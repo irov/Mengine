@@ -1,3 +1,0 @@
-#	include "XmlManager.h"
-
-// empty

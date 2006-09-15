@@ -1,0 +1,4 @@
+namespace luabind
+{
+	class object;
+}

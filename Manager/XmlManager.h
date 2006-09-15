@@ -2,7 +2,7 @@
 
 #	define TIXML_USE_STL
 
-#	include <tinyxml/tinyxml.h>
+#	include "tinyxml/tinyxml.h"
 
 #	include "Utility/string_algorithm.h"
 #	include "math/mat4.h"

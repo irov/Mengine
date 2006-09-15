@@ -10,13 +10,11 @@
 
 #	include "InputEngine.h"
 
-#	include "../System/InputSystemInterface.h"
+#	include "InputSystemInterface.h"
 
 #	include "ScriptEngine.h"
 
 #	include "InputScriptFunctionMap.h"
-
-#	include "Manager/InputManager.h"
 
 #	include "Manager/XmlManager.h"
 #	include "Manager/ErrorMessage.h"

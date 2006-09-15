@@ -9,7 +9,7 @@
 // ***************************************************************
 
 #	include "InputScriptFunctionMap.h"
-#	include "Manager/InputEnum.h"
+#	include "InputEnum.h"
 
 #	define DIRECTINPUT_VERSION 0x0800
 #	include <dinput.h>

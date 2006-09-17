@@ -3,8 +3,8 @@
 #	include "FileEngine.h"
 #	include "SoundNode.h"
 
-#	include "../System/SoundSystemInterface.h"
-#	include "../System/FileSystemInterface.h"
+#	include "SoundSystemInterface.h"
+#	include "FileSystemInterface.h"
 
 #include	<assert.h>
 

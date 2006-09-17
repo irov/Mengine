@@ -1,8 +1,8 @@
 #	include "RenderEngine.h"
 
-#	include "../System/RenderSystemInterface.h"
+#	include "RenderSystemInterface.h"
 
-#	include "../System/FileSystemInterface.h"
+#	include "FileSystemInterface.h"
 #	include "FileEngine.h"
 
 

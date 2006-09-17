@@ -1,5 +1,5 @@
-#	include "../System/SoundSystemInterface.h"
-#	include "../System/SoundSystemInterface.h"
+#	include "SoundSystemInterface.h"
+#	include "SoundSystemInterface.h"
 
 #	include "SoundNode.h"
 

@@ -7,7 +7,7 @@
 
 #	include "LuaScript/LuaScript.h"
 
-using namespace RvEngine;
+using namespace Menge;
 
 //////////////////////////////////////////////////////////////////////////
 ScriptFunction::ScriptFunction(ScriptEngine *_scriptEngine)

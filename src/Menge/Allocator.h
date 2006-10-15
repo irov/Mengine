@@ -4,7 +4,7 @@
 
 #	include "math/mat3.h"
 
-namespace RvEngine
+namespace Menge
 {
 	class Allocator
 		: public Node

@@ -14,7 +14,7 @@
 #	include "ScriptableRegistrator.h"
 
 #	define SCRIPTABLE_DECLARE_HELPER( CLASS )\
-	namespace RvEngine{\
+	namespace Menge{\
 	TLuaObject * CLASS##LuaObjectTypeCast( Node *Object, CLuaScript *LuaScript);\
 	void CLASS##RegistryScriptClass(CLuaScript *LuaScript);\
 	volatile static ScriptableCaster::\

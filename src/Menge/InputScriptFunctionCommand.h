@@ -14,7 +14,7 @@
 #	include <string>
 
 
-namespace RvEngine
+namespace Menge
 {
 	class ScriptFunction;
 	class ScriptEngine;

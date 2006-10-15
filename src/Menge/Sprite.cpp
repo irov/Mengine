@@ -18,7 +18,8 @@ Sprite::Sprite()
 void Sprite::render()
 {
 	const mt::mat3f &wm = getWorldMatrix();
-	m_renderEngine->renderImage(wm,0xffffffff,m_image);
+
+	Keeper<RenderEngine>::hostage()->renderImage(wm,0xffffffff,m_image);
 }
 //////////////////////////////////////////////////////////////////////////
 bool Sprite::_compile()
@@ -28,7 +29,7 @@ bool Sprite::_compile()
 		return false;
 	}
 
-	m_image = m_renderEngine->loadImage(m_spriteDesc->imageFile,m_spriteDesc->haveAlpha);
+	m_image = Keeper<RenderEngine>::hostage()->loadImage(m_spriteDesc->imageFile,m_spriteDesc->haveAlpha);
 
 	delete m_spriteDesc;
 
@@ -37,7 +38,7 @@ bool Sprite::_compile()
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_release()
 {
-	m_renderEngine->releaseRenderImage(m_image);
+	Keeper<RenderEngine>::hostage()->releaseRenderImage(m_image);
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::loader(TiXmlElement *xml)
@@ -55,7 +56,5 @@ void Sprite::_debugRender()
 	const mt::vec2f &pos = getWorldPosition();
 	const mt::vec2f &dir = getWorldDirection();
 
-
-
-	m_renderEngine->drawLine(pos - dir*4, pos + dir*4 , 4 , 0xff00ff00 );
+	Keeper<RenderEngine>::hostage()->drawLine(pos - dir*4, pos + dir*4 , 4 , 0xff00ff00 );
 };

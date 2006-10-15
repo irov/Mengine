@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "DllModule.h"
+#	include "Keeper.h"
 
 #	include <boost/intrusive_ptr.hpp>
 
@@ -15,13 +16,12 @@ class	SoundNodeListenerInterface;
 	Forward declaration
 */
 
-namespace RvEngine
+namespace Menge
 {
-	class FileEngine;
 	class SoundNode;
 }
 
-namespace RvEngine
+namespace Menge
 {
 	/*
 		Sound	Manager.
@@ -39,7 +39,6 @@ namespace RvEngine
 	public:
 		SoundEngine(const std::string& _dllModule);
 		~SoundEngine();
-		bool			init(FileEngine*	_fileEngine);
 		void			setListenerOrient(const float* _position, const float* _updir);
 		NodePtr			addSoundNode(const std::string& _filename, SoundNodeListenerInterface*	_listener = 0, bool _isStreamAudioFile = false);
 		void			deleteSoundNode(const std::string& _name);		
@@ -48,6 +47,5 @@ namespace RvEngine
 		typedef std::map<std::string,NodePtr> TMapSoundSource;
 
 		TMapSoundSource	mSoundSources;
-		FileEngine*	mFileEngine;
 	};
 };

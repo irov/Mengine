@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;SCENE_MANAGER_EXPORT;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;MENGE_EXPORT;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -190,22 +190,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="MapForeachSecond"
-				>
-				<File
-					RelativePath=".\VisitorMapForeachSecond.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Foreach"
-				>
-				<File
-					RelativePath=".\VisitorForeach.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Scene"
@@ -248,10 +232,6 @@
 			</File>
 			<File
 				RelativePath=".\SceneManager.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SceneManagerExport.h"
 				>
 			</File>
 			<File
@@ -422,6 +402,14 @@
 				RelativePath=".\DllModule.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Keeper.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MengeExport.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Chapter"
@@ -491,18 +479,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Renderable"
-				>
-				<File
-					RelativePath=".\Renderable.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Renderable.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Node"
 				>
 				<File
@@ -550,6 +526,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Renderable"
+				>
+				<File
+					RelativePath=".\Renderable.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Renderable.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Layer"
@@ -560,6 +548,30 @@
 			</File>
 			<File
 				RelativePath=".\Layer.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Game"
+			>
+			<File
+				RelativePath=".\Game.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Game.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Application"
+			>
+			<File
+				RelativePath=".\Application.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Application.h"
 				>
 			</File>
 		</Filter>

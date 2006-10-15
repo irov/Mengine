@@ -3,7 +3,7 @@
 #	include "VisitorBase.h"
 #	include "NodeFactory.h"
 
-using namespace RvEngine;
+using namespace Menge;
 
 
 #	ifndef OBJECT_USER_VISITOR
@@ -19,10 +19,9 @@ using namespace RvEngine;
 
 #	ifndef OBJECT_USER_GENERATOR
 #	define OBJECT_IMPLEMENT_GENERATOR(C)\
-	Node * C::genObject(SceneManager *_sceneManager, const std::string &_type){\
+	Node * C::genObject(const std::string &_type){\
 	Node *node = new C();\
 	node->setType(_type);\
-	node->setSceneManager(_sceneManager);\
 	return node;\
 	}
 #	else

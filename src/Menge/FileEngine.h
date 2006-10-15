@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "DllModule.h"
+#	include "Keeper.h"
 
 class FileSystemInterface;
 class FileDataInterface;
@@ -8,7 +9,7 @@ class FileDataInterface;
 class TiXmlElement;
 class TiXmlDocument;
 
-namespace RvEngine
+namespace Menge
 {
 	class FileEngine
 		: public DllModuleInterface<FileSystemInterface>
@@ -30,13 +31,13 @@ namespace RvEngine
 }
 
 //////////////////////////////////////////////////////////////////////////
-#	define XML_PARSE_FILE_EX( FILE_ENGINE_PTR, FILE_NAME )\
+#	define XML_PARSE_FILE_EX( FILE_NAME )\
 	for( bool irov_xml_parse_once = true ; irov_xml_parse_once == true; )\
 	for( \
 	TiXmlDocument irov_xml_document;\
 	irov_xml_parse_once==true;\
 	)\
-	if( (irov_xml_parse_once = FILE_ENGINE_PTR->loadXml(irov_xml_document,FILE_NAME)) == true )\
+	if( (irov_xml_parse_once = Keeper<FileEngine>::hostage()->loadXml(irov_xml_document,FILE_NAME)) == true )\
 	for(\
 	TiXmlElement * irov_xml_current_tree = irov_xml_document.FirstChildElement();\
 	irov_xml_current_tree != 0;\

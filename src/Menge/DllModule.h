@@ -2,7 +2,7 @@
 
 #	include <string>
 
-namespace RvEngine
+namespace Menge
 {
 	class DllModule
 	{

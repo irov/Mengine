@@ -12,7 +12,7 @@
 
 #	include "Utility/factory.h"
 
-namespace RvEngine
+namespace Menge
 {
 	namespace ScriptableRegistrator
 	{

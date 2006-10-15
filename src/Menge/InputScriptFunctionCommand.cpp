@@ -12,7 +12,7 @@
 
 #	include "ScriptFunction.h"
 
-namespace RvEngine
+namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	InputScriptFunctionCommand::InputScriptFunctionCommand()

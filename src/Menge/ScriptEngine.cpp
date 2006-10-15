@@ -7,12 +7,12 @@
 
 #	include "LuaScript/LuaScript.h"
 
-using namespace RvEngine;
+using namespace Menge;
 
 ScriptEngine::ScriptEngine()
 : m_luaScript(0)
 {
-
+	Keeper<ScriptEngine>::keep(this);
 }
 //////////////////////////////////////////////////////////////////////////
 ScriptEngine::~ScriptEngine()

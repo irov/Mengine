@@ -8,7 +8,7 @@
 
 #	include "Math/vec2.h"
 
-namespace RvEngine
+namespace Menge
 {
 	class TrackProxy;
 

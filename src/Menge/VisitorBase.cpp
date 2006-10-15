@@ -1,7 +1,7 @@
 #	include "VisitorBase.h"
 #	include "Node.h"
 
-using namespace RvEngine;
+using namespace Menge;
 using namespace Visitor;
 
 void Base::execute(Node *obj)

@@ -14,7 +14,7 @@
 #	define DIRECTINPUT_VERSION 0x0800
 #	include <dinput.h>
 
-namespace RvEngine
+namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	void InputScriptFunctionMap::InitDIK()

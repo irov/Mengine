@@ -1,11 +1,13 @@
 #	pragma once
 
+#	include "Keeper.h"
+
 #	include <string>
 #	include <set>
 
 class CLuaScript;
 
-namespace RvEngine
+namespace Menge
 {
 	class ScriptFunction;
 

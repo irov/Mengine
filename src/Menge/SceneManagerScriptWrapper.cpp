@@ -4,17 +4,17 @@
 
 #	include "LuaScript/LuaScript.h"
 
-namespace RvEngine
+namespace Menge
 {
 	void SceneManager::RegisterScriptClass()
 	{
-
-		CLuaScript *LuaScript = m_scriptEngine->getLuaScript();
+		CLuaScript *LuaScript = 
+			Keeper<ScriptEngine>::hostage()
+			->getLuaScript();
 
 		LuaScript->DefineClass()
 			[
 				luabind::class_<SceneManager>("SceneManager")
-				.def("getPath",&SceneManager::getPath)
 			];
 
 		LuaScript->SetLuaObject("SceneManager",boost::ref(*this));

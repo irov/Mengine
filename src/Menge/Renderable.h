@@ -4,7 +4,7 @@
 
 #	include "math/mat3.h"
 
-namespace RvEngine
+namespace Menge
 {
 	class RenderEngine;
 
@@ -15,11 +15,5 @@ namespace RvEngine
 
 	public:
 		virtual void render();
-
-	public:
-		void setSceneManager(SceneManager *sceneManager)override;
-
-	protected:
-		RenderEngine *m_renderEngine;
 	};
 }

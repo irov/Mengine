@@ -16,7 +16,7 @@
 
 #	include "Manager/XmlManager.h"
 
-namespace RvEngine
+namespace Menge
 {
 	void InputScriptFunctionMap::Loader(TiXmlElement *Tree)
 	{

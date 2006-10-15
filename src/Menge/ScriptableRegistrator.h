@@ -11,7 +11,7 @@
 #	include <string>
 
 class CLuaScript;
-namespace RvEngine
+namespace Menge
 {
 	namespace ScriptableRegistrator
 	{

@@ -6,20 +6,13 @@
 #	include "FileEngine.h"
 
 
-namespace RvEngine
+namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine(const std::string &_dllModule)
 		: DllModuleInterface<RenderSystemInterface>(_dllModule)
 	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::init(FileEngine *_fileEngine)
-	{
-		m_fileEngine = _fileEngine;
-
-		return true;
+		Keeper<RenderEngine>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createDisplay(
@@ -54,7 +47,7 @@ namespace RvEngine
 	RenderImageInterface* RenderEngine::loadImage(const std::string & _imageFile, bool _haveAlpha)
 	{
 		FileDataInterface* imageData = 
-			m_fileEngine->openFile(_imageFile);
+			Keeper<FileEngine>::hostage()->openFile(_imageFile);
 
 		if( imageData == 0 )
 		{

@@ -4,11 +4,8 @@
 
 #	include <list>
 
-namespace RvEngine
+namespace Menge
 {
-	class SceneManager;
-	class ScriptEngine;
-
 	class Node
 	{
 		OBJECT_DECLARE(Node);
@@ -41,9 +38,11 @@ namespace RvEngine
 
 		virtual size_t getTypeId()const;
 
-	public:		
-		virtual void setSceneManager(SceneManager *sceneManager);
-		virtual SceneManager * getSceneManager();
+		virtual void setExternal(bool _value);
+		virtual bool isExternal()const;
+
+		virtual void setResource(const std::string &_file);
+		virtual const std::string & getResource()const;
 
 	public:
 		virtual void setParent(Node *node);
@@ -67,6 +66,26 @@ namespace RvEngine
 			return static_cast<T*>(getChildren(_name));
 		}
 
+		template<class T_Result,class T_Class>
+		void dynamicForeach( T_Result (T_Class::*f)() )
+		{
+			for( TListChildren::iterator 
+				it = m_listChildren.begin(),
+				it_end = m_listChildren.end();
+			it != it_end;
+			++it)
+			{
+				T_Class *obj = dynamic_cast<T_Class*>(*it);
+
+				if( obj )
+				{
+					(obj->*f)();
+				}
+
+				(*it)->dynamicForeach(f);
+			}
+		}
+
 		virtual void removeChildren(Node *_node);
 		virtual void removeChildren(const std::string &_name);
 
@@ -86,7 +105,7 @@ namespace RvEngine
 		virtual void _deactivate();
 
 		virtual bool _compile();
-		virtual void _release();		
+		virtual void _release();
 
 	protected:
 		bool m_active;
@@ -95,12 +114,13 @@ namespace RvEngine
 		std::string m_name;
 		std::string m_type;
 
+		bool m_external;
+		std::string m_resource;
+
 		Node * m_parent;
 		TListChildren m_listChildren;
 
 		luabind::adl::object * m_scriptObject;	
-
-		SceneManager *m_sceneManager;
 
 	private:
 		TListChildren::iterator _findChildren(const std::string &_name);

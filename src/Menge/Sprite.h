@@ -6,7 +6,7 @@
 
 class RenderImageInterface;
 
-namespace RvEngine
+namespace Menge
 {
 	struct SpriteDesc
 	{

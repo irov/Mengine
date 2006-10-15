@@ -1,6 +1,6 @@
 #	pragma once
 
-namespace RvEngine
+namespace Menge
 {
 	class Node;
 	class Allocator;

@@ -4,13 +4,15 @@
 
 #	include <list>
 
-namespace RvEngine
+namespace Menge
 {
 	class Layer
 		: public Node
 	{
 		OBJECT_DECLARE(Layer);
 
-	};
+	public:
+		void setParent(Node *node)override;
 
+	};
 }

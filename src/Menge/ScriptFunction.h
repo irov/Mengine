@@ -4,7 +4,7 @@
 
 #	include <string>
 
-namespace RvEngine
+namespace Menge
 {
 	class ScriptEngine;
 

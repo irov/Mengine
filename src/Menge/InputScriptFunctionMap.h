@@ -16,7 +16,7 @@
 class TiXmlElement;
 
 
-namespace RvEngine
+namespace Menge
 {
 	class InputEngine;
 	class InputScriptFunctionCommand;

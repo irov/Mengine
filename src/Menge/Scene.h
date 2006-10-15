@@ -4,7 +4,7 @@
 
 #	include <list>
 
-namespace RvEngine
+namespace Menge
 {
 	class Layer;
 
@@ -16,13 +16,9 @@ namespace RvEngine
 		OBJECT_DECLARE(Scene);
 
 	public:
-		Layer * createLayer(const std::string &_nameLayer);
-		Layer * getLayer(const std::string &_nameLayer);
+		void start();
 
 	protected:
 		bool addChildren(Node *_node) override;
-
-	public:
-		void loader(TiXmlElement *_xml);
 	};
 }

@@ -2,10 +2,8 @@
 
 #	include <string>
 
-namespace RvEngine
+namespace Menge
 {
-	class SceneManager;
-
 	namespace Visitor
 	{
 		class Base;
@@ -26,5 +24,5 @@ namespace luabind
 #	define OBJECT_DECLARE(C)\
 	public:\
 	virtual void visit(Visitor::Base *visitor);\
-	static Node * genObject(SceneManager *sceneManager, const std::string &type);\
+	static Node * genObject(const std::string &type);\
 	private:

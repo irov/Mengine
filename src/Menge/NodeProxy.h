@@ -2,7 +2,7 @@
 
 #	include "Node.h"
 
-namespace RvEngine
+namespace Menge
 {
 	class NodeProxy
 		: public Node
@@ -31,9 +31,11 @@ namespace RvEngine
 
 		size_t getTypeId()const override;
 
-	public:
-		void setSceneManager(SceneManager *sceneManager) override;
-		SceneManager * getSceneManager() override;
+		void setExternal(bool _value) override;
+		bool isExternal()const override;
+
+		void setResource(const std::string &_file) override;
+		const std::string & getResource()const override;
 
 	public:
 		void setParent(Node *node) override;

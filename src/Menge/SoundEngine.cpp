@@ -8,28 +8,16 @@
 
 #include	<assert.h>
 
-
-
-
-namespace RvEngine
+namespace Menge
 {
 	SoundEngine::SoundEngine(const std::string& _dllModule)
 			: DllModuleInterface<SoundSystemInterface>(_dllModule)
 	{
+		Keeper<SoundEngine>::keep(this);
 	}
 
 	SoundEngine::~SoundEngine()
 	{
-	}
-
-	bool	SoundEngine::init(FileEngine*	_fileEngine)
-	{
-		if(!_fileEngine)
-		{
-			return	false;
-		}
-		mFileEngine = _fileEngine;
-		return	true;
 	}
 
 	void	SoundEngine::setListenerOrient(const float* _position, const float* _updir)
@@ -51,7 +39,7 @@ namespace RvEngine
 		{
 			SOUND_TYPE	typeOfSoundFile = _filename.find(".ogg")!=std::string::npos ? OGG : WAV;
 			
-			if (FileDataInterface* data = mFileEngine->openFile(_filename))
+			if (FileDataInterface* data = Keeper<FileEngine>::hostage()->openFile(_filename))
 			{
 				SoundDataDesc	desc_to_load = {
 					typeOfSoundFile,

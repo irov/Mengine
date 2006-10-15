@@ -12,7 +12,7 @@
 
 #	include "Utility/factory.h"
 
-namespace RvEngine
+namespace Menge
 {
 	namespace NodeFactory
 	{
@@ -58,10 +58,10 @@ namespace RvEngine
 			getClassFactory()->Registration(_key,_func);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		Node * genNode(const std::string &_type,SceneManager *_sceneManager)
+		Node * genNode(const std::string &_type)
 		{
 			Node * Abstract = 
-				getClassFactory()->Generation(_type,_sceneManager,_type);
+				getClassFactory()->Generation(_type,_type);
 
 			return Abstract;
 		}

@@ -1,4 +1,3 @@
-PREVED MEDVED
 #	include "stdio.h"
 
 #	include "../Menge/Application.h"

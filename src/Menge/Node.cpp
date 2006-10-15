@@ -2,6 +2,8 @@
 #	include "ObjectImplement.h"
 
 #	include "SceneManager.h"
+
+#	include "FileEngine.h"
 #	include "Manager/XmlManager.h"
 
 #	include "Utility/algorithm.h"
@@ -10,7 +12,10 @@ OBJECT_IMPLEMENT(Node);
 //////////////////////////////////////////////////////////////////////////
 Node::Node()
 : m_parent(0)
+, m_active(false)
+, m_compile(false)
 , m_scriptObject(0)
+, m_external(false)
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -84,16 +89,6 @@ bool Node::isCompile()
 	return m_compile;
 }
 //////////////////////////////////////////////////////////////////////////
-void Node::setSceneManager(SceneManager *sceneManager)
-{
-	m_sceneManager = sceneManager;
-}
-//////////////////////////////////////////////////////////////////////////
-SceneManager * Node::getSceneManager()
-{
-	return m_sceneManager;
-}
-//////////////////////////////////////////////////////////////////////////
 void Node::setName(const std::string &name)
 {
 	m_name = name;
@@ -117,6 +112,27 @@ const std::string & Node::getType()const
 size_t Node::getTypeId()const
 {
 	return NodeFactory::getId(m_type);
+}
+//////////////////////////////////////////////////////////////////////////
+void Node::setExternal(bool _value)
+{
+	m_external = _value;
+}
+//////////////////////////////////////////////////////////////////////////
+bool Node::isExternal()const
+{
+	return m_external;
+}
+
+//////////////////////////////////////////////////////////////////////////
+void Node::setResource(const std::string &_file)
+{
+	m_resource = _file;
+}
+//////////////////////////////////////////////////////////////////////////
+const std::string & Node::getResource()const
+{
+	return m_resource;
 }
 //////////////////////////////////////////////////////////////////////////
 Node * Node::getParent()
@@ -152,6 +168,8 @@ void Node::update(float _timing)
 //////////////////////////////////////////////////////////////////////////
 void Node::loader(TiXmlElement *xml)
 {
+	SceneManager *sceneMgr = Keeper<SceneManager>::hostage();
+
 	XML_FOR_EACH_TREE(xml)
 	{
 		XML_CHECK_NODE("Node")
@@ -159,7 +177,7 @@ void Node::loader(TiXmlElement *xml)
 			XML_DEF_ATTRIBUTES_NODE(Name);
 			XML_DEF_ATTRIBUTES_NODE(Type);
 
-			Node *node = m_sceneManager->createNode(Name,Type);
+			Node *node = sceneMgr->createNode(Name,Type);
 
 			if(node == 0)
 			{
@@ -169,6 +187,35 @@ void Node::loader(TiXmlElement *xml)
 			node->loader(XML_CURRENT_NODE);
 
 			addChildren(node);
+		}
+
+		XML_CHECK_NODE("EXTERNAL")
+		{
+			XML_DEF_ATTRIBUTES_NODE(File);
+			
+			bool loading; 
+			XML_VALUE_ATTRIBUTE("Loading",loading);
+			
+			XML_PARSE_FILE_EX(File)
+			{
+				if ( loading == true )
+				{
+					Node::loader(XML_CURRENT_NODE);
+				}
+				else
+				{
+					XML_CHECK_NODE("Node")
+					{
+						XML_DEF_ATTRIBUTES_NODE(Name);
+						XML_DEF_ATTRIBUTES_NODE(Type);
+
+						Node *node = sceneMgr->createNode(Name,Type);
+
+						node->setExternal(true);
+						node->setResource(File);
+					}				
+				}
+			}
 		}
 	}
 }

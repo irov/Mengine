@@ -22,7 +22,7 @@
 
 #	include <vector>
 
-namespace RvEngine
+namespace Menge
 {
 	namespace ScriptableCaster
 	{
@@ -41,10 +41,9 @@ namespace RvEngine
 			public:
 				luabind::adl::object * cast(size_t _id, Node * _node)
 				{
-					SceneManager *sceneMgr = _node->getSceneManager();
-					ScriptEngine *scriptEngine = sceneMgr->getScriptEngine();
-
-					CLuaScript *luaScript = scriptEngine->getLuaScript();
+					CLuaScript *luaScript = 
+						Keeper<ScriptEngine>::hostage()
+						->getLuaScript();
 
 					return m_vectorFunctionTypeCast[_id](_node,luaScript);
 				}

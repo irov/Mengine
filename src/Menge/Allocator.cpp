@@ -1,10 +1,6 @@
 #	include "Allocator.h"
 #	include "ObjectImplement.h"
 
-#	include "VisitorForeach.h"
-
-#	include "Utility/map_algorithm.h"
-
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Allocator);
 //////////////////////////////////////////////////////////////////////////
@@ -17,7 +13,7 @@ Allocator::Allocator()
 //////////////////////////////////////////////////////////////////////////
 void Allocator::changePivot()
 {
-	Visitor::foreach(m_listChildren,&Allocator::changePivot);
+	dynamicForeach(&Allocator::changePivot);
 
 	_changePivot();
 }

@@ -12,7 +12,7 @@
 
 #	include <string>
 
-namespace RvEngine
+namespace Menge
 {
 	class SceneManager;
 
@@ -20,10 +20,10 @@ namespace RvEngine
 
 	namespace NodeFactory
 	{
-		typedef Node *(*TGenFunc)(SceneManager *, const std::string &);
+		typedef Node *(*TGenFunc)(const std::string &);
 
 		size_t getId(const std::string &_key);
-		Node * genNode(const std::string &_type, SceneManager *_sceneManager);
+		Node * genNode(const std::string &_type);
 
 		void registration(const std::string &_key, TGenFunc _func);
 

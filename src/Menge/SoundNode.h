@@ -3,7 +3,7 @@
 class SoundSystemInterface;
 class SoundSourceInterface;
 
-namespace RvEngine
+namespace Menge
 {
 	class SoundNode
 	{
@@ -36,5 +36,5 @@ namespace RvEngine
 	};
 }
 
-void intrusive_ptr_add_ref(RvEngine::SoundNode *_n);
-void intrusive_ptr_release(RvEngine::SoundNode *_n);
+void intrusive_ptr_add_ref(Menge::SoundNode *_n);
+void intrusive_ptr_release(Menge::SoundNode *_n);

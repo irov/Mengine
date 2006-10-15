@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "DllModule.h"
+#	include "Keeper.h"
 
 #	include <string>
 
@@ -11,7 +12,7 @@ class RenderSystemInterface;
 class RenderFontInterface;
 class RenderImageInterface;
 
-namespace RvEngine
+namespace Menge
 {
 	class FileEngine;
 
@@ -21,9 +22,6 @@ namespace RvEngine
 	public:
 		RenderEngine(const std::string &_dllModule);
 		
-	public:
-		bool init(FileEngine *_fileEngine);
-
 	public:
 		bool createDisplay(
 			unsigned int _width, 
@@ -60,8 +58,5 @@ namespace RvEngine
 
 
 		void releaseRenderFont(RenderFontInterface* _fnt);
-		
-	private:
-		FileEngine *m_fileEngine;		
 	};
 }

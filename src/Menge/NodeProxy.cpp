@@ -1,6 +1,6 @@
 #	include "NodeProxy.h"
 
-using namespace RvEngine;
+using namespace Menge;
 
 //////////////////////////////////////////////////////////////////////////
 NodeProxy::NodeProxy( Node *_node)
@@ -128,14 +128,24 @@ void NodeProxy::setParent(Node *_node)
 	return m_node->setParent(_node);
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeProxy::setSceneManager(SceneManager *_sceneManager)
+void NodeProxy::setExternal(bool _value)
 {
-	return m_node->setSceneManager(_sceneManager);
+	return m_node->setExternal(_value);
 }
 //////////////////////////////////////////////////////////////////////////
-SceneManager * NodeProxy::getSceneManager()
+bool NodeProxy::isExternal()const
 {
-	return m_node->getSceneManager();
+	return m_node->isExternal();
+}
+//////////////////////////////////////////////////////////////////////////
+void NodeProxy::setResource(const std::string &_file)
+{
+	return m_node->setResource(_file);
+};
+//////////////////////////////////////////////////////////////////////////
+const std::string & NodeProxy::getResource()const
+{
+	return m_node->getResource();
 }
 //////////////////////////////////////////////////////////////////////////
 bool NodeProxy::_activate()

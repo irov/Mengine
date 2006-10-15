@@ -20,7 +20,7 @@ namespace luabind{
 		class object;
 	}
 }
-namespace RvEngine
+namespace Menge
 {
 	class Node;
 

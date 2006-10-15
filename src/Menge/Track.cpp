@@ -117,7 +117,7 @@ void Track::loader(TiXmlElement *_xml)
 //////////////////////////////////////////////////////////////////////////
 void Track::_debugRender()
 {
-	RenderEngine *renderEng = m_sceneManager->getRenderEngine();
+	RenderEngine *renderEng = Keeper<RenderEngine>::hostage();
  
 	for( TListTrackChain::iterator 
 		it = m_listChain.begin(),

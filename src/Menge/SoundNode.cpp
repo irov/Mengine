@@ -3,17 +3,17 @@
 
 #	include "SoundNode.h"
 
-void intrusive_ptr_add_ref(RvEngine::SoundNode *_n)
+void intrusive_ptr_add_ref(Menge::SoundNode *_n)
 {
 	_n->addRefCnt();
 }
 
-void intrusive_ptr_release(RvEngine::SoundNode *_n)
+void intrusive_ptr_release(Menge::SoundNode *_n)
 {
 	_n->releaseRefCnt();
 }
 
-namespace RvEngine
+namespace Menge
 {
 	SoundNode::SoundNode(SoundSystemInterface* _soundSystem, SoundSourceInterface *_interface)
 		: m_ssytem(_soundSystem)

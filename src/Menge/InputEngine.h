@@ -11,13 +11,14 @@
 #	pragma once
 
 #	include "DllModule.h"
+#	include "Keeper.h"
 
 #	include <string>
 #	include <map>
 
 class InputSystemInterface;
 
-namespace RvEngine
+namespace Menge
 {
 	class InputScriptFunctionMap;
 	class InputManager;

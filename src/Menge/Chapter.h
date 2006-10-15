@@ -2,23 +2,32 @@
 
 #	include "Node.h"
 
-#	include <map>
 
-namespace RvEngine
+
+namespace Menge
 {
 	class Scene;
 
 	class Chapter
 		: public Node
 	{
-		OBJECT_DECLARE(Chapter);
+	public:
+		Chapter(const std::string &_name);
 
 	public:
-		Scene * createScene(const std::string &_name);
-		Scene * getScene(const std::string &_name);
-		void removeScene(Scene *_scene);
+		void setScene(const std::string &_name);
 
 	public:
-		void loader(TiXmlElement *_xml)override;
+		bool addChildren(Node *_node) override;
+		void loader(TiXmlElement *_xml) override;
+
+	protected:		
+		bool _activate()override;
+
+	private:
+		std::string m_name;
+
+		std::string m_startScene;
+		Scene *m_currentScene;
 	};
 }

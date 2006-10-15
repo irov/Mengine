@@ -302,19 +302,23 @@
 			Name="XmlManager"
 			>
 			<File
-				RelativePath=".\ErrorMessage.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ErrorMessage.h"
-				>
-			</File>
-			<File
 				RelativePath=".\XmlManager.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\XmlManager.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="ErrorMessage"
+			>
+			<File
+				RelativePath=".\ErrorMessage.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ErrorMessage.h"
 				>
 			</File>
 		</Filter>

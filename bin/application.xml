@@ -16,4 +16,6 @@
 		<FullScreen Value = "0"/>
 	</Display>
 
+	<Game File = "Game/Game.xml" />
+
 </Application>

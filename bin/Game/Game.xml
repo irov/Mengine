@@ -1,8 +1,6 @@
-<Game>
-	<Chapters>
-		<Chapter Value = "Buba"/>
-		<Chapter Value = "Poba"/>
-	<Chapters>
+<Node Name = "Game" Type = "Game">
+	<External File = "Game/Buba/Chapter.xml" />
+	<External File = "Game/Poba/Chapter.xml" />
 
-	<ChapterIntro Name = "Buba"/>
-</Game>
+	<StartChapter Name = "Buba"/>
+</Node>

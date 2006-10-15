@@ -1,5 +1,4 @@
-<Chapter>
-	<Scenes>
-		<Scene Value = "Buka"/>
-	<Scenes>
-<Chapter>
+<Node Name = "Buba" Type = "Chapter" >
+	<External File = "Game/Buba/Buka/Scene.xml" />
+	<StartScene Name = "Buka" />
+</Node>

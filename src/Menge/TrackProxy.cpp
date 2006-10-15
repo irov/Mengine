@@ -4,16 +4,12 @@
 
 using namespace Menge;
 //////////////////////////////////////////////////////////////////////////
-TrackProxy::TrackProxy( const TrackProxyDesc &_desc )
-: NodeProxy(_desc.node)
-, m_track(_desc.track)
-, m_chain(_desc.chain)
-, m_speedMove(_desc.speedMove)
+TrackProxy::TrackProxy( Node *_node , Track *_track )
+: NodeProxy(_node)
+, m_track(_track)
+, m_speedMove(1.f)
 , m_isMove(true)
 {
-	const mt::vec2f &position = m_chain->beginPoint();
-
-	setPosition(position);
 }
 //////////////////////////////////////////////////////////////////////////
 void TrackProxy::setDirection(const mt::vec2f &dir)
@@ -65,6 +61,15 @@ void TrackProxy::update(float _timing)
 	}
 
 	NodeProxy::update(_timing);
+};
+//////////////////////////////////////////////////////////////////////////
+bool TrackProxy::_activate()
+{
+	const mt::vec2f &position = m_chain->beginPoint();
+
+	setPosition(position);
+
+	return true;
 };
 //////////////////////////////////////////////////////////////////////////
 void TrackProxy::start()

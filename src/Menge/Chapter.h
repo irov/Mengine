@@ -11,8 +11,9 @@ namespace Menge
 	class Chapter
 		: public Node
 	{
+		OBJECT_DECLARE(Chapter)
 	public:
-		Chapter(const std::string &_name);
+		Chapter();
 
 	public:
 		void setScene(const std::string &_name);
@@ -25,8 +26,6 @@ namespace Menge
 		bool _activate()override;
 
 	private:
-		std::string m_name;
-
 		std::string m_startScene;
 		Scene *m_currentScene;
 	};

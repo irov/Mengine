@@ -5,6 +5,7 @@
 
 #	include "FileEngine.h"
 #	include "Manager/XmlManager.h"
+#	include "Manager/ErrorMessage.h"
 
 #	include "Utility/algorithm.h"
 
@@ -32,6 +33,8 @@ bool Node::activate()
 	{
 		return true;
 	}
+
+	compile();
 
 	if( m_compile )
 	{
@@ -62,7 +65,20 @@ bool Node::compile()
 {
 	Utility::for_each(m_listChildren,&Node::compile);
 
-	if( m_compile == false )
+	if( m_compile == true )
+	{
+		return true;
+	}
+
+	bool hasResource = true;
+
+	if( m_external )
+	{
+		hasResource = Keeper<SceneManager>::hostage()
+			->loadNode(this, m_resource);
+	}
+
+	if( hasResource == true)
 	{
 		m_compile = _compile();
 	}
@@ -114,19 +130,14 @@ size_t Node::getTypeId()const
 	return NodeFactory::getId(m_type);
 }
 //////////////////////////////////////////////////////////////////////////
-void Node::setExternal(bool _value)
-{
-	m_external = _value;
-}
-//////////////////////////////////////////////////////////////////////////
 bool Node::isExternal()const
 {
 	return m_external;
 }
-
 //////////////////////////////////////////////////////////////////////////
 void Node::setResource(const std::string &_file)
 {
+	m_external = true;
 	m_resource = _file;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -189,11 +200,11 @@ void Node::loader(TiXmlElement *xml)
 			addChildren(node);
 		}
 
-		XML_CHECK_NODE("EXTERNAL")
+		XML_CHECK_NODE("External")
 		{
 			XML_DEF_ATTRIBUTES_NODE(File);
 			
-			bool loading; 
+			bool loading = false; 
 			XML_VALUE_ATTRIBUTE("Loading",loading);
 			
 			XML_PARSE_FILE_EX(File)
@@ -211,10 +222,15 @@ void Node::loader(TiXmlElement *xml)
 
 						Node *node = sceneMgr->createNode(Name,Type);
 
-						node->setExternal(true);
 						node->setResource(File);
+
+						addChildren(node);
 					}				
 				}
+			}
+			XML_INVALID_PARSE()
+			{
+				ErrorMessage("Invalid parse external node %s for %s", File.c_str(), m_name.c_str());
 			}
 		}
 	}

@@ -128,11 +128,6 @@ void NodeProxy::setParent(Node *_node)
 	return m_node->setParent(_node);
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeProxy::setExternal(bool _value)
-{
-	return m_node->setExternal(_value);
-}
-//////////////////////////////////////////////////////////////////////////
 bool NodeProxy::isExternal()const
 {
 	return m_node->isExternal();

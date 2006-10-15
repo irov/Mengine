@@ -10,6 +10,7 @@ namespace Menge
 	class Game
 		: public Node
 	{
+		OBJECT_DECLARE(Game)
 	public:
 		Game();
 

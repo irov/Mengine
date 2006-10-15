@@ -9,20 +9,11 @@ namespace Menge
 	class Node;
 	class Track;
 
-
-	struct TrackProxyDesc
-	{
-		Track *track;
-		TListTrackChain::iterator chain;
-		float speedMove;
-		Node *node;
-	};
-
 	class TrackProxy
 		: public NodeProxy
 	{
 	public:
-		TrackProxy( const TrackProxyDesc &_desc );
+		TrackProxy( Node *_node , Track *_track );
 
 	public:
 		void setSpeedMove(float _speed);
@@ -44,6 +35,9 @@ namespace Menge
 
 	public:
 		void update(float _timing) override;
+
+	protected:
+		bool _activate()override;
 
 	private:
 		bool m_isMove;

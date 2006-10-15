@@ -31,7 +31,6 @@ namespace Menge
 
 		size_t getTypeId()const override;
 
-		void setExternal(bool _value) override;
 		bool isExternal()const override;
 
 		void setResource(const std::string &_file) override;

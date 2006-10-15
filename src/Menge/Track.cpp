@@ -31,14 +31,9 @@ bool Track::addChildren(Node *_node)
 		return false;
 	}
 
-	TrackProxyDesc desc;
+	TrackProxy *proxy = new TrackProxy(_node,this);
 
-	desc.track = this;
-	desc.chain = m_listChain.begin();
-	desc.speedMove = 1.f;
-	desc.node = _node;
-
-	TrackProxy *proxy = new TrackProxy(desc);
+	proxy->setChain(m_listChain.begin());
 
 	return Node::addChildren(proxy);
 };
@@ -105,11 +100,13 @@ void Track::loader(TiXmlElement *_xml)
 			XML_CHECK_NODE("Point")
 			{
 				mt::vec2f pos;
-				XML_VALUE_ATTRIBUTE("Position",pos);
+				XML_VALUE_ATTRIBUTE("Value",pos);
 				addPoint(pos);
 			}
 		}
 	}
+
+	Node::loader(_xml);
 };
 //////////////////////////////////////////////////////////////////////////
 #	include "SceneManager.h"

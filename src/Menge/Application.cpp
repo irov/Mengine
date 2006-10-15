@@ -97,6 +97,16 @@ namespace Menge
 					XML_CHECK_VALUE_NODE("Bits","Value",m_bits);
 					XML_CHECK_VALUE_NODE("FullScreen","Value",m_fullScreen);
 				}
+
+				//<Game File = "Game/Game.xml" />
+				XML_CHECK_NODE("Game")
+				{
+					XML_DEF_ATTRIBUTES_NODE(File);
+
+					m_game = new Game();
+
+					m_game->setResource(File);
+				}
 			}
 		}
 		XML_INVALID_PARSE()
@@ -113,8 +123,6 @@ namespace Menge
 		{
 			Keeper<FileEngine>::hostage()->loadPak(it->first,it->second);
 		}
-
-		m_game = new Game;
 
 		return true;
 	}
@@ -154,7 +162,7 @@ namespace Menge
 		//	m_functionUpdate->callFunctionVoid();
 		//}
 
-		//g_scene->update(0.1f);
+		m_game->update(0.1f);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::render()
@@ -168,7 +176,7 @@ namespace Menge
 		//	m_functionRender->callFunctionVoid();
 		//}
 
-		//g_scene->debugRender();
+		m_game->debugRender();
 
 		renderEng->endSceneDrawing();
 	}

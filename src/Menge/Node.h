@@ -38,7 +38,6 @@ namespace Menge
 
 		virtual size_t getTypeId()const;
 
-		virtual void setExternal(bool _value);
 		virtual bool isExternal()const;
 
 		virtual void setResource(const std::string &_file);

@@ -1,0 +1,17 @@
+<Node Name = "Buka" Type = "Scene">
+	<Node Name = "Main" Type = "Layer">
+		<Node Name = "TestTrack" Type = "Track">
+			<Point Value = "0;0"/>
+			<Point Value = "100;100"/>
+			<Point Value = "200;50"/>
+			<Point Value = "300;150"/>
+			
+			<Node Name = "TestSprite" Type = "Sprite">
+				<SpeedMove Value = "2.f"/>
+				
+				<Node Name = "TestSprite2" Type = "Sprite">
+				</Node> <!-- Sprite -->
+			</Node> <!-- Sprite -->
+		</Node> <!-- Track -->
+	</Node> <!-- Layer -->
+</Node>

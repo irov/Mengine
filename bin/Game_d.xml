@@ -1,0 +1,14 @@
+<Game Type = "Debug">
+	<DllModule>
+		<InputSystem DllFile = "InputSystem_d.dll"/>
+		<FileSystem DllFile = "FileSystem_d.dll"/>
+		<RenderSystem DllFile = "RenderSystem_d.dll"/>
+	</DllModule>
+
+
+
+	<Paks>
+		<Pak File = "Data.pak" Priority = "1" />
+	</Paks>
+	
+</Game>

@@ -1,0 +1,8 @@
+<Game>
+	<Chapters>
+		<Chapter Value = "Buba"/>
+		<Chapter Value = "Poba"/>
+	<Chapters>
+
+	<ChapterIntro Name = "Buba"/>
+</Game>

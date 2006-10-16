@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="MngWriter"
-	ProjectGUID="{CF682BF0-2596-44B6-9599-4FB28DB2693C}"
+	ProjectGUID="{6498B8C0-7F7F-4552-9761-37F50E7FD10A}"
 	RootNamespace="invert"
 	>
 	<Platforms>

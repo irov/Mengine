@@ -45,7 +45,7 @@ bool SceneManager::loadNode(Node *_node, const std::string &_xml)
 
 	return true;
 }
-
+ 
 #	include "Scene.h"
 #	include "Layer.h"
 #	include "Track.h"

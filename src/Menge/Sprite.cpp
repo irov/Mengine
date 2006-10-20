@@ -66,7 +66,7 @@ void Sprite::update(float timing)
 				if(!m_looping)
 				{
 					m_playing = false;
-					m_currentFrame = --m_desc.frames.end();
+					m_currentFrame = m_desc.frames.end() - 1;
 					break;
 				}
 				else
@@ -204,7 +204,7 @@ void Sprite::stop()
 void Sprite::play()
 {
 	m_playing = true;
-	m_currentFrame = (m_state == FORWARD) ? m_desc.frames.begin() : --m_desc.frames.end();
+	m_currentFrame = (m_state == FORWARD) ? m_desc.frames.begin() : m_desc.frames.end() - 1;
 }
 
 //////////////////////////////////////////////////////////////////////////

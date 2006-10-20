@@ -1,7 +1,6 @@
 #	pragma once
 
-#	include "..\Includes\include\png.h"
-
+#	include <pnglib/include/png.h>
 #	include <vector>
 
 namespace	mnglib

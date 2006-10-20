@@ -11,6 +11,7 @@
 class RenderSystemInterface;
 class RenderFontInterface;
 class RenderImageInterface;
+struct TextureDesc;
 
 namespace Menge
 {
@@ -58,5 +59,8 @@ namespace Menge
 
 
 		void releaseRenderFont(RenderFontInterface* _fnt);
+
+		/*	Добавлено 17.10.2006 в 16:17	*/
+		RenderImageInterface* loadImage(const TextureDesc& _desc);
 	};
 }

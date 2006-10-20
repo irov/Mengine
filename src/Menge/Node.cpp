@@ -370,7 +370,6 @@ void Node::removeChildren(const std::string &_name)
 void Node::debugRender()
 {
 	Utility::for_each(m_listChildren,&Node::debugRender);
-
 	_debugRender();
 }
 //////////////////////////////////////////////////////////////////////////

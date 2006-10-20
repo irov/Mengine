@@ -79,10 +79,13 @@ void Direct3d9RenderSystem::renderImage(const mt::mat3f& _transform,
     mVBDynamic->Lock(0, mSizeOf4Verts, (VOID**)&vertices, 0);
 	memcpy(vertices, imaged3d9ptype->_getD3D9V4(), mSizeOf4Verts);
 	for(size_t i = 0; i < 4; ++i)
-    {
-		mt::mul_m3_v3(vertices[i].position, _transform, vertices[i].position);
+	{
+		mt::vec3f outvert;
+		//mt::mul_m3_v3(outvert, _transform, vertices[i].position);
+		mt::mul_v3_m3(outvert, vertices[i].position, _transform);
+		vertices[i].position = outvert;
 		vertices[i].mColor = _mixedColor;
-    }
+	}
 	mVBDynamic->Unlock();
 
 	mDeviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, imaged3d9ptype->_isAlpha());

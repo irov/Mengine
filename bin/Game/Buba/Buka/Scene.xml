@@ -10,6 +10,8 @@
 			
 			<Node Name = "TestSprite" Type = "Sprite">
 				<SpeedMove Value = "2.f"/>
+
+				<ImageMNG File = "bla.mng" />
 				
 				<Node Name = "TestSprite2" Type = "Sprite">
 				</Node> <!-- Sprite -->

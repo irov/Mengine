@@ -69,7 +69,7 @@ namespace Menge
 					/* 20.10.06 */
 					XML_CHECK_NODE("PhysSystem")
 					{
-						new PhysicEngine(DllFile);					
+//						new PhysicEngine(DllFile);					
 					}
 				}
 

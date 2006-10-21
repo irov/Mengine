@@ -393,14 +393,6 @@
 			<Filter
 				Name="Physic"
 				>
-				<File
-					RelativePath=".\PhysicEngine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\PhysicEngine.h"
-					>
-				</File>
 			</Filter>
 		</Filter>
 		<Filter

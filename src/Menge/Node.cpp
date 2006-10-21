@@ -209,6 +209,7 @@ void Node::loader(TiXmlElement *xml)
 			
 			XML_PARSE_FILE_EX(File)
 			{
+
 				if ( loading == true )
 				{
 					Node::loader(XML_CURRENT_NODE);

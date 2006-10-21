@@ -4,8 +4,8 @@
 			<Points>
 				<Point Value = "0;0"/>
 				<Point Value = "100;100"/>
-				<Point Value = "200;50"/>
-				<Point Value = "300;150"/>
+				<Point Value = "200;650"/>
+				<Point Value = "300;650"/>
 			</Points>
 			
 			<Node Name = "TestSprite" Type = "Sprite">

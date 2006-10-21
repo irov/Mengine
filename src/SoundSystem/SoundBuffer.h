@@ -1,8 +1,8 @@
 #pragma once
 
 #include <assert.h>
-#include "al.h"
-#include "alc.h"
+#include "openal/al.h"
+#include "openal/alc.h"
 #include "vorbis/vorbisfile.h"
 #include <memory.h>
 

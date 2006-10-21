@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\OpenAL\;.\Vorbis\;&quot;$(SolutionDir)dependencies&quot;"
+				AdditionalIncludeDirectories="$(SolutionDir)dependencies&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -64,6 +64,7 @@
 				AdditionalDependencies="OpenAL32.lib vorbisfile.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\lib\"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				SubSystem="1"

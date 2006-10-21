@@ -522,7 +522,7 @@ bool	Direct3d9RenderSystem::_initRenderSystem()
 	mDeviceD3D9->SetTransform (D3DTS_PROJECTION, &temp);
 	D3DXMatrixIdentity(&temp);
 	mDeviceD3D9->SetTransform (D3DTS_VIEW, &temp);
-	temp._41+=-(float)(mWidth) / 2.0f;
+	temp._41-=(float)(mWidth) / 2.0f;
 	temp._42+=(float)(mHeight) / 2.0f;
 	mDeviceD3D9->SetTransform(D3DTS_WORLD, &temp);
 	/*	

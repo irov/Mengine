@@ -37,7 +37,7 @@ namespace Menge
 		}
 		else
 		{
-			SOUND_TYPE	typeOfSoundFile = _filename.find(".ogg")!=std::string::npos ? OGG : WAV;
+			SOUND_TYPE	typeOfSoundFile = _filename.find(".ogg") != std::string::npos ? OGG : WAV;
 			
 			if (FileDataInterface* data = Keeper<FileEngine>::hostage()->openFile(_filename))
 			{

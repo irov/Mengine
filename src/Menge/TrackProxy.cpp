@@ -2,6 +2,8 @@
 
 #	include "Track.h"
 
+#	include "Manager/XmlManager.h"
+
 using namespace Menge;
 //////////////////////////////////////////////////////////////////////////
 TrackProxy::TrackProxy( Node *_node , Track *_track )
@@ -69,8 +71,8 @@ bool TrackProxy::_activate()
 
 	setPosition(position);
 
-	return true;
-};
+	return NodeProxy::_activate();
+}
 //////////////////////////////////////////////////////////////////////////
 void TrackProxy::start()
 {
@@ -86,3 +88,13 @@ bool TrackProxy::isMoved()const
 {
 	return m_isMove;
 }
+//////////////////////////////////////////////////////////////////////////
+void TrackProxy::loader(TiXmlElement * _xml)
+{
+	XML_FOR_EACH_TREE(_xml)
+	{
+		XML_CHECK_VALUE_NODE("SpeedMove","Value",m_speedMove);
+	}
+
+	NodeProxy::loader(_xml);
+};

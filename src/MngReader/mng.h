@@ -1,6 +1,5 @@
 #	pragma once
 
-#	include <pnglib/include/png.h>
 #	include <vector>
 
 namespace	mnglib

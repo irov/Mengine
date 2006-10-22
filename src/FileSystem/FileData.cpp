@@ -30,7 +30,7 @@ FileData::FileData(void *_data, size_t _size)
 FileData::FileData(std::ifstream& _stream)
 {
 	_stream.seekg(0,std::ios::end); 
-	size_t filesize = _stream.tellg();
+	std::streamsize filesize = _stream.tellg();
 	_stream.seekg(0,std::ios::beg);
 	mSize = filesize;
 	mData = new unsigned char[mSize];
@@ -43,7 +43,7 @@ size_t FileData::read(void* _buffer, size_t _elemsize, size_t _count)
 {
     size_t cnt = _elemsize * _count;
 
-	if (mEndData - mPos < cnt )
+	if ( mEndData - mPos < cnt )
 	{
         cnt = mEndData - mPos;
 	}

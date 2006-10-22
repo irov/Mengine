@@ -1,7 +1,14 @@
-#include "FileSystem.h"
+#	include "FileSystem.h"
 
-#include <assert.h>
-#include <boost/functional.hpp>
+#	include "FileData.h"
+#	include "ZipArch.h"
+
+#	include <boost/functional.hpp>
+
+#	include <algorithm>
+
+#	include <direct.h>
+#	include <assert.h>
 
 bool initInterfaceSystem(FileSystemInterface** _ptrFileSystem)
 {

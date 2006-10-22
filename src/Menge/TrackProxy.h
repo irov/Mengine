@@ -35,6 +35,7 @@ namespace Menge
 
 	public:
 		void update(float _timing) override;
+		void loader(TiXmlElement * _xml) override;
 
 	protected:
 		bool _activate()override;

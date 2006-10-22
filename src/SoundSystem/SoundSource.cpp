@@ -1,4 +1,10 @@
-#include "SoundSource.h"
+#	include "SoundSource.h"
+
+#	include "SoundBuffer.h"
+
+#	include <assert.h>
+
+#	include "OpenAL/al.h"
 
 OpenALSoundSource::OpenALSoundSource( 
 									 SoundNodeListenerInterface* _plr,
@@ -12,7 +18,7 @@ OpenALSoundSource::OpenALSoundSource(
 	mPlayer = _plr;
 	mBufferWithData = _data;
 
-	if (mBufferWithData == NULL)
+	if (mBufferWithData == 0)
 	{
 		assert(!"OpenALSoundSource error");
 		return;
@@ -71,7 +77,7 @@ OpenALSoundSource::OpenALSoundSource(
 	alSourcefv(mSource, AL_POSITION,  mPosition);
 	alSourcefv(mSource, AL_VELOCITY,  m_ov);
 	alSourcei(mSource, AL_SOURCE_RELATIVE, mHeadMode);
-	mPlayer = NULL;
+	mPlayer = 0;
 }
 
 OpenALSoundSource::~OpenALSoundSource()

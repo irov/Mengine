@@ -1,5 +1,7 @@
 #include "RenderSystem.h"
 
+#include <assert.h>
+
 bool initInterfaceSystem(RenderSystemInterface**	_ptrRenderSystem)
 {
 	try

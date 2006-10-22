@@ -1,4 +1,6 @@
-#include "WavSoundBuffer.h"
+#	include "WavSoundBuffer.h"
+
+#	include <assert.h>
 
 CALWavBuffer::CALWavBuffer(void * _buffer, size_t _size):SoundBufferInterface(_buffer, _size)
 {

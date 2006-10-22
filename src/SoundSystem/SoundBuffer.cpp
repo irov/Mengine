@@ -1,5 +1,13 @@
 #include "SoundBuffer.h"
 
+#include "OpenAL/al.h"
+#include "OpenAL/alc.h"
+#include "Vorbis/vorbisfile.h"
+
+#include <memory.h>
+#include <assert.h>
+
+
 SoundBufferInterface::SoundBufferInterface(void* _buffer, size_t _size) 
 {
 	mBits   = (unsigned char *)_buffer;

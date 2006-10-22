@@ -3,6 +3,8 @@
 #include "WavSoundBuffer.h"
 #include "OggSoundBuffer.h"
 
+#	include "OpenAL/al.h"
+
 bool initRenderSystem(SoundSystemInterface** _ptrSoundSystem)
 {
 	try

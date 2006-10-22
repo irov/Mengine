@@ -1,5 +1,8 @@
-#pragma once
-#include "SoundBuffer.h"
+#	pragma once
+
+#	include "SoundBuffer.h"
+#	include "Vorbis/vorbisfile.h"
+
 
 class	OggSoundData : public SoundBufferInterface
 {

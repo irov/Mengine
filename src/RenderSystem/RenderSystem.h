@@ -1,16 +1,17 @@
-#pragma once
+#	pragma once
 
-#include "interfaces.h"
-#include <assert.h>
-#include <map>
-#include <vector>
+#	include "interfaces.h"
 
-#include "RenderImage.h"
-#include "RenderFont.h"
+#	include "RenderImage.h"
+#	include "RenderFont.h"
 
-#include "math/vec3.h"
-#include "math/mat3.h"
-#include "math/mat4.h"
+#	include "math/vec3.h"
+#	include "math/mat3.h"
+#	include "math/mat4.h"
+
+#	include <map>
+#	include <vector>
+
 
 /*	
 	Structure for holding batching of font.
@@ -31,11 +32,14 @@ struct	FontBatch
 		_initBatching() - init	VB, IB batching.
 		_flushFonts() - flush all fonts batches.
 */
-class	Direct3d9RenderSystem : public RenderSystemInterface
+class	Direct3d9RenderSystem 
+	: public RenderSystemInterface
 {
 public:
 	Direct3d9RenderSystem();
 	~Direct3d9RenderSystem();
+
+public:
 	bool	createDisplay(unsigned int _width, unsigned int _height, unsigned int _bits, bool _fullScreen);
 	bool	beginSceneDrawing(bool _backBuffer, bool _zBuffer, unsigned long _color);
 	bool	endSceneDrawing();
@@ -47,8 +51,10 @@ public:
 	void	releaseRenderImage(RenderImageInterface* _rmi);
     void	renderText(mt::vec2f _pos, RenderFontInterface* _font, const std::string& _text);
 	void	releaseRenderFont(RenderFontInterface* _fnt);
+
 	RenderImageInterface* loadImage(const TextureDesc&	_desc);
 	RenderFontInterface* loadFont(const FontDesc& _desc);
+
 private:
 	/*	
 		size of	VB for batching.

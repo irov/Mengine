@@ -1,12 +1,17 @@
 #include "interfaces.h"
 
-#include "SoundBuffer.h"
+#include "OpenAL/altypes.h"
 
-class OpenALSoundSource : public SoundSourceInterface  
+class SoundBufferInterface;
+
+class OpenALSoundSource 
+	: public SoundSourceInterface  
 {
 public:
 	OpenALSoundSource(SoundNodeListenerInterface* _plr, SoundBufferInterface* _data, bool _streaming);
 	~OpenALSoundSource();
+
+public:
 	void			play(); 
 	void			pause();
 	void			stop();

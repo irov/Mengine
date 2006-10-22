@@ -1,5 +1,6 @@
-#include "OggSoundBuffer.h"
+#	include "OggSoundBuffer.h"
 
+#	include <assert.h>
 
 size_t readFunc(void* _ptr, size_t _size, size_t _nmemb, void* _datasource)
 {

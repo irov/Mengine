@@ -27,6 +27,13 @@ Node::~Node()
 //////////////////////////////////////////////////////////////////////////
 bool Node::activate()
 {
+	compile();
+
+	if( m_compile == false )
+	{
+		return false;
+	}
+
 	Utility::for_each(m_listChildren,&Node::activate);
 
 	if( m_active )
@@ -34,14 +41,7 @@ bool Node::activate()
 		return true;
 	}
 
-	compile();
-
-	if( m_compile )
-	{
-		return _activate();
-	}
-
-	return false;
+	return _activate();
 }
 //////////////////////////////////////////////////////////////////////////
 void Node::deactivate()
@@ -63,6 +63,12 @@ bool Node::isActive()
 //////////////////////////////////////////////////////////////////////////
 bool Node::compile()
 {
+	if( m_external )
+	{
+		Keeper<SceneManager>::hostage()
+			->loadNode(this, m_resource);
+	}
+
 	Utility::for_each(m_listChildren,&Node::compile);
 
 	if( m_compile == true )
@@ -70,18 +76,7 @@ bool Node::compile()
 		return true;
 	}
 
-	bool hasResource = true;
-
-	if( m_external )
-	{
-		hasResource = Keeper<SceneManager>::hostage()
-			->loadNode(this, m_resource);
-	}
-
-	if( hasResource == true)
-	{
-		m_compile = _compile();
-	}
+	m_compile = _compile();
 
 	return m_compile;	
 }

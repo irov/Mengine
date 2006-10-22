@@ -1,10 +1,11 @@
-#pragma once
-#include "interfaces.h"
+#	pragma once
 
-#include <d3d9.h>
-#include <d3dx9.h>
+#	include "interfaces.h"
 
-#include "math/vec3.h"
+#	include <d3d9.h>
+#	include <d3dx9.h>
+
+#	include "math/vec3.h"
 
 struct D3D9Vertex
 {
@@ -13,18 +14,22 @@ struct D3D9Vertex
 	mt::vec2f	tcoor;
 };
 
-class	D3D9RenderImage : public RenderImageInterface
+class	D3D9RenderImage 
+	: public RenderImageInterface
 {
 public:
 	D3D9RenderImage(LPDIRECT3DDEVICE9 _dev, const TextureDesc& _desc);
 	~D3D9RenderImage();
 
+public:
 	float	getWidth() const;
 	float	getHeight() const;
 
+public:
 	const D3D9Vertex*	_getD3D9V4() const;
 	LPDIRECT3DTEXTURE9	_getTexPointer() const;
 	bool				_isAlpha() const;
+
 private:
 	float				mWidth;
 	float				mHeight;

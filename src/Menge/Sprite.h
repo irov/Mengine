@@ -8,7 +8,6 @@
 
 /*	добавлен всякий ахтунг	*/
 #	include "..\MngReader\MNG.h"
-#	pragma comment (lib, "D:/TestSVN/MngReader.lib")
 /**/
 
 class RenderImageInterface;
@@ -57,14 +56,17 @@ namespace Menge
 	private:
 		bool m_playing;
 		bool m_looping;
+
+		bool m_haveAlpha;
+
 		ANIMSTATE	m_state;
-		std::string m_filenameMNG;
+
+		std::string m_fileMNG;
+
 		std::vector<mnglib::Frame>::iterator m_currentFrame;
 		std::vector<RenderImageInterface*>	m_renderImages;
 		mnglib::mngDesc	m_desc;
 		float m_currentDelay;
-
-		SpriteDesc *m_spriteDesc;
 		//RenderImageInterface* m_image;
 	};
 }

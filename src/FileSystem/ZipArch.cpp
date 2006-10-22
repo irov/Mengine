@@ -1,5 +1,11 @@
-#include "ZipArch.h"
-#include <assert.h>
+#	include "ZipArch.h"
+
+#	include "FileData.h"
+
+#	include "zlib\unzip.h"
+#	include "zlib\iowin32.h" 
+
+#	include <assert.h>
 
 ZipArchive::ZipArchive(const std::string& _filename, int _prior) 
 : mUzFile(0),

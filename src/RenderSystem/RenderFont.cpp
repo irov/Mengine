@@ -1,4 +1,7 @@
-#include "RenderFont.h"
+#	include "RenderFont.h"
+
+#	include <assert.h>
+
 
 D3D9Font::D3D9Font(LPDIRECT3DDEVICE9	_devD3D9, const FontDesc&	_fontDesc)
 {

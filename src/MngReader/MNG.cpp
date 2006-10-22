@@ -1,9 +1,9 @@
 #	include "MNG.h"
+
 #	include <assert.h>
 
 namespace mnglib
 {
-
 	void	readChunk(void* _buffer, size_t _elemsize, size_t _count, unsigned char*& _chunk)
 	{
 		size_t count = _elemsize * _count;

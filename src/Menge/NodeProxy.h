@@ -40,10 +40,12 @@ namespace Menge
 		void setParent(Node *node) override;
 		Node * getParent() override;
 		
-		void updateParent() override;
+		void _updateParent() override;
 		bool isRoot() override;
 
 	public:
+		Node * createChildren(const std::string &_name, const std::string &_type) override;
+
 		bool addChildren(Node *_node) override;
 		void visitChildren(Visitor::Base *visitor) override;
 

@@ -68,14 +68,19 @@ Node * NodeProxy::getParent()
 	return m_node->getParent();
 };
 //////////////////////////////////////////////////////////////////////////
-void NodeProxy::updateParent()
+void NodeProxy::_updateParent()
 {
-	return m_node->updateParent();
+	return m_node->_updateParent();
 };
 //////////////////////////////////////////////////////////////////////////
 bool NodeProxy::isRoot()
 {
 	return m_node->isRoot();
+};
+//////////////////////////////////////////////////////////////////////////
+Node * NodeProxy::createChildren(const std::string &_name, const std::string &_type)
+{
+	return m_node->createChildren(_name,_type);
 };
 //////////////////////////////////////////////////////////////////////////
 bool NodeProxy::addChildren(Node *_node)

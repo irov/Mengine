@@ -192,6 +192,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="FindParentAllocator"
+				>
+				<File
+					RelativePath=".\VisitorChangePivotChildren.h"
+					>
+				</File>
+				<File
+					RelativePath=".\VisitorGetParentAllocator.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Scene"

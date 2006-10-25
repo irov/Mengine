@@ -47,10 +47,11 @@ namespace Menge
 		virtual void setParent(Node *node);
 		virtual Node * getParent();
 
-		virtual void updateParent();
 		virtual bool isRoot();
 
 	public:
+		virtual Node * createChildren(const std::string &_name, const std::string &_type);
+
 		virtual bool addChildren(Node *_node);
 		virtual void visitChildren(Visitor::Base *visitor);
 
@@ -105,6 +106,9 @@ namespace Menge
 
 		virtual bool _compile();
 		virtual void _release();
+
+		virtual void _updateParent();
+		virtual void _lostChildren(Node *_node, bool _valid);
 
 	protected:
 		bool m_active;

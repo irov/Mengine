@@ -36,16 +36,16 @@ namespace Menge
 
 	public:
 		bool isChangePivot()const;
+		void changePivot();
 
 	protected:
-		virtual void _changePivot();		
+		virtual void _changePivot();
+
+	protected:
+		void _updateParent()override;
 
 	private:	
-		void changePivot();
 		void updateMatrix();
-
-	public:
-		void updateParent()override;
 
 	protected:
 		Allocator *m_parentAllocator;

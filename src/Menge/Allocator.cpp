@@ -1,6 +1,9 @@
 #	include "Allocator.h"
 #	include "ObjectImplement.h"
 
+#	include "VisitorChangePivotChildren.h"
+#	include "VisitorGetParentAllocator.h"
+
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Allocator);
 //////////////////////////////////////////////////////////////////////////
@@ -13,7 +16,7 @@ Allocator::Allocator()
 //////////////////////////////////////////////////////////////////////////
 void Allocator::changePivot()
 {
-	dynamicForeach(&Allocator::changePivot);
+	Visitor::changePivotChildren(this);
 
 	_changePivot();
 }
@@ -115,21 +118,9 @@ void Allocator::translate( const mt::vec2f &delta )
 	changePivot();
 }
 //////////////////////////////////////////////////////////////////////////
-void Allocator::updateParent()
+void Allocator::_updateParent()
 {
-	m_parentAllocator = 0;
-	
-	for(Node *parent = getParent(); 
-		parent != 0; 
-		parent = parent->getParent())
-	{
-		m_parentAllocator = dynamic_cast<Allocator*>(parent);
-
-		if( m_parentAllocator != 0 )
-		{
-			break;
-		}
-	}
+	m_parentAllocator = Visitor::getParentAllocator(this);
 };
 //////////////////////////////////////////////////////////////////////////
 void Allocator::updateMatrix()

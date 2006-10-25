@@ -19,6 +19,12 @@ namespace Menge
 			
 		public:
 			void operator () (Node *obj);
+
+		public:
+			void apply(Node *obj);
+
+		protected:
+			virtual void provideUnknown( Node *_node);
 		};
 	}
 }

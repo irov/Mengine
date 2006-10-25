@@ -135,6 +135,7 @@ int CollideBoxBox(CollisionPair& cp, RigidBodyInterface* A, RigidBodyInterface* 
 
 	mt::vec2f faceB = mt::vec2f(abs(dB.x),abs(dB.y)) - hAc - hB;
 
+
 	if (faceB.x > 0.0f || faceB.y > 0.0f)
 	{
 		return 0;

@@ -153,13 +153,13 @@ bool Node::isRoot()
 //////////////////////////////////////////////////////////////////////////
 void Node::setParent(Node *node)
 {
+	if( m_parent )
+	{
+		m_parent->_lostChildren(this,true);
+	}
+
 	m_parent = node;
-	updateParent();
-}
-//////////////////////////////////////////////////////////////////////////
-void Node::updateParent()
-{
-	Utility::for_each(m_listChildren,&Node::updateParent);
+	_updateParent();
 }
 //////////////////////////////////////////////////////////////////////////
 void Node::visitChildren(Visitor::Base *visitor)
@@ -174,8 +174,6 @@ void Node::update(float _timing)
 //////////////////////////////////////////////////////////////////////////
 void Node::loader(TiXmlElement *xml)
 {
-	SceneManager *sceneMgr = Keeper<SceneManager>::hostage();
-
 	XML_FOR_EACH_TREE(xml)
 	{
 		XML_CHECK_NODE("Node")
@@ -183,7 +181,7 @@ void Node::loader(TiXmlElement *xml)
 			XML_DEF_ATTRIBUTES_NODE(Name);
 			XML_DEF_ATTRIBUTES_NODE(Type);
 
-			Node *node = sceneMgr->createNode(Name,Type);
+			Node *node = createChildren(Name,Type);
 
 			if(node == 0)
 			{
@@ -216,7 +214,7 @@ void Node::loader(TiXmlElement *xml)
 						XML_DEF_ATTRIBUTES_NODE(Name);
 						XML_DEF_ATTRIBUTES_NODE(Type);
 
-						Node *node = sceneMgr->createNode(Name,Type);
+						Node *node = createChildren(Name,Type);
 
 						node->setResource(File);
 
@@ -235,26 +233,6 @@ void Node::loader(TiXmlElement *xml)
 luabind::adl::object * Node::getScriptable()
 {
 	return m_scriptObject;
-}
-//////////////////////////////////////////////////////////////////////////
-bool Node::_activate()
-{
-	return true;
-}
-//////////////////////////////////////////////////////////////////////////
-void Node::_deactivate()
-{
-
-}
-//////////////////////////////////////////////////////////////////////////
-bool Node::_compile()
-{
-	return true;
-}
-//////////////////////////////////////////////////////////////////////////
-void Node::_release()
-{
-
 }
 /////////////////////////////////////////////////////////////////////////
 Node::TListChildren::iterator Node::_findChildren(const std::string &_name)
@@ -293,6 +271,15 @@ Node::TListChildren::iterator Node::_findChildren(const std::string &_name)
 
 	return it_find;
 }
+/////////////////////////////////////////////////////////////////////////
+Node * Node::createChildren(const std::string &_name, const std::string &_type)
+{
+	Node *node = Keeper<SceneManager>::hostage()
+		->createNode(_name,_type);
+
+	return node;
+}
+
 /////////////////////////////////////////////////////////////////////////
 bool Node::addChildren(Node *_node)
 {
@@ -359,6 +346,7 @@ void Node::removeChildren(const std::string &_name)
 
 	if( it_find != m_listChildren.end() )
 	{
+		_lostChildren(*it_find,false);
 		m_listChildren.erase(it_find);
 	}
 }
@@ -371,5 +359,37 @@ void Node::debugRender()
 //////////////////////////////////////////////////////////////////////////
 void Node::_debugRender()
 {
-
+	//Empty
+}
+//////////////////////////////////////////////////////////////////////////
+void Node::_lostChildren(Node *_node, bool _valid)
+{
+	//Empty
+}
+//////////////////////////////////////////////////////////////////////////
+void Node::_updateParent()
+{
+	//Empty
+}
+//////////////////////////////////////////////////////////////////////////
+bool Node::_activate()
+{
+	//Empty
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void Node::_deactivate()
+{
+	//Empty
+}
+//////////////////////////////////////////////////////////////////////////
+bool Node::_compile()
+{
+	//Empty
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void Node::_release()
+{
+	//Empty
 }

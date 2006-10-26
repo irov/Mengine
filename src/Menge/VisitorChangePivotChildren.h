@@ -15,7 +15,6 @@ namespace Menge
 			void execute(Allocator * _alloc) override
 			{
 				_alloc->changePivot();
-				_alloc->visitChildren(this);				
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////

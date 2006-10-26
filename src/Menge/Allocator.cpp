@@ -12,6 +12,7 @@ Allocator::Allocator()
 , m_parentAllocator(0)
 {
 	mt::ident_m3(m_localMatrix);
+	mt::ident_m3(m_worldMatrix);
 }
 //////////////////////////////////////////////////////////////////////////
 void Allocator::changePivot()

@@ -218,26 +218,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="SystemInterface"
-			>
-			<File
-				RelativePath="..\SystemInterface\FileSystemInterface.h"
-				>
-			</File>
-			<File
-				RelativePath="..\SystemInterface\InputSystemInterface.h"
-				>
-			</File>
-			<File
-				RelativePath="..\SystemInterface\RenderSystemInterface.h"
-				>
-			</File>
-			<File
-				RelativePath="..\SystemInterface\SoundSystemInterface.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="SceneManager"
 			>
 			<File

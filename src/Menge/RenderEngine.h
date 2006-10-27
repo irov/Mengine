@@ -30,10 +30,7 @@ namespace Menge
 			unsigned int _bits, 
 			bool _fullScreen);
 		
-		bool beginSceneDrawing(
-			bool _backBuffer, 
-			bool _zBuffer, 
-			unsigned long _color);
+		bool beginSceneDrawing(unsigned long _color);
 
 		bool endSceneDrawing();
 

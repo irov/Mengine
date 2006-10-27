@@ -32,12 +32,9 @@ namespace Menge
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::beginSceneDrawing(
-		bool _backBuffer, 
-		bool _zBuffer, 
-		unsigned long _color)
+	bool RenderEngine::beginSceneDrawing(unsigned long _color)
 	{
-		return m_interface->beginSceneDrawing(_backBuffer,_zBuffer,_color);
+		return m_interface->beginSceneDrawing(_color);
 	}
 
 	//////////////////////////////////////////////////////////////////////////

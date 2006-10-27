@@ -50,7 +50,6 @@ void Sprite::update(float timing)
 
 	m_currentDelay+=timing;
 
-	//assert(m_currentFrame);
 	float delay = m_currentFrame->delay;
 
 	while(m_currentDelay >= delay)

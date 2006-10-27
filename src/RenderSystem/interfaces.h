@@ -39,7 +39,7 @@ class	RenderSystemInterface
 {
 public:
 	virtual bool	createDisplay(unsigned int _width, unsigned int _height, unsigned int _bits, bool _fullScreen) = 0;
-	virtual bool	beginSceneDrawing(bool _backBuffer, bool _zBuffer, unsigned long _color) = 0;
+	virtual bool	beginSceneDrawing(unsigned long _color) = 0;
 	virtual bool	endSceneDrawing() = 0;
 
 	virtual void    drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color) = 0;

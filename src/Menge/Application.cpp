@@ -134,6 +134,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::run()
 	{	
+		//хг-гю кхмхи мерс бняярюмнбкемхъ пеяспянб.
 		bool display = createDisplay(m_width,m_height,m_bits,m_fullScreen);
 
 		if( display == false )
@@ -174,7 +175,7 @@ namespace Menge
 	{
 		RenderEngine *renderEng = Keeper<RenderEngine>::hostage();
 
-		renderEng->beginSceneDrawing(true,true,0x00000000);
+		renderEng->beginSceneDrawing(0xFF0000FF);
 
 		//if( m_functionRender )
 		//{

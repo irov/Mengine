@@ -109,14 +109,6 @@ bool Sprite::_compile()
 
 	Keeper<FileEngine>::hostage()->closeFile(fileData);
 
-/*
-	m_image = Keeper<RenderEngine>::hostage()->loadImage(m_spriteDesc->imageFile,m_spriteDesc->haveAlpha);
-
-	delete m_spriteDesc;
-
-	return ( m_image != 0);
-	*/
-
 	TextureDesc	textureDesc;
 
 	for(int i = 0; i < m_desc.images.size(); i++)
@@ -153,43 +145,6 @@ void Sprite::loader(TiXmlElement *xml)
 	}
 
 	Renderable::loader(xml);
-//	/*	compile стадия	*/
-//	m_spriteDesc->imageFile = "output.mng";
-//	
-//	FileDataInterface* fileData = Keeper<FileEngine>::hostage()->openFile(m_spriteDesc->imageFile);
-//
-//	readMNG(
-//		m_desc,
-//		(unsigned char*)fileData->getBuffer(),
-//		fileData->size()
-//		);
-//
-//	Keeper<FileEngine>::hostage()->closeFile(fileData);
-//
-//	TextureDesc	textureDesc;
-//
-//	for(int i = 0; i < m_desc.images.size(); i++)
-//	{
-//		textureDesc.buffer = m_desc.images[i].buffer;
-//		textureDesc.size = m_desc.images[i].size;
-//		textureDesc.haveAlpha = true;
-//		m_renderImages.push_back(
-//			Keeper<RenderEngine>::hostage()->loadImage(textureDesc)
-//			);
-//	}
-//
-//	m_currentFrame = (m_state == FORWARD) ? m_desc.frames.begin() : m_desc.frames.end() - 1;
-//
-///*	FileDataInterface* fileData = getSceneManager()->getFileEngine()->openFile(m_filenameMNG);
-//
-//	readMNG(
-//		m_desc,
-//		(unsigned char*)fileData->getBuffer(),
-//		fileData->size()
-//		);
-//
-//	getSceneManager()->getFileEngine()->closeFile(fileData);
-//	*/
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::stop()

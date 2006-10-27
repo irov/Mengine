@@ -92,6 +92,7 @@ void Direct3d9RenderSystem::renderImage(const mt::mat3f& _transform,
 
 	mVBDynamic->Unlock();
 
+	mDeviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, imaged3d9ptype->_isAlpha());
 	mDeviceD3D9->SetTexture(0, imaged3d9ptype->_getTexPointer());
 	mDeviceD3D9->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
 

@@ -76,19 +76,18 @@ void Direct3d9RenderSystem::renderImage(const mt::mat3f& _transform,
 {
 	D3D9RenderImage*	imaged3d9ptype = static_cast<D3D9RenderImage*>(_rmi);
 
-	D3D9Vertex*			vertices = NULL;
+	const D3D9Vertex* srcVertices = imaged3d9ptype->_getD3D9V4();
+	 
+	D3D9Vertex*	dstVertices = NULL;
 
-	mVBDynamic->Lock(0, mSizeOf4Verts, (VOID**)&vertices, 0);
-
-	memcpy(vertices, imaged3d9ptype->_getD3D9V4(), mSizeOf4Verts);
+	mVBDynamic->Lock(0, mSizeOf4Verts, (VOID**)&dstVertices, 0);
 
 	for(size_t i = 0; i < 4; ++i)
 	{
-		mt::vec3f outvert;
-		mt::mul_v3_m3(outvert, vertices[i].position, _transform);
-		vertices[i].rhw = 1.0f;
-		vertices[i].position = outvert;
-		vertices[i].mColor = _mixedColor;
+		mt::mul_v3_m3(dstVertices[i].position, srcVertices[i].position, _transform );
+		dstVertices[i].rhw = 1.0f;
+		dstVertices[i].tcoor = srcVertices[i].tcoor;
+		dstVertices[i].mColor = _mixedColor;
 	}
 
 	mVBDynamic->Unlock();
@@ -96,10 +95,10 @@ void Direct3d9RenderSystem::renderImage(const mt::mat3f& _transform,
 	mDeviceD3D9->SetTexture(0, imaged3d9ptype->_getTexPointer());
 	mDeviceD3D9->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
 
-	drawLine(vertices[0].position.v2,vertices[1].position.v2,1,0xffffffff);
-	drawLine(vertices[1].position.v2,vertices[2].position.v2,1,0xffffffff);
-	drawLine(vertices[2].position.v2,vertices[3].position.v2,1,0xffffffff);
-	drawLine(vertices[3].position.v2,vertices[0].position.v2,1,0xffffffff);
+	drawLine(dstVertices[0].position.v2,dstVertices[1].position.v2,1,0xffffffff);
+	drawLine(dstVertices[1].position.v2,dstVertices[2].position.v2,1,0xffffffff);
+	drawLine(dstVertices[2].position.v2,dstVertices[3].position.v2,1,0xffffffff);
+	drawLine(dstVertices[3].position.v2,dstVertices[0].position.v2,1,0xffffffff);
 }
 
 void	Direct3d9RenderSystem::renderText(mt::vec2f _pos, 

@@ -168,7 +168,7 @@ namespace Menge
 		//	m_functionUpdate->callFunctionVoid();
 		//}
 
-		m_game->update(0.1f);
+		m_game->update(0.07f);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::render()

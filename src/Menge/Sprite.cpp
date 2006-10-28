@@ -18,17 +18,21 @@ Sprite::Sprite()
 , m_haveAlpha(true)
 {
 	m_currentDelay = 0;
-	m_state = FORWARD;  
+	m_state = eAnimState::FORWARD;  
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::render()
 {
+	//
 	const mt::mat3f& wm = getWorldMatrix();
 
+//	wm.v2.x+=m_offsets[m_currentFrame->index].x;
+//	wm.v2.y+=m_offsets[m_currentFrame->index].y;
+//
 	Keeper<RenderEngine>::hostage()->renderImage(
 		wm,
 		0xffffffff,
-		m_renderImages[m_currentFrame->index]
+		m_images[m_currentFrame->index].renderImage
 	);
 }
 void Sprite::setLooped(bool flag)
@@ -56,7 +60,7 @@ void Sprite::update(float timing)
 	{
 		m_currentDelay -= delay;
 
-		if(m_state == FORWARD)
+		if(m_state == eAnimState::FORWARD)
 		{
 			++m_currentFrame;
 
@@ -75,7 +79,7 @@ void Sprite::update(float timing)
 			}	
 		}			
 
-		if(m_state == REWIND)
+		if(m_state == eAnimState::REWIND)
 		{
 			if(m_currentFrame == m_desc.frames.begin())
 			{
@@ -116,12 +120,15 @@ bool Sprite::_compile()
 		textureDesc.buffer = m_desc.images[i].buffer;
 		textureDesc.size = m_desc.images[i].size;
 		textureDesc.haveAlpha = true;
-		m_renderImages.push_back(
-			Keeper<RenderEngine>::hostage()->loadImage(textureDesc)
-			);
+
+		ImageProperties	ip;
+		ip.offset = mt::vec2f(m_desc.images[i].offsetX, m_desc.images[i].offsetY);
+		ip.renderImage = Keeper<RenderEngine>::hostage()->loadImage(textureDesc);
+
+		m_images.push_back(ip);
 	}
 
-	m_currentFrame = (m_state == FORWARD) ? m_desc.frames.begin() : m_desc.frames.end() - 1;
+	m_currentFrame = (m_state == eAnimState::FORWARD) ? m_desc.frames.begin() : m_desc.frames.end() - 1;
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -129,7 +136,7 @@ void Sprite::_release()
 {
 	for(int i = 0; i < m_desc.images.size(); i++)
 	{
-		Keeper<RenderEngine>::hostage()->releaseRenderImage(m_renderImages[i]);
+		Keeper<RenderEngine>::hostage()->releaseRenderImage(m_images[i].renderImage);
 	}
 	freeMNG(m_desc);
 }
@@ -155,16 +162,10 @@ void Sprite::stop()
 void Sprite::play()
 {
 	m_playing = true;
-	m_currentFrame = (m_state == FORWARD) ? m_desc.frames.begin() : m_desc.frames.end() - 1;
+	m_currentFrame = (m_state == eAnimState::FORWARD) ? m_desc.frames.begin() : m_desc.frames.end() - 1;
 }
-
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()
 {
-	/*const mt::vec2f &pos = getWorldPosition();
-	const mt::vec2f &dir = getWorldDirection();
-
-	Keeper<RenderEngine>::hostage()->drawLine(pos - dir*4, pos + dir*4 , 4 , 0xff00ff00 );
-	*/
 	render();
 };

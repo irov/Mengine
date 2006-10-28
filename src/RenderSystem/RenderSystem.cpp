@@ -87,7 +87,7 @@ void Direct3d9RenderSystem::renderImage(const mt::mat3f& _transform,
 		mt::mul_v3_m3(dstVertices[i].position, srcVertices[i].position, _transform );
 		dstVertices[i].rhw = 1.0f;
 		dstVertices[i].tcoor = srcVertices[i].tcoor;
-		dstVertices[i].mColor = _mixedColor;
+		dstVertices[i].color = _mixedColor;
 	}
 
 	mVBDynamic->Unlock();
@@ -95,11 +95,12 @@ void Direct3d9RenderSystem::renderImage(const mt::mat3f& _transform,
 	mDeviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, imaged3d9ptype->_isAlpha());
 	mDeviceD3D9->SetTexture(0, imaged3d9ptype->_getTexPointer());
 	mDeviceD3D9->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
-
+/*
 	drawLine(dstVertices[0].position.v2,dstVertices[1].position.v2,1,0xffffffff);
 	drawLine(dstVertices[1].position.v2,dstVertices[2].position.v2,1,0xffffffff);
 	drawLine(dstVertices[2].position.v2,dstVertices[3].position.v2,1,0xffffffff);
 	drawLine(dstVertices[3].position.v2,dstVertices[0].position.v2,1,0xffffffff);
+	*/
 }
 
 void	Direct3d9RenderSystem::renderText(mt::vec2f _pos, 
@@ -184,10 +185,10 @@ void	Direct3d9RenderSystem::_flushFonts()
 			mFontVertices[count+2].position = mt::vec3f(offX, offY, 1.0f);
 			mFontVertices[count+3].position = mt::vec3f(anPos.x, offY, 1.0f);
 
-			mFontVertices[count+0].mColor = 
-			mFontVertices[count+1].mColor = 
-			mFontVertices[count+2].mColor = 
-			mFontVertices[count+3].mColor = 0xFFFFFFFF;
+			mFontVertices[count+0].color = 
+			mFontVertices[count+1].color = 
+			mFontVertices[count+2].color = 
+			mFontVertices[count+3].color = 0xFFFFFFFF;
 
 			anPos.x+=it->second.font->getWidth();
 

@@ -3,13 +3,14 @@
 		<Node Name = "TestTrack" Type = "Track">
 			<Points>
 				<Point Value = "0;0"/>
-				<Point Value = "100;100"/>
-				<Point Value = "200;650"/>
-				<Point Value = "300;650"/>
+				<Point Value = "300;100"/>
+				<Point Value = "200;450"/>
+				<Point Value = "300;450"/>
+				<Point Value = "50;550"/>
 			</Points>
 			
 			<Node Name = "TestSprite" Type = "Sprite">
-				<SpeedMove Value = "2.f"/>
+				<SpeedMove Value = "6.f"/>
 
 				<ImageMNG File = "output.mng" />
 			</Node> <!-- Sprite -->

@@ -9,10 +9,10 @@
 
 struct D3D9Vertex
 {
-	mt::vec3f	position;
+	mt::vec3f position;
 	float rhw;
-    D3DCOLOR		mColor;   
-	mt::vec2f	tcoor;
+    D3DCOLOR color;   
+	mt::vec2f tcoor;
 };
 
 const DWORD D3DFVF_TLVERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;

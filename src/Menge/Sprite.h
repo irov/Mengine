@@ -20,7 +20,7 @@ namespace Menge
 		bool haveAlpha;
 	};
 
-	enum	ANIMSTATE
+	enum	eAnimState
 	{
 		FORWARD,	
 		REWIND,		
@@ -39,7 +39,6 @@ namespace Menge
 		void setLooped(bool flag);
 		bool getLooped() const;
 		void update(float timing);
-		
 
 	public:
 		void loader(TiXmlElement *xml) override;
@@ -50,23 +49,23 @@ namespace Menge
 		void _release() override;
 
 	public:
-		void _debugRender()override;
+		void _debugRender() override;
 
-	private:
 	private:
 		bool m_playing;
 		bool m_looping;
-
 		bool m_haveAlpha;
-
-		ANIMSTATE	m_state;
-
+		eAnimState	m_state;
 		std::string m_fileMNG;
-
 		std::vector<mnglib::Frame>::iterator m_currentFrame;
-		std::vector<RenderImageInterface*>	m_renderImages;
+
+		struct ImageProperties
+		{
+			mt::vec2f offset;
+			RenderImageInterface* renderImage;
+		};
+		std::vector<ImageProperties>	m_images;
 		mnglib::mngDesc	m_desc;
 		float m_currentDelay;
-		//RenderImageInterface* m_image;
 	};
 }

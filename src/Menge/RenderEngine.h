@@ -44,6 +44,12 @@ namespace Menge
 			unsigned int _mixedColor, 
 			RenderImageInterface* _rmi);
 
+		void	renderImageOffset(
+			const mt::mat3f& _transform,
+			const mt::vec2f& _offset,
+			unsigned int _mixedColor,
+			RenderImageInterface * _rmi);
+
 		void releaseRenderImage(RenderImageInterface* _rmi);
 		
 		//////////////////////////////////////////////////////////////////////////

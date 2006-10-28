@@ -25,12 +25,9 @@ void Sprite::render()
 {
 	//
 	const mt::mat3f& wm = getWorldMatrix();
-
-//	wm.v2.x+=m_offsets[m_currentFrame->index].x;
-//	wm.v2.y+=m_offsets[m_currentFrame->index].y;
-//
-	Keeper<RenderEngine>::hostage()->renderImage(
-		wm,
+	
+	Keeper<RenderEngine>::hostage()->renderImageOffset(
+		wm, m_images[m_currentFrame->index].offset,
 		0xffffffff,
 		m_images[m_currentFrame->index].renderImage
 	);

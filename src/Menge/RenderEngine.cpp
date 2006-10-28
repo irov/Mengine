@@ -79,6 +79,16 @@ namespace Menge
 	}
 
 	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderImageOffset(
+		const mt::mat3f& _transform, 
+		const mt::vec2f& _offset,
+		unsigned int _mixedColor, 
+		RenderImageInterface* _rmi)
+	{
+		m_interface->renderImageOffset(_transform,_offset,_mixedColor,_rmi);
+	}
+
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseRenderImage(RenderImageInterface* _rmi)
 	{
 		m_interface->releaseRenderImage(_rmi);

@@ -48,6 +48,7 @@ public:
 
 
     void	renderImage(const mt::mat3f& _transform, unsigned int _mixedColor,RenderImageInterface* _rmi);
+	void	renderImageOffset(const mt::mat3f& _transform, const mt::vec2f& offset, unsigned int _mixedColor, RenderImageInterface * _rmi);
 	void	releaseRenderImage(RenderImageInterface* _rmi);
     void	renderText(mt::vec2f _pos, RenderFontInterface* _font, const std::string& _text);
 	void	releaseRenderFont(RenderFontInterface* _fnt);

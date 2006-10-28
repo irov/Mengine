@@ -16,35 +16,26 @@ namespace Menge
 {
 	namespace ScriptableRegistrator
 	{
-		typedef Utility::CFactory<std::string,void,TGenFunc> TClassFactory;
-		typedef TClassFactory::TGlobalFactory TGlobalClassFactory;
-		//////////////////////////////////////////////////////////////////////////
-		static TClassFactory *getClassFactory()
-		{
-			TClassFactory *classFactory = 
-				TGlobalClassFactory::GetInstance();
-
-			return classFactory;
-		}
+		typedef Utility::Factory<std::string,void,TGenFunc> TClassFactory;
 		//////////////////////////////////////////////////////////////////////////
 		void registration(const std::string &_key, TGenFunc _func)
 		{
-			getClassFactory()->Registration(_key,_func);
+			TClassFactory::Registration(_key,_func);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void implement(const std::string &_key, CLuaScript * _luaScript)
 		{
-			getClassFactory()->Implement(_key,_luaScript);
+			TClassFactory::Implement(_key,_luaScript);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void ImplementAll(CLuaScript * _luaScript)
 		{
-			getClassFactory()->ImplementAll(_luaScript);
+			TClassFactory::ImplementAll(_luaScript);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		Auto::Auto(const std::string &_key, TGenFunc _func)
 		{
-			getClassFactory()->Registration(_key,_func);
+			TClassFactory::Registration(_key,_func);
 		}
 
 	}

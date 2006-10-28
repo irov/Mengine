@@ -16,38 +16,22 @@ namespace Menge
 {
 	namespace NodeFactory
 	{
-		typedef Utility::CFactory<std::string,Node*,TGenFunc> TClassFactory;
-
-		typedef TClassFactory::TGlobalFactory TGlobalClassFactory;
-
-		typedef std::map<std::string, size_t> TMapId;
-		typedef Utility::CSingleton<TMapId> TGlobalMapId;
-
-
-		//////////////////////////////////////////////////////////////////////////
-		static TClassFactory *getClassFactory()
-		{
-			TClassFactory *ClassFactory = 
-				TGlobalClassFactory::GetInstance();
-
-			return ClassFactory;
-		}
-
+		typedef Utility::Factory<std::string,Node*,TGenFunc> TClassFactory;
 		//////////////////////////////////////////////////////////////////////////
 		size_t getId(const std::string &_key)
 		{
-			static size_t Id = 0;
+			typedef std::map<std::string, size_t> TMapId;
+			static TMapId map_id;
+			static size_t id = 0;
 
-			TMapId *Map = TGlobalMapId::GetInstance();
-			TMapId::iterator it_find = 
-				Map->lower_bound(_key);
+			TMapId::const_iterator it_find = map_id.find(_key);
 
-			if( it_find == Map->end() || it_find->first != _key )
+			if( it_find == map_id.end() )
 			{
-				size_t Id_insert = 
-					Map->insert(it_find,std::make_pair(_key,++Id))->second;
+				size_t id_insert = 
+					map_id.insert(std::make_pair(_key,++id)).second;
 
-				return Id_insert;
+				return id_insert;
 			}
 
 			return it_find->second;
@@ -55,20 +39,18 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void registration(const std::string &_key, TGenFunc _func)
 		{
-			getClassFactory()->Registration(_key,_func);
+			TClassFactory::Registration(_key,_func);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		Node * genNode(const std::string &_type)
 		{
-			Node * Abstract = 
-				getClassFactory()->Generation(_type,_type);
-
+			Node * Abstract = TClassFactory::Generation(_type,_type);
 			return Abstract;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		Auto::Auto(const std::string &_key, TGenFunc _func)
 		{
-			getClassFactory()->Registration(_key,_func);
+			TClassFactory::Registration(_key,_func);
 		}
 
 	}

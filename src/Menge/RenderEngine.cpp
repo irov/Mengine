@@ -30,13 +30,11 @@ namespace Menge
 	{
 		return m_interface->createDisplay(_width,_height,_bits,_fullScreen);
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::beginSceneDrawing(unsigned long _color)
 	{
 		return m_interface->beginSceneDrawing(_color);
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::endSceneDrawing()
 	{

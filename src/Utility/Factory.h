@@ -13,8 +13,6 @@
 #	ifndef IROV_AUTO_CLASS_FACTORY_INCLUDE
 #	define IROV_AUTO_CLASS_FACTORY_INCLUDE
 
-#	include "singleton.h"
-
 #	include <map>
 
 #	include <boost/preprocessor/repetition/enum.hpp>
@@ -27,7 +25,7 @@ namespace Utility
 {
 
 	template<class T>
-	struct CPoliceNullPtr
+	struct PoliceNullPtr
 	{
 		static T Police()
 		{
@@ -39,9 +37,9 @@ namespace Utility
 		class T_KEY,
 		class T_BASE,
 		class T_GEN_FUNC,
-			template<class> class T_POLICE_DEFAULT = CPoliceNullPtr
+			template<class> class T_POLICE_DEFAULT = PoliceNullPtr
 	>
-	class CFactory
+	class Factory
 	{
 	public:
 		typedef T_KEY		TKey;
@@ -51,59 +49,35 @@ namespace Utility
 	private:
 		typedef std::map<TKey,T_GEN_FUNC>	TMapGenerator;
 
-	public:
-		void Erase(const TKey &name)
+		static TMapGenerator & mapGenerator()
 		{
-			m_MapGeneration.erase(name);
-		}
-
-		size_t Registration(const TKey &Key, TGenFunc Func)
-		{	
-			TMapGenerator::iterator it_find = 
-				m_MapGeneration.lower_bound(Key);
-
-			if( it_find == m_MapGeneration.end() || it_find->first != Key )
-			{
-				m_MapGeneration.insert(it_find,std::make_pair(Key,Func));
-			}
-
-			return m_MapGeneration.size();
-		}
-
-		TGenFunc GetFunc(const TKey &name)const
-		{
-			TMapGenerator::iterator it_find = 
-				m_MapGeneration.lower_bound(Key);
-
-			if( it_find == m_MapGeneration.end() || it_find->first != Key )
-			{
-				return TGenFunc(0);
-			}
-
-			return it_find->second;
+			static TMapGenerator m;
+			return m;
 		}
 
 	public:
-		class CAuto
+		static void Erase(const TKey &name)
 		{
-			typedef CSingleton<CFactory,CAuto> TGlobalFactory;
+			mapGenerator().erase(name);
+		}
 
-		public:
-			CAuto(const TKey &Key, TGenFunc Func)
+		static size_t Registration(const TKey &_key, TGenFunc _func)
+		{				
+			TMapGenerator::iterator it_find = 
+				mapGenerator().find(_key);
+
+			if( it_find == mapGenerator().end() )
 			{
-				TGlobalFactory::GetInstance()->Registration(Key,Func);
+				mapGenerator().insert(it_find,std::make_pair(_key,_func));
 			}
-		};
 
-		typedef CSingleton<CFactory,CAuto> TGlobalFactory;
+			return mapGenerator().size();
+		}
 
+	public:
 #	define BOOST_PP_ITERATION_PARAMS_1 (4, (0, 4, "Utility/factory.h", 1))
 #	include BOOST_PP_ITERATE()
-
-	private:
-		TMapGenerator m_MapGeneration;
 	};
-
 }
 
 #endif
@@ -116,17 +90,17 @@ BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename T_VALUE_)
 >
 #	endif
 
-inline TBase Generation
+inline static TBase Generation
 (
  const TKey &name
  BOOST_PP_COMMA_IF(BOOST_PP_ITERATION())
  BOOST_PP_ENUM_BINARY_PARAMS(BOOST_PP_ITERATION(), const T_VALUE_ ,  &t_value_ )
- )const
+ )
 {
-	typename TMapGenerator::const_iterator it_f = m_MapGeneration.find(name);
-	if( it_f != m_MapGeneration.end())
+	typename TMapGenerator::const_iterator it_find = mapGenerator().find(name);
+	if( it_find != mapGenerator().end())
 	{
-		return it_f->second( BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), t_value_ ) );
+		return it_find->second( BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), t_value_ ) );
 	}
 	return static_cast<TBase>(T_POLICE_DEFAULT<TBase>::Police());
 }
@@ -138,14 +112,15 @@ BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename T_VALUE_)
 >
 #	endif
 
-inline void ImplementAll
+inline static void ImplementAll
 (
  BOOST_PP_ENUM_BINARY_PARAMS(BOOST_PP_ITERATION(), T_VALUE_ ,  &t_value_ )
- )const
+ )
 {
-	typename TMapGenerator::const_iterator it_end = m_MapGeneration.end();
 	for(
-		typename TMapGenerator::const_iterator it = m_MapGeneration.begin();
+		typename TMapGenerator::const_iterator 
+		it = mapGenerator().begin(),
+		it_end = mapGenerator().end();
 		it!=it_end;
 	++it)
 	{
@@ -159,17 +134,17 @@ BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), typename T_VALUE_)
 >
 #	endif
 
-inline void Implement
+inline static void Implement
 (
  const TKey &name
  BOOST_PP_COMMA_IF(BOOST_PP_ITERATION())
  BOOST_PP_ENUM_BINARY_PARAMS(BOOST_PP_ITERATION(), const T_VALUE_ ,  &t_value_ )
- )const
+ )
 {
-	typename TMapGenerator::const_iterator it_f = m_MapGeneration.find(name);
-	if( it_f != m_MapGeneration.end())
+	typename TMapGenerator::const_iterator it_find = mapGenerator().find(name);
+	if( it_find != mapGenerator().end())
 	{
-		it_f->second( BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), t_value_ ) );
+		it_find->second( BOOST_PP_ENUM_PARAMS(BOOST_PP_ITERATION(), t_value_ ) );
 	}
 }
 

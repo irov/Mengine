@@ -38,7 +38,7 @@ bool Sprite::getLooped() const
 void Sprite::setFirstFrame()
 {
 	m_currentFrame = 
-		(m_state == eAnimState::FORWARD)
+		(m_state == FORWARD)
 		? m_desc.frames.begin() 
 		: m_desc.frames.end() - 1;
 }
@@ -62,7 +62,7 @@ void Sprite::update(float _timing)
 
 		switch(m_state)
 		{
-			case eAnimState::FORWARD:
+			case FORWARD:
 			{
 				++m_currentFrame;
 
@@ -82,7 +82,7 @@ void Sprite::update(float _timing)
 			}
 			break;
 
-			case eAnimState::REWIND:
+			case REWIND:
 			{
 				if(m_currentFrame == m_desc.frames.begin())
 				{
@@ -129,7 +129,8 @@ bool Sprite::_compile()
 	//	fill internal structures:
 	TextureDesc	textureDesc;
 
-	for(int i = 0; i < m_desc.images.size(); i++)
+	size_t size = m_desc.images.size();
+	for(size_t i = 0; i < size; i++)
 	{
 		textureDesc.buffer = m_desc.images[i].buffer;
 		textureDesc.size = m_desc.images[i].size;
@@ -149,7 +150,8 @@ bool Sprite::_compile()
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_release()
 {
-	for(int i = 0; i < m_desc.images.size(); i++)
+	size_t size = m_desc.images.size();
+	for(size_t i = 0; i < size; i++)
 	{
 		Keeper<RenderEngine>::hostage()->releaseRenderImage(m_images[i].renderImage);
 	}

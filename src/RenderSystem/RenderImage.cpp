@@ -40,6 +40,11 @@ D3D9RenderImage::D3D9RenderImage(LPDIRECT3DDEVICE9 _dev, const TextureDesc& _des
 	mVertices[2].position = mt::vec3f(mWidth, mHeight, 1.0f);
 	mVertices[3].position = mt::vec3f(0.0f, mHeight, 1.0f);
 
+	mVertices[0].rhw = 1.0f;
+	mVertices[1].rhw = 1.0f;
+	mVertices[2].rhw = 1.0f;
+	mVertices[3].rhw = 1.0f;
+
 	mVertices[0].color = 0xFFFFFFFF;
 	mVertices[1].color = 0xFFFFFFFF;
 	mVertices[2].color = 0xFFFFFFFF;

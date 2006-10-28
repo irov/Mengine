@@ -85,7 +85,6 @@ void Direct3d9RenderSystem::renderImage(const mt::mat3f& _transform,
 	for(size_t i = 0; i < 4; ++i)
 	{
 		mt::mul_v3_m3(dstVertices[i].position, srcVertices[i].position, _transform );
-		dstVertices[i].rhw = 1.0f;
 		dstVertices[i].tcoor = srcVertices[i].tcoor;
 		dstVertices[i].color = _mixedColor;
 	}
@@ -111,9 +110,7 @@ void Direct3d9RenderSystem::renderImageOffset(const mt::mat3f& _transform,const 
 
 	for(size_t i = 0; i < 4; ++i)
 	{
-		mt::vec3f	off(srcVertices[i].position.v2+_offset,1);
-		mt::mul_v3_m3(dstVertices[i].position, off, _transform );
-		dstVertices[i].rhw = 1.0f;
+		mt::mul_v3_m3(dstVertices[i].position, mt::vec3f(srcVertices[i].position.v2+_offset,1), _transform );
 		dstVertices[i].tcoor = srcVertices[i].tcoor;
 		dstVertices[i].color = _mixedColor;
 	}

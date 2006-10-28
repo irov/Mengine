@@ -2,39 +2,32 @@
 #	include "ObjectImplement.h"
 #	include "RenderEngine.h"
 #	include "Manager/XmlManager.h"
-
-/*	непонятно как тут достать TextureDesc, поэтому добавил инклуд	*/
 #	include "RenderSystemInterface.h"
 #	include "FileSystemInterface.h"
 #	include "FileEngine.h"
-/*	конец*/
-
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Sprite);
 //////////////////////////////////////////////////////////////////////////
 Sprite::Sprite()
 : m_playing(true)
 , m_looping(true)
-, m_haveAlpha(true)
-{
-	m_currentDelay = 0;
-	m_state = eAnimState::FORWARD;  
-}
+, m_state(REWIND)
+{}
 //////////////////////////////////////////////////////////////////////////
 void Sprite::render()
 {
-	//
 	const mt::mat3f& wm = getWorldMatrix();
 	
 	Keeper<RenderEngine>::hostage()->renderImageOffset(
-		wm, m_images[m_currentFrame->index].offset,
+		wm, 
+		m_images[m_currentFrame->index].offset,
 		0xffffffff,
 		m_images[m_currentFrame->index].renderImage
 	);
 }
-void Sprite::setLooped(bool flag)
+void Sprite::setLooped(bool _looped)
 {
-	m_looping = flag;
+	m_looping = _looped;
 }
 //////////////////////////////////////////////////////////////////////////
 bool Sprite::getLooped() const
@@ -42,74 +35,98 @@ bool Sprite::getLooped() const
 	return m_looping;
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::update(float timing)
+void Sprite::setFirstFrame()
+{
+	m_currentFrame = 
+		(m_state == eAnimState::FORWARD)
+		? m_desc.frames.begin() 
+		: m_desc.frames.end() - 1;
+}
+//////////////////////////////////////////////////////////////////////////
+void Sprite::update(float _timing)
 {
 	if(!m_playing)
 	{
 		return; 
 	}
 
-	m_currentDelay+=timing;
+	static float currentDelay = 0;
+
+	currentDelay+=_timing;
 
 	float delay = m_currentFrame->delay;
 
-	while(m_currentDelay >= delay)
+	while(currentDelay >= delay)
 	{
-		m_currentDelay -= delay;
+		currentDelay -= delay;
 
-		if(m_state == eAnimState::FORWARD)
+		switch(m_state)
 		{
-			++m_currentFrame;
-
-			if(m_currentFrame == m_desc.frames.end())
+			case eAnimState::FORWARD:
 			{
-				if(!m_looping)
-				{
-					m_playing = false;
-					m_currentFrame = m_desc.frames.end() - 1;
-					break;
-				}
-				else
-				{
-					m_currentFrame = m_desc.frames.begin();
-				}
-			}	
-		}			
+				++m_currentFrame;
 
-		if(m_state == eAnimState::REWIND)
-		{
-			if(m_currentFrame == m_desc.frames.begin())
-			{
-				if(!m_looping)
+				if(m_currentFrame == m_desc.frames.end())
 				{
-					m_playing = false;
-					m_currentFrame = m_desc.frames.begin();
-					break;
-				}
-				else
-				{
-					m_currentFrame = m_desc.frames.end();
-				}
+					if(!m_looping)
+					{
+						m_playing = false;
+						m_currentFrame = m_desc.frames.end() - 1;
+						break;
+					}
+					else
+					{
+						m_currentFrame = m_desc.frames.begin();
+					}
+				}	
 			}
-			--m_currentFrame;
-		}
+			break;
 
+			case eAnimState::REWIND:
+			{
+				if(m_currentFrame == m_desc.frames.begin())
+				{
+					if(!m_looping)
+					{
+						m_playing = false;
+						m_currentFrame = m_desc.frames.begin();
+						break;
+					}
+					else
+					{
+						m_currentFrame = m_desc.frames.end();
+					}
+				}
+				--m_currentFrame;
+			}
+			break;
+
+			default:
+			{
+				assert(!"undefined state!");
+			}
+			break;
+		}
 		delay = m_currentFrame->delay;
 	}
 }
 //////////////////////////////////////////////////////////////////////////
 bool Sprite::_compile()
 {
+	//	open *.mng from *.pak:
 	FileDataInterface* fileData = Keeper<FileEngine>::hostage()->openFile(m_fileMNG);
 
+	//	read *.mng format in m_desc structure:
 	readMNG(
 		m_desc,
 		(unsigned char*)fileData->getBuffer(),
 		fileData->size()
 		);
 
+	//	release fileData:
 	Keeper<FileEngine>::hostage()->closeFile(fileData);
 
+	//	fill internal structures:
 	TextureDesc	textureDesc;
 
 	for(int i = 0; i < m_desc.images.size(); i++)
@@ -125,7 +142,8 @@ bool Sprite::_compile()
 		m_images.push_back(ip);
 	}
 
-	m_currentFrame = (m_state == eAnimState::FORWARD) ? m_desc.frames.begin() : m_desc.frames.end() - 1;
+	//	set first frame:
+	setFirstFrame();
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -159,10 +177,11 @@ void Sprite::stop()
 void Sprite::play()
 {
 	m_playing = true;
-	m_currentFrame = (m_state == eAnimState::FORWARD) ? m_desc.frames.begin() : m_desc.frames.end() - 1;
+	setFirstFrame();
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()
 {
 	render();
 };
+//////////////////////////////////////////////////////////////////////////

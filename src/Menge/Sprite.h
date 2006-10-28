@@ -6,24 +6,16 @@
 
 #	include <vector>
 
-/*	добавлен всякий ахтунг	*/
 #	include "..\MngReader\MNG.h"
-/**/
 
 class RenderImageInterface;
 
 namespace Menge
 {
-	struct SpriteDesc
-	{
-		std::string imageFile;
-		bool haveAlpha;
-	};
-
 	enum	eAnimState
 	{
 		FORWARD,	
-		REWIND,		
+		REWIND,	
 	};
 
 	class Sprite
@@ -35,10 +27,10 @@ namespace Menge
 
 		void stop();
 		void play();
-		
-		void setLooped(bool flag);
+		void setLooped(bool _looped);
 		bool getLooped() const;
-		void update(float timing);
+		void setFirstFrame();
+		void update(float _timing);
 
 	public:
 		void loader(TiXmlElement *xml) override;
@@ -54,18 +46,17 @@ namespace Menge
 	private:
 		bool m_playing;
 		bool m_looping;
-		bool m_haveAlpha;
 		eAnimState	m_state;
 		std::string m_fileMNG;
-		std::vector<mnglib::Frame>::iterator m_currentFrame;
 
+	private:
 		struct ImageProperties
 		{
 			mt::vec2f offset;
 			RenderImageInterface* renderImage;
 		};
-		std::vector<ImageProperties>	m_images;
+		std::vector<mnglib::Frame>::iterator m_currentFrame;
+		std::vector<ImageProperties> m_images;
 		mnglib::mngDesc	m_desc;
-		float m_currentDelay;
 	};
 }

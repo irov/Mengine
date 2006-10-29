@@ -11,7 +11,11 @@ namespace mnglib
 		_chunk += count;
 	}
 
+<<<<<<< .mine
+	void	readMNG(mngDesc& _desc, void* _buffer)
+=======
 	void	readMNG(mngDesc& _desc, void* _buffer, size_t _size)
+>>>>>>> .r55
 	{
 		unsigned char*	pos = reinterpret_cast<unsigned char*>(_buffer);
 

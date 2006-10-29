@@ -17,7 +17,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* RenderEngine::loadImage(const TextureDesc& _desc)
 	{
-		/*	Добавлено 17.10.2006 в 16:17	*/
 		RenderImageInterface * image = m_interface->loadImage(_desc);
 		return image;
 	}

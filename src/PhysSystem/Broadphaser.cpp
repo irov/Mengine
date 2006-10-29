@@ -24,12 +24,12 @@ void LinearTimeBroadphaser::DoBroadphase(CollisionAlgorithmDispatcher* CD, Rigid
 	{
 		RigidBodyInterface* co1 = collisionObjects[i];
 
-		if (!co1->isDead()/* && !co1->getShape()->GetShapeType() == CIRCLE*/)
+		if (!co1->isDead()/* && !co1->getShape()->getShapeType() == CIRCLE*/)
 		{
-			co1->getShape()->EvaluteBBox(co1->rot);
+			co1->getShape()->evaluteBBox(co1->rot);
 		}
 
-		mt::vec2f	tempBBox = co1->getShape()->GetBBoxInfo();
+		mt::vec2f	tempBBox = co1->getShape()->getBBoxInfo();
 
 		int g1 = (co1->x.x - tempBBox.x*0.5f)/gridSize + ratio * 0.5f;
 		int g2 = (co1->x.y - tempBBox.y*0.5f)/gridSize + ratio * 0.5f;
@@ -80,13 +80,13 @@ void LinearTimeBroadphaser::DoBroadphase(CollisionAlgorithmDispatcher* CD, Rigid
 						}
 
 						if (fabs(co1->x.x - co2->x.x) > 
-							(co1->getShape()->GetBBoxInfo().x*0.5f + co2->getShape()->GetBBoxInfo().x*0.5f))
+							(co1->getShape()->getBBoxInfo().x*0.5f + co2->getShape()->getBBoxInfo().x*0.5f))
 						{
 							continue;
 						}
 
 						if (fabs(co1->x.y - co2->x.y) > 
-							(co1->getShape()->GetBBoxInfo().y*0.5f + co2->getShape()->GetBBoxInfo().y*0.5f))
+							(co1->getShape()->getBBoxInfo().y*0.5f + co2->getShape()->getBBoxInfo().y*0.5f))
 						{
 							continue;
 						}
@@ -120,14 +120,14 @@ void LinearTimeBroadphaser::DoBroadphase(CollisionAlgorithmDispatcher* CD, Rigid
 			bool is_reversed = false;
 
 			cf = CD->GetCollider(
-				collisionObjects[bb1]->getShape()->GetShapeType(),
-				collisionObjects[bb2]->getShape()->GetShapeType());
+				collisionObjects[bb1]->getShape()->getShapeType(),
+				collisionObjects[bb2]->getShape()->getShapeType());
 
 			if(cf == NULL)
 			{
 				cf = CD->GetCollider(
-				collisionObjects[bb2]->getShape()->GetShapeType(),
-				collisionObjects[bb1]->getShape()->GetShapeType());
+				collisionObjects[bb2]->getShape()->getShapeType(),
+				collisionObjects[bb1]->getShape()->getShapeType());
 				is_reversed = true;
 			}
 
@@ -153,7 +153,9 @@ void LinearTimeBroadphaser::DoBroadphase(CollisionAlgorithmDispatcher* CD, Rigid
 			}
 		}
 
-		for (int i= 0; i < worldGrid.size(); i++)
+		size_t size = worldGrid.size();
+
+		for (size_t i = 0; i < size; i++)
 		{
 			worldGrid[i].clear();
 		}
@@ -190,14 +192,14 @@ void QuadraticTimeBroadphaser::DoBroadphase(CollisionAlgorithmDispatcher* CD, Ri
 			int bb2 = co2->getID();
 
 			cf = CD->GetCollider(
-			collisionObjects[bb1]->getShape()->GetShapeType(),
-			collisionObjects[bb2]->getShape()->GetShapeType());
+			collisionObjects[bb1]->getShape()->getShapeType(),
+			collisionObjects[bb2]->getShape()->getShapeType());
 
 			if(cf == NULL)
 			{
 				cf = CD->GetCollider(
-				collisionObjects[bb2]->getShape()->GetShapeType(),
-				collisionObjects[bb1]->getShape()->GetShapeType());
+				collisionObjects[bb2]->getShape()->getShapeType(),
+				collisionObjects[bb1]->getShape()->getShapeType());
 				is_reversed = true;
 			}
 

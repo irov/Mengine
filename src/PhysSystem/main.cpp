@@ -155,7 +155,7 @@ void SimulationLoop()
 
 	for (int j = 0; j < world.numBodies; ++j)
 	{
-		if	(world.bodies[j]->getShape()->GetShapeType() == BOX)
+		if	(world.bodies[j]->getShape()->getShapeType() == BOX)
 		{
 			BoxShape* cs = (BoxShape*)world.bodies[j]->getShape();
 			mt::vec2f h = cs->width * 0.5f;

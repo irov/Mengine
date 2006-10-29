@@ -15,5 +15,22 @@
 				<ImageMNG File = "output.mng" />
 			</Node> <!-- Sprite -->
 		</Node> <!-- Track -->
+
+		<Node Name = "TestTrack1" Type = "Track">
+			<Points>
+				<Point Value = "0;0"/>
+				<Point Value = "500;50"/>
+				<Point Value = "400;450"/>
+				<Point Value = "600;450"/>
+				<Point Value = "50;550"/>
+			</Points>
+			
+			<Node Name = "TestSprite1" Type = "Sprite">
+				<SpeedMove Value = "6.f"/>
+
+				<ImageMNG File = "output.mng" />
+			</Node> <!-- Sprite -->
+		</Node> <!-- Track -->
+
 	</Node> <!-- Layer -->
 </Node>

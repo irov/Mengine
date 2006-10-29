@@ -1,5 +1,5 @@
 #pragma once
-#include "math\vec2.h"
+#include "math/vec2.h"
 //////////////////////////////////////////////////////////////////////////
 const mt::vec2f	mars_g(0.0f,-3.69f);
 const mt::vec2f	mercury_g(0.0f,-3.701f);
@@ -17,7 +17,7 @@ struct PhysParamSimDesc
 	int iterval;
 };
 //////////////////////////////////////////////////////////////////////////
-enum CollisionFlags
+enum eCollisionFlags
 {
 	STATIC = 1,
 	DYNAMIC = 2,
@@ -26,19 +26,19 @@ enum CollisionFlags
 class	CollisionShape
 {
 public:
-	virtual	int		GetShapeType() const = 0;
-	virtual bool	IsConvex() const = 0;
-	virtual void	EvaluteBBox(float _rot) = 0;
-	virtual	const	mt::vec2f&	GetBBoxInfo() const = 0;
-	virtual	void	SetMargin(float eps) = 0;
-	virtual	float	GetMargin() const = 0;
+	virtual	int		getShapeType() const = 0;
+	virtual bool	isConvex() const = 0;
+	virtual void	evaluteBBox(float _rot) = 0;
+	virtual	const	mt::vec2f&	getBBoxInfo() const = 0;
+	virtual	void	setMargin(float eps) = 0;
+	virtual	float	getMargin() const = 0;
 };
 //////////////////////////////////////////////////////////////////////////
 class RigidBodyInterface
 {
 public:
 	virtual CollisionShape* getShape() const = 0;
-	virtual CollisionFlags getState() const = 0;
+	virtual eCollisionFlags getState() const = 0;
 	virtual long int getID() const = 0;
 	virtual bool isDead() const = 0;
 	virtual bool isSleepTimeIsZero() const = 0;

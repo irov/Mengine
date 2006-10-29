@@ -15,7 +15,7 @@ public:
 	void wake();
 	void* getUserData() const;
 	CollisionShape* getShape() const;
-	CollisionFlags getState() const;
+	eCollisionFlags getState() const;
 	long int getID() const;
 	bool isDead() const;
 	bool isSleepTimeIsZero() const;
@@ -23,7 +23,7 @@ private:
 	int	uniqueId;
 	void* userData;
 	CollisionShape* shape;
-	CollisionFlags state;
+	eCollisionFlags state;
 	bool dead;
 	float sleeptime;
 	mt::vec2f prevx;

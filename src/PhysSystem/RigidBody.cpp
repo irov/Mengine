@@ -35,7 +35,7 @@ RigidBody::RigidBody(CollisionShape* _shape, mt::vec2f _pos, float _rot, float _
 		state = STATIC;
 	}
 
-	shape->EvaluteBBox(0);
+	shape->evaluteBBox(0);
 }
 //////////////////////////////////////////////////////////////////////////
 RigidBody::~RigidBody()
@@ -112,7 +112,7 @@ long int RigidBody::getID() const
 	return uniqueId;
 }
 
-CollisionFlags RigidBody::getState() const
+eCollisionFlags RigidBody::getState() const
 {
 	return state;
 }

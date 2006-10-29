@@ -74,17 +74,3 @@ void init_base_scene(SceneManager *sceneMgr)
 	//Sprite *sprite2 = sceneMgr->createNodeT<Sprite>("Sprite2","Sprite");
 	//sprite1->addChildren(sprite2);
 }
-
-
-//m_currentDelay+=timing;
-//while( m_currentDelay >= delay )
-//{
-//	m_currentDelay -= delay;
-//	
-//	++m_currentFrame;
-//	if(m_currentFrame != m_desc.frames.end())
-//	{
-//		m_currentFrame = m_desc.frames.begin();
-//		delay = m_currentFrame->getDelay()
-//	}	
-//}

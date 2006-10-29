@@ -58,5 +58,6 @@ namespace Menge
 		std::vector<mnglib::Frame>::iterator m_currentFrame;
 		std::vector<ImageProperties> m_images;
 		mnglib::mngDesc	m_desc;
+		float m_ctdelay;
 	};
 }

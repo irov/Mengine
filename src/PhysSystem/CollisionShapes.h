@@ -1,7 +1,6 @@
 #pragma once 
 #include "interfaces.h"
 #include <float.h>
-#include "math\vec2.h"
 //////////////////////////////////////////////////////////////////////////
 enum	SHAPETYPE
 {
@@ -14,12 +13,12 @@ class	BoxShape
 {
 public:
 	BoxShape(mt::vec2f	_width);
-	bool IsConvex() const;
-	void EvaluteBBox(float _rot);
-	const mt::vec2f& GetBBoxInfo() const;
-	int	GetShapeType() const;
-	void SetMargin(float eps);
-	float GetMargin() const;
+	bool isConvex() const;
+	void evaluteBBox(float _rot);
+	const mt::vec2f& getBBoxInfo() const;
+	int	getShapeType() const;
+	void setMargin(float eps);
+	float getMargin() const;
 public:
 	mt::vec2f width;
 private:
@@ -32,12 +31,12 @@ class	CircleShape
 {
 public:
 	CircleShape::CircleShape(float	_r);
-	bool IsConvex() const;
-	void EvaluteBBox(float _rot);
-	const mt::vec2f& GetBBoxInfo() const;
-	int	GetShapeType() const;
-	void SetMargin(float eps);
-	float GetMargin() const;
+	bool isConvex() const;
+	void evaluteBBox(float _rot);
+	const mt::vec2f& getBBoxInfo() const;
+	int	getShapeType() const;
+	void setMargin(float eps);
+	float getMargin() const;
 public:
 	float radius;
 private:

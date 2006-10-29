@@ -244,11 +244,13 @@ namespace	mt
 	}
 
 	void compute_incident_edge_v2(mt::vec2f c[2], const mt::vec2f& h, const mt::vec2f& pos,
-		const mt::mat2f& Rot, const mt::vec2f& normal)
+		float angle, const mt::vec2f& normal)
 	{
-		mt::mat2f RotT;
-		RotT = mt::transpose_m2(Rot);
-		mt::vec2f n = -(normal*RotT);
+		float cs = cosf(angle);
+		float ss = sinf(angle);
+
+		mt::vec2f n = -mt::vec2f(cs * normal.x + ss * normal.y,-ss * normal.x + cs * normal.y);
+
 		mt::vec2f nAbs(abs(n.x),abs(n.y));
 
 		if (nAbs.x > nAbs.y)
@@ -278,7 +280,7 @@ namespace	mt
 			}
 		}
 
-		c[0] = pos + c[0]*Rot;
-		c[1] = pos + c[1]*Rot;
+		c[0] = pos + mt::vec2f(cs * c[0].x + -ss * c[0].y,ss * c[0].x + cs * c[0].y);
+		c[1] = pos + mt::vec2f(cs * c[1].x + -ss * c[1].y,ss * c[1].x + cs * c[1].y);
 	}
 }

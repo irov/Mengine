@@ -3,16 +3,16 @@
 BoxShape::BoxShape(mt::vec2f	_width) 
 	: width(_width)
 {
-	EvaluteBBox(0);
-	SetMargin(0.5f);
+	evaluteBBox(0);
+	setMargin(0.5f);
 };
 //////////////////////////////////////////////////////////////////////////
-bool BoxShape::IsConvex() const
+bool BoxShape::isConvex() const
 {
 	return	true;
 }
 //////////////////////////////////////////////////////////////////////////
-void BoxShape::EvaluteBBox(float _rot)
+void BoxShape::evaluteBBox(float _rot)
 {
 	float c = fabsf(cos(_rot));
 	float s = fabsf(sin(_rot));
@@ -20,22 +20,22 @@ void BoxShape::EvaluteBBox(float _rot)
 	BoundingBox.y = (s * width.x + c * width.y) + margin;
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::vec2f& BoxShape::GetBBoxInfo() const
+const mt::vec2f& BoxShape::getBBoxInfo() const
 {
 	return	BoundingBox;
 }
 //////////////////////////////////////////////////////////////////////////
-int	BoxShape::GetShapeType() const
+int	BoxShape::getShapeType() const
 {
 	return	BOX;
 }
 //////////////////////////////////////////////////////////////////////////
-void BoxShape::SetMargin(float eps)
+void BoxShape::setMargin(float eps)
 {
 	margin = eps;
 }
 //////////////////////////////////////////////////////////////////////////
-float BoxShape::GetMargin() const
+float BoxShape::getMargin() const
 {
 	return margin;
 }
@@ -43,37 +43,37 @@ float BoxShape::GetMargin() const
 CircleShape::CircleShape(float	_r) 
 : radius(_r)
 {
-	EvaluteBBox(0);
-	SetMargin(0.25f);
+	evaluteBBox(0);
+	setMargin(0.25f);
 };
 //////////////////////////////////////////////////////////////////////////
-bool	CircleShape::IsConvex() const
+bool	CircleShape::isConvex() const
 {
 	return	true;
 }
 //////////////////////////////////////////////////////////////////////////
-void CircleShape::EvaluteBBox(float _rot)
+void CircleShape::evaluteBBox(float _rot)
 {
 	BoundingBox.x = radius*2.0f + margin;
 	BoundingBox.y = radius*2.0f + margin;
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::vec2f& CircleShape::GetBBoxInfo() const
+const mt::vec2f& CircleShape::getBBoxInfo() const
 {
 	return BoundingBox;
 }
 //////////////////////////////////////////////////////////////////////////
-int	CircleShape::GetShapeType() const
+int	CircleShape::getShapeType() const
 {
 	return	CIRCLE;
 }
 //////////////////////////////////////////////////////////////////////////
-void CircleShape::SetMargin(float eps)
+void CircleShape::setMargin(float eps)
 {
 	margin = eps;
 }
 //////////////////////////////////////////////////////////////////////////
-float CircleShape::GetMargin() const
+float CircleShape::getMargin() const
 {
 	return margin;
 }

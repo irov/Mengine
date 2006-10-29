@@ -62,13 +62,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\Math\lib\Math_d.lib"
+				AdditionalOptions="..\..\lib\math_d.lib&#x0D;&#x0A;"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="LIBCD.lib"
 				ModuleDefinitionFile="PhysSystem.def"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"
 				TargetMachine="1"
 			/>
 			<Tool

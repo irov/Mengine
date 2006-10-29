@@ -12,6 +12,7 @@ Sprite::Sprite()
 : m_playing(true)
 , m_looping(true)
 , m_state(REWIND)
+, m_ctdelay(0)
 {}
 //////////////////////////////////////////////////////////////////////////
 void Sprite::render()
@@ -37,6 +38,8 @@ bool Sprite::getLooped() const
 //////////////////////////////////////////////////////////////////////////
 void Sprite::setFirstFrame()
 {
+	assert(m_state == FORWARD && m_state == REWIND);
+
 	m_currentFrame = 
 		(m_state == FORWARD)
 		? m_desc.frames.begin() 
@@ -45,20 +48,20 @@ void Sprite::setFirstFrame()
 //////////////////////////////////////////////////////////////////////////
 void Sprite::update(float _timing)
 {
+	assert(m_state == FORWARD && m_state == REWIND);
+	
 	if(!m_playing)
 	{
 		return; 
 	}
 
-	static float currentDelay = 0;
-
-	currentDelay+=_timing;
+	m_ctdelay += _timing;
 
 	float delay = m_currentFrame->delay;
 
-	while(currentDelay >= delay)
+	while(m_ctdelay >= delay)
 	{
-		currentDelay -= delay;
+		m_ctdelay -= delay;
 
 		switch(m_state)
 		{
@@ -116,11 +119,12 @@ bool Sprite::_compile()
 	//	open *.mng from *.pak:
 	FileDataInterface* fileData = Keeper<FileEngine>::hostage()->openFile(m_fileMNG);
 
+	assert(fileData != 0);
+
 	//	read *.mng format in m_desc structure:
 	readMNG(
 		m_desc,
-		(unsigned char*)fileData->getBuffer(),
-		fileData->size()
+		(unsigned char*)fileData->getBuffer()
 		);
 
 	//	release fileData:
@@ -129,8 +133,14 @@ bool Sprite::_compile()
 	//	fill internal structures:
 	TextureDesc	textureDesc;
 
+<<<<<<< .mine
+	size_t size = m_desc.images.size();
+
+	for(size_t i = 0; i < size; i++)
+=======
 	size_t size = m_desc.images.size();
 	for(size_t i = 0; i < size; i++)
+>>>>>>> .r55
 	{
 		textureDesc.buffer = m_desc.images[i].buffer;
 		textureDesc.size = m_desc.images[i].size;
@@ -150,11 +160,18 @@ bool Sprite::_compile()
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_release()
 {
+<<<<<<< .mine
+	size_t size = m_desc.images.size();
+
+	for(size_t i = 0; i < size; i++)
+=======
 	size_t size = m_desc.images.size();
 	for(size_t i = 0; i < size; i++)
+>>>>>>> .r55
 	{
 		Keeper<RenderEngine>::hostage()->releaseRenderImage(m_images[i].renderImage);
 	}
+
 	freeMNG(m_desc);
 }
 //////////////////////////////////////////////////////////////////////////

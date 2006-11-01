@@ -2,35 +2,20 @@
 	<Node Name = "Main" Type = "Layer">
 		<Node Name = "TestTrack" Type = "Track">
 			<Points>
-				<Point Value = "0;0"/>
+				<Point Value = "100;100"/>
 				<Point Value = "300;100"/>
 				<Point Value = "200;450"/>
 				<Point Value = "300;450"/>
 				<Point Value = "50;550"/>
 			</Points>
+
+			<SpeedMove Value = "5.f"/>
 			
 			<Node Name = "TestSprite" Type = "Sprite">
-				<SpeedMove Value = "6.f"/>
+				
 
 				<ImageMNG File = "output.mng" />
 			</Node> <!-- Sprite -->
 		</Node> <!-- Track -->
-
-		<Node Name = "TestTrack1" Type = "Track">
-			<Points>
-				<Point Value = "0;0"/>
-				<Point Value = "500;50"/>
-				<Point Value = "400;450"/>
-				<Point Value = "600;450"/>
-				<Point Value = "50;550"/>
-			</Points>
-			
-			<Node Name = "TestSprite1" Type = "Sprite">
-				<SpeedMove Value = "6.f"/>
-
-				<ImageMNG File = "output.mng" />
-			</Node> <!-- Sprite -->
-		</Node> <!-- Track -->
-
 	</Node> <!-- Layer -->
 </Node>

@@ -58,6 +58,10 @@ bool Track::_compile()
 {
 	m_currentChain = m_listChain.begin();
 
+	const mt::vec2f & bp = m_currentChain->beginPoint();
+
+	setPosition(bp);
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////

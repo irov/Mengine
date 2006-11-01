@@ -53,8 +53,7 @@ namespace Menge
 		virtual Node * createChildren(const std::string &_name, const std::string &_type);
 
 		virtual bool addChildren(Node *_node);
-		virtual void visitChildren(Visitor::Base *visitor);
-
+	
 		virtual bool isChildren(Node *_node);
 		virtual bool isChildren(const std::string &_name);
 
@@ -66,24 +65,10 @@ namespace Menge
 			return static_cast<T*>(getChildren(_name));
 		}
 
-		template<class T_Result,class T_Class>
-		void dynamicForeach( T_Result (T_Class::*f)() )
+		template<class P>
+		void for_each(const P &p)
 		{
-			for( TListChildren::iterator 
-				it = m_listChildren.begin(),
-				it_end = m_listChildren.end();
-			it != it_end;
-			++it)
-			{
-				T_Class *obj = dynamic_cast<T_Class*>(*it);
-
-				if( obj )
-				{
-					(obj->*f)();
-				}
-
-				(*it)->dynamicForeach(f);
-			}
+			std::for_each(m_listChildren.begin(),m_listChildren.end(),p);
 		}
 
 		virtual void removeChildren(Node *_node);
@@ -101,6 +86,9 @@ namespace Menge
 		virtual luabind::adl::object * getScriptable();
 
 	protected:
+
+		virtual void _update( float _timing );
+
 		virtual bool _activate();
 		virtual void _deactivate();
 

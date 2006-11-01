@@ -1,11 +1,10 @@
 #	include "Allocator.h"
 #	include "ObjectImplement.h"
 
-#	include "VisitorChangePivotChildren.h"
-#	include "VisitorGetParentAllocator.h"
+#	include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-OBJECT_IMPLEMENT(Allocator);
+OBJECT_IMPLEMENT(Allocator)
 //////////////////////////////////////////////////////////////////////////
 Allocator::Allocator()
 : m_changePivot(0)
@@ -17,9 +16,25 @@ Allocator::Allocator()
 //////////////////////////////////////////////////////////////////////////
 void Allocator::changePivot()
 {
-	Visitor::changePivotChildren(this);
-
 	_changePivot();
+
+	struct FChangePivot
+	{
+		void operator () ( Node *_node)
+		{
+			Allocator * alloc = dynamic_cast<Allocator*>(_node);
+			if( alloc )
+			{
+				alloc->changePivot();
+			}
+			else
+			{
+				_node->for_each( *this );
+			}
+		}
+	};
+
+	for_each( FChangePivot() );
 }
 //////////////////////////////////////////////////////////////////////////
 void Allocator::_changePivot()
@@ -121,7 +136,16 @@ void Allocator::translate( const mt::vec2f &delta )
 //////////////////////////////////////////////////////////////////////////
 void Allocator::_updateParent()
 {
-	m_parentAllocator = Visitor::getParentAllocator(this);
+	for( Node *parent = getParent(); 
+		parent != 0; 
+		parent = parent->getParent() )
+	{
+		m_parentAllocator = dynamic_cast<Allocator*>(parent);
+		if( m_parentAllocator )
+		{
+			break;
+		}
+	}
 };
 //////////////////////////////////////////////////////////////////////////
 void Allocator::updateMatrix()

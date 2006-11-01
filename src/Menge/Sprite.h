@@ -30,13 +30,13 @@ namespace Menge
 		void setLooped(bool _looped);
 		bool getLooped() const;
 		void setFirstFrame();
-		void update(float _timing);
 
 	public:
 		void loader(TiXmlElement *xml) override;
 		void render() override;
 
 	public:
+		void _update(float _timing) override;
 		bool _compile() override;
 		void _release() override;
 

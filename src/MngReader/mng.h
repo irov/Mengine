@@ -26,10 +26,6 @@ namespace	mnglib
 		std::vector<Image>	images;
 	};
 
-<<<<<<< .mine
-	void	readMNG(mngDesc& _desc, void* _buffer);
-=======
 	void	readMNG(mngDesc& _desc, void* _buffer, size_t _size);
->>>>>>> .r55
 	void	freeMNG(mngDesc& _desc);
 };

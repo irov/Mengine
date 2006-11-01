@@ -13,7 +13,7 @@ OBJECT_IMPLEMENT(Node);
 //////////////////////////////////////////////////////////////////////////
 Node::Node()
 : m_parent(0)
-, m_active(false)
+, m_active(true)
 , m_compile(false)
 , m_scriptObject(0)
 , m_external(false)
@@ -162,14 +162,14 @@ void Node::setParent(Node *node)
 	_updateParent();
 }
 //////////////////////////////////////////////////////////////////////////
-void Node::visitChildren(Visitor::Base *visitor)
-{
-	Utility::for_each(m_listChildren,&Node::visit,visitor);
-}
-//////////////////////////////////////////////////////////////////////////
 void Node::update(float _timing)
 {
-	Utility::for_each(m_listChildren,&Node::update,_timing);
+	if( m_active == true )
+	{
+		_update(_timing);
+
+		Utility::for_each(m_listChildren,&Node::update,_timing);
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void Node::loader(TiXmlElement *xml)
@@ -390,6 +390,11 @@ bool Node::_compile()
 }
 //////////////////////////////////////////////////////////////////////////
 void Node::_release()
+{
+	//Empty
+}
+//////////////////////////////////////////////////////////////////////////
+void Node::_update(float _timing)
 {
 	//Empty
 }

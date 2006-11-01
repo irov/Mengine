@@ -178,34 +178,6 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Visitor"
-			>
-			<Filter
-				Name="Base"
-				>
-				<File
-					RelativePath=".\VisitorBase.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\VisitorBase.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="FindParentAllocator"
-				>
-				<File
-					RelativePath=".\VisitorChangePivotChildren.h"
-					>
-				</File>
-				<File
-					RelativePath=".\VisitorGetParentAllocator.h"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
 			Name="Scene"
 			>
 			<File
@@ -487,14 +459,6 @@
 					RelativePath=".\Node.h"
 					>
 				</File>
-				<File
-					RelativePath=".\NodeProxy.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeProxy.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Track"
@@ -513,14 +477,6 @@
 				</File>
 				<File
 					RelativePath=".\TrackChain.h"
-					>
-				</File>
-				<File
-					RelativePath=".\TrackProxy.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\TrackProxy.h"
 					>
 				</File>
 			</Filter>

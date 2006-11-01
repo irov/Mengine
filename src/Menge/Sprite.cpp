@@ -38,17 +38,18 @@ bool Sprite::getLooped() const
 //////////////////////////////////////////////////////////////////////////
 void Sprite::setFirstFrame()
 {
-	assert(m_state == FORWARD && m_state == REWIND);
+	//assert(m_state == FORWARD && m_state == REWIND);
 
 	m_currentFrame = 
 		(m_state == FORWARD)
 		? m_desc.frames.begin() 
 		: m_desc.frames.end() - 1;
 }
+
 //////////////////////////////////////////////////////////////////////////
-void Sprite::update(float _timing)
+void Sprite::_update(float _timing)
 {
-	assert(m_state == FORWARD && m_state == REWIND);
+	//assert(m_state == FORWARD && m_state == REWIND);
 	
 	if(!m_playing)
 	{
@@ -124,7 +125,8 @@ bool Sprite::_compile()
 	//	read *.mng format in m_desc structure:
 	readMNG(
 		m_desc,
-		(unsigned char*)fileData->getBuffer()
+		(unsigned char*)fileData->getBuffer(),
+		fileData->size()
 		);
 
 	//	release fileData:
@@ -133,14 +135,8 @@ bool Sprite::_compile()
 	//	fill internal structures:
 	TextureDesc	textureDesc;
 
-<<<<<<< .mine
-	size_t size = m_desc.images.size();
-
-	for(size_t i = 0; i < size; i++)
-=======
 	size_t size = m_desc.images.size();
 	for(size_t i = 0; i < size; i++)
->>>>>>> .r55
 	{
 		textureDesc.buffer = m_desc.images[i].buffer;
 		textureDesc.size = m_desc.images[i].size;
@@ -160,14 +156,9 @@ bool Sprite::_compile()
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_release()
 {
-<<<<<<< .mine
 	size_t size = m_desc.images.size();
 
 	for(size_t i = 0; i < size; i++)
-=======
-	size_t size = m_desc.images.size();
-	for(size_t i = 0; i < size; i++)
->>>>>>> .r55
 	{
 		Keeper<RenderEngine>::hostage()->releaseRenderImage(m_images[i].renderImage);
 	}

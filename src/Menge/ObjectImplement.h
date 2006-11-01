@@ -1,21 +1,8 @@
 #	pragma once
 
-#	include "VisitorBase.h"
 #	include "NodeFactory.h"
 
 using namespace Menge;
-
-
-#	ifndef OBJECT_USER_VISITOR
-#	define OBJECT_IMPLEMENT_VISITOR(C)\
-	void C::visit(Visitor::Base *_visitor)\
-	{\
-	_visitor->execute(this);\
-	}
-#	else
-#	define OBJECT_IMPLEMENT_VISITOR(C)
-#	endif
-
 
 #	ifndef OBJECT_USER_GENERATOR
 #	define OBJECT_IMPLEMENT_GENERATOR(C)\
@@ -37,7 +24,6 @@ using namespace Menge;
 	}
 
 #	define OBJECT_IMPLEMENT(C)\
-	OBJECT_IMPLEMENT_VISITOR(C)\
 	OBJECT_IMPLEMENT_FACTORY(C)
 
 

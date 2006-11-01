@@ -18,8 +18,6 @@
 #	include "Node.h"
 #	include "ScriptEngine.h"
 
-#	include "Utility/singleton.h"
-
 #	include <vector>
 
 namespace Menge
@@ -30,51 +28,45 @@ namespace Menge
 		namespace NVectorTypeCast
 		{
 			class CVectorTypeCast
-				: public Utility::CSingleton<CVectorTypeCast>
 			{
+				typedef std::vector<TFunTypeCast> TVectorFunctionTypeCast;
+
 			public:
-				CVectorTypeCast()
+				static TVectorFunctionTypeCast & vectorFunctionTypeCast()
 				{
-					m_vectorFunctionTypeCast.resize(256);
+					static TVectorFunctionTypeCast m_vectorFunctionTypeCast(256);
+					return m_vectorFunctionTypeCast;
 				}
 
 			public:
-				luabind::adl::object * cast(size_t _id, Node * _node)
+				static luabind::adl::object * cast(size_t _id, Node * _node)
 				{
 					CLuaScript *luaScript = 
 						Keeper<ScriptEngine>::hostage()
 						->getLuaScript();
 
-					return m_vectorFunctionTypeCast[_id](_node,luaScript);
+					return vectorFunctionTypeCast()[_id](_node,luaScript);
 				}
 
-				void insert( size_t _id , TFunTypeCast _function)
+				static void insert( size_t _id , TFunTypeCast _function)
 				{
-					size_t size = m_vectorFunctionTypeCast.size();
+					size_t size = vectorFunctionTypeCast().size();
 					if( size <= _id )
 					{
-						m_vectorFunctionTypeCast.resize(size*2);
+						vectorFunctionTypeCast().resize(size*2);
 					}
-					m_vectorFunctionTypeCast[_id] = _function;
+					vectorFunctionTypeCast()[_id] = _function;
 				}
-
-			private: 
-				std::vector<TFunTypeCast> m_vectorFunctionTypeCast;
 			};	
-			//////////////////////////////////////////////////////////////////////////
-			CVectorTypeCast * get()
-			{
-				return CVectorTypeCast::GetInstance();
-			}
 			//////////////////////////////////////////////////////////////////////////
 			luabind::adl::object * cast(size_t _id, Node * _node)
 			{
-				return get()->cast(_id,_node);
+				return CVectorTypeCast::cast(_id,_node);
 			}
 			//////////////////////////////////////////////////////////////////////////
 			void insert( size_t _id , TFunTypeCast _function)
 			{
-				get()->insert(_id,_function);
+				CVectorTypeCast::insert(_id,_function);
 			}
 		}
 

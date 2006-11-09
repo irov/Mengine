@@ -492,6 +492,30 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Arrow"
+				>
+				<File
+					RelativePath=".\Arrow.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Arrow.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="HotSpot"
+				>
+				<File
+					RelativePath=".\HotSpot.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\HotSpot.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Layer"
@@ -548,6 +572,58 @@
 				RelativePath=".\SoundSystemInterface.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Player"
+			>
+			<File
+				RelativePath=".\Player.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Player.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Visitor"
+			>
+			<File
+				RelativePath=".\Visitor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Visitor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\VisitorClassDeclare.h"
+				>
+			</File>
+			<Filter
+				Name="Render"
+				>
+				<File
+					RelativePath=".\VisitorRender.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\VisitorRender.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Define"
+				>
+				<File
+					RelativePath=".\VisitorBaseDefine.h"
+					>
+				</File>
+				<File
+					RelativePath=".\VisitorMaskDefine.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

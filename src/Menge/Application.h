@@ -7,6 +7,7 @@
 namespace Menge
 {
 	class Game;
+	class Player;
 	
 	class MENGE_API Application
 	{

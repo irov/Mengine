@@ -20,7 +20,7 @@ void Allocator::changePivot()
 
 	struct FChangePivot
 	{
-		void operator () ( Node *_node)
+		static void apply( Node *_node)
 		{
 			Allocator * alloc = dynamic_cast<Allocator*>(_node);
 			if( alloc )
@@ -29,12 +29,12 @@ void Allocator::changePivot()
 			}
 			else
 			{
-				_node->for_each( *this );
+				_node->foreachFunc( &apply );
 			}
 		}
 	};
 
-	for_each( FChangePivot() );
+	foreachFunc( &FChangePivot::apply );
 }
 //////////////////////////////////////////////////////////////////////////
 void Allocator::_changePivot()

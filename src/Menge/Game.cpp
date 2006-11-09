@@ -2,6 +2,8 @@
 #	include "ObjectImplement.h"
 
 #	include "Chapter.h"
+#	include "Scene.h"
+#	include "Player.h"
 
 #	include "FileEngine.h"
 
@@ -14,8 +16,10 @@ Game::Game()
 : m_fnInit(0)
 , m_fnUpdate(0)
 , m_fnRender(0)
-, m_currentChapter()
 {
+	Keeper<Game>::keep(this);
+
+	//m_childrenForeach = false;
 }
 //////////////////////////////////////////////////////////////////////////
 bool Game::addChildren(Node *_node)
@@ -28,42 +32,39 @@ bool Game::addChildren(Node *_node)
 	return Node::addChildren(_node);
 }
 //////////////////////////////////////////////////////////////////////////
-void Game::setChapter(const std::string &_chapter)
+void Game::update( float _timing )
 {
-	m_currentChapter = getChildrenT<Chapter>(_chapter);
-
-	if( m_currentChapter == 0 )
-	{
-		//TODO: ERROR
-	}
-
-	m_currentChapter->activate();
+	m_player->update( _timing );
 }
 //////////////////////////////////////////////////////////////////////////
-bool Game::_activate()
+void Game::render()
 {
-	if( m_startChapter.empty() )
-	{
-		return false;
-	}
-
-	setChapter(m_startChapter);
-
-	return true;
+	m_player->render();
 }
 //////////////////////////////////////////////////////////////////////////
 void Game::loader(TiXmlElement *_xml)
-{
-	//<Game>
-	//	<Chapters>
-	//	<Chapter Value = "Buba"/>
-	//	<Chapter Value = "Poba"/>
-	//	<Chapters>
-	//	</Game>
+{	
 	XML_FOR_EACH_TREE( _xml )
 	{
-		XML_CHECK_VALUE_NODE("StartChapter","Name",m_startChapter);
+		//<Logo Chapter = "Buba" Scene = "Buka" />
+		XML_CHECK_NODE("Logo")
+		{
+			XML_VALUE_ATTRIBUTE("Chapter", m_logoChapterName);
+			XML_VALUE_ATTRIBUTE("Scene", m_logoSceneName);
+		}
 	}
 
 	Node::loader(_xml);
+}
+//////////////////////////////////////////////////////////////////////////
+bool Game::_compile()
+{
+	m_player = new Player;
+
+	Chapter *logoChapter = getChildrenT<Chapter>(m_logoChapterName);
+	Scene *logoScene = logoChapter->getChildrenT<Scene>(m_logoSceneName);
+	m_player->setChapter(logoChapter);
+	m_player->setScene(logoScene);
+
+	return true;
 }

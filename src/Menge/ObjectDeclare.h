@@ -12,8 +12,14 @@ namespace luabind
 	}
 }
 
+namespace Menge
+{
+	class Visitor;
+}
+
 
 #	define OBJECT_DECLARE(C)\
 	public:\
-	static Node * genObject(const std::string &type);\
+	static Node * genObject(const std::string &);\
+	virtual void visit( Visitor * );\
 	private:

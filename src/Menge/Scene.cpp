@@ -20,9 +20,3 @@ bool Scene::addChildren(Node *_node)
 
 	return Node::addChildren(_node);
 };
-//////////////////////////////////////////////////////////////////////////
-void Scene::start()
-{
-	activate();
-}
-

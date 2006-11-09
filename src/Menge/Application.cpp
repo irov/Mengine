@@ -11,6 +11,7 @@
 #	include "ScriptEngine.h"
 
 #	include "Game.h"
+#	include "Player.h"
 
 #	include "Manager/XmlManager.h"
 
@@ -27,9 +28,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::init(const std::string &_xmlFile)
 	{
-		new ScriptEngine();
-
-		Keeper<ScriptEngine>::hostage()->init();
+		ScriptEngine *scriptEngine = new ScriptEngine;
+		
+		scriptEngine->init();
 
 		typedef std::list< std::pair<std::string,int> > TListLoadPaks;
 		TListLoadPaks listLoadPaks;
@@ -181,8 +182,7 @@ namespace Menge
 		//{
 		//	m_functionRender->callFunctionVoid();
 		//}
-
-		m_game->debugRender();
+		m_game->render();
 
 		renderEng->endSceneDrawing();
 	}

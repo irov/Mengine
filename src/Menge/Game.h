@@ -2,9 +2,11 @@
 
 #	include "Node.h"
 
+#	include "Keeper.h"
+
 namespace Menge
 {
-	class Chapter;
+	class Player;
 	class ScriptFunction;
 
 	class Game
@@ -15,18 +17,21 @@ namespace Menge
 		Game();
 
 	public:
-		void setChapter(const std::string &_chapter);
-
+		void update( float _timing );
+		void render();
+		
 	public:
 		bool addChildren(Node *_node) override;
 		void loader(TiXmlElement *_xml) override;		
 
-	public:
-		bool _activate()override;
+	protected:
+		bool _compile();
 
-	private:
-		std::string m_startChapter;
-		Chapter * m_currentChapter;
+	protected:
+		std::string m_logoChapterName;
+		std::string m_logoSceneName;
+
+		Player * m_player;
 
 		ScriptFunction * m_fnInit;
 		ScriptFunction * m_fnUpdate;

@@ -65,11 +65,9 @@ namespace Menge
 			return static_cast<T*>(getChildren(_name));
 		}
 
-		template<class P>
-		void for_each(const P &p)
-		{
-			std::for_each(m_listChildren.begin(),m_listChildren.end(),p);
-		}
+		typedef void (*TForEachFunc)( Node *);
+
+		virtual void foreachFunc(TForEachFunc _func);
 
 		virtual void removeChildren(Node *_node);
 		virtual void removeChildren(const std::string &_name);
@@ -102,6 +100,8 @@ namespace Menge
 		bool m_active;
 		bool m_compile;
 
+		bool m_childrenForeach;
+
 		std::string m_name;
 		std::string m_type;
 
@@ -111,7 +111,7 @@ namespace Menge
 		Node * m_parent;
 		TListChildren m_listChildren;
 
-		luabind::adl::object * m_scriptObject;	
+		luabind::adl::object * m_scriptObject;
 
 	private:
 		TListChildren::iterator _findChildren(const std::string &_name);

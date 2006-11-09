@@ -12,18 +12,12 @@ namespace Menge
 		: public Node
 	{
 		OBJECT_DECLARE(Chapter)
+
 	public:
 		Chapter();
 
 	public:
-		void setScene(const std::string &_name);
-
-	public:
 		bool addChildren(Node *_node) override;
-		void loader(TiXmlElement *_xml) override;
-
-	protected:		
-		bool _activate()override;
 
 	private:
 		std::string m_startScene;

@@ -15,7 +15,7 @@ Sprite::Sprite()
 , m_ctdelay(0)
 {}
 //////////////////////////////////////////////////////////////////////////
-void Sprite::render()
+void Sprite::_render()
 {
 	const mt::mat3f& wm = getWorldMatrix();
 	
@@ -192,6 +192,12 @@ void Sprite::play()
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()
 {
-	render();
+	const mt::mat3f& wm = getWorldMatrix();
+
+	Keeper<RenderEngine>::hostage()->renderImageOffset(
+		wm, 
+		m_images[m_currentFrame->index].offset,
+		0xffffffff,
+		m_images[m_currentFrame->index].renderImage
+		);
 };
-//////////////////////////////////////////////////////////////////////////

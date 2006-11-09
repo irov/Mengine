@@ -17,6 +17,7 @@ Node::Node()
 , m_compile(false)
 , m_scriptObject(0)
 , m_external(false)
+, m_childrenForeach(true)
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -34,7 +35,10 @@ bool Node::activate()
 		return false;
 	}
 
-	Utility::for_each(m_listChildren,&Node::activate);
+	if( m_childrenForeach )
+	{
+		Utility::for_each(m_listChildren,&Node::activate);
+	}
 
 	if( m_active )
 	{
@@ -46,7 +50,10 @@ bool Node::activate()
 //////////////////////////////////////////////////////////////////////////
 void Node::deactivate()
 {
-	Utility::for_each(m_listChildren,&Node::deactivate);
+	if( m_childrenForeach )
+	{
+		Utility::for_each(m_listChildren,&Node::deactivate);
+	}
 
 	if( m_compile )
 	{
@@ -63,13 +70,16 @@ bool Node::isActive()
 //////////////////////////////////////////////////////////////////////////
 bool Node::compile()
 {
-	if( m_external )
+	if( m_external && m_compile == false )
 	{
 		Keeper<SceneManager>::hostage()
 			->loadNode(this, m_resource);
 	}
 
-	Utility::for_each(m_listChildren,&Node::compile);
+	if( m_childrenForeach )
+	{
+		Utility::for_each(m_listChildren,&Node::compile);
+	}
 
 	if( m_compile == true )
 	{
@@ -83,7 +93,10 @@ bool Node::compile()
 //////////////////////////////////////////////////////////////////////////
 void Node::release()
 {
-	Utility::for_each(m_listChildren,&Node::release);
+	if( m_childrenForeach )
+	{
+		Utility::for_each(m_listChildren,&Node::release);
+	}
 
 	if( m_compile == true )
 	{
@@ -166,9 +179,14 @@ void Node::update(float _timing)
 {
 	if( m_active == true )
 	{
+		compile();
+
 		_update(_timing);
 
-		Utility::for_each(m_listChildren,&Node::update,_timing);
+		if( m_childrenForeach )
+		{
+			Utility::for_each(m_listChildren,&Node::update,_timing);
+		}
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -328,6 +346,11 @@ Node * Node::getChildren(const std::string &_name)
 	return *it_find;
 }
 //////////////////////////////////////////////////////////////////////////
+void Node::foreachFunc(TForEachFunc _func)
+{
+	std::for_each( m_listChildren.begin(), m_listChildren.end(), std::ptr_fun(_func) );
+}
+//////////////////////////////////////////////////////////////////////////
 void Node::removeChildren(Node *_node)
 {
 	if( _node == 0 )
@@ -353,7 +376,11 @@ void Node::removeChildren(const std::string &_name)
 //////////////////////////////////////////////////////////////////////////
 void Node::debugRender()
 {
-	Utility::for_each(m_listChildren,&Node::debugRender);
+	if( m_childrenForeach )
+	{
+		Utility::for_each(m_listChildren,&Node::debugRender);
+	}
+
 	_debugRender();
 }
 //////////////////////////////////////////////////////////////////////////

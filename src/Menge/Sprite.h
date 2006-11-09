@@ -33,16 +33,14 @@ namespace Menge
 
 	public:
 		void loader(TiXmlElement *xml) override;
-		void render() override;
 
-	public:
+	protected:
 		void _update(float _timing) override;
 		bool _compile() override;
 		void _release() override;
-
-	public:
+		void _render() override;
 		void _debugRender() override;
-
+	
 	private:
 		bool m_playing;
 		bool m_looping;

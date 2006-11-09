@@ -1,0 +1,3 @@
+VISITABLE_CLASS( Node ) 
+VISITABLE_CLASS( Allocator )
+VISITABLE_CLASS( Renderable )

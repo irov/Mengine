@@ -356,26 +356,6 @@
 					</File>
 				</Filter>
 			</Filter>
-			<Filter
-				Name="Physic"
-				>
-				<File
-					RelativePath=".\PhysicEngine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\PhysicEngine.h"
-					>
-				</File>
-				<File
-					RelativePath=".\RigidBody.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\RigidBody.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Kernel"
@@ -480,11 +460,15 @@
 				Name="Node"
 				>
 				<File
-					RelativePath=".\Node.cpp"
+					RelativePath=".\Node.h"
 					>
 				</File>
 				<File
-					RelativePath=".\Node.h"
+					RelativePath=".\NodeImpl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeImpl.h"
 					>
 				</File>
 				<File
@@ -552,18 +536,18 @@
 					>
 				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="Layer"
-			>
-			<File
-				RelativePath=".\Layer.cpp"
+			<Filter
+				Name="Layer"
 				>
-			</File>
-			<File
-				RelativePath=".\Layer.h"
-				>
-			</File>
+				<File
+					RelativePath=".\Layer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Layer.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"

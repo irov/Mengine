@@ -13,5 +13,5 @@ void Layer::setParent(Node *node)
 		return;
 	}
 
-	Node::setParent(node);
+	NodeImpl::setParent(node);
 }

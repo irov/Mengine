@@ -1,6 +1,6 @@
 #	 pragma once
 
-#	include "Node.h"
+#	include "NodeImpl.h"
 
 #	include "Keeper.h"
 
@@ -10,7 +10,7 @@ namespace Menge
 	class ScriptFunction;
 
 	class Game
-		: public Node
+		: public NodeImpl
 	{
 		OBJECT_DECLARE(Game)
 	public:

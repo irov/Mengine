@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Node.h"
+#	include "NodeImpl.h"
 
 
 
@@ -9,7 +9,7 @@ namespace Menge
 	class Scene;
 
 	class Chapter
-		: public Node
+		: public NodeImpl
 	{
 		OBJECT_DECLARE(Chapter)
 

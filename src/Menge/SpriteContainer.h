@@ -14,7 +14,7 @@ public:
 
 	void	addSprite(Sprite*	_spr)
 	{
-		m_sprites.push_back(new SpriteProxy(_spr,_spr));
+		m_sprites.push_back(new SpriteProxy(_spr));
 	}
 
 	void	setAllLooped(bool _looped)

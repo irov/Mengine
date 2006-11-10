@@ -18,5 +18,5 @@ bool Scene::addChildren(Node *_node)
 		return false;
 	}
 
-	return Node::addChildren(_node);
+	return NodeImpl::addChildren(_node);
 };

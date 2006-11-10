@@ -29,7 +29,7 @@ bool Game::addChildren(Node *_node)
 		return false;
 	}
 
-	return Node::addChildren(_node);
+	return NodeImpl::addChildren(_node);
 }
 //////////////////////////////////////////////////////////////////////////
 void Game::update( float _timing )
@@ -54,7 +54,7 @@ void Game::loader(TiXmlElement *_xml)
 		}
 	}
 
-	Node::loader(_xml);
+	NodeImpl::loader(_xml);
 }
 //////////////////////////////////////////////////////////////////////////
 bool Game::_compile()

@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "Node.h"
+#	include "NodeImpl.h"
 
 #	include "math/mat3.h"
 
 namespace Menge
 {
 	class Allocator
-		: public Node
+		: public NodeImpl
 	{
 		OBJECT_DECLARE(Allocator);
 

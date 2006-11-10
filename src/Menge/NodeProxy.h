@@ -40,7 +40,6 @@ namespace Menge
 		void setParent(Node *node) override;
 		Node * getParent() override;
 
-		void _updateParent() override;
 		bool isRoot() override;
 
 	public:
@@ -53,29 +52,24 @@ namespace Menge
 
 		Node * getChildren(const std::string &_name)override;
 
+		void foreachFunc(TForEachFunc _func) override;
+
 		void removeChildren(Node *_node) override;
 		void removeChildren(const std::string &_name) override;
 
 	public:
 		void update(float _timing) override;
 		void loader(TiXmlElement *xml) override;
+		void visit( Visitor * _visitor) override;
 
 	public:
 		void debugRender() override;
-		void _debugRender() override;
 
 	public:
 		luabind::adl::object * getScriptable() override;
 
-	protected:
-		bool _activate() override;
-		void _deactivate() override;
-
-		bool _compile() override;
-		void _release() override;
-
+	public:
 		void _lostChildren(Node *_node, bool _valid) override;
-		void _update(float _timing) override;
 
 	protected:
 		Node *m_node;

@@ -1,124 +1,86 @@
 #	pragma once
 
-#	include "ObjectDeclare.h"
-
 #	include <list>
+
+class TiXmlElement;
+
+namespace luabind
+{
+	namespace adl
+	{
+		class object;
+	}
+}
 
 namespace Menge
 {
-	class Node
+	class Visitor;
+
+	//pure-virtual interface
+	class Node 
 	{
-		OBJECT_DECLARE(Node);
-
 	public:
-		typedef std::list<Node *> TListChildren;
+		virtual bool activate() = 0;
+		virtual void deactivate() = 0;
 
-	public:
-		Node();
-		virtual ~Node();
-
-	public:
-		virtual bool activate();
-		virtual void deactivate();
-
-		virtual bool isActive();
+		virtual bool isActive() = 0;
 		
 	public:
-		virtual bool compile();
-		virtual void release();
+		virtual bool compile() = 0;
+		virtual void release() = 0;
 
-		virtual bool isCompile();
-
-	public:
-		virtual void setName(const std::string &name);
-		virtual const std::string & getName()const;
-
-		virtual void setType(const std::string &type);
-		virtual const std::string & getType()const;
-
-		virtual size_t getTypeId()const;
-
-		virtual bool isExternal()const;
-
-		virtual void setResource(const std::string &_file);
-		virtual const std::string & getResource()const;
+		virtual bool isCompile() = 0;
 
 	public:
-		virtual void setParent(Node *node);
-		virtual Node * getParent();
+		virtual void setName(const std::string &name) = 0;
+		virtual const std::string & getName()const = 0;
 
-		virtual bool isRoot();
+		virtual void setType(const std::string &type) = 0;
+		virtual const std::string & getType()const = 0;
+
+		virtual size_t getTypeId()const = 0;
+
+		virtual bool isExternal()const = 0;
+
+		virtual void setResource(const std::string &_file) = 0;
+		virtual const std::string & getResource()const = 0;
 
 	public:
-		virtual Node * createChildren(const std::string &_name, const std::string &_type);
+		virtual void setParent(Node *node) = 0;
+		virtual Node * getParent() = 0;
 
-		virtual bool addChildren(Node *_node);
+		virtual bool isRoot() = 0;
+
+	public:
+		virtual Node * createChildren(const std::string &_name, const std::string &_type) = 0;
+
+		virtual bool addChildren(Node *_node) = 0;
 	
-		virtual bool isChildren(Node *_node);
-		virtual bool isChildren(const std::string &_name);
+		virtual bool isChildren(Node *_node) = 0;
+		virtual bool isChildren(const std::string &_name) = 0;
 
-		virtual Node * getChildren(const std::string &_name);
-
-		template<class T>
-		T * getChildrenT(const std::string &_name)
-		{
-			return static_cast<T*>(getChildren(_name));
-		}
+		virtual Node * getChildren(const std::string &_name) = 0;
 
 		typedef void (*TForEachFunc)( Node *);
 
-		virtual void foreachFunc(TForEachFunc _func);
+		virtual void foreachFunc(TForEachFunc _func) = 0;
 
-		virtual void removeChildren(Node *_node);
-		virtual void removeChildren(const std::string &_name);
-
-	public:
-		virtual void update(float _timing);
-		virtual void loader(TiXmlElement *xml);
+		virtual void removeChildren(Node *_node) = 0;
+		virtual void removeChildren(const std::string &_name) = 0;
 
 	public:
-		virtual void debugRender();
-		virtual void _debugRender();
+		virtual void update(float _timing) = 0;
+		virtual void loader(TiXmlElement *xml) = 0;
+		virtual void visit(Visitor *visitor) = 0;
 
 	public:
-		virtual luabind::adl::object * getScriptable();
+		virtual void debugRender() = 0;
 
-	protected:
+	public:
+		virtual luabind::adl::object * getScriptable() = 0;
 
-		virtual void _update( float _timing );
-
-		virtual bool _activate();
-		virtual void _deactivate();
-
-		virtual bool _compile();
-		virtual void _release();
-
-		virtual void _updateParent();
-		virtual void _lostChildren(Node *_node, bool _valid);
-
-		virtual void _visit( Visitor * _visitor );
-
-	protected:
-		bool m_active;
-		bool m_compile;
-
-		bool m_childrenForeach;
-
-		std::string m_name;
-		std::string m_type;
-
-		bool m_external;
-		std::string m_resource;
-
-		Node * m_parent;
-		TListChildren m_listChildren;
-
-		luabind::adl::object * m_scriptObject;
-
-	private:
-		TListChildren::iterator _findChildren(const std::string &_name);
-
-		friend class NodeProxy;
+	public:
+		virtual void _lostChildren(Node *_node, bool _valid) = 0;
 	};
 
 }

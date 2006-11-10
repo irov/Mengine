@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "Node.h"
+#	include "NodeImpl.h"
 
 #	include <list>
 
 namespace Menge
 {
 	class Layer
-		: public Node
+		: public NodeImpl
 	{
 		OBJECT_DECLARE(Layer);
 

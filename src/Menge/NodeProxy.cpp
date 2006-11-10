@@ -68,11 +68,6 @@ namespace Menge
 		return m_node->getParent();
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::_updateParent()
-	{
-		return m_node->_updateParent();
-	};
-	//////////////////////////////////////////////////////////////////////////
 	bool NodeProxy::isRoot()
 	{
 		return m_node->isRoot();
@@ -87,7 +82,6 @@ namespace Menge
 	{
 		return m_node->addChildren(_node);
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeProxy::isChildren(Node *_node)
 	{
@@ -102,6 +96,11 @@ namespace Menge
 	Node * NodeProxy::getChildren(const std::string &_name)
 	{
 		return m_node->getChildren(_name);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeProxy::foreachFunc(TForEachFunc _func)
+	{
+		return m_node->foreachFunc(_func);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeProxy::removeChildren(Node *_node)
@@ -124,6 +123,11 @@ namespace Menge
 		return m_node->loader(xml);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void NodeProxy::visit( Visitor * _visitor)
+	{
+		return m_node->visit(_visitor);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void NodeProxy::setParent(Node *_node)
 	{
 		return m_node->setParent(_node);
@@ -144,26 +148,6 @@ namespace Menge
 		return m_node->getResource();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeProxy::_activate()
-	{
-		return m_node->_activate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::_deactivate()
-	{
-		return m_node->_deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool NodeProxy::_compile()
-	{
-		return m_node->_compile();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::_release()
-	{
-		return m_node->_release();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	luabind::adl::object * NodeProxy::getScriptable()
 	{
 		return m_node->getScriptable();
@@ -174,18 +158,9 @@ namespace Menge
 		return m_node->debugRender();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::_debugRender()
-	{
-		return m_node->_debugRender();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void NodeProxy::_lostChildren(Node *_node, bool _valid)
 	{
 		return m_node->_lostChildren(_node,_valid);
 	}
-	////////////////////////////////////////////////////////////////////////////
-	void NodeProxy::_update(float _timing)
-	{
-		return m_node->_update(_timing);
-	}
+
 };

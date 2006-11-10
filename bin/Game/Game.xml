@@ -1,5 +1,5 @@
 <Node Name = "Game" Type = "Game">
-	<External File = "Game/Buba/Chapter.xml" />
+	<External File = "Game/Chapters/Buba/Chapter.xml" />
 
 	<Logo Chapter = "Buba" Scene = "Buka" />
 </Node>

@@ -96,6 +96,8 @@ namespace Menge
 		virtual void _updateParent();
 		virtual void _lostChildren(Node *_node, bool _valid);
 
+		virtual void _visit( Visitor * _visitor );
+
 	protected:
 		bool m_active;
 		bool m_compile;

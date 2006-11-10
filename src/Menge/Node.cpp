@@ -425,3 +425,8 @@ void Node::_update(float _timing)
 {
 	//Empty
 }
+//////////////////////////////////////////////////////////////////////////
+void Node::_visit( Visitor * _visitor )
+{
+	//Empty
+}

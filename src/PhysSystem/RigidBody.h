@@ -1,8 +1,8 @@
 #pragma once
 #include "interfaces.h"
 //////////////////////////////////////////////////////////////////////////
-const float epsSleepVelocity = 0.008f;
-const float epsSleepRotMov = 0.008f;
+const float epsSleepVelocity = 0.009f;
+const float epsSleepRotMov = 0.0009f;
 //////////////////////////////////////////////////////////////////////////
 class RigidBody : public RigidBodyInterface
 {

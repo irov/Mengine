@@ -1,5 +1,6 @@
-#include "StandartCollisionAlgorithms.h"
-#include "math\closest_points.h"
+#include	"StandartCollisionAlgorithms.h"
+
+#include	"math\closest_points.h"
 
 int CollideCircleCircle(CollisionPair& cp, RigidBodyInterface* A, RigidBodyInterface* B)
 {

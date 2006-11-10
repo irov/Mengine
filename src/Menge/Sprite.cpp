@@ -38,7 +38,7 @@ bool Sprite::getLooped() const
 //////////////////////////////////////////////////////////////////////////
 void Sprite::setFirstFrame()
 {
-	//assert(m_state == FORWARD && m_state == REWIND);
+	assert(m_state == FORWARD || m_state == REWIND);
 
 	m_currentFrame = 
 		(m_state == FORWARD)
@@ -49,7 +49,7 @@ void Sprite::setFirstFrame()
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_update(float _timing)
 {
-	//assert(m_state == FORWARD && m_state == REWIND);
+	assert(m_state == FORWARD || m_state == REWIND);
 	
 	if(!m_playing)
 	{

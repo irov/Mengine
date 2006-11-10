@@ -13,7 +13,6 @@ class	BoxShape
 {
 public:
 	BoxShape(mt::vec2f	_width);
-	bool isConvex() const;
 	void evaluteBBox(float _rot);
 	const mt::vec2f& getBBoxInfo() const;
 	int	getShapeType() const;
@@ -31,7 +30,6 @@ class	CircleShape
 {
 public:
 	CircleShape::CircleShape(float	_r);
-	bool isConvex() const;
 	void evaluteBBox(float _rot);
 	const mt::vec2f& getBBoxInfo() const;
 	int	getShapeType() const;

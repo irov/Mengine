@@ -50,6 +50,7 @@ bool SceneManager::loadNode(Node *_node, const std::string &_xml)
 #	include "Layer.h"
 #	include "Track.h"
 #	include "Sprite.h"
+#	include "SpriteContainer.h"
 
 
 static Scene *g_scene;

@@ -359,6 +359,22 @@
 			<Filter
 				Name="Physic"
 				>
+				<File
+					RelativePath=".\PhysicEngine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PhysicEngine.h"
+					>
+				</File>
+				<File
+					RelativePath=".\RigidBody.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\RigidBody.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -421,6 +437,18 @@
 					RelativePath=".\Sprite.h"
 					>
 				</File>
+				<File
+					RelativePath=".\SpriteContainer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SpriteProxy.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SpriteProxy.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Define"
@@ -457,6 +485,14 @@
 				</File>
 				<File
 					RelativePath=".\Node.h"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeProxy.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeProxy.h"
 					>
 				</File>
 			</Filter>
@@ -562,6 +598,10 @@
 			</File>
 			<File
 				RelativePath=".\InputSystemInterface.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PhysicSystemInterface.h"
 				>
 			</File>
 			<File

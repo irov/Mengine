@@ -1,4 +1,4 @@
-#include "vld.h"
+//#include "vld.h"
 #include <windows.h>
 #include <string.h>
 #include <windows.h>
@@ -135,7 +135,7 @@ void SimulationLoop()
 	//{
 	//	i++;
 	//	accumulator -= dt;
-		world.integrate(1/120.0f);
+		world.integrate();
 //	}
 
 //	printf(" i = %d \n",i);
@@ -244,9 +244,9 @@ void Keyboard(unsigned char key, int x, int y)
 		*/
 		break;
 	case 'x':
-		/*b = new RigidBody(new CircleShape(1),20,world.numBodies);
-		b->x=mt::vec2f((x/1280.0f)*20.0f-10.0f, -((y/1024.0f)*20.0f-10.0f)+7);
-		world.addRigidBody(b);*/
+		CollisionShape* shape1 = world.createBoxShape(mt::vec2f(2, 1));
+		world.addRigidBody(shape1,mt::vec2f((x/1280.0f)*20.0f-10.0f, -((y/1024.0f)*20.0f-10.0f)),0,67,40,0);
+
 		break;
 	}
 }

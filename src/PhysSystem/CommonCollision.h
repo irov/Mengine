@@ -1,6 +1,9 @@
 #pragma once
-#include "math\vec2.h"
-#include "interfaces.h"
+
+#include	"interfaces.h"
+
+#include	"math\vec2.h"
+
 //////////////////////////////////////////////////////////////////////////
 struct Contact
 {

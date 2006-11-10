@@ -36,12 +36,12 @@ void PhysEngine::loadParams(const PhysParamSimDesc& _desc)
 	iterations = _desc.iterval;
 	gravity = _desc.g;
 	m_CollisionDispatcher = new CollisionAlgorithmDispatcher();
-	m_CollisionDispatcher->Init(CollisionAlgorithmDispatcher::STANDART_CD);
+	m_CollisionDispatcher->Init();
 	m_BroadPhaseCollisionDetector = new LinearTimeBroadphaser(10,10);
 	m_BroadPhaseCollisionDetector->Init();
 }
 
-CollisionShape* PhysEngine::createBoxShape(mt::vec2f width)
+CollisionShape* PhysEngine::createBoxShape(const mt::vec2f& width)
 {
 	return	new BoxShape(width);
 }
@@ -53,12 +53,12 @@ CollisionShape* PhysEngine::createCircleShape(float R)
 
 void PhysEngine::removeBoxShape(CollisionShape* _bs)
 {
-	delete (BoxShape*)_bs;
+	delete static_cast<BoxShape*>(_bs);
 }
 
 void PhysEngine::removeCircleShape(CollisionShape* _cs)
 {
-	delete (CircleShape*)_cs;
+	delete static_cast<CircleShape*>(_cs);
 }
 
 void PhysEngine::setUserDataCallback(callbackOnChangePivot* callback)

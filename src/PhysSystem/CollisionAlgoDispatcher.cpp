@@ -1,6 +1,6 @@
 #include "CollisionAlgoDispatcher.h"
 //////////////////////////////////////////////////////////////////////////
-void CollisionAlgorithmDispatcher::Init(COLLISION_PRIMITIVES _type)
+void CollisionAlgorithmDispatcher::Init()
 {
 	for(int i = 0; i < MAX_COLL_FUN; i++)
 	{
@@ -10,12 +10,9 @@ void CollisionAlgorithmDispatcher::Init(COLLISION_PRIMITIVES _type)
 		}
 	}
 
-	if(_type == STANDART_CD)
-	{
-		SetCollider(BOX,BOX,CollideBoxBox);
-		SetCollider(BOX,CIRCLE,CollideBoxCircle);
-		SetCollider(CIRCLE,CIRCLE,CollideCircleCircle);
-	}
+	SetCollider(BOX,BOX,CollideBoxBox);
+	SetCollider(BOX,CIRCLE,CollideBoxCircle);
+	SetCollider(CIRCLE,CIRCLE,CollideCircleCircle);
 }
 //////////////////////////////////////////////////////////////////////////
 void CollisionAlgorithmDispatcher::SetCollider(int body1, int body2, CollisionAlgorithm* fn) 

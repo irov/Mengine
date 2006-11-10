@@ -11,9 +11,13 @@ const mt::vec2f	earth_g(0.0f,-9.81f);
 //////////////////////////////////////////////////////////////////////////
 struct PhysParamSimDesc 
 {
+	/*	gravity in world */
 	mt::vec2f g;
+	/*	delta time, by default is 1/60.0f */
 	float dtvalue;
+	/*	preferred fps value	*/
 	float fpstarget;
+	/*	number of iterations, by default is 10 */
 	int iterval;
 };
 //////////////////////////////////////////////////////////////////////////
@@ -27,11 +31,8 @@ class	CollisionShape
 {
 public:
 	virtual	int		getShapeType() const = 0;
-	virtual bool	isConvex() const = 0;
 	virtual void	evaluteBBox(float _rot) = 0;
 	virtual	const	mt::vec2f&	getBBoxInfo() const = 0;
-	virtual	void	setMargin(float eps) = 0;
-	virtual	float	getMargin() const = 0;
 };
 //////////////////////////////////////////////////////////////////////////
 class RigidBodyInterface
@@ -72,7 +73,7 @@ public:
 class PhysicSystemInterface
 {
 public:
-	virtual CollisionShape* createBoxShape(mt::vec2f width) = 0;
+	virtual CollisionShape* createBoxShape(const mt::vec2f& width) = 0;
 	virtual CollisionShape* createCircleShape(float R) = 0;
 	virtual void removeBoxShape(CollisionShape* _bs) = 0;
 	virtual void removeCircleShape(CollisionShape* _cs) = 0;

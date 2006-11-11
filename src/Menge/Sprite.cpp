@@ -58,7 +58,7 @@ void Sprite::_update(float _timing)
 
 	m_ctdelay += _timing;
 
-	float delay = m_currentFrame->delay;
+	int delay = m_currentFrame->delay;
 
 	while(m_ctdelay >= delay)
 	{
@@ -143,7 +143,9 @@ bool Sprite::_compile()
 		textureDesc.haveAlpha = true;
 
 		ImageProperties	ip;
-		ip.offset = mt::vec2f(m_desc.images[i].offsetX, m_desc.images[i].offsetY);
+		ip.offset = mt::vec2f(
+			(float)m_desc.images[i].offsetX, 
+			(float)m_desc.images[i].offsetY);
 		ip.renderImage = Keeper<RenderEngine>::hostage()->loadImage(textureDesc);
 
 		m_images.push_back(ip);
@@ -200,4 +202,5 @@ void Sprite::_debugRender()
 		0xffffffff,
 		m_images[m_currentFrame->index].renderImage
 		);
+
 };

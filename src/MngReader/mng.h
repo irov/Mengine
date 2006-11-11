@@ -6,15 +6,15 @@ namespace	mnglib
 {
 	struct Frame 
 	{
-		int	index;
-		float	delay;
+		int		index;
+		int		delay;
 	};
 
 	struct Image
 	{
-		float	offsetX;
-		float	offsetY;
-		int	size;
+		int	offsetX;
+		int	offsetY;
+		int size;
 		unsigned char* buffer;
 	};
 

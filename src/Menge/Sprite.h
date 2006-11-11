@@ -6,7 +6,7 @@
 
 #	include <vector>
 
-#	include "..\MngReader\MNG.h"
+#	include "../MngReader/MNG.h"
 
 class RenderImageInterface;
 

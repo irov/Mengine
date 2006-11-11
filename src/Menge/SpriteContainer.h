@@ -1,58 +1,29 @@
 #	pragma once
 
+#	include "Visitor.h"
+
 #	include "Node.h"
 
 #	include	"SpriteProxy.h"
 
-class SpriteContainer
-	: public Node
+namespace	Menge
 {
-public:
-	SpriteContainer(){}
-
-	~SpriteContainer(){}
-
-	void	addSprite(Sprite*	_spr)
+	class SpriteContainer
+		: public Node
 	{
-		m_sprites.push_back(new SpriteProxy(_spr));
-	}
+	public:
+		void	addSprite(Sprite*	_spr);
+		void	setAllLooped(bool _looped);
+		void	start();
+		void	stop();
+		void	setLooped(bool _looped);
+		void	_visit(Visitor * _visitor);
+		void	nextSprite();
+		void	loader(TiXmlElement *xml);
+	private:
+		typedef std::list<SpriteProxy*> TListSprite;
+		TListSprite	m_sprites;
 
-	void	setAllLooped(bool _looped)
-	{
-		for(TListSprite::iterator	it = m_sprites.begin(); it != m_sprites.end(); ++it)
-		{
-			(*it)->setLooped(_looped);
-		}
-	}
-
-	void	render()
-	{
-		if(m_sprites.empty())	return;
-		(*m_currentSprite)->render();
-	}
-
-	void	start()
-	{
-		if(m_sprites.empty())	return;
-		(*m_currentSprite)->play();
-	}
-
-	void	nextSprite()
-	{
-		if(m_sprites.empty())	return;
-		++m_currentSprite;
-		if (m_currentSprite == m_sprites.end())
-		{
-			m_currentSprite = m_sprites.begin();
-		}
-	}
-
-	void	loader(TiXmlElement *xml)
-	{}
-
-private:
-	typedef std::list<SpriteProxy*> TListSprite;
-	TListSprite	m_sprites;
-
-	TListSprite::iterator	m_currentSprite;
+		TListSprite::iterator	m_currentSprite;
+	};
 };

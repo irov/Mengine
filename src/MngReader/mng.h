@@ -7,13 +7,13 @@ namespace	mnglib
 	struct Frame 
 	{
 		int	index;
-		int	delay;
+		float	delay;
 	};
 
 	struct Image
 	{
-		int	offsetX;
-		int	offsetY;
+		float	offsetX;
+		float	offsetY;
 		int	size;
 		unsigned char* buffer;
 	};

@@ -418,6 +418,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\SpriteContainer.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\SpriteContainer.h"
 					>
 				</File>

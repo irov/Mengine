@@ -13,8 +13,6 @@ namespace Menge
 #	include "VisitorClassDeclare.h"
 	public:
 		void operator() ( Node * _node );
-
-	protected:
 		void apply( Node * _node);
 	};
 }

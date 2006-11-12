@@ -150,7 +150,7 @@ void	OpenALSoundSource::stop()
 	}
 }
 
-bool	 OpenALSoundSource::update()
+bool	 OpenALSoundSource::updateSoundBuffer()
 {
 	ALint state;
 	alGetSourcei(mSource, AL_SOURCE_STATE, &state);
@@ -162,7 +162,7 @@ bool	 OpenALSoundSource::update()
 
 	if (state == AL_PLAYING && mBufferWithData->atEnd() && getLooped())
 	{
-		if( mPlayer )
+		if(mPlayer)
 		{
 			mPlayer->listenRecycled( this );
 		}

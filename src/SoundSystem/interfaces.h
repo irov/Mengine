@@ -1,4 +1,4 @@
-#pragma once
+#	pragma once
 
 /*	
 	Тип звуковых данных.
@@ -52,16 +52,16 @@ public:
 	virtual void			play() = 0; 
 	virtual void			pause() = 0;
 	virtual void			stop() = 0;
-	virtual	bool			update() = 0;
+	virtual	bool			updateSoundBuffer() = 0;
 	virtual void			setLooped(bool _flag) = 0;
 	virtual bool			getLooped() const = 0;
 	virtual void			setVolume(float _value) = 0;
 	virtual float			getVolume() const = 0;
 	virtual void			setPosition(const float* _position) = 0;
 	virtual const float*	getPosition() const = 0;
-	virtual void			setDistance(float dist) = 0;
+	virtual void			setDistance(float _dist) = 0;
 	virtual float			getDistance() const = 0;
-	virtual void			setHeadMode(bool flag) = 0;
+	virtual void			setHeadMode(bool _flag) = 0;
 	virtual bool			getHeadMode() const = 0;
 };
 
@@ -79,9 +79,5 @@ public:
 	virtual void						releaseSoundNode(SoundSourceInterface* _sn) = 0;
 };
 
-/*
-	Создание/Удаление системы звука.
-	Необходимо для корректной загрузки из dll.
-*/
-bool initRenderSystem(SoundSystemInterface** );
-void releaseRenderSystem(SoundSystemInterface* );
+bool	initSoundSystem(SoundSystemInterface** );
+void	releaseSoundSystem(SoundSystemInterface* );

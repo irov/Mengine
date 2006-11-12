@@ -52,7 +52,7 @@ public:
 	virtual void			play() = 0; 
 	virtual void			pause() = 0;
 	virtual void			stop() = 0;
-	virtual	bool			update() = 0;
+	virtual	bool			updateSoundBuffer() = 0;
 	virtual void			setLooped(bool _flag) = 0;
 	virtual bool			getLooped() const = 0;
 	virtual void			setVolume(float _value) = 0;

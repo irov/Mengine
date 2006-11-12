@@ -1,12 +1,13 @@
 #	include "SoundEngine.h"
+#	include "SoundNode.h"
+
 
 #	include "FileEngine.h"
-#	include "SoundNode.h"
 
 #	include "SoundSystemInterface.h"
 #	include "FileSystemInterface.h"
 
-#include	<assert.h>
+#	include	<assert.h>
 
 namespace Menge
 {
@@ -15,21 +16,19 @@ namespace Menge
 	{
 		Keeper<SoundEngine>::keep(this);
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::~SoundEngine()
 	{
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void	SoundEngine::setListenerOrient(const float* _position, const float* _updir)
 	{
 		m_interface->setListenerOrient(_position,_updir);
 	}
-
-	NodePtr		SoundEngine::addSoundNode(const std::string& _filename, SoundNodeListenerInterface*	_listener, bool _isStreamAudioFile)
+	//////////////////////////////////////////////////////////////////////////
+	bool		SoundEngine::addSoundNode(NodePtr node, const std::string& _filename, SoundNodeListenerInterface*	_listener, bool _isStreamAudioFile)
 	{
 		TMapSoundSource::iterator it_find = mSoundSources.find(_filename.c_str());
-
-		NodePtr node = NULL;
 
 		if (it_find != mSoundSources.end())
 		{
@@ -55,27 +54,22 @@ namespace Menge
 			else
 			{
 				assert(!"Invalid sound node!");
+				return false;
 			}
 		}
-		return	node;
+		return	true;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void		SoundEngine::deleteSoundNode(const std::string& _name)
 	{
 		mSoundSources.erase(_name);
 	}
-
-	void		SoundEngine::update()
+	//////////////////////////////////////////////////////////////////////////
+	void		SoundEngine::processSoundSources()
 	{
-		/*
-			check for unstreamed source sounds, then
-			delete them.
-		*/
-		for (TMapSoundSource::iterator 
-			it = mSoundSources.begin();
-			it != mSoundSources.end();)
+		for (TMapSoundSource::iterator it = mSoundSources.begin(); it != mSoundSources.end(); )
 		{	
-			if( !(*it).second->update() )
+			if( !(*it).second->updateSoundBuffer() )
 			{
 				mSoundSources.erase(it++);
 			}

@@ -1,6 +1,6 @@
-#include "interfaces.h"
+#	include "interfaces.h"
 
-#include "OpenAL/altypes.h"
+#	include "OpenAL/altypes.h"
 
 class SoundBufferInterface;
 
@@ -25,7 +25,7 @@ public:
 	float			getVolume() const;
 	bool			getHeadMode() const;
 	bool			getLooped() const;
-	bool			update();
+	bool			updateSoundBuffer();
 private:
 	bool			mLooping;
 	bool			mHeadMode;

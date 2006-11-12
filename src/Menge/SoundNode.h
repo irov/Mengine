@@ -1,20 +1,27 @@
 #	pragma once
 
+#	include "Allocator.h"
+
+#	include "NodeImpl.h"
+
 class SoundSystemInterface;
 class SoundSourceInterface;
 
 namespace Menge
 {
 	class SoundNode
+		: public Allocator
 	{
+		OBJECT_DECLARE(SoundNode);
 	public:
 		SoundNode(SoundSystemInterface* _soundSystem, SoundSourceInterface* _interface);
+		SoundNode(){};
 		~SoundNode();
 	public:
 		void			play(); 
 		void			pause();
 		void			stop();
-		bool			update();
+		bool			updateSoundBuffer();
 		void			setLooped(bool _flag);
 		bool			getLooped() const;
 		void			setVolume(float _value);
@@ -29,7 +36,13 @@ namespace Menge
 		void			addRefCnt();
 		void			releaseRefCnt();
 		size_t			refCnt();
+	protected:
+		void			_update(float _timing) override;
+		bool			_compile() override;
+		void			_release() override;
+		void			loader(TiXmlElement *xml) override;
 	private:
+		std::string	m_filename;
 		SoundSourceInterface* m_interface;
 		SoundSystemInterface* m_ssytem;
 		size_t m_refCnt;

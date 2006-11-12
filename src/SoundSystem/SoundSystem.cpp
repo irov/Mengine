@@ -5,7 +5,7 @@
 
 #	include "OpenAL/al.h"
 
-bool initRenderSystem(SoundSystemInterface** _ptrSoundSystem)
+bool initSoundSystem(SoundSystemInterface** _ptrSoundSystem)
 {
 	try
 	{
@@ -20,7 +20,7 @@ bool initRenderSystem(SoundSystemInterface** _ptrSoundSystem)
 	return true;
 }
 
-void releaseRenderSystem(SoundSystemInterface* _ptrSoundSystem)
+void releaseSoundSystem(SoundSystemInterface* _ptrSoundSystem)
 {
 	delete (OpenALSoundSystem*)_ptrSoundSystem;
 }

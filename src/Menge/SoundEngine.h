@@ -18,6 +18,8 @@ namespace Menge
 
 	typedef boost::intrusive_ptr<SoundNode> NodePtr;
 
+	typedef std::map<std::string,NodePtr> TMapSoundSource;
+
 	class SoundEngine : public DllModuleInterface<SoundSystemInterface>
 	{
 	public:
@@ -28,8 +30,6 @@ namespace Menge
 		void			deleteSoundNode(const std::string& _name);		
 		void			processSoundSources();
 	private:
-		typedef std::map<std::string,NodePtr> TMapSoundSource;
-
 		TMapSoundSource	mSoundSources;
 	};
 };

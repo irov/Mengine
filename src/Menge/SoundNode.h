@@ -14,9 +14,7 @@ namespace Menge
 	{
 		OBJECT_DECLARE(SoundNode);
 	public:
-		SoundNode(SoundSystemInterface* _soundSystem, SoundSourceInterface* _interface);
-		SoundNode(){};
-		~SoundNode();
+		SoundNode();
 	public:
 		void			play(); 
 		void			pause();
@@ -36,6 +34,7 @@ namespace Menge
 		void			addRefCnt();
 		void			releaseRefCnt();
 		size_t			refCnt();
+		void			setSoundSourceInterface(SoundSourceInterface*);
 	protected:
 		void			_update(float _timing) override;
 		bool			_compile() override;
@@ -44,7 +43,6 @@ namespace Menge
 	private:
 		std::string	m_filename;
 		SoundSourceInterface* m_interface;
-		SoundSystemInterface* m_ssytem;
 		size_t m_refCnt;
 	};
 }

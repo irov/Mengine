@@ -15,6 +15,7 @@ namespace Menge
 			: DllModuleInterface<SoundSystemInterface>(_dllModule)
 	{
 		Keeper<SoundEngine>::keep(this);
+		mSoundSources.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::~SoundEngine()
@@ -48,7 +49,8 @@ namespace Menge
 				};
 
 				SoundSourceInterface *nfc = m_interface->loadSoundNode(desc_to_load, _listener);
-				NodePtr shared(new SoundNode(m_interface,nfc));
+				NodePtr shared(new SoundNode());
+				shared->setSoundSourceInterface(nfc);
 				mSoundSources.insert(std::make_pair(_filename,shared));
 			}
 			else

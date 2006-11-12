@@ -17,16 +17,10 @@ void intrusive_ptr_release(Menge::SoundNode *_n)
 	_n->releaseRefCnt();
 }
 //////////////////////////////////////////////////////////////////////////
-SoundNode::SoundNode(SoundSystemInterface * _soundSystem, SoundSourceInterface * _interface)
-	: m_ssytem(_soundSystem)
-	, m_interface(_interface)
+SoundNode::SoundNode()
+	: m_interface(NULL)
 	, m_refCnt(0)
 {}
-//////////////////////////////////////////////////////////////////////////
-SoundNode::~SoundNode()
-{
-	m_ssytem->releaseSoundNode(m_interface);
-}
 //////////////////////////////////////////////////////////////////////////
 void		SoundNode::play()
 {
@@ -41,6 +35,11 @@ void		SoundNode::pause()
 void		SoundNode::stop()
 {
 	m_interface->stop();
+}
+//////////////////////////////////////////////////////////////////////////
+void		SoundNode::setSoundSourceInterface(SoundSourceInterface* _ssi)
+{
+	m_interface = _ssi;
 }
 //////////////////////////////////////////////////////////////////////////
 void		SoundNode::setLooped(bool _flag)
@@ -128,10 +127,7 @@ void		SoundNode::loader(TiXmlElement * xml)
 {
 	XML_FOR_EACH_TREE(xml)
 	{
-		XML_CHECK_NODE("SoundNode")
-		{
-			XML_VALUE_ATTRIBUTE("File", m_filename);
-		}		
+		XML_CHECK_VALUE_NODE("Filename","Value",m_filename);
 	}
 }
 //////////////////////////////////////////////////////////////////////////

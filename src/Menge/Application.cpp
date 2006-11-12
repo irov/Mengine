@@ -67,7 +67,7 @@ namespace Menge
 					{
 						new SoundEngine(DllFile);
 					}
-					/* 20.10.06 */
+				
 					XML_CHECK_NODE("PhysSystem")
 					{
 //						new PhysicEngine(DllFile);					

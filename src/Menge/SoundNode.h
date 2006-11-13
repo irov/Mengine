@@ -31,9 +31,6 @@ namespace Menge
 		void			setHeadMode(bool flag);
 		bool			getHeadMode() const;
 	public:
-		void			addRefCnt();
-		void			releaseRefCnt();
-		size_t			refCnt();
 		void			setSoundSourceInterface(SoundSourceInterface*);
 	protected:
 		void			_update(float _timing) override;
@@ -41,11 +38,7 @@ namespace Menge
 		void			_release() override;
 		void			loader(TiXmlElement *xml) override;
 	private:
-		std::string	m_filename;
+		std::string		m_filename;
 		SoundSourceInterface* m_interface;
-		size_t m_refCnt;
 	};
 }
-
-void intrusive_ptr_add_ref(Menge::SoundNode *_n);
-void intrusive_ptr_release(Menge::SoundNode *_n);

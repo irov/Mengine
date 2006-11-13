@@ -79,5 +79,5 @@ public:
 	virtual void						releaseSoundNode(SoundSourceInterface* _sn) = 0;
 };
 
-bool	initSoundSystem(SoundSystemInterface** );
-void	releaseSoundSystem(SoundSystemInterface* );
+bool	initInterfaceSystem(SoundSystemInterface** );
+void	releaseInterfaceSystem(SoundSystemInterface* );

@@ -3,6 +3,7 @@
 		<InputSystem DllFile = "InputSystem_d.dll"/>
 		<FileSystem DllFile = "FileSystem_d.dll"/>
 		<RenderSystem DllFile = "RenderSystem_d.dll"/>
+		<SoundSystem DllFile = "SoundSystem_d.dll"/>
 	</DllModule>
 
 	<Paks>

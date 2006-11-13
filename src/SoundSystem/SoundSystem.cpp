@@ -5,7 +5,7 @@
 
 #	include "OpenAL/al.h"
 
-bool initSoundSystem(SoundSystemInterface** _ptrSoundSystem)
+bool initInterfaceSystem(SoundSystemInterface** _ptrSoundSystem)
 {
 	try
 	{
@@ -20,9 +20,9 @@ bool initSoundSystem(SoundSystemInterface** _ptrSoundSystem)
 	return true;
 }
 
-void releaseSoundSystem(SoundSystemInterface* _ptrSoundSystem)
+void releaseInterfaceSystem(SoundSystemInterface* _ptrSoundSystem)
 {
-	delete (OpenALSoundSystem*)_ptrSoundSystem;
+	delete static_cast<OpenALSoundSystem*>(_ptrSoundSystem);
 }
 
 OpenALSoundSystem::OpenALSoundSystem() 

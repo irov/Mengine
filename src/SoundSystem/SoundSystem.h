@@ -4,6 +4,7 @@
 
 #	include "OpenAL/alc.h"
 
+
 class	OpenALSoundSystem 
 	: public SoundSystemInterface
 {

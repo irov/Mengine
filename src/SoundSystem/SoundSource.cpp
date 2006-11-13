@@ -4,7 +4,7 @@
 
 #	include <assert.h>
 
-#	include "OpenAL/al.h"
+#	include "includes/OpenAL/al.h"
 
 OpenALSoundSource::OpenALSoundSource( 
 									 SoundNodeListenerInterface* _plr,

@@ -83,5 +83,5 @@ public:
 Создание/Удаление системы звука.
 Необходимо для корректной загрузки из dll.
 */
-bool initRenderSystem(SoundSystemInterface** );
-void releaseRenderSystem(SoundSystemInterface* );
+bool initInterfaceSystem(SoundSystemInterface** );
+void releaseInterfaceSystem(SoundSystemInterface* );

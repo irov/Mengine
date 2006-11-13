@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\includes&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\includes&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -48,7 +48,7 @@
 				UsePrecompiledHeader="0"
 				GenerateXMLDocumentationFiles="false"
 				BrowseInformation="1"
-				WarningLevel="2"
+				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
@@ -67,7 +67,7 @@
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\lib\OpenAL&quot;;&quot;$(SolutionDir)dependencies\lib\Vorbis&quot;"
-				ModuleDefinitionFile=""
+				ModuleDefinitionFile="SoundSystem.def"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"

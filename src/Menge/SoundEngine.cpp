@@ -1,7 +1,6 @@
 #	include "SoundEngine.h"
 #	include "SoundNode.h"
 
-
 #	include "FileEngine.h"
 
 #	include "SoundSystemInterface.h"
@@ -15,7 +14,6 @@ namespace Menge
 			: DllModuleInterface<SoundSystemInterface>(_dllModule)
 	{
 		Keeper<SoundEngine>::keep(this);
-		mSoundSources.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::~SoundEngine()
@@ -27,13 +25,14 @@ namespace Menge
 		m_interface->setListenerOrient(_position,_updir);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool		SoundEngine::addSoundNode(NodePtr node, const std::string& _filename, SoundNodeListenerInterface*	_listener, bool _isStreamAudioFile)
+	bool		SoundEngine::addSoundNode(SoundNode* node, const std::string& _filename, SoundNodeListenerInterface*	_listener, bool _isStreamAudioFile)
 	{
-		TMapSoundSource::iterator it_find = mSoundSources.find(_filename.c_str());
+		TMapSoundSource::iterator it_find = mSoundSources.find(_filename);
 
 		if (it_find != mSoundSources.end())
 		{
-			node = it_find->second;
+			node->setSoundSourceInterface(&*it_find->second);
+			return	true;
 		}
 		else
 		{
@@ -48,10 +47,10 @@ namespace Menge
 					_isStreamAudioFile
 				};
 
-				SoundSourceInterface *nfc = m_interface->loadSoundNode(desc_to_load, _listener);
-				NodePtr shared(new SoundNode());
-				shared->setSoundSourceInterface(nfc);
-				mSoundSources.insert(std::make_pair(_filename,shared));
+				SoundSourceInterface *newSoundSource = m_interface->loadSoundNode(desc_to_load, _listener);
+
+				mSoundSources.insert(
+					std::make_pair(_filename,newSoundSource));
 			}
 			else
 			{

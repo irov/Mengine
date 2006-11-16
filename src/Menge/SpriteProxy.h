@@ -1,3 +1,5 @@
+#	pragma once
+
 #include "Sprite.h"
 #include "NodeProxy.h"
 
@@ -8,6 +10,8 @@ namespace Menge
 	{
 	public:
 		SpriteProxy(Sprite * _spr);
+
+	public:
 		void stop();
 		void play();
 		void setLooped(bool _looped);

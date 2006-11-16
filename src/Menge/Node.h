@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include <list>
+#	include <string>
 
 class TiXmlElement;
 
@@ -19,6 +20,9 @@ namespace Menge
 	//pure-virtual interface
 	class Node 
 	{
+	public:
+		virtual ~Node(){};
+
 	public:
 		virtual bool activate() = 0;
 		virtual void deactivate() = 0;

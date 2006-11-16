@@ -7,7 +7,7 @@
 
 
 class	OggSoundData : public SoundBufferInterface
-{
+{ 
 public:
 	OggSoundData(void* _buffer, size_t _size);
 	~OggSoundData();

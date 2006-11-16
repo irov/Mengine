@@ -34,18 +34,19 @@ namespace Menge
 
 		void translate( const mt::vec2f &delta );
 
+	public: 
+		void setParentAllocator( Allocator *_alloc);
+		Allocator * getParentAllocator();
+
 	public:
-		bool isChangePivot()const;
 		void changePivot();
+		bool isChangePivot()const;
 
 	protected:
 		virtual void _changePivot();
 
 	protected:
 		void _updateParent()override;
-
-	private:	
-		void updateMatrix();
 
 	protected:
 		Allocator *m_parentAllocator;
@@ -54,5 +55,8 @@ namespace Menge
 		mt::mat3f m_worldMatrix;
 
 		bool m_changePivot;
+
+	private:	
+		void updateMatrix();
 	};
 }

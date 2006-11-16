@@ -167,3 +167,13 @@ void Allocator::updateMatrix()
 
 	m_changePivot = false;
 }
+//////////////////////////////////////////////////////////////////////////
+void Allocator::setParentAllocator( Allocator *_alloc)
+{
+	m_parentAllocator = _alloc;
+}
+//////////////////////////////////////////////////////////////////////////
+Allocator * Allocator::getParentAllocator()
+{
+	return m_parentAllocator;
+}

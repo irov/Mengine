@@ -9,6 +9,7 @@ namespace Menge
 	{
 	public:
 		NodeProxy( Node *_node);
+		virtual ~NodeProxy();
 
 	public:
 		bool activate() override;

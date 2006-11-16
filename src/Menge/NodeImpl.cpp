@@ -210,8 +210,6 @@ void NodeImpl::loader(TiXmlElement *xml)
 			}
 
 			node->loader(XML_CURRENT_NODE);
-
-			addChildren(node);
 		}
 
 		XML_CHECK_NODE("External")
@@ -237,8 +235,6 @@ void NodeImpl::loader(TiXmlElement *xml)
 						Node *node = createChildren(Name,Type);
 
 						node->setResource(File);
-
-						addChildren(node);
 					}				
 				}
 			}
@@ -296,6 +292,11 @@ Node * NodeImpl::createChildren(const std::string &_name, const std::string &_ty
 {
 	Node *node = Keeper<SceneManager>::hostage()
 		->createNode(_name,_type);
+
+	if( node )
+	{
+		addChildren(node);
+	}
 
 	return node;
 }

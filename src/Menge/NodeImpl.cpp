@@ -4,8 +4,8 @@
 #	include "SceneManager.h"
 
 #	include "FileEngine.h"
-#	include "Manager/XmlManager.h"
-#	include "Manager/ErrorMessage.h"
+#	include "XmlReader.h"
+#	include "ErrorMessage.h"
 
 #	include "Utility/algorithm.h"
 

@@ -1,7 +1,7 @@
 #	include "Sprite.h"
 #	include "ObjectImplement.h"
 #	include "RenderEngine.h"
-#	include "Manager/XmlManager.h"
+#	include "XmlReader.h"
 #	include "RenderSystemInterface.h"
 #	include "FileSystemInterface.h"
 #	include "FileEngine.h"
@@ -184,12 +184,17 @@ void Sprite::loader(TiXmlElement *xml)
 void Sprite::stop()
 {
 	m_playing = false;
+	setFirstFrame();
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::play()
 {
 	m_playing = true;
-	setFirstFrame();
+}
+//////////////////////////////////////////////////////////////////////////
+void Sprite::pause()
+{
+	m_playing = false;
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()

@@ -14,7 +14,7 @@ class	SoundNodeListenerInterface;
 
 namespace Menge
 {
-	class SoundNode;
+	class Sound;
 
 	typedef std::map<std::string, boost::shared_ptr<SoundSourceInterface> > TMapSoundSource;
 
@@ -24,8 +24,8 @@ namespace Menge
 		SoundEngine(const std::string& _dllModule);
 		~SoundEngine();
 		void			setListenerOrient(const float* _position, const float* _updir);
-		bool			addSoundNode(SoundNode*, const std::string& _filename, SoundNodeListenerInterface*	_listener = 0, bool _isStreamAudioFile = false);
-		void			deleteSoundNode(const std::string& _name);		
+		bool			addSound(Sound*, const std::string& _filename, SoundNodeListenerInterface*	_listener = 0, bool _isStreamAudioFile = false);
+		void			deleteSound(const std::string& _name);		
 		void			processSoundSources();
 	private:
 		TMapSoundSource	mSoundSources;

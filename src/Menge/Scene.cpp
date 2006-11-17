@@ -4,7 +4,7 @@
 #	include "SceneManager.h"
 #	include "Layer.h"
 
-#	include "Manager/XmlManager.h"
+#	include "XmlReader.h"
 
 #	include "Utility/map_algorithm.h"
 

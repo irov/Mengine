@@ -9,16 +9,19 @@ class SoundSourceInterface;
 
 namespace Menge
 {
-	class SoundNode
+	class Sound
 		: public Allocator
 	{
 		OBJECT_DECLARE(SoundNode);
+
 	public:
-		SoundNode();
+		Sound();
+
 	public:
 		void			play(); 
 		void			pause();
 		void			stop();
+
 		bool			updateSoundBuffer();
 		void			setLooped(bool _flag);
 		bool			getLooped() const;
@@ -30,13 +33,18 @@ namespace Menge
 		float			getDistance() const;
 		void			setHeadMode(bool flag);
 		bool			getHeadMode() const;
+
 	public:
 		void			setSoundSourceInterface(SoundSourceInterface*);
+	
+	public:
+		void			loader(TiXmlElement *xml) override;
+	
 	protected:
 		void			_update(float _timing) override;
 		bool			_compile() override;
 		void			_release() override;
-		void			loader(TiXmlElement *xml) override;
+		
 	private:
 		std::string		m_filename;
 		SoundSourceInterface* m_interface;

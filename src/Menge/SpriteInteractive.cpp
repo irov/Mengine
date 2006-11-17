@@ -1,0 +1,36 @@
+#	include "SpriteInteractive.h"
+#	include "ObjectImplement.h"
+
+#	include "XmlReader.h"
+
+OBJECT_IMPLEMENT(SpriteInteractive)
+//////////////////////////////////////////////////////////////////////////
+void SpriteInteractive::stop()
+{
+	Sprite::stop();
+	m_playSound.stop();
+}
+//////////////////////////////////////////////////////////////////////////
+void SpriteInteractive::play()
+{
+	Sprite::play();
+	m_playSound.play();
+}
+//////////////////////////////////////////////////////////////////////////
+void SpriteInteractive::pause()
+{
+	Sprite::pause();
+	m_playSound.pause();
+};
+//////////////////////////////////////////////////////////////////////////
+void SpriteInteractive::setLooped(bool _looped)
+{
+	Sprite::setLooped(_looped);
+	m_playSound.setLooped(_looped);
+}
+//////////////////////////////////////////////////////////////////////////
+void SpriteInteractive::loader(TiXmlElement *_xml)
+{
+	Sprite::loader(_xml);
+	m_playSound.loader(_xml);
+}

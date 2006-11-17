@@ -1,5 +1,5 @@
 #	include "SoundEngine.h"
-#	include "SoundNode.h"
+#	include "Sound.h"
 
 #	include "FileEngine.h"
 
@@ -25,7 +25,7 @@ namespace Menge
 		m_interface->setListenerOrient(_position,_updir);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool		SoundEngine::addSoundNode(SoundNode* node, const std::string& _filename, SoundNodeListenerInterface*	_listener, bool _isStreamAudioFile)
+	bool		SoundEngine::addSound(Sound* node, const std::string& _filename, SoundNodeListenerInterface*	_listener, bool _isStreamAudioFile)
 	{
 		TMapSoundSource::iterator it_find = mSoundSources.find(_filename);
 
@@ -61,7 +61,7 @@ namespace Menge
 		return	true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void		SoundEngine::deleteSoundNode(const std::string& _name)
+	void		SoundEngine::deleteSound(const std::string& _name)
 	{
 		mSoundSources.erase(_name);
 	}

@@ -1,96 +1,96 @@
 #	include "SoundSystemInterface.h"
-#	include "Manager/XmlManager.h"
-#	include "SoundNode.h"
+#	include "XmlReader.h"
+#	include "Sound.h"
 #	include "SoundEngine.h"
 #	include "ObjectImplement.h"
 
 //////////////////////////////////////////////////////////////////////////
-OBJECT_IMPLEMENT(SoundNode);
+OBJECT_IMPLEMENT(Sound);
 //////////////////////////////////////////////////////////////////////////
-SoundNode::SoundNode()
+Sound::Sound()
 	: m_interface(NULL)
 {}
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::play()
+void		Sound::play()
 {
 	m_interface->play();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::pause()
+void		Sound::pause()
 {
 	m_interface->pause();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::stop()
+void		Sound::stop()
 {
 	m_interface->stop();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::setSoundSourceInterface(SoundSourceInterface* _ssi)
+void		Sound::setSoundSourceInterface(SoundSourceInterface* _ssi)
 {
 	m_interface = _ssi;
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::setLooped(bool _flag)
+void		Sound::setLooped(bool _flag)
 {
 	m_interface->setLooped(_flag);
 }
 //////////////////////////////////////////////////////////////////////////
-bool		SoundNode::getLooped() const
+bool		Sound::getLooped() const
 {
 	return	m_interface->getLooped();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::setVolume(float _value)
+void		Sound::setVolume(float _value)
 {
 	m_interface->setVolume(_value);
 }
 //////////////////////////////////////////////////////////////////////////
-float		SoundNode::getVolume() const
+float		Sound::getVolume() const
 {
 	return	m_interface->getVolume();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::setPosition(const float* _position)
+void		Sound::setPosition(const float* _position)
 {
 	m_interface->setPosition(_position);
 }
 //////////////////////////////////////////////////////////////////////////
-const float*	SoundNode::getPosition() const
+const float*	Sound::getPosition() const
 {
 	return m_interface->getPosition();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::setDistance(float dist)
+void		Sound::setDistance(float dist)
 {
 	m_interface->setDistance(dist);
 }
 //////////////////////////////////////////////////////////////////////////
-float		SoundNode::getDistance() const
+float		Sound::getDistance() const
 {
 	return m_interface->getDistance();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::setHeadMode(bool flag)
+void		Sound::setHeadMode(bool flag)
 {
 	m_interface->setHeadMode(flag);
 }
 //////////////////////////////////////////////////////////////////////////
-bool		SoundNode::updateSoundBuffer()
+bool		Sound::updateSoundBuffer()
 {
 	return m_interface->updateSoundBuffer();
 }
 //////////////////////////////////////////////////////////////////////////
-bool		SoundNode::getHeadMode() const
+bool		Sound::getHeadMode() const
 {
 	return	m_interface->getHeadMode();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::_update(float _timing)
+void		Sound::_update(float _timing)
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::loader(TiXmlElement * xml)
+void		Sound::loader(TiXmlElement * xml)
 {
 	XML_FOR_EACH_TREE(xml)
 	{
@@ -98,12 +98,12 @@ void		SoundNode::loader(TiXmlElement * xml)
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool		SoundNode::_compile()
+bool		Sound::_compile()
 {
-	return	Keeper<SoundEngine>::hostage()->addSoundNode(this,m_filename);
+	return	Keeper<SoundEngine>::hostage()->addSound(this,m_filename);
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::_release()
+void		Sound::_release()
 {
-	Keeper<SoundEngine>::hostage()->deleteSoundNode(m_filename);
+	Keeper<SoundEngine>::hostage()->deleteSound(m_filename);
 }

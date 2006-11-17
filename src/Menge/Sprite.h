@@ -25,10 +25,14 @@ namespace Menge
 	public:
 		Sprite();
 
-		void stop();
-		void play();
-		void setLooped(bool _looped);
-		bool getLooped() const;
+		virtual void play();
+		virtual void pause();
+		virtual void stop();
+		
+		
+		virtual void setLooped(bool _looped);
+		virtual bool getLooped() const;
+		
 		void setFirstFrame();
 
 	public:

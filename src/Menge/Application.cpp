@@ -13,7 +13,7 @@
 #	include "Game.h"
 #	include "Player.h"
 
-#	include "Manager/XmlManager.h"
+#	include "XmlReader.h"
 
 #	define WIN32_LEAN_AND_MEAN
 #	include "windows.h"

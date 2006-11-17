@@ -7,7 +7,7 @@
 
 #	include "FileEngine.h"
 
-#	include "Manager/XmlManager.h"
+#	include "XmlReader.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Game);

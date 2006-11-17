@@ -343,18 +343,6 @@
 					RelativePath=".\SoundEngine.h"
 					>
 				</File>
-				<Filter
-					Name="Node"
-					>
-					<File
-						RelativePath=".\SoundNode.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SoundNode.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -552,6 +540,30 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="SpriteInteractive"
+				>
+				<File
+					RelativePath=".\SpriteInteractive.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SpriteInteractive.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Sound"
+				>
+				<File
+					RelativePath=".\Sound.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Sound.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"
@@ -652,6 +664,22 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Utility"
+			>
+			<File
+				RelativePath=".\ErrorMessage.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ErrorMessage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\XmlReader.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

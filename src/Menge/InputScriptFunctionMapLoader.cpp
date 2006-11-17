@@ -14,7 +14,7 @@
 
 #	include "InputEngine.h"
 
-#	include "Manager/XmlManager.h"
+#	include "XmlReader.h"
 
 namespace Menge
 {

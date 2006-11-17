@@ -1,3 +1,0 @@
-LIBRARY		"RenderSystem"
-EXPORTS 	initInterfaceSystem 	@1
-EXPORTS 	releaseInterfaceSystem 	@2

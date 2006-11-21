@@ -10,8 +10,8 @@ public:
 	~CALWavBuffer();
 
 public:
-	int		getDataSoundSize() const;
-	int		read(unsigned char* _buffer, int _size);
+	size_t	getDataSoundSize() const;
+	size_t	read(unsigned char* _buffer, size_t _size);
 	bool	seek(float _time);
 
 private:

@@ -179,7 +179,7 @@ XML_ATTRIBUTES_NODE [ NAME ]
 	(irov_xml_current_tree->Attribute( NAME ))
 
 #	define XML_ATTRIBUTES_NODE( NAME ) \
-	(irov_xml_current_tree->AttributeStr( NAME ))
+	(xml::parse::get_string_ref_attribute(irov_xml_current_tree, NAME ))
 
 /****************************************************************************
 XML_CHECK_ATTRIBUTE [ SET | NAME ]
@@ -233,8 +233,32 @@ namespace xml
 {
 	namespace parse
 	{
+		inline const std::string & get_string_ref_attribute( TiXmlElement *_xml, const std::string & _attr )
+		{
+			const std::string *value = _xml->Attribute(_attr);
+
+			if( value == 0 )
+			{
+				static std::string Empty;
+				return Empty;
+			}
+
+			return *value;
+		}
+
+		inline const std::string & get_string_ref_attribute( TiXmlElement *_xml, const char * _attr )
+		{			
+			if( _attr == 0 )
+			{
+				static std::string Empty;
+				return Empty;
+			}
+
+			return get_string_ref_attribute( _xml, std::string(_attr) );
+		}
+
 		template<class T>
-		bool GetValueAttributeSimple(T &Value, const std::string &Name, const char *Type, XML_TYPE_NODE irov_xml_current_tree)
+		inline bool GetValueAttributeSimple(T &Value, const std::string &Name, const char *Type, XML_TYPE_NODE irov_xml_current_tree)
 		{
 			const std::string &VALUE = XML_ATTRIBUTES_NODE(Name);
 

@@ -6,14 +6,18 @@
 
 
 
-class	OggSoundData : public SoundBufferInterface
+class	OggSoundData 
+	: public SoundBufferInterface
 { 
 public:
 	OggSoundData(void* _buffer, size_t _size);
 	~OggSoundData();
-	int		getDataSoundSize() const;
-	int		read(unsigned char* _buffer, int _size);
+
+public:
+	size_t	getDataSoundSize() const;
+	size_t	read(unsigned char* _buffer, size_t _size);
 	bool	seek(float _time);
+
 private:
 	OggVorbis_File	mFile;
 	vorbis_info*	mInfo;

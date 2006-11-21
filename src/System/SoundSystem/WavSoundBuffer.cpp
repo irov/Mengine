@@ -64,9 +64,9 @@ CALWavBuffer::CALWavBuffer(void * _buffer, size_t _size):SoundBufferInterface(_b
 
 CALWavBuffer::~CALWavBuffer(){};
 
-int		CALWavBuffer::read(unsigned char * _buffer, int _size)
+size_t	CALWavBuffer::read(unsigned char * _buffer, size_t _size)
 {
-	int	bytesLeft = mDataLength - (getPos() - mDataOffs);
+	size_t	bytesLeft = mDataLength + mDataOffs - getPos();
 	return  getPtr(_buffer, ( _size < 0 || _size > bytesLeft ) ? bytesLeft : _size);
 }
 
@@ -76,7 +76,7 @@ bool	CALWavBuffer::seek(float _time)
 	return true;
 }
 
-int		CALWavBuffer::getDataSoundSize() const
+size_t CALWavBuffer::getDataSoundSize() const
 {
 	return mDataLength;	
 };

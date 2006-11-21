@@ -69,23 +69,26 @@ OggSoundData::~OggSoundData()
 	ov_clear(&mFile);
 }
 
-int		OggSoundData::read(unsigned char* _buffer, int _size)
+size_t	OggSoundData::read(unsigned char* _buffer, size_t _size)
 {
 	if (_size < 0)
 	{
 		_size = getDataSoundSize();
 	}
 
-	int	curSection;
-	int	bytesRead = 0;
+	
+	size_t	bytesRead = 0;
 
 	while (bytesRead < _size)
 	{
+		int	curSection;
 		int	res = ov_read(&mFile, (char *)(_buffer + bytesRead), _size - bytesRead, 0, 2, 1, &curSection);
+		
 		if (res <= 0)
 		{
 			break;
 		}
+
 		bytesRead += res;
 	}
 	return bytesRead;
@@ -100,7 +103,7 @@ bool	OggSoundData::seek(float _time)
 	return false;
 }
 
-int		OggSoundData::getDataSoundSize()  const
+size_t		OggSoundData::getDataSoundSize()  const
 {
-	return (int)((double)ov_time_total(const_cast <OggVorbis_File *>(&mFile ),-1)+0.5) * getNumChannels() * getFrequency() * 2;
+	return (size_t)((double)ov_time_total(const_cast <OggVorbis_File *>(&mFile ),-1)+0.5) * getNumChannels() * getFrequency() * 2;
 }

@@ -43,7 +43,7 @@ size_t FileData::read(void* _buffer, size_t _elemsize, size_t _count)
 {
     size_t cnt = _elemsize * _count;
 
-	if ( mEndData - mPos < cnt )
+	if ( mEndData < mPos + cnt )
 	{
         cnt = mEndData - mPos;
 	}

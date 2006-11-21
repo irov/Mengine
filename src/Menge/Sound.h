@@ -12,7 +12,7 @@ namespace Menge
 	class Sound
 		: public Allocator
 	{
-		OBJECT_DECLARE(SoundNode);
+		OBJECT_DECLARE(Sound);
 
 	public:
 		Sound();

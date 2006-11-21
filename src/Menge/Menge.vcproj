@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies/luabind&quot;;&quot;$(SolutionDir)dependencies\lua-5.0.3\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;MENGE_EXPORT;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -142,7 +142,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/RvEngine.exe"
 				LinkIncremental="1"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

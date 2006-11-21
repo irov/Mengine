@@ -7,74 +7,75 @@
 #include <memory.h>
 #include <assert.h>
 
-
+//////////////////////////////////////////////////////////////////////////
 SoundBufferInterface::SoundBufferInterface(void* _buffer, size_t _size) 
+: mBits((unsigned char *)_buffer)
+, mLength(_size)
+, mPos(0)
+, mFreq(0)
+, mNumChannels(0)
+, mBitsPerSample(8)
 {
-	mBits   = (unsigned char *)_buffer;
-	mLength = _size;
-	mPos    = 0;
-	mFreq   = 0;
-	mNumChannels   = 0;
-	mBitsPerSample = 8;
-}
 
+}
+//////////////////////////////////////////////////////////////////////////
 SoundBufferInterface::~SoundBufferInterface()
 {
 }
-
-void	SoundBufferInterface::setSize(int _rhs)
+//////////////////////////////////////////////////////////////////////////
+void	SoundBufferInterface::setSize(size_t _rhs)
 {
 	mLength = _rhs;
 }
-
-void	SoundBufferInterface::setNumChannels(int _rhs)
+//////////////////////////////////////////////////////////////////////////
+void	SoundBufferInterface::setNumChannels(size_t _rhs)
 {
 	mNumChannels = _rhs;
 }
-
-void	SoundBufferInterface::setFrequency(int _rhs)
+//////////////////////////////////////////////////////////////////////////
+void	SoundBufferInterface::setFrequency(size_t _rhs)
 {
 	mFreq = _rhs;
 }
-
-void	SoundBufferInterface::setBitsPerSample(int _rhs)
+//////////////////////////////////////////////////////////////////////////
+void	SoundBufferInterface::setBitsPerSample(size_t _rhs)
 {
 	mBitsPerSample = _rhs;
 }
-
-int		SoundBufferInterface::getNumChannels() const
+//////////////////////////////////////////////////////////////////////////
+size_t		SoundBufferInterface::getNumChannels() const
 {
 	return mNumChannels;
 }
-
-int		SoundBufferInterface::getFrequency() const
+//////////////////////////////////////////////////////////////////////////
+size_t SoundBufferInterface::getFrequency() const
 {
 	return mFreq; 
 }
-
-int		SoundBufferInterface::getBitsPerSample() const
+//////////////////////////////////////////////////////////////////////////
+size_t SoundBufferInterface::getBitsPerSample() const
 {
 	return mBitsPerSample; 
 }
-
-bool	SoundBufferInterface::atEnd() const
+//////////////////////////////////////////////////////////////////////////
+bool SoundBufferInterface::atEnd() const
 {
 	return getPos() >= getSize();
 }
-
-int	SoundBufferInterface::getSize() const
+//////////////////////////////////////////////////////////////////////////
+size_t	SoundBufferInterface::getSize() const
 {	
 	return mLength;
 }
-
-int	SoundBufferInterface::getPos() const
+//////////////////////////////////////////////////////////////////////////
+size_t	SoundBufferInterface::getPos() const
 {
 	return mPos;
 }
-
+//////////////////////////////////////////////////////////////////////////
 long SoundBufferInterface::getLong()
 {
-	if (mPos + 3 >= getSize())
+	if (mPos + 3 >= mLength)
 	{
 		assert(!"getLong error");
 		return -1;
@@ -83,27 +84,27 @@ long SoundBufferInterface::getLong()
 	mPos += 4;
 	return v;
 }
-
-int	SoundBufferInterface::seekCur(int _delta)
+//////////////////////////////////////////////////////////////////////////
+size_t	SoundBufferInterface::seekCur(size_t _delta)
 {
 	mPos += _delta;
-	return (mPos > getSize()) ? getSize() : ((mPos < 0) ? 0 : mPos);
+	return (mPos > mLength) ? mLength : ((mPos < 0) ? 0 : mPos);
 }
-
-int	SoundBufferInterface::seekAbs(int _offs)
+//////////////////////////////////////////////////////////////////////////
+size_t	SoundBufferInterface::seekAbs(size_t _offs)
 {
 	mPos = _offs;
-	return (mPos > getSize()) ? getSize() : ((mPos < 0) ? 0 : mPos);
+	return (mPos > mLength) ? mLength : ((mPos < 0) ? 0 : mPos);
 }
-
-int	SoundBufferInterface::getPtr(void * _ptr, int _len)
+//////////////////////////////////////////////////////////////////////////
+size_t	SoundBufferInterface::getPtr(void * _ptr, size_t _len)
 {
-	if (mPos >= getSize())
+	if (mPos >= mLength)
 	{
 		return -1;
 	};
 
-	if (mPos + _len > getSize())
+	if (mPos + _len > mLength)
 	{
 		_len = mLength - mPos;
 	};

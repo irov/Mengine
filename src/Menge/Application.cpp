@@ -25,6 +25,10 @@ namespace Menge
 	{
 
 	}
+	Application::~Application()
+	{
+		delete m_game;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::init(const std::string &_xmlFile)
 	{

@@ -23,7 +23,14 @@ NodeImpl::NodeImpl()
 //////////////////////////////////////////////////////////////////////////
 NodeImpl::~NodeImpl()
 {
-
+	for( TListChildren::iterator 
+		it = m_listChildren.begin(),
+		it_end = m_listChildren.end();
+	it != it_end;
+	++it)
+	{
+		delete *it;
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 bool NodeImpl::activate()

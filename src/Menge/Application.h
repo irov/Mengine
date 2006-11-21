@@ -13,6 +13,7 @@ namespace Menge
 	{
 	public:
 		Application();
+		~Application();
 
 	public:
 		virtual bool init(const std::string &_xmlFile);

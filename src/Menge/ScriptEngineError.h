@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Manager/ErrorMessage.h"
+#	include "ErrorMessage.h"
 
 #	define TRY_CATCH_ERROR_ENABLE
 

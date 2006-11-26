@@ -21,4 +21,9 @@ namespace Menge
 	{
 		_node->render();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void VisitorRender::apply( Node * _node)
+	{
+		_node->visit(this);
+	}
 }

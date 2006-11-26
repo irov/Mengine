@@ -71,6 +71,7 @@ namespace Menge
 		typedef void (*TForEachFunc)( Node *);
 
 		virtual void foreachFunc(TForEachFunc _func);
+		virtual void foreachChildren( Visitor *_visitor );
 
 		virtual void removeChildren(Node *_node);
 		virtual void removeChildren(const std::string &_name);

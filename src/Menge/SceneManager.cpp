@@ -11,6 +11,7 @@
 #	include "ScriptFunction.h"
 
 #	include "XmlReader.h"
+#	include "ErrorMessage.h"
 
 using namespace Menge;
 
@@ -45,33 +46,26 @@ bool SceneManager::loadNode(Node *_node, const std::string &_xml)
 
 	return true;
 }
- 
-#	include "Scene.h"
-#	include "Layer.h"
-#	include "Track.h"
-#	include "Sprite.h"
-#	include "SpriteContainer.h"
-
-
-static Scene *g_scene;
-
-void init_base_scene(SceneManager *sceneMgr)
+//////////////////////////////////////////////////////////////////////////
+Node * SceneManager::createNodeFromXml( const std::string &_file)
 {
-	//g_scene = sceneMgr->createNodeT<Scene>("Scene1","Scene");
+	XML_PARSE_FILE_EX(_file)
+	{
+		XML_CHECK_NODE("Node")
+		{
+			XML_DEF_ATTRIBUTES_NODE(Name);
+			XML_DEF_ATTRIBUTES_NODE(Type);
+			Node *node = createNode(Name,Type);
+			node->setResource(_file);
+			return node;
+		}
+	}
+	XML_INVALID_PARSE()
+	{
+		ErrorMessage("Invalid parse external node `%s`", _file.c_str() );
+	}
 
-	//Layer *layer = g_scene->createLayer("Base");
+	ErrorMessage("This xml file `%s` have invalid external node format", _file.c_str() );
 
-	//Track *track = sceneMgr->createNodeT<Track>("Track1","Track");
-	//layer->addChildren(track);
-
-	//track->addPoint(mt::vec2f(0,0));
-	//track->addPoint(mt::vec2f(100,100));
-	//track->addPoint(mt::vec2f(200,50));
-	//track->addPoint(mt::vec2f(300,150));
-
-	//Sprite *sprite1 = sceneMgr->createNodeT<Sprite>("Sprite1","Sprite");
-	//track->addChildren(sprite1);
-
-	//Sprite *sprite2 = sceneMgr->createNodeT<Sprite>("Sprite2","Sprite");
-	//sprite1->addChildren(sprite2);
+	return 0;
 }

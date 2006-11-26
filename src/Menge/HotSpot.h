@@ -2,6 +2,8 @@
 
 #	include "Allocator.h"
 
+#	include "Math/polygon.h"
+
 namespace Menge
 {
 	class HotSpot
@@ -15,10 +17,8 @@ namespace Menge
 
 	public:
 		void loader( TiXmlElement *_xml) override;
-		
 			
 	private:
-		typedef std::list<mt::vec2f> TListPoint;
-		TListPoint m_listPoint;
+		mt::polygon m_poligon;
 	};
 }

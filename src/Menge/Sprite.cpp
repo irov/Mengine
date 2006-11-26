@@ -199,13 +199,4 @@ void Sprite::pause()
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()
 {
-	const mt::mat3f& wm = getWorldMatrix();
-
-	Keeper<RenderEngine>::hostage()->renderImageOffset(
-		wm, 
-		m_images[m_currentFrame->index].offset,
-		0xffffffff,
-		m_images[m_currentFrame->index].renderImage
-		);
-
 };

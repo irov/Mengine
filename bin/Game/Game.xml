@@ -2,4 +2,13 @@
 	<External File = "Game/Chapters/Buba/Chapter.xml" />
 
 	<Logo Chapter = "Buba" Scene = "Buka" />
-</Node>
+
+	<Arrows>
+		<Arrow File = "Game/Arrows/Default.xml" />
+	</Arrows>
+
+	<Default>
+		<Arrow Type = "Default" />
+	</Default>
+		
+</Node>	

@@ -16,6 +16,7 @@ namespace Menge
 	public:
 		void setChapter( Chapter *_chapter );
 		void setScene( Scene * _scene );
+		void setArrow( Arrow * _arrow );
 
 	public:
 		void update( float _timing );

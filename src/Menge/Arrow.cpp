@@ -1,6 +1,8 @@
 #	include "Arrow.h"
 #	include "ObjectImplement.h"
 
+#	include "RenderEngine.h"
+
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT( Arrow )
 //////////////////////////////////////////////////////////////////////////
@@ -17,3 +19,12 @@ bool Arrow::_compile()
 {
 	return true;
 }
+//////////////////////////////////////////////////////////////////////////
+void Arrow::_debugRender()
+{
+	RenderEngine *renderEng = Keeper<RenderEngine>::hostage();
+
+	const mt::vec2f & pos = getWorldPosition();
+
+	renderEng->drawLine(pos,pos + mt::vec2f(0.1,-0.1),2,0xffff00ff);
+};

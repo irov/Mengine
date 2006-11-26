@@ -16,8 +16,9 @@ namespace Menge
 		HotSpot *pickHotSpot();
 
 	protected:
-		void _update(float _timing) override;
+		void _update( float _timing ) override;
 		bool _compile() override;
+		void _debugRender() override;
 
 	private:
 		Sprite *m_arrowIdle;

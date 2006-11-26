@@ -29,12 +29,14 @@ namespace Menge
 
 	public:
 		Node * createNode(const std::string &_name, const std::string &_type);
-
+		
 		template<class T>
 		T* createNodeT(const std::string &_name, const std::string &_type)
 		{
 			return static_cast<T*>(createNode(_name,_type));
 		}
+
+		Node * createNodeFromXml( const std::string &_file);
 
 		bool loadNode(Node *_node, const std::string &_xml);
 

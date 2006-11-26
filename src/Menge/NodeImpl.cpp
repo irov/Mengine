@@ -361,6 +361,14 @@ void NodeImpl::foreachFunc(TForEachFunc _func)
 	std::for_each( m_listChildren.begin(), m_listChildren.end(), std::ptr_fun(_func) );
 }
 //////////////////////////////////////////////////////////////////////////
+void NodeImpl::foreachChildren( Visitor *_visitor )
+{
+	std::for_each( 
+		m_listChildren.begin(), 
+		m_listChildren.end(), 
+		std::bind1st( std::mem_fun( &Visitor::apply ) , _visitor ) );
+}
+//////////////////////////////////////////////////////////////////////////
 void NodeImpl::removeChildren(Node *_node)
 {
 	if( _node == 0 )

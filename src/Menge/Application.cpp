@@ -187,6 +187,7 @@ namespace Menge
 		//	m_functionRender->callFunctionVoid();
 		//}
 		m_game->render();
+		m_game->debugRender();
 
 		renderEng->endSceneDrawing();
 	}

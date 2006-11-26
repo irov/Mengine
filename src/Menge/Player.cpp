@@ -27,6 +27,11 @@ namespace Menge
 		m_scene = _scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Player::setArrow( Arrow * _arrow )
+	{
+		m_arrow = _arrow;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Player::update( float _timig )
 	{
 		m_scene->update( _timig );
@@ -35,11 +40,11 @@ namespace Menge
 	void Player::render()
 	{
 		VisitorRender vr(m_scene);
-		m_scene->debugRender();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::debugRender()
 	{
 		m_scene->debugRender();
+		//m_arrow->debugRender();
 	}
 }

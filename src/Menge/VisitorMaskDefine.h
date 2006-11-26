@@ -6,7 +6,10 @@
 #	define VISITOR_MASK_DECLARE( CLASS )\
 	private:\
 	template<typename O>\
-	void call_impl( O * ){}\
+	void call_impl( O * _o )\
+	{\
+		_o->foreachChildren(this);\
+	}\
 	void call_impl( CLASS * _node)\
 	{\
 	mask_call(_node);\

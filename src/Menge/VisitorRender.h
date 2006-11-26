@@ -18,6 +18,10 @@ namespace Menge
 	public:
 #	include "VisitorClassDeclare.h"
 
+
+	public:
+		void apply( Node * _node) override;
+
 	protected:
 		void mask_call( Renderable *_node);
 	};

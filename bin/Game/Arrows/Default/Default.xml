@@ -1,2 +1,3 @@
 <Node Name = "Default" Type = "Arrow">
+	<Idle Sprite = "Game/Arrows/Default/Default.mng" />
 </Node>

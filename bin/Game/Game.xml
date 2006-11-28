@@ -4,7 +4,7 @@
 	<Logo Chapter = "Buba" Scene = "Buka" />
 
 	<Arrows>
-		<Arrow File = "Game/Arrows/Default.xml" />
+		<Arrow File = "Game/Arrows/Default/Default.xml" />
 	</Arrows>
 
 	<Default>

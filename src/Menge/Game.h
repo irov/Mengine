@@ -36,6 +36,7 @@ namespace Menge
 
 	protected:
 		bool _compile();
+		void _release();
 		void _debugRender();
 
 	protected:

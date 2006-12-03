@@ -122,6 +122,20 @@ bool Game::_compile()
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
+void Game::_release()
+{
+	for (TMapArrow::iterator 
+		it = m_mapArrow.begin(),
+		it_end = m_mapArrow.end();
+	it != it_end;
+	++it)
+	{
+		it->second->release();
+	}
+
+	delete m_player;
+}
+//////////////////////////////////////////////////////////////////////////
 void Game::addArrow(Arrow *_arrow)
 {
 	const std::string &name = _arrow->getName();

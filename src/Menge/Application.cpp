@@ -27,6 +27,7 @@ namespace Menge
 	}
 	Application::~Application()
 	{
+		m_game->release();
 		delete m_game;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -6,15 +6,18 @@
 
 class SoundSystemInterface;
 class SoundSourceInterface;
-// „то делать с позицией аллокатора? где ее обновл€ть?
+class FileDataInterface;
+
 namespace Menge
 {
 	class SoundNode
 		: public Allocator
 	{
 		OBJECT_DECLARE(SoundNode);
+
 	public:
 		SoundNode();
+
 	public:
 		void			play(); 
 		void			pause();
@@ -37,16 +40,18 @@ namespace Menge
 
 		double			getTotalSize()	const;
 		double			getPos()	const;
-		void			release();
+
 	public:
-		void			setSoundSourceInterface(SoundSourceInterface*);
+		void			loader(TiXmlElement *xml) override;
+	
 	protected:
 		void			_update(float _timing) override;
 		bool			_compile() override;
 		void			_release() override;
-		void			loader(TiXmlElement *xml) override;
+	
 	private:
-		std::string		m_filename;
+		std::string	m_filename;
 		SoundSourceInterface* m_interface;
+		FileDataInterface* m_fileData;	
 	};
 }

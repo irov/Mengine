@@ -2,7 +2,7 @@
 
 #	include <vector>
 
-#	include "Manager/XmlManager.h"
+#	include "XmlReader.h"
 
 namespace	Menge
 {

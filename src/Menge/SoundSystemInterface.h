@@ -1,9 +1,5 @@
-#pragma once
+#	pragma once
 
-/*	
-Тип звуковых данных.
-На основе eSoundType выбирается звуковой буффер для загрузки.
-*/
 enum SOUND_TYPE	 
 {
 	OGG,
@@ -11,13 +7,6 @@ enum SOUND_TYPE
 	MP3,
 };
 
-/*
-Описание звуковых данных.
-- тип звуковых данных
-- буффер
-- размер буффера
-- явл. ли потоковым.
-*/
 struct	SoundDataDesc
 {
 	SOUND_TYPE	type;
@@ -28,30 +17,24 @@ struct	SoundDataDesc
 
 class	SoundSourceInterface;
 
-/*
-Слушатель в системе.
-*/
 class	SoundNodeListenerInterface
 {
 public:
 	virtual bool listenRecycled(SoundSourceInterface*	_sn) = 0;
 	virtual void listenStoped(SoundSourceInterface*	_sn) = 0;
+	virtual void listenEnded(SoundSourceInterface*	_sn) = 0;
 };
-
-/*
-Источник звука.
-Загружается функцией SoundSystemInterface::loadSoundNode с указанием SoundDataDesc
-и слушателя.
-Содержит функции для воспроизв и т.д.
-Функция update возвращает true, если источник звука больше не нужен.
-*/
 
 class	SoundSourceInterface
 {
 public:
+	SoundSourceInterface(){};
+	virtual ~SoundSourceInterface(){};
+	virtual	void			release() = 0;
 	virtual void			play() = 0; 
 	virtual void			pause() = 0;
 	virtual void			stop() = 0;
+	virtual bool			isPlaying() const = 0;
 	virtual	bool			updateSoundBuffer() = 0;
 	virtual void			setLooped(bool _flag) = 0;
 	virtual bool			getLooped() const = 0;
@@ -59,18 +42,14 @@ public:
 	virtual float			getVolume() const = 0;
 	virtual void			setPosition(const float* _position) = 0;
 	virtual const float*	getPosition() const = 0;
-	virtual void			setDistance(float dist) = 0;
-	virtual float			getDistance() const = 0;
-	virtual void			setHeadMode(bool flag) = 0;
+	virtual void			setMaxDistance(float _dist) = 0;
+	virtual float			getMaxDistance() const = 0;
+	virtual void			setHeadMode(bool _flag) = 0;
 	virtual bool			getHeadMode() const = 0;
+	virtual double			getTotalSize()	const = 0;
+	virtual	double			getPos()	const = 0;
 };
 
-/*
-Система звука.
-- Устанавливает положение слушателя.
-- Загружает источник звука.
-- Удаляет источник звука.
-*/
 class SoundSystemInterface
 {
 public:
@@ -79,9 +58,5 @@ public:
 	virtual void						releaseSoundNode(SoundSourceInterface* _sn) = 0;
 };
 
-/*
-Создание/Удаление системы звука.
-Необходимо для корректной загрузки из dll.
-*/
-bool initInterfaceSystem(SoundSystemInterface** );
-void releaseInterfaceSystem(SoundSystemInterface* );
+bool	initInterfaceSystem(SoundSystemInterface** );
+void	releaseInterfaceSystem(SoundSystemInterface* );

@@ -2,60 +2,58 @@
 
 #	include <assert.h>
 
-CALWavBuffer::CALWavBuffer(void * _buffer, size_t _size):SoundBufferInterface(_buffer, _size)
+CALWavBuffer::CALWavBuffer(void * _buffer, size_t _size)
+: SoundBufferInterface(_buffer, _size)
 {
-	long	magic	=  getLong();
-	long	length	=  getLong();
-	long	magic2	=  getLong();
+	long magic = getLong();
+	long length = getLong();
+	long magic2 = getLong();
 
-	if ( magic != 0x46464952 || magic2 != 0x45564157 )
+	if (magic != 0x46464952 || magic2 != 0x45564157)
 	{
 		assert(!"CALWavBuffer error");
 		return;
 	}
 
-	while ( getPos () <  getSize () )
+	while (getPos() < getSize())
 	{
-		magic  =  getLong ();
-		length =  getLong ();
+		magic = getLong();
+		length = getLong();
 
-		if ( magic == 0x20746D66 )
+		if (magic == 0x20746D66)
 		{
-#pragma pack (push, 1)
-			struct WavFmt
-			{
-				unsigned short encoding;
-				unsigned short channels;
-				unsigned int   freqeuncy;
-				unsigned int   byterate;
-				unsigned short blockAlign;
-				unsigned short bps;
-			} mFormat;
-#pragma pack (pop)
+			#pragma pack (push, 1)
+			struct WavFmt  { unsigned short encoding; unsigned short channels; unsigned int freqeuncy; unsigned int byterate; unsigned short blockAlign; unsigned short bps;  } wave_format;
+			#pragma pack (pop)
 
-			getPtr ( &mFormat, sizeof ( mFormat ) );
-			if ( mFormat.encoding != 1 )
+			getPtr(&wave_format, sizeof(wave_format));
+
+			if (wave_format.encoding != 1)
 			{
+				assert(!"Error encoding!");
 				return;
-			};
-			setFrequency(mFormat.freqeuncy);
-			setNumChannels(mFormat.channels);
-			setBitsPerSample(mFormat.bps);
+			}
+
+			setFrequency(wave_format.freqeuncy);
+			setNumChannels(wave_format.channels);
+			setBitsPerSample(wave_format.bps);
 		}
 		else
-			if ( magic == 0x61746164 )
+		{
+			if (magic == 0x61746164)
 			{
-				mDataOffs   =  getPos();
-				mDataLength = length;
+				m_dataOffset = getPos();
+				m_dataLength = length;
 				break;
 			}
 			else
 			{
 				seekCur(length);
-			};
+			}
+		}
 	}
 
-	if ( getNumChannels() < 1 || getFrequency() == 0 || mDataOffs == 0 || mDataLength == 0 )
+	if (getNumChannels() < 1 || getFrequency() == 0 || m_dataOffset == 0 || m_dataLength == 0)
 	{
 		assert(!"CALWavBuffer error");
 		return;
@@ -64,19 +62,30 @@ CALWavBuffer::CALWavBuffer(void * _buffer, size_t _size):SoundBufferInterface(_b
 
 CALWavBuffer::~CALWavBuffer(){};
 
-size_t	CALWavBuffer::read(unsigned char * _buffer, size_t _size)
+int		CALWavBuffer::read(unsigned char * _buffer, int _size)
 {
-	size_t	bytesLeft = mDataLength + mDataOffs - getPos();
-	return  getPtr(_buffer, ( _size < 0 || _size > bytesLeft ) ? bytesLeft : _size);
+	int	bytesLeft = m_dataLength - (getPos() - m_dataOffset);
+	return  getPtr(_buffer, (_size < 0 || _size > bytesLeft) ? bytesLeft : _size);
 }
 
 bool	CALWavBuffer::seek(float _time)
 {
-	seekAbs(mDataOffs + (int)(_time * getNumChannels() * getFrequency() * getBitsPerSample()/2));	
+	seekAbs(m_dataOffset + (int)(_time * getNumChannels() * getFrequency() * getBitsPerSample()/2));	
 	return true;
 }
 
-size_t CALWavBuffer::getDataSoundSize() const
+int		CALWavBuffer::getDataSoundSize() const
 {
-	return mDataLength;	
+	return m_dataLength;	
 };
+
+double	CALWavBuffer::getTotalTime()
+{
+	double byte_per_sample = getBitsPerSample() * getNumChannels() / 8;
+	assert(byte_per_sample>=0);
+
+	double freq = getFrequency();
+	assert(freq>=0);
+
+	return m_dataLength / byte_per_sample / freq;
+}

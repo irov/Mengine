@@ -18,8 +18,8 @@ public:
 	SoundSourceInterface*	loadSoundNode(const SoundDataDesc& _desc, SoundNodeListenerInterface* _listener = 0);
 
 private:
-	ALCdevice*				mDeviceAL;
-	ALCcontext*				mContextAL;
-	float					mPosition[3];
-	float					mUpDir[6];
+	ALCdevice* m_deviceAL;
+	ALCcontext* m_contextAL;
+	float m_pos[3];
+	float m_updir[6];
 };

@@ -142,17 +142,20 @@ bool Sprite::_compile()
 		textureDesc.size = m_desc.images[i].size;
 		textureDesc.haveAlpha = true;
 
-		ImageProperties	ip;
-		ip.offset = mt::vec2f(
+		ImageProperties	imageProps;
+
+		imageProps.offset = mt::vec2f(
 			(float)m_desc.images[i].offsetX, 
 			(float)m_desc.images[i].offsetY);
-		ip.renderImage = Keeper<RenderEngine>::hostage()->loadImage(textureDesc);
 
-		m_images.push_back(ip);
+		imageProps.renderImage = Keeper<RenderEngine>::hostage()->loadImage(textureDesc);
+
+		m_images.push_back(imageProps);
 	}
 
 	//	set first frame:
 	setFirstFrame();
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -184,19 +187,23 @@ void Sprite::loader(TiXmlElement *xml)
 void Sprite::stop()
 {
 	m_playing = false;
-	setFirstFrame();
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::play()
 {
 	m_playing = true;
-}
-//////////////////////////////////////////////////////////////////////////
-void Sprite::pause()
-{
-	m_playing = false;
+	setFirstFrame();
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()
 {
+	const mt::mat3f& wm = getWorldMatrix();
+
+	Keeper<RenderEngine>::hostage()->renderImageOffset(
+		wm, 
+		m_images[m_currentFrame->index].offset,
+		0xffffffff,
+		m_images[m_currentFrame->index].renderImage
+		);
+
 };

@@ -4,21 +4,16 @@
 
 #	include "includes/Vorbis/vorbisfile.h"
 
-
-
-class	OggSoundData 
-	: public SoundBufferInterface
-{ 
+class	OggSoundData : public SoundBufferInterface
+{
 public:
 	OggSoundData(void* _buffer, size_t _size);
 	~OggSoundData();
-
-public:
-	size_t	getDataSoundSize() const;
-	size_t	read(unsigned char* _buffer, size_t _size);
+	int		getDataSoundSize() const;
+	int		read(unsigned char* _buffer, int _size);
 	bool	seek(float _time);
-
+	double	getTotalTime();
 private:
-	OggVorbis_File	mFile;
-	vorbis_info*	mInfo;
+	OggVorbis_File m_oggFile;
+	vorbis_info* m_vorbisInfo;
 };

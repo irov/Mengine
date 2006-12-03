@@ -7,6 +7,7 @@ namespace Menge
 	class Chapter;
 	class Scene;
 	class Arrow;
+	class BackgroundSound;
 
 	class Player
 	{
@@ -28,5 +29,7 @@ namespace Menge
 		Chapter * m_chapter;
 		Scene * m_scene;
 		Arrow *m_arrow;
+		BackgroundSound* m_backSound;
+
 	};
 }

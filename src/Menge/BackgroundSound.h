@@ -10,6 +10,13 @@
 
 namespace	Menge
 {
+	enum	FADE_STATES
+	{
+		FADE_DOWN,
+		FADE_UP,
+		NO_FADE,
+	};
+
 	class	BackgroundSound	: public SoundNodeListenerInterface
 	{
 	public:
@@ -20,17 +27,13 @@ namespace	Menge
 		void	listenStoped(SoundSourceInterface*	_sn);
 		void	listenEnded(SoundSourceInterface*	_sn);
 	private:
-		enum	FADE_STATES
-		{
-			FADE_DOWN,
-			FADE_UP,
-			NO_FADE,
-		};
-		SoundNode		m_playingTrack;
-		std::string		m_currentNamePlayList;
-		Playlist* 		m_currentPlayList;
-		FADE_STATES		m_fadeState;
-		std::string		m_currentSoundTrackName;
+		float m_fadeVelocity;
+		SoundSourceInterface* m_soundSource;
+		FileDataInterface* m_fileData;	
+		std::string	m_currentNamePlayList;
+		Playlist* m_currentPlayList;
+		FADE_STATES	m_fadeState;
+		std::string	m_currentSoundTrackName;
 		void	_beginFade();
 	};
 };

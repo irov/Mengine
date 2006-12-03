@@ -6,8 +6,10 @@ namespace	Menge
 	{
 		m_playListName = name;
 		//////////////////////////////////////////////////////////////////////////
+		m_tracks.push_back("1.wav");
+		m_tracks.push_back("2.wav");
+		//m_tracks.push_back("3.wav");
 		m_currentSoundTrack = m_tracks.begin();
-		m_playListName = "testis";
 		//////////////////////////////////////////////////////////////////////////
 	}
 	void	Playlist::nextSong()

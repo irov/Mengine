@@ -10,13 +10,12 @@
 
 class	SoundSystemInterface;
 class	SoundSourceInterface;
+class	FileDataInterface;
 class	SoundNodeListenerInterface;
 
 namespace Menge
 {
-	class Sound;
-
-	typedef std::map<std::string, boost::shared_ptr<SoundSourceInterface> > TMapSoundSource;
+	class SoundNode;
 
 	class SoundEngine : public DllModuleInterface<SoundSystemInterface>
 	{
@@ -24,10 +23,17 @@ namespace Menge
 		SoundEngine(const std::string& _dllModule);
 		~SoundEngine();
 		void			setListenerOrient(const float* _position, const float* _updir);
-		bool			addSound(Sound*, const std::string& _filename, SoundNodeListenerInterface*	_listener = 0, bool _isStreamAudioFile = false);
-		void			deleteSound(const std::string& _name);		
-		void			processSoundSources();
-	private:
-		TMapSoundSource	mSoundSources;
+		/*
+			IN: filename
+			OUT: SoundNodeInterface, FileDataInterface
+			¬озвращает саунд сурс и файл ресурса, который использует этот саунд сурс.
+		*/
+		bool			addSoundNode(
+			SoundSourceInterface* &_node,
+			FileDataInterface* &_data, 
+			const std::string& _filename,
+			SoundNodeListenerInterface* _listener = 0,
+			bool _isStreamAudioFile = true);
+		void			deleteSound(SoundSourceInterface* _node);		
 	};
 };

@@ -12,26 +12,13 @@
 #	include <map>
 #	include <vector>
 
-
-/*	
-	Structure for holding batching of font.
-	All fonts flushing in Direct3d9RenderSystem::endSceneDrawing().
-*/
 struct	FontBatch
 {
 	mt::vec2f	pos;
-	std::string		text;
-	D3D9Font*		font;
+	std::string	text;
+	D3D9Font*	font;
 };
 
-/*
-	All resources are D3DPOOL_MANAGED.
-
-	internal:
-		_initRenderSystem() - init RS. Need for Lost Device.
-		_initBatching() - init	VB, IB batching.
-		_flushFonts() - flush all fonts batches.
-*/
 class	Direct3d9RenderSystem 
 	: public RenderSystemInterface
 {
@@ -46,7 +33,6 @@ public:
 
 	void	drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color) override;
 
-
     void	renderImage(const mt::mat3f& _transform, unsigned int _mixedColor,RenderImageInterface* _rmi);
 	void	renderImageOffset(const mt::mat3f& _transform, const mt::vec2f& offset, unsigned int _mixedColor, RenderImageInterface * _rmi);
 	void	releaseRenderImage(RenderImageInterface* _rmi);
@@ -57,39 +43,36 @@ public:
 	RenderFontInterface* loadFont(const FontDesc& _desc);
 
 private:
-	/*	
-		size of	VB for batching.
-	*/
 	static const int BATCH_BUFFER_SIZE = 1000;
 
-	LPDIRECT3D9					mDirect3D9;
-	LPDIRECT3DDEVICE9			mDeviceD3D9;
+	LPDIRECT3D9					m_direct3d9;
+	LPDIRECT3DDEVICE9			m_deviceD3D9;
 
-	LPDIRECT3DVERTEXBUFFER9		mVBDynamic;
+	LPDIRECT3DVERTEXBUFFER9		m_vbDynamic;
 
-	UINT						mSizeOf4Verts;
-	UINT						mSizeOfVert;
+	UINT m_size4Verts;
+	UINT m_size1Vert;
 
-	std::vector<D3D9Vertex>		mFontVertices;
+	std::vector<D3D9Vertex>		m_fontVerts;
 
-	LPDIRECT3DVERTEXBUFFER9		mBatchVB;
-	LPDIRECT3DINDEXBUFFER9		mBatchIB;
-	UINT						mNumBatchVertices;
-	LPDIRECT3DTEXTURE9			mCurrentTex;
+	LPDIRECT3DVERTEXBUFFER9		m_batchVB;
+	LPDIRECT3DINDEXBUFFER9		m_batchIB;
+	UINT						m_numBatchVertices;
+	LPDIRECT3DTEXTURE9			m_currentTex;
 
 	LPD3DXLINE					m_pLine;
 
-	size_t						mWidth;
-	size_t						mHeight;
-	size_t						mBits;
-	bool						mFullScreen;
-	bool						mDeviceLost;
+	size_t						m_width;
+	size_t						m_height;
+	size_t						m_bits;
+	bool						m_fullScreen;
+	bool						m_deviceLost;
 
-	D3DPRESENT_PARAMETERS		mPresent;
+	D3DPRESENT_PARAMETERS		m_present;
 
 	typedef std::multimap<LPDIRECT3DTEXTURE9,FontBatch> TMultimapFontBatch;
 
-	TMultimapFontBatch			mBuffersToFlush;
+	TMultimapFontBatch			m_flushBuffers;
 
 	bool						_initRenderSystem();
 	bool						_initBatching();

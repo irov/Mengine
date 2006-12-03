@@ -26,7 +26,6 @@ namespace Menge
 		Sprite();
 
 		virtual void play();
-		virtual void pause();
 		virtual void stop();
 		
 		

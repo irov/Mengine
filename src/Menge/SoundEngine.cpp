@@ -1,5 +1,5 @@
 #	include "SoundEngine.h"
-#	include "Sound.h"
+#	include "SoundNode.h"
 
 #	include "FileEngine.h"
 
@@ -25,59 +25,41 @@ namespace Menge
 		m_interface->setListenerOrient(_position,_updir);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool		SoundEngine::addSound(Sound* node, const std::string& _filename, SoundNodeListenerInterface*	_listener, bool _isStreamAudioFile)
+	bool		SoundEngine::addSoundNode(
+		SoundSourceInterface* &_node,
+		FileDataInterface* &_data,
+		const std::string& _filename,
+		SoundNodeListenerInterface*	_listener,
+		bool _isStreamAudioFile)
 	{
-		TMapSoundSource::iterator it_find = mSoundSources.find(_filename);
+		_isStreamAudioFile = true;
 
-		if (it_find != mSoundSources.end())
+		SOUND_TYPE	typeOfSoundFile = _filename.find(".ogg") != std::string::npos ? OGG : WAV;
+		
+		_data = Keeper<FileEngine>::hostage()->openFile(_filename);
+
+		if (_data)
 		{
-			node->setSoundSourceInterface(&*it_find->second);
-			return	true;
+			SoundDataDesc	desc_to_load = {
+				typeOfSoundFile,
+				(void*)_data->getBuffer(),
+				_data->size(),
+				_isStreamAudioFile
+			};
+
+			_node = m_interface->loadSoundNode(desc_to_load, _listener);
 		}
 		else
 		{
-			SOUND_TYPE	typeOfSoundFile = _filename.find(".ogg") != std::string::npos ? OGG : WAV;
-			
-			if (FileDataInterface* data = Keeper<FileEngine>::hostage()->openFile(_filename))
-			{
-				SoundDataDesc	desc_to_load = {
-					typeOfSoundFile,
-					(void*)data->getBuffer(),
-					data->size(),
-					_isStreamAudioFile
-				};
-
-				SoundSourceInterface *newSoundSource = m_interface->loadSoundNode(desc_to_load, _listener);
-
-				mSoundSources.insert(
-					std::make_pair(_filename,newSoundSource));
-			}
-			else
-			{
-				assert(!"Invalid sound node!");
-				return false;
-			}
+			assert(!"Invalid sound node!");
+			return false;
 		}
+
 		return	true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void		SoundEngine::deleteSound(const std::string& _name)
+	void		SoundEngine::deleteSound(SoundSourceInterface* _soundSource)
 	{
-		mSoundSources.erase(_name);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void		SoundEngine::processSoundSources()
-	{
-		for (TMapSoundSource::iterator it = mSoundSources.begin(); it != mSoundSources.end(); )
-		{	
-			if( !(*it).second->updateSoundBuffer() )
-			{
-				mSoundSources.erase(it++);
-			}
-			else
-			{
-				++it;
-			}
-		}
+		m_interface->releaseSoundNode(_soundSource);
 	}
 }

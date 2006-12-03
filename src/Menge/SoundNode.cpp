@@ -1,15 +1,16 @@
 #	include "SoundSystemInterface.h"
-#	include "Manager/XmlManager.h"
+#	include "XmlReader.h"
 #	include "SoundNode.h"
 #	include "SoundEngine.h"
+#	include "FileEngine.h"
+
 #	include "ObjectImplement.h"
-#	include	"Playlist.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(SoundNode);
 //////////////////////////////////////////////////////////////////////////
 SoundNode::SoundNode()
-	: m_interface(NULL)
+: m_interface(NULL)
 {}
 //////////////////////////////////////////////////////////////////////////
 void		SoundNode::play()
@@ -25,16 +26,6 @@ void		SoundNode::pause()
 void		SoundNode::stop()
 {
 	m_interface->stop();
-}
-//////////////////////////////////////////////////////////////////////////
-void		SoundNode::release()
-{
-	m_interface->release();
-}
-//////////////////////////////////////////////////////////////////////////
-void		SoundNode::setSoundSourceInterface(SoundSourceInterface* _ssi)
-{
-	m_interface = _ssi;
 }
 //////////////////////////////////////////////////////////////////////////
 void		SoundNode::setLooped(bool _flag)
@@ -93,10 +84,6 @@ bool		SoundNode::getHeadMode() const
 	return	m_interface->getHeadMode();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::_update(float _timing)
-{
-}
-//////////////////////////////////////////////////////////////////////////
 bool		SoundNode::isPlaying() const
 {
 	return	m_interface->isPlaying();
@@ -112,6 +99,11 @@ double		SoundNode::getPos()	const
 	return	m_interface->getPos();
 }
 //////////////////////////////////////////////////////////////////////////
+void	SoundNode::_update(float _timing)
+{
+	m_interface->updateSoundBuffer();
+}
+//////////////////////////////////////////////////////////////////////////
 void		SoundNode::loader(TiXmlElement * xml)
 {
 	XML_FOR_EACH_TREE(xml)
@@ -122,10 +114,13 @@ void		SoundNode::loader(TiXmlElement * xml)
 //////////////////////////////////////////////////////////////////////////
 bool		SoundNode::_compile()
 {
-	return	Keeper<SoundEngine>::hostage()->addSoundNode(this,m_filename);
+	Keeper<SoundEngine>::hostage()->addSoundNode(m_interface,m_fileData,m_filename);
+	//play(); //for test
+	return	true;
 }
 //////////////////////////////////////////////////////////////////////////
 void		SoundNode::_release()
 {
-	Keeper<SoundEngine>::hostage()->deleteSoundNode(m_filename);
+	Keeper<SoundEngine>::hostage()->deleteSound(m_interface);
+	Keeper<FileEngine>::hostage()->closeFile(m_fileData);
 }

@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Sprite.h"
-#	include "Sound.h"
+#	include "SoundNode.h"
 
 namespace Menge
 {
@@ -12,7 +12,6 @@ namespace Menge
 
 	public:
 		void play() override;
-		void pause() override;
 		void stop() override;		
 
 		void setLooped(bool _looped) override;
@@ -21,6 +20,6 @@ namespace Menge
 		void loader(TiXmlElement *_xml) override;
 
 	private:
-		Sound m_playSound;
+		SoundNode m_playSound;
 	};
 }

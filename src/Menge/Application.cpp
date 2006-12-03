@@ -180,7 +180,7 @@ namespace Menge
 	{
 		RenderEngine *renderEng = Keeper<RenderEngine>::hostage();
 
-		renderEng->beginSceneDrawing(0xFF0000FF);
+		renderEng->beginSceneDrawing(0xFF0FF0FF);
 
 		//if( m_functionRender )
 		//{

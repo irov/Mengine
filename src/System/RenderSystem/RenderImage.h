@@ -34,9 +34,9 @@ public:
 	bool				_isAlpha() const;
 
 private:
-	float				mWidth;
-	float				mHeight;
-	bool				mHaveAlpha;
-	D3D9Vertex			mVertices[4];
-	LPDIRECT3DTEXTURE9	mTexPointer;
+	float				m_width;
+	float				m_height;
+	bool				m_haveAlpha;
+	D3D9Vertex			m_verts[4];
+	LPDIRECT3DTEXTURE9	m_texPointer;
 };

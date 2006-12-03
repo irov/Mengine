@@ -30,5 +30,5 @@ public:
 	virtual void	closeFile(FileDataInterface* _fd) = 0;
 };
 
-bool initFileSystem(FileSystemInterface**	_ptrFileSystem);
-void releaseFileSystem(FileSystemInterface*	_ptrFileSystem);
+bool initInterfaceSystem(FileSystemInterface**	_ptrFileSystem);
+void releaseInterfaceSystem(FileSystemInterface*	_ptrFileSystem);

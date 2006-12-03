@@ -17,12 +17,6 @@ void SpriteInteractive::play()
 	m_playSound.play();
 }
 //////////////////////////////////////////////////////////////////////////
-void SpriteInteractive::pause()
-{
-	Sprite::pause();
-	m_playSound.pause();
-};
-//////////////////////////////////////////////////////////////////////////
 void SpriteInteractive::setLooped(bool _looped)
 {
 	Sprite::setLooped(_looped);

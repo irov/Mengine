@@ -10,12 +10,12 @@ public:
 	~CALWavBuffer();
 
 public:
-	size_t	getDataSoundSize() const;
-	size_t	read(unsigned char* _buffer, size_t _size);
+	int		getDataSoundSize() const;
+	int		read(unsigned char* _buffer, int _size);
 	bool	seek(float _time);
-
+	double	getTotalTime();
 private:
-	int		mDataOffs;
-	int		mDataLength;
+	int m_dataOffset;
+	int m_dataLength;
 };
 

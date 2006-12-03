@@ -4,6 +4,7 @@
 
 #	include "FileSystemInterface.h"
 #	include "FileEngine.h"
+#	include "XmlReader.h"
 
 
 namespace Menge
@@ -50,7 +51,7 @@ namespace Menge
 		FileDataInterface* imageData = 
 			Keeper<FileEngine>::hostage()->openFile(_imageFile);
 
-		if( imageData == 0 )
+		if(imageData == 0)
 		{
 			return 0;
 		}
@@ -94,8 +95,93 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderFontInterface* RenderEngine::loadFont(const std::string &_fontXml)
 	{
-		//Fix
-		return 0;
+		FontDesc desc;
+
+		float scaleW = -1;
+		float scaleH = -1;
+
+		desc.color = 0xFFFFFFFF;
+
+		XML_PARSE_FILE(_fontXml)
+		{
+			XML_VALUE_ATTRIBUTE("height",desc.height);
+
+			XML_CHECK_NODE_FOR_EACH("font")
+			{
+				XML_CHECK_NODE_FOR_EACH("bitmaps")
+				{
+					XML_CHECK_NODE("bitmap")
+					{
+						std::string name;
+						std::string size;
+
+						XML_VALUE_ATTRIBUTE("name",name);
+						XML_VALUE_ATTRIBUTE("size",size);
+
+						assert(!name.empty());
+						assert(!size.empty());
+
+						FileDataInterface* imageData = 
+							Keeper<FileEngine>::hostage()->openFile(name);
+
+						if(imageData == 0)
+						{
+							assert(!"no font image");
+							return 0;
+						}
+
+						desc.texDesc.buffer = (void*)imageData->getBuffer();
+						desc.texDesc.size = imageData->size();
+						desc.texDesc.haveAlpha = true;
+
+						sscanf(size.c_str(), "%fx%f", &scaleW, &scaleH); 
+
+						assert((scaleW > 0 && scaleW <= 1024));
+						assert((scaleH > 0 && scaleH <= 1024));
+					}
+				}
+
+				XML_CHECK_NODE_FOR_EACH("glyphs")
+				{
+					XML_CHECK_NODE("glyph")
+					{
+						std::string ch;
+						std::string origin;
+						std::string size;
+						float aw;
+
+						XML_VALUE_ATTRIBUTE("ch",ch);
+						XML_VALUE_ATTRIBUTE("origin",origin);
+						XML_VALUE_ATTRIBUTE("size",size);
+						XML_VALUE_ATTRIBUTE("aw",aw);
+
+						float x;
+						float y;
+
+					    sscanf(origin.c_str(), "%f,%f", &x,&y); 
+
+						float width;
+						float height;
+
+						sscanf(size.c_str(), "%fx%f", &width, &height); 
+
+						int id = int(ch[0]);
+						
+						desc.chars[id].uv.x = x / scaleW;
+						desc.chars[id].uv.y = y / scaleH;
+						desc.chars[id].uv.z = (x + width) / scaleW;
+						desc.chars[id].uv.w = (y + height) / scaleH;
+						desc.chars[id].width = aw;
+					}
+				}
+			}
+		}
+		XML_INVALID_PARSE()
+		{
+			//TODO: ERROR
+			return false;
+		}
+		return m_interface->loadFont(desc);
 	}
 
 	//////////////////////////////////////////////////////////////////////////

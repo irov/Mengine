@@ -17,8 +17,5 @@
 				<ImageMNG File = "output.mng" />
 			</Node> <!-- Sprite -->
 		</Node> <!-- Track -->
-		<Node Name = "TestSound" Type = "SoundNode">
-			<Filename Value = "test.ogg"/>
-		</Node> <!-- Sound -->
 	</Node> <!-- Layer -->
 </Node>

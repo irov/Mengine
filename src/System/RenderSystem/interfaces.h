@@ -1,7 +1,9 @@
 #pragma once
-#include <string>
-#include "math/mat3.h"
-#include "math/vec4.h"
+
+#	include <string>
+
+#	include "math/mat3.h"
+#	include "math/vec4.h"
 
 class RenderImageInterface
 {
@@ -13,10 +15,8 @@ public:
 class RenderFontInterface
 {
 public:
-    virtual float getWidth() const = 0;
-    virtual float getHeight() const = 0;
-    virtual float getInterval() const = 0;
-    virtual unsigned int getColor() const = 0;
+    virtual float			getHeight() const = 0;
+    virtual unsigned int	getColor() const = 0;
 };
 
 struct	TextureDesc
@@ -26,13 +26,18 @@ struct	TextureDesc
 	bool	haveAlpha;
 };
 
+struct FontCharDesc
+{
+	mt::vec4f		uv;
+	float			width;
+};
+
 struct FontDesc
 {
 	TextureDesc		texDesc;
-	void*			fontDesc;
-	mt::vec4f	chars[256];
-	size_t			sizeData;
-	unsigned long	mColor;
+	FontCharDesc	chars[256];
+	unsigned long	color;
+	float			height;
 };
 
 class	RenderSystemInterface
@@ -50,9 +55,10 @@ public:
 	virtual	void	releaseRenderImage(RenderImageInterface* _rmi) = 0;
     virtual	void	renderText(mt::vec2f _pos, RenderFontInterface* _font, const std::string& _text) = 0;
 	virtual	void	releaseRenderFont(RenderFontInterface* _fnt) = 0;
+
 	virtual RenderImageInterface* loadImage(const TextureDesc&	_desc) = 0;
 	virtual RenderFontInterface* loadFont(const FontDesc&	_desc) = 0;
 };
 
-bool initRenderSystem(RenderSystemInterface** _ptrRenderSystem);
-void releaseRenderSystem(RenderSystemInterface* _ptrRenderSystem);
+bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);
+void releaseInterfaceSystem(RenderSystemInterface* _ptrRenderSystem);

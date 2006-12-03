@@ -26,54 +26,54 @@ void releaseInterfaceSystem(SoundSystemInterface* _ptrSoundSystem)
 }
 
 OpenALSoundSystem::OpenALSoundSystem() 
-								: SoundSystemInterface()
+	: SoundSystemInterface()
 {
-	mPosition[0] = 0.0f;
-	mPosition[1] = 0.0f;
-	mPosition[2] = 0.0f;
+	m_pos[0] = 0.0f;
+	m_pos[1] = 0.0f;
+	m_pos[2] = 0.0f;
 
-	mUpDir[0] = 0.0f;
-	mUpDir[1] = 0.0f;
-	mUpDir[2] = 0.0f;
-	mUpDir[3] = 0.0f;
-	mUpDir[4] = 0.0f;
-	mUpDir[5] = 0.0f;
+	m_updir[0] = 0.0f;
+	m_updir[1] = 0.0f;
+	m_updir[2] = 0.0f;
+	m_updir[3] = 0.0f;
+	m_updir[4] = 0.0f;
+	m_updir[5] = 0.0f;
 
-	mDeviceAL = alcOpenDevice(NULL);
+	m_deviceAL = alcOpenDevice(NULL);
 
-	if (mDeviceAL)
+	if (m_deviceAL)
 	{
-		mContextAL = alcCreateContext(mDeviceAL, NULL);
-		alcMakeContextCurrent(mContextAL);
+		m_contextAL = alcCreateContext(m_deviceAL, NULL);
+		alcMakeContextCurrent(m_contextAL);
 	}
 
-	alListenerfv(AL_VELOCITY, mPosition);
-	alListenerfv(AL_POSITION, mPosition);
-	alListenerfv(AL_ORIENTATION, mUpDir);
+	alListenerfv(AL_VELOCITY, m_pos);
+	alListenerfv(AL_POSITION, m_pos);
+	alListenerfv(AL_ORIENTATION, m_updir);
 }
 
 OpenALSoundSystem::~OpenALSoundSystem()
 {
 	alcMakeContextCurrent(NULL);
-	alcDestroyContext(mContextAL);
-	alcCloseDevice(mDeviceAL);
+	alcDestroyContext(m_contextAL);
+	alcCloseDevice(m_deviceAL);
 }
 
 void	OpenALSoundSystem::setListenerOrient(const float* _position, const float* _updir)
 {
-	mPosition[0] = _position[0];
-	mPosition[1] = _position[1];
-	mPosition[2] = _position[2];
+	m_pos[0] = _position[0];
+	m_pos[1] = _position[1];
+	m_pos[2] = _position[2];
 
-	mUpDir[0] = _updir[0];
-	mUpDir[1] = _updir[1];
-	mUpDir[2] = _updir[2];
-	mUpDir[3] = _updir[0];
-	mUpDir[4] = _updir[1];
-	mUpDir[5] = _updir[2];
+	m_updir[0] = _updir[0];
+	m_updir[1] = _updir[1];
+	m_updir[2] = _updir[2];
+	m_updir[3] = _updir[0];
+	m_updir[4] = _updir[1];
+	m_updir[5] = _updir[2];
 
-	alListenerfv( AL_POSITION, mPosition );
-	alListenerfv( AL_ORIENTATION, mUpDir );
+	alListenerfv( AL_POSITION, m_pos );
+	alListenerfv( AL_ORIENTATION, m_updir );
 }
 
 SoundSourceInterface*	OpenALSoundSystem::loadSoundNode(const SoundDataDesc& _desc, SoundNodeListenerInterface*	_listener)

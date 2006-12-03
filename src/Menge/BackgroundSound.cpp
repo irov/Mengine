@@ -1,9 +1,12 @@
 #	include "BackgroundSound.h"
+#	include "FileEngine.h"
 #	include "SoundSystemInterface.h"
 
 namespace	Menge
 {
 	BackgroundSound::BackgroundSound()
+	: m_soundSource(0)
+	, m_fadeVelocity(0.003f)
 	{
 		m_fadeState = NO_FADE;
 	}
@@ -12,9 +15,9 @@ namespace	Menge
 	{
 		m_fadeState = FADE_UP;
 		m_currentSoundTrackName = m_currentPlayList->getCurrentSongName();
-		Keeper<SoundEngine>::hostage()->addSoundNode(&m_playingTrack,m_currentSoundTrackName,this,true);
-		m_playingTrack.play();
-		m_playingTrack.setVolume(0);
+		Keeper<SoundEngine>::hostage()->addSoundNode(m_soundSource,m_fileData,m_currentSoundTrackName,this,true);
+		m_soundSource->setVolume(0);
+		m_soundSource->play();
 	}
 
 	void	BackgroundSound::play(Playlist& _playList)
@@ -30,7 +33,7 @@ namespace	Menge
 			return;
 		}
 
-		if (m_playingTrack.isPlaying() && !firstInit)
+		if (m_soundSource->isPlaying() && !firstInit)
 		{
 			m_fadeState = FADE_DOWN;
 		}
@@ -40,7 +43,7 @@ namespace	Menge
 		}
 	}
 
-	bool	BackgroundSound::listenRecycled(SoundSourceInterface*	_sn)
+	bool	BackgroundSound::listenRecycled(SoundSourceInterface* _sn)
 	{
 		printf("listenRecycled \n");
 		return true;
@@ -51,9 +54,12 @@ namespace	Menge
 		printf("listenStoped \n");
 	} 
 
-	void	BackgroundSound::listenEnded(SoundSourceInterface*	_sn)
+	void	BackgroundSound::listenEnded(SoundSourceInterface* _sn)
 	{
 		m_currentPlayList->nextSong();
+
+		Keeper<SoundEngine>::hostage()->deleteSound(m_soundSource);
+		Keeper<FileEngine>::hostage()->closeFile(m_fileData);
 
 		_beginFade();
 
@@ -62,17 +68,19 @@ namespace	Menge
 
 	void	BackgroundSound::update()
 	{
+		m_soundSource->updateSoundBuffer();
+
 		switch(m_fadeState)
 		{
 			case FADE_UP:
 			{
 				printf("FADE UP \n");
-				float newVolume = m_playingTrack.getVolume()+0.005f;
-				m_playingTrack.setVolume(newVolume);
+				float newVolume = m_soundSource->getVolume() + m_fadeVelocity;
+				m_soundSource->setVolume(newVolume);
 
-				if (m_playingTrack.getVolume() >= 1.0f)
+				if (m_soundSource->getVolume() >= 1.0f)
 				{
-					m_playingTrack.setVolume(1.0f);
+					m_soundSource->setVolume(1.0f);
 					m_fadeState = NO_FADE;
 				}
 			}
@@ -81,12 +89,12 @@ namespace	Menge
 			case FADE_DOWN:
 			{
 				printf("FADE_DOWN \n");
-				float newVolume = m_playingTrack.getVolume()-0.005f;
-				m_playingTrack.setVolume(newVolume);
+				float newVolume = m_soundSource->getVolume() - m_fadeVelocity;
+				m_soundSource->setVolume(newVolume);
 
-				if (m_playingTrack.getVolume() <= 0)
+				if (m_soundSource->getVolume() <= 0)
 				{
-					m_playingTrack.stop();
+					m_soundSource->stop();
 				}
 			}
 			break;
@@ -94,10 +102,13 @@ namespace	Menge
 			case NO_FADE:
 			{
 				printf("NO_FADE \n");
-				double a = m_playingTrack.getTotalSize();
-				double b = m_playingTrack.getPos();
+
+				double totalSize = m_soundSource->getTotalSize() * 0.50;
+				double currPos = m_soundSource->getPos();
 			
-				if ((a - b) <= 1.0)	
+				if (currPos >= totalSize)	
+
+				//if ((totalSize - currPos) <= 5.0)	
 				{
 					m_fadeState = FADE_DOWN;
 				}

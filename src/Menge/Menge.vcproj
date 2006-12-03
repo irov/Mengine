@@ -343,6 +343,34 @@
 					RelativePath=".\SoundEngine.h"
 					>
 				</File>
+				<Filter
+					Name="Node"
+					>
+					<File
+						RelativePath=".\BackgroundSound.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\BackgroundSound.h"
+						>
+					</File>
+					<File
+						RelativePath=".\Playlist.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Playlist.h"
+						>
+					</File>
+					<File
+						RelativePath=".\SoundNode.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SoundNode.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -552,18 +580,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="Sound"
-				>
-				<File
-					RelativePath=".\Sound.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Sound.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"
@@ -598,10 +614,6 @@
 			</File>
 			<File
 				RelativePath=".\InputSystemInterface.h"
-				>
-			</File>
-			<File
-				RelativePath=".\PhysicSystemInterface.h"
 				>
 			</File>
 			<File

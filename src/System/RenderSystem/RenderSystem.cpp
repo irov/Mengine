@@ -24,8 +24,8 @@ void releaseInterfaceSystem(RenderSystemInterface* _ptrRenderSystem)
 
 Direct3d9RenderSystem::Direct3d9RenderSystem()
 {
-	mDirect3D9 = Direct3DCreate9(D3D_SDK_VERSION);
-	if (!mDirect3D9)
+	m_direct3d9 = Direct3DCreate9(D3D_SDK_VERSION);
+	if (!m_direct3d9)
 	{
 		assert(!"error Direct3DCreate9\n");
 	}
@@ -38,26 +38,26 @@ Direct3d9RenderSystem::~Direct3d9RenderSystem()
 		m_pLine->Release();
 	} 
 
-	if (mDirect3D9 != NULL)
+	if (m_direct3d9 != NULL)
 	{
-		mDirect3D9->Release();
+		m_direct3d9->Release();
 	}
 
-	if (mDeviceD3D9 != NULL)
+	if (m_deviceD3D9 != NULL)
 	{
-		mDeviceD3D9->Release();
+		m_deviceD3D9->Release();
 	}
 }
 
 
 RenderImageInterface* Direct3d9RenderSystem::loadImage(const TextureDesc& _desc)
 {
-    return new D3D9RenderImage(mDeviceD3D9, _desc);
+    return new D3D9RenderImage(m_deviceD3D9, _desc);
 }
 
 RenderFontInterface * Direct3d9RenderSystem::loadFont(const FontDesc &_fontDesc)
 {
-	return new D3D9Font(mDeviceD3D9, _fontDesc);
+	return new D3D9Font(m_deviceD3D9, _fontDesc);
 }
 
 void	Direct3d9RenderSystem::releaseRenderFont(RenderFontInterface* _fnt)
@@ -80,7 +80,7 @@ void Direct3d9RenderSystem::renderImage(const mt::mat3f& _transform,
 	 
 	D3D9Vertex*	dstVertices = NULL;
 
-	mVBDynamic->Lock(0, mSizeOf4Verts, (VOID**)&dstVertices, 0);
+	m_vbDynamic->Lock(0, m_size4Verts, (VOID**)&dstVertices, 0);
 
 	for(size_t i = 0; i < 4; ++i)
 	{
@@ -89,11 +89,11 @@ void Direct3d9RenderSystem::renderImage(const mt::mat3f& _transform,
 		dstVertices[i].color = _mixedColor;
 	}
 
-	mVBDynamic->Unlock();
+	m_vbDynamic->Unlock();
 
-	mDeviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, imaged3d9ptype->_isAlpha());
-	mDeviceD3D9->SetTexture(0, imaged3d9ptype->_getTexPointer());
-	mDeviceD3D9->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
+	m_deviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, imaged3d9ptype->_isAlpha());
+	m_deviceD3D9->SetTexture(0, imaged3d9ptype->_getTexPointer());
+	m_deviceD3D9->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
 }
 
 void Direct3d9RenderSystem::renderImageOffset(const mt::mat3f& _transform,const mt::vec2f& _offset,
@@ -106,7 +106,7 @@ void Direct3d9RenderSystem::renderImageOffset(const mt::mat3f& _transform,const 
 
 	D3D9Vertex*	dstVertices = NULL;
 
-	mVBDynamic->Lock(0, mSizeOf4Verts, (VOID**)&dstVertices, 0);
+	m_vbDynamic->Lock(0, m_size4Verts, (VOID**)&dstVertices, 0);
 
 	for(size_t i = 0; i < 4; ++i)
 	{
@@ -115,11 +115,11 @@ void Direct3d9RenderSystem::renderImageOffset(const mt::mat3f& _transform,const 
 		dstVertices[i].color = _mixedColor;
 	}
 
-	mVBDynamic->Unlock();
+	m_vbDynamic->Unlock();
 
-	mDeviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, imaged3d9ptype->_isAlpha());
-	mDeviceD3D9->SetTexture(0, imaged3d9ptype->_getTexPointer());
-	mDeviceD3D9->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
+	m_deviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, imaged3d9ptype->_isAlpha());
+	m_deviceD3D9->SetTexture(0, imaged3d9ptype->_getTexPointer());
+	m_deviceD3D9->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
 }
 
 void	Direct3d9RenderSystem::renderText(mt::vec2f _pos, 
@@ -132,116 +132,122 @@ void	Direct3d9RenderSystem::renderText(mt::vec2f _pos,
  
     LPDIRECT3DTEXTURE9	texture = fontd3d9ptype->_getTexPointer();
  
-	mBuffersToFlush.insert(std::make_pair(texture,fontBatch));
+	m_flushBuffers.insert(std::make_pair(texture,fontBatch));
 }
 
 void	Direct3d9RenderSystem::_flushFonts()
 {
-	if(mBuffersToFlush.empty())
+	if(m_flushBuffers.empty())
 	{
 		return;
 	}
 
 	static	D3D9Vertex*		batchVertices;
 	
-	mCurrentTex = mBuffersToFlush.begin()->first;
+	m_currentTex = m_flushBuffers.begin()->first;
 	
-	mDeviceD3D9->SetTexture(0, mCurrentTex);
+	m_deviceD3D9->SetTexture(0, m_currentTex);
 
-	mDeviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	m_deviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 	
-	mDeviceD3D9->SetStreamSource(0, mBatchVB, 0, mSizeOfVert);
+	m_deviceD3D9->SetStreamSource(0, m_batchVB, 0, m_size1Vert);
 
-	mNumBatchVertices = 0;
+	m_numBatchVertices = 0;
 
 	unsigned long	count = 0;
 
-	mBatchVB->Lock(0, BATCH_BUFFER_SIZE * mSizeOfVert, (VOID**)&batchVertices, 0);
+	m_batchVB->Lock(0, BATCH_BUFFER_SIZE * m_size1Vert, (VOID**)&batchVertices, 0);
 	
-	for(TMultimapFontBatch::iterator it = mBuffersToFlush.begin(); it != mBuffersToFlush.end(); ++it)
+	for(TMultimapFontBatch::iterator it = m_flushBuffers.begin(); it != m_flushBuffers.end(); ++it)
 	{
 		mt::vec2f& anPos = it->second.pos;
 	
 		size_t textSize = it->second.text.size();
 
-		mFontVertices.resize(textSize * 4);
+		m_fontVerts.resize(textSize * 4);
 
-		if (mNumBatchVertices >= BATCH_BUFFER_SIZE || mCurrentTex != it->first)
+		if (m_numBatchVertices >= BATCH_BUFFER_SIZE || m_currentTex != it->first)
 		{
-			mBatchVB->Unlock();
+			m_batchVB->Unlock();
 
-			mDeviceD3D9->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, mNumBatchVertices, 0, mNumBatchVertices / 2); 
+			m_deviceD3D9->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_numBatchVertices, 0, m_numBatchVertices / 2); 
 		
-			mCurrentTex = it->first;
-			mDeviceD3D9->SetTexture(0, mCurrentTex);
+			m_currentTex = it->first;
+			m_deviceD3D9->SetTexture(0, m_currentTex);
 	
-			mNumBatchVertices = 0;
-			mBatchVB->Lock(0, BATCH_BUFFER_SIZE * mSizeOfVert, (VOID**)&batchVertices, 0);
+			m_numBatchVertices = 0;
+			m_batchVB->Lock(0, BATCH_BUFFER_SIZE * m_size1Vert, (VOID**)&batchVertices, 0);
 		}
 
 		count = 0;
 	
 		for(std::string::const_iterator i = it->second.text.begin(), e = it->second.text.end(); i != e; ++i)
 		{		
+			FontCharDesc	Char = it->second.font->_getChar(*i);
+
 			if(*i == ' ')
 			{
-				anPos.x+=it->second.font->getWidth();
+				anPos.x+=Char.width;
 				continue;
 			}
 
-			mt::vec4f	texcoor = it->second.font->_getChar(*i);
+			m_fontVerts[count+0].tcoor = mt::vec2f(Char.uv.x, Char.uv.y);
+			m_fontVerts[count+1].tcoor = mt::vec2f(Char.uv.z, Char.uv.y);
+			m_fontVerts[count+2].tcoor = mt::vec2f(Char.uv.z, Char.uv.w);
+			m_fontVerts[count+3].tcoor = mt::vec2f(Char.uv.x, Char.uv.w);
 
-			mFontVertices[count+0].tcoor = mt::vec2f(texcoor.x, texcoor.y);
-			mFontVertices[count+1].tcoor = mt::vec2f(texcoor.z, texcoor.y);
-			mFontVertices[count+2].tcoor = mt::vec2f(texcoor.z, texcoor.w);
-			mFontVertices[count+3].tcoor = mt::vec2f(texcoor.x, texcoor.w);
+		
+			float	offX = anPos.x + Char.width;
+			float	offY = it->second.font->getHeight();
 
-			float	offX = anPos.x+it->second.font->getWidth();
-			float	offY = -it->second.font->getHeight();
+			m_fontVerts[count+0].position = mt::vec3f(anPos.x, 0.0f, 0);
+			m_fontVerts[count+1].position = mt::vec3f(offX, 0.0f, 0);
+			m_fontVerts[count+2].position = mt::vec3f(offX, offY, 0);
+			m_fontVerts[count+3].position = mt::vec3f(anPos.x, offY, 0);
 
-			mFontVertices[count+0].position = mt::vec3f(anPos.x, 0.0f, 1.0f);
-			mFontVertices[count+1].position = mt::vec3f(offX, 0.0f, 1.0f);
-			mFontVertices[count+2].position = mt::vec3f(offX, offY, 1.0f);
-			mFontVertices[count+3].position = mt::vec3f(anPos.x, offY, 1.0f);
+			m_fontVerts[count+0].color = 
+			m_fontVerts[count+1].color = 
+			m_fontVerts[count+2].color = 
+			m_fontVerts[count+3].color = 0xFFFFFFFF;
 
-			mFontVertices[count+0].color = 
-			mFontVertices[count+1].color = 
-			mFontVertices[count+2].color = 
-			mFontVertices[count+3].color = 0xFFFFFFFF;
+			m_fontVerts[count+0].rhw = 1.0f;
+			m_fontVerts[count+1].rhw = 1.0f;
+			m_fontVerts[count+2].rhw = 1.0f;
+			m_fontVerts[count+3].rhw = 1.0f;
 
-			anPos.x+=it->second.font->getWidth();
+			anPos.x+=Char.width;
 
 			count+=4;
 		}
 		
-		memcpy(&batchVertices[mNumBatchVertices], &mFontVertices[0], mSizeOfVert * count);
-		mNumBatchVertices+=count;
+		memcpy(&batchVertices[m_numBatchVertices], &m_fontVerts[0], m_size1Vert * count);
+		m_numBatchVertices+=count;
 	}
 
-	mBatchVB->Unlock();
+	m_batchVB->Unlock();
 	
-	if(mNumBatchVertices)
+	if(m_numBatchVertices)
 	{
-		mDeviceD3D9->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, mNumBatchVertices, 0, mNumBatchVertices/2); 
+		m_deviceD3D9->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_numBatchVertices, 0, m_numBatchVertices/2); 
 	}
 
-	mDeviceD3D9->SetStreamSource(0, mVBDynamic, 0, mSizeOfVert);
+	m_deviceD3D9->SetStreamSource(0, m_vbDynamic, 0, m_size1Vert);
 	
-    mBuffersToFlush.clear();
+    m_flushBuffers.clear();
 }
 
 bool	Direct3d9RenderSystem::beginSceneDrawing(unsigned long _color)
 {
-	if (!mDeviceD3D9)
+	if (!m_deviceD3D9)
 	{
 		return false;
 	}
 
 	HRESULT	hr;
 
-	if (mDeviceLost)
+	if (m_deviceLost)
 	{
-		if(FAILED(hr = mDeviceD3D9->TestCooperativeLevel()))
+		if(FAILED(hr = m_deviceD3D9->TestCooperativeLevel()))
         {
             if (hr == D3DERR_DEVICELOST)
 			{
@@ -250,30 +256,30 @@ bool	Direct3d9RenderSystem::beginSceneDrawing(unsigned long _color)
 
             if (hr == D3DERR_DEVICENOTRESET)
 			{
-				if (FAILED(mDeviceD3D9->Reset(&mPresent)))
+				if (FAILED(m_deviceD3D9->Reset(&m_present)))
 				{
 					return false;
 				}
 
 				_initRenderSystem();
 
-				mDeviceD3D9->SetVertexShader(NULL);
+				m_deviceD3D9->SetVertexShader(NULL);
 				
-				mDeviceD3D9->SetFVF (D3DFVF_TLVERTEX);
-				mDeviceD3D9->SetStreamSource(0, mVBDynamic, 0, mSizeOfVert);
-				mDeviceD3D9->SetIndices(mBatchIB);
+				m_deviceD3D9->SetFVF (D3DFVF_TLVERTEX);
+				m_deviceD3D9->SetStreamSource(0, m_vbDynamic, 0, m_size1Vert);
+				m_deviceD3D9->SetIndices(m_batchIB);
 
-				mDeviceLost = false;
+				m_deviceLost = false;
 			}
         }
 	}
 
-	if (FAILED(mDeviceD3D9->Clear(0, NULL, D3DCLEAR_TARGET, _color, 1.0, 0)))
+	if (FAILED(m_deviceD3D9->Clear(0, NULL, D3DCLEAR_TARGET, _color, 1.0, 0)))
 	{
 		return false;
 	}
 
-	if (FAILED(mDeviceD3D9->BeginScene()))
+	if (FAILED(m_deviceD3D9->BeginScene()))
 	{
 		return	false;
 	}
@@ -285,20 +291,20 @@ bool	Direct3d9RenderSystem::endSceneDrawing()
 {
 	_flushFonts();
 
-	if (mDeviceLost)
+	if (m_deviceLost)
 	{
 		return false;
 	}
 	
-	if (FAILED(mDeviceD3D9->EndScene()))
+	if (FAILED(m_deviceD3D9->EndScene()))
 	{
 		return	false;
 	}
 
-	HRESULT hr = mDeviceD3D9->Present(NULL,NULL,NULL,NULL);
+	HRESULT hr = m_deviceD3D9->Present(NULL,NULL,NULL,NULL);
 	if (hr == D3DERR_DEVICELOST)
 	{
-		mDeviceLost = true;
+		m_deviceLost = true;
 	}
 	else
 	if (FAILED(hr) && hr != D3DERR_INVALIDCALL)
@@ -326,17 +332,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 bool Direct3d9RenderSystem::createDisplay(unsigned int _width, unsigned int _height, unsigned int _bits, bool _fullScreen)
 {
-	mWidth = _width;
-	mHeight = _height;
-	mBits = _bits;
-	mFullScreen = _fullScreen;
+	m_width = _width;
+	m_height = _height;
+	m_bits = _bits;
+	m_fullScreen = _fullScreen;
 
 	bool vsync = true;
 
 	HINSTANCE hInstance = GetModuleHandle(0);
 
 	D3DDISPLAYMODE d3ddm;
-	HRESULT hr = mDirect3D9->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
+	HRESULT hr = m_direct3d9->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
 
 	if (FAILED(hr))
 	{
@@ -396,60 +402,60 @@ bool Direct3d9RenderSystem::createDisplay(unsigned int _width, unsigned int _hei
 
 	MoveWindow(HWnd, windowLeft, windowTop, realWidth, realHeight, TRUE);
 
-	ZeroMemory(&mPresent, sizeof(mPresent));
+	ZeroMemory(&m_present, sizeof(m_present));
 
-	mPresent.SwapEffect					= _fullScreen ? D3DSWAPEFFECT_FLIP : D3DSWAPEFFECT_COPY;
-	mPresent.Windowed					= _fullScreen ? FALSE : TRUE;
-	mPresent.BackBufferFormat			= d3ddm.Format;
+	m_present.SwapEffect					= _fullScreen ? D3DSWAPEFFECT_FLIP : D3DSWAPEFFECT_COPY;
+	m_present.Windowed					= _fullScreen ? FALSE : TRUE;
+	m_present.BackBufferFormat			= d3ddm.Format;
 	//mPresent.EnableAutoDepthStencil		= TRUE;
-	mPresent.EnableAutoDepthStencil		= FALSE;
-	mPresent.PresentationInterval		= D3DPRESENT_INTERVAL_IMMEDIATE;
+	m_present.EnableAutoDepthStencil		= FALSE;
+	m_present.PresentationInterval		= D3DPRESENT_INTERVAL_IMMEDIATE;
 
 	if (_fullScreen)
 	{
-		mPresent.BackBufferWidth = _width;
-		mPresent.BackBufferHeight = _height;
-		mPresent.BackBufferFormat = D3DFMT_R5G6B5;
-		mPresent.BackBufferCount = 0;
-		mPresent.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+		m_present.BackBufferWidth = _width;
+		m_present.BackBufferHeight = _height;
+		m_present.BackBufferFormat = D3DFMT_R5G6B5;
+		m_present.BackBufferCount = 0;
+		m_present.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
 		if (vsync)
 		{
-			mPresent.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+			m_present.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 		}
 		
 		if (_bits == 32) 
 		{
-			mPresent.BackBufferFormat = D3DFMT_A8R8G8B8;
+			m_present.BackBufferFormat = D3DFMT_A8R8G8B8;
 		}
 	}
 
 	D3DDEVTYPE devtype = D3DDEVTYPE_HAL;
 
-	mPresent.AutoDepthStencilFormat = D3DFMT_D16;
+	m_present.AutoDepthStencilFormat = D3DFMT_D16;
 	
 	//#define _NVPERFHUD_
 
 	#ifndef _NVPERFHUD_
-		if (FAILED(mDirect3D9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, HWnd,
+		if (FAILED(m_direct3d9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, HWnd,
 			D3DCREATE_HARDWARE_VERTEXPROCESSING,
-			&mPresent, &mDeviceD3D9 )))
+			&m_present, &m_deviceD3D9 )))
 		{
 			assert(!"[!] error CreateDevice\n");
 		}
 	#else
 	  D3DADAPTER_IDENTIFIER9 Identifier;
 	  bool use_nvpefhud = false;
-	  mDirect3D9->GetAdapterIdentifier(mDirect3D9->GetAdapterCount() - 1, 0 , &Identifier);
+	  m_direct3d9->GetAdapterIdentifier(m_direct3d9->GetAdapterCount() - 1, 0 , &Identifier);
 	  if (strcmp(Identifier.Description, "NVIDIA NVPerfHUD") == 0)
 		  use_nvpefhud = true;
 
 	  if (use_nvpefhud)
 	  {
 		LOG.msg("[i] Используем NVPerfhud\n");
-		if (FAILED(mDirect3D9->CreateDevice(mDirect3D9->GetAdapterCount() - 1,
+		if (FAILED(m_direct3d9->CreateDevice(m_direct3d9->GetAdapterCount() - 1,
 			D3DDEVTYPE_REF, HWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING,
-			&mPresent, &mDeviceD3D9 )))
+			&m_present, &m_deviceD3D9 )))
 		{
 		  LOG.msg("[!] Ошибка CreateDevice\n");
 	//	  return false;
@@ -457,9 +463,9 @@ bool Direct3d9RenderSystem::createDisplay(unsigned int _width, unsigned int _hei
 	  }
 	  else
 	  {
-		if (FAILED(mDirect3D9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, HWnd,
+		if (FAILED(m_direct3d9->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, HWnd,
 			D3DCREATE_HARDWARE_VERTEXPROCESSING,
-			&mPresent, &mDeviceD3D9 )))
+			&m_present, &m_deviceD3D9 )))
 		{
 		  LOG.msg("[!] Ошибка CreateDevice\n");
 	//	  return false;
@@ -467,7 +473,7 @@ bool Direct3d9RenderSystem::createDisplay(unsigned int _width, unsigned int _hei
 	  }
 	#endif
 
-	mDeviceLost = false;
+	m_deviceLost = false;
 	_initRenderSystem();
 	_initBatching();
 	return true;
@@ -475,26 +481,26 @@ bool Direct3d9RenderSystem::createDisplay(unsigned int _width, unsigned int _hei
 
 bool	Direct3d9RenderSystem::_initRenderSystem()
 {
-	mDeviceD3D9->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	mDeviceD3D9->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	m_deviceD3D9->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	m_deviceD3D9->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 
-	mDeviceD3D9->SetRenderState(D3DRS_LIGHTING, FALSE);
-	mDeviceD3D9->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	mDeviceD3D9->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	m_deviceD3D9->SetRenderState(D3DRS_LIGHTING, FALSE);
+	m_deviceD3D9->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	m_deviceD3D9->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-	mDeviceD3D9->SetTextureStageState(0,D3DTSS_COLOROP,  D3DTOP_MODULATE);
-	mDeviceD3D9->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-	mDeviceD3D9->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);
+	m_deviceD3D9->SetTextureStageState(0,D3DTSS_COLOROP,  D3DTOP_MODULATE);
+	m_deviceD3D9->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+	m_deviceD3D9->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);
 
-	mDeviceD3D9->SetTextureStageState(0,D3DTSS_ALPHAOP,  D3DTOP_MODULATE);
-	mDeviceD3D9->SetTextureStageState(0,D3DTSS_ALPHAARG1,D3DTA_TEXTURE);
-	mDeviceD3D9->SetTextureStageState(0,D3DTSS_ALPHAARG2,D3DTA_DIFFUSE);
+	m_deviceD3D9->SetTextureStageState(0,D3DTSS_ALPHAOP,  D3DTOP_MODULATE);
+	m_deviceD3D9->SetTextureStageState(0,D3DTSS_ALPHAARG1,D3DTA_TEXTURE);
+	m_deviceD3D9->SetTextureStageState(0,D3DTSS_ALPHAARG2,D3DTA_DIFFUSE);
 
-	mDeviceD3D9->SetTexture(0,NULL);
-	mCurrentTex = NULL;
+	m_deviceD3D9->SetTexture(0,NULL);
+	m_currentTex = NULL;
 
 	// #######################
-	if(FAILED(D3DXCreateLine(mDeviceD3D9, &m_pLine)) )
+	if(FAILED(D3DXCreateLine(m_deviceD3D9, &m_pLine)) )
 	{
 		assert(!"can't create line");
 	}
@@ -504,50 +510,50 @@ bool	Direct3d9RenderSystem::_initRenderSystem()
 
 bool	Direct3d9RenderSystem::_initBatching()
 {
-	mSizeOf4Verts = sizeof(D3D9Vertex) * 4;
-	mSizeOfVert = sizeof(D3D9Vertex);
+	m_size4Verts = sizeof(D3D9Vertex) * 4;
+	m_size1Vert = sizeof(D3D9Vertex);
 
-	mDeviceD3D9->CreateVertexBuffer(
-		mSizeOf4Verts, 
+	m_deviceD3D9->CreateVertexBuffer(
+		m_size4Verts, 
 		D3DUSAGE_WRITEONLY,
 		D3DFVF_TLVERTEX,
 		D3DPOOL_MANAGED,
-		&mVBDynamic, 
+		&m_vbDynamic, 
 		NULL
 	);
 
-	mFontVertices.reserve(1000);
+	m_fontVerts.reserve(1000);
 
-	if (D3D_OK != mDeviceD3D9->CreateVertexBuffer(
-		BATCH_BUFFER_SIZE * mSizeOfVert, 
+	if (D3D_OK != m_deviceD3D9->CreateVertexBuffer(
+		BATCH_BUFFER_SIZE * m_size1Vert, 
 		D3DUSAGE_WRITEONLY,
 		D3DFVF_TLVERTEX,
 		D3DPOOL_MANAGED,
-		&mBatchVB,
+		&m_batchVB,
 		NULL
 		))
 	{
 		return	false;
 	}
 
-	if (D3D_OK != mDeviceD3D9->CreateIndexBuffer(
+	if (D3D_OK != m_deviceD3D9->CreateIndexBuffer(
 		BATCH_BUFFER_SIZE * 3, 
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,
-		&mBatchIB,
+		&m_batchIB,
 		NULL
 		))
 	{
 		return	false;
 	}
 
-	mNumBatchVertices = 0;
+	m_numBatchVertices = 0;
 
 	int		index = 0;
 	short*	indices = NULL;
 
-	if (FAILED(mBatchIB->Lock(0, BATCH_BUFFER_SIZE * 3, (VOID**)&indices, 0)))
+	if (FAILED(m_batchIB->Lock(0, BATCH_BUFFER_SIZE * 3, (VOID**)&indices, 0)))
 	{
 		return	false;
 	}
@@ -562,12 +568,12 @@ bool	Direct3d9RenderSystem::_initBatching()
 		indices[index++] = i + 2;
 	}
 
-	mBatchIB->Unlock();
+	m_batchIB->Unlock();
 
-	mDeviceD3D9->SetVertexShader(NULL);
-	mDeviceD3D9->SetFVF (D3DFVF_TLVERTEX);
-	mDeviceD3D9->SetStreamSource(0, mVBDynamic, 0, mSizeOfVert);
-	mDeviceD3D9->SetIndices(mBatchIB);
+	m_deviceD3D9->SetVertexShader(NULL);
+	m_deviceD3D9->SetFVF (D3DFVF_TLVERTEX);
+	m_deviceD3D9->SetStreamSource(0, m_vbDynamic, 0, m_size1Vert);
+	m_deviceD3D9->SetIndices(m_batchIB);
 	return	true;
 }
 

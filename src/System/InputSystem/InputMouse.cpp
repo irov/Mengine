@@ -66,6 +66,12 @@ HRESULT CInputMouse::Init()
 		return hr;
 	}
 
+	IFFAILED(hr = m_pDev->Acquire())
+	{
+		//PUSHERROR("SetDataFormat error code = %d [/FATAL ERROR/]",hr);
+		return hr;
+	}
+
 	m_bUse = true;
 	m_bActive = true;
 

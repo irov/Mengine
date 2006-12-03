@@ -13,6 +13,7 @@
 #	include "Game.h"
 #	include "Player.h"
 
+#	include "ErrorMessage.h"
 #	include "XmlParser.h"
 
 #	define WIN32_LEAN_AND_MEAN
@@ -148,7 +149,12 @@ namespace Menge
 		inputEng->SetPositionAndSpeed (0, 0, 0, 1);
 		inputEng->SetRange (0, 0, -1000, 1024, 768, 1000);
 
-		inputEng->Init();
+		bool inputInit = inputEng->Init();
+
+		if( inputInit == false )
+		{
+			ErrorMessage("Input Manager invalid initialization");
+		}
 
 		return true;
 	}

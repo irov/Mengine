@@ -50,8 +50,8 @@ void CInputSystem::destroy()
 bool CInputSystem::init(HWND hWnd, int Joint)
 {
 	HRESULT res = m_InputCore->Init(hWnd,Joint);
-	
-	return acquire();
+
+	return ( res <= 0 );
 }
 
 HRESULT CInputSystem::reset()

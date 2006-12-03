@@ -689,7 +689,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\XmlReader.h"
+				RelativePath=".\XmlParser.h"
 				>
 			</File>
 		</Filter>

@@ -42,7 +42,7 @@ namespace Menge
 		std::string m_logoChapterName;
 		std::string m_logoSceneName;
 
-		std::string m_defaultArrow;
+		std::string m_defaultArrowName;
 
 		Player * m_player;
 

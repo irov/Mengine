@@ -13,7 +13,7 @@
 #	include "Game.h"
 #	include "Player.h"
 
-#	include "XmlReader.h"
+#	include "XmlParser.h"
 
 #	define WIN32_LEAN_AND_MEAN
 #	include "windows.h"
@@ -134,11 +134,6 @@ namespace Menge
 			Keeper<FileEngine>::hostage()->loadPak(it->first,it->second);
 		}
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::run()
-	{	
 		//хг-гю кхмхи мерс бняярюмнбкемхъ пеяспянб.
 		bool display = createDisplay(m_width,m_height,m_bits,m_fullScreen);
 
@@ -147,6 +142,18 @@ namespace Menge
 			//TODO: ERROR
 		}
 
+		InputEngine *inputEng = Keeper<InputEngine>::hostage();
+
+		inputEng->SetPositionAndSpeed (0, 0, 0, 1);
+		inputEng->SetRange (0, 0, -1000, 1024, 768, 1000);
+
+		inputEng->Init();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::run()
+	{	
 		m_game->activate();
 
 		MSG msg = MSG();
@@ -172,6 +179,8 @@ namespace Menge
 		//{
 		//	m_functionUpdate->callFunctionVoid();
 		//}
+
+		Keeper<InputEngine>::hostage()->Update();
 
 		m_game->update(0.07f);
 	}

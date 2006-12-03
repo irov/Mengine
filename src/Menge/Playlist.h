@@ -2,7 +2,7 @@
 
 #	include <vector>
 
-#	include "XmlReader.h"
+class TiXmlElement;
 
 namespace	Menge
 {
@@ -12,11 +12,14 @@ namespace	Menge
 	{
 	public:
 		Playlist(const std::string& name);
+
+	public:
 		void	nextSong();
 		void	loader(TiXmlElement * xml);
 		void	release();
 		const std::string&	getCurrentSongName() const;
 		const std::string&	getName() const;
+
 	private:
 		std::string	m_playListName;
 		TVecTrackList m_tracks;

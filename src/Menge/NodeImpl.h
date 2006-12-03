@@ -55,6 +55,12 @@ namespace Menge
 	public:
 		virtual Node * createChildren(const std::string &_name, const std::string &_type);
 
+		template<class T>
+		T * createChildrenT(const std::string &_name, const std::string &_type)
+		{
+			return static_cast<T*>(createChildren(_name,_type));
+		}
+
 		virtual bool addChildren(Node *_node);
 
 		virtual bool isChildren(Node *_node);
@@ -71,7 +77,7 @@ namespace Menge
 		typedef void (*TForEachFunc)( Node *);
 
 		virtual void foreachFunc(TForEachFunc _func);
-		virtual void foreachChildren( Visitor *_visitor );
+		virtual void visitChildren( Visitor *_visitor );
 
 		virtual void removeChildren(Node *_node);
 		virtual void removeChildren(const std::string &_name);

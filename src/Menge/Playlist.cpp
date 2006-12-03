@@ -1,5 +1,7 @@
 #include "Playlist.h"
 
+#	include "XmlParser.h"
+
 namespace	Menge
 {
 	Playlist::Playlist(const std::string& name)

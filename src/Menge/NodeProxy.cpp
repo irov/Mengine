@@ -108,9 +108,9 @@ namespace Menge
 		return m_node->foreachFunc(_func);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::foreachChildren( Visitor *_visitor)
+	void NodeProxy::visitChildren( Visitor *_visitor)
 	{
-		return m_node->foreachChildren( _visitor );
+		return m_node->visitChildren( _visitor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeProxy::removeChildren(Node *_node)

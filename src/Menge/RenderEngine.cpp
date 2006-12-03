@@ -4,7 +4,7 @@
 
 #	include "FileSystemInterface.h"
 #	include "FileEngine.h"
-#	include "XmlReader.h"
+#	include "XmlParser.h"
 
 
 namespace Menge

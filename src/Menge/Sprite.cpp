@@ -1,7 +1,7 @@
 #	include "Sprite.h"
 #	include "ObjectImplement.h"
 #	include "RenderEngine.h"
-#	include "XmlReader.h"
+#	include "XmlParser.h"
 #	include "RenderSystemInterface.h"
 #	include "FileSystemInterface.h"
 #	include "FileEngine.h"

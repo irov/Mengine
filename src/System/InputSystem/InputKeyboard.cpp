@@ -57,12 +57,12 @@ HRESULT CInputKeyboard::Init()
 	}
 
 	//Required for game editor
-#ifdef _EDITOR
+//#ifdef _EDITOR
 	IFFAILED(hr = m_pDev->SetCooperativeLevel(m_InputCore->m_hWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE))
-#else
-	IFFAILED(hr = m_pDev->SetCooperativeLevel(m_InputCore->m_hWnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE))
-#endif
-//	IFFAILED(hr = m_pDev->SetCooperativeLevel (m_InputCore->m_hWnd , DISCL_FOREGROUND | DISCL_EXCLUSIVE))
+//#else
+	//IFFAILED(hr = m_pDev->SetCooperativeLevel(m_InputCore->m_hWnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE))
+//#endif
+	//IFFAILED(hr = m_pDev->SetCooperativeLevel (m_InputCore->m_hWnd , DISCL_FOREGROUND | DISCL_EXCLUSIVE))
 	{
 		//PUSHERROR("SetCooperativeLevel [ DISCL_FOREGROUND | DISCL_NONEXCLUSIVE ] error code = %d [/FATAL ERROR/]",hr);
 		return hr;
@@ -108,7 +108,7 @@ void CInputKeyboard::Update (void)
 	const int SizeLayerKeys = sizeof(m_Keys[m_LayerKeys]);
 	IFFAILED(hr = m_pDev->GetDeviceState (SizeLayerKeys, (LPVOID)&m_Keys[m_LayerKeys]))
 	{
-#ifndef _EDITOR
+//#ifndef _EDITOR
 		if( hr == DIERR_INPUTLOST )
 		{
 			hr = m_pDev->Acquire ();
@@ -118,7 +118,7 @@ void CInputKeyboard::Update (void)
 		{
 			hr = m_pDev->Acquire ();
 		}
-#endif // _EDITOR
+//#endif // _EDITOR
 
 		for( int i = 0; i<256; ++i )
 		{

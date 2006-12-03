@@ -1,5 +1,5 @@
 #	include "SoundSystemInterface.h"
-#	include "XmlReader.h"
+#	include "XmlParser.h"
 #	include "SoundNode.h"
 #	include "SoundEngine.h"
 #	include "FileEngine.h"

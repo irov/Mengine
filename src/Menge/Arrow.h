@@ -15,6 +15,9 @@ namespace Menge
 	public:
 		HotSpot *pickHotSpot();
 
+	public:
+		void loader( TiXmlElement *_xml ) override;
+
 	protected:
 		void _update( float _timing ) override;
 		bool _compile() override;

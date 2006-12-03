@@ -16,7 +16,7 @@
 
 #	include "InputScriptFunctionMap.h"
 
-#	include "XmlReader.h"
+#	include "XmlParser.h"
 #	include "ErrorMessage.h"
 
 #	include "Utility/algorithm.h"
@@ -37,16 +37,9 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	bool InputEngine::Init()
 	{
-		//m_interface->Init()
-		
-		//CWindowEngine *WndEng = GetWindowEngine();
+		HWND hWnd = GetActiveWindow();
 
-		//HWND hWnd = WndEng->hWnd();
-
-		//m_InputManager = new CInputManager();
-
-		//m_InputManager->Init(hWnd,INPUT_ALL);
-		return true;
+		return m_interface->init( hWnd, 0x00000003 );
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	void InputEngine::Update()

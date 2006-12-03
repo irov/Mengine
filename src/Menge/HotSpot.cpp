@@ -1,7 +1,7 @@
 #	include "HotSpot.h"
 #	include "ObjectImplement.h"
 
-#	include "XmlReader.h"
+#	include "XmlParser.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(HotSpot)

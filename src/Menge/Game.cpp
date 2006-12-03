@@ -10,7 +10,7 @@
 
 #	include "FileEngine.h"
 
-#	include "XmlReader.h"
+#	include "XmlParser.h"
 #	include "ErrorMessage.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -93,6 +93,14 @@ void Game::loader(TiXmlElement *_xml)
 				addArrow(arrow);
 			}
 		}
+
+		//<Default>
+		//	<Arrow Type = "Default" />
+		//	</Default>
+		XML_CHECK_NODE_FOR_EACH("Default")
+		{
+			XML_CHECK_VALUE_NODE("Arrow", "Type", m_defaultArrowName)
+		}
 	}
 
 	NodeImpl::loader(_xml);
@@ -104,8 +112,12 @@ bool Game::_compile()
 
 	Chapter *logoChapter = getChildrenT<Chapter>(m_logoChapterName);
 	Scene *logoScene = logoChapter->getChildrenT<Scene>(m_logoSceneName);
+
+	Arrow *defaultArrow = getArrow(m_defaultArrowName);
+
 	m_player->setChapter(logoChapter);
 	m_player->setScene(logoScene);
+	m_player->setArrow(defaultArrow);
 
 	return true;
 }

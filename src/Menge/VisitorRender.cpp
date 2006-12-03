@@ -20,6 +20,7 @@ namespace Menge
 	void VisitorRender::mask_call( Renderable *_node)
 	{
 		_node->render();
+		_node->visitChildren(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void VisitorRender::apply( Node * _node)

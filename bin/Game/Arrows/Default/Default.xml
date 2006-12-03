@@ -1,3 +1,5 @@
 <Node Name = "Default" Type = "Arrow">
-	<Idle Sprite = "Game/Arrows/Default/Default.mng" />
+	<IdleSprite Type = "Sprite" >
+		<ImageMNG File = "Game/Arrows/Default/Default.mng" />
+	</IdleSprite>
 </Node>

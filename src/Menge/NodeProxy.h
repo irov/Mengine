@@ -54,7 +54,7 @@ namespace Menge
 		Node * getChildren(const std::string &_name)override;
 
 		void foreachFunc(TForEachFunc _func) override;
-		void foreachChildren( Visitor *_visitor) override;
+		void visitChildren( Visitor *_visitor) override;
 
 		void removeChildren(Node *_node) override;
 		void removeChildren(const std::string &_name) override;

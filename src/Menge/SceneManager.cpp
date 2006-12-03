@@ -10,7 +10,7 @@
 
 #	include "ScriptFunction.h"
 
-#	include "XmlReader.h"
+#	include "XmlParser.h"
 #	include "ErrorMessage.h"
 
 using namespace Menge;

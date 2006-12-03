@@ -48,11 +48,15 @@ namespace Menge
 	void Player::update(float _timig)
 	{
 		m_scene->update( _timig );
+		m_arrow->update( _timig );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render()
 	{
-		VisitorRender vr(m_scene);
+		VisitorRender renderer;
+		
+		renderer.apply(m_scene);
+		renderer.apply(m_arrow);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::debugRender()

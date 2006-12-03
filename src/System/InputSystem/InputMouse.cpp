@@ -10,6 +10,8 @@ CInputMouse::CInputMouse(CInputCore *InputCore)
 , m_pDev(0)
 , m_bUse(FALSE)
 , m_bActive(FALSE)
+, m_Speed(0)
+, m_bMove(false)
 {
 	for( int i = 0; i< 8; ++i)
 	{
@@ -37,19 +39,19 @@ HRESULT CInputMouse::Init()
 		return hr;
 	}
 //Required for game editor
-#ifdef _EDITOR
-	IFFAILED(hr = m_pDev->SetCooperativeLevel(m_InputCore->m_hWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE))
-	{
-		//PUSHERROR("SetCooperativeLevel [ DISCL_FOREGROUND | DISCL_NONEXCLUSIVE ] error code = %d [/FATAL ERROR/]",hr);
-		return hr;
-	}
-#else
+//#ifdef _EDITOR
+	//IFFAILED(hr = m_pDev->SetCooperativeLevel(m_InputCore->m_hWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE))
+	//{
+	//	//PUSHERROR("SetCooperativeLevel [ DISCL_FOREGROUND | DISCL_NONEXCLUSIVE ] error code = %d [/FATAL ERROR/]",hr);
+	//	return hr;
+	//}
+//#else
 	IFFAILED(hr = m_pDev->SetCooperativeLevel(m_InputCore->m_hWnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE))
 	{
 		//PUSHERROR("SetCooperativeLevel [ DISCL_FOREGROUND | DISCL_NONEXCLUSIVE ] error code = %d [/FATAL ERROR/]",hr);
 		return hr;
 	}
-#endif
+//#endif
 
 
 	DIPROPDWORD MProp;
@@ -117,12 +119,12 @@ void CInputMouse::Update (void)
 
 	IFFAILED(hr = m_pDev->GetDeviceState( sizeof(m_MouseState),&m_MouseState))
 	{
-#ifndef _EDITOR
+//#ifndef _EDITOR
 		if( hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED )
 		{
 			Restore();
 		}
-#endif // _EDITOR
+//#endif // _EDITOR
 		return;
 	}
 
@@ -139,12 +141,12 @@ void CInputMouse::Update (void)
 		m_Elem = 1;
 		if(FAILED(hr = m_pDev->GetDeviceData (sizeof(m_Data), &m_Data, &m_Elem, 0)))
 		{
-#ifndef _EDITOR
+//#ifndef _EDITOR
 			if( hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED )
 			{
 				Restore();
 			}
-#endif // _EDITOR
+//#endif // _EDITOR
 			break;
 
 		}

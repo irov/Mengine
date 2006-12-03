@@ -8,7 +8,7 @@
 	template<typename O>\
 	void call_impl( O * _o )\
 	{\
-		_o->foreachChildren(this);\
+		_o->visitChildren(this);\
 	}\
 	void call_impl( CLASS * _node)\
 	{\

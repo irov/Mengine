@@ -49,7 +49,9 @@ void CInputSystem::destroy()
 
 bool CInputSystem::init(HWND hWnd, int Joint)
 {
-	return ( m_InputCore->Init(hWnd,Joint) < 0 );
+	HRESULT res = m_InputCore->Init(hWnd,Joint);
+	
+	return acquire();
 }
 
 HRESULT CInputSystem::reset()
@@ -104,21 +106,11 @@ bool CInputSystem::getKey(char *ch,int key_state)
 
 void CInputSystem::setPositionAndSpeed (int X, int Y, int Z, int Speed)
 {
-	if( m_InputCore->m_InputKeyboard->IsActive() == false )
-	{
-		return;
-	}
-
 	m_InputCore->m_InputMouse->SetPosSpeed(X,Y,Z,Speed);
 }
 
 void CInputSystem::setRange (int min_x, int min_y, int min_z, int max_x, int max_y, int max_z)
 {
-	if( m_InputCore->m_InputMouse->IsActive() == false )
-	{
-		return;
-	}
-
 	m_InputCore->m_InputMouse->SetPosRange(min_x,min_y,min_z,max_x,max_y,max_z);
 }
 

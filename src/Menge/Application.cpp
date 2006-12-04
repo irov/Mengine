@@ -114,9 +114,21 @@ namespace Menge
 				{
 					XML_DEF_ATTRIBUTES_NODE(File);
 
+					if( File.empty() )
+					{
+						continue;
+					}
+
 					m_game = new Game();
 
-					m_game->setResource(File);
+					XML_PARSE_FILE_EX( File )
+					{
+						XML_CHECK_NODE("Game")
+						{
+							m_game->loader(XML_CURRENT_NODE);
+						}
+					}
+					
 				}
 			}
 		}
@@ -159,13 +171,13 @@ namespace Menge
 			ErrorMessage("Input Manager invalid initialization");
 		}
 
+		m_game->compile();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::run()
 	{	
-		m_game->activate();
-
 		MSG msg = MSG();
 		while(msg.message != WM_QUIT)
 		{

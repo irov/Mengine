@@ -50,12 +50,12 @@ namespace mt
 		return	points.size();
 	}
 
-	const vec2f& polygon::operator[](int i) const
+	const vec2f& polygon::operator[](size_t i) const
 	{
 		return points[i];
 	}
 
-	vec2f& polygon::operator[](int i)
+	vec2f& polygon::operator[](size_t i)
 	{
 		return points[i];
 	}

@@ -17,6 +17,9 @@ namespace Menge
 
 	public:
 		void loader( TiXmlElement *_xml) override;
+
+	protected:
+		void _debugRender() override;
 			
 	private:
 		mt::polygon m_poligon;

@@ -28,8 +28,8 @@ namespace mt
 
 		polygon&	operator=(const polygon& _rhs);
 
-		const vec2f&	operator[](int i) const;
-		vec2f&			operator[](int i);
+		const vec2f&	operator[](size_t i) const;
+		vec2f&			operator[](size_t i);
 	private:
 		std::vector<vec2f> points;
 	};

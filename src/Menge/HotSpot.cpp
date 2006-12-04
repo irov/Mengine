@@ -28,3 +28,17 @@ void HotSpot::loader( TiXmlElement *_xml)
 		}
 	}
 };
+//////////////////////////////////////////////////////////////////////////
+#	include "RenderEngine.h"
+//////////////////////////////////////////////////////////////////////////
+void HotSpot::_debugRender()
+{
+	RenderEngine *renderEng = Keeper<RenderEngine>::hostage();
+
+	size_t size = m_poligon.num_points();
+
+	for( size_t i = 0; i < size; ++i )
+	{
+		renderEng->drawLine(m_poligon[i],m_poligon[ (i+1) % size ] ,2,0xffff00ff);
+	}
+};

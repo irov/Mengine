@@ -1,5 +1,4 @@
 #	include "Game.h"
-#	include "ObjectImplement.h"
 
 #	include "SceneManager.h"
 
@@ -14,171 +13,228 @@
 #	include "ErrorMessage.h"
 
 //////////////////////////////////////////////////////////////////////////
-OBJECT_IMPLEMENT(Game);
-//////////////////////////////////////////////////////////////////////////
-Game::Game()
-: m_fnInit(0)
-, m_fnUpdate(0)
-, m_fnRender(0)
+namespace Menge
 {
-	Keeper<Game>::keep(this);
-
-	//m_childrenForeach = false;
-}
-
-Game::~Game()
-{
-	for (TMapArrow::iterator 
-		it = m_mapArrow.begin(),
-		it_end = m_mapArrow.end();
-	it != it_end;
-	++it)
+	//////////////////////////////////////////////////////////////////////////
+	Game::Game()
+		: m_fnInit(0)
+		, m_fnUpdate(0)
+		, m_fnRender(0)
 	{
-		delete it->second;	
+		m_player = new Player;
+
+		Keeper<Game>::keep(this);
 	}
-	delete m_player;
-}
-//////////////////////////////////////////////////////////////////////////
-bool Game::addChildren(Node *_node)
-{
-	if( dynamic_cast<Chapter*>(_node) == 0 )
+	//////////////////////////////////////////////////////////////////////////
+	Game::~Game()
 	{
-		return false;
-	}
-
-	return NodeImpl::addChildren(_node);
-}
-//////////////////////////////////////////////////////////////////////////
-void Game::update( float _timing )
-{
-	m_player->update( _timing );
-}
-//////////////////////////////////////////////////////////////////////////
-void Game::render()
-{
-	m_player->render();
-}
-//////////////////////////////////////////////////////////////////////////
-void Game::_debugRender()
-{
-	m_player->debugRender();
-}
-//////////////////////////////////////////////////////////////////////////
-void Game::loader(TiXmlElement *_xml)
-{	
-	XML_FOR_EACH_TREE( _xml )
-	{
-		//<Logo Chapter = "Buba" Scene = "Buka" />
-		XML_CHECK_NODE("Logo")
+		for (TMapArrow::iterator 
+			it = m_mapArrow.begin(),
+			it_end = m_mapArrow.end();
+		it != it_end;
+		++it)
 		{
-			XML_VALUE_ATTRIBUTE("Chapter", m_logoChapterName);
-			XML_VALUE_ATTRIBUTE("Scene", m_logoSceneName);
+			delete it->second;
 		}
 
-
-		//<Arrows>
-		//	<Arrow File = "Game/Arrows/Default.xml" />
-		//	</Arrows>
-		XML_CHECK_NODE_FOR_EACH("Arrows")
+		for (TMapChapter::iterator 
+			it = m_mapChapter.begin(),
+			it_end = m_mapChapter.end();
+		it != it_end;
+		++it)
 		{
-			XML_CHECK_NODE("Arrow")
+			delete it->second;
+		}
+
+		delete m_player;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::update( float _timing )
+	{
+		m_player->update( _timing );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::render()
+	{
+		m_player->render();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::debugRender()
+	{
+		m_player->debugRender();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loader(TiXmlElement *_xml)
+	{	
+		XML_FOR_EACH_TREE( _xml )
+		{
+			//<Chapter File = "Game/Chapters/Buba/Chapter.xml" />
+			XML_CHECK_NODE("Chapter")
 			{
 				XML_DEF_ATTRIBUTES_NODE(File);
 
-				Node * _node = Keeper<SceneManager>::hostage()
-					->createNodeFromXml(File);
-	
-				if( _node == 0 )
+				SceneManager *sceneMgr = Keeper<SceneManager>::hostage();
+
+				Chapter *chapter = sceneMgr->createNodeFromXmlT<Chapter>(File);
+
+				addChapter(chapter);
+			}
+
+
+			//<Logo Chapter = "Buba" Scene = "Buka" />
+			XML_CHECK_NODE("Logo")
+			{
+				XML_VALUE_ATTRIBUTE("Chapter", m_logoChapterName);
+				XML_VALUE_ATTRIBUTE("Scene", m_logoSceneName);
+			}
+
+
+			//<Arrows>
+			//	<Arrow File = "Game/Arrows/Default.xml" />
+			//	</Arrows>
+			XML_CHECK_NODE_FOR_EACH("Arrows")
+			{
+				XML_CHECK_NODE("Arrow")
 				{
-					ErrorMessage("Invalid file `%s`", File.c_str() );
+					XML_DEF_ATTRIBUTES_NODE(File);
+
+					Node *_node = Keeper<SceneManager>::hostage()
+						->createNodeFromXml(File);
+
+					if( _node == 0 )
+					{
+						ErrorMessage("Invalide file `%s`", File.c_str() );
+					}
+
+					Arrow *arrow = dynamic_cast<Arrow*>(_node);
+
+					if( arrow == 0 )
+					{
+						const std::string &name = _node->getName();
+						ErrorMessage("Invalide arrow type - `%s` from file `%s`"
+							, name.c_str()
+							, File.c_str() );
+					}
+
+					addArrow(arrow);
 				}
+			}
 
-				Arrow * arrow = dynamic_cast<Arrow*>(_node);
-
-				if(arrow == 0)
-				{
-					const std::string &name = _node->getName();
-					ErrorMessage("Invalid arrow type - `%s` from file `%s`"
-						, name.c_str()
-						, File.c_str() );
-				}
-
-				addArrow(arrow);
+			//<Default>
+			//	<Arrow Type = "Default" />
+			//	</Default>
+			XML_CHECK_NODE_FOR_EACH("Default")
+			{
+				XML_CHECK_VALUE_NODE("Arrow", "Type", m_defaultArrowName)
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::compile()
+	{
+		Chapter *logoChapter = getChapter(m_logoChapterName);
+		Scene *logoScene = logoChapter->getChildrenT<Scene>(m_logoSceneName);
 
-		//<Default>
-		//	<Arrow Type = "Default" />
-		//	</Default>
-		XML_CHECK_NODE_FOR_EACH("Default")
+		Arrow *defaultArrow = getArrow(m_defaultArrowName);
+
+		m_player->setChapter(logoChapter);
+		m_player->setScene(logoScene);
+		m_player->setArrow(defaultArrow);
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::release()
+	{
+		for (TMapArrow::iterator 
+			it = m_mapArrow.begin(),
+			it_end = m_mapArrow.end();
+		it != it_end;
+		++it)
 		{
-			XML_CHECK_VALUE_NODE("Arrow", "Type", m_defaultArrowName)
+			it->second->release();
 		}
+
+		for (TMapChapter::iterator 
+			it = m_mapChapter.begin(),
+			it_end = m_mapChapter.end();
+		it != it_end;
+		++it)
+		{
+			it->second->release();
+		}
+		
 	}
-
-	NodeImpl::loader(_xml);
-}
-//////////////////////////////////////////////////////////////////////////
-bool Game::_compile()
-{
-	m_player = new Player;
-
-	Chapter * logoChapter = getChildrenT<Chapter>(m_logoChapterName);
-	Scene * logoScene = logoChapter->getChildrenT<Scene>(m_logoSceneName);
-
-	Arrow * defaultArrow = getArrow(m_defaultArrowName);
-
-	m_player->setChapter(logoChapter);
-	m_player->setScene(logoScene);
-	m_player->setArrow(defaultArrow);
-
-	return true;
-}
-//////////////////////////////////////////////////////////////////////////
-void Game::_release()
-{
-	for (TMapArrow::iterator 
-		it = m_mapArrow.begin(),
-		it_end = m_mapArrow.end();
-	it != it_end;
-	++it)
+	//////////////////////////////////////////////////////////////////////////
+	void Game::addArrow(Arrow *_arrow)
 	{
-		it->second->release();
-	}
-}
-//////////////////////////////////////////////////////////////////////////
-void Game::addArrow(Arrow *_arrow)
-{
-	const std::string &name = _arrow->getName();
+		const std::string &name = _arrow->getName();
 
-	if( name.empty() == true )
+		if( name.empty() == true )
+		{
+			ErrorMessage("add invalid arrow");
+		}
+
+		TMapArrow::iterator it_find = m_mapArrow.find(name);
+
+		if( it_find != m_mapArrow.end() )
+		{
+			return;
+		}
+
+		m_mapArrow.insert(std::make_pair(name,_arrow));
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::removeArrow(const std::string &_name)
 	{
-		ErrorMessage("add invalid arrow");
+		m_mapArrow.erase(_name);
 	}
-
-	TMapArrow::iterator it_find = m_mapArrow.find(name);
-
-	if( it_find != m_mapArrow.end() )
+	//////////////////////////////////////////////////////////////////////////
+	Arrow * Game::getArrow(const std::string &_name)
 	{
-		return;
+		TMapArrow::iterator it_find = m_mapArrow.find( _name );
+
+		if( it_find == m_mapArrow.end() )
+		{
+			return 0;
+		}
+
+		return it_find->second;
 	}
-
-	m_mapArrow.insert(std::make_pair(name,_arrow));
-}
-//////////////////////////////////////////////////////////////////////////
-void Game::removeArrow(const std::string &_name)
-{
-	m_mapArrow.erase(_name);
-}
-//////////////////////////////////////////////////////////////////////////
-Arrow * Game::getArrow(const std::string &_name)
-{
-	TMapArrow::iterator it_find = m_mapArrow.find( _name );
-
-	if( it_find == m_mapArrow.end() )
+	//////////////////////////////////////////////////////////////////////////
+	void Game::addChapter(Chapter * _chapter)
 	{
-		return 0;
-	}
+		if( _chapter == 0 )
+		{
+			return;
+		}
 
-	return it_find->second;
+		const std::string &name = _chapter->getName();
+
+		if( name.empty() )
+		{
+			return;
+		}
+
+		TMapChapter::iterator it_find = m_mapChapter.find( name );
+
+		if( it_find != m_mapChapter.end() )
+		{
+			return;
+		}
+
+		m_mapChapter.insert(std::make_pair(name, _chapter));
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Chapter * Game::getChapter(const std::string & _name )
+	{
+		TMapChapter::iterator it_find = m_mapChapter.find( _name );
+
+		if( it_find == m_mapChapter.end() )
+		{
+			return 0;
+		}
+
+		return it_find->second;
+	}
 }

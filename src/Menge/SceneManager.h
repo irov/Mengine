@@ -38,6 +38,12 @@ namespace Menge
 
 		Node * createNodeFromXml( const std::string &_file);
 
+		template<class T>
+		T * createNodeFromXmlT( const std::string &_file)
+		{
+			return static_cast<T*>(createNodeFromXml(_file));
+		}
+
 		bool loadNode(Node *_node, const std::string &_xml);
 
 	private:

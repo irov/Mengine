@@ -171,7 +171,7 @@ void	OpenALSoundSource::stop()
 		m_currentBuffer = 0;
 		if(m_listener)
 		{
-			m_listener->listenStoped( this );
+			m_listener->listenStoped(this);
 		}
 	}
 	m_startTime = 0;
@@ -208,7 +208,7 @@ bool	 OpenALSoundSource::updateSoundBuffer()
 	{
 		if(m_listener)
 		{
-			m_listener->listenRecycled( this );
+			m_listener->listenRecycled(this);
 		}
 	}
 
@@ -230,7 +230,7 @@ bool	 OpenALSoundSource::updateSoundBuffer()
 		if (processed == 1)
 		{
 			alSourceUnqueueBuffers(m_source, 1, &m_buffer[m_currentBuffer]);
-			int size = m_dataBuffer->read (m_dataSoundBuffer,BUFFER_SIZE);
+			int size = m_dataBuffer->read(m_dataSoundBuffer,BUFFER_SIZE);
 			if (size > 0 || (size == 0 && m_looping))
 			{
 				alBufferData(m_buffer[m_currentBuffer], m_format, m_dataSoundBuffer, size, m_dataBuffer->getFrequency());
@@ -246,7 +246,7 @@ bool	 OpenALSoundSource::updateSoundBuffer()
 
 				alGetSourcei(m_source,AL_BUFFERS_QUEUED,&queued);
 
-				if ( queued == 0 )
+				if (queued == 0)
 				{
 					m_dataBuffer -> seek(0);
 				}

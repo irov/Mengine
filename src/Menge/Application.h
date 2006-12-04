@@ -7,6 +7,10 @@
 namespace Menge
 {
 	class Game;
+	class RenderEngine;
+	class FileEngine;
+	class InputEngine;
+	class SoundEngine;
 	class Player;
 	
 	class MENGE_API Application
@@ -37,5 +41,9 @@ namespace Menge
 		bool m_fullScreen;
 
 		Game * m_game;
+		RenderEngine * m_renderEngine;
+		FileEngine * m_fileEngine;
+		InputEngine * m_inputEngine;
+		SoundEngine * m_soundEngine;
 	};
 }

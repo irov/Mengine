@@ -19,6 +19,7 @@ namespace Menge
 		OBJECT_DECLARE(Game)
 	public:
 		Game();
+		~Game();
 
 	public:
 		void update( float _timing );

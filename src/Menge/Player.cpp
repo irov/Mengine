@@ -13,8 +13,12 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+//#define TEST
+
+#ifdef TEST
 	Playlist pl("test");
 	RenderFontInterface* font;
+#endif
 
 	Player::Player()
 	: m_chapter(0)
@@ -22,11 +26,12 @@ namespace Menge
 	, m_arrow(0)
 	, m_backSound(0)
 	{
-		//***
+#ifdef TEST
 		m_backSound = new BackgroundSound();
 		m_backSound->play(pl);
 		font = Keeper<RenderEngine>::hostage()->loadFont("russian.xml");
-		//***
+	#endif
+
 		Keeper<Player>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -62,10 +67,13 @@ namespace Menge
 	void Player::debugRender()
 	{
 		m_scene->debugRender();
+		#ifdef TEST
 		m_backSound->update();
 		Keeper<RenderEngine>::hostage()->renderText(
 			mt::vec2f(25,25),font,"werio walfh; a: :FJKQR:JKRM gyuMEGADET    Hergpyu(&)(&%&%)#$&%)($%");
 
+		#endif
+	
 //		m_arrow->debugRender();
 	}
 }

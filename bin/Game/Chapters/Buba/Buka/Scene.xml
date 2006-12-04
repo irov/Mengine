@@ -12,8 +12,6 @@
 			<SpeedMove Value = "5.f"/>
 			
 			<Node Name = "TestSprite" Type = "Sprite">
-				
-
 				<ImageMNG File = "output.mng" />
 			</Node> <!-- Sprite -->
 		</Node> <!-- Track -->

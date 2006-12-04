@@ -23,20 +23,32 @@ namespace Menge
 {
 	Application::Application()
 		: m_game(0)
-	{
-
-	}
+		, m_fileEngine(0)
+		, m_renderEngine(0)
+		, m_inputEngine(0)
+		, m_soundEngine(0)
+	{}
+	
 	Application::~Application()
 	{
-		m_game->release();
+		if (m_game)
+		{
+			m_game->release();
+		}
+
 		delete m_game;
+
+		delete m_fileEngine;
+		delete m_renderEngine;
+		delete m_inputEngine;
+		delete m_soundEngine;
 	}
-	//////////////////////////////////////////////////////////////////////////
+
 	bool Application::init(const std::string &_xmlFile)
 	{
-		ScriptEngine *scriptEngine = new ScriptEngine;
+//		ScriptEngine *scriptEngine = new ScriptEngine;
 		
-		scriptEngine->init();
+//		scriptEngine->init();
 
 		typedef std::list< std::pair<std::string,int> > TListLoadPaks;
 		TListLoadPaks listLoadPaks;
@@ -56,33 +68,27 @@ namespace Menge
 
 					XML_CHECK_NODE("FileSystem")
 					{
-						new FileEngine(DllFile);			
+						m_fileEngine = new FileEngine(DllFile);			
 					}
 
 					XML_CHECK_NODE("InputSystem")
 					{
-						new InputEngine(DllFile);
+						m_inputEngine = new InputEngine(DllFile);
 					}
 
 					XML_CHECK_NODE("RenderSystem")
 					{
-						new RenderEngine(DllFile);
+						m_renderEngine = new RenderEngine(DllFile);
 					}
 
 					XML_CHECK_NODE("SoundSystem")
 					{
-						new SoundEngine(DllFile);
-					}
-				
-					XML_CHECK_NODE("PhysSystem")
-					{
-//						new PhysicEngine(DllFile);					
+						m_soundEngine = new SoundEngine(DllFile);
 					}
 				}
 
 				XML_CHECK_NODE_FOR_EACH("Paks")
 				{
-					//<Pak File = "Data.pak" Priority = "1" />
 					XML_CHECK_NODE("Pak")
 					{
 						std::string file;
@@ -96,12 +102,6 @@ namespace Menge
 					}
 				}
 
-				//<Display>
-				//	<Width Value = "1024"/>
-				//	<Height Value = "768"/>
-				//	<Bits Value = "32"/>
-				//	<FullScreen Value = "0"/>
-				//	</Display>
 				XML_CHECK_NODE_FOR_EACH("Display")
 				{
 					XML_CHECK_VALUE_NODE("Width","Value",m_width);
@@ -110,7 +110,6 @@ namespace Menge
 					XML_CHECK_VALUE_NODE("FullScreen","Value",m_fullScreen);
 				}
 
-				//<Game File = "Game/Game.xml" />
 				XML_CHECK_NODE("Game")
 				{
 					XML_DEF_ATTRIBUTES_NODE(File);
@@ -144,14 +143,18 @@ namespace Menge
 			//TODO: ERROR
 		}
 
-		InputEngine *inputEng = Keeper<InputEngine>::hostage();
+		InputEngine * inputEng = Keeper<InputEngine>::hostage();
 
-		inputEng->SetPositionAndSpeed (0, 0, 0, 1);
-		inputEng->SetRange (0, 0, -1000, 1024, 768, 1000);
+		bool inputInit = false;
 
-		bool inputInit = inputEng->Init();
+		if (inputEng)
+		{
+			inputEng->SetPositionAndSpeed (0, 0, 0, 1);
+			inputEng->SetRange (0, 0, -1000, 1024, 768, 1000);
+			inputInit = inputEng->Init();
+		}
 
-		if( inputInit == false )
+		if(inputInit == false)
 		{
 			ErrorMessage("Input Manager invalid initialization");
 		}
@@ -164,7 +167,6 @@ namespace Menge
 		m_game->activate();
 
 		MSG msg = MSG();
-
 		while(msg.message != WM_QUIT)
 		{
 			if(PeekMessage(&msg, NULL, NULL, NULL, PM_REMOVE))
@@ -173,7 +175,7 @@ namespace Menge
 				DispatchMessage(&msg);
 			}
 			else
-			{
+			{			
 				update();
 				render();
 			}

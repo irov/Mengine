@@ -21,6 +21,6 @@ namespace Menge
 
 	private:
 		std::string m_startScene;
-		Scene *m_currentScene;
+		//Scene *m_currentScene;
 	};
 }

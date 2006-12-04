@@ -25,6 +25,19 @@ Game::Game()
 
 	//m_childrenForeach = false;
 }
+
+Game::~Game()
+{
+	for (TMapArrow::iterator 
+		it = m_mapArrow.begin(),
+		it_end = m_mapArrow.end();
+	it != it_end;
+	++it)
+	{
+		delete it->second;	
+	}
+	delete m_player;
+}
 //////////////////////////////////////////////////////////////////////////
 bool Game::addChildren(Node *_node)
 {
@@ -72,20 +85,20 @@ void Game::loader(TiXmlElement *_xml)
 			{
 				XML_DEF_ATTRIBUTES_NODE(File);
 
-				Node *_node = Keeper<SceneManager>::hostage()
+				Node * _node = Keeper<SceneManager>::hostage()
 					->createNodeFromXml(File);
 	
 				if( _node == 0 )
 				{
-					ErrorMessage("Invalide file `%s`", File.c_str() );
+					ErrorMessage("Invalid file `%s`", File.c_str() );
 				}
 
-				Arrow *arrow = dynamic_cast<Arrow*>(_node);
+				Arrow * arrow = dynamic_cast<Arrow*>(_node);
 
-				if( arrow == 0 )
+				if(arrow == 0)
 				{
 					const std::string &name = _node->getName();
-					ErrorMessage("Invalide arrow type - `%s` from file `%s`"
+					ErrorMessage("Invalid arrow type - `%s` from file `%s`"
 						, name.c_str()
 						, File.c_str() );
 				}
@@ -110,10 +123,10 @@ bool Game::_compile()
 {
 	m_player = new Player;
 
-	Chapter *logoChapter = getChildrenT<Chapter>(m_logoChapterName);
-	Scene *logoScene = logoChapter->getChildrenT<Scene>(m_logoSceneName);
+	Chapter * logoChapter = getChildrenT<Chapter>(m_logoChapterName);
+	Scene * logoScene = logoChapter->getChildrenT<Scene>(m_logoSceneName);
 
-	Arrow *defaultArrow = getArrow(m_defaultArrowName);
+	Arrow * defaultArrow = getArrow(m_defaultArrowName);
 
 	m_player->setChapter(logoChapter);
 	m_player->setScene(logoScene);
@@ -132,8 +145,6 @@ void Game::_release()
 	{
 		it->second->release();
 	}
-
-	delete m_player;
 }
 //////////////////////////////////////////////////////////////////////////
 void Game::addArrow(Arrow *_arrow)

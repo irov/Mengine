@@ -11,6 +11,14 @@
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT( Arrow )
 //////////////////////////////////////////////////////////////////////////
+Arrow::Arrow()
+: m_arrowIdle(0)
+, m_arrowClick(0)
+, m_offsetClick(0,0)
+{
+
+}
+//////////////////////////////////////////////////////////////////////////
 HotSpot * Arrow::pickHotSpot()
 {
 	return 0;
@@ -24,10 +32,13 @@ void Arrow::_update(float _timing)
 	int y = inputEng->GetPosition(1);
 
 	setPosition( mt::vec2f(x, y) );
+	
 }
 //////////////////////////////////////////////////////////////////////////
 bool Arrow::_compile()
 {
+	m_arrowIdle->setOffset(m_offsetClick);
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -48,7 +59,9 @@ void Arrow::loader( TiXmlElement *_xml )
 			m_arrowIdle = createChildrenT<Sprite>("_Idle", Type);
 			m_arrowIdle->loader(XML_CURRENT_NODE);
 		}
-	}	
+
+		XML_CHECK_VALUE_NODE("ClickOffset", "Value", m_offsetClick);
+	}
 };
 //////////////////////////////////////////////////////////////////////////
 void Arrow::_debugRender()

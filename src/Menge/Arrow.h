@@ -13,6 +13,9 @@ namespace Menge
 		OBJECT_DECLARE(Arrow)
 
 	public:
+		Arrow();
+
+	public:
 		HotSpot *pickHotSpot();
 
 	public:
@@ -26,6 +29,8 @@ namespace Menge
 	private:
 		Sprite *m_arrowIdle;
 		Sprite *m_arrowClick;
+
+		mt::vec2f m_offsetClick;
 	};
 
 }

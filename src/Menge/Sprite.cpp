@@ -13,19 +13,9 @@ Sprite::Sprite()
 , m_looping(true)
 , m_state(REWIND)
 , m_ctdelay(0)
+, m_offset(0.f,0.f)
 {}
 //////////////////////////////////////////////////////////////////////////
-void Sprite::_render()
-{
-	const mt::mat3f& wm = getWorldMatrix();
-	
-	Keeper<RenderEngine>::hostage()->renderImageOffset(
-		wm, 
-		m_images[m_currentFrame->index].offset,
-		0xffffffff,
-		m_images[m_currentFrame->index].renderImage
-	);
-}
 void Sprite::setLooped(bool _looped)
 {
 	m_looping = _looped;
@@ -45,7 +35,11 @@ void Sprite::setFirstFrame()
 		? m_desc.frames.begin() 
 		: m_desc.frames.end() - 1;
 }
-
+//////////////////////////////////////////////////////////////////////////
+void Sprite::setOffset( const mt::vec2f &_offset )
+{
+	m_offset = _offset;
+}
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_update(float _timing)
 {
@@ -195,13 +189,25 @@ void Sprite::play()
 	setFirstFrame();
 }
 //////////////////////////////////////////////////////////////////////////
+void Sprite::_render()
+{
+	const mt::mat3f& wm = getWorldMatrix();
+
+	Keeper<RenderEngine>::hostage()->renderImageOffset(
+		wm, 
+		m_images[m_currentFrame->index].offset + m_offset,
+		0xffffffff,
+		m_images[m_currentFrame->index].renderImage
+		);
+}
+//////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()
 {
 	const mt::mat3f& wm = getWorldMatrix();
 
 	Keeper<RenderEngine>::hostage()->renderImageOffset(
 		wm, 
-		m_images[m_currentFrame->index].offset,
+		m_images[m_currentFrame->index].offset + m_offset,
 		0xffffffff,
 		m_images[m_currentFrame->index].renderImage
 		);

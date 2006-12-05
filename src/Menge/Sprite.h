@@ -28,11 +28,12 @@ namespace Menge
 		virtual void play();
 		virtual void stop();
 		
-		
 		virtual void setLooped(bool _looped);
 		virtual bool getLooped() const;
 		
 		void setFirstFrame();
+
+		void setOffset( const mt::vec2f &_offset );
 
 	public:
 		void loader(TiXmlElement *xml) override;
@@ -60,5 +61,7 @@ namespace Menge
 		std::vector<ImageProperties> m_images;
 		mnglib::mngDesc	m_desc;
 		float m_ctdelay;
+
+		mt::vec2f m_offset;
 	};
 }

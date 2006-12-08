@@ -47,9 +47,7 @@ void Arrow::loader( TiXmlElement *_xml )
 	Renderable::loader( _xml );
 
 	SceneManager *sceneMgr = Keeper<SceneManager>::hostage();
-	//<IdleSprite>
-	//	<ImageMNG File = "output.mng" />	
-	//	</IdleSprite>
+
 	XML_FOR_EACH_TREE( _xml )
 	{
 		XML_CHECK_NODE("IdleSprite")

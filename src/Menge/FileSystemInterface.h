@@ -1,9 +1,7 @@
 #pragma once
 
 #include <string>
-/*
-wrapper under void* and size_t;
-*/
+
 class	FileDataInterface
 {
 public:

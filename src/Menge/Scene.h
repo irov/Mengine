@@ -11,7 +11,14 @@ namespace Menge
 	{
 		OBJECT_DECLARE(Scene);
 
+	public:
+		Scene();
+		void loader( TiXmlElement *_xml ) override;
+
 	protected:
 		bool addChildren(Node *_node) override;
+
+	private:
+		std::string	m_playListName;
 	};
 }

@@ -7,6 +7,8 @@
 #	include "Player.h"
 #	include "Arrow.h"
 
+#	include "BackgroundSound.h"
+
 #	include "FileEngine.h"
 
 #	include "XmlParser.h"
@@ -20,14 +22,19 @@ namespace Menge
 		: m_fnInit(0)
 		, m_fnUpdate(0)
 		, m_fnRender(0)
+		, m_backsoundManager(0)
 	{
 		m_player = new Player;
+
+		m_backsoundManager = new BackgroundSound();
 
 		Keeper<Game>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
+		delete m_backsoundManager;
+
 		for (TMapArrow::iterator 
 			it = m_mapArrow.begin(),
 			it_end = m_mapArrow.end();
@@ -49,9 +56,54 @@ namespace Menge
 		delete m_player;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Game::playList(const std::string& _name)
+	{
+		assert(!"ahtung");
+		std::string	fileNameTrack;
+		//грузим все плейлисты из какого-то файлика
+		XML_PARSE_FILE_EX("tracks.xml")
+		{
+			XML_CHECK_NODE_FOR_EACH("Tracks")
+			{
+				XML_CHECK_VALUE_NODE("Track","File",fileNameTrack)
+				{
+					if(fileNameTrack == _name)
+					{
+						///как получить ноду?
+						////Node* p = getChildren(fileNameTrack);
+						XML_PARSE_FILE_EX(fileNameTrack)
+						{
+							XML_CHECK_NODE_FOR_EACH("Tracks")
+							{
+								XML_CHECK_VALUE_NODE("Track","File",fileNameTrack)
+								{
+								}
+							}
+						}
+						//получаем имя плейлиста (PlatList*)nodepl
+						//
+						//nodepl->push_back()
+	//					createNodeFromXml(fileNameTrack);
+					}
+				}
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Game::update( float _timing )
 	{
 		m_player->update( _timing );
+
+
+		static bool fuck = true;
+
+		if (fuck)
+		{
+			playList("logoSceneMusic.xml");
+		//m_backSound->play(pl);
+
+		fuck = false;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()

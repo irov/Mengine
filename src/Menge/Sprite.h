@@ -27,6 +27,7 @@ namespace Menge
 
 		virtual void play();
 		virtual void stop();
+	
 		
 		virtual void setLooped(bool _looped);
 		virtual bool getLooped() const;

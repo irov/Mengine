@@ -2,20 +2,24 @@
 
 #	include <vector>
 
+#	include "NodeImpl.h"
+
 class TiXmlElement;
 
 namespace	Menge
 {
 	typedef	std::vector<std::string> TVecTrackList;
 
-	class Playlist
+	class Playlist : public NodeImpl
 	{
+		OBJECT_DECLARE(Playlist)
 	public:
-		Playlist(const std::string& name);
-
+		Playlist();
+		~Playlist();
+	public:
+		void loader( TiXmlElement *_xml ) override;
 	public:
 		void	nextSong();
-		void	loader(TiXmlElement * xml);
 		void	release();
 		const std::string&	getCurrentSongName() const;
 		const std::string&	getName() const;

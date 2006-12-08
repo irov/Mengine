@@ -21,12 +21,15 @@ namespace	Menge
 	{
 	public:
 		BackgroundSound();
+		~BackgroundSound();
 		void	play(Playlist& _playList);
 		void	update();
 		bool	listenRecycled(SoundSourceInterface*	_sn);
 		void	listenStoped(SoundSourceInterface*	_sn);
 		void	listenEnded(SoundSourceInterface*	_sn);
 	private:
+
+		
 		float m_fadeVelocity;
 		SoundSourceInterface* m_soundSource;
 		FileDataInterface* m_fileData;	

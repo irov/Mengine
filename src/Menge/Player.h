@@ -12,6 +12,7 @@ namespace Menge
 	{
 	public:
 		Player();
+		~Player();
 
 	public:
 		void setChapter( Chapter *_chapter );
@@ -27,6 +28,6 @@ namespace Menge
 	private:
 		Chapter * m_chapter;
 		Scene * m_scene;
-		Arrow *m_arrow;
+		Arrow * m_arrow;
 	};
 }

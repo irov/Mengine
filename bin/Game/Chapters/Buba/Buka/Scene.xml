@@ -1,19 +1,9 @@
 <Node Name = "Buka" Type = "Scene">
 	<Node Name = "Main" Type = "Layer">
-		<Node Name = "TestTrack" Type = "Track">
-			<Points>
-				<Point Value = "100;100"/>
-				<Point Value = "300;100"/>
-				<Point Value = "200;450"/>
-				<Point Value = "300;450"/>
-				<Point Value = "50;550"/>
-			</Points>
-
-			<SpeedMove Value = "5.f"/>
-			
-			<Node Name = "TestSprite" Type = "Sprite">
-				<ImageMNG File = "output.mng" />
-			</Node> <!-- Sprite -->
-		</Node> <!-- Track -->
+		<Node Name = "TestSprite" Type = "Sprite">
+			<ImageMNG File = "output.mng" />
+		</Node> <!-- Sprite -->
 	</Node> <!-- Layer -->
+	
+	<PlayList Name = "logoSceneMusic"/>
 </Node>

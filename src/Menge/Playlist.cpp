@@ -1,53 +1,61 @@
-#include "Playlist.h"
+#	include "ObjectImplement.h"
+
+#	include "Playlist.h"
 
 #	include "XmlParser.h"
 
-namespace	Menge
+OBJECT_IMPLEMENT( Playlist )
+
+Playlist::Playlist()
 {
-	Playlist::Playlist(const std::string& name)
+}
+
+Playlist::~Playlist()
+{
+	int u = 0;
+}
+
+void	Playlist::nextSong()
+{
+	++m_currentSoundTrack;
+	if (m_currentSoundTrack == m_tracks.end())
 	{
-		m_playListName = name;
-		//////////////////////////////////////////////////////////////////////////
-		m_tracks.push_back("1.wav");
-		m_tracks.push_back("2.wav");
-		//m_tracks.push_back("3.wav");
-		m_currentSoundTrack = m_tracks.begin();
-		//////////////////////////////////////////////////////////////////////////
+		m_currentSoundTrack	= m_tracks.begin();
 	}
-	void	Playlist::nextSong()
+}
+
+const std::string&	Playlist::getCurrentSongName() const
+{
+	return	*m_currentSoundTrack;
+}
+
+const std::string&	Playlist::getName() const
+{
+	return	m_playListName;
+}
+
+void	Playlist::loader(TiXmlElement * xml)
+{
+	std::string	m_filename;
+
+	XML_FOR_EACH_TREE(xml)
 	{
-		++m_currentSoundTrack;
-		if (m_currentSoundTrack == m_tracks.end())
+		XML_CHECK_NODE_FOR_EACH("Tracks")
 		{
-			m_currentSoundTrack	= m_tracks.begin();
+			XML_CHECK_NODE("Track")
+			{
+				XML_VALUE_ATTRIBUTE("Value",m_filename);
+				m_tracks.push_back(m_filename);
+			}
 		}
 	}
 
-	const std::string&	Playlist::getCurrentSongName() const
-	{
-		return	*m_currentSoundTrack;
-	}
+	NodeImpl::loader(xml);
 
-	const std::string&	Playlist::getName() const
-	{
-		return	m_playListName;
-	}
+	m_currentSoundTrack = m_tracks.begin();
+}
 
-	void	Playlist::loader(TiXmlElement * xml)
-	{
-		std::string	m_filename;
-
-		XML_FOR_EACH_TREE(xml)
-		{
-			XML_CHECK_VALUE_NODE("Filename","Value",m_filename);
-			m_tracks.push_back(m_filename);
-		}
-
-		m_currentSoundTrack = m_tracks.begin();
-	}
-
-	void	Playlist::release()
-	{
-		m_tracks.clear();
-	}
-};
+void	Playlist::release()
+{
+	m_tracks.clear();
+}

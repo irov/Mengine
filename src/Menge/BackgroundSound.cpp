@@ -2,13 +2,30 @@
 #	include "FileEngine.h"
 #	include "SoundSystemInterface.h"
 
+#	include "time.h"
+
 namespace	Menge
 {
 	BackgroundSound::BackgroundSound()
 	: m_soundSource(0)
 	, m_fadeVelocity(0.003f)
+	, m_fileData(0)
+	, m_currentPlayList(0)
 	{
 		m_fadeState = NO_FADE;
+	}
+
+	BackgroundSound::~BackgroundSound()
+	{
+		if(m_soundSource)
+		{
+			Keeper<SoundEngine>::hostage()->deleteSound(m_soundSource);
+		}
+		
+		if (m_fileData)
+		{
+			Keeper<FileEngine>::hostage()->closeFile(m_fileData);
+		}
 	}
 
 	void	BackgroundSound::_beginFade()
@@ -18,6 +35,10 @@ namespace	Menge
 		Keeper<SoundEngine>::hostage()->addSoundNode(m_soundSource,m_fileData,m_currentSoundTrackName,this,true);
 		m_soundSource->setVolume(0);
 		m_soundSource->play();
+
+		double totalSize5 = m_soundSource->getTotalSize() * 0.05f;
+
+		m_fadeVelocity = totalSize5 / (m_soundSource->getTotalSize()*100);
 	}
 
 	void	BackgroundSound::play(Playlist& _playList)
@@ -59,7 +80,10 @@ namespace	Menge
 		m_currentPlayList->nextSong();
 
 		Keeper<SoundEngine>::hostage()->deleteSound(m_soundSource);
+		m_soundSource = NULL;
+
 		Keeper<FileEngine>::hostage()->closeFile(m_fileData);
+		m_fileData = NULL;
 
 		_beginFade();
 
@@ -103,13 +127,14 @@ namespace	Menge
 			{
 				printf("NO_FADE \n");
 
-				double totalSize = m_soundSource->getTotalSize() * 0.50;
+		
+				double totalSize = m_soundSource->getTotalSize();
 				double currPos = m_soundSource->getPos();
 			
-				if (currPos >= totalSize)	
-
-				//if ((totalSize - currPos) <= 5.0)	
+				if (currPos >= totalSize * 0.05)	
+			//	if ((totalSize - currPos) <= 5.0)	
 				{
+				//	printf(,currPos);
 					m_fadeState = FADE_DOWN;
 				}
 			}

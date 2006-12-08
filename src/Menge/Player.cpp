@@ -15,9 +15,10 @@ namespace Menge
 	: m_chapter(0)
 	, m_scene(0)
 	, m_arrow(0)
-	{
-		Keeper<Player>::keep(this);
-	}
+	{}
+
+	Player::~Player()
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setChapter(Chapter *_chapter)
 	{

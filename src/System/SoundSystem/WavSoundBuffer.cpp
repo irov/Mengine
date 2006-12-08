@@ -18,7 +18,7 @@ CALWavBuffer::CALWavBuffer(void * _buffer, size_t _size)
 	while (getPos() < getSize())
 	{
 		magic = getLong();
-		length = getLong();
+		length =  getLong();
 
 		if (magic == 0x20746D66)
 		{

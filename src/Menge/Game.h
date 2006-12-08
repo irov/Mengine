@@ -14,11 +14,16 @@ namespace Menge
 	class Chapter;
 	class Arrow;
 
+	class BackgroundSound;
+
 	class Game
 	{
 	public:
 		Game();
 		~Game();
+
+	public:
+		void playList(const std::string& _name);
 
 	public:
 		void update( float _timing );
@@ -49,6 +54,8 @@ namespace Menge
 		std::string m_defaultArrowName;
 
 		Player * m_player;
+
+		BackgroundSound * m_backsoundManager;
 
 		ScriptFunction * m_fnInit;
 		ScriptFunction * m_fnUpdate;

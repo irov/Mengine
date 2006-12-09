@@ -7,7 +7,7 @@
 #	include "Player.h"
 #	include "Arrow.h"
 
-#	include "BackgroundSound.h"
+#	include "BacksoundManager.h"
 
 #	include "FileEngine.h"
 
@@ -26,7 +26,7 @@ namespace Menge
 	{
 		m_player = new Player;
 
-		m_backsoundManager = new BackgroundSound();
+		m_backsoundManager = new BacksoundManager();
 
 		Keeper<Game>::keep(this);
 	}
@@ -56,66 +56,6 @@ namespace Menge
 		delete m_player;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::playList(const std::string& _name)
-	{
-		assert(!"ahtung");
-		std::string	fileNameTrack;
-		//грузим все плейлисты из какого-то файлика
-		XML_PARSE_FILE_EX("tracks.xml")
-		{
-			XML_CHECK_NODE_FOR_EACH("Tracks")
-			{
-				XML_CHECK_VALUE_NODE("Track","File",fileNameTrack)
-				{
-					if(fileNameTrack == _name)
-					{
-						///как получить ноду?
-						////Node* p = getChildren(fileNameTrack);
-						XML_PARSE_FILE_EX(fileNameTrack)
-						{
-							XML_CHECK_NODE_FOR_EACH("Tracks")
-							{
-								XML_CHECK_VALUE_NODE("Track","File",fileNameTrack)
-								{
-								}
-							}
-						}
-						//получаем имя плейлиста (PlatList*)nodepl
-						//
-						//nodepl->push_back()
-	//					createNodeFromXml(fileNameTrack);
-					}
-				}
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::update( float _timing )
-	{
-		m_player->update( _timing );
-
-
-		static bool fuck = true;
-
-		if (fuck)
-		{
-			playList("logoSceneMusic.xml");
-		//m_backSound->play(pl);
-
-		fuck = false;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::render()
-	{
-		m_player->render();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::debugRender()
-	{
-		m_player->debugRender();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Game::loader(TiXmlElement *_xml)
 	{	
 		XML_FOR_EACH_TREE( _xml )
@@ -141,6 +81,13 @@ namespace Menge
 				XML_VALUE_ATTRIBUTE("Scene", m_logoSceneName);
 			}
 
+			XML_CHECK_NODE("BacksoundManager")
+			{
+				std::string	playlistFilename;
+				XML_VALUE_ATTRIBUTE("File", playlistFilename);
+				m_backsoundManager->loadPlayList(playlistFilename);
+			}
+
 
 			//<Arrows>
 			//	<Arrow File = "Game/Arrows/Default.xml" />
@@ -156,7 +103,7 @@ namespace Menge
 
 					if( _node == 0 )
 					{
-						ErrorMessage("Invalide file `%s`", File.c_str() );
+						ErrorMessage("Invalid file `%s`", File.c_str() );
 					}
 
 					Arrow *arrow = dynamic_cast<Arrow*>(_node);
@@ -164,7 +111,7 @@ namespace Menge
 					if( arrow == 0 )
 					{
 						const std::string &name = _node->getName();
-						ErrorMessage("Invalide arrow type - `%s` from file `%s`"
+						ErrorMessage("Invalid arrow type - `%s` from file `%s`"
 							, name.c_str()
 							, File.c_str() );
 					}
@@ -181,6 +128,31 @@ namespace Menge
 				XML_CHECK_VALUE_NODE("Arrow", "Type", m_defaultArrowName)
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::update( float _timing )
+	{
+		static bool test = true;
+
+		if (test)
+		{
+			m_backsoundManager->playList("logoSceneMusic.xml");
+			test = false;
+		}
+
+		m_player->update( _timing );
+
+		m_backsoundManager->update();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::render()
+	{
+		m_player->render();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::debugRender()
+	{
+		m_player->debugRender();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::compile()

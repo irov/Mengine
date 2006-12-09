@@ -10,5 +10,6 @@
 	<Default>
 		<Arrow Type = "Default" />
 	</Default>
-		
+
+	<BacksoundManager File = "playlists.xml"/>		
 </Game>	

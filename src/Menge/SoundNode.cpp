@@ -1,10 +1,12 @@
-#	include "SoundSystemInterface.h"
-#	include "XmlParser.h"
 #	include "SoundNode.h"
-#	include "SoundEngine.h"
-#	include "FileEngine.h"
 
 #	include "ObjectImplement.h"
+
+#	include "SoundSystemInterface.h"
+#	include "SoundEngine.h"
+
+#	include "XmlParser.h"
+#	include "FileEngine.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(SoundNode);
@@ -114,7 +116,7 @@ void		SoundNode::loader(TiXmlElement * xml)
 //////////////////////////////////////////////////////////////////////////
 bool		SoundNode::_compile()
 {
-	Keeper<SoundEngine>::hostage()->addSoundNode(m_interface,m_fileData,m_filename);
+	Keeper<SoundEngine>::hostage()->addSoundNode(m_interface,m_fileData,m_filename,false);
 	//play(); //for test
 	return	true;
 }

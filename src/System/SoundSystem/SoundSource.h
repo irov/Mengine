@@ -2,6 +2,8 @@
 
 #	include "OpenAL/altypes.h"
 
+#	include <time.h>
+
 class SoundBufferInterface;
 
 class OpenALSoundSource 
@@ -40,7 +42,7 @@ private:
 	bool m_headMode;
 	bool m_isStream;
 
-	float m_startTime;
+	clock_t m_startTime;
 	float m_vol;
 	float m_pos[3];
 	float m_maxDistance;

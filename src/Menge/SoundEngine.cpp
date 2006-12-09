@@ -32,8 +32,6 @@ namespace Menge
 		SoundNodeListenerInterface*	_listener,
 		bool _isStreamAudioFile)
 	{
-		_isStreamAudioFile = true;
-
 		SOUND_TYPE	typeOfSoundFile = _filename.find(".ogg") != std::string::npos ? OGG : WAV;
 		
 		_data = Keeper<FileEngine>::hostage()->openFile(_filename);

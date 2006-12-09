@@ -6,8 +6,6 @@
 
 #	include "includes/OpenAL/al.h"
 
-#	include <time.h>
-
 #	include <stdio.h>
 
 OpenALSoundSource::OpenALSoundSource( 
@@ -184,7 +182,7 @@ double		OpenALSoundSource::getTotalSize()	const
 //////////////////////////////////////////////////////////////////////////
 double		OpenALSoundSource::getPos()	const
 {
-	float m_endTime = clock();
+	clock_t m_endTime = clock();
 	return (m_endTime - m_startTime) / CLOCKS_PER_SEC;
 	//return	mBufferWithData->getTotalTime();
 }
@@ -196,11 +194,13 @@ bool	 OpenALSoundSource::updateSoundBuffer()
 	
 	if (state == AL_STOPPED && m_isStream)
 	{
+		m_startTime = 0;
+
 		if(m_listener)
 		{
 			m_listener->listenEnded( this );
 		}
-		m_startTime = 0;
+	
 		return false;
 	}
 

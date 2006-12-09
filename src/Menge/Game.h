@@ -1,4 +1,4 @@
-#	 pragma once
+#	pragma once
 
 #	include "Keeper.h"
 
@@ -14,7 +14,7 @@ namespace Menge
 	class Chapter;
 	class Arrow;
 
-	class BackgroundSound;
+	class BacksoundManager;
 
 	class Game
 	{
@@ -23,19 +23,14 @@ namespace Menge
 		~Game();
 
 	public:
-		void playList(const std::string& _name);
-
-	public:
 		void update( float _timing );
 		void render();
+		void loader(TiXmlElement *_xml);
 
 	public:
 		bool compile();
 		void release();
 		void debugRender();
-		
-	public:
-		void loader(TiXmlElement *_xml);		
 
 	public:
 		void addArrow(Arrow *_arrow);
@@ -46,7 +41,6 @@ namespace Menge
 		void addChapter(Chapter * _chapter);
 		Chapter * getChapter(const std::string &_name);
 
-
 	protected:
 		std::string m_logoChapterName;
 		std::string m_logoSceneName;
@@ -55,7 +49,7 @@ namespace Menge
 
 		Player * m_player;
 
-		BackgroundSound * m_backsoundManager;
+		BacksoundManager * m_backsoundManager;
 
 		ScriptFunction * m_fnInit;
 		ScriptFunction * m_fnUpdate;

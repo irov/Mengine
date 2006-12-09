@@ -7,6 +7,8 @@
 class ZipArchive;
 class FileDataInterface;
 
+typedef std::vector<ZipArchive*> TVecZipArch;
+
 class	FileSystem 
 	: public FileSystemInterface
 {
@@ -23,5 +25,5 @@ public:
 	void		closeFile(FileDataInterface* _fd);
 
 private:
-	std::vector<ZipArchive*>		mZipArchives;
+	TVecZipArch m_zipArchives;
 };

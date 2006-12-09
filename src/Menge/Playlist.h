@@ -1,33 +1,31 @@
 #	pragma once
 
-#	include <vector>
-
-#	include "NodeImpl.h"
+#	include <list>
 
 class TiXmlElement;
 
 namespace	Menge
 {
-	typedef	std::vector<std::string> TVecTrackList;
+	typedef	std::list<std::string> TListTrackList;
 
-	class Playlist : public NodeImpl
+	class Playlist
 	{
-		OBJECT_DECLARE(Playlist)
 	public:
-		Playlist();
+		Playlist(const std::string& _playlistName);
 		~Playlist();
 	public:
-		void loader( TiXmlElement *_xml ) override;
+		void loadTracks();
 	public:
-		void	nextSong();
-		void	release();
+		void nextSong();
+		void release();
 		const std::string&	getCurrentSongName() const;
 		const std::string&	getName() const;
-
+		bool isLoaded() const;
 	private:
+		bool m_isTracksLoaded;
 		std::string	m_playListName;
-		TVecTrackList m_tracks;
-		TVecTrackList::iterator	m_currentSoundTrack;
+		TListTrackList m_tracks;
+		TListTrackList::iterator	m_currentSoundTrack;
 	};
 
 };

@@ -25,8 +25,8 @@ public:
     const unsigned char* getBuffer() const;
 
 private:
-	unsigned char*	mData;
-	unsigned char*	mPos;
-	unsigned char*	mEndData;
-	size_t			mSize;
+	unsigned char* m_data;
+	unsigned char* m_pos;
+	unsigned char* m_endData;
+	size_t m_size;
 };

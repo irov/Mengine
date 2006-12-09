@@ -1,61 +1,73 @@
-#	include "ObjectImplement.h"
-
 #	include "Playlist.h"
 
 #	include "XmlParser.h"
 
-OBJECT_IMPLEMENT( Playlist )
+#	include "FileEngine.h"
 
-Playlist::Playlist()
+namespace	Menge
 {
-}
-
-Playlist::~Playlist()
-{
-	int u = 0;
-}
-
-void	Playlist::nextSong()
-{
-	++m_currentSoundTrack;
-	if (m_currentSoundTrack == m_tracks.end())
+	Playlist::Playlist(const std::string& _playlistName)
+		: m_playListName(_playlistName)
+		, m_isTracksLoaded(false)
 	{
-		m_currentSoundTrack	= m_tracks.begin();
 	}
-}
 
-const std::string&	Playlist::getCurrentSongName() const
-{
-	return	*m_currentSoundTrack;
-}
-
-const std::string&	Playlist::getName() const
-{
-	return	m_playListName;
-}
-
-void	Playlist::loader(TiXmlElement * xml)
-{
-	std::string	m_filename;
-
-	XML_FOR_EACH_TREE(xml)
+	Playlist::~Playlist()
 	{
-		XML_CHECK_NODE_FOR_EACH("Tracks")
+	}
+
+	void	Playlist::nextSong()
+	{
+		++m_currentSoundTrack;
+		if (m_currentSoundTrack == m_tracks.end())
 		{
-			XML_CHECK_NODE("Track")
-			{
-				XML_VALUE_ATTRIBUTE("Value",m_filename);
-				m_tracks.push_back(m_filename);
-			}
+			m_currentSoundTrack	= m_tracks.begin();
 		}
 	}
 
-	NodeImpl::loader(xml);
+	const std::string&	Playlist::getCurrentSongName() const
+	{
+		return	*m_currentSoundTrack;
+	}
 
-	m_currentSoundTrack = m_tracks.begin();
-}
+	const std::string&	Playlist::getName() const
+	{
+		return	m_playListName;
+	}
 
-void	Playlist::release()
-{
-	m_tracks.clear();
+	void	Playlist::loadTracks()
+	{
+		if(isLoaded() == true)
+		{
+			return;
+		}
+
+		std::string	filename;
+
+		XML_PARSE_FILE_EX(m_playListName)
+		{
+			XML_CHECK_NODE_FOR_EACH("Tracks")
+			{
+				XML_CHECK_NODE("Track")
+				{
+					XML_VALUE_ATTRIBUTE("File",filename);
+					m_tracks.push_back(filename);
+				}
+			}
+		}
+
+		m_isTracksLoaded = true;
+
+		m_currentSoundTrack = m_tracks.begin();
+	}
+
+	bool	Playlist::isLoaded() const
+	{
+		return m_isTracksLoaded;
+	}
+
+	void	Playlist::release()
+	{
+		m_tracks.clear();
+	}
 }

@@ -11,15 +11,14 @@ public:
 	~ZipArchive();
 
 public:
-	FileDataInterface*	FileRead(const std::string& _filename) const;
-	bool			HaveFile(const std::string& _filename) const;
-	bool			LoadZip(const std::string& _filename, int _prior);
-	bool			UnloadZip(); 
-	int				GetPriority() const;
-	std::string		GetZipName() const;
-
+	FileDataInterface* fileRead(const std::string& _filename) const;
+	bool haveFile(const std::string& _filename) const;
+	bool loadZip(const std::string& _filename, int _prior);
+	bool unloadZip(); 
+	int getPriority() const;
+	std::string getZipName() const;
 private:
-	void*			mUzFile;
-	int				mPriority;	
-	std::string		mZipName;
+	void* m_uzFile;
+	int m_priority;	
+	std::string m_zipName;
 };

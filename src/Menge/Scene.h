@@ -13,7 +13,6 @@ namespace Menge
 
 	public:
 		Scene();
-		void loader( TiXmlElement *_xml ) override;
 
 	protected:
 		bool addChildren(Node *_node) override;

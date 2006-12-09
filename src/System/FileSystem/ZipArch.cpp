@@ -8,11 +8,11 @@
 #	include <assert.h>
 
 ZipArchive::ZipArchive(const std::string& _filename, int _prior) 
-: mUzFile(0),
-mPriority(_prior)
+: m_uzFile(0),
+m_priority(_prior)
 {
 	assert( _prior > 0 );
-	if(!LoadZip(_filename, _prior))
+	if(!loadZip(_filename, _prior))
 	{
 		assert(!"error in FileSystem::ZipArchive()");
 	}
@@ -20,58 +20,58 @@ mPriority(_prior)
 
 ZipArchive::~ZipArchive()
 {
-	UnloadZip();
+	unloadZip();
 }
 
-bool ZipArchive::UnloadZip()
+bool ZipArchive::unloadZip() 
 {
-	unzCloseCurrentFile(mUzFile);
-	int nRet = unzClose(mUzFile);
-	mUzFile = NULL;
+	unzCloseCurrentFile(m_uzFile);
+	int nRet = unzClose(m_uzFile);
+	m_uzFile = NULL;
 	return (nRet == UNZ_OK);
 }
 
-bool ZipArchive::LoadZip(const std::string& _filename, int _prior) 
+bool ZipArchive::loadZip( const std::string& _filename, int _prior ) 
 {
 	assert( !_filename.empty() );
 
-	mZipName = _filename;
-	mPriority = _prior;
-	UnloadZip();
-	mUzFile = unzOpen( _filename.c_str() );
-	return (mUzFile != NULL);
+	m_zipName = _filename;
+	m_priority = _prior;
+	unloadZip();
+	m_uzFile = unzOpen( _filename.c_str() );
+	return (m_uzFile != NULL);
 }
 
-FileDataInterface* ZipArchive::FileRead(const std::string& _filename) const
+FileDataInterface* ZipArchive::fileRead( const std::string& _filename ) const
 {
     unz_file_info tagUFI;
-    if(unzLocateFile( mUzFile, _filename.c_str(), 2) == UNZ_OK)
+    if(unzLocateFile( m_uzFile, _filename.c_str(), 2) == UNZ_OK)
 	{
-        unzGetCurrentFileInfo(mUzFile, &tagUFI, NULL, 0, NULL, 0, NULL, 0);
+        unzGetCurrentFileInfo(m_uzFile, &tagUFI, NULL, 0, NULL, 0, NULL, 0);
 		FileDataInterface* retData = new FileData(tagUFI.uncompressed_size);
-		unzOpenCurrentFile(mUzFile);
-        unzReadCurrentFile(mUzFile,(void*)retData->getBuffer(),tagUFI.uncompressed_size);
-        unzCloseCurrentFile(mUzFile);
+		unzOpenCurrentFile(m_uzFile);
+        unzReadCurrentFile(m_uzFile,(void*)retData->getBuffer(),tagUFI.uncompressed_size);
+        unzCloseCurrentFile(m_uzFile);
         return retData;
     }
     return NULL;
 }
 
-bool	ZipArchive::HaveFile(const std::string& _filename) const 
+bool ZipArchive::haveFile( const std::string& _filename ) const
 {
-	if( unzLocateFile(mUzFile, _filename.c_str(), 2) == UNZ_OK)
+	if( unzLocateFile(m_uzFile, _filename.c_str(), 2) == UNZ_OK)
 	{
 		return true;
 	}
 	return false;
 }
 
-int			ZipArchive::GetPriority() const
+int ZipArchive::getPriority() const
 {
-	return mPriority; 
+	return m_priority; 
 }
 
-std::string	ZipArchive::GetZipName() const 
+std::string ZipArchive::getZipName() const
 {
-	return mZipName; 
+	return m_zipName; 
 }

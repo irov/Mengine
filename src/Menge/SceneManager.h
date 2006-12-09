@@ -48,8 +48,5 @@ namespace Menge
 
 	private:
 		void RegisterScriptClass();
-
-		typedef std::list< std::pair<std::string,int> > TListLoadPaks;
-		TListLoadPaks m_listLoadPaks;
 	};
 }

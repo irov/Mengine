@@ -28,15 +28,13 @@ namespace	Menge
 		void	listenStoped(SoundSourceInterface*	_sn);
 		void	listenEnded(SoundSourceInterface*	_sn);
 	private:
-
-		
 		float m_fadeVelocity;
+		std::string	m_currentNamePlayList;
+		FADE_STATES	m_fadeState;
+		Playlist * m_currentPlayList;
+	private:
 		SoundSourceInterface* m_soundSource;
 		FileDataInterface* m_fileData;	
-		std::string	m_currentNamePlayList;
-		Playlist* m_currentPlayList;
-		FADE_STATES	m_fadeState;
-		std::string	m_currentSoundTrackName;
 		void	_beginFade();
 	};
 };

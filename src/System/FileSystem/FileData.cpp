@@ -2,29 +2,29 @@
 #include <assert.h>
 
 FileData::FileData(size_t _size) 
-	: mData(NULL),
-	mPos(NULL),
-	mEndData(NULL),
-	mSize(_size)
+	: m_data(NULL)
+	, m_pos(NULL)
+	, m_endData(NULL)
+	, m_size(_size)
 {
-	assert(mSize > 0);
+	assert(m_size > 0);
 
-	if(mData)
+	if(m_data)
 	{
-		delete[] mData;
+		delete[] m_data;
 	}
 
-	mData = new unsigned char[mSize];
-    mPos = mData;
-	mEndData = mData + mSize;
+	m_data = new unsigned char[m_size];
+    m_pos = m_data;
+	m_endData = m_data + m_size;
 }
 
 FileData::FileData(void *_data, size_t _size)
 {
-    mData = reinterpret_cast< unsigned char* >(_data);
-    mEndData = mData + _size;
-    mPos = mData;
-    mSize = _size;
+    m_data = reinterpret_cast< unsigned char* >(_data);
+    m_endData = m_data + _size;
+    m_pos = m_data;
+    m_size = _size;
 }
 
 FileData::FileData(std::ifstream& _stream)
@@ -32,10 +32,10 @@ FileData::FileData(std::ifstream& _stream)
 	_stream.seekg(0,std::ios::end); 
 	std::streamsize filesize = _stream.tellg();
 	_stream.seekg(0,std::ios::beg);
-	mSize = filesize;
-	mData = new unsigned char[mSize];
-    mPos = mData;
-	mEndData = mData + mSize;
+	m_size = filesize;
+	m_data = new unsigned char[m_size];
+    m_pos = m_data;
+	m_endData = m_data + m_size;
 	_stream.read((char*)getBuffer(),filesize);
 }
 
@@ -43,9 +43,9 @@ size_t FileData::read(void* _buffer, size_t _elemsize, size_t _count)
 {
     size_t cnt = _elemsize * _count;
 
-	if ( mEndData < mPos + cnt )
+	if ( m_endData < m_pos + cnt )
 	{
-        cnt = mEndData - mPos;
+        cnt = m_endData - m_pos;
 	}
 
     if (cnt == 0)
@@ -53,8 +53,8 @@ size_t FileData::read(void* _buffer, size_t _elemsize, size_t _count)
         return 0;
 	}
 
-    memcpy(_buffer, (const void*)mPos, cnt);
-    mPos += cnt;
+    memcpy(_buffer, (const void*)m_pos, cnt);
+    m_pos += cnt;
 
     return cnt;
 }
@@ -86,33 +86,33 @@ size_t	FileData::read_longs(unsigned long* _buffer, size_t _count)
 
 bool	FileData::eof() const
 {
-	return mPos >= mEndData;
+	return m_pos >= m_endData;
 }
 
 void	FileData::setPos(size_t _pos)
 {
-    if( _pos <= mSize )
+    if( _pos <= m_size )
 	{
-        mPos = mData + _pos;
+        m_pos = m_data + _pos;
 	}
 }
 
 FileData::~FileData()
 {
-	if (mData)
+	if (m_data)
 	{
-		delete [] mData;
-		mData = 0;
-		mSize = 0;
+		delete [] m_data;
+		m_data = 0;
+		m_size = 0;
 	}
 }
 
 size_t		FileData::size() const 
 {
-	return mSize;
+	return m_size;
 };
 
 const unsigned char* FileData::getBuffer() const
 {
-	return mData; 
+	return m_data; 
 };

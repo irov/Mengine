@@ -31,16 +31,16 @@ void releaseInterfaceSystem(FileSystemInterface* _ptrFileSystem)
 
 FileSystem::FileSystem()
 {
-	mZipArchives.clear();
+	m_zipArchives.clear();
 }
 
 FileSystem::~FileSystem()
 {
-	for (std::vector<ZipArchive*>::const_iterator j = mZipArchives.begin(); j != mZipArchives.end(); ++j)
+	for (TVecZipArch::const_iterator j = m_zipArchives.begin(); j != m_zipArchives.end(); ++j)
 	{
 		delete (*j);
 	}
-	mZipArchives.clear();
+	m_zipArchives.clear();
 }
 
 bool FileSystem::createFolder(const std::string& _foldername)
@@ -65,13 +65,13 @@ bool	FileSystem::loadPak(const std::string& _filename, int _prior)
 	if (f.is_open()) 
 	{ 
 		f.close();
-		mZipArchives.push_back(new ZipArchive(_filename,_prior));
+		m_zipArchives.push_back(new ZipArchive(_filename,_prior));
 		struct PriorSort{	
 			bool operator()(ZipArchive*& lhs, ZipArchive*& rhs){
-				return lhs->GetPriority() > rhs->GetPriority();
+				return lhs->getPriority() > rhs->getPriority();
 			}
 		};
-		std::sort(mZipArchives.begin(),mZipArchives.end(),PriorSort());
+		std::sort(m_zipArchives.begin(),m_zipArchives.end(),PriorSort());
 		return true;
 	}
 	return false;
@@ -80,11 +80,11 @@ bool	FileSystem::loadPak(const std::string& _filename, int _prior)
 bool	FileSystem::unloadPak(const std::string& _filename)
 {
 	assert(!_filename.empty());
-	for(std::vector<ZipArchive*>::const_iterator i = mZipArchives.begin(); i != mZipArchives.end(); ++i)
+	for(TVecZipArch::const_iterator i = m_zipArchives.begin(); i != m_zipArchives.end(); ++i)
 	{
-		if((*i)->GetZipName() == _filename)
+		if((*i)->getZipName() == _filename)
 		{
-			(*i)->UnloadZip();
+			(*i)->unloadZip();
 			return true;
 		}
 	}
@@ -95,18 +95,19 @@ bool	FileSystem::existFile(const std::string& _filename)
 {
 	assert(!_filename.empty());
 
-	std::vector<ZipArchive*>::const_iterator i = std::find_if(
-		mZipArchives.begin(), 
-		mZipArchives.end(),
-		boost::bind2nd(boost::mem_fun(&ZipArchive::HaveFile),_filename)
+	TVecZipArch::const_iterator i = std::find_if(
+		m_zipArchives.begin(), 
+		m_zipArchives.end(),
+		boost::bind2nd(boost::mem_fun(&ZipArchive::haveFile),_filename)
 		);
 
-	if(i != mZipArchives.end())
+	if(i != m_zipArchives.end())
 	{
 		return true;
 	}
 
 	static char buff[_MAX_PATH];
+
 	if(!_getcwd(buff, _MAX_PATH))
 	{
 		assert(!"_getcwd error");
@@ -136,15 +137,15 @@ FileDataInterface*	FileSystem::openFile(const std::string& _filename)
 {
 	assert(!_filename.empty());
 
-	std::vector<ZipArchive*>::const_iterator i = std::find_if(
-		mZipArchives.begin(), 
-		mZipArchives.end(),
-		boost::bind2nd(boost::mem_fun(&ZipArchive::HaveFile),_filename)
+	TVecZipArch::const_iterator i = std::find_if(
+		m_zipArchives.begin(), 
+		m_zipArchives.end(),
+		boost::bind2nd(boost::mem_fun(&ZipArchive::haveFile),_filename)
 		);
 
-	if(i != mZipArchives.end())
+	if(i != m_zipArchives.end())
 	{
-		return (*i)->FileRead(_filename);
+		return (*i)->fileRead(_filename);
 	}
 
 	static char buff[_MAX_PATH];

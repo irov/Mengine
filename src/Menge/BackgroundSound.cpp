@@ -1,4 +1,5 @@
 #	include "BackgroundSound.h"
+
 #	include "FileEngine.h"
 #	include "SoundSystemInterface.h"
 
@@ -8,7 +9,7 @@ namespace	Menge
 {
 	BackgroundSound::BackgroundSound()
 	: m_soundSource(0)
-	, m_fadeVelocity(0.003f)
+	, m_fadeVelocity(0.005f)
 	, m_fileData(0)
 	, m_currentPlayList(0)
 	{
@@ -31,14 +32,14 @@ namespace	Menge
 	void	BackgroundSound::_beginFade()
 	{
 		m_fadeState = FADE_UP;
-		m_currentSoundTrackName = m_currentPlayList->getCurrentSongName();
-		Keeper<SoundEngine>::hostage()->addSoundNode(m_soundSource,m_fileData,m_currentSoundTrackName,this,true);
+		Keeper<SoundEngine>::hostage()->addSoundNode(
+			m_soundSource,
+			m_fileData,
+			m_currentPlayList->getCurrentSongName(),
+			this, true
+		);
 		m_soundSource->setVolume(0);
 		m_soundSource->play();
-
-		double totalSize5 = m_soundSource->getTotalSize() * 0.05f;
-
-		m_fadeVelocity = totalSize5 / (m_soundSource->getTotalSize()*100);
 	}
 
 	void	BackgroundSound::play(Playlist& _playList)
@@ -126,7 +127,6 @@ namespace	Menge
 			case NO_FADE:
 			{
 				printf("NO_FADE \n");
-
 		
 				double totalSize = m_soundSource->getTotalSize();
 				double currPos = m_soundSource->getPos();

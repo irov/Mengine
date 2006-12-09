@@ -28,11 +28,3 @@ bool Scene::addChildren(Node *_node)
 
 	return NodeImpl::addChildren(_node);
 };
-
-void Scene::loader( TiXmlElement *_xml )
-{
-	XML_FOR_EACH_TREE( _xml )
-	{
-		XML_CHECK_VALUE_NODE("PlayList","Name",m_playListName);
-	}
-};

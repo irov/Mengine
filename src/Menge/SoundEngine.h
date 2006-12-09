@@ -23,11 +23,6 @@ namespace Menge
 		SoundEngine(const std::string& _dllModule);
 		~SoundEngine();
 		void			setListenerOrient(const float* _position, const float* _updir);
-		/*
-			IN: filename
-			OUT: SoundNodeInterface, FileDataInterface
-			¬озвращает саунд сурс и файл ресурса, который использует этот саунд сурс.
-		*/
 		bool			addSoundNode(
 			SoundSourceInterface* &_node,
 			FileDataInterface* &_data, 

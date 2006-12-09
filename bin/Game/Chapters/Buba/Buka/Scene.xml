@@ -4,6 +4,4 @@
 			<ImageMNG File = "output.mng" />
 		</Node> <!-- Sprite -->
 	</Node> <!-- Layer -->
-	
-	<PlayList Name = "logoSceneMusic"/>
 </Node>

@@ -1,7 +1,7 @@
-#include "SoundSystem.h"
+#	include "SoundSystem.h"
 
-#include "WavSoundBuffer.h"
-#include "OggSoundBuffer.h"
+#	include "WavSoundBuffer.h"
+#	include "OggSoundBuffer.h"
 
 #	include "OpenAL/al.h"
 

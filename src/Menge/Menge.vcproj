@@ -347,22 +347,6 @@
 					Name="Node"
 					>
 					<File
-						RelativePath=".\BackgroundSound.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\BackgroundSound.h"
-						>
-					</File>
-					<File
-						RelativePath=".\Playlist.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Playlist.h"
-						>
-					</File>
-					<File
 						RelativePath=".\SoundNode.cpp"
 						>
 					</File>
@@ -592,6 +576,34 @@
 				RelativePath=".\Game.h"
 				>
 			</File>
+			<Filter
+				Name="BackSoundManager"
+				>
+				<File
+					RelativePath=".\BackgroundSound.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\BackgroundSound.h"
+					>
+				</File>
+				<File
+					RelativePath=".\BacksoundManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\BacksoundManager.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Playlist.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Playlist.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Application"

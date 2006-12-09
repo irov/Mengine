@@ -580,14 +580,6 @@
 				Name="BackSoundManager"
 				>
 				<File
-					RelativePath=".\BackgroundSound.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\BackgroundSound.h"
-					>
-				</File>
-				<File
 					RelativePath=".\BacksoundManager.cpp"
 					>
 				</File>

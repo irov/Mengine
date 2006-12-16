@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies/luabind&quot;;&quot;$(SolutionDir)dependencies\lua-5.0.3\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies/luabind&quot;;&quot;$(SolutionDir)dependencies\lua-5.0.2\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;MENGE_EXPORT;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -52,6 +52,7 @@
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
+				DisableSpecificWarnings="4251;4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -239,6 +240,14 @@
 					Name="Factory"
 					>
 					<File
+						RelativePath=".\BaseScriptFunctionRegistration.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\BaseScriptFunctionRegistration.h"
+						>
+					</File>
+					<File
 						RelativePath=".\ScriptableRegistrator.cpp"
 						>
 					</File>
@@ -277,6 +286,10 @@
 				</File>
 				<File
 					RelativePath=".\InputEngine.h"
+					>
+				</File>
+				<File
+					RelativePath=".\InputEnum.h"
 					>
 				</File>
 				<Filter
@@ -410,6 +423,10 @@
 				Name="Sprite"
 				>
 				<File
+					RelativePath=".\ScriptSprite.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Sprite.cpp"
 					>
 				</File>
@@ -445,6 +462,10 @@
 				</File>
 				<File
 					RelativePath=".\ObjectImplement.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ScriptImplement.h"
 					>
 				</File>
 			</Filter>
@@ -653,7 +674,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\VisitorClassDeclare.h"
+				RelativePath=".\VisitorMask.h"
 				>
 			</File>
 			<Filter
@@ -669,14 +690,22 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Define"
+				Name="PickNode"
 				>
 				<File
-					RelativePath=".\VisitorBaseDefine.h"
+					RelativePath=".\VisitorPickHotSpot.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\VisitorMaskDefine.h"
+					RelativePath=".\VisitorPickHotSpot.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="FindNode"
+				>
+				<File
+					RelativePath=".\VisitorFindNode.h"
 					>
 				</File>
 			</Filter>

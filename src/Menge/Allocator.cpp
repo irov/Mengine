@@ -3,6 +3,8 @@
 
 #	include <algorithm>
 
+#	include "XmlParser.h"
+
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Allocator)
 //////////////////////////////////////////////////////////////////////////
@@ -177,3 +179,18 @@ Allocator * Allocator::getParentAllocator()
 {
 	return m_parentAllocator;
 }
+//////////////////////////////////////////////////////////////////////////
+void Allocator::loader( TiXmlElement * _xml )
+{
+	XML_FOR_EACH_TREE( _xml )
+	{
+		XML_CHECK_NODE("Transformation")
+		{
+			XML_VALUE_ATTRIBUTE("Value", m_localMatrix);
+
+			changePivot();
+		}
+	}
+
+	NodeImpl::loader(_xml);
+};

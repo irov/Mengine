@@ -18,12 +18,14 @@ bool HotSpot::testPoint( const mt::vec2f &p )
 //////////////////////////////////////////////////////////////////////////
 void HotSpot::loader( TiXmlElement *_xml)
 {
+	Allocator::loader(_xml);
+
 	XML_FOR_EACH_TREE( _xml )
 	{
-		XML_CHECK_NODE("POINT")
+		XML_CHECK_NODE("Point")
 		{
 			mt::vec2f point;
-			XML_VALUE_ATTRIBUTE("VALUE", point);
+			XML_VALUE_ATTRIBUTE("Value", point);
 			addPoint(point);
 		}
 	}

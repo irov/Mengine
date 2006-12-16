@@ -1,30 +1,29 @@
 #	include "VisitorRender.h"
 
 #	include "Renderable.h"
+#	include "Sprite.h"
+
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	VisitorRender::VisitorRender()
-	: Visitor()
 	{
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	VisitorRender::VisitorRender(Node *_node)
-	: Visitor()
-	{
-		apply(_node);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void VisitorRender::mask_call( Renderable *_node)
+	void VisitorRender::call_impl( Renderable *_node )
 	{
 		_node->render();
-		_node->visitChildren(this);
+		_node->visitChildren( this );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void VisitorRender::apply( Node * _node)
+	void VisitorRender::call( Renderable *_node, Node *_base)
 	{
-		_node->visit(this);
+		call_impl(_node);
 	}
+	void VisitorRender::call( Sprite *_node, Node *_base)
+	{
+		call_impl(_node);
+	}
+
 }

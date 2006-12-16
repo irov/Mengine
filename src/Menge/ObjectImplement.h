@@ -28,7 +28,7 @@ using namespace Menge;
 	void C::visit( Visitor * _visitor)\
 	{\
 		_visit(_visitor);\
-		_visitor->call(this);\
+		_visitor->call(this, this);\
 	}
 
 #	define OBJECT_IMPLEMENT(C)\

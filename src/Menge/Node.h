@@ -16,6 +16,7 @@ namespace luabind
 namespace Menge
 {
 	class Visitor;
+	class ScriptFunction;
 
 	//pure-virtual interface
 	class Node 
@@ -72,6 +73,10 @@ namespace Menge
 
 		virtual void removeChildren(Node *_node) = 0;
 		virtual void removeChildren(const std::string &_name) = 0;
+
+	public:
+		virtual void registerEvent( const std::string &_name, ScriptFunction * _func ) = 0;
+		virtual ScriptFunction * event( const std::string &_name ) = 0;
 
 	public:
 		virtual void update(float _timing) = 0;

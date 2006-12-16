@@ -5,6 +5,7 @@
 #	include "ObjectDeclare.h"
 
 #	include <list>
+#	include <map>
 
 namespace Menge
 {
@@ -91,6 +92,9 @@ namespace Menge
 
 	public:
 		virtual luabind::adl::object * getScriptable();
+		
+		virtual void registerEvent( const std::string &_name, ScriptFunction * _func );
+		virtual ScriptFunction * event( const std::string &_name );
 
 	protected:
 
@@ -125,6 +129,10 @@ namespace Menge
 		TListChildren m_listChildren;
 
 		luabind::adl::object * m_scriptObject;
+
+		typedef std::map<std::string, ScriptFunction *> TMapScriptFunction;
+
+		TMapScriptFunction m_mapScriptFunction;
 
 	private:
 		TListChildren::iterator _findChildren(const std::string &_name);

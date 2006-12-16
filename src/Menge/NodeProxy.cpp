@@ -163,6 +163,15 @@ namespace Menge
 		return m_node->getScriptable();
 	};
 	//////////////////////////////////////////////////////////////////////////
+	void NodeProxy::registerEvent( const std::string &_name, ScriptFunction * _func )
+	{
+		return m_node->registerEvent(_name,_func);
+	}
+	ScriptFunction * NodeProxy::event( const std::string &_name )
+	{
+		return m_node->event(_name);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void NodeProxy::debugRender()
 	{
 		return m_node->debugRender();

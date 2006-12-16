@@ -39,6 +39,9 @@ namespace Menge
 		Allocator * getParentAllocator();
 
 	public:
+		void loader( TiXmlElement * _xml ) override;
+
+	public:
 		void changePivot();
 		bool isChangePivot()const;
 

@@ -70,6 +70,9 @@ namespace Menge
 	public:
 		luabind::adl::object * getScriptable() override;
 
+		void registerEvent( const std::string &_name, ScriptFunction * _func ) override;
+		ScriptFunction * event( const std::string &_name ) override;
+
 	public:
 		void _lostChildren(Node *_node, bool _valid) override;
 

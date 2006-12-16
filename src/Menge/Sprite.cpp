@@ -9,12 +9,13 @@
 OBJECT_IMPLEMENT(Sprite);
 //////////////////////////////////////////////////////////////////////////
 Sprite::Sprite()
-: m_playing(true)
+: m_playing(false)
 , m_looping(true)
 , m_state(REWIND)
 , m_ctdelay(0)
 , m_offset(0.f,0.f)
-{}
+{
+}
 //////////////////////////////////////////////////////////////////////////
 void Sprite::setLooped(bool _looped)
 {
@@ -203,13 +204,15 @@ void Sprite::_render()
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()
 {
-	const mt::mat3f& wm = getWorldMatrix();
+	//const mt::mat3f& wm = getWorldMatrix();
 
-	Keeper<RenderEngine>::hostage()->renderImageOffset(
-		wm, 
-		m_images[m_currentFrame->index].offset + m_offset,
-		0xffffffff,
-		m_images[m_currentFrame->index].renderImage
-		);
-
+	//Keeper<RenderEngine>::hostage()->renderImageOffset(
+	//	wm, 
+	//	m_images[m_currentFrame->index].offset + m_offset,
+	//	0xffffffff,
+	//	m_images[m_currentFrame->index].renderImage
+	//	);
 };
+
+
+

@@ -7,6 +7,7 @@
 namespace Menge
 {
 	class Game;
+	class ScriptEngine;
 	class RenderEngine;
 	class FileEngine;
 	class InputEngine;
@@ -41,6 +42,7 @@ namespace Menge
 		bool m_fullScreen;
 
 		Game * m_game;
+		ScriptEngine * m_scriptEngine;
 		RenderEngine * m_renderEngine;
 		FileEngine * m_fileEngine;
 		InputEngine * m_inputEngine;

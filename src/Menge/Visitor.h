@@ -1,17 +1,26 @@
 #	pragma once
 
-#	include "VisitorBaseDefine.h"
-
 namespace Menge
 {
+	class Node;
+	class Allocator;
+	class Renderable;
+	class HotSpot;
+	class Sprite;
+
 	class Visitor
 	{
 	public:
 		Visitor();
 
 	public:
-#	include "VisitorClassDeclare.h"
+		virtual void call( Node *_node, Node *_base);
+		virtual void call( Allocator *_node, Node *_base);
+		virtual void call( Renderable *_node, Node *_base);
+		virtual void call( HotSpot *_node, Node *_base);
+		virtual void call( Sprite *_node, Node *_base);
+
 	public:
-		virtual void apply( Node * _node);
+		void apply( Node * _node);
 	};
 }

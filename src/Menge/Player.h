@@ -16,7 +16,10 @@ namespace Menge
 
 	public:
 		void setChapter( Chapter *_chapter );
+		
 		void setScene( Scene * _scene );
+		Scene * getScene();
+
 		void setArrow( Arrow * _arrow );
 
 	public:

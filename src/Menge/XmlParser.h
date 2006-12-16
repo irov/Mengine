@@ -393,6 +393,29 @@ namespace xml
 		}
 
 		template<>
+		inline bool GetValueAttribute<mt::mat3f>(mt::mat3f &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
+		{
+			const std::string &VALUE = XML_ATTRIBUTES_NODE(Name);
+
+			if( VALUE.empty() == true )
+			{
+				return false;
+			}
+
+			sscanf(VALUE.c_str(),"%f;%f;%f;%f;%f;%f"
+				,&Value[0][0],&Value[0][1]
+				,&Value[1][0],&Value[1][1]
+				,&Value[2][0],&Value[2][1]
+			);
+
+			Value[0][2] = 0.f;
+			Value[1][2] = 0.f;
+			Value[2][2] = 0.f;
+
+			return true;
+		}
+
+		template<>
 		inline bool GetValueAttribute<mt::mat4f>(mt::mat4f &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
 		{
 			const std::string &VALUE = XML_ATTRIBUTES_NODE(Name);

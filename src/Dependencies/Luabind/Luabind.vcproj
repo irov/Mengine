@@ -41,16 +41,17 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\luabind\&quot;;&quot;$(SolutionDir)dependencies\lua-5.0.3\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\luabind\&quot;;&quot;$(SolutionDir)dependencies\lua-5.0.2\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;LUABIND_BUILDING"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
-				BrowseInformation="0"
+				BrowseInformation="1"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
+				DisableSpecificWarnings="4251;4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

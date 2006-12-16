@@ -17,7 +17,7 @@ CLuaScript::CLuaScript()
 
 CLuaScript::~CLuaScript()
 {
-	//lua_close(m_LuaState);
+	lua_close(m_LuaState);
 }
 
 void CLuaScript::Init()

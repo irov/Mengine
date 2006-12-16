@@ -45,6 +45,8 @@ namespace Menge
 		void callFunctionVoid(const std::string &_function);
 		int callFunctionInt(const std::string &_function);
 
+
+
 	public:
 		const std::string & getErrorString();
 

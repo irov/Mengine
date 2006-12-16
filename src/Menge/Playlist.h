@@ -13,8 +13,10 @@ namespace	Menge
 	public:
 		Playlist(const std::string& _playlistName);
 		~Playlist();
+
 	public:
 		void loadTracks();
+
 	public:
 		void nextSong();
 		void release();

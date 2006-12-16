@@ -4,6 +4,9 @@
 #	include "SceneManager.h"
 
 #	include "FileEngine.h"
+#	include "ScriptEngine.h"
+#	include "ScriptFunction.h"
+
 #	include "XmlParser.h"
 #	include "ErrorMessage.h"
 
@@ -86,17 +89,24 @@ bool NodeImpl::compile()
 		}
 	}
 
+	if( m_compile == false )
+	{
+		for( TMapScriptFunction::iterator 
+			it = m_mapScriptFunction.begin(),
+			it_end = m_mapScriptFunction.end();
+		it != it_end;
+		++it)
+		{
+			it->second->Accept();
+		}
+
+		m_compile = _compile();
+	}
+
 	if( m_childrenForeach )
 	{
 		Utility::for_each(m_listChildren,&Node::compile);
 	}
-
-	if( m_compile == true )
-	{
-		return true;
-	}
-
-	m_compile = _compile();
 
 	return m_compile;	
 }
@@ -217,6 +227,18 @@ void NodeImpl::loader(TiXmlElement *xml)
 			}
 
 			node->loader(XML_CURRENT_NODE);
+		}
+
+		XML_CHECK_NODE("Event")
+		{
+			XML_DEF_ATTRIBUTES_NODE(Type);
+			XML_DEF_ATTRIBUTES_NODE(Function);
+
+			ScriptEngine *scriptEng = Keeper<ScriptEngine>::hostage();
+
+			ScriptFunction *scriptFunction = scriptEng->genEvent(Function);
+
+			registerEvent(Type, scriptFunction);
 		}
 
 		XML_CHECK_NODE("External")
@@ -400,6 +422,28 @@ void NodeImpl::debugRender()
 	}
 
 	_debugRender();
+}
+//////////////////////////////////////////////////////////////////////////
+void NodeImpl::registerEvent( const std::string &_name, ScriptFunction * _func )
+{
+	TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
+
+	if( it_find == m_mapScriptFunction.end() )
+	{
+		m_mapScriptFunction.insert(std::make_pair(_name,_func));		
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+ScriptFunction * NodeImpl::event( const std::string &_name )
+{
+	TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
+
+	if( it_find == m_mapScriptFunction.end() )
+	{
+		return 0;
+	}
+
+	return it_find->second;
 }
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::_debugRender()

@@ -2,6 +2,23 @@
 	<Node Name = "Main" Type = "Layer">
 		<Node Name = "TestSprite" Type = "Sprite">
 			<ImageMNG File = "output.mng" />
+			<Transformation Value = "1;0;0;1;100;100" />
 		</Node> <!-- Sprite -->
+
+		<Node Name = "TestSound" Type = "SoundNode">
+			<Filename Value = "1.ogg" />
+		</Node> <!-- Sound -->
+
+		<Node Name = "TestHotSpot" Type = "HotSpot" >
+			<Point Value = "200;200" />
+			<Point Value = "300;200" />
+			<Point Value = "400;250" />
+			<Point Value = "350;300" />
+			<Point Value = "250;250" />
+			<Point Value = "150;250" />
+			<Event Type = "LeftMouseClick" Function = "TestHotSpotLeftMouseClick" />
+		</Node>
 	</Node> <!-- Layer -->
+
+	<Script File = "Game/Chapters/Buba/Buka/Scene.lua" />
 </Node>

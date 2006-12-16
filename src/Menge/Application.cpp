@@ -46,9 +46,9 @@ namespace Menge
 
 	bool Application::init(const std::string &_xmlFile)
 	{
-//		ScriptEngine *scriptEngine = new ScriptEngine;
+		m_scriptEngine = new ScriptEngine;
 		
-//		scriptEngine->init();
+		m_scriptEngine->init();
 
 		typedef std::list< std::pair<std::string,int> > TListLoadPaks;
 		TListLoadPaks listLoadPaks;

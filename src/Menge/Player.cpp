@@ -3,8 +3,15 @@
 #	include "Chapter.h"
 #	include "Scene.h"
 #	include "Arrow.h"
+#	include "HotSpot.h"
 
 #	include "RenderEngine.h"
+#	include "InputEngine.h"
+#	include "InputEnum.h"
+
+#	include "ScriptFunction.h"
+
+#	include "VisitorPickHotSpot.h"
 
 #	include "VisitorRender.h"
 
@@ -15,7 +22,9 @@ namespace Menge
 	: m_chapter(0)
 	, m_scene(0)
 	, m_arrow(0)
-	{}
+	{
+		Keeper<Player>::keep(this);
+	}
 
 	Player::~Player()
 	{}
@@ -30,6 +39,11 @@ namespace Menge
 		m_scene = _scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Scene * Player::getScene()
+	{
+		return m_scene;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Player::setArrow(Arrow * _arrow)
 	{
 		m_arrow = _arrow;
@@ -39,6 +53,25 @@ namespace Menge
 	{
 		m_scene->update( _timig );
 		m_arrow->update( _timig );
+
+		InputEngine * inputEng = Keeper<InputEngine>::hostage();
+
+		if( inputEng->IsButton(MOUSE_LEFT,DI_PRESSED) == true )
+		{
+			int i = inputEng->GetPosition(0);
+			int j = inputEng->GetPosition(1);
+
+			mt::vec2f pick(i,j);
+			VisitorPickHotSpot pickHotSpot( pick );
+			pickHotSpot.apply(m_scene);
+			HotSpot *hs = pickHotSpot.top();
+
+			if( hs )
+			{
+				ScriptFunction *event = hs->event("LeftMouseClick");
+				event->callFunctionVoid();
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render()

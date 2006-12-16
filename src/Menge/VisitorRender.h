@@ -1,28 +1,22 @@
 #	pragma once 
 
-#	include "Visitor.h"
-
-#	include "VisitorMaskDefine.h"
+#	include "VisitorMask.h"
 
 namespace Menge
 {
+	class Renderable;
+
 	class VisitorRender
 		: public Visitor
 	{
-		VISITOR_MASK_DECLARE(Renderable)
-
 	public:
 		VisitorRender();
-		VisitorRender(Node *_node);
 
-	public:
-#	include "VisitorClassDeclare.h"
-
-
-	public:
-		void apply( Node * _node) override;
+	private:
+		void call_impl( Renderable *_node );
 
 	protected:
-		void mask_call( Renderable *_node);
+		void call( Renderable *_node, Node *_base) override;
+		void call( Sprite *_node, Node *_base) override;
 	};
 }

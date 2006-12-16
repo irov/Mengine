@@ -7,6 +7,8 @@
 
 #	include "LuaScript/LuaScript.h"
 
+#	include "BaseScriptFunctionRegistration.h"
+
 using namespace Menge;
 
 ScriptEngine::ScriptEngine()
@@ -25,6 +27,8 @@ void ScriptEngine::init()
 	m_luaScript = new CLuaScript();
 
 	TRY_SCRIPT_FUNCTION(m_luaScript->Init());
+
+	BaseScriptFunctionRegistration::registration( m_luaScript->GetLuaState() );
 
 	//TODO
 	//TRY_SCRIPT_FUNCTION(NScriptObjectFactory::ImplementAll(m_LuaScript));

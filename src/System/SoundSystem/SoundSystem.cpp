@@ -39,13 +39,15 @@ OpenALSoundSystem::OpenALSoundSystem()
 	m_updir[4] = 0.0f;
 	m_updir[5] = 0.0f;
 
-	m_deviceAL = alcOpenDevice(NULL);
+	m_deviceAL = alcOpenDevice(0);
 
 	if (m_deviceAL)
 	{
 		m_contextAL = alcCreateContext(m_deviceAL, NULL);
 		alcMakeContextCurrent(m_contextAL);
 	}
+
+	alcGetError(m_deviceAL);
 
 	alListenerfv(AL_VELOCITY, m_pos);
 	alListenerfv(AL_POSITION, m_pos);

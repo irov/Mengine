@@ -198,10 +198,10 @@ void	Direct3d9RenderSystem::_flushFonts()
 
 		
 			float	offX = anPos.x + Char.width;
-			float	offY = it->second.font->getHeight();
+			float	offY = anPos.y + it->second.font->getHeight();
 
-			m_fontVerts[count+0].position = mt::vec3f(anPos.x, 0.0f, 0);
-			m_fontVerts[count+1].position = mt::vec3f(offX, 0.0f, 0);
+			m_fontVerts[count+0].position = mt::vec3f(anPos.x, anPos.y, 0);
+			m_fontVerts[count+1].position = mt::vec3f(offX, anPos.y, 0);
 			m_fontVerts[count+2].position = mt::vec3f(offX, offY, 0);
 			m_fontVerts[count+3].position = mt::vec3f(anPos.x, offY, 0);
 

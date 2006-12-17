@@ -58,10 +58,10 @@ int		SoundBufferInterface::getBitsPerSample() const
 
 bool	SoundBufferInterface::atEnd() const
 {
-	return getPos() >= getSize();
+	return getPos() >= getLength();
 }
 
-int	SoundBufferInterface::getSize() const
+int SoundBufferInterface::getLength() const
 {	
 	return m_length;
 }
@@ -73,7 +73,7 @@ int	SoundBufferInterface::getPos() const
 
 long SoundBufferInterface::getLong()
 {
-	if (m_pos + 3 >= getSize())
+	if (m_pos + 3 >= m_length)
 	{
 		assert(!"getLong error");
 		return -1;
@@ -85,24 +85,33 @@ long SoundBufferInterface::getLong()
 
 int	SoundBufferInterface::seekCur(int _delta)
 {
+
 	m_pos += _delta;
-	return (m_pos > getSize()) ? getSize() : ((m_pos < 0) ? 0 : m_pos);
+
+	if (m_pos > m_length)
+		m_pos = m_length;
+
+	if (m_pos < 0)
+		m_pos = 0;
+
+//	m_pos += _delta;
+	return m_pos;
 }
 
 int	SoundBufferInterface::seekAbs(int _offs)
 {
 	m_pos = _offs;
-	return (m_pos > getSize()) ? getSize() : ((m_pos < 0) ? 0 : m_pos);
+	return (m_pos > getLength()) ? getLength() : ((m_pos < 0) ? 0 : m_pos);
 }
 
 int	SoundBufferInterface::getPtr(void * _ptr, int _len)
 {
-	if (m_pos >= getSize())
+	if (m_pos >= getLength())
 	{
 		return -1;
 	};
 
-	if (m_pos + _len > getSize())
+	if (m_pos + _len > getLength())
 	{
 		_len = m_length - m_pos;
 	};

@@ -55,6 +55,11 @@ unsigned int D3D9Font::getColor() const
 	return m_color;
 }
 
+float	D3D9Font::getCharWidth(char id) const
+{
+	return m_chars[id].width;
+}
+
 FontCharDesc&	D3D9Font::_getChar(char id)
 {
 	return m_chars[id];

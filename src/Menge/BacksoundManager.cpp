@@ -12,7 +12,7 @@ namespace	Menge
 {
 	BacksoundManager::BacksoundManager()
 	: m_soundSource(0)
-	, m_fadeVelocity(0.005f)
+	, m_fadeVelocity(0.05f)
 	, m_fileData(0)
 	, m_currentPlayList(0)
 	, m_fadeState(NO_FADE)
@@ -149,9 +149,9 @@ namespace	Menge
 				float newVolume = m_soundSource->getVolume() + m_fadeVelocity;
 				m_soundSource->setVolume(newVolume);
 
-				if (m_soundSource->getVolume() >= 1.0f)
+				if (m_soundSource->getVolume() >= 100.0f)
 				{
-					m_soundSource->setVolume(1.0f);
+					m_soundSource->setVolume(100.0f);
 					m_fadeState = NO_FADE;
 				}
 			}

@@ -6,7 +6,7 @@ size_t readFunc(void* _ptr, size_t _size, size_t _nmemb, void* _datasource)
 {
 	OggSoundData* dt   = (OggSoundData *)_datasource;
 
-	if (dt->getPos()>=dt->getSize())
+	if (dt->getPos()>=dt->getLength())
 	{
 		return 0;
 	}
@@ -25,7 +25,7 @@ int    seekFunc(void* _datasource, ogg_int64_t _offset, int _whence)
 			dt->seekCur((int)_offset);
 		else
 			if (_whence == SEEK_END)
-				dt->seekAbs(dt->getSize() + (int)_offset);
+				dt->seekAbs(dt->getLength() + (int)_offset);
 
 	return  dt->getPos ();
 }
@@ -108,5 +108,7 @@ bool	OggSoundData::seek(float _time)
 
 int		OggSoundData::getDataSoundSize()  const
 {
-	return (int)((double)ov_time_total(const_cast <OggVorbis_File *>(&m_oggFile ),-1)+0.5) * getNumChannels() * getFrequency() * 2;
+	double	totalTime = ov_time_total ( const_cast <OggVorbis_File *> ( &m_oggFile ), -1 );
+
+	return (int)( totalTime + 0.5) * getNumChannels() * getFrequency() * 2;
 }

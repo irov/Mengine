@@ -14,6 +14,8 @@
 #	include "XmlParser.h"
 #	include "ErrorMessage.h"
 
+#	include "Dialog.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -23,17 +25,24 @@ namespace Menge
 		, m_fnUpdate(0)
 		, m_fnRender(0)
 		, m_backsoundManager(0)
+		, m_dialogManager(0)
 	{
 		m_player = new Player;
 
 		m_backsoundManager = new BacksoundManager();
+
+		m_dialogManager = new DialogManager();
 
 		Keeper<Game>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
+		delete m_dialogManager;
+
 		delete m_backsoundManager;
+
+
 
 		for (TMapArrow::iterator 
 			it = m_mapArrow.begin(),
@@ -86,6 +95,13 @@ namespace Menge
 				std::string	playlistFilename;
 				XML_VALUE_ATTRIBUTE("File", playlistFilename);
 				m_backsoundManager->loadPlayList(playlistFilename);
+			}
+
+			XML_CHECK_NODE("DialogManager")
+			{
+				std::string	messagesFilename;
+				XML_VALUE_ATTRIBUTE("File", messagesFilename);
+				m_dialogManager->loadMessagesList(messagesFilename);
 			}
 
 

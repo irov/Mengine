@@ -11,5 +11,6 @@
 		<Arrow Type = "Default" />
 	</Default>
 
-	<BacksoundManager File = "playlists.xml"/>		
+	<BacksoundManager File = "playlists.xml"/>
+	<DialogManager File = "messages.xml"/>				
 </Game>	

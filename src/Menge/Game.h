@@ -15,6 +15,7 @@ namespace Menge
 	class Arrow;
 
 	class BacksoundManager;
+	class DialogManager;
 
 	class Game
 	{
@@ -50,6 +51,7 @@ namespace Menge
 		Player * m_player;
 
 		BacksoundManager * m_backsoundManager;
+		DialogManager * m_dialogManager;
 
 		ScriptFunction * m_fnInit;
 		ScriptFunction * m_fnUpdate;

@@ -46,8 +46,14 @@ void Scene::loader(TiXmlElement *_xml)
 {
 	NodeImpl::loader(_xml);
 
+	int id = -1;
+
 	XML_FOR_EACH_TREE( _xml )
 	{
 		XML_CHECK_VALUE_NODE("Script", "File", m_scriptFile);
+		XML_CHECK_NODE_FOR_EACH("Dialog")
+		{
+			XML_CHECK_VALUE_NODE("Message","id",id);
+		}
 	}
 };

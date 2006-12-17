@@ -8,6 +8,24 @@
 
 #	include <stdio.h>
 
+#include <windows.h>
+#include <string>
+
+#define ERRMSG(Msg) MessageBox(NULL, Msg, "Error", MB_OK | MB_ICONEXCLAMATION)
+
+ALboolean CheckALError()
+{
+	ALenum ErrCode;
+	std::string Err = "OpenAL error: ";
+	if ((ErrCode = alGetError()) != AL_NO_ERROR)
+	{
+		Err += (char *)alGetString(ErrCode);
+//		ERRMSG(Err.data());
+		return AL_FALSE;
+	}
+	return AL_TRUE;
+}
+
 OpenALSoundSource::OpenALSoundSource( 
 									 SoundNodeListenerInterface* _plr,
 									 SoundBufferInterface* _data,
@@ -15,7 +33,7 @@ OpenALSoundSource::OpenALSoundSource(
 :	SoundSourceInterface(),
     m_looping(false), 
 	m_headMode(false), 
-	m_vol(1.0f), 
+	m_vol(10.0f), 
 	m_maxDistance(1),
 	m_startTime(0)
 {
@@ -52,35 +70,47 @@ OpenALSoundSource::OpenALSoundSource(
 			m_format = AL_FORMAT_MONO8;
 		}
 	}
-	
-	if (m_isStream)
-	{
-		m_dataSoundBuffer = new unsigned char [BUFFER_SIZE * 2];
-		m_currentBuffer = 0;
-		alGenBuffers(2, m_buffer);
-		alGenSources(1, &m_source);
-	}
-	else
-	{
-		m_dataSoundBuffer = new unsigned char[m_dataBuffer->getDataSoundSize()];
-		int size = m_dataBuffer->read(m_dataSoundBuffer);
-		alGenBuffers(1, m_buffer);
-		alBufferData(m_buffer[0], m_format, m_dataSoundBuffer, size, m_dataBuffer->getFrequency());
-		alGenSources(1,&m_source);
-		alSourcei(m_source, AL_BUFFER, m_buffer[0]);
-		delete m_dataSoundBuffer;
-	}
+
 
 	m_pos[0] = 0;
 	m_pos[1] = 0;
 	m_pos[2] = 0;
 	float m_ov[3] = {};
+
+	alGenSources(1,&m_source);
+	if (!CheckALError()) return;
+
 	alSourcef(m_source, AL_GAIN, 1.0f);
 	alSourcef(m_source, AL_PITCH, 1.0f);
 	alSourcei(m_source, AL_LOOPING, m_looping);
 	alSourcefv(m_source, AL_POSITION,  m_pos);
 	alSourcefv(m_source, AL_VELOCITY,  m_ov);
-	alSourcei(m_source, AL_SOURCE_RELATIVE, m_headMode);
+	//alSourcei(m_source, AL_SOURCE_RELATIVE, m_headMode);
+
+
+	if (m_isStream)
+	{
+		m_dataSoundBuffer = new unsigned char [BUFFER_SIZE * 2];
+		m_currentBuffer = 0;
+		alGenBuffers(2, m_buffer);
+		if (!CheckALError()) return;
+	}
+	else
+	{
+		m_dataSoundBuffer = new unsigned char[m_dataBuffer->getDataSoundSize()];
+		int size = m_dataBuffer->read(m_dataSoundBuffer);
+
+		alGenBuffers(1, m_buffer);
+		if (!CheckALError()) return;
+
+		alBufferData(m_buffer[0], m_format, m_dataSoundBuffer, size, m_dataBuffer->getFrequency());
+		if (!CheckALError()) return;
+
+		alSourcei(m_source, AL_BUFFER, m_buffer[0]);
+		if (!CheckALError()) return;
+
+		delete[] m_dataSoundBuffer;
+	}
 }
 
 OpenALSoundSource::~OpenALSoundSource()
@@ -95,7 +125,7 @@ void	OpenALSoundSource::release()
 
 	if (m_isStream)
 	{
-		delete m_dataSoundBuffer;
+		delete[] m_dataSoundBuffer;
 	}
 
 	alDeleteSources(1, &m_source);
@@ -127,9 +157,15 @@ void	OpenALSoundSource::play()
 	{
 		size = m_dataBuffer->read(m_dataSoundBuffer, BUFFER_SIZE);
 		alBufferData(m_buffer[0], m_format, m_dataSoundBuffer, size, m_dataBuffer->getFrequency());
+		if (!CheckALError()) return;
+
 		size = m_dataBuffer->read ( m_dataSoundBuffer, BUFFER_SIZE );
 		alBufferData(m_buffer[1], m_format, m_dataSoundBuffer, size, m_dataBuffer->getFrequency());
+		if (!CheckALError()) return;
+
 		alSourceQueueBuffers(m_source, 2, m_buffer);
+		if (!CheckALError()) return;
+
 	}
 	alSourcePlay (m_source);
 }
@@ -175,19 +211,18 @@ void	OpenALSoundSource::stop()
 	m_startTime = 0;
 }
 //////////////////////////////////////////////////////////////////////////
-double		OpenALSoundSource::getTotalSize()	const
+double	OpenALSoundSource::getTotalSize()	const
 {
 	return	m_dataBuffer->getTotalTime();
 }
 //////////////////////////////////////////////////////////////////////////
-double		OpenALSoundSource::getPos()	const
+double	OpenALSoundSource::getPos()	const
 {
 	clock_t m_endTime = clock();
 	return (m_endTime - m_startTime) / CLOCKS_PER_SEC;
-	//return	mBufferWithData->getTotalTime();
 }
 //////////////////////////////////////////////////////////////////////////
-bool	 OpenALSoundSource::updateSoundBuffer()
+bool OpenALSoundSource::updateSoundBuffer()
 {
 	ALint state;
 	alGetSourcei(m_source, AL_SOURCE_STATE, &state);
@@ -248,7 +283,7 @@ bool	 OpenALSoundSource::updateSoundBuffer()
 
 				if (queued == 0)
 				{
-					m_dataBuffer -> seek(0);
+					m_dataBuffer->seek(0);
 				}
 			}
 			m_currentBuffer = 1 - m_currentBuffer;
@@ -284,13 +319,13 @@ void	OpenALSoundSource::setPosition(const float* _position)
 	alSourcefv(m_source, AL_POSITION, m_pos);
 }
 
-void		OpenALSoundSource::setMaxDistance(float _dist)	
+void	OpenALSoundSource::setMaxDistance(float _dist)	
 {
 	m_maxDistance = _dist;
 	alSourcef(m_source, AL_MAX_DISTANCE, m_maxDistance);
 }
 
-void		OpenALSoundSource::setHeadMode(bool _flag) 
+void	OpenALSoundSource::setHeadMode(bool _flag) 
 {
 	m_headMode = _flag;
 	alSourcei(m_source, AL_SOURCE_RELATIVE, m_headMode);
@@ -301,22 +336,22 @@ const float*	OpenALSoundSource::getPosition() const
 	return	m_pos;
 }
 
-float			OpenALSoundSource::getMaxDistance() const
+float	OpenALSoundSource::getMaxDistance() const
 {
 	return	m_maxDistance;
 }
 
-float			OpenALSoundSource::getVolume() const
+float	OpenALSoundSource::getVolume() const
 {
 	return	m_vol;	
 }
 
-bool			OpenALSoundSource::getHeadMode() const	
+bool	OpenALSoundSource::getHeadMode() const	
 {
 	return	m_headMode;	
 }
 
-bool			OpenALSoundSource::getLooped() const
+bool	OpenALSoundSource::getLooped() const
 {
 	return	m_looping;	
 }

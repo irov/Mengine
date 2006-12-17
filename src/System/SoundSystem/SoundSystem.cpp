@@ -5,6 +5,8 @@
 
 #	include "OpenAL/al.h"
 
+#include	"OpenAL/alut.h"
+
 bool initInterfaceSystem(SoundSystemInterface** _ptrSoundSystem)
 {
 	try
@@ -39,13 +41,17 @@ OpenALSoundSystem::OpenALSoundSystem()
 	m_updir[4] = 0.0f;
 	m_updir[5] = 0.0f;
 
-	m_deviceAL = alcOpenDevice(0);
+	m_deviceAL = alcOpenDevice(NULL);
 
 	if (m_deviceAL)
 	{
 		m_contextAL = alcCreateContext(m_deviceAL, NULL);
 		alcMakeContextCurrent(m_contextAL);
 	}
+
+	//alutInit(NULL, 0);
+
+	//alGetError();
 
 	alcGetError(m_deviceAL);
 
@@ -56,6 +62,7 @@ OpenALSoundSystem::OpenALSoundSystem()
 
 OpenALSoundSystem::~OpenALSoundSystem()
 {
+//	alutExit();
 	alcMakeContextCurrent(NULL);
 	alcDestroyContext(m_contextAL);
 	alcCloseDevice(m_deviceAL);

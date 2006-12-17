@@ -726,6 +726,14 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\Dialog.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Dialog.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

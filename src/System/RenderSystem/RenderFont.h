@@ -13,6 +13,7 @@ public:
 public:
 	float			getHeight() const;
     unsigned int	getColor() const;
+	float			getCharWidth(char id) const;
 public:
 	FontCharDesc&		_getChar(char id);
 	LPDIRECT3DTEXTURE9	_getTexPointer() const;

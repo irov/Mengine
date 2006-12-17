@@ -17,6 +17,7 @@ class RenderFontInterface
 public:
 	virtual float			getHeight() const = 0;
 	virtual unsigned int	getColor() const = 0;
+	virtual float			getCharWidth(char id) const = 0;
 };
 
 struct	TextureDesc

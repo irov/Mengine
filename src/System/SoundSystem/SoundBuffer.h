@@ -16,7 +16,7 @@ public:
 	virtual	int		getBitsPerSample()	const;
 	virtual	void	setBitsPerSample(int _rhs);
 
-	virtual	int		getSize()	const;
+	virtual int		getLength() const;
 	virtual	void	setSize(int _rhs);
 
 	virtual	bool	atEnd()		const;

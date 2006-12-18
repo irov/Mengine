@@ -1,0 +1,48 @@
+#	pragma once
+
+#	include "NodeImpl.h"
+
+#	include "MessageSpot.h"
+
+#	include <vector>
+#	include <string>
+
+class RenderFontInterface;
+class SoundSourceInterface;
+class FileDataInterface;
+
+namespace	Menge
+{
+	typedef std::vector<MessageSpot*> TVecMessageSpot;
+
+	typedef std::list<std::string>	TListLine;
+
+	class Dialog
+		: public NodeImpl
+	{
+		OBJECT_DECLARE(Dialog);
+	protected:
+		void	_update(float _timing) override;
+		bool	_compile() override;
+		void	_release() override;
+	public:
+		void	loader(TiXmlElement *xml) override;
+	public:
+		void	start();
+		void	nextMessageSpot();
+	private:
+		void	createFormattedMessage(const std::string& _text, RenderFontInterface* _font, float _width);
+		void	loadCurrentMessageSpot();
+	private:
+		std::string m_fontFilename;
+		TListLine m_lines;
+
+		TVecMessageSpot m_messageSpots;
+		TVecMessageSpot::iterator m_currentMessageSpot;
+
+		RenderFontInterface* m_dialogFont;
+		SoundSourceInterface* m_soundSource;
+		FileDataInterface* m_fileData;
+		bool m_isUpdate;
+	};
+};

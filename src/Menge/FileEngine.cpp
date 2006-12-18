@@ -99,14 +99,3 @@ namespace Menge
 	}
 }
 
-void intrusive_ptr_add_ref(FileDataInterface * p)
-{
-	
-}
-
-void intrusive_ptr_release(FileDataInterface * p)
-{
-
-}
-
-

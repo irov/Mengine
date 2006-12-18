@@ -42,6 +42,8 @@ namespace Menge
 		delete m_renderEngine;
 		delete m_inputEngine;
 		delete m_soundEngine;
+
+		delete m_scriptEngine;// Иров, смотри сюда
 	}
 
 	bool Application::init(const std::string &_xmlFile)

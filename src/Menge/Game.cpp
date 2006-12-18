@@ -14,7 +14,7 @@
 #	include "XmlParser.h"
 #	include "ErrorMessage.h"
 
-#	include "Dialog.h"
+#	include "DialogManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -152,7 +152,7 @@ namespace Menge
 
 		if (test)
 		{
-			m_backsoundManager->playList("logoSceneMusic.xml");
+			//m_backsoundManager->playList("logoSceneMusic.xml");
 			test = false;
 		}
 

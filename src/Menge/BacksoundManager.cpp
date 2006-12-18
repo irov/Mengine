@@ -139,6 +139,10 @@ namespace	Menge
 
 	void	BacksoundManager::update()
 	{
+		if(!m_soundSource)
+		{
+			return;
+		}
 		m_soundSource->updateSoundBuffer();
 
 		switch(m_fadeState)

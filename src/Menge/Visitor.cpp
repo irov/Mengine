@@ -39,4 +39,9 @@ namespace Menge
 	{
 		_base->visitChildren(this);
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Visitor::call( Dialog *_node, Node *_base)
+	{
+		_base->visitChildren(this);
+	}
 }

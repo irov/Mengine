@@ -7,6 +7,7 @@ namespace Menge
 	class Renderable;
 	class HotSpot;
 	class Sprite;
+	class Dialog;
 
 	class Visitor
 	{
@@ -19,6 +20,7 @@ namespace Menge
 		virtual void call( Renderable *_node, Node *_base);
 		virtual void call( HotSpot *_node, Node *_base);
 		virtual void call( Sprite *_node, Node *_base);
+		virtual void call( Dialog *_node, Node *_base);
 
 	public:
 		void apply( Node * _node);

@@ -22,5 +22,4 @@ namespace Menge
 			sprite->play();
 		}
 	}
-
 }

@@ -33,8 +33,8 @@ void Sprite::setFirstFrame()
 
 	m_currentFrame = 
 		(m_state == FORWARD)
-		? m_desc.frames.begin() 
-		: m_desc.frames.end() - 1;
+		? m_frames.begin() 
+		: m_frames.end() - 1;
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::setOffset( const mt::vec2f &_offset )
@@ -65,17 +65,17 @@ void Sprite::_update(float _timing)
 			{
 				++m_currentFrame;
 
-				if(m_currentFrame == m_desc.frames.end())
+				if(m_currentFrame == m_frames.end())
 				{
 					if(!m_looping)
 					{
 						m_playing = false;
-						m_currentFrame = m_desc.frames.end() - 1;
+						m_currentFrame = m_frames.end() - 1;
 						break;
 					}
 					else
 					{
-						m_currentFrame = m_desc.frames.begin();
+						m_currentFrame = m_frames.begin();
 					}
 				}	
 			}
@@ -83,17 +83,17 @@ void Sprite::_update(float _timing)
 
 			case REWIND:
 			{
-				if(m_currentFrame == m_desc.frames.begin())
+				if(m_currentFrame == m_frames.begin())
 				{
 					if(!m_looping)
 					{
 						m_playing = false;
-						m_currentFrame = m_desc.frames.begin();
+						m_currentFrame = m_frames.begin();
 						break;
 					}
 					else
 					{
-						m_currentFrame = m_desc.frames.end();
+						m_currentFrame = m_frames.end();
 					}
 				}
 				--m_currentFrame;
@@ -112,32 +112,31 @@ void Sprite::_update(float _timing)
 //////////////////////////////////////////////////////////////////////////
 bool Sprite::_compile()
 {
-	//	open *.mng from *.pak:
 	FileDataInterface* fileData = Keeper<FileEngine>::hostage()->openFile(m_fileMNG);
 
 	assert(fileData != 0);
 
-	//	read *.mng format in m_desc structure:
+	mnglib::mngDesc	m_desc;
+
 	readMNG(
 		m_desc,
 		(unsigned char*)fileData->getBuffer(),
 		fileData->size()
 		);
 
-	//	release fileData:
 	Keeper<FileEngine>::hostage()->closeFile(fileData);
 
-	//	fill internal structures:
 	TextureDesc	textureDesc;
 
 	size_t size = m_desc.images.size();
+
 	for(size_t i = 0; i < size; i++)
 	{
 		textureDesc.buffer = m_desc.images[i].buffer;
 		textureDesc.size = m_desc.images[i].size;
 		textureDesc.haveAlpha = true;
 
-		ImageProperties	imageProps;
+		Image	imageProps;
 
 		imageProps.offset = mt::vec2f(
 			(float)m_desc.images[i].offsetX, 
@@ -148,22 +147,31 @@ bool Sprite::_compile()
 		m_images.push_back(imageProps);
 	}
 
-	//	set first frame:
+	size = m_desc.frames.size();
+
+	m_frames.resize(size);
+
+	for(size_t i = 0; i < size; i++)
+	{
+		m_frames[i].index = m_desc.frames[i].index;
+		m_frames[i].delay = m_desc.frames[i].delay;
+	}
+
 	setFirstFrame();
+
+	freeMNG(m_desc);
 
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_release()
 {
-	size_t size = m_desc.images.size();
+	size_t size = m_images.size();
 
 	for(size_t i = 0; i < size; i++)
 	{
 		Keeper<RenderEngine>::hostage()->releaseRenderImage(m_images[i].renderImage);
 	}
-
-	freeMNG(m_desc);
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::loader(TiXmlElement *xml)

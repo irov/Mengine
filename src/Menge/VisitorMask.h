@@ -25,6 +25,7 @@ namespace Menge
 		void call( Renderable *_node, Node *_base){ call_impl( _base, _node  ); }
 		void call( HotSpot *_node, Node *_base){ call_impl( _base, _node ); }
 		void call( Sprite *_node, Node *_base){ call_impl( _base, _node ); }
+		void call( Dialog *_node, Node *_base){ call_impl( _base, _node ); }
 
 	protected:
 		virtual void mask_call( T *_node) = 0;

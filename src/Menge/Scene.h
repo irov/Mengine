@@ -25,6 +25,5 @@ namespace Menge
 
 	private:
 		std::string m_scriptFile;
-		std::string	m_playListName;
 	};
 }

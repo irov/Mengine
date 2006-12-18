@@ -51,17 +51,26 @@ namespace Menge
 		bool m_looping;
 		eAnimState	m_state;
 		std::string m_fileMNG;
-
 	private:
-		struct ImageProperties
+
+		struct Frame 
+		{
+			int		index;
+			int		delay;
+		};
+
+		struct Image
 		{
 			mt::vec2f offset;
 			RenderImageInterface* renderImage;
 		};
-		std::vector<mnglib::Frame>::iterator m_currentFrame;
-		std::vector<ImageProperties> m_images;
-		mnglib::mngDesc	m_desc;
-		float m_ctdelay;
+
+		std::vector<Frame>	m_frames;
+		std::vector<Frame>::iterator m_currentFrame;
+
+		std::vector<Image>	m_images;
+
+		float	m_ctdelay;
 
 		mt::vec2f m_offset;
 	};

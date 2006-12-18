@@ -585,6 +585,38 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Dialog"
+				>
+				<File
+					RelativePath=".\Dialog.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog.h"
+					>
+				</File>
+				<File
+					RelativePath=".\DialogManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DialogManager.h"
+					>
+				</File>
+				<File
+					RelativePath=".\MessageSpot.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MessageSpot.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ScriptDialog.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"
@@ -726,14 +758,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\Dialog.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Dialog.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -100,6 +100,8 @@ namespace Menge
 		float scaleW = -1;
 		float scaleH = -1;
 
+		FileDataInterface* imageData = 0;
+
 		desc.color = 0xFFFFFFFF;
 
 		XML_PARSE_FILE(_fontXml)
@@ -121,7 +123,7 @@ namespace Menge
 						assert(!name.empty());
 						assert(!size.empty());
 
-						FileDataInterface* imageData = 
+						imageData = 
 							Keeper<FileEngine>::hostage()->openFile(name);
 
 						if(imageData == 0)
@@ -181,7 +183,12 @@ namespace Menge
 			//TODO: ERROR
 			return false;
 		}
-		return m_interface->loadFont(desc);
+		
+		RenderFontInterface* f = m_interface->loadFont(desc);
+
+		Keeper<FileEngine>::hostage()->closeFile(imageData);
+
+		return f;
 	}
 
 	//////////////////////////////////////////////////////////////////////////

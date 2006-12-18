@@ -19,9 +19,12 @@
 			<Event Type = "LeftMouseClick" Function = "TestHotSpotLeftMouseClick" />
 		</Node>
 		<Node Name = "TestDialog" Type = "Dialog">
-			<Message id = "0"/>	
-			<Message id = "1"/>	
-			<Message id = "2"/>
+			<Messages>
+				<Message id = "0"/>	
+				<Message id = "1"/>	
+				<Message id = "2"/>
+			</Messages>
+			<Font File = "russian.xml" />
 		</Node>
 	</Node> <!-- Layer -->
 

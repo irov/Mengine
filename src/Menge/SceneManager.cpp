@@ -16,11 +16,6 @@
 using namespace Menge;
 
 //////////////////////////////////////////////////////////////////////////
-SceneManager::SceneManager()
-{
-	Keeper<SceneManager>::keep(this);
-}
-//////////////////////////////////////////////////////////////////////////
 Node* SceneManager::createNode(const std::string &_name, const std::string &_type)
 {
 	Node *node = NodeFactory::genNode(_type);

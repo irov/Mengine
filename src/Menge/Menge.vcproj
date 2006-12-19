@@ -201,10 +201,6 @@
 				RelativePath=".\SceneManager.h"
 				>
 			</File>
-			<File
-				RelativePath=".\SceneManagerScriptWrapper.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Engine"
@@ -757,6 +753,30 @@
 				RelativePath=".\XmlParser.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Camera"
+			>
+			<File
+				RelativePath=".\Camera.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Camera.h"
+				>
+			</File>
+			<Filter
+				Name="Behavior"
+				>
+				<File
+					RelativePath=".\CameraBehavior.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CameraBehavior.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

@@ -84,8 +84,7 @@ bool NodeImpl::compile()
 	{
 		if( m_resource.empty() == false )
 		{
-			Keeper<SceneManager>::hostage()
-				->loadNode(this, m_resource);
+			SceneManager::loadNode(this, m_resource);
 		}
 	}
 
@@ -319,8 +318,7 @@ NodeImpl::TListChildren::iterator NodeImpl::_findChildren(const std::string &_na
 /////////////////////////////////////////////////////////////////////////
 Node * NodeImpl::createChildren(const std::string &_name, const std::string &_type)
 {
-	Node *node = Keeper<SceneManager>::hostage()
-		->createNode(_name,_type);
+	Node *node = SceneManager::createNode(_name,_type);
 
 	if( node )
 	{

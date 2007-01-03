@@ -3,43 +3,57 @@
 #	include "InputEnum.h"
 #	include "interfaces.h"
 
-class CInputCore;
+class InputKeyboard;
+class InputMouse;
 
-class CInputSystem
+class InputSystem
 	: public InputSystemInterface
 {
 public:
-	CInputSystem();
-	virtual ~CInputSystem();
+	InputSystem();
+	~InputSystem();
 
 public:
-	bool init(HWND hWnd, int Joint) override;
-	void destroy() override;
-	void release() override;
-
-	HRESULT reset() ;
-	HRESULT acquire() ;
-	HRESULT unacquire() ;
-
+	bool init( HWND _hWnd, int _joint ) override;
 	void update() override;
+	void destroy() override;
+	
 
 	//keyboard
-	bool isKey(int index,int key_state)const override;
-	bool isAnyKey() override;
-	bool getKey(char *ch,int key_state) override;
+	bool isKey( int _key, int _state ) const override;
+	bool isAnyKeyDown() const override;
+	bool getChar( char *_char, int _state ) override;
 
 	//mouse
-	void setPositionAndSpeed (int X, int Y, int Z, int Speed) override;
-	void setRange (int min_x, int min_y, int min_z, int max_x, int max_y, int max_z) override;
-	void setPosition (int axis, int value) override;
+	void setPosition( float _x, float _y, float _whell );
+	void setSensitivity( float _sensitivity );
 
-	int getPosition (int axis) override;
-	int getDelta	(int axis) override;
+	void setRange( const float *_minRange, const float * _maxRange ) override;
 
-	bool isMove() override;
-	bool isAnyButton() override;
-	bool isButton(int but,int but_state) override;
+	const float * getPosition() const override;
+	const float * getDelta() const override;
+
+	bool isMove() const override;
+	bool isAnyButtonDown() const override;
+	bool isButton( int _button, int _state ) const override;
+
+protected:
+	void release();
+
+	bool acquire();
+	bool unacquire();
 
 private:
-	CInputCore	*m_InputCore;
+	LPDIRECTINPUT8 getDirectInput();
+	HWND getHWnd();
+
+private:
+	LPDIRECTINPUT8	m_pDirectInput;
+	HWND       		m_hWnd;	
+	int				m_joint;
+
+	InputKeyboard	*m_keyboard;
+	InputMouse		*m_mouse;
+
+	friend class InputJoint;
 };

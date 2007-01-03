@@ -4,7 +4,7 @@
 
 namespace Menge
 {
-	class Chapter;
+	class Avatar;
 	class Scene;
 	class Arrow;
 
@@ -15,8 +15,6 @@ namespace Menge
 		~Player();
 
 	public:
-		void setChapter( Chapter *_chapter );
-		
 		void setScene( Scene * _scene );
 		Scene * getScene();
 
@@ -29,7 +27,7 @@ namespace Menge
 		void debugRender();
 		
 	private:
-		Chapter * m_chapter;
+		Avatar * m_avatar;
 		Scene * m_scene;
 		Arrow * m_arrow;
 	};

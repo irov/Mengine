@@ -2,27 +2,27 @@
 
 #	include <list>
 
-#	include "Math/vec2.h"
+#	include "Math/vec3.h"
 
 namespace Menge
 {
 	class TrackChain
 	{
 	public:
-		TrackChain(mt::vec2f *_begin, mt::vec2f * _end);
+		TrackChain(mt::vec3f *_begin, mt::vec3f * _end);
 
 	public:
-		const mt::vec2f & beginPoint()const;
-		const mt::vec2f & endPoint()const;
+		const mt::vec3f & beginPoint()const;
+		const mt::vec3f & endPoint()const;
 
-		const mt::vec2f & direction()const;
+		const mt::vec3f & direction()const;
 		float length()const;
 
 	private:
-		mt::vec2f *m_beginPoint;
-		mt::vec2f *m_endPoint;
+		mt::vec3f *m_beginPoint;
+		mt::vec3f *m_endPoint;
 
-		mt::vec2f m_direction;
+		mt::vec3f m_direction;
 		float m_length;
 	};
 

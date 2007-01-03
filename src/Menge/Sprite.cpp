@@ -200,14 +200,14 @@ void Sprite::play()
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_render()
 {
-	const mt::mat3f& wm = getWorldMatrix();
+	const mt::mat4f& wm = getWorldMatrix();
 
-	Keeper<RenderEngine>::hostage()->renderImageOffset(
-		wm, 
-		m_images[m_currentFrame->index].offset + m_offset,
-		0xffffffff,
-		m_images[m_currentFrame->index].renderImage
-		);
+	//Keeper<RenderEngine>::hostage()->renderImageOffset(
+	//	wm, 
+	//	m_images[m_currentFrame->index].offset + m_offset,
+	//	0xffffffff,
+	//	m_images[m_currentFrame->index].renderImage
+	//	);
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()

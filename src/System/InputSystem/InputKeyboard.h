@@ -1,37 +1,27 @@
 #	pragma once
 
-#	define DIRECTINPUT_VERSION 0x0800
-#	include <dinput.h>
+#	include "InputJoint.h"
 
-class CInputCore;
-
-class CInputKeyboard
+class InputKeyboard
+	: public InputJoint
 {
-	friend class CInputCore;
 public:
-	CInputKeyboard(CInputCore *InputCore);
+	InputKeyboard( InputSystem * _system );
 
 public:
-	HRESULT Init();
-	HRESULT Acquire();
-	HRESULT Unacquire();
-
-	void Update ();
-	bool IsActive ()const { return m_bActive; };
+	HRESULT init() override;
+	HRESULT restore() override;
+	void update() override;
 
 public:
-	bool IsBut(DWORD,int)const;
-	bool IsAnyButD()const;
-	bool GetChar(char *,int)const;
+	bool isKey( int _key, int _state ) const;
+	bool isAnyKeyDown() const;
+	bool getChar( char *_char, int _state ) const;
 
 private:
-	LPDIRECTINPUTDEVICE8 m_pDev;
-	CInputCore *m_InputCore;
-	bool m_bActive;
-	bool m_bUse;
+	unsigned char m_layerKeys;
 
-	unsigned char m_LayerKeys;
-	unsigned char m_Keys[2][256];	
+	unsigned char m_keysBuffer[2][256];
 };
 
 

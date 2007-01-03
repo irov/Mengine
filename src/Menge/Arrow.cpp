@@ -19,20 +19,13 @@ Arrow::Arrow()
 
 }
 //////////////////////////////////////////////////////////////////////////
-HotSpot * Arrow::pickHotSpot()
-{
-	return 0;
-}
-//////////////////////////////////////////////////////////////////////////
 void Arrow::_update(float _timing)
 {
 	InputEngine *inputEng = Keeper<InputEngine>::hostage();
 
-	int x = inputEng->GetPosition(0);
-	int y = inputEng->GetPosition(1);
+	const mt::vec3f &dmv = inputEng->getPosition();
 
-	setPosition( mt::vec2f(x, y) );
-	
+	setPosition( mt::vec3f(dmv.x, dmv.y, 0) );
 }
 //////////////////////////////////////////////////////////////////////////
 bool Arrow::_compile()

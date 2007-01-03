@@ -1,55 +1,47 @@
 #	pragma once
 
-#	define DIRECTINPUT_VERSION 0x0800
-#	include <dinput.h>
+#	include "InputJoint.h"
 
-class CInputCore;
+class InputSystem;
 
-class CInputMouse
+class InputMouse
+	: public InputJoint
 {
-	friend class CInputCore;
 public:
-	CInputMouse(CInputCore *InputCore);
-
-public:
-	HRESULT Init();
-	void Update ();
-	void Restore ();
-	bool IsActive () { return m_bActive; };
+	InputMouse( InputSystem *_system );
 
 public:
-	void SetPosSpeed (int, int, int, int);
-	void SetPosRange (int, int, int, int, int, int);
-	void SetCurPos (int axis, int value) { m_CurPos[axis] = value; };
+	HRESULT init() override;
+	HRESULT restore() override;
+	void update() override;
 
-	int GetCurPos		(int axis)const { return m_CurPos[axis]; };
-	int GetDeltaPos		(int axis)const { return m_DeltaPos[axis]; };
+public:
+	void setPosition( float _x, float _y, float _whell );
+	void setSensitivity( float _sensitivity );
+	void setRange( const float *_minRange, const float * _maxRange );
 
-	bool IsMove ()const { return m_bMove; };
-	BYTE IsButD (int but)const { return m_MouseState.rgbButtons[but]; };
-	bool IsBJustD (int but)const { return m_But[but]>0 ? true : false; };
-	bool IsBJustU (int but)const { return m_But[but]<0 ? true : false; };
-	bool IsAnyButD ()const;
+	const float * getPosition() const;
+	const float * getDelta() const;
+
+	//int GetCurPos		(int axis)const { return m_CurPos[axis]; };
+	//int GetDeltaPos		(int axis)const { return m_DeltaPos[axis]; };
+
+	bool isMove() const;
+	bool isButtonDown(int _button) const;
+	bool isButtonJustDown(int _button) const;
+	bool isButtonJustUp(int _button) const;
+	bool isAnyButtonDown() const;
 
 private:
-	LPDIRECTINPUTDEVICE8 m_pDev;
-	CInputCore *m_InputCore;
+	DIDEVICEOBJECTDATA m_data;
+	DIMOUSESTATE m_lastState;
 
-	bool m_bActive;
-	bool m_bUse;
+	bool m_bMove;
+	int m_button[8]; 
 
-	bool m_bDone;
-	DIDEVICEOBJECTDATA m_Data;
-	DIMOUSESTATE m_MouseState;
-	DIMOUSESTATE m_LastMouseState;
-	DWORD m_Elem;
-
-	int m_Speed; 
-	bool m_bMove;	
-	bool m_bButD[8]; 
-	int m_But[8]; 
-	int m_OldPos[3]; 
-	int m_PosRange[6]; 
-	int m_CurPos[3];
-	int m_DeltaPos[3]; 
+	float m_sensitivity;
+	float m_position[3];
+	float m_deltaPosition[3];
+	float m_oldPosition[3];
+	float m_range[6];
 };

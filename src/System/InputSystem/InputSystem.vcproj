@@ -181,15 +181,15 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\InputCore.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\InputCore.h"
-			>
-		</File>
-		<File
 			RelativePath=".\InputEnum.h"
+			>
+		</File>
+		<File
+			RelativePath=".\InputJoint.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\InputJoint.h"
 			>
 		</File>
 		<File
@@ -218,6 +218,10 @@
 		</File>
 		<File
 			RelativePath=".\InputSystem.h"
+			>
+		</File>
+		<File
+			RelativePath=".\interfaces.h"
 			>
 		</File>
 	</Files>

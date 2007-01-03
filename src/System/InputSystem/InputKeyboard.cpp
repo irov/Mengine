@@ -1,64 +1,72 @@
-#	include "InputCore.h"
 #	include "InputKeyboard.h"
 #	include "InputEnum.h"
 
 #	include <string>
 
 #	define IFFAILED( X )  if( (HRESULT)((X) < 0) )
-
-static std::string char_row[] = 
+//////////////////////////////////////////////////////////////////////////
+namespace
 {
-	"1234567890-=",
+	static const char * char_row[4] = 
+	{
+		"1234567890-=",
 		"qwertyuiop[]",
 		"asdfghjkl;'\\",
 		"zxcvbnm,./"
-};
+	};
 
-static std::string shift_char_row[] =
-{
-	"!@#$%^&*()_+",
+	static const char * shift_char_row[4] =
+	{
+		"!@#$%^&*()_+",
 		"QWERTYUIOP{}",
 		"ASDFGHJKL:\"|",
 		"ZXCVBNM<>?"
-};
-
-CInputKeyboard::CInputKeyboard(CInputCore *InputCore)
-:	m_InputCore(InputCore)
-,	m_pDev(0)
-,	m_bActive(FALSE)
-,	m_bUse(FALSE)
-,	m_LayerKeys(false)
-{
-	for( int i = 0; i<256; ++i )
-	{
-		m_Keys[0][i] = 0;
-		m_Keys[1][i] = 0;
-	}
+	};
 }
-
-HRESULT CInputKeyboard::Init()
+//////////////////////////////////////////////////////////////////////////
+InputKeyboard::InputKeyboard( InputSystem * _system )
+: InputJoint( _system )
 {
-	if( m_InputCore == 0 )
+	restore();
+}
+//////////////////////////////////////////////////////////////////////////
+HRESULT InputKeyboard::restore()
+{
+	m_layerKeys = 0;
+
+	for( int i = 0; i < 256; ++i )
 	{
-		return -1;
+		m_keysBuffer[0][i] = 0;
+		m_keysBuffer[1][i] = 0;
 	}
 
+	return acquire();
+}
+//////////////////////////////////////////////////////////////////////////
+HRESULT InputKeyboard::init()
+{
 	HRESULT	hr = 0;
 
-	IFFAILED(hr = m_InputCore->m_pInput->CreateDevice (GUID_SysKeyboard, &m_pDev, 0)) 
+	LPDIRECTINPUT8 directInput = getDirectInput();
+
+	IFFAILED(hr = directInput->CreateDevice (GUID_SysKeyboard, &m_pDev, 0)) 
 	{
 		//PUSHERROR("CreateDevice GUID_SysKeyboard error code = %d [/FATAL ERROR/]",hr);
 		return hr;
 	}
+
 	IFFAILED(hr = m_pDev->SetDataFormat (&c_dfDIKeyboard) )
 	{
 		//PUSHERROR("SetDataFormat error code = %d [/FATAL ERROR/]",hr);
 		return hr;
 	}
 
+
+	HWND hWnd = getHWnd();
+
 	//Required for game editor
 //#ifdef _EDITOR
-	IFFAILED(hr = m_pDev->SetCooperativeLevel(m_InputCore->m_hWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE))
+	IFFAILED(hr = m_pDev->SetCooperativeLevel( hWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE ) )
 //#else
 	//IFFAILED(hr = m_pDev->SetCooperativeLevel(m_InputCore->m_hWnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE))
 //#endif
@@ -68,185 +76,134 @@ HRESULT CInputKeyboard::Init()
 		return hr;
 	}	
 
-	IFFAILED(hr = m_pDev->Acquire())
+	IFFAILED( hr = restore() )
 	{
-		//PUSHERROR("SetDataFormat error code = %d [/FATAL ERROR/]",hr);
 		return hr;
 	}
 
-	m_bUse = TRUE;
-	m_bActive = TRUE;
-
-	for( int i = 0; i<256; ++i )
-	{
-		m_Keys[0][i] = 0;
-		m_Keys[1][i] = 0;
-	}
+	setActive( true );
 
 	return 0;
 };
-
-HRESULT CInputKeyboard::Acquire()
-{
-	if(m_pDev)
-	{
-		return m_pDev->Acquire();
-	}
-	return -1;
-}
-
-HRESULT CInputKeyboard::Unacquire()
-{
-	if(m_pDev)
-	{
-		return m_pDev->Unacquire();
-	}
-	return -1;
-}
-
-void CInputKeyboard::Update (void)
+//////////////////////////////////////////////////////////////////////////
+void InputKeyboard::update (void)
 {
 	HRESULT	hr = 0;
 
-	++m_LayerKeys;
-	m_LayerKeys &= 1;
+	++m_layerKeys;
+	m_layerKeys &= 1;
 
-	const int SizeLayerKeys = sizeof(m_Keys[m_LayerKeys]);
-	IFFAILED(hr = m_pDev->GetDeviceState (SizeLayerKeys, (LPVOID)&m_Keys[m_LayerKeys]))
+	const int sizeLayerKeys = sizeof(m_keysBuffer[m_layerKeys]);
+	IFFAILED(hr = m_pDev->GetDeviceState (sizeLayerKeys, (LPVOID)&m_keysBuffer[m_layerKeys]))
 	{
-//#ifndef _EDITOR
-		if( hr == DIERR_INPUTLOST )
+		if( hr == DIERR_INPUTLOST && hr == DIERR_NOTACQUIRED )
 		{
-			hr = m_pDev->Acquire ();
-		}
-
-		if( hr == DIERR_NOTACQUIRED )
-		{
-			hr = m_pDev->Acquire ();
-		}
-//#endif // _EDITOR
-
-		for( int i = 0; i<256; ++i )
-		{
-			m_Keys[0][i] = 0;
-			m_Keys[1][i] = 0;
-		}
-	}
-};
-
-bool CInputKeyboard::IsBut (DWORD index,int key_state)const
-{
-	int _state;
-	if(m_Keys[m_LayerKeys][index] & 0x80) 
-	{
-		if( m_Keys[(m_LayerKeys+1)&1][index] & 0x80 )
-		{
-			_state = DI_HELD; 
+			restore();
 		}
 		else
 		{
-			_state = DI_PRESSED;
+			for( int i = 0; i < 256; ++i )
+			{
+				m_keysBuffer[0][i] = 0;
+				m_keysBuffer[1][i] = 0;
+			}
+		}
+	}
+};
+//////////////////////////////////////////////////////////////////////////
+bool InputKeyboard::isKey( int _key, int _state ) const
+{
+	typedef const unsigned char TChar256 [256];
+	TChar256 &lastbuffer = m_keysBuffer[((m_layerKeys + 1)&1)];
+	TChar256 &buffer = m_keysBuffer[m_layerKeys];
+
+	if( buffer[_key] & 0x80 ) 
+	{
+		if( lastbuffer[_key] & 0x80 )
+		{
+			return _state == DI_HELD; 
+		}
+		else
+		{
+			return _state == DI_PRESSED;
 		}
 	}
 	else
 	{
-		if( m_Keys[(m_LayerKeys+1)&1][index] & 0x80 )
+		if( lastbuffer[_key] & 0x80 )
 		{
-			_state = DI_RELEASED;
+			return _state == DI_RELEASED;
 		}
 		else
 		{
-			_state = DI_DEFAULT;
+			return _state == DI_DEFAULT;
 		}
 	}
-	return (_state == key_state);
+
+	return false;
 }
 
-bool CInputKeyboard::IsAnyButD (void)const
+bool InputKeyboard::isAnyKeyDown() const
 {
 	for(int i=0; i<256; i++)
 	{
-		if(m_Keys[m_LayerKeys][i] & 0x80) return true;
+		if( m_keysBuffer[m_layerKeys][i] & 0x80 ) return true;
 	}
 
 	return false;
 };
 
-bool CInputKeyboard::GetChar(char *ch, int char_state)const
+bool InputKeyboard::getChar( char *_char, int _state )const
 {
-	*ch = 0;
+	*_char = 0;
 
-	bool shift=(m_Keys[m_LayerKeys][DIK_LSHIFT]& 0x80) || (m_Keys[m_LayerKeys][DIK_RSHIFT]& 0x80);
+	bool shift=
+		(m_keysBuffer[m_layerKeys][DIK_LSHIFT]& 0x80) || 
+		(m_keysBuffer[m_layerKeys][DIK_RSHIFT]& 0x80);
 
-	for (int i = DIK_1; i <= DIK_EQUALS; i++)	// Detection First Row
+	const char ** cur_char_row = ( shift )? shift_char_row : char_row;
+
+	for( int i = DIK_1; i <= DIK_EQUALS; ++i)	// Detection First Row
 	{
-		if (IsBut(i,char_state))						
+		if( isKey( i, _state ) )
 		{
-			if (shift)		
-			{
-				*ch = shift_char_row[0][i-DIK_1];		// !@#$%^&*()_+
-			}
-			else 
-			{
-				*ch = char_row[0][i - DIK_1];			// 1234567890	
-			}
+			*_char = cur_char_row[0][i-DIK_1];		// !@#$%^&*()_+ // 1234567890
 		}
 	}
 
-	for (int i = DIK_Q; i <= DIK_RBRACKET; i++) // Detection Second Row
+	for( int i = DIK_Q; i <= DIK_RBRACKET; ++i ) // Detection Second Row
 	{
-		if (IsBut(i,char_state)) 
+		if( isKey( i, _state ) )
 		{
-			if (shift)
-			{
-				*ch = shift_char_row[1][i-DIK_Q];		// QWERTYUIOP{}
-			}
-			else 
-			{
-				*ch = char_row[1][i - DIK_Q];			// qwertyuiop[]
-			}
+			*_char = cur_char_row[1][i-DIK_Q];		// QWERTYUIOP{} // qwertyuiop[]
 		}
 	}
 
-	for (int i = DIK_A; i <= DIK_APOSTROPHE; i++) // Detection Third Row
+	for( int i = DIK_A; i <= DIK_APOSTROPHE; ++i ) // Detection Third Row
 	{
-		if (IsBut(i,char_state)) 
+		if( isKey( i, _state ) )
 		{
-			if (shift)
-			{
-				*ch = shift_char_row[2][i-DIK_A];		// ASDFGHJKL:"|
-			}
-			else 
-			{
-				*ch = char_row[2][i - DIK_A];			// asdfghjkl;'
-			}
+			*_char = cur_char_row[2][i-DIK_A];		// ASDFGHJKL:"| // asdfghjkl;'
 		}
 	}
 
-	for (int i = DIK_Z; i <= DIK_SLASH ; i++) // Detection First Row
+	for( int i = DIK_Z; i <= DIK_SLASH ; ++i ) // Detection First Row
 	{
-		if (IsBut(i,char_state)) 
+		if( isKey( i, _state ) )
 		{
-			if (shift)
-			{
-				*ch = shift_char_row[3][i-DIK_Z];
-			}
-			else 
-			{
-				*ch = char_row[3][i - DIK_Z];
-			}
+			*_char = cur_char_row[3][i-DIK_Z]; 
 		}
 	}
 
-	if (IsBut(DIK_SPACE,char_state))
+	if( isKey( DIK_SPACE, _state ) )
 	{
-		*ch = ' ';
+		*_char = ' ';
 	}
-	if (0==*ch)
+
+	if( *_char == 0 )
 	{
 		return false;
 	}
 
 	return true;
 }
-

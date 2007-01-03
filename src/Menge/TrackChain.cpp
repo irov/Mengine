@@ -3,27 +3,27 @@
 using namespace Menge;
 
 //////////////////////////////////////////////////////////////////////////
-TrackChain::TrackChain(mt::vec2f * _begin, mt::vec2f * _end)
+TrackChain::TrackChain(mt::vec3f * _begin, mt::vec3f * _end)
 : m_beginPoint(_begin)
 , m_endPoint(_end)
 {
-	mt::vec2f dist = *m_endPoint-*m_beginPoint;
+	mt::vec3f dist = *m_endPoint-*m_beginPoint;
 
 	m_length = dist.length();
-	norm_v2(m_direction,dist);	
+	norm_v3(m_direction,dist);	
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::vec2f & TrackChain::beginPoint()const
+const mt::vec3f & TrackChain::beginPoint()const
 {
 	return *m_beginPoint;
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::vec2f & TrackChain::endPoint()const
+const mt::vec3f & TrackChain::endPoint()const
 {
 	return *m_endPoint;
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::vec2f & TrackChain::direction()const
+const mt::vec3f & TrackChain::direction()const
 {
 	return m_direction;
 }

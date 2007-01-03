@@ -132,7 +132,7 @@ namespace Menge
 
 				for( ;UKL_ITB!=UKL_ITE;++UKL_ITB)
 				{
-					if (m_InputEngine->IsKey(UKL_ITB->m_Key,UKL_ITB->m_State) == false)
+					if (m_InputEngine->isKey(UKL_ITB->m_Key,UKL_ITB->m_State) == false)
 					{
 						Done = false;
 						break;
@@ -150,7 +150,7 @@ namespace Menge
 
 				for( ;UKL_ITB!=UKL_ITE;++UKL_ITB)
 				{
-					if (m_InputEngine->IsButton(UKL_ITB->m_Key,UKL_ITB->m_State) == false)
+					if (m_InputEngine->isButton(UKL_ITB->m_Key,UKL_ITB->m_State) == false)
 					{
 						Done = false;
 						break;
@@ -166,30 +166,32 @@ namespace Menge
 
 		if( m_ScriptFunctionChangeDelthaMouse )
 		{
-			int dm_x = m_InputEngine->GetDelta(0);
-			int dm_y = m_InputEngine->GetDelta(1);
+			const mt::vec3f &dmv = m_InputEngine->getDelta();
 
-			if ( dm_x || dm_y )
+			bool isMove = m_InputEngine->isMove();
+
+			if ( isMove )
 			{
 				m_ScriptFunctionChangeDelthaMouse
 					->callFunctionVoidObjectFloatFloat(
 					_node,
-					float(dm_x),
-					float(dm_y));
-
+					float(dmv.x),
+					float(dmv.y));
 			}
 		}
 
 		if( m_ScriptFunctionChangeWhellMouse )
 		{
-			int dm_z = m_InputEngine->GetDelta(2);
+			const mt::vec3f &dmv = m_InputEngine->getDelta();
 
-			if( dm_z )
+			bool isMove = m_InputEngine->isMove();
+
+			if( isMove )
 			{
 				m_ScriptFunctionChangeWhellMouse
 					->callFunctionVoidObjectFloat(
 					_node,
-					float(dm_z));
+					float(dmv.z));
 
 			}
 		}

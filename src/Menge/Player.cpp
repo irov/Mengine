@@ -21,20 +21,15 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Player::Player()
-	: m_chapter(0)
+	: m_avatar(0)
 	, m_scene(0)
 	, m_arrow(0)
 	{
 		Keeper<Player>::keep(this);
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
 	{}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::setChapter(Chapter *_chapter)
-	{
-		m_chapter = _chapter;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setScene(Scene * _scene)
 	{
@@ -58,12 +53,11 @@ namespace Menge
 
 		InputEngine * inputEng = Keeper<InputEngine>::hostage();
 
-		if( inputEng->IsButton(MOUSE_LEFT,DI_PRESSED) == true )
+		if( inputEng->isButton(MOUSE_LEFT,DI_PRESSED) == true )
 		{
-			int i = inputEng->GetPosition(0);
-			int j = inputEng->GetPosition(1);
+			const mt::vec3f &dmv = inputEng->getPosition();
 
-			mt::vec2f pick(i,j);
+			mt::vec2f pick(dmv.v2);
 			VisitorPickHotSpot pickHotSpot( pick );
 			pickHotSpot.apply(m_scene);
 			HotSpot *hs = pickHotSpot.top();

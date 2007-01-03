@@ -2,7 +2,7 @@
 
 #	include "Renderable.h"
 
-#	include "math/mat3.h"
+#	include "math/vec2.h"
 
 #	include <vector>
 

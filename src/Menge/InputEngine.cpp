@@ -35,19 +35,19 @@ namespace Menge
 		Utility::erase_ptr_container(m_MapInputScriptFunctionMap);
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::Init()
+	bool InputEngine::init()
 	{
 		HWND hWnd = GetActiveWindow();
 
 		return m_interface->init( hWnd, 0x00000003 );
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	void InputEngine::Update()
+	void InputEngine::update()
 	{
 		m_interface->update();
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::LoadFunctionMap(const std::string &File)
+	bool InputEngine::loadFunctionMap(const std::string &File)
 	{
 		//<INPUT_CONTROLS NAME = "MainPlayer" SCRIPT_FILE = "InputMainPlayer.lua" >
 
@@ -99,7 +99,7 @@ namespace Menge
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	InputScriptFunctionMap * InputEngine::GetFunctionMap(const std::string &Name)
+	InputScriptFunctionMap * InputEngine::getFunctionMap(const std::string &Name)
 	{
 		TMapInputScriptFunctionMap::iterator it_find =
 			m_MapInputScriptFunctionMap.find(Name);
@@ -112,7 +112,7 @@ namespace Menge
 		return it_find->second;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::SetActiveFunctionMap(const std::string &Name, bool Value)
+	bool InputEngine::setActiveFunctionMap(const std::string &Name, bool Value)
 	{
 		TMapInputScriptFunctionMap::iterator it_find =
 			m_MapInputScriptFunctionMap.find(Name);
@@ -127,59 +127,57 @@ namespace Menge
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::IsKey(unsigned int index,int key_state)const
+	bool InputEngine::isKey(unsigned int index,int key_state)const
 	{
 		return m_interface->isKey(index,key_state);
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::IsAnyKey()const
+	bool InputEngine::isAnyKeyDown()const
 	{
-		return m_interface->isAnyKey();
+		return m_interface->isAnyKeyDown();
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::GetKey(char *ch,int key_state)const
+	bool InputEngine::getChar(char *ch,int key_state)const
 	{
-		return m_interface->getKey(ch,key_state);
+		return m_interface->getChar(ch,key_state);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//mouse
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	void InputEngine::SetPositionAndSpeed (int X, int Y, int Z, int Speed)
+	void InputEngine::setPosition( float _x, float _y, float _whell )
 	{
-		m_interface->setPositionAndSpeed (X,Y,Z,Speed);
+		m_interface->setPosition( _x, _y, _whell);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::setSensitivity( float _sensitivity )
+	{
+		m_interface->setSensitivity( _sensitivity );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::setRange( const mt::vec3f &_minRange, const mt::vec3f & _maxRange )
+	{
+		m_interface->setRange( _minRange.m, _maxRange.m );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & InputEngine::getPosition() const
+	{
+		return *(const mt::vec3f *)m_interface->getPosition();
+	}
+	const mt::vec3f & InputEngine::getDelta() const
+	{
+		return *(const mt::vec3f *)m_interface->getDelta();
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	void InputEngine::SetRange (int min_x, int min_y, int min_z, int max_x, int max_y, int max_z)
-	{
-		m_interface->setRange(min_x,min_y,min_z,max_x,max_y,max_z);
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	void InputEngine::SetPosition (int axis, int value)
-	{
-		m_interface->setPosition(axis,value);
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	int InputEngine::GetPosition (int axis)const
-	{
-		return m_interface->getPosition(axis);
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	int InputEngine::GetDelta	(int axis)const
-	{
-		return m_interface->getDelta(axis);
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::IsMove()const
+	bool InputEngine::isMove()const
 	{
 		return m_interface->isMove();
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::IsAnyButton()const
+	bool InputEngine::isAnyButtonDown()const
 	{
-		return m_interface->isAnyButton();
+		return m_interface->isAnyButtonDown();
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::IsButton(int but,int but_state)const
+	bool InputEngine::isButton(int but,int but_state)const
 	{
 		return m_interface->isButton(but,but_state);
 	}

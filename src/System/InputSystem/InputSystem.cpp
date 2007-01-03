@@ -1,22 +1,20 @@
 #	include "InputSystem.h"
 
-#	include "InputCore.h"
 #	include "InputKeyboard.h"
 #	include "InputMouse.h"
 
 #	include <windows.h>
-#	include <string>
 
 #	pragma comment (lib, "dinput8.lib")
 #	pragma comment (lib, "dxguid.lib")
 
 #	define IFFAILED( X )  if( (HRESULT)((X) < 0) )
-
+//////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem(InputSystemInterface **_system)
 {
 	try
 	{
-		*_system = new CInputSystem();
+		*_system = new InputSystem();
 	}
 	catch (...)
 	{
@@ -25,172 +23,265 @@ bool initInterfaceSystem(InputSystemInterface **_system)
 	
 	return true;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void releaseInterfaceSystem(InputSystemInterface *_system)
 {
-	delete static_cast<CInputSystem*>(_system);
+	delete static_cast<InputSystem*>(_system);
 }
-
-CInputSystem::CInputSystem()
+//////////////////////////////////////////////////////////////////////////
+InputSystem::InputSystem()
+: m_pDirectInput(0)
+, m_hWnd(0)
+, m_joint(0)
 {
-	m_InputCore = new CInputCore;
+	m_mouse = new InputMouse(this);
+	m_keyboard = new InputKeyboard(this);
 }
-
-
-CInputSystem::~CInputSystem()
+//////////////////////////////////////////////////////////////////////////
+InputSystem::~InputSystem()
 {
-	delete m_InputCore;
-}
+	release();
 
-void CInputSystem::destroy()
+	delete m_mouse;
+	delete m_keyboard;
+}
+//////////////////////////////////////////////////////////////////////////
+void InputSystem::destroy()
 {
 	delete this;
 }
-
-bool CInputSystem::init(HWND hWnd, int Joint)
+//////////////////////////////////////////////////////////////////////////
+bool InputSystem::init( HWND _hWnd, int _joint )
 {
-	HRESULT res = m_InputCore->Init(hWnd,Joint);
+	m_hWnd = _hWnd;
+	m_joint = _joint;
 
-	return ( res <= 0 );
+	HRESULT	hr = 0;
+
+	IFFAILED(
+		hr = DirectInput8Create(
+		GetModuleHandle(NULL),
+		DIRECTINPUT_VERSION,
+		IID_IDirectInput8,
+		(void**)&m_pDirectInput,
+		0
+		)
+		)
+	{
+		return false;
+	}
+
+	if( m_joint & INPUT_MOUSE)
+	{
+		IFFAILED(hr = m_mouse->init())
+		{
+			return false;
+		}
+	}
+
+	if( m_joint & INPUT_KEYBOARD)
+	{
+		IFFAILED( hr = m_keyboard->init())
+		{
+			return false;
+		}
+	};
+
+	return true;
 }
-
-HRESULT CInputSystem::reset()
+//////////////////////////////////////////////////////////////////////////
+bool InputSystem::acquire()
 {
-	return m_InputCore->Reset();
-}
+	HRESULT	hr = 0;
 
-HRESULT CInputSystem::acquire()
-{
-	return m_InputCore->Acquire();
+	if( m_joint & INPUT_KEYBOARD )
+	{
+		IFFAILED( hr = m_keyboard->acquire() )
+		{
+			return false;
+		}
+	}
+
+	if( m_joint & INPUT_MOUSE )
+	{
+		IFFAILED( hr = m_mouse->acquire() )
+		{
+			return false;
+		}
+	}
+
+	return true;
 };
-
-HRESULT CInputSystem::unacquire()
+//////////////////////////////////////////////////////////////////////////
+bool InputSystem::unacquire()
 {
-	return m_InputCore->Unacquire();
+	HRESULT	hr = 0;
+
+	if( m_joint & INPUT_KEYBOARD )
+	{
+		IFFAILED( hr = m_keyboard->unacquire() )
+		{
+			return false;
+		}
+	}
+
+	if( m_joint & INPUT_MOUSE )
+	{
+		IFFAILED( hr = m_mouse->unacquire() )
+		{
+			return false;
+		}
+	}
+
+	return true;
 };
-
-void CInputSystem::update (void)
+//////////////////////////////////////////////////////////////////////////
+void InputSystem::update (void)
 {
-	m_InputCore->Update();
+	if( m_joint & INPUT_KEYBOARD )
+	{
+		if( m_keyboard->isActive() )
+		{
+			m_keyboard->update();
+		}
+	}
+
+	if( m_joint & INPUT_MOUSE )
+	{
+		if( m_mouse->isActive() )
+		{
+			m_mouse->update();
+		}
+	}
 }
-
-bool CInputSystem::isKey(int index,int key_state)const
+//////////////////////////////////////////////////////////////////////////
+bool InputSystem::isKey( int _key, int _state ) const
 {
-	if( m_InputCore->m_InputKeyboard->IsActive() == false )
+	if( m_keyboard->isActive() == false )
 	{
 		return false;
 	}
 
-	return m_InputCore->m_InputKeyboard->IsBut(index, key_state);
+	return m_keyboard->isKey( _key, _state );
 }
-
-bool CInputSystem::isAnyKey()
+//////////////////////////////////////////////////////////////////////////
+bool InputSystem::isAnyKeyDown() const
 {
-	if( m_InputCore->m_InputKeyboard->IsActive() == false )
+	if( m_keyboard->isActive() == false )
 	{
 		return false;
 	}
 
-	return m_InputCore->m_InputKeyboard->IsAnyButD();
+	return m_keyboard->isAnyKeyDown();
 }
-
-bool CInputSystem::getKey(char *ch,int key_state)
+//////////////////////////////////////////////////////////////////////////
+bool InputSystem::getChar( char *_char, int _state )
 {
-	if( m_InputCore->m_InputKeyboard->IsActive() == false )
+	if( m_keyboard->isActive() == false )
 	{
 		return false;
 	}
 
-	return m_InputCore->m_InputKeyboard->GetChar(ch,key_state);
+	return m_keyboard->getChar( _char, _state );
 }
-
-void CInputSystem::setPositionAndSpeed (int X, int Y, int Z, int Speed)
+//////////////////////////////////////////////////////////////////////////
+void InputSystem::setPosition( float _x, float _y, float _whell )
 {
-	m_InputCore->m_InputMouse->SetPosSpeed(X,Y,Z,Speed);
+	m_mouse->setPosition( _x, _y, _whell );
 }
-
-void CInputSystem::setRange (int min_x, int min_y, int min_z, int max_x, int max_y, int max_z)
+//////////////////////////////////////////////////////////////////////////
+void InputSystem::setSensitivity( float _sensitivity )
 {
-	m_InputCore->m_InputMouse->SetPosRange(min_x,min_y,min_z,max_x,max_y,max_z);
+	m_mouse->setSensitivity( _sensitivity );
 }
-
-void CInputSystem::setPosition (int axis, int value)
+//////////////////////////////////////////////////////////////////////////
+void InputSystem::setRange( const float *_minRange, const float * _maxRange )
 {
-	if( m_InputCore->m_InputMouse->IsActive() == false )
-	{
-		return;
-	}
-
-	m_InputCore->m_InputMouse->SetCurPos(axis,value);
+	m_mouse->setRange( _minRange, _maxRange );
 }
-
-int CInputSystem::getPosition (int axis)
+//////////////////////////////////////////////////////////////////////////
+const float * InputSystem::getPosition() const
 {
-	if( m_InputCore->m_InputMouse->IsActive() == false )
+	if( m_mouse->isActive() == false )
 	{
 		return 0;
 	}
 
-	return m_InputCore->m_InputMouse->GetCurPos(axis);
+	return m_mouse->getPosition();
 }
-
-int CInputSystem::getDelta	(int axis)
+//////////////////////////////////////////////////////////////////////////
+const float * InputSystem::getDelta() const
 {
-	if( m_InputCore->m_InputMouse->IsActive() == false )
+	if( m_mouse->isActive() == false )
 	{
 		return 0;
 	}
 
-	return m_InputCore->m_InputMouse->GetDeltaPos(axis);
+	return m_mouse->getDelta();
 }
-
-bool CInputSystem::isMove()
+//////////////////////////////////////////////////////////////////////////
+bool InputSystem::isMove() const
 {
-	if( m_InputCore->m_InputMouse->IsActive() == false )
+	if( m_mouse->isActive() == false )
 	{
 		return false;
 	}
 
-	return (m_InputCore->m_InputMouse->IsMove() != 0) ;
+	return m_mouse->isMove();
 }
-
-bool CInputSystem::isButton(int but,int but_state )
+//////////////////////////////////////////////////////////////////////////
+bool InputSystem::isAnyButtonDown() const
 {
-	if( m_InputCore->m_InputMouse->IsActive() == false )
+	if( m_mouse->isActive() == false )
 	{
 		return false;
 	}
 
-	if( but_state == DI_HELD ) 
+	return m_mouse->isAnyButtonDown();
+}
+//////////////////////////////////////////////////////////////////////////
+bool InputSystem::isButton( int _button, int _state ) const
+{
+	if( m_mouse->isActive() == false )
 	{
-		return (m_InputCore->m_InputMouse->IsButD(but) != 0);
+		return false;
 	}
-	else if( but_state == DI_DEFAULT) 
+
+	switch( _state )
 	{
-		return !(m_InputCore->m_InputMouse->IsButD(but) != 0);
-	}
-	else if( but_state == DI_PRESSED)
-	{
-		return (m_InputCore->m_InputMouse->IsBJustD(but) != 0);		
-	}
-	else if( but_state == DI_RELEASED)
-	{
-		return (m_InputCore->m_InputMouse->IsBJustU(but) != 0);
-	}
+	case DI_HELD:
+		return (m_mouse->isButtonDown(_button) != 0);
+	case DI_DEFAULT:
+		return !(m_mouse->isButtonDown(_button) != 0);
+	case DI_PRESSED:
+		return (m_mouse->isButtonJustDown(_button) != 0);
+	case DI_RELEASED:
+		return (m_mouse->isButtonJustUp(_button) != 0);
+	};
+
 	return false;
 }
-
-bool CInputSystem::isAnyButton()
+//////////////////////////////////////////////////////////////////////////
+void InputSystem::release()
 {
-	if( m_InputCore->m_InputMouse->IsActive() == false )
+	unacquire();
+
+	m_mouse->release();
+	m_keyboard->release();
+
+	if ( m_pDirectInput ) 
 	{
-		return false;
+		m_pDirectInput->Release();
+		m_pDirectInput = 0;
 	}
-
-	return (m_InputCore->m_InputMouse->IsAnyButD() != 0);
-}
-
-void CInputSystem::release()
-{
-	m_InputCore->Release();
 };
+//////////////////////////////////////////////////////////////////////////
+LPDIRECTINPUT8 InputSystem::getDirectInput()
+{
+	return m_pDirectInput;
+}
+//////////////////////////////////////////////////////////////////////////
+HWND InputSystem::getHWnd()
+{
+	return m_hWnd;
+}

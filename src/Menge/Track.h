@@ -6,7 +6,7 @@
 
 #	include <list>
 
-#	include "Math/vec2.h"
+#	include "Math/vec3.h"
 
 namespace Menge
 {
@@ -21,7 +21,7 @@ namespace Menge
 		Track();
 
 	public:
-		void addPoint(const mt::vec2f &_point);
+		void addPoint(const mt::vec3f &_point);
 
 		void setSpeedMove(float _speed);
 		float getSpeedMove()const;
@@ -44,7 +44,7 @@ namespace Menge
 		
 
 	private:
-		typedef std::list<mt::vec2f> TListPoint;
+		typedef std::list<mt::vec3f> TListPoint;
 
 		TListPoint m_listPoints;
 		TListTrackChain m_listChain;

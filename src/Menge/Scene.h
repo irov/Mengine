@@ -5,6 +5,7 @@
 namespace Menge
 {
 	class Layer;
+	class Camera;
 
 	class Scene
 		: public NodeImpl
@@ -13,6 +14,10 @@ namespace Menge
 
 	public:
 		Scene();
+
+	public:
+		void setRenderCamera( Camera * _camera);
+		Camera * getRenderCamera();
 
 	public:
 		void loader(TiXmlElement *_xml) override;
@@ -25,5 +30,7 @@ namespace Menge
 
 	private:
 		std::string m_scriptFile;
+
+		Camera * m_renderCamera;
 	};
 }

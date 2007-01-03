@@ -92,6 +92,12 @@ namespace	mt
 		return sqrtf(sqrlength());
 	}
 
+	float	length_v3_v3(const vec3f& _a, const vec3f& _b)
+	{
+		vec3f c = _a - _b;
+		return c.length();
+	}
+
 	bool	cmp_v3_v3(const vec3f& _a, const vec3f& _b, float eps)
 	{
 		return	(fabs(_a.x - _b.x) < eps) && (fabs(_a.y - _b.y) < eps) && (fabs(_a.z - _b.z) < eps);

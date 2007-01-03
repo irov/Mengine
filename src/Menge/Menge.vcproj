@@ -274,50 +274,6 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="Input"
-				>
-				<File
-					RelativePath=".\InputEngine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\InputEngine.h"
-					>
-				</File>
-				<File
-					RelativePath=".\InputEnum.h"
-					>
-				</File>
-				<Filter
-					Name="InputScriptFunctionMap"
-					>
-					<File
-						RelativePath=".\InputScriptFunctionCommand.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\InputScriptFunctionCommand.h"
-						>
-					</File>
-					<File
-						RelativePath=".\InputScriptFunctionMap.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\InputScriptFunctionMap.h"
-						>
-					</File>
-					<File
-						RelativePath=".\InputScriptFunctionMapDIK.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\InputScriptFunctionMapLoader.cpp"
-						>
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
 				Name="File"
 				>
 				<File
@@ -328,6 +284,54 @@
 					RelativePath=".\FileEngine.h"
 					>
 				</File>
+				<Filter
+					Name="Input"
+					>
+					<File
+						RelativePath=".\InputEngine.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\InputEngine.h"
+						>
+					</File>
+					<File
+						RelativePath=".\InputEnum.h"
+						>
+					</File>
+					<File
+						RelativePath=".\InputHandler.h"
+						>
+					</File>
+					<Filter
+						Name="InputScriptFunctionMap"
+						>
+						<File
+							RelativePath=".\InputScriptFunctionCommand.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\InputScriptFunctionCommand.h"
+							>
+						</File>
+						<File
+							RelativePath=".\InputScriptFunctionMap.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\InputScriptFunctionMap.h"
+							>
+						</File>
+						<File
+							RelativePath=".\InputScriptFunctionMapDIK.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\InputScriptFunctionMapLoader.cpp"
+							>
+						</File>
+					</Filter>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Render"
@@ -610,6 +614,30 @@
 				</File>
 				<File
 					RelativePath=".\ScriptDialog.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Actor"
+				>
+				<File
+					RelativePath=".\Actor.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Actor.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Avatar"
+				>
+				<File
+					RelativePath=".\Avatar.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Avatar.h"
 					>
 				</File>
 			</Filter>

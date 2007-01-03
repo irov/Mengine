@@ -163,9 +163,13 @@ namespace Menge
 
 		if (inputEng)
 		{
-			inputEng->SetPositionAndSpeed (0, 0, 0, 1);
-			inputEng->SetRange (0, 0, -1000, 1024, 768, 1000);
-			inputInit = inputEng->Init();
+			inputEng->setPosition(0.f, 0.f, 0.f);
+			inputEng->setSensitivity( 1.f );
+			mt::vec3f minRange(0,0,-1000);
+			mt::vec3f maxRange(1024,768,1000);
+			inputEng->setRange( minRange, maxRange );
+			
+			inputInit = inputEng->init();
 		}
 
 		if(inputInit == false)
@@ -203,7 +207,7 @@ namespace Menge
 		//	m_functionUpdate->callFunctionVoid();
 		//}
 
-		Keeper<InputEngine>::hostage()->Update();
+		Keeper<InputEngine>::hostage()->update();
 
 		m_game->update(0.07f);
 	}

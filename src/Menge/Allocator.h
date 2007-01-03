@@ -2,7 +2,7 @@
 
 #	include "NodeImpl.h"
 
-#	include "math/mat3.h"
+#	include "math/mat4.h"
 
 namespace Menge
 {
@@ -15,24 +15,24 @@ namespace Menge
 		Allocator();
 
 	public:
-		const mt::vec2f & getWorldPosition();
-		const mt::vec2f & getWorldDirection();
-		const mt::mat3f & getWorldMatrix();
+		const mt::vec3f & getWorldPosition();
+		const mt::vec3f & getWorldDirection();
+		const mt::mat4f & getWorldMatrix();
 
-		const mt::vec2f & getLocalPosition()const;
-		mt::vec2f & getLocalPosition();
+		const mt::vec3f & getLocalPosition()const;
+		mt::vec3f & getLocalPosition();
 
-		const mt::vec2f & getLocalDirection()const;
-		mt::vec2f & getLocalDirection();
+		const mt::vec3f & getLocalDirection()const;
+		mt::vec3f & getLocalDirection();
 
-		const mt::mat3f & getLocalMatrix()const;
-		mt::mat3f & getLocalMatrix();
+		const mt::mat4f & getLocalMatrix()const;
+		mt::mat4f & getLocalMatrix();
 
-		void setPosition( const mt::vec2f &position );
-		void setDirection( const mt::vec2f &direction );
-		void setWorldMatrix( const mt::mat3f &matrix );
+		void setPosition( const mt::vec3f &position );
+		void setDirection( const mt::vec3f &direction );
+		void setWorldMatrix( const mt::mat4f &matrix );
 
-		void translate( const mt::vec2f &delta );
+		void translate( const mt::vec3f &delta );
 
 	public: 
 		void setParentAllocator( Allocator *_alloc);
@@ -54,8 +54,8 @@ namespace Menge
 	protected:
 		Allocator *m_parentAllocator;
 
-		mt::mat3f m_localMatrix;
-		mt::mat3f m_worldMatrix;
+		mt::mat4f m_localMatrix;
+		mt::mat4f m_worldMatrix;
 
 		bool m_changePivot;
 

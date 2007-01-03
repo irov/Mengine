@@ -16,9 +16,6 @@ namespace Menge
 		Arrow();
 
 	public:
-		HotSpot *pickHotSpot();
-
-	public:
 		void loader( TiXmlElement *_xml ) override;
 
 	protected:

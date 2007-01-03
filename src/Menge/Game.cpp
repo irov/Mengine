@@ -177,7 +177,6 @@ namespace Menge
 
 		Arrow *defaultArrow = getArrow(m_defaultArrowName);
 
-		m_player->setChapter(logoChapter);
 		m_player->setScene(logoScene);
 		m_player->setArrow(defaultArrow);
 

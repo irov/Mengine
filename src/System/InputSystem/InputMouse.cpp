@@ -1,33 +1,46 @@
-#	include "InputCore.h"
+#	include "InputMouse.h"
+
+#	include "InputSystem.h"
+
 #	include "InputEnum.h"
 
-#	include "InputMouse.h"
+#	include <algorithm>
+
+#	include <math.h>
 
 #	define IFFAILED( X )  if( (HRESULT)((X) < 0) )
 
-CInputMouse::CInputMouse(CInputCore *InputCore)
-: m_InputCore(InputCore)
-, m_pDev(0)
-, m_bUse(FALSE)
-, m_bActive(FALSE)
-, m_Speed(0)
+//////////////////////////////////////////////////////////////////////////
+InputMouse::InputMouse( InputSystem *_system )
+: InputJoint( _system )
+, m_sensitivity(0)
 , m_bMove(false)
+{
+	restore();
+}
+//////////////////////////////////////////////////////////////////////////
+HRESULT InputMouse::restore()
 {
 	for( int i = 0; i< 8; ++i)
 	{
-		m_bButD[i] = 1;
+		m_button[i] = 0;
 	}
+
 	for( int i = 0; i < 4; ++i)
 	{
-		m_MouseState.rgbButtons[i] = 0;
+		m_lastState.rgbButtons[i] = 0;
 	}
-}
 
-HRESULT CInputMouse::Init()
+	return acquire();
+};
+//////////////////////////////////////////////////////////////////////////
+HRESULT InputMouse::init()
 {
 	HRESULT	hr = 0;
 
-	IFFAILED(hr = m_InputCore->m_pInput->CreateDevice (GUID_SysMouse, &m_pDev, 0))
+	LPDIRECTINPUT8 directInput = getDirectInput();
+
+	IFFAILED(hr = directInput->CreateDevice (GUID_SysMouse, &m_pDev, 0))
 	{
 		//PUSHERROR("CreateDevice GUID_SysMouse error code = %d [/FATAL ERROR/]",hr);
 		return hr;
@@ -46,7 +59,10 @@ HRESULT CInputMouse::Init()
 	//	return hr;
 	//}
 //#else
-	IFFAILED(hr = m_pDev->SetCooperativeLevel(m_InputCore->m_hWnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE))
+
+	HWND hWnd = getHWnd();
+
+	IFFAILED(hr = m_pDev->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE))
 	{
 		//PUSHERROR("SetCooperativeLevel [ DISCL_FOREGROUND | DISCL_NONEXCLUSIVE ] error code = %d [/FATAL ERROR/]",hr);
 		return hr;
@@ -72,136 +88,140 @@ HRESULT CInputMouse::Init()
 		return hr;
 	}
 
-	m_bUse = true;
-	m_bActive = true;
+	setActive( true );
 
-	return 0;
+	return hr;
 };
-
-void CInputMouse::Restore (void)
+//////////////////////////////////////////////////////////////////////////
+void InputMouse::setPosition( float _x, float _y, float _whell )
 {
-	m_pDev->Acquire ();
-	for( int i = 0; i< 8; ++i)
-	{
-		m_bButD[i] = 1;
-	}
-
-	for( int i = 0; i < 4; ++i)
-	{
-		m_MouseState.rgbButtons[i] = 0;
-	}
+	//std::fill(m_button, 8, 0);
+	m_position[0] = _x;
+	m_position[1] = _y;
+	m_position[2] = _whell;
+};
+//////////////////////////////////////////////////////////////////////////
+void InputMouse::setSensitivity( float _sensitivity )
+{
+	m_sensitivity = _sensitivity;
 }
-
-void CInputMouse::SetPosSpeed(int in_x0, int in_y0, int in_z0,int in_speed)
+//////////////////////////////////////////////////////////////////////////
+void InputMouse::setRange( const float *_minRange, const float * _maxRange )
 {
-	ZeroMemory (m_But, sizeof(m_But));
-
-	m_CurPos[0] = in_x0;
-	m_CurPos[1] = in_y0;
-	m_CurPos[2] = in_z0;
-
-	m_Speed = in_speed;
+	std::copy(_minRange, _minRange + 3, stdext::checked_array_iterator<float *>(m_range + 0, 6) );
+	std::copy(_maxRange, _maxRange + 3, stdext::checked_array_iterator<float *>(m_range + 3, 6) );
 };
-
-void CInputMouse::SetPosRange(int in_x1, int in_y1, int in_z1,int in_x2, int in_y2, int in_z2)
+//////////////////////////////////////////////////////////////////////////
+const float * InputMouse::getPosition() const
 {
-	m_PosRange[0] = in_x1;
-	m_PosRange[1] = in_y1;
-	m_PosRange[2] = in_z1;
-	m_PosRange[0+3] = in_x2;
-	m_PosRange[1+3] = in_y2;
-	m_PosRange[2+3] = in_z2;
-};
-
-void CInputMouse::Update (void)
+	return m_position;
+}
+//////////////////////////////////////////////////////////////////////////
+const float * InputMouse::getDelta() const
+{
+	return m_deltaPosition;
+}
+//////////////////////////////////////////////////////////////////////////
+void InputMouse::update()
 {
 	HRESULT	hr = 0;
 
-	memcpy (m_OldPos, m_CurPos, sizeof(m_CurPos));
-	ZeroMemory (m_But, sizeof(m_But));
-	ZeroMemory (m_DeltaPos, sizeof(m_DeltaPos));
+	std::copy( m_position, m_position + 3, stdext::checked_array_iterator<float *>(m_oldPosition, 3) );
 
-	m_bDone = false;
+	std::fill( m_deltaPosition, m_deltaPosition + 3, 0.f );
 
-	IFFAILED(hr = m_pDev->GetDeviceState( sizeof(m_MouseState),&m_MouseState))
+	DIMOUSESTATE state;
+
+	IFFAILED( hr = m_pDev->GetDeviceState( sizeof(state),&state) )
 	{
-//#ifndef _EDITOR
 		if( hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED )
 		{
-			Restore();
+			restore();
 		}
-//#endif // _EDITOR
 		return;
 	}
 
-	for( int i = 0; i<4; i++ )
+	for( int i = 0; i < 8; i++ )
 	{
-		m_But[i] = m_MouseState.rgbButtons[i] - m_LastMouseState.rgbButtons[i];
+		m_button[i] = state.rgbButtons[i] - m_lastState.rgbButtons[i];
 	}
-	m_LastMouseState = m_MouseState;
+	
+	m_lastState = state;
 
+	DIDEVICEOBJECTDATA data;
 
-	while(!m_bDone)
+	while( true )
 	{
+		DWORD elem = 1;
 
-		m_Elem = 1;
-		if(FAILED(hr = m_pDev->GetDeviceData (sizeof(m_Data), &m_Data, &m_Elem, 0)))
+		if(FAILED(hr = m_pDev->GetDeviceData (sizeof(data), &data, &elem, 0)))
 		{
-//#ifndef _EDITOR
 			if( hr == DIERR_INPUTLOST || hr == DIERR_NOTACQUIRED )
 			{
-				Restore();
+				restore();
 			}
-//#endif // _EDITOR
 			break;
-
 		}
 
-		if(m_Elem == 1)
+		if( elem != 1 )
 		{
-			switch(m_Data.dwOfs)
+			break;
+		}
+
+		switch( data.dwOfs )
+		{
+		case DIMOFS_X:
+		case DIMOFS_Y:
+		case DIMOFS_Z:
 			{
-			case DIMOFS_X:
-			case DIMOFS_Y:
-			case DIMOFS_Z:
+				int axis = data.dwOfs >> 2;
+
+				m_deltaPosition[axis] += int(data.dwData) * m_sensitivity;
+				m_position[axis] += m_deltaPosition[axis];
+
+				if( m_position[axis] < m_range[axis]) 
 				{
-					int axis = m_Data.dwOfs >> 2;
-
-					m_DeltaPos[axis] += m_Data.dwData * m_Speed;
-					m_CurPos[axis] += m_DeltaPos[axis];
-
-					if( m_CurPos[axis] < m_PosRange[axis]) 
+					m_position[axis] = m_range[axis];
+				}
+				else 
+				{
+					if( m_position[axis] > m_range[axis+3] ) 
 					{
-						m_CurPos[axis] = m_PosRange[axis];
+						m_position[axis] = m_range[axis+3];
 					}
-					else 
-					{
-						if(m_CurPos[axis] > m_PosRange[axis+3]) 
-						{
-							m_CurPos[axis] = m_PosRange[axis+3];
-						}
-					}
-				}break;
-			}
+				}
+			}break;
 		}
-		else
-		{
-			if(m_Elem == 0)
-			{
-				m_bDone = true;
-			}
-		}
-
 	};
-
-	m_bMove = ( m_DeltaPos[0] != 0 || m_DeltaPos[1] != 0 )?true:false;
+	
+	m_bMove = ( fabsf(m_deltaPosition[0]) >  0.00001 || fabsf(m_deltaPosition[1]) > 0.0001 )? true : false;
 };
-
-bool CInputMouse::IsAnyButD (void)const
+//////////////////////////////////////////////////////////////////////////
+bool InputMouse::isMove() const 
+{ 
+	return m_bMove; 
+};
+//////////////////////////////////////////////////////////////////////////
+bool InputMouse::isButtonDown(int _button) const 
+{ 
+	return m_lastState.rgbButtons[_button] != 0; 
+};
+//////////////////////////////////////////////////////////////////////////
+bool InputMouse::isButtonJustDown(int _button) const 
+{
+	return m_button[_button]>0 ? true : false; 
+}
+//////////////////////////////////////////////////////////////////////////
+bool InputMouse::isButtonJustUp(int _button) const 
+{ 
+	return m_button[_button]<0 ? true : false; 
+};
+//////////////////////////////////////////////////////////////////////////
+bool InputMouse::isAnyButtonDown() const
 {
 	for( int i=0; i<8; ++i)
 	{
-		if( m_bButD[i] )
+		if( m_button[i] != 0 )
 		{
 			return true;
 		}

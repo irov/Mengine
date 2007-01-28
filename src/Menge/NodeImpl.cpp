@@ -5,7 +5,6 @@
 
 #	include "FileEngine.h"
 #	include "ScriptEngine.h"
-#	include "ScriptFunction.h"
 
 #	include "lua_boost/lua_functor.h"
 

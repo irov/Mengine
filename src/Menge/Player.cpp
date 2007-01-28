@@ -9,8 +9,6 @@
 #	include "InputEngine.h"
 #	include "InputEnum.h"
 
-#	include "ScriptFunction.h"
-
 #	include "VisitorPickHotSpot.h"
 
 #	include "VisitorRender.h"

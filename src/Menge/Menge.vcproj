@@ -219,65 +219,9 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ScriptEngineError.h"
-					>
-				</File>
-				<File
 					RelativePath=".\ScriptEngineExport.cpp"
 					>
 				</File>
-				<Filter
-					Name="Function"
-					>
-					<File
-						RelativePath=".\ScriptFunction.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ScriptFunction.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Factory"
-					>
-					<File
-						RelativePath=".\BaseScriptFunctionRegistration.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\BaseScriptFunctionRegistration.h"
-						>
-					</File>
-					<File
-						RelativePath=".\ScriptableRegistrator.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ScriptableRegistrator.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Declare"
-					>
-					<File
-						RelativePath=".\ScriptObjectDeclare.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Caster"
-					>
-					<File
-						RelativePath=".\ScriptableCaster.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\ScriptableCaster.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="File"
@@ -290,54 +234,6 @@
 					RelativePath=".\FileEngine.h"
 					>
 				</File>
-				<Filter
-					Name="Input"
-					>
-					<File
-						RelativePath=".\InputEngine.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\InputEngine.h"
-						>
-					</File>
-					<File
-						RelativePath=".\InputEnum.h"
-						>
-					</File>
-					<File
-						RelativePath=".\InputHandler.h"
-						>
-					</File>
-					<Filter
-						Name="InputScriptFunctionMap"
-						>
-						<File
-							RelativePath=".\InputScriptFunctionCommand.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\InputScriptFunctionCommand.h"
-							>
-						</File>
-						<File
-							RelativePath=".\InputScriptFunctionMap.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\InputScriptFunctionMap.h"
-							>
-						</File>
-						<File
-							RelativePath=".\InputScriptFunctionMapDIK.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\InputScriptFunctionMapLoader.cpp"
-							>
-						</File>
-					</Filter>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Render"
@@ -371,6 +267,34 @@
 					</File>
 					<File
 						RelativePath=".\SoundNode.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="Input"
+				>
+				<File
+					RelativePath=".\InputEngine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\InputEngine.h"
+					>
+				</File>
+				<File
+					RelativePath=".\InputEnum.h"
+					>
+				</File>
+				<File
+					RelativePath=".\InputHandler.h"
+					>
+				</File>
+				<Filter
+					Name="InputScriptFunctionMap"
+					>
+					<File
+						RelativePath=".\InputScriptFunctionMapDIK.cpp"
 						>
 					</File>
 				</Filter>
@@ -440,10 +364,6 @@
 			<Filter
 				Name="Sprite"
 				>
-				<File
-					RelativePath=".\ScriptSprite.cpp"
-					>
-				</File>
 				<File
 					RelativePath=".\Sprite.cpp"
 					>
@@ -628,10 +548,6 @@
 				</File>
 				<File
 					RelativePath=".\MessageSpot.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ScriptDialog.cpp"
 					>
 				</File>
 			</Filter>

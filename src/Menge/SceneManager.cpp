@@ -8,8 +8,6 @@
 #	include "RenderEngine.h"
 #	include "ScriptEngine.h"
 
-#	include "ScriptFunction.h"
-
 #	include "XmlParser.h"
 #	include "ErrorMessage.h"
 

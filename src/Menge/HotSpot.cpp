@@ -18,7 +18,7 @@ bool HotSpot::testPoint( const mt::vec2f &p )
 //////////////////////////////////////////////////////////////////////////
 void HotSpot::loader( TiXmlElement *_xml)
 {
-	Allocator::loader(_xml);
+	Allocator2D::loader(_xml);
 
 	XML_FOR_EACH_TREE( _xml )
 	{

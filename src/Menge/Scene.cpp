@@ -27,17 +27,6 @@ Camera * Scene::getRenderCamera()
 	return m_renderCamera;
 }
 //////////////////////////////////////////////////////////////////////////
-bool Scene::addChildren(Node *_node)
-{
-	if( dynamic_cast<Layer*>(_node) == 0 )
-	{
-		assert(!"Can't add non-layer node");
-		return false;
-	}
-
-	return NodeImpl::addChildren(_node);
-};
-//////////////////////////////////////////////////////////////////////////
 bool Scene::_compile()
 {
 	if( m_scriptFile.empty() == false )
@@ -47,9 +36,7 @@ bool Scene::_compile()
 		return Error == 0;
 	}
 
-	NodeImpl::_compile();
-
-	return true;
+	return NodeImpl::_compile();
 };
 //////////////////////////////////////////////////////////////////////////
 void Scene::loader(TiXmlElement *_xml)

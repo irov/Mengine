@@ -22,9 +22,9 @@ public:
 
 struct	TextureDesc
 {
-	void*	buffer;
-	size_t	size;
-	bool	haveAlpha;
+	void*			buffer;
+	size_t			size;
+	bool			haveAlpha;
 };
 
 struct FontCharDesc

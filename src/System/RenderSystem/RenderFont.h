@@ -20,6 +20,6 @@ public:
 private:
 	FontCharDesc		m_chars[256];
 	LPDIRECT3DTEXTURE9	m_texPointer;
-	unsigned int		m_height;
+	float				m_height;
 	unsigned int		m_color;
 };

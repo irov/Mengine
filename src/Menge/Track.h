@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Allocator.h"
+#	include "Allocator2D.h"
 
 #	include "TrackChain.h"
 
@@ -13,7 +13,7 @@ namespace Menge
 	class TrackProxy;
 
 	class Track
-		: public Allocator
+		: public Allocator2D
 	{
 		OBJECT_DECLARE(Track);
 
@@ -21,7 +21,7 @@ namespace Menge
 		Track();
 
 	public:
-		void addPoint(const mt::vec3f &_point);
+		void addPoint(const mt::vec2f &_point);
 
 		void setSpeedMove(float _speed);
 		float getSpeedMove()const;
@@ -44,7 +44,7 @@ namespace Menge
 		
 
 	private:
-		typedef std::list<mt::vec3f> TListPoint;
+		typedef std::list<mt::vec2f> TListPoint;
 
 		TListPoint m_listPoints;
 		TListTrackChain m_listChain;

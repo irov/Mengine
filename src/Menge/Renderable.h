@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Allocator.h"
+#	include "Allocator2D.h"
 
 #	include "math/mat3.h"
 
@@ -9,7 +9,7 @@ namespace Menge
 	class RenderEngine;
 
 	class Renderable
-		: public Allocator
+		: public Allocator2D
 	{
 		OBJECT_DECLARE(Renderable);
 	public:

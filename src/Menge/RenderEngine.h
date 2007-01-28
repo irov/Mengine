@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "RenderSystemInterface.h"
+
 #	include "DllModule.h"
 #	include "Keeper.h"
 
@@ -7,11 +9,6 @@
 
 #	include "math/mat3.h"
 #	include "math/vec2.h"
-
-class RenderSystemInterface;
-class RenderFontInterface;
-class RenderImageInterface;
-struct TextureDesc;
 
 namespace Menge
 {

@@ -10,16 +10,7 @@
 
 #	include "InputEngine.h"
 
-#	include "InputSystemInterface.h"
-
 #	include "ScriptEngine.h"
-
-#	include "InputScriptFunctionMap.h"
-
-#	include "XmlParser.h"
-#	include "ErrorMessage.h"
-
-#	include "Utility/algorithm.h"
 
 namespace Menge
 {
@@ -32,7 +23,6 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	InputEngine::~InputEngine()
 	{
-		Utility::erase_ptr_container(m_MapInputScriptFunctionMap);
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	bool InputEngine::init()
@@ -45,86 +35,6 @@ namespace Menge
 	void InputEngine::update()
 	{
 		m_interface->update();
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::loadFunctionMap(const std::string &File)
-	{
-		//<INPUT_CONTROLS NAME = "MainPlayer" SCRIPT_FILE = "InputMainPlayer.lua" >
-
-		//std::string InputPath = NPath::TemplateObject(File);
-
-		//XML_PARSE_FILE(InputPath)
-		//{
-		//	XML_CHECK_NODE("INPUT_CONTROLS")
-		//	{
-		//		XML_DEF_ATTRIBUTES_NODE(NAME);
-
-		//		TMapInputScriptFunctionMap::iterator it_find = 
-		//			m_MapInputScriptFunctionMap.find(NAME);
-
-		//		if( it_find != m_MapInputScriptFunctionMap.end() )
-		//		{
-		//			break;
-		//		}
-
-		//		CInputScriptFunctionMap *FunctionMap =
-		//			new CInputScriptFunctionMap(this);
-
-		//		m_MapInputScriptFunctionMap
-		//			.insert(std::make_pair(NAME,FunctionMap));
-
-		//		CScriptEngine *ScriptEngine = GetScriptEngine();
-		//		FunctionMap->Init(ScriptEngine);
-
-		//		XML_DEF_ATTRIBUTES_NODE(SCRIPT_FILE);
-
-		//		if( SCRIPT_FILE.empty() == false )
-		//		{
-		//			std::string ScriptPath = NPath::TemplateObject(SCRIPT_FILE);
-		//			ScriptEngine->DoFile(ScriptPath);
-		//		}
-
-		//		FunctionMap->Loader(XML_CURRENT_NODE);
-		//	}
-		//}
-		//XML_INVALID_PARSE()
-		//{
-		//	ErrorMessage("Invalid parse xml input file '%s'"
-		//		,InputPath.c_str()
-		//		);
-
-		//	return false;
-		//}
-
-		return true;
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	InputScriptFunctionMap * InputEngine::getFunctionMap(const std::string &Name)
-	{
-		TMapInputScriptFunctionMap::iterator it_find =
-			m_MapInputScriptFunctionMap.find(Name);
-
-		if( it_find == m_MapInputScriptFunctionMap.end() )
-		{
-			return 0;
-		}
-
-		return it_find->second;
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::setActiveFunctionMap(const std::string &Name, bool Value)
-	{
-		TMapInputScriptFunctionMap::iterator it_find =
-			m_MapInputScriptFunctionMap.find(Name);
-
-		if( it_find == m_MapInputScriptFunctionMap.end() )
-		{
-			return false;
-		}
-
-		it_find->second->SetActive(Value);
-
-		return true;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isKey(unsigned int index,int key_state)const
@@ -162,6 +72,7 @@ namespace Menge
 	{
 		return *(const mt::vec3f *)m_interface->getPosition();
 	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & InputEngine::getDelta() const
 	{
 		return *(const mt::vec3f *)m_interface->getDelta();

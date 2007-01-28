@@ -158,28 +158,31 @@ namespace	mt
 	}
 
 	/*	Scale by Scalar	 */
-	void scale_m4_s(mat4f& _out, const mat4f& _rhs, float _val)
+	void scale_m4_m4(mat4f& _out, const mat4f& _rhs, const mt::vec4f & _val)
 	{
-		scale_v4_v4(_out.v0,_rhs.v0,_val);
-		scale_v4_v4(_out.v1,_rhs.v1,_val);
-		scale_v4_v4(_out.v2,_rhs.v2,_val);
-		scale_v4_v4(_out.v3,_rhs.v3,_val);
+		scale_v4_v4(_out.v0,_rhs.v0,_val.x);
+		scale_v4_v4(_out.v1,_rhs.v1,_val.y);
+		scale_v4_v4(_out.v2,_rhs.v2,_val.z);
+		scale_v4_v4(_out.v3,_rhs.v3,_val.w);
 	}
 
-	mat4f operator*(const mat4f& _rhs, float _val)
+	void scale_m4(mat4f& _out, const mt::vec4f & _val)
 	{
-		mat4f out;
-		scale_m4_s(out,_rhs,_val);
-		return out;
+		scale_m4_m4( _out, _out, _val );
 	}
 
-	void scale_m4_s(mat4f& _out, float _val)
+	void	scale_rotate_m4_m4(mat4f& _out, const mat4f& _rhs, const mt::vec3f & _val)
 	{
-		scale_v4_v4(_out.v0,_out.v0,_val);
-		scale_v4_v4(_out.v1,_out.v1,_val);
-		scale_v4_v4(_out.v2,_out.v2,_val);
-		scale_v4_v4(_out.v2,_out.v2,_val);
+		scale_v4_v4(_out.v0,_rhs.v0,_val.x);
+		scale_v4_v4(_out.v1,_rhs.v1,_val.y);
+		scale_v4_v4(_out.v2,_rhs.v2,_val.z);
 	}
+
+	void	scale_rotate_m4(mat4f& _out, const mt::vec3f &_val)
+	{
+		scale_rotate_m4_m4( _out, _out, _val );
+	}
+
 
 	/*	Identity	matrix	*/
 	void ident_m4(mat4f& _out)
@@ -315,7 +318,7 @@ namespace	mt
 	{ 
 		adj_m4(_out, _rhs);
 		float	invdet = 1.0f / det_m4(_out);
-		scale_m4_s(_out,invdet);
+		scale_m4(_out, mt::vec4f(invdet,invdet,invdet,invdet) );
 	}
 
 	mat4f inv_m4(const mat4f& _rhs)

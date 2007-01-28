@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "Allocator.h"
+#	include "Allocator2D.h"
 
 namespace Menge
 {
 	class Avatar;
 
 	class Actor
-		: public Allocator
+		: public Allocator2D
 	{
 		OBJECT_DECLARE(Actor)
 

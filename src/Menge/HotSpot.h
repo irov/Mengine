@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "Allocator.h"
+#	include "Allocator2D.h"
 
 #	include "Math/polygon.h"
 
 namespace Menge
 {
 	class HotSpot
-		: public Allocator
+		: public Allocator2D
 	{
 		OBJECT_DECLARE(HotSpot)
 	

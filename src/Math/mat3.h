@@ -52,6 +52,9 @@ namespace mt
 	void	scale_m3_s(mat3f& _out, const mat3f& _rhs, float _val);
 	void	scale_m3_s(mat3f& _out, float _val);
 
+	void	scale_m3_m3(mat3f& _out, const mat3f& _rhs, const mt::vec3f & _val);
+	void	scale_m3(mat3f& _out, const mt::vec3f &_val);
+
 	void	transpose_m3(mat3f& _out, const mat3f& _rhs);
 	mat3f	transpose_m3(const mat3f& _rhs);
 

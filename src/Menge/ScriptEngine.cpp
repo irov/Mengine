@@ -1,177 +1,50 @@
 #	include "ScriptEngine.h"
-#	include "ScriptEngineError.h"
 
-#	include "ScriptFunction.h"
-
-#	include "Node.h"
-
-#	include "LuaScript/LuaScript.h"
-
-#	include "BaseScriptFunctionRegistration.h"
+#	include "FileEngine.h"
 
 using namespace Menge;
 
 ScriptEngine::ScriptEngine()
-: m_luaScript(0)
 {
 	Keeper<ScriptEngine>::keep(this);
 }
-//////////////////////////////////////////////////////////////////////////
 ScriptEngine::~ScriptEngine()
 {
-	delete m_luaScript;
+	m_luaBoost.close();
 }
 //////////////////////////////////////////////////////////////////////////
 void ScriptEngine::init()
 {
-	m_luaScript = new CLuaScript();
-
-	TRY_SCRIPT_FUNCTION(m_luaScript->Init());
-
-	BaseScriptFunctionRegistration::registration( m_luaScript->GetLuaState() );
-
-	//TODO
-	//TRY_SCRIPT_FUNCTION(NScriptObjectFactory::ImplementAll(m_LuaScript));
-
-	//	m_luaScript->SetLuaObject("ScriptEngine",this);
-}
-//////////////////////////////////////////////////////////////////////////
-CLuaScript* ScriptEngine::getLuaScript()
-{
-	return m_luaScript;
-}
-//////////////////////////////////////////////////////////////////////////
-void ScriptEngine::setLuaObject(const std::string &_name, Node *_object )
-{
-	TLuaObject *luaObject = _object->getScriptable();
-
-	m_luaScript->SetLuaObject(_name,*luaObject);
-}
-//////////////////////////////////////////////////////////////////////////
-void ScriptEngine::include(const std::string &_file)
-{
-	m_queueLuaFile.insert(_file);
+	m_luaBoost.init();
+	export_function();
 }
 //////////////////////////////////////////////////////////////////////////
 int ScriptEngine::doString(const std::string &_string)
 {
-	int errorCode = -1;
-
-	TRY_SCRIPT_FUNCTION(errorCode = m_luaScript->DoString(_string));
-
-	if( errorCode != 0 )
-	{
-		ErrorMessage("Bad parse string: \n %s \n error code [%d]"
-			,_string.c_str()
-			,errorCode);
-
-		return errorCode;
-	}
-
-	return 0;
+	return m_luaBoost.do_buffer( _string.c_str(), _string.size() );
 }
 //////////////////////////////////////////////////////////////////////////
 int ScriptEngine::doFile(const std::string &_file)
 {
-	TSetLuaFile::iterator it_find = m_setLuaFile.find(_file);
-	if( it_find != m_setLuaFile.end() )
+	FileDataInterface *_data = Keeper<FileEngine>::hostage()->openFile(_file);
+
+	return m_luaBoost.do_buffer( _data->getBuffer(), _data->size() );
+}
+//////////////////////////////////////////////////////////////////////////
+const lua_boost::lua_functor * ScriptEngine::genFunctor( const std::string &_name )
+{
+	TMapLuaFunctor::iterator it_find = m_mapLuaFunctor.find( _name );
+	if( it_find != m_mapLuaFunctor.end() )
 	{
-		return 0;
+		return it_find->second;
 	}
 
-	int errorCode = -1;
-	TRY_SCRIPT_FUNCTION( errorCode = m_luaScript->DoFile(_file) );
+	const lua_boost::lua_functor * func = 
+		new	lua_boost::lua_functor(
+		m_luaBoost.functor( _name.c_str() )
+		);
 
-	if( errorCode == 0 )
-	{
-		m_setLuaFile.insert(_file);
-	}
-	else
-	{
-		ErrorMessage("Bad parse file [%s] error code [%d]"
-			,_file.c_str()
-			,errorCode);
+	m_mapLuaFunctor.insert( std::make_pair(_name, func ) );
 
-		return errorCode;
-	}
-
-	TSetLuaFile::iterator it_file = m_queueLuaFile.begin();
-	if( it_file != m_queueLuaFile.end())
-	{
-		std::string nextFile = (*it_file);
-
-		m_queueLuaFile.erase(it_file);
-
-		doFile(nextFile);
-	}
-
-	return errorCode;
-}
-//////////////////////////////////////////////////////////////////////////
-ScriptFunction * ScriptEngine::genEvent(const std::string &_name)
-{
-	return new ScriptFunction(this,_name);
-}
-//////////////////////////////////////////////////////////////////////////
-template<class T> inline
-T ScriptEngine::callFunction(const std::string &_function, Node *_object)
-{
-	if( _object == 0 )
-	{
-		ErrorMessage("CallFunction[%s] Object is null",_function.c_str());
-		return T(0);
-	}
-
-	if( m_luaScript->IsLuaObject(_function) == false )
-	{
-		ErrorMessage("CallFunction[%s] Function is null",_function.c_str());
-		return T(0);
-	}
-
-	TLuaObject *luaThisObject = _object->getScriptable();
-
-	TRY_SCRIPT_ERROR
-		return m_luaScript->CallFunction<T>(_function,*luaThisObject);
-	CATCH_SCRIPT_ERROR
-
-		return T(0);
-}
-//////////////////////////////////////////////////////////////////////////
-void ScriptEngine::callFunctionVoid(const std::string &_function, Node *_object)
-{
-	callFunction<void>(_function,_object);
-}
-//////////////////////////////////////////////////////////////////////////
-int ScriptEngine::callFunctionInt(const std::string &_function, Node *_object)
-{
-	return callFunction<int>(_function,_object);
-}
-//////////////////////////////////////////////////////////////////////////
-template<class T> inline
-T ScriptEngine::callFunction(const std::string &_function)
-{
-	if( m_luaScript->IsLuaObject(_function) == false )
-	{
-		ErrorMessage("CallFunction[%s] Function is null",_function.c_str());
-		return T(0);
-	}
-
-	TRY_SCRIPT_FUNCTION( return m_luaScript->CallFunction<T>(_function) );
-
-	return T(0);
-}
-//////////////////////////////////////////////////////////////////////////
-void ScriptEngine::callFunctionVoid(const std::string &_function)
-{
-	callFunction<void>(_function);
-}
-//////////////////////////////////////////////////////////////////////////
-int ScriptEngine::callFunctionInt(const std::string &_function)
-{
-	return callFunction<int>(_function);
-}
-//////////////////////////////////////////////////////////////////////////
-const std::string & ScriptEngine::getErrorString()
-{
-	return m_luaScript->GetError();
+	return func;
 }

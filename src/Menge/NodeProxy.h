@@ -44,20 +44,13 @@ namespace Menge
 		bool isRoot() override;
 
 	public:
-		Node * createChildren(const std::string &_name, const std::string &_type) override;
-
 		bool addChildren(Node *_node) override;
-	
 		bool isChildren(Node *_node) override;
-		bool isChildren(const std::string &_name) override;
-
-		Node * getChildren(const std::string &_name)override;
-
-		void foreachFunc(TForEachFunc _func) override;
 		void visitChildren( Visitor *_visitor) override;
-
 		void removeChildren(Node *_node) override;
-		void removeChildren(const std::string &_name) override;
+
+		Node * nextChildren() override;
+		Node * beginChildren() override;
 
 	public:
 		void update(float _timing) override;
@@ -68,10 +61,8 @@ namespace Menge
 		void debugRender() override;
 
 	public:
-		luabind::adl::object * getScriptable() override;
-
-		void registerEvent( const std::string &_name, ScriptFunction * _func ) override;
-		ScriptFunction * event( const std::string &_name ) override;
+		virtual void registerEvent( const std::string &_name, const lua_boost::lua_functor * _func  );
+		virtual const lua_boost::lua_functor * event( const std::string &_name );
 
 	public:
 		void _lostChildren(Node *_node, bool _valid) override;

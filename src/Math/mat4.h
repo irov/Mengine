@@ -53,7 +53,6 @@ namespace mt
 	mat4f	operator*(const mat4f& _a, const mat4f& _b);
 	mat4f	operator+(const mat4f& _a, const mat4f& _b);
 	mat4f	operator-(const mat4f& _a, const mat4f& _b);
-	mat4f	operator*(const mat4f& _rhs, float _val);
 
 	bool	cmp_m4_m4(const mat4f& _a, const mat4f& _b);
 
@@ -62,8 +61,12 @@ namespace mt
 	void	mul_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b);
 	void	add_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b);
 	void	sub_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b);
-	void	scale_m4_s(mat4f& _out, const mat4f& _rhs, float _val);
-	void	scale_m4_s(mat4f& _out, float _val);
+
+	void	scale_m4_m4(mat4f& _out, const mat4f& _rhs, const mt::vec4f & _val);
+	void	scale_m4(mat4f& _out, const mt::vec4f &_val);
+
+	void	scale_rotate_m4_m4(mat4f& _out, const mat4f& _rhs, const mt::vec3f & _val);
+	void	scale_rotate_m4(mat4f& _out, const mt::vec3f &_val);
 
 	void	ident_m4(mat4f& _out);
 

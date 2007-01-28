@@ -78,11 +78,6 @@ namespace Menge
 		return m_node->isRoot();
 	};
 	//////////////////////////////////////////////////////////////////////////
-	Node * NodeProxy::createChildren(const std::string &_name, const std::string &_type)
-	{
-		return m_node->createChildren(_name,_type);
-	};
-	//////////////////////////////////////////////////////////////////////////
 	bool NodeProxy::addChildren(Node *_node)
 	{
 		return m_node->addChildren(_node);
@@ -91,21 +86,6 @@ namespace Menge
 	bool NodeProxy::isChildren(Node *_node)
 	{
 		return m_node->isChildren(_node);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool NodeProxy::isChildren(const std::string &_name)
-	{
-		return m_node->isChildren(_name);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Node * NodeProxy::getChildren(const std::string &_name)
-	{
-		return m_node->getChildren(_name);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::foreachFunc(TForEachFunc _func)
-	{
-		return m_node->foreachFunc(_func);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeProxy::visitChildren( Visitor *_visitor)
@@ -118,9 +98,14 @@ namespace Menge
 		return m_node->removeChildren(_node);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::removeChildren(const std::string &_name)
+	Node * NodeProxy::nextChildren()
 	{
-		return m_node->removeChildren(_name);
+		return m_node->nextChildren();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * NodeProxy::beginChildren()
+	{
+		return m_node->beginChildren();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeProxy::update(float _timing)
@@ -158,16 +143,12 @@ namespace Menge
 		return m_node->getResource();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	luabind::adl::object * NodeProxy::getScriptable()
-	{
-		return m_node->getScriptable();
-	};
-	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::registerEvent( const std::string &_name, ScriptFunction * _func )
+	void NodeProxy::registerEvent( const std::string &_name, const lua_boost::lua_functor * _func  )
 	{
 		return m_node->registerEvent(_name,_func);
 	}
-	ScriptFunction * NodeProxy::event( const std::string &_name )
+	//////////////////////////////////////////////////////////////////////////
+	const lua_boost::lua_functor * NodeProxy::event( const std::string &_name )
 	{
 		return m_node->event(_name);
 	}

@@ -23,9 +23,6 @@ namespace Menge
 		void loader(TiXmlElement *_xml) override;
 
 	protected:
-		bool addChildren(Node *_node) override;
-
-	protected:
 		bool _compile() override;
 
 	private:

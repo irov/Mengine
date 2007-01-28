@@ -7,6 +7,8 @@
 #	include "ScriptEngine.h"
 #	include "ScriptFunction.h"
 
+#	include "lua_boost/lua_functor.h"
+
 #	include "XmlParser.h"
 #	include "ErrorMessage.h"
 
@@ -21,6 +23,7 @@ NodeImpl::NodeImpl()
 , m_scriptObject(0)
 , m_external(false)
 , m_childrenForeach(true)
+, m_iteratorChildren(m_listChildren.begin())
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -90,15 +93,6 @@ bool NodeImpl::compile()
 
 	if( m_compile == false )
 	{
-		for( TMapScriptFunction::iterator 
-			it = m_mapScriptFunction.begin(),
-			it_end = m_mapScriptFunction.end();
-		it != it_end;
-		++it)
-		{
-			it->second->Accept();
-		}
-
 		m_compile = _compile();
 	}
 
@@ -235,7 +229,7 @@ void NodeImpl::loader(TiXmlElement *xml)
 
 			ScriptEngine *scriptEng = Keeper<ScriptEngine>::hostage();
 
-			ScriptFunction *scriptFunction = scriptEng->genEvent(Function);
+			const lua_boost::lua_functor * scriptFunction = scriptEng->genFunctor(Function);
 
 			registerEvent(Type, scriptFunction);
 		}
@@ -376,9 +370,28 @@ Node * NodeImpl::getChildren(const std::string &_name)
 	return *it_find;
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeImpl::foreachFunc(TForEachFunc _func)
+Node * NodeImpl::nextChildren()
 {
-	std::for_each( m_listChildren.begin(), m_listChildren.end(), std::ptr_fun(_func) );
+	++m_iteratorChildren;
+
+	if( m_iteratorChildren == m_listChildren.end() )
+	{
+		return 0;
+	}
+
+	return *m_iteratorChildren;
+}
+//////////////////////////////////////////////////////////////////////////
+Node * NodeImpl::beginChildren()
+{
+	m_iteratorChildren = m_listChildren.begin();
+	
+	if( m_listChildren.empty() )
+	{
+		return 0;
+	}
+
+	return *m_iteratorChildren;
 }
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::visitChildren( Visitor *_visitor )
@@ -422,7 +435,7 @@ void NodeImpl::debugRender()
 	_debugRender();
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeImpl::registerEvent( const std::string &_name, ScriptFunction * _func )
+void NodeImpl::registerEvent( const std::string &_name, const lua_boost::lua_functor * _func  )
 {
 	TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
 
@@ -432,7 +445,7 @@ void NodeImpl::registerEvent( const std::string &_name, ScriptFunction * _func )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-ScriptFunction * NodeImpl::event( const std::string &_name )
+const lua_boost::lua_functor * NodeImpl::event( const std::string &_name )
 {
 	TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
 

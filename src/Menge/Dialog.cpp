@@ -1,7 +1,5 @@
 #	include "Dialog.h"
 
-#	include "RenderSystemInterface.h"
-
 #	include "SoundSystemInterface.h"
 
 #	include "FileEngine.h"

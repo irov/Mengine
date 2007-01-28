@@ -15,6 +15,8 @@
 
 #	include "VisitorRender.h"
 
+#	include "lua_boost/lua_functor.h"
+
 #	include "Dialog.h"
 
 namespace Menge
@@ -64,8 +66,8 @@ namespace Menge
 
 			if( hs )
 			{
-				ScriptFunction *event = hs->event("LeftMouseClick");
-				event->callFunctionVoid();
+				const lua_boost::lua_functor * event = hs->event("LeftMouseClick");
+				event->call() % lua_boost::ret<void>();
 			}
 		}
 	}

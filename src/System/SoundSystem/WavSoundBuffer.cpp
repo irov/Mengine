@@ -96,16 +96,16 @@ CALWavBuffer::CALWavBuffer(void * _buffer, size_t _size)
 
 CALWavBuffer::~CALWavBuffer(){};
 
-int		CALWavBuffer::read(unsigned char * _buffer, int _size)
+ALsizei	CALWavBuffer::read(unsigned char * _buffer, size_t _size)
 {
-	int	bytesLeft = m_dataLength - (getPos() - m_dataOffset);
+	size_t	bytesLeft = m_dataLength - (getPos() - m_dataOffset);
 
 	if (_size < 0 || _size > bytesLeft)
 	{
 		_size = bytesLeft;
 	}
 
-	return  getPtr(_buffer, _size);
+	return  (ALsizei)getPtr(_buffer, _size);
 }
 
 bool	CALWavBuffer::seek(float _time)
@@ -114,7 +114,7 @@ bool	CALWavBuffer::seek(float _time)
 	return true;
 }
 
-int		CALWavBuffer::getDataSoundSize() const
+size_t	CALWavBuffer::getDataSoundSize() const
 {
 	return m_dataLength;	
 };

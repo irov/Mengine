@@ -59,6 +59,27 @@ namespace mt
 	{
 		return points[i];
 	}
+
+	vec2f & polygon::front()
+	{
+		return points.front();
+	}
+	const vec2f & polygon::front()const
+	{
+		return points.front();
+	}
+
+	vec2f & polygon::back()
+	{
+		return points.back();
+	}
+	
+	const vec2f & polygon::back()const
+	{
+		return points.back();
+	}
+
+
 	/*	
 		Compare	two polygons. equal, if all vertices and size are same.
 	*/
@@ -68,7 +89,11 @@ namespace mt
 		size_t size_b = _b.num_points();
 		if(size_a!=size_b)	return	false;
 		if(!size_a) return	true;
-		return std::equal(&_a[0],&_a[size_a - 1],&_b[0]);
+		return std::equal(
+			&_a.front(),
+			&_a.back(), 
+			stdext::checked_array_iterator<const vec2f *>(&_b.front(), size_b) 
+			);
 	}
 	/*
 		Helpers for compare.
@@ -101,11 +126,12 @@ namespace mt
 			return false;
 		}
 
-		int L = 0, H = size;
+		size_t L = 0;
+		size_t H = size;
 
 		do
 		{
-			int M = (L + H) / 2;
+			size_t M = (L + H) / 2;
 
 			if (is_left_v2(poly[0], poly[M], p) > 0)
 			{
@@ -173,8 +199,8 @@ namespace mt
 
 		for (size_t i = 0; i < size; i++) 
 		{
-			int j = (i + 1) % size;
-			int k = (i + 2) % size;
+			size_t j = (i + 1) % size;
+			size_t k = (i + 2) % size;
 			float z  = (poly[j].x - poly[i].x) * (poly[k].y - poly[j].y) - (poly[j].y - poly[i].y) * (poly[k].x - poly[j].x);
 			if (z < 0)	flag |= 1;
 			else if (z > 0) flag |= 2;
@@ -190,9 +216,9 @@ namespace mt
 	*/
 	float	orient_polygon(const polygon& poly)
 	{
-		int rmin = 0;
-		int xmin = poly[0].x;
-		int ymin = poly[0].y;
+		size_t rmin = 0;
+		float xmin = poly[0].x;
+		float ymin = poly[0].y;
 
 		size_t size = poly.num_points();
 

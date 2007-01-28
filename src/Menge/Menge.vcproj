@@ -41,8 +41,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies/luabind&quot;;&quot;$(SolutionDir)dependencies\lua-5.0.2\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;MENGE_EXPORT;_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -50,8 +51,9 @@
 				GenerateXMLDocumentationFiles="false"
 				BrowseInformation="1"
 				WarningLevel="3"
+				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				DisableSpecificWarnings="4251;4996"
 			/>
 			<Tool
@@ -218,6 +220,10 @@
 				</File>
 				<File
 					RelativePath=".\ScriptEngineError.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ScriptEngineExport.cpp"
 					>
 				</File>
 				<Filter
@@ -418,6 +424,18 @@
 					RelativePath=".\Allocator.h"
 					>
 				</File>
+				<Filter
+					Name="Allocator2D"
+					>
+					<File
+						RelativePath=".\Allocator2D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Allocator2D.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Sprite"
@@ -786,11 +804,11 @@
 			Name="Camera"
 			>
 			<File
-				RelativePath=".\Camera.cpp"
+				RelativePath=".\Camera2D.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Camera.h"
+				RelativePath=".\Camera2D.h"
 				>
 			</File>
 			<Filter

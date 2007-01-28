@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Allocator.h"
+#	include "Allocator2D.h"
 
 #	include "NodeImpl.h"
 
@@ -11,7 +11,7 @@ class FileDataInterface;
 namespace Menge
 {
 	class SoundNode
-		: public Allocator
+		: public Allocator2D
 	{
 		OBJECT_DECLARE(SoundNode);
 

@@ -6,28 +6,32 @@ size_t readFunc(void* _ptr, size_t _size, size_t _nmemb, void* _datasource)
 {
 	OggSoundData* dt   = (OggSoundData *)_datasource;
 
-	if (dt->getPos()>=dt->getLength())
+	size_t pos = dt->getPos();
+	size_t length = dt->getLength();
+
+	if ( pos >= length )
 	{
 		return 0;
 	}
 
-	return (size_t) dt->getPtr (_ptr, _size * _nmemb);
+	size_t ptr = dt->getPtr (_ptr, _size * _nmemb);
+
+	return ptr;
 }
 
 int    seekFunc(void* _datasource, ogg_int64_t _offset, int _whence)
 {
 	OggSoundData * dt = (OggSoundData *)_datasource;
 
-	if (_whence == SEEK_SET)
-		dt->seekAbs ((int)_offset);
-	else
-		if ( _whence == SEEK_CUR )
-			dt->seekCur((int)_offset);
-		else
-			if (_whence == SEEK_END)
-				dt->seekAbs(dt->getLength() + (int)_offset);
+	int _offset_i = (int)_offset;
 
-	return  dt->getPos ();
+	switch( _whence )
+	{		
+	case SEEK_SET: 	return (int)dt->seekAbs(_offset_i);
+	case SEEK_CUR:	return (int)dt->seekCur(_offset_i);
+	case SEEK_END:	return (int)dt->seekAbs( dt->getLength() + _offset_i);
+	default: return (int)dt->getPos();
+	}
 }
 
 int    closeFunc(void* _datasource)
@@ -38,7 +42,7 @@ int    closeFunc(void* _datasource)
 long   tellFunc(void* _datasource)
 {
 	OggSoundData * dt = (OggSoundData *)_datasource;
-	return  dt->getPos();
+	return  (long)dt->getPos();
 }
 
 
@@ -75,7 +79,7 @@ double	OggSoundData::getTotalTime()
 	return ov_time_total(&m_oggFile,-1);
 }
 
-int		OggSoundData::read(unsigned char* _buffer, int _size)
+ALsizei		OggSoundData::read(unsigned char* _buffer, size_t _size)
 {
 	if (_size < 0)
 	{
@@ -83,11 +87,14 @@ int		OggSoundData::read(unsigned char* _buffer, int _size)
 	}
 
 	int	curSection;
-	int	bytesRead = 0;
+	ALsizei bytesRead = 0;
 
 	while (bytesRead < _size)
 	{
-		int	res = ov_read(&m_oggFile, (char *)(_buffer + bytesRead), _size - bytesRead, 0, 2, 1, &curSection);
+		char * ch = (char *)(_buffer + bytesRead);
+		int size = (int)(_size) - bytesRead;
+
+		int	res = ov_read(&m_oggFile, ch, size, 0, 2, 1, &curSection);
 		if (res <= 0)
 		{
 			break;
@@ -106,9 +113,9 @@ bool	OggSoundData::seek(float _time)
 	return false;
 }
 
-int		OggSoundData::getDataSoundSize()  const
+size_t	OggSoundData::getDataSoundSize()  const
 {
 	double	totalTime = ov_time_total ( const_cast <OggVorbis_File *> ( &m_oggFile ), -1 );
 
-	return (int)( totalTime + 0.5) * getNumChannels() * getFrequency() * 2;
+	return size_t( totalTime + 0.5 ) * getNumChannels() * getFrequency() * 2;
 }

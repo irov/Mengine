@@ -155,6 +155,20 @@ namespace	mt
 		scale_v3_v3(_out.v2,_out.v2,_val);
 	}
 
+	void	scale_m3_m3(mat3f& _out, const mat3f& _rhs, const mt::vec3f & _val)
+	{
+		scale_v3_v3(_out.v0,_rhs.v0,_val.x);
+		scale_v3_v3(_out.v1,_rhs.v1,_val.y);
+		scale_v3_v3(_out.v2,_rhs.v2,_val.z);
+
+	}
+
+	void	scale_m3(mat3f& _out, const mt::vec3f &_val)
+	{
+		scale_m3_m3( _out, _out, _val );
+	}
+
+
 	/*	Transpose Matrix  */
 	void transpose_m3(mat3f& _out, const mat3f& _rhs)
 	{

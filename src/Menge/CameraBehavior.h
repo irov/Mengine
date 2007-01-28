@@ -4,7 +4,7 @@
 
 namespace Menge
 {
-	class Camera;
+	class Camera2D;
 
 	class CameraBehavior
 		: public NodeImpl
@@ -22,6 +22,6 @@ namespace Menge
 		void _updateParent() override;
 
 	private:
-		Camera * m_camera;
+		Camera2D * m_camera;
 	};
 }

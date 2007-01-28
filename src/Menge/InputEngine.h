@@ -13,16 +13,15 @@
 #	include "DllModule.h"
 #	include "Keeper.h"
 
+#	include "InputSystemInterface.h"
+
 #	include "Math/vec3.h"
 
 #	include <string>
 #	include <map>
 
-class InputSystemInterface;
-
 namespace Menge
 {
-	class InputScriptFunctionMap;
 	class InputManager;
 	class ScriptEngine;
 
@@ -36,11 +35,6 @@ namespace Menge
 	public:
 		bool init();
 		void update();
-
-	public:
-		bool loadFunctionMap(const std::string &File);
-		InputScriptFunctionMap * getFunctionMap(const std::string &Name);
-		bool setActiveFunctionMap(const std::string &Name, bool Value);
 
 	public:
 		bool isKey(unsigned int index,int key_state)const;
@@ -59,10 +53,5 @@ namespace Menge
 		bool isMove()const;
 		bool isAnyButtonDown()const;
 		bool isButton(int but,int but_state)const;
-
-	private:
-		typedef std::map<std::string, InputScriptFunctionMap *> TMapInputScriptFunctionMap;
-
-		TMapInputScriptFunctionMap m_MapInputScriptFunctionMap;
 	};
 }

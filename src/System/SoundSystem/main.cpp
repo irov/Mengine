@@ -24,7 +24,7 @@ int main()
 	std::ifstream	f("1.OGG",std::ios::binary);
 
 	f.seekg(0,std::ios::end); 
-	size_t filesize = f.tellg();
+	std::streamsize filesize = f.tellg();
 
 	f.seekg(0,std::ios::beg);
 	char* buffer = new char[filesize];
@@ -42,7 +42,7 @@ int main()
 	SoundSourceInterface* ssi = SoundSystem->loadSoundNode(desc_to_load,0);
 	ssi->play();
 	
-	getche ();
+	_getche ();
 
 	SoundSystem->releaseSoundNode(ssi);
 

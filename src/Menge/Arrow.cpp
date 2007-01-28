@@ -25,7 +25,7 @@ void Arrow::_update(float _timing)
 
 	const mt::vec3f &dmv = inputEng->getPosition();
 
-	setPosition( mt::vec3f(dmv.x, dmv.y, 0) );
+	setPosition( mt::vec2f(dmv.x, dmv.y) );
 }
 //////////////////////////////////////////////////////////////////////////
 bool Arrow::_compile()
@@ -55,9 +55,9 @@ void Arrow::loader( TiXmlElement *_xml )
 //////////////////////////////////////////////////////////////////////////
 void Arrow::_debugRender()
 {
-	//RenderEngine *renderEng = Keeper<RenderEngine>::hostage();
+	RenderEngine *renderEng = Keeper<RenderEngine>::hostage();
 
-	//const mt::vec2f & pos = getWorldPosition();
+	const mt::vec2f & pos = getWorldPosition();
 
-	//renderEng->drawLine(pos,pos + mt::vec2f(10,-10),2,0xffff00ff);
+	renderEng->drawLine(pos,pos + mt::vec2f(10,-10),2,0xffff00ff);
 };

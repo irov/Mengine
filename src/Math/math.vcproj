@@ -49,8 +49,9 @@
 				ProgramDataBaseFileName="$(OutDir)\$(ProjectName)_d.pdb"
 				BrowseInformation="1"
 				WarningLevel="3"
+				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

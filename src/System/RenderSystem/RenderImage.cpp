@@ -5,7 +5,7 @@ D3D9RenderImage::D3D9RenderImage(LPDIRECT3DDEVICE9 _dev, const TextureDesc& _des
 { 
 	m_haveAlpha = _desc.haveAlpha;
 
-	if (FAILED(D3DXCreateTextureFromFileInMemoryEx(_dev, _desc.buffer, _desc.size,
+	if (FAILED(D3DXCreateTextureFromFileInMemoryEx(_dev, _desc.buffer, (UINT)_desc.size,
                                     D3DX_DEFAULT, D3DX_DEFAULT,
                                     1,                  
                                     0,                  
@@ -27,8 +27,8 @@ D3D9RenderImage::D3D9RenderImage(LPDIRECT3DDEVICE9 _dev, const TextureDesc& _des
         assert(!"can't get desc!");
     }
 
-	m_width = surfaceDesc.Width;
-	m_height = surfaceDesc.Height;
+	m_width = (float)surfaceDesc.Width;
+	m_height = (float)surfaceDesc.Height;
 
 	m_verts[0].tcoor = mt::vec2f(0.0f, 0.0f);
 	m_verts[1].tcoor = mt::vec2f(1.0f, 0.0f);

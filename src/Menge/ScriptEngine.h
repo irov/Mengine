@@ -3,9 +3,9 @@
 #	include "Keeper.h"
 
 #	include <string>
-#	include <set>
+#	include <map>
 
-class CLuaScript;
+#	include "lua_boost/lua_boost.h"
 
 namespace Menge
 {
@@ -22,40 +22,20 @@ namespace Menge
 	public:
 		void init();
 
-		CLuaScript* getLuaScript();
+		void export_function();
 
-		void include(const std::string &_file);
 		int doFile(const std::string &_file);
 		int doString(const std::string &_string);
 
-		void setLuaObject(const std::string &_name, Node *_object );
-
-		ScriptFunction * genEvent(const std::string &_name);
-
-	public:
-		template<class T>
-		T callFunction(const std::string &_function, Node *_object);
-
-		void callFunctionVoid(const std::string &_function, Node *_object);
-		int callFunctionInt(const std::string &_function, Node *_object);
-
-		template<class T>
-		T callFunction(const std::string &_function);
-
-		void callFunctionVoid(const std::string &_function);
-		int callFunctionInt(const std::string &_function);
-
-
+		const lua_boost::lua_functor * genFunctor( const std::string &_name );
 
 	public:
 		const std::string & getErrorString();
 
 	private:
-		typedef std::set<std::string> TSetLuaFile;
+		lua_boost::lua_boost m_luaBoost;
 
-		CLuaScript*	m_luaScript;
-
-		TSetLuaFile m_setLuaFile;
-		TSetLuaFile m_queueLuaFile;
+		typedef std::map<std::string, const lua_boost::lua_functor * > TMapLuaFunctor;
+		TMapLuaFunctor m_mapLuaFunctor;
 	};
 }

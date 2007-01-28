@@ -98,7 +98,7 @@ OpenALSoundSource::OpenALSoundSource(
 	else
 	{
 		m_dataSoundBuffer = new unsigned char[m_dataBuffer->getDataSoundSize()];
-		int size = m_dataBuffer->read(m_dataSoundBuffer);
+		ALsizei size = m_dataBuffer->read(m_dataSoundBuffer);
 
 		alGenBuffers(1, m_buffer);
 		if (!CheckALError()) return;

@@ -3,8 +3,7 @@
 #	include "DllModule.h"
 #	include "Keeper.h"
 
-class FileSystemInterface;
-class FileDataInterface;
+#	include "FileSystemInterface.h"
 
 class TiXmlElement;
 class TiXmlDocument;

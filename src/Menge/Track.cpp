@@ -13,7 +13,7 @@ Track::Track()
 	
 }
 //////////////////////////////////////////////////////////////////////////
-void Track::addPoint(const mt::vec3f &_point)
+void Track::addPoint(const mt::vec2f &_point)
 {
 	if( m_listPoints.empty() )
 	{
@@ -21,9 +21,9 @@ void Track::addPoint(const mt::vec3f &_point)
 	}
 	else
 	{
-		mt::vec3f &begin = m_listPoints.back();
+		mt::vec2f &begin = m_listPoints.back();
 		m_listPoints.push_back(_point);
-		mt::vec3f &end = m_listPoints.back();
+		mt::vec2f &end = m_listPoints.back();
 
 		m_listChain.push_back(TrackChain(&begin,&end));
 	}
@@ -58,7 +58,7 @@ bool Track::_compile()
 {
 	m_currentChain = m_listChain.begin();
 
-	const mt::vec3f & bp = m_currentChain->beginPoint();
+	const mt::vec2f & bp = m_currentChain->beginPoint();
 
 	setPosition(bp);
 
@@ -79,9 +79,9 @@ void Track::_update( float _timing)
 
 	float trackLength = m_speedMove * _timing;
 
-	const mt::vec3f &lposition = getLocalPosition();
+	const mt::vec2f &lposition = getLocalPosition();
 
-	float lnChain = mt::length_v3_v3(lposition, m_currentChain->endPoint());
+	float lnChain = mt::length_v2_v2(lposition, m_currentChain->endPoint());
 
 	while( trackLength > lnChain )
 	{
@@ -93,7 +93,7 @@ void Track::_update( float _timing)
 		{
 			TrackChain &backChain = m_listChain.back();
 
-			const mt::vec3f &endPoint = backChain.endPoint();
+			const mt::vec2f &endPoint = backChain.endPoint();
 			setPosition(endPoint);
 
 			stop();
@@ -110,9 +110,9 @@ void Track::_update( float _timing)
 
 	if( m_isMove == true )
 	{	
-		const mt::vec3f &dir = m_currentChain->direction();
+		const mt::vec2f &dir = m_currentChain->direction();
 
-		mt::vec3f pos = getLocalPosition();
+		mt::vec2f pos = getLocalPosition();
 
 		pos += dir * trackLength;
 
@@ -129,7 +129,7 @@ void Track::loader(TiXmlElement *_xml)
 		{
 			XML_CHECK_NODE("Point")
 			{
-				mt::vec3f pos;
+				mt::vec2f pos;
 				XML_VALUE_ATTRIBUTE("Value",pos);
 				addPoint(pos);
 			}

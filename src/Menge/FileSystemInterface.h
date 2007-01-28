@@ -5,15 +5,15 @@
 class	FileDataInterface
 {
 public:
-	virtual const	unsigned char*	getBuffer() const = 0;
+	virtual const char*	getBuffer() const = 0;
 	virtual bool	eof() const = 0;
 	virtual size_t	size() const = 0;
 	virtual size_t  read(void* _buffer, size_t _elemsize, size_t _count) = 0;
-	virtual size_t	read_chars(unsigned char* _buffer, size_t _count) = 0;
+	virtual size_t	read_chars(char* _buffer, size_t _count) = 0;
 	virtual size_t	read_floats(float* _buffer, size_t _count) = 0;
-	virtual size_t	read_ushorts(unsigned short* _buffer, size_t _count) = 0;
-	virtual size_t	read_ints(unsigned int* _buffer, size_t _count) = 0;
-	virtual size_t	read_longs(unsigned long* _buffer, size_t _count) = 0;
+	virtual size_t	read_ushorts(short* _buffer, size_t _count) = 0;
+	virtual size_t	read_ints(int* _buffer, size_t _count) = 0;
+	virtual size_t	read_longs(long* _buffer, size_t _count) = 0;
 	virtual	void	setPos(size_t _pos) = 0;
 };
 

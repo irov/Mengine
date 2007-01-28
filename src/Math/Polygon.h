@@ -30,6 +30,13 @@ namespace mt
 
 		const vec2f&	operator[](size_t i) const;
 		vec2f&			operator[](size_t i);
+
+		vec2f & front();
+		const vec2f & front()const;
+
+		vec2f & back();
+		const vec2f & back()const;
+
 	private:
 		std::vector<vec2f> points;
 	};

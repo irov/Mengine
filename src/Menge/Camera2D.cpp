@@ -1,30 +1,27 @@
-#	include "CameraBehavior.h"
-#	include "ObjectImplement.h"
-
 #	include "Camera2D.h"
+#	include "ObjectImplement.h"
 
 #	include "XmlParser.h"
 
 //////////////////////////////////////////////////////////////////////////
-OBJECT_IMPLEMENT( CameraBehavior )
+OBJECT_IMPLEMENT( Camera2D );
 //////////////////////////////////////////////////////////////////////////
-CameraBehavior::CameraBehavior()
-: m_camera(0)
+Camera2D::Camera2D()
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-void CameraBehavior::_update( float _timing )
+void Camera2D::loader( TiXmlElement * _xml )
 {
-	// Todo
+	Allocator2D::loader( _xml );
 }
 //////////////////////////////////////////////////////////////////////////
-void CameraBehavior::loader( TiXmlElement * _xml )
+bool Camera2D::_compile()
 {
-	NodeImpl::loader( _xml );
-}
+	return true;
+};
 //////////////////////////////////////////////////////////////////////////
-void CameraBehavior::_updateParent()
+void Camera2D::_update( float _timing )
 {
-	m_camera = dynamic_cast<Camera2D*>(m_parent);
+	
 }

@@ -8,7 +8,7 @@ using namespace Menge;
 #	ifndef OBJECT_USER_GENERATOR
 #	define OBJECT_IMPLEMENT_GENERATOR(C)\
 	Node * C::genObject(const std::string & _type){\
-	Node *node = new C();\
+	Node * node = new C();\
 	node->setType(_type);\
 	return node;\
 	}

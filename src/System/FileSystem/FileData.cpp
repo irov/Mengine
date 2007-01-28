@@ -14,14 +14,14 @@ FileData::FileData(size_t _size)
 		delete[] m_data;
 	}
 
-	m_data = new unsigned char[m_size];
+	m_data = new char[m_size];
     m_pos = m_data;
 	m_endData = m_data + m_size;
 }
 
 FileData::FileData(void *_data, size_t _size)
 {
-    m_data = reinterpret_cast< unsigned char* >(_data);
+    m_data = reinterpret_cast< char* >(_data);
     m_endData = m_data + _size;
     m_pos = m_data;
     m_size = _size;
@@ -33,7 +33,7 @@ FileData::FileData(std::ifstream& _stream)
 	std::streamsize filesize = _stream.tellg();
 	_stream.seekg(0,std::ios::beg);
 	m_size = filesize;
-	m_data = new unsigned char[m_size];
+	m_data = new char[m_size];
     m_pos = m_data;
 	m_endData = m_data + m_size;
 	_stream.read((char*)getBuffer(),filesize);
@@ -59,7 +59,7 @@ size_t FileData::read(void* _buffer, size_t _elemsize, size_t _count)
     return cnt;
 }
 
-size_t	FileData::read_chars(unsigned char* _buffer, size_t _count)
+size_t	FileData::read_chars(char* _buffer, size_t _count)
 {
 	return read(_buffer, sizeof(char), _count);
 }
@@ -69,19 +69,19 @@ size_t	FileData::read_floats(float* _buffer, size_t _count)
 	return read(_buffer, sizeof(float), _count);
 }
 
-size_t	FileData::read_ushorts(unsigned short* _buffer, size_t _count)
+size_t	FileData::read_ushorts( short* _buffer, size_t _count)
 {
-	return read(_buffer, sizeof(unsigned short), _count);
+	return read(_buffer, sizeof(short), _count);
 }
 
-size_t	FileData::read_ints(unsigned int*_buffer, size_t _count)
+size_t	FileData::read_ints( int*_buffer, size_t _count)
 {
-	return read(_buffer, sizeof(unsigned int), _count);
+	return read(_buffer, sizeof(int), _count);
 }
 
-size_t	FileData::read_longs(unsigned long* _buffer, size_t _count)
+size_t	FileData::read_longs( long* _buffer, size_t _count)
 {
-	return read(_buffer, sizeof(unsigned long), _count);
+	return read(_buffer, sizeof(long), _count);
 }
 
 bool	FileData::eof() const
@@ -112,7 +112,7 @@ size_t		FileData::size() const
 	return m_size;
 };
 
-const unsigned char* FileData::getBuffer() const
+const char* FileData::getBuffer() const
 {
 	return m_data; 
 };

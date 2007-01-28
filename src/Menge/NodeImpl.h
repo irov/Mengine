@@ -7,6 +7,14 @@
 #	include <list>
 #	include <map>
 
+namespace luabind
+{
+	namespace adl
+	{
+		class object;
+	}
+}
+
 namespace Menge
 {
 	class NodeImpl
@@ -75,9 +83,19 @@ namespace Menge
 			return static_cast<T*>(getChildren(_name));
 		}
 
-		typedef void (*TForEachFunc)( Node *);
+		template<class F>
+		void foreachChildren( F f )
+		{
+			std::for_each( 
+				m_listChildren.begin(), 
+				m_listChildren.end(), 
+				f 
+				);
+		}
 
-		virtual void foreachFunc(TForEachFunc _func);
+		virtual Node * nextChildren();
+		virtual Node * beginChildren();
+
 		virtual void visitChildren( Visitor *_visitor );
 
 		virtual void removeChildren(Node *_node);
@@ -93,8 +111,8 @@ namespace Menge
 	public:
 		virtual luabind::adl::object * getScriptable();
 		
-		virtual void registerEvent( const std::string &_name, ScriptFunction * _func );
-		virtual ScriptFunction * event( const std::string &_name );
+		virtual void registerEvent( const std::string &_name, const lua_boost::lua_functor * _func  );
+		virtual const lua_boost::lua_functor * event( const std::string &_name );
 
 	protected:
 
@@ -127,10 +145,11 @@ namespace Menge
 
 		Node * m_parent;
 		TListChildren m_listChildren;
+		TListChildren::iterator m_iteratorChildren;
 
 		luabind::adl::object * m_scriptObject;
 
-		typedef std::map<std::string, ScriptFunction *> TMapScriptFunction;
+		typedef std::map<std::string, const lua_boost::lua_functor *> TMapScriptFunction;
 
 		TMapScriptFunction m_mapScriptFunction;
 

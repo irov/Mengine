@@ -1,4 +1,4 @@
-#	include "Allocator.h"
+#	include "Allocator2D.h"
 #	include "ObjectImplement.h"
 
 #	include <algorithm>
@@ -6,14 +6,14 @@
 #	include "XmlParser.h"
 
 //////////////////////////////////////////////////////////////////////////
-OBJECT_IMPLEMENT(Allocator)
+OBJECT_IMPLEMENT(Allocator2D)
 //////////////////////////////////////////////////////////////////////////
-Allocator::Allocator()
+Allocator2D::Allocator2D()
 : m_changePivot(0)
 , m_parentAllocator(0)
 {
-	mt::ident_m4(m_localMatrix);
-	mt::ident_m4(m_worldMatrix);
+	mt::ident_m3(m_localMatrix);
+	mt::ident_m3(m_worldMatrix);
 }
 
 template<class T, class I, class F>
@@ -52,72 +52,42 @@ inline void dynamic_ptr_for_each( I _begin, I _end, F _f )
 }
 
 //////////////////////////////////////////////////////////////////////////
-void Allocator::changePivot()
+void Allocator2D::changePivot()
 {
 	_changePivot();
 
-	dynamic_ptr_for_each<Allocator>(
+	dynamic_ptr_for_each<Allocator2D>(
 		m_listChildren.begin(), 
 		m_listChildren.end(), 
-		std::mem_fun( &Allocator::changePivot ) 
+		std::mem_fun( &Allocator2D::changePivot ) 
 		);
-
-	//Allocator * alloc = dynamic_cast<Allocator*>(_node);
-	//if( alloc )
-	//{
-	//	alloc->changePivot();
-	//}
-
-	//std::for_each( 
-	//	m_listChildren.begin(), 
-	//	m_listChildren.end(), 
-	//	std::bind1st( std::mem_fun(&Allocator::changePivot), *this ) 
-	//	);
-		
-	//struct FChangePivot
-	//{
-	//	static void apply( Node *_node)
-	//	{
-	//		Allocator * alloc = dynamic_cast<Allocator*>(_node);
-	//		if( alloc )
-	//		{
-	//			alloc->changePivot();
-	//		}
-	//		else
-	//		{
-	//			_node->foreachFunc( &apply );
-	//		}
-	//	}
-	//};
-
-	//foreachFunc( &FChangePivot::apply );
 }
 //////////////////////////////////////////////////////////////////////////
-void Allocator::_changePivot()
+void Allocator2D::_changePivot()
 {
 	m_changePivot = true;
 }
 //////////////////////////////////////////////////////////////////////////
-bool Allocator::isChangePivot()const
+bool Allocator2D::isChangePivot()const
 {
 	return m_changePivot;
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::vec3f & Allocator::getWorldPosition()
+const mt::vec2f & Allocator2D::getWorldPosition()
 {
-	const mt::mat4f &wm = getWorldMatrix();
+	const mt::mat3f &wm = getWorldMatrix();
 
-	return wm.v3.v3;
+	return wm.v2.v2;
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::vec3f & Allocator::getWorldDirection()
+const mt::vec2f & Allocator2D::getWorldDirection()
 {
-	const mt::mat4f &wm = getWorldMatrix();
+	const mt::mat3f &wm = getWorldMatrix();
 
-	return wm.v2.v3;
+	return wm.v0.v2;
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::mat4f & Allocator::getWorldMatrix()
+const mt::mat3f & Allocator2D::getWorldMatrix()
 {
 	if( m_parentAllocator == 0 )
 	{
@@ -129,75 +99,74 @@ const mt::mat4f & Allocator::getWorldMatrix()
 	return m_worldMatrix;
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::vec3f & Allocator::getLocalPosition()const
+const mt::vec2f & Allocator2D::getLocalPosition()const
 {
-	return m_localMatrix.v3.v3;
+	return m_localMatrix.v2.v2;
 }
 //////////////////////////////////////////////////////////////////////////
-mt::vec3f & Allocator::getLocalPosition()
+mt::vec2f & Allocator2D::getLocalPosition()
 {
-	return m_localMatrix.v3.v3;
+	return m_localMatrix.v2.v2;
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::vec3f & Allocator::getLocalDirection()const
+const mt::vec2f & Allocator2D::getLocalDirection()const
 {
-	return m_localMatrix.v2.v3;
+	return m_localMatrix.v0.v2;
 }
 //////////////////////////////////////////////////////////////////////////
-mt::vec3f & Allocator::getLocalDirection()
+mt::vec2f & Allocator2D::getLocalDirection()
 {
-	return m_localMatrix.v2.v3;
+	return m_localMatrix.v0.v2;
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::mat4f & Allocator::getLocalMatrix()const
+const mt::mat3f & Allocator2D::getLocalMatrix()const
 {
 	return m_localMatrix;
 }
 //////////////////////////////////////////////////////////////////////////
-mt::mat4f & Allocator::getLocalMatrix()
+mt::mat3f & Allocator2D::getLocalMatrix()
 {
 	return m_localMatrix;
 }
 //////////////////////////////////////////////////////////////////////////
-void Allocator::setPosition( const mt::vec3f &position )
+void Allocator2D::setPosition( const mt::vec2f &position )
 {
-	mt::vec3f & localPosition = getLocalPosition();
-	
+	mt::vec2f & localPosition = getLocalPosition();
+
 	localPosition = position;
 
 	changePivot();
 }
 //////////////////////////////////////////////////////////////////////////
-void Allocator::setDirection( const mt::vec3f &direction )
+void Allocator2D::setDirection( const mt::vec2f &direction )
 {
-	// TODO: FIX 3d set direction
-	//m_localMatrix.v0.v2 = direction;
-	//m_localMatrix.v1.v2 = mt::perp(direction);
+	m_localMatrix.v0.v2 = direction;
+	m_localMatrix.v1.v2 = mt::perp(direction);
 
 	changePivot();
 }
 //////////////////////////////////////////////////////////////////////////
-void Allocator::setWorldMatrix( const mt::mat4f &matrix )
+void Allocator2D::setWorldMatrix( const mt::mat3f &matrix )
 {
 	m_worldMatrix = matrix;
 
 	changePivot();
 }
 //////////////////////////////////////////////////////////////////////////
-void Allocator::translate( const mt::vec3f &delta )
+void Allocator2D::translate( const mt::vec2f &delta )
 {
-	m_localMatrix.v3.v3 += delta;
+	m_localMatrix.v2.v2 += delta;
 
 	changePivot();
 }
 //////////////////////////////////////////////////////////////////////////
-void Allocator::_updateParent()
+void Allocator2D::_updateParent()
 {
 	for( Node *parent = getParent(); 
 		parent != 0; 
 		parent = parent->getParent() )
 	{
-		m_parentAllocator = dynamic_cast<Allocator*>(parent);
+		m_parentAllocator = dynamic_cast<Allocator2D*>(parent);
 		if( m_parentAllocator )
 		{
 			break;
@@ -205,13 +174,13 @@ void Allocator::_updateParent()
 	}
 };
 //////////////////////////////////////////////////////////////////////////
-void Allocator::updateMatrix()
+void Allocator2D::updateMatrix()
 {
 	if( m_changePivot == false )
 	{
 		return;
 	}
-	
+
 	if( m_parentAllocator == 0 )
 	{
 		return;
@@ -219,31 +188,31 @@ void Allocator::updateMatrix()
 
 	if( _updateMatrix() )
 	{
-		const mt::mat4f & parentMatrix =
+		const mt::mat3f & parentMatrix =
 			m_parentAllocator->getWorldMatrix();
 
-		mt::mul_m4_m4(m_worldMatrix,m_localMatrix,parentMatrix);
+		mt::mul_m3_m3(m_worldMatrix,m_localMatrix,parentMatrix);
 	}
 
 	m_changePivot = false;
 }
 //////////////////////////////////////////////////////////////////////////
-bool Allocator::_updateMatrix()
+bool Allocator2D::_updateMatrix()
 {
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void Allocator::setParentAllocator( Allocator *_alloc)
+void Allocator2D::setParentAllocator( Allocator2D *_alloc)
 {
 	m_parentAllocator = _alloc;
 }
 //////////////////////////////////////////////////////////////////////////
-Allocator * Allocator::getParentAllocator()
+Allocator2D * Allocator2D::getParentAllocator()
 {
 	return m_parentAllocator;
 }
 //////////////////////////////////////////////////////////////////////////
-void Allocator::loader( TiXmlElement * _xml )
+void Allocator2D::loader( TiXmlElement * _xml )
 {
 	XML_FOR_EACH_TREE( _xml )
 	{

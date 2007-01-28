@@ -14,7 +14,7 @@ D3D9Font::D3D9Font(LPDIRECT3DDEVICE9	_devD3D9, const FontDesc&	_fontDesc)
 	m_color = _fontDesc.color;
 	m_height = _fontDesc.height;
 
-    if (FAILED(D3DXCreateTextureFromFileInMemoryEx(_devD3D9, _fontDesc.texDesc.buffer, _fontDesc.texDesc.size,
+    if (FAILED(D3DXCreateTextureFromFileInMemoryEx(_devD3D9, _fontDesc.texDesc.buffer, (UINT)_fontDesc.texDesc.size,
 								D3DX_DEFAULT, D3DX_DEFAULT,
 								1, 0,					
 								_fontDesc.texDesc.haveAlpha ? D3DFMT_A8R8G8B8 : D3DFMT_R8G8B8,	

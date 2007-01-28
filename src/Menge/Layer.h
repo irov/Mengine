@@ -1,18 +1,26 @@
 #	pragma once
 
-#	include "NodeImpl.h"
+#	include "Allocator2D.h"
 
 #	include <list>
 
 namespace Menge
 {
 	class Layer
-		: public NodeImpl
+		: public Allocator2D
 	{
 		OBJECT_DECLARE(Layer);
 
 	public:
+		Layer();
+
+	public:
 		void setParent(Node *node)override;
 
+	protected:
+		bool _updateMatrix() override;
+
+	protected:
+		mt::vec2f m_factorParalax;
 	};
 }

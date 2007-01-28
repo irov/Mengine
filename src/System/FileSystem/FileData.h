@@ -14,19 +14,19 @@ public:
 
 public:
 	size_t	read(void* buffer, size_t elemsize, size_t count);
-	size_t	read_chars(unsigned char* buffer, size_t count);
+	size_t	read_chars(char* buffer, size_t count);
 	size_t	read_floats(float* buffer, size_t count);
-	size_t	read_ushorts(unsigned short* buffer, size_t count);
-	size_t	read_ints(unsigned int* buffer, size_t count);
-	size_t	read_longs(unsigned long* buffer, size_t count);
+	size_t	read_ushorts(short* buffer, size_t count);
+	size_t	read_ints(int* buffer, size_t count);
+	size_t	read_longs(long* buffer, size_t count);
 	bool	eof()const;
 	void	setPos(size_t pos);
     size_t	size()const;
-    const unsigned char* getBuffer() const;
+    const char* getBuffer() const;
 
 private:
-	unsigned char* m_data;
-	unsigned char* m_pos;
-	unsigned char* m_endData;
+	char* m_data;
+	char* m_pos;
+	char* m_endData;
 	size_t m_size;
 };

@@ -47,6 +47,7 @@ namespace Menge
 
 	protected:
 		virtual void _changePivot();
+		virtual bool _updateMatrix();
 
 	protected:
 		void _updateParent()override;
@@ -59,7 +60,7 @@ namespace Menge
 
 		bool m_changePivot;
 
-	private:	
+	private:
 		void updateMatrix();
 	};
 }

@@ -3,8 +3,6 @@
 
 #	include "FileEngine.h"
 
-#	include "SoundSystemInterface.h"
-
 #	include	<assert.h>
 
 namespace Menge

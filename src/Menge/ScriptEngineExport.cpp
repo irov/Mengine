@@ -1,6 +1,6 @@
 #	include "ScriptEngine.h"
 
-#	include "lua_boost/lua_boost_reg.h"
+#	include "lua_boost/lua_boost.h"
 
 #	include "Player.h"
 #	include "Scene.h"

@@ -2,13 +2,6 @@
 
 #	include <windows.h>
 
-enum
-{
-	INPUT_KEYBOARD	= 0x00000001,
-	INPUT_MOUSE		= 0x00000002,
-	INPUT_ALL		= 0x00000003
-};
-
 class InputSystemInterface
 {
 public:

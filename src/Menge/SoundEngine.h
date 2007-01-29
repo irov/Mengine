@@ -3,15 +3,14 @@
 #	include "DllModule.h"
 #	include "Keeper.h"
 
+#	include "SoundSystemInterface.h"
+
 #	include <boost/shared_ptr.hpp>
 
 #	include	<map>
 #	include	<string>
 
-class	SoundSystemInterface;
-class	SoundSourceInterface;
 class	FileDataInterface;
-class	SoundNodeListenerInterface;
 
 namespace Menge
 {

@@ -1,0 +1,60 @@
+#	include "lua_totype.h"
+
+#	include "../lua_include.h"
+
+namespace lua_boost
+{
+	namespace lua_totype_case
+	{
+		//////////////////////////////////////////////////////////////////////////
+		bool totype( lua_State *L, int arg, bool )
+		{
+			return lua_toboolean(L,arg) != 0;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		int totype( lua_State *L, int arg, int )
+		{
+			return static_cast<int>(lua_tonumber(L,arg));
+		}
+		//////////////////////////////////////////////////////////////////////////
+		size_t totype( lua_State *L, int arg, size_t )
+		{
+			return static_cast<size_t>(lua_tonumber(L,arg));
+		}
+		//////////////////////////////////////////////////////////////////////////
+		float totype( lua_State *L, int arg, float )
+		{
+			return static_cast<float>(lua_tonumber(L,arg));
+		}
+		//////////////////////////////////////////////////////////////////////////
+		const char * totype( lua_State *L, int arg, const char * )
+		{
+			return lua_tostring(L,arg);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void pushtype( lua_State *L, bool b )
+		{
+			lua_pushboolean( L, b );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void pushtype( lua_State *L, int i )
+		{
+			lua_pushnumber( L, i );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void pushtype( lua_State *L, size_t u )
+		{
+			lua_pushnumber( L, u );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void pushtype( lua_State *L, float f )
+		{
+			lua_pushnumber( L, f );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void pushtype( lua_State *L, const char * s )
+		{
+			lua_pushstring( L, s );
+		}
+	}
+}

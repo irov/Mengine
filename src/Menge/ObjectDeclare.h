@@ -1,7 +1,14 @@
 #	pragma once
 
+#	include <string>
+
+struct FactoryGenStruct
+{
+	std::string type;
+};
+
 #	define OBJECT_DECLARE(C)\
 	public:\
-	static Node * genObject(const std::string &);\
+	static Node * genObject(const FactoryGenStruct &);\
 	virtual void visit( Visitor * );\
 	private:

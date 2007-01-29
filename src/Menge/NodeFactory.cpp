@@ -16,7 +16,7 @@ namespace Menge
 {
 	namespace NodeFactory
 	{
-		typedef Utility::Factory<std::string,Node*,TGenFunc> TClassFactory;
+		typedef Utility::Factory<std::string,Node*,FactoryGenStruct> TClassFactory;
 		//////////////////////////////////////////////////////////////////////////
 		size_t getId(const std::string &_key)
 		{
@@ -39,18 +39,20 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void registration(const std::string &_key, TGenFunc _func)
 		{
-			TClassFactory::Registration(_key,_func);
+			TClassFactory::registration(_key,_func);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		Node * genNode(const std::string &_type)
 		{
-			Node * Abstract = TClassFactory::Generation(_type,_type);
+			FactoryGenStruct gs;
+			gs.type = _type;
+			Node * Abstract = TClassFactory::generate(_type,gs);
 			return Abstract;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		Auto::Auto(const std::string &_key, TGenFunc _func)
 		{
-			TClassFactory::Registration(_key,_func);
+			TClassFactory::registration(_key,_func);
 		}
 
 	}

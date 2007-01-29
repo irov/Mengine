@@ -10,6 +10,7 @@
 
 #	 pragma once
 
+#	include "ObjectDeclare.h"
 #	include <string>
 
 namespace Menge
@@ -20,7 +21,7 @@ namespace Menge
 
 	namespace NodeFactory
 	{
-		typedef Node *(*TGenFunc)(const std::string &);
+		typedef Node *(*TGenFunc)(const FactoryGenStruct &);
 
 		size_t getId(const std::string &_key);
 		Node * genNode(const std::string &_type);

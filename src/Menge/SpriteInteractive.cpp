@@ -20,7 +20,7 @@ void SpriteInteractive::play()
 void SpriteInteractive::setLooped(bool _looped)
 {
 	Sprite::setLooped(_looped);
-	m_playSound.setLooped(_looped);
+	m_playSound.setLoop(_looped);
 }
 //////////////////////////////////////////////////////////////////////////
 void SpriteInteractive::loader(TiXmlElement *_xml)

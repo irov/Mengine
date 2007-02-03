@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Allocator2D.h"
+#	include "Allocator.h"
 
 #	include "NodeImpl.h"
 
@@ -11,7 +11,7 @@ class FileDataInterface;
 namespace Menge
 {
 	class SoundNode
-		: public Allocator2D
+		: public Allocator
 	{
 		OBJECT_DECLARE(SoundNode);
 
@@ -19,28 +19,34 @@ namespace Menge
 		SoundNode();
 
 	public:
-		void			play(); 
-		void			pause();
-		void			stop();
-		bool			updateSoundBuffer();
-		void			setLooped(bool _flag);
-		bool			getLooped() const;
-		void			setVolume(float _value);
-		float			getVolume() const;
 
-		void			setPosition(const mt::vec2f& _position);
-		mt::vec2f		getPosition() const;
+		bool play();
+		bool pause();
+		bool stop();
 
-		void			setMaxDistance(float dist);
-		float			getMaxDistance() const;
-		void			setHeadMode(bool flag);
-		bool			getHeadMode() const;
+		bool isPlaying() const;
+		bool isPaused() const;
+		bool isStopped() const;
+		bool isInitial() const;
 
-		bool			isPlaying() const;
+		void setPitch(float pitch);
+		float getPitch() const;
 
-		double			getTotalSize()	const;
-		double			getPos()	const;
+		void setGain(float gain);
+		float getGain() const;
 
+		void setRelativeToListener(bool relative);
+		bool isRelativeToListener() const;
+
+		void setPosition(const mt::vec3f& _position);
+		mt::vec3f getPosition() const;
+
+		void setLoop(bool loop);
+		bool isLooping() const;
+
+		bool process();
+
+		double		getSizeSec()	const;
 	public:
 		void			loader(TiXmlElement *xml) override;
 	

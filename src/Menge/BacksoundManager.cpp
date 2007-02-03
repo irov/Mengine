@@ -12,10 +12,9 @@ namespace	Menge
 {
 	BacksoundManager::BacksoundManager()
 	: m_soundSource(0)
-	, m_fadeVelocity(0.05f)
 	, m_fileData(0)
 	, m_currentPlayList(0)
-	, m_fadeState(NO_FADE)
+	, m_fadeState(true)
 	{
 	}
 
@@ -37,17 +36,10 @@ namespace	Menge
 		}
 	}
 
-	void	BacksoundManager::_beginFade()
+	void	BacksoundManager::setFadeTime(double _fadeTime)
 	{
-		m_fadeState = FADE_UP;
-		Keeper<SoundEngine>::hostage()->addSoundNode(
-			m_soundSource,
-			m_fileData,
-			m_currentPlayList->getCurrentSongName(),
-			this, true
-			);
-		m_soundSource->setVolume(0);
-		m_soundSource->play();
+		m_fadeTime = _fadeTime;
+		assert(_fadeTime > 0);
 	}
 
 	void	BacksoundManager::playList(const std::string& _playListName)
@@ -75,12 +67,24 @@ namespace	Menge
 
 		if (m_soundSource->isPlaying() && !firstInit)
 		{
-			m_fadeState = FADE_DOWN;
+			m_fadeState = false;
 		}
 		else
 		{
 			_beginFade();
 		}
+	}
+
+	void	BacksoundManager::addPlayList(const std::string& _playListFileName)
+	{
+		m_playLists.insert(
+			std::make_pair(_playListFileName, new Playlist(_playListFileName))
+			);
+	}
+
+	void	BacksoundManager::erasePlayList(const std::string& _playListFileName)
+	{
+		m_playLists.erase(_playListFileName);
 	}
 
 	void	BacksoundManager::loadPlayList(const std::string& _filename)
@@ -99,102 +103,83 @@ namespace	Menge
 		}
 	}
 
-	void	BacksoundManager::addPlayList(const std::string& _playListFileName)
+	void	BacksoundManager::update(double _timing)
 	{
-		m_playLists.insert(
-			std::make_pair(_playListFileName, new Playlist(_playListFileName))
-			);
-	}
-
-	void	BacksoundManager::erasePlayList(const std::string& _playListFileName)
-	{
-		m_playLists.erase(_playListFileName);
-	}
-
-	bool	BacksoundManager::listenRecycled(SoundSourceInterface* _sn)
-	{
-		printf("listenRecycled \n");
-		return true;
-	}
-
-	void	BacksoundManager::listenStoped(SoundSourceInterface*	_sn)
-	{
-		printf("listenStoped \n");
-	} 
-
-	void	BacksoundManager::listenEnded(SoundSourceInterface* _sn)
-	{
-		m_currentPlayList->nextSong();
-
-		Keeper<SoundEngine>::hostage()->deleteSound(m_soundSource);
-		m_soundSource = NULL;
-
-		Keeper<FileEngine>::hostage()->closeFile(m_fileData);
-		m_fileData = NULL;
-
-		_beginFade();
-
-		printf("listenEnded \n");
-	}
-
-	void	BacksoundManager::update()
-	{
-		if(!m_soundSource)
+		printf("vol = %f \n",m_soundSource->getGain());
+		
+		if(m_soundSource == NULL)
 		{
 			return;
 		}
-		m_soundSource->updateSoundBuffer();
 
-		switch(m_fadeState)
+		if(m_soundSource->process()==false)
 		{
-		case FADE_UP:
-			{
-				printf("FADE UP \n");
-				float newVolume = m_soundSource->getVolume() + m_fadeVelocity;
-				m_soundSource->setVolume(newVolume);
+			m_currentPlayList->nextSong();
 
-				if (m_soundSource->getVolume() >= 100.0f)
-				{
-					m_soundSource->setVolume(100.0f);
-					m_fadeState = NO_FADE;
-				}
-			}
-			break;
+			Keeper<SoundEngine>::hostage()->deleteSound(m_soundSource);
+			m_soundSource = NULL;
 
-		case FADE_DOWN:
+			Keeper<FileEngine>::hostage()->closeFile(m_fileData);
+			m_fileData = NULL;
+
+			_beginFade();
+		}
+
+		clock_t ticks = clock();
+
+		double time = (ticks - m_timeFadeBegin) / 1000.0;
+
+		if(m_fadeState == true)
+		{
+			if (m_soundSource->getGain() >= 1.0f)
 			{
+				m_soundSource->setGain(1.0f);
+
+				m_timeFadeEnd = clock();
+				m_fadeState = false;
+
 				printf("FADE_DOWN \n");
-				float newVolume = m_soundSource->getVolume() - m_fadeVelocity;
-				m_soundSource->setVolume(newVolume);
-
-				if (m_soundSource->getVolume() <= 0)
+			}
+			else
+			{
+				m_soundSource->setGain(time / m_fadeTime);
+			}
+		}
+		else
+		{
+			if(m_soundSource->getGain() > 0)
+			{
+				if(time >= m_fadeoffTime)
 				{
-					m_soundSource->stop();
+					m_soundSource->setGain( (m_fadeoffTime - (ticks - m_timeFadeEnd) / 1000.0 ) / m_fadeTime);
 				}
 			}
-			break;
-
-		case NO_FADE:
-			{
-				printf("NO_FADE \n");
-
-				double totalSize = m_soundSource->getTotalSize();
-				double currPos = m_soundSource->getPos();
-
-				if (currPos >= totalSize * 0.05)	
-					//	if ((totalSize - currPos) <= 5.0)	
-				{
-					//	printf(,currPos);
-					m_fadeState = FADE_DOWN;
-				}
-			}
-			break;
-
-		default:
-			{
-				assert(!"undefined state!");
-			}
-			break;
-		};
+		}
 	};
+
+	void	BacksoundManager::_beginFade()
+	{
+		printf("FADE_UP \n");
+
+		m_fadeState = true;
+
+		Keeper<SoundEngine>::hostage()->addSoundNode(
+			m_soundSource,
+			m_fileData,
+			m_currentPlayList->getCurrentSongName(),
+			NULL, true
+			);
+
+		m_soundSource->setGain(0);
+		m_soundSource->play();
+
+		assert(m_soundSource->getSizeSec() > 2*m_fadeTime);
+
+		m_fadeoffTime = m_soundSource->getSizeSec() - m_fadeTime;
+
+		m_timeFadeBegin = clock();
+	}
 };
+
+
+

@@ -1,5 +1,7 @@
 #	include "Dialog.h"
 
+#	include "RenderSystemInterface.h"
+
 #	include "SoundSystemInterface.h"
 
 #	include "FileEngine.h"
@@ -52,7 +54,7 @@ void	Dialog::_release()
 	m_dialogFont = 0;
 }
 
-void	Dialog::loadCurrentMessageSpot()	
+void	Dialog::loadCurrentMessageSpot()
 {
 	std::string text = (*m_currentMessageSpot)->getText();
 
@@ -62,10 +64,10 @@ void	Dialog::loadCurrentMessageSpot()
 
 	const std::string& soundName = (*m_currentMessageSpot)->getSoundName();
 
-	if(!soundName.empty())
+	if(soundName.empty() == false)
 	{
 
-		if(	Keeper<SoundEngine>::hostage()->addSoundNode(
+		if(Keeper<SoundEngine>::hostage()->addSoundNode(
 				m_soundSource,	m_fileData,	soundName,0, true) == false
 			)
 		{
@@ -118,8 +120,6 @@ void	Dialog::_update(float _timing)
 		return;
 	}
 
-	m_soundSource->updateSoundBuffer();
-
 	if (m_lines.empty() == false)
 	{
 		mt::vec2f pos(0,0);
@@ -132,6 +132,8 @@ void	Dialog::_update(float _timing)
 
 	if(m_soundSource != NULL)
 	{
+		m_soundSource->process();
+
 		if(m_soundSource->isPlaying() == false)
 		{
 			nextMessageSpot();
@@ -140,6 +142,7 @@ void	Dialog::_update(float _timing)
 	}
 	else
 	{
+
 		//ээ, как то выставляет время проигрыша мессаги без звука?
 	}
 }

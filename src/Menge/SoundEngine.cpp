@@ -3,6 +3,9 @@
 
 #	include "FileEngine.h"
 
+#	include "SoundSystemInterface.h"
+#	include "FileSystemInterface.h"
+
 #	include	<assert.h>
 
 namespace Menge
@@ -30,7 +33,7 @@ namespace Menge
 		bool _isStreamAudioFile)
 	{
 		// ogg - может быть и Ogg и OGG и т.д.
-		SOUND_TYPE	typeOfSoundFile = _filename.find(".ogg") != std::string::npos ? OGG : WAV;
+		SoundDataDesc::SOUND_TYPE	typeOfSoundFile = _filename.find(".ogg") != std::string::npos ? SoundDataDesc::OGG : SoundDataDesc::WAV;
 		
 		_data = Keeper<FileEngine>::hostage()->openFile(_filename);
 

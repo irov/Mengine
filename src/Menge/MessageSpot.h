@@ -11,13 +11,13 @@ namespace	Menge
 		MessageSpot(int _id, const std::string& _message, const std::string& _sname, float _width);
 		~MessageSpot();
 
-		void setText(const std::string& _text);
-		std::string& getText();
+		void	setText(const std::string& _text);
+		std::string&	getText();
 
-		void setSoundName(const std::string& _name);
-		std::string& getSoundName();
+		void	setSoundName(const std::string& _name);
+		std::string&	getSoundName();
 
-		void setWidth(float _width);
+		void	setWidth(float _width);
 		float	getWidth() const;
 	private:
 		int	m_id;

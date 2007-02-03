@@ -2,7 +2,7 @@
 
 #	include "Renderable.h"
 
-#	include "math/vec2.h"
+#	include "math/mat3.h"
 
 #	include <vector>
 
@@ -34,7 +34,7 @@ namespace Menge
 		
 		void setFirstFrame();
 
-		void setOffset( const mt::vec2f &_offset );
+		void setOffset(const mt::vec2f& _offset);
 
 	public:
 		void loader(TiXmlElement *xml) override;
@@ -51,8 +51,8 @@ namespace Menge
 		bool m_looping;
 		eAnimState	m_state;
 		std::string m_fileMNG;
-	private:
 
+	private:
 		struct Frame 
 		{
 			int		index;

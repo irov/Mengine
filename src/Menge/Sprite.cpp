@@ -2,7 +2,8 @@
 #	include "ObjectImplement.h"
 #	include "RenderEngine.h"
 #	include "XmlParser.h"
-
+#	include "RenderSystemInterface.h"
+#	include "FileSystemInterface.h"
 #	include "FileEngine.h"
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Sprite);
@@ -10,8 +11,8 @@ OBJECT_IMPLEMENT(Sprite);
 Sprite::Sprite()
 : m_playing(false)
 , m_looping(true)
-, m_state(REWIND)
-, m_ctdelay(0)
+, m_state(FORWARD)
+, m_ctdelay(0.f)
 , m_offset(0.f,0.f)
 {
 }
@@ -36,7 +37,7 @@ void Sprite::setFirstFrame()
 		: m_frames.end() - 1;
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::setOffset( const mt::vec2f &_offset )
+void Sprite::setOffset(const mt::vec2f& _offset)
 {
 	m_offset = _offset;
 }
@@ -62,9 +63,7 @@ void Sprite::_update(float _timing)
 		{
 			case FORWARD:
 			{
-				++m_currentFrame;
-
-				if(m_currentFrame == m_frames.end())
+				if(++m_currentFrame == m_frames.end())
 				{
 					if(!m_looping)
 					{

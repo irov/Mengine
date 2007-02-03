@@ -15,75 +15,65 @@ SoundNode::SoundNode()
 : m_interface(NULL)
 {}
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::play()
+bool		SoundNode::play()
 {
-	m_interface->play();
+	return m_interface->play();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::pause()
+bool		SoundNode::pause()
 {
-	m_interface->pause();
+	return m_interface->pause();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::stop()
+bool		SoundNode::stop()
 {
-	m_interface->stop();
+	return m_interface->stop();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::setLooped(bool _flag)
+void		SoundNode::setLoop(bool _flag)
 {
-	m_interface->setLooped(_flag);
+	m_interface->setLoop(_flag);
 }
 //////////////////////////////////////////////////////////////////////////
-bool		SoundNode::getLooped() const
+bool		SoundNode::isLooping() const
 {
-	return	m_interface->getLooped();
+	return	m_interface->isLooping();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::setVolume(float _value)
+void		SoundNode::setGain(float _value)
 {
-	m_interface->setVolume(_value);
+	m_interface->setGain(_value);
 }
 //////////////////////////////////////////////////////////////////////////
-float		SoundNode::getVolume() const
+float		SoundNode::getGain() const
 {
-	return	m_interface->getVolume();
+	return	m_interface->getGain();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::setPosition(const mt::vec2f& _position)
+void		SoundNode::setPosition(const mt::vec3f& _position)
 {
-	m_interface->setPosition(_position.m);
+	m_interface->setPosition(_position.x,_position.y,_position.z);
 }
 //////////////////////////////////////////////////////////////////////////
-mt::vec2f	SoundNode::getPosition() const
+mt::vec3f	SoundNode::getPosition() const
 {
 	const float* pos = m_interface->getPosition();
-	return mt::vec2f(pos[0],pos[1]);
+	return mt::vec3f(pos[0],pos[1],pos[2]);
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::setMaxDistance(float dist)
+void		SoundNode::setRelativeToListener(bool flag)
 {
-	m_interface->setMaxDistance(dist);
+	m_interface->setRelativeToListener(flag);
 }
 //////////////////////////////////////////////////////////////////////////
-float		SoundNode::getMaxDistance() const
+bool		SoundNode::process()
 {
-	return m_interface->getMaxDistance();
+	return m_interface->process();
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::setHeadMode(bool flag)
+bool		SoundNode::isRelativeToListener() const
 {
-	m_interface->setHeadMode(flag);
-}
-//////////////////////////////////////////////////////////////////////////
-bool		SoundNode::updateSoundBuffer()
-{
-	return m_interface->updateSoundBuffer();
-}
-//////////////////////////////////////////////////////////////////////////
-bool		SoundNode::getHeadMode() const
-{
-	return	m_interface->getHeadMode();
+	return	m_interface->isRelativeToListener();
 }
 //////////////////////////////////////////////////////////////////////////
 bool		SoundNode::isPlaying() const
@@ -91,19 +81,14 @@ bool		SoundNode::isPlaying() const
 	return	m_interface->isPlaying();
 }
 //////////////////////////////////////////////////////////////////////////
-double		SoundNode::getTotalSize()	const
+double		SoundNode::getSizeSec()	const
 {
-	return	m_interface->getTotalSize();
-}
-//////////////////////////////////////////////////////////////////////////
-double		SoundNode::getPos()	const
-{
-	return	m_interface->getPos();
+	return	m_interface->getSizeSec();
 }
 //////////////////////////////////////////////////////////////////////////
 void	SoundNode::_update(float _timing)
 {
-	m_interface->updateSoundBuffer();
+	m_interface->process();
 }
 //////////////////////////////////////////////////////////////////////////
 void		SoundNode::loader(TiXmlElement * xml)
@@ -116,7 +101,7 @@ void		SoundNode::loader(TiXmlElement * xml)
 //////////////////////////////////////////////////////////////////////////
 bool		SoundNode::_compile()
 {
-	Keeper<SoundEngine>::hostage()->addSoundNode(m_interface,m_fileData,m_filename,false);
+	Keeper<SoundEngine>::hostage()->addSoundNode(m_interface,m_fileData,m_filename,0,true);
 	//play(); //for test
 	return	true;
 }

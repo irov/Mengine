@@ -157,7 +157,7 @@ namespace Menge
 
 		m_player->update( _timing );
 
-		m_backsoundManager->update();
+		m_backsoundManager->update(_timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()

@@ -5,8 +5,6 @@
 
 #	include "SoundSystemInterface.h"
 
-#	include <boost/shared_ptr.hpp>
-
 #	include	<map>
 #	include	<string>
 

@@ -21,6 +21,6 @@ namespace Menge
 		bool _updateMatrix() override;
 
 	protected:
-		mt::vec2f m_factorParalax;
+		mt::vec2f m_factorParallax;
 	};
 }

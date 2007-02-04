@@ -3,7 +3,7 @@
 #	include "FileData.h"
 #	include "ZipArch.h"
 
-#	include <boost/functional.hpp>
+#	include <functional>
 
 #	include <algorithm>
 
@@ -98,7 +98,7 @@ bool	FileSystem::existFile(const std::string& _filename)
 	TVecZipArch::const_iterator i = std::find_if(
 		m_zipArchives.begin(), 
 		m_zipArchives.end(),
-		boost::bind2nd(boost::mem_fun(&ZipArchive::haveFile),_filename)
+		std::bind2nd(std::mem_fun(&ZipArchive::haveFile),_filename.c_str())
 		);
 
 	if(i != m_zipArchives.end())
@@ -140,7 +140,7 @@ FileDataInterface*	FileSystem::openFile(const std::string& _filename)
 	TVecZipArch::const_iterator i = std::find_if(
 		m_zipArchives.begin(), 
 		m_zipArchives.end(),
-		boost::bind2nd(boost::mem_fun(&ZipArchive::haveFile),_filename)
+		std::bind2nd(std::mem_fun(&ZipArchive::haveFile),_filename.c_str())
 		);
 
 	if(i != m_zipArchives.end())

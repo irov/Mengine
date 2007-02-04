@@ -57,9 +57,9 @@ FileDataInterface* ZipArchive::fileRead( const std::string& _filename ) const
     return NULL;
 }
 
-bool ZipArchive::haveFile( const std::string& _filename ) const
+bool ZipArchive::haveFile(const char* _filename) const
 {
-	if( unzLocateFile(m_uzFile, _filename.c_str(), 2) == UNZ_OK)
+	if( unzLocateFile(m_uzFile, _filename, 2) == UNZ_OK)
 	{
 		return true;
 	}

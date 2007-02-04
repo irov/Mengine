@@ -142,7 +142,7 @@ namespace	Menge
 			}
 			else
 			{
-				m_soundSource->setGain(time / m_fadeTime);
+				m_soundSource->setGain(float(time / m_fadeTime));
 			}
 		}
 		else
@@ -151,7 +151,7 @@ namespace	Menge
 			{
 				if(time >= m_fadeoffTime)
 				{
-					m_soundSource->setGain( (m_fadeoffTime - (ticks - m_timeFadeEnd) / 1000.0 ) / m_fadeTime);
+					m_soundSource->setGain( float((m_fadeoffTime - (ticks - m_timeFadeEnd) / 1000.0 ) / m_fadeTime));
 				}
 			}
 		}

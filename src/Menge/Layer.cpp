@@ -7,7 +7,7 @@
 OBJECT_IMPLEMENT(Layer);
 //////////////////////////////////////////////////////////////////////////
 Layer::Layer()
-: m_factorParalax(1.f,1.f)
+: m_factorParallax(1.f,1.f)
 {
 
 }
@@ -26,7 +26,7 @@ bool Layer::_updateMatrix()
 {
 	mt::mat3f & lwm = getLocalMatrix();
 
-	scale_m3( lwm , mt::vec3f( m_factorParalax.x, m_factorParalax.y, 1.f ) );
+	scale_m3( lwm , mt::vec3f( m_factorParallax.x, m_factorParallax.y, 1.f ) );
 
 	return true;
 }

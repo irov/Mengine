@@ -12,7 +12,7 @@ public:
 
 public:
 	FileDataInterface* fileRead(const std::string& _filename) const;
-	bool haveFile(const std::string& _filename) const;
+	bool haveFile(const char* _filename) const;
 	bool loadZip(const std::string& _filename, int _prior);
 	bool unloadZip(); 
 	int getPriority() const;

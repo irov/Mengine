@@ -1,7 +1,8 @@
 #	pragma once
 
+#	include "../../Menge/InputSystemInterface.h"
+
 #	include "InputEnum.h"
-#	include "interfaces.h"
 
 class InputKeyboard;
 class InputMouse;

@@ -2,8 +2,6 @@
 
 #	include "NodeImpl.h"
 
-
-
 namespace Menge
 {
 	class Scene;

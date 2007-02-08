@@ -1,12 +1,10 @@
 #	pragma once
+
 #	include "ALSoundSystem.h"
 
-#	include "OpenAL/altypes.h"
 #	include "Vorbis/vorbisfile.h"
 
 #	include <time.h>
-#	include <string>
-#	include <iostream>
 
 class OggStreamSound : public SoundSourceInterface
 {

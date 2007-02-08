@@ -2,9 +2,8 @@
 
 #	include "NodeImpl.h"
 
-#	include "MessageSpot.h"
-
 #	include <vector>
+
 #	include <string>
 
 class RenderFontInterface;
@@ -13,6 +12,8 @@ class FileDataInterface;
 
 namespace	Menge
 {
+	class MessageSpot;
+
 	typedef std::vector<MessageSpot*> TVecMessageSpot;
 
 	typedef std::list<std::string>	TListLine;
@@ -35,6 +36,7 @@ namespace	Menge
 		void	loadCurrentMessageSpot();
 	private:
 		std::string m_fontFilename;
+
 		TListLine m_lines;
 
 		TVecMessageSpot m_messageSpots;

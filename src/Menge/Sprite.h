@@ -6,6 +6,8 @@
 
 #	include <vector>
 
+#	include "SpriteDecoder.h"
+
 #	include "../MngReader/MNG.h"
 
 class RenderImageInterface;
@@ -53,6 +55,7 @@ namespace Menge
 		std::string m_fileMNG;
 
 	private:
+		SpriteDecoder::SpriteData*	m_sprData;
 		struct Frame 
 		{
 			int		index;

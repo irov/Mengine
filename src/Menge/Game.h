@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include "Keeper.h"
-
 #	include <map>
 
 class TiXmlElement;
@@ -57,10 +55,10 @@ namespace Menge
 		ScriptFunction * m_fnUpdate;
 		ScriptFunction * m_fnRender;
 
-		typedef std::map<std::string, Arrow *> TMapArrow;
+		typedef std::map<std::string, Arrow*> TMapArrow;
 		TMapArrow m_mapArrow;
 
-		typedef std::map<std::string, Chapter *> TMapChapter;
+		typedef std::map<std::string, Chapter*> TMapChapter;
 		TMapChapter m_mapChapter;
 	};	
 }

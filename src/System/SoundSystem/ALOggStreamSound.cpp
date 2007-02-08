@@ -1,5 +1,6 @@
 #	include "ALOggStreamSound.h"
 #	include "assert.h"
+#	include <memory>
 
 #ifndef OGG_BUFFER_SIZE
 	#define OGG_BUFFER_SIZE 32768	//32 kb
@@ -185,7 +186,7 @@ bool OggStreamSound::process()
 	alGetSourcei(m_source, AL_BUFFERS_PROCESSED, &processed);
 	ALSoundSystem::checkError();
 //падает после второго вызова фейд дауна
-printf("%d \n", processed);
+//printf("%d \n", processed);
 	while(processed--)
 	{
 		ALuint buffer;

@@ -1,8 +1,8 @@
 #	include "Scene.h"
+
 #	include "ObjectImplement.h"
 
 #	include "SceneManager.h"
-#	include "Layer.h"
 
 #	include "ScriptEngine.h"
 

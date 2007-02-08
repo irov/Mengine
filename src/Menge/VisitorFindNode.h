@@ -2,7 +2,6 @@
 
 #	include "VisitorMask.h"
 
-
 namespace Menge
 {
 

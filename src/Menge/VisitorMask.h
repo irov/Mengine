@@ -1,7 +1,6 @@
 #	pragma once 
 
 #	include "Visitor.h"
-#	include "Sprite.h"
 
 namespace Menge
 {

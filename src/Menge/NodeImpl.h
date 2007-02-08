@@ -5,6 +5,7 @@
 #	include "ObjectDeclare.h"
 
 #	include <list>
+
 #	include <map>
 
 namespace luabind

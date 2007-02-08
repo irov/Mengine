@@ -1,7 +1,6 @@
 #	pragma once
 
-#	include "interfaces.h"
-
+#	include "../../Menge/FileSystemInterface.h"
 #	include <vector>
 
 class ZipArchive;

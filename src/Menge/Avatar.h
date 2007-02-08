@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "NodeImpl.h"
+
 #	include "InputHandler.h"
 
 namespace Menge

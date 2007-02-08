@@ -64,7 +64,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies=".\zlib\zlibstat.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="LIBC.lib"
@@ -183,62 +182,46 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+		<File
+			RelativePath=".\FileData.cpp"
 			>
-			<File
-				RelativePath=".\FileData.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FileSystem.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FileSystem.def"
-				>
-			</File>
-			<File
-				RelativePath=".\main.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ZipArch.cpp"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+		</File>
+		<File
+			RelativePath=".\FileData.h"
 			>
-			<File
-				RelativePath=".\FileData.h"
+		</File>
+		<File
+			RelativePath=".\FileSystem.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\FileSystem.def"
+			>
+		</File>
+		<File
+			RelativePath=".\FileSystem.h"
+			>
+		</File>
+		<File
+			RelativePath=".\main.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
 				>
-			</File>
-			<File
-				RelativePath=".\FileSystem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\interfaces.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ZipArch.h"
-				>
-			</File>
-		</Filter>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\ZipArch.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ZipArch.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

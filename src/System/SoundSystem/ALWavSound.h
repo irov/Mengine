@@ -2,18 +2,10 @@
 
 #	include "ALSoundSystem.h"
 
-#	include "OpenAL/altypes.h"
-
-#	include <time.h>
-
-
-#	include <string>
-#	include <iostream>
-
 class WavSound : public SoundSourceInterface
 {
 public:
-	WavSound(void* _data, SoundNodeListenerInterface* _listener = NULL);
+	WavSound(void* _data, SoundNodeListenerInterface* _listener = 0);
 	~WavSound();
 
 	bool play();

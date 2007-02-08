@@ -50,7 +50,7 @@
 				UsePrecompiledHeader="0"
 				GenerateXMLDocumentationFiles="false"
 				BrowseInformation="1"
-				WarningLevel="3"
+				WarningLevel="1"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -388,6 +388,18 @@
 					RelativePath=".\SpriteProxy.h"
 					>
 				</File>
+				<Filter
+					Name="SpriteInteractive"
+					>
+					<File
+						RelativePath=".\SpriteInteractive.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SpriteInteractive.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Define"
@@ -512,18 +524,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="SpriteInteractive"
-				>
-				<File
-					RelativePath=".\SpriteInteractive.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SpriteInteractive.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Dialog"
 				>
 				<File
@@ -587,26 +587,6 @@
 				RelativePath=".\Game.h"
 				>
 			</File>
-			<Filter
-				Name="BackSoundManager"
-				>
-				<File
-					RelativePath=".\BacksoundManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\BacksoundManager.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Playlist.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Playlist.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Application"
@@ -739,6 +719,42 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Decoder"
+			>
+			<File
+				RelativePath=".\Decoder.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Decoder.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SpriteDecoder.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="BackSoundManager"
+			>
+			<File
+				RelativePath=".\BacksoundManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\BacksoundManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Playlist.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Playlist.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

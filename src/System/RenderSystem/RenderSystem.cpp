@@ -1,6 +1,10 @@
-#include "RenderSystem.h"
+#	include "RenderSystem.h"
+#	include "RenderImage.h"
 
-#include <assert.h>
+#	include <assert.h>
+
+#	pragma comment (lib, "d3d9.lib")
+#	pragma comment (lib, "d3dx9.lib")
 
 bool initInterfaceSystem(RenderSystemInterface**	_ptrRenderSystem)
 {

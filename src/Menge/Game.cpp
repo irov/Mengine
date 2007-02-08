@@ -3,15 +3,17 @@
 #	include "SceneManager.h"
 
 #	include "Chapter.h"
+
 #	include "Scene.h"
+
 #	include "Player.h"
+
 #	include "Arrow.h"
 
 #	include "BacksoundManager.h"
 
-#	include "FileEngine.h"
-
 #	include "XmlParser.h"
+
 #	include "ErrorMessage.h"
 
 #	include "DialogManager.h"
@@ -151,7 +153,8 @@ namespace Menge
 
 		if (test)
 		{
-			//m_backsoundManager->playList("logoSceneMusic.xml");
+			m_backsoundManager->setFadeTime(6);
+			m_backsoundManager->playList("logoSceneMusic.xml");
 			test = false;
 		}
 

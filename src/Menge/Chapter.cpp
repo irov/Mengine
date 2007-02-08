@@ -2,11 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "SceneManager.h"
-
 #	include "Scene.h"
-
-#	include "FileEngine.h"
 
 #	include <assert.h>
 

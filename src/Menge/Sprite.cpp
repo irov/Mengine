@@ -1,10 +1,19 @@
 #	include "Sprite.h"
+
 #	include "ObjectImplement.h"
+
 #	include "RenderEngine.h"
+
 #	include "XmlParser.h"
+
 #	include "RenderSystemInterface.h"
+
 #	include "FileSystemInterface.h"
+
 #	include "FileEngine.h"
+
+#	pragma comment (lib, "..\\..\\lib\\MngReader_d.lib")
+
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Sprite);
 //////////////////////////////////////////////////////////////////////////
@@ -110,6 +119,11 @@ void Sprite::_update(float _timing)
 //////////////////////////////////////////////////////////////////////////
 bool Sprite::_compile()
 {
+	/*
+	SpriteDecoder* mngdecoder =(SpriteDecoder*)Decoder::getDecodec(".mng");
+
+	m_sprData = (SpriteDecoder::SpriteData*)mngdecoder->decode(fileData);
+*/
 	FileDataInterface* fileData = Keeper<FileEngine>::hostage()->openFile(m_fileMNG);
 
 	assert(fileData != 0);

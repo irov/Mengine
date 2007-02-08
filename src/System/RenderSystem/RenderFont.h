@@ -1,7 +1,6 @@
 #	pragma once
 
-#	include "interfaces.h"
-#	include "RenderImage.h"
+#	include	"RenderCommon.h"
 
 class	D3D9Font 
 	: public RenderFontInterface

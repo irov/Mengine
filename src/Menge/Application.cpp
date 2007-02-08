@@ -11,13 +11,12 @@
 #	include "ScriptEngine.h"
 
 #	include "Game.h"
+
 #	include "Player.h"
 
 #	include "ErrorMessage.h"
-#	include "XmlParser.h"
 
-#	define WIN32_LEAN_AND_MEAN
-#	include "windows.h"
+#	include "XmlParser.h"
 
 namespace Menge
 {
@@ -45,6 +44,17 @@ namespace Menge
 
 		delete m_scriptEngine;// Иров, смотри сюда
 	}
+
+	/*void	Application::loadPlugin(const std::string& _name)
+	{
+		void *m_hInst;
+		typedef void (*DLL_START_PLUGIN)(void);
+
+		m_hInst = LoadLibrary(_name.c_str());
+		DLL_START_PLUGIN initialize = (DLL_START_PLUGIN)GetProcAddress((HMODULE)m_hInst, "dllStartPlugin" );
+		initialize();
+	}
+	*/
 
 	bool Application::init(const std::string &_xmlFile)
 	{

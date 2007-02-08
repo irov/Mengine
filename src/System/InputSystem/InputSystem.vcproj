@@ -221,10 +221,6 @@
 			RelativePath=".\InputSystem.h"
 			>
 		</File>
-		<File
-			RelativePath=".\interfaces.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

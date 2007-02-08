@@ -1,9 +1,10 @@
 #	pragma once
 
-#	include "interfaces.h"
+#	include "../../Menge/SoundSystemInterface.h"
 #	include "OpenAL/alc.h"
 #	include "OpenAL/al.h"
 #	include	"OpenAL/alut.h"
+#	include "OpenAL/altypes.h"
 
 struct ALSoundInfo
 {

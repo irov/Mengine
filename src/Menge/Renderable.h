@@ -2,8 +2,6 @@
 
 #	include "Allocator2D.h"
 
-#	include "math/mat3.h"
-
 namespace Menge
 {
 	class RenderEngine;

@@ -1,10 +1,7 @@
 #	include "ZipArch.h"
 
 #	include "FileData.h"
-
 #	include "zlib\unzip.h"
-#	include "zlib\iowin32.h" 
-
 #	include <assert.h>
 
 ZipArchive::ZipArchive(const std::string& _filename, int _prior) 
@@ -33,12 +30,12 @@ bool ZipArchive::unloadZip()
 
 bool ZipArchive::loadZip( const std::string& _filename, int _prior ) 
 {
-	assert( !_filename.empty() );
+	assert(!_filename.empty());
 
 	m_zipName = _filename;
 	m_priority = _prior;
 	unloadZip();
-	m_uzFile = unzOpen( _filename.c_str() );
+	m_uzFile = unzOpen(_filename.c_str());
 	return (m_uzFile != NULL);
 }
 
@@ -59,7 +56,7 @@ FileDataInterface* ZipArchive::fileRead( const std::string& _filename ) const
 
 bool ZipArchive::haveFile(const char* _filename) const
 {
-	if( unzLocateFile(m_uzFile, _filename, 2) == UNZ_OK)
+	if(unzLocateFile(m_uzFile, _filename, 2) == UNZ_OK)
 	{
 		return true;
 	}

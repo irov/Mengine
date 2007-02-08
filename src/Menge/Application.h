@@ -47,5 +47,7 @@ namespace Menge
 		FileEngine * m_fileEngine;
 		InputEngine * m_inputEngine;
 		SoundEngine * m_soundEngine;
+
+		//void	loadPlugin(const std::string& _name);
 	};
 }

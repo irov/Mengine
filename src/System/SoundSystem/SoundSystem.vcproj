@@ -289,10 +289,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\interfaces.h"
-			>
-		</File>
-		<File
 			RelativePath=".\main.cpp"
 			>
 			<FileConfiguration

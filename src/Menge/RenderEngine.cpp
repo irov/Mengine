@@ -97,6 +97,18 @@ namespace Menge
 		float scaleW = -1;
 		float scaleH = -1;
 
+		std::string name;
+		std::string ch;
+		std::string origin;
+		std::string size;
+
+		float aw;
+		float x;
+		float y;
+		float width;
+		float height;
+		int id;
+
 		FileDataInterface* imageData = 0;
 
 		desc.color = 0xFFFFFFFF;
@@ -111,9 +123,6 @@ namespace Menge
 				{
 					XML_CHECK_NODE("bitmap")
 					{
-						std::string name;
-						std::string size;
-
 						XML_VALUE_ATTRIBUTE("name",name);
 						XML_VALUE_ATTRIBUTE("size",size);
 
@@ -144,27 +153,15 @@ namespace Menge
 				{
 					XML_CHECK_NODE("glyph")
 					{
-						std::string ch;
-						std::string origin;
-						std::string size;
-						float aw;
-
 						XML_VALUE_ATTRIBUTE("ch",ch);
 						XML_VALUE_ATTRIBUTE("origin",origin);
 						XML_VALUE_ATTRIBUTE("size",size);
 						XML_VALUE_ATTRIBUTE("aw",aw);
 
-						float x;
-						float y;
-
 					    sscanf(origin.c_str(), "%f,%f", &x,&y); 
-
-						float width;
-						float height;
-
 						sscanf(size.c_str(), "%fx%f", &width, &height); 
 
-						int id = int(ch[0]);
+						id = int(ch[0]);
 						
 						desc.chars[id].uv.x = x / scaleW;
 						desc.chars[id].uv.y = y / scaleH;
@@ -177,7 +174,7 @@ namespace Menge
 		}
 		XML_INVALID_PARSE()
 		{
-			//TODO: ERROR
+			assert(!"Error in font loader!");
 			return false;
 		}
 		

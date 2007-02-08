@@ -10,7 +10,7 @@ namespace Menge
 {
 	class HotSpot;
 
-	typedef std::list<HotSpot *> TListHotSpot;
+	typedef std::list<HotSpot*> TListHotSpot;
 
 	class VisitorPickHotSpot
 		: public VisitorMask<HotSpot>

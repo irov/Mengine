@@ -1,20 +1,11 @@
 #	include "Dialog.h"
-
-#	include "RenderSystemInterface.h"
-
-#	include "SoundSystemInterface.h"
-
 #	include "FileEngine.h"
-
 #	include "RenderEngine.h"
-
 #	include "SoundEngine.h"
-
 #	include "XmlParser.h"
-
-#	include "ObjectImplement.h"
-
 #	include "DialogManager.h"
+#	include "ObjectImplement.h"
+#	include "MessageSpot.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Dialog)
@@ -22,9 +13,9 @@ OBJECT_IMPLEMENT(Dialog)
 
 bool	Dialog::_compile()
 {
+	m_dialogFont = Keeper<RenderEngine>::hostage()->loadFont(m_fontFilename);
 	m_soundSource = 0;
 	m_fileData = 0;
-	m_dialogFont = Keeper<RenderEngine>::hostage()->loadFont(m_fontFilename);
 	m_isUpdate = false;
 	return true;
 }

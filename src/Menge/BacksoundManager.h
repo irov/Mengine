@@ -1,15 +1,11 @@
 #	 pragma once
 
-#	include <string>
-
 #	include <map>
-
-#	include "SoundSystemInterface.h"
-
-#	include "FileEngine.h"
 
 #	include "time.h"
 
+class	FileDataInterface;
+class	SoundSourceInterface;
 
 namespace	Menge
 {

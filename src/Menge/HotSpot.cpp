@@ -1,4 +1,5 @@
 #	include "HotSpot.h"
+
 #	include "ObjectImplement.h"
 
 #	include "XmlParser.h"

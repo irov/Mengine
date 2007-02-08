@@ -1,12 +1,15 @@
 #	include "Player.h"
 
-#	include "Chapter.h"
 #	include "Scene.h"
+
 #	include "Arrow.h"
+
 #	include "HotSpot.h"
 
 #	include "RenderEngine.h"
+
 #	include "InputEngine.h"
+
 #	include "InputEnum.h"
 
 #	include "VisitorPickHotSpot.h"
@@ -14,8 +17,6 @@
 #	include "VisitorRender.h"
 
 #	include "lua_boost/lua_functor.h"
-
-#	include "Dialog.h"
 
 namespace Menge
 {

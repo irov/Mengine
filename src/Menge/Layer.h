@@ -2,8 +2,6 @@
 
 #	include "Allocator2D.h"
 
-#	include <list>
-
 namespace Menge
 {
 	class Layer

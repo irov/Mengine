@@ -210,10 +210,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\helper\lua_reg_module.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\helper\lua_totype.cpp"
 					>
 				</File>

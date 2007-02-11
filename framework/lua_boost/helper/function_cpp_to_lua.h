@@ -14,7 +14,7 @@ namespace lua_boost
 	template<class F>
 	struct function_cpp_to_lua
 	{
-		static const size_t function_arity = function_types<F>::arity;
+		static const size_t arity = function_types<F>::arity;
 		typedef typename function_types<F>::ret_type ret;
 
 		static int callback( lua_State *L )
@@ -25,7 +25,7 @@ namespace lua_boost
 		template<class R>
 		static int callback_ret( lua_State *L )
 		{
-			R r = func_call<function_arity>(
+			R r = func_call<arity>(
 				L, 
 				reinterpret_cast<F>( helper::get_function_ptr(L) )
 				);
@@ -37,7 +37,7 @@ namespace lua_boost
 		template<>
 		static int callback_ret<void>( lua_State *L )
 		{
-			func_call<function_arity>(
+			func_call<arity>(
 				L, 
 				reinterpret_cast<F>( helper::get_function_ptr(L) )
 				);

@@ -22,7 +22,6 @@ namespace lua_boost
 		luaopen_base(m_state);
 		luaopen_string(m_state);
 		luaopen_debug(m_state);
-		luaopen_io(m_state);		
 		luaopen_math(m_state);	
 	}
 	//////////////////////////////////////////////////////////////////////////

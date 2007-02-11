@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)&quot;;&quot;$(ProjectDir)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -72,6 +72,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				OutputFile=""
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -169,6 +170,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\lua_class.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\lua_functor.cpp"
 				>
 			</File>
@@ -201,7 +206,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\helper\lua_functor_traits_safe.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\helper\lua_reg_module.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\helper\lua_totype.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Utility"
+				>
+				<File
+					RelativePath=".\utility\lua_string.cpp"
 					>
 				</File>
 			</Filter>
@@ -216,7 +237,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\lua_boost_reg.h"
+				RelativePath=".\lua_class.h"
 				>
 			</File>
 			<File
@@ -247,7 +268,35 @@
 					>
 				</File>
 				<File
+					RelativePath=".\helper\lua_functor_traits_safe.h"
+					>
+				</File>
+				<File
+					RelativePath=".\helper\lua_reg_module.h"
+					>
+				</File>
+				<File
+					RelativePath=".\helper\lua_safe_result.h"
+					>
+				</File>
+				<File
 					RelativePath=".\helper\lua_totype.h"
+					>
+				</File>
+				<File
+					RelativePath=".\helper\member_cpp_to_lua.h"
+					>
+				</File>
+				<File
+					RelativePath=".\helper\member_types.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Utility"
+				>
+				<File
+					RelativePath=".\utility\lua_string.h"
 					>
 				</File>
 			</Filter>

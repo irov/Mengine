@@ -1,4 +1,4 @@
-#	include "lua_boost_reg.h"
+#	include "lua_boost.h"
 
 #	include <stdio.h>
 

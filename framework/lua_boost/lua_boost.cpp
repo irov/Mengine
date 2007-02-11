@@ -36,11 +36,10 @@ namespace lua_boost
 		lua_close( m_state );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void lua_boost::reg_function_impl( const char *_name, lua_CFunction _func, __int64 _offset )
+	void lua_boost::reg_function_impl( const char *_name, lua_CFunction _func, void * _offset )
 	{
-		printf("regist_lua %d\n", _offset);
 		lua_pushstring(m_state, _name );
-		lua_pushlightuserdata(m_state, (void*)_offset );
+		lua_pushlightuserdata(m_state, _offset );
 		lua_pushcclosure(m_state, _func, 1);
 		lua_settable(m_state, LUA_GLOBALSINDEX);
 	}
@@ -79,4 +78,32 @@ namespace lua_boost
 	{
 		return lua_functor( m_state, _name );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	lua_functor_traits lua_boost::call_function( const char * _name )
+	{
+		return functor(_name).call();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	lua_functor_traits_safe lua_boost::call_function_safe( const char * _name )
+	{
+		return functor(_name).call_safe();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool lua_boost::is_nil( const char * _name )
+	{
+		lua_pushstring( m_state, _name );
+		lua_gettable( m_state, LUA_GLOBALSINDEX );
+
+		bool result = lua_isnil( m_state, -1 );
+		lua_pop( m_state, 1 );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	lua_reg_module lua_boost::reg_module()
+	{
+		return lua_reg_module();
+	}
+
+
 }

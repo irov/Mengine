@@ -1,6 +1,7 @@
 #	include "function_cpp_to_lua.h"
 
-#	include "../lua_include.h"
+#	include "lua_include.h"
+
 namespace lua_boost
 {
 	namespace helper

@@ -31,11 +31,7 @@ namespace lua_boost
 			return lua_totype<R>( m_state, -1 );
 		}
 
-		template<>
-		void operator % ( end_call_function_format<void> )
-		{
-			call(0);
-		}
+		void operator % ( end_call_function_format<void> );
 
 	private:
 		void call( int numresult );
@@ -46,4 +42,6 @@ namespace lua_boost
 	{ 
 		return lua_functor_traits::end_call_function_format<T>(); 
 	}
+
+	lua_functor_traits::end_call_function_format<void> ret();
 }

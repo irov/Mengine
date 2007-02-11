@@ -1,7 +1,9 @@
 #	pragma once
 
 #	include "lua_functor.h"
+#	include "lua_class.h"
 
+#	include "helper/lua_reg_module.h"
 #	include "helper/function_cpp_to_lua.h"
 
 struct lua_State;
@@ -25,21 +27,30 @@ namespace lua_boost
 		template<class F>
 		void reg_function( const char * _name, F f)
 		{
-			reg_function_impl( 
-				_name, 
-				function_cpp_to_lua<F>::callback, 
-				reinterpret_cast<ptrdiff_t>(f) 
-				);
+			reg_function_impl( _name, function_cpp_to_lua<F>::callback, f );
 		}
 
 		int do_file( const char * _file );
 
 		int do_buffer( const char * _buff, size_t _sz );
 
+		bool is_nil( const char * _name );
+
 		lua_functor functor( const char * _name );
 
+		lua_functor_traits call_function( const char * _name );
+		lua_functor_traits_safe call_function_safe( const char * _name );
+
+		template<class T>
+		lua_class<T> reg_class( const char * _name )
+		{
+			return lua_class<T>( m_state, _name );
+		}
+
+		static lua_reg_module reg_module();
+
 	private:
-		void reg_function_impl( const char * _name, lua_callback _func, __int64 _offset );
+		void reg_function_impl( const char * _name, lua_callback _func, void * _offset );
 
 
 	private:

@@ -14,8 +14,8 @@ namespace lua_boost
 	template<class F>
 	struct function_cpp_to_lua
 	{
-		static const size_t function_arity = function_types<F>::result::arity;
-		typedef typename function_types<F>::result::ret_type ret;
+		static const size_t function_arity = function_types<F>::arity;
+		typedef typename function_types<F>::ret_type ret;
 
 		static int callback( lua_State *L )
 		{
@@ -53,7 +53,7 @@ namespace lua_boost
 
 		template<> static ret func_call<1>( lua_State *L, F f )
 		{
-			typedef typename function_types<F>::result::param1 _1;
+			typedef typename function_types<F>::param1 _1;
 
 			return (*f)
 				(lua_totype<_1>(L,1)
@@ -62,8 +62,8 @@ namespace lua_boost
 
 		template<> static ret func_call<2>( lua_State *L, F f )
 		{
-			typedef typename function_types<F>::result::param1 _1;
-			typedef typename function_types<F>::result::param2 _2;
+			typedef typename function_types<F>::param1 _1;
+			typedef typename function_types<F>::param2 _2;
 
 			return (*f)
 				(lua_totype<_1>(L,1)
@@ -73,9 +73,9 @@ namespace lua_boost
 
 		template<> static ret func_call<3>( lua_State *L, F f )
 		{
-			typedef typename function_types<F>::result::param1 _1;
-			typedef typename function_types<F>::result::param2 _2;
-			typedef typename function_types<F>::result::param3 _3;
+			typedef typename function_types<F>::param1 _1;
+			typedef typename function_types<F>::param2 _2;
+			typedef typename function_types<F>::param3 _3;
 
 			return (*f)
 				(lua_totype<_1>(L,1)
@@ -86,10 +86,10 @@ namespace lua_boost
 
 		template<> static ret func_call<4>( lua_State *L, F f )
 		{
-			typedef typename function_types<F>::result::param1 _1;
-			typedef typename function_types<F>::result::param2 _2;
-			typedef typename function_types<F>::result::param3 _3;
-			typedef typename function_types<F>::result::param3 _4;
+			typedef typename function_types<F>::param1 _1;
+			typedef typename function_types<F>::param2 _2;
+			typedef typename function_types<F>::param3 _3;
+			typedef typename function_types<F>::param3 _4;
 
 			return (*f)
 				(lua_totype<_1>(L,1)

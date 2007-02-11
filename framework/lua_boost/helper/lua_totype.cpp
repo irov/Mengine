@@ -1,6 +1,6 @@
 #	include "lua_totype.h"
 
-#	include "../lua_include.h"
+#	include "lua_include.h"
 
 namespace lua_boost
 {

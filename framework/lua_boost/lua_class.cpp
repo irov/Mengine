@@ -5,6 +5,11 @@
 namespace lua_boost
 {
 	//////////////////////////////////////////////////////////////////////////
+	struct UserdataType
+	{
+		void * pObject;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	lua_class_impl::lua_class_impl(lua_State * L, const char * _name,
 		lua_callback new_class,
 		lua_callback gc_class,
@@ -58,7 +63,7 @@ namespace lua_boost
 		lua_pushlightuserdata(m_state, (void*) _member );
 		lua_pushcclosure(m_state, _thunk, 1);
 		lua_settable(m_state, m_methods);
-		lua_pop(m_state, 2);  // drop metatable and method table
+		//lua_pop(m_state, 2);  // drop metatable and method table
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void lua_class_impl::end_reg() const
@@ -87,14 +92,29 @@ namespace lua_boost
 	{
 		lua_remove(L, 1);   // use classname:new(), instead of classname.new()
 
+		new_class_impl( L, obj, _name );
+
+		return 1;  // userdata containing pointer to T object
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void lua_class_impl::new_class_impl( lua_State *L, void * obj, const char * _name )
+	{
 		UserdataType *ud =
-			static_cast<UserdataType*>(lua_newuserdata(L, sizeof(UserdataType)));
+			static_cast<UserdataType*>(
+			lua_newuserdata(L, sizeof(UserdataType))
+			);
 
 		ud->pObject = obj;  // store pointer to object in userdata
 
 		luaL_getmetatable(L, _name);  // lookup metatable in Lua registry
-		lua_setmetatable(L, -2);
-		return 1;  // userdata containing pointer to T object
+		lua_setmetatable(L, -2);		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void lua_class_impl::new_object( lua_State *L, void * _self, const char * _name, const char * _value )
+	{
+		new_class_impl( L, _self, _name );
+
+		lua_setfield( L, LUA_GLOBALSINDEX, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void * lua_class_impl::gc_class( lua_State *L ) 

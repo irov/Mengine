@@ -12,7 +12,6 @@ namespace lua_boost
 		float totype( lua_State *L, int arg, float );
 		const char * totype( lua_State *L, int arg, const char * );
 
-
 		void pushtype( lua_State *L, bool b );
 		void pushtype( lua_State *L, int i );
 		void pushtype( lua_State *L, size_t u );

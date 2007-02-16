@@ -13,11 +13,6 @@ namespace lua_boost
 	protected:
 		typedef int (*lua_callback) (lua_State *L);
 
-		struct UserdataType
-		{
-			void * pObject;
-		};
-
 		struct MemberType {};
 
 	public:
@@ -36,6 +31,10 @@ namespace lua_boost
 		// create a new T object and
 		// push onto the Lua stack a userdata containing a pointer to T object
 		static int new_class( lua_State *L, void * obj, const char * _name );
+		static void new_class_impl( lua_State *L, void * _self, const char * _name );
+
+		static void new_object( lua_State *L, void * _self, const char * _name, const char * _value );
+
 		static void * gc_class( lua_State *L );
 		static int tostring_class( lua_State *L, const char * _name );
 
@@ -69,6 +68,11 @@ namespace lua_boost
 			: lua_class_impl( _state, _name, new_class, gc_class, tostring_class )
 		{
 			s_name.assign( _name );
+		}
+
+		static const char * className()
+		{
+			return s_name.c_str();
 		}
 
 		template<class F>

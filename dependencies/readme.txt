@@ -1,5 +1,5 @@
-lua-5.0.3 
-- http://www.lua.org/ftp/lua-5.0.3.tar.gz
+lua-5.1.1 
+- http://www.lua.org/ftp/lua-5.1.1.tar.gz
 
 tinyxml
 [ tinyxml-2.5.2 ] -

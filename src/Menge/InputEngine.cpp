@@ -18,7 +18,7 @@ namespace Menge
 	InputEngine::InputEngine(const std::string &_dllModule)
 		: DllModuleInterface<InputSystemInterface>(_dllModule)
 	{
-		Keeper<InputEngine>::keep(this);
+		Holder<InputEngine>::keep(this);
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	InputEngine::~InputEngine()

@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Node.h"
+#	include "Eventable.h"
 
 #	include "ObjectDeclare.h"
 
@@ -8,18 +9,11 @@
 
 #	include <map>
 
-namespace luabind
-{
-	namespace adl
-	{
-		class object;
-	}
-}
-
 namespace Menge
 {
 	class NodeImpl
 		: public Node
+		, public Eventable
 	{
 		OBJECT_DECLARE( NodeImpl )
 
@@ -110,8 +104,6 @@ namespace Menge
 		virtual void debugRender();
 
 	public:
-		virtual luabind::adl::object * getScriptable();
-		
 		virtual void registerEvent( const std::string &_name, const lua_boost::lua_functor * _func  );
 		virtual const lua_boost::lua_functor * event( const std::string &_name );
 
@@ -147,12 +139,6 @@ namespace Menge
 		Node * m_parent;
 		TListChildren m_listChildren;
 		TListChildren::iterator m_iteratorChildren;
-
-		luabind::adl::object * m_scriptObject;
-
-		typedef std::map<std::string, const lua_boost::lua_functor *> TMapScriptFunction;
-
-		TMapScriptFunction m_mapScriptFunction;
 
 	private:
 		TListChildren::iterator _findChildren(const std::string &_name);

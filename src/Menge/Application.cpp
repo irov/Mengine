@@ -2,7 +2,7 @@
 
 #	include <list>
 
-#	include "Keeper.h"
+#	include "Holder.h"
 
 #	include "InputEngine.h"
 #	include "FileEngine.h"
@@ -156,7 +156,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			Keeper<FileEngine>::hostage()->loadPak(it->first,it->second);
+			Holder<FileEngine>::hostage()->loadPak(it->first,it->second);
 		}
 
 		//хг-гю кхмхи мерс бняярюмнбкемхъ пеяспянб.
@@ -167,7 +167,7 @@ namespace Menge
 			//TODO: ERROR
 		}
 
-		InputEngine * inputEng = Keeper<InputEngine>::hostage();
+		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
 		bool inputInit = false;
 
@@ -217,14 +217,14 @@ namespace Menge
 		//	m_functionUpdate->callFunctionVoid();
 		//}
 
-		Keeper<InputEngine>::hostage()->update();
+		Holder<InputEngine>::hostage()->update();
 
 		m_game->update(0.07f);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::render()
 	{
-		RenderEngine *renderEng = Keeper<RenderEngine>::hostage();
+		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 
 		renderEng->beginSceneDrawing(0xFF0FF0FF);
 
@@ -244,7 +244,7 @@ namespace Menge
 		unsigned int _bits, 
 		bool _fullScreen)
 	{
-		return Keeper<RenderEngine>::hostage()
+		return Holder<RenderEngine>::hostage()
 			->createDisplay(_width,_height,_bits,_fullScreen);
 	}
 }

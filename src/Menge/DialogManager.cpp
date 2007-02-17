@@ -1,6 +1,6 @@
 #	include "DialogManager.h"
 #	include "XmlParser.h"
-#	include "Keeper.h"
+#	include "Holder.h"
 #	include "FileEngine.h"
 
 
@@ -8,7 +8,7 @@ namespace Menge
 {
 	DialogManager::DialogManager()
 	{
-		Keeper<DialogManager>::keep(this);
+		Holder<DialogManager>::keep(this);
 	}
 
 	DialogManager::~DialogManager()

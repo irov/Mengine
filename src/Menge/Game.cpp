@@ -12,6 +12,9 @@
 
 #	include "BacksoundManager.h"
 
+#	include "ScriptEngine.h"
+#	include "FileEngine.h"
+
 #	include "XmlParser.h"
 
 #	include "ErrorMessage.h"
@@ -23,11 +26,9 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
-		: m_fnInit(0)
-		, m_fnUpdate(0)
-		, m_fnRender(0)
-		, m_backsoundManager(0)
+		: m_backsoundManager(0)
 		, m_dialogManager(0)
+		, m_defaultArrow(0)
 	{
 		m_player = new Player;
 
@@ -35,7 +36,7 @@ namespace Menge
 
 		m_dialogManager = new DialogManager();
 
-		Keeper<Game>::keep(this);
+		Holder<Game>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
@@ -43,8 +44,6 @@ namespace Menge
 		delete m_dialogManager;
 
 		delete m_backsoundManager;
-
-
 
 		for (TMapArrow::iterator 
 			it = m_mapArrow.begin(),
@@ -76,20 +75,12 @@ namespace Menge
 			{
 				XML_DEF_ATTRIBUTES_NODE(File);
 
-				SceneManager *sceneMgr = Keeper<SceneManager>::hostage();
+				SceneManager *sceneMgr = Holder<SceneManager>::hostage();
 
 				Chapter *chapter = SceneManager::createNodeFromXmlT<Chapter>(File);
 				sceneMgr->loadNode(chapter, File);
 
 				addChapter(chapter);
-			}
-
-
-			//<Logo Chapter = "Buba" Scene = "Buka" />
-			XML_CHECK_NODE("Logo")
-			{
-				XML_VALUE_ATTRIBUTE("Chapter", m_logoChapterName);
-				XML_VALUE_ATTRIBUTE("Scene", m_logoSceneName);
 			}
 
 			XML_CHECK_NODE("BacksoundManager")
@@ -144,6 +135,18 @@ namespace Menge
 			{
 				XML_CHECK_VALUE_NODE("Arrow", "Type", m_defaultArrowName)
 			}
+
+			XML_CHECK_NODE("Personality")
+			{
+				XML_VALUE_ATTRIBUTE("File", m_personality );
+
+				XML_FOR_EACH()
+				{				
+					XML_CHECK_VALUE_NODE("Init","Function", m_eventInit);
+					XML_CHECK_VALUE_NODE("Update","Function", m_eventUpdate);
+					XML_CHECK_VALUE_NODE("Fini","Function", m_eventFini);
+				}
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -161,6 +164,9 @@ namespace Menge
 		m_player->update( _timing );
 
 		m_backsoundManager->update(_timing);
+
+		Holder<ScriptEngine>::hostage()
+			->callFunctionSafe( m_eventUpdate ) % _timing % lua_boost::ret_safe();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()
@@ -173,21 +179,36 @@ namespace Menge
 		m_player->debugRender();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Game::test( const char * _text )
+	{
+		printf("%s\n", _text );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Game::compile()
 	{
-		Chapter *logoChapter = getChapter(m_logoChapterName);
-		Scene *logoScene = logoChapter->getChildrenT<Scene>(m_logoSceneName);
+		m_defaultArrow = getArrow(m_defaultArrowName);
 
-		Arrow *defaultArrow = getArrow(m_defaultArrowName);
+		ScriptEngine * scriptEngine = 
+			Holder<ScriptEngine>::hostage();
 
-		m_player->setScene(logoScene);
-		m_player->setArrow(defaultArrow);
+		if( Holder<ScriptEngine>::hostage()
+			->doFile( m_personality ) == false )
+		{
+			return false;
+		}
 
-		return true;
+		lua_boost::safe_result<bool> result = 
+			Holder<ScriptEngine>::hostage()
+			->callFunctionSafe( m_eventInit ) % lua_boost::ret_safe<bool>();
+
+		return ( result.valid ) ? result.result : true ;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()
 	{
+		Holder<ScriptEngine>::hostage()
+			->callFunctionSafe( m_eventFini ) % lua_boost::ret_safe();
+
 		for (TMapArrow::iterator 
 			it = m_mapArrow.begin(),
 			it_end = m_mapArrow.end();
@@ -204,8 +225,7 @@ namespace Menge
 		++it)
 		{
 			it->second->release();
-		}
-		
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::addArrow(Arrow *_arrow)
@@ -230,6 +250,11 @@ namespace Menge
 	void Game::removeArrow(const std::string &_name)
 	{
 		m_mapArrow.erase(_name);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Arrow * Game::getDefaultArrow()
+	{
+		return m_defaultArrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Arrow * Game::getArrow(const std::string &_name)

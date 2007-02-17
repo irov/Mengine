@@ -3,7 +3,7 @@
 namespace Menge
 {
 	template<class T>
-	class Keeper
+	class Holder
 	{
 	public:
 		static void keep( T * _hostage)
@@ -20,5 +20,5 @@ namespace Menge
 	};
 
 	template<class T>
-	T * Keeper<T>::m_hostage = 0;
+	T * Holder<T>::m_hostage = 0;
 }

@@ -20,10 +20,14 @@ namespace Utility
 			return static_cast<T>(0);
 		}
 	};
+
+	struct EmptyFactoryParam{};
+
 	template<
+		class T_NAMESPACE,
 		class T_KEY,
 		class T_BASE,
-		class T_GEN_STRUCT = void,
+		class T_GEN_STRUCT = EmptyFactoryParam,
 		template<class> class T_POLICE_DEFAULT = PoliceNullPtr
 	>
 	class Factory

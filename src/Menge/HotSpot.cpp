@@ -36,7 +36,7 @@ void HotSpot::loader( TiXmlElement *_xml)
 //////////////////////////////////////////////////////////////////////////
 void HotSpot::_debugRender()
 {
-	RenderEngine *renderEng = Keeper<RenderEngine>::hostage();
+	RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 
 	size_t size = m_poligon.num_points();
 

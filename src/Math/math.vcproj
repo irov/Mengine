@@ -74,6 +74,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				OutputFile=""
 			/>
 			<Tool
 				Name="VCFxCopTool"

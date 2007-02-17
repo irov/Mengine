@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "DllModule.h"
-#	include "Keeper.h"
+#	include "Holder.h"
 
 #	include "FileSystemInterface.h"
 
@@ -36,7 +36,7 @@ namespace Menge
 	TiXmlDocument irov_xml_document;\
 	irov_xml_parse_once==true;\
 	)\
-	if( (irov_xml_parse_once = Keeper<FileEngine>::hostage()->loadXml(irov_xml_document,FILE_NAME)) == true )\
+	if( (irov_xml_parse_once = Holder<FileEngine>::hostage()->loadXml(irov_xml_document,FILE_NAME)) == true )\
 	for(\
 	TiXmlElement * irov_xml_current_tree = irov_xml_document.FirstChildElement();\
 	irov_xml_current_tree != 0;\

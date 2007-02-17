@@ -1,5 +1,7 @@
 #	include "Player.h"
 
+#	include "Game.h"
+#	include "Chapter.h"
 #	include "Scene.h"
 
 #	include "Arrow.h"
@@ -26,11 +28,12 @@ namespace Menge
 	, m_scene(0)
 	, m_arrow(0)
 	{
-		Keeper<Player>::keep(this);
+		Holder<Player>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
-	{}
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setScene(Scene * _scene)
 	{
@@ -47,12 +50,27 @@ namespace Menge
 		m_arrow = _arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Player::init()
+	{
+		Arrow *defaultArrow = 
+			Holder<Game>::hostage()->getDefaultArrow();
+
+		setArrow( defaultArrow );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Player::update(float _timig)
 	{
-		m_scene->update( _timig );
-		m_arrow->update( _timig );
+		if( m_scene )
+		{
+			m_scene->update( _timig );
+		}
 
-		InputEngine * inputEng = Keeper<InputEngine>::hostage();
+		if( m_arrow )
+		{
+			m_arrow->update( _timig );
+		}
+		
+		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
 		if( inputEng->isButton(MOUSE_LEFT,DI_PRESSED) == true )
 		{
@@ -75,12 +93,22 @@ namespace Menge
 	{
 		VisitorRender renderer;
 		
-		renderer.apply(m_scene);
-		renderer.apply(m_arrow);
+		if( m_scene )
+		{
+			renderer.apply(m_scene);
+		}
+		
+		if( m_arrow )
+		{
+			renderer.apply(m_arrow);
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::debugRender()
 	{
-		m_scene->debugRender();
+		if( m_scene )
+		{
+			m_scene->debugRender();
+		}		
 	}
 }

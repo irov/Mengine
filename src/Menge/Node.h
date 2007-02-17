@@ -12,7 +12,6 @@ class TiXmlElement;
 namespace Menge
 {
 	class Visitor;
-	class ScriptFunction;
 
 	//pure-virtual interface
 	class Node 

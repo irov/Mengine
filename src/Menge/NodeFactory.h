@@ -5,8 +5,6 @@
 
 namespace Menge
 {
-	class SceneManager;
-
 	class Node;
 
 	namespace NodeFactory

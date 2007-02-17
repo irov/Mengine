@@ -84,7 +84,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Debug/invert.bsc"
+				OutputFile=""
 			/>
 			<Tool
 				Name="VCFxCopTool"

@@ -14,7 +14,7 @@ namespace Menge
 {
 	void playSprite( const char * _sprite ) 
 	{
-		Player *player = Keeper<Player>::hostage();
+		Player *player = Holder<Player>::hostage();
 
 		Scene *scene = player->getScene();
 
@@ -28,7 +28,7 @@ namespace Menge
 
 	void playDialog( const char * _dialog )
 	{
-		Player *player = Keeper<Player>::hostage();
+		Player *player = Holder<Player>::hostage();
 
 		Scene *scene = player->getScene();
 

@@ -23,7 +23,7 @@ Arrow::Arrow()
 //////////////////////////////////////////////////////////////////////////
 void Arrow::_update(float _timing)
 {
-	InputEngine *inputEng = Keeper<InputEngine>::hostage();
+	InputEngine *inputEng = Holder<InputEngine>::hostage();
 
 	const mt::vec3f &dmv = inputEng->getPosition();
 
@@ -57,7 +57,7 @@ void Arrow::loader( TiXmlElement *_xml )
 //////////////////////////////////////////////////////////////////////////
 void Arrow::_debugRender()
 {
-	RenderEngine *renderEng = Keeper<RenderEngine>::hostage();
+	RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 
 	const mt::vec2f & pos = getWorldPosition();
 

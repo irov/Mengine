@@ -27,12 +27,12 @@ BacksoundManager::~BacksoundManager()
 	
 	if(m_soundSource)
 	{
-		Keeper<SoundEngine>::hostage()->deleteSound(m_soundSource);
+		Holder<SoundEngine>::hostage()->deleteSound(m_soundSource);
 	}
 
 	if (m_fileData)
 	{
-		Keeper<FileEngine>::hostage()->closeFile(m_fileData);
+		Holder<FileEngine>::hostage()->closeFile(m_fileData);
 	}
 }
 
@@ -116,10 +116,10 @@ void	BacksoundManager::update(double _timing)
 	{
 		m_currentPlayList->nextSong();
 
-		Keeper<SoundEngine>::hostage()->deleteSound(m_soundSource);
+			Holder<SoundEngine>::hostage()->deleteSound(m_soundSource);
 		m_soundSource = NULL;
 
-		Keeper<FileEngine>::hostage()->closeFile(m_fileData);
+			Holder<FileEngine>::hostage()->closeFile(m_fileData);
 		m_fileData = NULL;
 
 		_beginFade();
@@ -163,7 +163,7 @@ void	BacksoundManager::_beginFade()
 
 	m_fadeState = true;
 
-	Keeper<SoundEngine>::hostage()->addSoundNode(
+		Holder<SoundEngine>::hostage()->addSoundNode(
 		m_soundSource,
 		m_fileData,
 		m_currentPlayList->getCurrentSongName(),

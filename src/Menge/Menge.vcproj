@@ -86,6 +86,7 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
+				OutputFile=""
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -211,6 +212,14 @@
 				Name="Script"
 				>
 				<File
+					RelativePath=".\Scriptable.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Scriptable.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ScriptEngine.cpp"
 					>
 				</File>
@@ -312,7 +321,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Keeper.h"
+				RelativePath=".\Holder.h"
 				>
 			</File>
 			<File
@@ -454,6 +463,18 @@
 					RelativePath=".\NodeProxy.h"
 					>
 				</File>
+				<Filter
+					Name="Scriptable"
+					>
+					<File
+						RelativePath=".\Eventable.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Eventable.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Track"
@@ -585,6 +606,14 @@
 			</File>
 			<File
 				RelativePath=".\Game.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GameScriptable.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GameScriptable.h"
 				>
 			</File>
 		</Filter>

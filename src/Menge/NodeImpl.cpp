@@ -19,7 +19,6 @@ NodeImpl::NodeImpl()
 : m_parent(0)
 , m_active(true)
 , m_compile(false)
-, m_scriptObject(0)
 , m_external(false)
 , m_childrenForeach(true)
 , m_iteratorChildren(m_listChildren.begin())
@@ -206,6 +205,8 @@ void NodeImpl::loader(TiXmlElement *xml)
 {
 	XML_FOR_EACH_TREE(xml)
 	{
+		Eventable::loader( XML_CURRENT_NODE );
+
 		XML_CHECK_NODE("Node")
 		{
 			XML_DEF_ATTRIBUTES_NODE(Name);
@@ -219,18 +220,6 @@ void NodeImpl::loader(TiXmlElement *xml)
 			}
 
 			node->loader(XML_CURRENT_NODE);
-		}
-
-		XML_CHECK_NODE("Event")
-		{
-			XML_DEF_ATTRIBUTES_NODE(Type);
-			XML_DEF_ATTRIBUTES_NODE(Function);
-
-			ScriptEngine *scriptEng = Keeper<ScriptEngine>::hostage();
-
-			const lua_boost::lua_functor * scriptFunction = scriptEng->genFunctor(Function);
-
-			registerEvent(Type, scriptFunction);
 		}
 
 		XML_CHECK_NODE("External")
@@ -265,11 +254,6 @@ void NodeImpl::loader(TiXmlElement *xml)
 			}
 		}
 	}
-}
-//////////////////////////////////////////////////////////////////////////
-luabind::adl::object * NodeImpl::getScriptable()
-{
-	return m_scriptObject;
 }
 /////////////////////////////////////////////////////////////////////////
 NodeImpl::TListChildren::iterator NodeImpl::_findChildren(const std::string &_name)
@@ -436,24 +420,12 @@ void NodeImpl::debugRender()
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::registerEvent( const std::string &_name, const lua_boost::lua_functor * _func  )
 {
-	TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
-
-	if( it_find == m_mapScriptFunction.end() )
-	{
-		m_mapScriptFunction.insert(std::make_pair(_name,_func));		
-	}
+	Eventable::registerEvent( _name, _func );
 }
 //////////////////////////////////////////////////////////////////////////
 const lua_boost::lua_functor * NodeImpl::event( const std::string &_name )
 {
-	TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
-
-	if( it_find == m_mapScriptFunction.end() )
-	{
-		return 0;
-	}
-
-	return it_find->second;
+	return Eventable::event( _name );
 }
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::_debugRender()

@@ -124,7 +124,7 @@ bool Sprite::_compile()
 
 	m_sprData = (SpriteDecoder::SpriteData*)mngdecoder->decode(fileData);
 */
-	FileDataInterface* fileData = Keeper<FileEngine>::hostage()->openFile(m_fileMNG);
+	FileDataInterface* fileData = Holder<FileEngine>::hostage()->openFile(m_fileMNG);
 
 	assert(fileData != 0);
 
@@ -136,7 +136,7 @@ bool Sprite::_compile()
 		fileData->size()
 		);
 
-	Keeper<FileEngine>::hostage()->closeFile(fileData);
+	Holder<FileEngine>::hostage()->closeFile(fileData);
 
 	TextureDesc	textureDesc;
 
@@ -154,7 +154,7 @@ bool Sprite::_compile()
 			(float)m_desc.images[i].offsetX, 
 			(float)m_desc.images[i].offsetY);
 
-		imageProps.renderImage = Keeper<RenderEngine>::hostage()->loadImage(textureDesc);
+		imageProps.renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);
 
 		m_images.push_back(imageProps);
 	}
@@ -182,7 +182,7 @@ void Sprite::_release()
 
 	for(size_t i = 0; i < size; i++)
 	{
-		Keeper<RenderEngine>::hostage()->releaseRenderImage(m_images[i].renderImage);
+		Holder<RenderEngine>::hostage()->releaseRenderImage(m_images[i].renderImage);
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -214,7 +214,7 @@ void Sprite::_render()
 {
 	const mt::mat3f& wm = getWorldMatrix();
 
-	Keeper<RenderEngine>::hostage()->renderImageOffset(
+	Holder<RenderEngine>::hostage()->renderImageOffset(
 		wm, 
 		m_images[m_currentFrame->index].offset + m_offset,
 		0xffffffff,

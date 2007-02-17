@@ -123,6 +123,14 @@ XML_FOR_EACH_ATTRIBUTES [ XML_TREE ]
 	irov_xml_parse_once = true \
 	)
 
+#	define XML_FOR_EACH_FORCE( XML_TREE )\
+	for( bool irov_xml_parse_once = false; irov_xml_parse_once == false;)\
+	for( bool irov_xml_else_if = false; irov_xml_parse_once == false;)\
+	for(  TiXmlElement * irov_xml_current_tree = XML_TREE;\
+	irov_xml_parse_once == false;\
+	irov_xml_parse_once = true, irov_xml_else_if = false\
+	)
+
 /****************************************************************************
 XML_TITLE_NODE
 

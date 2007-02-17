@@ -10,16 +10,15 @@
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Dialog)
 //////////////////////////////////////////////////////////////////////////
-
 bool	Dialog::_compile()
 {
-	m_dialogFont = Keeper<RenderEngine>::hostage()->loadFont(m_fontFilename);
+	m_dialogFont = Holder<RenderEngine>::hostage()->loadFont(m_fontFilename);
 	m_soundSource = 0;
 	m_fileData = 0;
 	m_isUpdate = false;
 	return true;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Dialog::loader(TiXmlElement * _xml)
 {
 	int id = -1;
@@ -29,7 +28,7 @@ void	Dialog::loader(TiXmlElement * _xml)
 		{
 			XML_CHECK_VALUE_NODE("Message","id",id);
 
-			MessageSpot* elem = Keeper<DialogManager>::hostage()->getMessageSpot(id);
+			MessageSpot* elem = Holder<DialogManager>::hostage()->getMessageSpot(id);
 
 			m_messageSpots.push_back(elem);
 		}
@@ -38,13 +37,13 @@ void	Dialog::loader(TiXmlElement * _xml)
 
 	NodeImpl::loader(_xml);
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Dialog::_release()
 {
-	Keeper<RenderEngine>::hostage()->releaseRenderFont(m_dialogFont);
+	Holder<RenderEngine>::hostage()->releaseRenderFont(m_dialogFont);
 	m_dialogFont = 0;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Dialog::loadCurrentMessageSpot()
 {
 	std::string text = (*m_currentMessageSpot)->getText();
@@ -58,7 +57,7 @@ void	Dialog::loadCurrentMessageSpot()
 	if(soundName.empty() == false)
 	{
 
-		if(Keeper<SoundEngine>::hostage()->addSoundNode(
+		if(	Holder<SoundEngine>::hostage()->addSoundNode(
 				m_soundSource,	m_fileData,	soundName,0, true) == false
 			)
 		{
@@ -73,7 +72,7 @@ void	Dialog::loadCurrentMessageSpot()
 
 	m_isUpdate = true;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Dialog::start()
 {
 	m_lines.clear();
@@ -84,11 +83,11 @@ void	Dialog::start()
 
 	loadCurrentMessageSpot();
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Dialog::nextMessageSpot()
 {
-	Keeper<SoundEngine>::hostage()->deleteSound(m_soundSource);
-	Keeper<FileEngine>::hostage()->closeFile(m_fileData);
+	Holder<SoundEngine>::hostage()->deleteSound(m_soundSource);
+	Holder<FileEngine>::hostage()->closeFile(m_fileData);
 	m_soundSource = NULL;
 	m_fileData = NULL;
 
@@ -103,7 +102,7 @@ void	Dialog::nextMessageSpot()
 
 	loadCurrentMessageSpot();
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Dialog::_update(float _timing)
 {
 	if (!m_isUpdate)
@@ -116,7 +115,7 @@ void	Dialog::_update(float _timing)
 		mt::vec2f pos(0,0);
 		for (TListLine::iterator it = m_lines.begin(); it != m_lines.end(); ++it)
 		{
-			Keeper<RenderEngine>::hostage()->renderText(pos,m_dialogFont,*it);
+			Holder<RenderEngine>::hostage()->renderText(pos,m_dialogFont,*it);
 			pos.y+=m_dialogFont->getHeight();
 		}
 	}
@@ -137,7 +136,7 @@ void	Dialog::_update(float _timing)
 		//ээ, как то выставляет время проигрыша мессаги без звука?
 	}
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Dialog::createFormattedMessage(const std::string& _text,RenderFontInterface* _font, float _width)
 {
 	std::list<std::string> words;

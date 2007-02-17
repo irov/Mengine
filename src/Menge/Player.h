@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Keeper.h"
+#	include "Holder.h"
 
 namespace Menge
 {
@@ -21,6 +21,7 @@ namespace Menge
 		void setArrow( Arrow * _arrow );
 
 	public:
+		void init();
 		void update( float _timing );
 		void render();
 

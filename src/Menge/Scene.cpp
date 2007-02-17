@@ -31,7 +31,7 @@ bool Scene::_compile()
 {
 	if( m_scriptFile.empty() == false )
 	{
-		int Error = Keeper<ScriptEngine>::hostage()->doFile(m_scriptFile);
+		int Error = Holder<ScriptEngine>::hostage()->doFile(m_scriptFile);
 
 		return Error == 0;
 	}

@@ -7,7 +7,7 @@ namespace Menge
 	FileEngine::FileEngine(const std::string &_dllModule)
 		: DllModuleInterface<FileSystemInterface>(_dllModule)
 	{
-		Keeper<FileEngine>::keep(this);
+		Holder<FileEngine>::keep(this);
 	}
 
 	bool FileEngine::loadPak(const std::string&	_filename, int _prior)

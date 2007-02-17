@@ -13,7 +13,7 @@ namespace Menge
 	SoundEngine::SoundEngine(const std::string& _dllModule)
 			: DllModuleInterface<SoundSystemInterface>(_dllModule)
 	{
-		Keeper<SoundEngine>::keep(this);
+		Holder<SoundEngine>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::~SoundEngine()
@@ -35,7 +35,7 @@ namespace Menge
 		// ogg - может быть и Ogg и OGG и т.д.
 		SoundDataDesc::SOUND_TYPE	typeOfSoundFile = _filename.find(".ogg") != std::string::npos ? SoundDataDesc::OGG : SoundDataDesc::WAV;
 		
-		_data = Keeper<FileEngine>::hostage()->openFile(_filename);
+		_data = Holder<FileEngine>::hostage()->openFile(_filename);
 
 		if (_data)
 		{

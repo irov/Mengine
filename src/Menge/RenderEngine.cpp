@@ -10,7 +10,7 @@ namespace Menge
 	RenderEngine::RenderEngine(const std::string &_dllModule)
 		: DllModuleInterface<RenderSystemInterface>(_dllModule)
 	{
-		Keeper<RenderEngine>::keep(this);
+		Holder<RenderEngine>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* RenderEngine::loadImage(const TextureDesc& _desc)
@@ -46,7 +46,7 @@ namespace Menge
 	RenderImageInterface* RenderEngine::loadImage(const std::string & _imageFile, bool _haveAlpha)
 	{
 		FileDataInterface* imageData = 
-			Keeper<FileEngine>::hostage()->openFile(_imageFile);
+			Holder<FileEngine>::hostage()->openFile(_imageFile);
 
 		if(imageData == 0)
 		{
@@ -130,7 +130,7 @@ namespace Menge
 						assert(!size.empty());
 
 						imageData = 
-							Keeper<FileEngine>::hostage()->openFile(name);
+							Holder<FileEngine>::hostage()->openFile(name);
 
 						if(imageData == 0)
 						{
@@ -180,7 +180,7 @@ namespace Menge
 		
 		RenderFontInterface* f = m_interface->loadFont(desc);
 
-		Keeper<FileEngine>::hostage()->closeFile(imageData);
+		Holder<FileEngine>::hostage()->closeFile(imageData);
 
 		return f;
 	}

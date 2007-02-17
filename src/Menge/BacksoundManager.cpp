@@ -103,6 +103,27 @@ void	BacksoundManager::loadPlayList(const std::string& _filename)
 	}
 }
 
+bool	BacksoundManager::listenRecycled()
+{
+	return 0;
+}
+void	BacksoundManager::listenPaused()
+{
+
+}
+void	BacksoundManager::listenStopped()
+{
+	m_currentPlayList->nextSong();
+
+	Keeper<SoundEngine>::hostage()->deleteSound(m_soundSource);
+	m_soundSource = NULL;
+
+	Keeper<FileEngine>::hostage()->closeFile(m_fileData);
+	m_fileData = NULL;
+
+	_beginFade();
+}
+
 void	BacksoundManager::update(double _timing)
 {
 //		printf("vol = %f \n",m_soundSource->getGain());
@@ -113,7 +134,7 @@ void	BacksoundManager::update(double _timing)
 	}
 
 	//if(m_soundSource->process()==false)
-	{
+	/*{
 		m_currentPlayList->nextSong();
 
 			Holder<SoundEngine>::hostage()->deleteSound(m_soundSource);
@@ -123,7 +144,7 @@ void	BacksoundManager::update(double _timing)
 		m_fileData = NULL;
 
 		_beginFade();
-	}
+	}*/
 
 	clock_t ticks = clock();
 

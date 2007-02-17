@@ -4,8 +4,11 @@
 
 #	include "time.h"
 
+#	include "SoundSystemInterface.h"
+
 class	FileDataInterface;
 class	SoundSourceInterface;
+class	SoundNodeListenerInterface;
 
 namespace	Menge
 {
@@ -16,6 +19,7 @@ namespace	Menge
 	typedef	std::map<std::string,Playlist*>	TPlayListMap;
 
 	class BacksoundManager
+		:	public SoundNodeListenerInterface
 	{
 		public:
 			BacksoundManager();
@@ -26,6 +30,9 @@ namespace	Menge
 			void	addPlayList(const std::string& _playListFileName);
 			void	erasePlayList(const std::string& _playListFileName);
 			void	update(double _timing);
+			bool	listenRecycled();
+			void	listenPaused();
+			void	listenStopped();
 		private:
 			void	_beginFade();
 		private:

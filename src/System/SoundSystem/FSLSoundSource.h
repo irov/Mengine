@@ -36,5 +36,4 @@ public:
 	double	getSizeSec();
 private:
 	FSLsound obj;
-	SoundNodeListenerInterface* m_listener;
 };

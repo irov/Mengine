@@ -15,6 +15,7 @@ BacksoundManager::BacksoundManager()
 , m_fileData(0)
 , m_currentPlayList(0)
 , m_fadeState(true)
+, m_changeTrack(false)
 {
 }
 
@@ -114,14 +115,7 @@ void	BacksoundManager::listenPaused()
 void	BacksoundManager::listenStopped()
 {
 	m_currentPlayList->nextSong();
-
-	Keeper<SoundEngine>::hostage()->deleteSound(m_soundSource);
-	m_soundSource = NULL;
-
-	Keeper<FileEngine>::hostage()->closeFile(m_fileData);
-	m_fileData = NULL;
-
-	_beginFade();
+	m_changeTrack = !m_changeTrack;
 }
 
 void	BacksoundManager::update(double _timing)
@@ -133,18 +127,17 @@ void	BacksoundManager::update(double _timing)
 		return;
 	}
 
-	//if(m_soundSource->process()==false)
-	/*{
-		m_currentPlayList->nextSong();
-
-			Holder<SoundEngine>::hostage()->deleteSound(m_soundSource);
+	if(m_changeTrack == true)
+	{
+		Holder<SoundEngine>::hostage()->deleteSound(m_soundSource);
 		m_soundSource = NULL;
 
-			Holder<FileEngine>::hostage()->closeFile(m_fileData);
+		Holder<FileEngine>::hostage()->closeFile(m_fileData);
 		m_fileData = NULL;
 
 		_beginFade();
-	}*/
+		m_changeTrack = false;
+	}
 
 	clock_t ticks = clock();
 
@@ -188,7 +181,7 @@ void	BacksoundManager::_beginFade()
 		m_soundSource,
 		m_fileData,
 		m_currentPlayList->getCurrentSongName(),
-		NULL, true
+		this, true
 		);
 
 	m_soundSource->setGain(0);

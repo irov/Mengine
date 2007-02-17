@@ -1,6 +1,27 @@
 #include "FSLSoundSource.h"
 #include <assert.h>
 
+
+struct PauseCallback : public Callback 
+{
+	SoundNodeListenerInterface* listener;
+	PauseCallback(SoundNodeListenerInterface* _listener):listener(_listener){};
+	void	call()
+	{
+		listener->listenPaused();
+	};
+};
+
+struct StopCallback : public Callback 
+{
+	SoundNodeListenerInterface* listener;
+	StopCallback(SoundNodeListenerInterface* _listener):listener(_listener){};
+	void	call()
+	{
+		listener->listenStopped();
+	};
+};
+
 FSLSound::FSLSound(void* _data, int _size, SoundNodeListenerInterface* _listener, bool _isStreaming, const char* strFileFormat)
 {
 	if(_isStreaming)
@@ -13,27 +34,6 @@ FSLSound::FSLSound(void* _data, int _size, SoundNodeListenerInterface* _listener
 	}
 	if (_listener)
 	{
-
-		struct PauseCallback : public Callback 
-		{
-			SoundNodeListenerInterface* listener;
-			PauseCallback(SoundNodeListenerInterface* _listener):listener(_listener){};
-			void	call()
-			{
-				listener->listenPaused();
-			};
-		};
-
-		struct StopCallback : public Callback 
-		{
-			SoundNodeListenerInterface* listener;
-			StopCallback(SoundNodeListenerInterface* _listener):listener(_listener){};
-			void	call()
-			{
-				listener->listenStopped();
-			};
-		};
-
 		fslSoundCallbackPause(obj, new PauseCallback(_listener));
 		fslSoundCallbackStop(obj, new StopCallback(_listener));
 	}

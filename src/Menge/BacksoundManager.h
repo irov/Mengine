@@ -39,6 +39,7 @@ namespace	Menge
 			TPlayListMap	m_playLists;
 			Playlist*	m_currentPlayList;
 			bool	m_fadeState;
+			bool	m_changeTrack;
 
 			SoundSourceInterface* m_soundSource;
 			FileDataInterface* m_fileData;

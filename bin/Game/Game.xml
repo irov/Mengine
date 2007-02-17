@@ -11,6 +11,12 @@
 		<Arrow Type = "Default" />
 	</Default>
 
+	<Personality File = "Game/Game.lua" >
+		<Init Function = "game_init" />
+		<Update Function = "game_update" />
+		<Fini Function = "game_fini" />
+	</Personality>		
+
 	<BacksoundManager File = "playlists.xml"/>
 	<DialogManager File = "messages.xml"/>				
 </Game>	

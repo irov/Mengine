@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\includes&quot;;D:\IrovMenge\dependencies\includes\"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies\FreeSL&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,10 +63,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OpenAL32.lib vorbisfile.lib ALut.lib"
+				AdditionalDependencies="FreeSL.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\lib\OpenAL&quot;;&quot;$(SolutionDir)dependencies\lib\Vorbis&quot;;D:\IrovMenge\dependencies\lib\OpenAL;D:\IrovMenge\dependencies\lib\Vorbis"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\FreeSL&quot;"
 				ModuleDefinitionFile="SoundSystem.def"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -202,7 +202,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\includes&quot;;E:\IrovMenge\dependencies\includes\"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\includes&quot;;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -265,27 +265,19 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\ALOggStreamSound.cpp"
+			RelativePath=".\FSLSoundSource.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\ALOggStreamSound.h"
+			RelativePath=".\FSLSoundSource.h"
 			>
 		</File>
 		<File
-			RelativePath=".\ALSoundSystem.cpp"
+			RelativePath=".\FSLSoundSystem.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\ALSoundSystem.h"
-			>
-		</File>
-		<File
-			RelativePath=".\ALWavSound.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ALWavSound.h"
+			RelativePath=".\FSLSoundSystem.h"
 			>
 		</File>
 		<File

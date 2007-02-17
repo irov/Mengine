@@ -6,7 +6,6 @@ struct	SoundDataDesc
 	{
 		OGG,
 		WAV,
-		MP3,
 	}	type;
 	void*		buffer;
 	size_t		size;
@@ -20,8 +19,7 @@ class	SoundNodeListenerInterface
 public:
 	virtual bool listenRecycled() = 0;
 	virtual void listenPaused() = 0;
-	virtual void listenStoped() = 0;
-	virtual void listenEnded() = 0;
+	virtual void listenStopped() = 0;
 };
 
 class SoundSystemInterface
@@ -46,8 +44,7 @@ public:
 	virtual bool isPlaying() const = 0;
 	virtual bool isPaused() const = 0;
 	virtual bool isStopped() const = 0;
-	virtual bool isInitial() const = 0;
-
+	
 	virtual void setPitch(float pitch) = 0;
 	virtual float getPitch() const = 0;
 
@@ -65,8 +62,6 @@ public:
 
 	virtual void setLoop(bool loop) = 0;
 	virtual bool isLooping() const = 0;
-
-	virtual bool process() = 0;
 
 	virtual double	getSizeSec() = 0;
 };

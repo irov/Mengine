@@ -123,7 +123,7 @@ void	Dialog::_update(float _timing)
 
 	if(m_soundSource != NULL)
 	{
-		m_soundSource->process();
+		//m_soundSource->process();
 
 		if(m_soundSource->isPlaying() == false)
 		{

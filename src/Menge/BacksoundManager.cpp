@@ -112,7 +112,7 @@ void	BacksoundManager::update(double _timing)
 		return;
 	}
 
-	if(m_soundSource->process()==false)
+	//if(m_soundSource->process()==false)
 	{
 		m_currentPlayList->nextSong();
 

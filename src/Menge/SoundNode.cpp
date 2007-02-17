@@ -66,11 +66,6 @@ void		SoundNode::setRelativeToListener(bool flag)
 	m_interface->setRelativeToListener(flag);
 }
 //////////////////////////////////////////////////////////////////////////
-bool		SoundNode::process()
-{
-	return m_interface->process();
-}
-//////////////////////////////////////////////////////////////////////////
 bool		SoundNode::isRelativeToListener() const
 {
 	return	m_interface->isRelativeToListener();
@@ -88,7 +83,7 @@ double		SoundNode::getSizeSec()	const
 //////////////////////////////////////////////////////////////////////////
 void	SoundNode::_update(float _timing)
 {
-	m_interface->process();
+	//m_interface->process();
 }
 //////////////////////////////////////////////////////////////////////////
 void		SoundNode::loader(TiXmlElement * xml)

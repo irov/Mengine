@@ -188,6 +188,8 @@ namespace Menge
 	{
 		m_defaultArrow = getArrow(m_defaultArrowName);
 
+		m_player->setArrow( m_defaultArrow );
+
 		ScriptEngine * scriptEngine = 
 			Holder<ScriptEngine>::hostage();
 

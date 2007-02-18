@@ -660,6 +660,14 @@
 				RelativePath=".\Player.h"
 				>
 			</File>
+			<File
+				RelativePath=".\PlayerScriptable.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PlayerScriptable.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Visitor"

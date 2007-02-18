@@ -25,11 +25,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void GameScriptable::setChapter( const char * _name )
 	{
-		printf("setChapter [%s]",_name);
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GameScriptable::gotoScene( const char * _name )
 	{
-		printf("gotoScene [%s]",_name);
+
 	}
 }

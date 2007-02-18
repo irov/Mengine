@@ -2,10 +2,13 @@
 
 #	include "Holder.h"
 
+#	include <string>
+
 namespace Menge
-{
-	class Avatar;
+{	
+	class Chapter;
 	class Scene;
+	class Avatar;
 	class Arrow;
 
 	class Player
@@ -15,6 +18,13 @@ namespace Menge
 		~Player();
 
 	public:
+		void setChapter( const std::string & _name );
+		void gotoScene( const std::string & _name );
+
+	public:
+		void setChapter( Chapter * _chapter );
+		Chapter * getChapter();
+
 		void setScene( Scene * _scene );
 		Scene * getScene();
 
@@ -29,6 +39,7 @@ namespace Menge
 		
 	private:
 		Avatar * m_avatar;
+		Chapter * m_chapter;
 		Scene * m_scene;
 		Arrow * m_arrow;
 	};

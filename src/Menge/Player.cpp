@@ -18,6 +18,8 @@
 
 #	include "VisitorRender.h"
 
+#	include "ErrorMessage.h"
+
 #	include "lua_boost/lua_functor.h"
 
 namespace Menge
@@ -33,6 +35,48 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::setChapter( const std::string & _name )
+	{
+		Game * game =
+			Holder<Game>::hostage();
+
+		m_chapter = game->getChapter( _name );
+
+		if( m_chapter == 0 )
+		{
+			ErrorMessage("ERROR: Chapter [%s] not have in Game", _name.c_str() );
+			return;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::gotoScene( const std::string & _name )
+	{
+		Game * game =
+			Holder<Game>::hostage();
+
+		if( m_chapter == 0 )
+		{
+			ErrorMessage("ERROR: Please set valid chapter for Player");
+		}
+
+		m_scene = m_chapter->getScene( _name );
+
+		if( m_scene == 0 )
+		{
+			ErrorMessage("ERROR: Scene [%s] not have in Chapter", _name.c_str() );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::setChapter( Chapter * _chapter )
+	{
+		m_chapter = _chapter;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Chapter * Player::getChapter()
+	{
+		return m_chapter;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setScene(Scene * _scene)

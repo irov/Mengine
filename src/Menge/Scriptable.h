@@ -26,5 +26,5 @@ namespace Menge
 #	define MENGE_SCRIPTABLE_IMPLEMENT( CLASS )\
 	namespace Menge{\
 	Scriptable * CLASS::scriptable_gen(){ return new CLASS(); }\
-	Scriptable::AutoRegistrator MD_auto_reg( &CLASS::scriptable_gen );\
+	static Scriptable::AutoRegistrator MD_auto_reg_##CLASS( &CLASS::scriptable_gen );\
 }

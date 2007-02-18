@@ -1,7 +1,7 @@
 function game_init()
 
-  Game:setChapter("Buba");
-  Game:gotoScene("bukaka");
+  Player:setChapter("Buba");
+  Player:gotoScene("Buka");
 
   return true
 end

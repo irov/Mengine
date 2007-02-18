@@ -15,10 +15,9 @@ namespace Menge
 		Chapter();
 
 	public:
-		bool addChildren(Node *_node) override;
+		Scene * getScene( const std::string & _name );
 
-	private:
-		std::string m_startScene;
-		//Scene *m_currentScene;
+	public:
+		bool addChildren(Node *_node) override;
 	};
 }

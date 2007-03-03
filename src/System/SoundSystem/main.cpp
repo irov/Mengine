@@ -17,9 +17,25 @@
 
 #include "FSLSoundSource.h"
 
+class Listener : public SoundNodeListenerInterface
+{
+	bool listenRecycled()
+	{
+		return true;
+	}
+	void listenPaused()
+	{
+			printf("listernPuased\n");
+
+	}
+	void listenStopped()
+	{
+		printf("listenStopped\n");
+	}
+};
+
 int main()
 {
-
 	SoundSystemInterface* SoundSystem;
 	initInterfaceSystem(&SoundSystem);
 
@@ -41,16 +57,24 @@ int main()
 		true
 	};
 
-	SoundSourceInterface* ssi = SoundSystem->loadSoundNode(desc_to_load,0);
-	ssi->setLoop(true);
-	ssi->setPitch(1);
+	Listener* l = new Listener();
+
+	SoundSourceInterface* ssi = SoundSystem->loadSoundNode(desc_to_load,l);
+//	ssi->setLoop(true);
+//	ssi->setPitch(1);
 	ssi->play();
 
 	getche();
-
+//	char ch = 't';
+//	while(ch != '.')
+//	{
+//		std::cin>>ch;
+		//getche();
+//.	};
+	//Sleep(2000); 
 	SoundSystem->releaseSoundNode(ssi);
 
 	delete[] buffer;
-
+	delete l;
 	releaseInterfaceSystem(SoundSystem);
 };

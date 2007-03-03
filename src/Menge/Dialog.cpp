@@ -57,13 +57,14 @@ void	Dialog::loadCurrentMessageSpot()
 	if(soundName.empty() == false)
 	{
 
-		if(	Holder<SoundEngine>::hostage()->addSoundNode(
+/*		if(	Holder<SoundEngine>::hostage()->addSoundNode(
 				m_soundSource,	m_fileData,	soundName,0, true) == false
 			)
 		{
 			assert(!"Sound for dialog is not loaded");
 		}
 		m_soundSource->play();
+		*/
 	}
 	else
 	{	//означает что нету звука для данного мессаджа.

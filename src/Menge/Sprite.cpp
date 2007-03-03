@@ -212,6 +212,12 @@ void Sprite::_render()
 {
 	const mt::mat3f& wm = getWorldMatrix();
 
+	printf("matrix \n");
+	printf("%f %f %f\n",wm.v0.x,wm.v0.y,wm.v0.z);
+	printf("%f %f %f\n",wm.v1.x,wm.v1.y,wm.v1.z);
+	printf("%f %f %f\n",wm.v2.x,wm.v2.y,wm.v2.z);
+
+
 	Holder<RenderEngine>::hostage()->renderImageOffset(
 		wm, 
 		m_images[m_currentFrame->index].offset + m_offset,

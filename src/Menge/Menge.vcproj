@@ -346,6 +346,14 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\Region.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WayPoint.cpp"
+				>
+			</File>
 			<Filter
 				Name="Allocator"
 				>
@@ -424,7 +432,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Region.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ScriptImplement.h"
+					>
+				</File>
+				<File
+					RelativePath=".\WayPoint.h"
 					>
 				</File>
 			</Filter>

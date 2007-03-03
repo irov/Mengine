@@ -85,11 +85,15 @@ FSLAPI int FSLAPIENTRY fslGetMaxSources();												// return the amount of so
 FSLAPI FSLsound FSLAPIENTRY fslCreateEmptySound();										// create a sound object that has not buffer
 FSLAPI FSLsound FSLAPIENTRY fslCreateDummySound();										// create an empty sound object
 FSLAPI FSLsound FSLAPIENTRY fslCreateSoundFromBuffer(FSLbuffer buffer);					// create a sound source using a pre-defined sound buffer
+
+
 FSLAPI FSLsound FSLAPIENTRY fslLoadSoundFromData(const char* strFileFormat,
 												 const void* pData, unsigned int size);	// load a sound from data
+
 FSLAPI FSLsound FSLAPIENTRY fslCreateSound(const void* pData, FSLenum format,
 										   unsigned int size, unsigned int freq);		// creates a sound from data
-FSLAPI FSLsound FSLAPIENTRY fslStreamSound(const void* pData, unsigned int isize);
+FSLAPI FSLsound FSLAPIENTRY fslStreamSound(const char* _filename);
+FSLAPI FSLsound FSLAPIENTRY fslNonStreamSound(const void* pData, unsigned int isize);
 FSLAPI FSLsound FSLAPIENTRY fslCloneSound(FSLsound obj);								// create a new sound source, copy the buffer
 FSLAPI void FSLAPIENTRY fslFreeSound(FSLsound obj, bool remove_buffer = true);			// destroy sound source
 FSLAPI int FSLAPIENTRY fslFreeAllSounds();												// destroy all loaded/created sound sources (returns remove count)

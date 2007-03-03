@@ -418,7 +418,7 @@ namespace xml
 
 			Value[0][2] = 0.f;
 			Value[1][2] = 0.f;
-			Value[2][2] = 0.f;
+			Value[2][2] = 1.f;				//рср днкфмю ашрэ 1
 
 			return true;
 		}

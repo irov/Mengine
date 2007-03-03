@@ -152,18 +152,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update( float _timing )
 	{
-		static bool test = true;
-
-		if (test)
-		{
-			m_backsoundManager->setFadeTime(6);
-			m_backsoundManager->playList("logoSceneMusic.xml");
-			test = false;
-		}
-
 		m_player->update( _timing );
 
-		m_backsoundManager->update(_timing);
+	//	m_backsoundManager->update(_timing);
 
 		Holder<ScriptEngine>::hostage()
 			->callFunctionSafe( m_eventUpdate ) % _timing % lua_boost::ret_safe();

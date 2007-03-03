@@ -26,11 +26,11 @@ FSLSound::FSLSound(void* _data, int _size, SoundNodeListenerInterface* _listener
 {
 	if(_isStreaming)
 	{
-		obj = fslStreamSound(_data,_size);
+		obj = fslStreamSound("test.ogg");
 	}
 	else
 	{
-		obj = fslLoadSoundFromData(strFileFormat,_data,_size);
+		obj = fslNonStreamSound(_data,_size);
 	}
 	if (_listener)
 	{

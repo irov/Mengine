@@ -168,6 +168,14 @@ namespace	mt
 		_out = _rhs / _rhs.length();
 	}
 
+	/*	Normalize Vector*/
+	float	norm_v2_f(vec2f& _out, const vec2f& _rhs)
+	{
+		float l = _rhs.length();
+		_out = _rhs / l;
+		return l;
+	}
+
 	vec2f	norm_v2(const vec2f& _rhs)
 	{
 		vec2f	out;

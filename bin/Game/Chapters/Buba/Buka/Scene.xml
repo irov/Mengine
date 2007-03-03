@@ -1,13 +1,27 @@
 <Node Name = "Buka" Type = "Scene">
 	<Node Name = "Main" Type = "Layer">
-		<Node Name = "TestSprite" Type = "Sprite">
-			<ImageMNG File = "output.mng" />
-			<Transformation Value = "1;0;0;1;100;100" />
-		</Node> <!-- Sprite -->
 
-		<Node Name = "TestSound" Type = "SoundNode">
-			<Filename Value = "1.ogg" />
-		</Node> <!-- Sound -->
+		<Node Name = "TestActor" Type = "Actor" >
+			<Node Name = "TestSprite" Type = "Sprite">
+				<ImageMNG File = "output.mng" />
+				<Transformation Value = "1;0;0;1;0;0" />
+			</Node> <!-- Sprite -->
+		</Node>
+
+               <Node Name = "TestRegion" Type = "Region" >
+			<Points>
+				<Point Value = "20;20" />
+				<Point Value = "80;20" />
+				<Point Value = "40;25" />
+				<Point Value = "35;30" />
+				<Point Value = "25;25" />
+				<Point Value = "15;25" />
+			</Points>
+			<HelperWayPoints>
+				<WayPoint Value = "10;10" />
+				<WayPoint Value = "20;20" />
+			</HelperWayPoints>
+		</Node>
 
 		<Node Name = "TestHotSpot" Type = "HotSpot" >
 			<Point Value = "200;200" />
@@ -18,6 +32,7 @@
 			<Point Value = "150;250" />
 			<Event Type = "LeftMouseClick" Function = "TestHotSpotLeftMouseClick" />
 		</Node>
+
 		<Node Name = "TestDialog" Type = "Dialog">
 			<Messages>
 				<Message id = "0"/>	

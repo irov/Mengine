@@ -20,6 +20,12 @@
 
 #	include "ErrorMessage.h"
 
+#	include "Actor.h"
+
+#	include "Layer.h"
+
+//#	include "Region.h"
+
 #	include "lua_boost/lua_functor.h"
 
 namespace Menge
@@ -118,7 +124,14 @@ namespace Menge
 
 		if( inputEng->isButton(MOUSE_LEFT,DI_PRESSED) == true )
 		{
+			Actor * actor = m_scene->getChildrenT<Layer>("Main")->getChildrenT<Actor>("TestActor");
+
 			const mt::vec3f &dmv = inputEng->getPosition();
+			actor->moveto(dmv.v2);
+			
+			int u = 0;
+
+			/*const mt::vec3f &dmv = inputEng->getPosition();
 
 			mt::vec2f pick(dmv.v2);
 			VisitorPickHotSpot pickHotSpot( pick );
@@ -130,6 +143,8 @@ namespace Menge
 				const lua_boost::lua_functor * event = hs->event("LeftMouseClick");
 				event->call() % lua_boost::ret<void>();
 			}
+			*/
+			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

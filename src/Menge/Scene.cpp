@@ -18,12 +18,12 @@ Scene::Scene()
 
 }
 //////////////////////////////////////////////////////////////////////////
-void Scene::setRenderCamera( Camera * _camera)
+void Scene::setRenderCamera( Camera2D * _camera)
 {
 	m_renderCamera = _camera;
 }
 //////////////////////////////////////////////////////////////////////////
-Camera * Scene::getRenderCamera()
+Camera2D * Scene::getRenderCamera()
 {
 	return m_renderCamera;
 }

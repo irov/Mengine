@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Holder.h"
-#	include "Utility/Factory.h"
 
 #	include <string>
 #	include <map>

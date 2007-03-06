@@ -15,10 +15,11 @@ namespace Menge
 	public:
 		void setParent(Node *node)override;
 
-	protected:
-		bool _updateMatrix() override;
+	public:
+		const mt::mat3f & getWorldMatrix() override;
 
 	protected:
+		mt::mat3f m_matrixParalax;
 		mt::vec2f m_factorParallax;
 	};
 }

@@ -4,7 +4,6 @@
 
 #	include "tinyxml/tinyxml.h"
 
-#	include "Utility/string_algorithm.h"
 #	include "math/mat4.h"
 
 /****************************************************************************
@@ -141,7 +140,7 @@ XML_TITLE_NODE
 	(irov_xml_current_tree->Value())
 
 #	define XML_TITLE_NODE\
-	(Utility::string_from_char(XML_TITLE_NODE_CHARP))
+	(xml::string::from_char(XML_TITLE_NODE_CHARP))
 
 /****************************************************************************
 XML_VALUE_NODE []
@@ -151,7 +150,7 @@ XML_VALUE_NODE []
 #	define XML_VALUE_NODE()\
 	((irov_xml_current_tree->FirstChild())?\
 	irov_xml_current_tree->FirstChild()->ValueStr():\
-	Utility::string_empty());
+	xml::string::empty());
 
 /****************************************************************************
 XML_CHECK_NODE [ TITLE ]
@@ -233,12 +232,42 @@ XML_DEF_ATTRIBUTES_NODE [ NAME ]
 {\
 	std::string Attribute;\
 	XML_VALUE_ATTRIBUTE((ATTRIBUTE),(Attribute));\
-	Utility::string_toupper(Attribute);\
+	xml::string::toupper(Attribute);\
 	VAR = ( Attribute == "TRUE" )?true:false;\
 }
 
 namespace xml
 {
+	//////////////////////////////////////////////////////////////////////////
+	namespace string
+	{
+		inline std::string from_char(const char *str)
+		{
+			if( str == 0 )
+			{
+				return std::string();  
+			}
+
+			return std::string(str);   
+		}
+
+		inline const std::string & empty()
+		{
+			static std::string empty;
+			return empty;
+		}
+
+		inline void toupper(std::string &str)
+		{
+			size_t size = str.size();
+
+			for(size_t i=0;i < size;++i)
+			{
+				str[i] = ::toupper(str[i]);
+			}
+		}
+	}
+
 	namespace parse
 	{
 		inline const std::string & get_string_ref_attribute( TiXmlElement *_xml, const std::string & _attr )

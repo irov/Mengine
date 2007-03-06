@@ -3,6 +3,7 @@
 #	include "ObjectImplement.h"
 
 #	include "Scene.h"
+#	include "Camera2D.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Layer);
@@ -23,11 +24,18 @@ void Layer::setParent(Node *node)
 	NodeImpl::setParent(node);
 }
 //////////////////////////////////////////////////////////////////////////
-bool Layer::_updateMatrix()
+const mt::mat3f & Layer::getWorldMatrix()
 {
-	mt::mat3f & lwm = getLocalMatrix();
+	Camera2D * camera = 
+		getParentT<Scene>()
+		->getRenderCamera();
 
-	scale_m3( lwm , mt::vec3f( m_factorParallax.x, m_factorParallax.y, 1.f ) );
+	if( camera == 0 )
+	{
+		return Allocator2D::getWorldMatrix();
+	}
 
-	return true;
+	m_matrixParalax = camera->getWorldMatrix();
+	scale_m3( m_matrixParalax, mt::vec3f(m_factorParallax.x, m_factorParallax.y, 1.f) );
+	return m_matrixParalax;
 }

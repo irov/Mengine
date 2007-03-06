@@ -11,7 +11,7 @@
 #	include "XmlParser.h"
 #	include "ErrorMessage.h"
 
-#	include "Utility/algorithm.h"
+#	include <algorithm>
 
 OBJECT_IMPLEMENT( NodeImpl )
 //////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,11 @@ bool NodeImpl::activate()
 
 	if( m_childrenForeach )
 	{
-		Utility::for_each(m_listChildren,&Node::activate);
+		std::for_each( 
+			m_listChildren.begin(), 
+			m_listChildren.end(), 
+			std::mem_fun( &Node::activate) 
+			);
 	}
 
 	if( m_active )
@@ -63,7 +67,11 @@ void NodeImpl::deactivate()
 {
 	if( m_childrenForeach )
 	{
-		Utility::for_each(m_listChildren,&Node::deactivate);
+		std::for_each( 
+			m_listChildren.begin(), 
+			m_listChildren.end(),
+			std::mem_fun( &Node::deactivate ) 
+			);
 	}
 
 	if( m_compile )
@@ -96,7 +104,11 @@ bool NodeImpl::compile()
 
 	if( m_childrenForeach )
 	{
-		Utility::for_each(m_listChildren,&Node::compile);
+		std::for_each(
+			m_listChildren.begin(), 
+			m_listChildren.end(), 
+			std::mem_fun( &Node::compile ) 
+			);
 	}
 
 	return m_compile;	
@@ -106,7 +118,11 @@ void NodeImpl::release()
 {
 	if( m_childrenForeach )
 	{
-		Utility::for_each(m_listChildren,&Node::release);
+		std::for_each(
+			m_listChildren.begin(), 
+			m_listChildren.end(),
+			std::mem_fun( &Node::release ) 
+			);
 	}
 
 	if( m_compile == true )
@@ -192,7 +208,11 @@ void NodeImpl::update(float _timing)
 
 		if( m_childrenForeach )
 		{
-			Utility::for_each(m_listChildren,&Node::update,_timing);
+			std::for_each(
+				m_listChildren.begin(), 
+				m_listChildren.end(), 
+				std::bind2nd( std::mem_fun( &Node::update ) ,_timing ) 
+				);
 		}
 	}
 }
@@ -408,7 +428,11 @@ void NodeImpl::debugRender()
 {
 	if( m_childrenForeach )
 	{
-		Utility::for_each(m_listChildren,&Node::debugRender);
+		std::for_each(
+			m_listChildren.begin(), 
+			m_listChildren.end(), 
+			std::mem_fun( &Node::debugRender )
+			);
 	}
 
 	_debugRender();

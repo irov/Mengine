@@ -53,6 +53,12 @@ namespace Menge
 		virtual void setParent(Node *node);
 		virtual Node * getParent();
 
+		template<class T>
+		T * getParentT()
+		{
+			return static_cast<Scene*>(getParent());
+		}
+
 		virtual bool isRoot();
 
 	public:

@@ -32,7 +32,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Player::Player()
-	: m_avatar(0)
+	: m_chapter(0)
+	, m_avatar(0)
 	, m_scene(0)
 	, m_arrow(0)
 	{
@@ -124,7 +125,7 @@ namespace Menge
 
 		if( inputEng->isButton(MOUSE_LEFT,DI_PRESSED) == true )
 		{
-			Actor * actor = m_scene->getChildrenT<Layer>("Main")->getChildrenT<Actor>("TestActor");
+			Actor * actor = m_scene->getEntityT<Actor>("TestActor");
 
 			const mt::vec3f &dmv = inputEng->getPosition();
 			actor->moveto(dmv.v2);

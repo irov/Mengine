@@ -30,7 +30,7 @@ namespace lua_boost
 
 		// create a new T object and
 		// push onto the Lua stack a userdata containing a pointer to T object
-		static int new_class( lua_State *L, void * obj, const char * _name );
+		static int new_class( lua_State *L, void * _self, const char * _name );
 		static void new_class_impl( lua_State *L, void * _self, const char * _name );
 
 		static void new_object( lua_State *L, void * _self, const char * _name, const char * _value );

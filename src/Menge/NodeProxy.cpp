@@ -62,11 +62,6 @@ const std::string & NodeProxy::getType()const
 	return m_node->getType();
 }
 //////////////////////////////////////////////////////////////////////////
-size_t NodeProxy::getTypeId()const
-{
-	return m_node->getTypeId();
-}
-//////////////////////////////////////////////////////////////////////////
 Node * NodeProxy::getParent()
 {
 	return m_node->getParent();

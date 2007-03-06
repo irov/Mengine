@@ -30,8 +30,6 @@ namespace Menge
 		void setType(const std::string &type) override;
 		const std::string & getType()const override;
 
-		size_t getTypeId()const override;
-
 		bool isExternal()const override;
 
 		void setResource(const std::string &_file) override;

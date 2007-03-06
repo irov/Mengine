@@ -35,7 +35,7 @@ void Actor::loader( TiXmlElement * _xml )
 
 	NodeImpl::loader(_xml);
 }
-
+//////////////////////////////////////////////////////////////////////////
 void Actor::_update(float _timing)
 {
 	if(!m_ismove) return;
@@ -61,7 +61,7 @@ void Actor::_update(float _timing)
 		setPosition(pos);
 	}
 }
-
+//////////////////////////////////////////////////////////////////////////
 void Actor::moveto(const mt::vec2f& _destpos)
 {
 	mt::vec2f pos = getLocalPosition();

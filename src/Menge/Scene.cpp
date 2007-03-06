@@ -1,6 +1,7 @@
 #	include "Scene.h"
-
 #	include "ObjectImplement.h"
+
+#	include "Layer.h"
 
 #	include "SceneManager.h"
 
@@ -25,6 +26,33 @@ void Scene::setRenderCamera( Camera * _camera)
 Camera * Scene::getRenderCamera()
 {
 	return m_renderCamera;
+}
+//////////////////////////////////////////////////////////////////////////
+Node * Scene::getEntity( const std::string & _name )
+{
+	for( TListChildren::iterator 
+		it = m_listChildren.begin(),
+		it_end = m_listChildren.end();
+	it != it_end;
+	++it)
+	{
+		if( Layer * layer = dynamic_cast<Layer*>(*it) )
+		{
+			if( Node * node = layer->getChildren( _name ) )
+			{
+				return node;
+			}
+		}
+		else
+		{
+			if( (*it)->getName() == _name )
+			{
+				return *it;
+			}
+		}
+	}
+
+	return 0;
 }
 //////////////////////////////////////////////////////////////////////////
 bool Scene::_compile()

@@ -43,7 +43,6 @@ namespace Menge
 		virtual void setType(const std::string &type);
 		virtual const std::string & getType()const;
 
-		virtual size_t getTypeId()const;
 
 		virtual bool isExternal()const;
 

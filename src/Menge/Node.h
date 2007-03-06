@@ -26,8 +26,6 @@ namespace Menge
 		virtual void setType(const std::string &type) = 0;
 		virtual const std::string & getType() const = 0;
 
-		virtual size_t getTypeId() const = 0;
-
 	public:
 		virtual bool activate() = 0;
 		virtual void deactivate() = 0;

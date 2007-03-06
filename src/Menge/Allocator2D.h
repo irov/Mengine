@@ -15,9 +15,9 @@ namespace Menge
 		Allocator2D();
 
 	public:
-		const mt::vec2f & getWorldPosition();
-		const mt::vec2f & getWorldDirection();
-		const mt::mat3f & getWorldMatrix();
+		virtual const mt::vec2f & getWorldPosition();
+		virtual const mt::vec2f & getWorldDirection();
+		virtual const mt::mat3f & getWorldMatrix();
 
 		const mt::vec2f & getLocalPosition()const;
 		mt::vec2f & getLocalPosition();

@@ -745,6 +745,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Factory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\XmlParser.h"
 				>
 			</File>

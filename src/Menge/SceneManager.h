@@ -5,6 +5,7 @@
 namespace Menge
 {
 	class Node;
+	class ViewPort;
 
 	class SceneManager
 	{
@@ -26,6 +27,8 @@ namespace Menge
 		}
 
 		static bool loadNode(Node *_node, const std::string &_xml);
+
+		static void renderNode( Node * _node, const ViewPort & _viewPort );
 
 	private:
 		static void RegisterScriptClass();

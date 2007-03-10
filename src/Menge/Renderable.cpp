@@ -1,6 +1,8 @@
 #	include "Renderable.h"
 #	include "ObjectImplement.h"
 
+#	include "ObjectForeach.h"
+
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Renderable);
 //////////////////////////////////////////////////////////////////////////
@@ -10,26 +12,33 @@ Renderable::Renderable()
 
 }
 //////////////////////////////////////////////////////////////////////////
-void Renderable::render()
+const ViewPort & Renderable::updateViewPort( const ViewPort & _viewPort )
+{
+	return _viewPort;
+}
+//////////////////////////////////////////////////////////////////////////
+bool Renderable::render( const ViewPort & _viewPort )
 {
 	if( m_active == false )
 	{
-		return;
+		return false;
 	}
 
 	if( m_hide == true )
 	{
-		return;
+		return false;
 	}
 
 	compile();
 
-	_render();
+	_render( _viewPort );	
+
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void Renderable::_render()
+void Renderable::_render( const ViewPort & _viewPort )
 {
-	//Empty
+	// Empty;
 }
 //////////////////////////////////////////////////////////////////////////
 void Renderable::hide(bool value)

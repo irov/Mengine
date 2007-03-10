@@ -1,8 +1,11 @@
 #	include "Player.h"
 
+#	include "SceneManager.h"
+
 #	include "Game.h"
 #	include "Chapter.h"
 #	include "Scene.h"
+#	include "Camera2D.h"
 
 #	include "Arrow.h"
 
@@ -36,6 +39,7 @@ namespace Menge
 	, m_avatar(0)
 	, m_scene(0)
 	, m_arrow(0)
+	, m_renderCamera(0)
 	{
 		Holder<Player>::keep(this);
 	}
@@ -149,18 +153,28 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Player::setRenderCamera( Camera2D * _camera)
+	{
+		m_renderCamera = _camera;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Camera2D * Player::getRenderCamera()
+	{
+		return m_renderCamera;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Player::render()
 	{
-		VisitorRender renderer;
+		const ViewPort &vp = m_renderCamera->getViewPort();
 		
 		if( m_scene )
 		{
-			renderer.apply(m_scene);
+			SceneManager::renderNode( m_scene, vp );
 		}
 		
 		if( m_arrow )
 		{
-			renderer.apply(m_arrow);
+			SceneManager::renderNode( m_arrow, vp );
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////

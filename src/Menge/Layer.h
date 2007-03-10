@@ -1,11 +1,11 @@
 #	pragma once
 
-#	include "Allocator2D.h"
+#	include "Renderable.h"
 
 namespace Menge
 {
 	class Layer
-		: public Allocator2D
+		: public Renderable
 	{
 		OBJECT_DECLARE(Layer);
 
@@ -13,13 +13,15 @@ namespace Menge
 		Layer();
 
 	public:
-		void setParent(Node *node)override;
+		void setParent(Node *node) override;
 
 	public:
-		const mt::mat3f & getWorldMatrix() override;
+		const ViewPort & updateViewPort( const ViewPort & _viewPort ) override;
 
 	protected:
 		mt::mat3f m_matrixParalax;
 		mt::vec2f m_factorParallax;
+
+		ViewPort m_viewPort;
 	};
 }

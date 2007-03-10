@@ -1,6 +1,8 @@
 #	include "Allocator2D.h"
 #	include "ObjectImplement.h"
 
+#	include "ObjectForeach.h"
+
 #	include <algorithm>
 
 #	include "XmlParser.h"
@@ -15,48 +17,12 @@ Allocator2D::Allocator2D()
 	mt::ident_m3(m_localMatrix);
 	mt::ident_m3(m_worldMatrix);
 }
-
-template<class T, class I, class F>
-inline void dynamic_ptr_for_each( I _begin, I _end, F _f )
-{
-	struct helper_cast
-		: public std::unary_function<T *, void>
-	{
-		inline helper_cast( F _f )
-			: f( _f )
-		{
-		}
-
-		inline void operator ()( Node * object )
-		{
-			if( T* t = dynamic_cast<T*>(object) )
-			{
-				f(t);
-			}
-			else
-			{
-				for( Node *it = object->beginChildren(); 
-					it != 0;
-					it = object->nextChildren()
-					)
-				{
-					operator () ( it );
-				}
-			}
-		}
-
-		F f;
-	};
-
-	std::for_each( _begin, _end, helper_cast(_f) );
-}
-
 //////////////////////////////////////////////////////////////////////////
 void Allocator2D::changePivot()
 {
 	_changePivot();
 
-	dynamic_ptr_for_each<Allocator2D>(
+	ObjectForeach<Allocator2D>(
 		m_listChildren.begin(), 
 		m_listChildren.end(), 
 		std::mem_fun( &Allocator2D::changePivot ) 

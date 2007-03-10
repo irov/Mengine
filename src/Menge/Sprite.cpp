@@ -208,7 +208,7 @@ void Sprite::play()
 	setFirstFrame();
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::_render()
+void Sprite::_render( const ViewPort & _viewPort )
 {
 	const mt::mat3f& wm = getWorldMatrix();
 

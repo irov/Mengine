@@ -45,7 +45,7 @@ namespace Menge
 		void _update(float _timing) override;
 		bool _compile() override;
 		void _release() override;
-		void _render() override;
+		void _render( const ViewPort & _viewPort ) override;
 		void _debugRender() override;
 	
 	private:

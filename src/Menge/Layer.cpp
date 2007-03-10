@@ -24,18 +24,15 @@ void Layer::setParent(Node *node)
 	NodeImpl::setParent(node);
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::mat3f & Layer::getWorldMatrix()
+const ViewPort & Layer::updateViewPort( const ViewPort & _viewPort )
 {
-	Camera2D * camera = 
-		getParentT<Scene>()
-		->getRenderCamera();
+	m_viewPort = _viewPort;
+	
+	m_viewPort.begin.x *= m_factorParallax.x;
+	m_viewPort.begin.y *= m_factorParallax.y;
 
-	if( camera == 0 )
-	{
-		return Allocator2D::getWorldMatrix();
-	}
+	m_viewPort.end.x *= m_factorParallax.x;
+	m_viewPort.end.y *= m_factorParallax.y;
 
-	m_matrixParalax = camera->getWorldMatrix();
-	scale_m3( m_matrixParalax, mt::vec3f(m_factorParallax.x, m_factorParallax.y, 1.f) );
-	return m_matrixParalax;
+	return m_viewPort;
 }

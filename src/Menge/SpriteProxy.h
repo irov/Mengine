@@ -20,7 +20,7 @@ namespace Menge
 
 	public:
 		void loader(TiXmlElement *xml);
-		void render();
+		void render( const ViewPort & _viewPort );
 
 	private:
 		Sprite* m_Sprite;

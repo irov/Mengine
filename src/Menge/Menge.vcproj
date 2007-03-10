@@ -347,11 +347,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Region.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\WayPoint.cpp"
+				RelativePath=".\ObjectForeach.h"
 				>
 			</File>
 			<Filter
@@ -612,6 +608,22 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Region"
+				>
+				<File
+					RelativePath=".\Region.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="WayPoint"
+				>
+				<File
+					RelativePath=".\WayPoint.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"
@@ -762,6 +774,10 @@
 			</File>
 			<File
 				RelativePath=".\Camera2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ViewPort.h"
 				>
 			</File>
 			<Filter

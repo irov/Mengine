@@ -36,8 +36,8 @@ namespace Menge
 		m_Sprite->loader(xml);
 	}
 
-	void SpriteProxy::render()
+	void SpriteProxy::render( const ViewPort & _viewPort )
 	{
-		m_Sprite->render();
+		m_Sprite->render(_viewPort);
 	}
 };

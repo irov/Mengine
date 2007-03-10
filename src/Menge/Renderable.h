@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Allocator2D.h"
+#	include "ViewPort.h"
 
 namespace Menge
 {
@@ -14,13 +15,17 @@ namespace Menge
 		Renderable();
 
 	public:
-		virtual void render();
+		virtual bool render( const ViewPort & _viewPort );
 		virtual void hide(bool value);
 
 	protected:
-		virtual void _render();
+		virtual void _render( const ViewPort & _viewPort );
+
+	public:
+		virtual const ViewPort & updateViewPort( const ViewPort & _viewPort );			
 
 	private:
 		bool m_hide;
+		bool m_modifyViewPort;
 	};
 }

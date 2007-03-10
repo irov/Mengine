@@ -2,6 +2,7 @@
 #	include "NodeFactory.h"
 
 #	include "Node.h"
+#	include "Renderable.h"
 
 #	include "InputEngine.h"
 #	include "FileEngine.h"
@@ -62,4 +63,36 @@ Node * SceneManager::createNodeFromXml( const std::string &_file)
 	ErrorMessage("This xml file `%s` have invalid external node format", _file.c_str() );
 
 	return 0;
+}
+//////////////////////////////////////////////////////////////////////////
+void SceneManager::renderNode( Node * _node, const ViewPort & _viewPort )
+{
+
+	if( Renderable* ro = dynamic_cast<Renderable*>(_node) )
+	{
+		const ViewPort &uvp = ro->updateViewPort( _viewPort );
+
+		if( ro->render( uvp ) == false )
+		{
+			return;
+		}
+
+		for( Node *it = _node->beginChildren(); 
+			it != 0;
+			it = _node->nextChildren()
+			)
+		{
+			SceneManager::renderNode( it, uvp );
+		}
+	}
+	else
+	{
+		for( Node *it = _node->beginChildren(); 
+			it != 0;
+			it = _node->nextChildren()
+			)
+		{
+			SceneManager::renderNode( it, _viewPort );
+		}
+	}
 }

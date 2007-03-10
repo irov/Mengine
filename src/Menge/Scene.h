@@ -5,7 +5,6 @@
 namespace Menge
 {
 	class Layer;
-	class Camera2D;
 
 	class Scene
 		: public NodeImpl
@@ -14,10 +13,6 @@ namespace Menge
 
 	public:
 		Scene();
-
-	public:
-		void setRenderCamera( Camera2D * _camera);
-		Camera2D * getRenderCamera();
 
 	public:
 		Node * getEntity( const std::string & _name );
@@ -36,7 +31,5 @@ namespace Menge
 
 	private:
 		std::string m_scriptFile;
-
-		Camera2D * m_renderCamera;
 	};
 }

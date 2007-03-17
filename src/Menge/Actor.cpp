@@ -12,8 +12,8 @@ OBJECT_IMPLEMENT(Actor)
 //////////////////////////////////////////////////////////////////////////
 Actor::Actor()
 : m_avatar(0)
-, m_ismove(false)
-, m_speed(1.0f)
+, m_isMove(false)
+, m_speedMove(1.0f)
 , m_destpos(0.0f,0.0f)
 , m_dir(0.0f,0.0f)
 {
@@ -38,9 +38,9 @@ void Actor::loader( TiXmlElement * _xml )
 //////////////////////////////////////////////////////////////////////////
 void Actor::_update(float _timing)
 {
-	if(!m_ismove) return;
+	if(!m_isMove) return;
 
-	float t = m_speed * _timing;
+	float t = m_speedMove * _timing;
 	
 	const mt::vec2f& pos = getLocalPosition();
 
@@ -48,12 +48,12 @@ void Actor::_update(float _timing)
 
 	if (t > m_distance)
 	{
-		m_ismove = false;
+		m_isMove = false;
 		setDirection(m_dir);
 		setPosition(m_destpos);
 	}
 
-	if (m_ismove == true)
+	if (m_isMove == true)
 	{
 		mt::vec2f pos = getLocalPosition();
 		pos += m_dir * t;
@@ -69,5 +69,5 @@ void Actor::moveto(const mt::vec2f& _destpos)
 
 	norm_v2(m_dir,vec);
 	m_destpos = _destpos;
-	m_ismove = true;
+	m_isMove = true;
 }

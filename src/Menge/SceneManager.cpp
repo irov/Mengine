@@ -67,7 +67,6 @@ Node * SceneManager::createNodeFromXml( const std::string &_file)
 //////////////////////////////////////////////////////////////////////////
 void SceneManager::renderNode( Node * _node, const ViewPort & _viewPort )
 {
-
 	if( Renderable* ro = dynamic_cast<Renderable*>(_node) )
 	{
 		const ViewPort &uvp = ro->updateViewPort( _viewPort );

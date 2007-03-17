@@ -72,7 +72,7 @@ namespace Menge
 				XML_CHECK_NODE_FOR_EACH("DllModule")
 				{
 					XML_DEF_ATTRIBUTES_NODE(DllFile);
-
+ 
 					if( DllFile.empty() )
 					{
 						XML_CONTINUE();

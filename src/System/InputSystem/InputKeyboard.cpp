@@ -1,7 +1,5 @@
 #	include "InputKeyboard.h"
 
-#	include "InputEnum.h"
-
 #	define IFFAILED( X )  if( (HRESULT)((X) < 0) )
 //////////////////////////////////////////////////////////////////////////
 namespace

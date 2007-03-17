@@ -183,10 +183,6 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\InputEnum.h"
-			>
-		</File>
-		<File
 			RelativePath=".\InputJoint.cpp"
 			>
 		</File>

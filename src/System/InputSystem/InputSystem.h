@@ -1,8 +1,10 @@
 #	pragma once
 
+#	define DIRECTINPUT_VERSION 0x0800
+
 #	include "../../Menge/InputSystemInterface.h"
 
-#	include "InputEnum.h"
+#	include <dinput.h>
 
 class InputKeyboard;
 class InputMouse;

@@ -1,7 +1,5 @@
 #	include "InputMouse.h"
 
-#	include "InputEnum.h"
-
 #	include <algorithm>
 
 #	include <math.h>

@@ -302,10 +302,6 @@
 				<Filter
 					Name="InputScriptFunctionMap"
 					>
-					<File
-						RelativePath=".\InputScriptFunctionMapDIK.cpp"
-						>
-					</File>
 				</Filter>
 			</Filter>
 		</Filter>

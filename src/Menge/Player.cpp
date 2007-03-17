@@ -15,8 +15,6 @@
 
 #	include "InputEngine.h"
 
-#	include "InputEnum.h"
-
 #	include "VisitorPickHotSpot.h"
 
 #	include "VisitorRender.h"

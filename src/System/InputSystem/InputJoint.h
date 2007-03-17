@@ -1,7 +1,6 @@
 #	pragma once
 
-#	define DIRECTINPUT_VERSION 0x0800
-#	include <dinput.h>
+#	include "InputSystem.h"
 
 class InputSystem;
 
@@ -19,7 +18,6 @@ public:
 	HRESULT acquire();
 	HRESULT unacquire();
 	void release();
-
 	
 	bool isActive() const;
 	void setActive( bool _value );

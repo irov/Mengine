@@ -6,7 +6,7 @@
 
 #	include "InputEngine.h"
 
-//#	include "Sprite.h"
+#	include "Sprite.h"
 
 #	include "XmlParser.h"
 

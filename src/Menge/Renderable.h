@@ -17,6 +17,7 @@ namespace Menge
 	public:
 		virtual bool render( const ViewPort & _viewPort );
 		virtual void hide(bool value);
+		virtual bool isVisible( const ViewPort & _viewPort);
 
 	protected:
 		virtual void _render( const ViewPort & _viewPort );

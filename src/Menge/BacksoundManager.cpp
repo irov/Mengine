@@ -145,9 +145,9 @@ void	BacksoundManager::update(double _timing)
 
 	if(m_fadeState == true)
 	{
-		if (m_soundSource->getGain() >= 1.0f)
+		if (m_soundSource->getVolume() >= 1.0f)
 		{
-			m_soundSource->setGain(1.0f);
+			m_soundSource->setVolume(1.0f);
 
 			m_timeFadeEnd = clock();
 			m_fadeState = false;
@@ -156,16 +156,16 @@ void	BacksoundManager::update(double _timing)
 		}
 		else
 		{
-			m_soundSource->setGain(float(time / m_fadeTime));
+			m_soundSource->setVolume(float(time / m_fadeTime));
 		}
 	}
 	else
 	{
-		if(m_soundSource->getGain() > 0)
+		if(m_soundSource->getVolume() > 0)
 		{
 			if(time >= m_fadeoffTime)
 			{
-				m_soundSource->setGain( float((m_fadeoffTime - (ticks - m_timeFadeEnd) / 1000.0 ) / m_fadeTime));
+				m_soundSource->setVolume( float((m_fadeoffTime - (ticks - m_timeFadeEnd) / 1000.0 ) / m_fadeTime));
 			}
 		}
 	}
@@ -184,12 +184,12 @@ void	BacksoundManager::_beginFade()
 		this, true
 		);
 
-	m_soundSource->setGain(0);
+	m_soundSource->setVolume(0);
 	m_soundSource->play();
 
-	assert(m_soundSource->getSizeSec() > 2*m_fadeTime);
+	assert(m_soundSource->getLengthS() > 2*m_fadeTime);
 
-	m_fadeoffTime = m_soundSource->getSizeSec() - m_fadeTime;
+	m_fadeoffTime = m_soundSource->getLengthS() - m_fadeTime;
 
 	m_timeFadeBegin = clock();
 }

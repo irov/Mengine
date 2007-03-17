@@ -432,10 +432,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ScriptImplement.h"
-					>
-				</File>
-				<File
 					RelativePath=".\WayPoint.h"
 					>
 				</File>

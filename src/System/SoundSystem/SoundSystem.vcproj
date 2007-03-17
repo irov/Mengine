@@ -63,10 +63,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="FreeSL.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\FreeSL&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;"
 				ModuleDefinitionFile="SoundSystem.def"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -265,32 +264,24 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\FSLSoundSource.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\FSLSoundSource.h"
-			>
-		</File>
-		<File
-			RelativePath=".\FSLSoundSystem.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\FSLSoundSystem.h"
-			>
-		</File>
-		<File
 			RelativePath=".\main.cpp"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-				/>
-			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\SquallSoundSource.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SquallSoundSource.h"
+			>
+		</File>
+		<File
+			RelativePath=".\SquallSoundSystem.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SquallSoundSystem.h"
+			>
 		</File>
 	</Files>
 	<Globals>

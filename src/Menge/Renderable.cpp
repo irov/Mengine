@@ -45,3 +45,9 @@ void Renderable::hide(bool value)
 {
 	m_hide = value;
 }
+//////////////////////////////////////////////////////////////////////////
+bool Renderable::isVisible(const ViewPort & _viewPort)
+{
+	// Empty;
+	return true;
+}

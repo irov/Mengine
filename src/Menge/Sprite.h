@@ -38,6 +38,8 @@ namespace Menge
 
 		void setOffset(const mt::vec2f& _offset);
 
+		bool isVisible(const ViewPort & _viewPort);
+
 	public:
 		void loader(TiXmlElement *xml) override;
 
@@ -74,6 +76,8 @@ namespace Menge
 		std::vector<Image>	m_images;
 
 		float	m_ctdelay;
+		float   m_width;
+		float   m_height;
 
 		mt::vec2f m_offset;
 	};

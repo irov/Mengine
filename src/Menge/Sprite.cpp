@@ -1,4 +1,4 @@
-#	include "Sprite.h"
+#	include "Sprite.h" 
 
 #	include "ObjectImplement.h"
 
@@ -21,7 +21,25 @@ Sprite::Sprite()
 , m_state(FORWARD)
 , m_ctdelay(0.f)
 , m_offset(0.f,0.f)
+, m_width(0.f)
+, m_height(0.f)
 {
+}
+//////////////////////////////////////////////////////////////////////////
+bool Sprite::isVisible(const ViewPort & _viewPort)
+{
+	mt::vec2f& pos = getLocalPosition();
+
+	float max0 = pos.x + m_width;
+	float min0 = pos.x;
+
+	float max1 = pos.y + m_height;
+	float min1 = pos.y;
+
+	if (max0 < _viewPort.begin[0] || min0 > _viewPort.end[0]) return false;
+	if (max1 < _viewPort.begin[1] || min1 > _viewPort.end[1]) return false;
+
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::setLooped(bool _looped)
@@ -134,6 +152,10 @@ bool Sprite::_compile()
 		fileData->size()
 		);
 
+	m_width = m_desc.width;
+	m_height = m_desc.height;
+
+
 	Holder<FileEngine>::hostage()->closeFile(fileData);
 
 	TextureDesc	textureDesc;
@@ -212,10 +234,12 @@ void Sprite::_render( const ViewPort & _viewPort )
 {
 	const mt::mat3f& wm = getWorldMatrix();
 
+	/*
 	printf("matrix \n");
 	printf("%f %f %f\n",wm.v0.x,wm.v0.y,wm.v0.z);
 	printf("%f %f %f\n",wm.v1.x,wm.v1.y,wm.v1.z);
 	printf("%f %f %f\n",wm.v2.x,wm.v2.y,wm.v2.z);
+	*/
 
 
 	Holder<RenderEngine>::hostage()->renderImageOffset(

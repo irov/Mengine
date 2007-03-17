@@ -20,7 +20,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	SoundEngine::setListenerOrient(const float* _position, const float* _updir)
+	void	SoundEngine::setListenerOrient(float* _position, float* _updir)
 	{
 		m_interface->setListenerOrient(_position,_updir);
 	}
@@ -40,9 +40,11 @@ namespace Menge
 		if (_data)
 		{
 			SoundDataDesc	desc_to_load = {
+				//_filename,
 				typeOfSoundFile,
-				(void*)_data->getBuffer(),
-				_data->size(),
+				_filename,
+			//	(void*)_data->getBuffer(),
+			//	_data->size(),
 				_isStreamAudioFile
 			};
 

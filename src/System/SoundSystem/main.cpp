@@ -1,4 +1,4 @@
-#include "vld.h"
+//#include "vld.h"
 
 #include <iostream>
 //#include "interfaces.h"
@@ -15,14 +15,10 @@
 
 //#include	"BaseSoundSource.h"
 
-#include "FSLSoundSource.h"
+#include "SquallSoundSource.h"
 
 class Listener : public SoundNodeListenerInterface
 {
-	bool listenRecycled()
-	{
-		return true;
-	}
 	void listenPaused()
 	{
 			printf("listernPuased\n");
@@ -38,22 +34,9 @@ int main()
 {
 	SoundSystemInterface* SoundSystem;
 	initInterfaceSystem(&SoundSystem);
-
-	std::ifstream	f("test.ogg",std::ios::binary);
-
-	f.seekg(0,std::ios::end); 
-	size_t filesize = f.tellg();
-
-	f.seekg(0,std::ios::beg);
-	char* buffer = new char[filesize];
-	f.read(buffer,filesize);
-
-	f.close();
-
 	SoundDataDesc	desc_to_load = {
 		SoundDataDesc::OGG,
-		(void*)buffer,
-		filesize,
+		"2.ogg",
 		true
 	};
 
@@ -64,7 +47,31 @@ int main()
 //	ssi->setPitch(1);
 	ssi->play();
 
-	getche();
+	//agetche();
+	int key = 0;
+	int u = 0;
+	do
+	{
+		u++;
+		if (kbhit())
+			key = getch();
+
+		if (u == 6000)
+		{
+			ssi->pause();
+		}
+		if (u == 60000)
+		{
+			ssi->pause();
+			ssi->play();
+		}
+		if (u == 30000)
+		{
+			ssi->play();
+		}
+	} while (key != 27);
+
+	//ssi->pause();
 //	char ch = 't';
 //	while(ch != '.')
 //	{
@@ -74,7 +81,6 @@ int main()
 	//Sleep(2000); 
 	SoundSystem->releaseSoundNode(ssi);
 
-	delete[] buffer;
 	delete l;
 	releaseInterfaceSystem(SoundSystem);
 };

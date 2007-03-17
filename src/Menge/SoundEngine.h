@@ -19,7 +19,7 @@ namespace Menge
 	public:
 		SoundEngine(const std::string& _dllModule);
 		~SoundEngine();
-		void			setListenerOrient(const float* _position, const float* _updir);
+		void			setListenerOrient(float* _position, float* _updir);
 		bool			addSoundNode(
 			SoundSourceInterface* &_node,
 			FileDataInterface* &_data, 

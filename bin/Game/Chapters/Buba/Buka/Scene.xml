@@ -11,16 +11,14 @@
 
 	               <Node Name = "TestRegion" Type = "Region" >
 			<Points>
-				<Point Value = "20;20" />
-				<Point Value = "80;20" />
-				<Point Value = "40;25" />
-				<Point Value = "35;30" />
-				<Point Value = "25;25" />
-				<Point Value = "15;25" />
+				<Point Value = "480;480" />
+				<Point Value = "350;480" />
+				<Point Value = "350;300" />
+				<Point Value = "480;350" />
 			</Points>
 			<HelperWayPoints>
-				<WayPoint Value = "10;10" />
-				<WayPoint Value = "20;20" />
+				<WayPoint Value = "320;320" />
+				<WayPoint Value = "600;600" />
 			</HelperWayPoints>
 		</Node>
 

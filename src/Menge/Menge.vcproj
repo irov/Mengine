@@ -703,14 +703,6 @@
 			<Filter
 				Name="Render"
 				>
-				<File
-					RelativePath=".\VisitorRender.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\VisitorRender.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="PickNode"
@@ -790,10 +782,6 @@
 			</File>
 			<File
 				RelativePath=".\Decoder.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SpriteDecoder.h"
 				>
 			</File>
 		</Filter>

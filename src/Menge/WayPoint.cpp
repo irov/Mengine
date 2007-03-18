@@ -8,9 +8,7 @@
 OBJECT_IMPLEMENT(WayPoint)
 
 WayPoint::WayPoint()
-{
-
-}
+{}
 
 WayPoint::WayPoint(const mt::vec2f& _pos)
 {

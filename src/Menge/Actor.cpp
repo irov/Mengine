@@ -13,7 +13,7 @@ OBJECT_IMPLEMENT(Actor)
 Actor::Actor()
 : m_avatar(0)
 , m_isMove(false)
-, m_speedMove(1.0f)
+, m_speedMove(5.0f)
 , m_destpos(0.0f,0.0f)
 , m_dir(0.0f,0.0f)
 {

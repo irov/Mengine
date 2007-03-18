@@ -14,6 +14,8 @@
 
 #	include "../MngReader/MNG.h"
 
+#	include "math/bv.h"
+
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Sprite);
 //////////////////////////////////////////////////////////////////////////
@@ -23,23 +25,24 @@ Sprite::Sprite()
 , m_state(FORWARD)
 , m_ctdelay(0.f)
 , m_offset(0.f,0.f)
-, m_width(0.f)
-, m_height(0.f)
+, m_size(0.f,0.f)
 {
 }
-//////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////
 bool Sprite::isVisible(const Viewport & _viewPort)
 {
-	const mt::vec2f& pos = getWorldPosition();
+	const mt::vec2f& pos = getLocalPosition();
+	const mt::mat3f &wm = getWorldMatrix();
 
-	float max0 = pos.x + m_width;
-	float min0 = pos.x;
+	mt::vec3f min0, max0;
 
-	float max1 = pos.y + m_height;
-	float min1 = pos.y;
+	calculate_aabb_from_obb(min0,max0,getLocalPosition()+m_offset,m_size,getWorldMatrix());
 
-	if (max0 < _viewPort.begin.x || min0 > _viewPort.end.x ) return false;
-	if (max1 < _viewPort.begin.y || min1 > _viewPort.end.y ) return false;
+	if (max0.x < _viewPort.begin.x || min0.x > _viewPort.end.x ) return false;
+	if (max0.y < _viewPort.begin.y || min0.y > _viewPort.end.y ) return false;
+
+	Holder<RenderEngine>::hostage()->drawLine(min0.v2,max0.v2,2,0xffff00ff);
 
 	return true;
 }
@@ -154,8 +157,8 @@ bool Sprite::_compile()
 		fileData->size()
 		);
 
-	m_width = m_desc.width;
-	m_height = m_desc.height;
+	m_size.x = m_desc.width;
+	m_size.y = m_desc.height;
 
 
 	Holder<FileEngine>::hostage()->closeFile(fileData);
@@ -244,14 +247,7 @@ void Sprite::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()
 {
-	//const mt::mat3f& wm = getWorldMatrix();
 
-	//Holder<RenderEngine>::hostage()->renderImageOffset(
-	//	wm, 
-	//	m_images[m_currentFrame->index].offset + m_offset,
-	//	0xffffffff,
-	//	m_images[m_currentFrame->index].renderImage
-	//	);
 };
 
 

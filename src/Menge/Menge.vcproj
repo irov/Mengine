@@ -292,10 +292,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\InputEnum.h"
-					>
-				</File>
-				<File
 					RelativePath=".\InputHandler.h"
 					>
 				</File>

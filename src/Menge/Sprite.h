@@ -74,9 +74,8 @@ namespace Menge
 		std::vector<Image>	m_images;
 
 		float	m_ctdelay;
-		float   m_width;
-		float   m_height;
 
+		mt::vec2f m_size;
 		mt::vec2f m_offset;
 	};
 }

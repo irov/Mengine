@@ -187,7 +187,7 @@ namespace Menge
 			ErrorMessage("Input Manager invalid initialization");
 		}
 
-		m_game->compile();
+		m_game->init();
 
 		return true;
 	}

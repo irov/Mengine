@@ -1,13 +1,13 @@
 #	pragma once
 
 #	include "Allocator2D.h"
-#	include "ViewPort.h"
+#	include "Viewport.h"
 
 namespace Menge
 {
 	class CameraBehavior;
 	class Scene;
-	class ViewPort;
+	class Viewport;
 
 	class Camera2D
 		: public Allocator2D
@@ -17,18 +17,27 @@ namespace Menge
 		Camera2D();
 
 	public:
-		const ViewPort & getViewPort() const;
+		const Viewport & getViewport() const;
 
+	public:
+		void setViewportSize( const mt::vec2f & _size );
+		
 	public:
 		void loader( TiXmlElement * _xml ) override;
 
 	protected:
 		bool _compile() override;
 		void _update( float _timing ) override;
+		void _changePivot() override;
+
+	protected:
+		virtual void updateViewport();
 
 	protected:
 		Scene * m_renderScene;
 
-		ViewPort m_viewPort;
+		Viewport m_viewport;
+
+		mt::vec2f m_viewportSize;
 	};
 }

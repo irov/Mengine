@@ -12,6 +12,8 @@
 
 #	include "FileEngine.h"
 
+#	include "../MngReader/MNG.h"
+
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Sprite);
 //////////////////////////////////////////////////////////////////////////
@@ -26,9 +28,9 @@ Sprite::Sprite()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-bool Sprite::isVisible(const ViewPort & _viewPort)
+bool Sprite::isVisible(const Viewport & _viewPort)
 {
-	mt::vec2f& pos = getLocalPosition();
+	const mt::vec2f& pos = getWorldPosition();
 
 	float max0 = pos.x + m_width;
 	float min0 = pos.x;
@@ -36,8 +38,8 @@ bool Sprite::isVisible(const ViewPort & _viewPort)
 	float max1 = pos.y + m_height;
 	float min1 = pos.y;
 
-	if (max0 < _viewPort.begin[0] || min0 > _viewPort.end[0]) return false;
-	if (max1 < _viewPort.begin[1] || min1 > _viewPort.end[1]) return false;
+	if (max0 < _viewPort.begin.x || min0 > _viewPort.end.x ) return false;
+	if (max1 < _viewPort.begin.y || min1 > _viewPort.end.y ) return false;
 
 	return true;
 }
@@ -230,20 +232,10 @@ void Sprite::play()
 	setFirstFrame();
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::_render( const ViewPort & _viewPort )
+void Sprite::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 {
-	const mt::mat3f& wm = getWorldMatrix();
-
-	/*
-	printf("matrix \n");
-	printf("%f %f %f\n",wm.v0.x,wm.v0.y,wm.v0.z);
-	printf("%f %f %f\n",wm.v1.x,wm.v1.y,wm.v1.z);
-	printf("%f %f %f\n",wm.v2.x,wm.v2.y,wm.v2.z);
-	*/
-
-
 	Holder<RenderEngine>::hostage()->renderImageOffset(
-		wm, 
+		rwm, 
 		m_images[m_currentFrame->index].offset + m_offset,
 		0xffffffff,
 		m_images[m_currentFrame->index].renderImage

@@ -1,5 +1,7 @@
-#include "SquallSoundSource.h"
-#include <assert.h>
+#	include "SquallSoundSource.h"
+#	include <assert.h>
+
+#	include "squall.h"
 
 int PauseCallback(int ChannelID, bool pause,void* UserData)
 {
@@ -38,10 +40,10 @@ void SQUALLSoundSource::play()
 
 	if (InitCallback == true)
 	{
-		ChannelID = SQUALL_Sample_Play(SampleID, 0, 0, 1);
-		SQUALL_Channel_SetPauseWorker(ChannelID,PauseCallback,Listener);
-		SQUALL_Channel_SetEndWorker(ChannelID,StopCallback,Listener);
-		InitCallback = false;
+		//ChannelID = SQUALL_Sample_Play(SampleID, 0, 0, 1);
+		//SQUALL_Channel_SetPauseWorker(ChannelID,PauseCallback,Listener);
+		//SQUALL_Channel_SetEndWorker(ChannelID,StopCallback,Listener);
+		//InitCallback = false;
 	}
 }
 

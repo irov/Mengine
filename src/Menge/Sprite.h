@@ -8,8 +8,6 @@
 
 #	include "SpriteDecoder.h"
 
-#	include "../MngReader/MNG.h"
-
 class RenderImageInterface;
 
 namespace Menge
@@ -38,7 +36,7 @@ namespace Menge
 
 		void setOffset(const mt::vec2f& _offset);
 
-		bool isVisible(const ViewPort & _viewPort);
+		bool isVisible(const Viewport & _viewPort);
 
 	public:
 		void loader(TiXmlElement *xml) override;
@@ -47,7 +45,7 @@ namespace Menge
 		void _update(float _timing) override;
 		bool _compile() override;
 		void _release() override;
-		void _render( const ViewPort & _viewPort ) override;
+		void _render( const mt::mat3f &rwm, const Viewport & _viewPort ) override;
 		void _debugRender() override;
 	
 	private:

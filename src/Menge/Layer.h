@@ -13,15 +13,20 @@ namespace Menge
 		Layer();
 
 	public:
+		void setParallaxFactor( const mt::vec2f & _factor );
+
+	public:
 		void setParent(Node *node) override;
 
 	public:
-		const ViewPort & updateViewPort( const ViewPort & _viewPort ) override;
+		const Viewport & updateViewport( const Viewport & _viewPort ) override;
+
+	public:
+		void loader( TiXmlElement *_xml) override;
 
 	protected:
-		mt::mat3f m_matrixParalax;
 		mt::vec2f m_factorParallax;
 
-		ViewPort m_viewPort;
+		Viewport m_viewPort;
 	};
 }

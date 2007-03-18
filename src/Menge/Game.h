@@ -28,7 +28,7 @@ namespace Menge
 		void loader(TiXmlElement *_xml);
 
 	public:
-		bool compile();
+		bool init();
 		void release();
 		void debugRender();
 

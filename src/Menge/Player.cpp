@@ -25,9 +25,7 @@
 
 #	include "Layer.h"
 
-//#	include "Region.h"
-
-#	include "lua_boost/lua_functor.h"
+#	include <dinput.h>
 
 namespace Menge
 {
@@ -109,6 +107,13 @@ namespace Menge
 			Holder<Game>::hostage()->getDefaultArrow();
 
 		setArrow( defaultArrow );
+
+		Camera2D *cmr = SceneManager::createNodeT<Camera2D>("Camera", "Camera2D" );
+
+		mt::vec2f vpSz( 1024, 768 );
+		cmr->setViewportSize( vpSz );
+
+		setRenderCamera( cmr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update(float _timig)
@@ -147,8 +152,22 @@ namespace Menge
 				event->call() % lua_boost::ret<void>();
 			}
 			*/
-			
 		}
+
+		if( inputEng->isKey( DIK_D, DI_HELD ) == true )
+		{
+			mt::vec2f cp = m_renderCamera->getLocalPosition();
+			cp.x -= 1;
+			m_renderCamera->setPosition( cp );
+		}
+
+		if( inputEng->isKey( DIK_A, DI_HELD ) == true )
+		{
+			mt::vec2f cp = m_renderCamera->getLocalPosition();
+			cp.x += 1;
+			m_renderCamera->setPosition( cp );
+		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setRenderCamera( Camera2D * _camera)
@@ -163,7 +182,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render()
 	{
-		const ViewPort &vp = m_renderCamera->getViewPort();
+		if( m_renderCamera == 0 )
+		{
+			return;
+		}
+
+		const Viewport &vp = m_renderCamera->getViewport();
 		
 		if( m_scene )
 		{
@@ -172,7 +196,10 @@ namespace Menge
 		
 		if( m_arrow )
 		{
-			SceneManager::renderNode( m_arrow, vp );
+			Viewport avp;
+			avp.begin = mt::vec2f(0,0);
+			avp.end = mt::vec2f(1024,768);
+			SceneManager::renderNode( m_arrow, avp );
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////

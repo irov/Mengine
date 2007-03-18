@@ -769,7 +769,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ViewPort.h"
+				RelativePath=".\Viewport.h"
 				>
 			</File>
 			<Filter

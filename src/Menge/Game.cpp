@@ -175,11 +175,9 @@ namespace Menge
 		printf("%s\n", _text );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::compile()
+	bool Game::init()
 	{
 		m_defaultArrow = getArrow(m_defaultArrowName);
-
-		m_player->setArrow( m_defaultArrow );
 
 		ScriptEngine * scriptEngine = 
 			Holder<ScriptEngine>::hostage();
@@ -194,7 +192,14 @@ namespace Menge
 			Holder<ScriptEngine>::hostage()
 			->callFunctionSafe( m_eventInit ) % lua_boost::ret_safe<bool>();
 
-		return ( result.valid ) ? result.result : true ;
+		if( result.valid == false || result.result == false )
+		{
+			return false;
+		}
+
+		m_player->init();
+
+		return result.result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()

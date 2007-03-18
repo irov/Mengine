@@ -1,4 +1,6 @@
-#include "SquallSoundSystem.h"
+#	include "SquallSoundSystem.h"
+
+#	include "squall.h"
 
 bool initInterfaceSystem(SoundSystemInterface** _ptrSoundSystem)
 {

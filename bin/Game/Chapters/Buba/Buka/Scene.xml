@@ -1,5 +1,6 @@
 <Node Name = "Buka" Type = "Scene">
 	<Node Name = "Main" Type = "Layer">
+		<Parallax Factor = "1;1" />
 
 		<Node Name = "TestActor" Type = "Actor" >
 			<Node Name = "TestSprite" Type = "Sprite">
@@ -8,7 +9,7 @@
 			</Node> <!-- Sprite -->
 		</Node>
 
-               <Node Name = "TestRegion" Type = "Region" >
+	               <Node Name = "TestRegion" Type = "Region" >
 			<Points>
 				<Point Value = "20;20" />
 				<Point Value = "80;20" />
@@ -42,6 +43,16 @@
 			<Font File = "russian.xml" />
 		</Node>
 	</Node> <!-- Layer -->
+
+	<Node Name = "Back" Type = "Layer">
+		<Parallax Factor = "1.25;1" />
+
+		<Node Name = "TestSprite" Type = "Sprite">
+			<ImageMNG File = "output.mng" />
+			<Transformation Value = "1;0;0;1;20;20" />
+		</Node> <!-- Sprite -->
+	</Node> <!-- Layer -->
+
 
 	<Script File = "Game/Chapters/Buba/Buka/Scene.lua" />
 </Node>

@@ -12,12 +12,12 @@ Renderable::Renderable()
 
 }
 //////////////////////////////////////////////////////////////////////////
-const ViewPort & Renderable::updateViewPort( const ViewPort & _viewPort )
+const Viewport & Renderable::updateViewport( const Viewport & _viewPort )
 {
 	return _viewPort;
 }
 //////////////////////////////////////////////////////////////////////////
-bool Renderable::render( const ViewPort & _viewPort )
+bool Renderable::render( const Viewport & _viewPort )
 {
 	if( m_active == false )
 	{
@@ -29,14 +29,23 @@ bool Renderable::render( const ViewPort & _viewPort )
 		return false;
 	}
 
+	if( isVisible( _viewPort ) == false )
+	{
+		return false;
+	}
+
 	compile();
 
-	_render( _viewPort );	
+	mt::mat3f rwm = getWorldMatrix();
+
+	rwm.v2.v2 -= _viewPort.begin;
+
+	_render( rwm, _viewPort );
 
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void Renderable::_render( const ViewPort & _viewPort )
+void Renderable::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 {
 	// Empty;
 }
@@ -46,7 +55,7 @@ void Renderable::hide(bool value)
 	m_hide = value;
 }
 //////////////////////////////////////////////////////////////////////////
-bool Renderable::isVisible(const ViewPort & _viewPort)
+bool Renderable::isVisible(const Viewport & _viewPort)
 {
 	// Empty;
 	return true;

@@ -1,7 +1,6 @@
-#	include "../../Menge/SoundSystemInterface.h"
+#	pragma once
 
-#pragma comment(lib, "Squalld.lib")
-#include "squall.h"
+#	include "../../Menge/SoundSystemInterface.h"
 
 class SQUALLSoundSource
 	: public SoundSourceInterface

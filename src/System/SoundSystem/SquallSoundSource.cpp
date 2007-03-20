@@ -30,20 +30,21 @@ SQUALLSoundSource::~SQUALLSoundSource()
 {
 	SQUALL_Sample_Stop(SampleID);
 	SQUALL_Sample_Unload(SampleID);
-
 	SQUALL_Sample_Stop(ChannelID);
 };
 
 void SQUALLSoundSource::play()
 {
-	ChannelID = SQUALL_Sample_Play(SampleID, 0, 0, 1);
-
 	if (InitCallback == true)
 	{
-		//ChannelID = SQUALL_Sample_Play(SampleID, 0, 0, 1);
-		//SQUALL_Channel_SetPauseWorker(ChannelID,PauseCallback,Listener);
-		//SQUALL_Channel_SetEndWorker(ChannelID,StopCallback,Listener);
-		//InitCallback = false;
+		ChannelID = SQUALL_Sample_Play(SampleID, 0, 0, 1);
+		SQUALL_Channel_SetPauseWorker(ChannelID,PauseCallback,Listener);
+		SQUALL_Channel_SetEndWorker(ChannelID,StopCallback,Listener);
+		InitCallback = false;
+	}
+	else
+	{
+		SQUALL_Sample_Pause(SampleID, false);
 	}
 }
 

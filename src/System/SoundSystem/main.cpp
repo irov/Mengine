@@ -4,6 +4,8 @@
 //#include "interfaces.h"
 //#include "SoundSystem.h"
 
+#	pragma comment (lib, "Squalld.lib")
+
 #include	<conio.h>
 #include	<stdlib.h>
 #include	<stdio.h>
@@ -21,7 +23,7 @@ class Listener : public SoundNodeListenerInterface
 {
 	void listenPaused()
 	{
-			printf("listernPuased\n");
+		printf("listernPuased\n");
 
 	}
 	void listenStopped()
@@ -58,17 +60,18 @@ int main()
 
 		if (u == 6000)
 		{
-			ssi->pause();
+			ssi->stop();
 		}
 		if (u == 60000)
 		{
-			ssi->pause();
+		//	ssi->pause();
 			ssi->play();
 		}
-		if (u == 30000)
+	/*	if (u == 30000)
 		{
 			ssi->play();
 		}
+		*/
 	} while (key != 27);
 
 	//ssi->pause();

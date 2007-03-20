@@ -111,6 +111,7 @@ namespace Menge
 		Camera2D *cmr = SceneManager::createNodeT<Camera2D>("Camera", "Camera2D" );
 
 		mt::vec2f vpSz( 1024, 768 );
+		cmr->setPosition( mt::vec2f( 512, 384 ) );
 		cmr->setViewportSize( vpSz );
 
 		setRenderCamera( cmr );

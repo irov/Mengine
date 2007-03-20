@@ -38,8 +38,8 @@ void Camera2D::updateViewport()
 {
 	const mt::vec2f & pos = getWorldPosition();
 
-	m_viewport.begin = pos;
-	m_viewport.end = pos + m_viewportSize;
+	m_viewport.begin = pos - m_viewportSize * .5;
+	m_viewport.end = pos + m_viewportSize * .5;
 }
 //////////////////////////////////////////////////////////////////////////
 const Viewport & Camera2D::getViewport() const

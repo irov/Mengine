@@ -32,7 +32,7 @@ Sprite::Sprite()
 ///////////////////////////////////////////////////////////////////////////
 bool Sprite::isVisible(const Viewport & _viewPort)
 {
-	const mt::vec2f& pos = getLocalPosition();
+	const mt::vec2f& pos = getWorldPosition();
 	const mt::mat3f &wm = getWorldMatrix();
 
 	mt::vec3f min0, max0;
@@ -42,7 +42,7 @@ bool Sprite::isVisible(const Viewport & _viewPort)
 	if (max0.x < _viewPort.begin.x || min0.x > _viewPort.end.x ) return false;
 	if (max0.y < _viewPort.begin.y || min0.y > _viewPort.end.y ) return false;
 
-//	Holder<RenderEngine>::hostage()->drawLine(min0.v2,max0.v2,2,0xffff00ff);
+	Holder<RenderEngine>::hostage()->drawLine(min0.v2,max0.v2,2,0xffff00ff);
 
 	return true;
 }

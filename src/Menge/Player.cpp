@@ -25,6 +25,8 @@
 
 #	include "Layer.h"
 
+#	include "BacksoundManager.h"
+
 #	include <dinput.h>
 
 namespace Menge
@@ -139,6 +141,7 @@ namespace Menge
 			actor->moveto(dmv.v2);
 			
 			int u = 0;
+			
 
 			/*const mt::vec3f &dmv = inputEng->getPosition();
 
@@ -154,6 +157,13 @@ namespace Menge
 			}
 			*/
 		}
+
+		if( inputEng->isButton(MOUSE_RIGHT,DI_PRESSED) == true )
+		{
+			Holder<BacksoundManager>::hostage()->playList("logoSceneMusic.xml");
+		}
+
+//		m_backsoundManager
 
 		if( inputEng->isKey( DIK_D, DI_HELD ) == true )
 		{

@@ -95,7 +95,7 @@ namespace Menge
 
 					XML_CHECK_NODE("SoundSystem")
 					{
-						//m_soundEngine = new SoundEngine(DllFile); //нахер пока
+						m_soundEngine = new SoundEngine(DllFile); 
 					}
 				}
 

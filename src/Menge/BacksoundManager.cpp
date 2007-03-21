@@ -16,7 +16,9 @@ BacksoundManager::BacksoundManager()
 , m_currentPlayList(0)
 , m_fadeState(true)
 , m_changeTrack(false)
+, m_fadeTime(3) //3 секунды!
 {
+	Holder<BacksoundManager>::keep(this);
 }
 
 BacksoundManager::~BacksoundManager()

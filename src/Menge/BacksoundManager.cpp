@@ -104,14 +104,11 @@ void	BacksoundManager::loadPlayList(const std::string& _filename)
 	}
 }
 
-bool	BacksoundManager::listenRecycled()
-{
-	return 0;
-}
 void	BacksoundManager::listenPaused()
 {
 
 }
+
 void	BacksoundManager::listenStopped()
 {
 	m_currentPlayList->nextSong();
@@ -120,7 +117,7 @@ void	BacksoundManager::listenStopped()
 
 void	BacksoundManager::update(double _timing)
 {
-//		printf("vol = %f \n",m_soundSource->getGain());
+//	printf("vol = %f \n",m_soundSource->getGain());
 	
 	if(m_soundSource == NULL)
 	{

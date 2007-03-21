@@ -62,16 +62,30 @@ int main()
 		{
 			ssi->stop();
 		}
+		if (u == 28000)
+		{
+			ssi->play();
+		}
+		if (u == 30000)
+		{
+			ssi->pause();
+		}
 		if (u == 60000)
 		{
-		//	ssi->pause();
 			ssi->play();
 		}
-	/*	if (u == 30000)
+		if (u == 70000)
+		{
+			ssi->pause();
+		}
+		if (u == 72000)
 		{
 			ssi->play();
 		}
-		*/
+		if (u == 73000)
+		{
+			ssi->stop();
+		}
 	} while (key != 27);
 
 	//ssi->pause();

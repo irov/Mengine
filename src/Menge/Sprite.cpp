@@ -141,7 +141,7 @@ void Sprite::_update(float _timing)
 bool Sprite::_compile()
 {
 	/*
-	SpriteDecoder* mngdecoder =(SpriteDecoder*)Decoder::getDecodec(".mng");
+	SpriteDecoder* mngdecoder = static_cast<SpriteDecoder*>(Decoder::getDecodec(".mng"));
 
 	m_sprData = (SpriteDecoder::SpriteData*)mngdecoder->decode(fileData);
 */

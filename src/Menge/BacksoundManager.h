@@ -30,7 +30,6 @@ namespace	Menge
 			void	addPlayList(const std::string& _playListFileName);
 			void	erasePlayList(const std::string& _playListFileName);
 			void	update(double _timing);
-			bool	listenRecycled();
 			void	listenPaused();
 			void	listenStopped();
 		private:

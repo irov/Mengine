@@ -424,6 +424,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\SpriteDecoder.h"
+					>
+				</File>
+				<File
 					RelativePath=".\WayPoint.h"
 					>
 				</File>

@@ -5,6 +5,7 @@
 
 int PauseCallback(int ChannelID, bool pause,void* UserData)
 {
+	//printf("PauseCallback\n");
 	SoundNodeListenerInterface* Listener = static_cast<SoundNodeListenerInterface*>(UserData);
 	Listener->listenPaused();
 	return 1;
@@ -12,6 +13,7 @@ int PauseCallback(int ChannelID, bool pause,void* UserData)
 
 int StopCallback(int ChannelID,void* UserData)
 {
+	//printf("StopCallback\n");
 	SoundNodeListenerInterface* Listener = static_cast<SoundNodeListenerInterface*>(UserData);
 	Listener->listenStopped();
 	return 1;
@@ -21,30 +23,25 @@ SQUALLSoundSource::SQUALLSoundSource(int _Sample, SoundNodeListenerInterface* _l
 	: SampleID(_Sample)
 	, ChannelID(-1)
 	, Listener(_listener)
-	, InitCallback(false)
 {
-	if(Listener != NULL) InitCallback = true;
 }
 
 SQUALLSoundSource::~SQUALLSoundSource()
 {
-	SQUALL_Sample_Stop(SampleID);
-	SQUALL_Sample_Unload(SampleID);
-	SQUALL_Sample_Stop(ChannelID);
+	SQUALL_Channel_Stop(SampleID);
 };
 
 void SQUALLSoundSource::play()
 {
-	if (InitCallback == true)
+	if(!isPlaying())
 	{
 		ChannelID = SQUALL_Sample_Play(SampleID, 0, 0, 1);
 		SQUALL_Channel_SetPauseWorker(ChannelID,PauseCallback,Listener);
 		SQUALL_Channel_SetEndWorker(ChannelID,StopCallback,Listener);
-		InitCallback = false;
 	}
 	else
 	{
-		SQUALL_Sample_Pause(SampleID, false);
+		SQUALL_Channel_Pause(ChannelID, false);
 	}
 }
 
@@ -55,7 +52,7 @@ void SQUALLSoundSource::pause()
 
 void SQUALLSoundSource::stop()
 {
-	SQUALL_Sample_Stop(SampleID);
+	if(isPlaying()) SQUALL_Channel_Stop(ChannelID);
 }
 
 bool SQUALLSoundSource::isPlaying() const

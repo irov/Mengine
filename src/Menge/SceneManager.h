@@ -7,9 +7,8 @@ namespace Menge
 	class Node;
 	class Viewport;
 
-	class SceneManager
+	struct SceneManager
 	{
-	public:
 		static Node * createNode(const std::string &_name, const std::string &_type);
 		
 		template<class T>
@@ -25,12 +24,7 @@ namespace Menge
 		{
 			return static_cast<T*>(createNodeFromXml(_file));
 		}
-
 		static bool loadNode(Node *_node, const std::string &_xml);
-
 		static void renderNode( Node * _node, const Viewport & _viewPort );
-
-	private:
-		static void RegisterScriptClass();
 	};
 }

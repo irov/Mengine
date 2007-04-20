@@ -267,18 +267,6 @@
 					RelativePath=".\SoundEngine.h"
 					>
 				</File>
-				<Filter
-					Name="Node"
-					>
-					<File
-						RelativePath=".\SoundNode.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SoundNode.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Input"
@@ -305,19 +293,15 @@
 			Name="Kernel"
 			>
 			<File
-				RelativePath=".\DllModule.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DllModule.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Holder.h"
 				>
 			</File>
 			<File
 				RelativePath=".\MengeExport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SystemDLL.h"
 				>
 			</File>
 		</Filter>
@@ -352,6 +336,13 @@
 				<File
 					RelativePath=".\Allocator.h"
 					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+						/>
+					</FileConfiguration>
 				</File>
 				<Filter
 					Name="Allocator2D"
@@ -375,6 +366,10 @@
 				</File>
 				<File
 					RelativePath=".\Sprite.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SpriteCell.cpp"
 					>
 				</File>
 				<File
@@ -412,6 +407,10 @@
 				UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 				>
 				<File
+					RelativePath=".\CodecInterface.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ObjectDeclare.h"
 					>
 				</File>
@@ -424,7 +423,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\SpriteDecoder.h"
+					RelativePath=".\SpriteCell.h"
 					>
 				</File>
 				<File
@@ -778,28 +777,8 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Decoder"
-			>
-			<File
-				RelativePath=".\Decoder.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Decoder.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="BackSoundManager"
 			>
-			<File
-				RelativePath=".\BacksoundManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\BacksoundManager.h"
-				>
-			</File>
 			<File
 				RelativePath=".\Playlist.cpp"
 				>
@@ -808,6 +787,38 @@
 				RelativePath=".\Playlist.h"
 				>
 			</File>
+			<File
+				RelativePath=".\WinAmp.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WinAmp.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="TRASH"
+			>
+			<File
+				RelativePath=".\SoundNode.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SoundNode.h"
+				>
+			</File>
+			<Filter
+				Name="Decoder"
+				>
+				<File
+					RelativePath=".\Decoder.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Decoder.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

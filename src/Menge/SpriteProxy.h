@@ -17,10 +17,14 @@ namespace Menge
 		void setLooped(bool _looped);
 		bool getLooped() const;
 		void setFirstFrame();
-
+		void nextFrame();
+		void prevFrame();
+		void setOffset(const mt::vec2f& _offset);
+	public:
+		bool isVisible(const Viewport & _viewPort);
 	public:
 		void loader(TiXmlElement *xml);
-		void render( const Viewport & _viewPort );
+		bool render( const Viewport & _viewPort );
 
 	private:
 		Sprite* m_Sprite;

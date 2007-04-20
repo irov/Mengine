@@ -1,9 +1,5 @@
 #	include "Application.h"
 
-#	include <list>
-
-#	include "Holder.h"
-
 #	include "InputEngine.h"
 #	include "FileEngine.h"
 #	include "RenderEngine.h"
@@ -17,6 +13,8 @@
 #	include "ErrorMessage.h"
 
 #	include "XmlParser.h"
+
+#	include "Decoder.h"
 
 namespace Menge
 {
@@ -41,8 +39,7 @@ namespace Menge
 		delete m_renderEngine;
 		delete m_inputEngine;
 		delete m_soundEngine;
-
-		delete m_scriptEngine;// Иров, смотри сюда
+		delete m_scriptEngine;
 	}
 
 	/*void	Application::loadPlugin(const std::string& _name)
@@ -62,7 +59,6 @@ namespace Menge
 		
 		m_scriptEngine->init();
 
-		typedef std::list< std::pair<std::string,int> > TListLoadPaks;
 		TListLoadPaks listLoadPaks;
 
 		XML_PARSE_FILE("Application.xml")
@@ -96,6 +92,14 @@ namespace Menge
 					XML_CHECK_NODE("SoundSystem")
 					{
 						m_soundEngine = new SoundEngine(DllFile); 
+					}
+
+					XML_CHECK_NODE("Codec")
+					{
+					//	Decoder::DecoderComponent * dc = new Decoder::DecoderComponent(DllFile);
+						//dc->
+					//	Decoder::regDecoder("mng",dc);
+						//m_soundEngine = new SoundEngine(DllFile); 
 					}
 				}
 
@@ -150,11 +154,8 @@ namespace Menge
 			return false;
 		}
 
-		for( TListLoadPaks::iterator
-			it = listLoadPaks.begin(),
-			it_end = listLoadPaks.end();
-		it != it_end;
-		++it)
+		for( TListLoadPaks::iterator it = listLoadPaks.begin(),	it_end = listLoadPaks.end();
+				it != it_end; ++it)
 		{
 			Holder<FileEngine>::hostage()->loadPak(it->first,it->second);
 		}
@@ -238,13 +239,8 @@ namespace Menge
 		renderEng->endSceneDrawing();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createDisplay(
-		unsigned int _width, 
-		unsigned int _height, 
-		unsigned int _bits, 
-		bool _fullScreen)
+	bool Application::createDisplay(int _width, int _height, int _bits, bool _fullScreen)
 	{
-		return Holder<RenderEngine>::hostage()
-			->createDisplay(_width,_height,_bits,_fullScreen);
+		return Holder<RenderEngine>::hostage()->createDisplay(_width,_height,_bits,_fullScreen);
 	}
 }

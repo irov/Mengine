@@ -12,6 +12,8 @@ namespace Menge
 {
 	class TrackProxy;
 
+	typedef std::list<TrackChain> TListTrackChain;
+
 	class Track
 		: public Allocator2D
 	{

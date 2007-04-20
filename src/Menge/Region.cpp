@@ -8,9 +8,7 @@
 OBJECT_IMPLEMENT(Region)
 //////////////////////////////////////////////////////////////////////////
 Region::Region()
-{
-
-};
+{};
 //////////////////////////////////////////////////////////////////////////
 Region::~Region()
 {
@@ -60,7 +58,7 @@ void Region::_debugRender()
 		renderEng->drawLine(m_polygon[i],m_polygon[ (i+1) % size ] ,2,0xffffCCff);
 	}
 
-	for (WayPointList::iterator it = m_helperWayPoints.begin(); it!=m_helperWayPoints.end(); ++it)
+	for (WayPointList::iterator it = m_helperWayPoints.begin(); it != m_helperWayPoints.end(); ++it)
 	{
 		(*it)->_debugRender();
 	}

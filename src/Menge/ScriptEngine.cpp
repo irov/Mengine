@@ -112,6 +112,5 @@ ScriptEngine::TListRegister & ScriptEngine::getRegisterList()
 void ScriptEngine::registration( ScriptEngine::FScriptRegistration _func )
 {
 	TListRegister & list = ScriptEngine::getRegisterList();
-
 	list.push_back( _func );
 }

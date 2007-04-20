@@ -3,8 +3,6 @@
 
 #	include "ObjectForeach.h"
 
-#	include <algorithm>
-
 #	include "XmlParser.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -112,13 +110,6 @@ void Allocator2D::setDirection( const mt::vec2f &direction )
 	changePivot();
 }
 //////////////////////////////////////////////////////////////////////////
-void Allocator2D::setWorldMatrix( const mt::mat3f &matrix )
-{
-	m_worldMatrix = matrix;
-
-	changePivot();
-}
-//////////////////////////////////////////////////////////////////////////
 void Allocator2D::translate( const mt::vec2f &delta )
 {
 	m_localMatrix.v2.v2 += delta;
@@ -138,7 +129,7 @@ void Allocator2D::_updateParent()
 			break;
 		}
 	}
-};
+}
 //////////////////////////////////////////////////////////////////////////
 void Allocator2D::updateMatrix()
 {
@@ -191,4 +182,4 @@ void Allocator2D::loader( TiXmlElement * _xml )
 	}
 
 	NodeImpl::loader(_xml);
-};
+}

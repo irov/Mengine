@@ -14,7 +14,7 @@ public:
 	float	getHeight() const;
 
 public:
-	const D3D9Vertex*	_getD3D9V4() const;
+	D3D9Vertex*	_getD3D9V4();
 	LPDIRECT3DTEXTURE9	_getTexPointer() const;
 	bool				_isAlpha() const;
 

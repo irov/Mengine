@@ -17,9 +17,7 @@ Arrow::Arrow()
 : m_arrowIdle(0)
 , m_arrowClick(0)
 , m_offsetClick(0,0)
-{
-
-}
+{}
 //////////////////////////////////////////////////////////////////////////
 void Arrow::_update(float _timing)
 {
@@ -28,12 +26,13 @@ void Arrow::_update(float _timing)
 	const mt::vec3f &dmv = inputEng->getPosition();
 
 	setPosition( mt::vec2f(dmv.x, dmv.y) );
+
+	//setPosition( inputEng->getPosition().v2 );
 }
 //////////////////////////////////////////////////////////////////////////
 bool Arrow::_compile()
 {
 	m_arrowIdle->setOffset(m_offsetClick);
-
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -53,7 +52,7 @@ void Arrow::loader( TiXmlElement *_xml )
 
 		XML_CHECK_VALUE_NODE("ClickOffset", "Value", m_offsetClick);
 	}
-};
+}
 //////////////////////////////////////////////////////////////////////////
 void Arrow::_debugRender()
 {
@@ -62,4 +61,4 @@ void Arrow::_debugRender()
 	const mt::vec2f & pos = getWorldPosition();
 
 	renderEng->drawLine(pos,pos + mt::vec2f(10,-10),2,0xffff00ff);
-};
+}

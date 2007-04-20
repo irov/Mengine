@@ -5,35 +5,63 @@
 #	include "FileEngine.h"
 
 using namespace Menge;
-
+//////////////////////////////////////////////////////////////////////////
 Playlist::Playlist(const std::string& _playlistName)
 	: m_playListName(_playlistName)
 	, m_isTracksLoaded(false)
 {
 }
-
+//////////////////////////////////////////////////////////////////////////
 Playlist::~Playlist()
 {
 }
-
-void	Playlist::nextSong()
+//////////////////////////////////////////////////////////////////////////
+void	Playlist::shuffle()
 {
-	if (++m_currentSoundTrack == m_tracks.end())
+	for(int i = 0; i < m_tracks.size(); i++) 
 	{
-		m_currentSoundTrack	= m_tracks.begin();
+		int rnd = rand() % m_tracks.size();
+		std::swap(m_tracks[i],m_tracks[rnd]);
 	}
 }
-
+//////////////////////////////////////////////////////////////////////////
+void	Playlist::nextSong()
+{
+	if (++m_currentSong == m_tracks.end())
+	{
+		m_currentSong	= m_tracks.begin();
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void	Playlist::prevSong()
+{
+	if(m_currentSong == m_tracks.begin())
+	{
+		m_currentSong = m_tracks.end();
+	}
+	--m_currentSong;
+}
+//////////////////////////////////////////////////////////////////////////
+void	Playlist::firstSong()
+{
+	m_currentSong = m_tracks.begin();
+}
+//////////////////////////////////////////////////////////////////////////
+void	Playlist::lastSong()
+{
+	m_currentSong = m_tracks.end() - 1;
+}
+//////////////////////////////////////////////////////////////////////////
 const std::string&	Playlist::getCurrentSongName() const
 {
-	return	*m_currentSoundTrack;
+	return	*m_currentSong;
 }
-
+//////////////////////////////////////////////////////////////////////////
 const std::string&	Playlist::getName() const
 {
 	return	m_playListName;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Playlist::loadTracks()
 {
 	if(isLoaded() == true)
@@ -57,15 +85,16 @@ void	Playlist::loadTracks()
 
 	m_isTracksLoaded = true;
 
-	m_currentSoundTrack = m_tracks.begin();
+	m_currentSong = m_tracks.begin();
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool	Playlist::isLoaded() const
 {
 	return m_isTracksLoaded;
 }
-
-void	Playlist::release()
+//////////////////////////////////////////////////////////////////////////
+void	Playlist::clear()
 {
 	m_tracks.clear();
 }
+//////////////////////////////////////////////////////////////////////////

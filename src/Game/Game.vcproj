@@ -177,6 +177,10 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\VTune\Game.vpj"
+			>
+		</File>
+		<File
 			RelativePath=".\main.cpp"
 			>
 		</File>

@@ -22,13 +22,15 @@ bool	Dialog::_compile()
 void	Dialog::loader(TiXmlElement * _xml)
 {
 	int id = -1;
+	MessageSpot* elem = NULL;
+
 	XML_FOR_EACH_TREE(_xml)
 	{
 		XML_CHECK_NODE_FOR_EACH("Messages")
 		{
 			XML_CHECK_VALUE_NODE("Message","id",id);
 
-			MessageSpot* elem = Holder<DialogManager>::hostage()->getMessageSpot(id);
+			elem = Holder<DialogManager>::hostage()->getMessageSpot(id);
 
 			m_messageSpots.push_back(elem);
 		}
@@ -46,17 +48,18 @@ void	Dialog::_release()
 //////////////////////////////////////////////////////////////////////////
 void	Dialog::loadCurrentMessageSpot()
 {
-	std::string text = (*m_currentMessageSpot)->getText();
+	MessageSpot * it = *m_currentMessageSpot;
+
+	std::string text = it->getText();
 
 	assert(text.empty() == false);
 
-	createFormattedMessage(text, m_dialogFont,(*m_currentMessageSpot)->getWidth());
+	createFormattedMessage(text, m_dialogFont, it->getWidth());
 
-	const std::string& soundName = (*m_currentMessageSpot)->getSoundName();
+	const std::string& soundName = it->getSoundName();
 
 	if(soundName.empty() == false)
 	{
-
 /*		if(	Holder<SoundEngine>::hostage()->addSoundNode(
 				m_soundSource,	m_fileData,	soundName,0, true) == false
 			)
@@ -138,7 +141,7 @@ void	Dialog::_update(float _timing)
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void	Dialog::createFormattedMessage(const std::string& _text,RenderFontInterface* _font, float _width)
+void	Dialog::createFormattedMessage(const std::string& _text, RenderFontInterface* _font, float _width)
 {
 	std::list<std::string> words;
 

@@ -6,7 +6,7 @@ namespace Menge
 {
 	namespace NodeFactory
 	{
-		typedef Utility::Factory<Node*,std::string,Node*,FactoryGenStruct> TClassFactory;
+		typedef Utility::Factory<std::string,Node*,FactoryGenStruct> TClassFactory;
 		//////////////////////////////////////////////////////////////////////////
 		void registration(const std::string &_key, TGenFunc _func)
 		{

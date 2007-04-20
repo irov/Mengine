@@ -20,13 +20,14 @@ public:
 	~Direct3d9RenderSystem();
 
 public:
-	bool	createDisplay(unsigned int _width, unsigned int _height, unsigned int _bits, bool _fullScreen);
+	bool	createDisplay(int _width, int _height, int _bits, bool _fullScreen);
 	bool	beginSceneDrawing(unsigned long _color);
 	bool	endSceneDrawing();
 
 	void	drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color) override;
 
     void	renderImage(const mt::mat3f& _transform, unsigned int _mixedColor,RenderImageInterface* _rmi);
+	void	renderImageUV(const mt::mat3f& _transform, unsigned int _mixedColor, float u0, float v0, float u1, float v1, float width, float height, RenderImageInterface* _rmi);
 	void	renderImageOffset(const mt::mat3f& _transform, const mt::vec2f& offset, unsigned int _mixedColor, RenderImageInterface * _rmi);
 	void	releaseRenderImage(RenderImageInterface* _rmi);
     void	renderText(mt::vec2f _pos, RenderFontInterface* _font, const std::string& _text);
@@ -55,9 +56,9 @@ private:
 
 	LPD3DXLINE					m_pLine;
 
-	size_t						m_width;
-	size_t						m_height;
-	size_t						m_bits;
+	int							m_width;
+	int							m_height;
+	int							m_bits;
 	bool						m_fullScreen;
 	bool						m_deviceLost;
 

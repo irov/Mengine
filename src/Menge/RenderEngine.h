@@ -2,7 +2,7 @@
 
 #	include "RenderSystemInterface.h"
 
-#	include "DllModule.h"
+#	include "SystemDLL.h"
 #	include "Holder.h"
 
 #	include <string>
@@ -15,17 +15,13 @@ namespace Menge
 	class FileEngine;
 
 	class RenderEngine
-		: public DllModuleInterface<RenderSystemInterface>
+		: public SystemDLL<RenderSystemInterface>
 	{
 	public:
 		RenderEngine(const std::string &_dllModule);
 		
 	public:
-		bool createDisplay(
-			unsigned int _width, 
-			unsigned int _height, 
-			unsigned int _bits, 
-			bool _fullScreen);
+		bool createDisplay(int _width, int _height, int _bits, bool _fullScreen);
 		
 		bool beginSceneDrawing(unsigned long _color);
 
@@ -33,7 +29,6 @@ namespace Menge
 
 		void drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color);
 
-		//////////////////////////////////////////////////////////////////////////
 		RenderImageInterface* loadImage(const std::string &	_imageFile, bool _haveAlpha = false);
 
 		void renderImage(
@@ -41,11 +36,13 @@ namespace Menge
 			unsigned int _mixedColor, 
 			RenderImageInterface* _rmi);
 
-		void	renderImageOffset(
+		void renderImageOffset(
 			const mt::mat3f& _transform,
 			const mt::vec2f& _offset,
 			unsigned int _mixedColor,
 			RenderImageInterface * _rmi);
+
+		void renderImageUV(const mt::mat3f& _transform, unsigned int _mixedColor, float u0, float v0, float u1, float v1, float width, float height, RenderImageInterface* _rmi);
 
 		void releaseRenderImage(RenderImageInterface* _rmi);
 		

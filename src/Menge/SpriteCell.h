@@ -21,12 +21,12 @@ namespace Menge
 		//PINGPONG,	//надо ли нам такой стейт? т.е. анимация играется сначало вперед, потом назад.
 	};
 
-	class Sprite
+	class SpriteCell
 		: public Renderable
 	{
-		OBJECT_DECLARE(Sprite);
+		OBJECT_DECLARE(SpriteCell);
 	public:
-		Sprite();
+		SpriteCell();
 		virtual void play();
 		virtual void stop();
 		virtual void setLooped(bool _looped);
@@ -48,11 +48,20 @@ namespace Menge
 		void _debugRender() override;
 	
 	private:
-//		SpriteDecoder::SpriteData*	m_sprData;
+
+		int m_numX;
+		int m_numY;
+
+		int m_cellWidth;
+		int m_cellHeight;
+
+		int m_imageWidth;
+		int m_imageHeight;
+
 		struct Frame 
 		{
 			int		index;
-			int		delay;
+			int		delay;	
 		};
 
 		struct Image

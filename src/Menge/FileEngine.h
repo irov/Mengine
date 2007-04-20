@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "DllModule.h"
+#	include "SystemDLL.h"
 #	include "Holder.h"
 
 #	include "FileSystemInterface.h"
@@ -11,7 +11,7 @@ class TiXmlDocument;
 namespace Menge
 {
 	class FileEngine
-		: public DllModuleInterface<FileSystemInterface>
+		: public SystemDLL<FileSystemInterface>
 	{
 	public:
 		FileEngine(const std::string &_dllModule);
@@ -28,18 +28,3 @@ namespace Menge
 		bool loadXml(TiXmlDocument &_xmlDocument, const std::string &_fileName);
 	};
 }
-
-//////////////////////////////////////////////////////////////////////////
-#	define XML_PARSE_FILE_EX( FILE_NAME )\
-	for( bool irov_xml_parse_once = true ; irov_xml_parse_once == true; )\
-	for( \
-	TiXmlDocument irov_xml_document;\
-	irov_xml_parse_once==true;\
-	)\
-	if( (irov_xml_parse_once = Holder<FileEngine>::hostage()->loadXml(irov_xml_document,FILE_NAME)) == true )\
-	for(\
-	TiXmlElement * irov_xml_current_tree = irov_xml_document.FirstChildElement();\
-	irov_xml_current_tree != 0;\
-	irov_xml_current_tree = irov_xml_current_tree->NextSiblingElement()\
-	)\
-	for( bool irov_xml_else_if = false; irov_xml_parse_once == true;irov_xml_parse_once = false)

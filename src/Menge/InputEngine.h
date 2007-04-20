@@ -1,16 +1,6 @@
-// ***************************************************************
-//  InputEngine.h   version:  1.0   ·  date: 03/21/2006
-//  -------------------------------------------------------------
-//  IROV
-//  -------------------------------------------------------------
-//  Copyright (C) 2006 - All Rights Reserved
-// ***************************************************************
-// 
-// ***************************************************************
-
 #	pragma once
 
-#	include "DllModule.h"
+#	include "SystemDLL.h"
 #	include "Holder.h"
 
 #	include "InputSystemInterface.h"
@@ -26,7 +16,7 @@ namespace Menge
 	class ScriptEngine;
 
 	class InputEngine
-		: public DllModuleInterface<InputSystemInterface>
+		: public SystemDLL<InputSystemInterface>
 	{
 	public:
 		InputEngine(const std::string &_dllModule);

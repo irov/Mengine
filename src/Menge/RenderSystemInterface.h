@@ -1,9 +1,11 @@
-#pragma once
+#	pragma once
 
 #	include <string>
 
 #	include "math/mat3.h"
 #	include "math/vec4.h"
+
+#	include "Holder.h"
 
 class RenderImageInterface
 {
@@ -44,13 +46,14 @@ struct FontDesc
 class	RenderSystemInterface
 {
 public:
-	virtual bool	createDisplay(unsigned int _width, unsigned int _height, unsigned int _bits, bool _fullScreen) = 0;
+	virtual bool	createDisplay(int _width, int _height, int _bits, bool _fullScreen) = 0;
 	virtual bool	beginSceneDrawing(unsigned long _color) = 0;
 	virtual bool	endSceneDrawing() = 0;
 
 	virtual void    drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color) = 0;
 
 	virtual void	renderImage(const mt::mat3f& _transform, unsigned int _mixedColor, RenderImageInterface* _rmi) = 0;
+	virtual void	renderImageUV(const mt::mat3f& _transform, unsigned int _mixedColor, float u0, float v0, float u1, float v1, float width, float height, RenderImageInterface* _rmi) = 0;
 	virtual void	renderImageOffset(const mt::mat3f& _transform, const mt::vec2f& _offset, unsigned int _mixedColor, RenderImageInterface * _rmi) = 0;
 
 	virtual	void	releaseRenderImage(RenderImageInterface* _rmi) = 0;

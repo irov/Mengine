@@ -153,6 +153,6 @@ void Track::_debugRender()
 	it != it_end;
 	++it)
 	{
-		//renderEng->drawLine(it->beginPoint(),it->endPoint(),2,0xffff00ff);
+		renderEng->drawLine(it->beginPoint(),it->endPoint(),2,0xffff00ff);
 	}
 };

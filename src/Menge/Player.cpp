@@ -25,7 +25,7 @@
 
 #	include "Layer.h"
 
-#	include "BacksoundManager.h"
+#	include "WinAmp.h"
 
 #	include <dinput.h>
 
@@ -160,10 +160,8 @@ namespace Menge
 
 		if( inputEng->isButton(MOUSE_RIGHT,DI_PRESSED) == true )
 		{
-			Holder<BacksoundManager>::hostage()->playList("logoSceneMusic.xml");
+			Holder<WinAmp>::hostage()->playList("logoSceneMusic.xml");
 		}
-
-//		m_backsoundManager
 
 		if( inputEng->isKey( DIK_D, DI_HELD ) == true )
 		{

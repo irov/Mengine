@@ -37,10 +37,10 @@ namespace Menge
 		virtual bool isCompile();
 
 	public:
-		virtual void setName(const std::string &name);
+		virtual void setName(const std::string & _name);
 		virtual const std::string & getName()const;
 
-		virtual void setType(const std::string &type);
+		virtual void setType(const std::string & _type);
 		virtual const std::string & getType()const;
 
 

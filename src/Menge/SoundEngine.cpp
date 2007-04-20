@@ -11,7 +11,7 @@
 namespace Menge
 {
 	SoundEngine::SoundEngine(const std::string& _dllModule)
-			: DllModuleInterface<SoundSystemInterface>(_dllModule)
+			: SystemDLL<SoundSystemInterface>(_dllModule)
 	{
 		Holder<SoundEngine>::keep(this);
 	}

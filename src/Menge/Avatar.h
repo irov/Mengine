@@ -20,7 +20,5 @@ namespace Menge
 
 		bool handlerMouseButtonEvent( unsigned int _button, int _state ) override;
 		bool handlerMouseRoll( const mt::vec3f & _pos ) override;
-
-	private:	
 	};
 }

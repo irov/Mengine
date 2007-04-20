@@ -4,10 +4,6 @@
 #	include "SceneManager.h"
 
 #	include "FileEngine.h"
-#	include "ScriptEngine.h"
-
-#	include "lua_boost/lua_functor.h"
-
 #	include "XmlParser.h"
 #	include "ErrorMessage.h"
 
@@ -140,9 +136,9 @@ bool NodeImpl::isCompile()
 	return m_compile;
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeImpl::setName(const std::string &name)
+void NodeImpl::setName(const std::string & _name)
 {
-	m_name = name;
+	m_name = _name;
 }
 //////////////////////////////////////////////////////////////////////////
 const std::string & NodeImpl::getName()const
@@ -150,9 +146,9 @@ const std::string & NodeImpl::getName()const
 	return m_name;
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeImpl::setType(const std::string &type)
+void NodeImpl::setType(const std::string & _type)
 {
-	m_type = type;
+	m_type = _type;
 }
 //////////////////////////////////////////////////////////////////////////
 const std::string & NodeImpl::getType()const
@@ -166,7 +162,7 @@ bool NodeImpl::isExternal()const
 	return m_external;
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeImpl::setResource(const std::string &_file)
+void NodeImpl::setResource(const std::string & _file)
 {
 	m_external = true;
 	m_resource = _file;
@@ -187,14 +183,14 @@ bool NodeImpl::isRoot()
 	return m_parent == 0;
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeImpl::setParent(Node *node)
+void NodeImpl::setParent(Node *_node)
 {
 	if( m_parent )
 	{
 		m_parent->_lostChildren(this,true);
 	}
 
-	m_parent = node;
+	m_parent = _node;
 	_updateParent();
 }
 //////////////////////////////////////////////////////////////////////////
@@ -217,9 +213,9 @@ void NodeImpl::update(float _timing)
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeImpl::loader(TiXmlElement *xml)
+void NodeImpl::loader(TiXmlElement * _xml)
 {
-	XML_FOR_EACH_TREE(xml)
+	XML_FOR_EACH_TREE(_xml)
 	{
 		Eventable::loader( XML_CURRENT_NODE );
 

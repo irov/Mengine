@@ -15,10 +15,9 @@ namespace Menge
 
 		void registration(const std::string &_key, TGenFunc _func);
 
-		class Auto
+		struct Auto
 		{
-		public:
 			Auto(const std::string &_key, TGenFunc _func);
 		};
 	}
-};
+}

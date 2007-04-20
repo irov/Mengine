@@ -1,13 +1,3 @@
-// ***************************************************************
-//  Factory.h   version:  1.0   ·  date: 05/30/2006
-//  -------------------------------------------------------------
-//  IROV
-//  -------------------------------------------------------------
-//  Copyright (C) 2006 - All Rights Reserved
-// ***************************************************************
-// 
-// ***************************************************************
-
 #	include <map>
 
 namespace Utility
@@ -24,7 +14,6 @@ namespace Utility
 	struct EmptyFactoryParam{};
 
 	template<
-		class T_NAMESPACE,
 		class T_KEY,
 		class T_BASE,
 		class T_GEN_STRUCT = EmptyFactoryParam,
@@ -68,8 +57,7 @@ namespace Utility
 
 		static size_t registration(const TKey &_key, TGenFunc _func)
 		{				
-			TMapGenerator::iterator it_find = 
-				mapGenerator().find(_key);
+			TMapGenerator::iterator it_find = mapGenerator().find(_key);
 
 			if( it_find == mapGenerator().end() )
 			{
@@ -88,29 +76,6 @@ namespace Utility
 				return it_find->second( _struct );
 			}
 			return T_POLICE_DEFAULT<TBase>::Police();
-		}
-
-		static void implement( const TKey &_name, const TGenStruct & _struct )
-		{
-			typename TMapGenerator::const_iterator it_find = mapGenerator().find(_name);
-
-			if( it_find != mapGenerator().end())
-			{
-				it_find->second( _struct );
-			}
-		}
-
-		static void implementAll( const TGenStruct & _struct )
-		{
-			for(
-				typename TMapGenerator::const_iterator 
-				it = mapGenerator().begin(),
-				it_end = mapGenerator().end();
-			it!=it_end;
-			++it)
-			{
-				it->second( _struct );
-			}
 		}
 	};
 }

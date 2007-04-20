@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include <list>
-
 #	include "Math/vec2.h"
 
 namespace Menge
@@ -25,6 +23,4 @@ namespace Menge
 		mt::vec2f m_direction;
 		float m_length;
 	};
-
-	typedef std::list<TrackChain> TListTrackChain;
 }

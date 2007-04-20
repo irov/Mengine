@@ -3,59 +3,57 @@
 #	include "Holder.h"
 #	include "FileEngine.h"
 
+using namespace Menge;
 
-namespace Menge
+DialogManager::DialogManager()
 {
-	DialogManager::DialogManager()
-	{
-		Holder<DialogManager>::keep(this);
-	}
+	Holder<DialogManager>::keep(this);
+	m_local_id = -1;
+	m_local_width_text = -1;
+	/*	Пока не известно какая длина текста в среднем, но пока стоит 1000.
+		Еще не известно как устроены макросы для парсинга xml - может эта оптимизация никчему.
+	*/
+	m_local_text.reserve(1000);
+	m_local_soundname.reserve(1000);
+}
 
-	DialogManager::~DialogManager()
+DialogManager::~DialogManager()
+{
+	for(TMapMessageSpot::iterator it = m_messageSpots.begin(); it != m_messageSpots.end(); ++it)
 	{
-		for(TMapMessageSpot::iterator it = m_messageSpots.begin(); it != m_messageSpots.end(); ++it)
+		//	it->second->release();
+		delete it->second;
+	}
+}
+
+void	DialogManager::loadMessagesList(const std::string& _filename)
+{
+	XML_PARSE_FILE_EX(_filename)
+	{
+		XML_CHECK_NODE_FOR_EACH("Messages")
 		{
-			//	it->second->release();
-			delete it->second;
+			XML_CHECK_VALUE_NODE("Message","id",m_local_id);
+			XML_CHECK_VALUE_NODE("Message","text",m_local_text);
+			XML_CHECK_VALUE_NODE("Message","sound",m_local_soundname);
+			XML_CHECK_VALUE_NODE("Message","width",m_local_width_text);
+
+			m_messageSpots.insert(
+				std::make_pair(m_local_id,
+					new MessageSpot(m_local_id,m_local_text,m_local_soundname,m_local_width_text)
+				)
+			);
 		}
 	}
+}
 
-	void	DialogManager::loadMessagesList(const std::string& _filename)
+MessageSpot*	DialogManager::getMessageSpot(int id)
+{
+	TMapMessageSpot::iterator it = m_messageSpots.find(id);
+
+	if(it == m_messageSpots.end())
 	{
-		std::string playListFileName;
-
-		int id = -1;
-		std::string text;
-		std::string sound;
-		float width;
-
-		XML_PARSE_FILE_EX(_filename)
-		{
-			XML_CHECK_NODE_FOR_EACH("Messages")
-			{
-				XML_CHECK_VALUE_NODE("Message","id",id);
-				XML_CHECK_VALUE_NODE("Message","text",text);
-				XML_CHECK_VALUE_NODE("Message","sound",sound);
-				XML_CHECK_VALUE_NODE("Message","width",width);
-
-				m_messageSpots.insert(
-					std::make_pair(id,
-					new MessageSpot(id,text,sound,width)
-					)
-					);
-			}
-		}
+		return NULL;
 	}
 
-	MessageSpot*	DialogManager::getMessageSpot(int id)
-	{
-		TMapMessageSpot::iterator it = m_messageSpots.find(id);
-
-		if(it == m_messageSpots.end())
-		{
-			return NULL;
-		}
-
-		return it->second;
-	}
-};
+	return it->second;
+}

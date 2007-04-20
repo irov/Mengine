@@ -14,23 +14,21 @@ namespace	Menge
 {
 	class Playlist;
 
-	class BackgroundSound;
-
 	typedef	std::map<std::string,Playlist*>	TPlayListMap;
 
-	class BacksoundManager
+	class WinAmp
 		:	public SoundNodeListenerInterface
 	{
 		public:
-			BacksoundManager();
-			~BacksoundManager();
+			WinAmp();
+			~WinAmp();
 			void	setFadeTime(double _fadeTime);
 			void	playList(const std::string& _playListName);
 			void	loadPlayList(const std::string& _filename);
 			void	addPlayList(const std::string& _playListFileName);
 			void	erasePlayList(const std::string& _playListFileName);
 			void	update(double _timing);
-			void	listenPaused();
+			void	listenPaused(bool _pause);
 			void	listenStopped();
 		private:
 			void	_beginFade();
@@ -39,6 +37,7 @@ namespace	Menge
 			Playlist*	m_currentPlayList;
 			bool	m_fadeState;
 			bool	m_changeTrack;
+			bool	m_isPaused;
 
 			SoundSourceInterface* m_soundSource;
 			FileDataInterface* m_fileData;

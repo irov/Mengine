@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "System", "System", "{BF448BF9-4A00-426F-9E6C-1568088D7EFE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Systems", "Systems", "{BF448BF9-4A00-426F-9E6C-1568088D7EFE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{A995FA9D-F2B7-459D-A696-76677099A950}"
 EndProject

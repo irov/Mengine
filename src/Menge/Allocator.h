@@ -30,8 +30,7 @@ namespace Menge
 
 		void setPosition( const mt::vec3f &position );
 		void setDirection( const mt::vec3f &direction );
-		void setWorldMatrix( const mt::mat4f &matrix );
-
+		
 		void translate( const mt::vec3f &delta );
 
 	public: 

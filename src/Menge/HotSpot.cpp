@@ -30,7 +30,7 @@ void HotSpot::loader( TiXmlElement *_xml)
 			addPoint(point);
 		}
 	}
-};
+}
 //////////////////////////////////////////////////////////////////////////
 #	include "RenderEngine.h"
 //////////////////////////////////////////////////////////////////////////
@@ -44,4 +44,4 @@ void HotSpot::_debugRender()
 	{
 		renderEng->drawLine(m_poligon[i],m_poligon[ (i+1) % size ] ,2,0xffff00ff);
 	}
-};
+}

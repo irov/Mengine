@@ -1,4 +1,4 @@
-#	include "Sprite.h" 
+#	include "SpriteCell.h"
 
 #	include "ObjectImplement.h"
 
@@ -17,9 +17,9 @@
 #	include "math/bv.h"
 
 //////////////////////////////////////////////////////////////////////////
-OBJECT_IMPLEMENT(Sprite);
+OBJECT_IMPLEMENT(SpriteCell);
 //////////////////////////////////////////////////////////////////////////
-Sprite::Sprite()
+SpriteCell::SpriteCell()
 : m_playing(false)
 , m_looping(true)
 , m_state(FORWARD)
@@ -28,7 +28,7 @@ Sprite::Sprite()
 , m_size(0.f,0.f)
 {}
 ///////////////////////////////////////////////////////////////////////////
-bool Sprite::isVisible(const Viewport & _viewPort)
+bool SpriteCell::isVisible(const Viewport & _viewPort)
 {
 	const mt::vec2f& pos = getWorldPosition();
 	const mt::mat3f &wm = getWorldMatrix();
@@ -45,17 +45,17 @@ bool Sprite::isVisible(const Viewport & _viewPort)
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::setLooped(bool _looped)
+void SpriteCell::setLooped(bool _looped)
 {
 	m_looping = _looped;
 }
 //////////////////////////////////////////////////////////////////////////
-bool Sprite::getLooped() const
+bool SpriteCell::getLooped() const
 {
 	return m_looping;
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::setFirstFrame()
+void SpriteCell::setFirstFrame()
 {
 	assert(m_state == FORWARD || m_state == REWIND);
 
@@ -65,12 +65,12 @@ void Sprite::setFirstFrame()
 		: frames.end() - 1;
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::setOffset(const mt::vec2f& _offset)
+void SpriteCell::setOffset(const mt::vec2f& _offset)
 {
 	m_offset = _offset;
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::nextFrame()
+void SpriteCell::nextFrame()
 {
 	if(++m_currentFrame == frames.end())
 	{
@@ -87,7 +87,7 @@ void Sprite::nextFrame()
 	}	
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::prevFrame()
+void SpriteCell::prevFrame()
 {
 	if(m_currentFrame == frames.begin())
 	{
@@ -105,7 +105,7 @@ void Sprite::prevFrame()
 	--m_currentFrame;
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::_update(float _timing)
+void SpriteCell::_update(float _timing)
 {
 	assert(m_state == FORWARD || m_state == REWIND);
 	
@@ -146,7 +146,7 @@ void Sprite::_update(float _timing)
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool Sprite::_compile()
+bool SpriteCell::_compile()
 {
 //	SpriteDecoder* mngdecoder = static_cast<SpriteDecoder*>(Decoder::getDecodec(".mng"));
 
@@ -156,58 +156,48 @@ bool Sprite::_compile()
 
 	assert(fileData != 0);
 
-	mnglib::mngDesc	m_desc;
+	fileData->read_ints(&m_cellWidth,1);
+	fileData->read_ints(&m_cellHeight,1);
 
-	readMNG(
-		m_desc,
-		(unsigned char*)fileData->getBuffer(),
-		fileData->size()
-		);
+	fileData->read_ints(&m_numX,1);
+	fileData->read_ints(&m_numY,1);
 
-	m_size.x = m_desc.width;
-	m_size.y = m_desc.height;
+	m_imageWidth = m_numX * m_cellWidth;  
+	m_imageHeight = m_numY * m_cellHeight;
 
-	Holder<FileEngine>::hostage()->closeFile(fileData);
-
-	TextureDesc	textureDesc;
-
-	size_t size = m_desc.images.size();
-
-	for(size_t i = 0; i < size; i++)
-	{
-		textureDesc.buffer = m_desc.images[i].buffer;
-		textureDesc.size = m_desc.images[i].size;
-		textureDesc.haveAlpha = true;
-
-		Image	imageProps;
-
-		imageProps.offset = mt::vec2f(
-			(float)m_desc.images[i].offsetX, 
-			(float)m_desc.images[i].offsetY);
-
-		imageProps.renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);
-
-		images.push_back(imageProps);
-	}
-
-	size = m_desc.frames.size();
+	int size = m_numX*m_numY;
 
 	frames.resize(size);
 
 	for(size_t i = 0; i < size; i++)
 	{
-		frames[i].index = m_desc.frames[i].index;
-		frames[i].delay = m_desc.frames[i].delay;
+		fileData->read_ints(&frames[i].index,1);
+		fileData->read_ints(&frames[i].delay,1);
 	}
 
+	fileData->read_ints(&size,1);
+	char* buffer = new char[size];
+	fileData->read_chars(buffer,size);
+
+	TextureDesc	textureDesc;
+	textureDesc.buffer = buffer;
+	textureDesc.size = size;
+	textureDesc.haveAlpha = false;
+
+	Image	imageProps;
+
+	imageProps.offset = mt::vec2f(0,0);
+	imageProps.renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);
+	images.push_back(imageProps);
+	
+	delete[] buffer;
+
+	Holder<FileEngine>::hostage()->closeFile(fileData);
 	setFirstFrame();
-
-	freeMNG(m_desc);
-
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::_release()
+void SpriteCell::_release()
 {
 	size_t size = images.size();
 
@@ -217,7 +207,7 @@ void Sprite::_release()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::loader(TiXmlElement *xml)
+void SpriteCell::loader(TiXmlElement *xml)
 {
 	XML_FOR_EACH_TREE(xml)
 	{
@@ -230,29 +220,35 @@ void Sprite::loader(TiXmlElement *xml)
 	Renderable::loader(xml);
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::stop()
+void SpriteCell::stop()
 {
 	m_playing = false;
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::play()
+void SpriteCell::play()
 {
 	m_playing = true;
 	setFirstFrame();
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
+void SpriteCell::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 {
-	Holder<RenderEngine>::hostage()->renderImageOffset(
-		rwm, 
-		images[m_currentFrame->index].offset + m_offset,
-		0xffffffff,
-		images[m_currentFrame->index].renderImage
+	float u0 = float(m_currentFrame->index % m_numX) / m_numX;
+
+	int offset = float(m_currentFrame->index) / m_numY;
+	
+	float v0 = float(offset)/m_numY;
+
+	float u1 = float(m_currentFrame->index % m_numX + 1) / m_numX;
+
+	float v1 = float(offset + 1) / m_numY;
+
+	Holder<RenderEngine>::hostage()->renderImageUV(
+		rwm, 0xffffffff,
+		u0,v0,u1,v1,m_cellWidth,m_cellHeight,
+		images[0].renderImage
 		);
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::_debugRender()
+void SpriteCell::_debugRender()
 {};
-
-
-

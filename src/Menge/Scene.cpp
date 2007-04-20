@@ -13,9 +13,7 @@
 OBJECT_IMPLEMENT(Scene);
 //////////////////////////////////////////////////////////////////////////
 Scene::Scene()
-{
-
-}
+{}
 //////////////////////////////////////////////////////////////////////////
 Node * Scene::getEntity( const std::string & _name )
 {
@@ -54,7 +52,7 @@ bool Scene::_compile()
 	}
 
 	return NodeImpl::_compile();
-};
+}
 //////////////////////////////////////////////////////////////////////////
 void Scene::loader(TiXmlElement *_xml)
 {
@@ -64,4 +62,4 @@ void Scene::loader(TiXmlElement *_xml)
 	{
 		XML_CHECK_VALUE_NODE("Script", "File", m_scriptFile);
 	}
-};
+}

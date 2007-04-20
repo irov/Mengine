@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "DllModule.h"
+#	include "SystemDLL.h"
 #	include "Holder.h"
 
 #	include "SoundSystemInterface.h"
@@ -14,7 +14,8 @@ namespace Menge
 {
 	class SoundNode;
 
-	class SoundEngine : public DllModuleInterface<SoundSystemInterface>
+	class SoundEngine
+		: public SystemDLL<SoundSystemInterface>
 	{
 	public:
 		SoundEngine(const std::string& _dllModule);

@@ -2,10 +2,12 @@
 
 #	include "MengeExport.h"
 
-#	include <string>
+#	include <list>
 
 namespace Menge
 {
+	typedef std::list< std::pair<std::string,int> > TListLoadPaks;
+
 	class Game;
 	class ScriptEngine;
 	class RenderEngine;
@@ -13,7 +15,7 @@ namespace Menge
 	class InputEngine;
 	class SoundEngine;
 	class Player;
-	
+
 	class MENGE_API Application
 	{
 	public:
@@ -22,32 +24,24 @@ namespace Menge
 
 	public:
 		virtual bool init(const std::string &_xmlFile);
-
 		virtual void run();
-	
-	protected:
-		bool createDisplay(
-			unsigned int _width, 
-			unsigned int _height, 
-			unsigned int _bits, 
-			bool _fullScreen);
-
-		void update();
-		void render();
-
 	private:
-		unsigned int m_width;
-		unsigned int m_height;
-		unsigned int m_bits;
+		int m_width;
+		int m_height;
+		int m_bits;
 		bool m_fullScreen;
 
 		Game * m_game;
+
 		ScriptEngine * m_scriptEngine;
 		RenderEngine * m_renderEngine;
 		FileEngine * m_fileEngine;
 		InputEngine * m_inputEngine;
 		SoundEngine * m_soundEngine;
 
+		bool createDisplay(int _width, int _height, int _bits, bool _fullScreen);
+		void update();
+		void render();
 		//void	loadPlugin(const std::string& _name);
 	};
 }

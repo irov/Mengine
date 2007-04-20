@@ -177,13 +177,6 @@ void Allocator::setDirection( const mt::vec3f &direction )
 	changePivot();
 }
 //////////////////////////////////////////////////////////////////////////
-void Allocator::setWorldMatrix( const mt::mat4f &matrix )
-{
-	m_worldMatrix = matrix;
-
-	changePivot();
-}
-//////////////////////////////////////////////////////////////////////////
 void Allocator::translate( const mt::vec3f &delta )
 {
 	m_localMatrix.v3.v3 += delta;

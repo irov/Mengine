@@ -65,7 +65,7 @@ float	D3D9RenderImage::getHeight() const
 	return m_height;
 }
 
-const D3D9Vertex*	D3D9RenderImage::_getD3D9V4() const
+D3D9Vertex*	D3D9RenderImage::_getD3D9V4()
 {
 	return m_verts;
 }

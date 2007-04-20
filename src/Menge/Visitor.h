@@ -3,7 +3,7 @@
 namespace Menge
 {
 	class Node;
-	class Allocator;
+	//class Allocator;
 	class Renderable;
 	class HotSpot;
 	class Sprite;
@@ -16,7 +16,7 @@ namespace Menge
 
 	public:
 		virtual void call( Node *_node, Node *_base);
-		virtual void call( Allocator *_node, Node *_base);
+		//virtual void call( Allocator *_node, Node *_base);
 		virtual void call( Renderable *_node, Node *_base);
 		virtual void call( HotSpot *_node, Node *_base);
 		virtual void call( Sprite *_node, Node *_base);

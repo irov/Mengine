@@ -31,7 +31,7 @@ void Layer::setParent(Node *node)
 	NodeImpl::setParent(node);
 }
 //////////////////////////////////////////////////////////////////////////
-const Viewport & Layer::updateViewport( const Viewport & _viewPort )
+const Viewport& Layer::updateViewport( const Viewport & _viewPort )
 {
 	m_viewPort = _viewPort;
 	

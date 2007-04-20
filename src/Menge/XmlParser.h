@@ -236,6 +236,20 @@ XML_DEF_ATTRIBUTES_NODE [ NAME ]
 	VAR = ( Attribute == "TRUE" )?true:false;\
 }
 
+#define XML_PARSE_FILE_EX( FILE_NAME )\
+	for( bool irov_xml_parse_once = true ; irov_xml_parse_once == true; )\
+	for( \
+	TiXmlDocument irov_xml_document;\
+	irov_xml_parse_once==true;\
+	)\
+	if( (irov_xml_parse_once = Holder<FileEngine>::hostage()->loadXml(irov_xml_document,FILE_NAME)) == true )\
+	for(\
+	TiXmlElement * irov_xml_current_tree = irov_xml_document.FirstChildElement();\
+	irov_xml_current_tree != 0;\
+	irov_xml_current_tree = irov_xml_current_tree->NextSiblingElement()\
+	)\
+	for( bool irov_xml_else_if = false; irov_xml_parse_once == true;irov_xml_parse_once = false)
+
 namespace xml
 {
 	//////////////////////////////////////////////////////////////////////////

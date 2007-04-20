@@ -6,6 +6,8 @@
 #	pragma comment (lib, "d3d9.lib")
 #	pragma comment (lib, "d3dx9.lib")
 
+#	include "../../Menge/Application.h"
+
 bool initInterfaceSystem(RenderSystemInterface**	_ptrRenderSystem)
 {
 	try
@@ -16,7 +18,7 @@ bool initInterfaceSystem(RenderSystemInterface**	_ptrRenderSystem)
 	{
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -92,6 +94,39 @@ void Direct3d9RenderSystem::renderImage(const mt::mat3f& _transform,
 		dstVertices[i].tcoor = srcVertices[i].tcoor;
 		dstVertices[i].color = _mixedColor;
 	}
+
+	m_vbDynamic->Unlock();
+
+	m_deviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, imaged3d9ptype->_isAlpha());
+	m_deviceD3D9->SetTexture(0, imaged3d9ptype->_getTexPointer());
+	m_deviceD3D9->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
+}
+
+void Direct3d9RenderSystem::renderImageUV(const mt::mat3f& _transform, unsigned int _mixedColor, float u0, float v0, float u1, float v1, float width, float height, RenderImageInterface* _rmi)
+{
+	D3D9RenderImage*	imaged3d9ptype = static_cast<D3D9RenderImage*>(_rmi);
+
+	D3D9Vertex* srcVertices = imaged3d9ptype->_getD3D9V4();
+	 
+	D3D9Vertex*	dstVertices = NULL;
+
+	m_vbDynamic->Lock(0, m_size4Verts, (VOID**)&dstVertices, 0);
+
+	srcVertices[0].position = mt::vec3f(0.0f, 0.0f, 1.0f);
+	srcVertices[1].position = mt::vec3f(width, 0.0f, 1.0f);
+	srcVertices[2].position = mt::vec3f(width, height, 1.0f);
+	srcVertices[3].position = mt::vec3f(0.0f, height, 1.0f);
+
+	for(size_t i = 0; i < 4; ++i)
+	{
+		mt::mul_v3_m3(dstVertices[i].position, srcVertices[i].position, _transform );
+		dstVertices[i].color = _mixedColor;
+	}
+
+	dstVertices[0].tcoor = mt::vec2f(u0, v0);
+	dstVertices[1].tcoor = mt::vec2f(u1, v0);
+	dstVertices[2].tcoor = mt::vec2f(u1, v1);
+	dstVertices[3].tcoor = mt::vec2f(u0, v1);
 
 	m_vbDynamic->Unlock();
 
@@ -334,7 +369,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 /* */
 
-bool Direct3d9RenderSystem::createDisplay(unsigned int _width, unsigned int _height, unsigned int _bits, bool _fullScreen)
+bool Direct3d9RenderSystem::createDisplay(int _width, int _height, int _bits, bool _fullScreen)
 {
 	m_width = _width;
 	m_height = _height;
@@ -375,8 +410,8 @@ bool Direct3d9RenderSystem::createDisplay(unsigned int _width, unsigned int _hei
 
 	clientSize.top = 0;
 	clientSize.left = 0;
-	clientSize.right = _width;
-	clientSize.bottom = _height;
+	clientSize.right = m_width;
+	clientSize.bottom = m_height;
 	
 	DWORD style = WS_POPUP;
 
@@ -408,17 +443,17 @@ bool Direct3d9RenderSystem::createDisplay(unsigned int _width, unsigned int _hei
 
 	ZeroMemory(&m_present, sizeof(m_present));
 
-	m_present.SwapEffect					= _fullScreen ? D3DSWAPEFFECT_FLIP : D3DSWAPEFFECT_COPY;
-	m_present.Windowed					= _fullScreen ? FALSE : TRUE;
-	m_present.BackBufferFormat			= d3ddm.Format;
+	m_present.SwapEffect = _fullScreen ? D3DSWAPEFFECT_FLIP : D3DSWAPEFFECT_COPY;
+	m_present.Windowed = _fullScreen ? FALSE : TRUE;
+	m_present.BackBufferFormat = d3ddm.Format;
 	//mPresent.EnableAutoDepthStencil		= TRUE;
-	m_present.EnableAutoDepthStencil		= FALSE;
-	m_present.PresentationInterval		= D3DPRESENT_INTERVAL_IMMEDIATE;
+	m_present.EnableAutoDepthStencil = FALSE;
+	m_present.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
 	if (_fullScreen)
 	{
-		m_present.BackBufferWidth = _width;
-		m_present.BackBufferHeight = _height;
+		m_present.BackBufferWidth = m_width;
+		m_present.BackBufferHeight = m_height;
 		m_present.BackBufferFormat = D3DFMT_R5G6B5;
 		m_present.BackBufferCount = 0;
 		m_present.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;

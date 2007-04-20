@@ -1,4 +1,4 @@
-//#include "vld.h"
+#include "..\\..\\..\\dependencies\\vld\\vld.h"
 
 #include <iostream>
 //#include "interfaces.h"
@@ -21,7 +21,7 @@
 
 class Listener : public SoundNodeListenerInterface
 {
-	void listenPaused()
+	void listenPaused(bool _pause)
 	{
 		printf("listernPuased\n");
 
@@ -39,17 +39,18 @@ int main()
 	SoundDataDesc	desc_to_load = {
 		SoundDataDesc::OGG,
 		"2.ogg",
+		false,
 		true
 	};
 
 	Listener* l = new Listener();
 
 	SoundSourceInterface* ssi = SoundSystem->loadSoundNode(desc_to_load,l);
-//	ssi->setLoop(true);
-//	ssi->setPitch(1);
+	
+	
 	ssi->play();
+	ssi->setVolume(0.9);
 
-	//agetche();
 	int key = 0;
 	int u = 0;
 	do
@@ -57,47 +58,65 @@ int main()
 		u++;
 		if (kbhit())
 			key = getch();
-
-		if (u == 6000)
-		{
-			ssi->stop();
-		}
-		if (u == 28000)
-		{
-			ssi->play();
-		}
-		if (u == 30000)
-		{
-			ssi->pause();
-		}
-		if (u == 60000)
-		{
-			ssi->play();
-		}
-		if (u == 70000)
-		{
-			ssi->pause();
-		}
-		if (u == 72000)
-		{
-			ssi->play();
-		}
-		if (u == 73000)
-		{
-			ssi->stop();
-		}
 	} while (key != 27);
 
-	//ssi->pause();
-//	char ch = 't';
-//	while(ch != '.')
-//	{
-//		std::cin>>ch;
-		//getche();
-//.	};
-	//Sleep(2000); 
 	SoundSystem->releaseSoundNode(ssi);
+	ssi = NULL;
+	ssi = SoundSystem->loadSoundNode(desc_to_load,l);
+
+	ssi->play();
+/*	key = 0;
+	do
+	{
+		u++;
+		if (kbhit())
+			key = getch();
+	} while (key != 27);
+*/
+	u = 0;
+	key = 0;
+	do
+	{
+		u++;
+		if (kbhit())
+			key = getch();
+
+		if (u == 600)
+		{
+			ssi->stop();
+		}
+		if (u == 2800+5000)
+		{
+			ssi->play();
+		}
+		if (u == 3000+10000)
+		{
+			ssi->stop();
+		}
+		if (u == 4000+15000)
+		{
+			ssi->play();
+		}
+		if (u == 5000+20000)
+		{
+			ssi->pause();
+		}
+		if (u == 7200+30000)
+		{
+			ssi->play();
+		}
+		if (u == 9300+40000)
+		{
+			ssi->stop();
+		}
+		const float * p=  ssi->getPosition();
+	} while (key != 27);
+
+
+//	getche();
+	SoundSystem->releaseSoundNode(ssi);
+	//getche();
+	releaseInterfaceSystem(SoundSystem);
 
 	delete l;
-	releaseInterfaceSystem(SoundSystem);
 };

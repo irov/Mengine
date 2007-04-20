@@ -20,7 +20,7 @@ namespace Menge
 	
 	public:
 		void call( Node *_node, Node *_base){ call_impl( _base, _node  ); }
-		void call( Allocator *_node, Node *_base){ call_impl( _base, _node  );	}
+		//void call( Allocator *_node, Node *_base){ call_impl( _base, _node  );	}
 		void call( Renderable *_node, Node *_base){ call_impl( _base, _node  ); }
 		void call( HotSpot *_node, Node *_base){ call_impl( _base, _node ); }
 		void call( Sprite *_node, Node *_base){ call_impl( _base, _node ); }

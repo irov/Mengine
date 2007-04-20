@@ -2,13 +2,13 @@
 
 #	include "FileEngine.h"
 #	include "XmlParser.h"
-
+#	include "Holder.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine(const std::string &_dllModule)
-		: DllModuleInterface<RenderSystemInterface>(_dllModule)
+		: SystemDLL<RenderSystemInterface>(_dllModule)
 	{
 		Holder<RenderEngine>::keep(this);
 	}
@@ -19,10 +19,7 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createDisplay(
-		unsigned int _width, 
-		unsigned int _height, 
-		unsigned int _bits, 
+	bool RenderEngine::createDisplay(int _width, int _height, int _bits, 
 		bool _fullScreen)
 	{
 		return m_interface->createDisplay(_width,_height,_bits,_fullScreen);
@@ -71,6 +68,12 @@ namespace Menge
 		RenderImageInterface* _rmi)
 	{
 		m_interface->renderImage(_transform,_mixedColor,_rmi);
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderImageUV(const mt::mat3f& _transform, unsigned int _mixedColor, float u0, float v0, float u1, float v1,float width, float height, RenderImageInterface* _rmi)
+	{
+		m_interface->renderImageUV(_transform,_mixedColor,u0,v0,u1,v1,width,height,_rmi);
 	}
 
 	//////////////////////////////////////////////////////////////////////////

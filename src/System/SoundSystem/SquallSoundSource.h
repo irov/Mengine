@@ -1,12 +1,12 @@
 #	pragma once
 
-#	include "../../Menge/SoundSystemInterface.h"
+#	include "..\..\Menge\SoundSystemInterface.h"
 
 class SQUALLSoundSource
 	: public SoundSourceInterface
 {
 public:
-	SQUALLSoundSource(int _Sample, SoundNodeListenerInterface* _listener = 0);
+	SQUALLSoundSource(int _Sample, int _Head, SoundNodeListenerInterface* _listener = 0);
 	~SQUALLSoundSource();
 	void play();
 	void pause();
@@ -22,6 +22,7 @@ public:
 private:
 	int SampleID;
 	int ChannelID;
+	int Head;
 	SoundNodeListenerInterface* Listener;
 	bool InitCallback;
 };

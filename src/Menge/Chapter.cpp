@@ -28,4 +28,4 @@ bool Chapter::addChildren(Node *_node)
 	}
 
 	return NodeImpl::addChildren(_node);
-};
+}

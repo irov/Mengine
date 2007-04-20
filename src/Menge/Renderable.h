@@ -28,6 +28,6 @@ namespace Menge
 
 	private:
 		bool m_hide;
-		bool m_modifyViewPort;
+		//bool m_modifyViewPort;//////////////////////////////////////////////////////////////////////////
 	};
 }

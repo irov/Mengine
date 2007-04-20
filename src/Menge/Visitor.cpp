@@ -20,10 +20,10 @@ namespace Menge
 		_base->visitChildren(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Visitor::call( Allocator *_node, Node *_base)
+	/*void Visitor::call( Allocator *_node, Node *_base)
 	{
 		_base->visitChildren(this);
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Visitor::call( Renderable *_node, Node *_base)
 	{

@@ -5,7 +5,7 @@
 namespace Menge
 {
 	FileEngine::FileEngine(const std::string &_dllModule)
-		: DllModuleInterface<FileSystemInterface>(_dllModule)
+		: SystemDLL<FileSystemInterface>(_dllModule)
 	{
 		Holder<FileEngine>::keep(this);
 	}

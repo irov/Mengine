@@ -4,7 +4,6 @@
 
 namespace Menge
 {
-	class HotSpot;
 	class Sprite;
 
 	class Arrow
@@ -16,7 +15,7 @@ namespace Menge
 		Arrow();
 
 	public:
-		void loader( TiXmlElement *_xml ) override;
+		void loader( TiXmlElement * _xml ) override;
 
 	protected:
 		void _update( float _timing ) override;
@@ -24,10 +23,9 @@ namespace Menge
 		void _debugRender() override;
 
 	private:
-		Sprite *m_arrowIdle;
-		Sprite *m_arrowClick;
+		Sprite * m_arrowIdle;
+		Sprite * m_arrowClick;
 
 		mt::vec2f m_offsetClick;
 	};
-
 }

@@ -2,6 +2,8 @@
 
 #	include "squall.h"
 
+#	include <assert.h>
+
 bool initInterfaceSystem(SoundSystemInterface** _ptrSoundSystem)
 {
 	try
@@ -26,7 +28,7 @@ SQUALLSoundSystem::SQUALLSoundSystem()
 {
 	if (SQUALL_Init(0) < 0)
 	{
-		printf("error init squall!");
+		assert(!"error init squall!");
 	}
 }
 
@@ -45,7 +47,7 @@ SoundSourceInterface*	SQUALLSoundSystem::loadSoundNode(const SoundDataDesc& _des
 	const char * t = _desc.FILENAME_TEMP_FOR_TEST.c_str();
 	int sample = SQUALL_Sample_LoadFile((char *)t, _desc.isStreamSound, 0);
 
-	return new SQUALLSoundSource(sample,_listener);
+	return new SQUALLSoundSource(sample,_desc.isRelativeToListener,_listener);
 }
 
 void	SQUALLSoundSystem::releaseSoundNode(SoundSourceInterface* _sn)

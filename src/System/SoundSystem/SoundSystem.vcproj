@@ -202,7 +202,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\includes&quot;;E:\Menge\dependencies\FreeSL"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\includes&quot;;&quot;$(SolutionDir)dependencies\vld\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -227,7 +227,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\lib\OpenAL&quot;;&quot;$(SolutionDir)dependencies\lib\Vorbis&quot;;E:\IrovMenge\dependencies\lib\OpenAL;E:\IrovMenge\dependencies\lib\Vorbis;E:\Menge\dependencies\FreeSL"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\lib\OpenAL&quot;;&quot;$(SolutionDir)dependencies\lib\Vorbis&quot;;..\\..\\..\\dependencies\\vld\\"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
 				SubSystem="1"

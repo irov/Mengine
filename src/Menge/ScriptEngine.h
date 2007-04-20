@@ -2,7 +2,6 @@
 
 #	include "Holder.h"
 
-#	include <string>
 #	include <map>
 #	include <list>
 

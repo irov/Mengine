@@ -14,6 +14,7 @@
 #	include "RenderEngine.h"
 
 #	include "InputEngine.h"
+#	include "ScriptEngine.h"
 
 #	include "VisitorPickHotSpot.h"
 
@@ -143,7 +144,7 @@ namespace Menge
 			int u = 0;
 			
 
-			/*const mt::vec3f &dmv = inputEng->getPosition();
+			//const mt::vec3f &dmv = inputEng->getPosition();
 
 			mt::vec2f pick(dmv.v2);
 			VisitorPickHotSpot pickHotSpot( pick );
@@ -155,7 +156,6 @@ namespace Menge
 				const lua_boost::lua_functor * event = hs->event("LeftMouseClick");
 				event->call() % lua_boost::ret<void>();
 			}
-			*/
 		}
 
 		if( inputEng->isButton(MOUSE_RIGHT,DI_PRESSED) == true )

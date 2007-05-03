@@ -185,13 +185,25 @@
 			Name="Scene"
 			>
 			<File
-				RelativePath=".\Scene.cpp"
+				RelativePath=".\Scene2D.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Scene.h"
+				RelativePath=".\Scene2D.h"
 				>
 			</File>
+			<Filter
+				Name="SceneNode"
+				>
+				<File
+					RelativePath=".\Scene2DNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Scene2DNode.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="SceneManager"

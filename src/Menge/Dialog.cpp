@@ -9,14 +9,31 @@
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Dialog)
+
 //////////////////////////////////////////////////////////////////////////
-bool	Dialog::_compile()
+Dialog::Dialog()
+: m_dialogFont(0)
+, m_soundSource(0)
+, m_fileData(0)
+, m_isUpdate(false)
+{
+
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool Dialog::_activate()
 {
 	m_dialogFont = Holder<RenderEngine>::hostage()->loadFont(m_fontFilename);
 	m_soundSource = 0;
 	m_fileData = 0;
 	m_isUpdate = false;
 	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void	Dialog::_deactivate()
+{
+	Holder<RenderEngine>::hostage()->releaseRenderFont(m_dialogFont);
+	m_dialogFont = 0;
 }
 //////////////////////////////////////////////////////////////////////////
 void	Dialog::loader(TiXmlElement * _xml)
@@ -38,12 +55,6 @@ void	Dialog::loader(TiXmlElement * _xml)
 	}
 
 	NodeImpl::loader(_xml);
-}
-//////////////////////////////////////////////////////////////////////////
-void	Dialog::_release()
-{
-	Holder<RenderEngine>::hostage()->releaseRenderFont(m_dialogFont);
-	m_dialogFont = 0;
 }
 //////////////////////////////////////////////////////////////////////////
 void	Dialog::loadCurrentMessageSpot()
@@ -124,7 +135,7 @@ void	Dialog::_update(float _timing)
 		}
 	}
 
-	if(m_soundSource != NULL)
+	if( m_soundSource != NULL )
 	{
 		//m_soundSource->process();
 

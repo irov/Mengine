@@ -13,7 +13,7 @@ namespace Menge
 	class Chapter;
 	class Arrow;
 
-	class WinAmp;
+	class Amplifier;
 	class DialogManager;
 
 	class Game
@@ -57,7 +57,7 @@ namespace Menge
 		Player * m_player;
 
 		Arrow * m_defaultArrow;
-		WinAmp * m_winAmp;
+		Amplifier * m_amplifier;
 		DialogManager * m_dialogManager;
 
 		typedef std::map<std::string, Arrow*> TMapArrow;

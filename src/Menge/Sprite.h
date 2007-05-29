@@ -21,12 +21,16 @@ namespace Menge
 		//PINGPONG,	//надо ли нам такой стейт? т.е. анимация играется сначало вперед, потом назад.
 	};
 
+	class ResourceImage;
+
 	class Sprite
 		: public Renderable
 	{
 		OBJECT_DECLARE(Sprite);
 	public:
 		Sprite();
+
+	public:
 		virtual void play();
 		virtual void stop();
 		virtual void setLooped(bool _looped);
@@ -35,6 +39,7 @@ namespace Menge
 		virtual void prevFrame();
 		virtual void setOffset(const mt::vec2f& _offset);
 		virtual bool getLooped() const;
+
 	public:
 		virtual bool isVisible(const Viewport & _viewPort);
 
@@ -42,36 +47,25 @@ namespace Menge
 
 	protected:
 		void _update(float _timing) override;
-		bool _compile() override;
-		void _release() override;
+		
+		bool _activate() override;
+		void _deactivate() override;
+
 		void _render( const mt::mat3f &rwm, const Viewport & _viewPort ) override;
 		void _debugRender() override;
 	
 	private:
-//		SpriteDecoder::SpriteData*	m_sprData;
-		struct Frame 
-		{
-			int		index;
-			int		delay;
-		};
+		ResourceImage * m_image;
+		std::string m_resourceName;
 
-		struct Image
-		{
-			mt::vec2f offset;
-			RenderImageInterface* renderImage;
-		};
-
-		std::vector<Frame>	frames;
-		std::vector<Frame>::iterator m_currentFrame;
-
-		std::vector<Image>	images;
+		mt::vec2f m_offset;
+		size_t m_currentFrame;
 
 		float	m_total_delay;
-		mt::vec2f m_size;
-		mt::vec2f m_offset;
+
 		bool m_playing;
 		bool m_looping;
+
 		eAnimState	m_state;
-		std::string m_fileMNG;
 	};
 }

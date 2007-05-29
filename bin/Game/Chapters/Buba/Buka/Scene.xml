@@ -1,10 +1,12 @@
-<Node Name = "Buka" Type = "Scene" Kill = "34">
+<Node Name = "Buka" Type = "Scene" Kill = "34">	
+	<Script File = "Game/Chapters/Buba/Buka/Scene.lua" />
+
 	<Node Name = "Main" Type = "Layer">
 		<Parallax Factor = "1;1" />
 
 		<Node Name = "TestActor" Type = "Actor" >
 			<Node Name = "TestSprite" Type = "Sprite">
-				<ImageMNG File = "output.mng" />
+				<Resource Name = "output" />
 				<Transformation Value = "1;0;0;1;0;0" />
 			</Node> <!-- Sprite -->
 		</Node>
@@ -46,16 +48,14 @@
 		<Parallax Factor = "1.25;1" />
 
 		<Node Name = "TestSprite" Type = "Sprite">
-			<ImageMNG File = "output.mng" />
+			<Resource Name = "output" />
 			<Transformation Value = "1;0;0;1;20;20" />
 		</Node> <!-- Sprite -->
 
-		<Node Name = "TestSpriteCell" Type = "SpriteCell">
-			<ImageMNG File = "output.cng" />
+		<Node Name = "TestSpriteCell" Type = "Sprite">
+			<Resource Name = "output_cng" />
 			<Transformation Value = "1;0;0;1;40;20" />
 		</Node> <!-- Sprite -->
 	</Node> <!-- Layer -->
 
-
-	<Script File = "Game/Chapters/Buba/Buka/Scene.lua" />
 </Node>

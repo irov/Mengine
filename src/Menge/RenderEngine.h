@@ -33,16 +33,11 @@ namespace Menge
 
 		void renderImage(
 			const mt::mat3f& _transform, 
+			const mt::vec2f& _offset,
+			const mt::vec4f& _uv,
+			const mt::vec2f& _size,
 			unsigned int _mixedColor, 
 			RenderImageInterface* _rmi);
-
-		void renderImageOffset(
-			const mt::mat3f& _transform,
-			const mt::vec2f& _offset,
-			unsigned int _mixedColor,
-			RenderImageInterface * _rmi);
-
-		void renderImageUV(const mt::mat3f& _transform, unsigned int _mixedColor, float u0, float v0, float u1, float v1, float width, float height, RenderImageInterface* _rmi);
 
 		void releaseRenderImage(RenderImageInterface* _rmi);
 		

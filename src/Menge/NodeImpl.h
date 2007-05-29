@@ -31,23 +31,12 @@ namespace Menge
 		virtual bool isActive();
 
 	public:
-		virtual bool compile();
-		virtual void release();
-
-		virtual bool isCompile();
-
-	public:
 		virtual void setName(const std::string & _name);
 		virtual const std::string & getName()const;
 
 		virtual void setType(const std::string & _type);
 		virtual const std::string & getType()const;
 
-
-		virtual bool isExternal()const;
-
-		virtual void setResource(const std::string &_file);
-		virtual const std::string & getResource()const;
 
 	public:
 		virtual void setParent(Node *node);
@@ -119,9 +108,6 @@ namespace Menge
 		virtual bool _activate();
 		virtual void _deactivate();
 
-		virtual bool _compile();
-		virtual void _release();
-
 		virtual void _debugRender();
 
 		virtual void _updateParent();
@@ -131,15 +117,11 @@ namespace Menge
 
 	protected:
 		bool m_active;
-		bool m_compile;
 
 		bool m_childrenForeach;
 
 		std::string m_name;
 		std::string m_type;
-
-		bool m_external;
-		std::string m_resource;
 
 		Node * m_parent;
 		TListChildren m_listChildren;

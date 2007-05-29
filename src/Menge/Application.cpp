@@ -6,6 +6,8 @@
 #	include "SoundEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "ResourceManager.h"
+
 #	include "Game.h"
 
 #	include "Player.h"
@@ -56,7 +58,6 @@ namespace Menge
 	bool Application::init(const std::string &_xmlFile)
 	{
 		m_scriptEngine = new ScriptEngine;
-		
 		m_scriptEngine->init();
 
 		TListLoadPaks listLoadPaks;
@@ -187,6 +188,8 @@ namespace Menge
 		{
 			ErrorMessage("Input Manager invalid initialization");
 		}
+
+		Holder<ResourceManager>::keep( new ResourceManager );
 
 		m_game->init();
 

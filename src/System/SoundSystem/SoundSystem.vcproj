@@ -50,7 +50,7 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -69,7 +69,7 @@
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\squall\lib&quot;"
 				ModuleDefinitionFile="SoundSystem.def"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"
 				TargetMachine="1"
 			/>

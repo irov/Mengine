@@ -17,7 +17,7 @@ void Camera2D::loader( TiXmlElement * _xml )
 	Allocator2D::loader( _xml );
 }
 //////////////////////////////////////////////////////////////////////////
-bool Camera2D::_compile()
+bool Camera2D::_activate()
 {
 	return true;
 };

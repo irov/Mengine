@@ -52,8 +52,8 @@ namespace Menge
 	
 	protected:
 		void			_update(float _timing) override;
-		bool			_compile() override;
-		void			_release() override;
+		bool			_activate() override;
+		void			_deactivate() override;
 	
 	private:
 		std::string	m_filename;

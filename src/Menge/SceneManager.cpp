@@ -50,8 +50,8 @@ Node * SceneManager::createNodeFromXml( const std::string &_file)
 			XML_DEF_ATTRIBUTES_NODE(Name);
 			XML_DEF_ATTRIBUTES_NODE(Type);
 			Node *node = createNode(Name,Type);
-//			node->loader(XML_CURRENT_NODE);			
-			node->setResource(_file);
+			node->loader(XML_CURRENT_NODE);			
+//			node->setResource(_file);
 			return node;
 		}
 	}

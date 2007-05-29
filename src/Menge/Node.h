@@ -31,18 +31,6 @@ namespace Menge
 		virtual void deactivate() = 0;
 
 		virtual bool isActive() = 0;
-		
-	public:
-		virtual bool compile() = 0;
-		virtual void release() = 0;
-
-		virtual bool isCompile() = 0;
-
-	public:
-		virtual void setResource(const std::string &_file) = 0;
-		virtual const std::string & getResource()const = 0;
-
-		virtual bool isExternal()const = 0;
 
 	public:
 		virtual void setParent(Node *node) = 0;

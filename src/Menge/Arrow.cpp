@@ -30,7 +30,7 @@ void Arrow::_update(float _timing)
 	//setPosition( inputEng->getPosition().v2 );
 }
 //////////////////////////////////////////////////////////////////////////
-bool Arrow::_compile()
+bool Arrow::_activate()
 {
 	m_arrowIdle->setOffset(m_offsetClick);
 	return true;

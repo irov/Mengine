@@ -64,26 +64,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderImage(
 		const mt::mat3f& _transform, 
-		unsigned int _mixedColor, 
-		RenderImageInterface* _rmi)
-	{
-		m_interface->renderImage(_transform,_mixedColor,_rmi);
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderImageUV(const mt::mat3f& _transform, unsigned int _mixedColor, float u0, float v0, float u1, float v1,float width, float height, RenderImageInterface* _rmi)
-	{
-		m_interface->renderImageUV(_transform,_mixedColor,u0,v0,u1,v1,width,height,_rmi);
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderImageOffset(
-		const mt::mat3f& _transform, 
 		const mt::vec2f& _offset,
+		const mt::vec4f& _uv,
+		const mt::vec2f& _size,
 		unsigned int _mixedColor, 
 		RenderImageInterface* _rmi)
 	{
-		m_interface->renderImageOffset(_transform,_offset,_mixedColor,_rmi);
+		m_interface->renderImage(
+			_transform, 
+			_offset,
+			_uv,
+			_size,
+			_mixedColor,
+			_rmi);
 	}
 
 	//////////////////////////////////////////////////////////////////////////

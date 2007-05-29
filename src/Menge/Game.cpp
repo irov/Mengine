@@ -10,7 +10,7 @@
 
 #	include "Arrow.h"
 
-#	include "WinAmp.h"
+#	include "Amplifier.h"
 
 #	include "ScriptEngine.h"
 #	include "FileEngine.h"
@@ -26,13 +26,13 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
-		: m_winAmp(0)
+		: m_amplifier(0)
 		, m_dialogManager(0)
 		, m_defaultArrow(0)
 	{
 		m_player = new Player;
 
-		m_winAmp = new WinAmp();
+		m_amplifier = new Amplifier();
 
 		m_dialogManager = new DialogManager();
 
@@ -43,7 +43,7 @@ namespace Menge
 	{
 		delete m_dialogManager;
 
-		delete m_winAmp;
+		delete m_amplifier;
 
 		for (TMapArrow::iterator 
 			it = m_mapArrow.begin(),
@@ -87,7 +87,7 @@ namespace Menge
 			{
 				std::string	playlistFilename;
 				XML_VALUE_ATTRIBUTE("File", playlistFilename);
-				m_winAmp->loadPlayList(playlistFilename);
+				m_amplifier->loadPlayList(playlistFilename);
 			}
 
 			XML_CHECK_NODE("DialogManager")
@@ -154,7 +154,7 @@ namespace Menge
 	{
 		m_player->update( _timing );
 
-		m_winAmp->update(_timing);
+		m_amplifier->update(_timing);
 
 		Holder<ScriptEngine>::hostage()
 			->callFunctionSafe( m_eventUpdate ) % _timing % lua_boost::ret_safe();
@@ -213,7 +213,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			it->second->release();
+			it->second->deactivate();
 		}
 
 		for (TMapChapter::iterator 
@@ -222,7 +222,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			it->second->release();
+			it->second->deactivate();
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -22,10 +22,15 @@ namespace	Menge
 		: public NodeImpl
 	{
 		OBJECT_DECLARE(Dialog);
+	public:
+		Dialog();
+
 	protected:
 		void	_update(float _timing) override;
-		bool	_compile() override;
-		void	_release() override;
+		
+		bool	_activate() override;
+		void	_deactivate() override;
+
 	public:
 		void	loader(TiXmlElement *xml) override;
 	public:

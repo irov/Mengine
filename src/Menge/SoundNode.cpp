@@ -94,14 +94,14 @@ void		SoundNode::loader(TiXmlElement * xml)
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool		SoundNode::_compile()
+bool		SoundNode::_activate()
 {
 	Holder<SoundEngine>::hostage()->addSoundNode(m_interface,m_fileData,m_filename,false);
 	//play(); //for test
 	return	true;
 }
 //////////////////////////////////////////////////////////////////////////
-void		SoundNode::_release()
+void		SoundNode::_deactivate()
 {
 	Holder<SoundEngine>::hostage()->deleteSound(m_interface);
 	Holder<FileEngine>::hostage()->closeFile(m_fileData);

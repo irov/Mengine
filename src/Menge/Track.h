@@ -40,7 +40,7 @@ namespace Menge
 		void _debugRender() override;
 		void _update( float _timing)  override;
 
-		bool _compile() override;
+		bool _activate() override;
 
 	private:
 		

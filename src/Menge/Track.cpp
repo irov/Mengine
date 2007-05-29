@@ -55,7 +55,7 @@ bool Track::isMoved()const
 	return m_isMove;
 }
 //////////////////////////////////////////////////////////////////////////
-bool Track::_compile()
+bool Track::_activate()
 {
 	m_currentChain = m_listChain.begin();
 

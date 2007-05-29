@@ -4,6 +4,7 @@
 
 namespace Menge
 {
+	class Node;
 	class Viewport;
 
 	struct SceneManager

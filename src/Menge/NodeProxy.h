@@ -18,22 +18,11 @@ namespace Menge
 		bool isActive() override;
 
 	public:
-		bool compile() override;
-		void release() override;
-
-		bool isCompile() override;
-
-	public:
 		void setName(const std::string &name) override;
 		const std::string & getName()const override;
 
 		void setType(const std::string &type) override;
 		const std::string & getType()const override;
-
-		bool isExternal()const override;
-
-		void setResource(const std::string &_file) override;
-		const std::string & getResource()const override;
 
 	public:
 		void setParent(Node *node) override;

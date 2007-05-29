@@ -14,7 +14,6 @@
 #	include "RenderEngine.h"
 
 #	include "InputEngine.h"
-#	include "ScriptEngine.h"
 
 #	include "VisitorPickHotSpot.h"
 
@@ -26,7 +25,7 @@
 
 #	include "Layer.h"
 
-#	include "WinAmp.h"
+#	include "Amplifier.h"
 
 #	include <dinput.h>
 
@@ -101,7 +100,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setArrow(Arrow * _arrow)
 	{
+		if( m_arrow )
+		{
+			m_arrow->deactivate();
+		}
+
 		m_arrow = _arrow;
+		
+		if( m_arrow )
+		{
+			m_arrow->activate();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::init()
@@ -118,6 +127,8 @@ namespace Menge
 		cmr->setViewportSize( vpSz );
 
 		setRenderCamera( cmr );
+
+		m_scene->activate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update(float _timig)
@@ -144,7 +155,7 @@ namespace Menge
 			int u = 0;
 			
 
-			//const mt::vec3f &dmv = inputEng->getPosition();
+			/*const mt::vec3f &dmv = inputEng->getPosition();
 
 			mt::vec2f pick(dmv.v2);
 			VisitorPickHotSpot pickHotSpot( pick );
@@ -156,11 +167,12 @@ namespace Menge
 				const lua_boost::lua_functor * event = hs->event("LeftMouseClick");
 				event->call() % lua_boost::ret<void>();
 			}
+			*/
 		}
 
 		if( inputEng->isButton(MOUSE_RIGHT,DI_PRESSED) == true )
 		{
-			Holder<WinAmp>::hostage()->playList("logoSceneMusic.xml");
+			Holder<Amplifier>::hostage()->playList("logoSceneMusic.xml");
 		}
 
 		if( inputEng->isKey( DIK_D, DI_HELD ) == true )

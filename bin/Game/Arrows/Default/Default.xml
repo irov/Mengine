@@ -1,6 +1,6 @@
 <Node Name = "Default" Type = "Arrow">
 	<IdleSprite Type = "Sprite" >
-		<ImageMNG File = "Game/Arrows/Default/Default.mng" />
+		<Resource Name = "default" />
 	</IdleSprite>
 
 	<ClickOffset Value = "-10;-10" />

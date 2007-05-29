@@ -76,83 +76,37 @@ void	Direct3d9RenderSystem::releaseRenderImage(RenderImageInterface* _rmi)
 	delete static_cast<D3D9RenderImage*>(_rmi);
 }
 
-void Direct3d9RenderSystem::renderImage(const mt::mat3f& _transform,
-										unsigned int _mixedColor, 
-										RenderImageInterface * _rmi)
-{
-	D3D9RenderImage*	imaged3d9ptype = static_cast<D3D9RenderImage*>(_rmi);
-
-	const D3D9Vertex* srcVertices = imaged3d9ptype->_getD3D9V4();
-	 
-	D3D9Vertex*	dstVertices = NULL;
-
-	m_vbDynamic->Lock(0, m_size4Verts, (VOID**)&dstVertices, 0);
-
-	for(size_t i = 0; i < 4; ++i)
-	{
-		mt::mul_v3_m3(dstVertices[i].position, srcVertices[i].position, _transform );
-		dstVertices[i].tcoor = srcVertices[i].tcoor;
-		dstVertices[i].color = _mixedColor;
-	}
-
-	m_vbDynamic->Unlock();
-
-	m_deviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, imaged3d9ptype->_isAlpha());
-	m_deviceD3D9->SetTexture(0, imaged3d9ptype->_getTexPointer());
-	m_deviceD3D9->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
-}
-
-void Direct3d9RenderSystem::renderImageUV(const mt::mat3f& _transform, unsigned int _mixedColor, float u0, float v0, float u1, float v1, float width, float height, RenderImageInterface* _rmi)
+void	Direct3d9RenderSystem::renderImage(			
+					const mt::mat3f& _transform, 
+					const mt::vec2f& _offset,
+					const mt::vec4f& _uv,
+					const mt::vec2f& _size,
+					unsigned int _mixedColor, 
+					RenderImageInterface* _rmi)
 {
 	D3D9RenderImage*	imaged3d9ptype = static_cast<D3D9RenderImage*>(_rmi);
 
 	D3D9Vertex* srcVertices = imaged3d9ptype->_getD3D9V4();
-	 
+
 	D3D9Vertex*	dstVertices = NULL;
 
 	m_vbDynamic->Lock(0, m_size4Verts, (VOID**)&dstVertices, 0);
 
 	srcVertices[0].position = mt::vec3f(0.0f, 0.0f, 1.0f);
-	srcVertices[1].position = mt::vec3f(width, 0.0f, 1.0f);
-	srcVertices[2].position = mt::vec3f(width, height, 1.0f);
-	srcVertices[3].position = mt::vec3f(0.0f, height, 1.0f);
-
-	for(size_t i = 0; i < 4; ++i)
-	{
-		mt::mul_v3_m3(dstVertices[i].position, srcVertices[i].position, _transform );
-		dstVertices[i].color = _mixedColor;
-	}
-
-	dstVertices[0].tcoor = mt::vec2f(u0, v0);
-	dstVertices[1].tcoor = mt::vec2f(u1, v0);
-	dstVertices[2].tcoor = mt::vec2f(u1, v1);
-	dstVertices[3].tcoor = mt::vec2f(u0, v1);
-
-	m_vbDynamic->Unlock();
-
-	m_deviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, imaged3d9ptype->_isAlpha());
-	m_deviceD3D9->SetTexture(0, imaged3d9ptype->_getTexPointer());
-	m_deviceD3D9->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
-}
-
-void Direct3d9RenderSystem::renderImageOffset(const mt::mat3f& _transform,const mt::vec2f& _offset,
-										unsigned int _mixedColor, 
-										RenderImageInterface * _rmi)
-{
-	D3D9RenderImage*	imaged3d9ptype = static_cast<D3D9RenderImage*>(_rmi);
-
-	const D3D9Vertex* srcVertices = imaged3d9ptype->_getD3D9V4();
-
-	D3D9Vertex*	dstVertices = NULL;
-
-	m_vbDynamic->Lock(0, m_size4Verts, (VOID**)&dstVertices, 0);
+	srcVertices[1].position = mt::vec3f(_size.x, 0.0f, 1.0f);
+	srcVertices[2].position = mt::vec3f(_size.x, _size.y, 1.0f);
+	srcVertices[3].position = mt::vec3f(0.0f, _size.y, 1.0f);
 
 	for(size_t i = 0; i < 4; ++i)
 	{
 		mt::mul_v3_m3(dstVertices[i].position, mt::vec3f(srcVertices[i].position.v2+_offset,1), _transform );
-		dstVertices[i].tcoor = srcVertices[i].tcoor;
 		dstVertices[i].color = _mixedColor;
 	}
+
+	dstVertices[0].tcoor = mt::vec2f(_uv[0], _uv[1]);
+	dstVertices[1].tcoor = mt::vec2f(_uv[2], _uv[1]);
+	dstVertices[2].tcoor = mt::vec2f(_uv[2], _uv[3]);
+	dstVertices[3].tcoor = mt::vec2f(_uv[0], _uv[3]);
 
 	m_vbDynamic->Unlock();
 
@@ -160,6 +114,8 @@ void Direct3d9RenderSystem::renderImageOffset(const mt::mat3f& _transform,const 
 	m_deviceD3D9->SetTexture(0, imaged3d9ptype->_getTexPointer());
 	m_deviceD3D9->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, 2);
 }
+
+
 
 void	Direct3d9RenderSystem::renderText(mt::vec2f _pos, 
 										  RenderFontInterface* _font,

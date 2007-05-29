@@ -11,8 +11,7 @@
 OBJECT_IMPLEMENT(Actor)
 //////////////////////////////////////////////////////////////////////////
 Actor::Actor()
-: m_avatar(0)
-, m_isMove(false)
+: m_isMove(false)
 , m_speedMove(5.0f)
 , m_destpos(0.0f,0.0f)
 , m_dir(0.0f,0.0f)
@@ -22,43 +21,33 @@ Actor::Actor()
 //////////////////////////////////////////////////////////////////////////
 void Actor::loader( TiXmlElement * _xml )
 {
-	XML_FOR_EACH_TREE( _xml )
-	{
-		XML_CHECK_NODE("Avatar")
-		{
-			XML_DEF_ATTRIBUTES_NODE(Name);
-			XML_DEF_ATTRIBUTES_NODE(Type);
-
-			m_avatar = SceneManager::createNodeT<Avatar>(Name,Type);
-		}
-	}
-
-	NodeImpl::loader(_xml);
+	Allocator2D::loader(_xml);
 }
 //////////////////////////////////////////////////////////////////////////
 void Actor::_update(float _timing)
 {
-	if(!m_isMove) return;
-
-	float t = m_speedMove * _timing;
-	
-	const mt::vec2f& pos = getLocalPosition();
-
-	float m_distance = mt::length_v2_v2(pos, m_destpos);
-
-	if (t > m_distance)
+	if( m_isMove )
 	{
-		m_isMove = false;
-		setDirection(m_dir);
-		setPosition(m_destpos);
-	}
+		float t = m_speedMove * _timing;
 
-	if (m_isMove == true)
-	{
-		mt::vec2f pos = getLocalPosition();
-		pos += m_dir * t;
-		setDirection(m_dir);
-		setPosition(pos);
+		const mt::vec2f & pos = getLocalPosition();
+
+		float m_distance = mt::length_v2_v2(pos, m_destpos);
+
+		if (t > m_distance)
+		{
+			m_isMove = false;
+			setDirection(m_dir);
+			setPosition(m_destpos);
+		}
+
+		if (m_isMove == true)
+		{
+			mt::vec2f pos = getLocalPosition();
+			pos += m_dir * t;
+			setDirection(m_dir);
+			setPosition(pos);
+		}
 	}
 }
 //////////////////////////////////////////////////////////////////////////

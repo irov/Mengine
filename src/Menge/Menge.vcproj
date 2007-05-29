@@ -185,25 +185,13 @@
 			Name="Scene"
 			>
 			<File
-				RelativePath=".\Scene2D.cpp"
+				RelativePath=".\Scene.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Scene2D.h"
+				RelativePath=".\Scene.h"
 				>
 			</File>
-			<Filter
-				Name="SceneNode"
-				>
-				<File
-					RelativePath=".\Scene2DNode.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Scene2DNode.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="SceneManager"
@@ -381,18 +369,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\SpriteCell.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SpriteContainer.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SpriteContainer.h"
-					>
-				</File>
-				<File
 					RelativePath=".\SpriteProxy.cpp"
 					>
 				</File>
@@ -412,6 +388,30 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="SpriteCell"
+					>
+					<File
+						RelativePath=".\SpriteCell.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SpriteCell.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="SpriteContainer"
+					>
+					<File
+						RelativePath=".\SpriteContainer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SpriteContainer.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Define"
@@ -428,18 +428,6 @@
 				</File>
 				<File
 					RelativePath=".\ObjectImplement.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Region.h"
-					>
-				</File>
-				<File
-					RelativePath=".\SpriteCell.h"
-					>
-				</File>
-				<File
-					RelativePath=".\WayPoint.h"
 					>
 				</File>
 			</Filter>
@@ -618,12 +606,20 @@
 					RelativePath=".\Region.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\Region.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="WayPoint"
 				>
 				<File
 					RelativePath=".\WayPoint.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\WayPoint.h"
 					>
 				</File>
 			</Filter>
@@ -647,6 +643,26 @@
 				RelativePath=".\GameScriptable.h"
 				>
 			</File>
+			<Filter
+				Name="Interface"
+				>
+				<File
+					RelativePath=".\FileSystemInterface.h"
+					>
+				</File>
+				<File
+					RelativePath=".\InputSystemInterface.h"
+					>
+				</File>
+				<File
+					RelativePath=".\RenderSystemInterface.h"
+					>
+				</File>
+				<File
+					RelativePath=".\SoundSystemInterface.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Application"
@@ -657,26 +673,6 @@
 			</File>
 			<File
 				RelativePath=".\Application.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Interface"
-			>
-			<File
-				RelativePath=".\FileSystemInterface.h"
-				>
-			</File>
-			<File
-				RelativePath=".\InputSystemInterface.h"
-				>
-			</File>
-			<File
-				RelativePath=".\RenderSystemInterface.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SoundSystemInterface.h"
 				>
 			</File>
 		</Filter>
@@ -799,18 +795,18 @@
 				RelativePath=".\Playlist.h"
 				>
 			</File>
-			<File
-				RelativePath=".\WinAmp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\WinAmp.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="TRASH"
 			>
+			<File
+				RelativePath=".\Amplifier.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Amplifier.h"
+				>
+			</File>
 			<File
 				RelativePath=".\SoundNode.cpp"
 				>
@@ -831,6 +827,62 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Resource"
+			>
+			<File
+				RelativePath=".\Resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceImage.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceImage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceImageCNG.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceImageCNG.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceImageMNG.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceImageMNG.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceImageMNGManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceImageMNGManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceImpl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceImpl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceManager.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

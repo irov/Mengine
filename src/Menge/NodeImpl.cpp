@@ -13,9 +13,7 @@ OBJECT_IMPLEMENT( NodeImpl )
 //////////////////////////////////////////////////////////////////////////
 NodeImpl::NodeImpl()
 : m_parent(0)
-, m_active(true)
-, m_compile(false)
-, m_external(false)
+, m_active(false)
 , m_childrenForeach(true)
 , m_iteratorChildren(m_listChildren.begin())
 {
@@ -35,13 +33,6 @@ NodeImpl::~NodeImpl()
 //////////////////////////////////////////////////////////////////////////
 bool NodeImpl::activate()
 {
-	compile();
-
-	if( m_compile == false )
-	{
-		return false;
-	}
-
 	if( m_childrenForeach )
 	{
 		std::for_each( 
@@ -56,7 +47,9 @@ bool NodeImpl::activate()
 		return true;
 	}
 
-	return _activate();
+	m_active = _activate();
+
+	return m_active;
 }
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::deactivate()
@@ -70,70 +63,14 @@ void NodeImpl::deactivate()
 			);
 	}
 
-	if( m_compile )
-	{
-		_deactivate();
+	_deactivate();
 
-		m_active = false;
-	}
+	m_active = false;
 }
 //////////////////////////////////////////////////////////////////////////
 bool NodeImpl::isActive()
 {
 	return m_active;
-}
-//////////////////////////////////////////////////////////////////////////
-bool NodeImpl::compile()
-{
-	if( m_external && m_compile == false )
-	{
-		if( m_resource.empty() == false )
-		{
-			SceneManager::loadNode(this, m_resource);
-		}
-	}
-
-	if( m_compile == false )
-	{
-		m_compile = _compile();
-	}
-
-	if( m_childrenForeach )
-	{
-		std::for_each(
-			m_listChildren.begin(), 
-			m_listChildren.end(), 
-			std::mem_fun( &Node::compile ) 
-			);
-	}
-
-	return m_compile;	
-}
-//////////////////////////////////////////////////////////////////////////
-void NodeImpl::release()
-{
-	if( m_childrenForeach )
-	{
-		std::for_each(
-			m_listChildren.begin(), 
-			m_listChildren.end(),
-			std::mem_fun( &Node::release ) 
-			);
-	}
-
-	if( m_compile == true )
-	{
-		deactivate();
-
-		_release();
-
-		m_compile = false;
-	}
-}
-//////////////////////////////////////////////////////////////////////////
-bool NodeImpl::isCompile()
-{
-	return m_compile;
 }
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::setName(const std::string & _name)
@@ -154,23 +91,6 @@ void NodeImpl::setType(const std::string & _type)
 const std::string & NodeImpl::getType()const
 {
 	return m_type;
-}
-
-//////////////////////////////////////////////////////////////////////////
-bool NodeImpl::isExternal()const
-{
-	return m_external;
-}
-//////////////////////////////////////////////////////////////////////////
-void NodeImpl::setResource(const std::string & _file)
-{
-	m_external = true;
-	m_resource = _file;
-}
-//////////////////////////////////////////////////////////////////////////
-const std::string & NodeImpl::getResource()const
-{
-	return m_resource;
 }
 //////////////////////////////////////////////////////////////////////////
 Node * NodeImpl::getParent()
@@ -198,8 +118,6 @@ void NodeImpl::update(float _timing)
 {
 	if( m_active == true )
 	{
-		compile();
-
 		_update(_timing);
 
 		if( m_childrenForeach )
@@ -238,16 +156,16 @@ void NodeImpl::loader(TiXmlElement * _xml)
 		{
 			XML_DEF_ATTRIBUTES_NODE(File);
 			
-			bool loading = false; 
-			XML_VALUE_ATTRIBUTE("Loading",loading);
+			//bool loading = false; 
+			//XML_VALUE_ATTRIBUTE("Loading",loading);
 			
 			XML_PARSE_FILE_EX(File)
 			{
-				if ( loading == true )
-				{
-					loader(XML_CURRENT_NODE);
-				}
-				else
+				//if ( loading == true )
+				//{
+				//	loader(XML_CURRENT_NODE);
+				//}
+				//else
 				{
 					XML_CHECK_NODE("Node")
 					{
@@ -255,8 +173,9 @@ void NodeImpl::loader(TiXmlElement * _xml)
 						XML_DEF_ATTRIBUTES_NODE(Type);
 
 						Node *node = createChildren(Name,Type);
-
-						node->setResource(File);
+					
+						node->loader( XML_CURRENT_NODE );
+						//node->setResource(File);
 					}				
 				}
 			}
@@ -466,17 +385,6 @@ bool NodeImpl::_activate()
 }
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::_deactivate()
-{
-	//Empty
-}
-//////////////////////////////////////////////////////////////////////////
-bool NodeImpl::_compile()
-{
-	//Empty
-	return true;
-}
-//////////////////////////////////////////////////////////////////////////
-void NodeImpl::_release()
 {
 	//Empty
 }

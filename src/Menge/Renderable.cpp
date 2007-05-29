@@ -34,8 +34,6 @@ bool Renderable::render( const Viewport & _viewPort )
 		return false;
 	}
 
-	compile();
-
 	mt::mat3f rwm = getWorldMatrix();
 
 	rwm.v2.v2 -= _viewPort.begin;

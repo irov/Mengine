@@ -10,9 +10,9 @@
 
 #	include "FileSystemInterface.h"
 
-#	include "FileEngine.h"
+#	include "ResourceImage.h"
 
-#	include "../MngReader/MNG.h"
+#	include "ResourceManager.h"
 
 #	include "math/bv.h"
 
@@ -25,7 +25,7 @@ Sprite::Sprite()
 , m_state(FORWARD)
 , m_total_delay(0.f)
 , m_offset(0.f,0.f)
-, m_size(0.f,0.f)
+, m_currentFrame(0)
 {}
 ///////////////////////////////////////////////////////////////////////////
 bool Sprite::isVisible(const Viewport & _viewPort)
@@ -35,7 +35,14 @@ bool Sprite::isVisible(const Viewport & _viewPort)
 
 	mt::vec3f min0, max0;
 
-	calculate_aabb_from_obb(min0,max0,getLocalPosition()+m_offset,m_size,getWorldMatrix());
+	const mt::vec2f & size = m_image->getFrameSize( m_currentFrame );
+
+	calculate_aabb_from_obb(
+		min0,
+		max0,
+		getLocalPosition()+m_offset,
+		size,
+		getWorldMatrix());
 
 	if (max0.x < _viewPort.begin.x || min0.x > _viewPort.end.x ) return false;
 	if (max0.y < _viewPort.begin.y || min0.y > _viewPort.end.y ) return false;
@@ -59,10 +66,12 @@ void Sprite::setFirstFrame()
 {
 	assert(m_state == FORWARD || m_state == REWIND);
 
+	size_t frameSize = m_image->getFrameCount();
+
 	m_currentFrame = 
 		(m_state == FORWARD)
-		? frames.begin() 
-		: frames.end() - 1;
+		? 0
+		: frameSize - 1;
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::setOffset(const mt::vec2f& _offset)
@@ -72,34 +81,38 @@ void Sprite::setOffset(const mt::vec2f& _offset)
 //////////////////////////////////////////////////////////////////////////
 void Sprite::nextFrame()
 {
-	if(++m_currentFrame == frames.end())
+	size_t frimeSize = m_image->getFrameCount();
+
+	if( ++m_currentFrame == frimeSize )
 	{
-		if(!m_looping)
+		if( m_looping == false )
 		{
 			m_playing = false;
-			m_currentFrame = frames.end() - 1;
+			m_currentFrame = frimeSize - 1;
 			return;
 		}
 		else
 		{
-			m_currentFrame = frames.begin();
+			m_currentFrame = 0;
 		}
 	}	
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::prevFrame()
 {
-	if(m_currentFrame == frames.begin())
+	size_t frimeSize = m_image->getFrameCount();
+
+	if( m_currentFrame == 0 )
 	{
 		if(!m_looping)
 		{
 			m_playing = false;
-			m_currentFrame = frames.begin();
+			m_currentFrame = 0;
 			return;
 		}
 		else
 		{
-			m_currentFrame = frames.end();
+			m_currentFrame = frimeSize;
 		}
 	}
 	--m_currentFrame;
@@ -116,7 +129,7 @@ void Sprite::_update(float _timing)
 
 	m_total_delay += _timing;
 
-	int delay = m_currentFrame->delay;
+	int delay = m_image->getFrameDelay( m_currentFrame );
 
 	while(m_total_delay >= delay)
 	{
@@ -142,88 +155,39 @@ void Sprite::_update(float _timing)
 			}
 			break;
 		}
-		delay = m_currentFrame->delay;
+		delay = m_image->getFrameDelay( m_currentFrame );
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool Sprite::_compile()
+bool Sprite::_activate()
 {
-//	SpriteDecoder* mngdecoder = static_cast<SpriteDecoder*>(Decoder::getDecodec(".mng"));
+	m_image = 
+		Holder<ResourceManager>::hostage()
+		->getResourceT<ResourceImage>( m_resourceName );
 
-	//m_sprData = (SpriteDecoder::SpriteData*)mngdecoder->decode(fileData);
-
-	FileDataInterface* fileData = Holder<FileEngine>::hostage()->openFile(m_fileMNG);
-
-	assert(fileData != 0);
-
-	mnglib::mngDesc	m_desc;
-
-	readMNG(
-		m_desc,
-		(unsigned char*)fileData->getBuffer(),
-		fileData->size()
-		);
-
-	m_size.x = m_desc.width;
-	m_size.y = m_desc.height;
-
-	Holder<FileEngine>::hostage()->closeFile(fileData);
-
-	TextureDesc	textureDesc;
-
-	size_t size = m_desc.images.size();
-
-	for(size_t i = 0; i < size; i++)
+	if( m_image == 0 )
 	{
-		textureDesc.buffer = m_desc.images[i].buffer;
-		textureDesc.size = m_desc.images[i].size;
-		textureDesc.haveAlpha = true;
-
-		Image	imageProps;
-
-		imageProps.offset = mt::vec2f(
-			(float)m_desc.images[i].offsetX, 
-			(float)m_desc.images[i].offsetY);
-
-		imageProps.renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);
-
-		images.push_back(imageProps);
-	}
-
-	size = m_desc.frames.size();
-
-	frames.resize(size);
-
-	for(size_t i = 0; i < size; i++)
-	{
-		frames[i].index = m_desc.frames[i].index;
-		frames[i].delay = m_desc.frames[i].delay;
+		return false;
 	}
 
 	setFirstFrame();
-
-	freeMNG(m_desc);
-
+	
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::_release()
+void Sprite::_deactivate()
 {
-	size_t size = images.size();
-
-	for(size_t i = 0; i < size; i++)
-	{
-		Holder<RenderEngine>::hostage()->releaseRenderImage(images[i].renderImage);
-	}
+	Holder<ResourceManager>::hostage()
+		->releaseResource( m_image );
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::loader(TiXmlElement *xml)
 {
 	XML_FOR_EACH_TREE(xml)
 	{
-		XML_CHECK_NODE("ImageMNG")
+		XML_CHECK_NODE("Resource")
 		{
-			XML_VALUE_ATTRIBUTE("File", m_fileMNG);
+			XML_VALUE_ATTRIBUTE("Name", m_resourceName);
 		}		
 	}
 
@@ -243,11 +207,19 @@ void Sprite::play()
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 {
-	Holder<RenderEngine>::hostage()->renderImageOffset(
+	const mt::vec2f & size = m_image->getFrameSize( m_currentFrame );
+	const mt::vec2f & image_offset = m_image->getFrameOffset( m_currentFrame );
+	const mt::vec4f & frame_uv = m_image->getFrameUV( m_currentFrame );
+	
+	RenderImageInterface * renderImage = m_image->getFrameImage( m_currentFrame );
+
+	Holder<RenderEngine>::hostage()->renderImage(
 		rwm, 
-		images[m_currentFrame->index].offset + m_offset,
+		image_offset + m_offset,
+		frame_uv,
+		size,
 		0xffffffff,
-		images[m_currentFrame->index].renderImage
+		renderImage
 		);
 }
 //////////////////////////////////////////////////////////////////////////

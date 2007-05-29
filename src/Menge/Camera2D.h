@@ -26,7 +26,7 @@ namespace Menge
 		void loader( TiXmlElement * _xml ) override;
 
 	protected:
-		bool _compile() override;
+		bool _activate() override;
 		void _update( float _timing ) override;
 		void _changePivot() override;
 

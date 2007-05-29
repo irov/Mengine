@@ -1,9 +1,6 @@
 #	include "../Menge/Application.h"
 //#	include "../Menge/vld.h"
 
-#	include <iostream>
-#	include <list>
-
 void main()
 {
 	Menge::Application app;

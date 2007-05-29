@@ -1,4 +1,4 @@
-#	include "WinAmp.h"
+#	include "Amplifier.h"
 
 #	include "Playlist.h"
 
@@ -10,7 +10,7 @@
 
 using namespace Menge;
 
-WinAmp::WinAmp()
+Amplifier::Amplifier()
 : m_soundSource(0)
 , m_fileData(0)
 , m_currentPlayList(0)
@@ -20,10 +20,10 @@ WinAmp::WinAmp()
 , m_fadeTime(3) //3 секунды на фейд трека!
 {
 	assert(m_fadeTime > 0);
-	Holder<WinAmp>::keep(this);
+	Holder<Amplifier>::keep(this);
 }
 
-WinAmp::~WinAmp()
+Amplifier::~Amplifier()
 {
 	for (TPlayListMap::iterator it = m_playLists.begin(); it!=m_playLists.end(); ++it)
 	{
@@ -33,7 +33,7 @@ WinAmp::~WinAmp()
 	Holder<FileEngine>::hostage()->closeFile(m_fileData);
 }
 
-void	WinAmp::playList(const std::string& _playListName)
+void	Amplifier::playList(const std::string& _playListName)
 {
 	TPlayListMap::iterator it = m_playLists.find(_playListName);
 
@@ -74,19 +74,19 @@ void	WinAmp::playList(const std::string& _playListName)
 	m_timeFadeBegin = clock();
 }
 
-void	WinAmp::addPlayList(const std::string& _playListFileName)
+void	Amplifier::addPlayList(const std::string& _playListFileName)
 {
 	m_playLists.insert(
 		std::make_pair(_playListFileName, new Playlist(_playListFileName))
 		);
 }
 
-void	WinAmp::erasePlayList(const std::string& _playListFileName)
+void	Amplifier::erasePlayList(const std::string& _playListFileName)
 {
 	m_playLists.erase(_playListFileName);
 }
 
-void	WinAmp::loadPlayList(const std::string& _filename)
+void	Amplifier::loadPlayList(const std::string& _filename)
 {
 	std::string playListFileName;
 
@@ -102,18 +102,18 @@ void	WinAmp::loadPlayList(const std::string& _filename)
 	}
 }
 
-void	WinAmp::listenPaused(bool _pause)
+void	Amplifier::listenPaused(bool _pause)
 {
 	m_isPaused = _pause;
 }
 
-void	WinAmp::listenStopped()
+void	Amplifier::listenStopped()
 {
 	printf("here i am mother fuckers!\n");
 	m_changeTrack = true;
 }
 
-void	WinAmp::update(double _timing)
+void	Amplifier::update(double _timing)
 {
 	if(m_soundSource == NULL || m_isPaused == true)
 	{
@@ -172,7 +172,7 @@ void	WinAmp::update(double _timing)
 
 }
 
-void	WinAmp::_beginFade()
+void	Amplifier::_beginFade()
 {
 	m_fadeState = true;
 

@@ -16,12 +16,12 @@ namespace	Menge
 
 	typedef	std::map<std::string,Playlist*>	TPlayListMap;
 
-	class WinAmp
+	class Amplifier
 		:	public SoundNodeListenerInterface
 	{
 		public:
-			WinAmp();
-			~WinAmp();
+			Amplifier();
+			~Amplifier();
 			void	setFadeTime(double _fadeTime);
 			void	playList(const std::string& _playListName);
 			void	loadPlayList(const std::string& _filename);

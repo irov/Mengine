@@ -860,14 +860,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ResourceImageMNGManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ResourceImageMNGManager.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ResourceImpl.cpp"
 				>
 			</File>

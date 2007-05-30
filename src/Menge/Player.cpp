@@ -152,8 +152,7 @@ namespace Menge
 			const mt::vec3f &dmv = inputEng->getPosition();
 			actor->moveto(dmv.v2);
 			
-			int u = 0;
-			
+			int u = 0;			
 
 			/*const mt::vec3f &dmv = inputEng->getPosition();
 

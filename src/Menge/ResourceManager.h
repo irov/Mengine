@@ -15,6 +15,8 @@ namespace Menge
 	public:
 		void loadResource( const std::string & _file );
 
+		Resource * createResource( const std::string & _name, const std::string & _type );
+
 		void registerResource( Resource * _resource );
 		Resource * getResource( const std::string & _name );
 
@@ -26,6 +28,7 @@ namespace Menge
 
 		void releaseResource( Resource * _resource );
 
+	private:
 		typedef std::map< std::string, Resource * > TMapResource;
 
 		TMapResource m_mapResource;

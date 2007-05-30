@@ -2,6 +2,8 @@
 
 #	include "Resource.h"
 
+#	include "ResourceDeclare.h"
+
 namespace Menge
 {
 	class ResourceImpl

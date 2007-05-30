@@ -9,6 +9,9 @@ namespace Menge
 	class ResourceImageMNG
 		: public ResourceImage
 	{
+		RESOURCE_DECLARE( ResourceImageMNG )
+
+	private:
 		struct Frame 
 		{
 			int		index;

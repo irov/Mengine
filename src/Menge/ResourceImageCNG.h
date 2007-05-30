@@ -9,17 +9,14 @@ namespace Menge
 	class ResourceImageCNG
 		: public ResourceImage
 	{
+		RESOURCE_DECLARE( ResourceImageCNG )
+
+	private:
 		struct Frame 
 		{
 			int		index;
 			int		delay;
 			mt::vec4f uv;
-		};
-
-		struct Image
-		{
-			mt::vec2f offset;
-			RenderImageInterface * renderImage;
 		};
 
 	public:
@@ -53,8 +50,9 @@ namespace Menge
 		int m_numY;
 
 		mt::vec2f m_size;
+		mt::vec2f m_offset;
 
 		std::vector<Frame>	m_frames;
-		Image  m_image;
+		RenderImageInterface *  m_renderImage;
 	};
 }

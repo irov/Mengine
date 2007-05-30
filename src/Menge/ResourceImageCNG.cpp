@@ -1,4 +1,5 @@
 #	include "ResourceImageCNG.h"
+#	include "ResourceImplement.h"
 
 #	include "FileEngine.h"
 #	include "RenderEngine.h"
@@ -9,6 +10,7 @@
 
 namespace Menge
 {
+	RESOURCE_IMPLEMENT( ResourceImageCNG )
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageCNG::ResourceImageCNG( const std::string & _name )
 		: ResourceImage( _name )
@@ -38,7 +40,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageCNG::getFrameOffset( size_t _image )
 	{
-		return m_image.offset;
+		return m_offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f & ResourceImageCNG::getFrameUV( size_t _frame )
@@ -48,7 +50,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * ResourceImageCNG::getFrameImage( size_t _frame )
 	{
-		return m_image.renderImage;
+		return m_renderImage;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageCNG::loader( TiXmlElement * _xml )
@@ -108,8 +110,8 @@ namespace Menge
 		textureDesc.size = size;
 		textureDesc.haveAlpha = false;
 
-		m_image.offset = mt::vec2f(0,0);
-		m_image.renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);
+		m_offset = mt::vec2f( 0.f, 0.f );
+		m_renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);
 
 		delete[] buffer;
 
@@ -121,6 +123,6 @@ namespace Menge
 	void ResourceImageCNG::_release()
 	{
 		Holder<RenderEngine>::hostage()
-			->releaseRenderImage(m_image.renderImage);
+			->releaseRenderImage( m_renderImage );
 	}
 }

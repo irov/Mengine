@@ -35,14 +35,17 @@ bool Sprite::isVisible(const Viewport & _viewPort)
 
 	mt::vec3f min0, max0;
 
-	const mt::vec2f & size = m_image->getFrameSize( m_currentFrame );
+	const mt::vec2f & size = m_image->getMaxSize();
+
+	const mt::vec2f & localPosition = getLocalPosition();
+	const mt::mat3f & worldMatrix = getWorldMatrix();
 
 	calculate_aabb_from_obb(
 		min0,
 		max0,
-		getLocalPosition()+m_offset,
+		localPosition+m_offset,
 		size,
-		getWorldMatrix());
+		worldMatrix);
 
 	if (max0.x < _viewPort.begin.x || min0.x > _viewPort.end.x ) return false;
 	if (max0.y < _viewPort.begin.y || min0.y > _viewPort.end.y ) return false;

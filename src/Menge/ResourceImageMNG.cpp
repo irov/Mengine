@@ -1,4 +1,5 @@
 #	include "ResourceImageMNG.h"
+#	include "ResourceImplement.h"
 
 #	include "FileEngine.h"
 #	include "RenderEngine.h"
@@ -9,6 +10,7 @@
 
 namespace Menge
 {
+	RESOURCE_IMPLEMENT( ResourceImageMNG )
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageMNG::ResourceImageMNG( const std::string & _name )
 		: ResourceImage( _name )

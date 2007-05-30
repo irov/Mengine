@@ -389,18 +389,6 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="SpriteCell"
-					>
-					<File
-						RelativePath=".\SpriteCell.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SpriteCell.h"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="SpriteContainer"
 					>
 					<File
@@ -836,6 +824,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ResourceDeclare.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ResourceImage.cpp"
 				>
 			</File>
@@ -865,6 +857,10 @@
 			</File>
 			<File
 				RelativePath=".\ResourceImpl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceImplement.h"
 				>
 			</File>
 			<File

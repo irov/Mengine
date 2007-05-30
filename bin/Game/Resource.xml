@@ -1,16 +1,14 @@
-<Resource>
-	<ResourceImageMNG Name = "output" >
+<DataBlock>
+	<Resource Name = "output" Type = "ResourceImageMNG" >
 		<File Path = "output.mng" />
-	</ResourceImageMNG>
+	</Resource>
 
-	<ResourceImageMNG Name = "default" >
+	<Resource Name = "default" Type = "ResourceImageMNG" >
 		<File Path = "Game/Arrows/Default/Default.mng" />
-	</ResourceImageMNG>
-	
-	
-	<ResourceImageCNG Name = "output_cng" >
+	</Resource>
+		
+	<Resource Name = "output_cng" Type = "ResourceImageCNG" >
 		<File Path = "output.cng" />
-	</ResourceImageCNG>
-	
-</Resource>
+	</Resource>	
+</DataBlock>
 

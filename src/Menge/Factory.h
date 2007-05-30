@@ -33,7 +33,7 @@ namespace Utility
 		};
 
 		template<>
-		struct gen_function_type<void>
+		struct gen_function_type<EmptyFactoryParam>
 		{
 			typedef T_BASE (*type)( );
 		};
@@ -77,5 +77,14 @@ namespace Utility
 			}
 			return T_POLICE_DEFAULT<TBase>::Police();
 		}
+
+	public:
+		struct Auto
+		{
+			Auto( const TKey & _key, TGenFunc _func)
+			{
+				Factory::registration( _key, _func );
+			}
+		};
 	};
 }

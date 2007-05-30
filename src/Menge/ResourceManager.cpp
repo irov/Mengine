@@ -1,12 +1,16 @@
 #	include "ResourceManager.h"
 
-#	include "ResourceImageMNGManager.h"
+#	include "ResourceDeclare.h"
+#	include "ResourceImplement.h"
 
 #	include "ResourceImageMNG.h"
 #	include "ResourceImageCNG.h"
 
 #	include "FileEngine.h"
 #	include "XmlParser.h"
+
+#	include "ErrorMessage.h"
+
 #	include "Holder.h"
 
 namespace Menge
@@ -21,30 +25,33 @@ namespace Menge
 	{
 		XML_PARSE_FILE_EX( _file )
 		{
-			XML_CHECK_NODE_FOR_EACH("Resource")
+			XML_CHECK_NODE_FOR_EACH("DataBlock")
 			{
-				XML_CHECK_NODE("ResourceImageMNG")
+				XML_CHECK_NODE("Resource")
 				{
 					XML_DEF_ATTRIBUTES_NODE( Name );
+					XML_DEF_ATTRIBUTES_NODE( Type );
 
-					ResourceImageMNG * resource = new ResourceImageMNG( Name );
+					Resource * resource = createResource( Name, Type );
 
+					if( resource == 0 )
+					{
+						ErrorMessage( "Don't register resource type '%s' ", Type.c_str() );
+					}
+			
 					resource->loader( XML_CURRENT_NODE );
 
 					registerResource( resource );
 				}		
-				XML_CHECK_NODE("ResourceImageCNG")
-				{
-					XML_DEF_ATTRIBUTES_NODE( Name );
-
-					ResourceImageCNG * resource = new ResourceImageCNG( Name );
-
-					resource->loader( XML_CURRENT_NODE );
-
-					registerResource( resource );
-				}	
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Resource * ResourceManager::createResource( const std::string & _name, const std::string & _type )
+	{
+		ResourceFactoryParam param;
+		param.name = _name;
+		return TFactoryResource::generate( _type, param );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::registerResource( Resource * _resource )

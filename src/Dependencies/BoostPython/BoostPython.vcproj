@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm800 /Zm800 /Zm800 /Zm800 /Zm800 "
 				Optimization="0"
-				AdditionalIncludeDirectories="E:\Project\Menge\dependencies\boost_1_34_0"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\boost_1_34_0"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BOOST_PYTHON_DYNAMIC_LIB;BOOST_PYTHON_SOURCE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

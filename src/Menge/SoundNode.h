@@ -1,60 +1,44 @@
 #	pragma once
 
-#	include "Allocator.h"
+#	include "ResourceImpl.h"
 
-#	include "NodeImpl.h"
-
-class SoundSystemInterface;
 class SoundSourceInterface;
 class FileDataInterface;
 
 namespace Menge
 {
-	class SoundNode
-		: public Allocator
+	class ResourceSound
+		: public ResourceImpl
 	{
-		OBJECT_DECLARE(SoundNode);
+		RESOURCE_DECLARE( ResourceSound )
 
 	public:
-		SoundNode();
+		ResourceSound( const std::string & _name );
 
 	public:
-
-		bool play();
-		bool pause();
-		bool stop();
+		void play();
+		void pause();
+		void stop();
 
 		bool isPlaying() const;
-		bool isPaused() const;
-		bool isStopped() const;
-		bool isInitial() const;
 
-		void setPitch(float pitch);
-		float getPitch() const;
+		void setVolume(float vol);
+		float getVolume() const;
 
-		void setGain(float gain);
-		float getGain() const;
-
-		void setRelativeToListener(bool relative);
-		bool isRelativeToListener() const;
-
-		void setPosition(const mt::vec3f& _position);
-		mt::vec3f getPosition() const;
+		void setPosition(float x, float y, float z);
+		const float* getPosition();
 
 		void setLoop(bool loop);
 		bool isLooping() const;
 
-		bool process();
+		double	getLengthS();
 
-		double		getSizeSec()	const;
 	public:
-		void			loader(TiXmlElement *xml) override;
-	
+		void loader( TiXmlElement *xml );
+
 	protected:
-		void			_update(float _timing) override;
-		bool			_activate() override;
-		void			_deactivate() override;
-	
+		bool _compile();
+		void _release();
 	private:
 		std::string	m_filename;
 		SoundSourceInterface* m_interface;

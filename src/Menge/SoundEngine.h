@@ -12,7 +12,7 @@ class	FileDataInterface;
 
 namespace Menge
 {
-	class SoundNode;
+	class ResourceSound;
 
 	class SoundEngine
 		: public SystemDLL<SoundSystemInterface>

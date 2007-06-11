@@ -1,7 +1,7 @@
 //#	pragma once
 //
 //#	include "Sprite.h"
-//#	include "SoundNode.h"
+//#	include "ResourceSound.h"
 //
 //namespace Menge
 //{
@@ -20,6 +20,6 @@
 //		void loader(TiXmlElement *_xml) override;
 //
 //	private:
-//		SoundNode m_playSound;
+//		ResourceSound m_playSound;
 //	};
 //}

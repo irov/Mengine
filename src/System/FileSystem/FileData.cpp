@@ -36,7 +36,7 @@ FileData::FileData(std::ifstream& _stream)
 	m_data = new char[m_size];
     m_pos = m_data;
 	m_endData = m_data + m_size;
-	_stream.read((char*)getBuffer(),filesize);
+	_stream.read(m_data,filesize);
 }
 
 size_t FileData::read(void* _buffer, size_t _elemsize, size_t _count)

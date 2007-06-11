@@ -7,7 +7,21 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::registerEvent( const std::string &_name, const lua_boost::lua_functor * _func  )
+	Eventable::~Eventable()
+	{
+		ScriptEngine *scriptEng = Holder<ScriptEngine>::hostage();
+
+		for( TMapScriptFunction::iterator
+			it = m_mapScriptFunction.begin(),
+			it_end = m_mapScriptFunction.end();
+		it != it_end;
+		++it)
+		{
+			scriptEng->removeFunctor( it->second );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Eventable::registerEvent( const std::string &_name, ScriptObject * _func  )
 	{
 		TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
 
@@ -17,7 +31,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const lua_boost::lua_functor * Eventable::event( const std::string &_name )
+	ScriptObject * Eventable::event( const std::string &_name )
 	{
 		TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
 
@@ -40,7 +54,7 @@ namespace Menge
 
 				ScriptEngine *scriptEng = Holder<ScriptEngine>::hostage();
 
-				const lua_boost::lua_functor * scriptFunction = scriptEng->genFunctor(Function);
+				ScriptObject * scriptFunction = scriptEng->genFunctor(Function);
 
 				registerEvent(Type, scriptFunction);
 			}

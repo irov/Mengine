@@ -5,12 +5,14 @@
 #	include <map>
 #	include <list>
 
-#	include "lua_boost/lua_boost.h"
-
 namespace Menge
 {
 	class Node;
 	class Scriptable;
+	class Entity;
+
+	class ScriptObject;
+	class ScriptGlobal;
 
 	class ScriptEngine
 	{
@@ -23,49 +25,25 @@ namespace Menge
 
 		void export_function();
 
-		bool doFile(const std::string &_file);
-		bool doString(const std::string &_string);
+		bool doFile( const std::string & _file );
+		bool doString( const std::string & _string );
 
 	public:
-		const lua_boost::lua_functor * genFunctor( const std::string &_name );
+		ScriptObject * genFunctor( const std::string &_name );
+		void removeFunctor( ScriptObject * _functor );
 
-		lua_boost::lua_functor_traits callFunction( const std::string & _name );
-		lua_boost::lua_functor_traits_safe callFunctionSafe( const std::string & _name );
+		Entity * createEntity( const std::string & _type, const std::string & _name );
 
-	public:
-		template<class T>
-		lua_boost::lua_class<T> regClass( const std::string & _name )
-		{
-			return m_luaBoost.reg_class<T>( _name.c_str() );
-		}
+		void callFunction( const std::string & _name, const char * _format = "()" , ... );
 
-		lua_boost::lua_reg_module regModule();
-
-		template<class T>
-		void refObject( const std::string & _name, T * _this )
-		{
-			return m_luaBoost.ref_object<T>( _name.c_str(), _this );
-		}
-
-	public:
-		const std::string & getErrorString();
-	
-		typedef Scriptable * (*FScriptRegistration)();
-
-		typedef	std::list< Scriptable * > TListScripting;
-		typedef	std::list< FScriptRegistration > TListRegister;
-		
-		static TListScripting & getScriptingList();
-		static TListRegister & getRegisterList();
-
-		static void registration( FScriptRegistration _func );
+		bool callFunctionBool( const std::string & _name, const char * _format = "()" , ... );
 	
 	private:
-		lua_boost::lua_boost m_luaBoost;
+		void doBuffer( const char * _buffer, size_t _size );
+		void handleException();
 
-		typedef std::map<std::string, const lua_boost::lua_functor * > TMapLuaFunctor;
-		TMapLuaFunctor m_mapLuaFunctor;
+	private:
+		ScriptObject * m_mainModule;
+		ScriptGlobal * m_global;
 	};
 }
-
-#	define MENGE_SCRIPT_CLASS_REGISTRATOR( NAME, CLASS );

@@ -14,8 +14,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageMNG::ResourceImageMNG( const std::string & _name )
 		: ResourceImage( _name )
+		, m_uv( 0.f, 0.f, 1.f, 1.f )
 	{
-		m_uv = mt::vec4f( 0.f, 0.f, 1.f, 1.f );
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageMNG::getMaxSize()
@@ -26,11 +27,6 @@ namespace Menge
 	size_t ResourceImageMNG::getFrameCount()
 	{
 		return m_frames.size();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int ResourceImageMNG::getFrameDelay( size_t _frame )
-	{
-		return m_frames[ _frame ].delay;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f & ResourceImageMNG::getFrameUV( size_t _frame )
@@ -57,10 +53,7 @@ namespace Menge
 	{
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_NODE("File")
-			{
-				XML_VALUE_ATTRIBUTE("Path", m_fileMNG );
-			}		
+			XML_CHECK_VALUE_NODE( "File", "Path", m_fileMNG );
 		}
 
 		ResourceImpl::loader( _xml );

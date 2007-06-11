@@ -24,6 +24,7 @@ namespace Menge
 		OBJECT_DECLARE(Sprite);
 	public:
 		Sprite();
+		~Sprite();
 
 	public:
 		virtual void setFrame( size_t _frame );

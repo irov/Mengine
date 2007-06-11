@@ -63,7 +63,10 @@ void NodeImpl::deactivate()
 			);
 	}
 
-	_deactivate();
+	if( m_active )
+	{
+		_deactivate();
+	}
 
 	m_active = false;
 }
@@ -353,12 +356,12 @@ void NodeImpl::debugRender()
 	_debugRender();
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeImpl::registerEvent( const std::string &_name, const lua_boost::lua_functor * _func  )
+void NodeImpl::registerEvent( const std::string &_name, ScriptObject * _func  )
 {
 	Eventable::registerEvent( _name, _func );
 }
 //////////////////////////////////////////////////////////////////////////
-const lua_boost::lua_functor * NodeImpl::event( const std::string &_name )
+ScriptObject * NodeImpl::event( const std::string &_name )
 {
 	return Eventable::event( _name );
 }

@@ -107,12 +107,12 @@ void NodeProxy::setParent(Node *_node)
 	return m_node->setParent(_node);
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeProxy::registerEvent( const std::string &_name, const lua_boost::lua_functor * _func  )
+void NodeProxy::registerEvent( const std::string &_name, ScriptObject * _func  )
 {
 	return m_node->registerEvent(_name,_func);
 }
 //////////////////////////////////////////////////////////////////////////
-const lua_boost::lua_functor * NodeProxy::event( const std::string &_name )
+ScriptObject * NodeProxy::event( const std::string &_name )
 {
 	return m_node->event(_name);
 }

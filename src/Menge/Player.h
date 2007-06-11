@@ -20,13 +20,9 @@ namespace Menge
 
 	public:
 		void setChapter( const std::string & _name );
-		void gotoScene( const std::string & _name );
-
-	public:
-		void setChapter( Chapter * _chapter );
 		Chapter * getChapter();
 
-		void setScene( Scene * _scene );
+		void gotoScene( const std::string & _name );
 		Scene * getScene();
 
 		void setArrow( Arrow * _arrow );

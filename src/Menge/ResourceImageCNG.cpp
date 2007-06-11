@@ -55,15 +55,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageCNG::loader( TiXmlElement * _xml )
 	{
+		ResourceImpl::loader( _xml );
+
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_NODE("File")
-			{
-				XML_VALUE_ATTRIBUTE("Path", m_fileMNG );
-			}		
+			XML_CHECK_VALUE_NODE( "File", "Path", m_fileMNG );
 		}
-
-		ResourceImpl::loader( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCNG::_compile()

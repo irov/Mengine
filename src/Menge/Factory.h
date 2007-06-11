@@ -26,19 +26,7 @@ namespace Utility
 		typedef T_BASE			TBase;		
 		typedef T_GEN_STRUCT	TGenStruct;
 
-		template<class T>
-		struct gen_function_type
-		{
-			typedef T_BASE (*type)( const T_GEN_STRUCT & );
-		};
-
-		template<>
-		struct gen_function_type<EmptyFactoryParam>
-		{
-			typedef T_BASE (*type)( );
-		};
-
-		typedef typename gen_function_type<T_GEN_STRUCT>::type TGenFunc;
+		typedef T_BASE (*TGenFunc)( const T_GEN_STRUCT & ); ;
 
 	private:
 		typedef std::map<TKey,TGenFunc>	TMapGenerator;

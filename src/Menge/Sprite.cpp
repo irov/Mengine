@@ -22,7 +22,12 @@ OBJECT_IMPLEMENT(Sprite);
 Sprite::Sprite()
 : m_offset(0.f,0.f)
 , m_color(0xFFFFFFFF)
-, m_currentFrame(0)
+, m_currentFrame(0) 
+{
+
+}
+//////////////////////////////////////////////////////////////////////////
+Sprite::~Sprite()
 {
 }
 ///////////////////////////////////////////////////////////////////////////
@@ -92,10 +97,7 @@ void Sprite::loader(TiXmlElement *xml)
 {
 	XML_FOR_EACH_TREE(xml)
 	{
-		XML_CHECK_NODE("Resource")
-		{
-			XML_VALUE_ATTRIBUTE("Name", m_resourceName);
-		}		
+		XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourceName );
 	}
 
 	Renderable::loader(xml);

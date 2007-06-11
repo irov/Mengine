@@ -40,9 +40,9 @@ namespace Menge
 		}
 	}
 
-	void ScriptEngine::export_function()
-	{
-		m_luaBoost.reg_function( "playSprite", &playSprite );
-		m_luaBoost.reg_function( "playDialog", &playDialog );
-	}
+	//void ScriptEngine::export_function()
+	//{
+	//	m_luaBoost.reg_function( "playSprite", &playSprite );
+	//	m_luaBoost.reg_function( "playDialog", &playDialog );
+	//}
 }

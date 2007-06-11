@@ -10,5 +10,10 @@
 	<Resource Name = "output_cng" Type = "ResourceImageCNG" >
 		<File Path = "output.cng" />
 	</Resource>	
+
+	<Resource Name = "output_cngAnimation" Type = "ResourceAnimation" >
+		<ImageMap Name = "output_cng" />
+		<
+	</Resource>
 </DataBlock>
 

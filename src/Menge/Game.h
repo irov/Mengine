@@ -2,6 +2,7 @@
 
 #	include "Holder.h"
 
+#	include <list>
 #	include <map>
 
 class TiXmlElement;
@@ -65,5 +66,10 @@ namespace Menge
 
 		typedef std::map<std::string, Chapter*> TMapChapter;
 		TMapChapter m_mapChapter;
+
+		typedef std::list<std::string> TListEntitysDeclaration;
+		TListEntitysDeclaration m_listEntitiesDeclaration;
+
+		std::string m_pathEntities;
 	};	
 }

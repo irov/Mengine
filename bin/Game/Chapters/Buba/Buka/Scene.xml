@@ -6,7 +6,7 @@
 
 		<Node Name = "TestActor" Type = "Actor" >
 			<Node Name = "TestSprite" Type = "Sprite">
-				<Resource Name = "output" />
+				<ImageMap Name = "output" />
 				<Transformation Value = "1;0;0;1;0;0" />
 			</Node> <!-- Sprite -->
 		</Node>
@@ -31,7 +31,7 @@
 			<Point Value = "350;300" />
 			<Point Value = "250;250" />
 			<Point Value = "150;250" />
-			<Event Type = "LeftMouseClick" Function = "TestHotSpotLeftMouseClick" />
+			<!-- <Event Type = "LeftMouseClick" Function = "TestHotSpotLeftMouseClick" /> -->
 		</Node>
 
 		<Node Name = "TestDialog" Type = "Dialog">
@@ -48,12 +48,12 @@
 		<Parallax Factor = "1.25;1" />
 
 		<Node Name = "TestSprite" Type = "Sprite">
-			<Resource Name = "output" />
+			<ImageMap Name = "output" />
 			<Transformation Value = "1;0;0;1;20;20" />
 		</Node> <!-- Sprite -->
 
 		<Node Name = "TestSpriteCell" Type = "Sprite">
-			<Resource Name = "output_cng" />
+			<ImageMap Name = "output_cng" />
 			<Transformation Value = "1;0;0;1;40;20" />
 		</Node> <!-- Sprite -->
 	</Node> <!-- Layer -->

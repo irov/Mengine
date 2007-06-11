@@ -1,5 +1,0 @@
-<SceneManager Type = "Debug">
-	<DllModule>
-		<InputSystem DllFile = "InputSystem_d.dll">
-	</DllModule>
-</SceneManager>

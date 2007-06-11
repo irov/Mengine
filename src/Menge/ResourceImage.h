@@ -19,7 +19,6 @@ namespace Menge
 
 		virtual size_t getFrameCount() = 0;
 
-		virtual int getFrameDelay( size_t _frame ) = 0;
 		virtual const mt::vec2f & getFrameSize( size_t _frame ) = 0;
 		virtual const mt::vec2f & getFrameOffset( size_t _image ) = 0;
 		virtual const mt::vec4f & getFrameUV( size_t _frame ) = 0;		

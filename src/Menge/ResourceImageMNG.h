@@ -32,7 +32,6 @@ namespace Menge
 		const mt::vec2f & getMaxSize();
 		size_t getFrameCount();
 
-		int getFrameDelay( size_t _frame );
 		const mt::vec2f & getFrameSize( size_t _image );
 		const mt::vec2f & getFrameOffset( size_t _image );
 		const mt::vec4f & getFrameUV( size_t _frame );

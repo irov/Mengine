@@ -76,7 +76,7 @@ void SceneManager::renderNode( Node * _node, const Viewport & _viewPort )
 			return;
 		}
 
-		for( Node *it = _node->beginChildren(); 
+		for( Node *it = _node->beginChildren();
 			it != 0;
 			it = _node->nextChildren()
 			)

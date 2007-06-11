@@ -77,43 +77,43 @@ void Animation::prevFrame()
 //////////////////////////////////////////////////////////////////////////
 void Animation::_update(float _timing)
 {
-	assert(m_state == FORWARD || m_state == REWIND);
+	//assert(m_state == FORWARD || m_state == REWIND);
 
-	if(!m_playing)
-	{
-		return; 
-	}
+	//if(!m_playing)
+	//{
+	//	return; 
+	//}
 
-	m_total_delay += _timing;
+	//m_total_delay += _timing;
 
-	int delay = m_image->getFrameDelay( m_currentFrame );
+	//int delay = m_image->getFrameDelay( m_currentFrame );
 
-	while(m_total_delay >= delay)
-	{
-		m_total_delay -= delay;
+	//while(m_total_delay >= delay)
+	//{
+	//	m_total_delay -= delay;
 
-		switch(m_state)
-		{
-		case FORWARD:
-			{
-				nextFrame();
-			}
-			break;
+	//	switch(m_state)
+	//	{
+	//	case FORWARD:
+	//		{
+	//			nextFrame();
+	//		}
+	//		break;
 
-		case REWIND:
-			{
-				prevFrame();
-			}
-			break;
+	//	case REWIND:
+	//		{
+	//			prevFrame();
+	//		}
+	//		break;
 
-		default:
-			{
-				assert(!"undefined state!");
-			}
-			break;
-		}
-		delay = m_image->getFrameDelay( m_currentFrame );
-	}
+	//	default:
+	//		{
+	//			assert(!"undefined state!");
+	//		}
+	//		break;
+	//	}
+	//	delay = m_image->getFrameDelay( m_currentFrame );
+	//}
 }
 //////////////////////////////////////////////////////////////////////////
 bool Animation::_activate()

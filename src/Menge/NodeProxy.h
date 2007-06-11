@@ -48,8 +48,8 @@ namespace Menge
 		void debugRender() override;
 
 	public:
-		virtual void registerEvent( const std::string &_name, const lua_boost::lua_functor * _func  );
-		virtual const lua_boost::lua_functor * event( const std::string &_name );
+		virtual void registerEvent( const std::string &_name, ScriptObject * _func  );
+		virtual ScriptObject * event( const std::string &_name );
 
 	public:
 		void _lostChildren(Node *_node, bool _valid) override;

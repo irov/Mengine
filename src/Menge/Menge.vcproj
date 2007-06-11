@@ -204,6 +204,10 @@
 				RelativePath=".\SceneManager.h"
 				>
 			</File>
+			<File
+				RelativePath=".\SceneManagerScriptWrapper.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Engine"
@@ -212,11 +216,15 @@
 				Name="Script"
 				>
 				<File
-					RelativePath=".\Scriptable.cpp"
+					RelativePath=".\ScriptClassDeclaration.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\Scriptable.h"
+					RelativePath=".\ScriptClassDeclaration.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ScriptDeclarationDefine.h"
 					>
 				</File>
 				<File
@@ -229,6 +237,18 @@
 				</File>
 				<File
 					RelativePath=".\ScriptEngineExport.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ScriptExceptionHandle.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ScriptModuleDeclaration.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ScriptModuleDeclaration.h"
 					>
 				</File>
 			</Filter>
@@ -407,10 +427,6 @@
 				UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 				>
 				<File
-					RelativePath=".\CodecInterface.h"
-					>
-				</File>
-				<File
 					RelativePath=".\ObjectDeclare.h"
 					>
 				</File>
@@ -455,7 +471,7 @@
 					>
 				</File>
 				<Filter
-					Name="Scriptable"
+					Name="Eventable"
 					>
 					<File
 						RelativePath=".\Eventable.cpp"
@@ -635,14 +651,6 @@
 				RelativePath=".\Game.h"
 				>
 			</File>
-			<File
-				RelativePath=".\GameScriptable.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\GameScriptable.h"
-				>
-			</File>
 			<Filter
 				Name="Interface"
 				>
@@ -688,11 +696,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PlayerScriptable.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\PlayerScriptable.h"
+				RelativePath=".\PlayerScriptWrapper.cpp"
 				>
 			</File>
 		</Filter>
@@ -819,6 +823,10 @@
 				Name="Decoder"
 				>
 				<File
+					RelativePath=".\CodecInterface.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Decoder.cpp"
 					>
 				</File>
@@ -840,30 +848,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ResourceImage.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ResourceImage.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ResourceImageCNG.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ResourceImageCNG.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ResourceImageMNG.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ResourceImageMNG.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ResourceImpl.cpp"
 				>
 			</File>
@@ -881,6 +865,62 @@
 			</File>
 			<File
 				RelativePath=".\ResourceManager.h"
+				>
+			</File>
+			<Filter
+				Name="Image"
+				>
+				<File
+					RelativePath=".\ResourceImage.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceImage.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceImageCNG.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceImageCNG.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceImageMNG.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceImageMNG.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Animation"
+				>
+				<File
+					RelativePath=".\ResourceAnimation.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceAnimation.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Entity"
+			>
+			<File
+				RelativePath=".\Entity.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Entity.h"
+				>
+			</File>
+			<File
+				RelativePath=".\EntityScriptWrapper.cpp"
 				>
 			</File>
 		</Filter>

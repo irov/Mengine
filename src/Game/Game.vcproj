@@ -66,6 +66,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(SolutionDir)dependencies"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName)_d.pdb"
 				SubSystem="1"
@@ -177,11 +178,11 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\VTune\Game.vpj"
+			RelativePath=".\main.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\main.cpp"
+			RelativePath="..\..\dependencies\vld-10\vldmtdll.lib"
 			>
 		</File>
 	</Files>

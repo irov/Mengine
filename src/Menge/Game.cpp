@@ -147,6 +147,18 @@ namespace Menge
 					XML_CHECK_VALUE_NODE("Fini","Function", m_eventFini);
 				}
 			}
+
+			XML_CHECK_NODE("Entities")
+			{
+				XML_DEF_ATTRIBUTES_NODE( Path );
+
+				XML_VALUE_ATTRIBUTE( "Path", m_pathEntities );
+
+				XML_FOR_EACH()
+				{
+					m_listEntitiesDeclaration.push_back( XML_TITLE_NODE );
+				}
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -157,7 +169,7 @@ namespace Menge
 		m_amplifier->update(_timing);
 
 		Holder<ScriptEngine>::hostage()
-			->callFunctionSafe( m_eventUpdate ) % _timing % lua_boost::ret_safe();
+			->callFunction( m_eventUpdate , "(f)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()
@@ -188,24 +200,37 @@ namespace Menge
 			return false;
 		}
 
-		lua_boost::safe_result<bool> result = 
-			Holder<ScriptEngine>::hostage()
-			->callFunctionSafe( m_eventInit ) % lua_boost::ret_safe<bool>();
+		for( TListEntitysDeclaration::iterator 
+			it = m_listEntitiesDeclaration.begin(),
+			it_end = m_listEntitiesDeclaration.end();
+		it != it_end;
+		++it)
+		{
+			if( Holder<ScriptEngine>::hostage()
+				->doFile( m_pathEntities + *it + ".py" ) == false )
+			{
+				return false;
+			}
+		}
 
-		if( result.valid == false || result.result == false )
+		bool result = 
+			Holder<ScriptEngine>::hostage()
+			->callFunctionBool( m_eventInit );
+
+		if( result == false )
 		{
 			return false;
 		}
 
 		m_player->init();
 
-		return result.result;
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()
 	{
 		Holder<ScriptEngine>::hostage()
-			->callFunctionSafe( m_eventFini ) % lua_boost::ret_safe();
+			->callFunction( m_eventFini );
 
 		for (TMapArrow::iterator 
 			it = m_mapArrow.begin(),

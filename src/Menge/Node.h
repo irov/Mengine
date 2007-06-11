@@ -12,6 +12,8 @@ class TiXmlElement;
 namespace Menge
 {
 	class Visitor;
+	class ScriptObject;
+
 	//pure-virtual interface
 	class Node 
 	{
@@ -48,8 +50,8 @@ namespace Menge
 		virtual void removeChildren(Node *_node) = 0;
 
 	public:
-		virtual void registerEvent( const std::string &_name, const lua_boost::lua_functor * _func  ) = 0;
-		virtual const lua_boost::lua_functor * event( const std::string &_name ) = 0;
+		virtual void registerEvent( const std::string &_name, ScriptObject * _func  ) = 0;
+		virtual ScriptObject * event( const std::string &_name ) = 0;
 
 	public:
 		virtual void update(float _timing) = 0;

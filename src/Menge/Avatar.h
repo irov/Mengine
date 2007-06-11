@@ -17,7 +17,6 @@ namespace Menge
 
 	public:
 		bool handlerKeyEvent( unsigned int _key, int _state ) override;
-
 		bool handlerMouseButtonEvent( unsigned int _button, int _state ) override;
 		bool handlerMouseRoll( const mt::vec3f & _pos ) override;
 	};

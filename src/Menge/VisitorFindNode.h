@@ -13,9 +13,7 @@ namespace Menge
 		VisitorFindNode( const std::string &_name )
 			: m_name(_name)
 			, m_node(0)
-		{
-
-		}
+		{}
 
 	public:
 		T * result()
@@ -46,5 +44,4 @@ namespace Menge
 		T *res = v.result();
 		return res;
 	}
-
 }

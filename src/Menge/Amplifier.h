@@ -47,4 +47,4 @@ namespace	Menge
 			double	m_fadeTime;
 			double	m_fadeoffTime;
 	};
-};
+}

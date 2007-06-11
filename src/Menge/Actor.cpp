@@ -15,9 +15,7 @@ Actor::Actor()
 , m_speedMove(5.0f)
 , m_destpos(0.0f,0.0f)
 , m_dir(0.0f,0.0f)
-{
-
-}
+{}
 //////////////////////////////////////////////////////////////////////////
 void Actor::loader( TiXmlElement * _xml )
 {

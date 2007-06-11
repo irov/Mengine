@@ -12,7 +12,6 @@ class TiXmlElement;
 namespace Menge
 {
 	class Visitor;
-
 	//pure-virtual interface
 	class Node 
 	{
@@ -63,5 +62,4 @@ namespace Menge
 	public:
 		virtual void _lostChildren(Node *_node, bool _valid) = 0;
 	};
-
 }

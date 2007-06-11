@@ -18,7 +18,7 @@ namespace mnglib
 		readChunk(&_desc.width, sizeof(unsigned int), 1, pos);
 		readChunk(&_desc.height, sizeof(unsigned int), 1, pos);
 
-		unsigned int	numSprites;
+	/*	unsigned int	numSprites;
 		readChunk(&numSprites, sizeof(unsigned int), 1, pos);
 		_desc.frames.resize(numSprites);
 
@@ -27,7 +27,7 @@ namespace mnglib
 			readChunk(&_desc.frames[i].index, sizeof(unsigned int), 1, pos);
 			readChunk(&_desc.frames[i].delay, sizeof(unsigned int), 1, pos);
 		}
-
+*/
 		unsigned int	numImages;
 		readChunk(&numImages, sizeof(unsigned int), 1, pos);
 		_desc.images.resize(numImages);

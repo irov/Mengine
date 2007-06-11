@@ -28,8 +28,8 @@ Sprite::Sprite()
 ///////////////////////////////////////////////////////////////////////////
 bool Sprite::isVisible(const Viewport & _viewPort)
 {
-	const mt::vec2f& pos = getWorldPosition();
-	const mt::mat3f &wm = getWorldMatrix();
+	const mt::vec2f & pos = getWorldPosition();
+	const mt::mat3f & wm = getWorldMatrix();
 
 	mt::vec3f min0, max0;
 

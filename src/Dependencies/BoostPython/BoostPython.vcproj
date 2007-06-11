@@ -39,18 +39,20 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Zm800 /Zm800 /Zm800 /Zm800 /Zm800 "
+				AdditionalOptions="/Zm800 /EHsc"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\boost_1_34_0"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\boost_1_34_0&quot;;&quot;$(SolutionDir)dependencies\python251\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BOOST_PYTHON_DYNAMIC_LIB;BOOST_PYTHON_SOURCE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
+				BrowseInformation="1"
 				WarningLevel="3"
 				WarnAsError="false"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
+				DisableSpecificWarnings="4273"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

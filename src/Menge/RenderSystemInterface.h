@@ -5,8 +5,6 @@
 #	include "math/mat3.h"
 #	include "math/vec4.h"
 
-#	include "Holder.h"
-
 class RenderImageInterface
 {
 public:

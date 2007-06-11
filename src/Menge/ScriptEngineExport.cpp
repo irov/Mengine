@@ -14,16 +14,16 @@ namespace Menge
 {
 	void playSprite( const char * _sprite ) 
 	{
-		Player *player = Holder<Player>::hostage();
+		//Player *player = Holder<Player>::hostage();
 
-		Scene *scene = player->getScene();
+		//Scene *scene = player->getScene();
 
-		Sprite *sprite = findNode<Sprite>(scene, _sprite);
+		//Sprite *sprite = findNode<Sprite>(scene, _sprite);
 
-		if( sprite )
-		{
-			sprite->play();
-		}
+		//if( sprite )
+		//{
+		//	sprite->play();
+		//}
 	}
 
 	void playDialog( const char * _dialog )

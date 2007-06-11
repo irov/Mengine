@@ -14,6 +14,7 @@ namespace lua_boost
 	template<class F>
 	struct function_cpp_to_lua
 	{
+
 		static const size_t arity = function_types<F>::arity;
 		typedef typename function_types<F>::ret_type ret;
 

@@ -611,6 +611,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Animation"
+				>
+				<File
+					RelativePath=".\Animation.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Animation.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"

@@ -118,8 +118,6 @@ namespace Menge
 	protected:
 		bool m_active;
 
-		bool m_childrenForeach;
-
 		std::string m_name;
 		std::string m_type;
 

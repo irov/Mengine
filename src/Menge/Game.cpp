@@ -78,7 +78,6 @@ namespace Menge
 				SceneManager *sceneMgr = Holder<SceneManager>::hostage();
 
 				Chapter *chapter = SceneManager::createNodeFromXmlT<Chapter>(File);
-				sceneMgr->loadNode(chapter, File);
 
 				addChapter(chapter);
 			}

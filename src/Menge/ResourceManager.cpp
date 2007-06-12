@@ -21,6 +21,19 @@ namespace Menge
 		loadResource( "Game/Resource.xml" );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ResourceManager::~ResourceManager()
+	{
+		for( TMapResource::iterator
+			it = m_mapResource.begin(),
+			it_end = m_mapResource.end();
+		it != it_end;
+		++it)
+		{
+			it->second->release();
+			delete it->second;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::loadResource( const std::string & _file )
 	{
 		XML_PARSE_FILE_EX( _file )
@@ -112,6 +125,8 @@ namespace Menge
 				_resource->release();
 
 				delete _resource;
+
+				m_mapResource.erase( it_find );
 			}
 		}
 	}

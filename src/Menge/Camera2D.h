@@ -15,6 +15,7 @@ namespace Menge
 		OBJECT_DECLARE( Camera2D )
 	public:
 		Camera2D();
+		~Camera2D();
 
 	public:
 		const Viewport & getViewport() const;

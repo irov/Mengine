@@ -217,7 +217,10 @@ namespace Menge
 
 		try
 		{
-			PyEval_CallFunction( func.ptr(), _format, p );
+			boost::python::object result(
+				boost::python::handle<>(
+				PyEval_CallFunction( func.ptr(), _format, p )
+				));
 		}
 		catch (...)
 		{
@@ -247,20 +250,12 @@ namespace Menge
 
 		try
 		{
-			PyObject* const result =
-				PyEval_CallFunction( func.ptr(), _format, p );
+			boost::python::object result(
+				boost::python::handle<>(
+				PyEval_CallFunction( func.ptr(), _format, p )
+				));
 
-			// This conversion *must not* be done in the same expression as
-			// the call, because, in the special case where the result is a
-			// reference a Python object which was created by converting a C++
-			// argument for passing to PyEval_CallFunction, its reference
-			// count will be 2 until the end of the full expression containing
-			// the conversion, and that interferes with dangling
-			// pointer/reference detection.
-			boost::python::converter::return_from_python<bool> converter;
-			return converter(result);
-
-			return result;
+			return boost::python::extract<bool>( result );
 		}
 		catch (...) 
 		{

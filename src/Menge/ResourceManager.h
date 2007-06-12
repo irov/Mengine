@@ -11,6 +11,7 @@ namespace Menge
 	{
 	public:
 		ResourceManager();
+		~ResourceManager();
 
 	public:
 		void loadResource( const std::string & _file );

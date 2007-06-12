@@ -17,7 +17,9 @@ namespace Menge
 			return true;
 		}
 
-		return _compile();
+		m_compile = _compile();
+
+		return m_compile;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImpl::release()

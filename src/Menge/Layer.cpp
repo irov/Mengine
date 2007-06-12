@@ -3,7 +3,6 @@
 #	include "ObjectImplement.h"
 
 #	include "Scene.h"
-#	include "Camera2D.h"
 
 #	include "XmlParser.h"
 

@@ -20,14 +20,13 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	typedef std::list< std::pair<std::string,int> > TListLoadPaks;
+	//////////////////////////////////////////////////////////////////////////
 	Application::Application()
 		: m_game(0)
-		, m_fileEngine(0)
-		, m_renderEngine(0)
-		, m_inputEngine(0)
-		, m_soundEngine(0)
 	{}
-	
+	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
 	{
 		if (m_game)
@@ -37,11 +36,13 @@ namespace Menge
 
 		delete m_game;
 
-		delete m_fileEngine;
-		delete m_renderEngine;
-		delete m_inputEngine;
-		delete m_soundEngine;
-		delete m_scriptEngine;
+		Holder<FileEngine>::destroy();
+		Holder<RenderEngine>::destroy();
+		Holder<InputEngine>::destroy();
+		Holder<SoundEngine>::destroy();
+		Holder<ScriptEngine>::destroy();
+
+		Holder<ResourceManager>::destroy();
 	}
 
 	/*void	Application::loadPlugin(const std::string& _name)
@@ -54,11 +55,13 @@ namespace Menge
 		initialize();
 	}
 	*/
-
+	//////////////////////////////////////////////////////////////////////////
 	bool Application::init(const std::string &_xmlFile)
 	{
-		m_scriptEngine = new ScriptEngine;
-		m_scriptEngine->init();
+		Holder<ScriptEngine>::keep( new ScriptEngine );
+		
+		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
+		scriptEngine->init();
 
 		TListLoadPaks listLoadPaks;
 
@@ -77,22 +80,22 @@ namespace Menge
 
 					XML_CHECK_NODE("FileSystem")
 					{
-						m_fileEngine = new FileEngine(DllFile);			
+						Holder<FileEngine>::keep( new FileEngine(DllFile) );			
 					}
 
 					XML_CHECK_NODE("InputSystem")
 					{
-						m_inputEngine = new InputEngine(DllFile);
+						Holder<InputEngine>::keep( new InputEngine(DllFile) );
 					}
 
 					XML_CHECK_NODE("RenderSystem")
 					{
-						m_renderEngine = new RenderEngine(DllFile);
+						Holder<RenderEngine>::keep( new RenderEngine(DllFile) );
 					}
 
 					XML_CHECK_NODE("SoundSystem")
 					{
-						m_soundEngine = new SoundEngine(DllFile); 
+						Holder<SoundEngine>::keep( new SoundEngine(DllFile) ); 
 					}
 
 					XML_CHECK_NODE("Codec")

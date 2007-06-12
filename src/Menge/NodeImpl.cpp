@@ -14,7 +14,6 @@ OBJECT_IMPLEMENT( NodeImpl )
 NodeImpl::NodeImpl()
 : m_parent(0)
 , m_active(false)
-, m_childrenForeach(true)
 , m_iteratorChildren(m_listChildren.begin())
 {
 }
@@ -33,14 +32,11 @@ NodeImpl::~NodeImpl()
 //////////////////////////////////////////////////////////////////////////
 bool NodeImpl::activate()
 {
-	if( m_childrenForeach )
-	{
-		std::for_each( 
-			m_listChildren.begin(), 
-			m_listChildren.end(), 
-			std::mem_fun( &Node::activate) 
-			);
-	}
+	std::for_each( 
+		m_listChildren.begin(), 
+		m_listChildren.end(), 
+		std::mem_fun( &Node::activate) 
+		);
 
 	if( m_active )
 	{
@@ -54,14 +50,12 @@ bool NodeImpl::activate()
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::deactivate()
 {
-	if( m_childrenForeach )
-	{
-		std::for_each( 
-			m_listChildren.begin(), 
-			m_listChildren.end(),
-			std::mem_fun( &Node::deactivate ) 
-			);
-	}
+	std::for_each( 
+		m_listChildren.begin(), 
+		m_listChildren.end(),
+		std::mem_fun( &Node::deactivate ) 
+		);
+
 
 	if( m_active )
 	{
@@ -123,14 +117,11 @@ void NodeImpl::update(float _timing)
 	{
 		_update(_timing);
 
-		if( m_childrenForeach )
-		{
-			std::for_each(
-				m_listChildren.begin(), 
-				m_listChildren.end(), 
-				std::bind2nd( std::mem_fun( &Node::update ) ,_timing ) 
-				);
-		}
+		std::for_each(
+			m_listChildren.begin(), 
+			m_listChildren.end(), 
+			std::bind2nd( std::mem_fun( &Node::update ) ,_timing ) 
+			);
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -344,14 +335,11 @@ void NodeImpl::removeChildren(const std::string &_name)
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::debugRender()
 {
-	if( m_childrenForeach )
-	{
-		std::for_each(
-			m_listChildren.begin(), 
-			m_listChildren.end(), 
-			std::mem_fun( &Node::debugRender )
-			);
-	}
+	std::for_each(
+		m_listChildren.begin(), 
+		m_listChildren.end(), 
+		std::mem_fun( &Node::debugRender )
+		);
 
 	_debugRender();
 }

@@ -15,6 +15,12 @@ namespace Menge
 		{
 			return m_hostage;
 		}
+
+		static void destroy()
+		{
+			delete m_hostage;
+		}
+
 	private:
 		static T * m_hostage;
 	};

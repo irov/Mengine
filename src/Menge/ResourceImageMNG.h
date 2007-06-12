@@ -12,16 +12,11 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceImageMNG )
 
 	private:
-		struct Frame 
-		{
-			int		index;
-			int		delay;
-			mt::vec2f size;
-		};
 
 		struct Image
 		{
 			mt::vec2f offset;
+			mt::vec2f size;
 			RenderImageInterface * renderImage;
 		};
 
@@ -30,13 +25,13 @@ namespace Menge
 
 	public:
 		const mt::vec2f & getMaxSize();
-		size_t getFrameCount();
+		size_t getCount();
 
-		const mt::vec2f & getFrameSize( size_t _image );
-		const mt::vec2f & getFrameOffset( size_t _image );
-		const mt::vec4f & getFrameUV( size_t _frame );
+		const mt::vec2f & getSize( size_t _image );
+		const mt::vec2f & getOffset( size_t _image );
+		const mt::vec4f & getUV( size_t _image );
 	
-		RenderImageInterface * getFrameImage( size_t _image );
+		RenderImageInterface * getImage( size_t _image );
 
 	public:
 		void loader( TiXmlElement *xml );
@@ -51,7 +46,6 @@ namespace Menge
 		mt::vec2f m_size;
 		mt::vec4f m_uv;
 
-		std::vector<Frame>	m_frames;
 		std::vector<Image>	m_images;
 	};
 }

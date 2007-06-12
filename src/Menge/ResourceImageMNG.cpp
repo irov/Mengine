@@ -24,29 +24,29 @@ namespace Menge
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceImageMNG::getFrameCount()
+	size_t ResourceImageMNG::getCount()
 	{
-		return m_frames.size();
+		return m_images.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageMNG::getFrameUV( size_t _frame )
+	const mt::vec4f & ResourceImageMNG::getUV( size_t _index )
 	{
 		return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageMNG::getFrameSize( size_t _frame )
+	const mt::vec2f & ResourceImageMNG::getSize( size_t _index )
 	{
-		return m_frames[ _frame ].size;
+		return m_images[ _index ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageMNG::getFrameOffset( size_t _frame )
+	const mt::vec2f & ResourceImageMNG::getOffset( size_t _index )
 	{
-		return m_images[ m_frames[ _frame ].index ].offset;
+		return m_images[ _index ].offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * ResourceImageMNG::getFrameImage( size_t _frame )
+	RenderImageInterface * ResourceImageMNG::getImage( size_t _index )
 	{
-		return m_images[ m_frames[ _frame ].index ].renderImage;
+		return m_images[ _index ].renderImage;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageMNG::loader( TiXmlElement * _xml )
@@ -95,25 +95,9 @@ namespace Menge
 				(float)desc.images[i].offsetY);
 
 			imageProps.renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);
-
+			imageProps.size = mt::vec2f(imageProps.renderImage->getWidth(),imageProps.renderImage->getHeight());
 			m_images.push_back(imageProps);
 		}
-
-		size = desc.frames.size();
-
-		m_frames.resize(size);
-
-		for(size_t i = 0; i < size; i++)
-		{
-			m_frames[i].index = desc.frames[i].index;
-			m_frames[i].delay = desc.frames[i].delay;
-
-			float width = m_images[ m_frames[i].index ].renderImage->getWidth();
-			float height = m_images[ m_frames[i].index ].renderImage->getHeight();
-
-			m_frames[i].size = mt::vec2f( width, height );
-		}
-
 		freeMNG(desc);
 
 		return true;

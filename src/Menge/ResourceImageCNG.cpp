@@ -23,32 +23,27 @@ namespace Menge
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceImageCNG::getFrameCount()
+	size_t ResourceImageCNG::getCount()
 	{
-		return m_frames.size();
+		return m_uvs.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int ResourceImageCNG::getFrameDelay( size_t _frame )
-	{
-		return m_frames[ _frame ].delay;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCNG::getFrameSize( size_t _image )
+	const mt::vec2f & ResourceImageCNG::getSize( size_t _image )
 	{
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCNG::getFrameOffset( size_t _image )
+	const mt::vec2f & ResourceImageCNG::getOffset( size_t _image )
 	{
 		return m_offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageCNG::getFrameUV( size_t _frame )
+	const mt::vec4f & ResourceImageCNG::getUV( size_t _index )
 	{
-		return m_frames[ _frame ].uv;
+		return m_uvs[ _index ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * ResourceImageCNG::getFrameImage( size_t _frame )
+	RenderImageInterface * ResourceImageCNG::getImage( size_t _index )
 	{
 		return m_renderImage;
 	}
@@ -83,19 +78,16 @@ namespace Menge
 
 		int size = m_numX*m_numY;
 
-		m_frames.resize(size);
+		m_uvs.resize(size);
 
 		for( size_t index = 0; index < size; ++index )
 		{
-			fileData->read_ints(&m_frames[index].index,1);
-			fileData->read_ints(&m_frames[index].delay,1);
-
 			int offset = float( index ) / m_numY;
 
-			m_frames[index].uv[0] = float( index % m_numX ) / m_numX;
-			m_frames[index].uv[1] = float( offset ) / m_numY;
-			m_frames[index].uv[2] = float( index % m_numX + 1 ) / m_numX;
-			m_frames[index].uv[3] = float( offset + 1 ) / m_numY;
+			m_uvs[index].x = float( index % m_numX ) / m_numX;
+			m_uvs[index].y = float( offset ) / m_numY;
+			m_uvs[index].z = float( index % m_numX + 1 ) / m_numX;
+			m_uvs[index].w = float( offset + 1 ) / m_numY;
 		}
 
 		fileData->read_ints(&size,1);

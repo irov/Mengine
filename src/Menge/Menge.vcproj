@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\boost&quot;;D:\Projects\Menge\dependencies\Python\include"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\boost&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;MENGE_EXPORT;_CRT_SECURE_NO_DEPRECATE;BOOST_ALL_NO_LIB"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -238,10 +238,6 @@
 				</File>
 				<File
 					RelativePath=".\ScriptEngineExport.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ScriptExceptionHandle.h"
 					>
 				</File>
 				<File

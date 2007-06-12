@@ -105,11 +105,11 @@ void Sprite::loader(TiXmlElement *xml)
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 {
-	const mt::vec2f & size = m_image->getFrameSize( m_currentFrame );
-	const mt::vec2f & image_offset = m_image->getFrameOffset( m_currentFrame );
-	const mt::vec4f & frame_uv = m_image->getFrameUV( m_currentFrame );
+	const mt::vec2f & size = m_image->getSize( m_currentFrame );
+	const mt::vec2f & image_offset = m_image->getOffset( m_currentFrame );
+	const mt::vec4f & frame_uv = m_image->getUV( m_currentFrame );
 	
-	RenderImageInterface * renderImage = m_image->getFrameImage( m_currentFrame );
+	RenderImageInterface * renderImage = m_image->getImage( m_currentFrame );
 
 	Holder<RenderEngine>::hostage()->renderImage(
 		rwm, 

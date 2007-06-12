@@ -28,7 +28,7 @@ void Animation::setFirstFrame()
 {
 	assert(m_state == FORWARD || m_state == REWIND);
 
-	size_t frameSize = m_image->getFrameCount();
+	size_t frameSize = m_image->getCount();
 
 	m_currentFrame = 
 		(m_state == FORWARD)
@@ -38,7 +38,7 @@ void Animation::setFirstFrame()
 //////////////////////////////////////////////////////////////////////////
 void Animation::nextFrame()
 {
-	size_t frimeSize = m_image->getFrameCount();
+	size_t frimeSize = m_image->getCount();
 
 	if( ++m_currentFrame == frimeSize )
 	{
@@ -57,7 +57,7 @@ void Animation::nextFrame()
 //////////////////////////////////////////////////////////////////////////
 void Animation::prevFrame()
 {
-	size_t frimeSize = m_image->getFrameCount();
+	size_t frimeSize = m_image->getCount();
 
 	if( m_currentFrame == 0 )
 	{

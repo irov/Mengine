@@ -15,22 +15,12 @@ namespace mnglib
 	{
 		unsigned char*	pos = reinterpret_cast<unsigned char*>(_buffer);
 
-		readChunk(&_desc.width, sizeof(unsigned int), 1, pos);
-		readChunk(&_desc.height, sizeof(unsigned int), 1, pos);
-
-	/*	unsigned int	numSprites;
-		readChunk(&numSprites, sizeof(unsigned int), 1, pos);
-		_desc.frames.resize(numSprites);
-
-		for (unsigned int i = 0; i < numSprites; i++)
-		{
-			readChunk(&_desc.frames[i].index, sizeof(unsigned int), 1, pos);
-			readChunk(&_desc.frames[i].delay, sizeof(unsigned int), 1, pos);
-		}
-*/
 		unsigned int	numImages;
 		readChunk(&numImages, sizeof(unsigned int), 1, pos);
 		_desc.images.resize(numImages);
+
+		readChunk(&_desc.width, sizeof(unsigned int), 1, pos);
+		readChunk(&_desc.height, sizeof(unsigned int), 1, pos);
 
 		for (unsigned int i = 0; i < numImages; i++)
 		{

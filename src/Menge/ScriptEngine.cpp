@@ -163,9 +163,6 @@ namespace Menge
 
 		//void * d = boost::python::converter::rvalue_result_from_python(result);//<Entity*> converter;
 		////Entity * en = converter( result );
-
-
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Entity * ScriptEngine::createEntity( const std::string & _type, const std::string & _name )

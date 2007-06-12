@@ -17,12 +17,12 @@ namespace Menge
 	public:
 		virtual const mt::vec2f & getMaxSize() = 0;
 
-		virtual size_t getFrameCount() = 0;
+		virtual size_t getCount() = 0;
 
-		virtual const mt::vec2f & getFrameSize( size_t _frame ) = 0;
-		virtual const mt::vec2f & getFrameOffset( size_t _image ) = 0;
-		virtual const mt::vec4f & getFrameUV( size_t _frame ) = 0;		
+		virtual const mt::vec2f & getSize( size_t _frame ) = 0;
+		virtual const mt::vec2f & getOffset( size_t _image ) = 0;
+		virtual const mt::vec4f & getUV( size_t _frame ) = 0;		
 
-		virtual RenderImageInterface * getFrameImage( size_t _image ) = 0;
+		virtual RenderImageInterface * getImage( size_t _image ) = 0;
 	};
 }

@@ -1,5 +1,5 @@
 #	include "Menge/Application.h"
-#	include "vld-10/vld.h"
+#	include "vld/vld.h"
 
 void main()
 {

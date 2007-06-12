@@ -64,9 +64,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="vldmtdll.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies/vld&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName)_d.pdb"
 				SubSystem="1"
@@ -179,10 +180,6 @@
 	<Files>
 		<File
 			RelativePath=".\main.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\dependencies\vld-10\vldmtdll.lib"
 			>
 		</File>
 	</Files>

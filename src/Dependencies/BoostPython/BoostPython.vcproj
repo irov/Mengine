@@ -41,8 +41,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm800 /EHsc"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\boost_1_34_0&quot;;&quot;$(SolutionDir)dependencies\python251\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BOOST_PYTHON_DYNAMIC_LIB;BOOST_PYTHON_SOURCE"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\boost&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BOOST_PYTHON_DYNAMIC_LIB;BOOST_PYTHON_SOURCE;BOOST_ALL_NO_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -67,6 +67,7 @@
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Python\libs&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName)_d.pdb"
 				SubSystem="2"
@@ -183,86 +184,82 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\aix_init_module.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\aix_init_module.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\dict.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\dict.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\errors.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\errors.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\exec.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\exec.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\import.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\import.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\list.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\list.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\long.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\long.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\module.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\module.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\numeric.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\numeric.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\object_operators.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\object_operators.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\object_protocol.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\object_protocol.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\slice.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\slice.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\str.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\str.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\tuple.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\wrapper.cpp"
+				RelativePath="..\..\..\dependencies\boost\libs\python\src\tuple.cpp"
 				>
 			</File>
 			<Filter
 				Name="Converter"
 				>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\converter\arg_to_python_base.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\converter\arg_to_python_base.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\converter\builtin_converters.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\converter\builtin_converters.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\converter\from_python.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\converter\from_python.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\converter\registry.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\converter\registry.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\converter\type_id.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\converter\type_id.cpp"
 					>
 				</File>
 			</Filter>
@@ -270,35 +267,35 @@
 				Name="Object"
 				>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\object\class.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\object\class.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\object\enum.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\object\enum.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\object\function.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\object\function.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\object\inheritance.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\object\inheritance.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\object\iterator.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\object\iterator.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\object\life_support.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\object\life_support.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\object\pickle_support.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\object\pickle_support.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\dependencies\boost_1_34_0\libs\python\src\object\stl_iterator.cpp"
+					RelativePath="..\..\..\dependencies\boost\libs\python\src\object\stl_iterator.cpp"
 					>
 				</File>
 			</Filter>

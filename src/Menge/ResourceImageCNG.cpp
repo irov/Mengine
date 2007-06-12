@@ -6,8 +6,6 @@
 
 #	include "XmlParser.h"
 
-#	include "../MngReader/MNG.h"
-
 namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageCNG )

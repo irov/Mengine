@@ -6,8 +6,6 @@
 
 #	include "XmlParser.h"
 
-#	include "../MngReader/MNG.h"
-
 namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageMNG )
@@ -65,40 +63,47 @@ namespace Menge
 
 		assert(fileData != 0);
 
-		mnglib::mngDesc	desc;
+		int size;
 
-		readMNG(
-			desc,
-			(unsigned char*)fileData->getBuffer(),
-			fileData->size()
-			);
+		fileData->read_ints(&size,1);
 
-		Holder<FileEngine>::hostage()->closeFile(fileData);
+		int x, y;
+		fileData->read_ints(&x,1);
+		fileData->read_ints(&y,1);
 
-		m_size.x = desc.width;
-		m_size.y = desc.height;
-
+		m_size = mt::vec2f(x,y);
+	
 		TextureDesc	textureDesc;
 
-		size_t size = desc.images.size();
+		m_images.reserve(size);
 
-		for(size_t i = 0; i < size; i++)
+		for(int i = 0; i < size; i++)
 		{
-			textureDesc.buffer = desc.images[i].buffer;
-			textureDesc.size = desc.images[i].size;
+			fileData->read_ints(&x,1);
+			fileData->read_ints(&y,1);
+
+			int bsize = 0;
+			fileData->read_ints(&bsize,1);
+
+			char* buffer = new char[bsize];
+			fileData->read_chars(buffer,bsize);
+
+			textureDesc.buffer = buffer;
+			textureDesc.size = bsize;
 			textureDesc.haveAlpha = true;
 
 			Image	imageProps;
 
-			imageProps.offset = mt::vec2f(
-				(float)desc.images[i].offsetX, 
-				(float)desc.images[i].offsetY);
-
+			imageProps.offset = mt::vec2f(x,y);
 			imageProps.renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);
 			imageProps.size = mt::vec2f(imageProps.renderImage->getWidth(),imageProps.renderImage->getHeight());
+
 			m_images.push_back(imageProps);
+
+			delete[] buffer;
 		}
-		freeMNG(desc);
+
+		Holder<FileEngine>::hostage()->closeFile(fileData);
 
 		return true;
 	}

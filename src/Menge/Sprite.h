@@ -27,8 +27,8 @@ namespace Menge
 		~Sprite();
 
 	public:
-		virtual void setFrame( size_t _frame );
-		virtual size_t getFrame() const;
+		virtual void setImageIndex( size_t _index );
+		virtual size_t getImageIndex() const;
 		virtual void setOffset(const mt::vec2f& _offset);
 
 	public:
@@ -47,7 +47,7 @@ namespace Menge
 		ResourceImage * m_image;
 		std::string m_resourceName;
 
-		size_t m_currentFrame;
+		size_t m_currentImageIndex;
 
 		mt::vec2f m_offset;		
 	

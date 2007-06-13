@@ -18,7 +18,7 @@ namespace Menge
 		virtual size_t getSequenceCount() const;
 
 		virtual int getSequenceDelay( size_t _sequence ) const;
-		virtual size_t getSequenceFrame( size_t _sequence ) const;
+		virtual size_t getSequenceIndex( size_t _sequence ) const;
 
 		virtual const std::string & getImageMap() const;
 
@@ -29,7 +29,7 @@ namespace Menge
 		struct Sequence
 		{
 			int delay;
-			size_t frame;
+			size_t index;
 		};
 
 		typedef std::vector<Sequence> TVectorSequence;

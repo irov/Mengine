@@ -1,17 +1,37 @@
 #	include "Animation.h"
+
 #	include "ObjectImplement.h"
+
+#	include "ResourceManager.h"
 
 #	include "ResourceImage.h"
 
-OBJECT_IMPLEMENT(Animation)
+#	include "XmlParser.h"
 
+OBJECT_IMPLEMENT(Animation)
+//////////////////////////////////////////////////////////////////////////
 Animation::Animation()
 : m_playing(false)
-, m_looping(true)
+, m_looping(false)
 , m_state(FORWARD)
 , m_total_delay(0.f)
+, m_anim(0)
+, m_currentFrame(0)
+{}
+//////////////////////////////////////////////////////////////////////////
+void Animation::loader(TiXmlElement *xml)
 {
+	Sprite::loader(xml);
 
+	XML_FOR_EACH_TREE( xml )
+	{
+		XML_CHECK_VALUE_NODE( "ResourceAnim", "Name", m_resourceAnim );
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void Animation::setAnimState(eAnimState _state)
+{
+	m_state = _state;
 }
 //////////////////////////////////////////////////////////////////////////
 void Animation::setLooped(bool _looped)
@@ -28,7 +48,7 @@ void Animation::setFirstFrame()
 {
 	assert(m_state == FORWARD || m_state == REWIND);
 
-	size_t frameSize = m_image->getCount();
+	size_t frameSize = m_anim->getSequenceCount();
 
 	m_currentFrame = 
 		(m_state == FORWARD)
@@ -38,14 +58,14 @@ void Animation::setFirstFrame()
 //////////////////////////////////////////////////////////////////////////
 void Animation::nextFrame()
 {
-	size_t frimeSize = m_image->getCount();
+	size_t frameSize = m_anim->getSequenceCount();
 
-	if( ++m_currentFrame == frimeSize )
+	if( ++m_currentFrame == frameSize )
 	{
 		if( m_looping == false )
 		{
 			m_playing = false;
-			m_currentFrame = frimeSize - 1;
+			m_currentFrame = frameSize - 1;
 			return;
 		}
 		else
@@ -57,7 +77,7 @@ void Animation::nextFrame()
 //////////////////////////////////////////////////////////////////////////
 void Animation::prevFrame()
 {
-	size_t frimeSize = m_image->getCount();
+	size_t frameSize = m_anim->getSequenceCount();
 
 	if( m_currentFrame == 0 )
 	{
@@ -69,7 +89,7 @@ void Animation::prevFrame()
 		}
 		else
 		{
-			m_currentFrame = frimeSize;
+			m_currentFrame = frameSize;
 		}
 	}
 	--m_currentFrame;
@@ -77,43 +97,43 @@ void Animation::prevFrame()
 //////////////////////////////////////////////////////////////////////////
 void Animation::_update(float _timing)
 {
-	//assert(m_state == FORWARD || m_state == REWIND);
+	if(!m_playing)
+	{
+		return; 
+	}
 
-	//if(!m_playing)
-	//{
-	//	return; 
-	//}
+	m_total_delay += _timing;
 
-	//m_total_delay += _timing;
+	int delay = m_anim->getSequenceDelay(m_currentFrame);
 
-	//int delay = m_image->getFrameDelay( m_currentFrame );
+	m_currentImageIndex = m_anim->getSequenceIndex(m_currentFrame);
 
-	//while(m_total_delay >= delay)
-	//{
-	//	m_total_delay -= delay;
+	while(m_total_delay >= delay)
+	{
+		m_total_delay -= delay;
 
-	//	switch(m_state)
-	//	{
-	//	case FORWARD:
-	//		{
-	//			nextFrame();
-	//		}
-	//		break;
+		switch(m_state)
+		{
+		case FORWARD:
+			{
+				nextFrame();
+			}
+			break;
 
-	//	case REWIND:
-	//		{
-	//			prevFrame();
-	//		}
-	//		break;
+		case REWIND:
+			{
+				prevFrame();
+			}
+			break;
 
-	//	default:
-	//		{
-	//			assert(!"undefined state!");
-	//		}
-	//		break;
-	//	}
-	//	delay = m_image->getFrameDelay( m_currentFrame );
-	//}
+		default:
+			{
+				assert(!"undefined state!");
+			}
+			break;
+		}
+		delay = m_anim->getSequenceDelay( m_currentFrame );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 bool Animation::_activate()
@@ -123,9 +143,21 @@ bool Animation::_activate()
 		return false;
 	}
 
+	m_anim = Holder<ResourceManager>::hostage()->getResourceT<ResourceAnimation>( m_resourceAnim );
+
+	if(m_anim == NULL)
+	{
+		return false;
+	}
+
 	setFirstFrame();
 
 	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void Animation::_deactivate()
+{
+	Holder<ResourceManager>::hostage()->releaseResource( m_anim );
 }
 //////////////////////////////////////////////////////////////////////////
 void Animation::stop()

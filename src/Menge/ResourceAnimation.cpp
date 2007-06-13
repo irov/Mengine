@@ -23,9 +23,9 @@ namespace Menge
 		return m_vectorSequence[ _sequence ].delay;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceAnimation::getSequenceFrame( size_t _sequence ) const
+	size_t ResourceAnimation::getSequenceIndex( size_t _sequence ) const
 	{
-		return m_vectorSequence[ _sequence ].frame;
+		return m_vectorSequence[ _sequence ].index;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string & ResourceAnimation::getImageMap() const
@@ -46,6 +46,8 @@ namespace Menge
 		//	<Sequence Frame = "5" Delay = "50" />
 		//	</Sequences>
 
+		Sequence sq;
+
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_imageMap );
@@ -54,9 +56,7 @@ namespace Menge
 			{
 				XML_CHECK_NODE( "Sequence" )
 				{
-					Sequence sq;
-
-					XML_VALUE_ATTRIBUTE( "Frame", sq.frame );
+					XML_VALUE_ATTRIBUTE( "Index", sq.index );
 					XML_VALUE_ATTRIBUTE( "Delay", sq.delay );
 
 					m_vectorSequence.push_back( sq );

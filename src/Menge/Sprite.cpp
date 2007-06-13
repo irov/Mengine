@@ -22,7 +22,7 @@ OBJECT_IMPLEMENT(Sprite);
 Sprite::Sprite()
 : m_offset(0.f,0.f)
 , m_color(0xFFFFFFFF)
-, m_currentFrame(0) 
+, m_currentImageIndex(0) 
 {
 
 }
@@ -58,14 +58,21 @@ bool Sprite::isVisible(const Viewport & _viewPort)
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::setFrame( size_t _frame )
+void Sprite::setImageIndex( size_t _index )
 {
-	m_currentFrame = _frame;
+	size_t size = m_image->getCount();
+
+	if(_index >= size)
+	{
+		assert(!"You can't set image index > image size");
+	}
+
+	m_currentImageIndex = _index;
 }
 //////////////////////////////////////////////////////////////////////////
-size_t Sprite::getFrame() const
+size_t Sprite::getImageIndex() const
 {
-	return m_currentFrame;
+	return m_currentImageIndex;
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::setOffset(const mt::vec2f& _offset)
@@ -105,11 +112,11 @@ void Sprite::loader(TiXmlElement *xml)
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 {
-	const mt::vec2f & size = m_image->getSize( m_currentFrame );
-	const mt::vec2f & image_offset = m_image->getOffset( m_currentFrame );
-	const mt::vec4f & frame_uv = m_image->getUV( m_currentFrame );
+	const mt::vec2f & size = m_image->getSize( m_currentImageIndex );
+	const mt::vec2f & image_offset = m_image->getOffset( m_currentImageIndex );
+	const mt::vec4f & frame_uv = m_image->getUV( m_currentImageIndex );
 	
-	RenderImageInterface * renderImage = m_image->getImage( m_currentFrame );
+	RenderImageInterface * renderImage = m_image->getImage( m_currentImageIndex );
 
 	Holder<RenderEngine>::hostage()->renderImage(
 		rwm, 

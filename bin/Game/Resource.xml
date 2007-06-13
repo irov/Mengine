@@ -14,12 +14,11 @@
 	<Resource Name = "output_cngAnimation" Type = "ResourceAnimation" >
 		<ImageMap Name = "output_cng" />
 		<Sequences>
-			<Sequence Frame = "1" Delay = "50" />
-			<Sequence Frame = "2" Delay = "50" />
-			<Sequence Frame = "3" Delay = "50" />
-			<Sequence Frame = "4" Delay = "50" />
-			<Sequence Frame = "5" Delay = "50" />
+			<Sequence Index = "1" Delay = "50" />
+			<Sequence Index = "2" Delay = "50" />
+			<Sequence Index = "3" Delay = "50" />
+			<Sequence Index = "4" Delay = "50" />
+			<Sequence Index = "14" Delay = "50" />
 		</Sequences>
 	</Resource>
 </DataBlock>
-

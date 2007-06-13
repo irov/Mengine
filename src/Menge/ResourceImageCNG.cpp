@@ -13,7 +13,6 @@ namespace Menge
 	ResourceImageCNG::ResourceImageCNG( const std::string & _name )
 		: ResourceImage( _name )
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageCNG::getMaxSize()

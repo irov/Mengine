@@ -41,7 +41,6 @@ namespace Menge
 		Holder<InputEngine>::destroy();
 		Holder<SoundEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
-
 		Holder<ResourceManager>::destroy();
 	}
 

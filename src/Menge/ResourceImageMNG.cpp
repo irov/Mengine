@@ -13,9 +13,7 @@ namespace Menge
 	ResourceImageMNG::ResourceImageMNG( const std::string & _name )
 		: ResourceImage( _name )
 		, m_uv( 0.f, 0.f, 1.f, 1.f )
-	{
-		
-	}
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageMNG::getMaxSize()
 	{

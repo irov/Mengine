@@ -27,6 +27,8 @@
 
 #	include "Amplifier.h"
 
+#	include "Animation.h"
+
 #	include <dinput.h>
 
 namespace Menge
@@ -142,6 +144,10 @@ namespace Menge
 
 			const mt::vec3f &dmv = inputEng->getPosition();
 			actor->moveto(dmv.v2);
+
+
+			Animation * anim = m_scene->getEntityT<Animation>("TestAnimation");
+			anim->play();
 			
 			int u = 0;			
 
@@ -162,7 +168,11 @@ namespace Menge
 
 		if( inputEng->isButton(MOUSE_RIGHT,DI_PRESSED) == true )
 		{
-			Holder<Amplifier>::hostage()->playList("logoSceneMusic.xml");
+			Animation * anim = m_scene->getEntityT<Animation>("TestAnimation");
+			anim->setAnimState(REWIND);
+			//anim->play();
+
+			//Holder<Amplifier>::hostage()->playList("logoSceneMusic.xml");
 		}
 
 		if( inputEng->isKey( DIK_D, DI_HELD ) == true )

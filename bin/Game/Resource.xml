@@ -1,4 +1,8 @@
 <DataBlock>
+	<Resource Name = "TestSound" Type = "ResourceSound" >
+		<File Path = "1.ogg" />
+	</Resource>
+
 	<Resource Name = "output" Type = "ResourceImageMNG" >
 		<File Path = "output.mng" />
 	</Resource>

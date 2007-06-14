@@ -18,7 +18,7 @@ public:
 	const float* getPosition() const;
 	void setLoop(bool loop);
 	bool isLooping() const;
-	double	getLengthS();
+	int	getLengthMS();
 private:
 	int SampleID;
 	int ChannelID;

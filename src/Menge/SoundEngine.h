@@ -2,6 +2,7 @@
 
 #	include "SystemDLL.h"
 #	include "Holder.h"
+#	include	"math/vec3.h"
 
 #	include "SoundSystemInterface.h"
 
@@ -20,13 +21,11 @@ namespace Menge
 	public:
 		SoundEngine(const std::string& _dllModule);
 		~SoundEngine();
-		void			setListenerOrient(float* _position, float* _updir);
-		bool			addSoundNode(
-			SoundSourceInterface* &_node,
-			FileDataInterface* &_data, 
-			const std::string& _filename,
-			SoundNodeListenerInterface* _listener = 0,
-			bool _isStreamAudioFile = true);
-		void			deleteSound(SoundSourceInterface* _node);		
+	
+		void setListenerOrient(const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top);
+		SoundSourceInterface*	loadSoundSource(
+			const SoundDataDesc& desc,
+			SoundNodeListenerInterface*	_listener);
+		void			releaseSoundSource(SoundSourceInterface* _node);		
 	};
 };

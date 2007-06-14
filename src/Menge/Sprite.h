@@ -14,8 +14,6 @@ class RenderImageInterface;
 
 namespace Menge
 {
-
-
 	class ResourceImage;
 
 	class Sprite

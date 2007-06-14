@@ -10,7 +10,7 @@ public:
 	~SQUALLSoundSystem();
 
 public:
-	void	setListenerOrient(float* _position, float* _updir);
+	void	setListenerOrient(float* _position, float* _front, float* top);
 	SoundSourceInterface*	loadSoundNode(const SoundDataDesc& _desc, SoundNodeListenerInterface*	_listener = 0);
 	void	releaseSoundNode(SoundSourceInterface* _sn);
 };

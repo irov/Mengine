@@ -786,8 +786,16 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="BackSoundManager"
+			Name="Amplifier"
 			>
+			<File
+				RelativePath=".\Amplifier.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Amplifier.h"
+				>
+			</File>
 			<File
 				RelativePath=".\Playlist.cpp"
 				>
@@ -800,22 +808,6 @@
 		<Filter
 			Name="TRASH"
 			>
-			<File
-				RelativePath=".\Amplifier.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Amplifier.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SoundNode.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SoundNode.h"
-				>
-			</File>
 			<Filter
 				Name="Decoder"
 				>
@@ -901,6 +893,18 @@
 				</File>
 				<File
 					RelativePath=".\ResourceAnimation.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Sound"
+				>
+				<File
+					RelativePath=".\ResourceSound.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceSound.h"
 					>
 				</File>
 			</Filter>

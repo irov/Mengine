@@ -29,7 +29,7 @@ void	Playlist::nextSong()
 {
 	if (++m_currentSong == m_tracks.end())
 	{
-		m_currentSong	= m_tracks.begin();
+		m_currentSong = m_tracks.begin();
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -66,6 +66,7 @@ void	Playlist::loadTracks()
 {
 	if(isLoaded() == true)
 	{
+		firstSong();
 		return;
 	}
 
@@ -85,7 +86,7 @@ void	Playlist::loadTracks()
 
 	m_isTracksLoaded = true;
 
-	m_currentSong = m_tracks.begin();
+	firstSong();
 }
 //////////////////////////////////////////////////////////////////////////
 bool	Playlist::isLoaded() const

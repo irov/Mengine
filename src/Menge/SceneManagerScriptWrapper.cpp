@@ -25,8 +25,5 @@ namespace Menge
 			, &ScriptSceneManager::createEntity
 			, boost::python::return_value_policy<boost::python::reference_existing_object>() 
 			);
-
-
-
 	}
 }

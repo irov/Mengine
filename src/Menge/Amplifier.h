@@ -6,7 +6,6 @@
 
 #	include "SoundSystemInterface.h"
 
-class	FileDataInterface;
 class	SoundSourceInterface;
 class	SoundNodeListenerInterface;
 
@@ -22,29 +21,30 @@ namespace	Menge
 		public:
 			Amplifier();
 			~Amplifier();
-			void	setFadeTime(double _fadeTime);
+			void	stop();
 			void	playList(const std::string& _playListName);
 			void	loadPlayList(const std::string& _filename);
 			void	addPlayList(const std::string& _playListFileName);
 			void	erasePlayList(const std::string& _playListFileName);
-			void	update(double _timing);
-			void	listenPaused(bool _pause);
-			void	listenStopped();
-		private:
-			void	_beginFade();
+			void	update(float _timing);
 		private:
 			TPlayListMap	m_playLists;
-			Playlist*	m_currentPlayList;
+			Playlist *	m_currentPlayList;
 			bool	m_fadeState;
-			bool	m_changeTrack;
 			bool	m_isPaused;
-
-			SoundSourceInterface* m_soundSource;
-			FileDataInterface* m_fileData;
+			bool	m_isMusicDead;
+			
+			SoundSourceInterface * m_music;
 
 			clock_t	m_timeFadeBegin;
 			clock_t	m_timeFadeEnd;
-			double	m_fadeTime;
-			double	m_fadeoffTime;
+			float	m_fadeTime;
+			float	m_fadeoffTime;
+
+			void	beginFade();
+			void	updateFadeParams(SoundSourceInterface* sound);
+			void	listenPaused(bool _pause);
+			void	listenStopped();
+			void	releaseMusic(bool _dead);
 	};
 }

@@ -129,9 +129,7 @@ void Sprite::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()
-{
-
-};
+{};
 
 
 

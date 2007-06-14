@@ -37,9 +37,9 @@ SQUALLSoundSystem::~SQUALLSoundSystem()
 	SQUALL_Free();
 }
 
-void	SQUALLSoundSystem::setListenerOrient(float* _position, float* _updir)
+void	SQUALLSoundSystem::setListenerOrient(float* _position, float* _front, float* top)
 {
-	SQUALL_Listener_SetParameters(_position,0,0,0);
+	SQUALL_Listener_SetParameters(_position,_position,_front,top);
 }
 
 SoundSourceInterface*	SQUALLSoundSystem::loadSoundNode(const SoundDataDesc& _desc, SoundNodeListenerInterface*	_listener)

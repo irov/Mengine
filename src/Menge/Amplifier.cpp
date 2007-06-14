@@ -11,28 +11,25 @@
 using namespace Menge;
 
 Amplifier::Amplifier()
-: m_soundSource(0)
-, m_fileData(0)
+: m_music(0)
 , m_currentPlayList(0)
-, m_fadeState(true)
-, m_changeTrack(false)
+, m_fadeState(false)
+, m_isMusicDead(false)
 , m_isPaused(false)
-, m_fadeTime(3) //3 секунды на фейд трека!
+, m_fadeTime(3000.0f) //3000 ms
 {
 	assert(m_fadeTime > 0);
 	Holder<Amplifier>::keep(this);
 }
-
+//////////////////////////////////////////////////////////////////////////
 Amplifier::~Amplifier()
 {
 	for (TPlayListMap::iterator it = m_playLists.begin(); it!=m_playLists.end(); ++it)
 	{
 		delete (*it).second;
 	}
-	Holder<SoundEngine>::hostage()->deleteSound(m_soundSource);
-	Holder<FileEngine>::hostage()->closeFile(m_fileData);
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Amplifier::playList(const std::string& _playListName)
 {
 	TPlayListMap::iterator it = m_playLists.find(_playListName);
@@ -44,48 +41,32 @@ void	Amplifier::playList(const std::string& _playListName)
 	}
 
 	m_currentPlayList = it->second;
-
 	m_currentPlayList->loadTracks();
 
-	Holder<SoundEngine>::hostage()->deleteSound(m_soundSource);
-	m_soundSource = NULL;
-
-	Holder<FileEngine>::hostage()->closeFile(m_fileData);
-	m_fileData = NULL;
-
-	m_changeTrack = false;
-
-	Holder<SoundEngine>::hostage()->addSoundNode(
-		m_soundSource,
-		m_fileData,
-		m_currentPlayList->getCurrentSongName(),
-		this, true
-		);
-
-	printf("FADE_UP \n");
-
-	m_soundSource->play();
-	m_soundSource->setVolume(0);
-
-	assert(m_soundSource->getLengthS() > 2 * m_fadeTime);
-
-	m_fadeoffTime = m_soundSource->getLengthS() - m_fadeTime;
-
-	m_timeFadeBegin = clock();
+	releaseMusic(true);
 }
-
+//////////////////////////////////////////////////////////////////////////
+void	Amplifier::stop()
+{
+	if(m_music)
+	{
+		m_music->stop();
+		releaseMusic(false);
+	}
+}
+//////////////////////////////////////////////////////////////////////////
 void	Amplifier::addPlayList(const std::string& _playListFileName)
 {
 	m_playLists.insert(
 		std::make_pair(_playListFileName, new Playlist(_playListFileName))
 		);
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Amplifier::erasePlayList(const std::string& _playListFileName)
 {
 	m_playLists.erase(_playListFileName);
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Amplifier::loadPlayList(const std::string& _filename)
 {
 	std::string playListFileName;
@@ -101,98 +82,96 @@ void	Amplifier::loadPlayList(const std::string& _filename)
 		}
 	}
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Amplifier::listenPaused(bool _pause)
 {
 	m_isPaused = _pause;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	Amplifier::listenStopped()
 {
-	printf("here i am mother fuckers!\n");
-	m_changeTrack = true;
+	m_isMusicDead = true;
 }
-
-void	Amplifier::update(double _timing)
+//////////////////////////////////////////////////////////////////////////
+void	Amplifier::updateFadeParams(SoundSourceInterface* _sound)
 {
-	if(m_soundSource == NULL || m_isPaused == true)
-	{
-		return;
-	} 
-
-	//printf("vol = %f \n",m_soundSource->getPositiongetVolume());
-
-	if(m_changeTrack == true)
-	{
-		m_currentPlayList->nextSong();
-
-		Holder<SoundEngine>::hostage()->deleteSound(m_soundSource);
-		m_soundSource = NULL;
-		Holder<FileEngine>::hostage()->closeFile(m_fileData);
-		m_fileData = NULL;
-
-		_beginFade();
-		m_changeTrack = false;
-	}
-
 	clock_t ticks = clock();
 
-	double time_offset_begin = (ticks - m_timeFadeBegin) / 1000.0;
+	float time_offset_begin = (ticks - m_timeFadeBegin);
 
-	if(m_fadeState == true)
+	if(m_fadeState == false)
 	{
-		if (m_soundSource->getVolume() >= 1.0f)
+		if (_sound->getVolume() >= 1.0f)
 		{
-			m_soundSource->setVolume(1.0f);
-
+			_sound->setVolume(1.0f);
 			m_timeFadeEnd = clock();
-			m_fadeState = false;
-
-			printf("FADE_DOWN \n");
+			m_fadeState = true;
 		}
 		else
 		{
 			float new_volume = time_offset_begin / m_fadeTime;
+			_sound->setVolume(new_volume);
 			printf("%f \n",new_volume);
-			m_soundSource->setVolume(new_volume);
 		}
 	}
 	else
 	{
-		if(m_soundSource->getVolume() > 0)
+		if(_sound->getVolume() > 0)
 		{
 			if(time_offset_begin >= m_fadeoffTime)
 			{
-				double time_offset_end = (ticks - m_timeFadeEnd) / 1000.0;
+				float time_offset_end = (ticks - m_timeFadeEnd);
 				float new_volume = (m_fadeoffTime - time_offset_end) / m_fadeTime;
-				m_soundSource->setVolume(new_volume);
+				_sound->setVolume(new_volume);
+				printf("%f \n",new_volume);
 			}
 		}
 	}      
-
 }
-
-void	Amplifier::_beginFade()
+//////////////////////////////////////////////////////////////////////////
+void	Amplifier::update(float _timing)
 {
-	m_fadeState = true;
+	if(m_isPaused)
+	{
+		return;
+	}
 
-	printf("%s \n",m_currentPlayList->getCurrentSongName().c_str());
+	if(m_music)
+	{
+		updateFadeParams(m_music);
+	}
 
-	Holder<SoundEngine>::hostage()->addSoundNode(
-		m_soundSource,
-		m_fileData,
-		m_currentPlayList->getCurrentSongName(),
-		this, true
-		);
+	if(m_isMusicDead)
+	{
+		releaseMusic(false);
+	
+		std::string filename = m_currentPlayList->getCurrentSongName();
+		// loading sound. UGLY
+		SoundDataDesc::SOUND_TYPE	sound_type = filename.find(".ogg") != std::string::npos ? SoundDataDesc::OGG : SoundDataDesc::WAV;
+		SoundDataDesc desc = {sound_type,filename,true,true};
+		m_music = Holder<SoundEngine>::hostage()->loadSoundSource(desc,this);
+		// play new music
+		m_music->play();
+		m_music->setVolume(0);
+		// 				
+		m_currentPlayList->nextSong();
 
-	printf("FADE_UP \n");
-
-	m_soundSource->play();
-	m_soundSource->setVolume(0);
-
-	assert(m_soundSource->getLengthS() > 2 * m_fadeTime);
-
-	m_fadeoffTime = m_soundSource->getLengthS() - m_fadeTime;
-
-	m_timeFadeBegin = clock();
+		beginFade();
+	}
 }
+//////////////////////////////////////////////////////////////////////////
+void	Amplifier::beginFade()
+{
+	assert(m_music->getLengthMS() >= 2 * m_fadeTime);
+	m_fadeoffTime = m_music->getLengthMS() - m_fadeTime;
+	m_timeFadeBegin = clock();
+	m_fadeState = false;
+}
+//////////////////////////////////////////////////////////////////////////
+void	Amplifier::releaseMusic(bool _dead)
+{
+	Holder<SoundEngine>::hostage()->releaseSoundSource(m_music);
+	m_music = NULL;
+	m_isMusicDead = _dead;
+}
+//////////////////////////////////////////////////////////////////////////

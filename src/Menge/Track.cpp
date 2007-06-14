@@ -10,9 +10,7 @@ OBJECT_IMPLEMENT(Track)
 Track::Track()
 : m_speedMove(0)
 , m_isMove(true)
-{
-	
-}
+{}
 //////////////////////////////////////////////////////////////////////////
 void Track::addPoint(const mt::vec2f &_point)
 {

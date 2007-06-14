@@ -28,7 +28,7 @@ public:
 class SoundSystemInterface
 {
 public:
-	virtual void				setListenerOrient(float* _position, float* _updir) = 0;
+	virtual void				setListenerOrient(float* _position, float* _front, float* top) = 0;
 	virtual SoundSourceInterface*		loadSoundNode(const SoundDataDesc& _desc, SoundNodeListenerInterface*	_listener = 0) = 0;
 	virtual void				releaseSoundNode(SoundSourceInterface* _sn) = 0;
 };
@@ -47,7 +47,7 @@ public:
 	virtual const float* getPosition() const = 0;
 	virtual void setLoop(bool loop) = 0;
 	virtual bool isLooping() const = 0;
-	virtual double	getLengthS() = 0;
+	virtual int	getLengthMS() = 0;
 };
 
 bool	initInterfaceSystem(SoundSystemInterface** );

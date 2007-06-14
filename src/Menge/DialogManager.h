@@ -7,8 +7,6 @@ namespace	Menge
 {
 	typedef std::map<int,MessageSpot*> TMapMessageSpot;
 
-	/*	Паттерн Holder.
-		Контейнер сообщений - MessageSpot	*/
 	class DialogManager
 	{
 	public:
@@ -19,9 +17,6 @@ namespace	Menge
 	private:
 		TMapMessageSpot m_messageSpots;
 	private:
-		/*	Пришлось вынести в область видимости класса, потому что иногда падало
-			во вложенных блоках при парсинге xml.	
-			Добавил префикс local.	*/
 		int	m_local_id;
 		float m_local_width_text;
 		std::string m_local_text;		

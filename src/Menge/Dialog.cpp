@@ -16,9 +16,7 @@ Dialog::Dialog()
 , m_soundSource(0)
 , m_fileData(0)
 , m_isUpdate(false)
-{
-
-}
+{}
 
 //////////////////////////////////////////////////////////////////////////
 bool Dialog::_activate()
@@ -101,7 +99,7 @@ void	Dialog::start()
 //////////////////////////////////////////////////////////////////////////
 void	Dialog::nextMessageSpot()
 {
-	Holder<SoundEngine>::hostage()->deleteSound(m_soundSource);
+	Holder<SoundEngine>::hostage()->releaseSoundSource(m_soundSource);
 	Holder<FileEngine>::hostage()->closeFile(m_fileData);
 	m_soundSource = NULL;
 	m_fileData = NULL;

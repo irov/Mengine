@@ -2,11 +2,6 @@
 
 #	include <string>
 
-namespace lua_boost
-{
-	class lua_functor;
-}
-
 class TiXmlElement;
 
 namespace Menge

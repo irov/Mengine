@@ -10,9 +10,6 @@ DialogManager::DialogManager()
 	Holder<DialogManager>::keep(this);
 	m_local_id = -1;
 	m_local_width_text = -1;
-	/*	Пока не известно какая длина текста в среднем, но пока стоит 1000.
-		Еще не известно как устроены макросы для парсинга xml - может эта оптимизация никчему.
-	*/
 	m_local_text.reserve(1000);
 	m_local_soundname.reserve(1000);
 }

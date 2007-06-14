@@ -50,25 +50,51 @@ void SQUALLSoundSource::play()
 			ChannelID = SQUALL_Sample_Play(SampleID, 0, 0, 1);
 		}
 
-		SQUALL_Channel_SetPauseWorker(ChannelID,PauseCallback,Listener);
-		SQUALL_Channel_SetEndWorker(ChannelID,StopCallback,Listener);
+		if(ChannelID < 0)
+		{
+			assert(!"Bad Channel!");
+		}
+
+		int err = SQUALL_Channel_SetPauseWorker(ChannelID,PauseCallback,Listener);
+		if(err < 0)
+		{
+			assert(!"Bad SQUALL_Channel_SetPauseWorker!");
+		}
+
+		err = SQUALL_Channel_SetEndWorker(ChannelID,StopCallback,Listener);
+		if(err < 0)
+		{
+			assert(!"Bad SQUALL_Channel_SetEndWorker!");
+		}
 	}
 	else
 	{
-		SQUALL_Channel_Pause(ChannelID, false);
+		int err = SQUALL_Channel_Pause(ChannelID, false);
+		if(err < 0)
+		{
+			assert(!"Bad SQUALL_Channel_Pause!");
+		}
 	}
 }
 
 void SQUALLSoundSource::pause()
 {
-	SQUALL_Channel_Pause(ChannelID, true);
+	int err = SQUALL_Channel_Pause(ChannelID, true);
+	if(err < 0)
+	{
+		assert(!"Bad SQUALL_Channel_Pause!");
+	}
 }
 
 void SQUALLSoundSource::stop()
 {
 	if(isPlaying()) 
 	{
-		SQUALL_Channel_Stop(ChannelID);
+		int err = SQUALL_Channel_Stop(ChannelID);
+		if(err < 0)
+		{
+			assert(!"Bad SQUALL_Channel_Stop!");
+		}
 	}
 }
 
@@ -79,15 +105,24 @@ bool SQUALLSoundSource::isPlaying() const
 
 void SQUALLSoundSource::setVolume(float vol)
 {
-	float dxvol = (20*100*(log10(vol / (double)128)));
-	SQUALL_Channel_SetVolume(ChannelID,dxvol * 100);
-
-	//SQUALL_Channel_SetVolume(ChannelID,vol * 100);
+//	float dxvol = (20*100*(log10(vol / (double)128)));
+	float dxvol = vol;
+	if(vol == 0) dxvol = 0;
+	int err = SQUALL_Channel_SetVolume(ChannelID,dxvol * 100);
+	if(err < 0)
+	{
+		assert(!"Bad SQUALL_Channel_SetVolume!");
+	}
 }
 
 float SQUALLSoundSource::getVolume() const	
 {
-	float v = SQUALL_Channel_GetVolume(ChannelID)/100.f;
+	float temp = SQUALL_Channel_GetVolume(ChannelID);
+	if(temp < 0)
+	{
+		assert(!"Bad SQUALL_Channel_GetVolume!");
+	}
+	float v = temp/100.f;
 	return	v;
 }
 
@@ -114,7 +149,7 @@ bool SQUALLSoundSource::isLooping() const
 	return SQUALL_Channel_GetLoop(ChannelID);
 }
 
-double	SQUALLSoundSource::getLengthS()
+int	SQUALLSoundSource::getLengthMS()
 {
-	return SQUALL_Channel_GetLengthMs(ChannelID) / 1000.0;
+	return SQUALL_Channel_GetLengthMs(ChannelID);
 }

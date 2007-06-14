@@ -1,5 +1,4 @@
 #	include "SoundEngine.h"
-#	include "SoundNode.h"
 
 #	include "FileEngine.h"
 
@@ -20,46 +19,20 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	SoundEngine::setListenerOrient(float* _position, float* _updir)
+	void	SoundEngine::setListenerOrient(const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top)
 	{
-		m_interface->setListenerOrient(_position,_updir);
+		m_interface->setListenerOrient((float*)_position.m,(float*)_front.m,(float*)top.m);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool		SoundEngine::addSoundNode(
-		SoundSourceInterface* &_node,
-		FileDataInterface* &_data,
-		const std::string& _filename,
-		SoundNodeListenerInterface*	_listener,
-		bool _isStreamAudioFile)
+	SoundSourceInterface*		SoundEngine::loadSoundSource(
+		const SoundDataDesc& desc,
+		SoundNodeListenerInterface*	_listener)
 	{
-		// ogg - может быть и Ogg и OGG и т.д.
-		SoundDataDesc::SOUND_TYPE	typeOfSoundFile = _filename.find(".ogg") != std::string::npos ? SoundDataDesc::OGG : SoundDataDesc::WAV;
-		
-		_data = Holder<FileEngine>::hostage()->openFile(_filename);
-
-		if (_data)
-		{
-			SoundDataDesc	desc_to_load = {
-				//_filename,
-				typeOfSoundFile,
-				_filename,
-			//	(void*)_data->getBuffer(),
-			//	_data->size(),
-				_isStreamAudioFile
-			};
-
-			_node = m_interface->loadSoundNode(desc_to_load, _listener);
-		}
-		else
-		{
-			assert(!"Invalid sound node!");
-			return false;
-		}
-
-		return	true;
+		SoundSourceInterface* sound = m_interface->loadSoundNode(desc, _listener);
+		return	sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void		SoundEngine::deleteSound(SoundSourceInterface* _soundSource)
+	void		SoundEngine::releaseSoundSource(SoundSourceInterface* _soundSource)
 	{
 		m_interface->releaseSoundNode(_soundSource);
 	}

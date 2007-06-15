@@ -1,4 +1,5 @@
 #	include "Player.h"
+#	include "SoundEmitter.h"
 
 #	include "SceneManager.h"
 
@@ -168,11 +169,15 @@ namespace Menge
 
 		if( inputEng->isButton(MOUSE_RIGHT,DI_PRESSED) == true )
 		{
+
+			SoundEmitter * em = m_scene->getEntityT<SoundEmitter>("TestSoundEmitter");
+			em->play();
+
 			//Animation * anim = m_scene->getEntityT<Animation>("TestAnimation");
 			//anim->setAnimState(REWIND);
 			//anim->play();
 
-			Holder<Amplifier>::hostage()->playList("logoSceneMusic.xml");
+			//Holder<Amplifier>::hostage()->playList("logoSceneMusic.xml");
 		}
 
 		if( inputEng->isKey( DIK_D, DI_HELD ) == true )

@@ -42,14 +42,30 @@ void	SQUALLSoundSystem::setListenerOrient(float* _position, float* _front, float
 	SQUALL_Listener_SetParameters(_position,_position,_front,top);
 }
 
-SoundSourceInterface*	SQUALLSoundSystem::loadSoundNode(const SoundDataDesc& _desc, SoundNodeListenerInterface*	_listener)
+SoundSourceInterface*	SQUALLSoundSystem::createSoundSource(bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface* _listener = 0)
+{
+	SQUALLSample * squall_sample = (SQUALLSample*)_sample;
+	return new SQUALLSoundSource(_isHeadMode,squall_sample,_listener);
+}
+
+SoundBufferInterface * SQUALLSoundSystem::createSoundBuffer()
+{
+	return new SQUALLSample();
+}
+
+void SQUALLSoundSystem::releaseSoundBuffer(SoundBufferInterface* _soundBuffer)
+{
+	delete static_cast<SQUALLSample*>(_soundBuffer);
+}
+
+/*SoundSourceInterface*	SQUALLSoundSystem::loadSoundNode(const SoundDataDesc& _desc, SoundNodeListenerInterface*	_listener)
 {
 	const char * t = _desc.FILENAME_TEMP_FOR_TEST.c_str();
 	int sample = SQUALL_Sample_LoadFile((char *)t, _desc.isStreamSound, 0);
 
 	return new SQUALLSoundSource(sample,_desc.isRelativeToListener,_listener);
 }
-
+*/
 void	SQUALLSoundSystem::releaseSoundNode(SoundSourceInterface* _sn)
 {
 	delete static_cast<SQUALLSoundSource*>(_sn);

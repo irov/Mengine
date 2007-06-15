@@ -6,9 +6,9 @@
 
 #	include <vector>
 
-#	include "CodecInterface.h"
+//#	include "CodecInterface.h"
 
-#	include "Decoder.h"
+//#	include "Decoder.h"
 
 class RenderImageInterface;
 

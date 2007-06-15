@@ -12,6 +12,7 @@ using namespace Menge;
 
 Amplifier::Amplifier()
 : m_music(0)
+, m_sampleMusic(0)
 , m_currentPlayList(0)
 , m_fadeState(false)
 , m_isMusicDead(false)
@@ -146,11 +147,11 @@ void	Amplifier::update(float _timing)
 		releaseMusic(false);
 	
 		std::string filename = m_currentPlayList->getCurrentSongName();
-		// loading sound. UGLY
-		SoundDataDesc::SOUND_TYPE	sound_type = filename.find(".ogg") != std::string::npos ? SoundDataDesc::OGG : SoundDataDesc::WAV;
-		SoundDataDesc desc = {sound_type,filename,true,true};
-		m_music = Holder<SoundEngine>::hostage()->loadSoundSource(desc,this);
-		// play new music
+
+		m_sampleMusic = Holder<SoundEngine>::hostage()->createSoundBuffer();
+		m_sampleMusic->loadFromFile(filename.c_str(),true);
+
+		m_music = Holder<SoundEngine>::hostage()->createSoundSource(false,m_sampleMusic,this);
 		m_music->play();
 		m_music->setVolume(0);
 		// 				
@@ -172,6 +173,9 @@ void	Amplifier::releaseMusic(bool _dead)
 {
 	Holder<SoundEngine>::hostage()->releaseSoundSource(m_music);
 	m_music = NULL;
+
+	Holder<SoundEngine>::hostage()->releaseSoundBuffer(m_sampleMusic);
+	m_sampleMusic = NULL;
 	m_isMusicDead = _dead;
 }
 //////////////////////////////////////////////////////////////////////////

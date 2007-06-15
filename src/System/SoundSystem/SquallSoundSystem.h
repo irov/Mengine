@@ -11,7 +11,9 @@ public:
 
 public:
 	void	setListenerOrient(float* _position, float* _front, float* top);
-	SoundSourceInterface*	loadSoundNode(const SoundDataDesc& _desc, SoundNodeListenerInterface*	_listener = 0);
+	SoundSourceInterface *	createSoundSource(bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface*	_listener);
+	SoundBufferInterface * createSoundBuffer();
+	void releaseSoundBuffer(SoundBufferInterface* _soundBuffer);
 	void	releaseSoundNode(SoundSourceInterface* _sn);
 };
 

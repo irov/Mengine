@@ -7,7 +7,8 @@ struct	SoundDataDesc
 	{
 		OGG,
 		WAV,
-	}	type;
+	}	
+	type;
 	
 	/*void*		buffer;
 	size_t		size;*/
@@ -25,11 +26,21 @@ public:
 	virtual void listenStopped() = 0;
 };
 
+class SoundBufferInterface
+{
+public:
+	virtual void	loadFromFile(const char* _filename, bool _isStream) = 0;
+	virtual void	loadFromMemory(void* _buffer, int _size, bool _newmem) = 0;
+	virtual void	unload() = 0;
+};
+
 class SoundSystemInterface
 {
 public:
 	virtual void				setListenerOrient(float* _position, float* _front, float* top) = 0;
-	virtual SoundSourceInterface*		loadSoundNode(const SoundDataDesc& _desc, SoundNodeListenerInterface*	_listener = 0) = 0;
+	virtual SoundSourceInterface*		createSoundSource(bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface*	_listener = 0) = 0;
+	virtual SoundBufferInterface * createSoundBuffer() = 0;
+	virtual void releaseSoundBuffer(SoundBufferInterface * _soundBuffer) = 0;
 	virtual void				releaseSoundNode(SoundSourceInterface* _sn) = 0;
 };
 

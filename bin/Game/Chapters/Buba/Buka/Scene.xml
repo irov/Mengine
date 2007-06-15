@@ -63,5 +63,11 @@
 			<Transformation Value = "1;0;0;1;40;20" />
 		</Node> <!-- Sprite -->
 
+		<Node Name = "TestSoundEmitter" Type = "SoundEmitter">
+			<ResourceName Name = "TestSound" />
+			<HeadMode Mode = "false"/>
+			<Transformation Value = "1;0;0;0;1;0;0;0;1;20;20;20" />
+		</Node> 
+
 	</Node> <!-- Layer -->
 </Node>

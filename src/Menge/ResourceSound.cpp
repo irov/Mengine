@@ -14,68 +14,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceSound::ResourceSound( const std::string & _name )
 	: ResourceImpl(_name)
+	, m_isStreamable(false)
 	{}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::play()
-	{
-		return m_interface->play();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::pause()
-	{
-		return m_interface->pause();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::stop()
-	{
-		return m_interface->stop();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceSound::isPlaying() const
-	{
-		return m_interface->isPlaying();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::setVolume(float vol)
-	{
-		return m_interface->setVolume(vol);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourceSound::getVolume() const
-	{
-		return m_interface->getVolume();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::setPosition(float x, float y, float z)
-	{
-		return m_interface->setPosition(x,y,z);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const float* ResourceSound::getPosition()
-	{
-		return m_interface->getPosition();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::setLoop(bool loop)
-	{
-		return m_interface->setLoop(loop);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceSound::isLooping() const
-	{
-		return m_interface->isLooping();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int ResourceSound::getLengthMS()
-	{
-		return m_interface->getLengthMS();
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::loader( TiXmlElement * _xml )
 	{
 		XML_FOR_EACH_TREE(_xml)
 		{
 			XML_CHECK_VALUE_NODE("File","Path",m_filename);
+			XML_CHECK_VALUE_NODE("IsStreamable","Value",m_isStreamable);
 		}
 
 		ResourceImpl::loader( _xml );
@@ -83,20 +30,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceSound::_compile()
 	{
-		/*
-			тут возникает ряд проблем:
-			-	listener где задавать?
-			-	filename быть по логике ваще не должно, но как тогда получить стрим???
-			-	и head mode где задавать?
-		*/
-		SoundDataDesc::SOUND_TYPE	sound_type = m_filename.find(".ogg") != std::string::npos ? SoundDataDesc::OGG : SoundDataDesc::WAV;
-		SoundDataDesc desc = {sound_type,m_filename,false,false};
-		m_interface = Holder<SoundEngine>::hostage()->loadSoundSource(desc,NULL);
+		m_interface = Holder<SoundEngine>::hostage()->createSoundBuffer();
+		m_interface->loadFromFile(m_filename.c_str(),m_isStreamable);
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::_release()
 	{
-		Holder<SoundEngine>::hostage()->releaseSoundSource(m_interface);
+		Holder<SoundEngine>::hostage()->releaseSoundBuffer(m_interface);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	SoundBufferInterface * ResourceSound::get()
+	{
+		return m_interface;
 	}
 }

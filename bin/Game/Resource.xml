@@ -1,6 +1,7 @@
 <DataBlock>
 	<Resource Name = "TestSound" Type = "ResourceSound" >
 		<File Path = "1.ogg" />
+		<IsStreamable Value = "false" />
 	</Resource>
 
 	<Resource Name = "output" Type = "ResourceImageMNG" >

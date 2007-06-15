@@ -276,6 +276,14 @@
 			</FileConfiguration>
 		</File>
 		<File
+			RelativePath=".\SoundBuffer.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SoundBuffer.h"
+			>
+		</File>
+		<File
 			RelativePath=".\SquallSoundSource.cpp"
 			>
 		</File>

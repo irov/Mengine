@@ -277,6 +277,14 @@
 				Name="Sound"
 				>
 				<File
+					RelativePath=".\SoundEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SoundEmitter.h"
+					>
+				</File>
+				<File
 					RelativePath=".\SoundEngine.cpp"
 					>
 				</File>
@@ -402,18 +410,6 @@
 					</File>
 					<File
 						RelativePath=".\SpriteInteractive.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="SpriteContainer"
-					>
-					<File
-						RelativePath=".\SpriteContainer.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SpriteContainer.h"
 						>
 					</File>
 				</Filter>
@@ -587,6 +583,18 @@
 					RelativePath=".\Actor.h"
 					>
 				</File>
+				<Filter
+					Name="SpriteContainer"
+					>
+					<File
+						RelativePath=".\SpriteContainer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SpriteContainer.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Avatar"

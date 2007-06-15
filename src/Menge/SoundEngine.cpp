@@ -24,12 +24,25 @@ namespace Menge
 		m_interface->setListenerOrient((float*)_position.m,(float*)_front.m,(float*)top.m);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundSourceInterface*		SoundEngine::loadSoundSource(
-		const SoundDataDesc& desc,
-		SoundNodeListenerInterface*	_listener)
+	SoundSourceInterface*	SoundEngine::createSoundSource(
+			bool _isHeadMode, 
+			SoundBufferInterface * _sample,
+			SoundNodeListenerInterface *	_listener = 0)
 	{
-		SoundSourceInterface* sound = m_interface->loadSoundNode(desc, _listener);
+
+		SoundSourceInterface* sound = m_interface->createSoundSource(_isHeadMode,_sample,_listener);
 		return	sound;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	SoundBufferInterface * SoundEngine::createSoundBuffer()
+	{
+		SoundBufferInterface * sample = m_interface->createSoundBuffer();
+		return sample;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::releaseSoundBuffer(SoundBufferInterface* _soundBuffer)
+	{
+		m_interface->releaseSoundBuffer(_soundBuffer);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void		SoundEngine::releaseSoundSource(SoundSourceInterface* _soundSource)

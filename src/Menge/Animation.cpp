@@ -8,6 +8,8 @@
 
 #	include "XmlParser.h"
 
+#	include "Holder.h"
+
 OBJECT_IMPLEMENT(Animation)
 //////////////////////////////////////////////////////////////////////////
 Animation::Animation()

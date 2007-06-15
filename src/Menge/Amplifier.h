@@ -6,6 +6,7 @@
 
 #	include "SoundSystemInterface.h"
 
+class	SoundBufferInterface;
 class	SoundSourceInterface;
 class	SoundNodeListenerInterface;
 
@@ -35,6 +36,7 @@ namespace	Menge
 			bool	m_isMusicDead;
 			
 			SoundSourceInterface * m_music;
+			SoundBufferInterface * m_sampleMusic;
 
 			clock_t	m_timeFadeBegin;
 			clock_t	m_timeFadeEnd;

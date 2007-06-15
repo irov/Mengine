@@ -21,20 +21,17 @@ int StopCallback(int ChannelID,void* UserData)
 	return 1;
 }
 
-SQUALLSoundSource::SQUALLSoundSource(int _Sample, int _Head, SoundNodeListenerInterface* _listener)
-	: SampleID(_Sample)
-	, ChannelID(-1)
+SQUALLSoundSource::SQUALLSoundSource(int _Head, SQUALLSample * sample, SoundNodeListenerInterface* _listener)
+	: ChannelID(-1)
 	, Listener(_listener)
 	, Head(_Head)
-{
-}
+	, m_sample(sample)
+{}
 
 SQUALLSoundSource::~SQUALLSoundSource()
 {
 	stop();
-	//SQUALL_Channel_Stop(ChannelID);
-	//Sleep(200); //Надо ?
-};
+}
 
 void SQUALLSoundSource::play()
 {
@@ -43,11 +40,11 @@ void SQUALLSoundSource::play()
 		if (Head)
 		{
 			float pos[3] = {};
-			ChannelID = SQUALL_Sample_Play3D(SampleID, 0, 0, 1, pos, 0); 
+			ChannelID = SQUALL_Sample_Play3D(m_sample->SampleID, 0, 0, 1, pos, 0); 
 		}
 		else
 		{
-			ChannelID = SQUALL_Sample_Play(SampleID, 0, 0, 1);
+			ChannelID = SQUALL_Sample_Play(m_sample->SampleID, 0, 0, 1);
 		}
 
 		if(ChannelID < 0)
@@ -55,16 +52,19 @@ void SQUALLSoundSource::play()
 			assert(!"Bad Channel!");
 		}
 
-		int err = SQUALL_Channel_SetPauseWorker(ChannelID,PauseCallback,Listener);
-		if(err < 0)
+		if(Listener != NULL)
 		{
-			assert(!"Bad SQUALL_Channel_SetPauseWorker!");
-		}
+			int err = SQUALL_Channel_SetPauseWorker(ChannelID,PauseCallback,Listener);
+			if(err < 0)
+			{
+				assert(!"Bad SQUALL_Channel_SetPauseWorker!");
+			}
 
-		err = SQUALL_Channel_SetEndWorker(ChannelID,StopCallback,Listener);
-		if(err < 0)
-		{
-			assert(!"Bad SQUALL_Channel_SetEndWorker!");
+			err = SQUALL_Channel_SetEndWorker(ChannelID,StopCallback,Listener);
+			if(err < 0)
+			{
+				assert(!"Bad SQUALL_Channel_SetEndWorker!");
+			}
 		}
 	}
 	else

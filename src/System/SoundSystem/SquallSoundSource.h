@@ -2,11 +2,13 @@
 
 #	include "..\..\Menge\SoundSystemInterface.h"
 
+#	include "SoundBuffer.h"
+
 class SQUALLSoundSource
 	: public SoundSourceInterface
 {
 public:
-	SQUALLSoundSource(int _Sample, int _Head, SoundNodeListenerInterface* _listener = 0);
+	SQUALLSoundSource(int _Head, SQUALLSample * sample, SoundNodeListenerInterface* _listener = 0);
 	~SQUALLSoundSource();
 	void play();
 	void pause();
@@ -20,7 +22,7 @@ public:
 	bool isLooping() const;
 	int	getLengthMS();
 private:
-	int SampleID;
+	SQUALLSample * m_sample;
 	int ChannelID;
 	int Head;
 	SoundNodeListenerInterface* Listener;

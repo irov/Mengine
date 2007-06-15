@@ -26,9 +26,6 @@ namespace	Menge
 		bool isLoaded() const;
 	private:
 		bool m_isTracksLoaded;
-		/* Хранение имени плейлиста возможно избыточно, потому что оно используется менеджером
-		BacksoundManager в std::map<std::string,Playlist>
-		*/
 		std::string	m_playListName;
 		TListTrackVec m_tracks;
 		TListTrackVec::iterator	m_currentSong;

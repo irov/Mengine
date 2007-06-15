@@ -1,4 +1,4 @@
-<Node Name = "Buka" Type = "Scene" Kill = "34">	
+<Node Name = "Buka" Type = "Scene">	
 	<Script File = "Game/Chapters/Buba/Buka/Scene.lua" />
 
 	<Node Name = "Main" Type = "Layer">

@@ -916,6 +916,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Particle"
+				>
+				<File
+					RelativePath=".\ParticleResource.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ParticleResource.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Entity"
@@ -933,6 +945,22 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\Particle.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Particle.h"
+			>
+		</File>
+		<File
+			RelativePath=".\ParticleSystem.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ParticleSystem.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

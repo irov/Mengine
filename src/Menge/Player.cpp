@@ -1,8 +1,10 @@
 #	include "Player.h"
 #	include "SoundEmitter.h"
 
-#	include "SceneManager.h"
+#	include "ParticleSystem.h"
 
+#	include "SceneManager.h"
+#include <fstream>
 #	include "Game.h"
 #	include "Chapter.h"
 #	include "Scene.h"
@@ -124,6 +126,9 @@ namespace Menge
 
 		m_scene->activate();
 	}
+
+	ParticleSystem*ps;
+
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update(float _timig)
 	{
@@ -146,8 +151,7 @@ namespace Menge
 			const mt::vec3f &dmv = inputEng->getPosition();
 			actor->moveto(dmv.v2);
 
-
-			Animation * anim = m_scene->getEntityT<Animation>("TestAnimation");
+/*			Animation * anim = m_scene->getEntityT<Animation>("TestAnimation");
 			anim->play();
 			
 			int u = 0;			
@@ -169,9 +173,14 @@ namespace Menge
 
 		if( inputEng->isButton(MOUSE_RIGHT,DI_PRESSED) == true )
 		{
+			const mt::vec3f &dmv = inputEng->getPosition();
+	
+//			psx = dmv.x;
+		//	psy = dmv.y;
 
-			SoundEmitter * em = m_scene->getEntityT<SoundEmitter>("TestSoundEmitter");
-			em->play();
+//
+		//	SoundEmitter * em = m_scene->getEntityT<SoundEmitter>("TestSoundEmitter");
+		//	em->play();
 
 			//Animation * anim = m_scene->getEntityT<Animation>("TestAnimation");
 			//anim->setAnimState(REWIND);
@@ -226,7 +235,7 @@ namespace Menge
 			avp.begin = mt::vec2f(0,0);
 			avp.end = mt::vec2f(1024,768);
 			SceneManager::renderNode( m_arrow, avp );
-		}		
+		}	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::debugRender()

@@ -50,6 +50,7 @@ namespace Menge
 					if( resource == 0 )
 					{
 						ErrorMessage( "Don't register resource type '%s' ", Type.c_str() );
+						continue;
 					}
 			
 					resource->loader( XML_CURRENT_NODE );

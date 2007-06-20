@@ -51,6 +51,10 @@ namespace Menge
 		virtual void registerEvent( const std::string &_name, ScriptObject * _func  );
 		virtual ScriptObject * event( const std::string &_name );
 
+		virtual	void setScriptable( ScriptObject * _scriptable );
+		virtual ScriptObject * getScriptable();
+		virtual bool isScriptable() const;
+
 	public:
 		void _lostChildren(Node *_node, bool _valid) override;
 

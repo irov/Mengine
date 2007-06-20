@@ -1,9 +1,13 @@
 #	include "ScriptEngine.h"
 
+#	include "ScriptObject.h"
+
 #	include "ScriptModuleDeclaration.h"
 
 #	include "FileEngine.h"
 #	include "Entity.h"
+#	include "Scene.h"
+
 
 #	include <boost/python.hpp>
 #	include <boost/detail/lightweight_test.hpp>
@@ -11,16 +15,6 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class ScriptObject
-		: public boost::python::object
-	{
-	public:
-		ScriptObject( const boost::python::object & obj )
-			: boost::python::object( obj )
-		{
-		}
-	};
-
 	class ScriptGlobal
 		: public boost::python::dict
 	{
@@ -65,12 +59,50 @@ namespace Menge
 	{
 		Py_Initialize();
 
+		ScriptModuleDeclaration::init();
+
 		boost::python::object main = boost::python::import("__main__");
 		boost::python::dict global( main.attr("__dict__") );
 		m_mainModule = new ScriptObject( main );
 		m_global = new ScriptGlobal( global );
+	}
+	void ScriptEngine::setEntitiesPath( const std::string & _path )
+	{
+		m_pathEntities = _path;
+	}
+	bool ScriptEngine::isEntityType( const std::string & _type )
+	{
+		TListEntitysType::iterator it_find = 
+			std::find( m_listEntitiesType.begin(), m_listEntitiesType.end(), _type );
 
-		ScriptModuleDeclaration::init();
+		return it_find != m_listEntitiesType.end();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::registerEntityType( const std::string & _type )
+	{
+		if( doFile( m_pathEntities + _type + ".py" ) == true )
+		{
+			try
+			{
+				if( m_global->has_key( _type ) == false )
+				{
+					return;
+				}
+
+				boost::python::object ob_type = m_global->get( _type );
+
+				if( PyType_Check( ob_type.ptr() ) == false )
+				{
+					return;
+				}
+			}
+			catch (...)
+			{
+				handleException();
+			}
+
+			m_listEntitiesType.push_back( _type );	
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::doBuffer( const char * _buffer, size_t _size )
@@ -148,23 +180,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void createEntityImpl( const std::string & _name, ScriptGlobal * m_global )
-	{
-		//boost::python::str source( _name.c_str(), _name.size() );
-		//char *s = boost::python::extract<char *>( source );
-		//PyObject* result = PyRun_String(s, Py_eval_input, m_global->ptr(), m_global->ptr());
-
-		////boost::python::exec( source, m_global, m_global );
-
-
-		////if (!result) boost::python::throw_error_already_set();
-
-		//boost::python::object o( (boost::python::detail::new_reference(result)) );
-
-		//void * d = boost::python::converter::rvalue_result_from_python(result);//<Entity*> converter;
-		////Entity * en = converter( result );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	Entity * ScriptEngine::createEntity( const std::string & _type, const std::string & _name )
 	{
 		try
@@ -181,6 +196,8 @@ namespace Menge
 			Py_INCREF( result.ptr() );
 
 			Entity * en = boost::python::extract<Entity*>( result );
+
+			en->setScriptable( new ScriptObject( result ) );
 
 			en->setName( _name );
 
@@ -227,6 +244,37 @@ namespace Menge
 			handleException();
 		}
 	}
+	void ScriptEngine::callFunctionNode( const std::string & _name, Node * _node )
+	{
+
+		if( _node->isScriptable() == false )
+		{
+			return;
+		}
+
+		if( m_global->has_key( _name ) == false )
+		{
+			return;
+		}
+
+		boost::python::object func = m_global->get( _name );
+
+		try
+		{
+			//boost::python::object obj( static_cast<Scene*>( _node ) );
+			//boost::python::converter::arg_to_python<Scene*>( _node );
+			//Py_INCREF( obj.ptr() );
+			ScriptObject * _script = _node->getScriptable();
+			boost::python::call<void>( func.ptr(), static_cast<boost::python::object>(*_script) );			//boost::python::object result(
+			//	boost::python::handle<>(
+			//	PyEval_CallFunction( func.ptr(), "(i)", 100 )
+			//	));
+		}
+		catch (...)
+		{
+			handleException();
+		}	
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::callFunctionBool( const std::string & _name, const char * _format, ... )
 	{
@@ -263,6 +311,39 @@ namespace Menge
 		}
 
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::callMethod( Entity * _entity, const std::string & _name, const char * _format, ... )
+	{
+		struct xxx
+		{
+			char x [1024];
+			// 1024 - волшебное число. Общий размер передаваемых параметров
+		}; // xxx
+
+		va_list vargs;
+		va_start(vargs, _format);
+
+		if( m_global->has_key( _name ) == false )
+		{
+			return;
+		}
+
+		boost::python::object func = m_global->get( _name );
+
+		xxx* p = (xxx*) vargs;
+
+		try
+		{
+			boost::python::object result(
+				boost::python::handle<>(
+				PyEval_CallFunction( func.ptr(), _format, p )
+				));
+		}
+		catch (...)
+		{
+			handleException();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::handleException()
@@ -302,4 +383,5 @@ namespace Menge
 				"there was no exception translator registered.");
 		}
 	}
+
 }

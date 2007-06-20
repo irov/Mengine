@@ -48,6 +48,10 @@ namespace Menge
 		virtual void registerEvent( const std::string &_name, ScriptObject * _func  ) = 0;
 		virtual ScriptObject * event( const std::string &_name ) = 0;
 
+		virtual	void setScriptable( ScriptObject * _scriptable ) = 0;
+		virtual ScriptObject * getScriptable() = 0;
+		virtual bool isScriptable() const = 0;
+
 	public:
 		virtual void update(float _timing) = 0;
 		virtual void loader(TiXmlElement *xml) = 0;

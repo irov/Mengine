@@ -193,6 +193,10 @@
 				RelativePath=".\Scene.h"
 				>
 			</File>
+			<File
+				RelativePath=".\SceneScriptWrapper.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="SceneManager"
@@ -225,6 +229,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ScriptClassWrapper.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ScriptClassWrapper.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ScriptClassWrapperDefine.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ScriptDeclarationDefine.h"
 					>
 				</File>
@@ -246,6 +262,10 @@
 				</File>
 				<File
 					RelativePath=".\ScriptModuleDeclaration.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ScriptObject.h"
 					>
 				</File>
 			</Filter>
@@ -327,18 +347,6 @@
 			</File>
 			<File
 				RelativePath=".\SystemDLL.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Chapter"
-			>
-			<File
-				RelativePath=".\Chapter.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Chapter.h"
 				>
 			</File>
 		</Filter>
@@ -942,6 +950,14 @@
 			</File>
 			<File
 				RelativePath=".\EntityScriptWrapper.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="ScriptWrapper"
+			>
+			<File
+				RelativePath=".\NodeScriptWrapper.cpp"
 				>
 			</File>
 		</Filter>

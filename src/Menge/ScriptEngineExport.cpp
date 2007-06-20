@@ -28,13 +28,13 @@ namespace Menge
 	{
 		Player *player = Holder<Player>::hostage();
 
-		Scene *scene = player->getScene();
+		//Scene *scene = player->getScene();
 
-		Dialog *dlg = findNode<Dialog>(scene, _dialog);
+		//Dialog *dlg = findNode<Dialog>(scene, _dialog);
 
-		if( dlg )
+		//if( dlg )
 		{
-			dlg->start();
+			//dlg->start();
 		}
 	}
 

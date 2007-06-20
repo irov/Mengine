@@ -2,8 +2,6 @@
 
 #	include "SceneManager.h"
 
-#	include "Chapter.h"
-
 #	include "Scene.h"
 
 #	include "Player.h"
@@ -54,9 +52,9 @@ namespace Menge
 			delete it->second;
 		}
 
-		for (TMapChapter::iterator 
-			it = m_mapChapter.begin(),
-			it_end = m_mapChapter.end();
+		for (TMapScene::iterator 
+			it = m_mapScene.begin(),
+			it_end = m_mapScene.end();
 		it != it_end;
 		++it)
 		{
@@ -70,16 +68,15 @@ namespace Menge
 	{	
 		XML_FOR_EACH_TREE( _xml )
 		{
-			//<Chapter File = "Game/Chapters/Buba/Chapter.xml" />
-			XML_CHECK_NODE("Chapter")
+			XML_CHECK_NODE_FOR_EACH("Scenes")
 			{
-				XML_DEF_ATTRIBUTES_NODE(File);
+				XML_CHECK_NODE("Scene")
+				{
+					XML_DEF_ATTRIBUTES_NODE( File );
+					Scene * scene = SceneManager::createNodeFromXmlT<Scene>( File );
 
-				SceneManager *sceneMgr = Holder<SceneManager>::hostage();
-
-				Chapter *chapter = SceneManager::createNodeFromXmlT<Chapter>(File);
-
-				addChapter(chapter);
+					addScene( scene );
+				}
 			}
 
 			XML_CHECK_NODE("BacksoundManager")
@@ -95,7 +92,6 @@ namespace Menge
 				XML_VALUE_ATTRIBUTE("File", messagesFilename);
 				m_dialogManager->loadMessagesList(messagesFilename);
 			}
-
 
 			//<Arrows>
 			//	<Arrow File = "Game/Arrows/Default.xml" />
@@ -193,11 +189,8 @@ namespace Menge
 		ScriptEngine * scriptEngine = 
 			Holder<ScriptEngine>::hostage();
 
-		if( Holder<ScriptEngine>::hostage()
-			->doFile( m_personality ) == false )
-		{
-			return false;
-		}
+		Holder<ScriptEngine>::hostage()
+			->setEntitiesPath( m_pathEntities );
 
 		for( TListEntitysDeclaration::iterator 
 			it = m_listEntitiesDeclaration.begin(),
@@ -205,11 +198,14 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			if( Holder<ScriptEngine>::hostage()
-				->doFile( m_pathEntities + *it + ".py" ) == false )
-			{
-				return false;
-			}
+			Holder<ScriptEngine>::hostage()
+				->registerEntityType( *it );			
+		}
+
+		if( Holder<ScriptEngine>::hostage()
+			->doFile( m_personality ) == false )
+		{
+			return false;
 		}
 
 		bool result = 
@@ -240,9 +236,9 @@ namespace Menge
 			it->second->deactivate();
 		}
 
-		for (TMapChapter::iterator 
-			it = m_mapChapter.begin(),
-			it_end = m_mapChapter.end();
+		for (TMapScene::iterator 
+			it = m_mapScene.begin(),
+			it_end = m_mapScene.end();
 		it != it_end;
 		++it)
 		{
@@ -250,7 +246,7 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::addArrow(Arrow *_arrow)
+	void Game::addArrow( Arrow *_arrow )
 	{
 		const std::string &name = _arrow->getName();
 
@@ -269,7 +265,7 @@ namespace Menge
 		m_mapArrow.insert(std::make_pair(name,_arrow));
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::removeArrow(const std::string &_name)
+	void Game::removeArrow( const std::string &_name )
 	{
 		m_mapArrow.erase(_name);
 	}
@@ -279,7 +275,7 @@ namespace Menge
 		return m_defaultArrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Arrow * Game::getArrow(const std::string &_name)
+	Arrow * Game::getArrow( const std::string &_name )
 	{
 		TMapArrow::iterator it_find = m_mapArrow.find( _name );
 
@@ -291,39 +287,49 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::addChapter(Chapter * _chapter)
+	void Game::addScene( Scene * _scene )
 	{
-		if( _chapter == 0 )
+		if( _scene == 0 )
 		{
 			return;
 		}
 
-		const std::string &name = _chapter->getName();
+		const std::string &name = _scene->getName();
 
 		if( name.empty() )
 		{
 			return;
 		}
 
-		TMapChapter::iterator it_find = m_mapChapter.find( name );
+		TMapScene::iterator it_find = m_mapScene.find( name );
 
-		if( it_find != m_mapChapter.end() )
+		if( it_find != m_mapScene.end() )
 		{
 			return;
 		}
 
-		m_mapChapter.insert(std::make_pair(name, _chapter));
+		m_mapScene.insert( std::make_pair( name, _scene ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Chapter * Game::getChapter(const std::string & _name )
+	Scene * Game::getScene(const std::string & _name )
 	{
-		TMapChapter::iterator it_find = m_mapChapter.find( _name );
+		TMapScene::iterator it_find = m_mapScene.find( _name );
 
-		if( it_find == m_mapChapter.end() )
+		if( it_find == m_mapScene.end() )
 		{
 			return 0;
 		}
 
 		return it_find->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::setCurrentScene( const std::string & _name )
+	{
+		Scene * scene = getScene( _name );
+
+		if( scene )
+		{
+
+		}
 	}
 }

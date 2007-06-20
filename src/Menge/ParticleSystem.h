@@ -19,10 +19,12 @@ namespace Menge
 	public:
 		ParticleSystem();
 		void	move(float x, float y);
+
 	public:
 		bool	isVisible(const Viewport & _viewPort);
 		void	update(float _timing) override;
 		void	loader(TiXmlElement *xml) override;
+
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
@@ -31,6 +33,7 @@ namespace Menge
 
 	protected:
 		ResourceParticle *	m_particleResource;
+
 	private:
 		static const int MAX_PARTICLES = 500;
 		Particle			particles[MAX_PARTICLES];
@@ -41,7 +44,6 @@ namespace Menge
 		ParticleDesc		info;
 		RenderImageInterface * m_image;
 		int					alive_num;
-	private:
 		std::string m_resourceName;
 	};
 };

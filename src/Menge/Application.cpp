@@ -58,7 +58,7 @@ namespace Menge
 	bool Application::init(const std::string &_xmlFile)
 	{
 		Holder<ScriptEngine>::keep( new ScriptEngine );
-		
+
 		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
 		scriptEngine->init();
 
@@ -94,7 +94,7 @@ namespace Menge
 
 					XML_CHECK_NODE("SoundSystem")
 					{
-						Holder<SoundEngine>::keep( new SoundEngine(DllFile) ); 
+						//Holder<SoundEngine>::keep( new SoundEngine(DllFile) ); 
 					}
 
 					XML_CHECK_NODE("Codec")
@@ -225,7 +225,7 @@ namespace Menge
 
 		Holder<InputEngine>::hostage()->update();
 
-		m_game->update(0.0007f);
+		m_game->update(0.001f);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::render()

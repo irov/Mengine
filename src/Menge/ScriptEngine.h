@@ -23,10 +23,12 @@ namespace Menge
 	public:
 		void init();
 
-		void export_function();
-
 		bool doFile( const std::string & _file );
 		bool doString( const std::string & _string );
+
+		void setEntitiesPath( const std::string & _path );
+		bool isEntityType( const std::string & _type );
+		void registerEntityType( const std::string & _type );
 
 	public:
 		ScriptObject * genFunctor( const std::string &_name );
@@ -35,15 +37,25 @@ namespace Menge
 		Entity * createEntity( const std::string & _type, const std::string & _name );
 
 		void callFunction( const std::string & _name, const char * _format = "()" , ... );
+		void callFunctionNode( const std::string & _name, Node * _node );
 
 		bool callFunctionBool( const std::string & _name, const char * _format = "()" , ... );
+
+		void callMethod( Entity * _entity, const std::string & _name, const char * _format = "()" , ... );
+
+		static void handleException();
 	
 	private:
 		void doBuffer( const char * _buffer, size_t _size );
-		void handleException();
+		
 
 	private:
 		ScriptObject * m_mainModule;
 		ScriptGlobal * m_global;
+
+		typedef std::list<std::string> TListEntitysType;
+		TListEntitysType m_listEntitiesType;
+
+		std::string m_pathEntities;
 	};
 }

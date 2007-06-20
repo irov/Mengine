@@ -4,9 +4,8 @@
 #	include "ParticleSystem.h"
 
 #	include "SceneManager.h"
-#include <fstream>
+
 #	include "Game.h"
-#	include "Chapter.h"
 #	include "Scene.h"
 #	include "Camera2D.h"
 
@@ -33,13 +32,13 @@
 #	include "Animation.h"
 
 #	include <dinput.h>
+#	include <fstream>
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Player::Player()
-	: m_chapter(0)
-	, m_avatar(0)
+	: m_avatar(0)
 	, m_scene(0)
 	, m_arrow(0)
 	, m_renderCamera(0)
@@ -52,44 +51,26 @@ namespace Menge
 		delete m_renderCamera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setChapter( const std::string & _name )
+	void Player::setCurrentScene( const std::string & _name )
 	{
-		Game * game =
-			Holder<Game>::hostage();
+		Scene * scene = Holder<Game>::hostage()
+			->getScene( _name );
 
-		m_chapter = game->getChapter( _name );
-
-		if( m_chapter == 0 )
+		if( scene == 0 )
 		{
-			ErrorMessage("ERROR: Chapter [%s] not have in Game", _name.c_str() );
-			return;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::gotoScene( const std::string & _name )
-	{
-		Game * game =
-			Holder<Game>::hostage();
-
-		if( m_chapter == 0 )
-		{
-			ErrorMessage("ERROR: Please set valid chapter for Player");
+			ErrorMessage("ERROR: Scene [%s] not have in Game", _name.c_str() );
 		}
 
-		m_scene = m_chapter->getScene( _name );
-
-		if( m_scene == 0 )
+		if( m_scene )
 		{
-			ErrorMessage("ERROR: Scene [%s] not have in Chapter", _name.c_str() );
+			m_scene->deactivate();
 		}
+
+		m_scene = scene;
+		m_scene->activate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Chapter * Player::getChapter()
-	{
-		return m_chapter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Scene * Player::getScene()
+	Scene * Player::getCurrentScene()
 	{
 		return m_scene;
 	}
@@ -123,11 +104,7 @@ namespace Menge
 		cmr->setViewportSize( vpSz );
 
 		setRenderCamera( cmr );
-
-		m_scene->activate();
 	}
-
-	ParticleSystem*ps;
 
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update(float _timig)

@@ -14,7 +14,7 @@ class StructName : public Menge::ScriptClassDeclaration{\
 		{\
 		ScriptClassDeclaration::addClassDeclaration( #Module, this, &StructName::initModule );\
 		}\
-		void init();\
+		void init() override;\
 	protected:\
 	static void initModule()\
 		{\

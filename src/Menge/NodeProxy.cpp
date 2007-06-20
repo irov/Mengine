@@ -117,6 +117,21 @@ ScriptObject * NodeProxy::event( const std::string &_name )
 	return m_node->event(_name);
 }
 //////////////////////////////////////////////////////////////////////////
+void NodeProxy::setScriptable( ScriptObject * _scriptable )
+{
+	return m_node->setScriptable( _scriptable );
+}
+//////////////////////////////////////////////////////////////////////////
+ScriptObject * NodeProxy::getScriptable()
+{
+	return m_node->getScriptable();
+}
+//////////////////////////////////////////////////////////////////////////
+bool NodeProxy::isScriptable() const
+{
+	return m_node->isScriptable();
+}
+//////////////////////////////////////////////////////////////////////////
 void NodeProxy::debugRender()
 {
 	return m_node->debugRender();

@@ -2,6 +2,7 @@
 #	include "ObjectImplement.h"
 
 #	include "Layer.h"
+#	include "Entity.h"
 
 #	include "SceneManager.h"
 #	include "ResourceManager.h"
@@ -14,7 +15,28 @@
 OBJECT_IMPLEMENT(Scene);
 //////////////////////////////////////////////////////////////////////////
 Scene::Scene()
-{}
+{
+
+}
+//////////////////////////////////////////////////////////////////////////
+Entity * Scene::createEntity(
+							 const std::string & _type, 
+							 const std::string & _name,
+							 const std::string & _layer,
+							 const mt::vec2f & _pos, 
+							 const mt::vec2f & _dir )
+{
+	Entity *en = Holder<ScriptEngine>::hostage()
+		->createEntity( _type, _name );
+
+	en->setPosition( _pos );
+	en->setDirection( _dir );
+
+	en->setScene( this );
+	en->setLayer( _layer );
+
+	return en;
+}
 //////////////////////////////////////////////////////////////////////////
 Node * Scene::getEntity( const std::string & _name )
 {
@@ -47,12 +69,20 @@ bool Scene::_activate()
 {
 	if( m_scriptFile.empty() == false )
 	{
-		int Error = Holder<ScriptEngine>::hostage()->doFile(m_scriptFile);
-
-		if( Error )
+		if( Holder<ScriptEngine>::hostage()->doFile(m_scriptFile) == false )
 		{
 			printf( "False parse script file '%s'", m_scriptFile.c_str() );
 		}		
+	}
+
+	const std::string & name = getName();
+
+	if( name.empty() == false )
+	{
+		std::string functionName = "Scene" + getName() + "_activate";
+
+		Holder<ScriptEngine>::hostage()
+			->callFunctionNode( functionName, this );
 	}
 
 	return NodeImpl::_activate();

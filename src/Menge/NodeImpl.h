@@ -72,16 +72,6 @@ namespace Menge
 			return static_cast<T*>(getChildren(_name));
 		}
 
-		template<class F>
-		void foreachChildren( F f )
-		{
-			std::for_each( 
-				m_listChildren.begin(), 
-				m_listChildren.end(), 
-				f 
-				);
-		}
-
 		virtual Node * nextChildren();
 		virtual Node * beginChildren();
 
@@ -100,6 +90,10 @@ namespace Menge
 	public:
 		virtual void registerEvent( const std::string &_name, ScriptObject * _func  );
 		virtual ScriptObject * event( const std::string &_name );
+
+		virtual	void setScriptable( ScriptObject * _scriptable );
+		virtual ScriptObject * getScriptable();
+		virtual bool isScriptable() const;
 
 	protected:
 
@@ -124,6 +118,8 @@ namespace Menge
 		Node * m_parent;
 		TListChildren m_listChildren;
 		TListChildren::iterator m_iteratorChildren;
+
+		ScriptObject * m_scriptable;
 
 	private:
 		TListChildren::iterator _findChildren(const std::string &_name);

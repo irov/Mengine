@@ -2,9 +2,12 @@
 
 #	include "NodeImpl.h"
 
+#	include "math/vec2.h"
+
 namespace Menge
 {
 	class Layer;
+	class Entity;
 
 	class Scene
 		: public NodeImpl
@@ -15,6 +18,13 @@ namespace Menge
 		Scene();
 
 	public:
+		Entity * createEntity( 
+			const std::string & _type, 
+			const std::string & _name,
+			const std::string & _layer,
+			const mt::vec2f & _pos, 
+			const mt::vec2f & _dir );
+
 		Node * getEntity( const std::string & _name );
 
 		template<class T>

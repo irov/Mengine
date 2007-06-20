@@ -11,7 +11,7 @@ namespace Menge
 {
 	class Player;
 
-	class Chapter;
+	class Scene;
 	class Arrow;
 
 	class Amplifier;
@@ -34,14 +34,16 @@ namespace Menge
 		void debugRender();
 
 	public:
-		void addArrow(Arrow *_arrow);
-		void removeArrow(const std::string &_name);
-		Arrow * getArrow(const std::string &_name);
+		void addArrow( Arrow *_arrow );
+		void removeArrow( const std::string &_name );
+		Arrow * getArrow( const std::string &_name );
 		Arrow * getDefaultArrow();
 
 	public:
-		void addChapter(Chapter * _chapter);
-		Chapter * getChapter(const std::string &_name);
+		void addScene( Scene * _scene );
+		Scene * getScene(const std::string & _name );
+
+		void setCurrentScene( const std::string & _name );
 
 	public:
 		void test( const char * _text );
@@ -64,8 +66,8 @@ namespace Menge
 		typedef std::map<std::string, Arrow*> TMapArrow;
 		TMapArrow m_mapArrow;
 
-		typedef std::map<std::string, Chapter*> TMapChapter;
-		TMapChapter m_mapChapter;
+		typedef std::map<std::string, Scene*> TMapScene;
+		TMapScene m_mapScene;
 
 		typedef std::list<std::string> TListEntitysDeclaration;
 		TListEntitysDeclaration m_listEntitiesDeclaration;

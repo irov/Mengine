@@ -1,6 +1,8 @@
 #	include "ScriptModuleDeclaration.h"
 #	include "ScriptClassDeclaration.h"
 
+#	include "ScriptEngine.h"
+
 #	include <boost/python.hpp>
 
 #	include <list>
@@ -46,6 +48,8 @@ namespace Menge
 			{
 				throw std::runtime_error("Failed to add  'MengeMath' to the interpreter's builtin modules");
 			}
+			
+			boost::python::object module = boost::python::import( it->first.c_str() );
 		}
 	}
 
@@ -53,7 +57,14 @@ namespace Menge
 	{
 		void operator () ( ScriptClassDeclaration * _declare )
 		{
-			_declare->init();
+			try
+			{
+				_declare->init();
+			}
+			catch(...)
+			{
+				ScriptEngine::handleException();
+			}			
 		}
 	};
 

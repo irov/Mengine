@@ -1,11 +1,11 @@
 <Game>
-	<Chapter File = "Game/Chapters/Buba/Chapter.xml" />
-
-	<Logo Chapter = "Buba" Scene = "Buka" />
-
 	<Arrows>
 		<Arrow File = "Game/Arrows/Default/Default.xml" />
 	</Arrows>
+
+	<Scenes>
+		<Scene File = "Game/Scene/Buka/Scene.xml" />
+	</Scenes>
 
 	<Default>
 		<Arrow Type = "Default" />

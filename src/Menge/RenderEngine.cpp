@@ -58,6 +58,8 @@ namespace Menge
 
 		RenderImageInterface * image = m_interface->loadImage(desc);
 
+		Holder<FileEngine>::hostage()->closeFile(imageData);
+
 		return image;
 	}
 

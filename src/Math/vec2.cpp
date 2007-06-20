@@ -131,14 +131,21 @@ namespace	mt
 		_out.y = _a.y * _val;
 	}
 
-	vec2f	operator*(const vec2f& _rhs, const float _val) 
+	vec2f	operator*(const vec2f& _rhs, float _val) 
 	{
 		vec2f	out;
 		scale_v2_v2(out, _rhs, _val);
 		return out;
 	}
 
-	vec2f	operator/(const vec2f& _rhs, const float _val) 
+	vec2f	operator*(float _val, const vec2f& _rhs )
+	{
+		vec2f	out;
+		scale_v2_v2(out, _rhs, _val);
+		return out;
+	}
+
+	vec2f	operator/(const vec2f& _rhs, float _val) 
 	{
 		return operator*(_rhs, 1/_val);
 	}

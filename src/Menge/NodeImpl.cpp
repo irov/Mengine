@@ -3,7 +3,11 @@
 
 #	include "SceneManager.h"
 
+#	include "Entity.h"
+
 #	include "FileEngine.h"
+#	include "ScriptEngine.h"
+
 #	include "XmlParser.h"
 #	include "ErrorMessage.h"
 
@@ -14,6 +18,7 @@ OBJECT_IMPLEMENT( NodeImpl )
 NodeImpl::NodeImpl()
 : m_parent(0)
 , m_active(false)
+, m_scriptable(0)
 , m_iteratorChildren(m_listChildren.begin())
 {
 }
@@ -28,6 +33,8 @@ NodeImpl::~NodeImpl()
 	{
 		delete *it;
 	}
+
+	delete m_scriptable;
 }
 //////////////////////////////////////////////////////////////////////////
 bool NodeImpl::activate()
@@ -140,7 +147,17 @@ void NodeImpl::loader(TiXmlElement * _xml)
 
 			if(node == 0)
 			{
-				continue;
+				if( Holder<ScriptEngine>::hostage()
+						->isEntityType( Type ) )
+				{
+					node = Holder<ScriptEngine>::hostage()
+						->createEntity( Name, Type );
+				}
+
+				if( node == 0 )
+				{
+					continue;
+				}				
 			}
 
 			node->loader(XML_CURRENT_NODE);
@@ -352,6 +369,20 @@ void NodeImpl::registerEvent( const std::string &_name, ScriptObject * _func  )
 ScriptObject * NodeImpl::event( const std::string &_name )
 {
 	return Eventable::event( _name );
+}
+//////////////////////////////////////////////////////////////////////////
+void NodeImpl::setScriptable( ScriptObject * _scriptable )
+{
+	m_scriptable = _scriptable;
+}
+//////////////////////////////////////////////////////////////////////////
+ScriptObject * NodeImpl::getScriptable()
+{
+	return m_scriptable;
+}
+bool NodeImpl::isScriptable() const
+{
+	return m_scriptable != 0;
 }
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::_debugRender()

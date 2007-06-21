@@ -193,10 +193,6 @@
 				RelativePath=".\Scene.h"
 				>
 			</File>
-			<File
-				RelativePath=".\SceneScriptWrapper.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="SceneManager"
@@ -207,10 +203,6 @@
 			</File>
 			<File
 				RelativePath=".\SceneManager.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SceneManagerScriptWrapper.cpp"
 				>
 			</File>
 		</Filter>
@@ -708,10 +700,6 @@
 				RelativePath=".\Player.h"
 				>
 			</File>
-			<File
-				RelativePath=".\PlayerScriptWrapper.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Visitor"
@@ -946,10 +934,6 @@
 			</File>
 			<File
 				RelativePath=".\Entity.h"
-				>
-			</File>
-			<File
-				RelativePath=".\EntityScriptWrapper.cpp"
 				>
 			</File>
 		</Filter>

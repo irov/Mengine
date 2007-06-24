@@ -39,8 +39,8 @@ namespace Menge
 		{
 			try
 			{
-				ScriptObject * _scriptable = it_find->second->wrapp( _node );
-				_node->setScriptable( _scriptable );
+				ScriptObject * scriptable = it_find->second->wrapp( _node );
+				_node->setScriptable( scriptable );
 			}
 			catch (...)
 			{

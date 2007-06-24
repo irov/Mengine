@@ -18,12 +18,7 @@ namespace Menge
 		Scene();
 
 	public:
-		Entity * createEntity( 
-			const std::string & _type, 
-			const std::string & _name,
-			const std::string & _layer,
-			const mt::vec2f & _pos, 
-			const mt::vec2f & _dir );
+		void layerAppend( const std::string & _layer, Node * _node );
 
 		Node * getEntity( const std::string & _name );
 

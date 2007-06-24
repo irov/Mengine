@@ -42,6 +42,14 @@ void HotSpot::_debugRender()
 
 	for( size_t i = 0; i < size; ++i )
 	{
-		renderEng->drawLine(m_poligon[i],m_poligon[ (i+1) % size ] ,2,0xffff00ff);
+		const mt::mat3f & wm = getWorldMatrix();
+		
+		mt::vec2f b;
+		mt::vec2f e;
+
+		mt::mul_v2_m3( b, m_poligon[ i ], wm );
+		mt::mul_v2_m3( e, m_poligon[ (i+1) % size ], wm );
+
+		renderEng->drawLine( b, e, 2, 0xffff00ff );
 	}
 }

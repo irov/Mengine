@@ -22,7 +22,9 @@ namespace Menge
 
 	public:
 		NodeImpl();
+
 		virtual ~NodeImpl();
+		virtual void destroy();
 
 	public:
 		virtual bool activate();
@@ -51,12 +53,12 @@ namespace Menge
 		virtual bool isRoot();
 
 	public:
-		virtual Node * createChildren(const std::string &_name, const std::string &_type);
+		virtual Node * createChildren( const std::string &_type );
 
 		template<class T>
-		T * createChildrenT(const std::string &_name, const std::string &_type)
+		T * createChildrenT( const std::string &_type )
 		{
-			return static_cast<T*>(createChildren(_name,_type));
+			return static_cast<T*>(createChildren(_type));
 		}
 
 		virtual bool addChildren(Node *_node);

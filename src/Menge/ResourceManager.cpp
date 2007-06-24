@@ -23,14 +23,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceManager::~ResourceManager()
 	{
-		for( TMapResource::iterator
-			it = m_mapResource.begin(),
-			it_end = m_mapResource.end();
-		it != it_end;
-		++it)
+		for each( const TMapResource::value_type & it in m_mapResource )
 		{
-			it->second->release();
-			delete it->second;
+			it.second->release();
+			delete it.second;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

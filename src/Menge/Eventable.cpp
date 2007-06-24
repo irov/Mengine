@@ -11,13 +11,9 @@ namespace Menge
 	{
 		ScriptEngine *scriptEng = Holder<ScriptEngine>::hostage();
 
-		for( TMapScriptFunction::iterator
-			it = m_mapScriptFunction.begin(),
-			it_end = m_mapScriptFunction.end();
-		it != it_end;
-		++it)
+		for each( const TMapScriptFunction::value_type & it in m_mapScriptFunction )
 		{
-			scriptEng->removeFunctor( it->second );
+			scriptEng->removeFunctor( it.second );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

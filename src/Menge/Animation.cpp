@@ -27,7 +27,8 @@ void Animation::loader(TiXmlElement *xml)
 
 	XML_FOR_EACH_TREE( xml )
 	{
-		XML_CHECK_VALUE_NODE( "ResourceAnim", "Name", m_resourceAnim );
+		XML_CHECK_VALUE_NODE( "Animation", "Name", m_resourceAnim );
+		XML_CHECK_VALUE_NODE( "Looping", "Value", m_looping );
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -145,7 +146,8 @@ bool Animation::_activate()
 		return false;
 	}
 
-	m_anim = Holder<ResourceManager>::hostage()->getResourceT<ResourceAnimation>( m_resourceAnim );
+	m_anim = Holder<ResourceManager>::hostage()
+		->getResourceT<ResourceAnimation>( m_resourceAnim );
 
 	if(m_anim == NULL)
 	{
@@ -160,7 +162,9 @@ bool Animation::_activate()
 void Animation::_deactivate()
 {
 	Sprite::_deactivate();
-	Holder<ResourceManager>::hostage()->releaseResource( m_anim );
+
+	Holder<ResourceManager>::hostage()
+		->releaseResource( m_anim );
 }
 //////////////////////////////////////////////////////////////////////////
 void Animation::stop()

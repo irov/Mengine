@@ -12,9 +12,9 @@ Region::Region()
 //////////////////////////////////////////////////////////////////////////
 Region::~Region()
 {
-	for (WayPointList::iterator it = m_helperWayPoints.begin(); it!=m_helperWayPoints.end(); ++it)
+	for each( WayPoint * wp in m_helperWayPoints )
 	{
-		delete *it;
+		delete wp;
 	}
 };
 //////////////////////////////////////////////////////////////////////////
@@ -58,8 +58,8 @@ void Region::_debugRender()
 		renderEng->drawLine(m_polygon[i],m_polygon[ (i+1) % size ] ,2,0xffffCCff);
 	}
 
-	for (WayPointList::iterator it = m_helperWayPoints.begin(); it != m_helperWayPoints.end(); ++it)
+	for each( WayPoint * wp in m_helperWayPoints )
 	{
-		(*it)->_debugRender();
+		wp->debugRender();
 	}
 }

@@ -25,9 +25,9 @@ Amplifier::Amplifier()
 //////////////////////////////////////////////////////////////////////////
 Amplifier::~Amplifier()
 {
-	for (TPlayListMap::iterator it = m_playLists.begin(); it!=m_playLists.end(); ++it)
+	for each( const TPlayListMap::value_type & it in m_playLists )
 	{
-		delete (*it).second;
+		delete it.second;
 	}
 }
 //////////////////////////////////////////////////////////////////////////

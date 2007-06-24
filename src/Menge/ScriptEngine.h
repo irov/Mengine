@@ -30,11 +30,15 @@ namespace Menge
 		bool isEntityType( const std::string & _type );
 		void registerEntityType( const std::string & _type );
 
+		void incref( Node * _node );
+		void decref( Node * _node );
+
 	public:
 		ScriptObject * genFunctor( const std::string &_name );
 		void removeFunctor( ScriptObject * _functor );
 
-		Entity * createEntity( const std::string & _type, const std::string & _name );
+		Entity * createEntity( const std::string & _type );
+		void removeEntity( Entity * _entity );
 
 		void callFunction( const std::string & _name, const char * _format = "()" , ... );
 		void callFunctionNode( const std::string & _name, Node * _node );

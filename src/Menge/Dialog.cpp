@@ -126,10 +126,12 @@ void	Dialog::_update(float _timing)
 	if (m_lines.empty() == false)
 	{
 		mt::vec2f pos(0,0);
-		for (TListLine::iterator it = m_lines.begin(); it != m_lines.end(); ++it)
+		for each( const std::string & line in m_lines )
 		{
-			Holder<RenderEngine>::hostage()->renderText(pos,m_dialogFont,*it);
-			pos.y+=m_dialogFont->getHeight();
+			Holder<RenderEngine>::hostage()
+				->renderText( pos, m_dialogFont, line );
+
+			pos.y += m_dialogFont->getHeight();
 		}
 	}
 
@@ -184,16 +186,15 @@ void	Dialog::createFormattedMessage(const std::string& _text, RenderFontInterfac
 
 	std::string	temp_string = *words.begin();
 
-	for (TListLine::iterator it = ++words.begin(); it != words.end(); ++it)
+	for( TListLine::iterator it = ++words.begin(); it != words.end(); ++it)
 	{
-		std::string& str = *it;
+		std::string & str = *it;
 
 		float width = 0;
 
-		for (std::string::iterator symbol = str.begin(),
-			sym_end = str.end(); symbol != sym_end; ++symbol)
+		for each( char symbol in str )
 		{
-			width+=_font->getCharWidth(*symbol);
+			width += _font->getCharWidth( symbol );
 		}
 
 		pixelFontSize += width;

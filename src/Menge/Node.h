@@ -13,7 +13,7 @@ namespace Menge
 	class Node 
 	{
 	public:
-		virtual ~Node(){};
+		virtual void destroy() = 0;
 
 	public:
 		virtual void setName(const std::string &name) = 0;

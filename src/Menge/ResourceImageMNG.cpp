@@ -108,10 +108,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageMNG::_release()
 	{
-		for( size_t i = 0, size = m_images.size(); i < size; ++i )
+		for each( const Image & img in m_images )
 		{
 			Holder<RenderEngine>::hostage()
-				->releaseRenderImage(m_images[i].renderImage);
+				->releaseRenderImage( img.renderImage );
 		}
 	}
 }

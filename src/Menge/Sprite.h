@@ -29,6 +29,9 @@ namespace Menge
 		virtual size_t getImageIndex() const;
 		virtual void setOffset(const mt::vec2f& _offset);
 
+		virtual void setImageResource( const std::string & _name );
+		virtual const std::string & getImageResource() const;
+
 	public:
 		virtual bool isVisible(const Viewport & _viewPort);
 

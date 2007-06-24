@@ -145,12 +145,8 @@ void Track::_debugRender()
 {
 	RenderEngine *renderEng = Holder<RenderEngine>::hostage();
  
-	for( TListTrackChain::iterator 
-		it = m_listChain.begin(),
-		it_end = m_listChain.end();
-	it != it_end;
-	++it)
+	for each( const TrackChain & chain in m_listChain )
 	{
-		renderEng->drawLine(it->beginPoint(),it->endPoint(),2,0xffff00ff);
+		renderEng->drawLine( chain.beginPoint(), chain.endPoint(), 2, 0xffff00ff );
 	}
 };

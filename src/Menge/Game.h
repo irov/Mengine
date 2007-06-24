@@ -43,8 +43,6 @@ namespace Menge
 		void addScene( Scene * _scene );
 		Scene * getScene(const std::string & _name );
 
-		void setCurrentScene( const std::string & _name );
-
 	public:
 		void test( const char * _text );
 

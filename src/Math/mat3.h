@@ -44,8 +44,11 @@ namespace mt
 	mat3f	operator*(const mat3f& _rhs, float _val);
 
 	bool	cmp_m3_m3(const mat3f& _a, const mat3f& _b);
+	
 	void	mul_m3_v3(vec3f& _out, const mat3f& _m, const vec3f& _v);
 	void	mul_v3_m3(vec3f& _out, const vec3f& _v, const mat3f& _m);
+	void	mul_v2_m3(vec2f& _out, const vec2f& _v, const mat3f& _m);
+
 	void	mul_m3_m3(mat3f& _out, const mat3f& _a, const mat3f& _b);
 	void	add_m3_m3(mat3f& _out, const mat3f& _a, const mat3f& _b);
 	void	sub_m3_m3(mat3f& _out, const mat3f& _a, const mat3f& _b);

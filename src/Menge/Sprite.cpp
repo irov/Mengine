@@ -75,6 +75,16 @@ size_t Sprite::getImageIndex() const
 	return m_currentImageIndex;
 }
 //////////////////////////////////////////////////////////////////////////
+void Sprite::setImageResource( const std::string & _name )
+{
+	m_resourceName = _name;
+}
+//////////////////////////////////////////////////////////////////////////
+const std::string & Sprite::getImageResource() const
+{
+	return m_resourceName;
+}
+//////////////////////////////////////////////////////////////////////////
 void Sprite::setOffset(const mt::vec2f& _offset)
 {
 	m_offset = _offset;

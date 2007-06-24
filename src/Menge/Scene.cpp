@@ -19,23 +19,13 @@ Scene::Scene()
 
 }
 //////////////////////////////////////////////////////////////////////////
-Entity * Scene::createEntity(
-							 const std::string & _type, 
-							 const std::string & _name,
-							 const std::string & _layer,
-							 const mt::vec2f & _pos, 
-							 const mt::vec2f & _dir )
+void Scene::layerAppend( const std::string & _layer, Node * _node )
 {
-	Entity *en = Holder<ScriptEngine>::hostage()
-		->createEntity( _type, _name );
-
-	en->setPosition( _pos );
-	en->setDirection( _dir );
-
-	en->setScene( this );
-	en->setLayer( _layer );
-
-	return en;
+	Layer * layer = getChildrenT<Layer>( _layer );
+	if( layer )
+	{
+		layer->addChildren( _node );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 Node * Scene::getEntity( const std::string & _name )

@@ -123,8 +123,11 @@ void Allocator2D::_updateParent()
 		parent != 0; 
 		parent = parent->getParent() )
 	{
-		m_parentAllocator = dynamic_cast<Allocator2D*>(parent);
-		if( m_parentAllocator )
+		Allocator2D * parentAllocator = dynamic_cast<Allocator2D*>(parent);
+
+		setParentAllocator( parentAllocator );
+
+		if( parentAllocator )
 		{
 			break;
 		}
@@ -162,6 +165,7 @@ bool Allocator2D::_updateMatrix()
 void Allocator2D::setParentAllocator( Allocator2D *_alloc)
 {
 	m_parentAllocator = _alloc;
+	changePivot();
 }
 //////////////////////////////////////////////////////////////////////////
 Allocator2D * Allocator2D::getParentAllocator()

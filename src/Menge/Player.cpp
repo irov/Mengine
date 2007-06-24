@@ -48,7 +48,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
 	{
-		delete m_renderCamera;
+		m_renderCamera->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setCurrentScene( const std::string & _name )
@@ -97,7 +97,7 @@ namespace Menge
 
 		setArrow( defaultArrow );
 
-		Camera2D *cmr = SceneManager::createNodeT<Camera2D>("Camera", "Camera2D" );
+		Camera2D *cmr = SceneManager::createNodeT<Camera2D>( "Camera2D" );
 
 		mt::vec2f vpSz( 1024, 768 );
 		cmr->setPosition( mt::vec2f( 512, 384 ) );

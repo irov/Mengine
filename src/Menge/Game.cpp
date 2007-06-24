@@ -43,22 +43,14 @@ namespace Menge
 
 		delete m_amplifier;
 
-		for (TMapArrow::iterator 
-			it = m_mapArrow.begin(),
-			it_end = m_mapArrow.end();
-		it != it_end;
-		++it)
+		for each( const TMapArrow::value_type & it in m_mapArrow )
 		{
-			delete it->second;
+			it.second->destroy();
 		}
 
-		for (TMapScene::iterator 
-			it = m_mapScene.begin(),
-			it_end = m_mapScene.end();
-		it != it_end;
-		++it)
+		for each( const TMapScene::value_type & it in m_mapScene )
 		{
-			delete it->second;
+			it.second->destroy();
 		}
 
 		delete m_player;
@@ -192,14 +184,10 @@ namespace Menge
 		Holder<ScriptEngine>::hostage()
 			->setEntitiesPath( m_pathEntities );
 
-		for( TListEntitysDeclaration::iterator 
-			it = m_listEntitiesDeclaration.begin(),
-			it_end = m_listEntitiesDeclaration.end();
-		it != it_end;
-		++it)
+		for each( const std::string & enType in m_listEntitiesDeclaration )			
 		{
 			Holder<ScriptEngine>::hostage()
-				->registerEntityType( *it );			
+				->registerEntityType( enType );
 		}
 
 		if( Holder<ScriptEngine>::hostage()
@@ -227,22 +215,14 @@ namespace Menge
 		Holder<ScriptEngine>::hostage()
 			->callFunction( m_eventFini );
 
-		for (TMapArrow::iterator 
-			it = m_mapArrow.begin(),
-			it_end = m_mapArrow.end();
-		it != it_end;
-		++it)
+		for each( const TMapArrow::value_type & it in m_mapArrow )
 		{
-			it->second->deactivate();
+			it.second->deactivate();
 		}
 
-		for (TMapScene::iterator 
-			it = m_mapScene.begin(),
-			it_end = m_mapScene.end();
-		it != it_end;
-		++it)
+		for each( const TMapScene::value_type & it in m_mapScene )
 		{
-			it->second->deactivate();
+			it.second->deactivate();
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -308,6 +288,9 @@ namespace Menge
 			return;
 		}
 
+		Holder<ScriptEngine>::hostage()
+			->incref( _scene );
+
 		m_mapScene.insert( std::make_pair( name, _scene ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -321,15 +304,5 @@ namespace Menge
 		}
 
 		return it_find->second;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::setCurrentScene( const std::string & _name )
-	{
-		Scene * scene = getScene( _name );
-
-		if( scene )
-		{
-
-		}
 	}
 }

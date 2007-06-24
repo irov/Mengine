@@ -36,6 +36,15 @@ namespace Menge
 	{
 		delete m_mainModule;
 		delete m_global;
+
+		PyObject * obj = PyImport_GetModuleDict() ;
+		PyObject * obj_menge = PyDict_GetItemString( obj, "Menge" );
+
+		PyObject * obj_menge_dict = PyModule_GetDict( obj_menge );
+
+		PyObject * obj_menge_dict_all2d = PyDict_GetItemString( obj_menge_dict, "Allocator2D" );
+
+		Py_DECREF( obj_menge_dict_all2d );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ScriptObject * ScriptEngine::genFunctor( const std::string &_name )
@@ -61,15 +70,39 @@ namespace Menge
 
 		ScriptModuleDeclaration::init();
 
-		boost::python::object main = boost::python::import("__main__");
+		boost::python::object main = 
+			boost::python::object(
+			boost::python::handle<>(
+			boost::python::borrowed(
+			PyImport_AddModule("__main__")
+			)));
+
 		boost::python::dict global( main.attr("__dict__") );
 		m_mainModule = new ScriptObject( main );
 		m_global = new ScriptGlobal( global );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::incref( Node * _node )
+	{
+		if( _node->isScriptable() )
+		{
+			boost::python::incref( _node->getScriptable()->ptr() );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::decref( Node * _node )
+	{
+		if( _node->isScriptable() )
+		{	
+			boost::python::decref( _node->getScriptable()->ptr() );
+		}		
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::setEntitiesPath( const std::string & _path )
 	{
 		m_pathEntities = _path;
 	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::isEntityType( const std::string & _type )
 	{
 		TListEntitysType::iterator it_find = 
@@ -180,7 +213,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntity( const std::string & _type, const std::string & _name )
+	Entity * ScriptEngine::createEntity( const std::string & _type )
 	{
 		try
 		{
@@ -193,13 +226,11 @@ namespace Menge
 				, m_global->ptr()))
 				));
 
-			Py_INCREF( result.ptr() );
-
 			Entity * en = boost::python::extract<Entity*>( result );
 
 			en->setScriptable( new ScriptObject( result ) );
 
-			en->setName( _name );
+			incref( en );
 
 			return en;
 		}
@@ -210,10 +241,21 @@ namespace Menge
 
 		return 0;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::removeEntity( Entity * _entity )
+	{
+		ScriptObject * scriptable = _entity->getScriptable();
 
+		boost::python::decref( scriptable->ptr() );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::callFunction( const std::string & _name, const char * _format, ... )
 	{
+		if( m_global->has_key( _name ) == false )
+		{
+			return;
+		}
+
 		struct xxx
 		{
 			char x [1024];
@@ -222,11 +264,6 @@ namespace Menge
 
 		va_list vargs;
 		va_start(vargs, _format);
-
-		if( m_global->has_key( _name ) == false )
-		{
-			return;
-		}
 
 		boost::python::object func = m_global->get( _name );
 
@@ -243,6 +280,8 @@ namespace Menge
 		{
 			handleException();
 		}
+
+		va_end( vargs );
 	}
 	void ScriptEngine::callFunctionNode( const std::string & _name, Node * _node )
 	{
@@ -266,6 +305,7 @@ namespace Menge
 			//Py_INCREF( obj.ptr() );
 			ScriptObject * _script = _node->getScriptable();
 			boost::python::call<void>( func.ptr(), static_cast<boost::python::object>(*_script) );			//boost::python::object result(
+
 			//	boost::python::handle<>(
 			//	PyEval_CallFunction( func.ptr(), "(i)", 100 )
 			//	));
@@ -278,6 +318,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::callFunctionBool( const std::string & _name, const char * _format, ... )
 	{
+		if( m_global->has_key( _name ) == false )
+		{
+			return false;
+		}
+
 		struct xxx
 		{
 			char x [1024];
@@ -286,11 +331,6 @@ namespace Menge
 
 		va_list vargs;
 		va_start(vargs, _format);
-
-		if( m_global->has_key( _name ) == false )
-		{
-			return false;
-		}
 
 		boost::python::object func = m_global->get( _name );
 
@@ -310,11 +350,18 @@ namespace Menge
 			handleException();
 		}
 
+		va_end( vargs );
+
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::callMethod( Entity * _entity, const std::string & _name, const char * _format, ... )
 	{
+		if( m_global->has_key( _name ) == false )
+		{
+			return;
+		}
+
 		struct xxx
 		{
 			char x [1024];
@@ -323,11 +370,6 @@ namespace Menge
 
 		va_list vargs;
 		va_start(vargs, _format);
-
-		if( m_global->has_key( _name ) == false )
-		{
-			return;
-		}
 
 		boost::python::object func = m_global->get( _name );
 
@@ -344,6 +386,8 @@ namespace Menge
 		{
 			handleException();
 		}
+
+		va_end( vargs );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::handleException()

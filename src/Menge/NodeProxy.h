@@ -10,6 +10,7 @@ namespace Menge
 	public:
 		NodeProxy( Node *_node);
 		virtual ~NodeProxy();
+		virtual void destroy();
 
 	public:
 		bool activate() override;

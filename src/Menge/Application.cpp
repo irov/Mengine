@@ -157,10 +157,9 @@ namespace Menge
 			return false;
 		}
 
-		for( TListLoadPaks::iterator it = listLoadPaks.begin(),	it_end = listLoadPaks.end();
-				it != it_end; ++it)
+		for each( const TListLoadPaks::value_type & it in listLoadPaks )
 		{
-			Holder<FileEngine>::hostage()->loadPak(it->first,it->second);
+			Holder<FileEngine>::hostage()->loadPak( it.first, it.second );
 		}
 
 		//хг-гю кхмхи мерс бняярюмнбкемхъ пеяспянб.

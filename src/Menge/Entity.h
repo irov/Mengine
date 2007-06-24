@@ -12,15 +12,16 @@ namespace Menge
 		OBJECT_DECLARE( Entity )
 
 	public:
-		void setScene( Scene * _scene );
+		~Entity();
 
 	public:
-		void setLayer( const std::string & _name );
+		void destroy() override;
+
+	public:
+		bool addChildren( Node * _node ) override;
 
 	protected:
 		bool _activate();
 
-	private:
-		Scene * m_scene;
 	};
 }

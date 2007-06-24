@@ -25,25 +25,39 @@ NodeImpl::NodeImpl()
 //////////////////////////////////////////////////////////////////////////
 NodeImpl::~NodeImpl()
 {
-	for( TListChildren::iterator 
-		it = m_listChildren.begin(),
-		it_end = m_listChildren.end();
-	it != it_end;
-	++it)
+	delete m_scriptable;
+}
+//////////////////////////////////////////////////////////////////////////
+void NodeImpl::destroy()
+{
+	for each( Node * children in m_listChildren )
 	{
-		delete *it;
+		if( children->isScriptable() )
+		{
+			Holder<ScriptEngine>::hostage()
+				->decref( children );
+		}
+
+		children->destroy();
 	}
 
-	delete m_scriptable;
+	if( isScriptable() )
+	{
+		Holder<ScriptEngine>::hostage()
+			->decref( this );
+	}
+	else
+	{
+		delete this;
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 bool NodeImpl::activate()
 {
-	std::for_each( 
-		m_listChildren.begin(), 
-		m_listChildren.end(), 
-		std::mem_fun( &Node::activate) 
-		);
+	for each( Node * children in m_listChildren )
+	{
+		children->activate();
+	}
 
 	if( m_active )
 	{
@@ -57,12 +71,10 @@ bool NodeImpl::activate()
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::deactivate()
 {
-	std::for_each( 
-		m_listChildren.begin(), 
-		m_listChildren.end(),
-		std::mem_fun( &Node::deactivate ) 
-		);
-
+	for each( Node * children in m_listChildren )
+	{
+		children->deactivate();
+	}
 
 	if( m_active )
 	{
@@ -124,11 +136,10 @@ void NodeImpl::update(float _timing)
 	{
 		_update(_timing);
 
-		std::for_each(
-			m_listChildren.begin(), 
-			m_listChildren.end(), 
-			std::bind2nd( std::mem_fun( &Node::update ) ,_timing ) 
-			);
+		for each( Node * children in m_listChildren )
+		{
+			children->update( _timing );
+		}
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -143,23 +154,14 @@ void NodeImpl::loader(TiXmlElement * _xml)
 			XML_DEF_ATTRIBUTES_NODE(Name);
 			XML_DEF_ATTRIBUTES_NODE(Type);
 
-			Node *node = createChildren(Name,Type);
-
+			Node *node = createChildren( Type );
+	
 			if(node == 0)
 			{
-				if( Holder<ScriptEngine>::hostage()
-						->isEntityType( Type ) )
-				{
-					node = Holder<ScriptEngine>::hostage()
-						->createEntity( Name, Type );
-				}
-
-				if( node == 0 )
-				{
-					continue;
-				}				
+				continue;
 			}
 
+			node->setName( Name );
 			node->loader(XML_CURRENT_NODE);
 		}
 
@@ -183,7 +185,14 @@ void NodeImpl::loader(TiXmlElement * _xml)
 						XML_DEF_ATTRIBUTES_NODE(Name);
 						XML_DEF_ATTRIBUTES_NODE(Type);
 
-						Node *node = createChildren(Name,Type);
+						Node *node = createChildren( Type );
+						
+						if(node == 0)
+						{
+							continue;
+						}
+
+						node->setName( Name );
 					
 						node->loader( XML_CURRENT_NODE );
 						//node->setResource(File);
@@ -235,9 +244,9 @@ NodeImpl::TListChildren::iterator NodeImpl::_findChildren(const std::string &_na
 	return it_find;
 }
 /////////////////////////////////////////////////////////////////////////
-Node * NodeImpl::createChildren(const std::string &_name, const std::string &_type)
+Node * NodeImpl::createChildren( const std::string &_type )
 {
-	Node *node = SceneManager::createNode(_name,_type);
+	Node *node = SceneManager::createNode( _type );
 
 	if( node )
 	{
@@ -259,6 +268,9 @@ bool NodeImpl::addChildren(Node *_node)
 
 	_node->setParent(this);
 
+	Holder<ScriptEngine>::hostage()
+		->incref( _node );
+
 	m_listChildren.push_back(_node);
 
 	return true;
@@ -273,6 +285,11 @@ bool NodeImpl::isChildren(Node *_node)
 //////////////////////////////////////////////////////////////////////////
 bool NodeImpl::isChildren(const std::string &_name)
 {
+	if( _name.empty() )
+	{
+		return false;
+	}
+
 	TListChildren::iterator it_find = _findChildren(_name);
 
 	if( it_find == m_listChildren.end() )
@@ -321,10 +338,10 @@ Node * NodeImpl::beginChildren()
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::visitChildren( Visitor *_visitor )
 {
-	std::for_each( 
-		m_listChildren.begin(), 
-		m_listChildren.end(), 
-		std::bind1st( std::mem_fun( &Visitor::apply ) , _visitor ) );
+	for each( Node * children in m_listChildren )
+	{
+		_visitor->apply( children );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::removeChildren(Node *_node)
@@ -346,17 +363,20 @@ void NodeImpl::removeChildren(const std::string &_name)
 	if( it_find != m_listChildren.end() )
 	{
 		_lostChildren(*it_find,false);
+
+		Holder<ScriptEngine>::hostage()
+			->decref( *it_find );
+
 		m_listChildren.erase(it_find);
 	}
 }
 //////////////////////////////////////////////////////////////////////////
 void NodeImpl::debugRender()
 {
-	std::for_each(
-		m_listChildren.begin(), 
-		m_listChildren.end(), 
-		std::mem_fun( &Node::debugRender )
-		);
+	for each( Node * children in m_listChildren )
+	{
+		children->debugRender();
+	}
 
 	_debugRender();
 }
@@ -380,6 +400,7 @@ ScriptObject * NodeImpl::getScriptable()
 {
 	return m_scriptable;
 }
+//////////////////////////////////////////////////////////////////////////
 bool NodeImpl::isScriptable() const
 {
 	return m_scriptable != 0;

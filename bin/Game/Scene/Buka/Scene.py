@@ -1,3 +1,11 @@
+import Menge
+
+from Menge import vec2f
+
 def SceneBuka_activate( scene ):
-	print "assa -> ", scene
+	en = Menge.createEntity( "Block", vec2f(200,200), vec2f(1,0) )
+
+	en.activate();
+
+	scene.layerAppend( "Main", en )
 	pass

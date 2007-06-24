@@ -82,6 +82,13 @@ namespace	mt
 		return out;
 	}
 
+	void mul_v2_m3(vec2f& _out, const vec2f& _v, const mat3f& _m)
+	{
+		_out.x = _m[0][0] * _v.x + _m[1][0] * _v.y + _m[2][0];
+		_out.y = _m[0][1] * _v.x + _m[1][1] * _v.y + _m[2][1];
+	}
+
+
 	/*	Matrix/Matrix Mult  */
 	void mul_m3_m3(mat3f& _out, const mat3f& _a, const mat3f& _b)
 	{

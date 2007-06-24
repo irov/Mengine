@@ -1,33 +1,35 @@
 #	include "Entity.h"
 #	include "ObjectImplement.h"
 
+#	include "Holder.h"
+#	include "ScriptEngine.h"
+
 #	include "Scene.h"
 #	include "Layer.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT( Entity )
 //////////////////////////////////////////////////////////////////////////
-void Entity::setScene( Scene * _scene )
+Entity::~Entity()
 {
-	m_scene = _scene;
+	Holder<ScriptEngine>::hostage();
 }
 //////////////////////////////////////////////////////////////////////////
-void Entity::setLayer( const std::string & _name )
+void Entity::destroy()
 {
-	if( m_parent )
-	{
-		m_parent->removeChildren( this );
-	}
-
-	Layer * layer = m_scene->getChildrenT<Layer>( _name );
-
-	if( layer )
-	{
-		layer->addChildren( this );
-	}
+	Holder<ScriptEngine>::hostage()
+		->removeEntity( this );
 }
+//////////////////////////////////////////////////////////////////////////
+bool Entity::addChildren( Node * _node )
+{
+	return Allocator2D::addChildren( _node );
+};
 //////////////////////////////////////////////////////////////////////////
 bool Entity::_activate()
 {
+	Holder<ScriptEngine>::hostage()
+		->callMethod( this, "activate", "()" );
+
 	return true;
 }

@@ -9,21 +9,30 @@
 #	include "RenderEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "Entity.h"
+
 #	include "XmlParser.h"
 #	include "ErrorMessage.h"
 
 using namespace Menge;
 
 //////////////////////////////////////////////////////////////////////////
-Node* SceneManager::createNode(const std::string &_name, const std::string &_type)
+Node* SceneManager::createNode( const std::string & _type )
 {
 	Node *node = NodeFactory::genNode(_type);
-	
+
 	if( node )
 	{
-		node->setName(_name);
+		return node;
 	}
 
+	ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
+	
+	if( scriptEngine->isEntityType( _type ) )
+	{
+		node = scriptEngine->createEntity( _type );
+	}
+	
 	return node;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -49,8 +58,9 @@ Node * SceneManager::createNodeFromXml( const std::string &_file)
 		{
 			XML_DEF_ATTRIBUTES_NODE(Name);
 			XML_DEF_ATTRIBUTES_NODE(Type);
-			Node *node = createNode(Name,Type);
-			node->loader(XML_CURRENT_NODE);			
+			Node *node = createNode( Type );
+			node->setName( Name );
+			node->loader(XML_CURRENT_NODE);		
 //			node->setResource(_file);
 			return node;
 		}

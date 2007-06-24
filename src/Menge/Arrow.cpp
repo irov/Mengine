@@ -46,7 +46,7 @@ void Arrow::loader( TiXmlElement *_xml )
 		{
 			XML_DEF_ATTRIBUTES_NODE(Type);
 			
-			m_arrowIdle = createChildrenT<Sprite>("_Idle", Type);
+			m_arrowIdle = createChildrenT<Sprite>( Type );
 			m_arrowIdle->loader(XML_CURRENT_NODE);
 		}
 

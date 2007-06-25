@@ -6,7 +6,7 @@ class	D3D9Font
 	: public RenderFontInterface
 {
 public:
-	D3D9Font(LPDIRECT3DDEVICE9 dev, const FontDesc&	_fontDesc);
+	D3D9Font(RenderSystemInterface * _rs, LPDIRECT3DDEVICE9 dev, const FontDesc&	_fontDesc);
 	~D3D9Font();
 
 public:
@@ -15,10 +15,10 @@ public:
 	float			getCharWidth(char id) const;
 public:
 	FontCharDesc&		_getChar(char id);
-	LPDIRECT3DTEXTURE9	_getTexPointer() const;
+	RenderImageInterface*	getRenderImage() const; 	
 private:
+	RenderImageInterface*	m_rmi;
 	FontCharDesc		m_chars[256];
-	LPDIRECT3DTEXTURE9	m_texPointer;
 	float				m_height;
 	unsigned int		m_color;
 };

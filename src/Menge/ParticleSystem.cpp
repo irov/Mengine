@@ -6,6 +6,9 @@
 #	include "Holder.h"
 #	include "RenderEngine.h"
 
+#	include "PointEmitter.h"
+#	include "SimplePhysicAffector.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -17,13 +20,34 @@ namespace Menge
 		return min + r * (max-min);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleSystem::ParticleSystem()
-		: emission_residue(0.0f)
-		, alive_num(0)
-		, fAge(-1)
-		, position(0,0)
-		, prev_position(0,0)
+	void	ParticleSystem::addAffector(ParticleAffector* _aff)
 	{
+		m_affectors.push_back(_aff);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	ParticleSystem::addEmitter(ParticleEmitter* _em)
+	{
+		m_emitters.push_back(_em);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ParticleSystem::ParticleSystem()
+		: alive_num(0)
+	{
+		addEmitter(new PointEmitter());
+		addAffector(new SimplePhysicAffector());
+
+		m_particlePool.reserve(200);
+		m_particlePool.resize(200);
+		
+		for( size_t i = 0; i < m_particlePool.size(); ++i )
+		{
+            m_particlePool[i] = new Particle();
+		}
+
+		for( size_t i = 0; i < m_particlePool.size(); ++i )
+        {
+			m_freeParticleList.push_back( m_particlePool[i] );
+        }
 	}
 	///////////////////////////////////////////////////////////////////////////
 	bool ParticleSystem::isVisible(const Viewport & _viewPort)
@@ -33,6 +57,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleSystem::_activate()
 	{
+		if( Renderable::_activate() == false )
+		{
+			return false;
+		}
+
 		m_particleResource = 
 		Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceParticle>( m_resourceName );
@@ -50,6 +79,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleSystem::_deactivate()
 	{
+		Renderable::_deactivate();
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_particleResource );
 	}
@@ -66,118 +96,87 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleSystem::_debugRender()
 	{};
+
 	//////////////////////////////////////////////////////////////////////////
 	void	ParticleSystem::update(float t)
 	{
-		move(300,300);
-		if(fAge >= 0)
+		std::list<Particle*>::iterator it;
+		std::list<Particle*>::iterator end = m_activeParticleList.end();
+
+/*		for(it = m_activeParticleList.begin(); it != end;)
 		{
-			fAge += t;
-			if(fAge >= info.lifetime) fAge = -2.0f;
-		}
+			Particle * particle = static_cast<Particle*>(*it);
+			particle->m_timeToLive += t;
 
-		Particle * particle = particles;
-
-		for(int i = 0; i < alive_num; i++)
-		{
-			particle->age += t;
-
-			if(particle->age >= particle->terminal_age)
+			if(particle->m_timeToLive >= particle->m_totalTime)
 			{
-				alive_num--;
-				memcpy(particle, &particles[alive_num], sizeof(Particle));
-				i--;
-				continue;
+			//	m_freeParticleList.splice(m_freeParticleList.end(), m_activeParticleList, it++);
+				++it;
 			}
-
-			particle->integrate(position,t);
-			particle++;
-		}
-
-		if(fAge != -2.0f)
-		{
-			float	particles_needed = info.emission * t + emission_residue;
-			int		particles_created = (int)particles_needed;
-			emission_residue = particles_needed - particles_created;
-
-			Particle * particle = &particles[alive_num];
-
-			for(int i = 0; i < particles_created; i++)
+			else
 			{
-				if(alive_num >= MAX_PARTICLES) break;
-
-				particle->age = 0.0f;
-				particle->terminal_age = rand2(info.life.x, info.life.y);
-
-				particle->x = prev_position+(position-prev_position)*rand2(0.0f, 1.0f);
-
-				float ang = info.dir-1.57f+rand2(0,info.spread)-info.spread/2.0f;
-
-				particle->v.x = cosf(ang);
-				particle->v.y = sinf(ang);
-				particle->v *= rand2(info.v.x, info.v.y);
-
-				particle->g = rand2(info.g.x, info.g.y);
-				particle->r = rand2(info.r.x, info.r.y);
-				particle->tan = rand2(info.tan.x, info.tan.y);
-
-				particle->size = rand2(info.size.x, info.size.x+(info.size.y-info.size.x)*info.size.z);
-				particle->size_dt = (info.size.y-particle->size) / particle->terminal_age;
-
-				particle->spin = rand2(info.spin.x, info.spin.x+(info.spin.y-info.spin.x)*info.spin.z);
-				particle->spin_dt = (info.spin.y-particle->spin) / particle->terminal_age;
-
-				particle->color.r = rand2(info.startColor.r, info.startColor.r+(info.endColor.r-info.startColor.r)*info.varColor.x);
-				particle->color.g = rand2(info.startColor.g, info.startColor.g+(info.endColor.g-info.startColor.g)*info.varColor.x);
-				particle->color.b = rand2(info.startColor.b, info.startColor.b+(info.endColor.b-info.startColor.b)*info.varColor.x);
-				particle->color.a = rand2(info.startColor.a, info.startColor.a+(info.endColor.a-info.startColor.a)*info.varColor.y);
-
-				particle->color_dt = (info.endColor-particle->color) / particle->terminal_age;
-
-				alive_num++;
-				particle++;
+				++it;
 			}
 		}
+*/
+		int emissionCount = 0;
+		
+		for(std::list<ParticleEmitter*>::iterator it = m_emitters.begin(); it != m_emitters.end(); ++it)
+		{
+			emissionCount+=(*it)->getEmissionCount(t);
+		}
 
-		prev_position = position;
+		//if(emissionCount <= m_freeParticleList.size())
+		//{
+			for(int i = 0; i < emissionCount; i++)
+			{
+				Particle * particle = createParticle();
+				for(std::list<ParticleEmitter*>::iterator it = m_emitters.begin(); it != m_emitters.end(); ++it)
+				{
+					(*it)->emitt(t,particle);
+				}
+			}
+		//}
+
+		if(m_activeParticleList.empty())
+		{
+			return;
+		}
+
+		for(std::list<ParticleAffector*>::iterator it = m_affectors.begin(); it != m_affectors.end(); ++it)
+		{
+			(*it)->affectParticles(t,m_activeParticleList);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleSystem::_render( const mt::mat3f &rwm, const Viewport & _viewPort ) 
 	{
-		Particle * particle = particles;
-
-		for(int i = 0; i < alive_num; i++)
+		if(m_activeParticleList.empty())
 		{
+			return;
+		}
 
+		Particle* particle = *m_activeParticleList.begin();
+
+		for(int i = 0; i < m_activeParticleList.size(); i++)
+		{
 			mt::mat3f _transform;
 
 			mt::ident_m3(_transform);
 
-			float v = particle->spin*particle->age;
-
-		/*	_transform.v0.x = cosf(v);
-			_transform.v0.y = -sinf(v);
-
-			_transform.v1.x = sinf(v);
-			_transform.v1.y = cosf(v);
-*/
-			_transform.v2.x = particle->x.x;
-			_transform.v2.y = particle->x.y;
-
-		//	_transform = _transform * rwm;
+			float v = particle->m_rotation*particle->m_timeToLive;
 		
+			_transform.v2.x = particle->m_position.x;
+			_transform.v2.y = particle->m_position.y;
+
 			mt::vec2f _size(m_image->getWidth(),m_image->getHeight());
 
-			unsigned int col = (DWORD(particle->color.a*255.0f)<<24) + (DWORD(particle->color.r*255.0f)<<16) + (DWORD(particle->color.g*255.0f)<<8) + DWORD(particle->color.b*255.0f);
+            _size *= particle->m_size;
+
+			unsigned int col = (DWORD(particle->m_color.a*255.0f)<<24) + (DWORD(particle->m_color.r*255.0f)<<16) + (DWORD(particle->m_color.g*255.0f)<<8) + DWORD(particle->m_color.b*255.0f);
 
 			Holder<RenderEngine>::hostage()->renderImage(_transform,mt::vec2f(0,0),mt::vec4f(0,0,1.0f,1.0f),_size,col,m_image);
 			particle++;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleSystem::move(float x, float y)
-	{
-		prev_position = position;
-		position = mt::vec2f(x,y);
 	}
 }

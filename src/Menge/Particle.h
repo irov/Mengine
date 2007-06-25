@@ -5,24 +5,21 @@
 class Particle
 {
 public:
-	mt::vec2f	x;
-	mt::vec2f	v;
+	Particle()
+		: m_position(0,0)
+		, m_direction(0,0)
+		, m_rotation(0)
+		, m_size()
+		, m_color(0,0,0,0)
+		, m_timeToLive()
+		, m_totalTime()
+	{};
 
-	float		g;
-	float		r;
-	float		tan;
-
-	float		spin;
-	float		spin_dt;
-
-	float		size;
-	float		size_dt;
-
-	mt::vec4f	color;	
-	mt::vec4f	color_dt;
-
-	float		age;
-	float		terminal_age;
-
-	void		integrate(const mt::vec2f& offset, float dt);
+	mt::vec2f	m_position;	
+	mt::vec2f	m_direction;	
+	float		m_rotation;	
+	float		m_size;	
+	mt::vec4f	m_color;	
+	float		m_timeToLive;	
+	float		m_totalTime;	
 };

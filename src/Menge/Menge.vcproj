@@ -945,22 +945,58 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\Particle.cpp"
+		<Filter
+			Name="Particles"
 			>
-		</File>
-		<File
-			RelativePath=".\Particle.h"
-			>
-		</File>
-		<File
-			RelativePath=".\ParticleSystem.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\ParticleSystem.h"
-			>
-		</File>
+			<File
+				RelativePath=".\Particle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Particle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ParticleAffector.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ParticleEmitter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ParticleSystem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ParticleSystem.h"
+				>
+			</File>
+			<Filter
+				Name="Emitters"
+				>
+				<File
+					RelativePath=".\PointEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PointEmitter.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Affectors"
+				>
+				<File
+					RelativePath=".\SimplePhysicAffector.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SimplePhysicAffector.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

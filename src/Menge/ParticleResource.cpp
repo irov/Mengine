@@ -25,7 +25,6 @@ namespace Menge
 		{
 			XML_CHECK_VALUE_NODE( "Image", "Name", m_filename );
 			XML_CHECK_VALUE_NODE( "emission", "Value", m_desc.emission );
-			XML_CHECK_VALUE_NODE( "lifetime", "Value", m_desc.lifetime );
 			XML_CHECK_VALUE_NODE( "life", "Value", m_desc.life );
 			XML_CHECK_VALUE_NODE( "dir", "Value", m_desc.dir );
 			XML_CHECK_VALUE_NODE( "spread", "Value", m_desc.spread );

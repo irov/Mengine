@@ -3,7 +3,6 @@
 	<Resource Name = "TestParticle" Type = "ResourceParticle" >
 		<Image Name = "particles1.png" />
 		<emission Value = "899" />
-		<lifetime Value = "-1" />
 		<life Value = "0.5;1.26" />
 		<dir Value = "0" />
 		<spread Value = "0.46" />

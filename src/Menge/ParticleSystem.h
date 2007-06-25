@@ -9,6 +9,9 @@
 #	include "windows.h"
 #	include "ParticleResource.h"
 
+#	include "ParticleEmitter.h"
+#	include "ParticleAffector.h"
+#	include <list>
 
 namespace Menge
 {
@@ -19,6 +22,9 @@ namespace Menge
 	public:
 		ParticleSystem();
 		void	move(float x, float y);
+		
+		void	addAffector(ParticleAffector*);
+		void	addEmitter(ParticleEmitter*);
 
 	public:
 		bool	isVisible(const Viewport & _viewPort);
@@ -35,15 +41,23 @@ namespace Menge
 		ResourceParticle *	m_particleResource;
 
 	private:
-		static const int MAX_PARTICLES = 500;
-		Particle			particles[MAX_PARTICLES];
-		float				fAge;
-		float				emission_residue;
-		mt::vec2f			prev_position;
-		mt::vec2f			position;
+		std::list<ParticleAffector*>	m_affectors;
+		std::list<ParticleEmitter*>		m_emitters;
+
 		ParticleDesc		info;
 		RenderImageInterface * m_image;
 		int					alive_num;
-		std::string m_resourceName;
+		std::string			m_resourceName;
+
+		std::vector<Particle*>	m_particlePool;
+		std::list<Particle*>	m_freeParticleList;
+		std::list<Particle*>	m_activeParticleList;
+
+		Particle*	createParticle()
+		{
+			Particle* p = m_freeParticleList.front();
+			m_activeParticleList.splice(m_activeParticleList.end(), m_freeParticleList, m_freeParticleList.begin());
+			return p;
+		}
 	};
 };

@@ -90,6 +90,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	//RenderFontInterface * TESTfont;
+
 	void Player::init()
 	{
 		Arrow *defaultArrow = 
@@ -104,6 +106,9 @@ namespace Menge
 		cmr->setViewportSize( vpSz );
 
 		setRenderCamera( cmr );
+
+	//	TESTfont = Holder<RenderEngine>::hostage()->loadFont("russian.xml");
+
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -120,6 +125,8 @@ namespace Menge
 		}
 		
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
+
+		//Holder<RenderEngine>::hostage()->renderText(mt::vec2f(56,56),TESTfont,"dfgdfgdgfgdfgf");
 
 		if( inputEng->isButton(MOUSE_LEFT,DI_PRESSED) == true )
 		{
@@ -179,7 +186,6 @@ namespace Menge
 			cp.x += 1;
 			m_renderCamera->setPosition( cp );
 		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setRenderCamera( Camera2D * _camera)

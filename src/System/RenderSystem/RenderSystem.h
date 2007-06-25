@@ -1,16 +1,12 @@
 #	pragma once
 
 #	include "RenderFont.h"
+#	include "RenderImage.h"
 
 #	include <map>
 #	include <vector>
-
-struct	FontBatch
-{
-	mt::vec2f	pos;
-	std::string	text;
-	D3D9Font*	font;
-};
+#	include <list>
+#	include <algorithm>
 
 class	Direct3d9RenderSystem 
 	: public RenderSystemInterface
@@ -26,36 +22,34 @@ public:
 
 	void	drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color) override;
 
-	void	renderImage(			
-		const mt::mat3f& _transform, 
-		const mt::vec2f& _offset,
-		const mt::vec4f& _uv,
-		const mt::vec2f& _size,
-		unsigned int _mixedColor, 
-		RenderImageInterface* _rmi);
-
 	void	releaseRenderImage(RenderImageInterface* _rmi);
     void	renderText(mt::vec2f _pos, RenderFontInterface* _font, const std::string& _text);
 	void	releaseRenderFont(RenderFontInterface* _fnt);
+
+	void	renderImage(
+					const mt::mat3f& _transform, 
+					const mt::vec2f& _offset,
+					const mt::vec4f& _uv,
+					const mt::vec2f& _size,
+					unsigned int _mixedColor, 
+					RenderImageInterface* _rmi);
 
 	RenderImageInterface* loadImage(const TextureDesc&	_desc);
 	RenderFontInterface* loadFont(const FontDesc& _desc);
 
 private:
-	static const int BATCH_BUFFER_SIZE = 1000;
+	static const int BATCH_BUFFER_SIZE = 9000;
 
 	LPDIRECT3D9					m_direct3d9;
 	LPDIRECT3DDEVICE9			m_deviceD3D9;
 
-	LPDIRECT3DVERTEXBUFFER9		m_vbDynamic;
-
-	UINT m_size4Verts;
-	UINT m_size1Vert;
+	UINT						m_size4Verts;
+	UINT						m_size1Vert;
 
 	std::vector<D3D9Vertex>		m_fontVerts;
 
-	LPDIRECT3DVERTEXBUFFER9		m_batchVB;
-	LPDIRECT3DINDEXBUFFER9		m_batchIB;
+	LPDIRECT3DVERTEXBUFFER9		m_batchFontVB;
+	LPDIRECT3DINDEXBUFFER9		m_batchFontIB;
 	UINT						m_numBatchVertices;
 	LPDIRECT3DTEXTURE9			m_currentTex;
 
@@ -69,11 +63,24 @@ private:
 
 	D3DPRESENT_PARAMETERS		m_present;
 
-	typedef std::multimap<LPDIRECT3DTEXTURE9,FontBatch> TMultimapFontBatch;
+	std::vector<D3D9Vertex>		m_vertices;
 
-	TMultimapFontBatch			m_flushBuffers;
+	struct Batch
+	{
+		size_t	begin;
+		size_t	end;
+		int		blend;
+		RenderImageInterface * image;
+	};
+
+	std::list<Batch>			m_batches;
+
+	LPDIRECT3DVERTEXBUFFER9		m_batchVB;
+	LPDIRECT3DINDEXBUFFER9		m_batchIB;
 
 	bool						_initRenderSystem();
 	bool						_initBatching();
-	void						_flushFonts();
+	void						_renderBatches();
+	void						_prepareBatch(RenderImageInterface* _rmi, int _blend);
+	void						_newBatch(size_t _begin, RenderImageInterface* _rmi, int _blend);
 };

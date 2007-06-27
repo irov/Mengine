@@ -1,18 +1,19 @@
 #	pragma once
 
-#	include "Allocator2D.h"
-#	include "math/vec2.h"
+#	include "SceneNode2D.h"
 
 namespace Menge
 {
 	class WayPoint
-		: public Allocator2D
+		: public SceneNode2D
 	{
 		OBJECT_DECLARE(WayPoint)
 
 	public:
 		WayPoint();
 		WayPoint(const mt::vec2f& _pos);
+
+	public:
 		void _debugRender() override;
 
 	protected:

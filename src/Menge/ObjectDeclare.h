@@ -10,5 +10,4 @@ struct FactoryGenStruct
 #	define OBJECT_DECLARE(C)\
 	public:\
 	static Node * genObject(const FactoryGenStruct &);\
-	virtual void visit( Visitor * );\
 	private:

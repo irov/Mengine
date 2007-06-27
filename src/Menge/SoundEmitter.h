@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Allocator.h"
+#	include "SceneNode2D.h"
 
 #	include "SoundSystemInterface.h"
 
@@ -11,7 +11,7 @@ namespace Menge
 	class	ResourceSound;
 
 	class	SoundEmitter
-		: public Allocator
+		: public SceneNode2D
 	{
 			OBJECT_DECLARE(SoundEmitter);
 		public:

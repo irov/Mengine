@@ -1,32 +1,25 @@
 #	pragma once
 
-#	include "NodeImpl.h"
-
-#	include "math/vec2.h"
+#	include "SceneNode2D.h"
 
 namespace Menge
 {
-	class Layer;
+	class Layer2D;
+	class Layer3D;
 	class Entity;
 
 	class Scene
-		: public NodeImpl
+		: public SceneNode2D
 	{
-		OBJECT_DECLARE(Scene);
-
+		OBJECT_DECLARE( Scene )
 	public:
 		Scene();
 
 	public:
-		void layerAppend( const std::string & _layer, Node * _node );
+		void layerAppend( const std::string & _layer, SceneNode2D * _node );
 
-		Node * getEntity( const std::string & _name );
-
-		template<class T>
-		T * getEntityT( const std::string & _name )
-		{
-			return static_cast<T *>(getEntity(_name));
-		}
+		void addLayer2D( Layer2D * _layer );
+		void addLayer3D( Layer3D * _layer );
 
 	public:
 		void loader(TiXmlElement *_xml) override;
@@ -36,5 +29,11 @@ namespace Menge
 
 	private:
 		std::string m_scriptFile;
+
+		typedef std::list< Layer2D * > TListLayer2D;
+		TListLayer2D m_listLayer2D;
+
+		typedef std::list< Layer3D * > TListLayer3D;
+		TListLayer3D m_listLayer3D;
 	};
 }

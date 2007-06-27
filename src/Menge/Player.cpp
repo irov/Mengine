@@ -25,8 +25,6 @@
 
 #	include "Actor.h"
 
-#	include "Layer.h"
-
 #	include "Amplifier.h"
 
 #	include "Animation.h"
@@ -130,10 +128,10 @@ namespace Menge
 
 		if( inputEng->isButton(MOUSE_LEFT,DI_PRESSED) == true )
 		{
-			Actor * actor = m_scene->getEntityT<Actor>("TestActor");
+			//Actor * actor = m_scene->getEntityT<Actor>("TestActor");
 
-			const mt::vec3f &dmv = inputEng->getPosition();
-			actor->moveto(dmv.v2);
+			//const mt::vec3f &dmv = inputEng->getPosition();
+			//actor->moveto(dmv.v2);
 
 /*			Animation * anim = m_scene->getEntityT<Animation>("TestAnimation");
 			anim->play();
@@ -209,7 +207,7 @@ namespace Menge
 		
 		if( m_scene )
 		{
-			SceneManager::renderNode( m_scene, vp );
+			m_scene->render( vp );
 		}
 		
 		if( m_arrow )
@@ -217,7 +215,8 @@ namespace Menge
 			Viewport avp;
 			avp.begin = mt::vec2f(0,0);
 			avp.end = mt::vec2f(1024,768);
-			SceneManager::renderNode( m_arrow, avp );
+			
+			m_arrow->render( avp );
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////

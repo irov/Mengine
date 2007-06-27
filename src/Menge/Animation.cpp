@@ -4,6 +4,7 @@
 
 #	include "ResourceManager.h"
 
+#	include "ResourceAnimation.h"
 #	include "ResourceImage.h"
 
 #	include "XmlParser.h"

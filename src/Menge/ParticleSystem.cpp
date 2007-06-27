@@ -57,7 +57,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleSystem::_activate()
 	{
-		if( Renderable::_activate() == false )
+		if( SceneNode2D::_activate() == false )
 		{
 			return false;
 		}
@@ -79,7 +79,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleSystem::_deactivate()
 	{
-		Renderable::_deactivate();
+		SceneNode2D::_deactivate();
+
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_particleResource );
 	}

@@ -1,16 +1,15 @@
 #	pragma once
 
-#	include "Allocator2D.h"
+#	include "SceneNode2D.h"
 #	include "Viewport.h"
 
 namespace Menge
 {
-	class CameraBehavior;
 	class Scene;
 	class Viewport;
 
 	class Camera2D
-		: public Allocator2D
+		: public SceneNode2D
 	{
 		OBJECT_DECLARE( Camera2D )
 	public:

@@ -38,7 +38,7 @@ bool Arrow::_activate()
 //////////////////////////////////////////////////////////////////////////
 void Arrow::loader( TiXmlElement *_xml )
 {
-	Renderable::loader( _xml );
+	SceneNode2D::loader( _xml );
 
 	XML_FOR_EACH_TREE( _xml )
 	{

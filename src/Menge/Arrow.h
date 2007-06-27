@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "Renderable.h"
+#	include "SceneNode2D.h"
 
 namespace Menge
 {
 	class Sprite;
 
 	class Arrow
-		: public Renderable
+		: public SceneNode2D
 	{
 		OBJECT_DECLARE(Arrow)
 

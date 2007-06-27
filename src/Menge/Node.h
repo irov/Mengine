@@ -6,7 +6,6 @@ class TiXmlElement;
 
 namespace Menge
 {
-	class Visitor;
 	class ScriptObject;
 
 	//pure-virtual interface
@@ -29,22 +28,6 @@ namespace Menge
 		virtual bool isActive() = 0;
 
 	public:
-		virtual void setParent(Node *node) = 0;
-		virtual Node * getParent() = 0;
-
-		virtual bool isRoot() = 0;
-
-	public:
-		virtual bool addChildren(Node *_node) = 0;
-		virtual bool isChildren(Node *_node) = 0;
-		virtual void visitChildren( Visitor *_visitor ) = 0;
-
-		virtual Node * nextChildren() = 0;
-		virtual Node * beginChildren() = 0;
-
-		virtual void removeChildren(Node *_node) = 0;
-
-	public:
 		virtual void registerEvent( const std::string &_name, ScriptObject * _func  ) = 0;
 		virtual ScriptObject * event( const std::string &_name ) = 0;
 
@@ -53,14 +36,11 @@ namespace Menge
 		virtual bool isScriptable() const = 0;
 
 	public:
-		virtual void update(float _timing) = 0;
-		virtual void loader(TiXmlElement *xml) = 0;
-		virtual void visit(Visitor *visitor) = 0;
+		virtual void update( float _timing ) = 0;
+		virtual void loader( TiXmlElement * xml ) = 0;
 
 	public:
 		virtual void debugRender() = 0;
 
-	public:
-		virtual void _lostChildren(Node *_node, bool _valid) = 0;
 	};
 }

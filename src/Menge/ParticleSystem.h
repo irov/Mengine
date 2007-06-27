@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Renderable.h"
+#	include "SceneNode2D.h"
 
 #	include "Particle.h"
 
@@ -16,7 +16,7 @@
 namespace Menge
 {
 	class ParticleSystem
-		: public Renderable
+		: public SceneNode2D
 	{
 		OBJECT_DECLARE(ParticleSystem);
 	public:

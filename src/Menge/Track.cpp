@@ -136,7 +136,7 @@ void Track::loader(TiXmlElement *_xml)
 		XML_CHECK_VALUE_NODE("SpeedMove","Value",m_speedMove);
 	}
 
-	NodeImpl::loader(_xml);
+	SceneNode2D::loader(_xml);
 };
 //////////////////////////////////////////////////////////////////////////
 #	include "RenderEngine.h"

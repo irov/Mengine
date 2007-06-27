@@ -1,4 +1,4 @@
-#	include "Layer.h"
+#	include "Layer2D.h"
 
 #	include "ObjectImplement.h"
 
@@ -7,30 +7,20 @@
 #	include "XmlParser.h"
 
 //////////////////////////////////////////////////////////////////////////
-OBJECT_IMPLEMENT(Layer);
+OBJECT_IMPLEMENT(Layer2D);
 //////////////////////////////////////////////////////////////////////////
-Layer::Layer()
+Layer2D::Layer2D()
 : m_factorParallax(1.f,1.f)
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-void Layer::setParallaxFactor( const mt::vec2f & _factor )
+void Layer2D::setParallaxFactor( const mt::vec2f & _factor )
 {
 	m_factorParallax = _factor;
 }
-//////////////////////////////////////////////////////////////////////////()
-void Layer::setParent(Node *node)
-{
-	if(dynamic_cast<Scene*>(node) == 0)
-	{
-		return;
-	}
-
-	NodeImpl::setParent(node);
-}
 //////////////////////////////////////////////////////////////////////////
-const Viewport& Layer::updateViewport( const Viewport & _viewPort )
+const Viewport& Layer2D::updateViewport( const Viewport & _viewPort )
 {
 	m_viewPort = _viewPort;
 	
@@ -43,9 +33,9 @@ const Viewport& Layer::updateViewport( const Viewport & _viewPort )
 	return m_viewPort;
 }
 //////////////////////////////////////////////////////////////////////////
-void Layer::loader( TiXmlElement *_xml)
+void Layer2D::loader( TiXmlElement *_xml)
 {
-	Renderable::loader(_xml);
+	SceneNode2D::loader(_xml);
 
 	XML_FOR_EACH_TREE( _xml )
 	{

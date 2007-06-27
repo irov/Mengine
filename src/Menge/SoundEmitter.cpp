@@ -31,10 +31,11 @@ SoundEmitter::~SoundEmitter()
 //////////////////////////////////////////////////////////////////////////
 void SoundEmitter::_changePivot()
 {
-	const mt::vec3f & pos = getWorldPosition();
-	m_interface->setPosition(pos.x,pos.y,pos.z);
-	//nado? 
-	m_changePivot = true;
+	//?????????? WTF!!!!
+	//const mt::vec3f & pos = getWorldPosition();
+	//m_interface->setPosition(pos.x,pos.y,pos.z);
+	////nado? 
+	//m_changePivot = true;
 }
 //////////////////////////////////////////////////////////////////////////
 void SoundEmitter::play()
@@ -112,5 +113,5 @@ void SoundEmitter::loader(TiXmlElement *xml)
 		XML_CHECK_VALUE_NODE( "HeadMode", "Mode", m_isHeadMode );
 	}
 
-	Allocator::loader(xml);
+	SceneNode2D::loader(xml);
 }

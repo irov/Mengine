@@ -1,7 +1,9 @@
 #	include "Scene.h"
 #	include "ObjectImplement.h"
 
-#	include "Layer.h"
+#	include "Layer2D.h"
+#	include "Layer3D.h"
+
 #	include "Entity.h"
 
 #	include "SceneManager.h"
@@ -19,40 +21,13 @@ Scene::Scene()
 
 }
 //////////////////////////////////////////////////////////////////////////
-void Scene::layerAppend( const std::string & _layer, Node * _node )
+void Scene::layerAppend( const std::string & _layer, SceneNode2D * _node )
 {
-	Layer * layer = getChildrenT<Layer>( _layer );
+	Layer2D * layer = getChildrenT<Layer2D>( _layer );
 	if( layer )
 	{
 		layer->addChildren( _node );
 	}
-}
-//////////////////////////////////////////////////////////////////////////
-Node * Scene::getEntity( const std::string & _name )
-{
-	for( TListChildren::iterator 
-		it = m_listChildren.begin(),
-		it_end = m_listChildren.end();
-	it != it_end;
-	++it)
-	{
-		if( Layer * layer = dynamic_cast<Layer*>(*it) )
-		{
-			if( Node * node = layer->getChildren( _name ) )
-			{
-				return node;
-			}
-		}
-		else
-		{
-			if( (*it)->getName() == _name )
-			{
-				return *it;
-			}
-		}
-	}
- 
-	return 0;
 }
 //////////////////////////////////////////////////////////////////////////
 bool Scene::_activate()
@@ -75,12 +50,22 @@ bool Scene::_activate()
 			->callFunctionNode( functionName, this );
 	}
 
-	return NodeImpl::_activate();
+	return SceneNode2D::_activate();
+}
+//////////////////////////////////////////////////////////////////////////
+void Scene::addLayer2D( Layer2D * _layer )
+{
+	m_listLayer2D.push_back( _layer );
+}
+//////////////////////////////////////////////////////////////////////////
+void Scene::addLayer3D( Layer3D * _layer )
+{
+	m_listLayer3D.push_back( _layer );
 }
 //////////////////////////////////////////////////////////////////////////
 void Scene::loader(TiXmlElement *_xml)
 {
-	NodeImpl::loader(_xml);
+	SceneNode2D::loader(_xml);
 
 	XML_FOR_EACH_TREE( _xml )
 	{

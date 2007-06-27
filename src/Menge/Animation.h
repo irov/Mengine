@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Sprite.h"
-#	include "ResourceAnimation.h"
 
 namespace Menge
 {
@@ -10,6 +9,8 @@ namespace Menge
 		FORWARD,	
 		REWIND,	
 	};
+
+	class ResourceAnimation;
 
 	class Animation
 		: public Sprite

@@ -10,7 +10,9 @@ namespace Menge
 	public:
 		NodeProxy( Node *_node);
 		virtual ~NodeProxy();
-		virtual void destroy();
+
+	public:
+		virtual void destroy() override;
 
 	public:
 		bool activate() override;
@@ -26,24 +28,8 @@ namespace Menge
 		const std::string & getType()const override;
 
 	public:
-		void setParent(Node *node) override;
-		Node * getParent() override;
-
-		bool isRoot() override;
-
-	public:
-		bool addChildren(Node *_node) override;
-		bool isChildren(Node *_node) override;
-		void visitChildren( Visitor *_visitor) override;
-		void removeChildren(Node *_node) override;
-
-		Node * nextChildren() override;
-		Node * beginChildren() override;
-
-	public:
 		void update(float _timing) override;
 		void loader(TiXmlElement *xml) override;
-		void visit( Visitor * _visitor) override;
 
 	public:
 		void debugRender() override;
@@ -55,9 +41,6 @@ namespace Menge
 		virtual	void setScriptable( ScriptObject * _scriptable );
 		virtual ScriptObject * getScriptable();
 		virtual bool isScriptable() const;
-
-	public:
-		void _lostChildren(Node *_node, bool _valid) override;
 
 	protected:
 		Node *m_node;

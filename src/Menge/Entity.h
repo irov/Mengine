@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "Allocator2D.h"
+#	include "SceneNode2D.h"
 
 namespace Menge
 {
 	class Scene;
 
 	class Entity
-		: public Allocator2D
+		: public SceneNode2D
 	{
 		OBJECT_DECLARE( Entity )
 
@@ -17,8 +17,6 @@ namespace Menge
 	public:
 		void destroy() override;
 
-	public:
-		bool addChildren( Node * _node ) override;
 
 	protected:
 		bool _activate();

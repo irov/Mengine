@@ -117,7 +117,7 @@ void Sprite::loader(TiXmlElement *xml)
 		XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourceName );
 	}
 
-	Renderable::loader(xml);
+	SceneNode2D::loader(xml);
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_render( const mt::mat3f &rwm, const Viewport & _viewPort )

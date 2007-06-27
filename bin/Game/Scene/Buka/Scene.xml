@@ -1,7 +1,7 @@
 <Node Name = "Buka" Type = "Scene">	
 	<Script File = "Game/Scene/Buka/Scene.py" />
 
-	<Node Name = "Main" Type = "Layer">
+	<Node Name = "Main" Type = "Layer2D">
 		<Parallax Factor = "1;1" />
 
 		<Node Name = "TestActor" Type = "Actor" >
@@ -40,7 +40,7 @@
 
 	</Node> <!-- Layer -->
 
-	<Node Name = "Back" Type = "Layer">
+	<Node Name = "Back" Type = "Layer2D">
 		<Parallax Factor = "1.25;1" />
 	</Node> <!-- Layer -->
 </Node>

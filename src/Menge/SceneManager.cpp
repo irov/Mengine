@@ -74,34 +74,3 @@ Node * SceneManager::createNodeFromXml( const std::string &_file)
 
 	return 0;
 }
-//////////////////////////////////////////////////////////////////////////
-void SceneManager::renderNode( Node * _node, const Viewport & _viewPort )
-{
-	if( Renderable* ro = dynamic_cast<Renderable*>(_node) )
-	{
-		const Viewport &uvp = ro->updateViewport( _viewPort );
-
-		if( ro->render( uvp ) == false )
-		{
-			return;
-		}
-
-		for( Node *it = _node->beginChildren();
-			it != 0;
-			it = _node->nextChildren()
-			)
-		{
-			SceneManager::renderNode( it, uvp );
-		}
-	}
-	else
-	{
-		for( Node *it = _node->beginChildren(); 
-			it != 0;
-			it = _node->nextChildren()
-			)
-		{
-			SceneManager::renderNode( it, _viewPort );
-		}
-	}
-}

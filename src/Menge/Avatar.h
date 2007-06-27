@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "NodeImpl.h"
+#	include "SceneNode2D.h"
 
 #	include "InputHandler.h"
 
 namespace Menge
 {
 	class Avatar
-		: public NodeImpl
+		: public SceneNode2D
 		, public InputHandler
 	{
 		OBJECT_DECLARE(Avatar)

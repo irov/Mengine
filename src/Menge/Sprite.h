@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Renderable.h"
+#	include "SceneNode2D.h"
 
 #	include "math/mat3.h"
 
@@ -17,7 +17,7 @@ namespace Menge
 	class ResourceImage;
 
 	class Sprite
-		: public Renderable
+		: public SceneNode2D
 	{
 		OBJECT_DECLARE(Sprite);
 	public:
@@ -33,9 +33,9 @@ namespace Menge
 		virtual const std::string & getImageResource() const;
 
 	public:
-		virtual bool isVisible(const Viewport & _viewPort);
+		virtual bool isVisible( const Viewport & _viewPort );
 
-		void loader(TiXmlElement *xml) override;
+		void loader( TiXmlElement *xml ) override;
 
 	protected:
 		bool _activate() override;

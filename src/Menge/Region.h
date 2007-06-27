@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Allocator2D.h"
+#	include "SceneNode2D.h"
 #	include "math/polygon.h"
 
 namespace Menge
@@ -8,7 +8,7 @@ namespace Menge
 	class WayPoint;
 
 	class Region
-		: public Allocator2D
+		: public SceneNode2D
 	{
 		OBJECT_DECLARE(Region)
 

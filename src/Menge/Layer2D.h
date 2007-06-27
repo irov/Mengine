@@ -1,22 +1,19 @@
 #	pragma once
 
-#	include "Renderable.h"
+#	include "SceneNode2D.h"
 
 namespace Menge
 {
-	class Layer
-		: public Renderable
+	class Layer2D
+		: public SceneNode2D
 	{
-		OBJECT_DECLARE(Layer);
+		OBJECT_DECLARE(Layer2D);
 
 	public:
-		Layer();
+		Layer2D();
 
 	public:
 		void setParallaxFactor( const mt::vec2f & _factor );
-
-	public:
-		void setParent(Node *node) override;
 
 	public:
 		const Viewport & updateViewport( const Viewport & _viewPort ) override;

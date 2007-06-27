@@ -102,6 +102,11 @@ void	Direct3d9RenderSystem::_newBatch(size_t _begin, RenderImageInterface* _rmi,
 
 void Direct3d9RenderSystem::_renderBatches()
 {
+	if( m_vertices.empty() )
+	{
+		return;
+	}
+
 	static D3D9Vertex*	batchVertices = NULL;
 
 	m_deviceD3D9->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);

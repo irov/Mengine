@@ -52,7 +52,7 @@ void	Dialog::loader(TiXmlElement * _xml)
 		XML_CHECK_VALUE_NODE("Font", "File", m_fontFilename);
 	}
 
-	NodeImpl::loader(_xml);
+	NodeCore::loader(_xml);
 }
 //////////////////////////////////////////////////////////////////////////
 void	Dialog::loadCurrentMessageSpot()

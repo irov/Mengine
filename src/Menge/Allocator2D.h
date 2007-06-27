@@ -1,23 +1,22 @@
 #	pragma once
 
-#	include "NodeImpl.h"
-
 #	include "math/mat3.h"
+
+class TiXmlElement;
 
 namespace Menge
 {
 	class Allocator2D
-		: public NodeImpl
 	{
-		OBJECT_DECLARE(Allocator2D);
-
 	public:
 		Allocator2D();
 
 	public:
-		virtual const mt::vec2f & getWorldPosition();
-		virtual const mt::vec2f & getWorldDirection();
 		virtual const mt::mat3f & getWorldMatrix();
+		virtual void updateMatrix( Allocator2D * _parent );
+
+		const mt::vec2f & getWorldPosition();
+		const mt::vec2f & getWorldDirection();
 
 		const mt::vec2f & getLocalPosition()const;
 		mt::vec2f & getLocalPosition();
@@ -33,15 +32,11 @@ namespace Menge
 		
 		void translate( const mt::vec2f &delta );
 
-	public: 
-		void setParentAllocator( Allocator2D *_alloc);
-		Allocator2D * getParentAllocator();
+	public:
+		void loader( TiXmlElement * _xml );
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
-
-	public:
-		void changePivot();
+		virtual void changePivot();
 		bool isChangePivot()const;
 
 	protected:
@@ -49,17 +44,9 @@ namespace Menge
 		virtual bool _updateMatrix();
 
 	protected:
-		void _updateParent()override;
-
-	protected:
-		Allocator2D *m_parentAllocator;
-
 		mt::mat3f m_localMatrix;
 		mt::mat3f m_worldMatrix;
 
 		bool m_changePivot;
-
-	private:
-		void updateMatrix();
 	};
 }

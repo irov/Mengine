@@ -193,6 +193,66 @@
 				RelativePath=".\Scene.h"
 				>
 			</File>
+			<Filter
+				Name="Layer2D"
+				>
+				<File
+					RelativePath=".\Layer2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Layer2D.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Layer3D"
+				>
+				<File
+					RelativePath=".\Layer3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Layer3D.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="SceneNode2D"
+				>
+				<File
+					RelativePath=".\SceneNode2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SceneNode2D.h"
+					>
+				</File>
+				<Filter
+					Name="Allocator2D"
+					>
+					<File
+						RelativePath=".\Allocator2D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Allocator2D.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Renderable"
+					>
+					<File
+						RelativePath=".\Renderable.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Renderable.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="SceneManager"
@@ -343,14 +403,10 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Object"
+			Name="Object2D"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<File
-				RelativePath=".\ObjectForeach.h"
-				>
-			</File>
 			<Filter
 				Name="Allocator"
 				>
@@ -369,18 +425,6 @@
 						/>
 					</FileConfiguration>
 				</File>
-				<Filter
-					Name="Allocator2D"
-					>
-					<File
-						RelativePath=".\Allocator2D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Allocator2D.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Sprite"
@@ -410,6 +454,18 @@
 					</File>
 					<File
 						RelativePath=".\SpriteInteractive.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="SpriteContainer"
+					>
+					<File
+						RelativePath=".\SpriteContainer.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SpriteContainer.h"
 						>
 					</File>
 				</Filter>
@@ -448,11 +504,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\NodeImpl.cpp"
+					RelativePath=".\NodeCore.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\NodeImpl.h"
+					RelativePath=".\NodeCore.h"
 					>
 				</File>
 				<File
@@ -497,18 +553,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Renderable"
-				>
-				<File
-					RelativePath=".\Renderable.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Renderable.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Arrow"
 				>
 				<File
@@ -529,18 +573,6 @@
 				</File>
 				<File
 					RelativePath=".\HotSpot.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Layer"
-				>
-				<File
-					RelativePath=".\Layer.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Layer.h"
 					>
 				</File>
 			</Filter>
@@ -583,18 +615,6 @@
 					RelativePath=".\Actor.h"
 					>
 				</File>
-				<Filter
-					Name="SpriteContainer"
-					>
-					<File
-						RelativePath=".\SpriteContainer.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SpriteContainer.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Avatar"
@@ -702,46 +722,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Visitor"
-			>
-			<File
-				RelativePath=".\Visitor.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Visitor.h"
-				>
-			</File>
-			<File
-				RelativePath=".\VisitorMask.h"
-				>
-			</File>
-			<Filter
-				Name="Render"
-				>
-			</Filter>
-			<Filter
-				Name="PickNode"
-				>
-				<File
-					RelativePath=".\VisitorPickHotSpot.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\VisitorPickHotSpot.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="FindNode"
-				>
-				<File
-					RelativePath=".\VisitorFindNode.h"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
 			Name="Utility"
 			>
 			<File
@@ -776,18 +756,6 @@
 				RelativePath=".\Viewport.h"
 				>
 			</File>
-			<Filter
-				Name="Behavior"
-				>
-				<File
-					RelativePath=".\CameraBehavior.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\CameraBehavior.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Amplifier"
@@ -996,6 +964,10 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Object3D"
+			>
 		</Filter>
 	</Files>
 	<Globals>

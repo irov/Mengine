@@ -25,6 +25,5 @@ namespace Menge
 			return static_cast<T*>(createNodeFromXml(_file));
 		}
 		static bool loadNode(Node *_node, const std::string &_xml);
-		static void renderNode( Node * _node, const Viewport & _viewPort );
 	};
 }

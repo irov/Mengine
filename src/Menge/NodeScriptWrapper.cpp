@@ -130,48 +130,49 @@ namespace Menge
 
 		boost::python::class_<Node, boost::noncopyable>("Node", boost::python::no_init );
 
-		boost::python::class_<NodeImpl, boost::python::bases<Node> >("NodeImpl")
+		boost::python::class_<NodeCore, boost::python::bases<Node> >("NodeCore")
 			.def( boost::python::init<>("constructor") )
-			.def( "activate", &NodeImpl::activate )
-			.def( "addChildren", &NodeImpl::addChildren )
-			.def( "setName", &NodeImpl::setName )
-			.def( "getName", &NodeImpl::getName, retValuePolice  )
+			.def( "activate", &NodeCore::activate )
+			.def( "setName", &NodeCore::setName )
+			.def( "getName", &NodeCore::getName, retValuePolice  )
 			;
 
+
+		boost::python::class_<Allocator2D>("Allocator2D")
+			.def( boost::python::init<>("constructor") )
+			;
+
+		boost::python::class_<Renderable>("Renderable")
+			.def( boost::python::init<>("constructor") )
+			.def( "hide", &Renderable::hide )
+			;
+
+		boost::python::class_<SceneNode2D, boost::python::bases<NodeCore, Allocator2D, Renderable>  >("SceneNode2D")
+			.def( boost::python::init<>("constructor") )
+			.def( "addChildren", &SceneNode2D::addChildren )
+			;		
+
 		{
-			boost::python::class_<Scene, boost::python::bases<NodeImpl> >("Scene")
+			boost::python::class_<Scene, boost::python::bases<SceneNode2D> >("Scene")
 				.def( boost::python::init<>("constructor") )
 				.def( "layerAppend", &Scene::layerAppend )
 				;
-
-			boost::python::class_<Allocator2D, boost::python::bases<NodeImpl> >("Allocator2D")
-				.def( boost::python::init<>("constructor") )
-				;
-
 			{
-				boost::python::class_<Entity, boost::python::bases<Allocator2D> >("Entity")
+				boost::python::class_<Entity, boost::python::bases<SceneNode2D> >("Entity")
 					.def( boost::python::init<>("constructor") )
 					;
 
-				boost::python::class_<HotSpot, boost::python::bases<Allocator2D> >("HotSpot")
+				boost::python::class_<HotSpot, boost::python::bases<SceneNode2D> >("HotSpot")
 					.def( boost::python::init<>("constructor") )
 					;
 				
-
-				boost::python::class_<Renderable, boost::python::bases<Allocator2D> >("Renderable")
+				boost::python::class_<Sprite, boost::python::bases<SceneNode2D> >("Sprite")
 					.def( boost::python::init<>("constructor") )
-					.def( "hide", &Renderable::hide )
 					;
-
 				{
-					boost::python::class_<Sprite, boost::python::bases<Renderable> >("Sprite")
+					boost::python::class_<Animation, boost::python::bases<Sprite> >("Animation")
 						.def( boost::python::init<>("constructor") )
 						;
-					{
-						boost::python::class_<Animation, boost::python::bases<Sprite> >("Animation")
-							.def( boost::python::init<>("constructor") )
-							;
-					}
 				}
 			}
 		}

@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Allocator2D.h"
+#	include "SceneNode2D.h"
 
 #	include "TrackChain.h"
 
@@ -15,7 +15,7 @@ namespace Menge
 	typedef std::list<TrackChain> TListTrackChain;
 
 	class Track
-		: public Allocator2D
+		: public SceneNode2D
 	{
 		OBJECT_DECLARE(Track);
 

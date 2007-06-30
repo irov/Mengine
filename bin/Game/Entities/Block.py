@@ -18,8 +18,14 @@ class Block( Menge.Entity ):
 
 		hotspot = Menge.createNode( "HotSpot", params )
 
+		hotspot.setMouseLeftClickEvent( self.test )
+
 
 		self.addChildren( hotspot )
 
 		pass
 	pass
+
+	def test( self ):
+		print "Wazzzaaapp!!!"
+		pass

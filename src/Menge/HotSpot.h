@@ -4,10 +4,14 @@
 
 #	include "Math/polygon.h"
 
+extern "C" 
+{ 
+	struct _object; 
+	typedef _object PyObject;
+}
+
 namespace Menge
 {
-	class ScriptObject;
-
 	class HotSpot
 		: public SceneNode2D
 	{
@@ -21,7 +25,7 @@ namespace Menge
 		bool testPoint( const mt::vec2f &p );
 
 		void setHandle( bool _handle );
-		void setMouseLeftClickEvent( ScriptObject * _object );
+		void setMouseLeftClickEvent( PyObject * _object );
 
 	public:
 		void update( float _timing ) override;
@@ -33,7 +37,7 @@ namespace Menge
 	private:
 		mt::polygon m_poligon;
 
-		ScriptObject * m_mouseLeftClick;
+		PyObject * m_mouseLeftClick;
 
 		bool m_handle;
 	};

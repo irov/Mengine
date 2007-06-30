@@ -39,7 +39,7 @@ namespace Menge
 		{
 			try
 			{
-				ScriptObject * scriptable = it_find->second->wrapp( _node );
+				PyObject * scriptable = it_find->second->wrapp( _node );
 				_node->setScriptable( scriptable );
 			}
 			catch (...)

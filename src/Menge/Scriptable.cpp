@@ -9,15 +9,15 @@ namespace Menge
 	}
 	Scriptable::~Scriptable()
 	{
-		delete m_scriptable;
+
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::setScriptable( ScriptObject * _scriptable )
+	void Scriptable::setScriptable( PyObject * _scriptable )
 	{
 		m_scriptable = _scriptable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ScriptObject * Scriptable::getScriptable()
+	PyObject * Scriptable::getScriptable()
 	{
 		return m_scriptable;
 	}

@@ -62,22 +62,22 @@ void NodeProxy::loader(TiXmlElement *xml)
 	return m_node->loader(xml);
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeProxy::registerEvent( const std::string &_name, ScriptObject * _func  )
+void NodeProxy::registerEvent( const std::string &_name, PyObject * _func  )
 {
 	return m_node->registerEvent(_name,_func);
 }
 //////////////////////////////////////////////////////////////////////////
-ScriptObject * NodeProxy::getEvent( const std::string &_name )
+PyObject * NodeProxy::getEvent( const std::string &_name )
 {
 	return m_node->getEvent(_name);
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeProxy::setScriptable( ScriptObject * _scriptable )
+void NodeProxy::setScriptable( PyObject * _scriptable )
 {
 	return m_node->setScriptable( _scriptable );
 }
 //////////////////////////////////////////////////////////////////////////
-ScriptObject * NodeProxy::getScriptable()
+PyObject * NodeProxy::getScriptable()
 {
 	return m_node->getScriptable();
 }

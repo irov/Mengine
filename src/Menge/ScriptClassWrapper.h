@@ -2,15 +2,20 @@
 
 #	include <string>
 
+extern "C" 
+{ 
+	struct _object; 
+	typedef _object PyObject;
+}
+
 namespace Menge
 {
-	class ScriptObject;
 	class Node;
 
 	class ScriptClassWrapper
 	{
 	public:
-		virtual ScriptObject * wrapp( Node * _node ) = 0;
+		virtual PyObject * wrapp( Node * _node ) = 0;
 	};
 
 	class ScriptClassWrapperFactory

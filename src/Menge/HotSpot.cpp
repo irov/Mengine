@@ -100,7 +100,7 @@ void HotSpot::_debugRender()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void HotSpot::setMouseLeftClickEvent( ScriptObject * _object )
+void HotSpot::setMouseLeftClickEvent( PyObject * _object )
 {
 	registerEvent( "MOUSE_LEFT_CLICK", _object );
 }
@@ -120,7 +120,7 @@ void HotSpot::update( float _timing )
 			return;
 		}
 
-		if( ScriptObject * eventMouseLeftClick = getEvent( "MOUSE_LEFT_CLICK" ) )
+		if( PyObject * eventMouseLeftClick = getEvent( "MOUSE_LEFT_CLICK" ) )
 		{
 			Holder<ScriptEngine>::hostage()
 				->callFunction( eventMouseLeftClick );

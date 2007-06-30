@@ -15,23 +15,24 @@ namespace Menge
 
 		for each( const TMapScriptFunction::value_type & it in m_mapScriptFunction )
 		{
-			it.second->decref();
+			scriptEng->decref( it.second );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::registerEvent( const std::string &_name, ScriptObject * _func  )
+	void Eventable::registerEvent( const std::string &_name, PyObject * _func  )
 	{
 		TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
 
 		if( it_find == m_mapScriptFunction.end() )
 		{
-			_func->incref();
-			_func->incref();
+			Holder<ScriptEngine>::hostage()
+				->incref( _func );
+
 			m_mapScriptFunction.insert(std::make_pair(_name,_func));		
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ScriptObject * Eventable::getEvent( const std::string &_name )
+	PyObject * Eventable::getEvent( const std::string &_name )
 	{
 		TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
 
@@ -54,7 +55,7 @@ namespace Menge
 
 				ScriptEngine *scriptEng = Holder<ScriptEngine>::hostage();
 
-				ScriptObject * scriptFunction = scriptEng->genFunctor(Function);
+				PyObject * scriptFunction = scriptEng->genFunctor(Function);
 
 				registerEvent(Type, scriptFunction);
 			}

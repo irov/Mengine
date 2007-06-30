@@ -12,11 +12,12 @@ public:\
 	ScriptClassWrapperFactory::regWrapping( #Class, this );\
 };\
 public:\
-	ScriptObject * wrapp( Node * _node ) override\
+	PyObject * wrapp( Node * _node ) override\
 {\
 	Class * _cast = dynamic_cast< Class * >( _node );\
 	boost::python::object obj( boost::python::ptr< Class * >( _cast ) );\
-	return new ScriptObject( obj );\
+	boost::python::incref( obj.ptr() );\
+	return obj.ptr();\
 }\
 };\
 namespace{ static ScriptClassWrapper##Class Class##ScriptWrapper; }

@@ -47,21 +47,16 @@ namespace Menge
 		Py_DECREF( obj_menge_dict_all2d );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ScriptObject * ScriptEngine::genFunctor( const std::string &_name )
+	PyObject * ScriptEngine::genFunctor( const std::string &_name )
 	{
 		try
 		{
-			return new ScriptObject( m_global->attr( _name.c_str() ) );
+			return boost::python::object( m_global->attr( _name.c_str() ) ).ptr();
 		}
 		catch (const boost::python::error_already_set &e)
 		{
 			return 0;			
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::removeFunctor( ScriptObject * _functor )
-	{
-		delete _functor;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::init()
@@ -86,7 +81,7 @@ namespace Menge
 	{
 		if( _node->isScriptable() )
 		{
-			boost::python::incref( _node->getScriptable()->ptr() );
+			incref( _node->getScriptable() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -94,8 +89,18 @@ namespace Menge
 	{
 		if( _node->isScriptable() )
 		{	
-			boost::python::decref( _node->getScriptable()->ptr() );
+			decref( _node->getScriptable() );
 		}		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::incref( PyObject * _object )
+	{
+		boost::python::incref( _object );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::decref( PyObject * _object )
+	{
+		boost::python::decref( _object );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::setEntitiesPath( const std::string & _path )
@@ -228,7 +233,7 @@ namespace Menge
 
 			Entity * en = boost::python::extract<Entity*>( result );
 
-			en->setScriptable( new ScriptObject( result ) );
+			en->setScriptable( result.ptr() );
 
 			incref( en );
 
@@ -244,16 +249,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::removeEntity( Entity * _entity )
 	{
-		ScriptObject * scriptable = _entity->getScriptable();
+		PyObject * scriptable = _entity->getScriptable();
 
-		boost::python::decref( scriptable->ptr() );
+		boost::python::decref( scriptable );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callFunction( ScriptObject * _object )
+	void ScriptEngine::callFunction( PyObject * _object )
 	{
 		try
 		{
-			boost::python::call<void>( _object->ptr() );
+			boost::python::call<void>( _object );
 		}
 		catch (...)
 		{
@@ -315,8 +320,8 @@ namespace Menge
 
 		try
 		{
-			ScriptObject * _script = _node->getScriptable();
-			boost::python::call<void>( func.ptr(), static_cast<boost::python::object>(*_script) );
+			PyObject * _script = _node->getScriptable();
+			boost::python::call<void>( func.ptr(), boost::python::handle<>(_script) );
 		}
 		catch (...)
 		{
@@ -347,11 +352,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::callMethod( Entity * _entity, const std::string & _name )
 	{
-		ScriptObject * scriptable = _entity->getScriptable();
+		PyObject * scriptable = _entity->getScriptable();
 
 		try
 		{
-			boost::python::call_method<void>( scriptable->ptr(), _name.c_str() );
+			boost::python::call_method<void>( scriptable, _name.c_str() );
 		}
 		catch (...)
 		{

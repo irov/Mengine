@@ -35,11 +35,11 @@ namespace Menge
 		void debugRender() override;
 
 	public:
-		virtual void registerEvent( const std::string &_name, ScriptObject * _func  );
-		virtual ScriptObject * getEvent( const std::string &_name );
+		virtual void registerEvent( const std::string &_name, PyObject * _func  );
+		virtual PyObject * getEvent( const std::string &_name );
 
-		virtual	void setScriptable( ScriptObject * _scriptable );
-		virtual ScriptObject * getScriptable();
+		virtual	void setScriptable( PyObject * _scriptable );
+		virtual PyObject * getScriptable();
 		virtual bool isScriptable() const;
 
 	protected:

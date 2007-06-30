@@ -85,7 +85,7 @@ namespace Menge
 				node->loader( &node_xml );
 			}
 
-			PyObject * pyNode = node->getScriptable()->ptr();
+			PyObject * pyNode = node->getScriptable();
 
 			return pyNode;
 		}

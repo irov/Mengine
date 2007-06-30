@@ -4,9 +4,15 @@
 
 class TiXmlElement;
 
+extern "C" 
+{ 
+	struct _object; 
+	typedef _object PyObject;
+}
+
 namespace Menge
 {
-	class ScriptObject;
+	
 	class NodeForeach;
 
 	//pure-virtual interface
@@ -38,11 +44,11 @@ namespace Menge
 		virtual void foreachChildren( const NodeForeach & _foreach ) = 0;
 
 	public:
-		virtual void registerEvent( const std::string &_name, ScriptObject * _func  ) = 0;
-		virtual ScriptObject * getEvent( const std::string &_name ) = 0;
+		virtual void registerEvent( const std::string &_name, PyObject * _func  ) = 0;
+		virtual PyObject * getEvent( const std::string &_name ) = 0;
 
-		virtual	void setScriptable( ScriptObject * _scriptable ) = 0;
-		virtual ScriptObject * getScriptable() = 0;
+		virtual	void setScriptable( PyObject * _scriptable ) = 0;
+		virtual PyObject * getScriptable() = 0;
 		virtual bool isScriptable() const = 0;
 
 	public:

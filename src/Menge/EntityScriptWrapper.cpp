@@ -23,7 +23,7 @@ namespace Menge
 			en->setPosition( _pos );
 			en->setDirection( _dir );
 
-			PyObject * pyEn = en->getScriptable()->ptr();
+			PyObject * pyEn = en->getScriptable();
 
 			return pyEn;
 		}

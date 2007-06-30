@@ -5,6 +5,12 @@
 #	include <map>
 #	include <list>
 
+extern "C" 
+{ 
+	struct _object; 
+	typedef _object PyObject;
+}
+
 namespace Menge
 {
 	class Node;
@@ -30,17 +36,19 @@ namespace Menge
 		bool isEntityType( const std::string & _type );
 		void registerEntityType( const std::string & _type );
 
-		void incref( Node * _node );
-		void decref( Node * _node );
+		static void incref( Node * _node );
+		static void decref( Node * _node );
+
+		static void incref( PyObject * _object );
+		static void decref( PyObject * _object );
 
 	public:
-		ScriptObject * genFunctor( const std::string &_name );
-		void removeFunctor( ScriptObject * _functor );
+		PyObject * genFunctor( const std::string &_name );
 
 		Entity * createEntity( const std::string & _type );
 		void removeEntity( Entity * _entity );
 
-		void callFunction( ScriptObject * _object );
+		void callFunction( PyObject * _object );
 		void callFunction( const std::string & _name );
 		void callFunction( const std::string & _name, float f );
 		void callFunctionNode( const std::string & _name, Node * _node );

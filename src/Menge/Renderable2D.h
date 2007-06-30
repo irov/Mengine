@@ -1,0 +1,34 @@
+#	pragma once
+
+#	include "Math/mat3.h"
+
+class TiXmlElement;
+
+namespace Menge
+{
+	class RenderEngine;
+	class Camera2D;
+	class Viewport;
+
+	class Renderable2D
+	{
+	public:
+		Renderable2D();
+
+	public:
+		virtual bool renderSelf( const mt::mat3f & _rwm, const Viewport & _viewport );
+		virtual void hide( bool value );
+		virtual bool isVisible( const Viewport & _viewport );
+
+		virtual const Viewport & updateViewport( const Viewport & _viewport );
+
+	protected:
+		virtual void _render( const mt::mat3f &rwm, const Viewport & _viewport );
+
+	public:
+		void loader( TiXmlElement * _xml );
+
+	private:
+		bool m_hide;
+	};
+}

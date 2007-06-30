@@ -1,10 +1,7 @@
 #	include "Scene.h"
 #	include "ObjectImplement.h"
 
-#	include "Layer2D.h"
-#	include "Layer3D.h"
-
-#	include "Entity.h"
+#	include "Camera2D.h"
 
 #	include "SceneManager.h"
 #	include "ResourceManager.h"
@@ -21,9 +18,9 @@ Scene::Scene()
 
 }
 //////////////////////////////////////////////////////////////////////////
-void Scene::layerAppend( const std::string & _layer, SceneNode2D * _node )
+void Scene::layerAppend( const std::string & _layer, Node * _node )
 {
-	Layer2D * layer = getChildrenT<Layer2D>( _layer );
+	Layer * layer = getChildren( _layer );
 	if( layer )
 	{
 		layer->addChildren( _node );
@@ -50,25 +47,23 @@ bool Scene::_activate()
 			->callFunctionNode( functionName, this );
 	}
 
-	return SceneNode2D::_activate();
+	return NodeCore::_activate();
 }
 //////////////////////////////////////////////////////////////////////////
-void Scene::addLayer2D( Layer2D * _layer )
+void Scene::loader( TiXmlElement *_xml )
 {
-	m_listLayer2D.push_back( _layer );
-}
-//////////////////////////////////////////////////////////////////////////
-void Scene::addLayer3D( Layer3D * _layer )
-{
-	m_listLayer3D.push_back( _layer );
-}
-//////////////////////////////////////////////////////////////////////////
-void Scene::loader(TiXmlElement *_xml)
-{
-	SceneNode2D::loader(_xml);
+	NodeCore::loader(_xml);
 
 	XML_FOR_EACH_TREE( _xml )
 	{
 		XML_CHECK_VALUE_NODE("Script", "File", m_scriptFile);
 	}
 }
+//////////////////////////////////////////////////////////////////////////
+void Scene::render( const Camera2D * _camera )
+{
+	for each( Layer * layer in m_listChildren )
+	{
+		layer->renderLayer( _camera );
+	}
+};

@@ -67,9 +67,9 @@ void NodeProxy::registerEvent( const std::string &_name, ScriptObject * _func  )
 	return m_node->registerEvent(_name,_func);
 }
 //////////////////////////////////////////////////////////////////////////
-ScriptObject * NodeProxy::event( const std::string &_name )
+ScriptObject * NodeProxy::getEvent( const std::string &_name )
 {
-	return m_node->event(_name);
+	return m_node->getEvent(_name);
 }
 //////////////////////////////////////////////////////////////////////////
 void NodeProxy::setScriptable( ScriptObject * _scriptable )

@@ -1,7 +1,11 @@
 #	include "SceneNode2D.h"
 
+#	include "NodeForeach.h"
+
 #	include "SceneManager.h"
 #	include "ScriptEngine.h"
+
+#	include "Layer2D.h"
 
 #	include "FileEngine.h"
 #	include "XmlParser.h"
@@ -14,186 +18,15 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode2D::SceneNode2D()
-		: m_parent(0)
 	{
 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::destroy()
-	{
-		for each( SceneNode2D * children in m_listSceneNode2D )
-		{
-			if( children->isScriptable() )
-			{
-				Holder<ScriptEngine>::hostage()
-					->decref( children );
-			}
-
-			children->destroy();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SceneNode2D::activate()
-	{
-		for each( SceneNode2D * children in m_listSceneNode2D )
-		{
-			children->activate();
-		}
-
-		return NodeCore::activate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::deactivate()
-	{
-		for each( SceneNode2D * children in m_listSceneNode2D )
-		{
-			children->deactivate();
-		}
-
-		NodeCore::deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::setParent( SceneNode2D * _parent )
-	{
-		m_parent = _parent;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SceneNode2D * SceneNode2D::getParent()
-	{
-		return m_parent;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SceneNode2D::addChildren( SceneNode2D *_node)
-	{
-		if( isChildren( _node ) )
-		{
-			return false;
-		}
-
-		_node->setParent( this );
-
-		Holder<ScriptEngine>::hostage()->
-			incref( _node );
-
-		m_listSceneNode2D.push_back( _node );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SceneNode2D * SceneNode2D::getChildren( const std::string & _name )
-	{
-		for each( SceneNode2D * children in m_listSceneNode2D )
-		{
-			if( children->getName() == _name )
-			{
-				return children;
-			}
-		}
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::removeChildren( SceneNode2D *_node)
-	{
-		TListSceneNode2D::iterator it_find = 
-			std::find( m_listSceneNode2D.begin(), m_listSceneNode2D.end(), _node );
-
-		if( it_find != m_listSceneNode2D.end() )
-		{
-			m_listSceneNode2D.erase( it_find );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SceneNode2D::isChildren( SceneNode2D *_node)
-	{
-		TListSceneNode2D::iterator it_find = 
-			std::find( m_listSceneNode2D.begin(), m_listSceneNode2D.end(), _node );
-
-		return it_find != m_listSceneNode2D.end();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::update( float _timing )
-	{
-		NodeCore::update( _timing );
-
-		if( m_active == false )
-		{
-			return;
-		}
-
-		for each( SceneNode2D * children in m_listSceneNode2D )
-		{
-			children->update( _timing );
-		}
-	}
-	/////////////////////////////////////////////////////////////////////////
-	SceneNode2D * SceneNode2D::createChildren( const std::string &_type )
-	{
-		SceneNode2D *node = SceneManager::createNodeT<SceneNode2D>( _type );
-
-		if( node )
-		{
-			addChildren( node );
-		}
-
-		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::loader( TiXmlElement * _xml )
 	{
 		Allocator2D::loader( _xml );
-		Renderable::loader( _xml );
-
-		XML_FOR_EACH_TREE(_xml)
-		{
-			Eventable::loader( XML_CURRENT_NODE );
-
-			XML_CHECK_NODE("Node")
-			{
-				XML_DEF_ATTRIBUTES_NODE(Name);
-				XML_DEF_ATTRIBUTES_NODE(Type);
-
-				Node *node = createChildren( Type );
-
-				if(node == 0)
-				{
-					continue;
-				}
-
-				node->setName( Name );
-				node->loader(XML_CURRENT_NODE);
-			}
-
-			XML_CHECK_NODE("External")
-			{
-				XML_DEF_ATTRIBUTES_NODE(File);
-
-				XML_PARSE_FILE_EX(File)
-				{
-					XML_CHECK_NODE("Node")
-					{
-						XML_DEF_ATTRIBUTES_NODE(Name);
-						XML_DEF_ATTRIBUTES_NODE(Type);
-
-						Node *node = createChildren( Type );
-
-						if(node == 0)
-						{
-							continue;
-						}
-
-						node->setName( Name );
-
-						node->loader( XML_CURRENT_NODE );
-					}				
-				}
-				XML_INVALID_PARSE()
-				{
-					ErrorMessage("Invalid parse external node %s for %s", File.c_str(), m_name.c_str());
-				}
-			}
-		}
-
+		Renderable2D::loader( _xml );
+		NodeCore::loader( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & SceneNode2D::getWorldMatrix()
@@ -212,38 +45,45 @@ namespace Menge
 	{
 		Allocator2D::changePivot();
 
-		for each( SceneNode2D * children in m_listSceneNode2D )
+		for each( SceneNode2D * children in m_listChildren )
 		{
 			children->changePivot();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SceneNode2D::render( const Viewport & _viewPort )
+	bool SceneNode2D::isVisible( const Viewport & _viewport )
 	{
-		const mt::mat3f & wm = getWorldMatrix();
+		const mt::vec2f & pos = getWorldPosition();
+		bool res = _viewport.testPoint( pos );
 
+		return res;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::render( const Viewport & _viewport )
+	{
 		const Viewport & vp = 
-			Renderable::updateViewport( _viewPort );
+			Renderable2D::updateViewport( _viewport );
+
+		const mt::mat3f & wm = getWorldMatrix();
 
 		renderSelf( wm, vp );
 
-		for each( SceneNode2D * children in m_listSceneNode2D )
+		for each( SceneNode2D * children in m_listChildren )
 		{
 			children->render( vp );
 		}
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::debugRender()
 	{
-		for each( SceneNode2D * children in m_listSceneNode2D )
+		for each( SceneNode2D * children in m_listChildren )
 		{
 			children->debugRender();
 		}
 
 		NodeCore::debugRender();
 	}
+	
 
 
 }

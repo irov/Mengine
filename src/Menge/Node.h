@@ -7,6 +7,7 @@ class TiXmlElement;
 namespace Menge
 {
 	class ScriptObject;
+	class NodeForeach;
 
 	//pure-virtual interface
 	class Node 
@@ -28,8 +29,17 @@ namespace Menge
 		virtual bool isActive() = 0;
 
 	public:
+		virtual void setParent( Node * _node ) = 0;
+
+		virtual bool addChildren( Node * _node ) = 0;
+		virtual void removeChildren( Node * _node ) = 0;
+		virtual bool isChildren( Node * _node ) = 0;
+
+		virtual void foreachChildren( const NodeForeach & _foreach ) = 0;
+
+	public:
 		virtual void registerEvent( const std::string &_name, ScriptObject * _func  ) = 0;
-		virtual ScriptObject * event( const std::string &_name ) = 0;
+		virtual ScriptObject * getEvent( const std::string &_name ) = 0;
 
 		virtual	void setScriptable( ScriptObject * _scriptable ) = 0;
 		virtual ScriptObject * getScriptable() = 0;

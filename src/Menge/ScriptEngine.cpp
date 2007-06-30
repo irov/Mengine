@@ -249,39 +249,54 @@ namespace Menge
 		boost::python::decref( scriptable->ptr() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callFunction( const std::string & _name, const char * _format, ... )
+	void ScriptEngine::callFunction( ScriptObject * _object )
+	{
+		try
+		{
+			boost::python::call<void>( _object->ptr() );
+		}
+		catch (...)
+		{
+			handleException();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::callFunction( const std::string & _name )
 	{
 		if( m_global->has_key( _name ) == false )
 		{
 			return;
 		}
 
-		struct xxx
-		{
-			char x [1024];
-			// 1024 - волшебное число. Общий размер передаваемых параметров
-		}; // xxx
-
-		va_list vargs;
-		va_start(vargs, _format);
-
 		boost::python::object func = m_global->get( _name );
-
-		xxx* p = (xxx*) vargs;
 
 		try
 		{
-			boost::python::object result(
-				boost::python::handle<>(
-				PyEval_CallFunction( func.ptr(), _format, p )
-				));
+			boost::python::call<void>( func.ptr() );
 		}
 		catch (...)
 		{
 			handleException();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::callFunction( const std::string & _name, float f )
+	{
+		if( m_global->has_key( _name ) == false )
+		{
+			return;
+		}
 
-		va_end( vargs );
+		boost::python::object func = m_global->get( _name );
+
+		try
+		{
+			boost::python::call<void>( func.ptr(), f );
+		}
+		catch (...)
+		{
+			handleException();
+		}
 	}
 	void ScriptEngine::callFunctionNode( const std::string & _name, Node * _node )
 	{
@@ -300,15 +315,8 @@ namespace Menge
 
 		try
 		{
-			//boost::python::object obj( static_cast<Scene*>( _node ) );
-			//boost::python::converter::arg_to_python<Scene*>( _node );
-			//Py_INCREF( obj.ptr() );
 			ScriptObject * _script = _node->getScriptable();
-			boost::python::call<void>( func.ptr(), static_cast<boost::python::object>(*_script) );			//boost::python::object result(
-
-			//	boost::python::handle<>(
-			//	PyEval_CallFunction( func.ptr(), "(i)", 100 )
-			//	));
+			boost::python::call<void>( func.ptr(), static_cast<boost::python::object>(*_script) );
 		}
 		catch (...)
 		{
@@ -316,78 +324,39 @@ namespace Menge
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::callFunctionBool( const std::string & _name, const char * _format, ... )
+	bool ScriptEngine::callFunctionBool( const std::string & _name )
 	{
 		if( m_global->has_key( _name ) == false )
 		{
 			return false;
 		}
 
-		struct xxx
-		{
-			char x [1024];
-			// 1024 - волшебное число. Общий размер передаваемых параметров
-		}; // xxx
-
-		va_list vargs;
-		va_start(vargs, _format);
-
 		boost::python::object func = m_global->get( _name );
-
-		xxx* p = (xxx*) vargs;
 
 		try
 		{
-			boost::python::object result(
-				boost::python::handle<>(
-				PyEval_CallFunction( func.ptr(), _format, p )
-				));
-
-			return boost::python::extract<bool>( result );
+			return boost::python::call<bool>( func.ptr() );
 		}
 		catch (...) 
 		{
 			handleException();
 		}
 
-		va_end( vargs );
-
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callMethod( Entity * _entity, const std::string & _name, const char * _format, ... )
+	void ScriptEngine::callMethod( Entity * _entity, const std::string & _name )
 	{
-		if( m_global->has_key( _name ) == false )
-		{
-			return;
-		}
-
-		struct xxx
-		{
-			char x [1024];
-			// 1024 - волшебное число. Общий размер передаваемых параметров
-		}; // xxx
-
-		va_list vargs;
-		va_start(vargs, _format);
-
-		boost::python::object func = m_global->get( _name );
-
-		xxx* p = (xxx*) vargs;
+		ScriptObject * scriptable = _entity->getScriptable();
 
 		try
 		{
-			boost::python::object result(
-				boost::python::handle<>(
-				PyEval_CallFunction( func.ptr(), _format, p )
-				));
+			boost::python::call_method<void>( scriptable->ptr(), _name.c_str() );
 		}
 		catch (...)
 		{
 			handleException();
 		}
-
-		va_end( vargs );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::handleException()

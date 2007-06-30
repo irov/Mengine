@@ -2,6 +2,7 @@
 
 #	include "Node.h"
 #	include "Eventable.h"
+#	include "Scriptable.h"
 
 #	include "ObjectDeclare.h"
 
@@ -11,10 +12,10 @@
 
 namespace Menge
 {
-
 	class NodeCore
-		: public Node
+		: public virtual Node
 		, public Eventable
+		, public Scriptable
 	{
 	public:
 		NodeCore();
@@ -42,14 +43,6 @@ namespace Menge
 	public:
 		virtual void debugRender();
 
-	public:
-		virtual void registerEvent( const std::string &_name, ScriptObject * _func  );
-		virtual ScriptObject * event( const std::string &_name );
-
-		virtual	void setScriptable( ScriptObject * _scriptable );
-		virtual ScriptObject * getScriptable();
-		virtual bool isScriptable() const;
-
 	protected:
 
 		virtual void _update( float _timing );
@@ -65,7 +58,6 @@ namespace Menge
 		std::string m_name;
 		std::string m_type;
 
-		ScriptObject * m_scriptable;
 	};
 
 }

@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "NodeCore.h"
+#	include "NodeSinglethon.h"
 
 #	include <vector>
 
@@ -19,7 +19,7 @@ namespace	Menge
 	typedef std::list<std::string>	TListLine;
 
 	class Dialog
-		: public NodeCore
+		: public NodeSinglethon
 	{
 		OBJECT_DECLARE(Dialog);
 	public:

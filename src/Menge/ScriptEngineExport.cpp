@@ -6,8 +6,6 @@
 #	include "Sprite.h"
 #	include "Dialog.h"
 
-#	include "VisitorFindNode.h"
-
 namespace Menge
 {
 	void playSprite( const char * _sprite ) 

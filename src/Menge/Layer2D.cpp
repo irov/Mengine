@@ -1,5 +1,7 @@
 #	include "Layer2D.h"
 
+#	include "Camera2D.h"
+
 #	include "ObjectImplement.h"
 
 #	include "Scene.h"
@@ -47,3 +49,15 @@ void Layer2D::loader( TiXmlElement *_xml)
 		}
 	}
 }
+//////////////////////////////////////////////////////////////////////////
+void Layer2D::renderLayer( const Camera2D * _camera )
+{
+	const Viewport & cvp = _camera->getViewport();
+
+	const Viewport & viewport = updateViewport( cvp );
+
+	for each( SceneNode2D * node in m_listChildren )
+	{
+		node->render( viewport );
+	}
+};

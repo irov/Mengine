@@ -156,7 +156,7 @@ namespace Menge
 		m_amplifier->update(_timing);
 
 		Holder<ScriptEngine>::hostage()
-			->callFunction( m_eventUpdate , "(f)", _timing );
+			->callFunction( m_eventUpdate, _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()

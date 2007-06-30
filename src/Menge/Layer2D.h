@@ -1,11 +1,20 @@
 #	pragma once
 
+#	include "Layer.h"
 #	include "SceneNode2D.h"
+
+#	include "Viewport.h"
+
+#	include <list>
 
 namespace Menge
 {
+	class SceneNode2D;
+	class Camera2D;
+
 	class Layer2D
-		: public SceneNode2D
+		: public Layer
+		, public SceneNode2D
 	{
 		OBJECT_DECLARE(Layer2D);
 
@@ -16,10 +25,11 @@ namespace Menge
 		void setParallaxFactor( const mt::vec2f & _factor );
 
 	public:
-		const Viewport & updateViewport( const Viewport & _viewPort ) override;
+		const Viewport & updateViewport( const Viewport & _viewport ) override;
 
 	public:
 		void loader( TiXmlElement *_xml) override;
+		void renderLayer( const Camera2D * _camera ) override;
 
 	protected:
 		mt::vec2f m_factorParallax;

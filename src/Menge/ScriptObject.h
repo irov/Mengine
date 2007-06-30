@@ -8,9 +8,10 @@ namespace Menge
 		: public boost::python::object
 	{
 	public:
-		ScriptObject( const boost::python::object & obj )
-			: boost::python::object( obj )
-		{
-		}
+		ScriptObject();
+		ScriptObject( const boost::python::object & obj );
+
+		void incref();
+		void decref();
 	};
 }

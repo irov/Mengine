@@ -2,7 +2,7 @@
 #	include "NodeFactory.h"
 
 #	include "Node.h"
-#	include "Renderable.h"
+#	include "Renderable2D.h"
 
 #	include "InputEngine.h"
 #	include "FileEngine.h"

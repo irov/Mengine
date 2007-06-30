@@ -3,6 +3,7 @@
 #	include "ObjectImplement.h"
 
 #	include "RenderEngine.h"
+#	include "Viewport.h"
 
 #	include "XmlParser.h"
 
@@ -20,7 +21,8 @@
 OBJECT_IMPLEMENT(Sprite);
 //////////////////////////////////////////////////////////////////////////
 Sprite::Sprite()
-: m_offset(0.f,0.f)
+: m_image(0)
+, m_offset(0.f,0.f)
 , m_color(0xFFFFFFFF)
 , m_currentImageIndex(0) 
 {

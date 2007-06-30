@@ -21,7 +21,7 @@ void Entity::destroy()
 bool Entity::_activate()
 {
 	Holder<ScriptEngine>::hostage()
-		->callMethod( this, "activate", "()" );
+		->callMethod( this, "_activate" );
 
 	return true;
 }

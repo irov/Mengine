@@ -17,10 +17,6 @@
 
 #	include "InputEngine.h"
 
-#	include "VisitorPickHotSpot.h"
-
-#	include "VisitorRender.h"
-
 #	include "ErrorMessage.h"
 
 #	include "Actor.h"
@@ -124,9 +120,7 @@ namespace Menge
 		
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
-		//Holder<RenderEngine>::hostage()->renderText(mt::vec2f(56,56),TESTfont,"dfgdfgdgfgdfgf");
-
-		if( inputEng->isButton(MOUSE_LEFT,DI_PRESSED) == true )
+		if( inputEng->isButton( MOUSE_LEFT, DI_PRESSED ) == true )
 		{
 			//Actor * actor = m_scene->getEntityT<Actor>("TestActor");
 
@@ -203,11 +197,9 @@ namespace Menge
 			return;
 		}
 
-		const Viewport &vp = m_renderCamera->getViewport();
-		
 		if( m_scene )
 		{
-			m_scene->render( vp );
+			m_scene->render( m_renderCamera );
 		}
 		
 		if( m_arrow )

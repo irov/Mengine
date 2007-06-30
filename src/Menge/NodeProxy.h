@@ -36,7 +36,7 @@ namespace Menge
 
 	public:
 		virtual void registerEvent( const std::string &_name, ScriptObject * _func  );
-		virtual ScriptObject * event( const std::string &_name );
+		virtual ScriptObject * getEvent( const std::string &_name );
 
 		virtual	void setScriptable( ScriptObject * _scriptable );
 		virtual ScriptObject * getScriptable();

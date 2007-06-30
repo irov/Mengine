@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include <string>
+
 namespace Menge
 {
 	class ScriptClassDeclaration;
@@ -11,7 +13,7 @@ namespace Menge
 	public:
 		static void init();
 
-		static void addClassDeclaration( const char * _moduleName, ScriptClassDeclaration * _declaration, TDeclarationFunc _func );
+		static void addClassDeclaration( const char * _moduleName, ScriptClassDeclaration * _declaration, const std::string & _bases, TDeclarationFunc _func );
 
 		static void initModule( const char * _moduleName );
 

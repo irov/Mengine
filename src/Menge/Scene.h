@@ -1,39 +1,32 @@
 #	pragma once
 
-#	include "SceneNode2D.h"
+#	include "NodeCore.h"
+#	include "NodeChildren.h"
+#	include "Layer.h"
 
 namespace Menge
 {
-	class Layer2D;
-	class Layer3D;
-	class Entity;
+	class Camera2D;
 
 	class Scene
-		: public SceneNode2D
+		: public NodeCore
+		, public NodeChildren<Layer>
 	{
 		OBJECT_DECLARE( Scene )
 	public:
 		Scene();
 
 	public:
-		void layerAppend( const std::string & _layer, SceneNode2D * _node );
-
-		void addLayer2D( Layer2D * _layer );
-		void addLayer3D( Layer3D * _layer );
+		void layerAppend( const std::string & _layer, Node * _node );
 
 	public:
-		void loader(TiXmlElement *_xml) override;
+		void loader( TiXmlElement *_xml) override;
+		void render( const Camera2D * _camera );
 
 	protected:
 		bool _activate() override;
 
 	private:
 		std::string m_scriptFile;
-
-		typedef std::list< Layer2D * > TListLayer2D;
-		TListLayer2D m_listLayer2D;
-
-		typedef std::list< Layer3D * > TListLayer3D;
-		TListLayer3D m_listLayer3D;
 	};
 }

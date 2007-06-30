@@ -92,7 +92,7 @@ namespace Menge
 			XML_CHECK_VALUE_NODE( "ResourceName", "Value", m_resourceName );
 		}
 
-		Renderable::loader(xml);
+		Renderable2D::loader(xml);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleSystem::_debugRender()

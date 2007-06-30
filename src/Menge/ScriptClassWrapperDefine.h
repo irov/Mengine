@@ -14,7 +14,7 @@ public:\
 public:\
 	ScriptObject * wrapp( Node * _node ) override\
 {\
-	Class * _cast = static_cast< Class * >( _node );\
+	Class * _cast = dynamic_cast< Class * >( _node );\
 	boost::python::object obj( boost::python::ptr< Class * >( _cast ) );\
 	return new ScriptObject( obj );\
 }\

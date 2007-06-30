@@ -3,16 +3,17 @@
 #	include <boost/python.hpp>
 
 //////////////////////////////////////////////////////////////////////////
-#	define REGISTER_SCRIPT_CLASS( Module, Class )\
-	REGISTER_SCRIPT_BODY_IMPL( Module, Class, ScriptInitModule##Module##Class )\
+#	define REGISTER_SCRIPT_CLASS( Module, Class, Bases )\
+	REGISTER_SCRIPT_BODY_IMPL( Module, Class, Bases, ScriptInitModule##Module##Class )\
 
 //////////////////////////////////////////////////////////////////////////
-#	define REGISTER_SCRIPT_BODY_IMPL( Module, Class, StructName )\
+#	define REGISTER_SCRIPT_BODY_IMPL( Module, Class, Bases, StructName )\
 class StructName : public Menge::ScriptClassDeclaration{\
 	public:\
 	StructName ()\
 		{\
-		ScriptClassDeclaration::addClassDeclaration( #Module, this, &StructName::initModule );\
+		ScriptClassDeclaration::setName( #Class );\
+		ScriptClassDeclaration::addClassDeclaration( #Module, this, #Bases, &StructName::initModule );\
 		}\
 		void init() override;\
 	protected:\

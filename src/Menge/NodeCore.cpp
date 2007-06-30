@@ -1,6 +1,8 @@
 #	include "NodeCore.h"
 #	include "ObjectImplement.h"
 
+#	include "NodeForeach.h"
+
 #	include "SceneManager.h"
 
 #	include "FileEngine.h"
@@ -16,17 +18,33 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	NodeCore::NodeCore()
 		: m_active(false)
-		, m_scriptable(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	NodeCore::~NodeCore()
 	{
-		delete m_scriptable;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::destroy()
 	{
+		struct ForeachDestroy
+			: public NodeForeach
+		{
+			void apply( Node * children ) const override
+			{
+				if( children->isScriptable() )
+				{
+					Holder<ScriptEngine>::hostage()
+						->decref( children );
+				}
+
+				children->destroy();
+			}
+		};
+
+		foreachChildren( ForeachDestroy() );
+
+
 		if( isScriptable() )
 		{
 			Holder<ScriptEngine>::hostage()
@@ -40,6 +58,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeCore::activate()
 	{
+		struct ForeachActivate
+			: public NodeForeach
+		{
+			void apply( Node * children ) const override
+			{
+				children->activate();
+			}
+		};
+
+		foreachChildren( ForeachActivate() );
 
 		if( m_active )
 		{
@@ -53,6 +81,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::deactivate()
 	{
+		struct ForeachDeactivate
+			: public NodeForeach
+		{
+			void apply( Node * children ) const override
+			{
+				children->deactivate();
+			}
+		};
+
+		foreachChildren( ForeachDeactivate() );
+
 		if( m_active )
 		{
 			_deactivate();
@@ -94,46 +133,98 @@ namespace Menge
 		}
 		
 		_update(_timing);
+
+		struct ForeachUpdate
+			: public NodeForeach
+		{
+			ForeachUpdate( float _timing )
+				: m_timing( _timing )
+			{
+
+			}
+
+			void apply( Node * children ) const override
+			{
+				children->update( m_timing );
+			}
+
+			float m_timing;
+		};
+
+		foreachChildren( ForeachUpdate(_timing) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::loader(TiXmlElement * _xml)
 	{
+		XML_FOR_EACH_TREE(_xml)
+		{
+			Eventable::loader( XML_CURRENT_NODE );
 
+			XML_CHECK_NODE("Node")
+			{
+				XML_DEF_ATTRIBUTES_NODE(Name);
+				XML_DEF_ATTRIBUTES_NODE(Type);
+
+				Node *node = SceneManager::createNode( Type );
+
+				if(node == 0)
+				{
+					continue;
+				}
+
+				addChildren( node );
+
+				node->setName( Name );
+				node->loader(XML_CURRENT_NODE);
+			}
+
+			XML_CHECK_NODE("External")
+			{
+				XML_DEF_ATTRIBUTES_NODE(File);
+
+				XML_PARSE_FILE_EX(File)
+				{
+					XML_CHECK_NODE("Node")
+					{
+						XML_DEF_ATTRIBUTES_NODE(Name);
+						XML_DEF_ATTRIBUTES_NODE(Type);
+
+						Node *node = SceneManager::createNode( Type );
+
+						if(node == 0)
+						{
+							continue;
+						}
+
+						addChildren( node );
+
+						node->setName( Name );
+
+						node->loader( XML_CURRENT_NODE );
+					}				
+				}
+				XML_INVALID_PARSE()
+				{
+					ErrorMessage("Invalid parse external node %s for %s", File.c_str(), m_name.c_str());
+				}
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::debugRender()
 	{
-		//for( Node * children = getFirstChildren(); children; children = children->nextNode() )
-		//{
-		//	children->debugRender();
-		//}
+		struct ForeachDebugRender
+			: public NodeForeach
+		{
+			void apply( Node * children ) const override
+			{
+				children->debugRender();
+			}
+		};
+
+		foreachChildren( ForeachDebugRender() );
 
 		_debugRender();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::registerEvent( const std::string &_name, ScriptObject * _func  )
-	{
-		Eventable::registerEvent( _name, _func );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ScriptObject * NodeCore::event( const std::string &_name )
-	{
-		return Eventable::event( _name );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::setScriptable( ScriptObject * _scriptable )
-	{
-		m_scriptable = _scriptable;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ScriptObject * NodeCore::getScriptable()
-	{
-		return m_scriptable;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool NodeCore::isScriptable() const
-	{
-		return m_scriptable != 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::_debugRender()

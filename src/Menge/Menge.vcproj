@@ -241,17 +241,29 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="Renderable"
+					Name="Renderable2D"
 					>
 					<File
-						RelativePath=".\Renderable.cpp"
+						RelativePath=".\Renderable2D.cpp"
 						>
 					</File>
 					<File
-						RelativePath=".\Renderable.h"
+						RelativePath=".\Renderable2D.h"
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="Layer"
+				>
+				<File
+					RelativePath=".\Layer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Layer.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -314,6 +326,10 @@
 				</File>
 				<File
 					RelativePath=".\ScriptModuleDeclaration.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ScriptObject.cpp"
 					>
 				</File>
 				<File
@@ -504,6 +520,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\NodeChildren.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeChildren.h"
+					>
+				</File>
+				<File
 					RelativePath=".\NodeCore.cpp"
 					>
 				</File>
@@ -512,11 +536,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\NodeForeach.h"
+					>
+				</File>
+				<File
 					RelativePath=".\NodeProxy.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\NodeProxy.h"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeSinglethon.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeSinglethon.h"
 					>
 				</File>
 				<Filter
@@ -528,6 +564,18 @@
 					</File>
 					<File
 						RelativePath=".\Eventable.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Scriptable"
+					>
+					<File
+						RelativePath=".\Scriptable.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Scriptable.h"
 						>
 					</File>
 				</Filter>
@@ -753,6 +801,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Viewport.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Viewport.h"
 				>
 			</File>
@@ -908,6 +960,10 @@
 		<Filter
 			Name="ScriptWrapper"
 			>
+			<File
+				RelativePath=".\EntityScriptWrapper.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\NodeScriptWrapper.cpp"
 				>

@@ -14,7 +14,7 @@ namespace Menge
 		template<class T>
 		static T* createNodeT( const std::string &_type )
 		{
-			return static_cast<T*>(createNode( _type ));
+			return dynamic_cast<T*>(createNode( _type ));
 		}
 
 		static Node * createNodeFromXml( const std::string &_file);
@@ -22,7 +22,7 @@ namespace Menge
 		template<class T>
 		static T * createNodeFromXmlT( const std::string &_file)
 		{
-			return static_cast<T*>(createNodeFromXml(_file));
+			return dynamic_cast<T*>(createNodeFromXml(_file));
 		}
 		static bool loadNode(Node *_node, const std::string &_xml);
 	};

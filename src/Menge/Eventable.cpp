@@ -4,6 +4,8 @@
 
 #	include "XmlParser.h"
 
+#	include "ScriptObject.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -13,7 +15,7 @@ namespace Menge
 
 		for each( const TMapScriptFunction::value_type & it in m_mapScriptFunction )
 		{
-			scriptEng->removeFunctor( it.second );
+			it.second->decref();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -23,11 +25,13 @@ namespace Menge
 
 		if( it_find == m_mapScriptFunction.end() )
 		{
+			_func->incref();
+			_func->incref();
 			m_mapScriptFunction.insert(std::make_pair(_name,_func));		
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ScriptObject * Eventable::event( const std::string &_name )
+	ScriptObject * Eventable::getEvent( const std::string &_name )
 	{
 		TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
 

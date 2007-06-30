@@ -12,8 +12,6 @@
 
 #	include "Player.h"
 
-#	include "Entity.h"
-
 #	include "Sprite.h"
 #	include "Animation.h"
 #	include "HotSpot.h"
@@ -91,28 +89,10 @@ namespace Menge
 
 			return pyNode;
 		}
-
-		PyObject * createEntity(
-			const std::string & _type, 
-			const mt::vec2f & _pos, 
-			const mt::vec2f & _dir )
-		{
-
-			Entity *en = Holder<ScriptEngine>::hostage()
-				->createEntity( _type );
-
-			en->setPosition( _pos );
-			en->setDirection( _dir );
-
-			PyObject * pyEn = en->getScriptable()->ptr();
-
-			return pyEn;
-		}
 	}
 
-	REGISTER_SCRIPT_CLASS( Menge, Entity )
+	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{
-
 		boost::python::return_value_policy<boost::python::reference_existing_object> retValuePolice;
 
 		boost::python::class_<mt::vec2f>("vec2f")
@@ -128,62 +108,56 @@ namespace Menge
 			.def( boost::python::self /= float() )
 			;
 
-		boost::python::class_<Node, boost::noncopyable>("Node", boost::python::no_init );
 
-		boost::python::class_<NodeCore, boost::python::bases<Node> >("NodeCore")
-			.def( boost::python::init<>("constructor") )
-			.def( "activate", &NodeCore::activate )
-			.def( "setName", &NodeCore::setName )
-			.def( "getName", &NodeCore::getName, retValuePolice  )
+		//boost::python::to_python_converter<
+		//	ScriptObject *,
+		//	ScriptObjectConverter>();
+
+		boost::python::class_<ScriptObject>("ScriptObject" )
+			.def( boost::python::init<boost::python::object>() )
 			;
 
+		boost::python::class_<Node, boost::noncopyable>("Node", boost::python::no_init )
+			;		
 
 		boost::python::class_<Allocator2D>("Allocator2D")
-			.def( boost::python::init<>("constructor") )
 			;
 
-		boost::python::class_<Renderable>("Renderable")
-			.def( boost::python::init<>("constructor") )
-			.def( "hide", &Renderable::hide )
+		boost::python::class_<Renderable2D>("Renderable2D")
+			.def( "hide", &Renderable2D::hide )
 			;
 
-		boost::python::class_<SceneNode2D, boost::python::bases<NodeCore, Allocator2D, Renderable>  >("SceneNode2D")
-			.def( boost::python::init<>("constructor") )
+		boost::python::class_<SceneNode2D, boost::python::bases<Node, Allocator2D, Renderable2D>  >("SceneNode2D")
+			.def( "activate", &SceneNode2D::activate )
+			.def( "setName", &SceneNode2D::setName )
+			.def( "getName", &SceneNode2D::getName, retValuePolice  )
 			.def( "addChildren", &SceneNode2D::addChildren )
 			;		
 
 		{
-			boost::python::class_<Scene, boost::python::bases<SceneNode2D> >("Scene")
-				.def( boost::python::init<>("constructor") )
+			boost::python::class_<Scene, boost::python::bases<SceneNode2D> >("Scene", boost::python::no_init )
 				.def( "layerAppend", &Scene::layerAppend )
 				;
+
+			boost::python::class_<HotSpot, boost::python::bases<SceneNode2D> >("HotSpot")
+				.def( boost::python::init<>("constructor") )
+				.def( "setMouseLeftClickEvent", &HotSpot::setMouseLeftClickEvent )
+				;
+
+			boost::python::class_<Sprite, boost::python::bases<SceneNode2D> >("Sprite")
+				.def( boost::python::init<>("constructor") )
+				;
 			{
-				boost::python::class_<Entity, boost::python::bases<SceneNode2D> >("Entity")
+				boost::python::class_<Animation, boost::python::bases<Sprite> >("Animation")
 					.def( boost::python::init<>("constructor") )
 					;
-
-				boost::python::class_<HotSpot, boost::python::bases<SceneNode2D> >("HotSpot")
-					.def( boost::python::init<>("constructor") )
-					;
-				
-				boost::python::class_<Sprite, boost::python::bases<SceneNode2D> >("Sprite")
-					.def( boost::python::init<>("constructor") )
-					;
-				{
-					boost::python::class_<Animation, boost::python::bases<Sprite> >("Animation")
-						.def( boost::python::init<>("constructor") )
-						;
-				}
 			}
-		}
-		
 
-		
+		}		
 
 		boost::python::class_<Player>("Player");
 
 		boost::python::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
-		boost::python::def( "createEntity", &ScriptMethod::createEntity );
 		boost::python::def( "createNode", &ScriptMethod::createNode );
 	}
 }

@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Node.h"
+
 #	include <map>
 #	include <string>
 
@@ -10,13 +12,14 @@ namespace Menge
 	class ScriptObject;
 
 	class Eventable
+		: public virtual Node
 	{
 	public:
 		~Eventable();
 
 	public:
-		void registerEvent( const std::string &_name, ScriptObject * _func  );
-		ScriptObject * event( const std::string &_name );
+		void registerEvent( const std::string &_name, ScriptObject * _func  ) override;
+		ScriptObject * getEvent( const std::string &_name ) override;
 		
 	public:
 		void loader(TiXmlElement *xml);

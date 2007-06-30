@@ -40,12 +40,14 @@ namespace Menge
 		Entity * createEntity( const std::string & _type );
 		void removeEntity( Entity * _entity );
 
-		void callFunction( const std::string & _name, const char * _format = "()" , ... );
+		void callFunction( ScriptObject * _object );
+		void callFunction( const std::string & _name );
+		void callFunction( const std::string & _name, float f );
 		void callFunctionNode( const std::string & _name, Node * _node );
 
-		bool callFunctionBool( const std::string & _name, const char * _format = "()" , ... );
+		bool callFunctionBool( const std::string & _name );
 
-		void callMethod( Entity * _entity, const std::string & _name, const char * _format = "()" , ... );
+		void callMethod( Entity * _entity, const std::string & _name );
 
 		static void handleException();
 	

@@ -11,9 +11,10 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	typedef std::list< ScriptClassDeclaration * > TListClassDeclaration;
-	typedef std::pair<TDeclarationFunc, TListClassDeclaration> TModuleInfo; 
-	typedef std::map< std::string, TModuleInfo > TMapDeclaration;
+	typedef std::list<ScriptClassDeclaration *> TListClassDeclaration;
+	typedef std::map<std::string, TListClassDeclaration> TMapClassDeclaration;
+	typedef std::pair<TDeclarationFunc, TMapClassDeclaration> TModuleInfo; 
+	typedef std::map<std::string, TModuleInfo> TMapDeclaration;
 	//////////////////////////////////////////////////////////////////////////
 	static const char * s_current_module = 0;
 	//////////////////////////////////////////////////////////////////////////
@@ -28,11 +29,12 @@ namespace Menge
 		return map_declaration() [ _moduleName ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptModuleDeclaration::addClassDeclaration( const char * _moduleName, ScriptClassDeclaration * _declaration, TDeclarationFunc _func )
+	void ScriptModuleDeclaration::addClassDeclaration( const char * _moduleName, ScriptClassDeclaration * _declaration, const std::string & _bases, TDeclarationFunc _func )
 	{
 		TModuleInfo &info = declarations( _moduleName );
 		info.first = _func;
-		info.second.push_back( _declaration );
+
+		info.second[ _bases ].push_back( _declaration );
 	}
 
 	void ScriptModuleDeclaration::init()
@@ -49,21 +51,29 @@ namespace Menge
 			boost::python::object module = boost::python::import( it.first.c_str() );
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	static void foreachDeclaration()
+	static void foreachHierarchicalDeclaration( TMapClassDeclaration & mapDeclaration, const std::string & name )
 	{
-		TListClassDeclaration &listDeclaration = declarations(s_current_module).second;
+		TListClassDeclaration & listDeclaration = mapDeclaration[ name ];
 
 		for each( ScriptClassDeclaration * declare in listDeclaration )
 		{
-			try
-			{
-				declare->init();
-			}
-			catch(...)
-			{
-				ScriptEngine::handleException();
-			}		
+			declare->init();
+			const std::string & name = declare->getName();
+			foreachHierarchicalDeclaration( mapDeclaration, name );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void foreachDeclaration()
+	{
+		TMapClassDeclaration &mapDeclaration = declarations(s_current_module).second;
+
+		try
+		{
+			foreachHierarchicalDeclaration( mapDeclaration, "Base" );
+		}
+		catch(...)
+		{
+			ScriptEngine::handleException();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

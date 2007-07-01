@@ -2,12 +2,12 @@
 
 #	include "Particle.h"
 
-#	include <list>
+#	include <vector>
 
 class	ParticleAffector
 {
 public:
 	ParticleAffector(){};
 	virtual ~ParticleAffector(){};
-	virtual void	affectParticles(float _dt, std::list<Particle*>& _particles) = 0;
+	virtual void	affectParticles(float _dt, std::vector<Particle*>& _particles) = 0;
 };

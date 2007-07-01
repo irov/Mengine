@@ -35,7 +35,7 @@ namespace Menge
 	{
 		addEmitter(new PointEmitter());
 		addAffector(new SimplePhysicAffector());
-
+/*
 		m_particlePool.reserve(200);
 		m_particlePool.resize(200);
 		
@@ -48,6 +48,7 @@ namespace Menge
         {
 			m_freeParticleList.push_back( m_particlePool[i] );
         }
+		*/
 	}
 	///////////////////////////////////////////////////////////////////////////
 	bool ParticleSystem::isVisible(const Viewport & _viewPort)
@@ -101,8 +102,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void	ParticleSystem::update(float t)
 	{
-		std::list<Particle*>::iterator it;
-		std::list<Particle*>::iterator end = m_activeParticleList.end();
+	//	std::list<Particle*>::iterator it;
+	//	std::list<Particle*>::iterator end = m_activeParticleList.end();
 
 /*		for(it = m_activeParticleList.begin(); it != end;)
 		{
@@ -131,7 +132,9 @@ namespace Menge
 		//{
 			for(int i = 0; i < emissionCount; i++)
 			{
-				Particle * particle = createParticle();
+			//	Particle * particle = createParticle();
+				Particle * particle = new Particle();
+				m_particles.push_back(particle);
 				for(std::list<ParticleEmitter*>::iterator it = m_emitters.begin(); it != m_emitters.end(); ++it)
 				{
 					(*it)->emitt(t,particle);
@@ -139,28 +142,35 @@ namespace Menge
 			}
 		//}
 
-		if(m_activeParticleList.empty())
+		/*if(m_activeParticleList.empty())
 		{
 			return;
 		}
-
+*/
 		for(std::list<ParticleAffector*>::iterator it = m_affectors.begin(); it != m_affectors.end(); ++it)
 		{
-			(*it)->affectParticles(t,m_activeParticleList);
+			//(*it)->affectParticles(t,m_activeParticleList);
+			(*it)->affectParticles(t,m_particles);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleSystem::_render( const mt::mat3f &rwm, const Viewport & _viewPort ) 
 	{
-		if(m_activeParticleList.empty())
+		if(m_particles.empty())
 		{
 			return;
 		}
-
-		Particle* particle = *m_activeParticleList.begin();
-
-		for(int i = 0; i < m_activeParticleList.size(); i++)
+		/*if(m_activeParticleList.empty())
 		{
+			return;
+		}
+*/
+		std::vector<Particle*>::iterator it = m_particles.begin();
+
+		for(int i = 0; i < m_particles.size(); i++)
+		{
+			Particle * particle = *it;
+
 			mt::mat3f _transform;
 
 			mt::ident_m3(_transform);
@@ -177,7 +187,7 @@ namespace Menge
 			unsigned int col = (DWORD(particle->m_color.a*255.0f)<<24) + (DWORD(particle->m_color.r*255.0f)<<16) + (DWORD(particle->m_color.g*255.0f)<<8) + DWORD(particle->m_color.b*255.0f);
 
 			Holder<RenderEngine>::hostage()->renderImage(_transform,mt::vec2f(0,0),mt::vec4f(0,0,1.0f,1.0f),_size,col,m_image);
-			particle++;
+			it++;
 		}
 	}
 }

@@ -29,8 +29,6 @@
 		_particle->m_direction.x = cosf(ang);
 		_particle->m_direction.y = sinf(ang);
 		_particle->m_direction *= rand2(m_velocity.x, m_velocity.y);
-//		_num++;
-//		_particle++;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int PointEmitter::getEmissionCount(float _dt)

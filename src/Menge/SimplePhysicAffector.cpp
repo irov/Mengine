@@ -12,14 +12,14 @@ SimplePhysicAffector::SimplePhysicAffector()
 	, m_tangetial(14,14)
 	, m_size(1.94,0.22,0.54)
 	, m_spin(-50,11,0.126)
-	, m_startColor(0.68,0.319,0.27,0.56)
-	, m_endColor(0.97,0.73,0.389,0.23)
+	, m_startColor(0.68,0.319,0.27,1)
+	, m_endColor(0.97,0.73,0.389,1)
 	, m_varColor(0.38,0.44)
 {}
 
-void	SimplePhysicAffector::affectParticles(float _dt, std::list<Particle*>& _particles)
+void	SimplePhysicAffector::affectParticles(float _dt, std::vector<Particle*>& _particles)
 {
-	for(std::list<Particle*>::iterator it = _particles.begin(); it != _particles.end(); ++it)
+	for(std::vector<Particle*>::iterator it = _particles.begin(); it != _particles.end(); ++it)
 	{
 		Particle * particle = static_cast<Particle*>(*it);
 

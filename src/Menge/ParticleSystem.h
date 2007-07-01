@@ -21,8 +21,7 @@ namespace Menge
 		OBJECT_DECLARE(ParticleSystem);
 	public:
 		ParticleSystem();
-		void	move(float x, float y);
-		
+	
 		void	addAffector(ParticleAffector*);
 		void	addEmitter(ParticleEmitter*);
 
@@ -32,10 +31,10 @@ namespace Menge
 		void	loader(TiXmlElement *xml) override;
 
 	protected:
-		bool _activate() override;
-		void _deactivate() override;
-		void _render( const mt::mat3f &rwm, const Viewport & _viewPort ) override;
-		void _debugRender() override;
+		bool	_activate() override;
+		void	_deactivate() override;
+		void	_render( const mt::mat3f &rwm, const Viewport & _viewPort ) override;
+		void	_debugRender() override;
 
 	protected:
 		ResourceParticle *	m_particleResource;
@@ -48,16 +47,20 @@ namespace Menge
 		RenderImageInterface * m_image;
 		int					alive_num;
 		std::string			m_resourceName;
+//
+		//std::vector<Particle*>	m_particlePool;
+		//std::list<Particle*>	m_freeParticleList;
+		//std::list<Particle*>	m_activeParticleList;
 
-		std::vector<Particle*>	m_particlePool;
-		std::list<Particle*>	m_freeParticleList;
-		std::list<Particle*>	m_activeParticleList;
+		std::vector<Particle*>	m_particles;
 
 		Particle*	createParticle()
 		{
-			Particle* p = m_freeParticleList.front();
-			m_activeParticleList.splice(m_activeParticleList.end(), m_freeParticleList, m_freeParticleList.begin());
-			return p;
+			//m_particles.push_back()
+			//Particle* p = m_freeParticleList.front();
+			//m_activeParticleList.splice(m_activeParticleList.end(), m_freeParticleList, m_freeParticleList.begin());
+			//return p;
+			return NULL;
 		}
 	};
 };

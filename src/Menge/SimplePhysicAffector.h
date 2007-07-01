@@ -6,7 +6,7 @@ class	SimplePhysicAffector
 {
 public:
 	SimplePhysicAffector();
-	void	affectParticles(float _dt, std::list<Particle*>& _particles);
+	void	affectParticles(float _dt, std::vector<Particle*>& _particles);
 private:
 	float		m_gravity;		
 	mt::vec2f	m_radial;		

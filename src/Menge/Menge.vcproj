@@ -985,7 +985,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ParticleEmitter.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ParticleEmitter.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ParticleManager.h"
 				>
 			</File>
 			<File
@@ -999,6 +1007,14 @@
 			<Filter
 				Name="Emitters"
 				>
+				<File
+					RelativePath=".\BoxEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\BoxEmitter.h"
+					>
+				</File>
 				<File
 					RelativePath=".\PointEmitter.cpp"
 					>

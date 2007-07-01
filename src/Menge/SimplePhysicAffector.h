@@ -1,12 +1,14 @@
 #	pragma once
 #	include "ParticleAffector.h"
 
+using namespace Menge;
+
 class	SimplePhysicAffector
 	: public ParticleAffector
 {
 public:
 	SimplePhysicAffector();
-	void	affectParticles(float _dt, std::vector<Particle*>& _particles);
+	void	affectParticles(float _dt, std::list<Particle*>& _particles);
 private:
 	float		m_gravity;		
 	mt::vec2f	m_radial;		

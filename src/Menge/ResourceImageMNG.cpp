@@ -75,7 +75,7 @@ namespace Menge
 
 		m_images.reserve(size);
 
-		for(int i = 0; i < size; i++)
+		for(int i = 0; i < size; ++i)
 		{
 			fileData->read_ints(&x,1);
 			fileData->read_ints(&y,1);

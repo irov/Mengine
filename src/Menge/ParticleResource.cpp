@@ -37,7 +37,7 @@ namespace Menge
 			XML_CHECK_VALUE_NODE( "startColor", "Value", m_desc.startColor );
 			XML_CHECK_VALUE_NODE( "endColor", "Value", m_desc.endColor );
 			XML_CHECK_VALUE_NODE( "varColor", "Value", m_desc.varColor );
-		}
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceParticle::_compile()
@@ -52,10 +52,10 @@ namespace Menge
 			->releaseRenderImage(m_image);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ParticleDesc&	ResourceParticle::getDesc()
+/*	const ParticleDesc&	ResourceParticle::getDesc()
 	{
 		return m_desc;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * ResourceParticle::getImage()
 	{

@@ -1,31 +1,33 @@
-#	include "PointEmitter.h"
+#	include	"BoxEmitter.h"
+
 #	include "stdlib.h"
 	//////////////////////////////////////////////////////////////////////////
-	float rand2(float min, float max)
+	static float rand2(float min, float max)
 	{
 		float r = (float)rand() / RAND_MAX;
 		return min + r * (max-min);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PointEmitter::PointEmitter()
+	BoxEmitter::BoxEmitter()
 		: ParticleEmitter(1000)
 		, m_life(0.5f,1.26f)
-		, m_spread(0.96)
+		, m_spread(1.96)
 		, m_start_position(300,300)
 		, m_dir(0)
 		, m_velocity(300,300)
 	{};
 	//////////////////////////////////////////////////////////////////////////
-	void PointEmitter::emitt(float _dt, Particle * _particle)
+	void BoxEmitter::emitt(float _dt, Particle * _particle)
 	{
 		_particle->m_timeToLive = 0.0f;
 		_particle->m_totalTime = rand2(m_life.x, m_life.y);
 
-		_particle->m_position = m_start_position;
+		_particle->m_position = m_start_position + mt::vec2f(rand2(-1,1) * 40, rand2(-1,1) * 40);
 
 		float ang = m_dir-1.57f+rand2(0,m_spread)-m_spread/2.0f;
 
 		_particle->m_direction.x = cosf(ang);
 		_particle->m_direction.y = sinf(ang);
+
 		_particle->m_direction *= rand2(m_velocity.x, m_velocity.y);
 	}

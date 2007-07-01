@@ -28,6 +28,19 @@ namespace Menge
 		mt::vec2f	varColor;	//x - как измен€цо цвет, y - как измен€ецо альфа канал
 	};
 
+/*
+	class ResourceParticleEmitter
+		: public ResourceImpl
+	{
+	public:
+		ResourceParticleEmitter( const std::string & _name );
+	public:
+		RenderImageInterface * getImage() = 0;
+	private:
+		std::string			m_filename;
+		RenderImageInterface*	m_image; 
+	};
+*/
 	class ResourceParticle
 		: public ResourceImpl
 	{
@@ -44,7 +57,7 @@ namespace Menge
 		void _release();
 
 	public:
-		const ParticleDesc&	getDesc(); 
+	//	const ParticleDesc&	getDesc(); 
 		RenderImageInterface * getImage();
 	private:
 		std::string			m_filename;

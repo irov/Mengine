@@ -2,12 +2,15 @@
 
 #	include "Particle.h"
 
-#	include <vector>
+#	include <list>
 
-class	ParticleAffector
+namespace Menge
 {
-public:
-	ParticleAffector(){};
-	virtual ~ParticleAffector(){};
-	virtual void	affectParticles(float _dt, std::vector<Particle*>& _particles) = 0;
+	class	ParticleAffector
+	{
+	public:
+		ParticleAffector(){};
+		virtual ~ParticleAffector(){};
+		virtual void	affectParticles(float _dt, std::list<Particle*>& _particles) = 0;
+	};
 };

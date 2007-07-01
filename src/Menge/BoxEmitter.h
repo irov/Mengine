@@ -2,11 +2,11 @@
 
 using namespace Menge;
 
-class	PointEmitter
+class	BoxEmitter
 		: public ParticleEmitter
 {
 public:
-	PointEmitter();
+	BoxEmitter();
 	void emitt(float _dt, Particle * _particle);
 private:
 	mt::vec2f	m_start_position;

@@ -7,19 +7,19 @@ static float rand2(float min, float max)
 	return min + r * (max-min);
 }
 SimplePhysicAffector::SimplePhysicAffector()
-	: m_gravity(385)
-	, m_radial(-14,-14)
+	: m_gravity(355)
+	, m_radial(-10,-14)
 	, m_tangetial(14,14)
 	, m_size(1.94,0.22,0.54)
 	, m_spin(-50,11,0.126)
-	, m_startColor(0.68,0.319,0.27,1)
-	, m_endColor(0.97,0.73,0.389,1)
+	, m_startColor(0.68,0.319,0.27,0.3)
+	, m_endColor(0.97,0.73,0.389,0.6)
 	, m_varColor(0.38,0.44)
 {}
 
-void	SimplePhysicAffector::affectParticles(float _dt, std::vector<Particle*>& _particles)
+void	SimplePhysicAffector::affectParticles(float _dt, std::list<Particle*>& _particles)
 {
-	for(std::vector<Particle*>::iterator it = _particles.begin(); it != _particles.end(); ++it)
+	for(std::list<Particle*>::iterator it = _particles.begin(); it != _particles.end(); ++it)
 	{
 		Particle * particle = static_cast<Particle*>(*it);
 
@@ -32,7 +32,7 @@ void	SimplePhysicAffector::affectParticles(float _dt, std::vector<Particle*>& _p
 		particle->m_color.b = rand2(m_startColor.b, m_startColor.b+(m_endColor.b-m_startColor.b)*m_varColor.x);
 		particle->m_color.a = rand2(m_startColor.a, m_startColor.a+(m_endColor.a-m_startColor.a)*m_varColor.y);
 
-		mt::vec2f a = mt::norm_safe_v2(particle->m_position/* - position*/);
+		mt::vec2f a = mt::norm_safe_v2(particle->m_position);
 
 		mt::vec2f a2 = mt::perp(a) * rand2(m_tangetial.x, m_tangetial.y);
 

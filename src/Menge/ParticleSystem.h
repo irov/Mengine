@@ -43,24 +43,21 @@ namespace Menge
 		std::list<ParticleAffector*>	m_affectors;
 		std::list<ParticleEmitter*>		m_emitters;
 
-		ParticleDesc		info;
+		mt::vec2f	m_maxPoint;
+		mt::vec2f	m_minPoint;
+
 		RenderImageInterface * m_image;
-		int					alive_num;
 		std::string			m_resourceName;
-//
-		//std::vector<Particle*>	m_particlePool;
-		//std::list<Particle*>	m_freeParticleList;
-		//std::list<Particle*>	m_activeParticleList;
 
-		std::vector<Particle*>	m_particles;
+		typedef std::vector<Particle> TVectorPoolParticle;
+		typedef std::list<Particle*> TListFreeParticle;
+		typedef std::list<Particle*> TListActiveParticle;
 
-		Particle*	createParticle()
-		{
-			//m_particles.push_back()
-			//Particle* p = m_freeParticleList.front();
-			//m_activeParticleList.splice(m_activeParticleList.end(), m_freeParticleList, m_freeParticleList.begin());
-			//return p;
-			return NULL;
-		}
+		TVectorPoolParticle	m_particlePool;
+		TListFreeParticle	m_freeParticleList;
+		TListActiveParticle	m_activeParticleList;
+
+		Particle*	createParticle();
+		void	resizePool(size_t N);
 	};
 };

@@ -208,7 +208,8 @@ namespace Menge
 			avp.begin = mt::vec2f(0,0);
 			avp.end = mt::vec2f(1024,768);
 			
-			m_arrow->render( avp );
+			const mt::mat3f &wm = m_arrow->getWorldMatrix();
+			m_arrow->render( wm, avp );
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////

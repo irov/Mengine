@@ -26,11 +26,10 @@ namespace Menge
 		const mt::mat3f & getWorldMatrix() override;
 		void changePivot() override;
 
-		bool isVisible( const Viewport & _viewport ) override;
-
 	public:
-		virtual void render( const Viewport & _viewport );
-
+		void render( const mt::mat3f & _rwm, const Viewport & _viewport ) override;
+		bool isVisible( const Viewport & _viewport ) override;
+	
 	public:
 		void loader( TiXmlElement * _xml ) override;
 		void debugRender() override;

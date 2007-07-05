@@ -58,6 +58,7 @@ void Layer2D::renderLayer( const Camera2D * _camera )
 
 	for each( SceneNode2D * node in m_listChildren )
 	{
-		node->render( viewport );
+		const mt::mat3f & wm = node->getWorldMatrix();
+		node->render( wm, viewport );
 	}
 };

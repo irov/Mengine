@@ -16,7 +16,7 @@ namespace Menge
 		Renderable2D();
 
 	public:
-		virtual bool renderSelf( const mt::mat3f & _rwm, const Viewport & _viewport );
+		virtual void render( const mt::mat3f & _rwm, const Viewport & _viewport );
 		virtual void hide( bool value );
 		virtual bool isVisible( const Viewport & _viewport );
 

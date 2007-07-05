@@ -13,16 +13,16 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Renderable2D::renderSelf( const mt::mat3f &_rwm, const Viewport & _viewport )
+	void Renderable2D::render( const mt::mat3f &_rwm, const Viewport & _viewport )
 	{
 		if( m_hide == true )
 		{
-			return false;
+			return;
 		}
 
 		if( isVisible( _viewport ) == false )
 		{
-			return false;
+			return;
 		}
 
 		mt::mat3f rwm = _rwm;
@@ -30,8 +30,6 @@ namespace Menge
 		rwm.v2.v2 -= _viewport.begin;
 
 		_render( rwm, _viewport );
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Renderable2D::_render( const mt::mat3f &rwm, const Viewport & _viewPort )

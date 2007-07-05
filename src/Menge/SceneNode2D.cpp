@@ -59,18 +59,17 @@ namespace Menge
 		return res;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::render( const Viewport & _viewport )
+	void SceneNode2D::render( const mt::mat3f & _rwm, const Viewport & _viewport )
 	{
 		const Viewport & vp = 
 			Renderable2D::updateViewport( _viewport );
 
-		const mt::mat3f & wm = getWorldMatrix();
-
-		renderSelf( wm, vp );
+		Renderable2D::render( _rwm, vp );
 
 		for each( SceneNode2D * children in m_listChildren )
 		{
-			children->render( vp );
+			const mt::mat3f & wm = children->getWorldMatrix();
+			children->render( wm, vp );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

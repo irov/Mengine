@@ -18,14 +18,15 @@
 
 #	include "Decoder.h"
 
+#	include "osdefs.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	typedef std::list< std::pair<std::string,int> > TListLoadPaks;
-	//////////////////////////////////////////////////////////////////////////
 	Application::Application()
 		: m_game(0)
-	{}
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
 	{
@@ -61,8 +62,6 @@ namespace Menge
 
 		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
 		scriptEngine->init();
-
-		TListLoadPaks listLoadPaks;
 
 		XML_PARSE_FILE("Application.xml")
 		{
@@ -116,8 +115,7 @@ namespace Menge
 						XML_VALUE_ATTRIBUTE("File",file);
 						XML_VALUE_ATTRIBUTE("Priority",priority);
 
-						listLoadPaks
-							.push_back(std::make_pair(file,priority));
+						m_packHierarchical[ priority ].push_back( file );
 					}
 				}
 
@@ -157,10 +155,22 @@ namespace Menge
 			return false;
 		}
 
-		for each( const TListLoadPaks::value_type & it in listLoadPaks )
+		const std::string & pathEntities = m_game->getPathEntities();
+		std::string scriptPath = pathEntities;
+
+		for each( const TPackHierarchical::value_type & it in m_packHierarchical )
 		{
-			Holder<FileEngine>::hostage()->loadPak( it.first, it.second );
+			for each( const std::string & pak in it.second )
+			{
+				Holder<FileEngine>::hostage()->loadPak( pak, it.first );
+				//scriptPath += DELIM;
+				//scriptPath += pak;
+				//scriptPath += pathEntities;
+			}
 		}
+
+		Holder<ScriptEngine>::hostage()
+			->setEntitiesPath( scriptPath );
 
 		//хг-гю кхмхи мерс бняярюмнбкемхъ пеяспянб.
 		bool display = createDisplay(m_width,m_height,m_bits,m_fullScreen);

@@ -32,7 +32,9 @@ namespace Menge
 		bool doFile( const std::string & _file );
 		bool doString( const std::string & _string );
 
-		void setEntitiesPath( const std::string & _path );
+		PyObject * importModule( const std::string & _file );
+
+		void setEntitiesPath( const std::string & _paths );
 		bool isEntityType( const std::string & _type );
 		void registerEntityType( const std::string & _type );
 
@@ -48,11 +50,19 @@ namespace Menge
 		Entity * createEntity( const std::string & _type );
 		void removeEntity( Entity * _entity );
 
+		void callModuleFunction( PyObject * _module, const std::string & _name );
+		bool callModuleFunctionBool( PyObject * _module, const std::string & _name );
+		
+		void callModuleFunction( PyObject * _module, const std::string & _name, float f );
+
 		void callFunction( PyObject * _object );
 		void callFunction( const std::string & _name );
+		
+		void callFunction( PyObject * _object, float f );
 		void callFunction( const std::string & _name, float f );
 		void callFunctionNode( const std::string & _name, Node * _node );
 
+		bool callFunctionBool( PyObject * _object );
 		bool callFunctionBool( const std::string & _name );
 
 		void callMethod( Entity * _entity, const std::string & _name );

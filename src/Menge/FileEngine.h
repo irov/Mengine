@@ -5,7 +5,6 @@
 
 #	include "FileSystemInterface.h"
 
-class TiXmlElement;
 class TiXmlDocument;
 
 namespace Menge

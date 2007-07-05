@@ -2,6 +2,12 @@
 
 #	include "SceneNode2D.h"
 
+extern "C" 
+{ 
+	struct _typeobject; 
+	typedef _typeobject PyTypeObject;
+}
+
 namespace Menge
 {
 	class Scene;
@@ -20,6 +26,5 @@ namespace Menge
 
 	protected:
 		bool _activate();
-
 	};
 }

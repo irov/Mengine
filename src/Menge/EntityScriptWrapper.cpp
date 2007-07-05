@@ -20,6 +20,15 @@ namespace Menge
 			Entity *en = Holder<ScriptEngine>::hostage()
 				->createEntity( _type );
 
+			if( en == 0 )
+			{
+				printf("Can't create entity [%s]\n"
+					, _type.c_str() 
+					);
+
+				Py_RETURN_NONE;
+			}
+
 			en->setPosition( _pos );
 			en->setDirection( _dir );
 
@@ -31,9 +40,9 @@ namespace Menge
 
 	REGISTER_SCRIPT_CLASS( Menge, Entity, Node )
 	{
-		boost::python::class_<Entity, boost::python::bases<SceneNode2D> >("Entity")
-			.def( boost::python::init<>("constructor") )
-			;
+		boost::python::class_<Entity, boost::python::bases<SceneNode2D> > pyEntityClass("Entity");
+			
+		pyEntityClass.def( boost::python::init<>("constructor") );
 
 		boost::python::def( "createEntity", &ScriptMethod::createEntity );
 	}

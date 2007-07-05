@@ -1,4 +1,9 @@
+#import sys
+
+#sys.path.insert(0,"Game/Entities" )
+
 import Menge
+import BlockImpl
 
 class Block( Menge.Entity ):
 	def __init__( self ):
@@ -22,6 +27,10 @@ class Block( Menge.Entity ):
 
 
 		self.addChildren( hotspot )
+
+		self.doo = BlockImpl.Doo()
+		
+		self.doo.foo()
 
 		pass
 	pass

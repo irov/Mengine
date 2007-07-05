@@ -36,15 +36,6 @@ namespace Menge
 	{
 		delete m_mainModule;
 		delete m_global;
-
-		PyObject * obj = PyImport_GetModuleDict() ;
-		PyObject * obj_menge = PyDict_GetItemString( obj, "Menge" );
-
-		PyObject * obj_menge_dict = PyModule_GetDict( obj_menge );
-
-		PyObject * obj_menge_dict_all2d = PyDict_GetItemString( obj_menge_dict, "Allocator2D" );
-
-		Py_DECREF( obj_menge_dict_all2d );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::genFunctor( const std::string &_name )
@@ -63,6 +54,9 @@ namespace Menge
 	{
 		Py_Initialize();
 
+		//PySys_SetPath( "Game/Entities" /*const_cast< char * >( _paths.c_str() )*/ );
+
+
 		ScriptModuleDeclaration::init();
 
 		boost::python::object main = 
@@ -74,6 +68,7 @@ namespace Menge
 
 		boost::python::dict global( main.attr("__dict__") );
 		m_mainModule = new ScriptObject( main );
+
 		m_global = new ScriptGlobal( global );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -103,9 +98,14 @@ namespace Menge
 		boost::python::decref( _object );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::setEntitiesPath( const std::string & _path )
+	void ScriptEngine::setEntitiesPath( const std::string & _paths )
 	{
-		m_pathEntities = _path;
+		PySys_SetPath( const_cast< char * >( _paths.c_str() ) );
+
+		if (PyErr_Occurred())
+		{
+			PyErr_Print();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::isEntityType( const std::string & _type )
@@ -118,44 +118,46 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::registerEntityType( const std::string & _type )
 	{
-		if( doFile( m_pathEntities + _type + ".py" ) == true )
+		std::cout << "register entity type " << _type << "..." << std::endl;
+
+		PyObject * module = importModule( _type );
+
+		if( module == 0 )
 		{
-			try
-			{
-				if( m_global->has_key( _type ) == false )
-				{
-					return;
-				}
-
-				boost::python::object ob_type = m_global->get( _type );
-
-				if( PyType_Check( ob_type.ptr() ) == false )
-				{
-					return;
-				}
-			}
-			catch (...)
-			{
-				handleException();
-			}
-
-			m_listEntitiesType.push_back( _type );	
+			return;
 		}
+
+		try
+		{
+			boost::python::object result(boost::python::handle<>(
+				PyObject_GetAttrString( module, _type.c_str() )
+				));
+
+			if( PyType_Check( result.ptr() ) == false )
+			{
+				return;
+			}
+		}
+		catch (...)
+		{
+			handleException();
+		}
+
+		m_listEntitiesType.push_back( _type );	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::doBuffer( const char * _buffer, size_t _size )
 	{		
-		std::string str( _buffer, _size );
-		for( size_t i = 0, i_end = str.size(); i < i_end; ++i )
+		try
 		{
-			if( str[i] == 13 )
-			{
-				str[i] = 32;
-			}
+			boost::python::str source( _buffer, _size );
+			boost::python::object result = boost::python::exec( source, *m_global, *m_global );		
+			std::cout << "success!" << std::endl;
 		}
-		boost::python::str source( str.c_str(), str.size() );
-		boost::python::object result = boost::python::exec( source, *m_global, *m_global );		
-		std::cout << "success!" << std::endl;
+		catch (...)
+		{
+			ScriptEngine::handleException();
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::doString( const std::string & _string )
@@ -163,20 +165,7 @@ namespace Menge
 		const char * buffer = _string.c_str();
 		size_t size = _string.size();
 
-		if( boost::python::handle_exception(boost::bind( &ScriptEngine::doBuffer, this, buffer, size) ) )
-		{
-			if (PyErr_Occurred())
-			{
-				PyErr_Print();
-			}
-			else
-			{
-				BOOST_ERROR("A C++ exception was thrown  for which "
-					"there was no exception translator registered.");
-			}
-
-			return false;
-		}	
+		doBuffer( _string.c_str(), _string.size() );
 
 		return true;
 	}
@@ -185,51 +174,35 @@ namespace Menge
 	{
 		std::cout << "running file " << _file << "..." << std::endl;
 
-		FileDataInterface *data = 
-			Holder<FileEngine>::hostage()
-			->openFile( _file );
-
-		if( data == 0 )
+		try
 		{
-			return false;	
+			//boost::python::import( _file.c_str() );
+			boost::python::exec_file( _file.c_str(), *m_global, *m_global );
 		}
-
-		const char * buffer = data->getBuffer();
-		size_t size = data->size();
-
-		if( boost::python::handle_exception(boost::bind( &ScriptEngine::doBuffer, this, buffer, size ) ) )
+		catch (...) 
 		{
-			Holder<FileEngine>::hostage()->closeFile( data );
-			if (PyErr_Occurred())
-			{
-				PyErr_Print();
-			}
-			else
-			{
-				BOOST_ERROR("A C++ exception was thrown  for which "
-					"there was no exception translator registered.");
-			}
-
-			return false;
+			ScriptEngine::handleException();
 		}
-
-		Holder<FileEngine>::hostage()->closeFile( data );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::importModule( const std::string & _file )
+	{
+		std::cout << "import module " << _file << "..." << std::endl;
+
+		boost::python::object md = boost::python::import( _file.c_str() );
+		return md.ptr();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Entity * ScriptEngine::createEntity( const std::string & _type )
 	{
 		try
 		{
-			std::string code = _type;
-			code += "()";
-			boost::python::object result((boost::python::handle<>(
-				PyRun_String( const_cast< char * >( code.c_str() )
-				, Py_eval_input
-				, m_global->ptr()
-				, m_global->ptr()))
-				));
+			boost::python::object md = boost::python::import( _type.c_str() );
+
+			boost::python::object result = 
+				boost::python::call_method<boost::python::object>( md.ptr(), _type.c_str() );
 
 			Entity * en = boost::python::extract<Entity*>( result );
 
@@ -252,6 +225,33 @@ namespace Menge
 		PyObject * scriptable = _entity->getScriptable();
 
 		boost::python::decref( scriptable );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::callModuleFunction( PyObject * _module, const std::string & _name )
+	{
+		boost::python::object result(boost::python::handle<>(
+			PyObject_GetAttrString( _module, _name.c_str() )
+			));
+
+		callFunction( result.ptr() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScriptEngine::callModuleFunctionBool( PyObject * _module, const std::string & _name )
+	{
+		boost::python::object result(boost::python::handle<>(
+			PyObject_GetAttrString( _module, _name.c_str() )
+			));
+
+		return callFunctionBool( result.ptr() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::callModuleFunction( PyObject * _module, const std::string & _name, float f )
+	{
+		boost::python::object result(boost::python::handle<>(
+			PyObject_GetAttrString( _module, _name.c_str() )
+			));
+
+		callFunction( result.ptr(), f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::callFunction( PyObject * _object )
@@ -285,6 +285,18 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::callFunction( PyObject * _object, float f )
+	{
+		try
+		{
+			boost::python::call<void>( _object, f );
+		}
+		catch (...)
+		{
+			handleException();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::callFunction( const std::string & _name, float f )
 	{
 		if( m_global->has_key( _name ) == false )
@@ -294,14 +306,7 @@ namespace Menge
 
 		boost::python::object func = m_global->get( _name );
 
-		try
-		{
-			boost::python::call<void>( func.ptr(), f );
-		}
-		catch (...)
-		{
-			handleException();
-		}
+		callFunction( func.ptr() );
 	}
 	void ScriptEngine::callFunctionNode( const std::string & _name, Node * _node )
 	{
@@ -329,6 +334,20 @@ namespace Menge
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ScriptEngine::callFunctionBool( PyObject * _object )
+	{
+		try
+		{
+			return boost::python::call<bool>( _object );
+		}
+		catch (...) 
+		{
+			handleException();
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::callFunctionBool( const std::string & _name )
 	{
 		if( m_global->has_key( _name ) == false )
@@ -338,16 +357,7 @@ namespace Menge
 
 		boost::python::object func = m_global->get( _name );
 
-		try
-		{
-			return boost::python::call<bool>( func.ptr() );
-		}
-		catch (...) 
-		{
-			handleException();
-		}
-
-		return false;
+		return callFunctionBool( func.ptr() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::callMethod( Entity * _entity, const std::string & _name )

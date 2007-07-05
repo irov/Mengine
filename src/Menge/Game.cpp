@@ -27,6 +27,7 @@ namespace Menge
 		: m_amplifier(0)
 		, m_dialogManager(0)
 		, m_defaultArrow(0)
+		, m_pyPersonality(0)
 	{
 		m_player = new Player;
 
@@ -125,7 +126,7 @@ namespace Menge
 
 			XML_CHECK_NODE("Personality")
 			{
-				XML_VALUE_ATTRIBUTE("File", m_personality );
+				XML_VALUE_ATTRIBUTE("Module", m_personality );
 
 				XML_FOR_EACH()
 				{				
@@ -156,7 +157,7 @@ namespace Menge
 		m_amplifier->update(_timing);
 
 		Holder<ScriptEngine>::hostage()
-			->callFunction( m_eventUpdate, _timing );
+			->callModuleFunction( m_pyPersonality, m_eventUpdate, _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()
@@ -174,6 +175,11 @@ namespace Menge
 		printf("%s\n", _text );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const std::string & Game::getPathEntities() const
+	{
+		return m_pathEntities;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
 		m_defaultArrow = getArrow(m_defaultArrowName);
@@ -181,24 +187,23 @@ namespace Menge
 		ScriptEngine * scriptEngine = 
 			Holder<ScriptEngine>::hostage();
 
-		Holder<ScriptEngine>::hostage()
-			->setEntitiesPath( m_pathEntities );
-
 		for each( const std::string & enType in m_listEntitiesDeclaration )			
 		{
 			Holder<ScriptEngine>::hostage()
 				->registerEntityType( enType );
 		}
 
-		if( Holder<ScriptEngine>::hostage()
-			->doFile( m_personality ) == false )
+		m_pyPersonality = Holder<ScriptEngine>::hostage()
+			->importModule( m_personality );
+
+		if( m_pyPersonality == 0 )
 		{
 			return false;
 		}
 
 		bool result = 
 			Holder<ScriptEngine>::hostage()
-			->callFunctionBool( m_eventInit );
+			->callModuleFunctionBool( m_pyPersonality, m_eventInit );
 
 		if( result == false )
 		{
@@ -213,7 +218,7 @@ namespace Menge
 	void Game::release()
 	{
 		Holder<ScriptEngine>::hostage()
-			->callFunction( m_eventFini );
+			->callModuleFunction( m_pyPersonality, m_eventFini );
 
 		for each( const TMapArrow::value_type & it in m_mapArrow )
 		{

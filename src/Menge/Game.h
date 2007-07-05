@@ -1,11 +1,15 @@
 #	pragma once
 
-#	include "Holder.h"
-
 #	include <list>
 #	include <map>
 
 class TiXmlElement;
+
+extern "C" 
+{ 
+	struct _object; 
+	typedef _object PyObject;
+}
 
 namespace Menge
 {
@@ -34,6 +38,9 @@ namespace Menge
 		void debugRender();
 
 	public:
+		const std::string & getPathEntities() const;
+
+	public:
 		void addArrow( Arrow *_arrow );
 		void removeArrow( const std::string &_name );
 		Arrow * getArrow( const std::string &_name );
@@ -54,6 +61,8 @@ namespace Menge
 		std::string m_eventInit;
 		std::string m_eventUpdate;
 		std::string m_eventFini;
+
+		PyObject * m_pyPersonality;
 
 		Player * m_player;
 

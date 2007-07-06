@@ -12,3 +12,7 @@ http://sourceforge.net/project/showfiles.php?group_id=13559&package_id=20883
 
 vld
 [1.0]
+
+cal3d
+[snapshot]
+svn://svn.gna.org/svn/cal3d/trunk

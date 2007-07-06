@@ -19,7 +19,7 @@ namespace Menge
 		: public virtual Node
 	{
 	public:
-		~Eventable();
+		void removeAllEvent();
 
 	public:
 		void registerEvent( const std::string &_name, PyObject * _func  ) override;

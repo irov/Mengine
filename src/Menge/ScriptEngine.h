@@ -48,7 +48,6 @@ namespace Menge
 		PyObject * genFunctor( const std::string &_name );
 
 		Entity * createEntity( const std::string & _type );
-		void removeEntity( Entity * _entity );
 
 		void callModuleFunction( PyObject * _module, const std::string & _name );
 		bool callModuleFunctionBool( PyObject * _module, const std::string & _name );

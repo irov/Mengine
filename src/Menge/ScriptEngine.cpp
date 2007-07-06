@@ -191,8 +191,17 @@ namespace Menge
 	{
 		std::cout << "import module " << _file << "..." << std::endl;
 
-		boost::python::object md = boost::python::import( _file.c_str() );
-		return md.ptr();
+		try
+		{
+			boost::python::object md = boost::python::import( _file.c_str() );
+			return md.ptr();
+		}
+		catch (...)
+		{
+			ScriptEngine::handleException();
+		}
+
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Entity * ScriptEngine::createEntity( const std::string & _type )
@@ -218,13 +227,6 @@ namespace Menge
 		}
 
 		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::removeEntity( Entity * _entity )
-	{
-		PyObject * scriptable = _entity->getScriptable();
-
-		boost::python::decref( scriptable );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::callModuleFunction( PyObject * _module, const std::string & _name )

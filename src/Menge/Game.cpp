@@ -55,6 +55,9 @@ namespace Menge
 		}
 
 		delete m_player;
+
+		Holder<ScriptEngine>::hostage()
+			->callFunction( m_eventFini );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loader(TiXmlElement *_xml)

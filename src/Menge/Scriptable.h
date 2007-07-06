@@ -15,7 +15,7 @@ namespace Menge
 	{
 	public:
 		Scriptable();
-		~Scriptable();
+		virtual ~Scriptable();
 
 	public:
 		void setScriptable( PyObject * _scriptable ) override;

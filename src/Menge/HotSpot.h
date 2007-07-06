@@ -19,6 +19,7 @@ namespace Menge
 	
 	public:
 		HotSpot();
+		~HotSpot();
 
 	public:
 		void addPoint( const mt::vec2f &p );

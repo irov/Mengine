@@ -32,20 +32,15 @@ namespace Menge
 		{
 			void apply( Node * children ) const override
 			{
-				if( children->isScriptable() )
-				{
-					Holder<ScriptEngine>::hostage()
-						->decref( children );
-				}
-
 				children->destroy();
 			}
 		};
 
 		foreachChildren( ForeachDestroy() );
 
+		Eventable::removeAllEvent();
 
-		if( isScriptable() )
+		if( m_scriptable )
 		{
 			Holder<ScriptEngine>::hostage()
 				->decref( this );
@@ -174,6 +169,8 @@ namespace Menge
 
 				addChildren( node );
 
+				ScriptEngine::decref( node );
+
 				node->setName( Name );
 				node->loader(XML_CURRENT_NODE);
 			}
@@ -197,6 +194,8 @@ namespace Menge
 						}
 
 						addChildren( node );
+
+						ScriptEngine::decref( node );
 
 						node->setName( Name );
 

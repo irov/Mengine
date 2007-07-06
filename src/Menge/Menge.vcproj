@@ -265,6 +265,26 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="SceneNode3D"
+				>
+				<File
+					RelativePath=".\SceneNode3D.h"
+					>
+				</File>
+				<Filter
+					Name="Allocator3D"
+					>
+					<File
+						RelativePath=".\Allocator3D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Allocator3D.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="SceneManager"
@@ -426,21 +446,6 @@
 			<Filter
 				Name="Allocator"
 				>
-				<File
-					RelativePath=".\Allocator.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Allocator.h"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
 			</Filter>
 			<Filter
 				Name="Sprite"
@@ -798,6 +803,18 @@
 			</File>
 			<File
 				RelativePath=".\Camera2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Camera3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Camera3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Frustum.h"
 				>
 			</File>
 			<File

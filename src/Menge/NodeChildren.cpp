@@ -8,12 +8,16 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeChildrenImpl::increfImpl( Node * _node )
+	void NodeChildrenImpl::increfImpl( Node * _node )
 	{
 		Holder<ScriptEngine>::hostage()->
 			incref( _node );
-
-		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeChildrenImpl::decrefImpl( Node * _node )
+	{
+		Holder<ScriptEngine>::hostage()->
+			decref( _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * NodeChildrenImpl::createChildrenImpl( const std::string & _type )

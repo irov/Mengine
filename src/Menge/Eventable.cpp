@@ -9,13 +9,11 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Eventable::~Eventable()
+	void Eventable::removeAllEvent()
 	{
-		ScriptEngine *scriptEng = Holder<ScriptEngine>::hostage();
-
 		for each( const TMapScriptFunction::value_type & it in m_mapScriptFunction )
 		{
-			scriptEng->decref( it.second );
+			ScriptEngine::decref( it.second );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -10,7 +10,10 @@ namespace Menge
 		: public SceneNode3D
 		, public Frustum
 	{
-		OBJECT_DECLARE( SceneNode3D )
+		OBJECT_DECLARE( Camera3D )
+
+	public:
+		Camera3D();
 
 	public:
 		void yaw( float _degrees );
@@ -33,7 +36,12 @@ namespace Menge
 		void loader( TiXmlElement * _xml ) override;
 
 	protected:
+		void _updateMatrix( Allocator3D * _parent ) override;
+
+	protected:
 		mt::mat4f m_viewMatrix;	
 		mt::mat4f m_projMatrix;
+
+		Frustum m_frustum;
 	};
 }

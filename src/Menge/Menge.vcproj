@@ -269,6 +269,10 @@
 				Name="SceneNode3D"
 				>
 				<File
+					RelativePath=".\SceneNode3D.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\SceneNode3D.h"
 					>
 				</File>
@@ -281,6 +285,18 @@
 					</File>
 					<File
 						RelativePath=".\Allocator3D.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Renderable3D"
+					>
+					<File
+						RelativePath=".\Renderable3D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Renderable3D.h"
 						>
 					</File>
 				</Filter>
@@ -443,10 +459,6 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<Filter
-				Name="Allocator"
-				>
-			</Filter>
 			<Filter
 				Name="Sprite"
 				>

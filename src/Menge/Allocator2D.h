@@ -41,7 +41,7 @@ namespace Menge
 
 	protected:
 		virtual void _changePivot();
-		virtual bool _updateMatrix();
+		virtual void _updateMatrix( Allocator2D * _parent );
 
 	protected:
 		mt::mat3f m_localMatrix;

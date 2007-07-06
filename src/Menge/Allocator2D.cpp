@@ -112,20 +112,19 @@ namespace Menge
 			return;
 		}
 	
-		if( _updateMatrix() )
-		{
-			const mt::mat3f & parentMatrix =
-				_parent->getWorldMatrix();
+		const mt::mat3f & parentMatrix =
+			_parent->getWorldMatrix();
 	
-			mt::mul_m3_m3(m_worldMatrix,m_localMatrix,parentMatrix);
-		}
+		mt::mul_m3_m3(m_worldMatrix,m_localMatrix,parentMatrix);
+
+		_updateMatrix( _parent );
 	
 		m_changePivot = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Allocator2D::_updateMatrix()
+	void Allocator2D::_updateMatrix( Allocator2D * _parent )
 	{
-		return true;
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::loader( TiXmlElement * _xml )

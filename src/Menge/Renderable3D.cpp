@@ -1,59 +1,55 @@
-#	include "Renderable2D.h"
+#	include "Renderable3D.h"
 
-#	include "Viewport.h"
+#	include "Frustum.h"
 
 #	include "XmlParser.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Renderable2D::Renderable2D()
+	Renderable3D::Renderable3D()
 		: m_hide(false)
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable2D::render( const mt::mat3f &_rwm, const Viewport & _viewport )
+	void Renderable3D::render( const mt::mat4f &_rwm, const Frustum & _frustum )
 	{
 		if( m_hide == true )
 		{
 			return;
 		}
 
-		if( isVisible( _viewport ) == false )
+		if( isVisible( _frustum ) == false )
 		{
 			return;
 		}
 
-		mt::mat3f rwm = _rwm;
-
-		rwm.v2.v2 -= _viewport.begin;
-
-		_render( rwm, _viewport );
+		_render( _rwm, _frustum );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable2D::_render( const mt::mat3f & _rwm, const Viewport & _viewPort )
+	void Renderable3D::_render( const mt::mat4f & _rwm, const Frustum & _frustum )
 	{
 		// Empty;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable2D::hide( bool value )
+	void Renderable3D::hide( bool value )
 	{
 		m_hide = value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Renderable2D::isVisible( const Viewport & _viewPort )
+	bool Renderable3D::isVisible( const Frustum & _frustum )
 	{
 		// Empty;
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Viewport & Renderable2D::updateViewport( const Viewport & _viewport )
+	const Frustum & Renderable3D::updateFrustum( const Frustum & _viewport )
 	{
 		return _viewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable2D::loader( TiXmlElement * _xml )
+	void Renderable3D::loader( TiXmlElement * _xml )
 	{
 		XML_FOR_EACH_TREE( _xml )
 		{

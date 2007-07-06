@@ -41,6 +41,12 @@ namespace Menge
 
 		return wm.v2.v3;
 	}
+	const mt::vec3f & Allocator3D::getWorldStrafe()
+	{
+		const mt::mat4f &wm = getWorldMatrix();
+
+		return wm.v0.v3;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Allocator3D::getWorldMatrix()
 	{
@@ -65,6 +71,16 @@ namespace Menge
 	mt::vec3f & Allocator3D::getLocalDirection()
 	{
 		return m_localMatrix.v2.v3;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & Allocator3D::getLocalStrafe()const
+	{
+		return m_localMatrix.v0.v3;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec3f & Allocator3D::getLocalStrafe()
+	{
+		return m_localMatrix.v0.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Allocator3D::getLocalMatrix()const
@@ -115,20 +131,19 @@ namespace Menge
 			return;
 		}
 
-		if( _updateMatrix() )
-		{
-			const mt::mat4f & parentMatrix =
-				_parent->getWorldMatrix();
+		const mt::mat4f & parentMatrix =
+			_parent->getWorldMatrix();
 
-			mt::mul_m4_m4(m_worldMatrix,m_localMatrix,parentMatrix);
-		}
+		mt::mul_m4_m4(m_worldMatrix,m_localMatrix,parentMatrix);
+
+		_updateMatrix( _parent );
 
 		m_changePivot = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Allocator3D::_updateMatrix()
+	void Allocator3D::_updateMatrix( Allocator3D * _parent )
 	{
-		return true;
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator3D::loader( TiXmlElement * _xml )

@@ -12,15 +12,19 @@ namespace Menge
 		Allocator3D();
 
 	public:
-		const mt::vec3f & getWorldPosition();
-		const mt::vec3f & getWorldDirection();
-		const mt::mat4f & getWorldMatrix();
+		virtual const mt::vec3f & getWorldPosition();
+		virtual const mt::vec3f & getWorldDirection();
+		virtual const mt::vec3f & getWorldStrafe();
+		virtual const mt::mat4f & getWorldMatrix();
 
 		const mt::vec3f & getLocalPosition()const;
 		mt::vec3f & getLocalPosition();
 
 		const mt::vec3f & getLocalDirection()const;
 		mt::vec3f & getLocalDirection();
+
+		const mt::vec3f & getLocalStrafe()const;
+		mt::vec3f & getLocalStrafe();
 
 		const mt::mat4f & getLocalMatrix()const;
 		mt::mat4f & getLocalMatrix();
@@ -36,12 +40,12 @@ namespace Menge
 	public:
 		void updateMatrix( Allocator3D * _parent );
 
-		void changePivot();
+		virtual void changePivot();
 		bool isChangePivot()const;
 
 	protected:
 		virtual void _changePivot();
-		virtual bool _updateMatrix();
+		virtual void _updateMatrix( Allocator3D * _parent );
 
 	protected:
 		mt::mat4f m_localMatrix;

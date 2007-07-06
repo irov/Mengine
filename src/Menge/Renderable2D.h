@@ -7,7 +7,6 @@ class TiXmlElement;
 namespace Menge
 {
 	class RenderEngine;
-	class Camera2D;
 	class Viewport;
 
 	class Renderable2D
@@ -23,7 +22,7 @@ namespace Menge
 		virtual const Viewport & updateViewport( const Viewport & _viewport );
 
 	protected:
-		virtual void _render( const mt::mat3f &rwm, const Viewport & _viewport );
+		virtual void _render( const mt::mat3f & _rwm, const Viewport & _viewport );
 
 	public:
 		void loader( TiXmlElement * _xml );

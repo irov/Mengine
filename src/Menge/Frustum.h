@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Math/plane.h"
+
 class TiXmlElement;
 
 namespace Menge
@@ -20,15 +22,14 @@ namespace Menge
 		float getAspect() const;
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( TiXmlElement * _xml );
 
 	protected:
 		float m_fov;
 		float m_far;
 		float m_near;
 		float m_aspect;
-
-		Frustum m_frustum;
+		
 		mt::planef	m_planes[6];
 
 		float m_coeffL[2];

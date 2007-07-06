@@ -15,7 +15,10 @@ namespace Menge
 		, public Renderable3D
 	{
 	public:
-		
-	protected:
+		const mt::mat4f & getWorldMatrix() override;
+		void changePivot() override;
+
+	public:
+		void loader( TiXmlElement * _xml ) override;
 	};
 }

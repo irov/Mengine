@@ -163,35 +163,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\mat2.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\mat3.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\mat4.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\polygon.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\quat.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\vec2.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\vec3.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\vec4.cpp"
 				>
 			</File>
 		</Filter>
@@ -209,31 +181,87 @@
 				>
 			</File>
 			<File
-				RelativePath=".\mat2.h"
-				>
-			</File>
-			<File
-				RelativePath=".\mat3.h"
-				>
-			</File>
-			<File
-				RelativePath=".\mat4.h"
-				>
-			</File>
-			<File
 				RelativePath=".\polygon.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="vec2"
+			>
 			<File
-				RelativePath=".\quat.h"
+				RelativePath=".\vec2.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\vec2.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="vec3"
+			>
+			<File
+				RelativePath=".\vec3.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\vec3.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="mat2"
+			>
+			<File
+				RelativePath=".\mat2.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\mat2.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="mat3"
+			>
+			<File
+				RelativePath=".\mat3.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\mat3.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="mat4"
+			>
+			<File
+				RelativePath=".\mat4.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\mat4.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="plane"
+			>
+			<File
+				RelativePath=".\plane.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\plane.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="vec4"
+			>
+			<File
+				RelativePath=".\vec4.cpp"
 				>
 			</File>
 			<File
@@ -242,10 +270,16 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			Name="quat"
 			>
+			<File
+				RelativePath=".\quat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\quat.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

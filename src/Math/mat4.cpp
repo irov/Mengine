@@ -66,6 +66,38 @@ namespace	mt
 		return !operator==(_a, _b);
 	}
 
+	//////////////////////////////////////////////////////////////////////////
+	void	mul_m4_v3(vec3f& _out, const mat4f& _m,const vec3f& _v)
+	{
+		_out[0] = _m[0][0] * _v.x + _m[0][1] * _v.y + _m[0][2] * _v.z + _m[0][3];
+		_out[1] = _m[1][0] * _v.x + _m[1][1] * _v.y + _m[1][2] * _v.z + _m[1][3];
+		_out[2] = _m[2][0] * _v.x + _m[2][1] * _v.y + _m[2][2] * _v.z + _m[2][3];
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	vec3f	operator*(const mat4f& m, const vec3f& v)
+	{
+		vec3f out;
+		mul_m4_v3(out,m,v);
+		return out;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	void	mul_v3_m4(vec3f& _out, const vec3f& _v,const mat4f& _m)
+	{
+		_out[0] = _m[0][0] * _v.x + _m[1][0] * _v.y + _m[2][0] * _v.z + _m[3][0];
+		_out[1] = _m[0][1] * _v.x + _m[1][1] * _v.y + _m[2][1] * _v.z + _m[3][1];
+		_out[2] = _m[0][2] * _v.x + _m[1][2] * _v.y + _m[2][2] * _v.z + _m[3][2];
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	vec3f	operator*(const vec3f& v, const mat4f& m)
+	{
+		vec3f out;
+		mul_v3_m4(out,v,m);
+		return out;
+	}
+
 	/*	Matrix/Vector Mult	*/
 	void mul_m4_v4(vec4f& _out, const mat4f& _m,const vec4f& _v)
 	{
@@ -118,10 +150,39 @@ namespace	mt
 		_out[3][3] = _a[3][0] * _b[0][3] + _a[3][1] * _b[1][3]+ _a[3][2] * _b[2][3]+ _a[3][3] * _b[3][3];
 	}
 
+	/*	Matrix/Matrix Mult  */
+	void mul_m4_m3(mat4f& _out, const mat4f& _a, const mat3f& _b)
+	{
+		_out[0][0] =	_a[0][0] * _b[0][0] + _a[0][1] * _b[1][0]+ _a[0][2] * _b[2][0];
+		_out[0][1] =	_a[0][0] * _b[0][1] + _a[0][1] * _b[1][1]+ _a[0][2] * _b[2][1];
+		_out[0][2] =	_a[0][0] * _b[0][2] + _a[0][1] * _b[1][2]+ _a[0][2] * _b[2][2];
+		_out[1][0] =	_a[1][0] * _b[0][0] + _a[1][1] * _b[1][0]+ _a[1][2] * _b[2][0];
+		_out[1][1] =	_a[1][0] * _b[0][1] + _a[1][1] * _b[1][1]+ _a[1][2] * _b[2][1];
+		_out[1][2] =	_a[1][0] * _b[0][2] + _a[1][1] * _b[1][2]+ _a[1][2] * _b[2][2];
+		_out[2][0] =	_a[2][0] * _b[0][0] + _a[2][1] * _b[1][0]+ _a[2][2] * _b[2][0];
+		_out[2][1] =	_a[2][0] * _b[0][1] + _a[2][1] * _b[1][1]+ _a[2][2] * _b[2][1];
+		_out[2][2] =	_a[2][0] * _b[0][2] + _a[2][1] * _b[1][2]+ _a[2][2] * _b[2][2];
+		_out[3][0] =	_a[3][0];
+		_out[3][1] =	_a[3][1];
+		_out[3][2] =	_a[3][2];
+		_out[0][3] =	_a[0][3];
+		_out[1][3] =	_a[1][3];
+		_out[2][3] =	_a[2][3];
+		_out[3][3] =	_a[3][3];
+	}
+
+
 	mat4f operator* (const mat4f& _a, const mat4f& _b)
 	{
 		mat4f out;
 		mul_m4_m4(out,_a,_b);
+		return out;
+	}
+	
+	mat4f operator* (const mat4f& _a, const mat3f& _b)
+	{
+		mat4f out;
+		mul_m4_m3(out,_a,_b);
 		return out;
 	}
 
@@ -327,4 +388,29 @@ namespace	mt
 		inv_m4(out, _rhs);
 		return out;
 	}
+
+	void rotate_axis_m4( mat4f &out, const vec3f &u, float degrees )
+	{
+		float c = cosf( degrees );
+		float s = sinf( degrees );
+		float ic = 1.f - c;
+
+		float icux = ic*u.x;
+		float icuxy = icux*u.y;
+		float icuxz = icux*u.z;
+		float icuyz = ic*u.y*u.z;
+
+		float suy = s * u.y;
+		float suz = s * u.z;
+		float sux = s * u.x;
+
+		mat3f m;
+
+		m[0][0] = c+ic*u.x*u.x; m[0][1] = icuxy - suz; m[0][2] = icuxz + suy;
+		m[1][0] = icuxy + suz; m[1][1] = c+ic*u.y*u.y; m[1][2] = icuyz - sux;
+		m[2][0] = icuxz - suy; m[2][1] = icuyz + sux; m[2][2] = c+ic*u.z*u.z;
+
+		out = out * m;
+	}
+
 }

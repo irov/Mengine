@@ -48,17 +48,28 @@ namespace mt
 
 	bool	operator==(const mat4f& _a, const mat4f& _b);
 	bool	operator!=(const mat4f& _a, const mat4f& _b);
+
+	vec3f	operator*(const mat4f& m, const vec3f& v);
+	vec3f	operator*(const vec3f& v, const mat4f& m);
+
 	vec4f	operator*(const mat4f& m, const vec4f& v);
 	vec4f	operator*(const vec4f& v, const mat4f& m);
+	
 	mat4f	operator*(const mat4f& _a, const mat4f& _b);
+	mat4f	operator*(const mat4f& _a, const mat3f& _b);
+
 	mat4f	operator+(const mat4f& _a, const mat4f& _b);
 	mat4f	operator-(const mat4f& _a, const mat4f& _b);
 
 	bool	cmp_m4_m4(const mat4f& _a, const mat4f& _b);
 
+	void	mul_m4_v3(vec3f& _out, const mat4f& _m,const vec3f& _v);
+	void	mul_v3_m4(vec3f& _out, const vec3f& _v,const mat4f& _m);
+	
 	void	mul_m4_v4(vec4f& _out, const mat4f& _m,const vec4f& _v);
 	void	mul_v4_m4(vec4f& _out, const vec4f& _v, const mat4f& _m);
 	void	mul_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b);
+	void	mul_m4_m3(mat4f& _out, const mat4f& _a, const mat3f& _b);
 	void	add_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b);
 	void	sub_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b);
 
@@ -89,4 +100,6 @@ namespace mt
 
 	void	inv_m4(mat4f& _out, const mat4f& _rhs);
 	mat4f	inv_m4(const mat4f& _rhs);
+
+	void	rotate_axis_m4(mat4f &out, const vec3f &u, float degrees);
 }

@@ -210,6 +210,15 @@ namespace	mt
 		cross_v3_v3(out, _a, _b);
 		return	out;
 	}
+
+	void	cross_v3_v3_norm(vec3f& _out, const vec3f& _a, const vec3f& _b)
+	{
+		_out.x = _a.y*_b.z - _a.z*_b.y;
+		_out.y = _a.z*_b.x - _a.x*_b.z;
+		_out.z = _a.x*_b.y - _a.y*_b.x;
+
+		norm_v3( _out , _out );
+	}
 	
 	/*	Normalize Vector*/
 	void	norm_v3(vec3f& _out, const vec3f& _rhs)

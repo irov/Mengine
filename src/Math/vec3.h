@@ -78,6 +78,8 @@ namespace mt
 	void	cross_v3_v3(vec3f& _out, const vec3f& _a, const vec3f& _b);
 	vec3f	cross_v3_v3(const vec3f& _a, const vec3f& _b);
 
+	void	cross_v3_v3_norm(vec3f& _out, const vec3f& _a, const vec3f& _b);
+
 	void	norm_v3(vec3f& _out, const vec3f& _rhs);
 	vec3f	norm_v3(const vec3f& _rhs);
 	void	norm_safe_v3(vec3f& out, const vec3f& _rhs, float err = 1e-06);

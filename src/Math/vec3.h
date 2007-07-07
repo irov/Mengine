@@ -58,6 +58,7 @@ namespace mt
 	vec3f	operator+(const vec3f& _a, const vec3f& _b);
 	vec3f	operator-(const vec3f& _a, const vec3f& _b);
 	vec3f	operator*(const vec3f& _rhs, const float _val);
+	vec3f	operator*(const float _val, const vec3f& _rhs);
 	vec3f	operator/(const vec3f& _rhs, const float _val);
 	vec3f	operator-(vec3f _rhs);
 

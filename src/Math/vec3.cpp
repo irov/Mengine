@@ -158,6 +158,13 @@ namespace	mt
 		return out;
 	}
 
+	vec3f	operator*(const float _val, const vec3f& _rhs)
+	{
+		vec3f	out;
+		scale_v3_v3(out, _rhs, _val);
+		return out;
+	}
+
 	vec3f	operator/(const vec3f& _rhs, const float _val) 
 	{
 		return operator*(_rhs, 1/_val);

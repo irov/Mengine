@@ -413,4 +413,14 @@ namespace	mt
 		out = out * m;
 	}
 
+	void make_projection_m4( mat4f & out , float fovy, float aspect, float zn, float zf )
+	{
+		float yscale = 1.f / tanf( fovy * 0.5f );
+		float xscale = yscale / aspect;
+
+		out[0][0] = xscale;	out[0][1] = 0.f;	out[0][2] = 0.f;					out[0][3] = 0.f;
+		out[1][0] = 0.f;	out[1][1] = yscale;	out[1][2] = 0.f;					out[1][3] = 0.f;
+		out[2][0] = 0.f;	out[2][1] = 0.f;	out[2][2] = zf / (zf - zn);			out[2][3] = 1.f;
+		out[3][0] = 0.f;	out[3][1] = 0.f;	out[3][2] = -zn * zf / (zf - zn);	out[3][3] = 0.f;
+	}
 }

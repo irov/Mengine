@@ -102,4 +102,5 @@ namespace mt
 	mat4f	inv_m4(const mat4f& _rhs);
 
 	void	rotate_axis_m4(mat4f &out, const vec3f &u, float degrees);
+	void	make_projection_m4( mat4f &_out , float _fov, float _aspect, float _zn, float _zf );
 }

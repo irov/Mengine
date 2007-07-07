@@ -4,7 +4,7 @@
 #	include "ResourceImplement.h"
 
 #	include "ResourceImageMNG.h"
-#	include "ResourceImageCNG.h"
+#	include "ResourceImageCell.h"
 
 #	include "FileEngine.h"
 #	include "XmlParser.h"

@@ -933,6 +933,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ResourceImageDefault.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceImageDefault.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ResourceImageMNG.cpp"
 					>
 				</File>

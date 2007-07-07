@@ -826,6 +826,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Frustum.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Frustum.h"
 				>
 			</File>

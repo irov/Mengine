@@ -21,16 +21,14 @@ namespace Menge
 		
 	public:
 		void lookAt(const mt::vec3f& _targetPoint);
+		mt::vec3f getDirectionFromMouse( float _xm, float _ym );
 
+
+	public:
 		const mt::mat4f & getProjectionMatrix();
 		const mt::mat4f & getViewMatrix();
 
-		mt::vec3f getDirectionFromMouse( float _xm, float _ym );
-
-	private:
-		void recalcView();
-		void recalcProjection();
-		void recalcFrustum();
+		const Frustum & getFrustum() const;
 
 	public:
 		void loader( TiXmlElement * _xml ) override;
@@ -40,7 +38,6 @@ namespace Menge
 
 	protected:
 		mt::mat4f m_viewMatrix;	
-		mt::mat4f m_projMatrix;
 
 		Frustum m_frustum;
 	};

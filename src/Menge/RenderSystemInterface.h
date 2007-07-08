@@ -24,7 +24,7 @@ struct	TextureDesc
 {
 	void*			buffer;
 	size_t			size;
-	bool			haveAlpha;
+	int				filter;
 };
 
 struct FontCharDesc

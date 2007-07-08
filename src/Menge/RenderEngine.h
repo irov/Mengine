@@ -29,7 +29,7 @@ namespace Menge
 
 		void drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color);
 
-		RenderImageInterface* loadImage(const std::string &	_imageFile, bool _haveAlpha = false);
+		RenderImageInterface* loadImage(const std::string &	_imageFile, int _filter);
 
 		void renderImage(
 			const mt::mat3f& _transform, 

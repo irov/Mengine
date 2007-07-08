@@ -97,6 +97,11 @@ void	FileData::setPos(size_t _pos)
 	}
 }
 
+void FileData::seek( size_t count )
+{
+	m_pos += count;
+}
+
 FileData::~FileData()
 {
 	if (m_data)
@@ -116,3 +121,8 @@ const char* FileData::getBuffer() const
 {
 	return m_data; 
 };
+
+const char* FileData::getPos() const
+{
+	return m_pos;
+}

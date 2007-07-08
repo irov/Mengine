@@ -11,10 +11,10 @@
 	BoxEmitter::BoxEmitter()
 		: ParticleEmitter(1000)
 		, m_life(0.5f,1.26f)
-		, m_spread(1.96)
-		, m_start_position(300,300)
-		, m_dir(0)
-		, m_velocity(300,300)
+		, m_spread(1.96f)
+		, m_start_position(300.f,300.f)
+		, m_dir(0.f)
+		, m_velocity(300.f,300.f)
 	{};
 	//////////////////////////////////////////////////////////////////////////
 	void BoxEmitter::emitt(float _dt, Particle * _particle)

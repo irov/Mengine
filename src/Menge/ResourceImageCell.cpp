@@ -33,8 +33,8 @@ namespace Menge
 
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "CellCount", "X", m_numX );
-			XML_CHECK_VALUE_NODE( "CellCount", "Y", m_numY );
+			XML_CHECK_VALUE_NODE( "Cell", "X", m_numX );
+			XML_CHECK_VALUE_NODE( "Cell", "Y", m_numY );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -45,10 +45,13 @@ namespace Menge
 		m_count = m_numX * m_numY;
 
 		m_uvs.resize( m_count );
+		
+		m_size.x = m_size.x / m_numX;
+		m_size.y = m_size.y / m_numY;
 
 		for( size_t index = 0; index < m_count; ++index )
 		{
-			int offset = float( index ) / m_numY;
+			size_t offset = index / m_numY;
 
 			m_uvs[index].x = float( index % m_numX ) / m_numX;
 			m_uvs[index].y = float( offset ) / m_numY;

@@ -44,10 +44,12 @@ namespace Menge
 		{
 			return boost::python::object( m_global->attr( _name.c_str() ) ).ptr();
 		}
-		catch (const boost::python::error_already_set &e)
+		catch (...)
 		{
-			return 0;			
+			ScriptEngine::handleException();
 		}
+
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::init()

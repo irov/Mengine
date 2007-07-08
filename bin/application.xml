@@ -1,10 +1,17 @@
-<Application Type = "Debug">
-	<DllModule>
-		<InputSystem DllFile = "InputSystem_d.dll"/>
-		<FileSystem DllFile = "FileSystem_d.dll"/>
-		<RenderSystem DllFile = "RenderSystem_d.dll"/>
-		<SoundSystem DllFile = "SoundSystem_d.dll"/>
-	</DllModule>
+<Application>
+	<DllModuleDebug>
+		<InputSystem DllFile = "Systems/InputSystem_d.dll"/>
+		<FileSystem DllFile = "Systems/FileSystem_d.dll"/>
+		<RenderSystem DllFile = "Systems/RenderSystem_d.dll"/>
+		<SoundSystem DllFile = "Systems/SoundSystem_d.dll"/>
+	</DllModuleDebug>
+
+	<DllModuleRelease>
+		<InputSystem DllFile = "Systems/InputSystem.dll"/>
+		<FileSystem DllFile = "Systems/FileSystem.dll"/>
+		<RenderSystem DllFile = "Systems/RenderSystem.dll"/>
+		<SoundSystem DllFile = "Systems/SoundSystem.dll"/>
+	</DllModuleRelease>
 
 	<Paks>
 		<Pak File = "Data.pak" Priority = "1" />
@@ -17,6 +24,8 @@
 		<FullScreen Value = "0"/>
 	</Display>
 
-	<Game File = "Game/Game.xml" />
+	<Game File = "Game/Game.xml">
+		<DebugRender Enable = "0" />
+	</Game>
 
 </Application>

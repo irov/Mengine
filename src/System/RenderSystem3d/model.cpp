@@ -330,11 +330,11 @@ void Model::renderMesh(bool bWireframe, bool bLight)
 			int vertexCount = pCalRenderer->getVerticesNormalsAndTexCoords(&vertices[0]);
 			vertexData->unlock();
 
-			unsigned short * indecies = 0;
+			CalIndex * indecies = 0;
 
 			IndexData * indexData = pm.getIndexData();
 
-			indexData->lock(indecies,m_IBCursor,pCalRenderer->getFaceCount());
+			indexData->lock( indecies, m_IBCursor, pCalRenderer->getFaceCount() );
 			int faceCount = pCalRenderer->getFaces(indecies);
 			indexData->unlock();
 						

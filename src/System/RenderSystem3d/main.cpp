@@ -19,8 +19,8 @@ INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 	
  	pModel = new Model(renderSystem);
 
-	pModel->setPath("..//..//..//dependencies//cal3d//data//cally//");
-	pModel->onInit("..//..//..//dependencies//cal3d//data//cally//cally.cfg");
+	pModel->setPath("..//..//..//dependencies//cal3d//cal3d//data//cally//");
+	pModel->onInit("..//..//..//dependencies//cal3d//cal3d//data//cally//cally.cfg");
 
 	MSG  msg;
     msg.message = WM_NULL;

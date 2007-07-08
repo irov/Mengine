@@ -43,6 +43,8 @@ namespace Menge
 	protected:
 		std::string m_fileMNG;
 
+		int m_filter;
+
 		mt::vec2f m_size;
 		mt::vec4f m_uv;
 

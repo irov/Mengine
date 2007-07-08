@@ -3,13 +3,23 @@
 
 D3D9RenderImage::D3D9RenderImage(LPDIRECT3DDEVICE9 _dev, const TextureDesc& _desc)
 { 
-	m_haveAlpha = _desc.haveAlpha;
+
+	D3DXIMAGE_INFO info;
+	if ( FAILED( D3DXGetImageInfoFromFileInMemory( _desc.buffer, (UINT)_desc.size, &info ) ) )
+	{
+		assert(!"can't get TEXTURE info!");
+	}
+
+	if( info.Format == D3DFMT_A8R8G8B8 )
+	{
+		m_haveAlpha = true;
+	}
 
 	if (FAILED(D3DXCreateTextureFromFileInMemoryEx(_dev, _desc.buffer, (UINT)_desc.size,
-                                    D3DX_DEFAULT, D3DX_DEFAULT,
+                                    info.Width, info.Height,
                                     1,                  
                                     0,                  
-									_desc.haveAlpha ? D3DFMT_A8R8G8B8 : D3DFMT_R8G8B8,    
+									info.Format,    
                                     D3DPOOL_MANAGED,    
                                     D3DX_FILTER_NONE,   
                                     D3DX_DEFAULT,       

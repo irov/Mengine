@@ -18,7 +18,7 @@ namespace NError
 
 		char str[1024];
 
-		vsprintf( str, Message, argList );
+		vsprintf_s( str, Message, argList );
 
 		va_end(argList);
 		std::stringstream StrMessage;
@@ -39,7 +39,7 @@ namespace NError
 
 		char str[1024];
 
-		vsprintf( str, Message, argList );
+		vsprintf_s( str, Message, argList );
 
 		va_end(argList);
 		std::stringstream StrMessage;

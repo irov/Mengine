@@ -30,8 +30,10 @@
 		<File Path = "Game/Arrows/Default/Default.mng" />
 	</Resource>
 		
-	<Resource Name = "output_cng" Type = "ResourceImageCNG" >
-		<File Path = "output.cng" />
+	<Resource Name = "grid" Type = "ResourceImageCell" >
+		<File Path = "Game/Images/grid.png" />
+		<Filter Value = "4" />
+		<Cell X = "4" Y = "4" />
 	</Resource>	
 
 	<Resource Name = "output_cngAnimation" Type = "ResourceAnimation" >

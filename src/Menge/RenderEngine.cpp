@@ -40,7 +40,7 @@ namespace Menge
 		m_interface->drawLine(p1,p2,width,color);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* RenderEngine::loadImage(const std::string & _imageFile, bool _haveAlpha)
+	RenderImageInterface* RenderEngine::loadImage(const std::string & _imageFile, int _filter)
 	{
 		FileDataInterface* imageData = 
 			Holder<FileEngine>::hostage()->openFile(_imageFile);
@@ -54,7 +54,7 @@ namespace Menge
 
 		desc.buffer = (void*)imageData->getBuffer();
 		desc.size = imageData->size();
-		desc.haveAlpha = _haveAlpha;
+		desc.filter = _filter;
 
 		RenderImageInterface * image = m_interface->loadImage(desc);
 
@@ -138,9 +138,9 @@ namespace Menge
 
 						desc.texDesc.buffer = (void*)imageData->getBuffer();
 						desc.texDesc.size = imageData->size();
-						desc.texDesc.haveAlpha = true;
+						desc.texDesc.filter = 1;
 
-						sscanf(size.c_str(), "%fx%f", &scaleW, &scaleH); 
+						sscanf_s(size.c_str(), "%fx%f", &scaleW, &scaleH); 
 
 						assert((scaleW > 0 && scaleW <= 1024));
 						assert((scaleH > 0 && scaleH <= 1024));
@@ -156,8 +156,8 @@ namespace Menge
 						XML_VALUE_ATTRIBUTE("size",size);
 						XML_VALUE_ATTRIBUTE("aw",aw);
 
-					    sscanf(origin.c_str(), "%f,%f", &x,&y); 
-						sscanf(size.c_str(), "%fx%f", &width, &height); 
+					    sscanf_s(origin.c_str(), "%f,%f", &x,&y); 
+						sscanf_s(size.c_str(), "%fx%f", &width, &height); 
 
 						id = int(ch[0]);
 						

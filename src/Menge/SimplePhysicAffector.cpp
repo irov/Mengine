@@ -7,14 +7,14 @@ static float rand2(float min, float max)
 	return min + r * (max-min);
 }
 SimplePhysicAffector::SimplePhysicAffector()
-	: m_gravity(355)
-	, m_radial(-10,-14)
-	, m_tangetial(14,14)
-	, m_size(1.94,0.22,0.54)
-	, m_spin(-50,11,0.126)
-	, m_startColor(0.68,0.319,0.27,0.3)
-	, m_endColor(0.97,0.73,0.389,0.6)
-	, m_varColor(0.38,0.44)
+	: m_gravity(355.f)
+	, m_radial(-10.f,-14.f)
+	, m_tangetial(14.f,14.f)
+	, m_size(1.94f,0.22f,0.54f)
+	, m_spin(-50.f,11.f,0.126f)
+	, m_startColor(0.68f,0.319f,0.27f,0.3f)
+	, m_endColor(0.97f,0.73f,0.389f,0.6f)
+	, m_varColor(0.38f,0.44f)
 {}
 
 void	SimplePhysicAffector::affectParticles(float _dt, std::list<Particle*>& _particles)

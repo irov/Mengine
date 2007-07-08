@@ -55,8 +55,6 @@ bool Sprite::isVisible(const Viewport & _viewPort)
 	if (max0.x < _viewPort.begin.x || min0.x > _viewPort.end.x ) return false;
 	if (max0.y < _viewPort.begin.y || min0.y > _viewPort.end.y ) return false;
 
-	Holder<RenderEngine>::hostage()->drawLine(min0.v2,max0.v2,2,0xffff00ff);
-
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -67,6 +65,7 @@ void Sprite::setImageIndex( size_t _index )
 	if(_index >= size)
 	{
 		assert(!"You can't set image index > image size");
+		return;
 	}
 
 	m_currentImageIndex = _index;
@@ -141,7 +140,14 @@ void Sprite::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 }
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()
-{};
+{
+	const mt::vec2f & pos = getWorldPosition();
+
+	const mt::vec2f & size = m_image->getMaxSize();
+
+	Holder<RenderEngine>::hostage()
+		->drawLine( pos, pos + size, 2, 0xffff00ff );
+};
 
 
 

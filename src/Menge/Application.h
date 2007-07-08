@@ -31,7 +31,9 @@ namespace Menge
 		int m_width;
 		int m_height;
 		int m_bits;
+
 		bool m_fullScreen;
+		bool m_debugRender;
 
 		Game * m_game;
 		

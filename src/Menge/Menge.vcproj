@@ -50,11 +50,11 @@
 				UsePrecompiledHeader="0"
 				GenerateXMLDocumentationFiles="false"
 				BrowseInformation="1"
-				WarningLevel="1"
+				WarningLevel="3"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="4251;4996"
+				DebugInformationFormat="4"
+				DisableSpecificWarnings="4250"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -72,7 +72,7 @@
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Python\libs&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName)_d.pdb"
-				SubSystem="1"
+				SubSystem="2"
 				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"
 				TargetMachine="1"
 			/>
@@ -104,11 +104,12 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
-			ConfigurationType="1"
+			OutputDirectory="$(SolutionDir)Bin"
+			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
+			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
+			CharacterSet="0"
+			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -127,12 +128,15 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="0"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\boost&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;MENGE_EXPORT;_CRT_SECURE_NO_DEPRECATE;BOOST_ALL_NO_LIB"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
+				DisableSpecificWarnings="4250"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -145,12 +149,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/RvEngine.exe"
+				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Python\libs&quot;"
 				GenerateDebugInformation="false"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary="$(SolutionDir)Lib\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -447,6 +453,10 @@
 			</File>
 			<File
 				RelativePath=".\MengeExport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SystemDLL.cpp"
 				>
 			</File>
 			<File
@@ -925,11 +935,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ResourceImageCNG.cpp"
+					RelativePath=".\ResourceImageCell.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\ResourceImageCNG.h"
+					RelativePath=".\ResourceImageCell.h"
 					>
 				</File>
 				<File

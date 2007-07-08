@@ -136,7 +136,7 @@ namespace Menge
 
 		if(emissionCount < m_freeParticleList.size())
 		{
-			for(int i = 0; i < emissionCount; ++i)
+			for( size_t i = 0; i < emissionCount; ++i )
 			{
 				Particle * particle = createParticle();
 				for(std::list<ParticleEmitter*>::iterator it = m_emitters.begin(); it != m_emitters.end(); ++it)
@@ -173,7 +173,7 @@ namespace Menge
 
 		std::list<Particle*>::iterator it = m_activeParticleList.begin();
 
-		for(int i = 0; i < m_activeParticleList.size(); ++i)
+		for( size_t i = 0; i < m_activeParticleList.size(); ++i )
 		{
 			Particle * particle = *it;
 

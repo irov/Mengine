@@ -96,7 +96,7 @@ void	Amplifier::listenStopped()
 //////////////////////////////////////////////////////////////////////////
 void	Amplifier::updateFadeParams(SoundSourceInterface* _sound)
 {
-	clock_t ticks = clock();
+	float ticks = (float)clock();
 
 	float time_offset_begin = (ticks - m_timeFadeBegin);
 

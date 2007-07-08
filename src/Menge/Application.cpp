@@ -25,6 +25,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application()
 		: m_game(0)
+		, m_debugRender(false)
+		, m_fullScreen(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -61,13 +63,24 @@ namespace Menge
 		Holder<ScriptEngine>::keep( new ScriptEngine );
 
 		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
+
+		printf("init scriptEngine ...\n");
 		scriptEngine->init();
 
-		XML_PARSE_FILE("Application.xml")
+
+		std::string DllModuleSetting = "DllModule";
+#ifdef _DEBUG
+		DllModuleSetting += "Debug";
+#else
+		DllModuleSetting += "Release";
+#endif
+
+		printf("parse application xml [%s] ...\n", _xmlFile.c_str() );
+		XML_PARSE_FILE( _xmlFile )
 		{
 			XML_CHECK_NODE_FOR_EACH("Application")
 			{
-				XML_CHECK_NODE_FOR_EACH("DllModule")
+				XML_CHECK_NODE_FOR_EACH( DllModuleSetting )
 				{
 					XML_DEF_ATTRIBUTES_NODE(DllFile);
  
@@ -78,21 +91,25 @@ namespace Menge
 
 					XML_CHECK_NODE("FileSystem")
 					{
+						printf("use file system [%s]\n", DllFile.c_str() );
 						Holder<FileEngine>::keep( new FileEngine(DllFile) );			
 					}
 
 					XML_CHECK_NODE("InputSystem")
 					{
+						printf("use input system [%s]\n", DllFile.c_str() );
 						Holder<InputEngine>::keep( new InputEngine(DllFile) );
 					}
 
 					XML_CHECK_NODE("RenderSystem")
 					{
+						printf("use render system [%s]\n", DllFile.c_str() );
 						Holder<RenderEngine>::keep( new RenderEngine(DllFile) );
 					}
 
 					XML_CHECK_NODE("SoundSystem")
 					{
+						printf("use sound system [%s]\n", DllFile.c_str() );
 						//Holder<SoundEngine>::keep( new SoundEngine(DllFile) ); 
 					}
 
@@ -146,15 +163,21 @@ namespace Menge
 						}
 					}
 					
+					XML_FOR_EACH()
+					{
+						XML_CHECK_VALUE_NODE("DebugRender","Enable", m_debugRender );
+					}
 				}
 			}
 		}
 		XML_INVALID_PARSE()
 		{
 			//TODO: ERROR
+			printf("parse application xml failed\n");
 			return false;
 		}
 
+		printf("load packs ...\n");
 		const std::string & pathEntities = m_game->getPathEntities();
 		std::string scriptPath = pathEntities;
 
@@ -162,6 +185,7 @@ namespace Menge
 		{
 			for each( const std::string & pak in it.second )
 			{
+				printf("pack %s\n", pak.c_str() );
 				Holder<FileEngine>::hostage()->loadPak( pak, it.first );
 				//scriptPath += DELIM;
 				//scriptPath += pak;
@@ -169,40 +193,48 @@ namespace Menge
 			}
 		}
 
+		printf("set script Entity path [%s] ...", scriptPath.c_str() );
 		Holder<ScriptEngine>::hostage()
 			->setEntitiesPath( scriptPath );
 
+		printf("createDisplay [%d,%d] ...", m_width, m_height );
 		//»«-«¿ À»Õ»… Õ≈“” ¬Œ——“¿ÕŒ¬À≈Õ»ﬂ –≈—”–—Œ¬.
 		bool display = createDisplay(m_width,m_height,m_bits,m_fullScreen);
 
 		if( display == false )
 		{
+			printf("createDisplay failed" );
+			return false;
 			//TODO: ERROR
 		}
 
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
-		bool inputInit = false;
-
-		if (inputEng)
-		{
-			inputEng->setPosition(0.f, 0.f, 0.f);
-			inputEng->setSensitivity( 1.f );
-			mt::vec3f minRange(0,0,-1000);
-			mt::vec3f maxRange(1024,768,1000);
-			inputEng->setRange( minRange, maxRange );
+		inputEng->setPosition(0.f, 0.f, 0.f);
+		inputEng->setSensitivity( 1.f );
+		mt::vec3f minRange(0,0,-1000);
+		mt::vec3f maxRange(1024,768,1000);
+		inputEng->setRange( minRange, maxRange );
 			
-			inputInit = inputEng->init();
-		}
+		printf("init input manager ...");
+		bool input = inputEng->init();
 
-		if(inputInit == false)
+		if( input == false )
 		{
+			printf("init input manager failed");
 			ErrorMessage("Input Manager invalid initialization");
+			return false;
 		}
 
 		Holder<ResourceManager>::keep( new ResourceManager );
 
-		m_game->init();
+		printf("init game ...\n");
+		bool game = m_game->init();
+
+		if( game == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -248,7 +280,11 @@ namespace Menge
 		//	m_functionRender->callFunctionVoid();
 		//}
 		m_game->render();
-		m_game->debugRender();
+
+		if( m_debugRender )
+		{
+			m_game->debugRender();
+		}
 
 		renderEng->endSceneDrawing();
 	}

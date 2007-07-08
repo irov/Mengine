@@ -18,9 +18,9 @@ Playlist::~Playlist()
 //////////////////////////////////////////////////////////////////////////
 void	Playlist::shuffle()
 {
-	for(int i = 0; i < m_tracks.size(); ++i) 
+	for(size_t i = 0; i < m_tracks.size(); ++i) 
 	{
-		int rnd = rand() % m_tracks.size();
+		size_t rnd = rand() % m_tracks.size();
 		std::swap(m_tracks[i],m_tracks[rnd]);
 	}
 }

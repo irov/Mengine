@@ -61,6 +61,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::render( const mt::mat3f & _rwm, const Viewport & _viewport )
 	{
+		if( isActive() == false )
+		{
+			return;
+		}
+
 		const Viewport & vp = 
 			Renderable2D::updateViewport( _viewport );
 

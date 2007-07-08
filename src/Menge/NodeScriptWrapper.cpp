@@ -146,6 +146,8 @@ namespace Menge
 
 			boost::python::class_<Sprite, boost::python::bases<SceneNode2D> >("Sprite")
 				.def( boost::python::init<>("constructor") )
+				.def( "setImageIndex", &Sprite::setImageIndex )
+				.def( "getImageIndex", &Sprite::getImageIndex )
 				;
 			{
 				boost::python::class_<Animation, boost::python::bases<Sprite> >("Animation")

@@ -13,6 +13,7 @@ namespace Menge
 	ResourceImageMNG::ResourceImageMNG( const std::string & _name )
 		: ResourceImage( _name )
 		, m_uv( 0.f, 0.f, 1.f, 1.f )
+		, m_filter(1)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageMNG::getMaxSize()
@@ -50,6 +51,7 @@ namespace Menge
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_VALUE_NODE( "File", "Path", m_fileMNG );
+			XML_CHECK_VALUE_NODE( "Filter", "Value", m_filter );
 		}
 
 		ResourceImpl::loader( _xml );
@@ -69,7 +71,7 @@ namespace Menge
 		fileData->read_ints(&x,1);
 		fileData->read_ints(&y,1);
 
-		m_size = mt::vec2f(x,y);
+		m_size = mt::vec2f( float(x), float(y) );
 	
 		TextureDesc	textureDesc;
 
@@ -83,22 +85,19 @@ namespace Menge
 			int bsize = 0;
 			fileData->read_ints(&bsize,1);
 
-			char* buffer = new char[bsize];
-			fileData->read_chars(buffer,bsize);
-
-			textureDesc.buffer = buffer;
+			textureDesc.buffer = (void*)fileData->getPos();
 			textureDesc.size = bsize;
-			textureDesc.haveAlpha = true;
+			textureDesc.filter = m_filter;
 
 			Image	imageProps;
 
-			imageProps.offset = mt::vec2f(x,y);
+			imageProps.offset = mt::vec2f( float(x), float(y) );
 			imageProps.renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);
 			imageProps.size = mt::vec2f(imageProps.renderImage->getWidth(),imageProps.renderImage->getHeight());
 
 			m_images.push_back(imageProps);
 
-			delete[] buffer;
+			fileData->seek( bsize );
 		}
 
 		Holder<FileEngine>::hostage()->closeFile(fileData);

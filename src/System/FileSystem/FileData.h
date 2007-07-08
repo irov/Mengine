@@ -22,7 +22,11 @@ public:
 	bool	eof()const;
 	void	setPos(size_t pos);
     size_t	size()const;
+
     const char* getBuffer() const;
+	const char* getPos() const;
+
+	void seek( size_t count );
 
 private:
 	char* m_data;

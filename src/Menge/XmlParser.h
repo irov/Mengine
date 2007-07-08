@@ -318,7 +318,7 @@ namespace xml
 				return false;
 			}
 
-			sscanf(VALUE.c_str(),Type,&Value);
+			sscanf_s(VALUE.c_str(),Type,&Value);
 
 			return true;
 		}
@@ -351,7 +351,7 @@ namespace xml
 			}
 
 			unsigned int Bool;
-			sscanf(VALUE.c_str(),"%u",&Bool);
+			sscanf_s(VALUE.c_str(),"%u",&Bool);
 
 			Value = (Bool == 0)?false:true;
 
@@ -402,7 +402,7 @@ namespace xml
 				return false;
 			}
 
-			sscanf(VALUE.c_str(),"%f;%f"
+			sscanf_s(VALUE.c_str(),"%f;%f"
 				,&Value.x,&Value.y
 				);
 
@@ -419,7 +419,7 @@ namespace xml
 				return false;
 			}
 
-			sscanf(VALUE.c_str(),"%f;%f;%f"
+			sscanf_s(VALUE.c_str(),"%f;%f;%f"
 				,&Value.x,&Value.y,&Value.z
 				);
 
@@ -436,7 +436,7 @@ namespace xml
 				return false;
 			}
 
-			sscanf(VALUE.c_str(),"%f;%f;%f;%f"
+			sscanf_s(VALUE.c_str(),"%f;%f;%f;%f"
 				,&Value.x,&Value.y,&Value.z,&Value.w
 				);
 
@@ -453,7 +453,7 @@ namespace xml
 				return false;
 			}
 
-			sscanf(VALUE.c_str(),"%f;%f;%f;%f;%f;%f"
+			sscanf_s(VALUE.c_str(),"%f;%f;%f;%f;%f;%f"
 				,&Value[0][0],&Value[0][1]
 				,&Value[1][0],&Value[1][1]
 				,&Value[2][0],&Value[2][1]
@@ -476,7 +476,7 @@ namespace xml
 				return false;
 			}
 
-			sscanf(VALUE.c_str(),"%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f"
+			sscanf_s(VALUE.c_str(),"%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f"
 				,&Value[0][0],&Value[0][1],&Value[0][2]
 			,&Value[1][0],&Value[1][1],&Value[1][2]
 			,&Value[2][0],&Value[2][1],&Value[2][2]

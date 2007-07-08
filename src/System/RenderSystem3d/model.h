@@ -1,5 +1,5 @@
 #	pragma once
-#	include "RenderSystem3dInterface.h"
+#	include "..\..\Menge\RenderSystemInterface.h"
 
 #	include <windows.h>
 #	include <iostream>
@@ -30,12 +30,12 @@ protected:
 	std::string m_path;
 
 	//
-	RenderSystem * m_rs;
+	RenderSystemInterface * m_rs;
 	VertexDeclaration * vertexDecl;
-	PrimitiveData pm;
+	SubMesh * m_primitiveData;
 
 public:
-	Model(RenderSystem * _rs);
+	Model();
 	virtual ~Model();
 
 public:
@@ -44,7 +44,7 @@ public:
 	void getMotionBlend(float *pMotionBlend);
 	float getRenderScale();
 	int getState();
-	bool onInit(const std::string& strFilename);
+	bool onInit(RenderSystemInterface * _rs,const std::string& strFilename);
 	void onRender();
 	void onShutdown();
 	void onUpdate(float elapsedSeconds);

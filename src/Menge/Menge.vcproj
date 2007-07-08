@@ -50,7 +50,7 @@
 				UsePrecompiledHeader="0"
 				GenerateXMLDocumentationFiles="false"
 				BrowseInformation="1"
-				WarningLevel="3"
+				WarningLevel="2"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"

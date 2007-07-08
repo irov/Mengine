@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="RenderSystem3d"
+	Name="RenderSystem"
 	ProjectGUID="{A2045525-4754-444C-95C6-69FFCE071266}"
 	RootNamespace="RenderSystem3d"
 	Keyword="Win32Proj"
@@ -17,9 +17,9 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			OutputDirectory="$(SolutionDir)Bin\Systems"
+			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
+			ConfigurationType="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -40,8 +40,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="Common\;..\..\..\dependencies\cal3d\cal3d\src\"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;CAL_16BIT_INDICES"
+				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,8 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\dependencies\cal3d\cal3d\bin\debug\cal3d_d.lib Common\Debug\DXUT.lib &quot;dxerr.lib dxguid.lib d3dx9d.lib d3d9.lib winmm.lib comctl32.lib"
+				AdditionalDependencies="..\..\..\dependencies\cal3d\cal3d\bin\debug\cal3d_d.lib Common\Debug\DXUT.lib &quot;dxerr.lib dxguid.lib d3dx9d.lib d3d9.lib winmm.lib comctl32.lib ..\..\..\lib\Math_d.lib ..\..\..\dependencies\vld\vldmtdll.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
+				ModuleDefinitionFile="RenderSystem.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -181,6 +183,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\d3d9RenderFont.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\d3d9RenderImage.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\d3d9RenderSystem.cpp"
 				>
 			</File>
@@ -199,6 +209,14 @@
 			<File
 				RelativePath=".\main.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -208,6 +226,14 @@
 			>
 			<File
 				RelativePath=".\d3d9IndexData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\d3d9RenderFont.h"
+				>
+			</File>
+			<File
+				RelativePath=".\d3d9RenderImage.h"
 				>
 			</File>
 			<File
@@ -226,10 +252,6 @@
 				RelativePath=".\d3d9VertexDeclaration.h"
 				>
 			</File>
-			<File
-				RelativePath=".\RenderSystem3dInterface.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -243,10 +265,26 @@
 			<File
 				RelativePath=".\model.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\model.h"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>

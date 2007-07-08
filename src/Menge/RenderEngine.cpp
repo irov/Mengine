@@ -25,19 +25,14 @@ namespace Menge
 		return m_interface->createDisplay(_width,_height,_bits,_fullScreen);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::beginSceneDrawing(unsigned long _color)
+	void RenderEngine::setRenderCallback(renderFunction _rf)
 	{
-		return m_interface->beginSceneDrawing(_color);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::endSceneDrawing()
-	{
-		return m_interface->endSceneDrawing();
+		return m_interface->setRenderCallback(_rf);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color)
 	{
-		m_interface->drawLine(p1,p2,width,color);
+//		m_interface->drawLine(p1,p2,width,color);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* RenderEngine::loadImage(const std::string & _imageFile, int _filter)
@@ -85,6 +80,12 @@ namespace Menge
 	void RenderEngine::releaseRenderImage(RenderImageInterface* _rmi)
 	{
 		m_interface->releaseRenderImage(_rmi);
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::update()
+	{
+		m_interface->update();
 	}
 
 	//////////////////////////////////////////////////////////////////////////

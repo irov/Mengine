@@ -18,10 +18,10 @@
 	</Paks>
 
 	<Display>
-		<Width Value = "1024"/>
-		<Height Value = "768"/>
-		<Bits Value = "32"/>
-		<FullScreen Value = "0"/>
+		<Width Value = "640"/>
+		<Height Value = "480"/>
+		<Bits Value = "16"/>
+		<FullScreen Value = "1"/>
 	</Display>
 
 	<Game File = "Game/Game.xml">

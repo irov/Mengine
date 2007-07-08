@@ -5,7 +5,6 @@
 #include "model.h"
 #include "d3d9RenderSystem.h"
 
-
 const int Model::STATE_IDLE = 0;
 const int Model::STATE_FANCY = 1;
 const int Model::STATE_MOTION = 2;
@@ -18,8 +17,7 @@ struct Vertex
 	float s;
 };
 
-Model::Model(RenderSystem * _rs)
-: m_rs(_rs)
+Model::Model()
 {
 	m_calCoreModel = new CalCoreModel("dummy");
 
@@ -31,28 +29,10 @@ Model::Model(RenderSystem * _rs)
 	m_meshCount = 0;
 	m_renderScale = 1.0f;
 	m_lodLevel = 1.0f;
-
-	vertexDecl = m_rs->createVertexDeclaration();
-
-  	IndexData * indexData = m_rs->createIndexData();
-	VertexData * vertexData = m_rs->createVertexData();
-
-	pm.setIndexData(indexData);
-	pm.setVertexData(vertexData);
-
-	vertexDecl->insert(0, 0, DECLFLOAT3, DECLPOS, 0);
-	vertexDecl->insert(0, 12, DECLFLOAT3, DECLNRM, 0);
-	vertexDecl->insert(0, 12+12, DECLFLOAT2, DECLTEX, 0);
-
-	vertexData->setVertexDeclaration(vertexDecl);
-
-	vertexData->createVertexBuffer(30000,sizeof(Vertex));
-	indexData->createIndexBuffer(30000,0);
 }
 
 Model::~Model()
 {
-	delete vertexDecl;
 }
 
 void Model::executeAction(int action)
@@ -89,209 +69,228 @@ int Model::getState()
   return m_state;
 }
 
-int readInt( std::ifstream *file ) 
+bool Model::onInit(RenderSystemInterface * _rs,const std::string& strFilename)
 {
-	int x = 0;
-	for ( int i = 0; i < 32; i+=8 ) 
+	m_rs = _rs;
+
+	m_primitiveData = new SubMesh();
+	vertexDecl = NULL;
+	vertexDecl = m_rs->createVertexDeclaration();
+
+	IndexData * indexData = m_rs->createIndexData();
+	VertexData * vertexData = m_rs->createVertexData();
+
+	m_primitiveData->setIndexData(indexData);
+	m_primitiveData->setVertexData(vertexData);
+
+	vertexDecl->insert(0, 0, DECLFLOAT3, DECLPOS, 0);
+	vertexDecl->insert(0, 12, DECLFLOAT3, DECLNRM, 0);
+	vertexDecl->insert(0, 12+12, DECLFLOAT2, DECLTEX, 0);
+
+	vertexData->setVertexDeclaration(vertexDecl);
+
+	vertexData->createVertexBuffer(30000,sizeof(Vertex));
+	indexData->createIndexBuffer(30000,0);
+	
+	// open the model configuration file
+	std::ifstream file;
+	file.open(strFilename.c_str(), std::ios::in | std::ios::binary);
+	if(!file)
 	{
-		char c;
-		file->read ( &c, 1 );
-		x += c << i;
- 	}
- 	return x;
- }
+	std::cerr << "Failed to open model configuration file '" << strFilename << "'." << std::endl;
+	return false;
+	}
 
-bool Model::onInit(const std::string& strFilename)
-{
-  // open the model configuration file
-  std::ifstream file;
-  file.open(strFilename.c_str(), std::ios::in | std::ios::binary);
-  if(!file)
-  {
-    std::cerr << "Failed to open model configuration file '" << strFilename << "'." << std::endl;
-    return false;
-  }
+	// initialize the data path
+	std::string strPath = m_path;
 
-  // initialize the data path
-  std::string strPath = m_path;
+	// initialize the animation count
+	int animationCount;
+	animationCount = 0;
 
-  // initialize the animation count
-  int animationCount;
-  animationCount = 0;
+	// parse all lines from the model configuration file
+	int line;
+	for(line = 1; ; line++)
+	{
+	// read the next model configuration line
+	std::string strBuffer;
+	std::getline(file, strBuffer);
 
-  // parse all lines from the model configuration file
-  int line;
-  for(line = 1; ; line++)
-  {
-    // read the next model configuration line
-    std::string strBuffer;
-    std::getline(file, strBuffer);
+	// stop if we reached the end of file
+	if(file.eof()) break;
 
-    // stop if we reached the end of file
-    if(file.eof()) break;
+	// check if an error happend while reading from the file
+	if(!file)
+	{
+	  std::cerr << "Error while reading from the model configuration file '" << strFilename << "'." << std::endl;
+	  return false;
+	}
 
-    // check if an error happend while reading from the file
-    if(!file)
-    {
-      std::cerr << "Error while reading from the model configuration file '" << strFilename << "'." << std::endl;
-      return false;
-    }
+	// find the first non-whitespace character
+	std::string::size_type pos;
+	pos = strBuffer.find_first_not_of(" \t");
 
-    // find the first non-whitespace character
-    std::string::size_type pos;
-    pos = strBuffer.find_first_not_of(" \t");
+	// check for empty lines
+	if((pos == std::string::npos) || (strBuffer[pos] == '\n') || (strBuffer[pos] == '\r') || (strBuffer[pos] == 0)) continue;
 
-    // check for empty lines
-    if((pos == std::string::npos) || (strBuffer[pos] == '\n') || (strBuffer[pos] == '\r') || (strBuffer[pos] == 0)) continue;
+	// check for comment lines
+	if(strBuffer[pos] == '#') continue;
 
-    // check for comment lines
-    if(strBuffer[pos] == '#') continue;
+	// get the key
+	std::string strKey;
+	strKey = strBuffer.substr(pos, strBuffer.find_first_of(" =\t\n\r", pos) - pos);
+	pos += strKey.size();
 
-    // get the key
-    std::string strKey;
-    strKey = strBuffer.substr(pos, strBuffer.find_first_of(" =\t\n\r", pos) - pos);
-    pos += strKey.size();
+	// get the '=' character
+	pos = strBuffer.find_first_not_of(" \t", pos);
+	if((pos == std::string::npos) || (strBuffer[pos] != '='))
+	{
+	  std::cerr << strFilename << "(" << line << "): Invalid syntax." << std::endl;
+	  return false;
+	}
 
-    // get the '=' character
-    pos = strBuffer.find_first_not_of(" \t", pos);
-    if((pos == std::string::npos) || (strBuffer[pos] != '='))
-    {
-      std::cerr << strFilename << "(" << line << "): Invalid syntax." << std::endl;
-      return false;
-    }
+	// find the first non-whitespace character after the '=' character
+	pos = strBuffer.find_first_not_of(" \t", pos + 1);
 
-    // find the first non-whitespace character after the '=' character
-    pos = strBuffer.find_first_not_of(" \t", pos + 1);
+	// get the data
+	std::string strData;
+	strData = strBuffer.substr(pos, strBuffer.find_first_of("\n\r", pos) - pos);
 
-    // get the data
-    std::string strData;
-    strData = strBuffer.substr(pos, strBuffer.find_first_of("\n\r", pos) - pos);
+	// handle the model creation
+	if(strKey == "scale")
+	{
+	  // set rendering scale factor
+	  m_renderScale = atof(strData.c_str());
+	}
+	else if(strKey == "path")
+	{
+	  // set the new path for the data files if one hasn't been set already
+	  if (m_path == "") strPath = strData;
+	}
+	else if(strKey == "skeleton")
+	{
+	  // load core skeleton
+	  std::cout << "Loading skeleton '" << strData << "'..." << std::endl;
+	  if(!m_calCoreModel->loadCoreSkeleton(strPath + strData))
+	  {
+		CalError::printLastError();
+		return false;
+	  }
+	}
+	else if(strKey == "animation")
+	{
+	  // load core animation
+	  std::cout << "Loading animation '" << strData << "'..." << std::endl;
+	  m_animationId[animationCount] = m_calCoreModel->loadCoreAnimation(strPath + strData);
+	  if(m_animationId[animationCount] == -1)
+	  {
+		CalError::printLastError();
+		return false;
+	  }
 
-    // handle the model creation
-    if(strKey == "scale")
-    {
-      // set rendering scale factor
-      m_renderScale = atof(strData.c_str());
-    }
-    else if(strKey == "path")
-    {
-      // set the new path for the data files if one hasn't been set already
-      if (m_path == "") strPath = strData;
-    }
-    else if(strKey == "skeleton")
-    {
-      // load core skeleton
-      std::cout << "Loading skeleton '" << strData << "'..." << std::endl;
-      if(!m_calCoreModel->loadCoreSkeleton(strPath + strData))
-      {
-        CalError::printLastError();
-        return false;
-      }
-    }
-    else if(strKey == "animation")
-    {
-      // load core animation
-      std::cout << "Loading animation '" << strData << "'..." << std::endl;
-      m_animationId[animationCount] = m_calCoreModel->loadCoreAnimation(strPath + strData);
-      if(m_animationId[animationCount] == -1)
-      {
-        CalError::printLastError();
-        return false;
-      }
+	  animationCount++;
+	}
+	else if(strKey == "mesh")
+	{
+	  // load core mesh
+	  std::cout << "Loading mesh '" << strData << "'..." << std::endl;
+	  if(m_calCoreModel->loadCoreMesh(strPath + strData) == -1)
+	  {
+		CalError::printLastError();
+		return false;
+	  }
+	}
+	else if(strKey == "material")
+	{
+	  // load core material
+	  std::cout << "Loading material '" << strData << "'..." << std::endl;
+	  if(m_calCoreModel->loadCoreMaterial(strPath + strData) == -1)
+	  {
+		CalError::printLastError();
+		return false;
+	  }
+	}
+	else
+	{
+	  std::cerr << strFilename << "(" << line << "): Invalid syntax." << std::endl;
+	  return false;
+	}
+	}
 
-      animationCount++;
-    }
-    else if(strKey == "mesh")
-    {
-      // load core mesh
-      std::cout << "Loading mesh '" << strData << "'..." << std::endl;
-      if(m_calCoreModel->loadCoreMesh(strPath + strData) == -1)
-      {
-        CalError::printLastError();
-        return false;
-      }
-    }
-    else if(strKey == "material")
-    {
-      // load core material
-      std::cout << "Loading material '" << strData << "'..." << std::endl;
-      if(m_calCoreModel->loadCoreMaterial(strPath + strData) == -1)
-      {
-        CalError::printLastError();
-        return false;
-      }
-    }
-    else
-    {
-      std::cerr << strFilename << "(" << line << "): Invalid syntax." << std::endl;
-      return false;
-    }
-  }
+	// explicitely close the file
+	file.close();
 
-  // explicitely close the file
-  file.close();
+	int materialId;
+	for(materialId = 0; materialId < m_calCoreModel->getCoreMaterialCount(); materialId++)
+	{
+	// get the core material
+	CalCoreMaterial *pCoreMaterial;
+	pCoreMaterial = m_calCoreModel->getCoreMaterial(materialId);
 
-  // load all textures and store the opengl texture id in the corresponding map in the material
-  int materialId;
-  for(materialId = 0; materialId < m_calCoreModel->getCoreMaterialCount(); materialId++)
-  {
-    // get the core material
-    CalCoreMaterial *pCoreMaterial;
-    pCoreMaterial = m_calCoreModel->getCoreMaterial(materialId);
+	// loop through all maps of the core material
+		int mapId;
+		for(mapId = 0; mapId < pCoreMaterial->getMapCount(); mapId++)
+		{
+		  // get the filename of the texture
+		  std::string strFilename;
+		  strFilename = pCoreMaterial->getMapFilename(mapId);
 
-    // loop through all maps of the core material
-    int mapId;
-    for(mapId = 0; mapId < pCoreMaterial->getMapCount(); mapId++)
-    {
-      // get the filename of the texture
-      std::string strFilename;
-      strFilename = pCoreMaterial->getMapFilename(mapId);
+		  std::ifstream	f(strFilename.c_str(),std::ios::binary);
+			f.seekg(0,std::ios::end); 
+			size_t filesize = f.tellg();
+			f.seekg(0,std::ios::beg);
+			char*	buffer = new char[filesize];
+ 			f.read(buffer,(int)filesize);
+			f.close();
 
-      // load the texture from the file
-/*      GLuint textureId;
-      textureId = loadTexture(strPath + strFilename);
+			TextureDesc td;
+		  td.buffer = buffer;
+		  td.size = filesize;
+		  td.haveAlpha = false;
 
-      // store the opengl texture id in the user data of the map
-      pCoreMaterial->setMapUserData(mapId, (Cal::UserData)textureId);
-	  */
-    }
-  }
 
-  // make one material thread for each material
-  // NOTE: this is not the right way to do it, but this viewer can't do the right
-  // mapping without further information on the model etc.
-  for(materialId = 0; materialId < m_calCoreModel->getCoreMaterialCount(); materialId++)
-  {
-    // create the a material thread
-    m_calCoreModel->createCoreMaterialThread(materialId);
+		  Texture * tex = m_rs->createTextureInMemory(td);
 
-    // initialize the material thread
-    m_calCoreModel->setCoreMaterialId(materialId, 0, materialId);
-  }
+		  delete buffer;
+		  pCoreMaterial->setMapUserData(mapId, (Cal::UserData)tex);
+		}
+	}
 
-  // Calculate Bounding Boxes
+	// make one material thread for each material
+	// NOTE: this is not the right way to do it, but this viewer can't do the right
+	// mapping without further information on the model etc.
+	for(materialId = 0; materialId < m_calCoreModel->getCoreMaterialCount(); materialId++)
+	{
+	// create the a material thread
+	m_calCoreModel->createCoreMaterialThread(materialId);
 
-  m_calCoreModel->getCoreSkeleton()->calculateBoundingBoxes(m_calCoreModel);
+	// initialize the material thread
+	m_calCoreModel->setCoreMaterialId(materialId, 0, materialId);
+	}
 
-  m_calModel = new CalModel(m_calCoreModel);
+	// Calculate Bounding Boxes
 
-  // attach all meshes to the model
-  int meshId;
-  for(meshId = 0; meshId < m_calCoreModel->getCoreMeshCount(); meshId++)
-  {
-    m_calModel->attachMesh(meshId);
-  }
+	m_calCoreModel->getCoreSkeleton()->calculateBoundingBoxes(m_calCoreModel);
 
-  // set the material set of the whole model
-  m_calModel->setMaterialSet(0);
+	m_calModel = new CalModel(m_calCoreModel);
 
-  // set initial animation state
-  m_state = STATE_MOTION;
-  m_calModel->getMixer()->blendCycle(m_animationId[STATE_MOTION], m_motionBlend[0], 0.0f);
-  m_calModel->getMixer()->blendCycle(m_animationId[STATE_MOTION + 1], m_motionBlend[1], 0.0f);
-  m_calModel->getMixer()->blendCycle(m_animationId[STATE_MOTION + 2], m_motionBlend[2], 0.0f);
+	// attach all meshes to the model
+	int meshId;
+	for(meshId = 0; meshId < m_calCoreModel->getCoreMeshCount(); meshId++)
+	{
+		m_calModel->attachMesh(meshId);
+	}
 
-  return true;
+	// set the material set of the whole model
+	m_calModel->setMaterialSet(0);
+
+	// set initial animation state
+	m_state = STATE_MOTION;
+	m_calModel->getMixer()->blendCycle(m_animationId[STATE_MOTION], m_motionBlend[0], 0.0f);
+	m_calModel->getMixer()->blendCycle(m_animationId[STATE_MOTION + 1], m_motionBlend[1], 0.0f);
+	m_calModel->getMixer()->blendCycle(m_animationId[STATE_MOTION + 2], m_motionBlend[2], 0.0f);
+
+	return true;
 }
 
 void Model::renderSkeleton()
@@ -302,8 +301,7 @@ void Model::renderBoundingBox()
 
 void Model::renderMesh(bool bWireframe, bool bLight)
 {
-  CalRenderer *pCalRenderer;
-  pCalRenderer = m_calModel->getRenderer();
+  CalRenderer * pCalRenderer = m_calModel->getRenderer();
 
   if(!pCalRenderer->beginRendering()) return;
 
@@ -324,7 +322,7 @@ void Model::renderMesh(bool bWireframe, bool bLight)
       {
 			float * vertices = 0;
 
-			VertexData * vertexData = pm.getVertexData();
+			VertexData * vertexData = m_primitiveData->getVertexData();
 	
 			vertexData->lock(vertices,m_VBCursor,pCalRenderer->getVertexCount(),sizeof(Vertex)); 
 			int vertexCount = pCalRenderer->getVerticesNormalsAndTexCoords(&vertices[0]);
@@ -332,17 +330,14 @@ void Model::renderMesh(bool bWireframe, bool bLight)
 
 			CalIndex * indecies = 0;
 
-			IndexData * indexData = pm.getIndexData();
+			IndexData * indexData = m_primitiveData->getIndexData();
 
 			indexData->lock( indecies, m_IBCursor, pCalRenderer->getFaceCount() );
 			int faceCount = pCalRenderer->getFaces(indecies);
 			indexData->unlock();
 						
-			Direct3d9RenderSystem* d3d9rs =  (Direct3d9RenderSystem*)m_rs;
-	
-			d3d9rs->_getDevice()->SetTexture(0,(LPDIRECT3DTEXTURE9)pCalRenderer->getMapUserData(0));
-
-			m_rs->drawPrimitive(pm);
+			m_rs->setTexture((Texture*)pCalRenderer->getMapUserData(0));
+			m_rs->drawPrimitive(m_primitiveData);
 
 			m_VBCursor+=vertexCount;
 			m_IBCursor+=faceCount;
@@ -354,10 +349,6 @@ void Model::renderMesh(bool bWireframe, bool bLight)
   
 }
 
-//----------------------------------------------------------------------------//
-// Render the model                                                           //
-//----------------------------------------------------------------------------//
-
 void Model::onRender()
 {
 	renderMesh(false, false);
@@ -365,13 +356,34 @@ void Model::onRender()
 
 void Model::onUpdate(float elapsedSeconds)
 {
-  m_calModel->update(elapsedSeconds);
+	m_calModel->update(elapsedSeconds);
 }
 
 void Model::onShutdown()
 {
-  delete m_calModel;
-  delete m_calCoreModel;
+	CalRenderer * pCalRenderer = m_calModel->getRenderer();
+
+	int meshCount = pCalRenderer->getMeshCount();
+
+	for(int meshId = 0; meshId < meshCount; meshId++)
+	{
+		int submeshCount;
+		submeshCount = pCalRenderer->getSubmeshCount(meshId);
+
+		int submeshId;
+		for(submeshId = 0; submeshId < submeshCount; submeshId++)
+		{
+			if(pCalRenderer->selectMeshSubmesh(meshId, submeshId))
+			{
+				Texture* tex = (Texture*)pCalRenderer->getMapUserData(0);
+				m_rs->releaseTexture(tex);
+			}
+		}
+	}
+	delete m_calModel;
+	delete m_calCoreModel;
+	delete vertexDecl;
+	delete m_primitiveData;
 }
 
 void Model::setLodLevel(float lodLevel)

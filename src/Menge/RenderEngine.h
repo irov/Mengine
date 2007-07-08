@@ -23,9 +23,7 @@ namespace Menge
 	public:
 		bool createDisplay(int _width, int _height, int _bits, bool _fullScreen);
 		
-		bool beginSceneDrawing(unsigned long _color);
-
-		bool endSceneDrawing();
+		void setRenderCallback(renderFunction _rf);
 
 		void drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color);
 
@@ -40,6 +38,8 @@ namespace Menge
 			RenderImageInterface* _rmi);
 
 		void releaseRenderImage(RenderImageInterface* _rmi);
+
+		void update();
 		
 		//////////////////////////////////////////////////////////////////////////
 		RenderFontInterface* loadFont(const std::string &_fontXml);

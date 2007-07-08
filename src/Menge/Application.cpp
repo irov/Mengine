@@ -57,6 +57,12 @@ namespace Menge
 		initialize();
 	}
 	*/
+
+	void	renderScene()
+	{
+		Holder<Game>::hostage()->render();
+		Holder<Game>::hostage()->debugRender();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::init(const std::string &_xmlFile)
 	{
@@ -231,10 +237,14 @@ namespace Menge
 		printf("init game ...\n");
 		bool game = m_game->init();
 
+
 		if( game == false )
 		{
 			return false;
 		}
+
+		RenderEngine * renderEng = Holder<RenderEngine>::hostage();
+		renderEng->setRenderCallback(renderScene);
 
 		return true;
 	}
@@ -273,7 +283,8 @@ namespace Menge
 	{
 		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 
-		renderEng->beginSceneDrawing(0xFF0FF0FF);
+		//renderEng->beginSceneDrawing(0xFF0FF0FF);
+		renderEng->update();
 
 		//if( m_functionRender )
 		//{
@@ -281,12 +292,13 @@ namespace Menge
 		//}
 		m_game->render();
 
-		if( m_debugRender )
+	/*	if( m_debugRender )
 		{
 			m_game->debugRender();
 		}
 
 		renderEng->endSceneDrawing();
+*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createDisplay(int _width, int _height, int _bits, bool _fullScreen)

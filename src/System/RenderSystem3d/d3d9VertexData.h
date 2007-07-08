@@ -1,5 +1,5 @@
 #	pragma once
-#	include "RenderSystem3dInterface.h"
+#	include "..\..\Menge\RenderSystemInterface.h"
 #	include <d3d9.h>
 
 class Direct3d9VertexData : public VertexData

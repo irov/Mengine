@@ -1,26 +1,67 @@
-#include "d3d9RenderSystem.h"
+//#	include "vld.h"
 
-#include "model.h"
+#	include "d3d9RenderSystem.h"
+#	include "..\..\Menge\RenderSystemInterface.h"
+#	include "model.h"
 
-Model *	pModel;
+Model	pModel;
+mt::mat3f	ident;
+RenderSystemInterface *renderSystem;
+RenderImageInterface* SPRITE0;
 
 void	RenderScene()
 {
-	pModel->onUpdate(0.08);
-	pModel->onRender();
+	renderSystem->renderImage(
+		ident,
+		mt::vec2f(128,0),
+		mt::vec4f(0,0,1.0f,1.0f),
+		mt::vec2f(SPRITE0->getWidth(),
+		SPRITE0->getHeight()),
+		0xFFFFFFFF,
+		SPRITE0);
+
+	pModel.onUpdate(0.08);
+	pModel.onRender();
+
+	renderSystem->renderImage(
+		ident,
+		mt::vec2f(0,0),
+		mt::vec4f(0,0,1.0f,1.0f),
+		mt::vec2f(SPRITE0->getWidth(),SPRITE0->getHeight()),
+		0xFFFFFFFF,
+		SPRITE0);
+
+
 }
 
 INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 {
-	Direct3d9RenderSystem * renderSystem = new Direct3d9RenderSystem();
+	renderSystem = new Direct3d9RenderSystem();
 	renderSystem->setRenderCallback(RenderScene);
 	renderSystem->createDisplay(640,480,16,true);
 
-	
- 	pModel = new Model(renderSystem);
+	TextureDesc	td;
 
-	pModel->setPath("..//..//..//dependencies//cal3d//cal3d//data//cally//");
-	pModel->onInit("..//..//..//dependencies//cal3d//cal3d//data//cally//cally.cfg");
+	std::ifstream	f("HLSLwithoutEffects.jpg",std::ios::binary);
+	f.seekg(0,std::ios::end); 
+	size_t filesize = f.tellg();
+	f.seekg(0,std::ios::beg);
+	char*	buffer = new char[filesize];
+ 	f.read(buffer,(int)filesize);
+	f.close();
+
+	td.buffer = buffer;
+	td.size = filesize;
+	td.haveAlpha = false;
+
+	mt::ident_m3(ident);
+
+	
+	SPRITE0 = renderSystem->loadImage(td);
+
+ 	//pModel.setPath("cally//");
+	pModel.onInit(renderSystem,"heroine.cfg");
+
 
 	MSG  msg;
     msg.message = WM_NULL;
@@ -48,7 +89,9 @@ INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         }
     }
 
-	delete pModel;
+	pModel.onShutdown();
+	
+	renderSystem->releaseRenderImage(SPRITE0);
 
 	delete renderSystem;
 

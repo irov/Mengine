@@ -141,12 +141,12 @@ void Sprite::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 //////////////////////////////////////////////////////////////////////////
 void Sprite::_debugRender()
 {
-	const mt::vec2f & pos = getWorldPosition();
+/*	const mt::vec2f & pos = getWorldPosition();
 
 	const mt::vec2f & size = m_image->getMaxSize();
 
 	Holder<RenderEngine>::hostage()
-		->drawLine( pos, pos + size, 2, 0xffff00ff );
+		->drawLine( pos, pos + size, 2, 0xffff00ff );*/
 };
 
 

@@ -84,7 +84,7 @@ HRESULT CALLBACK OnResetDevice( IDirect3DDevice9* pd3dDevice,
 {
     HRESULT hr;
 
-    pd3dDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
+    /*pd3dDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
     pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
 
 	float fAspectRatio = pBackBufferSurfaceDesc->Width / (FLOAT)pBackBufferSurfaceDesc->Height;
@@ -92,7 +92,17 @@ HRESULT CALLBACK OnResetDevice( IDirect3DDevice9* pd3dDevice,
 	D3DXMATRIX m_mProj;
 	
     D3DXMatrixPerspectiveFovLH(&m_mProj, D3DX_PI/4, fAspectRatio, 0.1f, 4000.0f  );
-	pd3dDevice->SetTransform(D3DTS_PROJECTION, &m_mProj);
+	
+	mt::mat4f	m;
+
+	for(int i = 0; i < 4; i++)
+		for(int j = 0; j < 4; j++)
+		{
+			m[i][j] = m_mProj.m[i][j];
+		}
+	
+
+	setProjectionMatrix(m);
 
 	D3DXMATRIX mat_t;
 
@@ -109,8 +119,26 @@ HRESULT CALLBACK OnResetDevice( IDirect3DDevice9* pd3dDevice,
 	D3DXMatrixMultiply(&mat_rot, &mat_rot, &mat_user);
 
 	pd3dDevice->SetTransform(D3DTS_WORLD, &(D3DMATRIX)mat_rot);
-
+*/
     return S_OK;
+}
+
+void	Direct3d9RenderSystem::setProjectionMatrix(const mt::mat4f& _projection)
+{
+	HRESULT hr;
+	hr = m_pd3dDevice->SetTransform(D3DTS_PROJECTION,&D3DXMATRIX(_projection.m));
+}
+
+void	Direct3d9RenderSystem::setViewMatrix(const mt::mat4f& _view)
+{
+	HRESULT hr;
+	hr = m_pd3dDevice->SetTransform(D3DTS_VIEW,&D3DXMATRIX(_view.m));
+}
+
+void	Direct3d9RenderSystem::setWorldMatrix(const mt::mat4f& _world)
+{
+	HRESULT hr;
+	hr = m_pd3dDevice->SetTransform(D3DTS_WORLD,&D3DXMATRIX(_world.m));
 }
 
 void CALLBACK OnFrameRender( IDirect3DDevice9* pd3dDevice, double fTime, float fElapsedTime, void* pUserContext )

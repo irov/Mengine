@@ -28,8 +28,6 @@ public:
 	void	releaseRenderImage(RenderImageInterface* _rmi);
     void	renderText(mt::vec2f _pos, RenderFontInterface* _font, const std::string& _text);
 	void	releaseRenderFont(RenderFontInterface* _fnt);
-
-
 	void	setTexture(Texture * _tex);
 
 	void	releaseTexture(Texture * _tex);
@@ -43,6 +41,10 @@ public:
 					RenderImageInterface* _rmi);
 
 	RenderImageInterface* loadImage(const TextureDesc&	_desc);
+
+	void	setProjectionMatrix(const mt::mat4f& _projection);
+	void	setViewMatrix(const mt::mat4f& _view);
+	void	setWorldMatrix(const mt::mat4f& _world);
 public:
 	void	_setDevice(IDirect3DDevice9 * _pd3dDevice);
 	IDirect3DDevice9 * _getDevice();

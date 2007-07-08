@@ -2,6 +2,7 @@
 
 #	include <string>
 
+#	include "math/mat4.h"
 #	include "math/mat3.h"
 #	include "math/vec4.h"
 #	include "math/vec2.h"
@@ -182,6 +183,10 @@ public:
 	virtual RenderFontInterface* loadFont(const FontDesc&	_desc) = 0;
 	virtual	void	renderText(mt::vec2f _pos, RenderFontInterface* _font, const std::string& _text) = 0;
 	virtual	void	releaseRenderFont(RenderFontInterface* _fnt) = 0;
+
+	virtual	void	setProjectionMatrix(const mt::mat4f& _projection) = 0;
+	virtual	void	setViewMatrix(const mt::mat4f& _view) = 0;
+	virtual	void	setWorldMatrix(const mt::mat4f& _world) = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

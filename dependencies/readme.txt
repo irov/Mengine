@@ -16,3 +16,11 @@ vld
 cal3d
 [snapshot]
 svn://svn.gna.org/svn/cal3d/trunk
+
+libcurl
+[libcurl]
+http://gd.tuwien.ac.at/utils/archivers/curl/libcurl-7.15.5-win32-msvc.zip
+
+pycurl
+[pycurl]
+http://pycurl.sourceforge.net/download/pycurl-7.16.2.1.tar.gz

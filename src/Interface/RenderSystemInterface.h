@@ -148,18 +148,16 @@ struct FontDesc
 	float			height;
 };
 
-typedef void (*renderFunction)();
-
 class	RenderSystemInterface 
 {
 public:
 	virtual ~RenderSystemInterface(){};
 
-	virtual bool	createDisplay(int _width, int _height, int _bits, bool _fullScreen) = 0;
-	virtual void	setRenderCallback(renderFunction _rf) = 0;
-	virtual void	drawPrimitive(PrimitiveData * _pd) = 0;
-	virtual void	update() = 0;
+	virtual bool beginScene(bool backBuffer, bool zBuffer, int color) = 0;
+	virtual bool endScene() = 0;
 
+	virtual void	drawPrimitive(PrimitiveData * _pd) = 0;
+	
 	virtual VertexData * createVertexData() = 0;
 	virtual IndexData * createIndexData() = 0;
 	virtual VertexDeclaration * createVertexDeclaration() = 0;

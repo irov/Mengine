@@ -6,14 +6,6 @@
 
 #	include <windows.h>
 #	include <assert.h>
-#	include <XInput.h> 
-#	include "DXUT.h"
-#	include "DXUTmisc.h"
-#	include "DXUTenum.h"
-#	include "DXUTmesh.h"
-#	include "DXUTRes.h"
-
-//IDirect3DTexture9*		md2_texture = 0;
 
 #	pragma comment (lib, "d3d9.lib")
 #	pragma comment (lib, "d3dx9.lib")
@@ -37,147 +29,26 @@ void releaseInterfaceSystem(RenderSystemInterface* _ptrRenderSystem)
 	delete static_cast<Direct3d9RenderSystem*>(_ptrRenderSystem);
 }
 
-bool CALLBACK IsDeviceAcceptable( D3DCAPS9* pCaps, D3DFORMAT AdapterFormat, 
-                                  D3DFORMAT BackBufferFormat, bool bWindowed, void* pUserContext )
-{
-    IDirect3D9* pD3D = DXUTGetD3DObject(); 
-    if( FAILED( pD3D->CheckDeviceFormat( pCaps->AdapterOrdinal, pCaps->DeviceType,
-                    AdapterFormat, D3DUSAGE_QUERY_POSTPIXELSHADER_BLENDING, 
-                    D3DRTYPE_TEXTURE, BackBufferFormat ) ) )
-        return false;
-    return true;
-}
-
-bool CALLBACK ModifyDeviceSettings( DXUTDeviceSettings* pDeviceSettings, const D3DCAPS9* pCaps, void* pUserContext )
-{
-    if( (pCaps->DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 ||
-         pCaps->VertexShaderVersion < D3DVS_VERSION(2,0) )
-    {
-        pDeviceSettings->BehaviorFlags = D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-    }
-
-    static bool s_bFirstTime = true;
-    if( s_bFirstTime )
-    {
-        s_bFirstTime = false;
-        if( pDeviceSettings->DeviceType == D3DDEVTYPE_REF )
-            DXUTDisplaySwitchingToREFWarning();
-    }
-
-    return true;
-}
-
-HRESULT CALLBACK OnCreateDevice( IDirect3DDevice9* pd3dDevice, const D3DSURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext )
-{
-    HRESULT hr;
-
-	Direct3d9RenderSystem* renderSystem = static_cast<Direct3d9RenderSystem*>(pUserContext);
-	renderSystem->_setDevice(pd3dDevice);
-
-//	D3DXCreateTextureFromFile(pd3dDevice, L"HLSLwithoutEffects.jpg", &md2_texture);
-
-    return S_OK;
-}
-
-HRESULT CALLBACK OnResetDevice( IDirect3DDevice9* pd3dDevice, 
-                                const D3DSURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext )
-{
-    HRESULT hr;
-
-	Direct3d9RenderSystem * rs = static_cast<Direct3d9RenderSystem*>(pUserContext);
-	rs->_initRenderSystemParams();
-
-  /*  pd3dDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
-    pd3dDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-
-	float fAspectRatio = pBackBufferSurfaceDesc->Width / (FLOAT)pBackBufferSurfaceDesc->Height;
-   
-	D3DXMATRIX m_mProj;
-	
-    D3DXMatrixPerspectiveFovLH(&m_mProj, D3DX_PI/4, fAspectRatio, 0.1f, 4000.0f  );
-	
-	mt::mat4f	m;
-
-	for(int i = 0; i < 4; i++)
-		for(int j = 0; j < 4; j++)
-		{
-			m[i][j] = m_mProj.m[i][j];
-		}
-	
-
-//	setProjectionMatrix(m);
-
-	D3DXMATRIX mat_t;
-
-	D3DXMatrixIdentity(&mat_t);
-	D3DXMatrixTranslation(&mat_t, 0.0f, 0.0f, 25.0f);
-	pd3dDevice->SetTransform(D3DTS_VIEW, &(D3DMATRIX)mat_t);
-
-	D3DXMATRIX mat_rot, mat_user;
-
-	D3DXMatrixRotationYawPitchRoll(&mat_rot, D3DX_PI,1.5f*D3DX_PI, 1);
-
-	static float iii = 70.0f;
-	D3DXMatrixRotationX(&mat_user, iii);
-	D3DXMatrixMultiply(&mat_rot, &mat_rot, &mat_user);
-
-	pd3dDevice->SetTransform(D3DTS_WORLD, &(D3DMATRIX)mat_rot);
-*/
-    return S_OK;
-}
-
 void	Direct3d9RenderSystem::setProjectionMatrix(const mt::mat4f& _projection)
 {
 	HRESULT hr;
-	hr = m_pd3dDevice->SetTransform(D3DTS_PROJECTION,&D3DXMATRIX(_projection.m));
+	hr = pID3DDevice->SetTransform(D3DTS_PROJECTION,&D3DXMATRIX(_projection.m));
 }
 
 void	Direct3d9RenderSystem::setViewMatrix(const mt::mat4f& _view)
 {
 	HRESULT hr;
-	hr = m_pd3dDevice->SetTransform(D3DTS_VIEW,&D3DXMATRIX(_view.m));
+	hr = pID3DDevice->SetTransform(D3DTS_VIEW,&D3DXMATRIX(_view.m));
 }
 
 void	Direct3d9RenderSystem::setWorldMatrix(const mt::mat4f& _world)
 {
 	HRESULT hr;
-	hr = m_pd3dDevice->SetTransform(D3DTS_WORLD,&D3DXMATRIX(_world.m));
+	hr = pID3DDevice->SetTransform(D3DTS_WORLD,&D3DXMATRIX(_world.m));
 }
-
-void CALLBACK OnFrameRender( IDirect3DDevice9* pd3dDevice, double fTime, float fElapsedTime, void* pUserContext )
-{
-    HRESULT hr;
- 
-	pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_ARGB(0, 45, 50, 170), 1.0f, 0);
-
-    if( SUCCEEDED( pd3dDevice->BeginScene() ) )
-    {
-	//    pd3dDevice->SetTexture(0, md2_texture);
-
-		Direct3d9RenderSystem* rs = static_cast<Direct3d9RenderSystem*>(pUserContext);
-		rs->m_renderFunction();
-		// if smth is 
-		rs->_renderBatches();
-        pd3dDevice->EndScene();
-    }
-}
-
-LRESULT CALLBACK MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, bool* pbNoFurtherProcessing, void* pUserContext )
-{
-    return 0;
-}
-
-void CALLBACK OnLostDevice( void* pUserContext )
-{ 
-
-}
-
-void CALLBACK OnDestroyDevice( void* pUserContext )
-{}
 
 Direct3d9RenderSystem::Direct3d9RenderSystem()
-	: m_pd3dDevice(0)
-	, m_renderFunction(0)
+	: pID3DDevice(0)
 {}
 
 Direct3d9RenderSystem::~Direct3d9RenderSystem()
@@ -201,7 +72,7 @@ Texture * Direct3d9RenderSystem::createTextureInMemory(const TextureDesc& _desc)
 
 	bool haveAlpha = _desc.filter;
 
-	if (FAILED(D3DXCreateTextureFromFileInMemoryEx(m_pd3dDevice, _desc.buffer, (UINT)_desc.size,
+	if (FAILED(D3DXCreateTextureFromFileInMemoryEx(pID3DDevice, _desc.buffer, (UINT)_desc.size,
                                     D3DX_DEFAULT, D3DX_DEFAULT,
                                     1,                  
                                     0,                  
@@ -224,23 +95,227 @@ void	Direct3d9RenderSystem::setTexture(Texture * _tex)
 	d3d9Texture* _d3d9tex = static_cast<d3d9Texture*>(_tex);
 	if(_d3d9tex == NULL)
 	{
-		m_pd3dDevice->SetTexture(0,NULL);
+		pID3DDevice->SetTexture(0,NULL);
 	}
 	else
-	m_pd3dDevice->SetTexture(0,_d3d9tex->_get());
+	pID3DDevice->SetTexture(0,_d3d9tex->_get());
 }
 
 void	Direct3d9RenderSystem::releaseTexture(Texture * _tex)
 {
 	delete static_cast<d3d9Texture*>(_tex);
 }
-
-bool	Direct3d9RenderSystem::createDisplay(int _width, int _height, int _bits, bool _fullScreen)
+static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	DXUTSetCallbackDeviceCreated( OnCreateDevice, this );
+	switch (uMsg)
+	{
+	case WM_CLOSE:
+		DestroyWindow(hWnd);
+		return 0;
+
+	case WM_DESTROY:
+		PostQuitMessage(0);
+	}
+
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+bool	Direct3d9RenderSystem::createDisplay( HWND _hWnd, int _width, int _height, int _bits, bool _fullScreen)
+{
+	HRESULT hr;
+
+	DeviceLost = false;
+
+	bool vsync = true;
+	bool	StencilBuffer = false;
+	bool	antiAlias = true;
+	bool	pureSoftware = false;
+	
+	IDirect3D9* pID3D;
+	pID3D = Direct3DCreate9(D3D_SDK_VERSION);
+	// print device information
+	D3DADAPTER_IDENTIFIER9 dai;
+	if (!FAILED(pID3D->GetAdapterIdentifier(D3DADAPTER_DEFAULT, 0, &dai)))
+	{
+		char tmp[512];
+
+		int Product = HIWORD(dai.DriverVersion.HighPart);
+		int Version = LOWORD(dai.DriverVersion.HighPart);
+		int SubVersion = HIWORD(dai.DriverVersion.LowPart);
+		int Build = LOWORD(dai.DriverVersion.LowPart);
+
+		sprintf(tmp, "%s %s %d.%d.%d.%d", dai.Description, dai.Driver, Product, Version,
+			SubVersion, Build);
+	}
+
+	D3DDISPLAYMODE d3ddm;
+	hr = pID3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
+	if (FAILED(hr))
+	{
+		printf("Error: Could not get Adapter Display mode.");
+		return false;
+	}
+
+	D3DPRESENT_PARAMETERS present;
+
+	ZeroMemory(&present, sizeof(present));
+
+	present.SwapEffect					= _fullScreen ? D3DSWAPEFFECT_FLIP : D3DSWAPEFFECT_COPY;
+	present.Windowed					= _fullScreen ? FALSE : TRUE;
+	present.BackBufferFormat			= d3ddm.Format;
+	present.EnableAutoDepthStencil		= TRUE;
+	present.PresentationInterval		= D3DPRESENT_INTERVAL_IMMEDIATE;
+
+	if (_fullScreen)
+	{
+		present.BackBufferWidth = _width;
+		present.BackBufferHeight = _height;
+		present.BackBufferFormat = D3DFMT_R5G6B5;
+		present.BackBufferCount = 0;
+		present.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+
+		if (vsync)
+			present.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+		
+		// request 32bit mode if user specified 32 bit, added by Thomas Stüfe
+		if (_bits == 32 && !StencilBuffer) 
+			present.BackBufferFormat = D3DFMT_A8R8G8B8;
+	}
+
+	D3DDEVTYPE devtype = D3DDEVTYPE_HAL;
+	
+	// enable anti alias if possible and whished
+	if (antiAlias)
+	{
+		DWORD qualityLevels = 0; 
+
+		if (!FAILED(pID3D->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT, 
+		           devtype, present.BackBufferFormat, !_fullScreen, 
+		           D3DMULTISAMPLE_2_SAMPLES, &qualityLevels)))
+        {        
+			// enable multi sampling
+            present.SwapEffect         = D3DSWAPEFFECT_DISCARD; 
+            present.MultiSampleType    = D3DMULTISAMPLE_2_SAMPLES; 
+			present.MultiSampleQuality = qualityLevels-1;
+        } 
+		else
+		if (!FAILED(pID3D->CheckDeviceMultiSampleType(D3DADAPTER_DEFAULT, 
+					devtype, present.BackBufferFormat, !_fullScreen, 
+					D3DMULTISAMPLE_NONMASKABLE, &qualityLevels))) 
+		{        
+			// enable non maskable multi sampling
+			present.SwapEffect         = D3DSWAPEFFECT_DISCARD; 
+			present.MultiSampleType    = D3DMULTISAMPLE_NONMASKABLE; 
+			present.MultiSampleQuality = qualityLevels-1;
+		} 		
+		else 
+        { 
+            printf("Anti aliasing disabled because hardware/driver lacks necessary caps.");    
+			antiAlias = false;
+        }
+	}
+
+	if (StencilBuffer)
+	{
+		present.AutoDepthStencilFormat = D3DFMT_D24S8;
+		if(FAILED(pID3D->CheckDeviceFormat(D3DADAPTER_DEFAULT, devtype,
+			present.BackBufferFormat, D3DUSAGE_DEPTHSTENCIL, 
+			D3DRTYPE_SURFACE, D3DFMT_D24S8)))
+		{
+			printf("Device does not support stencilbuffer, disabling stencil buffer.");
+			StencilBuffer = false;
+		}
+		else
+		if(FAILED(pID3D->CheckDepthStencilMatch(D3DADAPTER_DEFAULT, devtype,
+			present.BackBufferFormat, present.BackBufferFormat, D3DFMT_D24S8)))
+		{
+			printf("Depth-stencil format is not compatible with display format, disabling stencil buffer.");
+			StencilBuffer = false;
+		} 		
+	}
+
+	if (!StencilBuffer)
+		present.AutoDepthStencilFormat = D3DFMT_D16;
+
+	if (pureSoftware)
+	{
+		hr = pID3D->CreateDevice(	D3DADAPTER_DEFAULT, D3DDEVTYPE_REF,	_hWnd,
+									D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present, &pID3DDevice);
+
+		if (FAILED(hr))
+			printf("Was not able to create Direct3D9 software device.");
+	}
+	else
+	{
+		hr = pID3D->CreateDevice(	D3DADAPTER_DEFAULT, devtype,	_hWnd,
+									D3DCREATE_HARDWARE_VERTEXPROCESSING, &present, &pID3DDevice);
+
+		if(FAILED(hr))
+		{
+			hr = pID3D->CreateDevice(	D3DADAPTER_DEFAULT, devtype,	_hWnd,
+										D3DCREATE_MIXED_VERTEXPROCESSING , &present, &pID3DDevice);
+
+			if(FAILED(hr))
+			{
+				hr = pID3D->CreateDevice(	D3DADAPTER_DEFAULT, devtype, _hWnd,
+											D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present, &pID3DDevice);
+
+				if (FAILED(hr))
+					printf("Was not able to create Direct3D9 device.");
+			}
+		}
+	}
+
+
+	if (!pID3DDevice)
+	{
+		printf("Was not able to create DIRECT3D9 device.");
+		return false;
+	}
+
+	D3DCAPS9 Caps;
+
+	// get caps
+	pID3DDevice->GetDeviceCaps(&Caps);
+
+	// disalbe stencilbuffer if necessary
+	if (StencilBuffer && 
+		(!(Caps.StencilCaps & D3DSTENCILCAPS_DECRSAT) ||
+		!(Caps.StencilCaps & D3DSTENCILCAPS_INCRSAT) ||
+		!(Caps.StencilCaps & D3DSTENCILCAPS_KEEP)))
+	{
+		printf("Device not able to use stencil buffer, disabling stencil buffer.");
+		StencilBuffer = false;
+	}
+
+	// set default vertex shader
+	//setVertexShader(EVT_STANDARD);
+
+	// enable antialiasing
+	if (antiAlias)
+		pID3DDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, TRUE);
+
+	// set fog mode
+	//setFog(FogColor, LinearFog, FogStart, FogEnd, FogDensity, PixelFog, RangeFog);
+
+	// set exposed data
+	//ExposedData.D3D9.D3D9 = pID3D;
+	//ExposedData.D3D9.D3DDev9 = pID3DDevice;
+	//ExposedData.D3D9.HWnd =  reinterpret_cast<s32>(hwnd);
+
+	//ResetRenderStates = true;
+
+	// create materials
+//	createMaterialRenderers();
+//
+	// set the renderstates
+//	setRenderStates3DMode();
+
+	// set maximal anisotropy
+	pID3DDevice->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, min(16, Caps.MaxAnisotropy));
+	pID3DDevice->SetSamplerState(1, D3DSAMP_MAXANISOTROPY, min(16, Caps.MaxAnisotropy));
+
+	/*DXUTSetCallbackDeviceCreated( OnCreateDevice, this );
 	DXUTSetCallbackDeviceReset( OnResetDevice, this );
-	DXUTSetCallbackDeviceLost( OnLostDevice, this );
-	DXUTSetCallbackDeviceDestroyed( OnDestroyDevice );
 	DXUTSetCallbackMsgProc( MsgProc );
 	DXUTSetCallbackKeyboard( NULL );
 	DXUTSetCallbackFrameRender( OnFrameRender, this );
@@ -251,24 +326,93 @@ bool	Direct3d9RenderSystem::createDisplay(int _width, int _height, int _bits, bo
 	DXUTCreateWindow( L"Render System test" );
 	DXUTCreateDevice( D3DADAPTER_DEFAULT, !_fullScreen, _width, _height, IsDeviceAcceptable, ModifyDeviceSettings );
 
+	*/
 	_initBatching();
 	_initRenderSystemParams();
+
 	return true;
 }
 
-void	Direct3d9RenderSystem::update()
+bool Direct3d9RenderSystem::beginScene(bool backBuffer, bool zBuffer, int color)
 {
-	DXUTRender3DEnvironment();
+	HRESULT hr;
+
+	if (!pID3DDevice)
+		return false;
+
+	if (DeviceLost)
+	{
+		if(FAILED(hr = pID3DDevice->TestCooperativeLevel()))
+        {
+            if (hr == D3DERR_DEVICELOST)
+                return false;
+
+            if (hr == D3DERR_DEVICENOTRESET)
+			{
+			//	reset();
+				_initRenderSystemParams();
+			}
+            return false;
+        }
+	}
+
+	DWORD flags = 0;
+
+	if (backBuffer)
+		flags |= D3DCLEAR_TARGET;
+
+	if (zBuffer)
+		flags |= D3DCLEAR_ZBUFFER;
+
+	//if (StencilBuffer)
+	//	flags |= D3DCLEAR_STENCIL;
+
+	hr = pID3DDevice->Clear( 0, NULL, flags, color, 1.0, 0);
+	if (FAILED(hr))
+		printf("DIRECT3D9 clear failed.");
+
+	hr = pID3DDevice->BeginScene();
+	if (FAILED(hr))
+	{
+		printf("DIRECT3D9 begin scene failed.");
+		return false;
+	}
+
+	return true;
 }
 
-void	Direct3d9RenderSystem::setRenderCallback(renderFunction _rf)
+bool Direct3d9RenderSystem::endScene()
 {
-	m_renderFunction = _rf;
+	if (DeviceLost)
+		return false;
+
+	HRESULT hr = pID3DDevice->EndScene();
+	if (FAILED(hr))
+	{
+		printf("DIRECT3D9 end scene failed.");
+		return false;
+	}
+
+	hr = pID3DDevice->Present(NULL, NULL, NULL, NULL);
+
+	if (hr == D3DERR_DEVICELOST)
+	{
+		DeviceLost = true;
+		printf("DIRECT3D9 device lost.");
+	}
+	else
+	if (FAILED(hr) && hr != D3DERR_INVALIDCALL)
+	{
+		printf("DIRECT3D9 present failed.");
+		return false;
+	}
+
+	return true;
 }
 
 RenderFontInterface * Direct3d9RenderSystem::loadFont(const FontDesc &_fontDesc)
 {
-	return new D3D9Font(this, m_pd3dDevice, _fontDesc);
+	return new D3D9Font(this, pID3DDevice, _fontDesc);
 }
 
 void	Direct3d9RenderSystem::releaseRenderFont(RenderFontInterface* _fnt)
@@ -347,9 +491,9 @@ void	Direct3d9RenderSystem::drawPrimitive(PrimitiveData * _pd)
 
 	Direct3d9IndexData * id = static_cast<Direct3d9IndexData*>(_pd->getIndexData());
 			
-	m_pd3dDevice->SetVertexDeclaration( vd->_getVertexDecl() );
-	m_pd3dDevice->SetStreamSource(0, vd->_get(), 0, vd->getVertexSize());
-	m_pd3dDevice->SetIndices(id->_get());
+	pID3DDevice->SetVertexDeclaration( vd->_getVertexDecl() );
+	pID3DDevice->SetStreamSource(0, vd->_get(), 0, vd->getVertexSize());
+	pID3DDevice->SetIndices(id->_get());
 
 	int primCount = 0;
 
@@ -367,49 +511,49 @@ void	Direct3d9RenderSystem::drawPrimitive(PrimitiveData * _pd)
 		size_t vertexStart = vd->getVertexStart();
 		size_t indexStart = id->getIndexStart();
 
-		m_pd3dDevice->DrawIndexedPrimitive( primitiveType, 
+		pID3DDevice->DrawIndexedPrimitive( primitiveType, 
 			vertexStart, 0, vertexCount, indexStart, primCount );
 	}
 	else
 	{
 		primCount = vd->getVertexCount()/3;
 
-		m_pd3dDevice->DrawPrimitive( primitiveType,
+		pID3DDevice->DrawPrimitive( primitiveType,
 			vd->getVertexCount(), primCount );
 	} 
 }
 
 void	Direct3d9RenderSystem::_setDevice(IDirect3DDevice9 * _pd3dDevice)
 {
-	m_pd3dDevice = _pd3dDevice;
+	pID3DDevice = _pd3dDevice;
 }
 
 IDirect3DDevice9 * Direct3d9RenderSystem::_getDevice()
 {
-	return m_pd3dDevice;
+	return pID3DDevice;
 }
 
 VertexData * Direct3d9RenderSystem::createVertexData()
 {
-	VertexData * m_vertexData = new Direct3d9VertexData(m_pd3dDevice);
+	VertexData * m_vertexData = new Direct3d9VertexData(pID3DDevice);
 	return m_vertexData;
 }
 
 IndexData * Direct3d9RenderSystem::createIndexData()
 {
-	Direct3d9IndexData * m_indexData = new Direct3d9IndexData(m_pd3dDevice);
+	Direct3d9IndexData * m_indexData = new Direct3d9IndexData(pID3DDevice);
 	return m_indexData;
 }
 
 VertexDeclaration * Direct3d9RenderSystem::createVertexDeclaration()
 {
-	d3d9VertexDeclaration * m_vertDecl = new d3d9VertexDeclaration(m_pd3dDevice);
+	d3d9VertexDeclaration * m_vertDecl = new d3d9VertexDeclaration(pID3DDevice);
 	return m_vertDecl;
 }
 
 RenderImageInterface* Direct3d9RenderSystem::loadImage(const TextureDesc& _desc)
 {
-    return new D3D9RenderImage(m_pd3dDevice, _desc);
+    return new D3D9RenderImage(pID3DDevice, _desc);
 }
 
 void	Direct3d9RenderSystem::_prepareBatch(RenderImageInterface* _rmi, int _blend)
@@ -444,15 +588,15 @@ void Direct3d9RenderSystem::_renderBatches()
 		return;
 	}
 
-	m_pd3dDevice->SetVertexShader(NULL);
-	m_pd3dDevice->SetFVF (D3DFVF_TLVERTEX);
-	m_pd3dDevice->SetIndices(m_batchFontIB);
+	pID3DDevice->SetVertexShader(NULL);
+	pID3DDevice->SetFVF (D3DFVF_TLVERTEX);
+	pID3DDevice->SetIndices(m_batchFontIB);
 	
 	static D3D9Vertex*	batchVertices = NULL;
 
-	m_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
-	m_pd3dDevice->SetStreamSource(0, m_batchFontVB, 0, m_size1Vert);
+	pID3DDevice->SetStreamSource(0, m_batchFontVB, 0, m_size1Vert);
 
 	m_batchFontVB->Lock(0, (UINT)m_vertices.size() * m_size1Vert, (VOID**)&batchVertices, 0);
 	memcpy(batchVertices, &m_vertices[0], (UINT)m_vertices.size() * m_size1Vert);
@@ -463,12 +607,12 @@ void Direct3d9RenderSystem::_renderBatches()
 	for each( const Batch & b in m_batches )
 	{
 		D3D9RenderImage* imaged3d9ptype = static_cast<D3D9RenderImage*>(b.image);
-		m_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, imaged3d9ptype->_isAlpha());
-		m_pd3dDevice->SetTexture(0, imaged3d9ptype->_getTexPointer());
+		pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, imaged3d9ptype->_isAlpha());
+		pID3DDevice->SetTexture(0, imaged3d9ptype->_getTexPointer());
 
 		UINT num_vertices = (UINT)b.end - (UINT)b.begin;
 		UINT num_primitives = num_vertices/2;
-		m_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, num_vertices, startIndex, num_primitives);
+		pID3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, num_vertices, startIndex, num_primitives);
 		startIndex += num_primitives*3;
 	}
 
@@ -516,20 +660,20 @@ void	Direct3d9RenderSystem::renderImage(
 
 void	Direct3d9RenderSystem::_initRenderSystemParams()
 {
-	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+	pID3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	pID3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
 
-	m_pd3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-	m_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	m_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	pID3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	pID3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	pID3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 
-	m_pd3dDevice->SetTextureStageState(0,D3DTSS_COLOROP,  D3DTOP_MODULATE);
-	m_pd3dDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-	m_pd3dDevice->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);
+	pID3DDevice->SetTextureStageState(0,D3DTSS_COLOROP,  D3DTOP_MODULATE);
+	pID3DDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+	pID3DDevice->SetTextureStageState(0,D3DTSS_COLORARG2,D3DTA_DIFFUSE);
 
-	m_pd3dDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,  D3DTOP_MODULATE);
-	m_pd3dDevice->SetTextureStageState(0,D3DTSS_ALPHAARG1,D3DTA_TEXTURE);
-	m_pd3dDevice->SetTextureStageState(0,D3DTSS_ALPHAARG2,D3DTA_DIFFUSE);
+	pID3DDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,  D3DTOP_MODULATE);
+	pID3DDevice->SetTextureStageState(0,D3DTSS_ALPHAARG1,D3DTA_TEXTURE);
+	pID3DDevice->SetTextureStageState(0,D3DTSS_ALPHAARG2,D3DTA_DIFFUSE);
 }
 
 bool	Direct3d9RenderSystem::_initBatching()
@@ -537,7 +681,7 @@ bool	Direct3d9RenderSystem::_initBatching()
 	m_size4Verts = sizeof(D3D9Vertex) * 4;
 	m_size1Vert = sizeof(D3D9Vertex);
 
-	if (D3D_OK != m_pd3dDevice->CreateVertexBuffer(
+	if (D3D_OK != pID3DDevice->CreateVertexBuffer(
 		BATCH_BUFFER_SIZE * m_size1Vert, 
 		D3DUSAGE_WRITEONLY,
 		D3DFVF_TLVERTEX,
@@ -549,7 +693,7 @@ bool	Direct3d9RenderSystem::_initBatching()
 		return	false;
 	}
 
-	if (D3D_OK != m_pd3dDevice->CreateIndexBuffer(
+	if (D3D_OK != pID3DDevice->CreateIndexBuffer(
 		BATCH_BUFFER_SIZE * 3, 
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,

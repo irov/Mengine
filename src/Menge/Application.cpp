@@ -63,19 +63,10 @@ namespace Menge
 	{
 		new InputEngine( _interface );
 	}
-
-	void RenderScene()
-	{
-		Holder<Game>::hostage()->render();
-		Holder<Game>::hostage()->debugRender();
-	}
-
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setRenderSystem( RenderSystemInterface * _interface )
 	{
 		new RenderEngine( _interface );
-
-		Holder<RenderEngine>::hostage()->setRenderCallback(RenderScene);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setSoundSystem( SoundSystemInterface * _interface )
@@ -164,7 +155,15 @@ namespace Menge
 
 		Holder<InputEngine>::hostage()->update();
 
-		Holder<RenderEngine>::hostage()->update();
+
+		Holder<RenderEngine>::hostage()->beginScene(true,true,2756);
+
+		Holder<Game>::hostage()->render();
+		Holder<Game>::hostage()->debugRender();
+
+		Holder<RenderEngine>::hostage()->endScene();
+
+		//		Holder<RenderEngine>::hostage()->update();
 
 		m_game->update(0.001f);
 	}
@@ -173,8 +172,7 @@ namespace Menge
 	{
 		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 
-		renderEng->update();
-
+	
 		//renderEng->beginSceneDrawing(0xFF0FF0FF);
 		//renderEng->update();
 

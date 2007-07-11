@@ -25,7 +25,7 @@ void Arrow::_update(float _timing)
 
 	const mt::vec3f &dmv = inputEng->getPosition();
 
-//	setPosition( mt::vec2f(dmv.x, dmv.y) );
+	setPosition( mt::vec2f(dmv.x, dmv.y) );
 
 	//setPosition( inputEng->getPosition().v2 );
 }

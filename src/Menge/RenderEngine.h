@@ -19,11 +19,11 @@ namespace Menge
 		RenderEngine( RenderSystemInterface * _interface );
 		
 	public:
-		bool createDisplay(int _width, int _height, int _bits, bool _fullScreen);
-		
-		void drawPrimitive(PrimitiveData * _pd);
 
-		void setRenderCallback(renderFunction _rf);
+		bool beginScene(bool backBuffer, bool zBuffer, int color);
+		bool endScene();
+
+		void drawPrimitive(PrimitiveData * _pd);
 
 		void drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color);
 
@@ -39,8 +39,6 @@ namespace Menge
 
 		void releaseRenderImage( RenderImageInterface* _rmi );
 
-		void update();
-		
 		VertexData * createVertexData();
 		IndexData * createIndexData();
 		VertexDeclaration * createVertexDeclaration();

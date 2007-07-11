@@ -68,15 +68,14 @@ namespace Menge
 		return m_interface->setWorldMatrix(_world);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createDisplay(int _width, int _height, int _bits, 
-		bool _fullScreen)
+	bool RenderEngine::beginScene(bool backBuffer, bool zBuffer, int color)
 	{
-		return m_interface->createDisplay(_width,_height,_bits,_fullScreen);
+		return m_interface->beginScene(backBuffer,zBuffer,color);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderCallback(renderFunction _rf)
+	bool RenderEngine::endScene()
 	{
-		return m_interface->setRenderCallback(_rf);
+		return m_interface->endScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color)
@@ -130,13 +129,6 @@ namespace Menge
 	{
 		m_interface->releaseRenderImage(_rmi);
 	}
-
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::update()
-	{
-		m_interface->update();
-	}
-
 	//////////////////////////////////////////////////////////////////////////
 	RenderFontInterface* RenderEngine::loadFont(const std::string &_fontXml)
 	{

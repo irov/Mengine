@@ -20,8 +20,8 @@ void	RenderScene()
 		0xFFFFFFFF,
 		SPRITE0);
 */
-	pModel.onIdle(0.001f);
-	pModel.onRender();
+	//pModel.onIdle(0.001f);
+//	pModel.onRender();
 
 /*	renderSystem->renderImage(
 		ident,
@@ -37,9 +37,8 @@ void	RenderScene()
 INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 {
 	renderSystem = new Direct3d9RenderSystem();
-	renderSystem->setRenderCallback(RenderScene);
 	renderSystem->createDisplay(640,480,16,false);
-/*
+
 	TextureDesc	td;
 
 	std::ifstream	f("HLSLwithoutEffects.jpg",std::ios::binary);
@@ -58,7 +57,7 @@ INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 
 	
 	SPRITE0 = renderSystem->loadImage(td);
-*/
+
  	pModel.onInit(renderSystem,"heroine.cfg");
 
 	MSG  msg;
@@ -83,7 +82,17 @@ INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         }
         else
         {
-			renderSystem->update();
+			renderSystem->beginScene(true,true,2756);
+						pModel.onIdle(0.001f);
+			pModel.onRender();
+			renderSystem->renderImage(
+				ident,
+				mt::vec2f(0,0),
+				mt::vec4f(0,0,1.0f,1.0f),
+				mt::vec2f(SPRITE0->getWidth(),SPRITE0->getHeight()),
+				0xFFFFFFFF,
+				SPRITE0);
+					renderSystem->endScene();
         }
     }
 

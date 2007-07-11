@@ -1,5 +1,5 @@
 #	pragma once
-#	include "Interface\RenderSystemInterface.h"
+#	include "Interface\WinRenderSystemInterface.h"
 
 #	include "d3d9RenderImage.h"
 #	include "d3d9RenderFont.h"
@@ -7,17 +7,15 @@
 #	include <vector>
 #	include <list>
 
-class	Direct3d9RenderSystem : public RenderSystemInterface
+class	Direct3d9RenderSystem : public WinRenderSystemInterface
 {
 public:
 	Direct3d9RenderSystem();
 	~Direct3d9RenderSystem();
 public:
-	bool	createDisplay(int _width, int _height, int _bits, bool _fullScreen);
-	void	setRenderCallback(renderFunction _rf);
+	bool	createDisplay( HWND _hWnd, int _width, int _height, int _bits, bool _fullScreen);
 	void	drawPrimitive(PrimitiveData * _pd);
-	void	update();
-
+	
 	VertexData * createVertexData();
 	IndexData * createIndexData();
 	VertexDeclaration * createVertexDeclaration();
@@ -48,11 +46,13 @@ public:
 public:
 	void	_setDevice(IDirect3DDevice9 * _pd3dDevice);
 	IDirect3DDevice9 * _getDevice();
-	renderFunction m_renderFunction;
+	
 	void			_renderBatches();
 	void			_initRenderSystemParams();
+	//new
+	bool beginScene(bool backBuffer, bool zBuffer, int color);
+	bool endScene();
 private:
-	IDirect3DDevice9 * m_pd3dDevice;
 
 	bool			_initBatching();
 	void			_prepareBatch(RenderImageInterface* _rmi, int _blend);
@@ -77,4 +77,9 @@ private:
 	};
 
 	std::list<Batch>			m_batches;
+
+private:
+	//new
+	IDirect3DDevice9* pID3DDevice;
+	bool DeviceLost;
 };

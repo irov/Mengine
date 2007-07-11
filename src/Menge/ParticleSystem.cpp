@@ -23,7 +23,7 @@ namespace Menge
 		: m_maxPoint(FLT_MIN,FLT_MIN)
 		, m_minPoint(FLT_MAX,FLT_MAX)
 	{
-		addEmitter(new BoxEmitter());
+//		addEmitter(new BoxEmitter());
 		//addEmitter(new PointEmitter());
 		addAffector(new SimplePhysicAffector());
 		resizePool(2000);

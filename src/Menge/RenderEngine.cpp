@@ -18,6 +18,67 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	VertexData * RenderEngine::createVertexData()
+	{
+		return m_interface->createVertexData();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::drawPrimitive(PrimitiveData * _pd)
+	{
+		return m_interface->drawPrimitive(_pd);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	IndexData * RenderEngine::createIndexData()
+	{
+		return m_interface->createIndexData();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	VertexDeclaration * RenderEngine::createVertexDeclaration()
+	{
+		return m_interface->createVertexDeclaration();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Texture * RenderEngine::createTextureInMemory(const TextureDesc& _desc)
+	{
+		return m_interface->createTextureInMemory(_desc);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	RenderEngine::releaseTexture(Texture * _tex)
+	{
+		return m_interface->releaseTexture(_tex);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	RenderEngine::setTexture(Texture * _tex)
+	{
+		return m_interface->setTexture(_tex);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	RenderEngine::setProjectionMatrix(const mt::mat4f& _projection)
+	{
+		return m_interface->setProjectionMatrix(_projection);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	RenderEngine::setViewMatrix(const mt::mat4f& _view)
+	{
+		return m_interface->setViewMatrix(_view);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	RenderEngine::setWorldMatrix(const mt::mat4f& _world)
+	{
+		return m_interface->setWorldMatrix(_world);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::createDisplay(int _width, int _height, int _bits, 
+		bool _fullScreen)
+	{
+		return m_interface->createDisplay(_width,_height,_bits,_fullScreen);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setRenderCallback(renderFunction _rf)
+	{
+		return m_interface->setRenderCallback(_rf);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color)
 	{
 //		m_interface->drawLine(p1,p2,width,color);
@@ -73,7 +134,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::update()
 	{
-		//m_interface->update();
+		m_interface->update();
 	}
 
 	//////////////////////////////////////////////////////////////////////////

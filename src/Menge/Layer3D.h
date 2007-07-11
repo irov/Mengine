@@ -21,6 +21,7 @@ namespace Menge
 		Layer3D();
 
 	public:
+		void loader( TiXmlElement *_xml) override;
 		void renderLayer() override;
 	};
 }

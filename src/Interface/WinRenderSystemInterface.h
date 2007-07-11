@@ -9,5 +9,5 @@ class	WinRenderSystemInterface
 	: public RenderSystemInterface
 {
 public:
-	virtual bool	createDisplay( HWND _hWnd, int _width, int _height, int _bits, bool _fullScreen) = 0;
+//	virtual bool	createDisplay( HWND _hWnd, int _width, int _height, int _bits, bool _fullScreen) = 0;
 };

@@ -244,8 +244,9 @@ bool WinApplication::init( const char * _xmlFile )
 	UpdateWindow(hWnd);
 
 	MoveWindow(hWnd, windowLeft, windowTop, realWidth, realHeight, TRUE);
-
-	renderInterface->createDisplay( hWnd, m_width, m_height, m_bits, m_fullScreen );
+ 
+	//renderInterface->createDisplay( hWnd, m_width, m_height, m_bits, m_fullScreen );
+	renderInterface->createDisplay( m_width, m_height, m_bits, m_fullScreen );
 
 	inputInterface->init( hWnd, 0x00000003 );
 

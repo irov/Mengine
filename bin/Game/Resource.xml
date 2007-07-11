@@ -17,6 +17,10 @@
 		<varColor Value = "0.38;0.45" />
 	</Resource>
 
+	<Resource Name = "Cal3dTest" Type = "ResourceAnimationCal3d" >
+		<File Path = "heroine.cfg" />
+	</Resource>
+
 	<Resource Name = "TestSound" Type = "ResourceSound" >
 		<File Path = "1.ogg" />
 		<IsStreamable Value = "false" />

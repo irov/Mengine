@@ -19,6 +19,12 @@ namespace Menge
 		RenderEngine( RenderSystemInterface * _interface );
 		
 	public:
+		bool createDisplay(int _width, int _height, int _bits, bool _fullScreen);
+		
+		void drawPrimitive(PrimitiveData * _pd);
+
+		void setRenderCallback(renderFunction _rf);
+
 		void drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color);
 
 		RenderImageInterface* loadImage(const std::string &	_imageFile, int _filter);
@@ -35,6 +41,18 @@ namespace Menge
 
 		void update();
 		
+		VertexData * createVertexData();
+		IndexData * createIndexData();
+		VertexDeclaration * createVertexDeclaration();
+
+		Texture * createTextureInMemory(const TextureDesc& _desc);
+		void	releaseTexture(Texture * _tex);
+
+		void	setTexture(Texture * _tex);
+		void	setProjectionMatrix(const mt::mat4f& _projection);
+		void	setViewMatrix(const mt::mat4f& _view);
+		void	setWorldMatrix(const mt::mat4f& _world);
+
 		//////////////////////////////////////////////////////////////////////////
 		RenderFontInterface* loadFont(const std::string &_fontXml);
 

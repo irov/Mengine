@@ -455,14 +455,6 @@
 				RelativePath=".\MengeExport.h"
 				>
 			</File>
-			<File
-				RelativePath=".\SystemDLL.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SystemDLL.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Object2D"
@@ -811,10 +803,6 @@
 				RelativePath=".\Factory.h"
 				>
 			</File>
-			<File
-				RelativePath=".\XmlParser.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Camera"
@@ -878,10 +866,6 @@
 			<Filter
 				Name="Decoder"
 				>
-				<File
-					RelativePath=".\CodecInterface.h"
-					>
-				</File>
 				<File
 					RelativePath=".\Decoder.cpp"
 					>

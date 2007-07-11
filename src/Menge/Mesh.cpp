@@ -8,7 +8,7 @@
 
 #	include "tinyxml/tinyxml.h"
 
-#	include "XmlParser.h"
+#	include "XmlParser/XmlParser.h"
 
 //#	include "RenderSystemInterface.h"
 

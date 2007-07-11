@@ -770,22 +770,6 @@
 			<Filter
 				Name="Interface"
 				>
-				<File
-					RelativePath=".\FileSystemInterface.h"
-					>
-				</File>
-				<File
-					RelativePath=".\InputSystemInterface.h"
-					>
-				</File>
-				<File
-					RelativePath=".\RenderSystemInterface.h"
-					>
-				</File>
-				<File
-					RelativePath=".\SoundSystemInterface.h"
-					>
-				</File>
 			</Filter>
 		</Filter>
 		<Filter

@@ -98,13 +98,24 @@ namespace Menge
 
 		setArrow( defaultArrow );
 
-		Camera2D *cmr = SceneManager::createNodeT<Camera2D>( "Camera2D" );
+		Camera2D * cmr = SceneManager::createNodeT<Camera2D>( "Camera2D" );
 
 		mt::vec2f vpSz( 1024, 768 );
 		cmr->setPosition( mt::vec2f( 512, 384 ) );
 		cmr->setViewportSize( vpSz );
 
 		setRenderCamera2D( cmr );
+
+		Camera3D * cmr3d = SceneManager::createNodeT<Camera3D>( "Camera3D" );
+		cmr3d->setAspect(1.3f);
+		cmr3d->setFar(4000.0f);
+		cmr3d->setNear(0.1f);
+		cmr3d->setFov(90);
+		cmr3d->setPosition(mt::vec3f(0,0,0));
+
+		cmr3d->lookAt(mt::vec3f(0,1,0));
+
+		setRenderCamera3D(cmr3d);
 
 	//	TESTfont = Holder<RenderEngine>::hostage()->loadFont("russian.xml");
 

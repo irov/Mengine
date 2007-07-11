@@ -4,6 +4,8 @@
 
 #	include "Player.h"
 
+#	include "RenderEngine.h"
+
 #	include "ObjectImplement.h"
 
 namespace Menge
@@ -25,6 +27,12 @@ namespace Menge
 
 		const Frustum & frustum = updateFrustum( cfm );
 
+		/*mt::mat4f worldMat;
+		mt::ident_m4(worldMat);
+		Holder<RenderEngine>::hostage()->setWorldMatrix(worldMat);
+		Holder<RenderEngine>::hostage()->setViewMatrix(camera->getViewMatrix());
+		Holder<RenderEngine>::hostage()->setProjectionMatrix(camera->getProjectionMatrix());
+		*/
 		for each( SceneNode3D * node in m_listChildren )
 		{
 			const mt::mat4f & wm = node->getWorldMatrix();

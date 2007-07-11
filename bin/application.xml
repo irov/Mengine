@@ -1,4 +1,5 @@
 <Application>
+
 	<DllModuleDebug>
 		<InputSystem DllFile = "Systems/InputSystem_d.dll"/>
 		<FileSystem DllFile = "Systems/FileSystem_d.dll"/>
@@ -13,10 +14,6 @@
 		<SoundSystem DllFile = "Systems/SoundSystem.dll"/>
 	</DllModuleRelease>
 
-	<Paks>
-		<Pak File = "Data.pak" Priority = "1" />
-	</Paks>
-
 	<Display>
 		<Width Value = "1024"/>
 		<Height Value = "768"/>
@@ -24,8 +21,11 @@
 		<FullScreen Value = "0"/>
 	</Display>
 
-	<Game File = "Game/Game.xml">
-		<DebugRender Enable = "0" />
-	</Game>
+	<Paks>
+		<Pak File = "Data.pak" Priority = "1" />
+	</Paks>
+
+	<Game File = "Game/Game.xml" />
+
 
 </Application>

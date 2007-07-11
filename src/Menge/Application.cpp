@@ -154,17 +154,6 @@ namespace Menge
 		//}
 
 		Holder<InputEngine>::hostage()->update();
-
-
-		Holder<RenderEngine>::hostage()->beginScene(true,true,2756);
-
-		Holder<Game>::hostage()->render();
-		Holder<Game>::hostage()->debugRender();
-
-		Holder<RenderEngine>::hostage()->endScene();
-
-		//		Holder<RenderEngine>::hostage()->update();
-
 		m_game->update(0.001f);
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -173,18 +162,17 @@ namespace Menge
 		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 
 	
-		//renderEng->beginSceneDrawing(0xFF0FF0FF);
-		//renderEng->update();
-
+		renderEng->beginScene(true,true,2756);
+		
 		//if( m_functionRender )
 		//{
 		//	m_functionRender->callFunctionVoid();
 		//}
-		/*m_game->render();
+		m_game->render();
 
 		m_game->debugRender();
-		*/
+		
 
-		//renderEng->endSceneDrawing();
+		renderEng->endScene();
 	}
 }

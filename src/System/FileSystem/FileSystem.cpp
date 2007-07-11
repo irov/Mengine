@@ -43,29 +43,31 @@ FileSystem::~FileSystem()
 	m_zipArchives.clear();
 }
 
-bool FileSystem::createFolder(const std::string& _foldername)
+bool FileSystem::createFolder(const char * _foldername)
 {
-	if (_foldername.empty())
+	if( _foldername == 0 )
 	{
 		return false;
 	}
-	if (_mkdir(_foldername.c_str()) < 0)
+
+	if( _mkdir( _foldername ) < 0 )
 	{
 		return false;
 	}
+
   	return true;
 }
   
-bool	FileSystem::loadPak(const std::string& _filename, int _prior)
+bool FileSystem::loadPak(const char * _filename, int _prior)
 {
-	assert(!_filename.empty());
+	assert( _filename );
 
-	std::ifstream f(_filename.c_str(), std::ios::binary);
+	std::ifstream f( _filename, std::ios::binary);
 
 	if (f.is_open()) 
 	{ 
 		f.close();
-		m_zipArchives.push_back(new ZipArchive(_filename,_prior));
+		m_zipArchives.push_back( new ZipArchive(_filename,_prior) );
 		struct PriorSort{	
 			bool operator()(ZipArchive*& lhs, ZipArchive*& rhs){
 				return lhs->getPriority() > rhs->getPriority();
@@ -77,9 +79,9 @@ bool	FileSystem::loadPak(const std::string& _filename, int _prior)
 	return false;
 } 
 
-bool	FileSystem::unloadPak(const std::string& _filename)
+bool	FileSystem::unloadPak(const char * _filename)
 {
-	assert(!_filename.empty());
+	assert( _filename );
 	for(TVecZipArch::const_iterator i = m_zipArchives.begin(); i != m_zipArchives.end(); ++i)
 	{
 		if((*i)->getZipName() == _filename)
@@ -91,14 +93,14 @@ bool	FileSystem::unloadPak(const std::string& _filename)
 	return false;
 }
 
-bool	FileSystem::existFile(const std::string& _filename)
+bool	FileSystem::existFile(const char * _filename)
 {
-	assert(!_filename.empty());
+	assert( _filename );
 
 	TVecZipArch::const_iterator i = std::find_if(
 		m_zipArchives.begin(), 
 		m_zipArchives.end(),
-		std::bind2nd(std::mem_fun(&ZipArchive::haveFile),_filename.c_str())
+		std::bind2nd(std::mem_fun(&ZipArchive::haveFile), _filename )
 		);
 
 	if(i != m_zipArchives.end())
@@ -115,7 +117,7 @@ bool	FileSystem::existFile(const std::string& _filename)
 	}
 
 	strcat_s(buff,"\\");
-	strcat_s(buff,_filename.c_str());
+	strcat_s(buff,_filename);
 
 	std::ifstream	f(buff, std::ios::binary);
 
@@ -133,19 +135,19 @@ void FileSystem::closeFile(FileDataInterface* _fd)
 	delete	static_cast<FileData*>(_fd);
 }
 
-FileDataInterface*	FileSystem::openFile(const std::string& _filename)
+FileDataInterface*	FileSystem::openFile(const char * _filename)
 {
-	assert(!_filename.empty());
+	assert(_filename);
 
 	TVecZipArch::const_iterator i = std::find_if(
 		m_zipArchives.begin(), 
 		m_zipArchives.end(),
-		std::bind2nd(std::mem_fun(&ZipArchive::haveFile),_filename.c_str())
+		std::bind2nd(std::mem_fun(&ZipArchive::haveFile), _filename )
 		);
 
 	if(i != m_zipArchives.end())
 	{
-		return (*i)->fileRead(_filename);
+		return (*i)->fileRead( _filename );
 	}
 
 	static char buff[_MAX_PATH];
@@ -157,7 +159,7 @@ FileDataInterface*	FileSystem::openFile(const std::string& _filename)
 	}
  
 	strcat_s(buff,"\\");
-	strcat_s(buff,_filename.c_str());
+	strcat_s(buff,_filename);
 	 
 	std::ifstream	f(buff,std::ios::binary);
 

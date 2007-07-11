@@ -13,6 +13,6 @@ namespace Menge
 	{
 	public:
 
-		virtual void renderLayer( const Camera2D * _camera );
+		virtual void renderLayer() = 0;
 	};
 }

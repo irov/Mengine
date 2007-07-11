@@ -2,9 +2,9 @@
 
 #	include "ScriptEngine.h"
 
-#	include "XmlParser.h"
-
 #	include "ScriptObject.h"
+
+#	include "XmlParser/XmlParser.h"
 
 namespace Menge
 {

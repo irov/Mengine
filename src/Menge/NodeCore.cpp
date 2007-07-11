@@ -8,10 +8,11 @@
 #	include "FileEngine.h"
 #	include "ScriptEngine.h"
 
-#	include "XmlParser.h"
 #	include "ErrorMessage.h"
 
 #	include <algorithm>
+
+#	include "XmlParser/XmlParser.h"
 
 namespace Menge
 {
@@ -178,8 +179,11 @@ namespace Menge
 			XML_CHECK_NODE("External")
 			{
 				XML_DEF_ATTRIBUTES_NODE(File);
+				
+				TiXmlDocument * document = Holder<FileEngine>::hostage()
+					->loadXml( File );
 
-				XML_PARSE_FILE_EX(File)
+				XML_FOR_EACH_DOCUMENT( document )
 				{
 					XML_CHECK_NODE("Node")
 					{

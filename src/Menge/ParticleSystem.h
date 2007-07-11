@@ -6,7 +6,6 @@
 
 #	include "math.h"
 
-#	include "windows.h"
 #	include "ParticleResource.h"
 
 #	include "ParticleEmitter.h"

@@ -21,7 +21,7 @@ namespace Menge
 
 	public:
 		void loader( TiXmlElement *_xml) override;
-		void render( const Camera2D * _camera );
+		void render();
 
 	protected:
 		bool _activate() override;

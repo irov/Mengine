@@ -1,14 +1,13 @@
 #	pragma once
 
-#	include "SystemDLL.h"
-#	include "Holder.h"
-
-#	include "InputSystemInterface.h"
-
 #	include "Math/vec3.h"
 
 #	include <string>
 #	include <map>
+
+#	include "Interface/InputSystemInterface.h"
+
+#	include "Holder.h"
 
 namespace Menge
 {
@@ -16,14 +15,12 @@ namespace Menge
 	class ScriptEngine;
 
 	class InputEngine
-		: public SystemDLL<InputSystemInterface>
 	{
 	public:
-		InputEngine(const std::string &_dllModule);
+		InputEngine( InputSystemInterface * _interface );
 		~InputEngine();
 
 	public:
-		bool init();
 		void update();
 
 	public:
@@ -43,5 +40,8 @@ namespace Menge
 		bool isMove()const;
 		bool isAnyButtonDown()const;
 		bool isButton(int but,int but_state)const;
+
+	protected:
+		InputSystemInterface * m_interface;
 	};
 }

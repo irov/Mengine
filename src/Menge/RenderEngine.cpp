@@ -1,14 +1,13 @@
 #	include "RenderEngine.h"
 
 #	include "FileEngine.h"
-#	include "XmlParser.h"
-#	include "Holder.h"
+#	include "XmlParser/XmlParser.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RenderEngine::RenderEngine(const std::string &_dllModule)
-		: SystemDLL<RenderSystemInterface>(_dllModule)
+	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
+		: m_interface( _interface )
 	{
 		Holder<RenderEngine>::keep(this);
 	}
@@ -17,17 +16,6 @@ namespace Menge
 	{
 		RenderImageInterface * image = m_interface->loadImage(_desc);
 		return image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createDisplay(int _width, int _height, int _bits, 
-		bool _fullScreen)
-	{
-		return m_interface->createDisplay(_width,_height,_bits,_fullScreen);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderCallback(renderFunction _rf)
-	{
-		return m_interface->setRenderCallback(_rf);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color)
@@ -85,7 +73,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::update()
 	{
-		m_interface->update();
+		//m_interface->update();
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -186,11 +174,11 @@ namespace Menge
 
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderText(
-		mt::vec2f _pos, 
+		const mt::vec2f & _pos, 
 		RenderFontInterface* _font, 
 		const std::string& _text)
 	{
-		m_interface->renderText(_pos,_font,_text);
+		m_interface->renderText( _pos, _font, _text.c_str() );
 	}
 
 	//////////////////////////////////////////////////////////////////////////

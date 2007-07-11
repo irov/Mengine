@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 class	FileDataInterface
 {
 public:
@@ -22,11 +20,11 @@ public:
 class	FileSystemInterface
 {
 public:
-	virtual bool	loadPak(const std::string&	_filename, int _prior) = 0;
-	virtual bool	unloadPak(const std::string& _filename) = 0;
- 	virtual bool	existFile(const std::string& _filename) = 0;
-	virtual bool	createFolder(const std::string&	_foldername) = 0;
-	virtual FileDataInterface*	openFile(const std::string&	_filename) = 0;
+	virtual bool	loadPak(const char * _filename, int _prior) = 0;
+	virtual bool	unloadPak(const char * _filename) = 0;
+ 	virtual bool	existFile(const char * _filename) = 0;
+	virtual bool	createFolder(const char * _foldername) = 0;
+	virtual FileDataInterface*	openFile(const char *	_filename) = 0;
 	virtual void	closeFile(FileDataInterface* _fd) = 0;
 };
 

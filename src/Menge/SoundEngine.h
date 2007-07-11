@@ -1,25 +1,23 @@
 #	pragma once
 
-#	include "SystemDLL.h"
 #	include "Holder.h"
 #	include	"math/vec3.h"
 
-#	include "SoundSystemInterface.h"
+#	include "Interface/SoundSystemInterface.h"
 
 #	include	<map>
 #	include	<string>
 
-class	FileDataInterface;
+#	include "Holder.h"
 
 namespace Menge
 {
 	class ResourceSound;
 
 	class SoundEngine
-		: public SystemDLL<SoundSystemInterface>
 	{
 	public:
-		SoundEngine(const std::string& _dllModule);
+		SoundEngine( SoundSystemInterface * _interface );
 		~SoundEngine();
 	
 		void setListenerOrient(const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top);
@@ -34,5 +32,8 @@ namespace Menge
 		void releaseSoundBuffer(SoundBufferInterface* _soundBuffer);
 
 		void			releaseSoundSource(SoundSourceInterface* _node);		
+
+	private:
+		SoundSystemInterface * m_interface;
 	};
 };

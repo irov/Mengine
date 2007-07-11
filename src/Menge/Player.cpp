@@ -7,7 +7,9 @@
 
 #	include "Game.h"
 #	include "Scene.h"
+
 #	include "Camera2D.h"
+#	include "Camera3D.h"
 
 #	include "Arrow.h"
 
@@ -36,14 +38,16 @@ namespace Menge
 	: m_avatar(0)
 	, m_scene(0)
 	, m_arrow(0)
-	, m_renderCamera(0)
+	, m_renderCamera2D(0)
+	, m_renderCamera3D(0)
 	{
 		Holder<Player>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
 	{
-		m_renderCamera->destroy();
+		m_renderCamera2D->destroy();
+		m_renderCamera3D->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setCurrentScene( const std::string & _name )
@@ -100,7 +104,7 @@ namespace Menge
 		cmr->setPosition( mt::vec2f( 512, 384 ) );
 		cmr->setViewportSize( vpSz );
 
-		setRenderCamera( cmr );
+		setRenderCamera2D( cmr );
 
 	//	TESTfont = Holder<RenderEngine>::hostage()->loadFont("russian.xml");
 
@@ -121,7 +125,7 @@ namespace Menge
 		
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
-		if( inputEng->isButton( MOUSE_LEFT, DI_PRESSED ) == true )
+		//if( inputEng->isButton( MOUSE_LEFT, DI_PRESSED ) == true )
 		{
 			//Actor * actor = m_scene->getEntityT<Actor>("TestActor");
 
@@ -148,59 +152,64 @@ namespace Menge
 			*/
 		}
 
-		if( inputEng->isButton(MOUSE_RIGHT,DI_PRESSED) == true )
-		{
-			const mt::vec3f &dmv = inputEng->getPosition();
-	
-//			psx = dmv.x;
-		//	psy = dmv.y;
-
+//		if( inputEng->isButton(MOUSE_RIGHT,DI_PRESSED) == true )
+//		{
+//			const mt::vec3f &dmv = inputEng->getPosition();
+//	
+////			psx = dmv.x;
+//		//	psy = dmv.y;
 //
-		//	SoundEmitter * em = m_scene->getEntityT<SoundEmitter>("TestSoundEmitter");
-		//	em->play();
+////
+//		//	SoundEmitter * em = m_scene->getEntityT<SoundEmitter>("TestSoundEmitter");
+//		//	em->play();
+//
+//			//Animation * anim = m_scene->getEntityT<Animation>("TestAnimation");
+//			//anim->setAnimState(REWIND);
+//			//anim->play();
+//
+//			//Holder<Amplifier>::hostage()->playList("logoSceneMusic.xml");
+//		}
 
-			//Animation * anim = m_scene->getEntityT<Animation>("TestAnimation");
-			//anim->setAnimState(REWIND);
-			//anim->play();
+		//if( inputEng->isKey( DIK_D, DI_HELD ) == true )
+		//{
+		//	mt::vec2f cp = m_renderCamera->getLocalPosition();
+		//	cp.x -= 1;
+		//	m_renderCamera->setPosition( cp );
+		//}
 
-			//Holder<Amplifier>::hostage()->playList("logoSceneMusic.xml");
-		}
-
-		if( inputEng->isKey( DIK_D, DI_HELD ) == true )
-		{
-			mt::vec2f cp = m_renderCamera->getLocalPosition();
-			cp.x -= 1;
-			m_renderCamera->setPosition( cp );
-		}
-
-		if( inputEng->isKey( DIK_A, DI_HELD ) == true )
-		{
-			mt::vec2f cp = m_renderCamera->getLocalPosition();
-			cp.x += 1;
-			m_renderCamera->setPosition( cp );
-		}
+		//if( inputEng->isKey( DIK_A, DI_HELD ) == true )
+		//{
+		//	mt::vec2f cp = m_renderCamera->getLocalPosition();
+		//	cp.x += 1;
+		//	m_renderCamera->setPosition( cp );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setRenderCamera( Camera2D * _camera)
+	void Player::setRenderCamera2D( Camera2D * _camera)
 	{
-		m_renderCamera = _camera;
+		m_renderCamera2D = _camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Camera2D * Player::getRenderCamera()
+	Camera2D * Player::getRenderCamera2D()
 	{
-		return m_renderCamera;
+		return m_renderCamera2D;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::setRenderCamera3D( Camera3D * _camera)
+	{
+		m_renderCamera3D = _camera;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Camera3D * Player::getRenderCamera3D()
+	{
+		return m_renderCamera3D;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render()
 	{
-		if( m_renderCamera == 0 )
-		{
-			return;
-		}
-
 		if( m_scene )
 		{
-			m_scene->render( m_renderCamera );
+			m_scene->render();
 		}
 		
 		if( m_arrow )

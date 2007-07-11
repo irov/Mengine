@@ -1,8 +1,10 @@
 #	include "SquallSoundSource.h"
-#	include "windows.h"
+//#	include "windows.h"
 #	include <assert.h>
 #	include "squall.h"
-#	include "math.h"
+//#	include "math.h"
+
+#	include "stdio.h"
 
 
 int PauseCallback(int ChannelID, bool pause,void* UserData)

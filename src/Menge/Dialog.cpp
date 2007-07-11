@@ -2,10 +2,11 @@
 #	include "FileEngine.h"
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
-#	include "XmlParser.h"
 #	include "DialogManager.h"
 #	include "ObjectImplement.h"
 #	include "MessageSpot.h"
+
+#	include "XmlParser/XmlParser.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Dialog)

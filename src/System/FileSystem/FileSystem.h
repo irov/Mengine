@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "../../Menge/FileSystemInterface.h"
+#	include "Interface/FileSystemInterface.h"
 #	include <vector>
 
 class ZipArchive;
@@ -16,11 +16,11 @@ public:
  	~FileSystem();
 
 public:
-	bool		createFolder(const std::string& _foldername);
- 	bool		loadPak(const std::string& _filename, int _prior);
- 	bool		unloadPak(const std::string& _filename);
-  	bool		existFile(const std::string& _filename);
- 	FileDataInterface*	openFile(const std::string& _filename);
+	bool		createFolder(const char * _foldername);
+ 	bool		loadPak(const char * _filename, int _prior);
+ 	bool		unloadPak(const char * _filename);
+  	bool		existFile(const char * _filename);
+ 	FileDataInterface*	openFile(const char * _filename);
 	void		closeFile(FileDataInterface* _fd);
 
 private:

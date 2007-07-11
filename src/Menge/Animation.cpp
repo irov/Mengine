@@ -7,9 +7,7 @@
 #	include "ResourceAnimation.h"
 #	include "ResourceImage.h"
 
-#	include "XmlParser.h"
-
-#	include "Holder.h"
+#	include "XmlParser/XmlParser.h"
 
 OBJECT_IMPLEMENT(Animation)
 //////////////////////////////////////////////////////////////////////////

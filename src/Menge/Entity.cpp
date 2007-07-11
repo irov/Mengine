@@ -1,7 +1,6 @@
 #	include "Entity.h"
 #	include "ObjectImplement.h"
 
-#	include "Holder.h"
 #	include "ScriptEngine.h"
 
 //////////////////////////////////////////////////////////////////////////

@@ -1,16 +1,12 @@
 #	include "SoundEmitter.h"
 
-#	include "XmlParser.h"
+#	include "XmlParser/XmlParser.h"
 
 #	include "ObjectImplement.h"
 
 #	include "ResourceSound.h"
 
 #	include "ResourceManager.h"
-
-#	include "Holder.h"
-
-#	include "FileSystemInterface.h"
 
 #	include "SoundEngine.h"
 

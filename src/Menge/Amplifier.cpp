@@ -2,7 +2,7 @@
 
 #	include "Playlist.h"
 
-#	include "XmlParser.h"
+#	include "XmlParser/XmlParser.h"
 
 #	include "FileEngine.h"
 
@@ -72,7 +72,10 @@ void	Amplifier::loadPlayList(const std::string& _filename)
 {
 	std::string playListFileName;
 
-	XML_PARSE_FILE_EX(_filename)
+	TiXmlDocument * document = Holder<FileEngine>::hostage()
+		->loadXml( _filename );
+
+	XML_FOR_EACH_DOCUMENT( document )
 	{
 		XML_CHECK_NODE_FOR_EACH("Pls")
 		{

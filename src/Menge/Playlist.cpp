@@ -1,6 +1,6 @@
 #	include "Playlist.h"
 
-#	include "XmlParser.h"
+#	include "XmlParser/XmlParser.h"
 
 #	include "FileEngine.h"
 
@@ -72,7 +72,10 @@ void	Playlist::loadTracks()
 
 	std::string	filename;
 
-	XML_PARSE_FILE_EX(m_playListName)
+	TiXmlDocument * document = Holder<FileEngine>::hostage()
+		->loadXml( m_playListName );
+
+	XML_FOR_EACH_DOCUMENT( document )
 	{
 		XML_CHECK_NODE_FOR_EACH("Tracks")
 		{

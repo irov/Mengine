@@ -1,30 +1,24 @@
 #	pragma once
 
-#	include "RenderSystemInterface.h"
-
-#	include "SystemDLL.h"
-#	include "Holder.h"
-
 #	include <string>
 
 #	include "math/mat3.h"
-#	include "math/vec2.h"
+#	include "math/vec4.h"
+
+#	include "Interface/RenderSystemInterface.h"
+
+#	include "Holder.h"
 
 namespace Menge
 {
 	class FileEngine;
 
 	class RenderEngine
-		: public SystemDLL<RenderSystemInterface>
 	{
 	public:
-		RenderEngine(const std::string &_dllModule);
+		RenderEngine( RenderSystemInterface * _interface );
 		
 	public:
-		bool createDisplay(int _width, int _height, int _bits, bool _fullScreen);
-		
-		void setRenderCallback(renderFunction _rf);
-
 		void drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color);
 
 		RenderImageInterface* loadImage(const std::string &	_imageFile, int _filter);
@@ -37,7 +31,7 @@ namespace Menge
 			unsigned int _mixedColor, 
 			RenderImageInterface* _rmi);
 
-		void releaseRenderImage(RenderImageInterface* _rmi);
+		void releaseRenderImage( RenderImageInterface* _rmi );
 
 		void update();
 		
@@ -45,13 +39,15 @@ namespace Menge
 		RenderFontInterface* loadFont(const std::string &_fontXml);
 
 		void renderText(
-			mt::vec2f _pos, 
+			const mt::vec2f & _pos, 
 			RenderFontInterface* _font, 
-			const std::string& _text);
+			const std::string & _text);
 
+		void releaseRenderFont( RenderFontInterface* _fnt );
 
-		void releaseRenderFont(RenderFontInterface* _fnt);
+		RenderImageInterface* loadImage( const TextureDesc& _desc );
 
-		RenderImageInterface* loadImage(const TextureDesc& _desc);
+	protected:
+		RenderSystemInterface * m_interface;
 	};
 }

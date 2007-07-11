@@ -2,15 +2,14 @@
 
 #	include "FileEngine.h"
 
-#	include "SoundSystemInterface.h"
-#	include "FileSystemInterface.h"
+#	include "Interface/SoundSystemInterface.h"
 
 #	include	<assert.h>
 
 namespace Menge
 {
-	SoundEngine::SoundEngine(const std::string& _dllModule)
-			: SystemDLL<SoundSystemInterface>(_dllModule)
+	SoundEngine::SoundEngine( SoundSystemInterface * _interface )
+	: m_interface( _interface )
 	{
 		Holder<SoundEngine>::keep(this);
 	}

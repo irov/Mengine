@@ -5,11 +5,14 @@
 #	include <map>
 #	include <list>
 
+class FileSystemInterface;
+class InputSystemInterface;
+class RenderSystemInterface;
+class SoundSystemInterface;
+
 namespace Menge
 {
 	class Game;
-
-	typedef std::map<int, std::list<std::string>> TPackHierarchical;
 
 	class MENGE_API Application
 	{
@@ -18,11 +21,19 @@ namespace Menge
 		~Application();
 
 	public:
-		virtual bool init(const std::string &_xmlFile);
-		virtual void run();
+		virtual bool init();
+		virtual void loop();
+
+		virtual void setFileSystem( FileSystemInterface * _interface );
+		virtual void setInputSystem( InputSystemInterface * _interface );
+		virtual void setRenderSystem( RenderSystemInterface * _interface );
+		virtual void setSoundSystem( SoundSystemInterface * _interface );
+
+		virtual void loadPak( const std::string & _pak, int _priority );
+
+		virtual bool createGame( const std::string & _game );
 
 	private:
-		bool createDisplay(int _width, int _height, int _bits, bool _fullScreen);
 		void update();
 		void render();
 		//void	loadPlugin(const std::string& _name);
@@ -33,10 +44,9 @@ namespace Menge
 		int m_bits;
 
 		bool m_fullScreen;
-		bool m_debugRender;
 
 		Game * m_game;
 		
-		TPackHierarchical m_packHierarchical;
+		
 	};
 }

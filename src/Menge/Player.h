@@ -9,7 +9,9 @@ namespace Menge
 	class Scene;
 	class Avatar;
 	class Arrow;
+
 	class Camera2D;
+	class Camera3D;
 
 	class Player
 	{
@@ -24,8 +26,11 @@ namespace Menge
 		void setArrow( Arrow * _arrow );
 
 	public:
-		void setRenderCamera( Camera2D * _camera);
-		Camera2D * getRenderCamera();
+		void setRenderCamera2D( Camera2D * _camera);
+		Camera2D * getRenderCamera2D();
+
+		void setRenderCamera3D( Camera3D * _camera);
+		Camera3D * getRenderCamera3D();
 
 	public:
 		void init();
@@ -39,6 +44,7 @@ namespace Menge
 		Scene * m_scene;
 		Arrow * m_arrow;
 
-		Camera2D * m_renderCamera;
+		Camera2D * m_renderCamera2D;
+		Camera3D * m_renderCamera3D;
 	};
 }

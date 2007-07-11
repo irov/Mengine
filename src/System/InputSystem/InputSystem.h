@@ -2,7 +2,7 @@
 
 #	define DIRECTINPUT_VERSION 0x0800
 
-#	include "../../Menge/InputSystemInterface.h"
+#	include "Interface/WinInputSystemInterface.h"
 
 #	include <dinput.h>
 
@@ -10,7 +10,7 @@ class InputKeyboard;
 class InputMouse;
 
 class InputSystem
-	: public InputSystemInterface
+	: public WinInputSystemInterface
 {
 public:
 	InputSystem();

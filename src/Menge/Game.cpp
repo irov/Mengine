@@ -13,7 +13,7 @@
 #	include "ScriptEngine.h"
 #	include "FileEngine.h"
 
-#	include "XmlParser.h"
+#	include "XmlParser/XmlParser.h"
 
 #	include "ErrorMessage.h"
 

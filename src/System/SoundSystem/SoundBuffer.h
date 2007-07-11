@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "..\..\Menge\SoundSystemInterface.h"
+#	include "Interface\SoundSystemInterface.h"
 
 class SQUALLSample : public SoundBufferInterface
 {

@@ -34,8 +34,6 @@ namespace Menge
 		virtual void updateViewport();
 
 	protected:
-		Scene * m_renderScene;
-
 		Viewport m_viewport;
 
 		mt::vec2f m_viewportSize;

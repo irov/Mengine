@@ -5,7 +5,7 @@
 
 #	include "Avatar.h"
 
-#	include "XmlParser.h"
+#	include "XmlParser/XmlParser.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Actor)

@@ -2,12 +2,10 @@
 
 #	include "ObjectImplement.h"
 
-#	include "Holder.h"
-
 #	include "InputEngine.h"
 #	include "ScriptEngine.h"
 
-#	include "XmlParser.h"
+#	include "XmlParser/XmlParser.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(HotSpot)
@@ -115,8 +113,10 @@ void HotSpot::update( float _timing )
 	const mt::vec3f & v = Holder<InputEngine>::hostage()
 		->getPosition();
 	
-	bool mlReleased = Holder<InputEngine>::hostage()
-		->isButton( MOUSE_LEFT, DI_RELEASED );
+	bool mlReleased = false;
+	
+	//Holder<InputEngine>::hostage()
+	//	->isButton( MOUSE_LEFT, DI_RELEASED );
 
 	if( mlReleased == true )
 	{	

@@ -1,5 +1,4 @@
-#pragma once
-#include <string>
+#	pragma once
 
 struct	SoundDataDesc
 {
@@ -10,9 +9,8 @@ struct	SoundDataDesc
 	}	
 	type;
 	
-	/*void*		buffer;
-	size_t		size;*/
-	std::string  FILENAME_TEMP_FOR_TEST;
+	void*		buffer;
+	size_t		size;
 	bool		isRelativeToListener;
 	bool		isStreamSound;
 };

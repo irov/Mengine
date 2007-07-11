@@ -1,7 +1,8 @@
 #	include "DialogManager.h"
-#	include "XmlParser.h"
 #	include "Holder.h"
 #	include "FileEngine.h"
+
+#	include "XmlParser/XmlParser.h"
 
 using namespace Menge;
 
@@ -23,9 +24,12 @@ DialogManager::~DialogManager()
 	}
 }
 
-void	DialogManager::loadMessagesList(const std::string& _filename)
+void	DialogManager::loadMessagesList(const std::string& _xml )
 {
-	XML_PARSE_FILE_EX(_filename)
+	TiXmlDocument * document = Holder<FileEngine>::hostage()
+		->loadXml( _xml );
+
+	XML_FOR_EACH_DOCUMENT( document )
 	{
 		XML_CHECK_NODE_FOR_EACH("Messages")
 		{

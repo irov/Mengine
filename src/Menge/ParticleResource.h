@@ -2,7 +2,7 @@
 
 #	include "ResourceImpl.h"
 
-#	include "RenderSystemInterface.h"
+#	include "Interface/RenderSystemInterface.h"
 
 #	include <vector>
 
@@ -59,6 +59,7 @@ namespace Menge
 	public:
 	//	const ParticleDesc&	getDesc(); 
 		RenderImageInterface * getImage();
+
 	private:
 		std::string			m_filename;
 		ParticleDesc		m_desc;

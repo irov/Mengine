@@ -6,7 +6,9 @@
 
 #	include "Scene.h"
 
-#	include "XmlParser.h"
+#	include "Player.h"
+
+#	include "XmlParser/XmlParser.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Layer2D);
@@ -50,9 +52,13 @@ void Layer2D::loader( TiXmlElement *_xml)
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void Layer2D::renderLayer( const Camera2D * _camera )
+void Layer2D::renderLayer()
 {
-	const Viewport & cvp = _camera->getViewport();
+	Camera2D * camera = 
+		Holder<Player>::hostage()
+		->getRenderCamera2D();
+
+	const Viewport & cvp = camera->getViewport();
 
 	const Viewport & viewport = updateViewport( cvp );
 

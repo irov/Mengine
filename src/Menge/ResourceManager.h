@@ -3,6 +3,8 @@
 #	include <map>
 #	include <string>
 
+#	include "Holder.h"
+
 namespace Menge
 {
 	class Resource;

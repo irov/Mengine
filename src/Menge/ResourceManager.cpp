@@ -7,11 +7,10 @@
 #	include "ResourceImageCell.h"
 
 #	include "FileEngine.h"
-#	include "XmlParser.h"
 
 #	include "ErrorMessage.h"
 
-#	include "Holder.h"
+#	include "XmlParser/XmlParser.h"
 
 namespace Menge
 {
@@ -32,7 +31,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::loadResource( const std::string & _file )
 	{
-		XML_PARSE_FILE_EX( _file )
+		TiXmlDocument * document = Holder<FileEngine>::hostage()
+			->loadXml( _file );
+
+		XML_FOR_EACH_DOCUMENT( document )
 		{
 			XML_CHECK_NODE_FOR_EACH("DataBlock")
 			{

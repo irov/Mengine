@@ -9,7 +9,6 @@
 
 namespace Menge
 {
-	class SceneNode2D;
 	class Camera2D;
 
 	class Layer2D
@@ -29,7 +28,7 @@ namespace Menge
 
 	public:
 		void loader( TiXmlElement *_xml) override;
-		void renderLayer( const Camera2D * _camera ) override;
+		void renderLayer() override;
 
 	protected:
 		mt::vec2f m_factorParallax;

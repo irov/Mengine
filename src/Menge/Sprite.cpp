@@ -5,11 +5,9 @@
 #	include "RenderEngine.h"
 #	include "Viewport.h"
 
-#	include "XmlParser.h"
+#	include "XmlParser/XmlParser.h"
 
-#	include "RenderSystemInterface.h"
-
-#	include "FileSystemInterface.h"
+#	include "Interface/RenderSystemInterface.h"
 
 #	include "ResourceImage.h"
 

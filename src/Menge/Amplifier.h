@@ -4,7 +4,7 @@
 
 #	include "time.h"
 
-#	include "SoundSystemInterface.h"
+#	include "Interface/SoundSystemInterface.h"
 
 class	SoundBufferInterface;
 class	SoundSourceInterface;

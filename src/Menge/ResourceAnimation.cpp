@@ -1,7 +1,7 @@
 #	include "ResourceAnimation.h"
 #	include "ResourceImplement.h"
 
-#	include "XmlParser.h"
+#	include "XmlParser/XmlParser.h"
 
 namespace Menge
 {

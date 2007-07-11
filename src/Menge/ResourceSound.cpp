@@ -1,11 +1,12 @@
 #	include "ResourceSound.h"
 #	include "ResourceImplement.h"
 
-#	include "SoundSystemInterface.h"
+#	include "Interface/SoundSystemInterface.h"
 
-#	include "XmlParser.h"
 #	include "SoundEngine.h"
 #	include "FileEngine.h"
+
+#	include "XmlParser/XmlParser.h"
 
 namespace Menge
 {

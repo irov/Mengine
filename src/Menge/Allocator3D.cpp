@@ -1,6 +1,6 @@
 #	include "Allocator3D.h"
 
-#	include "XmlParser.h"
+#	include "XmlParser/XmlParser.h"
 
 namespace Menge
 {

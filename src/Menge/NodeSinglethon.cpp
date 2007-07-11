@@ -2,8 +2,6 @@
 
 #	include "NodeForeach.h"
 
-#	include "Holder.h"
-
 #	include "ScriptEngine.h"
 
 #	include "SceneManager.h"

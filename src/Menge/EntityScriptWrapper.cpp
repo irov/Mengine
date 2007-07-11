@@ -2,8 +2,6 @@
 
 #	include "Entity.h"
 
-#	include "Holder.h"
-
 #	include "ScriptEngine.h"
 #	include "ScriptObject.h"
 

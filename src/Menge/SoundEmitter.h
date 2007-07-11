@@ -2,7 +2,7 @@
 
 #	include "SceneNode2D.h"
 
-#	include "SoundSystemInterface.h"
+#	include "Interface/SoundSystemInterface.h"
 
 #	include <vector>
 

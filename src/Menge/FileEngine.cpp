@@ -1,38 +1,38 @@
 #	include "FileEngine.h"
 
-#	include "XmlParser.h"
+#	include "XmlParser/XmlParser.h"
 
 namespace Menge
 {
-	FileEngine::FileEngine(const std::string &_dllModule)
-		: SystemDLL<FileSystemInterface>(_dllModule)
+	FileEngine::FileEngine( FileSystemInterface * _interface )
+		: m_interface( _interface )
 	{
 		Holder<FileEngine>::keep(this);
 	}
 
 	bool FileEngine::loadPak(const std::string&	_filename, int _prior)
 	{
-		return m_interface->loadPak(_filename,_prior);
+		return m_interface->loadPak(_filename.c_str(),_prior);
 	}
 
 	bool FileEngine::unloadPak(const std::string& _filename)
 	{
-		return m_interface->unloadPak(_filename);
+		return m_interface->unloadPak(_filename.c_str());
 	}
 
 	bool FileEngine::existFile(const std::string& _filename)
 	{
-		return m_interface->existFile(_filename);
+		return m_interface->existFile(_filename.c_str());
 	}
 
 	bool FileEngine::createFolder(const std::string& _foldername)
 	{
-		return m_interface->createFolder(_foldername);
+		return m_interface->createFolder(_foldername.c_str());
 	}
 
 	FileDataInterface* FileEngine::openFile(const std::string& _filename)
 	{
-		return m_interface->openFile(_filename);
+		return m_interface->openFile(_filename.c_str());
 	}
 
 	void FileEngine::closeFile(FileDataInterface* _fd)
@@ -40,10 +40,8 @@ namespace Menge
 		m_interface->closeFile(_fd);
 	}
 
-	bool FileEngine::loadXml(TiXmlDocument &_xmlDocument, const std::string &_fileName)
+	TiXmlDocument * FileEngine::loadXml( const std::string &_fileName)
 	{
-		// Delete the existing data:
-		_xmlDocument.Clear();
 		// There was a really terrifying little bug here. The code:
 		//		value = filename
 		// in the STL case, cause the assignment method of the std::string to
@@ -53,12 +51,11 @@ namespace Menge
 		// See STL_STRING_BUG above.
 		// Fixed with the StringToBuffer class.
 
-		FileDataInterface* file = openFile(_fileName);
+		FileDataInterface * file = openFile(_fileName);
 
 		if ( file == 0 )
 		{
-			_xmlDocument.SetError( TiXmlBase::TIXML_ERROR_OPENING_FILE, 0, 0, TIXML_ENCODING_UNKNOWN );
-			return false;
+			return 0;
 		}
 
 		// Get the file size, so we can pre-allocate the string. HUGE speed impact.
@@ -68,7 +65,7 @@ namespace Menge
 		if ( length == 0 )
 		{
 			closeFile(file);
-			return false;
+			return 0;
 		}
 
 		// If we have a file, assume it is all one big XML file, and read it in.
@@ -86,14 +83,10 @@ namespace Menge
 
 		closeFile(file);
 
-		_xmlDocument.Parse( data.c_str(), 0, TIXML_DEFAULT_ENCODING );
 
-		if( _xmlDocument.Error() == true )
-		{
-			return false;
-		}
+		TiXmlDocument * document = TiXmlDocumentLoadData( data );
 
-		return true;
+		return document;
 	}
 }
 

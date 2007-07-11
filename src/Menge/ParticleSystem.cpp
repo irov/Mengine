@@ -1,9 +1,7 @@
 #	include "ParticleSystem.h"
 #	include "ObjectImplement.h"
-#	include "XmlParser.h"
 #	include "ResourceManager.h"
-#	include "RenderSystemInterface.h"
-#	include "Holder.h"
+
 #	include "RenderEngine.h"
 #	include "Viewport.h"
 
@@ -11,6 +9,10 @@
 #	include "BoxEmitter.h"
 #	include "SimplePhysicAffector.h"
 #	include "float.h"
+
+#	include "Interface/RenderSystemInterface.h"
+
+#	include "XmlParser/XmlParser.h"
 
 namespace Menge
 {
@@ -190,7 +192,11 @@ namespace Menge
 
             _size *= particle->m_size;
 
-			unsigned int col = (DWORD(particle->m_color.a*255.0f)<<24) + (DWORD(particle->m_color.r*255.0f)<<16) + (DWORD(particle->m_color.g*255.0f)<<8) + DWORD(particle->m_color.b*255.0f);
+			unsigned int col = 
+				(unsigned int(particle->m_color.a*255.0f)<<24) + 
+				(unsigned int(particle->m_color.r*255.0f)<<16) + 
+				(unsigned int(particle->m_color.g*255.0f)<<8) + 
+				unsigned int(particle->m_color.b*255.0f);
 
 			Holder<RenderEngine>::hostage()->renderImage(_transform,mt::vec2f(0,0),mt::vec4f(0,0,1.0f,1.0f),_size,col,m_image);
 			it++;

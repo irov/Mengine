@@ -8,7 +8,7 @@
 
 #	include "ScriptEngine.h"
 
-#	include "XmlParser.h"
+#	include "XmlParser/XmlParser.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Scene);
@@ -60,10 +60,10 @@ void Scene::loader( TiXmlElement *_xml )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void Scene::render( const Camera2D * _camera )
+void Scene::render()
 {
 	for each( Layer * layer in m_listChildren )
 	{
-		layer->renderLayer( _camera );
+		layer->renderLayer();
 	}
 };

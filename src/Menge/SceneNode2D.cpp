@@ -8,9 +8,10 @@
 #	include "Layer2D.h"
 
 #	include "FileEngine.h"
-#	include "XmlParser.h"
 
 #	include "ErrorMessage.h"
+
+#	include "XmlParser/XmlParser.h"
 
 #	include <algorithm>
 

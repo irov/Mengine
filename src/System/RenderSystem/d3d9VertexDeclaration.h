@@ -4,7 +4,8 @@
 #	include <d3dx9.h>
 #	include <vector>
 
-class d3d9VertexDeclaration : public VertexDeclaration
+class d3d9VertexDeclaration
+	: public VertexDeclaration
 {
 public:
 	d3d9VertexDeclaration(IDirect3DDevice9 * pd3dDevice);
@@ -16,5 +17,5 @@ private:
 	mutable LPDIRECT3DVERTEXDECLARATION9 m_pVertexDeclaration;
 	IDirect3DDevice9 * m_pd3dDevice;
 	std::vector<D3DVERTEXELEMENT9>	m_decl;
-	mutable bool	m_isChanged;
-};
+	mutable bool   	m_isChanged;
+};      

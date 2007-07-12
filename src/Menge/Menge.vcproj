@@ -461,14 +461,6 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<File
-				RelativePath=".\Mesh.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ResourceAnimationCal3d.cpp"
-				>
-			</File>
 			<Filter
 				Name="Sprite"
 				>
@@ -519,19 +511,11 @@
 				UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 				>
 				<File
-					RelativePath=".\Mesh.h"
-					>
-				</File>
-				<File
 					RelativePath=".\ObjectDeclare.h"
 					>
 				</File>
 				<File
 					RelativePath=".\ObjectImplement.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceAnimationCal3d.h"
 					>
 				</File>
 			</Filter>
@@ -979,6 +963,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Cal3d"
+				>
+				<File
+					RelativePath=".\ResourceAnimationCal3d.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceAnimationCal3d.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Entity"
@@ -1075,6 +1071,18 @@
 		<Filter
 			Name="Object3D"
 			>
+			<Filter
+				Name="Mesh"
+				>
+				<File
+					RelativePath=".\Mesh.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Mesh.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

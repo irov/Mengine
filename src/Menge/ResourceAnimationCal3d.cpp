@@ -22,7 +22,8 @@ namespace Menge
 	{
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "File", "Path", m_fileCAL3D );
+			XML_CHECK_VALUE_NODE( "File", "Config", m_fileCAL3D );
+			XML_CHECK_VALUE_NODE( "File", "Path", m_filePathCAL3D );
 		}
 
 		ResourceImpl::loader( _xml );
@@ -32,7 +33,9 @@ namespace Menge
 	{
 		std::ifstream file;
 
-		file.open(m_fileCAL3D.c_str(), std::ios::in | std::ios::binary);
+		std::string offset_path = m_filePathCAL3D + m_fileCAL3D;
+
+		file.open(offset_path.c_str(), std::ios::in | std::ios::binary);
 		if(!file)
 		{
 			assert(!"Failed to open model configuration file '");
@@ -103,27 +106,32 @@ namespace Menge
 		return true;
 	}
 
-	float ResourceAnimationCal3d::getScale()
+	const std::string& ResourceAnimationCal3d::getFolderPath() const
+	{
+		return m_filePathCAL3D;
+	}
+
+	float ResourceAnimationCal3d::getScale() const
 	{
 		return m_scale;
 	}
 
-	const std::vector<std::string>& ResourceAnimationCal3d::getSceletonInfo()
+	const std::vector<std::string>& ResourceAnimationCal3d::getSceletonInfo() const
 	{
 		return m_sceletonInfo;
 	}
 
-	const std::vector<std::string>& ResourceAnimationCal3d::getCoreAnimInfo()
+	const std::vector<std::string>& ResourceAnimationCal3d::getCoreAnimInfo() const
 	{
 		return m_coreAnimInfo;
 	}
 
-	const std::vector<std::string>& ResourceAnimationCal3d::getCoreMeshInfo()
+	const std::vector<std::string>& ResourceAnimationCal3d::getCoreMeshInfo() const
 	{
 		return m_coreMeshInfo;
 	}	
 
-	const std::vector<std::string>& ResourceAnimationCal3d::getCoreMatInfo()
+	const std::vector<std::string>& ResourceAnimationCal3d::getCoreMatInfo() const
 	{
 		return m_coreMatInfo;
 	}

@@ -113,7 +113,7 @@ namespace Menge
 		cmr3d->setFov(90);
 		cmr3d->setPosition(mt::vec3f(0,0,0));
 
-		cmr3d->lookAt(mt::vec3f(0,1,0));
+		cmr3d->lookAt(mt::vec3f(1,0,0));
 
 		setRenderCamera3D(cmr3d);
 

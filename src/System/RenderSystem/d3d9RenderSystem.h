@@ -1,13 +1,16 @@
 #	pragma once
 #	include "Interface\WinRenderSystemInterface.h"
-
 #	include "d3d9RenderImage.h"
-#	include "d3d9RenderFont.h"
-#	include <d3d9.h>
+
 #	include <vector>
 #	include <list>
 
-class	Direct3d9RenderSystem : public WinRenderSystemInterface
+#define V(x)           { hr = x; if( FAILED(hr) ) { DXUTTrace( __FILE__, (DWORD)__LINE__, hr, L#x, true ); } }
+
+class	d3d9RenderFont;
+
+class	Direct3d9RenderSystem
+	: public WinRenderSystemInterface
 {
 public:
 	Direct3d9RenderSystem();

@@ -3,6 +3,7 @@
 #	include "d3d9IndexData.h"
 #	include "d3d9Texture.h"
 #	include "d3d9VertexDeclaration.h"
+#	include "d3d9RenderFont.h"
 
 #	include <windows.h>
 #	include <assert.h>
@@ -33,18 +34,30 @@ void	Direct3d9RenderSystem::setProjectionMatrix(const mt::mat4f& _projection)
 {
 	HRESULT hr;
 	hr = pID3DDevice->SetTransform(D3DTS_PROJECTION,&D3DXMATRIX(_projection.m));
+	if(hr != S_OK)
+	{
+		assert(!"can't set projection matrix");
+	}
 }
 
 void	Direct3d9RenderSystem::setViewMatrix(const mt::mat4f& _view)
 {
 	HRESULT hr;
 	hr = pID3DDevice->SetTransform(D3DTS_VIEW,&D3DXMATRIX(_view.m));
+	if(hr != S_OK)
+	{
+		assert(!"can't set view matrix");
+	}
 }
 
 void	Direct3d9RenderSystem::setWorldMatrix(const mt::mat4f& _world)
 {
 	HRESULT hr;
 	hr = pID3DDevice->SetTransform(D3DTS_WORLD,&D3DXMATRIX(_world.m));
+	if(hr != S_OK)
+	{
+		assert(!"can't set world matrix");
+	}
 }
 
 Direct3d9RenderSystem::Direct3d9RenderSystem()
@@ -64,6 +77,8 @@ Direct3d9RenderSystem::~Direct3d9RenderSystem()
 		m_batchFontIB->Release(); 
 		m_batchFontIB = NULL;
 	}
+
+
 }
 
 Texture * Direct3d9RenderSystem::createTextureInMemory(const TextureDesc& _desc)
@@ -93,12 +108,15 @@ Texture * Direct3d9RenderSystem::createTextureInMemory(const TextureDesc& _desc)
 void	Direct3d9RenderSystem::setTexture(Texture * _tex)
 {
 	d3d9Texture* _d3d9tex = static_cast<d3d9Texture*>(_tex);
+
 	if(_d3d9tex == NULL)
 	{
 		pID3DDevice->SetTexture(0,NULL);
 	}
 	else
-	pID3DDevice->SetTexture(0,_d3d9tex->_get());
+	{
+		pID3DDevice->SetTexture(0,_d3d9tex->_get());
+	}
 }
 
 void	Direct3d9RenderSystem::releaseTexture(Texture * _tex)
@@ -130,20 +148,17 @@ bool	Direct3d9RenderSystem::createDisplay( HWND _hWnd, int _width, int _height, 
 	bool	antiAlias = true;
 	bool	pureSoftware = false;
 	
-	IDirect3D9* pID3D;
-	pID3D = Direct3DCreate9(D3D_SDK_VERSION);
-	// print device information
+	IDirect3D9* pID3D = Direct3DCreate9(D3D_SDK_VERSION);
+	
 	D3DADAPTER_IDENTIFIER9 dai;
 	if (!FAILED(pID3D->GetAdapterIdentifier(D3DADAPTER_DEFAULT, 0, &dai)))
 	{
-		char tmp[512];
-
 		int Product = HIWORD(dai.DriverVersion.HighPart);
 		int Version = LOWORD(dai.DriverVersion.HighPart);
 		int SubVersion = HIWORD(dai.DriverVersion.LowPart);
 		int Build = LOWORD(dai.DriverVersion.LowPart);
 
-		sprintf(tmp, "%s %s %d.%d.%d.%d", dai.Description, dai.Driver, Product, Version,
+		printf("%s %s %d.%d.%d.%d", dai.Description, dai.Driver, Product, Version,
 			SubVersion, Build);
 	}
 
@@ -234,7 +249,9 @@ bool	Direct3d9RenderSystem::createDisplay( HWND _hWnd, int _width, int _height, 
 	}
 
 	if (!StencilBuffer)
+	{
 		present.AutoDepthStencilFormat = D3DFMT_D16;
+	}
 
 	if (pureSoftware)
 	{

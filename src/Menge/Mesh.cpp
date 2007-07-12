@@ -10,8 +10,6 @@
 
 #	include "XmlParser/XmlParser.h"
 
-//#	include "RenderSystemInterface.h"
-
 #	include "Interface/FileSystemInterface.h"
 
 #	include "ResourceImage.h"
@@ -93,9 +91,13 @@ bool Mesh::_activate()
 	m_calCoreModel = new CalCoreModel("dummy");
 	m_scale = m_cal3dRes->getScale();
 
+	const std::string& folder = m_cal3dRes->getFolderPath();
+
 	for(int i = 0; i < m_cal3dRes->getSceletonInfo().size();++i)
 	{
-		if(!m_calCoreModel->loadCoreSkeleton(m_cal3dRes->getSceletonInfo()[i]))
+
+		const std::string& info = folder + m_cal3dRes->getSceletonInfo()[i];
+		if(!m_calCoreModel->loadCoreSkeleton(info))
 		{
 			return false;
 		}
@@ -103,7 +105,8 @@ bool Mesh::_activate()
 
 	for(int i = 0; i < m_cal3dRes->getCoreAnimInfo().size();++i)
 	{
-		if(m_calCoreModel->loadCoreAnimation(m_cal3dRes->getCoreAnimInfo()[i]) == -1)
+		const std::string& info = folder + m_cal3dRes->getCoreAnimInfo()[i];
+		if(m_calCoreModel->loadCoreAnimation(info) == -1)
 		{
 			return false;
 		}
@@ -111,7 +114,8 @@ bool Mesh::_activate()
 
 	for(int i = 0; i < m_cal3dRes->getCoreMeshInfo().size();++i)
 	{
-		if(m_calCoreModel->loadCoreMesh(m_cal3dRes->getCoreMeshInfo()[i]) == -1)
+		const std::string& info = folder + m_cal3dRes->getCoreMeshInfo()[i];
+		if(m_calCoreModel->loadCoreMesh(info) == -1)
 		{
 			return false;
 		}
@@ -119,7 +123,8 @@ bool Mesh::_activate()
 
 	for(int i = 0; i < m_cal3dRes->getCoreMatInfo().size();++i)
 	{
-		if(m_calCoreModel->loadCoreMaterial(m_cal3dRes->getCoreMatInfo()[i]) == -1)
+		const std::string& info = folder + m_cal3dRes->getCoreMatInfo()[i];
+		if(m_calCoreModel->loadCoreMaterial(info) == -1)
 		{
 			return false;
 		}
@@ -141,7 +146,7 @@ bool Mesh::_activate()
 		{
 			std::string strFilename = pCoreMaterial->getMapFilename(mapId);
 
-			FileDataInterface* imageData = Holder<FileEngine>::hostage()->openFile(strFilename);
+			FileDataInterface* imageData = Holder<FileEngine>::hostage()->openFile(folder + strFilename);
 
 			TextureDesc td;
 			
@@ -164,6 +169,7 @@ bool Mesh::_activate()
 
 	m_currentAnimationId = 0;
 	m_leftAnimationTime = m_calCoreModel->getCoreAnimation(m_currentAnimationId)->getDuration() - m_blendTime;
+
 	if(m_calCoreModel->getCoreAnimationCount() > 1)
 	{
 		m_calModel->getMixer()->executeAction(m_currentAnimationId, 0.0f, m_blendTime);

@@ -20,11 +20,12 @@ namespace Menge
 
 	public:
 
-		float getScale();
-		const std::vector<std::string>& getSceletonInfo();
-		const std::vector<std::string>& getCoreAnimInfo();
-		const std::vector<std::string>& getCoreMeshInfo();
-		const std::vector<std::string>& getCoreMatInfo();
+		float getScale() const;
+		const std::vector<std::string>& getSceletonInfo() const;
+		const std::vector<std::string>& getCoreAnimInfo() const;
+		const std::vector<std::string>& getCoreMeshInfo() const;
+		const std::vector<std::string>& getCoreMatInfo() const;
+		const std::string& getFolderPath() const;
 	
 	public:
 		void loader( TiXmlElement *xml );
@@ -35,6 +36,7 @@ namespace Menge
 
 	protected:
 		std::string m_fileCAL3D;
+		std::string m_filePathCAL3D;
 
 	private:
 		float m_scale;

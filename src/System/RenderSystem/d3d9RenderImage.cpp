@@ -14,7 +14,6 @@ D3D9RenderImage::D3D9RenderImage(LPDIRECT3DDEVICE9 _dev, const TextureDesc& _des
 		assert(!"can't get TEXTURE image info!");
 	}
 
-
 	m_haveAlpha = 1;
 
 	if (FAILED(D3DXCreateTextureFromFileInMemoryEx(_dev, _desc.buffer, (UINT)_desc.size,

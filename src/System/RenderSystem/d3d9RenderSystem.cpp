@@ -42,15 +42,6 @@ void	Direct3d9RenderSystem::setProjectionMatrix(const mt::mat4f& _projection)
 
 void	Direct3d9RenderSystem::setViewMatrix(const mt::mat4f& _view)
 {
-
-	D3DXMATRIX out;
-	D3DXVECTOR3 eye(1,0,1);
-	D3DXVECTOR3 at(0,0,0);
-	D3DXVECTOR3 up(0,0,1);
-
-	D3DXMatrixLookAtLH(&out, &eye, &at, &up);
-
-
 	HRESULT hr;
 	hr = pID3DDevice->SetTransform(D3DTS_VIEW,LPD3DXMATRIX(_view.m));
 	if(hr != S_OK)

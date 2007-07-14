@@ -33,16 +33,6 @@ void Camera3D::lookAt(const mt::vec3f& _targetPoint)
 	setDirection( _targetPoint - m_localMatrix.v3_3 );
 }
 //////////////////////////////////////////////////////////////////////////
-const mt::mat4f & Camera3D::getProjectionMatrix()
-{
-	return m_frustum.getProjectionMatrix();
-}
-//////////////////////////////////////////////////////////////////////////
-const Frustum & Camera3D::getFrustum() const
-{
-	return m_frustum;
-}
-//////////////////////////////////////////////////////////////////////////
 const mt::mat4f & Camera3D::getViewMatrix()
 {	
 	_updateMatrix( m_parent );
@@ -56,7 +46,7 @@ void Camera3D::_updateMatrix( Allocator3D * _parent )
 
 	mt::inv_m4( m_viewMatrix, wm );
 
-	m_frustum.recalc( m_worldMatrix );
+	recalc( m_worldMatrix );
 }
 //////////////////////////////////////////////////////////////////////////
 mt::vec3f Camera3D::getDirectionFromMouse( float _xm, float _ym )

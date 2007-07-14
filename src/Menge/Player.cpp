@@ -91,6 +91,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	//RenderFontInterface * TESTfont;
 
+	Camera3D * cmr3d;
+
 	void Player::init()
 	{
 		Arrow *defaultArrow = 
@@ -106,12 +108,12 @@ namespace Menge
 
 		setRenderCamera2D( cmr );
 
-		Camera3D * cmr3d = SceneManager::createNodeT<Camera3D>( "Camera3D" );
+		cmr3d = SceneManager::createNodeT<Camera3D>( "Camera3D" );
 		cmr3d->setAspect(1.3f);
-		cmr3d->setFar(2000.0f);
+		cmr3d->setFar(1000.0f);
 		cmr3d->setNear(0.5f);
-		cmr3d->setFov(45);
-		cmr3d->setPosition(mt::vec3f(1,0,1));
+		cmr3d->setFov( 3.14f / 4.f );
+		cmr3d->setPosition(mt::vec3f(3,0,3));
 
 		cmr3d->lookAt(mt::vec3f(0,0,0));
 
@@ -135,6 +137,18 @@ namespace Menge
 		}
 		
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
+
+		if( inputEng->isButton( 0, 1 ) == true )
+		{
+			cmr3d->yaw( 0.128f );
+		}
+
+		if( inputEng->isButton( 1, 1 ) == true )
+		{
+			cmr3d->yaw( -0.128f );
+		}
+
+
 
 		//if( inputEng->isButton( MOUSE_LEFT, DI_PRESSED ) == true )
 		{

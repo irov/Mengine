@@ -6,8 +6,7 @@ class TiXmlElement;
 
 namespace Menge
 {
-	class RenderEngine;
-	class Frustum;
+	class Camera3D;
 
 	class Renderable3D
 	{
@@ -15,14 +14,12 @@ namespace Menge
 		Renderable3D();
 
 	public:
-		virtual void render( const mt::mat4f & _rwm, const Frustum & _frustum );
+		virtual void render( const mt::mat4f & _rwm, const Camera3D * _camera );
 		virtual void hide( bool value );
-		virtual bool isVisible( const Frustum & _frustum );
-
-		virtual const Frustum & updateFrustum( const Frustum & _frustum );
+		virtual bool isVisible( const Camera3D * _camera );
 
 	protected:
-		virtual void _render( const mt::mat4f & _rwm, const Frustum & _frustum );
+		virtual void _render( const mt::mat4f & _rwm, const Camera3D * _camera );
 
 	public:
 		void loader( TiXmlElement * _xml );

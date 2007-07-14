@@ -13,22 +13,22 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable3D::render( const mt::mat4f &_rwm, const Frustum & _frustum )
+	void Renderable3D::render( const mt::mat4f &_rwm, const Camera3D * _camera )
 	{
 		if( m_hide == true )
 		{
 			return;
 		}
 
-		if( isVisible( _frustum ) == false )
+		if( isVisible( _camera ) == false )
 		{
 			return;
 		}
 
-		_render( _rwm, _frustum );
+		_render( _rwm, _camera );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable3D::_render( const mt::mat4f & _rwm, const Frustum & _frustum )
+	void Renderable3D::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
 	{
 		// Empty;
 	}
@@ -38,15 +38,10 @@ namespace Menge
 		m_hide = value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Renderable3D::isVisible( const Frustum & _frustum )
+	bool Renderable3D::isVisible( const Camera3D * _camera )
 	{
 		// Empty;
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Frustum & Renderable3D::updateFrustum( const Frustum & _viewport )
-	{
-		return _viewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Renderable3D::loader( TiXmlElement * _xml )

@@ -31,16 +31,16 @@ namespace Menge
 		~Mesh();
 
 	public:
-		virtual bool isVisible( const Frustum & _frustum );
-
 		void loader( TiXmlElement *xml ) override;
-
 		void update( float _timing ) override;
+
+		virtual bool isVisible( const Camera3D * _camera ) override;
+
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
 
-		void _render( const mt::mat4f & _rwm, const Frustum & _frustum );
+		void _render( const mt::mat4f & _rwm, const Camera3D * _camera );
 		void _debugRender() override;
 	
 	private:

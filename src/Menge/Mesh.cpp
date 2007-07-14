@@ -39,7 +39,7 @@ Mesh::Mesh()
 Mesh::~Mesh()
 {}
 ///////////////////////////////////////////////////////////////////////////
-bool Mesh::isVisible( const Frustum & _frustum )
+bool Mesh::isVisible( const Camera3D * _camera )
 {
 	return true;
 }
@@ -222,7 +222,7 @@ void Mesh::loader(TiXmlElement *xml)
 	SceneNode3D::loader(xml);
 }
 //////////////////////////////////////////////////////////////////////////
-void Mesh::_render( const mt::mat4f & _rwm, const Frustum & _frustum )
+void Mesh::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
 {
 	CalRenderer * pCalRenderer = m_calModel->getRenderer();
 

@@ -23,17 +23,13 @@ namespace Menge
 			Holder<Player>::hostage()
 			->getRenderCamera3D();
 
-		const Frustum & cfm = camera->getFrustum();
-
-		const Frustum & frustum = updateFrustum( cfm );
-
 		Holder<RenderEngine>::hostage()->setViewMatrix(camera->getViewMatrix());
 		Holder<RenderEngine>::hostage()->setProjectionMatrix(camera->getProjectionMatrix());
 		
 		for each( SceneNode3D * node in m_listChildren )
 		{
 			const mt::mat4f & wm = node->getWorldMatrix();
-			node->render( wm, frustum );
+			node->render( wm, camera );
 		}
 	}
 

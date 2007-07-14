@@ -18,8 +18,8 @@
 	</Resource>
 
 	<Resource Name = "Cal3dTest" Type = "ResourceAnimationCal3d" >
-		<File Path = "hero\" />
-		<File Config = "hero.cfg" />
+		<File Path = "heroine\" />
+		<File Config = "heroine.cfg" />
 	</Resource>
 
 	<Resource Name = "TestSound" Type = "ResourceSound" >

@@ -25,10 +25,7 @@ namespace Menge
 
 
 	public:
-		const mt::mat4f & getProjectionMatrix();
 		const mt::mat4f & getViewMatrix();
-
-		const Frustum & getFrustum() const;
 
 	public:
 		void loader( TiXmlElement * _xml ) override;
@@ -38,7 +35,5 @@ namespace Menge
 
 	protected:
 		mt::mat4f m_viewMatrix;	
-
-		Frustum m_frustum;
 	};
 }

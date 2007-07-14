@@ -106,7 +106,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYXML_EXPORTS;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_WARNINGS;TIXML_USE_STL"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYXML_EXPORTS;_CRT_SECURE_NO_DEPRECATE;TIXML_USE_STL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"

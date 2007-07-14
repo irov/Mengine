@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)Bin"
+			OutputDirectory="$(SolutionDir)Bin\Systems"
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="0"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\Systems\$(ProjectName)_d.dll"
+				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
 				ModuleDefinitionFile="WinApplication.def"
 				GenerateDebugInformation="true"
@@ -97,10 +97,10 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)Bin\Systems"
+			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="2"
-			CharacterSet="1"
+			CharacterSet="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -120,12 +120,14 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				WholeProgramOptimization="false"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)src\libs\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;WINAPPLICATION_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -138,12 +140,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\Systems\$(ProjectName).dll"
+				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="1"
-				GenerateDebugInformation="true"
+				ModuleDefinitionFile="WinApplication.def"
+				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary="$(SolutionDir)Lib\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool

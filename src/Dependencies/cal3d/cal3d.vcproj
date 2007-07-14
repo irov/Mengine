@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)\dependencies\cal3d\cal3d\src&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;CAL3D_EXPORTS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;CAL3D_EXPORTS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

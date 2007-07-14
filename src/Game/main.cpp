@@ -8,13 +8,25 @@
 
 void main()
 {
-	HINSTANCE hInstance = LoadLibrary( "Systems/WinApplication_d.dll" );
+#ifdef _DEBUG
+	std::string str_systems = "Systems/WinApplication_d.dll";
+#else
+	std::string str_systems = "Systems/WinApplication.dll";
+#endif
 
+	HMODULE hInstance = LoadLibrary( str_systems.c_str() );
+
+	printf("load library '%s' - %p \n", str_systems.c_str(), hInstance );
+	
 	typedef bool (*FInterfaceInitial)( ApplicationInterface **);
 	typedef void (*FInterfaceRelease)( ApplicationInterface *);
 
 	FInterfaceInitial init = (FInterfaceInitial)GetProcAddress( (HMODULE) hInstance, "initInterfaceSystem" );
 	FInterfaceRelease fini = (FInterfaceRelease)GetProcAddress( (HMODULE) hInstance, "releaseInterfaceSystem" );
+
+
+	printf("init process initInterfaceSystem - %p \n", init );
+	printf("init process releaseInterfaceSystem - %p \n", fini );
 
 	ApplicationInterface * app = 0;
 
@@ -26,5 +38,6 @@ void main()
 
 	fini( app );
 
+	printf("load library '%s'", str_systems.c_str() );
 	FreeLibrary( hInstance );
 }

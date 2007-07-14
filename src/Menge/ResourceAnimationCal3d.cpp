@@ -83,7 +83,7 @@ namespace Menge
 
 			if(strKey == "scale")
 			{
-				m_scale = atof(strData.c_str());
+				m_scale = (float)atof(strData.c_str());
 			}
 			else if(strKey == "skeleton")
 			{

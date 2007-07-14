@@ -61,13 +61,14 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cal3d_d.lib dxerr.lib dxguid.lib d3dx9d.lib d3d9.lib winmm.lib comctl32.lib"
+				AdditionalDependencies="dxerr.lib dxguid.lib d3dx9d.lib d3d9.lib winmm.lib comctl32.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(SolutionDir)dependencies\cal3d\cal3d\bin\debug\"
 				ModuleDefinitionFile="RenderSystem.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				ImportLibrary="$(TargetDir)$(TargetName)_d.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -97,9 +98,9 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			OutputDirectory="$(SolutionDir)Bin\Systems"
+			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
+			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -120,6 +121,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -138,7 +140,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="dxerr.lib dxguid.lib d3dx9.lib d3d9.lib winmm.lib comctl32.lib"
+				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(SolutionDir)dependencies\cal3d\cal3d\bin\debug\"
+				ModuleDefinitionFile="RenderSystem.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -297,6 +303,14 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\RenderSystem.def"
@@ -357,12 +371,28 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\model.h"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool

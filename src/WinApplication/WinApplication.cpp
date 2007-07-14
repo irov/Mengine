@@ -62,7 +62,6 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 bool WinApplication::init( const char * _xmlFile )
 {
 	m_application = new Menge::Application;
-	//m_application->init( _xmlFile );
 
 	std::string DllModuleSetting = "DllModule";
 #ifdef _DEBUG

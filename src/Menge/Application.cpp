@@ -82,6 +82,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createGame( const std::string & _game )
 	{
+		printf("create game file [%s] ...\n", _game.c_str() );
 		m_game = new Game();
 
 		TiXmlDocument * document = Holder<FileEngine>::hostage()
@@ -96,7 +97,7 @@ namespace Menge
 		}
 		XML_INVALID_PARSE()
 		{
-			printf("Invalid game file [%s] ...\n", _game );
+			printf("Invalid game file [%s] ...\n", _game.c_str() );
 			return false;
 		}
 

@@ -85,7 +85,7 @@ bool Mesh::_activate()
 
 	const std::string& folder = m_cal3dRes->getFolderPath();
 
-	for(int i = 0; i < m_cal3dRes->getSceletonInfo().size();++i)
+	for(size_t i = 0; i < m_cal3dRes->getSceletonInfo().size();++i)
 	{
 
 		const std::string& info = folder + m_cal3dRes->getSceletonInfo()[i];
@@ -95,7 +95,7 @@ bool Mesh::_activate()
 		}
 	}
 
-	for(int i = 0; i < m_cal3dRes->getCoreAnimInfo().size();++i)
+	for(size_t i = 0; i < m_cal3dRes->getCoreAnimInfo().size();++i)
 	{
 		const std::string& info = folder + m_cal3dRes->getCoreAnimInfo()[i];
 		if(m_calCoreModel->loadCoreAnimation(info) == -1)
@@ -104,7 +104,7 @@ bool Mesh::_activate()
 		}
 	}
 
-	for(int i = 0; i < m_cal3dRes->getCoreMeshInfo().size();++i)
+	for(size_t i = 0; i < m_cal3dRes->getCoreMeshInfo().size();++i)
 	{
 		const std::string& info = folder + m_cal3dRes->getCoreMeshInfo()[i];
 		if(m_calCoreModel->loadCoreMesh(info) == -1)
@@ -113,7 +113,7 @@ bool Mesh::_activate()
 		}
 	}
 
-	for(int i = 0; i < m_cal3dRes->getCoreMatInfo().size();++i)
+	for(size_t i = 0; i < m_cal3dRes->getCoreMatInfo().size();++i)
 	{
 		const std::string& info = folder + m_cal3dRes->getCoreMatInfo()[i];
 		if(m_calCoreModel->loadCoreMaterial(info) == -1)

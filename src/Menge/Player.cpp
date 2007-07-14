@@ -108,12 +108,12 @@ namespace Menge
 
 		Camera3D * cmr3d = SceneManager::createNodeT<Camera3D>( "Camera3D" );
 		cmr3d->setAspect(1.3f);
-		cmr3d->setFar(4000.0f);
-		cmr3d->setNear(0.1f);
-		cmr3d->setFov(60);
-		cmr3d->setPosition(mt::vec3f(0,0,-1));
+		cmr3d->setFar(2000.0f);
+		cmr3d->setNear(0.5f);
+		cmr3d->setFov(45);
+		cmr3d->setPosition(mt::vec3f(1,0,1));
 
-		cmr3d->lookAt(mt::vec3f(0,0,1));
+		cmr3d->lookAt(mt::vec3f(0,0,0));
 
 		setRenderCamera3D(cmr3d);
 

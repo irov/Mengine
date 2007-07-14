@@ -33,7 +33,7 @@ void releaseInterfaceSystem(RenderSystemInterface* _ptrRenderSystem)
 void	Direct3d9RenderSystem::setProjectionMatrix(const mt::mat4f& _projection)
 {
 	HRESULT hr;
-	hr = pID3DDevice->SetTransform(D3DTS_PROJECTION,&D3DXMATRIX(_projection.m));
+	hr = pID3DDevice->SetTransform(D3DTS_PROJECTION,LPD3DXMATRIX(_projection.m));
 	if(hr != S_OK)
 	{
 		assert(!"can't set projection matrix");
@@ -42,8 +42,17 @@ void	Direct3d9RenderSystem::setProjectionMatrix(const mt::mat4f& _projection)
 
 void	Direct3d9RenderSystem::setViewMatrix(const mt::mat4f& _view)
 {
+
+	D3DXMATRIX out;
+	D3DXVECTOR3 eye(1,0,1);
+	D3DXVECTOR3 at(0,0,0);
+	D3DXVECTOR3 up(0,0,1);
+
+	D3DXMatrixLookAtLH(&out, &eye, &at, &up);
+
+
 	HRESULT hr;
-	hr = pID3DDevice->SetTransform(D3DTS_VIEW,&D3DXMATRIX(_view.m));
+	hr = pID3DDevice->SetTransform(D3DTS_VIEW,LPD3DXMATRIX(_view.m));
 	if(hr != S_OK)
 	{
 		assert(!"can't set view matrix");
@@ -53,7 +62,7 @@ void	Direct3d9RenderSystem::setViewMatrix(const mt::mat4f& _view)
 void	Direct3d9RenderSystem::setWorldMatrix(const mt::mat4f& _world)
 {
 	HRESULT hr;
-	hr = pID3DDevice->SetTransform(D3DTS_WORLD,&D3DXMATRIX(_world.m));
+	hr = pID3DDevice->SetTransform(D3DTS_WORLD,LPD3DXMATRIX(_world.m));
 	if(hr != S_OK)
 	{
 		assert(!"can't set world matrix");

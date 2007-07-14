@@ -64,6 +64,7 @@ namespace Menge
 		bool callFunctionBool( PyObject * _object );
 		bool callFunctionBool( const std::string & _name );
 
+		bool hasMethod( Entity * _entity, const std::string & _name );
 		void callMethod( Entity * _entity, const std::string & _name );
 
 		static void handleException();

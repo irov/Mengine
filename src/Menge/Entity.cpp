@@ -8,18 +8,16 @@ OBJECT_IMPLEMENT( Entity )
 //////////////////////////////////////////////////////////////////////////
 Entity::~Entity()
 {
-	Holder<ScriptEngine>::hostage();
-}
-//////////////////////////////////////////////////////////////////////////
-void Entity::destroy()
-{
-	SceneNode2D::destroy();
 }
 //////////////////////////////////////////////////////////////////////////
 bool Entity::_activate()
 {
-	Holder<ScriptEngine>::hostage()
-		->callMethod( this, "_activate" );
+	if( Holder<ScriptEngine>::hostage()
+		->hasMethod( this, "_active" ) )
+	{
+		Holder<ScriptEngine>::hostage()
+			->callMethod( this, "_activate" );
+	}
 
 	return true;
 }

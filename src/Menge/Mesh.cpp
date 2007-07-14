@@ -254,7 +254,7 @@ void Mesh::_render( const mt::mat4f & _rwm, const Frustum & _frustum )
 				VertexData * vertexData = m_primitiveData->getVertexData();
 
 				vertexData->lock(vertices,m_VBCursor,pCalRenderer->getVertexCount(),sizeof(Vertex)); 
-				int vertexCount = pCalRenderer->getVerticesNormalsAndTexCoords(&vertices[0]);
+				int vertexCount = pCalRenderer->getVerticesNormalsAndTexCoords( vertices );
 				vertexData->unlock();
 
 				CalIndex * indecies = 0;
@@ -262,7 +262,7 @@ void Mesh::_render( const mt::mat4f & _rwm, const Frustum & _frustum )
 				IndexData * indexData = m_primitiveData->getIndexData();
 
 				indexData->lock( indecies, m_IBCursor, pCalRenderer->getFaceCount() );
-				int faceCount = pCalRenderer->getFaces(indecies);
+				int faceCount = pCalRenderer->getFaces( indecies );
 				indexData->unlock();
 						
 				Holder<RenderEngine>::hostage()->setTexture((Texture*)pCalRenderer->getMapUserData(0));

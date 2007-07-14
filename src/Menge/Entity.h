@@ -20,10 +20,6 @@ namespace Menge
 	public:
 		~Entity();
 
-	public:
-		void destroy() override;
-
-
 	protected:
 		bool _activate();
 	};

@@ -364,6 +364,15 @@ namespace Menge
 		return callFunctionBool( func.ptr() );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ScriptEngine::hasMethod( Entity * _entity, const std::string & _name )
+	{
+		PyObject * scriptable = _entity->getScriptable();
+
+		int res = PyObject_HasAttrString( scriptable, _name.c_str() );
+
+		return res == 1;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::callMethod( Entity * _entity, const std::string & _name )
 	{
 		PyObject * scriptable = _entity->getScriptable();

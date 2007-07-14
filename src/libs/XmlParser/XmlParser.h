@@ -17,6 +17,10 @@ const std::string & TiXmlElementValue( TiXmlElement * _element );
 const std::string & TiXmlElementTitle( TiXmlElement * _element );
 const std::string & TiXmlElementAttribute( TiXmlElement * _element, const std::string & _name );
 
+TiXmlElement * TiXmlElementCreate( const std::string & _name );
+void TiXmlElementSetAttribute( TiXmlElement * _element, const std::string & _attribute, const std::string & _value );
+void TiXmlElementInsertEndChild( TiXmlElement * _element, TiXmlElement * _children );
+void TiXmlElementRemove( TiXmlElement * _element );
 
 /****************************************************************************
 XML_TYPE_NODE

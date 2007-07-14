@@ -36,12 +36,12 @@ WinApplication::WinApplication()
 //////////////////////////////////////////////////////////////////////////
 WinApplication::~WinApplication()
 {
+	delete m_application;
+
 	for each( Menge::SystemDLL * sysDll in m_listApplicationDLL )
 	{
 		delete sysDll;
 	}
-
-	delete m_application;
 }
 //////////////////////////////////////////////////////////////////////////
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

@@ -61,9 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\dependencies\cal3d\cal3d\bin\debug\cal3d_d.lib &quot;dxerr.lib dxguid.lib d3dx9d.lib d3d9.lib winmm.lib comctl32.lib ..\..\..\lib\Math_d.lib ..\..\..\dependencies\vld\vldmtdll.lib"
+				AdditionalDependencies="cal3d_d.lib dxerr.lib dxguid.lib d3dx9d.lib d3d9.lib winmm.lib comctl32.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(SolutionDir)dependencies\cal3d\cal3d\bin\debug\"
 				ModuleDefinitionFile="RenderSystem.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -296,6 +297,10 @@
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\RenderSystem.def"
+				>
 			</File>
 		</Filter>
 		<Filter

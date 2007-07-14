@@ -33,59 +33,61 @@ namespace Menge
 
 		PyObject * createNode( const std::string & _type, PyObject * _params  )
 		{
-		//	Node * node = SceneManager::createNode( _type );
+			Node * node = SceneManager::createNode( _type );
 
-		//	if( node->isScriptable() == false )
-		//	{
-		//		node->destroy();
-		//		Py_RETURN_NONE;
-		//	}
+			if( node->isScriptable() == false )
+			{
+				node->destroy();
+				Py_RETURN_NONE;
+			}
 
-		//	if( PyList_Check( _params ) )
-		//	{
-		//		TiXmlElement node_xml("Node");	
+			if( PyList_Check( _params ) )
+			{
+				TiXmlElement * node_xml = TiXmlElementCreate("Node");	
 
-		//		for( Py_ssize_t it = 0, it_end = PyList_Size( _params ); it != it_end; ++it )
-		//		{
-		//			PyObject * dict = PyList_GetItem( _params, it );
+				for( Py_ssize_t it = 0, it_end = PyList_Size( _params ); it != it_end; ++it )
+				{
+					PyObject * dict = PyList_GetItem( _params, it );
 
-		//			if( PyDict_Check( dict ) == 0 )
-		//			{
-		//				continue;
-		//			}
+					if( PyDict_Check( dict ) == 0 )
+					{
+						continue;
+					}
 
-		//			PyObject *py_key, *py_value;
-		//			Py_ssize_t pos = 0;
+					PyObject *py_key, *py_value;
+					Py_ssize_t pos = 0;
 
-		//			Py_ssize_t dict_size = PyDict_Size( dict );
+					Py_ssize_t dict_size = PyDict_Size( dict );
 
-		//			while( PyDict_Next( dict, &pos, &py_key, &py_value) ) 
-		//			{
-		//				std::string key = PyString_AsString( py_key );
+					while( PyDict_Next( dict, &pos, &py_key, &py_value) ) 
+					{
+						std::string key = PyString_AsString( py_key );
 
-		//				TiXmlElement key_xml( key );
+						TiXmlElement * key_xml = TiXmlElementCreate( key );
 
-		//				PyObject *py_value_key, *py_value_value;
-		//				Py_ssize_t value_pos = 0;
+						PyObject *py_value_key, *py_value_value;
+						Py_ssize_t value_pos = 0;
 
-		//				while( PyDict_Next( py_value, &value_pos, &py_value_key, &py_value_value) )
-		//				{
-		//					std::string value_key = PyString_AsString( py_value_key );
-		//					std::string value_value = PyString_AsString( py_value_value );
+						while( PyDict_Next( py_value, &value_pos, &py_value_key, &py_value_value) )
+						{
+							std::string value_key = PyString_AsString( py_value_key );
+							std::string value_value = PyString_AsString( py_value_value );
 
-		//					key_xml.SetAttribute( value_key, value_value );
-		//				}
+							TiXmlElementSetAttribute( key_xml, value_key, value_value );
+						}
 
-		//				node_xml.InsertEndChild( key_xml );
-		//			}
-		//		}
+						TiXmlElementInsertEndChild( node_xml, key_xml );
+					}
+				}
 
-		//		node->loader( &node_xml );
-		//	}
+				node->loader( node_xml );
 
-		//	PyObject * pyNode = node->getScriptable();
+				TiXmlElementRemove( node_xml );
+			}
 
-		//	return pyNode;
+			PyObject * pyNode = node->getScriptable();
+
+			return pyNode;
 			return 0;
 		}
 	}

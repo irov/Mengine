@@ -3,12 +3,13 @@
 #	define TIXML_USE_STL
 #	include "tinyxml/tinyxml.h"
 
+//////////////////////////////////////////////////////////////////////////
 static const std::string & string_empty()
 {
 	static std::string s_empty;
 	return s_empty;
 }
-
+//////////////////////////////////////////////////////////////////////////
 TiXmlDocument * TiXmlDocumentLoadFile( const std::string & _file )
 {
 	TiXmlDocument * document = new TiXmlDocument;
@@ -22,7 +23,7 @@ TiXmlDocument * TiXmlDocumentLoadFile( const std::string & _file )
 	
 	return document;	
 }
-
+//////////////////////////////////////////////////////////////////////////
 TiXmlDocument * TiXmlDocumentLoadData( const std::string & _data )
 {
 	TiXmlDocument * document = new TiXmlDocument;
@@ -37,27 +38,27 @@ TiXmlDocument * TiXmlDocumentLoadData( const std::string & _data )
 
 	return document;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void TiXmlDocumentRelese( TiXmlDocument * _document )
 {
 	delete _document;
 }
-
+//////////////////////////////////////////////////////////////////////////
 TiXmlElement * TiXmlDocumentFirstChildElement( TiXmlDocument * _document )
 {
 	return _document->FirstChildElement();
 }
-
+//////////////////////////////////////////////////////////////////////////
 TiXmlElement * TiXmlElementFirstChildElement( TiXmlElement * _element )
 {
 	return _element->FirstChildElement();
 }
-
+//////////////////////////////////////////////////////////////////////////
 TiXmlElement * TiXmlElementNextSiblingElement( TiXmlElement * _element )
 {
 	return _element->NextSiblingElement();
 }
-
+//////////////////////////////////////////////////////////////////////////
 const std::string & TiXmlElementValue( TiXmlElement * _element )
 {
 	TiXmlNode * node = _element->FirstChild();
@@ -69,12 +70,12 @@ const std::string & TiXmlElementValue( TiXmlElement * _element )
 
 	return string_empty();
 }
-
+//////////////////////////////////////////////////////////////////////////
 const std::string & TiXmlElementTitle( TiXmlElement * _element )
 {
 	return _element->ValueStr();
 }
-
+//////////////////////////////////////////////////////////////////////////
 const std::string & TiXmlElementAttribute( TiXmlElement * _element, const std::string & _name )
 {
 	const std::string * attr = _element->Attribute( _name );
@@ -85,6 +86,26 @@ const std::string & TiXmlElementAttribute( TiXmlElement * _element, const std::s
 	}
 
 	return string_empty();
+}
+//////////////////////////////////////////////////////////////////////////
+TiXmlElement * TiXmlElementCreate( const std::string & _name )
+{
+	return new TiXmlElement( _name );
+}
+//////////////////////////////////////////////////////////////////////////
+void TiXmlElementSetAttribute( TiXmlElement * _element, const std::string & _attribute, const std::string & _value )
+{
+	_element->SetAttribute( _attribute, _value );
+}
+//////////////////////////////////////////////////////////////////////////
+void TiXmlElementInsertEndChild( TiXmlElement * _element, TiXmlElement * _children )
+{
+	_element->InsertEndChild( *_children );
+}
+//////////////////////////////////////////////////////////////////////////
+void TiXmlElementRemove( TiXmlElement * _element )
+{
+	delete _element;
 }
 
 #	define XMLP_SIMPLE_PARSE( K )\

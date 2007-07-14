@@ -107,11 +107,6 @@ namespace Menge
 			return;
 		}
 	
-		if( _parent == 0 )
-		{
-			return;
-		}
-	
 		const mt::mat3f & parentMatrix =
 			_parent->getWorldMatrix();
 	

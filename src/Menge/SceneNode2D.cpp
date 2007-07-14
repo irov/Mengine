@@ -35,7 +35,7 @@ namespace Menge
 			return getLocalMatrix();
 		}
 
-		updateMatrix( m_parent );	
+		updateMatrix( m_parent );
 		
 		return Allocator2D::getWorldMatrix();
 	}

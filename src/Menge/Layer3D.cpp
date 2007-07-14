@@ -12,11 +12,11 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT(Layer3D);
-
+	//////////////////////////////////////////////////////////////////////////
 	Layer3D::Layer3D()
 	{
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::renderLayer()
 	{
 		Camera3D * camera = 
@@ -27,12 +27,9 @@ namespace Menge
 
 		const Frustum & frustum = updateFrustum( cfm );
 
-		/*mt::mat4f worldMat;
-		mt::ident_m4(worldMat);
-		Holder<RenderEngine>::hostage()->setWorldMatrix(worldMat);
 		Holder<RenderEngine>::hostage()->setViewMatrix(camera->getViewMatrix());
 		Holder<RenderEngine>::hostage()->setProjectionMatrix(camera->getProjectionMatrix());
-		*/
+		
 		for each( SceneNode3D * node in m_listChildren )
 		{
 			const mt::mat4f & wm = node->getWorldMatrix();

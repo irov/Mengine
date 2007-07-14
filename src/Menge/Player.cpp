@@ -110,10 +110,10 @@ namespace Menge
 		cmr3d->setAspect(1.3f);
 		cmr3d->setFar(4000.0f);
 		cmr3d->setNear(0.1f);
-		cmr3d->setFov(90);
-		cmr3d->setPosition(mt::vec3f(0,0,0));
+		cmr3d->setFov(60);
+		cmr3d->setPosition(mt::vec3f(0,0,-1));
 
-		cmr3d->lookAt(mt::vec3f(1,0,0));
+		cmr3d->lookAt(mt::vec3f(0,0,1));
 
 		setRenderCamera3D(cmr3d);
 

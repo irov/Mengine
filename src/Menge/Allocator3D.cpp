@@ -126,17 +126,12 @@ namespace Menge
 			return;
 		}
 
-		if( _parent == 0 )
-		{
-			return;
-		}
+		_updateMatrix( _parent );
 
 		const mt::mat4f & parentMatrix =
 			_parent->getWorldMatrix();
 
-		mt::mul_m4_m4(m_worldMatrix,m_localMatrix,parentMatrix);
-
-		_updateMatrix( _parent );
+		mt::mul_m4_m4(m_worldMatrix,m_localMatrix,parentMatrix);		
 
 		m_changePivot = false;
 	}

@@ -44,21 +44,17 @@ const Frustum & Camera3D::getFrustum() const
 }
 //////////////////////////////////////////////////////////////////////////
 const mt::mat4f & Camera3D::getViewMatrix()
-{
-	if( m_parent == 0 )
-	{
-		mt::inv_m4( m_viewMatrix, m_localMatrix );
-		return m_viewMatrix;
-	}
-
-	updateMatrix( m_parent );	
+{	
+	_updateMatrix( m_parent );
 
 	return m_viewMatrix;
 }
 //////////////////////////////////////////////////////////////////////////
 void Camera3D::_updateMatrix( Allocator3D * _parent )
 {
-	mt::inv_m4( m_viewMatrix, m_worldMatrix );
+	const mt::mat4f & wm = getWorldMatrix();
+
+	mt::inv_m4( m_viewMatrix, wm );
 
 	m_frustum.recalc( m_worldMatrix );
 }

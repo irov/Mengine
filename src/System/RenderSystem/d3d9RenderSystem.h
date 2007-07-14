@@ -5,8 +5,6 @@
 #	include <vector>
 #	include <list>
 
-#define V(x)           { hr = x; if( FAILED(hr) ) { DXUTTrace( __FILE__, (DWORD)__LINE__, hr, L#x, true ); } }
-
 class	d3d9RenderFont;
 
 class	Direct3d9RenderSystem
@@ -16,7 +14,10 @@ public:
 	Direct3d9RenderSystem();
 	~Direct3d9RenderSystem();
 public:
-	bool	createDisplay( HWND _hWnd, int _width, int _height, int _bits, bool _fullScreen);
+	bool	createDisplay(
+		HWND _hWnd, int _width, int _height, int _bits, bool _fullScreen,
+		bool _vsync, bool _stencilBuffer, bool _antiAlias, bool _pureSoftware);
+
 	void	drawPrimitive(PrimitiveData * _pd);
 	
 	VertexData * createVertexData();

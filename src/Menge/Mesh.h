@@ -14,6 +14,14 @@ namespace Menge
 {
 	class ResourceAnimationCal3d;
 
+	struct Vertex
+	{
+		float pos[3];
+		float normal[3];
+		float t;
+		float s;
+	};
+
 	class Mesh
 		: public SceneNode3D
 	{

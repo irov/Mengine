@@ -19,6 +19,10 @@
 		<Height Value = "768"/>
 		<Bits Value = "16"/>
 		<FullScreen Value = "0"/>
+		<Vsync Value = "1"/>
+		<StencilBuffer Value = "0"/>
+		<AntiAlias Value = "1"/>
+		<PureSoftware Value = "0"/>
 	</Display>
 
 	<Paks>

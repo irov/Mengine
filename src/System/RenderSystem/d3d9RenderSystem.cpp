@@ -86,8 +86,6 @@ Direct3d9RenderSystem::~Direct3d9RenderSystem()
 		m_batchFontIB->Release(); 
 		m_batchFontIB = NULL;
 	}
-
-
 }
 
 Texture * Direct3d9RenderSystem::createTextureInMemory(const TextureDesc& _desc)
@@ -132,31 +130,15 @@ void	Direct3d9RenderSystem::releaseTexture(Texture * _tex)
 {
 	delete static_cast<d3d9Texture*>(_tex);
 }
-static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	switch (uMsg)
-	{
-	case WM_CLOSE:
-		DestroyWindow(hWnd);
-		return 0;
 
-	case WM_DESTROY:
-		PostQuitMessage(0);
-	}
-
-	return DefWindowProc(hWnd, uMsg, wParam, lParam);
-}
-bool	Direct3d9RenderSystem::createDisplay( HWND _hWnd, int _width, int _height, int _bits, bool _fullScreen)
+bool	Direct3d9RenderSystem::createDisplay(
+	HWND _hWnd, int _width, int _height, int _bits, bool _fullScreen,
+	bool _vsync, bool _stencilBuffer, bool _antiAlias, bool _pureSoftware)
 {
 	HRESULT hr;
 
 	DeviceLost = false;
 
-	bool vsync = true;
-	bool	StencilBuffer = false;
-	bool	antiAlias = true;
-	bool	pureSoftware = false;
-	
 	IDirect3D9* pID3D = Direct3DCreate9(D3D_SDK_VERSION);
 	
 	D3DADAPTER_IDENTIFIER9 dai;
@@ -197,18 +179,18 @@ bool	Direct3d9RenderSystem::createDisplay( HWND _hWnd, int _width, int _height, 
 		present.BackBufferCount = 0;
 		present.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
-		if (vsync)
+		if (_vsync)
 			present.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 		
 		// request 32bit mode if user specified 32 bit, added by Thomas Stüfe
-		if (_bits == 32 && !StencilBuffer) 
+		if (_bits == 32 && !_stencilBuffer) 
 			present.BackBufferFormat = D3DFMT_A8R8G8B8;
 	}
 
 	D3DDEVTYPE devtype = D3DDEVTYPE_HAL;
 	
 	// enable anti alias if possible and whished
-	if (antiAlias)
+	if (_antiAlias)
 	{
 		DWORD qualityLevels = 0; 
 
@@ -234,11 +216,11 @@ bool	Direct3d9RenderSystem::createDisplay( HWND _hWnd, int _width, int _height, 
 		else 
         { 
             printf("Anti aliasing disabled because hardware/driver lacks necessary caps.");    
-			antiAlias = false;
+			_antiAlias = false;
         }
 	}
 
-	if (StencilBuffer)
+	if (_stencilBuffer)
 	{
 		present.AutoDepthStencilFormat = D3DFMT_D24S8;
 		if(FAILED(pID3D->CheckDeviceFormat(D3DADAPTER_DEFAULT, devtype,
@@ -246,23 +228,23 @@ bool	Direct3d9RenderSystem::createDisplay( HWND _hWnd, int _width, int _height, 
 			D3DRTYPE_SURFACE, D3DFMT_D24S8)))
 		{
 			printf("Device does not support stencilbuffer, disabling stencil buffer.");
-			StencilBuffer = false;
+			_stencilBuffer = false;
 		}
 		else
 		if(FAILED(pID3D->CheckDepthStencilMatch(D3DADAPTER_DEFAULT, devtype,
 			present.BackBufferFormat, present.BackBufferFormat, D3DFMT_D24S8)))
 		{
 			printf("Depth-stencil format is not compatible with display format, disabling stencil buffer.");
-			StencilBuffer = false;
+			_stencilBuffer = false;
 		} 		
 	}
 
-	if (!StencilBuffer)
+	if (!_stencilBuffer)
 	{
 		present.AutoDepthStencilFormat = D3DFMT_D16;
 	}
 
-	if (pureSoftware)
+	if (_pureSoftware)
 	{
 		hr = pID3D->CreateDevice(	D3DADAPTER_DEFAULT, D3DDEVTYPE_REF,	_hWnd,
 									D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present, &pID3DDevice);
@@ -304,20 +286,20 @@ bool	Direct3d9RenderSystem::createDisplay( HWND _hWnd, int _width, int _height, 
 	pID3DDevice->GetDeviceCaps(&Caps);
 
 	// disalbe stencilbuffer if necessary
-	if (StencilBuffer && 
+	if (_stencilBuffer && 
 		(!(Caps.StencilCaps & D3DSTENCILCAPS_DECRSAT) ||
 		!(Caps.StencilCaps & D3DSTENCILCAPS_INCRSAT) ||
 		!(Caps.StencilCaps & D3DSTENCILCAPS_KEEP)))
 	{
 		printf("Device not able to use stencil buffer, disabling stencil buffer.");
-		StencilBuffer = false;
+		_stencilBuffer = false;
 	}
 
 	// set default vertex shader
 	//setVertexShader(EVT_STANDARD);
 
 	// enable antialiasing
-	if (antiAlias)
+	if (_antiAlias)
 		pID3DDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, TRUE);
 
 	// set fog mode

@@ -74,11 +74,14 @@ bool WinApplication::init( const char * _xmlFile )
 	typedef std::map<int, std::list<std::string>> TPackHierarchical;
 	TPackHierarchical packHierarchical;
 
-	int m_width;
-	int m_height;
-	int m_bits;
-
-	bool m_fullScreen;
+	int		m_width = 1024;
+	int		m_height = 768;
+	int		m_bits = 32;
+	bool	m_fullScreen = false;
+	bool	m_vsync = false;
+	bool	m_stencilBuffer = false;
+	bool	m_antiAlias = false;
+	bool	m_pureSoftware = false;
 
 	std::string gameFile;
 
@@ -174,6 +177,11 @@ bool WinApplication::init( const char * _xmlFile )
 				XML_CHECK_VALUE_NODE("Height","Value",m_height);
 				XML_CHECK_VALUE_NODE("Bits","Value",m_bits);
 				XML_CHECK_VALUE_NODE("FullScreen","Value",m_fullScreen);
+
+				XML_CHECK_VALUE_NODE("Vsync","Value",m_vsync);
+				XML_CHECK_VALUE_NODE("StencilBuffer","Value",m_stencilBuffer);
+				XML_CHECK_VALUE_NODE("AntiAlias","Value",m_antiAlias);
+				XML_CHECK_VALUE_NODE("PureSoftware","Value",m_pureSoftware);
 			}
 
 			XML_CHECK_VALUE_NODE("Game", "File", gameFile );
@@ -243,7 +251,9 @@ bool WinApplication::init( const char * _xmlFile )
 
 	MoveWindow(hWnd, windowLeft, windowTop, realWidth, realHeight, TRUE);
 
-	renderInterface->createDisplay( hWnd, m_width, m_height, m_bits, m_fullScreen );
+	renderInterface->createDisplay( hWnd, m_width,
+		m_height, m_bits, m_fullScreen,	m_vsync, 
+		m_stencilBuffer, m_antiAlias, m_pureSoftware );
 
 	inputInterface->init( hWnd, 0x00000003 );
 

@@ -409,6 +409,37 @@ bool Direct3d9RenderSystem::endScene()
 	return true;
 }
 
+
+void	Direct3d9RenderSystem::setMaterialColor(unsigned char _ambient[4], 
+		unsigned char _diffuse[4],
+		unsigned char _specular[4])
+{
+	D3DMATERIAL9 mat;
+
+    mat.Ambient.r = _ambient[0]/255.0f;
+	mat.Ambient.g = _ambient[1]/255.0f;
+    mat.Ambient.b = _ambient[2]/255.0f;
+	mat.Ambient.a = _ambient[3]/255.0f;
+
+    mat.Diffuse.r = _diffuse[0]/255.0f;
+	mat.Diffuse.g = _diffuse[1]/255.0f;
+    mat.Diffuse.b = _diffuse[2]/255.0f;
+	mat.Diffuse.a = _diffuse[3]/255.0f;
+
+    mat.Specular.r = _specular[0]/255.0f;
+	mat.Specular.g = _specular[1]/255.0f;
+    mat.Specular.b = _specular[2]/255.0f;
+	mat.Specular.a = _specular[3]/255.0f;
+
+	mat.Power = 0.0f;
+    mat.Emissive.r = 0.0f;
+	mat.Emissive.g = 0.0f;
+	mat.Emissive.b = 0.0f;
+	mat.Emissive.a = 0.0f;
+
+    pID3DDevice->SetMaterial(&mat);
+}
+
 RenderFontInterface * Direct3d9RenderSystem::loadFont(const FontDesc &_fontDesc)
 {
 	return new D3D9Font(this, pID3DDevice, _fontDesc);

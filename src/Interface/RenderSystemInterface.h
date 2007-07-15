@@ -156,6 +156,10 @@ public:
 	virtual bool beginScene(bool backBuffer, bool zBuffer, int color) = 0;
 	virtual bool endScene() = 0;
 
+	virtual void	setMaterialColor(unsigned char _ambient[4], 
+		unsigned char _diffuse[4],
+		unsigned char _specular[4]) = 0;
+
 	virtual void	drawPrimitive(PrimitiveData * _pd) = 0;
 	
 	virtual VertexData * createVertexData() = 0;

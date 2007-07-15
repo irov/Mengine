@@ -50,7 +50,7 @@
 				UsePrecompiledHeader="0"
 				GenerateXMLDocumentationFiles="false"
 				BrowseInformation="1"
-				WarningLevel="3"
+				WarningLevel="2"
 				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
@@ -441,18 +441,6 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Kernel"
-			>
-			<File
-				RelativePath=".\Holder.h"
-				>
-			</File>
-			<File
-				RelativePath=".\MengeExport.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Object2D"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
@@ -724,6 +712,18 @@
 				</File>
 				<File
 					RelativePath=".\Animation.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Kernel"
+				>
+				<File
+					RelativePath=".\Holder.h"
+					>
+				</File>
+				<File
+					RelativePath=".\MengeExport.h"
 					>
 				</File>
 			</Filter>

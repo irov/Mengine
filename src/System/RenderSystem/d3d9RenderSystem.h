@@ -47,6 +47,11 @@ public:
 	void	setProjectionMatrix(const mt::mat4f& _projection);
 	void	setViewMatrix(const mt::mat4f& _view);
 	void	setWorldMatrix(const mt::mat4f& _world);
+
+	void	setMaterialColor(unsigned char _ambient[4], 
+		unsigned char _diffuse[4],
+		unsigned char _specular[4]);
+
 public:
 	void	_setDevice(IDirect3DDevice9 * _pd3dDevice);
 	IDirect3DDevice9 * _getDevice();

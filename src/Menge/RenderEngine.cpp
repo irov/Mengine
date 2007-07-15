@@ -18,6 +18,13 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void	RenderEngine::setMaterialColor(unsigned char _ambient[4], 
+		unsigned char _diffuse[4],
+		unsigned char _specular[4])
+	{
+		return m_interface->setMaterialColor(_ambient,_diffuse,_specular);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	VertexData * RenderEngine::createVertexData()
 	{
 		return m_interface->createVertexData();

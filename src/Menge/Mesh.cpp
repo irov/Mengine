@@ -34,6 +34,7 @@ Mesh::Mesh()
 , m_currentAnimationId(0)
 , m_calCoreModel(0)
 , m_calModel(0)
+, m_paused(false)
 {}
 //////////////////////////////////////////////////////////////////////////
 Mesh::~Mesh()
@@ -44,7 +45,7 @@ bool Mesh::isVisible( const Camera3D * _camera )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void Mesh::initGeometry()
+void Mesh::_initGeometry()
 {
 	m_primitiveData = new PrimitiveData();
 
@@ -78,7 +79,7 @@ bool Mesh::_activate()
 		return false;
 	}
 
-	initGeometry();
+	_initGeometry();
 
 	m_calCoreModel = new CalCoreModel("dummy");
 	m_scale = m_cal3dRes->getScale();
@@ -95,10 +96,13 @@ bool Mesh::_activate()
 		}
 	}
 
-	for(size_t i = 0; i < m_cal3dRes->getCoreAnimInfo().size();++i)
+	size_t sizeAnimCount = m_cal3dRes->getCoreAnimInfo().size();
+	m_animationId.resize(sizeAnimCount);
+
+	for(size_t i = 0; i < sizeAnimCount;++i)
 	{
 		const std::string& info = folder + m_cal3dRes->getCoreAnimInfo()[i];
-		if(m_calCoreModel->loadCoreAnimation(info) == -1)
+		if((m_animationId[i] = m_calCoreModel->loadCoreAnimation(info)) == -1)
 		{
 			return false;
 		}
@@ -162,24 +166,46 @@ bool Mesh::_activate()
 	m_currentAnimationId = 0;
 	m_leftAnimationTime = m_calCoreModel->getCoreAnimation(m_currentAnimationId)->getDuration() - m_blendTime;
 
-	if(m_calCoreModel->getCoreAnimationCount() > 1)
+/*	if(m_calCoreModel->getCoreAnimationCount() > 1)
 	{
 		m_calModel->getMixer()->executeAction(m_currentAnimationId, 0.0f, m_blendTime);
 	}
 	else
 	{
 		m_calModel->getMixer()->blendCycle(m_currentAnimationId, 1.0f, 0.0f);
-	}
+	}*/
 
 	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void Mesh::executeAction(int _action)
+{
+	m_calModel->getMixer()->clearCycle(m_currentAnimationId, m_blendTime);
+	m_calModel->getMixer()->executeAction(_action, 0.0f, m_blendTime);
+	m_paused = false;
+}
+//////////////////////////////////////////////////////////////////////////
+void Mesh::pause()
+{
+	m_paused = true;
+}
+//////////////////////////////////////////////////////////////////////////
+void Mesh::nextAction()
+{
+	for(int i = 0; i < m_animationId.size(); ++i)
+	{
+		m_calModel->getMixer()->clearCycle(m_animationId[i], m_blendTime);
+	}
+	m_currentAnimationId = (m_currentAnimationId + 1) % m_calCoreModel->getCoreAnimationCount();
+	m_calModel->getMixer()->executeAction(m_currentAnimationId, m_leftAnimationTime, m_blendTime);
+	m_paused = false;
 }
 //////////////////////////////////////////////////////////////////////////
 void Mesh::_deactivate()
 {
 	for(int materialId = 0; materialId < m_calCoreModel->getCoreMaterialCount(); materialId++)
 	{
-		CalCoreMaterial *pCoreMaterial;
-		pCoreMaterial = m_calCoreModel->getCoreMaterial(materialId);
+		CalCoreMaterial * pCoreMaterial = m_calCoreModel->getCoreMaterial(materialId);
 		for(int mapId = 0; mapId < pCoreMaterial->getMapCount(); mapId++)
 		{
 			Texture* tex = (Texture*)pCoreMaterial->getMapUserData(mapId);
@@ -189,6 +215,7 @@ void Mesh::_deactivate()
 
 	delete m_calModel;
 	delete m_calCoreModel;
+
 	delete m_vertexDecl;
 	delete m_primitiveData;
 
@@ -198,7 +225,8 @@ void Mesh::_deactivate()
 //////////////////////////////////////////////////////////////////////////
 void Mesh::update( float _timing )
 {
-	if(m_calCoreModel->getCoreAnimationCount() > 1)
+	//последовательное проигрывание всех анимацией для теста!
+	/*if(m_calCoreModel->getCoreAnimationCount() > 1)
 	{
 		m_leftAnimationTime -= _timing;
 		if(m_leftAnimationTime <= m_blendTime)
@@ -208,7 +236,8 @@ void Mesh::update( float _timing )
 			m_leftAnimationTime = m_calCoreModel->getCoreAnimation(m_currentAnimationId)->getDuration() - m_blendTime;
 		}
 	}
-
+	*/
+	if(m_paused) return;
 	m_calModel->update(_timing);
 }
 //////////////////////////////////////////////////////////////////////////
@@ -241,6 +270,19 @@ void Mesh::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
 		{
 			if(pCalRenderer->selectMeshSubmesh(meshId, submeshId))
 			{
+				RenderEngine * renderEng = Holder<RenderEngine>::hostage();
+
+				unsigned char ambient[4];
+				pCalRenderer->getAmbientColor(&ambient[0]);
+
+				unsigned char diffuse[4];
+				pCalRenderer->getAmbientColor(&diffuse[0]);
+
+				unsigned char specular[4];
+				pCalRenderer->getSpecularColor(&specular[0]);
+
+				renderEng->setMaterialColor(ambient,diffuse,specular);
+
 				float * vertices = 0;
 
 				VertexData * vertexData = m_primitiveData->getVertexData();
@@ -257,8 +299,8 @@ void Mesh::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
 				int faceCount = pCalRenderer->getFaces( indecies );
 				indexData->unlock();
 						
-				Holder<RenderEngine>::hostage()->setTexture((Texture*)pCalRenderer->getMapUserData(0));
-				Holder<RenderEngine>::hostage()->drawPrimitive(m_primitiveData);
+				renderEng->setTexture((Texture*)pCalRenderer->getMapUserData(0));
+				renderEng->drawPrimitive(m_primitiveData);
 
 				m_VBCursor+=vertexCount;
 				m_IBCursor+=faceCount;
@@ -270,7 +312,5 @@ void Mesh::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
 }
 //////////////////////////////////////////////////////////////////////////
 void Mesh::_debugRender()
-{
-
-}
+{}
 //////////////////////////////////////////////////////////////////////////

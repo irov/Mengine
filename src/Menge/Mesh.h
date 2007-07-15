@@ -36,6 +36,11 @@ namespace Menge
 
 		virtual bool isVisible( const Camera3D * _camera ) override;
 
+	public:
+		void executeAction(int _action);
+		void pause();
+		void nextAction();
+
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
@@ -48,6 +53,8 @@ namespace Menge
 		float	m_leftAnimationTime;
 		float	m_blendTime;
 		int		m_currentAnimationId;
+		bool	m_paused;
+		std::vector<int>	m_animationId;
 		std::string m_resourceName;
 
 		CalCoreModel * m_calCoreModel;
@@ -57,6 +64,6 @@ namespace Menge
 		VertexDeclaration * m_vertexDecl;
 		PrimitiveData * m_primitiveData;
 
-		void	initGeometry();
+		void	_initGeometry();
 	};
 }

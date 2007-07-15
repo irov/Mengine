@@ -23,9 +23,7 @@ namespace Menge
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_VALUE_NODE( "File", "Config", m_fileCAL3D );
-			XML_CHECK_VALUE_NODE( "File", "Path", m_filePathCAL3D );
 		}
-
 		ResourceImpl::loader( _xml );
 	}
 
@@ -33,7 +31,7 @@ namespace Menge
 	{
 		std::ifstream file;
 
-		std::string offset_path = m_filePathCAL3D + m_fileCAL3D;
+		std::string offset_path = m_fileCAL3D;
 
 		file.open(offset_path.c_str(), std::ios::in | std::ios::binary);
 		if(!file)
@@ -64,8 +62,7 @@ namespace Menge
 
 			if(strBuffer[pos] == '#') continue;
 
-			std::string strKey;
-			strKey = strBuffer.substr(pos, strBuffer.find_first_of(" =\t\n\r", pos) - pos);
+			std::string strKey = strBuffer.substr(pos, strBuffer.find_first_of(" =\t\n\r", pos) - pos);
 			pos += strKey.size();
 
 			pos = strBuffer.find_first_not_of(" \t", pos);
@@ -81,6 +78,10 @@ namespace Menge
 			std::string strData;
 			strData = strBuffer.substr(pos, strBuffer.find_first_of("\n\r", pos) - pos);
 
+			if(strKey == "path")
+			{
+				 m_filePathCAL3D = strData;
+			}
 			if(strKey == "scale")
 			{
 				m_scale = (float)atof(strData.c_str());

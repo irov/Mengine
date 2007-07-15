@@ -20,6 +20,10 @@ namespace Menge
 		
 	public:
 
+		void	setMaterialColor(unsigned char _ambient[4], 
+		unsigned char _diffuse[4],
+		unsigned char _specular[4]);
+
 		bool beginScene(bool backBuffer, bool zBuffer, int color);
 		bool endScene();
 

@@ -26,6 +26,10 @@
 #	include "Amplifier.h"
 
 #	include "Animation.h"
+//
+#	include "Mesh.h"
+
+#	include "Layer3D.h"
 
 #	define DIRECTINPUT_VERSION 0x0800
 #	include <dinput.h>
@@ -113,7 +117,7 @@ namespace Menge
 		cmr3d->setFar(1000.0f);
 		cmr3d->setNear(0.5f);
 		cmr3d->setFov( 3.14f / 4.f );
-		cmr3d->setPosition(mt::vec3f(3,0,3));
+		cmr3d->setPosition(mt::vec3f(300,0,300));
 
 		cmr3d->lookAt(mt::vec3f(0,0,0));
 
@@ -138,6 +142,13 @@ namespace Menge
 		
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
+		if( inputEng->isKey( DIK_SPACE, 1 ) == true )
+		{
+			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
+			Mesh * mesh = layer->getChildrenT<Mesh>("TestMesh");
+			mesh->nextAction();
+		}
+
 		if( inputEng->isButton( 0, 1 ) == true )
 		{
 			cmr3d->yaw( 0.128f );
@@ -155,7 +166,6 @@ namespace Menge
 			a += b * 0.1f;
 			cmr3d->setPosition( a );
 		}
-
 
 		if( inputEng->isKey( DIK_D, 1 ) == true )
 		{
@@ -180,8 +190,6 @@ namespace Menge
 			a -= b * 0.1f;
 			cmr3d->setPosition( a );
 		}
-
-
 
 
 		//if( inputEng->isButton( MOUSE_LEFT, DI_PRESSED ) == true )

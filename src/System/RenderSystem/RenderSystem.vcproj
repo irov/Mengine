@@ -313,54 +313,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\RenderSystem.def"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			>
-			<File
-				RelativePath=".\d3d9IndexData.h"
-				>
-			</File>
-			<File
-				RelativePath=".\d3d9RenderFont.h"
-				>
-			</File>
-			<File
-				RelativePath=".\d3d9RenderImage.h"
-				>
-			</File>
-			<File
-				RelativePath=".\d3d9RenderSystem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\d3d9Texture.h"
-				>
-			</File>
-			<File
-				RelativePath=".\d3d9VertexData.h"
-				>
-			</File>
-			<File
-				RelativePath=".\d3d9VertexDeclaration.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
-		</Filter>
-		<Filter
-			Name="Cal3dModel"
-			>
-			<File
 				RelativePath=".\model.cpp"
 				>
 				<FileConfiguration
@@ -407,6 +359,50 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\RenderSystem.def"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
+			<File
+				RelativePath=".\d3d9IndexData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\d3d9RenderFont.h"
+				>
+			</File>
+			<File
+				RelativePath=".\d3d9RenderImage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\d3d9RenderSystem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\d3d9Texture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\d3d9VertexData.h"
+				>
+			</File>
+			<File
+				RelativePath=".\d3d9VertexDeclaration.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
 		</Filter>
 	</Files>
 	<Globals>

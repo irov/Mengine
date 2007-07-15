@@ -70,7 +70,10 @@ namespace Menge
 
 		// If we have a file, assume it is all one big XML file, and read it in.
 		// The document parser may decide the document ends sooner than the entire file, however.
+
 		std::string data( file->getBuffer(), length );
+
+		//printf("%s\n",data.c_str());
 		//data.reserve(length);
 
 		//const int BUF_SIZE = 2048;

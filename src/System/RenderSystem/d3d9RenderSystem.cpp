@@ -382,6 +382,7 @@ bool Direct3d9RenderSystem::beginScene(bool backBuffer, bool zBuffer, int color)
 
 bool Direct3d9RenderSystem::endScene()
 {
+	_renderBatches();
 	if (DeviceLost)
 		return false;
 

@@ -148,6 +148,40 @@ namespace Menge
 			cmr3d->yaw( -0.128f );
 		}
 
+		if( inputEng->isKey( DIK_A, 1 ) == true )
+		{
+			mt::vec3f a = cmr3d->getLocalPosition();
+			mt::vec3f b = cmr3d->getLocalStrafe();
+			a += b * 0.1f;
+			cmr3d->setPosition( a );
+		}
+
+
+		if( inputEng->isKey( DIK_D, 1 ) == true )
+		{
+			mt::vec3f a = cmr3d->getLocalPosition();
+			mt::vec3f b = cmr3d->getLocalStrafe();
+			a -= b * 0.1f;
+			cmr3d->setPosition( a );
+		}
+
+		if( inputEng->isKey( DIK_W, 1 ) == true )
+		{
+			mt::vec3f a = cmr3d->getLocalPosition();
+			mt::vec3f b = cmr3d->getLocalDirection();
+			a += b * 0.1f;
+			cmr3d->setPosition( a );
+		}
+
+		if( inputEng->isKey( DIK_S, 1 ) == true )
+		{
+			mt::vec3f a = cmr3d->getLocalPosition();
+			mt::vec3f b = cmr3d->getLocalDirection();
+			a -= b * 0.1f;
+			cmr3d->setPosition( a );
+		}
+
+
 
 
 		//if( inputEng->isButton( MOUSE_LEFT, DI_PRESSED ) == true )

@@ -70,8 +70,8 @@ namespace Menge
 				{
 					XML_DEF_ATTRIBUTES_NODE( File );
 					Scene * scene = SceneManager::createNodeFromXmlT<Scene>( File );
-
 					addScene( scene );
+					
 				}
 			}
 

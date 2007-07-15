@@ -61,6 +61,7 @@ Node * SceneManager::createNodeFromXml( const std::string & _xml )
 
 	XML_FOR_EACH_DOCUMENT( document )
 	{
+		
 		XML_CHECK_NODE("Node")
 		{
 			XML_DEF_ATTRIBUTES_NODE(Name);

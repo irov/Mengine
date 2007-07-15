@@ -143,7 +143,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"
+				ImportLibrary="$(SolutionDir)Lib\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool

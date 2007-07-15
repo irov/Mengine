@@ -8,8 +8,6 @@
 #	include <direct.h>
 #	include <assert.h>
 
-#	pragma comment (lib, ".\\zlib\\zlibstat.lib")
-
 bool initInterfaceSystem(FileSystemInterface** _ptrFileSystem)
 {
 	try

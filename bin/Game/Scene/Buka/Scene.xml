@@ -5,8 +5,8 @@
 		<Node Name = "TestMesh" Type = "Mesh">
 			<ImageMap Name = "Cal3dTest" />
 			<Transformation Value = "1;0;0;0;1;0;0;0;1;0;0;0" />
-		</Node> <!-- Mesh -->
-	</Node> <!-- Layer -->
+		</Node>
+	</Node>
 
 	<Node Name = "Main" Type = "Layer2D">
 		<Parallax Factor = "1;1" />

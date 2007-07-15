@@ -192,7 +192,7 @@ void Mesh::pause()
 //////////////////////////////////////////////////////////////////////////
 void Mesh::nextAction()
 {
-	for(int i = 0; i < m_animationId.size(); ++i)
+	for(size_t i = 0; i < m_animationId.size(); ++i)
 	{
 		m_calModel->getMixer()->clearCycle(m_animationId[i], m_blendTime);
 	}

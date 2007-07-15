@@ -3,9 +3,6 @@
 #	include "InputKeyboard.h"
 #	include "InputMouse.h"
 
-#	pragma comment (lib, "dinput8.lib")
-#	pragma comment (lib, "dxguid.lib")
-
 #	define IFFAILED( X )  if( (HRESULT)((X) < 0) )
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem(InputSystemInterface **_system)

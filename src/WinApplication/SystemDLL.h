@@ -7,10 +7,11 @@ namespace Menge
 	class SystemDLL
 	{
 	public:
-		SystemDLL( const std::string &_filename );
+		SystemDLL( const std::string & _filename );
 		virtual ~SystemDLL();
 
 	protected:
+		std::string m_filename;
 		void * m_hInstance;
 
 		typedef int (*FInterface)();

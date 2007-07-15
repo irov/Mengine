@@ -16,6 +16,9 @@ TiXmlDocument * TiXmlDocumentLoadFile( const std::string & _file )
 
 	if( document->LoadFile( _file ) == false )
 	{
+		printf("invalid parse xml document file - '%s'\n", _file.c_str() );
+		printf("error - %s\n", document->ErrorDesc() );
+
 		delete document;
 
 		return 0;
@@ -32,6 +35,9 @@ TiXmlDocument * TiXmlDocumentLoadData( const std::string & _data )
 
 	if( document->Error() == true )
 	{
+		printf("invalid parse xml document file \n");
+		printf("error - %s\n", document->ErrorDesc() );
+
 		delete document;
 		return false;
 	}

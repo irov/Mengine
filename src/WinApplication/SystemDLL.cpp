@@ -9,6 +9,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SystemDLL::SystemDLL( const std::string &_filename )
+	: m_filename( _filename )
 	{
 		m_hInstance = LoadLibrary( _filename.c_str() );
 
@@ -36,6 +37,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SystemDLL::~SystemDLL()
 	{
+		printf("free library - %s \n", m_filename.c_str() );
 		if( FreeLibrary( (HMODULE) m_hInstance ) == 0 )
 		{
 			assert( !"FreeLibrary failure!" );

@@ -18,7 +18,7 @@
 	</Resource>
 
 	<Resource Name = "Cal3dTest" Type = "ResourceAnimationCal3d" >
-		<File Config = "paladin\paladin.cfg" />
+		<File Config = "Game/Animations/paladin/paladin.cfg" />
 	</Resource>
 
 	<Resource Name = "TestSound" Type = "ResourceSound" >

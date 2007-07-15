@@ -8,9 +8,6 @@
 #	include <windows.h>
 #	include <assert.h>
 
-#	pragma comment (lib, "d3d9.lib")
-#	pragma comment (lib, "d3dx9.lib")
-
 bool initInterfaceSystem(RenderSystemInterface**	_ptrRenderSystem)
 {
 	try
@@ -140,7 +137,7 @@ bool	Direct3d9RenderSystem::createDisplay(
 		int SubVersion = HIWORD(dai.DriverVersion.LowPart);
 		int Build = LOWORD(dai.DriverVersion.LowPart);
 
-		printf("%s %s %d.%d.%d.%d", dai.Description, dai.Driver, Product, Version,
+		printf("%s %s %d.%d.%d.%d\n", dai.Description, dai.Driver, Product, Version,
 			SubVersion, Build);
 	}
 

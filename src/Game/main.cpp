@@ -38,6 +38,6 @@ void main()
 
 	fini( app );
 
-	printf("load library '%s'", str_systems.c_str() );
+	printf("free library '%s' \n", str_systems.c_str() );
 	FreeLibrary( hInstance );
 }

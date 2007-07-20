@@ -10,6 +10,8 @@
 
 #	include "XmlParser/XmlParser.h"
 
+#	include <map>
+
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( ApplicationInterface** _ptrInterface )
 {

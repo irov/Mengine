@@ -8,9 +8,12 @@
 #	include "Entity.h"
 #	include "Scene.h"
 
+#	include "osdefs.h"
 
 #	include <boost/python.hpp>
 #	include <boost/detail/lightweight_test.hpp>
+
+#	include <stdarg.h>
 
 namespace Menge
 {
@@ -26,23 +29,23 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::ScriptEngine()
-		: m_mainModule(0)
-		, m_global(0)
+		: m_globalObject(0)
+		, m_globalDict(0)
 	{
 		Holder<ScriptEngine>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::~ScriptEngine()
 	{
-		delete m_mainModule;
-		delete m_global;
+		delete m_globalObject;
+		delete m_globalDict;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::genFunctor( const std::string &_name )
 	{
 		try
 		{
-			return boost::python::object( m_global->attr( _name.c_str() ) ).ptr();
+			return boost::python::object( m_globalObject->attr( _name.c_str() ) ).ptr();
 		}
 		catch (...)
 		{
@@ -61,17 +64,13 @@ namespace Menge
 
 		ScriptModuleDeclaration::init();
 
-		boost::python::object main = 
-			boost::python::object(
-			boost::python::handle<>(
-			boost::python::borrowed(
-			PyImport_AddModule("__main__")
-			)));
+		boost::python::object main = boost::python::import("__main__");
 
-		boost::python::dict global( main.attr("__dict__") );
-		m_mainModule = new ScriptObject( main );
+		boost::python::object global_o( main.attr("__dict__") );
+		boost::python::dict global_d( main.attr("__dict__") );
 
-		m_global = new ScriptGlobal( global );
+		m_globalObject = new ScriptObject( main );
+		m_globalDict = new ScriptGlobal( global_d );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::incref( Node * _node )
@@ -102,7 +101,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::setEntitiesPath( const std::string & _paths )
 	{
-		PySys_SetPath( const_cast< char * >( _paths.c_str() ) );
+
+		std::string all_paths = "Common/Script";
+		all_paths += DELIM;
+		all_paths += _paths;
+
+		PySys_SetPath( const_cast< char * >( all_paths.c_str() ) );
 
 		if (PyErr_Occurred())
 		{
@@ -153,7 +157,7 @@ namespace Menge
 		try
 		{
 			boost::python::str source( _buffer, _size );
-			boost::python::object result = boost::python::exec( source, *m_global, *m_global );		
+			boost::python::object result = boost::python::exec( source, *m_globalDict, *m_globalDict );		
 			std::cout << "success!" << std::endl;
 		}
 		catch (...)
@@ -179,7 +183,7 @@ namespace Menge
 		try
 		{
 			//boost::python::import( _file.c_str() );
-			boost::python::exec_file( _file.c_str(), *m_global, *m_global );
+			boost::python::exec_file( _file.c_str(), *m_globalDict, *m_globalDict );
 		}
 		catch (...) 
 		{
@@ -230,161 +234,124 @@ namespace Menge
 
 		return 0;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callModuleFunction( PyObject * _module, const std::string & _name )
+	static PyObject * callFunctionVa( PyObject * _object, const char * _params, va_list valist )
 	{
-		boost::python::object result(boost::python::handle<>(
+		try
+		{
+			return PyObject_CallObject( _object, Py_VaBuildValue( _params, valist ) );
+		}
+		catch (...)
+		{
+			ScriptEngine::handleException();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScriptEngine::hasModuleFunction( PyObject * _module, const std::string & _name )
+	{
+		return PyObject_HasAttrString( _module, _name.c_str() ) == 1;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::callModuleFunction( PyObject * _module, const std::string & _name, const char * _params, ...  )
+	{
+		boost::python::object func(boost::python::handle<>(
 			PyObject_GetAttrString( _module, _name.c_str() )
 			));
 
-		callFunction( result.ptr() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::callModuleFunctionBool( PyObject * _module, const std::string & _name )
-	{
-		boost::python::object result(boost::python::handle<>(
-			PyObject_GetAttrString( _module, _name.c_str() )
-			));
+		va_list valist;
+		va_start(valist, _params);
 
-		return callFunctionBool( result.ptr() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callModuleFunction( PyObject * _module, const std::string & _name, float f )
-	{
-		boost::python::object result(boost::python::handle<>(
-			PyObject_GetAttrString( _module, _name.c_str() )
-			));
+		PyObject * result = callFunctionVa( func.ptr(), _params, valist );
 
-		callFunction( result.ptr(), f );
+		va_end( valist ); 
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callFunction( PyObject * _object )
+	PyObject * ScriptEngine::callFunction( PyObject * _object, const char * _params, ...  )
 	{
+		va_list valist;
+		va_start(valist, _params);
+
+		PyObject * result = callFunctionVa( _object, _params, valist );
+
+		va_end( valist ); 
+
+		return result;
+
+		
+		return 0;
+	}	
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::callFunction( const std::string & _name, const char * _params, ...  )
+	{
+		if( m_globalDict->has_key( _name ) == false )
+		{
+			return 0;
+		}
+
+		boost::python::object func = m_globalDict->get( _name );
+
 		try
 		{
-			boost::python::call<void>( _object );
+			va_list valist;
+			va_start(valist, _params);
+
+			PyObject * result = callFunctionVa( func.ptr(), _params, valist );
+
+			va_end( valist ); 
+
+			return result;
 		}
 		catch (...)
 		{
 			handleException();
 		}
+
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callFunction( const std::string & _name )
+	bool ScriptEngine::hasMethod( Node * _node, const std::string & _name )
 	{
-		if( m_global->has_key( _name ) == false )
-		{
-			return;
-		}
-
-		boost::python::object func = m_global->get( _name );
-
-		try
-		{
-			boost::python::call<void>( func.ptr() );
-		}
-		catch (...)
-		{
-			handleException();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callFunction( PyObject * _object, float f )
-	{
-		try
-		{
-			boost::python::call<void>( _object, f );
-		}
-		catch (...)
-		{
-			handleException();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callFunction( const std::string & _name, float f )
-	{
-		if( m_global->has_key( _name ) == false )
-		{
-			return;
-		}
-
-		boost::python::object func = m_global->get( _name );
-
-		callFunction( func.ptr() );
-	}
-	void ScriptEngine::callFunctionNode( const std::string & _name, Node * _node )
-	{
-
-		if( _node->isScriptable() == false )
-		{
-			return;
-		}
-
-		if( m_global->has_key( _name ) == false )
-		{
-			return;
-		}
-
-		boost::python::object func = m_global->get( _name );
-
-		try
-		{
-			PyObject * _script = _node->getScriptable();
-			boost::python::call<void>( func.ptr(), boost::python::handle<>(_script) );
-		}
-		catch (...)
-		{
-			handleException();
-		}	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::callFunctionBool( PyObject * _object )
-	{
-		try
-		{
-			return boost::python::call<bool>( _object );
-		}
-		catch (...) 
-		{
-			handleException();
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::callFunctionBool( const std::string & _name )
-	{
-		if( m_global->has_key( _name ) == false )
-		{
-			return false;
-		}
-
-		boost::python::object func = m_global->get( _name );
-
-		return callFunctionBool( func.ptr() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::hasMethod( Entity * _entity, const std::string & _name )
-	{
-		PyObject * scriptable = _entity->getScriptable();
+		PyObject * scriptable = _node->getScriptable();
 
 		int res = PyObject_HasAttrString( scriptable, _name.c_str() );
 
 		return res == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callMethod( Entity * _entity, const std::string & _name )
+	PyObject * ScriptEngine::callMethod( Node * _node, const std::string & _name, const char * _params, ...  )
 	{
-		PyObject * scriptable = _entity->getScriptable();
+		PyObject * scriptable = _node->getScriptable();
 
 		try
 		{
-			boost::python::call_method<void>( scriptable, _name.c_str() );
+			PyObject * method = PyObject_GetAttrString( scriptable, _name.c_str() );
+
+			va_list valist;
+			va_start(valist, _params);
+
+			PyObject * result = callFunctionVa( method, _params, valist );
+
+			va_end( valist ); 
+
+			return result;
 		}
 		catch (...)
 		{
 			handleException();
 		}
+
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScriptEngine::parseBool( PyObject * _result )
+	{
+		if( PyBool_Check( _result ) )
+		{
+			return _result == Py_True;
+		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::handleException()

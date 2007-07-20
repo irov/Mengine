@@ -126,7 +126,36 @@ namespace Menge
 	//	TESTfont = Holder<RenderEngine>::hostage()->loadFont("russian.xml");
 
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Player::handleKeyEvent( size_t _key, bool _isDown )
+	{
+		if( m_scene )
+		{
+			return m_scene->handleKeyEvent( _key, _isDown );
+		}
 
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Player::handleMouseButtonEvent( size_t _button, bool _isDown )
+	{
+		if( m_scene )
+		{
+			return m_scene->handleMouseButtonEvent( _button, _isDown );
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Player::handleMouseMove( float _x, float _y, float _whell )
+	{
+		if( m_scene )
+		{
+			return m_scene->handleMouseMove( _x, _y, _whell );
+		}
+
+		return false;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update(float _timig)
 	{

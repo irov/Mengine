@@ -1,4 +1,5 @@
 #	include "InputMouse.h"
+#	include "Interface/WinInputSystemInterface.h"
 
 #	include <algorithm>
 
@@ -140,6 +141,18 @@ void InputMouse::update()
 	for( int i = 0; i < 8; i++ )
 	{
 		m_button[i] = state.rgbButtons[i] - m_lastState.rgbButtons[i];
+
+		if( m_handle )
+		{
+			if( m_button[i] > 0 )
+			{
+				m_handle->handleMouseButtonEvent( i, true );
+			}
+			else if ( m_button[i] < 0 )
+			{
+				m_handle->handleMouseButtonEvent( i, false );
+			}
+		}
 	}
 	
 	m_lastState = state;
@@ -191,7 +204,24 @@ void InputMouse::update()
 	};
 	
 	m_bMove = ( fabsf(m_deltaPosition[0]) >  0.00001 || fabsf(m_deltaPosition[1]) > 0.0001 )? true : false;
-};
+
+	if( m_handle )
+	{
+		if( m_bMove || fabsf(m_deltaPosition[2]) >  0.00001 )
+		{
+			m_handle->handleMouseMove( 
+				m_deltaPosition[0],
+				m_deltaPosition[1],
+				m_deltaPosition[2]
+				);
+		}
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void InputMouse::regHandle( InputSystemHandler * _handle )
+{
+	m_handle = _handle;
+}
 //////////////////////////////////////////////////////////////////////////
 bool InputMouse::isMove() const 
 { 

@@ -37,6 +37,21 @@ const Viewport& Layer2D::updateViewport( const Viewport & _viewPort )
 	return m_viewPort;
 }
 //////////////////////////////////////////////////////////////////////////
+bool Layer2D::handleKeyEvent( size_t _key, bool _isDown )
+{
+	return false;
+}
+//////////////////////////////////////////////////////////////////////////
+bool Layer2D::handleMouseButtonEvent( size_t _button, bool _isDown )
+{
+	return false;
+}
+//////////////////////////////////////////////////////////////////////////
+bool Layer2D::handleMouseMove( float _x, float _y, float _whell )
+{
+	return false;
+}
+//////////////////////////////////////////////////////////////////////////
 void Layer2D::loader( TiXmlElement *_xml)
 {
 	SceneNode2D::loader(_xml);

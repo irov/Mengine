@@ -49,23 +49,16 @@ namespace Menge
 
 		Entity * createEntity( const std::string & _type );
 
-		void callModuleFunction( PyObject * _module, const std::string & _name );
-		bool callModuleFunctionBool( PyObject * _module, const std::string & _name );
-		
-		void callModuleFunction( PyObject * _module, const std::string & _name, float f );
+		bool hasModuleFunction( PyObject * _module, const std::string & _name );
+		PyObject * callModuleFunction( PyObject * _module, const std::string & _name, const char * _params = "()", ... );
 
-		void callFunction( PyObject * _object );
-		void callFunction( const std::string & _name );
-		
-		void callFunction( PyObject * _object, float f );
-		void callFunction( const std::string & _name, float f );
-		void callFunctionNode( const std::string & _name, Node * _node );
+		PyObject * callFunction( PyObject * _object, const char * _params = "()", ...  );
+		PyObject * callFunction( const std::string & _name, const char * _params = "()", ...  );
 
-		bool callFunctionBool( PyObject * _object );
-		bool callFunctionBool( const std::string & _name );
+		bool hasMethod( Node * _entity, const std::string & _name );
+		PyObject * callMethod( Node * _entity, const std::string & _name, const char * _params = "()", ...  );
 
-		bool hasMethod( Entity * _entity, const std::string & _name );
-		void callMethod( Entity * _entity, const std::string & _name );
+		bool parseBool( PyObject * _result );
 
 		static void handleException();
 	
@@ -74,8 +67,8 @@ namespace Menge
 		
 
 	private:
-		ScriptObject * m_mainModule;
-		ScriptGlobal * m_global;
+		ScriptObject * m_globalObject;
+		ScriptGlobal * m_globalDict;
 
 		typedef std::list<std::string> TListEntitysType;
 		TListEntitysType m_listEntitiesType;

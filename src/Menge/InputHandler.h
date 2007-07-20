@@ -1,14 +1,12 @@
 #	pragma once
 
-#	include "Math/vec3.h"
+#	include "Interface/InputSystemInterface.h"
 
 namespace Menge
 {
 	class InputHandler
+		: public InputSystemHandler
 	{
-	public:
-		virtual bool handlerKeyEvent( unsigned int _key, int _state ) = 0;
-		virtual bool handlerMouseButtonEvent( unsigned int _button, int _state ) = 0;
-		virtual bool handlerMouseRoll( const mt::vec3f & _pos ) = 0;
+	public:		
 	};
 }

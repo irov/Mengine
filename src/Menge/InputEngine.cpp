@@ -1,4 +1,5 @@
 #	include "InputEngine.h"
+#	include "InputHandler.h"
 
 #	include "ScriptEngine.h"
 
@@ -74,5 +75,10 @@ namespace Menge
 	bool InputEngine::isButton(int but,int but_state)const
 	{
 		return m_interface->isButton(but,but_state);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::regHandle( InputHandler * _handle )
+	{
+		return m_interface->regHandle( _handle );
 	}
 }

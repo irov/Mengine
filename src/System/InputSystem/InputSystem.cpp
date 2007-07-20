@@ -85,6 +85,12 @@ bool InputSystem::init( HWND _hWnd, int _joint )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
+void InputSystem::regHandle( InputSystemHandler * _handle )
+{
+	m_keyboard->regHandle( _handle );
+	m_mouse->regHandle( _handle );
+};
+//////////////////////////////////////////////////////////////////////////
 bool InputSystem::acquire()
 {
 	HRESULT	hr = 0;

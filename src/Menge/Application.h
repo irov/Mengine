@@ -2,8 +2,7 @@
 
 #	include "MengeExport.h"
 
-#	include <map>
-#	include <list>
+#	include <string>
 
 class FileSystemInterface;
 class InputSystemInterface;
@@ -13,6 +12,7 @@ class SoundSystemInterface;
 namespace Menge
 {
 	class Game;
+	class InputHandler;
 
 	class MENGE_API Application
 	{
@@ -33,7 +33,12 @@ namespace Menge
 
 		virtual bool createGame( const std::string & _game );
 
-	private:
+	public:
+		bool handleKeyEvent( size_t _key, bool _isDown );
+		bool handleMouseButtonEvent( size_t _button, bool _isDown );
+		bool handleMouseMove( float _x, float _y, float _whell );
+
+	protected:
 		void update();
 		void render();
 		//void	loadPlugin(const std::string& _name);
@@ -45,8 +50,7 @@ namespace Menge
 
 		bool m_fullScreen;
 
-		Game * m_game;
-		
-		
+		InputHandler * m_handler;
+		Game * m_game;	
 	};
 }

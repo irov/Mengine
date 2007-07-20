@@ -1,6 +1,8 @@
 #	include "Application.h"
 
 #	include "InputEngine.h"
+#	include "InputHandler.h"
+
 #	include "FileEngine.h"
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
@@ -21,10 +23,42 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	class ApplicationInputHandlerProxy
+		: public InputHandler
+	{
+	public:
+		ApplicationInputHandlerProxy( Application * _app )
+			: m_app( _app )
+		{
+
+		}
+
+	public:
+		bool handleKeyEvent( size_t _key, bool _isDown ) override
+		{
+			return m_app->handleKeyEvent( _key, _isDown );
+		}
+
+		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override
+		{
+			return m_app->handleMouseButtonEvent( _button, _isDown );
+		}
+
+		bool handleMouseMove( float _x, float _y, float _whell ) override
+		{
+			return m_app->handleMouseMove( _x, _y, _whell );
+		}
+
+	private:
+		Application * m_app;
+	};
+
+	//////////////////////////////////////////////////////////////////////////
 	Application::Application()
 		: m_game(0)
 		, m_fullScreen(false)
 	{
+		m_handler = new ApplicationInputHandlerProxy( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
@@ -34,6 +68,7 @@ namespace Menge
 			m_game->release();
 		}
 
+		delete m_handler;
 		delete m_game;
 
 		Holder<FileEngine>::destroy();
@@ -130,6 +165,8 @@ namespace Menge
 
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
+		inputEng->regHandle( m_handler );
+
 		inputEng->setPosition(0.f, 0.f, 0.f);
 		inputEng->setSensitivity( 1.f );
 		mt::vec3f minRange(0,0,-1000);
@@ -145,6 +182,36 @@ namespace Menge
 	{	
 		update();
 		render();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::handleKeyEvent( size_t _key, bool _isDown )
+	{
+		if( m_game )
+		{
+			return m_game->handleKeyEvent( _key, _isDown );
+		}		
+		
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::handleMouseButtonEvent( size_t _button, bool _isDown )
+	{
+		if( m_game )
+		{
+			return m_game->handleMouseButtonEvent( _button, _isDown );
+		}		
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::handleMouseMove( float _x, float _y, float _whell )
+	{
+		if( m_game )
+		{
+			return m_game->handleMouseMove( _x, _y, _whell );
+		}	
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::update()

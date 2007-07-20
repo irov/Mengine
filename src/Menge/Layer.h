@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Node.h"
-#	include "Renderable2D.h"
+#	include "InputHandler.h"
 
 namespace Menge
 {
@@ -9,10 +9,10 @@ namespace Menge
 
 	class Layer
 		: public virtual Node
-		, public Renderable2D
+		, public InputHandler
 	{
 	public:
-
 		virtual void renderLayer() = 0;
+
 	};
 }

@@ -10,18 +10,17 @@ Avatar::Avatar()
 
 }
 //////////////////////////////////////////////////////////////////////////
-bool Avatar::handlerKeyEvent( unsigned int _key, int _state )
+bool Avatar::handleKeyEvent( size_t _key, bool _isDown )
 {
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////
-bool Avatar::handlerMouseButtonEvent( unsigned int _button, int _state )
+bool Avatar::handleMouseButtonEvent( size_t _button, bool _isDown )
 {
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////
-bool Avatar::handlerMouseRoll( const mt::vec3f & _pos )
+bool Avatar::handleMouseMove( float _x, float _y, float _whell )
 {
 	return false;
 }
-//////////////////////////////////////////////////////////////////////////

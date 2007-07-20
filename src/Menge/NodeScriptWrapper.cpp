@@ -149,6 +149,8 @@ namespace Menge
 				.def( boost::python::init<>("constructor") )
 				.def( "setImageIndex", &Sprite::setImageIndex )
 				.def( "getImageIndex", &Sprite::getImageIndex )
+				.def( "setImageResource", &Sprite::setImageResource )
+				.def( "getImageResource", &Sprite::getImageResource, retValuePolice )
 				;
 			{
 				boost::python::class_<Animation, boost::python::bases<Sprite> >("Animation")

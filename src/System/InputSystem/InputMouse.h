@@ -2,7 +2,7 @@
 
 #	include "InputJoint.h"
 
-class InputSystem;
+class InputSystemHandler;
 
 class InputMouse
 	: public InputJoint
@@ -14,6 +14,8 @@ public:
 	HRESULT init() override;
 	HRESULT restore() override;
 	void update() override;
+
+	void regHandle( InputSystemHandler * _handle );
 
 public:
 	void setPosition( float _x, float _y, float _whell );
@@ -44,4 +46,6 @@ private:
 	float m_deltaPosition[3];
 	float m_oldPosition[3];
 	float m_range[6];
+
+	InputSystemHandler * m_handle;
 };

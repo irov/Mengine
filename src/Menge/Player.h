@@ -2,6 +2,8 @@
 
 #	include "Holder.h"
 
+#	include "InputHandler.h"
+
 #	include <string>
 
 namespace Menge
@@ -14,6 +16,7 @@ namespace Menge
 	class Camera3D;
 
 	class Player
+		: public InputHandler
 	{
 	public:
 		Player();
@@ -36,6 +39,10 @@ namespace Menge
 		void init();
 		void update( float _timing );
 		void render();
+
+		bool handleKeyEvent( size_t _key, bool _isDown ) override;
+		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
+		bool handleMouseMove( float _x, float _y, float _whell ) override;
 
 		void debugRender();
 	

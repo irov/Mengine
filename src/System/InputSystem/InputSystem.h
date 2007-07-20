@@ -18,8 +18,12 @@ public:
 
 public:
 	bool init( HWND _hWnd, int _joint ) override;
+
+public:
 	void update() override;
 	void destroy() override;
+
+	void regHandle( InputSystemHandler * _handle ) override;
 	
 
 	//keyboard

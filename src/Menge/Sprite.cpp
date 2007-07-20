@@ -77,6 +77,16 @@ size_t Sprite::getImageIndex() const
 void Sprite::setImageResource( const std::string & _name )
 {
 	m_resourceName = _name;
+
+	if( m_image )
+	{
+		Holder<ResourceManager>::hostage()
+			->releaseResource( m_image );
+
+		m_image = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceImage>( m_resourceName );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 const std::string & Sprite::getImageResource() const

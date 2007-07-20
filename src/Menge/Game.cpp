@@ -153,14 +153,75 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Game::handleKeyEvent( size_t _key, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle && Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, "onHandleKeyEvent" ) )
+		{
+			handle = Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, "onHandleKeyEvent", "(Ib)", _key, _isDown );
+		}
+
+		if( !handle && m_player )
+		{
+			return m_player->handleKeyEvent( _key, _isDown );
+		}	
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::handleMouseButtonEvent( size_t _button, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle && Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, "onHandleMouseButtonEvent" ) )
+		{
+			handle = Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, "onHandleMouseButtonEvent", "(Ib)", _button, _isDown );
+		}
+
+		if( !handle && m_player )
+		{
+			return m_player->handleMouseButtonEvent( _button, _isDown );
+		}	
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::handleMouseMove( float _x, float _y, float _whell )
+	{
+		bool handle = false;
+
+		if( !handle && Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, "onHandleMouseMove" ) )
+		{
+			handle = Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, "onHandleMouseMove", "(fff)", _x, _y, _whell );
+		}
+		
+		if( !handle && m_player )
+		{
+			return m_player->handleMouseMove( _x, _y, _whell );
+		}		
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Game::update( float _timing )
 	{
 		m_player->update( _timing );
 
 		m_amplifier->update(_timing);
 
-		Holder<ScriptEngine>::hostage()
-			->callModuleFunction( m_pyPersonality, m_eventUpdate, _timing );
+		if( Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, m_eventUpdate ) )
+		{
+			Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, m_eventUpdate, "(f)", _timing );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()
@@ -171,11 +232,6 @@ namespace Menge
 	void Game::debugRender()
 	{
 		m_player->debugRender();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::test( const char * _text )
-	{
-		printf("%s\n", _text );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string & Game::getPathEntities() const
@@ -204,9 +260,17 @@ namespace Menge
 			return false;
 		}
 
-		bool result = 
-			Holder<ScriptEngine>::hostage()
-			->callModuleFunctionBool( m_pyPersonality, m_eventInit );
+		bool result = false;
+
+		if( Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
+		{
+			PyObject * pyResult = Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, m_eventInit );
+
+			result = Holder<ScriptEngine>::hostage()
+				->parseBool( pyResult );
+		}
 
 		if( result == false )
 		{

@@ -1,10 +1,20 @@
 #	pragma once
 
+class InputSystemHandler
+{
+public:
+	virtual bool handleKeyEvent( size_t _key, bool _isDown ) = 0;
+	virtual bool handleMouseButtonEvent( size_t _button, bool _isDown ) = 0;
+	virtual bool handleMouseMove( float _x, float _y, float _whell ) = 0;
+};
+
 class InputSystemInterface
 {
 public:
 	virtual void update() = 0;
 	virtual void destroy() = 0;
+
+	virtual void regHandle( InputSystemHandler * _handle ) = 0;
 
 	virtual bool isKey( int _key, int _state ) const = 0;
 	virtual bool isAnyKeyDown() const = 0;

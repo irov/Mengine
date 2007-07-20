@@ -1,4 +1,5 @@
 #	include "InputKeyboard.h"
+#	include "Interface/WinInputSystemInterface.h"
 
 #	define IFFAILED( X )  if( (HRESULT)((X) < 0) )
 //////////////////////////////////////////////////////////////////////////
@@ -23,6 +24,7 @@ namespace
 //////////////////////////////////////////////////////////////////////////
 InputKeyboard::InputKeyboard( InputSystem * _system )
 : InputJoint( _system )
+, m_handle( 0 )
 {
 	restore();
 }
@@ -106,7 +108,36 @@ void InputKeyboard::update (void)
 			}
 		}
 	}
+
+	typedef const unsigned char TChar256 [256];
+	TChar256 &lastbuffer = m_keysBuffer[((m_layerKeys + 1)&1)];
+	TChar256 &buffer = m_keysBuffer[m_layerKeys];
+
+	if( m_handle )
+	{
+		for( size_t _key = 0; _key < 256; ++_key )
+		{
+			if( buffer[_key] == lastbuffer[_key] )
+			{
+				continue;
+			}
+
+			if( buffer[_key] & 0x80 )
+			{
+				m_handle->handleKeyEvent( _key, true );
+			}
+			else
+			{
+				m_handle->handleKeyEvent( _key, false );
+			}
+		}
+	}
 };
+//////////////////////////////////////////////////////////////////////////
+void InputKeyboard::regHandle( InputSystemHandler * _handle )
+{
+	m_handle = _handle;
+}
 //////////////////////////////////////////////////////////////////////////
 bool InputKeyboard::isKey( int _key, int _state ) const
 {

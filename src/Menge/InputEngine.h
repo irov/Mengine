@@ -11,8 +11,9 @@
 
 namespace Menge
 {
-	class InputManager;
 	class ScriptEngine;
+
+	class InputHandler;
 
 	class InputEngine
 	{
@@ -27,6 +28,8 @@ namespace Menge
 		bool isKey(unsigned int index,int key_state)const;
 		bool isAnyKeyDown()const;
 		bool getChar(char *ch,int key_state)const;
+
+		void regHandle( InputHandler * _handle );
 
 
 		void setPosition( float _x, float _y, float _whell );
@@ -43,5 +46,6 @@ namespace Menge
 
 	protected:
 		InputSystemInterface * m_interface;
+		InputHandler * m_handle;
 	};
 }

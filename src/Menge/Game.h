@@ -3,6 +3,8 @@
 #	include <list>
 #	include <map>
 
+#	include "InputHandler.h"
+
 class TiXmlElement;
 
 extern "C" 
@@ -22,6 +24,7 @@ namespace Menge
 	class DialogManager;
 
 	class Game
+		: public InputHandler
 	{
 	public:
 		Game();
@@ -51,7 +54,9 @@ namespace Menge
 		Scene * getScene(const std::string & _name );
 
 	public:
-		void test( const char * _text );
+		bool handleKeyEvent( size_t _key, bool _isDown ) override;
+		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
+		bool handleMouseMove( float _x, float _y, float _whell ) override;
 
 	protected:
 		std::string m_defaultArrowName;

@@ -6,7 +6,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Allocator2D::Allocator2D()
-		: m_changePivot( false )
+		: m_changePivot( true )
 	{
 		mt::ident_m3(m_localMatrix);
 		mt::ident_m3(m_worldMatrix);

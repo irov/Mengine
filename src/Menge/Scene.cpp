@@ -27,6 +27,57 @@ void Scene::layerAppend( const std::string & _layer, Node * _node )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
+bool Scene::handleKeyEvent( size_t _key, bool _isDown )
+{
+	for( TListChildren::reverse_iterator 
+		it = m_listChildren.rbegin(),
+		it_end = m_listChildren.rend();
+	it != it_end;
+	++it)
+	{
+		if( (*it)->handleKeyEvent( _key, _isDown ) )
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+//////////////////////////////////////////////////////////////////////////
+bool Scene::handleMouseButtonEvent( size_t _button, bool _isDown )
+{
+	for( TListChildren::reverse_iterator 
+		it = m_listChildren.rbegin(),
+		it_end = m_listChildren.rend();
+	it != it_end;
+	++it)
+	{
+		if((*it)->handleMouseButtonEvent( _button, _isDown ) )
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+//////////////////////////////////////////////////////////////////////////
+bool Scene::handleMouseMove( float _x, float _y, float _whell )
+{
+	for( TListChildren::reverse_iterator 
+		it = m_listChildren.rbegin(),
+		it_end = m_listChildren.rend();
+	it != it_end;
+	++it)
+	{
+		if( (*it)->handleMouseMove( _x, _y, _whell ) )
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+//////////////////////////////////////////////////////////////////////////
 bool Scene::_activate()
 {
 	if( m_scriptFile.empty() == false )
@@ -44,7 +95,7 @@ bool Scene::_activate()
 		std::string functionName = "Scene" + getName() + "_activate";
 
 		Holder<ScriptEngine>::hostage()
-			->callFunctionNode( functionName, this );
+			->callFunction( functionName, "(O)", this->getScriptable() );
 	}
 
 	return NodeCore::_activate();

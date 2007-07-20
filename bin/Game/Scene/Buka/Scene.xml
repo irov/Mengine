@@ -2,7 +2,7 @@
 	<Script File = "Game/Scene/Buka/Scene.py" />
 
 	<Node Name = "Back" Type = "Layer3D">
-		<Node Name = "TestMesh" Type = "Mesh">
+		<Node Name = "TestMesh" Type = "AnimationObject">
 			<ImageMap Name = "Cal3dTest" />
 			<Transformation Value = "1;0;0;0;1;0;0;0;1;0;0;0" />
 		</Node>

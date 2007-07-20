@@ -27,7 +27,7 @@
 
 #	include "Animation.h"
 //
-#	include "Mesh.h"
+#	include "AnimationObject.h"
 
 #	include "Layer3D.h"
 
@@ -171,11 +171,28 @@ namespace Menge
 		
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
-		if( inputEng->isKey( DIK_SPACE, 1 ) == true )
+		if( inputEng->isKey( DIK_F1, 1 ) == true )
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
-			Mesh * mesh = layer->getChildrenT<Mesh>("TestMesh");
-			mesh->nextAction();
+			AnimationObject * mesh = layer->getChildrenT<AnimationObject>("TestMesh");
+
+			std::vector<std::string> names;
+			std::vector<float> w;
+
+			names.push_back("Game/Animations/paladin/paladin_idle.caf");
+			names.push_back("Game/Animations/paladin/paladin_walk.caf");
+
+			w.push_back(0.9f);
+			w.push_back(0.1f);
+
+			mesh->playBlend(names,w);
+		}
+
+		if( inputEng->isKey( DIK_F2, 1 ) == true )
+		{
+			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
+			AnimationObject * mesh = layer->getChildrenT<AnimationObject>("TestMesh");
+			mesh->nextPlay();
 		}
 
 		if( inputEng->isButton( 0, 1 ) == true )

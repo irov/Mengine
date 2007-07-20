@@ -42,7 +42,6 @@ namespace Menge
 		void update();
 		void render();
 		//void	loadPlugin(const std::string& _name);
-
 	private:
 		int m_width;
 		int m_height;

@@ -56,7 +56,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application()
 		: m_game(0)
-		, m_fullScreen(false)
 	{
 		m_handler = new ApplicationInputHandlerProxy( this );
 	}

@@ -504,18 +504,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Factory"
-				>
-				<File
-					RelativePath=".\NodeFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeFactory.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Node"
 				>
 				<File
@@ -1068,17 +1056,37 @@
 			Name="Object3D"
 			>
 			<Filter
-				Name="Mesh"
+				Name="Animation"
 				>
 				<File
-					RelativePath=".\Mesh.cpp"
+					RelativePath=".\AnimationObject.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\Mesh.h"
+					RelativePath=".\AnimationObject.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Bone.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Bone.h"
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="NodeFactory"
+			>
+			<File
+				RelativePath=".\NodeFactory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\NodeFactory.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

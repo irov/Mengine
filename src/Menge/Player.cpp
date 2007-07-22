@@ -26,7 +26,7 @@
 #	include "Amplifier.h"
 
 #	include "Animation.h"
-//
+
 #	include "AnimationObject.h"
 
 #	include "Layer3D.h"
@@ -156,6 +156,15 @@ namespace Menge
 
 		return false;
 	}
+
+	void UpdateCallback(AnimationObject * _obj, const std::string & animationName, float time, void * pUserData)
+	{
+	}
+
+	void CompleteCallback(AnimationObject * _obj, const std::string & animationName, void * pUserData)
+	{
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update(float _timig)
 	{
@@ -175,24 +184,22 @@ namespace Menge
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			AnimationObject * mesh = layer->getChildrenT<AnimationObject>("TestMesh");
-
-			std::vector<std::string> names;
-			std::vector<float> w;
-
-			names.push_back("Game/Animations/paladin/paladin_idle.caf");
-			names.push_back("Game/Animations/paladin/paladin_walk.caf");
-
-			w.push_back(0.9f);
-			w.push_back(0.1f);
-
-			mesh->playBlend(names,w);
+			mesh->play2Blend("paladin_idle.caf",0.9f,"paladin_walk.caf",0.1f);
 		}
 
 		if( inputEng->isKey( DIK_F2, 1 ) == true )
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			AnimationObject * mesh = layer->getChildrenT<AnimationObject>("TestMesh");
-			mesh->nextPlay();
+			mesh->play("paladin_idle.caf");
+		}
+
+		if( inputEng->isKey( DIK_F3, 1 ) == true )
+		{
+			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
+			AnimationObject * mesh = layer->getChildrenT<AnimationObject>("TestMesh");
+			mesh->setCallback("paladin_walk.caf",0,UpdateCallback,CompleteCallback,0);
+			mesh->play("paladin_walk.caf");
 		}
 
 		if( inputEng->isButton( 0, 1 ) == true )

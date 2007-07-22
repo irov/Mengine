@@ -19,6 +19,11 @@
 
 	<Resource Name = "Cal3dTest" Type = "ResourceAnimationCal3d" >
 		<File Config = "Game/Animations/paladin/paladin.cfg" />
+		<Sequences>
+			<AnimInfo Index = "0" Delay = "5.0" Blend = "1.0" />
+			<AnimInfo Index = "1" Delay = "5.0" Blend = "1.0" />
+			<AnimInfo Index = "2" Delay = "5.0" Blend = "1.0" />
+		</Sequences>	
 	</Resource>
 
 	<Resource Name = "TestSound" Type = "ResourceSound" >

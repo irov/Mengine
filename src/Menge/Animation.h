@@ -34,7 +34,7 @@ namespace Menge
 		virtual void setAnimState(eAnimState _state);
 
 	public:
-		void loader(TiXmlElement *xml) override;
+		void loader(TiXmlElement * _xml) override;
 
 	protected:
 		void _update(float _timing) override;

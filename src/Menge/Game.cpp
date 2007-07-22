@@ -11,7 +11,6 @@
 #	include "Amplifier.h"
 
 #	include "ScriptEngine.h"
-#	include "FileEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -29,7 +28,7 @@ namespace Menge
 		, m_defaultArrow(0)
 		, m_pyPersonality(0)
 	{
-		m_player = new Player;
+		m_player = new Player();
 
 		m_amplifier = new Amplifier();
 
@@ -71,7 +70,6 @@ namespace Menge
 					XML_DEF_ATTRIBUTES_NODE( File );
 					Scene * scene = SceneManager::createNodeFromXmlT<Scene>( File );
 					addScene( scene );
-					
 				}
 			}
 
@@ -91,21 +89,21 @@ namespace Menge
 
 			//<Arrows>
 			//	<Arrow File = "Game/Arrows/Default.xml" />
-			//	</Arrows>
+			//</Arrows>
 			XML_CHECK_NODE_FOR_EACH("Arrows")
 			{
 				XML_CHECK_NODE("Arrow")
 				{
 					XML_DEF_ATTRIBUTES_NODE(File);
 
-					Node *_node = SceneManager::createNodeFromXml(File);
+					Node * _node = SceneManager::createNodeFromXml(File);
 
 					if( _node == 0 )
 					{
 						ErrorMessage("Invalid file `%s`", File.c_str() );
 					}
 
-					Arrow *arrow = dynamic_cast<Arrow*>(_node);
+					Arrow * arrow = dynamic_cast<Arrow*>(_node);
 
 					if( arrow == 0 )
 					{
@@ -120,8 +118,8 @@ namespace Menge
 			}
 
 			//<Default>
-			//	<Arrow Type = "Default" />
-			//	</Default>
+			//	<Arrow Type = "Default"/>
+			//</Default>
 			XML_CHECK_NODE_FOR_EACH("Default")
 			{
 				XML_CHECK_VALUE_NODE("Arrow", "Type", m_defaultArrowName)
@@ -298,7 +296,7 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::addArrow( Arrow *_arrow )
+	void Game::addArrow( Arrow * _arrow )
 	{
 		const std::string &name = _arrow->getName();
 
@@ -317,7 +315,7 @@ namespace Menge
 		m_mapArrow.insert(std::make_pair(name,_arrow));
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::removeArrow( const std::string &_name )
+	void Game::removeArrow( const std::string & _name )
 	{
 		m_mapArrow.erase(_name);
 	}
@@ -327,7 +325,7 @@ namespace Menge
 		return m_defaultArrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Arrow * Game::getArrow( const std::string &_name )
+	Arrow * Game::getArrow( const std::string & _name )
 	{
 		TMapArrow::iterator it_find = m_mapArrow.find( _name );
 

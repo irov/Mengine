@@ -13,13 +13,13 @@ namespace	Menge
 		DialogManager();
 		~DialogManager();
 		void	loadMessagesList(const std::string& _filename);
-		MessageSpot*	getMessageSpot(int id);
+		MessageSpot*	getMessageSpot(int _id);
 	private:
 		TMapMessageSpot m_messageSpots;
 	private:
-		int	m_local_id;
-		float m_local_width_text;
-		std::string m_local_text;		
-		std::string m_local_soundname;
+		int	m_localId;
+		float m_localWidthText;
+		std::string m_localText;		
+		std::string m_localSoundname;
 	};
 }

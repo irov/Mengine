@@ -34,7 +34,7 @@ namespace Menge
 		RenderImageInterface * getImage( size_t _image ) override;
 
 	public:
-		void loader( TiXmlElement *xml );
+		void loader( TiXmlElement * _xml );
 
 	protected:
 		bool _compile();

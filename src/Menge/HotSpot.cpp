@@ -27,12 +27,12 @@ void HotSpot::setHandle( bool _handle )
 	m_handle = _handle;
 }
 //////////////////////////////////////////////////////////////////////////
-void HotSpot::addPoint( const mt::vec2f &p )
+void HotSpot::addPoint( const mt::vec2f & _p )
 {
-	m_poligon.add_point(p);
+	m_poligon.add_point(_p);
 }
 //////////////////////////////////////////////////////////////////////////
-bool HotSpot::testPoint( const mt::vec2f &p )
+bool HotSpot::testPoint( const mt::vec2f & _p )
 {
 	size_t size = m_poligon.num_points();
 
@@ -53,9 +53,9 @@ bool HotSpot::testPoint( const mt::vec2f &p )
 		mt::vec2f point;
 		mt::mul_v2_m3( point, m_poligon[ i ], wm );
 
-		if (( point.y > p.y) ^ (prev.y > p.y))
+		if (( point.y > _p.y) ^ (prev.y > _p.y))
 		{
-			if (prev.x + (p.y - prev.y) / (point.y - prev.y) * (point.x - prev.x) > p.x)
+			if (prev.x + (_p.y - prev.y) / (point.y - prev.y) * (point.x - prev.x) > _p.x)
 			{
 				++intersect_counter;
 			}
@@ -66,7 +66,7 @@ bool HotSpot::testPoint( const mt::vec2f &p )
 	return intersect_counter & 1;
 }
 //////////////////////////////////////////////////////////////////////////
-void HotSpot::loader( TiXmlElement *_xml)
+void HotSpot::loader( TiXmlElement * _xml)
 {
 	SceneNode2D::loader(_xml);
 

@@ -8,4 +8,3 @@ namespace Menge
 		virtual void apply( Node * _node ) const = 0;
 	};
 }
-

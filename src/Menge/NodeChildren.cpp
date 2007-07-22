@@ -22,8 +22,6 @@ namespace Menge
 	Node * NodeChildrenImpl::createChildrenImpl( const std::string & _type )
 	{
 		Node * node = SceneManager::createNode( _type );
-
 		return node;
 	}
-	
 }

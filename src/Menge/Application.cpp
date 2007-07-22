@@ -77,17 +77,7 @@ namespace Menge
 		Holder<ScriptEngine>::destroy();
 		Holder<ResourceManager>::destroy();
 	}
-
-	/*void	Application::loadPlugin(const std::string& _name)
-	{
-		void *m_hInst;
-		typedef void (*DLL_START_PLUGIN)(void);
-
-		m_hInst = LoadLibrary(_name.c_str());
-		DLL_START_PLUGIN initialize = (DLL_START_PLUGIN)GetProcAddress((HMODULE)m_hInst, "dllStartPlugin" );
-		initialize();
-	}
-	*/
+	//////////////////////////////////////////////////////////////////////////
 	void Application::setFileSystem( FileSystemInterface * _interface )
 	{
 		new FileEngine( _interface );

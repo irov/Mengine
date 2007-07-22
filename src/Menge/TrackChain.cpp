@@ -7,7 +7,7 @@ TrackChain::TrackChain(mt::vec2f * _begin, mt::vec2f * _end)
 : m_beginPoint(_begin)
 , m_endPoint(_end)
 {
-	mt::vec2f dist = *m_endPoint-*m_beginPoint;
+	mt::vec2f dist = *m_endPoint - *m_beginPoint;
 
 	m_length = dist.length();
 	norm_v2(m_direction,dist);	

@@ -35,7 +35,7 @@ namespace Menge
 	public:
 		virtual bool isVisible( const Viewport & _viewPort );
 
-		void loader( TiXmlElement *xml ) override;
+		void loader( TiXmlElement * _xml ) override;
 
 	protected:
 		bool _activate() override;

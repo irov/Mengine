@@ -189,122 +189,6 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Scene"
-			>
-			<File
-				RelativePath=".\Scene.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Scene.h"
-				>
-			</File>
-			<Filter
-				Name="Layer2D"
-				>
-				<File
-					RelativePath=".\Layer2D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Layer2D.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Layer3D"
-				>
-				<File
-					RelativePath=".\Layer3D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Layer3D.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="SceneNode2D"
-				>
-				<File
-					RelativePath=".\SceneNode2D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SceneNode2D.h"
-					>
-				</File>
-				<Filter
-					Name="Allocator2D"
-					>
-					<File
-						RelativePath=".\Allocator2D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Allocator2D.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Renderable2D"
-					>
-					<File
-						RelativePath=".\Renderable2D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Renderable2D.h"
-						>
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
-				Name="Layer"
-				>
-				<File
-					RelativePath=".\Layer.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="SceneNode3D"
-				>
-				<File
-					RelativePath=".\SceneNode3D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SceneNode3D.h"
-					>
-				</File>
-				<Filter
-					Name="Allocator3D"
-					>
-					<File
-						RelativePath=".\Allocator3D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Allocator3D.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Renderable3D"
-					>
-					<File
-						RelativePath=".\Renderable3D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Renderable3D.h"
-						>
-					</File>
-				</Filter>
-			</Filter>
-		</Filter>
-		<Filter
 			Name="SceneManager"
 			>
 			<File
@@ -727,10 +611,6 @@
 				RelativePath=".\Game.h"
 				>
 			</File>
-			<Filter
-				Name="Interface"
-				>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Application"
@@ -959,6 +839,122 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Scene"
+				>
+				<File
+					RelativePath=".\Scene.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Scene.h"
+					>
+				</File>
+				<Filter
+					Name="Layer2D"
+					>
+					<File
+						RelativePath=".\Layer2D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Layer2D.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Layer3D"
+					>
+					<File
+						RelativePath=".\Layer3D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Layer3D.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="SceneNode2D"
+					>
+					<File
+						RelativePath=".\SceneNode2D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SceneNode2D.h"
+						>
+					</File>
+					<Filter
+						Name="Allocator2D"
+						>
+						<File
+							RelativePath=".\Allocator2D.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Allocator2D.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="Renderable2D"
+						>
+						<File
+							RelativePath=".\Renderable2D.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Renderable2D.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+				<Filter
+					Name="Layer"
+					>
+					<File
+						RelativePath=".\Layer.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="SceneNode3D"
+					>
+					<File
+						RelativePath=".\SceneNode3D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SceneNode3D.h"
+						>
+					</File>
+					<Filter
+						Name="Allocator3D"
+						>
+						<File
+							RelativePath=".\Allocator3D.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Allocator3D.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="Renderable3D"
+						>
+						<File
+							RelativePath=".\Renderable3D.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\Renderable3D.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Entity"
@@ -1059,19 +1055,27 @@
 				Name="Animation"
 				>
 				<File
+					RelativePath=".\AnimationBone.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AnimationBone.h"
+					>
+				</File>
+				<File
+					RelativePath=".\AnimationCallbacks.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AnimationCallbacks.h"
+					>
+				</File>
+				<File
 					RelativePath=".\AnimationObject.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\AnimationObject.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Bone.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Bone.h"
 					>
 				</File>
 			</Filter>

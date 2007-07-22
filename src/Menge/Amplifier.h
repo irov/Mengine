@@ -44,7 +44,7 @@ namespace	Menge
 			float	m_fadeoffTime;
 
 			void	beginFade();
-			void	updateFadeParams(SoundSourceInterface* sound);
+			void	updateFadeParams(SoundSourceInterface* _sound);
 			void	listenPaused(bool _pause);
 			void	listenStopped();
 			void	releaseMusic(bool _dead);

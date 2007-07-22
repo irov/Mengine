@@ -1,16 +1,17 @@
 #	include "Dialog.h"
-#	include "FileEngine.h"
-#	include "RenderEngine.h"
-#	include "SoundEngine.h"
-#	include "DialogManager.h"
-#	include "ObjectImplement.h"
-#	include "MessageSpot.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "FileEngine.h"
+
+#	include "RenderEngine.h"
+
+#	include "SoundEngine.h"
+
+#	include "DialogManager.h"
+
+#	include "ObjectImplement.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Dialog)
-
 //////////////////////////////////////////////////////////////////////////
 Dialog::Dialog()
 : m_dialogFont(0)
@@ -18,7 +19,6 @@ Dialog::Dialog()
 , m_fileData(0)
 , m_isUpdate(false)
 {}
-
 //////////////////////////////////////////////////////////////////////////
 bool Dialog::_activate()
 {
@@ -139,7 +139,6 @@ void	Dialog::_update(float _timing)
 	if( m_soundSource != NULL )
 	{
 		//m_soundSource->process();
-
 		if(m_soundSource->isPlaying() == false)
 		{
 			nextMessageSpot();
@@ -148,7 +147,6 @@ void	Dialog::_update(float _timing)
 	}
 	else
 	{
-
 		//ээ, как то выставляет время проигрыша мессаги без звука?
 	}
 }

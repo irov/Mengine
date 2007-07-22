@@ -26,8 +26,6 @@ void Arrow::_update(float _timing)
 	const mt::vec3f &dmv = inputEng->getPosition();
 
 	setPosition( mt::vec2f(dmv.x, dmv.y) );
-
-	//setPosition( inputEng->getPosition().v2 );
 }
 //////////////////////////////////////////////////////////////////////////
 bool Arrow::_activate()
@@ -36,7 +34,7 @@ bool Arrow::_activate()
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void Arrow::loader( TiXmlElement *_xml )
+void Arrow::loader( TiXmlElement * _xml )
 {
 	SceneNode2D::loader( _xml );
 

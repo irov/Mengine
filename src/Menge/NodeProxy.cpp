@@ -2,7 +2,7 @@
 
 using namespace Menge;
 //////////////////////////////////////////////////////////////////////////
-NodeProxy::NodeProxy( Node *_node)
+NodeProxy::NodeProxy( Node * _node)
 : m_node(_node)
 {
 }
@@ -42,9 +42,9 @@ const std::string & NodeProxy::getName()const
 	return m_node->getName();
 }
 //////////////////////////////////////////////////////////////////////////
-void NodeProxy::setType(const std::string &type)
+void NodeProxy::setType(const std::string & _type)
 {
-	return m_node->setType(type);
+	return m_node->setType(_type);
 }
 //////////////////////////////////////////////////////////////////////////
 const std::string & NodeProxy::getType()const
@@ -57,9 +57,9 @@ void NodeProxy::update(float _timing)
 	return m_node->update(_timing);
 };
 //////////////////////////////////////////////////////////////////////////
-void NodeProxy::loader(TiXmlElement *xml)
+void NodeProxy::loader(TiXmlElement * _xml)
 {
-	return m_node->loader(xml);
+	return m_node->loader(_xml);
 }
 //////////////////////////////////////////////////////////////////////////
 void NodeProxy::registerEvent( const std::string &_name, PyObject * _func  )

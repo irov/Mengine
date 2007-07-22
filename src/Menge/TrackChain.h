@@ -17,8 +17,8 @@ namespace Menge
 		float length()const;
 
 	private:
-		mt::vec2f *m_beginPoint;
-		mt::vec2f *m_endPoint;
+		mt::vec2f * m_beginPoint;
+		mt::vec2f * m_endPoint;
 
 		mt::vec2f m_direction;
 		float m_length;

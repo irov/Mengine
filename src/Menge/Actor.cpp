@@ -1,11 +1,6 @@
 #	include "Actor.h"
+
 #	include "ObjectImplement.h"
-
-#	include "SceneManager.h"
-
-#	include "Avatar.h"
-
-#	include "XmlParser/XmlParser.h"
 
 //////////////////////////////////////////////////////////////////////////
 OBJECT_IMPLEMENT(Actor)

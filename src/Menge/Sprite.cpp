@@ -119,17 +119,17 @@ void Sprite::_deactivate()
 		->releaseResource( m_image );
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::loader(TiXmlElement *xml)
+void Sprite::loader(TiXmlElement * _xml)
 {
-	XML_FOR_EACH_TREE(xml)
+	XML_FOR_EACH_TREE(_xml)
 	{
 		XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourceName );
 	}
 
-	SceneNode2D::loader(xml);
+	SceneNode2D::loader(_xml);
 }
 //////////////////////////////////////////////////////////////////////////
-void Sprite::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
+void Sprite::_render( const mt::mat3f & _rwm, const Viewport & _viewPort )
 {
 	const mt::vec2f & size = m_image->getSize( m_currentImageIndex );
 	const mt::vec2f & image_offset = m_image->getOffset( m_currentImageIndex );
@@ -138,7 +138,7 @@ void Sprite::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 	RenderImageInterface * renderImage = m_image->getImage( m_currentImageIndex );
 
 	Holder<RenderEngine>::hostage()->renderImage(
-		rwm, 
+		_rwm, 
 		image_offset + m_offset,
 		frame_uv,
 		size,

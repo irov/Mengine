@@ -26,7 +26,7 @@ namespace Menge
 		PyObject * getEvent( const std::string &_name ) override;
 		
 	public:
-		void loader(TiXmlElement *xml);
+		void loader(TiXmlElement * _xml);
 
 	private:
 		typedef std::map<std::string, PyObject *> TMapScriptFunction;

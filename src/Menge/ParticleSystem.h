@@ -27,7 +27,7 @@ namespace Menge
 	public:
 		bool	isVisible(const Viewport & _viewPort);
 		void	update(float _timing) override;
-		void	loader(TiXmlElement *xml) override;
+		void	loader(TiXmlElement * _xml) override;
 
 	protected:
 		bool	_activate() override;

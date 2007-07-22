@@ -21,7 +21,7 @@ namespace Menge
 		Layer3D();
 
 	public:
-		void loader( TiXmlElement *_xml) override;
+		void loader( TiXmlElement * _xml) override;
 		void renderLayer() override;
 
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;

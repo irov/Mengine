@@ -13,6 +13,5 @@ namespace Menge
 	{
 	public:
 		virtual void renderLayer() = 0;
-
 	};
 }

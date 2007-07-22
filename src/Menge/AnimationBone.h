@@ -13,6 +13,10 @@ public:
 		m_index = _animObj->getBoneIndex(_boneName);
 	}
 
+	const mt::mat4f & getWorldMatrix()
+	{
+		//return 
+	}
 private:
 	int m_index;
 	AnimationObject * m_animObj;

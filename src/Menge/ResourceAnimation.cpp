@@ -38,13 +38,13 @@ namespace Menge
 		ResourceImpl::loader( _xml );
 
 		//<ImageMap Name = "output_cng" />
-		//	<Sequences>
+		//<Sequences>
 		//	<Sequence Frame = "1" Delay = "50" />
 		//	<Sequence Frame = "2" Delay = "50" />
 		//	<Sequence Frame = "3" Delay = "50" />
 		//	<Sequence Frame = "4" Delay = "50" />
 		//	<Sequence Frame = "5" Delay = "50" />
-		//	</Sequences>
+		//</Sequences>
 
 		Sequence sq;
 
@@ -54,7 +54,7 @@ namespace Menge
 
 			XML_CHECK_NODE_FOR_EACH( "Sequences" )
 			{
-				XML_CHECK_NODE( "Sequence" )
+				XML_CHECK_NODE( "AnimInfo" )
 				{
 					XML_VALUE_ATTRIBUTE( "Index", sq.index );
 					XML_VALUE_ATTRIBUTE( "Delay", sq.delay );

@@ -8,7 +8,7 @@ namespace Menge
 		: public Node
 	{
 	public:
-		NodeProxy( Node *_node);
+		NodeProxy( Node * _node);
 		virtual ~NodeProxy();
 
 	public:
@@ -21,22 +21,22 @@ namespace Menge
 		bool isActive() override;
 
 	public:
-		void setName(const std::string &name) override;
+		void setName(const std::string & _name) override;
 		const std::string & getName()const override;
 
-		void setType(const std::string &type) override;
+		void setType(const std::string & _type) override;
 		const std::string & getType()const override;
 
 	public:
 		void update(float _timing) override;
-		void loader(TiXmlElement *xml) override;
+		void loader(TiXmlElement * _xml) override;
 
 	public:
 		void debugRender() override;
 
 	public:
-		virtual void registerEvent( const std::string &_name, PyObject * _func  );
-		virtual PyObject * getEvent( const std::string &_name );
+		virtual void registerEvent( const std::string & _name, PyObject * _func  );
+		virtual PyObject * getEvent( const std::string & _name );
 
 		virtual	void setScriptable( PyObject * _scriptable );
 		virtual PyObject * getScriptable();

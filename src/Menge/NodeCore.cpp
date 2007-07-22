@@ -1,4 +1,5 @@
 #	include "NodeCore.h"
+
 #	include "ObjectImplement.h"
 
 #	include "NodeForeach.h"
@@ -6,13 +7,14 @@
 #	include "SceneManager.h"
 
 #	include "FileEngine.h"
+
 #	include "ScriptEngine.h"
 
 #	include "ErrorMessage.h"
 
-#	include <algorithm>
-
 #	include "XmlParser/XmlParser.h"
+
+#	include <algorithm>
 
 namespace Menge
 {

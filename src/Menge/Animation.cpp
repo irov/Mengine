@@ -5,7 +5,6 @@
 #	include "ResourceManager.h"
 
 #	include "ResourceAnimation.h"
-#	include "ResourceImage.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -20,11 +19,11 @@ Animation::Animation()
 , m_currentFrame(0)
 {}
 //////////////////////////////////////////////////////////////////////////
-void Animation::loader(TiXmlElement *xml)
+void Animation::loader(TiXmlElement * _xml)
 {
-	Sprite::loader(xml);
+	Sprite::loader(_xml);
 
-	XML_FOR_EACH_TREE( xml )
+	XML_FOR_EACH_TREE( _xml )
 	{
 		XML_CHECK_VALUE_NODE( "Animation", "Name", m_resourceAnim );
 		XML_CHECK_VALUE_NODE( "Looping", "Value", m_looping );

@@ -23,7 +23,7 @@ namespace Menge
 		Track();
 
 	public:
-		void addPoint(const mt::vec2f &_point);
+		void addPoint(const mt::vec2f & _point);
 
 		void setSpeedMove(float _speed);
 		float getSpeedMove()const;

@@ -57,6 +57,5 @@ namespace Menge
 
 	public:
 		virtual void debugRender() = 0;
-
 	};
 }

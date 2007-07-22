@@ -4,23 +4,13 @@
 
 #	include "RenderEngine.h"
 
-#	include "Viewport.h"
-
-#	include "tinyxml/tinyxml.h"
-
 #	include "XmlParser/XmlParser.h"
-
-#	include "Interface/FileSystemInterface.h"
-
-#	include "ResourceImage.h"
 
 #	include "ResourceManager.h"
 
 #	include "ResourceAnimationCal3d.h"
 
-#	include "math/bv.h"
-
-#	include "FileEngine.h"
+#	include "AnimationCallbacks.h"
 
 using namespace Menge;
 
@@ -36,150 +26,13 @@ struct Vertex
 OBJECT_IMPLEMENT(AnimationObject);
 //////////////////////////////////////////////////////////////////////////
 AnimationObject::AnimationObject()
-: m_scale(1.0f)
-, m_leftAnimationTime(0)
-, m_blendTime(1.0f)
-, m_currentAnimationId(0)
-, m_calCoreModel(0)
-, m_calModel(0)
+: m_calModel(0)
+, m_vertexDecl(0)
+, m_primitiveData(0)
 {}
 //////////////////////////////////////////////////////////////////////////
 AnimationObject::~AnimationObject()
 {}
-//////////////////////////////////////////////////////////////////////////
-void AnimationObject::clearCycles()
-{
-	size_t animCount = m_calCoreModel->getCoreAnimationCount();
-
-	for(int i = 0; i < animCount; ++i)
-	{
-		m_calModel->getMixer()->clearCycle(i,0.0f);
-	}
-}
-//////////////////////////////////////////////////////////////////////////
-void AnimationObject::play(const std::string& _name)
-{
-	size_t animCount = m_calCoreModel->getCoreAnimationCount();
-
-	int action = m_calCoreModel->getCoreAnimationId(_name);
-
-	for(int i = 0; i < animCount; ++i)
-	{
-		if(action != i)
-		{
-			m_calModel->getMixer()->clearCycle(i, 0);
-		}
-		else
-		{
-			m_calModel->getMixer()->blendCycle(action, 1.0f, m_blendTime);
-		}
-	}
-}
-//////////////////////////////////////////////////////////////////////////
-void AnimationObject::nextPlay()
-{
-	size_t size = m_calCoreModel->getCoreAnimationCount();
-	m_currentAnimationId = (m_currentAnimationId + 1) % size;
-
-	for(int i = 0; i < size; ++i)
-	{
-		if(m_currentAnimationId != i)
-		{
-			m_calModel->getMixer()->clearCycle(i, 0);
-		}
-		else
-		{
-			m_calModel->getMixer()->blendCycle(m_currentAnimationId, 1.0f, m_blendTime);
-		}
-	}
-}
-//////////////////////////////////////////////////////////////////////////
-void AnimationObject::playBlend(
-			const std::vector<std::string>& _animNames,
-			const std::vector<float>& _weights
-		)
-{
-	size_t size = _weights.size();
-
-	if(_animNames.size() != size)
-	{
-		assert(!"sizes of two vectors are different!");
-	}
-
-	std::list<int> animationIds;
-	
-	int id = 0;
-
-	for each( const std::string & animationName in _animNames )
-	{
-		/*getCoreAnimationId работает только при условии добавления имени вначале загрузки меша */
-		int animId = m_calCoreModel->getCoreAnimationId(animationName);
-
-		if(animId == -1)
-		{
-			assert(!"no such name of animation!");
-		}
-
-		float w = _weights[id++];
-
-		m_calModel->getMixer()->blendCycle(animId, w, m_blendTime);
-		animationIds.push_back(animId);
-	}
-
-	size_t animCount = m_calCoreModel->getCoreAnimationCount();
-
-	m_calModel->getMixer()->clearCycle(2, 0);
-
-	//FIX!!!!!!!
-	/*for(int i = 0; i < animCount; ++i)
-	{
-		for(std::list<int>::iterator it = animationIds.begin(); it != animationIds.end();++it)
-		{
-			if(i != *it)	m_calModel->getMixer()->clearCycle(i, 0);
-		}
-	}
-	*/
-}
-
-void AnimationObject::getBonePosition(int _boneIndex, mt::vec3f& _position)
-{
-	CalBone * bone = m_calModel->getSkeleton()->getBone(_boneIndex);
-
-	if(bone == NULL)
-	{
-		assert(!"no bone with this index");
-		return;
-	}
-
-	const CalVector &pos = bone->getTranslationAbsolute();
-
-	_position.x = pos.x;
-	_position.y = pos.y;
-	_position.z = pos.z;
-}
-//////////////////////////////////////////////////////////////////////////
-int AnimationObject::getBoneIndex(const std::string& _bonename)
-{
-	return m_calCoreModel->getCoreSkeleton()->getCoreBoneId(_bonename);
-}
-//////////////////////////////////////////////////////////////////////////
-void AnimationObject::getBoneRotation(int _boneIndex, mt::quatf & _q)
-{
-	CalBone * bone = m_calModel->getSkeleton()->getBone(_boneIndex);
-
-	if(bone == NULL)
-	{
-		assert(!"Not bone");
-		return;
-	}
-	
-	const CalQuaternion & calQ = bone->getRotationAbsolute();
-
-	_q.w = calQ.w;
-	_q.x = calQ.x;
-	_q.y = calQ.y;
-	_q.z = calQ.z;
-}
 ///////////////////////////////////////////////////////////////////////////
 bool AnimationObject::isVisible( const Camera3D * _camera )
 {
@@ -214,7 +67,6 @@ bool AnimationObject::_activate()
 		Holder<ResourceManager>::hostage()
 		->getResourceT<ResourceAnimationCal3d>( m_resourceName );
 
-
 	if( m_cal3dRes == 0 )
 	{
 		return false;
@@ -222,89 +74,14 @@ bool AnimationObject::_activate()
 
 	_initGeometry();
 
-	m_calCoreModel = new CalCoreModel("dummy");
-	m_scale = m_cal3dRes->getScale();
+	m_calModel = m_cal3dRes->createInstance();
 
-	const std::string& folder = m_cal3dRes->getFolderPath();
-
-	for(size_t i = 0; i < m_cal3dRes->getSceletonInfo().size();++i)
-	{
-
-		const std::string& info = folder + m_cal3dRes->getSceletonInfo()[i];
-		if(!m_calCoreModel->loadCoreSkeleton(info))
-		{
-			return false;
-		}
-	}
-
-	size_t sizeAnimCount = m_cal3dRes->getCoreAnimInfo().size();
-
-	for(size_t i = 0; i < sizeAnimCount;++i)
-	{
-		const std::string& info = folder + m_cal3dRes->getCoreAnimInfo()[i];
-		if(m_calCoreModel->loadCoreAnimation(info) == -1)
-		{
-			return false;
-		}
-		m_calCoreModel->addAnimationName(info,i);
-	}
-
-	for(size_t i = 0; i < m_cal3dRes->getCoreMeshInfo().size();++i)
-	{
-		const std::string& info = folder + m_cal3dRes->getCoreMeshInfo()[i];
-		if(m_calCoreModel->loadCoreMesh(info) == -1)
-		{
-			return false;
-		}
-	}
-
-	for(size_t i = 0; i < m_cal3dRes->getCoreMatInfo().size();++i)
-	{
-		const std::string& info = folder + m_cal3dRes->getCoreMatInfo()[i];
-		if(m_calCoreModel->loadCoreMaterial(info) == -1)
-		{
-			return false;
-		}
-	}
-
-	for(int materialId = 0; materialId < m_calCoreModel->getCoreMaterialCount(); materialId++)
-	{
-		m_calCoreModel->createCoreMaterialThread(materialId);
-		m_calCoreModel->setCoreMaterialId(materialId, 0, materialId);
-	}
-
-	m_calModel = new CalModel(m_calCoreModel);
-
-	for(int materialId = 0; materialId < m_calCoreModel->getCoreMaterialCount(); materialId++)
-	{
-		CalCoreMaterial * pCoreMaterial = m_calCoreModel->getCoreMaterial(materialId);
-
-		for(int mapId = 0; mapId < pCoreMaterial->getMapCount(); mapId++)
-		{
-			std::string strFilename = pCoreMaterial->getMapFilename(mapId);
-
-			FileDataInterface* imageData = Holder<FileEngine>::hostage()->openFile(folder + strFilename);
-
-			TextureDesc td;
-			
-			td.buffer = (void*)imageData->getBuffer();
-			td.size = imageData->size();
-			td.filter = 1;
-
-			Texture * tex = Holder<RenderEngine>::hostage()->createTextureInMemory(td);
-
-			pCoreMaterial->setMapUserData(mapId, (Cal::UserData)tex);
-		}
-	}
-
-	for(int meshId = 0; meshId < m_calCoreModel->getCoreMeshCount(); meshId++)
+	for(int meshId = 0; meshId < m_cal3dRes->getMeshCount(); meshId++)
 	{
 		m_calModel->attachMesh(meshId);
 	}
 
 	m_calModel->setMaterialSet(0);
-
-	m_leftAnimationTime = m_calCoreModel->getCoreAnimation(m_currentAnimationId)->getDuration() - m_blendTime;
 
 	clearCycles();
 	return true;
@@ -312,20 +89,7 @@ bool AnimationObject::_activate()
 //////////////////////////////////////////////////////////////////////////
 void AnimationObject::_deactivate()
 {
-	for(int materialId = 0; materialId < m_calCoreModel->getCoreMaterialCount(); materialId++)
-	{
-		CalCoreMaterial * pCoreMaterial = m_calCoreModel->getCoreMaterial(materialId);
-		for(int mapId = 0; mapId < pCoreMaterial->getMapCount(); mapId++)
-		{
-			Texture* tex = (Texture*)pCoreMaterial->getMapUserData(mapId);
-			Holder<RenderEngine>::hostage()->releaseTexture(tex);
-		}
-	}
-
-//	m_calModel->destroy();
-
 	delete m_calModel;
-	delete m_calCoreModel;
 
 	delete m_vertexDecl;
 	delete m_primitiveData;
@@ -357,8 +121,8 @@ void AnimationObject::_render( const mt::mat4f & _rwm, const Camera3D * _camera 
 
 	int meshCount = pCalRenderer->getMeshCount();
 
-	int	m_VBCursor = 0;
-	int	m_IBCursor = 0;
+	int	VBCursor = 0;
+	int	IBCursor = 0;
 
 	for(int meshId = 0; meshId < meshCount; meshId++)
 	{
@@ -385,7 +149,7 @@ void AnimationObject::_render( const mt::mat4f & _rwm, const Camera3D * _camera 
 
 				VertexData * vertexData = m_primitiveData->getVertexData();
 
-				vertexData->lock(vertices,m_VBCursor,pCalRenderer->getVertexCount(),sizeof(Vertex)); 
+				vertexData->lock(vertices, VBCursor, pCalRenderer->getVertexCount(), sizeof(Vertex)); 
 				int vertexCount = pCalRenderer->getVerticesNormalsAndTexCoords( vertices );
 				vertexData->unlock();
 
@@ -393,15 +157,15 @@ void AnimationObject::_render( const mt::mat4f & _rwm, const Camera3D * _camera 
 
 				IndexData * indexData = m_primitiveData->getIndexData();
 
-				indexData->lock( indecies, m_IBCursor, pCalRenderer->getFaceCount() );
+				indexData->lock( indecies, IBCursor, pCalRenderer->getFaceCount() );
 				int faceCount = pCalRenderer->getFaces( indecies );
 				indexData->unlock();
 						
 				renderEng->setTexture((Texture*)pCalRenderer->getMapUserData(0));
 				renderEng->drawPrimitive(m_primitiveData);
 
-				m_VBCursor+=vertexCount;
-				m_IBCursor+=faceCount;
+				VBCursor += vertexCount;
+				IBCursor += faceCount;
 			}
 		}
 	}
@@ -411,4 +175,158 @@ void AnimationObject::_render( const mt::mat4f & _rwm, const Camera3D * _camera 
 //////////////////////////////////////////////////////////////////////////
 void AnimationObject::_debugRender()
 {}
+//////////////////////////////////////////////////////////////////////////
+void AnimationObject::setCallback(const std::string & _name, float _updateTime, TUpdateCallback _updateCallback, TCompleteCallback _completeCallback, void * _userData)
+{
+	int index = m_cal3dRes->getAnimationId(_name);
+
+	if(index != -1)
+	{
+		TMapCallbacks::iterator it = m_callbacks.find(index);
+
+		if(it != m_callbacks.end())
+		{
+			m_removeCallbacks.push_back(std::make_pair(index, it->second));
+			m_callbacks.erase(it);
+		}
+
+		CalCoreAnimation * calCoreAnimation = m_cal3dRes->getCoreAnimation(index);
+		
+		AnimationCallback * callback = new AnimationCallback(this, _name, _updateCallback, _completeCallback, _userData);
+
+		calCoreAnimation->registerCallback(callback, _updateTime);
+
+		m_callbacks.insert(std::make_pair(index, callback));
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void AnimationObject::clearCallback(const std::string & _name)
+{
+	int index = m_cal3dRes->getAnimationId(_name);
+
+	if(index != -1)
+	{
+		TMapCallbacks::iterator it = m_callbacks.find(index);
+
+		if(it != m_callbacks.end())
+		{
+			m_removeCallbacks.push_back(std::make_pair(index, it->second));
+			m_callbacks.erase(it);
+		}
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void AnimationObject::clearRemovedCallback()
+{
+	for(TListRemoveCallbacks::iterator it = m_removeCallbacks.begin(); 
+		it!= m_removeCallbacks.end(); ++it)
+	{
+		CalCoreAnimation * calCoreAnimation = m_cal3dRes->getCoreAnimation((*it).first);
+		calCoreAnimation->removeCallback((*it).second);
+		delete (*it).second;
+	}
+
+	m_removeCallbacks.clear();
+}
+//////////////////////////////////////////////////////////////////////////
+void AnimationObject::clearCycles()
+{
+	size_t animCount = m_cal3dRes->getAnimationCount();
+
+	for(int i = 0; i < animCount; ++i)
+	{
+		m_calModel->getMixer()->clearCycle(i,0.0f);
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void AnimationObject::play(const std::string& _name)
+{
+	size_t animCount = m_cal3dRes->getAnimationCount();
+
+	AnimInfo * seq = m_cal3dRes->getAnimationInfo(_name);
+
+	m_calModel->getMixer()->setTimeFactor(seq->delay);
+
+	for(int i = 0; i < animCount; ++i)
+	{
+		if(seq->index != i)
+		{
+			m_calModel->getMixer()->clearCycle(i, 0);
+		}
+		else
+		{
+			m_calModel->getMixer()->blendCycle(seq->index, 1.0f, seq->blend);
+		}
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void AnimationObject::play2Blend(const std::string& _name1,	float _weight1,
+			const std::string& _name2,	float _weight2
+		)
+{
+	AnimInfo * seq1 = m_cal3dRes->getAnimationInfo(_name1);
+	AnimInfo * seq2 = m_cal3dRes->getAnimationInfo(_name2);
+
+	m_calModel->getMixer()->setTimeFactor(seq1->delay);
+
+	float blend	= seq1->blend;
+
+	size_t animCount = m_cal3dRes->getAnimationCount();
+
+	for(int i = 0; i < animCount; i++)
+	{
+		if(i == seq1->index)
+		{
+			m_calModel->getMixer()->blendCycle(i, _weight1, blend);
+		}
+		else if(i == seq2->index)
+		{
+			m_calModel->getMixer()->blendCycle(i, _weight2, blend);
+		}
+		else
+		{
+			m_calModel->getMixer()->clearCycle(i, blend);
+		}
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void AnimationObject::getBonePosition(int _boneIndex, mt::vec3f& _position)
+{
+	CalBone * bone = m_calModel->getSkeleton()->getBone(_boneIndex);
+
+	if(bone == NULL)
+	{
+		assert(!"no bone with this index");
+		return;
+	}
+
+	const CalVector & pos = bone->getTranslationAbsolute();
+
+	_position.x = pos.x;
+	_position.y = pos.y;
+	_position.z = pos.z;
+}
+//////////////////////////////////////////////////////////////////////////
+int AnimationObject::getBoneIndex(const std::string& _bonename)
+{
+	return m_cal3dRes->getBoneIndex(_bonename);
+}
+//////////////////////////////////////////////////////////////////////////
+void AnimationObject::getBoneRotation(int _boneIndex, mt::quatf & _q)
+{
+	CalBone * bone = m_calModel->getSkeleton()->getBone(_boneIndex);
+
+	if(bone == NULL)
+	{
+		assert(!"Not bone");
+		return;
+	}
+	
+	const CalQuaternion & calQ = bone->getRotationAbsolute();
+
+	_q.w = calQ.w;
+	_q.x = calQ.x;
+	_q.y = calQ.y;
+	_q.z = calQ.z;
+}
 //////////////////////////////////////////////////////////////////////////

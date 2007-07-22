@@ -33,7 +33,7 @@ namespace Menge
 	public:
 		void update( float _timing );
 		void render();
-		void loader(TiXmlElement *_xml);
+		void loader(TiXmlElement * _xml);
 
 	public:
 		bool init();

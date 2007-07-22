@@ -32,7 +32,7 @@ namespace	Menge
 		void	_deactivate() override;
 
 	public:
-		void	loader(TiXmlElement *xml) override;
+		void	loader(TiXmlElement * _xml) override;
 	public:
 		void	start();
 		void	nextMessageSpot();

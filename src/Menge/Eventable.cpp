@@ -42,9 +42,9 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::loader(TiXmlElement *xml)
+	void Eventable::loader(TiXmlElement * _xml)
 	{
-		XML_FOR_EACH_FORCE(xml)
+		XML_FOR_EACH_FORCE(_xml)
 		{
 			XML_CHECK_NODE("Event")
 			{

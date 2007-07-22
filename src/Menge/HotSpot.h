@@ -22,8 +22,8 @@ namespace Menge
 		~HotSpot();
 
 	public:
-		void addPoint( const mt::vec2f &p );
-		bool testPoint( const mt::vec2f &p );
+		void addPoint( const mt::vec2f & _p );
+		bool testPoint( const mt::vec2f & _p );
 
 		void setHandle( bool _handle );
 		void setMouseLeftClickEvent( PyObject * _object );

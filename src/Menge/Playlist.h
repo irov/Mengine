@@ -6,7 +6,7 @@ class TiXmlElement;
 
 namespace	Menge
 {
-	typedef	std::vector<std::string> TListTrackVec;
+	typedef	std::vector<std::string> TVecTrack;
 
 	class Playlist
 	{
@@ -27,8 +27,8 @@ namespace	Menge
 	private:
 		bool m_isTracksLoaded;
 		std::string	m_playListName;
-		TListTrackVec m_tracks;
-		TListTrackVec::iterator	m_currentSong;
+		TVecTrack m_tracks;
+		TVecTrack::iterator	m_currentSong;
 	};
 
 };

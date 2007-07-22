@@ -6,10 +6,19 @@
 
 #	include <vector>
 
+#	include <cal3d\cal3d.h>
+
 class RenderImageInterface;
 
 namespace Menge
 {
+	struct AnimInfo
+	{
+		size_t	index;
+		float	delay;
+		float	blend;
+	};
+
 	class ResourceAnimationCal3d
 		: public ResourceImpl
 	{
@@ -17,15 +26,6 @@ namespace Menge
 
 	public:
 		ResourceAnimationCal3d( const std::string & _name );
-
-	public:
-
-		float getScale() const;
-		const std::vector<std::string>& getSceletonInfo() const;
-		const std::vector<std::string>& getCoreAnimInfo() const;
-		const std::vector<std::string>& getCoreMeshInfo() const;
-		const std::vector<std::string>& getCoreMatInfo() const;
-		const std::string& getFolderPath() const;
 	
 	public:
 		void loader( TiXmlElement *xml );
@@ -35,14 +35,28 @@ namespace Menge
 		void _release();
 
 	protected:
-		std::string m_fileCAL3D;
-		std::string m_filePathCAL3D;
+		std::string m_filename;
 
+	public:
+		size_t	getAnimationCount() const;
+		size_t  getMeshCount() const;
+		int		getAnimationId(const std::string& _name) const;
+		int		getBoneIndex(const std::string& _bonename) const;
+		float	getScale() const;
+	public:
+		AnimInfo * getAnimationInfo(const std::string& _name);
+	public:
+		// cal3d specs:
+		CalModel * createInstance();
+		CalCoreAnimation * getCoreAnimation(int _index);
 	private:
+		typedef std::vector<AnimInfo> TVectorAnimInfo;
+		TVectorAnimInfo m_animInfos;
 		float m_scale;
-		std::vector<std::string>	m_sceletonInfo;
-		std::vector<std::string>	m_coreAnimInfo;
-		std::vector<std::string>	m_coreMeshInfo;
-		std::vector<std::string>	m_coreMatInfo;
+		std::string m_folder;
+		CalCoreModel * m_calCoreModel;
+
+		void	createMaterials();
+		void	freeMaterials();
 	};
 }

@@ -4,20 +4,15 @@
 
 #	include "AnimationObject.h"
 
-class Bone : public SceneNode3D
+namespace	Menge
 {
-public:
-	Bone(AnimationObject * _animObj, const std::string& _boneName)
-		: m_animObj(_animObj)
+	class AnimationBone : public SceneNode3D
 	{
-		m_index = _animObj->getBoneIndex(_boneName);
-	}
-
-	const mt::mat4f & getWorldMatrix()
-	{
-		//return 
-	}
-private:
-	int m_index;
-	AnimationObject * m_animObj;
-};
+	public:
+		AnimationBone(AnimationObject * _animObj, const std::string& _boneName);
+		const mt::mat4f & getWorldMatrix();
+	private:
+		int m_index;
+		AnimationObject * m_animObj;
+	};
+}

@@ -19,6 +19,8 @@ namespace Menge
 		float	blend;
 	};
 
+	typedef std::vector<std::string> TVecHardPoints;
+
 	class ResourceAnimationCal3d
 		: public ResourceImpl
 	{
@@ -43,6 +45,7 @@ namespace Menge
 		int		getAnimationId(const std::string& _name) const;
 		int		getBoneIndex(const std::string& _bonename) const;
 		float	getScale() const;
+		const	TVecHardPoints & getHardPoints() const; 
 	public:
 		AnimInfo * getAnimationInfo(const std::string& _name);
 	public:
@@ -55,6 +58,8 @@ namespace Menge
 		float m_scale;
 		std::string m_folder;
 		CalCoreModel * m_calCoreModel;
+
+		TVecHardPoints m_hardPoints;
 
 		void	createMaterials();
 		void	freeMaterials();

@@ -8,7 +8,7 @@
 #include "vec4.h"
 #include "mat3.h"
 #include "math.h"
-
+#include "quat.h"
 
 namespace mt
 {
@@ -103,4 +103,7 @@ namespace mt
 
 	void	rotate_axis_m4(mat4f &out, const vec3f &u, float degrees);
 	void	make_projection_m4( mat4f &_out , float _fov, float _aspect, float _zn, float _zf );
+
+	void	qpos_to_rot_m4(mat4f& out, const quatf& _rhs, const vec3f& _pos);
+	mat4f	qpos_to_rot_m4(const quatf& _rhs, const vec3f& _pos);
 }

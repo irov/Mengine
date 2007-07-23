@@ -12,6 +12,8 @@
 
 #	include "AnimationCallbacks.h"
 
+#	include "AnimationBone.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -29,6 +31,8 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool AnimationObject::isVisible( const Camera3D * _camera )
 	{
+	//	CalBoundingBox & box = m_calModel->getBoundingBox();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -60,7 +64,7 @@ namespace Menge
 		};
 
 		m_vertexSize = sizeof(Vertex);
-		//FIX
+
 		vertexData->createVertexBuffer(30000,m_vertexSize);
 		indexData->createIndexBuffer(30000,0);
 	}
@@ -86,6 +90,13 @@ namespace Menge
 		}
 
 		m_calModel->setMaterialSet(0);
+
+		const TVecHardPoints & hp = m_cal3dRes->getHardPoints();
+
+		for each( std::string hardPoint in hp )
+		{
+			this->addChildren(new AnimationBone(this, hardPoint));
+		}
 
 		clearCycles();
 		return true;
@@ -294,44 +305,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::getBonePosition(int _boneIndex, mt::vec3f& _position)
-	{
-		CalBone * bone = m_calModel->getSkeleton()->getBone(_boneIndex);
-
-		if(bone == NULL)
-		{
-			assert(!"no bone with this index");
-			return;
-		}
-
-		const CalVector & pos = bone->getTranslationAbsolute();
-
-		_position.x = pos.x;
-		_position.y = pos.y;
-		_position.z = pos.z;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	int AnimationObject::getBoneIndex(const std::string& _bonename)
 	{
 		return m_cal3dRes->getBoneIndex(_bonename);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::getBoneRotation(int _boneIndex, mt::quatf & _q)
-	{
-		CalBone * bone = m_calModel->getSkeleton()->getBone(_boneIndex);
-
-		if(bone == NULL)
-		{
-			assert(!"Not bone");
-			return;
-		}
-		
-		const CalQuaternion & calQ = bone->getRotationAbsolute();
-
-		_q.w = calQ.w;
-		_q.x = calQ.x;
-		_q.y = calQ.y;
-		_q.z = calQ.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

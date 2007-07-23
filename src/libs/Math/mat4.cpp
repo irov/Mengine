@@ -423,4 +423,27 @@ namespace	mt
 		out[2][0] = 0.f;	out[2][1] = 0.f;	out[2][2] = zf / (zf - zn);			out[2][3] = 1.f;
 		out[3][0] = 0.f;	out[3][1] = 0.f;	out[3][2] = -zn * zf / (zf - zn);	out[3][3] = 0.f;
 	}
+
+	void qpos_to_rot_m4(mat4f& out, const quatf& _rhs, const vec3f& _pos)
+	{
+		float wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
+		x2 = _rhs.x + _rhs.x;
+		y2 = _rhs.y + _rhs.y;
+		z2 = _rhs.z + _rhs.z;
+		xx = _rhs.x * x2;   xy = _rhs.x * y2;   xz = _rhs.x * z2;
+		yy = _rhs.y * y2;   yz = _rhs.y * z2;   zz = _rhs.z * z2;
+		wx = _rhs.w * x2;   wy = _rhs.w * y2;   wz = _rhs.w * z2;
+
+		out[0][0] = 1.0f-(yy+zz);		out[0][1] = xy-wz;			out[0][2] = xz+wy;			out[0][3] = 0.0f;
+		out[1][0] = xy+wz;				out[1][1] = 1.0f-(xx+zz);	out[1][2] = yz-wx;			out[1][3] = 0.0f;
+		out[2][0] = xz-wy;				out[2][1] = yz+wx;			out[2][2] = 1.0f-(xx+yy);	out[2][3] = 0.0f;
+		out[3][0] = _pos.x;				out[3][1] = _pos.y;			out[3][2] = _pos.z;			out[3][3] = 1.0f;
+	}
+
+	mat4f qpos_to_rot_m4(const quatf& _rhs, const vec3f& _pos)
+	{
+		mat4f	out;
+		qpos_to_rot_m4(out,_rhs,_pos);
+		return	out;
+	}
 }

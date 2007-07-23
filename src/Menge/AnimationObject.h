@@ -42,9 +42,6 @@ namespace Menge
 		// 
 		int getBoneIndex(const std::string& _bonename);
 		//
-		void getBonePosition(int _boneIndex, mt::vec3f & _position);
-		void getBoneRotation(int _boneIndex, mt::quatf & _q);
-		
 		void setCallback(const std::string & _name, float _updateTime, UpdateCallback _updateCallback, CompleteCallback _completeCallback, void * _userData);
 		void clearCallback(const std::string& _name);
 		void clearRemovedCallback();

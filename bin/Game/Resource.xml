@@ -24,6 +24,10 @@
 			<AnimInfo Index = "1" Delay = "5.0" Blend = "1.0" />
 			<AnimInfo Index = "2" Delay = "5.0" Blend = "1.0" />
 		</Sequences>	
+		<HardPoints>
+			<HardPoint Name = "Bip01 Tail" />
+			<HardPoint Name = "Bip01 Tail1" />
+		</HardPoints>
 	</Resource>
 
 	<Resource Name = "TestSound" Type = "ResourceSound" >

@@ -23,6 +23,7 @@ namespace Menge
 	void ResourceAnimationCal3d::loader( TiXmlElement * _xml )
 	{
 		AnimInfo sq;
+		std::string hardPointName;
 
 		XML_FOR_EACH_TREE( _xml )
 		{
@@ -37,6 +38,16 @@ namespace Menge
 					XML_VALUE_ATTRIBUTE( "Blend", sq.blend );
 
 					m_animInfos.push_back( sq );
+				}
+			}	
+
+			XML_CHECK_NODE_FOR_EACH( "HardPoints" )
+			{
+				XML_CHECK_NODE( "HardPoint" )
+				{
+					XML_VALUE_ATTRIBUTE( "Name", hardPointName );
+			
+					m_hardPoints.push_back( hardPointName );
 				}
 			}	
 		}
@@ -237,5 +248,10 @@ namespace Menge
 	float	ResourceAnimationCal3d::getScale() const
 	{
 		return m_scale;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const	TVecHardPoints & ResourceAnimationCal3d::getHardPoints() const
+	{
+		return m_hardPoints;
 	}
 }

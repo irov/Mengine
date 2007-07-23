@@ -1,5 +1,8 @@
 #	include "PointEmitter.h"
 #	include "stdlib.h"
+
+namespace	Menge
+{
 	//////////////////////////////////////////////////////////////////////////
 	float rand2(float min, float max)
 	{
@@ -29,3 +32,4 @@
 		_particle->m_direction.y = sinf(ang);
 		_particle->m_direction *= rand2(m_velocity.x, m_velocity.y);
 	}
+}

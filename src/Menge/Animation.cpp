@@ -8,176 +8,179 @@
 
 #	include "XmlParser/XmlParser.h"
 
-OBJECT_IMPLEMENT(Animation)
-//////////////////////////////////////////////////////////////////////////
-Animation::Animation()
-: m_playing(false)
-, m_looping(false)
-, m_state(FORWARD)
-, m_total_delay(0.f)
-, m_anim(0)
-, m_currentFrame(0)
-{}
-//////////////////////////////////////////////////////////////////////////
-void Animation::loader(TiXmlElement * _xml)
+namespace	Menge
 {
-	Sprite::loader(_xml);
-
-	XML_FOR_EACH_TREE( _xml )
+	OBJECT_IMPLEMENT(Animation)
+	//////////////////////////////////////////////////////////////////////////
+	Animation::Animation()
+	: m_playing(false)
+	, m_looping(false)
+	, m_state(FORWARD)
+	, m_total_delay(0.f)
+	, m_anim(0)
+	, m_currentFrame(0)
+	{}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::loader(TiXmlElement * _xml)
 	{
-		XML_CHECK_VALUE_NODE( "Animation", "Name", m_resourceAnim );
-		XML_CHECK_VALUE_NODE( "Looping", "Value", m_looping );
-	}
-}
-//////////////////////////////////////////////////////////////////////////
-void Animation::setAnimState(eAnimState _state)
-{
-	m_state = _state;
-}
-//////////////////////////////////////////////////////////////////////////
-void Animation::setLooped(bool _looped)
-{
-	m_looping = _looped;
-}
-//////////////////////////////////////////////////////////////////////////
-bool Animation::getLooped() const
-{
-	return m_looping;
-}
-//////////////////////////////////////////////////////////////////////////
-void Animation::setFirstFrame()
-{
-	assert(m_state == FORWARD || m_state == REWIND);
+		Sprite::loader(_xml);
 
-	size_t frameSize = m_anim->getSequenceCount();
-
-	m_currentFrame = 
-		(m_state == FORWARD)
-		? 0
-		: frameSize - 1;
-}
-//////////////////////////////////////////////////////////////////////////
-void Animation::nextFrame()
-{
-	size_t frameSize = m_anim->getSequenceCount();
-
-	if( ++m_currentFrame == frameSize )
-	{
-		if( m_looping == false )
+		XML_FOR_EACH_TREE( _xml )
 		{
-			m_playing = false;
-			m_currentFrame = frameSize - 1;
-			return;
-		}
-		else
-		{
-			m_currentFrame = 0;
-		}
-	}	
-}
-//////////////////////////////////////////////////////////////////////////
-void Animation::prevFrame()
-{
-	size_t frameSize = m_anim->getSequenceCount();
-
-	if( m_currentFrame == 0 )
-	{
-		if(!m_looping)
-		{
-			m_playing = false;
-			m_currentFrame = 0;
-			return;
-		}
-		else
-		{
-			m_currentFrame = frameSize;
+			XML_CHECK_VALUE_NODE( "Animation", "Name", m_resourceAnim );
+			XML_CHECK_VALUE_NODE( "Looping", "Value", m_looping );
 		}
 	}
-	--m_currentFrame;
-}
-//////////////////////////////////////////////////////////////////////////
-void Animation::_update(float _timing)
-{
-	if(!m_playing)
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::setAnimState(eAnimState _state)
 	{
-		return; 
+		m_state = _state;
 	}
-
-	m_total_delay += _timing;
-
-	int delay = m_anim->getSequenceDelay(m_currentFrame);
-
-	m_currentImageIndex = m_anim->getSequenceIndex(m_currentFrame);
-
-	while(m_total_delay >= delay)
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::setLooped(bool _looped)
 	{
-		m_total_delay -= delay;
+		m_looping = _looped;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Animation::getLooped() const
+	{
+		return m_looping;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::setFirstFrame()
+	{
+		assert(m_state == FORWARD || m_state == REWIND);
 
-		switch(m_state)
+		size_t frameSize = m_anim->getSequenceCount();
+
+		m_currentFrame = 
+			(m_state == FORWARD)
+			? 0
+			: frameSize - 1;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::nextFrame()
+	{
+		size_t frameSize = m_anim->getSequenceCount();
+
+		if( ++m_currentFrame == frameSize )
 		{
-		case FORWARD:
+			if( m_looping == false )
 			{
-				nextFrame();
+				m_playing = false;
+				m_currentFrame = frameSize - 1;
+				return;
 			}
-			break;
-
-		case REWIND:
+			else
 			{
-				prevFrame();
+				m_currentFrame = 0;
 			}
-			break;
+		}	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::prevFrame()
+	{
+		size_t frameSize = m_anim->getSequenceCount();
 
-		default:
+		if( m_currentFrame == 0 )
+		{
+			if(!m_looping)
 			{
-				assert(!"undefined state!");
+				m_playing = false;
+				m_currentFrame = 0;
+				return;
 			}
-			break;
+			else
+			{
+				m_currentFrame = frameSize;
+			}
 		}
-		delay = m_anim->getSequenceDelay( m_currentFrame );
+		--m_currentFrame;
 	}
-}
-//////////////////////////////////////////////////////////////////////////
-bool Animation::_activate()
-{
-	if( Sprite::_activate() == false )
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_update(float _timing)
 	{
-		return false;
+		if(!m_playing)
+		{
+			return; 
+		}
+
+		m_total_delay += _timing;
+
+		int delay = m_anim->getSequenceDelay(m_currentFrame);
+
+		m_currentImageIndex = m_anim->getSequenceIndex(m_currentFrame);
+
+		while(m_total_delay >= delay)
+		{
+			m_total_delay -= delay;
+
+			switch(m_state)
+			{
+			case FORWARD:
+				{
+					nextFrame();
+				}
+				break;
+
+			case REWIND:
+				{
+					prevFrame();
+				}
+				break;
+
+			default:
+				{
+					assert(!"undefined state!");
+				}
+				break;
+			}
+			delay = m_anim->getSequenceDelay( m_currentFrame );
+		}
 	}
-
-	m_anim = Holder<ResourceManager>::hostage()
-		->getResourceT<ResourceAnimation>( m_resourceAnim );
-
-	if(m_anim == NULL)
+	//////////////////////////////////////////////////////////////////////////
+	bool Animation::_activate()
 	{
-		return false;
+		if( Sprite::_activate() == false )
+		{
+			return false;
+		}
+
+		m_anim = Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceAnimation>( m_resourceAnim );
+
+		if(m_anim == NULL)
+		{
+			return false;
+		}
+
+		setFirstFrame();
+
+		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_deactivate()
+	{
+		Sprite::_deactivate();
 
-	setFirstFrame();
-
-	return true;
-}
-//////////////////////////////////////////////////////////////////////////
-void Animation::_deactivate()
-{
-	Sprite::_deactivate();
-
-	Holder<ResourceManager>::hostage()
-		->releaseResource( m_anim );
-}
-//////////////////////////////////////////////////////////////////////////
-void Animation::stop()
-{
-	m_playing = false;
-	setFirstFrame();
-}
-//////////////////////////////////////////////////////////////////////////
-void Animation::pause()
-{
-	m_playing = false;
-}
-//////////////////////////////////////////////////////////////////////////
-void Animation::play()
-{
-	m_playing = true;
-	setFirstFrame();
+		Holder<ResourceManager>::hostage()
+			->releaseResource( m_anim );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::stop()
+	{
+		m_playing = false;
+		setFirstFrame();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::pause()
+	{
+		m_playing = false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::play()
+	{
+		m_playing = true;
+		setFirstFrame();
+	}
 }

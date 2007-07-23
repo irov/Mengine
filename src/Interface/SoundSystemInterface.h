@@ -50,11 +50,11 @@ public:
 	virtual void pause() = 0;
 	virtual void stop() = 0;
 	virtual bool isPlaying() const = 0;
-	virtual void setVolume(float vol) = 0;
+	virtual void setVolume(float _vol) = 0;
 	virtual float getVolume() const = 0;
-	virtual void setPosition(float x, float y, float z) = 0;
+	virtual void setPosition(float _x, float _y, float _z) = 0;
 	virtual const float* getPosition() const = 0;
-	virtual void setLoop(bool loop) = 0;
+	virtual void setLoop(bool _loop) = 0;
 	virtual bool isLooping() const = 0;
 	virtual int	getLengthMS() = 0;
 };

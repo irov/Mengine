@@ -8,11 +8,6 @@ namespace Menge
 	{
 		typedef Utility::Factory<std::string,Node*,FactoryGenStruct> TClassFactory;
 		//////////////////////////////////////////////////////////////////////////
-		void registration(const std::string &_key, TGenFunc _func)
-		{
-			TClassFactory::registration(_key,_func);
-		}
-		//////////////////////////////////////////////////////////////////////////
 		Node * genNode(const std::string &_type)
 		{
 			FactoryGenStruct gs;

@@ -47,7 +47,7 @@ namespace mt
 		}
 	};
 
-	void setPlaneByTriangle( planef & _plane, const vec3f _v[3] );
-	void projectionToPlane( vec3f & _out, const vec3f & _eye, const vec3f  & _dir, const planef & _plane );
+	void set_plane_by_triangle( planef & _plane, const vec3f _v[3] );
+	void projection_to_plane( vec3f & _out, const vec3f & _eye, const vec3f  & _dir, const planef & _plane );
 }
 

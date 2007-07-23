@@ -157,11 +157,11 @@ namespace Menge
 		return false;
 	}
 
-	void UpdateCallback(AnimationObject * _obj, const std::string & animationName, float time, void * pUserData)
+	void updateCallback(AnimationObject * _obj, const std::string & animationName, float time, void * pUserData)
 	{
 	}
 
-	void CompleteCallback(AnimationObject * _obj, const std::string & animationName, void * pUserData)
+	void completeCallback(AnimationObject * _obj, const std::string & animationName, void * pUserData)
 	{
 	}
 
@@ -198,7 +198,7 @@ namespace Menge
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			AnimationObject * mesh = layer->getChildrenT<AnimationObject>("TestMesh");
-			mesh->setCallback("paladin_walk.caf",0,UpdateCallback,CompleteCallback,0);
+			mesh->setCallback("paladin_walk.caf",0,updateCallback,completeCallback,0);
 			mesh->play("paladin_walk.caf");
 		}
 

@@ -3,8 +3,6 @@
 #	include "ScriptClassWrapper.h"
 #	include "NodeFactory.h"
 
-using namespace Menge;
-
 #	ifndef OBJECT_USER_GENERATOR
 #	define OBJECT_IMPLEMENT_GENERATOR( Class )\
 	Node * Class::genObject(const FactoryGenStruct & _struct){\

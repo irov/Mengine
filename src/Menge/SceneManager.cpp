@@ -15,72 +15,74 @@
 
 #	include "XmlParser/XmlParser.h"
 
-using namespace Menge;
-
-//////////////////////////////////////////////////////////////////////////
-Node* SceneManager::createNode( const std::string & _type )
+namespace Menge
 {
-	Node *node = NodeFactory::genNode(_type);
 
-	if( node )
+	//////////////////////////////////////////////////////////////////////////
+	Node* SceneManager::createNode( const std::string & _type )
 	{
-		return node;
-	}
+		Node *node = NodeFactory::genNode(_type);
 
-	ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
-	
-	if( scriptEngine->isEntityType( _type ) )
-	{
-		node = scriptEngine->createEntity( _type );
-	}
-	
-	return node;
-}
-//////////////////////////////////////////////////////////////////////////
-bool SceneManager::loadNode(Node *_node, const std::string &_xml)
-{
-	TiXmlDocument * document = Holder<FileEngine>::hostage()
-		->loadXml( _xml );
-
-	XML_FOR_EACH_DOCUMENT( document )
-	{
-		_node->loader(XML_CURRENT_NODE);
-	}
-	XML_INVALID_PARSE()
-	{
-		return false;
-	}
-
-	return true;
-}
-//////////////////////////////////////////////////////////////////////////
-Node * SceneManager::createNodeFromXml( const std::string & _xml )
-{
-	TiXmlDocument * document = Holder<FileEngine>::hostage()
-		->loadXml( _xml );
-
-	XML_FOR_EACH_DOCUMENT( document )
-	{
-		
-		XML_CHECK_NODE("Node")
+		if( node )
 		{
-			XML_DEF_ATTRIBUTES_NODE(Name);
-			XML_DEF_ATTRIBUTES_NODE(Type);
-
-			Node *node = createNode( Type );
-
-			node->setName( Name );
-			node->loader(XML_CURRENT_NODE);
-
 			return node;
 		}
+
+		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
+		
+		if( scriptEngine->isEntityType( _type ) )
+		{
+			node = scriptEngine->createEntity( _type );
+		}
+		
+		return node;
 	}
-	XML_INVALID_PARSE()
+	//////////////////////////////////////////////////////////////////////////
+	bool SceneManager::loadNode(Node *_node, const std::string &_xml)
 	{
-		ErrorMessage("Invalid parse external node `%s`", _xml.c_str() );
+		TiXmlDocument * document = Holder<FileEngine>::hostage()
+			->loadXml( _xml );
+
+		XML_FOR_EACH_DOCUMENT( document )
+		{
+			_node->loader(XML_CURRENT_NODE);
+		}
+		XML_INVALID_PARSE()
+		{
+			return false;
+		}
+
+		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * SceneManager::createNodeFromXml( const std::string & _xml )
+	{
+		TiXmlDocument * document = Holder<FileEngine>::hostage()
+			->loadXml( _xml );
 
-	ErrorMessage("This xml file `%s` have invalid external node format", _xml.c_str() );
+		XML_FOR_EACH_DOCUMENT( document )
+		{
+			
+			XML_CHECK_NODE("Node")
+			{
+				XML_DEF_ATTRIBUTES_NODE(Name);
+				XML_DEF_ATTRIBUTES_NODE(Type);
 
-	return 0;
+				Node *node = createNode( Type );
+
+				node->setName( Name );
+				node->loader(XML_CURRENT_NODE);
+
+				return node;
+			}
+		}
+		XML_INVALID_PARSE()
+		{
+			ErrorMessage("Invalid parse external node `%s`", _xml.c_str() );
+		}
+
+		ErrorMessage("This xml file `%s` have invalid external node format", _xml.c_str() );
+
+		return 0;
+	}
 }

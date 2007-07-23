@@ -1,6 +1,9 @@
 #	include	"BoxEmitter.h"
 
 #	include "stdlib.h"
+
+namespace	Menge
+{
 	//////////////////////////////////////////////////////////////////////////
 	static float rand2(float min, float max)
 	{
@@ -31,3 +34,4 @@
 
 		_particle->m_direction *= rand2(m_velocity.x, m_velocity.y);
 	}
+}

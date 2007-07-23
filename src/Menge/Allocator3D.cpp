@@ -152,5 +152,5 @@ namespace Menge
 				changePivot();
 			}
 		}
-	};
+	}
 }

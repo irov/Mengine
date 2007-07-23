@@ -83,10 +83,6 @@ namespace Menge
 		{
 			children->debugRender();
 		}
-
 		NodeCore::debugRender();
 	}
-	
-
-
 }

@@ -10,207 +10,210 @@
 
 #	include "ObjectImplement.h"
 
-//////////////////////////////////////////////////////////////////////////
-OBJECT_IMPLEMENT(Dialog)
-//////////////////////////////////////////////////////////////////////////
-Dialog::Dialog()
-: m_dialogFont(0)
-, m_soundSource(0)
-, m_fileData(0)
-, m_isUpdate(false)
-{}
-//////////////////////////////////////////////////////////////////////////
-bool Dialog::_activate()
+namespace	Menge
 {
-	m_dialogFont = Holder<RenderEngine>::hostage()->loadFont(m_fontFilename);
-	m_soundSource = 0;
-	m_fileData = 0;
-	m_isUpdate = false;
-	return true;
-}
-//////////////////////////////////////////////////////////////////////////
-void	Dialog::_deactivate()
-{
-	Holder<RenderEngine>::hostage()->releaseRenderFont(m_dialogFont);
-	m_dialogFont = 0;
-}
-//////////////////////////////////////////////////////////////////////////
-void	Dialog::loader(TiXmlElement * _xml)
-{
-	int id = -1;
-	MessageSpot* elem = NULL;
-
-	XML_FOR_EACH_TREE(_xml)
+	//////////////////////////////////////////////////////////////////////////
+	OBJECT_IMPLEMENT(Dialog)
+	//////////////////////////////////////////////////////////////////////////
+	Dialog::Dialog()
+	: m_dialogFont(0)
+	, m_soundSource(0)
+	, m_fileData(0)
+	, m_isUpdate(false)
+	{}
+	//////////////////////////////////////////////////////////////////////////
+	bool Dialog::_activate()
 	{
-		XML_CHECK_NODE_FOR_EACH("Messages")
-		{
-			XML_CHECK_VALUE_NODE("Message","id",id);
-
-			elem = Holder<DialogManager>::hostage()->getMessageSpot(id);
-
-			m_messageSpots.push_back(elem);
-		}
-		XML_CHECK_VALUE_NODE("Font", "File", m_fontFilename);
-	}
-
-	NodeCore::loader(_xml);
-}
-//////////////////////////////////////////////////////////////////////////
-void	Dialog::loadCurrentMessageSpot()
-{
-	MessageSpot * it = *m_currentMessageSpot;
-
-	std::string text = it->getText();
-
-	assert(text.empty() == false);
-
-	createFormattedMessage(text, m_dialogFont, it->getWidth());
-
-	const std::string& soundName = it->getSoundName();
-
-	if(soundName.empty() == false)
-	{
-/*		if(	Holder<SoundEngine>::hostage()->addSoundNode(
-				m_soundSource,	m_fileData,	soundName,0, true) == false
-			)
-		{
-			assert(!"Sound for dialog is not loaded");
-		}
-		m_soundSource->play();
-		*/
-	}
-	else
-	{	//означает что нету звука для данного мессаджа.
-		m_soundSource = NULL;
-	}
-
-	m_isUpdate = true;
-}
-//////////////////////////////////////////////////////////////////////////
-void	Dialog::start()
-{
-	m_lines.clear();
-
-	m_isUpdate = false;
-
-	m_currentMessageSpot = m_messageSpots.begin();
-
-	loadCurrentMessageSpot();
-}
-//////////////////////////////////////////////////////////////////////////
-void	Dialog::nextMessageSpot()
-{
-	Holder<SoundEngine>::hostage()->releaseSoundSource(m_soundSource);
-	Holder<FileEngine>::hostage()->closeFile(m_fileData);
-	m_soundSource = NULL;
-	m_fileData = NULL;
-
-	m_lines.clear();
-
-	if (++m_currentMessageSpot == m_messageSpots.end())
-	{
+		m_dialogFont = Holder<RenderEngine>::hostage()->loadFont(m_fontFilename);
+		m_soundSource = 0;
+		m_fileData = 0;
 		m_isUpdate = false;
-//		release();
-		return;
+		return true;
 	}
-
-	loadCurrentMessageSpot();
-}
-//////////////////////////////////////////////////////////////////////////
-void	Dialog::_update(float _timing)
-{
-	if (!m_isUpdate)
+	//////////////////////////////////////////////////////////////////////////
+	void	Dialog::_deactivate()
 	{
-		return;
+		Holder<RenderEngine>::hostage()->releaseRenderFont(m_dialogFont);
+		m_dialogFont = 0;
 	}
-
-	if (m_lines.empty() == false)
+	//////////////////////////////////////////////////////////////////////////
+	void	Dialog::loader(TiXmlElement * _xml)
 	{
-		mt::vec2f pos(0,0);
-		for each( const std::string & line in m_lines )
+		int id = -1;
+		MessageSpot* elem = NULL;
+
+		XML_FOR_EACH_TREE(_xml)
 		{
-			Holder<RenderEngine>::hostage()
-				->renderText( pos, m_dialogFont, line );
+			XML_CHECK_NODE_FOR_EACH("Messages")
+			{
+				XML_CHECK_VALUE_NODE("Message","id",id);
 
-			pos.y += m_dialogFont->getHeight();
+				elem = Holder<DialogManager>::hostage()->getMessageSpot(id);
+
+				m_messageSpots.push_back(elem);
+			}
+			XML_CHECK_VALUE_NODE("Font", "File", m_fontFilename);
 		}
-	}
 
-	if( m_soundSource != NULL )
+		NodeCore::loader(_xml);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	Dialog::loadCurrentMessageSpot()
 	{
-		//m_soundSource->process();
-		if(m_soundSource->isPlaying() == false)
+		MessageSpot * it = *m_currentMessageSpot;
+
+		std::string text = it->getText();
+
+		assert(text.empty() == false);
+
+		createFormattedMessage(text, m_dialogFont, it->getWidth());
+
+		const std::string& soundName = it->getSoundName();
+
+		if(soundName.empty() == false)
 		{
-			nextMessageSpot();
+	/*		if(	Holder<SoundEngine>::hostage()->addSoundNode(
+					m_soundSource,	m_fileData,	soundName,0, true) == false
+				)
+			{
+				assert(!"Sound for dialog is not loaded");
+			}
+			m_soundSource->play();
+			*/
+		}
+		else
+		{	//означает что нету звука для данного мессаджа.
+			m_soundSource = NULL;
+		}
+
+		m_isUpdate = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	Dialog::start()
+	{
+		m_lines.clear();
+
+		m_isUpdate = false;
+
+		m_currentMessageSpot = m_messageSpots.begin();
+
+		loadCurrentMessageSpot();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	Dialog::nextMessageSpot()
+	{
+		Holder<SoundEngine>::hostage()->releaseSoundSource(m_soundSource);
+		Holder<FileEngine>::hostage()->closeFile(m_fileData);
+		m_soundSource = NULL;
+		m_fileData = NULL;
+
+		m_lines.clear();
+
+		if (++m_currentMessageSpot == m_messageSpots.end())
+		{
+			m_isUpdate = false;
+	//		release();
 			return;
 		}
+
+		loadCurrentMessageSpot();
 	}
-	else
+	//////////////////////////////////////////////////////////////////////////
+	void	Dialog::_update(float _timing)
 	{
-		//ээ, как то выставляет время проигрыша мессаги без звука?
-	}
-}
-//////////////////////////////////////////////////////////////////////////
-void	Dialog::createFormattedMessage(const std::string& _text, RenderFontInterface* _font, float _width)
-{
-	std::list<std::string> words;
-
-	size_t endpos = 0;
-
-	std::string::size_type pos = _text.find_first_not_of(" ");
-	
-	if(pos != std::string::npos)
-	{
-		endpos = _text.find_first_of(" ",pos+1);
-	}
-
-	while((pos < endpos) && (pos != std::string::npos) && (endpos != std::string::npos))
-	{
-		words.push_back(
-			_text.substr(pos,endpos-pos)
-			);
-
-		pos = _text.find_first_not_of(" ",endpos+1);
-		endpos = _text.find_first_of(" ",pos+1);
-	}
-
-	if(endpos == std::string::npos)
-	{
-		words.push_back(
-			_text.substr(pos,_text.size())
-			);
-	}
-
-	float pixelFontSize = 0;
-
-	std::string	temp_string = *words.begin();
-
-	for( TListLine::iterator it = ++words.begin(); it != words.end(); ++it)
-	{
-		std::string & str = *it;
-
-		float width = 0;
-
-		for each( char symbol in str )
+		if (!m_isUpdate)
 		{
-			width += _font->getCharWidth( symbol );
+			return;
 		}
 
-		pixelFontSize += width;
-
-		if(pixelFontSize < _width)
+		if (m_lines.empty() == false)
 		{
-			temp_string += " ";
-			temp_string += *it;
+			mt::vec2f pos(0,0);
+			for each( const std::string & line in m_lines )
+			{
+				Holder<RenderEngine>::hostage()
+					->renderText( pos, m_dialogFont, line );
+
+				pos.y += m_dialogFont->getHeight();
+			}
+		}
+
+		if( m_soundSource != NULL )
+		{
+			//m_soundSource->process();
+			if(m_soundSource->isPlaying() == false)
+			{
+				nextMessageSpot();
+				return;
+			}
 		}
 		else
 		{
-			m_lines.push_back(temp_string);
-			temp_string.clear();
-			temp_string += *it;
-			pixelFontSize = 0.0f;
+			//ээ, как то выставляет время проигрыша мессаги без звука?
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void	Dialog::createFormattedMessage(const std::string& _text, RenderFontInterface* _font, float _width)
+	{
+		std::list<std::string> words;
 
-	m_lines.push_back(temp_string);
+		size_t endpos = 0;
+
+		std::string::size_type pos = _text.find_first_not_of(" ");
+		
+		if(pos != std::string::npos)
+		{
+			endpos = _text.find_first_of(" ",pos+1);
+		}
+
+		while((pos < endpos) && (pos != std::string::npos) && (endpos != std::string::npos))
+		{
+			words.push_back(
+				_text.substr(pos,endpos-pos)
+				);
+
+			pos = _text.find_first_not_of(" ",endpos+1);
+			endpos = _text.find_first_of(" ",pos+1);
+		}
+
+		if(endpos == std::string::npos)
+		{
+			words.push_back(
+				_text.substr(pos,_text.size())
+				);
+		}
+
+		float pixelFontSize = 0;
+
+		std::string	temp_string = *words.begin();
+
+		for( TListLine::iterator it = ++words.begin(); it != words.end(); ++it)
+		{
+			std::string & str = *it;
+
+			float width = 0;
+
+			for each( char symbol in str )
+			{
+				width += _font->getCharWidth( symbol );
+			}
+
+			pixelFontSize += width;
+
+			if(pixelFontSize < _width)
+			{
+				temp_string += " ";
+				temp_string += *it;
+			}
+			else
+			{
+				m_lines.push_back(temp_string);
+				temp_string.clear();
+				temp_string += *it;
+				pixelFontSize = 0.0f;
+			}
+		}
+
+		m_lines.push_back(temp_string);
+	}
 }

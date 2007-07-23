@@ -13,12 +13,11 @@
 namespace Menge
 {
 	class AnimationCallback;
+	class AnimationObject;
 	class ResourceAnimationCal3d;
 
-	class AnimationObject;
-	
-	typedef void (*TUpdateCallback)(AnimationObject *, const std::string & animationName, float time, void * pUserData);
-	typedef void (*TCompleteCallback)(AnimationObject *, const std::string & animationName, void * pUserData);
+	typedef void (*UpdateCallback)(AnimationObject * _animObj, const std::string & _animName, float _animTime, void * _userData);
+	typedef void (*CompleteCallback)(AnimationObject * _animObj, const std::string & _animName, void * _userData);
 
 	class AnimationObject
 		: public SceneNode3D
@@ -29,7 +28,7 @@ namespace Menge
 		~AnimationObject();
 
 	public:
-		void loader( TiXmlElement *xml ) override;
+		void loader( TiXmlElement * _xml ) override;
 		void update( float _timing ) override;
 
 		virtual bool isVisible( const Camera3D * _camera ) override;
@@ -46,7 +45,7 @@ namespace Menge
 		void getBonePosition(int _boneIndex, mt::vec3f & _position);
 		void getBoneRotation(int _boneIndex, mt::quatf & _q);
 		
-		void setCallback(const std::string & _name, float _updateTime, TUpdateCallback _updateCallback, TCompleteCallback _completeCallback, void * _userData);
+		void setCallback(const std::string & _name, float _updateTime, UpdateCallback _updateCallback, CompleteCallback _completeCallback, void * _userData);
 		void clearCallback(const std::string& _name);
 		void clearRemovedCallback();
 
@@ -69,6 +68,8 @@ namespace Menge
 		std::string m_resourceName;
 
 		ResourceAnimationCal3d * m_cal3dRes;
+
+		size_t m_vertexSize;
 
 		VertexDeclaration * m_vertexDecl;
 		PrimitiveData * m_primitiveData;

@@ -10,111 +10,114 @@
 
 #	include "XmlParser/XmlParser.h"
 
-//////////////////////////////////////////////////////////////////////////
-OBJECT_IMPLEMENT(Scene);
-//////////////////////////////////////////////////////////////////////////
-Scene::Scene()
+namespace	Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	OBJECT_IMPLEMENT(Scene);
+	//////////////////////////////////////////////////////////////////////////
+	Scene::Scene()
+	{
 
-}
-//////////////////////////////////////////////////////////////////////////
-void Scene::layerAppend( const std::string & _layer, Node * _node )
-{
-	Layer * layer = getChildren( _layer );
-	if( layer )
-	{
-		layer->addChildren( _node );
 	}
-}
-//////////////////////////////////////////////////////////////////////////
-bool Scene::handleKeyEvent( size_t _key, bool _isDown )
-{
-	for( TListChildren::reverse_iterator 
-		it = m_listChildren.rbegin(),
-		it_end = m_listChildren.rend();
-	it != it_end;
-	++it)
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::layerAppend( const std::string & _layer, Node * _node )
 	{
-		if( (*it)->handleKeyEvent( _key, _isDown ) )
+		Layer * layer = getChildren( _layer );
+		if( layer )
 		{
-			return true;
+			layer->addChildren( _node );
 		}
 	}
-
-	return false;
-}
-//////////////////////////////////////////////////////////////////////////
-bool Scene::handleMouseButtonEvent( size_t _button, bool _isDown )
-{
-	for( TListChildren::reverse_iterator 
-		it = m_listChildren.rbegin(),
-		it_end = m_listChildren.rend();
-	it != it_end;
-	++it)
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleKeyEvent( size_t _key, bool _isDown )
 	{
-		if((*it)->handleMouseButtonEvent( _button, _isDown ) )
+		for( TListChildren::reverse_iterator 
+			it = m_listChildren.rbegin(),
+			it_end = m_listChildren.rend();
+		it != it_end;
+		++it)
 		{
-			return true;
+			if( (*it)->handleKeyEvent( _key, _isDown ) )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleMouseButtonEvent( size_t _button, bool _isDown )
+	{
+		for( TListChildren::reverse_iterator 
+			it = m_listChildren.rbegin(),
+			it_end = m_listChildren.rend();
+		it != it_end;
+		++it)
+		{
+			if((*it)->handleMouseButtonEvent( _button, _isDown ) )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleMouseMove( float _x, float _y, float _whell )
+	{
+		for( TListChildren::reverse_iterator 
+			it = m_listChildren.rbegin(),
+			it_end = m_listChildren.rend();
+		it != it_end;
+		++it)
+		{
+			if( (*it)->handleMouseMove( _x, _y, _whell ) )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::_activate()
+	{
+		if( m_scriptFile.empty() == false )
+		{
+			if( Holder<ScriptEngine>::hostage()->doFile(m_scriptFile) == false )
+			{
+				printf( "False parse script file '%s'", m_scriptFile.c_str() );
+			}		
+		}
+
+		const std::string & name = getName();
+
+		if( name.empty() == false )
+		{
+			std::string functionName = "Scene" + getName() + "_activate";
+
+			Holder<ScriptEngine>::hostage()
+				->callFunction( functionName, "(O)", this->getScriptable() );
+		}
+
+		return NodeCore::_activate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::loader( TiXmlElement *_xml )
+	{
+		NodeCore::loader(_xml);
+
+		XML_FOR_EACH_TREE( _xml )
+		{
+			XML_CHECK_VALUE_NODE("Script", "File", m_scriptFile);
 		}
 	}
-
-	return false;
-}
-//////////////////////////////////////////////////////////////////////////
-bool Scene::handleMouseMove( float _x, float _y, float _whell )
-{
-	for( TListChildren::reverse_iterator 
-		it = m_listChildren.rbegin(),
-		it_end = m_listChildren.rend();
-	it != it_end;
-	++it)
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::render()
 	{
-		if( (*it)->handleMouseMove( _x, _y, _whell ) )
+		for each( Layer * layer in m_listChildren )
 		{
-			return true;
+			layer->renderLayer();
 		}
 	}
-
-	return false;
 }
-//////////////////////////////////////////////////////////////////////////
-bool Scene::_activate()
-{
-	if( m_scriptFile.empty() == false )
-	{
-		if( Holder<ScriptEngine>::hostage()->doFile(m_scriptFile) == false )
-		{
-			printf( "False parse script file '%s'", m_scriptFile.c_str() );
-		}		
-	}
-
-	const std::string & name = getName();
-
-	if( name.empty() == false )
-	{
-		std::string functionName = "Scene" + getName() + "_activate";
-
-		Holder<ScriptEngine>::hostage()
-			->callFunction( functionName, "(O)", this->getScriptable() );
-	}
-
-	return NodeCore::_activate();
-}
-//////////////////////////////////////////////////////////////////////////
-void Scene::loader( TiXmlElement *_xml )
-{
-	NodeCore::loader(_xml);
-
-	XML_FOR_EACH_TREE( _xml )
-	{
-		XML_CHECK_VALUE_NODE("Script", "File", m_scriptFile);
-	}
-}
-//////////////////////////////////////////////////////////////////////////
-void Scene::render()
-{
-	for each( Layer * layer in m_listChildren )
-	{
-		layer->renderLayer();
-	}
-};

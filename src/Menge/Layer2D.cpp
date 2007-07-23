@@ -10,76 +10,79 @@
 
 #	include "XmlParser/XmlParser.h"
 
-//////////////////////////////////////////////////////////////////////////
-OBJECT_IMPLEMENT(Layer2D);
-//////////////////////////////////////////////////////////////////////////
-Layer2D::Layer2D()
-: m_factorParallax(1.f,1.f)
+namespace	Menge
 {
-
-}
-//////////////////////////////////////////////////////////////////////////
-void Layer2D::setParallaxFactor( const mt::vec2f & _factor )
-{
-	m_factorParallax = _factor;
-}
-//////////////////////////////////////////////////////////////////////////
-const Viewport& Layer2D::updateViewport( const Viewport & _viewPort )
-{
-	m_viewPort = _viewPort;
-	
-	m_viewPort.begin.x *= m_factorParallax.x;
-	m_viewPort.begin.y *= m_factorParallax.y;
-
-	m_viewPort.end.x *= m_factorParallax.x;
-	m_viewPort.end.y *= m_factorParallax.y;
-
-	return m_viewPort;
-}
-//////////////////////////////////////////////////////////////////////////
-bool Layer2D::handleKeyEvent( size_t _key, bool _isDown )
-{
-	return false;
-}
-//////////////////////////////////////////////////////////////////////////
-bool Layer2D::handleMouseButtonEvent( size_t _button, bool _isDown )
-{
-	return false;
-}
-//////////////////////////////////////////////////////////////////////////
-bool Layer2D::handleMouseMove( float _x, float _y, float _whell )
-{
-	return false;
-}
-//////////////////////////////////////////////////////////////////////////
-void Layer2D::loader( TiXmlElement *_xml)
-{
-	SceneNode2D::loader(_xml);
-
-	XML_FOR_EACH_TREE( _xml )
+	//////////////////////////////////////////////////////////////////////////
+	OBJECT_IMPLEMENT(Layer2D);
+	//////////////////////////////////////////////////////////////////////////
+	Layer2D::Layer2D()
+	: m_factorParallax(1.f,1.f)
 	{
-		XML_CHECK_NODE("Parallax")
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::setParallaxFactor( const mt::vec2f & _factor )
+	{
+		m_factorParallax = _factor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Viewport& Layer2D::updateViewport( const Viewport & _viewPort )
+	{
+		m_viewPort = _viewPort;
+		
+		m_viewPort.begin.x *= m_factorParallax.x;
+		m_viewPort.begin.y *= m_factorParallax.y;
+
+		m_viewPort.end.x *= m_factorParallax.x;
+		m_viewPort.end.y *= m_factorParallax.y;
+
+		return m_viewPort;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer2D::handleKeyEvent( size_t _key, bool _isDown )
+	{
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer2D::handleMouseButtonEvent( size_t _button, bool _isDown )
+	{
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer2D::handleMouseMove( float _x, float _y, float _whell )
+	{
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::loader( TiXmlElement *_xml)
+	{
+		SceneNode2D::loader(_xml);
+
+		XML_FOR_EACH_TREE( _xml )
 		{
-			mt::vec2f offset;
-			XML_VALUE_ATTRIBUTE("Factor", offset);
-			setParallaxFactor( offset );
+			XML_CHECK_NODE("Parallax")
+			{
+				mt::vec2f offset;
+				XML_VALUE_ATTRIBUTE("Factor", offset);
+				setParallaxFactor( offset );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::renderLayer()
+	{
+		Camera2D * camera = 
+			Holder<Player>::hostage()
+			->getRenderCamera2D();
+
+		const Viewport & cvp = camera->getViewport();
+
+		const Viewport & viewport = updateViewport( cvp );
+
+		for each( SceneNode2D * node in m_listChildren )
+		{
+			const mt::mat3f & wm = node->getWorldMatrix();
+			node->render( wm, viewport );
 		}
 	}
 }
-//////////////////////////////////////////////////////////////////////////
-void Layer2D::renderLayer()
-{
-	Camera2D * camera = 
-		Holder<Player>::hostage()
-		->getRenderCamera2D();
-
-	const Viewport & cvp = camera->getViewport();
-
-	const Viewport & viewport = updateViewport( cvp );
-
-	for each( SceneNode2D * node in m_listChildren )
-	{
-		const mt::mat3f & wm = node->getWorldMatrix();
-		node->render( wm, viewport );
-	}
-};

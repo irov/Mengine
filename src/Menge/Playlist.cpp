@@ -4,101 +4,103 @@
 
 #	include "FileEngine.h"
 
-using namespace Menge;
-//////////////////////////////////////////////////////////////////////////
-Playlist::Playlist(const std::string& _playlistName)
-	: m_playListName(_playlistName)
-	, m_isTracksLoaded(false)
+namespace Menge
 {
-}
-//////////////////////////////////////////////////////////////////////////
-Playlist::~Playlist()
-{
-}
-//////////////////////////////////////////////////////////////////////////
-void	Playlist::shuffle()
-{
-	for(size_t i = 0; i < m_tracks.size(); ++i) 
+	//////////////////////////////////////////////////////////////////////////
+	Playlist::Playlist(const std::string& _playlistName)
+		: m_playListName(_playlistName)
+		, m_isTracksLoaded(false)
 	{
-		size_t rnd = rand() % m_tracks.size();
-		std::swap(m_tracks[i],m_tracks[rnd]);
 	}
-}
-//////////////////////////////////////////////////////////////////////////
-void	Playlist::nextSong()
-{
-	if (++m_currentSong == m_tracks.end())
+	//////////////////////////////////////////////////////////////////////////
+	Playlist::~Playlist()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	Playlist::shuffle()
+	{
+		for(size_t i = 0; i < m_tracks.size(); ++i) 
+		{
+			size_t rnd = rand() % m_tracks.size();
+			std::swap(m_tracks[i],m_tracks[rnd]);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	Playlist::nextSong()
+	{
+		if (++m_currentSong == m_tracks.end())
+		{
+			m_currentSong = m_tracks.begin();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	Playlist::prevSong()
+	{
+		if(m_currentSong == m_tracks.begin())
+		{
+			m_currentSong = m_tracks.end();
+		}
+		--m_currentSong;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	Playlist::firstSong()
 	{
 		m_currentSong = m_tracks.begin();
 	}
-}
-//////////////////////////////////////////////////////////////////////////
-void	Playlist::prevSong()
-{
-	if(m_currentSong == m_tracks.begin())
+	//////////////////////////////////////////////////////////////////////////
+	void	Playlist::lastSong()
 	{
-		m_currentSong = m_tracks.end();
+		m_currentSong = m_tracks.end() - 1;
 	}
-	--m_currentSong;
-}
-//////////////////////////////////////////////////////////////////////////
-void	Playlist::firstSong()
-{
-	m_currentSong = m_tracks.begin();
-}
-//////////////////////////////////////////////////////////////////////////
-void	Playlist::lastSong()
-{
-	m_currentSong = m_tracks.end() - 1;
-}
-//////////////////////////////////////////////////////////////////////////
-const std::string&	Playlist::getCurrentSongName() const
-{
-	return	*m_currentSong;
-}
-//////////////////////////////////////////////////////////////////////////
-const std::string&	Playlist::getName() const
-{
-	return	m_playListName;
-}
-//////////////////////////////////////////////////////////////////////////
-void	Playlist::loadTracks()
-{
-	if(isLoaded() == true)
+	//////////////////////////////////////////////////////////////////////////
+	const std::string&	Playlist::getCurrentSongName() const
 	{
-		firstSong();
-		return;
+		return	*m_currentSong;
 	}
-
-	std::string	filename;
-
-	TiXmlDocument * document = Holder<FileEngine>::hostage()
-		->loadXml( m_playListName );
-
-	XML_FOR_EACH_DOCUMENT( document )
+	//////////////////////////////////////////////////////////////////////////
+	const std::string&	Playlist::getName() const
 	{
-		XML_CHECK_NODE_FOR_EACH("Tracks")
+		return	m_playListName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	Playlist::loadTracks()
+	{
+		if(isLoaded() == true)
 		{
-			XML_CHECK_NODE("Track")
+			firstSong();
+			return;
+		}
+
+		std::string	filename;
+
+		TiXmlDocument * document = Holder<FileEngine>::hostage()
+			->loadXml( m_playListName );
+
+		XML_FOR_EACH_DOCUMENT( document )
+		{
+			XML_CHECK_NODE_FOR_EACH("Tracks")
 			{
-				XML_VALUE_ATTRIBUTE("File",filename);
-				m_tracks.push_back(filename);
+				XML_CHECK_NODE("Track")
+				{
+					XML_VALUE_ATTRIBUTE("File",filename);
+					m_tracks.push_back(filename);
+				}
 			}
 		}
+
+		m_isTracksLoaded = true;
+
+		firstSong();
 	}
-
-	m_isTracksLoaded = true;
-
-	firstSong();
+	//////////////////////////////////////////////////////////////////////////
+	bool	Playlist::isLoaded() const
+	{
+		return m_isTracksLoaded;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	Playlist::clear()
+	{
+		m_tracks.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
 }
-//////////////////////////////////////////////////////////////////////////
-bool	Playlist::isLoaded() const
-{
-	return m_isTracksLoaded;
-}
-//////////////////////////////////////////////////////////////////////////
-void	Playlist::clear()
-{
-	m_tracks.clear();
-}
-//////////////////////////////////////////////////////////////////////////

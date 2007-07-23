@@ -4,9 +4,10 @@
 
 #	include "TrackChain.h"
 
+#	include "Math/vec3.h"
+
 #	include <list>
 
-#	include "Math/vec3.h"
 
 namespace Menge
 {
@@ -41,10 +42,6 @@ namespace Menge
 		void _update( float _timing)  override;
 
 		bool _activate() override;
-
-	private:
-		
-
 	private:
 		typedef std::list<mt::vec2f> TListPoint;
 

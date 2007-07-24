@@ -9,7 +9,7 @@ namespace	Menge
 	class AnimationBone : public SceneNode3D
 	{
 	public:
-		AnimationBone(AnimationObject * _animObj, const std::string& _boneName);
+		AnimationBone(AnimationObject * _animObj, int _index);
 		const mt::mat4f & getWorldMatrix() override;
 		void _debugRender() override;
 	private:

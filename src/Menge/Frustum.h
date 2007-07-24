@@ -46,12 +46,13 @@ namespace Menge
 		float m_far;
 		float m_near;
 		float m_aspect;
-		
-		mt::planef	m_planes[6];
 
 		float m_coeffL[2];
 		float m_coeffR[2];
 		float m_coeffB[2];
 		float m_coeffT[2];
+
+	public:
+		mt::planef	m_planes[6];
 	};
 }

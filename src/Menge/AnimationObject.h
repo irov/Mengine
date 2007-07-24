@@ -34,25 +34,23 @@ namespace Menge
 		virtual bool isVisible( const Camera3D * _camera ) override;
 
 	public:
-		void clearCycles();
 		void play(const std::string& _name);
 		void play2Blend(const std::string& _name1,	float _weight1,
 			const std::string& _name2,	float _weight2
 		);
-		// 
-		int getBoneIndex(const std::string& _bonename);
-		//
+
 		void setCallback(const std::string & _name, float _updateTime, UpdateCallback _updateCallback, CompleteCallback _completeCallback, void * _userData);
 		void clearCallback(const std::string& _name);
-		void clearRemovedCallback();
 
-		CalModel * m_calModel;
+		// cal3d specs:
+		CalBone *	getBoneWithIndex(int _index);
+		bool		isSimilarModel(const CalModel * _calModel);
 
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
 
-		void _render( const mt::mat4f & _rwm, const Camera3D * _camera );
+		void _render( const mt::mat4f & _rwm, const Camera3D * _camera ) override;
 		void _debugRender() override;
 	
 	private:
@@ -64,13 +62,15 @@ namespace Menge
 
 		std::string m_resourceName;
 
-		ResourceAnimationCal3d * m_cal3dRes;
-
 		size_t m_vertexSize;
 
+		ResourceAnimationCal3d * m_cal3dRes;
 		VertexDeclaration * m_vertexDecl;
 		PrimitiveData * m_primitiveData;
+		CalModel * m_calModel;
 
 		void	_initGeometry();
+		void	_clearRemovedCallback();
+		void	_clearCycles();
 	};
 }

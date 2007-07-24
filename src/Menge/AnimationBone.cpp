@@ -1,20 +1,19 @@
 #	include "AnimationBone.h"
+
 #	include "math/box.h"
+
 #	include "RenderEngine.h"
 
 namespace	Menge
 {
-	AnimationBone::AnimationBone(AnimationObject * _animObj, const std::string& _boneName)
+	AnimationBone::AnimationBone(AnimationObject * _animObj, int _index)
 		: m_animObj(_animObj)
-	{
-		m_index = _animObj->getBoneIndex(_boneName);
-	}
+		, m_index(_index)
+	{}
 
 	const mt::mat4f & AnimationBone::getWorldMatrix()
 	{
-		//SceneNode3D::getWorldMatrix();
-
-		CalBone * bone = m_animObj->m_calModel->getSkeleton()->getBone(m_index);
+		CalBone * bone = m_animObj->getBoneWithIndex(m_index);
 
 		const CalVector & position = bone->getTranslationAbsolute();
 		const CalQuaternion & orient = bone->getRotationAbsolute();

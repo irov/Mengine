@@ -2,6 +2,8 @@
 
 #	include "ObjectImplement.h"
 
+#	include "Camera3D.h"
+
 #	include "RenderEngine.h"
 
 #	include "XmlParser/XmlParser.h"
@@ -33,8 +35,36 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool AnimationObject::isVisible( const Camera3D * _camera )
 	{
-	//	CalBoundingBox & box = m_calModel->getBoundingBox();
+		/*CalBoundingBox & box = m_calModel->getBoundingBox();
 
+		CalVector p[8];
+		box.computePoints(p);
+
+		mt::boxf bbox;
+
+		mt::set_box_from_min_max(bbox, mt::vec3f(p[0].x, p[0].y, p[0].z), mt::vec3f(p[4].x, p[2].y, p[1].z));
+
+		mt::vec3f pCorners[8];
+		mt::get_point_from_box(pCorners, bbox);
+
+		bool Done = true;
+		for (int plane = 0; plane < 6; ++plane)
+		{			
+			for( int point = 0; point < 8; ++point)
+			{
+				if( (dot_v3_v3(_camera->m_planes[plane].norm,pCorners[point]) + _camera->m_planes[plane].dist) > 0.0f )
+				{
+					Done = false;
+					break;
+				}
+			}
+			if( Done )
+			{
+				return false;
+			}
+			Done = true;
+		}
+		*/
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -97,12 +127,17 @@ namespace Menge
 
 		for each( std::string hardPoint in hp )
 		{
-			AnimationBone * bone = new AnimationBone(this, hardPoint);
+			int index = m_cal3dRes->getBoneIndex(hardPoint);
+			if(index == -1)		
+			{
+				assert(!"no bone with such index!");
+			}
+			AnimationBone * bone = new AnimationBone(this, index);
 			bone->setName(hardPoint);
 			this->addChildren(bone);
 		}
 
-		clearCycles();
+		_clearCycles();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -120,6 +155,11 @@ namespace Menge
 	void AnimationObject::update( float _timing )
 	{
 		m_calModel->update(_timing);
+
+		if(_timing != 0 && !m_removeCallbacks.empty())
+		{
+			_clearRemovedCallback();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationObject::loader(TiXmlElement *xml)
@@ -264,7 +304,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::clearRemovedCallback()
+	void AnimationObject::_clearRemovedCallback()
 	{
 		for(TListRemoveCallbacks::iterator it = m_removeCallbacks.begin(); 
 			it!= m_removeCallbacks.end(); ++it)
@@ -277,7 +317,7 @@ namespace Menge
 		m_removeCallbacks.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::clearCycles()
+	void AnimationObject::_clearCycles()
 	{
 		size_t animCount = m_cal3dRes->getAnimationCount();
 
@@ -338,9 +378,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int AnimationObject::getBoneIndex(const std::string& _bonename)
+	CalBone * AnimationObject::getBoneWithIndex(int _index)
 	{
-		return m_cal3dRes->getBoneIndex(_bonename);
+		CalBone * bone = m_calModel->getSkeleton()->getBone(_index);
+		return bone;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool	AnimationObject::isSimilarModel(const CalModel * _calModel)
+	{
+		return m_calModel == _calModel;
+	}
 }

@@ -39,4 +39,27 @@ namespace mt
 		box.vb = center - extent;
 		box.ve = center + extent;
 	}
+
+	void GetUVHVector(vec3f uvh[3],const boxf &box)
+	{
+		vec3f vDir = box.ve - box.vb;
+		uvh[0] = vec3f(vDir.x,0,0);
+		uvh[1] = vec3f(0,vDir.y,0);
+		uvh[2] = vec3f(0,0,vDir.z);
+	}
+
+	void get_point_from_box(vec3f point[8],const boxf &box)
+	{
+		vec3f uvh[3];
+		GetUVHVector(uvh,box);
+
+		point[0] = box.vb;
+		point[1] = box.vb + uvh[0];
+		point[2] = box.vb + uvh[0] + uvh[1];
+		point[3] = box.vb + uvh[1];
+		point[4] = box.vb + uvh[2];
+		point[5] = box.vb + uvh[0] + uvh[2];
+		point[6] = box.vb + uvh[0] + uvh[1] + uvh[2];
+		point[7] = box.vb + uvh[1] + uvh[2];
+	}
 }

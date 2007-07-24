@@ -37,4 +37,5 @@ namespace mt
 	void add_internal_point(boxf & box, const vec3f & p);
 	void set_box_from_min_max(boxf & box, const vec3f & min, const vec3f & max);
 	void set_box_from_center_and_extent(boxf & box, const vec3f & center, const vec3f & extent);
+	void get_point_from_box(vec3f point[8],const boxf & box);
 }

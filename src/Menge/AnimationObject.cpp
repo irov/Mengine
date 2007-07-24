@@ -68,39 +68,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::_initGeometry()
-	{
-		m_primitiveData = new PrimitiveData();
-
-		m_vertexDecl = Holder<RenderEngine>::hostage()->createVertexDeclaration();
-
-		IndexData * indexData = Holder<RenderEngine>::hostage()->createIndexData();
-		VertexData * vertexData = Holder<RenderEngine>::hostage()->createVertexData();
-
-		m_primitiveData->setIndexData(indexData);
-		m_primitiveData->setVertexData(vertexData);
-
-		m_vertexDecl->insert(0, 0, DECLFLOAT3, DECLPOS, 0);
-		m_vertexDecl->insert(0, 12, DECLFLOAT3, DECLNRM, 0);
-		m_vertexDecl->insert(0, 12+12, DECLFLOAT2, DECLTEX, 0);
-
-		vertexData->setVertexDeclaration(m_vertexDecl);
-		
-		//need for calc. size. 
-		struct Vertex
-		{
-			float pos[3];
-			float normal[3];
-			float t;
-			float s;
-		};
-
-		m_vertexSize = sizeof(Vertex);
-
-		vertexData->createVertexBuffer(30000,m_vertexSize);
-		indexData->createIndexBuffer(30000,0);
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool AnimationObject::_activate()
 	{
 		m_cal3dRes = 
@@ -114,7 +81,7 @@ namespace Menge
 
 		_initGeometry();
 		//Taking instance from cal3d core model.
-		m_calModel = m_cal3dRes->createInstance();
+		m_calModel = m_cal3dRes->getNewInstance();
 
 		for(int meshId = 0; meshId < m_cal3dRes->getMeshCount(); meshId++)
 		{
@@ -290,40 +257,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationObject::clearCallback(const std::string & _name)
 	{
-		int index = m_cal3dRes->getAnimationId(_name);
+		int id = m_cal3dRes->getAnimationId(_name);
 
-		if(index != -1)
+		if(id != -1)
 		{
-			TMapCallbacks::iterator it = m_callbacks.find(index);
+			TMapCallbacks::iterator it = m_callbacks.find(id);
 
 			if(it != m_callbacks.end())
 			{
-				m_removeCallbacks.push_back(std::make_pair(index, it->second));
+				m_removeCallbacks.push_back(std::make_pair(id, it->second));
 				m_callbacks.erase(it);
 			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::_clearRemovedCallback()
-	{
-		for(TListRemoveCallbacks::iterator it = m_removeCallbacks.begin(); 
-			it!= m_removeCallbacks.end(); ++it)
-		{
-			CalCoreAnimation * calCoreAnimation = m_cal3dRes->getCoreAnimation((*it).first);
-			calCoreAnimation->removeCallback((*it).second);
-			delete (*it).second;
-		}
-
-		m_removeCallbacks.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::_clearCycles()
-	{
-		size_t animCount = m_cal3dRes->getAnimationCount();
-
-		for(int i = 0; i < animCount; ++i)
-		{
-			m_calModel->getMixer()->clearCycle(i,0.0f);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -361,7 +305,7 @@ namespace Menge
 
 		size_t animCount = m_cal3dRes->getAnimationCount();
 
-		for(int i = 0; i < animCount; i++)
+		for(int i = 0; i < animCount; ++i)
 		{
 			if(i == seq1->index)
 			{
@@ -387,5 +331,61 @@ namespace Menge
 	bool	AnimationObject::isSimilarModel(const CalModel * _calModel)
 	{
 		return m_calModel == _calModel;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AnimationObject::_clearRemovedCallback()
+	{
+		for(TListRemoveCallbacks::iterator it = m_removeCallbacks.begin(); 
+			it!= m_removeCallbacks.end(); ++it)
+		{
+			CalCoreAnimation * calCoreAnimation = m_cal3dRes->getCoreAnimation((*it).first);
+			calCoreAnimation->removeCallback((*it).second);
+			delete (*it).second;
+		}
+
+		m_removeCallbacks.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AnimationObject::_clearCycles()
+	{
+		size_t animCount = m_cal3dRes->getAnimationCount();
+
+		for(int i = 0; i < animCount; ++i)
+		{
+			m_calModel->getMixer()->clearCycle(i,0.0f);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AnimationObject::_initGeometry()
+	{
+		m_primitiveData = new PrimitiveData();
+
+		m_vertexDecl = Holder<RenderEngine>::hostage()->createVertexDeclaration();
+
+		IndexData * indexData = Holder<RenderEngine>::hostage()->createIndexData();
+		VertexData * vertexData = Holder<RenderEngine>::hostage()->createVertexData();
+
+		m_primitiveData->setIndexData(indexData);
+		m_primitiveData->setVertexData(vertexData);
+
+		m_vertexDecl->insert(0, 0, DECLFLOAT3, DECLPOS, 0);
+		m_vertexDecl->insert(0, 12, DECLFLOAT3, DECLNRM, 0);
+		m_vertexDecl->insert(0, 12+12, DECLFLOAT2, DECLTEX, 0);
+
+		vertexData->setVertexDeclaration(m_vertexDecl);
+		
+		//need for calc. size. 
+		struct Vertex
+		{
+			float pos[3];
+			float normal[3];
+			float t;
+			float s;
+		};
+
+		m_vertexSize = sizeof(Vertex);
+
+		vertexData->createVertexBuffer(30000,m_vertexSize);
+		indexData->createIndexBuffer(30000,0);
 	}
 }

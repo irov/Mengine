@@ -8,10 +8,10 @@
 
 #	include <cal3d\cal3d.h>
 
-class RenderImageInterface;
-
 namespace Menge
 {
+	class RenderImageInterface;
+
 	struct AnimInfo
 	{
 		size_t	index;
@@ -44,24 +44,24 @@ namespace Menge
 		size_t  getMeshCount() const;
 		int		getAnimationId(const std::string& _name) const;
 		int		getBoneIndex(const std::string& _bonename) const;
-		float	getScale() const;
+
 		const	TVecHardPoints & getHardPoints() const; 
 	public:
 		AnimInfo * getAnimationInfo(const std::string& _name);
 	public:
 		// cal3d specs:
-		CalModel * createInstance();
+		CalModel * getNewInstance();
 		CalCoreAnimation * getCoreAnimation(int _index);
 	private:
 		typedef std::vector<AnimInfo> TVectorAnimInfo;
 		TVectorAnimInfo m_animInfos;
-		float m_scale;
-		std::string m_folder;
-		CalCoreModel * m_calCoreModel;
-
 		TVecHardPoints m_hardPoints;
 
-		void	createMaterials();
-		void	freeMaterials();
+		std::string m_folder;
+
+		CalCoreModel * m_calCoreModel;
+
+		void	_createMaterials();
+		void	_freeMaterials();
 	};
 }

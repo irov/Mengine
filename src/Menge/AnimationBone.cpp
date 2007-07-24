@@ -23,9 +23,9 @@ namespace	Menge
 
 		mt::mat4f worldMatrix = mt::qpos_to_rot_m4(q,pos);
 
-		const mt::mat4f & mat = m_animObj->getWorldMatrix();
+		const mt::mat4f & objWorldMatrix = m_animObj->getWorldMatrix();
 
-		m_worldMatrix = worldMatrix * mat;
+		m_worldMatrix = worldMatrix * objWorldMatrix;
 
 		return m_worldMatrix;
 	}

@@ -165,7 +165,8 @@ namespace Menge
 	{}
 
 	void completeCallback(AnimationObject * _obj, const std::string & animationName, void * pUserData)
-	{}
+	{
+	}
 
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update(float _timig)

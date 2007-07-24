@@ -17,8 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceAnimationCal3d::ResourceAnimationCal3d( const std::string & _name )
 		: ResourceImpl( _name )
-	{
-	}
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimationCal3d::loader( TiXmlElement * _xml )
 	{
@@ -64,33 +63,32 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceAnimationCal3d::_compile()
 	{
-		std::ifstream file;
-
-		file.open(m_filename.c_str(), std::ios::in | std::ios::binary);
-
-		if(!file)
-		{
-			assert(!"Failed to open model configuration file '");
-			return false;
-		}
-
+		FileDataInterface * cal3dfile = 
+			Holder<FileEngine>::hostage()->openFile(m_filename);
+	
 		m_calCoreModel = new CalCoreModel("dummy");
 
-		for(int line = 1; ; line++)
+		std::string strBuffer;
+		strBuffer.reserve(100);
+		char c = 0;
+
+		float scale = 1.0f;
+
+		for(int line = 0; ;++line)
 		{
-			std::string strBuffer;
-			std::getline(file, strBuffer);
+			strBuffer.clear();
 
-			if(file.eof()) break;
-
-			if(!file)
+			while(!cal3dfile->eof())
 			{
-				assert(0);
-				return false;
+				cal3dfile->read_chars(&c,1);	
+				if(c == '\n')
+				{
+					break;
+				}
+				strBuffer+=c;
 			}
 
-			std::string::size_type pos;
-			pos = strBuffer.find_first_not_of(" \t");
+			std::string::size_type pos = strBuffer.find_first_not_of(" \t");
 
 			if((pos == std::string::npos) || (strBuffer[pos] == '\n') || (strBuffer[pos] == '\r') || (strBuffer[pos] == 0)) continue;
 
@@ -103,7 +101,7 @@ namespace Menge
 
 			if((pos == std::string::npos) || (strBuffer[pos] != '='))
 			{
-				std::cout << m_filename << "(" << line << "): Invalid syntax." << std::endl;
+				printf("%s (%d): Invalid syntax.", m_filename.c_str(),line);
 				return false;
 			}
 
@@ -116,9 +114,10 @@ namespace Menge
 			{
 				 m_folder = strData;
 			}
+
 			if(strKey == "scale")
 			{
-				m_scale = (float)atof(strData.c_str());
+				scale = (float)atof(strData.c_str());
 			}
 			else if(strKey == "skeleton")
 			{
@@ -154,20 +153,26 @@ namespace Menge
 					return false;
 				}
 			}
-		}
-		file.close();
 
-		m_calCoreModel->scale(m_scale);
+			if(cal3dfile->eof()) 
+			{
+				break;
+			}
+		}
+
+		Holder<FileEngine>::hostage()->closeFile(cal3dfile);
+
+		m_calCoreModel->scale(scale);
 		m_calCoreModel->getCoreSkeleton()->calculateBoundingBoxes(m_calCoreModel);
 
-		createMaterials();
+		_createMaterials();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimationCal3d::_release()
 	{
-		freeMaterials();
+		_freeMaterials();
 		delete m_calCoreModel;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -191,7 +196,7 @@ namespace Menge
 		return m_calCoreModel->getCoreSkeleton()->getCoreBoneId(_bonename);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimationCal3d::createMaterials()
+	void ResourceAnimationCal3d::_createMaterials()
 	{
 		for(int materialId = 0; materialId < m_calCoreModel->getCoreMaterialCount(); materialId++)
 		{
@@ -222,7 +227,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimationCal3d::freeMaterials()
+	void ResourceAnimationCal3d::_freeMaterials()
 	{
 		for(int materialId = 0; materialId < m_calCoreModel->getCoreMaterialCount(); materialId++)
 		{
@@ -236,7 +241,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CalModel * ResourceAnimationCal3d::createInstance()
+	CalModel * ResourceAnimationCal3d::getNewInstance()
 	{
 		CalModel * model = new CalModel(m_calCoreModel);
 		return model;
@@ -246,11 +251,6 @@ namespace Menge
 	{
 		CalCoreAnimation * calCoreAnimation = m_calCoreModel->getCoreAnimation(_index);
 		return calCoreAnimation;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float	ResourceAnimationCal3d::getScale() const
-	{
-		return m_scale;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const	TVecHardPoints & ResourceAnimationCal3d::getHardPoints() const

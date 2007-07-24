@@ -29,7 +29,9 @@ namespace Menge
 
 		void drawPrimitive(PrimitiveData * _pd);
 
-		void drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color);
+		void drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long color);
+		void drawLine(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color);
+		void drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color);
 
 		RenderImageInterface* loadImage(const std::string &	_imageFile, int _filter);
 

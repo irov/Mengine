@@ -55,7 +55,7 @@ namespace Menge
 		if (m_maxPoint.x < _viewPort.begin.x || m_minPoint.x > _viewPort.end.x ) return false;
 		if (m_maxPoint.y < _viewPort.begin.y || m_minPoint.y > _viewPort.end.y ) return false;
 
-		Holder<RenderEngine>::hostage()->drawLine(m_minPoint,m_maxPoint,2,0xffff00ff);
+		Holder<RenderEngine>::hostage()->drawLine(m_minPoint,m_maxPoint,0xffff00ff);
 
 		return true;
 	}

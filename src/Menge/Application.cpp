@@ -228,7 +228,8 @@ namespace Menge
 		m_game->render();
 
 		m_game->debugRender();
-		
+
+	
 
 		renderEng->endScene();
 	}

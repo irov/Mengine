@@ -1,13 +1,6 @@
 <Node Name = "Buka" Type = "Scene">	
 	<Script File = "Game/Scene/Buka/Scene.py" />
 
-	<Node Name = "Back" Type = "Layer3D">
-		<Node Name = "TestMesh" Type = "AnimationObject">
-			<ImageMap Name = "Cal3dTest" />
-			<Transformation Value = "1;0;0;0;1;0;0;0;1;0;0;0" />
-		</Node>
-	</Node>
-
 	<Node Name = "Main" Type = "Layer2D">
 		<Parallax Factor = "1;1" />
 
@@ -49,7 +42,19 @@
 
 	</Node> <!-- Layer -->
 
+	<Node Name = "Back" Type = "Layer3D">
+		<Node Name = "TestMesh" Type = "AnimationObject">
+			<ImageMap Name = "Cal3dTest" />
+			<Transformation Value = "1;0;0;0;1;0;0;0;1;0;0;0" />
+		</Node>
+	</Node>
+
 	<Node Name = "Back" Type = "Layer2D">
 		<Parallax Factor = "1.25;1" />
+
+		<Node Name = "TestSprite1" Type = "Sprite">
+			<ImageMap Name = "output" />
+			<Transformation Value = "1;0;0;1;70;70" />
+		</Node> <!-- Sprite -->
 	</Node> <!-- Layer -->
 </Node>

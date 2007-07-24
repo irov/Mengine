@@ -52,6 +52,9 @@ public:
 		unsigned char _diffuse[4],
 		unsigned char _specular[4]);
 
+	void	drawLine(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color);
+	void	drawLine3D(const mt::vec3f& p1,const mt::vec3f& p2, unsigned long color);
+	void	drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color);
 public:
 	void	_setDevice(IDirect3DDevice9 * _pd3dDevice);
 	IDirect3DDevice9 * _getDevice();

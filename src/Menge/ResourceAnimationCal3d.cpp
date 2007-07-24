@@ -156,7 +156,10 @@ namespace Menge
 			}
 		}
 		file.close();
-	
+
+		//m_calCoreModel->scale(m_scale);
+		m_calCoreModel->getCoreSkeleton()->calculateBoundingBoxes(m_calCoreModel);
+
 		createMaterials();
 
 		return true;

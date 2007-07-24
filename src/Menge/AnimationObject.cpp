@@ -14,6 +14,8 @@
 
 #	include "AnimationBone.h"
 
+#	include "math/box.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -95,7 +97,9 @@ namespace Menge
 
 		for each( std::string hardPoint in hp )
 		{
-			this->addChildren(new AnimationBone(this, hardPoint));
+			AnimationBone * bone = new AnimationBone(this, hardPoint);
+			bone->setName(hardPoint);
+			this->addChildren(bone);
 		}
 
 		clearCycles();
@@ -129,7 +133,38 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationObject::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
-	{
+	{	
+		CalSkeleton * pCalSkeleton = m_calModel->getSkeleton();
+		m_calModel->getSkeleton()->calculateBoundingBoxes();
+
+		RenderEngine * renderEng = Holder<RenderEngine>::hostage();
+
+		renderEng->setWorldMatrix( _rwm );
+
+		float lines[1024][2][3];
+		int nrLines = m_calModel->getSkeleton()->getBoneLines(&lines[0][0][0]);
+
+		for ( int i = 0; i < nrLines; ++i )
+		{
+			mt::vec3f p1(lines[i][0][0], lines[i][0][1], lines[i][0][2]);
+			mt::vec3f p2(lines[i][1][0], lines[i][1][1], lines[i][1][2]);
+
+			renderEng->drawLine3D(p1, p2, 0xaaff00ff);
+		}
+
+		float points[1024][3];
+
+	/*	int nrPoints = m_calModel->getSkeleton()->getBonePoints(&points[0][0]);
+
+		for ( int i = 0; i < nrPoints; ++i )
+		{
+			mt::vec3f p(points[i][0], points[i][1], points[i][2]);
+			mt::Box box;
+			mt::SetBoxFromCenterAndExtent(box, p, mt::vec3f(5.0f, 5.0f, 5.0f));
+
+			renderEng->drawBox(box.MinEdge,box.MaxEdge, 0xaaff00ff);
+		}
+*/
 		CalRenderer * pCalRenderer = m_calModel->getRenderer();
 
 		if(!pCalRenderer->beginRendering()) return;
@@ -147,8 +182,6 @@ namespace Menge
 			{
 				if(pCalRenderer->selectMeshSubmesh(meshId, submeshId))
 				{
-					RenderEngine * renderEng = Holder<RenderEngine>::hostage();
-
 					unsigned char ambient[4];
 					pCalRenderer->getAmbientColor(&ambient[0]);
 

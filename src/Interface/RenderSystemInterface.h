@@ -189,6 +189,10 @@ public:
 	virtual	void	setProjectionMatrix(const mt::mat4f& _projection) = 0;
 	virtual	void	setViewMatrix(const mt::mat4f& _view) = 0;
 	virtual	void	setWorldMatrix(const mt::mat4f& _world) = 0;
+
+	virtual void	drawLine(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color) = 0;
+	virtual	void	drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long color) = 0;
+	virtual void	drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color) = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

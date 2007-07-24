@@ -60,6 +60,6 @@ namespace	Menge
 
 		const mt::vec2f & pos = getWorldPosition();
 
-		renderEng->drawLine(pos,pos + mt::vec2f(10,-10),2,0xffff00ff);
+		renderEng->drawLine(pos,pos + mt::vec2f(10,-10),0xffff00ff);
 	}
 }

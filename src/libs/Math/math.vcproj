@@ -281,6 +281,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="box"
+			>
+			<File
+				RelativePath=".\box.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\box.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

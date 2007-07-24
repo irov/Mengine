@@ -31,6 +31,10 @@
 
 #	include "Layer3D.h"
 
+#	include "AnimationBone.h"
+
+#	include "math/box.h"
+
 #	define DIRECTINPUT_VERSION 0x0800
 #	include <dinput.h>
 #	include <fstream>
@@ -158,12 +162,10 @@ namespace Menge
 	}
 
 	void updateCallback(AnimationObject * _obj, const std::string & animationName, float time, void * pUserData)
-	{
-	}
+	{}
 
 	void completeCallback(AnimationObject * _obj, const std::string & animationName, void * pUserData)
-	{
-	}
+	{}
 
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update(float _timig)
@@ -183,23 +185,32 @@ namespace Menge
 		if( inputEng->isKey( DIK_F1, 1 ) == true )
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
-			AnimationObject * mesh = layer->getChildrenT<AnimationObject>("TestMesh");
-			mesh->play2Blend("paladin_idle.caf",0.9f,"paladin_walk.caf",0.1f);
+			AnimationObject * anim = layer->getChildrenT<AnimationObject>("TestMesh");
+			anim->play2Blend("paladin_idle.caf",0.9f,"paladin_walk.caf",0.1f);
 		}
 
 		if( inputEng->isKey( DIK_F2, 1 ) == true )
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
-			AnimationObject * mesh = layer->getChildrenT<AnimationObject>("TestMesh");
-			mesh->play("paladin_idle.caf");
+			AnimationObject * anim = layer->getChildrenT<AnimationObject>("TestMesh");
+			anim->play("paladin_idle.caf");
 		}
 
 		if( inputEng->isKey( DIK_F3, 1 ) == true )
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
-			AnimationObject * mesh = layer->getChildrenT<AnimationObject>("TestMesh");
-			mesh->setCallback("paladin_walk.caf",0,updateCallback,completeCallback,0);
-			mesh->play("paladin_walk.caf");
+			AnimationObject * anim = layer->getChildrenT<AnimationObject>("TestMesh");
+			anim->setCallback("paladin_walk.caf",0,updateCallback,completeCallback,0);
+			anim->play("paladin_walk.caf");
+		}
+
+		if( inputEng->isKey( DIK_F4, 1 ) == true )
+		{
+			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
+			AnimationObject * anim = layer->getChildrenT<AnimationObject>("TestMesh");
+			static mt::vec3f pos(0,0,0);
+			anim->setPosition(pos);
+			pos.y+=7.5f;
 		}
 
 		if( inputEng->isButton( 0, 1 ) == true )

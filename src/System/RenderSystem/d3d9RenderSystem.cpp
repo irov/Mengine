@@ -104,13 +104,20 @@ void	Direct3d9RenderSystem::setTexture(Texture * _tex)
 {
 	d3d9Texture* _d3d9tex = static_cast<d3d9Texture*>(_tex);
 
+	HRESULT hr;
+
 	if(_d3d9tex == NULL)
 	{
-		pID3DDevice->SetTexture(0,NULL);
+		hr = pID3DDevice->SetTexture(0,NULL);
 	}
 	else
 	{
-		pID3DDevice->SetTexture(0,_d3d9tex->_get());
+		hr = pID3DDevice->SetTexture(0,_d3d9tex->_get());
+	}
+
+	if(hr != S_OK)
+	{
+		assert(!"can't set texture");
 	}
 }
 
@@ -127,7 +134,7 @@ bool	Direct3d9RenderSystem::createDisplay(
 
 	DeviceLost = false;
 
-	IDirect3D9* pID3D = Direct3DCreate9(D3D_SDK_VERSION);
+	IDirect3D9 * pID3D = Direct3DCreate9(D3D_SDK_VERSION);
 	
 	D3DADAPTER_IDENTIFIER9 dai;
 	if (!FAILED(pID3D->GetAdapterIdentifier(D3DADAPTER_DEFAULT, 0, &dai)))
@@ -142,6 +149,7 @@ bool	Direct3d9RenderSystem::createDisplay(
 	}
 
 	D3DDISPLAYMODE d3ddm;
+
 	hr = pID3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
 	if (FAILED(hr))
 	{
@@ -261,7 +269,6 @@ bool	Direct3d9RenderSystem::createDisplay(
 		}
 	}
 
-
 	if (!pID3DDevice)
 	{
 		printf("Was not able to create DIRECT3D9 device.");
@@ -288,7 +295,9 @@ bool	Direct3d9RenderSystem::createDisplay(
 
 	// enable antialiasing
 	if (_antiAlias)
+	{
 		pID3DDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, TRUE);
+	}
 
 	// set fog mode
 	//setFog(FogColor, LinearFog, FogStart, FogEnd, FogDensity, PixelFog, RangeFog);
@@ -381,7 +390,9 @@ bool Direct3d9RenderSystem::endScene()
 {
 	_renderBatches();
 	if (DeviceLost)
+	{
 		return false;
+	}
 
 	HRESULT hr = pID3DDevice->EndScene();
 	if (FAILED(hr))
@@ -398,10 +409,12 @@ bool Direct3d9RenderSystem::endScene()
 		printf("DIRECT3D9 device lost.");
 	}
 	else
-	if (FAILED(hr) && hr != D3DERR_INVALIDCALL)
 	{
-		printf("DIRECT3D9 present failed.");
-		return false;
+		if (FAILED(hr) && hr != D3DERR_INVALIDCALL)
+		{
+			printf("DIRECT3D9 present failed.");
+			return false;
+		}
 	}
 
 	return true;
@@ -513,6 +526,8 @@ void	Direct3d9RenderSystem::drawPrimitive(PrimitiveData * _pd)
 {
 	_renderBatches();
 
+	pID3DDevice->SetRenderState(D3DRS_ZENABLE,D3DZB_TRUE);
+
 	HRESULT hr;
 
 	Direct3d9VertexData * vd = static_cast<Direct3d9VertexData*>(_pd->getVertexData());
@@ -549,6 +564,8 @@ void	Direct3d9RenderSystem::drawPrimitive(PrimitiveData * _pd)
 		pID3DDevice->DrawPrimitive( primitiveType,
 			vd->getVertexCount(), primCount );
 	} 
+
+	pID3DDevice->SetRenderState(D3DRS_ZENABLE,D3DZB_FALSE);
 }
 
 void	Direct3d9RenderSystem::_setDevice(IDirect3DDevice9 * _pd3dDevice)
@@ -659,9 +676,9 @@ void	Direct3d9RenderSystem::renderImage(
 	
 	_prepareBatch(_rmi,-1);
 
-	D3D9RenderImage* imaged3d9ptype = static_cast<D3D9RenderImage*>(_rmi);
+	D3D9RenderImage * imaged3d9ptype = static_cast<D3D9RenderImage*>(_rmi);
 
-	D3D9Vertex* srcVertices = imaged3d9ptype->_getD3D9V4();
+	D3D9Vertex * srcVertices = imaged3d9ptype->_getD3D9V4();
 
 	srcVertices[0].position = mt::vec3f(0.0f, 0.0f, 1.0f);
 	srcVertices[1].position = mt::vec3f(_size.x, 0.0f, 1.0f);
@@ -709,26 +726,28 @@ bool	Direct3d9RenderSystem::_initBatching()
 	m_size4Verts = sizeof(D3D9Vertex) * 4;
 	m_size1Vert = sizeof(D3D9Vertex);
 
-	if (D3D_OK != pID3DDevice->CreateVertexBuffer(
+	HRESULT hr; 
+
+	hr = pID3DDevice->CreateVertexBuffer(
 		BATCH_BUFFER_SIZE * m_size1Vert, 
 		D3DUSAGE_WRITEONLY,
 		D3DFVF_TLVERTEX,
 		D3DPOOL_MANAGED,
-		&m_batchFontVB,
-		NULL
-		))
+		&m_batchFontVB,	NULL	);
+
+	if(hr != S_OK)
 	{
 		return	false;
 	}
 
-	if (D3D_OK != pID3DDevice->CreateIndexBuffer(
+	hr = pID3DDevice->CreateIndexBuffer(
 		BATCH_BUFFER_SIZE * 3, 
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,
-		&m_batchFontIB,
-		NULL
-		))
+		&m_batchFontIB,	NULL	);
+
+	if(hr != S_OK)
 	{
 		return	false;
 	}
@@ -736,7 +755,9 @@ bool	Direct3d9RenderSystem::_initBatching()
 	int		index = 0;
 	short*	indices = NULL;
 
-	if (FAILED(m_batchFontIB->Lock(0, BATCH_BUFFER_SIZE*6/4*sizeof(WORD), (VOID**)&indices, 0)))
+	hr = m_batchFontIB->Lock(0, BATCH_BUFFER_SIZE*6/4*sizeof(WORD), (VOID**)&indices, 0);
+	
+	if(hr != S_OK)
 	{
 		return	false;
 	}
@@ -754,7 +775,185 @@ bool	Direct3d9RenderSystem::_initBatching()
 		n+=4;
 	}
 
-	m_batchFontIB->Unlock();
+	hr = m_batchFontIB->Unlock();
+
+	if(hr != S_OK)
+	{
+		return	false;
+	}
 
 	return	true;
+}
+
+void Direct3d9RenderSystem::drawLine3D(const mt::vec3f& p1,const mt::vec3f& p2, unsigned long color)
+{
+	_renderBatches();
+
+	pID3DDevice->SetVertexShader(NULL);
+	pID3DDevice->SetIndices(NULL);
+
+	pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+	pID3DDevice->SetStreamSource(0,0,0,0);
+
+	pID3DDevice->SetRenderState(D3DRS_ZENABLE,D3DZB_TRUE);
+
+	float vert[6];
+	vert[0] = p1.x; vert[1] = p1.y; vert[2] = p1.z;
+	vert[3] = p2.x; vert[4] = p2.y; vert[5] = p2.z;
+
+	struct VERT_XYZ_DIFFUSE
+	{
+		mt::vec3f pos;
+		unsigned long color;
+	};
+
+	VERT_XYZ_DIFFUSE p[2];
+	// Line 1
+	p[0].pos.x = vert[0];
+	p[0].pos.y = vert[1];
+	p[0].pos.z = vert[2];
+
+	p[1].pos.x = vert[3];
+	p[1].pos.y = vert[4];
+	p[1].pos.z = vert[5];
+
+	for (int i=0; i<2; i++) 
+	{
+		p[i].color = color;
+	}
+
+	pID3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
+
+	if FAILED(pID3DDevice->DrawPrimitiveUP(D3DPT_LINELIST, 1, (void *)p, sizeof(VERT_XYZ_DIFFUSE)))
+	{
+		assert(0);
+	}
+
+	pID3DDevice->SetRenderState(D3DRS_ZENABLE,D3DZB_FALSE);
+}
+
+void Direct3d9RenderSystem::drawLine(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color)
+{
+	float vert[6];
+	vert[0] = p1.x; vert[1] = p1.y; vert[2] = 1;
+	vert[3] = p2.x; vert[4] = p2.y; vert[5] = 1;
+
+	struct FVertex
+	{
+		float x, y, z, w;
+		unsigned long color; 
+	};
+
+	FVertex p[2];
+	// Line 1
+	p[0].x = vert[0];
+	p[0].y = vert[1];
+	p[0].z = vert[2];
+	p[0].w = 1.0;
+
+	p[1].x = vert[3];
+	p[1].y = vert[4];
+	p[1].z = vert[5];
+	p[1].w = 1.0;
+	
+	for (int i=0;i<2;i++) 
+	{
+		p[i].color = color;
+	}
+
+	pID3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
+	
+	pID3DDevice->DrawPrimitiveUP(D3DPT_LINELIST , 1,(void *)p,sizeof(FVertex));
+}
+
+void Direct3d9RenderSystem::drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color)
+{
+	
+	_renderBatches();
+
+
+	pID3DDevice->SetVertexShader(NULL);
+	pID3DDevice->SetIndices(NULL);
+
+	pID3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+
+	pID3DDevice->SetStreamSource(0,0,0,0);
+	pID3DDevice->SetRenderState(D3DRS_ZENABLE,D3DZB_TRUE);
+
+	float vert[6];
+	vert[0] = MinEdge.x; vert[1] = MinEdge.y; vert[2] = MinEdge.z;
+	vert[3] = MaxEdge.x; vert[4] = MaxEdge.y; vert[5] = MaxEdge.z;
+
+	struct FBBVertex
+	{
+		float x, y, z;
+		DWORD color; 
+	};
+
+	FBBVertex p[24];
+	for (int i=0;i<2;i++)
+	{
+		// Line 1
+		p[0+i*12].x = vert[0];
+		p[0+i*12].y = vert[1];
+		p[0+i*12].z = vert[2+i*3];
+
+		p[1+i*12].x = vert[0];
+		p[1+i*12].y = vert[4];
+		p[1+i*12].z = vert[2+i*3];
+
+		// Line 2
+		p[2+i*12].x = vert[0];
+		p[2+i*12].y = vert[4];
+		p[2+i*12].z = vert[2+i*3];
+
+		p[3+i*12].x = vert[3];
+		p[3+i*12].y = vert[4];
+		p[3+i*12].z = vert[2+i*3];
+
+		// Line 3
+		p[4+i*12].x = vert[3];
+		p[4+i*12].y = vert[4];
+		p[4+i*12].z = vert[2+i*3];
+
+		p[5+i*12].x = vert[3];
+		p[5+i*12].y = vert[1];
+		p[5+i*12].z = vert[2+i*3];
+
+		// Line 4
+		p[6+i*12].x = vert[3];
+		p[6+i*12].y = vert[1];
+		p[6+i*12].z = vert[2+i*3];
+
+		p[7+i*12].x = vert[0];
+		p[7+i*12].y = vert[1];
+		p[7+i*12].z = vert[2+i*3];
+
+		// Line 5 6 / 11 12
+		for (int j=0;j<2;j++)
+		{
+			p[8+j*2+i*12].x = vert[3*i];
+			p[8+j*2+i*12].y = vert[3*j + 1];
+			p[8+j*2+i*12].z = vert[2];
+
+			p[9+j*2+i*12].x = vert[3*i];
+			p[9+j*2+i*12].y = vert[3*j + 1];
+			p[9+j*2+i*12].z = vert[5];
+		}
+
+	}
+
+	for (int i=0;i<24;i++) 
+	{
+		p[i].color = _color;
+	}
+	
+	pID3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE);
+	
+	if FAILED(pID3DDevice->DrawPrimitiveUP(D3DPT_LINELIST , 12,(void *)p,sizeof(FBBVertex)))
+	{
+		assert(0);
+	}
+	pID3DDevice->SetRenderState(D3DRS_ZENABLE,D3DZB_FALSE);
 }

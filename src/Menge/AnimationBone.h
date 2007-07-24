@@ -10,7 +10,8 @@ namespace	Menge
 	{
 	public:
 		AnimationBone(AnimationObject * _animObj, const std::string& _boneName);
-		const mt::mat4f & getWorldMatrix();
+		const mt::mat4f & getWorldMatrix() override;
+		void _debugRender() override;
 	private:
 		int m_index;
 		AnimationObject * m_animObj;

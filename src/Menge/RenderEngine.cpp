@@ -85,9 +85,18 @@ namespace Menge
 		return m_interface->endScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::drawLine(const mt::vec2f& p1, const mt::vec2f& p2, float width, unsigned long color)
+	void RenderEngine::drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long color)
 	{
-//		m_interface->drawLine(p1,p2,width,color);
+		return m_interface->drawLine3D(p1,p2,color);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::drawLine(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color)
+	{
+		return m_interface->drawLine(p1,p2,color);
+	}
+	void RenderEngine::drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color)
+	{
+		return m_interface->drawBox(MinEdge,MaxEdge,_color);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* RenderEngine::loadImage(const std::string & _imageFile, int _filter)

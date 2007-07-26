@@ -14,29 +14,13 @@
 
 
 		<Node Name = "TestParticleSystem" Type = "ParticleSystem">
-			<ResourceName Value = "TestParticle" />
+			<Emitters>
+				<Node Name = "TestBoxEmitter" Type = "BoxEmitter">
+					<ResourceName Value = "TestResourceBoxEmitter" />
+				</Node>
+			</Emitters>
+
 			<Transformation Value = "1;0;0;1;20;20" />
-
-			<Emitter Name = "TestEmitter" Type = "SimplePhysicEmitter">
-				<emission Value = "899" />
-				<life Value = "0.5;1.26" />
-				<dir Value = "0" />
-				<spread Value = "0.46" />
-				<velocity Value = "300;300" />
-				<position Value = "300;300" />
-			</Emitter>
-
-			<Affector Name = "TestAffector" Type = "SimplePhysicAffector">
-				<gravity Value = "385;642" />
-				<radial Value = "-14;-14" />
-				<tan Value = "14;14" />
-				<size Value = "1.94;0.22;0.54" />
-				<spin Value = "-50;11;0.126" />
-				<startColor Value = "0.68;0.32;0.27;0.57" />
-				<endColor Value = "0.97;0.73;0.39;0.24" />
-				<varColor Value = "0.38;0.45" />
-			</Affector> 
-
 		</Node> 
 
 

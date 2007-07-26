@@ -826,6 +826,14 @@
 					RelativePath=".\ParticleResource.h"
 					>
 				</File>
+				<File
+					RelativePath=".\ResourceBoxEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceBoxEmitter.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Cal3d"

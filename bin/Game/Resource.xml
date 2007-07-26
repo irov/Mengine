@@ -17,6 +17,14 @@
 		<varColor Value = "0.38;0.45" />
 	</Resource>
 
+	<Resource Name = "TestResourceBoxEmitter" Type = "ResourceBoxEmitter" >
+		<position Value = "300.0;300.0" />
+		<life Value = "0.5;1.26" />
+		<dir Value = "0" />
+		<spread Value = "1.96" />
+		<velocity Value = "300.0;300.0" />
+	</Resource>
+
 	<Resource Name = "Cal3dTest" Type = "ResourceAnimationCal3d" >
 		<File Config = "Game/Animations/paladin/paladin.cfg" />
 		<Sequences>

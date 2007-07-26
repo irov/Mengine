@@ -2,12 +2,12 @@
 
 #	include "Particle.h"
 
-#	include "NodeCore.h"
+#	include "NodeSinglethon.h"
 
 namespace Menge
 {
 	class	ParticleEmitter
-		: public NodeCore
+		: public NodeSinglethon
 	{
 	public:
 		ParticleEmitter(int _emission);

@@ -94,7 +94,16 @@ namespace Menge
 	{
 		XML_FOR_EACH_TREE(xml)
 		{
-			XML_CHECK_VALUE_NODE( "ResourceName", "Value", m_resourceName );
+			XML_CHECK_NODE_FOR_EACH( "Emitters" )
+			{
+				XML_CHECK_NODE( "Emitter" )
+				{
+					int u =0;
+				//	XML_VALUE_ATTRIBUTE( "Index", sq.index );
+			
+			//		addEmitter(new BoxEmitter());
+				}
+			}	
 		}
 
 		Renderable2D::loader(xml);

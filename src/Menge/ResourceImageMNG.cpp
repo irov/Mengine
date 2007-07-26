@@ -93,7 +93,7 @@ namespace Menge
 
 			imageProps.offset = mt::vec2f( float(x), float(y) );
 			imageProps.renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);
-			imageProps.size = mt::vec2f(imageProps.renderImage->getWidth(),imageProps.renderImage->getHeight());
+			imageProps.size = mt::vec2f((float)imageProps.renderImage->getWidth(),(float)imageProps.renderImage->getHeight());
 
 			m_images.push_back(imageProps);
 

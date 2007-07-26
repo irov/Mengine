@@ -1,13 +1,13 @@
 #	include "d3d9IndexData.h"
-
-Direct3d9IndexData::Direct3d9IndexData(IDirect3DDevice9* pd3dDevice)
-	: m_pd3dDevice(pd3dDevice)
+//////////////////////////////////////////////////////////////////////////
+D3D9IndexData::D3D9IndexData(IDirect3DDevice9* _pd3dDevice)
+	: m_pd3dDevice(_pd3dDevice)
 	, m_IB(0)
 	, m_indexCount(0)
 	, m_indexStart(0)
 {}
-
-Direct3d9IndexData::~Direct3d9IndexData()
+//////////////////////////////////////////////////////////////////////////
+D3D9IndexData::~D3D9IndexData()
 {
 	if(m_IB)
 	{
@@ -15,8 +15,8 @@ Direct3d9IndexData::~Direct3d9IndexData()
 		m_IB = NULL;
 	}
 }
-
-void	Direct3d9IndexData::lock(unsigned short* &_indecies, size_t _offset, size_t _count)
+//////////////////////////////////////////////////////////////////////////
+void	D3D9IndexData::lock(unsigned short* &_indecies, size_t _offset, size_t _count)
 {
 	m_indexCount = _count;
 	m_indexStart = _offset * 3;
@@ -26,13 +26,13 @@ void	Direct3d9IndexData::lock(unsigned short* &_indecies, size_t _offset, size_t
 		(void**)&_indecies, 
 		D3DLOCK_NOOVERWRITE);
 }
-
-void	Direct3d9IndexData::unlock()
+//////////////////////////////////////////////////////////////////////////
+void	D3D9IndexData::unlock()
 {
 	m_IB->Unlock();
 }
-
-void	Direct3d9IndexData::createIndexBuffer(size_t _count, size_t _start)
+//////////////////////////////////////////////////////////////////////////
+void	D3D9IndexData::createIndexBuffer(size_t _count, size_t _start)
 {
 	m_indexCount = _count;
 	m_indexStart = _start;
@@ -47,18 +47,19 @@ void	Direct3d9IndexData::createIndexBuffer(size_t _count, size_t _start)
 		&m_IB,
 		NULL );
 }
-
-LPDIRECT3DINDEXBUFFER9	Direct3d9IndexData::_get() const
+//////////////////////////////////////////////////////////////////////////
+LPDIRECT3DINDEXBUFFER9	D3D9IndexData::_get() const
 {
 	return m_IB;
 }
-
-size_t Direct3d9IndexData::getIndexStart() const
+//////////////////////////////////////////////////////////////////////////
+size_t D3D9IndexData::getIndexStart() const
 {
 	return m_indexStart;
 }
-
-size_t Direct3d9IndexData::getIndexCount() const
+//////////////////////////////////////////////////////////////////////////
+size_t D3D9IndexData::getIndexCount() const
 {
 	return m_indexCount;
 }
+//////////////////////////////////////////////////////////////////////////

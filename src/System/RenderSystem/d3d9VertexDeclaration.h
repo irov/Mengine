@@ -1,16 +1,15 @@
 #	pragma once
 #	include "Interface\RenderSystemInterface.h"
 #	include <d3d9.h>
-#	include <d3dx9.h>
 #	include <vector>
 
-class d3d9VertexDeclaration
+class D3D9VertexDeclaration
 	: public VertexDeclaration
 {
 public:
-	d3d9VertexDeclaration(IDirect3DDevice9 * pd3dDevice);
-	~d3d9VertexDeclaration();
-	void	insert(size_t stream, size_t offset, DECLTYPE type, DECLUSAGE usage, size_t index);
+	D3D9VertexDeclaration(IDirect3DDevice9 * _pd3dDevice);
+	~D3D9VertexDeclaration();
+	void	insert(size_t _stream, size_t _offset, DECLTYPE _type, DECLUSAGE _usage, size_t _index);
 public:
 	LPDIRECT3DVERTEXDECLARATION9 _get() const;
 private:

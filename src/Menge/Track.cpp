@@ -149,7 +149,7 @@ namespace	Menge
 	 
 		for each( const TrackChain & chain in m_listChain )
 		{
-			renderEng->drawLine( chain.beginPoint(), chain.endPoint(), 0xffff00ff );
+			renderEng->drawLine2D( chain.beginPoint(), chain.endPoint(), 0xffff00ff );
 		}
 	}
 }

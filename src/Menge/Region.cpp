@@ -62,7 +62,7 @@ namespace	Menge
 
 		for( size_t i = 0; i < size; ++i )
 		{
-			renderEng->drawLine(m_polygon[i],m_polygon[ (i+1) % size ], 0xffffCCff);
+			renderEng->drawLine2D(m_polygon[i],m_polygon[ (i+1) % size ], 0xffffCCff);
 		}
 
 		for each( WayPoint * wp in m_helperWayPoints )

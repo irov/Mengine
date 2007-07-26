@@ -24,13 +24,13 @@ namespace Menge
 		unsigned char _diffuse[4],
 		unsigned char _specular[4]);
 
-		bool beginScene(bool backBuffer, bool zBuffer, int color);
+		bool beginScene(int _color);
 		bool endScene();
 
 		void drawPrimitive(PrimitiveData * _pd);
 
 		void drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long color);
-		void drawLine(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color);
+		void drawLine2D(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color);
 		void drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color);
 
 		RenderImageInterface* loadImage(const std::string &	_imageFile, int _filter);
@@ -49,10 +49,7 @@ namespace Menge
 		IndexData * createIndexData();
 		VertexDeclaration * createVertexDeclaration();
 
-		Texture * createTextureInMemory(const TextureDesc& _desc);
-		void	releaseTexture(Texture * _tex);
-
-		void	setTexture(Texture * _tex);
+		void	setTexture(RenderImageInterface * _tex);
 		void	setProjectionMatrix(const mt::mat4f& _projection);
 		void	setViewMatrix(const mt::mat4f& _view);
 		void	setWorldMatrix(const mt::mat4f& _world);

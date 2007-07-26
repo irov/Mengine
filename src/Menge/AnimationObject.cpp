@@ -156,7 +156,7 @@ namespace Menge
 			mt::vec3f p1(lines[i][0][0], lines[i][0][1], lines[i][0][2]);
 			mt::vec3f p2(lines[i][1][0], lines[i][1][1], lines[i][1][2]);
 
-			renderEng->drawLine3D(p1, p2, 0xaaff00ff);
+			renderEng->drawLine3D(p1, p2, 0xFFFFFFAA);
 		}
 
 		float points[1024][3];
@@ -216,7 +216,8 @@ namespace Menge
 					int faceCount = pCalRenderer->getFaces( indecies );
 					indexData->unlock();
 							
-					renderEng->setTexture((Texture*)pCalRenderer->getMapUserData(0));
+					Cal::UserData material = pCalRenderer->getMapUserData(0);
+					renderEng->setTexture(static_cast<RenderImageInterface*>(material));
 					renderEng->drawPrimitive(m_primitiveData);
 
 					VBCursor += vertexCount;

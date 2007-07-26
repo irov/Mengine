@@ -109,8 +109,8 @@ protected:
 class RenderImageInterface
 {
 public:
-	virtual float getWidth() const = 0;
-	virtual float getHeight() const = 0;
+	virtual int getWidth() const = 0;
+	virtual int getHeight() const = 0;
 };
 
 struct	TextureDesc
@@ -118,12 +118,6 @@ struct	TextureDesc
 	void*			buffer;
 	size_t			size;
 	int				filter;
-};
-
-class	Texture
-{
-public:
-	virtual ~Texture(){};
 };
 
 class RenderFontInterface
@@ -153,7 +147,7 @@ class	RenderSystemInterface
 public:
 	virtual ~RenderSystemInterface(){};
 
-	virtual bool beginScene(bool backBuffer, bool zBuffer, int color) = 0;
+	virtual bool beginScene(int _color) = 0;
 	virtual bool endScene() = 0;
 
 	virtual void	setMaterialColor(unsigned char _ambient[4], 
@@ -166,10 +160,7 @@ public:
 	virtual IndexData * createIndexData() = 0;
 	virtual VertexDeclaration * createVertexDeclaration() = 0;
 
-	virtual Texture * createTextureInMemory(const TextureDesc& _desc) = 0;
-	virtual void releaseTexture(Texture * _tex) = 0;
-
-	virtual void setTexture(Texture * _tex) = 0;
+	virtual void setTexture(RenderImageInterface * _tex) = 0;
 
 	virtual RenderImageInterface* loadImage(const TextureDesc&	_desc) = 0;
 
@@ -183,16 +174,16 @@ public:
 
 	virtual void	releaseRenderImage(RenderImageInterface* _rmi) = 0;
 	virtual RenderFontInterface* loadFont(const FontDesc&	_desc) = 0;
-	virtual	void	renderText(mt::vec2f _pos, RenderFontInterface* _font, const std::string& _text) = 0;
+	virtual	void	renderText(const mt::vec2f& _pos, RenderFontInterface* _font, const std::string& _text) = 0;
 	virtual	void	releaseRenderFont(RenderFontInterface* _fnt) = 0;
 
 	virtual	void	setProjectionMatrix(const mt::mat4f& _projection) = 0;
 	virtual	void	setViewMatrix(const mt::mat4f& _view) = 0;
 	virtual	void	setWorldMatrix(const mt::mat4f& _world) = 0;
 
-	virtual void	drawLine(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color) = 0;
-	virtual	void	drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long color) = 0;
-	virtual void	drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color) = 0;
+	virtual void	drawLine2D(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long _color) = 0;
+	virtual	void	drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long _color) = 0;
+	virtual void	drawBox(const mt::vec3f& _minEdge, const mt::vec3f & _maxEdge, unsigned long _color) = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

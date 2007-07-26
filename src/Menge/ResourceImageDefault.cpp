@@ -84,8 +84,8 @@ namespace Menge
 			return false;
 		}
 
-		m_size.x = m_renderImage->getWidth();
-		m_size.y = m_renderImage->getHeight();
+		m_size.x = (float)m_renderImage->getWidth();
+		m_size.y = (float)m_renderImage->getHeight();
 
 		m_count = 1;
 

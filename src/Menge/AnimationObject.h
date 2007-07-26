@@ -15,7 +15,7 @@ namespace Menge
 	class AnimationCallback;
 	class AnimationObject;
 	class ResourceAnimationCal3d;
-
+	
 	typedef void (*UpdateCallback)(AnimationObject * _animObj, const std::string & _animName, float _animTime, void * _userData);
 	typedef void (*CompleteCallback)(AnimationObject * _animObj, const std::string & _animName, void * _userData);
 

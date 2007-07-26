@@ -8,6 +8,8 @@
 
 #	include "XmlParser/XmlParser.h"
 
+#	include "Interface/RenderSystemInterface.h"
+
 #	include <iostream>
 #	include <fstream>
 
@@ -220,7 +222,7 @@ namespace Menge
 				td.size = imageData->size();
 				td.filter = 1;
 
-				Texture * texture = Holder<RenderEngine>::hostage()->createTextureInMemory(td);
+				RenderImageInterface * texture = Holder<RenderEngine>::hostage()->loadImage(td);
 
 				pCoreMaterial->setMapUserData(mapId, (Cal::UserData)texture);
 			}
@@ -235,8 +237,9 @@ namespace Menge
 
 			for(int mapId = 0; mapId < pCoreMaterial->getMapCount(); mapId++)
 			{
-				Texture* tex = (Texture*)pCoreMaterial->getMapUserData(mapId);
-				Holder<RenderEngine>::hostage()->releaseTexture(tex);
+				Cal::UserData material = pCoreMaterial->getMapUserData(mapId);
+				RenderImageInterface * tex = static_cast<RenderImageInterface*>(material);
+				Holder<RenderEngine>::hostage()->releaseRenderImage(tex);
 			}
 		}
 	}

@@ -10,8 +10,6 @@
 
 namespace Menge
 {
-	class RenderImageInterface;
-
 	struct AnimInfo
 	{
 		size_t	index;

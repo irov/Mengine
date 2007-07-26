@@ -2,11 +2,11 @@
 #	include "Interface\RenderSystemInterface.h"
 #	include <d3d9.h>
 
-class Direct3d9VertexData : public VertexData
+class D3D9VertexData : public VertexData
 {
 public:
-    Direct3d9VertexData(IDirect3DDevice9 * pd3dDevice);
-	~Direct3d9VertexData();
+    D3D9VertexData(IDirect3DDevice9 * _pd3dDevice);
+	~D3D9VertexData();
 	void	createVertexBuffer(size_t _count, size_t _vertexSizeInBytes, size_t _start = 0);
 	void	setVertexDeclaration(VertexDeclaration * _vd);
 	size_t	getVertexSize() const;

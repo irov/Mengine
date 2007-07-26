@@ -45,17 +45,7 @@ namespace Menge
 		return m_interface->createVertexDeclaration();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Texture * RenderEngine::createTextureInMemory(const TextureDesc& _desc)
-	{
-		return m_interface->createTextureInMemory(_desc);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void	RenderEngine::releaseTexture(Texture * _tex)
-	{
-		return m_interface->releaseTexture(_tex);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void	RenderEngine::setTexture(Texture * _tex)
+	void	RenderEngine::setTexture(RenderImageInterface * _tex)
 	{
 		return m_interface->setTexture(_tex);
 	}
@@ -75,9 +65,9 @@ namespace Menge
 		return m_interface->setWorldMatrix(_world);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::beginScene(bool backBuffer, bool zBuffer, int color)
+	bool RenderEngine::beginScene(int _color)
 	{
-		return m_interface->beginScene(backBuffer,zBuffer,color);
+		return m_interface->beginScene(_color);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::endScene()
@@ -90,9 +80,9 @@ namespace Menge
 		return m_interface->drawLine3D(p1,p2,color);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::drawLine(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color)
+	void RenderEngine::drawLine2D(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color)
 	{
-		return m_interface->drawLine(p1,p2,color);
+		return m_interface->drawLine2D(p1,p2,color);
 	}
 	void RenderEngine::drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color)
 	{

@@ -10,7 +10,7 @@ namespace	Menge
 		: m_animObj(_animObj)
 		, m_index(_index)
 	{}
-
+	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & AnimationBone::getWorldMatrix()
 	{
 		CalBone * bone = m_animObj->getBoneWithIndex(m_index);
@@ -29,7 +29,7 @@ namespace	Menge
 
 		return m_worldMatrix;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void AnimationBone::_debugRender()
 	{
 		const mt::mat4f & matrix = getWorldMatrix();

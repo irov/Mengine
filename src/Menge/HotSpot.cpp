@@ -103,7 +103,7 @@ namespace	Menge
 			mt::mul_v2_m3( b, m_poligon[ i ], wm );
 			mt::mul_v2_m3( e, m_poligon[ (i+1) % size ], wm );
 
-			renderEng->drawLine( b, e, 0xffff00ff );
+			renderEng->drawLine2D( b, e, 0xffff00ff );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

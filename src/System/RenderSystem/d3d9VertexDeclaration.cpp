@@ -1,13 +1,13 @@
 #	include "d3d9VertexDeclaration.h"
 #	include <assert.h>
 
-d3d9VertexDeclaration::d3d9VertexDeclaration(IDirect3DDevice9* pd3dDevice)
-	: m_pd3dDevice(pd3dDevice)
+D3D9VertexDeclaration::D3D9VertexDeclaration(IDirect3DDevice9 * _pd3dDevice)
+	: m_pd3dDevice(_pd3dDevice)
 	, m_pVertexDeclaration(0)
 	, m_isChanged(true)
 {}
 
-d3d9VertexDeclaration::~d3d9VertexDeclaration()
+D3D9VertexDeclaration::~D3D9VertexDeclaration()
 {
 	if(m_pVertexDeclaration)
 	{
@@ -16,24 +16,25 @@ d3d9VertexDeclaration::~d3d9VertexDeclaration()
 	}
 }
 
-void	d3d9VertexDeclaration::insert(size_t stream, size_t offset, DECLTYPE type, DECLUSAGE usage, size_t index)
+void	D3D9VertexDeclaration::insert(size_t _stream, size_t _offset, DECLTYPE _type, DECLUSAGE _usage, size_t _index)
 {
-	D3DDECLTYPE _type = D3DDECLTYPE_FLOAT3;
-	D3DDECLUSAGE _usage = D3DDECLUSAGE_POSITION;
+	D3DDECLTYPE type = D3DDECLTYPE_FLOAT3;
+	D3DDECLUSAGE usage = D3DDECLUSAGE_POSITION;
 
-	if(type == DECLFLOAT2) _type = D3DDECLTYPE_FLOAT2;
-	if(type == DECLFLOAT4) _type = D3DDECLTYPE_FLOAT4;
+	if(_type == DECLFLOAT2) type = D3DDECLTYPE_FLOAT2;
+	if(_type == DECLFLOAT4) type = D3DDECLTYPE_FLOAT4;
 
-	if(usage == DECLTEX) _usage = D3DDECLUSAGE_TEXCOORD;
-	if(usage == DECLNRM) _usage = D3DDECLUSAGE_NORMAL;
-	if(usage == DECLCOL) _usage = D3DDECLUSAGE_COLOR;
+	if(_usage == DECLTEX) usage = D3DDECLUSAGE_TEXCOORD;
+	if(_usage == DECLNRM) usage = D3DDECLUSAGE_NORMAL;
+	if(_usage == DECLCOL) usage = D3DDECLUSAGE_COLOR;
 
-	D3DVERTEXELEMENT9 elem = {stream, offset, _type, D3DDECLMETHOD_DEFAULT, _usage, index};
+	D3DVERTEXELEMENT9 elem = {_stream, _offset, type, D3DDECLMETHOD_DEFAULT, usage, _index};
+
 	m_decl.push_back(elem);
 	m_isChanged = true;
 }
 
-LPDIRECT3DVERTEXDECLARATION9 d3d9VertexDeclaration::_get() const
+LPDIRECT3DVERTEXDECLARATION9 D3D9VertexDeclaration::_get() const
 {
 	if(m_decl.empty())
 	{
@@ -47,7 +48,11 @@ LPDIRECT3DVERTEXDECLARATION9 d3d9VertexDeclaration::_get() const
 		std::copy(m_decl.begin(),m_decl.end(),std::back_inserter(decl));
 		D3DVERTEXELEMENT9 end = D3DDECL_END();
 		decl.push_back(end);
-		m_pd3dDevice->CreateVertexDeclaration( &*decl.begin(), &m_pVertexDeclaration );
+		HRESULT hr = m_pd3dDevice->CreateVertexDeclaration( &*decl.begin(), &m_pVertexDeclaration );
+		if(hr != S_OK)
+		{
+			assert(0);
+		}
 		m_isChanged = false;
 	}
 

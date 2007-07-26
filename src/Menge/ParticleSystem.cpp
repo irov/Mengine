@@ -55,7 +55,7 @@ namespace Menge
 		if (m_maxPoint.x < _viewPort.begin.x || m_minPoint.x > _viewPort.end.x ) return false;
 		if (m_maxPoint.y < _viewPort.begin.y || m_minPoint.y > _viewPort.end.y ) return false;
 
-		Holder<RenderEngine>::hostage()->drawLine(m_minPoint,m_maxPoint,0xffff00ff);
+		Holder<RenderEngine>::hostage()->drawLine2D(m_minPoint,m_maxPoint,0xffff00ff);
 
 		return true;
 	}
@@ -197,7 +197,7 @@ namespace Menge
 			_transform.v2.x = particle->m_position.x;
 			_transform.v2.y = particle->m_position.y;
 
-			mt::vec2f _size(m_image->getWidth(),m_image->getHeight());
+			mt::vec2f _size((float)m_image->getWidth(),(float)m_image->getHeight());
 
             _size *= particle->m_size;
 

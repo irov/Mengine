@@ -222,7 +222,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\dependencies\cal3d\cal3d\bin\debug\cal3d_d.lib ..\..\..\lib\math_d.lib Common\Debug\DXUT.lib &quot;dxerr.lib dxguid.lib d3dx9d.lib d3d9.lib winmm.lib comctl32.lib ..\..\..\lib\Math_d.lib ..\..\..\dependencies\vld\vldmtdll.lib ..\..\..\dependencies\cal3d\cal3d\bin\debug\cal3d_d.lib"
+				AdditionalDependencies="..\..\..\dependencies\cal3d\cal3d\bin\debug\cal3d_d.lib ..\..\..\lib\math_d.lib &quot;dxerr.lib dxguid.lib d3dx9d.lib d3d9.lib winmm.lib comctl32.lib ..\..\..\lib\Math_d.lib ..\..\..\dependencies\vld\vldmtdll.lib ..\..\..\dependencies\cal3d\cal3d\bin\debug\cal3d_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
 				LinkIncremental="2"
 				ModuleDefinitionFile=""
@@ -265,6 +265,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\d3d9BatchRender.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\d3d9IndexData.cpp"
 				>
 			</File>
@@ -278,10 +282,6 @@
 			</File>
 			<File
 				RelativePath=".\d3d9RenderSystem.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\d3d9Texture.cpp"
 				>
 			</File>
 			<File
@@ -313,53 +313,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\model.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\model.h"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="DebugExe|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\RenderSystem.def"
 				>
 			</File>
@@ -369,6 +322,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\d3d9BatchRender.h"
+				>
+			</File>
 			<File
 				RelativePath=".\d3d9IndexData.h"
 				>
@@ -386,10 +343,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\d3d9Texture.h"
-				>
-			</File>
-			<File
 				RelativePath=".\d3d9VertexData.h"
 				>
 			</File>
@@ -397,12 +350,6 @@
 				RelativePath=".\d3d9VertexDeclaration.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
 		</Filter>
 	</Files>
 	<Globals>

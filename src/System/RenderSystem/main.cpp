@@ -1,47 +1,97 @@
-//#	include "vld.h"
+#	include "vld.h"
 
 #	include "d3d9RenderSystem.h"
 #	include "..\..\Interface\RenderSystemInterface.h"
-#	include "model.h"
+#	include <fstream>
 
-Model	pModel;
 mt::mat3f	ident;
-RenderSystemInterface *renderSystem;
-RenderImageInterface* SPRITE0;
+RenderSystemInterface * renderSystem;
+RenderImageInterface * SPRITE0;
 
-void	RenderScene()
+static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	/*renderSystem->renderImage(
-		ident,
-		mt::vec2f(128,0),
-		mt::vec4f(0,0,1.0f,1.0f),
-		mt::vec2f(SPRITE0->getWidth(),
-		SPRITE0->getHeight()),
-		0xFFFFFFFF,
-		SPRITE0);
-*/
-	//pModel.onIdle(0.001f);
-//	pModel.onRender();
+	switch (uMsg)
+	{
+	case WM_CLOSE:
+		DestroyWindow(hWnd);
+		return 0;
 
-/*	renderSystem->renderImage(
-		ident,
-		mt::vec2f(0,0),
-		mt::vec4f(0,0,1.0f,1.0f),
-		mt::vec2f(SPRITE0->getWidth(),SPRITE0->getHeight()),
-		0xFFFFFFFF,
-		SPRITE0);
+	case WM_DESTROY:
+		PostQuitMessage(0);
+	}
 
-*/
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 {
+	HINSTANCE hInstance = GetModuleHandle(0);
+
+	const char* className = "main window";
+
+	WNDCLASSEX wcex;
+	wcex.cbSize = sizeof(WNDCLASSEX); 
+	wcex.style			= CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc	= (WNDPROC)WndProc;
+	wcex.cbClsExtra		= 0;
+	wcex.cbWndExtra		= 0;
+	wcex.hInstance		= hInstance;
+	wcex.hIcon			= NULL;
+	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
+	wcex.lpszMenuName	= 0;
+	wcex.lpszClassName	= className;
+	wcex.hIconSm		= 0;
+	wcex.hIcon			= NULL; 
+	RegisterClassEx(&wcex);
+
+	RECT clientSize;
+
+	int width = 1024;
+	int height = 768;
+
+	clientSize.top = 0;
+	clientSize.left = 0;
+	clientSize.right = width;
+	clientSize.bottom = height;
+
+	bool m_fullScreen = false;
+
+	DWORD style = WS_POPUP;
+
+	if ( m_fullScreen == false )
+	{
+		style = WS_SYSMENU | WS_BORDER | WS_CAPTION | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
+	}
+
+	AdjustWindowRect(&clientSize, style, FALSE);
+
+	unsigned int realWidth = clientSize.right - clientSize.left;
+	unsigned int realHeight = clientSize.bottom - clientSize.top;
+
+	unsigned int windowLeft = (GetSystemMetrics(SM_CXSCREEN) - realWidth) / 2;
+	unsigned int windowTop = (GetSystemMetrics(SM_CYSCREEN) - realHeight) / 2;
+
+	if ( m_fullScreen )
+	{
+		windowLeft = 0;
+		windowTop = 0;
+	}
+
+	HWND hWnd = CreateWindow(className,"", style, windowLeft, windowTop, realWidth, realHeight,NULL, NULL, hInstance, NULL);
+
+	ShowWindow(hWnd, SW_SHOW);
+	UpdateWindow(hWnd);
+
+	MoveWindow(hWnd, windowLeft, windowTop, realWidth, realHeight, TRUE);
+
 	renderSystem = new Direct3d9RenderSystem();
-	renderSystem->createDisplay(640,480,16,false);
+	
+	((Direct3d9RenderSystem*)renderSystem)->createDisplay(hWnd,width,height,16,false,true,false,true,false);
 
 	TextureDesc	td;
 
-	std::ifstream	f("HLSLwithoutEffects.jpg",std::ios::binary);
+	std::ifstream	f("1.jpg",std::ios::binary);
 	f.seekg(0,std::ios::end); 
 	size_t filesize = f.tellg();
 	f.seekg(0,std::ios::beg);
@@ -58,13 +108,11 @@ INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 	
 	SPRITE0 = renderSystem->loadImage(td);
 
- 	pModel.onInit(renderSystem,"heroine.cfg");
+	delete[] buffer;
 
 	MSG  msg;
     msg.message = WM_NULL;
     PeekMessage( &msg, NULL, 0U, 0U, PM_NOREMOVE );
-
-	HWND hWnd = GetActiveWindow();
 
     while( WM_QUIT != msg.message  )
     {
@@ -82,9 +130,8 @@ INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         }
         else
         {
-			renderSystem->beginScene(true,true,2756);
-						pModel.onIdle(0.001f);
-			pModel.onRender();
+			renderSystem->beginScene(2756);
+
 			renderSystem->renderImage(
 				ident,
 				mt::vec2f(0,0),
@@ -92,12 +139,24 @@ INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 				mt::vec2f(SPRITE0->getWidth(),SPRITE0->getHeight()),
 				0xFFFFFFFF,
 				SPRITE0);
-					renderSystem->endScene();
+	
+			renderSystem->drawLine(mt::vec2f(0,0),mt::vec2f(100,100),0xFFFFaaFF);
+
+			renderSystem->renderImage(
+				ident,
+				mt::vec2f(60,100),
+				mt::vec4f(0,0,1.0f,1.0f),
+				mt::vec2f(SPRITE0->getWidth(),SPRITE0->getHeight()),
+				0xFFFFFFFF,
+				SPRITE0);
+
+			renderSystem->drawLine(mt::vec2f(400,0),mt::vec2f(300,900),0xFFFFFFAA);
+
+			renderSystem->endScene();
         }
     }
 
-	pModel.onShutdown();
-	
+
 	renderSystem->releaseRenderImage(SPRITE0);
 
 	delete renderSystem;

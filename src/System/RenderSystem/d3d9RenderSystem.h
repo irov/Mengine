@@ -1,11 +1,16 @@
 #	pragma once
 #	include "Interface\WinRenderSystemInterface.h"
-#	include "d3d9RenderImage.h"
+
+#	include "d3d9BatchRender.h"
 
 #	include <vector>
 #	include <list>
 
-class	d3d9RenderFont;
+#	include <d3d9.h>
+#	include <d3dx9.h>
+
+class	D3D9Font;
+class	D3D9RenderImage;
 
 class	Direct3d9RenderSystem
 	: public WinRenderSystemInterface
@@ -16,82 +21,56 @@ public:
 public:
 	bool	createDisplay(
 		HWND _hWnd, int _width, int _height, int _bits, bool _fullScreen,
-		bool _vsync, bool _stencilBuffer, bool _antiAlias, bool _pureSoftware);
+		bool _vsync, bool _stencilBuffer, bool _antiAlias, bool _pureSoftware) override;
 
-	void	drawPrimitive(PrimitiveData * _pd);
-	
-	VertexData * createVertexData();
-	IndexData * createIndexData();
-	VertexDeclaration * createVertexDeclaration();
-
-	Texture * createTextureInMemory(const TextureDesc& _desc);
-
-	RenderFontInterface* loadFont(const FontDesc& _desc);
-	void	releaseRenderImage(RenderImageInterface* _rmi);
-    void	renderText(mt::vec2f _pos, RenderFontInterface* _font, const std::string& _text);
-	void	releaseRenderFont(RenderFontInterface* _fnt);
-	void	setTexture(Texture * _tex);
-
-	void	releaseTexture(Texture * _tex);
-
-	void	renderImage(
-					const mt::mat3f& _transform, 
-					const mt::vec2f& _offset,
-					const mt::vec4f& _uv,
-					const mt::vec2f& _size,
-					unsigned int _mixedColor, 
-					RenderImageInterface* _rmi);
-
-	RenderImageInterface* loadImage(const TextureDesc&	_desc);
-
-	void	setProjectionMatrix(const mt::mat4f& _projection);
-	void	setViewMatrix(const mt::mat4f& _view);
-	void	setWorldMatrix(const mt::mat4f& _world);
+	bool beginScene(int _color) override;
+	bool endScene() override;
 
 	void	setMaterialColor(unsigned char _ambient[4], 
 		unsigned char _diffuse[4],
-		unsigned char _specular[4]);
+		unsigned char _specular[4]) override;
 
-	void	drawLine(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color);
-	void	drawLine3D(const mt::vec3f& p1,const mt::vec3f& p2, unsigned long color);
-	void	drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color);
-public:
-	void	_setDevice(IDirect3DDevice9 * _pd3dDevice);
-	IDirect3DDevice9 * _getDevice();
+	void	drawPrimitive(PrimitiveData * _pd) override;
 	
-	void			_renderBatches();
+	VertexData * createVertexData() override;
+	IndexData * createIndexData() override;
+	VertexDeclaration * createVertexDeclaration() override;
+
+	void setTexture(RenderImageInterface * _tex) override;
+
+	RenderImageInterface* loadImage(const TextureDesc&	_desc) override;
+
+	void	renderImage(			
+		const mt::mat3f& _transform, 
+		const mt::vec2f& _offset,
+		const mt::vec4f& _uv,
+		const mt::vec2f& _size,
+		unsigned int _mixedColor, 
+		RenderImageInterface* _rmi) override;
+
+	void	releaseRenderImage(RenderImageInterface* _rmi) override;
+	RenderFontInterface* loadFont(const FontDesc&	_desc) override;
+	void	renderText(const mt::vec2f& _pos, RenderFontInterface* _font, const std::string& _text) override;
+	void	releaseRenderFont(RenderFontInterface* _fnt) override;
+
+	void	setProjectionMatrix(const mt::mat4f& _projection) override;
+	void	setViewMatrix(const mt::mat4f& _view) override;
+	void	setWorldMatrix(const mt::mat4f& _world) override;
+
+	void	drawLine2D(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long _color) override;
+	void	drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long _color) override;
+	void	drawBox(const mt::vec3f& _minEdge, const mt::vec3f & _maxEdge, unsigned long _color) override;
+private:
+	D3D9BatchRender BatchRender;
+	//
 	void			_initRenderSystemParams();
-	//new
-	bool beginScene(bool backBuffer, bool zBuffer, int color);
-	bool endScene();
-private:
-
-	bool			_initBatching();
-	void			_prepareBatch(RenderImageInterface* _rmi, int _blend);
-	void			_newBatch(size_t _begin, RenderImageInterface* _rmi, int _blend);
-	
-	static const int BATCH_BUFFER_SIZE = 9000;
-
-	LPDIRECT3DVERTEXBUFFER9		m_batchFontVB;
-	LPDIRECT3DINDEXBUFFER9		m_batchFontIB;
-		
-	UINT						m_size4Verts;
-	UINT						m_size1Vert;
-
-	std::vector<D3D9Vertex>		m_vertices;
-
-	struct Batch
+	//
+	struct HelperVertex
 	{
-		size_t	begin;
-		size_t	end;
-		int		blend;
-		RenderImageInterface * image;
+		float x, y, z;
+		unsigned long color; 
 	};
-
-	std::list<Batch>			m_batches;
-
 private:
-	//new
-	IDirect3DDevice9* pID3DDevice;
+	IDirect3DDevice9 * pID3DDevice;
 	bool DeviceLost;
 };

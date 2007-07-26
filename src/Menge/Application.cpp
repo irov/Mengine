@@ -219,7 +219,7 @@ namespace Menge
 		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 
 	
-		renderEng->beginScene(true,true,2756);
+		renderEng->beginScene(2756);
 		
 		//if( m_functionRender )
 		//{

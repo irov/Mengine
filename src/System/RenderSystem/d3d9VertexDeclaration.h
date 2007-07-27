@@ -9,7 +9,7 @@ class D3D9VertexDeclaration
 public:
 	D3D9VertexDeclaration(IDirect3DDevice9 * _pd3dDevice);
 	~D3D9VertexDeclaration();
-	void	insert(size_t _stream, size_t _offset, DECLTYPE _type, DECLUSAGE _usage, size_t _index);
+	void	insert(size_t _stream, size_t _offset, eDeclType _type, eDeclUsage _usage, size_t _index);
 public:
 	LPDIRECT3DVERTEXDECLARATION9 _get() const;
 private:

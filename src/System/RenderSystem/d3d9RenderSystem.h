@@ -61,16 +61,23 @@ public:
 	void	drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long _color) override;
 	void	drawBox(const mt::vec3f& _minEdge, const mt::vec3f & _maxEdge, unsigned long _color) override;
 private:
+	//
 	D3D9BatchRender BatchRender;
 	//
-	void			_initRenderSystemParams();
+	void			_resetRenderSystemParams();
 	//
-	struct HelperVertex
+	struct HelperVertex2d
+	{
+		float x, y, z, w;
+		unsigned long color; 
+	};
+	//
+	struct HelperVertex3d
 	{
 		float x, y, z;
 		unsigned long color; 
 	};
-private:
-	IDirect3DDevice9 * pID3DDevice;
-	bool DeviceLost;
+	//
+	IDirect3DDevice9 * m_pID3DDevice;
+	bool m_deviceLost;
 };

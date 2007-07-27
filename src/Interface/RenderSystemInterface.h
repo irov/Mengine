@@ -8,14 +8,14 @@
 #	include "libs/math/vec2.h"
 #	include "libs/math/vec3.h"
 
-enum DECLTYPE
+enum eDeclType
 {
 	DECLFLOAT2,
 	DECLFLOAT3,
 	DECLFLOAT4
 };
 
-enum DECLUSAGE
+enum eDeclUsage
 {
 	DECLPOS,
 	DECLTEX,
@@ -23,7 +23,7 @@ enum DECLUSAGE
 	DECLCOL
 };
 
-enum RenderOperation
+enum eRenderOp
 {
 	TRIANGLELIST,
 	TRIANGLESTRIP
@@ -33,7 +33,7 @@ class VertexDeclaration
 {
 public:
 	virtual ~VertexDeclaration(){};
-	virtual void	insert(size_t stream, size_t offset, DECLTYPE type, DECLUSAGE usage, size_t index) = 0;
+	virtual void	insert(size_t stream, size_t offset, eDeclType type, eDeclUsage usage, size_t index) = 0;
 };
 
 class IndexData
@@ -95,7 +95,7 @@ public:
 		return m_indexData;
 	}
 
-	RenderOperation	getRenderOp() const
+	eRenderOp	getRenderOp() const
 	{
 		return m_type;
 	}
@@ -103,7 +103,7 @@ public:
 protected:
 	VertexData * m_vertexData;
 	IndexData * m_indexData;
-	RenderOperation	m_type;
+	eRenderOp	m_type;
 };
 
 class RenderImageInterface

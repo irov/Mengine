@@ -16,7 +16,7 @@ D3D9VertexDeclaration::~D3D9VertexDeclaration()
 	}
 }
 
-void	D3D9VertexDeclaration::insert(size_t _stream, size_t _offset, DECLTYPE _type, DECLUSAGE _usage, size_t _index)
+void	D3D9VertexDeclaration::insert(size_t _stream, size_t _offset, eDeclType _type, eDeclUsage _usage, size_t _index)
 {
 	D3DDECLTYPE type = D3DDECLTYPE_FLOAT3;
 	D3DDECLUSAGE usage = D3DDECLUSAGE_POSITION;

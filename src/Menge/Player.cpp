@@ -29,6 +29,8 @@
 
 #	include "AnimationObject.h"
 
+#	include "Layer2D.h"
+
 #	include "Layer3D.h"
 
 #	include "AnimationBone.h"
@@ -212,6 +214,14 @@ namespace Menge
 			static mt::vec3f pos(0,0,0);
 			anim->setPosition(pos);
 			pos.y+=7.5f;
+		}
+
+		if( inputEng->isKey( DIK_F5, 1 ) == true )
+		{
+			Layer2D * layer = m_scene->getChildrenT<Layer2D>("Main");
+			Actor * act = layer->getChildrenT<Actor>("TestActor");
+			Sprite * spr = act->getChildrenT<Sprite>("TestSprite");
+			spr->setImageIndex(1);
 		}
 
 		if( inputEng->isButton( 0, 1 ) == true )

@@ -21,7 +21,7 @@ public:
 	void	init(IDirect3DDevice9 * _dev);
 	void	destroy();
 	void	insertVertices(D3D9Vertex * _begin, D3D9Vertex * _end);
-	void	begin(RenderImageInterface* _rmi, int _blend);
+	void	begin(RenderImageInterface * _rmi, int _blend);
 	void	flush();
 	void	end();
 private:

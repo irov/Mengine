@@ -63,16 +63,14 @@ namespace Menge
 
 		assert(fileData != 0);
 
-		int size;
-
-		fileData->read_ints(&size,1);
-
 		int x, y;
 		fileData->read_ints(&x,1);
 		fileData->read_ints(&y,1);
-
 		m_size = mt::vec2f( float(x), float(y) );
-	
+
+		int size;
+		fileData->read_ints(&size,1);
+
 		TextureDesc	textureDesc;
 
 		m_images.reserve(size);

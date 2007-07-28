@@ -1,6 +1,6 @@
 #	include	"d3d9BatchRender.h"	
 #	include	"d3d9RenderImage.h"	
-
+//////////////////////////////////////////////////////////////////////////
 void	D3D9BatchRender::init(IDirect3DDevice9 * _dev)
 {
 	m_pID3DDevice = _dev;
@@ -65,7 +65,7 @@ void	D3D9BatchRender::init(IDirect3DDevice9 * _dev)
 		return;
 	}
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	D3D9BatchRender::destroy()
 {
 	if(m_batchVertexBuffer)
@@ -80,12 +80,12 @@ void	D3D9BatchRender::destroy()
 		m_batchIndexBuffer = NULL;
 	}
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	D3D9BatchRender::insertVertices(D3D9Vertex * _begin, D3D9Vertex * _end)
 {
 	m_vertices.insert(m_vertices.end(), _begin, _end);
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	D3D9BatchRender::begin(RenderImageInterface* _rmi, int _blend)
 {
 	if( m_batches.empty() )
@@ -100,18 +100,18 @@ void	D3D9BatchRender::begin(RenderImageInterface* _rmi, int _blend)
 		_newBatch(current_b.end,_rmi,_blend);
 	}
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	D3D9BatchRender::end()
 {
 	m_batches.back().end = m_vertices.size();
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	D3D9BatchRender::_newBatch(size_t _begin, RenderImageInterface * _rmi, int _blend)
 {
 	Batch b = {_begin, 0, _blend, _rmi};
 	m_batches.push_back( b );
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	D3D9BatchRender::flush()
 {
 	if( m_vertices.empty() )
@@ -144,9 +144,10 @@ void	D3D9BatchRender::flush()
 		UINT num_vertices = (UINT)b.end - (UINT)b.begin;
 		UINT num_primitives = num_vertices/2;
 		m_pID3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, num_vertices, startIndex, num_primitives);
-		startIndex += num_primitives*3;
+		startIndex += num_primitives * 3;
 	}
 
 	m_vertices.clear();
 	m_batches.clear();
 }
+//////////////////////////////////////////////////////////////////////////

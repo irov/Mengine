@@ -11,8 +11,8 @@ D3D9RenderImage::D3D9RenderImage(LPDIRECT3DTEXTURE9	_texPointer, const TextureDe
         assert(!"can't get desc!");
     }
 
-	m_width = (float)surfaceDesc.Width;
-	m_height = (float)surfaceDesc.Height;
+	m_width = surfaceDesc.Width;
+	m_height = surfaceDesc.Height;
 }
 //////////////////////////////////////////////////////////////////////////
 D3D9RenderImage::~D3D9RenderImage()

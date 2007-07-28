@@ -95,10 +95,12 @@ namespace Menge
 		for each( std::string hardPoint in hp )
 		{
 			int index = m_cal3dRes->getBoneIndex(hardPoint);
+
 			if(index == -1)		
 			{
 				assert(!"no bone with such index!");
 			}
+
 			AnimationBone * bone = new AnimationBone(this, index);
 			bone->setName(hardPoint);
 			this->addChildren(bone);

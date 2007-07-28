@@ -517,7 +517,7 @@ void	Direct3d9RenderSystem::drawPrimitive(PrimitiveData * _pd)
 		assert(!"Can't SetVertexDeclaration");
 	}
 
-	hr = m_pID3DDevice->SetStreamSource(0, vd->_get(), 0, vd->getVertexSize());
+	hr = m_pID3DDevice->SetStreamSource(0, vd->_get(), 0, (UINT)vd->getVertexSize());
 	if(hr != S_OK)
 	{
 		assert(!"Can't SetStreamSource");
@@ -529,7 +529,7 @@ void	Direct3d9RenderSystem::drawPrimitive(PrimitiveData * _pd)
 		assert(!"Can't SetIndices");
 	}
 
-	int primCount = 0;
+	UINT primCount = 0;
 
 	D3DPRIMITIVETYPE primitiveType = D3DPT_TRIANGLELIST;
 
@@ -538,12 +538,13 @@ void	Direct3d9RenderSystem::drawPrimitive(PrimitiveData * _pd)
 		primitiveType = D3DPT_TRIANGLESTRIP;
 	}
 
+	UINT vertexCount = (UINT)vd->getVertexCount();
+
 	if(id != NULL)
 	{
-		primCount = id->getIndexCount();
-		int vertexCount = vd->getVertexCount();
-		size_t vertexStart = vd->getVertexStart();
-		size_t indexStart = id->getIndexStart();
+		primCount = (UINT)id->getIndexCount();
+		UINT vertexStart = (UINT)vd->getVertexStart();
+		UINT indexStart = (UINT)id->getIndexStart();
 
 		hr = m_pID3DDevice->DrawIndexedPrimitive( primitiveType, 
 			vertexStart, 0, vertexCount, indexStart, primCount );
@@ -555,10 +556,10 @@ void	Direct3d9RenderSystem::drawPrimitive(PrimitiveData * _pd)
 	}
 	else
 	{
-		primCount = vd->getVertexCount()/3;
+		primCount = (UINT)(vd->getVertexCount() / 3);
 
 		hr = m_pID3DDevice->DrawPrimitive( primitiveType,
-			vd->getVertexCount(), primCount );
+			vertexCount, primCount );
 
 		if(hr != S_OK)
 		{

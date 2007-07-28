@@ -1,12 +1,12 @@
 #	include "d3d9VertexDeclaration.h"
 #	include <assert.h>
-
+//////////////////////////////////////////////////////////////////////////
 D3D9VertexDeclaration::D3D9VertexDeclaration(IDirect3DDevice9 * _pd3dDevice)
 	: m_pd3dDevice(_pd3dDevice)
 	, m_pVertexDeclaration(0)
 	, m_isChanged(true)
 {}
-
+//////////////////////////////////////////////////////////////////////////
 D3D9VertexDeclaration::~D3D9VertexDeclaration()
 {
 	if(m_pVertexDeclaration)
@@ -15,7 +15,7 @@ D3D9VertexDeclaration::~D3D9VertexDeclaration()
 		m_pVertexDeclaration = NULL;
 	}
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	D3D9VertexDeclaration::insert(size_t _stream, size_t _offset, eDeclType _type, eDeclUsage _usage, size_t _index)
 {
 	D3DDECLTYPE type = D3DDECLTYPE_FLOAT3;
@@ -28,12 +28,12 @@ void	D3D9VertexDeclaration::insert(size_t _stream, size_t _offset, eDeclType _ty
 	if(_usage == DECLNRM) usage = D3DDECLUSAGE_NORMAL;
 	if(_usage == DECLCOL) usage = D3DDECLUSAGE_COLOR;
 
-	D3DVERTEXELEMENT9 elem = {_stream, _offset, type, D3DDECLMETHOD_DEFAULT, usage, _index};
+	D3DVERTEXELEMENT9 elem = {(WORD)_stream, (WORD)_offset, type, D3DDECLMETHOD_DEFAULT, usage, (BYTE)_index};
 
 	m_decl.push_back(elem);
 	m_isChanged = true;
 }
-
+//////////////////////////////////////////////////////////////////////////
 LPDIRECT3DVERTEXDECLARATION9 D3D9VertexDeclaration::_get() const
 {
 	if(m_decl.empty())
@@ -58,3 +58,4 @@ LPDIRECT3DVERTEXDECLARATION9 D3D9VertexDeclaration::_get() const
 
 	return m_pVertexDeclaration;
 }
+//////////////////////////////////////////////////////////////////////////

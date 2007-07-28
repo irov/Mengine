@@ -20,8 +20,8 @@ public:
 	bool				_isAlpha() const;
 
 private:
-	float				m_width;
-	float				m_height;
+	int				m_width;
+	int				m_height;
 	bool				m_haveAlpha;
 	LPDIRECT3DTEXTURE9	m_texPointer;
 };

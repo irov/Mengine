@@ -57,8 +57,8 @@ public:
 	void	setViewMatrix(const mt::mat4f& _view) override;
 	void	setWorldMatrix(const mt::mat4f& _world) override;
 
-	void	drawLine2D(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long _color) override;
-	void	drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long _color) override;
+	void	drawLine2D(const mt::vec2f& _p1, const mt::vec2f& _p2, unsigned long _color) override;
+	void	drawLine3D(const mt::vec3f& _p1, const mt::vec3f& _p2, unsigned long _color) override;
 	void	drawBox(const mt::vec3f& _minEdge, const mt::vec3f & _maxEdge, unsigned long _color) override;
 private:
 	//

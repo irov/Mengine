@@ -374,88 +374,6 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="Define"
-				Filter="h;hpp;hxx;hm;inl;inc;xsd"
-				UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-				>
-				<File
-					RelativePath=".\ObjectDeclare.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ObjectImplement.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Node"
-				>
-				<File
-					RelativePath=".\Node.h"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeChildren.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeChildren.h"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeCore.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeCore.h"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeForeach.h"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeProxy.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeProxy.h"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeSinglethon.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeSinglethon.h"
-					>
-				</File>
-				<Filter
-					Name="Eventable"
-					>
-					<File
-						RelativePath=".\Eventable.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Eventable.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Scriptable"
-					>
-					<File
-						RelativePath=".\Scriptable.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Scriptable.h"
-						>
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
 				Name="Track"
 				>
 				<File
@@ -496,34 +414,6 @@
 				</File>
 				<File
 					RelativePath=".\HotSpot.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Dialog"
-				>
-				<File
-					RelativePath=".\Dialog.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Dialog.h"
-					>
-				</File>
-				<File
-					RelativePath=".\DialogManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DialogManager.h"
-					>
-				</File>
-				<File
-					RelativePath=".\MessageSpot.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\MessageSpot.h"
 					>
 				</File>
 			</Filter>
@@ -588,16 +478,72 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Kernel"
+				Name="Particles"
 				>
 				<File
-					RelativePath=".\Holder.h"
+					RelativePath=".\Particle.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\MengeExport.h"
+					RelativePath=".\Particle.h"
 					>
 				</File>
+				<File
+					RelativePath=".\ParticleAffector.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ParticleEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ParticleEmitter.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ParticleManager.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ParticleSystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ParticleSystem.h"
+					>
+				</File>
+				<Filter
+					Name="Emitters"
+					>
+					<File
+						RelativePath=".\BoxEmitter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\BoxEmitter.h"
+						>
+					</File>
+					<File
+						RelativePath=".\PointEmitter.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\PointEmitter.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Affectors"
+					>
+					<File
+						RelativePath=".\SimplePhysicAffector.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\SimplePhysicAffector.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -707,22 +653,6 @@
 				RelativePath=".\Playlist.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="TRASH"
-			>
-			<Filter
-				Name="Decoder"
-				>
-				<File
-					RelativePath=".\Decoder.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Decoder.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource"
@@ -989,74 +919,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Particles"
-			>
-			<File
-				RelativePath=".\Particle.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Particle.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ParticleAffector.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ParticleEmitter.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ParticleEmitter.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ParticleManager.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ParticleSystem.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ParticleSystem.h"
-				>
-			</File>
-			<Filter
-				Name="Emitters"
-				>
-				<File
-					RelativePath=".\BoxEmitter.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\BoxEmitter.h"
-					>
-				</File>
-				<File
-					RelativePath=".\PointEmitter.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\PointEmitter.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Affectors"
-				>
-				<File
-					RelativePath=".\SimplePhysicAffector.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SimplePhysicAffector.h"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
 			Name="Object3D"
 			>
 			<Filter
@@ -1089,16 +951,138 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="NodeFactory"
+			Name="Dialog"
 			>
 			<File
-				RelativePath=".\NodeFactory.cpp"
+				RelativePath=".\Dialog.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\NodeFactory.h"
+				RelativePath=".\Dialog.h"
 				>
 			</File>
+			<File
+				RelativePath=".\DialogManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DialogManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MessageSpot.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MessageSpot.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Define"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
+			<File
+				RelativePath=".\ObjectDeclare.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ObjectImplement.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Kernel"
+			>
+			<File
+				RelativePath=".\Holder.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MengeExport.h"
+				>
+			</File>
+			<Filter
+				Name="Node"
+				>
+				<File
+					RelativePath=".\Node.h"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeChildren.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeChildren.h"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeCore.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeCore.h"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeForeach.h"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeProxy.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeProxy.h"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeSinglethon.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeSinglethon.h"
+					>
+				</File>
+				<Filter
+					Name="Eventable"
+					>
+					<File
+						RelativePath=".\Eventable.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Eventable.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Scriptable"
+					>
+					<File
+						RelativePath=".\Scriptable.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Scriptable.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="NodeFactory"
+				>
+				<File
+					RelativePath=".\NodeFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeFactory.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

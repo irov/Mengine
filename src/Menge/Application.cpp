@@ -16,7 +16,7 @@
 
 #	include "ErrorMessage.h"
 
-#	include "Decoder.h"
+//#	include "Decoder.h"
 
 #	include "XmlParser/XmlParser.h"
 

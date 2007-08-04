@@ -545,6 +545,18 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="Trap"
+				>
+				<File
+					RelativePath=".\Trap2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Trap2D.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"
@@ -946,6 +958,18 @@
 				</File>
 				<File
 					RelativePath=".\AnimationObject.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Trap"
+				>
+				<File
+					RelativePath=".\Trap3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Trap3D.h"
 					>
 				</File>
 			</Filter>

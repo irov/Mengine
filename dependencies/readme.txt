@@ -1,10 +1,13 @@
+-------------------------------------------------------------------------------
+NOW:
+
 python 
 [2.5.1]
-http://www.python.org/ftp/python/2.5.1/python-2.5.1.msi
+http://www.python.org/ftp/python/2.5.1/Python-2.5.1.tar.bz2
 
-boost 
-[1.34]
-http://switch.dl.sourceforge.net/sourceforge/boost/boost_1_34_0.zip
+pybind
+[head]
+https://pybind.svn.sourceforge.net/svnroot/pybind
 
 tinyxml
 [2.5.2] -
@@ -16,6 +19,9 @@ vld
 cal3d
 [snapshot]
 svn://svn.gna.org/svn/cal3d/trunk
+
+--------------------------------------------------------------------------------
+TODO:
 
 libcurl
 [libcurl]

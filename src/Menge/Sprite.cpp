@@ -61,13 +61,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageIndex( size_t _index )
 	{
-		size_t size = m_image->getCount();
+	//size_t size = m_image->getCount();
 
-		if(_index >= size)
-		{
-			assert(!"You can't set image index > image size");
-			return;
-		}
+	//if(_index >= size)
+	//{
+	//	assert(!"You can't set image index > image size");
+	//	return;
+	//}
 
 		m_currentImageIndex = _index;
 	}

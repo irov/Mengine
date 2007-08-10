@@ -3,20 +3,25 @@
 
 #	include "ScriptEngine.h"
 
-#	include <boost/python.hpp>
-
+#	include <string>
 #	include <list>
 #	include <map>
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	typedef std::list<ScriptClassDeclaration *> TListClassDeclaration;
-	typedef std::map<std::string, TListClassDeclaration> TMapClassDeclaration;
-	typedef std::pair<TDeclarationFunc, TMapClassDeclaration> TModuleInfo; 
-	typedef std::map<std::string, TModuleInfo> TMapDeclaration;
+	struct ClassDeclaration
+	{		
+		std::string m_name;
+		std::string m_module;
+	
+		ScriptClassDeclaration * m_declatation;
+
+		typedef std::list<ClassDeclaration *> TListParents;
+		TListParents m_parents;
+	};
 	//////////////////////////////////////////////////////////////////////////
-	static const char * s_current_module = 0;
+	typedef std::map<std::string, ClassDeclaration> TMapDeclaration;
 	//////////////////////////////////////////////////////////////////////////
 	static TMapDeclaration & map_declaration()
 	{
@@ -24,63 +29,48 @@ namespace Menge
 		return pd;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static TModuleInfo & declarations( const char * _moduleName )
+	static ClassDeclaration * declarations( const std::string & _moduleName )
 	{
-		return map_declaration() [ _moduleName ];
+		return & map_declaration() [ _moduleName ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptModuleDeclaration::addClassDeclaration( const char * _moduleName, ScriptClassDeclaration * _declaration, const std::string & _bases, TDeclarationFunc _func )
+	void ScriptModuleDeclaration::addClassDeclaration( const std::string & _moduleName, const std::string & _pakName, ScriptClassDeclaration * _declaration, const std::string & _bases )
 	{
-		TModuleInfo &info = declarations( _moduleName );
-		info.first = _func;
+		ClassDeclaration * info_bases = declarations( _bases );
+		ClassDeclaration * info_parent = declarations( _pakName );
 
-		info.second[ _bases ].push_back( _declaration );
+		info_parent->m_declatation = _declaration;
+		info_parent->m_name = _pakName;
+		info_parent->m_module = _moduleName;
+
+		info_bases->m_parents.push_back( info_parent );
 	}
 
-	void ScriptModuleDeclaration::init()
+	static void foreachHierarchicalDeclaration( PyObject * _module, const std::string & name )
 	{
-		TMapDeclaration &mapDeclaration = map_declaration();
+		ClassDeclaration * info = declarations( name );
 
-		for each( const TMapDeclaration::value_type & it in mapDeclaration )
+		for each( ClassDeclaration * base in info->m_parents )
 		{
-			if (PyImport_AppendInittab( const_cast<char*>(it.first.c_str()), it.second.first ) == -1)
-			{
-				throw std::runtime_error("Failed to add  'MengeMath' to the interpreter's builtin modules");
-			}
-			
-			boost::python::object module = boost::python::import( it.first.c_str() );
+			Holder<ScriptEngine>::hostage()
+				->setCurrentModule( _module );
+
+			base->m_declatation->init();
+
+			foreachHierarchicalDeclaration( _module, base->m_name );
 		}
 	}
-	static void foreachHierarchicalDeclaration( TMapClassDeclaration & mapDeclaration, const std::string & name )
-	{
-		TListClassDeclaration & listDeclaration = mapDeclaration[ name ];
 
-		for each( ScriptClassDeclaration * declare in listDeclaration )
-		{
-			declare->init();
-			const std::string & name = declare->getName();
-			foreachHierarchicalDeclaration( mapDeclaration, name );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void foreachDeclaration()
+	void ScriptModuleDeclaration::init( PyObject * _module )
 	{
-		TMapClassDeclaration &mapDeclaration = declarations(s_current_module).second;
-
 		try
 		{
-			foreachHierarchicalDeclaration( mapDeclaration, "Base" );
+			foreachHierarchicalDeclaration( _module, "Base" );
 		}
 		catch(...)
 		{
 			ScriptEngine::handleException();
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptModuleDeclaration::initModule( const char * _moduleName )
-	{
-		s_current_module = _moduleName;
-		boost::python::detail::init_module( const_cast<char*>(_moduleName), &foreachDeclaration );
 	}
 }
 

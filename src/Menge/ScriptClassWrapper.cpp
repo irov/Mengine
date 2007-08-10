@@ -37,15 +37,15 @@ namespace Menge
 
 		if( it_find != mapWrapper.end() )
 		{
-			try
-			{
+			//try
+			//{
 				PyObject * scriptable = it_find->second->wrapp( _node );
 				_node->setScriptable( scriptable );
-			}
-			catch (...)
-			{
-				ScriptEngine::handleException();
-			}			
+			//}
+			//catch (...)
+			//{
+				//ScriptEngine::handleException();
+			//}			
 		}
 	}
 }

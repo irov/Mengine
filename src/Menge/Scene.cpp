@@ -82,22 +82,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_activate()
 	{
-		if( m_scriptFile.empty() == false )
-		{
-			if( Holder<ScriptEngine>::hostage()->doFile(m_scriptFile) == false )
-			{
-				printf( "False parse script file '%s'", m_scriptFile.c_str() );
-			}		
-		}
+		m_sceneModule = Holder<ScriptEngine>::hostage()
+			->importModule( m_name + "." + m_scriptFile );
 
-		const std::string & name = getName();
+		const std::string & name = this->getName();
 
 		if( name.empty() == false )
 		{
 			std::string functionName = "Scene" + getName() + "_activate";
 
 			Holder<ScriptEngine>::hostage()
-				->callFunction( functionName, "(O)", this->getScriptable() );
+				->callModuleFunction( m_sceneModule, functionName, "(O)", this->getScriptable() );
 		}
 
 		return NodeCore::_activate();

@@ -37,5 +37,6 @@ namespace Menge
 
 	private:
 		std::string m_scriptFile;
+		PyObject * m_sceneModule;
 	};
 }

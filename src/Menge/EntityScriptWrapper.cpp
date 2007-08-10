@@ -10,11 +10,10 @@ namespace Menge
 	namespace ScriptMethod
 	{
 		PyObject * createEntity(
-			const std::string & _type, 
+			std::string _type, 
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
-
 			Entity *en = Holder<ScriptEngine>::hostage()
 				->createEntity( _type );
 
@@ -24,7 +23,7 @@ namespace Menge
 					, _type.c_str() 
 					);
 
-				Py_RETURN_NONE;
+				pybind::ret_none();
 			}
 
 			en->setPosition( _pos );
@@ -38,10 +37,8 @@ namespace Menge
 
 	REGISTER_SCRIPT_CLASS( Menge, Entity, Node )
 	{
-		boost::python::class_<Entity, boost::python::bases<SceneNode2D> > pyEntityClass("Entity");
+		pybind::class_<Entity, pybind::bases<SceneNode2D> >("Entity");
 			
-		pyEntityClass.def( boost::python::init<>("constructor") );
-
-		boost::python::def( "createEntity", &ScriptMethod::createEntity );
+		pybind::def( "createEntity", &ScriptMethod::createEntity );
 	}
 }

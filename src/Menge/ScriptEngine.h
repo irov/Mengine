@@ -17,9 +17,6 @@ namespace Menge
 	class Scriptable;
 	class Entity;
 
-	class ScriptObject;
-	class ScriptGlobal;
-
 	class ScriptEngine
 	{
 	public:
@@ -32,7 +29,10 @@ namespace Menge
 		bool doFile( const std::string & _file );
 		bool doString( const std::string & _string );
 
+		PyObject * initModule( const std::string & _file );
 		PyObject * importModule( const std::string & _file );
+
+		void setCurrentModule( PyObject * _module );
 
 		void setEntitiesPath( const std::string & _paths );
 		bool isEntityType( const std::string & _type );
@@ -67,8 +67,7 @@ namespace Menge
 		
 
 	private:
-		ScriptObject * m_globalObject;
-		ScriptGlobal * m_globalDict;
+		PyObject * m_global;
 
 		typedef std::list<std::string> TListEntitysType;
 		TListEntitysType m_listEntitiesType;

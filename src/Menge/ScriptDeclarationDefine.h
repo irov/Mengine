@@ -1,6 +1,6 @@
 #	include "ScriptClassDeclaration.h"
 
-#	include <boost/python.hpp>
+#	include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 #	define REGISTER_SCRIPT_CLASS( Module, Class, Bases )\
@@ -11,16 +11,12 @@
 class StructName : public Menge::ScriptClassDeclaration{\
 	public:\
 	StructName ()\
+	: Menge::ScriptClassDeclaration( #Module )\
 		{\
-		ScriptClassDeclaration::setName( #Class );\
-		ScriptClassDeclaration::addClassDeclaration( #Module, this, #Bases, &StructName::initModule );\
+		ScriptClassDeclaration::addClassDeclaration( #Module, #Class, this, #Bases );\
 		}\
 		void init() override;\
 	protected:\
-	static void initModule()\
-		{\
-		ScriptClassDeclaration::initModuleImpl( #Module );\
-		}\
 	};\
 		namespace{ static StructName _##StructName; }\
 		void StructName::init()

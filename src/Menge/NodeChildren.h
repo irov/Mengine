@@ -7,7 +7,7 @@
 #	include <algorithm>
 
 namespace Menge
-{
+{	
 	class NodeChildrenImpl
 	{
 	public:
@@ -44,11 +44,13 @@ namespace Menge
 				return false;
 			}
 
-			_node->setParent( this );
+			TNode * t_node = dynamic_cast<TNode *>( _node );
 
-			increfImpl( _node );
+			t_node->setParent( this );
+
+			increfImpl( t_node );
 			
-			m_listChildren.push_back( dynamic_cast<TNode *>( _node ) );
+			m_listChildren.push_back( t_node );
 
 			return true;
 		}

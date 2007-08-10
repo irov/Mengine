@@ -57,10 +57,10 @@ namespace Menge
 		typedef std::map<int, AnimationCallback*> TMapCallbacks;
 		typedef std::list<std::pair<int, AnimationCallback*> > TListRemoveCallbacks;
 
+		std::string m_resourceName;
+
 		TMapCallbacks	m_callbacks;
 		TListRemoveCallbacks	m_removeCallbacks;		
-
-		std::string m_resourceName;
 
 		size_t m_vertexSize;
 

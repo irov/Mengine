@@ -2,6 +2,12 @@
 
 #	include <string>
 
+extern "C" 
+{ 
+	struct _object; 
+	typedef _object PyObject;
+}
+
 namespace Menge
 {
 	typedef void (*TDeclarationFunc)();
@@ -9,20 +15,15 @@ namespace Menge
 	class ScriptClassDeclaration
 	{
 	public:
+		ScriptClassDeclaration( const std::string & _name );
 		virtual ~ScriptClassDeclaration();
 
 	public:
 		virtual void init() = 0;
 
-		void setName( const std::string & _name );
-		const std::string & getName() const;
+		void addClassDeclaration( const std::string & _moduleName, const std::string & _pakName, ScriptClassDeclaration * _declare, const std::string & _bases );
 
-		void addClassDeclaration( const char * _moduleName, ScriptClassDeclaration * _declare, const std::string & _bases, TDeclarationFunc _func );
-	
-	protected:
-		static void initModuleImpl( const char * _moduleName );
-
-	protected:
+	public:
 		std::string m_name;
 	};
 }

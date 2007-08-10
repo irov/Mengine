@@ -1,6 +1,8 @@
+#	pragma once
+
 #	include <map>
 
-namespace Utility
+namespace Menge
 {
 	template<class T>
 	struct PoliceNullPtr

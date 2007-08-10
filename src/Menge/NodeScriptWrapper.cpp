@@ -28,7 +28,7 @@ namespace Menge
 		void setCurrentScene( const std::string & _name )
 		{
 			Holder<Player>::hostage()
-				->setCurrentScene( _name );
+					->setCurrentScene( _name );
 		}
 
 		PyObject * createNode( const std::string & _type, PyObject * _params  )
@@ -38,40 +38,38 @@ namespace Menge
 			if( node->isScriptable() == false )
 			{
 				node->destroy();
-				Py_RETURN_NONE;
+				pybind::ret_none();
 			}
 
-			if( PyList_Check( _params ) )
+			if( pybind::list_check( _params ) )
 			{
 				TiXmlElement * node_xml = TiXmlElementCreate("Node");	
 
-				for( Py_ssize_t it = 0, it_end = PyList_Size( _params ); it != it_end; ++it )
+				for( size_t it = 0, it_end = pybind::list_size( _params ); it != it_end; ++it )
 				{
-					PyObject * dict = PyList_GetItem( _params, it );
+					PyObject * dict = pybind::list_getitem( _params, it );
 
-					if( PyDict_Check( dict ) == 0 )
+					if( pybind::dict_check( dict ) == false )
 					{
 						continue;
 					}
 
 					PyObject *py_key, *py_value;
-					Py_ssize_t pos = 0;
+					size_t pos = 0;
 
-					Py_ssize_t dict_size = PyDict_Size( dict );
-
-					while( PyDict_Next( dict, &pos, &py_key, &py_value) ) 
+					while( pybind::dict_next( dict, &pos, &py_key, &py_value) ) 
 					{
-						std::string key = PyString_AsString( py_key );
+						std::string key = pybind::extract<std::string>( py_key );
 
 						TiXmlElement * key_xml = TiXmlElementCreate( key );
 
 						PyObject *py_value_key, *py_value_value;
-						Py_ssize_t value_pos = 0;
+						size_t value_pos = 0;
 
-						while( PyDict_Next( py_value, &value_pos, &py_value_key, &py_value_value) )
+						while( pybind::dict_next( py_value, &value_pos, &py_value_key, &py_value_value) )
 						{
-							std::string value_key = PyString_AsString( py_value_key );
-							std::string value_value = PyString_AsString( py_value_value );
+							std::string value_key = pybind::extract<std::string>( py_value_key );
+							std::string value_value = pybind::extract<std::string>( py_value_value );
 
 							TiXmlElementSetAttribute( key_xml, value_key, value_value );
 						}
@@ -87,26 +85,25 @@ namespace Menge
 
 			PyObject * pyNode = node->getScriptable();
 
+			pybind::incref( pyNode );
+
 			return pyNode;
-			return 0;
 		}
 	}
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{
-		boost::python::return_value_policy<boost::python::reference_existing_object> retValuePolice;
-
-		boost::python::class_<mt::vec2f>("vec2f")
-			.def( boost::python::init<float,float>() )
-			.def( boost::python::self + boost::python::self )	// __add__
-			.def( boost::python::self - boost::python::self )          // __radd__
-			.def( boost::python::self * float() )           // __sub__
-			.def( boost::python::self / float() )          // __sub__
-			.def( float() * boost::python::self )         // __iadd__
-			.def( boost::python::self += boost::python::self )
-			.def( boost::python::self -= boost::python::self )
-			.def( boost::python::self *= float() )
-			.def( boost::python::self /= float() )
+		pybind::class_<mt::vec2f>("vec2f")
+			//.def( boost::python::init<float,float>() )
+			//.def( boost::python::self + boost::python::self )	// __add__
+			//.def( boost::python::self - boost::python::self )          // __radd__
+			//.def( boost::python::self * float() )           // __sub__
+			//.def( boost::python::self / float() )          // __sub__
+			//.def( float() * boost::python::self )         // __iadd__
+			//.def( boost::python::self += boost::python::self )
+			//.def( boost::python::self -= boost::python::self )
+			//.def( boost::python::self *= float() )
+			//.def( boost::python::self /= float() )
 			;
 
 
@@ -114,55 +111,93 @@ namespace Menge
 		//	ScriptObject *,
 		//	ScriptObjectConverter>();
 
-		boost::python::class_<ScriptObject>("ScriptObject" )
-			.def( boost::python::init<boost::python::object>() )
+		pybind::interface_<Node>("Node")
 			;
 
-		boost::python::class_<Node, boost::noncopyable>("Node", boost::python::no_init )
-			;		
+		//boost::python::class_<Node, boost::noncopyable>("Node", boost::python::no_init )
+		//	;		
 
-		boost::python::class_<Allocator2D>("Allocator2D")
+		pybind::class_<Allocator2D>("Allocator2D")
 			;
+		
+		//boost::python::class_<Allocator2D>("Allocator2D")
+		//	;
 
-		boost::python::class_<Renderable2D>("Renderable2D")
+		using namespace pybind;
+		//PYBIND_METHOD_STATIC( "hide",  );
+
+		pybind::class_<Renderable2D>("Renderable2D")
 			.def( "hide", &Renderable2D::hide )
 			;
 
-		boost::python::class_<SceneNode2D, boost::python::bases<Node, Allocator2D, Renderable2D>  >("SceneNode2D")
+		//boost::python::class_<Renderable2D>("Renderable2D")
+		//	.def( "hide", &Renderable2D::hide )
+		//	;
+
+		pybind::class_<SceneNode2D, pybind::bases<Node, Allocator2D, Renderable2D>  >("SceneNode2D")
 			.def( "activate", &SceneNode2D::activate )
 			.def( "setName", &SceneNode2D::setName )
-			.def( "getName", &SceneNode2D::getName, retValuePolice  )
+			.def( "getName", &SceneNode2D::getName )
 			.def( "addChildren", &SceneNode2D::addChildren )
-			;		
+			;
+
+		//boost::python::class_<SceneNode2D, boost::python::bases<Node, Allocator2D, Renderable2D>  >("SceneNode2D")
+		//	.def( "activate", &SceneNode2D::activate )
+		//	.def( "setName", &SceneNode2D::setName )
+		//	.def( "getName", &SceneNode2D::getName, retValuePolice  )
+		//	.def( "addChildren", &SceneNode2D::addChildren )
+		//	;		
 
 		{
-			boost::python::class_<Scene, boost::python::bases<SceneNode2D> >("Scene", boost::python::no_init )
+			pybind::class_<Scene>("Scene")
 				.def( "layerAppend", &Scene::layerAppend )
 				;
 
-			boost::python::class_<HotSpot, boost::python::bases<SceneNode2D> >("HotSpot")
-				.def( boost::python::init<>("constructor") )
+			//boost::python::class_<Scene, boost::python::bases<SceneNode2D> >("Scene", boost::python::no_init )
+			//	.def( "layerAppend", &Scene::layerAppend )
+			//	;
+
+			pybind::class_<HotSpot, pybind::bases<SceneNode2D> >("HotSpot")
 				.def( "setMouseLeftClickEvent", &HotSpot::setMouseLeftClickEvent )
 				;
 
-			boost::python::class_<Sprite, boost::python::bases<SceneNode2D> >("Sprite")
-				.def( boost::python::init<>("constructor") )
+			//boost::python::class_<HotSpot, boost::python::bases<SceneNode2D> >("HotSpot")
+			//	.def( boost::python::init<>("constructor") )
+			//	.def( "setMouseLeftClickEvent", &HotSpot::setMouseLeftClickEvent )
+			//	;
+
+			pybind::class_<Sprite, pybind::bases<SceneNode2D> >("Sprite")
 				.def( "setImageIndex", &Sprite::setImageIndex )
 				.def( "getImageIndex", &Sprite::getImageIndex )
 				.def( "setImageResource", &Sprite::setImageResource )
-				.def( "getImageResource", &Sprite::getImageResource, retValuePolice )
+				.def( "getImageResource", &Sprite::getImageResource )
 				;
+
+			//boost::python::class_<Sprite, boost::python::bases<SceneNode2D> >("Sprite")
+			//	.def( boost::python::init<>("constructor") )
+			//	.def( "setImageIndex", &Sprite::setImageIndex )
+			//	.def( "getImageIndex", &Sprite::getImageIndex )
+			//	.def( "setImageResource", &Sprite::setImageResource )
+			//	.def( "getImageResource", &Sprite::getImageResource, retValuePolice )
+			//	;
 			{
-				boost::python::class_<Animation, boost::python::bases<Sprite> >("Animation")
-					.def( boost::python::init<>("constructor") )
+
+				pybind::class_<Animation, pybind::bases<Sprite> >("Animation")
 					;
+
+				//boost::python::class_<Animation, boost::python::bases<Sprite> >("Animation")
+				//	.def( boost::python::init<>("constructor") )
+				//	;
 			}
 
 		}		
 
-		boost::python::class_<Player>("Player");
+		pybind::class_<Player>("Player")
+			;
+		
+		//boost::python::class_<Player>("Player");
 
-		boost::python::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
-		boost::python::def( "createNode", &ScriptMethod::createNode );
+		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
+		pybind::def( "createNode", &ScriptMethod::createNode );
 	}
 }

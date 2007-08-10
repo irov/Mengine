@@ -4,7 +4,7 @@
 
 namespace Menge
 {
-	typedef Utility::Factory< std::string, Resource *, ResourceFactoryParam> TFactoryResource;
+	typedef Menge::Factory< std::string, Resource *, ResourceFactoryParam> TFactoryResource;
 }
 
 #	define RESOURCE_IMPLEMENT(C)\

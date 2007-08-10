@@ -6,7 +6,7 @@
 #	ifndef OBJECT_USER_GENERATOR
 #	define OBJECT_IMPLEMENT_GENERATOR( Class )\
 	Node * Class::genObject(const FactoryGenStruct & _struct){\
-	Node * node = new Class();\
+	Node * node = new Class;\
 	ScriptClassWrapperFactory::wrapp( #Class, node );\
 	node->setType(_struct.type);\
 	return node;\

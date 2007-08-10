@@ -57,6 +57,27 @@
 		<Cell X = "4" Y = "4" />
 	</Resource>	
 
+	<Resource Name = "BallRed" Type = "ResourceImageDefault" >
+		<File Path = "Game/Images/BallRed.png" />
+	</Resource>
+
+	<Resource Name = "BallGreen" Type = "ResourceImageDefault" >
+		<File Path = "Game/Images/BallGreen.png" />
+	</Resource>
+
+	<Resource Name = "BallBlue" Type = "ResourceImageDefault" >
+		<File Path = "Game/Images/BallBlue.png" />
+	</Resource>
+
+	<Resource Name = "BallYellow" Type = "ResourceImageDefault" >
+		<File Path = "Game/Images/BallYellow.png" />
+	</Resource>
+
+	<Resource Name = "BallVialet" Type = "ResourceImageDefault" >
+		<File Path = "Game/Images/BallVialet.png" />
+	</Resource>
+
+
 	<Resource Name = "output_cngAnimation" Type = "ResourceAnimation" >
 		<ImageMap Name = "output_cng" />
 		<Sequences>

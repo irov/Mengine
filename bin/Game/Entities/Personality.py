@@ -1,7 +1,7 @@
 import Menge
-import gc
 
 def init():
+	#Menge.setCurrentScene("Match3")
 	Menge.setCurrentScene("Buka")
 
 	return True
@@ -11,5 +11,4 @@ def update( timing ):
 	pass
 
 def fini():
-	gc.collect();
 	pass

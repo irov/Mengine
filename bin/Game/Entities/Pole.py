@@ -1,7 +1,5 @@
 import Menge
 
-import Grid
-
 class Pole:
 	def __init__( self ):
 		self.size_x = 0

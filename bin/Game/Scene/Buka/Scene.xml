@@ -1,5 +1,5 @@
 <Node Name = "Buka" Type = "Scene">	
-	<Script File = "Game/Scene/Buka/Scene.py" />
+	<Script File = "Scene" />
 
 	<Node Name = "Main" Type = "Layer2D">
 		<Parallax Factor = "1;1" />

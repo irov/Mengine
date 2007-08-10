@@ -5,6 +5,7 @@
 
 	<Scenes>
 		<Scene File = "Game/Scene/Buka/Scene.xml" />
+		<Scene File = "Game/Scene/Match3/Scene.xml" />
 	</Scenes>
 
 	<Default>
@@ -19,6 +20,8 @@
 
 	<Entities Path = "Game/Entities">
 		<Block/>
+		<Grid/>
+		<Ball/>
 	</Entities>
 
 	<BacksoundManager File = "playlists.xml"/>

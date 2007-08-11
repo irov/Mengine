@@ -18,10 +18,6 @@
 
 #	include "XmlParser/XmlParser.h"
 
-#	define MEMWATCH
-
-#	include "memwatch.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

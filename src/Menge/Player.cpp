@@ -56,8 +56,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
 	{
-	//	m_renderCamera2D->destroy();
-	//	m_renderCamera3D->destroy();
+		if( m_renderCamera2D )
+		{
+			m_renderCamera2D->destroy();
+		}
+
+		if( m_renderCamera3D )
+		{
+			m_renderCamera3D->destroy();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setCurrentScene( const std::string & _name )

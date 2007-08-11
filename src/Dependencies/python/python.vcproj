@@ -121,6 +121,8 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				Description="make build info"
+				CommandLine="cd $(SolutionDir)dependencies\python\PCbuild8\&#x0D;&#x0A;make_buildinfo.exe"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -138,7 +140,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm200 "
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\Python\Include&quot;;&quot;$(SolutionDir)dependencies\Python\Pc&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\Python\Include&quot;;&quot;$(SolutionDir)src\Dependencies\python&quot;;&quot;$(SolutionDir)dependencies\python\PC&quot;"
 				PreprocessorDefinitions="_DEBUG;USE_DL_EXPORT;WIN32;_WINDOWS;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -159,7 +161,6 @@
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
-				Description=""
 				CommandLine=""
 			/>
 			<Tool

@@ -6,19 +6,21 @@
 
 #	include "XmlParser/XmlParser.h"
 
+#	include "ScriptEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT(Trap3D);
 	//////////////////////////////////////////////////////////////////////////
 	Trap3D::Trap3D()
-		: m_enterZoneCallback(0)
-		, m_leaveZoneCallback(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trap3D::loader( TiXmlElement * _xml )
 	{
+		SceneNode3D::loader(_xml);
+
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_NODE( "Zone" )
@@ -39,23 +41,18 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trap3D::setEnterZoneCallback(EnterZoneCallback3D _callback)
+	void Trap3D::setEnterZoneCallback(PyObject * _object)
 	{
-		m_enterZoneCallback = _callback;
+		registerEvent( "ENTER_ZONE", _object );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trap3D::setLeaveZoneCallback(LeaveZoneCallback3D _callback)
+	void Trap3D::setLeaveZoneCallback(PyObject * _object)
 	{
-		m_leaveZoneCallback = _callback;
+		registerEvent( "LEAVE_ZONE", _object );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trap3D::update( float _timing )
 	{
-		if(m_enterZoneCallback == NULL || m_leaveZoneCallback == NULL)
-		{
-			return;
-		}
-
 		for(TListSceneNodesNames::iterator i = m_sceneNodes.begin(); i != m_sceneNodes.end(); ++i)
 		{
 			SceneNode3D * node = this->getParent()->getChildren(*i);
@@ -81,7 +78,11 @@ namespace Menge
 
 			if(founded == m_trapped.end())
 			{
-				m_leaveZoneCallback(*it);
+				if( PyObject * eventEnterZone = getEvent( "LEAVE_ZONE" ) )
+				{
+					Holder<ScriptEngine>::hostage()
+						->callFunction( eventEnterZone, "(O)", (*it)->getScriptable() );
+				}
 				it = m_inZone.erase(it);
 			}
 			else
@@ -98,7 +99,11 @@ namespace Menge
 
 			if(founded == m_inZone.end())
 			{
-				m_enterZoneCallback(*it);
+				if( PyObject * eventEnterZone = getEvent( "ENTER_ZONE" ) )
+				{
+					Holder<ScriptEngine>::hostage()
+						->callFunction( eventEnterZone, "(O)", (*it)->getScriptable() );
+				}
 				m_inZone.push_back(*it);
 			}
 			it++;

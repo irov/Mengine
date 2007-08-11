@@ -65,9 +65,9 @@ namespace Menge
 		return m_interface->getVolume();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setLoop(bool loop)
+	void SoundEmitter::setLooped(bool loop)
 	{
-		return m_interface->setLoop(loop);
+		return m_interface->setLooped(loop);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::isLooping() const

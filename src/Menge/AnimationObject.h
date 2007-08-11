@@ -39,11 +39,12 @@ namespace Menge
 			const std::string& _name2,	float _weight2
 		);
 
+		mt::mat4f	getBoneWorldMatrix(int _index);
+
 		void setCallback(const std::string & _name, float _updateTime, UpdateCallback _updateCallback, CompleteCallback _completeCallback, void * _userData);
-		void clearCallback(const std::string& _name);
+		void clearCallback(const std::string & _name);
 
 		// cal3d specs:
-		CalBone *	getBoneWithIndex(int _index);
 		bool		isSimilarModel(const CalModel * _calModel);
 
 	protected:

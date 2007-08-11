@@ -6,15 +6,13 @@
 
 #	include <vector>
 
-//#	include "CodecInterface.h"
-
-//#	include "Decoder.h"
-
 class RenderImageInterface;
 
 namespace Menge
 {
 	class ResourceImage;
+
+	class SpriteProxy;
 
 	class Sprite
 		: public SceneNode2D
@@ -53,5 +51,7 @@ namespace Menge
 		mt::vec2f m_offset;		
 	
 		unsigned int m_color;
+
+		friend SpriteProxy;
 	};
 }

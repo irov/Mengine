@@ -14,20 +14,20 @@ m_priority(_prior)
 		assert(!"error in FileSystem::ZipArchive()");
 	}
 } 
-
+//////////////////////////////////////////////////////////////////////////
 ZipArchive::~ZipArchive()
 {
 	unloadZip();
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool ZipArchive::unloadZip() 
 {
 	unzCloseCurrentFile(m_uzFile);
 	int nRet = unzClose(m_uzFile);
 	m_uzFile = NULL;
-	return (nRet == UNZ_OK);
+	return nRet == UNZ_OK;
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool ZipArchive::loadZip( const std::string& _filename, int _prior ) 
 {
 	assert(!_filename.empty());
@@ -38,7 +38,7 @@ bool ZipArchive::loadZip( const std::string& _filename, int _prior )
 	m_uzFile = unzOpen(_filename.c_str());
 	return (m_uzFile != NULL);
 }
-
+//////////////////////////////////////////////////////////////////////////
 FileDataInterface* ZipArchive::fileRead( const std::string& _filename ) const
 {
     unz_file_info tagUFI;
@@ -53,22 +53,19 @@ FileDataInterface* ZipArchive::fileRead( const std::string& _filename ) const
     }
     return NULL;
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool ZipArchive::haveFile(const char* _filename) const
 {
-	if(unzLocateFile(m_uzFile, _filename, 2) == UNZ_OK)
-	{
-		return true;
-	}
-	return false;
+	return unzLocateFile(m_uzFile, _filename, 2) == UNZ_OK;
 }
-
+//////////////////////////////////////////////////////////////////////////
 int ZipArchive::getPriority() const
 {
 	return m_priority; 
 }
-
+//////////////////////////////////////////////////////////////////////////
 std::string ZipArchive::getZipName() const
 {
 	return m_zipName; 
 }
+//////////////////////////////////////////////////////////////////////////

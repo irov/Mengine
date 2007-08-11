@@ -5,6 +5,7 @@
 #	include "Menge/Application.h"
 
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/SoundSystemInterface.h"
 #	include "Interface/WinInputSystemInterface.h"
 #	include "Interface/WinRenderSystemInterface.h"
 
@@ -89,6 +90,7 @@ bool WinApplication::init( const char * _xmlFile )
 	FileSystemInterface * fileInterface = 0;
 	WinInputSystemInterface * inputInterface = 0;
 	WinRenderSystemInterface * renderInterface = 0;
+	SoundSystemInterface * soundInterface = 0;
 
 	printf("parse application xml [%s] ...\n", _xmlFile );
 	XML_PARSE_FILE( _xmlFile )
@@ -146,15 +148,14 @@ bool WinApplication::init( const char * _xmlFile )
 				XML_CHECK_NODE("SoundSystem")
 				{
 					printf("use sound system [%s]\n", DllFile.c_str() );
-					//Holder<SoundEngine>::keep( new SoundEngine(DllFile) ); 
-				}
 
-				XML_CHECK_NODE("Codec")
-				{
-					//	Decoder::DecoderComponent * dc = new Decoder::DecoderComponent(DllFile);
-					//dc->
-					//	Decoder::regDecoder("mng",dc);
-					//m_soundEngine = new SoundEngine(DllFile); 
+					Menge::SystemInterfaceDLL<SoundSystemInterface> * interfaceDLL = 
+						new Menge::SystemInterfaceDLL<SoundSystemInterface>(DllFile);
+
+					m_listApplicationDLL.push_back( interfaceDLL );
+
+					soundInterface = interfaceDLL->getInterface();
+					m_application->setSoundSystem( soundInterface );
 				}
 			}
 

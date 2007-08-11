@@ -54,9 +54,10 @@ public:
 	virtual float getVolume() const = 0;
 	virtual void setPosition(float _x, float _y, float _z) = 0;
 	virtual const float* getPosition() const = 0;
-	virtual void setLoop(bool _loop) = 0;
+	virtual void setLooped(bool _loop) = 0;
 	virtual bool isLooping() const = 0;
 	virtual int	getLengthMS() = 0;
+	virtual int getPosMs() = 0;
 };
 
 bool	initInterfaceSystem(SoundSystemInterface** );

@@ -6,12 +6,10 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
-class	SoundBufferInterface;
-class	SoundSourceInterface;
-class	SoundNodeListenerInterface;
-
 namespace	Menge
 {
+//	#define USE_CLOCK_TIME
+
 	class Playlist;
 
 	typedef	std::map<std::string,Playlist*>	TPlayListMap;
@@ -38,15 +36,16 @@ namespace	Menge
 			SoundSourceInterface * m_music;
 			SoundBufferInterface * m_sampleMusic;
 
-			clock_t	m_timeFadeBegin;
-			clock_t	m_timeFadeEnd;
 			float	m_fadeTime;
-			float	m_fadeoffTime;
 
-			void	beginFade();
 			void	updateFadeParams(SoundSourceInterface* _sound);
 			void	listenPaused(bool _pause);
 			void	listenStopped();
 			void	releaseMusic(bool _dead);
+			void	setVolume(float _newVolume);
+
+			#ifdef USE_CLOCK_TIME
+			clock_t begin;
+			#endif
 	};
 }

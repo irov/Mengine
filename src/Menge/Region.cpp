@@ -51,7 +51,6 @@ namespace	Menge
 				}
 			}
 		}
-		//NodeImpl::loader(_xml);
 	}
 	////////////////////////////////////////////////////////////////////////
 	void Region::_debugRender()

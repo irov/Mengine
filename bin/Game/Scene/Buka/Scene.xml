@@ -25,13 +25,6 @@
 
 	</Node> <!-- Layer -->
 
-	<Node Name = "Back" Type = "Layer3D">
-		<Node Name = "TestMesh" Type = "AnimationObject">
-			<ImageMap Name = "Cal3dTest" />
-			<Transformation Value = "1;0;0;0;1;0;0;0;1;0;0;0" />
-		</Node>
-	</Node>
-
 	<Node Name = "Back" Type = "Layer2D">
 		<Parallax Factor = "1.25;1" />
 

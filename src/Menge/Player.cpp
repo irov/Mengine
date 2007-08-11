@@ -56,8 +56,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
 	{
-		m_renderCamera2D->destroy();
-		m_renderCamera3D->destroy();
+	//	m_renderCamera2D->destroy();
+	//	m_renderCamera3D->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setCurrentScene( const std::string & _name )
@@ -266,6 +266,11 @@ namespace Menge
 			cmr3d->setPosition( a );
 		}
 
+		if( inputEng->isKey( DIK_F9, 1 ) == true )
+		{
+			Holder<Amplifier>::hostage()->playList("logoSceneMusic.xml");
+		}
+
 
 		//if( inputEng->isButton( MOUSE_LEFT, DI_PRESSED ) == true )
 		{
@@ -311,20 +316,6 @@ namespace Menge
 //
 //			//Holder<Amplifier>::hostage()->playList("logoSceneMusic.xml");
 //		}
-
-		//if( inputEng->isKey( DIK_D, DI_HELD ) == true )
-		//{
-		//	mt::vec2f cp = m_renderCamera->getLocalPosition();
-		//	cp.x -= 1;
-		//	m_renderCamera->setPosition( cp );
-		//}
-
-		//if( inputEng->isKey( DIK_A, DI_HELD ) == true )
-		//{
-		//	mt::vec2f cp = m_renderCamera->getLocalPosition();
-		//	cp.x += 1;
-		//	m_renderCamera->setPosition( cp );
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setRenderCamera2D( Camera2D * _camera)

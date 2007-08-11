@@ -49,11 +49,12 @@ namespace conv {
 			}
 		}
 	private: System::Windows::Forms::Button^  button1;
-	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
+
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::ListBox^  listBox1;
 	private: System::Windows::Forms::Button^  button3;
 	private: System::Windows::Forms::SaveFileDialog^  saveFileDialog1;
+	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
 
 
 	protected: 
@@ -91,9 +92,9 @@ namespace conv {
 			// 
 			// openFileDialog1
 			// 
-			this->openFileDialog1->DefaultExt = L"png";
-			this->openFileDialog1->FileName = L"openFileDialog1";
-			this->openFileDialog1->Filter = L"*.png|";
+			this->openFileDialog1->Filter = L"png files (*.png)|*.png";
+			this->openFileDialog1->Multiselect = true;
+			this->openFileDialog1->Title = L"Adding png files...";
 			this->openFileDialog1->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::openFileDialog1_FileOk);
 			// 
 			// button2
@@ -113,6 +114,7 @@ namespace conv {
 			this->listBox1->Name = L"listBox1";
 			this->listBox1->Size = System::Drawing::Size(284, 316);
 			this->listBox1->TabIndex = 6;
+			this->listBox1->SelectedIndexChanged += gcnew System::EventHandler(this, &Form1::listBox1_SelectedIndexChanged);
 			// 
 			// button3
 			// 
@@ -127,7 +129,7 @@ namespace conv {
 			// saveFileDialog1
 			// 
 			this->saveFileDialog1->DefaultExt = L"mng";
-			this->saveFileDialog1->Filter = L"*.mng|";
+			this->saveFileDialog1->Filter = L"mng files (*.mng)|*.mng";
 			this->saveFileDialog1->FileOk += gcnew System::ComponentModel::CancelEventHandler(this, &Form1::saveFileDialog1_FileOk);
 			// 
 			// Form1
@@ -152,21 +154,26 @@ namespace conv {
 
 	private: System::Void openFileDialog1_FileOk(System::Object^  sender, System::ComponentModel::CancelEventArgs^  e) 
 			 {
-				 System::String^ filename = openFileDialog1->FileName;
-				 pin_ptr<const wchar_t> wch = PtrToStringChars(filename);
-				 size_t convertedChars = 0;
-				 size_t  sizeInBytes = ((filename->Length + 1) * 2);
-				 errno_t err = 0;
-			     char    *ch = (char *)malloc(sizeInBytes);
+				 array<String^>^ files = openFileDialog1->FileNames;
 
-			     err = wcstombs_s(&convertedChars, 
-								ch, sizeInBytes,
-								wch, sizeInBytes);
-			     if (err != 0)
-					printf_s("wcstombs_s  failed!\n");
-				 
-				 filenames.push_back(ch);
-				 listBox1->Items->Add(filename);
+				 for each ( String^ file in files )
+				 {
+					 pin_ptr<const wchar_t> wch = PtrToStringChars(file);
+					 size_t convertedChars = 0;
+					 size_t  sizeInBytes = ((file->Length + 1) * 2);
+					 errno_t err = 0;
+					 char    *ch = (char *)malloc(sizeInBytes);
+
+					 err = wcstombs_s(&convertedChars, 
+									ch, sizeInBytes,
+									wch, sizeInBytes);
+					 if (err != 0)
+						printf_s("wcstombs_s  failed!\n");
+					 
+					 filenames.push_back(ch);
+
+					 listBox1->Items->Add(file);
+				 }
 			 }
 
 private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) 
@@ -203,6 +210,10 @@ private: System::Void button3_Click(System::Object^  sender, System::EventArgs^ 
 		 {
 			 listBox1->Items->Clear();
 			 filenames.clear();
+		 }
+private: System::Void listBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) 
+		 {
+
 		 }
 };
 }

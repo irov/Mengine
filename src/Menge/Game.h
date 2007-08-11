@@ -21,7 +21,6 @@ namespace Menge
 	class Arrow;
 
 	class Amplifier;
-	class DialogManager;
 
 	class Game
 		: public InputHandler
@@ -73,7 +72,6 @@ namespace Menge
 
 		Arrow * m_defaultArrow;
 		Amplifier * m_amplifier;
-		DialogManager * m_dialogManager;
 
 		typedef std::map<std::string, Arrow*> TMapArrow;
 		TMapArrow m_mapArrow;

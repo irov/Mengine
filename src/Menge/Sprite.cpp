@@ -26,13 +26,10 @@ namespace	Menge
 	, m_offset(0.f,0.f)
 	, m_color(0xFFFFFFFF)
 	, m_currentImageIndex(0) 
-	{
-
-	}
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
-	{
-	}
+	{}
 	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible(const Viewport & _viewPort)
 	{

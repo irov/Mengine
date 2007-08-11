@@ -6,6 +6,7 @@
 
 namespace	Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	AnimationBone::AnimationBone(AnimationObject * _animObj, int _index)
 		: m_animObj(_animObj)
 		, m_index(_index)
@@ -13,15 +14,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & AnimationBone::getWorldMatrix()
 	{
-		CalBone * bone = m_animObj->getBoneWithIndex(m_index);
-
-		const CalVector & position = bone->getTranslationAbsolute();
-		const CalQuaternion & orient = bone->getRotationAbsolute();
-
-		mt::vec3f pos(position.x,position.y,position.z);
-		mt::quatf q(orient.w,orient.x,orient.y,orient.z);
-
-		mt::mat4f worldMatrix = mt::qpos_to_rot_m4(q,pos);
+		mt::mat4f worldMatrix = m_animObj->getBoneWorldMatrix(m_index);
 
 		const mt::mat4f & objWorldMatrix = m_animObj->getWorldMatrix();
 

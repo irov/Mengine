@@ -30,7 +30,7 @@ namespace Menge
 			void setVolume(float vol);
 			float getVolume() const;
 
-			void setLoop(bool loop);
+			void setLooped(bool loop);
 			bool isLooping() const;
 
 			int	getLengthMS();

@@ -330,6 +330,10 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\memwatch.c"
+				>
+			</File>
 			<Filter
 				Name="Sprite"
 				>
@@ -342,6 +346,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\SpriteContainer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SpriteContainer.h"
+					>
+				</File>
+				<File
 					RelativePath=".\SpriteProxy.cpp"
 					>
 				</File>
@@ -349,30 +361,6 @@
 					RelativePath=".\SpriteProxy.h"
 					>
 				</File>
-				<Filter
-					Name="SpriteInteractive"
-					>
-					<File
-						RelativePath=".\SpriteInteractive.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SpriteInteractive.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="SpriteContainer"
-					>
-					<File
-						RelativePath=".\SpriteContainer.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SpriteContainer.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Track"
@@ -475,6 +463,14 @@
 				</File>
 				<File
 					RelativePath=".\Animation.h"
+					>
+				</File>
+				<File
+					RelativePath=".\AnimationInteractive.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AnimationInteractive.h"
 					>
 				</File>
 			</Filter>
@@ -592,22 +588,6 @@
 			</File>
 			<File
 				RelativePath=".\Player.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Utility"
-			>
-			<File
-				RelativePath=".\ErrorMessage.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ErrorMessage.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Factory.h"
 				>
 			</File>
 		</Filter>
@@ -791,120 +771,16 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Scene"
+				Name="MessageStorage"
 				>
 				<File
-					RelativePath=".\Scene.cpp"
+					RelativePath=".\ResourceMessageStorage.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\Scene.h"
+					RelativePath=".\ResourceMessageStorage.h"
 					>
 				</File>
-				<Filter
-					Name="Layer2D"
-					>
-					<File
-						RelativePath=".\Layer2D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Layer2D.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Layer3D"
-					>
-					<File
-						RelativePath=".\Layer3D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Layer3D.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="SceneNode2D"
-					>
-					<File
-						RelativePath=".\SceneNode2D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SceneNode2D.h"
-						>
-					</File>
-					<Filter
-						Name="Allocator2D"
-						>
-						<File
-							RelativePath=".\Allocator2D.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Allocator2D.h"
-							>
-						</File>
-					</Filter>
-					<Filter
-						Name="Renderable2D"
-						>
-						<File
-							RelativePath=".\Renderable2D.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Renderable2D.h"
-							>
-						</File>
-					</Filter>
-				</Filter>
-				<Filter
-					Name="Layer"
-					>
-					<File
-						RelativePath=".\Layer.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="SceneNode3D"
-					>
-					<File
-						RelativePath=".\SceneNode3D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SceneNode3D.h"
-						>
-					</File>
-					<Filter
-						Name="Allocator3D"
-						>
-						<File
-							RelativePath=".\Allocator3D.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Allocator3D.h"
-							>
-						</File>
-					</Filter>
-					<Filter
-						Name="Renderable3D"
-						>
-						<File
-							RelativePath=".\Renderable3D.cpp"
-							>
-						</File>
-						<File
-							RelativePath=".\Renderable3D.h"
-							>
-						</File>
-					</Filter>
-				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -980,44 +856,14 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="Dialog"
+			Name="TextField"
 			>
 			<File
-				RelativePath=".\Dialog.cpp"
+				RelativePath=".\TextField.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Dialog.h"
-				>
-			</File>
-			<File
-				RelativePath=".\DialogManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DialogManager.h"
-				>
-			</File>
-			<File
-				RelativePath=".\MessageSpot.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\MessageSpot.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Define"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			>
-			<File
-				RelativePath=".\ObjectDeclare.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ObjectImplement.h"
+				RelativePath=".\TextField.h"
 				>
 			</File>
 		</Filter>
@@ -1025,11 +871,31 @@
 			Name="Kernel"
 			>
 			<File
+				RelativePath=".\ErrorMessage.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ErrorMessage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Factory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Holder.h"
 				>
 			</File>
 			<File
 				RelativePath=".\MengeExport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ObjectDeclare.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ObjectImplement.h"
 				>
 			</File>
 			<Filter
@@ -1056,6 +922,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\NodeFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeFactory.h"
+					>
+				</File>
+				<File
 					RelativePath=".\NodeForeach.h"
 					>
 				</File>
@@ -1067,10 +941,6 @@
 					RelativePath=".\NodeProxy.h"
 					>
 				</File>
-			</Filter>
-			<Filter
-				Name="Bone"
-				>
 				<File
 					RelativePath=".\NodeSinglethon.cpp"
 					>
@@ -1079,18 +949,6 @@
 					RelativePath=".\NodeSinglethon.h"
 					>
 				</File>
-				<Filter
-					Name="Eventable"
-					>
-					<File
-						RelativePath=".\Eventable.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Eventable.h"
-						>
-					</File>
-				</Filter>
 				<Filter
 					Name="Scriptable"
 					>
@@ -1103,18 +961,134 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Eventable"
+					>
+					<File
+						RelativePath=".\Eventable.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Eventable.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Scene"
+			>
+			<File
+				RelativePath=".\Scene.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Scene.h"
+				>
+			</File>
 			<Filter
-				Name="NodeFactory"
+				Name="Layer2D"
 				>
 				<File
-					RelativePath=".\NodeFactory.cpp"
+					RelativePath=".\Layer2D.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\NodeFactory.h"
+					RelativePath=".\Layer2D.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="Layer3D"
+				>
+				<File
+					RelativePath=".\Layer3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Layer3D.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="SceneNode2D"
+				>
+				<File
+					RelativePath=".\SceneNode2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SceneNode2D.h"
+					>
+				</File>
+				<Filter
+					Name="Allocator2D"
+					>
+					<File
+						RelativePath=".\Allocator2D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Allocator2D.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Renderable2D"
+					>
+					<File
+						RelativePath=".\Renderable2D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Renderable2D.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="Layer"
+				>
+				<File
+					RelativePath=".\Layer.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="SceneNode3D"
+				>
+				<File
+					RelativePath=".\SceneNode3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SceneNode3D.h"
+					>
+				</File>
+				<Filter
+					Name="Allocator3D"
+					>
+					<File
+						RelativePath=".\Allocator3D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Allocator3D.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Renderable3D"
+					>
+					<File
+						RelativePath=".\Renderable3D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Renderable3D.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 	</Files>

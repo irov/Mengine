@@ -4,7 +4,7 @@
 #	include "Scene.h"
 
 #	include "Sprite.h"
-#	include "Dialog.h"
+#	include "TextField.h"
 
 namespace Menge
 {
@@ -28,7 +28,7 @@ namespace Menge
 
 		//Scene *scene = player->getScene();
 
-		//Dialog *dlg = findNode<Dialog>(scene, _dialog);
+		//TextField *dlg = findNode<TextField>(scene, _dialog);
 
 		//if( dlg )
 		{

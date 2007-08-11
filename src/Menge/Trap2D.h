@@ -9,8 +9,7 @@
 
 namespace Menge
 {
-	typedef void (*EnterZoneCallback2D)(SceneNode2D* obj);
-	typedef void (*LeaveZoneCallback2D)(SceneNode2D* obj);
+	/*	Trapped under Ice  */
 
 	class	Trap2D : public SceneNode2D
 	{
@@ -22,17 +21,14 @@ namespace Menge
 		void update( float _timing ) override;
 		void debugRender() override;
 	public:
-		void setEnterZoneCallback(EnterZoneCallback2D _callback);
-		void setLeaveZoneCallback(LeaveZoneCallback2D _callback);
+		void setEnterZoneCallback(PyObject * _object);
+		void setLeaveZoneCallback(PyObject * _object);
 	private:
 
 		mt::polygon	m_polygon;
 
 		typedef std::list<std::string> TListSceneNodesNames;
 		TListSceneNodesNames	m_sceneNodes;
-
-		EnterZoneCallback2D	m_enterZoneCallback;
-		LeaveZoneCallback2D	m_leaveZoneCallback;
 
 		typedef std::list<SceneNode2D*> TListTrapped;
 		TListTrapped m_trapped;

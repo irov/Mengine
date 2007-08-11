@@ -56,11 +56,10 @@ namespace Menge
 		ResourceImpl::loader( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AnimInfo * ResourceAnimationCal3d::getAnimationInfo(const std::string& _name)
+	const AnimInfo& ResourceAnimationCal3d::getAnimationInfo(const std::string& _name) const
 	{
 		int id = m_calCoreModel->getCoreAnimationId(_name);
-		AnimInfo * seq = &m_animInfos[id];
-		return seq;
+		return m_animInfos[id];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceAnimationCal3d::_compile()

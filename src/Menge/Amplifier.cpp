@@ -10,7 +10,7 @@
 
 namespace Menge
 {
-
+	//////////////////////////////////////////////////////////////////////////
 	Amplifier::Amplifier()
 	: m_music(0)
 	, m_sampleMusic(0)
@@ -98,38 +98,59 @@ namespace Menge
 		m_isMusicDead = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void	Amplifier::setVolume(float _newVolume)
+	{
+		#ifdef _DEBUG
+	//		printf("%f \n",_newVolume);
+		#endif
+
+		if(_newVolume >= 1) _newVolume = 1.0f;
+		if(_newVolume <= 0) _newVolume = 0.0f;
+
+		m_music->setVolume(_newVolume);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::updateFadeParams(SoundSourceInterface* _sound)
 	{
-		float ticks = (float)clock();
+		if(_sound == NULL) return;
 
-		float time_offset_begin = (ticks - m_timeFadeBegin);
+		int  position = _sound->getPosMs();
+
+		printf("%d \n", position);
+
+		#ifdef USE_CLOCK_TIME
+			clock_t position_clock = clock();
+			long posTicks = position_clock - begin;
+			printf("posTicks = %d \n", posTicks);
+		//	long posMS = long(posSec * 1000);
+		//	printf("posMS = %d \n", posMS);
+		#endif
 
 		if(m_fadeState == false)
 		{
-			if (_sound->getVolume() >= 1.0f)
+			if(position >= m_fadeTime)
 			{
-				_sound->setVolume(1.0f);
-				m_timeFadeEnd = clock();
+				setVolume(1.0f);
 				m_fadeState = true;
 			}
 			else
 			{
-				float new_volume = time_offset_begin / m_fadeTime;
-				_sound->setVolume(new_volume);
-				printf("%f \n",new_volume);
+				float new_volume = position / m_fadeTime;
+				setVolume(new_volume);
 			}
 		}
 		else
 		{
-			if(_sound->getVolume() > 0)
+			/* непонятный баг с получением позиции,
+			чего-то резко перескакивает на начало трека.*/
+			int len = m_music->getLengthMS();
+
+			int beginFading = len - (int)m_fadeTime;
+
+			if(position >= beginFading)
 			{
-				if(time_offset_begin >= m_fadeoffTime)
-				{
-					float time_offset_end = (ticks - m_timeFadeEnd);
-					float new_volume = (m_fadeoffTime - time_offset_end) / m_fadeTime;
-					_sound->setVolume(new_volume);
-					printf("%f \n",new_volume);
-				}
+				float new_volume = (len - position) / m_fadeTime;
+				setVolume(new_volume);
 			}
 		}      
 	}
@@ -141,36 +162,47 @@ namespace Menge
 			return;
 		}
 
-		if(m_music)
-		{
-			updateFadeParams(m_music);
-		}
-
 		if(m_isMusicDead)
 		{
+			printf("music dead = true \n");
 			releaseMusic(false);
 		
-			std::string filename = m_currentPlayList->getCurrentSongName();
+			const std::string& filename = m_currentPlayList->getCurrentSongName();
 
 			m_sampleMusic = Holder<SoundEngine>::hostage()->createSoundBuffer();
 			m_sampleMusic->loadFromFile(filename.c_str(),true);
 
 			m_music = Holder<SoundEngine>::hostage()->createSoundSource(false,m_sampleMusic,this);
+
+			
+			#ifdef USE_CLOCK_TIME
+			begin = clock();
+			#endif
+
 			m_music->play();
-			m_music->setVolume(0);
-			// 				
+			m_music->setVolume(0.0f);
+			
 			m_currentPlayList->nextSong();
 
-			beginFade();
+			m_fadeState = false;
+
+			int length = m_music->getLengthMS();
+
+			if(length < 2 * m_fadeTime)
+			{
+				assert(0);
+			}
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::beginFade()
-	{
-		assert(m_music->getLengthMS() >= 2 * m_fadeTime);
-		m_fadeoffTime = m_music->getLengthMS() - m_fadeTime;
-		m_timeFadeBegin = clock();
-		m_fadeState = false;
+
+	/*	if(m_music)
+		{
+
+		int  position = m_music->getPosMs();
+
+		printf("%d \n", position);
+		}
+		*/
+		updateFadeParams(m_music);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::releaseMusic(bool _dead)

@@ -32,41 +32,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AnimationObject::~AnimationObject()
 	{}
-	///////////////////////////////////////////////////////////////////////////
-	bool AnimationObject::isVisible( const Camera3D * _camera )
-	{
-		/*CalBoundingBox & box = m_calModel->getBoundingBox();
-
-		CalVector p[8];
-		box.computePoints(p);
-
-		mt::boxf bbox;
-
-		mt::set_box_from_min_max(bbox, mt::vec3f(p[0].x, p[0].y, p[0].z), mt::vec3f(p[4].x, p[2].y, p[1].z));
-
-		mt::vec3f pCorners[8];
-		mt::get_point_from_box(pCorners, bbox);
-
-		bool Done = true;
-		for (int plane = 0; plane < 6; ++plane)
-		{			
-			for( int point = 0; point < 8; ++point)
-			{
-				if( (dot_v3_v3(_camera->m_planes[plane].norm,pCorners[point]) + _camera->m_planes[plane].dist) > 0.0f )
-				{
-					Done = false;
-					break;
-				}
-			}
-			if( Done )
-			{
-				return false;
-			}
-			Done = true;
-		}
-		*/
-		return true;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AnimationObject::_activate()
 	{
@@ -107,6 +72,7 @@ namespace Menge
 		}
 
 		_clearCycles();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -150,6 +116,7 @@ namespace Menge
 
 		renderEng->setWorldMatrix( _rwm );
 
+/*
 		float lines[1024][2][3];
 		int nrLines = m_calModel->getSkeleton()->getBoneLines(&lines[0][0][0]);
 
@@ -160,10 +127,11 @@ namespace Menge
 
 			renderEng->drawLine3D(p1, p2, 0xFFFFFFAA);
 		}
-
+	
+	
 		float points[1024][3];
 
-	/*	int nrPoints = m_calModel->getSkeleton()->getBonePoints(&points[0][0]);
+		int nrPoints = m_calModel->getSkeleton()->getBonePoints(&points[0][0]);
 
 		for ( int i = 0; i < nrPoints; ++i )
 		{
@@ -278,19 +246,19 @@ namespace Menge
 	{
 		size_t animCount = m_cal3dRes->getAnimationCount();
 
-		AnimInfo * seq = m_cal3dRes->getAnimationInfo(_name);
+		const AnimInfo& seq = m_cal3dRes->getAnimationInfo(_name);
 
-		m_calModel->getMixer()->setTimeFactor(seq->delay);
+		m_calModel->getMixer()->setTimeFactor(seq.delay);
 
 		for(int i = 0; i < animCount; ++i)
 		{
-			if(seq->index != i)
+			if(seq.index != i)
 			{
 				m_calModel->getMixer()->clearCycle(i, 0);
 			}
 			else
 			{
-				m_calModel->getMixer()->blendCycle(seq->index, 1.0f, seq->blend);
+				m_calModel->getMixer()->blendCycle(seq.index, 1.0f, seq.blend);
 			}
 		}
 	}
@@ -299,22 +267,22 @@ namespace Menge
 				const std::string& _name2,	float _weight2
 			)
 	{
-		AnimInfo * seq1 = m_cal3dRes->getAnimationInfo(_name1);
-		AnimInfo * seq2 = m_cal3dRes->getAnimationInfo(_name2);
+		const AnimInfo& seq1 = m_cal3dRes->getAnimationInfo(_name1);
+		const AnimInfo& seq2 = m_cal3dRes->getAnimationInfo(_name2);
 
-		m_calModel->getMixer()->setTimeFactor(seq1->delay);
+		m_calModel->getMixer()->setTimeFactor(seq1.delay);
 
-		float blend	= seq1->blend;
+		float blend	= seq1.blend;
 
 		size_t animCount = m_cal3dRes->getAnimationCount();
 
 		for(int i = 0; i < animCount; ++i)
 		{
-			if(i == seq1->index)
+			if(i == seq1.index)
 			{
 				m_calModel->getMixer()->blendCycle(i, _weight1, blend);
 			}
-			else if(i == seq2->index)
+			else if(i == seq2.index)
 			{
 				m_calModel->getMixer()->blendCycle(i, _weight2, blend);
 			}
@@ -325,10 +293,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CalBone * AnimationObject::getBoneWithIndex(int _index)
+	mt::mat4f	AnimationObject::getBoneWorldMatrix(int _index)
 	{
 		CalBone * bone = m_calModel->getSkeleton()->getBone(_index);
-		return bone;
+
+		const CalVector & position = bone->getTranslationAbsolute();
+		const CalQuaternion & orient = bone->getRotationAbsolute();
+
+		mt::vec3f pos(position.x,position.y,position.z);
+		mt::quatf q(orient.w,orient.x,orient.y,orient.z);
+
+		mt::mat4f worldMatrix = mt::qpos_to_rot_m4(q,pos);
+
+		return worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool	AnimationObject::isSimilarModel(const CalModel * _calModel)
@@ -390,5 +367,40 @@ namespace Menge
 
 		vertexData->createVertexBuffer(30000,m_vertexSize);
 		indexData->createIndexBuffer(30000,0);
+	}
+	///////////////////////////////////////////////////////////////////////////
+	bool AnimationObject::isVisible( const Camera3D * _camera )
+	{
+		/*CalBoundingBox & box = m_calModel->getBoundingBox();
+
+		CalVector p[8];
+		box.computePoints(p);
+
+		mt::boxf bbox;
+
+		mt::set_box_from_min_max(bbox, mt::vec3f(p[0].x, p[0].y, p[0].z), mt::vec3f(p[4].x, p[2].y, p[1].z));
+
+		mt::vec3f pCorners[8];
+		mt::get_point_from_box(pCorners, bbox);
+
+		bool Done = true;
+		for (int plane = 0; plane < 6; ++plane)
+		{			
+			for( int point = 0; point < 8; ++point)
+			{
+				if( (dot_v3_v3(_camera->m_planes[plane].norm,pCorners[point]) + _camera->m_planes[plane].dist) > 0.0f )
+				{
+					Done = false;
+					break;
+				}
+			}
+			if( Done )
+			{
+				return false;
+			}
+			Done = true;
+		}
+		*/
+		return true;
 	}
 }

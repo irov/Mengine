@@ -21,17 +21,17 @@ bool initInterfaceSystem(FileSystemInterface** _ptrFileSystem)
 	
 	return true;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void releaseInterfaceSystem(FileSystemInterface* _ptrFileSystem)
 {
 	delete	static_cast<FileSystem*>(_ptrFileSystem);
 }
-
+//////////////////////////////////////////////////////////////////////////
 FileSystem::FileSystem()
 {
 	m_zipArchives.clear();
 }
-
+//////////////////////////////////////////////////////////////////////////
 FileSystem::~FileSystem()
 {
 	for (TVecZipArch::const_iterator j = m_zipArchives.begin(); j != m_zipArchives.end(); ++j)
@@ -40,7 +40,7 @@ FileSystem::~FileSystem()
 	}
 	m_zipArchives.clear();
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool FileSystem::createFolder(const char * _foldername)
 {
 	if( _foldername == 0 )
@@ -55,7 +55,7 @@ bool FileSystem::createFolder(const char * _foldername)
 
   	return true;
 }
-  
+//////////////////////////////////////////////////////////////////////////
 bool FileSystem::loadPak(const char * _filename, int _prior)
 {
 	assert( _filename );
@@ -76,7 +76,7 @@ bool FileSystem::loadPak(const char * _filename, int _prior)
 	}
 	return false;
 } 
-
+//////////////////////////////////////////////////////////////////////////
 bool	FileSystem::unloadPak(const char * _filename)
 {
 	assert( _filename );
@@ -90,7 +90,7 @@ bool	FileSystem::unloadPak(const char * _filename)
 	}
 	return false;
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool	FileSystem::existFile(const char * _filename)
 {
 	assert( _filename );
@@ -127,12 +127,12 @@ bool	FileSystem::existFile(const char * _filename)
 
 	return false;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void FileSystem::closeFile(FileDataInterface* _fd)
 {
 	delete	static_cast<FileData*>(_fd);
 }
-
+//////////////////////////////////////////////////////////////////////////
 FileDataInterface*	FileSystem::openFile(const char * _filename)
 {
 	assert(_filename);
@@ -173,3 +173,4 @@ FileDataInterface*	FileSystem::openFile(const char * _filename)
 	f.close();
 	return tempFileData;
 }
+//////////////////////////////////////////////////////////////////////////

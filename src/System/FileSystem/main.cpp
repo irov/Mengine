@@ -1,37 +1,32 @@
 #include "FileSystem.h"
 
+#	include "ZipArch.h"
+
 int main()
 {
+	ZipArchive za("C:\\swept.zip",1);
+
 
 	FileSystemInterface* fs;
-	initFileSystem(&fs);
+	initInterfaceSystem(&fs);
 	//bool is_ok = fs->createFolder( "D:\\2934");
  
-	if(!fs->loadPak( "C:\\just smth.zip", 1))
+	if(!fs->loadPak( "C:\\swept.zip", 1))
 	{
 	
 
 	}
 	
-	if(!fs->loadPak( "C:\\6s.zip", 75))
-	{
-	
-	}
 
-	if(!fs->loadPak( "C:\\6s.zip", 5))
-	{
-	
-	}
+	FileDataInterface * first = fs->openFile("3D swept.doc");
 
-
-	FileDataInterface * first = fs->openFile("vldmtdll.lib");
 	bool is_ok = fs->existFile("1.txt");
 	FileDataInterface * second = fs->openFile("2.txt");
 	is_ok = fs->existFile("2.txt");
 	fs->closeFile(first);
 	fs->closeFile(second);
 
-	releaseFileSystem(fs);
+	releaseInterfaceSystem(fs);
 
 	return 0;
 };

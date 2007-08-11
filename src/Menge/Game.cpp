@@ -16,15 +16,12 @@
 
 #	include "ErrorMessage.h"
 
-#	include "DialogManager.h"
-
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
 		: m_amplifier(0)
-		, m_dialogManager(0)
 		, m_defaultArrow(0)
 		, m_pyPersonality(0)
 	{
@@ -32,15 +29,11 @@ namespace Menge
 
 		m_amplifier = new Amplifier();
 
-		m_dialogManager = new DialogManager();
-
 		Holder<Game>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
-		delete m_dialogManager;
-
 		delete m_amplifier;
 
 		for each( const TMapArrow::value_type & it in m_mapArrow )
@@ -79,14 +72,6 @@ namespace Menge
 				XML_VALUE_ATTRIBUTE("File", playlistFilename);
 				m_amplifier->loadPlayList(playlistFilename);
 			}
-
-			XML_CHECK_NODE("DialogManager")
-			{
-				std::string	messagesFilename;
-				XML_VALUE_ATTRIBUTE("File", messagesFilename);
-				m_dialogManager->loadMessagesList(messagesFilename);
-			}
-
 			//<Arrows>
 			//	<Arrow File = "Game/Arrows/Default.xml" />
 			//</Arrows>

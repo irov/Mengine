@@ -1,4 +1,4 @@
-#	include "Dialog.h"
+#	include "TextField.h"
 
 #	include "FileEngine.h"
 
@@ -6,155 +6,114 @@
 
 #	include "SoundEngine.h"
 
-#	include "DialogManager.h"
-
 #	include "ObjectImplement.h"
+
+#	include "ResourceMessageStorage.h"
+
+#	include "ResourceManager.h"
 
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OBJECT_IMPLEMENT(Dialog)
+	OBJECT_IMPLEMENT(TextField)
 	//////////////////////////////////////////////////////////////////////////
-	Dialog::Dialog()
+	TextField::TextField()
 	: m_dialogFont(0)
-	, m_soundSource(0)
-	, m_fileData(0)
-	, m_isUpdate(false)
+	, m_isPaused(false)
+	, m_nextDialog(false)
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	bool Dialog::_activate()
+	bool TextField::_activate()
 	{
+		m_resourceMessageStore = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceMessageStorage>( m_resourceName );
+
+		if( m_resourceMessageStore == 0 )
+		{
+			return false;
+		}
+
 		m_dialogFont = Holder<RenderEngine>::hostage()->loadFont(m_fontFilename);
-		m_soundSource = 0;
-		m_fileData = 0;
-		m_isUpdate = false;
+
+		if( m_dialogFont == 0 )
+		{
+			return false;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Dialog::_deactivate()
+	void	TextField::_deactivate()
 	{
+		Holder<ResourceManager>::hostage()
+			->releaseResource( m_resourceMessageStore );
+
 		Holder<RenderEngine>::hostage()->releaseRenderFont(m_dialogFont);
-		m_dialogFont = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Dialog::loader(TiXmlElement * _xml)
+	void	TextField::loader(TiXmlElement * _xml)
 	{
-		int id = -1;
-		MessageSpot* elem = NULL;
-
 		XML_FOR_EACH_TREE(_xml)
 		{
-			XML_CHECK_NODE_FOR_EACH("Messages")
-			{
-				XML_CHECK_VALUE_NODE("Message","id",id);
-
-				elem = Holder<DialogManager>::hostage()->getMessageSpot(id);
-
-				m_messageSpots.push_back(elem);
-			}
+			XML_CHECK_VALUE_NODE("ResourceMessageStorage", "File", m_resourceName);
 			XML_CHECK_VALUE_NODE("Font", "File", m_fontFilename);
 		}
+
+		m_messageSpots.push_back(0);
+		m_messageSpots.push_back(1);
 
 		NodeCore::loader(_xml);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Dialog::loadCurrentMessageSpot()
+	void	TextField::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 	{
-		MessageSpot * it = *m_currentMessageSpot;
-
-		std::string text = it->getText();
-
-		assert(text.empty() == false);
-
-		createFormattedMessage(text, m_dialogFont, it->getWidth());
-
-		const std::string& soundName = it->getSoundName();
-
-		if(soundName.empty() == false)
+		mt::vec2f pos(0,0);
+		for each( const std::string & line in m_lines )
 		{
-	/*		if(	Holder<SoundEngine>::hostage()->addSoundNode(
-					m_soundSource,	m_fileData,	soundName,0, true) == false
-				)
-			{
-				assert(!"Sound for dialog is not loaded");
-			}
-			m_soundSource->play();
-			*/
-		}
-		else
-		{	//означает что нету звука для данного мессаджа.
-			m_soundSource = NULL;
-		}
+			Holder<RenderEngine>::hostage()
+				->renderText( pos, m_dialogFont, line );
 
-		m_isUpdate = true;
+			pos.y += m_dialogFont->getHeight();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Dialog::start()
+	void	TextField::_debugRender()
 	{
-		m_lines.clear();
-
-		m_isUpdate = false;
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	TextField::start()
+	{
 		m_currentMessageSpot = m_messageSpots.begin();
-
-		loadCurrentMessageSpot();
+		m_nextDialog = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Dialog::nextMessageSpot()
+	void	TextField::_update(float _timing)
 	{
-		Holder<SoundEngine>::hostage()->releaseSoundSource(m_soundSource);
-		Holder<FileEngine>::hostage()->closeFile(m_fileData);
-		m_soundSource = NULL;
-		m_fileData = NULL;
-
-		m_lines.clear();
-
-		if (++m_currentMessageSpot == m_messageSpots.end())
-		{
-			m_isUpdate = false;
-	//		release();
-			return;
-		}
-
-		loadCurrentMessageSpot();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void	Dialog::_update(float _timing)
-	{
-		if (!m_isUpdate)
+		if (!m_isPaused)
 		{
 			return;
 		}
 
-		if (m_lines.empty() == false)
+		if(m_nextDialog)
 		{
-			mt::vec2f pos(0,0);
-			for each( const std::string & line in m_lines )
-			{
-				Holder<RenderEngine>::hostage()
-					->renderText( pos, m_dialogFont, line );
+			m_nextDialog = false;
 
-				pos.y += m_dialogFont->getHeight();
-			}
-		}
-
-		if( m_soundSource != NULL )
-		{
-			//m_soundSource->process();
-			if(m_soundSource->isPlaying() == false)
+			if (++m_currentMessageSpot == m_messageSpots.end())
 			{
-				nextMessageSpot();
 				return;
 			}
-		}
-		else
-		{
-			//ээ, как то выставляет время проигрыша мессаги без звука?
+
+			Message * message = m_resourceMessageStore->getMessage( *m_currentMessageSpot );
+
+			createFormattedMessage(message->message, m_dialogFont, message->width);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Dialog::createFormattedMessage(const std::string& _text, RenderFontInterface* _font, float _width)
+	void	TextField::createFormattedMessage(const std::string& _text, RenderFontInterface* _font, float _width)
 	{
+		m_lines.clear();
+
 		std::list<std::string> words;
 
 		size_t endpos = 0;

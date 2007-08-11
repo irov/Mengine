@@ -22,6 +22,8 @@ namespace mnglib
 
 	bool	mngWriter::createMNG(const std::string& _filename, int size)
 	{
+		m_seeks.clear();
+
 		int num = 0;
 
 		errno_t err;
@@ -33,9 +35,17 @@ namespace mnglib
 
 		fwrite(&num, sizeof(unsigned int), 1, m_fp);
 		fwrite(&num, sizeof(unsigned int), 1, m_fp);
-		fwrite(&num, sizeof(unsigned int), 1, m_fp);
+		fwrite(&size, sizeof(unsigned int), 1, m_fp);
 
-		m_numSprites = size;
+		for(int i = 0; i < size; i++)
+		{
+			int pos = ftell(m_fp);
+			fwrite(&num, sizeof(unsigned int), 1, m_fp);
+			m_seeks.push_back(pos);
+		}
+
+		m_currentSeek = m_seeks.begin();
+
 		m_posInFile = 0;
 
 		return	true;
@@ -112,16 +122,12 @@ namespace mnglib
 			initSpriteProperties = false;
 
 			int oldpos = ftell(m_fp);
-			/*	Going	to	old	position */
-			fseek (m_fp, m_posInFile, SEEK_SET);
+			/*	Going	to	BEGIN OF FILE */
+			/* writes OFFSET(X,Y) and Num Images */
+			fseek (m_fp, 0, SEEK_SET);
 			fwrite(&read_info_ptr->width, sizeof(unsigned int), 1, m_fp);
 			fwrite(&read_info_ptr->height, sizeof(unsigned int), 1, m_fp);
-			fwrite(&m_numSprites, sizeof(unsigned int), 1, m_fp);
-			/*	Return	to current	position */
-		//	fseek (m_fp, oldpos, SEEK_SET);
-		//	m_numSprites = 0;
-		//	m_posInFile = ftell(m_fp);
-		//	fwrite(&m_numSprites, sizeof(unsigned int), 1, m_fp);
+			fseek (m_fp, oldpos, SEEK_SET);
 		}
 
 		/*	Allocate memory for temp buffer. Size is bpp*h*w.	*/
@@ -231,6 +237,17 @@ namespace mnglib
 			return	false;
 		}
 
+		int seek = ftell(m_fp);
+		
+		int posBegin = *m_currentSeek;
+
+		fseek (m_fp, posBegin, SEEK_SET);
+		fwrite(&seek, sizeof(unsigned int), 1, m_fp);
+
+		fseek (m_fp, seek, SEEK_SET);	
+
+		m_currentSeek++;
+
 		fwrite(&minX, sizeof(unsigned int), 1, m_fp);
 		fwrite(&minY, sizeof(unsigned int), 1, m_fp);
 		fwrite(&sizebuf, sizeof(unsigned int), 1, m_fp);
@@ -244,10 +261,6 @@ namespace mnglib
  
 	bool	mngWriter::closeMNG()
 	{
-		int oldpos = ftell(m_fp);
-		fseek (m_fp,m_posInFile,SEEK_SET);
-		fwrite(&m_numSprites, 4, 1, m_fp);
-		fseek (m_fp,oldpos,SEEK_SET);
 		fclose(m_fp);
 		return	true;
 	}

@@ -49,14 +49,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setFirstFrame()
 	{
-		assert(m_state == FORWARD || m_state == REWIND);
-
 		size_t frameSize = m_anim->getSequenceCount();
 
-		m_currentFrame = 
-			(m_state == FORWARD)
-			? 0
-			: frameSize - 1;
+		m_currentFrame = (m_state == FORWARD) ? 0 : frameSize - 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::nextFrame()

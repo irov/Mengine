@@ -16,11 +16,11 @@
 
 #	include "ErrorMessage.h"
 
-//#	include "Decoder.h"
-
 #	include "XmlParser/XmlParser.h"
 
-//#	include "vld/vld.h"
+#	define MEMWATCH
+
+#	include "memwatch.h"
 
 namespace Menge
 {
@@ -32,7 +32,6 @@ namespace Menge
 		ApplicationInputHandlerProxy( Application * _app )
 			: m_app( _app )
 		{
-
 		}
 
 	public:
@@ -72,12 +71,13 @@ namespace Menge
 		delete m_handler;
 		delete m_game;
 
-		Holder<FileEngine>::destroy();
+		Holder<ResourceManager>::destroy();
+
 		Holder<RenderEngine>::destroy();
+		Holder<FileEngine>::destroy();
 		Holder<InputEngine>::destroy();
 		Holder<SoundEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
-		Holder<ResourceManager>::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFileSystem( FileSystemInterface * _interface )
@@ -97,7 +97,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setSoundSystem( SoundSystemInterface * _interface )
 	{
-		//TODO
+		new SoundEngine( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPak( const std::string & _pak, int _priority )
@@ -130,13 +130,13 @@ namespace Menge
 		const std::string & pathEntities = m_game->getPathEntities();
 		std::string scriptPath = pathEntities;
 
-
 		printf("set script Entity path [%s] ...\n", scriptPath.c_str() );
 
 		Holder<ScriptEngine>::hostage()
 			->setEntitiesPath( scriptPath );
 
 		printf("init game ...\n");
+
 		if( m_game->init() == false )
 		{
 			return false;
@@ -230,8 +230,6 @@ namespace Menge
 		m_game->render();
 
 		m_game->debugRender();
-
-	
 
 		renderEng->endScene();
 	}

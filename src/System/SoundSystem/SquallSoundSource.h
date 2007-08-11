@@ -18,9 +18,10 @@ public:
 	float getVolume() const;
 	void setPosition(float x, float y, float z);
 	const float* getPosition() const;
-	void setLoop(bool loop);
+	void setLooped(bool loop);
 	bool isLooping() const;
 	int	getLengthMS();
+	int getPosMs();
 private:
 	SQUALLSample * m_sample;
 	int ChannelID;

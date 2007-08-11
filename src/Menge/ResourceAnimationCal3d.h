@@ -44,8 +44,7 @@ namespace Menge
 		int		getBoneIndex(const std::string& _bonename) const;
 
 		const	TVecHardPoints & getHardPoints() const; 
-	public:
-		AnimInfo * getAnimationInfo(const std::string& _name);
+		const   AnimInfo & getAnimationInfo(const std::string& _name) const;
 	public:
 		// cal3d specs:
 		CalModel * getNewInstance();

@@ -39,7 +39,7 @@ private:
 	DIMOUSESTATE m_lastState;
 
 	bool m_bMove;
-	int m_button[8]; 
+	int m_button[4]; 
 
 	float m_sensitivity;
 	float m_position[3];

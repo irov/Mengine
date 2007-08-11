@@ -18,7 +18,7 @@ InputMouse::InputMouse( InputSystem *_system )
 //////////////////////////////////////////////////////////////////////////
 HRESULT InputMouse::restore()
 {
-	for( int i = 0; i< 8; ++i)
+	for( int i = 0; i< 4; ++i)
 	{
 		m_button[i] = 0;
 	}
@@ -138,7 +138,7 @@ void InputMouse::update()
 		return;
 	}
 
-	for( int i = 0; i < 8; i++ )
+	for( int i = 0; i < 4; i++ )
 	{
 		m_button[i] = state.rgbButtons[i] - m_lastState.rgbButtons[i];
 

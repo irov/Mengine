@@ -102,14 +102,14 @@ namespace Menge
 		Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::loader(TiXmlElement *xml)
+	void SoundEmitter::loader(TiXmlElement * _xml)
 	{
-		XML_FOR_EACH_TREE(xml)
+		SceneNode2D::loader(_xml);
+
+		XML_FOR_EACH_TREE(_xml)
 		{
 			XML_CHECK_VALUE_NODE( "ResourceName", "Name", m_resourceName );
 			XML_CHECK_VALUE_NODE( "HeadMode", "Mode", m_isHeadMode );
 		}
-
-		SceneNode2D::loader(xml);
 	}
 }

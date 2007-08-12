@@ -1,8 +1,6 @@
 #	pragma once
 
-#	include "NodeSinglethon.h"
-
-#	include "Renderable2D.h"
+#	include "SceneNode2D.h"
 
 #	include "ResourceMessageStorage.h"
 
@@ -18,7 +16,7 @@ namespace	Menge
 	class ResourceMessageStorage;
 
 	class TextField
-		: public NodeSinglethon, Renderable2D
+		: public SceneNode2D
 	{
 		OBJECT_DECLARE(TextField);
 	public:
@@ -38,26 +36,30 @@ namespace	Menge
 		void	loader(TiXmlElement * _xml) override;
 
 	public:
-		void	start();
-	private:
-		ResourceMessageStorage * m_resourceMessageStore;
+		virtual const Message * start();
+		virtual const Message * getNextMessage();
+		bool	isPlaying() const;
 
+	private:
 		std::string m_fontFilename;
 		std::string m_resourceName;
 
 		typedef std::list<int> TListMessage;
-		typedef std::list<std::string>	TListLine;
-
-		TListLine m_lines;
-
 		TListMessage m_messageSpots;
 		TListMessage::iterator m_currentMessageSpot;
 
 		RenderFontInterface * m_dialogFont;
+		ResourceMessageStorage * m_resourceMessageStore;
 
-		bool	m_isPaused;
-		bool	m_nextDialog;
+		float			m_total_delay;
+		float			m_delay;
 
-		void	createFormattedMessage(const std::string& _text, RenderFontInterface* _font, float _width);
+		typedef std::list<std::string>	TListLine;
+		TListLine		m_renderLines;
+
+		void	_createFormattedMessage(const std::string& _text, RenderFontInterface* _font, float _width);
+
+	protected:
+		bool	m_isPlaying;
 	};
 }

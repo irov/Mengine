@@ -55,9 +55,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Message*	ResourceMessageStorage::getMessage(int id)
+	const Message *	ResourceMessageStorage::getMessage(int id) const
 	{
-		TMapMessage::iterator it = m_messages.find(id);
+		TMapMessage::const_iterator it = m_messages.find(id);
 
 		if(it == m_messages.end())
 		{

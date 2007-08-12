@@ -51,7 +51,7 @@
 				GenerateXMLDocumentationFiles="false"
 				BrowseInformation="1"
 				WarningLevel="2"
-				WarnAsError="true"
+				WarnAsError="false"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4250"
@@ -854,6 +854,14 @@
 		<Filter
 			Name="TextField"
 			>
+			<File
+				RelativePath=".\SoundTextField.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SoundTextField.h"
+				>
+			</File>
 			<File
 				RelativePath=".\TextField.cpp"
 				>

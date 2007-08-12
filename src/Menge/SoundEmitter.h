@@ -18,7 +18,7 @@ namespace Menge
 			SoundEmitter();
 			~SoundEmitter();
 		public:
-			void loader(TiXmlElement *xml) override;
+			void loader(TiXmlElement * _xml) override;
 
 		public:
 			void play();

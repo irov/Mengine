@@ -19,8 +19,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
 	: m_dialogFont(0)
-	, m_isPaused(false)
-	, m_nextDialog(false)
+	, m_isPlaying(false)
+	, m_total_delay(0.0f)
+	, m_delay(1000)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::_activate()
@@ -54,6 +55,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void	TextField::loader(TiXmlElement * _xml)
 	{
+		SceneNode2D::loader(_xml);
+
 		XML_FOR_EACH_TREE(_xml)
 		{
 			XML_CHECK_VALUE_NODE("ResourceMessageStorage", "File", m_resourceName);
@@ -62,14 +65,12 @@ namespace	Menge
 
 		m_messageSpots.push_back(0);
 		m_messageSpots.push_back(1);
-
-		NodeCore::loader(_xml);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	TextField::_render( const mt::mat3f &rwm, const Viewport & _viewPort )
 	{
 		mt::vec2f pos(0,0);
-		for each( const std::string & line in m_lines )
+		for each( const std::string & line in m_renderLines )
 		{
 			Holder<RenderEngine>::hostage()
 				->renderText( pos, m_dialogFont, line );
@@ -82,37 +83,52 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	TextField::start()
+	const Message *	TextField::start()
 	{
+		m_isPlaying = true;
 		m_currentMessageSpot = m_messageSpots.begin();
-		m_nextDialog = true;
+
+		const Message *	message = m_resourceMessageStore->getMessage( *m_currentMessageSpot );
+
+		return message;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	TextField::_update(float _timing)
 	{
-		if (!m_isPaused)
+		if(m_isPlaying == false) return;
+
+		m_total_delay += _timing;
+
+		while(m_total_delay >= m_delay)
 		{
-			return;
-		}
-
-		if(m_nextDialog)
-		{
-			m_nextDialog = false;
-
-			if (++m_currentMessageSpot == m_messageSpots.end())
-			{
-				return;
-			}
-
-			Message * message = m_resourceMessageStore->getMessage( *m_currentMessageSpot );
-
-			createFormattedMessage(message->message, m_dialogFont, message->width);
+			m_total_delay -= m_delay;
+			getNextMessage();
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void	TextField::createFormattedMessage(const std::string& _text, RenderFontInterface* _font, float _width)
+	//////////////////////////////////////////////////////////////////////////	
+	const Message * TextField::getNextMessage()
 	{
-		m_lines.clear();
+		if (++m_currentMessageSpot == m_messageSpots.end())
+		{
+			m_isPlaying = false;
+			return NULL;
+		}
+
+		const Message * message = m_resourceMessageStore->getMessage( *m_currentMessageSpot );
+
+		_createFormattedMessage(message->message, m_dialogFont, message->width);
+
+		return message;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool	TextField::isPlaying() const
+	{
+		return m_isPlaying;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	TextField::_createFormattedMessage(const std::string& _text, RenderFontInterface* _font, float _width)
+	{
+		m_renderLines.clear();
 
 		std::list<std::string> words;
 
@@ -166,13 +182,13 @@ namespace	Menge
 			}
 			else
 			{
-				m_lines.push_back(temp_string);
+				m_renderLines.push_back(temp_string);
 				temp_string.clear();
 				temp_string += *it;
 				pixelFontSize = 0.0f;
 			}
 		}
 
-		m_lines.push_back(temp_string);
+		m_renderLines.push_back(temp_string);
 	}
 }

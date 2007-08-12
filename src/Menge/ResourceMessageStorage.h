@@ -27,7 +27,7 @@ namespace Menge
 		RESOURCE_DECLARE(ResourceMessageStorage);
 	public:
 		ResourceMessageStorage( const std::string & _name );
-		Message*	getMessage(int _id);
+		const Message *	getMessage(int _id) const;
 
 	public:
 		void loader( TiXmlElement * xml ) override;

@@ -12,17 +12,6 @@
 		</Node>
 
 
-		<Node Name = "TestParticleSystem" Type = "ParticleSystem">
-			<Emitters>
-				<Node Name = "TestBoxEmitter" Type = "BoxEmitter">
-					<ResourceName Value = "TestResourceBoxEmitter" />
-				</Node>
-			</Emitters>
-
-			<Transformation Value = "1;0;0;1;20;20" />
-		</Node> 
-
-
 	</Node> <!-- Layer -->
 
 	<Node Name = "Back" Type = "Layer2D">

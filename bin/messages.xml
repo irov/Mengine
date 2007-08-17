@@ -1,5 +1,5 @@
 <Messages>
- <Message id = "0" text = "PREVED MEDVED!" sound = "1.ogg" width = 200 />
- <Message id = "1" text = "1234567890, THIS TEST IS REALLY MORE THEN 50 PIXELS, SO FUCK UP" sound = "2.ogg" width = 50 />
- <Message id = "2" text = "TUT DOLZHEN BYT RUSSKIY SHRIFT!!!!! A EGO net :( " sound = "2.ogg" width = 1000 />
+ <Message id = "0" text = "PREVED MEDVED!" sound = "1.ogg" width = "200" />
+ <Message id = "1" text = "1234567890, THIS TEST IS REALLY MORE THEN 50 PIXELS, SO FUCK UP" sound = "2.ogg" width = "50" />
+ <Message id = "2" text = "TUT DOLZHEN BYT RUSSKIY SHRIFT!!!!! A EGO net :( " sound = "2.ogg" width = "1000" />
 </Messages>

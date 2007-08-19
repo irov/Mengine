@@ -9,18 +9,24 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Actor3D::Actor3D()
 	: m_isMove(false)
-	, m_velocity(1.0f)
+	, m_velocity(17.0f)
 	, m_destpos(0.0f,0.0f,0.0f)
 	, m_dir(0.0f,0.0f,0.0f)
-	{}
+	{
+		m_animObject = new AnimationObject();
+		this->addChildren(m_animObject);
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::loader( TiXmlElement * _xml )
 	{
 		SceneNode3D::loader(_xml);
+		m_animObject->loader(_xml);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::_update( float _timing )
 	{
+		m_animObject->update( _timing );
+
 		if( m_isMove )
 		{
 			float actual_distance = m_velocity * _timing;
@@ -73,4 +79,20 @@ namespace	Menge
 		setDirection(m_dir);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Actor3D::_activate()
+	{
+		return m_animObject->activate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Actor3D::_deactivate()
+	{
+		m_animObject->deactivate();
+		delete m_animObject;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Actor3D::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
+	{
+		SceneNode3D::_render(_rwm, _camera);
+		m_animObject->render(_rwm, _camera);
+	}
 }

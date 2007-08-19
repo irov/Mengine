@@ -418,11 +418,11 @@
 				Name="Avatar"
 				>
 				<File
-					RelativePath=".\Avatar.cpp"
+					RelativePath=".\Avatar2D.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\Avatar.h"
+					RelativePath=".\Avatar2D.h"
 					>
 				</File>
 			</Filter>

@@ -2,6 +2,8 @@
 
 #	include "SceneNode3D.h"
 
+#	include "AnimationObject.h"
+
 namespace Menge
 {
 	class Actor3D
@@ -11,6 +13,7 @@ namespace Menge
 
 	public:
 		Actor3D();
+		~Actor3D();
 
 	public:
 		void	moveToWayPoint(const mt::vec3f& _wayPoint);
@@ -18,9 +21,17 @@ namespace Menge
 		void	stop();
 		bool	isMoving() const;
 
-	protected:
+	public:
 		void	loader( TiXmlElement * _xml ) override;
-		void	_update( float _timing)  override;
+		
+	protected:
+		void _update( float _timing)  override;
+		bool _activate() override;
+		void _deactivate() override;
+		void _render( const mt::mat4f & _rwm, const Camera3D * _camera ) override;
+
+	protected:
+		AnimationObject * m_animObject;
 
 	private:
 		bool		m_isMove;

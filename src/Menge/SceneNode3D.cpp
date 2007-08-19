@@ -2,6 +2,7 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & SceneNode3D::getWorldMatrix()
 	{
 		if( m_parent == 0 )

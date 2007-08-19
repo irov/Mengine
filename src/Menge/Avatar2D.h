@@ -6,14 +6,14 @@
 
 namespace Menge
 {
-	class Avatar
+	class Avatar2D
 		: public SceneNode2D
 		, public InputHandler
 	{
-		OBJECT_DECLARE(Avatar)
+		OBJECT_DECLARE(Avatar2D)
 
 	public:
-		Avatar();
+		Avatar2D();
 
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;

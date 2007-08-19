@@ -23,7 +23,6 @@ namespace Menge
 		void lookAt(const mt::vec3f& _targetPoint);
 		mt::vec3f getDirectionFromMouse( float _xm, float _ym );
 
-
 	public:
 		const mt::mat4f & getViewMatrix();
 

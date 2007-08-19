@@ -33,6 +33,8 @@ namespace Menge
 	public:
 		void loader( TiXmlElement * _xml ) override;
 
+		void _update( float _timing ) override;
+
 		bool isVisible( const Camera3D * _camera ) override;
 
 	public:
@@ -55,8 +57,7 @@ namespace Menge
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
-		void _update( float _timing ) override;
-		
+	
 
 		void _render( const mt::mat4f & _rwm, const Camera3D * _camera ) override;
 		void _debugRender() override;

@@ -4,42 +4,43 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	FileEngine::FileEngine( FileSystemInterface * _interface )
 		: m_interface( _interface )
 	{
 		Holder<FileEngine>::keep(this);
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::loadPak(const std::string&	_filename, int _prior)
 	{
 		return m_interface->loadPak(_filename.c_str(),_prior);
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::unloadPak(const std::string& _filename)
 	{
 		return m_interface->unloadPak(_filename.c_str());
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::existFile(const std::string& _filename)
 	{
 		return m_interface->existFile(_filename.c_str());
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::createFolder(const std::string& _foldername)
 	{
 		return m_interface->createFolder(_foldername.c_str());
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	FileDataInterface* FileEngine::openFile(const std::string& _filename)
 	{
 		return m_interface->openFile(_filename.c_str());
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::closeFile(FileDataInterface* _fd)
 	{
 		m_interface->closeFile(_fd);
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	TiXmlDocument * FileEngine::loadXml( const std::string &_fileName)
 	{
 		// There was a really terrifying little bug here. The code:

@@ -1,18 +1,18 @@
-#	include "ActionMove.h"	
+#	include "ActionLook.h"	
 
 #	include "Avatar3D.h"	
 
 namespace Menge
 { 
 	//////////////////////////////////////////////////////////////////////////
-	ActionMove::ActionMove(Avatar3D * _avatar, const mt::vec3f& _destPoint)
+	ActionLook::ActionLook(Avatar3D * _avatar, const mt::vec3f& _destPoint)
 		: Action()
 		, m_avatar(_avatar)
 		, m_destPoint(_destPoint)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	ActionMove::update( float _timing )
+	void	ActionLook::update( float _timing )
 	{
 		if(m_avatar->isMoving() == false)
 		{
@@ -20,14 +20,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	ActionMove::run()
+	void	ActionLook::run()
 	{
-		m_avatar->moveToWayPoint(m_destPoint);
+		m_avatar->lookTo(m_destPoint);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	ActionMove::end()
-	{
-		m_avatar->stop();
-	}
+	void	ActionLook::end()
+	{}
 	//////////////////////////////////////////////////////////////////////////
 }

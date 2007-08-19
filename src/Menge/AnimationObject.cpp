@@ -109,7 +109,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationObject::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
 	{	
-		Allocator3D::debugRender();
+		SceneNode3D::_render(_rwm,_camera);
+	//	Allocator3D::debugRender();
 		
 		CalSkeleton * pCalSkeleton = m_calModel->getSkeleton();
 		m_calModel->getSkeleton()->calculateBoundingBoxes();

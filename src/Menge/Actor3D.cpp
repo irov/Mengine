@@ -2,6 +2,8 @@
 
 #	include "ObjectImplement.h"
 
+#	include "XmlParser/XmlParser.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////

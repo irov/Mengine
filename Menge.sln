@@ -46,6 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interface", "Interface", "{
 		src\Interface\CodecInterface.h = src\Interface\CodecInterface.h
 		src\Interface\FileSystemInterface.h = src\Interface\FileSystemInterface.h
 		src\Interface\InputSystemInterface.h = src\Interface\InputSystemInterface.h
+		src\Interface\RenderSystemInterface.h = src\Interface\RenderSystemInterface.h
 		src\Interface\SoundSystemInterface.h = src\Interface\SoundSystemInterface.h
 		src\Interface\WinInputSystemInterface.h = src\Interface\WinInputSystemInterface.h
 		src\Interface\WinRenderSystemInterface.h = src\Interface\WinRenderSystemInterface.h

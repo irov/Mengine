@@ -25,7 +25,14 @@ namespace	Menge
 	void Actor3D::loader( TiXmlElement * _xml )
 	{
 		SceneNode3D::loader(_xml);
-		m_animObject->loader( _xml );
+
+		XML_FOR_EACH_TREE( _xml )
+		{
+			XML_CHECK_NODE("Animation")
+			{
+				m_animObject->loader( _xml );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::_update( float _timing )

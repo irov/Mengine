@@ -53,13 +53,11 @@ namespace	Menge
 
 		float			m_total_delay;
 		float			m_delay;
+		bool			m_isPlaying;
 
 		typedef std::list<std::string>	TListLine;
 		TListLine		m_renderLines;
 
 		void	_createFormattedMessage(const std::string& _text, RenderFontInterface* _font, float _width);
-
-	protected:
-		bool	m_isPlaying;
 	};
 }

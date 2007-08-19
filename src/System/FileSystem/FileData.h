@@ -13,21 +13,18 @@ public:
 	~FileData();
 
 public:
-	size_t	read(void* buffer, size_t elemsize, size_t count);
-	size_t	read_chars(char* buffer, size_t count);
-	size_t	read_floats(float* buffer, size_t count);
-	size_t	read_ushorts(short* buffer, size_t count);
-	size_t	read_ints(int* buffer, size_t count);
-	size_t	read_longs(long* buffer, size_t count);
+	size_t	read(void* _buffer, size_t _elemsize, size_t _count);
+	size_t	read_chars(char* _buffer, size_t _count);
+	size_t	read_floats(float* _buffer, size_t _count);
+	size_t	read_ushorts(short* _buffer, size_t _count);
+	size_t	read_ints(int* _buffer, size_t _count);
+	size_t	read_longs(long* _buffer, size_t _count);
 	bool	eof()const;
-	void	setPos(size_t pos);
+	void	setPos(size_t _pos);
     size_t	size()const;
 
     const char* getBuffer() const;
 	const char* getPos() const;
-
-	void seek( size_t count );
-
 private:
 	char* m_data;
 	char* m_pos;

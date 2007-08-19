@@ -209,7 +209,7 @@ namespace Menge
 		//}
 
 		Holder<InputEngine>::hostage()->update();
-		m_game->update(0.001f);
+		m_game->update(0.01f);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::render()

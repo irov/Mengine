@@ -9,10 +9,35 @@
 				<ImageMap Name = "output" />
 				<Transformation Value = "1;0;0;1;0;0" />
 			</Node> <!-- Sprite -->
+			<Hull>
+				<Point Value = "0.0;0.0"/>
+				<Point Value = "10.0;0.0"/>
+				<Point Value = "10.0;10.0"/>
+				<Point Value = "0.0;10.0"/>
+			</Hull>
+		</Node>
+
+		<Node Name = "TestTrap" Type = "Trap2D">
+			<Zone>
+				<Point Value = "0.0;0.0"/>
+				<Point Value = "10.0;0.0"/>
+				<Point Value = "10.0;10.0"/>
+				<Point Value = "0.0;10.0"/>
+			</Zone>
+			<SceneNodes>
+				<SceneNode Value = "TestActor"/>
+			</SceneNodes>
 		</Node>
 
 
 	</Node> <!-- Layer -->
+
+	<Node Name = "Back" Type = "Layer3D">
+		<Node Name = "TestAvatar" Type = "Avatar3D">
+			<ImageMap Name = "Cal3dTest" />
+			<Transformation Value = "1;0;0;0;1;0;0;0;1;0;0;0" />
+		</Node>
+	</Node>
 
 	<Node Name = "Back" Type = "Layer2D">
 		<Parallax Factor = "1.25;1" />

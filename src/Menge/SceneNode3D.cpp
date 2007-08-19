@@ -28,6 +28,7 @@ namespace Menge
 	{
 		Allocator3D::loader( _xml );
 		Renderable3D::loader( _xml );
+		Collideable3D::loader( _xml );
 
 		NodeCore::loader( _xml );
 	}

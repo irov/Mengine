@@ -5,6 +5,7 @@
 
 #	include "Allocator2D.h"
 #	include "Renderable2D.h"
+#	include "Collideable2D.h"
 
 namespace Menge
 {
@@ -16,6 +17,7 @@ namespace Menge
 		, public NodeChildren<SceneNode2D>
 		, public Allocator2D
 		, public Renderable2D
+		, public Collideable2D
 	{
 	public:
 		SceneNode2D();

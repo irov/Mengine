@@ -1,30 +1,15 @@
-#include "..\\..\\..\\dependencies\\vld\\vld.h"
-
-#include <iostream>
-//#include "interfaces.h"
-//#include "SoundSystem.h"
-
 #	pragma comment (lib, "Squalld.lib")
 
-#include	<conio.h>
-#include	<stdlib.h>
-#include	<stdio.h>
-#include	<time.h>
-//SoundSystem.def
-#include "windows.h"
-
-#include <fstream>
-
-//#include	"BaseSoundSource.h"
-
-#include "SquallSoundSource.h"
+#	include	<conio.h>
+#	include	<stdio.h>
+	
+#	include	"SquallSoundSource.h"
 
 class Listener : public SoundNodeListenerInterface
 {
 	void listenPaused(bool _pause)
 	{
-		printf("listernPuased\n");
-
+		printf("listernPaused\n");
 	}
 	void listenStopped()
 	{
@@ -34,89 +19,52 @@ class Listener : public SoundNodeListenerInterface
 
 int main()
 {
-	SoundSystemInterface* SoundSystem;
+	SoundSystemInterface * SoundSystem = NULL;
+
 	initInterfaceSystem(&SoundSystem);
-	SoundDataDesc	desc_to_load = {
-		SoundDataDesc::OGG,
-		"2.ogg",
-		false,
-		true
-	};
 
-	Listener* l = new Listener();
+	SoundBufferInterface * Sample = SoundSystem->createSoundBuffer();
+	Sample->loadFromFile("1.ogg",false);
 
-	SoundSourceInterface* ssi = SoundSystem->loadSoundNode(desc_to_load,l);
+	SoundNodeListenerInterface * listener = new Listener();
+
+	SoundSourceInterface * Source = SoundSystem->createSoundSource(false,Sample,listener);
 	
-	
-	ssi->play();
-	ssi->setVolume(0.9);
+	Source->play();
 
 	int key = 0;
-	int u = 0;
+
+	/* 
+		Ошибка вот в чем:
+
+		у меня последняя позиция и длинна которые "нормальные" это 
+		12861 | 12863
+		дальше идет неправильная позиция: 
+		0 | 12863
+		0 | 12863
+		5 | 12863
+		и т.д. до
+		139 | 12863
+		
+		и звук перестает играть, вызывается callback на останов.
+	*/
+
 	do
 	{
-		u++;
+		float pos = Source->getPosMs();
+		float len = Source->getLengthMS();
+		printf("%f | %f \n",pos, len);
+
 		if (kbhit())
+		{
 			key = getch();
-	} while (key != 27);
+		}
+	} 
+	while (key != 27);
 
-	SoundSystem->releaseSoundNode(ssi);
-	ssi = NULL;
-	ssi = SoundSystem->loadSoundNode(desc_to_load,l);
+	SoundSystem->releaseSoundNode(Source);
 
-	ssi->play();
-/*	key = 0;
-	do
-	{
-		u++;
-		if (kbhit())
-			key = getch();
-	} while (key != 27);
-*/
-	u = 0;
-	key = 0;
-	do
-	{
-		u++;
-		if (kbhit())
-			key = getch();
-
-		if (u == 600)
-		{
-			ssi->stop();
-		}
-		if (u == 2800+5000)
-		{
-			ssi->play();
-		}
-		if (u == 3000+10000)
-		{
-			ssi->stop();
-		}
-		if (u == 4000+15000)
-		{
-			ssi->play();
-		}
-		if (u == 5000+20000)
-		{
-			ssi->pause();
-		}
-		if (u == 7200+30000)
-		{
-			ssi->play();
-		}
-		if (u == 9300+40000)
-		{
-			ssi->stop();
-		}
-		const float * p=  ssi->getPosition();
-	} while (key != 27);
-
-
-//	getche();
-	SoundSystem->releaseSoundNode(ssi);
-	//getche();
+	SoundSystem->releaseSoundBuffer(Sample);
+	
 	releaseInterfaceSystem(SoundSystem);
-
-	delete l;
 };

@@ -1,6 +1,6 @@
 #	include "AnimationBone.h"
 
-#	include "math/box.h"
+#	include "math/box3.h"
 
 #	include "RenderEngine.h"
 
@@ -28,7 +28,7 @@ namespace	Menge
 		const mt::mat4f & matrix = getWorldMatrix();
 		mt::vec3f points = matrix.v3.v3;
 		mt::vec3f p(points[0], points[1], points[2]);
-		mt::boxf box;
+		mt::box3f box;
 		mt::set_box_from_center_and_extent(box, p, mt::vec3f(5.0f, 5.0f, 5.0f));
 	
 		RenderEngine * renderEng = Holder<RenderEngine>::hostage();

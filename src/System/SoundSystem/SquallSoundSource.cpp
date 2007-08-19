@@ -1,5 +1,4 @@
 #	include "SquallSoundSource.h"
-//#	include "windows.h"
 #	include <assert.h>
 #	include "squall.h"
 #	include "math.h"
@@ -160,9 +159,8 @@ void SQUALLSoundSource::setPosition(float x, float y, float z)
 //////////////////////////////////////////////////////////////////////////
 const float* SQUALLSoundSource::getPosition() const
 {
-	float Position[3]={};
-	SQUALL_Channel_Get3DPosition(ChannelID,Position);
-	return Position;
+	//SQUALL_Channel_Get3DPosition(ChannelID,Position);
+	return 0;
 }
 //////////////////////////////////////////////////////////////////////////
 void SQUALLSoundSource::setLooped(bool loop)

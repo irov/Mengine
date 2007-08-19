@@ -79,10 +79,6 @@ namespace mt
 		return points.back();
 	}
 
-
-	/*	
-		Compare	two polygons. equal, if all vertices and size are same.
-	*/
 	bool	cmp_poly_poly(const polygon& _a, const polygon& _b)
 	{
 		size_t size_a = _a.num_points();
@@ -95,9 +91,7 @@ namespace mt
 			stdext::checked_array_iterator<const vec2f *>(&_b.front(), size_b) 
 			);
 	}
-	/*
-		Helpers for compare.
-	*/
+
 	bool	operator==(const polygon& _a, const polygon& _b)
 	{
 		return	cmp_poly_poly(_a,_b);
@@ -169,7 +163,7 @@ namespace mt
 
 		vec2f prev = poly[size-1];
 		
-		for (size_t i=0; i<size; ++i)
+		for (size_t i = 0; i < size; ++i)
 		{
 			if ((poly[i].y > p.y) ^ (prev.y > p.y))
 			{

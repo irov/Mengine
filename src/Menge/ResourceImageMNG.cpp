@@ -71,12 +71,21 @@ namespace Menge
 		int size;
 		fileData->read_ints(&size,1);
 
+		std::vector<long> seeks(size);
+
+		for(int i = 0; i < seeks.size(); ++i)
+		{
+			fileData->read_longs(&seeks[i],1);
+		}
+
 		TextureDesc	textureDesc;
 
 		m_images.reserve(size);
 
 		for(int i = 0; i < size; ++i)
 		{
+			fileData->setPos( seeks[i] );
+
 			fileData->read_ints(&x,1);
 			fileData->read_ints(&y,1);
 
@@ -94,8 +103,6 @@ namespace Menge
 			imageProps.size = mt::vec2f((float)imageProps.renderImage->getWidth(),(float)imageProps.renderImage->getHeight());
 
 			m_images.push_back(imageProps);
-
-			fileData->seek( bsize );
 		}
 
 		Holder<FileEngine>::hostage()->closeFile(fileData);
@@ -111,4 +118,5 @@ namespace Menge
 				->releaseRenderImage( img.renderImage );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

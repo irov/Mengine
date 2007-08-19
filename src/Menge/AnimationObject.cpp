@@ -16,7 +16,7 @@
 
 #	include "AnimationBone.h"
 
-#	include "math/box.h"
+#	include "math/box3.h"
 
 namespace Menge
 {
@@ -71,7 +71,7 @@ namespace Menge
 			this->addChildren(bone);
 		}
 
-		_clearCycles();
+		_clearCycles(0.0f);
 
 		return true;
 	}
@@ -87,7 +87,7 @@ namespace Menge
 			->releaseResource( m_cal3dRes );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::update( float _timing )
+	void AnimationObject::_update( float _timing )
 	{
 		m_calModel->update(_timing);
 
@@ -109,13 +109,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationObject::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
 	{	
+		Allocator3D::debugRender();
+		
 		CalSkeleton * pCalSkeleton = m_calModel->getSkeleton();
 		m_calModel->getSkeleton()->calculateBoundingBoxes();
 
 		RenderEngine * renderEng = Holder<RenderEngine>::hostage();
 
 		renderEng->setWorldMatrix( _rwm );
-
 /*
 		float lines[1024][2][3];
 		int nrLines = m_calModel->getSkeleton()->getBoneLines(&lines[0][0][0]);
@@ -197,6 +198,11 @@ namespace Menge
 		}
 
 		pCalRenderer->endRendering();
+
+		mt::mat4f ident;
+		mt::ident_m4(ident);
+
+		renderEng->setWorldMatrix( ident );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationObject::_debugRender()
@@ -293,6 +299,17 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void	AnimationObject::executeAction(const std::string & _name, float _timeIn,
+			float _timeOut, float _width, bool _autoLock
+		)
+	{
+		const AnimInfo& pAnimInfo = m_cal3dRes->getAnimationInfo(_name);
+
+		_clearCycles(_timeIn);
+		m_calModel->getMixer()->setTimeFactor(pAnimInfo.delay);
+		m_calModel->getMixer()->executeAction(pAnimInfo.index, _timeIn, _timeOut, _width, _autoLock);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	mt::mat4f	AnimationObject::getBoneWorldMatrix(int _index)
 	{
 		CalBone * bone = m_calModel->getSkeleton()->getBone(_index);
@@ -326,13 +343,13 @@ namespace Menge
 		m_removeCallbacks.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::_clearCycles()
+	void AnimationObject::_clearCycles(float _blendTime)
 	{
 		size_t animCount = m_cal3dRes->getAnimationCount();
 
 		for(int i = 0; i < animCount; ++i)
 		{
-			m_calModel->getMixer()->clearCycle(i,0.0f);
+			m_calModel->getMixer()->clearCycle(i,_blendTime);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -376,7 +393,7 @@ namespace Menge
 		CalVector p[8];
 		box.computePoints(p);
 
-		mt::boxf bbox;
+		mt::box3f bbox;
 
 		mt::set_box_from_min_max(bbox, mt::vec3f(p[0].x, p[0].y, p[0].z), mt::vec3f(p[4].x, p[2].y, p[1].z));
 

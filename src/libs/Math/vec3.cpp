@@ -89,7 +89,8 @@ namespace	mt
 
 	float	vec3f::length()	const
 	{
-		return sqrtf(sqrlength());
+		float len = sqrlength();
+		return sqrtf(len);
 	}
 
 	float	length_v3_v3(const vec3f& _a, const vec3f& _b)

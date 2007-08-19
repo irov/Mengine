@@ -58,15 +58,6 @@ void SQUALLSoundSystem::releaseSoundBuffer(SoundBufferInterface* _soundBuffer)
 	delete static_cast<SQUALLSample*>(_soundBuffer);
 }
 //////////////////////////////////////////////////////////////////////////
-/*SoundSourceInterface*	SQUALLSoundSystem::loadSoundNode(const SoundDataDesc& _desc, SoundNodeListenerInterface*	_listener)
-{
-	const char * t = _desc.FILENAME_TEMP_FOR_TEST.c_str();
-	int sample = SQUALL_Sample_LoadFile((char *)t, _desc.isStreamSound, 0);
-
-	return new SQUALLSoundSource(sample,_desc.isRelativeToListener,_listener);
-}
-*/
-//////////////////////////////////////////////////////////////////////////
 void	SQUALLSoundSystem::releaseSoundNode(SoundSourceInterface* _sn)
 {
 	delete static_cast<SQUALLSoundSource*>(_sn);

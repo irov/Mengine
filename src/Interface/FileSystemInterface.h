@@ -14,7 +14,6 @@ public:
 	virtual size_t	read_ints(int* _buffer, size_t _count) = 0;
 	virtual size_t	read_longs(long* _buffer, size_t _count) = 0;
 	virtual	void	setPos(size_t _pos) = 0;
-	virtual void	seek( size_t count ) = 0;
 };
 
 class	FileSystemInterface

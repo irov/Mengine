@@ -23,9 +23,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::loader( TiXmlElement * _xml )
 	{
+		NodeCore::loader( _xml );
 		Allocator2D::loader( _xml );
 		Renderable2D::loader( _xml );
-		NodeCore::loader( _xml );
+		Collideable2D::loader( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & SceneNode2D::getWorldMatrix()

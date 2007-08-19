@@ -406,11 +406,11 @@
 				Name="Actor"
 				>
 				<File
-					RelativePath=".\Actor.cpp"
+					RelativePath=".\Actor2D.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\Actor.h"
+					RelativePath=".\Actor2D.h"
 					>
 				</File>
 			</Filter>
@@ -811,6 +811,78 @@
 			Name="Object3D"
 			>
 			<Filter
+				Name="Trap"
+				>
+				<File
+					RelativePath=".\Trap3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Trap3D.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Actor"
+				>
+				<File
+					RelativePath=".\Actor3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Actor3D.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Avatar"
+				>
+				<File
+					RelativePath=".\Avatar3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Avatar3D.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Action"
+				>
+				<File
+					RelativePath=".\Action.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Action.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ActionLook.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ActionLook.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ActionMove.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ActionMove.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ActionScheduler.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ActionScheduler.h"
+					>
+				</File>
+			</Filter>
+			<Filter
 				Name="Animation"
 				>
 				<File
@@ -835,18 +907,6 @@
 				</File>
 				<File
 					RelativePath=".\AnimationObject.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Trap"
-				>
-				<File
-					RelativePath=".\Trap3D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Trap3D.h"
 					>
 				</File>
 			</Filter>
@@ -1049,6 +1109,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Collideable2D"
+					>
+					<File
+						RelativePath=".\Collideable2D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Collideable2D.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Layer"
@@ -1090,6 +1162,18 @@
 					</File>
 					<File
 						RelativePath=".\Renderable3D.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Collideable3D"
+					>
+					<File
+						RelativePath=".\Collideable3D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Collideable3D.h"
 						>
 					</File>
 				</Filter>

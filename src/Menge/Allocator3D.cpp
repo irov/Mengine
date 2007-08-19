@@ -2,6 +2,8 @@
 
 #	include "XmlParser/XmlParser.h"
 
+#	include "RenderEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -153,4 +155,22 @@ namespace Menge
 			}
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Allocator3D::debugRender()
+	{
+		mt::vec3f orig = m_localMatrix.v3.v3;
+
+		float axisWidth = 50;
+
+		RenderEngine * renderEng = Holder<RenderEngine>::hostage();
+
+		mt::vec3f axis1 = orig + m_localMatrix.v0.v3 * axisWidth;
+		mt::vec3f axis2 = orig + m_localMatrix.v1.v3 * axisWidth;
+		mt::vec3f axis3 = orig + m_localMatrix.v2.v3 * axisWidth;
+		
+		renderEng->drawLine3D(orig, axis1, 0xFFFFFFAA);
+		renderEng->drawLine3D(orig, axis2, 0xFFAAFFAA);
+		renderEng->drawLine3D(orig, axis3, 0xAAFFFFAA);
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

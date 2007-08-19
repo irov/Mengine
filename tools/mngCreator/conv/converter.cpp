@@ -1,5 +1,3 @@
-//#	include "converter.h"
-//#	include <assert.h>
 #include "stdafx.h"
 
 namespace mnglib

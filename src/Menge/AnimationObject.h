@@ -8,7 +8,10 @@
 
 #	include "math/quat.h"
 
+#	include <cal3d\global.h>
 #	include <cal3d\cal3d.h>
+#	include <cal3d\cal3d_wrapper.h>
+#	include <cal3d\coretrack.h>
 
 namespace Menge
 {
@@ -29,14 +32,16 @@ namespace Menge
 
 	public:
 		void loader( TiXmlElement * _xml ) override;
-		void update( float _timing ) override;
 
-		virtual bool isVisible( const Camera3D * _camera ) override;
+		bool isVisible( const Camera3D * _camera ) override;
 
 	public:
 		void play(const std::string& _name);
 		void play2Blend(const std::string& _name1,	float _weight1,
 			const std::string& _name2,	float _weight2
+		);
+		void executeAction(const std::string & _name, float _timeIn,
+			float _timeOut, float _width, bool _autoLock
 		);
 
 		mt::mat4f	getBoneWorldMatrix(int _index);
@@ -50,6 +55,8 @@ namespace Menge
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
+		void _update( float _timing ) override;
+		
 
 		void _render( const mt::mat4f & _rwm, const Camera3D * _camera ) override;
 		void _debugRender() override;
@@ -72,6 +79,6 @@ namespace Menge
 
 		void	_initGeometry();
 		void	_clearRemovedCallback();
-		void	_clearCycles();
+		void	_clearCycles(float _blendTime);
 	};
 }

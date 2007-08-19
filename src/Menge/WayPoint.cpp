@@ -42,4 +42,5 @@ namespace	Menge
 		renderEng->drawLine2D(mt::vec2f(p.x-3,p.y-3),mt::vec2f(p.x+3,p.y+3),0xFFFfFCff);
 		renderEng->drawLine2D(mt::vec2f(p.x-3,p.y+3),mt::vec2f(p.x+3,p.y-3),0xFFFfFCff);
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

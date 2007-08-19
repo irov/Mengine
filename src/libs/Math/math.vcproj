@@ -282,14 +282,26 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="box"
+			Name="box3"
 			>
 			<File
-				RelativePath=".\box.cpp"
+				RelativePath=".\box3.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\box.h"
+				RelativePath=".\box3.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="box2"
+			>
+			<File
+				RelativePath=".\box2.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\box2.h"
 				>
 			</File>
 		</Filter>

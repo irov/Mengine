@@ -4,7 +4,7 @@
 
 #	include <list>
 
-#	include "math\box.h"
+#	include "math\box3.h"
 
 namespace Menge
 {
@@ -20,16 +20,22 @@ namespace Menge
 	public:
 		void setEnterZoneCallback(PyObject * _object);
 		void setLeaveZoneCallback(PyObject * _object);
+	protected:
+		bool _activate() override;
+		void _deactivate() override;
 	private:
-		mt::boxf	m_boundingZone;
+		mt::box3f	m_bbox;
 
 		typedef std::list<std::string> TListSceneNodesNames;
-		TListSceneNodesNames	m_sceneNodes;
+		TListSceneNodesNames	m_sceneNodesNames;
 
-		typedef std::list<SceneNode3D*> TListTrapped;
+		typedef std::list<SceneNode3D*> TListSceneNodes;
+		TListSceneNodes m_sceneNodes;
+
+		typedef std::list<Node*> TListTrapped;
 		TListTrapped m_trapped;
 
-		typedef std::list<SceneNode3D*> TListInZone;
+		typedef std::list<Node*> TListInZone;
 		TListInZone	m_inZone;
 	};
 }

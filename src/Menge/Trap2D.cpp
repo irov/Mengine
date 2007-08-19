@@ -15,6 +15,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Trap2D::Trap2D()
 	{
+		reset(m_bbox,0,0);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trap2D::loader( TiXmlElement * _xml )
@@ -30,6 +31,7 @@ namespace Menge
 					mt::vec2f point;
 					XML_VALUE_ATTRIBUTE("Value", point);
 					m_polygon.add_point(point);
+					add_internal_point(m_bbox,point);
 				}
 			}	
 
@@ -39,33 +41,46 @@ namespace Menge
 				{
 					std::string name;
 					XML_VALUE_ATTRIBUTE("Value", name);
-					m_sceneNodes.push_back(name);
+					m_sceneNodesNames.push_back(name);
 				}
 			}		
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trap2D::setEnterZoneCallback(PyObject * _object)
+	bool Trap2D::_activate()
 	{
-		registerEvent( "ENTER_ZONE", _object );
+		for(TListSceneNodesNames::iterator i = m_sceneNodesNames.begin(); i != m_sceneNodesNames.end(); ++i)
+		{
+			SceneNode2D * node = this->getParent()->getChildren(*i);
+
+			if(node == NULL)
+			{
+				return false;
+			}
+
+			m_sceneNodes.push_back(node);
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trap2D::setLeaveZoneCallback(PyObject * _object)
+	void Trap2D::_deactivate()
 	{
-		registerEvent( "LEAVE_ZONE", _object );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trap2D::update( float _timing )
 	{
-		for(TListSceneNodesNames::iterator i = m_sceneNodes.begin(); i != m_sceneNodes.end(); ++i)
+		// sweep and prune method ?
+		for(TListSceneNodes::iterator i = m_sceneNodes.begin(); i != m_sceneNodes.end(); ++i)
 		{
-			SceneNode2D * node = this->getParent()->getChildren(*i);
-			const mt::vec2f& pos = node->getWorldPosition();
-			bool is_trapped = mt::is_point_inside_polygon(m_polygon, pos);
+			SceneNode2D * node = *i;
 
+			bool is_trapped =  mt::is_intersect(m_bbox, node->getBoundingBox());
+			
 			if(is_trapped)
 			{
-				m_trapped.push_back(node);
+				//check for near phase.
+				m_trapped.push_back(*i);
 			}
 		}
 
@@ -131,6 +146,16 @@ namespace Menge
 
 			renderEng->drawLine2D( b, e, 0xffff00ff );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Trap2D::setEnterZoneCallback(PyObject * _object)
+	{
+		registerEvent( "ENTER_ZONE", _object );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Trap2D::setLeaveZoneCallback(PyObject * _object)
+	{
+		registerEvent( "LEAVE_ZONE", _object );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

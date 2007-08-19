@@ -25,8 +25,8 @@ namespace Menge
 		{
 			XML_CHECK_NODE( "Zone" )
 			{
-				XML_VALUE_ATTRIBUTE("MinEdge", m_boundingZone.MinEdge);
-				XML_VALUE_ATTRIBUTE("MaxEdge", m_boundingZone.MaxEdge);
+				XML_VALUE_ATTRIBUTE("MinEdge", m_bbox.MinEdge);
+				XML_VALUE_ATTRIBUTE("MaxEdge", m_bbox.MaxEdge);
 			}	
 
 			XML_CHECK_NODE_FOR_EACH( "SceneNodes" )
@@ -35,34 +35,40 @@ namespace Menge
 				{
 					std::string name;
 					XML_VALUE_ATTRIBUTE("Value", name);
-					m_sceneNodes.push_back(name);
+					m_sceneNodesNames.push_back(name);
 				}
 			}		
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trap3D::setEnterZoneCallback(PyObject * _object)
+	bool Trap3D::_activate()
 	{
-		registerEvent( "ENTER_ZONE", _object );
+		for(TListSceneNodesNames::iterator it = m_sceneNodesNames.begin(); it != m_sceneNodesNames.end(); ++it)
+		{
+			SceneNode3D * node = this->getParent()->getChildren(*it);
+
+			if(node == NULL)
+			{
+				return false;
+			}
+
+			m_sceneNodes.push_back(node);
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trap3D::setLeaveZoneCallback(PyObject * _object)
+	void Trap3D::_deactivate()
 	{
-		registerEvent( "LEAVE_ZONE", _object );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trap3D::update( float _timing )
 	{
-		for(TListSceneNodesNames::iterator i = m_sceneNodes.begin(); i != m_sceneNodes.end(); ++i)
+		for(TListSceneNodes::iterator i = m_sceneNodes.begin(); i != m_sceneNodes.end(); ++i)
 		{
-			SceneNode3D * node = this->getParent()->getChildren(*i);
-			const mt::vec3f& pos = node->getWorldPosition();
+			SceneNode3D * node = *i;
 
-			bool is_trapped = true;
-
-			if ((pos[0] < m_boundingZone.MinEdge[0] || pos[0] > m_boundingZone.MaxEdge[0]) ||
-				(pos[1] < m_boundingZone.MinEdge[1] || pos[1] > m_boundingZone.MaxEdge[1] ||
-				(pos[2] < m_boundingZone.MinEdge[2] || pos[2] > m_boundingZone.MaxEdge[2]))) is_trapped = false;
+			bool is_trapped =  mt::is_intersect(m_bbox, node->getBoundingBox());
 
 			if(is_trapped)
 			{
@@ -120,6 +126,17 @@ namespace Menge
 		mt::ident_m4(id);
 		renderEng->setWorldMatrix(id);
 
-		renderEng->drawBox(m_boundingZone.MinEdge,m_boundingZone.MaxEdge, 0xaaff00ff);
+		renderEng->drawBox(m_bbox.MinEdge,m_bbox.MaxEdge, 0xaaff00ff);
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Trap3D::setEnterZoneCallback(PyObject * _object)
+	{
+		registerEvent( "ENTER_ZONE", _object );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Trap3D::setLeaveZoneCallback(PyObject * _object)
+	{
+		registerEvent( "LEAVE_ZONE", _object );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -21,7 +21,7 @@
 
 #	include "ErrorMessage.h"
 
-#	include "Actor.h"
+#	include "Actor2D.h"
 
 #	include "Amplifier.h"
 
@@ -35,7 +35,9 @@
 
 #	include "AnimationBone.h"
 
-#	include "math/box.h"
+#	include "Avatar3D.h"
+
+#	include "math/box2.h"
 
 #	define DIRECTINPUT_VERSION 0x0800
 #	include <dinput.h>
@@ -192,11 +194,23 @@ namespace Menge
 		
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
+		if( inputEng->isKey( DIK_1, 1 ) == true )
+		{
+			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
+			Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
+		//	avat->moveToPoint(mt::vec3f(0,-100,0));
+			avat->moveToPoint(mt::vec3f(0,100,0));
+			//avat->moveTo(mt::vec3f(0,-100,0));
+		//	//anim->play2Blend("paladin_idle.caf",0.4f,"paladin_walk.caf",0.6f);
+		}
+
+
+
 		if( inputEng->isKey( DIK_F1, 1 ) == true )
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			AnimationObject * anim = layer->getChildrenT<AnimationObject>("TestMesh");
-			anim->play2Blend("paladin_idle.caf",0.9f,"paladin_walk.caf",0.1f);
+			anim->play2Blend("paladin_idle.caf",0.4f,"paladin_walk.caf",0.6f);
 		}
 
 		if( inputEng->isKey( DIK_F2, 1 ) == true )
@@ -218,15 +232,22 @@ namespace Menge
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			AnimationObject * anim = layer->getChildrenT<AnimationObject>("TestMesh");
+			anim->executeAction("paladin_walk.caf",0,1,1,false);
+
+
+
+		/*	Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
+			AnimationObject * anim = layer->getChildrenT<AnimationObject>("TestMesh");
 			static mt::vec3f pos(0,0,0);
 			anim->setPosition(pos);
 			pos.y+=7.5f;
+			*/
 		}
 
 		if( inputEng->isKey( DIK_F5, 1 ) == true )
 		{
 			Layer2D * layer = m_scene->getChildrenT<Layer2D>("Main");
-			Actor * act = layer->getChildrenT<Actor>("TestActor");
+			Actor2D * act = layer->getChildrenT<Actor2D>("TestActor");
 			Sprite * spr = act->getChildrenT<Sprite>("TestSprite");
 			spr->setImageIndex(1);
 		}

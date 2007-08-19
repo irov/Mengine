@@ -4,12 +4,14 @@
 
 #	include "math/polygon.h"
 
+#	include "math/box2.h"
+
 #	include <list>
 
 
 namespace Menge
 {
-	/*	Trapped under Ice  */
+	/*	Trapped under Ice!  */
 
 	class	Trap2D : public SceneNode2D
 	{
@@ -23,17 +25,25 @@ namespace Menge
 	public:
 		void setEnterZoneCallback(PyObject * _object);
 		void setLeaveZoneCallback(PyObject * _object);
+	protected:
+		bool _activate() override;
+		void _deactivate() override;
 	private:
 
 		mt::polygon	m_polygon;
 
-		typedef std::list<std::string> TListSceneNodesNames;
-		TListSceneNodesNames	m_sceneNodes;
+		mt::box2f	m_bbox;
 
-		typedef std::list<SceneNode2D*> TListTrapped;
+		typedef std::list<std::string> TListSceneNodesNames;
+		TListSceneNodesNames	m_sceneNodesNames;
+
+		typedef std::list<SceneNode2D*> TListSceneNodes;
+		TListSceneNodes m_sceneNodes;
+
+		typedef std::list<Node*> TListTrapped;
 		TListTrapped m_trapped;
 
-		typedef std::list<SceneNode2D*> TListInZone;
+		typedef std::list<Node*> TListInZone;
 		TListInZone	m_inZone;
 	};
 }

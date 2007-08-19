@@ -96,7 +96,6 @@ namespace	mt
 		return !operator==(_a, _b);
 	}
 
-	/*	Addition of vecs  */
 	void	add_v2_v2(vec2f& _out,const vec2f& _a, const vec2f& _b)
 	{
 		_out.x = _a.x + _b.x;
@@ -110,7 +109,6 @@ namespace	mt
 		return	out;
 	}
 
-	/*	Addition of vecs  */
 	void	sub_v2_v2(vec2f& _out,const vec2f& _a, const vec2f& _b)
 	{
 		_out.x = _a.x - _b.x;
@@ -124,7 +122,6 @@ namespace	mt
 		return	out;
 	}
 
-	/*	Scale of vecs  */
 	void	scale_v2_v2(vec2f& _out, const vec2f& _a, float _val)
 	{
 		_out.x = _a.x * _val;
@@ -150,7 +147,6 @@ namespace	mt
 		return operator*(_rhs, 1/_val);
 	}
 
-	/*	Negation */
 	void	neg_v2(vec2f& _out)
 	{
 		_out.x = -_out.x;
@@ -163,19 +159,16 @@ namespace	mt
 		return	_rhs;
 	}
 
-	/*	Dot	Product			*/
 	float	dot_v2_v2(const vec2f &a, const vec2f &b)
 	{
 		return a.x * b.x + a.y * b.y ;
 	}
 
-	/*	Normalize Vector*/
 	void	norm_v2(vec2f& _out, const vec2f& _rhs)
 	{
 		_out = _rhs / _rhs.length();
 	}
 
-	/*	Normalize Vector*/
 	float	norm_v2_f(vec2f& _out, const vec2f& _rhs)
 	{
 		float l = _rhs.length();
@@ -208,7 +201,6 @@ namespace	mt
 		return	out;
 	}
 	
-	/*	Perp to Vector		*/
 	void	perp(vec2f&	_out, const vec2f& _rhs)
 	{
 		_out = vec2f(-_rhs.y,_rhs.x);
@@ -219,9 +211,9 @@ namespace	mt
 		return	vec2f(-_rhs.y,_rhs.x);
 	}
 
-	float	is_left_v2(const vec2f& P0, const vec2f& P1, const vec2f& P2)
+	float	is_left_v2(const vec2f& p0, const vec2f& p1, const vec2f& p2)
 	{
-		return ((P1.x - P0.x) * (P2.y - P0.y) - (P2.x - P0.x) * (P1.y - P0.y));
+		return ((p1.x - p0.x) * (p2.y - p0.y) - (p2.x - p0.x) * (p1.y - p0.y));
 	}
 
 	float	pseudo_cross_v2(const mt::vec2f& a, const mt::vec2f& b)
@@ -235,67 +227,5 @@ namespace	mt
 
 		result.x = dp * b.x;
 		result.y = dp * b.y;
-	}
-
-	int clip_segment_to_line_v2(mt::vec2f vOut[2], const mt::vec2f vIn[2],
-		const mt::vec2f& normal, float offset, char clipEdge)
-	{
-		int numOut = 0;
-
-		float distance0 = dot_v2_v2(normal, vIn[0]) - offset;
-		float distance1 = dot_v2_v2(normal, vIn[1]) - offset;
-
-		if (distance0 <= 0.0f) vOut[numOut++] = vIn[0];
-		if (distance1 <= 0.0f) vOut[numOut++] = vIn[1];
-
-		if (distance0 * distance1 < 0.0f)
-		{
-			float interp = distance0 / (distance0 - distance1);
-			vOut[numOut] = vIn[0] + (vIn[1] - vIn[0]) * interp;
-			++numOut;
-		}
-
-		return numOut;
-	}
-
-	void compute_incident_edge_v2(mt::vec2f c[2], const mt::vec2f& h, const mt::vec2f& pos,
-		float angle, const mt::vec2f& normal)
-	{
-		float cs = cosf(angle);
-		float ss = sinf(angle);
-
-		mt::vec2f n = -mt::vec2f(cs * normal.x + ss * normal.y,-ss * normal.x + cs * normal.y);
-
-		mt::vec2f nAbs(abs(n.x),abs(n.y));
-
-		if (nAbs.x > nAbs.y)
-		{
-			if (n.x > 0.0f)
-			{
-				c[0]=mt::vec2f(h.x, -h.y);
-				c[1]=mt::vec2f(h.x, h.y);
-			}
-			else
-			{
-				c[0]=mt::vec2f(-h.x, h.y);
-				c[1]=mt::vec2f(-h.x, -h.y);
-			}
-		}
-		else
-		{
-			if (n.y > 0.0f)
-			{
-				c[0]=mt::vec2f(h.x, h.y);
-				c[1]=mt::vec2f(-h.x, h.y);
-			}
-			else
-			{
-				c[0]=mt::vec2f(-h.x, -h.y);
-				c[1]=mt::vec2f(h.x, -h.y);
-			}
-		}
-
-		c[0] = pos + mt::vec2f(cs * c[0].x + -ss * c[0].y,ss * c[0].x + cs * c[0].y);
-		c[1] = pos + mt::vec2f(cs * c[1].x + -ss * c[1].y,ss * c[1].x + cs * c[1].y);
 	}
 }

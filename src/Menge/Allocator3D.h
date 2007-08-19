@@ -37,6 +37,8 @@ namespace Menge
 	public:
 		void loader( TiXmlElement * _xml );
 
+		void debugRender();
+
 	public:
 		void updateMatrix( Allocator3D * _parent );
 

@@ -25,6 +25,7 @@ namespace	Menge
 	void Actor3D::loader( TiXmlElement * _xml )
 	{
 		SceneNode3D::loader(_xml);
+		m_animObject->loader( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::_update( float _timing )
@@ -82,7 +83,7 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Actor3D::_activate()
-	{
+	{		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,5 +94,6 @@ namespace	Menge
 	void Actor3D::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
 	{
 		SceneNode3D::_render(_rwm, _camera);
+		m_animObject->render(_rwm, _camera);
 	}
 }

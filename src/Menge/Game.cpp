@@ -34,6 +34,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
+		if( Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, "fini" ) )
+		{
+			Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, "fini" );
+		}
+
 		delete m_amplifier;
 
 		for each( const TMapArrow::value_type & it in m_mapArrow )
@@ -47,9 +54,6 @@ namespace Menge
 		}
 
 		delete m_player;
-
-		Holder<ScriptEngine>::hostage()
-			->callFunction( m_eventFini );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loader(TiXmlElement *_xml)

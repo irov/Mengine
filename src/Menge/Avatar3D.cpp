@@ -30,13 +30,11 @@ namespace	Menge
 	void Avatar3D::loader( TiXmlElement * _xml )
 	{
 		Actor3D::loader(_xml);
-//		m_animObject.loader(_xml);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Avatar3D::_update( float _timing)
 	{
 		Actor3D::_update(_timing);
-	//	m_animObject._update(_timing);
 		m_actionScheduler.update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////

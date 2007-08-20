@@ -13,7 +13,6 @@ namespace Menge
 
 	public:
 		Actor3D();
-		~Actor3D();
 
 	public:
 		void	moveToWayPoint(const mt::vec3f& _wayPoint);
@@ -25,10 +24,10 @@ namespace Menge
 		void	loader( TiXmlElement * _xml ) override;
 		
 	protected:
-		void _update( float _timing)  override;
-		bool _activate() override;
-		void _deactivate() override;
-		void _render( const mt::mat4f & _rwm, const Camera3D * _camera ) override;
+		void	_update( float _timing)  override;
+		bool	_activate() override;
+		void	_deactivate() override;
+		void	_render( const mt::mat4f & _rwm, const Camera3D * _camera ) override;
 
 	protected:
 		AnimationObject * m_animObject;
@@ -37,6 +36,9 @@ namespace Menge
 		bool		m_isMove;
 		mt::vec3f	m_dir;
 		mt::vec3f   m_destpos;
-		float		m_velocity;
+		
+		float		m_acceleration;
+		float		m_speed;
+		float		m_maxSpeed;
 	};	
 }

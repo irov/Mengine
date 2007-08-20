@@ -260,4 +260,8 @@ namespace Menge
 		return m_hardPoints;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const	CalCoreBone * ResourceAnimationCal3d::getCoreBone(int _index) const
+	{
+		return m_calCoreModel->getCoreSkeleton()->getCoreBone(_index);
+	}
 }

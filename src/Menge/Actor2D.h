@@ -25,6 +25,9 @@ namespace Menge
 		bool		m_isMove;
 		mt::vec2f	m_dir;
 		mt::vec2f   m_destpos;
-		float		m_velocity;
+
+		float		m_acceleration;
+		float		m_speed;
+		float		m_maxSpeed;
 	};	
 }

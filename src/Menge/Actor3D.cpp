@@ -11,17 +11,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Actor3D::Actor3D()
 	: m_isMove(false)
-	, m_velocity(17.0f)
 	, m_destpos(0.0f,0.0f,0.0f)
 	, m_dir(0.0f,0.0f,0.0f)
+	, m_speed(0.0f)
+	, m_maxSpeed(0.0f)
+	, m_acceleration(0.0f)
 	{
 		m_animObject =
 			this->createChildrenT<AnimationObject>("AnimationObject");
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Actor3D::~Actor3D()
-	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::loader( TiXmlElement * _xml )
@@ -32,7 +29,13 @@ namespace	Menge
 		{
 			XML_CHECK_NODE("Animation")
 			{
-				m_animObject->loader( _xml );
+				m_animObject->loader( XML_CURRENT_NODE );
+			}
+
+			XML_CHECK_NODE_FOR_EACH("MovementParams")
+			{
+				XML_CHECK_VALUE_NODE( "MaxSpeed", "Value", m_maxSpeed );
+				XML_CHECK_VALUE_NODE( "Acceleration", "Value", m_acceleration );
 			}
 		}
 	}
@@ -41,7 +44,17 @@ namespace	Menge
 	{
 		if( m_isMove )
 		{
-			float actual_distance = m_velocity * _timing;
+			if( m_speed <= m_maxSpeed )
+			{
+				m_speed += m_acceleration * _timing;
+
+				if(m_speed > m_maxSpeed)
+				{
+					m_speed = m_maxSpeed;
+				}
+			}
+
+			float actual_distance = m_speed * _timing;
 
 			mt::vec3f pos = getLocalPosition();
 
@@ -70,11 +83,20 @@ namespace	Menge
 		norm_v3(m_dir,vec);
 		m_destpos = _wayPoint;
 
+		float m_distance = mt::length_v3_v3(pos, m_destpos);
+
 		m_isMove = true;
+//test
+		m_animObject->play("paladin_walk.caf");
+//
+//		m_animObject->executeAction("paladin_walk.caf",0,1,1,false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::stop()
 	{
+//test
+		m_animObject->play("paladin_idle.caf");
+//
 		m_isMove = false;
 	}
 	//////////////////////////////////////////////////////////////////////////

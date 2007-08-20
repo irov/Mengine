@@ -2,6 +2,8 @@
 
 #	include "ObjectImplement.h"
 
+#	include "XmlParser/XmlParser.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -9,21 +11,42 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Actor2D::Actor2D()
 	: m_isMove(false)
-	, m_velocity(1.0f)
 	, m_destpos(0.0f,0.0f)
 	, m_dir(0.0f,0.0f)
+	, m_speed(0.0f)
+	, m_maxSpeed(0.0f)
+	, m_acceleration(0.0f)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor2D::loader( TiXmlElement * _xml )
 	{
 		SceneNode2D::loader(_xml);
+
+		XML_FOR_EACH_TREE( _xml )
+		{
+			XML_CHECK_NODE_FOR_EACH("MovementParams")
+			{
+				XML_CHECK_VALUE_NODE( "MaxSpeed", "Value", m_maxSpeed );
+				XML_CHECK_VALUE_NODE( "Acceleration", "Value", m_acceleration );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor2D::_update( float _timing )
 	{
 		if( m_isMove )
 		{
-			float actual_distance = m_velocity * _timing;
+			if( m_speed <= m_maxSpeed )
+			{
+				m_speed += m_acceleration * _timing;
+
+				if(m_speed > m_maxSpeed)
+				{
+					m_speed = m_maxSpeed;
+				}
+			}
+
+			float actual_distance = m_speed * _timing;
 
 			mt::vec2f pos = getLocalPosition();
 

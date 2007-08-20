@@ -194,12 +194,39 @@ namespace Menge
 		
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
+		if( inputEng->isButton( 0, 1 ) == true )
+		{
+			mt::vec2f pos = inputEng->getPosition().v2;
+
+			mt::vec3f dir = cmr3d->getDirectionFromMouse(pos.x,pos.y);
+			printf("%f %f %f \n", dir.x,dir.y,dir.z);
+		//	cmr3d->yaw( 0.128f );
+		}
+
+		if( inputEng->isButton( 1, 1 ) == true )
+		{
+		//	cmr3d->yaw( -0.128f );
+		}
+
+
 		if( inputEng->isKey( DIK_1, 1 ) == true )
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
 		//	avat->moveToPoint(mt::vec3f(0,-100,0));
 			avat->moveToPoint(mt::vec3f(0,100,0));
+			//avat->
+			//avat->moveTo(mt::vec3f(0,-100,0));
+		//	//anim->play2Blend("paladin_idle.caf",0.4f,"paladin_walk.caf",0.6f);
+		}
+
+		if( inputEng->isKey( DIK_2, 1 ) == true )
+		{
+			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
+			Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
+		//	avat->moveToPoint(mt::vec3f(0,-100,0));
+			avat->moveToPoint(mt::vec3f(0,-100,0));
+			//avat->
 			//avat->moveTo(mt::vec3f(0,-100,0));
 		//	//anim->play2Blend("paladin_idle.caf",0.4f,"paladin_walk.caf",0.6f);
 		}
@@ -252,7 +279,7 @@ namespace Menge
 			spr->setImageIndex(1);
 		}
 
-		if( inputEng->isButton( 0, 1 ) == true )
+	/*	if( inputEng->isButton( 0, 1 ) == true )
 		{
 			cmr3d->yaw( 0.128f );
 		}
@@ -261,7 +288,7 @@ namespace Menge
 		{
 			cmr3d->yaw( -0.128f );
 		}
-
+*/
 		if( inputEng->isKey( DIK_A, 1 ) == true )
 		{
 			mt::vec3f a = cmr3d->getLocalPosition();

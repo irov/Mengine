@@ -45,6 +45,7 @@ namespace Menge
 
 		const	TVecHardPoints & getHardPoints() const; 
 		const   AnimInfo & getAnimationInfo(const std::string& _name) const;
+		const	CalCoreBone * getCoreBone(int _index) const;
 	public:
 		// cal3d specs:
 		CalModel * getNewInstance();

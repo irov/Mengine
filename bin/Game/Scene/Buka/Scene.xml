@@ -34,9 +34,16 @@
 
 	<Node Name = "Back" Type = "Layer3D">
 		<Node Name = "TestAvatar" Type = "Avatar3D">
-			<ImageMap Name = "Cal3dTest" />
-			<Transformation Value = "1;0;0;0;1;0;0;0;1;0;0;0" />
+			<Animation>
+				<Transformation Value = "1;0;0;0;1;0;0;0;1;0;0;0" />
+				<ImageMap Name = "Cal3dTest" />
+			</Animation>
+			<MovementParams>
+				<MaxSpeed Value = "10.0" />
+				<Acceleration Value = "2.0" />
+			</MovementParams>
 		</Node>
+
 	</Node>
 
 	<Node Name = "Back" Type = "Layer2D">

@@ -45,7 +45,7 @@ namespace Menge
 		void executeAction(const std::string & _name, float _timeIn,
 			float _timeOut, float _width, bool _autoLock
 		);
-
+	
 		mt::mat4f	getBoneWorldMatrix(int _index);
 
 		void setCallback(const std::string & _name, float _updateTime, UpdateCallback _updateCallback, CompleteCallback _completeCallback, void * _userData);

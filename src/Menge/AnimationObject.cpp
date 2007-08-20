@@ -97,20 +97,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::loader(TiXmlElement *xml)
+	void AnimationObject::loader(TiXmlElement * _xml)
 	{
-		XML_FOR_EACH_TREE(xml)
+		SceneNode3D::loader(_xml);
+
+		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourceName );
 		}
-
-		SceneNode3D::loader(xml);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationObject::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
 	{	
 		SceneNode3D::_render(_rwm,_camera);
-	//	Allocator3D::debugRender();
 		
 		CalSkeleton * pCalSkeleton = m_calModel->getSkeleton();
 		m_calModel->getSkeleton()->calculateBoundingBoxes();
@@ -307,6 +306,7 @@ namespace Menge
 		const AnimInfo& pAnimInfo = m_cal3dRes->getAnimationInfo(_name);
 
 		_clearCycles(_timeIn);
+
 		m_calModel->getMixer()->setTimeFactor(pAnimInfo.delay);
 		m_calModel->getMixer()->executeAction(pAnimInfo.index, _timeIn, _timeOut, _width, _autoLock);
 	}

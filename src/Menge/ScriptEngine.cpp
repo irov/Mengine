@@ -32,7 +32,7 @@ namespace Menge
 		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::genFunctor( const std::string &_name )
+	PyObject * ScriptEngine::genEvent( const std::string &_name )
 	{
 		try
 		{
@@ -58,22 +58,6 @@ namespace Menge
 		ScriptModuleDeclaration::init( py_menge );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::incref( Node * _node )
-	{
-		if( _node->isScriptable() )
-		{
-			incref( _node->getScriptable() );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::decref( Node * _node )
-	{
-		if( _node->isScriptable() )
-		{	
-			decref( _node->getScriptable() );
-		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::incref( PyObject * _object )
 	{
 		pybind::incref( _object );
@@ -97,13 +81,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::isEntityType( const std::string & _type )
 	{
-		TListEntitysType::iterator it_find = 
-			std::find( m_listEntitiesType.begin(), m_listEntitiesType.end(), _type );
+		TMapEntitiesType::iterator it_find = 
+			m_mapEntitiesType.find( _type );
 
-		return it_find != m_listEntitiesType.end();
+		return it_find != m_mapEntitiesType.end();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::registerEntityType( const std::string & _type )
+	PyObject * ScriptEngine::getEntityModule( const std::string & _type )
+	{
+		TMapEntitiesType::iterator it_find = 
+			m_mapEntitiesType.find( _type );
+
+		if( it_find == m_mapEntitiesType.end() )
+		{
+			return 0;
+		}
+
+		return it_find->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScriptEngine::registerEntityType( const std::string & _type )
 	{
 		std::cout << "register entity type " << _type << "...";
 
@@ -112,10 +109,8 @@ namespace Menge
 		if( module == 0 )
 		{
 			std::cout << "failed" << std::endl;
-			return;
+			return false;
 		}
-
-		std::cout << "successful" << std::endl;
 
 		try
 		{
@@ -123,15 +118,22 @@ namespace Menge
 
 			if( pybind::check_type( result ) == false )
 			{
-				return;
+				std::cout << "failed" << std::endl;
+				return false;
 			}
+
+			pybind::decref( result );
+
+			std::cout << "successful" << std::endl;
 		}
 		catch (...)
 		{
 			handleException();
 		}
 
-		m_listEntitiesType.push_back( _type );	
+		m_mapEntitiesType.insert( std::make_pair( _type, module ) );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::doBuffer( const char * _buffer, size_t _size )
@@ -205,6 +207,14 @@ namespace Menge
 		try
 		{
 			PyObject * module = pybind::module_import( _file.c_str() );
+
+			if( module == 0 )
+			{				
+				return 0;
+			}
+
+			m_mapModule.insert( std::make_pair( _file, module ) );
+
 			return module;
 		}
 		catch (...)
@@ -224,29 +234,50 @@ namespace Menge
 	{
 		//try
 		//{
-			PyObject * md = pybind::module_import( _type.c_str() );
+		PyObject * module = getEntityModule( _type );
+		PyObject * result = pybind::call_method( module, _type.c_str(), "()" );
 
-			PyObject * result = pybind::call_method( md, _type.c_str(), "()" );
+		if( result == 0 )
+		{
+			return 0;
+		}
 
-			Entity * en = pybind::extract<Entity*>( result );
+		Entity * en = pybind::extract<Entity*>( result );
 
-			en->setScriptable( result );
-
-			this->incref( en );
-
-			return en;
+		//pybind::decref( result );
+		//this->incref( en );
+		return en;
 		//}
 		//catch (...) 
 		//{
-			ScriptEngine::handleException();
+			//ScriptEngine::handleException();
 		//}
 
-		return 0;
+		//return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::hasModuleFunction( PyObject * _module, const std::string & _name )
 	{
 		return pybind::has_attr( _module, _name.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::callModuleFunction( const std::string & _module, const std::string & _name, const char * _params, ... )
+	{
+		TMapModule::iterator it_find = m_mapModule.find( _module );
+
+		if( it_find == m_mapModule.end() )
+		{
+			return 0;
+		}
+
+		va_list valist;
+		va_start(valist, _params);
+
+		PyObject * result = pybind::call_method_va( it_find->second, _name.c_str(), _params, valist );
+
+		va_end( valist ); 
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::callModuleFunction( PyObject * _module, const std::string & _name, const char * _params, ...  )
@@ -299,7 +330,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::hasMethod( Node * _node, const std::string & _name )
 	{
-		PyObject * scriptable = _node->getScriptable();
+		PyObject * scriptable = pybind::ptr( _node );
+
+		if( scriptable == 0 )
+		{
+			return false;
+		}
 
 		int res = pybind::has_attr( scriptable, _name.c_str() );
 
@@ -308,7 +344,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::callMethod( Node * _node, const std::string & _name, const char * _params, ...  )
 	{
-		PyObject * scriptable = _node->getScriptable();
+		PyObject * scriptable = pybind::ptr( _node );
+
+		if( scriptable == 0 )
+		{
+			return false;
+		}
 
 		try
 		{
@@ -332,6 +373,15 @@ namespace Menge
 	bool ScriptEngine::parseBool( PyObject * _result )
 	{
 		return pybind::extract<bool>( _result );
+	}
+	PyObject * ScriptEngine::wrapp( Node * _node )
+	{
+		return pybind::ptr( _node );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ScriptEngine::refCount( PyObject * _obj )
+	{
+		return pybind::refcount( _obj );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::handleException()

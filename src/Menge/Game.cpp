@@ -43,12 +43,12 @@ namespace Menge
 
 		delete m_amplifier;
 
-		for each( const TMapArrow::value_type & it in m_mapArrow )
+		for each( const TMapScene::value_type & it in m_mapScene )
 		{
 			it.second->destroy();
 		}
 
-		for each( const TMapScene::value_type & it in m_mapScene )
+		for each( const TMapArrow::value_type & it in m_mapArrow )
 		{
 			it.second->destroy();
 		}
@@ -347,8 +347,8 @@ namespace Menge
 			return;
 		}
 
-		Holder<ScriptEngine>::hostage()
-			->incref( _scene );
+		//Holder<ScriptEngine>::hostage()
+		//	->incref( _scene );
 
 		m_mapScene.insert( std::make_pair( name, _scene ) );
 	}

@@ -18,7 +18,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
 	: m_handle( true )
-	, m_mouseLeftClick( 0 )
+	//, m_mouseLeftClick( 0 )
 	{
 
 	}
@@ -107,10 +107,10 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::setMouseLeftClickEvent( PyObject * _object )
-	{
-		registerEvent( "MOUSE_LEFT_CLICK", _object );
-	}
+	//void HotSpot::setMouseLeftClickEvent( PyObject * _object )
+	//{
+	//	registerEvent( "MOUSE_LEFT_CLICK", _object );
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::update( float _timing )
 	{
@@ -129,11 +129,11 @@ namespace	Menge
 				return;
 			}
 
-			if( PyObject * eventMouseLeftClick = getEvent( "MOUSE_LEFT_CLICK" ) )
-			{
-				Holder<ScriptEngine>::hostage()
-					->callFunction( eventMouseLeftClick );
-			}
+			//if( PyObject * eventMouseLeftClick = getEvent( "MOUSE_LEFT_CLICK" ) )
+			//{
+			//	Holder<ScriptEngine>::hostage()
+			//		->callFunction( eventMouseLeftClick );
+			//}
 		}
 	}
 }

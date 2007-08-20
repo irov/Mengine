@@ -7,14 +7,10 @@
 
 class TiXmlElement;
 
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
-
 namespace Menge
 {
+	class Event{};
+
 	class Eventable
 		: public virtual Node
 	{
@@ -22,14 +18,14 @@ namespace Menge
 		void removeAllEvent();
 
 	public:
-		void registerEvent( const std::string &_name, PyObject * _func  ) override;
-		PyObject * getEvent( const std::string &_name ) override;
+		void registerEvent( const std::string &_name, Event * _func  ) override;
+		Event * getEvent( const std::string &_name ) override;
 		
 	public:
 		void loader(TiXmlElement * _xml);
 
 	private:
-		typedef std::map<std::string, PyObject *> TMapScriptFunction;
-		TMapScriptFunction m_mapScriptFunction;
+		typedef std::map<std::string, Event *> TMapEvent;
+		TMapEvent m_mapEvent;
 	};
 }

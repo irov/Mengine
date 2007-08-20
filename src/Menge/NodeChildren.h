@@ -11,8 +11,6 @@ namespace Menge
 	class NodeChildrenImpl
 	{
 	public:
-		void increfImpl( Node * _node );
-		void decrefImpl( Node * _node );
 		Node * createChildrenImpl( const std::string & _name );
 	};
 
@@ -48,8 +46,6 @@ namespace Menge
 
 			t_node->setParent( this );
 
-			increfImpl( t_node );
-			
 			m_listChildren.push_back( t_node );
 
 			return true;
@@ -107,8 +103,6 @@ namespace Menge
 
 			addChildren( node );
 			
-			decrefImpl( node );
-
 			return dynamic_cast<TNode*>(node);
 		}
 		//////////////////////////////////////////////////////////////////////////

@@ -26,7 +26,7 @@ namespace Menge
 		bool testPoint( const mt::vec2f & _p );
 
 		void setHandle( bool _handle );
-		void setMouseLeftClickEvent( PyObject * _object );
+		//void setMouseLeftClickEvent( PyObject * _object );
 
 	public:
 		void update( float _timing ) override;
@@ -38,7 +38,7 @@ namespace Menge
 	private:
 		mt::polygon m_poligon;
 
-		PyObject * m_mouseLeftClick;
+		//PyObject * m_mouseLeftClick;
 
 		bool m_handle;
 	};

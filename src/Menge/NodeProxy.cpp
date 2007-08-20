@@ -43,12 +43,12 @@ namespace Menge
 		return m_node->getName();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::setType(const std::string & _type)
+	void NodeProxy::setType( const type_info * _type)
 	{
 		return m_node->setType(_type);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & NodeProxy::getType()const
+	const type_info * NodeProxy::getType()const
 	{
 		return m_node->getType();
 	}
@@ -62,31 +62,31 @@ namespace Menge
 	{
 		return m_node->loader(_xml);
 	}
+	////////////////////////////////////////////////////////////////////////////
+	//void NodeProxy::registerEvent( const std::string &_name, PyObject * _func  )
+	//{
+	//	return m_node->registerEvent(_name,_func);
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//PyObject * NodeProxy::getEvent( const std::string &_name )
+	//{
+	//	return m_node->getEvent(_name);
+	//}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::registerEvent( const std::string &_name, PyObject * _func  )
-	{
-		return m_node->registerEvent(_name,_func);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * NodeProxy::getEvent( const std::string &_name )
-	{
-		return m_node->getEvent(_name);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::setScriptable( PyObject * _scriptable )
-	{
-		return m_node->setScriptable( _scriptable );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * NodeProxy::getScriptable()
-	{
-		return m_node->getScriptable();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool NodeProxy::isScriptable() const
-	{
-		return m_node->isScriptable();
-	}
+	//void NodeProxy::setScriptable( PyObject * _scriptable )
+	//{
+	//	return m_node->setScriptable( _scriptable );
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//PyObject * NodeProxy::getScriptable()
+	//{
+	//	return m_node->getScriptable();
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//bool NodeProxy::isScriptable() const
+	//{
+	//	return m_node->isScriptable();
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeProxy::debugRender()
 	{

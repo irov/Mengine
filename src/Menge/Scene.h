@@ -19,6 +19,7 @@ namespace Menge
 		OBJECT_DECLARE( Scene )
 	public:
 		Scene();
+		~Scene();
 
 	public:
 		void layerAppend( const std::string & _layer, Node * _node );
@@ -37,6 +38,5 @@ namespace Menge
 
 	private:
 		std::string m_scriptFile;
-		PyObject * m_sceneModule;
 	};
 }

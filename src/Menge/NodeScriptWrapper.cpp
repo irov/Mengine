@@ -18,11 +18,6 @@
 
 namespace Menge
 {
-	SCRIPT_CLASS_WRAPPING( Scene );
-	SCRIPT_CLASS_WRAPPING( Sprite );
-	SCRIPT_CLASS_WRAPPING( Animation );
-	SCRIPT_CLASS_WRAPPING( HotSpot );
-
 	namespace ScriptMethod
 	{
 		void setCurrentScene( const std::string & _name )
@@ -35,11 +30,17 @@ namespace Menge
 		{
 			Node * node = SceneManager::createNode( _type );
 
-			if( node->isScriptable() == false )
+			const type_info * type = node->getType();
+
+			PyObject * pyNode = pybind::ptr( node, *type );
+
+			if( pyNode == 0 )
 			{
 				node->destroy();
-				pybind::ret_none();
+				return pybind::ret_none();
 			}
+
+			pybind::incref( pyNode );
 
 			if( pybind::list_check( _params ) )
 			{
@@ -83,10 +84,6 @@ namespace Menge
 				TiXmlElementRemove( node_xml );
 			}
 
-			PyObject * pyNode = node->getScriptable();
-
-			pybind::incref( pyNode );
-
 			return pyNode;
 		}
 	}
@@ -123,9 +120,6 @@ namespace Menge
 		//boost::python::class_<Allocator2D>("Allocator2D")
 		//	;
 
-		using namespace pybind;
-		//PYBIND_METHOD_STATIC( "hide",  );
-
 		pybind::class_<Renderable2D>("Renderable2D")
 			.def( "hide", &Renderable2D::hide )
 			;
@@ -134,7 +128,7 @@ namespace Menge
 		//	.def( "hide", &Renderable2D::hide )
 		//	;
 
-		pybind::class_<SceneNode2D, pybind::bases<Node, Allocator2D, Renderable2D>  >("SceneNode2D")
+		pybind::class_<SceneNode2D, pybind::bases<Node, Allocator2D, Renderable2D>>("SceneNode2D")
 			.def( "activate", &SceneNode2D::activate )
 			.def( "setName", &SceneNode2D::setName )
 			.def( "getName", &SceneNode2D::getName )
@@ -149,7 +143,7 @@ namespace Menge
 		//	;		
 
 		{
-			pybind::class_<Scene>("Scene")
+			pybind::class_<Scene, pybind::no_bases>("Scene")
 				.def( "layerAppend", &Scene::layerAppend )
 				;
 
@@ -157,8 +151,8 @@ namespace Menge
 			//	.def( "layerAppend", &Scene::layerAppend )
 			//	;
 
-			pybind::class_<HotSpot, pybind::bases<SceneNode2D> >("HotSpot")
-				.def( "setMouseLeftClickEvent", &HotSpot::setMouseLeftClickEvent )
+			pybind::class_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot")
+				//.def( "setMouseLeftClickEvent", &HotSpot::setMouseLeftClickEvent )
 				;
 
 			//boost::python::class_<HotSpot, boost::python::bases<SceneNode2D> >("HotSpot")
@@ -166,7 +160,7 @@ namespace Menge
 			//	.def( "setMouseLeftClickEvent", &HotSpot::setMouseLeftClickEvent )
 			//	;
 
-			pybind::class_<Sprite, pybind::bases<SceneNode2D> >("Sprite")
+			pybind::class_<Sprite, pybind::bases<SceneNode2D>>("Sprite")
 				.def( "setImageIndex", &Sprite::setImageIndex )
 				.def( "getImageIndex", &Sprite::getImageIndex )
 				.def( "setImageResource", &Sprite::setImageResource )
@@ -182,7 +176,7 @@ namespace Menge
 			//	;
 			{
 
-				pybind::class_<Animation, pybind::bases<Sprite> >("Animation")
+				pybind::class_<Animation, pybind::bases<Sprite>>("Animation")
 					;
 
 				//boost::python::class_<Animation, boost::python::bases<Sprite> >("Animation")
@@ -192,7 +186,7 @@ namespace Menge
 
 		}		
 
-		pybind::class_<Player>("Player")
+		pybind::class_<Player, pybind::no_bases>("Player")
 			;
 		
 		//boost::python::class_<Player>("Player");

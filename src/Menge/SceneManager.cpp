@@ -60,20 +60,19 @@ namespace Menge
 		TiXmlDocument * document = Holder<FileEngine>::hostage()
 			->loadXml( _xml );
 
+		Node *node = 0;
+
 		XML_FOR_EACH_DOCUMENT( document )
-		{
-			
+		{			
 			XML_CHECK_NODE("Node")
 			{
 				XML_DEF_ATTRIBUTES_NODE(Name);
 				XML_DEF_ATTRIBUTES_NODE(Type);
 
-				Node *node = createNode( Type );
+				node = createNode( Type );
 
 				node->setName( Name );
 				node->loader(XML_CURRENT_NODE);
-
-				return node;
 			}
 		}
 		XML_INVALID_PARSE()
@@ -81,8 +80,11 @@ namespace Menge
 			ErrorMessage("Invalid parse external node `%s`", _xml.c_str() );
 		}
 
-		ErrorMessage("This xml file `%s` have invalid external node format", _xml.c_str() );
+		if( node == 0 )
+		{
+			ErrorMessage("This xml file `%s` have invalid external node format", _xml.c_str() );
+		}
 
-		return 0;
+		return node;
 	}
 }

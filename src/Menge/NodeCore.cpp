@@ -41,17 +41,9 @@ namespace Menge
 
 		foreachChildren( ForeachDestroy() );
 
-		Eventable::removeAllEvent();
+		//Eventable::removeAllEvent();
 
-		if( m_scriptable )
-		{
-			Holder<ScriptEngine>::hostage()
-				->decref( this );
-		}
-		else
-		{
-			delete this;
-		}
+		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeCore::activate()
@@ -113,12 +105,12 @@ namespace Menge
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::setType(const std::string & _type)
+	void NodeCore::setType( const type_info * _type)
 	{
 		m_type = _type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & NodeCore::getType()const
+	const type_info * NodeCore::getType()const
 	{
 		return m_type;
 	}
@@ -154,10 +146,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::loader(TiXmlElement * _xml)
 	{
+		Eventable::loader( _xml );
+
 		XML_FOR_EACH_TREE(_xml)
 		{
-			Eventable::loader( XML_CURRENT_NODE );
-
 			XML_CHECK_NODE("Node")
 			{
 				XML_DEF_ATTRIBUTES_NODE(Name);
@@ -171,8 +163,6 @@ namespace Menge
 				}
 
 				addChildren( node );
-
-				ScriptEngine::decref( node );
 
 				node->setName( Name );
 				node->loader(XML_CURRENT_NODE);
@@ -200,8 +190,6 @@ namespace Menge
 						}
 
 						addChildren( node );
-
-						ScriptEngine::decref( node );
 
 						node->setName( Name );
 

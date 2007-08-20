@@ -17,7 +17,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Scene::Scene()
 	{
-
+	}
+	Scene::~Scene()
+	{
+		size_t size = m_listChildren.size();
+		size_t f = size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerAppend( const std::string & _layer, Node * _node )
@@ -82,18 +86,30 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_activate()
 	{
-		m_sceneModule = Holder<ScriptEngine>::hostage()
+		const std::string & name = this->getName();
+		
+		if( name.empty() )
+		{
+			return false;
+		}
+
+		std::string functionName = "Scene" + getName() + "_activate";
+
+		PyObject * py_scene = 
+			Holder<ScriptEngine>::hostage()->wrapp( this ); 
+
+		//size_t rc = ScriptEngine::refCount(py_scene);
+
+
+		Holder<ScriptEngine>::hostage()
 			->importModule( m_name + "." + m_scriptFile );
 
-		const std::string & name = this->getName();
+		Holder<ScriptEngine>::hostage()
+			->callModuleFunction( m_name + "." + m_scriptFile, functionName, "(O)", py_scene );
 
-		if( name.empty() == false )
-		{
-			std::string functionName = "Scene" + getName() + "_activate";
+		//rc = ScriptEngine::refCount(py_scene);
 
-			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_sceneModule, functionName, "(O)", this->getScriptable() );
-		}
+		ScriptEngine::decref( py_scene );
 
 		return NodeCore::_activate();
 	}

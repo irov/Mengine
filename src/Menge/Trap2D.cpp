@@ -46,6 +46,16 @@ namespace Menge
 			}		
 		}
 	}
+	////////////////////////////////////////////////////////////////////////////
+	//void Trap2D::setEnterZoneCallback(PyObject * _object)
+	//{
+	//	registerEvent( "ENTER_ZONE", _object );
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//void Trap2D::setLeaveZoneCallback(PyObject * _object)
+	//{
+	//	registerEvent( "LEAVE_ZONE", _object );
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool Trap2D::_activate()
 	{
@@ -92,11 +102,11 @@ namespace Menge
 
 			if(founded == m_trapped.end())
 			{
-				if( PyObject * eventEnterZone = getEvent( "LEAVE_ZONE" ) )
-				{
-					Holder<ScriptEngine>::hostage()
-						->callFunction( eventEnterZone, "(O)", (*it)->getScriptable() );
-				}
+				//if( PyObject * eventEnterZone = getEvent( "LEAVE_ZONE" ) )
+				//{
+				//	Holder<ScriptEngine>::hostage()
+				//		->callFunction( eventEnterZone, "(O)", (*it)->getScriptable() );
+				//}
 
 				it = m_inZone.erase(it);
 			}
@@ -114,11 +124,11 @@ namespace Menge
 
 			if(founded == m_inZone.end())
 			{
-				if( PyObject * eventLeaveZone = getEvent( "ENTER_ZONE" ) )
-				{
-					Holder<ScriptEngine>::hostage()
-						->callFunction( eventLeaveZone, "(O)", (*it)->getScriptable() );
-				}
+				//if( PyObject * eventLeaveZone = getEvent( "ENTER_ZONE" ) )
+				//{
+				//	Holder<ScriptEngine>::hostage()
+				//		->callFunction( eventLeaveZone, "(O)", (*it)->getScriptable() );
+				//}
 
 				m_inZone.push_back(*it);
 			}

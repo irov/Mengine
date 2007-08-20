@@ -2,7 +2,6 @@
 
 #	include "Node.h"
 #	include "Eventable.h"
-#	include "Scriptable.h"
 
 #	include "ObjectDeclare.h"
 
@@ -15,36 +14,34 @@ namespace Menge
 	class NodeCore
 		: public virtual Node
 		, public Eventable
-		, public Scriptable
 	{
 	public:
 		NodeCore();
 
-		virtual ~NodeCore();
-		virtual void destroy();
+		~NodeCore();
+		void destroy() override;
 
 	public:
-		virtual bool activate();
-		virtual void deactivate();
+		bool activate() override;
+		void deactivate() override;
 
-		virtual bool isActive();
-
-	public:
-		virtual void setName( const std::string & _name );
-		virtual const std::string & getName() const;
-
-		virtual void setType( const std::string & _type );
-		virtual const std::string & getType() const;
+		bool isActive() override;
 
 	public:
-		virtual void update( float _timing );
-		virtual void loader( TiXmlElement *xml );
+		void setName( const std::string & _name ) override;
+		const std::string & getName() const override;
 
+		void setType( const type_info * _type ) override;
+		const type_info * getType() const override;
+				
 	public:
-		virtual void debugRender();
+		void update( float _timing ) override;
+		void loader( TiXmlElement *xml ) override;
+
+	public:		
+		void debugRender() override;
 
 	protected:
-
 		virtual void _update( float _timing );
 
 		virtual bool _activate();
@@ -56,8 +53,7 @@ namespace Menge
 		bool m_active;
 
 		std::string m_name;
-		std::string m_type;
-
+		const type_info * m_type;
 	};
 
 }

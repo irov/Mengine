@@ -36,20 +36,22 @@ namespace Menge
 
 		void setEntitiesPath( const std::string & _paths );
 		bool isEntityType( const std::string & _type );
-		void registerEntityType( const std::string & _type );
+		PyObject * getEntityModule( const std::string & _type );
+		bool registerEntityType( const std::string & _type );
 
-		static void incref( Node * _node );
-		static void decref( Node * _node );
+		static PyObject * wrapp( Node * _node );
 
 		static void incref( PyObject * _object );
 		static void decref( PyObject * _object );
+		static size_t refCount( PyObject * _obj );
 
 	public:
-		PyObject * genFunctor( const std::string &_name );
+		PyObject * genEvent( const std::string &_name );
 
 		Entity * createEntity( const std::string & _type );
 
 		bool hasModuleFunction( PyObject * _module, const std::string & _name );
+		PyObject * callModuleFunction( const std::string & _module, const std::string & _name, const char * _params = "()", ... );
 		PyObject * callModuleFunction( PyObject * _module, const std::string & _name, const char * _params = "()", ... );
 
 		PyObject * callFunction( PyObject * _object, const char * _params = "()", ...  );
@@ -59,7 +61,7 @@ namespace Menge
 		PyObject * callMethod( Node * _entity, const std::string & _name, const char * _params = "()", ...  );
 
 		bool parseBool( PyObject * _result );
-
+		
 		static void handleException();
 	
 	private:
@@ -69,8 +71,11 @@ namespace Menge
 	private:
 		PyObject * m_global;
 
-		typedef std::list<std::string> TListEntitysType;
-		TListEntitysType m_listEntitiesType;
+		typedef std::map<std::string, PyObject *> TMapEntitiesType;
+		TMapEntitiesType m_mapEntitiesType;
+
+		typedef std::map<std::string, PyObject *> TMapModule;
+		TMapModule m_mapModule;
 
 		std::string m_pathEntities;
 	};

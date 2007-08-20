@@ -5,6 +5,8 @@
 #	include "ScriptEngine.h"
 #	include "ScriptObject.h"
 
+#	include "pybind/pybind.hpp"
+
 namespace Menge
 {
 	namespace ScriptMethod
@@ -23,13 +25,18 @@ namespace Menge
 					, _type.c_str() 
 					);
 
-				pybind::ret_none();
+				return pybind::ret_none();
 			}
 
 			en->setPosition( _pos );
 			en->setDirection( _dir );
 
-			PyObject * pyEn = en->getScriptable();
+			PyObject * pyEn = pybind::ptr( en );
+
+			if( pyEn == 0 )
+			{
+				return pybind::ret_none();
+			}
 
 			return pyEn;
 		}

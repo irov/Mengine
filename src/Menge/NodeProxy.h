@@ -24,8 +24,8 @@ namespace Menge
 		void setName(const std::string & _name) override;
 		const std::string & getName()const override;
 
-		void setType(const std::string & _type) override;
-		const std::string & getType()const override;
+		void setType( const type_info * _type) override;
+		const type_info * getType()const override;
 
 	public:
 		void update(float _timing) override;
@@ -35,12 +35,12 @@ namespace Menge
 		void debugRender() override;
 
 	public:
-		virtual void registerEvent( const std::string & _name, PyObject * _func  );
-		virtual PyObject * getEvent( const std::string & _name );
+		//virtual void registerEvent( const std::string & _name, PyObject * _func  );
+		//virtual PyObject * getEvent( const std::string & _name );
 
-		virtual	void setScriptable( PyObject * _scriptable );
-		virtual PyObject * getScriptable();
-		virtual bool isScriptable() const;
+		//virtual	void setScriptable( PyObject * _scriptable );
+		//virtual PyObject * getScriptable();
+		//virtual bool isScriptable() const;
 
 	protected:
 		Node *m_node;

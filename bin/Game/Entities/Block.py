@@ -13,6 +13,8 @@ class Block( Menge.Entity ):
 		print "02", self
 		print "01", self.addChildren
 
+		print image
+
 		image.setName( "TestP" )
 
 		self.addChildren( image )

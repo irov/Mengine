@@ -11,30 +11,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Eventable::removeAllEvent()
 	{
-		for each( const TMapScriptFunction::value_type & it in m_mapScriptFunction )
+		for each( const TMapEvent::value_type & it in m_mapEvent )
 		{
-			ScriptEngine::decref( it.second );
+			delete it.second;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::registerEvent( const std::string &_name, PyObject * _func  )
+	void Eventable::registerEvent( const std::string &_name, Event * _event  )
 	{
-		TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
+		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
-		if( it_find == m_mapScriptFunction.end() )
+		if( it_find == m_mapEvent.end() )
 		{
-			Holder<ScriptEngine>::hostage()
-				->incref( _func );
-
-			m_mapScriptFunction.insert(std::make_pair(_name,_func));		
+			m_mapEvent.insert(std::make_pair( _name, _event ));		
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEvent( const std::string &_name )
+	Event * Eventable::getEvent( const std::string & _name )
 	{
-		TMapScriptFunction::iterator it_find = m_mapScriptFunction.find(_name);
+		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
-		if( it_find == m_mapScriptFunction.end() )
+		if( it_find == m_mapEvent.end() )
 		{
 			return 0;
 		}
@@ -44,18 +41,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Eventable::loader(TiXmlElement * _xml)
 	{
-		XML_FOR_EACH_FORCE(_xml)
+		XML_FOR_EACH_TREE(_xml)
 		{
 			XML_CHECK_NODE("Event")
 			{
 				XML_DEF_ATTRIBUTES_NODE(Type);
 				XML_DEF_ATTRIBUTES_NODE(Function);
 
-				ScriptEngine *scriptEng = Holder<ScriptEngine>::hostage();
+				//ScriptEngine *scriptEng = Holder<ScriptEngine>::hostage();
 
-				PyObject * scriptFunction = scriptEng->genFunctor(Function);
+				//Event * event = scriptEng->genEvent( Function );
 
-				registerEvent(Type, scriptFunction);
+				//registerEvent( Type, event );
 			}
 		}
 	}

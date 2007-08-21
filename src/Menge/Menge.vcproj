@@ -251,14 +251,6 @@
 					RelativePath=".\ScriptModuleDeclaration.h"
 					>
 				</File>
-				<File
-					RelativePath=".\ScriptObject.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ScriptObject.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="File"

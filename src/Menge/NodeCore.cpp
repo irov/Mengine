@@ -105,12 +105,12 @@ namespace Menge
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::setType( const type_info * _type)
+	void NodeCore::setType( const std::string & _type)
 	{
 		m_type = _type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const type_info * NodeCore::getType()const
+	const std::string & NodeCore::getType()const
 	{
 		return m_type;
 	}

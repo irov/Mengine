@@ -22,6 +22,6 @@ namespace Menge
 	{
 	public:
 		static void regWrapping( const std::string & _type, ScriptClassWrapper * _wrapper );
-		static void wrapp( const std::string & _type, Node * _node );
+		static PyObject * wrapp( const std::string & _type, Node * _node );
 	};
 }

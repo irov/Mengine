@@ -7,7 +7,7 @@
 #	define OBJECT_IMPLEMENT_GENERATOR( Class )\
 	Node * Class::genObject(const FactoryGenStruct & _struct){\
 	Node * node = new Class();\
-	node->setType( &typeid( Class * ) );\
+	node->setType( #Class );\
 	return node;\
 	}
 #	else

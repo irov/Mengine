@@ -9,7 +9,6 @@ class Pole:
 		pass
 
 	def loadLevel( self, scene, file ):
-		
 		f = open( file )
 		try:
 			size = f.readline();
@@ -33,9 +32,8 @@ class Pole:
 			
 		finally:
 			f.close()
-		pass
-
-	
+			pass
+		
 		for index in xrange( 0, self.pole_img_count ):
 			x = int( index % self.img_size_x ) * 54 + 200
 			y = int( index / self.img_size_x ) * 54 + 200
@@ -44,7 +42,7 @@ class Pole:
 
 			scene.layerAppend( "Main", en )
 			self.pole_img.append( en )
-			pass 
+			pass
 
 		self.refreshImgPoleAll()
 		pass
@@ -75,7 +73,8 @@ class Pole:
 
 	def setImgFrame( self, i, j, frame ):
 		index = j * self.img_size_x + i;
-		self.pole_img[ index ].setImageIndex( frame )
+		print dir( self.pole_img[ index ] )
+		self.pole_img[ index ].setImageIndex1( frame )
 		pass
 
 

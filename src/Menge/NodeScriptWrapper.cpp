@@ -1,8 +1,6 @@
 #	include "ScriptClassWrapperDefine.h"
 #	include "ScriptDeclarationDefine.h"
 
-#	include "ScriptObject.h"
-
 #	include "SceneManager.h"
 #	include "Scene.h"
 
@@ -30,9 +28,11 @@ namespace Menge
 		{
 			Node * node = SceneManager::createNode( _type );
 
-			const type_info * type = node->getType();
+			PyObject * pyNode = 
+				Holder<ScriptEngine>::hostage()
+				->wrapp( node );
 
-			PyObject * pyNode = pybind::ptr( node, *type );
+			//PyObject * pyNode = pybind::ptr( node, *type );
 
 			if( pyNode == 0 )
 			{
@@ -88,6 +88,12 @@ namespace Menge
 		}
 	}
 
+	SCRIPT_CLASS_WRAPPING( Node );
+	SCRIPT_CLASS_WRAPPING( Scene );
+	SCRIPT_CLASS_WRAPPING( HotSpot );
+	SCRIPT_CLASS_WRAPPING( Sprite );
+	SCRIPT_CLASS_WRAPPING( Player );	
+
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{
 		pybind::class_<mt::vec2f>("vec2f")
@@ -103,10 +109,6 @@ namespace Menge
 			//.def( boost::python::self /= float() )
 			;
 
-
-		//boost::python::to_python_converter<
-		//	ScriptObject *,
-		//	ScriptObjectConverter>();
 
 		pybind::interface_<Node>("Node")
 			;

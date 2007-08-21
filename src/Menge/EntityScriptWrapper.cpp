@@ -3,7 +3,6 @@
 #	include "Entity.h"
 
 #	include "ScriptEngine.h"
-#	include "ScriptObject.h"
 
 #	include "pybind/pybind.hpp"
 

@@ -275,8 +275,8 @@ namespace Menge
 		{
 			Layer2D * layer = m_scene->getChildrenT<Layer2D>("Main");
 			Actor2D * act = layer->getChildrenT<Actor2D>("TestActor");
-			Sprite * spr = act->getChildrenT<Sprite>("TestSprite");
-			spr->setImageIndex(1);
+			//Sprite * spr = act->getChildrenT<Sprite>("TestSprite");
+			//spr->setImageIndex(1);
 		}
 
 	/*	if( inputEng->isButton( 0, 1 ) == true )

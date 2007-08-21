@@ -16,7 +16,6 @@ public:\
 {\
 	Class * _cast = dynamic_cast< Class * >( _node );\
 	PyObject * obj =  pybind::ptr< Class * >( _cast );\
-	pybind::incref( obj );\
 	return obj;\
 }\
 };\

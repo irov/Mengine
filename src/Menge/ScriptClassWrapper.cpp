@@ -29,7 +29,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptClassWrapperFactory::wrapp( const std::string & _type, Node * _node )
+	PyObject * ScriptClassWrapperFactory::wrapp( const std::string & _type, Node * _node )
 	{
 		TMapClassWrapper & mapWrapper = getMapWrapper();
 
@@ -40,12 +40,14 @@ namespace Menge
 			//try
 			//{
 				PyObject * scriptable = it_find->second->wrapp( _node );
-				_node->setScriptable( scriptable );
+				return scriptable;
 			//}
 			//catch (...)
 			//{
 				//ScriptEngine::handleException();
 			//}			
 		}
+
+		return 0;
 	}
 }

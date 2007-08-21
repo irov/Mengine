@@ -24,8 +24,8 @@ namespace Menge
 		void setName(const std::string & _name) override;
 		const std::string & getName()const override;
 
-		void setType( const type_info * _type) override;
-		const type_info * getType()const override;
+		void setType( const std::string & _type) override;
+		const std::string & getType()const override;
 
 	public:
 		void update(float _timing) override;

@@ -43,12 +43,12 @@ namespace Menge
 		return m_node->getName();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::setType( const type_info * _type)
+	void NodeProxy::setType( const std::string & _type)
 	{
 		return m_node->setType(_type);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const type_info * NodeProxy::getType()const
+	const std::string & NodeProxy::getType()const
 	{
 		return m_node->getType();
 	}

@@ -1,8 +1,7 @@
 #	include "ScriptEngine.h"
 
-#	include "ScriptObject.h"
-
 #	include "ScriptModuleDeclaration.h"
+#	include "ScriptClassWrapper.h"
 
 #	include "FileEngine.h"
 #	include "Entity.h"
@@ -374,9 +373,12 @@ namespace Menge
 	{
 		return pybind::extract<bool>( _result );
 	}
+	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::wrapp( Node * _node )
 	{
-		return pybind::ptr( _node );
+		const std::string & type = _node->getType();
+		PyObject * pyNode = ScriptClassWrapperFactory::wrapp( type, _node );
+		return pyNode;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ScriptEngine::refCount( PyObject * _obj )

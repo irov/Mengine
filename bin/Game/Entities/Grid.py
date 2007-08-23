@@ -11,7 +11,7 @@ class Grid( Menge.Entity ):
 		self.addChildren( self.image )
 		pass
 
-	def setImageIndex1( self, frame ):
+	def setImageIndex( self, frame ):
 		print self.image, frame
 		self.image.setImageIndex( frame )
 		pass

@@ -73,8 +73,7 @@ class Pole:
 
 	def setImgFrame( self, i, j, frame ):
 		index = j * self.img_size_x + i;
-		print dir( self.pole_img[ index ] )
-		self.pole_img[ index ].setImageIndex1( frame )
+		self.pole_img[ index ].setImageIndex( frame )
 		pass
 
 

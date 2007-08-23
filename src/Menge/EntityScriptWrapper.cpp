@@ -15,8 +15,16 @@ namespace Menge
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
-			Entity *en = Holder<ScriptEngine>::hostage()
-				->createEntity( _type );
+			PyObject * module = Holder<ScriptEngine>::hostage()
+				->getEntityModule( _type );
+			PyObject * result = pybind::call_method( module, _type.c_str(), "()" );
+
+			if( result == 0 )
+			{
+				pybind::ret_none();
+			}
+
+			Entity * en = pybind::extract<Entity*>( result );
 
 			if( en == 0 )
 			{
@@ -30,20 +38,13 @@ namespace Menge
 			en->setPosition( _pos );
 			en->setDirection( _dir );
 
-			PyObject * pyEn = pybind::ptr( en );
-
-			if( pyEn == 0 )
-			{
-				return pybind::ret_none();
-			}
-
-			return pyEn;
+			return result;
 		}
 	}
 
 	REGISTER_SCRIPT_CLASS( Menge, Entity, Node )
 	{
-		pybind::class_<Entity, pybind::bases<SceneNode2D> >("Entity");
+		pybind::proxy_<Entity, pybind::bases<SceneNode2D> >("Entity");
 			
 		pybind::def( "createEntity", &ScriptMethod::createEntity );
 	}

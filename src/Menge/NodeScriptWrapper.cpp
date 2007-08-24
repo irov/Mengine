@@ -146,7 +146,7 @@ namespace Menge
 		//	;		
 
 		{
-			pybind::class_<Scene, pybind::no_bases>("Scene")
+			pybind::interface_<Scene, pybind::no_bases>("Scene")
 				.def( "layerAppend", &Scene::layerAppend )
 				;
 

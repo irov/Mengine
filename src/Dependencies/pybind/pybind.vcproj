@@ -286,10 +286,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\dependencies\pybind\pybind\from_py_to_cpp_parser.hpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\dependencies\pybind\pybind\method_call.hpp"
 				>
 			</File>
@@ -307,10 +303,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\dependencies\pybind\pybind\pybind.hpp"
-				>
-			</File>
-			<File
-				RelativePath=".\pyconfig.h"
 				>
 			</File>
 			<File

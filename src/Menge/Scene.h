@@ -7,6 +7,12 @@
 
 #	include "InputHandler.h"
 
+extern "C" 
+{ 
+	struct _object; 
+	typedef _object PyObject;
+}
+
 namespace Menge
 {
 	class Camera2D;
@@ -38,5 +44,6 @@ namespace Menge
 
 	private:
 		std::string m_scriptFile;
+		PyObject * m_scriptScene;
 	};
 }

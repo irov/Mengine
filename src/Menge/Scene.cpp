@@ -95,21 +95,17 @@ namespace	Menge
 
 		std::string functionName = "Scene" + getName() + "_activate";
 
-		PyObject * py_scene = 
-			Holder<ScriptEngine>::hostage()->wrapp( this ); 
-
-		//size_t rc = ScriptEngine::refCount(py_scene);
-
-
-		Holder<ScriptEngine>::hostage()
+		PyObject * pyModule = Holder<ScriptEngine>::hostage()
 			->importModule( m_name + "." + m_scriptFile );
 
+		m_scriptScene = ScriptEngine::proxy( pyModule, "Scene", this );
+
 		Holder<ScriptEngine>::hostage()
-			->callModuleFunction( m_name + "." + m_scriptFile, functionName, "(O)", py_scene );
+			->callModuleFunction( m_scriptScene, "onActivate" );
 
 		//rc = ScriptEngine::refCount(py_scene);
 
-		ScriptEngine::decref( py_scene );
+		//ScriptEngine::decref( m_scriptScene );
 
 		return NodeCore::_activate();
 	}

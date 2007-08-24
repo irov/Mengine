@@ -47,7 +47,6 @@ class Pole:
 		self.refreshImgPoleAll()
 		pass
 
-
 	def refreshImgPole( self, i, j ):
 		frame = 0;
 		frame += self.isPoleDataWall( i + 0, j + 0 ) * 8;

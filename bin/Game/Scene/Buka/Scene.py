@@ -1,23 +1,19 @@
 import Menge
 import Block
 
-import Pole
+from Pole import Pole
 
 from Menge import vec2f
 
-pole = Pole.Pole();
+class Scene( Menge.Scene ):
+	def __init__( self ):
+		self.pole = Pole()
+		pass
 
-def SceneBuka_activate( scene ):
-	en = Menge.createEntity( "Block", vec2f(200,200), vec2f(1,0) )
-	en.activate();
-
-	print en.test();
-	print hasattr( en, "test" )
-	
-	scene.layerAppend( "Main", en )
-
-#	print "1"
-	pole.loadLevel( scene, "Game/Levels/01.txt" )
-#	print "222"
-
+	def onActivate( self ):
+		en = Menge.createEntity( "Block", vec2f(200,200), vec2f(1,0) )
+		en.activate();
+		self.layerAppend( "Main", en )
+		self.pole.loadLevel( self, "Game/Levels/01.txt" )
+		pass
 	pass

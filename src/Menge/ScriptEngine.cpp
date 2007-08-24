@@ -374,6 +374,13 @@ namespace Menge
 		return pybind::extract<bool>( _result );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::proxy( PyObject * _module, const std::string & _name, void * _impl )
+	{
+		PyObject * result = pybind::call_method( _module, _name.c_str(), "()" );
+		pybind::class_core::wrapp_holder( result, _impl );
+		return result;
+	}	
+	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::wrapp( Node * _node )
 	{
 		const std::string & type = _node->getType();

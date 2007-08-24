@@ -381,11 +381,6 @@ namespace Menge
 		return pyNode;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ScriptEngine::refCount( PyObject * _obj )
-	{
-		return pybind::refcount( _obj );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::handleException()
 	{
 		pybind::exception_filter();

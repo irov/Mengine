@@ -12,3 +12,17 @@ def update( timing ):
 
 def fini():
 	pass
+
+
+def onHandleKeyEvent( key, isDown ):
+	print "onHandleKeyEvent", key, isDown
+	pass
+
+def onHandleMouseButtonEvent( button, isDown ):
+	print "onHandleMouseButtonEvent", button, isDown
+	pass
+
+def onHandleMouseMove( x, y, z ):
+	print "onHandleMouseMove", x, y, z
+	pass
+

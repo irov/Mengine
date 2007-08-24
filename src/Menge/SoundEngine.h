@@ -30,8 +30,7 @@ namespace Menge
 		SoundBufferInterface * createSoundBuffer();
 
 		void releaseSoundBuffer(SoundBufferInterface* _soundBuffer);
-
-		void			releaseSoundSource(SoundSourceInterface* _node);		
+		void releaseSoundSource(SoundSourceInterface* _node);
 
 	private:
 		SoundSystemInterface * m_interface;

@@ -97,6 +97,7 @@ namespace Menge
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{
 		pybind::class_<mt::vec2f>("vec2f")
+			.def( pybind::init<float,float>() )
 			//.def( boost::python::init<float,float>() )
 			//.def( boost::python::self + boost::python::self )	// __add__
 			//.def( boost::python::self - boost::python::self )          // __radd__

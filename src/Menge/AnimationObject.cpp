@@ -24,7 +24,8 @@ namespace Menge
 	OBJECT_IMPLEMENT(AnimationObject);
 	//////////////////////////////////////////////////////////////////////////
 	AnimationObject::AnimationObject()
-	: m_calModel(0)
+	: m_cal3dRes( 0 )
+	, m_calModel(0)
 	, m_vertexDecl(0)
 	, m_primitiveData(0)
 	, m_vertexSize(0)

@@ -17,6 +17,7 @@ namespace Menge
 		{
 			PyObject * module = Holder<ScriptEngine>::hostage()
 				->getEntityModule( _type );
+
 			PyObject * result = pybind::call_method( module, _type.c_str(), "()" );
 
 			if( result == 0 )

@@ -192,6 +192,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\dependencies\pybind\src\constructor.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\dependencies\pybind\src\def.cpp"
 				>
 			</File>
@@ -247,6 +251,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\dependencies\pybind\pybind\config.hpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\dependencies\pybind\pybind\constructor.hpp"
 				>
 			</File>
 			<File

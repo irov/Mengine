@@ -1,18 +1,18 @@
-#	include "ActionLook.h"	
+#	include "StateLook.h"	
 
 #	include "Avatar3D.h"	
 
 namespace Menge
 { 
 	//////////////////////////////////////////////////////////////////////////
-	ActionLook::ActionLook(Avatar3D * _avatar, const mt::vec3f& _destPoint)
-		: Action()
+	StateLook::StateLook(Avatar3D * _avatar, const mt::vec3f& _destPoint)
+		: State()
 		, m_avatar(_avatar)
 		, m_destPoint(_destPoint)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	ActionLook::update( float _timing )
+	void	StateLook::update( float _timing )
 	{
 		if(m_avatar->isMoving() == false)
 		{
@@ -20,12 +20,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	ActionLook::run()
+	void	StateLook::run()
 	{
+		printf("StateLook is running! \n");
 		m_avatar->lookTo(m_destPoint);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	ActionLook::end()
-	{}
+	void	StateLook::end()
+	{
+		printf("StateLook is ended! \n");
+	}
 	//////////////////////////////////////////////////////////////////////////
 }

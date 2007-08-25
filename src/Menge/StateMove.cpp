@@ -1,18 +1,18 @@
-#	include "ActionMove.h"	
+#	include "StateMove.h"	
 
 #	include "Avatar3D.h"	
 
 namespace Menge
 { 
 	//////////////////////////////////////////////////////////////////////////
-	ActionMove::ActionMove(Avatar3D * _avatar, const mt::vec3f& _destPoint)
-		: Action()
+	StateMove::StateMove(Avatar3D * _avatar, const mt::vec3f& _destPoint)
+		: State()
 		, m_avatar(_avatar)
 		, m_destPoint(_destPoint)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	ActionMove::update( float _timing )
+	void	StateMove::update( float _timing )
 	{
 		if(m_avatar->isMoving() == false)
 		{
@@ -20,15 +20,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	ActionMove::run()
+	void	StateMove::run()
 	{
-		printf("ActionMove is running! \n");
+		printf("StateMove is running! \n");
 		m_avatar->moveTo(m_destPoint);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	ActionMove::end()
+	void	StateMove::end()
 	{
-		printf("ActionMove is ended! \n");
+		printf("StateMove is ended! \n");
 		m_avatar->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////

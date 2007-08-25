@@ -86,13 +86,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec3f &	Actor3D::_getMovementDir()
 	{
-		mt::vec3f	result = m_destPos;
-		result -= getLocalPosition();	
-		norm_safe_v3(m_destDir, result);
-		if(mt::dot_v3_v3(m_destDir, m_destDir) < 0.000001)
+		norm_safe_v3(m_destDir, m_destPos - getLocalPosition());
+
+		if(mt::dot_v3_v3(m_destDir, m_destDir) < 0.000001f)
 		{
 			norm_safe_v3(m_destDir, m_destPos);
 		}
+
 		return m_destDir;
 	}
 	//////////////////////////////////////////////////////////////////////////

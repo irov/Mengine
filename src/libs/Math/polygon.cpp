@@ -3,9 +3,20 @@
 namespace mt
 {
 	polygon::polygon()
+		: convex_value(0)
+		, convex_state(false)
 	{}
 
+	polygon::polygon(size_t n)
+		: convex_value(0)
+		, convex_state(false)
+	{
+		points.resize(n);
+	}
+
 	polygon::polygon(const polygon&	_rhs)
+		: convex_value(0)
+		, convex_state(false)
 	{
 		points = _rhs.points;
 	}
@@ -16,11 +27,6 @@ namespace mt
 		return	*this;
 	}
 
-	polygon::polygon(size_t n)
-	{
-		points.resize(n);
-	}
-
 	void polygon::clear_points()
 	{
 		points.clear();
@@ -29,6 +35,23 @@ namespace mt
 	void polygon::add_point(const vec2f& v)
 	{
 		points.push_back(v);
+
+		if( points.size() > 2) 
+			check_edges_convex(points.size() - 3);
+	}
+
+	void polygon::check_edges_convex(int i)
+	{
+		size_t j = (i + 1) % points.size();
+		size_t k = (i + 2) % points.size();
+
+		float value  = pseudo_cross_v2(points[j] - points[i], points[k] - points[j]);
+
+		if (value < 0)	convex_value |= 1;
+		else if (value > 0) convex_value |= 2;
+
+		if (convex_value == 3)	convex_state = false;
+		convex_state = (convex_value != 0);
 	}
 
 	void polygon::insert(size_t after, const vec2f& v)
@@ -37,12 +60,23 @@ namespace mt
 
 		if(after < size)
 		{
-			points.insert(points.begin()+after,v);
+			points.insert(points.begin() + after, v);
+
+			if( points.size() > 2) 
+				check_edges_convex(after - 1);
+
+			if( after + 2 < points.size()) 
+				check_edges_convex(after);
 		}
 		else
 		{
 			points.push_back(v);
 		}
+	}
+
+	bool	polygon::is_convex() const
+	{
+		return convex_state;
 	}
 
 	size_t	polygon::num_points() const
@@ -64,6 +98,7 @@ namespace mt
 	{
 		return points.front();
 	}
+
 	const vec2f & polygon::front()const
 	{
 		return points.front();
@@ -195,11 +230,15 @@ namespace mt
 		{
 			size_t j = (i + 1) % size;
 			size_t k = (i + 2) % size;
-			float z  = (poly[j].x - poly[i].x) * (poly[k].y - poly[j].y) - (poly[j].y - poly[i].y) * (poly[k].x - poly[j].x);
-			if (z < 0)	flag |= 1;
-			else if (z > 0) flag |= 2;
+
+			float value  = pseudo_cross_v2(poly[j] - poly[i], poly[k] - poly[j]);
+
+			if (value < 0)	flag |= 1;
+			else if (value > 0) flag |= 2;
+
 			if (flag == 3)	return false;
 		}
+
 		return flag != 0;
 	}
 
@@ -216,7 +255,7 @@ namespace mt
 
 		size_t size = poly.num_points();
 
-		for (size_t i=1; i<size; i++)
+		for (size_t i = 1; i < size; i++)
 		{
 			if (poly[i].y > ymin)	continue;
 
@@ -229,6 +268,6 @@ namespace mt
 			xmin = poly[i].x;
 			ymin = poly[i].y;
 		}
-		return	rmin == 0 ? is_left_v2(poly[size-1], poly[0], poly[1]) : is_left_v2(poly[rmin-1], poly[rmin], poly[rmin+1]);
+		return	rmin == 0 ? is_left_v2(poly[size - 1], poly[0], poly[1]) : is_left_v2(poly[rmin - 1], poly[rmin], poly[rmin + 1]);
 	}
 };

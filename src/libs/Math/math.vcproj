@@ -49,7 +49,7 @@
 				ProgramDataBaseFileName="$(OutDir)\$(ProjectName)_d.pdb"
 				BrowseInformation="1"
 				WarningLevel="3"
-				WarnAsError="true"
+				WarnAsError="false"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
@@ -150,38 +150,26 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			Name="bv"
 			>
 			<File
 				RelativePath=".\bv.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\closest_points.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\polygon.cpp"
+				RelativePath=".\bv.h"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			Name="closest_points"
 			>
 			<File
-				RelativePath=".\bv.h"
+				RelativePath=".\closest_points.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\closest_points.h"
-				>
-			</File>
-			<File
-				RelativePath=".\polygon.h"
 				>
 			</File>
 		</Filter>
@@ -302,6 +290,18 @@
 			</File>
 			<File
 				RelativePath=".\box2.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="polygon"
+			>
+			<File
+				RelativePath=".\polygon.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\polygon.h"
 				>
 			</File>
 		</Filter>

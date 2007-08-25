@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Action.h"
+#	include "State.h"
 
 #	include "math\vec3.h"
 
@@ -8,10 +8,10 @@ namespace Menge
 {
 	class	Avatar3D;
 
-	class	ActionLook : public Action
+	class	StateMove : public State
 	{
 	public:
-		ActionLook(Avatar3D * _avatar, const mt::vec3f& _destPoint);
+		StateMove(Avatar3D * _avatar, const mt::vec3f& _destPoint);
 	public:
 		void	update( float _timing );
 		void	run();

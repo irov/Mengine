@@ -248,6 +248,19 @@ namespace Menge
 		//	//anim->play2Blend("paladin_idle.caf",0.4f,"paladin_walk.caf",0.6f);
 		}
 
+		if( inputEng->isKey( DIK_4, 1 ) == true )
+		{
+			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
+			Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
+
+			std::vector<mt::vec3f> points;
+			points.push_back(mt::vec3f(0,10,0));
+			points.push_back(mt::vec3f(50,10,0));
+			points.push_back(mt::vec3f(10,100,0));
+			points.push_back(mt::vec3f(-10,200,0));
+			avat->moveByWayPoints(points);
+		}
+
 
 
 		if( inputEng->isKey( DIK_F1, 1 ) == true )

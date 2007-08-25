@@ -2,13 +2,15 @@
 
 #	include "InputHandler.h"
 
-#	include "ActionScheduler.h"
+#	include "StackFSM.h"
 
 #	include "Actor3D.h"
 
+#	include <vector>
+
 namespace Menge
 {
-	class Action;
+	class State;
 
 	class Avatar3D
 		: public Actor3D
@@ -24,8 +26,9 @@ namespace Menge
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( float _x, float _y, float _whell ) override;
 	public:
-		void moveToPoint(const mt::vec3f& _dest);
-		void lookAtPoint(const mt::vec3f& _dest);
+		void moveToPoint( const mt::vec3f& _dest );
+		void lookAtPoint( const mt::vec3f& _dest );
+		void moveByWayPoints( const std::vector<mt::vec3f>& _wayPoints );
 
 	public:
 		void loader( TiXmlElement * _xml ) override;
@@ -37,6 +40,6 @@ namespace Menge
 		void _render( const mt::mat4f & _rwm, const Camera3D * _camera ) override;
 
 	private:
-		ActionScheduler	m_actionScheduler;
+		StackFSM	m_actionScheduler;
 	};
 }

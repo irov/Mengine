@@ -2,9 +2,9 @@
 
 #	include "ObjectImplement.h"
 
-#	include "ActionMove.h"
+#	include "StateMove.h"
 
-#	include "ActionLook.h"
+#	include "StateLook.h"
 
 namespace	Menge
 {
@@ -40,14 +40,24 @@ namespace	Menge
 		m_actionScheduler.update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Avatar3D::moveToPoint(const mt::vec3f& _dest)
+	void Avatar3D::moveToPoint( const mt::vec3f& _dest )
 	{
-		m_actionScheduler.runAction( new ActionMove(this, _dest) );
+		m_actionScheduler.runState( new StateMove(this, _dest) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Avatar3D::lookAtPoint(const mt::vec3f& _dest)
+	void Avatar3D::moveByWayPoints( const std::vector<mt::vec3f>& _wayPoints )
 	{
-		m_actionScheduler.runAction( new ActionLook(this, _dest) );
+		m_actionScheduler.terminateStates();
+
+		for each( const mt::vec3f & it in _wayPoints )		
+		{
+			m_actionScheduler.addState( new StateMove(this, it) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Avatar3D::lookAtPoint( const mt::vec3f& _dest )
+	{
+		m_actionScheduler.runState( new StateLook(this, _dest) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Avatar3D::_activate()

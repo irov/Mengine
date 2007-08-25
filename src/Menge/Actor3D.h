@@ -18,6 +18,7 @@ namespace Menge
 		void	moveTo(const mt::vec3f& _wayPoint);
 		void	lookTo(const mt::vec3f& _target);
 		void	stop();
+
 		bool	isMoving() const;
 
 	public:
@@ -52,7 +53,6 @@ namespace Menge
 		mt::vec3f   m_destDir;
 		bool		m_lookAtTarget;
 
-	//	mt::vec3f	_getMovementDir();
 		mt::vec3f &	_getMovementDir();
 		float		_evaluteSpeed( float _timing );
 		float		_getDistance();

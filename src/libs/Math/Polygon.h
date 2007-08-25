@@ -35,10 +35,15 @@ namespace mt
 		const vec2f & front()const;
 
 		vec2f & back();
-		const vec2f & back()const;
+		const vec2f & back() const;
 
+		bool	is_convex() const;
 	private:
 		std::vector<vec2f> points;
+
+		char convex_value;
+		bool convex_state;
+		void check_edges_convex(int i);
 	};
 
 	bool	cmp_poly_poly(const polygon& _a, const polygon& _b);

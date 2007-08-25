@@ -2,11 +2,11 @@
 
 namespace Menge
 {
-	class	Action
+	class	State
 	{
 	public:
-		Action();
-		virtual ~Action();
+		State();
+		virtual ~State();
 	public: 
 		virtual void	update( float _timing );
 		virtual void	run();

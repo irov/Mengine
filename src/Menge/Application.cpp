@@ -18,6 +18,8 @@
 
 #	include "XmlParser/XmlParser.h"
 
+//#	include "E:\\Menge\\dependencies\\vld\\vld.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

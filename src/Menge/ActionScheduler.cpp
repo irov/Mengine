@@ -58,15 +58,18 @@ namespace	Menge
 			return;
 		}
 
-		m_currentAction->end();
 
 		ActionList::iterator it = m_actionList.begin();
+
+
+	/*	
+		m_currentAction->end();
 
 		if(m_currentAction->isEnded() == false)
 		{
 			it++;
 		}
-
+	*/
 		std::for_each(it, m_actionList.end(), std::mem_fun(&Action::end));
 		m_actionList.erase(it, m_actionList.end());
 	

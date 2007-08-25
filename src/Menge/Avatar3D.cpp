@@ -4,6 +4,8 @@
 
 #	include "ActionMove.h"
 
+#	include "ActionLook.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -41,6 +43,11 @@ namespace	Menge
 	void Avatar3D::moveToPoint(const mt::vec3f& _dest)
 	{
 		m_actionScheduler.runAction( new ActionMove(this, _dest) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Avatar3D::lookAtPoint(const mt::vec3f& _dest)
+	{
+		m_actionScheduler.runAction( new ActionLook(this, _dest) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Avatar3D::_activate()

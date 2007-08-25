@@ -25,6 +25,7 @@ namespace Menge
 		bool handleMouseMove( float _x, float _y, float _whell ) override;
 	public:
 		void moveToPoint(const mt::vec3f& _dest);
+		void lookAtPoint(const mt::vec3f& _dest);
 
 	public:
 		void loader( TiXmlElement * _xml ) override;

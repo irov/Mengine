@@ -39,8 +39,9 @@
 				<ImageMap Name = "Cal3dTest" />
 			</Animation>
 			<MovementParams>
-				<MaxSpeed Value = "10.0" />
-				<Acceleration Value = "2.0" />
+				<MaxSpeed Value = "30.0" />
+				<Acceleration Value = "20.0" />
+				<RotateSpeed Value = "2.0" />
 			</MovementParams>
 		</Node>
 

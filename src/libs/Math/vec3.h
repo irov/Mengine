@@ -72,6 +72,7 @@ namespace mt
 	void	neg_v3(vec3f& _out);
 
 	float	dot_v3_v3(const vec3f &a, const vec3f &b);
+	float	dot_v3_v3_clamp(const vec3f &a, const vec3f &b);
 
 	void	reflect_v3_v3(vec3f& _out, const vec3f& _a, const vec3f& _b);
 	vec3f	reflect_v3_v3(const vec3f& _a, const vec3f& _b);

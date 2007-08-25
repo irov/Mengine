@@ -191,6 +191,14 @@ namespace	mt
 		return a.x * b.x + a.y * b.y + a.z * b.z;
 	}
 
+	float	dot_v3_v3_clamp(const vec3f &a, const vec3f &b)
+	{
+		float dot = a.x * b.x + a.y * b.y + a.z * b.z;
+		if(dot > 1.0f) dot = 1.0f;
+		if(dot < -1.0f) dot = -1.0f;
+		return dot;
+	}
+
 	/*	Reflection Vector	*/
 	void	reflect_v3_v3(vec3f& _out, const vec3f& _a, const vec3f& _b)
 	{

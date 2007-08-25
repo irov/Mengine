@@ -164,9 +164,9 @@ namespace Menge
 
 		RenderEngine * renderEng = Holder<RenderEngine>::hostage();
 
-		mt::vec3f axis1 = orig + m_localMatrix.v0.v3 * axisWidth;
-		mt::vec3f axis2 = orig + m_localMatrix.v1.v3 * axisWidth;
-		mt::vec3f axis3 = orig + m_localMatrix.v2.v3 * axisWidth;
+		mt::vec3f axis1 = orig + m_worldMatrix.v0.v3 * axisWidth;
+		mt::vec3f axis2 = orig + m_worldMatrix.v1.v3 * axisWidth;
+		mt::vec3f axis3 = orig + m_worldMatrix.v2.v3 * axisWidth;
 		
 		renderEng->drawLine3D(orig, axis1, 0xFFFFFFAA);
 		renderEng->drawLine3D(orig, axis2, 0xFFAAFFAA);

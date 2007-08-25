@@ -198,8 +198,25 @@ namespace Menge
 		{
 			mt::vec2f pos = inputEng->getPosition().v2;
 
-			mt::vec3f dir = cmr3d->getDirectionFromMouse(pos.x,pos.y);
-			printf("%f %f %f \n", dir.x,dir.y,dir.z);
+			mt::vec3f camDir = cmr3d->getDirectionFromMouse(pos.x,pos.y);
+			mt::vec3f camPos = cmr3d->getWorldPosition();
+			
+			mt::planef	plane(mt::vec3f(0,1,1),0);
+
+			float t = (plane.d - dot_v3_v3(plane.norm,camPos))/dot_v3_v3(plane.norm,camDir);
+
+			printf("%f  \n", t);
+			if(t >= 0.0f && t <= 1.0f)
+			{
+				printf("moving  \n");
+				mt::vec3f q = camPos + t * camDir;
+
+				Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
+				Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
+				avat->moveToPoint(q);
+
+				printf("%f %f %f \n", q.x,q.y,q.z);
+			}
 		//	cmr3d->yaw( 0.128f );
 		}
 
@@ -213,21 +230,21 @@ namespace Menge
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
-		//	avat->moveToPoint(mt::vec3f(0,-100,0));
-			avat->moveToPoint(mt::vec3f(0,100,0));
-			//avat->
-			//avat->moveTo(mt::vec3f(0,-100,0));
-		//	//anim->play2Blend("paladin_idle.caf",0.4f,"paladin_walk.caf",0.6f);
+			avat->moveToPoint(mt::vec3f(50,10,0));
+		}
+
+		if( inputEng->isKey( DIK_3, 1 ) == true )
+		{
+			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
+			Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
+			avat->lookAtPoint(mt::vec3f(0,100,0));
 		}
 
 		if( inputEng->isKey( DIK_2, 1 ) == true )
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
-		//	avat->moveToPoint(mt::vec3f(0,-100,0));
-			avat->moveToPoint(mt::vec3f(0,-100,0));
-			//avat->
-			//avat->moveTo(mt::vec3f(0,-100,0));
+			avat->moveToPoint(mt::vec3f(0,-50,0));
 		//	//anim->play2Blend("paladin_idle.caf",0.4f,"paladin_walk.caf",0.6f);
 		}
 

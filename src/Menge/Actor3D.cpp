@@ -4,21 +4,27 @@
 
 #	include "XmlParser/XmlParser.h"
 
+#	include "math.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT(Actor3D)
 	//////////////////////////////////////////////////////////////////////////
 	Actor3D::Actor3D()
-	: m_isMove(false)
-	, m_destpos(0.0f,0.0f,0.0f)
-	, m_dir(0.0f,0.0f,0.0f)
+	: m_destPos(0.0f, 0.0f, 0.0f)
+	, m_targetPos(0.0f, 0.0f, 0.0f)
+	, m_lookAtTarget(false)
 	, m_speed(0.0f)
 	, m_maxSpeed(0.0f)
 	, m_acceleration(0.0f)
+	, m_rotateSpeed(1.0f)
+	, m_state(STOP)
 	{
 		m_animObject =
 			this->createChildrenT<AnimationObject>("AnimationObject");
+
+		setDirection(mt::vec3f(1,0,0));	// АХТУНГ!  исправть нафиг этот аллокатор. щас для теста
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::loader( TiXmlElement * _xml )
@@ -36,81 +42,133 @@ namespace	Menge
 			{
 				XML_CHECK_VALUE_NODE( "MaxSpeed", "Value", m_maxSpeed );
 				XML_CHECK_VALUE_NODE( "Acceleration", "Value", m_acceleration );
+				XML_CHECK_VALUE_NODE( "RotateSpeed", "Value", m_rotateSpeed );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Actor3D::_update( float _timing )
+	void Actor3D::lookTo( const mt::vec3f& _target )
 	{
-		if( m_isMove )
-		{
-			if( m_speed <= m_maxSpeed )
-			{
-				m_speed += m_acceleration * _timing;
-
-				if(m_speed > m_maxSpeed)
-				{
-					m_speed = m_maxSpeed;
-				}
-			}
-
-			float actual_distance = m_speed * _timing;
-
-			mt::vec3f pos = getLocalPosition();
-
-			float m_distance = mt::length_v3_v3(pos, m_destpos);
-
-			//setDirection(m_dir);
-
-			if (actual_distance > m_distance)
-			{
-				m_isMove = false;
-				setPosition(m_destpos);
-			}
-			else
-			{
-				pos += m_dir * actual_distance;
-				setPosition(pos);
-			}
-		}
+		m_state = ROTATE;
+		m_lookAtTarget = true;
+		m_targetPos = _target;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Actor3D::moveToWayPoint( const mt::vec3f& _wayPoint )
+	void Actor3D::moveTo( const mt::vec3f& _wayPoint )
 	{
-		mt::vec3f pos = getLocalPosition();
-		mt::vec3f vec = _wayPoint - pos;
-
-		norm_v3(m_dir,vec);
-		m_destpos = _wayPoint;
-
-		float m_distance = mt::length_v3_v3(pos, m_destpos);
-
-		m_isMove = true;
-//test
+		m_state = ROTATE;
+		m_lookAtTarget = false;
+		m_destPos = _wayPoint;
 		m_animObject->play("paladin_walk.caf");
-//
-//		m_animObject->executeAction("paladin_walk.caf",0,1,1,false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::stop()
 	{
-//test
 		m_animObject->play("paladin_idle.caf");
-//
-		m_isMove = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Actor3D::isMoving() const
 	{
-		return m_isMove;
+		return (m_state == MOVE) || (m_state == ROTATE);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Actor3D::lookTo(const mt::vec3f& _target)
+	void Actor3D::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
 	{
-		const mt::vec3f& pos = getLocalPosition();
-		m_dir = _target - pos;
-		norm_v3(m_dir,m_dir);
-		setDirection(m_dir);
+		Allocator3D::debugRender();
+		SceneNode3D::_render(_rwm, _camera);
+		m_animObject->render(_rwm, _camera);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec3f	Actor3D::_getMovementDir()
+	{
+		mt::vec3f	result = m_lookAtTarget ? m_targetPos : m_destPos;
+		result -= getLocalPosition();	
+		norm_safe_v3(result, result);
+		if(mt::dot_v3_v3(result, result) < 0.000001)
+		{
+			result = m_destPos;
+			norm_safe_v3(result, result);
+		}
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Actor3D::_update( float _timing )
+	{
+		if( m_state == ROTATE )
+		{
+			_rotate( _timing );		
+		}
+
+		if( m_state == MOVE )
+		{
+			_move( _timing );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void  Actor3D::_move( float _timing )
+	{
+		float speed = _evaluteSpeed( _timing );	
+		float distance = _getDistance();
+
+		float actualDist = speed * _timing;
+
+		if ( actualDist < distance )
+		{
+			mt::vec3f dir = _getMovementDir();
+			mt::vec3f pos = getLocalPosition();
+
+			pos += dir * actualDist;
+			setPosition( pos );
+		}
+		else
+		{
+			setPosition( m_destPos );
+			m_state = STOP;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void  Actor3D::_rotate( float _timing )
+	{
+		mt::vec2f lerpDir = getLocalDirection().v2;
+		mt::vec3f movDir = _getMovementDir();
+
+		bool  isComplete = mt::slerp_v2_v2( lerpDir, movDir.v2, _timing * m_rotateSpeed, lerpDir );
+
+		setDirection( mt::vec3f( lerpDir, 0) );
+		
+		if( isComplete )
+		{
+			if( m_lookAtTarget == false )
+			{
+				m_state = MOVE;
+			}
+			else
+			{
+				m_state = STOP;
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Actor3D::_evaluteSpeed( float t )
+	{
+		if( m_speed <= m_maxSpeed )
+		{
+			m_speed += m_acceleration * t;
+
+			if(m_speed > m_maxSpeed)
+			{
+				m_speed = m_maxSpeed;
+			}
+		}
+
+		return m_speed;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Actor3D::_getDistance()
+	{
+		mt::vec3f & pos = getLocalPosition();
+		float distance = mt::length_v3_v3(pos, m_destPos);
+		return distance;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Actor3D::_activate()
@@ -122,9 +180,4 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Actor3D::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
-	{
-		SceneNode3D::_render(_rwm, _camera);
-		m_animObject->render(_rwm, _camera);
-	}
 }

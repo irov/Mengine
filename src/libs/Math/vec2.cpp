@@ -228,4 +228,25 @@ namespace	mt
 		result.x = dp * b.x;
 		result.y = dp * b.y;
 	}
+
+	bool	slerp_v2_v2(const vec2f& a, const vec2f& b, float t, vec2f& result)
+	{
+		float m_to = (dot_v2_v2(b,perp(a)) < 0.0f) ? 1.0f : -1.0f;
+
+		float _sin = sin(t * m_to);
+		float _cos = cos(t * m_to);
+
+		result.x = _sin * a.y + _cos * a.x;
+		result.y = _cos * a.y - _sin * a.x;
+
+		float mn_to = (dot_v2_v2(b,perp(result)) < 0.0f ) ? 1.0f : -1.0f;
+
+		if ( m_to * mn_to < 0.0f )
+		{
+			result = b;
+			return true;
+		}
+
+		return false;
+	}
 }

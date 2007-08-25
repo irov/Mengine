@@ -13,7 +13,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Actor3D::Actor3D()
 	: m_destPos(0.0f, 0.0f, 0.0f)
-	, m_targetPos(0.0f, 0.0f, 0.0f)
+	, m_destDir(0.0f, 0.0f, 0.0f)
 	, m_lookAtTarget(false)
 	, m_speed(0.0f)
 	, m_maxSpeed(0.0f)
@@ -51,7 +51,10 @@ namespace	Menge
 	{
 		m_state = ROTATE;
 		m_lookAtTarget = true;
-		m_targetPos = _target;
+		m_destPos = _target;
+		_getMovementDir();
+
+		m_animObject->play("paladin_idle.caf");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::moveTo( const mt::vec3f& _wayPoint )
@@ -59,6 +62,8 @@ namespace	Menge
 		m_state = ROTATE;
 		m_lookAtTarget = false;
 		m_destPos = _wayPoint;
+		_getMovementDir();
+
 		m_animObject->play("paladin_walk.caf");
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -79,17 +84,16 @@ namespace	Menge
 		m_animObject->render(_rwm, _camera);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f	Actor3D::_getMovementDir()
+	mt::vec3f &	Actor3D::_getMovementDir()
 	{
-		mt::vec3f	result = m_lookAtTarget ? m_targetPos : m_destPos;
+		mt::vec3f	result = m_destPos;
 		result -= getLocalPosition();	
-		norm_safe_v3(result, result);
-		if(mt::dot_v3_v3(result, result) < 0.000001)
+		norm_safe_v3(m_destDir, result);
+		if(mt::dot_v3_v3(m_destDir, m_destDir) < 0.000001)
 		{
-			result = m_destPos;
-			norm_safe_v3(result, result);
+			norm_safe_v3(m_destDir, m_destPos);
 		}
-		return result;
+		return m_destDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::_update( float _timing )
@@ -114,10 +118,9 @@ namespace	Menge
 
 		if ( actualDist < distance )
 		{
-			mt::vec3f dir = _getMovementDir();
 			mt::vec3f pos = getLocalPosition();
 
-			pos += dir * actualDist;
+			pos += m_destDir * actualDist;
 			setPosition( pos );
 		}
 		else
@@ -130,22 +133,14 @@ namespace	Menge
 	void  Actor3D::_rotate( float _timing )
 	{
 		mt::vec2f lerpDir = getLocalDirection().v2;
-		mt::vec3f movDir = _getMovementDir();
 
-		bool  isComplete = mt::slerp_v2_v2( lerpDir, movDir.v2, _timing * m_rotateSpeed, lerpDir );
+		bool  isComplete = mt::slerp_v2_v2( lerpDir, m_destDir.v2, _timing * m_rotateSpeed, lerpDir );
 
 		setDirection( mt::vec3f( lerpDir, 0) );
 		
 		if( isComplete )
 		{
-			if( m_lookAtTarget == false )
-			{
-				m_state = MOVE;
-			}
-			else
-			{
-				m_state = STOP;
-			}
+			m_state = m_lookAtTarget ? STOP : MOVE;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

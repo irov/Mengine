@@ -21,7 +21,7 @@ namespace	Menge
 	, m_offsetClick(0,0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::_update(float _timing)
+	void Arrow::_update( float _timing )
 	{
 		InputEngine *inputEng = Holder<InputEngine>::hostage();
 

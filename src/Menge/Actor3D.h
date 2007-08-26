@@ -43,11 +43,11 @@ namespace Menge
 		};
 
 		eMovementState m_state;
-	
-		float		m_acceleration;
+
 		float		m_speed;
 		float		m_maxSpeed;
 		float		m_rotateSpeed;
+		float		m_acceleration;
 
 		mt::vec3f   m_destPos;
 		mt::vec3f   m_destDir;
@@ -57,6 +57,6 @@ namespace Menge
 		void		_calculateNewPosition( float _timing );
 		void		_calculateNewDirection( float _timing );
 		mt::vec3f &	_calculateDirection();
-		float		_getDistance();
+		float		_calculateDistance();
 	};	
 }

@@ -2,6 +2,8 @@
 
 #	include "ObjectImplement.h"
 
+#	include "RenderEngine.h"
+
 #	include "XmlParser/XmlParser.h"
 
 #	include "math.h"
@@ -12,19 +14,20 @@ namespace	Menge
 	OBJECT_IMPLEMENT(Actor3D)
 	//////////////////////////////////////////////////////////////////////////
 	Actor3D::Actor3D()
-	: m_destPos(0.0f, 0.0f, 0.0f)
+	: m_state(STOP)
+	, m_destPos(0.0f, 0.0f, 0.0f)
 	, m_destDir(0.0f, 0.0f, 0.0f)
 	, m_lookAtTarget(false)
 	, m_speed(0.0f)
 	, m_maxSpeed(0.0f)
+	, m_rotateSpeed(0.0f)
 	, m_acceleration(0.0f)
-	, m_rotateSpeed(1.0f)
-	, m_state(STOP)
 	{
 		m_animObject =
 			this->createChildrenT<AnimationObject>("AnimationObject");
 
-		setDirection(mt::vec3f(1,0,0));	// АХТУНГ!  исправть нафиг этот аллокатор. щас для теста
+		// АХТУНГ!  исправть нафиг этот аллокатор. щас для теста
+		setDirection(mt::vec3f(1,0,0));	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::loader( TiXmlElement * _xml )
@@ -69,6 +72,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::stop()
 	{
+		m_state = STOP;
+
 		m_animObject->play("paladin_idle.caf");
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -81,8 +86,11 @@ namespace	Menge
 	{
 		Allocator3D::debugRender();
 		SceneNode3D::_render(_rwm, _camera);
-
 		m_animObject->render(_rwm, _camera);
+		//debug moving path
+		mt::vec3f pos = getLocalPosition();
+		RenderEngine * renderEng = Holder<RenderEngine>::hostage();
+		renderEng->drawLine3D(pos, m_destPos, 0xFFFFFFAA);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::_update( float _timing )
@@ -101,21 +109,19 @@ namespace	Menge
 	void  Actor3D::_calculateNewPosition( float _timing )
 	{
 		float speed = _calculateNewSpeed( _timing );	
-		float distance = _getDistance();
-
+		float distance = _calculateDistance();
 		float actualDist = speed * _timing;
 
 		if ( actualDist < distance )
 		{
 			mt::vec3f pos = getLocalPosition();
-
 			pos += m_destDir * actualDist;
 			setPosition( pos );
 		}
 		else
 		{
 			setPosition( m_destPos );
-			m_state = STOP;
+			stop();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -152,15 +158,15 @@ namespace	Menge
 	{
 		norm_safe_v3( m_destDir, m_destPos - getLocalPosition() );
 
-		if(mt::dot_v3_v3( m_destDir, m_destDir ) < 0.000001f)
+		if(mt::dot_v3_v3( m_destDir, m_destDir ) < 0.00001f)
 		{
-			norm_safe_v3( m_destDir, m_destPos );
+			m_destDir = getLocalDirection();
 		}
 
 		return m_destDir;
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	float Actor3D::_getDistance()
+	float Actor3D::_calculateDistance()
 	{
 		mt::vec3f & pos = getLocalPosition();
 		float distance = mt::length_v3_v3(pos, m_destPos);

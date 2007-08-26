@@ -53,10 +53,10 @@ namespace Menge
 		mt::vec3f   m_destDir;
 		bool		m_lookAtTarget;
 
-		mt::vec3f &	_getMovementDir();
-		float		_evaluteSpeed( float _timing );
+		float		_calculateNewSpeed( float _timing );
+		void		_calculateNewPosition( float _timing );
+		void		_calculateNewDirection( float _timing );
+		mt::vec3f &	_calculateDirection();
 		float		_getDistance();
-		void		_move( float _timing );
-		void		_rotate( float _timing );
 	};	
 }

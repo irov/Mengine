@@ -52,7 +52,7 @@ namespace	Menge
 		m_state = ROTATE;
 		m_lookAtTarget = true;
 		m_destPos = _target;
-		_getMovementDir();
+		_calculateDirection();
 
 		m_animObject->play("paladin_idle.caf");
 	}
@@ -62,7 +62,7 @@ namespace	Menge
 		m_state = ROTATE;
 		m_lookAtTarget = false;
 		m_destPos = _wayPoint;
-		_getMovementDir();
+		_calculateDirection();
 
 		m_animObject->play("paladin_walk.caf");
 	}
@@ -81,37 +81,26 @@ namespace	Menge
 	{
 		Allocator3D::debugRender();
 		SceneNode3D::_render(_rwm, _camera);
+
 		m_animObject->render(_rwm, _camera);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f &	Actor3D::_getMovementDir()
-	{
-		norm_safe_v3(m_destDir, m_destPos - getLocalPosition());
-
-		if(mt::dot_v3_v3(m_destDir, m_destDir) < 0.000001f)
-		{
-			norm_safe_v3(m_destDir, m_destPos);
-		}
-
-		return m_destDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::_update( float _timing )
 	{
 		if( m_state == ROTATE )
 		{
-			_rotate( _timing );		
+			_calculateNewDirection( _timing );		
 		}
 
 		if( m_state == MOVE )
 		{
-			_move( _timing );
+			_calculateNewPosition( _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void  Actor3D::_move( float _timing )
+	void  Actor3D::_calculateNewPosition( float _timing )
 	{
-		float speed = _evaluteSpeed( _timing );	
+		float speed = _calculateNewSpeed( _timing );	
 		float distance = _getDistance();
 
 		float actualDist = speed * _timing;
@@ -130,7 +119,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void  Actor3D::_rotate( float _timing )
+	void  Actor3D::_calculateNewDirection( float _timing )
 	{
 		mt::vec2f lerpDir = getLocalDirection().v2;
 
@@ -144,7 +133,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Actor3D::_evaluteSpeed( float t )
+	float Actor3D::_calculateNewSpeed( float t )
 	{
 		if( m_speed <= m_maxSpeed )
 		{
@@ -158,6 +147,18 @@ namespace	Menge
 
 		return m_speed;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec3f &	Actor3D::_calculateDirection()
+	{
+		norm_safe_v3( m_destDir, m_destPos - getLocalPosition() );
+
+		if(mt::dot_v3_v3( m_destDir, m_destDir ) < 0.000001f)
+		{
+			norm_safe_v3( m_destDir, m_destPos );
+		}
+
+		return m_destDir;
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	float Actor3D::_getDistance()
 	{

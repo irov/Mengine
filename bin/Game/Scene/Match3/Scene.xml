@@ -1,5 +1,5 @@
 <Node Name = "Match3" Type = "Scene">	
-	<Script File = "Game/Scene/Match3/Scene.py" />
+	<Script File = "Scene" />
 
 	<Node Name = "Main" Type = "Layer2D">
 		<Parallax Factor = "1;1" />

@@ -5,7 +5,7 @@ class Block( Menge.Entity ):
 	def __init__( self ):
 		Menge.Entity.__init__( self )
 
-		params = [ { "ImageMap": { "Name": "output_cng" }  } ]
+		params = [ { "ImageMap": { "Name": "output" }  } ]
 
 		image = Menge.createNode( "Sprite", params )
 

@@ -1,16 +1,16 @@
 import Menge
 
-import Match3
+import MatchPole
 
 class Scene( Menge.Scene ):
 	def __init__( self ):
-		self.match3 = Match3.Match3();
+		self.pole = MatchPole.MatchPole();
 		pass
 
-	def activate( self ):
+	def onActivate( self ):
 		print "scene Match3 - activate!"
 
-		self.match3.initLevel( self)
+		self.pole.initLevel( self )
 		pass
 
 	pass

@@ -1,6 +1,6 @@
 import Menge
 
-class Match3:
+class MatchPole:
 
 	def __init__( self ):
 		self.pole_data = []

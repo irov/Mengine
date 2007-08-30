@@ -3,11 +3,10 @@ import Menge
 
 class Ball( Menge.Entity ):
 	def __init__( self ):
-		Menge.Entity.__init__( self )
 		pass
 
 	def init( self, imageResource ):
-	
+
 		self.image = Menge.createNode( "Sprite", 
 			[ { "ImageMap": { "Name": imageResource }  } ]
 			)
@@ -22,7 +21,7 @@ class Ball( Menge.Entity ):
 
 		hotspot = Menge.createNode( "HotSpot", params )
 
-		hotspot.setMouseLeftClickEvent( self.onMouseLeftClick )
+#		hotspot.setMouseLeftClickEvent( self.onMouseLeftClick )
 
 		self.addChildren( hotspot )
 		pass

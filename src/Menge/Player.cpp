@@ -132,7 +132,7 @@ namespace Menge
 		cmr3d->setFar(1000.0f);
 		cmr3d->setNear(0.5f);
 		cmr3d->setFov( 3.14f / 4.f );
-		cmr3d->setPosition(mt::vec3f(300,0,300));
+		cmr3d->setPosition(mt::vec3f(300,300,0));
 
 		cmr3d->lookAt(mt::vec3f(0,0,0));
 
@@ -230,21 +230,21 @@ namespace Menge
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
-			avat->moveToPoint(mt::vec3f(50,10,0));
+			avat->moveToPoint(mt::vec3f(50,0,10));
 		}
 
 		if( inputEng->isKey( DIK_3, 1 ) == true )
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
-			avat->lookAtPoint(mt::vec3f(0,100,0));
+			avat->lookAtPoint(mt::vec3f(0,0,100));
 		}
 
 		if( inputEng->isKey( DIK_2, 1 ) == true )
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
-			avat->moveToPoint(mt::vec3f(0,-50,0));
+			avat->moveToPoint(mt::vec3f(0,0,-50));
 		//	//anim->play2Blend("paladin_idle.caf",0.4f,"paladin_walk.caf",0.6f);
 		}
 

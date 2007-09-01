@@ -9,7 +9,7 @@ class TiXmlElement;
 
 namespace Menge
 {
-	class Event{};
+	class Event;
 
 	class Eventable
 		: public virtual Node

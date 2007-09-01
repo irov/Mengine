@@ -40,7 +40,7 @@ namespace mt
 			check_edges_convex(points.size() - 3);
 	}
 
-	void polygon::check_edges_convex(int i)
+	void polygon::check_edges_convex( size_t i )
 	{
 		size_t j = (i + 1) % points.size();
 		size_t k = (i + 2) % points.size();

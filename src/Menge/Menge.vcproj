@@ -208,6 +208,14 @@
 				Name="Script"
 				>
 				<File
+					RelativePath=".\EventScriptable.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\EventScriptable.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ScriptClassDeclaration.cpp"
 					>
 				</File>
@@ -1144,6 +1152,10 @@
 				<Filter
 					Name="Eventable"
 					>
+					<File
+						RelativePath=".\Event.h"
+						>
+					</File>
 					<File
 						RelativePath=".\Eventable.cpp"
 						>

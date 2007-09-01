@@ -10,6 +10,8 @@
 
 #	include "RenderEngine.h"
 
+#	include "Event.h"
+
 
 namespace	Menge
 {
@@ -107,20 +109,19 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//void HotSpot::setMouseLeftClickEvent( PyObject * _object )
-	//{
-	//	registerEvent( "MOUSE_LEFT_CLICK", _object );
-	//}
+	void HotSpot::setMouseLeftClickEvent( Event * _event )
+	{
+		registerEvent( "MOUSE_LEFT_CLICK", _event );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::update( float _timing )
 	{
 		const mt::vec3f & v = Holder<InputEngine>::hostage()
 			->getPosition();
 		
-		bool mlReleased = false;
-		
-		//Holder<InputEngine>::hostage()
-		//	->isButton( MOUSE_LEFT, DI_RELEASED );
+		bool mlReleased = 
+			Holder<InputEngine>::hostage()
+			->isButton( 0, 1 );
 
 		if( mlReleased == true )
 		{	
@@ -129,11 +130,10 @@ namespace	Menge
 				return;
 			}
 
-			//if( PyObject * eventMouseLeftClick = getEvent( "MOUSE_LEFT_CLICK" ) )
-			//{
-			//	Holder<ScriptEngine>::hostage()
-			//		->callFunction( eventMouseLeftClick );
-			//}
+			if( Event * eventLC = getEvent( "MOUSE_LEFT_CLICK" ) )
+			{
+				eventLC->call( "()" );
+			}
 		}
 	}
 }

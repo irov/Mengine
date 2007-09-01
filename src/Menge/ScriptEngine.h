@@ -55,6 +55,8 @@ namespace Menge
 		PyObject * callModuleFunction( const std::string & _module, const std::string & _name, const char * _params = "()", ... );
 		PyObject * callModuleFunction( PyObject * _module, const std::string & _name, const char * _params = "()", ... );
 
+		PyObject * callFunction( PyObject * _object, const char * _params, va_list );
+
 		PyObject * callFunction( PyObject * _object, const char * _params = "()", ...  );
 		PyObject * callFunction( const std::string & _name, const char * _params = "()", ...  );
 

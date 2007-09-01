@@ -155,7 +155,7 @@ namespace Menge
 			//	;
 
 			pybind::class_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot")
-				//.def( "setMouseLeftClickEvent", &HotSpot::setMouseLeftClickEvent )
+				.def( "setMouseLeftClickEvent", &HotSpot::setMouseLeftClickEvent )
 				;
 
 			//boost::python::class_<HotSpot, boost::python::bases<SceneNode2D> >("HotSpot")

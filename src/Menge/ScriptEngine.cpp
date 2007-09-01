@@ -291,6 +291,13 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::callFunction( PyObject * _object, const char * _params, va_list _valist )
+	{
+		PyObject * result = pybind::call_va( _object, _params, _valist );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::callFunction( PyObject * _object, const char * _params, ...  )
 	{
 		va_list valist;

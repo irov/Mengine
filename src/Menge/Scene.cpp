@@ -103,10 +103,6 @@ namespace	Menge
 		Holder<ScriptEngine>::hostage()
 			->callModuleFunction( m_scriptScene, "onActivate" );
 
-		//rc = ScriptEngine::refCount(py_scene);
-
-		//ScriptEngine::decref( m_scriptScene );
-
 		return NodeCore::_activate();
 	}
 	//////////////////////////////////////////////////////////////////////////

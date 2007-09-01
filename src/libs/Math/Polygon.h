@@ -43,7 +43,7 @@ namespace mt
 
 		char convex_value;
 		bool convex_state;
-		void check_edges_convex(int i);
+		void check_edges_convex(size_t i);
 	};
 
 	bool	cmp_poly_poly(const polygon& _a, const polygon& _b);

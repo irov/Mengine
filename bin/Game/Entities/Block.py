@@ -16,6 +16,8 @@ class Block( Menge.Entity ):
 		params = [ { 'Point': { 'Value': '-50;-50' } } ,{ 'Point': { 'Value': ' 50;-50' } } ,{ 'Point': { 'Value': ' 50; 50' } } ,{ 'Point': { 'Value': '-50; 50' } } ]
 
 		hotspot = Menge.createNode( "HotSpot", params )
+		
+		hotspot.setMouseLeftClickEvent( self.test )
 
 		self.addChildren( hotspot )
 

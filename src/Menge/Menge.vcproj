@@ -1153,6 +1153,10 @@
 					Name="Eventable"
 					>
 					<File
+						RelativePath=".\Event.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Event.h"
 						>
 					</File>

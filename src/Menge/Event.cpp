@@ -1,4 +1,4 @@
-#	include "EventScriptable.h"
+#	include "Event.h"
 
 #	include "ScriptEngine.h"
 
@@ -7,25 +7,30 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	EventScriptable::EventScriptable( PyObject * _callback )
+	Event::Event( PyObject * _callback )
 		: m_callback( _callback )
 	{		
-		pybind::incref( _callback );
+		pybind::incref( m_callback );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * EventScriptable::getCallback()
+	Event::~Event()
+	{
+		pybind::decref( m_callback );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * Event::getCallback()
 	{
 		return m_callback;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void EventScriptable::call( const char * _format, ... )
+	void Event::call( const char * _format, ... )
 	{
 		va_list valist;
 		va_start(valist, _format);
 
 		Holder<ScriptEngine>::hostage()
 			->callFunction( m_callback, _format, valist );
-		
+
 		va_end( valist ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -34,13 +39,13 @@ namespace Menge
 	{
 		void apply( PyObject * _obj ) override
 		{
-			m_result = new EventScriptable( _obj );
+			m_result = new Event( _obj );
 			m_valid = true;
 		}
 
 		PyObject * wrapp( Event * _event ) override
 		{
-			return static_cast<EventScriptable*>(_event)->getCallback();
+			return _event->getCallback();
 		}
 	}s_extract_Event_type;
 

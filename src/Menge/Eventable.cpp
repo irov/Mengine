@@ -24,7 +24,7 @@ namespace Menge
 		if( it_find == m_mapEvent.end() )
 		{
 			m_mapEvent.insert(std::make_pair( _name, _event ));		
-		}
+		}            
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Event * Eventable::getEvent( const std::string & _name )

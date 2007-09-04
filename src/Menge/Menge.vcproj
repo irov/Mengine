@@ -208,14 +208,6 @@
 				Name="Script"
 				>
 				<File
-					RelativePath=".\EventScriptable.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\EventScriptable.h"
-					>
-				</File>
-				<File
 					RelativePath=".\ScriptClassDeclaration.cpp"
 					>
 				</File>

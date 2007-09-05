@@ -39,6 +39,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP2"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\pybind&quot;;&quot;$(SolutionDir)dependencies\Python\Include&quot;;&quot;$(ProjectDir)&quot;;&quot;$(SolutionDir)src\Dependencies\python&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PYBIND_EXPORTS"

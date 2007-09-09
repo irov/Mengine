@@ -45,7 +45,10 @@ namespace Menge
 
 		XML_FOR_EACH_DOCUMENT( document )
 		{
-			_node->loader(XML_CURRENT_NODE);
+			XML_CHECK_NODE("Node")
+			{
+				_node->loader(XML_CURRENT_NODE);
+			}
 		}
 		XML_INVALID_PARSE()
 		{

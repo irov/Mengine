@@ -34,7 +34,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
-		if( Holder<ScriptEngine>::hostage()
+		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, "fini" ) )
 		{
 			Holder<ScriptEngine>::hostage()
@@ -137,6 +137,8 @@ namespace Menge
 					m_listEntitiesDeclaration.push_back( XML_TITLE_NODE );
 				}
 			}
+
+			XML_CHECK_VALUE_NODE( "Scripts", "Path", m_pathScripts );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -163,7 +165,7 @@ namespace Menge
 	{
 		bool handle = false;
 
-		if( !handle && Holder<ScriptEngine>::hostage()
+		if( !handle && m_pyPersonality && Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, "onHandleMouseButtonEvent" ) )
 		{
 			handle = Holder<ScriptEngine>::hostage()
@@ -182,7 +184,7 @@ namespace Menge
 	{
 		bool handle = false;
 
-		if( !handle && Holder<ScriptEngine>::hostage()
+		if( !handle && m_pyPersonality && Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, "onHandleMouseMove" ) )
 		{
 			handle = Holder<ScriptEngine>::hostage()
@@ -203,7 +205,7 @@ namespace Menge
 
 		m_amplifier->update(_timing);
 
-		if( Holder<ScriptEngine>::hostage()
+		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, m_eventUpdate ) )
 		{
 			Holder<ScriptEngine>::hostage()

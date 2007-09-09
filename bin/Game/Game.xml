@@ -24,6 +24,8 @@
 		<Ball/>
 	</Entities>
 
+	<Scripts Path = "Game/Scripts" />
+
 	<BacksoundManager File = "playlists.xml"/>
 	<DialogManager File = "messages.xml"/>				
 </Game>	

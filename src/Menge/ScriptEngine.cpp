@@ -69,7 +69,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::setEntitiesPath( const std::string & _paths )
 	{
+		m_pathEntities = _paths;
+
 		std::string all_paths = "Game/Scene";
+		all_paths += ';';
+		all_paths += "Game/Scripts";
 		all_paths += ';';
 		all_paths += _paths;
 
@@ -84,6 +88,11 @@ namespace Menge
 			m_mapEntitiesType.find( _type );
 
 		return it_find != m_mapEntitiesType.end();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const std::string & ScriptEngine::getEntitiesPath() const
+	{
+		return m_pathEntities;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::getEntityModule( const std::string & _type )

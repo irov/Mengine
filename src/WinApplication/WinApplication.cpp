@@ -269,7 +269,10 @@ bool WinApplication::init( const char * _xmlFile )
 		}
 	}
 
-	m_application->createGame( gameFile );
+	if( m_application->createGame( gameFile ) == false )
+	{
+		return false;
+	}
 
 	return true;
 }

@@ -82,6 +82,7 @@ namespace Menge
 		typedef std::list<std::string> TListEntitysDeclaration;
 		TListEntitysDeclaration m_listEntitiesDeclaration;
 
+		std::string m_pathScripts;
 		std::string m_pathEntities;
 	};	
 }

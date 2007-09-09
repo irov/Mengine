@@ -62,13 +62,13 @@ XML_PARSE_FILE [XML_NAME]
 	for( bool irov_xml_else_if = false; irov_xml_parse_once == true;irov_xml_parse_once = false)
 
 #define XML_FOR_EACH_DOCUMENT( XML_DOCUMENT )\
-	for( bool irov_xml_parse_once = true ; irov_xml_parse_once == true; )\
-	for( \
+	for( bool irov_xml_parse_once = true ; irov_xml_parse_once == true; irov_xml_parse_once = false )\
+	if( XML_DOCUMENT )\
+	for(\
 	TiXmlDocument * irov_xml_document = XML_DOCUMENT;\
-	irov_xml_parse_once==true && irov_xml_document;\
+	irov_xml_parse_once == true && irov_xml_document;\
 	TiXmlDocumentRelese( irov_xml_document )\
 	)\
-	if( irov_xml_parse_once = true )\
 	for(\
 	TiXmlElement * irov_xml_current_tree = TiXmlDocumentFirstChildElement(irov_xml_document);\
 	irov_xml_current_tree != 0;\

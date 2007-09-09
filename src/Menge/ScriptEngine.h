@@ -36,6 +36,7 @@ namespace Menge
 
 		void setEntitiesPath( const std::string & _paths );
 		bool isEntityType( const std::string & _type );
+		const std::string & getEntitiesPath() const;
 		PyObject * getEntityModule( const std::string & _type );
 		bool registerEntityType( const std::string & _type );
 

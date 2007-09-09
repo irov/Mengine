@@ -2,6 +2,7 @@
 
 #	include "Entity.h"
 
+#	include "FileEngine.h"
 #	include "ScriptEngine.h"
 
 #	include "pybind/pybind.hpp"
@@ -25,9 +26,9 @@ namespace Menge
 				pybind::ret_none();
 			}
 
-			Entity * en = pybind::extract<Entity*>( result );
+			Entity * entity = pybind::extract<Entity*>( result );
 
-			if( en == 0 )
+			if( entity == 0 )
 			{
 				printf("Can't create entity [%s]\n"
 					, _type.c_str() 
@@ -36,8 +37,30 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			en->setPosition( _pos );
-			en->setDirection( _dir );
+			std::string xml_path = Holder<ScriptEngine>::hostage()
+				->getEntitiesPath();
+			
+			xml_path += '/';
+			xml_path += _type;
+			xml_path += ".xml";
+
+			TiXmlDocument * document = Holder<FileEngine>::hostage()
+				->loadXml( xml_path );
+
+			XML_FOR_EACH_DOCUMENT( document )
+			{
+				XML_CHECK_NODE("Entity")
+				{
+					entity->loader(XML_CURRENT_NODE);
+				}
+			}
+			XML_INVALID_PARSE()
+			{
+				
+			}
+
+			entity->setPosition( _pos );
+			entity->setDirection( _dir );
 
 			return result;
 		}

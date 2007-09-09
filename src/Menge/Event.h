@@ -15,6 +15,7 @@ namespace Menge
 		Event( PyObject * _callback );
 		virtual ~Event();
 
+
 	public:
 		virtual void call( const char * _format, ... );
 

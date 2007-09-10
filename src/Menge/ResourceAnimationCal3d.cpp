@@ -222,6 +222,7 @@ namespace Menge
 				td.filter = 1;
 
 				RenderImageInterface * texture = Holder<RenderEngine>::hostage()->loadImage(td);
+				Holder<FileEngine>::hostage()->closeFile( imageData );
 
 				pCoreMaterial->setMapUserData(mapId, (Cal::UserData)texture);
 			}

@@ -76,6 +76,7 @@ namespace Menge
 						}
 
 						TiXmlElementInsertEndChild( node_xml, key_xml );
+						TiXmlElementRemove( key_xml );
 					}
 				}
 

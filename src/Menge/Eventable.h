@@ -15,6 +15,10 @@ namespace Menge
 		: public virtual Node
 	{
 	public:
+		Eventable();
+		~Eventable();
+
+	public:
 		void removeAllEvent();
 
 	public:

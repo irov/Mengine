@@ -3,17 +3,14 @@
 #	include "SceneManager.h"
 
 #	include "Scene.h"
-
 #	include "Player.h"
-
 #	include "Arrow.h"
-
 #	include "Amplifier.h"
 
+#	include "MousePickerSystem.h"
+
 #	include "ScriptEngine.h"
-
 #	include "XmlParser/XmlParser.h"
-
 #	include "ErrorMessage.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -21,15 +18,11 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
-		: m_amplifier(0)
-		, m_defaultArrow(0)
+		: m_defaultArrow(0)
 		, m_pyPersonality(0)
 	{
-		m_player = new Player();
-
-		m_amplifier = new Amplifier();
-
-		Holder<Game>::keep(this);
+		Holder<Player>::keep( new Player );
+		Holder<Amplifier>::keep( new Amplifier );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
@@ -41,8 +34,6 @@ namespace Menge
 				->callModuleFunction( m_pyPersonality, "fini" );
 		}
 
-		delete m_amplifier;
-
 		for each( const TMapScene::value_type & it in m_mapScene )
 		{
 			it.second->destroy();
@@ -53,7 +44,9 @@ namespace Menge
 			it.second->destroy();
 		}
 
-		delete m_player;
+		Holder<Amplifier>::destroy();
+		Holder<Player>::destroy();
+		Holder<MousePickerSystem>::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loader(TiXmlElement *_xml)
@@ -74,7 +67,9 @@ namespace Menge
 			{
 				std::string	playlistFilename;
 				XML_VALUE_ATTRIBUTE("File", playlistFilename);
-				m_amplifier->loadPlayList(playlistFilename);
+				
+				Holder<Amplifier>::hostage()
+					->loadPlayList(playlistFilename);
 			}
 			//<Arrows>
 			//	<Arrow File = "Game/Arrows/Default.xml" />
@@ -146,16 +141,16 @@ namespace Menge
 	{
 		bool handle = false;
 
-		if( !handle && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, "onHandleKeyEvent" ) )
+		if( !handle )
 		{
 			handle = Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, "onHandleKeyEvent", "(Ib)", _key, _isDown );
+				->handleKeyEvent( m_pyPersonality, _key, _isDown );
 		}
 
-		if( !handle && m_player )
+		if( !handle )
 		{
-			return m_player->handleKeyEvent( _key, _isDown );
+			return Holder<Player>::hostage()
+				->handleKeyEvent( _key, _isDown );
 		}	
 
 		return false;
@@ -165,16 +160,15 @@ namespace Menge
 	{
 		bool handle = false;
 
-		if( !handle && m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, "onHandleMouseButtonEvent" ) )
+		if( !handle )
 		{
 			handle = Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, "onHandleMouseButtonEvent", "(Ib)", _button, _isDown );
+				->handleMouseButtonEvent( m_pyPersonality, _button, _isDown );
 		}
 
-		if( !handle && m_player )
+		if( !handle )
 		{
-			return m_player->handleMouseButtonEvent( _button, _isDown );
+			return Holder<Player>::hostage()->handleMouseButtonEvent( _button, _isDown );
 		}	
 
 		return false;
@@ -184,16 +178,16 @@ namespace Menge
 	{
 		bool handle = false;
 
-		if( !handle && m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, "onHandleMouseMove" ) )
+		if( !handle )
 		{
 			handle = Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, "onHandleMouseMove", "(fff)", _x, _y, _whell );
+				->handleMouseMove( m_pyPersonality, _x, _y, _whell );
 		}
 		
-		if( !handle && m_player )
+		if( !handle )
 		{
-			return m_player->handleMouseMove( _x, _y, _whell );
+			return Holder<Player>::hostage()
+				->handleMouseMove( _x, _y, _whell );
 		}		
 
 		return false;
@@ -201,9 +195,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update( float _timing )
 	{
-		m_player->update( _timing );
+		Holder<Player>::hostage()
+			->update( _timing );
 
-		m_amplifier->update(_timing);
+		Holder<Amplifier>::hostage()
+			->update(_timing);
 
 		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, m_eventUpdate ) )
@@ -215,12 +211,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()
 	{
-		m_player->render();
+		Holder<Player>::hostage()
+			->render();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::debugRender()
 	{
-		m_player->debugRender();
+		Holder<Player>::hostage()
+			->debugRender();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string & Game::getPathEntities() const
@@ -230,6 +228,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
+		Holder<MousePickerSystem>::keep( new MousePickerSystem );
+
 		m_defaultArrow = getArrow(m_defaultArrowName);
 
 		ScriptEngine * scriptEngine = 
@@ -266,7 +266,8 @@ namespace Menge
 			return false;
 		}
 
-		m_player->init();
+		Holder<Player>::hostage()
+			->init();
 
 		return result;
 	}

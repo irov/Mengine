@@ -2,13 +2,15 @@
 
 #	include "ObjectImplement.h"
 
-#	include "InputEngine.h"
+#	include "MousePickerSystem.h"
 
+#	include "InputEngine.h"
 #	include "ScriptEngine.h"
+#	include "RenderEngine.h"
+
+#	include "Holder.h"
 
 #	include "XmlParser/XmlParser.h"
-
-#	include "RenderEngine.h"
 
 #	include "Event.h"
 
@@ -19,15 +21,40 @@ namespace	Menge
 	OBJECT_IMPLEMENT(HotSpot)
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
-	: m_handle( true )
-	//, m_mouseLeftClick( 0 )
+	: m_handler( 0 )
+	, m_handle( true )
 	{
-
+		this->setHandler( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::~HotSpot()
 	{
 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::pick( float _x, float _y )
+	{
+		return this->testPoint( mt::vec2f( _x, _y ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::onLeave()
+	{
+		if( Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_handler, "onLeave" ) )
+		{
+			Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_handler, "onLeave", "()" );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::onEnter()
+	{
+		if( Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_handler, "onEnter" ) )
+		{
+			Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_handler, "onEnter", "()" );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::setHandle( bool _handle )
@@ -109,13 +136,46 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::setMouseLeftClickEvent( Event * _event )
+	bool HotSpot::handleKeyEvent( size_t _key, bool _isDown )
 	{
-		registerEvent( "MOUSE_LEFT_CLICK", _event );
+		return Holder<ScriptEngine>::hostage()
+			->handleKeyEvent( m_handler, _key, _isDown );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleMouseButtonEvent( size_t _button, bool _isDown )
+	{
+		return Holder<ScriptEngine>::hostage()
+			->handleMouseButtonEvent( m_handler, _button, _isDown );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleMouseMove( float _x, float _y, float _whell )
+	{
+		return Holder<ScriptEngine>::hostage()
+			->handleMouseMove( m_handler, _x, _y, _whell );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::setInputHandler( PyObject * _handler )
+	{
+		ScriptEngine::incref( _handler );
+
+		m_handler = _handler;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::_activate()
+	{
+		return SceneNode2D::_activate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_deactivate()
+	{
+		SceneNode2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::update( float _timing )
 	{
+		Holder<MousePickerSystem>::hostage()
+			->regTrap( this );
+
 		const mt::vec3f & v = Holder<InputEngine>::hostage()
 			->getPosition();
 		

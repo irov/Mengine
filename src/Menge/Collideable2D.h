@@ -12,8 +12,7 @@ namespace Menge
 	public:
 		Collideable2D();
 
-	public:
-		
+	public:		
 		const mt::box2f& getBoundingBox();
 
 	public:

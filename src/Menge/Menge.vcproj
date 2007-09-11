@@ -312,10 +312,6 @@
 					RelativePath=".\InputHandler.h"
 					>
 				</File>
-				<Filter
-					Name="InputScriptFunctionMap"
-					>
-				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -1180,6 +1176,26 @@
 				</File>
 				<File
 					RelativePath=".\State.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="MousePickerTrap"
+				>
+				<File
+					RelativePath=".\MousePickerSystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MousePickerSystem.h"
+					>
+				</File>
+				<File
+					RelativePath=".\MousePickerTrap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MousePickerTrap.h"
 					>
 				</File>
 			</Filter>

@@ -41,8 +41,6 @@ namespace Menge
 
 		foreachChildren( ForeachDestroy() );
 
-		//Eventable::removeAllEvent();
-
 		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////

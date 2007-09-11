@@ -22,6 +22,7 @@ namespace Menge
 
 	public:
 		virtual bool init();
+		virtual void fini();
 		virtual void loop();
 
 		virtual void setFileSystem( FileSystemInterface * _interface );
@@ -49,6 +50,5 @@ namespace Menge
 		bool m_fullScreen;
 
 		InputHandler * m_handler;
-		Game * m_game;	
 	};
 }

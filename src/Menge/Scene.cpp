@@ -5,8 +5,10 @@
 
 #	include "SceneManager.h"
 #	include "ResourceManager.h"
+#	include "MousePickerSystem.h"
 
 #	include "ScriptEngine.h"
+
 
 #	include "XmlParser/XmlParser.h"
 
@@ -35,53 +37,20 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleKeyEvent( size_t _key, bool _isDown )
 	{
-		for( TListChildren::reverse_iterator 
-			it = m_listChildren.rbegin(),
-			it_end = m_listChildren.rend();
-		it != it_end;
-		++it)
-		{
-			if( (*it)->handleKeyEvent( _key, _isDown ) )
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return Holder<MousePickerSystem>::hostage()
+			->handleKeyEvent( _key, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEvent( size_t _button, bool _isDown )
 	{
-		for( TListChildren::reverse_iterator 
-			it = m_listChildren.rbegin(),
-			it_end = m_listChildren.rend();
-		it != it_end;
-		++it)
-		{
-			if((*it)->handleMouseButtonEvent( _button, _isDown ) )
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return Holder<MousePickerSystem>::hostage()
+			->handleMouseButtonEvent( _button, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseMove( float _x, float _y, float _whell )
 	{
-		for( TListChildren::reverse_iterator 
-			it = m_listChildren.rbegin(),
-			it_end = m_listChildren.rend();
-		it != it_end;
-		++it)
-		{
-			if( (*it)->handleMouseMove( _x, _y, _whell ) )
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return Holder<MousePickerSystem>::hostage()
+			->handleMouseMove( _x, _y, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_activate()

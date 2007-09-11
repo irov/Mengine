@@ -68,10 +68,7 @@ namespace Menge
 
 		PyObject * m_pyPersonality;
 
-		Player * m_player;
-
 		Arrow * m_defaultArrow;
-		Amplifier * m_amplifier;
 
 		typedef std::map<std::string, Arrow*> TMapArrow;
 		TMapArrow m_mapArrow;

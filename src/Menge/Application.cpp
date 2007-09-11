@@ -8,6 +8,7 @@
 #	include "SoundEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "MousePickerSystem.h"
 #	include "ResourceManager.h"
 
 #	include "Game.h"
@@ -54,23 +55,16 @@ namespace Menge
 
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application()
-		: m_game(0)
 	{
 		m_handler = new ApplicationInputHandlerProxy( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
 	{
-		if (m_game)
-		{
-			m_game->release();
-		}
-
 		delete m_handler;
-		delete m_game;
 
+		Holder<Game>::destroy();
 		Holder<ResourceManager>::destroy();
-
 		Holder<RenderEngine>::destroy();
 		Holder<FileEngine>::destroy();
 		Holder<InputEngine>::destroy();
@@ -107,7 +101,8 @@ namespace Menge
 	bool Application::createGame( const std::string & _game )
 	{
 		printf("create game file [%s] ...\n", _game.c_str() );
-		m_game = new Game();
+
+		Holder<Game>::keep( new Game );
 
 		TiXmlDocument * document = Holder<FileEngine>::hostage()
 			->loadXml( _game );
@@ -116,7 +111,8 @@ namespace Menge
 		{
 			XML_CHECK_NODE("Game")
 			{
-				m_game->loader(XML_CURRENT_NODE);
+				Holder<Game>::hostage()
+					->loader(XML_CURRENT_NODE);
 			}
 		}
 		XML_INVALID_PARSE()
@@ -125,7 +121,10 @@ namespace Menge
 			return false;
 		}
 
-		const std::string & pathEntities = m_game->getPathEntities();
+		const std::string & pathEntities = 
+			Holder<Game>::hostage()
+			->getPathEntities();
+
 		std::string scriptPath = pathEntities;
 
 		printf("set script Entity path [%s] ...\n", scriptPath.c_str() );
@@ -135,7 +134,8 @@ namespace Menge
 
 		printf("init game ...\n");
 
-		if( m_game->init() == false )
+		if( Holder<Game>::hostage()
+			->init() == false )
 		{
 			return false;
 		}
@@ -167,6 +167,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::fini()
+	{
+		Holder<Game>::hostage()->release();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Application::loop()
 	{	
 		update();
@@ -175,59 +180,35 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::handleKeyEvent( size_t _key, bool _isDown )
 	{
-		if( m_game )
-		{
-			return m_game->handleKeyEvent( _key, _isDown );
-		}		
-		
-		return false;
+		return Holder<Game>::hostage()->handleKeyEvent( _key, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::handleMouseButtonEvent( size_t _button, bool _isDown )
 	{
-		if( m_game )
-		{
-			return m_game->handleMouseButtonEvent( _button, _isDown );
-		}		
-
-		return false;
+		return Holder<Game>::hostage()->handleMouseButtonEvent( _button, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::handleMouseMove( float _x, float _y, float _whell )
 	{
-		if( m_game )
-		{
-			return m_game->handleMouseMove( _x, _y, _whell );
-		}	
-
-		return false;
+		return Holder<Game>::hostage()->handleMouseMove( _x, _y, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::update()
 	{
-		//if( m_functionUpdate )
-		//{
-		//	m_functionUpdate->callFunctionVoid();
-		//}
-
+		Holder<MousePickerSystem>::hostage()->clear();
+		Holder<Game>::hostage()->update(0.01f);
 		Holder<InputEngine>::hostage()->update();
-		m_game->update(0.01f);
+		Holder<MousePickerSystem>::hostage()->update();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::render()
 	{
 		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
-
 	
 		renderEng->beginScene(2756);
-		
-		//if( m_functionRender )
-		//{
-		//	m_functionRender->callFunctionVoid();
-		//}
-		m_game->render();
 
-		m_game->debugRender();
+		Holder<Game>::hostage()->render();
+		Holder<Game>::hostage()->debugRender();
 
 		renderEng->endScene();
 	}

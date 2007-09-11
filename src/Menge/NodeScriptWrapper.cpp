@@ -36,7 +36,7 @@ namespace Menge
 
 			if( pyNode == 0 )
 			{
-				node->destroy();
+				delete node;
 				return pybind::ret_none();
 			}
 
@@ -156,7 +156,7 @@ namespace Menge
 			//	;
 
 			pybind::class_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot")
-				.def( "setMouseLeftClickEvent", &HotSpot::setMouseLeftClickEvent )
+				.def( "setInputHandler", &HotSpot::setInputHandler )
 				;
 
 			//boost::python::class_<HotSpot, boost::python::bases<SceneNode2D> >("HotSpot")

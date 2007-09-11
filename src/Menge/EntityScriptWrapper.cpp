@@ -23,7 +23,7 @@ namespace Menge
 
 			if( result == 0 )
 			{
-				pybind::ret_none();
+				return pybind::ret_none();
 			}
 
 			Entity * entity = pybind::extract<Entity*>( result );

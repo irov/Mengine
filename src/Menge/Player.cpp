@@ -53,19 +53,18 @@ namespace Menge
 	, m_renderCamera2D(0)
 	, m_renderCamera3D(0)
 	{
-		Holder<Player>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
 	{
 		if( m_renderCamera2D )
 		{
-			m_renderCamera2D->destroy();
+			delete m_renderCamera2D;
 		}
 
 		if( m_renderCamera3D )
 		{
-			m_renderCamera3D->destroy();
+			delete m_renderCamera3D;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -21,7 +21,6 @@ namespace Menge
 	, m_fadeTime(3000.0f) //3000 ms
 	{
 		assert(m_fadeTime > 0);
-		Holder<Amplifier>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::~Amplifier()

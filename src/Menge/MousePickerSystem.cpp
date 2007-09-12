@@ -74,6 +74,8 @@ namespace Menge
 				}
 			}
 		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEvent( size_t _button, bool _isDown )
@@ -86,14 +88,14 @@ namespace Menge
 			{
 				InputHandler * handler = trap->handler();
 
-				if( handler->handleMouseButtonEvent( _button, _isDown ) == false )
+				if( handler->handleMouseButtonEvent( _button, _isDown ) == true )
 				{
-					return false;
+					return true;
 				}
 			}
 		}
 
-		return true;
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseMove( float _x, float _y, float _whell )
@@ -112,6 +114,8 @@ namespace Menge
 				}
 			}
 		}
+		
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	InputHandler * MousePickerSystem::pickHandler( float _x, float _y )

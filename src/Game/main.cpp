@@ -27,9 +27,10 @@ void main()
 
 	init( &app );
 
-	app->init( "application.xml" );
-
-	app->run();
+	if( app->init( "application.xml" ) )
+	{
+		app->run();
+	}
 
 	fini( app );
 

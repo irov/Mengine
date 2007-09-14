@@ -4,7 +4,10 @@
 
 #	include "InputHandler.h"
 
+#	include "Math/vec2.h"
+
 #	include <string>
+
 
 namespace Menge
 {	
@@ -27,6 +30,9 @@ namespace Menge
 		Scene * getCurrentScene();
 
 		void setArrow( Arrow * _arrow );
+		Arrow * getArrow();
+
+		const mt::vec2f & getPositionClick() const;
 
 	public:
 		void setRenderCamera2D( Camera2D * _camera);

@@ -175,25 +175,5 @@ namespace	Menge
 	{
 		Holder<MousePickerSystem>::hostage()
 			->regTrap( this );
-
-		const mt::vec3f & v = Holder<InputEngine>::hostage()
-			->getPosition();
-		
-		bool mlReleased = 
-			Holder<InputEngine>::hostage()
-			->isButton( 0, 1 );
-
-		if( mlReleased == true )
-		{	
-			if( testPoint( v.v2 ) == false )
-			{
-				return;
-			}
-
-			if( Event * eventLC = getEvent( "MOUSE_LEFT_CLICK" ) )
-			{
-				eventLC->call( "()" );
-			}
-		}
 	}
 }

@@ -4,6 +4,8 @@
 #	include "InputEngine.h"
 #	include "InputHandler.h"
 
+#	include "Player.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -15,7 +17,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update()
 	{
-		const mt::vec3f & mp = Holder<InputEngine>::hostage()->getPosition();
+		const mt::vec2f & mp = Holder<Player>::hostage()
+			->getPositionClick();
 
 		MousePickerTrap * picker = MousePickerSystem::pickTrap( mp.x, mp.y );
 
@@ -60,7 +63,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleKeyEvent( size_t _key, bool _isDown )
 	{
-		const mt::vec3f & mp = Holder<InputEngine>::hostage()->getPosition();
+		const mt::vec2f & mp = Holder<Player>::hostage()
+			->getPositionClick();
 
 		for each( MousePickerTrap * trap in m_listPickerTrap )
 		{
@@ -80,7 +84,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEvent( size_t _button, bool _isDown )
 	{
-		const mt::vec3f & mp = Holder<InputEngine>::hostage()->getPosition();
+		const mt::vec2f & mp = Holder<Player>::hostage()
+			->getPositionClick();
 
 		for each( MousePickerTrap * trap in m_listPickerTrap )
 		{
@@ -100,7 +105,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseMove( float _x, float _y, float _whell )
 	{
-		const mt::vec3f & mp = Holder<InputEngine>::hostage()->getPosition();
+		const mt::vec2f & mp = Holder<Player>::hostage()
+			->getPositionClick();
 
 		for each( MousePickerTrap * trap in m_listPickerTrap )
 		{

@@ -15,6 +15,9 @@ namespace Menge
 		Arrow();
 
 	public:
+		const mt::vec2f & getPositionClick();
+
+	public:
 		void loader( TiXmlElement * _xml ) override;
 
 	protected:
@@ -24,5 +27,6 @@ namespace Menge
 
 	private:
 		mt::vec2f m_offsetClick;
+		mt::vec2f m_positionClick;
 	};
 }

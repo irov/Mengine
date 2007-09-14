@@ -55,16 +55,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Trap3D::_activate()
 	{
-		for(TListSceneNodesNames::iterator it = m_sceneNodesNames.begin(); it != m_sceneNodesNames.end(); ++it)
+		for each( const TListSceneNodesNames::value_type & it in m_sceneNodesNames )
 		{
-			SceneNode3D * node = this->getParent()->getChildren(*it);
+			SceneNode3D * node = this->getParent()->getChildren(it);
 
-			if(node == NULL)
+			if( node == NULL )
 			{
 				return false;
 			}
 
-			m_sceneNodes.push_back(node);
+			m_sceneNodes.push_back( node );
 		}
 
 		return true;
@@ -76,25 +76,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Trap3D::update( float _timing )
 	{
-		for(TListSceneNodes::iterator i = m_sceneNodes.begin(); i != m_sceneNodes.end(); ++i)
+		for each( SceneNode3D * node in m_sceneNodes )
 		{
-			SceneNode3D * node = *i;
+			bool is_trapped =  mt::is_intersect( m_bbox, node->getBoundingBox() );
 
-			bool is_trapped =  mt::is_intersect(m_bbox, node->getBoundingBox());
-
-			if(is_trapped)
+			if( is_trapped ) 
 			{
-				m_trapped.push_back(node);
-			}
+				m_trapped.push_back( node );
+			} 
 		}
 
 		TListInZone::iterator it = m_inZone.begin();
 
-		while(it != m_inZone.end())
+		while( it != m_inZone.end() )
 		{
 			TListTrapped::iterator founded = std::find( m_trapped.begin(), m_trapped.end(), *it);
 
-			if(founded == m_trapped.end())
+			if( founded == m_trapped.end() )
 			{
 				if( Event * event = getEvent( "LEAVE_ZONE" ) )
 				{
@@ -111,11 +109,11 @@ namespace Menge
 
 		it = m_trapped.begin();
 
-		while(it != m_trapped.end())
+		while( it != m_trapped.end() )
 		{
 			TListInZone::iterator founded = std::find(m_inZone.begin(),m_inZone.end(),*it);
 
-			if(founded == m_inZone.end())
+			if( founded == m_inZone.end() )
 			{
 				if( Event * event = getEvent( "ENTER_ZONE" ) )
 				{

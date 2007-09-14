@@ -13,7 +13,7 @@ namespace	Menge
 	public:
 		StackFSM();
 		~StackFSM();
-		//! StackFSM - dynamic stack finite automat. update automato
+		//! StackFSM - dynamic stack finite automat. update automat
 		/*!
 		\param _timing type the first argument.
 		*/

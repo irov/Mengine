@@ -61,11 +61,11 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	bool Trap2D::_activate()
 	{
-		for(TListSceneNodesNames::iterator i = m_sceneNodesNames.begin(); i != m_sceneNodesNames.end(); ++i)
+		for each( const TListSceneNodesNames::value_type & it in m_sceneNodesNames )
 		{
-			SceneNode2D * node = this->getParent()->getChildren(*i);
+			SceneNode2D * node = this->getParent()->getChildren(it);
 
-			if(node == NULL)
+			if( node == NULL )
 			{
 				return false;
 			}
@@ -82,26 +82,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Trap2D::update( float _timing )
 	{
-		for(TListSceneNodes::iterator i = m_sceneNodes.begin(); i != m_sceneNodes.end(); ++i)
+		for each( SceneNode2D * node in m_sceneNodes )
 		{
-			SceneNode2D * node = *i;
-
-			bool is_trapped =  mt::is_intersect(m_bbox, node->getBoundingBox());
+			bool is_trapped =  mt::is_intersect( m_bbox, node->getBoundingBox() );
 			
-			if(is_trapped)
+			if( is_trapped )
 			{
 				//check for near phase.
-				m_trapped.push_back(*i);
+				m_trapped.push_back( node );
 			}
 		}
 
 		TListInZone::iterator it = m_inZone.begin();
 
-		while(it != m_inZone.end())
+		while( it != m_inZone.end() )
 		{
 			TListTrapped::iterator founded = std::find(m_trapped.begin(),m_trapped.end(),*it);
 
-			if(founded == m_trapped.end())
+			if( founded == m_trapped.end() )
 			{
 				if( Event * event = getEvent( "LEAVE_ZONE" ) )
 				{
@@ -118,18 +116,18 @@ namespace Menge
 
 		it = m_trapped.begin();
 
-		while(it != m_trapped.end())
+		while( it != m_trapped.end() )
 		{
-			TListInZone::iterator founded = std::find(m_inZone.begin(),m_inZone.end(),*it);
+			TListInZone::iterator founded = std::find( m_inZone.begin(), m_inZone.end(), *it );
 
-			if(founded == m_inZone.end())
+			if( founded == m_inZone.end() )
 			{
 				if( Event * event = getEvent( "ENTER_ZONE" ) )
 				{
 					event->call( "()" );
 				}
 
-				m_inZone.push_back(*it);
+				m_inZone.push_back( *it );
 			}
 			it++;
 		}

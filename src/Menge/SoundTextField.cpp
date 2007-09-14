@@ -33,7 +33,7 @@ namespace Menge
 		if(m_soundSourceInterface->isPlaying() == false)
 		{
 			const Message * message = getNextMessage();
-			_prepareSound(message);
+			_prepareSound( message );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -41,15 +41,15 @@ namespace Menge
 	{
 		const Message * message = TextField::start();
 
-		_prepareSound(message);
+		_prepareSound( message );
 
 		return message;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	SoundTextField::_prepareSound(const Message * _message)
 	{
-		Holder<SoundEngine>::hostage()->releaseSoundSource(m_soundSourceInterface);
-		Holder<SoundEngine>::hostage()->releaseSoundBuffer(m_sampleMusic);
+		Holder<SoundEngine>::hostage()->releaseSoundSource( m_soundSourceInterface );
+		Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_sampleMusic );
 
 		m_sampleMusic = Holder<SoundEngine>::hostage()->createSoundBuffer();
 		m_sampleMusic->loadFromFile(_message->soundName.c_str(),true);

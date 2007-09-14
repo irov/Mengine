@@ -25,7 +25,7 @@ namespace	Menge
 		else
 		{
 			mt::vec2f &begin = m_listPoints.back();
-			m_listPoints.push_back(_point);
+			m_listPoints.push_back( _point );
 			mt::vec2f &end = m_listPoints.back();
 
 			m_listChain.push_back(TrackChain(&begin,&end));
@@ -68,7 +68,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Track::_update( float _timing)
+	void Track::_update( float _timing )
 	{
 		if( m_listChain.empty() == true )
 		{

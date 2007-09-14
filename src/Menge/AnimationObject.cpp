@@ -260,11 +260,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationObject::play( const std::string& _name )
 	{
-		size_t count = m_cal3dRes->getAnimationCount();
-
 		const AnimInfo& seq = m_cal3dRes->getAnimationInfo( _name );
 
 		m_calModel->getMixer()->setTimeFactor( seq.delay );
+
+		size_t count = m_cal3dRes->getAnimationCount();
 
 		for( int i = 0; i < count; ++i )
 		{
@@ -342,11 +342,11 @@ namespace Menge
 	void AnimationObject::_clearRemovedCallback()
 	{
 		for(TListRemoveCallbacks::iterator it = m_removeCallbacks.begin(); 
-			it!= m_removeCallbacks.end(); ++it)
+			it != m_removeCallbacks.end(); ++it)
 		{
-			CalCoreAnimation * calCoreAnimation = m_cal3dRes->getCoreAnimation((*it).first);
-			calCoreAnimation->removeCallback((*it).second);
-			delete (*it).second;
+			CalCoreAnimation * calCoreAnimation = m_cal3dRes->getCoreAnimation( it->first );
+			calCoreAnimation->removeCallback( it->second );
+			delete it->second;
 		}
 
 		m_removeCallbacks.clear();

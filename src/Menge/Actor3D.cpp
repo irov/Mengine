@@ -25,7 +25,6 @@ namespace	Menge
 	{
 		m_animObject =
 			this->createChildrenT<AnimationObject>("AnimationObject");
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::loader( TiXmlElement * _xml )
@@ -96,6 +95,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::_update( float _timing )
 	{
+		SceneNode3D::_update( _timing );
+
 		if( m_state == ROTATE )
 		{
 			_calculateNewDirection( _timing );		
@@ -146,7 +147,7 @@ namespace	Menge
 		{
 			m_speed += m_acceleration * t;
 
-			if(m_speed > m_maxSpeed)
+			if( m_speed > m_maxSpeed )
 			{
 				m_speed = m_maxSpeed;
 			}
@@ -159,7 +160,7 @@ namespace	Menge
 	{
 		norm_safe_v3( m_destDir, m_destPos - getLocalPosition() );
 
-		if(mt::dot_v3_v3( m_destDir, m_destDir ) < 0.00001f)
+		if( mt::dot_v3_v3( m_destDir, m_destDir ) < 0.00001f )
 		{
 			m_destDir = getLocalDirection();
 		}
@@ -176,11 +177,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Actor3D::_activate()
 	{		
+		if( SceneNode3D::_activate() == false )
+		{
+			return false;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::_deactivate()
 	{
+		SceneNode3D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -8,7 +8,7 @@
 
 #	include "SoundEngine.h"
 
-#	include "TimeInterval.h"
+//#	include "TimeInterval.h"
 
 
 namespace Menge
@@ -114,7 +114,7 @@ namespace Menge
 	
 	//////////////////////////////////////////////////////////////////////////
 
-	TimeInterval timer(1000, true, true, true);
+	//TimeInterval timer(1000, true, true, true);
 
 	void	Amplifier::updateFadeParams(SoundSourceInterface* _sound)
 	{
@@ -217,7 +217,7 @@ namespace Menge
 
 			assert( length >= 2 * m_fadeTime );
 		
-			timer.start( m_fadeTime, length, true, false );
+			//timer.start( m_fadeTime, length, true, false );
 		}
 
 	/*	if(m_music)

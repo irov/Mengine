@@ -11,7 +11,7 @@ namespace Menge
 
 	public:
 		WayPoint();
-		WayPoint(const mt::vec2f& _pos);
+		WayPoint( const mt::vec2f& _pos );
 
 	public:
 		void _debugRender() override;

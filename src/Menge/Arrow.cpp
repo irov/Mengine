@@ -16,9 +16,7 @@ namespace	Menge
 	OBJECT_IMPLEMENT( Arrow )
 	//////////////////////////////////////////////////////////////////////////
 	Arrow::Arrow()
-	: m_arrowIdle(0)
-	, m_arrowClick(0)
-	, m_offsetClick(0,0)
+	: m_offsetClick(0,0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::_update( float _timing )
@@ -32,7 +30,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()
 	{
-		m_arrowIdle->setOffset(m_offsetClick);
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -42,14 +39,6 @@ namespace	Menge
 
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_NODE("IdleSprite")
-			{
-				XML_DEF_ATTRIBUTES_NODE(Type);
-				
-				m_arrowIdle = createChildrenT<Sprite>( Type );
-				m_arrowIdle->loader(XML_CURRENT_NODE);
-			}
-
 			XML_CHECK_VALUE_NODE("ClickOffset", "Value", m_offsetClick);
 		}
 	}

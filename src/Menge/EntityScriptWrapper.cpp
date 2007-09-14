@@ -5,6 +5,8 @@
 #	include "FileEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "Game.h"
+
 #	include "pybind/pybind.hpp"
 
 namespace Menge
@@ -37,8 +39,8 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			std::string xml_path = Holder<ScriptEngine>::hostage()
-				->getEntitiesPath();
+			std::string xml_path = Holder<Game>::hostage()
+				->getPathEntities();
 			
 			xml_path += '/';
 			xml_path += _type;

@@ -10,6 +10,8 @@
 #	include "MousePickerSystem.h"
 
 #	include "ScriptEngine.h"
+#	include "FileEngine.h"
+
 #	include "XmlParser/XmlParser.h"
 #	include "ErrorMessage.h"
 
@@ -53,13 +55,18 @@ namespace Menge
 	{	
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_NODE_FOR_EACH("Scenes")
+			//<Scenes Path = "Game/Scenes">
+			//	<Default/>
+			//</Scenes>
+			XML_CHECK_NODE("Scenes")
 			{
-				XML_CHECK_NODE("Scene")
+				XML_DEF_ATTRIBUTES_NODE( Path );
+
+				XML_VALUE_ATTRIBUTE( "Path", m_pathScenes );
+
+				XML_FOR_EACH()
 				{
-					XML_DEF_ATTRIBUTES_NODE( File );
-					Scene * scene = SceneManager::createNodeFromXmlT<Scene>( File );
-					addScene( scene );
+					m_listScenesDeclaration.push_back( XML_TITLE_NODE );
 				}
 			}
 
@@ -71,33 +78,19 @@ namespace Menge
 				Holder<Amplifier>::hostage()
 					->loadPlayList(playlistFilename);
 			}
-			//<Arrows>
-			//	<Arrow File = "Game/Arrows/Default.xml" />
+
+			//<Arrows Path = "Game/Arrows">
+			//	<Default/>
 			//</Arrows>
-			XML_CHECK_NODE_FOR_EACH("Arrows")
+			XML_CHECK_NODE("Arrows")
 			{
-				XML_CHECK_NODE("Arrow")
+				XML_DEF_ATTRIBUTES_NODE( Path );
+
+				XML_VALUE_ATTRIBUTE( "Path", m_pathArrows );
+
+				XML_FOR_EACH()
 				{
-					XML_DEF_ATTRIBUTES_NODE(File);
-
-					Node * _node = SceneManager::createNodeFromXml(File);
-
-					if( _node == 0 )
-					{
-						ErrorMessage("Invalid file `%s`", File.c_str() );
-					}
-
-					Arrow * arrow = dynamic_cast<Arrow*>(_node);
-
-					if( arrow == 0 )
-					{
-						const std::string &name = _node->getName();
-						ErrorMessage("Invalid arrow type - `%s` from file `%s`"
-							, name.c_str()
-							, File.c_str() );
-					}
-
-					addArrow(arrow);
+					m_listArrowsDeclaration.push_back( XML_TITLE_NODE );
 				}
 			}
 
@@ -106,7 +99,7 @@ namespace Menge
 			//</Default>
 			XML_CHECK_NODE_FOR_EACH("Default")
 			{
-				XML_CHECK_VALUE_NODE("Arrow", "Type", m_defaultArrowName)
+				XML_CHECK_VALUE_NODE("Arrow", "Name", m_defaultArrowName)
 			}
 
 			XML_CHECK_NODE("Personality")
@@ -226,20 +219,42 @@ namespace Menge
 		return m_pathEntities;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const std::string & Game::getPathArrows() const
+	{
+		return m_pathArrows;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
+		ScriptEngine::TListModulePath m_listModulePath;
+
+		m_listModulePath.push_back( m_pathScripts );
+		m_listModulePath.push_back( m_pathEntities );
+		m_listModulePath.push_back( m_pathScenes );
+		m_listModulePath.push_back( m_pathArrows );	
+
+		Holder<ScriptEngine>::hostage()
+			->setModulePath( m_listModulePath );
+
 		Holder<MousePickerSystem>::keep( new MousePickerSystem );
-
-		m_defaultArrow = getArrow(m_defaultArrowName);
-
-		ScriptEngine * scriptEngine = 
-			Holder<ScriptEngine>::hostage();
 
 		for each( const std::string & enType in m_listEntitiesDeclaration )			
 		{
 			Holder<ScriptEngine>::hostage()
 				->registerEntityType( enType );
 		}
+
+		for each( const std::string & arrow in m_listArrowsDeclaration )
+		{
+			getArrow( arrow );
+		}
+
+		for each( const std::string & scene in m_listScenesDeclaration )
+		{
+			getScene( scene );
+		}
+
+		m_defaultArrow = getArrow(m_defaultArrowName);
 
 		m_pyPersonality = Holder<ScriptEngine>::hostage()
 			->importModule( m_personality );
@@ -288,25 +303,6 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::addArrow( Arrow * _arrow )
-	{
-		const std::string &name = _arrow->getName();
-
-		if( name.empty() == true )
-		{
-			ErrorMessage("add invalid arrow");
-		}
-
-		TMapArrow::iterator it_find = m_mapArrow.find(name);
-
-		if( it_find != m_mapArrow.end() )
-		{
-			return;
-		}
-
-		m_mapArrow.insert(std::make_pair(name,_arrow));
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Game::removeArrow( const std::string & _name )
 	{
 		m_mapArrow.erase(_name);
@@ -323,37 +319,47 @@ namespace Menge
 
 		if( it_find == m_mapArrow.end() )
 		{
-			return 0;
+			std::string arrowModule = _name;
+			arrowModule += ".Arrow";
+
+			Arrow * arrow = Holder<ScriptEngine>::hostage()
+				->createArrow( arrowModule );
+
+			if( arrow == 0 )
+			{
+				printf("Can't create arrow [%s]\n"
+					, _name.c_str() 
+					);
+
+				return 0;
+			}
+
+			std::string xml_path = m_pathArrows;
+			xml_path += "/";
+			xml_path += _name;
+			xml_path += "/Arrow.xml";
+
+			TiXmlDocument * document = Holder<FileEngine>::hostage()
+				->loadXml( xml_path );
+
+			XML_FOR_EACH_DOCUMENT( document )
+			{
+				XML_CHECK_NODE("Arrow")
+				{
+					arrow->loader(XML_CURRENT_NODE);
+				}
+			}
+			XML_INVALID_PARSE()
+			{
+
+			}
+
+			m_mapArrow.insert( std::make_pair( _name, arrow ) );
+
+			return arrow;
 		}
 
 		return it_find->second;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::addScene( Scene * _scene )
-	{
-		if( _scene == 0 )
-		{
-			return;
-		}
-
-		const std::string &name = _scene->getName();
-
-		if( name.empty() )
-		{
-			return;
-		}
-
-		TMapScene::iterator it_find = m_mapScene.find( name );
-
-		if( it_find != m_mapScene.end() )
-		{
-			return;
-		}
-
-		//Holder<ScriptEngine>::hostage()
-		//	->incref( _scene );
-
-		m_mapScene.insert( std::make_pair( name, _scene ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Game::getScene(const std::string & _name )
@@ -362,7 +368,46 @@ namespace Menge
 
 		if( it_find == m_mapScene.end() )
 		{
-			return 0;
+			std::string sceneModule = _name;
+			sceneModule += ".Scene";
+
+			Scene * scene = Holder<ScriptEngine>::hostage()
+				->createScene( sceneModule );
+
+			scene->setName( _name );
+
+			if( scene == 0 )
+			{
+				printf("Can't create scene [%s]\n"
+					, _name.c_str() 
+					);
+
+				return 0;
+			}
+
+			std::string xml_path = m_pathScenes;
+			xml_path += "/";
+			xml_path += _name;
+			xml_path += "/Scene.xml";
+
+			TiXmlDocument * document = Holder<FileEngine>::hostage()
+				->loadXml( xml_path );
+
+			XML_FOR_EACH_DOCUMENT( document )
+			{
+				XML_CHECK_NODE("Scene")
+				{
+					scene->loader(XML_CURRENT_NODE);
+				}
+			}
+			XML_INVALID_PARSE()
+			{
+
+			}
+
+			m_mapScene.insert( std::make_pair( _name, scene ) );
+
+			return scene;
 		}
 
 		return it_find->second;

@@ -23,9 +23,6 @@ namespace Menge
 		void _debugRender() override;
 
 	private:
-		Sprite * m_arrowIdle;
-		Sprite * m_arrowClick;
-
 		mt::vec2f m_offsetClick;
 	};
 }

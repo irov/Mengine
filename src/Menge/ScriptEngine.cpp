@@ -67,17 +67,16 @@ namespace Menge
 		pybind::decref( _object );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::setEntitiesPath( const std::string & _paths )
+	void ScriptEngine::setModulePath( const TListModulePath & _listPath )
 	{
-		m_pathEntities = _paths;
+		std::string path_packet;
+		for each( const std::string & path in _listPath )
+		{
+			path_packet += path;
+			path_packet += ';';
+		}
 
-		std::string all_paths = "Game/Scene";
-		all_paths += ';';
-		all_paths += "Game/Scripts";
-		all_paths += ';';
-		all_paths += _paths;
-
-		pybind::set_syspath( all_paths.c_str() );
+		pybind::set_syspath( path_packet.c_str() );
 
 		pybind::check_error();
 	}
@@ -88,11 +87,6 @@ namespace Menge
 			m_mapEntitiesType.find( _type );
 
 		return it_find != m_mapEntitiesType.end();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const std::string & ScriptEngine::getEntitiesPath() const
-	{
-		return m_pathEntities;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::getEntityModule( const std::string & _type )
@@ -212,6 +206,13 @@ namespace Menge
 	{
 		std::cout << "import module " << _file << "..." << std::endl;
 
+		TMapModule::iterator it_find = m_mapModule.find( _file );
+
+		if( it_find != m_mapModule.end() )
+		{
+			return it_find->second;
+		}
+
 		try
 		{
 			PyObject * module = pybind::module_import( _file.c_str() );
@@ -262,6 +263,52 @@ namespace Menge
 		//}
 
 		//return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////		
+	Arrow * ScriptEngine::createArrow( const std::string & _type )
+	{
+		PyObject * module = Holder<ScriptEngine>::hostage()
+			->importModule( _type );
+
+		if( module == 0 )
+		{
+			return 0;
+		}
+
+		PyObject * result = pybind::call_method( module, "Arrow", "()" );
+
+		if( result == 0 )
+		{
+			return 0;
+		}
+
+		Arrow * arrow = pybind::extract<Arrow*>( result );
+
+		return arrow;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Scene * ScriptEngine::createScene( const std::string & _type )
+	{
+		PyObject * module = Holder<ScriptEngine>::hostage()
+			->importModule( _type );
+
+		if( module == 0 )
+		{
+			return 0;
+		}
+
+		PyObject * result = pybind::call_method( module, "Scene", "()" );
+
+		if( result == 0 )
+		{
+			return 0;
+		}
+
+		Scene * scene = pybind::extract<Scene*>( result );
+
+		scene->setScriptable( result );
+
+		return scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::handleKeyEvent( PyObject * _module, size_t _key, bool _isDown )

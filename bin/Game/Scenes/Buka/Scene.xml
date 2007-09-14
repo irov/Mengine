@@ -1,6 +1,4 @@
-<Node Name = "Buka" Type = "Scene">	
-	<Script File = "Scene" />
-
+<Scene>
 	<Node Name = "Main" Type = "Layer2D">
 		<Parallax Factor = "1;1" />
 
@@ -55,4 +53,4 @@
 			<Transformation Value = "1;0;0;1;70;70" />
 		</Node> <!-- Sprite -->
 	</Node> <!-- Layer -->
-</Node>
+</Scene>

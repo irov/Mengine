@@ -121,17 +121,6 @@ namespace Menge
 			return false;
 		}
 
-		const std::string & pathEntities = 
-			Holder<Game>::hostage()
-			->getPathEntities();
-
-		std::string scriptPath = pathEntities;
-
-		printf("set script Entity path [%s] ...\n", scriptPath.c_str() );
-
-		Holder<ScriptEngine>::hostage()
-			->setEntitiesPath( scriptPath );
-
 		printf("init game ...\n");
 
 		if( Holder<Game>::hostage()

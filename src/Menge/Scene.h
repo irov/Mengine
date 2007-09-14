@@ -3,15 +3,11 @@
 #	include "NodeCore.h"
 #	include "NodeChildren.h"
 
+#	include "Scriptable.h"
+
 #	include "Layer.h"
 
 #	include "InputHandler.h"
-
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
 
 namespace Menge
 {
@@ -20,6 +16,7 @@ namespace Menge
 	class Scene
 		: public NodeCore
 		, public NodeChildren<Layer>
+		, public Scriptable
 		, public InputHandler
 	{
 		OBJECT_DECLARE( Scene )
@@ -43,7 +40,5 @@ namespace Menge
 		bool _activate() override;
 
 	private:
-		std::string m_scriptFile;
-		PyObject * m_scriptScene;
 	};
 }

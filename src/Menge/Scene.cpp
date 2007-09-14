@@ -62,15 +62,8 @@ namespace	Menge
 			return false;
 		}
 
-		std::string functionName = "Scene" + getName() + "_activate";
-
-		PyObject * pyModule = Holder<ScriptEngine>::hostage()
-			->importModule( m_name + "." + m_scriptFile );
-
-		m_scriptScene = ScriptEngine::proxy( pyModule, "Scene", this );
-
 		Holder<ScriptEngine>::hostage()
-			->callModuleFunction( m_scriptScene, "onActivate" );
+			->callModuleFunction( m_scriptable, "onActivate" );
 
 		return NodeCore::_activate();
 	}
@@ -78,11 +71,6 @@ namespace	Menge
 	void Scene::loader( TiXmlElement *_xml )
 	{
 		NodeCore::loader(_xml);
-
-		XML_FOR_EACH_TREE( _xml )
-		{
-			XML_CHECK_VALUE_NODE("Script", "File", m_scriptFile);
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::render()

@@ -16,12 +16,16 @@ namespace Menge
 	class Node;
 	class Scriptable;
 	class Entity;
+	class Arrow;
+	class Scene;
 
 	class ScriptEngine
 	{
 	public:
 		ScriptEngine();
 		~ScriptEngine();
+
+		typedef std::list< std::string > TListModulePath;
 
 	public:
 		void init();
@@ -33,10 +37,10 @@ namespace Menge
 		PyObject * importModule( const std::string & _file );
 
 		void setCurrentModule( PyObject * _module );
+		
+		void setModulePath( const TListModulePath & _listPath );
 
-		void setEntitiesPath( const std::string & _paths );
-		bool isEntityType( const std::string & _type );
-		const std::string & getEntitiesPath() const;
+		bool isEntityType( const std::string & _type );		
 		PyObject * getEntityModule( const std::string & _type );
 		bool registerEntityType( const std::string & _type );
 
@@ -51,7 +55,9 @@ namespace Menge
 		PyObject * genEvent( const std::string &_name );
 
 		Entity * createEntity( const std::string & _type );
-
+		Arrow * createArrow( const std::string & _type );
+		Scene * createScene( const std::string & _type );
+		
 		bool handleKeyEvent( PyObject * _module, size_t _key, bool _isDown );
 		bool handleMouseButtonEvent( PyObject * _module, size_t _button, bool _isDown );
 		bool handleMouseMove( PyObject * _module, float _x, float _y, float _whell );
@@ -84,7 +90,5 @@ namespace Menge
 
 		typedef std::map<std::string, PyObject *> TMapModule;
 		TMapModule m_mapModule;
-
-		std::string m_pathEntities;
 	};
 }

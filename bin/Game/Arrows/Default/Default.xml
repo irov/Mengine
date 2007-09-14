@@ -1,7 +1,0 @@
-<Node Name = "Default" Type = "Arrow">
-	<IdleSprite Type = "Sprite" >
-		<ImageMap Name = "default" />
-	</IdleSprite>
-
-	<ClickOffset Value = "-10;-10" />
-</Node>

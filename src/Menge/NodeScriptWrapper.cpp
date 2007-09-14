@@ -11,6 +11,7 @@
 #	include "Sprite.h"
 #	include "Animation.h"
 #	include "HotSpot.h"
+#	include "Arrow.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -115,22 +116,12 @@ namespace Menge
 		pybind::interface_<Node>("Node")
 			;
 
-		//boost::python::class_<Node, boost::noncopyable>("Node", boost::python::no_init )
-		//	;		
-
 		pybind::class_<Allocator2D>("Allocator2D")
 			;
 		
-		//boost::python::class_<Allocator2D>("Allocator2D")
-		//	;
-
 		pybind::class_<Renderable2D>("Renderable2D")
 			.def( "hide", &Renderable2D::hide )
 			;
-
-		//boost::python::class_<Renderable2D>("Renderable2D")
-		//	.def( "hide", &Renderable2D::hide )
-		//	;
 
 		pybind::class_<SceneNode2D, pybind::bases<Node, Allocator2D, Renderable2D>>("SceneNode2D")
 			.def( "activate", &SceneNode2D::activate )
@@ -139,30 +130,17 @@ namespace Menge
 			.def( "addChildren", &SceneNode2D::addChildren )
 			;
 
-		//boost::python::class_<SceneNode2D, boost::python::bases<Node, Allocator2D, Renderable2D>  >("SceneNode2D")
-		//	.def( "activate", &SceneNode2D::activate )
-		//	.def( "setName", &SceneNode2D::setName )
-		//	.def( "getName", &SceneNode2D::getName, retValuePolice  )
-		//	.def( "addChildren", &SceneNode2D::addChildren )
-		//	;		
-
 		{
-			pybind::interface_<Scene, pybind::no_bases>("Scene")
-				.def( "layerAppend", &Scene::layerAppend )
+			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow")
 				;
 
-			//boost::python::class_<Scene, boost::python::bases<SceneNode2D> >("Scene", boost::python::no_init )
-			//	.def( "layerAppend", &Scene::layerAppend )
-			//	;
+			pybind::proxy_<Scene, pybind::no_bases>("Scene")
+				.def( "layerAppend", &Scene::layerAppend )
+				;
 
 			pybind::class_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot")
 				.def( "setInputHandler", &HotSpot::setInputHandler )
 				;
-
-			//boost::python::class_<HotSpot, boost::python::bases<SceneNode2D> >("HotSpot")
-			//	.def( boost::python::init<>("constructor") )
-			//	.def( "setMouseLeftClickEvent", &HotSpot::setMouseLeftClickEvent )
-			//	;
 
 			pybind::class_<Sprite, pybind::bases<SceneNode2D>>("Sprite")
 				.def( "setImageIndex", &Sprite::setImageIndex )
@@ -171,29 +149,17 @@ namespace Menge
 				.def( "getImageResource", &Sprite::getImageResource )
 				;
 
-			//boost::python::class_<Sprite, boost::python::bases<SceneNode2D> >("Sprite")
-			//	.def( boost::python::init<>("constructor") )
-			//	.def( "setImageIndex", &Sprite::setImageIndex )
-			//	.def( "getImageIndex", &Sprite::getImageIndex )
-			//	.def( "setImageResource", &Sprite::setImageResource )
-			//	.def( "getImageResource", &Sprite::getImageResource, retValuePolice )
-			//	;
 			{
 
 				pybind::class_<Animation, pybind::bases<Sprite>>("Animation")
 					;
 
-				//boost::python::class_<Animation, boost::python::bases<Sprite> >("Animation")
-				//	.def( boost::python::init<>("constructor") )
-				//	;
 			}
 
 		}		
 
 		pybind::class_<Player, pybind::no_bases>("Player")
 			;
-		
-		//boost::python::class_<Player>("Player");
 
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
 		pybind::def( "createNode", &ScriptMethod::createNode );

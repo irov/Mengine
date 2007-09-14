@@ -41,15 +41,16 @@ namespace Menge
 
 	public:
 		const std::string & getPathEntities() const;
+		const std::string & getPathScenes() const;
+		const std::string & getPathArrows() const;
 
 	public:
-		void addArrow( Arrow *_arrow );
-		void removeArrow( const std::string &_name );
-		Arrow * getArrow( const std::string &_name );
+		Arrow * getArrow( const std::string & _name );
+		void removeArrow( const std::string & _name );
+
 		Arrow * getDefaultArrow();
 
 	public:
-		void addScene( Scene * _scene );
 		Scene * getScene(const std::string & _name );
 
 	public:
@@ -67,7 +68,6 @@ namespace Menge
 		std::string m_eventFini;
 
 		PyObject * m_pyPersonality;
-
 		Arrow * m_defaultArrow;
 
 		typedef std::map<std::string, Arrow*> TMapArrow;
@@ -76,10 +76,14 @@ namespace Menge
 		typedef std::map<std::string, Scene*> TMapScene;
 		TMapScene m_mapScene;
 
-		typedef std::list<std::string> TListEntitysDeclaration;
-		TListEntitysDeclaration m_listEntitiesDeclaration;
+		typedef std::list<std::string> TListDeclaration;
+		TListDeclaration m_listEntitiesDeclaration;
+		TListDeclaration m_listArrowsDeclaration;
+		TListDeclaration m_listScenesDeclaration;
 
 		std::string m_pathScripts;
 		std::string m_pathEntities;
+		std::string m_pathScenes;
+		std::string m_pathArrows;
 	};	
 }

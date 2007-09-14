@@ -1,8 +1,6 @@
-<Node Name = "Match3" Type = "Scene">	
-	<Script File = "Scene" />
-
+<Scene>	
 	<Node Name = "Main" Type = "Layer2D">
 		<Parallax Factor = "1;1" />
 
 	</Node> <!-- Layer -->
-</Node>
+</Scene>

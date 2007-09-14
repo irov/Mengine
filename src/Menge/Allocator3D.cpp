@@ -9,7 +9,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Allocator3D::Allocator3D()
 		: m_changePivot(false)
-		, m_fixedUp( 0.0, 1.f, 0.f )
+		, m_fixedUp( 1.0, 0.f, 0.f )
 	{
 		mt::ident_m4(m_localMatrix);
 		mt::ident_m4(m_worldMatrix);

@@ -10,11 +10,11 @@ namespace Menge
 	class AnimationCallback : public CalAnimationCallback
 	{
 	public:
-		AnimationCallback(AnimationObject * _animObj, const std::string & _name, UpdateCallback _updateCallback, CompleteCallback _completeCallback, void * _userData);
+		AnimationCallback( AnimationObject * _animObj, const std::string & _name, UpdateCallback _updateCallback, CompleteCallback _completeCallback, void * _userData );
 
 	public:
-		void AnimationUpdate(float anim_time, CalModel * model, void * userData) override;
-		void AnimationComplete(CalModel * model, void * userData) override;
+		void AnimationUpdate( float anim_time, CalModel * model, void * userData ) override;
+		void AnimationComplete( CalModel * model, void * userData ) override;
 
 	private:
 		AnimationObject	* m_animObj;

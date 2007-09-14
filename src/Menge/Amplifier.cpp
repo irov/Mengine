@@ -8,6 +8,9 @@
 
 #	include "SoundEngine.h"
 
+#	include "TimeInterval.h"
+
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -108,22 +111,54 @@ namespace Menge
 
 		m_music->setVolume(_newVolume);
 	}
+	
 	//////////////////////////////////////////////////////////////////////////
+
+	TimeInterval timer(1000, true, true, true);
+
 	void	Amplifier::updateFadeParams(SoundSourceInterface* _sound)
 	{
 		if(_sound == NULL) return;
 
+	//	static int position = 0;
+	//	position++;
+
+	/*	int  position = _sound->getPosMs();
+
+		int beginFading = m_music->getLengthMS() - (int)m_fadeTime;
+
+		if(timer.value() != 1.0f || position > beginFading)
+		{
+			float value = 0.0f;
+
+			if( position > beginFading)
+				value = timer.update( position - beginFading );
+			else
+				value = timer.update( position );
+
+			if(value == 0.0f)
+			{
+				int u = 0;
+			}
+
+				
+			setVolume(value);
+			printf("%f \n",value);
+		}
+*/
+	
+		/*if( position > beginFading)
+		{
+			float value = timer.update( position - beginFading );
+			setVolume(value);
+			printf("%f \n",value);
+		}*/
+
+		if(_sound == NULL) return;
+
 		int  position = _sound->getPosMs();
 
-		printf("%d \n", position);
-
-		#ifdef USE_CLOCK_TIME
-			clock_t position_clock = clock();
-			long posTicks = position_clock - begin;
-			printf("posTicks = %d \n", posTicks);
-		//	long posMS = long(posSec * 1000);
-		//	printf("posMS = %d \n", posMS);
-		#endif
+		//printf("%d \n", position);
 
 		if(m_fadeState == false)
 		{
@@ -140,8 +175,6 @@ namespace Menge
 		}
 		else
 		{
-			/* непонятный баг с получением позиции,
-			чего-то резко перескакивает на начало трека.*/
 			int len = m_music->getLengthMS();
 
 			int beginFading = len - (int)m_fadeTime;
@@ -151,35 +184,30 @@ namespace Menge
 				float new_volume = (len - position) / m_fadeTime;
 				setVolume(new_volume);
 			}
-		}      
+		}     
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::update(float _timing)
+	void	Amplifier::update( float _timing )
 	{
-		if(m_isPaused)
+		if ( m_isPaused )
 		{
 			return;
 		}
 
-		if(m_isMusicDead)
+		if ( m_isMusicDead )
 		{
 			printf("music dead = true \n");
 			releaseMusic(false);
 		
-			const std::string& filename = m_currentPlayList->getCurrentSongName();
+			const std::string & filename = m_currentPlayList->getCurrentSongName();
 
 			m_sampleMusic = Holder<SoundEngine>::hostage()->createSoundBuffer();
-			m_sampleMusic->loadFromFile(filename.c_str(),true);
+			m_sampleMusic->loadFromFile( filename.c_str(), true );
 
-			m_music = Holder<SoundEngine>::hostage()->createSoundSource(false,m_sampleMusic,this);
-
-			
-			#ifdef USE_CLOCK_TIME
-			begin = clock();
-			#endif
+			m_music = Holder<SoundEngine>::hostage()->createSoundSource( false, m_sampleMusic, this );
 
 			m_music->play();
-			m_music->setVolume(0.0f);
+			m_music->setVolume( 0.0f );
 			
 			m_currentPlayList->nextSong();
 
@@ -187,10 +215,9 @@ namespace Menge
 
 			int length = m_music->getLengthMS();
 
-			if(length < 2 * m_fadeTime)
-			{
-				assert(0);
-			}
+			assert( length >= 2 * m_fadeTime );
+		
+			timer.start( m_fadeTime, length, true, false );
 		}
 
 	/*	if(m_music)
@@ -204,7 +231,7 @@ namespace Menge
 		updateFadeParams(m_music);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::releaseMusic(bool _dead)
+	void	Amplifier::releaseMusic( bool _dead )
 	{
 		Holder<SoundEngine>::hostage()->releaseSoundSource(m_music);
 		m_music = NULL;

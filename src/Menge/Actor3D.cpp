@@ -26,8 +26,6 @@ namespace	Menge
 		m_animObject =
 			this->createChildrenT<AnimationObject>("AnimationObject");
 
-		// АХТУНГ!  исправть нафиг этот аллокатор. щас для теста
-		setDirection(mt::vec3f(1,0,0));	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::loader( TiXmlElement * _xml )
@@ -48,6 +46,9 @@ namespace	Menge
 				XML_CHECK_VALUE_NODE( "RotateSpeed", "Value", m_rotateSpeed );
 			}
 		}
+
+		// АХТУНГ!  исправть нафиг этот аллокатор. щас для теста
+		setDirection(mt::vec3f(1,0,0));	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::lookTo( const mt::vec3f& _target )

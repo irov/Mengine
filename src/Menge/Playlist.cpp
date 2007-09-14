@@ -7,9 +7,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Playlist::Playlist(const std::string& _playlistName)
-		: m_playListName(_playlistName)
-		, m_isTracksLoaded(false)
+	Playlist::Playlist( const std::string& _playlistName )
+		: m_playListName( _playlistName )
+		, m_isTracksLoaded( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ namespace Menge
 		for(size_t i = 0; i < m_tracks.size(); ++i) 
 		{
 			size_t rnd = rand() % m_tracks.size();
-			std::swap(m_tracks[i],m_tracks[rnd]);
+			std::swap( m_tracks[ i ], m_tracks[ rnd ] );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

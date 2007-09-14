@@ -6,6 +6,11 @@
 
 namespace Menge
 {
+	//! Actor
+	/*! 
+	* 3d animation class. 
+	* Have 3 states - Move, Rotate, Stop.
+	*/
 	class Actor3D
 		: public SceneNode3D
 	{
@@ -15,8 +20,8 @@ namespace Menge
 		Actor3D();
 
 	public:
-		void	moveTo(const mt::vec3f& _wayPoint);
-		void	lookTo(const mt::vec3f& _target);
+		void	moveTo( const mt::vec3f& _wayPoint );
+		void	lookTo( const mt::vec3f& _target );
 		void	stop();
 
 		bool	isMoving() const;
@@ -25,7 +30,7 @@ namespace Menge
 		void	loader( TiXmlElement * _xml ) override;
 		
 	protected:
-		void	_update( float _timing)  override;
+		void	_update( float _timing )  override;
 		bool	_activate() override;
 		void	_deactivate() override;
 		void	_render( const mt::mat4f & _rwm, const Camera3D * _camera ) override;

@@ -11,37 +11,37 @@ namespace Menge
 		Holder<FileEngine>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::loadPak(const std::string&	_filename, int _prior)
+	bool FileEngine::loadPak( const std::string& _filename, int _prior )
 	{
 		return m_interface->loadPak(_filename.c_str(),_prior);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::unloadPak(const std::string& _filename)
+	bool FileEngine::unloadPak( const std::string& _filename )
 	{
 		return m_interface->unloadPak(_filename.c_str());
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::existFile(const std::string& _filename)
+	bool FileEngine::existFile( const std::string& _filename )
 	{
 		return m_interface->existFile(_filename.c_str());
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::createFolder(const std::string& _foldername)
+	bool FileEngine::createFolder( const std::string& _filename )
 	{
-		return m_interface->createFolder(_foldername.c_str());
+		return m_interface->createFolder(_filename.c_str());
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileDataInterface* FileEngine::openFile(const std::string& _filename)
+	FileDataInterface* FileEngine::openFile( const std::string& _filename )
 	{
 		return m_interface->openFile(_filename.c_str());
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeFile(FileDataInterface* _fd)
+	void FileEngine::closeFile( FileDataInterface* _fd )
 	{
 		m_interface->closeFile(_fd);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TiXmlDocument * FileEngine::loadXml( const std::string &_fileName)
+	TiXmlDocument * FileEngine::loadXml( const std::string & _filename )
 	{
 		// There was a really terrifying little bug here. The code:
 		//		value = filename
@@ -52,7 +52,7 @@ namespace Menge
 		// See STL_STRING_BUG above.
 		// Fixed with the StringToBuffer class.
 
-		FileDataInterface * file = openFile(_fileName);
+		FileDataInterface * file = openFile(_filename);
 
 		if ( file == 0 )
 		{

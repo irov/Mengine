@@ -17,7 +17,6 @@
 
 namespace Menge
 {
-
 	//////////////////////////////////////////////////////////////////////////
 	Node* SceneManager::createNode( const std::string & _type )
 	{

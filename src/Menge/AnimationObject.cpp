@@ -24,7 +24,7 @@ namespace Menge
 	OBJECT_IMPLEMENT(AnimationObject);
 	//////////////////////////////////////////////////////////////////////////
 	AnimationObject::AnimationObject()
-	: m_cal3dRes( 0 )
+	: m_cal3dRes(0)
 	, m_calModel(0)
 	, m_vertexDecl(0)
 	, m_primitiveData(0)
@@ -34,8 +34,23 @@ namespace Menge
 	AnimationObject::~AnimationObject()
 	{}
 	//////////////////////////////////////////////////////////////////////////
+	void AnimationObject::loader(TiXmlElement * _xml)
+	{
+		SceneNode3D::loader(_xml);
+
+		XML_FOR_EACH_TREE( _xml )
+		{
+			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourceName );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool AnimationObject::_activate()
 	{
+		if( SceneNode3D::_activate() == false )
+		{
+			return false;
+		}
+
 		m_cal3dRes = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceAnimationCal3d>( m_resourceName );
@@ -45,66 +60,66 @@ namespace Menge
 			return false;
 		}
 
-		_initGeometry();
-		//Taking instance from cal3d core model.
+		/*	Attach hard points to SceneNode3d	*/
+
+		const TVecHardPoints & hardsPoints = m_cal3dRes->getHardPoints();
+
+		for each( std::string hardPoint in hardsPoints )
+		{
+			int index = m_cal3dRes->getBoneIndex( hardPoint );
+
+			assert( index != -1 && "no bone with such index!" );
+
+			AnimationBone * bone = new AnimationBone( this, index );
+
+			bone->setName( hardPoint );
+			this->addChildren( bone );
+		}
+
+		/*	Get instance of cal3d model			*/
+
 		m_calModel = m_cal3dRes->getNewInstance();
 
-		for(int meshId = 0; meshId < m_cal3dRes->getMeshCount(); meshId++)
+		size_t count = m_cal3dRes->getMeshCount();
+
+		for( int i = 0; i < count; ++i )
 		{
-			m_calModel->attachMesh(meshId);
+			m_calModel->attachMesh( i );
 		}
 
 		m_calModel->setMaterialSet(0);
 
-		const TVecHardPoints & hp = m_cal3dRes->getHardPoints();
+		/*	Clear all blends					*/
 
-		for each( std::string hardPoint in hp )
-		{
-			int index = m_cal3dRes->getBoneIndex(hardPoint);
+		_clearCycles( 0.0f );
 
-			if(index == -1)		
-			{
-				assert(!"no bone with such index!");
-			}
+		/*	Prepare vertex and index buffers	*/
 
-			AnimationBone * bone = new AnimationBone(this, index);
-			bone->setName(hardPoint);
-			this->addChildren(bone);
-		}
-
-		_clearCycles(0.0f);
-
+		_initGeometry();
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationObject::_deactivate()
 	{
-		delete m_calModel;
-
 		delete m_vertexDecl;
 		delete m_primitiveData;
 
+		delete m_calModel;
+
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_cal3dRes );
+
+		SceneNode3D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationObject::_update( float _timing )
 	{
-		m_calModel->update(_timing);
+		m_calModel->update( _timing );
 
-		if(_timing != 0 && !m_removeCallbacks.empty())
+		if( _timing != 0 && !m_removeCallbacks.empty() )
 		{
 			_clearRemovedCallback();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::loader(TiXmlElement * _xml)
-	{
-		SceneNode3D::loader(_xml);
-
-		XML_FOR_EACH_TREE( _xml )
-		{
-			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourceName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -200,8 +215,11 @@ namespace Menge
 
 		pCalRenderer->endRendering();
 
-		mt::mat4f ident;
-		mt::ident_m4(ident);
+		static mt::mat4f ident(
+			mt::vec4f(1.0f, 0.0f, 0.0f, 0.0f),
+			mt::vec4f(0.0f, 1.0f, 0.0f, 0.0f),
+			mt::vec4f(0.0f, 0.0f, 1.0f, 0.0f),
+			mt::vec4f(0.0f, 0.0f, 0.0f, 1.0f));
 
 		renderEng->setWorldMatrix( ident );
 	}
@@ -209,112 +227,101 @@ namespace Menge
 	void AnimationObject::_debugRender()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::setCallback(const std::string & _name, float _updateTime, UpdateCallback _updateCallback, CompleteCallback _completeCallback, void * _userData)
+	void AnimationObject::clearCallback( const std::string & _name )
 	{
-		int index = m_cal3dRes->getAnimationId(_name);
+		int index = m_cal3dRes->getAnimationId( _name );
 
-		if(index != -1)
+		assert( index != -1 && "no animation with such index!" );
+
+		TMapCallbacks::iterator it = m_callbacks.find( index );
+
+		if( it != m_callbacks.end() )
 		{
-			TMapCallbacks::iterator it = m_callbacks.find(index);
-
-			if(it != m_callbacks.end())
-			{
-				m_removeCallbacks.push_back(std::make_pair(index, it->second));
-				m_callbacks.erase(it);
-			}
-
-			CalCoreAnimation * calCoreAnimation = m_cal3dRes->getCoreAnimation(index);
-			
-			AnimationCallback * callback = new AnimationCallback(this, _name, _updateCallback, _completeCallback, _userData);
-
-			calCoreAnimation->registerCallback(callback, _updateTime);
-
-			m_callbacks.insert(std::make_pair(index, callback));
+			m_removeCallbacks.push_back( std::make_pair( index, it->second ) );
+			m_callbacks.erase( it );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::clearCallback(const std::string & _name)
+	void AnimationObject::setCallback( const std::string & _name, float _updateTime,
+		UpdateCallback _updateCallback, CompleteCallback _completeCallback, 
+		void * _userData )
 	{
-		int id = m_cal3dRes->getAnimationId(_name);
+		clearCallback( _name );
 
-		if(id != -1)
-		{
-			TMapCallbacks::iterator it = m_callbacks.find(id);
+		int index = m_cal3dRes->getAnimationId( _name );
 
-			if(it != m_callbacks.end())
-			{
-				m_removeCallbacks.push_back(std::make_pair(id, it->second));
-				m_callbacks.erase(it);
-			}
-		}
+		AnimationCallback * callback = new AnimationCallback( this, _name, _updateCallback, _completeCallback, _userData );
+
+		CalCoreAnimation * calCoreAnimation = m_cal3dRes->getCoreAnimation( index );
+		calCoreAnimation->registerCallback( callback, _updateTime );
+
+		m_callbacks.insert( std::make_pair( index, callback ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::play(const std::string& _name)
+	void AnimationObject::play( const std::string& _name )
 	{
-		size_t animCount = m_cal3dRes->getAnimationCount();
+		size_t count = m_cal3dRes->getAnimationCount();
 
-		const AnimInfo& seq = m_cal3dRes->getAnimationInfo(_name);
+		const AnimInfo& seq = m_cal3dRes->getAnimationInfo( _name );
 
-		m_calModel->getMixer()->setTimeFactor(seq.delay);
+		m_calModel->getMixer()->setTimeFactor( seq.delay );
 
-		for(int i = 0; i < animCount; ++i)
+		for( int i = 0; i < count; ++i )
 		{
-			if(seq.index != i)
+			if( seq.index != i )
 			{
-				m_calModel->getMixer()->clearCycle(i, 0);
+				m_calModel->getMixer()->clearCycle( i, 0 );
 			}
 			else
 			{
-				m_calModel->getMixer()->blendCycle(seq.index, 1.0f, seq.blend);
+				m_calModel->getMixer()->blendCycle( seq.index, 1.0f, seq.blend );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::play2Blend(const std::string& _name1,	float _weight1,
+	void AnimationObject::play( const std::string& _name1,	float _weight1,
 				const std::string& _name2,	float _weight2
 			)
 	{
-		const AnimInfo& seq1 = m_cal3dRes->getAnimationInfo(_name1);
-		const AnimInfo& seq2 = m_cal3dRes->getAnimationInfo(_name2);
+		const AnimInfo& seq1 = m_cal3dRes->getAnimationInfo( _name1 );
+		const AnimInfo& seq2 = m_cal3dRes->getAnimationInfo( _name2 );
+ 
+		m_calModel->getMixer()->setTimeFactor( seq1.delay );
 
-		m_calModel->getMixer()->setTimeFactor(seq1.delay);
+		size_t count = m_cal3dRes->getAnimationCount();
 
-		float blend	= seq1.blend;
-
-		size_t animCount = m_cal3dRes->getAnimationCount();
-
-		for(int i = 0; i < animCount; ++i)
+		for( int i = 0; i < count; ++i )
 		{
-			if(i == seq1.index)
+			if( i == seq1.index )
 			{
-				m_calModel->getMixer()->blendCycle(i, _weight1, blend);
+				m_calModel->getMixer()->blendCycle( i, _weight1, seq1.blend );
 			}
-			else if(i == seq2.index)
+			else if( i == seq2.index )
 			{
-				m_calModel->getMixer()->blendCycle(i, _weight2, blend);
+				m_calModel->getMixer()->blendCycle( i, _weight2, seq1.blend );
 			}
 			else
 			{
-				m_calModel->getMixer()->clearCycle(i, blend);
+				m_calModel->getMixer()->clearCycle( i, seq1.blend );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	AnimationObject::executeAction(const std::string & _name, float _timeIn,
+	void	AnimationObject::execute( const std::string & _name, float _timeIn,
 			float _timeOut, float _width, bool _autoLock
 		)
 	{
-		const AnimInfo& pAnimInfo = m_cal3dRes->getAnimationInfo(_name);
+		_clearCycles( _timeIn );
 
-		_clearCycles(_timeIn);
+		const AnimInfo& inf = m_cal3dRes->getAnimationInfo( _name );
 
-		m_calModel->getMixer()->setTimeFactor(pAnimInfo.delay);
-		m_calModel->getMixer()->executeAction(pAnimInfo.index, _timeIn, _timeOut, _width, _autoLock);
+		m_calModel->getMixer()->setTimeFactor( inf.delay );
+		m_calModel->getMixer()->executeAction( inf.index, _timeIn, _timeOut, _width, _autoLock );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::mat4f	AnimationObject::getBoneWorldMatrix(int _index)
+	mt::mat4f	AnimationObject::getBoneWorldMatrix( int _index )
 	{
-		CalBone * bone = m_calModel->getSkeleton()->getBone(_index);
+		CalBone * bone = m_calModel->getSkeleton()->getBone( _index );
 
 		const CalVector & position = bone->getTranslationAbsolute();
 		const CalQuaternion & orient = bone->getRotationAbsolute();
@@ -327,7 +334,7 @@ namespace Menge
 		return worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool	AnimationObject::isSimilarModel(const CalModel * _calModel)
+	bool	AnimationObject::isSimilarModel( const CalModel * _calModel )
 	{
 		return m_calModel == _calModel;
 	}
@@ -345,13 +352,13 @@ namespace Menge
 		m_removeCallbacks.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationObject::_clearCycles(float _blendTime)
+	void AnimationObject::_clearCycles( float _blendTime )
 	{
-		size_t animCount = m_cal3dRes->getAnimationCount();
+		size_t count = m_cal3dRes->getAnimationCount();
 
-		for(int i = 0; i < animCount; ++i)
+		for( int i = 0; i < count; ++i )
 		{
-			m_calModel->getMixer()->clearCycle(i,_blendTime);
+			m_calModel->getMixer()->clearCycle( i, _blendTime );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -390,36 +397,7 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool AnimationObject::isVisible( const Camera3D * _camera )
 	{
-		/*CalBoundingBox & box = m_calModel->getBoundingBox();
-
-		CalVector p[8];
-		box.computePoints(p);
-
-		mt::box3f bbox;
-
-		mt::set_box_from_min_max(bbox, mt::vec3f(p[0].x, p[0].y, p[0].z), mt::vec3f(p[4].x, p[2].y, p[1].z));
-
-		mt::vec3f pCorners[8];
-		mt::get_point_from_box(pCorners, bbox);
-
-		bool Done = true;
-		for (int plane = 0; plane < 6; ++plane)
-		{			
-			for( int point = 0; point < 8; ++point)
-			{
-				if( (dot_v3_v3(_camera->m_planes[plane].norm,pCorners[point]) + _camera->m_planes[plane].dist) > 0.0f )
-				{
-					Done = false;
-					break;
-				}
-			}
-			if( Done )
-			{
-				return false;
-			}
-			Done = true;
-		}
-		*/
 		return true;
 	}
+	///////////////////////////////////////////////////////////////////////////
 }

@@ -631,6 +631,14 @@
 				RelativePath=".\Playlist.h"
 				>
 			</File>
+			<File
+				RelativePath=".\TimeInterval.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TimeInterval.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource"
@@ -1168,10 +1176,6 @@
 				</File>
 				<File
 					RelativePath=".\StackFSM.h"
-					>
-				</File>
-				<File
-					RelativePath=".\State.cpp"
 					>
 				</File>
 				<File

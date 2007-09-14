@@ -8,7 +8,6 @@
 #	include "PointEmitter.h"
 #	include "BoxEmitter.h"
 #	include "SimplePhysicAffector.h"
-#	include "float.h"
 
 #	include "Interface/RenderSystemInterface.h"
 
@@ -20,44 +19,11 @@ namespace Menge
 	OBJECT_IMPLEMENT(ParticleSystem);
 	//////////////////////////////////////////////////////////////////////////
 	ParticleSystem::ParticleSystem()
-		: m_maxPoint(FLT_MIN,FLT_MIN)
-		, m_minPoint(FLT_MAX,FLT_MAX)
 	{
 //		addEmitter(new BoxEmitter());
 		//addEmitter(new PointEmitter());
-		addAffector(new SimplePhysicAffector());
-		resizePool(2000);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void	ParticleSystem::addAffector(ParticleAffector* _aff)
-	{
-		m_affectors.push_back(_aff);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void	ParticleSystem::addEmitter(ParticleEmitter* _em)
-	{
-		m_emitters.push_back(_em);
-	}
-	///////////////////////////////////////////////////////////////////////////
-	void ParticleSystem::resizePool(size_t N)
-	{
-		/*not correct */
-		m_particlePool.resize(N);
-
-		for( size_t i = 0; i < N; ++i )
-        {
-			m_freeParticleList.push_back( &m_particlePool[i] );
-        }
-	}
-	///////////////////////////////////////////////////////////////////////////
-	bool ParticleSystem::isVisible(const Viewport & _viewPort)
-	{
-		if (m_maxPoint.x < _viewPort.begin.x || m_minPoint.x > _viewPort.end.x ) return false;
-		if (m_maxPoint.y < _viewPort.begin.y || m_minPoint.y > _viewPort.end.y ) return false;
-
-		Holder<RenderEngine>::hostage()->drawLine2D(m_minPoint,m_maxPoint,0xffff00ff);
-
-		return true;
+		addAffector( new SimplePhysicAffector() );
+		_resizePool(2000);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleSystem::_activate()
@@ -92,6 +58,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleSystem::loader(TiXmlElement *xml)
 	{
+		SceneNode2D::loader(xml);
+
 		XML_FOR_EACH_TREE(xml)
 		{
 			XML_CHECK_NODE_FOR_EACH( "Emitters" )
@@ -105,84 +73,98 @@ namespace Menge
 				}
 			}	
 		}
-
-		Renderable2D::loader(xml);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleSystem::_debugRender()
-	{};
-	//////////////////////////////////////////////////////////////////////////
-	Particle*	ParticleSystem::createParticle()
+	Particle *	ParticleSystem::_createParticle()
 	{
 		Particle * particle = m_freeParticleList.front();
-		m_activeParticleList.splice(m_activeParticleList.end(), m_freeParticleList, m_freeParticleList.begin());
+		m_activeParticleList.splice( m_activeParticleList.end(), m_freeParticleList, m_freeParticleList.begin() );
 		return particle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	ParticleSystem::update(float t)
+	void	ParticleSystem::_doLife( float _timing )
 	{
-		std::list<Particle*>::iterator end = m_activeParticleList.end();
+		TListActiveParticle::iterator end = m_activeParticleList.end();
 
-		for(std::list<Particle*>::iterator it = m_activeParticleList.begin(); it != end;)
+		for( TListActiveParticle::iterator it = m_activeParticleList.begin(); it != end; )
 		{
 			Particle * particle = static_cast<Particle*>(*it);
-			particle->m_timeToLive += t;
 
-			if(particle->m_timeToLive >= particle->m_totalTime)
+			particle->m_timeToLive += _timing;
+
+			if( particle->m_timeToLive >= particle->m_totalTime )
 			{
-				m_freeParticleList.splice(m_freeParticleList.end(), m_activeParticleList, it++);
+				m_freeParticleList.splice( m_freeParticleList.end(), m_activeParticleList, it++ );
 			}
 			else
 			{
 				++it;
 			}
 		}
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t	ParticleSystem::_getEmissionCount( float _timing )
+	{
 		size_t emissionCount = 0;
-		
-		for(std::list<ParticleEmitter*>::iterator it = m_emitters.begin(); it != m_emitters.end(); ++it)
+
+		for each( ParticleEmitter * emitter in m_emitters )
 		{
-			emissionCount+=(*it)->getEmissionCount(t);
+			emissionCount += emitter->getEmissionCount( _timing );
 		}
 
-		if(emissionCount < m_freeParticleList.size())
+		return emissionCount;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	ParticleSystem::_processEmitters( float _timing )
+	{
+		size_t emissionCount = _getEmissionCount( _timing );
+
+		if( emissionCount < m_freeParticleList.size() )
 		{
 			for( size_t i = 0; i < emissionCount; ++i )
 			{
-				Particle * particle = createParticle();
-				for(std::list<ParticleEmitter*>::iterator it = m_emitters.begin(); it != m_emitters.end(); ++it)
+				Particle * particle = _createParticle();
+
+				for each( ParticleEmitter * emitter in m_emitters )
 				{
-					(*it)->emitt(t,particle);
+					emitter->emitt( _timing, particle );
 				}
 			}
 		}
-
-		for(std::list<ParticleAffector*>::iterator it = m_affectors.begin(); it != m_affectors.end(); ++it)
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	ParticleSystem::_processAffectors( float _timing )
+	{
+		for each( ParticleAffector * affector in m_affectors )
 		{
-			(*it)->affectParticles(t,m_activeParticleList);
+			affector->affectParticles( _timing, m_activeParticleList );
 		}
-							
-		for(std::list<Particle*>::iterator it = m_activeParticleList.begin(); it != m_activeParticleList.end(); ++it)
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	ParticleSystem::_calculateBoundingBox()
+	{
+		for each( Particle * particle in m_activeParticleList )
 		{
-			Particle * particle = *it;
-			const mt::vec2f& pos = particle->m_position;
-
-			if (pos.x > m_maxPoint.x) m_maxPoint.x = pos.x;
-			if (pos.y > m_maxPoint.y) m_maxPoint.y = pos.y;
-				
-			if (pos.x < m_minPoint.x) m_minPoint.x = pos.x;
-			if (pos.y < m_minPoint.y) m_minPoint.y = pos.y;
+			mt::add_internal_point( m_bbox, particle->m_position );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	ParticleSystem::update( float _timing )
+	{
+		_doLife( _timing );
+		_processEmitters( _timing );
+		_processAffectors( _timing );
+		_calculateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleSystem::_render( const mt::mat3f &rwm, const Viewport & _viewPort ) 
 	{
-		if(m_activeParticleList.empty())
+		if( m_activeParticleList.empty() )
 		{
 			return;
 		}
 
-		std::list<Particle*>::iterator it = m_activeParticleList.begin();
+		TListActiveParticle::iterator it = m_activeParticleList.begin();
 
 		for( size_t i = 0; i < m_activeParticleList.size(); ++i )
 		{
@@ -211,4 +193,39 @@ namespace Menge
 			it++;
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleSystem::_debugRender()
+	{};
+	//////////////////////////////////////////////////////////////////////////
+	void	ParticleSystem::addAffector( ParticleAffector * _aff )
+	{
+		m_affectors.push_back(_aff);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	ParticleSystem::addEmitter( ParticleEmitter * _em )
+	{
+		m_emitters.push_back(_em);
+	}
+	///////////////////////////////////////////////////////////////////////////
+	void ParticleSystem::_resizePool(size_t N)
+	{
+		/*not correct */
+		m_particlePool.resize(N);
+
+		for( size_t i = 0; i < N; ++i )
+        {
+			m_freeParticleList.push_back( &m_particlePool[i] );
+        }
+	}
+	///////////////////////////////////////////////////////////////////////////
+	bool ParticleSystem::isVisible(const Viewport & _viewPort)
+	{
+		if (m_bbox.MaxEdge.x < _viewPort.begin.x || m_bbox.MinEdge.x > _viewPort.end.x ) return false;
+		if (m_bbox.MaxEdge.y < _viewPort.begin.y || m_bbox.MinEdge.y > _viewPort.end.y ) return false;
+
+		Holder<RenderEngine>::hostage()->drawLine2D( m_bbox.MinEdge, m_bbox.MaxEdge, 0xffff00ff );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

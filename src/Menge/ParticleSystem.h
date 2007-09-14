@@ -1,15 +1,19 @@
 #	pragma once
 
+
 #	include "SceneNode2D.h"
 
 #	include "Particle.h"
-
-#	include "math.h"
 
 #	include "ParticleResource.h"
 
 #	include "ParticleEmitter.h"
 #	include "ParticleAffector.h"
+
+#	include "math.h"
+
+#	include "math/box2.h"
+
 #	include <list>
 
 namespace Menge
@@ -39,11 +43,8 @@ namespace Menge
 		ResourceParticle *	m_particleResource;
 
 	private:
-		std::list<ParticleAffector*>	m_affectors;
-		std::list<ParticleEmitter*>		m_emitters;
 
-		mt::vec2f	m_maxPoint;
-		mt::vec2f	m_minPoint;
+		mt::box2f	m_bbox;
 
 		RenderImageInterface * m_image;
 		std::string			m_resourceName;
@@ -51,12 +52,22 @@ namespace Menge
 		typedef std::vector<Particle> TVectorPoolParticle;
 		typedef std::list<Particle*> TListFreeParticle;
 		typedef std::list<Particle*> TListActiveParticle;
+		typedef std::list<ParticleAffector*> TListAffectors;
+		typedef std::list<ParticleEmitter*> TListEmitters;
 
 		TVectorPoolParticle	m_particlePool;
 		TListFreeParticle	m_freeParticleList;
 		TListActiveParticle	m_activeParticleList;
+		TListAffectors		m_affectors;
+		TListEmitters		m_emitters;
 
-		Particle*	createParticle();
-		void	resizePool(size_t N);
+		Particle *	_createParticle();
+		size_t		_getEmissionCount( float _timing );
+
+		void		_resizePool(size_t N);
+		void		_doLife( float _timing );
+		void		_processEmitters( float _timing );
+		void		_processAffectors( float _timing );
+		void		_calculateBoundingBox();
 	};
 };

@@ -128,7 +128,7 @@ void SQUALLSoundSource::setVolume(float vol)
 	if(dxvol >= 1.0f) dxvol = 1.0f;
 	if(dxvol <= 0) dxvol = 0.0f;
 
-	printf("vol = %f \n", dxvol);
+	//printf("vol = %f \n", dxvol);
 
 
 	int err = SQUALL_Channel_SetVolume(ChannelID,int(dxvol * 100));

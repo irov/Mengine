@@ -8,6 +8,8 @@
 
 #	include "ScriptEngine.h"
 
+#	include "Event.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -47,16 +49,16 @@ namespace Menge
 		}
 	}
 	////////////////////////////////////////////////////////////////////////////
-	//void Trap2D::setEnterZoneCallback(PyObject * _object)
-	//{
-	//	registerEvent( "ENTER_ZONE", _object );
-	//}
+	void Trap2D::setEnterZoneCallback( Event * _event )
+	{
+		registerEvent( "ENTER_ZONE", _event );
+	}
 	////////////////////////////////////////////////////////////////////////////
-	//void Trap2D::setLeaveZoneCallback(PyObject * _object)
-	//{
-	//	registerEvent( "LEAVE_ZONE", _object );
-	//}
-	//////////////////////////////////////////////////////////////////////////
+	void Trap2D::setLeaveZoneCallback( Event * _event )
+	{
+		registerEvent( "LEAVE_ZONE", _event );
+	}
+	////////////////////////////////////////////////////////////////////////////
 	bool Trap2D::_activate()
 	{
 		for(TListSceneNodesNames::iterator i = m_sceneNodesNames.begin(); i != m_sceneNodesNames.end(); ++i)
@@ -80,7 +82,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Trap2D::update( float _timing )
 	{
-		// sweep and prune method ?
 		for(TListSceneNodes::iterator i = m_sceneNodes.begin(); i != m_sceneNodes.end(); ++i)
 		{
 			SceneNode2D * node = *i;
@@ -102,11 +103,10 @@ namespace Menge
 
 			if(founded == m_trapped.end())
 			{
-				//if( PyObject * eventEnterZone = getEvent( "LEAVE_ZONE" ) )
-				//{
-				//	Holder<ScriptEngine>::hostage()
-				//		->callFunction( eventEnterZone, "(O)", (*it)->getScriptable() );
-				//}
+				if( Event * event = getEvent( "LEAVE_ZONE" ) )
+				{
+					event->call( "()" );
+				}
 
 				it = m_inZone.erase(it);
 			}
@@ -124,11 +124,10 @@ namespace Menge
 
 			if(founded == m_inZone.end())
 			{
-				//if( PyObject * eventLeaveZone = getEvent( "ENTER_ZONE" ) )
-				//{
-				//	Holder<ScriptEngine>::hostage()
-				//		->callFunction( eventLeaveZone, "(O)", (*it)->getScriptable() );
-				//}
+				if( Event * event = getEvent( "ENTER_ZONE" ) )
+				{
+					event->call( "()" );
+				}
 
 				m_inZone.push_back(*it);
 			}
@@ -157,15 +156,5 @@ namespace Menge
 			renderEng->drawLine2D( b, e, 0xffff00ff );
 		}
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void Trap2D::setEnterZoneCallback(PyObject * _object)
-	//{
-	//	registerEvent( "ENTER_ZONE", _object );
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//void Trap2D::setLeaveZoneCallback(PyObject * _object)
-	//{
-	//	registerEvent( "LEAVE_ZONE", _object );
-	//}
 	//////////////////////////////////////////////////////////////////////////
 }

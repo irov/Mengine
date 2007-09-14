@@ -33,23 +33,25 @@ namespace Menge
 	public:
 		void loader( TiXmlElement * _xml ) override;
 
-		void _update( float _timing ) override;
-
 		bool isVisible( const Camera3D * _camera ) override;
 
 	public:
-		void play(const std::string& _name);
-		void play2Blend(const std::string& _name1,	float _weight1,
+		void play( const std::string& _name );
+		void play( const std::string& _name1,	float _weight1,
 			const std::string& _name2,	float _weight2
 		);
-		void executeAction(const std::string & _name, float _timeIn,
+		void execute( const std::string & _name, float _timeIn,
 			float _timeOut, float _width, bool _autoLock
 		);
 	
 		mt::mat4f	getBoneWorldMatrix(int _index);
 
-		void setCallback(const std::string & _name, float _updateTime, UpdateCallback _updateCallback, CompleteCallback _completeCallback, void * _userData);
-		void clearCallback(const std::string & _name);
+		void setCallback( const std::string & _name, float _updateTime, 
+			UpdateCallback _updateCallback, CompleteCallback _completeCallback, 
+			void * _userData 
+		);
+
+		void clearCallback( const std::string & _name );
 
 		// cal3d specs:
 		bool		isSimilarModel(const CalModel * _calModel);
@@ -58,10 +60,11 @@ namespace Menge
 		bool _activate() override;
 		void _deactivate() override;
 	
-
 		void _render( const mt::mat4f & _rwm, const Camera3D * _camera ) override;
 		void _debugRender() override;
 	
+		void _update( float _timing ) override;
+
 	private:
 		typedef std::map<int, AnimationCallback*> TMapCallbacks;
 		typedef std::list<std::pair<int, AnimationCallback*> > TListRemoveCallbacks;

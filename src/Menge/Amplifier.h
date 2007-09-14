@@ -8,8 +8,6 @@
 
 namespace	Menge
 {
-//	#define USE_CLOCK_TIME
-
 	class Playlist;
 
 	typedef	std::map<std::string,Playlist*>	TPlayListMap;
@@ -43,9 +41,5 @@ namespace	Menge
 			void	listenStopped();
 			void	releaseMusic(bool _dead);
 			void	setVolume(float _newVolume);
-
-			#ifdef USE_CLOCK_TIME
-			clock_t begin;
-			#endif
 	};
 }

@@ -28,34 +28,30 @@ namespace Menge
 		ResourceAnimationCal3d( const std::string & _name );
 	
 	public:
-		void loader( TiXmlElement *xml );
+		void loader( TiXmlElement * _xml );
 
 	protected:
 		bool _compile();
 		void _release();
 
-	protected:
-		std::string m_filename;
-
 	public:
 		size_t	getAnimationCount() const;
 		size_t  getMeshCount() const;
-		int		getAnimationId(const std::string& _name) const;
-		int		getBoneIndex(const std::string& _bonename) const;
+		int		getAnimationId( const std::string& _name ) const;
+		int		getBoneIndex( const std::string& _name ) const;
 
 		const	TVecHardPoints & getHardPoints() const; 
-		const   AnimInfo & getAnimationInfo(const std::string& _name) const;
-		const	CalCoreBone * getCoreBone(int _index) const;
+		const   AnimInfo & getAnimationInfo( const std::string& _name ) const;
 	public:
-		// cal3d specs:
 		CalModel * getNewInstance();
-		CalCoreAnimation * getCoreAnimation(int _index);
+		CalCoreAnimation * getCoreAnimation( int _index );
 	private:
 		typedef std::vector<AnimInfo> TVectorAnimInfo;
 		TVectorAnimInfo m_animInfos;
 		TVecHardPoints m_hardPoints;
 
 		std::string m_folder;
+		std::string m_filename;
 
 		CalCoreModel * m_calCoreModel;
 

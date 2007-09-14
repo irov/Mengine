@@ -52,6 +52,6 @@ namespace Menge
 	
 		unsigned int m_color;
 
-		friend SpriteProxy;
+		friend class SpriteProxy;
 	};
 }

@@ -2,10 +2,7 @@
 
 #	include "Layer.h"
 #	include "SceneNode2D.h"
-
 #	include "Viewport.h"
-
-#	include <list>
 
 namespace Menge
 {

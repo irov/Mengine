@@ -23,8 +23,8 @@ namespace Menge
 		void update( float _timing ) override;
 		void debugRender() override;
 	public:
-		//void setEnterZoneCallback(PyObject * _object);
-		//void setLeaveZoneCallback(PyObject * _object);
+		void setEnterZoneCallback( Event * _event );
+		void setLeaveZoneCallback( Event * _event );
 	protected:
 		bool _activate() override;
 		void _deactivate() override;

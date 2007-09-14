@@ -40,6 +40,6 @@ namespace Menge
 		void _render( const mt::mat4f & _rwm, const Camera3D * _camera ) override;
 
 	private:
-		StackFSM	m_actionScheduler;
+		StackFSM	m_stackFSM;
 	};
 }

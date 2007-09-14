@@ -8,6 +8,8 @@
 
 #	include "ScriptEngine.h"
 
+#	include "Event.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -41,15 +43,15 @@ namespace Menge
 		}
 	}
 	////////////////////////////////////////////////////////////////////////////
-	//void Trap3D::setEnterZoneCallback(PyObject * _object)
-	//{
-	//	registerEvent( "ENTER_ZONE", _object );
-	//}
+	void Trap3D::setEnterZoneCallback( Event * _event )
+	{
+		registerEvent( "ENTER_ZONE", _event );
+	}
 	////////////////////////////////////////////////////////////////////////////
-	//void Trap3D::setLeaveZoneCallback(PyObject * _object)
-	//{
-	//	registerEvent( "LEAVE_ZONE", _object );
-	//}
+	void Trap3D::setLeaveZoneCallback( Event * _event )
+	{
+		registerEvent( "LEAVE_ZONE", _event );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Trap3D::_activate()
 	{
@@ -90,16 +92,16 @@ namespace Menge
 
 		while(it != m_inZone.end())
 		{
-			TListTrapped::iterator founded = std::find(m_trapped.begin(),m_trapped.end(),*it);
+			TListTrapped::iterator founded = std::find( m_trapped.begin(), m_trapped.end(), *it);
 
 			if(founded == m_trapped.end())
 			{
-				//if( PyObject * eventEnterZone = getEvent( "LEAVE_ZONE" ) )
-				//{
-				//	Holder<ScriptEngine>::hostage()
-				//		->callFunction( eventEnterZone, "(O)", (*it)->getScriptable() );
-				//}
-				//it = m_inZone.erase(it);
+				if( Event * event = getEvent( "LEAVE_ZONE" ) )
+				{
+					event->call( "()" );
+				}
+
+				it = m_inZone.erase(it);
 			}
 			else
 			{
@@ -115,12 +117,12 @@ namespace Menge
 
 			if(founded == m_inZone.end())
 			{
-				//if( PyObject * eventEnterZone = getEvent( "ENTER_ZONE" ) )
-				//{
-				//	Holder<ScriptEngine>::hostage()
-				//		->callFunction( eventEnterZone, "(O)", (*it)->getScriptable() );
-				//}
-				//m_inZone.push_back(*it);
+				if( Event * event = getEvent( "ENTER_ZONE" ) )
+				{
+					event->call( "()" );
+				}
+
+				m_inZone.push_back(*it);
 			}
 			it++;
 		}
@@ -139,14 +141,4 @@ namespace Menge
 		renderEng->drawBox(m_bbox.MinEdge,m_bbox.MaxEdge, 0xaaff00ff);
 	}
 	////////////////////////////////////////////////////////////////////////////
-	//void Trap3D::setEnterZoneCallback(PyObject * _object)
-	//{
-	//	registerEvent( "ENTER_ZONE", _object );
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//void Trap3D::setLeaveZoneCallback(PyObject * _object)
-	//{
-	//	registerEvent( "LEAVE_ZONE", _object );
-	//}
-	//////////////////////////////////////////////////////////////////////////
 }

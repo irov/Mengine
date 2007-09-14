@@ -5,16 +5,16 @@
 namespace Menge
 { 
 	//////////////////////////////////////////////////////////////////////////
-	StateLook::StateLook(Avatar3D * _avatar, const mt::vec3f& _destPoint)
-		: State()
-		, m_avatar(_avatar)
-		, m_destPoint(_destPoint)
+	StateLook::StateLook( Avatar3D * _avatar, const mt::vec3f& _destPoint )
+		: m_avatar( _avatar )
+		, m_destPoint( _destPoint )
+		, m_isEnded( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	StateLook::update( float _timing )
 	{
-		if(m_avatar->isMoving() == false)
+		if( m_avatar->isMoving() == false )
 		{
 			m_isEnded = true;
 		}
@@ -29,6 +29,11 @@ namespace Menge
 	void	StateLook::end()
 	{
 		printf("StateLook is ended! \n");
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool	StateLook::isEnded() const
+	{
+		return m_isEnded;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

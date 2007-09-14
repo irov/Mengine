@@ -7,6 +7,7 @@
 
 void main()
 {
+
 #ifdef _DEBUG
 	std::string str_systems = "Systems/WinApplication_d.dll";
 #else

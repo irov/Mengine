@@ -119,6 +119,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	//RenderFontInterface * TESTfont;
 
+	//Camera3D * cmr3d;
+
 	Camera3D * cmr3d;
 
 	void Player::init()
@@ -137,6 +139,7 @@ namespace Menge
 		setRenderCamera2D( cmr );
 
 		cmr3d = SceneManager::createNodeT<Camera3D>( "Camera3D" );
+		cmr3d->activate();
 		cmr3d->setAspect(1.3f);
 		cmr3d->setFar(1000.0f);
 		cmr3d->setNear(0.5f);
@@ -144,6 +147,9 @@ namespace Menge
 		cmr3d->setPosition(mt::vec3f(300,300,0));
 
 		cmr3d->lookAt(mt::vec3f(0,0,0));
+
+		Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
+		Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
 
 		setRenderCamera3D(cmr3d);
 
@@ -201,6 +207,8 @@ namespace Menge
 			m_arrow->update( _timig );
 		}
 		
+		cmr3d->update(_timig);
+
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
 		if( inputEng->isButton( 0, 1 ) == true )
@@ -209,8 +217,18 @@ namespace Menge
 
 			mt::vec3f camDir = cmr3d->getDirectionFromMouse(pos.x,pos.y);
 			mt::vec3f camPos = cmr3d->getWorldPosition();
+			mt::mat4f m = cmr3d->getViewMatrix();
+
+			mt::mat4f m1;
+
+			mt::inv_m4(m1,m);
 			
-			mt::planef	plane(mt::vec3f(0,1,1),0);
+			mt::planef	plane(mt::vec3f(0,1,0),0);
+ 
+
+			mt::vec3f out;
+			projection_to_plane(out,camPos,camDir,plane);
+			printf("%f %f %f \n", out.x,out.y,out.z);
 
 			float t = (plane.d - dot_v3_v3(plane.norm,camPos))/dot_v3_v3(plane.norm,camDir);
 
@@ -276,7 +294,7 @@ namespace Menge
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			AnimationObject * anim = layer->getChildrenT<AnimationObject>("TestMesh");
-			anim->play2Blend("paladin_idle.caf",0.4f,"paladin_walk.caf",0.6f);
+			anim->play("paladin_idle.caf",0.4f,"paladin_walk.caf",0.6f);
 		}
 
 		if( inputEng->isKey( DIK_F2, 1 ) == true )
@@ -298,7 +316,7 @@ namespace Menge
 		{
 			Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
 			AnimationObject * anim = layer->getChildrenT<AnimationObject>("TestMesh");
-			anim->executeAction("paladin_walk.caf",0,1,1,false);
+			anim->execute("paladin_walk.caf",0,1,1,false);
 
 
 

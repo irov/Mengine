@@ -13,17 +13,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationCallback::AnimationUpdate(float anim_time, CalModel * model, void * userData)
 	{
-		if(m_animObj->isSimilarModel(model) && m_updateCallback != NULL)
+		if( m_animObj->isSimilarModel( model ) && m_updateCallback != NULL )
 		{
-			m_updateCallback(m_animObj, m_name, anim_time, m_userData);
+			m_updateCallback( m_animObj, m_name, anim_time, m_userData );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationCallback::AnimationComplete(CalModel * model, void * userData)
 	{
-		if(m_animObj->isSimilarModel(model) && m_completeCallback != NULL)
+		if( m_animObj->isSimilarModel( model ) && m_completeCallback != NULL )
 		{
-			m_completeCallback(m_animObj, m_name, m_userData);
+			m_completeCallback( m_animObj, m_name, m_userData );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -23,6 +23,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimationCal3d::loader( TiXmlElement * _xml )
 	{
+		ResourceImpl::loader( _xml );
+
 		AnimInfo sq;
 		std::string hardPointName;
 
@@ -52,14 +54,6 @@ namespace Menge
 				}
 			}	
 		}
-
-		ResourceImpl::loader( _xml );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const AnimInfo& ResourceAnimationCal3d::getAnimationInfo(const std::string& _name) const
-	{
-		int id = m_calCoreModel->getCoreAnimationId(_name);
-		return m_animInfos[id];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceAnimationCal3d::_compile()
@@ -173,28 +167,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimationCal3d::_release()
 	{
+		m_calCoreModel->unloadCoreAnimation("paladin_idle.caf");
+
+			//paladin_idle.caf
 		_freeMaterials();
 		delete m_calCoreModel;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceAnimationCal3d::getAnimationCount() const
-	{
-		return m_calCoreModel->getCoreAnimationCount();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceAnimationCal3d::getMeshCount() const
-	{
-		return m_calCoreModel->getCoreMeshCount();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int	ResourceAnimationCal3d::getAnimationId(const std::string& _name) const
-	{
-		return m_calCoreModel->getCoreAnimationId(_name);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int ResourceAnimationCal3d::getBoneIndex(const std::string& _bonename) const
-	{
-		return m_calCoreModel->getCoreSkeleton()->getCoreBoneId(_bonename);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimationCal3d::_createMaterials()
@@ -225,6 +202,10 @@ namespace Menge
 				Holder<FileEngine>::hostage()->closeFile( imageData );
 
 				pCoreMaterial->setMapUserData(mapId, (Cal::UserData)texture);
+
+			//	Holder<FileEngine>::hostage()->closeFile(imageData);
+
+
 			}
 		}
 	}
@@ -250,7 +231,7 @@ namespace Menge
 		return model;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CalCoreAnimation * ResourceAnimationCal3d::getCoreAnimation(int _index)
+	CalCoreAnimation * ResourceAnimationCal3d::getCoreAnimation( int _index )
 	{
 		CalCoreAnimation * calCoreAnimation = m_calCoreModel->getCoreAnimation(_index);
 		return calCoreAnimation;
@@ -261,8 +242,30 @@ namespace Menge
 		return m_hardPoints;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const	CalCoreBone * ResourceAnimationCal3d::getCoreBone(int _index) const
+	size_t ResourceAnimationCal3d::getAnimationCount() const
 	{
-		return m_calCoreModel->getCoreSkeleton()->getCoreBone(_index);
+		return m_calCoreModel->getCoreAnimationCount();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ResourceAnimationCal3d::getMeshCount() const
+	{
+		return m_calCoreModel->getCoreMeshCount();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int	ResourceAnimationCal3d::getAnimationId( const std::string& _name ) const
+	{
+		return m_calCoreModel->getCoreAnimationId(_name);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int ResourceAnimationCal3d::getBoneIndex( const std::string& _name ) const
+	{
+		return m_calCoreModel->getCoreSkeleton()->getCoreBoneId(_name);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const AnimInfo& ResourceAnimationCal3d::getAnimationInfo( const std::string& _name ) const
+	{
+		int id = m_calCoreModel->getCoreAnimationId(_name);
+		return m_animInfos[id];
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

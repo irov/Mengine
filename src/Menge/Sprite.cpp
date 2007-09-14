@@ -58,14 +58,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageIndex( size_t _index )
 	{
-	//size_t size = m_image->getCount();
-
-	//if(_index >= size)
-	//{
-	//	assert(!"You can't set image index > image size");
-	//	return;
-	//}
-
 		m_currentImageIndex = _index;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -121,12 +113,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::loader(TiXmlElement * _xml)
 	{
+		SceneNode2D::loader(_xml);
+
 		XML_FOR_EACH_TREE(_xml)
 		{
 			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourceName );
 		}
-
-		SceneNode2D::loader(_xml);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( const mt::mat3f & _rwm, const Viewport & _viewPort )

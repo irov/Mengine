@@ -95,6 +95,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_update(float _timing)
 	{
+		Sprite::_update( _timing );
+
 		if(!m_playing)
 		{
 			return; 

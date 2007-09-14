@@ -7,9 +7,9 @@
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	AnimationBone::AnimationBone(AnimationObject * _animObj, int _index)
-		: m_animObj(_animObj)
-		, m_index(_index)
+	AnimationBone::AnimationBone( AnimationObject * _animObj, int _index )
+		: m_animObj( _animObj )
+		, m_index( _index )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & AnimationBone::getWorldMatrix()

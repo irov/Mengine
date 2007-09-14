@@ -7,79 +7,84 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	StackFSM::StackFSM()
-		: m_currentAction(NULL)
+		: m_currentState( NULL )
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	StackFSM::~StackFSM()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	StackFSM::update( float _timing )
 	{
-		if(m_stateList.empty())
+		if( m_stateList.empty() )
 		{
 			return;
 		}
 
-		m_currentAction->update( _timing );
+		m_currentState->update( _timing );
 
-		if(m_currentAction->isEnded())
+		if( m_currentState->isEnded() )
 		{
-			m_currentAction->end();
+			m_currentState->end();
 
-			//зовем колбек для скрипта!
+			//FIX ME:
+			//SCRIPT CALLBACK!!!!!!!!!!!!
 
-			delete m_stateList.front();
-			m_stateList.pop_front();
+			pop();
 
-			if(m_stateList.empty())
+			if( m_stateList.empty() )
 			{
-				m_currentAction = NULL;
+				m_currentState = NULL;
 				return;
 			}
 
-			m_currentAction = m_stateList.front();
-			m_currentAction->run();
+			next();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	StackFSM::addState( State * _action )
+	void	StackFSM::pop()
 	{
-		if(m_stateList.empty())
-		{
-			m_currentAction = _action;
-			_action->run();
-		}
-
-		m_stateList.push_back(_action);
+		delete m_stateList.front();
+		m_stateList.pop_front();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	StackFSM::runState( State * _action )
+	void	StackFSM::next()
 	{
-		if(m_stateList.empty())
-		{
-			addState(_action);
-			return;
-		}
-
-
-		StateList::iterator it = m_stateList.begin();
-	/*	
-		m_currentAction->end();
-
-		if(m_currentAction->isEnded() == false)
-		{
-			it++;
-		}
-	*/
-		std::for_each(it, m_stateList.end(), std::mem_fun(&State::end));
-		m_stateList.erase(it, m_stateList.end());
-	
-		addState(_action);
+		m_currentState = m_stateList.front();
+		m_currentState->run();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	StackFSM::terminateStates()
+	void	StackFSM::push( State * _state )
 	{
-		StateList::iterator it = m_stateList.begin();
-		std::for_each(it, m_stateList.end(), std::mem_fun(&State::end));
-		m_stateList.erase(it, m_stateList.end());
+		if( m_stateList.empty() )
+		{
+			m_currentState = _state;
+			_state->run();
+		}
+
+		m_stateList.push_back(_state);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	StackFSM::execute( State * _state )
+	{
+		terminate();
+		push( _state );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	StackFSM::terminate()
+	{
+		struct	TerminateState
+		{
+			void operator()( State * _state )
+			{
+				_state->end();
+				delete _state;
+			}
+		};
+
+		std::for_each( m_stateList.begin(), m_stateList.end(), TerminateState() );
+		m_stateList.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

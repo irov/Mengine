@@ -170,7 +170,7 @@ void SQUALLSoundSource::setLooped(bool loop)
 //////////////////////////////////////////////////////////////////////////
 bool SQUALLSoundSource::isLooping() const
 {
-	return SQUALL_Channel_GetLoop(ChannelID);
+	return SQUALL_Channel_GetLoop(ChannelID) == 1;
 }
 //////////////////////////////////////////////////////////////////////////
 int	SQUALLSoundSource::getLengthMS()

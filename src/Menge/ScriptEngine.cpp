@@ -364,6 +364,11 @@ namespace Menge
 		return pybind::has_attr( _module, _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::getModuleFunction( PyObject * _module, const std::string & _name )
+	{
+		return pybind::get_attr( _module, _name.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::callModuleFunction( const std::string & _module, const std::string & _name, const char * _params, ... )
 	{
 		TMapModule::iterator it_find = m_mapModule.find( _module );

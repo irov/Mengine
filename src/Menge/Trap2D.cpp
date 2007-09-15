@@ -8,8 +8,6 @@
 
 #	include "ScriptEngine.h"
 
-#	include "Event.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -49,12 +47,12 @@ namespace Menge
 		}
 	}
 	////////////////////////////////////////////////////////////////////////////
-	void Trap2D::setEnterZoneCallback( Event * _event )
+	void Trap2D::setEnterZoneCallback( PyObject * _event )
 	{
 		registerEvent( "ENTER_ZONE", _event );
 	}
 	////////////////////////////////////////////////////////////////////////////
-	void Trap2D::setLeaveZoneCallback( Event * _event )
+	void Trap2D::setLeaveZoneCallback( PyObject * _event )
 	{
 		registerEvent( "LEAVE_ZONE", _event );
 	}
@@ -101,10 +99,7 @@ namespace Menge
 
 			if( founded == m_trapped.end() )
 			{
-				if( Event * event = getEvent( "LEAVE_ZONE" ) )
-				{
-					event->call( "()" );
-				}
+				callEvent( "LEAVE_ZONE", "()" );
 
 				it = m_inZone.erase(it);
 			}
@@ -122,10 +117,7 @@ namespace Menge
 
 			if( founded == m_inZone.end() )
 			{
-				if( Event * event = getEvent( "ENTER_ZONE" ) )
-				{
-					event->call( "()" );
-				}
+				callEvent( "ENTER_ZONE", "()" );
 
 				m_inZone.push_back( *it );
 			}

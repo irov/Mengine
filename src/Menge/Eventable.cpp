@@ -4,7 +4,7 @@
 
 #	include "XmlParser/XmlParser.h"
 
-#	include "Event.h"
+#	include "pybind/pybind.hpp"
 
 namespace Menge
 {
@@ -23,21 +23,56 @@ namespace Menge
 	{
 		for each( const TMapEvent::value_type & it in m_mapEvent )
 		{
-			delete it.second;
+			ScriptEngine::decref( it.second );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::registerEvent( const std::string &_name, Event * _event  )
+	bool Eventable::registerEvent( const std::string &_name, PyObject * _module, const std::string & _method  )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
-		if( it_find == m_mapEvent.end() )
+		if( it_find != m_mapEvent.end() )
 		{
-			m_mapEvent.insert(std::make_pair( _name, _event ));		
-		}            
+			return false;
+		}
+
+		PyObject * event = Holder<ScriptEngine>::hostage()
+			->getModuleFunction( _module, _method );
+
+		if( event == 0 )
+		{
+			return false;
+		}
+
+		ScriptEngine::incref( event );
+
+		m_mapEvent.insert(std::make_pair( _name, event ));
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Event * Eventable::getEvent( const std::string & _name )
+	bool Eventable::registerEvent( const std::string &_name, PyObject * _callback )
+	{
+		TMapEvent::iterator it_find = m_mapEvent.find(_name);
+
+		if( it_find != m_mapEvent.end() )
+		{
+			return false;
+		}
+
+		if( _callback == 0 )
+		{
+			return false;
+		}
+
+		ScriptEngine::incref( _callback );
+
+		m_mapEvent.insert(std::make_pair( _name, _callback ));
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * Eventable::getEvent( const std::string & _name )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -49,21 +84,62 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Eventable::callEvent( const std::string &_name, const char * _format, ... )
+	{
+		TMapEvent::iterator it_find = m_mapEvent.find( _name );
+
+		if( it_find == m_mapEvent.end() )
+		{
+			return;
+		}
+
+		va_list valist;
+		va_start(valist, _format);
+
+		Holder<ScriptEngine>::hostage()
+			->callFunction( it_find->second, _format, valist );
+
+		va_end( valist ); 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Eventable::askEvent( bool & _result, const std::string &_name, const char * _format, ... )
+	{
+		TMapEvent::iterator it_find = m_mapEvent.find( _name );
+
+		if( it_find == m_mapEvent.end() )
+		{
+			return false; 
+		}
+
+		va_list valist;
+		va_start(valist, _format);
+
+		PyObject * result = 
+			Holder<ScriptEngine>::hostage()
+			->callFunction( it_find->second, _format, valist );
+
+		va_end( valist );
+
+		_result = pybind::convert::to_bool( result );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Eventable::loader(TiXmlElement * _xml)
 	{
-		XML_FOR_EACH_TREE(_xml)
-		{
-			XML_CHECK_NODE("Event")
-			{
-				XML_DEF_ATTRIBUTES_NODE(Type);
-				XML_DEF_ATTRIBUTES_NODE(Function);
+		//XML_FOR_EACH_TREE(_xml)
+		//{
+		//	XML_CHECK_NODE("Event")
+		//	{
+		//		XML_DEF_ATTRIBUTES_NODE(Type);
+		//		XML_DEF_ATTRIBUTES_NODE(Function);
 
-				//ScriptEngine *scriptEng = Holder<ScriptEngine>::hostage();
+		//		ScriptEngine *scriptEng = Holder<ScriptEngine>::hostage();
 
-				//Event * event = scriptEng->genEvent( Function );
+		//		Event * event = scriptEng->genEvent( Function );
 
-				//registerEvent( Type, event );
-			}
-		}
+		//		//registerEvent( Type, event );
+		//	}
+		//}
 	}
 }

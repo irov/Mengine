@@ -17,11 +17,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Arrow::Arrow()
 	: m_offsetClick(0,0)
-	{}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Arrow::getPositionClick()
 	{
-		return m_positionClick;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::_update( float _timing )
@@ -31,9 +27,7 @@ namespace	Menge
 		const mt::vec3f &dmv = inputEng->getPosition();
 
 		mt::vec2f pos(dmv.x, dmv.y);
-		setPosition( pos );
-		
-		m_positionClick = pos + m_offsetClick;
+		setPosition( pos + m_offsetClick );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()

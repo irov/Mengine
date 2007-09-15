@@ -8,7 +8,6 @@ namespace Menge
 {
 	
 	class NodeForeach;
-	class Event;
 
 	//! Node - base pure virtual class
 	/*! 
@@ -102,21 +101,6 @@ namespace Menge
 		\param _foreach the first argument, functor NodeForeach
 		*/
 		virtual void foreachChildren( const NodeForeach & _foreach ) = 0;
-
-	public:
-		//! Node pure virtual. register event for script callback
-		/*!
-		\param _name the first argument, name of event
-		\param _event the second argument, pointer of event
-		*/
-		virtual void registerEvent( const std::string &_name, Event * _event  ) = 0;
-
-		//! Node pure virtual. get event by name
-		/*!
-		\param _name the first argument, name of event
-		\return pointer of event, if not event then return NULL
-		*/
-		virtual Event * getEvent( const std::string &_name ) = 0;
 
 	public:
 		//! Node pure virtual. update node

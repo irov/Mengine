@@ -36,7 +36,6 @@ namespace Menge
 		void addPoint( const mt::vec2f & _p );
 		bool testPoint( const mt::vec2f & _p );
 
-		void setHandle( bool _handle );
 		void setInputHandler( PyObject * _handler );
 		
 	public:
@@ -44,20 +43,25 @@ namespace Menge
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( float _x, float _y, float _whell ) override;
 
-	public:
-		void update( float _timing ) override;
+	public:		
 		void loader( TiXmlElement *_xml) override;
 
 	protected:
-		void _debugRender() override;
 		bool _activate() override;
 		void _deactivate() override;
-			
+		void _update( float _timing ) override;
+		void _debugRender() override;
+
 	private:
 		mt::polygon m_poligon;
 
 		PyObject * m_handler;
 
-		bool m_handle;
+		//bool m_handle;
+
+		bool m_onLeaveMethod;
+		bool m_onEnterMethod;
+
+		bool onHandleMouseButtonEvent;
 	};
 }

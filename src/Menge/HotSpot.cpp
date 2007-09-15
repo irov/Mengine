@@ -12,9 +12,6 @@
 
 #	include "XmlParser/XmlParser.h"
 
-#	include "Event.h"
-
-
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -22,7 +19,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
 	: m_handler( 0 )
-	, m_handle( true )
 	{
 		this->setHandler( this );
 	}
@@ -39,27 +35,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()
 	{
-		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_handler, "onLeave" ) )
-		{
-			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_handler, "onLeave", "()" );
-		}
+		callEvent( "LEAVE", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onEnter()
 	{
-		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_handler, "onEnter" ) )
-		{
-			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_handler, "onEnter", "()" );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::setHandle( bool _handle )
-	{
-		m_handle = _handle;
+		callEvent( "ENTER", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
@@ -138,20 +119,26 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleKeyEvent( size_t _key, bool _isDown )
 	{
-		return Holder<ScriptEngine>::hostage()
-			->handleKeyEvent( m_handler, _key, _isDown );
+		bool result = false;
+		askEvent( result, "KEY", "(Ib)", _key, _isDown );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseButtonEvent( size_t _button, bool _isDown )
 	{
-		return Holder<ScriptEngine>::hostage()
-			->handleMouseButtonEvent( m_handler, _button, _isDown );
+		bool result = false;
+		askEvent( result, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseMove( float _x, float _y, float _whell )
 	{
-		return Holder<ScriptEngine>::hostage()
-			->handleMouseMove( m_handler, _x, _y, _whell );
+		bool result = false;
+		askEvent( result, "MOUSE_MOVE", "(fff)", _x, _y, _whell );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::setInputHandler( PyObject * _handler )
@@ -159,6 +146,13 @@ namespace	Menge
 		ScriptEngine::incref( _handler );
 
 		m_handler = _handler;
+
+		this->registerEvent("KEY", m_handler, "onHandleKeyEvent" );
+		this->registerEvent("MOUSE_BUTTON", m_handler, "onHandleMouseButtonEvent" );
+		this->registerEvent("MOUSE_MOVE", m_handler, "onHandleMouseMove" );
+
+		this->registerEvent("LEAVE", m_handler, "onLeave" );
+		this->registerEvent("ENTER", m_handler, "onEnter" );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_activate()
@@ -171,7 +165,7 @@ namespace	Menge
 		SceneNode2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::update( float _timing )
+	void HotSpot::_update( float _timing )
 	{
 		Holder<MousePickerSystem>::hostage()
 			->regTrap( this );

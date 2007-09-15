@@ -63,6 +63,7 @@ namespace Menge
 		bool handleMouseMove( PyObject * _module, float _x, float _y, float _whell );
 
 		bool hasModuleFunction( PyObject * _module, const std::string & _name );
+		PyObject * getModuleFunction( PyObject * _module, const std::string & _name );
 		PyObject * callModuleFunction( const std::string & _module, const std::string & _name, const char * _params = "()", ... );
 		PyObject * callModuleFunction( PyObject * _module, const std::string & _name, const char * _params = "()", ... );
 

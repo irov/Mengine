@@ -60,11 +60,11 @@ namespace	Menge
 		m_animObject->play("paladin_idle.caf");
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Actor3D::moveTo( const mt::vec3f& _wayPoint )
+	void Actor3D::moveTo( const mt::vec3f& _target )
 	{
 		m_state = ROTATE;
 		m_lookAtTarget = false;
-		m_destPos = _wayPoint;
+		m_destPos = _target;
 		_calculateDirection();
 
 		m_animObject->play("paladin_walk.caf");
@@ -86,11 +86,15 @@ namespace	Menge
 	{
 		Allocator3D::debugRender();
 		SceneNode3D::_render(_rwm, _camera);
+
 		m_animObject->render(_rwm, _camera);
-		//debug moving path
-		mt::vec3f pos = getLocalPosition();
-		RenderEngine * renderEng = Holder<RenderEngine>::hostage();
-		renderEng->drawLine3D(pos, m_destPos, 0xFFFFFFAA);
+
+		/*	debug moving path */
+		#ifdef _DEBUG
+			mt::vec3f pos = getLocalPosition();
+			RenderEngine * renderEng = Holder<RenderEngine>::hostage();
+			renderEng->drawLine3D(pos, m_destPos, 0xFFFFFFAA);
+		#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::_update( float _timing )
@@ -171,7 +175,7 @@ namespace	Menge
 	float Actor3D::_calculateDistance()
 	{
 		mt::vec3f & pos = getLocalPosition();
-		float distance = mt::length_v3_v3(pos, m_destPos);
+		float distance = mt::length_v3_v3( pos, m_destPos );
 		return distance;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -414,6 +414,26 @@
 					RelativePath=".\Avatar2D.h"
 					>
 				</File>
+				<Filter
+					Name="States"
+					>
+					<File
+						RelativePath=".\StateLook2D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StateLook2D.h"
+						>
+					</File>
+					<File
+						RelativePath=".\StateMove2D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StateMove2D.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Region"
@@ -822,26 +842,6 @@
 					RelativePath=".\Actor3D.h"
 					>
 				</File>
-				<Filter
-					Name="States"
-					>
-					<File
-						RelativePath=".\StateLook.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\StateLook.h"
-						>
-					</File>
-					<File
-						RelativePath=".\StateMove.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\StateMove.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Avatar"
@@ -854,6 +854,26 @@
 					RelativePath=".\Avatar3D.h"
 					>
 				</File>
+				<Filter
+					Name="States"
+					>
+					<File
+						RelativePath=".\StateLook3D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StateLook3D.h"
+						>
+					</File>
+					<File
+						RelativePath=".\StateMove3D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\StateMove3D.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Animation"

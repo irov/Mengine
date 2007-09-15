@@ -1,18 +1,18 @@
-#	include "StateLook.h"	
+#	include "StateLook2D.h"	
 
-#	include "Avatar3D.h"	
+#	include "Avatar2D.h"	
 
 namespace Menge
 { 
 	//////////////////////////////////////////////////////////////////////////
-	StateLook::StateLook( Avatar3D * _avatar, const mt::vec3f& _destPoint )
+	StateLook2D::StateLook2D( Avatar2D * _avatar, const mt::vec2f& _destPoint )
 		: m_avatar( _avatar )
 		, m_destPoint( _destPoint )
 		, m_isEnded( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	StateLook::update( float _timing )
+	void	StateLook2D::update( float _timing )
 	{
 		if( m_avatar->isMoving() == false )
 		{
@@ -20,18 +20,18 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	StateLook::run()
+	void	StateLook2D::run()
 	{
-		printf("StateLook is running! \n");
+		printf("StateLook2D is running! \n");
 		m_avatar->lookTo(m_destPoint);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	StateLook::end()
+	void	StateLook2D::end()
 	{
-		printf("StateLook is ended! \n");
+		printf("StateLook2D is ended! \n");
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool	StateLook::isEnded() const
+	bool	StateLook2D::isEnded() const
 	{
 		return m_isEnded;
 	}

@@ -11,7 +11,7 @@
 #	include <cal3d\global.h>
 #	include <cal3d\cal3d.h>
 #	include <cal3d\cal3d_wrapper.h>
-#	include <cal3d\coretrack.h>
+
 
 namespace Menge
 {

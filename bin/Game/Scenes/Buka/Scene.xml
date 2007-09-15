@@ -2,17 +2,23 @@
 	<Node Name = "Main" Type = "Layer2D">
 		<Parallax Factor = "1;1" />
 
-		<Node Name = "TestActor" Type = "Actor" >
-			<Node Name = "TestSprite" Type = "Sprite">
-				<ImageMap Name = "output" />
+		<Node Name = "TestActor" Type = "Actor2D" >
+
+			<Animation>
+				<Node Name = "TestSprite" Type = "Sprite">
+					<ImageMap Name = "output" />
+					<Transformation Value = "1;0;0;1;0;0" />
+				</Node>
+
+				<Animation Name = "output_cngAnimation" />
 				<Transformation Value = "1;0;0;1;0;0" />
-			</Node> <!-- Sprite -->
-			<Hull>
-				<Point Value = "0.0;0.0"/>
-				<Point Value = "10.0;0.0"/>
-				<Point Value = "10.0;10.0"/>
-				<Point Value = "0.0;10.0"/>
-			</Hull>
+			</Animation>
+
+			<MovementParams>
+				<MaxSpeed Value = "30.0" />
+				<Acceleration Value = "20.0" />
+				<RotateSpeed Value = "2.0" />
+			</MovementParams>
 		</Node>
 
 		<Node Name = "TestTrap" Type = "Trap2D">

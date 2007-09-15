@@ -2,9 +2,9 @@
 
 #	include "ObjectImplement.h"
 
-#	include "StateMove.h"
+#	include "StateMove3D.h"
 
-#	include "StateLook.h"
+#	include "StateLook3D.h"
 
 namespace	Menge
 {
@@ -36,7 +36,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Avatar3D::moveToPoint( const mt::vec3f& _dest )
 	{
-		m_stackFSM.execute( new StateMove(this, _dest) );
+		m_stackFSM.execute( new StateMove3D(this, _dest) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Avatar3D::moveByWayPoints( const std::vector<mt::vec3f>& _wayPoints )
@@ -45,13 +45,13 @@ namespace	Menge
 
 		for each( const mt::vec3f & it in _wayPoints )		
 		{
-			m_stackFSM.push( new StateMove(this, it) );
+			m_stackFSM.push( new StateMove3D( this, it ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Avatar3D::lookAtPoint( const mt::vec3f& _dest )
 	{
-		m_stackFSM.execute( new StateLook(this, _dest) );
+		m_stackFSM.execute( new StateLook3D( this, _dest ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Avatar3D::_activate()
@@ -71,7 +71,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Avatar3D::_update( float _timing)
 	{
-		Actor3D::_update(_timing);
+		Actor3D::_update( _timing );
 		m_stackFSM.update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////

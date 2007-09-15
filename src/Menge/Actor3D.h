@@ -6,11 +6,6 @@
 
 namespace Menge
 {
-	//! Actor
-	/*! 
-	* 3d animation class. 
-	* Have 3 states - Move, Rotate, Stop.
-	*/
 	class Actor3D
 		: public SceneNode3D
 	{
@@ -20,7 +15,7 @@ namespace Menge
 		Actor3D();
 
 	public:
-		void	moveTo( const mt::vec3f& _wayPoint );
+		void	moveTo( const mt::vec3f& _target );
 		void	lookTo( const mt::vec3f& _target );
 		void	stop();
 

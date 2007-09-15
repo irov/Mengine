@@ -223,7 +223,7 @@ namespace	mt
 
 	void	project_v2_v2(const vec2f& a, const vec2f& b, mt::vec2f& result) 
 	{
-		float dp = dot_v2_v2(a,b);
+		float dp = dot_v2_v2(a, b);
 
 		result.x = dp * b.x;
 		result.y = dp * b.y;
@@ -231,7 +231,9 @@ namespace	mt
 
 	bool	slerp_v2_v2(const vec2f& a, const vec2f& b, float t, vec2f& result)
 	{
-		float m_to = (dot_v2_v2(b,perp(a)) < 0.0f) ? 1.0f : -1.0f;
+		float m_to = pseudo_cross_v2(b,a) < 0.0f ? 1.0f : -1.0f;
+
+		//float m_to = (dot_v2_v2(b,perp(a)) < 0.0f) ? 1.0f : -1.0f;
 
 		float _sin = sin(t * m_to);
 		float _cos = cos(t * m_to);
@@ -239,7 +241,9 @@ namespace	mt
 		result.x = _sin * a.y + _cos * a.x;
 		result.y = _cos * a.y - _sin * a.x;
 
-		float mn_to = (dot_v2_v2(b,perp(result)) < 0.0f ) ? 1.0f : -1.0f;
+		//float mn_to = (dot_v2_v2(b,perp(result)) < 0.0f ) ? 1.0f : -1.0f;
+
+		float mn_to = pseudo_cross_v2(b, result) < 0.0f ? 1.0f : -1.0f;
 
 		if ( m_to * mn_to < 0.0f )
 		{

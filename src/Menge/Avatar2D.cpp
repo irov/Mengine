@@ -2,6 +2,10 @@
 
 #	include "ObjectImplement.h"
 
+#	include "StateMove2D.h"
+
+#	include "StateLook2D.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -24,4 +28,51 @@ namespace	Menge
 	{
 		return false;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Avatar2D::loader( TiXmlElement * _xml )
+	{
+		Actor2D::loader(_xml);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Avatar2D::moveToPoint( const mt::vec2f& _dest )
+	{
+		m_stackFSM.execute( new StateMove2D(this, _dest) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Avatar2D::moveByWayPoints( const std::vector<mt::vec2f>& _wayPoints )
+	{
+		m_stackFSM.terminate();
+
+		for each( const mt::vec2f & it in _wayPoints )		
+		{
+			m_stackFSM.push( new StateMove2D( this, it ) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Avatar2D::lookAtPoint( const mt::vec2f& _dest )
+	{
+		m_stackFSM.execute( new StateLook2D( this, _dest ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Avatar2D::_activate()
+	{
+		return Actor2D::_activate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Avatar2D::_deactivate()
+	{
+		Actor2D::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Avatar2D::_render( const mt::mat3f & _rwm, const Viewport & _viewport )
+	{
+		Actor2D::_render( _rwm, _viewport );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Avatar2D::_update( float _timing)
+	{
+		Actor2D::_update( _timing );
+		m_stackFSM.update( _timing );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

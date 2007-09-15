@@ -24,7 +24,6 @@ namespace	Menge
 	void Animation::loader(TiXmlElement * _xml)
 	{
 		Sprite::loader(_xml);
-
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_VALUE_NODE( "Animation", "Name", m_resourceAnim );

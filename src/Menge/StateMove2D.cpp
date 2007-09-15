@@ -1,18 +1,18 @@
-#	include "StateMove.h"	
+#	include "StateMove2D.h"	
 
-#	include "Avatar3D.h"	
+#	include "Avatar2D.h"	
 
 namespace Menge
 { 
 	//////////////////////////////////////////////////////////////////////////
-	StateMove::StateMove(Avatar3D * _avatar, const mt::vec3f& _destPoint)
+	StateMove2D::StateMove2D(Avatar2D * _avatar, const mt::vec2f& _destPoint)
 		: m_avatar( _avatar ) 
 		, m_destPoint( _destPoint )
 		, m_isEnded( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	StateMove::update( float _timing )
+	void	StateMove2D::update( float _timing )
 	{
 		if(m_avatar->isMoving() == false)
 		{
@@ -20,19 +20,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	StateMove::run()
+	void	StateMove2D::run()
 	{
-		printf("StateMove is running! \n");
+		printf("StateMove2D is running! \n");
 		m_avatar->moveTo(m_destPoint);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	StateMove::end()
+	void	StateMove2D::end()
 	{
-		printf("StateMove is ended! \n");
+		printf("StateMove2D is ended! \n");
 		m_avatar->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool	StateMove::isEnded() const
+	bool	StateMove2D::isEnded() const
 	{
 		return m_isEnded;
 	}

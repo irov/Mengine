@@ -2,24 +2,24 @@
 
 #	include "State.h"
 
-#	include "math\vec3.h"
+#	include "math\vec2.h"
 
 namespace Menge
 {
-	class	Avatar3D;
+	class	Avatar2D;
 
-	class	StateLook : public State
+	class	StateMove2D : public State
 	{
 	public:
-		StateLook( Avatar3D * _avatar, const mt::vec3f& _destPoint );
+		StateMove2D( Avatar2D * _avatar, const mt::vec2f& _destPoint );
 	public:
 		void	update( float _timing );
 		void	run();
 		void	end();
 		bool	isEnded() const;
 	private:
-		Avatar3D *	m_avatar;
-		mt::vec3f	m_destPoint;
+		Avatar2D *	m_avatar;
+		mt::vec2f	m_destPoint;
 		bool		m_isEnded;
 	};
 }

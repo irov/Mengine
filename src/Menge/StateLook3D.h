@@ -8,10 +8,10 @@ namespace Menge
 {
 	class	Avatar3D;
 
-	class	StateMove : public State
+	class	StateLook3D : public State
 	{
 	public:
-		StateMove( Avatar3D * _avatar, const mt::vec3f& _destPoint );
+		StateLook3D( Avatar3D * _avatar, const mt::vec3f& _destPoint );
 	public:
 		void	update( float _timing );
 		void	run();

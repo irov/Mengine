@@ -11,6 +11,7 @@
 
 #	include "ScriptEngine.h"
 #	include "FileEngine.h"
+#	include "ResourceManager.h"
 
 #	include "XmlParser/XmlParser.h"
 #	include "ErrorMessage.h"
@@ -126,6 +127,18 @@ namespace Menge
 				}
 			}
 
+			XML_CHECK_NODE("Resource")
+			{
+				XML_DEF_ATTRIBUTES_NODE( Path );
+
+				XML_VALUE_ATTRIBUTE( "Path", m_pathResource );
+
+				XML_FOR_EACH()
+				{
+					m_listResourceDeclaration.push_back( XML_TITLE_NODE );
+				}
+			}
+			
 			XML_CHECK_VALUE_NODE( "Scripts", "Path", m_pathScripts );
 		}
 	}
@@ -242,6 +255,17 @@ namespace Menge
 		{
 			Holder<ScriptEngine>::hostage()
 				->registerEntityType( enType );
+		}
+
+		for each( const std::string & resource in m_listResourceDeclaration )
+		{
+			std::string path = m_pathResource;
+			path += '/';
+			path += resource;
+			path += ".resource";
+
+			Holder<ResourceManager>::hostage()
+				->loadResource( path );
 		}
 
 		for each( const std::string & arrow in m_listArrowsDeclaration )

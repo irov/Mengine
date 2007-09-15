@@ -25,7 +25,6 @@ namespace Menge
 	public:
 		virtual void setImageIndex( size_t _index );
 		virtual size_t getImageIndex() const;
-		virtual void setOffset(const mt::vec2f& _offset);
 
 		virtual void setImageResource( const std::string & _name );
 		virtual const std::string & getImageResource() const;
@@ -47,8 +46,6 @@ namespace Menge
 		std::string m_resourceName;
 
 		size_t m_currentImageIndex;
-
-		mt::vec2f m_offset;		
 	
 		unsigned int m_color;
 

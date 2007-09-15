@@ -148,8 +148,8 @@ namespace Menge
 
 		cmr3d->lookAt(mt::vec3f(0,0,0));
 
-		Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
-		Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
+		//Layer3D * layer = m_scene->getChildrenT<Layer3D>("Back");
+		//Avatar3D * avat = layer->getChildrenT<Avatar3D>("TestAvatar");
 
 		setRenderCamera3D(cmr3d);
 
@@ -448,6 +448,14 @@ namespace Menge
 	Camera3D * Player::getRenderCamera3D()
 	{
 		return m_renderCamera3D;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::setCamera2DPosition( const mt::vec2f & _pos )
+	{
+		if( m_renderCamera2D )
+		{
+			m_renderCamera2D->setPosition( _pos );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render()

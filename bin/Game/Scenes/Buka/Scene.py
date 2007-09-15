@@ -16,4 +16,8 @@ class Scene( Menge.Scene ):
 		self.layerAppend( "Main", en )
 		self.pole.loadLevel( self, "Game/Levels/01.txt" )
 		pass
+
+	def onHandleMouseButtonEvent( self, button, isDown ):
+		pass
+
 	pass

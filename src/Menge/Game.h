@@ -80,7 +80,9 @@ namespace Menge
 		TListDeclaration m_listEntitiesDeclaration;
 		TListDeclaration m_listArrowsDeclaration;
 		TListDeclaration m_listScenesDeclaration;
-
+		TListDeclaration m_listResourceDeclaration;
+		
+		std::string m_pathResource;
 		std::string m_pathScripts;
 		std::string m_pathEntities;
 		std::string m_pathScenes;

@@ -28,12 +28,15 @@ namespace	Menge
 	{
 		m_viewPort = _viewPort;
 		
-		m_viewPort.begin.x *= m_factorParallax.x;
-		m_viewPort.begin.y *= m_factorParallax.y;
+		mt::vec2f size = ( _viewPort.end - _viewPort.begin ) * 0.5f;
+		mt::vec2f middle = ( _viewPort.begin + _viewPort.end ) * 0.5f;
 
-		m_viewPort.end.x *= m_factorParallax.x;
-		m_viewPort.end.y *= m_factorParallax.y;
+		middle.x *= m_factorParallax.x;
+		middle.y *= m_factorParallax.y;
 
+		m_viewPort.begin = middle - size;
+		m_viewPort.end = middle + size;
+		
 		return m_viewPort;
 	}
 	//////////////////////////////////////////////////////////////////////////

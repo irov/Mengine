@@ -25,6 +25,12 @@ namespace Menge
 					->setCurrentScene( _name );
 		}
 
+		void setCamera2DPosition( float x, float y )
+		{
+			Holder<Player>::hostage()
+				->setCamera2DPosition( mt::vec2f(x, y) );
+		}
+
 		PyObject * createNode( const std::string & _type, PyObject * _params  )
 		{
 			Node * node = SceneManager::createNode( _type );
@@ -162,6 +168,8 @@ namespace Menge
 			;
 
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
+		pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
+		
 		pybind::def( "createNode", &ScriptMethod::createNode );
 	}
 }

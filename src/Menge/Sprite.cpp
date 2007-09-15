@@ -23,7 +23,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
 	: m_image(0)
-	, m_offset(0.f,0.f)
 	, m_color(0xFFFFFFFF)
 	, m_currentImageIndex(0) 
 	{}
@@ -31,23 +30,25 @@ namespace	Menge
 	Sprite::~Sprite()
 	{}
 	///////////////////////////////////////////////////////////////////////////
-	bool Sprite::isVisible(const Viewport & _viewPort)
+	bool Sprite::isVisible( const Viewport & _viewPort )
 	{
 		const mt::vec2f & pos = getWorldPosition();
 		const mt::mat3f & wm = getWorldMatrix();
 
-		mt::vec3f min0, max0;
+		mt::vec2f min0, max0;
 
 		const mt::vec2f & size = m_image->getMaxSize();
+
+		const mt::vec2f & offset = m_image->getOffset( m_currentImageIndex );
 
 		const mt::vec2f & localPosition = getLocalPosition();
 		const mt::mat3f & worldMatrix = getWorldMatrix();
 
 		calculate_aabb_from_obb(
 			min0,
-			max0,
-			localPosition+m_offset,
+			max0,	
 			size,
+			offset,
 			worldMatrix);
 
 		if (max0.x < _viewPort.begin.x || min0.x > _viewPort.end.x ) return false;
@@ -84,11 +85,6 @@ namespace	Menge
 	const std::string & Sprite::getImageResource() const
 	{
 		return m_resourceName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setOffset(const mt::vec2f& _offset)
-	{
-		m_offset = _offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_activate()
@@ -131,7 +127,7 @@ namespace	Menge
 
 		Holder<RenderEngine>::hostage()->renderImage(
 			_rwm, 
-			image_offset + m_offset,
+			image_offset,
 			frame_uv,
 			size,
 			m_color,

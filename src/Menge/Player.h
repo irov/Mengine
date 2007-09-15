@@ -41,6 +41,8 @@ namespace Menge
 		void setRenderCamera3D( Camera3D * _camera);
 		Camera3D * getRenderCamera3D();
 
+		void setCamera2DPosition( const mt::vec2f & _pos );
+
 	public:
 		void init();
 		void update( float _timing );

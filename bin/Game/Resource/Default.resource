@@ -1,6 +1,4 @@
 <DataBlock>
-	<Extend File = "FishDemo.resource" />
-
 	<Resource Name = "TestParticle" Type = "ResourceParticle" >
 		<Image Name = "particles1.png" />
 		<emission Value = "899" />

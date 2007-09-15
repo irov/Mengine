@@ -3,7 +3,7 @@ import Menge
 def init():
 	#Menge.setCurrentScene("Match3")
 	Menge.setCurrentScene("Buka")
-
+	#Menge.setCurrentScene("FishDemo")
 	return True
 	pass
 

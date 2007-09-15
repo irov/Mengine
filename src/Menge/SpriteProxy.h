@@ -14,7 +14,6 @@ namespace Menge
 	public:
 		void setImageIndex( size_t _index );
 		size_t getImageIndex() const;
-		void setOffset(const mt::vec2f& _offset);
 
 		void setImageResource( const std::string & _name );
 		const std::string & getImageResource() const;

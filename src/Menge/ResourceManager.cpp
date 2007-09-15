@@ -55,6 +55,13 @@ namespace Menge
 
 					registerResource( resource );
 				}		
+
+				XML_CHECK_NODE("Extend")
+				{
+					XML_DEF_ATTRIBUTES_NODE( File );
+
+					loadResource( File );
+				}
 			}
 		}
 	}

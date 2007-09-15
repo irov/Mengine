@@ -51,11 +51,6 @@ namespace	Menge
 		return	m_sprite->getImageResource();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SpriteProxy::setOffset(const mt::vec2f& _offset)
-	{
-		return	m_sprite->setOffset(_offset);
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool SpriteProxy::_activate()
 	{
 		return	m_sprite->_activate();

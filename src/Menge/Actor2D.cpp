@@ -45,9 +45,6 @@ namespace	Menge
 				XML_CHECK_VALUE_NODE( "RotateSpeed", "Value", m_rotateSpeed );
 			}
 		}
-
-		// АХТУНГ!  исправть нафиг этот аллокатор. щас для теста
-		//setDirection(mt::vec3f(1,0,0));	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor2D::lookTo( const mt::vec2f& _target )

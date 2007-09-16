@@ -167,7 +167,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimationCal3d::_release()
 	{
-		m_calCoreModel->unloadCoreAnimation("paladin_idle.caf");
+	//	m_calCoreModel->unloadCoreAnimation("paladin_idle.caf");
 
 			//paladin_idle.caf
 		_freeMaterials();

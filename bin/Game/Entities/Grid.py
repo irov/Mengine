@@ -5,7 +5,13 @@ class Grid( Menge.Entity ):
 		Menge.Entity.__init__( self )
 
 		self.image = Menge.createNode( "Sprite", 
-			[ { "ImageMap": { "Name": "grid" }  } ]
+			[ {
+                                "ImageMap" :
+                                {
+                                        "Name" : "grid"
+                                }
+                                }
+                          ]
 			)	
 		
 		self.addChildren( self.image )
@@ -15,5 +21,4 @@ class Grid( Menge.Entity ):
 		print self.image, frame
 		self.image.setImageIndex( frame )
 		pass
-
 	pass

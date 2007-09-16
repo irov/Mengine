@@ -5,11 +5,7 @@
 		<Node Name = "TestActor" Type = "Actor2D" >
 
 			<Animation>
-				<Node Name = "TestSprite" Type = "Sprite">
-					<ImageMap Name = "output" />
-					<Transformation Value = "1;0;0;1;0;0" />
-				</Node>
-
+				<ImageMap Name = "output" />
 				<Animation Name = "output_cngAnimation" />
 				<Transformation Value = "1;0;0;1;0;0" />
 			</Animation>
@@ -38,10 +34,12 @@
 
 	<Node Name = "Back" Type = "Layer3D">
 		<Node Name = "TestAvatar" Type = "Avatar3D">
+
 			<Animation>
 				<Transformation Value = "1;0;0;0;1;0;0;0;1;0;0;0" />
 				<ImageMap Name = "Cal3dTest" />
 			</Animation>
+
 			<MovementParams>
 				<MaxSpeed Value = "30.0" />
 				<Acceleration Value = "20.0" />

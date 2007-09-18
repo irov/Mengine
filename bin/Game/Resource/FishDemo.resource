@@ -1,5 +1,13 @@
 <DataBlock>
 	<!- ************************************************ -->
+	<!- Image for Water -->
+
+	<Resource Name = "Water_01" Type = "ResourceImageDefault" >
+		<File Path = "Game/Images/Water/water_01.png" />
+	</Resource>
+		
+
+	<!- ************************************************ -->
 	<!- Image for 1st plan -->
 
 	<Resource Name = "ReefValun_01" Type = "ResourceImageDefault" >

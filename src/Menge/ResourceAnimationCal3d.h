@@ -12,7 +12,7 @@ namespace Menge
 {
 	struct AnimInfo
 	{
-		size_t	index;
+		int		index;
 		float	delay;
 		float	blend;
 	};
@@ -35,8 +35,8 @@ namespace Menge
 		void _release();
 
 	public:
-		size_t	getAnimationCount() const;
-		size_t  getMeshCount() const;
+		int		getAnimationCount() const;
+		int		getMeshCount() const;
 		int		getAnimationId( const std::string& _name ) const;
 		int		getBoneIndex( const std::string& _name ) const;
 

@@ -242,12 +242,12 @@ namespace Menge
 		return m_hardPoints;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceAnimationCal3d::getAnimationCount() const
+	int ResourceAnimationCal3d::getAnimationCount() const
 	{
 		return m_calCoreModel->getCoreAnimationCount();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceAnimationCal3d::getMeshCount() const
+	int ResourceAnimationCal3d::getMeshCount() const
 	{
 		return m_calCoreModel->getCoreMeshCount();
 	}

@@ -73,7 +73,7 @@ namespace Menge
 
 		std::vector<long> seeks(size);
 
-		for(int i = 0; i < seeks.size(); ++i)
+		for(size_t i = 0; i < seeks.size(); ++i)
 		{
 			fileData->read_longs(&seeks[i],1);
 		}

@@ -88,7 +88,7 @@ namespace	Menge
 			handle = Holder<MousePickerSystem>::hostage()
 				->handleMouseMove( _x, _y, _whell );
 		}
-
+	
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -116,6 +116,16 @@ namespace	Menge
 	void Scene::loader( TiXmlElement *_xml )
 	{
 		NodeCore::loader(_xml);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::_addChildren( Layer * _layer )
+	{
+		_layer->setScene( this );
+
+		if( _layer->isMain() )
+		{
+
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::render()

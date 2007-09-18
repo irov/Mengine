@@ -80,7 +80,7 @@ namespace Menge
 
 		m_calModel = m_cal3dRes->getNewInstance();
 
-		size_t count = m_cal3dRes->getMeshCount();
+		int count = m_cal3dRes->getMeshCount();
 
 		for( int i = 0; i < count; ++i )
 		{
@@ -264,7 +264,7 @@ namespace Menge
 
 		m_calModel->getMixer()->setTimeFactor( seq.delay );
 
-		size_t count = m_cal3dRes->getAnimationCount();
+		int count = m_cal3dRes->getAnimationCount();
 
 		for( int i = 0; i < count; ++i )
 		{
@@ -288,7 +288,7 @@ namespace Menge
  
 		m_calModel->getMixer()->setTimeFactor( seq1.delay );
 
-		size_t count = m_cal3dRes->getAnimationCount();
+		int count = m_cal3dRes->getAnimationCount();
 
 		for( int i = 0; i < count; ++i )
 		{
@@ -354,7 +354,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationObject::_clearCycles( float _blendTime )
 	{
-		size_t count = m_cal3dRes->getAnimationCount();
+		int count = m_cal3dRes->getAnimationCount();
 
 		for( int i = 0; i < count; ++i )
 		{

@@ -58,6 +58,7 @@ namespace	Menge
 	void Layer2D::loader( TiXmlElement *_xml)
 	{
 		SceneNode2D::loader(_xml);
+		Layer::loader(_xml);
 
 		XML_FOR_EACH_TREE( _xml )
 		{

@@ -48,6 +48,8 @@ namespace Menge
 
 			m_listChildren.push_back( t_node );
 
+			_addChildren( t_node );
+
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -110,6 +112,11 @@ namespace Menge
 		T * createChildrenT( const std::string &_type )
 		{
 			return static_cast<T*>( createChildren( _type ) );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		virtual void _addChildren( TNode * _node )
+		{
+			//Empty
 		}
 
 	protected:

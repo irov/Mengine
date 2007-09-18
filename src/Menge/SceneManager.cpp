@@ -89,4 +89,37 @@ namespace Menge
 
 		return node;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * SceneManager::createNodeFromXmlData( const std::string & _xml_data )
+	{
+		TiXmlDocument * document = TiXmlDocumentLoadData( _xml_data );
+
+		Node *node = 0;
+
+		XML_FOR_EACH_DOCUMENT( document )
+		{			
+			XML_CHECK_NODE("Node")
+			{
+				XML_DEF_ATTRIBUTES_NODE(Name);
+				XML_DEF_ATTRIBUTES_NODE(Type);
+
+				node = createNode( Type );
+
+				node->setName( Name );
+				node->loader(XML_CURRENT_NODE);
+			}
+		}
+		XML_INVALID_PARSE()
+		{
+			ErrorMessage("Invalid parse external node" );
+		}
+
+		if( node == 0 )
+		{
+			ErrorMessage("This xml have invalid external node format" );
+		}
+
+		return node;
+	}
+
 }

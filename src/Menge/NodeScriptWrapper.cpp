@@ -32,65 +32,30 @@ namespace Menge
 				->setCamera2DPosition( mt::vec2f(x, y) );
 		}
 
-		PyObject * createNode( const std::string & _type, PyObject * _params  )
+		PyObject * createNodeFromXml( PyObject * _params  )
 		{
-			Node * node = SceneManager::createNode( _type );
+			if( pybind::convert::is_string( _params ) == false )
+			{
+				return pybind::ret_none();
+			}
+
+			const char * xml_data = pybind::convert::to_string( _params );
+
+			Node * node = SceneManager::createNodeFromXmlData( xml_data );
+
+			if( node == 0 )
+			{
+				return pybind::ret_none();
+			}
 
 			PyObject * pyNode = 
 				Holder<ScriptEngine>::hostage()
 				->wrapp( node );
 
-			//PyObject * pyNode = pybind::ptr( node, *type );
-
 			if( pyNode == 0 )
 			{
 				delete node;
 				return pybind::ret_none();
-			}
-
-			pybind::incref( pyNode );
-
-			if( pybind::list_check( _params ) )
-			{
-				TiXmlElement * node_xml = TiXmlElementCreate("Node");	
-
-				for( size_t it = 0, it_end = pybind::list_size( _params ); it != it_end; ++it )
-				{
-					PyObject * dict = pybind::list_getitem( _params, it );
-
-					if( pybind::dict_check( dict ) == false )
-					{
-						continue;
-					}
-
-					PyObject *py_key, *py_value;
-					size_t pos = 0;
-
-					while( pybind::dict_next( dict, &pos, &py_key, &py_value) ) 
-					{
-						std::string key = pybind::extract<std::string>( py_key );
-
-						TiXmlElement * key_xml = TiXmlElementCreate( key );
-
-						PyObject *py_value_key, *py_value_value;
-						size_t value_pos = 0;
-
-						while( pybind::dict_next( py_value, &value_pos, &py_value_key, &py_value_value) )
-						{
-							std::string value_key = pybind::extract<std::string>( py_value_key );
-							std::string value_value = pybind::extract<std::string>( py_value_value );
-
-							TiXmlElementSetAttribute( key_xml, value_key, value_value );
-						}
-
-						TiXmlElementInsertEndChild( node_xml, key_xml );
-						TiXmlElementRemove( key_xml );
-					}
-				}
-
-				node->loader( node_xml );
-
-				TiXmlElementRemove( node_xml );
 			}
 
 			return pyNode;
@@ -175,6 +140,6 @@ namespace Menge
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
 		pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
 		
-		pybind::def( "createNode", &ScriptMethod::createNode );
+		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
 	}
 }

@@ -1,40 +1,43 @@
-#	include "Menge/Application.h"
+#	include "Interface/ApplicationInterface.h"
 
 #	define WIN32_LEAN_AND_MEAN
 #	include <windows.h>
 
-#	include "Interface/ApplicationInterface.h"
+#	include <stdio.h>
 
 void main()
 {
 
 #ifdef _DEBUG
-	std::string str_systems = "Systems/WinApplication_d.dll";
+	const char * application_dll  = "Systems/WinApplication_d.dll";
 #else
-	std::string str_systems = "Systems/WinApplication.dll";
+	const char * application_dll = "Systems/WinApplication.dll";
 #endif
 
-	HMODULE hInstance = LoadLibrary( str_systems.c_str() );
+	HMODULE hInstance = LoadLibrary( application_dll );
 
-	printf("load library '%s'\n", str_systems.c_str() );
+	printf("load library '%s'\n", application_dll );
 	
 	typedef bool (*FInterfaceInitial)( ApplicationInterface **);
 	typedef void (*FInterfaceRelease)( ApplicationInterface *);
 
-	FInterfaceInitial init = (FInterfaceInitial)GetProcAddress( (HMODULE) hInstance, "initInterfaceSystem" );
-	FInterfaceRelease fini = (FInterfaceRelease)GetProcAddress( (HMODULE) hInstance, "releaseInterfaceSystem" );
+	FInterfaceInitial initInterfaceSystem = 
+		(FInterfaceInitial)GetProcAddress( (HMODULE) hInstance, "initInterfaceSystem" );
+
+	FInterfaceRelease releaseInterfaceSystem = 
+		(FInterfaceRelease)GetProcAddress( (HMODULE) hInstance, "releaseInterfaceSystem" );
 
 	ApplicationInterface * app = 0;
 
-	init( &app );
+	initInterfaceSystem( &app );
 
 	if( app->init( "application.xml" ) )
 	{
 		app->run();
 	}
 
-	fini( app );
+	releaseInterfaceSystem( app );
 
-	printf("free library '%s' \n", str_systems.c_str() );
+	printf("free library '%s' \n", application_dll );
 	FreeLibrary( hInstance );
 }

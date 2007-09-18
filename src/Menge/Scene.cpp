@@ -18,12 +18,16 @@ namespace	Menge
 	OBJECT_IMPLEMENT(Scene);
 	//////////////////////////////////////////////////////////////////////////
 	Scene::Scene()
+	: m_mainLayer(0)
 	{
 	}
 	Scene::~Scene()
 	{
-		size_t size = m_listChildren.size();
-		size_t f = size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Layer * Scene::getMainLayer()
+	{
+		return m_mainLayer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerAppend( const std::string & _layer, Node * _node )
@@ -124,7 +128,7 @@ namespace	Menge
 
 		if( _layer->isMain() )
 		{
-
+			m_mainLayer = _layer;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -27,6 +27,8 @@ namespace Menge
 	public:
 		void layerAppend( const std::string & _layer, Node * _node );
 
+		Layer * getMainLayer();
+
 	public:
 		void loader( TiXmlElement *_xml) override;
 		void render();
@@ -42,5 +44,7 @@ namespace Menge
 
 		void _addChildren( Layer * _layer ) override;
 	private:
+
+		Layer * m_mainLayer;
 	};
 }

@@ -27,15 +27,34 @@ namespace	Menge
 	const Viewport& Layer2D::updateViewport( const Viewport & _viewPort )
 	{
 		m_viewPort = _viewPort;
-		
-		mt::vec2f size = ( _viewPort.end - _viewPort.begin ) * 0.5f;
-		mt::vec2f middle = ( _viewPort.begin + _viewPort.end ) * 0.5f;
 
-		middle.x *= m_factorParallax.x;
-		middle.y *= m_factorParallax.y;
+		Layer * main = m_scene->getMainLayer();
 
-		m_viewPort.begin = middle - size;
-		m_viewPort.end = middle + size;
+		const mt::vec2f & main_size = main->getSize();
+
+		mt::vec2f viewport_size = ( _viewPort.end - _viewPort.begin ) * 0.5f;
+		mt::vec2f viewport_middle = ( _viewPort.begin + _viewPort.end ) * 0.5f;
+
+		//if( viewport_middle - viewport_size < 0.f )
+		//{
+		//	viewport_middle = viewport_size;
+		//}
+
+		//if( viewport_middle + viewport_size > main_size )
+		//{
+		//	viewport_middle = main_size - viewport_size;
+		//}
+
+		//const mt::vec2f & size = getSize();
+
+		//float parallax_x = main_size.x / size.x;
+		//float parallax_y = main_size.y / size.y;
+
+		viewport_middle.x *= m_factorParallax.x;
+		viewport_middle.y *= m_factorParallax.y;
+
+		m_viewPort.begin = viewport_middle - viewport_size;
+		m_viewPort.end = viewport_middle + viewport_size;
 		
 		return m_viewPort;
 	}

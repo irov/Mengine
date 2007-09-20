@@ -6,7 +6,7 @@ class MyActor( Menge.Entity ):
                 Menge.Entity.__init__( self )
 
                 self.actor = Menge.createNode( "Actor2D", 
-                [
+			[
                                 {
                                         "Animation":
                                         { 

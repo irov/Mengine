@@ -937,18 +937,6 @@
 				>
 			</File>
 			<Filter
-				Name="Layer2D"
-				>
-				<File
-					RelativePath=".\Layer2D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Layer2D.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Layer3D"
 				>
 				<File
@@ -1067,6 +1055,18 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="Layer2D"
+				>
+				<File
+					RelativePath=".\Layer2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Layer2D.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

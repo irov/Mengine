@@ -14,14 +14,14 @@ class Scene( Menge.Scene ):
         pass
 
     def onActivate( self ):
-        en = Menge.createEntity( "Block", vec2f(200,200), vec2f(1,0) )
-        en.activate();
-        self.layerAppend( "Main", en )
-        self.pole.loadLevel( self, "Game/Levels/01.txt" )
+#        en = Menge.createEntity( "Block", vec2f(200,200), vec2f(1,0) )
+#        en.activate();
+#        self.layerAppend( "Main", en )
+#        self.pole.loadLevel( self, "Game/Levels/01.txt" )
 
-        en1 = Menge.createEntity( "MyActor", vec2f(200,200), vec2f(1,0) )
+#        en1 = Menge.createEntity( "MyActor", vec2f(200,200), vec2f(1,0) )
 
-        self.layerAppend( "Main", en1 )
+#        self.layerAppend( "Main", en1 )
         pass
 
     def onHandleMouseButtonEvent( self, button, isDown ):

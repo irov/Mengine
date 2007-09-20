@@ -31,6 +31,9 @@ namespace Menge
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( float _x, float _y, float _whell ) override;
 
+	public:
+		bool _activate() override;
+
 	protected:
 		mt::vec2f m_factorParallax;
 

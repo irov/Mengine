@@ -601,7 +601,7 @@ RenderImageInterface* Direct3d9RenderSystem::loadImage(const TextureDesc& _desc)
 		assert(!"can't get TEXTURE image info!");
 	}
 
-	bool haveAlpha = _desc.filter;
+	//bool haveAlpha = _desc.filter;
 
 	LPDIRECT3DTEXTURE9	texPointer = NULL;
 
@@ -609,7 +609,7 @@ RenderImageInterface* Direct3d9RenderSystem::loadImage(const TextureDesc& _desc)
                                     info.Width, info.Height,
                                     1,                  
                                     0,                  
-									haveAlpha ? D3DFMT_A8R8G8B8 : D3DFMT_R8G8B8,    
+									info.Format,    
                                     D3DPOOL_MANAGED,    
                                     D3DX_FILTER_NONE,   
                                     D3DX_DEFAULT,       

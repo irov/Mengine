@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////////
 D3D9RenderImage::D3D9RenderImage(LPDIRECT3DTEXTURE9	_texPointer, const TextureDesc& _desc)
 	: m_texPointer(_texPointer)
+	, m_haveAlpha(true)
 { 
     D3DSURFACE_DESC surfaceDesc;
  

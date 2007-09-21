@@ -4,7 +4,7 @@
 
 #	include "InputHandler.h"
 
-#	include "Math/vec2.h"
+#	include "Math/vec3.h"
 
 #	include <string>
 
@@ -42,6 +42,7 @@ namespace Menge
 		Camera3D * getRenderCamera3D();
 
 		void setCamera2DPosition( const mt::vec2f & _pos );
+		void setCamera3DPosition( const mt::vec3f & _pos );
 
 	public:
 		void init();

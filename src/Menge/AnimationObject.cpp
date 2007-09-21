@@ -307,7 +307,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	AnimationObject::execute( const std::string & _name, float _timeIn,
+	void	AnimationObject::play( const std::string & _name, float _timeIn,
 			float _timeOut, float _width, bool _autoLock
 		)
 	{

@@ -20,8 +20,6 @@ namespace Menge
 		virtual int getSequenceDelay( size_t _sequence ) const;
 		virtual size_t getSequenceIndex( size_t _sequence ) const;
 
-		virtual const std::string & getImageMap() const;
-
 	public:
 		void loader( TiXmlElement *xml );
 

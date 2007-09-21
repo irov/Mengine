@@ -16,7 +16,7 @@ namespace	Menge
 	Actor3D::Actor3D()
 	: m_state(STOP)
 	, m_destPos(0.0f, 0.0f, 0.0f)
-	, m_destDir(0.0f, 0.0f, 0.0f)
+	, m_destAxisDirection(0.0f, 0.0f)
 	, m_lookAtTarget(false)
 	, m_speed(0.0f)
 	, m_maxSpeed(0.0f)
@@ -47,7 +47,7 @@ namespace	Menge
 		}
 
 		// АХТУНГ!  исправть нафиг этот аллокатор. щас для теста
-		setDirection(mt::vec3f(1,0,0));	
+		setDirection(mt::vec3f(0,1,0));	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor3D::lookTo( const mt::vec3f& _target )
@@ -56,6 +56,8 @@ namespace	Menge
 		m_lookAtTarget = true;
 		m_destPos = _target;
 		_calculateDirection();
+
+	//	m_animObject->play("paladin_idle.caf",1,"paladin_walk.caf",1);
 
 		m_animObject->play("paladin_idle.caf");
 	}
@@ -121,7 +123,9 @@ namespace	Menge
 		if ( actualDist < distance )
 		{
 			mt::vec3f pos = getLocalPosition();
-			pos += m_destDir * actualDist;
+		//	pos += m_destDir * actualDist;
+			mt::vec3f destDir = mt::vec3f( m_destAxisDirection.x, 1.0f, m_destAxisDirection.y );
+			pos += destDir * actualDist;
 			setPosition( pos );
 		}
 		else
@@ -133,9 +137,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void  Actor3D::_calculateNewDirection( float _timing )
 	{
-		mt::vec2f lerpDir = getLocalDirection().v2;
+	//	mt::vec2f lerpDir = getLocalDirection().v2;
 
-		bool  isComplete = mt::slerp_v2_v2( lerpDir, m_destDir.v2, _timing * m_rotateSpeed, lerpDir );
+		mt::vec3f dir = getLocalDirection();
+
+		mt::vec2f lerpDir = mt::vec2f(dir.y,dir.x);
+
+		bool  isComplete = mt::slerp_v2_v2( lerpDir, m_destAxisDirection, _timing * m_rotateSpeed, lerpDir );
 
 		setDirection( mt::vec3f( lerpDir, 0) );
 		
@@ -160,16 +168,25 @@ namespace	Menge
 		return m_speed;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f &	Actor3D::_calculateDirection()
+	void	Actor3D::_calculateDirection()
 	{
-		norm_safe_v3( m_destDir, m_destPos - getLocalPosition() );
+		const mt::vec3f & pos = getLocalPosition();
 
-		if( mt::dot_v3_v3( m_destDir, m_destDir ) < 0.00001f )
+		mt::vec3f destDir;
+		norm_safe_v3( destDir, m_destPos - pos );
+
+		m_destAxisDirection = mt::vec2f( destDir.x, destDir.z );
+
+	/*	if( mt::dot_v3_v3( m_destDir, m_destDir ) < 0.00001f )
 		{
 			m_destDir = getLocalDirection();
 		}
-
-		return m_destDir;
+*/
+		if( mt::dot_v2_v2( m_destAxisDirection, m_destAxisDirection ) < 0.00001f )
+		{
+			mt::vec3f dir = getLocalDirection();
+			m_destAxisDirection = mt::vec2f( dir.x, dir.z );
+		}
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	float Actor3D::_calculateDistance()

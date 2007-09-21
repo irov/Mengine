@@ -28,11 +28,6 @@ namespace Menge
 		return m_vectorSequence[ _sequence ].index;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & ResourceAnimation::getImageMap() const
-	{
-		return m_imageMap;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimation::loader( TiXmlElement * _xml )
 	{
 		ResourceImpl::loader( _xml );
@@ -54,7 +49,7 @@ namespace Menge
 
 			XML_CHECK_NODE_FOR_EACH( "Sequences" )
 			{
-				XML_CHECK_NODE( "AnimInfo" )
+				XML_CHECK_NODE( "Sequence" )
 				{
 					XML_VALUE_ATTRIBUTE( "Index", sq.index );
 					XML_VALUE_ATTRIBUTE( "Delay", sq.delay );

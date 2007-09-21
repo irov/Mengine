@@ -50,13 +50,21 @@ namespace Menge
 		float		m_acceleration;
 
 		mt::vec3f   m_destPos;
-		mt::vec3f   m_destDir;
+		//mt::vec3f   m_destDir;
+
+		mt::vec2f   m_destAxisDirection;	
+		/*
+			направление вдоль какой- то оси, 
+			по умол. 0,1,0
+			т.е. это направление x,1,z. 1 - не храним.
+		*/
+
 		bool		m_lookAtTarget;
 
 		float		_calculateNewSpeed( float _timing );
 		void		_calculateNewPosition( float _timing );
 		void		_calculateNewDirection( float _timing );
-		mt::vec3f &	_calculateDirection();
+		void		_calculateDirection();
 		float		_calculateDistance();
 	};	
 }

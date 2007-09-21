@@ -13,6 +13,7 @@
 #	include "HotSpot.h"
 #	include "Arrow.h"
 #	include "Actor2D.h"
+#	include "Camera3D.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -30,6 +31,12 @@ namespace Menge
 		{
 			Holder<Player>::hostage()
 				->setCamera2DPosition( mt::vec2f(x, y) );
+		}
+
+		void setCamera3DPosition( float x, float y, float z )
+		{
+			Holder<Player>::hostage()
+				->setCamera3DPosition( mt::vec3f(x, y, z) );
 		}
 
 		PyObject * createNodeFromXml( PyObject * _params  )
@@ -139,6 +146,7 @@ namespace Menge
 
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
 		pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
+		pybind::def( "setCamera3DPosition", &ScriptMethod::setCamera3DPosition );
 		
 		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
 	}

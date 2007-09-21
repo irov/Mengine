@@ -14,24 +14,24 @@ class Scene( Menge.Scene ):
         pass
 
     def onActivate( self ):
-#        en = Menge.createEntity( "Block", vec2f(200,200), vec2f(1,0) )
-#        en.activate();
-#        self.layerAppend( "Main", en )
-#        self.pole.loadLevel( self, "Game/Levels/01.txt" )
+        Menge.setCamera2DPosition( 0, 0 );
+        Menge.setCamera3DPosition( 300, 300, 0 );
 
-#        en1 = Menge.createEntity( "MyActor", vec2f(200,200), vec2f(1,0) )
-
-#        self.layerAppend( "Main", en1 )
+        en = Menge.createEntity( "MyActor", vec2f(200,200), vec2f(1,0) )
+        en.activate();
+        self.layerAppend( "Main", en )
         pass
 
     def onHandleMouseButtonEvent( self, button, isDown ):
         pass
 
     def onHandleKeyEvent( self, key, isDown ):
-        if key == 2:
-            pass
-        pass
-    def onUpdate( self, f ):
+        if key == 67:
+                    print "preved"
         pass
     
+    def onUpdate( self, timing ):
+
+        pass
+   
     pass

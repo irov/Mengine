@@ -1,12 +1,17 @@
 <Scene>
 	<Node Name = "Main" Type = "Layer2D">
-		<Parallax Factor = "1;1" />
+		<Main Value = "1" />
+		<Size Value = "1024; 768" />
+
+		<Node Name = "Background" Type = "Sprite">
+			<ImageMap Name = "Back_01" />
+			<Transformation Value = "1;0;0;1;0;0" />
+		</Node> <!-- Sprite -->	
 
 		<Node Name = "TestActor" Type = "Actor2D" >
-
 			<Animation>
-				<ImageMap Name = "output" />
-				<Animation Name = "output_cngAnimation" />
+				<ImageMap Name = "BallRed" />
+				<Animation Name = "BallRedCNG" />
 				<Transformation Value = "1;0;0;1;0;0" />
 			</Animation>
 
@@ -16,20 +21,6 @@
 				<RotateSpeed Value = "2.0" />
 			</MovementParams>
 		</Node>
-
-		<Node Name = "TestTrap" Type = "Trap2D">
-			<Zone>
-				<Point Value = "0.0;0.0"/>
-				<Point Value = "10.0;0.0"/>
-				<Point Value = "10.0;10.0"/>
-				<Point Value = "0.0;10.0"/>
-			</Zone>
-			<SceneNodes>
-				<SceneNode Value = "TestActor"/>
-			</SceneNodes>
-		</Node>
-
-
 	</Node> <!-- Layer -->
 
 	<Node Name = "Back" Type = "Layer3D">
@@ -50,10 +41,10 @@
 	</Node>
 
 	<Node Name = "Back" Type = "Layer2D">
-		<Parallax Factor = "1.25;1" />
+		<Size Value = "1536; 768" />
 
 		<Node Name = "TestSprite1" Type = "Sprite">
-			<ImageMap Name = "output" />
+			<ImageMap Name = "BallVialet" />
 			<Transformation Value = "1;0;0;1;70;70" />
 		</Node> <!-- Sprite -->
 	</Node> <!-- Layer -->

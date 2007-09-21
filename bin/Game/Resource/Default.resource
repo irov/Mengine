@@ -1,28 +1,14 @@
 <DataBlock>
-	<Resource Name = "TestParticle" Type = "ResourceParticle" >
-		<Image Name = "particles1.png" />
-		<emission Value = "899" />
-		<life Value = "0.5;1.26" />
-		<dir Value = "0" />
-		<spread Value = "0.46" />
-		<v Value = "300;300" />
-		<g Value = "385;642" />
-		<r Value = "-14;-14" />
-		<tan Value = "14;14" />
-		<size Value = "1.94;0.22;0.54" />
-		<spin Value = "-50;11;0.126" />
-		<startColor Value = "0.68;0.32;0.27;0.57" />
-		<endColor Value = "0.97;0.73;0.39;0.24" />
-		<varColor Value = "0.38;0.45" />
+
+	<!- ************************************************ -->
+	<!- Image for Background -->
+
+	<Resource Name = "Back_01" Type = "ResourceImageDefault" >
+		<File Path = "Game/Scenes/Buka/background/Kuzya_yard_right.png" />
 	</Resource>
 
-	<Resource Name = "TestResourceBoxEmitter" Type = "ResourceBoxEmitter" >
-		<position Value = "300.0;300.0" />
-		<life Value = "0.5;1.26" />
-		<dir Value = "0" />
-		<spread Value = "1.96" />
-		<velocity Value = "300.0;300.0" />
-	</Resource>
+	<!- ************************************************ -->
+	<!- Cal3d Test Animation -->
 
 	<Resource Name = "Cal3dTest" Type = "ResourceAnimationCal3d" >
 		<File Config = "Game/Animations/paladin/paladin.cfg" />
@@ -35,11 +21,6 @@
 			<HardPoint Name = "Bip01 Tail" />
 			<HardPoint Name = "Bip01 Tail1" />
 		</HardPoints>
-	</Resource>
-
-
-	<Resource Name = "output" Type = "ResourceImageMNG" >
-		<File Path = "output.mng" />
 	</Resource>
 
 	<Resource Name = "default" Type = "ResourceImageMNG" >
@@ -72,9 +53,8 @@
 		<File Path = "Game/Images/BallVialet.png" />
 	</Resource>
 
-
-	<Resource Name = "output_cngAnimation" Type = "ResourceAnimation" >
-		<ImageMap Name = "output_cng" />
+	<Resource Name = "BallRedCNG" Type = "ResourceAnimation" >
+		<ImageMap Name = "BallRed" />
 		<Sequences>
 			<Sequence Index = "1" Delay = "50" />
 			<Sequence Index = "2" Delay = "50" />
@@ -82,5 +62,33 @@
 			<Sequence Index = "4" Delay = "50" />
 			<Sequence Index = "14" Delay = "50" />
 		</Sequences>
+	</Resource>
+
+	<!- ************************************************ -->
+	<!- FIXME. PARTICLE SYSTEM -->
+
+	<Resource Name = "TestParticle" Type = "ResourceParticle" >
+		<Image Name = "particles1.png" />
+		<emission Value = "899" />
+		<life Value = "0.5;1.26" />
+		<dir Value = "0" />
+		<spread Value = "0.46" />
+		<v Value = "300;300" />
+		<g Value = "385;642" />
+		<r Value = "-14;-14" />
+		<tan Value = "14;14" />
+		<size Value = "1.94;0.22;0.54" />
+		<spin Value = "-50;11;0.126" />
+		<startColor Value = "0.68;0.32;0.27;0.57" />
+		<endColor Value = "0.97;0.73;0.39;0.24" />
+		<varColor Value = "0.38;0.45" />
+	</Resource>
+
+	<Resource Name = "TestResourceBoxEmitter" Type = "ResourceBoxEmitter" >
+		<position Value = "300.0;300.0" />
+		<life Value = "0.5;1.26" />
+		<dir Value = "0" />
+		<spread Value = "1.96" />
+		<velocity Value = "300.0;300.0" />
 	</Resource>
 </DataBlock>

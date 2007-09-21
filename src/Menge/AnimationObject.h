@@ -40,11 +40,11 @@ namespace Menge
 		void play( const std::string& _name1,	float _weight1,
 			const std::string& _name2,	float _weight2
 		);
-		void execute( const std::string & _name, float _timeIn,
+		void play( const std::string & _name, float _timeIn,
 			float _timeOut, float _width, bool _autoLock
 		);
 	
-		mt::mat4f	getBoneWorldMatrix(int _index);
+		mt::mat4f	getBoneWorldMatrix( int _index );
 
 		void setCallback( const std::string & _name, float _updateTime, 
 			UpdateCallback _updateCallback, CompleteCallback _completeCallback, 
@@ -69,10 +69,12 @@ namespace Menge
 		typedef std::map<int, AnimationCallback*> TMapCallbacks;
 		typedef std::list<std::pair<int, AnimationCallback*> > TListRemoveCallbacks;
 
-		std::string m_resourceName;
+		
 
 		TMapCallbacks	m_callbacks;
 		TListRemoveCallbacks	m_removeCallbacks;		
+
+		std::string m_resourceName;
 
 		size_t m_vertexSize;
 
@@ -83,6 +85,6 @@ namespace Menge
 
 		void	_initGeometry();
 		void	_clearRemovedCallback();
-		void	_clearCycles(float _blendTime);
+		void	_clearCycles( float _blendTime );
 	};
 }

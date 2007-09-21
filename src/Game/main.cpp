@@ -3,15 +3,14 @@
 #	define WIN32_LEAN_AND_MEAN
 #	include <windows.h>
 
-//#	include <stdio.h>
+#	include <stdio.h>
 
-#ifdef _DEBUG
+
 int main()
 {
+#ifdef _DEBUG
 	const char * application_dll  = "Systems/WinApplication_d.dll";
 #else
-int mainCRTStartup()
-{
 	const char * application_dll = "Systems/WinApplication.dll";
 #endif
 

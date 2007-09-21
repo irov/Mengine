@@ -151,7 +151,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies/vld&quot;"
-				IgnoreAllDefaultLibraries="true"
+				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="false"
 				SubSystem="1"
 				OptimizeReferences="2"

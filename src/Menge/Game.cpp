@@ -155,11 +155,11 @@ namespace Menge
 
 		if( !handle )
 		{
-			return Holder<Player>::hostage()
+			handle = Holder<Player>::hostage()
 				->handleKeyEvent( _key, _isDown );
 		}	
 
-		return false;
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleMouseButtonEvent( size_t _button, bool _isDown )
@@ -174,10 +174,10 @@ namespace Menge
 
 		if( !handle )
 		{
-			return Holder<Player>::hostage()->handleMouseButtonEvent( _button, _isDown );
+			handle = Holder<Player>::hostage()->handleMouseButtonEvent( _button, _isDown );
 		}	
 
-		return false;
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleMouseMove( float _x, float _y, float _whell )
@@ -192,11 +192,11 @@ namespace Menge
 		
 		if( !handle )
 		{
-			return Holder<Player>::hostage()
+			handle = Holder<Player>::hostage()
 				->handleMouseMove( _x, _y, _whell );
 		}		
 
-		return false;
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update( float _timing )

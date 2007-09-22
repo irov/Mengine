@@ -21,7 +21,7 @@ namespace	Menge
 	, m_currentFrame(0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::loader(TiXmlElement * _xml)
+	void Animation::loader( TiXmlElement * _xml )
 	{
 		Sprite::loader(_xml);
 		XML_FOR_EACH_TREE( _xml )
@@ -31,12 +31,12 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setAnimState(eAnimState _state)
+	void Animation::setAnimState( eAnimState _state )
 	{
 		m_state = _state;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setLooped(bool _looped)
+	void Animation::setLooped( bool _looped )
 	{
 		m_looping = _looped;
 	}
@@ -74,8 +74,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::prevFrame()
 	{
-		size_t frameSize = m_anim->getSequenceCount();
-
 		if( m_currentFrame == 0 )
 		{
 			if(!m_looping)
@@ -86,7 +84,7 @@ namespace	Menge
 			}
 			else
 			{
-				m_currentFrame = frameSize;
+				m_currentFrame = m_anim->getSequenceCount();
 			}
 		}
 		--m_currentFrame;
@@ -96,7 +94,7 @@ namespace	Menge
 	{
 		Sprite::_update( _timing );
 
-		if(!m_playing)
+		if( m_playing == false )
 		{
 			return; 
 		}
@@ -105,9 +103,11 @@ namespace	Menge
 
 		int delay = m_anim->getSequenceDelay(m_currentFrame);
 
-		m_currentImageIndex = m_anim->getSequenceIndex(m_currentFrame);
+		size_t currentImageIndex = m_anim->getSequenceIndex(m_currentFrame);
 
-		while(m_total_delay >= delay)
+		setImageIndex( currentImageIndex );
+
+		while( m_total_delay >= delay )
 		{
 			m_total_delay -= delay;
 
@@ -145,7 +145,7 @@ namespace	Menge
 		m_anim = Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceAnimation>( m_resourceAnim );
 
-		if(m_anim == NULL)
+		if( m_anim == NULL )
 		{
 			return false;
 		}

@@ -54,18 +54,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::loader( TiXmlElement * _xml )
 	{
+		ResourceImpl::loader( _xml );
+
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_VALUE_NODE( "File", "Path", m_fileImage );
 			XML_CHECK_VALUE_NODE( "Filter", "Value", m_filter );
 		}
-
-		ResourceImpl::loader( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_compile()
 	{
-		FileDataInterface* fileData = Holder<FileEngine>::hostage()->openFile(m_fileImage);
+		FileDataInterface * fileData = Holder<FileEngine>::hostage()->openFile(m_fileImage);
 
 		if( fileData == 0 )
 		{

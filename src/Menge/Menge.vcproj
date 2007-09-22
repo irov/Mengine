@@ -393,50 +393,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Actor"
-				>
-				<File
-					RelativePath=".\Actor2D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Actor2D.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Avatar"
-				>
-				<File
-					RelativePath=".\Avatar2D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Avatar2D.h"
-					>
-				</File>
-				<Filter
-					Name="States"
-					>
-					<File
-						RelativePath=".\StateLook2D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\StateLook2D.h"
-						>
-					</File>
-					<File
-						RelativePath=".\StateMove2D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\StateMove2D.h"
-						>
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
 				Name="Region"
 				>
 				<File
@@ -479,74 +435,6 @@
 					RelativePath=".\AnimationInteractive.h"
 					>
 				</File>
-			</Filter>
-			<Filter
-				Name="Particles"
-				>
-				<File
-					RelativePath=".\Particle.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Particle.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ParticleAffector.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ParticleEmitter.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ParticleEmitter.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ParticleManager.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ParticleSystem.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ParticleSystem.h"
-					>
-				</File>
-				<Filter
-					Name="Emitters"
-					>
-					<File
-						RelativePath=".\BoxEmitter.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\BoxEmitter.h"
-						>
-					</File>
-					<File
-						RelativePath=".\PointEmitter.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\PointEmitter.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Affectors"
-					>
-					<File
-						RelativePath=".\SimplePhysicAffector.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\SimplePhysicAffector.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Trap"
@@ -719,6 +607,14 @@
 					RelativePath=".\ResourceImageMNG.h"
 					>
 				</File>
+				<File
+					RelativePath=".\ResourceImageSet.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceImageSet.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Animation"
@@ -741,26 +637,6 @@
 				</File>
 				<File
 					RelativePath=".\ResourceSound.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Particle"
-				>
-				<File
-					RelativePath=".\ParticleResource.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ParticleResource.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceBoxEmitter.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceBoxEmitter.h"
 					>
 				</File>
 			</Filter>
@@ -831,50 +707,6 @@
 					RelativePath=".\Trap3D.h"
 					>
 				</File>
-			</Filter>
-			<Filter
-				Name="Actor"
-				>
-				<File
-					RelativePath=".\Actor3D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Actor3D.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Avatar"
-				>
-				<File
-					RelativePath=".\Avatar3D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Avatar3D.h"
-					>
-				</File>
-				<Filter
-					Name="States"
-					>
-					<File
-						RelativePath=".\StateLook3D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\StateLook3D.h"
-						>
-					</File>
-					<File
-						RelativePath=".\StateMove3D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\StateMove3D.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Animation"
@@ -1175,22 +1007,6 @@
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="StackFSM"
-				>
-				<File
-					RelativePath=".\StackFSM.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\StackFSM.h"
-					>
-				</File>
-				<File
-					RelativePath=".\State.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="MousePickerTrap"

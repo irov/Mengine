@@ -59,6 +59,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Track::_activate()
 	{
+		if( SceneNode2D::_activate() == false )
+		{
+			return false;
+		}
+
 		m_currentChain = m_listChain.begin();
 
 		const mt::vec2f & bp = m_currentChain->beginPoint();
@@ -70,6 +75,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Track::_update( float _timing )
 	{
+		SceneNode2D::_update( _timing );
+
 		if( m_listChain.empty() == true )
 		{
 			return;
@@ -124,8 +131,10 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Track::loader(TiXmlElement *_xml)
+	void Track::loader(TiXmlElement * _xml )
 	{
+		SceneNode2D::loader( _xml );
+
 		XML_FOR_EACH_TREE(_xml)
 		{
 			XML_CHECK_NODE_FOR_EACH("Points")
@@ -139,8 +148,6 @@ namespace	Menge
 			}
 			XML_CHECK_VALUE_NODE("SpeedMove","Value",m_speedMove);
 		}
-
-		SceneNode2D::loader(_xml);
 	};
 	//////////////////////////////////////////////////////////////////////////
 	void Track::_debugRender()

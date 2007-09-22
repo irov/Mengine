@@ -22,6 +22,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::_update( float _timing )
 	{
+		SceneNode2D::_update( _timing );
+
 		InputEngine *inputEng = Holder<InputEngine>::hostage();
 
 		const mt::vec3f &dmv = inputEng->getPosition();

@@ -59,6 +59,11 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	bool Trap2D::_activate()
 	{
+		if( SceneNode2D::_activate() == false )
+		{
+			return false;
+		}
+
 		for each( const TListSceneNodesNames::value_type & it in m_sceneNodesNames )
 		{
 			SceneNode2D * node = this->getParent()->getChildren(it);
@@ -76,10 +81,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Trap2D::_deactivate()
 	{
+		SceneNode2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trap2D::update( float _timing )
 	{
+		SceneNode2D::_update( _timing );
+
 		for each( SceneNode2D * node in m_sceneNodes )
 		{
 			bool is_trapped =  mt::is_intersect( m_bbox, node->getBoundingBox() );
@@ -95,7 +103,7 @@ namespace Menge
 
 		while( it != m_inZone.end() )
 		{
-			TListTrapped::iterator founded = std::find(m_trapped.begin(),m_trapped.end(),*it);
+			TListTrapped::iterator founded = std::find( m_trapped.begin(), m_trapped.end(), *it );
 
 			if( founded == m_trapped.end() )
 			{

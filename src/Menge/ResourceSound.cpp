@@ -20,13 +20,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::loader( TiXmlElement * _xml )
 	{
+		ResourceImpl::loader( _xml );
+
 		XML_FOR_EACH_TREE(_xml)
 		{
 			XML_CHECK_VALUE_NODE("File","Path",m_filename);
 			XML_CHECK_VALUE_NODE("IsStreamable","Value",m_isStreamable);
 		}
-
-		ResourceImpl::loader( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceSound::_compile()

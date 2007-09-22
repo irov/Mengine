@@ -32,15 +32,6 @@ namespace Menge
 	{
 		ResourceImpl::loader( _xml );
 
-		//<ImageMap Name = "output_cng" />
-		//<Sequences>
-		//	<Sequence Frame = "1" Delay = "50" />
-		//	<Sequence Frame = "2" Delay = "50" />
-		//	<Sequence Frame = "3" Delay = "50" />
-		//	<Sequence Frame = "4" Delay = "50" />
-		//	<Sequence Frame = "5" Delay = "50" />
-		//</Sequences>
-
 		Sequence sq;
 
 		XML_FOR_EACH_TREE( _xml )

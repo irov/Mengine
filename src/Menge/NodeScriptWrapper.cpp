@@ -12,7 +12,6 @@
 #	include "Animation.h"
 #	include "HotSpot.h"
 #	include "Arrow.h"
-#	include "Actor2D.h"
 #	include "Camera3D.h"
 
 #	include "XmlParser/XmlParser.h"
@@ -73,7 +72,6 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Scene );
 	SCRIPT_CLASS_WRAPPING( HotSpot );
 	SCRIPT_CLASS_WRAPPING( Sprite );
-	SCRIPT_CLASS_WRAPPING( Actor2D );
 	SCRIPT_CLASS_WRAPPING( Player );	
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -135,9 +133,6 @@ namespace Menge
 					;
 
 			}
-
-			pybind::class_<Actor2D, pybind::bases<SceneNode2D>>("Actor2D")
-				;
 
 		}		
 

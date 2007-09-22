@@ -40,7 +40,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCell::_compile()
 	{
-		ResourceImageDefault::_compile();
+		if( ResourceImageDefault::_compile() == false )
+		{
+			return false;
+		}
 
 		m_count = m_numX * m_numY;
 

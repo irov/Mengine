@@ -53,6 +53,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Trap3D::_activate()
 	{
+		if( SceneNode3D::_activate() == false)
+		{
+			return false;
+		}
+
 		for each( const TListSceneNodesNames::value_type & it in m_sceneNodesNames )
 		{
 			SceneNode3D * node = this->getParent()->getChildren(it);
@@ -70,10 +75,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Trap3D::_deactivate()
 	{
+		SceneNode3D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trap3D::update( float _timing )
 	{
+		SceneNode3D::update( _timing );
+
 		for each( SceneNode3D * node in m_sceneNodes )
 		{
 			bool is_trapped =  mt::is_intersect( m_bbox, node->getBoundingBox() );

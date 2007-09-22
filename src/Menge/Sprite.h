@@ -41,7 +41,7 @@ namespace Menge
 		void _render( const mt::mat3f &rwm, const Viewport & _viewPort ) override;
 		void _debugRender() override;
 	
-	protected:
+	private:
 		ResourceImage * m_image;
 		std::string m_resourceName;
 

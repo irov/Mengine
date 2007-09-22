@@ -4,8 +4,6 @@ import Block
 
 from Pole import Pole
 
-from MyActor import MyActor
-
 from Menge import vec2f
 
 class Scene( Menge.Scene ):
@@ -17,9 +15,9 @@ class Scene( Menge.Scene ):
         Menge.setCamera2DPosition( 0, 0 );
         Menge.setCamera3DPosition( 300, 300, 0 );
 
-        en = Menge.createEntity( "MyActor", vec2f(200,200), vec2f(1,0) )
-        en.activate();
-        self.layerAppend( "Main", en )
+        #en = Menge.createEntity( "MyActor", vec2f(200,200), vec2f(1,0) )
+        #en.activate();
+        #self.layerAppend( "Main", en )
         pass
 
     def onHandleMouseButtonEvent( self, button, isDown ):

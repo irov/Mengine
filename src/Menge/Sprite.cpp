@@ -89,6 +89,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_activate()
 	{
+		if( SceneNode2D::_activate() == false )
+		{
+			return false;
+		}
+
 		m_image = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceImage>( m_resourceName );
@@ -103,6 +108,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_deactivate()
 	{
+		SceneNode2D::_deactivate();
+
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_image );
 	}

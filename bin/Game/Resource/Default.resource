@@ -33,6 +33,12 @@
 		<Cell X = "4" Y = "4" />
 	</Resource>	
 
+	<Resource Name = "TestAtlas" Type = "ResourceImageSet" >
+		<File Path = "Game/Images/grid.png" />
+		<Image UV = "0.0;0.0;0.25;0.25" />
+		<Image UV = "0.75;0.75;1.0;1.0" />
+	</Resource>	
+
 	<Resource Name = "BallRed" Type = "ResourceImageDefault" >
 		<File Path = "Game/Images/BallRed.png" />
 	</Resource>
@@ -64,31 +70,4 @@
 		</Sequences>
 	</Resource>
 
-	<!- ************************************************ -->
-	<!- FIXME. PARTICLE SYSTEM -->
-
-	<Resource Name = "TestParticle" Type = "ResourceParticle" >
-		<Image Name = "particles1.png" />
-		<emission Value = "899" />
-		<life Value = "0.5;1.26" />
-		<dir Value = "0" />
-		<spread Value = "0.46" />
-		<v Value = "300;300" />
-		<g Value = "385;642" />
-		<r Value = "-14;-14" />
-		<tan Value = "14;14" />
-		<size Value = "1.94;0.22;0.54" />
-		<spin Value = "-50;11;0.126" />
-		<startColor Value = "0.68;0.32;0.27;0.57" />
-		<endColor Value = "0.97;0.73;0.39;0.24" />
-		<varColor Value = "0.38;0.45" />
-	</Resource>
-
-	<Resource Name = "TestResourceBoxEmitter" Type = "ResourceBoxEmitter" >
-		<position Value = "300.0;300.0" />
-		<life Value = "0.5;1.26" />
-		<dir Value = "0" />
-		<spread Value = "1.96" />
-		<velocity Value = "300.0;300.0" />
-	</Resource>
 </DataBlock>

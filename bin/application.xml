@@ -1,14 +1,14 @@
 <Application>
 
 	<DllModuleDebug>
-		<InputSystem DllFile = "Systems/InputSystem_d.dll"/>
+		<InputSystem DllFile = "Systems/OgreInputSystem_d.dll"/>
 		<FileSystem DllFile = "Systems/FileSystem_d.dll"/>
 		<RenderSystem DllFile = "Systems/RenderSystem_d.dll"/>
 		<SoundSystem DllFile = "Systems/SoundSystem_d.dll"/>
 	</DllModuleDebug>
 
 	<DllModuleRelease>
-		<InputSystem DllFile = "Systems/InputSystem.dll"/>
+		<InputSystem DllFile = "Systems/OgreInputSystem.dll"/>
 		<FileSystem DllFile = "Systems/FileSystem.dll"/>
 		<RenderSystem DllFile = "Systems/RenderSystem.dll"/>
 		<SoundSystem DllFile = "Systems/SoundSystem.dll"/>

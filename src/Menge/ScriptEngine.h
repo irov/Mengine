@@ -60,7 +60,7 @@ namespace Menge
 		
 		bool handleKeyEvent( PyObject * _module, size_t _key, bool _isDown );
 		bool handleMouseButtonEvent( PyObject * _module, size_t _button, bool _isDown );
-		bool handleMouseMove( PyObject * _module, float _x, float _y, float _whell );
+		bool handleMouseMove( PyObject * _module, int _x, int _y, int _whell );
 
 		bool hasModuleFunction( PyObject * _module, const std::string & _name );
 		PyObject * getModuleFunction( PyObject * _module, const std::string & _name );

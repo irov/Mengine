@@ -44,7 +44,7 @@ namespace Menge
 			return m_app->handleMouseButtonEvent( _button, _isDown );
 		}
 
-		bool handleMouseMove( float _x, float _y, float _whell ) override
+		bool handleMouseMove( int _x, int _y, int _whell ) override
 		{
 			return m_app->handleMouseMove( _x, _y, _whell );
 		}
@@ -145,12 +145,6 @@ namespace Menge
 
 		inputEng->regHandle( m_handler );
 
-		inputEng->setPosition(0.f, 0.f, 0.f);
-		inputEng->setSensitivity( 1.f );
-		mt::vec3f minRange(0,0,-1000);
-		mt::vec3f maxRange(1024,768,1000);
-		inputEng->setRange( minRange, maxRange );
-
 		Holder<ResourceManager>::keep( new ResourceManager );
 
 		return true;
@@ -177,7 +171,7 @@ namespace Menge
 		return Holder<Game>::hostage()->handleMouseButtonEvent( _button, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::handleMouseMove( float _x, float _y, float _whell )
+	bool Application::handleMouseMove( int _x, int _y, int _whell )
 	{
 		return Holder<Game>::hostage()->handleMouseMove( _x, _y, _whell );
 	}

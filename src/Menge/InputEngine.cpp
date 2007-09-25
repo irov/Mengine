@@ -1,8 +1,6 @@
 #	include "InputEngine.h"
 #	include "InputHandler.h"
 
-#	include "ScriptEngine.h"
-
 namespace Menge
 {
 	////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,60 +19,39 @@ namespace Menge
 		m_interface->update();
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::isKey(unsigned int index,int key_state)const
+	bool InputEngine::isKeyDown( int index )
 	{
-		return m_interface->isKey(index,key_state);
+		return m_interface->isKeyDown( index );
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::isAnyKeyDown()const
+	bool InputEngine::isModifierDown( int _modifier )
 	{
-		return m_interface->isAnyKeyDown();
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::getChar(char *ch,int key_state)const
-	{
-		return m_interface->getChar(ch,key_state);
+		return m_interface->isModifierDown( _modifier );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//mouse
-	void InputEngine::setPosition( float _x, float _y, float _whell )
+	int InputEngine::getMouseX() const
 	{
-		m_interface->setPosition( _x, _y, _whell);
+		return m_interface->getMouseX();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::setSensitivity( float _sensitivity )
+	int InputEngine::getMouseY() const
 	{
-		m_interface->setSensitivity( _sensitivity );
+		return m_interface->getMouseY();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::setRange( const mt::vec3f &_minRange, const mt::vec3f & _maxRange )
+	int InputEngine::getMouseWhell() const
 	{
-		m_interface->setRange( _minRange.m, _maxRange.m );
+		return m_interface->getMouseWhell();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & InputEngine::getPosition() const
-	{
-		return *(const mt::vec3f *)m_interface->getPosition();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & InputEngine::getDelta() const
-	{
-		return *(const mt::vec3f *)m_interface->getDelta();
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::isMove()const
-	{
-		return m_interface->isMove();
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::isAnyButtonDown()const
+	bool InputEngine::isAnyButtonDown() const
 	{
 		return m_interface->isAnyButtonDown();
 	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	bool InputEngine::isButton(int but,int but_state)const
+	//////////////////////////////////////////////////////////////////////////
+	bool InputEngine::isButtonDown( int _button ) const
 	{
-		return m_interface->isButton(but,but_state);
+		return m_interface->isButtonDown( _button );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::regHandle( InputHandler * _handle )

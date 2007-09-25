@@ -82,7 +82,7 @@ namespace	Menge
 		return handle;	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleMouseMove( float _x, float _y, float _whell )
+	bool Scene::handleMouseMove( int _x, int _y, int _whell )
 	{
 		bool handle = false;
 

@@ -9,9 +9,9 @@
 int main()
 {
 #ifdef _DEBUG
-	const char * application_dll  = "Systems/WinApplication_d.dll";
+	const char * application_dll  = "Systems/OgreApplication_d.dll";
 #else
-	const char * application_dll = "Systems/WinApplication.dll";
+	const char * application_dll = "Systems/OgreApplication.dll";
 #endif
 
 	HMODULE hInstance = LoadLibrary( application_dll );

@@ -18,8 +18,6 @@
 
 #	include "Layer3D.h"
 
-#	include "Avatar3D.h"
-
 #	define DIRECTINPUT_VERSION 0x0800
 #	include <dinput.h>
 
@@ -144,7 +142,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::handleMouseMove( float _x, float _y, float _whell )
+	bool Player::handleMouseMove( int _x, int _y, int _whell )
 	{
 		if( m_scene )
 		{

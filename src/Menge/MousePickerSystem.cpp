@@ -103,7 +103,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseMove( float _x, float _y, float _whell )
+	bool MousePickerSystem::handleMouseMove( int _x, int _y, int _whell )
 	{
 		const mt::vec2f & mp = Holder<Player>::hostage()
 			->getPositionClick();

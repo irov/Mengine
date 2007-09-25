@@ -133,7 +133,7 @@ namespace	Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleMouseMove( float _x, float _y, float _whell )
+	bool HotSpot::handleMouseMove( int _x, int _y, int _whell )
 	{
 		bool result = false;
 		askEvent( result, "MOUSE_MOVE", "(fff)", _x, _y, _whell );

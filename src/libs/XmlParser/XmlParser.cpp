@@ -1,7 +1,7 @@
 #	include "XmlParser.h"
 
 #	define TIXML_USE_STL
-#	include "tinyxml/tinyxml.h"
+#	include "tinyxml.h"
 
 //////////////////////////////////////////////////////////////////////////
 static const std::string & string_empty()

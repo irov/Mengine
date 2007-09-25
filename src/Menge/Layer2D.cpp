@@ -101,7 +101,7 @@ namespace	Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer2D::handleMouseMove( float _x, float _y, float _whell )
+	bool Layer2D::handleMouseMove( int _x, int _y, int _whell )
 	{
 		return false;
 	}

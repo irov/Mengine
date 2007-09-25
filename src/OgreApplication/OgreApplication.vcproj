@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="XmlParser"
-	ProjectGUID="{73E25478-3097-462B-913C-2B5EFC8ADD62}"
-	RootNamespace="XmlParser"
+	Name="OgreApplication"
+	ProjectGUID="{00D7F770-9D10-4A51-B099-94CE79AC3F85}"
+	RootNamespace="OgreApplication"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -17,10 +17,10 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)Lib"
+			OutputDirectory="$(SolutionDir)Bin\Systems"
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
-			ConfigurationType="4"
-			CharacterSet="1"
+			ConfigurationType="2"
+			CharacterSet="2"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -39,10 +39,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP2"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\tinyxml&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\OgreSDK\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OGREAPPLICATION_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -61,13 +60,22 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				AdditionalDependencies="tinyxmld_STL.lib"
-				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\tinyxml\Debug_STL"
+				Name="VCLinkerTool"
+				AdditionalDependencies="OgreMain_d.lib"
+				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(SolutionDir)dependencies\OgreSDK\lib"
+				ModuleDefinitionFile="OgreApplication.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -79,15 +87,22 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)Lib"
+			OutputDirectory="$(SolutionDir)Bin\Systems"
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
-			ConfigurationType="4"
-			CharacterSet="0"
+			ConfigurationType="2"
+			CharacterSet="2"
+			ManagedExtensions="0"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -107,9 +122,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\tinyxml&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\OgreSDK\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OGREAPPLICATION_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -126,12 +140,22 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				AdditionalDependencies="tinyxml_STL.lib"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\tinyxml\Release_STL"
+				Name="VCLinkerTool"
+				AdditionalDependencies="OgreMain.lib Ois.lib"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="$(SolutionDir)dependencies\OgreSDK\lib"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="$(SolutionDir)Lib\$(ProjectName).lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -143,6 +167,12 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -151,11 +181,23 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\XmlParser.cpp"
+			RelativePath=".\OgreApplication.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\XmlParser.h"
+			RelativePath=".\OgreApplication.def"
+			>
+		</File>
+		<File
+			RelativePath=".\OgreApplication.h"
+			>
+		</File>
+		<File
+			RelativePath=".\SystemDLL.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SystemDLL.h"
 			>
 		</File>
 	</Files>

@@ -180,7 +180,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseMove( float _x, float _y, float _whell )
+	bool Game::handleMouseMove( int _x, int _y, int _whell )
 	{
 		bool handle = false;
 

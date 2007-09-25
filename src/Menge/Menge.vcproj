@@ -68,10 +68,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="vldmtdll.lib"
+				AdditionalDependencies="pybind_d.lib cal3d_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Python\libs&quot;;&quot;$(SolutionDir)dependencies\vld&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Python\libs&quot;;&quot;$(SolutionDir)dependencies\Pybind\lib&quot;;&quot;$(SolutionDir)dependencies\cal3d\cal3d\bin\debug&quot;;$(NOINHERIT)"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/$(ProjectName)_d.pdb"
 				SubSystem="2"
@@ -151,9 +151,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="pybind.lib cal3d.lib"
 				OutputFile="$(OutDir)\$(ProjectName).dll"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Python\libs&quot;;&quot;$(SolutionDir)dependencies\vld&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Python\libs&quot;;&quot;$(SolutionDir)dependencies\Pybind\lib&quot;;&quot;$(SolutionDir)dependencies\cal3d\cal3d\bin\release&quot;;$(NOINHERIT)"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="false"
 				SubSystem="2"

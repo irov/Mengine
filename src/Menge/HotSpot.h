@@ -41,7 +41,7 @@ namespace Menge
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
-		bool handleMouseMove( float _x, float _y, float _whell ) override;
+		bool handleMouseMove( int _x, int _y, int _whell ) override;
 
 	public:		
 		void loader( TiXmlElement *_xml) override;

@@ -42,7 +42,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer3D::handleMouseMove( float _x, float _y, float _whell )
+	bool Layer3D::handleMouseMove( int _x, int _y, int _whell )
 	{
 		return false;
 	}

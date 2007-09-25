@@ -343,7 +343,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::handleMouseMove( PyObject * _module, float _x, float _y, float _whell )
+	bool ScriptEngine::handleMouseMove( PyObject * _module, int _x, int _y, int _whell )
 	{
 		if( _module && Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( _module, "onHandleMouseMove" ) )

@@ -37,7 +37,7 @@ namespace Menge
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown );
 		bool handleMouseButtonEvent( size_t _button, bool _isDown );
-		bool handleMouseMove( float _x, float _y, float _whell );
+		bool handleMouseMove( int _x, int _y, int _whell );
 
 	protected:
 		void update();

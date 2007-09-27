@@ -16,7 +16,7 @@ int main()
 
 	HMODULE hInstance = LoadLibrary( application_dll );
 
-	//printf("load library '%s'\n", application_dll );
+	printf("load library '%s'\n", application_dll );
 	
 	typedef bool (*FInterfaceInitial)( ApplicationInterface **);
 	typedef void (*FInterfaceRelease)( ApplicationInterface *);
@@ -29,7 +29,7 @@ int main()
 
 	if( initInterfaceSystem == 0 || releaseInterfaceSystem == 0 )
 	{
-		//printf("invalid open system application dll '%s'", application_dll );
+		printf("invalid open system application dll '%s'", application_dll );
 		return 0;
 	}
 
@@ -37,7 +37,7 @@ int main()
 
 	if( initInterfaceSystem( &app ) == false )
 	{
-		//printf("invalid init system application '%s'", application_dll );
+		printf("invalid init system application '%s'", application_dll );
 		return 0;
 	}
 
@@ -48,7 +48,7 @@ int main()
 
 	releaseInterfaceSystem( app );
 
-	//printf("free library '%s' \n", application_dll );
+	printf("free library '%s' \n", application_dll );
 	FreeLibrary( hInstance );
 
 	return 1;

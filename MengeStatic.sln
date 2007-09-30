@@ -1,0 +1,106 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "src\Game\Game.vcproj", "{6EDB3869-39FE-4AE5-869E-B6AA9C574E96}"
+	ProjectSection(ProjectDependencies) = postProject
+		{00D7F770-9D10-4A51-B099-94CE79AC3F85} = {00D7F770-9D10-4A51-B099-94CE79AC3F85}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "src\libs\Math\math.vcproj", "{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{006DB859-12B5-4BA9-8D3A-4C02B1B5B232}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XmlParser", "src\libs\XmlParser\XmlParser.vcproj", "{73E25478-3097-462B-913C-2B5EFC8ADD62}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Menge", "src\Menge\Menge.vcproj", "{61566E24-14DC-456C-A864-772C5064FDBA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{73E25478-3097-462B-913C-2B5EFC8ADD62} = {73E25478-3097-462B-913C-2B5EFC8ADD62}
+		{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0} = {CBADA4A8-0E45-4C56-883F-90F87AC5FFF0}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreApplication", "src\OgreApplication\OgreApplication.vcproj", "{00D7F770-9D10-4A51-B099-94CE79AC3F85}"
+	ProjectSection(ProjectDependencies) = postProject
+		{61566E24-14DC-456C-A864-772C5064FDBA} = {61566E24-14DC-456C-A864-772C5064FDBA}
+		{C3234B95-9A4A-49CA-9358-027A1939BBE8} = {C3234B95-9A4A-49CA-9358-027A1939BBE8}
+		{F055D8C9-3510-4462-BB47-0CBB9224C643} = {F055D8C9-3510-4462-BB47-0CBB9224C643}
+		{E28810F1-EF61-463A-87B6-87AA347B301F} = {E28810F1-EF61-463A-87B6-87AA347B301F}
+		{E42D8FF7-12C1-4105-AFFD-4376291B8726} = {E42D8FF7-12C1-4105-AFFD-4376291B8726}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileSystem", "src\System\FileSystem\FileSystem.vcproj", "{C3234B95-9A4A-49CA-9358-027A1939BBE8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "System", "System", "{ED8A0723-28AD-4D9D-B451-249C9855CAE0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreInputSystem", "src\System\OgreInputSystem\OgreInputSystem.vcproj", "{F055D8C9-3510-4462-BB47-0CBB9224C643}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderSystem", "src\System\RenderSystem\RenderSystem.vcproj", "{E28810F1-EF61-463A-87B6-87AA347B301F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoundSystem", "src\System\SoundSystem\SoundSystem.vcproj", "{E42D8FF7-12C1-4105-AFFD-4376291B8726}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interface", "Interface", "{0ADF1BD5-4952-4603-AB11-B394A7D8A484}"
+	ProjectSection(SolutionItems) = preProject
+		src\Interface\ApplicationInterface.h = src\Interface\ApplicationInterface.h
+		src\Interface\CodecInterface.h = src\Interface\CodecInterface.h
+		src\Interface\FileSystemInterface.h = src\Interface\FileSystemInterface.h
+		src\Interface\InputSystemInterface.h = src\Interface\InputSystemInterface.h
+		src\Interface\RenderSystemInterface.h = src\Interface\RenderSystemInterface.h
+		src\Interface\SoundSystemInterface.h = src\Interface\SoundSystemInterface.h
+		src\Interface\WinInputSystemInterface.h = src\Interface\WinInputSystemInterface.h
+		src\Interface\WinRenderSystemInterface.h = src\Interface\WinRenderSystemInterface.h
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Static_Debug|Win32 = Static_Debug|Win32
+		Static_Release|Win32 = Static_Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6EDB3869-39FE-4AE5-869E-B6AA9C574E96}.Static_Debug|Win32.ActiveCfg = Static_Debug|Win32
+		{6EDB3869-39FE-4AE5-869E-B6AA9C574E96}.Static_Debug|Win32.Build.0 = Static_Debug|Win32
+		{6EDB3869-39FE-4AE5-869E-B6AA9C574E96}.Static_Release|Win32.ActiveCfg = Static_Release|Win32
+		{6EDB3869-39FE-4AE5-869E-B6AA9C574E96}.Static_Release|Win32.Build.0 = Static_Release|Win32
+		{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0}.Static_Debug|Win32.ActiveCfg = Static_Debug|Win32
+		{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0}.Static_Debug|Win32.Build.0 = Static_Debug|Win32
+		{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0}.Static_Release|Win32.ActiveCfg = Static_Release|Win32
+		{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0}.Static_Release|Win32.Build.0 = Static_Release|Win32
+		{73E25478-3097-462B-913C-2B5EFC8ADD62}.Static_Debug|Win32.ActiveCfg = Static_Debug|Win32
+		{73E25478-3097-462B-913C-2B5EFC8ADD62}.Static_Debug|Win32.Build.0 = Static_Debug|Win32
+		{73E25478-3097-462B-913C-2B5EFC8ADD62}.Static_Release|Win32.ActiveCfg = Static_Release|Win32
+		{73E25478-3097-462B-913C-2B5EFC8ADD62}.Static_Release|Win32.Build.0 = Static_Release|Win32
+		{61566E24-14DC-456C-A864-772C5064FDBA}.Static_Debug|Win32.ActiveCfg = Static_Debug|Win32
+		{61566E24-14DC-456C-A864-772C5064FDBA}.Static_Debug|Win32.Build.0 = Static_Debug|Win32
+		{61566E24-14DC-456C-A864-772C5064FDBA}.Static_Release|Win32.ActiveCfg = Static_Release|Win32
+		{61566E24-14DC-456C-A864-772C5064FDBA}.Static_Release|Win32.Build.0 = Static_Release|Win32
+		{00D7F770-9D10-4A51-B099-94CE79AC3F85}.Static_Debug|Win32.ActiveCfg = Static_Debug|Win32
+		{00D7F770-9D10-4A51-B099-94CE79AC3F85}.Static_Debug|Win32.Build.0 = Static_Debug|Win32
+		{00D7F770-9D10-4A51-B099-94CE79AC3F85}.Static_Release|Win32.ActiveCfg = Static_Release|Win32
+		{00D7F770-9D10-4A51-B099-94CE79AC3F85}.Static_Release|Win32.Build.0 = Static_Release|Win32
+		{C3234B95-9A4A-49CA-9358-027A1939BBE8}.Static_Debug|Win32.ActiveCfg = Static_Debug|Win32
+		{C3234B95-9A4A-49CA-9358-027A1939BBE8}.Static_Debug|Win32.Build.0 = Static_Debug|Win32
+		{C3234B95-9A4A-49CA-9358-027A1939BBE8}.Static_Release|Win32.ActiveCfg = Static_Release|Win32
+		{C3234B95-9A4A-49CA-9358-027A1939BBE8}.Static_Release|Win32.Build.0 = Static_Release|Win32
+		{F055D8C9-3510-4462-BB47-0CBB9224C643}.Static_Debug|Win32.ActiveCfg = Static_Debug|Win32
+		{F055D8C9-3510-4462-BB47-0CBB9224C643}.Static_Debug|Win32.Build.0 = Static_Debug|Win32
+		{F055D8C9-3510-4462-BB47-0CBB9224C643}.Static_Release|Win32.ActiveCfg = Static_Release|Win32
+		{F055D8C9-3510-4462-BB47-0CBB9224C643}.Static_Release|Win32.Build.0 = Static_Release|Win32
+		{E28810F1-EF61-463A-87B6-87AA347B301F}.Static_Debug|Win32.ActiveCfg = Static_Debug|Win32
+		{E28810F1-EF61-463A-87B6-87AA347B301F}.Static_Debug|Win32.Build.0 = Static_Debug|Win32
+		{E28810F1-EF61-463A-87B6-87AA347B301F}.Static_Release|Win32.ActiveCfg = Static_Release|Win32
+		{E28810F1-EF61-463A-87B6-87AA347B301F}.Static_Release|Win32.Build.0 = Static_Release|Win32
+		{E42D8FF7-12C1-4105-AFFD-4376291B8726}.Static_Debug|Win32.ActiveCfg = Static_Debug|Win32
+		{E42D8FF7-12C1-4105-AFFD-4376291B8726}.Static_Debug|Win32.Build.0 = Static_Debug|Win32
+		{E42D8FF7-12C1-4105-AFFD-4376291B8726}.Static_Release|Win32.ActiveCfg = Static_Release|Win32
+		{E42D8FF7-12C1-4105-AFFD-4376291B8726}.Static_Release|Win32.Build.0 = Static_Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0} = {006DB859-12B5-4BA9-8D3A-4C02B1B5B232}
+		{73E25478-3097-462B-913C-2B5EFC8ADD62} = {006DB859-12B5-4BA9-8D3A-4C02B1B5B232}
+		{C3234B95-9A4A-49CA-9358-027A1939BBE8} = {ED8A0723-28AD-4D9D-B451-249C9855CAE0}
+		{F055D8C9-3510-4462-BB47-0CBB9224C643} = {ED8A0723-28AD-4D9D-B451-249C9855CAE0}
+		{E28810F1-EF61-463A-87B6-87AA347B301F} = {ED8A0723-28AD-4D9D-B451-249C9855CAE0}
+		{E42D8FF7-12C1-4105-AFFD-4376291B8726} = {ED8A0723-28AD-4D9D-B451-249C9855CAE0}
+	EndGlobalSection
+EndGlobal

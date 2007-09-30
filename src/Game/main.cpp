@@ -14,6 +14,7 @@ int main()
 	const char * application_dll = "Systems/OgreApplication.dll";
 #endif
 
+#ifdef MENGE_STATIC
 	HMODULE hInstance = LoadLibrary( application_dll );
 
 	printf("load library '%s'\n", application_dll );
@@ -50,6 +51,7 @@ int main()
 
 	printf("free library '%s' \n", application_dll );
 	FreeLibrary( hInstance );
+#endif
 
 	return 1;
 }

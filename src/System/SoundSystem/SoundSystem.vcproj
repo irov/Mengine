@@ -124,7 +124,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\includes&quot;;D:\IrovMenge\dependencies\includes\"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies\squall\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -145,7 +145,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="Squalld.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\lib\OpenAL&quot;;&quot;$(SolutionDir)dependencies\lib\Vorbis&quot;;D:\IrovMenge\dependencies\lib\OpenAL;D:\IrovMenge\dependencies\lib\Vorbis"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\squall\lib&quot;"
 				ModuleDefinitionFile="SoundSystem.def"
 				GenerateDebugInformation="false"
 				SubSystem="2"

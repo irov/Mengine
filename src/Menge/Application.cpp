@@ -92,10 +92,10 @@ namespace Menge
 		new SoundEngine( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::loadPak( const std::string & _pak, int _priority )
+	void Application::loadPak( const std::string & _pak )
 	{
-		printf("load pack [%s] priority - %d ...\n", _pak.c_str(), _priority );
-		Holder<FileEngine>::hostage()->loadPak( _pak, _priority );
+		printf("load pack [%s] priority - %d ...\n", _pak.c_str() );
+		Holder<FileEngine>::hostage()->loadPak( _pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createGame( const std::string & _game )

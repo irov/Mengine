@@ -30,7 +30,7 @@ namespace Menge
 		virtual void setRenderSystem( RenderSystemInterface * _interface );
 		virtual void setSoundSystem( SoundSystemInterface * _interface );
 
-		virtual void loadPak( const std::string & _pak, int _priority );
+		virtual void loadPak( const std::string & _pak );
 
 		virtual bool createGame( const std::string & _game );
 

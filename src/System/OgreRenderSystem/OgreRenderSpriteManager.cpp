@@ -59,7 +59,7 @@ void OgreRenderSpriteManager::renderBuffer()
 	RenderVertexChunk thisChunk;
 	std::list<RenderVertexChunk> chunks;
 
-	unsigned int newSize;
+	size_t newSize;
 
 	newSize=sprites.size()*6;
 	if (newSize<OGRE2D_MINIMAL_HARDWARE_BUFFER_SIZE)
@@ -212,7 +212,7 @@ void OgreRenderSpriteManager::prepareForRender()
 }
 
 
-void OgreRenderSpriteManager::createHardwareBuffer(unsigned int size)
+void OgreRenderSpriteManager::createHardwareBuffer( size_t size)
 {
 	Ogre::VertexDeclaration* vd;
 
@@ -246,11 +246,10 @@ void OgreRenderSpriteManager::destroyHardwareBuffer()
 }
 
 void OgreRenderSpriteManager::spriteBltFull(
-								  std::string textureName,
+								  Ogre::Texture * _texture,
 								  double x1, double y1, double x2, double y2,
 								  double tx1, double ty1, double tx2, double ty2)
 {
-	Ogre::TexturePtr tp;
 	RenderSprite spr;
 
 	spr.x1=x1;
@@ -263,8 +262,7 @@ void OgreRenderSpriteManager::spriteBltFull(
 	spr.tx2=tx2;
 	spr.ty2=ty2;
 
-	tp = Ogre::TextureManager::getSingleton().getByName(textureName);
-	spr.texHandle=tp->getHandle();
+	spr.texHandle = _texture->getHandle();
 
 	sprites.push_back(spr);
 }

@@ -36,11 +36,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WayPoint::_debugRender()
 	{
-		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
+		//RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 
-		mt::vec2f p = getLocalPosition();
-		renderEng->drawLine2D(mt::vec2f(p.x-3,p.y-3),mt::vec2f(p.x+3,p.y+3),0xFFFfFCff);
-		renderEng->drawLine2D(mt::vec2f(p.x-3,p.y+3),mt::vec2f(p.x+3,p.y-3),0xFFFfFCff);
+		//mt::vec2f p = getLocalPosition();
+		//renderEng->drawLine2D(mt::vec2f(p.x-3,p.y-3),mt::vec2f(p.x+3,p.y+3),0xFFFfFCff);
+		//renderEng->drawLine2D(mt::vec2f(p.x-3,p.y+3),mt::vec2f(p.x+3,p.y-3),0xFFFfFCff);
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

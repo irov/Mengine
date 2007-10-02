@@ -50,11 +50,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::_debugRender()
 	{
-		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
+		//RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 
-		const mt::vec2f & pos = getWorldPosition();
+		//const mt::vec2f & pos = getWorldPosition();
 
-		renderEng->drawLine2D(pos,pos + mt::vec2f(10,-10),0xffff00ff);
+		//renderEng->drawLine2D(pos,pos + mt::vec2f(10,-10),0xffff00ff);
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

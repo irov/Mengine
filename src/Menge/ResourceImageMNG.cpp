@@ -64,18 +64,18 @@ namespace Menge
 		assert(fileData != 0);
 
 		int x, y;
-		fileData->read_ints(&x,1);
-		fileData->read_ints(&y,1);
+		fileData->read(&x,sizeof(int));
+		fileData->read(&y,sizeof(int));
 		m_size = mt::vec2f( float(x), float(y) );
 
 		int size;
-		fileData->read_ints(&size,1);
+		fileData->read(&size,sizeof(int));
 
 		std::vector<long> seeks(size);
 
 		for(size_t i = 0; i < seeks.size(); ++i)
 		{
-			fileData->read_longs(&seeks[i],1);
+			fileData->read(&seeks[i],sizeof(long));
 		}
 
 		TextureDesc	textureDesc;
@@ -84,15 +84,18 @@ namespace Menge
 
 		for(int i = 0; i < size; ++i)
 		{
-			fileData->setPos( seeks[i] );
+			//fileData->setPos( seeks[i] );
 
-			fileData->read_ints(&x,1);
-			fileData->read_ints(&y,1);
+			fileData->read(&x,sizeof(int));
+			fileData->read(&y,sizeof(int));
 
 			int bsize = 0;
-			fileData->read_ints(&bsize,1);
+			fileData->read(&bsize,sizeof(int));
 
-			textureDesc.buffer = (void*)fileData->getPos();
+			char * buff = new char [ bsize ];
+			fileData->read( buff, bsize );
+
+			textureDesc.buffer = buff;
 			textureDesc.size = bsize;
 			textureDesc.filter = m_filter;
 
@@ -115,7 +118,7 @@ namespace Menge
 		for each( const Image & img in m_images )
 		{
 			Holder<RenderEngine>::hostage()
-				->releaseRenderImage( img.renderImage );
+				->releaseImage( img.renderImage );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

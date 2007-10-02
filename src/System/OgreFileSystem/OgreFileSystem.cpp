@@ -30,17 +30,17 @@ OgreFileSystem::OgreFileSystem()
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::loadPath( const char * _path )
 {
-	m_resourceMgr->addResourceLocation( platformBundlePath( _path ), "FileSystem" );
+	m_resourceMgr->addResourceLocation( std::string(platformBundlePath()) + "/" + _path, "FileSystem" );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::loadPak(const char * _pak )
 {
-	m_resourceMgr->addResourceLocation( platformBundlePath( _pak ), "Zip" );
+	m_resourceMgr->addResourceLocation( std::string(platformBundlePath()) + "/" + _pak, "Zip" );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::unloadPak( const char * _pak )
 {
-	m_resourceMgr->removeResourceLocation( platformBundlePath( _pak ) );
+	m_resourceMgr->removeResourceLocation( std::string(platformBundlePath()) + "/" + _pak );
 }
 //////////////////////////////////////////////////////////////////////////
 FileDataInterface *	OgreFileSystem::openFile(const char *	_filename)
@@ -52,7 +52,7 @@ FileDataInterface *	OgreFileSystem::openFile(const char *	_filename)
 		return 0;
 	}
 
-	return new OgreFileData( data.getPointer() );
+	return new OgreFileData( data );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::closeFile( FileDataInterface * _fd )

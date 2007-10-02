@@ -8,7 +8,7 @@ class OgreFileData
 	: public FileDataInterface
 {
 public:
-	OgreFileData( Ogre::DataStream * _data );
+	OgreFileData( Ogre::DataStreamPtr _data );
 	~OgreFileData();
 
 public:
@@ -21,5 +21,5 @@ public:
 	size_t tell() const override;
 
 private:
-	Ogre::DataStream * m_data;
+	Ogre::DataStreamPtr m_data;
 };

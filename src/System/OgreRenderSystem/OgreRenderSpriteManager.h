@@ -57,7 +57,7 @@ public:
 	/param tx2 u coordinate for the texture, in the bottom right point of the sprite.
 	/param ty2 u coordinate for the texture, in the bottom right point of the sprite.
 	*/
-	void spriteBltFull(std::string textureName, double x1, double y1, double x2, double y2, double tx1=0, double ty1=0, double tx2=1, double ty2=1);
+	void spriteBltFull(Ogre::Texture * _texture,  double x1, double y1, double x2, double y2, double tx1=0, double ty1=0, double tx2=1, double ty2=1);
 
 private:
 	/// Render all the 2d data stored in the hardware buffers.
@@ -66,7 +66,7 @@ private:
 	/**
 	/param size Vertex count for the new hardware buffer.
 	*/
-	void createHardwareBuffer(unsigned int size);
+	void createHardwareBuffer( size_t size );
 	/// Destroy the hardware buffer
 	void destroyHardwareBuffer();
 	/// Set Ogre for rendering

@@ -168,9 +168,9 @@ namespace Menge
 		mt::vec3f axis2 = orig + m_worldMatrix.v1.v3 * axisWidth;
 		mt::vec3f axis3 = orig + m_worldMatrix.v2.v3 * axisWidth;
 		
-		renderEng->drawLine3D(orig, axis1, 0xFFFFFFAA);
-		renderEng->drawLine3D(orig, axis2, 0xFFAAFFAA);
-		renderEng->drawLine3D(orig, axis3, 0xAAFFFFAA);
+		//renderEng->drawLine3D(orig, axis1, 0xFFFFFFAA);
+		//renderEng->drawLine3D(orig, axis2, 0xFFAAFFAA);
+		//renderEng->drawLine3D(orig, axis3, 0xAAFFFFAA);
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

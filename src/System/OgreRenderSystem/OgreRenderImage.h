@@ -4,22 +4,16 @@
 
 #	include "Ogre.h"
 
-class RenderImageInterface
-{
-public:
-	virtual int getWidth() const = 0;
-	virtual int getHeight() const = 0;
-};
-
 class OgreRenderImage
 	: public RenderImageInterface
 {
+public:
 	OgreRenderImage( const TextureDesc&	_desc );
 
 public:
-	int getWidth() const override;
-	int getHeight() const override;
+	size_t getWidth() const override;
+	size_t getHeight() const override;
 
 private:
-	Ogre::Image * m_image;
+	Ogre::TexturePtr m_texture;
 };

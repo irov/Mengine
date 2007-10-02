@@ -1,6 +1,6 @@
 #	include "OgreFileData.h"
 
-OgreFileData::OgreFileData( Ogre::DataStream * _data )
+OgreFileData::OgreFileData( Ogre::DataStreamPtr _data )
 : m_data( _data )
 {
 
@@ -9,7 +9,6 @@ OgreFileData::OgreFileData( Ogre::DataStream * _data )
 OgreFileData::~OgreFileData()
 {
 	m_data->close();
-	delete m_data;
 }
 //////////////////////////////////////////////////////////////////////////
 size_t OgreFileData::read( void* _buffer, size_t _count )

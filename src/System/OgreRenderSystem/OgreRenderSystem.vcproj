@@ -65,7 +65,7 @@
 				AdditionalDependencies="OgreMain_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\cal3d\cal3d\bin\debug\"
+				AdditionalLibraryDirectories="$(SolutionDir)dependencies\OgreSDK\lib"
 				ModuleDefinitionFile="OgreRenderSystem.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"

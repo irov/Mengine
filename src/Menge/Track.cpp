@@ -152,11 +152,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Track::_debugRender()
 	{
-		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
-	 
-		for each( const TrackChain & chain in m_listChain )
-		{
-			renderEng->drawLine2D( chain.beginPoint(), chain.endPoint(), 0xffff00ff );
-		}
+		//RenderEngine *renderEng = Holder<RenderEngine>::hostage();
+	 //
+		//for each( const TrackChain & chain in m_listChain )
+		//{
+		//	renderEng->drawLine2D( chain.beginPoint(), chain.endPoint(), 0xffff00ff );
+		//}
 	}
 }

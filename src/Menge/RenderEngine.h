@@ -2,7 +2,7 @@
 
 #	include <string>
 
-#	include "math/mat3.h"
+#	include "math/mat4.h"
 #	include "math/vec4.h"
 
 #	include "Interface/RenderSystemInterface.h"
@@ -20,51 +20,54 @@ namespace Menge
 		
 	public:
 
-		void	setMaterialColor(unsigned char _ambient[4], 
-		unsigned char _diffuse[4],
-		unsigned char _specular[4]);
+		//void	setMaterialColor(unsigned char _ambient[4], 
+		//unsigned char _diffuse[4],
+		//unsigned char _specular[4]);
 
-		bool beginScene(int _color);
-		bool endScene();
+		void render();
 
-		void drawPrimitive(PrimitiveData * _pd);
+		//bool beginScene(int _color);
+		//bool endScene();
 
-		void drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long color);
-		void drawLine2D(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color);
-		void drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color);
+		//void drawPrimitive(PrimitiveData * _pd);
 
-		RenderImageInterface* loadImage(const std::string &	_imageFile, int _filter);
+		//void drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long color);
+		//void drawLine2D(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color);
+		//void drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color);
+
+		RenderImageInterface * loadImage( const TextureDesc & _desc );
+		RenderImageInterface * loadImage( const std::string & _imageFile, int _filter );
 
 		void renderImage(
-			const mt::mat3f& _transform, 
-			const mt::vec2f& _offset,
-			const mt::vec4f& _uv,
-			const mt::vec2f& _size,
+			const mt::mat3f & _transform, 
+			const mt::vec2f & _offset,
+			const mt::vec4f & _uv,
+			const mt::vec2f & _size,
 			unsigned int _mixedColor, 
-			RenderImageInterface* _rmi);
+			RenderImageInterface* _rii);
 
-		void releaseRenderImage( RenderImageInterface* _rmi );
+		void releaseImage( RenderImageInterface* _rmi );
 
-		VertexData * createVertexData();
-		IndexData * createIndexData();
-		VertexDeclaration * createVertexDeclaration();
+		//VertexData * createVertexData();
+		//IndexData * createIndexData();
+		//VertexDeclaration * createVertexDeclaration();
 
-		void	setTexture(RenderImageInterface * _tex);
+		//void	setTexture(RenderImageInterface * _tex);
 		void	setProjectionMatrix(const mt::mat4f& _projection);
 		void	setViewMatrix(const mt::mat4f& _view);
 		void	setWorldMatrix(const mt::mat4f& _world);
 
 		//////////////////////////////////////////////////////////////////////////
-		RenderFontInterface* loadFont(const std::string &_fontXml);
+		//RenderFontInterface* loadFont(const std::string &_fontXml);
 
-		void renderText(
-			const mt::vec2f & _pos, 
-			RenderFontInterface* _font, 
-			const std::string & _text);
+		//void renderText(
+		//	const mt::vec2f & _pos, 
+		//	RenderFontInterface* _font, 
+		//	const std::string & _text);
 
-		void releaseRenderFont( RenderFontInterface* _fnt );
+		//void releaseRenderFont( RenderFontInterface* _fnt );
 
-		RenderImageInterface* loadImage( const TextureDesc& _desc );
+		
 
 	protected:
 		RenderSystemInterface * m_interface;

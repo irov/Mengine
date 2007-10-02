@@ -94,7 +94,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPak( const std::string & _pak )
 	{
-		printf("load pack [%s] priority - %d ...\n", _pak.c_str() );
+		printf("load pack [%s]...\n", _pak.c_str() );
 		Holder<FileEngine>::hostage()->loadPak( _pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -188,11 +188,11 @@ namespace Menge
 	{
 		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 	
-		renderEng->beginScene(2756);
-
 		Holder<Game>::hostage()->render();
 		Holder<Game>::hostage()->debugRender();
 
-		renderEng->endScene();
+		renderEng->render();
+
+		//renderEng->endScene();
 	}
 }

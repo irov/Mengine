@@ -3,17 +3,22 @@
 //////////////////////////////////////////////////////////////////////////
 OgreRenderImage::OgreRenderImage( const TextureDesc& _desc )
 {
-	m_image = new Ogre::Image();
+	Ogre::Image image;
 
+	Ogre::DataStreamPtr data( new Ogre::MemoryDataStream( _desc.buffer, _desc.size ) );
+	image.load( data, "png" );
 
+	m_texture = Ogre::TextureManager::getSingletonPtr()
+		->loadImage( _desc.name, "Default", image );
 }
 //////////////////////////////////////////////////////////////////////////
-int OgreRenderImage::getHeight() const
+size_t OgreRenderImage::getWidth() const
 {
-
+	return m_texture->getWidth();
 }
 //////////////////////////////////////////////////////////////////////////
-int OgreRenderImage::getWidth() const
+size_t OgreRenderImage::getHeight() const
 {
-
+	return m_texture->getHeight();
 }
+

@@ -11,24 +11,24 @@ namespace Menge
 		Holder<FileEngine>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::loadPak( const std::string& _filename, int _prior )
+	void FileEngine::loadPath( const std::string& _path )
 	{
-		return m_interface->loadPak(_filename.c_str(),_prior);
+		m_interface->loadPath( _path.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::unloadPak( const std::string& _filename )
+	void FileEngine::loadPak( const std::string& _filename )
 	{
-		return m_interface->unloadPak(_filename.c_str());
+		m_interface->loadPak( _filename.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::unloadPak( const std::string& _filename )
+	{
+		m_interface->unloadPak(_filename.c_str());
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::existFile( const std::string& _filename )
 	{
 		return m_interface->existFile(_filename.c_str());
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::createFolder( const std::string& _filename )
-	{
-		return m_interface->createFolder(_filename.c_str());
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileDataInterface* FileEngine::openFile( const std::string& _filename )
@@ -72,34 +72,10 @@ namespace Menge
 		// If we have a file, assume it is all one big XML file, and read it in.
 		// The document parser may decide the document ends sooner than the entire file, however.
 
-		std::string data( file->getBuffer(), length );
-
-		//printf("%s\n",data.c_str());
-		//data.reserve(length);
-
-		//const int BUF_SIZE = 2048;
-		//char buf[BUF_SIZE + 1];
-		//buf[BUF_SIZE] = '\0';
-
-		//while( length > BUF_SIZE )
-		//{
-		//	file->read( buf, BUF_SIZE, 1 );
-		//	data += buf;
-		//	length -= BUF_SIZE;
-		//}
-
-		//if( length > 0 )
-		//{
-		//	file->read( buf, length, 1 );
-		//	data += buf;
-		//}
-
-		////while( file->read(buf,BUF_SIZE,1))
-		////{
-		////	data += buf;
-		////}
-
-		//data += '\0';
+		char * buff = new char[ length ];
+		file->read( buff, length );
+		
+		std::string data( buff, length );
 
 		closeFile(file);
 

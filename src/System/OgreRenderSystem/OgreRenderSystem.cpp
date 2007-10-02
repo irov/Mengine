@@ -1,6 +1,7 @@
 #	include "OgreRenderSystem.h"
 
 #	include "OgreRenderSpriteManager.h"
+#	include "OgreRenderImage.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( RenderSystemInterface ** _ptrInterface )
@@ -74,12 +75,12 @@ void OgreRenderSystem::setWorldMatrix(const /*mat4f*/ float * _world)
 //////////////////////////////////////////////////////////////////////////
 RenderImageInterface* OgreRenderSystem::loadImage( const TextureDesc&	_desc )
 {
-
+	return new OgreRenderImage( _desc );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::releaseImage( RenderImageInterface* _rii )
 {
-
+	delete static_cast<OgreRenderImage*>( _rii );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::renderImage(		

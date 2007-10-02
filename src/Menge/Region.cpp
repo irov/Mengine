@@ -55,18 +55,18 @@ namespace	Menge
 	////////////////////////////////////////////////////////////////////////
 	void Region::_debugRender()
 	{
-		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
+		//RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 
-		size_t size = m_polygon.num_points();
+		//size_t size = m_polygon.num_points();
 
-		for( size_t i = 0; i < size; ++i )
-		{
-			renderEng->drawLine2D(m_polygon[i],m_polygon[ (i+1) % size ], 0xffffCCff);
-		}
+		//for( size_t i = 0; i < size; ++i )
+		//{
+		//	renderEng->drawLine2D(m_polygon[i],m_polygon[ (i+1) % size ], 0xffffCCff);
+		//}
 
-		for each( WayPoint * wp in m_helperWayPoints )
-		{
-			wp->debugRender();
-		}
+		//for each( WayPoint * wp in m_helperWayPoints )
+		//{
+		//	wp->debugRender();
+		//}
 	}
 }

@@ -130,13 +130,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Trap3D::debugRender() 
 	{		
-		RenderEngine * renderEng = Holder<RenderEngine>::hostage();
-
-		mt::mat4f id;
-		mt::ident_m4(id);
-		renderEng->setWorldMatrix(id);
-
-		renderEng->drawBox(m_bbox.MinEdge,m_bbox.MaxEdge, 0xaaff00ff);
+		//RenderEngine * renderEng = Holder<RenderEngine>::hostage();
+		//mt::mat4f id;
+		//mt::ident_m4(id);
+		//renderEng->setWorldMatrix(id);
+		//renderEng->drawBox(m_bbox.MinEdge,m_bbox.MaxEdge, 0xaaff00ff);
 	}
 	////////////////////////////////////////////////////////////////////////////
 }

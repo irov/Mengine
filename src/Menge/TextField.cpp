@@ -35,7 +35,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_dialogFont = Holder<RenderEngine>::hostage()->loadFont(m_fontFilename);
+		//m_dialogFont = Holder<RenderEngine>::hostage()->loadFont(m_fontFilename);
 
 		if( m_dialogFont == 0 )
 		{
@@ -50,7 +50,7 @@ namespace	Menge
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceMessageStore );
 
-		Holder<RenderEngine>::hostage()->releaseRenderFont(m_dialogFont);
+		//Holder<RenderEngine>::hostage()->releaseRenderFont(m_dialogFont);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	TextField::loader(TiXmlElement * _xml)
@@ -72,10 +72,10 @@ namespace	Menge
 		mt::vec2f pos(0,0);
 		for each( const std::string & line in m_renderLines )
 		{
-			Holder<RenderEngine>::hostage()
-				->renderText( pos, m_dialogFont, line );
+			//Holder<RenderEngine>::hostage()
+			//	->renderText( pos, m_dialogFont, line );
 
-			pos.y += m_dialogFont->getHeight();
+			//pos.y += m_dialogFont->getHeight();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ namespace	Menge
 
 			for each( char symbol in str )
 			{
-				width += _font->getCharWidth( symbol );
+				//width += _font->getCharWidth( symbol );
 			}
 
 			pixelFontSize += width;

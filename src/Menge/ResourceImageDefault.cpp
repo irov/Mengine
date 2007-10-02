@@ -73,7 +73,9 @@ namespace Menge
 		}
 
 		TextureDesc	textureDesc;
-		textureDesc.buffer = (void*)fileData->getBuffer();
+		char * buff = new char [ fileData->size() ];
+		fileData->read( buff, fileData->size() );
+		textureDesc.buffer = buff;
 		textureDesc.size = fileData->size();
 		textureDesc.filter = m_filter;
 
@@ -97,6 +99,6 @@ namespace Menge
 	void ResourceImageDefault::_release()
 	{
 		Holder<RenderEngine>::hostage()
-			->releaseRenderImage( m_renderImage );
+			->releaseImage( m_renderImage );
 	}
 }

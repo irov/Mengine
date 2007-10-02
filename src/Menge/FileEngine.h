@@ -16,8 +16,9 @@ namespace Menge
 		FileEngine( FileSystemInterface * _interface );
 
 	public:
-		bool loadPak( const std::string& _filename, int _prior );
-		bool unloadPak( const std::string& _filename );
+		void loadPath( const std::string& _path );
+		void loadPak( const std::string& _filename );
+		void unloadPak( const std::string& _filename );
 		bool existFile( const std::string& _filename );
 		bool createFolder( const std::string& _filename );
 

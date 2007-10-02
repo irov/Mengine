@@ -3,22 +3,22 @@
 class RenderImageInterface
 {
 public:
-	virtual int getWidth() const = 0;
-	virtual int getHeight() const = 0;
+	virtual size_t getWidth() const = 0;
+	virtual size_t getHeight() const = 0;
 };
 
 struct	TextureDesc
 {
 	void*			buffer;
 	size_t			size;
+
+	const char * name;
 	int				filter;
 };
 
 class	RenderSystemInterface
 {
 public:
-	virtual ~RenderSystemInterface(){};
-
 	virtual void render() = 0;
 
 	virtual	void setProjectionMatrix(const /*mat4f*/ float * _projection) = 0;

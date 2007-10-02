@@ -143,15 +143,15 @@ namespace Menge
 
 		for( size_t i = 0; i < size; ++i )
 		{
-			const mt::mat3f & wm = getWorldMatrix();
-			
-			mt::vec2f b;
-			mt::vec2f e;
+			//const mt::mat3f & wm = getWorldMatrix();
+			//
+			//mt::vec2f b;
+			//mt::vec2f e;
 
-			mt::mul_v2_m3( b, m_polygon[ i ], wm );
-			mt::mul_v2_m3( e, m_polygon[ (i+1) % size ], wm );
+			//mt::mul_v2_m3( b, m_polygon[ i ], wm );
+			//mt::mul_v2_m3( e, m_polygon[ (i+1) % size ], wm );
 
-			renderEng->drawLine2D( b, e, 0xffff00ff );
+			//renderEng->drawLine2D( b, e, 0xffff00ff );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

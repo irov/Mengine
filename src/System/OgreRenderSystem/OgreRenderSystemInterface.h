@@ -2,11 +2,7 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-namespace Ogre
-{
-	class Root;
-	class RenderWindow;
-}
+#	include "Ogre.h"
 
 class	OgreRenderSystemInterface
 	: public RenderSystemInterface

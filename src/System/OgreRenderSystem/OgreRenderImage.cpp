@@ -21,4 +21,9 @@ size_t OgreRenderImage::getHeight() const
 {
 	return m_texture->getHeight();
 }
+//////////////////////////////////////////////////////////////////////////
+Ogre::Texture * OgreRenderImage::getTexture()
+{
+	return m_texture.getPointer();
+}
 

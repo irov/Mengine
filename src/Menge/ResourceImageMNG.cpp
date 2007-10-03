@@ -6,6 +6,8 @@
 
 #	include "XmlParser/XmlParser.h"
 
+#	include <sstream>
+
 namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageMNG )
@@ -98,6 +100,11 @@ namespace Menge
 			textureDesc.buffer = buff;
 			textureDesc.size = bsize;
 			textureDesc.filter = m_filter;
+
+			std::stringstream str;
+			str << m_fileMNG << i;
+			std::string mngimagename = str.str();
+			textureDesc.name = mngimagename.c_str();
 
 			Image	imageProps;
 

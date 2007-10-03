@@ -77,6 +77,7 @@ namespace Menge
 		fileData->read( buff, fileData->size() );
 		textureDesc.buffer = buff;
 		textureDesc.size = fileData->size();
+		textureDesc.name = m_fileImage.c_str();
 		textureDesc.filter = m_filter;
 
 		m_renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);

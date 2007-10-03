@@ -46,6 +46,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
+				BrowseInformation="1"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -195,6 +196,10 @@
 		</File>
 		<File
 			RelativePath=".\OgreFileSystem.h"
+			>
+		</File>
+		<File
+			RelativePath=".\OgreFileSystemInterface.h"
 			>
 		</File>
 		<File

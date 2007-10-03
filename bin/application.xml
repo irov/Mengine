@@ -1,35 +1,7 @@
 <Application>
-
-	<DllModuleDebug>
-		<InputSystem DllFile = "Systems/OgreInputSystem_d.dll"/>
-		<FileSystem DllFile = "Systems/FileSystem_d.dll"/>
-		<RenderSystem DllFile = "Systems/RenderSystem_d.dll"/>
-		<SoundSystem DllFile = "Systems/SoundSystem_d.dll"/>
-	</DllModuleDebug>
-
-	<DllModuleRelease>
-		<InputSystem DllFile = "Systems/OgreInputSystem.dll"/>
-		<FileSystem DllFile = "Systems/FileSystem.dll"/>
-		<RenderSystem DllFile = "Systems/RenderSystem.dll"/>
-		<SoundSystem DllFile = "Systems/SoundSystem.dll"/>
-	</DllModuleRelease>
-
-	<Display>
-		<Width Value = "1024"/>
-		<Height Value = "768"/>
-		<Bits Value = "16"/>
-		<FullScreen Value = "0"/>
-		<Vsync Value = "1"/>
-		<StencilBuffer Value = "0"/>
-		<AntiAlias Value = "1"/>
-		<PureSoftware Value = "0"/>
-	</Display>
-
 	<Paks>
-		<Pak File = "Data.pak" Priority = "1" />
 	</Paks>
 
 	<Game File = "Game/Game.xml" />
-
 
 </Application>

@@ -14,6 +14,9 @@ public:
 	size_t getWidth() const override;
 	size_t getHeight() const override;
 
+public:
+	Ogre::Texture * getTexture();
+
 private:
 	Ogre::TexturePtr m_texture;
 };

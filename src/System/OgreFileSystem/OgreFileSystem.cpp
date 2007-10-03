@@ -24,28 +24,37 @@ void releaseInterfaceSystem(FileSystemInterface *_system)
 }
 //////////////////////////////////////////////////////////////////////////
 OgreFileSystem::OgreFileSystem()
+: m_resourceMgr(0)
 {
-	m_resourceMgr = Ogre::ResourceGroupManager::getSingletonPtr();
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreFileSystem::init( Ogre::ResourceGroupManager * _resourceMgr )
+{
+	m_resourceMgr = _resourceMgr;
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::loadPath( const char * _path )
 {
-	m_resourceMgr->addResourceLocation( std::string(platformBundlePath()) + "/" + _path, "FileSystem" );
+	m_resourceMgr
+		->addResourceLocation( _path, "FileSystem", "OgreFileSystem", true );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::loadPak(const char * _pak )
 {
-	m_resourceMgr->addResourceLocation( std::string(platformBundlePath()) + "/" + _pak, "Zip" );
+	m_resourceMgr
+		->addResourceLocation( _pak, "Zip", "OgreFileSystem", true );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::unloadPak( const char * _pak )
 {
-	m_resourceMgr->removeResourceLocation( std::string(platformBundlePath()) + "/" + _pak );
+	m_resourceMgr
+		->removeResourceLocation( _pak, "OgreFileSystem" );
 }
 //////////////////////////////////////////////////////////////////////////
 FileDataInterface *	OgreFileSystem::openFile(const char *	_filename)
 {
-	Ogre::DataStreamPtr data = m_resourceMgr->openResource( _filename );
+	Ogre::DataStreamPtr data = m_resourceMgr
+		->openResource( _filename, "OgreFileSystem" );
 
 	if( data.isNull() )
 	{
@@ -62,7 +71,8 @@ void OgreFileSystem::closeFile( FileDataInterface * _fd )
 //////////////////////////////////////////////////////////////////////////
 bool OgreFileSystem::existFile(const char * _filename)
 {
-	const Ogre::String & group = m_resourceMgr->findGroupContainingResource( _filename );
+	const Ogre::String & group = m_resourceMgr
+		->findGroupContainingResource( _filename );
 
 	return group.empty() == false;
 }

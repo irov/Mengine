@@ -5,7 +5,7 @@
 #	include "System/OgreInputSystem/OgreInputSystemInterface.h"
 #	include "System/OgreRenderSystem/OgreRenderSystemInterface.h"
 
-#	include "Interface/FileSystemInterface.h"
+#	include "System/OgreFileSystem/OgreFileSystemInterface.h"
 #	include "Interface/SoundSystemInterface.h"
 
 #	include "OIS/OIS.h"
@@ -90,12 +90,12 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	printf("use file system [%s]\n", DllFileSystem.c_str() );
 
-	SystemInterfaceDLL<FileSystemInterface> * fileInterfaceDLL = 
-		new SystemInterfaceDLL<FileSystemInterface>(DllFileSystem);
+	SystemInterfaceDLL<OgreFileSystemInterface> * fileInterfaceDLL = 
+		new SystemInterfaceDLL<OgreFileSystemInterface>(DllFileSystem);
 
 	m_listApplicationDLL.push_back( fileInterfaceDLL );
 
-	FileSystemInterface * fileInterface = fileInterfaceDLL->getInterface();
+	OgreFileSystemInterface * fileInterface = fileInterfaceDLL->getInterface();
 	m_application->setFileSystem( fileInterface );
 
 	printf("use input system [%s]\n", DllInputSystem.c_str() );
@@ -164,6 +164,17 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	inputInterface->init( pl );
 
+	Ogre::ResourceGroupManager * resourceMgr = 
+		Ogre::ResourceGroupManager::getSingletonPtr();
+
+	fileInterface->init( resourceMgr );
+	fileInterface->loadPath(".");
+
+	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+	Ogre::ResourceGroupManager::getSingleton().openResource( "Game/Game.xml" );
+
+	renderInterface->init( m_root, m_window );
+
 	m_application->init();
 
 	std::string gameFile;
@@ -191,8 +202,6 @@ bool OgreApplication::init( const char * _xmlFile )
 		return false;
 	}
 
-	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
 	if( m_application->createGame( gameFile ) == false )
 	{
 		return false;
@@ -203,5 +212,8 @@ bool OgreApplication::init( const char * _xmlFile )
 //////////////////////////////////////////////////////////////////////////
 void OgreApplication::run()
 {
-	//m_root->startRendering();
+	while( true )
+	{
+		m_application->loop();
+	}
 }

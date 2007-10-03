@@ -34,6 +34,7 @@ public:
 private:
 	Ogre::Root * m_root;
 	Ogre::RenderWindow * m_renderWindow;
+	Ogre::Viewport * m_viewport;
 
 	Ogre::RenderSystem * m_renderSys;
 	Ogre::SceneManager * m_sceneMgr;

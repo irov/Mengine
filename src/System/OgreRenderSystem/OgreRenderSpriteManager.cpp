@@ -15,13 +15,14 @@ OgreRenderSpriteManager::~OgreRenderSpriteManager()
 {
 }
 
-void OgreRenderSpriteManager::init(Ogre::SceneManager* sceneMan, Ogre::RenderSystem * renderSys, Ogre::uint8 targetQueue, bool afterQueue)
+void OgreRenderSpriteManager::init(Ogre::SceneManager* sceneMan, Ogre::RenderSystem * renderSys, Ogre::Viewport * viewport, Ogre::uint8 targetQueue, bool afterQueue)
 {
 	OgreRenderSpriteManager::sceneMan=sceneMan;
 	OgreRenderSpriteManager::afterQueue=afterQueue;
 	OgreRenderSpriteManager::targetQueue=targetQueue;
 
 	m_renderSys = renderSys;
+	m_viewport = viewport;
 
 	hardwareBuffer.setNull();
 
@@ -89,42 +90,42 @@ void OgreRenderSpriteManager::renderBuffer()
 	while (currSpr!=endSpr)
 	{
 		// 1st point (left bottom)
-		*buffer=currSpr->x1; buffer++;
-		*buffer=currSpr->y2; buffer++;
+		*buffer=currSpr->point[0].x; buffer++;
+		*buffer=currSpr->point[0].y; buffer++;
 		*buffer=z; buffer++;
-		*buffer=currSpr->tx1; buffer++;
-		*buffer=currSpr->ty2; buffer++;
+		*buffer=currSpr->tcoord[0].x; buffer++;
+		*buffer=currSpr->tcoord[0].y; buffer++;
 		// 2st point (right top)
-		*buffer=currSpr->x2; buffer++;
-		*buffer=currSpr->y1; buffer++;
+		*buffer=currSpr->point[1].x; buffer++;
+		*buffer=currSpr->point[1].y; buffer++;
 		*buffer=z; buffer++;
-		*buffer=currSpr->tx2; buffer++;
-		*buffer=currSpr->ty1; buffer++;
+		*buffer=currSpr->tcoord[1].x; buffer++;
+		*buffer=currSpr->tcoord[1].y; buffer++;
 		// 3rd point (left top)
-		*buffer=currSpr->x1; buffer++;
-		*buffer=currSpr->y1; buffer++;
+		*buffer=currSpr->point[2].x; buffer++;
+		*buffer=currSpr->point[2].y; buffer++;
 		*buffer=z; buffer++;
-		*buffer=currSpr->tx1; buffer++;
-		*buffer=currSpr->ty1; buffer++;
+		*buffer=currSpr->tcoord[2].x; buffer++;
+		*buffer=currSpr->tcoord[2].y; buffer++;
 
 		// 4th point (left bottom)
-		*buffer=currSpr->x1; buffer++;
-		*buffer=currSpr->y2; buffer++;
+		*buffer=currSpr->point[0].x; buffer++;
+		*buffer=currSpr->point[0].y; buffer++;
 		*buffer=z; buffer++;
-		*buffer=currSpr->tx1; buffer++;
-		*buffer=currSpr->ty2; buffer++;
+		*buffer=currSpr->tcoord[0].x; buffer++;
+		*buffer=currSpr->tcoord[0].y; buffer++;
 		// 5th point (right bottom)
-		*buffer=currSpr->x2; buffer++;
-		*buffer=currSpr->y1; buffer++;
+		*buffer=currSpr->point[2].x; buffer++;
+		*buffer=currSpr->point[2].y; buffer++;
 		*buffer=z; buffer++;
-		*buffer=currSpr->tx2; buffer++;
-		*buffer=currSpr->ty1; buffer++;
+		*buffer=currSpr->tcoord[2].x; buffer++;
+		*buffer=currSpr->tcoord[2].y; buffer++;
 		// 6th point (right top)
-		*buffer=currSpr->x2; buffer++;
-		*buffer=currSpr->y2; buffer++;
+		*buffer=currSpr->point[3].x; buffer++;
+		*buffer=currSpr->point[3].y; buffer++;
 		*buffer=z; buffer++;
-		*buffer=currSpr->tx2; buffer++;
-		*buffer=currSpr->ty2; buffer++;
+		*buffer=currSpr->tcoord[3].x; buffer++;
+		*buffer=currSpr->tcoord[3].y; buffer++;
 
 		// remember this chunk
 		thisChunk.vertexCount+=6;
@@ -246,21 +247,38 @@ void OgreRenderSpriteManager::destroyHardwareBuffer()
 }
 
 void OgreRenderSpriteManager::spriteBltFull(
-								  Ogre::Texture * _texture,
-								  double x1, double y1, double x2, double y2,
-								  double tx1, double ty1, double tx2, double ty2)
+				   Ogre::Texture * _texture, 
+				   const Ogre::Matrix3 & _transform,
+				   const Ogre::Vector2 & _offset,
+				   const Ogre::Vector4 & _uv,
+				   const Ogre::Vector2 & _size)
 {
 	RenderSprite spr;
 
-	spr.x1=x1;
-	spr.y1=y1;
-	spr.x2=x2;
-	spr.y2=y2;
+	spr.point[0] = Ogre::Vector3(_offset.x, _offset.y, 1.0f);
+	spr.point[1] = Ogre::Vector3(_offset.x + _size.x, _offset.y, 1.0f);
+	spr.point[2] = Ogre::Vector3(_offset.x + _size.x, _offset.y + _size.y, 1.0f);
+	spr.point[3] = Ogre::Vector3(_offset.x, _offset.y + _size.y, 1.0f);
 
-	spr.tx1=tx1;
-	spr.ty1=ty1;
-	spr.tx2=tx2;
-	spr.ty2=ty2;
+	Ogre::Vector3 transformed_pos;
+
+	for(size_t i = 0; i < 4; ++i)
+	{
+		transformed_pos = spr.point[i] * _transform;
+
+		transformed_pos.x /= 512;
+		transformed_pos.y /= 384;
+
+		transformed_pos.x -= 1;
+		transformed_pos.y -= 1;
+
+		spr.point[i] = transformed_pos;
+	}
+
+	spr.tcoord[0] = Ogre::Vector2(_uv[0], _uv[3]);
+	spr.tcoord[1] = Ogre::Vector2(_uv[2], _uv[3]);
+	spr.tcoord[2] = Ogre::Vector2(_uv[2], _uv[1]);
+	spr.tcoord[3] = Ogre::Vector2(_uv[0], _uv[1]);
 
 	spr.texHandle = _texture->getHandle();
 

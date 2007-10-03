@@ -28,6 +28,8 @@ namespace	Menge
 
 		int mx = inputEng->getMouseX();
 		int my = inputEng->getMouseY();
+		
+		printf("%d, %d\n", mx, my);
 
 		mt::vec2f pos( (float)mx, (float)my );
 		setPosition( pos + m_offsetClick );

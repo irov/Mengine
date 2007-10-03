@@ -6,11 +6,12 @@
 #	include <string>
 #	include <list>
 
-
 struct RenderSprite
 {
-	float x1, y1, x2, y2;// sprite coordinates
-	float tx1, ty1, tx2, ty2;// texture coordinates
+	Ogre::Vector3 point[4];
+	Ogre::Vector2 tcoord[4];
+	//float x1, y1, x2, y2;// sprite coordinates
+	//float tx1, ty1, tx2, ty2;// texture coordinates
 	Ogre::ResourceHandle texHandle;// texture handle
 };
 
@@ -28,7 +29,13 @@ public:
 
 	/// Initializes this 2d Manager
 	/** and registers it as the render queue listener.*/
-	void init(Ogre::SceneManager* sceneMan, Ogre::RenderSystem * renderSys, Ogre::uint8 targetQueue, bool afterQueue);
+	void init( 
+		Ogre::SceneManager* sceneMan, 
+		Ogre::RenderSystem * renderSys, 
+		Ogre::Viewport * viewport,
+		Ogre::uint8 targetQueue, 
+		bool afterQueue);
+
 	/// Finishes Ogre 2d Manager
 	void end();
 
@@ -57,7 +64,12 @@ public:
 	/param tx2 u coordinate for the texture, in the bottom right point of the sprite.
 	/param ty2 u coordinate for the texture, in the bottom right point of the sprite.
 	*/
-	void spriteBltFull(Ogre::Texture * _texture,  double x1, double y1, double x2, double y2, double tx1=0, double ty1=0, double tx2=1, double ty2=1);
+	void spriteBltFull(
+		Ogre::Texture * _texture, 
+		const Ogre::Matrix3 & _transform,
+		const Ogre::Vector2 & _offset,
+		const Ogre::Vector4 & _uv,
+		const Ogre::Vector2 & _size);
 
 private:
 	/// Render all the 2d data stored in the hardware buffers.
@@ -73,8 +85,9 @@ private:
 	void prepareForRender();
 
 private:
-	Ogre::SceneManager* sceneMan;
+	Ogre::SceneManager * sceneMan;
 	Ogre::RenderSystem * m_renderSys;
+	Ogre::Viewport * m_viewport;
 
 	Ogre::uint8 targetQueue;
 	bool afterQueue;

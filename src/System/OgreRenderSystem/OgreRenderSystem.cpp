@@ -28,6 +28,7 @@ void releaseInterfaceSystem( RenderSystemInterface* _ptrInterface )
 OgreRenderSystem::OgreRenderSystem()
 	: m_root(0)
 	, m_renderWindow(0)
+	, m_viewport(0)
 	, m_sceneMgr(0)
 	, m_spriteMgr(0)
 {
@@ -48,19 +49,20 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
 	m_spriteMgr = new OgreRenderSpriteManager();
 
-	m_spriteMgr->init( m_sceneMgr, m_renderSys, Ogre::RENDER_QUEUE_OVERLAY, true);
-
 	Ogre::Camera * camera = m_sceneMgr->createCamera("defaultCamera");
  	camera->setNearClipDistance(5);
 
  	// Create one viewport, entire window
-	Ogre::Viewport* vp = m_renderWindow->addViewport( camera );
+	m_viewport = m_renderWindow->addViewport( camera );
  	// Alter the camera aspect ratio to match the viewport
 
- 	camera->setAspectRatio(vp->getActualWidth() / vp->getActualWidth());
+ 	camera->setAspectRatio(m_viewport->getActualWidth() / m_viewport->getActualWidth());
 
  	// Set default mipmap level (NB some APIs ignore this)
  	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+
+	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
+
 
 	return true;
 }
@@ -105,5 +107,10 @@ void OgreRenderSystem::renderImage(
 {
 	OgreRenderImage * image = static_cast<OgreRenderImage *>( _rii );
 	Ogre::Texture * texture = image->getTexture();
-	m_spriteMgr->spriteBltFull( texture, -0.5, 0.5, 0.5, -0.5);
+
+	m_spriteMgr->spriteBltFull( texture
+		, *(Ogre::Matrix3*)_transform
+		, *(Ogre::Vector2*)_offset
+		, *(Ogre::Vector4*)_uv
+		, *(Ogre::Vector2*)_size );
 }

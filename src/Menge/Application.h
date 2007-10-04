@@ -23,7 +23,7 @@ namespace Menge
 	public:
 		virtual bool init();
 		virtual void fini();
-		virtual void loop();
+		virtual bool loop();
 
 		virtual void setFileSystem( FileSystemInterface * _interface );
 		virtual void setInputSystem( InputSystemInterface * _interface );

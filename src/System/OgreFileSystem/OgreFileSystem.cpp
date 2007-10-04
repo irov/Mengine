@@ -53,15 +53,23 @@ void OgreFileSystem::unloadPak( const char * _pak )
 //////////////////////////////////////////////////////////////////////////
 FileDataInterface *	OgreFileSystem::openFile(const char *	_filename)
 {
-	Ogre::DataStreamPtr data = m_resourceMgr
-		->openResource( _filename, "OgreFileSystem" );
+	try
+	{
+		Ogre::DataStreamPtr data = m_resourceMgr
+			->openResource( _filename, "OgreFileSystem" );
 
-	if( data.isNull() )
+
+		if( data.isNull() )
+		{
+			return 0;
+		}
+
+		return new OgreFileData( data );
+	}
+	catch ( ... )
 	{
 		return 0;
 	}
-
-	return new OgreFileData( data );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::closeFile( FileDataInterface * _fd )
@@ -71,10 +79,17 @@ void OgreFileSystem::closeFile( FileDataInterface * _fd )
 //////////////////////////////////////////////////////////////////////////
 bool OgreFileSystem::existFile(const char * _filename)
 {
-	const Ogre::String & group = m_resourceMgr
-		->findGroupContainingResource( _filename );
+	try
+	{
+		const Ogre::String & group = m_resourceMgr
+			->findGroupContainingResource( _filename );
 
-	return group.empty() == false;
+		return group.empty() == false;
+	}
+	catch ( ... )
+	{
+		return false;
+	}	
 }
 //////////////////////////////////////////////////////////////////////////
 const char * OgreFileSystem::platformBundlePath()

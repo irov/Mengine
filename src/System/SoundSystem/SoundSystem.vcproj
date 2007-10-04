@@ -143,7 +143,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Squalld.lib"
+				AdditionalDependencies="Squall.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\squall\lib&quot;"
 				ModuleDefinitionFile="SoundSystem.def"

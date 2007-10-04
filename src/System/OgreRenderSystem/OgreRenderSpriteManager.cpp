@@ -272,13 +272,15 @@ void OgreRenderSpriteManager::spriteBltFull(
 		transformed_pos.x -= 1;
 		transformed_pos.y -= 1;
 
+		transformed_pos.y = -transformed_pos.y;
+
 		spr.point[i] = transformed_pos;
 	}
 
-	spr.tcoord[0] = Ogre::Vector2(_uv[0], _uv[3]);
-	spr.tcoord[1] = Ogre::Vector2(_uv[2], _uv[3]);
-	spr.tcoord[2] = Ogre::Vector2(_uv[2], _uv[1]);
-	spr.tcoord[3] = Ogre::Vector2(_uv[0], _uv[1]);
+	spr.tcoord[0] = Ogre::Vector2(_uv[0], _uv[1]);
+	spr.tcoord[1] = Ogre::Vector2(_uv[2], _uv[1]);
+	spr.tcoord[2] = Ogre::Vector2(_uv[2], _uv[3]);
+	spr.tcoord[3] = Ogre::Vector2(_uv[0], _uv[3]);
 
 	spr.texHandle = _texture->getHandle();
 

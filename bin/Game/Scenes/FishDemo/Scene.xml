@@ -15,17 +15,17 @@
 
 		<Node Name = "Kamen_01" Type = "Sprite">
 			<ImageMap Name = "ReefKamen_01" />
-			<Transformation Value = "1;0;0;1;0;0" />
+			<Transformation Value = "1;0;0;1;0;138" />
 		</Node> <!-- Sprite -->			
 
 		<Node Name = "Kamen_01" Type = "Sprite">
 			<ImageMap Name = "ReefKamen_02" />
-			<Transformation Value = "1;0;0;1;512;0" />
+			<Transformation Value = "1;0;0;1;512;138" />
 		</Node> <!-- Sprite -->			
 
 		<Node Name = "Kamen_03" Type = "Sprite">
 			<ImageMap Name = "ReefKamen_03" />
-			<Transformation Value = "1;0;0;1;1024;0" />
+			<Transformation Value = "1;0;0;1;1024;138" />
 		</Node> <!-- Sprite -->			
 	</Node> <!-- Layer -->
 
@@ -37,32 +37,32 @@
 
 		<Node Name = "Valun_01" Type = "Sprite">
 			<ImageMap Name = "ReefValun_01" />
-			<Transformation Value = "1;0;0;1;0;0" />
+			<Transformation Value = "1;0;0;1;0;256" />
 		</Node> <!-- Sprite -->			
 
 		<Node Name = "Valun_02" Type = "Sprite">
 			<ImageMap Name = "ReefValun_02" />
-			<Transformation Value = "1;0;0;1;512;0" />
+			<Transformation Value = "1;0;0;1;512;256" />
 		</Node> <!-- Sprite -->			
 
 		<Node Name = "Valun_03" Type = "Sprite">
 			<ImageMap Name = "ReefValun_03" />
-			<Transformation Value = "1;0;0;1;1024;0" />
+			<Transformation Value = "1;0;0;1;1024;256" />
 		</Node> <!-- Sprite -->	
 
 		<Node Name = "Valun_04" Type = "Sprite">
 			<ImageMap Name = "ReefValun_01" />
-			<Transformation Value = "1;0;0;1;1536;0" />
+			<Transformation Value = "1;0;0;1;1536;256" />
 		</Node> <!-- Sprite -->			
 
 		<Node Name = "Valun_05" Type = "Sprite">
 			<ImageMap Name = "ReefValun_02" />
-			<Transformation Value = "1;0;0;1;2048;0" />
+			<Transformation Value = "1;0;0;1;2048;256" />
 		</Node> <!-- Sprite -->			
 
 		<Node Name = "Valun_06" Type = "Sprite">
 			<ImageMap Name = "ReefValun_03" />
-			<Transformation Value = "1;0;0;1;2560;0" />
+			<Transformation Value = "1;0;0;1;2560;256" />
 		</Node> <!-- Sprite -->	
 		
 	</Node> <!-- Layer -->

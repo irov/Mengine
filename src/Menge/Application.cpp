@@ -155,10 +155,12 @@ namespace Menge
 		Holder<Game>::hostage()->release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::loop()
+	bool Application::loop()
 	{	
 		update();
 		render();
+
+		return Holder<InputEngine>::hostage()->isKeyDown( 0x01 ) == false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::handleKeyEvent( size_t _key, bool _isDown )

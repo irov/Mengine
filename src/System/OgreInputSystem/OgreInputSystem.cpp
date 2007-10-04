@@ -37,12 +37,10 @@ bool OgreInputSystem::init( const OIS::ParamList & _params )
 {
 	OIS::ParamList local_params = _params;
 
-	//local_params.insert( std::make_pair("WINDOW","0"));
-
 	m_inputManager = OIS::InputManager::createInputSystem( local_params );
 
-	m_keyboard = static_cast<OIS::Keyboard*>(m_inputManager->createInputObject( OIS::OISKeyboard, false ));
-	m_mouse = static_cast<OIS::Mouse*>(m_inputManager->createInputObject( OIS::OISMouse, false ));
+	m_keyboard = static_cast<OIS::Keyboard*>(m_inputManager->createInputObject( OIS::OISKeyboard, true ));
+	m_mouse = static_cast<OIS::Mouse*>(m_inputManager->createInputObject( OIS::OISMouse, true ));
 
 	m_mouse->getMouseState().width = 1024;
 	m_mouse->getMouseState().height = 768;

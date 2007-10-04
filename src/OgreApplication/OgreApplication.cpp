@@ -212,8 +212,5 @@ bool OgreApplication::init( const char * _xmlFile )
 //////////////////////////////////////////////////////////////////////////
 void OgreApplication::run()
 {
-	while( true )
-	{
-		m_application->loop();
-	}
+	while( m_application->loop() );
 }

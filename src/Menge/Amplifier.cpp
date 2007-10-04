@@ -228,7 +228,10 @@ namespace Menge
 		printf("%d \n", position);
 		}
 		*/
-		updateFadeParams(m_music);
+		if( m_music )
+		{
+			updateFadeParams(m_music);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::releaseMusic( bool _dead )

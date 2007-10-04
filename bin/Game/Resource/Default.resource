@@ -10,6 +10,7 @@
 	<!- ************************************************ -->
 	<!- Cal3d Test Animation -->
 
+	<!--
 	<Resource Name = "Cal3dTest" Type = "ResourceAnimationCal3d" >
 		<File Config = "Game/Animations/paladin/paladin.cfg" />
 		<Sequences>
@@ -22,6 +23,7 @@
 			<HardPoint Name = "Bip01 Tail1" />
 		</HardPoints>
 	</Resource>
+	-->
 
 	<Resource Name = "default" Type = "ResourceImageMNG" >
 		<File Path = "Game/Arrows/Default/Default.mng" />

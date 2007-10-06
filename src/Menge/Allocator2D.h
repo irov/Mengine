@@ -19,16 +19,15 @@ namespace Menge
 		const mt::vec2f & getWorldDirection();
 
 		const mt::vec2f & getLocalPosition()const;
-		mt::vec2f & getLocalPosition();
-
 		const mt::vec2f & getLocalDirection()const;
-		mt::vec2f & getLocalDirection();
-
 		const mt::mat3f & getLocalMatrix()const;
-		mt::mat3f & getLocalMatrix();
 
-		void setPosition( const mt::vec2f &position );
-		void setDirection( const mt::vec2f &direction );
+		mt::vec2f & getLocalPositionModify();
+		mt::vec2f & getLocalDirectionModify();
+		mt::mat3f & getLocalMatrixModify();
+
+		void setLocalPosition( const mt::vec2f &position );
+		void setLocalDirection( const mt::vec2f &direction );
 		
 		void translate( const mt::vec2f &delta );
 

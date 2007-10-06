@@ -306,7 +306,7 @@ namespace Menge
 
 		Scene * scene = pybind::extract<Scene*>( result );
 
-		scene->setScriptable( result );
+		scene->setScript( result );
 
 		return scene;
 	}

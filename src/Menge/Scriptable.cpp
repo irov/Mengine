@@ -1,5 +1,7 @@
 #	include "Scriptable.h"
 
+#	include "ScriptEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -10,13 +12,19 @@ namespace Menge
 	Scriptable::~Scriptable()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::setScriptable( PyObject * _scriptable )
+	void Scriptable::setScript( PyObject * _scriptable )
 	{
 		m_scriptable = _scriptable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Scriptable::getScriptable()
+	PyObject * Scriptable::getScript()
 	{
+		if( m_scriptable == 0 )
+		{
+			m_scriptable = Holder<ScriptEngine>::hostage()
+				->wrapp( this );
+		}
+
 		return m_scriptable;
 	}
 	//////////////////////////////////////////////////////////////////////////

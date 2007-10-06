@@ -68,7 +68,7 @@ namespace	Menge
 
 		const mt::vec2f & bp = m_currentChain->beginPoint();
 
-		setPosition(bp);
+		setLocalPosition(bp);
 
 		return true;
 	}
@@ -104,7 +104,7 @@ namespace	Menge
 				TrackChain &backChain = m_listChain.back();
 
 				const mt::vec2f &endPoint = backChain.endPoint();
-				setPosition(endPoint);
+				setLocalPosition(endPoint);
 
 				stop();
 				break;
@@ -126,8 +126,8 @@ namespace	Menge
 
 			pos += dir * trackLength;
 
-			setDirection(dir);
-			setPosition(pos);
+			setLocalDirection(dir);
+			setLocalPosition(pos);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

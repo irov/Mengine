@@ -18,8 +18,8 @@ namespace Menge
 		virtual ~Scriptable();
 
 	public:
-		void setScriptable( PyObject * _scriptable );
-		PyObject * getScriptable();
+		void setScript( PyObject * _scriptable );
+		PyObject * getScript();
 		bool isScriptable() const;
 
 	protected:

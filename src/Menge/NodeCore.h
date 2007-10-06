@@ -2,6 +2,7 @@
 
 #	include "Node.h"
 #	include "Eventable.h"
+#	include "Scriptable.h"
 
 #	include "ObjectDeclare.h"
 
@@ -14,6 +15,7 @@ namespace Menge
 	class NodeCore
 		: public virtual Node
 		, public Eventable
+		, public Scriptable
 	{
 	public:
 		NodeCore();
@@ -37,6 +39,9 @@ namespace Menge
 	public:
 		void update( float _timing ) override;
 		void loader( TiXmlElement *xml ) override;
+
+	public:
+		Scriptable * getScriptable() override;
 
 	public:		
 		void debugRender() override;

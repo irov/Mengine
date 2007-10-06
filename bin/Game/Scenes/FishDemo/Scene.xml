@@ -3,10 +3,12 @@
 		
 		<Size Value = "1024; 768" />
 
+		<!--	
 		<Node Name = "Water_01" Type = "Sprite">
 			<ImageMap Name = "Water_01" />
 			<Transformation Value = "1;0;0;1;0;0" />
-		</Node> <!-- Sprite -->	
+		</Node>
+		-->
 	</Node>
 	
 	<Node Name = "Deep" Type = "Layer2D">

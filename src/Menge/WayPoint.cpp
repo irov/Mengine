@@ -16,7 +16,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	WayPoint::WayPoint(const mt::vec2f& _pos)
 	{
-		setPosition(_pos);
+		setLocalPosition(_pos);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WayPoint::loader( TiXmlElement * _xml)
@@ -29,7 +29,7 @@ namespace	Menge
 			{
 				mt::vec2f point;
 				XML_VALUE_ATTRIBUTE("Value", point);
-				setPosition(point);
+				setLocalPosition(point);
 			}
 		}
 	};

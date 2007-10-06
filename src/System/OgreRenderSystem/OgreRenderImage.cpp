@@ -9,7 +9,7 @@ OgreRenderImage::OgreRenderImage( const TextureDesc& _desc )
 	image.load( data, "png" );
 
 	m_texture = Ogre::TextureManager::getSingletonPtr()
-		->loadImage( _desc.name, "Default", image );
+		->loadImage( _desc.name, "Default", image, Ogre::TEX_TYPE_2D, 0 );
 }
 //////////////////////////////////////////////////////////////////////////
 size_t OgreRenderImage::getWidth() const

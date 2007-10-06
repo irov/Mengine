@@ -8,6 +8,7 @@ namespace Menge
 {
 	
 	class NodeForeach;
+	class Scriptable;
 
 	//! Node - base pure virtual class
 	/*! 
@@ -89,6 +90,8 @@ namespace Menge
 		*/
 		virtual void removeChildren( Node * _node ) = 0;
 
+		virtual Node * getChildren( const std::string & _name, bool _recursion ) = 0;
+
 		//! Node pure virtual. check is children
 		/*!
 		\param _node the first argument, pointer of children
@@ -101,6 +104,9 @@ namespace Menge
 		\param _foreach the first argument, functor NodeForeach
 		*/
 		virtual void foreachChildren( const NodeForeach & _foreach ) = 0;
+
+	public:
+		virtual Scriptable * getScriptable() = 0; 
 
 	public:
 		//! Node pure virtual. update node

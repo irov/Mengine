@@ -55,9 +55,8 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			PyObject * pyNode = 
-				Holder<ScriptEngine>::hostage()
-				->wrapp( node );
+			Scriptable * scriptable = node->getScriptable();
+			PyObject * pyNode = scriptable->getScript();
 
 			if( pyNode == 0 )
 			{
@@ -79,6 +78,7 @@ namespace Menge
 	{
 		pybind::class_<mt::vec2f>("vec2f")
 			.def( pybind::init<float,float>() )
+			//.attr( "x", &vec2f::x )
 			//.def( boost::python::init<float,float>() )
 			//.def( boost::python::self + boost::python::self )	// __add__
 			//.def( boost::python::self - boost::python::self )          // __radd__
@@ -91,11 +91,39 @@ namespace Menge
 			//.def( boost::python::self /= float() )
 			;
 
-
-		pybind::interface_<Node>("Node")
+		pybind::interface_<Node>("Node", false)
+			.def( "activate", &Node::activate )
+			.def( "setName", &Node::setName )
+			.def( "getName", &Node::getName )
+			.def( "addChildren", &Node::addChildren )
+			.def( "getChildren", &Node::getChildren )
 			;
 
+		static struct NodePtrExtract
+			: public pybind::interface_<Node>::extract_ptr_type
+		{
+			PyObject * wrapp( Node * _node ) override
+			{
+				if( _node == 0 )
+				{
+					return 0;
+				}
+
+				Scriptable * scriptable = _node->getScriptable();
+				PyObject * pyObj = scriptable->getScript();
+				return pyObj;
+			}
+		} s_node_ptr_extract;
+
 		pybind::class_<Allocator2D>("Allocator2D")
+			.def( "getLocalPosition", &Allocator2D::getLocalPosition )
+			.def( "getLocalDirection", &Allocator2D::getLocalDirection )
+
+			.def( "getWorldPosition", &Allocator2D::getWorldPosition )
+			.def( "getWorldDirection", &Allocator2D::getWorldDirection )
+
+			.def( "setLocalPosition", &Allocator2D::setLocalPosition )
+			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
 			;
 		
 		pybind::class_<Renderable2D>("Renderable2D")
@@ -103,18 +131,15 @@ namespace Menge
 			;
 
 		pybind::class_<SceneNode2D, pybind::bases<Node, Allocator2D, Renderable2D>>("SceneNode2D")
-			.def( "activate", &SceneNode2D::activate )
-			.def( "setName", &SceneNode2D::setName )
-			.def( "getName", &SceneNode2D::getName )
-			.def( "addChildren", &SceneNode2D::addChildren )
 			;
 
 		{
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow")
 				;
 
-			pybind::proxy_<Scene, pybind::no_bases>("Scene")
+			pybind::proxy_<Scene, pybind::no_bases >("Scene")
 				.def( "layerAppend", &Scene::layerAppend )
+				.def( "getNode", &Scene::getNode )
 				;
 
 			pybind::class_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot")

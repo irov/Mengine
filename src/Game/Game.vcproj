@@ -150,7 +150,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies/vld&quot;"
+				AdditionalLibraryDirectories=""
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="false"
 				SubSystem="1"

@@ -21,6 +21,13 @@ namespace Menge
 			PyObject * module = Holder<ScriptEngine>::hostage()
 				->getEntityModule( _type );
 
+			if( module == 0 )
+			{
+				printf("Cant't create entity [%s] (not module)\n"
+					, _type.c_str() 
+					);
+			}
+
 			PyObject * result = pybind::call_method( module, _type.c_str(), "()" );
 
 			if( result == 0 )
@@ -61,8 +68,8 @@ namespace Menge
 				
 			}
 
-			entity->setPosition( _pos );
-			entity->setDirection( _dir );
+			entity->setLocalPosition( _pos );
+			entity->setLocalDirection( _dir );
 
 			return result;
 		}

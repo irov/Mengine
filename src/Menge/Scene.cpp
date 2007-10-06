@@ -35,9 +35,15 @@ namespace	Menge
 		return m_mainLayer;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Node * Scene::getNode(const std::string & _name )
+	{
+		Node * node = getChildren( _name, true );
+		return node;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerAppend( const std::string & _layer, Node * _node )
 	{
-		Layer * layer = getChildren( _layer );
+		Layer * layer = getChildrenT<Layer>( _layer, false );
 		if( layer )
 		{
 			layer->addChildren( _node );
@@ -48,13 +54,13 @@ namespace	Menge
 	{
 		bool handle = false;
 		
-		if( handle )
+		if( handle == false )
 		{
 			handle = Holder<ScriptEngine>::hostage()
 				->handleKeyEvent( m_scriptable, _key, _isDown );
 		}
 
-		if( handle )
+		if( handle == false )
 		{
 			handle = Holder<MousePickerSystem>::hostage()
 				->handleKeyEvent( _key, _isDown );
@@ -67,13 +73,13 @@ namespace	Menge
 	{
 		bool handle = false;
 
-		if( handle )
+		if( handle == false )
 		{
 			handle = Holder<ScriptEngine>::hostage()
 				->handleMouseButtonEvent( m_scriptable, _button, _isDown );
 		}
 
-		if( handle )
+		if( handle == false )
 		{
 			handle = Holder<MousePickerSystem>::hostage()
 				->handleMouseButtonEvent( _button, _isDown );
@@ -86,13 +92,13 @@ namespace	Menge
 	{
 		bool handle = false;
 
-		if( handle )
+		if( handle == false )
 		{
 			handle = Holder<ScriptEngine>::hostage()
 				->handleMouseMove( m_scriptable, _x, _y, _whell );
 		}
 
-		if( handle )
+		if( handle == false )
 		{
 			handle = Holder<MousePickerSystem>::hostage()
 				->handleMouseMove( _x, _y, _whell );

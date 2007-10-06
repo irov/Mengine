@@ -16,7 +16,6 @@ namespace Menge
 	class Scene
 		: public NodeCore
 		, public NodeChildren<Layer>
-		, public Scriptable
 		, public InputHandler
 	{
 		OBJECT_DECLARE( Scene )
@@ -29,6 +28,8 @@ namespace Menge
 
 		void setMainLayer( Layer * _layer );
 		Layer * getMainLayer();
+
+		Node * getNode(const std::string & _name );
 
 	public:
 		void loader( TiXmlElement *_xml) override;

@@ -13,7 +13,8 @@ namespace Menge
 {
 	/*	Trapped under Ice!  */
 
-	class	Trap2D : public SceneNode2D
+	class	Trap2D 
+		: public SceneNode2D
 	{
 		OBJECT_DECLARE(Trap2D);
 	public:

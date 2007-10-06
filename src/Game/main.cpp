@@ -15,7 +15,13 @@ int main()
 #endif
 
 #ifndef MENGE_STATIC
-	HMODULE hInstance = LoadLibrary( application_dll );
+	HMODULE hModule = LoadLibrary( application_dll );
+
+	if( hModule == 0 )
+	{
+		printf("Error: load library '%s' is failed\n", application_dll );
+		return 0;
+	}
 
 	printf("load library '%s'\n", application_dll );
 	
@@ -23,10 +29,10 @@ int main()
 	typedef void (*FInterfaceRelease)( ApplicationInterface *);
 
 	FInterfaceInitial initInterfaceSystem = 
-		(FInterfaceInitial)GetProcAddress( (HMODULE) hInstance, "initInterfaceSystem" );
+		(FInterfaceInitial)GetProcAddress( (HMODULE) hModule, "initInterfaceSystem" );
 
 	FInterfaceRelease releaseInterfaceSystem = 
-		(FInterfaceRelease)GetProcAddress( (HMODULE) hInstance, "releaseInterfaceSystem" );
+		(FInterfaceRelease)GetProcAddress( (HMODULE) hModule, "releaseInterfaceSystem" );
 
 	if( initInterfaceSystem == 0 || releaseInterfaceSystem == 0 )
 	{
@@ -51,7 +57,7 @@ int main()
 	releaseInterfaceSystem( app );
 
 	printf("free library '%s' \n", application_dll );
-	FreeLibrary( hInstance );
+	FreeLibrary( hModule );
 
 
 	return 1;

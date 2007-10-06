@@ -51,17 +51,7 @@ namespace Menge
 		return m_localMatrix.v2.v2;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f & Allocator2D::getLocalPosition()
-	{
-		return m_localMatrix.v2.v2;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Allocator2D::getLocalDirection()const
-	{
-		return m_localMatrix.v0.v2;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f & Allocator2D::getLocalDirection()
 	{
 		return m_localMatrix.v0.v2;
 	}
@@ -71,21 +61,31 @@ namespace Menge
 		return m_localMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::mat3f & Allocator2D::getLocalMatrix()
+	mt::vec2f & Allocator2D::getLocalPositionModify()
+	{
+		return m_localMatrix.v2.v2;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f & Allocator2D::getLocalDirectionModify()
+	{
+		return m_localMatrix.v0.v2;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::mat3f & Allocator2D::getLocalMatrixModify()
 	{
 		return m_localMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::setPosition( const mt::vec2f &position )
+	void Allocator2D::setLocalPosition( const mt::vec2f &position )
 	{
-		mt::vec2f & localPosition = getLocalPosition();
+		mt::vec2f & localPosition = getLocalPositionModify();
 
 		localPosition = position;
 
 		changePivot();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::setDirection( const mt::vec2f &direction )
+	void Allocator2D::setLocalDirection( const mt::vec2f &direction )
 	{
 		m_localMatrix.v0.v2 = direction;
 		m_localMatrix.v1.v2 = mt::perp(direction);

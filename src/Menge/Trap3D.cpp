@@ -60,7 +60,7 @@ namespace Menge
 
 		for each( const TListSceneNodesNames::value_type & it in m_sceneNodesNames )
 		{
-			SceneNode3D * node = this->getParent()->getChildren(it);
+			SceneNode3D * node = this->getParent()->getChildrenT<SceneNode3D>( it, true );
 
 			if( node == NULL )
 			{

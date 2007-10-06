@@ -80,7 +80,7 @@ namespace Menge
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
-		TNode * getChildren( const std::string & _name )
+		Node * getChildren( const std::string & _name, bool _recursion ) override
 		{
 			for each( TNode * children in m_listChildren )
 			{
@@ -88,15 +88,23 @@ namespace Menge
 				{
 					return children;
 				}
+
+				if( _recursion )
+				{
+					if( Node * result = children->getChildren( _name, _recursion ) )
+					{
+						return result;
+					}
+				}
 			}
 
 			return 0;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		template<class T>
-		T * getChildrenT( const std::string & _name )
+		T * getChildrenT( const std::string & _name, bool recursion = false )
 		{
-			return static_cast< T * >( getChildren( _name ) );
+			return dynamic_cast< T * >( getChildren( _name, recursion ) );
 		}	
 		///////////////////////////////////////////////////////////////////////
 		TNode * createChildren( const std::string &_type )

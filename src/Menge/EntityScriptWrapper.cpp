@@ -46,6 +46,9 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
+			entity->setType("Entity");
+			entity->setScript( result );
+
 			std::string xml_path = Holder<Game>::hostage()
 				->getPathEntities();
 			

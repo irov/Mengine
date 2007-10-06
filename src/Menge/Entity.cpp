@@ -19,10 +19,10 @@ namespace	Menge
 	bool Entity::_activate()
 	{
 		if( Holder<ScriptEngine>::hostage()
-			->hasMethod( this, "_active" ) )
+			->hasMethod( this, "onActivate" ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callMethod( this, "_activate" );
+				->callMethod( this, "onActivate" );
 		}
 
 		return true;

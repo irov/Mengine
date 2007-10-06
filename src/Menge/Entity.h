@@ -21,13 +21,8 @@ namespace Menge
 		Entity();
 		~Entity();
 
-	public:
-		bool addChildren( Node * _node ) override
-		{
-			return SceneNode2D::addChildren( _node );
-		}
 
 	protected:
-		bool _activate();
+		bool _activate() override;
 	};
 }

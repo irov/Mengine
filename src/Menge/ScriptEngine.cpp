@@ -445,23 +445,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::hasMethod( Node * _node, const std::string & _name )
 	{
-		PyObject * scriptable = pybind::ptr( _node );
+		Scriptable * scriptable = _node->getScriptable();
+		PyObject * script = scriptable->getScript();
 
-		if( scriptable == 0 )
+		if( script == 0 )
 		{
 			return false;
 		}
 
-		int res = pybind::has_attr( scriptable, _name.c_str() );
+		int res = pybind::has_attr( script, _name.c_str() );
 
 		return res == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::callMethod( Node * _node, const std::string & _name, const char * _params, ...  )
 	{
-		PyObject * scriptable = pybind::ptr( _node );
+		Scriptable * scriptable = _node->getScriptable();
+		PyObject * script = scriptable->getScript();
 
-		if( scriptable == 0 )
+		if( script == 0 )
 		{
 			return false;
 		}
@@ -471,7 +473,7 @@ namespace Menge
 			va_list valist;
 			va_start(valist, _params);
 
-			PyObject * result = pybind::call_method_va( scriptable, _name.c_str(), _params, valist );
+			PyObject * result = pybind::call_method_va( script, _name.c_str(), _params, valist );
 
 			va_end( valist ); 
 

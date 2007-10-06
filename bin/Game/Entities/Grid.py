@@ -3,18 +3,10 @@ import Menge
 class Grid( Menge.Entity ):
 	def __init__( self ):
 		Menge.Entity.__init__( self )
+		pass
 
-		self.image = Menge.createNode( "Sprite", 
-			[ {
-                                "ImageMap" :
-                                {
-                                        "Name" : "grid"
-                                }
-                                }
-                          ]
-			)	
-		
-		self.addChildren( self.image )
+	def onActivate( self ):
+		self.image = self.getChildren( "gridImage" )
 		pass
 
 	def setImageIndex( self, frame ):

@@ -28,15 +28,15 @@ class Scene( Menge.Scene ):
 		
 		block.activate();
 		
-		self.layerAppend( "Water", block )
+		self.layerAppend( "Deep", block )
 				
 		#self.boo = 
 		#print self.boo
 		pass
 
 	def onUpdate( self, timing ):
-		#Menge.setCamera2DPosition( self.camera_x, self.camera_y );
+		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 
-		#self.camera_x += timing * 25
+		self.camera_x += timing * 25
 		pass
 	pass

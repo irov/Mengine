@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)Lib"
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
-			CharacterSet="1"
+			CharacterSet="2"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"

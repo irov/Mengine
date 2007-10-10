@@ -27,6 +27,13 @@ namespace Menge
 					->setCurrentScene( _name );
 		}
 
+		Scene * getCurrentScene()
+		{
+			Scene * scene = Holder<Player>::hostage()
+				->getCurrentScene();
+			return scene;
+		}
+
 		void setCamera2DPosition( float x, float y )
 		{
 			Holder<Player>::hostage()
@@ -72,7 +79,8 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Scene );
 	SCRIPT_CLASS_WRAPPING( HotSpot );
 	SCRIPT_CLASS_WRAPPING( Sprite );
-	SCRIPT_CLASS_WRAPPING( Player );	
+	SCRIPT_CLASS_WRAPPING( Arrow );
+//	SCRIPT_CLASS_WRAPPING( Player );	
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{
@@ -99,23 +107,7 @@ namespace Menge
 			.def( "getChildren", &Node::getChildren )
 			;
 
-		static struct NodePtrExtract
-			: public pybind::interface_<Node>::extract_ptr_type
-		{
-			PyObject * wrapp( Node * _node ) override
-			{
-				if( _node == 0 )
-				{
-					return 0;
-				}
-
-				Scriptable * scriptable = _node->getScriptable();
-				PyObject * pyObj = scriptable->getScript();
-				return pyObj;
-			}
-		} s_node_ptr_extract;
-
-		pybind::class_<Allocator2D>("Allocator2D")
+		pybind::class_<Allocator2D>("Allocator2D", false)
 			.def( "getLocalPosition", &Allocator2D::getLocalPosition )
 			.def( "getLocalDirection", &Allocator2D::getLocalDirection )
 
@@ -126,27 +118,27 @@ namespace Menge
 			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
 			;
 		
-		pybind::class_<Renderable2D>("Renderable2D")
+		pybind::class_<Renderable2D>("Renderable2D", false)
 			.def( "hide", &Renderable2D::hide )
 			;
 
-		pybind::class_<SceneNode2D, pybind::bases<Node, Allocator2D, Renderable2D>>("SceneNode2D")
+		pybind::class_<SceneNode2D, pybind::bases<Node, Allocator2D, Renderable2D>>("SceneNode2D", false)
 			;
 
 		{
-			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow")
+			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)
 				;
 
-			pybind::proxy_<Scene, pybind::no_bases >("Scene")
+			pybind::proxy_<Scene, pybind::no_bases >("Scene", false)
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "getNode", &Scene::getNode )
 				;
 
-			pybind::class_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot")
+			pybind::class_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot", false)
 				.def( "setInputHandler", &HotSpot::setInputHandler )
 				;
 
-			pybind::class_<Sprite, pybind::bases<SceneNode2D>>("Sprite")
+			pybind::class_<Sprite, pybind::bases<SceneNode2D>>("Sprite", false)
 				.def( "setImageIndex", &Sprite::setImageIndex )
 				.def( "getImageIndex", &Sprite::getImageIndex )
 				.def( "setImageResource", &Sprite::setImageResource )
@@ -155,17 +147,18 @@ namespace Menge
 
 			{
 
-				pybind::class_<Animation, pybind::bases<Sprite>>("Animation")
+				pybind::class_<Animation, pybind::bases<Sprite>>("Animation", false)
 					;
 
 			}
 
 		}		
 
-		pybind::class_<Player, pybind::no_bases>("Player")
+		pybind::class_<Player, pybind::no_bases>("Player", false)
 			;
 
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
+		pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
 		pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
 		pybind::def( "setCamera3DPosition", &ScriptMethod::setCamera3DPosition );
 		

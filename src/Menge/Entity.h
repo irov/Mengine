@@ -21,6 +21,8 @@ namespace Menge
 		Entity();
 		~Entity();
 
+	public:
+		void loader( TiXmlElement * _xml ) override;
 
 	protected:
 		bool _activate() override;

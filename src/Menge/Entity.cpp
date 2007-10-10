@@ -27,4 +27,16 @@ namespace	Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::loader( TiXmlElement * _xml )
+	{
+		SceneNode2D::loader( _xml );
+
+		if( Holder<ScriptEngine>::hostage()
+			->hasMethod( this, "onLoader" ) )
+		{
+			Holder<ScriptEngine>::hostage()
+				->callMethod( this, "onLoader" );
+		}
+	}
 }

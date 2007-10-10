@@ -23,6 +23,11 @@ namespace Menge
 		{
 			m_scriptable = Holder<ScriptEngine>::hostage()
 				->wrapp( this );
+
+			if( m_scriptable == 0 )
+			{
+				return 0;
+			}
 		}
 
 		return m_scriptable;

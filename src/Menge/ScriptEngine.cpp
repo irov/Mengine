@@ -10,8 +10,6 @@
 #	include "osdefs.h"
 
 #	include "pybind/pybind.hpp"
-//#	include <boost/python.hpp>
-//#	include <boost/detail/lightweight_test.hpp>
 
 #	include <iostream>
 

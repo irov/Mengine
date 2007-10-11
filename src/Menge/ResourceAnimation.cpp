@@ -18,7 +18,7 @@ namespace Menge
 		return m_vectorSequence.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int ResourceAnimation::getSequenceDelay( size_t _sequence ) const
+	size_t ResourceAnimation::getSequenceDelay( size_t _sequence ) const
 	{
 		return m_vectorSequence[ _sequence ].delay;
 	}
@@ -36,8 +36,6 @@ namespace Menge
 
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_imageMap );
-
 			XML_CHECK_NODE_FOR_EACH( "Sequences" )
 			{
 				XML_CHECK_NODE( "Sequence" )

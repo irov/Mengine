@@ -25,7 +25,7 @@ namespace	Menge
 		return true;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::_update( float _timing )
+	void Camera2D::_update( size_t _timing )
 	{
 		//Empty
 	}

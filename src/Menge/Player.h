@@ -46,7 +46,7 @@ namespace Menge
 
 	public:
 		void init();
-		void update( float _timing );
+		void update( size_t _timing );
 		void render();
 
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;

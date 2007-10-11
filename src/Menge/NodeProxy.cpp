@@ -48,9 +48,9 @@ namespace Menge
 		return m_node->getType();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::update(float _timing)
+	void NodeProxy::update( size_t _timing )
 	{
-		return m_node->update(_timing);
+		return m_node->update( _timing );
 	};
 	//////////////////////////////////////////////////////////////////////////
 	void NodeProxy::loader(TiXmlElement * _xml)

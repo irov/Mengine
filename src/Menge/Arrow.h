@@ -15,10 +15,14 @@ namespace Menge
 		Arrow();
 
 	public:
+		void setOffsetClick( const mt::vec2f & _offsetClick );
+		const mt::vec2f & getOffsetClick();
+
+	public:
 		void loader( TiXmlElement * _xml ) override;
 
 	protected:
-		void _update( float _timing ) override;
+		void _update( size_t _timing ) override;
 		bool _activate() override;
 		void _debugRender() override;
 

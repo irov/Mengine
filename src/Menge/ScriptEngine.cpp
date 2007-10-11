@@ -7,8 +7,6 @@
 #	include "Entity.h"
 #	include "Scene.h"
 
-#	include "osdefs.h"
-
 #	include "pybind/pybind.hpp"
 
 #	include <iostream>

@@ -45,7 +45,7 @@ OgreApplication::OgreApplication()
 , m_window(0)
 {
 	
-} 
+}
 //////////////////////////////////////////////////////////////////////////
 OgreApplication::~OgreApplication()
 {
@@ -153,6 +153,16 @@ bool OgreApplication::init( const char * _xmlFile )
 	}
 
 	m_window = m_root->initialise( true );
+	
+	//Ogre::RenderTargetListener * rtl = new Ogre::RenderTargetListener( ;
+	m_root->addFrameListener( this );
+	
+	//unsigned int width = m_root->getWidth();
+	//unsigned int height = m_root->getHeight();
+
+	//bool isFullScreen = m_root->isFullScreen();
+
+	//createWindow( width, height, isFullScreen );
 
 	OIS::ParamList pl;
 	size_t windowHnd = 0;
@@ -174,6 +184,7 @@ bool OgreApplication::init( const char * _xmlFile )
 	Ogre::ResourceGroupManager::getSingleton().openResource( "Game/Game.xml" );
 
 	renderInterface->init( m_root, m_window );
+	
 
 	m_application->init();
 
@@ -210,7 +221,22 @@ bool OgreApplication::init( const char * _xmlFile )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
+bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)
+{
+	if( m_window->isActive() )
+	{
+		return m_application->loop();
+	}
+
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
+{
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
 void OgreApplication::run()
 {
-	while( m_application->loop() );
+	m_root->startRendering();
 }

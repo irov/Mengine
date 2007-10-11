@@ -23,7 +23,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	SoundTextField::_update(float _timing)
+	void	SoundTextField::_update( size_t _timing )
 	{
 		if(TextField::isPlaying() == false) 
 		{

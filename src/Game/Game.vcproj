@@ -106,7 +106,7 @@
 			OutputDirectory="$(SolutionDir)Bin"
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="1"
-			CharacterSet="0"
+			CharacterSet="2"
 			WholeProgramOptimization="0"
 			>
 			<Tool

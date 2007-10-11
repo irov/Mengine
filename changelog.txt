@@ -1,19 +1,27 @@
 ===========================================================================
 Menge Engine
 
+===========================================================================
 staue: development 
 version: 0.0.0.4
-date: 
+date: 11.10.07
 
 [General]
 + added Sprite support ImageIndex:Value attribute
 + added Animation support AutoStart:Value attribute
+* fixed bug scheduleManager
+* fixed bug ResourceImageCell
+* fixed Windows event
 
 [Framework]
 + added Menge.getMouseX()
 + added Menge.getMouseY()
++ added Menge.getArrow()
++ added Arrow.setOffsetClick
++ added Arrow.getOffsetClick
 
 
+===========================================================================
 staue: development 
 version: 0.0.0.3
 date: 11.10.07
@@ -35,6 +43,7 @@ date: 11.10.07
 + added Menge.schedule( timing, script )
 + added Menge.scheduleRemove( id )
 
+===========================================================================
 staue: development 
 version: 0.0.0.2
 date: 08.10.07
@@ -53,8 +62,7 @@ date: 08.10.07
 + added Node.getWorldPosition()
 * fixed Renderable.hide
 
-
-
+===========================================================================
 staue: development 
 version: 0.0.0.1
 date: 05.10.07

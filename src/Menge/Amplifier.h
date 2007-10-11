@@ -23,7 +23,7 @@ namespace	Menge
 			void	loadPlayList(const std::string& _filename);
 			void	addPlayList(const std::string& _playListFileName);
 			void	erasePlayList(const std::string& _playListFileName);
-			void	update(float _timing);
+			void	update( size_t _timing );
 		private:
 			TPlayListMap	m_playLists;
 			Playlist *	m_currentPlayList;

@@ -187,7 +187,7 @@ namespace Menge
 		}     
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::update( float _timing )
+	void	Amplifier::update( size_t _timing )
 	{
 		if ( m_isPaused )
 		{

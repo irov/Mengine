@@ -152,7 +152,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::update( float _timing )
+	void Player::update( size_t _timing )
 	{
 		if( m_scene )
 		{

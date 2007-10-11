@@ -1,10 +1,12 @@
 #	include "ScriptClassWrapperDefine.h"
 #	include "ScriptDeclarationDefine.h"
 
+#	include "InputEngine.h"
 #	include "SceneManager.h"
 #	include "Scene.h"
 
 #	include "ScriptEngine.h"
+#	include "ScheduleManager.h"
 
 #	include "Player.h"
 
@@ -20,33 +22,65 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		void setCurrentScene( const std::string & _name )
+		static size_t schedule( size_t _timing, PyObject * _script )
+		{
+			return Holder<ScheduleManager>::hostage()
+				->schedule( _timing, _script );
+		}
+
+		static void scheduleRemove( size_t _id )
+		{
+			Holder<ScheduleManager>::hostage()
+				->remove( _id );
+		}
+
+		static int getMouseX()
+		{
+			return Holder<InputEngine>::hostage()
+				->getMouseX();
+		}
+
+		static int getMouseY()
+		{
+			return Holder<InputEngine>::hostage()
+				->getMouseY();
+		}
+
+		static void setCurrentScene( const std::string & _name )
 		{
 			printf("set current scene '%s'\n", _name.c_str() );
 			Holder<Player>::hostage()
 					->setCurrentScene( _name );
 		}
 
-		Scene * getCurrentScene()
+		static Scene * getCurrentScene()
 		{
 			Scene * scene = Holder<Player>::hostage()
 				->getCurrentScene();
 			return scene;
 		}
 
-		void setCamera2DPosition( float x, float y )
+		static Arrow * getArrow()
+		{
+			Arrow * arrow = Holder<Player>::hostage()
+				->getArrow();
+
+			return arrow;
+		}
+
+		static void setCamera2DPosition( float x, float y )
 		{
 			Holder<Player>::hostage()
 				->setCamera2DPosition( mt::vec2f(x, y) );
 		}
 
-		void setCamera3DPosition( float x, float y, float z )
+		static void setCamera3DPosition( float x, float y, float z )
 		{
 			Holder<Player>::hostage()
 				->setCamera3DPosition( mt::vec3f(x, y, z) );
 		}
 
-		PyObject * createNodeFromXml( PyObject * _params  )
+		static PyObject * createNodeFromXml( PyObject * _params  )
 		{
 			if( pybind::convert::is_string( _params ) == false )
 			{
@@ -79,6 +113,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Scene );
 	SCRIPT_CLASS_WRAPPING( HotSpot );
 	SCRIPT_CLASS_WRAPPING( Sprite );
+	SCRIPT_CLASS_WRAPPING( Animation );
 	SCRIPT_CLASS_WRAPPING( Arrow );
 //	SCRIPT_CLASS_WRAPPING( Player );	
 
@@ -127,6 +162,8 @@ namespace Menge
 
 		{
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)
+				.def( "setOffsetClick", &Arrow::setOffsetClick )
+				.def( "getOffsetClick", &Arrow::getOffsetClick )
 				;
 
 			pybind::proxy_<Scene, pybind::no_bases >("Scene", false)
@@ -136,6 +173,8 @@ namespace Menge
 
 			pybind::class_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot", false)
 				.def( "setInputHandler", &HotSpot::setInputHandler )
+				.def( "addPoint", &HotSpot::addPoint )
+				.def( "clearPoints", &HotSpot::clearPoints )
 				;
 
 			pybind::class_<Sprite, pybind::bases<SceneNode2D>>("Sprite", false)
@@ -146,8 +185,14 @@ namespace Menge
 				;
 
 			{
-
 				pybind::class_<Animation, pybind::bases<Sprite>>("Animation", false)
+					.def( "play", &Animation::play )
+					.def( "stop", &Animation::stop )
+					.def( "pause", &Animation::pause )
+					.def( "setLooped", &Animation::setLooped )
+					.def( "getLooped", &Animation::getLooped )					
+					.def( "setAnimationListener", &Animation::setAnimationListener )
+					.def( "setAnimationResource", &Animation::setAnimationResource )
 					;
 
 			}
@@ -163,5 +208,13 @@ namespace Menge
 		pybind::def( "setCamera3DPosition", &ScriptMethod::setCamera3DPosition );
 		
 		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
+
+		pybind::def( "schedule", &ScriptMethod::schedule );
+		pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );
+
+		pybind::def( "getMouseX", &ScriptMethod::getMouseX );
+		pybind::def( "getMouseY", &ScriptMethod::getMouseY );
+
+		pybind::def( "getArrow", &ScriptMethod::getArrow );
 	}
 }

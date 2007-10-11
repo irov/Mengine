@@ -54,7 +54,7 @@ namespace Menge
 
 		for( size_t index = 0; index < m_count; ++index )
 		{
-			size_t offset = index / m_numY;
+			size_t offset = index / m_numX;
 
 			m_uvs[index].x = float( index % m_numX ) / m_numX;
 			m_uvs[index].y = float( offset ) / m_numY;

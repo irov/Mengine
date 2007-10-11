@@ -122,10 +122,10 @@ namespace	Menge
 		return NodeCore::_activate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_update( float _timing )
+	void Scene::_update( size_t _timing )
 	{
 		Holder<ScriptEngine>::hostage()
-			->callModuleFunction( m_scriptable, "onUpdate", "(f)", _timing );
+			->callModuleFunction( m_scriptable, "onUpdate", "(k)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loader( TiXmlElement *_xml )

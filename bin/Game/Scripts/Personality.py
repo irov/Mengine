@@ -3,8 +3,14 @@ import Menge
 def init():
 	#Menge.setCurrentScene("Match3")
 	#Menge.setCurrentScene("Buka")
+	#Menge.setCurrentScene("FishDemo")	
 	Menge.setCurrentScene("FishDemo")
+	#Menge.schedule( 5000, setScene )
 	return True
+	pass
+
+def setScene():
+#	Menge.setCurrentScene("FishDemo")
 	pass
 
 def update( timing ):

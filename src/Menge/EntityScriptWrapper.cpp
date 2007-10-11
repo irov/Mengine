@@ -59,16 +59,19 @@ namespace Menge
 			TiXmlDocument * document = Holder<FileEngine>::hostage()
 				->loadXml( xml_path );
 
-			XML_FOR_EACH_DOCUMENT( document )
+			if( document )
 			{
-				XML_CHECK_NODE("Entity")
+				XML_FOR_EACH_DOCUMENT( document )
 				{
-					entity->loader(XML_CURRENT_NODE);
+					XML_CHECK_NODE("Entity")
+					{
+						entity->loader(XML_CURRENT_NODE);
+					}
 				}
-			}
-			XML_INVALID_PARSE()
-			{
-				
+				XML_INVALID_PARSE()
+				{
+					printf("Error: Invalid parse %s.xml\n", _type.c_str() );
+				}
 			}
 
 			entity->setLocalPosition( _pos );

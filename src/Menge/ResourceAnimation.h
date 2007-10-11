@@ -17,7 +17,7 @@ namespace Menge
 	public:
 		virtual size_t getSequenceCount() const;
 
-		virtual int getSequenceDelay( size_t _sequence ) const;
+		virtual size_t getSequenceDelay( size_t _sequence ) const;
 		virtual size_t getSequenceIndex( size_t _sequence ) const;
 
 	public:
@@ -26,13 +26,11 @@ namespace Menge
 	private:
 		struct Sequence
 		{
-			int delay;
+			size_t delay;
 			size_t index;
 		};
 
 		typedef std::vector<Sequence> TVectorSequence;
 		TVectorSequence m_vectorSequence;
-
-		std::string m_imageMap;
 	};
 }

@@ -62,14 +62,13 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
  	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
-
-
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::render()
 {
-	m_root->renderOneFrame();
+	//m_renderWindow->update();
+	//m_root->renderOneFrame();
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setProjectionMatrix(const /*mat4f*/ float * _projection)

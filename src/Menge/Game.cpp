@@ -12,6 +12,7 @@
 #	include "ScriptEngine.h"
 #	include "FileEngine.h"
 #	include "ResourceManager.h"
+#	include "ScheduleManager.h"
 
 #	include "XmlParser/XmlParser.h"
 #	include "ErrorMessage.h"
@@ -199,8 +200,11 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::update( float _timing )
+	void Game::update( size_t _timing )
 	{
+		Holder<ScheduleManager>::hostage()
+			->update( _timing );
+
 		Holder<Player>::hostage()
 			->update( _timing );
 
@@ -211,7 +215,7 @@ namespace Menge
 			->hasModuleFunction( m_pyPersonality, m_eventUpdate ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, m_eventUpdate, "(f)", _timing );
+				->callModuleFunction( m_pyPersonality, m_eventUpdate, "(k)", _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -249,6 +253,7 @@ namespace Menge
 		Holder<ScriptEngine>::hostage()
 			->setModulePath( m_listModulePath );
 
+		Holder<ScheduleManager>::keep( new ScheduleManager );
 		Holder<MousePickerSystem>::keep( new MousePickerSystem );
 
 		for each( const std::string & enType in m_listEntitiesDeclaration )			
@@ -288,6 +293,9 @@ namespace Menge
 			return false;
 		}
 
+		Holder<Player>::hostage()
+			->init();
+
 		bool result = false;
 
 		if( Holder<ScriptEngine>::hostage()
@@ -305,8 +313,6 @@ namespace Menge
 			return false;
 		}
 
-		Holder<Player>::hostage()
-			->init();
 
 		return result;
 	}

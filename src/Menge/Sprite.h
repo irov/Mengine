@@ -43,7 +43,7 @@ namespace Menge
 	
 	private:
 		ResourceImage * m_image;
-		std::string m_resourceName;
+		std::string m_resourceImage;
 
 		size_t m_currentImageIndex;
 	

@@ -14,11 +14,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Animation::Animation()
 	: m_playing(false)
+	, m_autoStart(false)
 	, m_looping(false)
 	, m_state(FORWARD)
-	, m_total_delay(0.f)
-	, m_anim(0)
+	, m_total_delay(0)
+	, m_animation(0)
 	, m_currentFrame(0)
+	, m_listener(0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::loader( TiXmlElement * _xml )
@@ -26,9 +28,32 @@ namespace	Menge
 		Sprite::loader(_xml);
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "Animation", "Name", m_resourceAnim );
+			XML_CHECK_VALUE_NODE( "Animation", "Name", m_resourceAnimation );
 			XML_CHECK_VALUE_NODE( "Looping", "Value", m_looping );
+			XML_CHECK_VALUE_NODE( "AutoStart", "Value", m_autoStart );			
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::setAnimationListener( PyObject * _listener )
+	{
+		m_listener = _listener;
+
+		this->registerEvent("END_ANIMATION", m_listener, "onAnimationEnd" );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::setAnimationResource( const std::string & _resource )
+	{
+		m_resourceAnimation = _resource;
+
+		if( m_animation )
+		{
+			Holder<ResourceManager>::hostage()
+				->releaseResource( m_animation );
+		}
+
+		m_animation = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceAnimation>( m_resourceAnimation );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimState( eAnimState _state )
@@ -48,21 +73,20 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setFirstFrame()
 	{
-		size_t frameSize = m_anim->getSequenceCount();
+		size_t frameSize = m_animation->getSequenceCount();
 
 		m_currentFrame = (m_state == FORWARD) ? 0 : frameSize - 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::nextFrame()
 	{
-		size_t frameSize = m_anim->getSequenceCount();
+		size_t frameSize = m_animation->getSequenceCount();
 
 		if( ++m_currentFrame == frameSize )
 		{
 			if( m_looping == false )
 			{
-				m_playing = false;
-				m_currentFrame = frameSize - 1;
+				stop();
 				return;
 			}
 			else
@@ -78,19 +102,18 @@ namespace	Menge
 		{
 			if(!m_looping)
 			{
-				m_playing = false;
-				m_currentFrame = 0;
+				stop();
 				return;
 			}
 			else
 			{
-				m_currentFrame = m_anim->getSequenceCount();
+				m_currentFrame = m_animation->getSequenceCount();
 			}
 		}
 		--m_currentFrame;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_update(float _timing)
+	void Animation::_update( size_t _timing )
 	{
 		Sprite::_update( _timing );
 
@@ -101,10 +124,9 @@ namespace	Menge
 
 		m_total_delay += _timing;
 
-		int delay = m_anim->getSequenceDelay(m_currentFrame);
+		size_t delay = m_animation->getSequenceDelay(m_currentFrame);
 
-		size_t currentImageIndex = m_anim->getSequenceIndex(m_currentFrame);
-
+		size_t currentImageIndex = m_animation->getSequenceIndex(m_currentFrame);
 		setImageIndex( currentImageIndex );
 
 		while( m_total_delay >= delay )
@@ -131,7 +153,7 @@ namespace	Menge
 				}
 				break;
 			}
-			delay = m_anim->getSequenceDelay( m_currentFrame );
+			delay = m_animation->getSequenceDelay( m_currentFrame );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -142,15 +164,25 @@ namespace	Menge
 			return false;
 		}
 
-		m_anim = Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceAnimation>( m_resourceAnim );
+		m_animation = Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceAnimation>( m_resourceAnimation );
 
-		if( m_anim == NULL )
+		if( m_animation == NULL )
 		{
 			return false;
 		}
 
-		setFirstFrame();
+		if( m_autoStart )
+		{
+			play();
+		}
+		else
+		{
+			setFirstFrame();
+
+			size_t currentImageIndex = m_animation->getSequenceIndex(m_currentFrame);
+			setImageIndex( currentImageIndex );
+		}
 
 		return true;
 	}
@@ -160,13 +192,15 @@ namespace	Menge
 		Sprite::_deactivate();
 
 		Holder<ResourceManager>::hostage()
-			->releaseResource( m_anim );
+			->releaseResource( m_animation );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::stop()
 	{
 		m_playing = false;
 		setFirstFrame();
+		m_total_delay = 0;
+		callEvent( "END_ANIMATION", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::pause()
@@ -177,6 +211,7 @@ namespace	Menge
 	void Animation::play()
 	{
 		m_playing = true;
+		m_total_delay = 0;
 		setFirstFrame();
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -62,13 +62,12 @@
 	</Resource>
 
 	<Resource Name = "BallRedCNG" Type = "ResourceAnimation" >
-		<ImageMap Name = "BallRed" />
 		<Sequences>
-			<Sequence Index = "1" Delay = "50" />
-			<Sequence Index = "2" Delay = "50" />
-			<Sequence Index = "3" Delay = "50" />
-			<Sequence Index = "4" Delay = "50" />
-			<Sequence Index = "14" Delay = "50" />
+			<Sequence Index = "1" Delay = "500" />
+			<Sequence Index = "2" Delay = "500" />
+			<Sequence Index = "3" Delay = "500" />
+			<Sequence Index = "4" Delay = "500" />
+			<Sequence Index = "5" Delay = "500" />
 		</Sequences>
 	</Resource>
 

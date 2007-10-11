@@ -20,7 +20,7 @@ namespace	Menge
 		const Message * start() override;
 
 	protected:
-		void	_update(float _timing) override;
+		void	_update( size_t _timing ) override;
 
 	private:
 		SoundBufferInterface * m_sampleMusic;

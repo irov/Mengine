@@ -69,22 +69,22 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageResource( const std::string & _name )
 	{
-		m_resourceName = _name;
+		m_resourceImage = _name;
 
 		if( m_image )
 		{
 			Holder<ResourceManager>::hostage()
 				->releaseResource( m_image );
-
-			m_image = 
-				Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceImage>( m_resourceName );
 		}
+		
+		m_image = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceImage>( m_resourceImage );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string & Sprite::getImageResource() const
 	{
-		return m_resourceName;
+		return m_resourceImage;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_activate()
@@ -96,7 +96,7 @@ namespace	Menge
 
 		m_image = 
 			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImage>( m_resourceName );
+			->getResourceT<ResourceImage>( m_resourceImage );
 
 		if( m_image == 0 )
 		{
@@ -120,7 +120,8 @@ namespace	Menge
 
 		XML_FOR_EACH_TREE(_xml)
 		{
-			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourceName );
+			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourceImage );
+			XML_CHECK_VALUE_NODE( "ImageIndex", "Value", m_currentImageIndex);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

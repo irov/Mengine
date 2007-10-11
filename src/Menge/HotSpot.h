@@ -34,6 +34,7 @@ namespace Menge
 
 	public:
 		void addPoint( const mt::vec2f & _p );
+		void clearPoints();
 		bool testPoint( const mt::vec2f & _p );
 
 		void setInputHandler( PyObject * _handler );
@@ -49,7 +50,7 @@ namespace Menge
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
-		void _update( float _timing ) override;
+		void _update( size_t _timing ) override;
 		void _debugRender() override;
 
 	private:

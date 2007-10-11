@@ -1,6 +1,7 @@
 <Entity>
-	<Node Type = "Sprite">
-		<ImageMap Name = "BallRed"/>
+	<Node Name = "AN_01" Type = "Animation">
+		<ImageMap Name = "grid"/>
+		<Animation Name = "BallRedCNG" />
 	</Node>
 	
 	<Node Name = "HS_01" Type = "HotSpot">

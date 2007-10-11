@@ -33,6 +33,11 @@ namespace Menge
 		TiXmlDocument * document = Holder<FileEngine>::hostage()
 			->loadXml( _file );
 
+		if( document == 0 )
+		{
+			printf("Error: Invalid parse resource '%s' \n", _file.c_str() );
+		}
+
 		XML_FOR_EACH_DOCUMENT( document )
 		{
 			XML_CHECK_NODE_FOR_EACH("DataBlock")
@@ -62,6 +67,10 @@ namespace Menge
 					loadResource( File );
 				}
 			}
+		}
+		XML_INVALID_PARSE()
+		{
+			printf("Error: Invalid pasrse resorce - '%s'", _file.c_str() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

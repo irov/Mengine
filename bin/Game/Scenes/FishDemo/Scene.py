@@ -1,11 +1,14 @@
 import Menge
 
 class Scene( Menge.Scene ):
-	def onActivate( self ):
-		self.camera_x = 512
+	def __init__( self ):
+		self.camera_x = 900
 		self.camera_y = 384
 
-		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
+		#Menge.setCamera2DPosition( self.camera_x, self.camera_y );
+		pass
+
+	def onActivate( self ):
 
 		self.node = Menge.createNodeFromXml(
 			'<Node Name = "Water_01" Type = "Sprite">'
@@ -19,12 +22,15 @@ class Scene( Menge.Scene ):
 		
 		self.node1 = self.getNode("Water_01")
 	
+		self.node1.setLocalPosition( Menge.vec2f( 500,400 ) )
+
 		position = self.node1.getLocalPosition()
-		print position
+		print Menge.getVec2fX(position), Menge.getVec2fY(position)
+
 		
-		self.node1.hide( True )
+		self.node1.hide( False )
 		
-		block = Menge.createEntity("Block",Menge.vec2f( 0,0 ), Menge.vec2f( 1, 0 ) )
+		block = Menge.createEntity("Block",Menge.vec2f( 100, 100 ), Menge.vec2f( 1, 0 ) )
 		
 		block.activate();
 		
@@ -35,8 +41,8 @@ class Scene( Menge.Scene ):
 		pass
 
 	def onUpdate( self, timing ):
-		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
+		#Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 
-		self.camera_x += timing * 25
+		self.camera_x += timing * 0.025
 		pass
 	pass

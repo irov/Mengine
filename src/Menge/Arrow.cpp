@@ -20,7 +20,17 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::_update( float _timing )
+	void Arrow::setOffsetClick( const mt::vec2f & _offsetClick )
+	{
+		m_offsetClick = _offsetClick;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Arrow::getOffsetClick()
+	{
+		return m_offsetClick;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::_update( size_t _timing )
 	{
 		SceneNode2D::_update( _timing );
 

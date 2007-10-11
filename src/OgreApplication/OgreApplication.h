@@ -15,6 +15,7 @@ class SystemDLL;
 
 class OgreApplication
 	: public ApplicationInterface
+	, public Ogre::FrameListener
 {
 public:
 	OgreApplication();
@@ -23,6 +24,12 @@ public:
 public:
 	bool init( const char * _xmlFile ) override;
 	void run() override;
+
+protected:
+	void createWindow( unsigned int _width, unsigned int _height, bool _fullscreen );
+
+	bool frameStarted( const Ogre::FrameEvent &evt) override;
+	bool frameEnded( const Ogre::FrameEvent &evt) override;
 
 private:
 	Ogre::Root *m_root;

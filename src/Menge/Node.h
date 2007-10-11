@@ -113,7 +113,7 @@ namespace Menge
 		/*!
 		\param _timing the first argument, timing for need update
 		*/
-		virtual void update( float _timing ) = 0;
+		virtual void update( size_t _timing ) = 0;
 
 		//! Node pure virtual. setup node from xml
 		/*!

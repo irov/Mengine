@@ -181,7 +181,7 @@ namespace Menge
 	void Application::update()
 	{
 		Holder<MousePickerSystem>::hostage()->clear();
-		Holder<Game>::hostage()->update(0.01f);
+		Holder<Game>::hostage()->update(10);
 		Holder<InputEngine>::hostage()->update();
 		Holder<MousePickerSystem>::hostage()->update();
 	}

@@ -42,7 +42,7 @@ namespace Menge
 
 	protected:
 		bool _activate() override;
-		void _update( float _timing ) override;
+		void _update( size_t _timing ) override;
 
 		void _addChildren( Layer * _layer ) override;
 	private:

@@ -113,19 +113,19 @@ namespace Menge
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::update(float _timing)
+	void NodeCore::update( size_t _timing )
 	{
 		if( m_active == false )
 		{
 			return;
 		}
 		
-		_update(_timing);
+		_update( _timing );
 
 		struct ForeachUpdate
 			: public NodeForeach
 		{
-			ForeachUpdate( float _timing )
+			ForeachUpdate( size_t _timing )
 				: m_timing( _timing )
 			{
 
@@ -136,7 +136,7 @@ namespace Menge
 				children->update( m_timing );
 			}
 
-			float m_timing;
+			size_t m_timing;
 		};
 
 		foreachChildren( ForeachUpdate(_timing) );
@@ -239,7 +239,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::_update(float _timing)
+	void NodeCore::_update( size_t _timing )
 	{
 		//Empty
 	}

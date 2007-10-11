@@ -48,6 +48,11 @@ namespace	Menge
 		m_poligon.add_point(_p);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::clearPoints()
+	{
+		m_poligon.clear_points();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )
 	{
 		size_t size = m_poligon.num_points();
@@ -165,7 +170,7 @@ namespace	Menge
 		SceneNode2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_update( float _timing )
+	void HotSpot::_update( size_t _timing )
 	{
 		Holder<MousePickerSystem>::hostage()
 			->regTrap( this );

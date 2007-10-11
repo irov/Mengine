@@ -73,7 +73,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Track::_update( float _timing )
+	void Track::_update( size_t _timing )
 	{
 		SceneNode2D::_update( _timing );
 

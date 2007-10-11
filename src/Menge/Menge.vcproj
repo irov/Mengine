@@ -110,7 +110,7 @@
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="0"
+			CharacterSet="2"
 			WholeProgramOptimization="0"
 			>
 			<Tool
@@ -584,14 +584,6 @@
 				</File>
 				<File
 					RelativePath=".\Animation.h"
-					>
-				</File>
-				<File
-					RelativePath=".\AnimationInteractive.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\AnimationInteractive.h"
 					>
 				</File>
 			</Filter>
@@ -1187,6 +1179,18 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="ScheduleManager"
+			>
+			<File
+				RelativePath=".\ScheduleManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ScheduleManager.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

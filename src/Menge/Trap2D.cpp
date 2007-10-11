@@ -84,7 +84,7 @@ namespace Menge
 		SceneNode2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trap2D::update( float _timing )
+	void Trap2D::update( size_t _timing )
 	{
 		SceneNode2D::_update( _timing );
 

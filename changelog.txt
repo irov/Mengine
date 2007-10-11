@@ -1,0 +1,62 @@
+===========================================================================
+Menge Engine
+
+staue: development 
+version: 0.0.0.4
+date: 
+
+[General]
++ added Sprite support ImageIndex:Value attribute
++ added Animation support AutoStart:Value attribute
+
+[Framework]
++ added Menge.getMouseX()
++ added Menge.getMouseY()
+
+
+staue: development 
+version: 0.0.0.3
+date: 11.10.07
+
+[General]
++ added Entity.onLoader callback
+
+[Framework]
++ added support class Animation
++ added Animation.play()
++ added Animation.stop()
++ added Animation.pause()
++ added Animation.setLooped( bool )
++ added Animation.getLooped()
++ added Animation.setAnimationListener( script )
++ added Animation.setAnimationResource( string )
+
++ added Menge.getCurrentScene
++ added Menge.schedule( timing, script )
++ added Menge.scheduleRemove( id )
+
+staue: development 
+version: 0.0.0.2
+date: 08.10.07
+
+[Genereal]
+* fixed hotspot, but don't corect work in scrolling
++ added support [Entity].xml for build children node
+
+[Framework]
++ added Scene.getNode( NodeName )
++ added Node.getChildren( NodeName, isRecursive )
++ added Node.setLocalPosition( vec2f )
++ added Node.getLocalPosition()
++ added Node.setLocalDirection( vec2f )
++ added Node.getLocalDirection()
++ added Node.getWorldPosition()
+* fixed Renderable.hide
+
+
+
+staue: development 
+version: 0.0.0.1
+date: 05.10.07
+
+* test

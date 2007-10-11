@@ -38,7 +38,8 @@ date: 11.10.07
 + added Animation.getLooped()
 + added Animation.setAnimationListener( script )
 + added Animation.setAnimationResource( string )
-
++ added HotSpot.addPoint( vec2f )
++ added HotSpot.clearPoints();
 + added Menge.getCurrentScene
 + added Menge.schedule( timing, script )
 + added Menge.scheduleRemove( id )

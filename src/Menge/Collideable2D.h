@@ -14,6 +14,7 @@ namespace Menge
 
 	public:		
 		const mt::box2f& getBoundingBox();
+		const mt::polygon& getPolygon();
 
 	public:
 		void loader( TiXmlElement * _xml );

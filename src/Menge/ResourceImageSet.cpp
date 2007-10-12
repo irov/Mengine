@@ -25,6 +25,15 @@ namespace Menge
 		return m_uvs[ _index ];
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & ResourceImageSet::getSize( size_t _frame )
+	{
+		float u = m_uvs[ _frame ].z - m_uvs[ _frame ].x;
+		float v = m_uvs[ _frame ].w - m_uvs[ _frame ].y;
+		m_size.x *= u;
+		m_size.y *= v;
+		return m_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageSet::loader( TiXmlElement * _xml )
 	{
 		ResourceImageDefault::loader( _xml );

@@ -38,6 +38,10 @@ namespace mt
 		const vec2f & back() const;
 
 		bool	is_convex() const;
+
+		//	return extrem point in direction
+		mt::vec2f	support( const mt::vec2f& normal )  const;
+
 	private:
 		std::vector<vec2f> points;
 
@@ -51,6 +55,9 @@ namespace mt
 	bool	is_point_inside_polygon(const polygon& poly, const vec2f& p);
 	bool	is_convex_polygon(const polygon& poly);
 	float	orient_polygon(const polygon& poly);
+
+	bool	intersect_poly_poly( const polygon& _a, const polygon& _b );
+	bool	closest_point_poly_poly( const polygon & _a, const polygon & _b, mt::vec2f & _p, mt::vec2f & _q );
 
 	bool	operator==(const polygon& _a, const polygon& _b);
 	bool	operator!=(const polygon& _a, const polygon& _b);

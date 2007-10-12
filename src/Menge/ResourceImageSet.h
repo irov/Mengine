@@ -17,6 +17,7 @@ namespace Menge
 	public:
 		size_t getCount() override;
 
+		const mt::vec2f & getSize( size_t _frame ) override;
 		const mt::vec4f & getUV( size_t _image ) override;
 
 	public:

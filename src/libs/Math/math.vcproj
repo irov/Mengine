@@ -437,6 +437,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="simplex"
+			>
+			<File
+				RelativePath=".\simplex.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\simplex.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

@@ -30,8 +30,9 @@ namespace Menge
 				{
 					mt::vec2f point;
 					XML_VALUE_ATTRIBUTE("Value", point);
+
 					m_polygon.add_point(point);
-					add_internal_point(m_bbox,point);
+					mt::add_internal_point(m_bbox,point);
 				}
 			}	
 
@@ -94,8 +95,12 @@ namespace Menge
 			
 			if( is_trapped )
 			{
+				bool is_intersect = mt::intersect_poly_poly( m_polygon, node->getPolygon() );
 				//check for near phase.
-				m_trapped.push_back( node );
+				if( is_intersect )
+				{
+					m_trapped.push_back( node );
+				}
 			}
 		}
 

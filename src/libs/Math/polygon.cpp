@@ -1,4 +1,5 @@
-#include	"polygon.h"
+#	include	"polygon.h"
+#	include	"simplex.h"
 
 namespace mt
 {
@@ -26,6 +27,137 @@ namespace mt
 		points = _rhs.points;
 		return	*this;
 	}
+
+	mt::vec2f	polygon::support( const mt::vec2f& normal ) const
+	{
+		float max = dot_v2_v2( points[0], normal );
+		int index = 0;
+
+		for( int i = 1; i < points.size(); i++ )
+		{
+			float dot = dot_v2_v2( points[i], normal );
+			if( dot > max )
+			{
+				max = dot;
+				index = i;
+			}
+		}
+
+		return points[index];
+	}
+
+	bool	intersect_poly_poly( const polygon& _a, const polygon& _b )
+	{
+		float nu = 0;
+		float delta = 0;
+		bool close_enough = false;
+		float eps = 0.0001f;
+
+		simplex_solver solver;
+		
+		int iteration = 0;
+
+		mt::vec3f	V(1,0,0);
+
+		while(!close_enough)
+		{
+			mt::vec3f P = mt::vec3f( _a.support( -V.v2 ), 0);
+			mt::vec3f Q = mt::vec3f( _b.support( V.v2 ), 0);
+			mt::vec3f W = P - Q;
+
+			float v = V.length();
+
+			delta = dot_v3_v3(V,W) / v;
+
+			if(delta > 0) 
+			{
+				return false;
+			}
+
+			nu = std::max(nu, delta);
+
+			close_enough = fabs(v - nu) < eps;
+
+			if(!close_enough)
+			{
+				if( solver.testSimplex(W) == true )
+				{
+					return false;
+				}
+				solver.addVertex( W, P, Q );
+				solver.update( V );
+			}
+
+			iteration++;
+
+			if(iteration > 300)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	bool	closest_point_poly_poly( const polygon& _a, const polygon& _b, mt::vec2f & _p, mt::vec2f & _q )
+	{
+		float nu = 0;
+		float delta = 0;
+		bool close_enough = false;
+		float eps = 0.0001f;
+
+		simplex_solver solver;
+		
+		int iteration = 0;
+
+		bool intersect = true;
+
+		mt::vec3f	V(1,0,0);
+
+		while(!close_enough)
+		{
+			mt::vec3f P = mt::vec3f( _a.support( -V.v2 ), 0);
+			mt::vec3f Q = mt::vec3f( _b.support( V.v2 ), 0);
+			mt::vec3f W = P - Q;
+
+			float v = V.length();
+
+			delta = dot_v3_v3(V,W) / v;
+
+			if(delta > 0) 
+			{
+				intersect = false;
+			}
+
+			nu = std::max(nu, delta);
+
+			close_enough = fabs(v - nu) < eps;
+
+			if(!close_enough)
+			{
+				if( solver.testSimplex( W ) == true )
+				{
+					return false;
+				}
+
+				solver.addVertex( W, P, Q );
+				solver.update( V );
+			}
+
+			iteration++;
+
+			if(iteration > 300)
+			{
+				return false;
+			}
+		}
+
+		_p = solver.ClosestPoints[0].v2;
+		_q = solver.ClosestPoints[1].v2;
+
+		return intersect;
+	}
+
 
 	void polygon::clear_points()
 	{

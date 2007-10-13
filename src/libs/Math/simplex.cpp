@@ -123,7 +123,7 @@ namespace	mt
 			float d1 = mt::dot_v3_v3(ab, ap);
 			float d2 = mt::dot_v3_v3(ac, ap);
 
-			for(;;)
+			while(true)
 			{
 				if( d1 <= 0.0f && d2 <= 0.0f ) 
 				{

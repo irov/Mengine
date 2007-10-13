@@ -41,7 +41,7 @@ namespace	mt
 
 	bool	simplex_solver::testSimplex( const mt::vec3f& _W)
 	{
-		for( int i = 0; i < size; i++ )
+		for( size_t i = 0; i < size; i++ )
 		{
 			if (W[i].x == _W.x && W[i].y == _W.y && W[i].z == _W.z)
 			{
@@ -123,89 +123,92 @@ namespace	mt
 			float d1 = mt::dot_v3_v3(ab, ap);
 			float d2 = mt::dot_v3_v3(ac, ap);
 
-			if( d1 <= 0.0f && d2 <= 0.0f ) 
+			for(;;)
 			{
-				u = 1;
-				v = 0;
-				w = 0;
-				Usage.A = true;
-				goto END;
-			}
+				if( d1 <= 0.0f && d2 <= 0.0f ) 
+				{
+					u = 1;
+					v = 0;
+					w = 0;
+					Usage.A = true;
+					break;
+				}
 
-			mt::vec3f bp = origin - W[1];
-			float d3 = mt::dot_v3_v3(ab, bp);
-			float d4 = mt::dot_v3_v3(ac, bp);
+				mt::vec3f bp = origin - W[1];
+				float d3 = mt::dot_v3_v3(ab, bp);
+				float d4 = mt::dot_v3_v3(ac, bp);
 
-			if( d3 >= 0.0f && d4 <= d3 ) 
-			{
-				u = 0;
-				v = 1;
-				w = 0;
+				if( d3 >= 0.0f && d4 <= d3 ) 
+				{
+					u = 0;
+					v = 1;
+					w = 0;
+					Usage.B = true;
+					break;
+				}
+
+				float vc = d1*d4-d3*d2;
+				if(vc <= 0.0f && d1>= 0.0f && d3 <= 0.0f)
+				{
+					float v = d1/(d1-d3);
+					u = 1-v;
+					v = v;
+					w = 0;
+					Usage.A = true;
+					Usage.B = true;
+					break;
+				}
+
+				mt::vec3f cp = origin - W[2];
+				float d5 = mt::dot_v3_v3(ab, cp);
+				float d6 = mt::dot_v3_v3(ac, cp);
+
+				if( d6 >= 0.0f && d5 <= d6 ) 
+				{
+					u = 0;
+					v = 0;
+					w = 1;
+					Usage.C = true;
+					break;
+				}
+
+				float vb = d5*d2-d1*d6;
+				if(vb <= 0.0f && d2 >= 0.0f && d6 <= 0.0f)
+				{
+					float w_ = d2/(d2-d6);
+					u = 1-w_;
+					v = 0;
+					w = w_;
+					Usage.A = true;
+					Usage.C = true;
+					break;
+				}
+
+				float va = d3*d6-d5*d4;
+
+				if(va <= 0.0f && (d4 - d3) >= 0.0f && (d5 - d6) >= 0.0f)
+				{
+					float w_ = (d4 - d3)/((d4 - d3)+(d5 - d6));
+					u = 0;
+					v = 1-w_;
+					w = w_;
+					Usage.B = true;
+					Usage.C = true;
+					break;
+				}
+
+				float denom = 1.0f / (va + vb + vc);
+
+				v = vb * denom;
+				w = vc * denom;
+
+				u = 1 - v - w;
+
 				Usage.B = true;
-				goto END;
-			}
-
-			float vc = d1*d4-d3*d2;
-			if(vc <= 0.0f && d1>= 0.0f && d3 <= 0.0f)
-			{
-				float v = d1/(d1-d3);
-				u = 1-v;
-				v = v;
-				w = 0;
-				Usage.A = true;
-				Usage.B = true;
-				goto END;
-			}
-
-			mt::vec3f cp = origin - W[2];
-			float d5 = mt::dot_v3_v3(ab, cp);
-			float d6 = mt::dot_v3_v3(ac, cp);
-
-			if( d6 >= 0.0f && d5 <= d6 ) 
-			{
-				u = 0;
-				v = 0;
-				w = 1;
 				Usage.C = true;
-				goto END;
+				break;
 			}
 
-			float vb = d5*d2-d1*d6;
-			if(vb <= 0.0f && d2 >= 0.0f && d6 <= 0.0f)
-			{
-				float w_ = d2/(d2-d6);
-				u = 1-w_;
-				v = 0;
-				w = w_;
-				Usage.A = true;
-				Usage.C = true;
-				goto END;
-			}
-
-			float va = d3*d6-d5*d4;
-
-			if(va <= 0.0f && (d4 - d3) >= 0.0f && (d5 - d6) >= 0.0f)
-			{
-				float w_ = (d4 - d3)/((d4 - d3)+(d5 - d6));
-				u = 0;
-				v = 1-w_;
-				w = w_;
-				Usage.B = true;
-				Usage.C = true;
-				goto END;
-			}
-
-			float denom = 1.0f / (va + vb + vc);
-			
-			v = vb * denom;
-			w = vc * denom;
-
-			u = 1 - v - w;
-
-			Usage.B = true;
-			Usage.C = true;
-
-			END:
 			ClosestPoints[0] = u * P[0] + v * P[1] + w * P[2];
 			ClosestPoints[1] = u * Q[0] + v * Q[1] + w * Q[2];
 

@@ -10,12 +10,18 @@ extern "C"
 
 namespace Menge
 {
-	struct ScheduleEvent;
-
 	class ScheduleManager
 	{
 	public:
 		ScheduleManager();
+
+		struct ScheduleEvent
+		{
+			bool dead;
+			size_t id;
+			size_t timing;
+			PyObject * script;
+		};
 
 	public:
 		size_t schedule( size_t _timing, PyObject * _func );
@@ -25,7 +31,7 @@ namespace Menge
 		void update( size_t _timing );
 
 	private:
-		typedef std::list<ScheduleEvent *> TSchedules;
+		typedef std::list<ScheduleEvent> TSchedules;
 
 		size_t m_schedulesID;
 		TSchedules m_schedules;

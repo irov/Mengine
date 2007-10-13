@@ -1,6 +1,25 @@
 ===========================================================================
 Menge Engine
 
+
+===========================================================================
+staue: development 
+version: 0.0.0.5
+date: now
+
+[Genereal]
+* fixed Hotspot parallax-scrolling behavior
+* fixed bug scheduleManager
++ support timing update
++ support Entity move
++ support Allocator Transformation:Position attribute
++ support Allocator Transformation:Direction attribute
++ support Allocator Transformation:Rotate attribute
+
+[Framework]
++ added Entity.moveTo( time, vec2f, bool )
++ added Entity.moveStop()
+
 ===========================================================================
 staue: development 
 version: 0.0.0.4
@@ -17,8 +36,8 @@ date: 11.10.07
 + added Menge.getMouseX()
 + added Menge.getMouseY()
 + added Menge.getArrow()
-+ added Arrow.setOffsetClick
-+ added Arrow.getOffsetClick
++ added Arrow.setOffsetClick( vec2f )
++ added Arrow.getOffsetClick()
 
 
 ===========================================================================
@@ -40,7 +59,7 @@ date: 11.10.07
 + added Animation.setAnimationResource( string )
 + added HotSpot.addPoint( vec2f )
 + added HotSpot.clearPoints();
-+ added Menge.getCurrentScene
++ added Menge.getCurrentScene()
 + added Menge.schedule( timing, script )
 + added Menge.scheduleRemove( id )
 
@@ -61,7 +80,7 @@ date: 08.10.07
 + added Node.setLocalDirection( vec2f )
 + added Node.getLocalDirection()
 + added Node.getWorldPosition()
-* fixed Renderable.hide
+* fixed Renderable.hide( bool )
 
 ===========================================================================
 staue: development 

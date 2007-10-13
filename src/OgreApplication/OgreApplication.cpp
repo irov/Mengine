@@ -225,7 +225,7 @@ bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)
 {
 	if( m_window->isActive() )
 	{
-		return m_application->loop();
+		return m_application->update( size_t(evt.timeSinceLastFrame * 1000.f) );
 	}
 
 	return true;

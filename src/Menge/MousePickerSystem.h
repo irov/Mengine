@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Viewport.h"
+
 #	include <list>
 
 namespace Menge
@@ -12,11 +14,17 @@ namespace Menge
 	public:
 		MousePickerSystem();
 
+		struct PickerTrap
+		{
+			MousePickerTrap * trap;
+			Viewport viewport;
+		};
+
 	public:
 		void update();
 		void clear();
 
-		void regTrap( MousePickerTrap * _trap );
+		void regTrap( MousePickerTrap * _trap, const Viewport & _viewport );
 		MousePickerTrap * pickTrap( float _x, float _y );
 		InputHandler * pickHandler( float _x, float _y );
 
@@ -25,7 +33,7 @@ namespace Menge
 		bool handleMouseMove( int _x, int _y, int _whell );
 
 	private:
-		typedef std::list<MousePickerTrap *> TListPickerTrap;
+		typedef std::list<PickerTrap> TListPickerTrap;
 		TListPickerTrap m_listPickerTrap;
 
 		MousePickerTrap * m_lastPickerTrap;

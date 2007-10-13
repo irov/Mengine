@@ -9,6 +9,7 @@ namespace Menge
 	
 	class NodeForeach;
 	class Scriptable;
+	class Viewport;
 
 	//! Node - base pure virtual class
 	/*! 
@@ -113,7 +114,7 @@ namespace Menge
 		/*!
 		\param _timing the first argument, timing for need update
 		*/
-		virtual void update( size_t _timing ) = 0;
+		virtual void update( size_t _timing, const Viewport & _viewport ) = 0;
 
 		//! Node pure virtual. setup node from xml
 		/*!

@@ -31,9 +31,9 @@ namespace mt
 	mt::vec2f	polygon::support( const mt::vec2f& normal ) const
 	{
 		float max = dot_v2_v2( points[0], normal );
-		int index = 0;
+		size_t index = 0;
 
-		for( int i = 1; i < points.size(); i++ )
+		for( size_t i = 1; i < points.size(); i++ )
 		{
 			float dot = dot_v2_v2( points[i], normal );
 			if( dot > max )

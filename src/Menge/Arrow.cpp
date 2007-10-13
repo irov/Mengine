@@ -30,9 +30,9 @@ namespace	Menge
 		return m_offsetClick;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::_update( size_t _timing )
+	void Arrow::_update( size_t _timing, const Viewport & _viewport )
 	{
-		SceneNode2D::_update( _timing );
+		SceneNode2D::_update( _timing, _viewport );
 
 		InputEngine *inputEng = Holder<InputEngine>::hostage();
 

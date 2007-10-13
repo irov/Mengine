@@ -122,7 +122,7 @@ namespace	Menge
 		return NodeCore::_activate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_update( size_t _timing )
+	void Scene::_update( size_t _timing, const Viewport & _viewport )
 	{
 		Holder<ScriptEngine>::hostage()
 			->callModuleFunction( m_scriptable, "onUpdate", "(k)", _timing );

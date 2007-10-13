@@ -23,7 +23,7 @@ namespace Menge
 	public:
 		virtual bool init();
 		virtual void fini();
-		virtual bool loop();
+		virtual bool update( size_t _timing );
 
 		virtual void setFileSystem( FileSystemInterface * _interface );
 		virtual void setInputSystem( InputSystemInterface * _interface );
@@ -39,10 +39,6 @@ namespace Menge
 		bool handleMouseButtonEvent( size_t _button, bool _isDown );
 		bool handleMouseMove( int _x, int _y, int _whell );
 
-	protected:
-		void update();
-		void render();
-		
 	private:
 		int m_width;
 		int m_height;

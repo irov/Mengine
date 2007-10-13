@@ -93,6 +93,16 @@ namespace Menge
 		changePivot();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Allocator2D::setRotate( float _alpha )
+	{
+		float cos_alpha = cosf(_alpha);
+		float sin_alpha = sinf(_alpha);
+		m_localMatrix[0][0] = cos_alpha;
+		m_localMatrix[0][1] = -sin_alpha;
+		m_localMatrix[1][0] = sin_alpha;
+		m_localMatrix[1][1] = cos_alpha;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::translate( const mt::vec2f &delta )
 	{
 		m_localMatrix.v2.v2 += delta;
@@ -128,7 +138,32 @@ namespace Menge
 		{
 			XML_CHECK_NODE("Transformation")
 			{
-				XML_VALUE_ATTRIBUTE("Value", m_localMatrix);
+				XML_CHECK_ATTRIBUTE( "Value" )
+				{
+					XML_VALUE_ATTRIBUTE("Value", m_localMatrix);
+				}
+
+				XML_CHECK_ATTRIBUTE( "Position" )
+				{
+					mt::vec2f position;
+					XML_VALUE_ATTRIBUTE("Position", position);
+					setLocalPosition( position );
+				}
+
+				XML_CHECK_ATTRIBUTE( "Rotate" )
+				{
+					float rotate;
+					XML_VALUE_ATTRIBUTE("Rotate", rotate);
+					setRotate( rotate );
+				}
+
+				XML_CHECK_ATTRIBUTE( "Direction" )
+				{
+					mt::vec2f direction;
+					XML_VALUE_ATTRIBUTE("Rotate", direction);
+					setLocalDirection( direction );
+				}
+
 
 				changePivot();
 			}

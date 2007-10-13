@@ -7,6 +7,7 @@ class Block( Menge.Entity ):
 		pass
 		
 	def onLoader( self ):
+		print "!@!"
 		hotspot = self.getChildren( "HS_01", True )
 		hotspot.setInputHandler( self )
 		
@@ -17,12 +18,18 @@ class Block( Menge.Entity ):
 	def onHandleMouseButtonEvent( self, button, isDwon ):
 		print button, isDwon
 		self.animation.play()
+		self.moveTo( 3000, Menge.vec2f( 1000,200 ), False )
 		return True
 		pass
 		
-	#def onAnimationEnd( self ):
-		#print "Bla bla bla..."
-	#	pass
+	def onMoveEnd( self ):
+		print "Blo blu ble..."
+		pass
+		
+	def onAnimationEnd( self ):
+		self.moveTo( 4000, Menge.vec2f( 100,200 ), False )
+		print "Bla bla bla..."
+		pass
 		
 	def onEnter( self ):
 		print "enter"

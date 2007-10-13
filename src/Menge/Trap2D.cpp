@@ -85,9 +85,9 @@ namespace Menge
 		SceneNode2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trap2D::update( size_t _timing )
+	void Trap2D::update( size_t _timing, const Viewport & _viewport )
 	{
-		SceneNode2D::_update( _timing );
+		SceneNode2D::_update( _timing, _viewport );
 
 		for each( SceneNode2D * node in m_sceneNodes )
 		{

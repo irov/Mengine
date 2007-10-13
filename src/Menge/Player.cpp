@@ -154,14 +154,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update( size_t _timing )
 	{
+		Viewport avp;
+		avp.begin = mt::vec2f(0,0);
+		avp.end = mt::vec2f(1024,768);
+
 		if( m_scene )
 		{
-			m_scene->update( _timing );
+			m_scene->update( _timing, avp );
 		}
 
 		if( m_arrow )
 		{
-			m_arrow->update( _timing );
+			m_arrow->update( _timing, avp );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -93,7 +93,7 @@ namespace	Menge
 		return message;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	TextField::_update( size_t _timing )
+	void	TextField::_update( size_t _timing, const Viewport & _viewport )
 	{
 		if(m_isPlaying == false) return;
 

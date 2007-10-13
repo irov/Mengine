@@ -28,6 +28,8 @@ namespace Menge
 
 		void setLocalPosition( const mt::vec2f &position );
 		void setLocalDirection( const mt::vec2f &direction );
+
+		void setRotate( float _alpha );
 		
 		void translate( const mt::vec2f &delta );
 

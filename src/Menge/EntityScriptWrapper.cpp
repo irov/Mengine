@@ -1,4 +1,6 @@
+#	include "ScriptClassWrapperDefine.h"
 #	include "ScriptDeclarationDefine.h"
+
 
 #	include "Entity.h"
 
@@ -66,12 +68,19 @@ namespace Menge
 					XML_CHECK_NODE("Entity")
 					{
 						entity->loader(XML_CURRENT_NODE);
+
+						entity->registerEvent( "LOADER", "onLoader" );
+						entity->callEvent("LOADER", "()");
 					}
 				}
 				XML_INVALID_PARSE()
 				{
 					printf("Error: Invalid parse %s.xml\n", _type.c_str() );
 				}
+			}
+			else
+			{
+				printf( "Warrning: not find entity xml '%s'", xml_path.c_str() );
 			}
 
 			entity->setLocalPosition( _pos );
@@ -81,10 +90,15 @@ namespace Menge
 		}
 	}
 
+	SCRIPT_CLASS_WRAPPING( Entity );
+
 	REGISTER_SCRIPT_CLASS( Menge, Entity, Node )
 	{
-		pybind::proxy_<Entity, pybind::bases<SceneNode2D> >("Entity");
-			
+		pybind::proxy_<Entity, pybind::bases<SceneNode2D> >("Entity", false)
+			.def( "moveTo", &Entity::moveTo )
+			.def( "moveStop", &Entity::moveStop )
+			;
+
 		pybind::def( "createEntity", &ScriptMethod::createEntity );
 	}
 }

@@ -113,9 +113,9 @@ namespace	Menge
 		--m_currentFrame;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_update( size_t _timing )
+	void Animation::_update( size_t _timing, const Viewport & _viewport )
 	{
-		Sprite::_update( _timing );
+		Sprite::_update( _timing, _viewport );
 
 		if( m_playing == false )
 		{

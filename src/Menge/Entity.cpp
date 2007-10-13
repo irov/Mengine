@@ -9,6 +9,9 @@ namespace	Menge
 	OBJECT_IMPLEMENT( Entity )
 	//////////////////////////////////////////////////////////////////////////
 	Entity::Entity()
+	: m_moveTo(false)
+	, m_moveTime(0)
+	, m_moveSpeed(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -16,27 +19,75 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Entity::_activate()
+	void Entity::moveTo( size_t _time, const mt::vec2f & _point, bool _changeDirection )
 	{
-		if( Holder<ScriptEngine>::hostage()
-			->hasMethod( this, "onActivate" ) )
+		const mt::vec2f & _pos = getLocalPosition();
+		float length = mt::length_v2_v2( _pos, _point );
+		if( length > 0.00001f )
 		{
-			Holder<ScriptEngine>::hostage()
-				->callMethod( this, "onActivate" );
-		}
+			if( m_moveTo )
+			{
+				moveStop();
+			}
 
-		return true;
+			m_movePoint = _point;
+			m_moveTime = _time;
+			m_moveTo = true;
+
+			m_moveSpeed = length / float(_time);
+
+			m_moveDir = mt::norm_v2( _point - _pos );
+			if( _changeDirection )
+			{
+				setLocalDirection( m_moveDir );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::loader( TiXmlElement * _xml )
+	void Entity::moveStop()
 	{
-		SceneNode2D::loader( _xml );
+		m_moveTo = false;
 
-		if( Holder<ScriptEngine>::hostage()
-			->hasMethod( this, "onLoader" ) )
+		this->callEvent("MOVE_STOP", "()" );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::_update( size_t _timing, const Viewport & _viewport )
+	{
+		if( m_moveTo )
 		{
-			Holder<ScriptEngine>::hostage()
-				->callMethod( this, "onLoader" );
+			if( m_moveTime < _timing )
+			{
+				setLocalPosition( m_movePoint );
+
+				m_moveTo = false;
+
+				this->callEvent("MOVE_END", "()" );
+			}
+			else
+			{
+				m_moveTime -= _timing;
+
+				float way_length = m_moveSpeed * float(_timing);
+				
+				mt::vec2f way_offset = m_moveDir * way_length;
+				
+				mt::vec2f & pos = getLocalPositionModify();
+
+				pos += way_offset;
+
+				changePivot();
+			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Entity::_activate()
+	{
+		this->registerEvent("ACTIVATE", "onActivate" );
+		this->registerEvent("MOVE_END", "onMoveEnd" );
+		this->registerEvent("MOVE_STOP", "onMoveStop" );
+
+		this->callEvent("ACTIVATE", "()" );
+
+		return true;
 	}
 }

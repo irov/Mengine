@@ -155,10 +155,19 @@ namespace Menge
 		Holder<Game>::hostage()->release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::loop()
+	bool Application::update( size_t _timing )
 	{	
-		update();
-		render();
+		Holder<MousePickerSystem>::hostage()->clear();
+		Holder<Game>::hostage()->update( _timing );
+		Holder<InputEngine>::hostage()->update();
+		Holder<MousePickerSystem>::hostage()->update();
+
+		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
+
+		Holder<Game>::hostage()->render();
+		Holder<Game>::hostage()->debugRender();
+
+		renderEng->render();
 
 		return Holder<InputEngine>::hostage()->isKeyDown( 0x01 ) == false;
 	}
@@ -176,25 +185,5 @@ namespace Menge
 	bool Application::handleMouseMove( int _x, int _y, int _whell )
 	{
 		return Holder<Game>::hostage()->handleMouseMove( _x, _y, _whell );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::update()
-	{
-		Holder<MousePickerSystem>::hostage()->clear();
-		Holder<Game>::hostage()->update(10);
-		Holder<InputEngine>::hostage()->update();
-		Holder<MousePickerSystem>::hostage()->update();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::render()
-	{
-		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
-	
-		Holder<Game>::hostage()->render();
-		Holder<Game>::hostage()->debugRender();
-
-		renderEng->render();
-
-		//renderEng->endScene();
 	}
 }

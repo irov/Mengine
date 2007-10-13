@@ -113,33 +113,35 @@ namespace Menge
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::update( size_t _timing )
+	void NodeCore::update( size_t _timing, const Viewport & _viewport )
 	{
 		if( m_active == false )
 		{
 			return;
 		}
 		
-		_update( _timing );
+		_update( _timing, _viewport );
 
 		struct ForeachUpdate
 			: public NodeForeach
 		{
-			ForeachUpdate( size_t _timing )
-				: m_timing( _timing )
+			ForeachUpdate( size_t _timing, const Viewport & _viewport )
+				: m_timing(_timing)
+				, m_viewport(_viewport)
 			{
 
 			}
 
 			void apply( Node * children ) const override
 			{
-				children->update( m_timing );
+				children->update( m_timing, m_viewport );
 			}
 
 			size_t m_timing;
+			const Viewport & m_viewport;
 		};
 
-		foreachChildren( ForeachUpdate(_timing) );
+		foreachChildren( ForeachUpdate( _timing, _viewport ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::loader(TiXmlElement * _xml)
@@ -239,7 +241,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::_update( size_t _timing )
+	void NodeCore::_update( size_t _timing, const Viewport & _viewport )
 	{
 		//Empty
 	}

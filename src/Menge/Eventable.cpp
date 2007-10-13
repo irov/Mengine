@@ -1,6 +1,7 @@
 #	include "Eventable.h"
 
 #	include "ScriptEngine.h"
+#	include "Scriptable.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -27,7 +28,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( const std::string &_name, PyObject * _module, const std::string & _method  )
+	bool Eventable::registerEvent( const std::string & _name, const std::string & _method  )
+	{
+		Scriptable * scriptable = getScriptable();
+		PyObject * module = scriptable->getScript();
+
+		return registerEvent( _name, module, _method );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Eventable::registerEvent( const std::string & _name, PyObject * _module, const std::string & _method  )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -51,7 +60,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( const std::string &_name, PyObject * _callback )
+	bool Eventable::registerEvent( const std::string & _name, PyObject * _callback )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -84,7 +93,7 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::callEvent( const std::string &_name, const char * _format, ... )
+	void Eventable::callEvent( const std::string & _name, const char * _format, ... )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find( _name );
 
@@ -102,7 +111,7 @@ namespace Menge
 		va_end( valist ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::askEvent( bool & _result, const std::string &_name, const char * _format, ... )
+	bool Eventable::askEvent( bool & _result, const std::string & _name, const char * _format, ... )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find( _name );
 
@@ -127,19 +136,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Eventable::loader(TiXmlElement * _xml)
 	{
-		//XML_FOR_EACH_TREE(_xml)
-		//{
-		//	XML_CHECK_NODE("Event")
-		//	{
-		//		XML_DEF_ATTRIBUTES_NODE(Type);
-		//		XML_DEF_ATTRIBUTES_NODE(Function);
+		XML_FOR_EACH_TREE(_xml)
+		{
+			XML_CHECK_NODE("Event")
+			{
+				XML_DEF_ATTRIBUTES_NODE(Type);
+				XML_DEF_ATTRIBUTES_NODE(Function);
 
-		//		ScriptEngine *scriptEng = Holder<ScriptEngine>::hostage();
-
-		//		Event * event = scriptEng->genEvent( Function );
-
-		//		//registerEvent( Type, event );
-		//	}
-		//}
+				registerEvent( Type, Function );
+			}
+		}
 	}
 }

@@ -25,7 +25,7 @@ namespace Menge
 		const std::string & getType()const override;
 
 	public:
-		void update( size_t _timing ) override;
+		void update( size_t _timing, const Viewport & _viewport ) override;
 		void loader(TiXmlElement * _xml) override;
 
 	public:

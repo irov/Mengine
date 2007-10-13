@@ -91,6 +91,13 @@ namespace	Menge
 		return m_viewPort;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::update( size_t _timing, const Viewport & _viewport )
+	{
+		const Viewport & viewport = updateViewport( _viewport );
+
+		SceneNode2D::update( _timing, viewport );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::handleKeyEvent( size_t _key, bool _isDown )
 	{
 		return false;

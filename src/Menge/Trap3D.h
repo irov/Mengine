@@ -15,7 +15,7 @@ namespace Menge
 		Trap3D();
 	public:
 		void loader( TiXmlElement * _xml ) override;
-		void update( size_t _timing ) override;
+		void update( size_t _timing, const Viewport & _viewport ) override;
 		void debugRender() override;
 	public:
 		void setEnterZoneCallback( PyObject * _event );

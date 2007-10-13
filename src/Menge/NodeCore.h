@@ -37,7 +37,7 @@ namespace Menge
 		const std::string & getType() const override;
 				
 	public:
-		void update( size_t _timing ) override;
+		void update( size_t _timing, const Viewport & _viewport ) override;
 		void loader( TiXmlElement *xml ) override;
 
 	public:
@@ -47,7 +47,7 @@ namespace Menge
 		void debugRender() override;
 
 	protected:
-		virtual void _update( size_t _timing );
+		virtual void _update( size_t _timing, const Viewport & _viewport );
 
 		virtual bool _activate();
 		virtual void _deactivate();

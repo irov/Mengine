@@ -32,6 +32,9 @@ namespace Menge
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
 
 	public:
+		void update( size_t _timing, const Viewport & _viewport ) override;
+
+	public:
 		bool _activate() override;
 
 	protected:

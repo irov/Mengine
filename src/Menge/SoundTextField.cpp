@@ -23,7 +23,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	SoundTextField::_update( size_t _timing )
+	void	SoundTextField::_update( size_t _timing, const Viewport & _viewport )
 	{
 		if(TextField::isPlaying() == false) 
 		{

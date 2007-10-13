@@ -43,16 +43,28 @@ namespace Menge
 		m_listPickerTrap.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::regTrap( MousePickerTrap * _trap )
+	void MousePickerSystem::regTrap( MousePickerTrap * _trap, const Viewport & _viewport )
 	{
-		m_listPickerTrap.push_front( _trap );
+		PickerTrap pt;
+
+		pt.trap = _trap;
+		pt.viewport = _viewport;
+
+		m_listPickerTrap.push_front( pt );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerTrap * MousePickerSystem::pickTrap( float _x, float _y )
 	{
-		for each( MousePickerTrap * trap in m_listPickerTrap )
+		for each( const PickerTrap & picker in m_listPickerTrap )
 		{
-			if( trap->pick( _x, _y ) == true )
+			MousePickerTrap * trap = picker.trap;
+
+			const Viewport & vp = picker.viewport;
+		
+			float picker_x = vp.begin.x + _x;
+			float picker_y = vp.begin.y + _y;
+
+			if( trap->pick( picker_x, picker_y ) == true )
 			{
 				return trap;
 			}
@@ -66,9 +78,16 @@ namespace Menge
 		const mt::vec2f & mp = Holder<Player>::hostage()
 			->getPositionClick();
 
-		for each( MousePickerTrap * trap in m_listPickerTrap )
+		for each( const PickerTrap & picker in m_listPickerTrap )
 		{
-			if( trap->pick( mp.x, mp.y ) == true )
+			MousePickerTrap * trap = picker.trap;
+
+			const Viewport & vp = picker.viewport;
+
+			float picker_x = vp.begin.x + mp.x;
+			float picker_y = vp.begin.y + mp.y;
+
+			if( trap->pick( picker_x, picker_y ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -87,9 +106,16 @@ namespace Menge
 		const mt::vec2f & mp = Holder<Player>::hostage()
 			->getPositionClick();
 
-		for each( MousePickerTrap * trap in m_listPickerTrap )
+		for each( const PickerTrap & picker in m_listPickerTrap )
 		{
-			if( trap->pick( mp.x, mp.y ) == true )
+			MousePickerTrap * trap = picker.trap;
+
+			const Viewport & vp = picker.viewport;
+
+			float picker_x = vp.begin.x + mp.x;
+			float picker_y = vp.begin.y + mp.y;
+
+			if( trap->pick( picker_x, picker_y ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -108,9 +134,16 @@ namespace Menge
 		const mt::vec2f & mp = Holder<Player>::hostage()
 			->getPositionClick();
 
-		for each( MousePickerTrap * trap in m_listPickerTrap )
+		for each( const PickerTrap & picker in m_listPickerTrap )
 		{
-			if( trap->pick( mp.x, mp.y ) == true )
+			MousePickerTrap * trap = picker.trap;
+
+			const Viewport & vp = picker.viewport;
+
+			float picker_x = vp.begin.x + mp.x;
+			float picker_y = vp.begin.y + mp.y;
+
+			if( trap->pick( picker_x, picker_y ) == true )
 			{
 				InputHandler * handler = trap->handler();
 

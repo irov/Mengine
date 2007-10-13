@@ -170,9 +170,9 @@ namespace	Menge
 		SceneNode2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_update( size_t _timing )
+	void HotSpot::_update( size_t _timing, const Viewport & _viewport )
 	{
 		Holder<MousePickerSystem>::hostage()
-			->regTrap( this );
+			->regTrap( this, _viewport );
 	}
 }

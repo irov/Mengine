@@ -2,7 +2,7 @@ import Menge
 
 class Scene( Menge.Scene ):
 	def __init__( self ):
-		self.camera_x = 900
+		self.camera_x = 512
 		self.camera_y = 384
 
 		#Menge.setCamera2DPosition( self.camera_x, self.camera_y );
@@ -30,7 +30,7 @@ class Scene( Menge.Scene ):
 		
 		self.node1.hide( False )
 		
-		block = Menge.createEntity("Block",Menge.vec2f( 100, 100 ), Menge.vec2f( 1, 0 ) )
+		block = Menge.createEntity("Block",Menge.vec2f( 500, 100 ), Menge.vec2f( 1, 0 ) )
 		
 		block.activate();
 		
@@ -41,7 +41,7 @@ class Scene( Menge.Scene ):
 		pass
 
 	def onUpdate( self, timing ):
-		#Menge.setCamera2DPosition( self.camera_x, self.camera_y );
+		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 
 		self.camera_x += timing * 0.025
 		pass

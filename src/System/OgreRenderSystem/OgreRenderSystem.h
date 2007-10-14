@@ -31,6 +31,11 @@ public:
 		unsigned int _mixedColor, 
 		RenderImageInterface* _rii) override;
 
+	RenderFontInterface* loadFont( const FontDesc&	_desc ) override;
+	void	releaseRenderFont( RenderFontInterface * _fnt ) override;
+
+	void	renderText(const float * _pos, RenderFontInterface* _font, const char * _text) override;
+
 private:
 	Ogre::Root * m_root;
 	Ogre::RenderWindow * m_renderWindow;

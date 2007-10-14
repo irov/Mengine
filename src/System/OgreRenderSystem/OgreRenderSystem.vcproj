@@ -182,6 +182,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\OgreRenderFont.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\OgreRenderFont.h"
+			>
+		</File>
+		<File
 			RelativePath=".\OgreRenderImage.cpp"
 			>
 		</File>

@@ -12,8 +12,22 @@ struct	TextureDesc
 	void*			buffer;
 	size_t			size;
 
-	const char * name;
+	const char *	name;
 	int				filter;
+};
+
+struct	FontDesc
+{
+	const char *	name;
+};
+
+class	RenderFontInterface
+{
+public:
+	virtual ~RenderFontInterface(){};
+//	virtual float getHeight() const = 0;
+ //   virtual unsigned int getColor() const = 0;
+//	virtual float getCharWidth(char id) const = 0;
 };
 
 class	RenderSystemInterface
@@ -35,6 +49,10 @@ public:
 		unsigned int _mixedColor, 
 		RenderImageInterface* _rii) = 0;
 
+	virtual RenderFontInterface* loadFont( const FontDesc&	_desc ) = 0;
+	virtual	void	releaseRenderFont( RenderFontInterface* _fnt ) = 0;
+
+	virtual	void	renderText(const float * _pos, RenderFontInterface* _font, const char * _text) = 0;
 
 	//virtual bool beginScene(int _color) = 0;
 	//virtual bool endScene() = 0;
@@ -51,7 +69,6 @@ public:
 
 	//virtual void setTexture(RenderImageInterface * _tex) = 0;
 
-	//virtual void	releaseRenderImage(RenderImageInterface* _rmi) = 0;
 	//virtual RenderFontInterface* loadFont(const FontDesc&	_desc) = 0;
 	//virtual	void	renderText(const mt::vec2f& _pos, RenderFontInterface* _font, const std::string& _text) = 0;
 	//virtual	void	releaseRenderFont(RenderFontInterface* _fnt) = 0;

@@ -57,7 +57,6 @@ namespace mt
 	float	orient_polygon(const polygon& poly);
 
 	bool	intersect_poly_poly( const polygon& _a, const polygon& _b );
-	bool	closest_point_poly_poly( const polygon & _a, const polygon & _b, mt::vec2f & _p, mt::vec2f & _q );
 
 	bool	operator==(const polygon& _a, const polygon& _b);
 	bool	operator!=(const polygon& _a, const polygon& _b);

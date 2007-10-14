@@ -2,6 +2,7 @@
 
 #	include "OgreRenderSpriteManager.h"
 #	include "OgreRenderImage.h"
+#	include "OgreRenderFont.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( RenderSystemInterface ** _ptrInterface )
@@ -113,3 +114,20 @@ void OgreRenderSystem::renderImage(
 		, *(Ogre::Vector4*)_uv
 		, *(Ogre::Vector2*)_size );
 }
+//////////////////////////////////////////////////////////////////////////
+RenderFontInterface* OgreRenderSystem::loadFont( const FontDesc&	_desc )
+{
+	return new OgreRenderFont(_desc.name);
+}
+//////////////////////////////////////////////////////////////////////////
+void	OgreRenderSystem::releaseRenderFont( RenderFontInterface* _fnt )
+{
+	delete static_cast<OgreRenderFont*>(_fnt);
+}
+//////////////////////////////////////////////////////////////////////////
+void	OgreRenderSystem::renderText(const float * _pos, RenderFontInterface* _font, const char * _text)
+{
+	OgreRenderFont * font = static_cast<OgreRenderFont *>( _font );	
+	Ogre::Font * f = font->getFont();
+}
+//////////////////////////////////////////////////////////////////////////

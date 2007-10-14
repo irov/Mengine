@@ -48,116 +48,51 @@ namespace mt
 
 	bool	intersect_poly_poly( const polygon& _a, const polygon& _b )
 	{
-		float nu = 0;
-		float delta = 0;
-		bool close_enough = false;
-		float eps = 0.0001f;
-
+		// GJK algo for intersection
 		simplex_solver solver;
-		
+		solver.reset();
+
 		int iteration = 0;
 
-		mt::vec3f	V(1,0,0);
+		const int MaxIterations = 100;
 
-		while(!close_enough)
+		mt::vec3f V(1,0,0);
+
+		mt::vec3f P(_a.support( V.v2 ),0);
+		mt::vec3f Q(_b.support( -V.v2 ),0);
+
+		mt::vec3f d = P - Q;
+
+		solver.addWPQ( d, P, Q );
+
+		V = -d;
+
+		for( int i = 0; i < MaxIterations; i++ )
 		{
-			mt::vec3f P = mt::vec3f( _a.support( -V.v2 ), 0);
-			mt::vec3f Q = mt::vec3f( _b.support( V.v2 ), 0);
+			mt::vec3f P(_a.support( V.v2 ),0);
+			mt::vec3f Q(_b.support( -V.v2 ),0);
+
 			mt::vec3f W = P - Q;
 
-			float v = V.length();
+			if ( mt::dot_v3_v3(W, V) > 0 )
+			{
+				solver.addWPQ( W,P,Q );
 
-			delta = dot_v3_v3(V,W) / v;
-
-			if(delta > 0) 
+				if( solver.update( V ) ) 
+				{
+					return true;
+				}
+			}
+			else
 			{
 				return false;
-			}
-
-			nu = std::max(nu, delta);
-
-			close_enough = fabs(v - nu) < eps;
-
-			if(!close_enough)
-			{
-				if( solver.testSimplex(W) == true )
-				{
-					return false;
-				}
-				solver.addVertex( W, P, Q );
-				solver.update( V );
 			}
 
 			iteration++;
-
-			if(iteration > 300)
-			{
-				return false;
-			}
 		}
 
 		return true;
 	}
-
-	bool	closest_point_poly_poly( const polygon& _a, const polygon& _b, mt::vec2f & _p, mt::vec2f & _q )
-	{
-		float nu = 0;
-		float delta = 0;
-		bool close_enough = false;
-		float eps = 0.0001f;
-
-		simplex_solver solver;
-		
-		int iteration = 0;
-
-		bool intersect = true;
-
-		mt::vec3f	V(1,0,0);
-
-		while(!close_enough)
-		{
-			mt::vec3f P = mt::vec3f( _a.support( -V.v2 ), 0);
-			mt::vec3f Q = mt::vec3f( _b.support( V.v2 ), 0);
-			mt::vec3f W = P - Q;
-
-			float v = V.length();
-
-			delta = dot_v3_v3(V,W) / v;
-
-			if(delta > 0) 
-			{
-				intersect = false;
-			}
-
-			nu = std::max(nu, delta);
-
-			close_enough = fabs(v - nu) < eps;
-
-			if(!close_enough)
-			{
-				if( solver.testSimplex( W ) == true )
-				{
-					return false;
-				}
-
-				solver.addVertex( W, P, Q );
-				solver.update( V );
-			}
-
-			iteration++;
-
-			if(iteration > 300)
-			{
-				return false;
-			}
-		}
-
-		_p = solver.ClosestPoints[0].v2;
-		_q = solver.ClosestPoints[1].v2;
-
-		return intersect;
-	}
-
 
 	void polygon::clear_points()
 	{

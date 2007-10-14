@@ -9,6 +9,7 @@ class OgreRenderImage
 {
 public:
 	OgreRenderImage( const TextureDesc&	_desc );
+	~OgreRenderImage();
 
 public:
 	size_t getWidth() const override;
@@ -19,4 +20,5 @@ public:
 
 private:
 	Ogre::TexturePtr m_texture;
+	Ogre::String m_description;
 };

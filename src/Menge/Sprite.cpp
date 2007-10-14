@@ -112,6 +112,8 @@ namespace	Menge
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_image );
+
+		m_image = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::loader(TiXmlElement * _xml)

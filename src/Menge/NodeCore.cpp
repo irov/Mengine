@@ -82,10 +82,12 @@ namespace Menge
 
 		if( m_active )
 		{
-			_deactivate();
-		}
+			m_active = false;
 
-		m_active = false;
+			Eventable::removeAllEvent();
+
+			_deactivate();
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeCore::isActive()

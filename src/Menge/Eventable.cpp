@@ -45,6 +45,12 @@ namespace Menge
 			return false;
 		}
 
+		if( Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( _module, _method ) == false )
+		{
+			return false;
+		}
+
 		PyObject * event = Holder<ScriptEngine>::hostage()
 			->getModuleFunction( _module, _method );
 

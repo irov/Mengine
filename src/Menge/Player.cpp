@@ -30,6 +30,8 @@ namespace Menge
 	, m_arrow(0)
 	, m_renderCamera2D(0)
 	, m_renderCamera3D(0)
+	, m_switchScene(false)
+	, m_nextScene(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -48,21 +50,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setCurrentScene( const std::string & _name )
 	{
-		Scene * scene = Holder<Game>::hostage()
+		m_nextScene = Holder<Game>::hostage()
 			->getScene( _name );
 
-		if( scene == 0 )
+		if( m_nextScene == 0 )
 		{
 			ErrorMessage("ERROR: Scene [%s] not have in Game", _name.c_str() );
+			return;
 		}
 
-		if( m_scene )
-		{
-			m_scene->deactivate();
-		}
-
-		m_scene = scene;
-		m_scene->activate();
+		m_switchScene = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Player::getCurrentScene()
@@ -154,6 +151,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update( size_t _timing )
 	{
+		if( m_switchScene == true )
+		{
+
+			m_switchScene = false;
+
+			m_nextScene->activate();
+
+			if( m_scene )
+			{
+				m_scene->deactivate();
+			}
+
+			m_scene = m_nextScene;
+			//m_scene->activate();
+		}
+
 		Viewport avp;
 		avp.begin = mt::vec2f(0,0);
 		avp.end = mt::vec2f(1024,768);

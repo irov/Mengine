@@ -15,6 +15,7 @@ date: now
 + support Allocator Transformation:Position attribute
 + support Allocator Transformation:Direction attribute
 + support Allocator Transformation:Rotate attribute
++ support reset scene
 
 [Framework]
 + added Entity.moveTo( time, vec2f, bool )

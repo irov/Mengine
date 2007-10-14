@@ -202,10 +202,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update( size_t _timing )
 	{
-		Holder<ScheduleManager>::hostage()
+		Holder<Player>::hostage()
 			->update( _timing );
 
-		Holder<Player>::hostage()
+		Holder<ScheduleManager>::hostage()
 			->update( _timing );
 
 		Holder<Amplifier>::hostage()

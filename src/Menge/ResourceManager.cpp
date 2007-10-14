@@ -137,10 +137,6 @@ namespace Menge
 			if( refcounter == 0 )
 			{
 				_resource->release();
-
-				delete _resource;
-
-				m_mapResource.erase( it_find );
 			}
 		}
 	}

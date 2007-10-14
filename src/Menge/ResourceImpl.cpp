@@ -26,6 +26,7 @@ namespace Menge
 	{
 		if( m_compile )
 		{
+			m_compile = false;
 			_release();
 		}
 	}

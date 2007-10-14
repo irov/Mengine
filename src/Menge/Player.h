@@ -59,8 +59,11 @@ namespace Menge
 		Avatar * m_avatar;
 		Scene * m_scene;
 		Arrow * m_arrow;
-
+		
 		Camera2D * m_renderCamera2D;
 		Camera3D * m_renderCamera3D;
+
+		bool m_switchScene;
+		Scene * m_nextScene;
 	};
 }

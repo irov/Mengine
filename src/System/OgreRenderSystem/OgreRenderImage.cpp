@@ -2,6 +2,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 OgreRenderImage::OgreRenderImage( const TextureDesc& _desc )
+: m_description(_desc.name)
 {
 	Ogre::Image image;
 
@@ -9,11 +10,17 @@ OgreRenderImage::OgreRenderImage( const TextureDesc& _desc )
 	image.load( data, "png" );
 
 	m_texture = Ogre::TextureManager::getSingletonPtr()
-		->loadImage( _desc.name, "Default", image, Ogre::TEX_TYPE_2D, 0 );
+		->loadImage( m_description, "Default", image, Ogre::TEX_TYPE_2D, 0 );
+}
+//////////////////////////////////////////////////////////////////////////
+OgreRenderImage::~OgreRenderImage()
+{
+	Ogre::TextureManager::getSingletonPtr()
+		->remove( m_description );
 }
 //////////////////////////////////////////////////////////////////////////
 size_t OgreRenderImage::getWidth() const
-{
+{ 
 	return m_texture->getWidth();
 }
 //////////////////////////////////////////////////////////////////////////

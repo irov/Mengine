@@ -23,8 +23,6 @@ void releaseInterfaceSystem( RenderSystemInterface* _ptrInterface )
 {
 	delete static_cast<OgreRenderSystem*>(_ptrInterface);
 }
-
-
 //////////////////////////////////////////////////////////////////////////
 OgreRenderSystem::OgreRenderSystem()
 	: m_root(0)
@@ -48,21 +46,18 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	m_sceneMgr = m_root->createSceneManager( Ogre::ST_GENERIC, "defaultSceneManager" );
 	m_renderSys = m_root->getRenderSystem();
 
-	m_spriteMgr = new OgreRenderSpriteManager();
-
 	Ogre::Camera * camera = m_sceneMgr->createCamera("defaultCamera");
  	camera->setNearClipDistance(5);
 
- 	// Create one viewport, entire window
-	m_viewport = m_renderWindow->addViewport( camera );
- 	// Alter the camera aspect ratio to match the viewport
+ 	m_viewport = m_renderWindow->addViewport( camera );
+ 	
+ 	camera->setAspectRatio(m_viewport->getActualWidth() / m_viewport->getActualHeight());
 
- 	camera->setAspectRatio(m_viewport->getActualWidth() / m_viewport->getActualWidth());
-
- 	// Set default mipmap level (NB some APIs ignore this)
  	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
 
+	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -72,17 +67,17 @@ void OgreRenderSystem::render()
 	//m_root->renderOneFrame();
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSystem::setProjectionMatrix(const /*mat4f*/ float * _projection)
+void OgreRenderSystem::setProjectionMatrix( const float * _projection )
 {
 	m_renderSys->_setProjectionMatrix( *(Ogre::Matrix4 *)_projection );
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSystem::setViewMatrix(const /*mat4f*/ float * _view)
+void OgreRenderSystem::setViewMatrix( const float * _view )
 {
 	m_renderSys->_setViewMatrix( *(Ogre::Matrix4 *)_view );
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSystem::setWorldMatrix(const /*mat4f*/ float * _world)
+void OgreRenderSystem::setWorldMatrix( const float * _world )
 {
 	m_renderSys->_setWorldMatrix( *(Ogre::Matrix4 *)_world );
 }
@@ -98,10 +93,10 @@ void OgreRenderSystem::releaseImage( RenderImageInterface* _rii )
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::renderImage(		
-				 const /*mat3*/ float * _transform, 
-				 const /*vec2f*/ float * _offset,
-				 const /*vec4f*/ float * _uv,
-				 const /*vec2f*/ float * _size,
+				 const float * _transform, 
+				 const float * _offset,
+				 const float * _uv,
+				 const float * _size,
 				 unsigned int _mixedColor, 
 				 RenderImageInterface* _rii)
 {
@@ -127,7 +122,20 @@ void	OgreRenderSystem::releaseRenderFont( RenderFontInterface* _fnt )
 //////////////////////////////////////////////////////////////////////////
 void	OgreRenderSystem::renderText(const float * _pos, RenderFontInterface* _font, const char * _text)
 {
+	float width = m_viewport->getActualWidth();
+	float heigth = m_viewport->getActualHeight();
 	OgreRenderFont * font = static_cast<OgreRenderFont *>( _font );	
-	Ogre::Font * f = font->getFont();
+	Ogre::Font * fnt = font->getFont();
+	m_spriteMgr->printText(fnt, 2 * _pos[0]/width - 1, -(_pos[1]/heigth*2 - 1) , _text );
+}
+//////////////////////////////////////////////////////////////////////////
+void	OgreRenderSystem::beginLayer()
+{
+	m_spriteMgr->beginLayer();
+}
+//////////////////////////////////////////////////////////////////////////
+void	OgreRenderSystem::endLayer()
+{
+	m_spriteMgr->endLayer();
 }
 //////////////////////////////////////////////////////////////////////////

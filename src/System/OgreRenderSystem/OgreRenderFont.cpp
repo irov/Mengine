@@ -1,20 +1,24 @@
 #	include "OgreRenderFont.h"
-
 //////////////////////////////////////////////////////////////////////////
 OgreRenderFont::OgreRenderFont( const std::string&  _name )
+	: m_ID( _name )
 {
-	m_font = dynamic_cast<Ogre::Font*>(Ogre::FontManager::getSingleton().getByName(_name).getPointer());
-
-	if ( m_font == NULL )
-	{
-		assert(0);
-	}
-
+	m_font = Ogre::FontManager::getSingletonPtr()->getByName(_name);
 	m_font->load();
+}
+//////////////////////////////////////////////////////////////////////////
+const std::string& OgreRenderFont::getID()
+{
+	return m_ID;
+}
+//////////////////////////////////////////////////////////////////////////
+OgreRenderFont::~OgreRenderFont()
+{
+	Ogre::FontManager::getSingletonPtr()->remove( m_ID );
 }
 //////////////////////////////////////////////////////////////////////////
 Ogre::Font * OgreRenderFont::getFont()
 {
-	return m_font;
+	return m_font.getPointer();
 }
 //////////////////////////////////////////////////////////////////////////

@@ -25,9 +25,9 @@ class	RenderFontInterface
 {
 public:
 	virtual ~RenderFontInterface(){};
-//	virtual float getHeight() const = 0;
- //   virtual unsigned int getColor() const = 0;
 //	virtual float getCharWidth(char id) const = 0;
+//	virtual float getHeight() const = 0;
+//  virtual unsigned int getColor() const = 0;
 };
 
 class	RenderSystemInterface
@@ -35,24 +35,27 @@ class	RenderSystemInterface
 public:
 	virtual void render() = 0;
 
-	virtual	void setProjectionMatrix(const /*mat4f*/ float * _projection) = 0;
-	virtual	void setViewMatrix(const /*mat4f*/ float * _view) = 0;
-	virtual	void setWorldMatrix(const /*mat4f*/ float * _world) = 0;
+	virtual	void setProjectionMatrix( const float * _projection ) = 0;
+	virtual	void setViewMatrix( const float * _view ) = 0;
+	virtual	void setWorldMatrix( const float * _world ) = 0;
 
 	virtual RenderImageInterface* loadImage( const TextureDesc&	_desc ) = 0;
 	virtual void releaseImage( RenderImageInterface* _rii ) = 0;
 	virtual void renderImage(		
-		const /*mat3*/ float * _transform, 
-		const /*vec2f*/ float * _offset,
-		const /*vec4f*/ float * _uv,
-		const /*vec2f*/ float * _size,
+		const float * _transform, 
+		const float * _offset,
+		const float * _uv,
+		const float * _size,
 		unsigned int _mixedColor, 
 		RenderImageInterface* _rii) = 0;
 
 	virtual RenderFontInterface* loadFont( const FontDesc&	_desc ) = 0;
 	virtual	void	releaseRenderFont( RenderFontInterface* _fnt ) = 0;
 
-	virtual	void	renderText(const float * _pos, RenderFontInterface* _font, const char * _text) = 0;
+	virtual	void	renderText( const float * _pos, RenderFontInterface* _font, const char * _text ) = 0;
+
+	virtual	void	beginLayer() = 0;
+	virtual	void	endLayer() = 0;
 
 	//virtual bool beginScene(int _color) = 0;
 	//virtual bool endScene() = 0;

@@ -16,7 +16,16 @@ namespace Menge
 	{
 		m_interface->render();
 	}
-
+	////////////////////////////////////////////////////////////////////////////
+	void RenderEngine::beginLayer()
+	{
+		m_interface->beginLayer();
+	}
+	////////////////////////////////////////////////////////////////////////////
+	void RenderEngine::endLayer()
+	{
+		m_interface->endLayer();
+	}
 	////////////////////////////////////////////////////////////////////////////
 	//void	RenderEngine::setMaterialColor(unsigned char _ambient[4], 
 	//	unsigned char _diffuse[4],
@@ -145,6 +154,14 @@ namespace Menge
 		m_interface->releaseImage( _rmi );
 	}
 	////////////////////////////////////////////////////////////////////////////
+	RenderFontInterface* RenderEngine::loadFont(const std::string & _font)
+	{
+		FontDesc desc;
+		desc.name = _font.c_str();
+		return m_interface->loadFont( desc );
+	}
+
+	////////////////////////////////////////////////////////////////////////////
 	//RenderFontInterface* RenderEngine::loadFont(const std::string &_fontXml)
 	//{
 	//	FontDesc desc;
@@ -241,17 +258,17 @@ namespace Menge
 	//}
 
 	////////////////////////////////////////////////////////////////////////////
-	//void RenderEngine::renderText(
-	//	const mt::vec2f & _pos, 
-	//	RenderFontInterface* _font, 
-	//	const std::string& _text)
-	//{
-	//	m_interface->renderText( _pos, _font, _text.c_str() );
-	//}
+	void RenderEngine::renderText(
+		const mt::vec2f & _pos, 
+		RenderFontInterface* _font, 
+		const std::string& _text)
+	{
+		m_interface->renderText( _pos.m, _font, _text.c_str() );
+	}
 
 	////////////////////////////////////////////////////////////////////////////
-	//void RenderEngine::releaseRenderFont(RenderFontInterface* _fnt)
-	//{
-	//	m_interface->releaseRenderFont(_fnt);
-	//}
+	void RenderEngine::releaseRenderFont(RenderFontInterface* _fnt)
+	{
+		m_interface->releaseRenderFont(_fnt);
+	}
 }

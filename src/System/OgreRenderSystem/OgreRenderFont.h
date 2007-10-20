@@ -12,10 +12,14 @@ class OgreRenderFont
 {
 public:
 	OgreRenderFont( const std::string&  _name );
+	~OgreRenderFont();
 
 public:
 	Ogre::Font * getFont();
 
+	const std::string& getID();
+	
 private:
-	Ogre::Font* m_font;
+	Ogre::FontPtr m_font;
+	Ogre::String m_ID;
 };

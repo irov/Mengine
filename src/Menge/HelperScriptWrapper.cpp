@@ -2,6 +2,7 @@
 #	include "ScriptDeclarationDefine.h"
 
 #	include "Math/vec2.h"
+#	include "Math/rand.h"
 
 namespace Menge
 {

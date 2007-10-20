@@ -10,9 +10,7 @@ struct RenderSprite
 {
 	Ogre::Vector3 point[4];
 	Ogre::Vector2 tcoord[4];
-	//float x1, y1, x2, y2;// sprite coordinates
-	//float tx1, ty1, tx2, ty2;// texture coordinates
-	Ogre::ResourceHandle texHandle;// texture handle
+	Ogre::ResourceHandle texHandle;
 };
 
 struct RenderVertexChunk {
@@ -70,10 +68,20 @@ public:
 		const Ogre::Vector2 & _offset,
 		const Ogre::Vector4 & _uv,
 		const Ogre::Vector2 & _size);
+ 
+	/// 
+	void beginLayer();
+
+	///
+	void endLayer();
+
+	///
+	void printText(  const Ogre::Font * mpFont, float x, float y, const char * text );
 
 private:
 	/// Render all the 2d data stored in the hardware buffers.
 	void renderBuffer();
+
 	/// Create a new hardware buffer
 	/**
 	/param size Vertex count for the new hardware buffer.
@@ -85,6 +93,7 @@ private:
 	void prepareForRender();
 
 private:
+	bool	firstInit;
 	Ogre::SceneManager * sceneMan;
 	Ogre::RenderSystem * m_renderSys;
 	Ogre::Viewport * m_viewport;
@@ -97,5 +106,35 @@ private:
 	Ogre::HardwareVertexBufferSharedPtr hardwareBuffer;
 
 	// sprite buffer
-	std::list<RenderSprite> sprites;
+
+	typedef std::list<RenderSprite> RenderSpriteList;
+
+	struct	Layer
+	{
+		RenderSpriteList	m_sprites;
+	
+		Layer()
+		{
+		}
+
+		void	addSprite(const RenderSprite& spr)
+		{
+			m_sprites.push_back(spr);
+		}
+
+		void	clear()
+		{
+			m_sprites.clear();
+		}
+	};
+
+	void	addLayer()
+	{
+		Layer layer;
+
+		m_layers.push_back( layer );
+	}
+
+	std::list<Layer>	m_layers;
+	std::list<Layer>::iterator	m_currentLayer;
 };

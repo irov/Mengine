@@ -9,6 +9,8 @@
 #	include "Camera2D.h"
 #	include "Player.h"
 
+#	include "RenderEngine.h"
+
 #	include "XmlParser/XmlParser.h"
 
 namespace	Menge
@@ -145,6 +147,10 @@ namespace	Menge
 			Holder<Player>::hostage()
 			->getRenderCamera2D();
 
+		RenderEngine * renderEng = Holder<RenderEngine>::hostage();
+
+		renderEng->beginLayer();
+
 		const Viewport & cvp = camera->getViewport();
 
 		const Viewport & viewport = updateViewport( cvp );
@@ -154,5 +160,7 @@ namespace	Menge
 			const mt::mat3f & wm = node->getWorldMatrix();
 			node->render( wm, viewport );
 		}
+	
+		renderEng->endLayer();
 	}
 }

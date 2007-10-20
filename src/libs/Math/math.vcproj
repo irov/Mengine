@@ -294,18 +294,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="closest_points"
-			>
-			<File
-				RelativePath=".\closest_points.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\closest_points.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="vec2"
 			>
 			<File
@@ -446,6 +434,14 @@
 			</File>
 			<File
 				RelativePath=".\simplex.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="rand"
+			>
+			<File
+				RelativePath=".\rand.h"
 				>
 			</File>
 		</Filter>

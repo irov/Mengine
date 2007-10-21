@@ -2,14 +2,18 @@
 
 #	include "Node.h"
 
+#	include "ObjectDeclare.h"
+
 namespace Menge
 {
 	class NodeProxy
-		: public Node
+		: virtual public Node
 	{
 	public:
 		NodeProxy( Node * _node);
 		virtual ~NodeProxy();
+
+		void destroy() override;
 
 	public:
 		bool activate() override;
@@ -25,19 +29,22 @@ namespace Menge
 		const std::string & getType()const override;
 
 	public:
+		Scriptable * getScriptable() override;
+
+	public:
+		void setParent( Node * _node ) override;
+		bool addChildren( Node * _node ) override;
+		void removeChildren( Node * _node ) override;
+		Node * getChildren( const std::string & _name, bool _recursion ) override;
+		bool isChildren( Node * _node ) override;
+		void foreachChildren( const NodeForeach & _foreach ) override;
+
+	public:
 		void update( size_t _timing, const Viewport & _viewport ) override;
 		void loader(TiXmlElement * _xml) override;
 
 	public:
 		void debugRender() override;
-
-	public:
-		//virtual void registerEvent( const std::string & _name, PyObject * _func  );
-		//virtual PyObject * getEvent( const std::string & _name );
-
-		//virtual	void setScriptable( PyObject * _scriptable );
-		//virtual PyObject * getScriptable();
-		//virtual bool isScriptable() const;
 
 	protected:
 		Node *m_node;

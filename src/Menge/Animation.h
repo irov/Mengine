@@ -4,12 +4,6 @@
 
 namespace Menge
 {
-	enum	eAnimState
-	{
-		FORWARD,	
-		REWIND,	
-	};
-
 	class ResourceAnimation;
 
 	class Animation
@@ -27,12 +21,6 @@ namespace Menge
 		virtual void setLooped( bool _looped );
 		virtual bool getLooped() const;
 
-		virtual void setFirstFrame();
-		virtual void nextFrame();
-		virtual void prevFrame();
-
-		virtual void setAnimState( eAnimState _state );
- 
 	public:
 		void setAnimationListener( PyObject * _listener );
 		void setAnimationResource( const std::string & _resource );
@@ -55,8 +43,6 @@ namespace Menge
 		bool m_playing;
 		bool m_looping;
 		size_t m_currentFrame;
-
-		eAnimState	m_state;
 
 		PyObject * m_listener;
 	};

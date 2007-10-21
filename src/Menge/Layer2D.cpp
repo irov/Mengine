@@ -30,6 +30,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	const Viewport& Layer2D::updateViewport( const Viewport & _viewPort )
 	{
+		if( m_scene == 0 )
+		{
+			return _viewPort;
+		}
+
 		m_viewPort = _viewPort;
 
 		Layer * main = m_scene->getMainLayer();
@@ -115,7 +120,7 @@ namespace	Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::loader( TiXmlElement *_xml)
+	void Layer2D::loader( TiXmlElement * _xml )
 	{
 		SceneNode2D::loader(_xml);
 		Layer::loader(_xml);

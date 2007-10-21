@@ -20,6 +20,11 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Node * NodeSinglethon::getChildren( const std::string & _name, bool _recursion )
+	{
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void NodeSinglethon::removeChildren( Node *_node)
 	{
 	}

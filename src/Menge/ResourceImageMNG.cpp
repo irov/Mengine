@@ -15,12 +15,8 @@ namespace Menge
 	ResourceImageMNG::ResourceImageMNG( const std::string & _name )
 		: ResourceImage( _name )
 		, m_uv( 0.f, 0.f, 1.f, 1.f )
-		, m_filter(1)
-	{}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageMNG::getMaxSize()
 	{
-		return m_size;
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ResourceImageMNG::getCount()
@@ -28,35 +24,40 @@ namespace Menge
 		return m_images.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageMNG::getUV( size_t _index )
+	const mt::vec2f & ResourceImageMNG::getMaxSize( size_t _frame )
+	{
+		return m_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec4f & ResourceImageMNG::getUV( size_t _frame )
 	{
 		return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageMNG::getSize( size_t _index )
+	const mt::vec2f & ResourceImageMNG::getSize( size_t _frame )
 	{
-		return m_images[ _index ].size;
+		return m_images[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageMNG::getOffset( size_t _index )
+	const mt::vec2f & ResourceImageMNG::getOffset( size_t _frame )
 	{
-		return m_images[ _index ].offset;
+		return m_images[ _frame ].offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * ResourceImageMNG::getImage( size_t _index )
+	RenderImageInterface * ResourceImageMNG::getImage( size_t _frame )
 	{
-		return m_images[ _index ].renderImage;
+		return m_images[ _frame ].renderImage;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageMNG::loader( TiXmlElement * _xml )
 	{
+		ResourceImage::loader( _xml );
+
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_VALUE_NODE( "File", "Path", m_fileMNG );
 			XML_CHECK_VALUE_NODE( "Filter", "Value", m_filter );
-		}
-
-		ResourceImpl::loader( _xml );
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageMNG::_compile()
@@ -84,20 +85,19 @@ namespace Menge
 
 		m_images.reserve(size);
 
+		std::vector<char> buff;
 		for(int i = 0; i < size; ++i)
 		{
-			//fileData->setPos( seeks[i] );
-
 			fileData->read(&x,sizeof(int));
 			fileData->read(&y,sizeof(int));
 
 			int bsize = 0;
 			fileData->read(&bsize,sizeof(int));
 
-			char * buff = new char [ bsize ];
-			fileData->read( buff, bsize );
+			buff.resize( bsize );
+			fileData->read( &buff[0], bsize );
 
-			textureDesc.buffer = buff;
+			textureDesc.buffer = &buff[0];
 			textureDesc.size = bsize;
 			textureDesc.filter = m_filter;
 
@@ -109,8 +109,15 @@ namespace Menge
 			Image	imageProps;
 
 			imageProps.offset = mt::vec2f( float(x), float(y) );
-			imageProps.renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);
-			imageProps.size = mt::vec2f((float)imageProps.renderImage->getWidth(),(float)imageProps.renderImage->getHeight());
+			
+			imageProps.renderImage = 
+				Holder<RenderEngine>::hostage()
+				->loadImage(textureDesc);
+
+			float width = (float)imageProps.renderImage->getWidth();
+			float height = (float)imageProps.renderImage->getHeight();
+
+			imageProps.size = mt::vec2f( width, height );
 
 			m_images.push_back(imageProps);
 		}
@@ -128,5 +135,4 @@ namespace Menge
 				->releaseImage( img.renderImage );
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
 }

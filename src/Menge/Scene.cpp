@@ -56,8 +56,7 @@ namespace	Menge
 		
 		if( handle == false )
 		{
-			handle = Holder<ScriptEngine>::hostage()
-				->handleKeyEvent( m_scriptable, _key, _isDown );
+			askEvent( handle, "KEY", "(Ib)", _key, _isDown );
 		}
 
 		if( handle == false )
@@ -75,8 +74,7 @@ namespace	Menge
 
 		if( handle == false )
 		{
-			handle = Holder<ScriptEngine>::hostage()
-				->handleMouseButtonEvent( m_scriptable, _button, _isDown );
+			askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
 		}
 
 		if( handle == false )
@@ -94,8 +92,7 @@ namespace	Menge
 
 		if( handle == false )
 		{
-			handle = Holder<ScriptEngine>::hostage()
-				->handleMouseMove( m_scriptable, _x, _y, _whell );
+			askEvent( handle, "MOUSE_MOVE", "(fff)", _x, _y, _whell );
 		}
 
 		if( handle == false )
@@ -116,16 +113,19 @@ namespace	Menge
 			return false;
 		}
 
-		Holder<ScriptEngine>::hostage()
-			->callModuleFunction( m_scriptable, "onActivate" );
+		registerEventMethod( "UPDATE", "onUpdate" );
+		registerEventMethod( "KEY", "onHandleKeyEvent" );
+		registerEventMethod( "MOUSE_BUTTON", "onHandleMouseButtonEvent" );
+		registerEventMethod( "MOUSE_MOVE", "onHandleMouseMove" );
+
+		callMethod( "onActivate", "() " );
 
 		return NodeCore::_activate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( size_t _timing, const Viewport & _viewport )
 	{
-		Holder<ScriptEngine>::hostage()
-			->callModuleFunction( m_scriptable, "onUpdate", "(k)", _timing );
+		callEvent( "UPDATE", "(k)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loader( TiXmlElement *_xml )

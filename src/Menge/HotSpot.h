@@ -37,14 +37,14 @@ namespace Menge
 		void clearPoints();
 		bool testPoint( const mt::vec2f & _p );
 
-		void setInputHandler( PyObject * _handler );
+		void setHotspotListener( PyObject * _handler );
 		
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
 
-	public:		
+	public:
 		void loader( TiXmlElement *_xml) override;
 
 	protected:
@@ -55,9 +55,6 @@ namespace Menge
 
 	private:
 		mt::polygon m_poligon;
-
-		PyObject * m_handler;
-
 		//bool m_handle;
 
 		bool m_onLeaveMethod;

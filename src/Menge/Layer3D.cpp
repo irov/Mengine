@@ -1,12 +1,11 @@
 #	include "Layer3D.h"
+#	include "ObjectImplement.h"
 
 #	include "Camera3D.h"
 
 #	include "Player.h"
 
 #	include "RenderEngine.h"
-
-#	include "ObjectImplement.h"
 
 namespace Menge
 {
@@ -50,5 +49,6 @@ namespace Menge
 	void Layer3D::loader( TiXmlElement *_xml)
 	{
 		SceneNode3D::loader(_xml);
+		Layer::loader(_xml);
 	}
 }

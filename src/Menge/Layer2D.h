@@ -24,7 +24,7 @@ namespace Menge
 		const Viewport & updateViewport( const Viewport & _viewport ) override;
 
 	public:
-		void loader( TiXmlElement * _xml) override;
+		void loader( TiXmlElement * _xml ) override;
 		void renderLayer() override;
 
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;

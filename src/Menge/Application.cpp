@@ -132,7 +132,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::init()
+	bool Application::initialize( const std::string & _applicationFile )
 	{
 		Holder<ScriptEngine>::keep( new ScriptEngine );
 
@@ -147,10 +147,42 @@ namespace Menge
 
 		Holder<ResourceManager>::keep( new ResourceManager );
 
-		return true;
+		std::string gameFile;
+
+		TiXmlDocument * xmlDocument = 
+			Holder<FileEngine>::hostage()
+			->loadXml( _applicationFile );
+		
+		XML_FOR_EACH_DOCUMENT( xmlDocument )
+		{
+			XML_CHECK_NODE_FOR_EACH("Application")
+			{
+				XML_CHECK_NODE_FOR_EACH("Paks")
+				{
+					XML_CHECK_NODE("Pak")
+					{
+						XML_DEF_ATTRIBUTES_NODE( File );
+
+						loadPak( File );
+					}
+				}
+
+				XML_CHECK_VALUE_NODE("Game", "File", m_gameInfo );
+			}
+		}
+		XML_INVALID_PARSE()
+		{
+			//TODO: ERROR
+			printf("parse application xml failed\n");
+			return false;
+		}
+
+		bool creating = createGame( m_gameInfo );
+
+		return creating;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::fini()
+	void Application::finalize()
 	{
 		Holder<Game>::hostage()->release();
 	}

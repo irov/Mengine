@@ -18,7 +18,6 @@ namespace	Menge
 	OBJECT_IMPLEMENT(HotSpot)
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
-	: m_handler( 0 )
 	{
 		this->setHandler( this );
 	}
@@ -124,40 +123,48 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleKeyEvent( size_t _key, bool _isDown )
 	{
-		bool result = false;
-		askEvent( result, "KEY", "(Ib)", _key, _isDown );
+		bool handle = false;
 
-		return result;
+		if( !handle )
+		{
+			askEvent( handle, "KEY", "(Ib)", _key, _isDown );
+		}
+
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseButtonEvent( size_t _button, bool _isDown )
 	{
-		bool result = false;
-		askEvent( result, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
+		bool handle = false;
 
-		return result;
+		if( !handle )
+		{
+			askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
+		}
+
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseMove( int _x, int _y, int _whell )
 	{
-		bool result = false;
-		askEvent( result, "MOUSE_MOVE", "(fff)", _x, _y, _whell );
+		bool handle = false;
 
-		return result;
+		if( !handle )
+		{
+			askEvent( handle, "MOUSE_MOVE", "(fff)", _x, _y, _whell );
+		}
+
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::setInputHandler( PyObject * _handler )
+	void HotSpot::setHotspotListener( PyObject * _listener )
 	{
-		ScriptEngine::incref( _handler );
+		registerEventListener( "KEY", "onHandleKeyEvent", _listener );
+		registerEventListener( "MOUSE_BUTTON", "onHandleMouseButtonEvent", _listener );
+		registerEventListener( "MOUSE_MOVE", "onHandleMouseMove", _listener );
 
-		m_handler = _handler;
-
-		this->registerEvent("KEY", m_handler, "onHandleKeyEvent" );
-		this->registerEvent("MOUSE_BUTTON", m_handler, "onHandleMouseButtonEvent" );
-		this->registerEvent("MOUSE_MOVE", m_handler, "onHandleMouseMove" );
-
-		this->registerEvent("LEAVE", m_handler, "onLeave" );
-		this->registerEvent("ENTER", m_handler, "onEnter" );		
+		registerEventListener( "LEAVE", "onLeave", _listener );
+		registerEventListener( "ENTER", "onEnter", _listener );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_activate()

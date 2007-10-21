@@ -22,6 +22,10 @@ namespace Menge
 		PyObject * getScript();
 		bool isScriptable() const;
 
+
+	public:
+		void callMethod( const std::string & _method, const char * _format, ... );
+
 	protected:
 		PyObject * m_scriptable;
 	};

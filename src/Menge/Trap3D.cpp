@@ -43,12 +43,12 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	void Trap3D::setEnterZoneCallback( PyObject * _event )
 	{
-		registerEvent( "ENTER_ZONE", _event );
+		registerEventCallback( "ENTER_ZONE", _event );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void Trap3D::setLeaveZoneCallback( PyObject * _event )
 	{
-		registerEvent( "LEAVE_ZONE", _event );
+		registerEventCallback( "LEAVE_ZONE", _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Trap3D::_activate()

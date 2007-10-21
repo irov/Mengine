@@ -50,12 +50,12 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	void Trap2D::setEnterZoneCallback( PyObject * _event )
 	{
-		registerEvent( "ENTER_ZONE", _event );
+		registerEventCallback( "ENTER_ZONE", _event );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void Trap2D::setLeaveZoneCallback( PyObject * _event )
 	{
-		registerEvent( "LEAVE_ZONE", _event );
+		registerEventCallback( "LEAVE_ZONE", _event );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	bool Trap2D::_activate()

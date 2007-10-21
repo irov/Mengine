@@ -1,9 +1,6 @@
 #	include "Eventable.h"
 
 #	include "ScriptEngine.h"
-#	include "Scriptable.h"
-
-#	include "XmlParser/XmlParser.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -27,16 +24,9 @@ namespace Menge
 			ScriptEngine::decref( it.second );
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( const std::string & _name, const std::string & _method  )
-	{
-		Scriptable * scriptable = getScriptable();
-		PyObject * module = scriptable->getScript();
 
-		return registerEvent( _name, module, _method );
-	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( const std::string & _name, PyObject * _module, const std::string & _method  )
+	bool Eventable::registerEventListener( const std::string & _name, const std::string & _method, PyObject * _module )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -66,7 +56,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( const std::string & _name, PyObject * _callback )
+	bool Eventable::registerEventCallback( const std::string & _name, PyObject * _callback )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -111,10 +101,23 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
-		Holder<ScriptEngine>::hostage()
+		PyObject * result = 
+			Holder<ScriptEngine>::hostage()
 			->callFunction( it_find->second, _format, valist );
 
 		va_end( valist ); 
+
+		if( result == 0 )
+		{
+			return;
+		}
+
+		if( pybind::convert::is_none( result ) == false )
+		{
+			printf("Warning: Event '%s' don't have return any value\n"
+				, _name.c_str() 
+				);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::askEvent( bool & _result, const std::string & _name, const char * _format, ... )
@@ -123,7 +126,7 @@ namespace Menge
 
 		if( it_find == m_mapEvent.end() )
 		{
-			return false; 
+			return false;
 		}
 
 		va_list valist;
@@ -135,22 +138,22 @@ namespace Menge
 
 		va_end( valist );
 
+		if( result == 0 )
+		{
+			return false;
+		}
+
+		if( pybind::convert::is_none( result ) == true )
+		{
+			printf("Error: Event '%s' must have return [True/False] value\n"
+				, _name.c_str() 
+				);
+
+			return false;
+		}
+
 		_result = pybind::convert::to_bool( result );
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Eventable::loader(TiXmlElement * _xml)
-	{
-		XML_FOR_EACH_TREE(_xml)
-		{
-			XML_CHECK_NODE("Event")
-			{
-				XML_DEF_ATTRIBUTES_NODE(Type);
-				XML_DEF_ATTRIBUTES_NODE(Function);
-
-				registerEvent( Type, Function );
-			}
-		}
 	}
 }

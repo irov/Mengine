@@ -1,9 +1,5 @@
 #	include "ResourceImageDefault.h"
-
 #	include "ResourceImplement.h"
-
-#	include "FileEngine.h"
-#	include "RenderEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -13,31 +9,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDefault::ResourceImageDefault( const std::string & _name )
 		: ResourceImage( _name )
-		, m_renderImage(0)
-		, m_size(0.f, 0.f)
-		, m_uv( 0.f, 0.f, 1.f, 1.f )
-		, m_offset( 0.f, 0.f )
-		, m_count(0)
-		, m_filter(1)
+		, m_offset(0.f,0.f)
+		, m_uv(0.f,0.f,1.f,1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getMaxSize()
+	const mt::vec2f & ResourceImageDefault::getMaxSize( size_t _frame )
 	{
-		return m_size;
+		return m_frames[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ResourceImageDefault::getCount()
 	{
-		return m_count;
+		return m_frames.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageDefault::getSize( size_t _frame )
 	{
-		return m_size;
+		return m_frames[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getOffset( size_t _image )
+	const mt::vec2f & ResourceImageDefault::getOffset( size_t _frame )
 	{
 		return m_offset;
 	}
@@ -47,59 +39,43 @@ namespace Menge
 		return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * ResourceImageDefault::getImage( size_t _image )
+	RenderImageInterface * ResourceImageDefault::getImage( size_t _frame )
 	{
-		return m_renderImage;
+		return m_frames[ _frame ].image;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::loader( TiXmlElement * _xml )
 	{
-		ResourceImpl::loader( _xml );
+		ResourceImage::loader( _xml );
 
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "File", "Path", m_fileImage );
-			XML_CHECK_VALUE_NODE( "Filter", "Value", m_filter );
+			XML_CHECK_NODE("File")
+			{
+				XML_DEF_ATTRIBUTES_NODE(Path);
+				m_filesImages.push_back(Path);
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_compile()
-	{
-		FileDataInterface * fileData = Holder<FileEngine>::hostage()->openFile(m_fileImage);
-
-		if( fileData == 0 )
+	{	
+		std::vector<char> buff;
+		for each( const std::string & file in m_filesImages )
 		{
-			return false;
+			ImageFrame frame = loadImageFrame( file, buff );
+
+			m_frames.push_back( frame );
 		}
-
-		TextureDesc	textureDesc;
-		char * buff = new char [ fileData->size() ];
-		fileData->read( buff, fileData->size() );
-		textureDesc.buffer = buff;
-		textureDesc.size = fileData->size();
-		textureDesc.name = m_fileImage.c_str();
-		textureDesc.filter = m_filter;
-
-		m_renderImage = Holder<RenderEngine>::hostage()->loadImage(textureDesc);
-
-		if( m_renderImage == 0 )
-		{
-			return false;
-		}
-
-		m_size.x = (float)m_renderImage->getWidth();
-		m_size.y = (float)m_renderImage->getHeight();
-
-		m_count = 1;
-
-		Holder<FileEngine>::hostage()->closeFile(fileData);
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////()
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::_release()
 	{
-		Holder<RenderEngine>::hostage()
-			->releaseImage( m_renderImage );
+		for each( const ImageFrame & frame in m_frames )
+		{
+			releaseImageFrame( frame );
+		}
 	}
 }

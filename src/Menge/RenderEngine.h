@@ -1,13 +1,14 @@
 #	pragma once
 
-#	include <string>
+#	include "Interface/RenderSystemInterface.h"
+
+#	include "Holder.h"
 
 #	include "math/mat4.h"
 #	include "math/vec4.h"
 
-#	include "Interface/RenderSystemInterface.h"
-
-#	include "Holder.h"
+#	include <string>
+#	include <vector>
 
 namespace Menge
 {
@@ -23,7 +24,7 @@ namespace Menge
 		void render();
 
 		RenderImageInterface * loadImage( const TextureDesc & _desc );
-		RenderImageInterface * loadImage( const std::string & _imageFile, int _filter );
+		RenderImageInterface * loadImage( const std::string & _fileName, std::vector<char> & _buff, size_t _filter );
 
 		void renderImage(
 			const mt::mat3f & _transform, 

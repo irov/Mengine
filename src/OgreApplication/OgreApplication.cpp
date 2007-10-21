@@ -40,8 +40,6 @@ void releaseInterfaceSystem( ApplicationInterface* _ptrInterface )
 OgreApplication::OgreApplication() 
 : m_application(0)
 , m_root(0)
-//, m_camera(0)
-//, m_sceneMgr(0)
 , m_window(0)
 {
 	
@@ -49,6 +47,7 @@ OgreApplication::OgreApplication()
 //////////////////////////////////////////////////////////////////////////
 OgreApplication::~OgreApplication()
 {
+	m_application->finalize();
 	delete m_application;
 
 	for each( SystemDLL * sysDll in m_listApplicationDLL )
@@ -156,13 +155,6 @@ bool OgreApplication::init( const char * _xmlFile )
 	
 	//Ogre::RenderTargetListener * rtl = new Ogre::RenderTargetListener( ;
 	m_root->addFrameListener( this );
-	
-	//unsigned int width = m_root->getWidth();
-	//unsigned int height = m_root->getHeight();
-
-	//bool isFullScreen = m_root->isFullScreen();
-
-	//createWindow( width, height, isFullScreen );
 
 	OIS::ParamList pl;
 	size_t windowHnd = 0;
@@ -185,40 +177,9 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	renderInterface->init( m_root, m_window );
 	
+	bool initialize = m_application->initialize( _xmlFile );
 
-	m_application->init();
-
-	std::string gameFile;
-	XML_PARSE_FILE( _xmlFile )
-	{
-		XML_CHECK_NODE_FOR_EACH("Application")
-		{
-			XML_CHECK_NODE_FOR_EACH("Paks")
-			{
-				XML_CHECK_NODE("Pak")
-				{
-					XML_DEF_ATTRIBUTES_NODE( File );
-
-					m_application->loadPak( File );
-				}
-			}
-
-			XML_CHECK_VALUE_NODE("Game", "File", gameFile );
-		}
-	}
-	XML_INVALID_PARSE()
-	{
-		//TODO: ERROR
-		printf("parse application xml failed\n");
-		return false;
-	}
-
-	if( m_application->createGame( gameFile ) == false )
-	{
-		return false;
-	}
-
-	return true;
+	return initialize;
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)

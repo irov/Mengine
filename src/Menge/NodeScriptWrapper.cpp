@@ -115,7 +115,6 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Sprite );
 	SCRIPT_CLASS_WRAPPING( Animation );
 	SCRIPT_CLASS_WRAPPING( Arrow );
-//	SCRIPT_CLASS_WRAPPING( Player );	
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{
@@ -136,6 +135,7 @@ namespace Menge
 
 		pybind::interface_<Node>("Node", false)
 			.def( "activate", &Node::activate )
+			.def( "deactivate", &Node::deactivate )
 			.def( "setName", &Node::setName )
 			.def( "getName", &Node::getName )
 			.def( "addChildren", &Node::addChildren )
@@ -172,7 +172,7 @@ namespace Menge
 				;
 
 			pybind::class_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot", false)
-				.def( "setInputHandler", &HotSpot::setInputHandler )
+				.def( "setHotspotListener", &HotSpot::setHotspotListener )
 				.def( "addPoint", &HotSpot::addPoint )
 				.def( "clearPoints", &HotSpot::clearPoints )
 				;

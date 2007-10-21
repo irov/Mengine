@@ -37,8 +37,7 @@ namespace	Menge
 
 		mt::vec2f min0, max0;
 
-		const mt::vec2f & size = m_image->getMaxSize();
-
+		const mt::vec2f & size = m_image->getMaxSize( m_currentImageIndex );
 		const mt::vec2f & offset = m_image->getOffset( m_currentImageIndex );
 
 		const mt::vec2f & localPosition = getLocalPosition();

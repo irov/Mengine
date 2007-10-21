@@ -150,8 +150,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			handle = Holder<ScriptEngine>::hostage()
-				->handleKeyEvent( m_pyPersonality, _key, _isDown );
+			askEvent( handle, "KEY", "(Ib)", _key, _isDown );
 		}
 
 		if( !handle )
@@ -169,8 +168,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			handle = Holder<ScriptEngine>::hostage()
-				->handleMouseButtonEvent( m_pyPersonality, _button, _isDown );
+			askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
 		}
 
 		if( !handle )
@@ -187,8 +185,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			handle = Holder<ScriptEngine>::hostage()
-				->handleMouseMove( m_pyPersonality, _x, _y, _whell );
+			askEvent( handle, "MOUSE_MOVE", "(fff)", _x, _y, _whell );
 		}
 		
 		if( !handle )
@@ -292,6 +289,10 @@ namespace Menge
 		{
 			return false;
 		}
+
+		registerEventListener( "KEY", "onHandleKeyEvent", m_pyPersonality );
+		registerEventListener( "MOUSE_BUTTON", "onHandleMouseButtonEvent", m_pyPersonality );
+		registerEventListener( "MOUSE_MOVE", "onHandleMouseMove", m_pyPersonality );
 
 		Holder<Player>::hostage()
 			->init();

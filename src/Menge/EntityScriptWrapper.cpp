@@ -69,7 +69,7 @@ namespace Menge
 					{
 						entity->loader(XML_CURRENT_NODE);
 
-						entity->registerEvent( "LOADER", "onLoader" );
+						entity->registerEventMethod( "LOADER", "onLoader" );
 						entity->callEvent("LOADER", "()");
 					}
 				}

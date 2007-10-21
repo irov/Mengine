@@ -148,7 +148,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::loader(TiXmlElement * _xml)
 	{
-		Eventable::loader( _xml );
+		NodeEventable::loader( _xml );
 
 		XML_FOR_EACH_TREE(_xml)
 		{
@@ -164,10 +164,10 @@ namespace Menge
 					continue;
 				}
 
-				addChildren( node );
-
 				node->setName( Name );
 				node->loader(XML_CURRENT_NODE);
+
+				addChildren( node );
 			}
 
 			XML_CHECK_NODE("External")
@@ -194,7 +194,6 @@ namespace Menge
 						addChildren( node );
 
 						node->setName( Name );
-
 						node->loader( XML_CURRENT_NODE );
 					}				
 				}

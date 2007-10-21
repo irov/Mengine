@@ -1,9 +1,6 @@
 #	include "ResourceImageCell.h"
 #	include "ResourceImplement.h"
 
-#	include "FileEngine.h"
-#	include "RenderEngine.h"
-
 #	include "XmlParser/XmlParser.h"
 
 namespace Menge
@@ -11,10 +8,15 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceImageCell )
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageCell::ResourceImageCell( const std::string & _name )
-		: ResourceImageDefault( _name )
+		: ResourceImage( _name )
 		, m_numX(0)
 		, m_numY(0)
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & ResourceImageCell::getMaxSize( size_t _frame )
+	{
+		return m_imageFrame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ResourceImageCell::getCount()
@@ -22,17 +24,33 @@ namespace Menge
 		return m_uvs.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageCell::getUV( size_t _index )
+	const mt::vec2f & ResourceImageCell::getSize( size_t _frame )
 	{
-		return m_uvs[ _index ];
+		return m_imageFrame.size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & ResourceImageCell::getOffset( size_t _frame )
+	{
+		return m_offset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec4f & ResourceImageCell::getUV( size_t _frame )
+	{
+		return m_uvs[ _frame ];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderImageInterface * ResourceImageCell::getImage( size_t _frame )
+	{
+		return m_imageFrame.image;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageCell::loader( TiXmlElement * _xml )
 	{
-		ResourceImageDefault::loader( _xml );
+		ResourceImage::loader( _xml );
 
 		XML_FOR_EACH_TREE( _xml )
 		{
+			XML_CHECK_VALUE_NODE( "File", "Path", m_fileImage );
 			XML_CHECK_VALUE_NODE( "Cell", "X", m_numX );
 			XML_CHECK_VALUE_NODE( "Cell", "Y", m_numY );
 		}
@@ -40,19 +58,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCell::_compile()
 	{
-		if( ResourceImageDefault::_compile() == false )
-		{
-			return false;
-		}
+		std::vector<char> buff;
+		m_imageFrame = loadImageFrame( m_fileImage, buff );
 
-		m_count = m_numX * m_numY;
+		size_t count = m_numX * m_numY;
 
-		m_uvs.resize( m_count );
-		
-		m_size.x = m_size.x / m_numX;
-		m_size.y = m_size.y / m_numY;
+		m_imageFrame.size.x /= (float)m_numX;
+		m_imageFrame.size.y /= (float)m_numY;
 
-		for( size_t index = 0; index < m_count; ++index )
+		m_uvs.resize( count );
+
+		for( size_t index = 0; index < count; ++index )
 		{
 			size_t offset = index / m_numX;
 
@@ -63,5 +79,10 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageCell::_release()
+	{
+		releaseImageFrame( m_imageFrame );
 	}
 }

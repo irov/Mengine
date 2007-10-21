@@ -4,6 +4,8 @@
 #	include "Math/vec2.h"
 #	include "Math/rand.h"
 
+#	include <time.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -11,7 +13,7 @@ namespace Menge
 	{
 	public:
 		static int randint( int a, int b )
-		{
+		{			
 			return int(a + ( rand() % (b - a) ) );
 		}
 
@@ -28,6 +30,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
 	{
+		srand( clock() );
+
 		pybind::def( "randint", &ScriptHelper::randint );
 
 		pybind::def( "getVec2fX", &ScriptHelper::getVec2fX );

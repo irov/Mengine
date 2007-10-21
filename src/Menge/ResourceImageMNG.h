@@ -24,14 +24,14 @@ namespace Menge
 		ResourceImageMNG( const std::string & _name );
 
 	public:
-		const mt::vec2f & getMaxSize() override;
 		size_t getCount() override;
 
-		const mt::vec2f & getSize( size_t _image ) override;
-		const mt::vec2f & getOffset( size_t _image ) override;
-		const mt::vec4f & getUV( size_t _image ) override;
+		const mt::vec2f & getMaxSize( size_t _frame ) override;
+		const mt::vec2f & getSize( size_t _frame ) override;
+		const mt::vec2f & getOffset( size_t _frame ) override;
+		const mt::vec4f & getUV( size_t _frame ) override;
 	
-		RenderImageInterface * getImage( size_t _image ) override;
+		RenderImageInterface * getImage( size_t _frame ) override;
 
 	public:
 		void loader( TiXmlElement * _xml );
@@ -42,8 +42,6 @@ namespace Menge
 
 	protected:
 		std::string m_fileMNG;
-
-		int m_filter;
 
 		mt::vec2f m_size;
 		mt::vec4f m_uv;

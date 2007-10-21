@@ -21,8 +21,8 @@ namespace Menge
 		~Application();
 
 	public:
-		virtual bool init();
-		virtual void fini();
+		virtual bool initialize( const std::string & _applicationFile );
+		virtual void finalize();
 		virtual bool update( size_t _timing );
 
 		virtual void setFileSystem( FileSystemInterface * _interface );
@@ -45,6 +45,7 @@ namespace Menge
 		int m_bits;
 		bool m_fullScreen;
 
+		std::string m_gameInfo;
 		InputHandler * m_handler;
 	};
 }

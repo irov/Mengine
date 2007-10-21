@@ -48,7 +48,7 @@ namespace	Menge
 	{
 		m_moveTo = false;
 
-		this->callEvent("MOVE_STOP", "()" );
+		this->callEvent("MOVE_END", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_update( size_t _timing, const Viewport & _viewport )
@@ -59,9 +59,7 @@ namespace	Menge
 			{
 				setLocalPosition( m_movePoint );
 
-				m_moveTo = false;
-
-				this->callEvent("MOVE_END", "()" );
+				moveStop();
 			}
 			else
 			{
@@ -82,11 +80,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
 	{
-		this->registerEvent("ACTIVATE", "onActivate" );
-		this->registerEvent("MOVE_END", "onMoveEnd" );
-		this->registerEvent("MOVE_STOP", "onMoveStop" );
+		this->registerEventMethod("MOVE_END", "onMoveEnd" );
 
-		this->callEvent("ACTIVATE", "()" );
+		this->callMethod("ACTIVATE", "()" );
 
 		return true;
 	}

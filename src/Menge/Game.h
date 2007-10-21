@@ -4,6 +4,7 @@
 #	include <map>
 
 #	include "InputHandler.h"
+#	include "Eventable.h"
 
 class TiXmlElement;
 
@@ -24,6 +25,7 @@ namespace Menge
 
 	class Game
 		: public InputHandler
+		, public Eventable
 	{
 	public:
 		Game();

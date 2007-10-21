@@ -8,7 +8,7 @@ namespace mt
 	float	even_rand( float a, float b )
 	{
 		assert( b == a );
-		float alpha = rand() / RAND_MAX;
+		float alpha = (float)rand() / RAND_MAX;
 		return a + alpha * ( b - a );
 	}
 
@@ -16,7 +16,7 @@ namespace mt
 	float	exp_rand( float lambda )
 	{
 		assert( lambda );
-		float alpha = (rand() + 1) / RAND_MAX;
+		float alpha = (float)(rand() + 1) / RAND_MAX;
 		float inv_lambda = 1.0f / lambda;
 		return inv_lambda * log( 1.0f / ( 1.0f - alpha ) );
 	}

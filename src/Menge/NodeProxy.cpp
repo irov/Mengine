@@ -13,6 +13,13 @@ namespace Menge
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void NodeProxy::destroy()
+	{
+		m_node->destroy();
+
+		delete this;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool NodeProxy::activate()
 	{
 		return m_node->activate();
@@ -57,31 +64,40 @@ namespace Menge
 	{
 		return m_node->loader(_xml);
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void NodeProxy::registerEvent( const std::string &_name, PyObject * _func  )
-	//{
-	//	return m_node->registerEvent(_name,_func);
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//PyObject * NodeProxy::getEvent( const std::string &_name )
-	//{
-	//	return m_node->getEvent(_name);
-	//}
+	void NodeProxy::setParent( Node * _node )
+	{
+		return m_node->setParent( _node );
+	}
 	//////////////////////////////////////////////////////////////////////////
-	//void NodeProxy::setScriptable( PyObject * _scriptable )
-	//{
-	//	return m_node->setScriptable( _scriptable );
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//PyObject * NodeProxy::getScriptable()
-	//{
-	//	return m_node->getScriptable();
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//bool NodeProxy::isScriptable() const
-	//{
-	//	return m_node->isScriptable();
-	//}
+	bool NodeProxy::addChildren( Node * _node )
+	{
+		return m_node->addChildren( _node );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeProxy::removeChildren( Node * _node )
+	{
+		return m_node->removeChildren( _node );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * NodeProxy::getChildren( const std::string & _name, bool _recursion )
+	{
+		return m_node->getChildren( _name, _recursion );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool NodeProxy::isChildren( Node * _node )
+	{
+		return m_node->isChildren( _node );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeProxy::foreachChildren( const NodeForeach & _foreach )
+	{
+		return m_node->foreachChildren( _foreach );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Scriptable * NodeProxy::getScriptable()
+	{
+		return m_node->getScriptable();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeProxy::debugRender()
 	{

@@ -1051,6 +1051,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="LayerScene"
+				>
+				<File
+					RelativePath=".\LayerScene.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LayerScene.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Kernel"
@@ -1107,6 +1119,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\NodeEventable.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\NodeEventable.h"
+					>
+				</File>
+				<File
 					RelativePath=".\NodeFactory.cpp"
 					>
 				</File>
@@ -1146,18 +1166,6 @@
 						>
 					</File>
 				</Filter>
-				<Filter
-					Name="Eventable"
-					>
-					<File
-						RelativePath=".\Eventable.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Eventable.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="MousePickerTrap"
@@ -1176,6 +1184,18 @@
 				</File>
 				<File
 					RelativePath=".\MousePickerTrap.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Eventable"
+				>
+				<File
+					RelativePath=".\Eventable.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Eventable.h"
 					>
 				</File>
 			</Filter>

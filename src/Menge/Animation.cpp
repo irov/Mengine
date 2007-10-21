@@ -16,7 +16,6 @@ namespace	Menge
 	: m_playing(false)
 	, m_autoStart(false)
 	, m_looping(false)
-	, m_state(FORWARD)
 	, m_total_delay(0)
 	, m_animation(0)
 	, m_currentFrame(0)
@@ -38,7 +37,7 @@ namespace	Menge
 	{
 		m_listener = _listener;
 
-		this->registerEvent("END_ANIMATION", m_listener, "onAnimationEnd" );
+		registerEventListener("END_ANIMATION", "onAnimationEnd", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationResource( const std::string & _resource )
@@ -56,11 +55,6 @@ namespace	Menge
 			->getResourceT<ResourceAnimation>( m_resourceAnimation );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setAnimState( eAnimState _state )
-	{
-		m_state = _state;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Animation::setLooped( bool _looped )
 	{
 		m_looping = _looped;
@@ -69,48 +63,6 @@ namespace	Menge
 	bool Animation::getLooped() const
 	{
 		return m_looping;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::setFirstFrame()
-	{
-		size_t frameSize = m_animation->getSequenceCount();
-
-		m_currentFrame = (m_state == FORWARD) ? 0 : frameSize - 1;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::nextFrame()
-	{
-		size_t frameSize = m_animation->getSequenceCount();
-
-		if( ++m_currentFrame == frameSize )
-		{
-			if( m_looping == false )
-			{
-				stop();
-				return;
-			}
-			else
-			{
-				m_currentFrame = 0;
-			}
-		}	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::prevFrame()
-	{
-		if( m_currentFrame == 0 )
-		{
-			if(!m_looping)
-			{
-				stop();
-				return;
-			}
-			else
-			{
-				m_currentFrame = m_animation->getSequenceCount();
-			}
-		}
-		--m_currentFrame;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_update( size_t _timing, const Viewport & _viewport )
@@ -126,35 +78,33 @@ namespace	Menge
 
 		size_t delay = m_animation->getSequenceDelay(m_currentFrame);
 
-		size_t currentImageIndex = m_animation->getSequenceIndex(m_currentFrame);
-		setImageIndex( currentImageIndex );
-
 		while( m_total_delay >= delay )
 		{
 			m_total_delay -= delay;
+			
+			size_t frameSize = m_animation->getSequenceCount();
 
-			switch(m_state)
+			if( ++m_currentFrame == frameSize )
 			{
-			case FORWARD:
+				if( m_looping == false )
 				{
-					nextFrame();
-				}
-				break;
+					m_playing = false;
+					--m_currentFrame;
 
-			case REWIND:
-				{
-					prevFrame();
+					callEvent( "END_ANIMATION", "(O)", this->getScript() );
+					return;
 				}
-				break;
-
-			default:
+				else
 				{
-					assert(!"undefined state!");
+					m_currentFrame = 0;
 				}
-				break;
-			}
+			}	
 			delay = m_animation->getSequenceDelay( m_currentFrame );
 		}
+
+		size_t currentImageIndex = m_animation->getSequenceIndex(m_currentFrame);
+		setImageIndex( currentImageIndex );
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_activate()
@@ -178,7 +128,7 @@ namespace	Menge
 		}
 		else
 		{
-			setFirstFrame();
+			m_currentFrame = 0;
 
 			size_t currentImageIndex = m_animation->getSequenceIndex(m_currentFrame);
 			setImageIndex( currentImageIndex );
@@ -197,10 +147,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::stop()
 	{
-		m_playing = false;
-		setFirstFrame();
+		m_currentFrame = 0;
 		m_total_delay = 0;
-		callEvent( "END_ANIMATION", "()" );
+
+		if( m_playing == true )
+		{
+			m_playing = false;
+			callEvent( "END_ANIMATION", "(O)", this->getScript() );
+		}
+
+		size_t currentImageIndex = m_animation->getSequenceIndex(m_currentFrame);
+		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::pause()
@@ -212,7 +169,10 @@ namespace	Menge
 	{
 		m_playing = true;
 		m_total_delay = 0;
-		setFirstFrame();
+		m_currentFrame = 0;
+
+		size_t currentImageIndex = m_animation->getSequenceIndex(m_currentFrame);
+		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

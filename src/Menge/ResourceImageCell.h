@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "ResourceImageDefault.h"
+#	include "ResourceImage.h"
 
 #	include <vector>
 
 namespace Menge
 {
 	class ResourceImageCell
-		: public ResourceImageDefault
+		: public ResourceImage
 	{
 		RESOURCE_DECLARE( ResourceImageCell )
 
@@ -17,18 +17,29 @@ namespace Menge
 	public:
 		size_t getCount() override;
 
-		const mt::vec4f & getUV( size_t _image ) override;
+		const mt::vec2f & getMaxSize( size_t _frame ) override;
+		const mt::vec2f & getSize( size_t _frame ) override;
+		const mt::vec2f & getOffset( size_t _frame ) override;
+		const mt::vec4f & getUV( size_t _frame ) override;		
+
+		RenderImageInterface * getImage( size_t _frame ) override;
 
 	public:
 		void loader( TiXmlElement * _xml ) override;
 
 	protected:
 		bool _compile() override;
+		void _release() override;
 
 	protected:
-		int m_numX;
-		int m_numY;
+		std::string m_fileImage;
 
+		size_t m_numX;
+		size_t m_numY;
+
+		mt::vec2f m_offset;
 		std::vector<mt::vec4f>	m_uvs;
+
+		ImageFrame m_imageFrame;
 	};
 }

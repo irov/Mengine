@@ -4,14 +4,50 @@ Menge Engine
 
 ===========================================================================
 staue: development 
+version: 0.0.0.8
+date: 
+
+[Genereal]
++ support Event warning's and errors
++ support ResourceImageDefault multi-frames
+
+
+===========================================================================
+staue: development 
+version: 0.0.0.7
+date: 16.10.07
+
+[Genereal]
+* fixed randint, provide srand
++ added new Type LayerScene
++ added LayerScene Scene:Name attribute
+
+[Framework]
++ added Node.deactivate()
+
+===========================================================================
+staue: development 
+version: 0.0.0.6
+date: 16.10.07
+
+[General]
+* fixed Animation.stop()
+% change Animation.onAnimationEnd( animation )
+- remove Entity.onMoveStop()
+ 
+
+===========================================================================
+staue: development 
 version: 0.0.0.5
-date: now
+date: 15.10.07
 
 [Genereal]
 * fixed Hotspot parallax-scrolling behavior
 * fixed bug scheduleManager
 + support timing update
 + support Entity move
++ added Entity.onMoveEnd callback
++ added Entity.onMoveStop callback
 + support Allocator Transformation:Position attribute
 + support Allocator Transformation:Direction attribute
 + support Allocator Transformation:Rotate attribute
@@ -20,6 +56,7 @@ date: now
 [Framework]
 + added Entity.moveTo( time, vec2f, bool )
 + added Entity.moveStop()
+
 
 ===========================================================================
 staue: development 

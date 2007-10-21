@@ -58,10 +58,6 @@ namespace Menge
 		Arrow * createArrow( const std::string & _type );
 		Scene * createScene( const std::string & _type );
 		
-		bool handleKeyEvent( PyObject * _module, size_t _key, bool _isDown );
-		bool handleMouseButtonEvent( PyObject * _module, size_t _button, bool _isDown );
-		bool handleMouseMove( PyObject * _module, int _x, int _y, int _whell );
-
 		bool hasModuleFunction( PyObject * _module, const std::string & _name );
 		PyObject * getModuleFunction( PyObject * _module, const std::string & _name );
 		PyObject * callModuleFunction( const std::string & _module, const std::string & _name, const char * _params = "()", ... );

@@ -307,54 +307,6 @@ namespace Menge
 		return scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::handleKeyEvent( PyObject * _module, size_t _key, bool _isDown )
-	{
-		if( _module && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( _module, "onHandleKeyEvent" ) )
-		{
-			PyObject * result = Holder<ScriptEngine>::hostage()
-				->callModuleFunction( _module, "onHandleKeyEvent", "(Ib)", _key, _isDown );
-
-			bool value = pybind::extract<bool>( result );
-
-			return value;
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::handleMouseButtonEvent( PyObject * _module, size_t _button, bool _isDown )
-	{
-		if( _module && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( _module, "onHandleMouseButtonEvent" ) )
-		{
-			PyObject * result = Holder<ScriptEngine>::hostage()
-				->callModuleFunction( _module, "onHandleMouseButtonEvent", "(Ib)", _button, _isDown );
-
-			bool value = pybind::extract<bool>( result );
-
-			return value;
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::handleMouseMove( PyObject * _module, int _x, int _y, int _whell )
-	{
-		if( _module && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( _module, "onHandleMouseMove" ) )
-		{
-			PyObject * result = Holder<ScriptEngine>::hostage()
-				->callModuleFunction( _module, "onHandleMouseMove", "(fff)", _x, _y, _whell );
-
-			bool value = pybind::extract<bool>( result );
-
-			return value;
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::hasModuleFunction( PyObject * _module, const std::string & _name )
 	{
 		return pybind::has_attr( _module, _name.c_str() );

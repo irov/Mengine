@@ -80,6 +80,7 @@ namespace Menge
 		closeFile(file);
 
 		TiXmlDocument * document = TiXmlDocumentLoadData( data );
+		delete [] buff;
 
 		return document;
 	}

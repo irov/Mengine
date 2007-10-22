@@ -19,12 +19,11 @@ namespace Menge
 		~TextNode();
 
 	public:
-		virtual bool isVisible( const Viewport & _viewPort );
-
-		void loader( TiXmlElement * _xml ) override;
+		void setMessage( const std::string& _message );
 
 	public:
-		void	setMessage( const std::string& _message );
+		bool isVisible( const Viewport & _viewPort ) override;
+		void loader( TiXmlElement * _xml ) override;
 
 	protected:
 		bool _activate() override;
@@ -32,6 +31,7 @@ namespace Menge
 
 		void _render( const mt::mat3f &rwm, const Viewport & _viewPort ) override;
 		void _debugRender() override;
+
 	private:
 		ResourceFont * m_resourceFont;
 		RenderFontInterface * m_font;

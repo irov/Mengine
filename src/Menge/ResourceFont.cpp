@@ -1,4 +1,5 @@
 #	include "ResourceFont.h"
+#	include "ResourceImplement.h"
 
 #	include "RenderEngine.h"
 
@@ -6,6 +7,8 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	RESOURCE_IMPLEMENT( ResourceFont )
 	//////////////////////////////////////////////////////////////////////////
 	ResourceFont::ResourceFont( const std::string & _name )
 		: ResourceImpl( _name )
@@ -19,7 +22,7 @@ namespace Menge
 
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "Font", "Name", m_fontName );
+			XML_CHECK_VALUE_NODE( "File", "Path", m_fontName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

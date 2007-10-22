@@ -114,6 +114,7 @@ namespace	Menge
 		}
 
 		registerEventMethod( "UPDATE", "onUpdate" );
+
 		registerEventMethod( "KEY", "onHandleKeyEvent" );
 		registerEventMethod( "MOUSE_BUTTON", "onHandleMouseButtonEvent" );
 		registerEventMethod( "MOUSE_MOVE", "onHandleMouseMove" );
@@ -131,6 +132,8 @@ namespace	Menge
 	void Scene::loader( TiXmlElement *_xml )
 	{
 		NodeCore::loader(_xml);
+
+		callMethod( "onLoader", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Layer * _layer )

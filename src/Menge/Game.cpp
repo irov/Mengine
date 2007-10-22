@@ -405,8 +405,6 @@ namespace Menge
 			Scene * scene = Holder<ScriptEngine>::hostage()
 				->createScene( sceneModule );
 
-			scene->setName( _name );
-
 			if( scene == 0 )
 			{
 				printf("Can't create scene [%s]\n"
@@ -415,6 +413,8 @@ namespace Menge
 
 				return 0;
 			}
+
+			scene->setName( _name );
 
 			std::string xml_path = m_pathScenes;
 			xml_path += "/";

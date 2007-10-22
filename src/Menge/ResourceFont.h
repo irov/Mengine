@@ -12,6 +12,8 @@ namespace Menge
 	class ResourceFont
 		: public ResourceImpl
 	{
+		RESOURCE_DECLARE( ResourceFont )
+
 	public:
 		ResourceFont( const std::string & _name );
 

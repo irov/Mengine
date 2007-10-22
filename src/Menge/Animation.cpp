@@ -167,6 +167,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::play()
 	{
+		if( isActive() == false )
+		{
+			return;
+		}
+
 		m_playing = true;
 		m_total_delay = 0;
 		m_currentFrame = 0;

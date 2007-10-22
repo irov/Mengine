@@ -69,7 +69,8 @@ namespace	Menge
 
 		XML_FOR_EACH_TREE(_xml)
 		{
-			XML_CHECK_VALUE_NODE( "Font", "Name", m_resourceFont );
+			XML_CHECK_VALUE_NODE( "Font", "Name", m_resourceFontName );
+			XML_CHECK_VALUE_NODE( "Text", "Value", m_message);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

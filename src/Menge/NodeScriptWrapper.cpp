@@ -14,6 +14,7 @@
 #	include "Animation.h"
 #	include "HotSpot.h"
 #	include "Arrow.h"
+#	include "TextNode.h"
 #	include "Camera3D.h"
 
 #	include "XmlParser/XmlParser.h"
@@ -74,12 +75,6 @@ namespace Menge
 				->setCamera2DPosition( mt::vec2f(x, y) );
 		}
 
-		static void setCamera3DPosition( float x, float y, float z )
-		{
-			Holder<Player>::hostage()
-				->setCamera3DPosition( mt::vec3f(x, y, z) );
-		}
-
 		static PyObject * createNodeFromXml( PyObject * _params  )
 		{
 			if( pybind::convert::is_string( _params ) == false )
@@ -115,6 +110,8 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Sprite );
 	SCRIPT_CLASS_WRAPPING( Animation );
 	SCRIPT_CLASS_WRAPPING( Arrow );
+	SCRIPT_CLASS_WRAPPING( TextNode );
+	
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{
@@ -161,6 +158,10 @@ namespace Menge
 			;
 
 		{
+			pybind::proxy_<TextNode, pybind::bases<SceneNode2D>>("TextNode", false)
+				.def( "setMessage", &TextNode::setMessage )
+				;
+
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)
 				.def( "setOffsetClick", &Arrow::setOffsetClick )
 				.def( "getOffsetClick", &Arrow::getOffsetClick )
@@ -196,17 +197,12 @@ namespace Menge
 					;
 
 			}
-
 		}		
-
-		pybind::class_<Player, pybind::no_bases>("Player", false)
-			;
 
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
 		pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
 		pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
-		pybind::def( "setCamera3DPosition", &ScriptMethod::setCamera3DPosition );
-		
+				
 		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
 
 		pybind::def( "schedule", &ScriptMethod::schedule );

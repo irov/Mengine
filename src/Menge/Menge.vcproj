@@ -599,6 +599,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="TextNode"
+				>
+				<File
+					RelativePath=".\TextNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TextNode.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"
@@ -812,6 +824,18 @@
 				</File>
 				<File
 					RelativePath=".\ResourceMessageStorage.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Font"
+				>
+				<File
+					RelativePath=".\ResourceFont.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceFont.h"
 					>
 				</File>
 			</Filter>

@@ -2,7 +2,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 OgreRenderImage::OgreRenderImage( const TextureDesc& _desc )
-: m_description(_desc.name)
+: m_description( _desc.name )
 {
 	Ogre::Image image;
 

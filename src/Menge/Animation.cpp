@@ -76,7 +76,7 @@ namespace	Menge
 
 		m_total_delay += _timing;
 
-		size_t delay = m_animation->getSequenceDelay(m_currentFrame);
+		size_t delay = m_animation->getSequenceDelay( m_currentFrame );
 
 		while( m_total_delay >= delay )
 		{

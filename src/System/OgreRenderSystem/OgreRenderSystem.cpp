@@ -35,7 +35,8 @@ OgreRenderSystem::OgreRenderSystem()
 //////////////////////////////////////////////////////////////////////////
 OgreRenderSystem::~OgreRenderSystem()
 {
-
+	m_spriteMgr->end();
+	delete m_spriteMgr;
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow )
@@ -125,8 +126,7 @@ void	OgreRenderSystem::renderText(const float * _pos, RenderFontInterface* _font
 	float width = m_viewport->getActualWidth();
 	float heigth = m_viewport->getActualHeight();
 	OgreRenderFont * font = static_cast<OgreRenderFont *>( _font );	
-	Ogre::Font * fnt = font->getFont();
-	m_spriteMgr->printText(fnt, 2 * _pos[0]/width - 1, -(_pos[1]/heigth*2 - 1) , _text );
+	m_spriteMgr->printText(font, _pos[0], _pos[1], _text );
 }
 //////////////////////////////////////////////////////////////////////////
 void	OgreRenderSystem::beginLayer()

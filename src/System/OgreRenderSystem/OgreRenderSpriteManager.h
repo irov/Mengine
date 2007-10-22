@@ -1,14 +1,19 @@
 #	pragma once
 
 #	include <Ogre.h>
-#	include <OgreRenderQueueListener.h>
+//#	include <OgreRenderQueueListener.h>
 
 #	include <string>
 #	include <list>
 
+class	OgreRenderFont;
+
 struct RenderSprite
 {
 	Ogre::Vector3 point[4];
+	#ifdef COLOR
+	Ogre::RGBA  color[4];
+	#endif
 	Ogre::Vector2 tcoord[4];
 	Ogre::ResourceHandle texHandle;
 };
@@ -76,7 +81,7 @@ public:
 	void endLayer();
 
 	///
-	void printText(  const Ogre::Font * mpFont, float x, float y, const char * text );
+	void printText( const OgreRenderFont * _font, float x, float y, const std::string& caption );
 
 private:
 	/// Render all the 2d data stored in the hardware buffers.

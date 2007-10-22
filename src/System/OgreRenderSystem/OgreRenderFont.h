@@ -4,7 +4,6 @@
 
 #	include "Ogre.h"
 
-#	include "OgreFont.h"
 #	include "OgreFontManager.h"
 
 class OgreRenderFont
@@ -14,12 +13,13 @@ public:
 	OgreRenderFont( const std::string&  _name );
 	~OgreRenderFont();
 
-public:
-	Ogre::Font * getFont();
+	float getCharWidth( char _id ) const;
+	float getHeight() const;
 
-	const std::string& getID();
+public:
+	Ogre::Font * getFont() const;
 	
 private:
 	Ogre::FontPtr m_font;
-	Ogre::String m_ID;
+	Ogre::String m_description;
 };

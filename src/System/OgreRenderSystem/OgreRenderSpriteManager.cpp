@@ -1,19 +1,18 @@
-#include "OgreRenderSpriteManager.h"
-#include <Ogre.h>
-#include <OgreMesh.h>
-#include <OgreHardwareBuffer.h>
-#include <OgreFont.h>
+#	include "OgreRenderSpriteManager.h"
 
-#define OGRE2D_MINIMAL_HARDWARE_BUFFER_SIZE 120
+#	include "OgreRenderFont.h"
 
+#	define OGRE2D_MINIMAL_HARDWARE_BUFFER_SIZE 120
+
+//////////////////////////////////////////////////////////////////////////
 OgreRenderSpriteManager::OgreRenderSpriteManager()
 {
 }
-
+//////////////////////////////////////////////////////////////////////////
 OgreRenderSpriteManager::~OgreRenderSpriteManager()
 {
 }
-
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::init(Ogre::SceneManager* sceneMan, Ogre::RenderSystem * renderSys, Ogre::Viewport * viewport, Ogre::uint8 targetQueue, bool afterQueue)
 {
 	OgreRenderSpriteManager::sceneMan = sceneMan;
@@ -29,7 +28,7 @@ void OgreRenderSpriteManager::init(Ogre::SceneManager* sceneMan, Ogre::RenderSys
 
 	firstInit = true;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::end()
 {
 	if (!hardwareBuffer.isNull())
@@ -39,7 +38,7 @@ void OgreRenderSpriteManager::end()
 
 	sceneMan->removeRenderQueueListener(this);
 }
-
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::renderQueueStarted(
 									   Ogre::uint8 queueGroupId, const Ogre::String &invocation, bool &skipThisInvocation)
 {
@@ -50,7 +49,7 @@ void OgreRenderSpriteManager::renderQueueStarted(
 
 	firstInit = true;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::renderQueueEnded(
 									 Ogre::uint8 queueGroupId, const Ogre::String &invocation, bool &repeatThisInvocation)
 {
@@ -67,8 +66,7 @@ void OgreRenderSpriteManager::renderQueueEnded(
 		m_layers.clear();
 	}
 }
-
-
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::renderBuffer()
 {
 	Ogre::RenderSystem * rs = Ogre::Root::getSingleton().getRenderSystem();
@@ -121,21 +119,40 @@ void OgreRenderSpriteManager::renderBuffer()
 		while (currSpr != endSpr)
 		{
 			// 1st point (left bottom)
-			*buffer=currSpr->point[0].x; buffer++;
-			*buffer=currSpr->point[0].y; buffer++;
-			*buffer=z; buffer++;
-			*buffer=currSpr->tcoord[0].x; buffer++;
-			*buffer=currSpr->tcoord[0].y; buffer++;
+			*buffer = currSpr->point[0].x; buffer++;
+			*buffer = currSpr->point[0].y; buffer++;
+			*buffer = z; buffer++;
+
+			#ifdef COLOR
+			*buffer = currSpr->color[0]; buffer++;
+			#endif
+
+			*buffer = currSpr->tcoord[0].x; buffer++;
+			*buffer = currSpr->tcoord[0].y; buffer++;
+
 			// 2st point (right top)
-			*buffer=currSpr->point[1].x; buffer++;
-			*buffer=currSpr->point[1].y; buffer++;
-			*buffer=z; buffer++;
-			*buffer=currSpr->tcoord[1].x; buffer++;
-			*buffer=currSpr->tcoord[1].y; buffer++;
+			*buffer = currSpr->point[1].x; buffer++;
+			*buffer = currSpr->point[1].y; buffer++;
+			*buffer = z; buffer++;
+
+			#ifdef COLOR
+			*buffer = currSpr->color[1]; buffer++;
+			#endif
+
+			*buffer = currSpr->tcoord[1].x; buffer++;
+			*buffer = currSpr->tcoord[1].y; buffer++;
+
+
+
 			// 3rd point (left top)
 			*buffer=currSpr->point[2].x; buffer++;
 			*buffer=currSpr->point[2].y; buffer++;
 			*buffer=z; buffer++;
+
+			#ifdef COLOR
+			*buffer = currSpr->color[2]; buffer++;
+			#endif
+
 			*buffer=currSpr->tcoord[2].x; buffer++;
 			*buffer=currSpr->tcoord[2].y; buffer++;
 
@@ -143,18 +160,35 @@ void OgreRenderSpriteManager::renderBuffer()
 			*buffer=currSpr->point[0].x; buffer++;
 			*buffer=currSpr->point[0].y; buffer++;
 			*buffer=z; buffer++;
+
+			#ifdef COLOR
+			*buffer = currSpr->color[0]; buffer++;
+			#endif
+
 			*buffer=currSpr->tcoord[0].x; buffer++;
 			*buffer=currSpr->tcoord[0].y; buffer++;
+
 			// 5th point (right bottom)
 			*buffer=currSpr->point[2].x; buffer++;
 			*buffer=currSpr->point[2].y; buffer++;
 			*buffer=z; buffer++;
+
+			#ifdef COLOR
+			*buffer = currSpr->color[2]; buffer++;
+			#endif
+
 			*buffer=currSpr->tcoord[2].x; buffer++;
 			*buffer=currSpr->tcoord[2].y; buffer++;
+
 			// 6th point (right top)
 			*buffer=currSpr->point[3].x; buffer++;
 			*buffer=currSpr->point[3].y; buffer++;
 			*buffer=z; buffer++;
+
+			#ifdef COLOR
+			*buffer = currSpr->color[3]; buffer++;
+			#endif
+
 			*buffer=currSpr->tcoord[3].x; buffer++;
 			*buffer=currSpr->tcoord[3].y; buffer++;
 
@@ -199,7 +233,7 @@ void OgreRenderSpriteManager::renderBuffer()
 		}
 	}
 }
-
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::prepareForRender()
 {
 	Ogre::LayerBlendModeEx colorBlendMode;
@@ -227,7 +261,11 @@ void OgreRenderSpriteManager::prepareForRender()
 	rs->_setTextureCoordSet(0, 0);
 	rs->_setTextureCoordCalculation(0, Ogre::TEXCALC_NONE);
 	rs->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_POINT);
+
+	#ifndef COLOR
 	rs->_setTextureBlendMode(0, colorBlendMode);
+	#endif
+
 	rs->_setTextureBlendMode(0, alphaBlendMode);
 	rs->_setTextureAddressingMode(0, uvwAddressMode);
 	rs->_disableTextureUnitsFrom(1);
@@ -243,36 +281,46 @@ void OgreRenderSpriteManager::prepareForRender()
 	rs->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 	rs->_setAlphaRejectSettings(Ogre::CMPF_ALWAYS_PASS, 0);
 }
-
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::createHardwareBuffer( size_t size)
 {
 	renderOp.vertexData = new Ogre::VertexData;
 	renderOp.vertexData->vertexStart = 0;
 
 	Ogre::VertexDeclaration * vd = renderOp.vertexData->vertexDeclaration;
-	vd->addElement(0, 0, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
-	vd->addElement(0, Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3),
-		Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES);
 
+	size_t offset = 0;
+		
+	vd->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
+
+#ifdef COLOR
+	vd->addElement(0, offset, Ogre::VET_COLOUR, Ogre::VES_DIFFUSE);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_COLOUR);
+#endif
+
+	vd->addElement(0, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES);
+	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
+	
 	hardwareBuffer = Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
 		vd->getVertexSize(0),
-		size,// buffer size
+		size,
 		Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE,
-		false);// use shadow buffer? no
+		false);
 
 	renderOp.vertexData->vertexBufferBinding->setBinding(0, hardwareBuffer);
 
 	renderOp.operationType = Ogre::RenderOperation::OT_TRIANGLE_LIST;
 	renderOp.useIndexes = false;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::destroyHardwareBuffer()
 {
 	delete renderOp.vertexData;
 	renderOp.vertexData = 0;
 	hardwareBuffer.setNull();
 }
-
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::spriteBltFull(
 				   Ogre::Texture * _texture, 
 				   const Ogre::Matrix3 & _transform,
@@ -286,6 +334,10 @@ void OgreRenderSpriteManager::spriteBltFull(
 	spr.point[1] = Ogre::Vector3(_offset.x + _size.x, _offset.y, 1.0f);
 	spr.point[2] = Ogre::Vector3(_offset.x + _size.x, _offset.y + _size.y, 1.0f);
 	spr.point[3] = Ogre::Vector3(_offset.x, _offset.y + _size.y, 1.0f);
+
+	#ifdef COLOR
+	spr.color[0] = spr.color[1] = spr.color[2] = spr.color[3] = Ogre::ColourValue(0,0,1,0).getAsRGBA();
+	#endif
 
 	Ogre::Vector3 transformed_pos;
 
@@ -316,7 +368,67 @@ void OgreRenderSpriteManager::spriteBltFull(
 
 	m_currentLayer->addSprite(spr);
 }
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSpriteManager::printText( const OgreRenderFont * _font, float x, float y, const std::string& caption )
+{
+	Ogre::Font * ogreFont = _font->getFont();
 
+	float width = m_viewport->getActualWidth();
+	float heigth = m_viewport->getActualHeight();
+
+	float left = 2.0f * x / width - 1;
+	float top = 1 - y / heigth * 2.0f;
+
+	float spaceWidth = 0;
+	float charHeight = _font->getHeight();
+
+	RenderSprite spr;
+
+	if ( spaceWidth == 0 )
+	{
+		spaceWidth = ogreFont->getGlyphAspectRatio( 'A' ) * charHeight * 2.0;
+	}
+
+	for( std::string::const_iterator i = caption.begin(); i != caption.end(); ++i )
+	{
+		if ( *i == ' ' )
+		{
+			left += spaceWidth;
+			continue;
+		}
+
+		float aspectRatio = ogreFont->getGlyphAspectRatio( *i ) ;
+
+		Ogre::Font::UVRect rect = ogreFont->getGlyphTexCoords( *i );
+ 
+		spr.point[0] = Ogre::Vector3( left, top, 1.0f );
+
+		top -= charHeight * 2.0;
+		spr.point[1] = Ogre::Vector3( left, top, 1.0f );
+
+		left += aspectRatio * charHeight * 2.0;
+		spr.point[2] = Ogre::Vector3( left, top, 1.0f );
+
+		top += charHeight * 2.0;
+		spr.point[3] = Ogre::Vector3( left, top, 1.0f );
+		
+		spr.tcoord[0] = Ogre::Vector2( rect.left, rect.top );
+		spr.tcoord[1] = Ogre::Vector2( rect.left, rect.bottom );
+		spr.tcoord[2] = Ogre::Vector2( rect.right, rect.bottom );
+		spr.tcoord[3] = Ogre::Vector2( rect.right, rect.top );
+
+		Ogre::Texture * tex = 
+			static_cast<Ogre::Texture*>(
+				Ogre::TextureManager::getSingletonPtr()->getByName(
+					ogreFont->getName() + "Texture").getPointer()
+				);
+
+		spr.texHandle = tex->getHandle();
+
+		m_currentLayer->addSprite( spr );
+	}
+}
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::beginLayer()
 {
 	addLayer();
@@ -330,64 +442,8 @@ void OgreRenderSpriteManager::beginLayer()
 
 	m_currentLayer++;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::endLayer()
 {
 }
-
-void OgreRenderSpriteManager::printText( const Ogre::Font * mpFont, float x, float y, const char * text )
-{
-	float left = x;
-	float top = y;
-
-	std::string caption(text);
-
-	float mSpaceWidth = 0;
-	float mCharHeight = 0.02f;
-	float mViewportAspectCoef = 1;
-
-	if (mSpaceWidth == 0)
-	{
-		mSpaceWidth = mpFont->getGlyphAspectRatio( 'A' ) * mCharHeight * 2.0 * mViewportAspectCoef;
-	}
-
-	for( std::string::iterator i = caption.begin(); i != caption.end(); ++i )
-	{
-		if ( *i == ' ')
-		{
-			left += mSpaceWidth;
-			continue;
-		}
-
-		float horiz_height = mpFont->getGlyphAspectRatio( *i ) * mViewportAspectCoef ;
-
-		Ogre::Font::UVRect rect = mpFont->getGlyphTexCoords(*i);
-
-		RenderSprite spr;
-
-		spr.point[0] = Ogre::Vector3(left, top, 1.0f);
-
-		top -= mCharHeight * 2.0;
-
-		spr.point[1] = Ogre::Vector3(left, top, 1.0f);
-
-		left += horiz_height * mCharHeight * 2.0;
-
-		spr.point[2] = Ogre::Vector3(left, top, 1.0f);
-
-		top += mCharHeight * 2.0;
-
-		spr.point[3] = Ogre::Vector3(left, top, 1.0f);
-		
-		spr.tcoord[0] = Ogre::Vector2(rect.left, rect.top);
-		spr.tcoord[1] = Ogre::Vector2(rect.left, rect.bottom);
-		spr.tcoord[2] = Ogre::Vector2(rect.right, rect.bottom);
-		spr.tcoord[3] = Ogre::Vector2(rect.right, rect.top);
-
-		Ogre::Texture * tex = static_cast<Ogre::Texture*>(Ogre::TextureManager::getSingletonPtr()->getByName(mpFont->getName() + "Texture").getPointer());
-
-		spr.texHandle = tex->getHandle();
-
-		m_currentLayer->addSprite(spr);
-	}
-}
+//////////////////////////////////////////////////////////////////////////

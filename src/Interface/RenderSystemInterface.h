@@ -25,9 +25,8 @@ class	RenderFontInterface
 {
 public:
 	virtual ~RenderFontInterface(){};
-//	virtual float getCharWidth(char id) const = 0;
-//	virtual float getHeight() const = 0;
-//  virtual unsigned int getColor() const = 0;
+	virtual float getCharWidth( char _id ) const = 0;
+	virtual float getHeight() const = 0;
 };
 
 class	RenderSystemInterface

@@ -341,20 +341,15 @@ void OgreRenderSpriteManager::spriteBltFull(
 
 	Ogre::Vector3 transformed_pos;
 
-	float width = m_viewport->getActualWidth() / 2;
-	float heigth = m_viewport->getActualHeight() / 2;
+	float width = m_viewport->getActualWidth();
+	float heigth = m_viewport->getActualHeight();
 
 	for( size_t i = 0; i < 4; ++i )
 	{
 		transformed_pos = spr.point[i] * _transform;
 
-		transformed_pos.x /= width;
-		transformed_pos.y /= heigth;
-
-		transformed_pos.x -= 1;
-		transformed_pos.y -= 1;
-
-		transformed_pos.y = -transformed_pos.y;
+		transformed_pos.x = CONVERT_MENGE_TO_OGRE_X(transformed_pos.x,width);
+		transformed_pos.y = CONVERT_MENGE_TO_OGRE_Y(transformed_pos.y,heigth);
 
 		spr.point[i] = transformed_pos;
 	}
@@ -367,66 +362,6 @@ void OgreRenderSpriteManager::spriteBltFull(
 	spr.texHandle = _texture->getHandle();
 
 	m_currentLayer->addSprite(spr);
-}
-//////////////////////////////////////////////////////////////////////////
-void OgreRenderSpriteManager::printText( const OgreRenderFont * _font, float x, float y, const std::string& caption )
-{
-	Ogre::Font * ogreFont = _font->getFont();
-
-	float width = m_viewport->getActualWidth();
-	float heigth = m_viewport->getActualHeight();
-
-	float left = 2.0f * x / width - 1;
-	float top = 1 - y / heigth * 2.0f;
-
-	float spaceWidth = 0;
-	float charHeight = _font->getHeight();
-
-	RenderSprite spr;
-
-	if ( spaceWidth == 0 )
-	{
-		spaceWidth = ogreFont->getGlyphAspectRatio( 'A' ) * charHeight * 2.0;
-	}
-
-	for( std::string::const_iterator i = caption.begin(); i != caption.end(); ++i )
-	{
-		if ( *i == ' ' )
-		{
-			left += spaceWidth;
-			continue;
-		}
-
-		float aspectRatio = ogreFont->getGlyphAspectRatio( *i ) ;
-
-		Ogre::Font::UVRect rect = ogreFont->getGlyphTexCoords( *i );
- 
-		spr.point[0] = Ogre::Vector3( left, top, 1.0f );
-
-		top -= charHeight * 2.0;
-		spr.point[1] = Ogre::Vector3( left, top, 1.0f );
-
-		left += aspectRatio * charHeight * 2.0;
-		spr.point[2] = Ogre::Vector3( left, top, 1.0f );
-
-		top += charHeight * 2.0;
-		spr.point[3] = Ogre::Vector3( left, top, 1.0f );
-		
-		spr.tcoord[0] = Ogre::Vector2( rect.left, rect.top );
-		spr.tcoord[1] = Ogre::Vector2( rect.left, rect.bottom );
-		spr.tcoord[2] = Ogre::Vector2( rect.right, rect.bottom );
-		spr.tcoord[3] = Ogre::Vector2( rect.right, rect.top );
-
-		Ogre::Texture * tex = 
-			static_cast<Ogre::Texture*>(
-				Ogre::TextureManager::getSingletonPtr()->getByName(
-					ogreFont->getName() + "Texture").getPointer()
-				);
-
-		spr.texHandle = tex->getHandle();
-
-		m_currentLayer->addSprite( spr );
-	}
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::beginLayer()

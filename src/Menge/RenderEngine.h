@@ -46,9 +46,9 @@ namespace Menge
 		RenderFontInterface* loadFont(const std::string &_font);
 
 		void renderText(
-			const mt::vec2f & _pos, 
 			RenderFontInterface* _font, 
-			const std::string & _text);
+			const std::string & _text,
+			const float * _transform);
 
 		void releaseRenderFont( RenderFontInterface* _fnt );
 		

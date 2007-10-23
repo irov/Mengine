@@ -1,12 +1,14 @@
 #	pragma once
 
 #	include <Ogre.h>
-//#	include <OgreRenderQueueListener.h>
 
 #	include <string>
 #	include <list>
 
 class	OgreRenderFont;
+
+#	define CONVERT_MENGE_TO_OGRE_X(x,width) (2.0f * x / width - 1)
+#	define CONVERT_MENGE_TO_OGRE_Y(y,heigth) (1 - 2.0f * y / heigth)
 
 struct RenderSprite
 {
@@ -79,9 +81,6 @@ public:
 
 	///
 	void endLayer();
-
-	///
-	void printText( const OgreRenderFont * _font, float x, float y, const std::string& caption );
 
 private:
 	/// Render all the 2d data stored in the hardware buffers.

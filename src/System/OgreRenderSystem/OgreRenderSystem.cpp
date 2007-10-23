@@ -99,9 +99,9 @@ void OgreRenderSystem::renderImage(
 				 const float * _uv,
 				 const float * _size,
 				 unsigned int _mixedColor, 
-				 RenderImageInterface* _rii)
+				 RenderImageInterface* _image)
 {
-	OgreRenderImage * image = static_cast<OgreRenderImage *>( _rii );
+	OgreRenderImage * image = static_cast<OgreRenderImage *>( _image );
 	Ogre::Texture * texture = image->getTexture();
 
 	m_spriteMgr->spriteBltFull( texture
@@ -121,12 +121,62 @@ void	OgreRenderSystem::releaseRenderFont( RenderFontInterface* _fnt )
 	delete static_cast<OgreRenderFont*>(_fnt);
 }
 //////////////////////////////////////////////////////////////////////////
-void	OgreRenderSystem::renderText(const float * _pos, RenderFontInterface* _font, const char * _text)
+void	OgreRenderSystem::renderText( RenderFontInterface* _font, const char * _text, const float * _transform )
 {
+	OgreRenderFont * font = static_cast<OgreRenderFont *>( _font );	
+	Ogre::Font * ogreFont = font->getFont();
+
 	float width = m_viewport->getActualWidth();
 	float heigth = m_viewport->getActualHeight();
-	OgreRenderFont * font = static_cast<OgreRenderFont *>( _font );	
-	m_spriteMgr->printText(font, _pos[0], _pos[1], _text );
+
+	float left = _transform[6];
+	float top = _transform[7];
+
+	float spaceWidth = 0;
+
+	float charHeight = 12;
+
+	RenderSprite spr;
+
+	if ( spaceWidth == 0 )
+	{
+		spaceWidth = ogreFont->getGlyphAspectRatio( 'A' ) * charHeight * 2.0;
+	}
+
+	std::string	caption(_text);
+
+	for( std::string::const_iterator i = caption.begin(); i != caption.end(); ++i )
+	{
+		if ( *i == ' ' )
+		{
+			left += spaceWidth;
+			continue;
+		}
+
+		Ogre::Texture * tex = 
+			static_cast<Ogre::Texture*>(
+				Ogre::TextureManager::getSingletonPtr()->getByName(
+					ogreFont->getName() + "Texture").getPointer()
+				);
+
+		spr.texHandle = tex->getHandle();
+
+		float aspectRatio = ogreFont->getGlyphAspectRatio( *i ) ;
+
+		const Ogre::Font::UVRect & rect = ogreFont->getGlyphTexCoords( *i );
+ 
+		Ogre::Vector4	uv( rect.left, rect.top, rect.right, rect.bottom );
+ 
+		float height = charHeight * 2.0;
+		float width = aspectRatio * height;
+
+		Ogre::Vector2	offset( left, top );
+		Ogre::Vector2	size( width, height );
+
+		m_spriteMgr->spriteBltFull( tex, *(Ogre::Matrix3*)_transform, offset, uv, size );
+
+		left += width;
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void	OgreRenderSystem::beginLayer()

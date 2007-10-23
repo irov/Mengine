@@ -22,7 +22,7 @@ public:
 	void setWorldMatrix( const float * _world ) override;
 
 	RenderImageInterface* loadImage( const TextureDesc&	_desc ) override;
-	void releaseImage( RenderImageInterface* _rii ) override;
+	void releaseImage( RenderImageInterface* _image ) override;
 	void renderImage(		
 		const float * _transform, 
 		const float * _offset,
@@ -34,7 +34,7 @@ public:
 	RenderFontInterface* loadFont( const FontDesc&	_desc ) override;
 	void	releaseRenderFont( RenderFontInterface * _fnt ) override;
 
-	void	renderText( const float * _pos, RenderFontInterface* _font, const char * _text ) override;
+	void	renderText( RenderFontInterface* _font, const char * _text, const float * _transform ) override;
 
 	void	beginLayer() override;
 	void	endLayer() override;

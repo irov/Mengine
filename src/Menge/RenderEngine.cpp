@@ -26,38 +26,6 @@ namespace Menge
 	{
 		m_interface->endLayer();
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void	RenderEngine::setMaterialColor(unsigned char _ambient[4], 
-	//	unsigned char _diffuse[4],
-	//	unsigned char _specular[4])
-	//{
-	//	return m_interface->setMaterialColor(_ambient,_diffuse,_specular);
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	//VertexData * RenderEngine::createVertexData()
-	//{
-	//	return m_interface->createVertexData();
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	//void RenderEngine::drawPrimitive(PrimitiveData * _pd)
-	//{
-	//	return m_interface->drawPrimitive(_pd);
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	//IndexData * RenderEngine::createIndexData()
-	//{
-	//	return m_interface->createIndexData();
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	//VertexDeclaration * RenderEngine::createVertexDeclaration()
-	//{
-	//	return m_interface->createVertexDeclaration();
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	//void	RenderEngine::setTexture(RenderImageInterface * _tex)
-	//{
-	//	return m_interface->setTexture(_tex);
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	void	RenderEngine::setProjectionMatrix(const mt::mat4f& _projection)
 	{
@@ -73,31 +41,9 @@ namespace Menge
 	{
 		return m_interface->setWorldMatrix( _world.m );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	//bool RenderEngine::beginScene(int _color)
-	//{
-	//	return m_interface->beginScene(_color);
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	//bool RenderEngine::endScene()
-	//{
-	//	return m_interface->endScene();
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	//void RenderEngine::drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long color)
-	//{
-	//	return m_interface->drawLine3D(p1,p2,color);
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	//void RenderEngine::drawLine2D(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color)
-	//{
-	//	return m_interface->drawLine2D(p1,p2,color);
-	//}
-	//void RenderEngine::drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color)
-	//{
-	//	return m_interface->drawBox(MinEdge,MaxEdge,_color);
-	//}
-	//////////////////////////////////////////////////////////////////////////
+
+	
+//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* RenderEngine::loadImage( const TextureDesc & _desc )
 	{
 		RenderImageInterface * image = m_interface->loadImage( _desc );
@@ -149,7 +95,7 @@ namespace Menge
 		const mt::vec4f & _uv,
 		const mt::vec2f & _size,
 		unsigned int _mixedColor, 
-		RenderImageInterface * _rii)
+		RenderImageInterface * _image)
 	{
 		m_interface->renderImage(
 			_transform.m, 
@@ -157,22 +103,90 @@ namespace Menge
 			_uv.m,
 			_size.m,
 			_mixedColor,
-			_rii);
+			_image);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseImage(RenderImageInterface* _rmi)
+	void RenderEngine::releaseImage( RenderImageInterface * _image )
 	{
-		m_interface->releaseImage( _rmi );
+		m_interface->releaseImage( _image );
 	}
 	////////////////////////////////////////////////////////////////////////////
-	RenderFontInterface* RenderEngine::loadFont(const std::string & _font)
+	RenderFontInterface* RenderEngine::loadFont( const std::string & _font )
 	{
 		FontDesc desc;
 		desc.name = _font.c_str();
 		return m_interface->loadFont( desc );
 	}
-
+	////////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderText(
+		RenderFontInterface * _font, 
+		const std::string & _text,
+		const float * _transform)
+	{
+		m_interface->renderText( _font, _text.c_str(), _transform );
+	}
+	////////////////////////////////////////////////////////////////////////////
+	void RenderEngine::releaseRenderFont( RenderFontInterface* _fnt )
+	{
+		m_interface->releaseRenderFont(_fnt);
+	}
+	////////////////////////////////////////////////////////////////////////////
+	//void	RenderEngine::setMaterialColor(unsigned char _ambient[4], 
+	//	unsigned char _diffuse[4],
+	//	unsigned char _specular[4])
+	//{
+	//	return m_interface->setMaterialColor(_ambient,_diffuse,_specular);
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	//VertexData * RenderEngine::createVertexData()
+	//{
+	//	return m_interface->createVertexData();
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	//void RenderEngine::drawPrimitive(PrimitiveData * _pd)
+	//{
+	//	return m_interface->drawPrimitive(_pd);
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	//IndexData * RenderEngine::createIndexData()
+	//{
+	//	return m_interface->createIndexData();
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	//VertexDeclaration * RenderEngine::createVertexDeclaration()
+	//{
+	//	return m_interface->createVertexDeclaration();
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	//void	RenderEngine::setTexture(RenderImageInterface * _tex)
+	//{
+	//	return m_interface->setTexture(_tex);
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	//bool RenderEngine::beginScene(int _color)
+	//{
+	//	return m_interface->beginScene(_color);
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	//bool RenderEngine::endScene()
+	//{
+	//	return m_interface->endScene();
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	//void RenderEngine::drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long color)
+	//{
+	//	return m_interface->drawLine3D(p1,p2,color);
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	//void RenderEngine::drawLine2D(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color)
+	//{
+	//	return m_interface->drawLine2D(p1,p2,color);
+	//}
+	//void RenderEngine::drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color)
+	//{
+	//	return m_interface->drawBox(MinEdge,MaxEdge,_color);
+	//}
 	////////////////////////////////////////////////////////////////////////////
 	//RenderFontInterface* RenderEngine::loadFont(const std::string &_fontXml)
 	//{
@@ -268,19 +282,4 @@ namespace Menge
 
 	//	return f;
 	//}
-
-	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderText(
-		const mt::vec2f & _pos, 
-		RenderFontInterface* _font, 
-		const std::string& _text)
-	{
-		m_interface->renderText( _pos.m, _font, _text.c_str() );
-	}
-
-	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseRenderFont(RenderFontInterface* _fnt)
-	{
-		m_interface->releaseRenderFont(_fnt);
-	}
 }

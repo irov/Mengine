@@ -913,26 +913,6 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="TextField"
-			>
-			<File
-				RelativePath=".\SoundTextField.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SoundTextField.h"
-				>
-			</File>
-			<File
-				RelativePath=".\TextField.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\TextField.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="Scene"
 			>
 			<File

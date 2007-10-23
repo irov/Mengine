@@ -19,13 +19,13 @@ Ogre::Font * OgreRenderFont::getFont() const
 //////////////////////////////////////////////////////////////////////////
 float OgreRenderFont::getCharWidth( char _id ) const
 {
-	static float standartHeight = 0.02f;
+	static float standartHeight = 12.0f;
 	return m_font->getGlyphAspectRatio( _id ) * standartHeight * 2.0f;
 }
 //////////////////////////////////////////////////////////////////////////
 float OgreRenderFont::getHeight() const
 {
-	static float standartHeight = 0.02f;
+	static float standartHeight = 12.0f;
 	return standartHeight;
 }
 //////////////////////////////////////////////////////////////////////////

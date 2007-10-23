@@ -76,7 +76,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextNode::_render( const mt::mat3f & _rwm, const Viewport & _viewPort )
 	{
-		Holder<RenderEngine>::hostage()->renderText( _rwm.v2.v2 , m_font, m_message );
+		Holder<RenderEngine>::hostage()->renderText( m_font, m_message, _rwm.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextNode::_debugRender()

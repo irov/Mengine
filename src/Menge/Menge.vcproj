@@ -600,14 +600,14 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="TextNode"
+				Name="TextField"
 				>
 				<File
-					RelativePath=".\TextNode.cpp"
+					RelativePath=".\TextField.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\TextNode.h"
+					RelativePath=".\TextField.h"
 					>
 				</File>
 			</Filter>

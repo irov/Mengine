@@ -14,7 +14,7 @@
 #	include "Animation.h"
 #	include "HotSpot.h"
 #	include "Arrow.h"
-#	include "TextNode.h"
+#	include "TextField.h"
 #	include "Camera3D.h"
 
 #	include "XmlParser/XmlParser.h"
@@ -110,7 +110,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Sprite );
 	SCRIPT_CLASS_WRAPPING( Animation );
 	SCRIPT_CLASS_WRAPPING( Arrow );
-	SCRIPT_CLASS_WRAPPING( TextNode );
+	SCRIPT_CLASS_WRAPPING( TextField );
 	
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -158,8 +158,8 @@ namespace Menge
 			;
 
 		{
-			pybind::proxy_<TextNode, pybind::bases<SceneNode2D>>("TextNode", false)
-				.def( "setMessage", &TextNode::setMessage )
+			pybind::proxy_<TextField, pybind::bases<SceneNode2D>>("TextField", false)
+				.def( "setMessage", &TextField::setMessage )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)

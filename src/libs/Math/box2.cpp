@@ -2,43 +2,92 @@
 
 namespace mt
 {
-	void reset(box2f &box,const vec2f &initValue)
+
+	box2f::box2f()
+	{}
+
+	box2f::box2f( const box2f & _box )
+		: vb( _box.vb )
+		, ve( _box.ve )
+	{}
+
+
+	box2f::box2f( const vec2f & _vb, const vec2f & _ve )
+		: vb( _vb )
+		, ve( _ve )
+	{}
+
+	void reset( box2f & box, const vec2f &initValue)
 	{
-		box.MaxEdge = initValue;
-		box.MinEdge = initValue;
+		box.max = initValue;
+		box.min = initValue;
 	}
 
-	void reset(box2f &box,float x, float y)
+	void reset( box2f & box, float x, float y)
 	{
 		reset(box,vec2f(x,y));
 	}
 
-	void add_internal_point(box2f &box, float x,float y)
+	void add_internal_point( box2f & box, float x,float y)
 	{
-		if (x>box.MaxEdge.x) box.MaxEdge.x = x;
-		if (y>box.MaxEdge.y) box.MaxEdge.y = y;
-		if (x<box.MinEdge.x) box.MinEdge.x = x;
-		if (y<box.MinEdge.y) box.MinEdge.y = y;
+		if (x>box.max.x) box.max.x = x;
+		if (y>box.max.y) box.max.y = y;
+		if (x<box.min.x) box.min.x = x;
+		if (y<box.min.y) box.min.y = y;
 	}
 
-	void add_internal_point(box2f &box, const vec2f &p)
+	void add_internal_point( box2f & box, const vec2f &p)
 	{
 		add_internal_point(box,p.x, p.y);
 	}
 
-	void set_box_from_min_max(box2f &box, const vec2f &min, const vec2f &max)
+	void set_box_from_min_max( box2f & box, const vec2f &min, const vec2f &max)
 	{
 		box.vb = min;
 		box.ve = max;
 	}
 
-	void set_box_from_center_and_extent(box2f &box, const vec2f &center, const vec2f &extent)
+	void set_box_from_center_and_extent( box2f & box, const vec2f &center, const vec2f &extent)
 	{
 		box.vb = center - extent;
 		box.ve = center + extent;
 	}
 
-	bool is_intersect(const box2f & _a, const box2f & _b)
+	void set_box_from_oriented_extent( box2f & box, const mt::vec2f& _size, const mt::mat3f& _wm )
+	{
+		mt::vec2f bounds[4];
+
+		bounds[0].x = 0;
+		bounds[0].y = 0;
+
+		bounds[1].x = _size.x;
+		bounds[1].y = 0;
+
+		bounds[2].x = 0;
+		bounds[2].y = _size.y;
+
+		bounds[3].x = _size.x;
+		bounds[3].y = _size.y;
+
+		mt::mul_v2_m3( box.min, bounds[0], _wm );
+
+		box.max = box.min;
+
+		mt::vec2f temp;
+			
+		for(size_t i = 1; i < 4; ++i)
+		{
+			mt::mul_v2_m3(temp, bounds[i], _wm );
+
+			if ( box.max.x < temp.x ) box.max.x = temp.x;
+			if ( box.max.y < temp.y ) box.max.y = temp.y;
+
+			if ( box.min.x > temp.x ) box.min.x = temp.x;
+			if ( box.min.y > temp.y ) box.min.y = temp.y;
+		}
+	}
+
+	bool is_intersect( const box2f & _a, const box2f & _b )
 	{
 		return (_a.ve.y > _b.vb.y && _a.vb.y < _b.ve.y &&
 				_a.ve.x > _b.vb.x && _a.vb.x < _b.ve.x);

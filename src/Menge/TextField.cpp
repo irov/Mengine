@@ -12,9 +12,9 @@
 
 #	include "ResourceManager.h"
 
-#	include "math/bv.h"
-
 #	include "ResourceFont.h"
+
+#	include "math/box2.h"
 
 namespace	Menge
 {
@@ -22,6 +22,7 @@ namespace	Menge
 	OBJECT_IMPLEMENT(TextField);
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
+		: m_length( 0.0f, 0.0f )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	TextField::~TextField()
@@ -29,7 +30,13 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool TextField::isVisible( const Viewport & _viewPort )
 	{
-		return true;
+		const mt::mat3f & worldMatrix = getWorldMatrix();
+
+		mt::box2f	bbox;
+
+		mt::set_box_from_oriented_extent( bbox, m_length, worldMatrix );
+
+		return _viewPort.testRectangle( bbox.min, bbox.max );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::_activate()
@@ -63,7 +70,7 @@ namespace	Menge
 		m_font = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::loader(TiXmlElement * _xml)
+	void TextField::loader( TiXmlElement * _xml )
 	{
 		SceneNode2D::loader(_xml);
 
@@ -72,6 +79,8 @@ namespace	Menge
 			XML_CHECK_VALUE_NODE( "Font", "Name", m_resourceFontName );
 			XML_CHECK_VALUE_NODE( "Text", "Value", m_message);
 		}
+
+		setMessage( m_message );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( const mt::mat3f & _rwm, const Viewport & _viewPort )
@@ -86,6 +95,15 @@ namespace	Menge
 	void TextField::setMessage( const std::string& _message )
 	{
 		m_message = _message;
+
+		m_length.x = 0.0f;
+		m_length.y = m_font->getHeight();
+
+		for( std::string::const_iterator it = m_message.begin(); it != m_message.end(); ++it )
+		{
+			float width = m_font->getCharWidth( *it );
+			m_length.x += width;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

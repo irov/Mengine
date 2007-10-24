@@ -14,6 +14,8 @@ namespace mt
 {
 	struct vec4f
 	{
+		static const mt::vec4f zero_v4;
+
 		union
 		{
 			struct

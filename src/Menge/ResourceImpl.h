@@ -26,7 +26,7 @@ namespace Menge
 		const std::string & getName();
 
 	public:
-		void loader(TiXmlElement *xml);
+		void loader(TiXmlElement * _xml);
 
 	protected:
 		bool _compile();

@@ -282,18 +282,6 @@
 	</References>
 	<Files>
 		<Filter
-			Name="bv"
-			>
-			<File
-				RelativePath=".\bv.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\bv.h"
-				>
-			</File>
-		</Filter>
-		<Filter
 			Name="vec2"
 			>
 			<File

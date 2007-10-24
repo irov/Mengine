@@ -20,19 +20,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Trap2D::loader( TiXmlElement * _xml )
 	{
-		SceneNode2D::loader(_xml);
+		SceneNode2D::loader( _xml );
 
+		mt::vec2f point;
+
+		std::string name;		
+					
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_NODE_FOR_EACH( "Zone" )
 			{
 				XML_CHECK_NODE( "Point" )
 				{
-					mt::vec2f point;
-					XML_VALUE_ATTRIBUTE("Value", point);
+					XML_VALUE_ATTRIBUTE( "Value", point );
 
-					m_polygon.add_point(point);
-					mt::add_internal_point(m_bbox,point);
+					m_polygon.add_point( point );
+					mt::add_internal_point( m_bbox, point );
 				}
 			}	
 
@@ -40,9 +43,8 @@ namespace Menge
 			{
 				XML_CHECK_NODE( "SceneNode" )
 				{
-					std::string name;
 					XML_VALUE_ATTRIBUTE("Value", name);
-					m_sceneNodesNames.push_back(name);
+					m_sceneNodesNames.push_back( name );
 				}
 			}		
 		}
@@ -96,7 +98,7 @@ namespace Menge
 			if( is_trapped )
 			{
 				bool is_intersect = mt::intersect_poly_poly( m_polygon, node->getPolygon() );
-				//check for near phase.
+		
 				if( is_intersect )
 				{
 					m_trapped.push_back( node );

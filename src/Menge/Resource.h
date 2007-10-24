@@ -29,6 +29,6 @@ namespace Menge
 		virtual void _release() = 0;
 
 	public:
-		virtual void loader( TiXmlElement *xml ) = 0;
+		virtual void loader( TiXmlElement * _xml ) = 0;
 	};
 }

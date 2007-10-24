@@ -25,8 +25,8 @@ namespace Menge
 		{
 			XML_CHECK_NODE( "Zone" )
 			{
-				XML_VALUE_ATTRIBUTE("MinEdge", m_bbox.MinEdge);
-				XML_VALUE_ATTRIBUTE("MaxEdge", m_bbox.MaxEdge);
+				XML_VALUE_ATTRIBUTE("MinEdge", m_bbox.min);
+				XML_VALUE_ATTRIBUTE("MaxEdge", m_bbox.max);
 			}	
 
 			XML_CHECK_NODE_FOR_EACH( "SceneNodes" )

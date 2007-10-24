@@ -40,10 +40,8 @@ namespace Menge
 	void	RenderEngine::setWorldMatrix(const mt::mat4f& _world)
 	{
 		return m_interface->setWorldMatrix( _world.m );
-	}
-
-	
-//////////////////////////////////////////////////////////////////////////
+	}	
+	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* RenderEngine::loadImage( const TextureDesc & _desc )
 	{
 		RenderImageInterface * image = m_interface->loadImage( _desc );

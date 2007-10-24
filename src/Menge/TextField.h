@@ -37,5 +37,6 @@ namespace Menge
 		RenderFontInterface * m_font;
 		std::string m_message;
 		std::string m_resourceFontName;
+		mt::vec2f	m_length;
 	};
 }

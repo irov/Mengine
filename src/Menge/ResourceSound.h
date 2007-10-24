@@ -15,7 +15,7 @@ namespace Menge
 		ResourceSound( const std::string & _name );
 
 	public:
-		void loader( TiXmlElement * xml );
+		void loader( TiXmlElement * _xml );
 
 	public:
 		SoundBufferInterface * get();

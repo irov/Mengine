@@ -134,7 +134,7 @@ void	OgreRenderSystem::renderText( RenderFontInterface* _font, const char * _tex
 
 	float spaceWidth = 0;
 
-	float charHeight = 12;
+	float charHeight = font->getHeight();
 
 	RenderSprite spr;
 

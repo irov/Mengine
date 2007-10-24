@@ -66,7 +66,7 @@ namespace Menge
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImpl::loader(TiXmlElement *xml)
+	void ResourceImpl::loader(TiXmlElement * _xml)
 	{
 		//Empty
 	}

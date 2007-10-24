@@ -14,7 +14,7 @@
 
 #	include "ResourceManager.h"
 
-#	include "math/bv.h"
+#	include "math/box2.h"
 
 namespace	Menge
 {
@@ -32,28 +32,14 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible( const Viewport & _viewPort )
 	{
-		const mt::vec2f & pos = getWorldPosition();
-		const mt::mat3f & wm = getWorldMatrix();
-
-		mt::vec2f min0, max0;
-
 		const mt::vec2f & size = m_image->getMaxSize( m_currentImageIndex );
 		const mt::vec2f & offset = m_image->getOffset( m_currentImageIndex );
-
-		const mt::vec2f & localPosition = getLocalPosition();
 		const mt::mat3f & worldMatrix = getWorldMatrix();
 
-		calculate_aabb_from_obb(
-			min0,
-			max0,	
-			size,
-			offset,
-			worldMatrix);
+		mt::box2f	bbox;
 
-		if (max0.x < _viewPort.begin.x || min0.x > _viewPort.end.x ) return false;
-		if (max0.y < _viewPort.begin.y || min0.y > _viewPort.end.y ) return false;
-
-		return true;
+		mt::set_box_from_oriented_extent( bbox, size + offset, worldMatrix );
+		return _viewPort.testRectangle( bbox.min, bbox.max );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageIndex( size_t _index )
@@ -147,9 +133,7 @@ namespace	Menge
 	void Sprite::_debugRender()
 	{
 	/*	const mt::vec2f & pos = getWorldPosition();
-
 		const mt::vec2f & size = m_image->getMaxSize();
-
 		Holder<RenderEngine>::hostage()
 			->drawLine( pos, pos + size, 2, 0xffff00ff );*/
 	}

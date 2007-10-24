@@ -2,6 +2,8 @@
 
 namespace	mt
 {
+	const vec4f vec4f::zero_v4(0, 0, 0, 0);
+
 	vec4f::vec4f()
 	{}
 

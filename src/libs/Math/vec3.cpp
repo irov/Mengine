@@ -2,6 +2,8 @@
 
 namespace	mt
 {
+	const vec3f vec3f::zero_v3(0, 0, 0);
+
 	vec3f::vec3f() 
 	{
 	}

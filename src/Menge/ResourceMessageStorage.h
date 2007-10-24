@@ -30,7 +30,7 @@ namespace Menge
 		const Message *	getMessage(int _id) const;
 
 	public:
-		void loader( TiXmlElement * xml ) override;
+		void loader( TiXmlElement * _xml ) override;
 
 	protected:
 		bool _compile() override;

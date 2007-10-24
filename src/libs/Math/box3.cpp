@@ -4,8 +4,8 @@ namespace mt
 {
 	void reset(box3f &box,const vec3f &initValue)
 	{
-		box.MaxEdge = initValue;
-		box.MinEdge = initValue;
+		box.max = initValue;
+		box.min = initValue;
 	}
 
 	void reset(box3f &box,float x, float y, float z)
@@ -15,12 +15,12 @@ namespace mt
 
 	void add_internal_point(box3f &box, float x,float y,float z)
 	{
-		if (x>box.MaxEdge.x) box.MaxEdge.x = x;
-		if (y>box.MaxEdge.y) box.MaxEdge.y = y;
-		if (z>box.MaxEdge.z) box.MaxEdge.z = z;
-		if (x<box.MinEdge.x) box.MinEdge.x = x;
-		if (y<box.MinEdge.y) box.MinEdge.y = y;
-		if (z<box.MinEdge.z) box.MinEdge.z = z;
+		if (x>box.max.x) box.max.x = x;
+		if (y>box.max.y) box.max.y = y;
+		if (z>box.max.z) box.max.z = z;
+		if (x<box.min.x) box.min.x = x;
+		if (y<box.min.y) box.min.y = y;
+		if (z<box.min.z) box.min.z = z;
 	}
 
 	void add_internal_point(box3f &box, const vec3f &p)

@@ -12,6 +12,7 @@ namespace Menge
 
 	public:
 		bool testPoint( const mt::vec2f & _point ) const;
+		bool testRectangle( const mt::vec2f & _min,  const mt::vec2f & _max ) const;
 
 	public:
 		mt::vec2f begin;

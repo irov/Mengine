@@ -11,6 +11,7 @@ namespace Menge
 		: ResourceImage( _name )
 		, m_numX(0)
 		, m_numY(0)
+		, m_offset(0.f,0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

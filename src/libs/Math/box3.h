@@ -10,7 +10,7 @@ namespace mt
 		{
 			struct {vec3f vb,ve;};
 			struct {vec3f v[2];};
-			struct {vec3f MinEdge,MaxEdge;};
+			struct {vec3f min, max;};
 		};
 
 		box3f()

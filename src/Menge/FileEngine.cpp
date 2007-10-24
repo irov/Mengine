@@ -77,7 +77,7 @@ namespace Menge
 		
 		std::string data( buff, length );
 
-		closeFile(file);
+		closeFile( file );
 
 		TiXmlDocument * document = TiXmlDocumentLoadData( data );
 		delete [] buff;

@@ -38,7 +38,7 @@ namespace Menge
 		bool _activate() override;
 		void _deactivate() override;
 
-		void _render( const mt::mat3f &rwm, const Viewport & _viewPort ) override;
+		void _render( const mt::mat3f & _rwm, const Viewport & _viewPort ) override;
 		void _debugRender() override;
 	
 	private:

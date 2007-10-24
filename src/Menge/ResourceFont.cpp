@@ -12,7 +12,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceFont::ResourceFont( const std::string & _name )
 		: ResourceImpl( _name )
-		, m_font(0)
+		, m_font( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ namespace Menge
 		m_font = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderFontInterface * ResourceFont::getFont() const
+	const RenderFontInterface * ResourceFont::getFont() const
 	{
 		return m_font;
 	}

@@ -24,9 +24,9 @@ namespace Menge
 		Track();
 
 	public:
-		void addPoint(const mt::vec2f & _point);
+		void addPoint( const mt::vec2f & _point );
 
-		void setSpeedMove(float _speed);
+		void setSpeedMove( float _speed );
 		float getSpeedMove()const;
 
 		void start();
@@ -35,7 +35,7 @@ namespace Menge
 		bool isMoved()const;
 
 	public:
-		void loader(TiXmlElement *_xml) override;
+		void loader(TiXmlElement * _xml ) override;
 
 	protected:
 		void _debugRender() override;

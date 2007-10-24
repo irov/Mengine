@@ -10,7 +10,7 @@ namespace Menge
 		, public Eventable
 	{
 	public:
-		bool registerEventMethod( const std::string & _name, const std::string & _method  );
+		bool registerEventMethod( const std::string & _name, const std::string & _method );
 
 	public:
 		void loader( TiXmlElement * _xml );

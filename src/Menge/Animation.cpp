@@ -25,6 +25,7 @@ namespace	Menge
 	void Animation::loader( TiXmlElement * _xml )
 	{
 		Sprite::loader(_xml);
+
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_VALUE_NODE( "Animation", "Name", m_resourceAnimation );
@@ -176,7 +177,7 @@ namespace	Menge
 		m_total_delay = 0;
 		m_currentFrame = 0;
 
-		size_t currentImageIndex = m_animation->getSequenceIndex(m_currentFrame);
+		size_t currentImageIndex = m_animation->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////

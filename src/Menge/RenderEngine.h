@@ -32,21 +32,21 @@ namespace Menge
 			const mt::vec4f & _uv,
 			const mt::vec2f & _size,
 			unsigned int _mixedColor, 
-			RenderImageInterface* _rii);
+			const RenderImageInterface* _image);
 
 		void	releaseImage( RenderImageInterface* _rmi );
 
-		void	setProjectionMatrix(const mt::mat4f& _projection);
-		void	setViewMatrix(const mt::mat4f& _view);
-		void	setWorldMatrix(const mt::mat4f& _world);
+		void	setProjectionMatrix( const mt::mat4f& _projection );
+		void	setViewMatrix( const mt::mat4f& _view );
+		void	setWorldMatrix( const mt::mat4f& _world );
 
 		void	beginLayer();
 		void	endLayer();
 
-		RenderFontInterface* loadFont(const std::string &_font);
+		RenderFontInterface * loadFont( const std::string & _font );
 
 		void renderText(
-			RenderFontInterface* _font, 
+			const RenderFontInterface* _font, 
 			const std::string & _text,
 			const float * _transform);
 

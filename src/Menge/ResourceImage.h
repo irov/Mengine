@@ -24,12 +24,12 @@ namespace Menge
 	public:
 		virtual size_t getCount() = 0;
 
-		virtual const mt::vec2f & getMaxSize( size_t _frame ) = 0;
-		virtual const mt::vec2f & getSize( size_t _frame ) = 0;
-		virtual const mt::vec2f & getOffset( size_t _frame ) = 0;
-		virtual const mt::vec4f & getUV( size_t _frame ) = 0;		
+		virtual const mt::vec2f & getMaxSize( size_t _frame ) const = 0;
+		virtual const mt::vec2f & getSize( size_t _frame ) const = 0;
+		virtual const mt::vec2f & getOffset( size_t _frame ) const = 0;
+		virtual const mt::vec4f & getUV( size_t _frame ) const = 0;		
 
-		virtual RenderImageInterface * getImage( size_t _frame ) = 0;
+		virtual const RenderImageInterface * getImage( size_t _frame ) const = 0;
 
 	public:
 		void loader( TiXmlElement * _xml ) override;

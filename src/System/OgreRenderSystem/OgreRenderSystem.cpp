@@ -99,9 +99,9 @@ void OgreRenderSystem::renderImage(
 				 const float * _uv,
 				 const float * _size,
 				 unsigned int _mixedColor, 
-				 RenderImageInterface* _image)
+				 const RenderImageInterface* _image)
 {
-	OgreRenderImage * image = static_cast<OgreRenderImage *>( _image );
+	const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image );
 	Ogre::Texture * texture = image->getTexture();
 
 	m_spriteMgr->spriteBltFull( texture
@@ -121,9 +121,9 @@ void	OgreRenderSystem::releaseRenderFont( RenderFontInterface* _fnt )
 	delete static_cast<OgreRenderFont*>(_fnt);
 }
 //////////////////////////////////////////////////////////////////////////
-void	OgreRenderSystem::renderText( RenderFontInterface* _font, const char * _text, const float * _transform )
+void	OgreRenderSystem::renderText( const RenderFontInterface* _font, const char * _text, const float * _transform )
 {
-	OgreRenderFont * font = static_cast<OgreRenderFont *>( _font );	
+	const OgreRenderFont * font = static_cast<const OgreRenderFont *>( _font );	
 	Ogre::Font * ogreFont = font->getFont();
 
 	float width = m_viewport->getActualWidth();

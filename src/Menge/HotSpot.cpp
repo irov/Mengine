@@ -44,17 +44,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
 	{
-		m_poligon.add_point(_p);
+		m_polygon.add_point(_p);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
 	{
-		m_poligon.clear_points();
+		m_polygon.clear_points();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )
 	{
-		size_t size = m_poligon.num_points();
+		size_t size = m_polygon.num_points();
 
 		if(size == 0)
 		{
@@ -66,12 +66,12 @@ namespace	Menge
 		size_t intersect_counter = 0;
 
 		mt::vec2f prev;
-		mt::mul_v2_m3( prev, m_poligon[ size - 1], wm );
+		mt::mul_v2_m3( prev, m_polygon[ size - 1], wm );
 
 		for ( size_t i = 0; i < size; ++i )
 		{
 			mt::vec2f point;
-			mt::mul_v2_m3( point, m_poligon[ i ], wm );
+			mt::mul_v2_m3( point, m_polygon[ i ], wm );
 
 			if (( point.y > _p.y) ^ (prev.y > _p.y))
 			{
@@ -105,7 +105,7 @@ namespace	Menge
 	{
 		//RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 
-		//size_t size = m_poligon.num_points();
+		//size_t size = m_polygon.num_points();
 
 		//for( size_t i = 0; i < size; ++i )
 		//{
@@ -114,8 +114,8 @@ namespace	Menge
 		//	mt::vec2f b;
 		//	mt::vec2f e;
 
-		//	mt::mul_v2_m3( b, m_poligon[ i ], wm );
-		//	mt::mul_v2_m3( e, m_poligon[ (i+1) % size ], wm );
+		//	mt::mul_v2_m3( b, m_polygon[ i ], wm );
+		//	mt::mul_v2_m3( e, m_polygon[ (i+1) % size ], wm );
 
 		//	renderEng->drawLine2D( b, e, 0xffff00ff );
 		//}

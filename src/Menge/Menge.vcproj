@@ -401,10 +401,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ScriptEngineExport.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\ScriptModuleDeclaration.cpp"
 					>
 				</File>
@@ -812,18 +808,6 @@
 				</File>
 				<File
 					RelativePath=".\ResourceAnimationCal3d.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="MessageStorage"
-				>
-				<File
-					RelativePath=".\ResourceMessageStorage.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceMessageStorage.h"
 					>
 				</File>
 			</Filter>

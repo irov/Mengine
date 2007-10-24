@@ -9,7 +9,7 @@ namespace Menge
 	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
 		: m_interface( _interface )
 	{
-		Holder<RenderEngine>::keep(this);
+		Holder<RenderEngine>::keep( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render()
@@ -27,17 +27,17 @@ namespace Menge
 		m_interface->endLayer();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	RenderEngine::setProjectionMatrix(const mt::mat4f& _projection)
+	void	RenderEngine::setProjectionMatrix( const mt::mat4f& _projection )
 	{
 		return m_interface->setProjectionMatrix( _projection.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	RenderEngine::setViewMatrix(const mt::mat4f& _view)
+	void	RenderEngine::setViewMatrix( const mt::mat4f& _view )
 	{
 		return m_interface->setViewMatrix( _view.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	RenderEngine::setWorldMatrix(const mt::mat4f& _world)
+	void	RenderEngine::setWorldMatrix( const mt::mat4f& _world )
 	{
 		return m_interface->setWorldMatrix( _world.m );
 	}	
@@ -93,7 +93,7 @@ namespace Menge
 		const mt::vec4f & _uv,
 		const mt::vec2f & _size,
 		unsigned int _mixedColor, 
-		RenderImageInterface * _image)
+		const RenderImageInterface * _image)
 	{
 		m_interface->renderImage(
 			_transform.m, 
@@ -118,7 +118,7 @@ namespace Menge
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderText(
-		RenderFontInterface * _font, 
+		const RenderFontInterface * _font, 
 		const std::string & _text,
 		const float * _transform)
 	{
@@ -127,7 +127,7 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseRenderFont( RenderFontInterface* _fnt )
 	{
-		m_interface->releaseRenderFont(_fnt);
+		m_interface->releaseRenderFont( _fnt );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//void	RenderEngine::setMaterialColor(unsigned char _ambient[4], 

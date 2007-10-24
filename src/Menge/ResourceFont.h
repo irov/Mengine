@@ -18,7 +18,7 @@ namespace Menge
 		ResourceFont( const std::string & _name );
 
 	public:
-		RenderFontInterface * getFont() const;
+		const RenderFontInterface * getFont() const;
 
 	public:
 		void loader( TiXmlElement * _xml ) override;

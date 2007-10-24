@@ -23,7 +23,7 @@ namespace Menge
 		bool createFolder( const std::string& _filename );
 
 		FileDataInterface * openFile( const std::string& _filename );
-		void closeFile( FileDataInterface* _fd );
+		void closeFile( FileDataInterface * _fd );
 
 	public:
 		TiXmlDocument * loadXml( const std::string & _filename );

@@ -46,12 +46,12 @@ public:
 		const float * _uv,
 		const float * _size,
 		unsigned int _color, 
-		RenderImageInterface * _image) = 0;
+		const RenderImageInterface * _image) = 0;
 
 	virtual RenderFontInterface* loadFont( const FontDesc & _desc ) = 0;
 	virtual	void	releaseRenderFont( RenderFontInterface * _fnt ) = 0;
 
-	virtual	void	renderText( RenderFontInterface * _font, const char * _text, const float * _transform ) = 0;
+	virtual	void	renderText( const RenderFontInterface * _font, const char * _text, const float * _transform ) = 0;
 
 	virtual	void	beginLayer() = 0;
 	virtual	void	endLayer() = 0;

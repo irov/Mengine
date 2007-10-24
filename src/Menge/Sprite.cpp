@@ -118,7 +118,7 @@ namespace	Menge
 		const mt::vec2f & image_offset = m_image->getOffset( m_currentImageIndex );
 		const mt::vec4f & frame_uv = m_image->getUV( m_currentImageIndex );
 		
-		RenderImageInterface * renderImage = m_image->getImage( m_currentImageIndex );
+		const RenderImageInterface * renderImage = m_image->getImage( m_currentImageIndex );
 
 		Holder<RenderEngine>::hostage()->renderImage(
 			_rwm, 

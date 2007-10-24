@@ -15,7 +15,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCell::getMaxSize( size_t _frame )
+	const mt::vec2f & ResourceImageCell::getMaxSize( size_t _frame ) const
 	{
 		return m_imageFrame.size;
 	}
@@ -25,22 +25,22 @@ namespace Menge
 		return m_uvs.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCell::getSize( size_t _frame )
+	const mt::vec2f & ResourceImageCell::getSize( size_t _frame ) const
 	{
 		return m_imageFrame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCell::getOffset( size_t _frame )
+	const mt::vec2f & ResourceImageCell::getOffset( size_t _frame ) const
 	{
 		return m_offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageCell::getUV( size_t _frame )
+	const mt::vec4f & ResourceImageCell::getUV( size_t _frame ) const
 	{
 		return m_uvs[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * ResourceImageCell::getImage( size_t _frame )
+	const RenderImageInterface * ResourceImageCell::getImage( size_t _frame ) const
 	{
 		return m_imageFrame.image;
 	}

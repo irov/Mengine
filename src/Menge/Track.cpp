@@ -12,11 +12,11 @@ namespace	Menge
 	OBJECT_IMPLEMENT(Track)
 	//////////////////////////////////////////////////////////////////////////
 	Track::Track()
-	: m_speedMove(0)
-	, m_isMove(true)
+	: m_speedMove( 0.0f )
+	, m_isMove( true )
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void Track::addPoint(const mt::vec2f &_point)
+	void Track::addPoint( const mt::vec2f & _point )
 	{
 		if( m_listPoints.empty() )
 		{
@@ -24,20 +24,20 @@ namespace	Menge
 		}
 		else
 		{
-			mt::vec2f &begin = m_listPoints.back();
+			mt::vec2f & begin = m_listPoints.back();
 			m_listPoints.push_back( _point );
-			mt::vec2f &end = m_listPoints.back();
+			mt::vec2f & end = m_listPoints.back();
 
-			m_listChain.push_back(TrackChain(&begin,&end));
+			m_listChain.push_back( TrackChain( &begin, &end ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Track::setSpeedMove(float _speed)
+	void Track::setSpeedMove( float _speed )
 	{
 		m_speedMove = _speed;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Track::getSpeedMove()const
+	float Track::getSpeedMove() const
 	{
 		return m_speedMove;
 	}
@@ -52,7 +52,7 @@ namespace	Menge
 		m_isMove = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Track::isMoved()const
+	bool Track::isMoved() const
 	{
 		return m_isMove;
 	}
@@ -68,7 +68,7 @@ namespace	Menge
 
 		const mt::vec2f & bp = m_currentChain->beginPoint();
 
-		setLocalPosition(bp);
+		setLocalPosition( bp );
 
 		return true;
 	}
@@ -89,9 +89,9 @@ namespace	Menge
 
 		float trackLength = m_speedMove * _timing;
 
-		const mt::vec2f &lposition = getLocalPosition();
+		const mt::vec2f & lposition = getLocalPosition();
 
-		float lnChain = mt::length_v2_v2(lposition, m_currentChain->endPoint());
+		float lnChain = mt::length_v2_v2( lposition, m_currentChain->endPoint() );
 
 		while( trackLength > lnChain )
 		{
@@ -101,10 +101,10 @@ namespace	Menge
 
 			if( m_currentChain == m_listChain.end() )
 			{
-				TrackChain &backChain = m_listChain.back();
+				TrackChain & backChain = m_listChain.back();
 
-				const mt::vec2f &endPoint = backChain.endPoint();
-				setLocalPosition(endPoint);
+				const mt::vec2f & endPoint = backChain.endPoint();
+				setLocalPosition( endPoint );
 
 				stop();
 				break;
@@ -120,7 +120,7 @@ namespace	Menge
 
 		if( m_isMove == true )
 		{	
-			const mt::vec2f &dir = m_currentChain->direction();
+			const mt::vec2f & dir = m_currentChain->direction();
 
 			mt::vec2f pos = getLocalPosition();
 
@@ -131,9 +131,11 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Track::loader(TiXmlElement * _xml )
+	void Track::loader( TiXmlElement * _xml )
 	{
 		SceneNode2D::loader( _xml );
+
+		mt::vec2f pos;
 
 		XML_FOR_EACH_TREE(_xml)
 		{
@@ -141,7 +143,6 @@ namespace	Menge
 			{
 				XML_CHECK_NODE("Point")
 				{
-					mt::vec2f pos;
 					XML_VALUE_ATTRIBUTE("Value",pos);
 					addPoint(pos);
 				}

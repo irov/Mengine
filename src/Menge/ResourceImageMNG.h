@@ -26,12 +26,12 @@ namespace Menge
 	public:
 		size_t getCount() override;
 
-		const mt::vec2f & getMaxSize( size_t _frame ) override;
-		const mt::vec2f & getSize( size_t _frame ) override;
-		const mt::vec2f & getOffset( size_t _frame ) override;
-		const mt::vec4f & getUV( size_t _frame ) override;
-	
-		RenderImageInterface * getImage( size_t _frame ) override;
+		const mt::vec2f & getMaxSize( size_t _frame ) const override;
+		const mt::vec2f & getSize( size_t _frame ) const override;
+		const mt::vec2f & getOffset( size_t _frame ) const override;
+		const mt::vec4f & getUV( size_t _frame ) const override;
+	 
+		const RenderImageInterface * getImage( size_t _frame ) const override;
 
 	public:
 		void loader( TiXmlElement * _xml );

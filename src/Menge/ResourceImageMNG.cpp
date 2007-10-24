@@ -24,27 +24,27 @@ namespace Menge
 		return m_images.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageMNG::getMaxSize( size_t _frame )
+	const mt::vec2f & ResourceImageMNG::getMaxSize( size_t _frame ) const
 	{
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageMNG::getUV( size_t _frame )
+	const mt::vec4f & ResourceImageMNG::getUV( size_t _frame ) const
 	{
 		return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageMNG::getSize( size_t _frame )
+	const mt::vec2f & ResourceImageMNG::getSize( size_t _frame ) const
 	{
 		return m_images[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageMNG::getOffset( size_t _frame )
+	const mt::vec2f & ResourceImageMNG::getOffset( size_t _frame ) const
 	{
 		return m_images[ _frame ].offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * ResourceImageMNG::getImage( size_t _frame )
+	const RenderImageInterface * ResourceImageMNG::getImage( size_t _frame ) const
 	{
 		return m_images[ _frame ].renderImage;
 	}

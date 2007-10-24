@@ -54,7 +54,7 @@ namespace Menge
 		void _debugRender() override;
 
 	private:
-		mt::polygon m_poligon;
+		mt::polygon m_polygon;
 		//bool m_handle;
 
 		bool m_onLeaveMethod;

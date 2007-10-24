@@ -14,20 +14,21 @@ namespace	Menge
 	WayPoint::WayPoint()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	WayPoint::WayPoint(const mt::vec2f& _pos)
+	WayPoint::WayPoint( const mt::vec2f & _pos )
 	{
-		setLocalPosition(_pos);
+		setLocalPosition( _pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WayPoint::loader( TiXmlElement * _xml)
 	{
-		SceneNode2D::loader(_xml);
+		SceneNode2D::loader( _xml );
+
+		mt::vec2f point;
 
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_NODE("WayPoint")
 			{
-				mt::vec2f point;
 				XML_VALUE_ATTRIBUTE("Value", point);
 				setLocalPosition(point);
 			}
@@ -37,7 +38,6 @@ namespace	Menge
 	void WayPoint::_debugRender()
 	{
 		//RenderEngine *renderEng = Holder<RenderEngine>::hostage();
-
 		//mt::vec2f p = getLocalPosition();
 		//renderEng->drawLine2D(mt::vec2f(p.x-3,p.y-3),mt::vec2f(p.x+3,p.y+3),0xFFFfFCff);
 		//renderEng->drawLine2D(mt::vec2f(p.x-3,p.y+3),mt::vec2f(p.x+3,p.y-3),0xFFFfFCff);

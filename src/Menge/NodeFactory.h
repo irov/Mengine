@@ -9,13 +9,13 @@ namespace Menge
 
 	namespace NodeFactory
 	{
-		typedef Node *(*TGenFunc)(const FactoryGenStruct &);
+		typedef Node *(*TGenFunc)( const FactoryGenStruct & );
 
-		Node * genNode(const std::string &_type);
+		Node * genNode( const std::string & _type );
 
 		struct Auto
 		{
-			Auto(const std::string &_key, TGenFunc _func);
+			Auto( const std::string & _key, TGenFunc _func );
 		};
 	}
 }

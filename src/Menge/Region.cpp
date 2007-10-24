@@ -30,13 +30,14 @@ namespace	Menge
 	{
 		SceneNode2D::loader( _xml );
 
+		mt::vec2f point;
+
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_NODE_FOR_EACH("Points")
 			{
 				XML_CHECK_NODE("Point")
 				{
-					mt::vec2f point;
 					XML_VALUE_ATTRIBUTE("Value", point);
 					m_polygon.add_point(point);
 				}
@@ -45,9 +46,8 @@ namespace	Menge
 			{
 				XML_CHECK_NODE("WayPoint")
 				{
-					mt::vec2f point;
 					XML_VALUE_ATTRIBUTE("Value", point);
-					m_helperWayPoints.push_back(new WayPoint(point));
+					m_helperWayPoints.push_back( new WayPoint( point ) );
 				}
 			}
 		}

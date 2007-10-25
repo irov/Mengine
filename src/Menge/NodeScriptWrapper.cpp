@@ -159,7 +159,7 @@ namespace Menge
 
 		{
 			pybind::proxy_<TextField, pybind::bases<SceneNode2D>>("TextField", false)
-				.def( "setMessage", &TextField::setMessage )
+				.def( "setText", &TextField::setText )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)

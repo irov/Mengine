@@ -5,12 +5,18 @@ Menge Engine
 ===========================================================================
 staue: development 
 version: 0.0.0.8
-date: 
+date: 25.10.07
 
 [Genereal]
 + support Event warning's and errors
 + support ResourceImageDefault multi-frames
++ added new Node TextField
++ support TextField Text:Value attribute
++ support TextField Font:Name attribute
 
+[Framework]
+% change Hotspot.setInputHandler -> Hotspot.setHotspotListener
++ added TextField.setText( str )
 
 ===========================================================================
 staue: development 

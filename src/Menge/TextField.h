@@ -17,7 +17,7 @@ namespace Menge
 		~TextField();
 
 	public:
-		void setMessage( const std::string& _message );
+		void setText( const std::string& _message );
 
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;

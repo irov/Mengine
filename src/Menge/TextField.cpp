@@ -57,6 +57,8 @@ namespace	Menge
 
 		m_font = m_resourceFont->getFont();
 
+		setText( m_message );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -79,8 +81,6 @@ namespace	Menge
 			XML_CHECK_VALUE_NODE( "Font", "Name", m_resourceFontName );
 			XML_CHECK_VALUE_NODE( "Text", "Value", m_message);
 		}
-
-		setMessage( m_message );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( const mt::mat3f & _rwm, const Viewport & _viewPort )
@@ -92,7 +92,7 @@ namespace	Menge
 	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setMessage( const std::string& _message )
+	void TextField::setText( const std::string& _message )
 	{
 		m_message = _message;
 

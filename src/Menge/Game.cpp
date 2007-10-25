@@ -50,6 +50,7 @@ namespace Menge
 
 		Holder<Amplifier>::destroy();
 		Holder<Player>::destroy();
+		Holder<ScheduleManager>::destroy();
 		Holder<MousePickerSystem>::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////

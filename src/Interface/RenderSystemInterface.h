@@ -10,7 +10,7 @@ public:
 struct	TextureDesc
 {
 	const char *	name;
-	int				filter;
+	size_t			filter;
 
 	void*			buffer;
 	size_t			size;

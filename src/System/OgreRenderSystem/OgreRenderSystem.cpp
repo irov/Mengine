@@ -52,9 +52,13 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
  	m_viewport = m_renderWindow->addViewport( camera );
  	
- 	camera->setAspectRatio(m_viewport->getActualWidth() / m_viewport->getActualHeight());
+	float width = m_viewport->getActualWidth();
+	float height = m_viewport->getActualHeight();
+	float aspect = width / height;
 
- 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+ 	camera->setAspectRatio( aspect );
+
+ 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 
 	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);

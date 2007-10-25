@@ -67,5 +67,10 @@
 			<Transformation Value = "1;0;0;1;2560;256" />
 		</Node> <!-- Sprite -->	
 		
+		<Node Name = "Arial12" Type = "TextField">
+              		<Font Name = "Arial12"/>
+               		<Text Value = "some text"/>
+		</Node>
+
 	</Node> <!-- Layer -->
 </Scene>

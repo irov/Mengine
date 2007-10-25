@@ -38,5 +38,8 @@
 		<File Path = "Game/Images/Reef/2nd_plan/kamen_03.png" />
 	</Resource>
 
+	<Resource Name = "Arial12" Type = "ResourceFont">
+     		<File Path = "MyFont"/>
+	</Resource>
 
 </DataBlock>

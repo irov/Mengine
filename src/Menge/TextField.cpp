@@ -40,7 +40,8 @@ namespace	Menge
 
 		mt::set_box_from_oriented_extent( bbox, m_length, worldMatrix );
 
-		return _viewPort.testRectangle( bbox.min, bbox.max );
+		//return _viewPort.testRectangle( bbox.min, bbox.max );
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::_activate()
@@ -110,11 +111,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setText( const std::string& _message )
 	{
-		if( isActive() == false )
-		{
-			return;
-		}
-
 		m_message = _message;
 
 		m_length.x = 0.0f;

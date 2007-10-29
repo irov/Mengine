@@ -1,7 +1,10 @@
 #	include "RenderEngine.h"
 
 #	include "FileEngine.h"
+
 #	include "XmlParser/XmlParser.h"
+
+#	include "ErrorMessage.h"
 
 namespace Menge
 {
@@ -54,9 +57,7 @@ namespace Menge
 
 		if( fileData == 0 )
 		{
-			printf("Error: Image can't open resource file '%s'\n"
-				, _fileName.c_str()
-				);
+			ErrorMessage( "Error: Image can't open resource file '%s'", _fileName.c_str() );
 
 			return 0;
 		}
@@ -77,9 +78,7 @@ namespace Menge
 
 		if( image == 0 )
 		{
-			printf("Error: Image from file '%s' not loader\n"
-				, _fileName.c_str() 
-				);
+			ErrorMessage( "Error: Image from file '%s' not loader", _fileName.c_str() );
 
 			return 0;
 		}	
@@ -120,9 +119,10 @@ namespace Menge
 	void RenderEngine::renderText(
 		const RenderFontInterface * _font, 
 		const std::string & _text,
-		const float * _transform)
+		const float * _transform,
+		unsigned int _color )
 	{
-		m_interface->renderText( _font, _text.c_str(), _transform );
+		m_interface->renderText( _font, _text.c_str(), _transform, _color );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseRenderFont( RenderFontInterface* _fnt )

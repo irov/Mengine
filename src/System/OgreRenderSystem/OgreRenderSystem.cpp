@@ -112,7 +112,8 @@ void OgreRenderSystem::renderImage(
 		, *(Ogre::Matrix3*)_transform
 		, *(Ogre::Vector2*)_offset
 		, *(Ogre::Vector4*)_uv
-		, *(Ogre::Vector2*)_size );
+		, *(Ogre::Vector2*)_size
+		, _mixedColor );
 }
 //////////////////////////////////////////////////////////////////////////
 RenderFontInterface* OgreRenderSystem::loadFont( const FontDesc & _desc )
@@ -125,7 +126,7 @@ RenderFontInterface* OgreRenderSystem::loadFont( const FontDesc & _desc )
 	{
 		return 0;
 	}
-	
+
 	font->load();
 	
 	return new OgreRenderFont( font, name );
@@ -136,7 +137,7 @@ void	OgreRenderSystem::releaseRenderFont( RenderFontInterface* _fnt )
 	delete static_cast<OgreRenderFont*>(_fnt);
 }
 //////////////////////////////////////////////////////////////////////////
-void	OgreRenderSystem::renderText( const RenderFontInterface* _font, const char * _text, const float * _transform )
+void	OgreRenderSystem::renderText( const RenderFontInterface* _font, const char * _text, const float * _transform, unsigned int _color )
 {
 	const OgreRenderFont * font = static_cast<const OgreRenderFont *>( _font );	
 	Ogre::Font * ogreFont = font->getFont();
@@ -189,7 +190,7 @@ void	OgreRenderSystem::renderText( const RenderFontInterface* _font, const char 
 		
 		Ogre::Vector2	size( width, height );
 
-		m_spriteMgr->spriteBltFull( tex, *(Ogre::Matrix3*)_transform, offset, uv, size );
+		m_spriteMgr->spriteBltFull( tex, *(Ogre::Matrix3*)_transform, offset, uv, size, _color );
 
 		offset.x += width;
 	}

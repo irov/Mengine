@@ -18,6 +18,7 @@ namespace Menge
 
 	public:
 		void setText( const std::string& _message );
+		void setColor( unsigned int _color );
 
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;
@@ -32,6 +33,7 @@ namespace Menge
 
 	private:
 		ResourceFont * m_resourceFont;
+		unsigned int m_color;
 		std::string m_message;
 		std::string m_resourceFontName;
 		mt::vec2f	m_length;

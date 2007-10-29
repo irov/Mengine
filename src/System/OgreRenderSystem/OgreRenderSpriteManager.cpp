@@ -105,11 +105,9 @@ void OgreRenderSpriteManager::renderBuffer()
 			continue;
 		}
 
-		// write quads to the hardware buffer, and remember chunks
-		
 		float z = -1;
 
-		float* buffer = (float*)hardwareBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+		QuadVertex * buffer  = (QuadVertex*)hardwareBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 
 		endSpr = spriteList.end();
 		currSpr = spriteList.begin();
@@ -118,79 +116,48 @@ void OgreRenderSpriteManager::renderBuffer()
 
 		while (currSpr != endSpr)
 		{
-			// 1st point (left bottom)
-			*buffer = currSpr->point[0].x; buffer++;
-			*buffer = currSpr->point[0].y; buffer++;
-			*buffer = z; buffer++;
+			buffer->point = currSpr->point[0];
+			buffer->point.z = z;
+			buffer->color = currSpr->color[0];
+			buffer->tcoord = currSpr->tcoord[0];
 
-			#ifdef COLOR
-			*buffer = currSpr->color[0]; buffer++;
-			#endif
+			++buffer;
 
-			*buffer = currSpr->tcoord[0].x; buffer++;
-			*buffer = currSpr->tcoord[0].y; buffer++;
-
-			// 2st point (right top)
-			*buffer = currSpr->point[1].x; buffer++;
-			*buffer = currSpr->point[1].y; buffer++;
-			*buffer = z; buffer++;
-
-			#ifdef COLOR
-			*buffer = currSpr->color[1]; buffer++;
-			#endif
-
-			*buffer = currSpr->tcoord[1].x; buffer++;
-			*buffer = currSpr->tcoord[1].y; buffer++;
+			buffer->point = currSpr->point[1];
+			buffer->point.z = z;
+			buffer->color = currSpr->color[1];
+			buffer->tcoord = currSpr->tcoord[1];
 
 
+			++buffer;
 
-			// 3rd point (left top)
-			*buffer=currSpr->point[2].x; buffer++;
-			*buffer=currSpr->point[2].y; buffer++;
-			*buffer=z; buffer++;
+			buffer->point = currSpr->point[2];
+			buffer->point.z = z;
+			buffer->color = currSpr->color[2];
+			buffer->tcoord = currSpr->tcoord[2];
 
-			#ifdef COLOR
-			*buffer = currSpr->color[2]; buffer++;
-			#endif
+			++buffer;
 
-			*buffer=currSpr->tcoord[2].x; buffer++;
-			*buffer=currSpr->tcoord[2].y; buffer++;
+			buffer->point = currSpr->point[0];
+			buffer->point.z = z;
+			buffer->color = currSpr->color[0];
+			buffer->tcoord = currSpr->tcoord[0];
 
-			// 4th point (left bottom)
-			*buffer=currSpr->point[0].x; buffer++;
-			*buffer=currSpr->point[0].y; buffer++;
-			*buffer=z; buffer++;
+			++buffer;
 
-			#ifdef COLOR
-			*buffer = currSpr->color[0]; buffer++;
-			#endif
+			buffer->point = currSpr->point[2];
+			buffer->point.z = z;
+			buffer->color = currSpr->color[2];
+			buffer->tcoord = currSpr->tcoord[2];
 
-			*buffer=currSpr->tcoord[0].x; buffer++;
-			*buffer=currSpr->tcoord[0].y; buffer++;
+			++buffer;
+		
+			buffer->point = currSpr->point[3];
+			buffer->point.z = z;
+			buffer->color = currSpr->color[3];
+			buffer->tcoord = currSpr->tcoord[3];
 
-			// 5th point (right bottom)
-			*buffer=currSpr->point[2].x; buffer++;
-			*buffer=currSpr->point[2].y; buffer++;
-			*buffer=z; buffer++;
-
-			#ifdef COLOR
-			*buffer = currSpr->color[2]; buffer++;
-			#endif
-
-			*buffer=currSpr->tcoord[2].x; buffer++;
-			*buffer=currSpr->tcoord[2].y; buffer++;
-
-			// 6th point (right top)
-			*buffer=currSpr->point[3].x; buffer++;
-			*buffer=currSpr->point[3].y; buffer++;
-			*buffer=z; buffer++;
-
-			#ifdef COLOR
-			*buffer = currSpr->color[3]; buffer++;
-			#endif
-
-			*buffer=currSpr->tcoord[3].x; buffer++;
-			*buffer=currSpr->tcoord[3].y; buffer++;
+			++buffer;
 
 			// remember this chunk
 			thisChunk.vertexCount+=6;
@@ -236,50 +203,56 @@ void OgreRenderSpriteManager::renderBuffer()
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::prepareForRender()
 {
-	Ogre::LayerBlendModeEx colorBlendMode;
-	Ogre::LayerBlendModeEx alphaBlendMode;
-	Ogre::TextureUnitState::UVWAddressingMode uvwAddressMode;
+	Ogre::RenderSystem * d_render_sys = m_renderSys;
 
-	Ogre::RenderSystem * rs = m_renderSys;
+	Ogre::LayerBlendModeEx		d_colourBlendMode;	//!< Controls colour blending mode used.
+	Ogre::LayerBlendModeEx		d_alphaBlendMode;	//!< Controls alpha blending mode used.
+	Ogre::TextureUnitState::UVWAddressingMode d_uvwAddressMode;
+	// Initialise blending modes to be used.
+	d_colourBlendMode.blendType	= Ogre::LBT_COLOUR;
+	d_colourBlendMode.source1	= Ogre::LBS_TEXTURE;
+	d_colourBlendMode.source2	= Ogre::LBS_DIFFUSE;
+	d_colourBlendMode.operation	= Ogre::LBX_MODULATE;
 
-	colorBlendMode.blendType=Ogre::LBT_COLOUR;
-	colorBlendMode.source1=Ogre::LBS_TEXTURE;
-	colorBlendMode.operation=Ogre::LBX_SOURCE1;
+	d_alphaBlendMode.blendType	= Ogre::LBT_ALPHA;
+	d_alphaBlendMode.source1	= Ogre::LBS_TEXTURE;
+	d_alphaBlendMode.source2	= Ogre::LBS_DIFFUSE;
+	d_alphaBlendMode.operation	= Ogre::LBX_MODULATE;
 
-	alphaBlendMode.blendType=Ogre::LBT_ALPHA;
-	alphaBlendMode.source1=Ogre::LBS_TEXTURE;
-	alphaBlendMode.operation=Ogre::LBX_SOURCE1;
+	d_uvwAddressMode.u = Ogre::TextureUnitState::TAM_CLAMP;
+	d_uvwAddressMode.v = Ogre::TextureUnitState::TAM_CLAMP;
+	d_uvwAddressMode.w = Ogre::TextureUnitState::TAM_CLAMP;
 
-	uvwAddressMode.u = Ogre::TextureUnitState::TAM_CLAMP;
-	uvwAddressMode.v = Ogre::TextureUnitState::TAM_CLAMP;
-	uvwAddressMode.w = Ogre::TextureUnitState::TAM_CLAMP;
+		// set-up matrices
+	d_render_sys->_setWorldMatrix(Ogre::Matrix4::IDENTITY);
+	d_render_sys->_setViewMatrix(Ogre::Matrix4::IDENTITY);
+	d_render_sys->_setProjectionMatrix(Ogre::Matrix4::IDENTITY);
 
-	rs->_setWorldMatrix(Ogre::Matrix4::IDENTITY);
-	rs->_setViewMatrix(Ogre::Matrix4::IDENTITY);
-	rs->_setProjectionMatrix(Ogre::Matrix4::IDENTITY);
-	rs->_setTextureMatrix(0, Ogre::Matrix4::IDENTITY);
-	rs->_setTextureCoordSet(0, 0);
-	rs->_setTextureCoordCalculation(0, Ogre::TEXCALC_NONE);
-	rs->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_POINT);
+	// initialise render settings
+	d_render_sys->setLightingEnabled(false);
+	d_render_sys->_setDepthBufferParams(false, false);
+	d_render_sys->_setDepthBias(0, 0);
+	d_render_sys->_setCullingMode(Ogre::CULL_NONE);
+	d_render_sys->_setFog(Ogre::FOG_NONE);
+	d_render_sys->_setColourBufferWriteEnabled(true, true, true, true);
+	d_render_sys->unbindGpuProgram(Ogre::GPT_FRAGMENT_PROGRAM);
+	d_render_sys->unbindGpuProgram(Ogre::GPT_VERTEX_PROGRAM);
+	d_render_sys->setShadingType(Ogre::SO_GOURAUD);
+	d_render_sys->_setPolygonMode(Ogre::PM_SOLID);
 
-	#ifndef COLOR
-	rs->_setTextureBlendMode(0, colorBlendMode);
-	#endif
+	// initialise texture settings
+	d_render_sys->_setTextureCoordCalculation(0, Ogre::TEXCALC_NONE);
+	d_render_sys->_setTextureCoordSet(0, 0);
+	d_render_sys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_POINT);
+	d_render_sys->_setTextureAddressingMode(0, d_uvwAddressMode);
+	d_render_sys->_setTextureMatrix(0, Ogre::Matrix4::IDENTITY);
+	d_render_sys->_setAlphaRejectSettings(Ogre::CMPF_ALWAYS_PASS, 0);
+	d_render_sys->_setTextureBlendMode(0, d_colourBlendMode);
+	d_render_sys->_setTextureBlendMode(0, d_alphaBlendMode);
+	d_render_sys->_disableTextureUnitsFrom(1);
 
-	rs->_setTextureBlendMode(0, alphaBlendMode);
-	rs->_setTextureAddressingMode(0, uvwAddressMode);
-	rs->_disableTextureUnitsFrom(1);
-	rs->setLightingEnabled(false);
-	rs->_setFog(Ogre::FOG_NONE);
-	rs->_setCullingMode(Ogre::CULL_NONE);
-	rs->_setDepthBufferParams(false, false);
-	rs->_setColourBufferWriteEnabled(true, true, true, false);
-	rs->setShadingType(Ogre::SO_GOURAUD);
-	rs->_setPolygonMode(Ogre::PM_SOLID);
-	rs->unbindGpuProgram(Ogre::GPT_FRAGMENT_PROGRAM);
-	rs->unbindGpuProgram(Ogre::GPT_VERTEX_PROGRAM);
-	rs->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
-	rs->_setAlphaRejectSettings(Ogre::CMPF_ALWAYS_PASS, 0);
+	// enable alpha blending
+	d_render_sys->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::createHardwareBuffer( size_t size)
@@ -294,13 +267,10 @@ void OgreRenderSpriteManager::createHardwareBuffer( size_t size)
 	vd->addElement(0, offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
 	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
 
-#ifdef COLOR
 	vd->addElement(0, offset, Ogre::VET_COLOUR, Ogre::VES_DIFFUSE);
 	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_COLOUR);
-#endif
 
 	vd->addElement(0, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES);
-	offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
 	
 	hardwareBuffer = Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
 		vd->getVertexSize(0),
@@ -326,7 +296,8 @@ void OgreRenderSpriteManager::spriteBltFull(
 				   const Ogre::Matrix3 & _transform,
 				   const Ogre::Vector2 & _offset,
 				   const Ogre::Vector4 & _uv,
-				   const Ogre::Vector2 & _size)
+				   const Ogre::Vector2 & _size,
+				   unsigned int _color)
 {
 	RenderSprite spr;
 
@@ -335,10 +306,14 @@ void OgreRenderSpriteManager::spriteBltFull(
 	spr.point[2] = Ogre::Vector3(_offset.x + _size.x, _offset.y + _size.y, 1.0f);
 	spr.point[3] = Ogre::Vector3(_offset.x, _offset.y + _size.y, 1.0f);
 
-	#ifdef COLOR
-	spr.color[0] = spr.color[1] = spr.color[2] = spr.color[3] = Ogre::ColourValue(0,0,1,0).getAsRGBA();
-	#endif
+	Ogre::ColourValue col;
+	col.setAsRGBA(_color);
+	
+	Ogre::RGBA converted_color;
 
+	m_renderSys->convertColourValue(col,&converted_color);
+	spr.color[0] = spr.color[1] = spr.color[2] = spr.color[3] = converted_color;
+	
 	Ogre::Vector3 transformed_pos;
 
 	float width = m_viewport->getActualWidth();

@@ -13,11 +13,16 @@ class	OgreRenderFont;
 struct RenderSprite
 {
 	Ogre::Vector3 point[4];
-	#ifdef COLOR
-	Ogre::RGBA  color[4];
-	#endif
+	unsigned int  color[4];
 	Ogre::Vector2 tcoord[4];
 	Ogre::ResourceHandle texHandle;
+};
+
+struct QuadVertex
+{
+	Ogre::Vector3 point;
+	unsigned int  color;
+	Ogre::Vector2 tcoord;
 };
 
 struct RenderVertexChunk {
@@ -74,7 +79,8 @@ public:
 		const Ogre::Matrix3 & _transform,
 		const Ogre::Vector2 & _offset,
 		const Ogre::Vector4 & _uv,
-		const Ogre::Vector2 & _size);
+		const Ogre::Vector2 & _size,
+		unsigned int _color);
  
 	/// 
 	void beginLayer();

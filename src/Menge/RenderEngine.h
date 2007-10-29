@@ -48,7 +48,8 @@ namespace Menge
 		void renderText(
 			const RenderFontInterface* _font, 
 			const std::string & _text,
-			const float * _transform);
+			const float * _transform,
+			unsigned int _color );
 
 		void releaseRenderFont( RenderFontInterface* _fnt );
 		

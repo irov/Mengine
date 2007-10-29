@@ -14,6 +14,8 @@
 
 #	include "ResourceManager.h"
 
+#	include "ErrorMessage.h"
+
 #	include "math/box2.h"
 
 namespace	Menge
@@ -85,6 +87,7 @@ namespace	Menge
 
 		if( m_image == 0 )
 		{
+			ErrorMessage( "Image resource loading failed '%s' ", m_resourceImage.c_str() );
 			return false;
 		}
 

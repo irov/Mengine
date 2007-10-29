@@ -51,7 +51,7 @@ public:
 	virtual RenderFontInterface* loadFont( const FontDesc & _desc ) = 0;
 	virtual	void	releaseRenderFont( RenderFontInterface * _fnt ) = 0;
 
-	virtual	void	renderText( const RenderFontInterface * _font, const char * _text, const float * _transform ) = 0;
+	virtual	void	renderText( const RenderFontInterface * _font, const char * _text, const float * _transform, unsigned int _color  ) = 0;
 
 	virtual	void	beginLayer() = 0;
 	virtual	void	endLayer() = 0;

@@ -14,6 +14,8 @@
 
 #	include "ResourceFont.h"
 
+#	include "ErrorMessage.h"
+
 #	include "math/box2.h"
 
 namespace	Menge
@@ -23,13 +25,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
 		: m_length( 0.0f, 0.0f )
+		, m_color( 0xFFFFFFFF )
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TextField::~TextField()
 	{
-
 	}
 	///////////////////////////////////////////////////////////////////////////
 	bool TextField::isVisible( const Viewport & _viewPort )
@@ -40,8 +42,7 @@ namespace	Menge
 
 		mt::set_box_from_oriented_extent( bbox, m_length, worldMatrix );
 
-		//return _viewPort.testRectangle( bbox.min, bbox.max );
-		return true;
+		return _viewPort.testRectangle( bbox.min, bbox.max );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::_activate()
@@ -57,6 +58,7 @@ namespace	Menge
 
 		if( m_resourceFont == 0 )
 		{
+
 			printf("Warning: font '%s' have don't find resource '%s'\n"
 				, m_name.c_str()
 				, m_resourceFontName.c_str() 
@@ -96,6 +98,7 @@ namespace	Menge
 		{
 			XML_CHECK_VALUE_NODE( "Font", "Name", m_resourceFontName );
 			XML_CHECK_VALUE_NODE( "Text", "Value", m_message);
+			XML_CHECK_VALUE_NODE( "Color", "Value", m_color);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -103,7 +106,7 @@ namespace	Menge
 	{
 		const RenderFontInterface * font = m_resourceFont->getFont();
 
-		Holder<RenderEngine>::hostage()->renderText( font, m_message, _rwm.m );
+		Holder<RenderEngine>::hostage()->renderText( font, m_message, _rwm.m, m_color );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_debugRender()
@@ -122,6 +125,11 @@ namespace	Menge
 			float width = m_resourceFont->getCharWidth( *it );
 			m_length.x += width;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setColor( unsigned int _color )
+	{
+		m_color = _color;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

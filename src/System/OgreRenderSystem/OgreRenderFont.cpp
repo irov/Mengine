@@ -4,6 +4,10 @@ OgreRenderFont::OgreRenderFont( const Ogre::FontPtr & _font, const Ogre::String 
 : m_font(_font)
 , m_description( _name )
 {
+	//Ogre::FontManager::getSingletonPtr()->load( m_description, "fonts");
+	
+	//Ogre::FontManager::getSingletonPtr()->load("Fontik.fontdef" ,"Fonts");
+	//Ogre::FontManager::getSingletonPtr()->getByHandle(
 }
 //////////////////////////////////////////////////////////////////////////
 OgreRenderFont::~OgreRenderFont()

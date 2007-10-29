@@ -70,6 +70,7 @@
 		<Node Name = "Arial12" Type = "TextField">
               		<Font Name = "Arial12"/>
                		<Text Value = "some text"/>
+			<Color Value = "0094967295"/>
 		</Node>
 
 	</Node> <!-- Layer -->

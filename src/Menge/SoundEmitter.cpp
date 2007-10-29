@@ -82,6 +82,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_activate()
 	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_deactivate()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SoundEmitter::_compile()
+	{
 		m_resourceSound = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceSound>( m_resourceName );
@@ -96,7 +105,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_deactivate()
+	void SoundEmitter::_release()
 	{
 		Holder<ResourceManager>::hostage()->releaseResource( m_resourceSound );
 		Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );

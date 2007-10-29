@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "ResourceImpl.h"
+#	include "ResourceReference.h"
 
 class SoundBufferInterface;
 
 namespace Menge
 {
 	class ResourceSound
-		: public ResourceImpl
+		: public ResourceReference
 	{
 		RESOURCE_DECLARE( ResourceSound )
 

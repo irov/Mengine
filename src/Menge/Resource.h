@@ -9,26 +9,19 @@ namespace Menge
 	class Resource
 	{
 	public:
-		virtual ~Resource(){}
+		Resource();
 
 	public:
-		virtual bool compile() = 0;
-		virtual void release() = 0;
+		virtual bool compile();
+		virtual void release();
 
-		virtual bool isCompile() = 0;
-
-		virtual void incRef() = 0;
-		virtual size_t decRef() = 0;
-		virtual size_t refCount() = 0;
-
-		virtual void setName( const std::string & _name ) = 0;
-		virtual const std::string & getName() = 0;
+		virtual bool isCompile();
 
 	protected:
-		virtual bool _compile() = 0;
-		virtual void _release() = 0;
+		virtual bool _compile();
+		virtual void _release();
 
-	public:
-		virtual void loader( TiXmlElement * _xml ) = 0;
+	protected:
+		bool m_compile;
 	};
 }

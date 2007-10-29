@@ -91,6 +91,24 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool LayerScene::_compile()
+	{
+		if( m_subScene )
+		{
+			return m_subScene->compile();
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LayerScene::_release()
+	{
+		if( m_subScene )
+		{
+			return m_subScene->release();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Node * LayerScene::getChildren( const std::string & _name, bool _recursion )
 	{
 		if( m_subScene )

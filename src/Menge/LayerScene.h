@@ -31,9 +31,12 @@ namespace Menge
 	public:
 		void renderLayer();
 
-	public:
+	protected:
 		bool _activate() override;
 		void _deactivate() override;
+
+		bool _compile() override;
+		void _release() override;
 
 	public:
 		std::string m_sceneName;

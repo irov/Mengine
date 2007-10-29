@@ -704,19 +704,7 @@
 			Name="Resource"
 			>
 			<File
-				RelativePath=".\Resource.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ResourceDeclare.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ResourceImpl.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ResourceImpl.h"
 				>
 			</File>
 			<File
@@ -729,6 +717,14 @@
 			</File>
 			<File
 				RelativePath=".\ResourceManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceReference.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ResourceReference.h"
 				>
 			</File>
 			<Filter
@@ -1091,55 +1087,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\NodeChildren.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeChildren.h"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeCore.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeCore.h"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeEventable.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeEventable.h"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeFactory.h"
-					>
-				</File>
-				<File
 					RelativePath=".\NodeForeach.h"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeProxy.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeProxy.h"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeSinglethon.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\NodeSinglethon.h"
 					>
 				</File>
 				<Filter
@@ -1151,6 +1099,90 @@
 					</File>
 					<File
 						RelativePath=".\Scriptable.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Children"
+					>
+					<File
+						RelativePath=".\NodeChildren.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\NodeChildren.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Core"
+					>
+					<File
+						RelativePath=".\NodeCore.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\NodeCore.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Eventable"
+					>
+					<File
+						RelativePath=".\NodeEventable.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\NodeEventable.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Factory"
+					>
+					<File
+						RelativePath=".\NodeFactory.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\NodeFactory.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Proxy"
+					>
+					<File
+						RelativePath=".\NodeProxy.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\NodeProxy.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Singlethon"
+					>
+					<File
+						RelativePath=".\NodeSinglethon.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\NodeSinglethon.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Resource"
+					>
+					<File
+						RelativePath=".\NodeResource.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\NodeResource.h"
 						>
 					</File>
 				</Filter>
@@ -1184,6 +1216,30 @@
 				</File>
 				<File
 					RelativePath=".\Eventable.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Resource"
+				>
+				<File
+					RelativePath=".\Resource.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Resource.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Reference"
+				>
+				<File
+					RelativePath=".\Reference.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Reference.h"
 					>
 				</File>
 			</Filter>

@@ -48,8 +48,6 @@ namespace Menge
 		void loader( TiXmlElement *_xml) override;
 
 	protected:
-		bool _activate() override;
-		void _deactivate() override;
 		void _update( size_t _timing, const Viewport & _viewport ) override;
 		void _debugRender() override;
 

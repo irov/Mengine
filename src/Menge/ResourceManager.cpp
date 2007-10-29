@@ -47,7 +47,7 @@ namespace Menge
 					XML_DEF_ATTRIBUTES_NODE( Name );
 					XML_DEF_ATTRIBUTES_NODE( Type );
 
-					Resource * resource = createResource( Name, Type );
+					ResourceReference * resource = createResource( Name, Type );
 
 					if( resource == 0 )
 					{
@@ -74,14 +74,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Resource * ResourceManager::createResource( const std::string & _name, const std::string & _type )
+	ResourceReference * ResourceManager::createResource( const std::string & _name, const std::string & _type )
 	{
 		ResourceFactoryParam param;
 		param.name = _name;
 		return TFactoryResource::generate( _type, param );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::registerResource( Resource * _resource )
+	void ResourceManager::registerResource( ResourceReference * _resource )
 	{
 		if( _resource == 0 )
 		{
@@ -98,7 +98,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Resource * ResourceManager::getResource( const std::string & _name )
+	ResourceReference * ResourceManager::getResource( const std::string & _name )
 	{
 		TMapResource::iterator it_find = m_mapResource.find( _name );
 
@@ -107,19 +107,14 @@ namespace Menge
 			return 0;
 		}
 
-		Resource * resource = it_find->second;
+		ResourceReference * resource = it_find->second;
 
-		if( resource->refCount() == 0 )
-		{
-			resource->compile();
-		}
-
-		resource->incRef();
+		resource->incrementReference();
 
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::releaseResource( Resource * _resource )
+	void ResourceManager::releaseResource( ResourceReference * _resource )
 	{
 		if( _resource == 0 )
 		{
@@ -132,12 +127,7 @@ namespace Menge
 
 		if( it_find != m_mapResource.end() )
 		{
-			size_t refcounter = _resource->decRef();
-
-			if( refcounter == 0 )
-			{
-				_resource->release();
-			}
+			_resource->decrementReference();
 		}
 	}
 }

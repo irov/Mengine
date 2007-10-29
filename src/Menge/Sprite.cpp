@@ -81,6 +81,21 @@ namespace	Menge
 			return false;
 		}
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::_deactivate()
+	{
+		SceneNode2D::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Sprite::_compile()
+	{
+		if( SceneNode2D::_compile() == false )
+		{
+			return false;
+		}
+
 		m_image = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceImage>( m_resourceImage );
@@ -91,12 +106,12 @@ namespace	Menge
 			return false;
 		}
 
-		return true;
+		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_deactivate()
+	void Sprite::_release()
 	{
-		SceneNode2D::_deactivate();
+		SceneNode2D::_release();
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_image );
@@ -135,10 +150,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_debugRender()
 	{
-	/*	const mt::vec2f & pos = getWorldPosition();
-		const mt::vec2f & size = m_image->getMaxSize();
-		Holder<RenderEngine>::hostage()
-			->drawLine( pos, pos + size, 2, 0xffff00ff );*/
+		//const mt::vec2f & pos = getWorldPosition();
+		//const mt::vec2f & size = m_image->getMaxSize();
+		//Holder<RenderEngine>::hostage()
+		//	->drawLine( pos, pos + size, 2, 0xffff00ff );
 	}
 }
 

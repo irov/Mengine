@@ -1,7 +1,5 @@
 #	include "NodeChildren.h"
 
-#	include "ScriptEngine.h"
-
 #	include "SceneManager.h"
 
 namespace Menge

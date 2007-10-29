@@ -34,7 +34,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeSinglethon::foreachChildren( const NodeForeach & _foreach )
+	void NodeSinglethon::foreachChildren( NodeForeach & _foreach )
 	{
 	}
 }

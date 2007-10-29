@@ -17,7 +17,7 @@ namespace Menge
 		~TextField();
 
 	public:
-		void setText( const std::string& _message );
+		void setText( const std::string & _text );
 		void setColor( unsigned int _color );
 
 	public:
@@ -25,16 +25,19 @@ namespace Menge
 		void loader( TiXmlElement * _xml ) override;
 
 	protected:
-		bool _activate() override;
-		void _deactivate() override;
-
 		void _render( const mt::mat3f &rwm, const Viewport & _viewPort ) override;
 		void _debugRender() override;
+
+		bool _activate() override;
+		void _deactivate() override;
+		
+		bool _compile() override;
+		void _release() override;
 
 	private:
 		ResourceFont * m_resourceFont;
 		unsigned int m_color;
-		std::string m_message;
+		std::string m_text;
 		std::string m_resourceFontName;
 		mt::vec2f	m_length;
 	};

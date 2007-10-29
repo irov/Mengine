@@ -115,14 +115,6 @@ namespace	Menge
 			return false;
 		}
 
-		m_animation = Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceAnimation>( m_resourceAnimation );
-
-		if( m_animation == NULL )
-		{
-			return false;
-		}
-
 		if( m_autoStart )
 		{
 			play();
@@ -141,6 +133,29 @@ namespace	Menge
 	void Animation::_deactivate()
 	{
 		Sprite::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Animation::_compile()
+	{
+		if( Sprite::_compile() == false )
+		{
+			return false;
+		}
+
+		m_animation = Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceAnimation>( m_resourceAnimation );
+
+		if( m_animation == 0 )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_release()
+	{
+		Sprite::_release();
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_animation );

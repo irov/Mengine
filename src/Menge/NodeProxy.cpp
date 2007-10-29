@@ -89,7 +89,7 @@ namespace Menge
 		return m_node->isChildren( _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeProxy::foreachChildren( const NodeForeach & _foreach )
+	void NodeProxy::foreachChildren( NodeForeach & _foreach )
 	{
 		return m_node->foreachChildren( _foreach );
 	}

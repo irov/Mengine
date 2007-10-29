@@ -133,6 +133,8 @@ namespace Menge
 		pybind::interface_<Node>("Node", false)
 			.def( "activate", &Node::activate )
 			.def( "deactivate", &Node::deactivate )
+			.def( "compile", &Node::compile )
+			.def( "release", &Node::release )
 			.def( "setName", &Node::setName )
 			.def( "getName", &Node::getName )
 			.def( "addChildren", &Node::addChildren )

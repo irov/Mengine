@@ -9,5 +9,5 @@ struct ResourceFactoryParam
 
 #	define RESOURCE_DECLARE(C)\
 	public:\
-	static Resource * genObject(const ResourceFactoryParam &);\
+	static ResourceReference * genObject(const ResourceFactoryParam &);\
 	private:

@@ -18,6 +18,6 @@ namespace Menge
 		bool isChildren( Node *_node ) override;
 
 	public:
-		void foreachChildren( const NodeForeach & _foreach ) override;
+		void foreachChildren( NodeForeach & _foreach ) override;
 	};
 }

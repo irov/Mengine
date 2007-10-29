@@ -2,6 +2,7 @@
 
 #	include "Node.h"
 #	include "NodeEventable.h"
+#	include "NodeResource.h"
 #	include "Scriptable.h"
 
 #	include "ObjectDeclare.h"
@@ -15,6 +16,7 @@ namespace Menge
 	class NodeCore
 		: public virtual Node
 		, public NodeEventable
+		, public NodeResource
 		, public Scriptable
 	{
 	public:

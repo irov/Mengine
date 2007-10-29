@@ -132,7 +132,7 @@ RenderFontInterface* OgreRenderSystem::loadFont( const FontDesc & _desc )
 	return new OgreRenderFont( font, name );
 }
 //////////////////////////////////////////////////////////////////////////
-void	OgreRenderSystem::releaseRenderFont( RenderFontInterface* _fnt )
+void OgreRenderSystem::releaseRenderFont( RenderFontInterface* _fnt )
 {
 	delete static_cast<OgreRenderFont*>(_fnt);
 }

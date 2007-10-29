@@ -38,6 +38,10 @@ namespace Menge
 		protected:
 			bool _activate() override;
 			void _deactivate() override;
+
+			bool _compile() override;
+			void _release() override;
+
 		private:
 			std::string m_resourceName;
 			ResourceSound * m_resourceSound;

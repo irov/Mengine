@@ -14,13 +14,13 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceSound )
 	//////////////////////////////////////////////////////////////////////////
 	ResourceSound::ResourceSound( const std::string & _name )
-	: ResourceImpl(_name)
+	: ResourceReference(_name)
 	, m_isStreamable(false)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::loader( TiXmlElement * _xml )
 	{
-		ResourceImpl::loader( _xml );
+		ResourceReference::loader( _xml );
 
 		XML_FOR_EACH_TREE(_xml)
 		{

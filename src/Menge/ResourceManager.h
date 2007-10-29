@@ -7,7 +7,7 @@
 
 namespace Menge
 {
-	class Resource;
+	class ResourceReference;
 
 	class ResourceManager
 	{
@@ -18,10 +18,10 @@ namespace Menge
 	public:
 		void loadResource( const std::string & _file );
 
-		Resource * createResource( const std::string & _name, const std::string & _type );
+		ResourceReference * createResource( const std::string & _name, const std::string & _type );
 
-		void registerResource( Resource * _resource );
-		Resource * getResource( const std::string & _name );
+		void registerResource( ResourceReference * _resource );
+		ResourceReference * getResource( const std::string & _name );
 
 		template<class T>
 		T * getResourceT( const std::string & _name )
@@ -29,10 +29,10 @@ namespace Menge
 			return static_cast< T * >( getResource( _name ) );
 		}
 
-		void releaseResource( Resource * _resource );
+		void releaseResource( ResourceReference * _resource );
 
 	private:
-		typedef std::map< std::string, Resource * > TMapResource;
+		typedef std::map< std::string, ResourceReference * > TMapResource;
 
 		TMapResource m_mapResource;
 	};

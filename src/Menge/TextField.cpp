@@ -52,13 +52,29 @@ namespace	Menge
 			return false;
 		}
 
+		setText( m_text );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::_deactivate()
+	{
+		SceneNode2D::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::_compile()
+	{
+		if( SceneNode2D::_compile() == false )
+		{
+			return false;
+		}
+
 		m_resourceFont = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceFont>( m_resourceFontName );
 
 		if( m_resourceFont == 0 )
 		{
-
 			printf("Warning: font '%s' have don't find resource '%s'\n"
 				, m_name.c_str()
 				, m_resourceFontName.c_str() 
@@ -77,14 +93,12 @@ namespace	Menge
 			return false;
 		}
 
-		setText( m_message );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_deactivate()
+	void TextField::_release()
 	{
-		SceneNode2D::_deactivate();
+		SceneNode2D::_release();
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceFont );
@@ -97,7 +111,7 @@ namespace	Menge
 		XML_FOR_EACH_TREE(_xml)
 		{
 			XML_CHECK_VALUE_NODE( "Font", "Name", m_resourceFontName );
-			XML_CHECK_VALUE_NODE( "Text", "Value", m_message);
+			XML_CHECK_VALUE_NODE( "Text", "Value", m_text);
 			XML_CHECK_VALUE_NODE( "Color", "Value", m_color);
 		}
 	}
@@ -106,21 +120,25 @@ namespace	Menge
 	{
 		const RenderFontInterface * font = m_resourceFont->getFont();
 
-		Holder<RenderEngine>::hostage()->renderText( font, m_message, _rwm.m, m_color );
+		Holder<RenderEngine>::hostage()->renderText( font, m_text, _rwm.m, m_color );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_debugRender()
 	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setText( const std::string& _message )
+	void TextField::setText( const std::string& _text )
 	{
-		m_message = _message;
+		m_text = _text;
 
 		m_length.x = 0.0f;
 		m_length.y = m_resourceFont->getHeight();
 
-		for( std::string::const_iterator it = m_message.begin(); it != m_message.end(); ++it )
+		for( std::string::const_iterator 
+			it = m_text.begin(),
+			it_end = m_text.end(); 
+		it != it_end; 
+		++it )
 		{
 			float width = m_resourceFont->getCharWidth( *it );
 			m_length.x += width;

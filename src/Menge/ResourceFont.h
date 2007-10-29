@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "ResourceImpl.h"
+#	include "ResourceReference.h"
 
 #	include "Math/vec4.h"
 #	include <vector>
@@ -10,7 +10,7 @@ class RenderFontInterface;
 namespace Menge
 {
 	class ResourceFont
-		: public ResourceImpl
+		: public ResourceReference
 	{
 		RESOURCE_DECLARE( ResourceFont )
 

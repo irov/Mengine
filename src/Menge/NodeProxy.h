@@ -37,7 +37,7 @@ namespace Menge
 		void removeChildren( Node * _node ) override;
 		Node * getChildren( const std::string & _name, bool _recursion ) override;
 		bool isChildren( Node * _node ) override;
-		void foreachChildren( const NodeForeach & _foreach ) override;
+		void foreachChildren( NodeForeach & _foreach ) override;
 
 	public:
 		void update( size_t _timing, const Viewport & _viewport ) override;

@@ -35,11 +35,14 @@ namespace Menge
 		void loader( TiXmlElement * _xml ) override;
 
 	protected:
+		void _render( const mt::mat3f & _rwm, const Viewport & _viewPort ) override;
+		void _debugRender() override;
+
 		bool _activate() override;
 		void _deactivate() override;
 
-		void _render( const mt::mat3f & _rwm, const Viewport & _viewPort ) override;
-		void _debugRender() override;
+		bool _compile() override;
+		void _release() override;
 	
 	private:
 		ResourceImage * m_image;

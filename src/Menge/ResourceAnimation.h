@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "ResourceImpl.h"
+#	include "ResourceReference.h"
 
 #	include <vector>
 
 namespace Menge
 {
 	class ResourceAnimation
-		: public ResourceImpl
+		: public ResourceReference
 	{
 		 RESOURCE_DECLARE( ResourceAnimation )
 

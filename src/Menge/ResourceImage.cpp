@@ -8,7 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage::ResourceImage( const std::string & _name )
-		: ResourceImpl( _name )
+		: ResourceReference( _name )
 		, m_filter(1)
 	{
 	}
@@ -37,7 +37,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImage::loader( TiXmlElement * _xml )
 	{
-		ResourceImpl::loader( _xml );
+		ResourceReference::loader( _xml );
 
 		XML_FOR_EACH_TREE( _xml )
 		{

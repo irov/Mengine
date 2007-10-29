@@ -9,7 +9,7 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceAnimation )
 	//////////////////////////////////////////////////////////////////////////
 	ResourceAnimation::ResourceAnimation( const std::string & _name )
-	: ResourceImpl( _name )
+	: ResourceReference( _name )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceAnimation::loader( TiXmlElement * _xml )
 	{
-		ResourceImpl::loader( _xml );
+		ResourceReference::loader( _xml );
 
 		Sequence sq;
 

@@ -26,7 +26,10 @@ namespace Menge
 		{
 			if( m_lastPickerTrap )
 			{
-				m_lastPickerTrap->onLeave();
+				if( m_lastPickerTrap->isActive() )
+				{
+					m_lastPickerTrap->onLeave();
+				}
 			}
 
 			if( picker )

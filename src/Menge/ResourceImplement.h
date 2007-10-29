@@ -4,11 +4,11 @@
 
 namespace Menge
 {
-	typedef Menge::Factory< std::string, Resource *, ResourceFactoryParam> TFactoryResource;
+	typedef Menge::Factory< std::string, ResourceReference *, ResourceFactoryParam> TFactoryResource;
 }
 
 #	define RESOURCE_IMPLEMENT(C)\
-Resource * C::genObject(const ResourceFactoryParam & _struct){\
+ResourceReference * C::genObject(const ResourceFactoryParam & _struct){\
 return new C( _struct.name );\
 }\
 namespace {\

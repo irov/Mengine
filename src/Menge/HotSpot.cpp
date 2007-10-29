@@ -127,7 +127,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "KEY", "(Ib)", _key, _isDown );
+			askEvent( handle, "KEY", "(OIb)", _key, _isDown );
 		}
 
 		return handle;
@@ -139,7 +139,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
+			askEvent( handle, "MOUSE_BUTTON", "(OIb)", this->getScript(), _button, _isDown );
 		}
 
 		return handle;
@@ -151,7 +151,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "MOUSE_MOVE", "(fff)", _x, _y, _whell );
+			askEvent( handle, "MOUSE_MOVE", "(Offf)", this->getScript(), _x, _y, _whell );
 		}
 
 		return handle;
@@ -165,16 +165,6 @@ namespace	Menge
 
 		registerEventListener( "LEAVE", "onLeave", _listener );
 		registerEventListener( "ENTER", "onEnter", _listener );		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::_activate()
-	{
-		return SceneNode2D::_activate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_deactivate()
-	{
-		SceneNode2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_update( size_t _timing, const Viewport & _viewport )

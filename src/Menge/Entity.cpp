@@ -82,7 +82,7 @@ namespace	Menge
 	{
 		this->registerEventMethod("MOVE_END", "onMoveEnd" );
 
-		this->callMethod("ACTIVATE", "()" );
+		this->callMethod("onActivate", "()" );
 
 		return true;
 	}

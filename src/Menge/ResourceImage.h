@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "ResourceImpl.h"
+#	include "ResourceReference.h"
 
 #	include "Math/vec4.h"
 #	include <vector>
@@ -10,7 +10,7 @@ class RenderImageInterface;
 namespace Menge
 {
 	class ResourceImage
-		: public ResourceImpl
+		: public ResourceReference
 	{
 	public:
 		ResourceImage( const std::string & _name );

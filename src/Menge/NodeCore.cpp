@@ -33,13 +33,15 @@ namespace Menge
 		struct ForeachDestroy
 			: public NodeForeach
 		{
-			void apply( Node * children ) const override
+			void apply( Node * children ) override
 			{
 				children->destroy();
 			}
 		};
 
 		foreachChildren( ForeachDestroy() );
+
+		release();
 
 		delete this;
 	}
@@ -49,7 +51,7 @@ namespace Menge
 		struct ForeachActivate
 			: public NodeForeach
 		{
-			void apply( Node * children ) const override
+			void apply( Node * children ) override
 			{
 				children->activate();
 			}
@@ -62,6 +64,14 @@ namespace Menge
 			return true;
 		}
 
+		if( isCompile() == false )
+		{
+			if( compile() == false )
+			{
+				return false;
+			}
+		}
+
 		m_active = _activate();
 
 		return m_active;
@@ -72,7 +82,7 @@ namespace Menge
 		struct ForeachDeactivate
 			: public NodeForeach
 		{
-			void apply( Node * children ) const override
+			void apply( Node * children ) override
 			{
 				children->deactivate();
 			}
@@ -134,7 +144,7 @@ namespace Menge
 
 			}
 
-			void apply( Node * children ) const override
+			void apply( Node * children ) override
 			{
 				children->update( m_timing, m_viewport );
 			}
@@ -215,7 +225,7 @@ namespace Menge
 		struct ForeachDebugRender
 			: public NodeForeach
 		{
-			void apply( Node * children ) const override
+			void apply( Node * children ) override
 			{
 				children->debugRender();
 			}

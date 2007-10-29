@@ -72,11 +72,15 @@ namespace Menge
 			return it_find != m_listChildren.end();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void foreachChildren( const NodeForeach & _foreach ) override
+		void foreachChildren( NodeForeach & _foreach ) override
 		{
-			for each( TNode * children in m_listChildren )
+			for( TListChildren::iterator
+				it = m_listChildren.begin(),
+				it_end = m_listChildren.end();
+			it != it_end;
+			++it)
 			{
-				_foreach.apply( children );
+				_foreach.apply( *it );
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////

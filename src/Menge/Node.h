@@ -5,8 +5,7 @@
 class TiXmlElement;
 
 namespace Menge
-{
-	
+{	
 	class NodeForeach;
 	class Scriptable;
 	class Viewport;
@@ -72,6 +71,13 @@ namespace Menge
 		virtual bool isActive() = 0;
 
 	public:
+		virtual bool compile() = 0;
+
+		virtual void release() = 0;
+
+		virtual bool isCompile() = 0;
+
+	public:
 
 		//! Node pure virtual. set parent node
 		/*!
@@ -104,7 +110,7 @@ namespace Menge
 		/*!
 		\param _foreach the first argument, functor NodeForeach
 		*/
-		virtual void foreachChildren( const NodeForeach & _foreach ) = 0;
+		virtual void foreachChildren( NodeForeach & _foreach ) = 0;
 
 	public:
 		virtual Scriptable * getScriptable() = 0; 

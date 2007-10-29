@@ -29,8 +29,12 @@ namespace Menge
 
 	protected:
 		void _update( size_t _timing, const Viewport & _viewport ) override;
+
 		bool _activate() override;
 		void _deactivate() override;
+
+		bool _compile() override;
+		void _release() override;
 
 	protected:
 		std::string m_resourceAnimation;

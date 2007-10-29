@@ -14,7 +14,11 @@ namespace Menge
 	public:
 		static int randint( int a, int b )
 		{			
-			return int(a + ( rand() % (b - a) ) );
+			int big_a = a << 3;
+			int big_b = b << 3;
+			int big_r = big_a  + ( rand() % (big_b - big_a) );
+			big_r >>= 3;
+			return big_r;
 		}
 
 		static float getVec2fX( const mt::vec2f & _vec2f )

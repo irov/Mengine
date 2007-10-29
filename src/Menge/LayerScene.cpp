@@ -75,7 +75,7 @@ namespace Menge
 			m_subScene = Holder<Game>::hostage()
 				->getScene( m_sceneName );
 
-			m_subScene->callMethod( "onSubScene", "(O)", m_scene );
+			m_subScene->callMethod( "onSubScene", "(O)", m_scene->getScript() );
 
 			m_subScene->activate();
 		}

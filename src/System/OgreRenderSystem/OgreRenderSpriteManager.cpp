@@ -307,9 +307,9 @@ void OgreRenderSpriteManager::spriteBltFull(
 	spr.point[3] = Ogre::Vector3(_offset.x, _offset.y + _size.y, 1.0f);
 
 	Ogre::ColourValue col;
-	col.setAsRGBA(_color);
+	col.setAsARGB(_color);
 	
-	Ogre::RGBA converted_color;
+	Ogre::ARGB converted_color;
 
 	m_renderSys->convertColourValue(col,&converted_color);
 	spr.color[0] = spr.color[1] = spr.color[2] = spr.color[3] = converted_color;

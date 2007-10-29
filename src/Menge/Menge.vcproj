@@ -135,7 +135,7 @@
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				WarnAsError="true"
+				WarnAsError="false"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4250"

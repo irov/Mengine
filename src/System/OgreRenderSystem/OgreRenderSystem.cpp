@@ -156,6 +156,22 @@ void	OgreRenderSystem::renderText( const RenderFontInterface* _font, const char 
 		spaceWidth = ogreFont->getGlyphAspectRatio( 'A' ) * charHeight * 2.0;
 	}
 
+	Ogre::String textureName = ogreFont->getName() + "Texture";
+
+	Ogre::ResourcePtr texPtr = Ogre::TextureManager::getSingletonPtr()
+		->getByName(textureName);
+
+	if( texPtr.isNull() )
+	{
+		printf("Warning: render font can't find texture '%s'\n"
+			, textureName.c_str()
+			);
+
+		return;
+	}
+
+	Ogre::Texture * tex = static_cast<Ogre::Texture *>( texPtr.getPointer() );
+
 	std::string	caption(_text);
 
 	for( std::string::const_iterator i = caption.begin(); i != caption.end(); ++i )
@@ -165,12 +181,6 @@ void	OgreRenderSystem::renderText( const RenderFontInterface* _font, const char 
 			left += spaceWidth;
 			continue;
 		}
-
-		Ogre::Texture * tex = 
-			static_cast<Ogre::Texture*>(
-				Ogre::TextureManager::getSingletonPtr()->getByName(
-					ogreFont->getName() + "Texture").getPointer()
-				);
 
 		spr.texHandle = tex->getHandle();
 

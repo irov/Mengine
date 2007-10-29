@@ -144,19 +144,9 @@ void	OgreRenderSystem::renderText( const RenderFontInterface* _font, const char 
 	float width = m_viewport->getActualWidth();
 	float heigth = m_viewport->getActualHeight();
 
-	float left = _transform[6];
-	float top = _transform[7];
-
-	float spaceWidth = 0;
-
 	float charHeight = font->getHeight();
 
-	RenderSprite spr;
-
-	if ( spaceWidth == 0 )
-	{
-		spaceWidth = ogreFont->getGlyphAspectRatio( 'A' ) * charHeight * 2.0;
-	}
+	float spaceWidth = ogreFont->getGlyphAspectRatio( 'A' ) * charHeight * 2.0;
 
 	Ogre::String textureName = ogreFont->getName() + "Texture";
 
@@ -175,15 +165,17 @@ void	OgreRenderSystem::renderText( const RenderFontInterface* _font, const char 
 	Ogre::Texture * tex = static_cast<Ogre::Texture *>( texPtr.getPointer() );
 
 	std::string	caption(_text);
+	Ogre::Vector2 offset( 0.f, 0.f );
 
 	for( std::string::const_iterator i = caption.begin(); i != caption.end(); ++i )
 	{
 		if ( *i == ' ' )
 		{
-			left += spaceWidth;
+			offset.x += spaceWidth;
 			continue;
 		}
 
+		RenderSprite spr;
 		spr.texHandle = tex->getHandle();
 
 		float aspectRatio = ogreFont->getGlyphAspectRatio( *i ) ;
@@ -194,13 +186,12 @@ void	OgreRenderSystem::renderText( const RenderFontInterface* _font, const char 
  
 		float height = charHeight * 2.0;
 		float width = aspectRatio * height;
-
-		Ogre::Vector2	offset( left, top );
+		
 		Ogre::Vector2	size( width, height );
 
 		m_spriteMgr->spriteBltFull( tex, *(Ogre::Matrix3*)_transform, offset, uv, size );
 
-		left += width;
+		offset.x += width;
 	}
 }
 //////////////////////////////////////////////////////////////////////////

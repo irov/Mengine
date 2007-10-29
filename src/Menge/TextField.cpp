@@ -102,6 +102,7 @@ namespace	Menge
 	void TextField::_render( const mt::mat3f & _rwm, const Viewport & _viewPort )
 	{
 		const RenderFontInterface * font = m_resourceFont->getFont();
+
 		Holder<RenderEngine>::hostage()->renderText( font, m_message, _rwm.m );
 	}
 	//////////////////////////////////////////////////////////////////////////

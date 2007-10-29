@@ -32,6 +32,11 @@ namespace Menge
 
 		if( m_font == 0 )
 		{
+			printf("Warning: resource font '%s' not find fond file '%s'\n"
+				, m_name.c_str()
+				, m_fontName.c_str() 
+				);
+
 			return false;
 		}
 
@@ -44,8 +49,28 @@ namespace Menge
 		m_font = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float ResourceFont::getCharWidth( char _id ) const
+	{
+		if( m_font )
+		{
+			return m_font->getCharWidth( _id );
+		}
+
+		return 0.f;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const RenderFontInterface * ResourceFont::getFont() const
 	{
 		return m_font;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ResourceFont::getHeight() const
+	{
+		if( m_font )
+		{
+			return m_font->getHeight();
+		}
+
+		return 0.f;	
 	}
 }

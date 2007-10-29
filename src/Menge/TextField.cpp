@@ -23,11 +23,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
 		: m_length( 0.0f, 0.0f )
-		, m_font( 0 )
-	{}
+	{
+
+	}
 	//////////////////////////////////////////////////////////////////////////
 	TextField::~TextField()
-	{}
+	{
+
+	}
 	///////////////////////////////////////////////////////////////////////////
 	bool TextField::isVisible( const Viewport & _viewPort )
 	{
@@ -53,10 +56,23 @@ namespace	Menge
 
 		if( m_resourceFont == 0 )
 		{
+			printf("Warning: font '%s' have don't find resource '%s'\n"
+				, m_name.c_str()
+				, m_resourceFontName.c_str() 
+				);
+
 			return false;
 		}
 
-		m_font = m_resourceFont->getFont();
+		if( m_resourceFont->isCompile() == false )
+		{
+			printf("Warning: font '%s' have don't compile resource '%s'\n"
+				, m_name.c_str()
+				, m_resourceFontName.c_str() 
+				);
+
+			return false;
+		}
 
 		setText( m_message );
 
@@ -69,8 +85,6 @@ namespace	Menge
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceFont );
-
-		m_font = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::loader( TiXmlElement * _xml )
@@ -86,7 +100,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( const mt::mat3f & _rwm, const Viewport & _viewPort )
 	{
-		Holder<RenderEngine>::hostage()->renderText( m_font, m_message, _rwm.m );
+		const RenderFontInterface * font = m_resourceFont->getFont();
+		Holder<RenderEngine>::hostage()->renderText( font, m_message, _rwm.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_debugRender()
@@ -95,14 +110,19 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setText( const std::string& _message )
 	{
+		if( isActive() == false )
+		{
+			return;
+		}
+
 		m_message = _message;
 
 		m_length.x = 0.0f;
-		m_length.y = m_font->getHeight();
+		m_length.y = m_resourceFont->getHeight();
 
 		for( std::string::const_iterator it = m_message.begin(); it != m_message.end(); ++it )
 		{
-			float width = m_font->getCharWidth( *it );
+			float width = m_resourceFont->getCharWidth( *it );
 			m_length.x += width;
 		}
 	}

@@ -1,10 +1,9 @@
 #	include "OgreRenderFont.h"
 //////////////////////////////////////////////////////////////////////////
-OgreRenderFont::OgreRenderFont( const std::string&  _name )
-	: m_description( _name )
+OgreRenderFont::OgreRenderFont( const Ogre::FontPtr & _font, const Ogre::String & _name )
+: m_font(_font)
+, m_description( _name )
 {
-	m_font = Ogre::FontManager::getSingletonPtr()->getByName( m_description );
-	m_font->load();
 }
 //////////////////////////////////////////////////////////////////////////
 OgreRenderFont::~OgreRenderFont()

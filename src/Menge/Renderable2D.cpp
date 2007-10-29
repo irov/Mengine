@@ -13,6 +13,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Renderable2D::render( const mt::mat3f &_rwm, const Viewport & _viewport )
 	{
+		if( isActive() == false )
+		{
+			return;
+		}
+
 		if( m_hide == true )
 		{
 			return;

@@ -10,7 +10,7 @@ class OgreRenderFont
 	: public RenderFontInterface
 {
 public:
-	OgreRenderFont( const std::string&  _name );
+	OgreRenderFont( const Ogre::FontPtr & _font, const Ogre::String & _name );
 	~OgreRenderFont();
 
 	float getCharWidth( char _id ) const;

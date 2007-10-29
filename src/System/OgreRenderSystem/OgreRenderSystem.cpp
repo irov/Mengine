@@ -115,9 +115,18 @@ void OgreRenderSystem::renderImage(
 		, *(Ogre::Vector2*)_size );
 }
 //////////////////////////////////////////////////////////////////////////
-RenderFontInterface* OgreRenderSystem::loadFont( const FontDesc&	_desc )
+RenderFontInterface* OgreRenderSystem::loadFont( const FontDesc & _desc )
 {
-	return new OgreRenderFont(_desc.name);
+	Ogre::String name( _desc.name ); 
+
+	Ogre::FontPtr font = Ogre::FontManager::getSingletonPtr()->getByName( name );
+
+	if( font.isNull() )
+	{
+		return 0;
+	}
+	
+	return new OgreRenderFont( font, name );
 }
 //////////////////////////////////////////////////////////////////////////
 void	OgreRenderSystem::releaseRenderFont( RenderFontInterface* _fnt )

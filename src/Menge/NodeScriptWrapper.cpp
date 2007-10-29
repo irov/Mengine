@@ -139,7 +139,7 @@ namespace Menge
 			.def( "getChildren", &Node::getChildren )
 			;
 
-		pybind::class_<Allocator2D>("Allocator2D", false)
+		pybind::interface_<Allocator2D>("Allocator2D", false)
 			.def( "getLocalPosition", &Allocator2D::getLocalPosition )
 			.def( "getLocalDirection", &Allocator2D::getLocalDirection )
 
@@ -150,7 +150,7 @@ namespace Menge
 			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
 			;
 		
-		pybind::class_<Renderable2D>("Renderable2D", false)
+		pybind::interface_<Renderable2D>("Renderable2D", false)
 			.def( "hide", &Renderable2D::hide )
 			;
 

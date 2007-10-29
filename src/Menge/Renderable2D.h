@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Node.h"
+
 #	include "Math/mat3.h"
 
 class TiXmlElement;
@@ -10,6 +12,7 @@ namespace Menge
 	class Viewport;
 
 	class Renderable2D
+		: public virtual Node
 	{
 	public:
 		Renderable2D();

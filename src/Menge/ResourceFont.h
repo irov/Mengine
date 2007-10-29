@@ -18,6 +18,9 @@ namespace Menge
 		ResourceFont( const std::string & _name );
 
 	public:
+		float getCharWidth( char _id ) const;
+		float getHeight() const;
+
 		const RenderFontInterface * getFont() const;
 
 	public:

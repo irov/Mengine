@@ -126,6 +126,8 @@ RenderFontInterface* OgreRenderSystem::loadFont( const FontDesc & _desc )
 		return 0;
 	}
 	
+	font->load();
+	
 	return new OgreRenderFont( font, name );
 }
 //////////////////////////////////////////////////////////////////////////

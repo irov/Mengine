@@ -52,6 +52,8 @@ namespace Menge
 
 		foreachChildren( ForeachRelease() );
 
+		deactivate();
+
 		Resource::release();
 	}
 	//////////////////////////////////////////////////////////////////////////

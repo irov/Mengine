@@ -52,6 +52,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleKeyEvent( size_t _key, bool _isDown )
 	{
+		if( isActive() == false )
+		{
+			return false;
+		}
+
 		bool handle = false;
 		
 		if( handle == false )
@@ -65,11 +70,31 @@ namespace	Menge
 				->handleKeyEvent( _key, _isDown );
 		}
 
+		if( handle == false )
+		{
+			for( TListChildren::reverse_iterator 
+				it = m_listChildren.rbegin(),
+				it_end = m_listChildren.rend();
+			it != it_end;
+			++it)
+			{
+				if( handle = (*it)->handleKeyEvent( _key, _isDown ) )
+				{
+					break;
+				}
+			}
+		}
+
 		return handle;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEvent( size_t _button, bool _isDown )
 	{
+		if( isActive() == false )
+		{
+			return false;
+		}
+
 		bool handle = false;
 
 		if( handle == false )
@@ -83,11 +108,31 @@ namespace	Menge
 				->handleMouseButtonEvent( _button, _isDown );
 		}
 
+		if( handle == false )
+		{
+			for( TListChildren::reverse_iterator 
+				it = m_listChildren.rbegin(),
+				it_end = m_listChildren.rend();
+			it != it_end;
+			++it)
+			{
+				if( handle = (*it)->handleMouseButtonEvent( _button, _isDown ) )
+				{
+					break;
+				}
+			}
+		}
+
 		return handle;	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseMove( int _x, int _y, int _whell )
 	{
+		if( isActive() == false )
+		{
+			return false;
+		}
+
 		bool handle = false;
 
 		if( handle == false )
@@ -101,6 +146,21 @@ namespace	Menge
 				->handleMouseMove( _x, _y, _whell );
 		}
 	
+		if( handle == false )
+		{
+			for( TListChildren::reverse_iterator 
+				it = m_listChildren.rbegin(),
+				it_end = m_listChildren.rend();
+			it != it_end;
+			++it)
+			{
+				if( handle = (*it)->handleMouseMove( _x, _y, _whell ) )
+				{
+					break;
+				}
+			}
+		}
+
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -126,7 +186,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( size_t _timing, const Viewport & _viewport )
 	{
-		callEvent( "UPDATE", "(k)", _timing );
+		if( isActive()  )
+		{
+			callEvent( "UPDATE", "(k)", _timing );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loader( TiXmlElement *_xml )
@@ -148,6 +211,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::render()
 	{
+		if( isActive() == false )
+		{
+			return;
+		}
+
 		for each( Layer * layer in m_listChildren )
 		{
 			layer->renderLayer();

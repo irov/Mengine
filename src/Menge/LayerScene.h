@@ -2,7 +2,6 @@
 
 #	include "Layer.h"
 
-#	include "NodeCore.h"
 #	include "NodeSinglethon.h"
 
 namespace Menge
@@ -12,7 +11,6 @@ namespace Menge
 		, public NodeSinglethon
 	{
 		OBJECT_DECLARE(LayerScene);
-
 
 	public:
 		LayerScene();

@@ -51,7 +51,7 @@ namespace Menge
 
 					if( resource == 0 )
 					{
-						ErrorMessage( "Don't register resource type '%s' ", Type.c_str() );
+						printf( "Don't register resource type '%s'\n", Type.c_str() );
 						continue;
 					}
 			

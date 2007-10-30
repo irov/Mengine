@@ -79,12 +79,12 @@ namespace Menge
 		}
 		XML_INVALID_PARSE()
 		{
-			ErrorMessage("Invalid parse external node `%s`", _xml.c_str() );
+			printf("Invalid parse external node `%s`\n", _xml.c_str() );
 		}
 
 		if( node == 0 )
 		{
-			ErrorMessage("This xml file `%s` have invalid external node format", _xml.c_str() );
+			printf("This xml file `%s` have invalid external node format\n", _xml.c_str() );
 		}
 
 		return node;
@@ -111,12 +111,12 @@ namespace Menge
 		}
 		XML_INVALID_PARSE()
 		{
-			ErrorMessage("Invalid parse external node" );
+			printf("Invalid parse external node\n" );
 		}
 
 		if( node == 0 )
 		{
-			ErrorMessage("This xml have invalid external node format" );
+			printf("This xml have invalid external node format\n" );
 		}
 
 		return node;

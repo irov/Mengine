@@ -36,7 +36,16 @@ namespace Menge
 			return false;
 		}
 
-		return Resource::compile();
+		bool result = Resource::compile();
+
+		if( result == false )
+		{
+			printf("Error: compiled Node '%s' is failed\n"
+				, getName().c_str() 
+				);
+		}
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeResource::release()

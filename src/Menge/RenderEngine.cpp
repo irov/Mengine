@@ -57,7 +57,7 @@ namespace Menge
 
 		if( fileData == 0 )
 		{
-			ErrorMessage( "Error: Image can't open resource file '%s'", _fileName.c_str() );
+			printf( "Error: Image can't open resource file '%s'\n", _fileName.c_str() );
 
 			return 0;
 		}
@@ -78,7 +78,7 @@ namespace Menge
 
 		if( image == 0 )
 		{
-			ErrorMessage( "Error: Image from file '%s' not loader", _fileName.c_str() );
+			printf( "Error: Image from file '%s' not loader\n", _fileName.c_str() );
 
 			return 0;
 		}	

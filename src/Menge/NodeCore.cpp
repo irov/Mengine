@@ -30,6 +30,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::destroy()
 	{
+		release();
+
 		struct ForeachDestroy
 			: public NodeForeach
 		{
@@ -40,8 +42,6 @@ namespace Menge
 		};
 
 		foreachChildren( ForeachDestroy() );
-
-		release();
 
 		delete this;
 	}
@@ -68,6 +68,10 @@ namespace Menge
 		{
 			if( compile() == false )
 			{
+				printf("Error: activate Node '%s' is failed, becouse compiled is failed\n"
+					, m_name.c_str() 
+					);
+
 				return false;
 			}
 		}
@@ -209,7 +213,7 @@ namespace Menge
 				}
 				XML_INVALID_PARSE()
 				{
-					ErrorMessage("Invalid parse external node %s for %s", File.c_str(), m_name.c_str());
+					printf("Invalid parse external node %s for %s\n", File.c_str(), m_name.c_str());
 				}
 			}
 		}

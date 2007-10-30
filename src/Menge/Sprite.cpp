@@ -102,7 +102,7 @@ namespace	Menge
 
 		if( m_image == 0 )
 		{
-			ErrorMessage( "Image resource loading failed '%s' ", m_resourceImage.c_str() );
+			printf( "Image resource loading failed '%s'\n", m_resourceImage.c_str() );
 			return false;
 		}
 

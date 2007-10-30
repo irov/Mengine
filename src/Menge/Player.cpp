@@ -55,7 +55,7 @@ namespace Menge
 
 		if( m_nextScene == 0 )
 		{
-			ErrorMessage("ERROR: Scene [%s] not have in Game", _name.c_str() );
+			printf("ERROR: Scene [%s] not have in Game\n", _name.c_str() );
 			return;
 		}
 

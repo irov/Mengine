@@ -3,6 +3,7 @@
 #	include "NodeForeach.h"
 
 #	include "SceneManager.h"
+#	include "RenderEngine.h"
 #	include "ScriptEngine.h"
 
 #	include "Layer2D.h"
@@ -65,6 +66,9 @@ namespace Menge
 		{
 			return;
 		}
+
+		Holder<RenderEngine>::hostage()
+			->beginLayer();
 
 		const Viewport & vp = 
 			Renderable2D::updateViewport( _viewport );

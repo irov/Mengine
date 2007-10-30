@@ -76,11 +76,14 @@ namespace	Menge
 				changePivot();
 			}
 		}
+
+		this->callEvent("UPDATE", "(k)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
 	{
 		this->registerEventMethod("MOVE_END", "onMoveEnd" );
+		this->registerEventMethod("UPDATE", "onUpdate" );
 
 		this->callMethod("onActivate", "()" );
 

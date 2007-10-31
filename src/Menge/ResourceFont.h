@@ -21,19 +21,7 @@ namespace Menge
 
 	public:
 
-		struct UVRect
-		{
-			float u1;
-			float v1;
-			float u2;
-			float v2;
-
-			UVRect( float _left, float _top, float _right, float _bottom )
-				: u1( _left ), v1( _top ), u2( _right ), v2( _bottom )
-			{}
-		};
-
-		UVRect getUV( unsigned int _id ) const;
+		const mt::vec4f & getUV( unsigned int _id ) const;
 
 		float getCharWidth( char _id ) const;
 		float getHeight() const;
@@ -51,13 +39,13 @@ namespace Menge
 
 		struct Glyph
 		{
-			Glyph( unsigned int _id, const UVRect& _rect, float _ratio )
+			Glyph( unsigned int _id, const mt::vec4f& _rect, float _ratio )
 				: id(_id)
 				, rect(_rect)
 				, ratio(_ratio)
 			{}
 			unsigned int id;
-			UVRect rect;
+			mt::vec4f rect;
 			float ratio;
 		};
 

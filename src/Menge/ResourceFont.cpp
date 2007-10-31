@@ -34,19 +34,10 @@ namespace Menge
 		return m_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceFont::UVRect ResourceFont::getUV( unsigned int _id ) const
+	const mt::vec4f & ResourceFont::getUV( unsigned int _id ) const
 	{
 		TMapGlyph::const_iterator it = m_glyphs.find( _id );
-
-		if ( it != m_glyphs.end() )
-		{
-			return it->second.rect;
-		}
-		else
-		{
-			static UVRect nullRect(0.0, 0.0, 0.0, 0.0);
-			return nullRect;
-		}
+		return it != m_glyphs.end() ? it->second.rect : mt::vec4f::zero_v4;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::setGlyph( unsigned int _id, float _u1, float _v1, float _u2, float _v2 )
@@ -54,7 +45,8 @@ namespace Menge
 		TMapGlyph::iterator it = m_glyphs.find( _id );
 
 		float ratio = ( _u2 - _u1 )  / ( _v2 - _v1 );
-		UVRect rect( _u1, _v1, _u2, _v2 );
+		
+		mt::vec4f rect( _u1, _v1, _u2, _v2 );
 
 		if ( it != m_glyphs.end() )
 		{
@@ -86,7 +78,12 @@ namespace Menge
 
 		m_fontDir = getFontDir( m_fontName );
 
-		parseFontdef( stream );
+		bool result = parseFontdef( stream );
+
+		if( result == false )
+		{
+			return false;
+		}
 		
 		m_whitespaceWidth = getCharWidth('A');
 
@@ -132,29 +129,29 @@ namespace Menge
 		return fontDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::splitParams( std::vector<std::string> & _words, const std::string & _text, const std::string & _separator )
-    {
-		size_t n = _text.length();
-
-		size_t start = _text.find_first_not_of( _separator );
-
-		while ( (start >= 0) && (start < n) )
-		{
-			size_t stop = _text.find_first_of( _separator, start );
-			if ( (stop < 0) || (stop > n) ) stop = n;
-			_words.push_back( _text.substr( start, stop - start ) );
-			start = _text.find_first_not_of( _separator, stop + 1 );
-		}
-    }
-	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::parseAttribute( const std::vector<std::string> & _params )
 	{
 		const std::string & attrib = _params[0];
 
-		if ( attrib == "source" )
+		if ( attrib == "glyph" )
+		{
+			if ( _params.size() != 6 )
+			{
+				printf( "Error: error parsing params of uv \n");
+				return false;
+			}
+
+			setGlyph(_params[1].at(0), 
+				atof(_params[2].c_str()),
+				atof(_params[3].c_str()),
+				atof(_params[4].c_str()),
+				atof(_params[5].c_str())); 
+		}
+		else if ( attrib == "source" )
 		{
 			if ( _params.size() != 2 )
 			{
+				printf( "Error: error parsing params of uv \n");
 				return false;
 			}
 
@@ -191,19 +188,6 @@ namespace Menge
 
 			Holder<FileEngine>::hostage()->closeFile( fileData );
 		}
-		else if ( attrib == "glyph" )
-		{
-			if ( _params.size() != 6 )
-			{
-				return false;
-			}
-
-			setGlyph(_params[1].at(0), 
-				atof(_params[2].c_str()),
-				atof(_params[3].c_str()),
-				atof(_params[4].c_str()),
-				atof(_params[5].c_str())); 
-		}
 
 		return true;
 	}
@@ -238,5 +222,20 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceFont::splitParams( std::vector<std::string> & _words, const std::string & _text, const std::string & _separator )
+    {
+		size_t n = _text.length();
+
+		size_t start = _text.find_first_not_of( _separator );
+
+		while ( (start >= 0) && (start < n) )
+		{
+			size_t stop = _text.find_first_of( _separator, start );
+			if ( (stop < 0) || (stop > n) ) stop = n;
+			_words.push_back( _text.substr( start, stop - start ) );
+			start = _text.find_first_not_of( _separator, stop + 1 );
+		}
+    }
 	//////////////////////////////////////////////////////////////////////////
 }

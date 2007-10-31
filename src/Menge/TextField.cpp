@@ -132,9 +132,7 @@ namespace	Menge
 				continue;
 			}
 
-			ResourceFont::UVRect rect = m_resourceFont->getUV( *it );
-	 
-			mt::vec4f	uv( rect.u1, rect.v1, rect.u2, rect.v2 );
+			mt::vec4f uv = m_resourceFont->getUV( *it );
 	 
 			float width = m_resourceFont->getCharWidth( *it );
 			

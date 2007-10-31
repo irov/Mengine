@@ -112,7 +112,7 @@ void OgreRenderSystem::renderImage(
 		, *(Ogre::Vector2*)_offset
 		, *(Ogre::Vector4*)_uv
 		, *(Ogre::Vector2*)_size
-		, _mixedColor );
+		, _color );
 }
 //////////////////////////////////////////////////////////////////////////
 void	OgreRenderSystem::beginLayer()

@@ -2,7 +2,6 @@
 
 #	include "OgreRenderSpriteManager.h"
 #	include "OgreRenderImage.h"
-#	include "OgreRenderFont.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( RenderSystemInterface ** _ptrInterface )
@@ -92,9 +91,9 @@ RenderImageInterface* OgreRenderSystem::loadImage( const TextureDesc&	_desc )
 	return new OgreRenderImage( _desc );
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSystem::releaseImage( RenderImageInterface* _rii )
+void OgreRenderSystem::releaseImage( RenderImageInterface* _image )
 {
-	delete static_cast<OgreRenderImage*>( _rii );
+	delete static_cast<OgreRenderImage*>( _image );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::renderImage(		
@@ -102,7 +101,7 @@ void OgreRenderSystem::renderImage(
 				 const float * _offset,
 				 const float * _uv,
 				 const float * _size,
-				 unsigned int _mixedColor, 
+				 unsigned int _color, 
 				 const RenderImageInterface* _image)
 {
 	const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image );
@@ -114,86 +113,6 @@ void OgreRenderSystem::renderImage(
 		, *(Ogre::Vector4*)_uv
 		, *(Ogre::Vector2*)_size
 		, _mixedColor );
-}
-//////////////////////////////////////////////////////////////////////////
-RenderFontInterface* OgreRenderSystem::loadFont( const FontDesc & _desc )
-{
-	Ogre::String name( _desc.name ); 
-
-	Ogre::FontPtr font = Ogre::FontManager::getSingletonPtr()->getByName( name );
-
-	if( font.isNull() )
-	{
-		return 0;
-	}
-
-	font->load();
-	
-	return new OgreRenderFont( font, name );
-}
-//////////////////////////////////////////////////////////////////////////
-void OgreRenderSystem::releaseRenderFont( RenderFontInterface* _fnt )
-{
-	delete static_cast<OgreRenderFont*>(_fnt);
-}
-//////////////////////////////////////////////////////////////////////////
-void	OgreRenderSystem::renderText( const RenderFontInterface* _font, const char * _text, const float * _transform, unsigned int _color )
-{
-	const OgreRenderFont * font = static_cast<const OgreRenderFont *>( _font );	
-	Ogre::Font * ogreFont = font->getFont();
-
-	float width = m_viewport->getActualWidth();
-	float heigth = m_viewport->getActualHeight();
-
-	float charHeight = font->getHeight();
-
-	float spaceWidth = ogreFont->getGlyphAspectRatio( 'A' ) * charHeight * 2.0;
-
-	Ogre::String textureName = ogreFont->getName() + "Texture";
-
-	Ogre::ResourcePtr texPtr = Ogre::TextureManager::getSingletonPtr()
-		->getByName(textureName);
-
-	if( texPtr.isNull() )
-	{
-		printf("Warning: render font can't find texture '%s'\n"
-			, textureName.c_str()
-			);
-
-		return;
-	}
-
-	Ogre::Texture * tex = static_cast<Ogre::Texture *>( texPtr.getPointer() );
-
-	std::string	caption(_text);
-	Ogre::Vector2 offset( 0.f, 0.f );
-
-	for( std::string::const_iterator i = caption.begin(); i != caption.end(); ++i )
-	{
-		if ( *i == ' ' )
-		{
-			offset.x += spaceWidth;
-			continue;
-		}
-
-		RenderSprite spr;
-		spr.texHandle = tex->getHandle();
-
-		float aspectRatio = ogreFont->getGlyphAspectRatio( *i ) ;
-
-		const Ogre::Font::UVRect & rect = ogreFont->getGlyphTexCoords( *i );
- 
-		Ogre::Vector4	uv( rect.left, rect.top, rect.right, rect.bottom );
- 
-		float height = charHeight * 2.0;
-		float width = aspectRatio * height;
-		
-		Ogre::Vector2	size( width, height );
-
-		m_spriteMgr->spriteBltFull( tex, *(Ogre::Matrix3*)_transform, offset, uv, size, _color );
-
-		offset.x += width;
-	}
 }
 //////////////////////////////////////////////////////////////////////////
 void	OgreRenderSystem::beginLayer()

@@ -67,10 +67,10 @@
 			<Transformation Value = "1;0;0;1;2560;256" />
 		</Node> <!-- Sprite -->	
 		
-		<Node Name = "Arial12" Type = "TextField">
-              		<Font Name = "Arial12"/>
-               		<Text Value = "some text"/>
-			<Color Value = "0094967295"/>
+		<Node Name = "Arial2112" Type = "TextField">
+              		<Font Name = "ArialTest"/>
+               		<Text Value = "IROV PREVED MEDVED !!!"/>
+			<Color Value = "4290497757"/>
 		</Node>
 
 	</Node> <!-- Layer -->

@@ -28,13 +28,8 @@ public:
 		const float * _offset,
 		const float * _uv,
 		const float * _size,
-		unsigned int _mixedColor, 
+		unsigned int _color, 
 		const RenderImageInterface* _image ) override;
-
-	RenderFontInterface* loadFont( const FontDesc&	_desc ) override;
-	void	releaseRenderFont( RenderFontInterface * _fnt ) override;
-
-	void	renderText( const RenderFontInterface* _font, const char * _text, const float * _transform, unsigned int _color ) override;
 
 	void	beginLayer() override;
 	void	endLayer() override;

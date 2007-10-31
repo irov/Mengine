@@ -20,6 +20,9 @@ public:
 	void seek( size_t _pos ) override;
 	size_t tell() const override;
 
+	std::string getLine( bool _trimAfter )  const;
+	size_t skipLine( const std::string & _delim );
+
 private:
 	Ogre::DataStreamPtr m_data;
 };

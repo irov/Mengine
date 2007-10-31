@@ -27,7 +27,6 @@ namespace	Menge
 		: m_length( 0.0f, 0.0f )
 		, m_color( 0xFFFFFFFF )
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TextField::~TextField()
@@ -118,9 +117,33 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( const mt::mat3f & _rwm, const Viewport & _viewPort )
 	{
-		const RenderFontInterface * font = m_resourceFont->getFont();
+		float height = m_resourceFont->getHeight();
+		float spaceWidth = m_resourceFont->getCharWidth(' ');
 
-		Holder<RenderEngine>::hostage()->renderText( font, m_text, _rwm.m, m_color );
+		const RenderImageInterface * image = m_resourceFont->getImage();
+
+		mt::vec2f offset( 0.f, 0.f );
+
+		for( std::string::const_iterator it = m_text.begin(); it != m_text.end(); ++it )
+		{
+			if ( *it == ' ' )
+			{
+				offset.x += spaceWidth;
+				continue;
+			}
+
+			ResourceFont::UVRect rect = m_resourceFont->getUV( *it );
+	 
+			mt::vec4f	uv( rect.u1, rect.v1, rect.u2, rect.v2 );
+	 
+			float width = m_resourceFont->getCharWidth( *it );
+			
+			mt::vec2f	size( width, height );
+
+			Holder<RenderEngine>::hostage()->renderImage( _rwm, offset, uv, size, m_color, image );
+
+			offset.x += width;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_debugRender()

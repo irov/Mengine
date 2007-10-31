@@ -1,4 +1,6 @@
-#pragma once
+#	pragma once
+
+#	include <string>
 
 class	FileDataInterface
 {
@@ -10,6 +12,9 @@ public:
 
 	virtual void seek( size_t _pos ) = 0;
 	virtual size_t tell() const = 0;
+
+	virtual std::string getLine( bool _trimAfter ) const = 0;
+	virtual size_t skipLine( const std::string& _delim ) = 0;
 };
 
 class	FileSystemInterface

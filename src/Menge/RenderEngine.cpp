@@ -94,6 +94,7 @@ namespace Menge
 		unsigned int _mixedColor, 
 		const RenderImageInterface * _image)
 	{
+
 		m_interface->renderImage(
 			_transform.m, 
 			_offset.m,
@@ -109,26 +110,6 @@ namespace Menge
 		m_interface->releaseImage( _image );
 	}
 	////////////////////////////////////////////////////////////////////////////
-	RenderFontInterface* RenderEngine::loadFont( const std::string & _font )
-	{
-		FontDesc desc;
-		desc.name = _font.c_str();
-		return m_interface->loadFont( desc );
-	}
-	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderText(
-		const RenderFontInterface * _font, 
-		const std::string & _text,
-		const float * _transform,
-		unsigned int _color )
-	{
-		m_interface->renderText( _font, _text.c_str(), _transform, _color );
-	}
-	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseRenderFont( RenderFontInterface* _fnt )
-	{
-		m_interface->releaseRenderFont( _fnt );
-	}
 	////////////////////////////////////////////////////////////////////////////
 	//void	RenderEngine::setMaterialColor(unsigned char _ambient[4], 
 	//	unsigned char _diffuse[4],
@@ -247,7 +228,7 @@ namespace Menge
 
 	//			XML_CHECK_NODE_FOR_EACH("glyphs")
 	//			{
-	//				XML_CHECK_NODE("glyph")
+	//				XML_CHECK_NODE("Glyph")
 	//				{
 	//					XML_VALUE_ATTRIBUTE("ch",ch);
 	//					XML_VALUE_ATTRIBUTE("origin",origin);

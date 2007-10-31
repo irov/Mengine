@@ -36,6 +36,7 @@ namespace Menge
 
 	private:
 		ResourceFont * m_resourceFont;
+
 		unsigned int m_color;
 		std::string m_text;
 		std::string m_resourceFontName;

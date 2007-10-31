@@ -42,4 +42,8 @@
      		<File Path = "MyFont"/>
 	</Resource>
 
+	<Resource Name = "ArialTest" Type = "ResourceFont">
+     		<File Path = "GAme/Fonts/ArialTest.fontdef"/>
+	</Resource>
+
 </DataBlock>

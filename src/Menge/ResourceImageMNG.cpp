@@ -104,7 +104,13 @@ namespace Menge
 			std::stringstream str;
 			str << m_fileMNG << i;
 			std::string mngimagename = str.str();
-			textureDesc.name = mngimagename.c_str();
+
+
+			size_t index = mngimagename.find_last_of(".");
+			std::string ext = mngimagename.substr( 0, index + 1 );
+			ext += "png";
+
+			textureDesc.name = ext.c_str();
 
 			Image	imageProps;
 

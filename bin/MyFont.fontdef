@@ -1,9 +1,0 @@
-MyFont
-{
-	type 		truetype
-	source 	solo5.ttf
-	size 		16
-	resolution 	96
-}
-
-

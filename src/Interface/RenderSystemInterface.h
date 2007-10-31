@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include <map>
+
 class RenderImageInterface
 {
 public:
@@ -14,19 +16,6 @@ struct	TextureDesc
 
 	void*			buffer;
 	size_t			size;
-};
-
-struct	FontDesc
-{
-	const char *	name;
-};
-
-class	RenderFontInterface
-{
-public:
-	virtual ~RenderFontInterface(){};
-	virtual float getCharWidth( char _id ) const = 0;
-	virtual float getHeight() const = 0;
 };
 
 class	RenderSystemInterface
@@ -47,11 +36,6 @@ public:
 		const float * _size,
 		unsigned int _color, 
 		const RenderImageInterface * _image) = 0;
-
-	virtual RenderFontInterface* loadFont( const FontDesc & _desc ) = 0;
-	virtual	void	releaseRenderFont( RenderFontInterface * _fnt ) = 0;
-
-	virtual	void	renderText( const RenderFontInterface * _font, const char * _text, const float * _transform, unsigned int _color  ) = 0;
 
 	virtual	void	beginLayer() = 0;
 	virtual	void	endLayer() = 0;

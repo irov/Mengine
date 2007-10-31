@@ -7,7 +7,11 @@ OgreRenderImage::OgreRenderImage( const TextureDesc& _desc )
 	Ogre::Image image;
 
 	Ogre::DataStreamPtr data( new Ogre::MemoryDataStream( _desc.buffer, _desc.size ) );
-	image.load( data, "png" );
+	
+	size_t index = m_description.find_last_of(".");
+	std::string ext = m_description.substr( index + 1, m_description.size() );
+
+	image.load( data, ext );
 
 	m_texture = Ogre::TextureManager::getSingletonPtr()
 		->loadImage( m_description, "Default", image, Ogre::TEX_TYPE_2D, 0 );

@@ -1,7 +1,5 @@
 #	include "OgreRenderSpriteManager.h"
 
-#	include "OgreRenderFont.h"
-
 #	define OGRE2D_MINIMAL_HARDWARE_BUFFER_SIZE 120
 
 //////////////////////////////////////////////////////////////////////////

@@ -31,7 +31,7 @@ namespace Menge
 			const mt::vec2f & _offset,
 			const mt::vec4f & _uv,
 			const mt::vec2f & _size,
-			unsigned int _mixedColor, 
+			unsigned int _color, 
 			const RenderImageInterface* _image);
 
 		void	releaseImage( RenderImageInterface* _rmi );
@@ -43,17 +43,7 @@ namespace Menge
 		void	beginLayer();
 		void	endLayer();
 
-		RenderFontInterface * loadFont( const std::string & _font );
-
-		void renderText(
-			const RenderFontInterface* _font, 
-			const std::string & _text,
-			const float * _transform,
-			unsigned int _color );
-
-		void releaseRenderFont( RenderFontInterface* _fnt );
-		
-				//void	setMaterialColor(unsigned char _ambient[4], 
+		//void	setMaterialColor(unsigned char _ambient[4], 
 		//unsigned char _diffuse[4],
 		//unsigned char _specular[4]);
 		

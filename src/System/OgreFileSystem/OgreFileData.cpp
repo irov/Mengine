@@ -35,3 +35,13 @@ size_t OgreFileData::tell() const
 {
 	return m_data->tell();
 }
+//////////////////////////////////////////////////////////////////////////
+std::string OgreFileData::getLine( bool _trimAfter ) const
+{
+	return m_data->getLine( _trimAfter );
+}
+//////////////////////////////////////////////////////////////////////////
+size_t OgreFileData::skipLine( const std::string & _delim )
+{
+	return m_data->skipLine( _delim );
+}

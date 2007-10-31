@@ -51,12 +51,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::setGlyph( unsigned int _id, float u1, float v1, float u2, float v2, float textureAspect )
+	void ResourceFont::setGlyph( unsigned int _id, float _u1, float _v1, float _u2, float _v2 )
     {
 		TMapGlyph::iterator it = m_glyphs.find( _id );
 
-		float ratio = textureAspect * (u2 - u1)  / (v2 - v1);
-		UVRect rect( u1, v1, u2, v2 );
+		float ratio = ( _u2 - _u1 )  / ( _v2 - _v1 );
+		UVRect rect( _u1, _v1, _u2, _v2 );
 
 		if ( it != m_glyphs.end() )
 		{
@@ -134,39 +134,25 @@ namespace Menge
 		return fontDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::vector<std::string> ResourceFont::splitParams( const std::string& str, const std::string& delims, unsigned int maxSplits)
+	std::vector<std::string> ResourceFont::splitParams( const std::string& text, const std::string& separator )
     {
-        std::vector<std::string> ret;
+        std::vector<std::string> words;
      
-		ret.reserve(maxSplits ? maxSplits+1 : 10);  
+		int n = text.length();
 
-        unsigned int numSplits = 0;
+		int start, stop;
 
-        size_t start, pos;
-        start = 0;
-        do 
-        {
-            pos = str.find_first_of(delims, start);
-            if (pos == start)
-            {
-                start = pos + 1;
-            }
-            else if (pos == std::string::npos || (maxSplits && numSplits == maxSplits))
-            {
-                ret.push_back( str.substr(start) );
-                break;
-            }
-            else
-            {
-                ret.push_back( str.substr(start, pos - start) );
-                start = pos + 1;
-            }
-            start = str.find_first_not_of(delims, start);
-            ++numSplits;
+		start = text.find_first_not_of(separator);
 
-        } while (pos != std::string::npos);
+		while ( (start >= 0) && (start < n) )
+		{
+			stop = text.find_first_of(separator, start);
+			if ( (stop < 0) || (stop > n) ) stop = n;
+			words.push_back(text.substr(start, stop-start));
+			start = text.find_first_not_of(separator,stop+1);
+		}
 
-        return ret;
+		return words;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::parseAttribute( const std::vector<std::string> & _params )
@@ -181,6 +167,7 @@ namespace Menge
 			}
 
 			const std::string & imageName = _params[1];
+
 			FileDataInterface * fileData = Holder<FileEngine>::hostage()->openFile( m_fontDir + imageName );
 
 			if( fileData == 0 )
@@ -206,7 +193,7 @@ namespace Menge
 
 			Holder<FileEngine>::hostage()->closeFile( fileData );
 		}
-		else if (attrib == "glyph")
+		else if ( attrib == "glyph" )
 		{
 			if (_params.size() != 6)
 			{
@@ -217,8 +204,7 @@ namespace Menge
 				atof(_params[2].c_str()),
 				atof(_params[3].c_str()),
 				atof(_params[4].c_str()),
-				atof(_params[5].c_str()),
-				1.0 ); 
+				atof(_params[5].c_str())); 
 		}
 
 		return true;
@@ -226,36 +212,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::parseFontdef( FileDataInterface * _stream )
 	{
-		std::string line;
-
-		bool is_init = false;
-
+		std::string line = _stream->getLine( true );
+		_stream->skipLine("{");
+		
 		while( !_stream->eof() )
         {
             line = _stream->getLine( true );
 
-			if( !line.length() || line.substr( 0, 2 ) == "//" )
+			if( line.length() == 0 || line.substr( 0, 2 ) == "//" )
             {
                 continue;
             }
-            else
-            {
-				if ( is_init == false )
-			    {
-				    _stream->skipLine("{");
-					is_init = true;
-			    }
-			    else
-				{	
-					std::vector<std::string> params = splitParams(line);
 
-					bool result = parseAttribute( params );
+			std::vector<std::string> params = splitParams( line );
 
-					if( result == false)
-					{
-						return false;
-					}
-				}
+			bool result = parseAttribute( params );
+
+			if( result == false )
+			{
+				return false;
 			}
 		}
 

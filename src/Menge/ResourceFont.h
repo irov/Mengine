@@ -73,11 +73,12 @@ namespace Menge
 
 		RenderImageInterface * m_image;
 
-		void setGlyph( unsigned int id, float u1, float v1, float u2, float v2, float textureAspect );
+		void setGlyph( unsigned int _id, float _u1, float _v1, float _u2, float _v2 );
 		std::string getFontDir( const std::string & _fontName );
 
 		bool parseFontdef( FileDataInterface * _stream );
 		bool parseAttribute( const std::vector<std::string> & _params );
-		std::vector<std::string> splitParams( const std::string& str, const std::string& delims = "\t\n ", unsigned int maxSplits = 0);
+		std::vector<std::string> splitParams( const std::string& text, const std::string& separator = "\t\n ");
+//		std::vector<std::string> splitParams( const std::string& str, const std::string& delims = "\t\n ", unsigned int maxSplits = 0);
 	};
 }

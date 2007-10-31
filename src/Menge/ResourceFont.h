@@ -78,7 +78,6 @@ namespace Menge
 
 		bool parseFontdef( FileDataInterface * _stream );
 		bool parseAttribute( const std::vector<std::string> & _params );
-		std::vector<std::string> splitParams( const std::string& text, const std::string& separator = "\t\n ");
-//		std::vector<std::string> splitParams( const std::string& str, const std::string& delims = "\t\n ", unsigned int maxSplits = 0);
+		void splitParams( std::vector<std::string> & _words, const std::string & _text, const std::string & _separator = "\t\n ");
 	};
 }

@@ -3,8 +3,6 @@
 
 #	include "RenderEngine.h"
 #	include "FileEngine.h"
-#	include "ErrorMessage.h"
-
 
 #	include "XmlParser/XmlParser.h"
 
@@ -77,8 +75,6 @@ namespace Menge
 	{
 		FileDataInterface * stream = Holder<FileEngine>::hostage()->openFile( m_fontName );
 
-		m_fontDir = getFontDir( m_fontName );
-
 		if( stream == 0 )
 		{
 			printf("Warning: resource font not find fond file '%s'\n"
@@ -87,6 +83,8 @@ namespace Menge
 
 			return false;
 		}
+
+		m_fontDir = getFontDir( m_fontName );
 
 		parseFontdef( stream );
 		
@@ -134,25 +132,19 @@ namespace Menge
 		return fontDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::vector<std::string> ResourceFont::splitParams( const std::string& text, const std::string& separator )
+	void ResourceFont::splitParams( std::vector<std::string> & _words, const std::string & _text, const std::string & _separator )
     {
-        std::vector<std::string> words;
-     
-		int n = text.length();
+		size_t n = _text.length();
 
-		int start, stop;
-
-		start = text.find_first_not_of(separator);
+		size_t start = _text.find_first_not_of( _separator );
 
 		while ( (start >= 0) && (start < n) )
 		{
-			stop = text.find_first_of(separator, start);
+			size_t stop = _text.find_first_of( _separator, start );
 			if ( (stop < 0) || (stop > n) ) stop = n;
-			words.push_back(text.substr(start, stop-start));
-			start = text.find_first_not_of(separator,stop+1);
+			_words.push_back( _text.substr( start, stop - start ) );
+			start = _text.find_first_not_of( _separator, stop + 1 );
 		}
-
-		return words;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::parseAttribute( const std::vector<std::string> & _params )
@@ -172,7 +164,7 @@ namespace Menge
 
 			if( fileData == 0 )
 			{
-//				ErrorMessage( "Error: Image can't open resource file '%s'", imageName.c_str() );
+				printf( "Error: Image can't open resource file '%s'", imageName.c_str() );
 				return false;
 			}
 
@@ -191,11 +183,17 @@ namespace Menge
 
 			m_image = Holder<RenderEngine>::hostage()->loadImage( textureDesc );
 
+			if( m_image == 0 )
+			{
+				printf( "Error: Image can't loaded '%s'", imageName.c_str() );
+				return false;
+			}
+
 			Holder<FileEngine>::hostage()->closeFile( fileData );
 		}
 		else if ( attrib == "glyph" )
 		{
-			if (_params.size() != 6)
+			if ( _params.size() != 6 )
 			{
 				return false;
 			}
@@ -215,6 +213,8 @@ namespace Menge
 		std::string line = _stream->getLine( true );
 		_stream->skipLine("{");
 		
+		std::vector<std::string> params;
+
 		while( !_stream->eof() )
         {
             line = _stream->getLine( true );
@@ -223,8 +223,8 @@ namespace Menge
             {
                 continue;
             }
-
-			std::vector<std::string> params = splitParams( line );
+		
+			splitParams( params, line );
 
 			bool result = parseAttribute( params );
 
@@ -232,6 +232,8 @@ namespace Menge
 			{
 				return false;
 			}
+
+			params.clear();
 		}
 
 		return true;

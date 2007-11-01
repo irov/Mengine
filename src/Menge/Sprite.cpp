@@ -26,7 +26,8 @@ namespace	Menge
 	Sprite::Sprite()
 	: m_image(0)
 	, m_color(0xFFFFFFFF)
-	, m_currentImageIndex(0) 
+	, m_currentImageIndex(0)
+	, m_centerAlign(false)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -106,6 +107,13 @@ namespace	Menge
 			return false;
 		}
 
+		if( m_centerAlign )
+		{
+			const mt::vec2f & size = m_image->getMaxSize( 0 );
+			mt::vec2f half_size = size * 0.5f;
+			setLocalPosition( half_size );
+		}
+
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -126,7 +134,8 @@ namespace	Menge
 		XML_FOR_EACH_TREE(_xml)
 		{
 			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourceImage );
-			XML_CHECK_VALUE_NODE( "ImageIndex", "Value", m_currentImageIndex);
+			XML_CHECK_VALUE_NODE( "ImageIndex", "Value", m_currentImageIndex );
+			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

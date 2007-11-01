@@ -49,6 +49,7 @@ namespace Menge
 		std::string m_resourceImage;
 
 		size_t m_currentImageIndex;
+		bool m_centerAlign;
 	
 		unsigned int m_color;
 

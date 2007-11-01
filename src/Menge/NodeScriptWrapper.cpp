@@ -150,6 +150,8 @@ namespace Menge
 
 			.def( "setLocalPosition", &Allocator2D::setLocalPosition )
 			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
+
+			.def( "setRotate", &Allocator2D::setRotate )
 			;
 		
 		pybind::interface_<Renderable2D>("Renderable2D", false)
@@ -170,7 +172,7 @@ namespace Menge
 				.def( "getOffsetClick", &Arrow::getOffsetClick )
 				;
 
-			pybind::proxy_<Scene, pybind::no_bases >("Scene", false)
+			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "getNode", &Scene::getNode )
 				;

@@ -1,6 +1,19 @@
 ===========================================================================
 Menge Engine
 
+===========================================================================
+staue: development 
+version: 0.0.0.9
+date: 
+
+[General]
+* fixed Hotspot onLeave, now call this callback if this hotspot is active
+
+[Framework]
+% change Hotspot.handleKeyEvent attributes, add self. [self,key,isdown]
+% change Hotspot.handleMouseButtonEvent attributes, add self. [self,button,isdown]
+% change Hotspot.handleMouseMove attributes, add self. [self,x,y,z,whell]
+
 
 ===========================================================================
 staue: development 

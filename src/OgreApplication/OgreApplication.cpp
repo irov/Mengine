@@ -189,7 +189,7 @@ bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)
 		return m_application->update( size_t(evt.timeSinceLastFrame * 1000.f) );
 	}
 
-	return true;
+	return m_window->isClosed() == false;
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)

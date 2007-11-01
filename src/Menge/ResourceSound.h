@@ -15,13 +15,14 @@ namespace Menge
 		ResourceSound( const std::string & _name );
 
 	public:
-		void loader( TiXmlElement * _xml );
+		void loader( TiXmlElement * _xml ) override;
 
 	public:
 		SoundBufferInterface * get();
+
 	protected:
-		bool _compile();
-		void _release();
+		bool _compile() override;
+		void _release() override;
 
 	private:
 		std::string	m_filename;

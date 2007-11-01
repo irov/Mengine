@@ -141,11 +141,17 @@ namespace Menge
 				return false;
 			}
 
-			setGlyph(_params[1].at(0), 
-				atof(_params[2].c_str()),
-				atof(_params[3].c_str()),
-				atof(_params[4].c_str()),
-				atof(_params[5].c_str())); 
+			float u1;
+			float v1;
+			float u2;
+			float v2;
+
+			sscanf_s( _params[2].c_str(), "%f", &u1 );
+			sscanf_s( _params[3].c_str(), "%f", &v1 );
+			sscanf_s( _params[4].c_str(), "%f", &u2 );
+			sscanf_s( _params[5].c_str(), "%f", &v2 );
+
+			setGlyph( _params[1].at(0), u1, v1, u2, v2 );
 		}
 		else if ( attrib == "source" )
 		{

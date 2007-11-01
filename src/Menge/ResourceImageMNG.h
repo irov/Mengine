@@ -34,11 +34,11 @@ namespace Menge
 		const RenderImageInterface * getImage( size_t _frame ) const override;
 
 	public:
-		void loader( TiXmlElement * _xml );
+		void loader( TiXmlElement * _xml ) override;
 
 	protected:
-		bool _compile();
-		void _release();
+		bool _compile() override;
+		void _release() override;
 
 	protected:
 		std::string m_fileMNG;

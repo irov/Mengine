@@ -71,6 +71,7 @@
               		<Font Name = "ArialTest"/>
                		<Text Value = "IROV PREVED MEDVED !!!"/>
 			<Color Value = "4290497757"/>
+			<Height Value = "24"/>
 		</Node>
 
 	</Node> <!-- Layer -->

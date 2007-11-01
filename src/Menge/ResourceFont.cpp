@@ -14,8 +14,7 @@ namespace Menge
 	ResourceFont::ResourceFont( const std::string & _name )
 		: ResourceReference( _name )
 		, m_image( 0 )
-		, m_whitespaceWidth( 3.0f )
-		, m_height( 12.0f )
+		, m_whsRatio( 3.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -85,7 +84,7 @@ namespace Menge
 			return false;
 		}
 		
-		m_whitespaceWidth = getCharWidth('A');
+		m_whsRatio = getCharRatio('A');
 
 		Holder<FileEngine>::hostage()->closeFile( stream );
 
@@ -98,21 +97,16 @@ namespace Menge
 		m_image = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceFont::getCharWidth( char _id ) const
+	float ResourceFont::getCharRatio( char _id ) const
 	{
 		TMapGlyph::const_iterator it = m_glyphs.find(_id);
 
 		if( it == m_glyphs.end() )
 		{
-			return m_whitespaceWidth;
+			return m_whsRatio;
 		}
 
-		return it->second.ratio * m_height;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourceFont::getHeight() const
-	{
-		return m_height;
+		return it->second.ratio;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::string ResourceFont::getFontDir( const std::string & _fontName )

@@ -23,8 +23,7 @@ namespace Menge
 
 		const mt::vec4f & getUV( unsigned int _id ) const;
 
-		float getCharWidth( char _id ) const;
-		float getHeight() const;
+		float getCharRatio( char _id ) const;
 
 		const RenderImageInterface * getImage() const;
 
@@ -51,8 +50,7 @@ namespace Menge
 
 		typedef std::map<unsigned int, Glyph> TMapGlyph;
 
-		float m_whitespaceWidth;
-		float m_height;
+		float m_whsRatio;
 
 		TMapGlyph	m_glyphs;
 

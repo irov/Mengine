@@ -165,6 +165,7 @@ namespace Menge
 			pybind::proxy_<TextField, pybind::bases<SceneNode2D>>("TextField", false)
 				.def( "setText", &TextField::setText )
 				.def( "setColor", &TextField::setColor )
+				.def( "setHeight", &TextField::setHeight )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)

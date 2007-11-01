@@ -26,6 +26,7 @@ namespace	Menge
 	TextField::TextField()
 		: m_length( 0.0f, 0.0f )
 		, m_color( 0xFFFFFFFF )
+		, m_height( 12.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -112,13 +113,13 @@ namespace	Menge
 			XML_CHECK_VALUE_NODE( "Font", "Name", m_resourceFontName );
 			XML_CHECK_VALUE_NODE( "Text", "Value", m_text);
 			XML_CHECK_VALUE_NODE( "Color", "Value", m_color);
+			XML_CHECK_VALUE_NODE( "Height", "Value", m_height);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( const mt::mat3f & _rwm, const Viewport & _viewPort )
 	{
-		float height = m_resourceFont->getHeight();
-		float spaceWidth = m_resourceFont->getCharWidth(' ');
+		float spaceWidth = m_resourceFont->getCharRatio(' ') * m_height;
 
 		const RenderImageInterface * image = m_resourceFont->getImage();
 
@@ -134,9 +135,9 @@ namespace	Menge
 
 			mt::vec4f uv = m_resourceFont->getUV( *it );
 	 
-			float width = m_resourceFont->getCharWidth( *it );
+			float width = m_resourceFont->getCharRatio( *it ) * m_height;
 			
-			mt::vec2f	size( width, height );
+			mt::vec2f	size( width, m_height );
 
 			Holder<RenderEngine>::hostage()->renderImage( _rwm, offset, uv, size, m_color, image );
 
@@ -153,7 +154,7 @@ namespace	Menge
 		m_text = _text;
 
 		m_length.x = 0.0f;
-		m_length.y = m_resourceFont->getHeight();
+		m_length.y = m_height;
 
 		for( std::string::const_iterator 
 			it = m_text.begin(),
@@ -161,7 +162,7 @@ namespace	Menge
 		it != it_end; 
 		++it )
 		{
-			float width = m_resourceFont->getCharWidth( *it );
+			float width = m_resourceFont->getCharRatio( *it ) * m_height;
 			m_length.x += width;
 		}
 	}
@@ -171,4 +172,23 @@ namespace	Menge
 		m_color = _color;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float TextField::getHeight() const
+	{
+		return m_height;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setHeight( float _height )
+	{
+		m_height = _height;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	unsigned int TextField::getColor() const
+	{
+		return m_color;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const std::string & TextField::getText() const
+	{
+		return m_text;
+	}
 }

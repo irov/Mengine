@@ -18,7 +18,12 @@ namespace Menge
 
 	public:
 		void setText( const std::string & _text );
+		void setHeight( float _height );
 		void setColor( unsigned int _color );
+
+		float getHeight() const;
+		unsigned int getColor() const;
+		const std::string & getText() const;
 
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;
@@ -38,6 +43,7 @@ namespace Menge
 		ResourceFont * m_resourceFont;
 
 		unsigned int m_color;
+		float m_height;
 		std::string m_text;
 		std::string m_resourceFontName;
 		mt::vec2f	m_length;

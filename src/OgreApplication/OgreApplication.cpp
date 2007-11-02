@@ -62,8 +62,12 @@ OgreApplication::~OgreApplication()
 	}
 
 	if( m_root ) 
-	{
-		m_root->getAutoCreatedWindow()->removeAllViewports();
+	{				
+		if( Ogre::RenderWindow * window = m_root->getAutoCreatedWindow() )
+		{
+			window->removeAllViewports();
+		}
+
 		delete m_root;
 		m_root = 0;
 	}

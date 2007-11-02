@@ -40,7 +40,10 @@ namespace Menge
 
 		for each( const TMapScene::value_type & it in m_mapScene )
 		{
-			it.second->destroy();
+			if( it.second->isSubScene() == false )
+			{
+				it.second->destroy();
+			}
 		}
 
 		for each( const TMapArrow::value_type & it in m_mapArrow )
@@ -321,8 +324,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()
 	{
-		Holder<ScriptEngine>::hostage()
-			->callModuleFunction( m_pyPersonality, m_eventFini );
+		if( m_pyPersonality )
+		{
+			Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, m_eventFini );
+		}
 
 		for each( const TMapArrow::value_type & it in m_mapArrow )
 		{

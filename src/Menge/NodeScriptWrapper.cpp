@@ -111,7 +111,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Animation );
 	SCRIPT_CLASS_WRAPPING( Arrow );
 	SCRIPT_CLASS_WRAPPING( TextField );
-	
+
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{

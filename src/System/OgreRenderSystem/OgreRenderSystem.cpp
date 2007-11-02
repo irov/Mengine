@@ -34,8 +34,11 @@ OgreRenderSystem::OgreRenderSystem()
 //////////////////////////////////////////////////////////////////////////
 OgreRenderSystem::~OgreRenderSystem()
 {
-	m_spriteMgr->end();
-	delete m_spriteMgr;
+	if( m_spriteMgr )
+	{
+		m_spriteMgr->end();
+		delete m_spriteMgr;
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow )

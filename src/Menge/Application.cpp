@@ -182,7 +182,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{
-		Holder<Game>::hostage()->release();
+		if( Holder<Game>::empty() == false )
+		{
+			Holder<Game>::hostage()->release();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::update( size_t _timing )

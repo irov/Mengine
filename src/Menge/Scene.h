@@ -32,6 +32,10 @@ namespace Menge
 		Node * getNode(const std::string & _name );
 
 	public:
+		void setParentScene( Scene * _scene );
+		bool isSubScene() const;
+
+	public:
 		void loader( TiXmlElement *_xml) override;
 		void render();
 
@@ -45,8 +49,10 @@ namespace Menge
 		void _update( size_t _timing, const Viewport & _viewport ) override;
 
 		void _addChildren( Layer * _layer ) override;
-	private:
 
+	private:
+		bool m_isSubScene;
 		Layer * m_mainLayer;
+		
 	};
 }

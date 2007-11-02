@@ -38,6 +38,12 @@ namespace Menge
 		static void destroy()
 		{
 			delete m_hostage;
+			m_hostage = 0;
+		}
+
+		static bool empty()
+		{
+			return m_hostage == 0;
 		}
 
 	private:

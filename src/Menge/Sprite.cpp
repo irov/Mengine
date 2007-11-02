@@ -110,7 +110,7 @@ namespace	Menge
 		if( m_centerAlign )
 		{
 			const mt::vec2f & size = m_image->getMaxSize( 0 );
-			mt::vec2f half_size = size * 0.5f;
+			mt::vec2f half_size = size * (- 0.5f);
 			setLocalPosition( half_size );
 		}
 

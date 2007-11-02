@@ -77,7 +77,7 @@ namespace Menge
 
 			m_subScene->activate();
 
-			m_subScene->callMethod( "onSubScene", "(O)", m_scene->getScript() );			
+			m_subScene->setParentScene( m_scene );
 		}
 
 		return true;

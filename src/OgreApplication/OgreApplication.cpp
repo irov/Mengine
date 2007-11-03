@@ -157,7 +157,6 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	m_window = m_root->initialise( true );
 	
-	//Ogre::RenderTargetListener * rtl = new Ogre::RenderTargetListener( ;
 	m_root->addFrameListener( this );
 
 	OIS::ParamList pl;

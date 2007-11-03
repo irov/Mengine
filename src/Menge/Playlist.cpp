@@ -65,7 +65,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void	Playlist::loadTracks()
 	{
-		if(isLoaded() == true)
+		if( isLoaded() == true )
 		{
 			firstSong();
 			return;

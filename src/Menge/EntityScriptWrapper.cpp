@@ -97,6 +97,8 @@ namespace Menge
 		pybind::proxy_<Entity, pybind::bases<SceneNode2D> >("Entity", false)
 			.def( "moveTo", &Entity::moveTo )
 			.def( "moveStop", &Entity::moveStop )
+			.def( "rotateTo", &Entity::rotateTo )
+			.def( "rotateStop", &Entity::rotateStop )
 			;
 
 		pybind::def( "createEntity", &ScriptMethod::createEntity );

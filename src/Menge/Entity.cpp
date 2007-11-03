@@ -12,6 +12,10 @@ namespace	Menge
 	: m_moveTo(false)
 	, m_moveTime(0)
 	, m_moveSpeed(0.f)
+
+	, m_rotate(false)
+	, m_targetDir(0,0)
+	, m_rotateTime(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -30,6 +34,11 @@ namespace	Menge
 				moveStop();
 			}
 
+			if( m_rotate )
+			{
+				rotateStop();
+			}
+			
 			m_movePoint = _point;
 			m_moveTime = _time;
 			m_moveTo = true;
@@ -49,6 +58,30 @@ namespace	Menge
 		m_moveTo = false;
 
 		this->callEvent("MOVE_STOP", "()" );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::rotateStop()
+	{
+		m_rotate = false;
+
+		this->callEvent("ROTATE_STOP", "()" );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::rotateTo( size_t _time, float _alpha/*const mt::vec2f & _point*/ )
+	{
+		if( m_moveTo )
+		{
+			moveStop();
+		}
+
+		if( m_rotate )
+		{
+			rotateStop();
+		}
+		
+		m_rotate = true;
+		m_rotateTime = _time;
+		m_targetDir = mt::vec2f( cosf(_alpha), -sinf(_alpha) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_update( size_t _timing, const Viewport & _viewport )
@@ -79,6 +112,32 @@ namespace	Menge
 			}
 		}
 
+		if( m_rotate )
+		{
+			if( m_rotateTime < _timing  )
+			{
+				setLocalDirection( m_targetDir );
+
+				m_rotate = false;
+
+				this->callEvent("ROTATE_END", "()" );
+			}
+			else
+			{
+				m_rotateTime -= _timing;
+
+				float t = _timing / float(m_rotateTime);
+
+				const mt::vec2f & dir = getLocalDirection();
+
+				mt::vec2f curr_dir = mt::slerp_v2_v2( dir, m_targetDir, t );
+
+				setLocalDirection( curr_dir );
+
+				changePivot();
+			}
+		}
+
 		this->callEvent("UPDATE", "(k)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -87,6 +146,9 @@ namespace	Menge
 		this->registerEventMethod("MOVE_END", "onMoveEnd" );
 		this->registerEventMethod("MOVE_STOP", "onMoveStop" );
 		
+		this->registerEventMethod("ROTATE_END", "onRotateEnd" );
+		this->registerEventMethod("ROTATE_STOP", "onRotateStop" );
+
 		this->registerEventMethod("UPDATE", "onUpdate" );
 
 		this->callMethod("onActivate", "()" );

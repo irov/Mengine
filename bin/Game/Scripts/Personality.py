@@ -26,7 +26,7 @@ def fini():
 
 
 def onHandleKeyEvent( key, isDown ):
-#	print "onHandleKeyEvent", key, isDown
+	print "onHandleKeyEvent", key, isDown
 	return False
 	pass
 

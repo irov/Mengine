@@ -796,18 +796,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Cal3d"
-				>
-				<File
-					RelativePath=".\ResourceAnimationCal3d.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceAnimationCal3d.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Font"
 				>
 				<File
@@ -816,6 +804,18 @@
 				</File>
 				<File
 					RelativePath=".\ResourceFont.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Playlist"
+				>
+				<File
+					RelativePath=".\ResourcePlaylist.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourcePlaylist.h"
 					>
 				</File>
 			</Filter>

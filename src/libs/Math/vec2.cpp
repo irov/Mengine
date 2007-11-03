@@ -231,28 +231,19 @@ namespace	mt
 		result.y = dp * b.y;
 	}
 
-	bool	slerp_v2_v2(const vec2f& a, const vec2f& b, float t, vec2f& result)
+	vec2f	slerp_v2_v2(const vec2f& a, const vec2f& b, float t)
 	{
-	//	float m_to = pseudo_cross_v2(b,a) < 0.0f ? 1.0f : -1.0f;
-		float m_to = (dot_v2_v2(b,perp(a)) < 0.0f) ? 1.0f : -1.0f;
+		float s = sqrtf(a.sqrlength() * b.sqrlength());
+		float theta = acosf(mt::dot_v2_v2(a,b) / s);
 
-
-		float _sin = sin(t * m_to);
-		float _cos = cos(t * m_to);
-
-		result.x = _sin * a.y + _cos * a.x;
-		result.y = _cos * a.y - _sin * a.x;
-
-	//	float mn_to = pseudo_cross_v2(b, result) < 0.0f ? 1.0f : -1.0f;
-		float mn_to = (dot_v2_v2(b,perp(result)) < 0.0f ) ? 1.0f : -1.0f;
-
-
-		if ( m_to * mn_to < 0.0f )
+		if (theta != 0.0f)
 		{
-			result = b;
-			return true;
+			float d = 1.0f / sin(theta);
+			float s0 = sin((1.0f - t) * theta);
+			float s1 = sin(t * theta);  
+			return mt::vec2f((a.x * s0 + b.x * s1) * d, (a.y * s0 + b.y * s1) * d);
 		}
-
-		return false;
+		
+		return a;
 	}
 }

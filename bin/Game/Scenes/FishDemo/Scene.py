@@ -30,8 +30,12 @@ class Scene( Menge.Scene ):
 		
 		self.node1.hide( False )
 		
-		block = Menge.createEntity("Block",Menge.vec2f( 500, 100 ), Menge.vec2f( 1, 0 ) )
+		block = Menge.createEntity("Block",Menge.vec2f( 100, 100 ), Menge.vec2f( 1, 0 ) )
 		
+		#block.moveTo( 30000, Menge.vec2f( 1000,200 ), False )
+
+		block.rotateTo( 6000, 3.14  )
+
 		block.activate();
 		
 		self.layerAppend( "Deep", block )
@@ -43,6 +47,6 @@ class Scene( Menge.Scene ):
 	def onUpdate( self, timing ):
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 
-		self.camera_x += timing * 0.025
+		#self.camera_x += timing * 0.025
 		pass
 	pass

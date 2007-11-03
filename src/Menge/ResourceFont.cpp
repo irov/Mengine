@@ -123,66 +123,45 @@ namespace Menge
 		return fontDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceFont::parseAttribute( const std::vector<std::string> & _params )
+	bool ResourceFont::parseAttribute( const std::string & name, const std::string & params/*const std::vector<std::string> & _params*/ )
 	{
-		const std::string & attrib = _params[0];
-
-		if ( attrib == "glyph" )
+		if ( name == "glyph" )
 		{
-			if ( _params.size() != 6 )
-			{
-				printf( "Error: error parsing params of uv \n");
-				return false;
-			}
+			char r;
+			float u1, v1, u2, v2;
 
-			float u1;
-			float v1;
-			float u2;
-			float v2;
+			sscanf_s( params.c_str(), "%c %f %f %f %f", &r, 1, &u1, &v1, &u2, &v2 );
 
-			sscanf_s( _params[2].c_str(), "%f", &u1 );
-			sscanf_s( _params[3].c_str(), "%f", &v1 );
-			sscanf_s( _params[4].c_str(), "%f", &u2 );
-			sscanf_s( _params[5].c_str(), "%f", &v2 );
-
-			setGlyph( _params[1].at(0), u1, v1, u2, v2 );
+			setGlyph( r, u1, v1, u2, v2 );
 		}
-		else if ( attrib == "source" )
+		else if ( name == "source" )
 		{
-			if ( _params.size() != 2 )
-			{
-				printf( "Error: error parsing params of uv \n");
-				return false;
-			}
-
-			const std::string & imageName = _params[1];
-
-			FileDataInterface * fileData = Holder<FileEngine>::hostage()->openFile( m_fontDir + imageName );
+			FileDataInterface * fileData = Holder<FileEngine>::hostage()->openFile( m_fontDir + params );
 
 			if( fileData == 0 )
 			{
-				printf( "Error: Image can't open resource file '%s'", imageName.c_str() );
+				printf( "Error: Image can't open resource file '%s'", params.c_str() );
 				return false;
 			}
 
-			std::vector<char> _buff;
-
 			size_t buff_size = fileData->size();
-			_buff.resize( buff_size );
-			fileData->read( &_buff[0], fileData->size() );
+			
+			std::vector<char> _buff( buff_size );
+
+			fileData->read( &_buff[0], buff_size );
 
 			TextureDesc textureDesc;
 
 			textureDesc.buffer = &_buff[0];
 			textureDesc.size = buff_size;
-			textureDesc.name = imageName.c_str();
+			textureDesc.name = params.c_str();
 			textureDesc.filter = 1;
 
 			m_image = Holder<RenderEngine>::hostage()->loadImage( textureDesc );
 
 			if( m_image == 0 )
 			{
-				printf( "Error: Image can't loaded '%s'", imageName.c_str() );
+				printf( "Error: Image can't loaded '%s'", params.c_str() );
 				return false;
 			}
 
@@ -197,8 +176,6 @@ namespace Menge
 		std::string line = _stream->getLine( true );
 		_stream->skipLine("{");
 		
-		std::vector<std::string> params;
-
 		while( !_stream->eof() )
         {
             line = _stream->getLine( true );
@@ -207,35 +184,20 @@ namespace Menge
             {
                 continue;
             }
-		
-			splitParams( params, line );
 
-			bool result = parseAttribute( params );
+			size_t start = line.find_first_of( "\t\n " );
+			std::string name = line.substr( 0, start );
+			std::string value = line.substr( start + 1, line.size() );
+		
+			bool result = parseAttribute( name, value );
 
 			if( result == false )
 			{
 				return false;
 			}
-
-			params.clear();
 		}
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::splitParams( std::vector<std::string> & _words, const std::string & _text, const std::string & _separator )
-    {
-		size_t n = _text.length();
-
-		size_t start = _text.find_first_not_of( _separator );
-
-		while ( (start >= 0) && (start < n) )
-		{
-			size_t stop = _text.find_first_of( _separator, start );
-			if ( (stop < 0) || (stop > n) ) stop = n;
-			_words.push_back( _text.substr( start, stop - start ) );
-			start = _text.find_first_not_of( _separator, stop + 1 );
-		}
-    }
 	//////////////////////////////////////////////////////////////////////////
 }

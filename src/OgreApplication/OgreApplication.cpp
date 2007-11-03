@@ -189,8 +189,6 @@ bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)
 {
 	if( m_window->isActive() )
 	{
-		const Ogre::RenderTarget::FrameStats& stats = m_window->getStatistics();
-	//	printf("fps = %f \n", stats.avgFPS);
 		return m_application->update( size_t(evt.timeSinceLastFrame * 1000.f) );
 	}
 
@@ -199,6 +197,8 @@ bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)
 //////////////////////////////////////////////////////////////////////////
 bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
 {
+	const Ogre::RenderTarget::FrameStats& stats = m_window->getStatistics();
+	//printf("fps = %f \n", stats.avgFPS);
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////

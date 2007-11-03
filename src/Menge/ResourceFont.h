@@ -63,7 +63,6 @@ namespace Menge
 		std::string getFontDir( const std::string & _fontName );
 
 		bool parseFontdef( FileDataInterface * _stream );
-		bool parseAttribute( const std::vector<std::string> & _params );
-		void splitParams( std::vector<std::string> & _words, const std::string & _text, const std::string & _separator = "\t\n ");
+		bool parseAttribute( const std::string & name, const std::string & params );
 	};
 }

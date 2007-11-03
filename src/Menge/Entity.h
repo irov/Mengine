@@ -17,7 +17,7 @@ namespace Menge
 
 	public:
 		void moveTo( size_t _time, const mt::vec2f & _point, bool _changeDirection );
-		void rotateTo( size_t _time, float _alpha/*const mt::vec2f & _point */);
+		void rotateTo( size_t _time, const mt::vec2f & _point );
 		void moveStop();
 		void rotateStop();
 

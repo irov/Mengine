@@ -67,21 +67,27 @@ namespace	Menge
 		this->callEvent("ROTATE_STOP", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::rotateTo( size_t _time, float _alpha/*const mt::vec2f & _point*/ )
+	void Entity::rotateTo( size_t _time, const mt::vec2f & _point )
 	{
-		if( m_moveTo )
+		const mt::vec2f & _pos = getLocalPosition();
+		float length = mt::length_v2_v2( _pos, _point );
+		if( length > 0.00001f )
 		{
-			moveStop();
-		}
+	
+			if( m_moveTo )
+			{
+				moveStop();
+			}
 
-		if( m_rotate )
-		{
-			rotateStop();
+			if( m_rotate )
+			{
+				rotateStop();
+			}
+			
+			m_rotate = true;
+			m_rotateTime = _time;
+			m_targetDir = mt::norm_v2( _point - _pos );
 		}
-		
-		m_rotate = true;
-		m_rotateTime = _time;
-		m_targetDir = mt::vec2f( cosf(_alpha), -sinf(_alpha) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_update( size_t _timing, const Viewport & _viewport )

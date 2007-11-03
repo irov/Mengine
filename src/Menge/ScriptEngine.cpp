@@ -365,9 +365,6 @@ namespace Menge
 		va_end( valist ); 
 
 		return result;
-
-		
-		return 0;
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::callFunction( const std::string & _name, const char * _params, ...  )

@@ -32,6 +32,8 @@ namespace Menge
 			}
 		}
 
+		pybind::incref( m_scriptable );
+
 		return m_scriptable;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -158,7 +158,7 @@ namespace Menge
 			.def( "hide", &Renderable2D::hide )
 			;
 
-		pybind::class_<SceneNode2D, pybind::bases<Node, Allocator2D, Renderable2D>>("SceneNode2D", false)
+		pybind::proxy_<SceneNode2D, pybind::bases<Node, Allocator2D, Renderable2D>>("SceneNode2D", false)
 			;
 
 		{
@@ -178,13 +178,13 @@ namespace Menge
 				.def( "getNode", &Scene::getNode )
 				;
 
-			pybind::class_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot", false)
+			pybind::proxy_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot", false)
 				.def( "setHotspotListener", &HotSpot::setHotspotListener )
 				.def( "addPoint", &HotSpot::addPoint )
 				.def( "clearPoints", &HotSpot::clearPoints )
 				;
 
-			pybind::class_<Sprite, pybind::bases<SceneNode2D>>("Sprite", false)
+			pybind::proxy_<Sprite, pybind::bases<SceneNode2D>>("Sprite", false)
 				.def( "setImageIndex", &Sprite::setImageIndex )
 				.def( "getImageIndex", &Sprite::getImageIndex )
 				.def( "setImageResource", &Sprite::setImageResource )
@@ -192,7 +192,7 @@ namespace Menge
 				;
 
 			{
-				pybind::class_<Animation, pybind::bases<Sprite>>("Animation", false)
+				pybind::proxy_<Animation, pybind::bases<Sprite>>("Animation", false)
 					.def( "play", &Animation::play )
 					.def( "stop", &Animation::stop )
 					.def( "pause", &Animation::pause )

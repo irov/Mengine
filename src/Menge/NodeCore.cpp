@@ -98,8 +98,6 @@ namespace Menge
 		{
 			m_active = false;
 
-			Eventable::removeAllEvent();
-
 			_deactivate();
 		}		
 	}

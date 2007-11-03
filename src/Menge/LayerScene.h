@@ -29,6 +29,9 @@ namespace Menge
 	public:
 		void renderLayer();
 
+	public:
+		void update(size_t _timing, const Viewport & _viewport ) override;
+
 	protected:
 		bool _activate() override;
 		void _deactivate() override;

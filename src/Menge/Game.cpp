@@ -440,7 +440,10 @@ namespace Menge
 			}
 			XML_INVALID_PARSE()
 			{
-
+				printf("Warrning: invalid loader xml '%s' for scene '%s'/n"
+					, xml_path.c_str()
+					, _name.c_str()
+					);
 			}
 
 			m_mapScene.insert( std::make_pair( _name, scene ) );

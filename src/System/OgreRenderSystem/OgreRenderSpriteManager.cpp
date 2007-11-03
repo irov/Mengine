@@ -69,10 +69,13 @@ void OgreRenderSpriteManager::renderBuffer()
 {
 	Ogre::RenderSystem * rs = Ogre::Root::getSingleton().getRenderSystem();
 
+	printf("# \n");
 	for( std::list<Layer>::iterator it = m_layers.begin(); 
 		it != m_layers.end(); ++it)
 	{
 		RenderSpriteList & spriteList = it->m_sprites;
+
+		printf("size = %d \n",it->m_sprites.size());
 
 		RenderSpriteList::iterator currSpr;
 		RenderSpriteList::iterator endSpr;

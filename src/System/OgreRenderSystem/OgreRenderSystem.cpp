@@ -110,23 +110,17 @@ void OgreRenderSystem::renderImage(
 	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
 	{
 		Ogre::Texture * texture = image->getTexture();
-
-		m_spriteMgr->spriteBltFull( texture
-			, *(Ogre::Matrix3*)_transform
-			, *(Ogre::Vector2*)_offset
-			, *(Ogre::Vector4*)_uv
-			, *(Ogre::Vector2*)_size
-			, _color );
+		float z = m_spriteMgr->getCurrentZ();
+		m_spriteMgr->addQuad1(*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color);
 	}
 }
 //////////////////////////////////////////////////////////////////////////
 void	OgreRenderSystem::beginLayer()
 {
-	m_spriteMgr->beginLayer();
 }
 //////////////////////////////////////////////////////////////////////////
 void	OgreRenderSystem::endLayer()
 {
-	m_spriteMgr->endLayer();
+	m_spriteMgr->diffZ();
 }
 //////////////////////////////////////////////////////////////////////////

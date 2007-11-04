@@ -130,7 +130,13 @@ namespace Menge
 			char r;
 			float u1, v1, u2, v2;
 
-			sscanf_s( params.c_str(), "%c %f %f %f %f", &r, 1, &u1, &v1, &u2, &v2 );
+			int err = sscanf_s( params.c_str(), "%c %f %f %f %f", &r, 1, &u1, &v1, &u2, &v2 );
+
+			if (err == 0)
+			{
+				printf( "Error: in parsing params: '%s'", params.c_str() );
+				return false;
+			}
 
 			setGlyph( r, u1, v1, u2, v2 );
 		}

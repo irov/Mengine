@@ -18,7 +18,9 @@ public:
 public:
 	Ogre::Texture * getTexture() const;
 
-private:
 	Ogre::TexturePtr m_texture;
+
+private:
+	
 	Ogre::String m_description;
 };

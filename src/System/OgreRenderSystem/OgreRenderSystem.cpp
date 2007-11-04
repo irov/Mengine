@@ -107,15 +107,17 @@ void OgreRenderSystem::renderImage(
 				 unsigned int _color, 
 				 const RenderImageInterface* _image)
 {
-	const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image );
-	Ogre::Texture * texture = image->getTexture();
+	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
+	{
+		Ogre::Texture * texture = image->getTexture();
 
-	m_spriteMgr->spriteBltFull( texture
-		, *(Ogre::Matrix3*)_transform
-		, *(Ogre::Vector2*)_offset
-		, *(Ogre::Vector4*)_uv
-		, *(Ogre::Vector2*)_size
-		, _color );
+		m_spriteMgr->spriteBltFull( texture
+			, *(Ogre::Matrix3*)_transform
+			, *(Ogre::Vector2*)_offset
+			, *(Ogre::Vector4*)_uv
+			, *(Ogre::Vector2*)_size
+			, _color );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void	OgreRenderSystem::beginLayer()

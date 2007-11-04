@@ -19,10 +19,23 @@ namespace Menge
 			Holder<RenderEngine>::hostage()
 			->loadImage( _fileName, _buff, m_filter );
 
+		ImageFrame imageFrame;
+
+		if( image == 0 )
+		{
+			printf("Warning: resource '%s' can't load image file '%s'\n"
+				, m_name.c_str()
+				, _fileName.c_str()
+				);
+
+			imageFrame.image = 0;
+
+			return imageFrame;
+		}
+
 		float width = (float)image->getWidth();
 		float height = (float)image->getHeight();
 
-		ImageFrame imageFrame;
 		imageFrame.size = mt::vec2f( width, height );
 		imageFrame.image = image;
 

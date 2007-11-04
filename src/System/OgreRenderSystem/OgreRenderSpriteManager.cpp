@@ -55,12 +55,6 @@ void OgreRenderSpriteManager::renderQueueEnded(
 	{
 		renderBuffer();
 	
-		for( std::list<Layer>::iterator itList = m_layers.begin(); 
-		itList != m_layers.end(); ++itList)
-		{
-			itList->clear();
-		}
-
 		m_layers.clear();
 	}
 }

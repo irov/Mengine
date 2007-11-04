@@ -145,6 +145,7 @@ private:
 		m_layers.push_back( layer );
 	}
 
-	std::list<Layer>	m_layers;
-	std::list<Layer>::iterator	m_currentLayer;
+	typedef std::list<Layer> TListLayer;
+	TListLayer	m_layers;
+	TListLayer::iterator	m_currentLayer;
 };

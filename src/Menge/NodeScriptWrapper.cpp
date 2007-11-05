@@ -174,6 +174,7 @@ namespace Menge
 				.def( "getVolume", &SoundEmitter::getVolume )
 				.def( "setLooped", &SoundEmitter::setLooped )
 				.def( "isLooping", &SoundEmitter::isLooping )
+				.def( "setSoundListener", &SoundEmitter::setSoundListener )
 				;
 
 			pybind::proxy_<TextField, pybind::bases<SceneNode2D>>("TextField", false)

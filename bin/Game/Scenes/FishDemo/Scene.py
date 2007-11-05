@@ -41,8 +41,9 @@ class Scene( Menge.Scene ):
 		#block.setLocalDirection(Menge.vec2f( 0,-1 ))
 
 		self.testSound = self.getNode( "SoundEmitterTest" )
+		self.testSound.setSoundResource("ResourceSoundTest1");
 		self.testSound.play()
-		self.testSound.setVolume(0.5)
+		self.testSound.setVolume(0.8)
 
 		block.activate();
 		

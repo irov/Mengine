@@ -104,7 +104,7 @@ namespace Menge
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceSound>( m_resourceName );
 
-		m_interface = Holder<SoundEngine>::hostage()->createSoundSource(m_isHeadMode,m_resourceSound->get(),0);
+		m_interface = Holder<SoundEngine>::hostage()->createSoundSource(m_isHeadMode,m_resourceSound->get(),this);
 
 		if( m_resourceSound == 0 )
 		{
@@ -113,6 +113,28 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::setSoundResource( const std::string & _name )
+	{
+		m_resourceName = _name;
+
+		if( m_resourceSound )
+		{
+			Holder<ResourceManager>::hostage()->releaseResource( m_resourceSound );
+			Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
+		}
+		
+		m_resourceSound = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceSound>( m_resourceName );
+
+		m_interface = Holder<SoundEngine>::hostage()->createSoundSource(m_isHeadMode,m_resourceSound->get(),this);
+
+		if( m_resourceSound == 0 )
+		{
+			printf("can't set resource in SoundEmitter");
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setSoundListener( PyObject * _listener )

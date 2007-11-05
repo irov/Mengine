@@ -37,6 +37,8 @@ namespace Menge
 
 			void setSoundListener( PyObject * _listener );
 
+			void setSoundResource( const std::string & _name );
+
 		protected:
 			bool _activate() override;
 			void _deactivate() override;

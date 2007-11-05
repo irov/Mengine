@@ -52,4 +52,9 @@
 		<IsStreamable Path = "0"/>
 	</Resource>
 
+	<Resource Name = "ResourceSoundTest1" Type = "ResourceSound">
+     		<File Path = "Game/Sounds/2.ogg"/>
+		<IsStreamable Path = "0"/>
+	</Resource>
+
 </DataBlock>

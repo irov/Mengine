@@ -30,8 +30,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::destroy()
 	{
-		release();
-
 		struct ForeachDestroy
 			: public NodeForeach
 		{

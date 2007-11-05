@@ -77,5 +77,7 @@ namespace Menge
 		{
 			releaseImageFrame( frame );
 		}
+
+		m_frames.clear();
 	}
 }

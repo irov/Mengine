@@ -28,10 +28,14 @@ namespace	Menge
 	, m_color(0xFFFFFFFF)
 	, m_currentImageIndex(0)
 	, m_centerAlign(false)
-	{}
+	{
+
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
-	{}
+	{
+
+	}
 	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible( const Viewport & _viewPort )
 	{

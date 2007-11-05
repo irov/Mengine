@@ -42,12 +42,14 @@ namespace Menge
 		{
 			if( it.second->isSubScene() == false )
 			{
+				it.second->release();
 				it.second->destroy();
 			}
 		}
 
 		for each( const TMapArrow::value_type & it in m_mapArrow )
 		{
+			it.second->release();
 			it.second->destroy();
 		}
 

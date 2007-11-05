@@ -52,6 +52,7 @@ namespace Menge
 			std::string m_resourceName;
 			ResourceSound * m_resourceSound;
 			SoundSourceInterface * m_interface;
+			bool m_isLooped;
 			bool m_isHeadMode;
 
 			void _changePivot() override; 

@@ -23,11 +23,9 @@
 	</Entities>
 
 	<Scripts Path = "Game/Scripts" />
+
 	<Resource Path = "Game/Resource">
 		<Default/>
 		<FishDemo/>
 	</Resource>
-
-	<BacksoundManager File = "playlists.xml"/>
-	<DialogManager File = "messages.xml"/>				
 </Game>	

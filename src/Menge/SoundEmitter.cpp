@@ -20,6 +20,7 @@ namespace Menge
 		, m_interface(0)
 		, m_isHeadMode(false)
 		, m_listener(0)
+		, m_isLooped(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -159,6 +160,8 @@ namespace Menge
 		{
 			XML_CHECK_VALUE_NODE( "ResourceName", "Name", m_resourceName );
 			XML_CHECK_VALUE_NODE( "HeadMode", "Value", m_isHeadMode );
+			XML_CHECK_VALUE_NODE( "Loop", "Value", m_isLooped );
 		}
+
 	}
 }

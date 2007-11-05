@@ -43,15 +43,13 @@ class Scene( Menge.Scene ):
 		self.testSound = self.getNode( "SoundEmitterTest" )
 		self.testSound.setSoundResource("ResourceSoundTest1");
 		self.testSound.play()
-		self.testSound.setVolume(0.8)
+		self.testSound.setLooped(True)
+		self.testSound.setVolume(1.0)
 
 		block.activate();
 		
 		self.layerAppend( "Deep", block )
-
-				
-		#self.boo = 
-		#print self.boo
+		
 		pass
 
 	def onUpdate( self, timing ):

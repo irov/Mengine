@@ -19,7 +19,8 @@ namespace Menge
 	public:
 		void loader( TiXmlElement * _xml ) override;
 
-		const std::vector<std::string> & getTracks();
+		const std::vector<std::string> & getTracks() const;
+		const std::string & getPlayListName() const;
 
 	protected:
 		bool _compile() override;

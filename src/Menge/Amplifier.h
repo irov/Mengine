@@ -4,10 +4,15 @@
 
 #	include "time.h"
 
+#	include <vector>
+
 #	include "Interface/SoundSystemInterface.h"
+
+/* #	define FADE_PARAM */
 
 namespace	Menge
 {
+	class ResourcePlaylist;
 	class Playlist;
 
 	typedef	std::map<std::string,Playlist*>	TPlayListMap;
@@ -19,12 +24,12 @@ namespace	Menge
 			Amplifier();
 			~Amplifier();
 			void	stop();
-			void	playList(const std::string& _playListName);
-			void	loadPlayList(const std::string& _filename);
-			void	addPlayList(const std::string& _playListFileName);
-			void	erasePlayList(const std::string& _playListFileName);
+			void	setVolume(float _newVolume);
+			void	playList( const std::string& _playListName );
 			void	update( size_t _timing );
 		private:
+			ResourcePlaylist * m_playlistResource;
+
 			TPlayListMap	m_playLists;
 			Playlist *	m_currentPlayList;
 			bool	m_fadeState;
@@ -36,10 +41,10 @@ namespace	Menge
 
 			float	m_fadeTime;
 
-			void	updateFadeParams(SoundSourceInterface* _sound);
-			void	listenPaused(bool _pause);
+			void	addPlayList( const std::string& _playListFileName, const std::vector<std::string> & _tracks );
+			void	updateFadeParams( SoundSourceInterface * _sound );
+			void	listenPaused( bool _pause );
 			void	listenStopped();
-			void	releaseMusic(bool _dead);
-			void	setVolume(float _newVolume);
+			void	releaseMusic( bool _dead );	
 	};
 }

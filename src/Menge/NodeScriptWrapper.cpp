@@ -115,6 +115,8 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( TextField );
 	SCRIPT_CLASS_WRAPPING( SoundEmitter );
 
+	SCRIPT_CLASS_WRAPPING( Amplifier );
+
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{

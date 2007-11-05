@@ -14,7 +14,6 @@ namespace	Menge
 		Playlist( const std::string& _playlistName );
 		~Playlist();
 	public:
-		void loadTracks();
 		void shuffle();
 		void nextSong();
 		void prevSong();
@@ -23,9 +22,8 @@ namespace	Menge
 		void clear();
 		const std::string&	getCurrentSongName() const;
 		const std::string&	getName() const;
-		bool isLoaded() const;
+		void addTrack( const std::string & _track );
 	private:
-		bool m_isTracksLoaded;
 		std::string	m_playListName;
 		TVecTrack m_tracks;
 		TVecTrack::iterator	m_currentSong;

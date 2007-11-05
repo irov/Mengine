@@ -77,16 +77,6 @@ namespace Menge
 					m_listScenesDeclaration.push_back( XML_TITLE_NODE );
 				}
 			}
-
-			XML_CHECK_NODE("BacksoundManager")
-			{
-				std::string	playlistFilename;
-				XML_VALUE_ATTRIBUTE("File", playlistFilename);
-				
-				Holder<Amplifier>::hostage()
-					->loadPlayList(playlistFilename);
-			}
-
 			//<Arrows Path = "Game/Arrows">
 			//	<Default/>
 			//</Arrows>

@@ -57,4 +57,8 @@
 		<IsStreamable Path = "0"/>
 	</Resource>
 
+	<Resource Name = "ResourcePlayListTest1" Type = "ResourcePlaylist">
+		<File Path = "TestPlaylist.xml"/>
+	</Resource>
+
 </DataBlock>

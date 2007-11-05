@@ -9,7 +9,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::Playlist( const std::string& _playlistName )
 		: m_playListName( _playlistName )
-		, m_isTracksLoaded( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -63,39 +62,9 @@ namespace Menge
 		return	m_playListName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Playlist::loadTracks()
+	void	Playlist::addTrack( const std::string & _track )
 	{
-		if( isLoaded() == true )
-		{
-			firstSong();
-			return;
-		}
-
-		std::string	filename;
-
-		TiXmlDocument * document = Holder<FileEngine>::hostage()
-			->loadXml( m_playListName );
-
-		XML_FOR_EACH_DOCUMENT( document )
-		{
-			XML_CHECK_NODE_FOR_EACH("Tracks")
-			{
-				XML_CHECK_NODE("Track")
-				{
-					XML_VALUE_ATTRIBUTE("File",filename);
-					m_tracks.push_back(filename);
-				}
-			}
-		}
-
-		m_isTracksLoaded = true;
-
-		firstSong();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool	Playlist::isLoaded() const
-	{
-		return m_isTracksLoaded;
+		m_tracks.push_back( _track );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Playlist::clear()

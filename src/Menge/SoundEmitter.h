@@ -11,7 +11,7 @@ namespace Menge
 	class	ResourceSound;
 
 	class	SoundEmitter
-		: public SceneNode2D
+		: public SceneNode2D, public SoundNodeListenerInterface
 	{
 			OBJECT_DECLARE(SoundEmitter);
 		public:
@@ -35,6 +35,8 @@ namespace Menge
 
 			int	getLengthMS();
 
+			void setSoundListener( PyObject * _listener );
+
 		protected:
 			bool _activate() override;
 			void _deactivate() override;
@@ -43,11 +45,16 @@ namespace Menge
 			void _release() override;
 
 		private:
+			PyObject * m_listener;
+
 			std::string m_resourceName;
 			ResourceSound * m_resourceSound;
 			SoundSourceInterface * m_interface;
 			bool m_isHeadMode;
 
 			void _changePivot() override; 
+
+			void	listenPaused(bool _pause);
+			void	listenStopped();
 	};
 };

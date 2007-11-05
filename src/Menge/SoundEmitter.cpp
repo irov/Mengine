@@ -19,20 +19,29 @@ namespace Menge
 		: m_resourceSound(0)
 		, m_interface(0)
 		, m_isHeadMode(false)
+		, m_listener(0)
 	{
-	};
+	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundEmitter::~SoundEmitter()
 	{
-	};
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_changePivot()
 	{
-		//?????????? WTF!!!!
-		//const mt::vec3f & pos = getWorldPosition();
-		//m_interface->setPosition(pos.x,pos.y,pos.z);
-		////nado? 
-		//m_changePivot = true;
+		const mt::vec2f & pos = getLocalPosition();
+		m_interface->setPosition(pos.x,pos.y,0);
+		m_changePivot = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	SoundEmitter::listenPaused(bool _pause)
+	{
+		callEvent( "PAUSE_PLAYING", "(O)", this->getScript() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	SoundEmitter::listenStopped()
+	{
+		callEvent( "STOP_PLAYING", "(O)", this->getScript() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::play()
@@ -99,10 +108,19 @@ namespace Menge
 
 		if( m_resourceSound == 0 )
 		{
+			printf("can't compile SoundEmitter");
 			return false;
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::setSoundListener( PyObject * _listener )
+	{
+		m_listener = _listener;
+
+		registerEventListener("STOP_PLAYING", "onStopped", m_listener );
+		registerEventListener("PAUSE_PLAYING", "onPaused", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_release()
@@ -118,7 +136,7 @@ namespace Menge
 		XML_FOR_EACH_TREE(_xml)
 		{
 			XML_CHECK_VALUE_NODE( "ResourceName", "Name", m_resourceName );
-			XML_CHECK_VALUE_NODE( "HeadMode", "Mode", m_isHeadMode );
+			XML_CHECK_VALUE_NODE( "HeadMode", "Value", m_isHeadMode );
 		}
 	}
 }

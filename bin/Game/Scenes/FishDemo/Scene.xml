@@ -74,5 +74,10 @@
 			<Height Value = "24"/>
 		</Node>
 
+		<Node Name = "SoundEmitterTest" Type = "SoundEmitter">
+              		<ResourceName Name = "ResourceSoundTest"/>
+               		<HeadMode Value = "0"/>
+		</Node>
+
 	</Node> <!-- Layer -->
 </Scene>

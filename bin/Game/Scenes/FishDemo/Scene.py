@@ -33,15 +33,21 @@ class Scene( Menge.Scene ):
 		block = Menge.createEntity("Block",Menge.vec2f( 100, 100 ), Menge.vec2f( 1, 0 ) )
 		
 		#block.moveTo( 30000, Menge.vec2f( 1000,200 ), False )
-		block.rotateTo( 3000, Menge.vec2f( 0,200 ) )
+		
+		block.rotateTo( 3000, Menge.vec2f( 0,0 ) )
 
 		#block.setRotate( 3.14/3.0  )
 
 		#block.setLocalDirection(Menge.vec2f( 0,-1 ))
 
+		self.testSound = self.getNode( "SoundEmitterTest" )
+		self.testSound.play()
+		self.testSound.setVolume(0.5)
+
 		block.activate();
 		
 		self.layerAppend( "Deep", block )
+
 				
 		#self.boo = 
 		#print self.boo

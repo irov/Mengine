@@ -437,14 +437,6 @@
 				Name="Sound"
 				>
 				<File
-					RelativePath=".\SoundEmitter.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SoundEmitter.h"
-					>
-				</File>
-				<File
 					RelativePath=".\SoundEngine.cpp"
 					>
 				</File>
@@ -604,6 +596,18 @@
 				</File>
 				<File
 					RelativePath=".\TextField.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="SoundEmitter"
+				>
+				<File
+					RelativePath=".\SoundEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SoundEmitter.h"
 					>
 				</File>
 			</Filter>

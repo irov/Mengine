@@ -15,6 +15,8 @@
 #	include "HotSpot.h"
 #	include "Arrow.h"
 #	include "TextField.h"
+#	include "SoundEmitter.h"
+
 #	include "Camera3D.h"
 
 #	include "XmlParser/XmlParser.h"
@@ -111,6 +113,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Animation );
 	SCRIPT_CLASS_WRAPPING( Arrow );
 	SCRIPT_CLASS_WRAPPING( TextField );
+	SCRIPT_CLASS_WRAPPING( SoundEmitter );
 
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -162,6 +165,17 @@ namespace Menge
 			;
 
 		{
+			pybind::proxy_<SoundEmitter, pybind::bases<SceneNode2D>>("SoundEmitter", false)
+				.def( "play", &SoundEmitter::play )
+				.def( "pause", &SoundEmitter::pause )
+				.def( "stop", &SoundEmitter::stop )
+				.def( "isPlaying", &SoundEmitter::isPlaying )
+				.def( "setVolume", &SoundEmitter::setVolume )
+				.def( "getVolume", &SoundEmitter::getVolume )
+				.def( "setLooped", &SoundEmitter::setLooped )
+				.def( "isLooping", &SoundEmitter::isLooping )
+				;
+
 			pybind::proxy_<TextField, pybind::bases<SceneNode2D>>("TextField", false)
 				.def( "setText", &TextField::setText )
 				.def( "setColor", &TextField::setColor )

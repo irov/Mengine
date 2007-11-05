@@ -43,7 +43,13 @@
 	</Resource>
 
 	<Resource Name = "ArialTest" Type = "ResourceFont">
-     		<File Path = "GAme/Fonts/ArialTest.fontdef"/>
+     		<File Path = "Game/Fonts/ArialTest.fontdef"/>
+	</Resource>
+
+
+	<Resource Name = "ResourceSoundTest" Type = "ResourceSound">
+     		<File Path = "Game/Sounds/1.ogg"/>
+		<IsStreamable Path = "0"/>
 	</Resource>
 
 </DataBlock>

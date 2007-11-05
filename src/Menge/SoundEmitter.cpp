@@ -20,7 +20,6 @@ namespace Menge
 		, m_interface(0)
 		, m_isHeadMode(false)
 		, m_listener(0)
-		, m_isLooped(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -65,9 +64,10 @@ namespace Menge
 		return m_interface->isPlaying();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setVolume(float vol)
+	void SoundEmitter::setVolume( float _vol )
 	{
-		return m_interface->setVolume(vol);
+		float commonVol = _vol * Holder<SoundEngine>::hostage()->getVolume();
+		return m_interface->setVolume( commonVol );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEmitter::getVolume() const
@@ -75,9 +75,9 @@ namespace Menge
 		return m_interface->getVolume();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setLooped(bool loop)
+	void SoundEmitter::setLooped( bool _loop )
 	{
-		return m_interface->setLooped(loop);
+		return m_interface->setLooped( _loop );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::isLooping() const
@@ -152,16 +152,15 @@ namespace Menge
 		Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::loader(TiXmlElement * _xml)
+	void SoundEmitter::loader( TiXmlElement * _xml )
 	{
 		SceneNode2D::loader(_xml);
 
 		XML_FOR_EACH_TREE(_xml)
 		{
-			XML_CHECK_VALUE_NODE( "ResourceName", "Name", m_resourceName );
+			XML_CHECK_VALUE_NODE( "Resource", "Name", m_resourceName );
 			XML_CHECK_VALUE_NODE( "HeadMode", "Value", m_isHeadMode );
-			XML_CHECK_VALUE_NODE( "Loop", "Value", m_isLooped );
 		}
-
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

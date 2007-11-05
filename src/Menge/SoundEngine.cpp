@@ -10,8 +10,9 @@ namespace Menge
 {
 	SoundEngine::SoundEngine( SoundSystemInterface * _interface )
 	: m_interface( _interface )
+	, m_volume( 1.0f )
 	{
-		Holder<SoundEngine>::keep(this);
+		Holder<SoundEngine>::keep( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::~SoundEngine()
@@ -23,7 +24,7 @@ namespace Menge
 		m_interface->setListenerOrient((float*)_position.m,(float*)_front.m,(float*)top.m);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundSourceInterface*	SoundEngine::createSoundSource(
+	SoundSourceInterface *	SoundEngine::createSoundSource(
 			bool _isHeadMode, 
 			SoundBufferInterface * _sample,
 			SoundNodeListenerInterface *	_listener = 0)
@@ -45,9 +46,20 @@ namespace Menge
 		_soundBuffer = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void		SoundEngine::releaseSoundSource(SoundSourceInterface* _soundSource)
+	void SoundEngine::releaseSoundSource(SoundSourceInterface* _soundSource)
 	{
 		m_interface->releaseSoundNode(_soundSource);
 		_soundSource = NULL;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::setVolume( float _vol )
+	{
+		m_volume = _vol;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEngine::getVolume() const
+	{
+		return m_volume;
+	}
+	//////////////////////////////////////////////////////////////////////////	
 }

@@ -10,6 +10,7 @@
 
 #	include "Player.h"
 
+#	include "Amplifier.h"
 #	include "Sprite.h"
 #	include "Animation.h"
 #	include "HotSpot.h"
@@ -115,7 +116,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( TextField );
 	SCRIPT_CLASS_WRAPPING( SoundEmitter );
 
-	SCRIPT_CLASS_WRAPPING( Amplifier );
+//	SCRIPT_CLASS_WRAPPING( Amplifier );
 
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -134,6 +135,10 @@ namespace Menge
 			//.def( boost::python::self *= float() )
 			//.def( boost::python::self /= float() )
 			;
+
+		pybind::interface_<Amplifier>("Amplifier", false)
+			;
+
 
 		pybind::interface_<Node>("Node", false)
 			.def( "activate", &Node::activate )

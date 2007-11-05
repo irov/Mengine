@@ -478,22 +478,6 @@
 					RelativePath=".\Sprite.h"
 					>
 				</File>
-				<File
-					RelativePath=".\SpriteContainer.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SpriteContainer.h"
-					>
-				</File>
-				<File
-					RelativePath=".\SpriteProxy.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SpriteProxy.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Track"
@@ -608,6 +592,18 @@
 				</File>
 				<File
 					RelativePath=".\SoundEmitter.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="SoundGroup"
+				>
+				<File
+					RelativePath=".\SoundGroup.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SoundGroup.h"
 					>
 				</File>
 			</Filter>

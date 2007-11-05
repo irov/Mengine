@@ -20,19 +20,25 @@ namespace Menge
 		SoundEngine( SoundSystemInterface * _interface );
 		~SoundEngine();
 	
-		void setListenerOrient(const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top);
+		void setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top );
 
-		SoundSourceInterface*	createSoundSource(
+		SoundSourceInterface *	createSoundSource(
 			bool _isHeadMode, 
 			SoundBufferInterface * _sample,
-			SoundNodeListenerInterface*	_listener);
+			SoundNodeListenerInterface * _listener);
 
 		SoundBufferInterface * createSoundBuffer();
 
-		void releaseSoundBuffer(SoundBufferInterface* _soundBuffer);
-		void releaseSoundSource(SoundSourceInterface* _node);
+		void setVolume( float _vol );
+		float getVolume() const;
+
+		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer );
+		void releaseSoundSource( SoundSourceInterface * _node );
 
 	private:
+
+		float m_volume;
+
 		SoundSystemInterface * m_interface;
 	};
 };

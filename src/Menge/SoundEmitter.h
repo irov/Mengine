@@ -18,7 +18,7 @@ namespace Menge
 			SoundEmitter();
 			~SoundEmitter();
 		public:
-			void loader(TiXmlElement * _xml) override;
+			void loader( TiXmlElement * _xml ) override;
 
 		public:
 			void play();
@@ -27,10 +27,10 @@ namespace Menge
 
 			bool isPlaying() const;
 
-			void setVolume(float vol);
+			void setVolume( float _vol );
 			float getVolume() const;
-
-			void setLooped(bool loop);
+ 
+			void setLooped( bool _loop );
 			bool isLooping() const;
 
 			int	getLengthMS();
@@ -52,12 +52,12 @@ namespace Menge
 			std::string m_resourceName;
 			ResourceSound * m_resourceSound;
 			SoundSourceInterface * m_interface;
-			bool m_isLooped;
+
 			bool m_isHeadMode;
 
 			void _changePivot() override; 
 
-			void	listenPaused(bool _pause);
+			void	listenPaused( bool _pause );
 			void	listenStopped();
 	};
 };

@@ -17,6 +17,8 @@
 #	include "Arrow.h"
 #	include "TextField.h"
 #	include "SoundEmitter.h"
+#	include "SoundEngine.h"
+
 
 #	include "Camera3D.h"
 
@@ -36,6 +38,11 @@ namespace Menge
 		{
 			Holder<ScheduleManager>::hostage()
 				->remove( _id );
+		}
+
+		static void setVolume( float _vol )
+		{
+			Holder<SoundEngine>::hostage()->setVolume( _vol );
 		}
 
 		static int getMouseX()
@@ -241,5 +248,7 @@ namespace Menge
 		pybind::def( "getMouseY", &ScriptMethod::getMouseY );
 
 		pybind::def( "getArrow", &ScriptMethod::getArrow );
+
+		pybind::def( "setVolume", &ScriptMethod::setVolume );
 	}
 }

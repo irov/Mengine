@@ -66,7 +66,11 @@ namespace Menge
 
 		if( m_resourceSound == 0 )
 		{
-			printf("can't compile SoundEmitter");
+			printf("Warning: sound emitter '%s' can't get resource '%s'\n"
+				, m_name.c_str()
+				, m_resourceName.c_str()
+				);
+
 			return false;
 		}
 
@@ -74,40 +78,27 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			printf("can't create sound source");
+			printf("Warning: sound emitter '%s' can't compiled\n"
+				, m_name.c_str()
+				);
+
 			return false;
 		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_release()
+	{
+		Holder<ResourceManager>::hostage()->releaseResource( m_resourceSound );
+		Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setSoundResource( const std::string & _name )
 	{
 		m_resourceName = _name;
 
-		if( m_resourceSound )
-		{
-			Holder<ResourceManager>::hostage()->releaseResource( m_resourceSound );
-			Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
-		}
-		
-		m_resourceSound = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceSound>( m_resourceName );
-
-		if( m_resourceSound == 0 )
-		{
-			printf("can't set resource in SoundEmitter \n");
-			return;
-		}
-
-		m_interface = Holder<SoundEngine>::hostage()->createSoundSource(m_isHeadMode,m_resourceSound->get(),this);
-
-		if( m_interface == 0 )
-		{
-			printf("can't create sound source in SoundEmitter \n");
-			return;
-		}
+		recompile();		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setSoundListener( PyObject * _listener )
@@ -117,12 +108,7 @@ namespace Menge
 		registerEventListener("STOP_PLAYING", "onStopped", m_listener );
 		registerEventListener("PAUSE_PLAYING", "onPaused", m_listener );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_release()
-	{
-		Holder<ResourceManager>::hostage()->releaseResource( m_resourceSound );
-		Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
-	}
+
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenPaused(bool _pause)
 	{
@@ -149,7 +135,7 @@ namespace Menge
 		return m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::isPlaying() const
+	bool SoundEmitter::isPlaying()
 	{
 		return m_interface->isPlaying();
 	}
@@ -161,7 +147,7 @@ namespace Menge
 		return m_interface->setVolume( commonVol );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEmitter::getVolume() const
+	float SoundEmitter::getVolume()
 	{
 		return m_interface->getVolume();
 	}
@@ -171,7 +157,7 @@ namespace Menge
 		return m_interface->setLooped( _loop );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::isLooping() const
+	bool SoundEmitter::isLooping()
 	{
 		return m_interface->isLooping();
 	}

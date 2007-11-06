@@ -131,22 +131,72 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseButtonEvent( size_t _button, bool _isDown )
 	{
-		if( m_scene )
+		bool handler = false;
+
+		if( handler == false )
 		{
-			return m_scene->handleMouseButtonEvent( _button, _isDown );
+			for each( GlobalMouseHandler * mouseHandler in m_setGlobalMouseHandler )
+			{
+				if( handler = mouseHandler->handleGlobalMouseButtonEvent( _button, _isDown ) )
+				{
+					break;
+				}
+			}
 		}
 
-		return false;
+		if( handler == false )
+		{
+			if( m_scene )
+			{
+				handler = m_scene->handleMouseButtonEvent( _button, _isDown );
+			}
+		}
+
+		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseMove( int _x, int _y, int _whell )
 	{
-		if( m_scene )
+		bool handler = false;
+
+		if( handler == false )
 		{
-			return m_scene->handleMouseMove( _x, _y, _whell );
+			for each( GlobalMouseHandler * mouseHandler in m_setGlobalMouseHandler )
+			{
+				if( handler = mouseHandler->handleGlobalMouseMove( _x, _y, _whell ) )
+				{
+					break;
+				}
+			}
 		}
 
-		return false;
+		if( handler == false )
+		{
+			if( m_scene )
+			{
+				handler = m_scene->handleMouseMove( _x, _y, _whell );
+			}
+		}
+
+		return handler;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::regGlobalMouseEventable( GlobalMouseHandler * _handler )
+	{
+		TSetGlobalMouseHandler::iterator it_find = m_setGlobalMouseHandler.find( _handler );
+		if( it_find == m_setGlobalMouseHandler.end() )
+		{
+			m_setGlobalMouseHandler.insert( _handler );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::unregGlobalMouseEventable( GlobalMouseHandler * _handler )
+	{
+		TSetGlobalMouseHandler::iterator it_find = m_setGlobalMouseHandler.find( _handler );
+		if( it_find != m_setGlobalMouseHandler.end() )
+		{
+			m_setGlobalMouseHandler.erase( _handler );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update( size_t _timing )

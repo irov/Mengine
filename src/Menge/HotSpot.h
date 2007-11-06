@@ -19,6 +19,7 @@ namespace Menge
 	class HotSpot
 		: public SceneNode2D
 		, public InputHandler
+		, public GlobalMouseHandler
 		, public MousePickerTrap
 	{
 		OBJECT_DECLARE(HotSpot)
@@ -37,12 +38,17 @@ namespace Menge
 		void clearPoints();
 		bool testPoint( const mt::vec2f & _p );
 
+		void enableGlobalMouseEvent( bool _value );
 		void setHotspotListener( PyObject * _handler );
 		
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
+
+	public:
+		bool handleGlobalMouseButtonEvent( size_t _button, bool _isDown ) override;
+		bool handleGlobalMouseMove( int _x, int _y, int _whell ) override;
 
 	public:
 		void loader( TiXmlElement *_xml) override;
@@ -53,11 +59,7 @@ namespace Menge
 
 	private:
 		mt::polygon m_polygon;
-		//bool m_handle;
-
-		bool m_onLeaveMethod;
-		bool m_onEnterMethod;
-
-		bool onHandleMouseButtonEvent;
+		
+		bool m_globalMouseEventListenerEnable;
 	};
 }

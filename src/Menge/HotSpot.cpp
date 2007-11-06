@@ -8,6 +8,8 @@
 #	include "ScriptEngine.h"
 #	include "RenderEngine.h"
 
+#	include "Player.h"
+
 #	include "Holder.h"
 
 #	include "XmlParser/XmlParser.h"
@@ -18,6 +20,7 @@ namespace	Menge
 	OBJECT_IMPLEMENT(HotSpot)
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
+	: m_globalMouseEventListenerEnable(false)
 	{
 		this->setHandler( this );
 	}
@@ -157,11 +160,54 @@ namespace	Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleGlobalMouseButtonEvent( size_t _button, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			askEvent( handle, "GLOBAL_MOUSE_BUTTON", "(OIb)", this->getScript(), _button, _isDown );
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleGlobalMouseMove( int _x, int _y, int _whell )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			askEvent( handle, "GLOBAL_MOUSE_MOVE", "(Offf)", this->getScript(), _x, _y, _whell );
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::enableGlobalMouseEvent( bool _value )
+	{
+		m_globalMouseEventListenerEnable = _value;
+
+		if( _value )
+		{
+			Holder<Player>::hostage()
+				->regGlobalMouseEventable( this );
+		}
+		else
+		{
+			Holder<Player>::hostage()
+				->unregGlobalMouseEventable( this );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::setHotspotListener( PyObject * _listener )
 	{
 		registerEventListener( "KEY", "onHandleKeyEvent", _listener );
 		registerEventListener( "MOUSE_BUTTON", "onHandleMouseButtonEvent", _listener );
 		registerEventListener( "MOUSE_MOVE", "onHandleMouseMove", _listener );
+
+		registerEventListener( "GLOBAL_MOUSE_BUTTON", "onGlobalHandleMouseButtonEvent", _listener );
+		registerEventListener( "GLOBAL_MOUSE_MOVE", "onGlobalHandleMouseMove", _listener );
 
 		registerEventListener( "LEAVE", "onLeave", _listener );
 		registerEventListener( "ENTER", "onEnter", _listener );		

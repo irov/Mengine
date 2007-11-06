@@ -12,6 +12,7 @@ namespace Menge
 	public:
 		bool compile() override;
 		void release() override;
+		bool recompile() override;
 
 		bool isCompile() override;
 	};

@@ -7,7 +7,7 @@
 #	include "Math/vec3.h"
 
 #	include <string>
-
+#	include <set>
 
 namespace Menge
 {	
@@ -53,6 +53,9 @@ namespace Menge
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
 
+		void regGlobalMouseEventable( GlobalMouseHandler * _handler );
+		void unregGlobalMouseEventable( GlobalMouseHandler * _handler );
+
 		void debugRender();
 	
 	private:
@@ -65,5 +68,8 @@ namespace Menge
 
 		bool m_switchScene;
 		Scene * m_nextScene;
+
+		typedef std::set<GlobalMouseHandler *> TSetGlobalMouseHandler;
+		TSetGlobalMouseHandler m_setGlobalMouseHandler;
 	};
 }

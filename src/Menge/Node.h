@@ -75,6 +75,8 @@ namespace Menge
 
 		virtual void release() = 0;
 
+		virtual bool recompile() = 0;
+
 		virtual bool isCompile() = 0;
 
 	public:

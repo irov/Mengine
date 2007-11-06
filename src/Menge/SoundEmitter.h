@@ -25,13 +25,13 @@ namespace Menge
 			void pause();
 			void stop();
 
-			bool isPlaying() const;
+			bool isPlaying();
 
 			void setVolume( float _vol );
-			float getVolume() const;
+			float getVolume();
  
 			void setLooped( bool _loop );
-			bool isLooping() const;
+			bool isLooping();
 
 			int	getLengthMS();
 

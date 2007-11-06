@@ -29,15 +29,20 @@ namespace Menge
 
 		SoundBufferInterface * createSoundBuffer();
 
-		void setVolume( float _vol );
-		float getVolume() const;
+		void setSoundSourceVolume( float _vol );
+		float getSoundSourceVolume() const;
+
+		void setCommonVolume( float _vol );
+		float getCommonVolume() const;
 
 		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer );
 		void releaseSoundSource( SoundSourceInterface * _node );
 
 	private:
 
-		float m_volume;
+		float m_soundVolume;
+
+		float m_commonVolume;
 
 		SoundSystemInterface * m_interface;
 	};

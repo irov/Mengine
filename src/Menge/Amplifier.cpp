@@ -100,7 +100,7 @@ namespace Menge
 		if ( _vol >= 1 ) _vol = 1.0f;
 		if ( _vol <= 0 ) _vol = 0.0f;
 
-		m_volume = _vol;
+		m_volume = _vol * Holder<SoundEngine>::hostage()->getCommonVolume();
 
 		m_music->setVolume( _vol );
 	}

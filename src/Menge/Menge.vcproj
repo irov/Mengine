@@ -595,18 +595,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="SoundGroup"
-				>
-				<File
-					RelativePath=".\SoundGroup.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SoundGroup.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"

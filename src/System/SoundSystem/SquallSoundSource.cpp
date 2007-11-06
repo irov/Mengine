@@ -109,30 +109,11 @@ bool SQUALLSoundSource::isPlaying() const
 //////////////////////////////////////////////////////////////////////////
 void SQUALLSoundSource::setVolume(float vol)
 {
-	//xdB = 10 * log10(0.2);
-	///xdB = 10 * log10(0.3);
-	////xdB = 10 * log10(0.4);
+	float dxvol = log10( vol * 9.0f + 1.0f );
 
-//	float xdB = (vol == 0) ? 0 : 10 * log10(vol);
-//	if(vol != 0)
-//		vol = 1 + xdB * 0.1f;
-//	else vol = 0;
-	
+	int percent = int(dxvol * 100);
+	int err = SQUALL_Channel_SetVolume(ChannelID,percent);
 
-	//float cv = xdB/10;
-	////float x = pow(10,xdB/10);
-	//printf("xdB = %f \n", xdB);
-	//float dxvol = (20*100*(log10(vol / (float)128)));
-//	float dxvol = vol;
-///	//if(vol == 0) dxvol = 0;
-//	if(dxvol >= 1.0f) dxvol = 1.0f;
-//	if(dxvol <= 0) dxvol = 0.0f;
-
-	//printf("vol = %f \n", dxvol);
-
-	float dxvol = vol;
-
-	int err = SQUALL_Channel_SetVolume(ChannelID,int(dxvol * 100));
 	if(err < 0)
 	{
 		assert(!"Bad SQUALL_Channel_SetVolume!");

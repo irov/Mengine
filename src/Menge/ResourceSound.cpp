@@ -14,8 +14,8 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceSound )
 	//////////////////////////////////////////////////////////////////////////
 	ResourceSound::ResourceSound( const std::string & _name )
-	: ResourceReference(_name)
-	, m_isStreamable(false)
+	: ResourceReference( _name )
+	, m_isStreamable( false )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::loader( TiXmlElement * _xml )
@@ -32,17 +32,26 @@ namespace Menge
 	bool ResourceSound::_compile()
 	{
 		m_interface = Holder<SoundEngine>::hostage()->createSoundBuffer();
-		m_interface->loadFromFile(m_filename.c_str(),m_isStreamable);
+
+		m_interface->loadFromFile( m_filename.c_str(), m_isStreamable );
+
+		if( m_interface == 0 )
+		{
+			printf("can't compile ResourceSound");
+			return false;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::_release()
 	{
-		Holder<SoundEngine>::hostage()->releaseSoundBuffer(m_interface);
+		Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface * ResourceSound::get()
 	{
 		return m_interface;
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

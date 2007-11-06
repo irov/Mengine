@@ -1,6 +1,4 @@
 <Tracks>
- <Track File = "1.ogg"/>
- <Track File = "2.ogg"/>
- <Track File = "seraphim.ogg"/>
- <Track File = "wind_1.ogg"/>
+ <Track File = "Game/Sounds/1.ogg"/>
+ <Track File = "Game/Sounds/2.ogg"/>
 </Tracks>

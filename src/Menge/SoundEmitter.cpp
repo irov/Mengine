@@ -27,19 +27,109 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_changePivot()
+	bool SoundEmitter::_activate()
 	{
-		const mt::vec2f & pos = getLocalPosition();
-		m_interface->setPosition(pos.x,pos.y,0);
-		m_changePivot = true;
+		if( SceneNode2D::_activate() == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	SoundEmitter::listenPaused(bool _pause)
+	void SoundEmitter::_deactivate()
+	{
+		SceneNode2D::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::loader( TiXmlElement * _xml )
+	{
+		SceneNode2D::loader(_xml);
+
+		XML_FOR_EACH_TREE(_xml)
+		{
+			XML_CHECK_VALUE_NODE( "Resource", "Name", m_resourceName );
+			XML_CHECK_VALUE_NODE( "HeadMode", "Value", m_isHeadMode );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SoundEmitter::_compile()
+	{
+		if( SceneNode2D::_compile() == false )
+		{
+			return false;
+		}
+
+		m_resourceSound = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceSound>( m_resourceName );
+
+		if( m_resourceSound == 0 )
+		{
+			printf("can't compile SoundEmitter");
+			return false;
+		}
+
+		m_interface = Holder<SoundEngine>::hostage()->createSoundSource(m_isHeadMode,m_resourceSound->get(),this);
+
+		if( m_interface == 0 )
+		{
+			printf("can't create sound source");
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::setSoundResource( const std::string & _name )
+	{
+		m_resourceName = _name;
+
+		if( m_resourceSound )
+		{
+			Holder<ResourceManager>::hostage()->releaseResource( m_resourceSound );
+			Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
+		}
+		
+		m_resourceSound = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceSound>( m_resourceName );
+
+		if( m_resourceSound == 0 )
+		{
+			printf("can't set resource in SoundEmitter \n");
+			return;
+		}
+
+		m_interface = Holder<SoundEngine>::hostage()->createSoundSource(m_isHeadMode,m_resourceSound->get(),this);
+
+		if( m_interface == 0 )
+		{
+			printf("can't create sound source in SoundEmitter \n");
+			return;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::setSoundListener( PyObject * _listener )
+	{
+		m_listener = _listener;
+
+		registerEventListener("STOP_PLAYING", "onStopped", m_listener );
+		registerEventListener("PAUSE_PLAYING", "onPaused", m_listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_release()
+	{
+		Holder<ResourceManager>::hostage()->releaseResource( m_resourceSound );
+		Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::listenPaused(bool _pause)
 	{
 		callEvent( "PAUSE_PLAYING", "(O)", this->getScript() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	SoundEmitter::listenStopped()
+	void SoundEmitter::listenStopped()
 	{
 		callEvent( "STOP_PLAYING", "(O)", this->getScript() );
 	}
@@ -88,79 +178,6 @@ namespace Menge
 	int SoundEmitter::getLengthMS()
 	{
 		return m_interface->getLengthMS();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::_activate()
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_deactivate()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::_compile()
-	{
-		m_resourceSound = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceSound>( m_resourceName );
-
-		m_interface = Holder<SoundEngine>::hostage()->createSoundSource(m_isHeadMode,m_resourceSound->get(),this);
-
-		if( m_resourceSound == 0 )
-		{
-			printf("can't compile SoundEmitter");
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setSoundResource( const std::string & _name )
-	{
-		m_resourceName = _name;
-
-		if( m_resourceSound )
-		{
-			Holder<ResourceManager>::hostage()->releaseResource( m_resourceSound );
-			Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
-		}
-		
-		m_resourceSound = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceSound>( m_resourceName );
-
-		m_interface = Holder<SoundEngine>::hostage()->createSoundSource(m_isHeadMode,m_resourceSound->get(),this);
-
-		if( m_resourceSound == 0 )
-		{
-			printf("can't set resource in SoundEmitter");
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setSoundListener( PyObject * _listener )
-	{
-		m_listener = _listener;
-
-		registerEventListener("STOP_PLAYING", "onStopped", m_listener );
-		registerEventListener("PAUSE_PLAYING", "onPaused", m_listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_release()
-	{
-		Holder<ResourceManager>::hostage()->releaseResource( m_resourceSound );
-		Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::loader( TiXmlElement * _xml )
-	{
-		SceneNode2D::loader(_xml);
-
-		XML_FOR_EACH_TREE(_xml)
-		{
-			XML_CHECK_VALUE_NODE( "Resource", "Name", m_resourceName );
-			XML_CHECK_VALUE_NODE( "HeadMode", "Value", m_isHeadMode );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

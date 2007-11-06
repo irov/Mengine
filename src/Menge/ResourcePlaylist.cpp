@@ -3,7 +3,6 @@
 
 #	include "FileEngine.h"
 
-//#	include "Amplifier.h"
 #	include "XmlParser/XmlParser.h"
 
 namespace Menge
@@ -49,14 +48,18 @@ namespace Menge
 				XML_CHECK_NODE("Track")
 				{
 					XML_VALUE_ATTRIBUTE( "File", filename );
-					m_tracks.push_back( filename );
+
+					if( Holder<FileEngine>::hostage()->existFile( filename ) == false )
+					{
+						printf("ResourcePlaylist : %s not exist. \n", filename.c_str() );
+					}
+					else
+					{
+						m_tracks.push_back( filename );
+					}
 				}
 			}
 		}
-
-		const std::string & name = this->getName();
-
-		//Holder<Amplifier>::hostage()->addPlayList( m_filename, m_tracks );
 
 		return true;
 	}
@@ -64,11 +67,6 @@ namespace Menge
 	const std::vector<std::string> & ResourcePlaylist::getTracks() const
 	{
 		return m_tracks;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const std::string & ResourcePlaylist::getPlayListName() const
-	{
-		return m_filename;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePlaylist::_release()

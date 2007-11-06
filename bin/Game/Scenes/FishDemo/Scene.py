@@ -41,11 +41,12 @@ class Scene( Menge.Scene ):
 		#block.setLocalDirection(Menge.vec2f( 0,-1 ))
 
 		self.testSound = self.getNode( "SoundEmitterTest" )
-		self.testSound.setSoundResource("ResourceSoundTest1");
+		self.testSound.setSoundResource("ResourceSoundTest1")
 		self.testSound.play()
-		self.testSound.setLooped(True)
-		self.testSound.setVolume(1.0)
+		self.testSound.setVolume(0.8)
 
+		Menge.musicPlayList("ResourcePlayListTest1");
+		
 		block.activate();
 		
 		self.layerAppend( "Deep", block )

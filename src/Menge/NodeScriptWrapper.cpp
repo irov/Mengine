@@ -45,6 +45,26 @@ namespace Menge
 			Holder<SoundEngine>::hostage()->setVolume( _vol );
 		}
 
+		static void musicPlayList( const std::string & _list )
+		{
+			Holder<Amplifier>::hostage()->playList( _list );
+		}
+
+		static void musicSetVolume( float _vol )
+		{
+			Holder<Amplifier>::hostage()->setVolume( _vol );
+		}
+
+		static float musicGetVolume()
+		{
+			return Holder<Amplifier>::hostage()->getVolume();
+		}
+
+		static void musicStop( )
+		{
+			Holder<Amplifier>::hostage()->stop();
+		}
+
 		static int getMouseX()
 		{
 			return Holder<InputEngine>::hostage()
@@ -143,8 +163,8 @@ namespace Menge
 			//.def( boost::python::self /= float() )
 			;
 
-		pybind::interface_<Amplifier>("Amplifier", false)
-			;
+		//pybind::interface_<Amplifier>("Amplifier", false)
+		//	;
 
 
 		pybind::interface_<Node>("Node", false)
@@ -250,5 +270,11 @@ namespace Menge
 		pybind::def( "getArrow", &ScriptMethod::getArrow );
 
 		pybind::def( "setVolume", &ScriptMethod::setVolume );
+
+		pybind::def( "musicPlayList", &ScriptMethod::musicPlayList );
+		pybind::def( "musicSetVolume", &ScriptMethod::musicSetVolume );
+		pybind::def( "musicGetVolume", &ScriptMethod::musicGetVolume );
+		pybind::def( "musicStop", &ScriptMethod::musicStop );
+
 	}
 }

@@ -75,7 +75,7 @@
 		</Node>
 
 		<Node Name = "SoundEmitterTest" Type = "SoundEmitter">
-              		<ResourceName Name = "ResourceSoundTest"/>
+              		<Resource Name = "ResourceSoundTest"/>
                		<HeadMode Value = "0"/>
 		</Node>
 

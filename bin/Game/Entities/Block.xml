@@ -10,4 +10,9 @@
 		<Point Value = "100;100" />
 		<Point Value = "0;100" />
 	</Node>
+
+	<Node Name = "SoundEmitterTest" Type = "SoundEmitter">
+             	<Resource Name = "ResourceSoundTest"/>
+               	<HeadMode Value = "0"/>
+	</Node>
 </Entity>

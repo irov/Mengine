@@ -55,9 +55,7 @@ namespace Menge
 
 			bool m_isHeadMode;
 
-			void _changePivot() override; 
-
-			void	listenPaused( bool _pause );
-			void	listenStopped();
+			void	listenPaused( bool _pause ) override;
+			void	listenStopped() override;
 	};
 };

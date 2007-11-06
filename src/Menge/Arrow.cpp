@@ -30,9 +30,9 @@ namespace	Menge
 		return m_offsetClick;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::_update( size_t _timing, const Viewport & _viewport )
+	void Arrow::_update( size_t _timing )
 	{
-		SceneNode2D::_update( _timing, _viewport );
+		SceneNode2D::_update( _timing );
 
 		InputEngine *inputEng = Holder<InputEngine>::hostage();
 
@@ -63,6 +63,27 @@ namespace	Menge
 		//RenderEngine *renderEng = Holder<RenderEngine>::hostage();
 		//const mt::vec2f & pos = getWorldPosition();
 		//renderEng->drawLine2D(pos,pos + mt::vec2f(10,-10),0xffff00ff);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Arrow::_renderBegin()
+	{
+		Holder<RenderEngine>::hostage()
+			->beginLayer();
+
+		Viewport viewport;
+		viewport.begin = mt::vec2f( 0.f, 0.f );
+		viewport.end = mt::vec2f( 1024.f, 768.f );
+
+		Holder<RenderEngine>::hostage()
+			->setRenderViewport( viewport );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::_renderEnd()
+	{
+		Holder<RenderEngine>::hostage()
+			->endLayer();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

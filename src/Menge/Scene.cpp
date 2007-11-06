@@ -66,7 +66,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleKeyEvent( size_t _key, bool _isDown )
 	{
-		if( isActive() == false )
+		if( isActivate() == false )
 		{
 			return false;
 		}
@@ -104,7 +104,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEvent( size_t _button, bool _isDown )
 	{
-		if( isActive() == false )
+		if( isActivate() == false )
 		{
 			return false;
 		}
@@ -142,7 +142,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseMove( int _x, int _y, int _whell )
 	{
-		if( isActive() == false )
+		if( isActivate() == false )
 		{
 			return false;
 		}
@@ -198,12 +198,9 @@ namespace	Menge
 		return NodeCore::_activate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_update( size_t _timing, const Viewport & _viewport )
+	void Scene::_update( size_t _timing )
 	{
-		if( isActive()  )
-		{
-			callEvent( "UPDATE", "(k)", _timing );
-		}
+		callEvent( "UPDATE", "(k)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loader( TiXmlElement *_xml )
@@ -220,19 +217,6 @@ namespace	Menge
 		if( _layer->isMain() )
 		{
 			m_mainLayer = _layer;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::render()
-	{
-		if( isActive() == false )
-		{
-			return;
-		}
-
-		for each( Layer * layer in m_listChildren )
-		{
-			layer->renderLayer();
 		}
 	}
 }

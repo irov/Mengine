@@ -1,10 +1,6 @@
 #	pragma once
 
-#	include "Node.h"
-
-#	include "Math/mat3.h"
-
-class TiXmlElement;
+#	include "NodeRenderable.h"
 
 namespace Menge
 {
@@ -12,25 +8,15 @@ namespace Menge
 	class Viewport;
 
 	class Renderable2D
-		: public virtual Node
+		: public NodeRenderable
 	{
 	public:
 		Renderable2D();
 
 	public:
-		virtual void render( const mt::mat3f & _rwm, const Viewport & _viewport );
-		virtual void hide( bool value );
-		virtual bool isVisible( const Viewport & _viewport );
-
-		virtual const Viewport & updateViewport( const Viewport & _viewport );
-
-	protected:
-		virtual void _render( const mt::mat3f & _rwm, const Viewport & _viewport );
+		bool isRenderable() override;
 
 	public:
-		void loader( TiXmlElement * _xml );
-
-	private:
-		bool m_hide;
+		virtual bool isVisible( const Viewport & _viewport );
 	};
 }

@@ -52,30 +52,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SceneNode2D::isVisible( const Viewport & _viewport )
+	void SceneNode2D::_render()
 	{
-		const mt::vec2f & pos = getWorldPosition();
-		bool res = _viewport.testPoint( pos );
-
-		return res;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::render( const mt::mat3f & _rwm, const Viewport & _viewport )
-	{
-		if( isActive() == false )
-		{
-			return;
-		}
-
-		const Viewport & vp = 
-			Renderable2D::updateViewport( _viewport );
-
-		Renderable2D::render( _rwm, vp );
-
 		for each( SceneNode2D * children in m_listChildren )
 		{
-			const mt::mat3f & wm = children->getWorldMatrix();
-			children->render( wm, vp );
+			children->render();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

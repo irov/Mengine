@@ -73,9 +73,9 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Track::_update( size_t _timing, const Viewport & _viewport )
+	void Track::_update( size_t _timing )
 	{
-		SceneNode2D::_update( _timing, _viewport );
+		SceneNode2D::_update( _timing );
 
 		if( m_listChain.empty() == true )
 		{

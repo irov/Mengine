@@ -117,13 +117,15 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_render( const mt::mat3f & _rwm, const Viewport & _viewPort )
+	void TextField::_render()
 	{
 		float spaceWidth = m_resourceFont->getCharRatio(' ') * m_height;
 
 		const RenderImageInterface * image = m_resourceFont->getImage();
 
 		mt::vec2f offset( 0.f, 0.f );
+
+		const mt::mat3f & rwm = getWorldMatrix();
 
 		for( std::string::const_iterator it = m_text.begin(); it != m_text.end(); ++it )
 		{
@@ -139,7 +141,7 @@ namespace	Menge
 			
 			mt::vec2f	size( width, m_height );
 
-			Holder<RenderEngine>::hostage()->renderImage( _rwm, offset, uv, size, m_color, image );
+			Holder<RenderEngine>::hostage()->renderImage( rwm, offset, uv, size, m_color, image );
 
 			offset.x += width;
 		}

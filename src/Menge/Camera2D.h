@@ -27,7 +27,7 @@ namespace Menge
 
 	protected:
 		bool _activate() override;
-		void _update( size_t _timing, const Viewport & _viewport ) override;
+		void _update( size_t _timing ) override;
 		void _changePivot() override;
 
 	protected:

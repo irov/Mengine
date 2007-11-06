@@ -3,6 +3,9 @@
 #	include "NodeCore.h"
 #	include "NodeChildren.h"
 
+#	include "Allocator2D.h"
+#	include "Renderable2D.h"
+
 #	include "Scriptable.h"
 
 #	include "Layer.h"
@@ -15,6 +18,7 @@ namespace Menge
 
 	class Scene
 		: public NodeCore
+		, public NodeRenderable
 		, public NodeChildren<Layer>
 		, public InputHandler
 	{
@@ -37,7 +41,6 @@ namespace Menge
 
 	public:
 		void loader( TiXmlElement *_xml) override;
-		void render();
 
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;
@@ -46,13 +49,12 @@ namespace Menge
 
 	protected:
 		bool _activate() override;
-		void _update( size_t _timing, const Viewport & _viewport ) override;
+		void _update( size_t _timing ) override;
 
 		void _addChildren( Layer * _layer ) override;
 
 	private:
 		bool m_isSubScene;
-		Layer * m_mainLayer;
-		
+		Layer * m_mainLayer;		
 	};
 }

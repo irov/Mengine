@@ -8,21 +8,27 @@
 
 namespace Menge
 {
-	class	Trap3D : public SceneNode3D
+	class Trap3D 
+		: public SceneNode3D
 	{
 		OBJECT_DECLARE(Trap3D);
+
 	public:
 		Trap3D();
+
 	public:
 		void loader( TiXmlElement * _xml ) override;
-		void update( size_t _timing, const Viewport & _viewport ) override;
+		void update( size_t _timing ) override;
 		void debugRender() override;
+
 	public:
 		void setEnterZoneCallback( PyObject * _event );
 		void setLeaveZoneCallback( PyObject * _event );
+
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
+
 	private:
 		mt::box3f	m_bbox;
 

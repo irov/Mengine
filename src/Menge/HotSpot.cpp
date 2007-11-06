@@ -213,9 +213,13 @@ namespace	Menge
 		registerEventListener( "ENTER", "onEnter", _listener );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_update( size_t _timing, const Viewport & _viewport )
+	void HotSpot::_update( size_t _timing )
 	{
+		const Viewport & viewport =
+			Holder<RenderEngine>::hostage()
+			->getRenderViewport();
+
 		Holder<MousePickerSystem>::hostage()
-			->regTrap( this, _viewport );
+			->regTrap( this, viewport );
 	}
 }

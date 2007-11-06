@@ -19,7 +19,7 @@ namespace Menge
 
 	public:
 		void loader( TiXmlElement * _xml) override;
-		void renderLayer() override;
+		void render() override;
 
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;

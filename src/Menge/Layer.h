@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Node.h"
+#	include "NodeRenderable.h"
 #	include "InputHandler.h"
 
 #	include "Math/vec2.h"
@@ -10,7 +11,7 @@ namespace Menge
 	class Scene;
 
 	class Layer
-		: public virtual Node
+		: public virtual NodeRenderable
 		, public InputHandler
 	{
 	public:
@@ -25,9 +26,6 @@ namespace Menge
 
 		void setSize( const mt::vec2f & _size );
 		const mt::vec2f & getSize() const;
-
-	public:
-		virtual void renderLayer() = 0;
 
 	public:
 		void loader( TiXmlElement * _xml ) override;

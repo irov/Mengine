@@ -185,8 +185,13 @@ namespace Menge
 		pybind::interface_<Node>("Node", false)
 			.def( "activate", &Node::activate )
 			.def( "deactivate", &Node::deactivate )
+			.def( "isActivate", &Node::isActivate )
 			.def( "compile", &Node::compile )
 			.def( "release", &Node::release )
+			.def( "isCompile", &Node::isCompile )
+			.def( "enable", &Node::enable )
+			.def( "disable", &Node::disable )
+			.def( "isEnable", &Node::isEnable )
 			.def( "setName", &Node::setName )
 			.def( "getName", &Node::getName )
 			.def( "addChildren", &Node::addChildren )
@@ -206,11 +211,11 @@ namespace Menge
 			.def( "setRotate", &Allocator2D::setRotate )
 			;
 		
-		pybind::interface_<Renderable2D>("Renderable2D", false)
-			.def( "hide", &Renderable2D::hide )
+		pybind::interface_<NodeRenderable>("NodeRenderable", false)
+			.def( "hide", &NodeRenderable::hide )
 			;
 
-		pybind::proxy_<SceneNode2D, pybind::bases<Node, Allocator2D, Renderable2D>>("SceneNode2D", false)
+		pybind::proxy_<SceneNode2D, pybind::bases<Node, Allocator2D, NodeRenderable>>("SceneNode2D", false)
 			;
 
 		{

@@ -90,7 +90,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::_update( size_t _timing, const Viewport & _viewport )
+	void Entity::_update( size_t _timing )
 	{
 		if( m_moveTo )
 		{

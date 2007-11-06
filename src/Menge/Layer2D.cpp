@@ -27,16 +27,8 @@ namespace	Menge
 	{
 		m_factorParallax = _factor;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	const Viewport& Layer2D::updateViewport( const Viewport & _viewPort )
+	void Layer2D::updateViewport()
 	{
-		if( m_scene == 0 )
-		{
-			return _viewPort;
-		}
-
-		m_viewPort = _viewPort;
-
 		Layer * main = m_scene->getMainLayer();
 
 		if( main == 0 )
@@ -47,8 +39,11 @@ namespace	Menge
 
 		const mt::vec2f & main_size = main->getSize();
 
-		mt::vec2f viewport_size = ( _viewPort.end - _viewPort.begin ) * 0.5f;
-		mt::vec2f viewport_middle = ( _viewPort.begin + _viewPort.end ) * 0.5f;
+		//mt::vec2f viewport_size( 512.f, 384.f );
+		//mt::vec2f viewport_middle( 512.f, 384.f );
+
+		mt::vec2f viewport_size = mt::vec2f( 512.f, 384.f );/*( m_viewport.end - m_viewport.begin ) * 0.5f*/
+		mt::vec2f viewport_middle = ( m_viewport.begin + m_viewport.end ) * 0.5f;
 
 		Camera2D * camera = Holder<Player>::hostage()
 			->getRenderCamera2D();
@@ -79,7 +74,7 @@ namespace	Menge
 		const mt::vec2f & layer_size = getSize();
 
 		mt::vec2f paralax_size = layer_size - viewport_size * 2.f;
-		
+
 
 		viewport_middle.x = paralax_size.x * parallax_factor_x + viewport_size.x;
 		viewport_middle.y = paralax_size.y * parallax_factor_y + viewport_size.y;
@@ -92,17 +87,17 @@ namespace	Menge
 		//viewport_middle.x *= m_factorParallax.x;
 		//viewport_middle.y *= m_factorParallax.y;
 
-		m_viewPort.begin = viewport_middle - viewport_size;
-		m_viewPort.end = viewport_middle + viewport_size;
-		
-		return m_viewPort;
+		m_viewport.begin = viewport_middle - viewport_size;
+		m_viewport.end = viewport_middle + viewport_size;
+
+		////return m_viewPort;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::update( size_t _timing, const Viewport & _viewport )
+	void Layer2D::update( size_t _timing )
 	{
-		const Viewport & viewport = updateViewport( _viewport );
+		updateViewport();
 
-		SceneNode2D::update( _timing, viewport );
+		NodeCore::update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::handleKeyEvent( size_t _key, bool _isDown )
@@ -122,7 +117,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::loader( TiXmlElement * _xml )
 	{
-		SceneNode2D::loader(_xml);
+		NodeCore::loader(_xml);
 		Layer::loader(_xml);
 
 		XML_FOR_EACH_TREE( _xml )
@@ -138,34 +133,36 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::_activate()
 	{
+		if( m_scene == 0 )
+		{
+			return false;
+		}
+
 		if( m_main )
 		{
 			m_scene->setMainLayer( this );
 		}
 
+		m_viewport.begin = mt::vec2f( 0.f, 0.f );
+		m_viewport.end = mt::vec2f( 1024.f, 768.f );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::renderLayer()
+	bool Layer2D::_renderBegin()
 	{
-		Camera2D * camera = 
-			Holder<Player>::hostage()
-			->getRenderCamera2D();
+		Holder<RenderEngine>::hostage()
+			->beginLayer();
 
-		RenderEngine * renderEng = Holder<RenderEngine>::hostage();
+		Holder<RenderEngine>::hostage()
+			->setRenderViewport( m_viewport );
 
-		renderEng->beginLayer();
-
-		const Viewport & cvp = camera->getViewport();
-
-		const Viewport & viewport = updateViewport( cvp );
-
-		for each( SceneNode2D * node in m_listChildren )
-		{
-			const mt::mat3f & wm = node->getWorldMatrix();
-			node->render( wm, viewport );
-		}
-	
-		renderEng->endLayer();
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::_renderEnd()
+	{
+		Holder<RenderEngine>::hostage()
+			->endLayer();
 	}
 }

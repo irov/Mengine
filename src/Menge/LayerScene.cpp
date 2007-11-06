@@ -60,15 +60,15 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LayerScene::update(size_t _timing, const Viewport & _viewport )
+	void LayerScene::update( size_t _timing )
 	{
 		if( m_subScene )
 		{
-			m_subScene->update( _timing, _viewport );
+			m_subScene->update( _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LayerScene::renderLayer()
+	void LayerScene::render()
 	{	
 		if( m_subScene )
 		{

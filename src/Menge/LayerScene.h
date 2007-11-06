@@ -27,10 +27,10 @@ namespace Menge
 		Node * getChildren( const std::string & _name, bool _recursion ) override;
 
 	public:
-		void renderLayer();
+		void render() override;
 
 	public:
-		void update(size_t _timing, const Viewport & _viewport ) override;
+		void update( size_t _timing ) override;
 
 	protected:
 		bool _activate() override;

@@ -16,7 +16,7 @@ namespace Menge
 		: public NodeCore
 		, public NodeChildren<SceneNode2D>
 		, public Allocator2D
-		, public Renderable2D
+		, public virtual Renderable2D
 		, public Collideable2D
 	{
 	public:
@@ -27,8 +27,7 @@ namespace Menge
 		void changePivot() override;
 
 	public:
-		void render( const mt::mat3f & _rwm, const Viewport & _viewport ) override;
-		bool isVisible( const Viewport & _viewport ) override;
+		void _render() override;
 	
 	public:
 		void loader( TiXmlElement * _xml ) override;

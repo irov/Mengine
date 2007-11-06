@@ -1,6 +1,6 @@
 #	include "Renderable3D.h"
 
-#	include "Frustum.h"
+#	include "RenderEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -8,50 +8,31 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Renderable3D::Renderable3D()
-		: m_hide(false)
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable3D::render( const mt::mat4f &_rwm, const Camera3D * _camera )
+	bool Renderable3D::isRenderable()
 	{
-		if( m_hide == true )
+		if( NodeRenderable::isRenderable() == false )
 		{
-			return;
+			return false;
 		}
 
-		if( isVisible( _camera ) == false )
+		Camera3D * camera =
+			Holder<RenderEngine>::hostage()
+			->getRenderCamera();
+
+		if( isVisible( camera ) == false )
 		{
-			return;
+			return false;
 		}
 
-		_render( _rwm, _camera );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Renderable3D::_render( const mt::mat4f & _rwm, const Camera3D * _camera )
-	{
-		// Empty;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Renderable3D::hide( bool value )
-	{
-		m_hide = value;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Renderable3D::isVisible( const Camera3D * _camera )
 	{
-		// Empty;
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Renderable3D::loader( TiXmlElement * _xml )
-	{
-		XML_FOR_EACH_TREE( _xml )
-		{
-			XML_CHECK_NODE("Hide")
-			{
-				XML_VALUE_ATTRIBUTE("Value", m_hide);
-			}
-		}
 	}
 }

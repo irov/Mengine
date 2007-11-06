@@ -2,6 +2,8 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
+#	include "Viewport.h"
+
 #	include "Holder.h"
 
 #	include "math/mat4.h"
@@ -13,6 +15,7 @@
 namespace Menge
 {
 	class FileEngine;
+	class Camera3D;
 
 	class RenderEngine
 	{
@@ -20,8 +23,13 @@ namespace Menge
 		RenderEngine( RenderSystemInterface * _interface );
 		
 	public:
-
 		void render();
+
+		void setRenderViewport( const Viewport & _viewport );
+		const Viewport & getRenderViewport() const;
+
+		void setRenderCamera( Camera3D * _camera );
+		Camera3D * getRenderCamera();
 
 		RenderImageInterface * loadImage( const TextureDesc & _desc );
 		RenderImageInterface * loadImage( const std::string & _fileName, std::vector<char> & _buff, size_t _filter );
@@ -68,5 +76,7 @@ namespace Menge
 
 	protected:
 		RenderSystemInterface * m_interface;
+		Viewport m_renderViewport;
+		Camera3D * m_renderCamera;
 	};
 }

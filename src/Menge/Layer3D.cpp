@@ -15,20 +15,19 @@ namespace Menge
 	Layer3D::Layer3D()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::renderLayer()
+	void Layer3D::render()
 	{
-		Camera3D * camera = 
-			Holder<Player>::hostage()
-			->getRenderCamera3D();
+		//Camera3D * camera = 
+		//	Holder<Player>::hostage()
+		//	->getRenderCamera3D();
 
-		Holder<RenderEngine>::hostage()->setViewMatrix(camera->getViewMatrix());
-		Holder<RenderEngine>::hostage()->setProjectionMatrix(camera->getProjectionMatrix());
-		
-		for each( SceneNode3D * node in m_listChildren )
-		{
-			const mt::mat4f & wm = node->getWorldMatrix();
-			node->render( wm, camera );
-		}
+		//Holder<RenderEngine>::hostage()->setViewMatrix(camera->getViewMatrix());
+		//Holder<RenderEngine>::hostage()->setProjectionMatrix(camera->getProjectionMatrix());
+		//
+		//for each( SceneNode3D * node in m_listChildren )
+		//{
+		//	node->render();
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer3D::handleKeyEvent( size_t _key, bool _isDown )

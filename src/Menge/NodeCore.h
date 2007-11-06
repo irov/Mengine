@@ -28,8 +28,12 @@ namespace Menge
 	public:
 		bool activate() override;
 		void deactivate() override;
+		bool isActivate() override;
 
-		bool isActive() override;
+	public:
+		void enable() override;
+		void disable() override;
+		bool isEnable() override;
 
 	public:
 		void setName( const std::string & _name ) override;
@@ -39,7 +43,10 @@ namespace Menge
 		const std::string & getType() const override;
 				
 	public:
-		void update( size_t _timing, const Viewport & _viewport ) override;
+		void update( size_t _timing ) override;
+		bool isUpdateble() override;
+
+	public:
 		void loader( TiXmlElement *xml ) override;
 
 	public:
@@ -49,7 +56,7 @@ namespace Menge
 		void debugRender() override;
 
 	protected:
-		virtual void _update( size_t _timing, const Viewport & _viewport );
+		virtual void _update( size_t _timing );
 
 		virtual bool _activate();
 		virtual void _deactivate();
@@ -58,6 +65,7 @@ namespace Menge
 
 	protected:
 		bool m_active;
+		bool m_enable;
 
 		std::string m_name;
 		std::string m_type;

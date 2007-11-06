@@ -8,7 +8,6 @@ namespace Menge
 {	
 	class NodeForeach;
 	class Scriptable;
-	class Viewport;
 
 	//! Node - base pure virtual class
 	/*! 
@@ -53,31 +52,54 @@ namespace Menge
 		virtual const std::string & getType() const = 0;
 
 	public:
-
-		//! Node pure virtual. activate node, setup resource for work
+		//! Node pure virtual. activate node
 		/*!
 		*/
 		virtual bool activate() = 0;
 
-		//! Node pure virtual. deactivate node, remove resource for work
+		//! Node pure virtual. deactivate node
 		/*!
 		*/
 		virtual void deactivate() = 0;
 
-		//! Node pure virtual. check activate node
+		//! Node pure virtual. check activated node
 		/*!
-		\return result of activate
+		\return result of activated
 		*/
-		virtual bool isActive() = 0;
+		virtual bool isActivate() = 0;
 
 	public:
+		//! Node pure virtual. compile node, setup resource for work
+		/*!
+		\return result of compilated
+		*/
 		virtual bool compile() = 0;
 
+		//! Node pure virtual. release node, remove resource for work
+		/*!
+		*/
 		virtual void release() = 0;
 
 		virtual bool recompile() = 0;
 
 		virtual bool isCompile() = 0;
+
+	public:
+		//! Node pure virtual. enable node
+		/*!
+		*/
+		virtual void enable() = 0;
+
+		//! Node pure virtual. disable node
+		/*!
+		*/
+		virtual void disable() = 0;
+
+		//! Node pure virtual. check enabled node
+		/*!
+		\return result of enabled
+		*/
+		virtual bool isEnable() = 0;
 
 	public:
 
@@ -118,11 +140,19 @@ namespace Menge
 		virtual Scriptable * getScriptable() = 0; 
 
 	public:
+
+		//! Node pure virtual. render node
+		/*!
+		*/
+		virtual void render() = 0;
+		virtual bool isRenderable() = 0;
+
 		//! Node pure virtual. update node
 		/*!
 		\param _timing the first argument, timing for need update
 		*/
-		virtual void update( size_t _timing, const Viewport & _viewport ) = 0;
+		virtual void update( size_t _timing ) = 0;
+		virtual bool isUpdateble() = 0;
 
 		//! Node pure virtual. setup node from xml
 		/*!

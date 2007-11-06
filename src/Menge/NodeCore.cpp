@@ -21,6 +21,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	NodeCore::NodeCore()
 		: m_active(false)
+		, m_enable(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -100,9 +101,24 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeCore::isActive()
+	bool NodeCore::isActivate()
 	{
 		return m_active;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeCore::enable()
+	{
+		m_enable = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeCore::disable()
+	{
+		m_enable = false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool NodeCore::isEnable()
+	{
+		return m_enable;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::setName(const std::string & _name)
@@ -125,35 +141,48 @@ namespace Menge
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::update( size_t _timing, const Viewport & _viewport )
+	bool NodeCore::isUpdateble()
 	{
+		if( m_enable == false )
+		{
+			return false;
+		}
+
 		if( m_active == false )
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeCore::update( size_t _timing )
+	{
+		if( isUpdateble() == false )
 		{
 			return;
 		}
 		
-		_update( _timing, _viewport );
+		_update( _timing );
 
 		struct ForeachUpdate
 			: public NodeForeach
 		{
-			ForeachUpdate( size_t _timing, const Viewport & _viewport )
+			ForeachUpdate( size_t _timing )
 				: m_timing(_timing)
-				, m_viewport(_viewport)
 			{
 
 			}
 
 			void apply( Node * children ) override
 			{
-				children->update( m_timing, m_viewport );
+				children->update( m_timing );
 			}
 
 			size_t m_timing;
-			const Viewport & m_viewport;
 		};
 
-		foreachChildren( ForeachUpdate( _timing, _viewport ) );
+		foreachChildren( ForeachUpdate( _timing ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::loader(TiXmlElement * _xml)
@@ -209,7 +238,10 @@ namespace Menge
 				}
 				XML_INVALID_PARSE()
 				{
-					printf("Invalid parse external node %s for %s\n", File.c_str(), m_name.c_str());
+					printf("Invalid parse external node %s for %s\n"
+						, File.c_str()
+						, m_name.c_str()
+						);
 				}
 			}
 		}
@@ -252,7 +284,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::_update( size_t _timing, const Viewport & _viewport )
+	void NodeCore::_update( size_t _timing )
 	{
 		//Empty
 	}

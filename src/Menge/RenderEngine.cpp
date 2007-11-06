@@ -11,6 +11,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
 		: m_interface( _interface )
+		, m_renderViewport( mt::vec2f(0.f,0.f), mt::vec2f(1024.f,768.f) )
+		, m_renderCamera(0)
 	{
 		Holder<RenderEngine>::keep( this );
 	}
@@ -18,6 +20,26 @@ namespace Menge
 	void RenderEngine::render()
 	{
 		m_interface->render();
+	}
+	////////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setRenderViewport( const Viewport & _viewport )
+	{
+		m_renderViewport = _viewport;
+	}
+	////////////////////////////////////////////////////////////////////////////
+	const Viewport & RenderEngine::getRenderViewport() const
+	{
+		return m_renderViewport;
+	}
+	////////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setRenderCamera( Camera3D * _camera )
+	{
+		m_renderCamera = _camera;
+	}
+	////////////////////////////////////////////////////////////////////////////
+	Camera3D * RenderEngine::getRenderCamera()
+	{
+		return m_renderCamera;
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer()
@@ -94,9 +116,10 @@ namespace Menge
 		unsigned int _mixedColor, 
 		const RenderImageInterface * _image)
 	{
-
+		mt::mat3f transform = _transform;
+		transform.v2.v2 -= m_renderViewport.begin;
 		m_interface->renderImage(
-			_transform.m, 
+			transform.m,
 			_offset.m,
 			_uv.m,
 			_size.m,

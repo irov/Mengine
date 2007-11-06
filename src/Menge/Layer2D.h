@@ -10,7 +10,8 @@ namespace Menge
 
 	class Layer2D
 		: public Layer
-		, public SceneNode2D
+		, public NodeCore
+		, public NodeChildren<SceneNode2D>
 	{
 		OBJECT_DECLARE(Layer2D);
 
@@ -21,25 +22,27 @@ namespace Menge
 		void setParallaxFactor( const mt::vec2f & _factor );
 
 	public:
-		const Viewport & updateViewport( const Viewport & _viewport ) override;
-
-	public:
 		void loader( TiXmlElement * _xml ) override;
-		void renderLayer() override;
 
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
 
 	public:
-		void update( size_t _timing, const Viewport & _viewport ) override;
+		void update( size_t _timing ) override;
+		
+	protected:
+		bool _renderBegin() override;
+		void _renderEnd() override;
 
-	public:
 		bool _activate() override;
+
+	protected:
+		void updateViewport();
 
 	protected:
 		mt::vec2f m_factorParallax;
 
-		Viewport m_viewPort;
+		Viewport m_viewport;
 	};
 }

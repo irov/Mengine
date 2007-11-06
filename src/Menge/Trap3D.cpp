@@ -78,9 +78,9 @@ namespace Menge
 		SceneNode3D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trap3D::update( size_t _timing, const Viewport & _viewport )
+	void Trap3D::update( size_t _timing )
 	{
-		SceneNode3D::update( _timing, _viewport );
+		SceneNode3D::update( _timing );
 
 		for each( SceneNode3D * node in m_sceneNodes )
 		{

@@ -18,9 +18,9 @@ namespace Menge
 		const mt::vec2f & getWorldPosition();
 		const mt::vec2f & getWorldDirection();
 
-		const mt::vec2f & getLocalPosition()const;
-		const mt::vec2f & getLocalDirection()const;
-		const mt::mat3f & getLocalMatrix()const;
+		const mt::vec2f & getLocalPosition() const;
+		const mt::vec2f & getLocalDirection() const;
+		const mt::mat3f & getLocalMatrix() const;
 
 		mt::vec2f & getLocalPositionModify();
 		mt::vec2f & getLocalDirectionModify();

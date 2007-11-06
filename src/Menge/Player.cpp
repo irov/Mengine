@@ -217,18 +217,14 @@ namespace Menge
 			//m_scene->activate();
 		}
 
-		Viewport avp;
-		avp.begin = mt::vec2f(0,0);
-		avp.end = mt::vec2f(1024,768);
-
 		if( m_scene )
 		{
-			m_scene->update( _timing, avp );
+			m_scene->update( _timing );
 		}
 
 		if( m_arrow )
 		{
-			m_arrow->update( _timing, avp );
+			m_arrow->update( _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -277,12 +273,7 @@ namespace Menge
 		
 		if( m_arrow )
 		{
-			Viewport avp;
-			avp.begin = mt::vec2f(0,0);
-			avp.end = mt::vec2f(1024,768);
-			
-			const mt::mat3f &wm = m_arrow->getWorldMatrix();
-			m_arrow->render( wm, avp );
+			m_arrow->render();
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -30,7 +30,7 @@ namespace Menge
 		void loader( TiXmlElement * _xml ) override;
 
 	protected:
-		void _render( const mt::mat3f &rwm, const Viewport & _viewPort ) override;
+		void _render() override;
 		void _debugRender() override;
 
 		bool _activate() override;

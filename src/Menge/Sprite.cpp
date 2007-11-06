@@ -43,10 +43,11 @@ namespace	Menge
 		const mt::vec2f & offset = m_image->getOffset( m_currentImageIndex );
 		const mt::mat3f & worldMatrix = getWorldMatrix();
 
-		mt::box2f	bbox;
+		mt::box2f bbox;
 
 		mt::set_box_from_oriented_extent( bbox, size + offset, worldMatrix );
-		return _viewPort.testRectangle( bbox.min, bbox.max );
+		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageIndex( size_t _index )
@@ -143,7 +144,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_render( const mt::mat3f & _rwm, const Viewport & _viewPort )
+	void Sprite::_render()
 	{
 		const mt::vec2f & size = m_image->getSize( m_currentImageIndex );
 		const mt::vec2f & image_offset = m_image->getOffset( m_currentImageIndex );
@@ -151,8 +152,10 @@ namespace	Menge
 		
 		const RenderImageInterface * renderImage = m_image->getImage( m_currentImageIndex );
 
+		const mt::mat3f & rwm = getWorldMatrix();
+
 		Holder<RenderEngine>::hostage()->renderImage(
-			_rwm, 
+			rwm, 
 			image_offset,
 			frame_uv,
 			size,

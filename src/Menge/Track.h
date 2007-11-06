@@ -39,7 +39,7 @@ namespace Menge
 
 	protected:
 		void _debugRender() override;
-		void _update( size_t _timing, const Viewport & _viewport )  override;
+		void _update( size_t _timing )  override;
 
 		bool _activate() override;
 	private:

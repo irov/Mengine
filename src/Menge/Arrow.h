@@ -22,7 +22,11 @@ namespace Menge
 		void loader( TiXmlElement * _xml ) override;
 
 	protected:
-		void _update( size_t _timing, const Viewport & _viewport ) override;
+		bool _renderBegin() override;
+		void _renderEnd() override;
+
+	protected:
+		void _update( size_t _timing ) override;
 		bool _activate() override;
 		void _debugRender() override;
 

@@ -66,9 +66,9 @@ namespace	Menge
 		return m_looping;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_update( size_t _timing, const Viewport & _viewport )
+	void Animation::_update( size_t _timing )
 	{
-		Sprite::_update( _timing, _viewport );
+		Sprite::_update( _timing );
 
 		if( m_playing == false )
 		{
@@ -183,6 +183,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::play()
 	{
+		if( isActivate() == false )
+		{
+			return;
+		}
+
 		m_playing = true;
 		m_total_delay = 0;
 		m_currentFrame = 0;

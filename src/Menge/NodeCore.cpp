@@ -191,6 +191,8 @@ namespace Menge
 
 		XML_FOR_EACH_TREE(_xml)
 		{
+			XML_CHECK_VALUE_NODE("Enable", "Value", m_enable );
+
 			XML_CHECK_NODE("Node")
 			{
 				XML_DEF_ATTRIBUTES_NODE(Name);

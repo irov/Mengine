@@ -65,7 +65,7 @@ class Scene( Menge.Scene ):
 
 		Menge.soundSetVolume( 0.3 )
 
-		#Menge.musicPlayList("ResourcePlayListTest1");
+		Menge.musicPlayList("ResourcePlayListTest1");
 		
 		self.testTextField = self.getNode( "SoundEmitterTest" )
 		#self.testTextField.setLocalPosition( Menge.vec2f( 100,1016:30 06.11.20070 ) )

@@ -11,10 +11,12 @@ public:
 
 public:
 	void	setListenerOrient(float* _position, float* _front, float* top);
-	SoundSourceInterface *	createSoundSource(bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface*	_listener);
-	SoundBufferInterface * createSoundBuffer();
-	void releaseSoundBuffer(SoundBufferInterface* _soundBuffer);
-	void	releaseSoundNode(SoundSourceInterface* _sn);
+	SoundSourceInterface * createSoundSource(bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface* _listener);
+
+	SoundBufferInterface * createSoundBufferFromFile(const char* _filename, bool _isStream);
+	SoundBufferInterface * createSoundBufferFromMemory(void* _buffer, int _size, bool _newmem);
+	void	releaseSoundBuffer( SoundBufferInterface* _soundBuffer );
+	void	releaseSoundNode( SoundSourceInterface* _sn );
 };
 
 bool	initInterfaceSystem(SoundSystemInterface** );

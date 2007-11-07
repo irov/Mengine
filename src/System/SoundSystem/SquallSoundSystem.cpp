@@ -49,9 +49,27 @@ SoundSourceInterface*	SQUALLSoundSystem::createSoundSource(bool _isHeadMode, Sou
 	return new SQUALLSoundSource(_isHeadMode,squall_sample,_listener);
 }
 //////////////////////////////////////////////////////////////////////////
-SoundBufferInterface * SQUALLSoundSystem::createSoundBuffer()
+SoundBufferInterface * SQUALLSoundSystem::createSoundBufferFromFile( const char* _filename, bool _isStream )
 {
-	return new SQUALLSample();
+	int SampleID = SQUALL_Sample_LoadFile((char*)_filename, !_isStream, 0);
+
+	if( SampleID < 0 )
+	{	
+		return NULL;
+	}
+
+	return new SQUALLSample( SampleID );
+}
+//////////////////////////////////////////////////////////////////////////
+SoundBufferInterface * SQUALLSoundSystem::createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem )
+{	
+	int SampleID = SQUALL_Sample_LoadFromMemory( _buffer, _size, _newmem, 0 );
+	if( SampleID < 0 )
+	{	
+		return 0;
+	}
+
+	return new SQUALLSample( SampleID );
 }
 //////////////////////////////////////////////////////////////////////////
 void SQUALLSoundSystem::releaseSoundBuffer(SoundBufferInterface* _soundBuffer)

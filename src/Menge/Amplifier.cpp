@@ -122,8 +122,7 @@ namespace Menge
 	{
 		const std::string & filename = m_currentPlayList->getCurrentSongName();
 
-		m_sampleMusic = Holder<SoundEngine>::hostage()->createSoundBuffer();
-		m_sampleMusic->loadFromFile( filename.c_str(), true );
+		m_sampleMusic = Holder<SoundEngine>::hostage()->createSoundBufferFromFile( filename.c_str(), true );
 
 		m_music = Holder<SoundEngine>::hostage()->createSoundSource( false, m_sampleMusic, this );
 		m_music->play();

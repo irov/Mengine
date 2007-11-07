@@ -31,18 +31,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceSound::_compile()
 	{
-		m_interface = Holder<SoundEngine>::hostage()->createSoundBuffer();
+		m_interface = Holder<SoundEngine>::hostage()->createSoundBufferFromFile( m_filename.c_str(), m_isStreamable );
 
 		if( m_interface == 0 )
-		{
-			printf("resource sound [%s] can't compile sound engine not create sound buffer\n"
-				, m_name.c_str() 
-				);
-
-			return false;
-		}
-
-		if( m_interface->loadFromFile( m_filename.c_str(), m_isStreamable ) == false )
 		{
 			printf("resource sound [%s] can't load sound '%s'\n"
 				, m_name.c_str() 
@@ -51,7 +42,6 @@ namespace Menge
 
 			return false;			
 		}
-
 
 		return true;
 	}

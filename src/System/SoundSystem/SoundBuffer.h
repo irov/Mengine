@@ -5,11 +5,9 @@
 class SQUALLSample : public SoundBufferInterface
 {
 public:
-	SQUALLSample();
+	SQUALLSample( int _id );
 
 public:
-	bool loadFromFile(const char* _filename, bool _isStream);
-	bool loadFromMemory(void* _buffer, int _size, bool _newmem);
 	void unload();
 
 public:

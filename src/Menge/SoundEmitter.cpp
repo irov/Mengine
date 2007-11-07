@@ -122,7 +122,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::play()
 	{
-		if( isActivate() )
+		if( isActivate() == false )
 		{
 			return;
 		}

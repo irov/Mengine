@@ -122,6 +122,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::play()
 	{
+		if( isActivate() )
+		{
+			return;
+		}
+
 		Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
 		return m_interface->play();
 	}

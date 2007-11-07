@@ -33,13 +33,25 @@ namespace Menge
 	{
 		m_interface = Holder<SoundEngine>::hostage()->createSoundBuffer();
 
-		m_interface->loadFromFile( m_filename.c_str(), m_isStreamable );
-
 		if( m_interface == 0 )
 		{
-			printf("can't compile ResourceSound");
+			printf("resource sound [%s] can't compile sound engine not create sound buffer\n"
+				, m_name.c_str() 
+				);
+
 			return false;
 		}
+
+		if( m_interface->loadFromFile( m_filename.c_str(), m_isStreamable ) == false )
+		{
+			printf("resource sound [%s] can't load sound '%s'\n"
+				, m_name.c_str() 
+				, m_filename.c_str()
+				);
+
+			return false;			
+		}
+
 
 		return true;
 	}

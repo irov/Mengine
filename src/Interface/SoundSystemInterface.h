@@ -27,8 +27,8 @@ public:
 class SoundBufferInterface
 {
 public:
-	virtual void	loadFromFile(const char* _filename, bool _isStream) = 0;
-	virtual void	loadFromMemory(void* _buffer, int _size, bool _newmem) = 0;
+	virtual bool	loadFromFile(const char* _filename, bool _isStream) = 0;
+	virtual bool	loadFromMemory(void* _buffer, int _size, bool _newmem) = 0;
 	virtual void	unload() = 0;
 };
 

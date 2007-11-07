@@ -39,14 +39,15 @@ void SQUALLSoundSource::play()
 {
 	if(!isPlaying())
 	{
+		int sampleID = m_sample->getSampleID();
 		if (Head)
 		{
 			float pos[3] = {};
-			ChannelID = SQUALL_Sample_Play3D(m_sample->SampleID, 0, 0, 1, pos, 0); 
+			ChannelID = SQUALL_Sample_Play3D(sampleID, 0, 0, 1, pos, 0); 
 		}
 		else
 		{
-			ChannelID = SQUALL_Sample_Play(m_sample->SampleID, 0, 0, 1);
+			ChannelID = SQUALL_Sample_Play(sampleID, 0, 0, 1);
 		}
 
 		if(ChannelID < 0)
@@ -71,10 +72,13 @@ void SQUALLSoundSource::play()
 	}
 	else
 	{
-		int err = SQUALL_Channel_Pause(ChannelID, false);
-		if(err < 0)
+		if( SQUALL_CHANNEL_STATUS_PAUSE == SQUALL_Channel_Status(ChannelID) )
 		{
-			assert(!"Bad SQUALL_Channel_Pause!");
+			int err = SQUALL_Channel_Pause(ChannelID, false);
+			if(err < 0)
+			{
+				assert(!"Bad SQUALL_Channel_Pause!");
+			}
 		}
 	}
 }

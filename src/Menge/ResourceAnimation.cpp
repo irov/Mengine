@@ -18,7 +18,7 @@ namespace Menge
 		return m_vectorSequence.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceAnimation::getSequenceDelay( size_t _sequence ) const
+	float ResourceAnimation::getSequenceDelay( size_t _sequence ) const
 	{
 		return m_vectorSequence[ _sequence ].delay;
 	}

@@ -30,7 +30,7 @@ namespace Menge
 		void render() override;
 
 	public:
-		void update( size_t _timing ) override;
+		void update( float _timing ) override;
 
 	protected:
 		bool _activate() override;

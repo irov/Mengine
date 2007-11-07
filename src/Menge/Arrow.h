@@ -26,7 +26,7 @@ namespace Menge
 		void _renderEnd() override;
 
 	protected:
-		void _update( size_t _timing ) override;
+		void _update( float _timing ) override;
 		bool _activate() override;
 		void _debugRender() override;
 

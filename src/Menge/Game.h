@@ -32,7 +32,7 @@ namespace Menge
 		~Game();
 
 	public:
-		void update( size_t _timing );
+		void update( float _timing );
 		void render();
 		void loader(TiXmlElement * _xml);
 

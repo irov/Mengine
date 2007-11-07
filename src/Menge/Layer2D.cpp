@@ -93,7 +93,7 @@ namespace	Menge
 		////return m_viewPort;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::update( size_t _timing )
+	void Layer2D::update( float _timing )
 	{
 		updateViewport();
 

@@ -198,7 +198,7 @@ namespace	Menge
 		return NodeCore::_activate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_update( size_t _timing )
+	void Scene::_update( float _timing )
 	{
 		callEvent( "UPDATE", "(k)", _timing );
 	}

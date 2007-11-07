@@ -60,7 +60,7 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LayerScene::update( size_t _timing )
+	void LayerScene::update( float _timing )
 	{
 		if( m_subScene )
 		{

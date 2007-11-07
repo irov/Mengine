@@ -29,7 +29,7 @@ namespace Menge
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
 
 	public:
-		void update( size_t _timing ) override;
+		void update( float _timing ) override;
 		
 	protected:
 		bool _renderBegin() override;

@@ -43,7 +43,7 @@ namespace Menge
 		const std::string & getType() const override;
 				
 	public:
-		void update( size_t _timing ) override;
+		void update( float _timing ) override;
 		bool isUpdateble() override;
 
 	public:
@@ -56,7 +56,7 @@ namespace Menge
 		void debugRender() override;
 
 	protected:
-		virtual void _update( size_t _timing );
+		virtual void _update( float _timing );
 
 		virtual bool _activate();
 		virtual void _deactivate();

@@ -20,6 +20,7 @@ namespace	Menge
 	, m_animation(0)
 	, m_currentFrame(0)
 	, m_listener(0)
+	, m_animationFactor(1.f)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::loader( TiXmlElement * _xml )
@@ -56,6 +57,16 @@ namespace	Menge
 			->getResourceT<ResourceAnimation>( m_resourceAnimation );		
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Animation::setAnimationFactor( float _factor )
+	{
+		m_animationFactor = _factor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Animation::getAnimationFactor() const
+	{
+		return m_animationFactor;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Animation::setLooped( bool _looped )
 	{
 		m_looping = _looped;
@@ -66,7 +77,7 @@ namespace	Menge
 		return m_looping;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_update( size_t _timing )
+	void Animation::_update( float _timing )
 	{
 		Sprite::_update( _timing );
 
@@ -77,7 +88,8 @@ namespace	Menge
 
 		m_total_delay += _timing;
 
-		size_t delay = m_animation->getSequenceDelay( m_currentFrame );
+		float delay = m_animation->getSequenceDelay( m_currentFrame );
+		delay *= m_animationFactor;
 
 		while( m_total_delay >= delay )
 		{
@@ -101,6 +113,7 @@ namespace	Menge
 				}
 			}	
 			delay = m_animation->getSequenceDelay( m_currentFrame );
+			delay *= m_animationFactor;
 		}
 
 		size_t currentImageIndex = m_animation->getSequenceIndex(m_currentFrame);
@@ -117,7 +130,7 @@ namespace	Menge
 
 		if( m_autoStart )
 		{
-			play();
+			play_();
 		}
 		else
 		{
@@ -188,6 +201,11 @@ namespace	Menge
 			return;
 		}
 
+		play_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::play_()
+	{
 		m_playing = true;
 		m_total_delay = 0;
 		m_currentFrame = 0;

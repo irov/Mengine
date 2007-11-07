@@ -271,6 +271,8 @@ namespace Menge
 					.def( "getLooped", &Animation::getLooped )					
 					.def( "setAnimationListener", &Animation::setAnimationListener )
 					.def( "setAnimationResource", &Animation::setAnimationResource )
+					.def( "setAnimationFactor", &Animation::setAnimationFactor )
+					.def( "getAnimationFactor", &Animation::getAnimationFactor )
 					;
 
 			}

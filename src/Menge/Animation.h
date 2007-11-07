@@ -24,11 +24,16 @@ namespace Menge
 	public:
 		void setAnimationListener( PyObject * _listener );
 		void setAnimationResource( const std::string & _resource );
+
+	public:
+		void setAnimationFactor( float _factor );
+		float getAnimationFactor() const;
+
 	public:
 		void loader( TiXmlElement * _xml ) override;
 
 	protected:
-		void _update( size_t _timing ) override;
+		void _update( float _timing ) override;
 
 		bool _activate() override;
 		void _deactivate() override;
@@ -36,17 +41,21 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
+	private:
+		void play_();
+
 	protected:
 		std::string m_resourceAnimation;
 		ResourceAnimation * m_animation;
-
-	private:
-		size_t	m_total_delay;
+	
+		float m_total_delay;
 
 		bool m_autoStart;
 		bool m_playing;
 		bool m_looping;
 		size_t m_currentFrame;
+
+		float m_animationFactor;
 
 		PyObject * m_listener;
 	};

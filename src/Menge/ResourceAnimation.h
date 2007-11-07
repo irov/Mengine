@@ -17,7 +17,7 @@ namespace Menge
 	public:
 		virtual size_t getSequenceCount() const;
 
-		virtual size_t getSequenceDelay( size_t _sequence ) const;
+		virtual float getSequenceDelay( size_t _sequence ) const;
 		virtual size_t getSequenceIndex( size_t _sequence ) const;
 
 	public:
@@ -26,7 +26,7 @@ namespace Menge
 	private:
 		struct Sequence
 		{
-			size_t delay;
+			float delay;
 			size_t index;
 		};
 

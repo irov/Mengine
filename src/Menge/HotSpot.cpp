@@ -213,7 +213,7 @@ namespace	Menge
 		registerEventListener( "ENTER", "onEnter", _listener );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_update( size_t _timing )
+	void HotSpot::_update( float _timing )
 	{
 		const Viewport & viewport =
 			Holder<RenderEngine>::hostage()

@@ -90,7 +90,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::_update( size_t _timing )
+	void Entity::_update( float _timing )
 	{
 		if( m_moveTo )
 		{

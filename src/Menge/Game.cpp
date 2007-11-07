@@ -193,7 +193,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::update( size_t _timing )
+	void Game::update( float _timing )
 	{
 		Holder<Player>::hostage()
 			->update( _timing );

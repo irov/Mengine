@@ -112,7 +112,7 @@ bool SQUALLSoundSource::isPlaying() const
 //////////////////////////////////////////////////////////////////////////
 void SQUALLSoundSource::setVolume(float vol)
 {
-	float dxvol = log10( vol * 9.0f + 4.1f );
+	float dxvol = log10( vol * 9.0f + 2.0f );
 
 	if ( dxvol >= 1 ) dxvol = 1.0f;
 	if ( dxvol <= 0 ) dxvol = 0.0f;

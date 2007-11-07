@@ -106,7 +106,7 @@ namespace	Menge
 			{
 				m_moveTime -= _timing;
 
-				float way_length = m_moveSpeed * float(_timing);
+				float way_length = m_moveSpeed * _timing;
 				
 				mt::vec2f way_offset = m_moveDir * way_length;
 				
@@ -132,7 +132,7 @@ namespace	Menge
 			{
 				m_rotateTime -= _timing;
 
-				float t = _timing / float(m_rotateTime);
+				float t = _timing / m_rotateTime;
 
 				const mt::vec2f & dir = getLocalDirection();
 

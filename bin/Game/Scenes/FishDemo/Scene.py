@@ -54,11 +54,16 @@ class Scene( Menge.Scene ):
 		#block.setLocalDirection(Menge.vec2f( 0,-1 ))
 
 		self.testSound = self.getNode( "SoundEmitterTest" )
-		self.testSound.setSoundResource("ResourceSoundTest1")
+		#self.testSound.setSoundResource("ResourceSoundTest")
 		self.testSound.play()
 		self.testSound.setVolume(1.0)
 
-		Menge.soundSetVolume( 1.0 )
+		self.testSound1 = self.getNode( "SoundEmitterTest1" )
+		#self.testSound1.setSoundResource("ResourceSoundTest1")
+		self.testSound1.play()
+		self.testSound1.setVolume(1.0)
+
+		Menge.soundSetVolume( 0.7 )
 
 		#Menge.musicPlayList("ResourcePlayListTest1");
 		

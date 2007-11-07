@@ -19,8 +19,10 @@ namespace Menge
 	public:
 		void loader( TiXmlElement * _xml ) override;
 
+	public:
 		const std::vector<std::string> & getTracks() const;
-	
+		bool getLooped() const;
+
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -28,6 +30,8 @@ namespace Menge
 	private:
 		typedef	std::vector<std::string> TVecTrack;
 		TVecTrack m_tracks;
+
+		bool m_looped;
 
 		std::string m_filename;
 	};

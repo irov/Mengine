@@ -40,22 +40,22 @@ namespace Menge
 				->remove( _id );
 		}
 
-		static void setSoundVolume( float _vol )
+		static void soundSetVolume( float _vol )
 		{
 			Holder<SoundEngine>::hostage()->setSoundSourceVolume( _vol );
 		}
 
-		static float getSoundVolume()
+		static float soundGetVolume()
 		{
 			return Holder<SoundEngine>::hostage()->getSoundSourceVolume();
 		}
 
-		static void setCommonVolume( float _vol )
+		static void commonSetVolume( float _vol )
 		{
 			Holder<SoundEngine>::hostage()->setCommonVolume( _vol );
 		}
 
-		static float getCommonVolume()
+		static float commonGetVolume()
 		{
 			return Holder<SoundEngine>::hostage()->getCommonVolume();
 		}
@@ -292,11 +292,11 @@ namespace Menge
 
 		pybind::def( "getArrow", &ScriptMethod::getArrow );
 
-		pybind::def( "setSoundVolume", &ScriptMethod::setSoundVolume );
-		pybind::def( "getSoundVolume", &ScriptMethod::getSoundVolume );
+		pybind::def( "soundSetVolume", &ScriptMethod::soundSetVolume );
+		pybind::def( "soundGetVolume", &ScriptMethod::soundGetVolume );
 
-		pybind::def( "setCommonVolume", &ScriptMethod::setCommonVolume );
-		pybind::def( "getCommonVolume", &ScriptMethod::getCommonVolume );
+		pybind::def( "commonSetVolume", &ScriptMethod::commonSetVolume );
+		pybind::def( "commonGetVolume", &ScriptMethod::commonGetVolume );
 
 		pybind::def( "musicPlayList", &ScriptMethod::musicPlayList );
 		pybind::def( "musicSetVolume", &ScriptMethod::musicSetVolume );

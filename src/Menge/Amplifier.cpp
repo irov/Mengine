@@ -58,6 +58,7 @@ namespace Menge
 
 			const std::string & playlistName = m_playlistResource->getName();
 			const std::vector<std::string> & tracks = m_playlistResource->getTracks();
+			bool is_looped = m_playlistResource->getLooped();
 
 			Playlist * playlist = new Playlist( playlistName );
 
@@ -65,6 +66,8 @@ namespace Menge
 			{
 				playlist->addTrack( *i );
 			}
+
+			playlist->setLooped( is_looped );
 
 			it = m_playLists.insert(
 				std::make_pair( playlistName, playlist )
@@ -74,7 +77,7 @@ namespace Menge
 		m_currentPlayList = it->second;
 		m_currentPlayList->firstSong();
 
-		initStream();
+		m_changeTrack = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::stop()
@@ -88,6 +91,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::listenStopped()
 	{
+		if ( m_currentPlayList->isEnded() && m_currentPlayList->getLooped() == false )
+		{
+			m_changeTrack = false;
+			return;
+		}
 		m_changeTrack = true;
 	}
 	//////////////////////////////////////////////////////////////////////////

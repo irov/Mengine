@@ -2,7 +2,7 @@
 #	include <assert.h>
 #	include "squall.h"
 #	include "math.h"
-
+#	include "windows.h"
 #	include "stdio.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,6 @@ SQUALLSoundSource::SQUALLSoundSource(int _Head, SQUALLSample * sample, SoundNode
 SQUALLSoundSource::~SQUALLSoundSource()
 {
 	printf("stopped and destoyed \n");
-	
 	stop();
 }
 //////////////////////////////////////////////////////////////////////////
@@ -109,7 +108,10 @@ bool SQUALLSoundSource::isPlaying() const
 //////////////////////////////////////////////////////////////////////////
 void SQUALLSoundSource::setVolume(float vol)
 {
-	float dxvol = log10( vol * 9.0f + 1.0f );
+	float dxvol = log10( vol * 9.0f + 4.1f );
+
+	if ( dxvol >= 1 ) dxvol = 1.0f;
+	if ( dxvol <= 0 ) dxvol = 0.0f;
 
 	int percent = int(dxvol * 100);
 	int err = SQUALL_Channel_SetVolume(ChannelID,percent);

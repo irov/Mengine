@@ -43,9 +43,14 @@ class Scene( Menge.Scene ):
 		self.testSound = self.getNode( "SoundEmitterTest" )
 		self.testSound.setSoundResource("ResourceSoundTest1")
 		self.testSound.play()
-		self.testSound.setVolume(0.8)
+		self.testSound.setVolume(1.0)
 
-		Menge.musicPlayList("ResourcePlayListTest1");
+		Menge.soundSetVolume( 0.4 )
+
+		#Menge.musicPlayList("ResourcePlayListTest1");
+		
+		#self.testTextField = self.getNode( "SoundEmitterTest" )
+		#self.testTextField.setLocalPosition( Menge.vec2f( 100,1016:30 06.11.20070 ) )
 		
 		block.activate();
 		

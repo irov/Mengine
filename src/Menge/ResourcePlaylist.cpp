@@ -12,6 +12,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourcePlaylist::ResourcePlaylist( const std::string & _name )
 		: ResourceReference( _name )
+		, m_looped( true )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -22,7 +23,13 @@ namespace Menge
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_VALUE_NODE( "File", "Path", m_filename );
+			XML_CHECK_VALUE_NODE( "Loop", "Value", m_looped );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourcePlaylist::getLooped() const
+	{
+		return m_looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePlaylist::_compile()

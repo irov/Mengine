@@ -14,6 +14,9 @@ namespace	Menge
 		Playlist( const std::string& _playlistName );
 		~Playlist();
 	public:
+		void setLooped( bool _loop );
+		bool getLooped() const;
+		bool isEnded() const;
 		void shuffle();
 		void nextSong();
 		void prevSong();
@@ -27,6 +30,7 @@ namespace	Menge
 		std::string	m_playListName;
 		TVecTrack m_tracks;
 		TVecTrack::iterator	m_currentSong;
+		bool m_loop;
 	};
 
 };

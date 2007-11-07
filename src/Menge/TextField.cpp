@@ -93,6 +93,8 @@ namespace	Menge
 			return false;
 		}
 
+		this->setLocalPosition( mt::vec2f(100,300) );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

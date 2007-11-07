@@ -2,6 +2,8 @@
 
 #	include "FileEngine.h"
 
+#	include "SoundEmitter.h"
+
 #	include "Interface/SoundSystemInterface.h"
 
 #	include	<assert.h>
@@ -56,6 +58,26 @@ namespace Menge
 	void SoundEngine::setSoundSourceVolume( float _vol )
 	{
 		m_soundVolume = _vol;
+		for( std::set<SoundEmitter*>::iterator it = m_soundEmitters.begin(); it != m_soundEmitters.end(); ++it ) 		
+		{
+			float vol = (*it)->getVolume();
+			(*it)->setVolume( vol );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::registerSoundEmitter( SoundEmitter * _emitter )
+	{
+		m_soundEmitters.insert( _emitter );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::unregisterSoundEmitter( SoundEmitter * _emitter )
+	{
+		std::set<SoundEmitter*>::iterator it = m_soundEmitters.find( _emitter );
+
+		if( it != m_soundEmitters.end() )
+		{
+			m_soundEmitters.erase( it );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getSoundSourceVolume() const

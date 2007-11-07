@@ -9,6 +9,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::Playlist( const std::string& _playlistName )
 		: m_playListName( _playlistName )
+		, m_loop( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -16,7 +17,22 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Playlist::shuffle()
+	void Playlist::setLooped( bool _loop )
+	{
+		m_loop = _loop;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Playlist::getLooped() const
+	{
+		return m_loop;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Playlist::isEnded() const
+	{
+		return m_currentSong == m_tracks.end();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Playlist::shuffle()
 	{
 		for(size_t i = 0; i < m_tracks.size(); ++i) 
 		{
@@ -25,15 +41,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Playlist::nextSong()
+	void Playlist::nextSong()
 	{
-		if (++m_currentSong == m_tracks.end())
+		if ( ++m_currentSong == m_tracks.end() && m_loop == true )
 		{
 			m_currentSong = m_tracks.begin();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Playlist::prevSong()
+	void Playlist::prevSong()
 	{
 		if(m_currentSong == m_tracks.begin())
 		{
@@ -42,12 +58,12 @@ namespace Menge
 		--m_currentSong;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Playlist::firstSong()
+	void Playlist::firstSong()
 	{
 		m_currentSong = m_tracks.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Playlist::lastSong()
+	void Playlist::lastSong()
 	{
 		m_currentSong = m_tracks.end() - 1;
 	}
@@ -62,12 +78,12 @@ namespace Menge
 		return	m_playListName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Playlist::addTrack( const std::string & _track )
+	void Playlist::addTrack( const std::string & _track )
 	{
 		m_tracks.push_back( _track );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Playlist::clear()
+	void Playlist::clear()
 	{
 		m_tracks.clear();
 	}

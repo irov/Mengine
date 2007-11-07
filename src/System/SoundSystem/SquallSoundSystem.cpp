@@ -1,7 +1,7 @@
 #	include "SquallSoundSystem.h"
 
 #	include "squall.h"
-
+#	include "windows.h"
 #	include <assert.h>
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem(SoundSystemInterface** _ptrSoundSystem)
@@ -22,6 +22,7 @@ bool initInterfaceSystem(SoundSystemInterface** _ptrSoundSystem)
 void releaseInterfaceSystem(SoundSystemInterface* _ptrSoundSystem)
 {
 	delete static_cast<SQUALLSoundSystem*>(_ptrSoundSystem);
+//	Sleep(200);
 }
 //////////////////////////////////////////////////////////////////////////
 SQUALLSoundSystem::SQUALLSoundSystem()

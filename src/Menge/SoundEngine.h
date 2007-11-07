@@ -5,13 +5,14 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
-#	include	<map>
+#	include	<set>
 #	include	<string>
 
 #	include "Holder.h"
 
 namespace Menge
 {
+	class SoundEmitter;
 	class ResourceSound;
 
 	class SoundEngine
@@ -38,6 +39,8 @@ namespace Menge
 		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer );
 		void releaseSoundSource( SoundSourceInterface * _node );
 
+		void registerSoundEmitter( SoundEmitter * _emitter );
+		void unregisterSoundEmitter( SoundEmitter * _emitter );
 	private:
 
 		float m_soundVolume;
@@ -45,5 +48,7 @@ namespace Menge
 		float m_commonVolume;
 
 		SoundSystemInterface * m_interface;
+
+		std::set<SoundEmitter*>	m_soundEmitters;
 	};
 };

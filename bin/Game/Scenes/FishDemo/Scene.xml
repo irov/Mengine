@@ -72,6 +72,7 @@
                		<Text Value = "Irbo"/>
 			<Color Value = "4290497757"/>
 			<Height Value = "24"/>
+			<CenterAlign Value = "0"/>
 		</Node>
 
 		<Node Name = "SoundEmitterTest" Type = "SoundEmitter">

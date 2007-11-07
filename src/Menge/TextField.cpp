@@ -27,6 +27,7 @@ namespace	Menge
 		: m_length( 0.0f, 0.0f )
 		, m_color( 0xFFFFFFFF )
 		, m_height( 12.0f )
+		, m_centerAlign(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -114,6 +115,7 @@ namespace	Menge
 			XML_CHECK_VALUE_NODE( "Text", "Value", m_text);
 			XML_CHECK_VALUE_NODE( "Color", "Value", m_color);
 			XML_CHECK_VALUE_NODE( "Height", "Value", m_height);
+			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -167,6 +169,8 @@ namespace	Menge
 			float width = m_resourceFont->getCharRatio( *it ) * m_height;
 			m_length.x += width;
 		}
+
+		updateAlign_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setColor( unsigned int _color )
@@ -192,5 +196,14 @@ namespace	Menge
 	const std::string & TextField::getText() const
 	{
 		return m_text;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::updateAlign_()
+	{
+		if( m_centerAlign )
+		{
+			mt::vec2f half_size = mt::vec2f( m_length.x * -0.5f, 0 );
+			setLocalPosition( half_size );
+		}
 	}
 }

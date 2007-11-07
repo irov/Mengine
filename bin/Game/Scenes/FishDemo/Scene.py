@@ -63,11 +63,11 @@ class Scene( Menge.Scene ):
 		self.testSound1.play()
 		self.testSound1.setVolume(1.0)
 
-		Menge.soundSetVolume( 0.7 )
+		Menge.soundSetVolume( 0.3 )
 
 		#Menge.musicPlayList("ResourcePlayListTest1");
 		
-		#self.testTextField = self.getNode( "SoundEmitterTest" )
+		self.testTextField = self.getNode( "SoundEmitterTest" )
 		#self.testTextField.setLocalPosition( Menge.vec2f( 100,1016:30 06.11.20070 ) )
 		
 		block.activate();
@@ -79,6 +79,6 @@ class Scene( Menge.Scene ):
 	def onUpdate( self, timing ):
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 
-		self.camera_x += timing * 0.025
+		self.camera_x += timing * 0
 		pass
 	pass

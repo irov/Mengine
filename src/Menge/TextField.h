@@ -47,5 +47,9 @@ namespace Menge
 		std::string m_text;
 		std::string m_resourceFontName;
 		mt::vec2f	m_length;
+
+		bool m_centerAlign;
+
+		void updateAlign_();
 	};
 }

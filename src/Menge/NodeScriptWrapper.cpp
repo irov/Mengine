@@ -242,6 +242,7 @@ namespace Menge
 			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "getNode", &Scene::getNode )
+				.def( "getLayerSize", &Scene::getLayerSize )
 				;
 
 			pybind::proxy_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot", false)

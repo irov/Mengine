@@ -55,6 +55,18 @@ namespace	Menge
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Scene::getLayerSize( const std::string & _name )
+	{
+		Layer * layer = getChildrenT<Layer>( _name, false );
+		if( layer )
+		{
+			return layer->getSize();
+		}
+
+		static mt::vec2f s_zero(0,0);
+		return s_zero;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerAppend( const std::string & _layer, Node * _node )
 	{
 		Layer * layer = getChildrenT<Layer>( _layer, false );

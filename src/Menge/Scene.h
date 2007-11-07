@@ -40,6 +40,9 @@ namespace Menge
 		bool isSubScene() const;
 
 	public:
+		const mt::vec2f & getLayerSize( const std::string & _name );
+
+	public:
 		void loader( TiXmlElement *_xml) override;
 
 	public:

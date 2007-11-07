@@ -34,7 +34,10 @@ class Scene( Menge.Scene ):
 
 		posX = Menge.getVec2fX(block.getWorldPosition())
 		posY = Menge.getVec2fY(block.getWorldPosition())
-		#print Menge.getVec2fX(block.getWorldPosition())
+		
+		x = 1000
+		y = 100
+
 		if x > posX:
 			block.rotateTo( 10000, Menge.vec2f( x, y ) )
 		else:
@@ -55,7 +58,7 @@ class Scene( Menge.Scene ):
 		self.testSound.play()
 		self.testSound.setVolume(1.0)
 
-		Menge.soundSetVolume( 0.4 )
+		Menge.soundSetVolume( 1.0 )
 
 		#Menge.musicPlayList("ResourcePlayListTest1");
 		

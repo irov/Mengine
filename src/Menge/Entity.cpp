@@ -144,7 +144,7 @@ namespace	Menge
 			}
 		}
 
-		this->callEvent("UPDATE", "(k)", _timing );
+		this->callEvent("UPDATE", "(f)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()

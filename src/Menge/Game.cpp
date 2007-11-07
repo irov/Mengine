@@ -208,7 +208,7 @@ namespace Menge
 			->hasModuleFunction( m_pyPersonality, m_eventUpdate ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, m_eventUpdate, "(k)", _timing );
+				->callModuleFunction( m_pyPersonality, m_eventUpdate, "(f)", _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

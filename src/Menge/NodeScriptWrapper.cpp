@@ -257,6 +257,8 @@ namespace Menge
 				.def( "getImageIndex", &Sprite::getImageIndex )
 				.def( "setImageResource", &Sprite::setImageResource )
 				.def( "getImageResource", &Sprite::getImageResource )
+				.def( "setScale", &Sprite::setScale )
+				.def( "getScale", &Sprite::getScale )
 				;
 
 			{

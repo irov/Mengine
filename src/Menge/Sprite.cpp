@@ -28,6 +28,7 @@ namespace	Menge
 	, m_color(0xFFFFFFFF)
 	, m_currentImageIndex(0)
 	, m_centerAlign(false)
+	, m_scale(1.f)
 	{
 
 	}
@@ -37,9 +38,23 @@ namespace	Menge
 
 	}
 	///////////////////////////////////////////////////////////////////////////
+	void Sprite::setScale( float _scale )
+	{
+		m_scale = _scale;
+
+		updateAlign_();
+	}
+	///////////////////////////////////////////////////////////////////////////
+	float Sprite::getScale() const
+	{
+		return m_scale;
+	}
+	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible( const Viewport & _viewPort )
 	{
-		const mt::vec2f & size = m_image->getMaxSize( m_currentImageIndex );
+		mt::vec2f size = m_image->getMaxSize( m_currentImageIndex );
+		size *= m_scale;
+
 		const mt::vec2f & offset = m_image->getOffset( m_currentImageIndex );
 		const mt::mat3f & worldMatrix = getWorldMatrix();
 
@@ -87,6 +102,8 @@ namespace	Menge
 			return false;
 		}
 
+		updateAlign_();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -112,14 +129,19 @@ namespace	Menge
 			return false;
 		}
 
+		return true;		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::updateAlign_()
+	{
 		if( m_centerAlign )
 		{
-			const mt::vec2f & size = m_image->getMaxSize( 0 );
+			mt::vec2f size = m_image->getMaxSize( 0 );
+			size *= m_scale;
+
 			mt::vec2f half_size = size * (- 0.5f);
 			setLocalPosition( half_size );
 		}
-
-		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_release()
@@ -141,12 +163,15 @@ namespace	Menge
 			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourceImage );
 			XML_CHECK_VALUE_NODE( "ImageIndex", "Value", m_currentImageIndex );
 			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
+			XML_CHECK_VALUE_NODE( "Scale", "Value", m_scale );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render()
 	{
-		const mt::vec2f & size = m_image->getSize( m_currentImageIndex );
+		mt::vec2f size = m_image->getSize( m_currentImageIndex );
+		size *= m_scale;
+
 		const mt::vec2f & image_offset = m_image->getOffset( m_currentImageIndex );
 		const mt::vec4f & frame_uv = m_image->getUV( m_currentImageIndex );
 		

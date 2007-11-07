@@ -29,6 +29,9 @@ namespace Menge
 		virtual void setImageResource( const std::string & _name );
 		virtual const std::string & getImageResource() const;
 
+		virtual void setScale( float _scale );
+		virtual float getScale() const;
+
 	public:
 		virtual bool isVisible( const Viewport & _viewPort );
 
@@ -45,11 +48,16 @@ namespace Menge
 		void _release() override;
 	
 	private:
+		void updateAlign_();
+
+	protected:
 		ResourceImage * m_image;
 		std::string m_resourceImage;
 
 		size_t m_currentImageIndex;
 		bool m_centerAlign;
+
+		float m_scale;
 	
 		unsigned int m_color;
 

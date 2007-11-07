@@ -19,7 +19,7 @@ namespace	Menge
 			void	setVolume( float _vol );
 			float	getVolume() const;
 			void	playList( const std::string& _playListName );
-			void	update( size_t _timing );
+			void	update( float _timing );
 		private:
 			ResourcePlaylist * m_playlistResource;
 

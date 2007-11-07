@@ -23,7 +23,7 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::moveTo( size_t _time, const mt::vec2f & _point, bool _changeDirection )
+	void Entity::moveTo( float _time, const mt::vec2f & _point, bool _changeDirection )
 	{
 		const mt::vec2f & _pos = getLocalPosition();
 		float length = mt::length_v2_v2( _pos, _point );
@@ -67,7 +67,7 @@ namespace	Menge
 		this->callEvent("ROTATE_STOP", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::rotateTo( size_t _time, const mt::vec2f & _point )
+	void Entity::rotateTo( float _time, const mt::vec2f & _point )
 	{
 		const mt::vec2f & _pos = getLocalPosition();
 		float length = mt::length_v2_v2( _pos, _point );

@@ -15,7 +15,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ScheduleManager::schedule( size_t _timing, PyObject * _func )
+	size_t ScheduleManager::schedule( float _timing, PyObject * _func )
 	{
 		ScheduleEvent event;
 
@@ -57,7 +57,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::update( size_t _timing )
+	void ScheduleManager::update( float _timing )
 	{
 		for( TSchedules::iterator 
 			it = m_schedules.begin(),

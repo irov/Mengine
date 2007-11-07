@@ -28,7 +28,7 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		static size_t schedule( size_t _timing, PyObject * _script )
+		static size_t schedule( float _timing, PyObject * _script )
 		{
 			return Holder<ScheduleManager>::hostage()
 				->schedule( _timing, _script );

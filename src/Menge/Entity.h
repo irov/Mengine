@@ -16,8 +16,8 @@ namespace Menge
 		~Entity();
 
 	public:
-		void moveTo( size_t _time, const mt::vec2f & _point, bool _changeDirection );
-		void rotateTo( size_t _time, const mt::vec2f & _point );
+		void moveTo( float _time, const mt::vec2f & _point, bool _changeDirection );
+		void rotateTo( float _time, const mt::vec2f & _point );
 		void moveStop();
 		void rotateStop();
 
@@ -29,11 +29,11 @@ namespace Menge
 		bool m_moveTo;
 		mt::vec2f m_movePoint;
 		mt::vec2f m_moveDir;
-		size_t m_moveTime;
+		float m_moveTime;
 		float m_moveSpeed;
 
 		mt::vec2f m_targetDir;
-		size_t m_rotateTime;
+		float m_rotateTime;
 		bool m_rotate;
 	};
 }

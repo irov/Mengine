@@ -188,7 +188,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::update( size_t _timing )
+	bool Application::update( float _timing )
 	{	
 		Holder<MousePickerSystem>::hostage()->clear();
 		Holder<Game>::hostage()->update( _timing );

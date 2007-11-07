@@ -23,7 +23,7 @@ namespace Menge
 	public:
 		virtual bool initialize( const std::string & _applicationFile );
 		virtual void finalize();
-		virtual bool update( size_t _timing );
+		virtual bool update( float _timing );
 
 		virtual void setFileSystem( FileSystemInterface * _interface );
 		virtual void setInputSystem( InputSystemInterface * _interface );

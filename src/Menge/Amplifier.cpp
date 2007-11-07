@@ -137,7 +137,7 @@ namespace Menge
 		m_sampleMusic = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::update( size_t _timing )
+	void	Amplifier::update( float _timing )
 	{
 		if( m_changeTrack == true ) //squall bug :(
 		{

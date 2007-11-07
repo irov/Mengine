@@ -19,16 +19,16 @@ namespace Menge
 		{
 			bool dead;
 			size_t id;
-			size_t timing;
+			float timing;
 			PyObject * script;
 		};
 
 	public:
-		size_t schedule( size_t _timing, PyObject * _func );
+		size_t schedule( float _timing, PyObject * _func );
 		void remove( size_t _id );
 
 	public:
-		void update( size_t _timing );
+		void update( float _timing );
 
 	private:
 		typedef std::list<ScheduleEvent> TSchedules;

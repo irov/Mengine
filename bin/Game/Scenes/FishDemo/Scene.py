@@ -31,10 +31,20 @@ class Scene( Menge.Scene ):
 		self.node1.hide( False )
 		
 		block = Menge.createEntity("Block",Menge.vec2f( 100, 100 ), Menge.vec2f( 1, 0 ) )
+
+		posX = Menge.getVec2fX(block.getWorldPosition())
+		posY = Menge.getVec2fY(block.getWorldPosition())
+		#print Menge.getVec2fX(block.getWorldPosition())
+		if x > posX:
+			block.rotateTo( 10000, Menge.vec2f( x, y ) )
+		else:
+			mirrorX = posX + ( posX - x )
+			mirrorY = posY + ( posY - y )
+			block.rotateTo( 10000, Menge.vec2f( mirrorX, mirrorY ) )
 		
 		#block.moveTo( 30000, Menge.vec2f( 1000,200 ), False )
 		
-		block.rotateTo( 3000, Menge.vec2f( 0,0 ) )
+		#block.rotateTo( 3000, Menge.vec2f( 0,0 ) )
 
 		#block.setRotate( 3.14/3.0  )
 

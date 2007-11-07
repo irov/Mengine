@@ -2,17 +2,8 @@
 
 struct	SoundDataDesc
 {
-	enum SOUND_TYPE	 
-	{
-		OGG,
-		WAV,
-	}	
-	type;
-	
 	void*		buffer;
 	size_t		size;
-	bool		isRelativeToListener;
-	bool		isStreamSound;
 };
 
 class	SoundSourceInterface;
@@ -39,7 +30,7 @@ public:
 	virtual SoundSourceInterface*		createSoundSource(bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface*	_listener = 0) = 0;
 	virtual SoundBufferInterface * createSoundBuffer() = 0;
 	virtual void releaseSoundBuffer(SoundBufferInterface * _soundBuffer) = 0;
-	virtual void				releaseSoundNode(SoundSourceInterface* _sn) = 0;
+	virtual void releaseSoundNode(SoundSourceInterface* _sn) = 0;
 };
 
 class SoundSourceInterface

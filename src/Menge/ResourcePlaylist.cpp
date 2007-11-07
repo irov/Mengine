@@ -27,11 +27,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourcePlaylist::getLooped() const
-	{
-		return m_looped;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePlaylist::_compile()
 	{
 		TiXmlDocument * document = Holder<FileEngine>::hostage()
@@ -74,6 +69,11 @@ namespace Menge
 	const std::vector<std::string> & ResourcePlaylist::getTracks() const
 	{
 		return m_tracks;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourcePlaylist::getLooped() const
+	{
+		return m_looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePlaylist::_release()

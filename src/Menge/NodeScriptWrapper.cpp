@@ -158,9 +158,6 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( TextField );
 	SCRIPT_CLASS_WRAPPING( SoundEmitter );
 
-//	SCRIPT_CLASS_WRAPPING( Amplifier );
-
-
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{
 		pybind::class_<mt::vec2f>("vec2f")
@@ -178,7 +175,6 @@ namespace Menge
 			//.def( boost::python::self /= float() )
 			;
 
-		//pybind::interface_<Amplifier>("Amplifier", false)
 		//	;
 
 

@@ -198,7 +198,7 @@ bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)
 bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
 {
 	const Ogre::RenderTarget::FrameStats& stats = m_window->getStatistics();
-	//printf("fps = %f \n", stats.avgFPS);
+	printf("fps = %f \n", stats.avgFPS);
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////

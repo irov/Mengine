@@ -27,7 +27,7 @@ namespace	Menge
 		: m_length( 0.0f, 0.0f )
 		, m_color( 0xFFFFFFFF )
 		, m_height( 12.0f )
-		, m_centerAlign(true)
+		, m_centerAlign(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -141,7 +141,7 @@ namespace	Menge
 	 
 			float width = m_resourceFont->getCharRatio( *it ) * m_height;
 			
-			mt::vec2f	size( width, m_height );
+			mt::vec2f size( width, m_height );
 
 			Holder<RenderEngine>::hostage()->renderImage( rwm, offset, uv, size, m_color, image );
 

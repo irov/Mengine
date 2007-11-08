@@ -2,8 +2,9 @@
 #	include "OgreRenderImage.h"
 
 const size_t	VERTEX_PER_QUAD			= 6;
-const size_t	VERTEXBUFFER_INITIAL_CAPACITY	= 256;
+const size_t	VERTEXBUFFER_INITIAL_CAPACITY	= 1024;
 const size_t    UNDERUSED_FRAME_THRESHOLD = 50000;
+const size_t    VECTOR_CAPACITY = 1000;
 
 //////////////////////////////////////////////////////////////////////////
 OgreRenderSpriteManager::OgreRenderSpriteManager()
@@ -73,6 +74,8 @@ void OgreRenderSpriteManager::init(Ogre::SceneManager* sceneMan, Ogre::RenderSys
     underusedFramecount = 0;
 
 	m_renderSys = Ogre::Root::getSingleton().getRenderSystem();
+
+	quadList.reserve( VECTOR_CAPACITY );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::end()
@@ -154,41 +157,53 @@ void OgreRenderSpriteManager::addQuad1(const Ogre::Vector4 & _uv,const Ogre::Mat
 	isSorted = false;
 	QuadInfo quad;
 	
-	quad.points[0] = Ogre::Vector3(_offset[0], _offset[1], 1.0f) * _transform;
-	quad.points[1] = Ogre::Vector3(_offset[0] + _size[0], _offset[1], 1.0f) * _transform;
-	quad.points[2] = Ogre::Vector3(_offset[0] + _size[0], _offset[1] + _size[1], 1.0f) * _transform;
-	quad.points[3] = Ogre::Vector3(_offset[0], _offset[1] + _size[1], 1.0f) * _transform;
-
-	quad.tcoord[0] = Ogre::Vector2(_uv[0], _uv[1]);
-    quad.tcoord[1] = Ogre::Vector2(_uv[2], _uv[1]);
-    quad.tcoord[2] = Ogre::Vector2(_uv[2], _uv[3]);
-    quad.tcoord[3] = Ogre::Vector2(_uv[0], _uv[3]);
-
 	float width = m_viewport->getActualWidth();
   	float heigth = m_viewport->getActualHeight();
+	
+/*	quad.min.x = _transform[0][0] * _offset.x + _transform[1][0] * _offset.y + _transform[2][0];
+	quad.min.y = _transform[0][1] * _offset.x + _transform[1][1] * _offset.y + _transform[2][1];
 
-	for( size_t i = 0; i < 4; ++i )
-   	{
-   		quad.points[i].x = CONVERT_MENGE_TO_OGRE_X(quad.points[i].x,width);
-   		quad.points[i].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[i].y,heigth);
-		quad.points[i].z = -1 + z;
-   	}
+	quad.max.x = quad.min.x + _transform[0][0] * _size.x + _transform[1][0] * _size.y;
+	quad.max.y = quad.min.y + _transform[0][1] * _size.x + _transform[1][1] * _size.y;
+
+	quad.min.x = CONVERT_MENGE_TO_OGRE_X(quad.min.x,width);
+   	quad.min.y = CONVERT_MENGE_TO_OGRE_Y(quad.min.y,heigth);
+
+	quad.max.x = CONVERT_MENGE_TO_OGRE_X(quad.max.x,width);
+   	quad.max.y = CONVERT_MENGE_TO_OGRE_Y(quad.max.y,heigth);*/
+
+	quad.min.x = _transform[0][0] * _offset.x + _transform[1][0] * _offset.y + _transform[2][0];
+	quad.min.y = _transform[0][1] * _offset.x + _transform[1][1] * _offset.y + _transform[2][1];
+
+	quad.max.x = _transform[0][0] * _size.x + _transform[1][0] * _size.y;
+	quad.max.y = _transform[0][1] * _size.x + _transform[1][1] * _size.y;
+
+	quad.min.x = CONVERT_MENGE_TO_OGRE_X(quad.min.x,width);
+   	quad.min.y = CONVERT_MENGE_TO_OGRE_Y(quad.min.y,heigth);
+
+	quad.max.x = quad.min.x + CONVERT_MENGE_TO_OGRE_X(quad.max.x,width) + 1;
+   	quad.max.y = quad.min.y + CONVERT_MENGE_TO_OGRE_Y(quad.max.y,heigth) - 1;
+
+	quad.z = z - 1;
+
+	quad.uv = _uv;
 
 	quad.texture = image->m_texture;
 
 	quad.color = _color;
 	
-	quadList.insert(quad);
+	quadList.push_back(quad);
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::doRender(void)
 {
 	if( !isSorted )
 	{
+		std::sort( quadList.begin(), quadList.end() );
 		isSorted = true;
 
 		size_t size = vertexBuffer->getNumVertices();
-		size_t requestedSize = quadList.size()*VERTEX_PER_QUAD;
+		size_t requestedSize = quadList.size() * VERTEX_PER_QUAD;
 
 		if( size < requestedSize )
 		{
@@ -215,33 +230,63 @@ void OgreRenderSpriteManager::doRender(void)
 		{
 			const QuadInfo& quad = (*it);
 		
-			buffmem->point = quad.points[0];
-			buffmem->texcoord = quad.tcoord[0];
+			buffmem->point.x = quad.min.x;
+			buffmem->point.y = quad.min.y;
+			buffmem->point.z = quad.z;
+
+			buffmem->texcoord.x = quad.uv.x;
+			buffmem->texcoord.y = quad.uv.y;
+
 			buffmem->diffuse = quad.color;
 			++buffmem;
 			
-			buffmem->point = quad.points[1];
-			buffmem->texcoord = quad.tcoord[1];
+			buffmem->point.x = quad.max.x;
+			buffmem->point.y = quad.min.y;
+			buffmem->point.z = quad.z;
+
+			buffmem->texcoord.x = quad.uv.z;
+			buffmem->texcoord.y = quad.uv.y;
+
 			buffmem->diffuse = quad.color;
 			++buffmem;
 
-			buffmem->point = quad.points[2];
-			buffmem->texcoord = quad.tcoord[2];
+			buffmem->point.x = quad.max.x;
+			buffmem->point.y = quad.max.y;
+			buffmem->point.z = quad.z;
+
+			buffmem->texcoord.x = quad.uv.z;
+			buffmem->texcoord.y = quad.uv.w;
+
 			buffmem->diffuse = quad.color;
 			++buffmem;
 
-			buffmem->point = quad.points[0];
-			buffmem->texcoord = quad.tcoord[0];
+			buffmem->point.x = quad.min.x;
+			buffmem->point.y = quad.min.y;
+			buffmem->point.z = quad.z;
+
+			buffmem->texcoord.x = quad.uv.x;
+			buffmem->texcoord.y = quad.uv.y;
+
 			buffmem->diffuse = quad.color;
 			++buffmem;
 
-			buffmem->point = quad.points[2];
-			buffmem->texcoord = quad.tcoord[2];
+			buffmem->point.x = quad.max.x;
+			buffmem->point.y = quad.max.y;
+			buffmem->point.z = quad.z;
+
+			buffmem->texcoord.x = quad.uv.z;
+			buffmem->texcoord.y = quad.uv.w;
+
 			buffmem->diffuse = quad.color;
 			++buffmem;
 
-			buffmem->point = quad.points[3];
-			buffmem->texcoord = quad.tcoord[3];
+			buffmem->point.x = quad.min.x;
+			buffmem->point.y = quad.max.y;
+			buffmem->point.z = quad.z;
+			
+			buffmem->texcoord.x = quad.uv.x;
+			buffmem->texcoord.y = quad.uv.w;
+
 			buffmem->diffuse = quad.color;
 			++buffmem;
 		}
@@ -256,7 +301,6 @@ void OgreRenderSpriteManager::doRender(void)
 
 	while( it != quadList.end() )
 	{
-
 		currTexture = it->texture;
 		renderOp.vertexData->vertexStart = bufferPos;
 
@@ -274,7 +318,7 @@ void OgreRenderSpriteManager::doRender(void)
 
 		renderOp.vertexData->vertexCount = bufferPos - renderOp.vertexData->vertexStart;
 
-		m_renderSys->_setTexture(0, true, currTexture);
+		m_renderSys->_setTexture( 0, true, currTexture );
 
 		if ( first )
 		{
@@ -282,7 +326,7 @@ void OgreRenderSpriteManager::doRender(void)
 			first = false;
 		}
 
-		m_renderSys->_render(renderOp);
+		m_renderSys->_render( renderOp );
 	}
 
     if( bufferPos < vertexBuffer->getNumVertices()/2 )

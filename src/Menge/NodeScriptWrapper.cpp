@@ -19,7 +19,6 @@
 #	include "SoundEmitter.h"
 #	include "SoundEngine.h"
 
-
 #	include "Camera3D.h"
 
 #	include "XmlParser/XmlParser.h"
@@ -301,6 +300,5 @@ namespace Menge
 		pybind::def( "musicSetVolume", &ScriptMethod::musicSetVolume );
 		pybind::def( "musicGetVolume", &ScriptMethod::musicGetVolume );
 		pybind::def( "musicStop", &ScriptMethod::musicStop );
-
 	}
 }

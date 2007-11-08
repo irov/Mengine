@@ -17,19 +17,21 @@ struct QuadVertex
 	Ogre::Vector2 texcoord;
 };
 
-// FIXME: уменьшить кол памяти на вершины
 struct QuadInfo
 {
 	Ogre::TexturePtr	texture;
 
-	Ogre::Vector3		points[4];
-	Ogre::Vector2		tcoord[4];
+	Ogre::Vector2	min;
+	Ogre::Vector3	max;
+	Ogre::Vector4	uv;
+
+	float z;
 
     unsigned int        color;
 
 	bool operator<(const QuadInfo& other) const
 	{
-		return points[0].z > other.points[0].z;
+		return z > other.z;
 	}
 };
 
@@ -75,6 +77,7 @@ private:
 	Ogre::HardwareVertexBufferSharedPtr	vertexBuffer;
 	Ogre::TexturePtr			currTexture;	
 	Ogre::RenderOperation		renderOp;
-	typedef std::multiset<QuadInfo>		QuadList;
+	//typedef std::multiset<QuadInfo>		QuadList;
+	typedef std::vector<QuadInfo>		QuadList;
 	QuadList quadList;
 };

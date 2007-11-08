@@ -112,10 +112,10 @@ bool SQUALLSoundSource::isPlaying() const
 //////////////////////////////////////////////////////////////////////////
 void SQUALLSoundSource::setVolume(float vol)
 {
-	float dxvol = log10( vol * 9.0f + 2.0f );
+	float dxvol = log10( vol * 9.0f + 3.99f );
 
 	if ( dxvol >= 1 ) dxvol = 1.0f;
-	if ( dxvol <= 0 ) dxvol = 0.0f;
+	if ( dxvol <= 0.1 ) dxvol = 0.0f;
 
 	int percent = int(dxvol * 100);
 	int err = SQUALL_Channel_SetVolume(ChannelID,percent);

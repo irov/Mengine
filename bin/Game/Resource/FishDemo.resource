@@ -59,7 +59,6 @@
 
 	<Resource Name = "ResourcePlayListTest1" Type = "ResourcePlaylist">
 		<File Path = "TestPlaylist.xml"/>
-		<Loop Value = "0" />
 	</Resource>
 
 </DataBlock>

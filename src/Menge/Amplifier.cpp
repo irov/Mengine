@@ -77,7 +77,10 @@ namespace Menge
 		m_currentPlayList = it->second;
 		m_currentPlayList->firstSong();
 
-		m_changeTrack = true;
+		release();
+		initStream();
+		m_currentPlayList->nextSong();
+		m_changeTrack = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::stop()
@@ -110,7 +113,10 @@ namespace Menge
 
 		m_volume = _vol * Holder<SoundEngine>::hostage()->getCommonVolume();
 
-		m_music->setVolume( _vol );
+		if( m_music != NULL )
+		{
+			m_music->setVolume( _vol );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float	Amplifier::getVolume() const
@@ -126,6 +132,7 @@ namespace Menge
 
 		m_music = Holder<SoundEngine>::hostage()->createSoundSource( false, m_sampleMusic, this );
 		m_music->play();
+		m_music->setVolume( m_volume );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::release()

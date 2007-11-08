@@ -52,5 +52,5 @@ public:
 	virtual int getPosMs() = 0;
 };
 
-bool	initInterfaceSystem(SoundSystemInterface** );
-void	releaseInterfaceSystem(SoundSystemInterface* );
+bool	initInterfaceSystem( SoundSystemInterface** );
+void	releaseInterfaceSystem( SoundSystemInterface* );

@@ -272,7 +272,6 @@ namespace Menge
 					.def( "setAnimationFactor", &Animation::setAnimationFactor )
 					.def( "getAnimationFactor", &Animation::getAnimationFactor )
 					;
-
 			}
 		}		
 

@@ -41,7 +41,6 @@ namespace Menge
 			return sinf(a);
 		}
 
-
 		static float getVec2fX( const mt::vec2f & _vec2f )
 		{
 			return _vec2f.x;

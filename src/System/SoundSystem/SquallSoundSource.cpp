@@ -118,6 +118,7 @@ void SQUALLSoundSource::setVolume(float vol)
 	if ( dxvol <= 0.601 ) dxvol = 0.0f;
 
 	int percent = int(dxvol * 100);
+
 	int err = SQUALL_Channel_SetVolume(ChannelID,percent);
 
 	if(err < 0)
@@ -128,6 +129,9 @@ void SQUALLSoundSource::setVolume(float vol)
 //////////////////////////////////////////////////////////////////////////
 float SQUALLSoundSource::getVolume() const	
 {
+	int status = SQUALL_Channel_Status(ChannelID);
+	printf("status chanell = %d \n",status);
+
 	int temp = SQUALL_Channel_GetVolume(ChannelID);
 	if(temp < 0)
 	{

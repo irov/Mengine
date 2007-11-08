@@ -73,11 +73,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::registerSoundEmitter( SoundEmitter * _emitter )
 	{
+		printf("Sound Registered! \n");
 		m_soundEmitters.insert( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::unregisterSoundEmitter( SoundEmitter * _emitter )
 	{
+		printf("Sound UnRegistered! \n");
 		m_soundEmitters.erase( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////

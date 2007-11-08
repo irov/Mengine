@@ -39,6 +39,9 @@ namespace Menge
 
 			void setSoundResource( const std::string & _name );
 
+			void	listenPaused( bool _pause );
+			void	listenStopped();
+
 		protected:
 			bool _activate() override;
 			void _deactivate() override;
@@ -54,8 +57,5 @@ namespace Menge
 			SoundSourceInterface * m_interface;
 
 			bool m_isHeadMode;
-
-			void	listenPaused( bool _pause ) override;
-			void	listenStopped() override;
 	};
 };

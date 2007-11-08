@@ -21,8 +21,7 @@ struct QuadInfo
 {
 	Ogre::TexturePtr	texture;
 
-	Ogre::Vector2	min;
-	Ogre::Vector3	max;
+	Ogre::Vector2	points[4];
 	Ogre::Vector4	uv;
 
 	float z;
@@ -77,7 +76,6 @@ private:
 	Ogre::HardwareVertexBufferSharedPtr	vertexBuffer;
 	Ogre::TexturePtr			currTexture;	
 	Ogre::RenderOperation		renderOp;
-	//typedef std::multiset<QuadInfo>		QuadList;
 	typedef std::vector<QuadInfo>		QuadList;
 	QuadList quadList;
 };

@@ -74,7 +74,10 @@ namespace Menge
 			return false;
 		}
 
-		m_interface = Holder<SoundEngine>::hostage()->createSoundSource(m_isHeadMode,m_resourceSound->get(),this);
+		m_interface = Holder<SoundEngine>::hostage()->createSoundSource(
+			m_isHeadMode,
+			m_resourceSound->get(),
+			this );
 
 		if( m_interface == 0 )
 		{
@@ -110,7 +113,7 @@ namespace Menge
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::listenPaused(bool _pause)
+	void SoundEmitter::listenPaused( bool _pause )
 	{
 		callEvent( "PAUSE_PLAYING", "(O)", this->getScript() );
 	}

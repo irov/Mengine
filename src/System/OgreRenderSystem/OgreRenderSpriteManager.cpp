@@ -159,30 +159,32 @@ void OgreRenderSpriteManager::addQuad1(const Ogre::Vector4 & _uv,const Ogre::Mat
 	
 	float width = m_viewport->getActualWidth();
   	float heigth = m_viewport->getActualHeight();
-	
-/*	quad.min.x = _transform[0][0] * _offset.x + _transform[1][0] * _offset.y + _transform[2][0];
-	quad.min.y = _transform[0][1] * _offset.x + _transform[1][1] * _offset.y + _transform[2][1];
 
-	quad.max.x = quad.min.x + _transform[0][0] * _size.x + _transform[1][0] * _size.y;
-	quad.max.y = quad.min.y + _transform[0][1] * _size.x + _transform[1][1] * _size.y;
+	//FIXME:
 
-	quad.min.x = CONVERT_MENGE_TO_OGRE_X(quad.min.x,width);
-   	quad.min.y = CONVERT_MENGE_TO_OGRE_Y(quad.min.y,heigth);
+	quad.points[0].x = _transform[0][0] * _offset[0] + _transform[1][0] * _offset[1] + _transform[2][0];
+	quad.points[0].y = _transform[0][1] * _offset[0] + _transform[1][1] * _offset[1] + _transform[2][1];
 
-	quad.max.x = CONVERT_MENGE_TO_OGRE_X(quad.max.x,width);
-   	quad.max.y = CONVERT_MENGE_TO_OGRE_Y(quad.max.y,heigth);*/
+	quad.points[1].x = quad.points[0].x + _transform[0][0] * _size[0];
+	quad.points[1].y = quad.points[0].y + _transform[0][1] * _size[0];
 
-	quad.min.x = _transform[0][0] * _offset.x + _transform[1][0] * _offset.y + _transform[2][0];
-	quad.min.y = _transform[0][1] * _offset.x + _transform[1][1] * _offset.y + _transform[2][1];
+	quad.points[2].x = quad.points[1].x + _transform[1][0] * _size[1];
+	quad.points[2].y = quad.points[1].y + _transform[1][1] * _size[1];
 
-	quad.max.x = _transform[0][0] * _size.x + _transform[1][0] * _size.y;
-	quad.max.y = _transform[0][1] * _size.x + _transform[1][1] * _size.y;
+	quad.points[3].x = _transform[0][0] * (_offset[0]) + _transform[1][0] * (_offset[1] + _size[1]) + _transform[2][0];
+	quad.points[3].y = _transform[0][1] * (_offset[0]) + _transform[1][1] * (_offset[1] + _size[1]) + _transform[2][1];
 
-	quad.min.x = CONVERT_MENGE_TO_OGRE_X(quad.min.x,width);
-   	quad.min.y = CONVERT_MENGE_TO_OGRE_Y(quad.min.y,heigth);
+	quad.points[0].x = CONVERT_MENGE_TO_OGRE_X(quad.points[0].x,width);
+   	quad.points[0].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[0].y,heigth);
 
-	quad.max.x = quad.min.x + CONVERT_MENGE_TO_OGRE_X(quad.max.x,width) + 1;
-   	quad.max.y = quad.min.y + CONVERT_MENGE_TO_OGRE_Y(quad.max.y,heigth) - 1;
+	quad.points[1].x = CONVERT_MENGE_TO_OGRE_X(quad.points[1].x,width);
+   	quad.points[1].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[1].y,heigth);
+
+	quad.points[2].x = CONVERT_MENGE_TO_OGRE_X(quad.points[2].x,width);
+   	quad.points[2].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[2].y,heigth);
+
+	quad.points[3].x = CONVERT_MENGE_TO_OGRE_X(quad.points[3].x,width);
+   	quad.points[3].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[3].y,heigth);
 
 	quad.z = z - 1;
 
@@ -230,8 +232,8 @@ void OgreRenderSpriteManager::doRender(void)
 		{
 			const QuadInfo& quad = (*it);
 		
-			buffmem->point.x = quad.min.x;
-			buffmem->point.y = quad.min.y;
+			buffmem->point.x = quad.points[0].x;
+			buffmem->point.y = quad.points[0].y;
 			buffmem->point.z = quad.z;
 
 			buffmem->texcoord.x = quad.uv.x;
@@ -240,8 +242,8 @@ void OgreRenderSpriteManager::doRender(void)
 			buffmem->diffuse = quad.color;
 			++buffmem;
 			
-			buffmem->point.x = quad.max.x;
-			buffmem->point.y = quad.min.y;
+			buffmem->point.x = quad.points[1].x;
+			buffmem->point.y = quad.points[1].y;
 			buffmem->point.z = quad.z;
 
 			buffmem->texcoord.x = quad.uv.z;
@@ -250,8 +252,8 @@ void OgreRenderSpriteManager::doRender(void)
 			buffmem->diffuse = quad.color;
 			++buffmem;
 
-			buffmem->point.x = quad.max.x;
-			buffmem->point.y = quad.max.y;
+			buffmem->point.x = quad.points[2].x;
+			buffmem->point.y = quad.points[2].y;
 			buffmem->point.z = quad.z;
 
 			buffmem->texcoord.x = quad.uv.z;
@@ -260,8 +262,8 @@ void OgreRenderSpriteManager::doRender(void)
 			buffmem->diffuse = quad.color;
 			++buffmem;
 
-			buffmem->point.x = quad.min.x;
-			buffmem->point.y = quad.min.y;
+			buffmem->point.x = quad.points[0].x;
+			buffmem->point.y = quad.points[0].y;
 			buffmem->point.z = quad.z;
 
 			buffmem->texcoord.x = quad.uv.x;
@@ -270,8 +272,8 @@ void OgreRenderSpriteManager::doRender(void)
 			buffmem->diffuse = quad.color;
 			++buffmem;
 
-			buffmem->point.x = quad.max.x;
-			buffmem->point.y = quad.max.y;
+			buffmem->point.x = quad.points[2].x;
+			buffmem->point.y = quad.points[2].y;
 			buffmem->point.z = quad.z;
 
 			buffmem->texcoord.x = quad.uv.z;
@@ -280,8 +282,8 @@ void OgreRenderSpriteManager::doRender(void)
 			buffmem->diffuse = quad.color;
 			++buffmem;
 
-			buffmem->point.x = quad.min.x;
-			buffmem->point.y = quad.max.y;
+			buffmem->point.x = quad.points[3].x;
+			buffmem->point.y = quad.points[3].y;
 			buffmem->point.z = quad.z;
 			
 			buffmem->texcoord.x = quad.uv.x;

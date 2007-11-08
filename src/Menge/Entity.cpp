@@ -92,6 +92,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_update( float _timing )
 	{
+		printf("%f \n", _timing);
 		if( m_moveTo )
 		{
 			if( m_moveTime < _timing )

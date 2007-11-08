@@ -23,8 +23,7 @@ int main()
 
 	initInterfaceSystem(&SoundSystem);
 
-	SoundBufferInterface * Sample = SoundSystem->createSoundBuffer();
-	Sample->loadFromFile("1.ogg",false);
+	SoundBufferInterface * Sample = SoundSystem->createSoundBufferFromFile("Click.ogg",false);
 
 	SoundNodeListenerInterface * listener = new Listener();
 
@@ -49,7 +48,7 @@ int main()
 		и звук перестает играть, вызывается callback на останов.
 	*/
 
-	do
+/*	do
 	{
 		float pos = Source->getPosMs();
 		float len = Source->getLengthMS();
@@ -61,7 +60,7 @@ int main()
 		}
 	} 
 	while (key != 27);
-
+*/
 	SoundSystem->releaseSoundNode(Source);
 
 	SoundSystem->releaseSoundBuffer(Sample);

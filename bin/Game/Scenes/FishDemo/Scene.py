@@ -35,7 +35,7 @@ class Scene( Menge.Scene ):
 		posX = Menge.getVec2fX(block.getWorldPosition())
 		posY = Menge.getVec2fY(block.getWorldPosition())
 		
-		'''x = 1000
+		x = 0
 		y = -100
 
 		if x > posX:
@@ -43,7 +43,7 @@ class Scene( Menge.Scene ):
 		else:
 			mirrorX = posX + ( posX - x )
 			mirrorY = posY + ( posY - y )
-			block.rotateTo( 3000, Menge.vec2f( mirrorX, mirrorY ) )'''
+			block.rotateTo( 3000, Menge.vec2f( mirrorX, mirrorY ) )
 		
 		#block.moveTo( 30000, Menge.vec2f( 1000,200 ), False )
 		

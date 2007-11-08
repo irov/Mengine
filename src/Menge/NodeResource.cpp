@@ -68,8 +68,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeResource::recompile()
 	{
+		bool status = isActivate();
+
 		release();
-		return compile();
+		compile();
+
+		if( isCompile() == false )
+		{
+			return false;
+		}
+
+		if( status )
+		{
+			activate();
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeResource::isCompile()

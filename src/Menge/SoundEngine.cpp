@@ -78,12 +78,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::unregisterSoundEmitter( SoundEmitter * _emitter )
 	{
-		std::set<SoundEmitter*>::iterator it = m_soundEmitters.find( _emitter );
-
-		if( it != m_soundEmitters.end() )
-		{
-			m_soundEmitters.erase( it );
-		}
+		m_soundEmitters.erase( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getSoundSourceVolume() const

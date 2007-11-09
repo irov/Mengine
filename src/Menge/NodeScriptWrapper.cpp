@@ -17,9 +17,11 @@
 #	include "Arrow.h"
 #	include "TextField.h"
 #	include "SoundEmitter.h"
-#	include "SoundEngine.h"
+#	include "AnimationGroup.h"
 
 #	include "Camera3D.h"
+
+#	include "SoundEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -61,7 +63,7 @@ namespace Menge
 
 		static void musicPlayList( const std::string & _list )
 		{
-			Holder<Amplifier>::hostage()->playList( _list );
+			Holder<Amplifier>::hostage()->play( _list );
 		}
 
 		static void musicSetVolume( float _vol )
@@ -155,6 +157,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Animation );
 	SCRIPT_CLASS_WRAPPING( Arrow );
 	SCRIPT_CLASS_WRAPPING( TextField );
+	SCRIPT_CLASS_WRAPPING( AnimationGroup );
 	SCRIPT_CLASS_WRAPPING( SoundEmitter );
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -225,6 +228,11 @@ namespace Menge
 				.def( "isLooping", &SoundEmitter::isLooping )
 				.def( "setSoundListener", &SoundEmitter::setSoundListener )
 				.def( "setSoundResource", &SoundEmitter::setSoundResource )
+				;
+
+			pybind::proxy_<AnimationGroup, pybind::bases<SceneNode2D>>("AnimationGroup", false)
+				.def( "play", &AnimationGroup::play )
+				.def( "stop", &AnimationGroup::stop )
 				;
 
 			pybind::proxy_<TextField, pybind::bases<SceneNode2D>>("TextField", false)

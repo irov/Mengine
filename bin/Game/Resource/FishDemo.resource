@@ -1,4 +1,18 @@
 <DataBlock>
+
+	<Resource Name = "SimpleAnimation" Type = "ResourceImageCell" >
+		<File Path = "Game/Images/grid1.png" />
+		<Filter Value = "4" />
+		<Cell X = "4" Y = "4" />
+	</Resource>	
+
+	<Resource Name = "grid3" Type = "ResourceImageCell" >
+		<File Path = "Game/Images/grid3.png" />
+		<Filter Value = "4" />
+		<Cell X = "4" Y = "4" />
+	</Resource>	
+
+
 	<!- ************************************************ -->
 	<!- Image for Water -->
 
@@ -38,6 +52,7 @@
 		<File Path = "Game/Images/Reef/2nd_plan/kamen_03.png" />
 	</Resource>
 
+
 	<Resource Name = "Arial12" Type = "ResourceFont">
      		<File Path = "MyFont"/>
 	</Resource>
@@ -61,4 +76,17 @@
 		<File Path = "TestPlaylist.xml"/>
 	</Resource>
 
+	<Resource Name = "BallRedCNG666" Type = "ResourceAnimation" >
+		<Sequences>
+			<Sequence Index = "0" Delay = "450" />
+			<Sequence Index = "1" Delay = "450" />
+			<Sequence Index = "2" Delay = "450" />
+			<Sequence Index = "3" Delay = "450" />
+			<Sequence Index = "4" Delay = "450" />
+			<Sequence Index = "5" Delay = "450" />
+			<Sequence Index = "6" Delay = "450" />
+			<Sequence Index = "7" Delay = "450" />
+			<Sequence Index = "8" Delay = "450" />
+		</Sequences>
+	</Resource>
 </DataBlock>

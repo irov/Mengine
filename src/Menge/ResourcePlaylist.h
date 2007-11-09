@@ -8,6 +8,8 @@ class FileDataInterface;
 
 namespace Menge
 {
+	typedef	std::vector<std::string> TVecTrack;
+
 	class ResourcePlaylist
 		: public ResourceReference
 	{
@@ -20,18 +22,16 @@ namespace Menge
 		void loader( TiXmlElement * _xml ) override;
 
 	public:
-		const std::vector<std::string> & getTracks() const;
-		bool getLooped() const;
+		const TVecTrack & getTracks() const;
+		bool getLoop() const;
 
 	protected:
 		bool _compile() override;
 		void _release() override;
 
 	private:
-		typedef	std::vector<std::string> TVecTrack;
+		bool	  m_loop;
 		TVecTrack m_tracks;
-
-		bool m_looped;
 
 		std::string m_filename;
 	};

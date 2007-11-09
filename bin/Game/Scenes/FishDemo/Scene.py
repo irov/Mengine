@@ -34,6 +34,11 @@ class Scene( Menge.Scene ):
 
 		posX = Menge.getVec2fX(block.getWorldPosition())
 		posY = Menge.getVec2fY(block.getWorldPosition())
+
+
+		self.atg = self.getNode( "TestAnimationGroup1" )
+		self.atg.play("Test1")
+		self.atg.play("Test2")
 		
 		x = 0
 		y = -100
@@ -54,20 +59,20 @@ class Scene( Menge.Scene ):
 		#block.setLocalDirection(Menge.vec2f( 0,-1 ))
 
 
-		self.testSound = self.getNode( "SoundEmitterTest" )
+		#self.testSound = self.getNode( "SoundEmitterTest" )
 		#self.testSound.setSoundResource("ResourceSoundTest")
-		self.testSound.play()
-		self.testSound.setVolume(1.0)
+		#self.testSound.play()
+		#self.testSound.setVolume(1.0)
 
-		Menge.soundSetVolume( 0.1 )
+		#Menge.soundSetVolume( 0.1 )
 
-		self.testSound1 = self.getNode( "SoundEmitterTest1" )
+		#self.testSound1 = self.getNode( "SoundEmitterTest1" )
 		#self.testSound1.setSoundResource("ResourceSoundTest1")
-		self.testSound1.play()
-		self.testSound1.setVolume(1.0)
+		#self.testSound1.play()
+		#self.testSound1.setVolume(1.0)
 
 
-		#Menge.musicPlayList("ResourcePlayListTest1");
+		Menge.musicPlayList("ResourcePlayListTest1");
 		#Menge.musicSetVolume( 0.3 )
 		#Menge.musicSetVolume( 0.2 )
 		#Menge.musicPlayList("ResourcePlayListTest1");
@@ -78,12 +83,12 @@ class Scene( Menge.Scene ):
 		block.activate();
 		
 		self.layerAppend( "Deep", block )
-		
+	
 		pass
 
 	def onUpdate( self, timing ):
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 
-		self.camera_x += timing * 0.025
+		self.camera_x += timing * 0
 		pass
 	pass

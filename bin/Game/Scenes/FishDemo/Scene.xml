@@ -2,13 +2,14 @@
 	<Node Name = "Water" Type = "Layer2D">
 		
 		<Size Value = "1024; 768" />
-
-		<!--	
+		<!-- 
+			
 		<Node Name = "Water_01" Type = "Sprite">
 			<ImageMap Name = "Water_01" />
 			<Transformation Value = "1;0;0;1;0;0" />
 		</Node>
 		-->
+		
 	</Node>
 	
 	<Node Name = "Deep" Type = "Layer2D">
@@ -84,6 +85,19 @@
 		<Node Name = "SoundEmitterTest1" Type = "SoundEmitter">
               		<Resource Name = "ResourceSoundTest1"/>
                		<HeadMode Value = "0"/>
+		</Node>
+
+		<Node Name = "TestAnimationGroup1" Type = "AnimationGroup">
+			<Animations>
+				<Node Name = "Test1" Type = "Animation">
+   					<ImageMap Name = "SimpleAnimation"/>
+	   				<Animation Name = "BallRedCNG666"/>
+	                	</Node>
+				<Node Name = "Test2" Type = "Animation">
+   					<ImageMap Name = "grid3"/>
+	   				<Animation Name = "BallRedCNG666"/>
+	                	</Node>
+			</Animations>
 		</Node>
 
 	</Node> <!-- Layer -->

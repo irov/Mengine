@@ -560,6 +560,14 @@
 					RelativePath=".\Animation.h"
 					>
 				</File>
+				<File
+					RelativePath=".\AnimationGroup.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\AnimationGroup.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Trap"

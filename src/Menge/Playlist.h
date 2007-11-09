@@ -2,35 +2,45 @@
 
 #	include <vector>
 
-class TiXmlElement;
-
 namespace	Menge
 {
 	typedef	std::vector<std::string> TVecTrack;
 
+	class TiXmlElement;
+
+	class ResourcePlaylist;
+
 	class Playlist
 	{
 	public:
-		Playlist( const std::string& _playlistName );
+		Playlist( ResourcePlaylist * _resource );
 		~Playlist();
 	public:
 		void setLooped( bool _loop );
 		bool getLooped() const;
+
 		bool isEnded() const;
+
+		void next();
+		void previos();
+
+		void first();
+		void last();
+
 		void shuffle();
-		void nextSong();
-		void prevSong();
-		void firstSong();
-		void lastSong();
-		void clear();
-		const std::string&	getCurrentSongName() const;
-		const std::string&	getName() const;
+
+		const std::string &	getTrackName() const;
 		void addTrack( const std::string & _track );
+
+		bool setPlaylistResource( ResourcePlaylist * _resource );
+
 	private:
-		std::string	m_playListName;
+		bool m_loop;
+
+		ResourcePlaylist * m_playlistResource;
+
 		TVecTrack m_tracks;
 		TVecTrack::iterator	m_currentSong;
-		bool m_loop;
 	};
 
 };

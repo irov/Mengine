@@ -1,20 +1,45 @@
 #	include "Playlist.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "ResourcePlaylist.h"
 
-#	include "FileEngine.h"
+#	include "ResourceManager.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Playlist::Playlist( const std::string& _playlistName )
-		: m_playListName( _playlistName )
-		, m_loop( true )
+	Playlist::Playlist( ResourcePlaylist * _resource )
+		: m_loop( true )
+		, m_playlistResource( _resource )
 	{
+		if( m_playlistResource ) 
+		{
+			setPlaylistResource( m_playlistResource );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::~Playlist()
 	{
+		if( m_playlistResource )
+		{
+			Holder<ResourceManager>::hostage()
+				->releaseResource( m_playlistResource );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Playlist::setPlaylistResource( ResourcePlaylist * _resource )
+	{
+		const std::vector<std::string> & tracks = m_playlistResource->getTracks();
+
+		for( std::vector<std::string>::const_iterator it = tracks.begin(); it != tracks.end(); ++it )
+		{
+			addTrack( *it );
+		}
+
+		bool is_looped = m_playlistResource->getLoop();
+		
+		setLooped( is_looped );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::setLooped( bool _loop )
@@ -29,19 +54,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Playlist::isEnded() const
 	{
-		return m_currentSong == m_tracks.end();
+		return m_currentSong == m_tracks.end() && m_loop == false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Playlist::shuffle()
-	{
-		for(size_t i = 0; i < m_tracks.size(); ++i) 
-		{
-			size_t rnd = rand() % m_tracks.size();
-			std::swap( m_tracks[ i ], m_tracks[ rnd ] );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Playlist::nextSong()
+	void Playlist::next()
 	{
 		if ( ++m_currentSong == m_tracks.end() && m_loop == true )
 		{
@@ -49,33 +65,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Playlist::prevSong()
-	{
-		if(m_currentSong == m_tracks.begin())
-		{
-			m_currentSong = m_tracks.end();
-		}
-		--m_currentSong;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Playlist::firstSong()
+	void Playlist::first()
 	{
 		m_currentSong = m_tracks.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Playlist::lastSong()
-	{
-		m_currentSong = m_tracks.end() - 1;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const std::string&	Playlist::getCurrentSongName() const
+	const std::string &	Playlist::getTrackName() const
 	{
 		return	*m_currentSong;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const std::string&	Playlist::getName() const
-	{
-		return	m_playListName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::addTrack( const std::string & _track )
@@ -83,9 +80,26 @@ namespace Menge
 		m_tracks.push_back( _track );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Playlist::clear()
+	void Playlist::shuffle()
 	{
-		m_tracks.clear();
+		for( size_t i = 0; i < m_tracks.size(); ++i ) 
+		{
+			size_t rnd = rand() % m_tracks.size();
+			std::swap( m_tracks[ i ], m_tracks[ rnd ] );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Playlist::previos()
+	{
+		if( m_currentSong == m_tracks.begin() )
+		{
+			m_currentSong = m_tracks.end();
+		}
+		--m_currentSong;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Playlist::last()
+	{
+		m_currentSong = m_tracks.end() - 1;
+	}
 }

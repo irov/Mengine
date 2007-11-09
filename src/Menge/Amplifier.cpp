@@ -19,68 +19,43 @@ namespace Menge
 	: m_music(0)
 	, m_sampleMusic(0)
 	, m_currentPlayList(0)
-	, m_playlistResource(0)
 	, m_volume( 1.0f )
-	, m_changeTrack( false )
+	, m_changeTrack( false )		// for FIX bug SQUALL :(
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::~Amplifier()
 	{
-		if( m_playlistResource )
-		{
-			Holder<ResourceManager>::hostage()
-				->releaseResource( m_playlistResource );
-		}
-
 		for each( const TPlayListMap::value_type & it in m_playLists )
 		{
 			delete it.second;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::playList( const std::string & _playListName )
+	void	Amplifier::play( const std::string & _playlist )
 	{
-		release();
-
-		TPlayListMap::iterator it = m_playLists.find( _playListName );
+		TPlayListMap::iterator it = m_playLists.find( _playlist );
 
 		if ( it == m_playLists.end() )
-		{
-			if( m_playlistResource )
-			{
+		{			
+			ResourcePlaylist * playlistResource = 
 				Holder<ResourceManager>::hostage()
-					->releaseResource( m_playlistResource );
+					->getResourceT<ResourcePlaylist>( _playlist );
+
+			if( playlistResource == NULL )
+			{
+				printf("Amplifier: no found playlist with name %s \n", _playlist.c_str() );
+				return;
 			}
 
-			m_playlistResource = 
-				Holder<ResourceManager>::hostage()
-				->getResourceT<ResourcePlaylist>( _playListName );
+			Playlist * playlist = new Playlist( playlistResource );
 
-			const std::string & playlistName = m_playlistResource->getName();
-			const std::vector<std::string> & tracks = m_playlistResource->getTracks();
-			bool is_looped = m_playlistResource->getLooped();
-
-			Playlist * playlist = new Playlist( playlistName );
-
-			for( std::vector<std::string>::const_iterator i = tracks.begin(); i != tracks.end(); ++i )
-			{
-				playlist->addTrack( *i );
-			}
-
-			playlist->setLooped( is_looped );
-
-			it = m_playLists.insert(
-				std::make_pair( playlistName, playlist )
-				).first;
+			it = m_playLists.insert( std::make_pair( _playlist, playlist ) ).first;
 		}
 
 		m_currentPlayList = it->second;
-		m_currentPlayList->firstSong();
+		m_currentPlayList->first();
 
-		release();
-		initStream();
-		m_currentPlayList->nextSong();
-		m_changeTrack = false;
+		play_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::stop()
@@ -88,34 +63,26 @@ namespace Menge
 		if( m_music )
 		{
 			m_music->stop();
-			release();
+			release_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::listenStopped()
 	{
-		if ( m_currentPlayList->isEnded() && m_currentPlayList->getLooped() == false )
-		{
-			m_changeTrack = false;
-			return;
-		}
-		m_changeTrack = true;
+		m_changeTrack = !m_currentPlayList->isEnded();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::listenPaused( bool _pause )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::setVolume( float _vol )
+	void	Amplifier::setVolume( float _volume )
 	{
-		if ( _vol >= 1 ) _vol = 1.0f;
-		if ( _vol <= 0 ) _vol = 0.0f;
+		m_volume = _volume * Holder<SoundEngine>::hostage()->getCommonVolume();
 
-		m_volume = _vol * Holder<SoundEngine>::hostage()->getCommonVolume();
-
-		if( m_music != NULL )
+		if( m_music )
 		{
-			m_music->setVolume( _vol );
+			m_music->setVolume( _volume );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -124,34 +91,56 @@ namespace Menge
 		return m_volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::initStream()
+	void	Amplifier::update( float _timing )
 	{
-		const std::string & filename = m_currentPlayList->getCurrentSongName();
+		if( m_changeTrack == true ) //SQUALL bug :(
+		{
+			play_();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	Amplifier::play_()
+	{
+		release_();
+
+		const std::string & filename = m_currentPlayList->getTrackName();
 
 		m_sampleMusic = Holder<SoundEngine>::hostage()->createSoundBufferFromFile( filename.c_str(), true );
 
+		if( m_sampleMusic == 0 )
+		{
+			printf("Amplifier can't load sample '%s'\n"
+				, filename.c_str() 
+				);
+
+			return;			
+		}
+
 		m_music = Holder<SoundEngine>::hostage()->createSoundSource( false, m_sampleMusic, this );
+
+		if( m_music == 0 )
+		{
+			printf("Warning: Amplifier '%s' can't create sound source\n"
+				, filename.c_str()
+				);
+
+			return;
+		}
+
 		m_music->play();
 		m_music->setVolume( m_volume );
+
+		m_currentPlayList->next();
+
+		m_changeTrack = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::release()
+	void	Amplifier::release_()
 	{
 		Holder<SoundEngine>::hostage()->releaseSoundSource( m_music);
 		Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_sampleMusic );
 		m_music = NULL;
 		m_sampleMusic = NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::update( float _timing )
-	{
-		if( m_changeTrack == true ) //squall bug :(
-		{
-			release();
-			initStream();
-			m_currentPlayList->nextSong();
-			m_changeTrack = false;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

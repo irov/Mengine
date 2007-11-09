@@ -15,14 +15,20 @@ namespace	Menge
 		public:
 			Amplifier();
 			~Amplifier();
-			void	stop();
-			void	setVolume( float _vol );
-			float	getVolume() const;
-			void	playList( const std::string& _playListName );
+		public:
+			void	play( const std::string & _playlist );
 			void	update( float _timing );
-		private:
-			ResourcePlaylist * m_playlistResource;
+			void	stop();
 
+			void	setVolume( float _volume );
+			float	getVolume() const;
+
+		public:	
+
+		//	void	registerPlaylist( Playlist * _playlist );
+		//	void	unregisterPlaylist( Playlist * _playlist );
+
+		private:
 			bool m_changeTrack;
 
 			float m_volume;
@@ -30,6 +36,7 @@ namespace	Menge
 			typedef	std::map<std::string,Playlist*>	TPlayListMap;
 
 			TPlayListMap	m_playLists;
+
 			Playlist *	m_currentPlayList;
 			
 			SoundSourceInterface * m_music;
@@ -37,7 +44,7 @@ namespace	Menge
 
 			void	listenPaused( bool _pause );
 			void	listenStopped();
-			void	release();	
-			void	initStream();
+			void	release_();	
+			void	play_();
 	};
 }

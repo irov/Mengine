@@ -233,8 +233,13 @@ namespace Menge
 			pybind::proxy_<AnimationGroup, pybind::bases<SceneNode2D>>("AnimationGroup", false)
 				.def( "play", &AnimationGroup::play )
 				.def( "stop", &AnimationGroup::stop )
+				.def( "pause", &AnimationGroup::pause )
+				.def( "setLooped", &AnimationGroup::setLooped )
+				.def( "getLooped", &AnimationGroup::getLooped )
+				.def( "setAnimationListener", &AnimationGroup::setAnimationListener )
+				.def( "setAnimationResource", &AnimationGroup::setAnimationResource )
 				;
-
+			
 			pybind::proxy_<TextField, pybind::bases<SceneNode2D>>("TextField", false)
 				.def( "setText", &TextField::setText )
 				.def( "setColor", &TextField::setColor )

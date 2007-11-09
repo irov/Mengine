@@ -8,7 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::Playlist( ResourcePlaylist * _resource )
-		: m_loop( true )
+		: m_loop( false )
 		, m_playlistResource( _resource )
 	{
 		if( m_playlistResource ) 
@@ -85,7 +85,7 @@ namespace Menge
 		for( size_t i = 0; i < m_tracks.size(); ++i ) 
 		{
 			size_t rnd = rand() % m_tracks.size();
-			std::swap( m_tracks[ i ], m_tracks[ rnd ] );
+			std::swap( m_tracks[i], m_tracks[rnd] );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

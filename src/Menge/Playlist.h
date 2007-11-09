@@ -4,10 +4,6 @@
 
 namespace	Menge
 {
-	typedef	std::vector<std::string> TVecTrack;
-
-	class TiXmlElement;
-
 	class ResourcePlaylist;
 
 	class Playlist
@@ -38,6 +34,8 @@ namespace	Menge
 		bool m_loop;
 
 		ResourcePlaylist * m_playlistResource;
+
+		typedef	std::vector<std::string> TVecTrack;
 
 		TVecTrack m_tracks;
 		TVecTrack::iterator	m_currentSong;

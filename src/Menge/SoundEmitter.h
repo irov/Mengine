@@ -27,7 +27,7 @@ namespace Menge
 
 			bool isPlaying();
 
-			void setVolume( float _vol );
+			void setVolume( float _volume );
 			float getVolume();
  
 			void setLooped( bool _loop );

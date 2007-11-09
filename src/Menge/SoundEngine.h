@@ -8,8 +8,6 @@
 #	include	<set>
 #	include	<string>
 
-#	include "Holder.h"
-
 namespace Menge
 {
 	class SoundEmitter;
@@ -31,15 +29,16 @@ namespace Menge
 		SoundBufferInterface *	createSoundBufferFromFile(const char* _filename, bool _isStream);
 		SoundBufferInterface *	createSoundBufferFromMemory(void* _buffer, int _size, bool _newmem);
 
-		void setSoundSourceVolume( float _vol );
+		void setSoundSourceVolume( float _volume );
 		float getSoundSourceVolume() const;
 
-		void setCommonVolume( float _vol );
+		void setCommonVolume( float _volume );
 		float getCommonVolume() const;
 
 		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer );
 		void releaseSoundSource( SoundSourceInterface * _node );
 
+	public:
 		void registerSoundEmitter( SoundEmitter * _emitter );
 		void unregisterSoundEmitter( SoundEmitter * _emitter );
 	private:
@@ -50,6 +49,7 @@ namespace Menge
 
 		SoundSystemInterface * m_interface;
 
-		std::set<SoundEmitter*>	m_soundEmitters;
+		typedef std::set<SoundEmitter*> TSetSoundEmitters;
+		TSetSoundEmitters	m_soundEmitters;
 	};
 };

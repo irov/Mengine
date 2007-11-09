@@ -4,8 +4,6 @@
 
 #	include "RenderEngine.h"
 
-#	include "Viewport.h"
-
 #	include "XmlParser/XmlParser.h"
 
 #	include "Interface/RenderSystemInterface.h"
@@ -206,4 +204,5 @@ namespace	Menge
 			setLocalPosition( half_size );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

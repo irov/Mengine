@@ -26,19 +26,20 @@ namespace	Menge
 		void shuffle();
 
 		const std::string &	getTrackName() const;
+
 		void addTrack( const std::string & _track );
 
 		bool setPlaylistResource( ResourcePlaylist * _resource );
 
 	private:
-		bool m_loop;
-
 		ResourcePlaylist * m_playlistResource;
 
 		typedef	std::vector<std::string> TVecTrack;
 
 		TVecTrack m_tracks;
-		TVecTrack::iterator	m_currentSong;
+		TVecTrack::iterator	m_track;
+
+		bool m_loop;
 	};
 
 };

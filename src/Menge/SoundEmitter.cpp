@@ -151,9 +151,9 @@ namespace Menge
 		return m_interface->isPlaying();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setVolume( float _vol )
+	void SoundEmitter::setVolume( float _volume )
 	{
-		float soundSourceVol = _vol * Holder<SoundEngine>::hostage()->getSoundSourceVolume();
+		float soundSourceVol = _volume * Holder<SoundEngine>::hostage()->getSoundSourceVolume();
 		float commonVol = soundSourceVol * Holder<SoundEngine>::hostage()->getCommonVolume();
 		return m_interface->setVolume( commonVol );
 	}

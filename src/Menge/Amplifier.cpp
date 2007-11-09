@@ -2,10 +2,6 @@
 
 #	include "Playlist.h"
 
-#	include "XmlParser/XmlParser.h"
-
-#	include "FileEngine.h"
-
 #	include "SoundEngine.h"
 
 #	include "ResourcePlaylist.h"
@@ -17,7 +13,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::Amplifier()
 	: m_music(0)
-	, m_sampleMusic(0)
+	, m_buffer(0)
 	, m_currentPlayList(0)
 	, m_volume( 1.0f )
 	, m_changeTrack( false )		// for FIX bug SQUALL :(
@@ -69,7 +65,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::listenStopped()
 	{
-		m_changeTrack = !m_currentPlayList->isEnded();
+		m_changeTrack = !m_currentPlayList->isEnded(); // FOR FIX SQUALL BUG :(
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::listenPaused( bool _pause )
@@ -93,7 +89,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::update( float _timing )
 	{
-		if( m_changeTrack == true ) //SQUALL bug :(
+		if( m_changeTrack == true ) // FOR FIX SQUALL BUG :(
 		{
 			play_();
 		}
@@ -105,18 +101,18 @@ namespace Menge
 
 		const std::string & filename = m_currentPlayList->getTrackName();
 
-		m_sampleMusic = Holder<SoundEngine>::hostage()->createSoundBufferFromFile( filename.c_str(), true );
+		m_buffer = Holder<SoundEngine>::hostage()->createSoundBufferFromFile( filename.c_str(), true );
 
-		if( m_sampleMusic == 0 )
+		if( m_buffer == 0 )
 		{
-			printf("Amplifier can't load sample '%s'\n"
+			printf("Warning: Amplifier can't load sample '%s'\n"
 				, filename.c_str() 
 				);
 
 			return;			
 		}
 
-		m_music = Holder<SoundEngine>::hostage()->createSoundSource( false, m_sampleMusic, this );
+		m_music = Holder<SoundEngine>::hostage()->createSoundSource( false, m_buffer, this );
 
 		if( m_music == 0 )
 		{
@@ -132,15 +128,15 @@ namespace Menge
 
 		m_currentPlayList->next();
 
-		m_changeTrack = false;
+		m_changeTrack = false;	// FOR FIX SQUALL BUG :(
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::release_()
 	{
-		Holder<SoundEngine>::hostage()->releaseSoundSource( m_music);
-		Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_sampleMusic );
+		Holder<SoundEngine>::hostage()->releaseSoundSource( m_music );
+		Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_buffer );
 		m_music = NULL;
-		m_sampleMusic = NULL;
+		m_buffer = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -2,7 +2,7 @@
 
 struct	SoundDataDesc
 {
-	void*		buffer;
+	void *		buffer;
 	size_t		size;
 };
 
@@ -27,11 +27,11 @@ public:
 	virtual void pause() = 0;
 	virtual void stop() = 0;
 	virtual bool isPlaying() const = 0;
-	virtual void setVolume(float _vol) = 0;
+	virtual void setVolume( float _volume ) = 0;
 	virtual float getVolume() const = 0;
-	virtual void setPosition(float _x, float _y, float _z) = 0;
-	virtual const float* getPosition() const = 0;
-	virtual void setLooped(bool _loop) = 0;
+	virtual void setPosition( float _x, float _y, float _z ) = 0;
+	virtual const float * getPosition() const = 0;
+	virtual void setLooped( bool _loop ) = 0;
 	virtual bool isLooping() const = 0;
 	virtual int	getLengthMS() = 0;
 	virtual int getPosMs() = 0;
@@ -40,14 +40,14 @@ public:
 class SoundSystemInterface
 {
 public:
-	virtual void	setListenerOrient(float* _position, float* _front, float* top) = 0;
-	virtual SoundSourceInterface*	createSoundSource(bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface*	_listener = 0) = 0;
+	virtual void	setListenerOrient( float * _position, float * _front, float * top) = 0;
+	virtual SoundSourceInterface*	createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener = 0) = 0;
 
-	virtual SoundBufferInterface *	createSoundBufferFromFile(const char* _filename, bool _isStream) = 0;
-	virtual SoundBufferInterface *	createSoundBufferFromMemory(void* _buffer, int _size, bool _newmem) = 0;
+	virtual SoundBufferInterface *	createSoundBufferFromFile( const char * _filename, bool _isStream ) = 0;
+	virtual SoundBufferInterface *	createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) = 0;
 
-	virtual void	releaseSoundBuffer(SoundBufferInterface * _soundBuffer) = 0;
-	virtual void	releaseSoundNode(SoundSourceInterface* _sn) = 0;
+	virtual void	releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) = 0;
+	virtual void	releaseSoundNode( SoundSourceInterface * _sn ) = 0;
 };
 
 bool	initInterfaceSystem( SoundSystemInterface** );

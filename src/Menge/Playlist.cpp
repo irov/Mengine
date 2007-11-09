@@ -54,25 +54,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Playlist::isEnded() const
 	{
-		return m_currentSong == m_tracks.end() && m_loop == false;
+		return m_track == m_tracks.end() && m_loop == false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::next()
 	{
-		if ( ++m_currentSong == m_tracks.end() && m_loop == true )
+		if ( ++m_track == m_tracks.end() && m_loop == true )
 		{
-			m_currentSong = m_tracks.begin();
+			m_track = m_tracks.begin();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::first()
 	{
-		m_currentSong = m_tracks.begin();
+		m_track = m_tracks.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string &	Playlist::getTrackName() const
 	{
-		return	*m_currentSong;
+		return	*m_track;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::addTrack( const std::string & _track )
@@ -91,15 +91,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::previos()
 	{
-		if( m_currentSong == m_tracks.begin() )
+		if( m_track == m_tracks.begin() )
 		{
-			m_currentSong = m_tracks.end();
+			m_track = m_tracks.end();
 		}
-		--m_currentSong;
+		--m_track;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::last()
 	{
-		m_currentSong = m_tracks.end() - 1;
+		m_track = m_tracks.end() - 1;
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -847,50 +847,6 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Object3D"
-			>
-			<Filter
-				Name="Trap"
-				>
-				<File
-					RelativePath=".\Trap3D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Trap3D.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Animation"
-				>
-				<File
-					RelativePath=".\AnimationBone.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\AnimationBone.h"
-					>
-				</File>
-				<File
-					RelativePath=".\AnimationCallbacks.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\AnimationCallbacks.h"
-					>
-				</File>
-				<File
-					RelativePath=".\AnimationObject.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\AnimationObject.h"
-					>
-				</File>
-			</Filter>
-		</Filter>
-		<Filter
 			Name="Scene"
 			>
 			<File

@@ -117,7 +117,7 @@ namespace	Menge
 		{
 			return m_currentAnimation->getLooped();
 		}
-
+		// ???
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -149,5 +149,11 @@ namespace	Menge
 		}
 
 		m_currentAnimation = this->getChildrenT<Animation>( _name );
+
+		if( m_currentAnimation == NULL )
+		{
+			printf("AnimationGroup: no found animation with name %s \n", _name.c_str() );
+			return;
+		}
 	}
 }

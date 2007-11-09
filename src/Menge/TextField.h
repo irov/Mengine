@@ -2,8 +2,6 @@
 
 #	include "SceneNode2D.h"
 
-class RenderFontInterface;
-
 namespace Menge
 {
 	class ResourceFont;
@@ -43,7 +41,7 @@ namespace Menge
 		ResourceFont * m_resourceFont;
 
 		unsigned int m_color;
-		float m_height;
+		float		m_height;
 		std::string m_text;
 		std::string m_resourceFontName;
 		mt::vec2f	m_length;

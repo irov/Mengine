@@ -41,9 +41,9 @@ namespace Menge
 				->remove( _id );
 		}
 
-		static void soundSetVolume( float _vol )
+		static void soundSetVolume( float _volume )
 		{
-			Holder<SoundEngine>::hostage()->setSoundSourceVolume( _vol );
+			Holder<SoundEngine>::hostage()->setSoundSourceVolume( _volume );
 		}
 
 		static float soundGetVolume()
@@ -51,9 +51,9 @@ namespace Menge
 			return Holder<SoundEngine>::hostage()->getSoundSourceVolume();
 		}
 
-		static void commonSetVolume( float _vol )
+		static void commonSetVolume( float _volume )
 		{
-			Holder<SoundEngine>::hostage()->setCommonVolume( _vol );
+			Holder<SoundEngine>::hostage()->setCommonVolume( _volume );
 		}
 
 		static float commonGetVolume()
@@ -66,9 +66,9 @@ namespace Menge
 			Holder<Amplifier>::hostage()->play( _list );
 		}
 
-		static void musicSetVolume( float _vol )
+		static void musicSetVolume( float _volume )
 		{
-			Holder<Amplifier>::hostage()->setVolume( _vol );
+			Holder<Amplifier>::hostage()->setVolume( _volume );
 		}
 
 		static float musicGetVolume()

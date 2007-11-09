@@ -1,12 +1,6 @@
 #	include "SoundEngine.h"
 
-#	include "FileEngine.h"
-
 #	include "SoundEmitter.h"
-
-#	include "Interface/SoundSystemInterface.h"
-
-#	include	<assert.h>
 
 namespace Menge
 {
@@ -22,7 +16,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	SoundEngine::setListenerOrient(const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top)
+	void	SoundEngine::setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top )
 	{
 		m_interface->setListenerOrient((float*)_position.m,(float*)_front.m,(float*)top.m);
 	}
@@ -37,34 +31,34 @@ namespace Menge
 		return	sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface *	SoundEngine::createSoundBufferFromFile(const char* _filename, bool _isStream)
+	SoundBufferInterface *	SoundEngine::createSoundBufferFromFile( const char* _filename, bool _isStream )
 	{
 		SoundBufferInterface * sample =  m_interface->createSoundBufferFromFile(_filename, _isStream);
 		return sample;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface *	SoundEngine::createSoundBufferFromMemory(void* _buffer, int _size, bool _newmem)
+	SoundBufferInterface *	SoundEngine::createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem )
 	{
 		SoundBufferInterface * sample =  m_interface->createSoundBufferFromMemory(_buffer, _size, _newmem);
 		return sample;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::releaseSoundBuffer(SoundBufferInterface* _soundBuffer)
+	void SoundEngine::releaseSoundBuffer( SoundBufferInterface* _soundBuffer )
 	{
 		m_interface->releaseSoundBuffer(_soundBuffer);
 		_soundBuffer = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::releaseSoundSource(SoundSourceInterface* _soundSource)
+	void SoundEngine::releaseSoundSource( SoundSourceInterface* _soundSource )
 	{
 		m_interface->releaseSoundNode(_soundSource);
 		_soundSource = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setSoundSourceVolume( float _vol )
+	void SoundEngine::setSoundSourceVolume( float _volume )
 	{
-		m_soundVolume = _vol;
-		for( std::set<SoundEmitter*>::iterator it = m_soundEmitters.begin(); it != m_soundEmitters.end(); ++it ) 		
+		m_soundVolume = _volume;
+		for( TSetSoundEmitters::iterator it = m_soundEmitters.begin(); it != m_soundEmitters.end(); ++it )
 		{
 			float vol = (*it)->getVolume();
 			(*it)->setVolume( vol );
@@ -88,9 +82,9 @@ namespace Menge
 		return m_soundVolume;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	void SoundEngine::setCommonVolume( float _vol )
+	void SoundEngine::setCommonVolume( float _volume )
 	{
-		m_commonVolume = _vol;
+		m_commonVolume = _volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getCommonVolume() const

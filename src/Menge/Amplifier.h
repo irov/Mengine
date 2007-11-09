@@ -40,7 +40,7 @@ namespace	Menge
 			Playlist *	m_currentPlayList;
 			
 			SoundSourceInterface * m_music;
-			SoundBufferInterface * m_sampleMusic;
+			SoundBufferInterface * m_buffer;
 
 			void	listenPaused( bool _pause );
 			void	listenStopped();

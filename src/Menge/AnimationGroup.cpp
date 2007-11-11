@@ -79,40 +79,32 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationGroup::stop( const std::string& _name )
+	void AnimationGroup::stop()
 	{
-		setCurrentAnimation( _name );
-
 		if( m_currentAnimation )
 		{
 			m_currentAnimation->stop();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationGroup::pause( const std::string & _name )
+	void AnimationGroup::pause()
 	{
-		setCurrentAnimation( _name );
-
 		if( m_currentAnimation )
 		{
 			m_currentAnimation->pause();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationGroup::setLooped( const std::string & _name, bool _looped )
+	void AnimationGroup::setLooped( bool _looped )
 	{
-		setCurrentAnimation( _name );
-
 		if( m_currentAnimation )
 		{
 			m_currentAnimation->setLooped( _looped );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AnimationGroup::getLooped( const std::string & _name )
+	bool AnimationGroup::getLooped()
 	{
-		setCurrentAnimation( _name );
-
 		if( m_currentAnimation )
 		{
 			return m_currentAnimation->getLooped();
@@ -121,20 +113,16 @@ namespace	Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationGroup::setAnimationListener( const std::string & _name, PyObject * _listener )
+	void AnimationGroup::setAnimationListener( PyObject * _listener )
 	{
-		setCurrentAnimation( _name );
-
 		if( m_currentAnimation )
 		{
 			m_currentAnimation->setAnimationListener( _listener );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationGroup::setAnimationResource( const std::string & _name, const std::string & _resource )
+	void AnimationGroup::setAnimationResource( const std::string & _resource )
 	{
-		setCurrentAnimation( _name );
-
 		if( m_currentAnimation )
 		{
 			m_currentAnimation->setAnimationResource( _resource );

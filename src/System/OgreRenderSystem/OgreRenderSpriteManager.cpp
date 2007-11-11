@@ -5,6 +5,7 @@ const size_t	VERTEX_PER_QUAD			= 6;
 const size_t	VERTEXBUFFER_INITIAL_CAPACITY	= 1024;
 const size_t    UNDERUSED_FRAME_THRESHOLD = 50000;
 const size_t    VECTOR_CAPACITY = 1000;
+const size_t    INDEX_COUNT = 1000;
 
 //////////////////////////////////////////////////////////////////////////
 OgreRenderSpriteManager::OgreRenderSpriteManager()
@@ -48,7 +49,21 @@ static void createQuadRenderOp(Ogre::RenderOperation &renderOp,
 	renderOp.vertexData->vertexBufferBinding->setBinding(0, vertexBuffer);
 
 	renderOp.operationType = Ogre::RenderOperation::OT_TRIANGLE_LIST;
+
 	renderOp.useIndexes = false;
+
+/*	renderOp.indexData = new Ogre::IndexData;
+	renderOp.indexData->indexStart = 0;
+
+	renderOp.indexData->indexCount = nquads;
+
+	renderOp.indexData->indexBuffer = 
+		Ogre::HardwareBufferManager::getSingleton().createIndexBuffer(
+		Ogre::HardwareIndexBuffer::IT_16BIT, 
+		nquads, //??
+		Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
+*/
+//	renderOp.useIndexes = true;
 }
 
 static void destroyQuadRenderOp(Ogre::RenderOperation &renderOp, 
@@ -204,28 +219,30 @@ void OgreRenderSpriteManager::doRender(void)
 		std::sort( quadList.begin(), quadList.end() );
 		isSorted = true;
 
-		size_t size = vertexBuffer->getNumVertices();
-		size_t requestedSize = quadList.size() * VERTEX_PER_QUAD;
+		#ifdef VBVB
+			size_t size = vertexBuffer->getNumVertices();
+			size_t requestedSize = quadList.size() * VERTEX_PER_QUAD;
 
-		if( size < requestedSize )
-		{
-			while(size < requestedSize)
+			if( size < requestedSize )
 			{
-				size *= 2;
+				while(size < requestedSize)
+				{
+					size *= 2;
+				}
+				
+				destroyQuadRenderOp( renderOp, vertexBuffer );
+				createQuadRenderOp( renderOp, vertexBuffer, size );
 			}
+			else if( requestedSize < size/2 && underusedFramecount >= UNDERUSED_FRAME_THRESHOLD )
+			{
+				size /= 2;
+				destroyQuadRenderOp( renderOp, vertexBuffer );
+				createQuadRenderOp( renderOp, vertexBuffer, size );
 			
-			destroyQuadRenderOp( renderOp, vertexBuffer );
-			createQuadRenderOp( renderOp, vertexBuffer, size );
-		}
-		else if( requestedSize < size/2 && underusedFramecount >= UNDERUSED_FRAME_THRESHOLD )
-		{
-			size /= 2;
-			destroyQuadRenderOp( renderOp, vertexBuffer );
-			createQuadRenderOp( renderOp, vertexBuffer, size );
-		
-			underusedFramecount = 0;
-		}
-		
+				underusedFramecount = 0;
+			}
+		#endif
+
 		QuadVertex * buffmem = static_cast<QuadVertex*>( vertexBuffer->lock( Ogre::HardwareVertexBuffer::HBL_DISCARD ) );
 		
 		for ( QuadList::iterator it = quadList.begin(); it != quadList.end(); ++it )
@@ -331,12 +348,16 @@ void OgreRenderSpriteManager::doRender(void)
 		m_renderSys->_render( renderOp );
 	}
 
-    if( bufferPos < vertexBuffer->getNumVertices()/2 )
-	{
-       underusedFramecount++;
-	}
-    else
-	{
-       underusedFramecount = 0;
-	} 
+	#ifdef VBVB
+
+		if( bufferPos < vertexBuffer->getNumVertices()/2 )
+		{
+		   underusedFramecount++;
+		}
+		else
+		{
+		   underusedFramecount = 0;
+		} 
+	
+	#endif
 }

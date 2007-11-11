@@ -71,9 +71,6 @@ namespace Menge
 
 		//void	setTexture(RenderImageInterface * _tex);
 
-		
-		
-
 	protected:
 		RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;

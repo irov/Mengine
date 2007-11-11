@@ -15,14 +15,14 @@ namespace Menge
 
 	public:
 		void play( const std::string & _name );
-		void pause( const std::string & _name );
-		void stop( const std::string & _name );
+		void pause();
+		void stop();
 
-		void setLooped( const std::string & _name, bool _looped );
-		bool getLooped( const std::string & _name );
+		void setLooped( bool _looped );
+		bool getLooped();
 
-		void setAnimationListener( const std::string & _name, PyObject * _listener );
-		void setAnimationResource( const std::string & _name, const std::string & _resource );
+		void setAnimationListener( PyObject * _listener );
+		void setAnimationResource( const std::string & _resource );
 
 	public:
 		void loader( TiXmlElement * _xml ) override;

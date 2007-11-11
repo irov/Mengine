@@ -23,11 +23,6 @@ namespace	Menge
 			void	setVolume( float _volume );
 			float	getVolume() const;
 
-		public:	
-
-		//	void	registerPlaylist( Playlist * _playlist );
-		//	void	unregisterPlaylist( Playlist * _playlist );
-
 		private:
 			bool m_changeTrack;
 

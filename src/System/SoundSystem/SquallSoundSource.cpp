@@ -18,6 +18,7 @@ int StopCallback(int ChannelID,void* UserData)
 {
 	printf("StopCallback\n");
 	SoundNodeListenerInterface* Listener = static_cast<SoundNodeListenerInterface*>(UserData);
+
 	Listener->listenStopped();
 	return 1;
 }

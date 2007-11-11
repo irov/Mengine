@@ -463,6 +463,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Particle"
+				>
+				<File
+					RelativePath=".\ParticleEngine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ParticleEngine.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Object2D"
@@ -602,6 +614,18 @@
 				</File>
 				<File
 					RelativePath=".\SoundEmitter.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Emitter"
+				>
+				<File
+					RelativePath=".\Emitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Emitter.h"
 					>
 				</File>
 			</Filter>

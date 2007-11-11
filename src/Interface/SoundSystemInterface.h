@@ -1,11 +1,5 @@
 #	pragma once
 
-struct	SoundDataDesc
-{
-	void *		buffer;
-	size_t		size;
-};
-
 class	SoundNodeListenerInterface
 {
 public:

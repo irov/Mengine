@@ -26,8 +26,8 @@ namespace Menge
 			SoundBufferInterface * _sample,
 			SoundNodeListenerInterface * _listener);
 
-		SoundBufferInterface *	createSoundBufferFromFile(const char* _filename, bool _isStream);
-		SoundBufferInterface *	createSoundBufferFromMemory(void* _buffer, int _size, bool _newmem);
+		SoundBufferInterface *	createSoundBufferFromFile( const char* _filename, bool _isStream ); 
+		SoundBufferInterface *	createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem );
 
 		void setSoundSourceVolume( float _volume );
 		float getSoundSourceVolume() const;
@@ -41,13 +41,13 @@ namespace Menge
 	public:
 		void registerSoundEmitter( SoundEmitter * _emitter );
 		void unregisterSoundEmitter( SoundEmitter * _emitter );
+	protected:
+		SoundSystemInterface * m_interface;
 	private:
 
 		float m_soundVolume;
 
 		float m_commonVolume;
-
-		SoundSystemInterface * m_interface;
 
 		typedef std::set<SoundEmitter*> TSetSoundEmitters;
 		TSetSoundEmitters	m_soundEmitters;

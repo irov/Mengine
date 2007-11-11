@@ -5,6 +5,7 @@
 #	include "ObjectImplement.h"
 
 #	include "ResourceManager.h"
+#	include "LogEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -140,7 +141,7 @@ namespace	Menge
 
 		if( m_currentAnimation == NULL )
 		{
-			printf("AnimationGroup: no found animation with name %s \n", _name.c_str() );
+			MENGE_LOG("AnimationGroup: no found animation with name %s \n", _name.c_str() );
 			return;
 		}
 	}

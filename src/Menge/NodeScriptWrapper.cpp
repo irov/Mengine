@@ -22,6 +22,7 @@
 #	include "Camera3D.h"
 
 #	include "SoundEngine.h"
+#	include "LogEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -95,7 +96,7 @@ namespace Menge
 
 		static void setCurrentScene( const std::string & _name )
 		{
-			printf("set current scene '%s'\n", _name.c_str() );
+			MENGE_LOG("set current scene '%s'\n", _name.c_str() );
 			Holder<Player>::hostage()
 					->setCurrentScene( _name );
 		}

@@ -4,7 +4,7 @@
 
 #	include "XmlParser/XmlParser.h"
 
-#	include "ErrorMessage.h"
+#	include "LogEngine.h"
 
 namespace Menge
 {
@@ -79,7 +79,7 @@ namespace Menge
 
 		if( fileData == 0 )
 		{
-			printf( "Error: Image can't open resource file '%s'\n", _fileName.c_str() );
+			MENGE_LOG( "Error: Image can't open resource file '%s'\n", _fileName.c_str() );
 
 			return 0;
 		}
@@ -100,7 +100,7 @@ namespace Menge
 
 		if( image == 0 )
 		{
-			printf( "Error: Image from file '%s' not loader\n", _fileName.c_str() );
+			MENGE_LOG( "Error: Image from file '%s' not loader\n", _fileName.c_str() );
 
 			return 0;
 		}	

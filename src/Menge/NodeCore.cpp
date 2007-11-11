@@ -10,7 +10,7 @@
 
 #	include "ScriptEngine.h"
 
-#	include "ErrorMessage.h"
+#	include "LogEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -67,7 +67,7 @@ namespace Menge
 		{
 			if( compile() == false )
 			{
-				printf("Error: activate Node '%s' is failed, becouse compiled is failed\n"
+				MENGE_LOG("Error: activate Node '%s' is failed, becouse compiled is failed\n"
 					, m_name.c_str() 
 					);
 
@@ -240,7 +240,7 @@ namespace Menge
 				}
 				XML_INVALID_PARSE()
 				{
-					printf("Invalid parse external node %s for %s\n"
+					MENGE_LOG("Invalid parse external node %s for %s\n"
 						, File.c_str()
 						, m_name.c_str()
 						);

@@ -14,7 +14,7 @@
 
 #	include "ResourceManager.h"
 
-#	include "ErrorMessage.h"
+#	include "LogEngine.h"
 
 #	include "math/box2.h"
 
@@ -125,7 +125,7 @@ namespace	Menge
 
 		if( m_image == 0 )
 		{
-			printf( "Image resource loading failed '%s'\n", m_resourceImage.c_str() );
+			MENGE_LOG( "Image resource loading failed '%s'\n", m_resourceImage.c_str() );
 			return false;
 		}
 

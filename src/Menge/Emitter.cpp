@@ -14,8 +14,6 @@
 
 #	include "ResourceManager.h"
 
-#	include "ErrorMessage.h"
-
 #	include "math/box2.h"
 
 namespace	Menge

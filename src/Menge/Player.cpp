@@ -3,20 +3,16 @@
 #	include "SceneManager.h"
 
 #	include "Game.h"
-
 #	include "Scene.h"
 
 #	include "Camera2D.h"
-
 #	include "Camera3D.h"
-
 #	include "Arrow.h"
 
 #	include "InputEngine.h"
 
-#	include "ErrorMessage.h"
+#	include "LogEngine.h"
 
-#	include "Layer3D.h"
 
 #	define DIRECTINPUT_VERSION 0x0800
 #	include <dinput.h>
@@ -55,7 +51,7 @@ namespace Menge
 
 		if( m_nextScene == 0 )
 		{
-			printf("ERROR: Scene [%s] not have in Game\n", _name.c_str() );
+			MENGE_LOG("ERROR: Scene [%s] not have in Game\n", _name.c_str() );
 			return;
 		}
 

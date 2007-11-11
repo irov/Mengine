@@ -11,6 +11,8 @@
 
 #	include "RenderEngine.h"
 
+#	include "LogEngine.h"
+
 #	include "XmlParser/XmlParser.h"
 
 namespace	Menge
@@ -33,7 +35,7 @@ namespace	Menge
 
 		if( main == 0 )
 		{
-			printf("this scene [%s] is not valid: not have 'main' layer!!\n", m_scene->getName().c_str() );
+			MENGE_LOG("this scene [%s] is not valid: not have 'main' layer!!\n", m_scene->getName().c_str() );
 			throw std::exception("this scene is not valid: not have 'main' layer!!");
 		}
 

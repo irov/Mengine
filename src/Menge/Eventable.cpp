@@ -1,6 +1,7 @@
 #	include "Eventable.h"
 
 #	include "ScriptEngine.h"
+#	include "LogEngine.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -111,7 +112,7 @@ namespace Menge
 
 		if( pybind::convert::is_none( result ) == false )
 		{
-			printf("Warning: Event '%s' don't have return any value\n"
+			MENGE_LOG("Warning: Event '%s' don't have return any value\n"
 				, _name.c_str() 
 				);
 		}
@@ -142,7 +143,7 @@ namespace Menge
 
 		if( pybind::convert::is_none( result ) == true )
 		{
-			printf("Error: Event '%s' must have return [True/False] value\n"
+			MENGE_LOG("Error: Event '%s' must have return [True/False] value\n"
 				, _name.c_str() 
 				);
 

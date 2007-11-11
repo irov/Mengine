@@ -4,8 +4,9 @@
 
 #	include "System/OgreInputSystem/OgreInputSystemInterface.h"
 #	include "System/OgreRenderSystem/OgreRenderSystemInterface.h"
-
 #	include "System/OgreFileSystem/OgreFileSystemInterface.h"
+
+#	include "Interface/LogSystemInterface.h"
 #	include "Interface/SoundSystemInterface.h"
 
 #	include "OIS/OIS.h"
@@ -79,17 +80,29 @@ bool OgreApplication::init( const char * _xmlFile )
 
 #ifdef _DEBUG
 	std::string DllModuleSetting = "DllModuleDebug";
-	std::string DllFileSystem = "Systems/OgreFileSystem_d.dll";
-	std::string DllRenderSystem = "Systems/OgreRenderSystem_d.dll";
-	std::string DllInputSystem = "Systems/OgreInputSystem_d.dll";
-	std::string DllSoundSystem = "Systems/SoundSystem_d.dll";
+	std::string DllLogSystem = "Systems_d/OgreLogSystem_d.dll";
+	std::string DllFileSystem = "Systems_d/OgreFileSystem_d.dll";
+	std::string DllRenderSystem = "Systems_d/OgreRenderSystem_d.dll";
+	std::string DllInputSystem = "Systems_d/OgreInputSystem_d.dll";
+	std::string DllSoundSystem = "Systems_d/SoundSystem_d.dll";
 #else
 	std::string DllModuleSetting = "DllModuleRelease";
+	std::string DllLogSystem = "Systems/OgreLogSystem.dll";
 	std::string DllFileSystem = "Systems/OgreFileSystem.dll";
 	std::string DllRenderSystem = "Systems/OgreRenderSystem.dll";
 	std::string DllInputSystem = "Systems/OgreInputSystem.dll";
 	std::string DllSoundSystem = "Systems/SoundSystem.dll";
 #endif
+
+	printf("use log system [%s]\n", DllLogSystem.c_str() );
+
+	SystemInterfaceDLL<LogSystemInterface> * logInterfaceDLL = 
+		new SystemInterfaceDLL<LogSystemInterface>(DllLogSystem);
+
+	m_listApplicationDLL.push_back( logInterfaceDLL  );
+
+	LogSystemInterface * logInterface = logInterfaceDLL ->getInterface();
+	m_application->setLogSystem( logInterface );
 
 	printf("use file system [%s]\n", DllFileSystem.c_str() );
 

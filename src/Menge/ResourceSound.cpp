@@ -5,6 +5,7 @@
 
 #	include "SoundEngine.h"
 #	include "FileEngine.h"
+#	include "LogEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -35,7 +36,7 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			printf("resource sound [%s] can't load sound '%s'\n"
+			MENGE_LOG("resource sound [%s] can't load sound '%s'\n"
 				, m_name.c_str() 
 				, m_filename.c_str()
 				);

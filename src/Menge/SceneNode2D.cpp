@@ -10,8 +10,6 @@
 
 #	include "FileEngine.h"
 
-#	include "ErrorMessage.h"
-
 #	include "XmlParser/XmlParser.h"
 
 #	include <algorithm>

@@ -1,6 +1,7 @@
 #	include "ResourceImage.h"
 
 #	include "RenderEngine.h"
+#	include "LogEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -23,7 +24,7 @@ namespace Menge
 
 		if( image == 0 )
 		{
-			printf("Warning: resource '%s' can't load image file '%s'\n"
+			MENGE_LOG("Warning: resource '%s' can't load image file '%s'\n"
 				, m_name.c_str()
 				, _fileName.c_str()
 				);

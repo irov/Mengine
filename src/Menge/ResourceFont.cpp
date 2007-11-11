@@ -3,6 +3,7 @@
 
 #	include "RenderEngine.h"
 #	include "FileEngine.h"
+#	include "LogEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -68,7 +69,7 @@ namespace Menge
 
 		if( stream == 0 )
 		{
-			printf("Warning: resource font not find fond file '%s'\n"
+			MENGE_LOG("Warning: resource font not find fond file '%s'\n"
 				, m_fontName.c_str() 
 				);
 
@@ -134,7 +135,7 @@ namespace Menge
 
 			if (err == 0)
 			{
-				printf( "Error: in parsing params: '%s'", params.c_str() );
+				MENGE_LOG( "Error: in parsing params: '%s'", params.c_str() );
 				return false;
 			}
 
@@ -146,7 +147,7 @@ namespace Menge
 
 			if( fileData == 0 )
 			{
-				printf( "Error: Image can't open resource file '%s'", params.c_str() );
+				MENGE_LOG( "Error: Image can't open resource file '%s'", params.c_str() );
 				return false;
 			}
 
@@ -167,7 +168,7 @@ namespace Menge
 
 			if( m_image == 0 )
 			{
-				printf( "Error: Image can't loaded '%s'", params.c_str() );
+				MENGE_LOG( "Error: Image can't loaded '%s'", params.c_str() );
 				return false;
 			}
 

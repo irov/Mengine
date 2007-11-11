@@ -2,6 +2,7 @@
 #	include "ResourceImplement.h"
 
 #	include "FileEngine.h"
+#	include "LogEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -34,7 +35,7 @@ namespace Menge
 
 		if( document == 0 )
 		{
-			printf("Warning: resource playlist not find file '%s'\n"
+			MENGE_LOG("Warning: resource playlist not find file '%s'\n"
 				, m_filename.c_str() 
 				);
 
@@ -53,7 +54,7 @@ namespace Menge
 
 					if( Holder<FileEngine>::hostage()->existFile( filename ) == false )
 					{
-						printf("ResourcePlaylist : %s not exist. \n", filename.c_str() );
+						MENGE_LOG("ResourcePlaylist : %s not exist. \n", filename.c_str() );
 					}
 					else
 					{

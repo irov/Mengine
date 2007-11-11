@@ -37,7 +37,6 @@ namespace Menge
 		void _release() override;
 
 	private:
-
 		Animation * m_currentAnimation;
 
 		void setCurrentAnimation( const std::string & _name );

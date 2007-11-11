@@ -7,6 +7,7 @@
 #	include "ResourceSound.h"
 
 #	include "ResourceManager.h"
+#	include "LogEngine.h"
 
 #	include "SoundEngine.h"
 
@@ -66,7 +67,7 @@ namespace Menge
 
 		if( m_resourceSound == 0 )
 		{
-			printf("Warning: sound emitter '%s' can't get resource '%s'\n"
+			MENGE_LOG("Warning: sound emitter '%s' can't get resource '%s'\n"
 				, m_name.c_str()
 				, m_resourceName.c_str()
 				);
@@ -81,7 +82,7 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			printf("Warning: sound emitter '%s' can't compiled\n"
+			MENGE_LOG("Warning: sound emitter '%s' can't compiled\n"
 				, m_name.c_str()
 				);
 

@@ -4,6 +4,7 @@
 
 #	include <string>
 
+class LogSystemInterface;
 class FileSystemInterface;
 class InputSystemInterface;
 class RenderSystemInterface;
@@ -25,6 +26,7 @@ namespace Menge
 		virtual void finalize();
 		virtual bool update( float _timing );
 
+		virtual void setLogSystem( LogSystemInterface * _interface );
 		virtual void setFileSystem( FileSystemInterface * _interface );
 		virtual void setInputSystem( InputSystemInterface * _interface );
 		virtual void setRenderSystem( RenderSystemInterface * _interface );

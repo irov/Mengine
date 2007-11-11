@@ -11,7 +11,7 @@
 
 #	include "Entity.h"
 
-#	include "ErrorMessage.h"
+#	include "LogEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -79,12 +79,12 @@ namespace Menge
 		}
 		XML_INVALID_PARSE()
 		{
-			printf("Invalid parse external node `%s`\n", _xml.c_str() );
+			MENGE_LOG("Invalid parse external node `%s`\n", _xml.c_str() );
 		}
 
 		if( node == 0 )
 		{
-			printf("This xml file `%s` have invalid external node format\n", _xml.c_str() );
+			MENGE_LOG("This xml file `%s` have invalid external node format\n", _xml.c_str() );
 		}
 
 		return node;
@@ -111,12 +111,12 @@ namespace Menge
 		}
 		XML_INVALID_PARSE()
 		{
-			printf("Invalid parse external node\n" );
+			MENGE_LOG("Invalid parse external node\n" );
 		}
 
 		if( node == 0 )
 		{
-			printf("This xml have invalid external node format\n" );
+			MENGE_LOG("This xml have invalid external node format\n" );
 		}
 
 		return node;

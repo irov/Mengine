@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)Bin\Systems"
+			OutputDirectory="$(SolutionDir)Bin\Systems_d"
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="2"
@@ -464,6 +464,10 @@
 		</File>
 		<File
 			RelativePath=".\SoundBuffer.h"
+			>
+		</File>
+		<File
+			RelativePath=".\SoundSystem.def"
 			>
 		</File>
 		<File

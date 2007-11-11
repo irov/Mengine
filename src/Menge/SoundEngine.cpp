@@ -1,6 +1,7 @@
 #	include "SoundEngine.h"
 
 #	include "SoundEmitter.h"
+#	include "LogEngine.h"
 
 namespace Menge
 {
@@ -67,13 +68,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::registerSoundEmitter( SoundEmitter * _emitter )
 	{
-		printf("Sound Registered! \n");
+		MENGE_LOG("Sound Registered! \n");
 		m_soundEmitters.insert( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::unregisterSoundEmitter( SoundEmitter * _emitter )
 	{
-		printf("Sound UnRegistered! \n");
+		MENGE_LOG("Sound UnRegistered! \n");
 		m_soundEmitters.erase( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////

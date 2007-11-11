@@ -475,6 +475,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Log"
+				>
+				<File
+					RelativePath=".\LogEngine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LogEngine.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Object2D"
@@ -1029,14 +1041,6 @@
 		<Filter
 			Name="Kernel"
 			>
-			<File
-				RelativePath=".\ErrorMessage.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ErrorMessage.h"
-				>
-			</File>
 			<File
 				RelativePath=".\Factory.h"
 				>

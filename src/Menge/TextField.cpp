@@ -12,7 +12,7 @@
 
 #	include "ResourceFont.h"
 
-#	include "ErrorMessage.h"
+#	include "LogEngine.h"
 
 #	include "math/box2.h"
 
@@ -74,7 +74,7 @@ namespace	Menge
 
 		if( m_resourceFont == 0 )
 		{
-			printf("Warning: font '%s' have don't find resource '%s'\n"
+			MENGE_LOG("Warning: font '%s' have don't find resource '%s'\n"
 				, m_name.c_str()
 				, m_resourceFontName.c_str() 
 				);
@@ -84,7 +84,7 @@ namespace	Menge
 
 		if( m_resourceFont->isCompile() == false )
 		{
-			printf("Warning: font '%s' have don't compile resource '%s'\n"
+			MENGE_LOG("Warning: font '%s' have don't compile resource '%s'\n"
 				, m_name.c_str()
 				, m_resourceFontName.c_str() 
 				);

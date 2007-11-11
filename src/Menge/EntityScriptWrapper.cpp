@@ -6,6 +6,7 @@
 
 #	include "FileEngine.h"
 #	include "ScriptEngine.h"
+#	include "LogEngine.h"
 
 #	include "Game.h"
 
@@ -25,7 +26,7 @@ namespace Menge
 
 			if( module == 0 )
 			{
-				printf("Cant't create entity [%s] (not module)\n"
+				MENGE_LOG("Cant't create entity [%s] (not module)\n"
 					, _type.c_str() 
 					);
 			}
@@ -41,7 +42,7 @@ namespace Menge
 
 			if( entity == 0 )
 			{
-				printf("Can't create entity [%s]\n"
+				MENGE_LOG("Can't create entity [%s]\n"
 					, _type.c_str() 
 					);
 
@@ -75,12 +76,12 @@ namespace Menge
 				}
 				XML_INVALID_PARSE()
 				{
-					printf("Error: Invalid parse %s.xml\n", _type.c_str() );
+					MENGE_LOG("Error: Invalid parse %s.xml\n", _type.c_str() );
 				}
 			}
 			else
 			{
-				printf( "Warrning: not find entity xml '%s'", xml_path.c_str() );
+				MENGE_LOG( "Warrning: not find entity xml '%s'", xml_path.c_str() );
 			}
 
 			entity->setLocalPosition( _pos );

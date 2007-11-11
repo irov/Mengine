@@ -6,7 +6,7 @@
 #	include "stdio.h"
 
 //////////////////////////////////////////////////////////////////////////
-int PauseCallback(int ChannelID, bool pause,void* UserData)
+static int PauseCallback(int ChannelID, bool pause,void* UserData)
 {
 	printf("PauseCallback\n");
 	SoundNodeListenerInterface* Listener = static_cast<SoundNodeListenerInterface*>(UserData);
@@ -14,7 +14,7 @@ int PauseCallback(int ChannelID, bool pause,void* UserData)
 	return 1;
 }
 //////////////////////////////////////////////////////////////////////////
-int StopCallback(int ChannelID,void* UserData)
+static int StopCallback(int ChannelID,void* UserData)
 {
 	printf("StopCallback\n");
 	SoundNodeListenerInterface* Listener = static_cast<SoundNodeListenerInterface*>(UserData);
@@ -48,7 +48,7 @@ void SQUALLSoundSource::play()
 		}
 		else
 		{
-			ChannelID = SQUALL_Sample_Play(sampleID, 0, 0, 1);
+			ChannelID = SQUALL_Sample_Play(sampleID, 0, 0, 0);
 		}
 
 		if(ChannelID < 0)
@@ -68,6 +68,38 @@ void SQUALLSoundSource::play()
 			if(err < 0)
 			{
 				assert(!"Bad SQUALL_Channel_SetEndWorker!");
+			}
+		}
+
+		int val_s = SQUALL_Channel_GetLength( ChannelID );
+		int val = SQUALL_Channel_GetLengthMs( ChannelID );
+
+		if( val < 200 )
+		{
+			int result = 0;
+				
+			int b,e;
+
+			result = SQUALL_Channel_GetFragmentMs( ChannelID, &b, &e );
+
+			result = SQUALL_Channel_SetFragmentMs( ChannelID, 0, 107 );
+
+			result = SQUALL_Channel_GetFragmentMs( ChannelID, &b, &e );
+
+			if( result )
+			{
+				result = 1;
+			}
+		}
+
+		SQUALL_Channel_Start( ChannelID );
+
+		if( SQUALL_CHANNEL_STATUS_NONE == SQUALL_Channel_Status(ChannelID) )
+		{
+			int err = SQUALL_Channel_Pause(ChannelID, false);
+			if(err < 0)
+			{
+				assert(!"Bad SQUALL_Channel_Pause!");
 			}
 		}
 	}
@@ -113,6 +145,11 @@ bool SQUALLSoundSource::isPlaying() const
 //////////////////////////////////////////////////////////////////////////
 void SQUALLSoundSource::setVolume(float vol)
 {
+	if( SQUALL_CHANNEL_STATUS_NONE == SQUALL_Channel_Status(ChannelID) )
+	{
+		return;
+	}
+
 	float dxvol = log10( vol * 9.0f + 3.99f );
 
 	if ( dxvol >= 1 ) dxvol = 1.0f;
@@ -131,7 +168,6 @@ void SQUALLSoundSource::setVolume(float vol)
 float SQUALLSoundSource::getVolume() const	
 {
 	int status = SQUALL_Channel_Status(ChannelID);
-	printf("status chanell = %d \n",status);
 
 	int temp = SQUALL_Channel_GetVolume(ChannelID);
 	if(temp < 0)

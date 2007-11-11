@@ -9,7 +9,7 @@
 int main()
 {
 #ifdef _DEBUG
-	const char * application_dll  = "Systems/OgreApplication_d.dll";
+	const char * application_dll  = "Systems_d/OgreApplication_d.dll";
 #else
 	const char * application_dll = "Systems/OgreApplication.dll";
 #endif

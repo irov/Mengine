@@ -9,11 +9,11 @@ class Listener : public SoundNodeListenerInterface
 {
 	void listenPaused(bool _pause)
 	{
-		printf("listernPaused\n");
+		MENGE_LOG("listernPaused\n");
 	}
 	void listenStopped()
 	{
-		printf("listenStopped\n");
+		MENGE_LOG("listenStopped\n");
 	}
 };
 

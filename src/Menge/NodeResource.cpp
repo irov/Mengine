@@ -1,6 +1,7 @@
 #	include "NodeResource.h"
 
 #	include "NodeForeach.h"
+#	include "LogEngine.h"
 
 namespace Menge
 {
@@ -40,7 +41,7 @@ namespace Menge
 
 		if( result == false )
 		{
-			printf("Error: compiled Node '%s' is failed\n"
+			MENGE_LOG("Error: compiled Node '%s' is failed\n"
 				, getName().c_str() 
 				);
 		}

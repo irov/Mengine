@@ -15,7 +15,7 @@
 
 #	include "Player.h"
 
-#	include "ErrorMessage.h"
+#	include "LogEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -70,6 +70,11 @@ namespace Menge
 		Holder<ScriptEngine>::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::setLogSystem( LogSystemInterface * _interface )
+	{
+		new LogEngine( _interface );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Application::setFileSystem( FileSystemInterface * _interface )
 	{
 		new FileEngine( _interface );
@@ -92,13 +97,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPak( const std::string & _pak )
 	{
-		printf("load pack [%s]...\n", _pak.c_str() );
+		MENGE_LOG("load pack [%s]...\n", _pak.c_str() );
 		Holder<FileEngine>::hostage()->loadPak( _pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createGame( const std::string & _game )
 	{
-		printf("create game file [%s] ...\n", _game.c_str() );
+		MENGE_LOG("create game file [%s] ...\n", _game.c_str() );
 
 		Holder<Game>::keep( new Game );
 
@@ -115,11 +120,11 @@ namespace Menge
 		}
 		XML_INVALID_PARSE()
 		{
-			printf("Invalid game file [%s] ...\n", _game.c_str() );
+			MENGE_LOG("Invalid game file [%s] ...\n", _game.c_str() );
 			return false;
 		}
 
-		printf("init game ...\n");
+		MENGE_LOG("init game ...\n");
 
 		if( Holder<Game>::hostage()
 			->init() == false )
@@ -136,7 +141,7 @@ namespace Menge
 
 		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
 
-		printf("init scriptEngine ...\n");
+		MENGE_LOG("init scriptEngine ...\n");
 		scriptEngine->init();
 
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
@@ -171,7 +176,7 @@ namespace Menge
 		XML_INVALID_PARSE()
 		{
 			//TODO: ERROR
-			printf("parse application xml failed\n");
+			MENGE_LOG("parse application xml failed\n");
 			return false;
 		}
 

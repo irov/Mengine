@@ -8,7 +8,7 @@
 
 #	include "FileEngine.h"
 
-#	include "ErrorMessage.h"
+#	include "LogEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -35,7 +35,7 @@ namespace Menge
 
 		if( document == 0 )
 		{
-			printf("Error: Invalid parse resource '%s' \n", _file.c_str() );
+			MENGE_LOG("Error: Invalid parse resource '%s' \n", _file.c_str() );
 		}
 
 		XML_FOR_EACH_DOCUMENT( document )
@@ -51,7 +51,7 @@ namespace Menge
 
 					if( resource == 0 )
 					{
-						printf( "Don't register resource type '%s'\n", Type.c_str() );
+						MENGE_LOG( "Don't register resource type '%s'\n", Type.c_str() );
 						continue;
 					}
 			
@@ -70,7 +70,7 @@ namespace Menge
 		}
 		XML_INVALID_PARSE()
 		{
-			printf("Error: Invalid pasrse resorce - '%s'", _file.c_str() );
+			MENGE_LOG("Error: Invalid pasrse resorce - '%s'", _file.c_str() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

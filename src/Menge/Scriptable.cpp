@@ -1,6 +1,7 @@
 #	include "Scriptable.h"
 
 #	include "ScriptEngine.h"
+#	include "LogEngine.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -63,7 +64,7 @@ namespace Menge
 
 			if( pybind::convert::is_none( result ) == false )
 			{
-				printf("Warning: Method '%s' don't have return any value\n"
+				MENGE_LOG("Warning: Method '%s' don't have return any value\n"
 					, _method.c_str() 
 					);
 			}

@@ -6,6 +6,8 @@
 
 #	include "ResourcePlaylist.h"
 
+#	include "LogEngine.h"
+
 #	include "ResourceManager.h"
 
 namespace Menge
@@ -39,7 +41,7 @@ namespace Menge
 
 			if( playlistResource == NULL )
 			{
-				printf("Amplifier: no found playlist with name %s \n", _playlist.c_str() );
+				MENGE_LOG("Amplifier: no found playlist with name %s \n", _playlist.c_str() );
 				return;
 			}
 
@@ -105,7 +107,7 @@ namespace Menge
 
 		if( m_buffer == 0 )
 		{
-			printf("Warning: Amplifier can't load sample '%s'\n"
+			MENGE_LOG("Warning: Amplifier can't load sample '%s'\n"
 				, filename.c_str() 
 				);
 
@@ -116,7 +118,7 @@ namespace Menge
 
 		if( m_music == 0 )
 		{
-			printf("Warning: Amplifier '%s' can't create sound source\n"
+			MENGE_LOG("Warning: Amplifier '%s' can't create sound source\n"
 				, filename.c_str()
 				);
 

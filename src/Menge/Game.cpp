@@ -13,9 +13,9 @@
 #	include "FileEngine.h"
 #	include "ResourceManager.h"
 #	include "ScheduleManager.h"
+#	include "LogEngine.h"
 
 #	include "XmlParser/XmlParser.h"
-#	include "ErrorMessage.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -357,7 +357,7 @@ namespace Menge
 
 			if( arrow == 0 )
 			{
-				printf("Can't create arrow [%s]\n"
+				MENGE_LOG("Can't create arrow [%s]\n"
 					, _name.c_str() 
 					);
 
@@ -406,7 +406,7 @@ namespace Menge
 
 			if( scene == 0 )
 			{
-				printf("Can't create scene [%s]\n"
+				MENGE_LOG("Can't create scene [%s]\n"
 					, _name.c_str() 
 					);
 
@@ -432,7 +432,7 @@ namespace Menge
 			}
 			XML_INVALID_PARSE()
 			{
-				printf("Warrning: invalid loader xml '%s' for scene '%s'/n"
+				MENGE_LOG("Warrning: invalid loader xml '%s' for scene '%s'/n"
 					, xml_path.c_str()
 					, _name.c_str()
 					);

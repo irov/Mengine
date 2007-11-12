@@ -77,12 +77,12 @@
 
 	<Resource Name = "ResourceEmitterTest1" Type = "ResourceEmitterContainer">
 		<File Path = "meduse.ptc"/>
-		<Image Path = "Game/Images/1.png"/>
+		<Folder Path = "Game/Images/Particles/"/>
 	</Resource>
 
 	<Resource Name = "ResourceEmitterTest2" Type = "ResourceEmitterContainer">
 		<File Path = "serpantin.ptc"/>
-		<Image Path = "Game/Images/2.png"/>
+		<Folder Path = "Game/Images/Particles/"/>
 	</Resource>
 
 </DataBlock>

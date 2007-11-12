@@ -51,6 +51,6 @@ namespace Menge
 
 		ResourceEmitterContainer * m_resourceEmitter;
 
-		RenderImageInterface * m_image;
+		std::vector<RenderImageInterface*> m_images;
 	};
 }

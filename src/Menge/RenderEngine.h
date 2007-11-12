@@ -61,26 +61,6 @@ namespace Menge
 		void	beginLayer();
 		void	endLayer();
 
-		//void	setMaterialColor(unsigned char _ambient[4], 
-		//unsigned char _diffuse[4],
-		//unsigned char _specular[4]);
-		
-		//bool beginScene(int _color);
-		//bool endScene();
-
-		//void drawPrimitive(PrimitiveData * _pd);
-
-		//void drawLine3D(const mt::vec3f& p1, const mt::vec3f& p2, unsigned long color);
-		//void drawLine2D(const mt::vec2f& p1, const mt::vec2f& p2, unsigned long color);
-		//void drawBox( const mt::vec3f & MinEdge, const mt::vec3f & MaxEdge, unsigned long _color);
-
-
-		//VertexData * createVertexData();
-		//IndexData * createIndexData();
-		//VertexDeclaration * createVertexDeclaration();
-
-		//void	setTexture(RenderImageInterface * _tex);
-
 	protected:
 		RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;

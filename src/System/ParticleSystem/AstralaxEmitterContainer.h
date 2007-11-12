@@ -8,11 +8,11 @@
 
 #	include <string>
 
-class EmitterContainer : public EmitterContainerInterface
+class AstralaxEmitterContainer : public EmitterContainerInterface
 {
 public:
-	EmitterContainer();
-	~EmitterContainer();
+	AstralaxEmitterContainer();
+	~AstralaxEmitterContainer();
 
 public:
 	void addEmitterId( const char * _name,  HM_EMITTER _id );

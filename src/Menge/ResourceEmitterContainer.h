@@ -2,7 +2,7 @@
 
 #	include "ResourceReference.h"
 
-#	include <vector>
+#	include <map>
 
 class EmitterContainerInterface;
 class FileDataInterface;
@@ -25,7 +25,7 @@ namespace Menge
 
 		const EmitterContainerInterface * getContainer() const;
 
-		RenderImageInterface * getImage() const;
+		RenderImageInterface * getRenderImage( const std::string & _textureName );
 
 	protected:
 		bool _compile() override;
@@ -33,10 +33,11 @@ namespace Menge
 
 	private:
 		std::string m_filename;
-		std::string m_fileImage;
-
-		RenderImageInterface * m_image;
+		std::string m_texturesPath;
 
 		EmitterContainerInterface * m_container;
+
+		typedef std::map<std::string, RenderImageInterface * > TMapImageEmitters;
+		TMapImageEmitters	m_emitterTextures;
 	};
 }

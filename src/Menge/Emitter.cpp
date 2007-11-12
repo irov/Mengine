@@ -28,8 +28,7 @@ namespace	Menge
 	OBJECT_IMPLEMENT(Emitter);
 	//////////////////////////////////////////////////////////////////////////
 	Emitter::Emitter()
-		: m_image( 0 )
-		, m_interface( 0 )
+		: m_interface( 0 )
 		, m_resourceEmitter( 0 )
 	{}
 	//////////////////////////////////////////////////////////////////////////
@@ -89,14 +88,37 @@ namespace	Menge
 			return false;
 		}
 
-		m_image = m_resourceEmitter->getImage();
-	
+		int n = m_interface->getNumTypes();
+
+		for ( int i = n - 1; i >= 0; i-- )
+		{
+			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
+
+			std::string textureName = Holder<ParticleEngine>::hostage()->getTextureName();
+
+			RenderImageInterface * image = m_resourceEmitter->getRenderImage( textureName );
+
+			if( image == 0 )
+			{
+				MENGE_LOG( "Error: Image can't loaded '%s'", textureName.c_str() );
+				return false;
+			}
+
+			m_images.push_back( image );
+
+			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
+		}
+
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_release()
 	{
 		SceneNode2D::_release();
+
+		Holder<ParticleEngine>::hostage()->releaseEmitter( m_interface );
+
+		Holder<ResourceManager>::hostage()->releaseResource( m_resourceEmitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::loader( TiXmlElement * _xml )
@@ -116,7 +138,8 @@ namespace	Menge
 		{
 			return;
 		}
-		int n = m_interface->getParticlesTypeCount();
+
+		int n = m_interface->getNumTypes();
 
 		const mt::mat3f & rwm = getWorldMatrix();
 
@@ -126,29 +149,28 @@ namespace	Menge
 
 			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
 
-			///	int texture_frame=Magic_GetTextureFrame();
-			//	MAGIC_TEXTURE* magic_texture=&(m_texture[texture_frame]);					
+			RenderImageInterface * image = m_images[i];
 
 			while ( nextParticleType == false )
 			{
 				RenderParticle * p = Holder<ParticleEngine>::hostage()->nextParticle();
+
 				if( p == NULL )
 				{
 					nextParticleType = true;
 				}
 				else
 				{
-					mt::vec4f uv(p->u0, p->v0, p->u1, p->v1);
-
+					// terrible :(
 					Holder<RenderEngine>::hostage()->renderImage(
 						rwm, 
 						mt::vec2f(p->x1, p->y1),
 						mt::vec2f(p->x2, p->y2),
 						mt::vec2f(p->x3, p->y3),
 						mt::vec2f(p->x4, p->y4),
-						uv,
+						mt::vec4f(p->u0, p->v0, p->u1, p->v1),
 						p->color,
-						m_image
+						image
 						);
 					}
 			}
@@ -159,6 +181,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::play( bool _leftVisible )
 	{
+		if( isActivate() == false )
+		{
+			return;
+		}
+
 		m_interface->play( _leftVisible );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -1,4 +1,8 @@
 #	include "ParticleEngine.h"
+#	include "FileEngine.h"
+#	include "LogEngine.h"
+
+#	include <vector>
 
 namespace Menge
 {
@@ -12,9 +16,26 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromMemory( void * _buffer )
+	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const std::string & _filename )
 	{
-		return m_interface->createEmitterContainerFromMemory( _buffer );
+		FileDataInterface * fileData = Holder<FileEngine>::hostage()->openFile( _filename );
+
+		if( fileData == 0 )
+		{
+			MENGE_LOG( "Error: Emitter can't open resource file '%s'\n", _filename.c_str() );
+			return 0;
+		}
+
+		size_t buff_size = fileData->size();
+
+		std::vector<char> buffer( buff_size );
+		fileData->read( &buffer[0], buff_size );
+
+		EmitterContainerInterface * container = m_interface->createEmitterContainerFromMemory( &buffer[0] );
+
+		Holder<FileEngine>::hostage()->closeFile( fileData );
+
+		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EmitterInterface * ParticleEngine::createEmitterFromContainer( const char * _name, const EmitterContainerInterface * _container )
@@ -25,6 +46,16 @@ namespace Menge
 	void ParticleEngine::lockEmitter( EmitterInterface * _emitter, int _typeParticle )
 	{
 		return m_interface->lockEmitter( _emitter, _typeParticle );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEngine::releaseEmitter( EmitterInterface * _emitter )
+	{
+		return m_interface->releaseEmitter( _emitter );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const char * ParticleEngine::getTextureName() const
+	{
+		return m_interface->getTextureName();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderParticle * ParticleEngine::nextParticle()

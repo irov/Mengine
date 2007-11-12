@@ -16,7 +16,7 @@ public:
 	virtual void stop() = 0;
 	virtual void update() = 0;
 	virtual bool isPlaying() const = 0;
-	virtual int getParticlesTypeCount() const = 0;
+	virtual int getNumTypes() const = 0;
 };
 
 class EmitterContainerInterface
@@ -31,7 +31,9 @@ public:
 	virtual ~ParticleSystemInterface(){};
 	virtual EmitterContainerInterface * createEmitterContainerFromMemory( void * _buffer ) = 0;
 	virtual EmitterInterface * createEmitterFromContainer( const char * _name, const EmitterContainerInterface * _container ) = 0;
+	virtual void releaseEmitter( EmitterInterface * _emitter ) = 0;
 	virtual void lockEmitter( EmitterInterface * _emitter, int _typeParticle ) = 0;
+	virtual const char * getTextureName() const = 0;
 	virtual RenderParticle * nextParticle() = 0; 
 	virtual void unlockEmitter( EmitterInterface * _emitter ) = 0;
 };

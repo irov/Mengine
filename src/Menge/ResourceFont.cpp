@@ -143,36 +143,17 @@ namespace Menge
 		}
 		else if ( name == "source" )
 		{
-			FileDataInterface * fileData = Holder<FileEngine>::hostage()->openFile( m_fontDir + params );
+			std::string fullname = m_fontDir + params;
 
-			if( fileData == 0 )
-			{
-				MENGE_LOG( "Error: Image can't open resource file '%s'", params.c_str() );
-				return false;
-			}
+			static std::vector<char> buff;
 
-			size_t buff_size = fileData->size();
-			
-			std::vector<char> _buff( buff_size );
-
-			fileData->read( &_buff[0], buff_size );
-
-			TextureDesc textureDesc;
-
-			textureDesc.buffer = &_buff[0];
-			textureDesc.size = buff_size;
-			textureDesc.name = params.c_str();
-			textureDesc.filter = 1;
-
-			m_image = Holder<RenderEngine>::hostage()->loadImage( textureDesc );
+			m_image = Holder<RenderEngine>::hostage()->loadImage( fullname, buff, 1 );
 
 			if( m_image == 0 )
 			{
-				MENGE_LOG( "Error: Image can't loaded '%s'", params.c_str() );
+				MENGE_LOG( "Error: Image can't loaded '%s'", fullname.c_str() );
 				return false;
 			}
-
-			Holder<FileEngine>::hostage()->closeFile( fileData );
 		}
 
 		return true;

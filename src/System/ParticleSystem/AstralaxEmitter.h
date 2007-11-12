@@ -6,22 +6,22 @@
 
 #	include <vector>
 
-class Emitter : public EmitterInterface
+class AstralaxEmitter : public EmitterInterface
 {
 public:
-	Emitter( HM_EMITTER _id );
+	AstralaxEmitter( HM_EMITTER _id );
 
 public:
 	void	play( bool _leftVisible );
 	void	stop();
 	void	update();
 	bool	isPlaying() const;
-
-	int		getParticlesTypeCount() const;
+	int		getNumTypes() const;
 public:
 	HM_EMITTER	getId() const;
 private:
 	HM_EMITTER	m_id;
 	bool		m_pause;
+	std::string  m_name;
 	void	_leftVisibleInterval();
 };

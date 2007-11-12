@@ -17,9 +17,11 @@ namespace Menge
 		~ParticleEngine();
 
 	public:
-		EmitterContainerInterface * createEmitterContainerFromMemory( void * _buffer );
+		EmitterContainerInterface * createEmitterContainerFromFile( const std::string & _filename );
 		EmitterInterface * createEmitterFromContainer( const char * _name, const EmitterContainerInterface * _container );
+		void releaseEmitter( EmitterInterface * _emitter );
 		void lockEmitter( EmitterInterface * _emitter, int _typeParticle );
+		const char * getTextureName() const;
 		RenderParticle * nextParticle();
 		void unlockEmitter( EmitterInterface * _emitter );
 

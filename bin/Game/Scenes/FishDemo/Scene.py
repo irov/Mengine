@@ -36,9 +36,9 @@ class Scene( Menge.Scene ):
 		posY = Menge.getVec2fY(block.getWorldPosition())
 
 
-		self.atg = self.getNode( "TestAnimationGroup1" )
-		self.atg.play("Test1")
-		self.atg.play("Test2")
+		#self.atg = self.getNode( "TestAnimationGroup1" )
+		#self.atg.play("Test1")
+		#self.atg.play("Test2")
 		
 		x = 0
 		y = -100
@@ -72,14 +72,21 @@ class Scene( Menge.Scene ):
 		#self.testSound1.setVolume(1.0)
 
 
-		Menge.musicPlayList("ResourcePlayListTest1");
+		#Menge.musicPlayList("ResourcePlayListTest1");
 		#Menge.musicSetVolume( 0.3 )
 		#Menge.musicSetVolume( 0.2 )
+
 		#Menge.musicPlayList("ResourcePlayListTest1");
+
+		#Menge.stopMusic();
 		
 		#self.testTextField = self.getNode( "SoundEmitterTest" )
 		#self.testTextField.setLocalPosition( Menge.vec2f( 100,1016:30 06.11.20070 ) )
+
+		self.emitterTest = self.getNode( "EmitterTest1" );
+		self.emitterTest.play( False );
 		
+
 		block.activate();
 		
 		self.layerAppend( "Deep", block )
@@ -90,5 +97,17 @@ class Scene( Menge.Scene ):
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 
 		self.camera_x += timing * 0
+		pass
+
+	def onHandleMouseButtonEvent( self, botton, isDown ):
+		if isDown == True:
+			print "left pressed"
+			self.isMouseDown = True
+			self.emitterTest.stop();
+		else:
+			print "left unpressed"
+			self.isMouseDown = False
+			self.emitterTest.play( False );
+		return False
 		pass
 	pass

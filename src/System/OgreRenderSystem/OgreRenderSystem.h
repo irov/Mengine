@@ -31,6 +31,16 @@ public:
 		unsigned int _color, 
 		const RenderImageInterface* _image ) override;
 
+	void renderImage(		
+		const float * _transform, 
+		const float * _a,
+		const float * _b,
+		const float * _c,
+		const float * _d,
+		const float * _uv,
+		unsigned int _color, 
+		const RenderImageInterface * _image) override;
+
 	void	beginLayer() override;
 	void	endLayer() override;
 

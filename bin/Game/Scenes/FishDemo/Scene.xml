@@ -38,6 +38,17 @@
 		<Main Value = "1" />
 		<Size Value = "3072; 768" />
 
+		<Node Name = "EmitterTest1" Type = "Emitter">
+              		<Resource Name = "ResourceEmitterTest1"/>
+			<Emitter Name = "Медуза1"/>
+               	</Node>
+
+		<Node Name = "EmitterTest2" Type = "Emitter">
+              		<Resource Name = "ResourceEmitterTest1"/>
+			<Emitter Name = "Серпантин"/>
+			<Transformation Value = "1;0;0;1;400;400" />
+               	</Node>
+
 		<Node Name = "Valun_01" Type = "Sprite">
 			<ImageMap Name = "ReefValun_01" />
 			<Transformation Value = "1;0;0;1;0;256" />
@@ -87,7 +98,7 @@
                		<HeadMode Value = "0"/>
 		</Node>
 
-		<Node Name = "TestAnimationGroup1" Type = "AnimationGroup">
+		<!--<Node Name = "TestAnimationGroup1" Type = "AnimationGroup">
 			<Animations>
 				<Node Name = "Test1" Type = "Animation">
    					<ImageMap Name = "SimpleAnimation"/>
@@ -98,7 +109,7 @@
 	   				<Animation Name = "BallRedCNG666"/>
 	                	</Node>
 			</Animations>
-		</Node>
+		</Node>-->
 
 	</Node> <!-- Layer -->
 </Scene>

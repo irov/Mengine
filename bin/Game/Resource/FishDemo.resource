@@ -61,7 +61,6 @@
      		<File Path = "Game/Fonts/ArialTest.fontdef"/>
 	</Resource>
 
-
 	<Resource Name = "ResourceSoundTest" Type = "ResourceSound">
      		<File Path = "Game/Sounds/1.ogg"/>
 		<IsStreamable Path = "0"/>
@@ -76,17 +75,14 @@
 		<File Path = "TestPlaylist.xml"/>
 	</Resource>
 
-	<Resource Name = "BallRedCNG666" Type = "ResourceAnimation" >
-		<Sequences>
-			<Sequence Index = "0" Delay = "450" />
-			<Sequence Index = "1" Delay = "450" />
-			<Sequence Index = "2" Delay = "450" />
-			<Sequence Index = "3" Delay = "450" />
-			<Sequence Index = "4" Delay = "450" />
-			<Sequence Index = "5" Delay = "450" />
-			<Sequence Index = "6" Delay = "450" />
-			<Sequence Index = "7" Delay = "450" />
-			<Sequence Index = "8" Delay = "450" />
-		</Sequences>
+	<Resource Name = "ResourceEmitterTest1" Type = "ResourceEmitterContainer">
+		<File Path = "meduse.ptc"/>
+		<Image Path = "Game/Images/1.png"/>
 	</Resource>
+
+	<Resource Name = "ResourceEmitterTest2" Type = "ResourceEmitterContainer">
+		<File Path = "serpantin.ptc"/>
+		<Image Path = "Game/Images/2.png"/>
+	</Resource>
+
 </DataBlock>

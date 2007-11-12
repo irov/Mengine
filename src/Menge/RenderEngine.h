@@ -42,6 +42,16 @@ namespace Menge
 			unsigned int _color, 
 			const RenderImageInterface* _image);
 
+		void renderImage(		
+			const mt::mat3f & _transform, 
+			const mt::vec2f & _a,
+			const mt::vec2f & _b,
+			const mt::vec2f & _c,
+			const mt::vec2f & _d,
+			const mt::vec4f & _uv,
+			unsigned int _color, 
+			const RenderImageInterface* _image);
+
 		void	releaseImage( RenderImageInterface* _rmi );
 
 		void	setProjectionMatrix( const mt::mat4f& _projection );

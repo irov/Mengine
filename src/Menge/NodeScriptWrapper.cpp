@@ -18,6 +18,7 @@
 #	include "TextField.h"
 #	include "SoundEmitter.h"
 #	include "AnimationGroup.h"
+#	include "Emitter.h"
 
 #	include "Camera3D.h"
 
@@ -160,6 +161,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( TextField );
 	SCRIPT_CLASS_WRAPPING( AnimationGroup );
 	SCRIPT_CLASS_WRAPPING( SoundEmitter );
+	SCRIPT_CLASS_WRAPPING( Emitter );
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{
@@ -218,6 +220,12 @@ namespace Menge
 			;
 
 		{
+			pybind::proxy_<Emitter, pybind::bases<SceneNode2D>>("Emitter", false)
+				.def( "play", &Emitter::play )
+				.def( "isPlaying", &Emitter::isPlaying )
+				.def( "stop", &Emitter::stop )
+				;
+
 			pybind::proxy_<SoundEmitter, pybind::bases<SceneNode2D>>("SoundEmitter", false)
 				.def( "play", &SoundEmitter::play )
 				.def( "pause", &SoundEmitter::pause )

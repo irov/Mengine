@@ -6,6 +6,7 @@
 #	include "FileEngine.h"
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
+#	include "ParticleEngine.h"
 #	include "ScriptEngine.h"
 
 #	include "MousePickerSystem.h"
@@ -63,6 +64,7 @@ namespace Menge
 
 		Holder<Game>::destroy();
 		Holder<ResourceManager>::destroy();
+		Holder<ParticleEngine>::destroy();
 		Holder<RenderEngine>::destroy();
 		Holder<FileEngine>::destroy();
 		Holder<InputEngine>::destroy();
@@ -93,6 +95,11 @@ namespace Menge
 	void Application::setSoundSystem( SoundSystemInterface * _interface )
 	{
 		new SoundEngine( _interface );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setParticleSystem( ParticleSystemInterface * _interface )
+	{
+		new ParticleEngine( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPak( const std::string & _pak )

@@ -40,6 +40,8 @@ class OgreRenderSpriteManager
 public:
 	void addQuad1(const Ogre::Vector4 & _uv,const Ogre::Matrix3 & _transform, const Ogre::Vector2 & _offset, const Ogre::Vector2 & _size, float z, const OgreRenderImage * image, unsigned int _color);
 
+	void addQuad2(const Ogre::Vector4 & _uv,const Ogre::Matrix3 & _transform, const Ogre::Vector2 & _a, const Ogre::Vector2 & _b, const Ogre::Vector2 & _c, const Ogre::Vector2 & _d, float z, const OgreRenderImage * image, unsigned int _color);
+
 	OgreRenderSpriteManager();
 	~OgreRenderSpriteManager();
 

@@ -7,10 +7,11 @@
 #	include <vector>
 
 class RenderImageInterface;
+class EmitterInterface;
 
 namespace Menge
 {
-	class ResourceImage;
+	class ResourceEmitterContainer;
 
 	class Emitter
 		: public SceneNode2D
@@ -20,6 +21,11 @@ namespace Menge
 		Emitter();
 		~Emitter();
 
+	public:
+		void play( bool _leftVisible );
+		void stop();
+		bool isPlaying() const;
+	
 	public:
 		virtual bool isVisible( const Viewport & _viewPort );
 
@@ -34,5 +40,17 @@ namespace Menge
 
 		bool _compile() override;
 		void _release() override;
+
+		void _update( float _timing ) override;
+
+	private:
+		std::string m_resourceName;
+		std::string m_emitterName;
+
+		EmitterInterface * m_interface;
+
+		ResourceEmitterContainer * m_resourceEmitter;
+
+		RenderImageInterface * m_image;
 	};
 }

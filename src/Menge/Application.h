@@ -9,6 +9,7 @@ class FileSystemInterface;
 class InputSystemInterface;
 class RenderSystemInterface;
 class SoundSystemInterface;
+class ParticleSystemInterface;
 
 namespace Menge
 {
@@ -31,6 +32,7 @@ namespace Menge
 		virtual void setInputSystem( InputSystemInterface * _interface );
 		virtual void setRenderSystem( RenderSystemInterface * _interface );
 		virtual void setSoundSystem( SoundSystemInterface * _interface );
+		virtual void setParticleSystem( ParticleSystemInterface * _interface );
 
 		virtual void loadPak( const std::string & _pak );
 

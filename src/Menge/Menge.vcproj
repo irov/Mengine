@@ -853,6 +853,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Emitter"
+				>
+				<File
+					RelativePath=".\ResourceEmitterContainer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceEmitterContainer.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Entity"

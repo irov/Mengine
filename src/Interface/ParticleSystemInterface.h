@@ -8,31 +8,29 @@ struct RenderParticle
 	unsigned long color;
 };
 
-struct Image
-{
-	unsigned int size;
-	void * data;
-};
-
 class EmitterInterface
 {
 public:
-	virtual ~EmitterInterface(){}; 
+	virtual ~EmitterInterface(){};
+	virtual void play( bool _leftVisible ) = 0;
+	virtual void stop() = 0;
 	virtual void update() = 0;
-	virtual void setLoop( bool _loop ) = 0;
-	virtual bool getLoop() const = 0;
-	virtual float * getPosition() const = 0;
-	virtual const Image & getImage( int _id ) =0;
-	virtual int getImageCount() const = 0;
+	virtual bool isPlaying() const = 0;
 	virtual int getParticlesTypeCount() const = 0;
 };
 
+class EmitterContainerInterface
+{
+public:
+	virtual ~EmitterContainerInterface(){};
+};
 
 class ParticleSystemInterface
 {
 public:
 	virtual ~ParticleSystemInterface(){};
-	virtual EmitterInterface * createEmitterFromMemory( void * _buffer, int _size ) = 0;
+	virtual EmitterContainerInterface * createEmitterContainerFromMemory( void * _buffer ) = 0;
+	virtual EmitterInterface * createEmitterFromContainer( const char * _name, const EmitterContainerInterface * _container ) = 0;
 	virtual void lockEmitter( EmitterInterface * _emitter, int _typeParticle ) = 0;
 	virtual RenderParticle * nextParticle() = 0; 
 	virtual void unlockEmitter( EmitterInterface * _emitter ) = 0;

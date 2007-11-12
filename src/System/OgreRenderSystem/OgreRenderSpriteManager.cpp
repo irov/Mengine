@@ -2,9 +2,9 @@
 #	include "OgreRenderImage.h"
 
 const size_t	VERTEX_PER_QUAD			= 6;
-const size_t	VERTEXBUFFER_INITIAL_CAPACITY	= 1024;
+const size_t	VERTEXBUFFER_INITIAL_CAPACITY	= 50000;
 const size_t    UNDERUSED_FRAME_THRESHOLD = 50000;
-const size_t    VECTOR_CAPACITY = 1000;
+const size_t    VECTOR_CAPACITY = 20000;
 const size_t    INDEX_COUNT = 1000;
 
 //////////////////////////////////////////////////////////////////////////
@@ -211,6 +211,52 @@ void OgreRenderSpriteManager::addQuad1(const Ogre::Vector4 & _uv,const Ogre::Mat
 	
 	quadList.push_back(quad);
 }
+
+void OgreRenderSpriteManager::addQuad2(const Ogre::Vector4 & _uv,const Ogre::Matrix3 & _transform, const Ogre::Vector2 & _a, const Ogre::Vector2 & _b, const Ogre::Vector2 & _c, const Ogre::Vector2 & _d, float z, const OgreRenderImage * image, unsigned int _color)
+{
+	isSorted = false;
+	QuadInfo quad;
+	
+	float width = m_viewport->getActualWidth();
+  	float heigth = m_viewport->getActualHeight();
+
+	//FIXME:
+
+	quad.points[0].x = _transform[0][0] * _a[0] + _transform[1][0] * _a[1] + _transform[2][0];
+	quad.points[0].y = _transform[0][1] * _a[0] + _transform[1][1] * _a[1] + _transform[2][1];
+
+	quad.points[1].x = _transform[0][0] * _b[0] + _transform[1][0] * _b[1] + _transform[2][0];
+	quad.points[1].y = _transform[0][1] * _b[0] + _transform[1][1] * _b[1] + _transform[2][1];
+
+	quad.points[2].x = _transform[0][0] * _c[0] + _transform[1][0] * _c[1] + _transform[2][0];
+	quad.points[2].y = _transform[0][1] * _c[0] + _transform[1][1] * _c[1] + _transform[2][1];
+
+	quad.points[3].x = _transform[0][0] * _d[0] + _transform[1][0] * _d[1] + _transform[2][0];
+	quad.points[3].y = _transform[0][1] * _d[0] + _transform[1][1] * _d[1] + _transform[2][1];
+
+	quad.points[0].x = CONVERT_MENGE_TO_OGRE_X(quad.points[0].x,width);
+   	quad.points[0].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[0].y,heigth);
+
+	quad.points[1].x = CONVERT_MENGE_TO_OGRE_X(quad.points[1].x,width);
+   	quad.points[1].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[1].y,heigth);
+
+	quad.points[2].x = CONVERT_MENGE_TO_OGRE_X(quad.points[2].x,width);
+   	quad.points[2].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[2].y,heigth);
+
+	quad.points[3].x = CONVERT_MENGE_TO_OGRE_X(quad.points[3].x,width);
+   	quad.points[3].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[3].y,heigth);
+
+	quad.z = z - 1;
+
+	quad.uv = _uv;
+
+	quad.texture = image->m_texture;
+
+	quad.color = _color;
+	
+	quadList.push_back(quad);
+}
+
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::doRender(void)
 {

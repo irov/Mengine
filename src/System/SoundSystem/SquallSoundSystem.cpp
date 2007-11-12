@@ -22,7 +22,6 @@ bool initInterfaceSystem(SoundSystemInterface** _ptrSoundSystem)
 void releaseInterfaceSystem(SoundSystemInterface* _ptrSoundSystem)
 {
 	delete static_cast<SQUALLSoundSystem*>(_ptrSoundSystem);
-//	Sleep(200);
 }
 //////////////////////////////////////////////////////////////////////////
 SQUALLSoundSystem::SQUALLSoundSystem()

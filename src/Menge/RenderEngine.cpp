@@ -126,7 +126,29 @@ namespace Menge
 			_mixedColor,
 			_image);
 	}
-
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderImage(		
+			const mt::mat3f & _transform, 
+			const mt::vec2f & _a,
+			const mt::vec2f & _b,
+			const mt::vec2f & _c,
+			const mt::vec2f & _d,
+			const mt::vec4f & _uv,
+			unsigned int _color, 
+			const RenderImageInterface* _image)
+	{
+		mt::mat3f transform = _transform;
+		transform.v2.v2 -= m_renderViewport.begin;
+		m_interface->renderImage(
+			transform.m,
+			_a.m,
+			_b.m,
+			_c.m,
+			_d.m,
+			_uv.m,
+			_color,
+			_image);
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )
 	{

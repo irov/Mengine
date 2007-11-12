@@ -115,6 +115,34 @@ void OgreRenderSystem::renderImage(
 	}
 }
 //////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::renderImage(		
+		const float * _transform, 
+		const float * _a,
+		const float * _b,
+		const float * _c,
+		const float * _d,
+		const float * _uv,
+		unsigned int _color, 
+		const RenderImageInterface * _image)
+{
+	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
+	{
+		Ogre::Texture * texture = image->getTexture();
+		float z = m_spriteMgr->getCurrentZ();
+		m_spriteMgr->addQuad2(
+			*(Ogre::Vector4*)_uv,
+			*(Ogre::Matrix3*)_transform,
+			*(Ogre::Vector2*)_a,
+			*(Ogre::Vector2*)_b,
+			*(Ogre::Vector2*)_c,
+			*(Ogre::Vector2*)_d, 
+			z,
+			image, 
+			_color);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
 void	OgreRenderSystem::beginLayer()
 {
 }

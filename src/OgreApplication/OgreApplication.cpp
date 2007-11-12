@@ -85,6 +85,7 @@ bool OgreApplication::init( const char * _xmlFile )
 	std::string DllRenderSystem = "Systems_d/OgreRenderSystem_d.dll";
 	std::string DllInputSystem = "Systems_d/OgreInputSystem_d.dll";
 	std::string DllSoundSystem = "Systems_d/SoundSystem_d.dll";
+	std::string DllParticleSystem = "Systems/ParticleSystem_d.dll";
 #else
 	std::string DllModuleSetting = "DllModuleRelease";
 	std::string DllLogSystem = "Systems/OgreLogSystem.dll";
@@ -92,6 +93,7 @@ bool OgreApplication::init( const char * _xmlFile )
 	std::string DllRenderSystem = "Systems/OgreRenderSystem.dll";
 	std::string DllInputSystem = "Systems/OgreInputSystem.dll";
 	std::string DllSoundSystem = "Systems/SoundSystem.dll";
+	std::string DllParticleSystem = "Systems/ParticleSystem.dll";
 #endif
 
 	printf("use log system [%s]\n", DllLogSystem.c_str() );
@@ -143,6 +145,18 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	SoundSystemInterface * soundInterface = soundInterfaceDLL->getInterface();
 	m_application->setSoundSystem( soundInterface );
+
+//!!
+	printf("use particle system [%s]\n", DllParticleSystem.c_str() );
+
+	SystemInterfaceDLL<ParticleSystemInterface> * particleInterfaceDLL = 
+		new SystemInterfaceDLL<ParticleSystemInterface>(DllParticleSystem);
+
+	m_listApplicationDLL.push_back( particleInterfaceDLL );
+
+	ParticleSystemInterface * particleInterface = particleInterfaceDLL->getInterface();
+	m_application->setParticleSystem( particleInterface );
+
 
 	std::string resourcePath = fileInterface->platformBundlePath();
 
@@ -211,7 +225,7 @@ bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)
 bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
 {
 	const Ogre::RenderTarget::FrameStats& stats = m_window->getStatistics();
-//	printf("fps = %f \n", stats.avgFPS);
+	//printf("fps = %f \n", stats.avgFPS);
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////

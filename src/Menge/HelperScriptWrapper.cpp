@@ -16,6 +16,12 @@ namespace Menge
 		{			
 			int big_a = a << 3;
 			int big_b = b << 3;
+
+			if( big_a == big_b )
+			{
+				return a;
+			}
+
 			int big_r = big_a  + ( rand() % (big_b - big_a) );
 			big_r >>= 3;
 			return big_r;

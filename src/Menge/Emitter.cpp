@@ -230,7 +230,8 @@ namespace	Menge
 	void Emitter::_update( float _timing )
 	{
 		SceneNode2D::_update( _timing );
-		m_interface->update();
+
+		m_interface->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_debugRender()

@@ -195,11 +195,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::update( float _timing )
+	void Player::updateChangeScene()
 	{
 		if( m_switchScene == true )
 		{
-
 			m_switchScene = false;
 
 			m_nextScene->activate();
@@ -212,6 +211,11 @@ namespace Menge
 			m_scene = m_nextScene;
 			//m_scene->activate();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::update( float _timing )
+	{
+		updateChangeScene();
 
 		if( m_scene )
 		{

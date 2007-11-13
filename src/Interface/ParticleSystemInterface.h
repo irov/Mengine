@@ -11,11 +11,10 @@ struct RenderParticle
 class EmitterInterface
 {
 public:
-	virtual ~EmitterInterface(){};
 	virtual void play( bool _leftVisible ) = 0;
 	virtual void stop() = 0;
 	virtual void pause() = 0;
-	virtual void update() = 0;
+	virtual void update( float _timing ) = 0;
 	virtual void setLooped( bool _loop ) = 0;
 	virtual bool getLooped() const = 0;
 	virtual void getBoundingBox( int & left, int & top, int & right, int & bottom ) const = 0;
@@ -24,14 +23,11 @@ public:
 
 class EmitterContainerInterface
 {
-public:
-	virtual ~EmitterContainerInterface(){};
 };
 
 class ParticleSystemInterface
 {
 public:
-	virtual ~ParticleSystemInterface(){};
 	virtual EmitterContainerInterface * createEmitterContainerFromMemory( void * _buffer ) = 0;
 	virtual EmitterInterface * createEmitterFromContainer( const char * _name, const EmitterContainerInterface * _container ) = 0;
 	virtual void releaseEmitter( EmitterInterface * _emitter ) = 0;

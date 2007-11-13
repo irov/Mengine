@@ -57,16 +57,16 @@ void AstralaxEmitter::pause()
 	m_start = false;
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxEmitter::update()
+void AstralaxEmitter::update( float _timing )
 {
 	if( m_start == false )
 	{
 		return;
 	}
 
-	double rate = Magic_GetUpdateTime( m_id );
+	//double rate = Magic_GetUpdateTime( m_id );
 
-	Magic_Update( m_id, rate );
+	Magic_Update( m_id, _timing );
 
 	if ( Magic_IsRestart( m_id ) ) 
 	{ 

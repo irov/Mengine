@@ -91,7 +91,7 @@ EmitterInterface * AstralaxParticleSystem::createEmitterFromContainer( const cha
 //////////////////////////////////////////////////////////////////////////
 void AstralaxParticleSystem::releaseEmitter( EmitterInterface * _emitter )
 {
-	delete static_cast<EmitterInterface*>(_emitter);
+	delete static_cast<AstralaxEmitter*>(_emitter);
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxParticleSystem::lockEmitter( EmitterInterface * _emitter, int _typeParticle )

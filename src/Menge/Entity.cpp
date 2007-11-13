@@ -149,6 +149,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
 	{
+		bool result = SceneNode2D::_activate();
+
 		this->registerEventMethod("MOVE_END", "onMoveEnd" );
 		this->registerEventMethod("MOVE_STOP", "onMoveStop" );
 		
@@ -159,6 +161,29 @@ namespace	Menge
 
 		this->callMethod("onActivate", "()" );
 
-		return true;
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::_deactivate()
+	{
+		SceneNode2D::_deactivate();
+
+		this->callMethod("onDeactivate", "()" );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Entity::_compile()
+	{
+		bool result = SceneNode2D::_compile();
+
+		this->callMethod("onCompile", "()" );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::_release()
+	{
+		SceneNode2D::_release();
+
+		this->callMethod("onRelease", "()" );
 	}
 }

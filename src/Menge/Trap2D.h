@@ -11,8 +11,6 @@
 
 namespace Menge
 {
-	/*	Trapped under Ice!  */
-
 	class	Trap2D 
 		: public SceneNode2D
 	{

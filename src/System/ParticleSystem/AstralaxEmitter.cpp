@@ -1,11 +1,17 @@
 #	include "AstralaxEmitter.h"
+#	include <assert.h>
 //////////////////////////////////////////////////////////////////////////
 AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 	: m_id( _id )
-	, m_pause( true )
+	, m_start( false )
 {
 }
-
+//////////////////////////////////////////////////////////////////////////
+AstralaxEmitter::~AstralaxEmitter()
+{
+	Magic_UnloadEmitter( m_id );
+}
+//////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::getBoundingBox( int & left, int & top, int & right, int & bottom )  const
 {
 	Magic_GetRect( m_id, &left, &top, &right, &bottom );
@@ -18,30 +24,54 @@ void AstralaxEmitter::play( bool _leftVisible )
 		_leftVisibleInterval();
 	}
 
-	m_pause = false;
+	if ( Magic_IsRestart( m_id ) ) 
+	{ 
+		Magic_Restart( m_id );
+	}
+
+	m_start = true;
+}
+//////////////////////////////////////////////////////////////////////////
+void AstralaxEmitter::setLooped( bool _loop )
+{
+	int mode = _loop ? MAGIC_LOOP : MAGIC_NOLOOP;
+	Magic_SetLoopMode( m_id, mode );
+}
+
+bool AstralaxEmitter::getLooped() const
+{
+	return Magic_GetLoopMode( m_id ) == MAGIC_LOOP;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::stop()
 {
+	m_start = false;
+
 	Magic_Stop( m_id );
 
-	m_pause = true;
+	Magic_Restart( m_id );
+}
+//////////////////////////////////////////////////////////////////////////
+void AstralaxEmitter::pause()
+{
+	m_start = false;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::update()
 {
-	if( m_pause )
+	if( m_start == false )
 	{
 		return;
 	}
 
 	double rate = Magic_GetUpdateTime( m_id );
+
 	Magic_Update( m_id, rate );
-}
-//////////////////////////////////////////////////////////////////////////
-bool AstralaxEmitter::isPlaying() const
-{
-	return !m_pause;
+
+	if ( Magic_IsRestart( m_id ) ) 
+	{ 
+		m_start = false;
+	} 
 }
 //////////////////////////////////////////////////////////////////////////
 int	AstralaxEmitter::getNumTypes() const

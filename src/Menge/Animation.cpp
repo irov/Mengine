@@ -116,7 +116,7 @@ namespace	Menge
 			delay *= m_animationFactor;
 		}
 
-		size_t currentImageIndex = m_animation->getSequenceIndex(m_currentFrame);
+		size_t currentImageIndex = m_animation->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
 
 	}
@@ -136,7 +136,7 @@ namespace	Menge
 		{
 			m_currentFrame = 0;
 
-			size_t currentImageIndex = m_animation->getSequenceIndex(m_currentFrame);
+			size_t currentImageIndex = m_animation->getSequenceIndex( m_currentFrame );
 			setImageIndex( currentImageIndex );
 		}
 

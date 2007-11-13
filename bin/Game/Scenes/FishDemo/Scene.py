@@ -106,11 +106,41 @@ class Scene( Menge.Scene ):
 		if isDown == True:
 			print "left pressed"
 			self.isMouseDown = True
-			self.emitterTest.stop();
+			self.emitterTest.play( False );
 		else:
 			print "left unpressed"
 			self.isMouseDown = False
-			self.emitterTest.play( False );
+			#self.emitterTest.play( False );
 		return False
 		pass
+
+	def onHandleKeyEvent( self, key, isDown ):
+	
+		if isDown == False:
+			return False
+
+		if key == 28:	
+			print "28"
+			self.emitterTest.stop();
+		
+		if key == 57:
+			print "57"
+			self.emitterTest.play( False );
+
+		if key == 54:
+			print "54"
+			self.emitterTest.pause();
+
+		if key == 2:
+			print "54"
+			self.emitterTest.setLooped( True );
+
+		if key == 3:
+			print "54"
+			self.emitterTest.setLooped( False );
+
+		return False
+		pass
+		
+	pass
 	pass

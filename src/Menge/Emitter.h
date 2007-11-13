@@ -23,8 +23,10 @@ namespace Menge
 
 	public:
 		void play( bool _leftVisible );
+		void pause();
 		void stop();
-		bool isPlaying() const;
+		void setLooped( bool _loop );
+		bool getLooped() const;
 	
 	public:
 		virtual bool isVisible( const Viewport & _viewPort );

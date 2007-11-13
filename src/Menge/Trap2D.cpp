@@ -76,7 +76,7 @@ namespace Menge
 				return false;
 			}
 
-			m_sceneNodes.push_back(node);
+			m_sceneNodes.push_back( node );
 		}
 
 		return true;

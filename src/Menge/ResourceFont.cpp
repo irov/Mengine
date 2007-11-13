@@ -124,7 +124,7 @@ namespace Menge
 		return fontDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceFont::parseAttribute( const std::string & name, const std::string & params/*const std::vector<std::string> & _params*/ )
+	bool ResourceFont::parseAttribute( const std::string & name, const std::string & params )
 	{
 		if ( name == "glyph" )
 		{

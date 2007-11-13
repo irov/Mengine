@@ -14,9 +14,11 @@ public:
 	virtual ~EmitterInterface(){};
 	virtual void play( bool _leftVisible ) = 0;
 	virtual void stop() = 0;
+	virtual void pause() = 0;
 	virtual void update() = 0;
+	virtual void setLooped( bool _loop ) = 0;
+	virtual bool getLooped() const = 0;
 	virtual void getBoundingBox( int & left, int & top, int & right, int & bottom ) const = 0;
-	virtual bool isPlaying() const = 0;
 	virtual int getNumTypes() const = 0;
 };
 

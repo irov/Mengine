@@ -39,9 +39,9 @@ namespace Menge
 		struct Glyph
 		{
 			Glyph( unsigned int _id, const mt::vec4f& _rect, float _ratio )
-				: id(_id)
-				, rect(_rect)
-				, ratio(_ratio)
+				: id( _id )
+				, rect( _rect )
+				, ratio( _ratio )
 			{}
 			unsigned int id;
 			mt::vec4f rect;

@@ -222,8 +222,10 @@ namespace Menge
 		{
 			pybind::proxy_<Emitter, pybind::bases<SceneNode2D>>("Emitter", false)
 				.def( "play", &Emitter::play )
-				.def( "isPlaying", &Emitter::isPlaying )
 				.def( "stop", &Emitter::stop )
+				.def( "pause", &Emitter::pause )
+				.def( "setLooped", &Emitter::setLooped )
+				.def( "getLooped", &Emitter::getLooped )
 				;
 
 			pybind::proxy_<SoundEmitter, pybind::bases<SceneNode2D>>("SoundEmitter", false)

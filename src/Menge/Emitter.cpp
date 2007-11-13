@@ -37,6 +37,11 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool Emitter::isVisible( const Viewport & _viewPort )
 	{
+		if( SceneNode2D::isVisible( _viewPort ) == false )
+		{
+			return false;
+		}
+
 		int left;
 		int top; 
 		int right;
@@ -152,11 +157,6 @@ namespace	Menge
 	{
 		SceneNode2D::_render();
 
-		if( isPlaying() == false )
-		{
-			return;
-		}
-
 		int count = m_interface->getNumTypes();
 
 		const mt::mat3f & rwm = getWorldMatrix();
@@ -207,14 +207,24 @@ namespace	Menge
 		m_interface->play( _leftVisible );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Emitter::pause()
+	{
+		m_interface->pause();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Emitter::stop()
 	{
 		m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Emitter::isPlaying() const
+	void Emitter::setLooped( bool _loop )
 	{
-		return m_interface->isPlaying();
+		m_interface->setLooped( _loop );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Emitter::getLooped() const
+	{
+		return m_interface->getLooped();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_update( float _timing )

@@ -41,6 +41,7 @@
 		<Node Name = "EmitterTest1" Type = "Emitter">
               		<Resource Name = "ResourceEmitterTest1"/>
 			<Emitter Name = "Медуза1"/>
+			<Transformation Value = "1;0;0;1;200;200" />
                	</Node>
 
 		<Node Name = "EmitterTest2" Type = "Emitter">

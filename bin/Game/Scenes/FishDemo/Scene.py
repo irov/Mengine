@@ -85,6 +85,9 @@ class Scene( Menge.Scene ):
 
 		self.emitterTest = self.getNode( "EmitterTest1" );
 		self.emitterTest.play( False );
+
+		#self.emitterTest1 = self.getNode( "EmitterTest2" );
+		#self.emitterTest1.play( False );
 		
 
 		block.activate();

@@ -37,6 +37,13 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool Emitter::isVisible( const Viewport & _viewPort )
 	{
+		int left;
+		int top; 
+		int right;
+		int bottom;
+
+		m_interface->getBoundingBox( left, top, right, bottom );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -15,6 +15,7 @@ public:
 	void	play( bool _leftVisible );
 	void	stop();
 	void	update();
+	void	getBoundingBox( int & left, int & top, int & right, int & bottom )  const;
 	bool	isPlaying() const;
 	int		getNumTypes() const;
 public:
@@ -22,6 +23,5 @@ public:
 private:
 	HM_EMITTER	m_id;
 	bool		m_pause;
-	std::string  m_name;
 	void	_leftVisibleInterval();
 };

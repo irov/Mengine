@@ -22,6 +22,9 @@ public:
 	void unlockEmitter( EmitterInterface * _emitter );
 private:
 	MAGIC_TEXTURE m_texture;
+	int m_currentX;
+	int m_currentY;
+
 };
 
 bool	initInterfaceSystem(ParticleSystemInterface** );

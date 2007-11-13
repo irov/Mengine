@@ -5,6 +5,11 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 	, m_pause( true )
 {
 }
+
+void AstralaxEmitter::getBoundingBox( int & left, int & top, int & right, int & bottom )  const
+{
+	Magic_GetRect( m_id, &left, &top, &right, &bottom );
+}
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::play( bool _leftVisible )
 {

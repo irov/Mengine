@@ -25,8 +25,9 @@ void releaseInterfaceSystem(ParticleSystemInterface* _ptrParticleSystem)
 }
 //////////////////////////////////////////////////////////////////////////
 AstralaxParticleSystem::AstralaxParticleSystem()
-{
-}
+	: m_currentX(0)
+	, m_currentY(0)
+{}
 //////////////////////////////////////////////////////////////////////////
 AstralaxParticleSystem::~AstralaxParticleSystem()
 {
@@ -97,6 +98,9 @@ void AstralaxParticleSystem::lockEmitter( EmitterInterface * _emitter, int _type
 {
 	AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
 	HM_EMITTER id = emitter->getId();
+
+	Magic_GetEmitterPosition( id, &m_currentX, &m_currentY );
+
 	Magic_LockParticlesType( id, _typeParticle );
 
 	Magic_GetTexture( 0, &m_texture );
@@ -115,7 +119,7 @@ RenderParticle * AstralaxParticleSystem::nextParticle()
 
 	MAGIC_TEXTURE * magic_texture = & m_texture;	
 
-	MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture, 200, 200 );
+	MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture, m_currentX, m_currentY );
 
 	rp.x1 = vertex_rectangle->x1;
 	rp.x2 = vertex_rectangle->x2;

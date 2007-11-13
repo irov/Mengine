@@ -61,6 +61,7 @@ namespace	Menge
 
 		mt::set_box_from_oriented_extent( bbox, size + offset, worldMatrix );
 		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
+
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////

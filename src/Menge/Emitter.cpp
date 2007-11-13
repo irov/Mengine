@@ -44,7 +44,16 @@ namespace	Menge
 
 		m_interface->getBoundingBox( left, top, right, bottom );
 
-		return true;
+		const mt::mat3f & worldMatrix = getWorldMatrix();
+
+		mt::box2f bbox;	//сделать box2i
+
+		mt::mul_v2_m3( bbox.min, mt::vec2f( float(left), float(top) ), worldMatrix );
+		mt::mul_v2_m3( bbox.max, mt::vec2f( float(right), float(bottom) ), worldMatrix );
+
+		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Emitter::_activate()
@@ -60,6 +69,17 @@ namespace	Menge
 	void Emitter::_deactivate()
 	{
 		SceneNode2D::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Emitter::loader( TiXmlElement * _xml )
+	{
+		SceneNode2D::loader( _xml );
+
+		XML_FOR_EACH_TREE( _xml )
+		{
+			XML_CHECK_VALUE_NODE( "Resource", "Name", m_resourceName );
+			XML_CHECK_VALUE_NODE( "Emitter", "Name", m_emitterName );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Emitter::_compile()
@@ -95,9 +115,9 @@ namespace	Menge
 			return false;
 		}
 
-		int n = m_interface->getNumTypes();
+		int count = m_interface->getNumTypes();
 
-		for ( int i = n - 1; i >= 0; i-- )
+		for ( int i = count - 1; i >= 0; i-- )
 		{
 			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
 
@@ -128,29 +148,20 @@ namespace	Menge
 		Holder<ResourceManager>::hostage()->releaseResource( m_resourceEmitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Emitter::loader( TiXmlElement * _xml )
-	{
-		SceneNode2D::loader( _xml );
-
-		XML_FOR_EACH_TREE( _xml )
-		{
-			XML_CHECK_VALUE_NODE( "Resource", "Name", m_resourceName );
-			XML_CHECK_VALUE_NODE( "Emitter", "Name", m_emitterName );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_render()
 	{
+		SceneNode2D::_render();
+
 		if( isPlaying() == false )
 		{
 			return;
 		}
 
-		int n = m_interface->getNumTypes();
+		int count = m_interface->getNumTypes();
 
 		const mt::mat3f & rwm = getWorldMatrix();
 
-		for ( int i = n - 1; i >= 0; i-- )
+		for ( int i = count - 1; i >= 0; i-- )
 		{
 			bool nextParticleType = false;
 
@@ -208,6 +219,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_update( float _timing )
 	{
+		SceneNode2D::_update( _timing );
 		m_interface->update();
 	}
 	//////////////////////////////////////////////////////////////////////////

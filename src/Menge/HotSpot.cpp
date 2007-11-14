@@ -152,7 +152,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "MOUSE_MOVE", "(Offf)", this->getScript(), _x, _y, _whell );
+			askEvent( handle, "MOUSE_MOVE", "(Oiii)", this->getScript(), _x, _y, _whell );
 		}
 
 		return handle;
@@ -176,7 +176,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "GLOBAL_MOUSE_MOVE", "(Offf)", this->getScript(), _x, _y, _whell );
+			askEvent( handle, "GLOBAL_MOUSE_MOVE", "(Oiii)", this->getScript(), _x, _y, _whell );
 		}
 
 		return handle;

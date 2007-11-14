@@ -163,7 +163,7 @@ namespace	Menge
 
 		if( handle == false )
 		{
-			askEvent( handle, "MOUSE_MOVE", "(fff)", _x, _y, _whell );
+			askEvent( handle, "MOUSE_MOVE", "(iii)", _x, _y, _whell );
 		}
 
 		if( handle == false )

@@ -22,11 +22,12 @@ namespace Menge
 		~Emitter();
 
 	public:
-		void play( bool _leftVisible );
+		void play();
 		void pause();
 		void stop();
 		void setLooped( bool _loop );
 		bool getLooped() const;
+		void setLeftBorder( float _leftBorder );
 	
 	public:
 		virtual bool isVisible( const Viewport & _viewPort );

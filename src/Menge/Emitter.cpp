@@ -197,14 +197,14 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Emitter::play( bool _leftVisible )
+	void Emitter::play()
 	{
 		if( isActivate() == false )
 		{
 			return;
 		}
 
-		m_interface->play( _leftVisible );
+		m_interface->play();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::pause()
@@ -227,10 +227,14 @@ namespace	Menge
 		return m_interface->getLooped();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Emitter::setLeftBorder( float _leftBorder )
+	{
+		return m_interface->setLeftBorder( _leftBorder );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_update( float _timing )
 	{
 		SceneNode2D::_update( _timing );
-
 		m_interface->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -80,14 +80,14 @@ class Scene( Menge.Scene ):
 
 		#Menge.stopMusic();
 		
-		#self.testTextField = self.getNode( "SoundEmitterTest" )
-		#self.testTextField.setLocalPosition( Menge.vec2f( 100,1016:30 06.11.20070 ) )
+		self.testTextField = self.getNode( "Arial2112" )
+		self.testTextField.setLocalPosition( Menge.vec2f( 100,101 ) )
 
 		self.emitterTest = self.getNode( "EmitterTest1" );
-		self.emitterTest.play( False );
+		self.emitterTest.play();
 
 		#self.emitterTest1 = self.getNode( "EmitterTest2" );
-		#self.emitterTest1.play( False );
+		#self.emitterTest1.play();
 		
 
 		block.activate();
@@ -132,11 +132,11 @@ class Scene( Menge.Scene ):
 			self.emitterTest.pause();
 
 		if key == 2:
-			print "54"
+			print "2"
 			self.emitterTest.setLooped( True );
 
 		if key == 3:
-			print "54"
+			print "3"
 			self.emitterTest.setLooped( False );
 
 		return False

@@ -137,7 +137,7 @@ void OgreRenderSpriteManager::prepareForRender()
 
 	d_uvwAddressMode.u = Ogre::TextureUnitState::TAM_CLAMP;
 	d_uvwAddressMode.v = Ogre::TextureUnitState::TAM_CLAMP;
-	d_uvwAddressMode.w = Ogre::TextureUnitState::TAM_CLAMP;
+	d_uvwAddressMode.w = Ogre::TextureUnitState::TAM_CLAMP;//TAM_WRAP
 
 	m_renderSys->_setWorldMatrix(Ogre::Matrix4::IDENTITY);
 	m_renderSys->_setViewMatrix(Ogre::Matrix4::IDENTITY);

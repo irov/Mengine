@@ -113,7 +113,7 @@ namespace Menge
 		const mt::vec2f & _offset,
 		const mt::vec4f & _uv,
 		const mt::vec2f & _size,
-		unsigned int _mixedColor, 
+		unsigned int _color, 
 		const RenderImageInterface * _image)
 	{
 		mt::mat3f transform = _transform;
@@ -123,7 +123,7 @@ namespace Menge
 			_offset.m,
 			_uv.m,
 			_size.m,
-			_mixedColor,
+			_color,
 			_image);
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -4,6 +4,7 @@
 AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 	: m_id( _id )
 	, m_start( false )
+	, m_leftBorder( 0.0f )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -17,16 +18,23 @@ void AstralaxEmitter::getBoundingBox( int & left, int & top, int & right, int & 
 	Magic_GetRect( m_id, &left, &top, &right, &bottom );
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxEmitter::play( bool _leftVisible )
+void AstralaxEmitter::setLeftBorder( float _leftBorder )
 {
-	if( _leftVisible )
-	{
-		_leftVisibleInterval();
-	}
-
+	m_leftBorder = _leftBorder;
+}
+//////////////////////////////////////////////////////////////////////////
+void AstralaxEmitter::play()
+{
 	if ( Magic_IsRestart( m_id ) ) 
 	{ 
 		Magic_Restart( m_id );
+	}
+
+	//Magic_SetPosition( m_id, 0 );
+
+	if( m_leftBorder > 0 )
+	{
+		_leftVisibleInterval( m_leftBorder );
 	}
 
 	m_start = true;
@@ -66,6 +74,8 @@ void AstralaxEmitter::update( float _timing )
 
 	//double rate = Magic_GetUpdateTime( m_id );
 
+	//Magic_Update( m_id, rate );
+
 	Magic_Update( m_id, _timing );
 
 	if ( Magic_IsRestart( m_id ) ) 
@@ -84,15 +94,24 @@ HM_EMITTER AstralaxEmitter::getId() const
 	return m_id;
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxEmitter::_leftVisibleInterval()
+void AstralaxEmitter::_leftVisibleInterval( double _left )
 {
-	double left_interval = Magic_GetInterval1( m_id );
+	//double left_interval = Magic_GetInterval1( m_id );
+
+	Magic_SetUpdateTemp( m_id, 0.5f );
+
+	double duration = Magic_GetDuration( m_id );
+
+	if( _left >= duration )
+	{
+		return;
+	}
 
 	double position = Magic_GetPosition( m_id );
 
-	if( left_interval > 0)
+	if( _left > 0)
 	{
-		while( position < left_interval )
+		while( position < _left )
 		{
 			position = Magic_GetPosition( m_id );
 
@@ -100,9 +119,9 @@ void AstralaxEmitter::_leftVisibleInterval()
 
 			float temp = Magic_GetUpdateTemp( m_id );
 
-			if (position + rate * temp > left_interval)
+			if (position + rate * temp > _left)
 			{
-				rate = (left_interval - position) / temp;
+				rate = ( _left - position ) / temp;
 			}
 
 			Magic_Update( m_id, rate );

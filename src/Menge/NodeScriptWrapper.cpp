@@ -226,6 +226,7 @@ namespace Menge
 				.def( "pause", &Emitter::pause )
 				.def( "setLooped", &Emitter::setLooped )
 				.def( "getLooped", &Emitter::getLooped )
+				.def( "setLeftBorder", &Emitter::setLeftBorder )
 				;
 
 			pybind::proxy_<SoundEmitter, pybind::bases<SceneNode2D>>("SoundEmitter", false)
@@ -282,8 +283,9 @@ namespace Menge
 				.def( "getImageResource", &Sprite::getImageResource )
 				.def( "setScale", &Sprite::setScale )
 				.def( "getScale", &Sprite::getScale )
+				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
+				.def( "getPercentVisibility", &Sprite::getPercentVisibility )
 				;
-
 			{
 				pybind::proxy_<Animation, pybind::bases<Sprite>>("Animation", false)
 					.def( "play", &Animation::play )

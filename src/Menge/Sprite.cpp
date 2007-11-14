@@ -30,13 +30,11 @@ namespace	Menge
 	, m_centerAlign(false)
 	, m_alignOffset(0.f,0.f)
 	, m_scale(1.f)
-	{
-
-	}
+	, m_percent(1.f)
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
-	{
-	}
+	{}
 	///////////////////////////////////////////////////////////////////////////
 	void Sprite::setScale( float _scale )
 	{
@@ -48,6 +46,16 @@ namespace	Menge
 	float Sprite::getScale() const
 	{
 		return m_scale;
+	}
+	///////////////////////////////////////////////////////////////////////////
+	void Sprite::setPercentVisibility( float _percent )
+	{
+		m_percent = _percent;
+	}
+	///////////////////////////////////////////////////////////////////////////
+	float Sprite::getPercentVisibility() const
+	{
+		return m_percent;
 	}
 	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible( const Viewport & _viewPort )
@@ -173,12 +181,15 @@ namespace	Menge
 		size *= m_scale;
 
 		const mt::vec2f & image_offset = m_image->getOffset( m_currentImageIndex );
-		const mt::vec4f & frame_uv = m_image->getUV( m_currentImageIndex );
-		
+		mt::vec4f frame_uv = m_image->getUV( m_currentImageIndex );
+
 		const RenderImageInterface * renderImage = m_image->getImage( m_currentImageIndex );
 
 		const mt::mat3f & rwm = getWorldMatrix();
 
+		frame_uv.z *= m_percent;	// FIX: узнать надо ли по y делать и надо ли тайл.
+		size.x *= m_percent;
+	
 		mt::vec2f offset = ( m_centerAlign )? image_offset + m_alignOffset: image_offset;
 
 		Holder<RenderEngine>::hostage()->renderImage(

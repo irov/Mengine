@@ -26,6 +26,7 @@ namespace	Menge
 		, m_color( 0xFFFFFFFF )
 		, m_height( 12.0f )
 		, m_centerAlign( false )
+		, m_alignOffset( 0.f,0.f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -141,7 +142,9 @@ namespace	Menge
 			
 			mt::vec2f size( width, m_height );
 
-			Holder<RenderEngine>::hostage()->renderImage( rwm, offset, uv, size, m_color, image );
+			mt::vec2f offset_ = ( m_centerAlign )? offset + m_alignOffset: offset;
+
+			Holder<RenderEngine>::hostage()->renderImage( rwm, offset_, uv, size, m_color, image );
 
 			offset.x += width;
 		}
@@ -200,8 +203,7 @@ namespace	Menge
 	{
 		if( m_centerAlign )
 		{
-			mt::vec2f half_size = mt::vec2f( m_length.x * -0.5f, 0 );
-			setLocalPosition( half_size );
+			m_alignOffset = mt::vec2f( m_length.x * -0.5f, 0 );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

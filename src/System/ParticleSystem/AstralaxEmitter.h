@@ -13,10 +13,11 @@ public:
 	~AstralaxEmitter();
 
 public:
-	void	play( bool _leftVisible ) override;
+	void	play() override;
 	void	stop() override;
 	void	pause() override;
 	void	update( float _timing ) override;
+	void	setLeftBorder( float _leftBorder ) override;
 
 	void	setLooped( bool _loop ) override;
 	bool	getLooped() const override;
@@ -28,7 +29,8 @@ public:
 	HM_EMITTER	getId() const;
 
 private:
+	float		m_leftBorder;
 	HM_EMITTER	m_id;
 	bool		m_start;
-	void	_leftVisibleInterval();
+	void	_leftVisibleInterval( double _left );
 };

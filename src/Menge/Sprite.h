@@ -12,8 +12,6 @@ namespace Menge
 {
 	class ResourceImage;
 
-	class SpriteProxy;
-
 	class Sprite
 		: public SceneNode2D
 	{
@@ -28,6 +26,9 @@ namespace Menge
 
 		virtual void setImageResource( const std::string & _name );
 		virtual const std::string & getImageResource() const;
+
+		virtual void setPercentVisibility( float _percent );
+		virtual float getPercentVisibility() const;
 
 		virtual void setScale( float _scale );
 		virtual float getScale() const;
@@ -60,9 +61,9 @@ namespace Menge
 		mt::vec2f m_alignOffset;
 
 		float m_scale;
-	
-		unsigned int m_color;
 
-		friend class SpriteProxy;
+		float m_percent;
+
+		unsigned int m_color;
 	};
 }

@@ -55,7 +55,9 @@ namespace Menge
 		std::string m_resourceImage;
 
 		size_t m_currentImageIndex;
+
 		bool m_centerAlign;
+		mt::vec2f m_alignOffset;
 
 		float m_scale;
 	

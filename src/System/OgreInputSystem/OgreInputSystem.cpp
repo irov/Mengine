@@ -126,7 +126,7 @@ bool OgreInputSystem::mouseMoved( const OIS::MouseEvent &arg )
 {
 	if( m_handler )
 	{
-		return m_handler->handleMouseMove( arg.state.X.abs, arg.state.Y.abs, arg.state.Z.abs );
+		return m_handler->handleMouseMove( arg.state.X.rel, arg.state.Y.rel, arg.state.Z.rel );
 	}
 
 	return false;

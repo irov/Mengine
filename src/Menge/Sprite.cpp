@@ -28,6 +28,7 @@ namespace	Menge
 	, m_color(0xFFFFFFFF)
 	, m_currentImageIndex(0)
 	, m_centerAlign(false)
+	, m_alignOffset(0.f,0.f)
 	, m_scale(1.f)
 	{
 
@@ -139,8 +140,7 @@ namespace	Menge
 			mt::vec2f size = m_image->getMaxSize( 0 );
 			size *= m_scale;
 
-			mt::vec2f half_size = size * (- 0.5f);
-			setLocalPosition( half_size );
+			m_alignOffset = size * (- 0.5f);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -179,9 +179,11 @@ namespace	Menge
 
 		const mt::mat3f & rwm = getWorldMatrix();
 
+		mt::vec2f offset = ( m_centerAlign )? image_offset + m_alignOffset: image_offset;
+
 		Holder<RenderEngine>::hostage()->renderImage(
 			rwm, 
-			image_offset,
+			offset,
 			frame_uv,
 			size,
 			m_color,

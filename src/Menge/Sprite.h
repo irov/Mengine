@@ -3,6 +3,7 @@
 #	include "SceneNode2D.h"
 
 #	include "math/mat3.h"
+#	include "math/vec4.h"
 
 #	include <vector>
 
@@ -27,8 +28,7 @@ namespace Menge
 		virtual void setImageResource( const std::string & _name );
 		virtual const std::string & getImageResource() const;
 
-		virtual void setPercentVisibility( float _percent );
-		virtual float getPercentVisibility() const;
+		virtual void setPercentVisibility( const mt::vec4f & _percent );
 
 		virtual void setScale( float _scale );
 		virtual float getScale() const;
@@ -62,7 +62,7 @@ namespace Menge
 
 		float m_scale;
 
-		float m_percent;
+		mt::vec4f	m_percent;
 
 		unsigned int m_color;
 	};

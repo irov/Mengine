@@ -24,13 +24,13 @@ namespace	Menge
 	OBJECT_IMPLEMENT(Sprite);
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
-	: m_image(0)
-	, m_color(0xFFFFFFFF)
-	, m_currentImageIndex(0)
-	, m_centerAlign(false)
-	, m_alignOffset(0.f,0.f)
-	, m_scale(1.f)
-	, m_percent(1.f)
+	: m_image( 0 )
+	, m_color( 0xFFFFFFFF )
+	, m_currentImageIndex( 0 )
+	, m_centerAlign( false )
+	, m_alignOffset( 0.f, 0.f )
+	, m_scale( 1.0f )
+	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -48,14 +48,9 @@ namespace	Menge
 		return m_scale;
 	}
 	///////////////////////////////////////////////////////////////////////////
-	void Sprite::setPercentVisibility( float _percent )
+	void Sprite::setPercentVisibility( const mt::vec4f & _percent )
 	{
 		m_percent = _percent;
-	}
-	///////////////////////////////////////////////////////////////////////////
-	float Sprite::getPercentVisibility() const
-	{
-		return m_percent;
 	}
 	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible( const Viewport & _viewPort )
@@ -180,17 +175,29 @@ namespace	Menge
 		mt::vec2f size = m_image->getSize( m_currentImageIndex );
 		size *= m_scale;
 
-		const mt::vec2f & image_offset = m_image->getOffset( m_currentImageIndex );
+		mt::vec2f image_offset = m_image->getOffset( m_currentImageIndex );
 		mt::vec4f frame_uv = m_image->getUV( m_currentImageIndex );
 
 		const RenderImageInterface * renderImage = m_image->getImage( m_currentImageIndex );
 
 		const mt::mat3f & rwm = getWorldMatrix();
 
-		frame_uv.z *= m_percent;	// FIX: узнать надо ли по y делать и надо ли тайл.
-		size.x *= m_percent;
+		image_offset.x += size.x * m_percent.x;
+		size.x *= ( 1.0f - m_percent.x );
+
+		size.x *= ( 1.0f - m_percent.z );
 	
-		mt::vec2f offset = ( m_centerAlign )? image_offset + m_alignOffset: image_offset;
+		image_offset.y += size.y * m_percent.y;
+		size.y *= ( 1.0f - m_percent.y );
+
+		size.y *= ( 1.0f - m_percent.w );
+
+		frame_uv.x = m_percent.x;
+		frame_uv.y = m_percent.y;
+		frame_uv.z = 1.0f - m_percent.z;
+		frame_uv.w = 1.0f - m_percent.w;
+		
+		mt::vec2f offset = m_centerAlign ? image_offset + m_alignOffset : image_offset;
 
 		Holder<RenderEngine>::hostage()->renderImage(
 			rwm, 

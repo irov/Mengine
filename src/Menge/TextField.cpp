@@ -142,7 +142,7 @@ namespace	Menge
 			
 			mt::vec2f size( width, m_height );
 
-			mt::vec2f offset_ = ( m_centerAlign )? offset + m_alignOffset: offset;
+			mt::vec2f offset_ = m_centerAlign ? offset + m_alignOffset : offset;
 
 			Holder<RenderEngine>::hostage()->renderImage( rwm, offset_, uv, size, m_color, image );
 

@@ -28,7 +28,7 @@ namespace Menge
 		virtual void setImageResource( const std::string & _name );
 		virtual const std::string & getImageResource() const;
 
-		virtual void setPercentVisibility( const mt::vec4f & _percent );
+		virtual void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
 
 		virtual void setScale( float _scale );
 		virtual float getScale() const;

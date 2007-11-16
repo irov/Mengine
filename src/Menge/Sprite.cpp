@@ -48,9 +48,10 @@ namespace	Menge
 		return m_scale;
 	}
 	///////////////////////////////////////////////////////////////////////////
-	void Sprite::setPercentVisibility( const mt::vec4f & _percent )
+	void Sprite::setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY )
 	{
-		m_percent = _percent;
+		m_percent.v2_0 = _percentX;
+		m_percent.v2_1 = _percentY;
 	}
 	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible( const Viewport & _viewPort )

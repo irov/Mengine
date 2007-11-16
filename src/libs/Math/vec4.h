@@ -31,6 +31,11 @@ namespace mt
 				vec3f v3;
 				float w; 
 			};
+			struct
+			{
+				vec2f v2_0;
+				vec2f v2_1; 
+			};
 			float m[4];
 		};
 

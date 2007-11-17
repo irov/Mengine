@@ -43,4 +43,17 @@ private:
 
 	typedef std::list<SystemDLL *> TListApplicationDLL;
 	TListApplicationDLL m_listApplicationDLL;
+
+	template<class T>
+	T * addSystem( const std::string & _file )
+	{
+		SystemInterfaceDLL<T> * InterfaceDLL = 
+			new SystemInterfaceDLL<T>( _file );
+
+		m_listApplicationDLL.push_back( InterfaceDLL  );
+
+		T * interface_ = InterfaceDLL ->getInterface();
+
+		return interface_;
+	}
 };

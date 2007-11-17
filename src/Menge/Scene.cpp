@@ -63,8 +63,7 @@ namespace	Menge
 			return layer->getSize();
 		}
 
-		static mt::vec2f s_zero(0,0);
-		return s_zero;
+		return mt::vec2f::zero_v2;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerAppend( const std::string & _layer, Node * _node )

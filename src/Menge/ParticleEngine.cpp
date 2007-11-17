@@ -22,7 +22,7 @@ namespace Menge
 
 		if( fileData == 0 )
 		{
-			MENGE_LOG( "Error: Emitter can't open resource file '%s'\n", _filename.c_str() );
+			MENGE_LOG( "Error: ParticleEngine can't open file '%s'\n", _filename.c_str() );
 			return 0;
 		}
 
@@ -31,9 +31,15 @@ namespace Menge
 		std::vector<char> buffer( buff_size );
 		fileData->read( &buffer[0], buff_size );
 
+		Holder<FileEngine>::hostage()->closeFile( fileData );
+
 		EmitterContainerInterface * container = m_interface->createEmitterContainerFromMemory( &buffer[0] );
 
-		Holder<FileEngine>::hostage()->closeFile( fileData );
+		if( container == 0 )
+		{
+			MENGE_LOG( "Error: ParticleEngine can't create emitter container '%s'\n", _filename.c_str() );
+			return 0;
+		}
 
 		return container;
 	}

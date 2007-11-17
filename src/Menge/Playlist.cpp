@@ -19,11 +19,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::~Playlist()
 	{
-		if( m_playlistResource )
-		{
-			Holder<ResourceManager>::hostage()
-				->releaseResource( m_playlistResource );
-		}
+		Holder<ResourceManager>::hostage()->releaseResource( m_playlistResource );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Playlist::setPlaylistResource( ResourcePlaylist * _resource )

@@ -8,6 +8,8 @@
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/SoundSystemInterface.h"
+#	include "Interface/ParticleSystemInterface.h"
+
 
 #	include "OIS/OIS.h"
 
@@ -36,15 +38,12 @@ void releaseInterfaceSystem( ApplicationInterface* _ptrInterface )
 {
 	delete static_cast<OgreApplication*>(_ptrInterface);
 }
-
 //////////////////////////////////////////////////////////////////////////
 OgreApplication::OgreApplication() 
 : m_application(0)
 , m_root(0)
 , m_window(0)
-{
-	
-}
+{}
 //////////////////////////////////////////////////////////////////////////
 OgreApplication::~OgreApplication()
 {
@@ -98,65 +97,45 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	printf("use log system [%s]\n", DllLogSystem.c_str() );
 
-	SystemInterfaceDLL<LogSystemInterface> * logInterfaceDLL = 
-		new SystemInterfaceDLL<LogSystemInterface>(DllLogSystem);
+	LogSystemInterface * logInterface
+		= addSystem<LogSystemInterface>( DllLogSystem );
 
-	m_listApplicationDLL.push_back( logInterfaceDLL  );
-
-	LogSystemInterface * logInterface = logInterfaceDLL ->getInterface();
 	m_application->setLogSystem( logInterface );
 
 	printf("use file system [%s]\n", DllFileSystem.c_str() );
 
-	SystemInterfaceDLL<OgreFileSystemInterface> * fileInterfaceDLL = 
-		new SystemInterfaceDLL<OgreFileSystemInterface>(DllFileSystem);
+	OgreFileSystemInterface * fileInterface
+		= addSystem<OgreFileSystemInterface>( DllFileSystem );
 
-	m_listApplicationDLL.push_back( fileInterfaceDLL );
-
-	OgreFileSystemInterface * fileInterface = fileInterfaceDLL->getInterface();
 	m_application->setFileSystem( fileInterface );
 
 	printf("use input system [%s]\n", DllInputSystem.c_str() );
 
-	SystemInterfaceDLL<OgreInputSystemInterface> * inputInterfaceDLL = 
-		new SystemInterfaceDLL<OgreInputSystemInterface>(DllInputSystem);
+	OgreInputSystemInterface * inputInterface
+		= addSystem<OgreInputSystemInterface>( DllInputSystem );
 
-	m_listApplicationDLL.push_back( inputInterfaceDLL );
-
-	OgreInputSystemInterface * inputInterface = inputInterfaceDLL->getInterface();
 	m_application->setInputSystem( inputInterface );
 
 	printf("use render system [%s]\n", DllRenderSystem.c_str() );
 
-	SystemInterfaceDLL<OgreRenderSystemInterface> * renderInterfaceDLL = 
-		new SystemInterfaceDLL<OgreRenderSystemInterface>(DllRenderSystem);
+	OgreRenderSystemInterface * renderInterface
+		= addSystem<OgreRenderSystemInterface>( DllRenderSystem );
 
-	m_listApplicationDLL.push_back( renderInterfaceDLL );
-
-	OgreRenderSystemInterface * renderInterface = renderInterfaceDLL->getInterface();
 	m_application->setRenderSystem( renderInterface );
 
 	printf("use sound system [%s]\n", DllSoundSystem.c_str() );
 
-	SystemInterfaceDLL<SoundSystemInterface> * soundInterfaceDLL = 
-		new SystemInterfaceDLL<SoundSystemInterface>(DllSoundSystem);
+	SoundSystemInterface * soundInterface
+		= addSystem<SoundSystemInterface>( DllSoundSystem );
 
-	m_listApplicationDLL.push_back( soundInterfaceDLL );
-
-	SoundSystemInterface * soundInterface = soundInterfaceDLL->getInterface();
 	m_application->setSoundSystem( soundInterface );
 
-//!!
 	printf("use particle system [%s]\n", DllParticleSystem.c_str() );
 
-	SystemInterfaceDLL<ParticleSystemInterface> * particleInterfaceDLL = 
-		new SystemInterfaceDLL<ParticleSystemInterface>(DllParticleSystem);
+	ParticleSystemInterface * particleInterface
+		= addSystem<ParticleSystemInterface>( DllParticleSystem );
 
-	m_listApplicationDLL.push_back( particleInterfaceDLL );
-
-	ParticleSystemInterface * particleInterface = particleInterfaceDLL->getInterface();
 	m_application->setParticleSystem( particleInterface );
-
 
 	std::string resourcePath = fileInterface->platformBundlePath();
 

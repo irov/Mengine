@@ -27,5 +27,6 @@
 	<Resource Path = "Game/Resource">
 		<Default/>
 		<FishDemo/>
+		<Kuzya/>
 	</Resource>
 </Game>	

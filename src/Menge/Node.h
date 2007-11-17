@@ -9,7 +9,7 @@ namespace Menge
 	class NodeForeach;
 	class Scriptable;
 
-	//! Node - base pure virtual class
+	//! Node - базовый pure virtual class
 	/*! 
 	* 
 	*/

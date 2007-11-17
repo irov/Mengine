@@ -15,7 +15,7 @@ int main()
 #endif
 
 #ifndef MENGE_STATIC
-	HMODULE hModule = LoadLibrary( application_dll );
+	HMODULE hModule = LoadLibraryA( application_dll );
 
 	if( hModule == 0 )
 	{

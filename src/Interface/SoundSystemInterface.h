@@ -12,7 +12,7 @@ public:
 class SoundBufferInterface
 {
 public:
-	virtual void	unload() = 0;
+	virtual void unload() = 0;
 };
 
 class SoundSourceInterface
@@ -46,15 +46,15 @@ public:
 class SoundSystemInterface
 {
 public:
-	virtual void	setListenerOrient( float * _position, float * _front, float * top) = 0;
-	virtual SoundSourceInterface*	createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener ) = 0;
+	virtual void setListenerOrient( float * _position, float * _front, float * top) = 0;
+	virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener ) = 0;
 
-	virtual SoundBufferInterface *	createSoundBufferFromFile( const char * _filename, bool _isStream ) = 0;
-	virtual SoundBufferInterface *	createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) = 0;
+	virtual SoundBufferInterface * createSoundBufferFromFile( const char * _filename, bool _isStream ) = 0;
+	virtual SoundBufferInterface * createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) = 0;
 
-	virtual void	releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) = 0;
-	virtual void	releaseSoundNode( SoundSourceInterface * _sn ) = 0;
+	virtual void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) = 0;
+	virtual void releaseSoundNode( SoundSourceInterface * _sn ) = 0;
 };
 
-bool	initInterfaceSystem( SoundSystemInterface** );
-void	releaseInterfaceSystem( SoundSystemInterface* );
+bool initInterfaceSystem( SoundSystemInterface** );
+void releaseInterfaceSystem( SoundSystemInterface* );

@@ -8,7 +8,7 @@
 SystemDLL::SystemDLL( const std::string &_filename )
 : m_filename( _filename )
 {
-	m_hInstance = LoadLibrary( _filename.c_str() );
+	m_hInstance = LoadLibraryA( _filename.c_str() );
 
 	if( m_hInstance )
 	{

@@ -9,7 +9,7 @@ class Block( Menge.Entity ):
 	def onLoader( self ):
 		print "!@!"
 		hotspot = self.getChildren( "HS_01", True )
-		hotspot.setInputHandler( self )
+		hotspot.setHotspotListener( self )
 		
 		self.animation = self.getChildren( "AN_01", True )
 		self.animation.setAnimationListener( self )
@@ -23,12 +23,16 @@ class Block( Menge.Entity ):
 		pass
 		
 	def onMoveEnd( self ):
+		print "onMoveEnd..."
+		#self.animation.stop()
 		print "Blo blu ble..."
 		pass
 		
-	def onAnimationEnd( self ):
+	def onAnimationEnd( self, animation ):
+		print "onAnimationEnd...", animation.getName()
 		self.moveTo( 4000, Menge.vec2f( 100,200 ), False )
-		print "Bla bla bla..."
+		
+		
 		pass
 		
 	def onEnter( self ):

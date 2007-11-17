@@ -5,18 +5,9 @@ def init():
 	#Menge.setCurrentScene("Buka")
 	#Menge.setCurrentScene("FishDemo")	
 	Menge.setCurrentScene("FishDemo")
-	Menge.schedule( 5000, setScene )
 	return True
 	pass
 
-def setScene():
-	Menge.setCurrentScene("FishDemo2")
-	Menge.schedule( 1000, setTest )
-	pass
-
-def setTest():
-	print "bla bla"
-	pass
 
 def update( timing ):
 	pass

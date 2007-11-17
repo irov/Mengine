@@ -59,12 +59,13 @@ namespace	Menge
 		mt::vec2f size = m_image->getMaxSize( m_currentImageIndex );
 		size *= m_scale;
 
-		const mt::vec2f & offset = m_image->getOffset( m_currentImageIndex );
+		const mt::vec2f & image_offset = m_image->getOffset( m_currentImageIndex );
+		mt::vec2f offset = m_centerAlign ? image_offset + m_alignOffset : image_offset;
+
 		const mt::mat3f & worldMatrix = getWorldMatrix();
-
 		mt::box2f bbox;
-
 		mt::set_box_from_oriented_extent( bbox, size + offset, worldMatrix );
+
 		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
 
 		return result;
@@ -183,20 +184,20 @@ namespace	Menge
 
 		const mt::mat3f & rwm = getWorldMatrix();
 
-		image_offset.x += size.x * m_percent.x;
-		size.x *= ( 1.0f - m_percent.x );
+		//image_offset.x += size.x * m_percent.x;
+		//size.x *= ( 1.0f - m_percent.x );
 
-		size.x *= ( 1.0f - m_percent.z );
+		//size.x *= ( 1.0f - m_percent.z );
 	
-		image_offset.y += size.y * m_percent.y;
-		size.y *= ( 1.0f - m_percent.y );
+		//image_offset.y += size.y * m_percent.y;
+		//size.y *= ( 1.0f - m_percent.y );
 
-		size.y *= ( 1.0f - m_percent.w );
+		//size.y *= ( 1.0f - m_percent.w );
 
-		frame_uv.x = m_percent.x;
-		frame_uv.y = m_percent.y;
-		frame_uv.z = 1.0f - m_percent.z;
-		frame_uv.w = 1.0f - m_percent.w;
+		//frame_uv.x = m_percent.x;
+		//frame_uv.y = m_percent.y;
+		//frame_uv.z = 1.0f - m_percent.z;
+		//frame_uv.w = 1.0f - m_percent.w;
 		
 		mt::vec2f offset = m_centerAlign ? image_offset + m_alignOffset : image_offset;
 

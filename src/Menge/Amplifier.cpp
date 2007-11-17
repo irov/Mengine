@@ -101,7 +101,7 @@ namespace Menge
 	{
 		release_();
 
-		const std::string & filename = m_currentPlayList->getTrackName();
+		const std::string & filename = m_currentPlayList->getCurrentTrack();
 
 		m_buffer = Holder<SoundEngine>::hostage()->createSoundBufferFromFile( filename.c_str(), true );
 

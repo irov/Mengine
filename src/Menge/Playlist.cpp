@@ -30,10 +30,7 @@ namespace Menge
 	{
 		const std::vector<std::string> & tracks = m_playlistResource->getTracks();
 
-		for( std::vector<std::string>::const_iterator it = tracks.begin(); it != tracks.end(); ++it )
-		{
-			addTrack( *it );
-		}
+		std::copy( tracks.begin(), tracks.end(), std::back_inserter( m_tracks ) );
 
 		bool is_looped = m_playlistResource->getLoop();
 		
@@ -70,14 +67,9 @@ namespace Menge
 		m_track = m_tracks.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string &	Playlist::getTrackName() const
+	const std::string &	Playlist::getCurrentTrack() const
 	{
 		return	*m_track;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Playlist::addTrack( const std::string & _track )
-	{
-		m_tracks.push_back( _track );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::shuffle()
@@ -87,6 +79,8 @@ namespace Menge
 			size_t rnd = rand() % m_tracks.size();
 			std::swap( m_tracks[i], m_tracks[rnd] );
 		}
+
+		first();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::previos()

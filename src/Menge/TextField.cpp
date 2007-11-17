@@ -22,7 +22,8 @@ namespace	Menge
 	OBJECT_IMPLEMENT(TextField);
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
-		: m_length( 0.0f, 0.0f )
+		: m_resourceFont( 0 )
+		, m_length( 0.0f, 0.0f )
 		, m_color( 0xFFFFFFFF )
 		, m_height( 12.0f )
 		, m_centerAlign( false )

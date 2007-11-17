@@ -24,7 +24,7 @@ namespace	Menge
 			float	getVolume() const;
 
 		private:
-			bool m_changeTrack;
+			bool m_changeTrack;	// for FIX bug SQUALL :(
 
 			float m_volume;
 

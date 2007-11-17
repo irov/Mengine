@@ -25,10 +25,9 @@ namespace	Menge
 
 		void shuffle();
 
-		const std::string &	getTrackName() const;
+		const std::string &	getCurrentTrack() const;
 
-		void addTrack( const std::string & _track );
-
+	public:
 		bool setPlaylistResource( ResourcePlaylist * _resource );
 
 	private:

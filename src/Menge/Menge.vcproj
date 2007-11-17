@@ -550,30 +550,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Region"
-				>
-				<File
-					RelativePath=".\Region.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Region.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="WayPoint"
-				>
-				<File
-					RelativePath=".\WayPoint.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\WayPoint.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Animation"
 				>
 				<File

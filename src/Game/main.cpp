@@ -59,6 +59,5 @@ int main()
 	printf("free library '%s' \n", application_dll );
 	FreeLibrary( hModule );
 
-
 	return 1;
 }

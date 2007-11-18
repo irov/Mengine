@@ -5,6 +5,7 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 	: m_id( _id )
 	, m_start( false )
 	, m_leftBorder( 0.0f )
+	, m_total_rate( 0.0f )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -76,12 +77,27 @@ void AstralaxEmitter::update( float _timing )
 
 	//Magic_Update( m_id, rate );
 
-	Magic_Update( m_id, _timing );
+	/*Magic_Update( m_id, _timing );
 
 	if ( Magic_IsRestart( m_id ) ) 
 	{ 
 		m_start = false;
 	} 
+	*/
+	m_total_rate += _timing;
+
+    double rate = Magic_GetUpdateTime( m_id );
+
+    while( m_total_rate > rate )
+    {
+		m_total_rate -= rate;
+        Magic_Update( m_id, rate );
+
+        if ( Magic_IsRestart( m_id ) ) 
+        { 
+			m_start = false;
+        }
+    }
 }
 //////////////////////////////////////////////////////////////////////////
 int	AstralaxEmitter::getNumTypes() const
@@ -98,7 +114,7 @@ void AstralaxEmitter::_leftVisibleInterval( double _left )
 {
 	//double left_interval = Magic_GetInterval1( m_id );
 
-	Magic_SetUpdateTemp( m_id, 0.5f );
+	//Magic_SetUpdateTemp( m_id, 0.5f );
 
 	double duration = Magic_GetDuration( m_id );
 

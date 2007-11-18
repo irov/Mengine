@@ -27,7 +27,7 @@ namespace	Menge
 		, m_color( 0xFFFFFFFF )
 		, m_height( 12.0f )
 		, m_centerAlign( false )
-		, m_alignOffset( 0.f,0.f )
+		, m_alignOffset( 0.f, 0.f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

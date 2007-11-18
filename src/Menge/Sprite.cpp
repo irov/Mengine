@@ -159,7 +159,7 @@ namespace	Menge
 		m_image = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::loader(TiXmlElement * _xml)
+	void Sprite::loader( TiXmlElement * _xml )
 	{
 		SceneNode2D::loader(_xml);
 

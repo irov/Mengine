@@ -139,6 +139,10 @@ class Scene( Menge.Scene ):
 			print "3"
 			self.emitterTest.setLooped( False );
 
+		if key == 4:
+			print "4"
+			self.emitterTest.setLeftBorder( 8000 );
+
 		return False
 		pass
 		

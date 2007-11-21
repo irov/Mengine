@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	//! ResourceImageCell - ресурс-файл, который хранит размеченную изображение. 
+	//! ResourceImageCell - ресурс-файл, который хранит размеченное изображение. 
 
 	/*! xml - файл имеет следующую структуру:
 	* <Resource Name = "имя_ресурса" Type = "ResourceImageCell" >

@@ -32,7 +32,7 @@ namespace Menge
 		Camera3D * getRenderCamera();
 
 		RenderImageInterface * loadImage( const TextureDesc & _desc );
-		RenderImageInterface * loadImage( const std::string & _fileName, std::vector<char> & _buff, size_t _filter );
+		RenderImageInterface * loadImage( const std::string & _filename, std::vector<char> & _buff, size_t _filter );
 
 		void renderImage(
 			const mt::mat3f & _transform, 

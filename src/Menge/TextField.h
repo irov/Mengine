@@ -6,21 +6,69 @@ namespace Menge
 {
 	class ResourceFont;
 
+	//! TextField - класс для отрисовки шрифта. 
+
+    /*! xml - файл имеет следующую структуру:
+	 *	<Node Name = "имя_ноды" Type = "TextField">
+     *      <Font Name = "имя_ресура_шрифта"/>
+     *	    <Text Value = "отображаемый_текст"/>
+	 *		<Color Value = "цвет"/>
+	 *		<Height Value = "высота глифа"/>
+	 *		<CenterAlign Value = "1/0"/>
+	 *	</Node>
+	*/
+
 	class TextField
 		: public SceneNode2D
 	{
 		OBJECT_DECLARE(TextField);
 	public:
+		//! Конструктор.
+		/*!
+		*/
 		TextField();
+
+		//! Деструктор.
+		/*!
+		*/
 		~TextField();
 
 	public:
+
+		//! Установка отображаемого текста.
+		/*!
+		\param _text значение текста
+		*/
 		void setText( const std::string & _text );
+
+		//! Установка высоты глифов.
+		/*!
+		\param _height значение высоты
+		*/
 		void setHeight( float _height );
+
+		//! Установка цвета глифов.
+		/*!
+		\param _color значение цвета
+		*/
 		void setColor( unsigned int _color );
 
+		//! Возвращает высоту глифов.
+		/*!
+		\return высота глифов
+		*/
 		float getHeight() const;
+
+		//! Возвращает цвет глифов.
+		/*!
+		\return цвет глифов
+		*/
 		unsigned int getColor() const;
+
+		//! Возвращает текст.
+		/*!
+		\return текст
+		*/
 		const std::string & getText() const;
 
 	public:

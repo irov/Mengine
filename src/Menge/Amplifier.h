@@ -9,26 +9,58 @@ namespace	Menge
 	class ResourcePlaylist;
 	class Playlist;
 
+	//! Amplifier - проигрывает музыку. 
+	/*! 
+	*
+	*/
+
 	class Amplifier
 		:	public SoundNodeListenerInterface
 	{
 		public:
+
+			//! Конструктор. Изначально громкость 100%.
+			/*!
+			*/
 			Amplifier();
+
+			//! Деструктор.
+			/*!
+			*/
 			~Amplifier();
-		public:
+
+			//! Проигрывание плейлиста. Плейлист задается как ресурс.
+			/*!
+			\param _playlist имя ресурса.
+			*/
 			void	play( const std::string & _playlist );
-			void	update( float _timing );
+
+			//! Остановка музыки.
+			/*!
+			*/
 			void	stop();
 
+			//! Установка громкости. Задается от [0;1]
+			/*!
+			\param _volume значение громкости.
+			*/
+
 			void	setVolume( float _volume );
+
+			//! Возвращает величину громкости
+			/*!
+			\return величина громкости
+			*/
 			float	getVolume() const;
+
+			void	update( float _timing );
 
 		private:
 			bool m_changeTrack;	// for FIX bug SQUALL :(
 
 			float m_volume;
 
-			typedef	std::map<std::string,Playlist*>	TPlayListMap;
+			typedef	std::map< std::string, Playlist* >	TPlayListMap;
 
 			TPlayListMap	m_playLists;
 

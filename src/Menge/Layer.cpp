@@ -9,9 +9,7 @@ namespace Menge
 		: m_main(false)
 		, m_size(0.f, 0.f)
 		, m_scene(0)
-	{
-
-	}
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::setMain( bool _main )
 	{

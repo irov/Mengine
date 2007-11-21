@@ -6,6 +6,16 @@
 
 namespace Menge
 {
+	//! ResourceImageSet - ресурс-файл, который содержит список uv - областей. 
+
+	/*! xml - файл имеет следующую структуру:
+	* <Resource Name = "имя_ресурса" Type = "ResourceImageSet" >
+	*	<Frame UV = "left;top;right;bottom"/>
+	*    ...
+	*   <Frame UV = "left;top;right;bottom"/>
+	* </Resource>
+	*/
+
 	class ResourceImageSet
 		: public ResourceImageCell
 	{

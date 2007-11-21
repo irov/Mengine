@@ -63,8 +63,14 @@ namespace Menge
 		m_track = m_tracks.begin();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string &	Playlist::getCurrentTrack() const
+	const std::string &	Playlist::getTrack() const
 	{
+		if( m_track == m_tracks.end() )
+		{
+			static std::string empty;
+			return empty;
+		}
+
 		return	*m_track;
 	}
 	//////////////////////////////////////////////////////////////////////////

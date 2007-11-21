@@ -96,15 +96,15 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationGroup::setLooped( bool _looped )
+	void AnimationGroup::setLooped( bool _loop )
 	{
 		if( m_currentAnimation )
 		{
-			m_currentAnimation->setLooped( _looped );
+			m_currentAnimation->setLooped( _loop );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AnimationGroup::getLooped()
+	bool AnimationGroup::getLooped() const
 	{
 		if( m_currentAnimation )
 		{

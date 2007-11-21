@@ -6,27 +6,80 @@ namespace Menge
 {
 	class ResourceAnimation;
 
+	//! Animation - анимация. Наследуется от Sprite, и для прогрываемого кадра устанавливает изображение через Sprite::setImageIndex. см. описание Sprite.
+
+    /*! xml - файл имеет следующую структуру:
+	*	<Node Name = "имя_ноды" Type = "Animation">
+	*		<ImageMap Name = "имя_ресурса_спрайта"/>
+	*		<Animation Name = "имя_ресурса_анимации"/>
+	*		<AutoStart Value = "1/0"/>
+	*		<Looping Value = "1/0"/>
+	*		<Transformation Value = "1;0;0;1;512;0"/>
+	*	</Node>
+	*/
+
 	class Animation
 		: public Sprite
 	{
 		OBJECT_DECLARE(Animation)
 	public:
+		//! Конструктор.
+		/*!
+		*/
 		Animation();
 
 	public:
+		//! Проиграть анимацию.
+		/*!
+		*/
 		virtual void play();
+
+		//! Остановить анимацию.
+		/*!
+		*/
 		virtual void stop();
+
+		//! Поставить на паузу анимацию.
+		/*!
+		*/
 		virtual void pause();
 
-		virtual void setLooped( bool _looped );
+		//! Установка зацикленности.
+		/*!
+		\param _loop флаг зацикливания.
+		*/
+		virtual void setLooped( bool _loop );
+
+		//! Возвращает флаг зацикливания
+		/*!
+		\return флаг зацикливания
+		*/
 		virtual bool getLooped() const;
 
-	public:
+		//! Установка слушателя.
+		/*!
+		\param _listener слушатель
+		*/
 		void setAnimationListener( PyObject * _listener );
+
+		//! Установка ресурса анимации.
+		/*!
+		\param _resource имя ресурса.
+		*/
 		void setAnimationResource( const std::string & _resource );
 
-	public:
+		//! Значение на которое умножается каждая задержка анимации.
+		/*!
+		\param _factor значение
+		*/
+
 		void setAnimationFactor( float _factor );
+
+		//! Получение значения
+		/*!
+		\return _factor значение
+		*/
+
 		float getAnimationFactor() const;
 
 	public:

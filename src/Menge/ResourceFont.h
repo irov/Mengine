@@ -11,20 +11,45 @@ class FileDataInterface;
 
 namespace Menge
 {
+	//! ResourceFont - ресурс-файл, который содержит изображение, список uv - координат и коэффициентов пропорциональности. 
+
+    /*! xml - файл имеет следующую структуру:
+	* <Resource Name = "имя_ресурса" Type = "ResourceFont" >
+	*	<File Path = "имя_файла"/>
+	* </Resource>
+	*/
+
 	class ResourceFont
 		: public ResourceReference
 	{
 		RESOURCE_DECLARE( ResourceFont )
 
 	public:
+		//! Конструктор.
+		/*!
+		\param _name имя ресурса.
+		*/
 		ResourceFont( const std::string & _name );
 
 	public:
-
+		//! Возвращает uv - координаты глифа.
+		/*!
+		\param _id индекс глифа
+		\return uv - координаты глифа
+		*/
 		const mt::vec4f & getUV( unsigned int _id ) const;
 
+		//! Возвращает коэффициент пропорциональности глифа, т.е. его отношение ширины к высоте.
+		/*!
+		\param _id индекс глифа
+		\return коэффициент пропорциональности глифа
+		*/
 		float getCharRatio( char _id ) const;
 
+		//! Возвращает изображение для шрифта.
+		/*!
+		\return изображение
+		*/
 		const RenderImageInterface * getImage() const;
 
 	public:
@@ -35,6 +60,12 @@ namespace Menge
 		void _release() override;
 
 	private:
+
+		void setGlyph( unsigned int _id, float _u1, float _v1, float _u2, float _v2 );
+		std::string getFontDir( const std::string & _fontName );
+
+		bool parseFontdef( FileDataInterface * _stream );
+		bool parseAttribute( const std::string & name, const std::string & params );
 
 		struct Glyph
 		{
@@ -58,11 +89,5 @@ namespace Menge
 		std::string m_fontDir;
 
 		RenderImageInterface * m_image;
-
-		void setGlyph( unsigned int _id, float _u1, float _v1, float _u2, float _v2 );
-		std::string getFontDir( const std::string & _fontName );
-
-		bool parseFontdef( FileDataInterface * _stream );
-		bool parseAttribute( const std::string & name, const std::string & params );
 	};
 }

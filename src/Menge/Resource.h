@@ -6,15 +6,34 @@ class TiXmlElement;
 
 namespace Menge
 {
+	//! Reference - интерфейс для ресурса.
+
 	class Resource
 	{
 	public:
+		//! Конструктор.
+		/*!
+		*
+		*/
 		Resource();
 
 	public:
+		//! Компиляция ресурса. Например загрузка картинки, эмиттеров и т.д.
+		/*!
+		* return если компиляция прошла успешно
+		*/
 		virtual bool compile();
+
+		//! Освобождение ресурса.
+		/*!
+		*
+		*/
 		virtual void release();
 
+		//! Проверка является ли ресурса скомпилированным.
+		/*!
+		* return если скомпилирован
+		*/
 		virtual bool isCompile();
 
 	protected:

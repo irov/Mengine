@@ -6,6 +6,16 @@
 
 namespace Menge
 {
+	//! ResourceImageCell - ресурс-файл, который хранит размеченную изображение. 
+
+	/*! xml - файл имеет следующую структуру:
+	* <Resource Name = "имя_ресурса" Type = "ResourceImageCell" >
+	*	<File Path = "имя_файла"/>
+	*   <Cell X = "количество картинок по горизонтали"/>
+	*   <Cell Y = "количество картинок по вертикали"/>
+	* </Resource>
+	*/
+
 	class ResourceImageCell
 		: public ResourceImage
 	{

@@ -2,14 +2,29 @@
 
 namespace Menge
 {
+	//! Reference - класс для подсчета ссылок.
+
 	class Reference
 	{
 	public:
 		Reference();
 
 	public:
+		//! Увеличивает счетчик на еденицу
+		/*!
+		*/
 		virtual void incrementReference();
+
+		//! Уменьшает счетчик на еденицу
+		/*!
+			return количество ссылок.
+		*/
 		virtual size_t decrementReference();
+
+		//! Количество ссылок
+		/*!
+			return количество ссылок.
+		*/
 		virtual size_t countReference();
 
 	public:

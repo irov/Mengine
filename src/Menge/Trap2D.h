@@ -11,6 +11,11 @@
 
 namespace Menge
 {
+	//! Trap2D.
+	/*! 
+	*
+	*/
+
 	class	Trap2D 
 		: public SceneNode2D
 	{
@@ -23,7 +28,16 @@ namespace Menge
 		void debugRender() override;
 
 	public:
+		//! Установка обратного вызова на событие, когда объект попадает в зону.
+		/*!
+		\param обратный вызов
+		*/
 		void setEnterZoneCallback( PyObject * _event );
+
+		//! Установка обратного вызова на событие, когда объект покидает в зону.
+		/*!
+		\param обратный вызов
+		*/
 		void setLeaveZoneCallback( PyObject * _event );
 
 	protected:

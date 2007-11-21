@@ -39,7 +39,7 @@ TiXmlDocument * TiXmlDocumentLoadData( const std::string & _data )
 		printf("error - %s\n", document->ErrorDesc() );
 
 		delete document;
-		return false;
+		return NULL;
 	}
 
 	return document;

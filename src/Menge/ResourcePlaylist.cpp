@@ -67,6 +67,17 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const std::string & ResourcePlaylist::getTrack( size_t _track ) const
+	{
+		if( _track >= m_tracks.size() || _track < 0 )
+		{
+			static std::string empty;
+			return empty;
+		}
+		
+		return m_tracks[ _track ];
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const TVecTrack & ResourcePlaylist::getTracks() const
 	{
 		return m_tracks;

@@ -157,8 +157,6 @@ namespace Menge
 
 		Holder<ResourceManager>::keep( new ResourceManager );
 
-		std::string gameFile;
-
 		TiXmlDocument * xmlDocument = 
 			Holder<FileEngine>::hostage()
 			->loadXml( _applicationFile );

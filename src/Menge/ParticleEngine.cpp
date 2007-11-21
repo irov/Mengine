@@ -18,20 +18,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const std::string & _filename )
 	{
-		FileDataInterface * fileData = Holder<FileEngine>::hostage()->openFile( _filename );
+		FileDataInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
 
-		if( fileData == 0 )
+		if( file == 0 )
 		{
 			MENGE_LOG( "Error: ParticleEngine can't open file '%s'\n", _filename.c_str() );
 			return 0;
 		}
 
-		size_t buff_size = fileData->size();
+		size_t length = file->size();
 
-		std::vector<char> buffer( buff_size );
-		fileData->read( &buffer[0], buff_size );
+		static std::vector<char> buffer;
+		buffer.resize( length );
 
-		Holder<FileEngine>::hostage()->closeFile( fileData );
+		file->read( &buffer[0], length );
+
+		Holder<FileEngine>::hostage()->closeFile( file );
 
 		EmitterContainerInterface * container = m_interface->createEmitterContainerFromMemory( &buffer[0] );
 

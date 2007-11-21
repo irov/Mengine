@@ -73,34 +73,34 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::loadImage( const std::string & _fileName, std::vector<char> & _buff, size_t _filter )
+	RenderImageInterface * RenderEngine::loadImage( const std::string & _filename, std::vector<char> & _buff, size_t _filter )
 	{
-		FileDataInterface * fileData = Holder<FileEngine>::hostage()->openFile( _fileName );
+		FileDataInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
 
-		if( fileData == 0 )
+		if( file == 0 )
 		{
-			MENGE_LOG( "Error: Image can't open resource file '%s'\n", _fileName.c_str() );
+			MENGE_LOG( "Error: Image can't open resource file '%s'\n", _filename.c_str() );
 
 			return 0;
 		}
 
-		size_t buff_size = fileData->size();
+		size_t buff_size = file->size();
 		_buff.resize( buff_size );
-		fileData->read( &_buff[0], fileData->size() );
+		file->read( &_buff[0], buff_size );
 
 		TextureDesc	textureDesc;
 		textureDesc.buffer = &_buff[0];
 		textureDesc.size = buff_size;
-		textureDesc.name = _fileName.c_str();
+		textureDesc.name = _filename.c_str();
 		textureDesc.filter = _filter;
 
 		RenderImageInterface * image = loadImage( textureDesc );
 
-		Holder<FileEngine>::hostage()->closeFile( fileData );
+		Holder<FileEngine>::hostage()->closeFile( file );
 
 		if( image == 0 )
 		{
-			MENGE_LOG( "Error: Image from file '%s' not loader\n", _fileName.c_str() );
+			MENGE_LOG( "Error: Image from file '%s' not loader\n", _filename.c_str() );
 
 			return 0;
 		}	

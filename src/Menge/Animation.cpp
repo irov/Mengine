@@ -67,9 +67,9 @@ namespace	Menge
 		return m_animationFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setLooped( bool _looped )
+	void Animation::setLooped( bool _loop )
 	{
-		m_looping = _looped;
+		m_looping = _loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::getLooped() const

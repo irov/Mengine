@@ -10,12 +10,25 @@ class RenderImageInterface;
 
 namespace Menge
 {
+	//! ResourceEmitterContainer - ресурс-файл контейнера эмиттеров, который заполняется из формата *.ptc от Astralax. ptc содержит только имена текстур, поэтому необходимо задавать в какой директории они находятся.
+
+    /*! xml - файл имеет следующую структуру:
+	* <Resource Name = "имя_ресурса" Type = "ResourceEmitterContainer" >
+	*	<File Path = "имя_файла"/>
+	*	<Folder Path = "папка_с_текстурами_партиклов"/>
+	* </Resource>
+	*/
+
 	class ResourceEmitterContainer
 		: public ResourceReference
 	{
 		RESOURCE_DECLARE( ResourceEmitterContainer )
 
 	public:
+		//! Конструктор.
+		/*!
+		\param _name имя ресурса.
+		*/
 		ResourceEmitterContainer( const std::string & _name );
 
 	public:
@@ -23,9 +36,18 @@ namespace Menge
 
 	public:
 
+		//! Возвращает контейнер эмиттеров.
+		/*!
+		\return контейнер эмиттеров
+		*/
 		const EmitterContainerInterface * getContainer() const;
 
-		RenderImageInterface * getRenderImage( const std::string & _textureName );
+		//! Возвращает текстуру по имени.
+		/*!
+		\param _name имя текстуры
+		\return изображение
+		*/
+		RenderImageInterface * getRenderImage( const std::string & _name );
 
 	protected:
 		bool _compile() override;
@@ -33,7 +55,7 @@ namespace Menge
 
 	private:
 		std::string m_filename;
-		std::string m_texturesPath;
+		std::string m_folder;
 
 		EmitterContainerInterface * m_container;
 

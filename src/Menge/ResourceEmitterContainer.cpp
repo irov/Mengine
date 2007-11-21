@@ -26,7 +26,7 @@ namespace Menge
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_VALUE_NODE( "File", "Path", m_filename );
-			XML_CHECK_VALUE_NODE( "Folder", "Path", m_texturesPath );
+			XML_CHECK_VALUE_NODE( "Folder", "Path", m_folder );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -52,9 +52,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * ResourceEmitterContainer::getRenderImage( const std::string & _textureName )
+	RenderImageInterface * ResourceEmitterContainer::getRenderImage( const std::string & _name )
 	{
-		std::string fullname = m_texturesPath + _textureName;
+		std::string fullname = m_folder + _name;
 
 		TMapImageEmitters::iterator it = m_emitterTextures.find( fullname );
 

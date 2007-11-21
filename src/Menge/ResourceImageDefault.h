@@ -4,6 +4,16 @@
 
 namespace Menge
 {
+	//! ResourceImageDefault - ресурс-файл, который содержит список изображений. 
+
+    /*! xml - файл имеет следующую структуру:
+	* <Resource Name = "имя_ресурса" Type = "ResourceImageDefault" >
+	*	<File Path = "имя_файла0"/>
+	*    ...
+	*   <File Path = "имя_файлаN"/>
+	* </Resource>
+	*/
+
 	class ResourceImageDefault
 		: public ResourceImage
 	{

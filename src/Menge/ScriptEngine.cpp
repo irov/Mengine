@@ -6,6 +6,7 @@
 #	include "FileEngine.h"
 #	include "Entity.h"
 #	include "Scene.h"
+#	include "Arrow.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -279,6 +280,9 @@ namespace Menge
 		}
 
 		Arrow * arrow = pybind::extract<Arrow*>( result );
+
+		arrow->setType( "Arrow" );
+		arrow->setScript( result );
 
 		return arrow;
 	}

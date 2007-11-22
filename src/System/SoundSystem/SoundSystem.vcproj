@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\libogg\include&quot;;&quot;$(SolutionDir)dependencies\libvorbis\include&quot;;&quot;$(SolutionDir)dependencies\OpenThreads\include&quot;;&quot;$(SolutionDir)dependencies\OpenAL\include&quot;;&quot;$(SolutionDir)dependencies\freealut\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SOUNDSYSTEMINTERFACE_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

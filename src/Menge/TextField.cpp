@@ -149,6 +149,29 @@ namespace	Menge
 
 			offset.x += width;
 		}
+
+		offset = mt::vec2f( 0.f, 0.f );
+
+		for( std::string::const_iterator it = m_text.begin(); it != m_text.end(); ++it )
+		{
+			if ( *it == ' ' )
+			{
+				offset.x += spaceWidth;
+				continue;
+			}
+
+			mt::vec4f uv = m_resourceFont->getUV( *it );
+	 
+			float width = m_resourceFont->getCharRatio( *it ) * m_height;
+			
+			mt::vec2f size( width, m_height );
+
+			mt::vec2f offset_ = m_centerAlign ? offset + m_alignOffset : offset;
+
+			Holder<RenderEngine>::hostage()->renderImage( rwm, offset_, uv, size, 4294902015, image );
+
+			offset.x += width;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_debugRender()

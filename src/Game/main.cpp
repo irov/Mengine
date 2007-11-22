@@ -8,6 +8,8 @@
 
 int main()
 {
+	int * t = NULL;
+	delete t;
 #ifdef _DEBUG
 	const char * application_dll  = "Systems_d/OgreApplication_d.dll";
 #else

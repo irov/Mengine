@@ -54,7 +54,7 @@ namespace Menge
 
 		size_t length = file->size();
 
-		static std::string data;
+		std::string data;
 
 		data.resize( length );
 

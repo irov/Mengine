@@ -11,6 +11,7 @@
 
 #	include "ScriptEngine.h"
 #	include "FileEngine.h"
+#	include "RenderEngine.h"
 #	include "ResourceManager.h"
 #	include "ScheduleManager.h"
 #	include "LogEngine.h"
@@ -137,6 +138,8 @@ namespace Menge
 			}
 			
 			XML_CHECK_VALUE_NODE( "Scripts", "Path", m_pathScripts );
+
+			XML_CHECK_VALUE_NODE( "ResourceResolution", "Value", m_resourceResolution );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -201,9 +204,6 @@ namespace Menge
 		Holder<ScheduleManager>::hostage()
 			->update( _timing );
 
-		Holder<Amplifier>::hostage()
-			->update(_timing);
-
 		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, m_eventUpdate ) )
 		{
@@ -236,6 +236,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
+		Holder<RenderEngine>::hostage()->setContentResolution( m_resourceResolution );
+
 		ScriptEngine::TListModulePath m_listModulePath;
 
 		m_listModulePath.push_back( m_pathScripts );
@@ -445,4 +447,10 @@ namespace Menge
 
 		return it_find->second;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Game::getResourceResolution() const
+	{
+		return m_resourceResolution;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

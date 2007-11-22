@@ -16,6 +16,11 @@ namespace Menge
 	class Game;
 	class InputHandler;
 
+	//! Application - .
+	/*! 
+	* 
+	*/
+
 	class MENGE_API Application
 	{
 	public:
@@ -44,11 +49,6 @@ namespace Menge
 		bool handleMouseMove( int _x, int _y, int _whell );
 
 	private:
-		int m_width;
-		int m_height;
-		int m_bits;
-		bool m_fullScreen;
-
 		std::string m_gameInfo;
 		InputHandler * m_handler;
 	};

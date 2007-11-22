@@ -29,4 +29,6 @@
 		<FishDemo/>
 		<Kuzya/>
 	</Resource>
+
+	<ResourceResolution Value = "1024;768"/>
 </Game>	

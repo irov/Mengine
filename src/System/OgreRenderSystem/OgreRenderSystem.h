@@ -17,6 +17,8 @@ public:
 	bool init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow ) override;
 	void render();
 
+	void setContentResolution( const float * _resolution );
+
 	void setProjectionMatrix( const float * _projection ) override;
 	void setViewMatrix( const float * _view ) override;
 	void setWorldMatrix( const float * _world ) override;
@@ -45,6 +47,7 @@ public:
 	void	endLayer() override;
 
 private:
+	Ogre::Vector2	m_contentResolution;
 	Ogre::Root * m_root;
 	Ogre::RenderWindow * m_renderWindow;
 	Ogre::Viewport * m_viewport;

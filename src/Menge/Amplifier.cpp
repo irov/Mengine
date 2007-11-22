@@ -18,7 +18,6 @@ namespace Menge
 	, m_buffer(0)
 	, m_currentPlayList(0)
 	, m_volume( 1.0f )
-	, m_changeTrack( false )		// for FIX bug SQUALL :(
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::~Amplifier()
@@ -67,7 +66,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::listenStopped()
 	{
-		m_changeTrack = !m_currentPlayList->isEnded(); // FOR FIX SQUALL BUG :(
+		play_();	//	play next track in playlist
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::listenPaused( bool _pause )
@@ -80,21 +79,13 @@ namespace Menge
 
 		if( m_music )
 		{
-			m_music->setVolume( _volume );
+			m_music->setVolume( m_volume );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float	Amplifier::getVolume() const
 	{
 		return m_volume;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::update( float _timing )
-	{
-		if( m_changeTrack == true ) // FOR FIX SQUALL BUG :(
-		{
-			play_();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::play_()
@@ -129,8 +120,6 @@ namespace Menge
 		m_music->setVolume( m_volume );
 
 		m_currentPlayList->next();
-
-		m_changeTrack = false;	// FOR FIX SQUALL BUG :(
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	Amplifier::release_()

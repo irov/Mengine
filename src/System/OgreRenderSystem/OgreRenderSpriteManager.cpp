@@ -171,13 +171,13 @@ void OgreRenderSpriteManager::prepareForRender()
 	m_renderSys->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSpriteManager::addQuad1(const Ogre::Vector4 & _uv,const Ogre::Matrix3 & _transform, const Ogre::Vector2 & _offset, const Ogre::Vector2 & _size, float z,  const OgreRenderImage * image, unsigned int _color)
+void OgreRenderSpriteManager::addQuad1(const Ogre::Vector2 & _contentRes, const Ogre::Vector4 & _uv,const Ogre::Matrix3 & _transform, const Ogre::Vector2 & _offset, const Ogre::Vector2 & _size, float z,  const OgreRenderImage * image, unsigned int _color)
 {
 	isSorted = false;
 	QuadInfo quad;
 	
-	float width = m_viewport->getActualWidth();
-  	float heigth = m_viewport->getActualHeight();
+	float width = _contentRes.x;
+  	float heigth = _contentRes.y;
 
 	//FIXME:
 
@@ -216,13 +216,13 @@ void OgreRenderSpriteManager::addQuad1(const Ogre::Vector4 & _uv,const Ogre::Mat
 	quadList.push_back(quad);
 }
 
-void OgreRenderSpriteManager::addQuad2(const Ogre::Vector4 & _uv,const Ogre::Matrix3 & _transform, const Ogre::Vector2 & _a, const Ogre::Vector2 & _b, const Ogre::Vector2 & _c, const Ogre::Vector2 & _d, float z, const OgreRenderImage * image, unsigned int _color)
+void OgreRenderSpriteManager::addQuad2(const Ogre::Vector2 & _contentRes,const Ogre::Vector4 & _uv,const Ogre::Matrix3 & _transform, const Ogre::Vector2 & _a, const Ogre::Vector2 & _b, const Ogre::Vector2 & _c, const Ogre::Vector2 & _d, float z, const OgreRenderImage * image, unsigned int _color)
 {
 	isSorted = false;
 	QuadInfo quad;
 	
-	float width = m_viewport->getActualWidth();
-  	float heigth = m_viewport->getActualHeight();
+	float width = _contentRes.x;
+  	float heigth = _contentRes.y;
 
 	//FIXME:
 

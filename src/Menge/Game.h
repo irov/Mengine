@@ -5,6 +5,7 @@
 
 #	include "InputHandler.h"
 #	include "Eventable.h"
+#	include "math/vec2.h"
 
 class TiXmlElement;
 
@@ -60,7 +61,13 @@ namespace Menge
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
 
+	public:
+		const mt::vec2f & getResourceResolution() const;
+
 	protected:
+
+		mt::vec2f	m_resourceResolution;
+
 		std::string m_defaultArrowName;
 
 		std::string m_personality;

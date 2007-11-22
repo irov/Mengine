@@ -6,7 +6,7 @@
 
 #	include "InputEngine.h"
 #	include "FileEngine.h"
-#	include "RenderEngine.h"
+//#	include "RenderEngine.h"
 #	include "ScriptEngine.h"
 
 #	include "Entity.h"

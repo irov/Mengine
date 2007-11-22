@@ -229,4 +229,5 @@ namespace Menge
 	{
 		return Holder<Game>::hostage()->handleMouseMove( _x, _y, _whell );
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

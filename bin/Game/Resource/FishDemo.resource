@@ -54,7 +54,7 @@
 
 
 	<Resource Name = "Arial12" Type = "ResourceFont">
-     		<File Path = "MyFont"/>
+     		<File Path = "Game/Fonts/ArialTest.fontdef"/>
 	</Resource>
 
 	<Resource Name = "ArialTest" Type = "ResourceFont">

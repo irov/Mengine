@@ -75,7 +75,7 @@ OgreApplication::~OgreApplication()
 //////////////////////////////////////////////////////////////////////////
 bool OgreApplication::init( const char * _xmlFile )
 {
-	m_application = new Menge::Application;
+	m_application = new Menge::Application();
 
 #ifdef _DEBUG
 	std::string DllModuleSetting = "DllModuleDebug";
@@ -184,9 +184,11 @@ bool OgreApplication::init( const char * _xmlFile )
 	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 	Ogre::ResourceGroupManager::getSingleton().openResource( "Game/Game.xml" );
 
-	renderInterface->init( m_root, m_window );
-	
 	bool initialize = m_application->initialize( _xmlFile );
+
+	renderInterface->init( m_root, m_window );
+
+	//m_root->getRenderSystem()->setConfigOption();
 
 	return initialize;
 }

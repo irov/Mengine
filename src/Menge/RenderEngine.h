@@ -25,6 +25,8 @@ namespace Menge
 	public:
 		void render();
 
+		void setContentResolution( const mt::vec2f _resolution );
+
 		void setRenderViewport( const Viewport & _viewport );
 		const Viewport & getRenderViewport() const;
 

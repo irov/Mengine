@@ -68,6 +68,12 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::setContentResolution( const float * _resolution )
+{
+	m_contentResolution.x = _resolution[0];
+	m_contentResolution.y = _resolution[1];
+}
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::render()
 {
 	//m_renderWindow->update();
@@ -111,7 +117,7 @@ void OgreRenderSystem::renderImage(
 	{
 		Ogre::Texture * texture = image->getTexture();
 		float z = m_spriteMgr->getCurrentZ();
-		m_spriteMgr->addQuad1(*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color);
+		m_spriteMgr->addQuad1(m_contentResolution,*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color);
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -130,6 +136,7 @@ void OgreRenderSystem::renderImage(
 		Ogre::Texture * texture = image->getTexture();
 		float z = m_spriteMgr->getCurrentZ();
 		m_spriteMgr->addQuad2(
+			m_contentResolution,
 			*(Ogre::Vector4*)_uv,
 			*(Ogre::Matrix3*)_transform,
 			*(Ogre::Vector2*)_a,

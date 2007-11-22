@@ -53,11 +53,7 @@ namespace	Menge
 			*/
 			float	getVolume() const;
 
-			void	update( float _timing );
-
 		private:
-			bool m_changeTrack;	// for FIX bug SQUALL :(
-
 			float m_volume;
 
 			typedef	std::map< std::string, Playlist* >	TPlayListMap;

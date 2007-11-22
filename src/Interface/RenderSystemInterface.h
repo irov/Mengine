@@ -21,6 +21,8 @@ class	RenderSystemInterface
 public:
 	virtual void render() = 0;
 
+	virtual void setContentResolution( const float * _resolution ) = 0;
+
 	virtual	void setProjectionMatrix( const float * _projection ) = 0;
 	virtual	void setViewMatrix( const float * _view ) = 0;
 	virtual	void setWorldMatrix( const float * _world ) = 0;

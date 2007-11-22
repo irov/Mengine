@@ -7,5 +7,5 @@ public:
 	virtual void run() = 0;
 };
 
-bool initInterfaceSystem(ApplicationInterface **);
-void releaseInterfaceSystem(ApplicationInterface *);
+bool initInterfaceSystem( ApplicationInterface ** );
+void releaseInterfaceSystem( ApplicationInterface * );

@@ -5,7 +5,7 @@
 
 #define MAX_SOURCE_NUM 16
 
-enum DistanceModel
+enum EDistanceModel
 {
 	None = 0,
 	InverseDistance,
@@ -30,23 +30,23 @@ public:
 
 public:
 	void	setSoundVelocity( float _velocity );
-	float	getSoundVelocity()								{ return mSoundVelocity; }
+	float	getSoundVelocity()								{ return m_soundVelocity; }
 	void	setDopplerFactor( float _factor );
-	float	getDopplerFactor()								{ return mDopplerFactor; }
-	void	setDistanceModel(DistanceModel _model);
-	DistanceModel getDistanceModel()						{ return mDistanceModel; }
+	float	getDopplerFactor()								{ return m_dopplerFactor; }
+	void	setDistanceModel(EDistanceModel _model);
+	EDistanceModel getDistanceModel()						{ return m_distanceModel; }
 
 	ALuint	getFreeSource();
 
 private:
 	ALuint	m_sources[MAX_SOURCE_NUM];
-	UINT	m_sourceNum;
-	float mSoundVelocity;
-	float mDopplerFactor;
-	DistanceModel mDistanceModel;
-	float mListenerPosition[3];
-	float mListenerOrientation[6];
-	ALCdevice* mDevice;
-	ALCcontext_struct* mContext;
+	int m_sourceNum;
+	float m_soundVelocity;
+	float m_dopplerFactor;
+	EDistanceModel m_distanceModel;
+	float m_listenerPosition[3];
+	float m_listenerOrientation[6];
+	ALCdevice* m_device;
+	ALCcontext_struct* m_context;
 
 };

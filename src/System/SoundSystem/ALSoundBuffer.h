@@ -12,12 +12,12 @@ public:
 	virtual void unload();
 
 	virtual bool isStreamed()	const	{ return false; }
-	ALuint getBufferName()		const	{ return mBufferName; }
-	UINT   getLenghtMs()		const	{ return mLenghtMs; }
+	ALuint getBufferName()		const	{ return m_bufferName; }
+	UINT   getLenghtMs()		const	{ return m_lenghtMs; }
 
-	void setLenghtMs(UINT _ms)	{ mLenghtMs = _ms; }
+	void setLenghtMs(UINT _ms)	{ m_lenghtMs = _ms; }
 
 protected:
-	ALuint mBufferName;
-	UINT   mLenghtMs;
+	ALuint m_bufferName;
+	UINT   m_lenghtMs;
 };

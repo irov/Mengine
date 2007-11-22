@@ -25,8 +25,8 @@ public:
 	// Is called after run() finishes, and deletes this.
 	void cancelCleanup();
 
-	void setLooping(bool _looping)	{ mLooping = _looping; }
-	bool isLooping()				{ return mLooping; }
+	void setLooping(bool _looping)	{ m_looping = _looping; }
+	bool isLooping()				{ return m_looping; }
 
 protected:
 
@@ -35,29 +35,28 @@ protected:
 
 
 	// Names of the buffers to update
-	ALuint mBuffers[2];
+	ALuint m_buffers[2];
 
 	// OpenAL format of the sound data.
-	ALenum mFormat;
+	ALenum m_format;
 
 	// Frequency of the sound data.
-	UINT mFrequency;
+	UINT m_frequency;
 
 	//Source to update.
-	ALuint mSource;
+	ALuint m_source;
 
-	bool mNewSource, mRemoveSource;
-	//std::vector<ALuint> sources_,newsources_,removesources_;
+	bool m_newSource, m_removeSource;
 
 	//Flag for when Run should stop running..
-	bool mStopRunning;
+	bool m_stopRunning;
 
 	// Mutex for mStopRunning.
-	OpenThreads::Mutex mRunMutex;
+	OpenThreads::Mutex m_runMutex;
 
-	OggVorbis_File* mOggFile;	// The file structure
-	UINT mBufferSize;			// Size of the buffer in bytes
-	bool mLooping;				// Are we looping or not?
+	OggVorbis_File* m_oggFile;	// The file structure
+	UINT m_bufferSize;			// Size of the buffer in bytes
+	bool m_looping;				// Are we looping or not?
 
 };
 
@@ -76,9 +75,9 @@ public:
 	void record(ALuint sourcename);
 	void stop();
 
-	ALSoundBufferStreamUpdater* getUpdater() { return mUpdater; }
+	ALSoundBufferStreamUpdater* getUpdater() { return m_updater; }
 
 private:
-	ALSoundBufferStreamUpdater* mUpdater;
-	ALuint mBuffer2;
+	ALSoundBufferStreamUpdater* m_updater;
+	ALuint m_buffer2;
 };

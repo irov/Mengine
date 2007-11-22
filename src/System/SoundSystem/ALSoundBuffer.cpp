@@ -5,15 +5,14 @@
 
 ALSoundBuffer::ALSoundBuffer()
 {
-	alGenBuffers(1, &mBufferName);
+	alGenBuffers(1, &m_bufferName);
 }
 
 ALSoundBuffer::~ALSoundBuffer()
 {
-	//alDeleteBuffers(1, mBufferName);
 }
 
 void ALSoundBuffer::unload()
 {
-	alDeleteBuffers(1, &mBufferName);
+	alDeleteBuffers(1, &m_bufferName);
 }

@@ -38,12 +38,12 @@ public:
 	void setSoundBuffer( ALSoundBuffer* _soundBuffer );
 	void setAmbient(bool _ambient);
 	bool isAmbient();
-	void setSoundNodeListener(SoundNodeListenerInterface* _listener)	{ mListener = _listener; }
+	void setSoundNodeListener(SoundNodeListenerInterface* _listener)	{ m_listener = _listener; }
 
 private:
-	ALuint mSourceName;
-	ALSoundBuffer* mSoundBuffer;
-	float mPosition[3];
-	SoundNodeListenerInterface* mListener;
+	ALuint m_sourceName;
+	ALSoundBuffer* m_soundBuffer;
+	float m_position[3];
+	SoundNodeListenerInterface* m_listener;
 	ALSoundSystem* m_soundSystem;
 };

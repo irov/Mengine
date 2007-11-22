@@ -9,18 +9,18 @@
 void CALLBACK ListenStoppedCallback(void* _listener, BOOL)
 {
 	if(_listener)
+	{
 		static_cast<SoundNodeListenerInterface*>(_listener)->listenStopped();
+	}
 }
 
 ALSoundSource::ALSoundSource(ALSoundSystem* _soundSystem) :
-mSoundBuffer(NULL),
-mListener(NULL),
-mSourceName(AL_INVALID),
+m_soundBuffer(NULL),
+m_listener(NULL),
+m_sourceName(AL_INVALID),
 m_soundSystem(_soundSystem)
 {
-	//alGenSources(1, &mSourceName);
-
-	ZeroMemory(mPosition, sizeof(float)*3);
+	ZeroMemory(m_position, sizeof(float)*3);
 }
 
 ALSoundSource::~ALSoundSource()
@@ -29,139 +29,146 @@ ALSoundSource::~ALSoundSource()
 	{
 		stop();
 	}
-	//alDeleteSources(1, &mSourceName);
 }
 
 void ALSoundSource::play()
 {
-	mSourceName = m_soundSystem->getFreeSource();
+	m_sourceName = m_soundSystem->getFreeSource();
 
-	if(mSoundBuffer && mSoundBuffer->isStreamed())
+	if(m_soundBuffer && m_soundBuffer->isStreamed())
 	{
-		alSourcei(mSourceName, AL_BUFFER, NULL);
-	    alSourcei(mSourceName, AL_LOOPING, AL_FALSE); //Streaming sources can't loop
-		static_cast<ALSoundBufferStream*>(mSoundBuffer)->record(mSourceName);
+		alSourcei(m_sourceName, AL_BUFFER, NULL);
+	    alSourcei(m_sourceName, AL_LOOPING, AL_FALSE); //Streaming sources can't loop
+		static_cast<ALSoundBufferStream*>(m_soundBuffer)->record(m_sourceName);
 		Sleep(100);	// wait for starting thread for streamed buffer
 	}
 	else
-		alSourcei(mSourceName, AL_BUFFER, mSoundBuffer->getBufferName());
-
-	alSourcePlay(mSourceName);
-
-	if(ALenum error = alGetError())
 	{
-		printf("ALSoundSource::play() ERROR!  -  %d, %d", error, mSourceName);
+		alSourcei(m_sourceName, AL_BUFFER, m_soundBuffer->getBufferName());
 	}
 
-	SetTimerQueueTimer(NULL, (WAITORTIMERCALLBACK)ListenStoppedCallback, mListener, getLengthMs(), 0, 0);
- 
+	alSourcePlay(m_sourceName);
+
+	SetTimerQueueTimer(NULL, (WAITORTIMERCALLBACK)ListenStoppedCallback, m_listener, getLengthMs(), 0, 0);
 }
 
 void ALSoundSource::pause()
 {
-	alSourcePause(mSourceName);
-	if(mListener)
-		mListener->listenPaused(true);
+	alSourcePause(m_sourceName);
+	if(m_listener)
+	{
+		m_listener->listenPaused(true);
+	}
 }
 
 void ALSoundSource::stop()
 {
-	if(mSoundBuffer && mSoundBuffer->isStreamed())
-		static_cast<ALSoundBufferStream*>(mSoundBuffer)->stop();
+	if(m_soundBuffer && m_soundBuffer->isStreamed())
+	{
+		static_cast<ALSoundBufferStream*>(m_soundBuffer)->stop();
+	}
 
-	alSourceStop(mSourceName);
+	alSourceStop(m_sourceName);
 
-	if(mListener)
-		mListener->listenStopped();
+	if(m_listener)
+	{
+		m_listener->listenStopped();
+	}
 }
 
 bool ALSoundSource::isPlaying() const
 {
   ALint state;
-  alGetSourceiv(mSourceName,AL_SOURCE_STATE,&state);
+  alGetSourceiv(m_sourceName,AL_SOURCE_STATE,&state);
   if(state == AL_PLAYING)
+  {
 	  return true;
+  }
   return false;
 }
 
 void ALSoundSource::setVolume( float _volume )
 {
-	alSourcef(mSourceName, AL_GAIN, _volume);
+	alSourcef(m_sourceName, AL_GAIN, _volume);
 }
 
 float ALSoundSource::getVolume() const
 {
 	ALfloat gain;
-	alGetSourcefv(mSourceName, AL_GAIN, &gain);
+	alGetSourcefv(m_sourceName, AL_GAIN, &gain);
 	return gain;
 }
 
 void ALSoundSource::setPosition( float _x, float _y, float _z )
 {
-	alSource3f(mSourceName, AL_POSITION, _x, _y, _z);
-	mPosition[0] = _x;
-	mPosition[1] = _y;
-	mPosition[2] = _z;
+	alSource3f(m_sourceName, AL_POSITION, _x, _y, _z);
+	m_position[0] = _x;
+	m_position[1] = _y;
+	m_position[2] = _z;
 }
 
 const float * ALSoundSource::getPosition() const
 {
-	return mPosition;
+	return m_position;
 }
 
 void ALSoundSource::setLooped( bool _loop )
 {
-	if(mSoundBuffer && mSoundBuffer->isStreamed())
-		static_cast<ALSoundBufferStream*>(mSoundBuffer)->getUpdater()->setLooping(_loop);
+	if(m_soundBuffer && m_soundBuffer->isStreamed())
+	{
+		static_cast<ALSoundBufferStream*>(m_soundBuffer)->getUpdater()->setLooping(_loop);
+	}
 	else
-		alSourcei(mSourceName, AL_LOOPING, _loop ? AL_TRUE : AL_FALSE);
+	{
+		alSourcei(m_sourceName, AL_LOOPING, _loop ? AL_TRUE : AL_FALSE);
+	}
 }
 
 bool ALSoundSource::isLooping() const
 {
-	if(mSoundBuffer && mSoundBuffer->isStreamed())
-		return static_cast<ALSoundBufferStream*>(mSoundBuffer)->getUpdater()->isLooping();
+	if(m_soundBuffer && m_soundBuffer->isStreamed())
+	{
+		return static_cast<ALSoundBufferStream*>(m_soundBuffer)->getUpdater()->isLooping();
+	}
 	// else
 	ALint looping;
-	alGetSourceiv(mSourceName, AL_LOOPING, &looping);
+	alGetSourceiv(m_sourceName, AL_LOOPING, &looping);
 	return (looping == AL_TRUE);
 }
 
 int ALSoundSource::getLengthMs()
 {
-	if(mSoundBuffer)
-		return mSoundBuffer->getLenghtMs();
+	if(m_soundBuffer)
+	{
+		return m_soundBuffer->getLenghtMs();
+	}
 	return 0;
 }
 
 int ALSoundSource::getPosMs()
 {
 	ALint pos;
-	alGetSourcei(mSourceName, AL_SEC_OFFSET, &pos);
+	alGetSourcei(m_sourceName, AL_SEC_OFFSET, &pos);
 	return pos;
 }
 
 void ALSoundSource::setSoundBuffer( ALSoundBuffer* _soundBuffer)
 {
-	mSoundBuffer = _soundBuffer;
-	/*if(!_soundBuffer->isStreamed())
-		alSourcei(mSourceName, AL_BUFFER, mSoundBuffer->getBufferName() );
-	else
-		alSourcei(mSourceName, AL_BUFFER, NULL);*/
+	m_soundBuffer = _soundBuffer;
 }
 
 void ALSoundSource::setAmbient(bool _ambient)
 {
 	if(_ambient)
 	{
-		alSourcei(mSourceName, AL_SOURCE_RELATIVE, AL_TRUE);
-		alSourcef(mSourceName, AL_ROLLOFF_FACTOR, 0.0f);
-		alSource3f(mSourceName, AL_DIRECTION, 0.0f, 0.0f, 0.0f);
+		alSourcei(m_sourceName, AL_SOURCE_RELATIVE, AL_TRUE);
+		alSourcef(m_sourceName, AL_ROLLOFF_FACTOR, 0.0f);
+		alSource3f(m_sourceName, AL_DIRECTION, 0.0f, 0.0f, 0.0f);
 	} 
 	else 
 	{
-		alSourcei(mSourceName, AL_SOURCE_RELATIVE, AL_FALSE);
-		alSourcef(mSourceName, AL_ROLLOFF_FACTOR, 1.0f);
+		alSourcei(m_sourceName, AL_SOURCE_RELATIVE, AL_FALSE);
+		alSourcef(m_sourceName, AL_ROLLOFF_FACTOR, 1.0f);
 	}
 
 }

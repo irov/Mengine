@@ -10,7 +10,7 @@
 class ALSoundBufferStreamUpdater : public OpenThreads::Thread, public OpenThreads::Mutex
 {
 public:
-	ALSoundBufferStreamUpdater(const OggVorbis_File& oggfile, ALuint buffer1, ALuint buffer2, ALenum format, unsigned int frequency, UINT _buffersize);
+	ALSoundBufferStreamUpdater(const OggVorbis_File& oggfile, ALuint buffer1, ALuint buffer2, ALenum format, unsigned int frequency, unsigned int _buffersize);
 
 	void addSource(ALuint sourcename);
   
@@ -19,7 +19,7 @@ public:
 
 	void run();
 
-	bool update(void* _buffer, UINT _length); 
+	bool update(void* _buffer, unsigned int _length); 
 
 	// Inherited from Thread.
 	// Is called after run() finishes, and deletes this.
@@ -41,7 +41,7 @@ protected:
 	ALenum m_format;
 
 	// Frequency of the sound data.
-	UINT m_frequency;
+	unsigned int m_frequency;
 
 	//Source to update.
 	ALuint m_source;
@@ -55,7 +55,7 @@ protected:
 	OpenThreads::Mutex m_runMutex;
 
 	OggVorbis_File* m_oggFile;	// The file structure
-	UINT m_bufferSize;			// Size of the buffer in bytes
+	unsigned int m_bufferSize;	// Size of the buffer in bytes
 	bool m_looping;				// Are we looping or not?
 
 };

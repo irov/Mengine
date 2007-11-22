@@ -8,7 +8,7 @@
 #define ENTER_CRITICAL lock()
 #define LEAVE_CRITICAL unlock()
 
-ALSoundBufferStreamUpdater::ALSoundBufferStreamUpdater(const OggVorbis_File& _oggfile, ALuint _buffer1, ALuint _buffer2, ALenum _format, UINT _frequency, UINT _buffersize) :
+ALSoundBufferStreamUpdater::ALSoundBufferStreamUpdater(const OggVorbis_File& _oggfile, ALuint _buffer1, ALuint _buffer2, ALenum _format, unsigned int _frequency, unsigned int _buffersize) :
 m_source(AL_INVALID),
 m_format(_format),
 m_frequency(_frequency),
@@ -63,9 +63,9 @@ void ALSoundBufferStreamUpdater::run()
 	{
 		m_runMutex.unlock();
 
-		UINT count = 0;
+		unsigned int count = 0;
 		int stream;
-		UINT amt = 0;
+		unsigned int amt = 0;
 		while (amt = ov_read(m_oggFile, buffer + count, m_bufferSize - count, 0, 2, 1, &stream))
 		{
 			count += amt;
@@ -83,7 +83,7 @@ void ALSoundBufferStreamUpdater::run()
 	delete []buffer;
 }
 
-bool ALSoundBufferStreamUpdater::update(void* _buffer, UINT _length) 
+bool ALSoundBufferStreamUpdater::update(void* _buffer, unsigned int _length) 
 {
 	if(!(_length && _buffer))     // Zero length or NULL pointer => return
 		return false;
@@ -194,7 +194,7 @@ ALSoundBufferStream::ALSoundBufferStream(const char* _filename)
 
   FILE *filehandle = fopen(_filename, "rb");
 
-  UINT buffersize, format, freq;
+  unsigned int buffersize, format, freq;
   // Check for file type, create a FileStreamUpdater if a known type is
   // detected, otherwise throw an error.
   OggVorbis_File oggfile;
@@ -202,7 +202,7 @@ ALSoundBufferStream::ALSoundBufferStream(const char* _filename)
   {
     vorbis_info *ogginfo = ov_info(&oggfile, -1);
 	freq = ogginfo->rate;
-	m_lenghtMs = static_cast<UINT>( ov_time_total(&oggfile, -1) * 1000 );
+	m_lenghtMs = static_cast<unsigned int>( ov_time_total(&oggfile, -1) * 1000 );
 	if (ogginfo->channels == 1)
 	{
 		format = AL_FORMAT_MONO16;

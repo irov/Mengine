@@ -61,8 +61,7 @@ namespace Menge
 		m_soundVolume = _volume;
 		for( TSetSoundEmitters::iterator it = m_soundEmitters.begin(); it != m_soundEmitters.end(); ++it )
 		{
-			float vol = (*it)->getVolume();
-			(*it)->setVolume( vol );
+			(*it)->setVolume( _volume );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

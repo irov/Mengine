@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OpenAL32.lib alut.lib vorbisfile_static.lib ogg_static.lib OpenThreads.lib"
+				AdditionalDependencies="OpenAL32.lib alut.lib vorbis_static_d.lib vorbisfile_static_d.lib ogg_static_d.lib OpenThreadsWin32d_s.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\lib&quot;;&quot;$(SolutionDir)dependencies\OpenAL\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\OpenThreads\lib&quot;;&quot;$(SolutionDir)dependencies\freealut\lib&quot;;&quot;$(SolutionDir)dependencies\libvorbis\lib&quot;;&quot;$(SolutionDir)dependencies\libogg\lib&quot;"
@@ -141,7 +141,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OpenAL32.lib alut.lib vorbisfile_static.lib ogg_static.lib OpenThreads.lib"
+				AdditionalDependencies="OpenAL32.lib alut.lib vorbisfile_static.lib ogg_static.lib OpenThreadsWin32_s.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\lib&quot;;&quot;$(SolutionDir)dependencies\OpenAL\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\OpenThreads\lib&quot;;&quot;$(SolutionDir)dependencies\freealut\lib&quot;;&quot;$(SolutionDir)dependencies\libvorbis\lib&quot;;&quot;$(SolutionDir)dependencies\libogg\lib&quot;"
 				ModuleDefinitionFile="SoundSystemInterface.def"

@@ -7,7 +7,7 @@ class ALSoundBuffer : public SoundBufferInterface
 {
 public:
 	ALSoundBuffer();
-	virtual ~ALSoundBuffer();
+	~ALSoundBuffer();
 
 	virtual void unload();
 

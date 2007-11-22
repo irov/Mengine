@@ -242,7 +242,7 @@ void    ALSoundSystem::releaseSoundBuffer( SoundBufferInterface * _soundBuffer )
 
 void    ALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 {
-	//delete _sn;
+//	delete _sn;
 	if(_sn)
 	{
 		//static_cast<ALSoundSource*>(_sn)->stop();

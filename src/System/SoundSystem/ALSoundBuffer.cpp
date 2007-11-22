@@ -10,9 +10,10 @@ ALSoundBuffer::ALSoundBuffer()
 
 ALSoundBuffer::~ALSoundBuffer()
 {
+	alDeleteBuffers(1, &m_bufferName);
 }
 
 void ALSoundBuffer::unload()
 {
-	alDeleteBuffers(1, &m_bufferName);
+//	alDeleteBuffers(1, &m_bufferName);
 }

@@ -12,7 +12,7 @@ public:
 class SoundBufferInterface
 {
 public:
-       virtual void    unload() = 0;
+//       virtual void    unload() = 0;
 };
 
 class SoundSourceInterface

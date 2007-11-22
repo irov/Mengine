@@ -18,7 +18,6 @@ namespace	Menge
 		:	public SoundNodeListenerInterface
 	{
 		public:
-
 			//! Конструктор. Изначально громкость 100%.
 			/*!
 			*/

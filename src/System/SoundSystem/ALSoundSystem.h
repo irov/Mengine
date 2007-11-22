@@ -3,7 +3,9 @@
 
 #include "SoundSystemInterface.h"
 
-#define MAX_SOURCE_NUM 16
+#include <vector>
+
+#define MAX_SOURCE_NUM 30
 
 enum EDistanceModel
 {
@@ -11,6 +13,8 @@ enum EDistanceModel
 	InverseDistance,
 	InverseDistanceClamped
 };
+
+class ALSoundSource;
 
 class ALSoundSystem : public SoundSystemInterface
 {
@@ -36,11 +40,14 @@ public:
 	void	setDistanceModel(EDistanceModel _model);
 	EDistanceModel getDistanceModel()						{ return m_distanceModel; }
 
-	ALuint	getFreeSource();
+	ALuint getFreeSourceName();
 
 private:
-	ALuint	m_sources[MAX_SOURCE_NUM];
-	int m_sourceNum;
+	ALuint	m_sourceNames[MAX_SOURCE_NUM];
+	int m_sourceNamesNum;
+	std::vector<ALSoundSource*>	m_sources;
+	//ALSoundSource* m_sources[MAX_SOURCE_NUM];
+	//int m_sourceNum;
 	float m_soundVelocity;
 	float m_dopplerFactor;
 	EDistanceModel m_distanceModel;

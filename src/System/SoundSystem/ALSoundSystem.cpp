@@ -20,7 +20,7 @@ ALSoundSystem::ALSoundSystem() :
 m_soundVelocity(343.0f),
 m_dopplerFactor(1.0f),
 m_distanceModel(None),
-m_sourceNum(0)
+m_sourceNamesNum(0)
 {
 	char *initString = 0L;//"DirectSound", "DirectSound3D", ;
 	m_device = alcOpenDevice((const ALCchar *)initString);
@@ -46,12 +46,24 @@ m_sourceNum(0)
     alcMakeContextCurrent(m_context);
  
 	// get all available sources
-	for(;m_sourceNum < MAX_SOURCE_NUM; m_sourceNum++)
+	/*for(;m_sourceNamesNum < MAX_SOURCE_NUM; m_sourceNamesNum++)
 	{
-		alGenSources(1, &m_sources[m_sourceNum]);	
+		ALuint sourceName;
+		alGenSources(1, &sourceName);	
 		if(alGetError())
 			break;
+		m_sourceNames[m_sourceNamesNum] = sourceName;
+	}*/
+
+	for(;m_sourceNamesNum < MAX_SOURCE_NUM; m_sourceNamesNum++)
+	{
+		ALuint sourceName;
+		alGenSources(1, &sourceName);	
+		if(alGetError())
+			break;
+		m_sourceNames[m_sourceNamesNum] = sourceName;
 	}
+	m_sources.reserve(50);
 	/*ALuint t;
 	for(int i=0; i < 30; i++)
 	alGenSources(1, &t);
@@ -94,7 +106,7 @@ m_sourceNum(0)
 
 ALSoundSystem::~ALSoundSystem()
 {
-	alDeleteSources(m_sourceNum, m_sources);
+	//alDeleteSources(m_sourceNum, m_sources);
 
 	alcMakeContextCurrent(NULL);
 	alcDestroyContext(m_context);
@@ -113,9 +125,26 @@ void    ALSoundSystem::setListenerOrient( float * _position, float * _front, flo
 
 SoundSourceInterface*   ALSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener )
 {
-	ALSoundSource* source = new ALSoundSource(this);
+	//ALSoundSource* source = new ALSoundSource(this);
+	ALSoundSource* source = NULL;
+	for(int i = 0; i < m_sources.size(); i++)
+		if(!m_sources[i]->isBusy())
+		{
+			source = m_sources[i];
+			break;
+		}
+
+	if(!source)
+	{
+		source = new ALSoundSource(this);
+		m_sources.push_back(source);
+	}
+
 	source->setSoundBuffer( static_cast<ALSoundBuffer*>(_sample) );
 	source->setAmbient(_isHeadMode);
+	source->setSoundNodeListener(_listener);
+	source->setUsed(true);
+
 	return source;
 }
 
@@ -213,7 +242,12 @@ void    ALSoundSystem::releaseSoundBuffer( SoundBufferInterface * _soundBuffer )
 
 void    ALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 {
-	delete _sn;
+	//delete _sn;
+	if(_sn)
+	{
+		//static_cast<ALSoundSource*>(_sn)->stop();
+		static_cast<ALSoundSource*>(_sn)->setUsed(false);
+	}
 }
 
 void	ALSoundSystem::setSoundVelocity(float _velocity)
@@ -314,15 +348,15 @@ unsigned int GetSampleSize(ALenum format)
   }
 }
 
-ALuint ALSoundSystem::getFreeSource()
+ALuint ALSoundSystem::getFreeSourceName()
 {
-	for(int i = 0; i < m_sourceNum; i++)
+	for(int i = 0; i < m_sourceNamesNum; i++)
 	{
 		ALint state;
-		alGetSourcei(m_sources[i], AL_SOURCE_STATE, &state);
+		alGetSourcei(m_sourceNames[i], AL_SOURCE_STATE, &state);
 		if(state != AL_PLAYING)
 		{
-			return m_sources[i];
+			return m_sourceNames[i];
 		}
 	}
 	return AL_INVALID;

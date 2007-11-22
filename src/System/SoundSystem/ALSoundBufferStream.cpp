@@ -112,9 +112,9 @@ bool ALSoundBufferStreamUpdater::update(void* _buffer, unsigned int _length)
 			alSourceStop(m_source);
 		m_newSource = false;
 
-		LEAVE_CRITICAL;
-		Sleep(50);
-		ENTER_CRITICAL;
+		//LEAVE_CRITICAL;
+		//Sleep(50);
+		//ENTER_CRITICAL;
 	}
 
 	processed = 0;
@@ -130,7 +130,7 @@ bool ALSoundBufferStreamUpdater::update(void* _buffer, unsigned int _length)
 			alGetSourceiv(m_source, AL_BUFFERS_QUEUED, &nqueued);
 			if(nqueued)
 				alSourceUnqueueBuffers(m_source, nqueued, dump);
-			alBufferData(m_buffers[0], m_format, _buffer, _length , m_frequency);
+			alBufferData(m_buffers[0], m_format, _buffer, _length / 2, m_frequency);
 			alBufferData(m_buffers[1], m_format, (char *)_buffer + _length / 2, _length / 2, m_frequency);
 
 			alSourceQueueBuffers(m_source, 2, m_buffers);

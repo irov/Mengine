@@ -18,7 +18,8 @@ ALSoundSource::ALSoundSource(ALSoundSystem* _soundSystem) :
 m_soundBuffer(NULL),
 m_listener(NULL),
 m_sourceName(AL_INVALID),
-m_soundSystem(_soundSystem)
+m_soundSystem(_soundSystem),
+m_busy(false)
 {
 	ZeroMemory(m_position, sizeof(float)*3);
 }
@@ -33,21 +34,21 @@ ALSoundSource::~ALSoundSource()
 
 void ALSoundSource::play()
 {
-	m_sourceName = m_soundSystem->getFreeSource();
+	m_sourceName = m_soundSystem->getFreeSourceName();
 
 	if(m_soundBuffer && m_soundBuffer->isStreamed())
 	{
 		alSourcei(m_sourceName, AL_BUFFER, NULL);
 	    alSourcei(m_sourceName, AL_LOOPING, AL_FALSE); //Streaming sources can't loop
 		static_cast<ALSoundBufferStream*>(m_soundBuffer)->record(m_sourceName);
-		Sleep(100);	// wait for starting thread for streamed buffer
+		//Sleep(100);	// wait for starting thread for streamed buffer
 	}
 	else
 	{
 		alSourcei(m_sourceName, AL_BUFFER, m_soundBuffer->getBufferName());
+		alSourcePlay(m_sourceName);
 	}
 
-	alSourcePlay(m_sourceName);
 
 	SetTimerQueueTimer(NULL, (WAITORTIMERCALLBACK)ListenStoppedCallback, m_listener, getLengthMs(), 0, 0);
 }
@@ -67,8 +68,10 @@ void ALSoundSource::stop()
 	{
 		static_cast<ALSoundBufferStream*>(m_soundBuffer)->stop();
 	}
-
-	alSourceStop(m_sourceName);
+	else
+	{
+		alSourceStop(m_sourceName);
+	}
 
 	if(m_listener)
 	{

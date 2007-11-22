@@ -39,9 +39,12 @@ public:
 	void setAmbient(bool _ambient);
 	bool isAmbient();
 	void setSoundNodeListener(SoundNodeListenerInterface* _listener)	{ m_listener = _listener; }
+	bool isBusy()	{ return m_busy; }
+	void setUsed(bool _use)	{ m_busy = _use; }
 
 private:
 	ALuint m_sourceName;
+	bool m_busy;
 	ALSoundBuffer* m_soundBuffer;
 	float m_position[3];
 	SoundNodeListenerInterface* m_listener;

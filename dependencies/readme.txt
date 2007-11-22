@@ -24,6 +24,10 @@ OpenALSDK
 [1.1]
 http://openal.org/downloads.html
 
+freealut
+[1.1.0]
+http://openal.org/downloads.html
+
 libogg
 [1.1.3]
 http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz

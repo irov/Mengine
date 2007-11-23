@@ -58,6 +58,9 @@ namespace Menge
 		void regGlobalMouseEventable( GlobalMouseHandler * _handler );
 		void unregGlobalMouseEventable( GlobalMouseHandler * _handler );
 
+		void regGlobalKeyEventable( GlobalKeyHandler * _handler );
+		void unregGlobalKeyEventable( GlobalKeyHandler * _handler );
+
 		void debugRender();
 	
 	private:
@@ -73,5 +76,9 @@ namespace Menge
 
 		typedef std::set<GlobalMouseHandler *> TSetGlobalMouseHandler;
 		TSetGlobalMouseHandler m_setGlobalMouseHandler;
+
+		typedef std::set<GlobalKeyHandler *> TSetGlobalKeyHandler;
+		TSetGlobalKeyHandler m_setGlobalKeyHandler;
+
 	};
 }

@@ -117,12 +117,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleKeyEvent( size_t _key, bool _isDown )
 	{
-		if( m_scene )
+		bool handler = false;
+
+		if( handler == false )
 		{
-			return m_scene->handleKeyEvent( _key, _isDown );
+			for each( GlobalKeyHandler * keyHandler in m_setGlobalKeyHandler )
+			{
+				if( handler = keyHandler->handleKeyEvent( _key, _isDown ) )
+				{
+					break;
+				}
+			}
 		}
 
-		return false;
+		if( handler == false )
+		{
+			if( m_scene )
+			{
+				handler = m_scene->handleKeyEvent( _key, _isDown );
+			}
+		}
+
+		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseButtonEvent( size_t _button, bool _isDown )
@@ -192,6 +208,24 @@ namespace Menge
 		if( it_find != m_setGlobalMouseHandler.end() )
 		{
 			m_setGlobalMouseHandler.erase( _handler );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::regGlobalKeyEventable( GlobalKeyHandler * _handler )
+	{
+		TSetGlobalKeyHandler::iterator it_find = m_setGlobalKeyHandler.find( _handler );
+		if( it_find == m_setGlobalKeyHandler.end() )
+		{
+			m_setGlobalKeyHandler.insert( _handler );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::unregGlobalKeyEventable( GlobalKeyHandler * _handler )
+	{
+		TSetGlobalKeyHandler::iterator it_find = m_setGlobalKeyHandler.find( _handler );
+		if( it_find != m_setGlobalKeyHandler.end() )
+		{
+			m_setGlobalKeyHandler.erase( _handler );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

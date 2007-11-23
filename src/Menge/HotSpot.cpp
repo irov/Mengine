@@ -20,7 +20,8 @@ namespace	Menge
 	OBJECT_IMPLEMENT(HotSpot)
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
-	: m_globalMouseEventListenerEnable(false)
+	: m_globalMouseEventListener(false)
+	, m_globalKeyEventListener(false)
 	{
 		this->setHandler( this );
 	}
@@ -184,7 +185,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::enableGlobalMouseEvent( bool _value )
 	{
-		m_globalMouseEventListenerEnable = _value;
+		m_globalMouseEventListener = _value;
 
 		if( _value )
 		{
@@ -195,6 +196,22 @@ namespace	Menge
 		{
 			Holder<Player>::hostage()
 				->unregGlobalMouseEventable( this );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::enableGlobalKeyEvent( bool _value )
+	{
+		m_globalKeyEventListener = _value;
+
+		if( _value )
+		{
+			Holder<Player>::hostage()
+				->regGlobalKeyEventable( this );
+		}
+		else
+		{
+			Holder<Player>::hostage()
+				->unregGlobalKeyEventable( this );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

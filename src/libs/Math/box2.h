@@ -25,6 +25,6 @@ namespace mt
 	void add_internal_point(box2f & box, const vec2f & p);
 	void set_box_from_min_max(box2f & box, const vec2f & min, const vec2f & max);
 	void set_box_from_center_and_extent(box2f & box, const vec2f & center, const vec2f & extent);
-	void set_box_from_oriented_extent( box2f & box, const mt::vec2f & _size, const mt::mat3f & _wm );
+	void set_box_from_oriented_extent( box2f & box, const mt::vec2f & _offset, const mt::vec2f & _size, const mt::mat3f & _wm );
 	bool is_intersect(const box2f & _a, const box2f & _b);
 }

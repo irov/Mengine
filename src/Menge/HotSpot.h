@@ -20,6 +20,7 @@ namespace Menge
 		: public SceneNode2D
 		, public InputHandler
 		, public GlobalMouseHandler
+		, public GlobalKeyHandler
 		, public MousePickerTrap
 	{
 		OBJECT_DECLARE(HotSpot)
@@ -39,6 +40,8 @@ namespace Menge
 		bool testPoint( const mt::vec2f & _p );
 
 		void enableGlobalMouseEvent( bool _value );
+		void enableGlobalKeyEvent( bool _value );
+
 		void setHotspotListener( PyObject * _handler );
 		
 	public:
@@ -60,6 +63,7 @@ namespace Menge
 	private:
 		mt::polygon m_polygon;
 		
-		bool m_globalMouseEventListenerEnable;
+		bool m_globalMouseEventListener;
+		bool m_globalKeyEventListener;
 	};
 }

@@ -53,21 +53,21 @@ namespace mt
 		box.ve = center + extent;
 	}
 
-	void set_box_from_oriented_extent( box2f & box, const mt::vec2f& _size, const mt::mat3f& _wm )
+	void set_box_from_oriented_extent( box2f & box, const mt::vec2f & _offset, const mt::vec2f& _size, const mt::mat3f& _wm )
 	{
 		mt::vec2f bounds[4];
 
-		bounds[0].x = 0;
-		bounds[0].y = 0;
+		bounds[0].x = _offset.x;
+		bounds[0].y = _offset.y;
 
-		bounds[1].x = _size.x;
-		bounds[1].y = 0;
+		bounds[1].x = _offset.x + _size.x;
+		bounds[1].y = _offset.y;
 
-		bounds[2].x = 0;
-		bounds[2].y = _size.y;
+		bounds[2].x = _offset.x;
+		bounds[2].y = _offset.y + _size.y;
 
-		bounds[3].x = _size.x;
-		bounds[3].y = _size.y;
+		bounds[3].x = _offset.x + _size.x;
+		bounds[3].y = _offset.y + _size.y;
 
 		mt::mul_v2_m3( box.min, bounds[0], _wm );
 

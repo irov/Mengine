@@ -64,7 +64,7 @@ namespace	Menge
 
 		const mt::mat3f & worldMatrix = getWorldMatrix();
 		mt::box2f bbox;
-		mt::set_box_from_oriented_extent( bbox, size + offset, worldMatrix );
+		mt::set_box_from_oriented_extent( bbox, offset, size, worldMatrix );
 
 		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
 

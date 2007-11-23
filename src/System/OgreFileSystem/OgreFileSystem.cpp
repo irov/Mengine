@@ -124,7 +124,19 @@ bool OgreFileSystem::createFolder( const char * _path )
 {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
 #
-	int res = 0; //SHCreateDirectoryEx( NULL, _T(_path), NULL );
+	size_t required_size = mbstowcs( NULL, _path, 0 ); 
+
+	std::vector<wchar_t> convpath( required_size + 1 );
+
+    int res = mbstowcs( &convpath[0], _path, required_size + 1 );
+
+	if( res <= 0 )
+	{
+		assert(!"conversion from char to wchar_t failed!");
+		return false;
+	}
+  
+	res = SHCreateDirectoryEx( NULL, &convpath[0], NULL );
 
 	if ( res == ERROR_SUCCESS || res == ERROR_FILE_EXISTS || res == ERROR_ALREADY_EXISTS )
 	{

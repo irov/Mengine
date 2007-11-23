@@ -20,7 +20,7 @@ namespace Menge
 		void loadPak( const std::string& _filename );
 		void unloadPak( const std::string& _filename );
 		bool existFile( const std::string& _filename );
-		bool createFolder( const std::string& _filename );
+		bool createFolder( const std::string& _path );
 
 		FileDataInterface * openFile( const std::string& _filename );
 		void closeFile( FileDataInterface * _fd );

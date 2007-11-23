@@ -25,22 +25,26 @@ namespace Menge
 	SoundSourceInterface *	SoundEngine::createSoundSource(
 			bool _isHeadMode, 
 			SoundBufferInterface * _sample,
-			SoundNodeListenerInterface *	_listener = 0)
+			SoundNodeListenerInterface * _listener = 0 )
 	{
 
-		SoundSourceInterface* sound = m_interface->createSoundSource(_isHeadMode,_sample,_listener);
+		SoundSourceInterface* sound = m_interface->createSoundSource( _isHeadMode, _sample, _listener );
 		return	sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface *	SoundEngine::createSoundBufferFromFile( const char* _filename, bool _isStream )
 	{
-		SoundBufferInterface * sample =  m_interface->createSoundBufferFromFile(_filename, _isStream);
+		SoundBufferInterface * sample =
+			m_interface->createSoundBufferFromFile( _filename, _isStream );
+
 		return sample;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface *	SoundEngine::createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem )
 	{
-		SoundBufferInterface * sample =  m_interface->createSoundBufferFromMemory(_buffer, _size, _newmem);
+		SoundBufferInterface * sample =  
+			m_interface->createSoundBufferFromMemory( _buffer, _size, _newmem );
+
 		return sample;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -71,4 +71,9 @@ namespace Menge
 
 		return document;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileEngine::createFolder( const std::string& _path )
+	{
+		return m_interface->createFolder( _path.c_str() );
+	}
 }

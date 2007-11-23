@@ -29,6 +29,8 @@ public:
 	virtual void closeFile(FileDataInterface* _fd) = 0;
 
 	virtual const char * platformBundlePath() = 0;
+
+	virtual bool createFolder( const char * _path ) = 0;
 };
 
 bool initInterfaceSystem(FileSystemInterface**	_ptrFileSystem);

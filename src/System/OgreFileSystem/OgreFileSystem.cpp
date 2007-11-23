@@ -3,8 +3,12 @@
 
 #	include "OgrePlatformBundle.h"
 
+#	include "shlobj.h"
+
+#	include <tchar.h>
+
 //////////////////////////////////////////////////////////////////////////
-bool initInterfaceSystem(FileSystemInterface **_system)
+bool initInterfaceSystem( FileSystemInterface **_system )
 {
 	try
 	{
@@ -18,7 +22,7 @@ bool initInterfaceSystem(FileSystemInterface **_system)
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void releaseInterfaceSystem(FileSystemInterface *_system)
+void releaseInterfaceSystem( FileSystemInterface *_system )
 {
 	delete static_cast<OgreFileSystem*>(_system);
 }
@@ -39,7 +43,7 @@ void OgreFileSystem::loadPath( const char * _path )
 		->addResourceLocation( _path, "FileSystem", "OgreFileSystem", true );
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreFileSystem::loadPak(const char * _pak )
+void OgreFileSystem::loadPak( const char * _pak )
 {
 	m_resourceMgr
 		->addResourceLocation( _pak, "Zip", "OgreFileSystem", true );
@@ -51,7 +55,7 @@ void OgreFileSystem::unloadPak( const char * _pak )
 		->removeResourceLocation( _pak, "OgreFileSystem" );
 }
 //////////////////////////////////////////////////////////////////////////
-FileDataInterface *	OgreFileSystem::openFile(const char *	_filename)
+FileDataInterface *	OgreFileSystem::openFile( const char * _filename )
 {
 	try
 	{
@@ -77,7 +81,7 @@ void OgreFileSystem::closeFile( FileDataInterface * _fd )
 	delete static_cast<OgreFileData*>(_fd);
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreFileSystem::existFile(const char * _filename)
+bool OgreFileSystem::existFile( const char * _filename )
 {
 	try
 	{
@@ -115,3 +119,21 @@ const char * OgreFileSystem::platformBundlePath()
 	return "";
 #endif
 }
+//////////////////////////////////////////////////////////////////////////
+bool OgreFileSystem::createFolder( const char * _path )
+{
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
+#
+	int res = 0; //SHCreateDirectoryEx( NULL, _T(_path), NULL );
+
+	if ( res == ERROR_SUCCESS || res == ERROR_FILE_EXISTS || res == ERROR_ALREADY_EXISTS )
+	{
+		return true;
+	}
+#else
+	assert(!"Not released yet!");
+#endif
+
+	return false;
+}
+//////////////////////////////////////////////////////////////////////////

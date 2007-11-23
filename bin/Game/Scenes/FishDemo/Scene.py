@@ -35,7 +35,6 @@ class Scene( Menge.Scene ):
 		posX = Menge.getVec2fX(block.getWorldPosition())
 		posY = Menge.getVec2fY(block.getWorldPosition())
 
-
 		#self.atg = self.getNode( "TestAnimationGroup1" )
 		#self.atg.play("Test1")
 		#self.atg.play("Test2")
@@ -84,7 +83,7 @@ class Scene( Menge.Scene ):
 		self.testTextField.setLocalPosition( Menge.vec2f( 100,101 ) )
 
 		self.emitterTest = self.getNode( "EmitterTest1" );
-		self.emitterTest.play();
+		#self.emitterTest.play();
 
 		#self.emitterTest1 = self.getNode( "EmitterTest2" );
 		#self.emitterTest1.play();
@@ -99,7 +98,7 @@ class Scene( Menge.Scene ):
 	def onUpdate( self, timing ):
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 
-		self.camera_x += timing * 0.006
+		self.camera_x += timing * 0.0001
 		pass
 
 	def onHandleMouseButtonEvent( self, botton, isDown ):

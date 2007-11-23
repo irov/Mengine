@@ -84,7 +84,7 @@ bool OgreApplication::init( const char * _xmlFile )
 	std::string DllRenderSystem = "Systems_d/OgreRenderSystem_d.dll";
 	std::string DllInputSystem = "Systems_d/OgreInputSystem_d.dll";
 	std::string DllSoundSystem = "Systems_d/SoundSystem_d.dll";
-	std::string DllParticleSystem = "Systems_d/ParticleSystem_d.dll";
+	std::string DllParticleSystem = "Systems_d/AstralaxParticleSystem_d.dll";
 #else
 	std::string DllModuleSetting = "DllModuleRelease";
 	std::string DllLogSystem = "Systems/OgreLogSystem.dll";

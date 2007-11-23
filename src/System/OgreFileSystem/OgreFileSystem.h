@@ -22,6 +22,8 @@ public:
 
 	const char * platformBundlePath() override;
 
+	bool createFolder( const char* _path ) override;
+
 private:
 	Ogre::ResourceGroupManager * m_resourceMgr;
 };

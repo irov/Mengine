@@ -129,7 +129,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "KEY", "(OIb)", _key, _isDown );
+			askEvent( handle, "KEY", "(OIb)", this->getScript(), _key, _isDown );
 		}
 
 		return handle;

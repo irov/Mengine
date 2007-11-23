@@ -44,7 +44,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreFileSystem", "src\Syste
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreLogSystem", "src\System\OgreLogSystem\OgreLogSystem.vcproj", "{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ParticleSystem", "src\System\ParticleSystem\ParticleSystem.vcproj", "{BD7118E1-FE5A-4A90-AA51-EEB8717E2485}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AstralaxParticleSystem", "src\System\AstralaxParticleSystem\AstralaxParticleSystem.vcproj", "{BD7118E1-FE5A-4A90-AA51-EEB8717E2485}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

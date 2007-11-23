@@ -63,7 +63,7 @@ m_sourceNamesNum(0)
 			break;
 		m_sourceNames[m_sourceNamesNum] = sourceName;
 	}
-	m_sources.reserve(50);
+	m_sources.reserve(200);
 	/*ALuint t;
 	for(int i=0; i < 30; i++)
 	alGenSources(1, &t);
@@ -107,6 +107,8 @@ m_sourceNamesNum(0)
 ALSoundSystem::~ALSoundSystem()
 {
 	//alDeleteSources(m_sourceNum, m_sources);
+	for(unsigned int i = 0; i < m_sources.size(); i++)
+		delete m_sources[i];
 
 	alcMakeContextCurrent(NULL);
 	alcDestroyContext(m_context);
@@ -245,7 +247,7 @@ void    ALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 //	delete _sn;
 	if(_sn)
 	{
-		//static_cast<ALSoundSource*>(_sn)->stop();
+		static_cast<ALSoundSource*>(_sn)->stop();
 		static_cast<ALSoundSource*>(_sn)->setUsed(false);
 	}
 }

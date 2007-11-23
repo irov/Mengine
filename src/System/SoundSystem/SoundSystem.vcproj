@@ -123,12 +123,12 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\libogg\include&quot;;&quot;$(SolutionDir)dependencies\libvorbis\include&quot;;&quot;$(SolutionDir)dependencies\OpenThreads\include&quot;;&quot;$(SolutionDir)dependencies\OpenAL\include&quot;;&quot;$(SolutionDir)dependencies\freealut\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SOUNDSYSTEMINTERFACE_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SOUNDSYSTEMINTERFACE_EXPORTS;OT_LIBRARY_STATIC"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

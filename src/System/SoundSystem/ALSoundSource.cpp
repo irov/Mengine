@@ -41,7 +41,6 @@ void ALSoundSource::play()
 		alSourcei(m_sourceName, AL_BUFFER, NULL);
 	    alSourcei(m_sourceName, AL_LOOPING, AL_FALSE); //Streaming sources can't loop
 		static_cast<ALSoundBufferStream*>(m_soundBuffer)->record(m_sourceName);
-		//Sleep(100);	// wait for starting thread for streamed buffer
 	}
 	else
 	{
@@ -73,10 +72,10 @@ void ALSoundSource::stop()
 		alSourceStop(m_sourceName);
 	}
 
-	if(m_listener)
+	/*if(m_listener)
 	{
 		m_listener->listenStopped();
-	}
+	}*/
 }
 
 bool ALSoundSource::isPlaying() const
@@ -155,12 +154,12 @@ int ALSoundSource::getPosMs()
 	return pos;
 }
 
-void ALSoundSource::setSoundBuffer( ALSoundBuffer* _soundBuffer)
+void ALSoundSource::setSoundBuffer( ALSoundBuffer* _soundBuffer )
 {
 	m_soundBuffer = _soundBuffer;
 }
 
-void ALSoundSource::setAmbient(bool _ambient)
+void ALSoundSource::setAmbient(bool _ambient )
 {
 	if(_ambient)
 	{

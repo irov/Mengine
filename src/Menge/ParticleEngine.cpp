@@ -28,7 +28,7 @@ namespace Menge
 
 		size_t length = file->size();
 
-		static std::vector<char> buffer;
+		std::vector<char> buffer;
 		buffer.resize( length );
 
 		file->read( &buffer[0], length );

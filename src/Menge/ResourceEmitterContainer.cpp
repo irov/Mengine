@@ -58,7 +58,7 @@ namespace Menge
 
 		TMapImageEmitters::iterator it = m_emitterTextures.find( fullname );
 
-		static std::vector<char> buff;
+		std::vector<char> buff;
 
 		if ( it == m_emitterTextures.end() )
 		{

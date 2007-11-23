@@ -145,7 +145,7 @@ namespace Menge
 		{
 			std::string fullname = m_fontDir + params;
 
-			static std::vector<char> buff;
+			std::vector<char> buff;
 
 			m_image = Holder<RenderEngine>::hostage()->loadImage( fullname, buff, 1 );
 

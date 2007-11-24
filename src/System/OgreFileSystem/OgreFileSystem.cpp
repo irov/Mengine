@@ -24,7 +24,7 @@ bool initInterfaceSystem( FileSystemInterface **_system )
 //////////////////////////////////////////////////////////////////////////
 void releaseInterfaceSystem( FileSystemInterface *_system )
 {
-	delete static_cast<OgreFileSystem*>(_system);
+	delete static_cast<OgreFileSystem*>( _system );
 }
 //////////////////////////////////////////////////////////////////////////
 OgreFileSystem::OgreFileSystem()
@@ -124,19 +124,19 @@ bool OgreFileSystem::createFolder( const char * _path )
 {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
 #
-	size_t required_size = mbstowcs( NULL, _path, 0 ); 
+	size_t required_size = mbstowcs( NULL, _path, 0 ) + 1; 
 
-	std::vector<wchar_t> convpath( required_size + 1 );
+	std::vector<wchar_t> convpath( required_size );
 
-    int res = mbstowcs( &convpath[0], _path, required_size + 1 );
+    size_t conv_res = mbstowcs( &convpath[0], _path, required_size );
 
-	if( res <= 0 )
+	if( conv_res <= 0 )
 	{
 		assert(!"conversion from char to wchar_t failed!");
 		return false;
 	}
   
-	res = SHCreateDirectoryEx( NULL, &convpath[0], NULL );
+	int res = SHCreateDirectoryEx( NULL, &convpath[0], NULL );
 
 	if ( res == ERROR_SUCCESS || res == ERROR_FILE_EXISTS || res == ERROR_ALREADY_EXISTS )
 	{

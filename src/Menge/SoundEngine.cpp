@@ -51,13 +51,11 @@ namespace Menge
 	void SoundEngine::releaseSoundBuffer( SoundBufferInterface* _soundBuffer )
 	{
 		m_interface->releaseSoundBuffer(_soundBuffer);
-		_soundBuffer = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::releaseSoundSource( SoundSourceInterface* _soundSource )
 	{
 		m_interface->releaseSoundNode(_soundSource);
-		_soundSource = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setSoundSourceVolume( float _volume )

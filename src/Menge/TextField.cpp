@@ -22,7 +22,7 @@ namespace	Menge
 	OBJECT_IMPLEMENT(TextField);
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
-		: m_resourceFont( 0 )
+		: m_resource( 0 )
 		, m_length( 0.0f, 0.0f )
 		, m_color( 0xFFFFFFFF )
 		, m_height( 12.0f )
@@ -70,25 +70,25 @@ namespace	Menge
 			return false;
 		}
 
-		m_resourceFont = 
+		m_resource = 
 			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceFont>( m_resourceFontName );
+			->getResourceT<ResourceFont>( m_resourcename );
 
-		if( m_resourceFont == 0 )
+		if( m_resource == 0 )
 		{
 			MENGE_LOG("Warning: font '%s' have don't find resource '%s'\n"
 				, m_name.c_str()
-				, m_resourceFontName.c_str() 
+				, m_resourcename.c_str() 
 				);
 
 			return false;
 		}
 
-		if( m_resourceFont->isCompile() == false )
+		if( m_resource->isCompile() == false )
 		{
 			MENGE_LOG("Warning: font '%s' have don't compile resource '%s'\n"
 				, m_name.c_str()
-				, m_resourceFontName.c_str() 
+				, m_resourcename.c_str() 
 				);
 
 			return false;
@@ -102,7 +102,7 @@ namespace	Menge
 		SceneNode2D::_release();
 
 		Holder<ResourceManager>::hostage()
-			->releaseResource( m_resourceFont );
+			->releaseResource( m_resource );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::loader( TiXmlElement * _xml )
@@ -111,7 +111,7 @@ namespace	Menge
 
 		XML_FOR_EACH_TREE(_xml)
 		{
-			XML_CHECK_VALUE_NODE( "Font", "Name", m_resourceFontName );
+			XML_CHECK_VALUE_NODE( "Font", "Name", m_resourcename );
 			XML_CHECK_VALUE_NODE( "Text", "Value", m_text);
 			XML_CHECK_VALUE_NODE( "Color", "Value", m_color);
 			XML_CHECK_VALUE_NODE( "Height", "Value", m_height);
@@ -121,9 +121,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render()
 	{
-		float spaceWidth = m_resourceFont->getCharRatio(' ') * m_height;
+		float spaceWidth = m_resource->getCharRatio(' ') * m_height;
 
-		const RenderImageInterface * image = m_resourceFont->getImage();
+		const RenderImageInterface * image = m_resource->getImage();
 
 		mt::vec2f offset( 0.f, 0.f );
 
@@ -137,9 +137,9 @@ namespace	Menge
 				continue;
 			}
 
-			mt::vec4f uv = m_resourceFont->getUV( *it );
+			mt::vec4f uv = m_resource->getUV( *it );
 	 
-			float width = m_resourceFont->getCharRatio( *it ) * m_height;
+			float width = m_resource->getCharRatio( *it ) * m_height;
 			
 			mt::vec2f size( width, m_height );
 
@@ -168,7 +168,7 @@ namespace	Menge
 		it != it_end; 
 		++it )
 		{
-			float width = m_resourceFont->getCharRatio( *it ) * m_height;
+			float width = m_resource->getCharRatio( *it ) * m_height;
 			m_length.x += width;
 		}
 

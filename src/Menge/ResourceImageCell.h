@@ -42,7 +42,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		std::string m_fileImage;
+		std::string m_filename;
 
 		size_t m_numX;
 		size_t m_numY;

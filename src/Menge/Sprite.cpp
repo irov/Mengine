@@ -24,13 +24,13 @@ namespace	Menge
 	OBJECT_IMPLEMENT(Sprite);
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
-	: m_image( 0 )
+	: m_resource( 0 )
 	, m_color( 0xFFFFFFFF )
 	, m_currentImageIndex( 0 )
 	, m_centerAlign( false )
 	, m_alignOffset( 0.f, 0.f )
 	, m_scale( 1.0f )
-	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
+	, m_percent( 0.5f, 0.0f, 0.0f, 0.0f )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -56,10 +56,10 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible( const Viewport & _viewPort )
 	{
-		mt::vec2f size = m_image->getMaxSize( m_currentImageIndex );
+		mt::vec2f size = m_resource->getMaxSize( m_currentImageIndex );
 		size *= m_scale;
 
-		const mt::vec2f & image_offset = m_image->getOffset( m_currentImageIndex );
+		const mt::vec2f & image_offset = m_resource->getOffset( m_currentImageIndex );
 		mt::vec2f offset = m_centerAlign ? image_offset + m_alignOffset : image_offset;
 
 		const mt::mat3f & worldMatrix = getWorldMatrix();
@@ -83,22 +83,22 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageResource( const std::string & _name )
 	{
-		m_resourceImage = _name;
+		m_resourcename = _name;
 
-		if( m_image )
+		if( m_resource )
 		{
 			Holder<ResourceManager>::hostage()
-				->releaseResource( m_image );
+				->releaseResource( m_resource );
 		}
 		
-		m_image = 
+		m_resource = 
 			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImage>( m_resourceImage );
+			->getResourceT<ResourceImage>( m_resourcename );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string & Sprite::getImageResource() const
 	{
-		return m_resourceImage;
+		return m_resourcename;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_activate()
@@ -125,13 +125,13 @@ namespace	Menge
 			return false;
 		}
 
-		m_image = 
+		m_resource = 
 			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImage>( m_resourceImage );
+			->getResourceT<ResourceImage>( m_resourcename );
 
-		if( m_image == 0 )
+		if( m_resource == 0 )
 		{
-			MENGE_LOG( "Image resource loading failed '%s'\n", m_resourceImage.c_str() );
+			MENGE_LOG( "Image resource loading failed '%s'\n", m_resourcename.c_str() );
 			return false;
 		}
 
@@ -142,7 +142,7 @@ namespace	Menge
 	{
 		if( m_centerAlign )
 		{
-			mt::vec2f size = m_image->getMaxSize( 0 );
+			mt::vec2f size = m_resource->getMaxSize( 0 );
 			size *= m_scale;
 
 			m_alignOffset = size * (- 0.5f);
@@ -154,9 +154,9 @@ namespace	Menge
 		SceneNode2D::_release();
 
 		Holder<ResourceManager>::hostage()
-			->releaseResource( m_image );
+			->releaseResource( m_resource );
 
-		m_image = 0;
+		m_resource = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::loader( TiXmlElement * _xml )
@@ -165,7 +165,7 @@ namespace	Menge
 
 		XML_FOR_EACH_TREE(_xml)
 		{
-			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourceImage );
+			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourcename );
 			XML_CHECK_VALUE_NODE( "ImageIndex", "Value", m_currentImageIndex );
 			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
 			XML_CHECK_VALUE_NODE( "Scale", "Value", m_scale );
@@ -174,30 +174,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render()
 	{
-		mt::vec2f size = m_image->getSize( m_currentImageIndex );
+		mt::vec2f size = m_resource->getSize( m_currentImageIndex );
 		size *= m_scale;
 
-		mt::vec2f image_offset = m_image->getOffset( m_currentImageIndex );
-		mt::vec4f frame_uv = m_image->getUV( m_currentImageIndex );
+		mt::vec2f image_offset = m_resource->getOffset( m_currentImageIndex );
+		mt::vec4f frame_uv = m_resource->getUV( m_currentImageIndex );
 
-		const RenderImageInterface * renderImage = m_image->getImage( m_currentImageIndex );
+		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
 		const mt::mat3f & rwm = getWorldMatrix();
-
-		//image_offset.x += size.x * m_percent.x;
-		//size.x *= ( 1.0f - m_percent.x );
-
-		//size.x *= ( 1.0f - m_percent.z );
-	
-		//image_offset.y += size.y * m_percent.y;
-		//size.y *= ( 1.0f - m_percent.y );
-
-		//size.y *= ( 1.0f - m_percent.w );
-
-		//frame_uv.x = m_percent.x;
-		//frame_uv.y = m_percent.y;
-		//frame_uv.z = 1.0f - m_percent.z;
-		//frame_uv.w = 1.0f - m_percent.w;
 		
 		mt::vec2f offset = m_centerAlign ? image_offset + m_alignOffset : image_offset;
 

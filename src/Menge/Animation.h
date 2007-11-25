@@ -98,8 +98,8 @@ namespace Menge
 		void play_();
 
 	protected:
-		std::string m_resourceAnimation;
-		ResourceAnimation * m_animation;
+		ResourceAnimation * m_resource;
+		std::string m_resourcename;
 	
 		float m_total_delay;
 

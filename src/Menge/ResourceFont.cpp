@@ -25,7 +25,7 @@ namespace Menge
 
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "File", "Path", m_fontName );
+			XML_CHECK_VALUE_NODE( "File", "Path", m_filename );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -65,18 +65,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::_compile()
 	{
-		FileDataInterface * stream = Holder<FileEngine>::hostage()->openFile( m_fontName );
+		FileDataInterface * stream = Holder<FileEngine>::hostage()->openFile( m_filename );
 
 		if( stream == 0 )
 		{
 			MENGE_LOG("Warning: resource font not find fond file '%s'\n"
-				, m_fontName.c_str() 
+				, m_filename.c_str() 
 				);
 
 			return false;
 		}
 
-		m_fontDir = getFontDir( m_fontName );
+		m_fontDir = getFontDir( m_filename );
 
 		bool result = parseFontdef( stream );
 

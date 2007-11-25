@@ -47,12 +47,12 @@ namespace Menge
 		void _update( float _timing ) override;
 
 	private:
-		std::string m_resourceName;
+		ResourceEmitterContainer * m_resource;
+		std::string m_resourcename;
+
 		std::string m_emitterName;
 
 		EmitterInterface * m_interface;
-
-		ResourceEmitterContainer * m_resourceEmitter;
 
 		std::vector<RenderImageInterface*> m_images;
 	};

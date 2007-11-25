@@ -85,7 +85,7 @@ namespace Menge
 
 		TMapGlyph	m_glyphs;
 
-		std::string m_fontName;
+		std::string m_filename;
 		std::string m_fontDir;
 
 		RenderImageInterface * m_image;

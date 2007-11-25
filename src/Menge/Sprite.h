@@ -97,8 +97,8 @@ namespace Menge
 		void updateAlign_();
 
 	protected:
-		ResourceImage * m_image;
-		std::string m_resourceImage;
+		ResourceImage * m_resource;
+		std::string m_resourcename;
 
 		size_t m_currentImageIndex;
 

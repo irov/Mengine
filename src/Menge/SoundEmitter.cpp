@@ -17,7 +17,7 @@ namespace Menge
 	OBJECT_IMPLEMENT(SoundEmitter);
 	//////////////////////////////////////////////////////////////////////////
 	SoundEmitter::SoundEmitter()
-		: m_resourceSound(0)
+		: m_resource(0)
 		, m_interface(0)
 		, m_isHeadMode(false)
 		, m_listener(0)
@@ -49,7 +49,7 @@ namespace Menge
 
 		XML_FOR_EACH_TREE(_xml)
 		{
-			XML_CHECK_VALUE_NODE( "Resource", "Name", m_resourceName );
+			XML_CHECK_VALUE_NODE( "Resource", "Name", m_resourcename );
 			XML_CHECK_VALUE_NODE( "HeadMode", "Value", m_isHeadMode );
 		}
 	}
@@ -61,15 +61,15 @@ namespace Menge
 			return false;
 		}
 
-		m_resourceSound = 
+		m_resource = 
 			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceSound>( m_resourceName );
+			->getResourceT<ResourceSound>( m_resourcename );
 
-		if( m_resourceSound == 0 )
+		if( m_resource == 0 )
 		{
 			MENGE_LOG("Warning: sound emitter '%s' can't get resource '%s'\n"
 				, m_name.c_str()
-				, m_resourceName.c_str()
+				, m_resourcename.c_str()
 				);
 
 			return false;
@@ -77,7 +77,7 @@ namespace Menge
 
 		m_interface = Holder<SoundEngine>::hostage()->createSoundSource(
 			m_isHeadMode,
-			m_resourceSound->get(),
+			m_resource->get(),
 			this );
 
 		if( m_interface == 0 )
@@ -94,13 +94,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_release()
 	{
-		Holder<ResourceManager>::hostage()->releaseResource( m_resourceSound );
+		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
 		Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setSoundResource( const std::string & _name )
 	{
-		m_resourceName = _name;
+		m_resourcename = _name;
 
 		recompile();		
 	}

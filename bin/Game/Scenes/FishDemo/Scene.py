@@ -42,18 +42,18 @@ class Scene( Menge.Scene ):
 		x = 0
 		y = -100
 
-		if x > posX:
-			block.rotateTo( 3000, Menge.vec2f( x, y ) )
-		else:
-			mirrorX = posX + ( posX - x )
-			mirrorY = posY + ( posY - y )
-			block.rotateTo( 3000, Menge.vec2f( mirrorX, mirrorY ) )
+		#if x > posX:
+		#	block.rotateTo( 3000, Menge.vec2f( x, y ) )
+		#else:
+		#	mirrorX = posX + ( posX - x )
+		#	mirrorY = posY + ( posY - y )
+		#	block.rotateTo( 3000, Menge.vec2f( mirrorX, mirrorY ) )
 		
 		#block.moveTo( 30000, Menge.vec2f( 1000,200 ), False )
 		
 		#block.rotateTo( 3000, Menge.vec2f( 0,0 ) )
 
-		block.setRotate( 3.14/3.0  )
+		#block.setRotate( 3.14/3.0  )
 
 		#block.setLocalDirection(Menge.vec2f( 0,-1 ))
 

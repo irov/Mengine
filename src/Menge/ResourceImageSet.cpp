@@ -40,7 +40,7 @@ namespace Menge
 	bool ResourceImageSet::_compile()
 	{
 		std::vector<char> buff;
-		ImageFrame image = loadImageFrame( m_fileImage, buff );
+		ImageFrame image = loadImageFrame( m_filename, buff );
 
 		size_t size = m_uvs.size();
 		m_sizes.resize( size );

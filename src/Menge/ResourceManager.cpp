@@ -2,9 +2,8 @@
 
 #	include "ResourceDeclare.h"
 #	include "ResourceImplement.h"
+#	include "ResourceReference.h"
 
-#	include "ResourceImageMNG.h"
-#	include "ResourceImageCell.h"
 
 #	include "FileEngine.h"
 

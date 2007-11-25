@@ -51,7 +51,7 @@ namespace Menge
 
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "File", "Path", m_fileImage );
+			XML_CHECK_VALUE_NODE( "File", "Path", m_filename );
 			XML_CHECK_VALUE_NODE( "Cell", "X", m_numX );
 			XML_CHECK_VALUE_NODE( "Cell", "Y", m_numY );
 		}
@@ -60,7 +60,7 @@ namespace Menge
 	bool ResourceImageCell::_compile()
 	{
 		std::vector<char> buff;
-		m_imageFrame = loadImageFrame( m_fileImage, buff );
+		m_imageFrame = loadImageFrame( m_filename, buff );
 
 		size_t count = m_numX * m_numY;
 

@@ -86,12 +86,12 @@ namespace Menge
 		void _release() override;
 
 	private:
-		ResourceFont * m_resourceFont;
+		ResourceFont * m_resource;
+		std::string	m_resourcename;
 
 		unsigned int m_color;
 		float		m_height;
 		std::string m_text;
-		std::string m_resourceFontName;
 		mt::vec2f	m_length;
 
 		bool m_centerAlign;

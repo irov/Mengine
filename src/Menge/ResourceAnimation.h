@@ -8,14 +8,14 @@ namespace Menge
 {
 	//! ResourceAnimation - ресурс-файл который содержит список пар (индекс, задержка).
 
-    /*! xml - файл имеет следующую структуру:
-	* <Resource Name = "имя_ресурса" Type = "ResourceAnimation" >
-	*	<Sequences>
-	*		<Sequence Index = "индекс_изображения0" Delay = "задержка0" />
-	*			...
-	*		<Sequence Index = "индекс_изображенияN" Delay = "задержкаN" />
-	*	</Sequences>
-	* </Resource>
+    /** xml - файл имеет следующую структуру:
+	 *<Resource Name = "имя_ресурса" Type = "ResourceAnimation" >
+	 *	<Sequences>
+	 *		<Sequence Index = "индекс_изображения0" Delay = "задержка0" />
+	 *			...
+	 *		<Sequence Index = "индекс_изображенияN" Delay = "задержкаN" />
+	 * 	</Sequences>
+	 *</Resource>
 	*/
 
 	class ResourceAnimation

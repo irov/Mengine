@@ -53,7 +53,7 @@ namespace Menge
 			XML_CHECK_NODE("File")
 			{
 				XML_DEF_ATTRIBUTES_NODE(Path);
-				m_filesImages.push_back(Path);
+				m_filenames.push_back(Path);
 			}
 		}
 	}
@@ -61,7 +61,7 @@ namespace Menge
 	bool ResourceImageDefault::_compile()
 	{	
 		std::vector<char> buff;
-		for each( const std::string & file in m_filesImages )
+		for each( const std::string & file in m_filenames )
 		{
 			ImageFrame frame = loadImageFrame( file, buff );
 

@@ -29,7 +29,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Emitter::Emitter()
 		: m_interface( 0 )
-		, m_resourceEmitter( 0 )
+		, m_resource( 0 )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Emitter::~Emitter()
@@ -82,7 +82,7 @@ namespace	Menge
 
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "Resource", "Name", m_resourceName );
+			XML_CHECK_VALUE_NODE( "Resource", "Name", m_resourcename );
 			XML_CHECK_VALUE_NODE( "Emitter", "Name", m_emitterName );
 		}
 	}
@@ -94,21 +94,21 @@ namespace	Menge
 			return false;
 		}
 
-		m_resourceEmitter = 
+		m_resource = 
 			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceEmitterContainer>( m_resourceName );
+			->getResourceT<ResourceEmitterContainer>( m_resourcename );
 
-		if( m_resourceEmitter == NULL )
+		if( m_resource == NULL )
 		{
-			MENGE_LOG( "Error: Emitter can't open resource file '%s'\n", m_resourceName.c_str() );
+			MENGE_LOG( "Error: Emitter can't open resource file '%s'\n", m_resourcename.c_str() );
 			return false;
 		}
 
-		const EmitterContainerInterface * m_container = m_resourceEmitter->getContainer();
+		const EmitterContainerInterface * m_container = m_resource->getContainer();
 
 		if( m_container == NULL )
 		{
-			MENGE_LOG( "Error: Emitter can't open container file '%s'\n", m_resourceName.c_str() );
+			MENGE_LOG( "Error: Emitter can't open container file '%s'\n", m_resourcename.c_str() );
 			return false;
 		}
 
@@ -116,7 +116,7 @@ namespace	Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG( "Error: Emitter can't create emitter source '%s'\n", m_resourceName.c_str() );
+			MENGE_LOG( "Error: Emitter can't create emitter source '%s'\n", m_resourcename.c_str() );
 			return false;
 		}
 
@@ -128,7 +128,7 @@ namespace	Menge
 
 			std::string textureName = Holder<ParticleEngine>::hostage()->getTextureName();
 
-			RenderImageInterface * image = m_resourceEmitter->getRenderImage( textureName );
+			RenderImageInterface * image = m_resource->getRenderImage( textureName );
 
 			if( image == 0 )
 			{
@@ -150,7 +150,7 @@ namespace	Menge
 
 		Holder<ParticleEngine>::hostage()->releaseEmitter( m_interface );
 
-		Holder<ResourceManager>::hostage()->releaseResource( m_resourceEmitter );
+		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_render()

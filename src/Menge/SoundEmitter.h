@@ -52,8 +52,9 @@ namespace Menge
 		private:
 			PyObject * m_listener;
 
-			std::string m_resourceName;
-			ResourceSound * m_resourceSound;
+			ResourceSound * m_resource;
+			std::string m_resourcename;
+			
 			SoundSourceInterface * m_interface;
 
 			bool m_isHeadMode;

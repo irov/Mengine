@@ -765,14 +765,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ResourceImageMNG.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImageMNG.h"
-					>
-				</File>
-				<File
 					RelativePath=".\ResourceImageSet.cpp"
 					>
 				</File>

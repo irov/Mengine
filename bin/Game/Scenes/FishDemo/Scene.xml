@@ -88,7 +88,7 @@
 			<CenterAlign Value = "0"/>
 		</Node>
 
-		<Node Name = "SoundEmitterTest" Type = "SoundEmitter">
+		<!--<Node Name = "SoundEmitterTest" Type = "SoundEmitter">
               		<Resource Name = "ResourceSoundTest"/>
                		<HeadMode Value = "0"/>
 		</Node>
@@ -97,7 +97,7 @@
 		<Node Name = "SoundEmitterTest1" Type = "SoundEmitter">
               		<Resource Name = "ResourceSoundTest1"/>
                		<HeadMode Value = "0"/>
-		</Node>
+		</Node>-->
 
 		<!--<Node Name = "TestAnimationGroup1" Type = "AnimationGroup">
 			<Animations>

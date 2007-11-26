@@ -17,7 +17,7 @@ namespace	Menge
 	, m_playing(false)
 	, m_autoStart(false)
 	, m_looping(false)
-	, m_total_delay(0)
+	, m_delay(0)
 	, m_currentFrame(0)
 	, m_listener(0)
 	, m_animationFactor(1.f)
@@ -86,14 +86,14 @@ namespace	Menge
 			return; 
 		}
 
-		m_total_delay += _timing;
+		m_delay += _timing;
 
 		float delay = m_resource->getSequenceDelay( m_currentFrame );
 		delay *= m_animationFactor;
 
-		while( m_total_delay >= delay )
+		while( m_delay >= delay )
 		{
-			m_total_delay -= delay;
+			m_delay -= delay;
 			
 			size_t frameSize = m_resource->getSequenceCount();
 
@@ -177,7 +177,7 @@ namespace	Menge
 	void Animation::stop()
 	{
 		m_currentFrame = 0;
-		m_total_delay = 0;
+		m_delay = 0;
 
 		if( m_playing == true )
 		{
@@ -207,7 +207,7 @@ namespace	Menge
 	void Animation::play_()
 	{
 		m_playing = true;
-		m_total_delay = 0;
+		m_delay = 0;
 		m_currentFrame = 0;
 
 		size_t currentImageIndex = m_resource->getSequenceIndex( m_currentFrame );

@@ -30,7 +30,7 @@ namespace	Menge
 	, m_centerAlign( false )
 	, m_alignOffset( 0.f, 0.f )
 	, m_scale( 1.0f )
-	, m_percent( 0.5f, 0.0f, 0.0f, 0.0f )
+	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -183,7 +183,18 @@ namespace	Menge
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
 		const mt::mat3f & rwm = getWorldMatrix();
-		
+
+		image_offset.x += size.x * m_percent.x;
+        size.x *= ( 1.0f - m_percent.x );
+        size.x *= ( 1.0f - m_percent.z );
+     
+        image_offset.y += size.y * m_percent.y;
+        size.y *= ( 1.0f - m_percent.y );
+        size.y *= ( 1.0f - m_percent.w );
+
+		frame_uv.x = frame_uv.x * ( 1.0f - m_percent.x ) + m_percent.x * frame_uv.z; 
+        frame_uv.y = frame_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * frame_uv.w;
+
 		mt::vec2f offset = m_centerAlign ? image_offset + m_alignOffset : image_offset;
 
 		Holder<RenderEngine>::hostage()->renderImage(

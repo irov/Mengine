@@ -101,7 +101,7 @@ namespace Menge
 		ResourceAnimation * m_resource;
 		std::string m_resourcename;
 	
-		float m_total_delay;
+		float m_delay;
 
 		bool m_autoStart;
 		bool m_playing;

@@ -24,6 +24,10 @@
 	<!- ************************************************ -->
 	<!- Image for 1st plan -->
 
+	<Resource Name = "ReefValun_0N" Type = "ResourceImageDefault" >
+		<File Path = "Game/Images/Reef/1st_plan/testvalun_01.png" />
+	</Resource>
+
 	<Resource Name = "ReefValun_01" Type = "ResourceImageDefault" >
 		<File Path = "Game/Images/Reef/1st_plan/valun_01.png" />
 	</Resource>
@@ -59,16 +63,6 @@
 
 	<Resource Name = "ArialTest" Type = "ResourceFont">
      		<File Path = "Game/Fonts/Arial-28pt.fontdef"/>
-	</Resource>
-
-	<Resource Name = "ResourceSoundTest" Type = "ResourceSound">
-     		<File Path = "Game/Sounds/1.ogg"/>
-		<IsStreamable Path = "0"/>
-	</Resource>
-
-	<Resource Name = "ResourceSoundTest1" Type = "ResourceSound">
-     		<File Path = "Game/Sounds/2.ogg"/>
-		<IsStreamable Path = "0"/>
 	</Resource>
 
 	<Resource Name = "ResourcePlayListTest1" Type = "ResourcePlaylist">

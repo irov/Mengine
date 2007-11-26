@@ -18,10 +18,10 @@ m_removeSource(false),
 m_looping(false),
 m_bufferSize(_buffersize)
 {
-  m_buffers[0] = _buffer1;
+  /*m_buffers[0] = _buffer1;
   m_buffers[1] = _buffer2;
   m_oggFile = new OggVorbis_File(_oggfile);
-  Init();
+  Init();*/
 
 }
 
@@ -40,19 +40,28 @@ ALSoundBufferStreamUpdater::~ALSoundBufferStreamUpdater()
 
 void ALSoundBufferStreamUpdater::addSource(ALuint _sourcename) 
 {
-	alSourceStop(_sourcename);
+	/*alSourceStop(_sourcename);
 	ENTER_CRITICAL;
 	m_source = _sourcename;
 	m_newSource = true;
 	start();
-	LEAVE_CRITICAL;
+	LEAVE_CRITICAL;*/
 }
 
 void ALSoundBufferStreamUpdater::removeSource() 
 {
-  ENTER_CRITICAL;
-  m_removeSource = true;
-  LEAVE_CRITICAL;
+  /*ENTER_CRITICAL;
+  if(m_source != AL_INVALID)
+	  alSourceStop(m_source);
+  //m_removeSource = true;
+		ALuint dump[2];
+		ALint nqueued;
+		alGetSourceiv(m_source, AL_BUFFERS_QUEUED, &nqueued);
+		if(nqueued)
+			alSourceUnqueueBuffers(m_source, nqueued, dump);
+
+  cancel();
+  LEAVE_CRITICAL;*/
 }
 
 void ALSoundBufferStreamUpdater::run()
@@ -101,7 +110,7 @@ bool ALSoundBufferStreamUpdater::update(void* _buffer, unsigned int _length)
 		alGetSourceiv(m_source, AL_BUFFERS_QUEUED, &nqueued);
 		if(nqueued)
 			alSourceUnqueueBuffers(m_source, nqueued, dump);
-		alGetError();
+
 		m_source = AL_INVALID;
 		m_removeSource = false;
 	}
@@ -183,14 +192,15 @@ void ALSoundBufferStreamUpdater::cancelCleanup()
   delete this;
 } 
 
-ALSoundBufferStream::ALSoundBufferStream()
+ALSoundBufferStream::ALSoundBufferStream() :
+m_updater(NULL)
 {
 }
 
 ALSoundBufferStream::ALSoundBufferStream(const char* _filename)
 {
 
-	alGenBuffers(1, &m_buffer2);
+/*	alGenBuffers(1, &m_buffer2);
 
   FILE *filehandle = fopen(_filename, "rb");
 
@@ -236,8 +246,8 @@ ALSoundBufferStream::ALSoundBufferStream(const char* _filename)
 		buffersize -= (buffersize % 12);
 	}
     
-    m_updater = new ALSoundBufferStreamUpdater(oggfile, getBufferName(), m_buffer2, format, ogginfo->rate, buffersize * 2/**sampleSize(format)*/); 
-  } 
+    m_updater = new ALSoundBufferStreamUpdater(oggfile, getBufferName(), m_buffer2, format, ogginfo->rate, buffersize * 2/**sampleSize(format)); 
+  } */
   //else 
   //{
   //  fclose(filehandle);

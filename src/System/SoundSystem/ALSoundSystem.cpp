@@ -23,17 +23,14 @@ m_distanceModel(None),
 m_sourceNamesNum(0)
 {
 	char *initString = 0L;//"DirectSound", "DirectSound3D", ;
-	m_device = alcOpenDevice((const ALCchar *)initString);
+	m_device = alcOpenDevice(NULL);
 
     if(!m_device)
 	{
 		// TODO: error handling
 	}
 
-    int attributes[7];
-    attributes[0]=0;
-
-    m_context = alcCreateContext(m_device, attributes);
+    m_context = alcCreateContext(m_device, NULL);
     if(!m_context || alcGetError(m_device) != ALC_NO_ERROR) 
 	{
       if(m_context)
@@ -45,16 +42,6 @@ m_sourceNamesNum(0)
     } 
     alcMakeContextCurrent(m_context);
  
-	// get all available sources
-	/*for(;m_sourceNamesNum < MAX_SOURCE_NUM; m_sourceNamesNum++)
-	{
-		ALuint sourceName;
-		alGenSources(1, &sourceName);	
-		if(alGetError())
-			break;
-		m_sourceNames[m_sourceNamesNum] = sourceName;
-	}*/
-
 	for(;m_sourceNamesNum < MAX_SOURCE_NUM; m_sourceNamesNum++)
 	{
 		ALuint sourceName;
@@ -64,6 +51,7 @@ m_sourceNamesNum(0)
 		m_sourceNames[m_sourceNamesNum] = sourceName;
 	}
 	m_sources.reserve(200);
+//	m_buffers.reserve(100);
 	/*ALuint t;
 	for(int i=0; i < 30; i++)
 	alGenSources(1, &t);
@@ -141,11 +129,15 @@ SoundSourceInterface*   ALSoundSystem::createSoundSource( bool _isHeadMode, Soun
 		source = new ALSoundSource(this);
 		m_sources.push_back(source);
 	}
+			if(ALenum error = alGetError())
+				MessageBoxA(NULL, "", "", MB_OK);
 
 	source->setSoundBuffer( static_cast<ALSoundBuffer*>(_sample) );
 	source->setAmbient(_isHeadMode);
 	source->setSoundNodeListener(_listener);
 	source->setUsed(true);
+			if(ALenum error = alGetError())
+				MessageBoxA(NULL, "", "", MB_OK);
 
 	return source;
 }
@@ -157,6 +149,8 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 	if(_isStream)
 	{
 		buffer = new ALSoundBufferStream(_filename);
+			if(ALenum error = alGetError())
+				MessageBoxA(NULL, "", "", MB_OK);
 	}
 	else
 	{
@@ -198,16 +192,15 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 				DecodeOggVorbis(&oggfile, (char*)data, size, ogginfo->channels);
 
 			} 
-			else 
-			{
-				fclose(filehandle);
-			}
 			ov_clear(&oggfile);
+			fclose(filehandle);
 		}
 
 		if(data) 
 		{
 			alBufferData( buffer->getBufferName(), format, data, size, freq );
+			if(ALenum error = alGetError())
+				MessageBoxA(NULL, "", "", MB_OK);
 			free(data);
 		} 
 	}
@@ -230,14 +223,14 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buff
 	{
 		buffer->setLenghtMs(size * 1000 / (freq * GetSampleSize(format)));
 		alBufferData( buffer->getBufferName(), format, data, size, freq );
-	} 
+				if(ALenum error = alGetError())
+				MessageBoxA(NULL, "", "", MB_OK);
+} 
 	return buffer;
 }
 
 void    ALSoundSystem::releaseSoundBuffer( SoundBufferInterface * _soundBuffer )
 {
-	if(!_soundBuffer) return;
-
 	//_soundBuffer->unload();
 	delete static_cast<ALSoundBuffer*>(_soundBuffer);
 }
@@ -247,8 +240,8 @@ void    ALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 //	delete _sn;
 	if(_sn)
 	{
-		static_cast<ALSoundSource*>(_sn)->stop();
 		static_cast<ALSoundSource*>(_sn)->setUsed(false);
+		static_cast<ALSoundSource*>(_sn)->stop();
 	}
 }
 
@@ -256,16 +249,23 @@ void	ALSoundSystem::setSoundVelocity(float _velocity)
 {
 	m_soundVelocity = _velocity;
 	alDopplerVelocity(m_soundVelocity);
+			if(ALenum error = alGetError())
+				MessageBoxA(NULL, "", "", MB_OK);
 }
 
 void	ALSoundSystem::setDopplerFactor(float _factor)
 {
 	m_dopplerFactor = _factor;
 	alDopplerFactor(m_dopplerFactor);
+			if(ALenum error = alGetError())
+				MessageBoxA(NULL, "", "", MB_OK);
 }
 
 void	ALSoundSystem::setDistanceModel(EDistanceModel _model)
 {
+				if(ALenum error = alGetError())
+				MessageBoxA(NULL, "", "", MB_OK);
+
 	switch(_model) 
 	{
 	case(None):
@@ -286,6 +286,8 @@ void	ALSoundSystem::setDistanceModel(EDistanceModel _model)
 	  // TODO: Error handling
 		return;
 	}
+			if(ALenum error = alGetError())
+				MessageBoxA(NULL, "", "", MB_OK);
 
 	m_distanceModel = _model;
 }
@@ -355,7 +357,10 @@ ALuint ALSoundSystem::getFreeSourceName()
 	for(int i = 0; i < m_sourceNamesNum; i++)
 	{
 		ALint state;
-		alGetSourcei(m_sourceNames[i], AL_SOURCE_STATE, &state);
+		alGetSourceiv(m_sourceNames[i], AL_SOURCE_STATE, &state);
+			if(ALenum error = alGetError())
+				MessageBoxA(NULL, "", "", MB_OK);
+
 		if(state != AL_PLAYING)
 		{
 			return m_sourceNames[i];

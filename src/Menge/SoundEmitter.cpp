@@ -143,8 +143,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::stop()
 	{
-		Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
-		return m_interface->stop();
+		m_interface->stop();	
+		//Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
+		return ;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::isPlaying()

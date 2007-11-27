@@ -195,6 +195,9 @@ namespace	Menge
 		frame_uv.x = frame_uv.x * ( 1.0f - m_percent.x ) + m_percent.x * frame_uv.z; 
         frame_uv.y = frame_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * frame_uv.w;
 
+		frame_uv.z *= (1.0f - m_percent.z);
+		frame_uv.w *= (1.0f - m_percent.w);
+
 		mt::vec2f offset = m_centerAlign ? image_offset + m_alignOffset : image_offset;
 
 		Holder<RenderEngine>::hostage()->renderImage(

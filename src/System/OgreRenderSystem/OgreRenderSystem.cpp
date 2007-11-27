@@ -74,12 +74,6 @@ void OgreRenderSystem::setContentResolution( const float * _resolution )
 	m_contentResolution.y = _resolution[1];
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSystem::render()
-{
-	//m_renderWindow->update();
-	//m_root->renderOneFrame();
-}
-//////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setProjectionMatrix( const float * _projection )
 {
 	m_renderSys->_setProjectionMatrix( *(Ogre::Matrix4 *)_projection );

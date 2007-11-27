@@ -19,8 +19,6 @@ public:
 class	RenderSystemInterface
 {
 public:
-	virtual void render() = 0;
-
 	virtual void setContentResolution( const float * _resolution ) = 0;
 
 	virtual	void setProjectionMatrix( const float * _projection ) = 0;

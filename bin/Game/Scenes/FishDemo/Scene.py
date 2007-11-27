@@ -98,6 +98,8 @@ class Scene( Menge.Scene ):
 		self.c = 0;
 		self.d = 0;
 		self.delta = 0.25
+
+		self.node.setPercentVisibility( Menge.vec2f( 0.3, 0 ), Menge.vec2f( 0.1, 0 ));
 	
 		pass
 
@@ -108,7 +110,7 @@ class Scene( Menge.Scene ):
 
 		self.a = self.a + timing * 0.00005
 
-		self.node.setPercentVisibility( Menge.vec2f( 0, self.a ), Menge.vec2f( 0, 0 ));
+		#self.node.setPercentVisibility( Menge.vec2f( 1 - self.a, 0 ), Menge.vec2f( 0, 0 ));
 
 		pass
 

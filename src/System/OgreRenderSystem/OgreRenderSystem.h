@@ -15,7 +15,6 @@ public:
 
 public:
 	bool init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow ) override;
-	void render();
 
 	void setContentResolution( const float * _resolution );
 

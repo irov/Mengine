@@ -210,8 +210,6 @@ namespace Menge
 		Holder<Game>::hostage()->render();
 		Holder<Game>::hostage()->debugRender();
 
-		renderEng->render();
-
 		return Holder<InputEngine>::hostage()->isKeyDown( 0x01 ) == false;
 	}
 	//////////////////////////////////////////////////////////////////////////

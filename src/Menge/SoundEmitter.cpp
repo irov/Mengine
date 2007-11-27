@@ -27,7 +27,9 @@ namespace Menge
 	SoundEmitter::~SoundEmitter()
 	{
 		if(m_interface)
+		{
 			m_interface->setSoundNodeListener(NULL);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_activate()

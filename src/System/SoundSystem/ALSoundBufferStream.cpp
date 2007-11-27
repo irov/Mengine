@@ -173,7 +173,8 @@ m_buffer2(0)
 
 	alGenBuffers(1, &m_buffer2);
 
-	FILE *filehandle = fopen(_filename, "rb");
+	FILE * filehandle = 0;
+	fopen_s( &filehandle, _filename, "rb");
 
 	unsigned int buffersize, format, freq;
 	// Check for file type, create a FileStreamUpdater if a known type is

@@ -196,6 +196,7 @@ namespace Menge
 			.def( "setName", &Node::setName )
 			.def( "getName", &Node::getName )
 			.def( "addChildren", &Node::addChildren )
+			.def( "removeChildren", &Node::removeChildren )
 			.def( "getChildren", &Node::getChildren )
 			;
 

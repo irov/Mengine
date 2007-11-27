@@ -28,11 +28,11 @@ freealut
 [1.1.0]
 http://openal.org/downloads.html
 
-libogg
+ogg
 [1.1.3]
 http://downloads.xiph.org/releases/ogg/libogg-1.1.3.tar.gz
 
-libvorbis
+vorbis
 [1.2.0]
 http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz
 

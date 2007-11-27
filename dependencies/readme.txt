@@ -36,9 +36,9 @@ libvorbis
 [1.2.0]
 http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz
 
-OpenThreads
-[1.9.5]
-http://www.openscenegraph.org/projects/osg/browser/OpenThreads/developer_releases/OpenThreads-1.9.5/OpenThreads-1.9.5.zip
+PThreads
+[2.8.0]
+ftp://sourceware.org/pub/pthreads-win32
 
 --------------------------------------------------------------------------------
 TODO:

@@ -41,6 +41,8 @@ public:
 public:
 	virtual int	getLengthMS() = 0;
 	virtual int getPosMs() = 0;
+
+	virtual void setSoundNodeListener(SoundNodeListenerInterface * _listener) = 0;
 };
 
 class SoundSystemInterface

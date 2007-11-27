@@ -138,6 +138,16 @@ void ALSoundSource::setSoundBuffer( ALSoundBuffer* _soundBuffer )
 		m_soundBuffer->addSource(this);
 }
 
+void ALSoundSource::setVolume(float _volume)
+{
+	m_volume = _volume;
+
+	if(m_sourceName && m_playing)
+	{
+		alSourcef(m_sourceName->name, AL_GAIN, m_volume);
+	}
+}
+
 void ALSoundSource::_updateParams()
 {
 	if(m_ambient)

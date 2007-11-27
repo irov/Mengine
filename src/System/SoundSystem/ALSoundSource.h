@@ -22,7 +22,7 @@ public:
 	virtual bool isPlaying() const			{ return m_playing; }
 
 public:
-	virtual void setVolume( float _volume )	{ m_volume = _volume; }
+	virtual void setVolume( float _volume );
 	virtual float getVolume() const			{ return m_volume; }
 
 public:

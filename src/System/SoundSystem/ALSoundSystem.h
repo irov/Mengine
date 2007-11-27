@@ -5,7 +5,8 @@
 
 #include <vector>
 
-#define MAX_SOURCE_NUM 30
+#define MAX_SOURCENAMES_NUM 100
+#define MAX_SOUND_SOURCES 200
 
 enum EDistanceModel
 {
@@ -13,6 +14,13 @@ enum EDistanceModel
 	InverseDistance,
 	InverseDistanceClamped
 };
+
+typedef struct
+{
+	ALuint name;
+	bool   busy;
+} 
+TALSourceName;
 
 class ALSoundSource;
 
@@ -40,10 +48,10 @@ public:
 	void	setDistanceModel(EDistanceModel _model);
 	EDistanceModel getDistanceModel()						{ return m_distanceModel; }
 
-	ALuint getFreeSourceName();
+	TALSourceName* getFreeSourceName();
 
 private:
-	ALuint	m_sourceNames[MAX_SOURCE_NUM];
+	TALSourceName m_sourceNames[MAX_SOURCENAMES_NUM];
 	int m_sourceNamesNum;
 	std::vector<ALSoundSource*>	m_sources;
 	//ALSoundSource* m_sources[MAX_SOURCE_NUM];

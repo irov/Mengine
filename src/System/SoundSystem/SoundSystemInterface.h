@@ -11,8 +11,6 @@ public:
 
 class SoundBufferInterface
 {
-public:
-//       virtual void    unload() = 0;
 };
 
 class SoundSourceInterface

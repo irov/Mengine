@@ -3,7 +3,10 @@
 
 #include "SoundSystemInterface.h"
 
-class ALSoundSystem;
+
+//class ALSoundSystem;
+#include "ALSoundSystem.h"
+
 class ALSoundBuffer;
 
 class ALSoundSource : public SoundSourceInterface
@@ -42,10 +45,9 @@ public:
 	bool isBusy()	{ return m_busy; }
 	void setUsed(bool _use)	{ m_busy = _use; }
 	SoundNodeListenerInterface* getListener()	{ return m_listener; }
-	ALuint getName()		{ return m_sourceName; }
 
 private:
-	ALuint m_sourceName;
+	TALSourceName* m_sourceName;
 	ALSoundBuffer* m_soundBuffer;
 	ALSoundSystem* m_soundSystem;
 	bool m_busy;

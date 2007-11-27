@@ -42,15 +42,16 @@ m_sourceNamesNum(0)
     } 
     alcMakeContextCurrent(m_context);
  
-	for(;m_sourceNamesNum < MAX_SOURCE_NUM; m_sourceNamesNum++)
+	for(;m_sourceNamesNum < MAX_SOURCENAMES_NUM; m_sourceNamesNum++)
 	{
 		ALuint sourceName;
 		alGenSources(1, &sourceName);	
 		if(alGetError())
 			break;
-		m_sourceNames[m_sourceNamesNum] = sourceName;
+		m_sourceNames[m_sourceNamesNum].busy = false;
+		m_sourceNames[m_sourceNamesNum].name = sourceName;
 	}
-	m_sources.reserve(200);
+	m_sources.reserve(MAX_SOUND_SOURCES);
 //	m_buffers.reserve(100);
 	/*ALuint t;
 	for(int i=0; i < 30; i++)
@@ -129,15 +130,11 @@ SoundSourceInterface*   ALSoundSystem::createSoundSource( bool _isHeadMode, Soun
 		source = new ALSoundSource(this);
 		m_sources.push_back(source);
 	}
-			if(ALenum error = alGetError())
-				MessageBoxA(NULL, "", "", MB_OK);
 
 	source->setSoundBuffer( static_cast<ALSoundBuffer*>(_sample) );
 	source->setAmbient(_isHeadMode);
 	source->setSoundNodeListener(_listener);
 	source->setUsed(true);
-			if(ALenum error = alGetError())
-				MessageBoxA(NULL, "", "", MB_OK);
 
 	return source;
 }
@@ -149,8 +146,6 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 	if(_isStream)
 	{
 		buffer = new ALSoundBufferStream(_filename);
-			if(ALenum error = alGetError())
-				MessageBoxA(NULL, "", "", MB_OK);
 	}
 	else
 	{
@@ -199,8 +194,6 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 		if(data) 
 		{
 			alBufferData( buffer->getBufferName(), format, data, size, freq );
-			if(ALenum error = alGetError())
-				MessageBoxA(NULL, "", "", MB_OK);
 			free(data);
 		} 
 	}
@@ -223,9 +216,7 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buff
 	{
 		buffer->setLenghtMs(size * 1000 / (freq * GetSampleSize(format)));
 		alBufferData( buffer->getBufferName(), format, data, size, freq );
-				if(ALenum error = alGetError())
-				MessageBoxA(NULL, "", "", MB_OK);
-} 
+	} 
 	return buffer;
 }
 
@@ -249,16 +240,12 @@ void	ALSoundSystem::setSoundVelocity(float _velocity)
 {
 	m_soundVelocity = _velocity;
 	alDopplerVelocity(m_soundVelocity);
-			if(ALenum error = alGetError())
-				MessageBoxA(NULL, "", "", MB_OK);
 }
 
 void	ALSoundSystem::setDopplerFactor(float _factor)
 {
 	m_dopplerFactor = _factor;
 	alDopplerFactor(m_dopplerFactor);
-			if(ALenum error = alGetError())
-				MessageBoxA(NULL, "", "", MB_OK);
 }
 
 void	ALSoundSystem::setDistanceModel(EDistanceModel _model)
@@ -286,9 +273,6 @@ void	ALSoundSystem::setDistanceModel(EDistanceModel _model)
 	  // TODO: Error handling
 		return;
 	}
-			if(ALenum error = alGetError())
-				MessageBoxA(NULL, "", "", MB_OK);
-
 	m_distanceModel = _model;
 }
 
@@ -352,19 +336,21 @@ unsigned int GetSampleSize(ALenum format)
   }
 }
 
-ALuint ALSoundSystem::getFreeSourceName()
+TALSourceName* ALSoundSystem::getFreeSourceName()
 {
 	for(int i = 0; i < m_sourceNamesNum; i++)
 	{
-		ALint state;
-		alGetSourceiv(m_sourceNames[i], AL_SOURCE_STATE, &state);
-			if(ALenum error = alGetError())
-				MessageBoxA(NULL, "", "", MB_OK);
-
-		if(state != AL_PLAYING)
-		{
-			return m_sourceNames[i];
-		}
+		if(!m_sourceNames[i].busy)
+			return &m_sourceNames[i];
 	}
-	return AL_INVALID;
+
+	for(int i = 0; i < m_sourceNamesNum; i++)
+	{
+		int state;
+		alGetSourcei(m_sourceNames[i].name, AL_SOURCE_STATE, &state);
+		if(state != AL_PLAYING)
+			return &m_sourceNames[i];
+	}
+	
+	return 0;
 }

@@ -9,9 +9,7 @@ class ALSoundBuffer : public SoundBufferInterface
 {
 public:
 	ALSoundBuffer();
-	~ALSoundBuffer();
-
-	virtual void unload();
+	virtual ~ALSoundBuffer();
 
 	virtual bool isStreamed()	const	{ return false; }
 	ALuint getBufferName()		const	{ return m_bufferName; }

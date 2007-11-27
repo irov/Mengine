@@ -7,7 +7,8 @@
 #include <algorithm>
 
 ALSoundBuffer::ALSoundBuffer() :
-m_bufferName(0)
+m_bufferName(0),
+m_lenghtMs(0)
 {
 	alGenBuffers(1, &m_bufferName);
 }
@@ -20,11 +21,6 @@ ALSoundBuffer::~ALSoundBuffer()
 		static_cast<ALSoundSource*>(m_sources[i])->setSoundBuffer(NULL);
 	}
 	alDeleteBuffers(1, &m_bufferName);
-}
-
-void ALSoundBuffer::unload()
-{
-//	alDeleteBuffers(1, &m_bufferName);
 }
 
 void ALSoundBuffer::addSource(SoundSourceInterface *_source)

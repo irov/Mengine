@@ -5,273 +5,235 @@
 
 #include "AL/Alut.h"
 
-#define ENTER_CRITICAL lock()
-#define LEAVE_CRITICAL unlock()
-
 ALSoundBufferStreamUpdater::ALSoundBufferStreamUpdater(const OggVorbis_File& _oggfile, ALuint _buffer1, ALuint _buffer2, ALenum _format, unsigned int _frequency, unsigned int _buffersize) :
-m_source(AL_INVALID),
+m_source(0),
 m_format(_format),
 m_frequency(_frequency),
 m_stopRunning(false),
-m_newSource(false),
-m_removeSource(false),
 m_looping(false),
 m_bufferSize(_buffersize)
 {
-  /*m_buffers[0] = _buffer1;
-  m_buffers[1] = _buffer2;
-  m_oggFile = new OggVorbis_File(_oggfile);
-  Init();*/
-
+	m_buffers[0] = _buffer1;
+	m_buffers[1] = _buffer2;
+	m_oggFile = new OggVorbis_File(_oggfile);
 }
 
 ALSoundBufferStreamUpdater::~ALSoundBufferStreamUpdater() 
 {
+	m_stopRunning = true;
+	// wait until thread terminates
+	pthread_join(m_thread, NULL);
+
 	if(m_oggFile)
 		ov_clear(m_oggFile);
 	delete m_oggFile;
-	
-	m_runMutex.lock();
-	m_stopRunning = true;
-	m_runMutex.unlock();
 
-	cancel();
 }
 
-void ALSoundBufferStreamUpdater::addSource(ALuint _sourcename) 
+void ALSoundBufferStreamUpdater::start(ALuint _sourcename) 
 {
-	/*alSourceStop(_sourcename);
-	ENTER_CRITICAL;
 	m_source = _sourcename;
-	m_newSource = true;
-	start();
-	LEAVE_CRITICAL;*/
+	pthread_create(&m_thread, NULL, &ALSoundBufferStreamUpdater::run, (void*)this);
 }
 
-void ALSoundBufferStreamUpdater::removeSource() 
+void ALSoundBufferStreamUpdater::stop() 
 {
-  /*ENTER_CRITICAL;
-  if(m_source != AL_INVALID)
-	  alSourceStop(m_source);
-  //m_removeSource = true;
-		ALuint dump[2];
-		ALint nqueued;
-		alGetSourceiv(m_source, AL_BUFFERS_QUEUED, &nqueued);
-		if(nqueued)
-			alSourceUnqueueBuffers(m_source, nqueued, dump);
-
-  cancel();
-  LEAVE_CRITICAL;*/
+	m_stopRunning = true;
+	// wait until thread terminates
+	pthread_join(m_thread, NULL);
 }
 
-void ALSoundBufferStreamUpdater::run()
+void* ALSoundBufferStreamUpdater::run(void* _this)
 {
-	char* buffer = new char[m_bufferSize];
-	m_runMutex.lock();
-	while(!m_stopRunning) 
+	ALSoundBufferStreamUpdater* pThis = static_cast<ALSoundBufferStreamUpdater*>(_this);
+
+	// detach all buffers if any
+	alSourceStop(pThis->m_source);
+	alSourcei(pThis->m_source, AL_BUFFER, NULL);
+
+	// Fill all the Buffers with decoded audio data from the OggVorbis file
+	char* buffer = new char[pThis->m_bufferSize];
+	unsigned int count = 0;
+	int stream;
+	unsigned int amt = 0;
+	unsigned long bytesWritten = 0;
+	for (int i = 0; i < 2; i++)
 	{
-		m_runMutex.unlock();
-
-		unsigned int count = 0;
-		int stream;
-		unsigned int amt = 0;
-		while (amt = ov_read(m_oggFile, buffer + count, m_bufferSize - count, 0, 2, 1, &stream))
+		bytesWritten = pThis->decodeOggVorbis(pThis->m_oggFile, buffer, pThis->m_bufferSize, 2);
+		if (bytesWritten)
 		{
-			count += amt;
-
-			if (count >= m_bufferSize)
-				break;
+			alBufferData(pThis->m_buffers[i], pThis->m_format, buffer, bytesWritten, pThis->m_frequency);
+			alSourceQueueBuffers(pThis->m_source, 1, &pThis->m_buffers[i]);
 		}
-		if(count)
-		  update(buffer, count);
-
-		m_runMutex.lock();
 	}
 
-	m_runMutex.unlock();
-	delete []buffer;
-}
+	// Start playing source
+	alSourcePlay(pThis->m_source);
 
-bool ALSoundBufferStreamUpdater::update(void* _buffer, unsigned int _length) 
-{
-	if(!(_length && _buffer))     // Zero length or NULL pointer => return
-		return false;
-
-	ALint processed,state;
+	int buffersProcessed;
+	int queuedBuffers;
+	int state;
 	ALuint albuffer;
 
-	ENTER_CRITICAL;
-
-	if( m_removeSource && (m_source != AL_INVALID) ) 
+	while (!pThis->m_stopRunning)
 	{
-		alSourceStop(m_source);
-		ALuint dump[2];
-		ALint nqueued;
-		alGetSourceiv(m_source, AL_BUFFERS_QUEUED, &nqueued);
-		if(nqueued)
-			alSourceUnqueueBuffers(m_source, nqueued, dump);
+		// Request the number of OpenAL Buffers have been processed (played) on the Source
+		buffersProcessed = 0;
+		alGetSourcei(pThis->m_source, AL_BUFFERS_PROCESSED, &buffersProcessed);
 
-		m_source = AL_INVALID;
-		m_removeSource = false;
+		// For each processed buffer, remove it from the Source Queue, read next chunk of audio
+		// data from disk, fill buffer with new data, and add it to the Source Queue
+		while (buffersProcessed)
+		{
+			// Remove the Buffer from the Queue.  (uiBuffer contains the Buffer ID for the unqueued Buffer)
+			albuffer = 0;
+			alSourceUnqueueBuffers(pThis->m_source, 1, &albuffer);
+
+			// Read more audio data (if there is any)
+			bytesWritten = pThis->decodeOggVorbis(pThis->m_oggFile, buffer, pThis->m_bufferSize, 2);
+
+			if (bytesWritten)
+			{
+				alBufferData(albuffer, pThis->m_format, buffer, bytesWritten, pThis->m_frequency);
+				alSourceQueueBuffers(pThis->m_source, 1, &albuffer);
+			}
+
+			buffersProcessed--;
+		}
+
+		// Check the status of the Source.  If it is not playing, then playback was completed,
+		// or the Source was starved of audio data, and needs to be restarted.
+		alGetSourcei(pThis->m_source, AL_SOURCE_STATE, &state);
+
+		if (state != AL_PLAYING)
+		{
+			// If there are Buffers in the Source Queue then the Source was starved of audio
+			// data, so needs to be restarted (because there is more audio data to play)
+			alGetSourcei(pThis->m_source, AL_BUFFERS_QUEUED, &queuedBuffers);
+
+			if (queuedBuffers)
+			{
+				alSourcePlay(pThis->m_source);
+			}
+			else
+			{
+				// Finished playing
+				break;
+			}
+		}
+	}
+	// Stop the Source and clear the Queue
+	alSourceStop(pThis->m_source);
+	alSourcei(pThis->m_source, AL_BUFFER, 0);
+
+	if (buffer)
+	{
+		delete buffer;
+		buffer = NULL;
 	}
 
-	if(m_newSource) 
-	{
-		if(m_source != AL_INVALID)
-			alSourceStop(m_source);
-		m_newSource = false;
-
-		//LEAVE_CRITICAL;
-		//Sleep(50);
-		//ENTER_CRITICAL;
-	}
-
-	processed = 0;
-	while(!processed) 
-	{
-		alGetSourceiv(m_source, AL_SOURCE_STATE, &state);
-
-		if(state != AL_PLAYING) 
-		{
-			ALuint dump[2];
-			alSourceStop(m_source);
-			ALint nqueued;
-			alGetSourceiv(m_source, AL_BUFFERS_QUEUED, &nqueued);
-			if(nqueued)
-				alSourceUnqueueBuffers(m_source, nqueued, dump);
-			alBufferData(m_buffers[0], m_format, _buffer, _length / 2, m_frequency);
-			alBufferData(m_buffers[1], m_format, (char *)_buffer + _length / 2, _length / 2, m_frequency);
-
-			alSourceQueueBuffers(m_source, 2, m_buffers);
-
-			alSourcePlay(m_source);
-
-			processed = 1;
-		} 
-		else 
-		{
-			processed = 1;
-			alGetSourceiv(m_source, AL_BUFFERS_PROCESSED, &processed);
-
-			if(processed) 
-			{
-				alSourceUnqueueBuffers(m_source, 1, &albuffer);
-				alBufferData(albuffer, m_format, _buffer, _length, m_frequency);
-				alSourceQueueBuffers(m_source, 1, &albuffer);
-			} 
-			else 
-			{
-				LEAVE_CRITICAL;
-				YieldCurrentThread();
-				ENTER_CRITICAL;
-
-				if(m_looping)
-					ov_time_seek(m_oggFile, 0.0);
-
-				// Not sure if this is necessary, but just in case...
-				if(m_removeSource) 
-				{
-					LEAVE_CRITICAL;
-					return update(_buffer, _length);
-				}
-			} // if(processed) else
-		} // if(state!=AL_PLAYING) else
-	} // while(!processed)
-
-	LEAVE_CRITICAL;
-	bool ret;
-	m_runMutex.lock();
-	ret = m_stopRunning;
-	m_runMutex.unlock();
-    return ret;
+	return 0;
 }
 
-void ALSoundBufferStreamUpdater::cancelCleanup() 
+unsigned int ALSoundBufferStreamUpdater::decodeOggVorbis(OggVorbis_File* _oggVorbisFile, char* _decodeBuffer, unsigned int _bufferSize, unsigned int _channels)
 {
-  //std::cerr << "StreamUpdater::cancelCleanup: Should probably not delete this" << std::endl;
-  delete this;
-} 
+	int current_section;
+	long decodeSize;
+	//unsigned long samplesNum;
+	//short *samples;
+
+	unsigned long bytesDone = 0;
+	while (decodeSize = ov_read(_oggVorbisFile, _decodeBuffer + bytesDone, _bufferSize - bytesDone, 0, 2, 1, &current_section))
+	{
+		bytesDone += decodeSize;
+
+		if (bytesDone >= _bufferSize)
+			break;
+	}
+
+	return bytesDone;
+}
 
 ALSoundBufferStream::ALSoundBufferStream() :
-m_updater(NULL)
+m_updater(NULL),
+m_buffer2(0)
 {
+	alGenBuffers(1, &m_buffer2);
 }
 
-ALSoundBufferStream::ALSoundBufferStream(const char* _filename)
+ALSoundBufferStream::ALSoundBufferStream(const char* _filename) : 
+ALSoundBuffer(),
+m_updater(NULL),
+m_buffer2(0)
 {
 
-/*	alGenBuffers(1, &m_buffer2);
+	alGenBuffers(1, &m_buffer2);
+			if(ALenum error = alGetError())
+				MessageBoxA(NULL, "", "", MB_OK);
+	FILE *filehandle = fopen(_filename, "rb");
 
-  FILE *filehandle = fopen(_filename, "rb");
-
-  unsigned int buffersize, format, freq;
-  // Check for file type, create a FileStreamUpdater if a known type is
-  // detected, otherwise throw an error.
-  OggVorbis_File oggfile;
-  if(ov_open(filehandle, &oggfile, NULL, 0) >= 0) 
-  {
-    vorbis_info *ogginfo = ov_info(&oggfile, -1);
-	freq = ogginfo->rate;
-	m_lenghtMs = static_cast<unsigned int>( ov_time_total(&oggfile, -1) * 1000 );
-	if (ogginfo->channels == 1)
+	unsigned int buffersize, format, freq;
+	// Check for file type, create a FileStreamUpdater if a known type is
+	// detected, otherwise throw an error.
+	OggVorbis_File oggfile;
+	if(ov_open(filehandle, &oggfile, NULL, 0) >= 0) 
 	{
-		format = AL_FORMAT_MONO16;
-		// Set BufferSize to 250ms (Frequency * 2 (16bit) divided by 4 (quarter of a second))
-		buffersize = freq >> 1;
-		// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
-		buffersize -= (buffersize % 2);
+		vorbis_info *ogginfo = ov_info(&oggfile, -1);
+		freq = ogginfo->rate;
+		m_lenghtMs = static_cast<unsigned int>( ov_time_total(&oggfile, -1) * 1000 );
+		if (ogginfo->channels == 1)
+		{
+			format = AL_FORMAT_MONO16;
+			// Set BufferSize to 250ms (Frequency * 2 (16bit) divided by 4 (quarter of a second))
+			buffersize = freq >> 1;
+			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
+			buffersize -= (buffersize % 2);
+		}
+		else if (ogginfo->channels == 2)
+		{
+			format = AL_FORMAT_STEREO16;
+			// Set BufferSize to 250ms (Frequency * 4 (16bit stereo) divided by 4 (quarter of a second))
+			buffersize = freq;
+			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
+			buffersize -= (buffersize % 4);
+		}
+		else if (ogginfo->channels == 4)
+		{
+			format = alGetEnumValue("AL_FORMAT_QUAD16");
+			// Set BufferSize to 250ms (Frequency * 8 (16bit 4-channel) divided by 4 (quarter of a second))
+			buffersize = freq * 2;
+			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
+			buffersize -= (buffersize % 8);
+		}
+		else if (ogginfo->channels == 6)
+		{
+			format = alGetEnumValue("AL_FORMAT_51CHN16");
+			// Set BufferSize to 250ms (Frequency * 12 (16bit 6-channel) divided by 4 (quarter of a second))
+			buffersize = freq * 3;
+			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
+			buffersize -= (buffersize % 12);
+		}
+	    
+		m_updater = new ALSoundBufferStreamUpdater(oggfile, getBufferName(), m_buffer2, format, ogginfo->rate, buffersize); 
 	}
-	else if (ogginfo->channels == 2)
-	{
-		format = AL_FORMAT_STEREO16;
-		// Set BufferSize to 250ms (Frequency * 4 (16bit stereo) divided by 4 (quarter of a second))
-		buffersize = freq;
-		// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
-		buffersize -= (buffersize % 4);
-	}
-	else if (ogginfo->channels == 4)
-	{
-		format = alGetEnumValue("AL_FORMAT_QUAD16");
-		// Set BufferSize to 250ms (Frequency * 8 (16bit 4-channel) divided by 4 (quarter of a second))
-		buffersize = freq * 2;
-		// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
-		buffersize -= (buffersize % 8);
-	}
-	else if (ogginfo->channels == 6)
-	{
-		format = alGetEnumValue("AL_FORMAT_51CHN16");
-		// Set BufferSize to 250ms (Frequency * 12 (16bit 6-channel) divided by 4 (quarter of a second))
-		buffersize = freq * 3;
-		// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
-		buffersize -= (buffersize % 12);
-	}
-    
-    m_updater = new ALSoundBufferStreamUpdater(oggfile, getBufferName(), m_buffer2, format, ogginfo->rate, buffersize * 2/**sampleSize(format)); 
-  } */
-  //else 
-  //{
-  //  fclose(filehandle);
-  //}
-  //ov_clear(&oggfile);
-  //fclose(filehandle);
 }
 
 ALSoundBufferStream::~ALSoundBufferStream()
 {
-}
-
-void ALSoundBufferStream::unload()
-{
+	delete m_updater;
 	alDeleteBuffers(1, &m_buffer2);
+
+	if(ALenum error = alGetError())
+		MessageBoxA(NULL, "", "", MB_OK);
+
 }
 
 void ALSoundBufferStream::record(ALuint sourcename)
 {
-  m_updater->addSource(sourcename);
-//	mUpdater->run();
+  m_updater->start(sourcename);
 }
 
 void ALSoundBufferStream::stop()
 {
-	m_updater->removeSource();
+	m_updater->stop();
 }

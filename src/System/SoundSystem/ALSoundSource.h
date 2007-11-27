@@ -36,12 +36,13 @@ public:
 public:
 	virtual int getLengthMs();
 	virtual int getPosMs();
+	
+	virtual void setSoundNodeListener(SoundNodeListenerInterface* _listener)	{ m_listener = _listener; }
 
 public:
 	void setSoundBuffer( ALSoundBuffer* _soundBuffer );
 	void setAmbient(bool _ambient)		 { m_ambient = _ambient; }
 	bool isAmbient()	{ return m_ambient; }
-	void setSoundNodeListener(SoundNodeListenerInterface* _listener)	{ m_listener = _listener; }
 	bool isBusy()	{ return m_busy; }
 	void setUsed(bool _use)	{ m_busy = _use; }
 	SoundNodeListenerInterface* getListener()	{ return m_listener; }

@@ -61,6 +61,7 @@ namespace Menge
 			return false;
 		}
 
+
 		m_resource = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceSound>( m_resourcename );
@@ -89,13 +90,19 @@ namespace Menge
 			return false;
 		}
 
+		Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_release()
 	{
-		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
 		Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
+		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
+
+		m_interface = NULL;
+		m_resource = NULL;
+
+		Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setSoundResource( const std::string & _name )
@@ -121,7 +128,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenStopped()
 	{
-		Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
+		//Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
 		callEvent( "STOP_PLAYING", "(O)", this->getScript() );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -132,7 +139,7 @@ namespace Menge
 			return;
 		}
 
-		Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
+		//Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
 		return m_interface->play();
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -22,6 +22,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::~Amplifier()
 	{
+		if(m_music)
+			m_music->setSoundNodeListener(NULL);
+
 		for each( const TPlayListMap::value_type & it in m_playLists )
 		{
 			delete it.second;

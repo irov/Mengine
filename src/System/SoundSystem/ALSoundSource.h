@@ -57,6 +57,7 @@ private:
 	float m_position[3];
 	float m_volume;
 	SoundNodeListenerInterface* m_listener;
+	HANDLE m_stopCallbackHandle;
 
 	void _updateParams();
 };

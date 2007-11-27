@@ -6,6 +6,7 @@
 #include "PThread.h"
 #include "Vorbis/Vorbisfile.h"
 
+#define PROCESSING_TIME 20
 
 class ALSoundBufferStreamUpdater
 {

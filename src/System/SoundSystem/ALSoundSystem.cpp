@@ -250,8 +250,6 @@ void	ALSoundSystem::setDopplerFactor(float _factor)
 
 void	ALSoundSystem::setDistanceModel(EDistanceModel _model)
 {
-				if(ALenum error = alGetError())
-				MessageBoxA(NULL, "", "", MB_OK);
 
 	switch(_model) 
 	{

@@ -5,6 +5,7 @@
 
 #include "AL/Alut.h"
 
+
 ALSoundBufferStreamUpdater::ALSoundBufferStreamUpdater(const OggVorbis_File& _oggfile, ALuint _buffer1, ALuint _buffer2, ALenum _format, unsigned int _frequency, unsigned int _buffersize) :
 m_source(0),
 m_format(_format),
@@ -77,6 +78,9 @@ void* ALSoundBufferStreamUpdater::run(void* _this)
 
 	while (!pThis->m_stopRunning)
 	{
+		// wait some time while buffers processing
+		Sleep( PROCESSING_TIME );
+
 		// Request the number of OpenAL Buffers have been processed (played) on the Source
 		buffersProcessed = 0;
 		alGetSourcei(pThis->m_source, AL_BUFFERS_PROCESSED, &buffersProcessed);
@@ -168,8 +172,7 @@ m_buffer2(0)
 {
 
 	alGenBuffers(1, &m_buffer2);
-			if(ALenum error = alGetError())
-				MessageBoxA(NULL, "", "", MB_OK);
+
 	FILE *filehandle = fopen(_filename, "rb");
 
 	unsigned int buffersize, format, freq;
@@ -222,10 +225,6 @@ ALSoundBufferStream::~ALSoundBufferStream()
 {
 	delete m_updater;
 	alDeleteBuffers(1, &m_buffer2);
-
-	if(ALenum error = alGetError())
-		MessageBoxA(NULL, "", "", MB_OK);
-
 }
 
 void ALSoundBufferStream::record(ALuint sourcename)

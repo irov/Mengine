@@ -26,7 +26,8 @@ m_soundSystem(_soundSystem),
 m_busy(false),
 m_playing(false),
 m_looped(false),
-m_volume(1.0f)
+m_volume(1.0f),
+m_stopCallbackHandle(NULL)
 {
 	ZeroMemory(m_position, sizeof(float)*3);
 }
@@ -63,7 +64,7 @@ void ALSoundSource::play()
 	}
 
 
-	SetTimerQueueTimer(NULL, (WAITORTIMERCALLBACK)ListenStoppedCallback, this, getLengthMs(), 0, 0);
+	CreateTimerQueueTimer(&m_stopCallbackHandle, NULL, (WAITORTIMERCALLBACK)ListenStoppedCallback, this, getLengthMs(), 0, WT_EXECUTEONLYONCE);
 	m_playing = true;
 }
 
@@ -79,10 +80,17 @@ void ALSoundSource::pause()
 
 void ALSoundSource::stop()
 {
+	if(!m_playing)
+	{
+		return;
+	}
+
 	m_playing = false;
 
 	if(!m_sourceName)
+	{
 		return;
+	}
 
 	if(m_soundBuffer && m_soundBuffer->isStreamed())
 	{
@@ -95,6 +103,7 @@ void ALSoundSource::stop()
 	}
 
 	m_sourceName->busy = false;
+	DeleteTimerQueueTimer(NULL, m_stopCallbackHandle, NULL);
 
 	if(m_busy && m_listener)
 	{

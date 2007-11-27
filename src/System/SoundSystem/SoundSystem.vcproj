@@ -122,7 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\libogg\include&quot;;&quot;$(SolutionDir)dependencies\libvorbis\include&quot;;&quot;$(SolutionDir)dependencies\OpenThreads\include&quot;;&quot;$(SolutionDir)dependencies\OpenAL\include&quot;;&quot;$(SolutionDir)dependencies\freealut\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\libogg\include&quot;;&quot;$(SolutionDir)dependencies\libvorbis\include&quot;;&quot;$(SolutionDir)dependencies\PThreads\include&quot;;&quot;$(SolutionDir)dependencies\OpenAL\include&quot;;&quot;$(SolutionDir)dependencies\freealut\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SOUNDSYSTEMINTERFACE_EXPORTS;OT_LIBRARY_STATIC"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -141,9 +141,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OpenAL32.lib alut.lib vorbis_static.lib vorbisfile_static.lib ogg_static.lib OpenThreadsWin32_s.lib"
+				AdditionalDependencies="OpenAL32.lib alut.lib vorbis_static.lib vorbisfile_static.lib ogg_static.lib PThreadVC2.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\lib&quot;;&quot;$(SolutionDir)dependencies\OpenAL\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\OpenThreads\lib&quot;;&quot;$(SolutionDir)dependencies\freealut\lib&quot;;&quot;$(SolutionDir)dependencies\libvorbis\lib&quot;;&quot;$(SolutionDir)dependencies\libogg\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\lib&quot;;&quot;$(SolutionDir)dependencies\OpenAL\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\PThreads\lib&quot;;&quot;$(SolutionDir)dependencies\freealut\lib&quot;;&quot;$(SolutionDir)dependencies\libvorbis\lib&quot;;&quot;$(SolutionDir)dependencies\libogg\lib&quot;"
 				ModuleDefinitionFile="SoundSystemInterface.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"

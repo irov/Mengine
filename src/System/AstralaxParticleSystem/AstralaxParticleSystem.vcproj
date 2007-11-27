@@ -146,7 +146,7 @@
 				AdditionalDependencies="magic.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\astralax\&quot;"
-				ModuleDefinitionFile="ParticleSystem.def"
+				ModuleDefinitionFile="AstralaxParticleSystem.def"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"

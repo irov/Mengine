@@ -1,7 +1,4 @@
 #	include "Scene.h"
-#	include "ObjectImplement.h"
-
-#	include "Camera2D.h"
 
 #	include "SceneManager.h"
 #	include "ResourceManager.h"
@@ -14,8 +11,6 @@
 
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	OBJECT_IMPLEMENT(Scene);
 	//////////////////////////////////////////////////////////////////////////
 	Scene::Scene()
 	: m_mainLayer(0)

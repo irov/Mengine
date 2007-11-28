@@ -3,9 +3,6 @@
 #	include "NodeCore.h"
 #	include "NodeChildren.h"
 
-#	include "Allocator2D.h"
-#	include "Renderable2D.h"
-
 #	include "Scriptable.h"
 
 #	include "Layer.h"
@@ -22,7 +19,6 @@ namespace Menge
 		, public NodeChildren<Layer>
 		, public InputHandler
 	{
-		OBJECT_DECLARE( Scene )
 	public:
 		Scene();
 		~Scene();

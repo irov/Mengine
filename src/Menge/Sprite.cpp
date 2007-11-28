@@ -161,6 +161,25 @@ namespace	Menge
 		m_resource = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Sprite::updateVisibility_()
+	{
+		m_uv = m_resource->getUV( m_currentImageIndex );
+
+		m_offset.x += m_size.x * m_percent.x;
+        m_size.x *= ( 1.0f - m_percent.x );
+        m_size.x *= ( 1.0f - m_percent.z );
+     
+        m_offset.y += m_size.y * m_percent.y;
+        m_size.y *= ( 1.0f - m_percent.y );
+        m_size.y *= ( 1.0f - m_percent.w );
+
+		m_uv.x = m_uv.x * ( 1.0f - m_percent.x ) + m_percent.x * m_uv.z; 
+        m_uv.y = m_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * m_uv.w;
+
+		m_uv.z *= ( 1.0f - m_percent.z );
+		m_uv.w *= ( 1.0f - m_percent.w );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Sprite::loader( TiXmlElement * _xml )
 	{
 		SceneNode2D::loader(_xml);
@@ -190,25 +209,6 @@ namespace	Menge
 			m_color,
 			renderImage
 			);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::updateVisibility_()
-	{
-		m_uv = m_resource->getUV( m_currentImageIndex );
-
-		m_offset.x += m_size.x * m_percent.x;
-        m_size.x *= ( 1.0f - m_percent.x );
-        m_size.x *= ( 1.0f - m_percent.z );
-     
-        m_offset.y += m_size.y * m_percent.y;
-        m_size.y *= ( 1.0f - m_percent.y );
-        m_size.y *= ( 1.0f - m_percent.w );
-
-		m_uv.x = m_uv.x * ( 1.0f - m_percent.x ) + m_percent.x * m_uv.z; 
-        m_uv.y = m_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * m_uv.w;
-
-		m_uv.z *= ( 1.0f - m_percent.z );
-		m_uv.w *= ( 1.0f - m_percent.w );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_debugRender()

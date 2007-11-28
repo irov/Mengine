@@ -63,7 +63,9 @@ namespace	Menge
 		mt::vec2f offset = m_centerAlign ? image_offset + m_alignOffset : image_offset;
 
 		const mt::mat3f & worldMatrix = getWorldMatrix();
+
 		mt::box2f bbox;
+
 		mt::set_box_from_oriented_extent( bbox, offset, size, worldMatrix );
 
 		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
@@ -180,10 +182,6 @@ namespace	Menge
 		mt::vec2f image_offset = m_resource->getOffset( m_currentImageIndex );
 		mt::vec4f frame_uv = m_resource->getUV( m_currentImageIndex );
 
-		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
-
-		const mt::mat3f & rwm = getWorldMatrix();
-
 		image_offset.x += size.x * m_percent.x;
         size.x *= ( 1.0f - m_percent.x );
         size.x *= ( 1.0f - m_percent.z );
@@ -199,6 +197,10 @@ namespace	Menge
 		frame_uv.w *= (1.0f - m_percent.w);
 
 		mt::vec2f offset = m_centerAlign ? image_offset + m_alignOffset : image_offset;
+
+		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
+
+		const mt::mat3f & rwm = getWorldMatrix();
 
 		Holder<RenderEngine>::hostage()->renderImage(
 			rwm, 

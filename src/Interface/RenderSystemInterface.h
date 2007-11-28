@@ -19,20 +19,23 @@ public:
 class	RenderSystemInterface
 {
 public:
+	// установка разрешения контента игры, входные данные: вектор2. 
 	virtual void setContentResolution( const float * _resolution ) = 0;
-
+	// входные данные: матрица 4 на 4
 	virtual	void setProjectionMatrix( const float * _projection ) = 0;
 	virtual	void setViewMatrix( const float * _view ) = 0;
 	virtual	void setWorldMatrix( const float * _world ) = 0;
-
+	// загрузка изображения
 	virtual RenderImageInterface * loadImage( const TextureDesc& _desc ) = 0;
+	// удаления изображения
 	virtual void releaseImage( RenderImageInterface * _image ) = 0;
+	// отрисовка изображения
 	virtual void renderImage(		
-		const float * _transform, 
-		const float * _offset,
-		const float * _uv,
-		const float * _size,
-		unsigned int _color, 
+		const float * _transform, // матрица 3 на 3
+		const float * _offset,	  // смещение, вектор2
+		const float * _uv,		  // текстурные координаты, вектор4, u0, v0, u1, v1
+		const float * _size,	  // размер изображения, вектор2
+		unsigned int _color,	  // цвет, порядок RGBA
 		const RenderImageInterface * _image) = 0;
 
 	virtual void renderImage(		

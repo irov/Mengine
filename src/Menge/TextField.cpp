@@ -43,7 +43,9 @@ namespace	Menge
 
 		mt::set_box_from_oriented_extent( bbox, m_alignOffset, m_length, worldMatrix );
 
-		return _viewPort.testRectangle( bbox.min, bbox.max );
+		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::_activate()
@@ -131,6 +133,21 @@ namespace	Menge
 
 		for( std::string::const_iterator it = m_text.begin(); it != m_text.end(); ++it )
 		{
+			if ( *it == '\\' )
+			{
+				if ( ++it == m_text.end() )
+				{
+					break;
+				}
+
+				if( *it == 'n' )
+				{
+					offset.x = 0;
+					offset.y += m_height;
+					continue;
+				}
+			}
+
 			if ( *it == ' ' )
 			{
 				offset.x += spaceWidth;

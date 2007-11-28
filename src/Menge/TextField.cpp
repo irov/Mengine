@@ -125,17 +125,20 @@ namespace	Menge
 	{
 		float spaceWidth = m_resource->getCharRatio(' ') * m_height;
 
-		const RenderImageInterface * image = m_resource->getImage();
-
-		mt::vec2f offset( 0.f, 0.f );
+		mt::vec2f offset = m_alignOffset;
 
 		const mt::mat3f & wm = getWorldMatrix();
+		const RenderImageInterface * renderImage = m_resource->getImage();
 
-		for( std::string::const_iterator it = m_text.begin(); it != m_text.end(); ++it )
+		for( std::string::const_iterator
+			it = m_text.begin(), 
+			it_end = m_text.end();
+			it != it_end; 
+			++it )
 		{
 			if ( *it == '\\' )
 			{
-				if ( ++it == m_text.end() )
+				if ( ++it == it_end )
 				{
 					break;
 				}
@@ -154,22 +157,16 @@ namespace	Menge
 				continue;
 			}
 
-			mt::vec4f uv = m_resource->getUV( *it );
+			const mt::vec4f & uv = m_resource->getUV( *it );
 	 
 			float width = m_resource->getCharRatio( *it ) * m_height;
 			
 			mt::vec2f size( width, m_height );
 
-			mt::vec2f offset_ = m_centerAlign ? offset + m_alignOffset : offset;
-
-			Holder<RenderEngine>::hostage()->renderImage( wm, offset_, uv, size, m_color, image );
+			Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, m_color, renderImage );
 
 			offset.x += width;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::_debugRender()
-	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setText( const std::string& _text )
@@ -223,6 +220,10 @@ namespace	Menge
 		{
 			m_alignOffset = mt::vec2f( m_length.x * -0.5f, 0 );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::_debugRender()
+	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

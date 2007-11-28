@@ -35,6 +35,56 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
 	{}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::loader( TiXmlElement * _xml )
+	{
+		SceneNode2D::loader(_xml);
+
+		XML_FOR_EACH_TREE(_xml)
+		{
+			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourcename );
+			XML_CHECK_VALUE_NODE( "ImageIndex", "Value", m_currentImageIndex );
+			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
+			XML_CHECK_VALUE_NODE( "Scale", "Value", m_scale );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Sprite::_activate()
+	{
+		if( SceneNode2D::_activate() == false )
+		{
+			return false;
+		}
+
+		updateAlign_();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::_deactivate()
+	{
+		SceneNode2D::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Sprite::_compile()
+	{
+		if( SceneNode2D::_compile() == false )
+		{
+			return false;
+		}
+
+		m_resource = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceImage>( m_resourcename );
+
+		if( m_resource == 0 )
+		{
+			MENGE_LOG( "Image resource loading failed '%s'\n", m_resourcename.c_str() );
+			return false;
+		}
+
+		return true;		
+	}
 	///////////////////////////////////////////////////////////////////////////
 	void Sprite::setScale( float _scale )
 	{
@@ -60,7 +110,7 @@ namespace	Menge
 		m_size *= m_scale;
 
 		const mt::vec2f & offset = m_resource->getOffset( m_currentImageIndex );
-		m_offset = m_centerAlign ? offset + m_alignOffset : offset;
+		m_offset = offset + m_alignOffset;
 
 		const mt::mat3f & wm = getWorldMatrix();
 
@@ -103,43 +153,6 @@ namespace	Menge
 		return m_resourcename;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Sprite::_activate()
-	{
-		if( SceneNode2D::_activate() == false )
-		{
-			return false;
-		}
-
-		updateAlign_();
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_deactivate()
-	{
-		SceneNode2D::_deactivate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Sprite::_compile()
-	{
-		if( SceneNode2D::_compile() == false )
-		{
-			return false;
-		}
-
-		m_resource = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImage>( m_resourcename );
-
-		if( m_resource == 0 )
-		{
-			MENGE_LOG( "Image resource loading failed '%s'\n", m_resourcename.c_str() );
-			return false;
-		}
-
-		return true;		
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateAlign_()
 	{
 		if( m_centerAlign )
@@ -166,31 +179,20 @@ namespace	Menge
 		m_uv = m_resource->getUV( m_currentImageIndex );
 
 		m_offset.x += m_size.x * m_percent.x;
+
         m_size.x *= ( 1.0f - m_percent.x );
         m_size.x *= ( 1.0f - m_percent.z );
      
-        m_offset.y += m_size.y * m_percent.y;
+		m_offset.y += m_size.y * m_percent.y;
+
         m_size.y *= ( 1.0f - m_percent.y );
         m_size.y *= ( 1.0f - m_percent.w );
-
+		
 		m_uv.x = m_uv.x * ( 1.0f - m_percent.x ) + m_percent.x * m_uv.z; 
         m_uv.y = m_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * m_uv.w;
 
 		m_uv.z *= ( 1.0f - m_percent.z );
 		m_uv.w *= ( 1.0f - m_percent.w );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::loader( TiXmlElement * _xml )
-	{
-		SceneNode2D::loader(_xml);
-
-		XML_FOR_EACH_TREE(_xml)
-		{
-			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourcename );
-			XML_CHECK_VALUE_NODE( "ImageIndex", "Value", m_currentImageIndex );
-			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
-			XML_CHECK_VALUE_NODE( "Scale", "Value", m_scale );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render()

@@ -69,6 +69,7 @@ namespace Menge
 
 		for each( const TListSceneNodesNames::value_type & it in m_sceneNodesNames )
 		{
+			// FIX!!!!!!!! wtf the parent ??? 
 			SceneNode2D * node = this->getParent()->getChildrenT<SceneNode2D>( it, true );
 
 			if( node == NULL )
@@ -116,7 +117,7 @@ namespace Menge
 			{
 				callEvent( "LEAVE_ZONE", "()" );
 
-				it = m_inZone.erase(it);
+				it = m_inZone.erase( it );
 			}
 			else
 			{
@@ -144,22 +145,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Trap2D::debugRender() 
 	{
+		/*
 		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
-
 		size_t size = m_polygon.num_points();
-
 		for( size_t i = 0; i < size; ++i )
 		{
-			//const mt::mat3f & wm = getWorldMatrix();
-			//
-			//mt::vec2f b;
-			//mt::vec2f e;
-
-			//mt::mul_v2_m3( b, m_polygon[ i ], wm );
-			//mt::mul_v2_m3( e, m_polygon[ (i+1) % size ], wm );
-
-			//renderEng->drawLine2D( b, e, 0xffff00ff );
-		}
+			const mt::mat3f & wm = getWorldMatrix();
+			mt::vec2f b;
+			mt::vec2f e;
+			mt::mul_v2_m3( b, m_polygon[ i ], wm );
+			mt::mul_v2_m3( e, m_polygon[ (i+1) % size ], wm );
+			renderEng->drawLine2D( b, e, 0xffff00ff );
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

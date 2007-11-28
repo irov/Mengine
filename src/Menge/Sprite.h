@@ -104,15 +104,15 @@ namespace Menge
 		size_t m_currentImageIndex;
 
 		bool m_centerAlign;
-		mt::vec2f m_alignOffset;
 
 		float m_scale;
 
-		mt::vec4f	m_percent;
-
+		mt::vec2f m_alignOffset;
 		mt::vec2f m_size;
-		mt::vec4f m_uv;
 		mt::vec2f m_offset;
+
+		mt::vec4f m_percent;
+		mt::vec4f m_uv;
 
 		unsigned int m_color;
 	};

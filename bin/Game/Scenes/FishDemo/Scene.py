@@ -93,11 +93,12 @@ class Scene( Menge.Scene ):
 		
 		self.layerAppend( "Deep", block )
 
-		self.a = 0;
-		self.b = 0;
-		self.c = 0;
-		self.d = 0;
 		self.delta = 0.25
+
+		self.a = self.delta;
+		self.b = self.delta;
+		self.c = self.delta;
+		self.d = self.delta;
 
 		#self.node.setPercentVisibility( Menge.vec2f( 0.3, 0 ), Menge.vec2f( 0.1, 0 ));
 	
@@ -132,15 +133,15 @@ class Scene( Menge.Scene ):
 			return False
 
 		if key == 205:	
-			self.a = self.a + self.delta;
-			self.node.setPercentVisibility( Menge.vec2f( self.a, 0 ), Menge.vec2f( 0, 0 ));
+			#self.a = self.a + self.delta;
+			self.node.setPercentVisibility( Menge.vec2f( self.a, self.a ), Menge.vec2f( 0, 0 ));
 
 		if key == 203:	
-			self.c = self.c + self.delta;
+			#self.c = self.c + self.delta;
 			self.node.setPercentVisibility( Menge.vec2f( 0, 0 ), Menge.vec2f( self.c, 0 ));
 		
 		if key == 208:	
-			self.b = self.b - self.delta;
+			#self.b = self.b - self.delta;
 			self.node.setPercentVisibility( Menge.vec2f( 0, self.b ), Menge.vec2f( 0, 0 ));
 		
 		if key == 57:

@@ -56,17 +56,17 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible( const Viewport & _viewPort )
 	{
-		mt::vec2f size = m_resource->getMaxSize( m_currentImageIndex );
-		size *= m_scale;
+		m_size = m_resource->getMaxSize( m_currentImageIndex );
+		m_size *= m_scale;
 
-		const mt::vec2f & image_offset = m_resource->getOffset( m_currentImageIndex );
-		mt::vec2f offset = m_centerAlign ? image_offset + m_alignOffset : image_offset;
+		const mt::vec2f & offset = m_resource->getOffset( m_currentImageIndex );
+		m_offset = m_centerAlign ? offset + m_alignOffset : offset;
 
-		const mt::mat3f & worldMatrix = getWorldMatrix();
+		const mt::mat3f & wm = getWorldMatrix();
 
 		mt::box2f bbox;
 
-		mt::set_box_from_oriented_extent( bbox, offset, size, worldMatrix );
+		mt::set_box_from_oriented_extent( bbox, m_offset, m_size, wm );
 
 		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
 
@@ -176,40 +176,39 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render()
 	{
-		mt::vec2f size = m_resource->getSize( m_currentImageIndex );
-		size *= m_scale;
-
-		mt::vec2f image_offset = m_resource->getOffset( m_currentImageIndex );
-		mt::vec4f frame_uv = m_resource->getUV( m_currentImageIndex );
-
-		image_offset.x += size.x * m_percent.x;
-        size.x *= ( 1.0f - m_percent.x );
-        size.x *= ( 1.0f - m_percent.z );
-     
-        image_offset.y += size.y * m_percent.y;
-        size.y *= ( 1.0f - m_percent.y );
-        size.y *= ( 1.0f - m_percent.w );
-
-		frame_uv.x = frame_uv.x * ( 1.0f - m_percent.x ) + m_percent.x * frame_uv.z; 
-        frame_uv.y = frame_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * frame_uv.w;
-
-		frame_uv.z *= (1.0f - m_percent.z);
-		frame_uv.w *= (1.0f - m_percent.w);
-
-		mt::vec2f offset = m_centerAlign ? image_offset + m_alignOffset : image_offset;
+		updateVisibility_();
 
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
-		const mt::mat3f & rwm = getWorldMatrix();
+		const mt::mat3f & wm = getWorldMatrix();
 
 		Holder<RenderEngine>::hostage()->renderImage(
-			rwm, 
-			offset,
-			frame_uv,
-			size,
+			wm, 
+			m_offset,
+			m_uv,
+			m_size,
 			m_color,
 			renderImage
 			);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::updateVisibility_()
+	{
+		m_uv = m_resource->getUV( m_currentImageIndex );
+
+		m_offset.x += m_size.x * m_percent.x;
+        m_size.x *= ( 1.0f - m_percent.x );
+        m_size.x *= ( 1.0f - m_percent.z );
+     
+        m_offset.y += m_size.y * m_percent.y;
+        m_size.y *= ( 1.0f - m_percent.y );
+        m_size.y *= ( 1.0f - m_percent.w );
+
+		m_uv.x = m_uv.x * ( 1.0f - m_percent.x ) + m_percent.x * m_uv.z; 
+        m_uv.y = m_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * m_uv.w;
+
+		m_uv.z *= ( 1.0f - m_percent.z );
+		m_uv.w *= ( 1.0f - m_percent.w );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_debugRender()

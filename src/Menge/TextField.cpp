@@ -37,11 +37,11 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool TextField::isVisible( const Viewport & _viewPort )
 	{
-		const mt::mat3f & worldMatrix = getWorldMatrix();
+		const mt::mat3f & wm = getWorldMatrix();
 
 		mt::box2f	bbox;
 
-		mt::set_box_from_oriented_extent( bbox, m_alignOffset, m_length, worldMatrix );
+		mt::set_box_from_oriented_extent( bbox, m_alignOffset, m_length, wm );
 
 		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
 
@@ -129,7 +129,7 @@ namespace	Menge
 
 		mt::vec2f offset( 0.f, 0.f );
 
-		const mt::mat3f & rwm = getWorldMatrix();
+		const mt::mat3f & wm = getWorldMatrix();
 
 		for( std::string::const_iterator it = m_text.begin(); it != m_text.end(); ++it )
 		{
@@ -162,7 +162,7 @@ namespace	Menge
 
 			mt::vec2f offset_ = m_centerAlign ? offset + m_alignOffset : offset;
 
-			Holder<RenderEngine>::hostage()->renderImage( rwm, offset_, uv, size, m_color, image );
+			Holder<RenderEngine>::hostage()->renderImage( wm, offset_, uv, size, m_color, image );
 
 			offset.x += width;
 		}

@@ -95,6 +95,7 @@ namespace Menge
 	
 	private:
 		void updateAlign_();
+		void updateVisibility_();
 
 	protected:
 		ResourceImage * m_resource;
@@ -108,6 +109,10 @@ namespace Menge
 		float m_scale;
 
 		mt::vec4f	m_percent;
+
+		mt::vec2f m_size;
+		mt::vec4f m_uv;
+		mt::vec2f m_offset;
 
 		unsigned int m_color;
 	};

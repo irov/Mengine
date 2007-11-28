@@ -49,12 +49,12 @@ namespace	Menge
 
 		m_interface->getBoundingBox( left, top, right, bottom );
 
-		const mt::mat3f & worldMatrix = getWorldMatrix();
+		const mt::mat3f & wm = getWorldMatrix();
 
 		mt::box2f bbox;	//сделать box2i
 
-		mt::mul_v2_m3( bbox.min, mt::vec2f( float(left), float(top) ), worldMatrix );
-		mt::mul_v2_m3( bbox.max, mt::vec2f( float(right), float(bottom) ), worldMatrix );
+		mt::mul_v2_m3( bbox.min, mt::vec2f( float(left), float(top) ), wm );
+		mt::mul_v2_m3( bbox.max, mt::vec2f( float(right), float(bottom) ), wm );
 
 		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
 
@@ -159,7 +159,7 @@ namespace	Menge
 
 		int count = m_interface->getNumTypes();
 
-		const mt::mat3f & rwm = getWorldMatrix();
+		const mt::mat3f & wm = getWorldMatrix();
 
 		for ( int i = count - 1; i >= 0; i-- )
 		{
@@ -181,7 +181,7 @@ namespace	Menge
 				{
 					// terrible :(
 					Holder<RenderEngine>::hostage()->renderImage(
-						rwm, 
+						wm, 
 						mt::vec2f(p->x1, p->y1),
 						mt::vec2f(p->x2, p->y2),
 						mt::vec2f(p->x3, p->y3),

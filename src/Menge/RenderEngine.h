@@ -52,7 +52,7 @@ namespace Menge
 			unsigned int _color, 
 			const RenderImageInterface* _image);
 
-		void	releaseImage( RenderImageInterface* _rmi );
+		void	releaseImage( RenderImageInterface * _image );
 
 		void	setProjectionMatrix( const mt::mat4f& _projection );
 		void	setViewMatrix( const mt::mat4f& _view );

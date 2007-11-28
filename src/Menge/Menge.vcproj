@@ -1017,6 +1017,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Scene2D"
+				>
+				<File
+					RelativePath=".\Scene2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Scene2D.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Kernel"

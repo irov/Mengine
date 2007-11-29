@@ -122,8 +122,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\libogg\include&quot;;&quot;$(SolutionDir)dependencies\libvorbis\include&quot;;&quot;$(SolutionDir)dependencies\PThreads\include&quot;;&quot;$(SolutionDir)dependencies\OpenAL\include&quot;;&quot;$(SolutionDir)dependencies\freealut\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SOUNDSYSTEMINTERFACE_EXPORTS;OT_LIBRARY_STATIC"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\vorbis\include&quot;;&quot;$(SolutionDir)dependencies\PThreads\include&quot;;&quot;$(SolutionDir)dependencies\OpenALSDK\include&quot;;&quot;$(SolutionDir)dependencies\freealut\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SOUNDSYSTEMINTERFACE_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"

@@ -42,16 +42,14 @@ public:
 	//Source to update.
 	ALuint m_source;
 
-	bool m_newSource;
-
 	//Flag for when Run should stop running..
-	bool m_stopRunning;
+	volatile bool m_stopRunning;
 
 	pthread_t m_thread;
 	
 	OggVorbis_File* m_oggFile;	// The file structure
 	unsigned int m_bufferSize;	// Size of the buffer in bytes
-	bool m_looping;				// Are we looping or not?
+	volatile bool m_looping;				// Are we looping or not?
 
 };
 

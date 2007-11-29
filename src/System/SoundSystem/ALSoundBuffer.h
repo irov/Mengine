@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "AL.h"
+
 #include "SoundSystemInterface.h"
 
 #include <vector>

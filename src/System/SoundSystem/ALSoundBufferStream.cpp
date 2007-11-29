@@ -1,10 +1,10 @@
 
-#include "stdafx.h"
+//#include "stdafx.h"
 
 #include "ALSoundBufferStream.h"
 
 #include "AL/Alut.h"
-
+#include <windows.h>
 
 ALSoundBufferStreamUpdater::ALSoundBufferStreamUpdater(const OggVorbis_File& _oggfile, ALuint _buffer1, ALuint _buffer2, ALenum _format, unsigned int _frequency, unsigned int _buffersize) :
 m_source(0),

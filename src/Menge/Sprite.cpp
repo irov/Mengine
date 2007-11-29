@@ -29,8 +29,9 @@ namespace	Menge
 	, m_currentImageIndex( 0 )
 	, m_centerAlign( false )
 	, m_alignOffset( 0.f, 0.f )
-	, m_scale( 1.0f )
+	, m_scale( 1.0f, 1.0f )
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
+	, m_changingColorTime(0.0f)
 	, m_flipX(0)
 	, m_flipY(0)
 	{}
@@ -88,14 +89,16 @@ namespace	Menge
 		return true;		
 	}
 	///////////////////////////////////////////////////////////////////////////
-	void Sprite::setScale( float _scale )
+	//void Sprite::setScale( float _scale )
+	void Sprite::setScale( mt::vec2f _scale )
 	{
 		m_scale = _scale;
 
 		updateAlign_();
 	}
 	///////////////////////////////////////////////////////////////////////////
-	float Sprite::getScale() const
+	//float Sprite::getScale() const
+	mt::vec2f Sprite::getScale() const
 	{
 		return m_scale;
 	}
@@ -109,7 +112,9 @@ namespace	Menge
 	bool Sprite::isVisible( const Viewport & _viewPort )
 	{
 		m_size = m_resource->getMaxSize( m_currentImageIndex );
-		m_size *= m_scale;
+		//m_size *= m_scale;
+		m_size.x *= m_scale.x;
+		m_size.y *= m_scale.y;
 
 		const mt::vec2f & offset = m_resource->getOffset( m_currentImageIndex );
 		m_offset = offset + m_alignOffset;
@@ -160,7 +165,9 @@ namespace	Menge
 		if( m_centerAlign )
 		{
 			mt::vec2f size = m_resource->getMaxSize( 0 );
-			size *= m_scale;
+			//size *= m_scale;
+			size.x *= m_scale.x;
+			size.y *= m_scale.y;
 
 			m_alignOffset = size * (- 0.5f);
 		}
@@ -240,6 +247,17 @@ namespace	Menge
 			renderImage
 			);
 	}
+
+	void Sprite::_update( float _timing )
+	{
+		if(m_changingColorTime > 0.0f)
+		{
+			float d = _timing / m_changingColorTime;
+			m_color = m_newColor * d + m_color * (1.0f - d);
+			m_changingColorTime -= _timing;
+		}
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_debugRender()
 	{

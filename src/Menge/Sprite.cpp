@@ -33,6 +33,8 @@ namespace	Menge
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
 	, m_flipX( false )
 	, m_flipY( false )
+	, inverse_x(0)
+	, inverse_y(0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -85,8 +87,6 @@ namespace	Menge
 			return false;
 		}
 
-		m_uv = m_resource->getUV( m_currentImageIndex );
-
 		return true;		
 	}
 	///////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,6 @@ namespace	Menge
 	{
 		m_percent.v2_0 = _percentX;
 		m_percent.v2_1 = _percentY;
-		m_uv = m_resource->getUV( m_currentImageIndex );
 	}
 	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible( const Viewport & _viewPort )
@@ -131,7 +130,6 @@ namespace	Menge
 	void Sprite::setImageIndex( size_t _index )
 	{
 		m_currentImageIndex = _index;
-		m_uv = m_resource->getUV( m_currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Sprite::getImageIndex() const
@@ -175,10 +173,12 @@ namespace	Menge
 		if( _x )
 		{
 			m_flipX = true;
+			inverse_x++;
 		}
 		else
 		{
 			m_flipY = true;
+			inverse_y++;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -194,6 +194,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateVisibility_()
 	{	
+		m_uv = m_resource->getUV( m_currentImageIndex );
+
 		m_offset.x += m_size.x * m_percent.x;
 		m_offset.y += m_size.y * m_percent.y;
 
@@ -208,17 +210,15 @@ namespace	Menge
 
 		m_uv.z = m_uv.x * m_percent.z + ( 1.0f - m_percent.z ) * m_uv.z; 
 		m_uv.w = m_uv.y * m_percent.w + ( 1.0f - m_percent.w ) * m_uv.w; 
-
-		if( m_flipX == true )
+		
+		if( (m_flipX == true) && ((inverse_x % 2) != 0) )
 		{
 			std::swap( m_uv.x, m_uv.z );
-			m_flipX = false;
 		}
 
-		if( m_flipY == true )
+		if( (m_flipY == true) && ((inverse_y % 2) != 0) )
 		{
 			std::swap( m_uv.y, m_uv.w );
-			m_flipY = false;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

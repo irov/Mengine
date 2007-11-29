@@ -100,6 +100,7 @@ namespace Menge
 		void updateVisibility_();
 
 	protected:
+
 		ResourceImage * m_resource;
 		std::string m_resourcename;
 
@@ -108,6 +109,9 @@ namespace Menge
 		bool m_centerAlign;
 		bool m_flipX;
 		bool m_flipY;
+
+		int	inverse_x;
+		int	inverse_y;
 
 		float m_scale;
 

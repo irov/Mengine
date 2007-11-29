@@ -146,7 +146,7 @@ class Scene( Menge.Scene ):
 			#self.node.setPercentVisibility( Menge.vec2f( 0, 0 ), Menge.vec2f( self.c, 0 ));
 		
 		if key == 208:	
-			self.node.setPercentVisibility( Menge.vec2f( 0, self.a ), Menge.vec2f( 0, 0 ));
+			self.node.setPercentVisibility( Menge.vec2f( self.a, 0 ), Menge.vec2f( 0, 0 ));
 		
 		if key == 57:
 			print "57"

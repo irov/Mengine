@@ -98,6 +98,7 @@ namespace Menge
 	private:
 		void updateAlign_();
 		void updateVisibility_();
+		void updateFlip_();
 
 	protected:
 
@@ -108,8 +109,8 @@ namespace Menge
 
 		bool m_centerAlign;
 	
-		int	inverse_x;
-		int	inverse_y;
+		bool	m_flipX;
+		bool	m_flipY;
 
 		float m_scale;
 

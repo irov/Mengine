@@ -31,8 +31,8 @@ namespace	Menge
 	, m_alignOffset( 0.f, 0.f )
 	, m_scale( 1.0f )
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
-	, inverse_x(0)
-	, inverse_y(0)
+	, m_flipX(0)
+	, m_flipY(0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -170,11 +170,11 @@ namespace	Menge
 	{
 		if( _x )
 		{
-			inverse_x++;
+			m_flipX = !m_flipX;
 		}
 		else
 		{
-			inverse_y++;
+			m_flipY = !m_flipY;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -206,13 +206,16 @@ namespace	Menge
 
 		m_uv.z = m_uv.x * m_percent.z + ( 1.0f - m_percent.z ) * m_uv.z; 
 		m_uv.w = m_uv.y * m_percent.w + ( 1.0f - m_percent.w ) * m_uv.w; 
-		
-		if( (inverse_x % 2) != 0 )
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::updateFlip_()
+	{	
+		if( m_flipX == true )
 		{
 			std::swap( m_uv.x, m_uv.z );
 		}
 
-		if( (inverse_y % 2) != 0 )
+		if( m_flipY == true )
 		{
 			std::swap( m_uv.y, m_uv.w );
 		}
@@ -221,6 +224,8 @@ namespace	Menge
 	void Sprite::_render()
 	{
 		updateVisibility_();
+
+		updateFlip_();
 
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 

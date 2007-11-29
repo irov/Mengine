@@ -31,7 +31,7 @@ namespace	Menge
 	, m_alignOffset( 0.f, 0.f )
 	, m_scale( 1.0f, 1.0f )
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
-	, m_changingColorTime(0.0f)
+	, m_changingColorTime( 0.0f )
 	, m_flipX( false )
 	, m_flipY( false )
 	{}
@@ -167,7 +167,7 @@ namespace	Menge
 			size.x *= m_scale.x;
 			size.y *= m_scale.y;
 
-			m_alignOffset = size * (- 0.5f);
+			m_alignOffset = size * -0.5f;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

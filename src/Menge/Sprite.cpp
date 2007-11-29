@@ -31,8 +31,6 @@ namespace	Menge
 	, m_alignOffset( 0.f, 0.f )
 	, m_scale( 1.0f )
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
-	, m_flipX( false )
-	, m_flipY( false )
 	, inverse_x(0)
 	, inverse_y(0)
 	{}
@@ -172,12 +170,10 @@ namespace	Menge
 	{
 		if( _x )
 		{
-			m_flipX = true;
 			inverse_x++;
 		}
 		else
 		{
-			m_flipY = true;
 			inverse_y++;
 		}
 	}
@@ -211,12 +207,12 @@ namespace	Menge
 		m_uv.z = m_uv.x * m_percent.z + ( 1.0f - m_percent.z ) * m_uv.z; 
 		m_uv.w = m_uv.y * m_percent.w + ( 1.0f - m_percent.w ) * m_uv.w; 
 		
-		if( (m_flipX == true) && ((inverse_x % 2) != 0) )
+		if( (inverse_x % 2) != 0 )
 		{
 			std::swap( m_uv.x, m_uv.z );
 		}
 
-		if( (m_flipY == true) && ((inverse_y % 2) != 0) )
+		if( (inverse_y % 2) != 0 )
 		{
 			std::swap( m_uv.y, m_uv.w );
 		}

@@ -107,9 +107,7 @@ namespace Menge
 		size_t m_currentImageIndex;
 
 		bool m_centerAlign;
-		bool m_flipX;
-		bool m_flipY;
-
+	
 		int	inverse_x;
 		int	inverse_y;
 

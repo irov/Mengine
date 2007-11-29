@@ -100,7 +100,7 @@ class Scene( Menge.Scene ):
 		self.c = self.delta;
 		self.d = self.delta;
 
-		self.node.setImageIndex(2);
+		#self.node.setImageIndex(2);
 
 		#self.node.setPercentVisibility( Menge.vec2f( 0.3, 0 ), Menge.vec2f( 0.1, 0 ));
 	
@@ -146,8 +146,7 @@ class Scene( Menge.Scene ):
 			#self.node.setPercentVisibility( Menge.vec2f( 0, 0 ), Menge.vec2f( self.c, 0 ));
 		
 		if key == 208:	
-			#self.b = self.b - self.delta;
-			self.node.setPercentVisibility( Menge.vec2f( 0, self.b ), Menge.vec2f( 0, 0 ));
+			self.node.setPercentVisibility( Menge.vec2f( 0, self.a ), Menge.vec2f( 0, 0 ));
 		
 		if key == 57:
 			print "57"

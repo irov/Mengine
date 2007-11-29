@@ -85,6 +85,8 @@ namespace	Menge
 			return false;
 		}
 
+		m_uv = m_resource->getUV( m_currentImageIndex );
+
 		return true;		
 	}
 	///////////////////////////////////////////////////////////////////////////
@@ -104,6 +106,7 @@ namespace	Menge
 	{
 		m_percent.v2_0 = _percentX;
 		m_percent.v2_1 = _percentY;
+		m_uv = m_resource->getUV( m_currentImageIndex );
 	}
 	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible( const Viewport & _viewPort )
@@ -128,6 +131,7 @@ namespace	Menge
 	void Sprite::setImageIndex( size_t _index )
 	{
 		m_currentImageIndex = _index;
+		m_uv = m_resource->getUV( m_currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Sprite::getImageIndex() const
@@ -171,11 +175,9 @@ namespace	Menge
 		if( _x )
 		{
 			m_flipX = true;
-		//	m_flipY = false;
 		}
 		else
 		{
-		//	m_flipX = false;
 			m_flipY = true;
 		}
 	}
@@ -192,8 +194,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateVisibility_()
 	{	
-		m_uv = m_resource->getUV( m_currentImageIndex );
-
 		m_offset.x += m_size.x * m_percent.x;
 		m_offset.y += m_size.y * m_percent.y;
 
@@ -212,11 +212,13 @@ namespace	Menge
 		if( m_flipX == true )
 		{
 			std::swap( m_uv.x, m_uv.z );
+			m_flipX = false;
 		}
 
 		if( m_flipY == true )
 		{
 			std::swap( m_uv.y, m_uv.w );
+			m_flipY = false;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

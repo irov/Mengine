@@ -43,12 +43,15 @@ namespace Menge
 
 		virtual bool createGame( const std::string & _game );
 
+		void stop()	{ m_quit = true; }
+
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown );
 		bool handleMouseButtonEvent( size_t _button, bool _isDown );
 		bool handleMouseMove( int _x, int _y, int _whell );
 
 	private:
+		bool m_quit;
 		std::string m_gameInfo;
 		InputHandler * m_handler;
 	};

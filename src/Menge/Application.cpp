@@ -54,7 +54,9 @@ namespace Menge
 
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application()
+		: m_quit(false)
 	{
+		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -210,7 +212,8 @@ namespace Menge
 		Holder<Game>::hostage()->render();
 		Holder<Game>::hostage()->debugRender();
 
-		return Holder<InputEngine>::hostage()->isKeyDown( 0x01 ) == false;
+		return !m_quit;
+		//return Holder<InputEngine>::hostage()->isKeyDown( 0x01 ) == false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::handleKeyEvent( size_t _key, bool _isDown )

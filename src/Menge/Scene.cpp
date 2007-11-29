@@ -212,19 +212,20 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loader( TiXmlElement *_xml )
 	{
-		NodeCore::loader(_xml);
-		NodeRenderable::loader(_xml);
 
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_VALUE_NODE("OffsetPosition", "Value", m_offsetPosition );
 		}
 
+		NodeCore::loader(_xml);
+		NodeRenderable::loader(_xml);
 		callMethod( "onLoader", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Layer * _layer )
 	{
+		_layer->setOffsetPosition(m_offsetPosition);
 		_layer->setScene( this );
 
 		if( _layer->isMain() )

@@ -179,11 +179,10 @@ namespace	Menge
 		m_uv = m_resource->getUV( m_currentImageIndex );
 
 		m_offset.x += m_size.x * m_percent.x;
+		m_offset.y += m_size.y * m_percent.y;
 
         m_size.x *= ( 1.0f - m_percent.x );
         m_size.x *= ( 1.0f - m_percent.z );
-     
-		m_offset.y += m_size.y * m_percent.y;
 
         m_size.y *= ( 1.0f - m_percent.y );
         m_size.y *= ( 1.0f - m_percent.w );
@@ -191,8 +190,8 @@ namespace	Menge
 		m_uv.x = m_uv.x * ( 1.0f - m_percent.x ) + m_percent.x * m_uv.z; 
         m_uv.y = m_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * m_uv.w;
 
-		m_uv.z *= ( 1.0f - m_percent.z );
-		m_uv.w *= ( 1.0f - m_percent.w );
+		m_uv.z = m_uv.x * m_percent.z + ( 1.0f - m_percent.z ) * m_uv.z; 
+		m_uv.w = m_uv.y * m_percent.w + ( 1.0f - m_percent.w ) * m_uv.w; 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render()

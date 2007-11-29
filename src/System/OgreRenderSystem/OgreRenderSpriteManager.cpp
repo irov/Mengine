@@ -2,10 +2,9 @@
 #	include "OgreRenderImage.h"
 
 const size_t	VERTEX_PER_QUAD			= 6;
-const size_t	VERTEXBUFFER_INITIAL_CAPACITY	= 50000;
-const size_t    UNDERUSED_FRAME_THRESHOLD = 50000;
-const size_t    VECTOR_CAPACITY = 20000;
-const size_t    INDEX_COUNT = 1000;
+const size_t	VERTEXBUFFER_INITIAL_CAPACITY	= 70000;
+const size_t    UNDERUSED_FRAME_THRESHOLD = 70000;
+const size_t    VECTOR_CAPACITY = 40000;
 
 //////////////////////////////////////////////////////////////////////////
 OgreRenderSpriteManager::OgreRenderSpriteManager()
@@ -157,6 +156,8 @@ void OgreRenderSpriteManager::prepareForRender()
 	m_renderSys->unbindGpuProgram(Ogre::GPT_VERTEX_PROGRAM);
 	m_renderSys->setShadingType(Ogre::SO_GOURAUD);
 	m_renderSys->_setPolygonMode(Ogre::PM_SOLID);
+
+//	m_renderSys->_setPolygonMode(Ogre::PM_WIREFRAME);
 
 	m_renderSys->_setTextureCoordCalculation(0, Ogre::TEXCALC_NONE);
 	m_renderSys->_setTextureCoordSet(0, 0);

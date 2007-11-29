@@ -1,5 +1,10 @@
 <DataBlock>
 
+	<Resource Name = "BlueActive" Type = "ResourceImageCell" >
+		<File Path = "Game/Images/GO01_Active.png"/>
+		<Cell X = "6" Y = "1"/>
+	</Resource>
+
 	<Resource Name = "SimpleAnimation" Type = "ResourceImageCell" >
 		<File Path = "Game/Images/grid1.png" />
 		<Filter Value = "4" />

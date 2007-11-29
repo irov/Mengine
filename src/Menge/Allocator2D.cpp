@@ -8,8 +8,8 @@ namespace Menge
 	Allocator2D::Allocator2D()
 		: m_changePivot( true )
 	{
-		mt::ident_m3(m_localMatrix);
-		mt::ident_m3(m_worldMatrix);
+		mt::ident_m3( m_localMatrix );
+		mt::ident_m3( m_worldMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::changePivot()

@@ -12,7 +12,7 @@ class Scene( Menge.Scene ):
 
 		self.node = Menge.createNodeFromXml(
 			'<Node Name = "Water_01" Type = "Sprite">'
-			'<ImageMap Name = "ReefValun_0N" />'
+			'<ImageMap Name = "BlueActive" />'
 			'<Transformation Value = "1;0;0;1;0;0" />'
 			'</Node> <!-- Sprite -->'
 			)
@@ -22,7 +22,7 @@ class Scene( Menge.Scene ):
 		
 		self.node1 = self.getNode("Water_01")
 	
-		self.node1.setLocalPosition( Menge.vec2f( 300,0 ) )
+		self.node1.setLocalPosition( Menge.vec2f( 400,200 ) )
 
 		position = self.node1.getLocalPosition()
 		print Menge.getVec2fX(position), Menge.getVec2fY(position)
@@ -93,12 +93,14 @@ class Scene( Menge.Scene ):
 		
 		self.layerAppend( "Deep", block )
 
-		self.delta = 0.25
+		self.delta = -2.75
 
 		self.a = self.delta;
 		self.b = self.delta;
 		self.c = self.delta;
 		self.d = self.delta;
+
+		self.node.setImageIndex(2);
 
 		#self.node.setPercentVisibility( Menge.vec2f( 0.3, 0 ), Menge.vec2f( 0.1, 0 ));
 	
@@ -133,8 +135,9 @@ class Scene( Menge.Scene ):
 			return False
 
 		if key == 205:	
+			self.node.deactivate();
 			#self.a = self.a + self.delta;
-			self.node.setPercentVisibility( Menge.vec2f( self.a, self.a ), Menge.vec2f( 0, 0 ));
+			#self.node.setPercentVisibility( Menge.vec2f( 0, self.a ), Menge.vec2f( 0, 0 ));
 
 		if key == 203:	
 			#self.c = self.c + self.delta;

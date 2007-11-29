@@ -10,8 +10,7 @@ namespace Menge
 
 	class Layer2D
 		: public Layer
-		, public NodeCore
-		, public NodeChildren<SceneNode2D>
+		, public SceneNode2D
 	{
 		OBJECT_DECLARE(Layer2D);
 
@@ -27,6 +26,9 @@ namespace Menge
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
+
+	public:
+		void setOffsetPosition( const mt::vec2f & _offset ) override;
 
 	public:
 		void update( float _timing ) override;

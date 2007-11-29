@@ -28,11 +28,14 @@ namespace Menge
 		const mt::vec2f & getSize() const;
 
 	public:
+		virtual void setOffsetPosition( const mt::vec2f & _offset );
+
+	public:
 		void loader( TiXmlElement * _xml ) override;
 
 	protected:
 		bool m_main;
-		mt::vec2f m_size;
+		mt::vec2f m_size;		
 
 		Scene * m_scene;
 	};

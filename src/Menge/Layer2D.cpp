@@ -117,6 +117,11 @@ namespace	Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::setOffsetPosition( const mt::vec2f & _offset )
+	{
+		setLocalPosition( _offset );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::loader( TiXmlElement * _xml )
 	{
 		NodeCore::loader(_xml);

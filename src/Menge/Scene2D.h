@@ -6,9 +6,9 @@
 namespace Menge
 {
 
-	class Scene2D :
-		public Scene,
-		public Allocator2D
+	class Scene2D 
+		: public Scene
+		, public Allocator2D
 	{
 		OBJECT_DECLARE(Scene2D);
 
@@ -25,7 +25,6 @@ namespace Menge
 			void _update( float _timing ) override;
 
 			void _addChildren( Layer * _layer ) override;
-
 	};
 
 } // namespace Menge

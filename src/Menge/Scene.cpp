@@ -15,6 +15,7 @@ namespace	Menge
 	Scene::Scene()
 	: m_mainLayer(0)
 	, m_isSubScene(false)
+	, m_offsetPosition(0.f,0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -212,6 +213,12 @@ namespace	Menge
 	void Scene::loader( TiXmlElement *_xml )
 	{
 		NodeCore::loader(_xml);
+		NodeRenderable::loader(_xml);
+
+		XML_FOR_EACH_TREE( _xml )
+		{
+			XML_CHECK_VALUE_NODE("OffsetPosition", "Value", m_offsetPosition );
+		}
 
 		callMethod( "onLoader", "()" );
 	}

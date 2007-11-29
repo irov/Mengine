@@ -49,4 +49,9 @@ namespace Menge
 			XML_CHECK_VALUE_NODE( "Size", "Value", m_size );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer::setOffsetPosition( const mt::vec2f & _offset )
+	{
+		//Empty
+	}
 }

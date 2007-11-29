@@ -54,6 +54,8 @@ namespace Menge
 
 	private:
 		bool m_isSubScene;
-		Layer * m_mainLayer;		
+		Layer * m_mainLayer;
+
+		mt::vec2f m_offsetPosition;
 	};
 }

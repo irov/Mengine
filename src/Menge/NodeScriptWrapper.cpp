@@ -9,6 +9,7 @@
 #	include "ScheduleManager.h"
 
 #	include "Player.h"
+#	include "Application.h"
 
 #	include "Amplifier.h"
 #	include "Sprite.h"
@@ -26,6 +27,7 @@
 #	include "LogEngine.h"
 
 #	include "XmlParser/XmlParser.h"
+
 
 namespace Menge
 {
@@ -149,6 +151,12 @@ namespace Menge
 			}
 
 			return pyNode;
+		}
+
+
+		static void quitApplication()
+		{
+			Holder<Application>::hostage()->stop();
 		}
 	}
 
@@ -288,6 +296,7 @@ namespace Menge
 				.def( "setScale", &Sprite::setScale )
 				.def( "getScale", &Sprite::getScale )
 				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
+				.def( "setColorTime", &Sprite::setColorTime )
 				.def( "flip", &Sprite::flip )
 				;
 			{
@@ -329,5 +338,6 @@ namespace Menge
 		pybind::def( "musicSetVolume", &ScriptMethod::musicSetVolume );
 		pybind::def( "musicGetVolume", &ScriptMethod::musicGetVolume );
 		pybind::def( "musicStop", &ScriptMethod::musicStop );
+		pybind::def( "quitApplication", &ScriptMethod::quitApplication );
 	}
 }

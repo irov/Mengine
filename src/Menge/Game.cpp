@@ -145,6 +145,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleKeyEvent( size_t _key, bool _isDown )
 	{
+
 		bool handle = false;
 
 		if( !handle )
@@ -157,6 +158,7 @@ namespace Menge
 			handle = Holder<Player>::hostage()
 				->handleKeyEvent( _key, _isDown );
 		}	
+		//Holder<RenderEngine>::hostage()->render(NULL, NULL);
 
 		return handle;
 	}

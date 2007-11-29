@@ -134,14 +134,16 @@ class Scene( Menge.Scene ):
 		if isDown == False:
 			return False
 
-		if key == 205:	
-			self.node.deactivate();
+		if key == 205:		
+			self.node.flip(True);
+			#self.node.deactivate();
 			#self.a = self.a + self.delta;
 			#self.node.setPercentVisibility( Menge.vec2f( 0, self.a ), Menge.vec2f( 0, 0 ));
 
 		if key == 203:	
+			self.node.flip(False);
 			#self.c = self.c + self.delta;
-			self.node.setPercentVisibility( Menge.vec2f( 0, 0 ), Menge.vec2f( self.c, 0 ));
+			#self.node.setPercentVisibility( Menge.vec2f( 0, 0 ), Menge.vec2f( self.c, 0 ));
 		
 		if key == 208:	
 			#self.b = self.b - self.delta;

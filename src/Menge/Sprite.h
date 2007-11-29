@@ -76,6 +76,8 @@ namespace Menge
 		*/
 		virtual float getScale() const;
 
+		virtual void flip( bool _x );
+
 		virtual void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
 
 	public:
@@ -104,6 +106,8 @@ namespace Menge
 		size_t m_currentImageIndex;
 
 		bool m_centerAlign;
+		bool m_flipX;
+		bool m_flipY;
 
 		float m_scale;
 

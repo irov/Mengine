@@ -288,6 +288,7 @@ namespace Menge
 				.def( "setScale", &Sprite::setScale )
 				.def( "getScale", &Sprite::getScale )
 				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
+				.def( "flip", &Sprite::flip )
 				;
 			{
 				pybind::proxy_<Animation, pybind::bases<Sprite>>("Animation", false)

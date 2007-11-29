@@ -31,6 +31,8 @@ namespace	Menge
 	, m_alignOffset( 0.f, 0.f )
 	, m_scale( 1.0f )
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
+	, m_flipX( false )
+	, m_flipY( false )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -164,6 +166,20 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Sprite::flip( bool _x )
+	{
+		if( _x )
+		{
+			m_flipX = true;
+		//	m_flipY = false;
+		}
+		else
+		{
+		//	m_flipX = false;
+			m_flipY = true;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_release()
 	{
 		SceneNode2D::_release();
@@ -175,7 +191,7 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateVisibility_()
-	{
+	{	
 		m_uv = m_resource->getUV( m_currentImageIndex );
 
 		m_offset.x += m_size.x * m_percent.x;
@@ -192,6 +208,16 @@ namespace	Menge
 
 		m_uv.z = m_uv.x * m_percent.z + ( 1.0f - m_percent.z ) * m_uv.z; 
 		m_uv.w = m_uv.y * m_percent.w + ( 1.0f - m_percent.w ) * m_uv.w; 
+
+		if( m_flipX == true )
+		{
+			std::swap( m_uv.x, m_uv.z );
+		}
+
+		if( m_flipY == true )
+		{
+			std::swap( m_uv.y, m_uv.w );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render()

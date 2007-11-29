@@ -29,8 +29,7 @@ namespace Menge
 	public:
 		ApplicationInputHandlerProxy( Application * _app )
 			: m_app( _app )
-		{
-		}
+		{}
 
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown ) override
@@ -54,7 +53,7 @@ namespace Menge
 
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application()
-		: m_quit(false)
+		: m_quit( false )
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -229,6 +228,11 @@ namespace Menge
 	bool Application::handleMouseMove( int _x, int _y, int _whell )
 	{
 		return Holder<Game>::hostage()->handleMouseMove( _x, _y, _whell );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::quit()	
+	{
+		m_quit = true; 
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

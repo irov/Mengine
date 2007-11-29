@@ -32,8 +32,8 @@ namespace	Menge
 	, m_scale( 1.0f, 1.0f )
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
 	, m_changingColorTime(0.0f)
-	, m_flipX(0)
-	, m_flipY(0)
+	, m_flipX( false )
+	, m_flipY( false )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -89,7 +89,6 @@ namespace	Menge
 		return true;		
 	}
 	///////////////////////////////////////////////////////////////////////////
-	//void Sprite::setScale( float _scale )
 	void Sprite::setScale( mt::vec2f _scale )
 	{
 		m_scale = _scale;
@@ -97,7 +96,6 @@ namespace	Menge
 		updateAlign_();
 	}
 	///////////////////////////////////////////////////////////////////////////
-	//float Sprite::getScale() const
 	mt::vec2f Sprite::getScale() const
 	{
 		return m_scale;
@@ -112,7 +110,7 @@ namespace	Menge
 	bool Sprite::isVisible( const Viewport & _viewPort )
 	{
 		m_size = m_resource->getMaxSize( m_currentImageIndex );
-		//m_size *= m_scale;
+	
 		m_size.x *= m_scale.x;
 		m_size.y *= m_scale.y;
 
@@ -165,7 +163,7 @@ namespace	Menge
 		if( m_centerAlign )
 		{
 			mt::vec2f size = m_resource->getMaxSize( 0 );
-			//size *= m_scale;
+		
 			size.x *= m_scale.x;
 			size.y *= m_scale.y;
 
@@ -228,6 +226,12 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setColorTime( unsigned int _color, float _time )
+	{
+		m_newColor = _color;
+		m_changingColorTime = _time;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render()
 	{
 		updateVisibility_();
@@ -250,10 +254,10 @@ namespace	Menge
 
 	void Sprite::_update( float _timing )
 	{
-		if(m_changingColorTime > 0.0f)
+		if( m_changingColorTime > 0.0f )
 		{
 			float d = _timing / m_changingColorTime;
-			m_color = m_newColor * d + m_color * (1.0f - d);
+			m_color = m_newColor * d + ( 1.0f - d ) * m_color;
 			m_changingColorTime -= _timing;
 		}
 	}

@@ -156,7 +156,7 @@ namespace Menge
 
 		static void quitApplication()
 		{
-			Holder<Application>::hostage()->stop();
+			Holder<Application>::hostage()->quit();
 		}
 	}
 
@@ -338,6 +338,7 @@ namespace Menge
 		pybind::def( "musicSetVolume", &ScriptMethod::musicSetVolume );
 		pybind::def( "musicGetVolume", &ScriptMethod::musicGetVolume );
 		pybind::def( "musicStop", &ScriptMethod::musicStop );
+
 		pybind::def( "quitApplication", &ScriptMethod::quitApplication );
 	}
 }

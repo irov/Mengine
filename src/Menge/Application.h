@@ -43,7 +43,7 @@ namespace Menge
 
 		virtual bool createGame( const std::string & _game );
 
-		void stop()	{ m_quit = true; }
+		virtual void quit();
 
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown );

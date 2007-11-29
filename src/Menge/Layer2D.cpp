@@ -29,6 +29,7 @@ namespace	Menge
 	{
 		m_factorParallax = _factor;
 	}
+	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::updateViewport()
 	{
 		Layer * main = m_scene->getMainLayer();
@@ -172,4 +173,5 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()
 			->endLayer();
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

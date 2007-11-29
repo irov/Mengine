@@ -64,12 +64,10 @@ namespace Menge
 		*/
 		virtual const std::string & getImageResource() const;
 
-		//! Установка скейла.
+		//! Установка скейла по осям.
 		/*!
 		\param _scale скейл.
 		*/
-		//virtual void setScale( float _scale );
-
 		virtual void setScale( mt::vec2f _scale );
 
 		//! Возвращает скейл.
@@ -78,11 +76,25 @@ namespace Menge
 		*/
 		virtual mt::vec2f getScale() const;
 
+		//! Инвертирование спрайта по оси x, если _x = true, иначе по оси y.
+		/*!
+		\param _x ось.
+		*/
 		virtual void flip( bool _x );
 
+		//! Установка процента видимости спрайта по краям. 0.0 - все видно. 1.0 - не видно.
+		/*!
+		\param _percentX - коэффициент видимости по x, y слева.
+		\param _percentY - коэффициент видимости по ширине, высоте справа.
+		*/
 		virtual void setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY );
 
-		void setColorTime( unsigned int _color, float _time )	{ m_newColor = _color; m_changingColorTime = _time; }
+		//! Установка времени _time, в течении которого будет изменятся цвет спрайта к цвету _color.
+		/*!
+		\param _color - результирующий цвет
+		\param _time - время, в течении которого будет изменятся цвет
+		*/
+		virtual void setColorTime( unsigned int _color, float _time );
 
 	public:
 		virtual bool isVisible( const Viewport & _viewPort );
@@ -115,8 +127,8 @@ namespace Menge
 
 		bool m_centerAlign;
 	
-		bool	m_flipX;
-		bool	m_flipY;
+		bool m_flipX;
+		bool m_flipY;
 
 		mt::vec2f m_scale;
 		mt::vec2f m_alignOffset;
@@ -129,7 +141,6 @@ namespace Menge
 		unsigned int m_color;
 		float m_changingColorTime;
 		unsigned int m_newColor;
-		//unsigned int m_oldColor;
 		bool m_changingColor;
 	};
 }

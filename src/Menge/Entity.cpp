@@ -51,6 +51,19 @@ namespace	Menge
 				setLocalDirection( m_moveDir );
 			}
 		}
+		else
+		{
+			if( m_moveTo )
+			{
+				moveStop();
+			}
+
+			setLocalPosition( _point );
+
+			m_moveTo = false;
+
+			this->callEvent("MOVE_END", "()" );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::moveStop()
@@ -76,7 +89,7 @@ namespace	Menge
 	
 			if( m_moveTo )
 			{
-				moveStop();
+				rotateStop();
 			}
 
 			if( m_rotate )
@@ -87,6 +100,19 @@ namespace	Menge
 			m_rotate = true;
 			m_rotateTime = _time;
 			m_targetDir = mt::norm_v2( _point - _pos );
+		}
+		else
+		{
+			if( m_moveTo )
+			{
+				rotateStop();
+			}
+
+			setLocalDirection( m_targetDir );
+
+			m_rotate = false;
+
+			this->callEvent("ROTATE_END", "()" );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -139,8 +165,6 @@ namespace	Menge
 				mt::vec2f curr_dir = mt::slerp_v2_v2( dir, m_targetDir, t );
 
 				setLocalDirection( curr_dir );
-
-				changePivot();
 			}
 		}
 

@@ -100,6 +100,9 @@ namespace	Menge
 	{
 		updateViewport();
 
+		Holder<RenderEngine>::hostage()
+			->setRenderViewport( m_viewport );
+
 		NodeCore::update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////

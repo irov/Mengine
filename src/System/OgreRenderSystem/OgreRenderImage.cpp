@@ -1,6 +1,14 @@
 #	include "OgreRenderImage.h"
 
 //////////////////////////////////////////////////////////////////////////
+OgreRenderImage::OgreRenderImage( const char* _name, unsigned int _width, unsigned int _height )
+: m_description( _name )
+{
+	m_texture = Ogre::TextureManager::getSingleton().createManual( _name, "Default", Ogre::TEX_TYPE_2D,
+																	_width, _height, 0, 0, Ogre::PF_X8R8G8B8, 
+																	Ogre::TU_DEFAULT);
+}
+//////////////////////////////////////////////////////////////////////////
 OgreRenderImage::OgreRenderImage( const TextureDesc& _desc )
 : m_description( _desc.name )
 {

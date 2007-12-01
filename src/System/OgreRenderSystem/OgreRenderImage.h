@@ -8,6 +8,7 @@ class OgreRenderImage
 	: public RenderImageInterface
 {
 public:
+	OgreRenderImage( const char* _name, unsigned int _width, unsigned int _height );
 	OgreRenderImage( const TextureDesc&	_desc );
 	~OgreRenderImage();
 

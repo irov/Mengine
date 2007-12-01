@@ -217,6 +217,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::handleKeyEvent( size_t _key, bool _isDown )
 	{
+		//createShot = true;
 		return Holder<Game>::hostage()->handleKeyEvent( _key, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -235,4 +236,12 @@ namespace Menge
 		m_quit = true; 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::frameEnded()
+	{
+		//if(createShot)
+		//{
+		//	Holder<RenderEngine>::hostage()->render(NULL, NULL);
+		//	createShot = false;
+		//}
+	}
 }

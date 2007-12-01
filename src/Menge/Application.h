@@ -50,6 +50,8 @@ namespace Menge
 		bool handleMouseButtonEvent( size_t _button, bool _isDown );
 		bool handleMouseMove( int _x, int _y, int _whell );
 
+		void frameEnded();
+
 	private:
 		bool m_quit;
 		std::string m_gameInfo;

@@ -17,9 +17,9 @@ namespace Menge
 		Holder<RenderEngine>::keep( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::render( RenderImageInterface* _outImage, const char* _imageName, const int* rect )
+	void RenderEngine::render( RenderImageInterface* _image, const int* rect )
 	{
-		m_interface->render( _outImage, _imageName, rect );
+		m_interface->render( _image, rect );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setContentResolution( const mt::vec2f _resolution )
@@ -71,6 +71,12 @@ namespace Menge
 	{
 		return m_interface->setWorldMatrix( _world.m );
 	}	
+	//////////////////////////////////////////////////////////////////////////
+	RenderImageInterface * RenderEngine::createImage( const char* _name, unsigned int _width, unsigned int _height )
+	{
+		RenderImageInterface * image = m_interface->createImage( _name, _width, _height );
+		return image;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* RenderEngine::loadImage( const TextureDesc & _desc )
 	{

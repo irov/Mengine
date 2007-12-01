@@ -23,7 +23,7 @@ namespace Menge
 		RenderEngine( RenderSystemInterface * _interface );
 		
 	public:
-		void render( RenderImageInterface* _outImage, const char* _imageName, const int* rect = NULL );
+		void render( RenderImageInterface* _image, const int* rect = NULL );
 
 		void setContentResolution( const mt::vec2f _resolution );
 
@@ -33,6 +33,7 @@ namespace Menge
 		void setRenderCamera( Camera3D * _camera );
 		Camera3D * getRenderCamera();
 
+		RenderImageInterface * createImage( const char* _name, unsigned int _width, unsigned int _height );
 		RenderImageInterface * loadImage( const TextureDesc & _desc );
 		RenderImageInterface * loadImage( const std::string & _filename, std::vector<char> & _buff, size_t _filter );
 

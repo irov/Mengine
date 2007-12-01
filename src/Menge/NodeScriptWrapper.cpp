@@ -9,6 +9,7 @@
 #	include "ScheduleManager.h"
 
 #	include "ResourceManager.h"
+#	include "ResourceImageDynamic.h"
 
 #	include "Player.h"
 #	include "Application.h"
@@ -27,6 +28,7 @@
 
 #	include "SoundEngine.h"
 #	include "LogEngine.h"
+#	include "RenderEngine.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -172,6 +174,38 @@ namespace Menge
 		{
 			Holder<ResourceManager>::hostage()
 				->directResourceRelease( _nameResource );
+		}
+
+		static PyObject * createShot( const std::string& _name, mt::box2f _size )
+		{
+			int rect[4] = { _size.min.x , _size.min.y, _size.max.x, _size.max.y };
+			ResourceImageDynamic* resourceImage = static_cast<ResourceImageDynamic*>( Holder<ResourceManager>::hostage()->getResource( _name ) );
+			if( !resourceImage )
+			{
+				resourceImage = new ResourceImageDynamic( _name );
+				RenderImageInterface* imageInterface = Holder<RenderEngine>::hostage()->createImage( _name.c_str(), rect[2] - rect[0], rect[3] - rect[1] );
+				resourceImage->setRenderImage( imageInterface );
+				Holder<ResourceManager>::hostage()->registerResource( resourceImage );
+			}
+			Holder<RenderEngine>::hostage()->render( resourceImage->getImage(0), rect );
+			Sprite* nodeSprite = SceneManager::createNodeT<Sprite>("Sprite");
+			nodeSprite->setImageResource( _name );
+	
+			if( nodeSprite == 0 )
+			{
+				return pybind::ret_none();
+			}
+
+			Scriptable * scriptable = nodeSprite->getScriptable();
+			PyObject * pyNode = scriptable->getScript();
+
+			if( pyNode == 0 )
+			{
+				delete nodeSprite;
+				return pybind::ret_none();
+			}
+
+			return pyNode;		
 		}
 	}
 
@@ -358,5 +392,6 @@ namespace Menge
 		pybind::def( "directResourceRelease", &ScriptMethod::directResourceRelease );
 
 		pybind::def( "quitApplication", &ScriptMethod::quitApplication );
+		pybind::def( "createShot", &ScriptMethod::createShot );
 	}
 }

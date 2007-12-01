@@ -2,6 +2,7 @@
 
 #	include "OgreRenderSpriteManager.h"
 #	include "OgreRenderImage.h"
+#	include "OgreImageCodec.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( RenderSystemInterface ** _ptrInterface )
@@ -65,6 +66,11 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
 
+	//Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual("Shot", "Default", Ogre::TEX_TYPE_2D, 1024, 768, 0, Ogre::PF_X8R8G8B8, Ogre::TU_RENDERTARGET);
+	
+	//rt = texture->getBuffer()->getRenderTarget();
+	//rt->addViewport(m_sceneMgr->createCamera("ShotCam"));
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -73,6 +79,47 @@ void OgreRenderSystem::setContentResolution( const float * _resolution )
 	m_contentResolution.x = _resolution[0];
 	m_contentResolution.y = _resolution[1];
 }
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::render( RenderImageInterface* _outImage, const char* _imageName, const int* rect )
+{
+	Ogre::Rect wrect( 0, 0, m_renderWindow->getWidth(), m_renderWindow->getHeight() );
+	if(rect)
+	{
+		wrect.left = rect[0];
+		wrect.top = rect[1];
+		wrect.right = rect[2];
+		wrect.bottom = rect[3];
+	}
+
+	OgreRenderImage* shotImage = new OgreRenderImage( _imageName, wrect.width(), wrect.height() );
+
+	//Ogre::TextureManager::getSingleton().getByName( _imageName );
+
+	Ogre::TexturePtr rtt = Ogre::TextureManager::getSingleton().createManual("__shot__", "Default", Ogre::TEX_TYPE_2D, m_renderWindow->getWidth(),
+		 m_renderWindow->getHeight(), 1, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
+
+	Ogre::RenderTarget* rtgt = rtt->getBuffer()->getRenderTarget();
+
+	
+	Ogre::Root::getSingleton().renderOneFrame();
+
+	//rtgt->writeContentsToFile("shot.png");
+
+	Ogre::HardwarePixelBufferSharedPtr pixb = rtt->getBuffer();
+	
+	Ogre::Image::Box imagebox( wrect.left, wrect.top, wrect.right, wrect.bottom );
+
+	unsigned char* data = new unsigned char[ rtt->getBuffer()->getSizeInBytes() ];
+
+	Ogre::PixelBox pb( wrect.width(), wrect.height(), 1, rtt->getFormat(), data );
+	rtt->getBuffer()->blitToMemory( imagebox, pb );
+	shotImage->m_texture->getBuffer()->blitFromMemory(pb);
+
+	m_renderSys->detachRenderTarget(rtgt->getName());
+	Ogre::TextureManager::getSingleton().remove("__shot__");
+
+}
+
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setProjectionMatrix( const float * _projection )
 {

@@ -15,7 +15,7 @@ public:
 
 public:
 	bool init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow ) override;
-	void render( RenderImageInterface* _outImage, const char* _imageName, const int* rect = NULL ) override;
+	void render( RenderImageInterface* _outImage, const int* rect = NULL ) override;
 
 	void setContentResolution( const float * _resolution );
 
@@ -23,6 +23,7 @@ public:
 	void setViewMatrix( const float * _view ) override;
 	void setWorldMatrix( const float * _world ) override;
 
+	RenderImageInterface* createImage( const char* _name, unsigned int _width, unsigned int _height ) override;
 	RenderImageInterface* loadImage( const TextureDesc&	_desc ) override;
 	void releaseImage( RenderImageInterface* _image ) override;
 	void renderImage(		

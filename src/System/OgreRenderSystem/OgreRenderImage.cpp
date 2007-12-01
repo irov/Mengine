@@ -1,4 +1,5 @@
 #	include "OgreRenderImage.h"
+#	include "OgreImageCodec.h"
 
 //////////////////////////////////////////////////////////////////////////
 OgreRenderImage::OgreRenderImage( const char* _name, unsigned int _width, unsigned int _height )
@@ -39,6 +40,51 @@ size_t OgreRenderImage::getWidth() const
 size_t OgreRenderImage::getHeight() const
 {
 	return m_texture->getHeight();
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderImage::writeToFile( const char* _filename )
+{
+	// copyToMemory
+	Ogre::ImageCodec::ImageData *imgData = new Ogre::ImageCodec::ImageData();
+        
+    imgData->width = m_texture->getWidth();
+    imgData->height = m_texture->getHeight();
+	imgData->depth = 1;
+	imgData->format = Ogre::PF_BYTE_RGBA;
+	size_t size = imgData->width * imgData->height * 4;	// 4 bytes per pixel in RGBA
+
+    // Allocate buffer 
+    unsigned char* pBuffer = new unsigned char[size];
+
+    // Read pixels
+    m_texture->getBuffer()->blitToMemory(
+		Ogre::Box(0, 0, imgData->width, imgData->height), 
+		Ogre::PixelBox(imgData->width, imgData->height, 1, imgData->format, pBuffer)	);
+
+	// Wrap buffer in a chunk
+	Ogre::MemoryDataStreamPtr stream(new Ogre::MemoryDataStream( pBuffer, size, false ) );
+
+    // Get codec 
+	Ogre::String filename(_filename);
+    size_t pos = filename.find_last_of(".");
+	Ogre::String extension;
+	if( pos == Ogre::String::npos )
+	{
+		// TODO: invalid extension exception
+	}
+	while( pos != filename.length() - 1 )
+	{
+		extension += filename[++pos];
+	}
+
+    // Get the codec
+	Ogre::Codec * pCodec = Ogre::Codec::getCodec(extension);
+
+    // Write out
+	Ogre::Codec::CodecDataPtr codecDataPtr(imgData);
+    pCodec->codeToFile(stream, filename, codecDataPtr);
+
+	delete [] pBuffer;
 }
 //////////////////////////////////////////////////////////////////////////
 Ogre::Texture * OgreRenderImage::getTexture() const

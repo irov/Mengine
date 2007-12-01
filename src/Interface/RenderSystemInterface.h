@@ -14,15 +14,16 @@ class RenderImageInterface
 public:
 	virtual size_t getWidth() const = 0;
 	virtual size_t getHeight() const = 0;
+	virtual void writeToFile( const char* _filename ) = 0;
 };
 
 class	RenderSystemInterface
 {
 public:
 
-	// Render frame into image
+	// Render frame into _image
 	// int rect[4] - rectangle represents desired frame area in pixels
-	virtual void render( RenderImageInterface* _outImage, const char* _imageName, const int* rect = 0 ) = 0;
+	virtual void render( RenderImageInterface* _image, const int* rect = 0 ) = 0;
 
 	// установка разрешения контента игры, входные данные: вектор2. 
 	virtual void setContentResolution( const float * _resolution ) = 0;
@@ -30,6 +31,8 @@ public:
 	virtual	void setProjectionMatrix( const float * _projection ) = 0;
 	virtual	void setViewMatrix( const float * _view ) = 0;
 	virtual	void setWorldMatrix( const float * _world ) = 0;
+	// create empty render image
+	virtual RenderImageInterface * createImage( const char* _name, unsigned int _width, unsigned int _height ) = 0;
 	// загрузка изображения
 	virtual RenderImageInterface * loadImage( const TextureDesc& _desc ) = 0;
 	// удаления изображения

@@ -109,7 +109,7 @@ class Scene( Menge.Scene ):
 	def onUpdate( self, timing ):
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 
-		self.camera_x += timing * 0.5
+		self.camera_x += timing * 0.0
 
 		#self.a = self.a + timing * 0.00005
 
@@ -135,7 +135,9 @@ class Scene( Menge.Scene ):
 			return False
 
 		if key == 205:		
-			Menge.createShot("shot", Menge.vec2f( 0, 0 ), Menge.vec2f( 100, 100 ) );
+			shoted = Menge.createShot("shot.bmp", Menge.vec2f( 0, 0 ), Menge.vec2f( 100, 100 ) );
+			self.node.addChildren( shoted );
+
 			#self.node.flip(True);
 			#self.node.deactivate();
 			#self.a = self.a + self.delta;

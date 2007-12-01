@@ -176,20 +176,36 @@ namespace Menge
 				->directResourceRelease( _nameResource );
 		}
 
-		static PyObject * createShot( const std::string& _name, mt::box2f _size )
+		static PyObject * createShot( const std::string& _name, mt::vec2f _min,  mt::vec2f _max )
 		{
-			int rect[4] = { _size.min.x , _size.min.y, _size.max.x, _size.max.y };
-			ResourceImageDynamic* resourceImage = static_cast<ResourceImageDynamic*>( Holder<ResourceManager>::hostage()->getResource( _name ) );
-			if( !resourceImage )
+			int rect[4] = { _min.x , _min.y, _max.x, _max.y };
+
+			ResourceImageDynamic * resourceImage 
+				= Holder<ResourceManager>::hostage()->getResourceT<ResourceImageDynamic>( _name );
+
+			if( resourceImage == NULL )
 			{
 				resourceImage = new ResourceImageDynamic( _name );
-				RenderImageInterface* imageInterface = Holder<RenderEngine>::hostage()->createImage( _name.c_str(), rect[2] - rect[0], rect[3] - rect[1] );
+				//FIXME
+				RenderImageInterface * imageInterface
+					= Holder<RenderEngine>::hostage()->createImage( _name.c_str(), rect[2] - rect[0], rect[3] - rect[1] );
+
 				resourceImage->setRenderImage( imageInterface );
+
 				Holder<ResourceManager>::hostage()->registerResource( resourceImage );
 			}
-			Holder<RenderEngine>::hostage()->render( resourceImage->getImage(0), rect );
-			Sprite* nodeSprite = SceneManager::createNodeT<Sprite>("Sprite");
+
+			RenderImageInterface * image = resourceImage->getImage( 0 );
+
+			Holder<RenderEngine>::hostage()->render( image, rect );
+
+			Sprite * nodeSprite = SceneManager::createNodeT<Sprite>("Sprite");
+
 			nodeSprite->setImageResource( _name );
+
+			nodeSprite->activate();
+
+			//_activate
 	
 			if( nodeSprite == 0 )
 			{

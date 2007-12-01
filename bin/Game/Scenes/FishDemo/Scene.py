@@ -135,7 +135,8 @@ class Scene( Menge.Scene ):
 			return False
 
 		if key == 205:		
-			self.node.flip(True);
+			Menge.createShot("shot", Menge.vec2f( 0, 0 ), Menge.vec2f( 100, 100 ) );
+			#self.node.flip(True);
 			#self.node.deactivate();
 			#self.a = self.a + self.delta;
 			#self.node.setPercentVisibility( Menge.vec2f( 0, self.a ), Menge.vec2f( 0, 0 ));

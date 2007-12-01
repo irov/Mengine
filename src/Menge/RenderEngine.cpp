@@ -91,7 +91,6 @@ namespace Menge
 		if( file == 0 )
 		{
 			MENGE_LOG( "Error: Image can't open resource file '%s'\n", _filename.c_str() );
-
 			return 0;
 		}
 

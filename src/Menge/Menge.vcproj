@@ -765,6 +765,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ResourceImageDynamic.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceImageDynamic.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ResourceImageSet.cpp"
 					>
 				</File>

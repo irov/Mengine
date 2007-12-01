@@ -31,6 +31,10 @@ namespace Menge
 
 		void releaseResource( ResourceReference * _resource );
 
+	public:
+		bool directResourceCompile( const std::string & _name );
+		void directResourceRelease( const std::string & _name );
+
 	private:
 		typedef std::map< std::string, ResourceReference * > TMapResource;
 

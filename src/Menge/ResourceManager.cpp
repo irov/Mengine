@@ -129,4 +129,30 @@ namespace Menge
 			_resource->decrementReference();
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::directResourceCompile( const std::string & _name )
+	{
+		TMapResource::iterator it_find = m_mapResource.find( _name );
+
+		if( it_find == m_mapResource.end() )
+		{
+			return false;
+		}
+
+		bool result = it_find->second->compile();
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::directResourceRelease( const std::string & _name )
+	{
+		TMapResource::iterator it_find = m_mapResource.find( _name );
+
+		if( it_find == m_mapResource.end() )
+		{
+			return;
+		}
+
+		it_find->second->release();
+	}
+
 }

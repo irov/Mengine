@@ -8,6 +8,8 @@
 #	include "ScriptEngine.h"
 #	include "ScheduleManager.h"
 
+#	include "ResourceManager.h"
+
 #	include "Player.h"
 #	include "Application.h"
 
@@ -153,10 +155,23 @@ namespace Menge
 			return pyNode;
 		}
 
-
 		static void quitApplication()
 		{
 			Holder<Application>::hostage()->quit();
+		}
+
+		static bool directResourceCompile( const std::string & _nameResource )
+		{
+			bool result = Holder<ResourceManager>::hostage()
+				->directResourceCompile( _nameResource );
+
+			return result;
+		}
+
+		static void directResourceRelease( const std::string & _nameResource )
+		{
+			Holder<ResourceManager>::hostage()
+				->directResourceRelease( _nameResource );
 		}
 	}
 
@@ -338,6 +353,9 @@ namespace Menge
 		pybind::def( "musicSetVolume", &ScriptMethod::musicSetVolume );
 		pybind::def( "musicGetVolume", &ScriptMethod::musicGetVolume );
 		pybind::def( "musicStop", &ScriptMethod::musicStop );
+
+		pybind::def( "directResourceCompile", &ScriptMethod::directResourceCompile );
+		pybind::def( "directResourceRelease", &ScriptMethod::directResourceRelease );
 
 		pybind::def( "quitApplication", &ScriptMethod::quitApplication );
 	}

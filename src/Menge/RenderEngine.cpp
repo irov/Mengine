@@ -17,6 +17,11 @@ namespace Menge
 		Holder<RenderEngine>::keep( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::render( RenderImageInterface* _outImage, const char* _imageName, const int* rect )
+	{
+		m_interface->render( _outImage, _imageName, rect );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setContentResolution( const mt::vec2f _resolution )
 	{
 		m_interface->setContentResolution( _resolution.m );

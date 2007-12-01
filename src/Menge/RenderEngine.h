@@ -23,6 +23,8 @@ namespace Menge
 		RenderEngine( RenderSystemInterface * _interface );
 		
 	public:
+		void render( RenderImageInterface* _outImage, const char* _imageName, const int* rect = NULL );
+
 		void setContentResolution( const mt::vec2f _resolution );
 
 		void setRenderViewport( const Viewport & _viewport );

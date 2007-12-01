@@ -19,6 +19,11 @@ public:
 class	RenderSystemInterface
 {
 public:
+
+	// Render frame into image
+	// int rect[4] - rectangle represents desired frame area in pixels
+	virtual void render( RenderImageInterface* _outImage, const char* _imageName, const int* rect = 0 ) = 0;
+
 	// установка разрешения контента игры, входные данные: вектор2. 
 	virtual void setContentResolution( const float * _resolution ) = 0;
 	// входные данные: матрица 4 на 4

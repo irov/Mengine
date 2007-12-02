@@ -135,7 +135,7 @@ class Scene( Menge.Scene ):
 			return False
 
 		if key == 205:		
-			shoted = Menge.createShot("shot.bmp", Menge.vec2f( 0, 0 ), Menge.vec2f( 100, 100 ) );
+			shoted = Menge.createShot("shot", Menge.vec2f( 0, 0 ), Menge.vec2f( 500, 500 ) );
 			self.node.addChildren( shoted );
 
 			#self.node.flip(True);

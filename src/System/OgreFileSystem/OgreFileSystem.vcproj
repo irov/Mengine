@@ -203,18 +203,6 @@
 			RelativePath=".\OgreFileSystem.h"
 			>
 		</File>
-		<File
-			RelativePath=".\OgreFileSystemInterface.h"
-			>
-		</File>
-		<File
-			RelativePath=".\OgrePlatformBundle.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\OgrePlatformBundle.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

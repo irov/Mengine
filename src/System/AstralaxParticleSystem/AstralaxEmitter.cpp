@@ -81,7 +81,7 @@ void AstralaxEmitter::update( float _timing )
 
     while( m_total_rate >= rate )
     {
-		printf("rate = %f \n", m_total_rate);
+//		printf("rate = %f \n", m_total_rate);
 
 		m_total_rate -= rate;
         Magic_Update( m_id, rate );

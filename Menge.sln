@@ -11,7 +11,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interface", "Interface", "{3D722BE0-FA23-4F25-9EB5-DE38822083E6}"
 	ProjectSection(SolutionItems) = preProject
 		src\Interface\ApplicationInterface.h = src\Interface\ApplicationInterface.h
-		src\Interface\CodecInterface.h = src\Interface\CodecInterface.h
 		src\Interface\FileSystemInterface.h = src\Interface\FileSystemInterface.h
 		src\Interface\InputSystemInterface.h = src\Interface\InputSystemInterface.h
 		src\Interface\LogSystemInterface.h = src\Interface\LogSystemInterface.h

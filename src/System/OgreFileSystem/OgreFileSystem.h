@@ -1,15 +1,14 @@
 #	pragma once
 
-#	include "OgreFileSystemInterface.h"
+#	include "Ogre.h"
+
+#	include "Interface\FileSystemInterface.h"
 
 class OgreFileSystem
-	: public OgreFileSystemInterface
+	: public FileSystemInterface
 {
 public:
 	OgreFileSystem();
-
-public:
-	void init( Ogre::ResourceGroupManager * _resourceMgr ) override;
 
 public:
 	void loadPath( const char * _path ) override;
@@ -25,5 +24,5 @@ public:
 	bool createFolder( const char* _path ) override;
 
 private:
-	Ogre::ResourceGroupManager * m_resourceMgr;
+	Ogre::Archive * m_arch;
 };

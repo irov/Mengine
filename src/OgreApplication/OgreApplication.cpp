@@ -4,11 +4,11 @@
 
 #	include "System/OgreInputSystem/OgreInputSystemInterface.h"
 #	include "System/OgreRenderSystem/OgreRenderSystemInterface.h"
-#	include "System/OgreFileSystem/OgreFileSystemInterface.h"
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/SoundSystemInterface.h"
 #	include "Interface/ParticleSystemInterface.h"
+#	include "Interface/FileSystemInterface.h"
 
 
 #	include "OIS/OIS.h"
@@ -48,6 +48,7 @@ OgreApplication::OgreApplication()
 OgreApplication::~OgreApplication()
 {
 	m_application->finalize();
+
 	delete m_application;
 
 	for each( SystemDLL * sysDll in m_listApplicationDLL )
@@ -62,8 +63,10 @@ OgreApplication::~OgreApplication()
 	}
 
 	if( m_root ) 
-	{				
-		if( Ogre::RenderWindow * window = m_root->getAutoCreatedWindow() )
+	{			
+		Ogre::RenderWindow * window = m_root->getAutoCreatedWindow();
+
+		if( window != NULL )
 		{
 			window->removeAllViewports();
 		}
@@ -104,8 +107,8 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	printf("use file system [%s]\n", DllFileSystem.c_str() );
 
-	OgreFileSystemInterface * fileInterface
-		= addSystem<OgreFileSystemInterface>( DllFileSystem );
+	FileSystemInterface * fileInterface
+		= addSystem<FileSystemInterface>( DllFileSystem );
 
 	m_application->setFileSystem( fileInterface );
 
@@ -151,10 +154,8 @@ bool OgreApplication::init( const char * _xmlFile )
 		resourcePath + "Ogre.log");
 #endif
 
-	// попробуем завестись на дефолтных
 	if ( m_root->restoreConfig() == false ) 
 	{ 			
-		// ничего не получилось, покажем диалог
 		if ( m_root->showConfigDialog() == false )
 		{
 			return false; 
@@ -165,30 +166,28 @@ bool OgreApplication::init( const char * _xmlFile )
 	
 	m_root->addFrameListener( this );
 
-	OIS::ParamList pl;
 	size_t windowHnd = 0;
 	std::ostringstream windowHndStr;
 
 	m_window->getCustomAttribute("WINDOW", &windowHnd);
 	windowHndStr << windowHnd;
-	pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
+
+	OIS::ParamList pl;
+
+	pl.insert(
+		std::make_pair(
+			std::string("WINDOW"),
+			windowHndStr.str()
+			)
+		);
 
 	inputInterface->init( pl );
 
-	Ogre::ResourceGroupManager * resourceMgr = 
-		Ogre::ResourceGroupManager::getSingletonPtr();
-
-	fileInterface->init( resourceMgr );
 	fileInterface->loadPath(".");
-
-	Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-	Ogre::ResourceGroupManager::getSingleton().openResource( "Game/Game.xml" );
 
 	bool initialize = m_application->initialize( _xmlFile );
 
 	renderInterface->init( m_root, m_window );
-
-	//m_root->getRenderSystem()->setConfigOption();
 
 	return initialize;
 }
@@ -197,7 +196,7 @@ bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)
 {
 	if( m_window->isActive() )
 	{
-		return m_application->update( size_t(evt.timeSinceLastFrame * 1000.f) );
+		return m_application->update( size_t( evt.timeSinceLastFrame * 1000.f ) );
 	}
 
 	return m_window->isClosed() == false;
@@ -214,3 +213,4 @@ void OgreApplication::run()
 {
 	m_root->startRendering();
 }
+//////////////////////////////////////////////////////////////////////////

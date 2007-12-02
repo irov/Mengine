@@ -205,8 +205,6 @@ namespace Menge
 
 			nodeSprite->activate();
 
-			//_activate
-	
 			if( nodeSprite == 0 )
 			{
 				return pybind::ret_none();

@@ -1,8 +1,6 @@
 #	include "OgreFileSystem.h"
 #	include "OgreFileData.h"
 
-#	include "OgrePlatformBundle.h"
-
 #	include "shlobj.h"
 
 #	include <tchar.h>
@@ -28,40 +26,30 @@ void releaseInterfaceSystem( FileSystemInterface *_system )
 }
 //////////////////////////////////////////////////////////////////////////
 OgreFileSystem::OgreFileSystem()
-: m_resourceMgr(0)
+: m_arch(0)
 {
-}
-//////////////////////////////////////////////////////////////////////////
-void OgreFileSystem::init( Ogre::ResourceGroupManager * _resourceMgr )
-{
-	m_resourceMgr = _resourceMgr;
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::loadPath( const char * _path )
 {
-	m_resourceMgr
-		->addResourceLocation( _path, "FileSystem", "OgreFileSystem", true );
+	m_arch = Ogre::ArchiveManager::getSingleton().load( _path, "FileSystem" );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::loadPak( const char * _pak )
 {
-	m_resourceMgr
-		->addResourceLocation( _pak, "Zip", "OgreFileSystem", true );
+	Ogre::ArchiveManager::getSingleton().load( _pak, "Zip" );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::unloadPak( const char * _pak )
 {
-	m_resourceMgr
-		->removeResourceLocation( _pak, "OgreFileSystem" );
+	Ogre::ArchiveManager::getSingleton().unload( _pak );
 }
 //////////////////////////////////////////////////////////////////////////
 FileDataInterface *	OgreFileSystem::openFile( const char * _filename )
 {
 	try
 	{
-		Ogre::DataStreamPtr data = m_resourceMgr
-			->openResource( _filename, "OgreFileSystem" );
-
+		Ogre::DataStreamPtr data = m_arch->open( _filename );
 
 		if( data.isNull() )
 		{
@@ -83,17 +71,7 @@ void OgreFileSystem::closeFile( FileDataInterface * _fd )
 //////////////////////////////////////////////////////////////////////////
 bool OgreFileSystem::existFile( const char * _filename )
 {
-	try
-	{
-		const Ogre::String & group = m_resourceMgr
-			->findGroupContainingResource( _filename );
-
-		return group.empty() == false;
-	}
-	catch ( ... )
-	{
-		return false;
-	}	
+	return m_arch->exists( _filename );
 }
 //////////////////////////////////////////////////////////////////////////
 const char * OgreFileSystem::platformBundlePath()

@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "SceneNode2D.h"
+#	include "Color.h"
 
 namespace Menge
 {
@@ -51,7 +52,7 @@ namespace Menge
 		/*!
 		\param _color значение цвета
 		*/
-		void setColor( unsigned int _color );
+		void setColor( const Color& _color );
 
 		//! Возвращает цвет глифов.
 		/*!
@@ -76,7 +77,7 @@ namespace Menge
 		\param _color - результирующий цвет
 		\param _time - время, в течении которого будет изменятся цвет
 		*/
-		void setColorTime( unsigned int _color, float _time );
+		void setColorTime(  const Color& _color, float _time );
 
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;
@@ -99,9 +100,9 @@ namespace Menge
 		std::string	m_resourcename;
 
 		float m_changingColorTime;
-		unsigned int m_newColor;
+		Color m_newColor;
 
-		unsigned int m_color;
+		Color m_color;
 		float		m_height;
 		std::string m_text;
 		mt::vec2f	m_length;

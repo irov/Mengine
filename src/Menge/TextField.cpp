@@ -165,7 +165,7 @@ namespace	Menge
 			
 			mt::vec2f size( width, m_height );
 
-			Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, m_color, renderImage );
+			Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, m_color.get(), renderImage );
 
 			offset.x += width;
 		}
@@ -176,21 +176,7 @@ namespace	Menge
 		if( m_changingColorTime > 0.0f )
 		{
 			float d = _timing / m_changingColorTime;
-
-			int a = ( ( m_color & 0xFF000000 ) >> 24 );
-			int r = ( ( m_color & 0x00FF0000 ) >> 16 );
-			int g = ( ( m_color & 0x0000FF00 ) >> 8 );
-			int b = ( m_color & 0x000000FF );
-			
-			int na = ( ( m_newColor & 0xFF000000 ) >> 24 );
-			int nr = ( ( m_newColor & 0x00FF0000 ) >> 16 );
-			int ng = ( ( m_newColor & 0x0000FF00 ) >> 8 );
-			int nb = ( m_newColor & 0x000000FF );
-
-			m_color = ( ( (int)( (na - a) * d ) + a ) << 24 )
-						+ ( (int)( ( (nr - r) * d ) + r ) << 16 )
-						+ ( (int)( ( (ng - g) * d ) + g ) << 8 )
-						+   (int)( ( (nb - b) * d ) + b );
+			m_color = m_newColor * d + m_color * ( 1.0f - d );
 			m_changingColorTime -= _timing;
 		}
 	}
@@ -215,20 +201,20 @@ namespace	Menge
 		updateAlign_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setColorTime( unsigned int _color, float _time )
+	void TextField::setColorTime( const Color& _color, float _time )
 	{
 		m_newColor = _color;
 		m_changingColorTime = _time;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setColor( unsigned int _color )
+	void TextField::setColor( const Color& _color )
 	{
 		m_color = _color;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int TextField::getColor() const
 	{
-		return m_color;
+		return m_color.get();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getHeight() const

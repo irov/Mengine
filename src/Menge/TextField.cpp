@@ -176,7 +176,21 @@ namespace	Menge
 		if( m_changingColorTime > 0.0f )
 		{
 			float d = _timing / m_changingColorTime;
-			m_color = m_newColor * d + ( 1.0f - d ) * m_color;
+
+			int a = ( ( m_color & 0xFF000000 ) >> 24 );
+			int r = ( ( m_color & 0x00FF0000 ) >> 16 );
+			int g = ( ( m_color & 0x0000FF00 ) >> 8 );
+			int b = ( m_color & 0x000000FF );
+			
+			int na = ( ( m_newColor & 0xFF000000 ) >> 24 );
+			int nr = ( ( m_newColor & 0x00FF0000 ) >> 16 );
+			int ng = ( ( m_newColor & 0x0000FF00 ) >> 8 );
+			int nb = ( m_newColor & 0x000000FF );
+
+			m_color = ( ( (int)( (na - a) * d ) + a ) << 24 )
+						+ ( (int)( ( (nr - r) * d ) + r ) << 16 )
+						+ ( (int)( ( (ng - g) * d ) + g ) << 8 )
+						+   (int)( ( (nb - b) * d ) + b );
 			m_changingColorTime -= _timing;
 		}
 	}

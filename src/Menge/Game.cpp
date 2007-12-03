@@ -158,7 +158,11 @@ namespace Menge
 			handle = Holder<Player>::hostage()
 				->handleKeyEvent( _key, _isDown );
 		}	
-		//Holder<RenderEngine>::hostage()->render(NULL, NULL);
+
+		//RenderImageInterface* image = Holder<RenderEngine>::hostage()->createImage( "shot", 200, 200 );
+		//int rect[4] = { 10, 10, 210, 210 };
+		//Holder<RenderEngine>::hostage()->render(image, rect);
+		//image->writeToFile( "Shot.bmp" );
 
 		return handle;
 	}

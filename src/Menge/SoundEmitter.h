@@ -33,7 +33,7 @@ namespace Menge
 			void setLooped( bool _loop );
 			bool isLooping();
 
-			int	getLengthMS();
+			int	getLengthMs();
 
 			void setSoundListener( PyObject * _listener );
 

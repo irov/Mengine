@@ -38,6 +38,8 @@ namespace Menge
 		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer );
 		void releaseSoundSource( SoundSourceInterface * _node );
 
+		void update();
+
 	public:
 		void registerSoundEmitter( SoundEmitter * _emitter );
 		void unregisterSoundEmitter( SoundEmitter * _emitter );

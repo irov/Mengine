@@ -123,7 +123,7 @@ namespace	Menge
 			askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
 		}
 
-		if( handle == false )
+		if( handle == false  /*&& !m_isSubScene */)
 		{
 			handle = Holder<MousePickerSystem>::hostage()
 				->handleMouseButtonEvent( _button, _isDown );

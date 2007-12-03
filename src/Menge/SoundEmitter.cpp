@@ -186,9 +186,9 @@ namespace Menge
 		return m_interface->isLooping();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int SoundEmitter::getLengthMS()
+	int SoundEmitter::getLengthMs()
 	{
-		return m_interface->getLengthMS();
+		return m_interface->getLengthMs();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

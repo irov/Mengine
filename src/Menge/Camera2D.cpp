@@ -43,6 +43,8 @@ namespace	Menge
 
 		m_viewport.begin = pos - m_viewportSize * .5;
 		m_viewport.end = pos + m_viewportSize * .5;
+
+		printf("%f \n",m_viewport.begin.x);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Viewport & Camera2D::getViewport() const

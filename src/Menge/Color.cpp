@@ -11,41 +11,41 @@ namespace	Menge
 	{ 
 	}
 
-	float Color::operator [] ( const size_t i ) const
+	float Color::operator [] ( const size_t _i ) const
 	{
-		assert( i < 4 );
-		return *(&r+i);
+		assert( _i < 4 );
+		return *(&r + _i);
 	}
 
-	float& Color::operator [] ( const size_t i )
+	float& Color::operator [] ( const size_t _i )
 	{
-		assert( i < 4 );
-		return *(&r+i);
+		assert( _i < 4 );
+		return *(&r + _i);
 	}
 
 	void Color::set( unsigned int _val )
 	{
 		unsigned int val32 = _val;
-		a = ((val32 >> 24) & 0xFF) / 255.0f;
-		r = ((val32 >> 16) & 0xFF) / 255.0f;
-		g = ((val32 >> 8) & 0xFF) / 255.0f;
-		b = (val32 & 0xFF) / 255.0f;
+		a = ( ( val32 >> 24 ) & 0xFF ) / 255.0f;
+		r = ( ( val32 >> 16 ) & 0xFF ) / 255.0f;
+		g = ( ( val32 >> 8 ) & 0xFF ) / 255.0f;
+		b = ( val32 & 0xFF ) / 255.0f;
 	}
 
 	unsigned int Color::get() const
 	{
 		unsigned int val32 = 0;
 
-		unsigned char val8 = static_cast<unsigned char>(a * 255);
+		unsigned char val8 = static_cast<unsigned char>( a * 255 );
 		val32 = val8 << 24;
 
-		val8 = static_cast<unsigned char>(r * 255);
+		val8 = static_cast<unsigned char>( r * 255 );
 		val32 += val8 << 16;
 
-		val8 = static_cast<unsigned char>(g * 255);
+		val8 = static_cast<unsigned char>( g * 255 );
 		val32 += val8 << 8;
 
-		val8 = static_cast<unsigned char>(b * 255);
+		val8 = static_cast<unsigned char>( b * 255 );
 		val32 += val8;
 
 		return val32;

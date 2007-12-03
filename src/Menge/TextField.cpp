@@ -113,14 +113,22 @@ namespace	Menge
 	{
 		SceneNode2D::loader(_xml);
 
+		mt::vec4f	color;
+
 		XML_FOR_EACH_TREE(_xml)
 		{
 			XML_CHECK_VALUE_NODE( "Font", "Name", m_resourcename );
 			XML_CHECK_VALUE_NODE( "Text", "Value", m_text);
-			XML_CHECK_VALUE_NODE( "Color", "Value", m_color);
+			XML_CHECK_VALUE_NODE( "Color", "Value", color);
 			XML_CHECK_VALUE_NODE( "Height", "Value", m_height);
 			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
 		}
+
+		//FIXME
+		m_color.a = color.x;
+		m_color.r = color.y;
+		m_color.g = color.z;
+		m_color.b = color.w;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render()

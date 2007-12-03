@@ -11,8 +11,6 @@ public:
 
 class SoundBufferInterface
 {
-public:
-	virtual void unload() = 0;
 };
 
 class SoundSourceInterface
@@ -39,7 +37,7 @@ public:
 	virtual bool isLooping() const = 0;
 
 public:
-	virtual int	getLengthMS() = 0;
+	virtual int	getLengthMs() = 0;
 	virtual int getPosMs() = 0;
 
 	virtual void setSoundNodeListener(SoundNodeListenerInterface * _listener) = 0;
@@ -56,6 +54,8 @@ public:
 
 	virtual void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) = 0;
 	virtual void releaseSoundNode( SoundSourceInterface * _sn ) = 0;
+
+	virtual void update() = 0;
 };
 
 bool initInterfaceSystem( SoundSystemInterface** );

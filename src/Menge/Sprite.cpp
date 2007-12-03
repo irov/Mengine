@@ -37,7 +37,7 @@ namespace	Menge
 	, m_changingColorTime( 0.0f )
 	, m_flipX( false )
 	, m_flipY( false )
-	, m_newColor(  1.0f, 1.0f, 1.0f, 1.0f )
+	, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()

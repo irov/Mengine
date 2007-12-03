@@ -32,10 +32,9 @@ void Color::set( unsigned int _val )
 
 unsigned int Color::get() const
 {
-	unsigned char val8;
 	unsigned int val32 = 0;
 
-	val8 = static_cast<unsigned char>(a * 255);
+	unsigned char val8 = static_cast<unsigned char>(a * 255);
 	val32 = val8 << 24;
 
 	val8 = static_cast<unsigned char>(r * 255);
@@ -52,24 +51,24 @@ unsigned int Color::get() const
 
 Color Color::operator * ( float _s ) const
 {
-	Color col;
+	Color result;
 
-    col.r = _s * r;
-    col.g = _s * g;
-    col.b = _s * b;
-    col.a = _s * a;
+    result.r = _s * r;
+    result.g = _s * g;
+    result.b = _s * b;
+    result.a = _s * a;
 
-    return col;
+    return result;
 }
 
 Color Color::operator + ( const Color & _color ) const
 {
-    Color col;
+    Color result;
 
-    col.r = r + _color.r;
-    col.g = g + _color.g;
-    col.b = b + _color.b;
-    col.a = a + _color.a;
+    result.r = r + _color.r;
+    result.g = g + _color.g;
+    result.b = b + _color.b;
+    result.a = a + _color.a;
 
-    return col;
+    return result;
 }

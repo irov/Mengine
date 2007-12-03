@@ -108,6 +108,7 @@ namespace Menge
 		*/
 
 		unsigned int getColor() const;
+
 	public:
 		virtual bool isVisible( const Viewport & _viewPort );
 

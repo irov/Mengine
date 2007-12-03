@@ -326,11 +326,11 @@ namespace Menge
 			
 			pybind::proxy_<TextField, pybind::bases<SceneNode2D>>("TextField", false)
 				.def( "setText", &TextField::setText )
-				.def( "setColor", &TextField::setColor )
 				.def( "setHeight", &TextField::setHeight )
 				.def( "getText", &TextField::getText )
-				.def( "getColor", &TextField::getColor )
 				.def( "getHeight", &TextField::getHeight )
+				.def( "setColor", &TextField::setColor )
+				.def( "getColor", &TextField::getColor )
 				.def( "setColorTime", &TextField::setColorTime )
 				;
 
@@ -360,6 +360,8 @@ namespace Menge
 				.def( "setScale", &Sprite::setScale )
 				.def( "getScale", &Sprite::getScale )
 				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
+				.def( "setColor", &Sprite::setColor )
+				.def( "getColor", &Sprite::getColor )
 				.def( "setColorTime", &Sprite::setColorTime )
 				.def( "flip", &Sprite::flip )
 				;

@@ -336,7 +336,8 @@ namespace Menge
 				.def( "getHeight", &TextField::getHeight )
 				.def( "setColor", &TextField::setColor )
 				.def( "getColor", &TextField::getColor )
-				.def( "setColorTime", &TextField::setColorTime )
+				.def( "colorTo", &TextField::colorTo )
+				.def( "alphaTo", &TextField::alphaTo )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)
@@ -367,7 +368,7 @@ namespace Menge
 				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
 				.def( "setColor", &Sprite::setColor )
 				.def( "getColor", &Sprite::getColor )
-				.def( "setColorTime", &Sprite::setColorTime )
+				.def( "colorTo", &Sprite::colorTo )
 				.def( "flip", &Sprite::flip )
 				;
 			{

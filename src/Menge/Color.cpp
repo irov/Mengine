@@ -1,74 +1,77 @@
 #	include "Color.h"
 #	include <assert.h>
 
-Color::Color( float _red, float _green, float _blue, float _alpha )
-	: r( _red )
-	, g( _green )
-	, b( _blue )
-	, a( _alpha )
-{ 
-}
-
-float Color::operator [] ( const size_t i ) const
+namespace	Menge
 {
-	assert( i < 4 );
-	return *(&r+i);
-}
+	Color::Color( float _red, float _green, float _blue, float _alpha )
+		: r( _red )
+		, g( _green )
+		, b( _blue )
+		, a( _alpha )
+	{ 
+	}
 
-float& Color::operator [] ( const size_t i )
-{
-	assert( i < 4 );
-	return *(&r+i);
-}
+	float Color::operator [] ( const size_t i ) const
+	{
+		assert( i < 4 );
+		return *(&r+i);
+	}
 
-void Color::set( unsigned int _val )
-{
-    unsigned int val32 = _val;
-    a = ((val32 >> 24) & 0xFF) / 255.0f;
-    r = ((val32 >> 16) & 0xFF) / 255.0f;
-    g = ((val32 >> 8) & 0xFF) / 255.0f;
-    b = (val32 & 0xFF) / 255.0f;
-}
+	float& Color::operator [] ( const size_t i )
+	{
+		assert( i < 4 );
+		return *(&r+i);
+	}
 
-unsigned int Color::get() const
-{
-	unsigned int val32 = 0;
+	void Color::set( unsigned int _val )
+	{
+		unsigned int val32 = _val;
+		a = ((val32 >> 24) & 0xFF) / 255.0f;
+		r = ((val32 >> 16) & 0xFF) / 255.0f;
+		g = ((val32 >> 8) & 0xFF) / 255.0f;
+		b = (val32 & 0xFF) / 255.0f;
+	}
 
-	unsigned char val8 = static_cast<unsigned char>(a * 255);
-	val32 = val8 << 24;
+	unsigned int Color::get() const
+	{
+		unsigned int val32 = 0;
 
-	val8 = static_cast<unsigned char>(r * 255);
-	val32 += val8 << 16;
+		unsigned char val8 = static_cast<unsigned char>(a * 255);
+		val32 = val8 << 24;
 
-	val8 = static_cast<unsigned char>(g * 255);
-	val32 += val8 << 8;
+		val8 = static_cast<unsigned char>(r * 255);
+		val32 += val8 << 16;
 
-	val8 = static_cast<unsigned char>(b * 255);
-	val32 += val8;
+		val8 = static_cast<unsigned char>(g * 255);
+		val32 += val8 << 8;
 
-	return val32;
-}
+		val8 = static_cast<unsigned char>(b * 255);
+		val32 += val8;
 
-Color Color::operator * ( float _s ) const
-{
-	Color result;
+		return val32;
+	}
 
-    result.r = _s * r;
-    result.g = _s * g;
-    result.b = _s * b;
-    result.a = _s * a;
+	Color Color::operator * ( float _s ) const
+	{
+		Color result;
 
-    return result;
-}
+		result.r = _s * r;
+		result.g = _s * g;
+		result.b = _s * b;
+		result.a = _s * a;
 
-Color Color::operator + ( const Color & _color ) const
-{
-    Color result;
+		return result;
+	}
 
-    result.r = r + _color.r;
-    result.g = g + _color.g;
-    result.b = b + _color.b;
-    result.a = a + _color.a;
+	Color Color::operator + ( const Color & _color ) const
+	{
+		Color result;
 
-    return result;
+		result.r = r + _color.r;
+		result.g = g + _color.g;
+		result.b = b + _color.b;
+		result.a = a + _color.a;
+
+		return result;
+	}
 }

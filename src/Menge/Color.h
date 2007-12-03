@@ -1,15 +1,13 @@
 #	pragma once
 
+#	include "math/vec4.h"
+
 namespace	Menge
 {
 	class Color
+		: public mt::vec4f
 	{
 	public:
-		float a;
-		float r;
-		float g;
-		float b;
-
 		Color( float _red = 1.0f, float _green = 1.0f, float _blue = 1.0f, float _alpha = 1.0f );
 
 		void set( unsigned int _val );

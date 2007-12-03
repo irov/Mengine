@@ -4,10 +4,7 @@
 namespace	Menge
 {
 	Color::Color( float _red, float _green, float _blue, float _alpha )
-		: r( _red )
-		, g( _green )
-		, b( _blue )
-		, a( _alpha )
+		: mt::vec4f( _red, _green, _blue, _alpha )
 	{ 
 	}
 

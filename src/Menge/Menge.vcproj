@@ -1238,6 +1238,14 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\Color.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Color.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

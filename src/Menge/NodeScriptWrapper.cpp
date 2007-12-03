@@ -23,6 +23,8 @@
 #	include "SoundEmitter.h"
 #	include "AnimationGroup.h"
 #	include "Emitter.h"
+#	include "Color.h"
+
 
 #	include "Camera3D.h"
 
@@ -253,6 +255,9 @@ namespace Menge
 
 		//	;
 
+		pybind::class_<Color>("Color")
+			.def( pybind::init<float,float,float,float>() )
+		;
 
 		pybind::interface_<Node>("Node", false)
 			.def( "activate", &Node::activate )

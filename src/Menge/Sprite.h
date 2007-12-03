@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "SceneNode2D.h"
+#	include "Color.h"
 
 #	include "math/mat3.h"
 #	include "math/vec4.h"
@@ -94,20 +95,20 @@ namespace Menge
 		\param _color - результирующий цвет
 		\param _time - время, в течении которого будет изменятся цвет
 		*/
-		virtual void setColorTime( unsigned int _color, float _time );
+		virtual void setColorTime( const Color & _color, float _time );
 
 		//! Установка цвета спрайта.
 		/*!
 		\param _color значение цвета
 		*/
-		void setColor( unsigned int _color );
+		void setColor( const Color & _color );
 
 		//! Возвращает цвет спрайта.
 		/*!
 		\return цвет
 		*/
 
-		unsigned int getColor() const;
+		const Color & getColor() const;
 
 	public:
 		virtual bool isVisible( const Viewport & _viewPort );
@@ -151,8 +152,8 @@ namespace Menge
 		mt::vec4f m_percent;
 		mt::vec4f m_uv;
 
-		unsigned int m_color;
+		Color m_color;
 		float m_changingColorTime;
-		unsigned int m_newColor;
+		Color m_newColor;
 	};
 }

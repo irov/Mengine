@@ -25,7 +25,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
 	: m_resource( 0 )
-	, m_color( 0xFFFFFFFF )
+	, m_color( 1.0f, 1.0f, 1.0f, 1.0f )
 	, m_currentImageIndex( 0 )
 	, m_centerAlign( false )
 	, m_alignOffset( 0.f, 0.f )
@@ -37,7 +37,7 @@ namespace	Menge
 	, m_changingColorTime( 0.0f )
 	, m_flipX( false )
 	, m_flipY( false )
-	, m_newColor( 0xFFFFFFFF )
+	, m_newColor(  1.0f, 1.0f, 1.0f, 1.0f )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -230,9 +230,9 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setColorTime( unsigned int _color, float _time )
+	void Sprite::setColorTime( const Color & _color, float _time )
 	{
-		m_newColor = _color;
+		m_newColor = _color.get();
 		m_changingColorTime = _time;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -251,17 +251,17 @@ namespace	Menge
 			m_offset,
 			m_uv,
 			m_size,
-			m_color,
+			m_color.get(),
 			renderImage
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setColor( unsigned int _color )
+	void Sprite::setColor( const Color & _color )
 	{
 		m_color = _color;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int Sprite::getColor() const
+	const Color & Sprite::getColor() const
 	{
 		return m_color;
 	}
@@ -271,7 +271,7 @@ namespace	Menge
 		if( m_changingColorTime > 0.0f )
 		{
 			float d = _timing / m_changingColorTime;
-			m_color = m_newColor * d + ( 1.0f - d ) * m_color;
+			m_color = m_newColor * d + m_color * ( 1.0f - d );
 			m_changingColorTime -= _timing;
 		}
 	}

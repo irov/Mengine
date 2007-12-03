@@ -4,6 +4,8 @@
 #	include "Math/vec2.h"
 #	include "Math/rand.h"
 
+#	include "Color.h"
+
 #	include <time.h>
 
 namespace Menge
@@ -56,6 +58,26 @@ namespace Menge
 		{
 			return _vec2f.y;
 		}
+
+		static float getA( const Color & _color )
+		{
+			return _color.a;
+		}
+
+		static float getR( const Color & _color )
+		{
+			return _color.r;
+		}
+
+		static float getG( const Color & _color )
+		{
+			return _color.g;
+		}
+
+		static float getB( const Color & _color )
+		{
+			return _color.b;
+		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
@@ -70,5 +92,10 @@ namespace Menge
 
 		pybind::def( "getVec2fX", &ScriptHelper::getVec2fX );
 		pybind::def( "getVec2fY", &ScriptHelper::getVec2fY );
+
+		pybind::def( "getA", &ScriptHelper::getA );
+		pybind::def( "getR", &ScriptHelper::getR );
+		pybind::def( "getG", &ScriptHelper::getG );
+		pybind::def( "getB", &ScriptHelper::getB );
 	}
 }

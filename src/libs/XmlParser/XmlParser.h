@@ -228,19 +228,19 @@ namespace xml
 {
 	namespace parse
 	{
-		template<class T>
-		inline bool GetValueAttribute(T &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
-		{
-			char strError[1024];
+		//template<class T>
+		//inline bool GetValueAttribute(T &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
+		//{
+		//	char strError[1024];
 
-			sprintf(strError,"Error parse xml: Invalid Attribute '%s'"
-				, Name.c_str()
-				);
+		//	sprintf(strError,"Error parse xml: Invalid Attribute '%s'"
+		//		, Name.c_str()
+		//		);
 
-			throw std::exception( strError );
+		//	throw std::exception( strError );
 
-			return false;
-		}
+		//	return false;
+		//}
 
 		bool GetValueAttribute(bool &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree);
 		bool GetValueAttribute(unsigned int &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree);

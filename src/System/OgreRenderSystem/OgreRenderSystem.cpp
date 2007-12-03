@@ -115,6 +115,8 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 	m_renderSys->detachRenderTarget(rtgt->getName());
 	Ogre::TextureManager::getSingleton().remove("__shot__");
 
+	//_image->writeToFile("Shot.png");
+
 }
 
 //////////////////////////////////////////////////////////////////////////

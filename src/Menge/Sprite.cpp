@@ -230,7 +230,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setColorTime( const Color & _color, float _time )
+	void Sprite::colorTo( const Color & _color, float _time )
 	{
 		m_newColor = _color.get();
 		m_changingColorTime = _time;

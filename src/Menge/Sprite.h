@@ -95,7 +95,7 @@ namespace Menge
 		\param _color - результирующий цвет
 		\param _time - время, в течении которого будет изменятся цвет
 		*/
-		virtual void setColorTime( const Color & _color, float _time );
+		virtual void colorTo( const Color & _color, float _time );
 
 		//! Установка цвета спрайта.
 		/*!

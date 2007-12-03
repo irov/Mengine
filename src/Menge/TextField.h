@@ -77,7 +77,8 @@ namespace Menge
 		\param _color - результирующий цвет
 		\param _time - время, в течении которого будет изменятся цвет
 		*/
-		void setColorTime(  const Color& _color, float _time );
+		void colorTo( const Color& _color, float _time );
+		void alphaTo( float _alpha, float _time );
 
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;

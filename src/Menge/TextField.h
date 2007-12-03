@@ -53,23 +53,30 @@ namespace Menge
 		*/
 		void setColor( unsigned int _color );
 
-		//! Возвращает высоту глифов.
-		/*!
-		\return высота глифов
-		*/
-		float getHeight() const;
-
 		//! Возвращает цвет глифов.
 		/*!
 		\return цвет глифов
 		*/
 		unsigned int getColor() const;
 
+		//! Возвращает высоту глифов.
+		/*!
+		\return высота глифов
+		*/
+		float getHeight() const;
+
 		//! Возвращает текст.
 		/*!
 		\return текст
 		*/
 		const std::string & getText() const;
+
+		//! Установка времени _time, в течении которого будет изменятся цвет текста к цвету _color.
+		/*!
+		\param _color - результирующий цвет
+		\param _time - время, в течении которого будет изменятся цвет
+		*/
+		void setColorTime( unsigned int _color, float _time );
 
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;
@@ -85,9 +92,14 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
+		void _update( float _timing ) override;
+
 	private:
 		ResourceFont * m_resource;
 		std::string	m_resourcename;
+
+		float m_changingColorTime;
+		unsigned int m_newColor;
 
 		unsigned int m_color;
 		float		m_height;

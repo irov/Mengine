@@ -28,6 +28,8 @@ namespace	Menge
 		, m_height( 12.0f )
 		, m_centerAlign( false )
 		, m_alignOffset( 0.f, 0.f )
+		, m_changingColorTime( 0.0f )
+		, m_newColor( 0xFFFFFFFF )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -169,6 +171,16 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TextField::_update( float _timing )
+	{
+		if( m_changingColorTime > 0.0f )
+		{
+			float d = _timing / m_changingColorTime;
+			m_color = m_newColor * d + ( 1.0f - d ) * m_color;
+			m_changingColorTime -= _timing;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void TextField::setText( const std::string& _text )
 	{
 		m_text = _text;
@@ -189,9 +201,20 @@ namespace	Menge
 		updateAlign_();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TextField::setColorTime( unsigned int _color, float _time )
+	{
+		m_newColor = _color;
+		m_changingColorTime = _time;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void TextField::setColor( unsigned int _color )
 	{
 		m_color = _color;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	unsigned int TextField::getColor() const
+	{
+		return m_color;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getHeight() const
@@ -202,11 +225,6 @@ namespace	Menge
 	void TextField::setHeight( float _height )
 	{
 		m_height = _height;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	unsigned int TextField::getColor() const
-	{
-		return m_color;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string & TextField::getText() const

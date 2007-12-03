@@ -96,6 +96,18 @@ namespace Menge
 		*/
 		virtual void setColorTime( unsigned int _color, float _time );
 
+		//! Установка цвета спрайта.
+		/*!
+		\param _color значение цвета
+		*/
+		void setColor( unsigned int _color );
+
+		//! Возвращает цвет спрайта.
+		/*!
+		\return цвет
+		*/
+
+		unsigned int getColor() const;
 	public:
 		virtual bool isVisible( const Viewport & _viewPort );
 
@@ -141,6 +153,5 @@ namespace Menge
 		unsigned int m_color;
 		float m_changingColorTime;
 		unsigned int m_newColor;
-		bool m_changingColor;
 	};
 }

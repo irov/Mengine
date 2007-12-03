@@ -37,6 +37,7 @@ namespace	Menge
 	, m_changingColorTime( 0.0f )
 	, m_flipX( false )
 	, m_flipY( false )
+	, m_newColor( 0xFFFFFFFF )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -254,7 +255,17 @@ namespace	Menge
 			renderImage
 			);
 	}
-
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setColor( unsigned int _color )
+	{
+		m_color = _color;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	unsigned int Sprite::getColor() const
+	{
+		return m_color;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_update( float _timing )
 	{
 		if( m_changingColorTime > 0.0f )
@@ -264,7 +275,6 @@ namespace	Menge
 			m_changingColorTime -= _timing;
 		}
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_debugRender()
 	{

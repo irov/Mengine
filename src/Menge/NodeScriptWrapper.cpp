@@ -331,6 +331,7 @@ namespace Menge
 				.def( "getText", &TextField::getText )
 				.def( "getColor", &TextField::getColor )
 				.def( "getHeight", &TextField::getHeight )
+				.def( "setColorTime", &TextField::setColorTime )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)

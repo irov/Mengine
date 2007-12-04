@@ -78,6 +78,7 @@ namespace Menge
 		\param _time - время, в течении которого будет изменятся цвет
 		*/
 		void colorTo( const Color& _color, float _time );
+		void setAlpha( float _alpha );
 		void alphaTo( float _alpha, float _time );
 
 	public:

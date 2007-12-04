@@ -41,6 +41,7 @@ namespace	Menge
 		
 		mt::vec2f pos( (float)mx, (float)my );
 		setLocalPosition( pos + m_offsetClick );
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()

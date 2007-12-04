@@ -343,6 +343,7 @@ namespace Menge
 				.def( "getColor", &TextField::getColor )
 				.def( "colorTo", &TextField::colorTo )
 				.def( "alphaTo", &TextField::alphaTo )
+				.def( "setAlpha", &TextField::setAlpha )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)

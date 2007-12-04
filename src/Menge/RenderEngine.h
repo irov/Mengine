@@ -64,6 +64,8 @@ namespace Menge
 		void	beginLayer();
 		void	endLayer();
 
+		void	setFullscreenMode( bool _fullscreen );
+
 	protected:
 		RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;

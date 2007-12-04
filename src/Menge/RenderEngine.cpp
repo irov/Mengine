@@ -165,4 +165,8 @@ namespace Menge
 		m_interface->releaseImage( _image );
 	}
 	////////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setFullscreenMode( bool _fullscreen )
+	{
+		m_interface->setFullscreenMode( _fullscreen );
+	}
 }

@@ -223,6 +223,11 @@ namespace Menge
 
 			return pyNode;		
 		}
+
+		static void setFullscreenMode( bool _fullscreen )
+		{
+			Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
+		}
 	}
 
 	SCRIPT_CLASS_WRAPPING( Node );
@@ -416,5 +421,6 @@ namespace Menge
 
 		pybind::def( "quitApplication", &ScriptMethod::quitApplication );
 		pybind::def( "createShot", &ScriptMethod::createShot );
+		pybind::def( "setFullscreenMode", &ScriptMethod::setFullscreenMode );
 	}
 }

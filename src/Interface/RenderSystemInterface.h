@@ -58,6 +58,9 @@ public:
 
 	virtual	void	beginLayer() = 0;
 	virtual	void	endLayer() = 0;
+
+	virtual void	setFullscreenMode( bool _fullscreen ) = 0;
+
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

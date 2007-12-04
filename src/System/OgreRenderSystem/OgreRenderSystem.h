@@ -8,6 +8,7 @@ class OgreRenderSpriteManager;
 
 class OgreRenderSystem
 	: public OgreRenderSystemInterface
+	, public Ogre::ManualResourceLoader
 {
 public:
 	OgreRenderSystem();
@@ -48,6 +49,7 @@ public:
 	void	endLayer() override;
 
 	void setFullscreenMode( bool _fullscreen );
+	void loadResource( Ogre::Resource* _resource );
 
 private:
 	Ogre::Vector2	m_contentResolution;

@@ -53,7 +53,7 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
  	camera->setNearClipDistance(5);
 
  	m_viewport = m_renderWindow->addViewport( camera );
- 	
+	
 	float width = m_viewport->getActualWidth();
 	float height = m_viewport->getActualHeight();
 	float aspect = width / height;
@@ -94,7 +94,7 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 	}
 	  
 	Ogre::TexturePtr rtt = Ogre::TextureManager::getSingleton().createManual("__shot__", "Default", Ogre::TEX_TYPE_2D, m_renderWindow->getWidth(),
-		 m_renderWindow->getHeight(), 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
+		 m_renderWindow->getHeight(), 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET, this);
 	rtt->load();
 
 	Ogre::RenderTarget* rtgt = rtt->getBuffer()->getRenderTarget();
@@ -142,7 +142,7 @@ void OgreRenderSystem::setWorldMatrix( const float * _world )
 //////////////////////////////////////////////////////////////////////////
 RenderImageInterface* OgreRenderSystem::createImage( const char* _name, unsigned int _width, unsigned int _height )
 {
-	return new OgreRenderImage( _name, _width, _height );
+	return new OgreRenderImage( _name, _width, _height, this );
 }
 //////////////////////////////////////////////////////////////////////////
 RenderImageInterface* OgreRenderSystem::loadImage( const TextureDesc&	_desc )
@@ -212,4 +212,8 @@ void	OgreRenderSystem::endLayer()
 void OgreRenderSystem::setFullscreenMode(  bool _fullscreen )
 {
 	m_renderWindow->setFullscreen( _fullscreen, m_renderWindow->getWidth(), m_renderWindow->getHeight() );
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::loadResource( Ogre::Resource* _resource )
+{
 }

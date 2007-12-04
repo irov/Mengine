@@ -65,6 +65,12 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
 
+	/*Ogre::TexturePtr rtt = Ogre::TextureManager::getSingleton().createManual("__shot__", "Default", Ogre::TEX_TYPE_2D, m_renderWindow->getWidth(),
+		 m_renderWindow->getHeight(), 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
+	rtt->load();
+
+	rtt->getBuffer()->getRenderTarget()->addViewport( camera );*/
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -86,19 +92,20 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 		wrect.right = rect[2];
 		wrect.bottom = rect[3];
 	}
-	//OgreRenderImage* shotImage = new OgreRenderImage( _imageName, wrect.width(), wrect.height() );
-
-	//Ogre::TextureManager::getSingleton().getByName( _imageName );
-
+	  
 	Ogre::TexturePtr rtt = Ogre::TextureManager::getSingleton().createManual("__shot__", "Default", Ogre::TEX_TYPE_2D, m_renderWindow->getWidth(),
-		 m_renderWindow->getHeight(), 1, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
+		 m_renderWindow->getHeight(), 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
+	rtt->load();
 
 	Ogre::RenderTarget* rtgt = rtt->getBuffer()->getRenderTarget();
-
 	
-	Ogre::Root::getSingleton().renderOneFrame();
+	Ogre::Camera* sceneCam = m_sceneMgr->getCamera("defaultCamera");
 
-	//rtgt->writeContentsToFile("shot.png");
+	rtgt->addViewport( sceneCam );
+
+	m_renderWindow->getViewport(0)->setClearEveryFrame(false);
+	Ogre::Root::getSingleton().renderOneFrame();
+	m_renderWindow->getViewport(0)->setClearEveryFrame(true);
 
 	Ogre::HardwarePixelBufferSharedPtr pixb = rtt->getBuffer();
 	
@@ -114,8 +121,6 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 
 	m_renderSys->detachRenderTarget(rtgt->getName());
 	Ogre::TextureManager::getSingleton().remove("__shot__");
-
-	//_image->writeToFile("Shot.png");
 
 }
 
@@ -204,3 +209,7 @@ void	OgreRenderSystem::endLayer()
 	m_spriteMgr->diffZ();
 }
 //////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::setFullscreenMode(  bool _fullscreen )
+{
+	m_renderWindow->setFullscreen( _fullscreen, m_renderWindow->getWidth(), m_renderWindow->getHeight() );
+}

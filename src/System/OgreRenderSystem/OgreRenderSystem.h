@@ -47,6 +47,8 @@ public:
 	void	beginLayer() override;
 	void	endLayer() override;
 
+	void setFullscreenMode( bool _fullscreen );
+
 private:
 	Ogre::Vector2	m_contentResolution;
 	Ogre::Root * m_root;

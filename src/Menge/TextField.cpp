@@ -24,12 +24,12 @@ namespace	Menge
 	TextField::TextField()
 		: m_resource( 0 )
 		, m_length( 0.0f, 0.0f )
-		, m_color( 0xFFFFFFFF )
+		, m_color( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_height( 12.0f )
 		, m_centerAlign( false )
 		, m_alignOffset( 0.f, 0.f )
 		, m_changingColorTime( 0.0f )
-		, m_newColor( 0xFFFFFFFF )
+		, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -225,9 +225,9 @@ namespace	Menge
 		m_color.a = _alpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int TextField::getColor() const
+	const Color& TextField::getColor() const
 	{
-		return m_color.get();
+		return m_color;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getHeight() const

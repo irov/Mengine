@@ -58,7 +58,7 @@ namespace Menge
 		/*!
 		\return цвет глифов
 		*/
-		unsigned int getColor() const;
+		const Color& getColor() const;
 
 		//! Возвращает высоту глифов.
 		/*!

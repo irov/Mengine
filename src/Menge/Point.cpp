@@ -8,6 +8,8 @@
 
 #	include "XmlParser/XmlParser.h"
 
+#	include "HotSpot.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -30,6 +32,13 @@ namespace	Menge
 	void Point::loader( TiXmlElement * _xml )
 	{
 		SceneNode2D::loader( _xml );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Point::testHotSpot( HotSpot * _hotspot )
+	{
+		const mt::vec2f& pos = getLocalPosition();
+		bool result = _hotspot->testPoint( pos );
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Point::_debugRender()

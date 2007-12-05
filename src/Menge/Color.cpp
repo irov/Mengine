@@ -3,23 +3,29 @@
 
 namespace	Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	Color::Color()
+		: mt::vec4f( 1.0f, 1.0f, 1.0f, 1.0f )
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Color::Color( float _red, float _green, float _blue, float _alpha )
 		: mt::vec4f( _red, _green, _blue, _alpha )
 	{ 
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	float Color::operator [] ( const size_t _i ) const
 	{
 		assert( _i < 4 );
 		return *(&r + _i);
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	float& Color::operator [] ( const size_t _i )
 	{
 		assert( _i < 4 );
 		return *(&r + _i);
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void Color::set( unsigned int _val )
 	{
 		unsigned int val32 = _val;
@@ -28,7 +34,7 @@ namespace	Menge
 		g = ( ( val32 >> 8 ) & 0xFF ) / 255.0f;
 		b = ( val32 & 0xFF ) / 255.0f;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	unsigned int Color::get() const
 	{
 		unsigned int val32 = 0;
@@ -47,10 +53,10 @@ namespace	Menge
 
 		return val32;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	Color Color::operator * ( float _s ) const
 	{
-		Color result;
+		Color result(1.0f, 1.0f, 1.0f, 1.0f);
 
 		result.r = _s * r;
 		result.g = _s * g;
@@ -59,10 +65,10 @@ namespace	Menge
 
 		return result;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	Color Color::operator + ( const Color & _color ) const
 	{
-		Color result;
+		Color result(1.0f, 1.0f, 1.0f, 1.0f);
 
 		result.r = r + _color.r;
 		result.g = g + _color.g;
@@ -71,4 +77,5 @@ namespace	Menge
 
 		return result;
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

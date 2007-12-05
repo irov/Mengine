@@ -57,6 +57,7 @@ namespace mt
 	bool	is_convex_polygon(const polygon& poly);
 	float	orient_polygon(const polygon& poly);
 
+	bool	is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::mat3f& wm );
 	bool	intersect_poly_poly( const polygon& _a, const polygon& _b, const mt::mat3f & worldMatrixA, const mt::mat3f & worldMatrixB, const mt::vec2f& _offset = mt::vec2f::zero_v2 );
 
 	bool	operator==(const polygon& _a, const polygon& _b);

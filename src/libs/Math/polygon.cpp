@@ -298,6 +298,39 @@ namespace mt
 		
 		return intersect_counter & 1;
 	}
+
+	bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::mat3f& wm )
+	{
+		size_t size = poly.num_points();
+
+		if( size == 0 )
+		{
+			return false;
+		}
+
+		size_t intersect_counter = 0;
+
+		mt::vec2f prev;
+		mt::mul_v2_m3( prev, poly[ size - 1], wm );
+
+		for ( size_t i = 0; i < size; ++i )
+		{
+			mt::vec2f point;
+			mt::mul_v2_m3( point, poly[ i ], wm );
+
+			if (( point.y > _p.y) ^ (prev.y > _p.y))
+			{
+				if (prev.x + (_p.y - prev.y) / (point.y - prev.y) * (point.x - prev.x) > _p.x)
+				{
+					++intersect_counter;
+				}
+			}
+			prev = point;
+		}
+
+		return intersect_counter & 1;
+	}
+
 	/*	
 		Test if polygon is convex.  
 	*/

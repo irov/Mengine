@@ -371,6 +371,7 @@ namespace Menge
 
 			
 			pybind::proxy_<Point, pybind::bases<SceneNode2D>>("Point", false)
+				.def( "testHotSpot", &Point::testHotSpot )
 				;
 
 			pybind::proxy_<Sprite, pybind::bases<SceneNode2D>>("Sprite", false)

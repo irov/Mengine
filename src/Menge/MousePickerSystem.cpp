@@ -19,7 +19,6 @@ namespace Menge
 		const mt::vec2f & mp = Holder<Player>::hostage()
 			->getPositionClick();
 
-
 		Arrow * arrow = Holder<Player>::hostage()->getArrow();
 
 		HotSpot * hotSpot = arrow->getCurrentHotSpot();

@@ -8,7 +8,8 @@ namespace	Menge
 		: public mt::vec4f
 	{
 	public:
-		Color( float _red = 1.0f, float _green = 1.0f, float _blue = 1.0f, float _alpha = 1.0f );
+		Color();
+		Color( float _red, float _green, float _blue, float _alpha );
 
 		void set( unsigned int _val );
 		unsigned int get() const;

@@ -20,8 +20,8 @@ namespace	Menge
 	OBJECT_IMPLEMENT(HotSpot)
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
-	: m_globalMouseEventListener(false)
-	, m_globalKeyEventListener(false)
+	: m_globalMouseEventListener( false )
+	, m_globalKeyEventListener( false )
 	{
 		this->setHandler( this );
 	}
@@ -58,10 +58,11 @@ namespace	Menge
 
 		is_intersect = mt::intersect_poly_poly( m_polygon, _hotspot->m_polygon, worldMatrixA, worldMatrixB, _offset );
 
-		//if(is_intersect)
-		//printf("true\n");
-		//else
-		//printf("false\n");
+		std::string name = this->getParent()->getName();
+		//name.c_str();
+
+		if(is_intersect)
+			printf("true, %s\n", name.c_str());
 		
 		return is_intersect;
 	}
@@ -70,13 +71,14 @@ namespace	Menge
 	{
 		SceneNode2D::loader(_xml);
 
+		mt::vec2f point;
+
 		XML_FOR_EACH_TREE( _xml )
 		{
 			XML_CHECK_NODE("Point")
 			{
-				mt::vec2f point;
 				XML_VALUE_ATTRIBUTE("Value", point);
-				addPoint(point);
+				addPoint( point );
 			}
 		}
 	}
@@ -194,6 +196,15 @@ namespace	Menge
 
 		Holder<MousePickerSystem>::hostage()
 			->regTrap( this, viewport );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::testPoint( const mt::vec2f & _p )
+	{
+		const mt::mat3f & wm = getWorldMatrix();
+
+		bool result = mt::is_point_inside_polygon( m_polygon, _p, wm );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_debugRender()

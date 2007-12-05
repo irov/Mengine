@@ -4,6 +4,8 @@
 
 namespace Menge
 {
+	class HotSpot;
+
 	class Point
 		: public SceneNode2D
 	{
@@ -11,6 +13,9 @@ namespace Menge
 
 	public:
 		Point();
+
+	public:
+		bool testHotSpot( HotSpot * _hotspot );
 
 	public:
 		void loader( TiXmlElement * _xml ) override;

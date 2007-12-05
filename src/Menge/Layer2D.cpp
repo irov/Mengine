@@ -42,10 +42,7 @@ namespace	Menge
 
 		const mt::vec2f & main_size = main->getSize();
 
-		//mt::vec2f viewport_size( 512.f, 384.f );
-		//mt::vec2f viewport_middle( 512.f, 384.f );
-
-		mt::vec2f viewport_size = mt::vec2f( 512.f, 384.f );/*( m_viewport.end - m_viewport.begin ) * 0.5f*/
+		mt::vec2f viewport_size = mt::vec2f( 512.f, 384.f );
 		mt::vec2f viewport_middle = ( m_viewport.begin + m_viewport.end ) * 0.5f;
 
 		Camera2D * camera = Holder<Player>::hostage()
@@ -78,22 +75,11 @@ namespace	Menge
 
 		mt::vec2f paralax_size = layer_size - viewport_size * 2.f;
 
-
 		viewport_middle.x = paralax_size.x * parallax_factor_x + viewport_size.x;
 		viewport_middle.y = paralax_size.y * parallax_factor_y + viewport_size.y;
 
-		//const mt::vec2f & size = getSize();
-
-		//float parallax_x = main_size.x / size.x;
-		//float parallax_y = main_size.y / size.y;
-
-		//viewport_middle.x *= m_factorParallax.x;
-		//viewport_middle.y *= m_factorParallax.y;
-
 		m_viewport.begin = viewport_middle - viewport_size;
 		m_viewport.end = viewport_middle + viewport_size;
-
-		////return m_viewPort;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::update( float _timing )

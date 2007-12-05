@@ -13,8 +13,8 @@ namespace	Menge
 		void set( unsigned int _val );
 		unsigned int get() const;
 
-		float operator [] ( const size_t i ) const;
-		float& operator [] ( const size_t i );
+		float operator [] ( const size_t _i ) const;
+		float& operator [] ( const size_t _i );
 
 		Color operator * ( float _s ) const;
 		Color operator + ( const Color & _color ) const;

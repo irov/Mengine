@@ -19,15 +19,12 @@
 		<Block/>
 		<Grid/>
 		<Ball/>
-		<MyActor/>
 	</Entities>
 
 	<Scripts Path = "Game/Scripts" />
 
 	<Resource Path = "Game/Resource">
-		<Default/>
 		<FishDemo/>
-		<Kuzya/>
 	</Resource>
 
 	<ResourceResolution Value = "1024;768"/>

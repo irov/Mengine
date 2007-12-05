@@ -46,6 +46,12 @@ namespace Menge
 		virtual void quit();
 
 	public:
+		virtual int getWidth() const;
+		virtual int getHeight() const;
+		virtual int getBits() const;
+		virtual bool isFullscreen() const;
+
+	public:
 		bool handleKeyEvent( size_t _key, bool _isDown );
 		bool handleMouseButtonEvent( size_t _button, bool _isDown );
 		bool handleMouseMove( int _x, int _y, int _whell );
@@ -56,5 +62,10 @@ namespace Menge
 		bool m_quit;
 		std::string m_gameInfo;
 		InputHandler * m_handler;
+
+		int m_width;
+		int m_height;
+		int m_bits;
+		bool m_fullScreen;
 	};
 }

@@ -4,4 +4,11 @@
 
 	<Game File = "Game/Game.xml" />
 
+	<Config>
+		<Width Value = "1024"/>
+		<Height Value = "768"/>
+		<Bits Value = "32"/>
+		<Fullscreen Value = "0"/>
+	</Config>
+
 </Application>

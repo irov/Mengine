@@ -176,6 +176,14 @@ namespace Menge
 					}
 				}
 
+				XML_CHECK_NODE_FOR_EACH("Config")
+				{
+					XML_CHECK_VALUE_NODE("Width", "Value", m_width );					
+					XML_CHECK_VALUE_NODE("Height", "Value", m_height );
+					XML_CHECK_VALUE_NODE("Bits", "Value", m_bits );
+					XML_CHECK_VALUE_NODE("Fullscreen", "Value", m_fullScreen );
+				}
+
 				XML_CHECK_VALUE_NODE("Game", "File", m_gameInfo );
 			}
 		}
@@ -206,18 +214,14 @@ namespace Menge
 		Holder<InputEngine>::hostage()->update();
 		Holder<MousePickerSystem>::hostage()->update();
 
-		RenderEngine *renderEng = Holder<RenderEngine>::hostage();
-
 		Holder<Game>::hostage()->render();
 		Holder<Game>::hostage()->debugRender();
 
 		return !m_quit;
-		//return Holder<InputEngine>::hostage()->isKeyDown( 0x01 ) == false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::handleKeyEvent( size_t _key, bool _isDown )
 	{
-		//createShot = true;
 		return Holder<Game>::hostage()->handleKeyEvent( _key, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -244,4 +248,25 @@ namespace Menge
 		//	createShot = false;
 		//}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	int Application::getWidth() const
+	{
+		return m_width;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int Application::getHeight() const
+	{
+		return m_height;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int Application::getBits() const
+	{
+		return m_bits;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::isFullscreen() const
+	{
+		return m_fullScreen;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

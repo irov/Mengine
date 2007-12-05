@@ -39,14 +39,14 @@ bool OgreInputSystem::init( const OIS::ParamList & _params )
 
 	m_inputManager = OIS::InputManager::createInputSystem( local_params );
 
-	m_keyboard = static_cast<OIS::Keyboard*>(m_inputManager->createInputObject( OIS::OISKeyboard, true ));
-	m_mouse = static_cast<OIS::Mouse*>(m_inputManager->createInputObject( OIS::OISMouse, true ));
+	m_keyboard = static_cast<OIS::Keyboard*>( m_inputManager->createInputObject( OIS::OISKeyboard, true ) );
+	m_mouse = static_cast<OIS::Mouse*>( m_inputManager->createInputObject( OIS::OISMouse, true ) );
 
 	m_mouse->getMouseState().width = 1024;
 	m_mouse->getMouseState().height = 768;
 
-	m_mouse->setEventCallback(this);
-	m_keyboard->setEventCallback(this);
+	m_mouse->setEventCallback( this );
+	m_keyboard->setEventCallback( this );
 
 	return true;
 }

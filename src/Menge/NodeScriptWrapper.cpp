@@ -23,6 +23,8 @@
 #	include "SoundEmitter.h"
 #	include "AnimationGroup.h"
 #	include "Emitter.h"
+#	include "Point.h"
+
 #	include "Color.h"
 
 
@@ -240,6 +242,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( AnimationGroup );
 	SCRIPT_CLASS_WRAPPING( SoundEmitter );
 	SCRIPT_CLASS_WRAPPING( Emitter );
+	SCRIPT_CLASS_WRAPPING( Point );
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{
@@ -362,6 +365,10 @@ namespace Menge
 				.def( "enableGlobalMouseEvent", &HotSpot::enableGlobalMouseEvent )
 				.def( "addPoint", &HotSpot::addPoint )
 				.def( "clearPoints", &HotSpot::clearPoints )
+				;
+
+			
+			pybind::proxy_<Point, pybind::bases<SceneNode2D>>("Point", false)
 				;
 
 			pybind::proxy_<Sprite, pybind::bases<SceneNode2D>>("Sprite", false)

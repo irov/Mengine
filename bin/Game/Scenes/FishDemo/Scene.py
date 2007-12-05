@@ -5,7 +5,6 @@ class Scene( Menge.Scene ):
 		self.camera_x = 512
 		self.camera_y = 384
 
-		#Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 		pass
 
 	def onActivate( self ):
@@ -109,7 +108,7 @@ class Scene( Menge.Scene ):
 	def onUpdate( self, timing ):
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 
-		self.camera_x += timing * 0.0
+		self.camera_x += timing * 0.2
 
 		#self.a = self.a + timing * 0.00005
 

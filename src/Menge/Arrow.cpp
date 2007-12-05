@@ -34,7 +34,7 @@ namespace	Menge
 	{
 		SceneNode2D::_update( _timing );
 
-		InputEngine *inputEng = Holder<InputEngine>::hostage();
+		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
 		int mx = inputEng->getMouseX();
 		int my = inputEng->getMouseY();

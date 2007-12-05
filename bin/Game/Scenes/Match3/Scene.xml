@@ -1,6 +1,0 @@
-<Scene>	
-	<Node Name = "Main" Type = "Layer2D">
-		<Parallax Factor = "1;1" />
-
-	</Node> <!-- Layer -->
-</Scene>

@@ -151,6 +151,8 @@ bool OgreApplication::init( const char * _xmlFile )
 	m_root = new Ogre::Root(
 		resourcePath + "Plugins_d.cfg", 
 		resourcePath + "Ogre.cfg", 
+		//"",
+		//"",
 		resourcePath + "Ogre.log");
 #endif
 
@@ -163,6 +165,10 @@ bool OgreApplication::init( const char * _xmlFile )
 	}
 
 	m_window = m_root->initialise( true );
+
+//	m_root->loadPlugin( resourcePath + "Plugins\\RenderSystem_GL_d.dll" );
+//	m_root->setRenderSystem( m_root->getAvailableRenderers()->at(0) );
+//	m_window = m_root->createRenderWindow( "OGRE Render Window", 1024,768,false,0);
 	
 	m_root->addFrameListener( this );
 

@@ -58,7 +58,7 @@ namespace	Menge
 	{
 		size_t size = m_polygon.num_points();
 
-		if(size == 0)
+		if( size == 0 )
 		{
 			return false;
 		}

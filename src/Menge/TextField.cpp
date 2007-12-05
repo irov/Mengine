@@ -2,11 +2,9 @@
 
 #	include "ObjectImplement.h"
 
-#	include "RenderEngine.h"
-
 #	include "XmlParser/XmlParser.h"
 
-#	include "Interface/RenderSystemInterface.h"
+#	include "RenderEngine.h"
 
 #	include "ResourceManager.h"
 

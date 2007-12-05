@@ -1,13 +1,17 @@
 #	include "LayerScene.h"
+
 #	include "ObjectImplement.h"
+
+#	include "XmlParser/XmlParser.h"
 
 #	include "ScriptEngine.h"
 
 #	include "Scene.h"
+
 #	include "Game.h"
 
 #	include "Holder.h"
-#	include "XmlParser/XmlParser.h"
+
 
 namespace Menge
 {

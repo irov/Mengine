@@ -1,18 +1,16 @@
 #	include "SceneManager.h"
+
+#	include "XmlParser/XmlParser.h"
+
 #	include "NodeFactory.h"
 
-#	include "Node.h"
-#	include "Renderable2D.h"
-
-#	include "InputEngine.h"
 #	include "FileEngine.h"
+
 #	include "ScriptEngine.h"
 
 #	include "Entity.h"
 
 #	include "LogEngine.h"
-
-#	include "XmlParser/XmlParser.h"
 
 namespace Menge
 {

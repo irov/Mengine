@@ -1,19 +1,18 @@
 #	include "Layer2D.h"
 
-#	include "Camera2D.h"
-
 #	include "ObjectImplement.h"
+
+#	include "XmlParser/XmlParser.h"
 
 #	include "Scene.h"
 
 #	include "Camera2D.h"
+
 #	include "Player.h"
 
 #	include "RenderEngine.h"
 
 #	include "LogEngine.h"
-
-#	include "XmlParser/XmlParser.h"
 
 namespace	Menge
 {

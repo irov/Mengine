@@ -3,18 +3,16 @@
 #	include "SceneManager.h"
 
 #	include "Game.h"
+
 #	include "Scene.h"
 
 #	include "Camera2D.h"
+
 #	include "Camera3D.h"
+
 #	include "Arrow.h"
 
-#	include "InputEngine.h"
-
 #	include "LogEngine.h"
-
-//#	define DIRECTINPUT_VERSION 0x0800
-//#	include <dinput.h>
 
 namespace Menge
 {

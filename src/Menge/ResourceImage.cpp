@@ -1,9 +1,10 @@
 #	include "ResourceImage.h"
 
-#	include "RenderEngine.h"
-#	include "LogEngine.h"
-
 #	include "XmlParser/XmlParser.h"
+
+#	include "RenderEngine.h"
+
+#	include "LogEngine.h"
 
 namespace Menge
 {

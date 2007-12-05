@@ -4,10 +4,6 @@
 
 #	include "XmlParser/XmlParser.h"
 
-#	include "RenderEngine.h"
-
-#	include "ScriptEngine.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

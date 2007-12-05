@@ -1,10 +1,13 @@
 #	include "ResourcePlaylist.h"
+
 #	include "ResourceImplement.h"
 
+#	include "XmlParser/XmlParser.h"
+
 #	include "FileEngine.h"
+
 #	include "LogEngine.h"
 
-#	include "XmlParser/XmlParser.h"
 
 namespace Menge
 {

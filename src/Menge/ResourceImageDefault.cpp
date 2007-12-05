@@ -1,4 +1,5 @@
 #	include "ResourceImageDefault.h"
+
 #	include "ResourceImplement.h"
 
 #	include "XmlParser/XmlParser.h"

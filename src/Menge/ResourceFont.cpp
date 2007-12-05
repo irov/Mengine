@@ -1,11 +1,14 @@
 #	include "ResourceFont.h"
+
 #	include "ResourceImplement.h"
 
-#	include "RenderEngine.h"
-#	include "FileEngine.h"
-#	include "LogEngine.h"
-
 #	include "XmlParser/XmlParser.h"
+
+#	include "RenderEngine.h"
+
+#	include "FileEngine.h"
+
+#	include "LogEngine.h"
 
 namespace Menge
 {

@@ -1,5 +1,7 @@
 #	include "ResourceImageDynamic.h"
+
 #	include "ResourceImplement.h"
+
 #	include "RenderEngine.h"
 
 namespace Menge
@@ -43,7 +45,6 @@ namespace Menge
 	{
 		return m_frame.image;
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* ResourceImageDynamic::getImage( size_t _frame )
 	{
@@ -53,9 +54,8 @@ namespace Menge
 	void ResourceImageDynamic::loader( TiXmlElement * _xml )
 	{
 		ResourceImage::loader( _xml );
-
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDynamic::setRenderImage( RenderImageInterface *_image )
 	{
 		m_frame.image = _image;
@@ -71,4 +71,5 @@ namespace Menge
 	{
 		releaseImageFrame( m_frame );
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

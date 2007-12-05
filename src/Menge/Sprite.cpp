@@ -2,13 +2,9 @@
 
 #	include "ObjectImplement.h"
 
-#	include "RenderEngine.h"
-
-#	include "Viewport.h"
-
 #	include "XmlParser/XmlParser.h"
 
-#	include "Interface/RenderSystemInterface.h"
+#	include "RenderEngine.h"
 
 #	include "ResourceImage.h"
 
@@ -277,12 +273,7 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_debugRender()
-	{
-		//const mt::vec2f & pos = getWorldPosition();
-		//const mt::vec2f & size = m_image->getMaxSize();
-		//Holder<RenderEngine>::hostage()
-		//	->drawLine( pos, pos + size, 2, 0xffff00ff );
-	}
+	{}
 }
 
 

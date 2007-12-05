@@ -13,7 +13,6 @@ extern "C"
 	typedef _object PyObject;
 }
 
-
 namespace Menge
 {
 	class HotSpot
@@ -30,7 +29,6 @@ namespace Menge
 		~HotSpot();
 
 	public:
-		//bool pick( float _x, float _y ) override;
 		bool pick( const mt::vec2f& _offset, HotSpot * _hotspot ) override;
 		void onLeave() override;
 		void onEnter() override;
@@ -38,7 +36,6 @@ namespace Menge
 	public:
 		void addPoint( const mt::vec2f & _p );
 		void clearPoints();
-		bool testPoint( const mt::vec2f & _p );
 
 		void enableGlobalMouseEvent( bool _value );
 		void enableGlobalKeyEvent( bool _value );

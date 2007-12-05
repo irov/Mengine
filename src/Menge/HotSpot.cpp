@@ -29,11 +29,6 @@ namespace	Menge
 	HotSpot::~HotSpot()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	/*bool HotSpot::pick( float _x, float _y )
-	{
-		return this->testPoint( mt::vec2f( _x, _y ) );
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()
 	{
 		callEvent( "LEAVE", "(O)", this->getScript() );
@@ -69,40 +64,6 @@ namespace	Menge
 		//printf("false\n");
 		
 		return is_intersect;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testPoint( const mt::vec2f & _p )
-	{
-		size_t size = m_polygon.num_points();
-
-		if( size == 0 )
-		{
-			return false;
-		}
-
-		const mt::mat3f & wm = getWorldMatrix();
-
-		size_t intersect_counter = 0;
-
-		mt::vec2f prev;
-		mt::mul_v2_m3( prev, m_polygon[ size - 1], wm );
-
-		for ( size_t i = 0; i < size; ++i )
-		{
-			mt::vec2f point;
-			mt::mul_v2_m3( point, m_polygon[ i ], wm );
-
-			if (( point.y > _p.y) ^ (prev.y > _p.y))
-			{
-				if (prev.x + (_p.y - prev.y) / (point.y - prev.y) * (point.x - prev.x) > _p.x)
-				{
-					++intersect_counter;
-				}
-			}
-			prev = point;
-		}
-
-		return intersect_counter & 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::loader( TiXmlElement * _xml)

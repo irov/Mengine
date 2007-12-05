@@ -182,7 +182,7 @@ namespace Menge
 
 		static PyObject * createShot( const std::string& _name, mt::vec2f _min,  mt::vec2f _max )
 		{
-			int rect[4] = { _min.x , _min.y, _max.x, _max.y };
+			int rect[4] = { (int)_min.x , (int)_min.y, (int)_max.x, (int)_max.y };
 
 			ResourceImageDynamic * resourceImage 
 				= Holder<ResourceManager>::hostage()->getResourceT<ResourceImageDynamic>( _name );
@@ -261,11 +261,9 @@ namespace Menge
 			//.def( boost::python::self /= float() )
 			;
 
-		//	;
-
 		pybind::class_<Color>("Color")
 			.def( pybind::init<float,float,float,float>() )
-		;
+			;
 
 		pybind::interface_<Node>("Node", false)
 			.def( "activate", &Node::activate )

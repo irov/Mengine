@@ -65,12 +65,6 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
 
-	/*Ogre::TexturePtr rtt = Ogre::TextureManager::getSingleton().createManual("__shot__", "Default", Ogre::TEX_TYPE_2D, m_renderWindow->getWidth(),
-		 m_renderWindow->getHeight(), 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
-	rtt->load();
-
-	rtt->getBuffer()->getRenderTarget()->addViewport( camera );*/
-
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -92,36 +86,24 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 		wrect.right = rect[2];
 		wrect.bottom = rect[3];
 	}
-	  
-	Ogre::TexturePtr rtt = Ogre::TextureManager::getSingleton().createManual("__shot__", "Default", Ogre::TEX_TYPE_2D, m_renderWindow->getWidth(),
-		 m_renderWindow->getHeight(), 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET, this);
-	rtt->load();
+	OgreRenderImage* image = static_cast<OgreRenderImage*>(_image);
+
+	Ogre::TexturePtr rtt = Ogre::TextureManager::getSingleton().createManual("__shot__", "Default", Ogre::TEX_TYPE_2D, 1024, 768, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
 
 	Ogre::RenderTarget* rtgt = rtt->getBuffer()->getRenderTarget();
 	
 	Ogre::Camera* sceneCam = m_sceneMgr->getCamera("defaultCamera");
-
 	rtgt->addViewport( sceneCam );
 
 	m_renderWindow->getViewport(0)->setClearEveryFrame(false);
 	Ogre::Root::getSingleton().renderOneFrame();
 	m_renderWindow->getViewport(0)->setClearEveryFrame(true);
 
+
 	Ogre::HardwarePixelBufferSharedPtr pixb = rtt->getBuffer();
-	
 	Ogre::Image::Box imagebox( wrect.left, wrect.top, wrect.right, wrect.bottom );
-
-	unsigned char* data = new unsigned char[ rtt->getBuffer()->getSizeInBytes() ];
-
-	Ogre::PixelBox pb( wrect.width(), wrect.height(), 1, rtt->getFormat(), data );
-	rtt->getBuffer()->blitToMemory( imagebox, pb );
-
-	/// maybe wrong way
-	static_cast<OgreRenderImage*>( _image )->m_texture->getBuffer()->blitFromMemory(pb);
-
-	m_renderSys->detachRenderTarget(rtgt->getName());
+	static_cast<OgreRenderImage*>( _image )->m_texture->getBuffer()->blit(pixb, imagebox, Ogre::Image::Box(0, 0, _image->getWidth(), _image->getHeight() ));
 	Ogre::TextureManager::getSingleton().remove("__shot__");
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -142,7 +124,12 @@ void OgreRenderSystem::setWorldMatrix( const float * _world )
 //////////////////////////////////////////////////////////////////////////
 RenderImageInterface* OgreRenderSystem::createImage( const char* _name, unsigned int _width, unsigned int _height )
 {
-	return new OgreRenderImage( _name, _width, _height, this );
+	return new OgreRenderImage( _name, _width, _height, Ogre::TU_DEFAULT, this );
+}
+//////////////////////////////////////////////////////////////////////////
+RenderImageInterface* OgreRenderSystem::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height )
+{
+	return new OgreRenderImage( _name, _width, _height, Ogre::TU_RENDERTARGET, this );
 }
 //////////////////////////////////////////////////////////////////////////
 RenderImageInterface* OgreRenderSystem::loadImage( const TextureDesc&	_desc )

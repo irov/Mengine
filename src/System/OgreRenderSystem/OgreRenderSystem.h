@@ -25,6 +25,7 @@ public:
 	void setWorldMatrix( const float * _world ) override;
 
 	RenderImageInterface* createImage( const char* _name, unsigned int _width, unsigned int _height ) override;
+	RenderImageInterface* createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height ) override;
 	RenderImageInterface* loadImage( const TextureDesc&	_desc ) override;
 	void releaseImage( RenderImageInterface* _image ) override;
 	void renderImage(		

@@ -387,7 +387,7 @@ void OgreRenderSpriteManager::doRender(void)
 		}
 
 		renderOp.vertexData->vertexCount = bufferPos - renderOp.vertexData->vertexStart;
-
+		//m_renderSys->_setSceneBlending(Ogre::SceneBlendFactor::SBF_SOURCE_ALPHA, Ogre::SceneBlendFactor::SBF_DEST_ALPHA);
 		m_renderSys->_setTexture( 0, true, currTexture );
 
 		if ( first )

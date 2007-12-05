@@ -78,6 +78,12 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	RenderImageInterface * RenderEngine::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height )
+	{
+		RenderImageInterface * image = m_interface->createRenderTargetImage( _name, _width, _height );
+		return image;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* RenderEngine::loadImage( const TextureDesc & _desc )
 	{
 		RenderImageInterface * image = m_interface->loadImage( _desc );

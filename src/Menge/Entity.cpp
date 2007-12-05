@@ -34,7 +34,7 @@ namespace	Menge
 				moveStop();
 			}
 
-			if( m_rotate )
+			if( /*m_rotate*/ _changeDirection )
 			{
 				rotateStop();
 			}

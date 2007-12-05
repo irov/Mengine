@@ -33,6 +33,8 @@ public:
 	virtual	void setWorldMatrix( const float * _world ) = 0;
 	// create empty render image
 	virtual RenderImageInterface * createImage( const char* _name, unsigned int _width, unsigned int _height ) = 0;
+	// create render target image
+	virtual RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height ) = 0;
 	// загрузка изображения
 	virtual RenderImageInterface * loadImage( const TextureDesc& _desc ) = 0;
 	// удаления изображения

@@ -53,46 +53,6 @@ namespace Menge
 				->remove( _id );
 		}
 
-		static void soundSetVolume( float _volume )
-		{
-			Holder<SoundEngine>::hostage()->setSoundSourceVolume( _volume );
-		}
-
-		static float soundGetVolume()
-		{
-			return Holder<SoundEngine>::hostage()->getSoundSourceVolume();
-		}
-
-		static void commonSetVolume( float _volume )
-		{
-			Holder<SoundEngine>::hostage()->setCommonVolume( _volume );
-		}
-
-		static float commonGetVolume()
-		{
-			return Holder<SoundEngine>::hostage()->getCommonVolume();
-		}
-
-		static void musicPlayList( const std::string & _list )
-		{
-			Holder<Amplifier>::hostage()->play( _list );
-		}
-
-		static void musicSetVolume( float _volume )
-		{
-			Holder<Amplifier>::hostage()->setVolume( _volume );
-		}
-
-		static float musicGetVolume()
-		{
-			return Holder<Amplifier>::hostage()->getVolume();
-		}
-
-		static void musicStop( )
-		{
-			Holder<Amplifier>::hostage()->stop();
-		}
-
 		static int getMouseX()
 		{
 			return Holder<InputEngine>::hostage()
@@ -367,7 +327,6 @@ namespace Menge
 				.def( "clearPoints", &HotSpot::clearPoints )
 				;
 
-			
 			pybind::proxy_<Point, pybind::bases<SceneNode2D>>("Point", false)
 				.def( "testHotSpot", &Point::testHotSpot )
 				;
@@ -413,17 +372,6 @@ namespace Menge
 		pybind::def( "getMouseY", &ScriptMethod::getMouseY );
 
 		pybind::def( "getArrow", &ScriptMethod::getArrow );
-
-		pybind::def( "soundSetVolume", &ScriptMethod::soundSetVolume );
-		pybind::def( "soundGetVolume", &ScriptMethod::soundGetVolume );
-
-		pybind::def( "commonSetVolume", &ScriptMethod::commonSetVolume );
-		pybind::def( "commonGetVolume", &ScriptMethod::commonGetVolume );
-
-		pybind::def( "musicPlayList", &ScriptMethod::musicPlayList );
-		pybind::def( "musicSetVolume", &ScriptMethod::musicSetVolume );
-		pybind::def( "musicGetVolume", &ScriptMethod::musicGetVolume );
-		pybind::def( "musicStop", &ScriptMethod::musicStop );
 
 		pybind::def( "directResourceCompile", &ScriptMethod::directResourceCompile );
 		pybind::def( "directResourceRelease", &ScriptMethod::directResourceRelease );

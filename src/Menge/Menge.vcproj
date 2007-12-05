@@ -881,6 +881,10 @@
 				RelativePath=".\NodeScriptWrapper.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\SoundScriptWrapper.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Scene"

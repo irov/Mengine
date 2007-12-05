@@ -26,10 +26,10 @@ namespace Menge
 
 	public:
 		void setOffsetClick( const mt::vec2f & _offsetClick );
-		const mt::vec2f & getOffsetClick();
+		const mt::vec2f & getOffsetClick() const;
 
 		void addHotSpot( HotSpot * _hotspot );
-		HotSpot * getCurrentHotSpot();
+		HotSpot * getCurrentHotSpot() const;
 
 	public:
 		void loader( TiXmlElement * _xml ) override;

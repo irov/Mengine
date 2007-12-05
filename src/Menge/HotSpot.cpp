@@ -2,17 +2,13 @@
 
 #	include "ObjectImplement.h"
 
+#	include "XmlParser/XmlParser.h"
+
 #	include "MousePickerSystem.h"
 
-#	include "InputEngine.h"
-#	include "ScriptEngine.h"
 #	include "RenderEngine.h"
 
 #	include "Player.h"
-
-#	include "Holder.h"
-
-#	include "XmlParser/XmlParser.h"
 
 namespace	Menge
 {
@@ -53,17 +49,13 @@ namespace	Menge
 	{
 		bool is_intersect = false;
 
-		const mt::mat3f & worldMatrixA = getWorldMatrix();
-		const mt::mat3f & worldMatrixB = _hotspot->getWorldMatrix();
+		const mt::mat3f & wmA = getWorldMatrix();
+		const mt::mat3f & wmB = _hotspot->getWorldMatrix();
 
-		is_intersect = mt::intersect_poly_poly( m_polygon, _hotspot->m_polygon, worldMatrixA, worldMatrixB, _offset );
+		is_intersect = mt::intersect_poly_poly( m_polygon, _hotspot->m_polygon, wmA, wmB, _offset );
 
-		std::string name = this->getParent()->getName();
-		//name.c_str();
-
-		if(is_intersect)
-			printf("true, %s\n", name.c_str());
-		
+		//if(is_intersect)	printf("true\n");
+	
 		return is_intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -208,18 +200,6 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_debugRender()
-	{
-		//RenderEngine *renderEng = Holder<RenderEngine>::hostage();
-		//size_t size = m_polygon.num_points();
-		//for( size_t i = 0; i < size; ++i )
-		//{
-		//	const mt::mat3f & wm = getWorldMatrix();
-		//	mt::vec2f b;
-		//	mt::vec2f e;
-		//	mt::mul_v2_m3( b, m_polygon[ i ], wm );
-		//	mt::mul_v2_m3( e, m_polygon[ (i+1) % size ], wm );
-		//	renderEng->drawLine2D( b, e, 0xffff00ff );
-		//}
-	}
+	{}
 	//////////////////////////////////////////////////////////////////////////
 }

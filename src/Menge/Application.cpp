@@ -249,22 +249,22 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int Application::getWidth() const
+	int Application::getScreenWidth() const
 	{
 		return m_width;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int Application::getHeight() const
+	int Application::getScreenHeight() const
 	{
 		return m_height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int Application::getBits() const
+	int Application::getScreenBits() const
 	{
 		return m_bits;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::isFullscreen() const
+	bool Application::isFullScreen() const
 	{
 		return m_fullScreen;
 	}

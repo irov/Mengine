@@ -46,10 +46,10 @@ namespace Menge
 		virtual void quit();
 
 	public:
-		virtual int getWidth() const;
-		virtual int getHeight() const;
-		virtual int getBits() const;
-		virtual bool isFullscreen() const;
+		virtual int getScreenWidth() const;
+		virtual int getScreenHeight() const;
+		virtual int getScreenBits() const;
+		virtual bool isFullScreen() const;
 
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown );

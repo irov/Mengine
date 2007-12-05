@@ -1,20 +1,14 @@
 #	include "Emitter.h" 
 
-#	include "LogEngine.h"
-
 #	include "ObjectImplement.h"
-
-#	include "RenderEngine.h"
-
-#	include "FileEngine.h"
-
-#	include "ParticleEngine.h"
-
-#	include "Viewport.h"
 
 #	include "XmlParser/XmlParser.h"
 
-#	include "Interface/RenderSystemInterface.h"
+#	include "LogEngine.h"
+
+#	include "RenderEngine.h"
+
+#	include "ParticleEngine.h"
 
 #	include "ResourceEmitterContainer.h"
 

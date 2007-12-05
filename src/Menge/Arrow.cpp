@@ -16,17 +16,16 @@ namespace	Menge
 	OBJECT_IMPLEMENT( Arrow )
 	//////////////////////////////////////////////////////////////////////////
 	Arrow::Arrow()
-		: m_offsetClick(0,0)
-		, m_currentHotSpot(0)
-	{
-	}
+	: m_offsetClick(0,0)
+	, m_currentHotSpot(0)
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setOffsetClick( const mt::vec2f & _offsetClick )
 	{
 		m_offsetClick = _offsetClick;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Arrow::getOffsetClick()
+	const mt::vec2f & Arrow::getOffsetClick() const
 	{
 		return m_offsetClick;
 	}
@@ -61,7 +60,7 @@ namespace	Menge
 			return false;
 		}
 
-		 m_currentHotSpot->activate();
+		m_currentHotSpot->activate();
 
 		return true;
 	}
@@ -107,7 +106,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HotSpot * Arrow::getCurrentHotSpot()
+	HotSpot * Arrow::getCurrentHotSpot() const
 	{
 		return m_currentHotSpot;
 	}

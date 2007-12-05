@@ -2,10 +2,6 @@
 
 #	include "ObjectImplement.h"
 
-#	include "RenderEngine.h"
-
-#	include "InputEngine.h"
-
 #	include "XmlParser/XmlParser.h"
 
 #	include "HotSpot.h"

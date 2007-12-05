@@ -81,26 +81,6 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_debugRender()
-	{
-		//RenderEngine *renderEng = Holder<RenderEngine>::hostage();
-
-		//size_t size = m_polygon.num_points();
-
-		//for( size_t i = 0; i < size; ++i )
-		//{
-		//	const mt::mat3f & wm = getWorldMatrix();
-		//	
-		//	mt::vec2f b;
-		//	mt::vec2f e;
-
-		//	mt::mul_v2_m3( b, m_polygon[ i ], wm );
-		//	mt::mul_v2_m3( e, m_polygon[ (i+1) % size ], wm );
-
-		//	renderEng->drawLine2D( b, e, 0xffff00ff );
-		//}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleKeyEvent( size_t _key, bool _isDown )
 	{
 		bool handle = false;
@@ -214,6 +194,21 @@ namespace	Menge
 
 		Holder<MousePickerSystem>::hostage()
 			->regTrap( this, viewport );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_debugRender()
+	{
+		//RenderEngine *renderEng = Holder<RenderEngine>::hostage();
+		//size_t size = m_polygon.num_points();
+		//for( size_t i = 0; i < size; ++i )
+		//{
+		//	const mt::mat3f & wm = getWorldMatrix();
+		//	mt::vec2f b;
+		//	mt::vec2f e;
+		//	mt::mul_v2_m3( b, m_polygon[ i ], wm );
+		//	mt::mul_v2_m3( e, m_polygon[ (i+1) % size ], wm );
+		//	renderEng->drawLine2D( b, e, 0xffff00ff );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

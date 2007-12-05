@@ -56,12 +56,12 @@ namespace	Menge
 
 		bool result = this->addChildren( m_currentHotSpot );
 
-		m_currentHotSpot->activate();
-
 		if( result == false )
 		{
 			return false;
 		}
+
+		 m_currentHotSpot->activate();
 
 		return true;
 	}
@@ -72,15 +72,8 @@ namespace	Menge
 
 		XML_FOR_EACH_TREE( _xml )
 		{
-			XML_CHECK_VALUE_NODE("ClickOffset", "Value", m_offsetClick);
+			XML_CHECK_VALUE_NODE( "ClickOffset", "Value", m_offsetClick );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Arrow::_debugRender()
-	{
-		//RenderEngine *renderEng = Holder<RenderEngine>::hostage();
-		//const mt::vec2f & pos = getWorldPosition();
-		//renderEng->drawLine2D(pos,pos + mt::vec2f(10,-10),0xffff00ff);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_renderBegin()
@@ -106,12 +99,20 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::addHotSpot( HotSpot * _hotspot )
 	{
-		this->addChildren( _hotspot );
+		bool result = this->addChildren( _hotspot );
+
+		if( result == false )
+		{
+			assert(!"can't add hotspot to arrow");
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot * Arrow::getCurrentHotSpot()
 	{
 		return m_currentHotSpot;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::_debugRender()
+	{}
 	//////////////////////////////////////////////////////////////////////////
 }

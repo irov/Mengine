@@ -12,7 +12,7 @@ namespace Menge
 
     /*! xml - файл имеет следующую структуру:
 	 *	<Node Name = "им€_ноды" Type = "TextField">
-     *      <ClickOffset Value = "значени€ смещени€ курсора"/>
+     *      <ClickOffset Value = "значение_смещени€_курсора"/>
 	 *	</Node>
 	*/
 

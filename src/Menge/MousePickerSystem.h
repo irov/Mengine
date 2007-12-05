@@ -8,6 +8,7 @@ namespace Menge
 {
 	class MousePickerTrap;
 	class InputHandler;
+	class HotSpot;
 
 	class MousePickerSystem
 	{
@@ -25,8 +26,7 @@ namespace Menge
 		void clear();
 
 		void regTrap( MousePickerTrap * _trap, const Viewport & _viewport );
-		MousePickerTrap * pickTrap( float _x, float _y );
-		InputHandler * pickHandler( float _x, float _y );
+		MousePickerTrap * pickTrap( HotSpot * _hotspot );
 
 		bool handleKeyEvent( size_t _key, bool _isDown );
 		bool handleMouseButtonEvent( size_t _button, bool _isDown );

@@ -98,7 +98,10 @@ namespace Menge
 			
 			if( is_trapped )
 			{
-				bool is_intersect = mt::intersect_poly_poly( m_polygon, node->getPolygon() );
+				const mt::mat3f & worldMatrixA = getWorldMatrix();
+				const mt::mat3f & worldMatrixB = node->getWorldMatrix();
+
+				bool is_intersect = mt::intersect_poly_poly( m_polygon, node->getPolygon(), worldMatrixA, worldMatrixB );
 		
 				if( is_intersect )
 				{

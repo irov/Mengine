@@ -46,8 +46,27 @@ namespace mt
 		return points[index];
 	}
 
-	bool	intersect_poly_poly( const polygon& _a, const polygon& _b )
-	{
+	bool	intersect_poly_poly( const polygon& _a, const polygon& _b, const mt::mat3f & worldMatrixA, const mt::mat3f & worldMatrixB, const mt::vec2f& _offset )
+	{	
+
+		polygon polyA;
+
+		for ( size_t i = 0; i < _a.num_points(); ++i )
+		{
+			mt::vec2f point;
+			mt::mul_v2_m3( point, _a[ i ], worldMatrixA );
+			polyA.add_point(point);
+		}
+
+		polygon polyB;
+
+		for ( size_t i = 0; i < _b.num_points(); ++i )
+		{
+			mt::vec2f point;
+			mt::mul_v2_m3( point, _b[ i ], worldMatrixB );
+			polyB.add_point(point);
+		}
+
 		// GJK algo for intersection
 		simplex_solver solver;
 		solver.reset();
@@ -58,8 +77,8 @@ namespace mt
 
 		mt::vec3f V(1,0,0);
 
-		mt::vec3f P(_a.support( V.v2 ),0);
-		mt::vec3f Q(_b.support( -V.v2 ),0);
+		mt::vec3f P(polyA.support( V.v2 ),0);
+		mt::vec3f Q(_offset + polyB.support( -V.v2 ),0);
 
 		mt::vec3f d = P - Q;
 
@@ -69,8 +88,8 @@ namespace mt
 
 		for( int i = 0; i < MaxIterations; i++ )
 		{
-			mt::vec3f P(_a.support( V.v2 ),0);
-			mt::vec3f Q(_b.support( -V.v2 ),0);
+			mt::vec3f P(polyA.support( V.v2 ),0);
+			mt::vec3f Q(_offset + polyB.support( -V.v2 ),0);
 
 			mt::vec3f W = P - Q;
 

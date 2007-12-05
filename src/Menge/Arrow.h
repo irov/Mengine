@@ -6,6 +6,16 @@ namespace Menge
 {
 	class Sprite;
 
+	class HotSpot;
+
+	//! Arrow - курсор. ћожно повесить на курсор HotSpot, и пересечение будет провер€тс€ как хот спот.
+
+    /*! xml - файл имеет следующую структуру:
+	 *	<Node Name = "им€_ноды" Type = "TextField">
+     *      <ClickOffset Value = "значени€ смещени€ курсора"/>
+	 *	</Node>
+	*/
+
 	class Arrow
 		: public SceneNode2D
 	{
@@ -18,6 +28,9 @@ namespace Menge
 		void setOffsetClick( const mt::vec2f & _offsetClick );
 		const mt::vec2f & getOffsetClick();
 
+		void addHotSpot( HotSpot * _hotspot );
+		HotSpot * getCurrentHotSpot();
+
 	public:
 		void loader( TiXmlElement * _xml ) override;
 
@@ -29,8 +42,11 @@ namespace Menge
 		void _update( float _timing ) override;
 		bool _activate() override;
 		void _debugRender() override;
+		bool _compile() override;
 
 	protected:
 		mt::vec2f m_offsetClick;
+
+		HotSpot * m_currentHotSpot;
 	};
 }

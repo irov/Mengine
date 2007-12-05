@@ -6,7 +6,7 @@
 
 #	include "InputEngine.h"
 
-#	include "Sprite.h"
+#	include "HotSpot.h"
 
 #	include "XmlParser/XmlParser.h"
 
@@ -17,6 +17,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Arrow::Arrow()
 		: m_offsetClick(0,0)
+		, m_currentHotSpot(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -41,11 +42,27 @@ namespace	Menge
 		
 		mt::vec2f pos( (float)mx, (float)my );
 		setLocalPosition( pos + m_offsetClick );
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()
 	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Arrow::_compile()
+	{
+		m_currentHotSpot = new HotSpot();
+		m_currentHotSpot->addPoint( mt::vec2f::zero_v2 );
+
+		bool result = this->addChildren( m_currentHotSpot );
+
+		m_currentHotSpot->activate();
+
+		if( result == false )
+		{
+			return false;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -85,6 +102,16 @@ namespace	Menge
 	{
 		Holder<RenderEngine>::hostage()
 			->endLayer();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::addHotSpot( HotSpot * _hotspot )
+	{
+		this->addChildren( _hotspot );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	HotSpot * Arrow::getCurrentHotSpot()
+	{
+		return m_currentHotSpot;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

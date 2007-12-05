@@ -30,7 +30,8 @@ namespace Menge
 		~HotSpot();
 
 	public:
-		bool pick( float _x, float _y ) override;
+		//bool pick( float _x, float _y ) override;
+		bool pick( const mt::vec2f& _offset, HotSpot * _hotspot ) override;
 		void onLeave() override;
 		void onEnter() override;
 
@@ -60,9 +61,10 @@ namespace Menge
 		void _update( float _timing ) override;
 		void _debugRender() override;
 
-	private:
+	protected:
 		mt::polygon m_polygon;
-		
+
+	private:		
 		bool m_globalMouseEventListener;
 		bool m_globalKeyEventListener;
 	};

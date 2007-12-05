@@ -8,6 +8,7 @@
 #include <vector>
 #include <algorithm>
 #include "vec2.h"
+#include "mat3.h"
 
 
 
@@ -56,7 +57,7 @@ namespace mt
 	bool	is_convex_polygon(const polygon& poly);
 	float	orient_polygon(const polygon& poly);
 
-	bool	intersect_poly_poly( const polygon& _a, const polygon& _b );
+	bool	intersect_poly_poly( const polygon& _a, const polygon& _b, const mt::mat3f & worldMatrixA, const mt::mat3f & worldMatrixB, const mt::vec2f& _offset = mt::vec2f::zero_v2 );
 
 	bool	operator==(const polygon& _a, const polygon& _b);
 	bool	operator!=(const polygon& _a, const polygon& _b);

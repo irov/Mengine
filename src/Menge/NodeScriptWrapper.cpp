@@ -352,6 +352,8 @@ namespace Menge
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)
 				.def( "setOffsetClick", &Arrow::setOffsetClick )
 				.def( "getOffsetClick", &Arrow::getOffsetClick )
+				.def( "addHotSpot", &Arrow::addHotSpot )
+				.def( "getCurrentHotSpot", &Arrow::getCurrentHotSpot )
 				;
 
 			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)

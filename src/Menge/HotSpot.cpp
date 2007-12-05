@@ -29,10 +29,10 @@ namespace	Menge
 	HotSpot::~HotSpot()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::pick( float _x, float _y )
+	/*bool HotSpot::pick( float _x, float _y )
 	{
 		return this->testPoint( mt::vec2f( _x, _y ) );
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()
 	{
@@ -52,6 +52,23 @@ namespace	Menge
 	void HotSpot::clearPoints()
 	{
 		m_polygon.clear_points();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::pick( const mt::vec2f& _offset, HotSpot * _hotspot )
+	{
+		bool is_intersect = false;
+
+		const mt::mat3f & worldMatrixA = getWorldMatrix();
+		const mt::mat3f & worldMatrixB = _hotspot->getWorldMatrix();
+
+		is_intersect = mt::intersect_poly_poly( m_polygon, _hotspot->m_polygon, worldMatrixA, worldMatrixB, _offset );
+
+		//if(is_intersect)
+		//printf("true\n");
+		//else
+		//printf("false\n");
+		
+		return is_intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )

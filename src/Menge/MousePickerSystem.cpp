@@ -4,6 +4,7 @@
 #	include "InputEngine.h"
 #	include "InputHandler.h"
 
+#	include "Arrow.h"
 #	include "Player.h"
 
 namespace Menge
@@ -11,16 +12,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerSystem::MousePickerSystem()
 		: m_lastPickerTrap(0)
-	{
-
-	}
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update()
 	{
 		const mt::vec2f & mp = Holder<Player>::hostage()
 			->getPositionClick();
 
-		MousePickerTrap * picker = MousePickerSystem::pickTrap( mp.x, mp.y );
+
+		Arrow * arrow = Holder<Player>::hostage()->getArrow();
+
+		HotSpot * hotSpot = arrow->getCurrentHotSpot();
+
+		MousePickerTrap * picker = MousePickerSystem::pickTrap( hotSpot );
 
 		if( m_lastPickerTrap != picker )
 		{
@@ -56,7 +60,7 @@ namespace Menge
 		m_listPickerTrap.push_front( pt );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MousePickerTrap * MousePickerSystem::pickTrap( float _x, float _y )
+	MousePickerTrap * MousePickerSystem::pickTrap( HotSpot * _hotspot ) 
 	{
 		for each( const PickerTrap & picker in m_listPickerTrap )
 		{
@@ -64,10 +68,7 @@ namespace Menge
 
 			const Viewport & vp = picker.viewport;
 		
-			float picker_x = vp.begin.x + _x;
-			float picker_y = vp.begin.y + _y;
-
-			if( trap->pick( picker_x, picker_y ) == true )
+			if( trap->pick( vp.begin, _hotspot ) == true )
 			{
 				return trap;
 			}
@@ -78,8 +79,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleKeyEvent( size_t _key, bool _isDown )
 	{
-		const mt::vec2f & mp = Holder<Player>::hostage()
-			->getPositionClick();
+		Arrow * arrow = Holder<Player>::hostage()->getArrow();
+
+		HotSpot * hotspot = arrow->getCurrentHotSpot();
 
 		for each( const PickerTrap & picker in m_listPickerTrap )
 		{
@@ -87,10 +89,7 @@ namespace Menge
 
 			const Viewport & vp = picker.viewport;
 
-			float picker_x = vp.begin.x + mp.x;
-			float picker_y = vp.begin.y + mp.y;
-
-			if( trap->pick( picker_x, picker_y ) == true )
+			if( trap->pick( vp.begin, hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -106,8 +105,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEvent( size_t _button, bool _isDown )
 	{
-		const mt::vec2f & mp = Holder<Player>::hostage()
-			->getPositionClick();
+		Arrow * arrow = Holder<Player>::hostage()->getArrow();
+
+		HotSpot * hotspot = arrow->getCurrentHotSpot();
 
 		for each( const PickerTrap & picker in m_listPickerTrap )
 		{
@@ -115,10 +115,7 @@ namespace Menge
 
 			const Viewport & vp = picker.viewport;
 
-			float picker_x = vp.begin.x + mp.x;
-			float picker_y = vp.begin.y + mp.y;
-
-			if( trap->pick( picker_x, picker_y ) == true )
+			if( trap->pick( vp.begin, hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -134,8 +131,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseMove( int _x, int _y, int _whell )
 	{
-		const mt::vec2f & mp = Holder<Player>::hostage()
-			->getPositionClick();
+		Arrow * arrow = Holder<Player>::hostage()->getArrow();
+
+		HotSpot * hotspot = arrow->getCurrentHotSpot();
 
 		for each( const PickerTrap & picker in m_listPickerTrap )
 		{
@@ -143,10 +141,7 @@ namespace Menge
 
 			const Viewport & vp = picker.viewport;
 
-			float picker_x = vp.begin.x + mp.x;
-			float picker_y = vp.begin.y + mp.y;
-
-			if( trap->pick( picker_x, picker_y ) == true )
+			if( trap->pick( vp.begin, hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -160,16 +155,4 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputHandler * MousePickerSystem::pickHandler( float _x, float _y )
-	{
-		MousePickerTrap * picker = 
-			this->pickTrap( _x, _y );
-
-		if( picker )
-		{
-			return picker->handler();
-		}
-
-		return 0;
-	}
 }

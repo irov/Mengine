@@ -49,6 +49,11 @@ namespace mt
 	bool	intersect_poly_poly( const polygon& _a, const polygon& _b, const mt::mat3f & worldMatrixA, const mt::mat3f & worldMatrixB, const mt::vec2f& _offset )
 	{	
 
+		if( _a.num_points() == 0 || _b.num_points() == 0 )
+		{
+			return false;
+		}
+
 		polygon polyA;
 
 		for ( size_t i = 0; i < _a.num_points(); ++i )

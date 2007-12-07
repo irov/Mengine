@@ -3,9 +3,12 @@
 #	include "SceneNode2D.h"
 #	include "Color.h"
 
+//class	RenderImageInterface;
+
 namespace Menge
 {
 	class ResourceFont;
+	class ResourceImage;
 
 	//! TextField - класс для отрисовки шрифта. 
 
@@ -81,6 +84,18 @@ namespace Menge
 		void setAlpha( float _alpha );
 		void alphaTo( float _alpha, float _time );
 
+		//! Установка обводки цвета глифов.
+		/*!
+		\param _color значение цвета
+		*/
+		void setOutlineColor( const Color& _color );
+
+		//! Возвращает цвет обводки глифов.
+		/*!
+		\return цвет обводки глифов
+		*/
+		const Color& getOutlineColor() const;
+
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;
 		void loader( TiXmlElement * _xml ) override;
@@ -105,12 +120,17 @@ namespace Menge
 		Color m_newColor;
 
 		Color m_color;
+		Color m_outlineColor;
 		float		m_height;
 		std::string m_text;
 		mt::vec2f	m_length;
 
 		bool m_centerAlign;
 		mt::vec2f m_alignOffset;
+
+		//RenderImageInterface * m_outlineImage;
+		ResourceImage * m_outlineImage;
+		std::string m_outlineFontName;
 		
 		void updateAlign_();
 	};

@@ -307,6 +307,8 @@ namespace Menge
 				.def( "colorTo", &TextField::colorTo )
 				.def( "alphaTo", &TextField::alphaTo )
 				.def( "setAlpha", &TextField::setAlpha )
+				.def( "setOutlineColor", &TextField::setOutlineColor )
+				.def( "getOutlineColor", &TextField::getOutlineColor )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)

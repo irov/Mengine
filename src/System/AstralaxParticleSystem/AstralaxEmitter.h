@@ -33,7 +33,7 @@ private:
 	double		m_total_rate;
 	HM_EMITTER	m_id;
 	bool		m_start;
-	bool		m_stop;
+//	bool		m_stop;
 	bool		m_looped;
 	void	_leftVisibleInterval( double _left );
 };

@@ -10,6 +10,8 @@
 
 #	include "ResourceFont.h"
 
+#	include "ResourceImage.h"
+
 #	include "LogEngine.h"
 
 #	include "math/box2.h"
@@ -23,12 +25,15 @@ namespace	Menge
 		: m_resource( 0 )
 		, m_length( 0.0f, 0.0f )
 		, m_color( 1.0f, 1.0f, 1.0f, 1.0f )
+		, m_outlineColor( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_height( 12.0f )
 		, m_centerAlign( false )
 		, m_alignOffset( 0.f, 0.f )
 		, m_changingColorTime( 0.0f )
 		, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
+		, m_outlineImage( 0 )
 	{
+		m_outlineFontName.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TextField::~TextField()
@@ -96,6 +101,19 @@ namespace	Menge
 			return false;
 		}
 
+		if( m_outlineFontName.empty() == false )
+		{
+			m_outlineImage = 
+				Holder<ResourceManager>::hostage()
+				->getResourceT<ResourceImage>( m_outlineFontName );
+
+			if( m_outlineImage == 0 )
+			{
+				MENGE_LOG( "Error: Outline Image can't loaded '%s'", m_outlineFontName.c_str() );
+				return false;
+			}
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -105,6 +123,9 @@ namespace	Menge
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resource );
+
+		Holder<ResourceManager>::hostage()
+			->releaseResource( m_outlineImage );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::loader( TiXmlElement * _xml )
@@ -118,18 +139,64 @@ namespace	Menge
 			XML_CHECK_VALUE_NODE( "Color", "Value", m_color);
 			XML_CHECK_VALUE_NODE( "Height", "Value", m_height);
 			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
+			XML_CHECK_VALUE_NODE( "OutlineColor", "Value", m_outlineColor);
+			XML_CHECK_VALUE_NODE( "OutlineImage", "Name", m_outlineFontName);
 		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render()
 	{
 		float spaceWidth = m_resource->getCharRatio(' ') * m_height;
 
-		mt::vec2f offset = m_alignOffset;
-
 		const mt::mat3f & wm = getWorldMatrix();
 		const RenderImageInterface * renderImage = m_resource->getImage();
+
+		mt::vec2f offset = m_alignOffset;
+
+		if( m_outlineImage != NULL )
+		{
+			const RenderImageInterface * renderImage = m_outlineImage->getImage(0);
+
+			for( std::string::const_iterator
+				it = m_text.begin(), 
+				it_end = m_text.end();
+				it != it_end; 
+				++it )
+			{
+				if ( *it == '\\' )
+				{
+					if ( ++it == it_end )
+					{
+						break;
+					}
+
+					if( *it == 'n' )
+					{
+						offset.x = 0;
+						offset.y += m_height;
+						continue;
+					}
+				}
+
+				if ( *it == ' ' )
+				{
+					offset.x += spaceWidth;
+					continue;
+				}
+
+				const mt::vec4f & uv = m_resource->getUV( *it );
+		 
+				float width = m_resource->getCharRatio( *it ) * m_height;
+				
+				mt::vec2f size( width, m_height );
+
+				Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, m_outlineColor.get(), renderImage );
+
+				offset.x += width;
+			}
+		}	
+		
+		offset = m_alignOffset;
 
 		for( std::string::const_iterator
 			it = m_text.begin(), 
@@ -168,6 +235,7 @@ namespace	Menge
 
 			offset.x += width;
 		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_update( float _timing )
@@ -178,6 +246,16 @@ namespace	Menge
 			m_color = m_newColor * d + m_color * ( 1.0f - d );
 			m_changingColorTime -= _timing;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setOutlineColor( const Color& _color )
+	{
+		m_outlineColor = _color;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Color& TextField::getOutlineColor() const
+	{
+		return m_outlineColor;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setText( const std::string& _text )

@@ -7,7 +7,7 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 	, m_leftBorder( 0.0f )
 	, m_total_rate( 0.0f )
 	, m_looped( false )
-	, m_stop( false )
+	//, m_stop( false )
 {
 	HM_EMITTER duplicated_id;
 	Magic_DuplicateEmitter( m_id, &duplicated_id );
@@ -16,7 +16,7 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 //////////////////////////////////////////////////////////////////////////
 AstralaxEmitter::~AstralaxEmitter()
 {
-	Magic_UnloadEmitter( m_id );
+//	Magic_UnloadEmitter( m_id );
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::getBoundingBox( int & left, int & top, int & right, int & bottom )  const
@@ -45,7 +45,7 @@ void AstralaxEmitter::play()
 
 	m_start = true;
 
-	m_stop = false;
+//	m_stop = false;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::setLooped( bool _loop )
@@ -62,13 +62,13 @@ bool AstralaxEmitter::getLooped() const
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::stop()
 {
-	//m_start = false;
+	m_start = false;
 
-	//Magic_Stop( m_id );
+	Magic_Stop( m_id );
 
-	//Magic_Restart( m_id );
+	Magic_Restart( m_id );
 
-	m_stop = true;
+	//m_stop = true;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::pause()
@@ -94,7 +94,7 @@ void AstralaxEmitter::update( float _timing )
 
         if ( Magic_IsRestart( m_id ) )
         { 
-			if( m_looped && m_stop == false )
+			if( m_looped /*&& m_stop == false*/ )
 			{
 				Magic_Restart( m_id );
 			}

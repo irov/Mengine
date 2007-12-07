@@ -173,7 +173,7 @@ class Scene( Menge.Scene ):
 		
 		if key == 57:
 			print "57"
-			self.bubble1.play();
+			self.bubble.play();
 			#self.emitterTest.play();
 
 		if key == 54:
@@ -182,7 +182,7 @@ class Scene( Menge.Scene ):
 
 		if key == 2:
 			print "2"
-			self.bubble.play();
+			self.bubble.stop();
 			#self.emitterTest1.play();
 			#self.emitterTest.stop();
 

@@ -49,6 +49,7 @@ int main()
 		return 0;
 	}
 
+
 	if( app->init( "application.xml" ) )
 	{
 		app->run();

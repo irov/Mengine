@@ -24,6 +24,11 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Viewport* Layer2D::getViewport()
+	{
+		return &m_viewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setParallaxFactor( const mt::vec2f & _factor )
 	{
 		m_factorParallax = _factor;
@@ -162,4 +167,9 @@ namespace	Menge
 			->endLayer();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::_addChildren( Node* _node )
+	{
+		SceneNode2D* sceneNode = dynamic_cast<SceneNode2D*>(_node);
+		sceneNode->setLayer( this );
+	}
 }

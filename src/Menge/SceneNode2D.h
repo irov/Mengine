@@ -23,8 +23,11 @@ namespace Menge
 		SceneNode2D();
 
 	public:
+		void setLayer( Layer2D* _layer );
+		virtual mt::vec2f getScreenPosition();
 		const mt::mat3f & getWorldMatrix() override;
 		void changePivot() override;
+
 
 	public:
 		void _render() override;
@@ -32,5 +35,8 @@ namespace Menge
 	public:
 		void loader( TiXmlElement * _xml ) override;
 		void debugRender() override;
+
+	protected:
+		Layer2D* m_layer;
 	};
 }

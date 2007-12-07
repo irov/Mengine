@@ -9,6 +9,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ScheduleManager::ScheduleManager()
 		: m_schedulesID(0)
+		, m_updating(false)
 	{
 
 	}
@@ -17,7 +18,9 @@ namespace Menge
 	{
 		ScheduleEvent event;
 
+
 		event.dead = false;
+		event.updating = m_updating;
 		event.timing = _timing;
 		event.script = _func;
 		event.id = ++m_schedulesID;
@@ -46,7 +49,7 @@ namespace Menge
 			size_t m_id;
 		};
 			
-		TSchedules::iterator it_find = 
+		TListSchedules::iterator it_find = 
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
 
 		if( it_find != m_schedules.end() )
@@ -57,13 +60,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::update( float _timing )
 	{
-		for( TSchedules::iterator 
+		m_updating = true;
+
+		for( TListSchedules::iterator 
 			it = m_schedules.begin(),
 			it_end = m_schedules.end();
 		it != it_end;
 		++it)
 		{
 			if( it->dead )
+			{
+				continue;
+			}
+			
+			if( it->updating )
 			{
 				continue;
 			}
@@ -81,6 +91,9 @@ namespace Menge
 			}
 		}
 
+		m_updating = false;
+
+
 		struct FScheduleDead
 		{
 			bool operator ()( const ScheduleEvent & _event ) const
@@ -95,8 +108,18 @@ namespace Menge
 			}
 		};
 
-		TSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead());
+		TListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead());
 
 		m_schedules.erase( it_erase, m_schedules.end() );
+
+		struct FScheduleUpdating
+		{
+			void operator ()( ScheduleEvent & _event ) const
+			{
+				_event.updating = false;
+			}
+		};
+
+		std::for_each( m_schedules.begin(), m_schedules.end(), FScheduleUpdating() );
 	}
 }

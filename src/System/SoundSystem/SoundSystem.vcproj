@@ -122,6 +122,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\vorbis\include&quot;;&quot;$(SolutionDir)dependencies\PThreads\include&quot;;&quot;$(SolutionDir)dependencies\OpenALSDK\include&quot;;&quot;$(SolutionDir)dependencies\freealut\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SOUNDSYSTEMINTERFACE_EXPORTS"
 				RuntimeLibrary="2"
@@ -144,11 +145,14 @@
 				AdditionalDependencies="OpenAL32.lib alut.lib vorbis_static.lib vorbisfile_static.lib ogg_static.lib PThreadVC2.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\lib&quot;;&quot;$(SolutionDir)dependencies\OpenAL\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\PThreads\lib&quot;;&quot;$(SolutionDir)dependencies\freealut\lib&quot;;&quot;$(SolutionDir)dependencies\libvorbis\lib&quot;;&quot;$(SolutionDir)dependencies\libogg\lib&quot;"
+				IgnoreDefaultLibraryNames="LIBCMT.lib"
 				ModuleDefinitionFile="SoundSystemInterface.def"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="0"
+				ImportLibrary="$(SolutionDir)Lib\$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -249,10 +253,6 @@
 			</File>
 			<File
 				RelativePath=".\ALSoundSystem.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SoundSystemInterface.h"
 				>
 			</File>
 			<File

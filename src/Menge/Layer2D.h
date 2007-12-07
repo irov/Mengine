@@ -19,6 +19,7 @@ namespace Menge
 
 	public:
 		void setParallaxFactor( const mt::vec2f & _factor );
+		Viewport* getViewport();
 
 	public:
 		void loader( TiXmlElement * _xml ) override;
@@ -32,6 +33,8 @@ namespace Menge
 
 	public:
 		void update( float _timing ) override;
+
+		void _addChildren(Node* _node);
 		
 	protected:
 		bool _renderBegin() override;

@@ -3,7 +3,7 @@
 
 #include "AL.h"
 
-#include "SoundSystemInterface.h"
+#include "../../Interface/SoundSystemInterface.h"
 
 #include <vector>
 
@@ -19,8 +19,8 @@ public:
 
 	void setLenghtMs(unsigned int _ms)	{ m_lenghtMs = _ms; }
 
-	void addSource(SoundSourceInterface* _source);// { m_sources.push_back(_source); }
-	void removeSource(SoundSourceInterface* _source); //{ m_sources.erase(_source); }
+	void addSource(SoundSourceInterface* _source);
+	void removeSource(SoundSourceInterface* _source); 
 
 protected:
 

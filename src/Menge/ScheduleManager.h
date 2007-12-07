@@ -18,6 +18,7 @@ namespace Menge
 		struct ScheduleEvent
 		{
 			bool dead;
+			bool updating;
 			size_t id;
 			float timing;
 			PyObject * script;
@@ -31,9 +32,10 @@ namespace Menge
 		void update( float _timing );
 
 	private:
-		typedef std::list<ScheduleEvent> TSchedules;
+		typedef std::list<ScheduleEvent> TListSchedules;
 
+		bool m_updating;
 		size_t m_schedulesID;
-		TSchedules m_schedules;
+		TListSchedules m_schedules;
 	};
 }

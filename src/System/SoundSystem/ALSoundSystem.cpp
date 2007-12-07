@@ -9,7 +9,8 @@
 #include "ALSoundSource.h"
 #include "ALSoundSystem.h"
 
-#include <stdlib.h>
+//#include <stdlib.h>
+#include <algorithm>
 
 unsigned int DecodeOggVorbis(OggVorbis_File *psOggVorbisFile, char *pDecodeBuffer, unsigned int ulBufferSize, unsigned int ulChannels);
 void Swap(short &s1, short &s2);
@@ -236,6 +237,14 @@ void    ALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 	}
 }
 
+void ALSoundSystem::update()
+{
+	for(int i = 0; i < m_streams.size(); i++)
+	{
+		//m_streams[i]->getUpdater()->update();
+	}
+}
+
 void	ALSoundSystem::setSoundVelocity(float _velocity)
 {
 	m_soundVelocity = _velocity;
@@ -272,6 +281,18 @@ void	ALSoundSystem::setDistanceModel(EDistanceModel _model)
 		return;
 	}
 	m_distanceModel = _model;
+}
+
+void ALSoundSystem::addStream( ALSoundBufferStream *_stream )
+{
+	m_streams.push_back( _stream );
+}
+
+void ALSoundSystem::removeStream( ALSoundBufferStream* _stream )
+{
+	TVectorALSoundBufferStream::iterator it = std::find( m_streams.begin(), m_streams.end(), _stream );
+	if(it != m_streams.end())
+		m_streams.erase(it);
 }
 
 unsigned int DecodeOggVorbis(OggVorbis_File* _oggVorbisFile, char* _decodeBuffer, unsigned int _bufferSize, unsigned int _channels)

@@ -76,7 +76,7 @@ void OgreRenderSystem::setContentResolution( const float * _resolution )
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 {
-	if( !_image ) return;
+	if( !_image || Ogre::TextureManager::getSingleton().getByName("__shot__").isNull() == false ) return;
 
 	Ogre::Rect wrect( 0, 0, m_renderWindow->getWidth(), m_renderWindow->getHeight() );
 	if(rect)
@@ -104,6 +104,7 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 	Ogre::Image::Box imagebox( wrect.left, wrect.top, wrect.right, wrect.bottom );
 	static_cast<OgreRenderImage*>( _image )->m_texture->getBuffer()->blit(pixb, imagebox, Ogre::Image::Box(0, 0, _image->getWidth(), _image->getHeight() ));
 	Ogre::TextureManager::getSingleton().remove("__shot__");
+
 }
 
 //////////////////////////////////////////////////////////////////////////

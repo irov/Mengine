@@ -8,6 +8,8 @@ namespace Menge
 		: public virtual Node
 	{
 	public:
+		NodeRenderable();
+
 		void render() override;
 		bool isRenderable() override;
 	

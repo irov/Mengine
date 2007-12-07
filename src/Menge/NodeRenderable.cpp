@@ -6,6 +6,11 @@
 
 namespace Menge
 {
+
+	NodeRenderable::NodeRenderable()
+		: m_hide( false )
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeRenderable::hide( bool _value )
 	{

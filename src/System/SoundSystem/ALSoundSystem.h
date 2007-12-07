@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "SoundSystemInterface.h"
+#include "../../Interface/SoundSystemInterface.h"
 
 #include <vector>
 
@@ -23,6 +23,7 @@ typedef struct
 TALSourceName;
 
 class ALSoundSource;
+class ALSoundBufferStream;
 
 class ALSoundSystem : public SoundSystemInterface
 {
@@ -40,6 +41,8 @@ public:
 	virtual void    releaseSoundBuffer( SoundBufferInterface * _soundBuffer );
 	virtual void    releaseSoundNode( SoundSourceInterface * _sn );
 
+	virtual void	update();
+
 public:
 	void	setSoundVelocity( float _velocity );
 	float	getSoundVelocity()								{ return m_soundVelocity; }
@@ -50,12 +53,17 @@ public:
 
 	TALSourceName* getFreeSourceName();
 
+	void	addStream( ALSoundBufferStream* _stream );
+	void	removeStream( ALSoundBufferStream* _stream );
+
 private:
 	TALSourceName m_sourceNames[MAX_SOURCENAMES_NUM];
 	int m_sourceNamesNum;
 	std::vector<ALSoundSource*>	m_sources;
-	//ALSoundSource* m_sources[MAX_SOURCE_NUM];
-	//int m_sourceNum;
+	
+	typedef std::vector<ALSoundBufferStream*> TVectorALSoundBufferStream;
+	TVectorALSoundBufferStream m_streams;
+
 	float m_soundVelocity;
 	float m_dopplerFactor;
 	EDistanceModel m_distanceModel;

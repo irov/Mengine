@@ -18,6 +18,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode2D::SceneNode2D()
+		: m_layer( NULL )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::loader( TiXmlElement * _xml )
@@ -65,5 +66,18 @@ namespace Menge
 			children->debugRender();
 		}
 		NodeCore::debugRender();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::setLayer( Layer2D* _layer )
+	{
+		m_layer = _layer;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f SceneNode2D::getScreenPosition()
+	{
+		mt::vec2f pos = getWorldPosition();
+		if( m_layer )
+			pos -= m_layer->getViewport()->begin;
+		return pos;
 	}
 }

@@ -223,6 +223,7 @@ namespace Menge
 
 		pybind::class_<Color>("Color")
 			.def( pybind::init<float,float,float,float>() )
+			.def( "set", &Color::set )
 			;
 
 		pybind::interface_<Node>("Node", false)
@@ -260,6 +261,7 @@ namespace Menge
 			;
 
 		pybind::proxy_<SceneNode2D, pybind::bases<Node, Allocator2D, NodeRenderable>>("SceneNode2D", false)
+				.def( "getScreenPosition", &SceneNode2D::getScreenPosition )
 			;
 
 		{

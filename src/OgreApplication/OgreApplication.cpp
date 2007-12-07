@@ -145,21 +145,41 @@ bool OgreApplication::init( const char * _xmlFile )
 
 
 	m_root = new Ogre::Root(
-		//resourcePath + "Plugins_d.cfg", 
-		//resourcePath + "Ogre.cfg", 
 		"",
 		"",
 		resourcePath + "Menge.log");
 
 	m_root->loadPlugin( resourcePath + DllRenderPlugin );
-	m_root->setRenderSystem( m_root->getAvailableRenderers()->at(0) );
+
+	Ogre::RenderSystem * rs = m_root->getAvailableRenderers()->at(0);
+	m_root->setRenderSystem( rs );
 	m_root->initialise( false );
-	m_window = m_root->createRenderWindow( "Menge-engine", 1024,768,false,0);
-	
-	m_root->addFrameListener( this );
+
+
+
+
+		m_root->addFrameListener( this );
 
 	size_t windowHnd = 0;
 	std::ostringstream windowHndStr;
+
+	fileInterface->loadPath(".");
+
+	//bool initialize = m_application->initialize( _xmlFile );
+
+//	int bits = m_application->getScreenBits();
+//	int screenWidth = m_application->getScreenWidth();
+//	int screenHeight = m_application->getScreenHeight();
+//	bool fullscreen = m_application->isFullScreen();
+
+	Ogre::NameValuePairList params;
+
+//	Ogre::String	valueBit = Ogre::StringConverter::toString( bits );
+
+//	params.insert( std::make_pair("Colour Depth", valueBit ) );
+
+	//m_window = m_root->createRenderWindow( "Menge-engine", screenWidth, screenHeight, fullscreen, &params );
+	m_window = m_root->createRenderWindow( "Menge-engine", 1024, 768, false, 0 );
 
 	m_window->getCustomAttribute("WINDOW", &windowHnd);
 	windowHndStr << windowHnd;
@@ -175,11 +195,9 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	inputInterface->init( pl );
 
-	fileInterface->loadPath(".");
+	renderInterface->init( m_root, m_window );
 
 	bool initialize = m_application->initialize( _xmlFile );
-
-	renderInterface->init( m_root, m_window );
 
 	return initialize;
 }

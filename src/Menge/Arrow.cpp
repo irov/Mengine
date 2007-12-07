@@ -104,6 +104,8 @@ namespace	Menge
 		{
 			assert(!"can't add hotspot to arrow");
 		}
+
+		m_currentHotSpot = _hotspot;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot * Arrow::getCurrentHotSpot() const

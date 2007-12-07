@@ -82,10 +82,10 @@ class Scene( Menge.Scene ):
 		self.testTextField.setLocalPosition( Menge.vec2f( 100,101 ) )
 
 		self.emitterTest = self.getNode( "EmitterTest1" );
-		#self.emitterTest.play();
 
-		#self.emitterTest1 = self.getNode( "EmitterTest2" );
-		#self.emitterTest1.play();
+		self.emitterTest1 = self.getNode( "EmitterTestRush" );
+
+		#self.emitterTest1.setLocalPosition( Menge.vec2f( 200,201 ) );
 		
 
 		block.activate();
@@ -108,7 +108,7 @@ class Scene( Menge.Scene ):
 	def onUpdate( self, timing ):
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 
-		self.camera_x += timing * 0.2
+		self.camera_x += timing * 0.0
 
 		#self.a = self.a + timing * 0.00005
 
@@ -152,23 +152,24 @@ class Scene( Menge.Scene ):
 		
 		if key == 57:
 			print "57"
-			#self.emitterTest.play( False );
+			self.emitterTest.play();
 
 		if key == 54:
 			print "54"
-			#self.emitterTest.pause();
+			self.emitterTest.pause();
 
 		if key == 2:
 			print "2"
-			#self.emitterTest.setLooped( True );
+			self.emitterTest1.play();
+			#self.emitterTest.stop();
 
 		if key == 3:
 			print "3"
-			#self.emitterTest.setLooped( False );
+			self.emitterTest.setLooped( True );
 
 		if key == 4:
 			print "4"
-			#self.emitterTest.setLeftBorder( 8000 );
+			self.emitterTest.setLooped( False );
 
 		return False
 		pass

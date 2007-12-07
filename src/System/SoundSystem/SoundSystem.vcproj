@@ -69,7 +69,7 @@
 				ModuleDefinitionFile="SoundSystemInterface.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				ImportLibrary="$(TargetDir)$(TargetName)_d.lib"
+				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"
 				TargetMachine="1"
 			/>
 			<Tool

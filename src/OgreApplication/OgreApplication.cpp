@@ -70,7 +70,6 @@ OgreApplication::~OgreApplication()
 		{
 			window->removeAllViewports();
 		}
-
 		delete m_root;
 		m_root = 0;
 	}
@@ -88,6 +87,7 @@ bool OgreApplication::init( const char * _xmlFile )
 	std::string DllInputSystem = "Systems_d/OgreInputSystem_d.dll";
 	std::string DllSoundSystem = "Systems_d/SoundSystem_d.dll";
 	std::string DllParticleSystem = "Systems_d/AstralaxParticleSystem_d.dll";
+	std::string DllRenderPlugin = "Plugins/RenderSystem_Direct3D9_d.dll";
 #else
 	std::string DllModuleSetting = "DllModuleRelease";
 	std::string DllLogSystem = "Systems/OgreLogSystem.dll";
@@ -96,6 +96,7 @@ bool OgreApplication::init( const char * _xmlFile )
 	std::string DllInputSystem = "Systems/OgreInputSystem.dll";
 	std::string DllSoundSystem = "Systems/SoundSystem.dll";
 	std::string DllParticleSystem = "Systems/AstralaxParticleSystem.dll";
+	std::string DllRenderPlugin = "Plugins/RenderSystem_Direct3D9.dll";
 #endif
 
 	printf("use log system [%s]\n", DllLogSystem.c_str() );
@@ -142,33 +143,18 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	std::string resourcePath = fileInterface->platformBundlePath();
 
-#ifndef _DEBUG
+
 	m_root = new Ogre::Root(
-		resourcePath + "Plugins.cfg", 
-		resourcePath + "Ogre.cfg", 
-		resourcePath + "Ogre.log");
-#else
-	m_root = new Ogre::Root(
-		resourcePath + "Plugins_d.cfg", 
-		resourcePath + "Ogre.cfg", 
-		//"",
-		//"",
-		resourcePath + "Ogre.log");
-#endif
+		//resourcePath + "Plugins_d.cfg", 
+		//resourcePath + "Ogre.cfg", 
+		"",
+		"",
+		resourcePath + "Menge.log");
 
-	if ( m_root->restoreConfig() == false ) 
-	{ 			
-		if ( m_root->showConfigDialog() == false )
-		{
-			return false; 
-		}
-	}
-
-	m_window = m_root->initialise( true, "Menge-engine" );
-
-//	m_root->loadPlugin( resourcePath + "Plugins\\RenderSystem_GL_d.dll" );
-//	m_root->setRenderSystem( m_root->getAvailableRenderers()->at(0) );
-//	m_window = m_root->createRenderWindow( "OGRE Render Window", 1024,768,false,0);
+	m_root->loadPlugin( resourcePath + DllRenderPlugin );
+	m_root->setRenderSystem( m_root->getAvailableRenderers()->at(0) );
+	m_root->initialise( false );
+	m_window = m_root->createRenderWindow( "Menge-engine", 1024,768,false,0);
 	
 	m_root->addFrameListener( this );
 

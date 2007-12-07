@@ -32,7 +32,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Point::testHotSpot( HotSpot * _hotspot )
 	{
-		const mt::vec2f& pos = getLocalPosition();
+		const mt::vec2f& pos = getWorldPosition();
 		bool result = _hotspot->testPoint( pos );
 		return result;
 	}

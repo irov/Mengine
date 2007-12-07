@@ -318,6 +318,11 @@ namespace Menge
 				.def( "getCurrentHotSpot", &Arrow::getCurrentHotSpot )
 				;
 
+			pybind::proxy_<Point, pybind::bases<SceneNode2D>>("Point", false)
+				.def( "testHotSpot", &Point::testHotSpot )
+				;
+
+
 			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "getNode", &Scene::getNode )
@@ -329,10 +334,6 @@ namespace Menge
 				.def( "enableGlobalMouseEvent", &HotSpot::enableGlobalMouseEvent )
 				.def( "addPoint", &HotSpot::addPoint )
 				.def( "clearPoints", &HotSpot::clearPoints )
-				;
-
-			pybind::proxy_<Point, pybind::bases<SceneNode2D>>("Point", false)
-				.def( "testHotSpot", &Point::testHotSpot )
 				;
 
 			pybind::proxy_<Sprite, pybind::bases<SceneNode2D>>("Sprite", false)

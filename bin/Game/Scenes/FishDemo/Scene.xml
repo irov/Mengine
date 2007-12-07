@@ -40,13 +40,13 @@
 
 		<Node Name = "EmitterTest1" Type = "Emitter">
               		<Resource Name = "ResourceEmitterTest1"/>
-			<Emitter Name = "Медуза1"/>
+			<Emitter Name = "Meduse1"/>
 			<Transformation Value = "1;0;0;1;200;200" />
                	</Node>
 
 		<Node Name = "EmitterTestRush" Type = "Emitter">
               		<Resource Name = "ResourceEmitterTest1"/>
-			<Emitter Name = "Медуза1"/>
+			<Emitter Name = "Meduse1"/>
 			<Transformation Value = "1;0;0;1;300;200" />
                	</Node>
 

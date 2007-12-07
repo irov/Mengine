@@ -85,8 +85,29 @@ class Scene( Menge.Scene ):
 
 		self.emitterTest1 = self.getNode( "EmitterTestRush" );
 
-		#self.emitterTest1.setLocalPosition( Menge.vec2f( 200,201 ) );
-		
+
+		self.bubble = Menge.createNodeFromXml(
+                        '<Node Type = "Emitter">'
+			' <Resource Name = "ResourceEmitterTest1"/>'
+			' <Emitter Name = "Meduse1"/>'
+			'</Node>'
+			);
+
+		self.bubble.activate();
+
+		self.layerAppend( "Water", self.bubble )
+
+		self.bubble1 = Menge.createNodeFromXml(
+                        '<Node Type = "Emitter">'
+			' <Resource Name = "ResourceEmitterTest1"/>'
+			' <Emitter Name = "Meduse1"/>'
+			'</Node>'
+			);
+
+		self.bubble1.activate();
+
+		self.layerAppend( "Water", self.bubble1 )
+
 
 		block.activate();
 		
@@ -152,7 +173,8 @@ class Scene( Menge.Scene ):
 		
 		if key == 57:
 			print "57"
-			self.emitterTest.play();
+			self.bubble1.play();
+			#self.emitterTest.play();
 
 		if key == 54:
 			print "54"
@@ -160,7 +182,8 @@ class Scene( Menge.Scene ):
 
 		if key == 2:
 			print "2"
-			self.emitterTest1.play();
+			self.bubble.play();
+			#self.emitterTest1.play();
 			#self.emitterTest.stop();
 
 		if key == 3:

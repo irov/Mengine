@@ -76,7 +76,7 @@
 
 	<Resource Name = "ResourceEmitterTest1" Type = "ResourceEmitterContainer">
 		<File Path = "meduse.ptc"/>
-		<Folder Path = "Game/Images/Particles/"/>
+		<Folder Path = "Particles/"/>
 	</Resource>
 
 	<Resource Name = "ResourceEmitterTest2" Type = "ResourceEmitterContainer">

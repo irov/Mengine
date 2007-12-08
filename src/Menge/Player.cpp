@@ -232,8 +232,6 @@ namespace Menge
 		{
 			m_switchScene = false;
 
-			MENGE_LOG_DEBUG( "Activating Scene: %s\n", m_nextScene->getName().c_str() );
-
 			m_nextScene->activate();
 
 			if( m_scene )

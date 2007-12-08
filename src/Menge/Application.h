@@ -41,7 +41,7 @@ namespace Menge
 
 		virtual void loadPak( const std::string & _pak );
 
-		virtual bool createGame( const std::string & _game );
+		virtual bool createGame();
 
 		virtual void quit();
 
@@ -50,6 +50,7 @@ namespace Menge
 		virtual int getScreenHeight() const;
 		virtual int getScreenBits() const;
 		virtual bool isFullScreen() const;
+		virtual const std::string& getRenderDriver() const;
 
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown );
@@ -67,5 +68,6 @@ namespace Menge
 		int m_height;
 		int m_bits;
 		bool m_fullScreen;
+		std::string m_renderDriver;
 	};
 }

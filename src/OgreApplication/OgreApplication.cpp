@@ -70,6 +70,7 @@ OgreApplication::~OgreApplication()
 		{
 			window->removeAllViewports();
 		}
+
 		delete m_root;
 		m_root = 0;
 	}
@@ -87,7 +88,6 @@ bool OgreApplication::init( const char * _xmlFile )
 	std::string DllInputSystem = "Systems_d/OgreInputSystem_d.dll";
 	std::string DllSoundSystem = "Systems_d/SoundSystem_d.dll";
 	std::string DllParticleSystem = "Systems_d/AstralaxParticleSystem_d.dll";
-	std::string DllRenderPlugin = "Plugins/RenderSystem_Direct3D9_d.dll";
 #else
 	std::string DllModuleSetting = "DllModuleRelease";
 	std::string DllLogSystem = "Systems/OgreLogSystem.dll";
@@ -96,7 +96,6 @@ bool OgreApplication::init( const char * _xmlFile )
 	std::string DllInputSystem = "Systems/OgreInputSystem.dll";
 	std::string DllSoundSystem = "Systems/SoundSystem.dll";
 	std::string DllParticleSystem = "Systems/AstralaxParticleSystem.dll";
-	std::string DllRenderPlugin = "Plugins/RenderSystem_Direct3D9.dll";
 #endif
 
 	printf("use log system [%s]\n", DllLogSystem.c_str() );
@@ -141,62 +140,58 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	m_application->setParticleSystem( particleInterface );
 
-	std::string resourcePath = fileInterface->platformBundlePath();
-
+	m_resourcePath = fileInterface->platformBundlePath();
 
 	m_root = new Ogre::Root(
 		"",
 		"",
-		resourcePath + "Menge.log");
-
-	m_root->loadPlugin( resourcePath + DllRenderPlugin );
-
-	Ogre::RenderSystem * rs = m_root->getAvailableRenderers()->at(0);
-	m_root->setRenderSystem( rs );
-	m_root->initialise( false );
-
-	m_root->addFrameListener( this );
+		m_resourcePath + "Menge.log");
 
 	size_t windowHnd = 0;
 	std::ostringstream windowHndStr;
 
 	fileInterface->loadPath(".");
 
-	//bool initialize = m_application->initialize( _xmlFile );
+	bool initialize = m_application->initialize( _xmlFile );
 
-//	int bits = m_application->getScreenBits();
-//	int screenWidth = m_application->getScreenWidth();
-//	int screenHeight = m_application->getScreenHeight();
-//	bool fullscreen = m_application->isFullScreen();
-
-	Ogre::NameValuePairList params;
-
-//	Ogre::String	valueBit = Ogre::StringConverter::toString( bits );
-
-//	params.insert( std::make_pair("Colour Depth", valueBit ) );
-
-	//m_window = m_root->createRenderWindow( "Menge-engine", screenWidth, screenHeight, fullscreen, &params );
-	m_window = m_root->createRenderWindow( "Menge-engine", 1024, 768, false, 0 );
+	initParams();
 
 	m_window->getCustomAttribute("WINDOW", &windowHnd);
 	windowHndStr << windowHnd;
 
 	OIS::ParamList pl;
 
-	pl.insert(
-		std::make_pair(
-			std::string("WINDOW"),
-			windowHndStr.str()
-			)
-		);
+	pl.insert( std::make_pair(	"WINDOW", windowHndStr.str() ) );
 
 	inputInterface->init( pl );
-
-	bool initialize = m_application->initialize( _xmlFile );
-
 	renderInterface->init( m_root, m_window );
 
+	m_application->createGame();
+
 	return initialize;
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreApplication::initParams()
+{
+	int bits = m_application->getScreenBits();
+	int screenWidth = m_application->getScreenWidth();
+	int screenHeight = m_application->getScreenHeight();
+	bool fullscreen = m_application->isFullScreen();
+	std::string renderDriver = m_application->getRenderDriver();
+
+	m_root->loadPlugin( m_resourcePath + renderDriver );
+
+	Ogre::RenderSystem * renderSystem = m_root->getAvailableRenderers()->at( 0 );
+	m_root->setRenderSystem( renderSystem );
+
+	m_root->initialise( false );
+
+	m_root->addFrameListener( this );
+
+	Ogre::NameValuePairList params;
+	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( bits ) ) );
+
+	m_window = m_root->createRenderWindow( "Menge-engine", screenWidth, screenHeight, fullscreen, &params );
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)
@@ -214,7 +209,6 @@ bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
 	const Ogre::RenderTarget::FrameStats& stats = m_window->getStatistics();
 	//printf("fps = %f \n", stats.avgFPS);
 	//m_application->frameEnded();
-
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////

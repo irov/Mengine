@@ -109,14 +109,14 @@ namespace Menge
 		Holder<FileEngine>::hostage()->loadPak( _pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createGame( const std::string & _game )
+	bool Application::createGame()
 	{
-		MENGE_LOG("create game file [%s] ...\n", _game.c_str() );
+		MENGE_LOG("create game file [%s] ...\n", m_gameInfo.c_str() );
 
 		Holder<Game>::keep( new Game );
 
 		TiXmlDocument * document = Holder<FileEngine>::hostage()
-			->loadXml( _game );
+			->loadXml( m_gameInfo );
 
 		XML_FOR_EACH_DOCUMENT( document )
 		{
@@ -128,7 +128,7 @@ namespace Menge
 		}
 		XML_INVALID_PARSE()
 		{
-			MENGE_LOG("Invalid game file [%s] ...\n", _game.c_str() );
+			MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
 			return false;
 		}
 
@@ -161,6 +161,11 @@ namespace Menge
 		TiXmlDocument * xmlDocument = 
 			Holder<FileEngine>::hostage()
 			->loadXml( _applicationFile );
+
+		if( xmlDocument == NULL )
+		{
+			return false;
+		}
 		
 		XML_FOR_EACH_DOCUMENT( xmlDocument )
 		{
@@ -182,6 +187,7 @@ namespace Menge
 					XML_CHECK_VALUE_NODE("Height", "Value", m_height );
 					XML_CHECK_VALUE_NODE("Bits", "Value", m_bits );
 					XML_CHECK_VALUE_NODE("Fullscreen", "Value", m_fullScreen );
+					XML_CHECK_VALUE_NODE("RenderDriver", "Name", m_renderDriver );
 				}
 
 				XML_CHECK_VALUE_NODE("Game", "File", m_gameInfo );
@@ -189,14 +195,11 @@ namespace Menge
 		}
 		XML_INVALID_PARSE()
 		{
-			//TODO: ERROR
 			MENGE_LOG("parse application xml failed\n");
 			return false;
 		}
 
-		bool creating = createGame( m_gameInfo );
-
-		return creating;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
@@ -241,13 +244,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::frameEnded()
-	{
-		//if(createShot)
-		//{
-		//	Holder<RenderEngine>::hostage()->render(NULL, NULL);
-		//	createShot = false;
-		//}
-	}
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	int Application::getScreenWidth() const
 	{
@@ -269,4 +266,8 @@ namespace Menge
 		return m_fullScreen;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const std::string& Application::getRenderDriver() const
+	{
+		return m_renderDriver;
+	}
 }

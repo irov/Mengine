@@ -9,6 +9,7 @@
 		<Height Value = "768"/>
 		<Bits Value = "32"/>
 		<Fullscreen Value = "0"/>
+		<RenderDriver Name = "Plugins/RenderSystem_Direct3D9_d.dll"/>
 	</Config>
 
 </Application>

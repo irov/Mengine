@@ -35,6 +35,7 @@ private:
 	Ogre::Root * m_root;
 	Ogre::RenderWindow * m_window;
 	Menge::Application * m_application;
+	std::string m_resourcePath;
 
 	typedef std::list<SystemDLL *> TListApplicationDLL;
 	TListApplicationDLL m_listApplicationDLL;
@@ -51,4 +52,6 @@ private:
 
 		return interface_;
 	}
+
+	void initParams();
 };

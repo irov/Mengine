@@ -1,5 +1,5 @@
 #	include "OgreInputSystem.h"
-
+#	include <Windows.h>
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem(InputSystemInterface **_system)
@@ -96,12 +96,18 @@ int OgreInputSystem::getMouseX() const
 {
 	const OIS::MouseState & ms = m_mouse->getMouseState();
 	return ms.X.abs;
+	//::POINT pos;
+	//::GetCursorPos(&pos);
+	//return pos.x;
 }
 //////////////////////////////////////////////////////////////////////////
 int OgreInputSystem::getMouseY() const
 {
 	const OIS::MouseState & ms = m_mouse->getMouseState();
 	return ms.Y.abs;
+	//::POINT pos;
+	//::GetCursorPos(&pos);
+	//return pos.y;
 }
 //////////////////////////////////////////////////////////////////////////
 int OgreInputSystem::getMouseWhell() const

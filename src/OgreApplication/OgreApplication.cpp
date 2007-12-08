@@ -19,6 +19,7 @@
 
 #	include <map>
 
+Ogre::RenderWindow* OgreApplication::m_renderWindow = NULL;
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( ApplicationInterface** _ptrInterface )
 {
@@ -42,7 +43,10 @@ void releaseInterfaceSystem( ApplicationInterface* _ptrInterface )
 OgreApplication::OgreApplication() 
 : m_application(0)
 , m_root(0)
-, m_window(0)
+//, m_renderWindow(0)
+, m_hWnd(0)
+, m_running( true )
+, m_frameTime( 0.0f )
 {}
 //////////////////////////////////////////////////////////////////////////
 OgreApplication::~OgreApplication()
@@ -56,10 +60,10 @@ OgreApplication::~OgreApplication()
 		delete sysDll;
 	}
 
-	if( m_window )
+	if( m_renderWindow )
 	{
-		m_window->destroy();
-		m_window = 0;
+		m_renderWindow->destroy();
+		m_renderWindow = 0;
 	}
 
 	if( m_root ) 
@@ -154,19 +158,21 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	bool initialize = m_application->initialize( _xmlFile );
 
+	createWindow( 1024, 768, false );
 	initParams();
 
-	m_window->getCustomAttribute("WINDOW", &windowHnd);
+	m_renderWindow->getCustomAttribute("WINDOW", &windowHnd);
 	windowHndStr << windowHnd;
 
 	OIS::ParamList pl;
 
 	pl.insert( std::make_pair(	"WINDOW", windowHndStr.str() ) );
 
-	inputInterface->init( pl );
-	renderInterface->init( m_root, m_window );
 
+	inputInterface->init( pl );
 	m_application->createGame();
+
+	renderInterface->init( m_root, m_renderWindow );
 
 	return initialize;
 }
@@ -196,23 +202,20 @@ void OgreApplication::initParams()
 
 	Ogre::NameValuePairList params;
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( bits ) ) );
+	params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
 
-	m_window = m_root->createRenderWindow( "Menge-engine", screenWidth, screenHeight, fullscreen, &params );
+	m_renderWindow = m_root->createRenderWindow( "Menge-engine", screenWidth, screenHeight, fullscreen, &params );
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)
 {
-	if( m_window->isActive() )
-	{
-		return m_application->update( size_t( evt.timeSinceLastFrame * 1000.f ) );
-	}
-
-	return m_window->isClosed() == false;
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
 {
-	const Ogre::RenderTarget::FrameStats& stats = m_window->getStatistics();
+	const Ogre::RenderTarget::FrameStats& stats = m_renderWindow->getStatistics();
+	m_frameTime = evt.timeSinceLastFrame;
 	//printf("fps = %f \n", stats.avgFPS);
 	//m_application->frameEnded();
 	return true;
@@ -220,6 +223,136 @@ bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
 //////////////////////////////////////////////////////////////////////////
 void OgreApplication::run()
 {
-	m_root->startRendering();
+	while( m_running )
+	{
+		MSG  msg;
+		if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
+		{
+			TranslateMessage( &msg );
+			DispatchMessage( &msg );
+		}
+		m_running = m_renderWindow->isClosed() == false;
+		if( m_renderWindow->isActive() )
+		{
+			//Ogre::WindowEventUtilities::messagePump();
+			m_running = m_application->update(  m_frameTime * 1000.f ) && m_renderWindow->isClosed() == false;
+			m_root->renderOneFrame();
+		}
+	}
 }
 //////////////////////////////////////////////////////////////////////////
+void OgreApplication::createWindow( unsigned int _width, unsigned int _height, bool _fullscreen )
+{
+	DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
+
+	int width = _width;
+	int height = _height;
+
+	int screenw = ::GetSystemMetrics(SM_CXSCREEN);
+	int screenh = ::GetSystemMetrics(SM_CYSCREEN);
+	if ( width > screenw )
+		width = screenw;
+	if ( height > screenh )
+		height = screenh;
+	int left = (screenw - width) / 2;
+	int top = (screenh - height) / 2;
+
+
+	if (!_fullscreen)
+	{
+		dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
+	}
+	else
+	{
+		dwStyle |= WS_POPUP;
+		top = left = 0;
+	}
+
+	HINSTANCE hInstance = ::GetModuleHandle( NULL );
+	// Register the window class
+	// NB allow 4 bytes of window data for D3D9RenderWindow pointer
+	WNDCLASS wc = 
+	{ 0,
+	OgreApplication::_wndProc,
+	0, 
+	0, 
+	hInstance,
+	LoadIcon(0, IDI_APPLICATION), LoadCursor(NULL, IDC_ARROW),
+	(HBRUSH)GetStockObject(BLACK_BRUSH), 0, L"MengeWnd" 
+	};
+	::RegisterClass(&wc);
+
+	// Create our main window
+	// Pass pointer to self
+	m_hWnd = ::CreateWindow(L"MengeWnd", L"Menge-engine", dwStyle,
+		left, top, width, height, NULL, 0, hInstance, this);
+}
+//////////////////////////////////////////////////////////////////////////
+LRESULT CALLBACK OgreApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
+{
+	switch( uMsg )
+	{
+	case WM_ACTIVATE:
+		{
+			bool active = (LOWORD(wParam) != WA_INACTIVE);
+			if(m_renderWindow)
+			m_renderWindow->setActive( active );
+			break;
+		}
+	case WM_SYSKEYDOWN:
+		switch( wParam )
+		{
+		case VK_CONTROL:
+		case VK_SHIFT:
+		case VK_MENU: //ALT
+			//return zero to bypass defProc and signal we processed the message
+			return 0;
+		}
+		break;
+	case WM_SYSKEYUP:
+		switch( wParam )
+		{
+		case VK_CONTROL:
+		case VK_SHIFT:
+		case VK_MENU: //ALT
+		case VK_F10:
+			//return zero to bypass defProc and signal we processed the message
+			return 0;
+		}
+		break;
+	case WM_SYSCHAR:
+		// return zero to bypass defProc and signal we processed the message, unless it's an ALT-space
+		if (wParam != VK_SPACE)
+			return 0;
+		break;
+	case WM_ENTERSIZEMOVE:
+		//log->logMessage("WM_ENTERSIZEMOVE");
+		break;
+	case WM_EXITSIZEMOVE:
+		//log->logMessage("WM_EXITSIZEMOVE");
+		break;
+	case WM_MOVE:
+		//log->logMessage("WM_MOVE");
+		if(m_renderWindow)
+		m_renderWindow->windowMovedOrResized();
+		break;
+	case WM_DISPLAYCHANGE:
+		m_renderWindow->windowMovedOrResized();
+		break;
+	case WM_SIZE:
+		//log->logMessage("WM_SIZE");
+		if(m_renderWindow)
+		m_renderWindow->windowMovedOrResized();
+		break;
+	case WM_GETMINMAXINFO:
+		// Prevent the window from going smaller than some minimu size
+		((MINMAXINFO*)lParam)->ptMinTrackSize.x = 100;
+		((MINMAXINFO*)lParam)->ptMinTrackSize.y = 100;
+		break;
+	case WM_CLOSE:
+		//log->logMessage("WM_CLOSE");
+		m_renderWindow->destroy();
+		return 0;
+	}
+	return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
+}

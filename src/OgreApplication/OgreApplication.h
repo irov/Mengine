@@ -33,9 +33,14 @@ protected:
 
 private:
 	Ogre::Root * m_root;
-	Ogre::RenderWindow * m_window;
+	static Ogre::RenderWindow * m_renderWindow;
 	Menge::Application * m_application;
 	std::string m_resourcePath;
+	HWND	m_hWnd;
+	bool	m_running;
+	float	m_frameTime;
+
+	static LRESULT CALLBACK _wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
 	typedef std::list<SystemDLL *> TListApplicationDLL;
 	TListApplicationDLL m_listApplicationDLL;

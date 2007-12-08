@@ -179,6 +179,12 @@ void OgreApplication::initParams()
 	bool fullscreen = m_application->isFullScreen();
 	std::string renderDriver = m_application->getRenderDriver();
 
+	#ifdef _DEBUG
+		renderDriver += "_d.dll";
+	#else
+		renderDriver += ".dll";
+	#endif
+
 	m_root->loadPlugin( m_resourcePath + renderDriver );
 
 	Ogre::RenderSystem * renderSystem = m_root->getAvailableRenderers()->at( 0 );

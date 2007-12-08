@@ -41,7 +41,7 @@ namespace	Menge
 	bool Point::testHotSpot( HotSpot * _hotspot )
 	{
 		const mt::vec2f& pos = getWorldPosition();
-		bool result = _hotspot->testPoint( pos,m_offset);
+		bool result = _hotspot->testPoint( pos, m_offset );
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////

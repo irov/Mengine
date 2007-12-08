@@ -20,6 +20,8 @@ namespace Menge
 		void rotateTo( float _time, const mt::vec2f & _point );
 		void moveStop();
 		void rotateStop();
+		void flip( bool _x, bool _y );
+		void setScale( const mt::vec2f& _scale );
 
 	protected:
 		bool _activate() override;
@@ -38,5 +40,6 @@ namespace Menge
 		mt::vec2f m_targetDir;
 		float m_rotateTime;
 		bool m_rotate;
+		mt::vec2f m_scale;
 	};
 }

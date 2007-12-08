@@ -154,6 +154,7 @@ namespace Menge
 
 		Color m_color;
 		float m_changingColorTime;
+		bool m_changingColor;
 		Color m_newColor;
 	};
 }

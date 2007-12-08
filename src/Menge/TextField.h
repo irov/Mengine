@@ -117,6 +117,7 @@ namespace Menge
 		std::string	m_resourcename;
 
 		float m_changingColorTime;
+		bool m_changingColor;
 		Color m_newColor;
 
 		Color m_color;

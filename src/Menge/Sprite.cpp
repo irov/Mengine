@@ -31,6 +31,7 @@ namespace	Menge
 	, m_offset( 0.0f, 0.0f )
 	, m_size( 0.0f, 0.0f )
 	, m_changingColorTime( 0.0f )
+	, m_changingColor( false )
 	, m_flipX( false )
 	, m_flipY( false )
 	, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
@@ -60,6 +61,9 @@ namespace	Menge
 		}
 
 		updateAlign_();
+
+		this->registerEventMethod("COLOR_END", "onColorEnd" );
+		this->registerEventMethod("COLOR_STOP", "onColorStop" );
 
 		return true;
 	}
@@ -230,6 +234,11 @@ namespace	Menge
 	{
 		m_newColor = _color;
 		m_changingColorTime = _time;
+		if( m_changingColor )
+		{
+			this->callEvent( "COLOR_STOP", "()" );
+		}
+		m_changingColor = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render()
@@ -264,11 +273,21 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_update( float _timing )
 	{
-		if( m_changingColorTime > 0.0f )
+		if( m_changingColor )
 		{
-			float d = _timing / m_changingColorTime;
-			m_color = m_newColor * d + m_color * ( 1.0f - d );
-			m_changingColorTime -= _timing;
+			if( m_changingColorTime < _timing )
+			{
+				m_color = m_newColor;
+				m_changingColor = false;
+				this->callEvent( "COLOR_END", "()" );
+			}
+			else
+			{
+				float d = _timing / m_changingColorTime;
+				m_color = m_newColor * d + m_color * ( 1.0f - d );
+				m_changingColorTime -= _timing;
+			}
+
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

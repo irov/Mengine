@@ -16,6 +16,8 @@ namespace	Menge
 	, m_rotate(false)
 	, m_targetDir(0,0)
 	, m_rotateTime(0)
+
+	, m_scale( 1.0f, 1.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -114,6 +116,41 @@ namespace	Menge
 
 			this->callEvent("ROTATE_END", "()" );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::flip( bool _x, bool _y )
+	{
+		TListChildren::iterator it = m_listChildren.begin();
+		for(; it != m_listChildren.end(); it++)
+		{
+			mt::vec2f pos = (*it)->getLocalPosition();
+			if( _x )
+			{
+				pos.x = - pos.x;
+				(*it)->flip( true );
+			}
+			if( _y )
+			{
+				pos.y = - pos.y;
+				(*it)->flip( false );
+			}
+			(*it)->setLocalPosition( pos );
+			
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::setScale( const mt::vec2f& _scale )
+	{
+		TListChildren::iterator it = m_listChildren.begin();
+		for(; it != m_listChildren.end(); it++)
+		{
+			mt::vec2f pos = (*it)->getLocalPosition();
+			pos.x = pos.x / m_scale.x * _scale.x;
+			pos.y = pos.y / m_scale.y * _scale.y;
+			(*it)->setLocalPosition( pos );
+			(*it)->setScale( _scale );
+		}
+		m_scale = _scale;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_update( float _timing )

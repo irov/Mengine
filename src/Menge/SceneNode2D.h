@@ -27,7 +27,9 @@ namespace Menge
 		virtual mt::vec2f getScreenPosition();
 		const mt::mat3f & getWorldMatrix() override;
 		void changePivot() override;
-
+		
+		virtual void flip( bool _x ) {}
+		virtual void setScale( const mt::vec2f _scale ) {}
 
 	public:
 		void _render() override;

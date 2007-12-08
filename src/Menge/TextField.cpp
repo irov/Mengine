@@ -30,6 +30,7 @@ namespace	Menge
 		, m_centerAlign( false )
 		, m_alignOffset( 0.f, 0.f )
 		, m_changingColorTime( 0.0f )
+		, m_changingColor( false )
 		, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_outlineImage( 0 )
 	{
@@ -67,6 +68,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_deactivate()
 	{
+		this->registerEventMethod("COLOR_END", "onColorEnd" );
+		this->registerEventMethod("COLOR_STOP", "onColorStop" );
+
 		SceneNode2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -240,12 +244,48 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_update( float _timing )
 	{
-		if( m_changingColorTime > 0.0f )
+		if( m_changingColor )
 		{
-			float d = _timing / m_changingColorTime;
-			m_color = m_newColor * d + m_color * ( 1.0f - d );
-			m_changingColorTime -= _timing;
+			if( m_changingColorTime < _timing )
+			{
+				m_color = m_newColor;
+				m_changingColor = false;
+				this->callEvent( "COLOR_END", "()" );
+			}
+			else
+			{
+				float d = _timing / m_changingColorTime;
+				m_color = m_newColor * d + m_color * ( 1.0f - d );
+				m_changingColorTime -= _timing;
+			}
+
 		}
+
+		/*if( m_moveTo )
+		{
+			if( m_moveTime < _timing )
+			{
+				setLocalPosition( m_movePoint );
+
+				m_moveTo = false;
+
+				this->callEvent("MOVE_END", "()" );
+			}
+			else
+			{
+				m_moveTime -= _timing;
+
+				float way_length = m_moveSpeed * _timing;
+
+				mt::vec2f way_offset = m_moveDir * way_length;
+
+				mt::vec2f & pos = getLocalPositionModify();
+
+				pos += way_offset;
+
+				changePivot();
+			}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setOutlineColor( const Color& _color )
@@ -282,6 +322,11 @@ namespace	Menge
 	{
 		m_newColor = _color;
 		m_changingColorTime = _time;
+		if( m_changingColor )
+		{
+			this->callEvent( "COLOR_STOP", "()" );
+		}
+		m_changingColor = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::alphaTo( float _alpha, float _time )
@@ -289,6 +334,11 @@ namespace	Menge
 		m_newColor = m_color;
 		m_newColor.a = _alpha;
 		m_changingColorTime = _time;
+		if( m_changingColor )
+		{
+			this->callEvent( "COLOR_STOP", "()" );
+		}
+		m_changingColor = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setColor( const Color& _color )

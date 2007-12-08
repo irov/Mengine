@@ -6,11 +6,7 @@
 
 #	include "HotSpot.h"
 
-#	include "MousePickerSystem.h"
-
 #	include "RenderEngine.h"
-
-#	include "Player.h"
 
 namespace	Menge
 {
@@ -19,7 +15,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Point::Point()
 	{
-		this->setHandler( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Point::_update( float _timing )
@@ -30,8 +25,7 @@ namespace	Menge
 			Holder<RenderEngine>::hostage()
 			->getRenderViewport();
 
-		Holder<MousePickerSystem>::hostage()
-			->regTrap( this, viewport );
+		m_offset = viewport.begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Point::_activate()
@@ -47,38 +41,8 @@ namespace	Menge
 	bool Point::testHotSpot( HotSpot * _hotspot )
 	{
 		const mt::vec2f& pos = getWorldPosition();
-	//	printf("%f \n", m_offset.x);
-		bool result = _hotspot->testPoint( pos,m_offset );
+		bool result = _hotspot->testPoint( pos,m_offset);
 		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Point::onLeave()
-	{
-		callEvent( "LEAVE", "(O)", this->getScript() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Point::onEnter()
-	{
-		callEvent( "ENTER", "(O)", this->getScript() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Point::pick( const mt::vec2f& _offset, HotSpot * _hotspot )
-	{
-		m_offset = _offset;
-		//printf("%f \n", _offset.x);
-		return true;
-	}
-	bool Point::handleKeyEvent( size_t _key, bool _isDown )
-	{
-		return false;
-	}
-	bool Point::handleMouseButtonEvent( size_t _button, bool _isDown )
-	{
-		return false;
-	}
-	bool Point::handleMouseMove( int _x, int _y, int _whell )
-	{
-		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Point::_debugRender()

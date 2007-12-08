@@ -200,17 +200,9 @@ namespace	Menge
 	{
 		mt::mat3f wm = getWorldMatrix();
 
-		wm.v2.v2 += _offset;
-
 		// DIRTY HACK. FIX.
-		
-		{
-	/*		Camera2D * camera = Holder<Player>::hostage()
-				->getRenderCamera2D();
-			mt::vec2f camera_position = camera->getWorldPosition();
-			camera_position-=mt::vec2f(512,384);
-			wm.v2.v2 += camera_position; */
-		}
+
+		wm.v2.v2 += _offset;
 
 		bool result = mt::is_point_inside_polygon( m_polygon, _p, wm );
 

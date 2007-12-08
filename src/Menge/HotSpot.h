@@ -35,7 +35,7 @@ namespace Menge
 
 	public:
 		void addPoint( const mt::vec2f & _p );
-		bool testPoint( const mt::vec2f & _p );
+		bool testPoint( const mt::vec2f & _p, const mt::vec2f & _offset );
 		void clearPoints();
 
 		void enableGlobalMouseEvent( bool _value );

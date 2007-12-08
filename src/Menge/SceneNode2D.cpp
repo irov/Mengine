@@ -76,8 +76,12 @@ namespace Menge
 	mt::vec2f SceneNode2D::getScreenPosition()
 	{
 		mt::vec2f pos = getWorldPosition();
+
 		if( m_layer )
+		{
 			pos -= m_layer->getViewport()->begin;
+		}
+
 		return pos;
 	}
 }

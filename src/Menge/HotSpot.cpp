@@ -10,6 +10,8 @@
 
 #	include "Player.h"
 
+#	include "Camera2D.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -52,9 +54,13 @@ namespace	Menge
 		const mt::mat3f & wmA = getWorldMatrix();
 		const mt::mat3f & wmB = _hotspot->getWorldMatrix();
 
+	//	printf("%f \n", _offset.x);
 		is_intersect = mt::intersect_poly_poly( m_polygon, _hotspot->m_polygon, wmA, wmB, _offset );
 
-		//if(is_intersect)	printf("true\n");
+	//	if(is_intersect)
+	//	{
+//			printf("true\n");
+	//	}
 	
 		return is_intersect;
 	}
@@ -192,7 +198,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )
 	{
-		const mt::mat3f & wm = getWorldMatrix();
+		mt::mat3f wm = getWorldMatrix();
+
+		// DIRTY HACK. FIX.
+		
+		{
+			Camera2D * camera = Holder<Player>::hostage()
+				->getRenderCamera2D();
+			mt::vec2f camera_position = camera->getWorldPosition();
+			camera_position-=mt::vec2f(512,384);
+			wm.v2.v2 += camera_position; 
+		}
 
 		bool result = mt::is_point_inside_polygon( m_polygon, _p, wm );
 

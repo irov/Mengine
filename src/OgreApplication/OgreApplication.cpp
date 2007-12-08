@@ -155,10 +155,7 @@ bool OgreApplication::init( const char * _xmlFile )
 	m_root->setRenderSystem( rs );
 	m_root->initialise( false );
 
-
-
-
-		m_root->addFrameListener( this );
+	m_root->addFrameListener( this );
 
 	size_t windowHnd = 0;
 	std::ostringstream windowHndStr;
@@ -195,9 +192,9 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	inputInterface->init( pl );
 
-	renderInterface->init( m_root, m_window );
-
 	bool initialize = m_application->initialize( _xmlFile );
+
+	renderInterface->init( m_root, m_window );
 
 	return initialize;
 }

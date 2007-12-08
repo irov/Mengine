@@ -33,11 +33,13 @@ namespace Menge
 
 	public:
 		void update( float _timing ) override;
+		void render() override;
 
 		void _addChildren(Node* _node);
 		
 	protected:
 		bool _renderBegin() override;
+		void _render() override;
 		void _renderEnd() override;
 
 		bool _activate() override;
@@ -49,5 +51,9 @@ namespace Menge
 		mt::vec2f m_factorParallax;
 
 		Viewport m_viewport;
+		bool m_needReRender;
+		bool m_reRender;
+		bool m_scrollable;
+		mt::vec2f m_viewportShift;
 	};
 }

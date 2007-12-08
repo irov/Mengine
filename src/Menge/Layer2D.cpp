@@ -13,6 +13,7 @@
 #	include "RenderEngine.h"
 
 #	include "LogEngine.h"
+#	include "Game.h"
 
 namespace	Menge
 {
@@ -21,6 +22,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D::Layer2D()
 	: m_factorParallax(1.f,1.f)
+	, m_reRender( false )
+	, m_scrollable( false )
+	, m_viewportShift( 0.0f, 0.0f )
+	, m_needReRender( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -54,18 +59,35 @@ namespace	Menge
 
 		mt::vec2f camera_position = camera->getWorldPosition();
 
-		if( false
-			|| camera_position.x - viewport_size.x < 0.f 
+		/*if( camera_position.x - viewport_size.x < 0.f 
 			|| camera_position.y - viewport_size.y < 0.f )
 		{
 			camera_position = viewport_size;
 		}
 
-		if( false
-			|| camera_position.x +  viewport_size.x > main_size.x 
+		if( camera_position.x +  viewport_size.x > main_size.x 
 			|| camera_position.y +  viewport_size.y > main_size.y )
 		{
 			camera_position = main_size - viewport_size;
+		}*/
+
+		if( m_scrollable && ( camera_position.x - viewport_size.x < 0.0f 
+			|| camera_position.x + viewport_size.x > m_size.x ) 
+			&& m_reRender == false)
+		{
+			// notify re-render
+			m_needReRender = true;
+		}
+
+		if( camera_position.x < 0.0f )
+		{
+			//camera_position.x = main_size.x + camera_position.x;
+			//camera->setLocalPosition( camera_position );
+		}
+		else if( camera_position.x > main_size.x )
+		{
+			//camera_position.x = camera_position.x - main_size.x;
+			//camera->setLocalPosition( camera_position );
 		}
 
 		mt::vec2f main_paralax_size = main_size - viewport_size * 2.f;
@@ -129,6 +151,10 @@ namespace	Menge
 				XML_VALUE_ATTRIBUTE("Factor", offset);
 				setParallaxFactor( offset );
 			}
+			XML_CHECK_NODE("Scrollable")
+			{
+				XML_VALUE_ATTRIBUTE("Value", m_scrollable);
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -155,10 +181,70 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()
 			->beginLayer();
 
+		if( m_reRender )
+		{
+			m_viewport.begin += mt::vec2f( m_size.x, 0 );
+			m_viewport.end += mt::vec2f( m_size.x, 0 );
+		}
+
 		Holder<RenderEngine>::hostage()
 			->setRenderViewport( m_viewport );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::render()
+	{
+		if( NodeRenderable::isRenderable() == false )
+		{
+			return;
+		}
+
+		if( _renderBegin() )
+		{
+			_render();
+
+			struct ForeachRender
+				: public NodeForeach
+			{
+				void apply( Node * children ) override
+				{
+					children->render();
+				}
+			};
+
+			foreachChildren( ForeachRender() );
+
+			_renderEnd();
+		}
+		if( m_needReRender )
+		{
+			m_reRender = true;
+			if( _renderBegin() )
+			{
+				_render();
+
+				struct ForeachRender
+					: public NodeForeach
+				{
+					void apply( Node * children ) override
+					{
+						children->render();
+					}
+				};
+
+				foreachChildren( ForeachRender() );
+
+				_renderEnd();
+			}
+			m_needReRender = false;
+			m_reRender = false;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::_render()
+	{
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::_renderEnd()

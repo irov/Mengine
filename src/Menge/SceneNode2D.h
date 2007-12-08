@@ -29,7 +29,7 @@ namespace Menge
 		void changePivot() override;
 		
 		virtual void flip( bool _x ) {}
-		virtual void setScale( const mt::vec2f _scale ) {}
+		virtual void setScale( const mt::vec2f& _scale ) {}
 
 	public:
 		void _render() override;

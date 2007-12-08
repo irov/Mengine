@@ -69,13 +69,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::registerSoundEmitter( SoundEmitter * _emitter )
 	{
-		MENGE_LOG("Sound Registered! \n");
+		//MENGE_LOG("Sound Registered! \n");
 		m_soundEmitters.insert( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::unregisterSoundEmitter( SoundEmitter * _emitter )
 	{
-		MENGE_LOG("Sound UnRegistered! \n");
+		//MENGE_LOG("Sound UnRegistered! \n");
 		m_soundEmitters.erase( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////

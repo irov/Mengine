@@ -93,7 +93,7 @@ namespace	Menge
 		return true;		
 	}
 	///////////////////////////////////////////////////////////////////////////
-	void Sprite::setScale( mt::vec2f _scale )
+	void Sprite::setScale( const mt::vec2f& _scale )
 	{
 		m_scale = _scale;
 

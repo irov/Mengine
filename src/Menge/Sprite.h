@@ -69,7 +69,7 @@ namespace Menge
 		/*!
 		\param _scale скейл.
 		*/
-		virtual void setScale( mt::vec2f _scale );
+		virtual void setScale( const mt::vec2f& _scale );
 
 		//! Возвращает скейл.
 		/*!

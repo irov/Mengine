@@ -30,7 +30,11 @@ namespace Menge
 		bool isAnyButtonDown() const;
 		bool isButtonDown( int _button ) const;
 
+		void setMousePos( int _x, int _y );
+
 	protected:
+		int m_mouseX;
+		int m_mouseY;
 		InputSystemInterface * m_interface;
 		InputHandler * m_handle;
 	};

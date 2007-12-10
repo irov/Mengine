@@ -235,7 +235,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::handleMouseMove( int _x, int _y, int _whell )
 	{
+		Holder<InputEngine>::hostage()->setMousePos( _x, _y );
 		return Holder<Game>::hostage()->handleMouseMove( _x, _y, _whell );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::handleMouseLeave()
+	{
+		Holder<Game>::hostage()->handleMouseLeave();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::handleMouseEnter()
+	{
+		Holder<Game>::hostage()->handleMouseEnter();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	

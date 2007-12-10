@@ -56,6 +56,8 @@ namespace Menge
 		bool handleKeyEvent( size_t _key, bool _isDown );
 		bool handleMouseButtonEvent( size_t _button, bool _isDown );
 		bool handleMouseMove( int _x, int _y, int _whell );
+		void handleMouseLeave();
+		void handleMouseEnter();
 
 		void frameEnded();
 

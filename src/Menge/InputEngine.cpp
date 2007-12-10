@@ -31,12 +31,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	int InputEngine::getMouseX() const
 	{
-		return m_interface->getMouseX();
+		//return m_interface->getMouseX();
+		return m_mouseX;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int InputEngine::getMouseY() const
 	{
-		return m_interface->getMouseY();
+		//return m_interface->getMouseY();
+		return m_mouseY;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int InputEngine::getMouseWhell() const
@@ -57,5 +59,11 @@ namespace Menge
 	void InputEngine::regHandle( InputHandler * _handle )
 	{
 		return m_interface->regHandle( _handle );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::setMousePos( int _x, int _y )
+	{
+		m_mouseX = _x;
+		m_mouseY = _y;
 	}
 }

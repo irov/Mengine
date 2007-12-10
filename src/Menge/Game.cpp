@@ -202,6 +202,26 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Game::handleMouseLeave()
+	{
+		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, "onMouseLeave" ) )
+		{
+			Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, "onMouseLeave" );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::handleMouseEnter()
+	{
+		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, "onMouseEnter" ) )
+		{
+			Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, "onMouseEnter" );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Game::update( float _timing )
 	{
 		Holder<Player>::hostage()

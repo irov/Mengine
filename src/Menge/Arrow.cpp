@@ -40,7 +40,7 @@ namespace	Menge
 		int my = inputEng->getMouseY();
 		
 		mt::vec2f pos( (float)mx, (float)my );
-		setLocalPosition( pos + m_offsetClick );
+		setLocalPosition( pos /*+ m_offsetClick*/ );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()

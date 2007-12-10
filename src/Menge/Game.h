@@ -60,7 +60,9 @@ namespace Menge
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
-
+		void handleMouseLeave();
+		void handleMouseEnter();
+		
 	public:
 		const mt::vec2f & getResourceResolution() const;
 

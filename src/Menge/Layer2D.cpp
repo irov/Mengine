@@ -26,6 +26,7 @@ namespace	Menge
 	, m_scrollable( false )
 	, m_viewportShift( 0.0f, 0.0f )
 	, m_needReRender( false )
+	, m_viewportOffset( 0.0f, 0.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -59,36 +60,47 @@ namespace	Menge
 
 		mt::vec2f camera_position = camera->getWorldPosition();
 
-		/*if( camera_position.x - viewport_size.x < 0.f 
-			|| camera_position.y - viewport_size.y < 0.f )
+		if( /*camera_position.x - viewport_size.x < 0.f 
+			||*/ camera_position.y - viewport_size.y < 0.f )
 		{
-			camera_position = viewport_size;
+			camera_position.y = viewport_size.y;
+		}
+		else if( /*camera_position.x +  viewport_size.x > main_size.x 
+			||*/ camera_position.y +  viewport_size.y > main_size.y )
+		{
+			camera_position.y = main_size.y - viewport_size.y;
 		}
 
-		if( camera_position.x +  viewport_size.x > main_size.x 
-			|| camera_position.y +  viewport_size.y > main_size.y )
-		{
-			camera_position = main_size - viewport_size;
-		}*/
 
-		if( m_scrollable && ( camera_position.x - viewport_size.x < 0.0f 
-			|| camera_position.x + viewport_size.x > m_size.x ) 
-			&& m_reRender == false)
+		if( m_scrollable && camera_position.x < 0.0f )
 		{
-			// notify re-render
-			m_needReRender = true;
+			int d = static_cast<int>( ::fabs( camera_position.x ) / main_size.x );
+			camera_position.x = ( d + 1 ) * main_size.x + camera_position.x;
+		}
+		else if( m_scrollable && camera_position.x > main_size.x )
+		{
+			int d = static_cast<int>( camera_position.x / main_size.x );
+			camera_position.x = camera_position.x - main_size.x * d;
+		}	
+		
+		if( m_scrollable && m_reRender == false )
+		{
+			if( camera_position.x - viewport_size.x < 0.0f )
+			{
+				m_viewportOffset.x = m_size.x;
+				m_viewportOffset.y = 0.0f;
+				// notify re-render
+				m_needReRender = true;
+			}
+			else if( camera_position.x + viewport_size.x > m_size.x ) 
+			{
+				m_viewportOffset.x = -m_size.x;
+				m_viewportOffset.y = 0.0f;
+				// notify re-render
+				m_needReRender = true;
+			}	
 		}
 
-		if( camera_position.x < 0.0f )
-		{
-			//camera_position.x = main_size.x + camera_position.x;
-			//camera->setLocalPosition( camera_position );
-		}
-		else if( camera_position.x > main_size.x )
-		{
-			//camera_position.x = camera_position.x - main_size.x;
-			//camera->setLocalPosition( camera_position );
-		}
 
 		mt::vec2f main_paralax_size = main_size - viewport_size * 2.f;
 
@@ -183,8 +195,8 @@ namespace	Menge
 
 		if( m_reRender )
 		{
-			m_viewport.begin += mt::vec2f( m_size.x, 0 );
-			m_viewport.end += mt::vec2f( m_size.x, 0 );
+			m_viewport.begin += m_viewportOffset;
+			m_viewport.end += m_viewportOffset;
 		}
 
 		Holder<RenderEngine>::hostage()

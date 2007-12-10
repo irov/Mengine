@@ -1,5 +1,17 @@
 #	pragma once
 
+#ifndef WINVER				// Allow use of features specific to Windows XP or later.
+#define WINVER 0x0501		// Change this to the appropriate value to target other versions of Windows.
+#endif
+
+#ifndef _WIN32_WINNT		// Allow use of features specific to Windows XP or later.                   
+#define _WIN32_WINNT 0x0501	// Change this to the appropriate value to target other versions of Windows.
+#endif						
+
+#ifndef _WIN32_WINDOWS		// Allow use of features specific to Windows 98 or later.
+#define _WIN32_WINDOWS 0x0410 // Change this to the appropriate value to target Windows Me or later.
+#endif
+
 #	include "Interface/ApplicationInterface.h"
 
 #	include "Ogre.h"
@@ -34,11 +46,13 @@ protected:
 private:
 	Ogre::Root * m_root;
 	static Ogre::RenderWindow * m_renderWindow;
-	Menge::Application * m_application;
+	static Menge::Application * m_application;
 	std::string m_resourcePath;
-	HWND	m_hWnd;
 	bool	m_running;
 	float	m_frameTime;
+	static HWND	m_hWnd;
+	static bool	m_cursorInArea;
+	static WINDOWINFO m_wndInfo;
 
 	static LRESULT CALLBACK _wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 

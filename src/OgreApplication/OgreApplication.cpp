@@ -19,7 +19,6 @@
 
 #	include <map>
 
-Ogre::RenderWindow* OgreApplication::m_renderWindow = NULL;
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( ApplicationInterface** _ptrInterface )
 {
@@ -40,13 +39,18 @@ void releaseInterfaceSystem( ApplicationInterface* _ptrInterface )
 	delete static_cast<OgreApplication*>(_ptrInterface);
 }
 //////////////////////////////////////////////////////////////////////////
+Ogre::RenderWindow* OgreApplication::m_renderWindow = NULL;
+Menge::Application* OgreApplication::m_application = NULL;
+HWND OgreApplication::m_hWnd = 0;
+bool OgreApplication::m_cursorInArea = false;
+WINDOWINFO OgreApplication::m_wndInfo;
+
 OgreApplication::OgreApplication() 
-: m_application(0)
-, m_root(0)
-//, m_renderWindow(0)
-, m_hWnd(0)
+: m_root(0)
+//, m_hWnd(0)
 , m_running( true )
 , m_frameTime( 0.0f )
+//, m_cursorInArea( false )
 {}
 //////////////////////////////////////////////////////////////////////////
 OgreApplication::~OgreApplication()
@@ -158,7 +162,6 @@ bool OgreApplication::init( const char * _xmlFile )
 
 	bool initialize = m_application->initialize( _xmlFile );
 
-	createWindow( 1024, 768, false );
 	initParams();
 
 	m_renderWindow->getCustomAttribute("WINDOW", &windowHnd);
@@ -200,6 +203,8 @@ void OgreApplication::initParams()
 
 	m_root->addFrameListener( this );
 
+	createWindow( screenWidth, screenHeight, fullscreen );
+
 	Ogre::NameValuePairList params;
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( bits ) ) );
 	params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
@@ -223,9 +228,25 @@ bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
 //////////////////////////////////////////////////////////////////////////
 void OgreApplication::run()
 {
+	MSG  msg;
+	POINT pos;
 	while( m_running )
 	{
-		MSG  msg;
+		::GetCursorPos( &pos );
+		if( m_cursorInArea 
+			&& ( pos.x < m_wndInfo.rcClient.left 
+			|| pos.x > m_wndInfo.rcClient.right 
+			|| pos.y < m_wndInfo.rcClient.top
+			|| pos.y > m_wndInfo.rcClient.bottom ) )
+		{
+
+			::ShowCursor( TRUE );
+			m_application->handleMouseLeave();
+			//::ShowCursor( TRUE );
+
+			m_cursorInArea = false;
+			//printf( "Cursor Showed \n" );
+		}
 		if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 		{
 			TranslateMessage( &msg );
@@ -286,6 +307,16 @@ void OgreApplication::createWindow( unsigned int _width, unsigned int _height, b
 	// Pass pointer to self
 	m_hWnd = ::CreateWindow(L"MengeWnd", L"Menge-engine", dwStyle,
 		left, top, width, height, NULL, 0, hInstance, this);
+
+	::ShowCursor( FALSE );
+
+	TRACKMOUSEEVENT mouseEvent;
+	mouseEvent.cbSize = sizeof( TRACKMOUSEEVENT );
+	mouseEvent.dwFlags = TME_LEAVE;
+	mouseEvent.hwndTrack = m_hWnd;
+	::TrackMouseEvent( &mouseEvent );
+ 
+	::GetWindowInfo( m_hWnd, &m_wndInfo);
 }
 //////////////////////////////////////////////////////////////////////////
 LRESULT CALLBACK OgreApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -294,9 +325,10 @@ LRESULT CALLBACK OgreApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 	{
 	case WM_ACTIVATE:
 		{
+			::GetWindowInfo( m_hWnd, &m_wndInfo);
 			bool active = (LOWORD(wParam) != WA_INACTIVE);
 			if(m_renderWindow)
-			m_renderWindow->setActive( active );
+				m_renderWindow->setActive( active );
 			break;
 		}
 	case WM_SYSKEYDOWN:
@@ -326,23 +358,25 @@ LRESULT CALLBACK OgreApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 			return 0;
 		break;
 	case WM_ENTERSIZEMOVE:
-		//log->logMessage("WM_ENTERSIZEMOVE");
+
 		break;
 	case WM_EXITSIZEMOVE:
-		//log->logMessage("WM_EXITSIZEMOVE");
+
 		break;
 	case WM_MOVE:
-		//log->logMessage("WM_MOVE");
-		if(m_renderWindow)
-		m_renderWindow->windowMovedOrResized();
+		::GetWindowInfo( m_hWnd, &m_wndInfo);
+		if( m_renderWindow )
+			m_renderWindow->windowMovedOrResized();
 		break;
 	case WM_DISPLAYCHANGE:
-		m_renderWindow->windowMovedOrResized();
+		::GetWindowInfo( m_hWnd, &m_wndInfo);
+		if( m_renderWindow )
+			m_renderWindow->windowMovedOrResized();
 		break;
 	case WM_SIZE:
-		//log->logMessage("WM_SIZE");
+		::GetWindowInfo( m_hWnd, &m_wndInfo);
 		if(m_renderWindow)
-		m_renderWindow->windowMovedOrResized();
+			m_renderWindow->windowMovedOrResized();
 		break;
 	case WM_GETMINMAXINFO:
 		// Prevent the window from going smaller than some minimu size
@@ -350,9 +384,38 @@ LRESULT CALLBACK OgreApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 		((MINMAXINFO*)lParam)->ptMinTrackSize.y = 100;
 		break;
 	case WM_CLOSE:
-		//log->logMessage("WM_CLOSE");
+
 		m_renderWindow->destroy();
-		return 0;
+		break;
+	case WM_MOUSEMOVE:
+		if( !m_cursorInArea )
+		{
+			m_cursorInArea = true;
+			::ShowCursor( FALSE );
+			m_application->handleMouseEnter();
+			//::ShowCursor( FALSE );
+			//printf( "Cursor Hided \n" );
+		}
+		m_application->handleMouseMove( (int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), 0 );
+		break;
+	case WM_LBUTTONDOWN:
+		m_application->handleMouseButtonEvent( 1, true );
+		break;
+	case WM_LBUTTONUP:
+		m_application->handleMouseButtonEvent( 1, false );
+		break;
+	case WM_RBUTTONDOWN:
+		m_application->handleMouseButtonEvent( 2, true );
+		break;
+	case WM_RBUTTONUP:
+		m_application->handleMouseButtonEvent( 2, false );
+		break;
+	case WM_MBUTTONDOWN:
+		m_application->handleMouseButtonEvent( 3, true );
+		break;
+	case WM_MBUTTONUP:
+		m_application->handleMouseButtonEvent( 3, false );
+		break;
 	}
 	return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 }

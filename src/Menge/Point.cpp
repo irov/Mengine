@@ -21,6 +21,7 @@ namespace	Menge
 	{
 		SceneNode2D::_update( _timing );
 
+		// HACK
 		const Viewport & viewport =
 			Holder<RenderEngine>::hostage()
 			->getRenderViewport();

@@ -14,6 +14,7 @@ namespace Menge
 		, m_uv( 0.0f, 0.0f, 1.0f, 1.0f )
 	{
 		m_frame.image = NULL;
+		m_frame.size = mt::vec2f::zero_v2;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageDynamic::getMaxSize( size_t _frame ) const
@@ -21,7 +22,7 @@ namespace Menge
 		return m_frame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceImageDynamic::getCount()
+	size_t ResourceImageDynamic::getCount() const
 	{
 		return 1;
 	}
@@ -56,7 +57,7 @@ namespace Menge
 		ResourceImage::loader( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDynamic::setRenderImage( RenderImageInterface *_image )
+	void ResourceImageDynamic::setRenderImage( RenderImageInterface * _image )
 	{
 		m_frame.image = _image;
 		m_frame.size = mt::vec2f( _image->getWidth(), _image->getHeight() );

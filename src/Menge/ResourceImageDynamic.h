@@ -6,7 +6,6 @@ class RenderImageInterface;
 
 namespace Menge
 {
-
 	class ResourceImageDynamic
 		: public ResourceImage
 	{
@@ -16,7 +15,7 @@ namespace Menge
 		ResourceImageDynamic( const std::string & _name );
 
 	public:
-		virtual size_t getCount() override;
+		virtual size_t getCount() const override;
 		virtual const mt::vec2f & getMaxSize( size_t _frame ) const override;
 		virtual const mt::vec2f & getSize( size_t _frame ) const override;
 		virtual const mt::vec2f & getOffset( size_t _frame ) const override;
@@ -28,6 +27,7 @@ namespace Menge
 	public:
 		void loader( TiXmlElement * _xml ) override;
 
+	public:
 		void setRenderImage( RenderImageInterface* _image );
 
 	protected:
@@ -39,5 +39,4 @@ namespace Menge
 		mt::vec2f m_offset;
 		mt::vec4f m_uv;
 	};
-
-} // namespace
+}

@@ -5,7 +5,6 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
-#	include	<set>
 #	include	<string>
 
 namespace Menge

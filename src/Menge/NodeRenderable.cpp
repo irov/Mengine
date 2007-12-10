@@ -6,7 +6,6 @@
 
 namespace Menge
 {
-
 	NodeRenderable::NodeRenderable()
 		: m_hide( false )
 	{

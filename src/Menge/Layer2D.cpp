@@ -168,6 +168,7 @@ namespace	Menge
 				XML_VALUE_ATTRIBUTE("Value", m_scrollable);
 			}
 		}
+		m_scrollable = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::_activate()

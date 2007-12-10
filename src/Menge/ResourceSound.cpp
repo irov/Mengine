@@ -16,6 +16,7 @@ namespace Menge
 	ResourceSound::ResourceSound( const std::string & _name )
 	: ResourceReference( _name )
 	, m_isStreamable( false )
+	, m_interface( 0 )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::loader( TiXmlElement * _xml )

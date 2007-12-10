@@ -67,6 +67,8 @@ namespace Menge
 		bool parseFontdef( FileDataInterface * _stream );
 		bool parseAttribute( const std::string & name, const std::string & params );
 
+	private:
+
 		struct Glyph
 		{
 			Glyph( unsigned int _id, const mt::vec4f& _rect, float _ratio )
@@ -81,12 +83,12 @@ namespace Menge
 
 		typedef std::map<unsigned int, Glyph> TMapGlyph;
 
-		float m_whsRatio;
-
 		TMapGlyph	m_glyphs;
 
 		std::string m_filename;
 		std::string m_fontDir;
+
+		float m_whsRatio;
 
 		RenderImageInterface * m_image;
 	};

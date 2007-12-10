@@ -15,7 +15,7 @@ namespace	Menge
 	OBJECT_IMPLEMENT(AnimationGroup)
 	//////////////////////////////////////////////////////////////////////////
 	AnimationGroup::AnimationGroup()
-	: m_currentAnimation( NULL )
+	: m_currentAnimation( 0 )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void AnimationGroup::loader( TiXmlElement * _xml )

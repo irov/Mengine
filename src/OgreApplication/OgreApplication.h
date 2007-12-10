@@ -37,6 +37,8 @@ public:
 	bool init( const char * _xmlFile ) override;
 	void run() override;
 
+	//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
+
 protected:
 	void createWindow( unsigned int _width, unsigned int _height, bool _fullscreen );
 

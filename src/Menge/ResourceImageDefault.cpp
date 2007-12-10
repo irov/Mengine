@@ -10,8 +10,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDefault::ResourceImageDefault( const std::string & _name )
 		: ResourceImage( _name )
-		, m_offset(0.f,0.f)
-		, m_uv(0.f,0.f,1.f,1.f)
+		, m_offset( 0.f, 0.f )
+		, m_uv( 0.f, 0.f, 1.f, 1.f )
+		, m_filter( 1.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -20,7 +21,7 @@ namespace Menge
 		return m_frames[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceImageDefault::getCount()
+	size_t ResourceImageDefault::getCount() const
 	{
 		return m_frames.size();
 	}

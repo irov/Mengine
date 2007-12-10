@@ -140,9 +140,11 @@ namespace Menge
 		size_t m_currentImageIndex;
 
 		bool m_centerAlign;
-	
 		bool m_flipX;
 		bool m_flipY;
+		bool m_changingColor;
+
+		float m_changingColorTime;
 
 		mt::vec2f m_scale;
 		mt::vec2f m_alignOffset;
@@ -152,9 +154,8 @@ namespace Menge
 		mt::vec4f m_percent;
 		mt::vec4f m_uv;
 
+
 		Color m_color;
-		float m_changingColorTime;
-		bool m_changingColor;
 		Color m_newColor;
 	};
 }

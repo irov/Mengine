@@ -21,7 +21,7 @@ namespace Menge
 		return m_imageFrame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceImageCell::getCount()
+	size_t ResourceImageCell::getCount() const 
 	{
 		return m_uvs.size();
 	}

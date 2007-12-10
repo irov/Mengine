@@ -138,7 +138,8 @@ namespace Menge
 			return false;
 		}
 
-		bool result = it_find->second->compile();
+		ResourceReference * ref = it_find->second;
+		bool result = ref->compile();
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -151,7 +152,8 @@ namespace Menge
 			return;
 		}
 
-		it_find->second->release();
+		ResourceReference * ref = it_find->second;
+		ref->release();
 	}
 
 }

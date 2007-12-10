@@ -36,7 +36,7 @@ namespace Menge
 		\return количество изображений
 		*/
 
-		virtual size_t getCount() = 0;
+		virtual size_t getCount() const = 0;
 
 		//! Возвращает максимальный размер frame изображения
 		/*!

@@ -25,7 +25,7 @@ namespace Menge
 		ResourceImageCell( const std::string & _name );
 
 	public:
-		size_t getCount() override;
+		size_t getCount() const override;
 
 		const mt::vec2f & getMaxSize( size_t _frame ) const override;
 		const mt::vec2f & getSize( size_t _frame ) const override;

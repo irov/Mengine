@@ -129,7 +129,7 @@ class Scene( Menge.Scene ):
 	def onUpdate( self, timing ):
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
 
-		self.camera_x += timing * 0.0
+		self.camera_x -= timing * 0.1
 
 		#self.a = self.a + timing * 0.00005
 

@@ -239,13 +239,8 @@ void OgreApplication::run()
 			|| pos.y < m_wndInfo.rcClient.top
 			|| pos.y > m_wndInfo.rcClient.bottom ) )
 		{
-
 			::ShowCursor( TRUE );
 			m_application->handleMouseLeave();
-			//::ShowCursor( TRUE );
-
-			m_cursorInArea = false;
-			//printf( "Cursor Showed \n" );
 		}
 		if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 		{
@@ -259,6 +254,8 @@ void OgreApplication::run()
 			m_running = m_application->update(  m_frameTime * 1000.f ) && m_renderWindow->isClosed() == false;
 			m_root->renderOneFrame();
 		}
+
+		::Sleep(1);
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -307,8 +304,6 @@ void OgreApplication::createWindow( unsigned int _width, unsigned int _height, b
 	// Pass pointer to self
 	m_hWnd = ::CreateWindow(L"MengeWnd", L"Menge-engine", dwStyle,
 		left, top, width, height, NULL, 0, hInstance, this);
-
-	::ShowCursor( FALSE );
 
 	TRACKMOUSEEVENT mouseEvent;
 	mouseEvent.cbSize = sizeof( TRACKMOUSEEVENT );
@@ -393,8 +388,6 @@ LRESULT CALLBACK OgreApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 			m_cursorInArea = true;
 			::ShowCursor( FALSE );
 			m_application->handleMouseEnter();
-			//::ShowCursor( FALSE );
-			//printf( "Cursor Hided \n" );
 		}
 		m_application->handleMouseMove( (int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), 0 );
 		break;

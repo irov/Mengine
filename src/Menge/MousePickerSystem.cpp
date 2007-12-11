@@ -16,9 +16,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update()
 	{
-		const mt::vec2f & mp = Holder<Player>::hostage()
-			->getPositionClick();
-
 		Arrow * arrow = Holder<Player>::hostage()->getArrow();
 
 		HotSpot * hotSpot = arrow->getCurrentHotSpot();
@@ -51,23 +48,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::regTrap( MousePickerTrap * _trap, const Viewport & _viewport )
 	{
-		PickerTrap pt;
-
-		pt.trap = _trap;
-		pt.viewport = _viewport;
-
-		m_listPickerTrap.push_front( pt );
+		m_listPickerTrap.push_front( _trap );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerTrap * MousePickerSystem::pickTrap( HotSpot * _hotspot ) 
 	{
-		for each( const PickerTrap & picker in m_listPickerTrap )
+		for each( MousePickerTrap * trap in m_listPickerTrap )
 		{
-			MousePickerTrap * trap = picker.trap;
-
-			const Viewport & vp = picker.viewport;
-		
-			if( trap->pick( vp.begin, _hotspot ) == true )
+			if( trap->pick( _hotspot ) == true )
 			{
 				return trap;
 			}
@@ -82,13 +70,9 @@ namespace Menge
 
 		HotSpot * hotspot = arrow->getCurrentHotSpot();
 
-		for each( const PickerTrap & picker in m_listPickerTrap )
+		for each( MousePickerTrap * trap in m_listPickerTrap )
 		{
-			MousePickerTrap * trap = picker.trap;
-
-			const Viewport & vp = picker.viewport;
-
-			if( trap->pick( vp.begin, hotspot ) == true )
+			if( trap->pick( hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -108,13 +92,9 @@ namespace Menge
 
 		HotSpot * hotspot = arrow->getCurrentHotSpot();
 
-		for each( const PickerTrap & picker in m_listPickerTrap )
+		for each( MousePickerTrap * trap in m_listPickerTrap )
 		{
-			MousePickerTrap * trap = picker.trap;
-
-			const Viewport & vp = picker.viewport;
-
-			if( trap->pick( vp.begin, hotspot ) == true )
+			if( trap->pick( hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -134,13 +114,9 @@ namespace Menge
 
 		HotSpot * hotspot = arrow->getCurrentHotSpot();
 
-		for each( const PickerTrap & picker in m_listPickerTrap )
+		for each( MousePickerTrap * trap in m_listPickerTrap )
 		{
-			MousePickerTrap * trap = picker.trap;
-
-			const Viewport & vp = picker.viewport;
-
-			if( trap->pick( vp.begin, hotspot ) == true )
+			if( trap->pick( hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();
 

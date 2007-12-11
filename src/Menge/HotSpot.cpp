@@ -47,20 +47,30 @@ namespace	Menge
 		m_polygon.clear_points();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::pick( const mt::vec2f& _offset, HotSpot * _hotspot )
+	bool HotSpot::pick( HotSpot * _hotspot )
 	{
+		if( _hotspot == this )
+		{
+			return false;
+		}
+
 		bool is_intersect = false;
 
-		const mt::mat3f & wmA = getWorldMatrix();
-		const mt::mat3f & wmB = _hotspot->getWorldMatrix();
+		mt::mat3f wmA = getWorldMatrix();
+		mt::mat3f wmB = _hotspot->getWorldMatrix();
 
-	//	printf("%f \n", _offset.x);
-		is_intersect = mt::intersect_poly_poly( m_polygon, _hotspot->m_polygon, wmA, wmB, _offset );
+	//	printf("%f \n", wmA.v2.v2.x);
 
-	//	if(is_intersect)
-	//	{
-//			printf("true\n");
-	//	}
+		wmA.v2.v2 = this->getScreenPosition();
+		wmB.v2.v2 = _hotspot->getScreenPosition();
+
+		is_intersect = mt::intersect_poly_poly( m_polygon, _hotspot->m_polygon, wmA, wmB, mt::vec2f(0,0) );
+
+		if(is_intersect)
+		{
+			printf("%f;%f  and %f;%f \n", wmA.v2.v2.x, wmA.v2.v2.y, wmB.v2.v2.x, wmB.v2.v2.y);
+//			printf("%s and %s intersected\n", this->getName().c_str(), _hotspot->getName().c_str());
+		}
 	
 		return is_intersect;
 	}
@@ -196,13 +206,15 @@ namespace	Menge
 			->regTrap( this, viewport );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testPoint( const mt::vec2f & _p, const mt::vec2f & _offset )
+	bool HotSpot::testPoint( const mt::vec2f & _p )
 	{
 		mt::mat3f wm = getWorldMatrix();
 
 		// DIRTY HACK. FIX.
 
-		wm.v2.v2 += _offset;
+		//wm.v2.v2 += _offset;
+
+		wm.v2.v2 = this->getScreenPosition();
 
 		bool result = mt::is_point_inside_polygon( m_polygon, _p, wm );
 

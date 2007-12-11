@@ -24,8 +24,5 @@ namespace Menge
 		void _update( float _timing ) override;
 		bool _activate() override;
 		void _debugRender() override;
-
-	private:
-		mt::vec2f m_offset;
 	};
 }

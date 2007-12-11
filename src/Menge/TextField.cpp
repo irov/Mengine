@@ -118,6 +118,8 @@ namespace	Menge
 			}
 		}
 
+	//	setText("sdfsdfds68678767687687687687686778fsdf\\nsdfgsdfsdfdsf");
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -176,7 +178,7 @@ namespace	Menge
 
 					if( *it == 'n' )
 					{
-						offset.x = 0;
+						offset.x = m_alignOffset.x;
 						offset.y += m_height;
 						continue;
 					}
@@ -195,6 +197,8 @@ namespace	Menge
 				mt::vec2f size( width, m_height );
 
 				Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, m_outlineColor.get(), renderImage );
+
+				Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, m_color.get(), renderImage );
 
 				offset.x += width;
 			}

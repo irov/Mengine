@@ -6,6 +6,8 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	InputEngine::InputEngine( InputSystemInterface * _interface )
 		: m_interface( _interface )
+		, m_mouseX(-1)
+		, m_mouseY(-1)
 	{
 		Holder<InputEngine>::keep(this);
 	}

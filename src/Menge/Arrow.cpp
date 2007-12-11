@@ -41,6 +41,8 @@ namespace	Menge
 		
 		mt::vec2f pos( (float)mx, (float)my );
 		setLocalPosition( pos /*+ m_offsetClick*/ );
+
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()
@@ -52,6 +54,7 @@ namespace	Menge
 	{
 		m_currentHotSpot = new HotSpot();
 		m_currentHotSpot->addPoint( mt::vec2f::zero_v2 );
+		m_currentHotSpot->setName("MainHotSpotArrow");
 
 		bool result = this->addChildren( m_currentHotSpot );
 
@@ -98,8 +101,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::addHotSpot( HotSpot * _hotspot )
 	{
-		//if( this->isChildren( _hotspot ) )
-		//	return;
+		if( m_currentHotSpot != NULL )
+		{
+			this->removeChildren( m_currentHotSpot );
+		}
 
 		bool result = this->addChildren( _hotspot );
 

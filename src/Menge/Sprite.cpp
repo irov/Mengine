@@ -300,5 +300,3 @@ namespace	Menge
 	void Sprite::_debugRender()
 	{}
 }
-
-

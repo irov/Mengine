@@ -29,13 +29,13 @@ namespace Menge
 		~HotSpot();
 
 	public:
-		bool pick( const mt::vec2f& _offset, HotSpot * _hotspot ) override;
+		bool pick( HotSpot * _hotspot ) override;
 		void onLeave() override;
 		void onEnter() override;
 
 	public:
 		void addPoint( const mt::vec2f & _p );
-		bool testPoint( const mt::vec2f & _p, const mt::vec2f & _offset );
+		bool testPoint( const mt::vec2f & _p );
 		void clearPoints();
 
 		void enableGlobalMouseEvent( bool _value );

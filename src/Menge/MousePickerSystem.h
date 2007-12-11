@@ -15,12 +15,12 @@ namespace Menge
 	public:
 		MousePickerSystem();
 
-		struct PickerTrap
+	/*	struct PickerTrap
 		{
 			MousePickerTrap * trap;
 			Viewport viewport;
 		};
-
+*/
 	public:
 		void update();
 		void clear();
@@ -33,7 +33,9 @@ namespace Menge
 		bool handleMouseMove( int _x, int _y, int _whell );
 
 	private:
-		typedef std::list<PickerTrap> TListPickerTrap;
+
+	//	typedef std::list<PickerTrap> TListPickerTrap;
+		typedef std::list<MousePickerTrap *> TListPickerTrap;
 		TListPickerTrap m_listPickerTrap;
 
 		MousePickerTrap * m_lastPickerTrap;

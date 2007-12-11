@@ -35,7 +35,7 @@ namespace Menge
 		void update( float _timing ) override;
 		void render() override;
 
-		void _addChildren(Node* _node);
+		void _addChildren( SceneNode2D * _node ) override;
 		
 	protected:
 		bool _renderBegin() override;

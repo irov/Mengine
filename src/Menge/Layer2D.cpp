@@ -259,15 +259,15 @@ namespace	Menge
 			->endLayer();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::_addChildren( Node * _node )
+	void Layer2D::_addChildren( SceneNode2D * _node )
 	{
-		SceneNode2D * sceneNode = dynamic_cast<SceneNode2D*>( _node );
+		//SceneNode2D * sceneNode = dynamic_cast<SceneNode2D*>( _node );
 
-		if ( sceneNode == NULL )
-		{
-			assert(!"error in converting node to SceneNode2D");
-		}
+	//	if ( sceneNode == NULL )
+	//	{
+	//		assert(!"error in converting node to SceneNode2D");
+	////	}
 
-		sceneNode->setLayer( this );
+		_node->setLayer( this );
 	}
 }

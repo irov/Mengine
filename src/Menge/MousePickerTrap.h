@@ -19,7 +19,7 @@ namespace Menge
 		InputHandler * handler();
 
 	public:
-		virtual bool pick( const mt::vec2f & _offset, HotSpot * _hotspot ) = 0;
+		virtual bool pick( HotSpot * _hotspot ) = 0;
 		virtual void onLeave() = 0;
 		virtual void onEnter() = 0;
 

@@ -20,13 +20,6 @@ namespace	Menge
 	void Point::_update( float _timing )
 	{
 		SceneNode2D::_update( _timing );
-
-		// HACK
-		const Viewport & viewport =
-			Holder<RenderEngine>::hostage()
-			->getRenderViewport();
-
-		m_offset = viewport.begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Point::_activate()
@@ -41,8 +34,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Point::testHotSpot( HotSpot * _hotspot )
 	{
-		const mt::vec2f& pos = getWorldPosition();
-		bool result = _hotspot->testPoint( pos, m_offset );
+		const mt::vec2f& pos = this->getScreenPosition();
+		bool result = _hotspot->testPoint( pos );
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////

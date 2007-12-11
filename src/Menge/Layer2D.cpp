@@ -24,7 +24,6 @@ namespace	Menge
 	: m_factorParallax(1.f,1.f)
 	, m_reRender( false )
 	, m_scrollable( false )
-	, m_viewportShift( 0.0f, 0.0f )
 	, m_needReRender( false )
 	, m_viewportOffset( 0.0f, 0.0f )
 	{
@@ -52,7 +51,7 @@ namespace	Menge
 
 		const mt::vec2f & main_size = main->getSize();
 
-		mt::vec2f viewport_size = mt::vec2f( 512.f, 384.f );
+		mt::vec2f viewport_size = ( m_viewport.end - m_viewport.begin ) * 0.5f;
 		mt::vec2f viewport_middle = ( m_viewport.begin + m_viewport.end ) * 0.5f;
 
 		Camera2D * camera = Holder<Player>::hostage()
@@ -71,37 +70,6 @@ namespace	Menge
 			camera_position.y = main_size.y - viewport_size.y;
 		}
 
-
-		if( m_scrollable && camera_position.x < 0.0f )
-		{
-			int d = static_cast<int>( ::fabs( camera_position.x ) / main_size.x );
-			camera_position.x = ( d + 1 ) * main_size.x + camera_position.x;
-		}
-		else if( m_scrollable && camera_position.x > main_size.x )
-		{
-			int d = static_cast<int>( camera_position.x / main_size.x );
-			camera_position.x = camera_position.x - main_size.x * d;
-		}	
-		
-		if( m_scrollable && m_reRender == false )
-		{
-			if( camera_position.x - viewport_size.x < 0.0f )
-			{
-				m_viewportOffset.x = m_size.x;
-				m_viewportOffset.y = 0.0f;
-				// notify re-render
-				m_needReRender = true;
-			}
-			else if( camera_position.x + viewport_size.x > m_size.x ) 
-			{
-				m_viewportOffset.x = -m_size.x;
-				m_viewportOffset.y = 0.0f;
-				// notify re-render
-				m_needReRender = true;
-			}	
-		}
-
-
 		mt::vec2f main_paralax_size = main_size - viewport_size * 2.f;
 
 		mt::vec2f main_paralax_position = camera_position - viewport_size;
@@ -109,15 +77,40 @@ namespace	Menge
 		float parallax_factor_x = (main_paralax_size.x > 0.0001f) ? main_paralax_position.x / main_paralax_size.x : 0.f;
 		float parallax_factor_y = (main_paralax_size.y > 0.0001f) ? main_paralax_position.y / main_paralax_size.y : 0.f;
 
-		const mt::vec2f & layer_size = getSize();
-
-		mt::vec2f paralax_size = layer_size - viewport_size * 2.f;
+		mt::vec2f paralax_size = m_size - viewport_size * 2.f;
 
 		viewport_middle.x = paralax_size.x * parallax_factor_x + viewport_size.x;
 		viewport_middle.y = paralax_size.y * parallax_factor_y + viewport_size.y;
 
 		m_viewport.begin = viewport_middle - viewport_size;
 		m_viewport.end = viewport_middle + viewport_size;
+
+		//
+		if( !m_scrollable ) return;
+
+		if( m_viewport.begin.x < -m_size.x || m_viewport.begin.x > m_size.x )
+		{
+			m_viewport.begin.x += m_size.x * ::floorf( m_viewport.begin.x / -m_size.x );
+			m_viewport.end.x = m_viewport.begin.x + 1024;
+		}
+
+		if( !m_reRender )
+		{
+			if( m_viewport.begin.x < 0.0f )
+			{
+				m_viewportOffset.x = m_size.x;
+				m_viewportOffset.y = 0.0f;
+				// notify re-render
+				m_needReRender = true;
+			}
+			else if( m_viewport.end.x > m_size.x )
+			{
+				m_viewportOffset.x = -m_size.x;
+				m_viewportOffset.y = 0.0f;
+				// notify re-render
+				m_needReRender = true;
+			}	
+		}	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::update( float _timing )
@@ -197,7 +190,7 @@ namespace	Menge
 		if( m_reRender )
 		{
 			m_viewport.begin += m_viewportOffset;
-			m_viewport.end += m_viewportOffset;
+			m_viewport.end += m_viewportOffset;	
 		}
 
 		Holder<RenderEngine>::hostage()

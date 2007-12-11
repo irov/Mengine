@@ -233,13 +233,13 @@ namespace Menge
 			m_switchScene = false;
 
 
+			m_nextScene->compile();
+			m_nextScene->activate();
 			if( m_scene )
 			{
 				m_scene->deactivate();
 				m_scene->release();
 			}
-			m_nextScene->compile();
-			m_nextScene->activate();
 
 			m_scene = m_nextScene;
 			//m_scene->activate();

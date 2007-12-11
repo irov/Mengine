@@ -35,6 +35,8 @@ namespace	Menge
 	, m_flipX( false )
 	, m_flipY( false )
 	, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
+	, m_blendSrc( BF_SOURCE_ALPHA )
+	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -50,6 +52,9 @@ namespace	Menge
 			XML_CHECK_VALUE_NODE( "ImageIndex", "Value", m_currentImageIndex );
 			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
 			XML_CHECK_VALUE_NODE( "Scale", "Value", m_scale );
+			XML_CHECK_VALUE_NODE( "Blend", "Source", ((int&)m_blendSrc) );
+			XML_CHECK_VALUE_NODE( "Blend", "Dest", ((int&)m_blendDest) );
+			XML_CHECK_VALUE_NODE( "Color", "Value", m_color );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -257,8 +262,9 @@ namespace	Menge
 			m_uv,
 			m_size,
 			m_color.get(),
-			renderImage
-			);
+			renderImage,
+			m_blendSrc,
+			m_blendDest);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setColor( const Color & _color )

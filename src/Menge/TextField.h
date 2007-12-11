@@ -96,6 +96,8 @@ namespace Menge
 		*/
 		const Color& getOutlineColor() const;
 
+		const mt::vec2f& getLength() const;
+
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;
 		void loader( TiXmlElement * _xml ) override;

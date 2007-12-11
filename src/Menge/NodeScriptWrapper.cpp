@@ -53,6 +53,12 @@ namespace Menge
 				->remove( _id );
 		}
 
+		static void scheduleRemoveAll()
+		{
+			Holder<ScheduleManager>::hostage()
+				->removeAll();
+		}	
+		
 		static int getMouseX()
 		{
 			return Holder<InputEngine>::hostage()
@@ -309,6 +315,7 @@ namespace Menge
 				.def( "setAlpha", &TextField::setAlpha )
 				.def( "setOutlineColor", &TextField::setOutlineColor )
 				.def( "getOutlineColor", &TextField::getOutlineColor )
+				.def( "getLength", &TextField::getLength )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)
@@ -372,6 +379,7 @@ namespace Menge
 
 		pybind::def( "schedule", &ScriptMethod::schedule );
 		pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );
+		pybind::def( "scheduleRemoveAll", &ScriptMethod::scheduleRemoveAll );
 
 		pybind::def( "getMouseX", &ScriptMethod::getMouseX );
 		pybind::def( "getMouseY", &ScriptMethod::getMouseY );

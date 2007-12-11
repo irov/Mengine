@@ -58,6 +58,18 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ScheduleManager::removeAll()
+	{
+		for( TListSchedules::iterator 
+			it = m_schedules.begin(),
+			it_end = m_schedules.end();
+		it != it_end;
+		++it)
+		{
+			it->dead = true;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::update( float _timing )
 	{
 		m_updating = true;

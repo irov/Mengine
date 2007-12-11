@@ -54,7 +54,6 @@ namespace Menge
 		bool m_needReRender;
 		bool m_reRender;
 		bool m_scrollable;
-		mt::vec2f m_viewportShift;
 		mt::vec2f m_viewportOffset;
 	};
 }

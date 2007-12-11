@@ -44,7 +44,9 @@ namespace Menge
 			const mt::vec4f & _uv,
 			const mt::vec2f & _size,
 			unsigned int _color, 
-			const RenderImageInterface* _image);
+			const RenderImageInterface* _image,
+			EBlendFactor _src = BF_SOURCE_ALPHA,
+			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
 
 		void renderImage(		
 			const mt::mat3f & _transform, 
@@ -54,7 +56,9 @@ namespace Menge
 			const mt::vec2f & _d,
 			const mt::vec4f & _uv,
 			unsigned int _color, 
-			const RenderImageInterface* _image);
+			const RenderImageInterface* _image,
+			EBlendFactor _src = BF_SOURCE_ALPHA,
+			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
 
 		void	releaseImage( RenderImageInterface * _image );
 

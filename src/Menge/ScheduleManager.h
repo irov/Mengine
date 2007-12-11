@@ -27,6 +27,7 @@ namespace Menge
 	public:
 		size_t schedule( float _timing, PyObject * _func );
 		void remove( size_t _id );
+		void removeAll();
 
 	public:
 		void update( float _timing );

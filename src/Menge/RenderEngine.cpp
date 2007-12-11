@@ -130,7 +130,9 @@ namespace Menge
 		const mt::vec4f & _uv,
 		const mt::vec2f & _size,
 		unsigned int _color, 
-		const RenderImageInterface * _image)
+		const RenderImageInterface * _image,
+		EBlendFactor _src,
+		EBlendFactor _dst)
 	{
 		mt::mat3f transform = _transform;
 		transform.v2.v2 -= m_renderViewport.begin;
@@ -140,7 +142,9 @@ namespace Menge
 			_uv.m,
 			_size.m,
 			_color,
-			_image);
+			_image,
+			_src,
+			_dst);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderImage(		
@@ -151,7 +155,9 @@ namespace Menge
 			const mt::vec2f & _d,
 			const mt::vec4f & _uv,
 			unsigned int _color, 
-			const RenderImageInterface* _image)
+			const RenderImageInterface* _image,
+			EBlendFactor _src,
+			EBlendFactor _dst)
 	{
 		mt::mat3f transform = _transform;
 		transform.v2.v2 -= m_renderViewport.begin;
@@ -163,7 +169,9 @@ namespace Menge
 			_d.m,
 			_uv.m,
 			_color,
-			_image);
+			_image,
+			_src,
+			_dst);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )

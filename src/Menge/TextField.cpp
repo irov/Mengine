@@ -217,7 +217,7 @@ namespace	Menge
 
 				if( *it == 'n' )
 				{
-					offset.x = 0;
+					offset.x = m_alignOffset.x;
 					offset.y += m_height;
 					continue;
 				}
@@ -383,4 +383,8 @@ namespace	Menge
 	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& TextField::getLength() const
+	{
+		return m_length;
+	}
 }

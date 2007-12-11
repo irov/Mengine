@@ -98,6 +98,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::addHotSpot( HotSpot * _hotspot )
 	{
+		//if( this->isChildren( _hotspot ) )
+		//	return;
+
 		bool result = this->addChildren( _hotspot );
 
 		if( result == false )

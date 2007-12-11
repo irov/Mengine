@@ -161,7 +161,6 @@ namespace	Menge
 				XML_VALUE_ATTRIBUTE("Value", m_scrollable);
 			}
 		}
-		m_scrollable = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::_activate()
@@ -261,13 +260,23 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::_addChildren( SceneNode2D * _node )
 	{
-		//SceneNode2D * sceneNode = dynamic_cast<SceneNode2D*>( _node );
-
-	//	if ( sceneNode == NULL )
-	//	{
-	//		assert(!"error in converting node to SceneNode2D");
-	////	}
-
 		_node->setLayer( this );
+
+		// прости господи
+		struct ForeachRender
+			: public NodeForeach
+		{
+			Layer2D * layer;
+			ForeachRender(Layer2D * _layer)
+				: layer(_layer)
+			{}6
+
+			void apply( Node * children ) override
+			{
+				dynamic_cast<SceneNode2D*>(children)->setLayer(layer);
+			}
+		};
+
+		_node->foreachChildren( ForeachRender(this) );
 	}
 }

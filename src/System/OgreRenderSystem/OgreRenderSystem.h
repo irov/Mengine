@@ -34,7 +34,9 @@ public:
 		const float * _uv,
 		const float * _size,
 		unsigned int _color, 
-		const RenderImageInterface* _image ) override;
+		const RenderImageInterface* _image, 
+		EBlendFactor _src,
+		EBlendFactor _dst) override;
 
 	void renderImage(		
 		const float * _transform, 
@@ -44,7 +46,9 @@ public:
 		const float * _d,
 		const float * _uv,
 		unsigned int _color, 
-		const RenderImageInterface * _image) override;
+		const RenderImageInterface * _image,
+		EBlendFactor _src,
+		EBlendFactor _dst) override;
 
 	void	beginLayer() override;
 	void	endLayer() override;

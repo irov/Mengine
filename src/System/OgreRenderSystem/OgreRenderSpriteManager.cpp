@@ -172,7 +172,17 @@ void OgreRenderSpriteManager::prepareForRender()
 	m_renderSys->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSpriteManager::addQuad1(const Ogre::Vector2 & _contentRes, const Ogre::Vector4 & _uv,const Ogre::Matrix3 & _transform, const Ogre::Vector2 & _offset, const Ogre::Vector2 & _size, float z,  const OgreRenderImage * image, unsigned int _color)
+void OgreRenderSpriteManager::addQuad1(const Ogre::Vector2 & _contentRes,
+									   const Ogre::Vector4 & _uv,
+									   const Ogre::Matrix3 & _transform,
+									   const Ogre::Vector2 & _offset,
+									   const Ogre::Vector2 & _size,
+									   float z,
+									   const OgreRenderImage * image,
+									   unsigned int _color,
+									   Ogre::SceneBlendFactor _src,
+									   Ogre::SceneBlendFactor _dst)
+
 {
 	isSorted = false;
 	QuadInfo quad;
@@ -213,11 +223,25 @@ void OgreRenderSpriteManager::addQuad1(const Ogre::Vector2 & _contentRes, const 
 	quad.texture = image->m_texture;
 
 	quad.color = _color;
+
+	quad.source = _src;
+	quad.dest = _dst;
 	
 	quadList.push_back(quad);
 }
 
-void OgreRenderSpriteManager::addQuad2(const Ogre::Vector2 & _contentRes,const Ogre::Vector4 & _uv,const Ogre::Matrix3 & _transform, const Ogre::Vector2 & _a, const Ogre::Vector2 & _b, const Ogre::Vector2 & _c, const Ogre::Vector2 & _d, float z, const OgreRenderImage * image, unsigned int _color)
+void OgreRenderSpriteManager::addQuad2(const Ogre::Vector2 & _contentRes,
+									   const Ogre::Vector4 & _uv,
+									   const Ogre::Matrix3 & _transform,
+									   const Ogre::Vector2 & _a,
+									   const Ogre::Vector2 & _b,
+									   const Ogre::Vector2 & _c,
+									   const Ogre::Vector2 & _d,
+									   float z,
+									   const OgreRenderImage * image,
+									   unsigned int _color,
+									   Ogre::SceneBlendFactor _src,
+									   Ogre::SceneBlendFactor _dst)
 {
 	isSorted = false;
 	QuadInfo quad;
@@ -259,6 +283,9 @@ void OgreRenderSpriteManager::addQuad2(const Ogre::Vector2 & _contentRes,const O
 
 	quad.color = _color;
 	
+	quad.source = _src;
+	quad.dest = _dst;
+
 	quadList.push_back(quad);
 }
 
@@ -373,6 +400,8 @@ void OgreRenderSpriteManager::doRender(void)
 	{
 		currTexture = it->texture;
 		renderOp.vertexData->vertexStart = bufferPos;
+		Ogre::SceneBlendFactor src = it->source;
+		Ogre::SceneBlendFactor dst = it->dest;
 
 		for ( ;it != quadList.end(); ++it )
 		{
@@ -387,7 +416,10 @@ void OgreRenderSpriteManager::doRender(void)
 		}
 
 		renderOp.vertexData->vertexCount = bufferPos - renderOp.vertexData->vertexStart;
-		//m_renderSys->_setSceneBlending(Ogre::SceneBlendFactor::SBF_SOURCE_ALPHA, Ogre::SceneBlendFactor::SBF_DEST_ALPHA);
+		
+		//m_renderSys->_setSceneBlending(it->source, it->dest);
+		m_renderSys->_setSceneBlending( src, dst );
+
 		m_renderSys->_setTexture( 0, true, currTexture );
 
 		if ( first )

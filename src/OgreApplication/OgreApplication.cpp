@@ -232,7 +232,7 @@ void OgreApplication::run()
 	POINT pos;
 	while( m_running )
 	{
-		::GetCursorPos( &pos );
+		/*::GetCursorPos( &pos );
 		if( m_cursorInArea 
 			&& ( pos.x < m_wndInfo.rcClient.left 
 			|| pos.x > m_wndInfo.rcClient.right 
@@ -241,7 +241,7 @@ void OgreApplication::run()
 		{
 			::ShowCursor( TRUE );
 			m_application->handleMouseLeave();
-		}
+		}*/
 		if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 		{
 			TranslateMessage( &msg );
@@ -382,7 +382,7 @@ LRESULT CALLBACK OgreApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 		m_renderWindow->destroy();
 		break;
-	case WM_MOUSEMOVE:
+	/*case WM_MOUSEMOVE:
 		if( !m_cursorInArea )
 		{
 			m_cursorInArea = true;
@@ -408,7 +408,7 @@ LRESULT CALLBACK OgreApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 		break;
 	case WM_MBUTTONUP:
 		m_application->handleMouseButtonEvent( 3, false );
-		break;
+		break;*/
 	}
 	return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 }

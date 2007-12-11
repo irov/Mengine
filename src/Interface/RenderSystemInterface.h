@@ -9,6 +9,20 @@ struct	TextureDesc
 	size_t			size;
 };
 
+enum EBlendFactor 
+{
+	BF_ONE,
+	BF_ZERO,
+	BF_DEST_COLOUR,
+	BF_SOURCE_COLOUR,
+	BF_ONE_MINUS_DEST_COLOUR,
+	BF_ONE_MINUS_SOURCE_COLOUR,
+	BF_DEST_ALPHA,
+	BF_SOURCE_ALPHA,
+	BF_ONE_MINUS_DEST_ALPHA,
+	BF_ONE_MINUS_SOURCE_ALPHA
+};
+
 class RenderImageInterface
 {
 public:
@@ -46,7 +60,9 @@ public:
 		const float * _uv,		  // текстурные координаты, вектор4, u0, v0, u1, v1
 		const float * _size,	  // размер изображения, вектор2
 		unsigned int _color,	  // цвет, порядок RGBA
-		const RenderImageInterface * _image) = 0;
+		const RenderImageInterface * _image,
+		EBlendFactor _src,
+		EBlendFactor _dst) = 0;
 
 	virtual void renderImage(		
 		const float * _transform, 
@@ -56,7 +72,9 @@ public:
 		const float * _d,
 		const float * _uv,
 		unsigned int _color, 
-		const RenderImageInterface * _image) = 0;
+		const RenderImageInterface * _image,
+		EBlendFactor _src,
+		EBlendFactor _dst) = 0;
 
 	virtual	void	beginLayer() = 0;
 	virtual	void	endLayer() = 0;

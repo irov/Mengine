@@ -149,13 +149,15 @@ void OgreRenderSystem::renderImage(
 				 const float * _uv,
 				 const float * _size,
 				 unsigned int _color, 
-				 const RenderImageInterface* _image)
+				 const RenderImageInterface* _image,
+				 EBlendFactor _src,
+				 EBlendFactor _dst)
 {
 	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
 	{
 		Ogre::Texture * texture = image->getTexture();
 		float z = m_spriteMgr->getCurrentZ();
-		m_spriteMgr->addQuad1(m_contentResolution,*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color);
+		m_spriteMgr->addQuad1(m_contentResolution,*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color, (Ogre::SceneBlendFactor)_src, (Ogre::SceneBlendFactor)_dst);
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -167,7 +169,9 @@ void OgreRenderSystem::renderImage(
 		const float * _d,
 		const float * _uv,
 		unsigned int _color, 
-		const RenderImageInterface * _image)
+		const RenderImageInterface * _image,
+		EBlendFactor _src,
+		EBlendFactor _dst)
 {
 	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
 	{
@@ -183,7 +187,9 @@ void OgreRenderSystem::renderImage(
 			*(Ogre::Vector2*)_d, 
 			z,
 			image, 
-			_color);
+			_color,
+			(Ogre::SceneBlendFactor)_src,
+			(Ogre::SceneBlendFactor)_dst);
 	}
 }
 

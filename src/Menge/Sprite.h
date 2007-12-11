@@ -1,5 +1,6 @@
 #	pragma once
 
+#	include "../Interface/RenderSystemInterface.h"
 #	include "SceneNode2D.h"
 #	include "Color.h"
 
@@ -157,5 +158,8 @@ namespace Menge
 
 		Color m_color;
 		Color m_newColor;
+
+		EBlendFactor m_blendSrc;
+		EBlendFactor m_blendDest;
 	};
 }

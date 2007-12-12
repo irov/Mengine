@@ -92,20 +92,18 @@ void AstralaxEmitter::update( float _timing )
 		m_total_rate -= rate;
         Magic_Update( m_id, rate );
 
-        if ( Magic_IsRestart( m_id ) )
+  /*      if ( Magic_IsRestart( m_id ) )
         { 
-			if( m_looped /*&& m_stop == false*/ )
+			if( m_looped )
 			{
 				Magic_Restart( m_id );
 			}
 			else
 			{
-				//if( m_stop == true )
-				//{
 					m_start = false;
-				//}
+				
 			}
-        }
+        }*/
     }
 }
 //////////////////////////////////////////////////////////////////////////
@@ -161,3 +159,7 @@ void AstralaxEmitter::_leftVisibleInterval( double _left )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
+bool	AstralaxEmitter::isIntensive() const
+{
+	return Magic_IsIntensive();
+}

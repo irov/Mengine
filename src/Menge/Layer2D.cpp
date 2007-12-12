@@ -269,7 +269,7 @@ namespace	Menge
 			Layer2D * layer;
 			ForeachRender(Layer2D * _layer)
 				: layer(_layer)
-			{}6
+			{}
 
 			void apply( Node * children ) override
 			{

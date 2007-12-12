@@ -2,11 +2,12 @@
 
 #	include "SceneNode2D.h"
 
+#	include "../Interface/RenderSystemInterface.h"
+
 #	include "math/mat3.h"
 
 #	include <vector>
 
-class RenderImageInterface;
 class EmitterInterface;
 
 namespace Menge
@@ -55,5 +56,8 @@ namespace Menge
 		EmitterInterface * m_interface;
 
 		std::vector<RenderImageInterface*> m_images;
+
+		EBlendFactor m_blendSrc;
+		EBlendFactor m_blendDest;
 	};
 }

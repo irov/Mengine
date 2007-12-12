@@ -59,8 +59,6 @@ namespace	Menge
 		mt::mat3f wmA = getWorldMatrix();
 		mt::mat3f wmB = _hotspot->getWorldMatrix();
 
-	//	printf("%f \n", wmA.v2.v2.x);
-
 		wmA.v2.v2 = this->getScreenPosition();
 		wmB.v2.v2 = _hotspot->getScreenPosition();
 
@@ -68,8 +66,7 @@ namespace	Menge
 
 		if(is_intersect)
 		{
-			printf("%f;%f  and %f;%f \n", wmA.v2.v2.x, wmA.v2.v2.y, wmB.v2.v2.x, wmB.v2.v2.y);
-//			printf("%s and %s intersected\n", this->getName().c_str(), _hotspot->getName().c_str());
+			//printf("%f;%f  and %f;%f \n", wmA.v2.v2.x, wmA.v2.v2.y, wmB.v2.v2.x, wmB.v2.v2.y);
 		}
 	
 		return is_intersect;

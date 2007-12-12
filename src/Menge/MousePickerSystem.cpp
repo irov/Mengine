@@ -34,6 +34,9 @@ namespace Menge
 
 			if( picker )
 			{
+			//	static int test = 0;
+			//	printf("onEnter %d\n", test);
+			//	test++;
 				picker->onEnter();
 			}
 		}

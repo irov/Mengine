@@ -9,8 +9,6 @@
 
 #	include <vector>
 
-class RenderImageInterface;
-
 namespace Menge
 {
 	class ResourceImage;

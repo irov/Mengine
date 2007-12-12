@@ -25,6 +25,8 @@ public:
 	void	getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
 	int		getNumTypes() const override;
 
+	bool	isIntensive() const override;
+
 public:
 	HM_EMITTER	getId() const;
 

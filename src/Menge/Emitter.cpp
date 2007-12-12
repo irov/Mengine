@@ -24,6 +24,8 @@ namespace	Menge
 	Emitter::Emitter()
 		: m_interface( 0 )
 		, m_resource( 0 )
+		, m_blendSrc( BF_SOURCE_ALPHA )
+		, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Emitter::~Emitter()
@@ -163,6 +165,15 @@ namespace	Menge
 
 			RenderImageInterface * image = m_images[i];
 
+			if(m_interface->isIntensive())
+			{
+				m_blendDest = BF_ONE;
+			}
+			else
+			{
+				m_blendDest = BF_ONE_MINUS_SOURCE_ALPHA;
+			}
+
 			while ( nextParticleType == false )
 			{
 				RenderParticle * p = Holder<ParticleEngine>::hostage()->nextParticle();
@@ -182,7 +193,9 @@ namespace	Menge
 						mt::vec2f(p->x4, p->y4),
 						mt::vec4f(p->u0, p->v0, p->u1, p->v1),
 						p->color,
-						image
+						image,
+						m_blendSrc,
+						m_blendDest
 						);
 					}
 			}

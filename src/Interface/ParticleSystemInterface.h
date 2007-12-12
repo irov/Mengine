@@ -20,6 +20,7 @@ public:
 	virtual void getBoundingBox( int & left, int & top, int & right, int & bottom ) const = 0;
 	virtual void setLeftBorder( float _leftBorder ) = 0;
 	virtual int getNumTypes() const = 0;
+	virtual bool isIntensive() const = 0;
 };
 
 class EmitterContainerInterface

@@ -19,7 +19,7 @@ namespace	Menge
 	, m_looping(false)
 	, m_delay(0)
 	, m_currentFrame(0)
-	, m_listener(0)
+	//, m_listener(0)
 	, m_animationFactor(1.f)
 	{}
 	//////////////////////////////////////////////////////////////////////////

@@ -37,6 +37,7 @@ namespace	Menge
 	, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
 	, m_blendSrc( BF_SOURCE_ALPHA )
 	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
+	, m_listener( 0 )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -67,8 +68,8 @@ namespace	Menge
 
 		updateAlign_();
 
-		this->registerEventMethod("COLOR_END", "onColorEnd" );
-		this->registerEventMethod("COLOR_STOP", "onColorStop" );
+		//this->registerEventMethod("COLOR_END", "onColorEnd" );
+		//this->registerEventMethod("COLOR_STOP", "onColorStop" );
 
 		return true;
 	}
@@ -246,6 +247,23 @@ namespace	Menge
 		m_changingColor = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setAlpha( float _alpha )
+	{
+		m_color.a = _alpha;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::alphaTo( float _alpha, float _time )
+	{
+		m_newColor = m_color;
+		m_newColor.a = _alpha;
+		m_changingColorTime = _time;
+		if( m_changingColor )
+		{
+			this->callEvent( "COLOR_STOP", "()" );
+		}
+		m_changingColor = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render()
 	{
 		updateVisibility_();
@@ -299,4 +317,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_debugRender()
 	{}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setListener( PyObject* _listener )
+	{
+		m_listener = _listener;
+
+		registerEventListener("COLOR_END", "onColorEnd", m_listener );
+		registerEventListener("COLOR_STOP", "onColorStop", m_listener );
+	}
 }

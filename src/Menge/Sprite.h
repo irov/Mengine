@@ -96,6 +96,8 @@ namespace Menge
 		*/
 		virtual void colorTo( const Color & _color, float _time );
 
+		void setAlpha( float _alpha );
+		virtual void alphaTo( float _alpha, float _time );
 		//! Установка цвета спрайта.
 		/*!
 		\param _color значение цвета
@@ -106,6 +108,8 @@ namespace Menge
 		/*!
 		\return цвет
 		*/
+
+		void setListener( PyObject* _listener );
 
 		const Color & getColor() const;
 
@@ -159,5 +163,6 @@ namespace Menge
 
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;
+		PyObject * m_listener;
 	};
 }

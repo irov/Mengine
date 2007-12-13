@@ -110,6 +110,6 @@ namespace Menge
 
 		float m_animationFactor;
 
-		PyObject * m_listener;
+		//PyObject * m_listener;
 	};
 }

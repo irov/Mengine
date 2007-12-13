@@ -353,8 +353,11 @@ namespace Menge
 				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
 				.def( "setColor", &Sprite::setColor )
 				.def( "getColor", &Sprite::getColor )
+				.def( "setAlpha", &Sprite::setAlpha )
 				.def( "colorTo", &Sprite::colorTo )
+				.def( "alphaTo", &Sprite::alphaTo )
 				.def( "flip", &Sprite::flip )
+				.def( "setListener", &Sprite::setListener )
 				;
 			{
 				pybind::proxy_<Animation, pybind::bases<Sprite>>("Animation", false)

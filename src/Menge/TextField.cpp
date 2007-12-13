@@ -198,8 +198,6 @@ namespace	Menge
 
 				Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, m_outlineColor.get(), renderImage );
 
-				Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, m_color.get(), renderImage );
-
 				offset.x += width;
 			}
 		}	

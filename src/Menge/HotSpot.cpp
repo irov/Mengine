@@ -53,16 +53,16 @@ namespace	Menge
 		{
 			return false;
 		}
+		
+		const mt::vec2f & dirA = this->getLocalDirection();
+		const mt::vec2f & posA = this->getScreenPosition();
 
-		bool is_intersect = false;
+		const mt::vec2f & dirB = _hotspot->getLocalDirection();
+		const mt::vec2f & posB = _hotspot->getScreenPosition();
 
-		mt::mat3f wmA = getWorldMatrix();
-		mt::mat3f wmB = _hotspot->getWorldMatrix();
-
-		wmA.v2.v2 = this->getScreenPosition();
-		wmB.v2.v2 = _hotspot->getScreenPosition();
-
-		is_intersect = mt::intersect_poly_poly( m_polygon, _hotspot->m_polygon, wmA, wmB, mt::vec2f(0,0) );
+		bool is_intersect = mt::intersect_poly_poly( 
+			m_polygon, _hotspot->m_polygon, 
+			dirA, posA, dirB, posB );
 
 		if(is_intersect)
 		{
@@ -205,16 +205,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )
 	{
-		mt::mat3f wm = getWorldMatrix();
-
-		// DIRTY HACK. FIX.
-
-		//wm.v2.v2 += _offset;
-
-		wm.v2.v2 = this->getScreenPosition();
-
-		bool result = mt::is_point_inside_polygon( m_polygon, _p, wm );
-
+	//	mt::mat3f wm = getWorldMatrix();
+	//	wm.v2.v2 = this->getScreenPosition();
+		const mt::vec2f & direction = this->getLocalDirection();
+		const mt::vec2f & position = this->getScreenPosition();
+		bool result = mt::is_point_inside_polygon( m_polygon, _p, position, direction  );
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////

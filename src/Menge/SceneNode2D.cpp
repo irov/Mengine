@@ -92,7 +92,8 @@ namespace Menge
 
 		if( m_layer )
 		{
-			pos -= m_layer->getViewport()->begin;
+			Viewport * viewport = m_layer->getViewport();
+			pos -= viewport->begin;
 		}
 
 		return pos;

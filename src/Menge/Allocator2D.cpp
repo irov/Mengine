@@ -76,19 +76,19 @@ namespace Menge
 		return m_localMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::setLocalPosition( const mt::vec2f &position )
+	void Allocator2D::setLocalPosition( const mt::vec2f & _position )
 	{
 		mt::vec2f & localPosition = getLocalPositionModify();
 
-		localPosition = position;
+		localPosition = _position;
 
 		changePivot();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::setLocalDirection( const mt::vec2f &direction )
+	void Allocator2D::setLocalDirection( const mt::vec2f & _direction )
 	{
-		m_localMatrix.v0.v2 = direction;
-		m_localMatrix.v1.v2 = mt::perp(direction);
+		m_localMatrix.v0.v2 = _direction;
+		m_localMatrix.v1.v2 = mt::perp( _direction );
 
 		changePivot();
 	}
@@ -103,9 +103,9 @@ namespace Menge
 		m_localMatrix[1][1] = cos_alpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::translate( const mt::vec2f &delta )
+	void Allocator2D::translate( const mt::vec2f & _delta )
 	{
-		m_localMatrix.v2.v2 += delta;
+		m_localMatrix.v2.v2 += _delta;
 
 		changePivot();
 	}
@@ -120,7 +120,7 @@ namespace Menge
 		const mt::mat3f & parentMatrix =
 			_parent->getWorldMatrix();
 	
-		mt::mul_m3_m3(m_worldMatrix,m_localMatrix,parentMatrix);
+		mt::mul_m3_m3( m_worldMatrix, m_localMatrix, parentMatrix );
 
 		_updateMatrix( _parent );
 	

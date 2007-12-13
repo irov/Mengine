@@ -26,12 +26,12 @@ namespace Menge
 		mt::vec2f & getLocalDirectionModify();
 		mt::mat3f & getLocalMatrixModify();
 
-		void setLocalPosition( const mt::vec2f &position );
-		void setLocalDirection( const mt::vec2f &direction );
+		void setLocalPosition( const mt::vec2f & _position );
+		void setLocalDirection( const mt::vec2f & _direction );
 
 		void setRotate( float _alpha );
 		
-		void translate( const mt::vec2f &delta );
+		void translate( const mt::vec2f & _delta );
 
 	public:
 		void loader( TiXmlElement * _xml );

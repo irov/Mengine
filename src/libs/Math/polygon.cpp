@@ -46,9 +46,95 @@ namespace mt
 		return points[index];
 	}
 
-	bool	intersect_poly_poly( const polygon& _a, const polygon& _b, const mt::mat3f & worldMatrixA, const mt::mat3f & worldMatrixB, const mt::vec2f& _offset )
+	bool	intersect_poly_poly( 
+		const polygon& _a, const polygon& _b, 
+		const mt::vec2f & _dirA, const mt::vec2f & _posA,
+		const mt::vec2f & _dirB, const mt::vec2f & _posB )
 	{	
+		if( _a.num_points() == 0 || _b.num_points() == 0 )
+		{
+			return false;
+		}
 
+		mt::mat3f worldMatrixA;
+		worldMatrixA.v0 = mt::vec3f(_dirA,1);
+		worldMatrixA.v1 = mt::vec3f(mt::perp(_dirA),1);
+		worldMatrixA.v2 = mt::vec3f(_posA,1);
+
+		mt::mat3f worldMatrixB;
+		worldMatrixB.v0 = mt::vec3f(_dirB,1);
+		worldMatrixB.v1 = mt::vec3f(mt::perp(_dirB),1);
+		worldMatrixB.v2 = mt::vec3f(_posB,1);
+
+		polygon polyA;
+
+		for ( size_t i = 0; i < _a.num_points(); ++i )
+		{
+			mt::vec2f point;
+			mt::mul_v2_m3( point, _a[ i ], worldMatrixA );
+			polyA.add_point(point);
+		}
+
+		polygon polyB;
+
+		for ( size_t i = 0; i < _b.num_points(); ++i )
+		{
+			mt::vec2f point;
+			mt::mul_v2_m3( point, _b[ i ], worldMatrixB );
+			polyB.add_point(point);
+		}
+
+		// GJK algo for intersection
+		simplex_solver solver;
+		solver.reset();
+
+		int iteration = 0;
+
+		const int MaxIterations = 100;
+
+		mt::vec3f V(1,0,0);
+
+		mt::vec3f P(polyA.support( V.v2 ),0);
+		mt::vec3f Q(polyB.support( -V.v2 ),0);
+
+		mt::vec3f d = P - Q;
+
+		solver.addWPQ( d, P, Q );
+
+		V = -d;
+
+		for( int i = 0; i < MaxIterations; i++ )
+		{
+			mt::vec3f P(polyA.support( V.v2 ),0);
+			mt::vec3f Q(polyB.support( -V.v2 ),0);
+
+			mt::vec3f W = P - Q;
+
+			if ( mt::dot_v3_v3(W, V) > 0 )
+			{
+				solver.addWPQ( W,P,Q );
+
+				if( solver.update( V ) ) 
+				{
+					return true;
+				}
+			}
+			else
+			{
+				return false;
+			}
+
+			iteration++;
+		}
+
+		return true;
+	}
+
+	bool	intersect_poly_poly( 
+		const polygon& _a, const polygon& _b, 
+		const mt::mat3f & worldMatrixA,
+		const mt::mat3f & worldMatrixB)
+	{	
 		if( _a.num_points() == 0 || _b.num_points() == 0 )
 		{
 			return false;
@@ -83,7 +169,7 @@ namespace mt
 		mt::vec3f V(1,0,0);
 
 		mt::vec3f P(polyA.support( V.v2 ),0);
-		mt::vec3f Q(_offset + polyB.support( -V.v2 ),0);
+		mt::vec3f Q(polyB.support( -V.v2 ),0);
 
 		mt::vec3f d = P - Q;
 
@@ -94,7 +180,7 @@ namespace mt
 		for( int i = 0; i < MaxIterations; i++ )
 		{
 			mt::vec3f P(polyA.support( V.v2 ),0);
-			mt::vec3f Q(_offset + polyB.support( -V.v2 ),0);
+			mt::vec3f Q(polyB.support( -V.v2 ),0);
 
 			mt::vec3f W = P - Q;
 
@@ -307,6 +393,43 @@ namespace mt
 	bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::mat3f& wm )
 	{
 		size_t size = poly.num_points();
+
+		if( size == 0 )
+		{
+			return false;
+		}
+
+		size_t intersect_counter = 0;
+
+		mt::vec2f prev;
+		mt::mul_v2_m3( prev, poly[ size - 1], wm );
+
+		for ( size_t i = 0; i < size; ++i )
+		{
+			mt::vec2f point;
+			mt::mul_v2_m3( point, poly[ i ], wm );
+
+			if (( point.y > _p.y) ^ (prev.y > _p.y))
+			{
+				if (prev.x + (_p.y - prev.y) / (point.y - prev.y) * (point.x - prev.x) > _p.x)
+				{
+					++intersect_counter;
+				}
+			}
+			prev = point;
+		}
+
+		return intersect_counter & 1;
+	}
+
+	bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::vec2f& _position, const mt::vec2f& _direction )
+	{
+		size_t size = poly.num_points();
+
+		mt::mat3f wm;
+		wm.v0 = mt::vec3f(_direction,1);
+		wm.v1 = mt::vec3f(mt::perp(_direction),1);
+		wm.v2 = mt::vec3f(_position,1);
 
 		if( size == 0 )
 		{

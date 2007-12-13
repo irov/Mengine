@@ -40,7 +40,7 @@ namespace Menge
 				XML_CHECK_NODE( "SceneNode" )
 				{
 					XML_VALUE_ATTRIBUTE("Value", name);
-					m_sceneNodesNames.push_back( name );
+					m_listSceneNodesNames.push_back( name );
 				}
 			}		
 		}
@@ -63,17 +63,21 @@ namespace Menge
 			return false;
 		}
 
-		for each( const TListSceneNodesNames::value_type & it in m_sceneNodesNames )
+		for( TListSceneNodesNames::iterator
+			it = m_listSceneNodesNames.begin(),
+			it_end = m_listSceneNodesNames.end();
+		it != it_end;
+		++it)
 		{
 			// FIX!!!!!!!! wtf the parent ??? 
-			SceneNode2D * node = this->getParent()->getChildrenT<SceneNode2D>( it, true );
+			SceneNode2D * node = this->getParent()->getChildrenT<SceneNode2D>( *it, true );
 
 			if( node == NULL )
 			{
 				return false;
 			}
 
-			m_sceneNodes.push_back( node );
+			m_listSceneNodes.push_back( node );
 		}
 
 		return true;
@@ -88,8 +92,13 @@ namespace Menge
 	{
 		SceneNode2D::_update( _timing );
 
-		for each( SceneNode2D * node in m_sceneNodes )
+		for( TListSceneNodes::iterator
+			it = m_listSceneNodes.begin(),
+			it_end = m_listSceneNodes.end();
+		it != it_end;
+		++it)
 		{
+			SceneNode2D * node = *it;
 			bool is_trapped =  mt::is_intersect( m_bbox, node->getBoundingBox() );
 			
 			if( is_trapped )

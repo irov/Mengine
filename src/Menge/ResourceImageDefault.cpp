@@ -12,23 +12,23 @@ namespace Menge
 		: ResourceImage( _name )
 		, m_offset( 0.f, 0.f )
 		, m_uv( 0.f, 0.f, 1.f, 1.f )
-		, m_filter( 1.0f )
+		, m_filter( 1 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageDefault::getMaxSize( size_t _frame ) const
 	{
-		return m_frames[ _frame ].size;
+		return m_vectorImageFrames[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ResourceImageDefault::getCount() const
 	{
-		return m_frames.size();
+		return m_vectorImageFrames.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageDefault::getSize( size_t _frame ) const
 	{
-		return m_frames[ _frame ].size;
+		return m_vectorImageFrames[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageDefault::getOffset( size_t _frame ) const
@@ -43,7 +43,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const RenderImageInterface * ResourceImageDefault::getImage( size_t _frame ) const
 	{
-		return m_frames[ _frame ].image;
+		return m_vectorImageFrames[ _frame ].image;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::loader( TiXmlElement * _xml )
@@ -55,7 +55,7 @@ namespace Menge
 			XML_CHECK_NODE("File")
 			{
 				XML_DEF_ATTRIBUTES_NODE(Path);
-				m_filenames.push_back(Path);
+				m_vectorFileNames.push_back(Path);
 			}
 		}
 	}
@@ -63,11 +63,16 @@ namespace Menge
 	bool ResourceImageDefault::_compile()
 	{	
 		std::vector<char> buff;
-		for each( const std::string & file in m_filenames )
-		{
-			ImageFrame frame = loadImageFrame( file, buff );
 
-			m_frames.push_back( frame );
+		for( TVectorFileNames::iterator
+			it = m_vectorFileNames.begin(),
+			it_end = m_vectorFileNames.end();
+		it != it_end;
+		++it)
+		{
+			ImageFrame frame = loadImageFrame( *it, buff );
+
+			m_vectorImageFrames.push_back( frame );
 		}
 
 		return true;
@@ -75,11 +80,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::_release()
 	{
-		for each( const ImageFrame & frame in m_frames )
+		for( TVectorImageFrame::iterator
+			it = m_vectorImageFrames.begin(),
+			it_end = m_vectorImageFrames.end();
+		it != it_end;
+		++it)
 		{
-			releaseImageFrame( frame );
+			releaseImageFrame( *it );
 		}
 
-		m_frames.clear();
+		m_vectorImageFrames.clear();
 	}
 }

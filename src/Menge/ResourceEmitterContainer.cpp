@@ -47,10 +47,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceEmitterContainer::_release()
 	{
-		for each( const TMapImageEmitters::value_type & it in m_emitterTextures )
+		for( TMapImageEmitters::iterator
+			it = m_mapImageEmitters.begin(),
+			it_end = m_mapImageEmitters.end();
+		it != it_end;
+		++it)
 		{
 			Holder<RenderEngine>::hostage()
-				->releaseImage( it.second );
+				->releaseImage( it->second );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -58,11 +62,11 @@ namespace Menge
 	{
 		std::string fullname = m_folder + _name;
 
-		TMapImageEmitters::iterator it = m_emitterTextures.find( fullname );
+		TMapImageEmitters::iterator it = m_mapImageEmitters.find( fullname );
 
 		std::vector<char> buff;
 
-		if ( it == m_emitterTextures.end() )
+		if ( it == m_mapImageEmitters.end() )
 		{
 			RenderImageInterface * image = Holder<RenderEngine>::hostage()->loadImage( fullname, buff, 1 );
 
@@ -71,7 +75,7 @@ namespace Menge
 				return false;
 			}
 
-			m_emitterTextures.insert( std::make_pair( fullname, image ) );
+			m_mapImageEmitters.insert( std::make_pair( fullname, image ) );
 
 			return image;
 		}

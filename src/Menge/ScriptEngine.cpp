@@ -64,12 +64,16 @@ namespace Menge
 		pybind::decref( _object );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::setModulePath( const TListModulePath & _listPath )
+	void ScriptEngine::setModulePath( const TListModulePath & _listModulePath )
 	{
 		std::string path_packet;
-		for each( const std::string & path in _listPath )
+		for( TListModulePath::const_iterator
+			it = _listModulePath.begin(),
+			it_end = _listModulePath.end();
+		it != it_end;
+		++it)
 		{
-			path_packet += path;
+			path_packet += (*it);
 			path_packet += ';';
 		}
 

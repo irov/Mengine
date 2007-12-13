@@ -118,8 +118,13 @@ namespace Menge
 
 		if( handler == false )
 		{
-			for each( GlobalKeyHandler * keyHandler in m_setGlobalKeyHandler )
+			for( TSetGlobalKeyHandler::iterator
+				it = m_setGlobalKeyHandler.begin(),
+				it_end = m_setGlobalKeyHandler.end();
+			it != it_end;
+			++it)
 			{
+				GlobalKeyHandler * keyHandler = *it;
 				if( handler = keyHandler->handleKeyEvent( _key, _isDown ) )
 				{
 					break;
@@ -144,8 +149,13 @@ namespace Menge
 
 		if( handler == false )
 		{
-			for each( GlobalMouseHandler * mouseHandler in m_setGlobalMouseHandler )
+			for( TSetGlobalMouseHandler::iterator
+				it = m_setGlobalMouseHandler.begin(),
+				it_end = m_setGlobalMouseHandler.end();
+			it != it_end;
+			++it)
 			{
+				GlobalMouseHandler * mouseHandler = *it;
 				if( handler = mouseHandler->handleGlobalMouseButtonEvent( _button, _isDown ) )
 				{
 					break;
@@ -170,8 +180,13 @@ namespace Menge
 
 		if( handler == false )
 		{
-			for each( GlobalMouseHandler * mouseHandler in m_setGlobalMouseHandler )
+			for( TSetGlobalMouseHandler::iterator
+				it = m_setGlobalMouseHandler.begin(),
+				it_end = m_setGlobalMouseHandler.end();
+			it != it_end;
+			++it)
 			{
+				GlobalMouseHandler * mouseHandler = *it;
 				if( handler = mouseHandler->handleGlobalMouseMove( _x, _y, _whell ) )
 				{
 					break;

@@ -8,16 +8,9 @@
 
 namespace Menge
 {	
-	class NodeChildrenImpl
-	{
-	public:
-		Node * createChildrenImpl( const std::string & _name );
-	};
-
 	template<class TNode >
 	class NodeChildren
 		: public virtual Node
-		, public NodeChildrenImpl
 	{
 	public:
 		//////////////////////////////////////////////////////////////////////////
@@ -86,8 +79,13 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		Node * getChildren( const std::string & _name, bool _recursion ) override
 		{
-			for each( TNode * children in m_listChildren )
+			for( TListChildren::iterator
+				it = m_listChildren.begin(),
+				it_end = m_listChildren.end();
+			it != it_end;
+			++it)
 			{
+				TNode * children = *it;
 				if( children->getName() == _name )
 				{
 					return children;
@@ -110,27 +108,11 @@ namespace Menge
 		{
 			return dynamic_cast< T * >( getChildren( _name, recursion ) );
 		}	
-		///////////////////////////////////////////////////////////////////////
-		TNode * createChildren( const std::string &_type )
-		{
-			Node * node = createChildrenImpl( _type );
-
-			addChildren( node );
-			
-			return dynamic_cast<TNode*>(node);
-		}
-		//////////////////////////////////////////////////////////////////////////
-		template< class T >
-		T * createChildrenT( const std::string &_type )
-		{
-			return static_cast<T*>( createChildren( _type ) );
-		}
 		//////////////////////////////////////////////////////////////////////////
 		virtual void _addChildren( TNode * _node )
 		{
 			//Empty
 		}
-
 	protected:
 		TNode * m_parent;
 

@@ -60,6 +60,6 @@ namespace Menge
 		EmitterContainerInterface * m_container;
 
 		typedef std::map<std::string, RenderImageInterface * > TMapImageEmitters;
-		TMapImageEmitters	m_emitterTextures;
+		TMapImageEmitters	m_mapImageEmitters;
 	};
 }

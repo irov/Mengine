@@ -40,12 +40,15 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		std::vector<std::string> m_filenames;
-
 		mt::vec2f m_offset;
 		mt::vec4f m_uv;
 
 		size_t m_filter;
-		std::vector<ImageFrame>  m_frames;
+
+		typedef std::vector<std::string> TVectorFileNames;
+		TVectorFileNames m_vectorFileNames;
+
+		typedef std::vector<ImageFrame> TVectorImageFrame;
+		TVectorImageFrame m_vectorImageFrames;
 	};
 }

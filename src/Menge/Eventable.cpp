@@ -18,9 +18,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Eventable::removeAllEvent()
 	{
-		for each( const TMapEvent::value_type & it in m_mapEvent )
+		for( TMapEvent::iterator
+			it = m_mapEvent.begin(),
+			it_end = m_mapEvent.end();
+		it != it_end;
+		++it)
 		{
-			ScriptEngine::decref( it.second );
+			ScriptEngine::decref( it->second );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

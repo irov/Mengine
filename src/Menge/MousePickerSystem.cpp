@@ -56,8 +56,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerTrap * MousePickerSystem::pickTrap( HotSpot * _hotspot ) 
 	{
-		for each( MousePickerTrap * trap in m_listPickerTrap )
+		for( TListPickerTrap::iterator
+			it = m_listPickerTrap.begin(),
+			it_end = m_listPickerTrap.end();
+		it != it_end;
+		++it)
 		{
+			MousePickerTrap * trap = *it;
 			if( trap->pick( _hotspot ) == true )
 			{
 				return trap;
@@ -73,8 +78,13 @@ namespace Menge
 
 		HotSpot * hotspot = arrow->getCurrentHotSpot();
 
-		for each( MousePickerTrap * trap in m_listPickerTrap )
+		for( TListPickerTrap::iterator
+			it = m_listPickerTrap.begin(),
+			it_end = m_listPickerTrap.end();
+		it != it_end;
+		++it)
 		{
+			MousePickerTrap * trap = *it;
 			if( trap->pick( hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();
@@ -95,8 +105,13 @@ namespace Menge
 
 		HotSpot * hotspot = arrow->getCurrentHotSpot();
 
-		for each( MousePickerTrap * trap in m_listPickerTrap )
+		for( TListPickerTrap::iterator
+			it = m_listPickerTrap.begin(),
+			it_end = m_listPickerTrap.end();
+		it != it_end;
+		++it)
 		{
+			MousePickerTrap * trap = *it;
 			if( trap->pick( hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();
@@ -117,8 +132,13 @@ namespace Menge
 
 		HotSpot * hotspot = arrow->getCurrentHotSpot();
 
-		for each( MousePickerTrap * trap in m_listPickerTrap )
+		for( TListPickerTrap::iterator
+			it = m_listPickerTrap.begin(),
+			it_end = m_listPickerTrap.end();
+		it != it_end;
+		++it)
 		{
+			MousePickerTrap * trap = *it;
 			if( trap->pick( hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();

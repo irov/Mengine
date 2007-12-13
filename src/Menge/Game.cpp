@@ -39,19 +39,31 @@ namespace Menge
 				->callModuleFunction( m_pyPersonality, "fini" );
 		}
 
-		for each( const TMapScene::value_type & it in m_mapScene )
+		for( TMapScene::iterator 
+			it = m_mapScene.begin(),
+			it_end = m_mapScene.end();
+		it != it_end;
+		++it)
 		{
-			if( it.second->isSubScene() == false )
+			Scene * scene = it->second;
+
+			if( scene->isSubScene() == false )
 			{
-				it.second->release();
-				it.second->destroy();
+				scene->release();
+				scene->destroy();
 			}
 		}
 
-		for each( const TMapArrow::value_type & it in m_mapArrow )
+		for( TMapArrow::iterator
+			it = m_mapArrow.begin(),
+			it_end = m_mapArrow.end();
+		it != it_end;
+		++it)
 		{
-			it.second->release();
-			it.second->destroy();
+			Arrow * arrow = it->second;
+
+			arrow->release();
+			arrow->destroy();
 		}
 
 		Holder<Amplifier>::destroy();
@@ -277,31 +289,47 @@ namespace Menge
 		Holder<ScheduleManager>::keep( new ScheduleManager );
 		Holder<MousePickerSystem>::keep( new MousePickerSystem );
 
-		for each( const std::string & enType in m_listEntitiesDeclaration )			
+		for( TListDeclaration::iterator
+			it = m_listEntitiesDeclaration.begin(),
+			it_end = m_listEntitiesDeclaration.end();
+		it != it_end;
+		++it)			
 		{
 			Holder<ScriptEngine>::hostage()
-				->registerEntityType( enType );
+				->registerEntityType( *it );
 		}
 
-		for each( const std::string & resource in m_listResourceDeclaration )
+		for( TListDeclaration::iterator
+			it = m_listResourceDeclaration.begin(),
+			it_end = m_listResourceDeclaration.end();
+		it != it_end;
+		++it)	
 		{
 			std::string path = m_pathResource;
 			path += '/';
-			path += resource;
+			path += *it;
 			path += ".resource";
 
 			Holder<ResourceManager>::hostage()
 				->loadResource( path );
 		}
 
-		for each( const std::string & arrow in m_listArrowsDeclaration )
+		for( TListDeclaration::iterator
+			it = m_listArrowsDeclaration.begin(),
+			it_end = m_listArrowsDeclaration.end();
+		it != it_end;
+		++it)	
 		{
-			getArrow( arrow );
+			getArrow( *it );
 		}
 
-		for each( const std::string & scene in m_listScenesDeclaration )
+		for( TListDeclaration::iterator
+			it = m_listScenesDeclaration.begin(),
+			it_end = m_listScenesDeclaration.end();
+		it != it_end;
+		++it)	
 		{
-			getScene( scene );
+			getScene( *it );
 		}
 
 		m_defaultArrow = getArrow(m_defaultArrowName);
@@ -350,14 +378,22 @@ namespace Menge
 				->callModuleFunction( m_pyPersonality, m_eventFini );
 		}
 
-		for each( const TMapArrow::value_type & it in m_mapArrow )
+		for( TMapArrow::iterator
+			it = m_mapArrow.begin(),
+			it_end = m_mapArrow.end();
+		it != it_end;
+		++it)
 		{
-			it.second->deactivate();
+			it->second->deactivate();
 		}
 
-		for each( const TMapScene::value_type & it in m_mapScene )
+		for( TMapScene::iterator
+			it = m_mapScene.begin(),
+			it_end = m_mapScene.end();
+		it != it_end;
+		++it)
 		{
-			it.second->deactivate();
+			it->second->deactivate();
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////

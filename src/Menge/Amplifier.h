@@ -55,9 +55,9 @@ namespace	Menge
 		private:
 			float m_volume;
 
-			typedef	std::map< std::string, Playlist* >	TPlayListMap;
+			typedef	std::map< std::string, Playlist* >	TMapPlayList;
 
-			TPlayListMap	m_playLists;
+			TMapPlayList	m_mapPlayLists;
 
 			Playlist *	m_currentPlayList;
 			

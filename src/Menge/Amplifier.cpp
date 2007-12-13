@@ -27,17 +27,21 @@ namespace Menge
 			m_music->setSoundNodeListener(NULL);
 		}
 
-		for each( const TPlayListMap::value_type & it in m_playLists )
+		for( TMapPlayList::iterator 
+			it = m_mapPlayLists.begin(),
+			it_end = m_mapPlayLists.end();
+		it != it_end;
+		++it)
 		{
-			delete it.second;
+			delete it->second;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::play( const std::string & _playlist )
+	void Amplifier::play( const std::string & _playlist )
 	{
-		TPlayListMap::iterator it = m_playLists.find( _playlist );
+		TMapPlayList::iterator it = m_mapPlayLists.find( _playlist );
 
-		if ( it == m_playLists.end() )
+		if ( it == m_mapPlayLists.end() )
 		{			
 			ResourcePlaylist * playlistResource = 
 				Holder<ResourceManager>::hostage()
@@ -51,7 +55,7 @@ namespace Menge
 
 			Playlist * playlist = new Playlist( playlistResource );
 
-			it = m_playLists.insert( std::make_pair( _playlist, playlist ) ).first;
+			it = m_mapPlayLists.insert( std::make_pair( _playlist, playlist ) ).first;
 		}
 
 		m_currentPlayList = it->second;
@@ -60,7 +64,7 @@ namespace Menge
 		play_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::stop()
+	void Amplifier::stop()
 	{
 		if( m_music )
 		{
@@ -69,18 +73,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::listenStopped()
+	void Amplifier::listenStopped()
 	{
 		play_();	//	play next track in playlist
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::listenPaused( bool _pause )
+	void Amplifier::listenPaused( bool _pause )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::setVolume( float _volume )
+	void Amplifier::setVolume( float _volume )
 	{
-		m_volume = _volume * Holder<SoundEngine>::hostage()->getCommonVolume();
+		float commonValue = Holder<SoundEngine>::hostage()->getCommonVolume();
+		m_volume = _volume * commonValue;
 
 		if( m_music )
 		{
@@ -88,12 +93,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float	Amplifier::getVolume() const
+	float Amplifier::getVolume() const
 	{
 		return m_volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::play_()
+	void Amplifier::play_()
 	{
 		release_();
 
@@ -127,7 +132,7 @@ namespace Menge
 		m_currentPlayList->next();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	Amplifier::release_()
+	void Amplifier::release_()
 	{
 		Holder<SoundEngine>::hostage()->releaseSoundSource( m_music );
 		Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_buffer );

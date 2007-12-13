@@ -59,9 +59,13 @@ OgreApplication::~OgreApplication()
 
 	delete m_application;
 
-	for each( SystemDLL * sysDll in m_listApplicationDLL )
+	for( TListApplicationDLL::iterator
+		it = m_listApplicationDLL.begin(),
+		it_end = m_listApplicationDLL.end();
+	it != it_end;
+	++it)
 	{
-		delete sysDll;
+		delete *it;
 	}
 
 	if( m_renderWindow )

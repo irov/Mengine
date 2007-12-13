@@ -45,27 +45,40 @@ namespace Menge
 	{
 		Allocator2D::changePivot();
 
-		for each( SceneNode2D * children in m_listChildren )
+		for( TListChildren::iterator
+			it = m_listChildren.begin(),
+			it_end = m_listChildren.end();
+		it != it_end;
+		++it)
 		{
-			children->changePivot();
+			(*it)->changePivot();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::_render()
 	{
-		for each( SceneNode2D * children in m_listChildren )
+		for( TListChildren::iterator
+			it = m_listChildren.begin(),
+			it_end = m_listChildren.end();
+		it != it_end;
+		++it)
 		{
-			children->render();
+			(*it)->render();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::debugRender()
 	{
-		for each( SceneNode2D * children in m_listChildren )
-		{
-			children->debugRender();
-		}
 		NodeCore::debugRender();
+
+		for( TListChildren::iterator
+			it = m_listChildren.begin(),
+			it_end = m_listChildren.end();
+		it != it_end;
+		++it)
+		{
+			(*it)->debugRender();
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::setLayer( Layer2D* _layer )

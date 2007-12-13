@@ -19,9 +19,13 @@ namespace Menge
 	{
 		Allocator3D::changePivot();
 
-		for each( SceneNode3D * children in m_listChildren )
+		for( TListChildren::iterator
+			it = m_listChildren.begin(),
+			it_end = m_listChildren.end();
+		it != it_end;
+		++it)
 		{
-			children->changePivot();
+			(*it)->changePivot();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

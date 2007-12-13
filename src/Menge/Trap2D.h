@@ -50,10 +50,10 @@ namespace Menge
 		mt::box2f	m_bbox;
 
 		typedef std::list<std::string> TListSceneNodesNames;
-		TListSceneNodesNames	m_sceneNodesNames;
+		TListSceneNodesNames	m_listSceneNodesNames;
 
 		typedef std::list<SceneNode2D*> TListSceneNodes;
-		TListSceneNodes m_sceneNodes;
+		TListSceneNodes m_listSceneNodes;
 
 		typedef std::list<Node*> TListTrapped;
 		TListTrapped m_trapped;

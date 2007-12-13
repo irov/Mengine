@@ -50,14 +50,20 @@ namespace Menge
 	{
 		ClassDeclaration * info = declarations( name );
 
-		for each( ClassDeclaration * base in info->m_parents )
+		ClassDeclaration::TListParents & listParents = info->m_parents;
+
+		for( ClassDeclaration::TListParents::iterator
+			it = listParents.begin(),
+			it_end = listParents.end();
+		it != it_end;
+		++it)
 		{
 			Holder<ScriptEngine>::hostage()
 				->setCurrentModule( _module );
 
-			base->m_declatation->init();
+			(*it)->m_declatation->init();
 
-			foreachHierarchicalDeclaration( _module, base->m_name );
+			foreachHierarchicalDeclaration( _module, (*it)->m_name );
 		}
 	}
 

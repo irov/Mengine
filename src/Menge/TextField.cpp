@@ -118,8 +118,6 @@ namespace	Menge
 			}
 		}
 
-	//	setText("sdfsdfds68678767687687687687686778fsdf\\nsdfgsdfsdfdsf");
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -150,59 +148,13 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_render()
+	void TextField::renderPass_( const Color & _color, const RenderImageInterface * _renderImage )
 	{
 		float spaceWidth = m_resource->getCharRatio(' ') * m_height;
 
 		const mt::mat3f & wm = getWorldMatrix();
-		const RenderImageInterface * renderImage = m_resource->getImage();
 
 		mt::vec2f offset = m_alignOffset;
-
-		if( m_outlineImage != NULL )
-		{
-			const RenderImageInterface * renderImage = m_outlineImage->getImage(0);
-
-			for( std::string::const_iterator
-				it = m_text.begin(), 
-				it_end = m_text.end();
-				it != it_end; 
-				++it )
-			{
-				if ( *it == '\\' )
-				{
-					if ( ++it == it_end )
-					{
-						break;
-					}
-
-					if( *it == 'n' )
-					{
-						offset.x = m_alignOffset.x;
-						offset.y += m_height;
-						continue;
-					}
-				}
-
-				if ( *it == ' ' )
-				{
-					offset.x += spaceWidth;
-					continue;
-				}
-
-				const mt::vec4f & uv = m_resource->getUV( *it );
-		 
-				float width = m_resource->getCharRatio( *it ) * m_height;
-				
-				mt::vec2f size( width, m_height );
-
-				Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, m_outlineColor.get(), renderImage );
-
-				offset.x += width;
-			}
-		}	
-		
-		offset = m_alignOffset;
 
 		for( std::string::const_iterator
 			it = m_text.begin(), 
@@ -237,10 +189,25 @@ namespace	Menge
 			
 			mt::vec2f size( width, m_height );
 
-			Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, m_color.get(), renderImage );
+			Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, _color.get(), _renderImage );
 
 			offset.x += width;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::_render()
+	{
+		if( m_outlineImage != NULL )
+		{
+			const RenderImageInterface * outlineImage = m_outlineImage->getImage(0);
+
+			renderPass_( m_outlineColor, outlineImage );
+		}
+
+		const RenderImageInterface * renderImage = m_resource->getImage();
+
+		renderPass_( m_color, renderImage );
+
 
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -262,7 +229,7 @@ namespace	Menge
 			}
 
 		}
-
+		// это шо ?
 		/*if( m_moveTo )
 		{
 			if( m_moveTime < _timing )
@@ -381,12 +348,12 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_debugRender()
-	{	
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& TextField::getLength() const
 	{
 		return m_length;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::_debugRender()
+	{	
 	}
 }

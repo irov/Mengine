@@ -3,7 +3,7 @@
 #	include "SceneNode2D.h"
 #	include "Color.h"
 
-//class	RenderImageInterface;
+class	RenderImageInterface;
 
 namespace Menge
 {
@@ -136,5 +136,6 @@ namespace Menge
 		std::string m_outlineFontName;
 		
 		void updateAlign_();
+		void renderPass_( const Color & _color, const RenderImageInterface * _renderImage );
 	};
 }

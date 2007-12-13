@@ -52,9 +52,15 @@ namespace Menge
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	Application::Application()
+	Application::Application( const char * _args )
 		: m_quit( false )
+//		, m_commandLine("")
 	{
+		if( _args != NULL )
+		{
+		//	m_commandLine = _args;
+		}
+
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
 	}
@@ -135,7 +141,7 @@ namespace Menge
 		MENGE_LOG("init game ...\n");
 
 		if( Holder<Game>::hostage()
-			->init() == false )
+			->init( "" ) == false )
 		{
 			return false;
 		}

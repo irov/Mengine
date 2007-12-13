@@ -24,7 +24,7 @@ namespace Menge
 	class MENGE_API Application
 	{
 	public:
-		Application();
+		Application( const char * _args );
 		~Application();
 
 	public:
@@ -71,5 +71,6 @@ namespace Menge
 		int m_bits;
 		bool m_fullScreen;
 		std::string m_renderDriver;
+	//	std::string m_commandLine;
 	};
 }

@@ -6,7 +6,7 @@
 #	include <stdio.h>
 
 
-int main()
+int main( int argc, char *argv[] )
 {
 #ifdef _DEBUG
 	const char * application_dll  = "Systems_d/OgreApplication_d.dll";
@@ -49,8 +49,18 @@ int main()
 		return 0;
 	}
 
+	bool result = false;
 
-	if( app->init( "application.xml" ) )
+	if( argc > 1 )
+	{
+	//	result = app->init( "application.xml", argv[1] );
+	}
+	else
+	{
+		result = app->init( "application.xml", 0 );
+	}
+
+	if( result == true )
 	{
 		app->run();
 	}

@@ -38,7 +38,7 @@ namespace Menge
 		void loader(TiXmlElement * _xml);
 
 	public:
-		bool init();
+		bool init( const std::string& _params );
 		void release();
 		void debugRender();
 

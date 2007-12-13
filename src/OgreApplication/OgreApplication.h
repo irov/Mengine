@@ -34,7 +34,7 @@ public:
 	~OgreApplication();
 
 public:
-	bool init( const char * _xmlFile ) override;
+	bool init( const char * _xmlFile, const char * _args ) override;
 	void run() override;
 
 	//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );

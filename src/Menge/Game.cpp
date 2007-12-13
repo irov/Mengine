@@ -272,7 +272,7 @@ namespace Menge
 		return m_pathArrows;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::init()
+	bool Game::init( const std::string& _params )
 	{
 		Holder<RenderEngine>::hostage()->setContentResolution( m_resourceResolution );
 
@@ -332,7 +332,7 @@ namespace Menge
 			getScene( *it );
 		}
 
-		m_defaultArrow = getArrow(m_defaultArrowName);
+		m_defaultArrow = getArrow( m_defaultArrowName );
 
 		m_pyPersonality = Holder<ScriptEngine>::hostage()
 			->importModule( m_personality );
@@ -351,14 +351,20 @@ namespace Menge
 
 		bool result = false;
 
-		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
+		if( _params.empty() == false )
 		{
-			PyObject * pyResult = Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, m_eventInit );
+		}
+		else
+		{
+			if( Holder<ScriptEngine>::hostage()
+				->hasModuleFunction( m_pyPersonality, m_eventInit ) )
+			{
+				PyObject * pyResult = Holder<ScriptEngine>::hostage()
+					->callModuleFunction( m_pyPersonality, m_eventInit );
 
-			result = Holder<ScriptEngine>::hostage()
-				->parseBool( pyResult );
+				result = Holder<ScriptEngine>::hostage()
+					->parseBool( pyResult );
+			}
 		}
 
 		if( result == false )

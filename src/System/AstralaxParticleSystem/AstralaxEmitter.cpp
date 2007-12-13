@@ -92,7 +92,7 @@ void AstralaxEmitter::update( float _timing )
 		m_total_rate -= rate;
         Magic_Update( m_id, rate );
 
-  /*      if ( Magic_IsRestart( m_id ) )
+        if ( Magic_IsRestart( m_id ) )
         { 
 			if( m_looped )
 			{
@@ -100,10 +100,9 @@ void AstralaxEmitter::update( float _timing )
 			}
 			else
 			{
-					m_start = false;
-				
+				m_start = false;
 			}
-        }*/
+        }
     }
 }
 //////////////////////////////////////////////////////////////////////////

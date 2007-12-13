@@ -88,9 +88,9 @@ OgreApplication::~OgreApplication()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreApplication::init( const char * _xmlFile )
+bool OgreApplication::init( const char * _xmlFile, const char * _args )
 {
-	m_application = new Menge::Application();
+	m_application = new Menge::Application( _args );
 
 #ifdef _DEBUG
 	std::string DllModuleSetting = "DllModuleDebug";
@@ -233,7 +233,7 @@ bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
 void OgreApplication::run()
 {
 	MSG  msg;
-	POINT pos;
+//	POINT pos;
 	while( m_running )
 	{
 		/*::GetCursorPos( &pos );

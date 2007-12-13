@@ -64,10 +64,10 @@ namespace	Menge
 			m_polygon, _hotspot->m_polygon, 
 			dirA, posA, dirB, posB );
 
-		if(is_intersect)
+	/*	if(is_intersect)
 		{
 			//printf("%f;%f  and %f;%f \n", wmA.v2.v2.x, wmA.v2.v2.y, wmB.v2.v2.x, wmB.v2.v2.y);
-		}
+		}*/
 	
 		return is_intersect;
 	}

@@ -206,6 +206,7 @@ void	OgreRenderSystem::endLayer()
 void OgreRenderSystem::setFullscreenMode(  bool _fullscreen )
 {
 	m_renderWindow->setFullscreen( _fullscreen, m_renderWindow->getWidth(), m_renderWindow->getHeight() );
+
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::loadResource( Ogre::Resource* _resource )

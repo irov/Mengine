@@ -372,6 +372,8 @@ namespace Menge
 			return false;
 		}
 
+		Holder<ResourceManager>::hostage()->addListener( this );
+
 
 		return result;
 	}
@@ -521,4 +523,23 @@ namespace Menge
 		return m_resourceResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Game::onResourceLoaded()
+	{
+		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, "onHandleResourceLoaded" ) )
+		{
+			Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, "onHandleResourceLoaded" );
+		}	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::onResourceUnLoaded()
+	{
+		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, "onHandleResourceUnLoaded" ) )
+		{
+			Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, "onHandleResourceUnLoaded" );
+		}	
+	}
 }

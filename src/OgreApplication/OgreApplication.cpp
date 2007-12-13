@@ -207,11 +207,11 @@ void OgreApplication::initParams()
 
 	m_root->addFrameListener( this );
 
-	createWindow( screenWidth, screenHeight, fullscreen );
+	//createWindow( screenWidth, screenHeight, fullscreen );
 
 	Ogre::NameValuePairList params;
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( bits ) ) );
-	params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
+	//params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
 
 	m_renderWindow = m_root->createRenderWindow( "Menge-engine", screenWidth, screenHeight, fullscreen, &params );
 }
@@ -246,7 +246,7 @@ void OgreApplication::run()
 			::ShowCursor( TRUE );
 			m_application->handleMouseLeave();
 		}*/
-		if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
+		while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 		{
 			TranslateMessage( &msg );
 			DispatchMessage( &msg );
@@ -266,9 +266,17 @@ void OgreApplication::run()
 void OgreApplication::createWindow( unsigned int _width, unsigned int _height, bool _fullscreen )
 {
 	DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
+	RECT rc;
 
 	int width = _width;
 	int height = _height;
+
+	// Calculate window dimensions required
+	// to get the requested client area
+	SetRect(&rc, 0, 0, width, height);
+	AdjustWindowRect(&rc, dwStyle, false);
+	width = rc.right - rc.left;
+	height = rc.bottom - rc.top;
 
 	int screenw = ::GetSystemMetrics(SM_CXSCREEN);
 	int screenh = ::GetSystemMetrics(SM_CYSCREEN);
@@ -363,6 +371,7 @@ LRESULT CALLBACK OgreApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 		break;
 	case WM_MOVE:
+
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
 		if( m_renderWindow )
 			m_renderWindow->windowMovedOrResized();

@@ -2,12 +2,20 @@
 
 #	include <map>
 #	include <string>
+#	include <list>
 
 #	include "Holder.h"
 
 namespace Menge
 {
 	class ResourceReference;
+
+	class ResourceManagerListener
+	{
+	public:
+		virtual void onResourceLoaded() = 0;
+		virtual void onResourceUnLoaded() = 0;
+	};
 
 	class ResourceManager
 	{
@@ -35,9 +43,16 @@ namespace Menge
 		bool directResourceCompile( const std::string & _name );
 		void directResourceRelease( const std::string & _name );
 
+		void addListener( ResourceManagerListener* _listener );
+		void removeListener( ResourceManagerListener* _listener );
+
 	private:
 		typedef std::map< std::string, ResourceReference * > TMapResource;
 
 		TMapResource m_mapResource;
+
+		typedef std::list< ResourceManagerListener* > TListResourceManagerListener;
+		TListResourceManagerListener m_listeners;
+
 	};
 }

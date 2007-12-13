@@ -111,7 +111,17 @@ namespace Menge
 
 		ResourceReference * resource = it_find->second;
 
-		resource->incrementReference();
+		size_t inc = resource->incrementReference();
+		// resource has been loaded
+		if( inc == 1 && m_listeners.size() )
+		{
+			for( TListResourceManagerListener::iterator it = m_listeners.begin();
+				it != m_listeners.end();
+				it++)
+			{
+				(*it)->onResourceLoaded();
+			}
+		}
 
 		return resource;
 	}
@@ -129,7 +139,17 @@ namespace Menge
 
 		if( it_find != m_mapResource.end() )
 		{
-			_resource->decrementReference();
+			size_t inc = _resource->decrementReference();
+			// resource has been unloaded
+			if( inc == 0 && m_listeners.size() )
+			{
+				for( TListResourceManagerListener::iterator it = m_listeners.begin();
+					it != m_listeners.end();
+					it++)
+				{
+					(*it)->onResourceUnLoaded();
+				}
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -159,5 +179,16 @@ namespace Menge
 		ResourceReference * ref = it_find->second;
 		ref->release();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::addListener( ResourceManagerListener* _listener )
+	{
+		m_listeners.push_back( _listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::removeListener( ResourceManagerListener* _listener )
+	{
+		m_listeners.remove( _listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
 
 }

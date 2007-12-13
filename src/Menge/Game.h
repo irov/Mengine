@@ -6,6 +6,7 @@
 #	include "InputHandler.h"
 #	include "Eventable.h"
 #	include "math/vec2.h"
+#	include "ResourceManager.h"
 
 class TiXmlElement;
 
@@ -27,6 +28,7 @@ namespace Menge
 	class Game
 		: public InputHandler
 		, public Eventable
+		, public ResourceManagerListener
 	{
 	public:
 		Game();
@@ -62,6 +64,9 @@ namespace Menge
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
 		void handleMouseLeave();
 		void handleMouseEnter();
+
+		void onResourceLoaded() override;
+		void onResourceUnLoaded() override;
 		
 	public:
 		const mt::vec2f & getResourceResolution() const;

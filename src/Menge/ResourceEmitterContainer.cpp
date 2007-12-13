@@ -56,6 +56,7 @@ namespace Menge
 			Holder<RenderEngine>::hostage()
 				->releaseImage( it->second );
 		}
+		m_mapImageEmitters.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * ResourceEmitterContainer::getRenderImage( const std::string & _name )

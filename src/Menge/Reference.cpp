@@ -9,12 +9,13 @@ namespace Menge
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Reference::incrementReference()
+	size_t Reference::incrementReference()
 	{
 		if( ++m_refcounter == 1 )
 		{
 			_incrementZero();
 		}
+		return m_refcounter;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Reference::decrementReference()

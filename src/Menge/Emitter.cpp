@@ -147,6 +147,10 @@ namespace	Menge
 		Holder<ParticleEngine>::hostage()->releaseEmitter( m_interface );
 
 		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
+
+		m_images.clear();
+		m_interface = NULL;
+		m_resource = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_render()

@@ -13,7 +13,7 @@ namespace Menge
 		//! Увеличивает счетчик на еденицу
 		/*!
 		*/
-		virtual void incrementReference();
+		virtual size_t incrementReference();
 
 		//! Уменьшает счетчик на еденицу
 		/*!

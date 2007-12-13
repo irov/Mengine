@@ -35,6 +35,8 @@ namespace Menge
 		void disable() override;
 		bool isEnable() override;
 
+		void setUpdatable( bool _updatable ) override;
+
 	public:
 		void setName( const std::string & _name ) override;
 		const std::string & getName() const override;
@@ -44,7 +46,7 @@ namespace Menge
 				
 	public:
 		void update( float _timing ) override;
-		bool isUpdateble() override;
+		bool isUpdatable() override;
 
 	public:
 		void loader( TiXmlElement *xml ) override;
@@ -66,6 +68,7 @@ namespace Menge
 	protected:
 		bool m_active;
 		bool m_enable;
+		bool m_updatable;
 
 		std::string m_name;
 		std::string m_type;

@@ -22,6 +22,7 @@ namespace Menge
 	NodeCore::NodeCore()
 		: m_active(false)
 		, m_enable(true)
+		, m_updatable(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -141,8 +142,18 @@ namespace Menge
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeCore::isUpdateble()
+	void NodeCore::setUpdatable( bool _updatable )
 	{
+		m_updatable = _updatable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool NodeCore::isUpdatable()
+	{
+		if( m_updatable == false )
+		{
+			return false;
+		}
+
 		if( m_enable == false )
 		{
 			return false;
@@ -158,7 +169,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::update( float _timing )
 	{
-		if( isUpdateble() == false )
+		if( isUpdatable() == false )
 		{
 			return;
 		}

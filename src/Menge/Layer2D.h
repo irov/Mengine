@@ -20,6 +20,8 @@ namespace Menge
 	public:
 		void setParallaxFactor( const mt::vec2f & _factor );
 		Viewport* getViewport();
+		const mt::vec2f& getViewportOffset() const;
+		bool isScrollable();
 
 	public:
 		void loader( TiXmlElement * _xml ) override;

@@ -94,6 +94,11 @@ namespace Menge
 		{
 			Viewport * viewport = m_layer->getViewport();
 			pos -= viewport->begin;
+
+			if( m_layer->isScrollable() && pos.x > viewport->end.x )
+			{
+				pos -= m_layer->getViewportOffset();
+			}
 		}
 
 		return pos;

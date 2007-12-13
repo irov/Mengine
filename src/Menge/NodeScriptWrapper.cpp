@@ -242,6 +242,8 @@ namespace Menge
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )
 			.def( "isEnable", &Node::isEnable )
+			.def( "setUpdatable", &Node::setUpdatable )
+			.def( "isUpdatable", &Node::isUpdatable )
 			.def( "setName", &Node::setName )
 			.def( "getName", &Node::getName )
 			.def( "addChildren", &Node::addChildren )

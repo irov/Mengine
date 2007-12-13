@@ -101,6 +101,8 @@ namespace Menge
 		*/
 		virtual bool isEnable() = 0;
 
+		virtual void setUpdatable( bool _updatable ) = 0;
+
 	public:
 
 		//! Node pure virtual. set parent node
@@ -152,7 +154,7 @@ namespace Menge
 		\param _timing the first argument, timing for need update
 		*/
 		virtual void update( float _timing ) = 0;
-		virtual bool isUpdateble() = 0;
+		virtual bool isUpdatable() = 0;
 
 		//! Node pure virtual. setup node from xml
 		/*!

@@ -34,6 +34,16 @@ namespace	Menge
 		return &m_viewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& Layer2D::getViewportOffset() const
+	{
+		return m_viewportOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer2D::isScrollable()
+	{
+		return m_scrollable;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::setParallaxFactor( const mt::vec2f & _factor )
 	{
 		m_factorParallax = _factor;
@@ -91,7 +101,7 @@ namespace	Menge
 		if( m_viewport.begin.x < -m_size.x || m_viewport.begin.x > m_size.x )
 		{
 			m_viewport.begin.x += m_size.x * ::floorf( m_viewport.begin.x / -m_size.x );
-			m_viewport.end.x = m_viewport.begin.x + 1024;
+			m_viewport.end.x = m_viewport.begin.x + viewport_size.x * 2.0f;
 		}
 
 		if( !m_reRender )
@@ -188,8 +198,14 @@ namespace	Menge
 
 		if( m_reRender )
 		{
-			m_viewport.begin += m_viewportOffset;
-			m_viewport.end += m_viewportOffset;	
+			Viewport viewport;
+			viewport.begin = m_viewport.begin + m_viewportOffset;
+			viewport.end = m_viewport.end + m_viewportOffset;
+			//m_viewport.begin += m_viewportOffset;
+			//m_viewport.end += m_viewportOffset;	
+			Holder<RenderEngine>::hostage()
+				->setRenderViewport( viewport );
+			return true;
 		}
 
 		Holder<RenderEngine>::hostage()

@@ -31,11 +31,13 @@ namespace Menge
 
 	public:
 		void update( float _timing );
+		void setUpdatable( bool _upatable );
 
 	private:
 		typedef std::list<ScheduleEvent> TListSchedules;
 
 		bool m_updating;
+		bool m_updatable;
 		size_t m_schedulesID;
 		TListSchedules m_schedules;
 	};

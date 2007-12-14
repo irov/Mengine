@@ -145,14 +145,35 @@ namespace Menge
 	void NodeCore::setUpdatable( bool _updatable )
 	{
 		m_updatable = _updatable;
+
+		//// !!!! Temporary hack
+		struct ForeachSetUpdatable
+			: public NodeForeach
+		{
+			ForeachSetUpdatable( bool _updatable )
+				: m_updatable(_updatable)
+			{
+
+			}
+
+			void apply( Node * children ) override
+			{
+				children->setUpdatable( m_updatable );
+			}
+
+			bool m_updatable;
+		};
+
+		foreachChildren( ForeachSetUpdatable( _updatable ) );
+		//// !!!!
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeCore::isUpdatable()
 	{
-		if( m_updatable == false )
+		/*if( m_updatable == false )
 		{
 			return false;
-		}
+		}*/
 
 		if( m_enable == false )
 		{
@@ -174,7 +195,10 @@ namespace Menge
 			return;
 		}
 		
-		_update( _timing );
+		if( m_updatable )	// !!!!
+		{
+			_update( _timing );
+		}
 
 		struct ForeachUpdate
 			: public NodeForeach

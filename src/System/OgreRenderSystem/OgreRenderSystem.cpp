@@ -212,3 +212,29 @@ void OgreRenderSystem::setFullscreenMode(  bool _fullscreen )
 void OgreRenderSystem::loadResource( Ogre::Resource* _resource )
 {
 }
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::setViewportDimensions( float _width, float _height, float _renderFactor )
+{
+	m_renderWindow->update();
+	float realWidth = m_renderWindow->getWidth();
+	float realHeight = m_renderWindow->getHeight();
+	float aspect = _width / _height;
+	float width = _width / realWidth;
+	float height = _height / realHeight;
+	if( width > 1.0f )
+	{
+		width = 1.0f;
+		height = realWidth / aspect / realHeight;
+	}
+	if( height > 1.0f )
+	{
+		height = 1.0f;
+		width = realHeight * aspect / realWidth;
+	}
+	if( _renderFactor )
+	{
+		width += ( 1.0f - width ) * _renderFactor;
+		height += ( 1.0f - height ) * _renderFactor;
+	}
+	m_viewport->setDimensions( 0.5f - width / 2.0f, 0.5f - height / 2.0f, width, height );
+}

@@ -177,9 +177,9 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 
 
 	inputInterface->init( pl );
-	m_application->createGame();
-
 	renderInterface->init( m_root, m_renderWindow );
+
+	m_application->createGame();
 
 	return initialize;
 }
@@ -211,7 +211,8 @@ void OgreApplication::initParams()
 
 	Ogre::NameValuePairList params;
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( bits ) ) );
-	//params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
+	//
+	params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
 
 	m_renderWindow = m_root->createRenderWindow( "Menge-engine", screenWidth, screenHeight, fullscreen, &params );
 }

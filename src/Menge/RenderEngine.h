@@ -70,6 +70,7 @@ namespace Menge
 		void	endLayer();
 
 		void	setFullscreenMode( bool _fullscreen );
+		void	setViewportDimensions( float _width, float _height, float _renderFactor = 0.0f );
 
 	protected:
 		RenderSystemInterface * m_interface;

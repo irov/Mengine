@@ -55,6 +55,7 @@ namespace Menge
 	Application::Application( const char * _args )
 		: m_quit( false )
 //		, m_commandLine("")
+		, m_fixedContentResolution( false )
 	{
 		if( _args != NULL )
 		{
@@ -140,6 +141,12 @@ namespace Menge
 
 		MENGE_LOG("init game ...\n");
 
+		if( m_fixedContentResolution )
+		{
+			mt::vec2f res = Holder<Game>::hostage()->getResourceResolution();
+			Holder<RenderEngine>::hostage()->setViewportDimensions( res.x, res.y );
+		}
+
 		if( Holder<Game>::hostage()
 			->init( "" ) == false )
 		{
@@ -194,6 +201,7 @@ namespace Menge
 					XML_CHECK_VALUE_NODE("Bits", "Value", m_bits );
 					XML_CHECK_VALUE_NODE("Fullscreen", "Value", m_fullScreen );
 					XML_CHECK_VALUE_NODE("RenderDriver", "Name", m_renderDriver );
+					XML_CHECK_VALUE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
 				}
 
 				XML_CHECK_VALUE_NODE("Game", "File", m_gameInfo );

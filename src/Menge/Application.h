@@ -71,6 +71,7 @@ namespace Menge
 		int m_bits;
 		bool m_fullScreen;
 		std::string m_renderDriver;
+		bool m_fixedContentResolution;
 	//	std::string m_commandLine;
 	};
 }

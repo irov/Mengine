@@ -58,6 +58,18 @@ namespace Menge
 			Holder<ScheduleManager>::hostage()
 				->removeAll();
 		}	
+
+		static void scheduleStopAll()
+		{
+			Holder<ScheduleManager>::hostage()
+				->setUpdatable( false );
+		}
+
+		static void scheduleResumeAll()
+		{
+			Holder<ScheduleManager>::hostage()
+				->setUpdatable( true );
+		}
 		
 		static int getMouseX()
 		{
@@ -166,6 +178,8 @@ namespace Menge
 			}
 
 			RenderImageInterface * image = resourceImage->getImage( 0 );
+
+			Holder<Application>::hostage()->update( 0.0f );
 
 			Holder<RenderEngine>::hostage()->render( image, rect );
 
@@ -385,6 +399,8 @@ namespace Menge
 		pybind::def( "schedule", &ScriptMethod::schedule );
 		pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );
 		pybind::def( "scheduleRemoveAll", &ScriptMethod::scheduleRemoveAll );
+		pybind::def( "scheduleStopAll", &ScriptMethod::scheduleStopAll );
+		pybind::def( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
 
 		pybind::def( "getMouseX", &ScriptMethod::getMouseX );
 		pybind::def( "getMouseY", &ScriptMethod::getMouseY );

@@ -10,6 +10,7 @@ namespace Menge
 	ScheduleManager::ScheduleManager()
 		: m_schedulesID(0)
 		, m_updating(false)
+		, m_updatable(true)
 	{
 
 	}
@@ -72,6 +73,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::update( float _timing )
 	{
+		if( !m_updatable )
+		{
+			return;
+		}
+
 		m_updating = true;
 
 		for( TListSchedules::iterator 
@@ -133,5 +139,10 @@ namespace Menge
 		};
 
 		std::for_each( m_schedules.begin(), m_schedules.end(), FScheduleUpdating() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScheduleManager::setUpdatable( bool _upatable )
+	{
+		m_updatable = _upatable;
 	}
 }

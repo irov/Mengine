@@ -183,4 +183,9 @@ namespace Menge
 	{
 		m_interface->setFullscreenMode( _fullscreen );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setViewportDimensions( float _width, float _height, float _renderFactor )
+	{
+		m_interface->setViewportDimensions( _width, _height, _renderFactor );
+	}
 }

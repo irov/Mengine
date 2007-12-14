@@ -132,10 +132,15 @@ namespace Menge
 		mt::vec2f m_alignOffset;
 
 		//RenderImageInterface * m_outlineImage;
+		float m_totalWidth;
 		ResourceImage * m_outlineImage;
 		std::string m_outlineFontName;
+
+		std::list<std::string>	 m_lines;
 		
 		void updateAlign_();
 		void renderPass_( const Color & _color, const RenderImageInterface * _renderImage );
+		void createFormattedMessage_( const std::string& _text );
+		float getWordWidth_( const std::string & _text ) const;
 	};
 }

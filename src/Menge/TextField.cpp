@@ -33,6 +33,7 @@ namespace	Menge
 		, m_changingColor( false )
 		, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_outlineImage( 0 )
+		, m_totalWidth( 0 )
 	{
 		m_outlineFontName.clear();
 	}
@@ -145,6 +146,7 @@ namespace	Menge
 			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
 			XML_CHECK_VALUE_NODE( "OutlineColor", "Value", m_outlineColor);
 			XML_CHECK_VALUE_NODE( "OutlineImage", "Name", m_outlineFontName);
+			XML_CHECK_VALUE_NODE( "MaxWidth", "Value", m_totalWidth);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -156,42 +158,51 @@ namespace	Menge
 
 		mt::vec2f offset = m_alignOffset;
 
-		for( std::string::const_iterator
-			it = m_text.begin(), 
-			it_end = m_text.end();
-			it != it_end; 
-			++it )
+		for( std::list<std::string>::iterator it = m_lines.begin(); it != m_lines.end(); ++it)
 		{
-			if ( *it == '\\' )
+			const std::string & _line = *it;
+		
+			offset.x = 0;
+
+			for( std::string::const_iterator
+				it = _line.begin(), 
+				it_end = _line.end();
+				it != it_end; 
+				++it )
 			{
-				if ( ++it == it_end )
+				if ( *it == '\\' )
 				{
-					break;
+					if ( ++it == it_end )
+					{
+						break;
+					}
+
+					if( *it == 'n' )
+					{
+						offset.x = m_alignOffset.x;
+						offset.y += m_height;
+						continue;
+					}
 				}
 
-				if( *it == 'n' )
+				if ( *it == ' ' )
 				{
-					offset.x = m_alignOffset.x;
-					offset.y += m_height;
+					offset.x += spaceWidth;
 					continue;
 				}
+
+				const mt::vec4f & uv = m_resource->getUV( *it );
+		 
+				float width = m_resource->getCharRatio( *it ) * m_height;
+				
+				mt::vec2f size( width, m_height );
+
+				Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, _color.get(), _renderImage );
+
+				offset.x += width;
 			}
 
-			if ( *it == ' ' )
-			{
-				offset.x += spaceWidth;
-				continue;
-			}
-
-			const mt::vec4f & uv = m_resource->getUV( *it );
-	 
-			float width = m_resource->getCharRatio( *it ) * m_height;
-			
-			mt::vec2f size( width, m_height );
-
-			Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, _color.get(), _renderImage );
-
-			offset.x += width;
+			offset.y += m_height;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -200,15 +211,11 @@ namespace	Menge
 		if( m_outlineImage != NULL )
 		{
 			const RenderImageInterface * outlineImage = m_outlineImage->getImage(0);
-
 			renderPass_( m_outlineColor, outlineImage );
 		}
 
 		const RenderImageInterface * renderImage = m_resource->getImage();
-
 		renderPass_( m_color, renderImage );
-
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_update( float _timing )
@@ -270,20 +277,7 @@ namespace	Menge
 	void TextField::setText( const std::string& _text )
 	{
 		m_text = _text;
-
-		m_length.x = 0.0f;
-		m_length.y = m_height;
-
-		for( std::string::const_iterator 
-			it = m_text.begin(),
-			it_end = m_text.end(); 
-		it != it_end; 
-		++it )
-		{
-			float width = m_resource->getCharRatio( *it ) * m_height;
-			m_length.x += width;
-		}
-
+		createFormattedMessage_( m_text );
 		updateAlign_();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -291,10 +285,12 @@ namespace	Menge
 	{
 		m_newColor = _color;
 		m_changingColorTime = _time;
+
 		if( m_changingColor )
 		{
 			this->callEvent( "COLOR_STOP", "()" );
 		}
+
 		m_changingColor = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -303,10 +299,12 @@ namespace	Menge
 		m_newColor = m_color;
 		m_newColor.a = _alpha;
 		m_changingColorTime = _time;
+
 		if( m_changingColor )
 		{
 			this->callEvent( "COLOR_STOP", "()" );
 		}
+
 		m_changingColor = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -351,6 +349,78 @@ namespace	Menge
 	const mt::vec2f& TextField::getLength() const
 	{
 		return m_length;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	/*вот такое бы в утилити какой  - нить*/
+	void split( const std::string& str,
+			std::vector<std::string> & tokens,
+			const std::string & delimiters = " ")
+	{
+		std::string::size_type lastPos = str.find_first_not_of( delimiters, 0);
+		std::string::size_type pos     = str.find_first_of( delimiters, lastPos );
+
+		while ( std::string::npos != pos || std::string::npos != lastPos )
+		{
+			tokens.push_back( str.substr( lastPos, pos - lastPos ));
+			lastPos = str.find_first_not_of( delimiters, pos );
+			pos = str.find_first_of( delimiters, lastPos );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float	TextField::getWordWidth_( const std::string & _text ) const
+	{
+		float width = 0.0f;
+
+		for( std::string::const_iterator 
+			it = _text.begin(),
+			it_end = _text.end(); 
+		it != it_end; 
+		++it )
+		{
+			width += m_resource->getCharRatio( *it ) * m_height;
+		}
+
+		return width;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void	TextField::createFormattedMessage_( const std::string & _text )
+	{
+		std::vector<std::string> words;
+		split( _text, words ); 
+
+		if( words.empty() == true )
+		{
+			return;
+		}
+
+		m_lines.clear();
+
+		std::string	temp = *words.begin();
+
+		float maxLen = getWordWidth_( *words.begin() );
+
+		for( std::vector<std::string>::iterator it = ++words.begin(); it != words.end(); ++it)
+		{
+			float wordWidth = getWordWidth_( *it );
+			maxLen = std::max( wordWidth, maxLen );
+
+			if( m_totalWidth < wordWidth )
+			{
+				temp += " ";
+				temp += *it;
+			}
+			else
+			{
+				m_lines.push_back( temp );
+				temp.clear();
+				temp += *it;
+			}
+		}
+
+		m_length.x = maxLen;
+		m_length.y = m_height;
+		
+		m_lines.push_back( temp );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_debugRender()

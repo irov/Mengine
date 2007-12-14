@@ -90,7 +90,15 @@ OgreApplication::~OgreApplication()
 //////////////////////////////////////////////////////////////////////////
 bool OgreApplication::init( const char * _xmlFile, const char * _args )
 {
-	m_application = new Menge::Application( _args );
+
+	std::string args;
+
+	if( _args != NULL )
+	{
+		args = _args;
+	}
+
+	m_application = new Menge::Application( args );
 
 #ifdef _DEBUG
 	std::string DllModuleSetting = "DllModuleDebug";

@@ -353,6 +353,10 @@ namespace Menge
 
 		if( _params.empty() == false )
 		{
+			Holder<Player>::hostage()
+					->setCurrentScene( _params );
+
+			result  = true;
 		}
 		else
 		{

@@ -52,16 +52,11 @@ namespace Menge
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	Application::Application( const char * _args )
+	Application::Application( const std::string& _args )
 		: m_quit( false )
-//		, m_commandLine("")
+		, m_commandLine(_args)
 		, m_fixedContentResolution( false )
 	{
-		if( _args != NULL )
-		{
-		//	m_commandLine = _args;
-		}
-
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
 	}
@@ -148,7 +143,7 @@ namespace Menge
 		}
 
 		if( Holder<Game>::hostage()
-			->init( "" ) == false )
+			->init( m_commandLine ) == false )
 		{
 			return false;
 		}

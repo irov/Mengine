@@ -5,6 +5,9 @@
 
 #	include <stdio.h>
 
+#	include <vector>
+#	include <string>
+#	include <sstream>
 
 int main( int argc, char *argv[] )
 {
@@ -51,9 +54,12 @@ int main( int argc, char *argv[] )
 
 	bool result = false;
 
+//	result = app->init( "application.xml", "ReefLevel1");
+
 	if( argc > 1 )
 	{
-	//	result = app->init( "application.xml", argv[1] );
+		printf("%s", argv[1]);
+		result = app->init( "application.xml", argv[1] );
 	}
 	else
 	{

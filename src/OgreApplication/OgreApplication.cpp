@@ -106,7 +106,7 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	std::string DllFileSystem = "Systems_d/OgreFileSystem_d.dll";
 	std::string DllRenderSystem = "Systems_d/OgreRenderSystem_d.dll";
 	std::string DllInputSystem = "Systems_d/OgreInputSystem_d.dll";
-	std::string DllSoundSystem = "Systems_d/SoundSystem_d.dll";
+	std::string DllSoundSystem = "Systems_d/ALSoundSystem_d.dll";
 	std::string DllParticleSystem = "Systems_d/AstralaxParticleSystem_d.dll";
 #else
 	std::string DllModuleSetting = "DllModuleRelease";
@@ -114,7 +114,7 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	std::string DllFileSystem = "Systems/OgreFileSystem.dll";
 	std::string DllRenderSystem = "Systems/OgreRenderSystem.dll";
 	std::string DllInputSystem = "Systems/OgreInputSystem.dll";
-	std::string DllSoundSystem = "Systems/SoundSystem.dll";
+	std::string DllSoundSystem = "Systems/ALSoundSystem.dll";
 	std::string DllParticleSystem = "Systems/AstralaxParticleSystem.dll";
 #endif
 
@@ -219,8 +219,7 @@ void OgreApplication::initParams()
 
 	Ogre::NameValuePairList params;
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( bits ) ) );
-	//
-	params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
+	//params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
 
 	m_renderWindow = m_root->createRenderWindow( "Menge-engine", screenWidth, screenHeight, fullscreen, &params );
 }

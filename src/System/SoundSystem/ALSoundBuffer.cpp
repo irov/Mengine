@@ -15,12 +15,17 @@ m_lenghtMs(0)
 
 ALSoundBuffer::~ALSoundBuffer()
 {
-	for(int i = 0; i < m_sources.size(); i++)
+	for(unsigned int i = 0; i < m_sources.size(); i++)
 	{
 		m_sources[i]->stop();
 		static_cast<ALSoundSource*>(m_sources[i])->setSoundBuffer(NULL);
 	}
 	alDeleteBuffers(1, &m_bufferName);
+}
+
+unsigned int ALSoundBuffer::getLenghtMs() const
+{
+	return m_lenghtMs;
 }
 
 void ALSoundBuffer::addSource(SoundSourceInterface *_source)

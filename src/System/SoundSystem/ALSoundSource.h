@@ -19,33 +19,33 @@ public:
 	virtual void play();
 	virtual void pause();
 	virtual void stop();
-	virtual bool isPlaying() const			{ return m_playing; }
+	virtual bool isPlaying() const;
 
 public:
 	virtual void setVolume( float _volume );
-	virtual float getVolume() const			{ return m_volume; }
+	virtual float getVolume() const;
 
 public:
 	virtual void setPosition( float _x, float _y, float _z );
 	virtual const float * getPosition() const;
 
 public:
-	virtual void setLooped( bool _loop )	{ m_looped = _loop; }
-	virtual bool isLooping() const			{ return m_looped; }
+	virtual void setLooped( bool _loop );
+	virtual bool isLooping() const;
 
 public:
 	virtual int getLengthMs();
 	virtual int getPosMs();
 	
-	virtual void setSoundNodeListener(SoundNodeListenerInterface* _listener)	{ m_listener = _listener; }
+	virtual void setSoundNodeListener(SoundNodeListenerInterface* _listener);
 
 public:
 	void setSoundBuffer( ALSoundBuffer* _soundBuffer );
-	void setAmbient(bool _ambient)		 { m_ambient = _ambient; }
-	bool isAmbient()	{ return m_ambient; }
-	bool isBusy()	{ return m_busy; }
-	void setUsed(bool _use)	{ m_busy = _use; }
-	SoundNodeListenerInterface* getListener()	{ return m_listener; }
+	void setAmbient( bool _ambient );
+	bool isAmbient() const;
+	bool isBusy() const;
+	void setUsed( bool _use );
+	SoundNodeListenerInterface* getListener();
 
 private:
 	TALSourceName* m_sourceName;

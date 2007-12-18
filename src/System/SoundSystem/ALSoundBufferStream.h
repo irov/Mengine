@@ -3,15 +3,15 @@
 
 #include "ALSoundBuffer.h"
 
-#include "PThread.h"
+//#include "PThread.h"
 #include "Vorbis/Vorbisfile.h"
 
-#define PROCESSING_TIME 20
+//#define PROCESSING_TIME 20
 
 class ALSoundBufferStreamUpdater
 {
 public:
-	ALSoundBufferStreamUpdater(const OggVorbis_File& oggfile, ALuint buffer1, ALuint buffer2, ALenum format, unsigned int frequency, unsigned int _buffersize);
+	ALSoundBufferStreamUpdater(const OggVorbis_File& oggfile, ALuint buffer1, ALuint buffer2, ALenum format, unsigned int frequency, unsigned int _buffersize, unsigned int _channels);
 
 	void start(ALuint sourcename);
   
@@ -19,6 +19,8 @@ public:
 	void stop();
 
 	static void* run(void*);
+
+	void update();
 
 	void setLooping(bool _looping)	{ m_looping = _looping; }
 	bool isLooping()				{ return m_looping; }
@@ -35,22 +37,22 @@ public:
 
 	// OpenAL format of the sound data.
 	ALenum m_format;
-
+	
 	// Frequency of the sound data.
 	unsigned int m_frequency;
-
+	unsigned int m_channels;
 	//Source to update.
 	ALuint m_source;
 
 	//Flag for when Run should stop running..
-	volatile bool m_stopRunning;
+	//volatile bool m_stopRunning;
 
-	pthread_t m_thread;
-	
+	//pthread_t m_thread;
+	char* m_buffer;
 	OggVorbis_File* m_oggFile;	// The file structure
 	unsigned int m_bufferSize;	// Size of the buffer in bytes
-	volatile bool m_looping;				// Are we looping or not?
-
+	bool m_looping;				// Are we looping or not?
+	bool m_updating;
 };
 
 

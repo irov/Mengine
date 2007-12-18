@@ -1,29 +1,30 @@
 
-//#include "stdafx.h"
-
 #include "ALSoundBufferStream.h"
 
 #include "AL/Alut.h"
 #include <windows.h>
 
-ALSoundBufferStreamUpdater::ALSoundBufferStreamUpdater(const OggVorbis_File& _oggfile, ALuint _buffer1, ALuint _buffer2, ALenum _format, unsigned int _frequency, unsigned int _buffersize) :
-m_source(0),
-m_format(_format),
-m_frequency(_frequency),
-m_stopRunning(false),
-m_looping(false),
-m_bufferSize(_buffersize)
+ALSoundBufferStreamUpdater::ALSoundBufferStreamUpdater(const OggVorbis_File& _oggfile, ALuint _buffer1, ALuint _buffer2, ALenum _format, unsigned int _frequency, unsigned int _buffersize, unsigned int _channels) 
+:m_source( 0 )
+,m_buffer( NULL )
+,m_format( _format )
+,m_frequency( _frequency )
+//,m_stopRunning( false )
+,m_looping( false )
+,m_bufferSize( _buffersize )
+,m_channels( _channels )
+,m_updating( false )
 {
 	m_buffers[0] = _buffer1;
 	m_buffers[1] = _buffer2;
-	m_oggFile = new OggVorbis_File(_oggfile);
+	m_oggFile = new OggVorbis_File( _oggfile );
 }
 
 ALSoundBufferStreamUpdater::~ALSoundBufferStreamUpdater() 
 {
-	m_stopRunning = true;
+	//m_stopRunning = true;
 	// wait until thread terminates
-	pthread_join(m_thread, NULL);
+	//pthread_join(m_thread, NULL);
 
 	if(m_oggFile)
 		ov_clear(m_oggFile);
@@ -34,17 +35,52 @@ ALSoundBufferStreamUpdater::~ALSoundBufferStreamUpdater()
 void ALSoundBufferStreamUpdater::start(ALuint _sourcename) 
 {
 	m_source = _sourcename;
-	pthread_create(&m_thread, NULL, &ALSoundBufferStreamUpdater::run, (void*)this);
+	//pthread_create(&m_thread, NULL, &ALSoundBufferStreamUpdater::run, (void*)this);
+	// detach all buffers if any
+	alSourceStop( m_source );
+	alSourcei( m_source, AL_BUFFER, NULL );
+
+	// Fill all the Buffers with decoded audio data from the OggVorbis file
+	m_buffer = new char[m_bufferSize];
+	unsigned int count = 0;
+	int stream;
+	unsigned int amt = 0;
+	unsigned long bytesWritten = 0;
+	for (int i = 0; i < 2; i++)
+	{
+		bytesWritten = decodeOggVorbis( m_oggFile, m_buffer, m_bufferSize, m_channels );
+		if (bytesWritten)
+		{
+			alBufferData( m_buffers[i], m_format, m_buffer, bytesWritten, m_frequency );
+			alSourceQueueBuffers( m_source, 1, &m_buffers[i] );
+		}
+	}
+
+	// Start playing source
+	alSourcePlay(m_source);
+
+	m_updating = true;
 }
 
 void ALSoundBufferStreamUpdater::stop() 
 {
-	m_stopRunning = true;
+	//m_stopRunning = true;
 	// wait until thread terminates
-	pthread_join(m_thread, NULL);
+	//pthread_join(m_thread, NULL);
+	// Stop the Source and clear the Queue
+	alSourceStop( m_source );
+	alSourcei( m_source, AL_BUFFER, 0 );
+
+	if ( m_buffer )
+	{
+		delete m_buffer;
+		m_buffer = NULL;
+	}
+
+	m_updating = false;
 }
 
-void* ALSoundBufferStreamUpdater::run(void* _this)
+/*void* ALSoundBufferStreamUpdater::run(void* _this)
 {
 	ALSoundBufferStreamUpdater* pThis = static_cast<ALSoundBufferStreamUpdater*>(_this);
 
@@ -60,7 +96,7 @@ void* ALSoundBufferStreamUpdater::run(void* _this)
 	unsigned long bytesWritten = 0;
 	for (int i = 0; i < 2; i++)
 	{
-		bytesWritten = pThis->decodeOggVorbis(pThis->m_oggFile, buffer, pThis->m_bufferSize, 2);
+		bytesWritten = pThis->decodeOggVorbis( pThis->m_oggFile, buffer, pThis->m_bufferSize, pThis->m_channels );
 		if (bytesWritten)
 		{
 			alBufferData(pThis->m_buffers[i], pThis->m_format, buffer, bytesWritten, pThis->m_frequency);
@@ -89,19 +125,30 @@ void* ALSoundBufferStreamUpdater::run(void* _this)
 		// data from disk, fill buffer with new data, and add it to the Source Queue
 		while (buffersProcessed)
 		{
+			printf( "Updating stream\n" );
 			// Remove the Buffer from the Queue.  (uiBuffer contains the Buffer ID for the unqueued Buffer)
 			albuffer = 0;
 			alSourceUnqueueBuffers(pThis->m_source, 1, &albuffer);
 
 			// Read more audio data (if there is any)
-			bytesWritten = pThis->decodeOggVorbis(pThis->m_oggFile, buffer, pThis->m_bufferSize, 2);
+			bytesWritten = pThis->decodeOggVorbis(pThis->m_oggFile, buffer, pThis->m_bufferSize, pThis->m_channels);
 
-			if (bytesWritten)
+			if ( !bytesWritten )
 			{
-				alBufferData(albuffer, pThis->m_format, buffer, bytesWritten, pThis->m_frequency);
-				alSourceQueueBuffers(pThis->m_source, 1, &albuffer);
+				// we reached end of file
+				if( pThis->m_looping )
+				{
+					ov_time_seek( pThis->m_oggFile, 0.0 );
+					bytesWritten = pThis->decodeOggVorbis(pThis->m_oggFile, buffer, pThis->m_bufferSize, pThis->m_channels);
+				}
+				else
+				{
+					break;
+				}
 			}
-
+			
+			alBufferData(albuffer, pThis->m_format, buffer, bytesWritten, pThis->m_frequency);
+			alSourceQueueBuffers(pThis->m_source, 1, &albuffer);
 			buffersProcessed--;
 		}
 
@@ -137,6 +184,74 @@ void* ALSoundBufferStreamUpdater::run(void* _this)
 	}
 
 	return 0;
+}*/
+
+void ALSoundBufferStreamUpdater::update()
+{
+	if( !m_updating ) return;
+
+	int buffersProcessed;
+	int queuedBuffers;
+	int state;
+	ALuint albuffer;
+	unsigned long bytesWritten = 0;
+
+	// Request the number of OpenAL Buffers have been processed (played) on the Source
+	buffersProcessed = 0;
+	alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &buffersProcessed );
+
+	// For each processed buffer, remove it from the Source Queue, read next chunk of audio
+	// data from disk, fill buffer with new data, and add it to the Source Queue
+	while (buffersProcessed)
+	{
+		// Remove the Buffer from the Queue.  (uiBuffer contains the Buffer ID for the unqueued Buffer)
+		albuffer = 0;
+		alSourceUnqueueBuffers( m_source, 1, &albuffer );
+
+		// Read more audio data (if there is any)
+		bytesWritten = decodeOggVorbis( m_oggFile, m_buffer, m_bufferSize, m_channels );
+
+		if ( !bytesWritten )
+		{
+			// we reached end of file
+			if( m_looping )
+			{
+				ov_time_seek( m_oggFile, 0.0 );
+				bytesWritten = decodeOggVorbis( m_oggFile, m_buffer, m_bufferSize, m_channels );
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		alBufferData( albuffer, m_format, m_buffer, bytesWritten, m_frequency );
+		alSourceQueueBuffers( m_source, 1, &albuffer );
+		buffersProcessed--;
+	}
+
+	// Check the status of the Source.  If it is not playing, then playback was completed,
+	// or the Source was starved of audio data, and needs to be restarted.
+	alGetSourcei( m_source, AL_SOURCE_STATE, &state );
+
+	if (state != AL_PLAYING)
+	{
+		// If there are Buffers in the Source Queue then the Source was starved of audio
+		// data, so needs to be restarted (because there is more audio data to play)
+		alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queuedBuffers );
+
+		if ( queuedBuffers )
+		{
+			alSourcePlay( m_source );
+		}
+		else
+		{
+			// Finished playing
+			//break;
+			m_updating = false;
+		}
+	}
+
 }
 
 unsigned int ALSoundBufferStreamUpdater::decodeOggVorbis(OggVorbis_File* _oggVorbisFile, char* _decodeBuffer, unsigned int _bufferSize, unsigned int _channels)
@@ -218,7 +333,7 @@ m_buffer2(0)
 			buffersize -= (buffersize % 12);
 		}
 	    
-		m_updater = new ALSoundBufferStreamUpdater(oggfile, getBufferName(), m_buffer2, format, ogginfo->rate, buffersize); 
+		m_updater = new ALSoundBufferStreamUpdater( oggfile, getBufferName(), m_buffer2, format, ogginfo->rate, buffersize, ogginfo->channels ); 
 	}
 }
 

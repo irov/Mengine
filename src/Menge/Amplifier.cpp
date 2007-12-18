@@ -126,8 +126,8 @@ namespace Menge
 			return;
 		}
 
-		m_music->play();
 		m_music->setVolume( m_volume );
+		m_music->play();
 
 		m_currentPlayList->next();
 	}

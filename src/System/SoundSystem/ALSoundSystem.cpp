@@ -16,7 +16,6 @@ unsigned int DecodeOggVorbis(OggVorbis_File *psOggVorbisFile, char *pDecodeBuffe
 void Swap(short &s1, short &s2);
 unsigned int GetSampleSize(ALenum format);
 
-
 ALSoundSystem::ALSoundSystem() :
 m_soundVelocity(343.0f),
 m_dopplerFactor(1.0f),
@@ -119,7 +118,7 @@ SoundSourceInterface*   ALSoundSystem::createSoundSource( bool _isHeadMode, Soun
 {
 	//ALSoundSource* source = new ALSoundSource(this);
 	ALSoundSource* source = NULL;
-	for(int i = 0; i < m_sources.size(); i++)
+	for(unsigned int i = 0; i < m_sources.size(); i++)
 		if(!m_sources[i]->isBusy())
 		{
 			source = m_sources[i];
@@ -166,8 +165,10 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 		else if( !strcmp( _filename + (strlen(_filename) - 4), ".ogg" ) )
 		{
 			OggVorbis_File oggfile;
-			FILE* filehandle = fopen(_filename, "rb");
-			if(ov_open(filehandle, &oggfile, NULL, 0) >= 0) 
+			FILE* filehandle = NULL;
+			fopen_s(&filehandle, _filename, "rb");
+
+			if( ov_open( filehandle, &oggfile, NULL, 0 ) >= 0 ) 
 			{
 				vorbis_info *ogginfo = ov_info(&oggfile,-1);
 				freq = ogginfo->rate; 
@@ -188,6 +189,11 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 				DecodeOggVorbis(&oggfile, (char*)data, size, ogginfo->channels);
 
 			} 
+			else
+			{
+				delete buffer;
+				buffer = NULL;
+			}
 			ov_clear(&oggfile);
 			fclose(filehandle);
 		}
@@ -239,9 +245,9 @@ void    ALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 
 void ALSoundSystem::update()
 {
-	for(int i = 0; i < m_streams.size(); i++)
+	for(unsigned int i = 0; i < m_streams.size(); i++)
 	{
-		//m_streams[i]->getUpdater()->update();
+		m_streams[i]->getUpdater()->update();
 	}
 }
 
@@ -360,7 +366,9 @@ TALSourceName* ALSoundSystem::getFreeSourceName()
 	for(int i = 0; i < m_sourceNamesNum; i++)
 	{
 		if(!m_sourceNames[i].busy)
+		{
 			return &m_sourceNames[i];
+		}
 	}
 
 	for(int i = 0; i < m_sourceNamesNum; i++)
@@ -368,7 +376,9 @@ TALSourceName* ALSoundSystem::getFreeSourceName()
 		int state;
 		alGetSourcei(m_sourceNames[i].name, AL_SOURCE_STATE, &state);
 		if(state != AL_PLAYING)
+		{
 			return &m_sourceNames[i];
+		}
 	}
 	
 	return 0;

@@ -225,6 +225,7 @@ namespace Menge
 		Holder<Game>::hostage()->update( _timing );
 		Holder<InputEngine>::hostage()->update();
 		Holder<MousePickerSystem>::hostage()->update();
+		Holder<SoundEngine>::hostage()->update();
 
 		Holder<Game>::hostage()->render();
 		Holder<Game>::hostage()->debugRender();

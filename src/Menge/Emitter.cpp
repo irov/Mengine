@@ -169,14 +169,14 @@ namespace	Menge
 
 			RenderImageInterface * image = m_images[i];
 
-			if(m_interface->isIntensive())
+			/*if(m_interface->isIntensive())
 			{
 				m_blendDest = BF_ONE;
 			}
 			else
 			{
 				m_blendDest = BF_ONE_MINUS_SOURCE_ALPHA;
-			}
+			}*/
 
 			while ( nextParticleType == false )
 			{

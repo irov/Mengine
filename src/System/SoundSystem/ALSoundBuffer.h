@@ -15,7 +15,7 @@ public:
 
 	virtual bool isStreamed()	const	{ return false; }
 	ALuint getBufferName()		const	{ return m_bufferName; }
-	unsigned int  getLenghtMs()	const	{ return m_lenghtMs; }
+	unsigned int  getLenghtMs()	const;
 
 	void setLenghtMs(unsigned int _ms)	{ m_lenghtMs = _ms; }
 

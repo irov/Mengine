@@ -5,6 +5,7 @@
 #	include <list>
 
 #	include "Holder.h"
+#	include "ScriptClassWrapper.h"
 
 namespace Menge
 {
@@ -44,7 +45,9 @@ namespace Menge
 		void directResourceRelease( const std::string & _name );
 
 		void addListener( ResourceManagerListener* _listener );
+		void addListener( PyObject* _listener );
 		void removeListener( ResourceManagerListener* _listener );
+		void removeListener( PyObject* _listener );
 
 	private:
 		typedef std::map< std::string, ResourceReference * > TMapResource;
@@ -54,5 +57,7 @@ namespace Menge
 		typedef std::list< ResourceManagerListener* > TListResourceManagerListener;
 		TListResourceManagerListener m_listeners;
 
+		typedef std::map< PyObject*, PyObject* > TMapResourceManagerListenerScript;
+		TMapResourceManagerListenerScript m_scriptListeners;
 	};
 }

@@ -38,7 +38,8 @@ public:
 	// Render frame into _image
 	// int rect[4] - rectangle represents desired frame area in pixels
 	virtual void render( RenderImageInterface* _image, const int* rect = 0 ) = 0;
-
+	// Renders One Frame
+	virtual void render() = 0; 
 	// установка разрешения контента игры, входные данные: вектор2. 
 	virtual void setContentResolution( const float * _resolution ) = 0;
 	// входные данные: матрица 4 на 4

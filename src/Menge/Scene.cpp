@@ -205,6 +205,11 @@ namespace	Menge
 		return NodeCore::_activate();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Scene::_deactivate()
+	{
+		callMethod( "onDeactivate", "() ");
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
 	{
 		callEvent( "UPDATE", "(f)", _timing );

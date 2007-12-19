@@ -1,8 +1,6 @@
 // SoundSystemInterface.cpp : Defines the entry point for the DLL application.
 //
 
-#include "stdafx.h"
-
 #include "ALSoundSystem.h"
 
 //bool gSoundSystemInitialized = false;

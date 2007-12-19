@@ -4,6 +4,8 @@
 #include "../../Interface/SoundSystemInterface.h"
 
 #include <vector>
+#include <AL.h>
+#include <ALC.h>
 
 #define MAX_SOURCENAMES_NUM 100
 #define MAX_SOUND_SOURCES 200

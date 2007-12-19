@@ -3,6 +3,8 @@
 
 #include "../../Interface/SoundSystemInterface.h"
 
+#define _WIN32_WINNT 0x0500 
+#include <windows.h>
 
 //class ALSoundSystem;
 #include "ALSoundSystem.h"

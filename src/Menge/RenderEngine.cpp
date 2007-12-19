@@ -22,6 +22,11 @@ namespace Menge
 		m_interface->render( _image, rect );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::render()
+	{
+		m_interface->render();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setContentResolution( const mt::vec2f _resolution )
 	{
 		m_interface->setContentResolution( _resolution.m );

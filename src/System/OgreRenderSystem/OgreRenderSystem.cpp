@@ -76,7 +76,7 @@ void OgreRenderSystem::setContentResolution( const float * _resolution )
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 {
-	if( !_image || Ogre::TextureManager::getSingleton().getByName("__shot__").isNull() == false ) return;
+	if( Ogre::TextureManager::getSingleton().getByName("__shot__").isNull() == false ) return;
 
 	Ogre::Rect wrect( 0, 0, m_renderWindow->getWidth(), m_renderWindow->getHeight() );
 	if(rect)
@@ -86,7 +86,6 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 		wrect.right = rect[2];
 		wrect.bottom = rect[3];
 	}
-	OgreRenderImage* image = static_cast<OgreRenderImage*>(_image);
 
 	Ogre::TexturePtr rtt = Ogre::TextureManager::getSingleton().createManual("__shot__", "Default", Ogre::TEX_TYPE_2D, 1024, 768, 0, Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET);
 
@@ -99,12 +98,20 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 	Ogre::Root::getSingleton().renderOneFrame();
 	m_renderWindow->getViewport(0)->setClearEveryFrame(true);
 
-
-	Ogre::HardwarePixelBufferSharedPtr pixb = rtt->getBuffer();
-	Ogre::Image::Box imagebox( wrect.left, wrect.top, wrect.right, wrect.bottom );
-	static_cast<OgreRenderImage*>( _image )->m_texture->getBuffer()->blit(pixb, imagebox, Ogre::Image::Box(0, 0, _image->getWidth(), _image->getHeight() ));
+	if( _image )
+	{
+		Ogre::HardwarePixelBufferSharedPtr pixb = rtt->getBuffer();
+		Ogre::Image::Box imagebox( wrect.left, wrect.top, wrect.right, wrect.bottom );
+		static_cast<OgreRenderImage*>( _image )->m_texture->getBuffer()->blit(pixb, imagebox, Ogre::Image::Box(0, 0, _image->getWidth(), _image->getHeight() ));
+	}
+	
 	Ogre::TextureManager::getSingleton().remove("__shot__");
 
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::render()
+{
+	Ogre::Root::getSingleton().renderOneFrame();
 }
 
 //////////////////////////////////////////////////////////////////////////

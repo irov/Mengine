@@ -1,6 +1,4 @@
 
-#include "stdafx.h"
-
 #include "ALSoundBuffer.h"
 #include "ALSoundBufferStream.h"
 #include "ALSoundSource.h"

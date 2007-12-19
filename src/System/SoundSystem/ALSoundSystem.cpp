@@ -1,6 +1,4 @@
 
-#include "stdafx.h"
-
 #include "AL/ALut.h"
 #include "Vorbis/Vorbisfile.h"
 

@@ -48,6 +48,8 @@ namespace Menge
 
 	protected:
 		bool _activate() override;
+		void _deactivate() override;
+
 		void _update( float _timing ) override;
 
 		void _addChildren( Layer * _layer ) override;

@@ -4,6 +4,7 @@
 #	include "InputEngine.h"
 #	include "SceneManager.h"
 #	include "Scene.h"
+#	include "Game.h"
 
 #	include "ScriptEngine.h"
 #	include "ScheduleManager.h"
@@ -210,6 +211,20 @@ namespace Menge
 		{
 			Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
 		}
+
+		static void addResourceListener( PyObject* _listener )
+		{
+			Holder<ResourceManager>::hostage()->addListener( _listener );
+		}
+		static void removeResourceListener( PyObject* _listener )
+		{
+			Holder<ResourceManager>::hostage()->removeListener( _listener );
+		}
+		static void renderOneFrame()
+		{
+			Holder<Game>::hostage()->render();
+			Holder<RenderEngine>::hostage()->render();
+		}
 	}
 
 	SCRIPT_CLASS_WRAPPING( Node );
@@ -413,5 +428,9 @@ namespace Menge
 		pybind::def( "quitApplication", &ScriptMethod::quitApplication );
 		pybind::def( "createShot", &ScriptMethod::createShot );
 		pybind::def( "setFullscreenMode", &ScriptMethod::setFullscreenMode );
+		pybind::def( "addResourceListener", &ScriptMethod::addResourceListener );
+		pybind::def( "removeResourceListener", &ScriptMethod::removeResourceListener );
+		pybind::def( "renderOneFrame", &ScriptMethod::renderOneFrame );
+
 	}
 }

@@ -24,6 +24,7 @@ namespace Menge
 		
 	public:
 		void render( RenderImageInterface* _renderTargetImage, const int* rect = NULL );
+		void render();
 
 		void setContentResolution( const mt::vec2f _resolution );
 

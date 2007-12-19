@@ -9,6 +9,7 @@
 #	include "FileEngine.h"
 
 #	include "LogEngine.h"
+#	include "ScriptEngine.h"
 
 namespace Menge
 {
@@ -121,6 +122,16 @@ namespace Menge
 			{
 				(*it)->onResourceLoaded();
 			}
+
+			for( TMapResourceManagerListenerScript::iterator it = m_scriptListeners.begin();
+				it != m_scriptListeners.end();
+				it++)
+			{
+				PyObject * result = 
+					Holder<ScriptEngine>::hostage()
+					->callFunction( it->second, "()", it->first );
+			}
+
 		}
 
 		return resource;
@@ -149,6 +160,16 @@ namespace Menge
 				{
 					(*it)->onResourceUnLoaded();
 				}
+
+				/*for( TMapResourceManagerListenerScript::iterator it = m_scriptListeners.begin();
+					it != m_scriptListeners.end();
+					it++)
+				{
+					PyObject * result = 
+						Holder<ScriptEngine>::hostage()
+						->callFunction( it->second, "()", it->first );
+				}*/
+
 			}
 		}
 	}
@@ -185,10 +206,35 @@ namespace Menge
 		m_listeners.push_back( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::addListener( PyObject* _listener )
+	{
+		if( Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( _listener, "onHandleResourceLoaded" ) == false )
+		{
+			return;
+		}
+
+		PyObject * event = Holder<ScriptEngine>::hostage()
+			->getModuleFunction( _listener, "onHandleResourceLoaded" );
+
+		if( event == 0 )
+		{
+			return;
+		}
+
+		ScriptEngine::incref( event );
+
+		m_scriptListeners.insert( std::make_pair( _listener, event ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::removeListener( ResourceManagerListener* _listener )
 	{
 		m_listeners.remove( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-
+	void ResourceManager::removeListener( PyObject* _listener )
+	{
+		m_scriptListeners.erase( _listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

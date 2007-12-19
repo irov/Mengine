@@ -162,7 +162,7 @@ namespace	Menge
 		{
 			const std::string & _line = *it;
 		
-			offset.x = 0;
+			offset.x = m_alignOffset.x;
 
 			for( std::string::const_iterator
 				it = _line.begin(), 

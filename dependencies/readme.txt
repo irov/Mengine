@@ -36,13 +36,6 @@ vorbis
 [1.2.0]
 http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz
 
-PThreads
-[2.8.0]
-ftp://sourceware.org/pub/pthreads-win32
-
-expat
-[2.0.1]
-
 --------------------------------------------------------------------------------
 TODO:
 
@@ -53,3 +46,10 @@ http://gd.tuwien.ac.at/utils/archivers/curl/libcurl-7.15.5-win32-msvc.zip
 pycurl
 [pycurl]
 http://pycurl.sourceforge.net/download/pycurl-7.16.2.1.tar.gz
+
+expat
+[2.0.1]
+
+PThreads
+[2.8.0]
+ftp://sourceware.org/pub/pthreads-win32

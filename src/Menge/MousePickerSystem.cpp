@@ -48,6 +48,12 @@ namespace Menge
 	{
 		m_listPickerTrap.clear();
 	}
+
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::reset()
+	{
+		m_lastPickerTrap = NULL;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::regTrap( MousePickerTrap * _trap, const Viewport & _viewport )
 	{

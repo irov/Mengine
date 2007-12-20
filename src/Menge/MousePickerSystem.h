@@ -24,6 +24,7 @@ namespace Menge
 	public:
 		void update();
 		void clear();
+		void reset();
 
 		void regTrap( MousePickerTrap * _trap, const Viewport & _viewport );
 		MousePickerTrap * pickTrap( HotSpot * _hotspot );

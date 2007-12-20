@@ -14,6 +14,8 @@
 
 #	include "LogEngine.h"
 
+#	include "MousePickerSystem.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -258,6 +260,7 @@ namespace Menge
 				m_scene->release();
 				if( m_destroyOldScene )
 				{
+					Holder<MousePickerSystem>::hostage()->reset();
 					Holder<Game>::hostage()->destroyScene( m_scene->getName() );
 				}
 			}

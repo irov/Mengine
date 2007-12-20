@@ -80,6 +80,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void LayerScene::_destroy()
+	{
+		if( m_subScene )
+		{
+			Holder<Game>::hostage()->destroyScene( m_subScene->getName() );
+		}
+		m_subScene = NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool LayerScene::_activate()
 	{
 		if( m_sceneName.empty() == false )

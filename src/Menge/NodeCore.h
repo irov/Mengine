@@ -58,6 +58,7 @@ namespace Menge
 		void debugRender() override;
 
 	protected:
+		virtual void _destroy();
 		virtual void _update( float _timing );
 
 		virtual bool _activate();

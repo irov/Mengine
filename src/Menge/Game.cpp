@@ -522,6 +522,17 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Game::destroyScene( const std::string & _name  )
+	{
+		TMapScene::iterator it_find = m_mapScene.find( _name );
+
+		if( it_find != m_mapScene.end() )
+		{
+			it_find->second->destroy();
+			m_mapScene.erase( it_find );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Game::getResourceResolution() const
 	{
 		return m_resourceResolution;

@@ -26,7 +26,7 @@ namespace Menge
 		~Player();
 
 	public:
-		void setCurrentScene( const std::string & _scene );
+		void setCurrentScene( const std::string & _scene, bool _destroyOld = false );
 		Scene * getCurrentScene();
 
 		void setArrow( Arrow * _arrow );
@@ -72,6 +72,7 @@ namespace Menge
 		Camera3D * m_renderCamera3D;
 
 		bool m_switchScene;
+		bool m_destroyOldScene;
 		Scene * m_nextScene;
 
 		typedef std::set<GlobalMouseHandler *> TSetGlobalMouseHandler;

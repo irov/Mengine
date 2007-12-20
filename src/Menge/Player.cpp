@@ -25,6 +25,7 @@ namespace Menge
 	, m_renderCamera3D(0)
 	, m_switchScene(false)
 	, m_nextScene(0)
+	, m_destroyOldScene( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -41,7 +42,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setCurrentScene( const std::string & _name )
+	void Player::setCurrentScene( const std::string & _name, bool _destroyOld )
 	{
 		m_nextScene = Holder<Game>::hostage()
 			->getScene( _name );
@@ -53,6 +54,7 @@ namespace Menge
 		}
 
 		m_switchScene = true;
+		m_destroyOldScene = _destroyOld;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Player::getCurrentScene()
@@ -254,6 +256,10 @@ namespace Menge
 			{
 				m_scene->deactivate();
 				m_scene->release();
+				if( m_destroyOldScene )
+				{
+					Holder<Game>::hostage()->destroyScene( m_scene->getName() );
+				}
 			}
 
 			m_scene = m_nextScene;

@@ -57,6 +57,7 @@ namespace Menge
 
 	public:
 		Scene * getScene(const std::string & _name );
+		void destroyScene( const std::string & _name );
 
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;

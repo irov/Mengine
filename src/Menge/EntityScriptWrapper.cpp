@@ -105,6 +105,7 @@ namespace Menge
 			.def( "rotateStop", &Entity::rotateStop )
 			.def( "flip", &Entity::flip )
 			.def( "setScale", &Entity::setScale )
+			.def( "getParent", &Entity::getParent )
 			;
 
 		pybind::def( "createEntity", &ScriptMethod::createEntity );

@@ -84,11 +84,11 @@ namespace Menge
 				->getMouseY();
 		}
 
-		static void setCurrentScene( const std::string & _name )
+		static void setCurrentScene( const std::string & _name, bool _destroyOld = false )
 		{
 			MENGE_LOG("set current scene '%s'\n", _name.c_str() );
 			Holder<Player>::hostage()
-					->setCurrentScene( _name );
+					->setCurrentScene( _name, _destroyOld );
 		}
 
 		static Scene * getCurrentScene()

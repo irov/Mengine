@@ -267,6 +267,7 @@ namespace Menge
 			.def( "isActivate", &Node::isActivate )
 			.def( "compile", &Node::compile )
 			.def( "release", &Node::release )
+			.def( "destroy", &Node::destroy )
 			.def( "isCompile", &Node::isCompile )
 			.def( "enable", &Node::enable )
 			.def( "disable", &Node::disable )

@@ -79,7 +79,8 @@ class Scene( Menge.Scene ):
 		#Menge.stopMusic();
 		
 		self.testTextField = self.getNode( "Arial2112" )
-		self.testTextField.setLocalPosition( Menge.vec2f( 100,101 ) )
+		self.testTextField.setLocalPosition( Menge.vec2f( 200,100 ) )
+		self.testTextField.setText("Gloria");
 
 		self.emitterTest = self.getNode( "EmitterTest1" );
 
@@ -154,7 +155,7 @@ class Scene( Menge.Scene ):
 		if isDown == False:
 			return False
 
-		if key == 205:		
+		if key == 205:
 			shoted = Menge.createShot("shot", Menge.vec2f( 0, 0 ), Menge.vec2f( 500, 500 ) );
 			self.node.addChildren( shoted );
 
@@ -171,9 +172,10 @@ class Scene( Menge.Scene ):
 		if key == 208:	
 			self.node.setPercentVisibility( Menge.vec2f( self.a, 0 ), Menge.vec2f( 0, 0 ));
 		
-		if key == 57:
-			print "57"
-			self.bubble.play();
+		if key == 32:
+			print "32"
+			self.testTextField.setText("Zateryannyi attol");
+			#self.bubble.play();
 			#self.emitterTest.play();
 
 		if key == 54:
@@ -182,7 +184,7 @@ class Scene( Menge.Scene ):
 
 		if key == 2:
 			print "2"
-			self.bubble.stop();
+			#self.bubble.stop();
 			#self.emitterTest1.play();
 			#self.emitterTest.stop();
 

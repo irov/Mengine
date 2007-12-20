@@ -83,12 +83,12 @@
 		
 		<Node Name = "Arial2112" Type = "TextField">
               		<Font Name = "Arial12"/>
-               		<Text Value = "PREVED!!!! \n SOBA4\n OMETALLLICIACACACACA \\\\\\\\\ sjkdghfskrheiru TEST\"/>
+               		<Text Value = ""/>
 			<Color Value = "4294901760"/>
 			<OutlineColor Value = "4294901760"/>
 			<OutlineImage Name = "ReefValun_0N"/>
 			<Height Value = "24"/>
-			<CenterAlign Value = "0"/>
+			<CenterAlign Value = "1"/>
 		</Node>
 
 		<!--<Node Name = "SoundEmitterTest" Type = "SoundEmitter">

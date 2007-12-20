@@ -234,34 +234,7 @@ namespace	Menge
 				m_color = m_newColor * d + m_color * ( 1.0f - d );
 				m_changingColorTime -= _timing;
 			}
-
 		}
-		// это шо ?
-		/*if( m_moveTo )
-		{
-			if( m_moveTime < _timing )
-			{
-				setLocalPosition( m_movePoint );
-
-				m_moveTo = false;
-
-				this->callEvent("MOVE_END", "()" );
-			}
-			else
-			{
-				m_moveTime -= _timing;
-
-				float way_length = m_moveSpeed * _timing;
-
-				mt::vec2f way_offset = m_moveDir * way_length;
-
-				mt::vec2f & pos = getLocalPositionModify();
-
-				pos += way_offset;
-
-				changePivot();
-			}
-		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setOutlineColor( const Color& _color )
@@ -340,6 +313,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::updateAlign_()
 	{
+		m_alignOffset = mt::vec2f::zero_v2;
+
 		if( m_centerAlign )
 		{
 			m_alignOffset = mt::vec2f( m_length.x * -0.5f, 0 );
@@ -385,6 +360,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void	TextField::createFormattedMessage_( const std::string & _text )
 	{
+		m_lines.clear();
+		m_length = mt::vec2f::zero_v2;
+
 		std::vector<std::string> words;
 		split( _text, words ); 
 
@@ -393,31 +371,34 @@ namespace	Menge
 			return;
 		}
 
-		m_lines.clear();
-
 		std::string	temp = *words.begin();
 
-		float maxLen = getWordWidth_( *words.begin() );
+		float maxLen = 0.0f;
 
+		float wordWidth = getWordWidth_( *words.begin() );
+
+		float lineWidth = wordWidth;
+		
 		for( std::vector<std::string>::iterator it = ++words.begin(); it != words.end(); ++it)
 		{
-			float wordWidth = getWordWidth_( *it );
-			maxLen = std::max( wordWidth, maxLen );
+			wordWidth = getWordWidth_( *it );
+			lineWidth += wordWidth;
 
-			if( m_totalWidth < wordWidth )
+			//if( lineWidth < m_totalWidth)
 			{
 				temp += " ";
 				temp += *it;
 			}
-			else
+/*			else
 			{
 				m_lines.push_back( temp );
+				maxLen = std::max( lineWidth, maxLen );
 				temp.clear();
 				temp += *it;
-			}
+			}*/
 		}
 
-		m_length.x = maxLen;
+		m_length.x = lineWidth;
 		m_length.y = m_height;
 		
 		m_lines.push_back( temp );

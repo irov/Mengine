@@ -364,7 +364,7 @@ namespace	Menge
 		m_length = mt::vec2f::zero_v2;
 
 		std::vector<std::string> words;
-		split( _text, words ); 
+		split( _text, words, " \\n" ); 
 
 		if( words.empty() == true )
 		{

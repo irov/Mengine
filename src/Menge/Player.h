@@ -44,6 +44,8 @@ namespace Menge
 		void setCamera2DPosition( const mt::vec2f & _pos );
 		void setCamera3DPosition( const mt::vec3f & _pos );
 
+		void setCamera2DDirection( const mt::vec2f & _dir );
+
 		void updateChangeScene();
 
 	public:

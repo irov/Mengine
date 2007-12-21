@@ -174,7 +174,7 @@ class Scene( Menge.Scene ):
 		
 		if key == 32:
 			print "32"
-			self.testTextField.setText("Zateryannyi attol");
+			self.testTextField.setText("Zateryannyi attol\\ndfgdfgdfgdfgdfg\\dfg");
 			#self.bubble.play();
 			#self.emitterTest.play();
 

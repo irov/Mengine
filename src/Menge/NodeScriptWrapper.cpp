@@ -112,6 +112,12 @@ namespace Menge
 				->setCamera2DPosition( mt::vec2f(x, y) );
 		}
 
+		static void setCamera2DDirection( float x, float y )
+		{
+			Holder<Player>::hostage()
+				->setCamera2DDirection( mt::vec2f(x, y) );
+		}
+
 		static PyObject * createNodeFromXml( PyObject * _params  )
 		{
 			if( pybind::convert::is_string( _params ) == false )
@@ -409,6 +415,7 @@ namespace Menge
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
 		pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
 		pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
+		pybind::def( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
 				
 		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
 

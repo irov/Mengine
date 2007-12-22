@@ -4,7 +4,7 @@ def init():
 	#Menge.setCurrentScene("Match3")
 	#Menge.setCurrentScene("Buka")
 	#Menge.setCurrentScene("FishDemo")	
-	Menge.setCurrentScene("FishDemo")
+	Menge.setCurrentScene("FishDemo", False)
 	return True
 	pass
 

@@ -114,8 +114,24 @@ namespace Menge
 
 		static void setCamera2DDirection( float x, float y )
 		{
-			Holder<Player>::hostage()
-				->setCamera2DDirection( mt::vec2f(x, y) );
+			Scene * scene = getCurrentScene();
+
+			struct ForeachRender
+				: public NodeForeach
+			{
+				mt::vec2f dir;
+				ForeachRender( const mt::vec2f& _dir )
+					: dir(_dir)
+				{}
+
+				void apply( Node * children ) override
+				{
+					SceneNode2D * child = dynamic_cast<SceneNode2D*>(children);
+					child->setLocalDirection(dir);
+				}
+			};
+
+			scene->foreachChildren( ForeachRender(mt::vec2f(x,y)) );
 		}
 
 		static PyObject * createNodeFromXml( PyObject * _params  )
@@ -366,7 +382,6 @@ namespace Menge
 			pybind::proxy_<Point, pybind::bases<SceneNode2D>>("Point", false)
 				.def( "testHotSpot", &Point::testHotSpot )
 				;
-
 
 			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
 				.def( "layerAppend", &Scene::layerAppend )

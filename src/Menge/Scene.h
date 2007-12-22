@@ -9,6 +9,8 @@
 
 #	include "InputHandler.h"
 
+#	include "Allocator2D.h"
+
 namespace Menge
 {
 	class Camera2D;

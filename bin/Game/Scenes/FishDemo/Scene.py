@@ -124,7 +124,7 @@ class Scene( Menge.Scene ):
 		#self.node.setImageIndex(2);
 
 		#self.node.setPercentVisibility( Menge.vec2f( 0.3, 0 ), Menge.vec2f( 0.1, 0 ));
-	
+
 		pass
 
 	def onUpdate( self, timing ):
@@ -174,7 +174,8 @@ class Scene( Menge.Scene ):
 		
 		if key == 32:
 			print "32"
-			self.testTextField.setText("Zateryannyi attol\\ndfgdfgdfgdfgdfg\\dfg");
+			Menge.setCamera2DDirection( 1, 0)
+			#self.testTextField.setText("Zateryannyi attol\\ndfgdfgdfgdfgdfg\\dfg");
 			#self.bubble.play();
 			#self.emitterTest.play();
 

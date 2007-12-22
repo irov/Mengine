@@ -313,14 +313,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setCamera2DDirection( const mt::vec2f & _dir )
-	{
-		if( m_renderCamera2D )
-		{
-			m_renderCamera2D->setLocalDirection( _dir );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Player::setCamera3DPosition( const mt::vec3f & _pos )
 	{
 		if( m_renderCamera3D )

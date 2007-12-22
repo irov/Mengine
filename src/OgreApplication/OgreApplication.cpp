@@ -51,6 +51,7 @@ OgreApplication::OgreApplication()
 , m_running( true )
 , m_frameTime( 0.0f )
 //, m_cursorInArea( false )
+, m_mutex(0)
 {}
 //////////////////////////////////////////////////////////////////////////
 OgreApplication::~OgreApplication()
@@ -85,6 +86,12 @@ OgreApplication::~OgreApplication()
 
 		delete m_root;
 		m_root = 0;
+	}
+
+	if( m_mutex )
+	{
+		::CloseHandle( m_mutex );
+		m_mutex = 0;
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -173,6 +180,18 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	fileInterface->loadPath(".");
 
 	bool initialize = m_application->initialize( _xmlFile );
+
+	const std::string& title = m_application->getTitle();
+
+	m_mutex = ::CreateMutexA( NULL, FALSE, title.c_str() );
+	DWORD error = ::GetLastError();
+
+	if( error == ERROR_ALREADY_EXISTS )
+	{
+		std::string message = std::string("Another instance of ") + title + std::string(" is already running");
+		::MessageBoxA( NULL, message.c_str(), "Menge-engine", MB_ICONWARNING );
+		return false;
+	}
 
 	initParams();
 

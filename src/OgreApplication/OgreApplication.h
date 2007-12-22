@@ -55,6 +55,7 @@ private:
 	static HWND	m_hWnd;
 	static bool	m_cursorInArea;
 	static WINDOWINFO m_wndInfo;
+	HANDLE m_mutex;	// for multiple instance tracking
 
 	static LRESULT CALLBACK _wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 

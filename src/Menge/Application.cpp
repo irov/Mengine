@@ -56,6 +56,7 @@ namespace Menge
 		: m_quit( false )
 		, m_commandLine(_args)
 		, m_fixedContentResolution( false )
+		, m_title("Menge-engine")
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -191,6 +192,7 @@ namespace Menge
 
 				XML_CHECK_NODE_FOR_EACH("Config")
 				{
+					XML_CHECK_VALUE_NODE("Title", "Name", m_title );					
 					XML_CHECK_VALUE_NODE("Width", "Value", m_width );					
 					XML_CHECK_VALUE_NODE("Height", "Value", m_height );
 					XML_CHECK_VALUE_NODE("Bits", "Value", m_bits );
@@ -292,4 +294,8 @@ namespace Menge
 		return m_renderDriver;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const std::string& Application::getTitle() const
+	{
+		return m_title;
+	}
 }

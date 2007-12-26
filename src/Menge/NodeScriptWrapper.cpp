@@ -27,7 +27,7 @@
 #	include "Point.h"
 
 #	include "Color.h"
-
+#	include "C4AI.h"
 
 #	include "Camera3D.h"
 
@@ -282,6 +282,16 @@ namespace Menge
 			.def( pybind::init<float,float,float,float>() )
 			.def( "set", &Color::set )
 			;
+
+		pybind::class_<C4AI>("C4AI")
+			.def( pybind::init<>() )
+			.def( "newGame", &C4AI::newGame )
+			.def( "makeMove", &C4AI::makeMove )
+			.def( "autoMove", &C4AI::autoMove )
+			.def( "endGame", &C4AI::endGame )
+			.def( "reset", &C4AI::reset )
+			;
+
 
 		pybind::interface_<Node>("Node", false)
 			.def( "activate", &Node::activate )

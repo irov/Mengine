@@ -870,6 +870,10 @@
 			Name="ScriptWrapper"
 			>
 			<File
+				RelativePath=".\C4AIScriptWrapper.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EntityScriptWrapper.cpp"
 				>
 			</File>
@@ -885,6 +889,18 @@
 				RelativePath=".\SoundScriptWrapper.cpp"
 				>
 			</File>
+			<Filter
+				Name="C4AI"
+				>
+				<File
+					RelativePath=".\C4AI.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\C4AI.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Scene"

@@ -38,26 +38,24 @@ void AstralaxEmitter::play()
 
 	//Magic_SetPosition( m_id, 0 );
 
-	if( m_leftBorder > 0 )
+	/*if( m_leftBorder > 0 )
 	{
 		_leftVisibleInterval( m_leftBorder );
 	}
-
+*/
 	m_start = true;
 
 //	m_stop = false;
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxEmitter::setLooped( bool _loop )
+void AstralaxEmitter::setLooped( int _loop )
 {
-	//int mode = _loop ? MAGIC_LOOP : MAGIC_NOLOOP;
-	//Magic_SetLoopMode( m_id, mode );
-	m_looped = _loop;
+	Magic_SetLoopMode( m_id, _loop );
 }
 
-bool AstralaxEmitter::getLooped() const
+int AstralaxEmitter::getLooped() const
 {
-	return m_looped;//Magic_GetLoopMode( m_id ) == MAGIC_LOOP;
+	return Magic_GetLoopMode( m_id );
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::stop()
@@ -65,10 +63,6 @@ void AstralaxEmitter::stop()
 	m_start = false;
 
 	Magic_Stop( m_id );
-
-	Magic_Restart( m_id );
-
-	//m_stop = true;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::pause()
@@ -94,14 +88,7 @@ void AstralaxEmitter::update( float _timing )
 
         if ( Magic_IsRestart( m_id ) )
         { 
-			if( m_looped )
-			{
-				Magic_Restart( m_id );
-			}
-			else
-			{
-				m_start = false;
-			}
+			m_start = false;
         }
     }
 }

@@ -61,9 +61,11 @@ namespace Menge
 		return m_interface->releaseEmitter( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const char * ParticleEngine::getTextureName() const
+	const std::string& ParticleEngine::getTextureName() const
 	{
-		return m_interface->getTextureName();
+		static std::string name;
+		name = m_interface->getTextureName() ? m_interface->getTextureName() : "";
+		return name;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderParticle * ParticleEngine::nextParticle()

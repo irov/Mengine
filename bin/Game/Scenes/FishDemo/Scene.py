@@ -179,23 +179,25 @@ class Scene( Menge.Scene ):
 			#self.bubble.play();
 			#self.emitterTest.play();
 
-		if key == 54:
-			print "54"
-			self.emitterTest.pause();
+		if key == 49:
+			print "1"
+			self.emitterTest.stop();
 
-		if key == 2:
+		if key == 50:
 			print "2"
-			#self.bubble.stop();
-			#self.emitterTest1.play();
-			#self.emitterTest.stop();
+			self.emitterTest.setLooped( 0 );
 
-		if key == 3:
+		if key == 51:
 			print "3"
-			self.emitterTest.setLooped( True );
+			self.emitterTest.setLooped( 1 );
 
-		if key == 4:
+		if key == 52:
 			print "4"
-			self.emitterTest.setLooped( False );
+			self.emitterTest.setLooped( 2 );
+
+		if key == 53:
+			print "5"
+			self.emitterTest.pause();
 
 		return False
 		pass

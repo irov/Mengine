@@ -141,7 +141,7 @@ namespace Menge
 		++it)
 		{
 			MousePickerTrap * trap = *it;
-			if( trap->isActivate() == true &&  trap->pick( hotspot ) == true )
+			if( trap->isActivate() == true && trap->pick( hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();
 

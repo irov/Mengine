@@ -870,10 +870,6 @@
 			Name="ScriptWrapper"
 			>
 			<File
-				RelativePath=".\C4AIScriptWrapper.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\EntityScriptWrapper.cpp"
 				>
 			</File>

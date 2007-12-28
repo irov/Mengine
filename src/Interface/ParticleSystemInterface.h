@@ -15,8 +15,8 @@ public:
 	virtual void stop() = 0;
 	virtual void pause() = 0;
 	virtual void update( float _timing ) = 0;
-	virtual void setLooped( bool _loop ) = 0;
-	virtual bool getLooped() const = 0;
+	virtual void setLooped( int _loop ) = 0;
+	virtual int getLooped() const = 0;
 	virtual void getBoundingBox( int & left, int & top, int & right, int & bottom ) const = 0;
 	virtual void setLeftBorder( float _leftBorder ) = 0;
 	virtual int getNumTypes() const = 0;

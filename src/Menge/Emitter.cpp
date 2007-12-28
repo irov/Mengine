@@ -228,12 +228,12 @@ namespace	Menge
 		m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Emitter::setLooped( bool _loop )
+	void Emitter::setLooped( int _loop )
 	{
 		m_interface->setLooped( _loop );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Emitter::getLooped() const
+	int Emitter::getLooped() const
 	{
 		return m_interface->getLooped();
 	}

@@ -325,4 +325,10 @@ namespace	Menge
 		registerEventListener("COLOR_END", "onColorEnd", m_listener );
 		registerEventListener("COLOR_STOP", "onColorStop", m_listener );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::save()
+	{
+		SceneNode2D::save();
+
+	}
 }

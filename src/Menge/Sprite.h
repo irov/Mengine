@@ -129,6 +129,8 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _timing ) override;
+
+		void save() override;
 	
 	private:
 		void updateAlign_();

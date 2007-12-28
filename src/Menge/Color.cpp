@@ -57,7 +57,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Color Color::operator * ( float _s ) const
 	{
-		Color result(1.0f, 1.0f, 1.0f, 1.0f);
+		Color result;
 
 		result.r = _s * r;
 		result.g = _s * g;
@@ -69,7 +69,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Color Color::operator + ( const Color & _color ) const
 	{
-		Color result(1.0f, 1.0f, 1.0f, 1.0f);
+		Color result;
 
 		result.r = r + _color.r;
 		result.g = g + _color.g;

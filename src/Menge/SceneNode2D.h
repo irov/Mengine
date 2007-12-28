@@ -42,5 +42,7 @@ namespace Menge
 		Layer2D* m_layer;
 
 		void _addChildren( SceneNode2D * _node ) override;
+
+		void	save() override;
 	};
 }

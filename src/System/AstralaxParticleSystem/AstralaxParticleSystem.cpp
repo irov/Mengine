@@ -142,7 +142,7 @@ RenderParticle * AstralaxParticleSystem::nextParticle()
 //////////////////////////////////////////////////////////////////////////
 const char * AstralaxParticleSystem::getTextureName() const
 {
-	return m_texture.file;
+	return /*((m_texture.length == 0) || (m_texture.data == 0)) ? 0 : */m_texture.file;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxParticleSystem::unlockEmitter( EmitterInterface * _emitter ) 

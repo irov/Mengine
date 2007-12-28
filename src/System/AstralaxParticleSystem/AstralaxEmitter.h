@@ -19,8 +19,8 @@ public:
 	void	update( float _timing ) override;
 	void	setLeftBorder( float _leftBorder ) override;
 
-	void	setLooped( bool _loop ) override;
-	bool	getLooped() const override;
+	void	setLooped( int _loop ) override;
+	int		getLooped() const override;
 
 	void	getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
 	int		getNumTypes() const override;

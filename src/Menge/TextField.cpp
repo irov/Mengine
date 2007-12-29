@@ -33,7 +33,7 @@ namespace	Menge
 		, m_changingColor( false )
 		, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_outlineImage( 0 )
-		, m_totalWidth( 0 )
+		, m_maxWidth( 2048.f )
 	{
 		m_outlineFontName.clear();
 	}
@@ -146,7 +146,7 @@ namespace	Menge
 			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
 			XML_CHECK_VALUE_NODE( "OutlineColor", "Value", m_outlineColor);
 			XML_CHECK_VALUE_NODE( "OutlineImage", "Name", m_outlineFontName);
-			XML_CHECK_VALUE_NODE( "MaxWidth", "Value", m_totalWidth);
+			XML_CHECK_VALUE_NODE( "MaxWidth", "Value", m_maxWidth);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -156,12 +156,17 @@ namespace	Menge
 
 		const mt::mat3f & wm = getWorldMatrix();
 
-		mt::vec2f offset = m_alignOffset;
+		mt::vec2f offset = mt::vec2f::zero_v2;
 
-		for( std::list<std::string>::iterator it = m_lines.begin(); it != m_lines.end(); ++it)
+		for( std::list<Line>::iterator it = m_lines.begin(); it != m_lines.end(); ++it)
 		{
-			const std::string & _line = *it;
-		
+			const std::string & _line = (*it).text;		
+
+			if( m_centerAlign )
+			{
+				m_alignOffset = mt::vec2f( (*it).length * -0.5f, 0 );
+			}
+
 			offset.x = m_alignOffset.x;
 
 			for( std::string::const_iterator
@@ -251,7 +256,6 @@ namespace	Menge
 	{
 		m_text = _text;
 		createFormattedMessage_( m_text );
-		updateAlign_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::colorTo( const Color& _color, float _time )
@@ -311,35 +315,9 @@ namespace	Menge
 		return m_text;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateAlign_()
-	{
-		m_alignOffset = mt::vec2f::zero_v2;
-
-		if( m_centerAlign )
-		{
-			m_alignOffset = mt::vec2f( m_length.x * -0.5f, 0 );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& TextField::getLength() const
 	{
 		return m_length;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	/*вот такое бы в утилити какой  - нить*/
-	void split( const std::string& str,
-			std::vector<std::string> & tokens,
-			const std::string & delimiters = " ")
-	{
-		std::string::size_type lastPos = str.find_first_not_of( delimiters, 0);
-		std::string::size_type pos     = str.find_first_of( delimiters, lastPos );
-
-		while ( std::string::npos != pos || std::string::npos != lastPos )
-		{
-			tokens.push_back( str.substr( lastPos, pos - lastPos ));
-			lastPos = str.find_first_not_of( delimiters, pos );
-			pos = str.find_first_of( delimiters, lastPos );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float	TextField::getWordWidth_( const std::string & _text ) const
@@ -361,47 +339,64 @@ namespace	Menge
 	void	TextField::createFormattedMessage_( const std::string & _text )
 	{
 		m_lines.clear();
-		m_length = mt::vec2f::zero_v2;
 
-		std::vector<std::string> words;
-		split( _text, words, " \\n" ); 
+		std::string delimiters = " ";
 
-		if( words.empty() == true )
+		std::string::size_type lastPos = _text.find_first_not_of( delimiters, 0);
+		std::string::size_type pos     = _text.find_first_of( delimiters, lastPos );
+
+		std::string word;
+		std::string line;
+
+		word.reserve(100);
+		line.reserve(200);
+
+		float len = 0.0f;
+		float maxlen = 0.0f;
+
+		while ( std::string::npos != pos || std::string::npos != lastPos )
 		{
-			return;
-		}
+			word = _text.substr( lastPos, pos - lastPos );
 
-		std::string	temp = *words.begin();
-
-		float maxLen = 0.0f;
-
-		float wordWidth = getWordWidth_( *words.begin() );
-
-		float lineWidth = wordWidth;
-		
-		for( std::vector<std::string>::iterator it = ++words.begin(); it != words.end(); ++it)
-		{
-			wordWidth = getWordWidth_( *it );
-			lineWidth += wordWidth;
-
-			//if( lineWidth < m_totalWidth)
+			if( word == "\\n" )
 			{
-				temp += " ";
-				temp += *it;
+				if( len != 0 )
+				{
+					maxlen = std::max( maxlen, len );
+					m_lines.push_back( Line( line, len ));
+				}
+
+				line.clear();
+				len = 0.0f;
 			}
-/*			else
+			else
 			{
-				m_lines.push_back( temp );
-				maxLen = std::max( lineWidth, maxLen );
-				temp.clear();
-				temp += *it;
-			}*/
+				line += word;
+				line += " ";
+
+				len += getWordWidth_( word );
+
+				if( len >= m_maxWidth )
+				{
+					maxlen = std::max( maxlen, len );
+					m_lines.push_back( Line( line, len ) );
+					line.clear();
+					len = 0.0f;
+				}
+			}
+		
+			lastPos = _text.find_first_not_of( delimiters, pos );
+			pos = _text.find_first_of( delimiters, lastPos );
 		}
 
-		m_length.x = lineWidth;
-		m_length.y = m_height;
-		
-		m_lines.push_back( temp );
+		if( len != 0 )
+		{
+			maxlen = std::max( maxlen, len );
+			m_lines.push_back( Line( line, len ) );
+		}
+
+		m_length.x = maxlen;
+		m_length.y = m_height * m_lines.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_debugRender()

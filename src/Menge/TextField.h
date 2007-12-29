@@ -131,14 +131,20 @@ namespace Menge
 		bool m_centerAlign;
 		mt::vec2f m_alignOffset;
 
-		//RenderImageInterface * m_outlineImage;
-		float m_totalWidth;
+		float m_maxWidth;
 		ResourceImage * m_outlineImage;
 		std::string m_outlineFontName;
 
-		std::list<std::string>	 m_lines;
+		struct	Line
+		{
+			std::string	text;
+			float		length;
+			Line( const std::string& _text, float _len )
+				: text(_text), length(_len){};
+		};
+
+		std::list<Line>	 m_lines;
 		
-		void updateAlign_();
 		void renderPass_( const Color & _color, const RenderImageInterface * _renderImage );
 		void createFormattedMessage_( const std::string& _text );
 		float getWordWidth_( const std::string & _text ) const;

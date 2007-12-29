@@ -7,7 +7,6 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 	, m_leftBorder( 0.0f )
 	, m_total_rate( 0.0f )
 	, m_looped( false )
-	//, m_stop( false )
 {
 	HM_EMITTER duplicated_id;
 	Magic_DuplicateEmitter( m_id, &duplicated_id );
@@ -44,8 +43,6 @@ void AstralaxEmitter::play()
 	}
 */
 	m_start = true;
-
-//	m_stop = false;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::setLooped( int _loop )
@@ -149,3 +146,4 @@ bool	AstralaxEmitter::isIntensive() const
 {
 	return Magic_IsIntensive();
 }
+//////////////////////////////////////////////////////////////////////////

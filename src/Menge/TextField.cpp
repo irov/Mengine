@@ -175,7 +175,7 @@ namespace	Menge
 				it != it_end; 
 				++it )
 			{
-				if ( *it == '\\' )
+			/*	if ( *it == '\\' )
 				{
 					if ( ++it == it_end )
 					{
@@ -189,7 +189,7 @@ namespace	Menge
 						continue;
 					}
 				}
-
+*/
 				if ( *it == ' ' )
 				{
 					offset.x += spaceWidth;
@@ -245,6 +245,11 @@ namespace	Menge
 	void TextField::setOutlineColor( const Color& _color )
 	{
 		m_outlineColor = _color;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setMaxLen( float _len )
+	{
+		m_maxWidth = _len;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Color& TextField::getOutlineColor() const
@@ -340,10 +345,21 @@ namespace	Menge
 	{
 		m_lines.clear();
 
-		std::string delimiters = " ";
+		std::string delimiters;
+		delimiters += ' ';
+		delimiters += '\n';
+	
+		bool	check = false;
 
 		std::string::size_type lastPos = _text.find_first_not_of( delimiters, 0);
 		std::string::size_type pos     = _text.find_first_of( delimiters, lastPos );
+
+		if( _text[pos] == '\n' )
+		{
+			check = true;
+		}
+
+		//m_centerAlign = false;
 
 		std::string word;
 		std::string line;
@@ -356,9 +372,7 @@ namespace	Menge
 
 		while ( std::string::npos != pos || std::string::npos != lastPos )
 		{
-			word = _text.substr( lastPos, pos - lastPos );
-
-			if( word == "\\n" )
+			if(check)
 			{
 				if( len != 0 )
 				{
@@ -369,24 +383,31 @@ namespace	Menge
 				line.clear();
 				len = 0.0f;
 			}
-			else
+
+			word = _text.substr( lastPos, pos - lastPos );
+		
+			line += word;
+			line += " ";
+
+			len += getWordWidth_( word );
+
+			if( len >= m_maxWidth )
 			{
-				line += word;
-				line += " ";
-
-				len += getWordWidth_( word );
-
-				if( len >= m_maxWidth )
-				{
-					maxlen = std::max( maxlen, len );
-					m_lines.push_back( Line( line, len ) );
-					line.clear();
-					len = 0.0f;
-				}
+				maxlen = std::max( maxlen, len );
+				m_lines.push_back( Line( line, len ) );
+				line.clear();
+				len = 0.0f;
 			}
+
+			check = false;
 		
 			lastPos = _text.find_first_not_of( delimiters, pos );
 			pos = _text.find_first_of( delimiters, lastPos );
+
+			if( _text[pos] == '\n' )
+			{
+				check = true;
+			}
 		}
 
 		if( len != 0 )

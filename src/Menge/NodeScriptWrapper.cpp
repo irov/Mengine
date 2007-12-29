@@ -380,6 +380,7 @@ namespace Menge
 				.def( "setOutlineColor", &TextField::setOutlineColor )
 				.def( "getOutlineColor", &TextField::getOutlineColor )
 				.def( "getLength", &TextField::getLength )
+				.def( "setMaxLen", &TextField::setMaxLen )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)

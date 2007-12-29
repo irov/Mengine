@@ -174,8 +174,9 @@ class Scene( Menge.Scene ):
 		
 		if key == 32:
 			print "32"
-			Menge.setCamera2DDirection( 1, 0)
-			#self.testTextField.setText("Zateryannyi attol\\ndfgdfgdfgdfgdfg\\dfg");
+			#Menge.setCamera2DDirection( 1, 0)
+			self.testTextField.setMaxLen(80);
+			self.testTextField.setText("Zateryannyi tyjgffgfh gfhfghgfh trytry \n attol\ndfgdfgdfgdfgdfg\dfg");
 			#self.bubble.play();
 			#self.emitterTest.play();
 

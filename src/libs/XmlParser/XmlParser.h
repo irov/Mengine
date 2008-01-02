@@ -104,9 +104,7 @@ namespace XmlParserCast
 	XmlParserElement::element_next_attributes( xmlengine_element ) )
 
 #	define XML_CASE_ATTRIBUTE( key, var )\
-	for( bool xmlengine_parse_once = true ; xmlengine_parse_once == true; )\
-	for( ; xmlengine_parse_once == true && XmlParserElement::element_compare_attribute_key( xmlengine_element, key ); )\
-	for( ; xmlengine_parse_once == true; xmlengine_parse_once = false )\
+	for( bool xmlengine_parse_once = true ; xmlengine_parse_once == true && XmlParserElement::element_compare_attribute_key( xmlengine_element, key ); xmlengine_parse_once = false )\
 	XmlParserCast::attribute_value_cast( var, XmlParserElement::element_get_attribute_value( xmlengine_element ) )
 
 #	define XML_CASE_ATTRIBUTE_MEMBER( key, member )\

@@ -70,6 +70,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::loader( XmlElement * _xml )
 	{
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE( "Arrow" )
+			{
+				XML_PUSH_CLASS_LISTENER( this, &Arrow::loaderArrow_ );
+			}
+		}
+	}
+	
+	void Arrow::loaderArrow_( XmlElement * _xml )
+	{
 		SceneNode2D::loader( _xml );
 
 		XML_SWITCH_NODE( _xml )

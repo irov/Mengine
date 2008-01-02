@@ -9,9 +9,9 @@ pybind
 [head]
 https://pybind.svn.sourceforge.net/svnroot/pybind
 
-tinyxml
-[2.5.2] -
-http://sourceforge.net/project/showfiles.php?group_id=13559&package_id=20883
+[expatl
+[2.0.1] -
+
 
 cal3d
 [snapshot]

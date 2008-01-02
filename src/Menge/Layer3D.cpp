@@ -46,7 +46,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::loader( TiXmlElement *_xml)
+	void Layer3D::loader( XmlElement *_xml)
 	{
 		SceneNode3D::loader(_xml);
 		Layer::loader(_xml);

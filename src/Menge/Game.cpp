@@ -16,7 +16,7 @@
 #	include "ScheduleManager.h"
 #	include "LogEngine.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -72,86 +72,138 @@ namespace Menge
 		Holder<MousePickerSystem>::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::loader(TiXmlElement *_xml)
+	void Game::loader( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE( "Game" )
+			{
+				XML_PUSH_CLASS_LISTENER( this, &Game::loaderGame_ );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loaderGame_(XmlElement *_xml)
 	{	
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
 			//<Scenes Path = "Game/Scenes">
 			//	<Default/>
 			//</Scenes>
-			XML_CHECK_NODE("Scenes")
+			
+			XML_CASE_NODE("Scenes")
 			{
-				XML_DEF_ATTRIBUTES_NODE( Path );
-
-				XML_VALUE_ATTRIBUTE( "Path", m_pathScenes );
-
-				XML_FOR_EACH()
+				XML_FOR_EACH_ATTRIBUTES()
 				{
-					m_listScenesDeclaration.push_back( XML_TITLE_NODE );
+					XML_CASE_ATTRIBUTE( "Path", m_pathScenes );
 				}
+
+				XML_PUSH_CLASS_LISTENER( this, &Game::loaderScenes_ );
 			}
 			//<Arrows Path = "Game/Arrows">
 			//	<Default/>
 			//</Arrows>
-			XML_CHECK_NODE("Arrows")
+			XML_CASE_NODE("Arrows")
 			{
-				XML_DEF_ATTRIBUTES_NODE( Path );
-
-				XML_VALUE_ATTRIBUTE( "Path", m_pathArrows );
-
-				XML_FOR_EACH()
+				XML_FOR_EACH_ATTRIBUTES()
 				{
-					m_listArrowsDeclaration.push_back( XML_TITLE_NODE );
+					XML_CASE_ATTRIBUTE( "Path", m_pathArrows );
 				}
+
+				XML_PUSH_CLASS_LISTENER( this, &Game::loaderArrows_ );
+
 			}
 
 			//<Default>
 			//	<Arrow Type = "Default"/>
 			//</Default>
-			XML_CHECK_NODE_FOR_EACH("Default")
+			XML_CASE_NODE("Default")
 			{
-				XML_CHECK_VALUE_NODE("Arrow", "Name", m_defaultArrowName)
+				XML_PUSH_CLASS_LISTENER( this, &Game::loaderDefault_ );
 			}
 
-			XML_CHECK_NODE("Personality")
+			XML_CASE_NODE("Personality")
 			{
-				XML_VALUE_ATTRIBUTE("Module", m_personality );
-
-				XML_FOR_EACH()
-				{				
-					XML_CHECK_VALUE_NODE("Init","Function", m_eventInit);
-					XML_CHECK_VALUE_NODE("Update","Function", m_eventUpdate);
-					XML_CHECK_VALUE_NODE("Fini","Function", m_eventFini);
-				}
-			}
-
-			XML_CHECK_NODE("Entities")
-			{
-				XML_DEF_ATTRIBUTES_NODE( Path );
-
-				XML_VALUE_ATTRIBUTE( "Path", m_pathEntities );
-
-				XML_FOR_EACH()
+				XML_FOR_EACH_ATTRIBUTES()
 				{
-					m_listEntitiesDeclaration.push_back( XML_TITLE_NODE );
+					XML_CASE_ATTRIBUTE( "Module", m_personality );
 				}
+
+				XML_PUSH_CLASS_LISTENER( this, &Game::loaderPersonality_ );
 			}
 
-			XML_CHECK_NODE("Resource")
+			XML_CASE_NODE("Entities")
 			{
-				XML_DEF_ATTRIBUTES_NODE( Path );
-
-				XML_VALUE_ATTRIBUTE( "Path", m_pathResource );
-
-				XML_FOR_EACH()
+				XML_FOR_EACH_ATTRIBUTES()
 				{
-					m_listResourceDeclaration.push_back( XML_TITLE_NODE );
+					XML_CASE_ATTRIBUTE( "Path", m_pathEntities );
 				}
+
+				XML_PUSH_CLASS_LISTENER( this, &Game::loaderEntities_ );
+			}
+
+			XML_CASE_NODE("Resource")
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Path", m_pathResource );
+				}
+
+				XML_PUSH_CLASS_LISTENER( this, &Game::loaderResources_ );
 			}
 			
-			XML_CHECK_VALUE_NODE( "Scripts", "Path", m_pathScripts );
-
-			XML_CHECK_VALUE_NODE( "ResourceResolution", "Value", m_resourceResolution );
+			XML_CASE_VALUE_NODE( "Scripts", "Path", m_pathScripts );
+			XML_CASE_VALUE_NODE( "ResourceResolution", "Value", m_resourceResolution );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loaderScenes_( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			m_listScenesDeclaration.push_back( XML_TITLE_NODE );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loaderArrows_( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			m_listArrowsDeclaration.push_back( XML_TITLE_NODE );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loaderEntities_( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			m_listEntitiesDeclaration.push_back( XML_TITLE_NODE );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loaderResources_( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			m_listResourceDeclaration.push_back( XML_TITLE_NODE );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loaderDefault_( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_VALUE_NODE( "Arrow", "Name", m_defaultArrowName );
+		}		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loaderPersonality_( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_VALUE_NODE( "Init", "Function", m_eventInit );
+			XML_CASE_VALUE_NODE( "Update", "Function", m_eventUpdate );
+			XML_CASE_VALUE_NODE( "Fini", "Function", m_eventFini );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -445,20 +497,25 @@ namespace Menge
 			xml_path += _name;
 			xml_path += "/Arrow.xml";
 
-			TiXmlDocument * document = Holder<FileEngine>::hostage()
-				->loadXml( xml_path );
-
-			XML_FOR_EACH_DOCUMENT( document )
-			{
-				XML_CHECK_NODE("Arrow")
-				{
-					arrow->loader(XML_CURRENT_NODE);
-				}
-			}
-			XML_INVALID_PARSE()
+			if( Holder<XmlEngine>::hostage()
+				->parseXmlFileM( xml_path, arrow, &Arrow::loader ) == false )
 			{
 
 			}
+			//TiXmlDocument * document = Holder<FileEngine>::hostage()
+			//	->loadXml( xml_path );
+
+			//XML_FOR_EACH_DOCUMENT( document )
+			//{
+			//	XML_CHECK_NODE("Arrow")
+			//	{
+			//		arrow->loader(XML_CURRENT_NODE);
+			//	}
+			//}
+			//XML_INVALID_PARSE()
+			//{
+
+			//}
 
 			m_mapArrow.insert( std::make_pair( _name, arrow ) );
 
@@ -496,23 +553,31 @@ namespace Menge
 			xml_path += _name;
 			xml_path += "/Scene.xml";
 
-			TiXmlDocument * document = Holder<FileEngine>::hostage()
-				->loadXml( xml_path );
-
-			XML_FOR_EACH_DOCUMENT( document )
-			{
-				XML_CHECK_NODE("Scene")
-				{
-					scene->loader(XML_CURRENT_NODE);
-				}
-			}
-			XML_INVALID_PARSE()
+			if( Holder<XmlEngine>::hostage()
+				->parseXmlFileM( xml_path, this, &Game::loader ) == false )
 			{
 				MENGE_LOG("Warrning: invalid loader xml '%s' for scene '%s'/n"
 					, xml_path.c_str()
 					, _name.c_str()
 					);
 			}
+			//TiXmlDocument * document = Holder<FileEngine>::hostage()
+			//	->loadXml( xml_path );
+
+			//XML_FOR_EACH_DOCUMENT( document )
+			//{
+			//	XML_CHECK_NODE("Scene")
+			//	{
+			//		scene->loader(XML_CURRENT_NODE);
+			//	}
+			//}
+			//XML_INVALID_PARSE()
+			//{
+			//	MENGE_LOG("Warrning: invalid loader xml '%s' for scene '%s'/n"
+			//		, xml_path.c_str()
+			//		, _name.c_str()
+			//		);
+			//}
 
 			m_mapScene.insert( std::make_pair( _name, scene ) );
 

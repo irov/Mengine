@@ -35,7 +35,7 @@ namespace Menge
 		void _render() override;
 	
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 		void debugRender() override;
 
 	protected:

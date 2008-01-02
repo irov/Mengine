@@ -2,7 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "Scene.h"
 
@@ -153,22 +153,30 @@ namespace	Menge
 		setLocalPosition( _offset );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::loader( TiXmlElement * _xml )
+	void Layer2D::loader( XmlElement * _xml )
 	{
 		NodeCore::loader(_xml);
 		Layer::loader(_xml);
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_NODE("Parallax")
+			XML_CASE_NODE("Parallax")
 			{
-				mt::vec2f offset;
-				XML_VALUE_ATTRIBUTE("Factor", offset);
-				setParallaxFactor( offset );
+				//mt::vec2f offset;
+
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE_MEMBER( "Factor", &Layer2D::setParallaxFactor );
+					//setParallaxFactor( offset );	
+				}
 			}
-			XML_CHECK_NODE("Scrollable")
+
+			XML_CASE_NODE("Scrollable")
 			{
-				XML_VALUE_ATTRIBUTE("Value", m_scrollable);
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE("Value", m_scrollable);
+				}
 			}
 		}
 	}

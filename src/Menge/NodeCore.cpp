@@ -12,7 +12,7 @@
 
 #	include "LogEngine.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include <algorithm>
 
@@ -222,67 +222,78 @@ namespace Menge
 		foreachChildren( ForeachUpdate( _timing ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::loader(TiXmlElement * _xml)
+	void NodeCore::loader( XmlElement * _xml )
 	{
 		NodeEventable::loader( _xml );
 
-		XML_FOR_EACH_TREE(_xml)
+		XML_SWITCH_NODE(_xml)
 		{
-			XML_CHECK_VALUE_NODE("Enable", "Value", m_enable );
+			XML_CASE_VALUE_NODE("Enable", "Value", m_enable );
 
-			XML_CHECK_NODE("Node")
+			XML_CASE_NODE("Node")
 			{
-				XML_DEF_ATTRIBUTES_NODE(Name);
-				XML_DEF_ATTRIBUTES_NODE(Type);
+				std::string name;
+				std::string type;
 
-				Node *node = SceneManager::createNode( Type );
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", name );
+					XML_CASE_ATTRIBUTE( "Type", type );
+				}
+
+				Node *node = SceneManager::createNode( type );
 
 				if(node == 0)
 				{
 					continue;
 				}
 
-				node->setName( Name );
-				node->loader(XML_CURRENT_NODE);
-
+				node->setName( name );
 				addChildren( node );
+
+				XML_PUSH_CLASS_LISTENER( node, &Node::loader );
 			}
 
-			XML_CHECK_NODE("External")
-			{
-				XML_DEF_ATTRIBUTES_NODE(File);
-				
-				TiXmlDocument * document = Holder<FileEngine>::hostage()
-					->loadXml( File );
+			//XML_CHECK_NODE("External")
+			//{
+			//	std::string file;
 
-				XML_FOR_EACH_DOCUMENT( document )
-				{
-					XML_CHECK_NODE("Node")
-					{
-						XML_DEF_ATTRIBUTES_NODE(Name);
-						XML_DEF_ATTRIBUTES_NODE(Type);
+			//	XML_FOR_EACH_ATTRIBUTES()
+			//	{
+			//		XML_CHECK_ATTRIBUTE("File", file );
+			//	}
+			//	
+			//	TiXmlDocument * document = Holder<FileEngine>::hostage()
+			//		->loadXml( file );
 
-						Node *node = SceneManager::createNode( Type );
+			//	XML_FOR_EACH_DOCUMENT( document )
+			//	{
+			//		XML_CHECK_NODE("Node")
+			//		{
+			//			XML_DEF_ATTRIBUTES_NODE(Name);
+			//			XML_DEF_ATTRIBUTES_NODE(Type);
 
-						if(node == 0)
-						{
-							continue;
-						}
+			//			Node *node = SceneManager::createNode( Type );
 
-						addChildren( node );
+			//			if(node == 0)
+			//			{
+			//				continue;
+			//			}
 
-						node->setName( Name );
-						node->loader( XML_CURRENT_NODE );
-					}				
-				}
-				XML_INVALID_PARSE()
-				{
-					MENGE_LOG("Invalid parse external node %s for %s\n"
-						, File.c_str()
-						, m_name.c_str()
-						);
-				}
-			}
+			//			addChildren( node );
+
+			//			node->setName( Name );
+			//			node->loader( XML_CURRENT_NODE );
+			//		}				
+			//	}
+			//	XML_INVALID_PARSE()
+			//	{
+			//		MENGE_LOG("Invalid parse external node %s for %s\n"
+			//			, File.c_str()
+			//			, m_name.c_str()
+			//			);
+			//	}
+			//}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

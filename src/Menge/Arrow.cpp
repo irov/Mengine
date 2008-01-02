@@ -8,7 +8,7 @@
 
 #	include "HotSpot.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace	Menge
 {
@@ -68,13 +68,13 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::loader( TiXmlElement * _xml )
+	void Arrow::loader( XmlElement * _xml )
 	{
 		SceneNode2D::loader( _xml );
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "ClickOffset", "Value", m_offsetClick );
+			XML_CASE_VALUE_NODE( "ClickOffset", "Value", m_offsetClick );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -7,7 +7,7 @@
 #	include "ResourceManager.h"
 #	include "LogEngine.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace	Menge
 {
@@ -18,17 +18,17 @@ namespace	Menge
 	: m_currentAnimation( 0 )
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void AnimationGroup::loader( TiXmlElement * _xml )
+	void AnimationGroup::loader( XmlElement * _xml )
 	{
 		SceneNode2D::loader(_xml);
 
-		XML_FOR_EACH_TREE( _xml )
-		{
-			XML_CHECK_NODE( "Animations" )
-			{
-				SceneNode2D::loader(XML_CURRENT_NODE);
-			}		
-		}
+		//XML_FOR_EACH_TREE( _xml )
+		//{
+		//	XML_CHECK_NODE( "Animations" )
+		//	{
+		//		SceneNode2D::loader(XML_CURRENT_NODE);
+		//	}		
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AnimationGroup::_compile()

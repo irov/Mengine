@@ -2,13 +2,13 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageSet )
-	//////////////////////////////////////////////////////////////////////////
-	ResourceImageSet::ResourceImageSet( const std::string & _name )
+		//////////////////////////////////////////////////////////////////////////
+		ResourceImageSet::ResourceImageSet( const std::string & _name )
 		: ResourceImageCell( _name )
 	{
 	}
@@ -23,25 +23,30 @@ namespace Menge
 		return m_sizes[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageSet::loader( TiXmlElement * _xml )
+	void ResourceImageSet::addFrameUV( const mt::vec4f & _uv )
+	{
+		m_uvs.push_back( _uv );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageSet::loader( XmlElement * _xml )
 	{
 		ResourceImage::loader( _xml );
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_NODE( "Frame" )
+			XML_CASE_NODE( "Frame" )
 			{
-				mt::vec4f val;
-				XML_VALUE_ATTRIBUTE("UV", val);
-				m_uvs.push_back( val );
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE_MEMBER( "UV", &ResourceImageSet::addFrameUV );
+				}
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageSet::_compile()
 	{
-		std::vector<char> buff;
-		ImageFrame image = loadImageFrame( m_filename, buff );
+		ImageFrame image = loadImageFrame( m_filename );
 
 		size_t size = m_uvs.size();
 		m_sizes.resize( size );

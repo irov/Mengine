@@ -2,7 +2,7 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
@@ -29,24 +29,23 @@ namespace Menge
 		return m_vectorSequence[ _sequence ].index;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimation::loader( TiXmlElement * _xml )
+	void ResourceAnimation::loader( XmlElement * _xml )
 	{
 		ResourceReference::loader( _xml );
 
 		Sequence sq;
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_NODE_FOR_EACH( "Sequences" )
+			XML_CASE_NODE( "Sequence" )
 			{
-				XML_CHECK_NODE( "Sequence" )
+				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_VALUE_ATTRIBUTE( "Index", sq.index );
-					XML_VALUE_ATTRIBUTE( "Delay", sq.delay );
-
+					XML_CASE_ATTRIBUTE( "Index", sq.index );
+					XML_CASE_ATTRIBUTE( "Delay", sq.delay );
 					m_vectorSequence.push_back( sq );
 				}
-			}		
+			}
 		}
 	}
 }

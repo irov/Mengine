@@ -2,18 +2,18 @@
 
 #	include <string>
 
-class TiXmlElement;
+class XmlElement;
 
 namespace Menge
 {	
 	class NodeForeach;
-	class Scriptable;
+	class Scriptable;	
 
 	//! Node - базовый pure virtual class
 	/*! 
 	* 
 	*/
-	class Node 
+	class Node
 	{
 	public:
 		//! Node virtual destructor.
@@ -160,9 +160,9 @@ namespace Menge
 
 		//! Node pure virtual. setup node from xml
 		/*!
-		\param xml the first argument, xml element [TiXmlElement]
+		\param xml the first argument, xml element [XmlElement]
 		*/
-		virtual void loader( TiXmlElement * xml ) = 0;
+		virtual void loader( XmlElement * xml ) = 0;
 
 	public:
 

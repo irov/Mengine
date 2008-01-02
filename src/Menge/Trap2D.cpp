@@ -2,7 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
@@ -14,36 +14,36 @@ namespace Menge
 		reset( m_bbox, 0, 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trap2D::loader( TiXmlElement * _xml )
+	void Trap2D::loader( XmlElement * _xml )
 	{
-		SceneNode2D::loader( _xml );
+		//SceneNode2D::loader( _xml );
 
-		mt::vec2f point;
+		//mt::vec2f point;
 
-		std::string name;		
-					
-		XML_FOR_EACH_TREE( _xml )
-		{
-			XML_CHECK_NODE_FOR_EACH( "Zone" )
-			{
-				XML_CHECK_NODE( "Point" )
-				{
-					XML_VALUE_ATTRIBUTE( "Value", point );
+		//std::string name;		
+		//			
+		//XML_FOR_EACH_TREE( _xml )
+		//{
+		//	XML_CHECK_NODE_FOR_EACH( "Zone" )
+		//	{
+		//		XML_CHECK_NODE( "Point" )
+		//		{
+		//			XML_VALUE_ATTRIBUTE( "Value", point );
 
-					m_polygon.add_point( point );
-					mt::add_internal_point( m_bbox, point );
-				}
-			}	
+		//			m_polygon.add_point( point );
+		//			mt::add_internal_point( m_bbox, point );
+		//		}
+		//	}	
 
-			XML_CHECK_NODE_FOR_EACH( "SceneNodes" )
-			{
-				XML_CHECK_NODE( "SceneNode" )
-				{
-					XML_VALUE_ATTRIBUTE("Value", name);
-					m_listSceneNodesNames.push_back( name );
-				}
-			}		
-		}
+		//	XML_CHECK_NODE_FOR_EACH( "SceneNodes" )
+		//	{
+		//		XML_CHECK_NODE( "SceneNode" )
+		//		{
+		//			XML_VALUE_ATTRIBUTE("Value", name);
+		//			m_listSceneNodesNames.push_back( name );
+		//		}
+		//	}		
+		//}
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void Trap2D::setEnterZoneCallback( PyObject * _event )

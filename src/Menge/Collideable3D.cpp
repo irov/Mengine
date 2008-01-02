@@ -1,6 +1,6 @@
 #	include "Collideable3D.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
@@ -15,7 +15,7 @@ namespace Menge
 		return m_bbox;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Collideable3D::loader( TiXmlElement * _xml )
+	void Collideable3D::loader( XmlElement * _xml )
 	{
 	/*	mt::vec2f	point;
 

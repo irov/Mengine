@@ -52,7 +52,7 @@ namespace Menge
 		return m_frame.image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDynamic::loader( TiXmlElement * _xml )
+	void ResourceImageDynamic::loader( XmlElement * _xml )
 	{
 		ResourceImage::loader( _xml );
 	}

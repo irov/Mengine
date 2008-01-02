@@ -1,6 +1,6 @@
 #	include "SceneManager.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "NodeFactory.h"
 
@@ -36,48 +36,85 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SceneManager::loadNode(Node *_node, const std::string &_xml)
 	{
-		TiXmlDocument * document = Holder<FileEngine>::hostage()
-			->loadXml( _xml );
-
-		XML_FOR_EACH_DOCUMENT( document )
-		{
-			XML_CHECK_NODE("Node")
-			{
-				_node->loader(XML_CURRENT_NODE);
-			}
-		}
-		XML_INVALID_PARSE()
+		if( Holder<XmlEngine>::hostage()
+			->parseXmlFileM( _xml, _node, &Node::loader ) == false )
 		{
 			return false;
 		}
+		//TiXmlDocument * document = Holder<FileEngine>::hostage()
+		//	->loadXml( _xml );
+
+		//XML_FOR_EACH_DOCUMENT( document )
+		//{
+		//	XML_CHECK_NODE("Node")
+		//	{
+		//		_node->loader(XML_CURRENT_NODE);
+		//	}
+		//}
+		//XML_INVALID_PARSE()
+		//{
+		//	return false;
+		//}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * SceneManager::createNodeFromXml( const std::string & _xml )
+	class XmlNodeLoaderListener
+		: public XmlListener
 	{
-		TiXmlDocument * document = Holder<FileEngine>::hostage()
-			->loadXml( _xml );
+	public:
+		XmlNodeLoaderListener()
+			: m_node(0)
+		{
+		}
 
-		Node *node = 0;
+	public:
+		Node * result()
+		{
+			return m_node;
+		}
 
-		XML_FOR_EACH_DOCUMENT( document )
-		{			
-			XML_CHECK_NODE("Node")
-			{
-				XML_DEF_ATTRIBUTES_NODE(Name);
-				XML_DEF_ATTRIBUTES_NODE(Type);
+	public:
+		void parseXML( XmlElement * _xml ) override
+		{
+			XML_SWITCH_NODE( _xml )
+			{			
+				XML_CASE_NODE("Node")
+				{
+					std::string name;
+					std::string type;
+					XML_FOR_EACH_ATTRIBUTES()
+					{
+						XML_CASE_ATTRIBUTE( "Name", name );
+						XML_CASE_ATTRIBUTE( "Type", type );
+					}
 
-				node = createNode( Type );
+					m_node = SceneManager::createNode( type );
 
-				node->setName( Name );
-				node->loader(XML_CURRENT_NODE);
+					m_node->setName( name );
+
+					XML_PUSH_CLASS_LISTENER( m_node, &Node::loader );
+				}
 			}
 		}
-		XML_INVALID_PARSE()
+
+	protected:
+		Node * m_node;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	Node * SceneManager::createNodeFromXml( const std::string & _xml )
+	{
+		XmlNodeLoaderListener nodeLoader;
+
+		if(  Holder<XmlEngine>::hostage()
+			->parseXmlFile( _xml, &nodeLoader ) == false )
 		{
 			MENGE_LOG("Invalid parse external node `%s`\n", _xml.c_str() );
+
+			return 0;
 		}
+
+		Node * node = nodeLoader.result();
 
 		if( node == 0 )
 		{
@@ -89,27 +126,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Node * SceneManager::createNodeFromXmlData( const std::string & _xml_data )
 	{
-		TiXmlDocument * document = TiXmlDocumentLoadData( _xml_data );
+		XmlNodeLoaderListener nodeLoader;
 
-		Node *node = 0;
-
-		XML_FOR_EACH_DOCUMENT( document )
-		{			
-			XML_CHECK_NODE("Node")
-			{
-				XML_DEF_ATTRIBUTES_NODE(Name);
-				XML_DEF_ATTRIBUTES_NODE(Type);
-
-				node = createNode( Type );
-
-				node->setName( Name );
-				node->loader(XML_CURRENT_NODE);
-			}
-		}
-		XML_INVALID_PARSE()
+		if(  Holder<XmlEngine>::hostage()
+			->parseXmlBuffer( _xml_data, &nodeLoader ) == false )
 		{
-			MENGE_LOG("Invalid parse external node\n" );
+			MENGE_LOG("Invalid parse external xml data `%s`\n", _xml_data.c_str() );
+
+			return 0;
 		}
+
+		Node * node = nodeLoader.result();
 
 		if( node == 0 )
 		{

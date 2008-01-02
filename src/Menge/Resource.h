@@ -2,8 +2,6 @@
 
 #	include <string>
 
-class TiXmlElement;
-
 namespace Menge
 {
 	//! Reference - интерфейс для ресурса.

@@ -25,7 +25,7 @@ namespace Menge
 		RenderImageInterface * getImage( size_t _frame );
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 
 	public:
 		void setRenderImage( RenderImageInterface* _image );

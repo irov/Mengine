@@ -2,7 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "ScriptEngine.h"
 
@@ -54,13 +54,13 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LayerScene::loader( TiXmlElement * _xml )
+	void LayerScene::loader( XmlElement * _xml )
 	{
 		Layer::loader( _xml );
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "Scene", "Name", m_sceneName );
+			XML_CASE_VALUE_NODE( "Scene", "Name", m_sceneName );
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////

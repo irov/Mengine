@@ -2,6 +2,8 @@
 
 #	include "ResourceImage.h"
 
+#	include <vector>
+
 namespace Menge
 {
 	//! ResourceImageDefault - ресурс-файл, который содержит список изображений. 
@@ -23,6 +25,9 @@ namespace Menge
 		ResourceImageDefault( const std::string & _name );
 
 	public:
+		void addFrameFile( const std::string & _path );
+
+	public:
 		size_t getCount() const override;
 
 		const mt::vec2f & getMaxSize( size_t _frame ) const override;
@@ -33,7 +38,7 @@ namespace Menge
 		const RenderImageInterface * getImage( size_t _frame ) const override;
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 
 	protected:
 		bool _compile() override;

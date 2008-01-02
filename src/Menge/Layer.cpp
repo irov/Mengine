@@ -1,6 +1,6 @@
 #	include "Layer.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
@@ -41,12 +41,12 @@ namespace Menge
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer::loader( TiXmlElement * _xml )
+	void Layer::loader( XmlElement * _xml )
 	{
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "Main", "Value", m_main );
-			XML_CHECK_VALUE_NODE( "Size", "Value", m_size );
+			XML_CASE_VALUE_NODE( "Main", "Value", m_main );
+			XML_CASE_VALUE_NODE( "Size", "Value", m_size );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

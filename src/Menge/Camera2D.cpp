@@ -2,7 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace	Menge
 {
@@ -15,7 +15,7 @@ namespace	Menge
 	Camera2D::~Camera2D()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::loader( TiXmlElement * _xml )
+	void Camera2D::loader( XmlElement * _xml )
 	{
 		Allocator2D::loader( _xml );
 	}

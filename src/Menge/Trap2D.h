@@ -23,7 +23,7 @@ namespace Menge
 	public:
 		Trap2D();
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 		void update( float _timing ) override;
 		void debugRender() override;
 

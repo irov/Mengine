@@ -11,6 +11,8 @@ class RenderSystemInterface;
 class SoundSystemInterface;
 class ParticleSystemInterface;
 
+class XmlElement;
+
 namespace Menge
 {
 	class Game;
@@ -44,6 +46,11 @@ namespace Menge
 		virtual bool createGame();
 
 		virtual void quit();
+
+	public:
+		void loader( XmlElement * _xml );
+		void loaderApplication( XmlElement * _xml );
+		void loaderConfig( XmlElement * _xml );
 
 	public:
 		virtual int getScreenWidth() const;

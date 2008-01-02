@@ -29,7 +29,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::loader( TiXmlElement * _xml )
+	void SceneNode3D::loader( XmlElement * _xml )
 	{
 		Allocator3D::loader( _xml );
 		Renderable3D::loader( _xml );

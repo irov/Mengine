@@ -10,7 +10,7 @@
 
 #	include "FileEngine.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include <algorithm>
 
@@ -21,7 +21,7 @@ namespace Menge
 		: m_layer( NULL )
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::loader( TiXmlElement * _xml )
+	void SceneNode2D::loader( XmlElement * _xml )
 	{
 		NodeCore::loader( _xml );
 		Allocator2D::loader( _xml );

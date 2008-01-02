@@ -54,7 +54,7 @@ namespace Menge
 		virtual size_t getSequenceIndex( size_t _sequence ) const;
 
 	public:
-		void loader( TiXmlElement * _xml );
+		void loader( XmlElement * _xml );
 
 	private:
 		struct Sequence

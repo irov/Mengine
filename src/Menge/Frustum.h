@@ -3,7 +3,7 @@
 #	include "Math/mat4.h"
 #	include "Math/plane.h"
 
-class TiXmlElement;
+class XmlElement;
 
 namespace Menge
 {
@@ -32,7 +32,7 @@ namespace Menge
 		void recalc( const mt::mat4f & _wm );
 	
 	public:
-		void loader( TiXmlElement * _xml );
+		void loader( XmlElement * _xml );
 
 	protected:
 		void recalcProjection();

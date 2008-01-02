@@ -2,7 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "RenderEngine.h"
 
@@ -133,20 +133,20 @@ namespace	Menge
 			->releaseResource( m_outlineImage );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::loader( TiXmlElement * _xml )
+	void TextField::loader( XmlElement * _xml )
 	{
 		SceneNode2D::loader(_xml);
 
-		XML_FOR_EACH_TREE(_xml)
+		XML_SWITCH_NODE(_xml)
 		{
-			XML_CHECK_VALUE_NODE( "Font", "Name", m_resourcename );
-			XML_CHECK_VALUE_NODE( "Text", "Value", m_text);
-			XML_CHECK_VALUE_NODE( "Color", "Value", m_color);
-			XML_CHECK_VALUE_NODE( "Height", "Value", m_height);
-			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
-			XML_CHECK_VALUE_NODE( "OutlineColor", "Value", m_outlineColor);
-			XML_CHECK_VALUE_NODE( "OutlineImage", "Name", m_outlineFontName);
-			XML_CHECK_VALUE_NODE( "MaxWidth", "Value", m_maxWidth);
+			XML_CASE_VALUE_NODE( "Font", "Name", m_resourcename );
+			XML_CASE_VALUE_NODE( "Text", "Value", m_text);
+			XML_CASE_VALUE_NODE( "Color", "Value", m_color);
+			XML_CASE_VALUE_NODE( "Height", "Value", m_height);
+			XML_CASE_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
+			XML_CASE_VALUE_NODE( "OutlineColor", "Value", m_outlineColor);
+			XML_CASE_VALUE_NODE( "OutlineImage", "Name", m_outlineFontName);
+			XML_CASE_VALUE_NODE( "MaxWidth", "Value", m_maxWidth);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

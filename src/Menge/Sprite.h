@@ -116,7 +116,7 @@ namespace Menge
 	public:
 		virtual bool isVisible( const Viewport & _viewPort );
 
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 
 	protected:
 		void _render() override;

@@ -1,6 +1,6 @@
 #	include "Renderable3D.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "RenderEngine.h"
 

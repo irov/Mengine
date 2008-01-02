@@ -74,7 +74,7 @@ namespace Menge
 		bool isMoved()const;
 
 	public:
-		void loader(TiXmlElement * _xml ) override;
+		void loader(XmlElement * _xml ) override;
 
 	protected:
 		void _debugRender() override;

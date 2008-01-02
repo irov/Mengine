@@ -27,7 +27,7 @@ namespace Menge
 		const mt::mat4f & getViewMatrix();
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 
 	protected:
 		void _updateMatrix( Allocator3D * _parent ) override;

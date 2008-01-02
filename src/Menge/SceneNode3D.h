@@ -21,6 +21,6 @@ namespace Menge
 		void changePivot() override;
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 	};
 }

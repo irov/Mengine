@@ -24,7 +24,7 @@ namespace Menge
 		virtual void _renderEnd();
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 
 	protected:
 		bool m_hide;

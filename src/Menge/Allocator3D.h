@@ -2,7 +2,7 @@
 
 #	include "math/mat4.h"
 
-class TiXmlElement;
+class XmlElement;
 
 namespace Menge
 {
@@ -35,7 +35,7 @@ namespace Menge
 		void translate( const mt::vec3f &delta );
 
 	public:
-		void loader( TiXmlElement * _xml );
+		void loader( XmlElement * _xml );
 
 		void debugRender();
 

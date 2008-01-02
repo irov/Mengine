@@ -13,7 +13,7 @@ namespace Menge
 		OBJECT_DECLARE(Scene2D);
 
 		public:
-			void loader( TiXmlElement *_xml) override;
+			void loader( XmlElement *_xml) override;
 
 		public:
 			bool handleKeyEvent( size_t _key, bool _isDown ) override;

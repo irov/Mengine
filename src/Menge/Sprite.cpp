@@ -2,7 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "RenderEngine.h"
 
@@ -43,19 +43,19 @@ namespace	Menge
 	Sprite::~Sprite()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::loader( TiXmlElement * _xml )
+	void Sprite::loader( XmlElement * _xml )
 	{
 		SceneNode2D::loader(_xml);
 
-		XML_FOR_EACH_TREE(_xml)
+		XML_SWITCH_NODE(_xml)
 		{
-			XML_CHECK_VALUE_NODE( "ImageMap", "Name", m_resourcename );
-			XML_CHECK_VALUE_NODE( "ImageIndex", "Value", m_currentImageIndex );
-			XML_CHECK_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
-			XML_CHECK_VALUE_NODE( "Scale", "Value", m_scale );
-			XML_CHECK_VALUE_NODE( "Blend", "Source", ((int&)m_blendSrc) );
-			XML_CHECK_VALUE_NODE( "Blend", "Dest", ((int&)m_blendDest) );
-			XML_CHECK_VALUE_NODE( "Color", "Value", m_color );
+			XML_CASE_VALUE_NODE( "ImageMap", "Name", m_resourcename );
+			XML_CASE_VALUE_NODE( "ImageIndex", "Value", m_currentImageIndex );
+			XML_CASE_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
+			XML_CASE_VALUE_NODE( "Scale", "Value", m_scale );
+			XML_CASE_VALUE_NODE( "Blend", "Source", ((int&)m_blendSrc) );
+			XML_CASE_VALUE_NODE( "Blend", "Dest", ((int&)m_blendDest) );
+			XML_CASE_VALUE_NODE( "Color", "Value", m_color );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -92,11 +92,21 @@ namespace	Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG( "Image resource loading failed '%s'\n", m_resourcename.c_str() );
+			MENGE_LOG( "Image resource not getting '%s'\n", m_resourcename.c_str() );
 			return false;
 		}
 
-		return true;		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::_release()
+	{
+		SceneNode2D::_release();
+
+		Holder<ResourceManager>::hostage()
+			->releaseResource( m_resource );
+
+		m_resource = 0;
 	}
 	///////////////////////////////////////////////////////////////////////////
 	void Sprite::setScale( const mt::vec2f& _scale )
@@ -152,15 +162,7 @@ namespace	Menge
 	{
 		m_resourcename = _name;
 
-		if( m_resource )
-		{
-			Holder<ResourceManager>::hostage()
-				->releaseResource( m_resource );
-		}
-		
-		m_resource = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImage>( m_resourcename );
+		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string & Sprite::getImageResource() const
@@ -191,16 +193,6 @@ namespace	Menge
 		{
 			m_flipY = !m_flipY;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_release()
-	{
-		SceneNode2D::_release();
-
-		Holder<ResourceManager>::hostage()
-			->releaseResource( m_resource );
-
-		m_resource = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateVisibility_()

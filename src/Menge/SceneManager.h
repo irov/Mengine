@@ -2,10 +2,11 @@
 
 #	include <string>
 
+class XmlElement;
+
 namespace Menge
 {
-	class Node;
-	class Viewport;
+	class Node;	
 
 	struct SceneManager
 	{
@@ -19,6 +20,8 @@ namespace Menge
 
 		static Node * createNodeFromXml( const std::string &_file);
 		static Node * createNodeFromXmlData( const std::string & _xml_data );
+
+		static void loaderNode_( XmlElement * _xml );
 
 		template<class T>
 		static T * createNodeFromXmlT( const std::string &_file)

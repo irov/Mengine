@@ -28,7 +28,7 @@ namespace Menge
 		ResourceSound( const std::string & _name );
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 
 	public:
 		//! Возвращает звуковой буффер с данными.

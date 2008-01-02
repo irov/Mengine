@@ -7,10 +7,12 @@
 #	include "Holder.h"
 #	include "ScriptClassWrapper.h"
 
+class XmlElement;
+
 namespace Menge
 {
 	class ResourceReference;
-
+	
 	class ResourceManagerListener
 	{
 	public:
@@ -48,6 +50,10 @@ namespace Menge
 		void addListener( PyObject* _listener );
 		void removeListener( ResourceManagerListener* _listener );
 		void removeListener( PyObject* _listener );
+
+	protected:
+		void loaderDataBlock( XmlElement * _xml );
+		void loaderResource( XmlElement * _xml );
 
 	private:
 		typedef std::map< std::string, ResourceReference * > TMapResource;

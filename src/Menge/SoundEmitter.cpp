@@ -2,7 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "ResourceSound.h"
 
@@ -48,14 +48,14 @@ namespace Menge
 		SceneNode2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::loader( TiXmlElement * _xml )
+	void SoundEmitter::loader( XmlElement * _xml )
 	{
 		SceneNode2D::loader(_xml);
 
-		XML_FOR_EACH_TREE(_xml)
+		XML_SWITCH_NODE(_xml)
 		{
-			XML_CHECK_VALUE_NODE( "Resource", "Name", m_resourcename );
-			XML_CHECK_VALUE_NODE( "HeadMode", "Value", m_isHeadMode );
+			XML_CASE_VALUE_NODE( "Resource", "Name", m_resourcename );
+			XML_CASE_VALUE_NODE( "HeadMode", "Value", m_isHeadMode );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

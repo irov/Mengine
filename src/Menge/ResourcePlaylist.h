@@ -35,9 +35,6 @@ namespace Menge
 		ResourcePlaylist( const std::string & _name );
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
-
-	public:
 		//! Возвращает вектор треков.
 		/*!
 		\return вектор треков
@@ -56,6 +53,9 @@ namespace Menge
 		\return флаг зацикливания
 		*/
 		bool getLoop() const;
+
+	public:
+		void loader( XmlElement * _xml ) override;
 
 	protected:
 		bool _compile() override;

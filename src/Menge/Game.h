@@ -1,20 +1,21 @@
 #	pragma once
 
-#	include <list>
-#	include <map>
+#	include "ResourceManager.h"
 
 #	include "InputHandler.h"
 #	include "Eventable.h"
 #	include "math/vec2.h"
-#	include "ResourceManager.h"
 
-class TiXmlElement;
+#	include <list>
+#	include <map>
 
 extern "C" 
 { 
 	struct _object; 
 	typedef _object PyObject;
 }
+
+class XmlElement;
 
 namespace Menge
 {
@@ -37,7 +38,6 @@ namespace Menge
 	public:
 		void update( float _timing );
 		void render();
-		void loader(TiXmlElement * _xml);
 
 	public:
 		bool init( const std::string& _params );
@@ -58,6 +58,17 @@ namespace Menge
 	public:
 		Scene * getScene(const std::string & _name );
 		void destroyScene( const std::string & _name );
+
+	public:
+		void loader( XmlElement * _xml );
+		void loaderGame_( XmlElement * _xml );
+		void loaderScenes_( XmlElement * _xml );
+		void loaderArrows_( XmlElement * _xml );
+		void loaderEntities_( XmlElement * _xml );
+		void loaderResources_( XmlElement * _xml );
+		void loaderDefault_( XmlElement * _xml );
+		void loaderPersonality_( XmlElement * _xml );
+		
 
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;

@@ -2,7 +2,7 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
@@ -46,31 +46,36 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::loader( TiXmlElement * _xml )
+	void ResourceImageDefault::addFrameFile( const std::string & _path )
+	{
+		m_vectorFileNames.push_back( _path );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageDefault::loader( XmlElement * _xml )
 	{
 		ResourceImage::loader( _xml );
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_NODE("File")
+			XML_CASE_NODE("File")
 			{
-				XML_DEF_ATTRIBUTES_NODE(Path);
-				m_vectorFileNames.push_back(Path);
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE_MEMBER( "Path", &ResourceImageDefault::addFrameFile );
+				}				
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_compile()
 	{	
-		std::vector<char> buff;
-
 		for( TVectorFileNames::iterator
 			it = m_vectorFileNames.begin(),
 			it_end = m_vectorFileNames.end();
 		it != it_end;
 		++it)
 		{
-			ImageFrame frame = loadImageFrame( *it, buff );
+			ImageFrame frame = loadImageFrame( *it );
 
 			m_vectorImageFrames.push_back( frame );
 		}

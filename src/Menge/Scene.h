@@ -41,7 +41,7 @@ namespace Menge
 		const mt::vec2f & getLayerSize( const std::string & _name );
 
 	public:
-		void loader( TiXmlElement *_xml) override;
+		void loader( XmlElement *_xml) override;
 
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;

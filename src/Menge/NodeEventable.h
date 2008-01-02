@@ -13,6 +13,6 @@ namespace Menge
 		bool registerEventMethod( const std::string & _name, const std::string & _method );
 
 	public:
-		void loader( TiXmlElement * _xml );
+		void loader( XmlElement * _xml );
 	};
 }

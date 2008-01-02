@@ -2,7 +2,7 @@
 
 #	include "Math/box3.h"
 
-class TiXmlElement;
+class XmlElement;
 
 namespace Menge
 {
@@ -16,7 +16,7 @@ namespace Menge
 		const mt::box3f& getBoundingBox();
 
 	public:
-		void loader( TiXmlElement * _xml );
+		void loader( XmlElement * _xml );
 
 	private:
 		mt::box3f	m_bbox;

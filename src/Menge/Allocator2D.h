@@ -2,7 +2,7 @@
 
 #	include "math/mat3.h"
 
-class TiXmlElement;
+class XmlElement;
 
 namespace Menge
 {
@@ -26,6 +26,7 @@ namespace Menge
 		mt::vec2f & getLocalDirectionModify();
 		mt::mat3f & getLocalMatrixModify();
 
+		void setLocalMatrix( const mt::mat3f & _matrix );
 		void setLocalPosition( const mt::vec2f & _position );
 		void setLocalDirection( const mt::vec2f & _direction );
 
@@ -34,7 +35,7 @@ namespace Menge
 		void translate( const mt::vec2f & _delta );
 
 	public:
-		void loader( TiXmlElement * _xml );
+		void loader( XmlElement * _xml );
 
 	public:
 		virtual void changePivot();

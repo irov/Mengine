@@ -1,7 +1,5 @@
 #	include "FileEngine.h"
 
-#	include "XmlParser/XmlParser.h"
-
 #	include <vector>
 
 namespace Menge
@@ -11,6 +9,10 @@ namespace Menge
 		: m_interface( _interface )
 	{
 		Holder<FileEngine>::keep( this );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileEngine::~FileEngine()
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::loadPath( const std::string& _path )
@@ -43,33 +45,29 @@ namespace Menge
 		m_interface->closeFile( _fd );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TiXmlDocument * FileEngine::loadXml( const std::string & _filename )
+	FileBuffer FileEngine::getFileBuffer( const std::string& _filename )
 	{
 		FileDataInterface * file = openFile( _filename );
 
-		if ( file == 0 )
+		FileBuffer fb;
+
+		fb.buffer = 0;
+		fb.size = 0;
+
+		if( file == 0 )
 		{
-			return 0;
+			return fb;
 		}
+	
+		fb.size = file->size();
+		m_fileCache.resize( fb.size + 2 );
+		fb.buffer = &m_fileCache[0];
 
-		size_t length = file->size();
-
-		std::string data;
-
-		data.resize( length );
-
-		file->read( &data[0], length );
+		file->read( fb.buffer, fb.size );
 
 		closeFile( file );
 
-		TiXmlDocument * document = TiXmlDocumentLoadData( data );
-
-		if ( document == 0 )
-		{
-			return 0;
-		}
-
-		return document;
+		return fb;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::createFolder( const std::string& _path )

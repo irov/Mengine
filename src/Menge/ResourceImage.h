@@ -3,7 +3,6 @@
 #	include "ResourceReference.h"
 
 #	include "Math/vec4.h"
-#	include <vector>
 
 class RenderImageInterface;
 
@@ -74,7 +73,7 @@ namespace Menge
 		virtual const RenderImageInterface * getImage( size_t _frame ) const = 0;
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 
 	protected:
 
@@ -84,7 +83,7 @@ namespace Menge
 		\param _buff буффер данных с изображением
 		\return изображение
 		*/
-		ImageFrame loadImageFrame( const std::string & _filename, std::vector<char> & _buff );
+		ImageFrame loadImageFrame( const std::string & _filename );
 		void releaseImageFrame( const ImageFrame & _frame );
 
 	protected:

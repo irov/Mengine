@@ -18,10 +18,11 @@ namespace Menge
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceReference::loader(TiXmlElement * _xml)
+	void ResourceReference::loader(XmlElement * _xml)
 	{
 		//Empty
 	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceReference::_incrementZero()
 	{
 		compile();

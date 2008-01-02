@@ -487,6 +487,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Xml"
+				>
+				<File
+					RelativePath=".\XmlEngine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\XmlEngine.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Object2D"
@@ -1263,6 +1275,10 @@
 			</File>
 			<File
 				RelativePath=".\ScheduleManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TimerManager.h"
 				>
 			</File>
 		</Filter>

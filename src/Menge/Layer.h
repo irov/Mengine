@@ -31,7 +31,7 @@ namespace Menge
 		virtual void setOffsetPosition( const mt::vec2f & _offset );
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 
 	protected:
 		bool m_main;

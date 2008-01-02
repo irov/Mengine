@@ -6,7 +6,7 @@
 
 #	include "ResourceAnimation.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace	Menge
 {
@@ -23,15 +23,15 @@ namespace	Menge
 	, m_animationFactor(1.f)
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::loader( TiXmlElement * _xml )
+	void Animation::loader( XmlElement * _xml )
 	{
 		Sprite::loader(_xml);
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "Animation", "Name", m_resourcename );
-			XML_CHECK_VALUE_NODE( "Looping", "Value", m_looping );
-			XML_CHECK_VALUE_NODE( "AutoStart", "Value", m_autoStart );			
+			XML_CASE_VALUE_NODE( "Animation", "Name", m_resourcename );
+			XML_CASE_VALUE_NODE( "Looping", "Value", m_looping );
+			XML_CASE_VALUE_NODE( "AutoStart", "Value", m_autoStart );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -45,16 +45,7 @@ namespace	Menge
 	void Animation::setAnimationResource( const std::string & _resource )
 	{
 		m_resourcename = _resource;
-
-		if( m_resource )
-		{
-			Holder<ResourceManager>::hostage()
-				->releaseResource( m_resource );
-		}
-
-		m_resource = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceAnimation>( m_resourcename );		
+		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationFactor( float _factor )

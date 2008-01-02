@@ -1,6 +1,6 @@
 #	include "Allocator3D.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "RenderEngine.h"
 
@@ -143,13 +143,16 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D::loader( TiXmlElement * _xml )
+	void Allocator3D::loader( XmlElement * _xml )
 	{
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_NODE("Transformation")
+			XML_CASE_NODE("Transformation")
 			{
-				XML_VALUE_ATTRIBUTE("Value", m_localMatrix);
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE("Value", m_localMatrix);
+				}
 
 				changePivot();
 			}

@@ -1,19 +1,25 @@
 #	pragma once
 
-#	include <string>
-
 #	include "Interface/FileSystemInterface.h"
-
-#	include "XmlParser/XmlParser.h"
 
 #	include "Holder.h"
 
+#	include <string>
+#	include <vector>
+
 namespace Menge
 {
+	struct FileBuffer
+	{
+		void * buffer;
+		size_t size;
+	};
+
 	class FileEngine
 	{
 	public:
 		FileEngine( FileSystemInterface * _interface );
+		~FileEngine();
 
 	public:
 		void loadPath( const std::string& _path );
@@ -23,12 +29,15 @@ namespace Menge
 		bool createFolder( const std::string& _path );
 
 		FileDataInterface * openFile( const std::string& _filename );
-		void closeFile( FileDataInterface * _fd );
+		FileBuffer getFileBuffer( const std::string& _filename );
 
-	public:
-		TiXmlDocument * loadXml( const std::string & _filename );
+		void closeFile( FileDataInterface * _fd );
 
 	protected:
 		FileSystemInterface * m_interface;
+
+		typedef std::vector<char> TFileCache;
+
+		TFileCache m_fileCache;
 	};
 }

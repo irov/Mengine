@@ -1,6 +1,6 @@
 #	include "Collideable2D.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
@@ -20,19 +20,25 @@ namespace Menge
 		return m_polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Collideable2D::loader( TiXmlElement * _xml )
+	void Collideable2D::addPoint( const mt::vec2f & _point )
 	{
-		mt::vec2f	point;
+		m_polygon.add_point( _point );
+		mt::add_internal_point( m_bbox, _point );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Collideable2D::loader( XmlElement * _xml )
+	{
+		//mt::vec2f	point;
 
-		XML_FOR_EACH_TREE( _xml )
-		{
-			XML_CHECK_NODE_FOR_EACH("Hull")
-			{
-				XML_VALUE_ATTRIBUTE("Value", point);
-				m_polygon.add_point(point);
-				mt::add_internal_point(m_bbox,point);
-			}
-		}
+		//XML_FOR_EACH_TREE( _xml )
+		//{
+		//	XML_CHECK_NODE_FOR_EACH("Hull")
+		//	{
+		//		XML_VALUE_ATTRIBUTE("Value", point);
+		//		m_polygon.add_point(point);
+		//		mt::add_internal_point(m_bbox,point);
+		//	}
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

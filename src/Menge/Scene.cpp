@@ -7,7 +7,7 @@
 #	include "ScriptEngine.h"
 
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace	Menge
 {
@@ -215,12 +215,12 @@ namespace	Menge
 		callEvent( "UPDATE", "(f)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::loader( TiXmlElement *_xml )
+	void Scene::loader( XmlElement *_xml )
 	{
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_VALUE_NODE("OffsetPosition", "Value", m_offsetPosition );
+			XML_CASE_VALUE_NODE("OffsetPosition", "Value", m_offsetPosition );
 		}
 
 		NodeCore::loader(_xml);

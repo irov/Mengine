@@ -2,7 +2,7 @@
 
 #	include "NodeForeach.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
@@ -82,13 +82,16 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeRenderable::loader( TiXmlElement * _xml )
+	void NodeRenderable::loader( XmlElement * _xml )
 	{
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_NODE("Hide")
+			XML_CASE_NODE("Hide")
 			{
-				XML_VALUE_ATTRIBUTE("Value", m_hide);
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE("Value", m_hide);
+				}
 			}
 		}
 	}

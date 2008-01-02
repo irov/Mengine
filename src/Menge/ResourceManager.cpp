@@ -2,11 +2,12 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "ResourceReference.h"
 
 #	include "FileEngine.h"
+#	include "XmlEngine.h"
 
 #	include "LogEngine.h"
 #	include "ScriptEngine.h"
@@ -33,47 +34,57 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::loadResource( const std::string & _file )
 	{
-		TiXmlDocument * document = Holder<FileEngine>::hostage()
-			->loadXml( _file );
-
-		if( document == 0 )
+		if( Holder<XmlEngine>::hostage()
+			->parseXmlFile( _file, xmlListenerMethod( this, &ResourceManager::loaderDataBlock ) ) == false )
 		{
 			MENGE_LOG("Error: Invalid parse resource '%s' \n", _file.c_str() );
 		}
-
-		XML_FOR_EACH_DOCUMENT( document )
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::loaderDataBlock( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_NODE_FOR_EACH("DataBlock")
+			XML_CASE_NODE("DataBlock")
 			{
-				XML_CHECK_NODE("Resource")
-				{
-					XML_DEF_ATTRIBUTES_NODE( Name );
-					XML_DEF_ATTRIBUTES_NODE( Type );
-
-					ResourceReference * resource = createResource( Name, Type );
-
-					if( resource == 0 )
-					{
-						MENGE_LOG( "Don't register resource type '%s'\n", Type.c_str() );
-						continue;
-					}
-			
-					resource->loader( XML_CURRENT_NODE );
-
-					registerResource( resource );
-				}		
-
-				XML_CHECK_NODE("Extend")
-				{
-					XML_DEF_ATTRIBUTES_NODE( File );
-
-					loadResource( File );
-				}
+				XML_PUSH_CLASS_LISTENER( this, &ResourceManager::loaderResource );
 			}
 		}
-		XML_INVALID_PARSE()
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::loaderResource( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
 		{
-			MENGE_LOG("Error: Invalid pasrse resorce - '%s'", _file.c_str() );
+			XML_CASE_NODE("Resource")
+			{
+				std::string name;
+				std::string type;
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE("Name", name );
+					XML_CASE_ATTRIBUTE("Type", type );
+				}
+
+				ResourceReference * resource = createResource( name, type );
+
+				if( resource == 0 )
+				{
+					MENGE_LOG( "Don't register resource type '%s'\n", type.c_str() );
+					continue;
+				}
+
+				registerResource( resource );
+
+				XML_PUSH_CLASS_LISTENER( resource, &ResourceReference::loader );
+			}		
+
+			//XML_CHECK_NODE("Extend")
+			//{
+			//	XML_DEF_ATTRIBUTES_NODE( File );
+
+			//	loadResource( File );
+			//}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -2,7 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "HotSpot.h"
 
@@ -27,7 +27,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Point::loader( TiXmlElement * _xml )
+	void Point::loader( XmlElement * _xml )
 	{
 		SceneNode2D::loader( _xml );
 	}

@@ -2,7 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace	Menge
 {
@@ -67,7 +67,7 @@ namespace	Menge
 		return -out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::loader( TiXmlElement * _xml )
+	void Camera3D::loader( XmlElement * _xml )
 	{
 		SceneNode3D::loader( _xml );
 	}

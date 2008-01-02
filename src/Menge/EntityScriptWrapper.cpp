@@ -6,9 +6,8 @@
 #	include "Entity.h"
 
 #	include "FileEngine.h"
-
+#	include "XmlEngine.h"
 #	include "ScriptEngine.h"
-
 #	include "LogEngine.h"
 
 #	include "Game.h"
@@ -62,29 +61,11 @@ namespace Menge
 			xml_path += _type;
 			xml_path += ".xml";
 
-			TiXmlDocument * document = Holder<FileEngine>::hostage()
-				->loadXml( xml_path );
-
-			if( document )
+			if( Holder<XmlEngine>::hostage()
+				->parseXmlFileM( xml_path, entity, &Entity::loader ) )
 			{
-				XML_FOR_EACH_DOCUMENT( document )
-				{
-					XML_CHECK_NODE("Entity")
-					{
-						entity->loader(XML_CURRENT_NODE);
-
-						entity->registerEventMethod( "LOADER", "onLoader" );
-						entity->callEvent("LOADER", "()");
-					}
-				}
-				XML_INVALID_PARSE()
-				{
-					MENGE_LOG("Error: Invalid parse %s.xml\n", _type.c_str() );
-				}
-			}
-			else
-			{
-				MENGE_LOG( "Warrning: not find entity xml '%s'", xml_path.c_str() );
+				entity->registerEventMethod( "LOADER", "onLoader" );
+				entity->callEvent("LOADER", "()");
 			}
 
 			entity->setLocalPosition( _pos );

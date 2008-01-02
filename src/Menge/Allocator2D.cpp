@@ -1,6 +1,6 @@
 #	include "Allocator2D.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
@@ -76,6 +76,13 @@ namespace Menge
 		return m_localMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Allocator2D::setLocalMatrix( const mt::mat3f & _matrix )
+	{
+		m_localMatrix = _matrix;
+
+		changePivot();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::setLocalPosition( const mt::vec2f & _position )
 	{
 		mt::vec2f & localPosition = getLocalPositionModify();
@@ -132,40 +139,19 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::loader( TiXmlElement * _xml )
+	void Allocator2D::loader( XmlElement * _xml )
 	{
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_NODE("Transformation")
+			XML_CASE_NODE("Transformation")
 			{
-				XML_CHECK_ATTRIBUTE( "Value" )
+				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_VALUE_ATTRIBUTE("Value", m_localMatrix);
+					XML_CASE_ATTRIBUTE_MEMBER( "Value", &Allocator2D::setLocalMatrix );
+					XML_CASE_ATTRIBUTE_MEMBER( "Position", &Allocator2D::setLocalPosition );
+					XML_CASE_ATTRIBUTE_MEMBER( "Direction", &Allocator2D::setLocalDirection );
+					XML_CASE_ATTRIBUTE_MEMBER( "Rotate", &Allocator2D::setRotate );
 				}
-
-				XML_CHECK_ATTRIBUTE( "Position" )
-				{
-					mt::vec2f position;
-					XML_VALUE_ATTRIBUTE("Position", position);
-					setLocalPosition( position );
-				}
-
-				XML_CHECK_ATTRIBUTE( "Rotate" )
-				{
-					float rotate;
-					XML_VALUE_ATTRIBUTE("Rotate", rotate);
-					setRotate( rotate );
-				}
-
-				XML_CHECK_ATTRIBUTE( "Direction" )
-				{
-					mt::vec2f direction;
-					XML_VALUE_ATTRIBUTE("Rotate", direction);
-					setLocalDirection( direction );
-				}
-
-
-				changePivot();
 			}
 		}
 	}

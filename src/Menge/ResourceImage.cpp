@@ -1,6 +1,6 @@
 #	include "ResourceImage.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "RenderEngine.h"
 
@@ -15,11 +15,11 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::loadImageFrame( const std::string & _fileName, std::vector<char> & _buff )
+	ResourceImage::ImageFrame ResourceImage::loadImageFrame( const std::string & _fileName )
 	{
 		RenderImageInterface * image = 
 			Holder<RenderEngine>::hostage()
-			->loadImage( _fileName, _buff, m_filter );
+			->loadImage( _fileName, m_filter );
 
 		ImageFrame imageFrame;
 
@@ -50,13 +50,13 @@ namespace Menge
 			->releaseImage( _frame.image );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImage::loader( TiXmlElement * _xml )
+	void ResourceImage::loader( XmlElement * _xml )
 	{
 		ResourceReference::loader( _xml );
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "Filter", "Value", m_filter );
+			XML_CASE_VALUE_NODE( "Filter", "Value", m_filter );
 		}
 	}
 }

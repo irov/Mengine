@@ -53,7 +53,7 @@ namespace Menge
 		bool handleGlobalMouseMove( int _x, int _y, int _whell ) override;
 
 	public:
-		void loader( TiXmlElement *_xml) override;
+		void loader( XmlElement *_xml) override;
 
 	protected:
 		void _update( float _timing ) override;

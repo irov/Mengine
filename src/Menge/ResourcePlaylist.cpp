@@ -2,7 +2,7 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "FileEngine.h"
 
@@ -20,52 +20,46 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::loader( TiXmlElement * _xml )
+	void ResourcePlaylist::loader( XmlElement * _xml )
 	{
 		ResourceReference::loader( _xml );
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "File", "Path", m_filename );
-			XML_CHECK_VALUE_NODE( "Loop", "Value", m_loop );
+			XML_CASE_VALUE_NODE( "Loop", "Value", m_loop );
+
+			XML_CASE_NODE("Track")
+			{
+				std::string filename;
+
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "File", filename );
+				}
+
+				if( Holder<FileEngine>::hostage()->existFile( filename ) == false )
+				{
+					MENGE_LOG("ResourcePlaylist : %s not exist. \n", filename.c_str() );
+				}
+				else
+				{
+					m_tracks.push_back( filename );
+				}
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePlaylist::_compile()
 	{
-		TiXmlDocument * document = Holder<FileEngine>::hostage()
-			->loadXml( m_filename );
+		//if( Holder<XmlEngine>::hostage()
+		//	->parseXml( m_filename, this ) == false )
+		//{
+		//	MENGE_LOG("Warning: resource playlist not find file '%s'\n"
+		//		, m_filename.c_str() 
+		//		);
 
-		if( document == 0 )
-		{
-			MENGE_LOG("Warning: resource playlist not find file '%s'\n"
-				, m_filename.c_str() 
-				);
-
-			return false;
-		}
-
-		std::string	filename;
-
-		XML_FOR_EACH_DOCUMENT( document )
-		{
-			XML_CHECK_NODE_FOR_EACH("Tracks")
-			{
-				XML_CHECK_NODE("Track")
-				{
-					XML_VALUE_ATTRIBUTE( "File", filename );
-
-					if( Holder<FileEngine>::hostage()->existFile( filename ) == false )
-					{
-						MENGE_LOG("ResourcePlaylist : %s not exist. \n", filename.c_str() );
-					}
-					else
-					{
-						m_tracks.push_back( filename );
-					}
-				}
-			}
-		}
+		//	return false;
+		//}
 
 		return true;
 	}

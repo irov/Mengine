@@ -2,7 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace	Menge
 {
@@ -129,24 +129,24 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Track::loader( TiXmlElement * _xml )
+	void Track::loader( XmlElement * _xml )
 	{
-		SceneNode2D::loader( _xml );
+		//SceneNode2D::loader( _xml );
 
-		mt::vec2f pos;
+		//mt::vec2f pos;
 
-		XML_FOR_EACH_TREE(_xml)
-		{
-			XML_CHECK_NODE_FOR_EACH("Points")
-			{
-				XML_CHECK_NODE("Point")
-				{
-					XML_VALUE_ATTRIBUTE("Value",pos);
-					addPoint(pos);
-				}
-			}
-			XML_CHECK_VALUE_NODE("SpeedMove","Value",m_speedMove);
-		}
+		//XML_FOR_EACH_TREE(_xml)
+		//{
+		//	XML_CHECK_NODE_FOR_EACH("Points")
+		//	{
+		//		XML_CHECK_NODE("Point")
+		//		{
+		//			XML_VALUE_ATTRIBUTE("Value",pos);
+		//			addPoint(pos);
+		//		}
+		//	}
+		//	XML_CHECK_VALUE_NODE("SpeedMove","Value",m_speedMove);
+		//}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	void Track::_debugRender()

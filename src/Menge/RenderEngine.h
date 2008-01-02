@@ -37,7 +37,7 @@ namespace Menge
 		RenderImageInterface * createImage( const char* _name, unsigned int _width, unsigned int _height );
 		RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height );
 		RenderImageInterface * loadImage( const TextureDesc & _desc );
-		RenderImageInterface * loadImage( const std::string & _filename, std::vector<char> & _buff, size_t _filter );
+		RenderImageInterface * loadImage( const std::string & _filename, size_t _filter );
 
 		void renderImage(
 			const mt::mat3f & _transform, 

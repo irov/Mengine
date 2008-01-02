@@ -35,7 +35,7 @@ namespace Menge
 		const RenderImageInterface * getImage( size_t _frame ) const override;
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 
 	protected:
 		bool _compile() override;

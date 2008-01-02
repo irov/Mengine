@@ -2,7 +2,7 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
@@ -46,22 +46,21 @@ namespace Menge
 		return m_imageFrame.image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageCell::loader( TiXmlElement * _xml )
+	void ResourceImageCell::loader( XmlElement * _xml )
 	{
 		ResourceImage::loader( _xml );
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "File", "Path", m_filename );
-			XML_CHECK_VALUE_NODE( "Cell", "X", m_numX );
-			XML_CHECK_VALUE_NODE( "Cell", "Y", m_numY );
+			XML_CASE_VALUE_NODE( "File", "Path", m_filename );
+			XML_CASE_VALUE_NODE( "Cell", "X", m_numX );
+			XML_CASE_VALUE_NODE( "Cell", "Y", m_numY );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCell::_compile()
 	{
-		std::vector<char> buff;
-		m_imageFrame = loadImageFrame( m_filename, buff );
+		m_imageFrame = loadImageFrame( m_filename );
 
 		size_t count = m_numX * m_numY;
 

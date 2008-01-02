@@ -2,7 +2,7 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "RenderEngine.h"
 
@@ -21,14 +21,14 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::loader( TiXmlElement * _xml )
+	void ResourceEmitterContainer::loader( XmlElement * _xml )
 	{
 		ResourceReference::loader( _xml );
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "File", "Path", m_filename );
-			XML_CHECK_VALUE_NODE( "Folder", "Path", m_folder );
+			XML_CASE_VALUE_NODE( "File", "Path", m_filename );
+			XML_CASE_VALUE_NODE( "Folder", "Path", m_folder );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -65,11 +65,9 @@ namespace Menge
 
 		TMapImageEmitters::iterator it = m_mapImageEmitters.find( fullname );
 
-		std::vector<char> buff;
-
 		if ( it == m_mapImageEmitters.end() )
 		{
-			RenderImageInterface * image = Holder<RenderEngine>::hostage()->loadImage( fullname, buff, 1 );
+			RenderImageInterface * image = Holder<RenderEngine>::hostage()->loadImage( fullname, 1 );
 
 			if( image == 0 )
 			{

@@ -5,6 +5,8 @@
 
 #	include "ResourceDeclare.h"
 
+class XmlElement;
+
 namespace Menge
 {
 	class ResourceReference
@@ -19,7 +21,7 @@ namespace Menge
 		const std::string & getName();
 
 	public:
-		virtual void loader(TiXmlElement * _xml);
+		virtual void loader( XmlElement * _xml );
 
 	protected:
 		void _incrementZero() override;

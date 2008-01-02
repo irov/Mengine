@@ -2,7 +2,7 @@
 
 #	include "ObjectImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "MousePickerSystem.h"
 
@@ -76,18 +76,18 @@ namespace	Menge
 		return is_intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::loader( TiXmlElement * _xml)
+	void HotSpot::loader( XmlElement * _xml)
 	{
 		SceneNode2D::loader(_xml);
 
-		mt::vec2f point;
-
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_NODE("Point")
+			XML_CASE_NODE("Point")
 			{
-				XML_VALUE_ATTRIBUTE("Value", point);
-				addPoint( point );
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE_MEMBER( "Value", &HotSpot::addPoint );
+				}
 			}
 		}
 	}

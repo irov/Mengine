@@ -18,7 +18,7 @@
 
 #	include "LogEngine.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
@@ -118,18 +118,8 @@ namespace Menge
 
 		Holder<Game>::keep( new Game );
 
-		TiXmlDocument * document = Holder<FileEngine>::hostage()
-			->loadXml( m_gameInfo );
-
-		XML_FOR_EACH_DOCUMENT( document )
-		{
-			XML_CHECK_NODE("Game")
-			{
-				Holder<Game>::hostage()
-					->loader(XML_CURRENT_NODE);
-			}
-		}
-		XML_INVALID_PARSE()
+		if( Holder<XmlEngine>::hostage()
+			->parseXmlFileM( m_gameInfo, Holder<Game>::hostage(), &Game::loader ) == false )
 		{
 			MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
 			return false;
@@ -152,8 +142,52 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::loader( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE("Application")
+			{				
+				XML_PUSH_CLASS_LISTENER( this, &Application::loaderApplication );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::loaderApplication( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE("Paks")
+			{
+				// 
+			}
+
+			XML_CASE_VALUE_NODE( "Game", "File", m_gameInfo );
+
+			XML_CASE_NODE("Config")
+			{
+				XML_PUSH_CLASS_LISTENER( this, &Application::loaderConfig );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::loaderConfig( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_VALUE_NODE("Title", "Name", m_title );					
+			XML_CASE_VALUE_NODE("Width", "Value", m_width );					
+			XML_CASE_VALUE_NODE("Height", "Value", m_height );
+			XML_CASE_VALUE_NODE("Bits", "Value", m_bits );
+			XML_CASE_VALUE_NODE("Fullscreen", "Value", m_fullScreen );
+			XML_CASE_VALUE_NODE("RenderDriver", "Name", m_renderDriver );
+			XML_CASE_VALUE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const std::string & _applicationFile )
 	{
+		Holder<XmlEngine>::keep( new XmlEngine );
 		Holder<ScriptEngine>::keep( new ScriptEngine );
 
 		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
@@ -167,47 +201,12 @@ namespace Menge
 
 		Holder<ResourceManager>::keep( new ResourceManager );
 
-		TiXmlDocument * xmlDocument = 
-			Holder<FileEngine>::hostage()
-			->loadXml( _applicationFile );
-
-		if( xmlDocument == NULL )
+		if( Holder<XmlEngine>::hostage()
+			->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
 		{
-			return false;
-		}
-		
-		XML_FOR_EACH_DOCUMENT( xmlDocument )
-		{
-			XML_CHECK_NODE_FOR_EACH("Application")
-			{
-				XML_CHECK_NODE_FOR_EACH("Paks")
-				{
-					XML_CHECK_NODE("Pak")
-					{
-						XML_DEF_ATTRIBUTES_NODE( File );
-
-						loadPak( File );
-					}
-				}
-
-				XML_CHECK_NODE_FOR_EACH("Config")
-				{
-					XML_CHECK_VALUE_NODE("Title", "Name", m_title );					
-					XML_CHECK_VALUE_NODE("Width", "Value", m_width );					
-					XML_CHECK_VALUE_NODE("Height", "Value", m_height );
-					XML_CHECK_VALUE_NODE("Bits", "Value", m_bits );
-					XML_CHECK_VALUE_NODE("Fullscreen", "Value", m_fullScreen );
-					XML_CHECK_VALUE_NODE("RenderDriver", "Name", m_renderDriver );
-					XML_CHECK_VALUE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
-				}
-
-				XML_CHECK_VALUE_NODE("Game", "File", m_gameInfo );
-			}
-		}
-		XML_INVALID_PARSE()
-		{
-			MENGE_LOG("parse application xml failed\n");
-			return false;
+			MENGE_LOG("parse application xml failed '%s'\n"
+				, _applicationFile.c_str()
+				);
 		}
 
 		return true;

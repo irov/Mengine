@@ -3,6 +3,7 @@
 #	include "Node.h"
 #	include "NodeEventable.h"
 #	include "NodeResource.h"
+
 #	include "Scriptable.h"
 
 #	include "ObjectDeclare.h"
@@ -49,7 +50,7 @@ namespace Menge
 		bool isUpdatable() override;
 
 	public:
-		void loader( TiXmlElement *xml ) override;
+		void loader( XmlElement *xml ) override;
 
 	public:
 		Scriptable * getScriptable() override;

@@ -2,7 +2,7 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "RenderEngine.h"
 
@@ -14,21 +14,21 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RESOURCE_IMPLEMENT( ResourceFont )
-	//////////////////////////////////////////////////////////////////////////
-	ResourceFont::ResourceFont( const std::string & _name )
+		//////////////////////////////////////////////////////////////////////////
+		ResourceFont::ResourceFont( const std::string & _name )
 		: ResourceReference( _name )
 		, m_image( 0 )
 		, m_whsRatio( 3.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::loader( TiXmlElement * _xml )
+	void ResourceFont::loader( XmlElement * _xml )
 	{
 		ResourceReference::loader( _xml );
 
-		XML_FOR_EACH_TREE( _xml )
+		XML_SWITCH_NODE( _xml )
 		{
-			XML_CHECK_VALUE_NODE( "File", "Path", m_filename );
+			XML_CASE_VALUE_NODE( "File", "Path", m_filename );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -148,9 +148,7 @@ namespace Menge
 		{
 			std::string fullname = m_fontDir + params;
 
-			std::vector<char> buff;
-
-			m_image = Holder<RenderEngine>::hostage()->loadImage( fullname, buff, 1 );
+			m_image = Holder<RenderEngine>::hostage()->loadImage( fullname, 1 );
 
 			if( m_image == 0 )
 			{

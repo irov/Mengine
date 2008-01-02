@@ -2,7 +2,7 @@
 
 #	include "FileEngine.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "LogEngine.h"
 
@@ -95,7 +95,7 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::loadImage( const std::string & _filename, std::vector<char> & _buff, size_t _filter )
+	RenderImageInterface * RenderEngine::loadImage( const std::string & _filename, size_t _filter )
 	{
 		FileDataInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
 
@@ -105,12 +105,14 @@ namespace Menge
 			return 0;
 		}
 
+		static std::vector<char> s_buff;
+
 		size_t buff_size = file->size();
-		_buff.resize( buff_size );
-		file->read( &_buff[0], buff_size );
+		s_buff.resize( buff_size );
+		file->read( &s_buff[0], buff_size );
 
 		TextureDesc	textureDesc;
-		textureDesc.buffer = &_buff[0];
+		textureDesc.buffer = &s_buff[0];
 		textureDesc.size = buff_size;
 		textureDesc.name = _filename.c_str();
 		textureDesc.filter = _filter;

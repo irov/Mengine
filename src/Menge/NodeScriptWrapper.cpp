@@ -35,7 +35,7 @@
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 
 namespace Menge

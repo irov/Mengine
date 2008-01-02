@@ -21,7 +21,7 @@ namespace Menge
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
 
 	public:
-		void loader( TiXmlElement * _xml ) override;
+		void loader( XmlElement * _xml ) override;
 
 	public:
 		Node * getChildren( const std::string & _name, bool _recursion ) override;

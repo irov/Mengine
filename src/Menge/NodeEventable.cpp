@@ -2,7 +2,7 @@
 
 #	include "Scriptable.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
@@ -15,16 +15,22 @@ namespace Menge
 		return Eventable::registerEventListener( _name, _method, module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeEventable::loader(TiXmlElement * _xml)
+	void NodeEventable::loader(XmlElement * _xml)
 	{
-		XML_FOR_EACH_TREE(_xml)
+		XML_SWITCH_NODE(_xml)
 		{
-			XML_CHECK_NODE("Event")
+			XML_CASE_NODE("Event")
 			{
-				XML_DEF_ATTRIBUTES_NODE(Type);
-				XML_DEF_ATTRIBUTES_NODE(Function);
+				std::string type;
+				std::string function;
 
-				registerEventMethod( Type, Function );
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Type", type );
+					XML_CASE_ATTRIBUTE( "Function", function );
+				}
+
+				registerEventMethod( type, function );
 			}
 		}
 	}

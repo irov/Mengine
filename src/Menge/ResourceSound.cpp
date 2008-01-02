@@ -2,7 +2,7 @@
 
 #	include "ResourceImplement.h"
 
-#	include "XmlParser/XmlParser.h"
+#	include "XmlEngine.h"
 
 #	include "SoundEngine.h"
 
@@ -19,14 +19,14 @@ namespace Menge
 	, m_interface( 0 )
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::loader( TiXmlElement * _xml )
+	void ResourceSound::loader( XmlElement * _xml )
 	{
 		ResourceReference::loader( _xml );
 
-		XML_FOR_EACH_TREE(_xml)
+		XML_SWITCH_NODE(_xml)
 		{
-			XML_CHECK_VALUE_NODE("File","Path",m_filename);
-			XML_CHECK_VALUE_NODE("IsStreamable","Value",m_isStreamable);
+			XML_CASE_VALUE_NODE("File","Path",m_filename);
+			XML_CASE_VALUE_NODE("IsStreamable","Value",m_isStreamable);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -41,8 +41,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP2"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\tinyxml&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\expat\lib&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;XML_STATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -63,9 +63,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="tinyxmld_STL.lib"
+				AdditionalDependencies="libexpatMT.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\tinyxml\Debug_STL"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\expat\win32\bin\debug&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -282,6 +282,30 @@
 	<References>
 	</References>
 	<Files>
+		<File
+			RelativePath=".\XmlElement.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\XmlElement.h"
+			>
+		</File>
+		<File
+			RelativePath=".\XmlExpatParser.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\XmlExpatParser.h"
+			>
+		</File>
+		<File
+			RelativePath=".\XmlListener.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\XmlListener.h"
+			>
+		</File>
 		<File
 			RelativePath=".\XmlParser.cpp"
 			>

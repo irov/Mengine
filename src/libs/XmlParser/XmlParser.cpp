@@ -1,284 +1,114 @@
 #	include "XmlParser.h"
-
-#	define TIXML_USE_STL
-#	include "tinyxml.h"
+#	include "XmlExpatParser.h"
 
 //////////////////////////////////////////////////////////////////////////
-static const std::string & string_empty()
+XmlParser::XmlParser()
 {
-	static std::string s_empty;
-	return s_empty;
+	m_xmlExpat = new XmlExpatParser;
 }
 //////////////////////////////////////////////////////////////////////////
-TiXmlDocument * TiXmlDocumentLoadFile( const std::string & _file )
+XmlParser::~XmlParser()
 {
-	TiXmlDocument * document = new TiXmlDocument;
+	delete m_xmlExpat;
+}
+//////////////////////////////////////////////////////////////////////////
+void * XmlParser::makeBuffer( int _size )
+{
+	return m_xmlExpat->makeBuffer( _size );
+}
+//////////////////////////////////////////////////////////////////////////
+bool XmlParser::parseBuffer( int _size, XmlListener * _listener )
+{
+	return m_xmlExpat->parseXML( _size, _listener );
+}
+//////////////////////////////////////////////////////////////////////////
+template<class T>
+static bool attribute_value_cast_format( T & _var, const char * _value, const char * _format )
+{
+	int result = sscanf_s( _value, _format, &_var);
 
-	if( document->LoadFile( _file ) == false )
+	return result == 1;
+}
+//////////////////////////////////////////////////////////////////////////
+namespace XmlParserCast
+{
+	//////////////////////////////////////////////////////////////////////////
+	bool attribute_value_cast( bool & _var, const char * _value )
 	{
-		printf("invalid parse xml document file - '%s'\n", _file.c_str() );
-		printf("error - %s\n", document->ErrorDesc() );
+		unsigned int wrapp_value;
+		if( attribute_value_cast_format( wrapp_value, _value, "%u" ) == false )
+		{
+			return false;
+		}
 
-		delete document;
+		_var = (wrapp_value != 0);
 
-		return 0;
+		return true;
 	}
-	
-	return document;	
-}
-//////////////////////////////////////////////////////////////////////////
-TiXmlDocument * TiXmlDocumentLoadData( const std::string & _data )
-{
-	TiXmlDocument * document = new TiXmlDocument;
-
-	document->Parse( _data.c_str(), 0, TIXML_DEFAULT_ENCODING );
-
-	if( document->Error() == true )
+	//////////////////////////////////////////////////////////////////////////
+	bool attribute_value_cast( unsigned int & _var, const char * _value )
 	{
-		printf("invalid parse xml document file \n");
-		printf("error - %s\n", document->ErrorDesc() );
-
-		delete document;
-		return NULL;
+		return attribute_value_cast_format( _var, _value, "%u" );
 	}
-
-	return document;
-}
-//////////////////////////////////////////////////////////////////////////
-void TiXmlDocumentRelese( TiXmlDocument * _document )
-{
-	delete _document;
-}
-//////////////////////////////////////////////////////////////////////////
-TiXmlElement * TiXmlDocumentFirstChildElement( TiXmlDocument * _document )
-{
-	return _document->FirstChildElement();
-}
-//////////////////////////////////////////////////////////////////////////
-TiXmlElement * TiXmlElementFirstChildElement( TiXmlElement * _element )
-{
-	return _element->FirstChildElement();
-}
-//////////////////////////////////////////////////////////////////////////
-TiXmlElement * TiXmlElementNextSiblingElement( TiXmlElement * _element )
-{
-	return _element->NextSiblingElement();
-}
-//////////////////////////////////////////////////////////////////////////
-const std::string & TiXmlElementValue( TiXmlElement * _element )
-{
-	TiXmlNode * node = _element->FirstChild();
-
-	if( node )
+	//////////////////////////////////////////////////////////////////////////
+	bool attribute_value_cast( int & _var, const char * _value )
 	{
-		return node->ValueStr();
+		return attribute_value_cast_format( _var, _value, "%d" );
 	}
-
-	return string_empty();
-}
-//////////////////////////////////////////////////////////////////////////
-const std::string & TiXmlElementTitle( TiXmlElement * _element )
-{
-	return _element->ValueStr();
-}
-//////////////////////////////////////////////////////////////////////////
-const std::string & TiXmlElementAttribute( TiXmlElement * _element, const std::string & _name )
-{
-	const std::string * attr = _element->Attribute( _name );
-
-	if( attr )
+	//////////////////////////////////////////////////////////////////////////
+	bool attribute_value_cast( float & _var, const char * _value )
 	{
-		return *attr;
+		return attribute_value_cast_format( _var, _value, "%f" );
 	}
-
-	return string_empty();
-}
-//////////////////////////////////////////////////////////////////////////
-TiXmlElement * TiXmlElementCreate( const std::string & _name )
-{
-	return new TiXmlElement( _name );
-}
-//////////////////////////////////////////////////////////////////////////
-void TiXmlElementSetAttribute( TiXmlElement * _element, const std::string & _attribute, const std::string & _value )
-{
-	_element->SetAttribute( _attribute, _value );
-}
-//////////////////////////////////////////////////////////////////////////
-void TiXmlElementInsertEndChild( TiXmlElement * _element, TiXmlElement * _children )
-{
-	_element->InsertEndChild( *_children );
-}
-//////////////////////////////////////////////////////////////////////////
-void TiXmlElementRemove( TiXmlElement * _element )
-{
-	delete _element;
-}
-
-#	define XMLP_SIMPLE_PARSE( K )\
-	return GetValueAttributeSimple(Value,Name, (K) ,irov_xml_current_tree)
-
-namespace xml
-{
-	namespace parse
+	//////////////////////////////////////////////////////////////////////////
+	bool attribute_value_cast( std::string & _var, const char * _value )
 	{
-		template<class T>
-		bool GetValueAttributeSimple( 
-			T &Value, 
-			const std::string &Name, 
-			const char *Type, 
-			XML_TYPE_NODE irov_xml_current_tree )
-		{
-			const std::string &VALUE = XML_ATTRIBUTES_NODE(Name);
+		_var.assign( _value );
 
-			if( VALUE.empty() == true )
-			{
-				return false;
-			}
+		return true;
+	}
+}
 
-			sscanf_s( VALUE.c_str(), Type, &Value);
-
-			return true;
-		}
-
-		bool GetValueAttribute(bool &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
-		{
-			const std::string &VALUE = XML_ATTRIBUTES_NODE(Name);
-
-			if( VALUE.empty() == true )
-			{
-				return false;
-			}
-
-			unsigned int Bool;
-			sscanf_s(VALUE.c_str(),"%u",&Bool);
-
-			Value = (Bool == 0)?false:true;
-
-			return true;			
-		}
-
-		bool GetValueAttribute(unsigned int &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
-		{
-			XMLP_SIMPLE_PARSE("%u");
-		}
-
-		bool GetValueAttribute(int &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
-		{
-			XMLP_SIMPLE_PARSE("%d");
-		}
-
-		bool GetValueAttribute(float &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
-		{
-			XMLP_SIMPLE_PARSE("%f");
-		}
-
-		bool GetValueAttribute(std::string &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
-		{
-			const std::string &VALUE = XML_ATTRIBUTES_NODE(Name);
-
-			if( VALUE.empty() == true )
-			{
-				return false;
-			}
-
-			Value = VALUE;
-
-			return true;
-		}
-
-
-		bool GetValueAttribute(mt::vec2f &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
-		{
-			const std::string &VALUE = XML_ATTRIBUTES_NODE(Name);
-
-			if( VALUE.empty() == true )
-			{
-				return false;
-			}
-
-			sscanf_s(VALUE.c_str(),"%f;%f"
-				,&Value.x,&Value.y
-				);
-
-			return true;
-		}
-
-		bool GetValueAttribute(mt::vec3f &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
-		{
-			const std::string &VALUE = XML_ATTRIBUTES_NODE(Name);
-
-			if( VALUE.empty() == true )
-			{
-				return false;
-			}
-
-			sscanf_s(VALUE.c_str(),"%f;%f;%f"
-				,&Value.x,&Value.y,&Value.z
-				);
-
-			return true;
-		}
-
-		bool GetValueAttribute(mt::vec4f &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
-		{
-			const std::string &VALUE = XML_ATTRIBUTES_NODE(Name);
-
-			if( VALUE.empty() == true )
-			{
-				return false;
-			}
-
-			sscanf_s(VALUE.c_str(),"%f;%f;%f;%f"
-				,&Value.x,&Value.y,&Value.z,&Value.w
-				);
-
-			return true;
-		}
-
-		bool GetValueAttribute(mt::mat3f &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
-		{
-			const std::string &VALUE = XML_ATTRIBUTES_NODE(Name);
-
-			if( VALUE.empty() == true )
-			{
-				return false;
-			}
-
-			sscanf_s(VALUE.c_str(),"%f;%f;%f;%f;%f;%f"
-				,&Value[0][0],&Value[0][1]
-			,&Value[1][0],&Value[1][1]
-			,&Value[2][0],&Value[2][1]
-			);
-
-			Value[0][2] = 0.f;
-			Value[1][2] = 0.f;
-			Value[2][2] = 1.f;			
-
-			return true;
-		}
-
-		bool GetValueAttribute(mt::mat4f &Value, const std::string &Name, XML_TYPE_NODE irov_xml_current_tree)
-		{
-			const std::string &VALUE = XML_ATTRIBUTES_NODE(Name);
-
-			if( VALUE.empty() == true )
-			{
-				return false;
-			}
-
-			sscanf_s(VALUE.c_str(),"%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f"
-				,&Value[0][0],&Value[0][1],&Value[0][2]
-			,&Value[1][0],&Value[1][1],&Value[1][2]
-			,&Value[2][0],&Value[2][1],&Value[2][2]
-			,&Value[3][0],&Value[3][1],&Value[3][2]
-			);
-
-			Value[0][3] = 0.f;
-			Value[1][3] = 0.f;
-			Value[2][3] = 0.f;
-			Value[3][3] = 1.f;
-
-			return true;
-		}
+namespace XmlParserElement
+{
+	//////////////////////////////////////////////////////////////////////////
+	bool element_compare_title( XmlElement * _element, const char * _title )
+	{
+		return _element->compareTitle( _title );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const char * element_get_title( XmlElement * _element )
+	{
+		return _element->getTitle();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void element_begin_attributes( XmlElement * _element )
+	{
+		_element->beginAttributes();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool element_valid_attributes( XmlElement * _element )
+	{
+		return _element->validAttributes();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void element_next_attributes( XmlElement * _element )
+	{
+		_element->nextAttributes();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool element_compare_attribute_key( XmlElement * _element, const char * _key )
+	{
+		return _element->compareAttributeKey( _key );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const char * element_get_attribute_value( XmlElement * _element )
+	{
+		return _element->getAttributeValue();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void element_push_listener( XmlElement * _element, XmlListener * _listenerMethod )
+	{
+		_element->pushListener( _listenerMethod );
 	}
 }

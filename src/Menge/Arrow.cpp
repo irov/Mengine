@@ -78,7 +78,7 @@ namespace	Menge
 			}
 		}
 	}
-	
+	//////////////////////////////////////////////////////////////////////////	
 	void Arrow::loaderArrow_( XmlElement * _xml )
 	{
 		SceneNode2D::loader( _xml );

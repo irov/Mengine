@@ -16,7 +16,9 @@ namespace Menge
 
 		size_t size = file->size();
 
-		void * buffer = XmlParser::makeBuffer( size );
+		void * buffer = XmlParser::makeBuffer( size + 2 );
+
+		((char*)buffer)[size] = '\0';
 
 		file->read( buffer, size );
 

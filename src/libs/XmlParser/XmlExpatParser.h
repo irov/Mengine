@@ -19,6 +19,7 @@ public:
 	void pushListener( XmlListener * _listener );
 	XmlListener * topListener();
 	void popListener();
+	void clearListener();
 
 protected:
 	typedef std::list<XmlListener *> TListStackListener;

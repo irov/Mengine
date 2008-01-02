@@ -60,11 +60,9 @@ bool XmlExpatParser::parseXML( int _size, XmlListener * _listener )
 
 	pushListener( _listener );
 
-	XML_Status status = XML_ParseBuffer( m_parser, _size, XML_TRUE);
+	bool done = true;
 
-	popListener();
-
-	if( status == XML_STATUS_ERROR ) 
+	if( XML_ParseBuffer( m_parser, _size, XML_TRUE ) == XML_STATUS_ERROR )
 	{
 		fprintf(stderr,
 			"%s at line %" XML_FMT_INT_MOD "u\n",
@@ -72,12 +70,13 @@ bool XmlExpatParser::parseXML( int _size, XmlListener * _listener )
 			XML_GetCurrentLineNumber(m_parser)
 			);
 
-		return false;
+		done = false;
 	}
 
+	clearListener();
 	XML_ParserReset( m_parser, NULL );
 
-	return true;
+	return done;
 }
 //////////////////////////////////////////////////////////////////////////
 void XmlExpatParser::pushListener( XmlListener * _listener )
@@ -94,4 +93,18 @@ void XmlExpatParser::popListener()
 {
 	delete m_listStackListener.back();
 	m_listStackListener.pop_back();
+}
+//////////////////////////////////////////////////////////////////////////
+void XmlExpatParser::clearListener()
+{
+	for( TListStackListener::iterator
+		it = m_listStackListener.begin(),
+		it_end = m_listStackListener.end();
+	it != it_end;
+	++it)
+	{
+		delete *it;
+	}
+
+	m_listStackListener.clear();
 }

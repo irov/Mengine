@@ -16,10 +16,7 @@ namespace Menge
 
 		size_t size = file->size();
 
-		void * buffer = XmlParser::makeBuffer( size + 2 );
-
-		((char*)buffer)[size] = '\0';
-
+		void * buffer = XmlParser::makeBuffer( size );
 		file->read( buffer, size );
 
 		return XmlParser::parseBuffer( size, _listener );
@@ -63,6 +60,8 @@ namespace XmlParserCast
 	//////////////////////////////////////////////////////////////////////////
 	bool attribute_value_cast( mt::mat3f & _var, const char * _value )
 	{
+		mt::ident_m3( _var );
+
 		int res = sscanf( _value, 
 			"%f;%f;%f;%f;%f;%f;"
 			, &_var.v0.x, &_var.v0.y 
@@ -75,8 +74,10 @@ namespace XmlParserCast
 	//////////////////////////////////////////////////////////////////////////
 	bool attribute_value_cast( mt::mat4f & _var, const char * _value )
 	{
+		mt::ident_m4( _var );
+
 		int res = sscanf( _value, 
-			"%f;%f;%f;%f;%f;%f;"
+			"%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;"
 			, &_var.v0.x, &_var.v0.y, &_var.v0.z
 			, &_var.v1.x, &_var.v1.y, &_var.v1.z
 			, &_var.v2.x, &_var.v2.y, &_var.v2.z

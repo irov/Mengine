@@ -29,5 +29,8 @@ namespace Menge
 			return dynamic_cast<T*>(createNodeFromXml(_file));
 		}
 		static bool loadNode(Node *_node, const std::string &_xml);
+
+	public:
+		static bool nodeLoader( XmlElement * _element );
 	};
 }

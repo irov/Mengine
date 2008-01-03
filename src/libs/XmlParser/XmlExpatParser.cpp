@@ -62,7 +62,9 @@ bool XmlExpatParser::parseXML( int _size, XmlListener * _listener )
 
 	bool done = true;
 
-	if( XML_ParseBuffer( m_parser, _size, XML_TRUE ) == XML_STATUS_ERROR )
+	XML_Status status = XML_ParseBuffer( m_parser, _size, XML_TRUE );
+
+	if( status == XML_STATUS_ERROR )
 	{
 		fprintf(stderr,
 			"%s at line %" XML_FMT_INT_MOD "u\n",

@@ -63,15 +63,9 @@ namespace Menge
 		: public XmlListener
 	{
 	public:
-		XmlNodeLoaderListener()
-			: m_node(0)
+		XmlNodeLoaderListener( Node ** _externalNode )
+			: m_externalNode( _externalNode )
 		{
-		}
-
-	public:
-		Node * result()
-		{
-			return m_node;
 		}
 
 	public:
@@ -89,32 +83,32 @@ namespace Menge
 						XML_CASE_ATTRIBUTE( "Type", type );
 					}
 
-					m_node = SceneManager::createNode( type );
+					*m_externalNode = SceneManager::createNode( type );
 
-					m_node->setName( name );
+					(*m_externalNode)->setName( name );
 
-					XML_PUSH_CLASS_LISTENER( m_node, &Node::loader );
+					XML_PUSH_CLASS_LISTENER( (*m_externalNode), &Node::loader );
 				}
 			}
 		}
 
 	protected:
-		Node * m_node;
+		Node ** m_externalNode;	
 	};
 	//////////////////////////////////////////////////////////////////////////
 	Node * SceneManager::createNodeFromXml( const std::string & _xml )
 	{
-		XmlNodeLoaderListener nodeLoader;
+		Node * node = 0;
+
+		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node );
 
 		if(  Holder<XmlEngine>::hostage()
-			->parseXmlFile( _xml, &nodeLoader ) == false )
+			->parseXmlFile( _xml, nodeLoader ) == false )
 		{
 			MENGE_LOG("Invalid parse external node `%s`\n", _xml.c_str() );
 
 			return 0;
 		}
-
-		Node * node = nodeLoader.result();
 
 		if( node == 0 )
 		{
@@ -126,17 +120,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Node * SceneManager::createNodeFromXmlData( const std::string & _xml_data )
 	{
-		XmlNodeLoaderListener nodeLoader;
+		Node * node = 0;
+
+		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node );
 
 		if(  Holder<XmlEngine>::hostage()
-			->parseXmlBuffer( _xml_data, &nodeLoader ) == false )
+			->parseXmlBuffer( _xml_data, nodeLoader ) == false )
 		{
 			MENGE_LOG("Invalid parse external xml data `%s`\n", _xml_data.c_str() );
 
 			return 0;
 		}
-
-		Node * node = nodeLoader.result();
 
 		if( node == 0 )
 		{

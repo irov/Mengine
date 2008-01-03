@@ -20,6 +20,13 @@ namespace Menge
 			XmlListener * listener = new XmlListenerMethod<C,F>(_self,f);
 			return parseXmlFile( _file, listener );
 		}
+
+		template<class F>
+		bool parseXmlFileF( const std::string & _file, F f )
+		{
+			XmlListener * listener = new XmlListenerFunction<F>(f);
+			return parseXmlFile( _file, listener );
+		}
 	};
 }
 

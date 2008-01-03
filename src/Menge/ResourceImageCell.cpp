@@ -53,8 +53,15 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_VALUE_NODE( "File", "Path", m_filename );
-			XML_CASE_VALUE_NODE( "Cell", "X", m_numX );
-			XML_CASE_VALUE_NODE( "Cell", "Y", m_numY );
+
+			XML_CASE_NODE( "Cell" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "X", m_numX );
+					XML_CASE_ATTRIBUTE( "Y", m_numY );
+				}
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -217,15 +217,34 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loader( XmlElement *_xml )
 	{
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE("Scene")
+			{
+				XML_PUSH_CLASS_LISTENER( this, &Scene::loaderScene_ );
+			}	
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::loaderEnd( bool result )
+	{
+		if( result == false )
+		{
+			return;
+		}
+
+		callMethod( "onLoader", "()" );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::loaderScene_( XmlElement *_xml )
+	{
+		NodeCore::loader(_xml);
+		NodeRenderable::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_VALUE_NODE("OffsetPosition", "Value", m_offsetPosition );
-		}
-
-		NodeCore::loader(_xml);
-		NodeRenderable::loader(_xml);
-		callMethod( "onLoader", "()" );
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Layer * _layer )

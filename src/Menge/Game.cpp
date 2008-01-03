@@ -554,7 +554,7 @@ namespace Menge
 			xml_path += "/Scene.xml";
 
 			if( Holder<XmlEngine>::hostage()
-				->parseXmlFileM( xml_path, this, &Game::loader ) == false )
+				->parseXmlFileM( xml_path, scene, &Scene::loader, &Scene::loaderEnd ) == false )
 			{
 				MENGE_LOG("Warrning: invalid loader xml '%s' for scene '%s'/n"
 					, xml_path.c_str()

@@ -14,11 +14,24 @@ namespace Menge
 		bool parseXmlFile( const std::string & _file, XmlListener * _listener );
 		bool parseXmlBuffer( const std::string & _buffer, XmlListener * _listener );
 
-		template<class C, class F>
-		bool parseXmlFileM( const std::string & _file, C * _self, F f )
+		template<class C, class F, class FE>
+		bool parseXmlFileM( const std::string & _file, C * _self, F _method, FE _end )
 		{
-			XmlListener * listener = new XmlListenerMethod<C,F>(_self,f);
-			return parseXmlFile( _file, listener );
+			XmlListener * listener = new XmlListenerMethod<C,F>(_self, _method );
+			bool result = parseXmlFile( _file, listener );
+			if( _end ) 
+			{
+				(_self->*_end)( result );
+			}
+			return result;
+		}
+
+		template<class C, class F>
+		bool parseXmlFileM( const std::string & _file, C * _self, F _method )
+		{
+			XmlListener * listener = new XmlListenerMethod<C,F>(_self, _method );
+			bool result = parseXmlFile( _file, listener );
+			return result;
 		}
 
 		template<class F>

@@ -42,6 +42,8 @@ namespace Menge
 
 	public:
 		void loader( XmlElement *_xml) override;
+		void loaderScene_( XmlElement * _xml );
+		void loaderEnd( bool result );
 
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;

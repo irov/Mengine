@@ -9,25 +9,8 @@
 #	include <string>
 #	include <sstream>
 
-float f (float x1, float x2)
-{
-	return 7 * x1 * x1 + 5 * x1 * x2 + x2*x2 + 6*x1 + 3*x2;
-}
-
-float f1(float x1, float x2)
-{
-	return 14 * x1 + 5*x2 + 6;
-}
-
-float f2(float x1, float x2)
-{
-	return 5 * x1 + 2*x2 + 3;
-}
-
 int main( int argc, char *argv[] )
 {
-	float res = f(1,-4);
-
 #ifdef _DEBUG
 	const char * application_dll  = "Systems_d/OgreApplication_d.dll";
 #else

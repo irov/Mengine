@@ -1,6 +1,6 @@
 <DataBlock>
 
-	<Resource Name = "BlueActive" Type = "ResourceImageCell" >
+	<Resource Name = "BlueActive" Type = "ResourceImageCell">
 		<File Path = "Game/Images/GO01_Active.png"/>
 		<Cell X = "6" Y = "1"/>
 	</Resource>
@@ -17,18 +17,10 @@
 		<Cell X = "4" Y = "4" />
 	</Resource>	
 
-
-	<!- ************************************************ -->
-	<!- Image for Water -->
-
 	<Resource Name = "Water_01" Type = "ResourceImageDefault" >
 		<File Path = "Game/Images/Water/water_01.png" />
 	</Resource>
-		
-
-	<!- ************************************************ -->
-	<!- Image for 1st plan -->
-
+	
 	<Resource Name = "ReefValun_0N" Type = "ResourceImageDefault" >
 		<File Path = "Game/Images/Reef/1st_plan/testvalun_01.png" />
 	</Resource>
@@ -45,10 +37,6 @@
 		<File Path = "Game/Images/Reef/1st_plan/valun_03.png" />
 	</Resource>
 
-
-	<!- ************************************************ -->
-	<!- Image for 2nd plan -->
-
 	<Resource Name = "ReefKamen_01" Type = "ResourceImageDefault" >
 		<File Path = "Game/Images/Reef/2nd_plan/kamen_01.png" />
 	</Resource>
@@ -60,7 +48,6 @@
 	<Resource Name = "ReefKamen_03" Type = "ResourceImageDefault" >
 		<File Path = "Game/Images/Reef/2nd_plan/kamen_03.png" />
 	</Resource>
-
 
 	<Resource Name = "Arial12" Type = "ResourceFont">
      		<File Path = "Game/Fonts/ArialTest.fontdef"/>

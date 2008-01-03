@@ -1,15 +1,6 @@
 <Scene>
 	<Node Name = "Water" Type = "Layer2D">
-		
-		<Size Value = "1024; 768" />
-		<!-- 
-			
-		<Node Name = "Water_01" Type = "Sprite">
-			<ImageMap Name = "Water_01" />
-			<Transformation Value = "1;0;0;1;0;0" />
-		</Node>
-		-->
-		
+		<Size Value = "1024; 768" />		
 	</Node>
 	
 	<Node Name = "Deep" Type = "Layer2D">
@@ -19,18 +10,18 @@
 		<Node Name = "Kamen_01" Type = "Sprite">
 			<ImageMap Name = "ReefKamen_01" />
 			<Transformation Value = "1;0;0;1;0;138" />
-		</Node> <!-- Sprite -->			
+		</Node>
 
 		<Node Name = "Kamen_01" Type = "Sprite">
 			<ImageMap Name = "ReefKamen_02" />
 			<Transformation Value = "1;0;0;1;512;138" />
-		</Node> <!-- Sprite -->			
+		</Node> 
 
 		<Node Name = "Kamen_03" Type = "Sprite">
 			<ImageMap Name = "ReefKamen_03" />
 			<Transformation Value = "1;0;0;1;1024;138" />
-		</Node> <!-- Sprite -->			
-	</Node> <!-- Layer -->
+		</Node> 
+	</Node> 
 
 
 	<Node Name = "Front" Type = "Layer2D">
@@ -50,36 +41,35 @@
 			<Transformation Value = "1;0;0;1;300;200" />
                	</Node>
 
-
 		<Node Name = "Valun_01" Type = "Sprite">
 			<ImageMap Name = "ReefValun_01" />
 			<Transformation Value = "1;0;0;1;0;256" />
-		</Node> <!-- Sprite -->			
+		</Node>
 
 		<Node Name = "Valun_02" Type = "Sprite">
 			<ImageMap Name = "ReefValun_02" />
 			<Transformation Value = "1;0;0;1;512;256" />
-		</Node> <!-- Sprite -->			
+		</Node> 
 
 		<Node Name = "Valun_03" Type = "Sprite">
 			<ImageMap Name = "ReefValun_03" />
 			<Transformation Value = "1;0;0;1;1024;256" />
-		</Node> <!-- Sprite -->	
+		</Node> 
 
 		<Node Name = "Valun_04" Type = "Sprite">
 			<ImageMap Name = "ReefValun_01" />
 			<Transformation Value = "1;0;0;1;1536;256" />
-		</Node> <!-- Sprite -->			
+		</Node> 
 
 		<Node Name = "Valun_05" Type = "Sprite">
 			<ImageMap Name = "ReefValun_02" />
 			<Transformation Value = "1;0;0;1;2048;256" />
-		</Node> <!-- Sprite -->			
+		</Node> 
 
 		<Node Name = "Valun_06" Type = "Sprite">
 			<ImageMap Name = "ReefValun_03" />
 			<Transformation Value = "1;0;0;1;2560;256" />
-		</Node> <!-- Sprite -->	
+		</Node> 
 		
 		<Node Name = "Arial2112" Type = "TextField">
               		<Font Name = "Arial12"/>
@@ -91,29 +81,5 @@
 			<CenterAlign Value = "1"/>
 		</Node>
 
-		<!--<Node Name = "SoundEmitterTest" Type = "SoundEmitter">
-              		<Resource Name = "ResourceSoundTest"/>
-               		<HeadMode Value = "0"/>
-		</Node>
-
-
-		<Node Name = "SoundEmitterTest1" Type = "SoundEmitter">
-              		<Resource Name = "ResourceSoundTest1"/>
-               		<HeadMode Value = "0"/>
-		</Node>-->
-
-		<!--<Node Name = "TestAnimationGroup1" Type = "AnimationGroup">
-			<Animations>
-				<Node Name = "Test1" Type = "Animation">
-   					<ImageMap Name = "SimpleAnimation"/>
-	   				<Animation Name = "BallRedCNG666"/>
-	                	</Node>
-				<Node Name = "Test2" Type = "Animation">
-   					<ImageMap Name = "grid3"/>
-	   				<Animation Name = "BallRedCNG666"/>
-	                	</Node>
-			</Animations>
-		</Node>-->
-
-	</Node> <!-- Layer -->
+	</Node>
 </Scene>

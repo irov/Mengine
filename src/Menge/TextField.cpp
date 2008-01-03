@@ -175,21 +175,6 @@ namespace	Menge
 				it != it_end; 
 				++it )
 			{
-			/*	if ( *it == '\\' )
-				{
-					if ( ++it == it_end )
-					{
-						break;
-					}
-
-					if( *it == 'n' )
-					{
-						offset.x = m_alignOffset.x;
-						offset.y += m_height;
-						continue;
-					}
-				}
-*/
 				if ( *it == ' ' )
 				{
 					offset.x += spaceWidth;
@@ -358,8 +343,6 @@ namespace	Menge
 		{
 			check = true;
 		}
-
-		//m_centerAlign = false;
 
 		std::string word;
 		std::string line;

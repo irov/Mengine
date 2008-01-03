@@ -134,7 +134,7 @@ namespace Menge
 		}
 
 		if( Holder<Game>::hostage()
-			->init( m_commandLine ) == false )
+			->init() == false )
 		{
 			return false;
 		}

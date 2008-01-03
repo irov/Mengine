@@ -8,13 +8,16 @@ class Scene( Menge.Scene ):
 		pass
 
 	def onActivate( self ):
+		print "asdf"
 
 		self.node = Menge.createNodeFromXml(
 			'<Node Name = "Water_01" Type = "Sprite">'
 			'<ImageMap Name = "BlueActive" />'
-			'<Transformation Value = "1;0;0;1;0;0" />'
-			'</Node> <!-- Sprite -->'
+			'<Transformation Value = "1;0;0;1;0;0;" />'
+			'</Node>'
 			)
+
+		print "asdf2"
 
 		self.node.activate()
 		self.layerAppend( "Water", self.node )

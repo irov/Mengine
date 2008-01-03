@@ -40,9 +40,12 @@ namespace Menge
 		void render();
 
 	public:
-		bool init( const std::string& _params );
+		bool init();
 		void release();
 		void debugRender();
+
+	public:
+		void setParamString( const std::string& _params );
 
 	public:
 		const std::string & getPathEntities() const;

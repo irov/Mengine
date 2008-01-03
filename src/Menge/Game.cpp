@@ -209,7 +209,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleKeyEvent( size_t _key, bool _isDown )
 	{
-
 		bool handle = false;
 
 		if( !handle )
@@ -324,7 +323,19 @@ namespace Menge
 		return m_pathArrows;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::init( const std::string& _params )
+	void Game::setParamString( const std::string& _params )
+	{
+		if( _params.empty() == false )
+		{
+			Holder<Player>::hostage()
+					->setCurrentScene( _params );
+		}
+		else
+		{
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::init( )
 	{
 		Holder<RenderEngine>::hostage()->setContentResolution( m_resourceResolution );
 
@@ -403,24 +414,14 @@ namespace Menge
 
 		bool result = false;
 
-		if( _params.empty() == false )
+		if( Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
 		{
-			Holder<Player>::hostage()
-					->setCurrentScene( _params );
+			PyObject * pyResult = Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, m_eventInit );
 
-			result  = true;
-		}
-		else
-		{
-			if( Holder<ScriptEngine>::hostage()
-				->hasModuleFunction( m_pyPersonality, m_eventInit ) )
-			{
-				PyObject * pyResult = Holder<ScriptEngine>::hostage()
-					->callModuleFunction( m_pyPersonality, m_eventInit );
-
-				result = Holder<ScriptEngine>::hostage()
-					->parseBool( pyResult );
-			}
+			result = Holder<ScriptEngine>::hostage()
+				->parseBool( pyResult );
 		}
 
 		if( result == false )
@@ -429,7 +430,6 @@ namespace Menge
 		}
 
 		Holder<ResourceManager>::hostage()->addListener( this );
-
 
 		return result;
 	}

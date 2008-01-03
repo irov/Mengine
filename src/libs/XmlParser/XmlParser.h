@@ -3,8 +3,6 @@
 #	include "XmlElement.h"
 #	include "XmlListener.h"
 
-#	include "math/mat4.h"
-
 #	include <string>
 
 class XmlElement;

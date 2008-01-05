@@ -141,5 +141,14 @@ XmlParserCheckMethod::check_member( this, member, xmlengine_value  )
 		}\
 	}
 
+#	define XML_CASE_VALUE_NODE_MEMBER( node, key, member )\
+	XML_CASE_NODE( node )\
+	{\
+		XML_FOR_EACH_ATTRIBUTES()\
+		{\
+			XML_CASE_ATTRIBUTE_MEMBER( key, member );\
+		}\
+	}
+
 #	define XML_PUSH_CLASS_LISTENER( listener, method )\
 	do{ XmlParserElement::element_push_listener( xmlengine_element, xmlListenerMethod( listener, method ) ); } while(false)

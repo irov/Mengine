@@ -1,3 +1,4 @@
+#	pragma once
 
 #define C4_NONE      2
 #define C4_MAX_LEVEL 20

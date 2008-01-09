@@ -28,6 +28,8 @@
 
 #	include "Color.h"
 #	include "C4AI.h"
+#	include "ReversiAI.h"
+#	include "CornersAI.h"
 
 #	include "Camera3D.h"
 
@@ -283,6 +285,26 @@ namespace Menge
 			.def( "set", &Color::set )
 			;
 
+		pybind::class_<ReversiAI>("ReversiAI")
+			.def( pybind::init<>() )
+			.def( "setId", &ReversiAI::setId )
+			.def( "setDepth", &ReversiAI::setDepth )
+			.def( "setEndgameEmpty", &ReversiAI::setEndgameEmpty )
+			.def( "markCell", &ReversiAI::markCell )
+			.def( "autoMove", &ReversiAI::autoMove )
+			.def( "getCurScore", &ReversiAI::getCurScore )
+			.def( "getLeavesEvaluated", &ReversiAI::getLeavesEvaluated )
+			;
+
+		pybind::class_<CornersAI>("CornersAI")
+			.def( pybind::init<>() )
+			.def( "changeTurn", &CornersAI::changeTurn )
+			.def( "makeMove", &CornersAI::makeMove )
+			.def( "autoMove", &CornersAI::autoMove )
+			.def( "getWinner", &CornersAI::getWinner )
+			.def( "restartGame", &CornersAI::restartGame )
+			;		
+		
 		pybind::class_<C4AI>("C4AI")
 			.def( pybind::init<>() )
 			.def( "newGame", &C4AI::newGame )
@@ -291,6 +313,7 @@ namespace Menge
 			.def( "endGame", &C4AI::endGame )
 			.def( "reset", &C4AI::reset )
 			;
+
 
 
 		pybind::interface_<Node>("Node", false)

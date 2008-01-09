@@ -909,6 +909,44 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="ReversiAI"
+				>
+				<File
+					RelativePath=".\ReversiAI.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\ReversiAI.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="CornersAI"
+				>
+				<File
+					RelativePath=".\CornersAI.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\CornersAI.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Scene"

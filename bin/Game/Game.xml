@@ -9,21 +9,21 @@
 		<Fini Function = "fini" />
 	</Personality>
 
-	<Scenes Path = "Game/Scenes"/>
+	<Scenes Path = "Scenes"/>
 
-	<Arrows Path = "Game/Arrows">
+	<Arrows Path = "Arrows">
 		<Default/>
 	</Arrows>
 
-	<Entities Path = "Game/Entities">
+	<Entities Path = "Entities">
 		<Block/>
 		<Grid/>
 		<Ball/>
 	</Entities>
 
-	<Scripts Path = "Game/Scripts" />
+	<Scripts Path = "Scripts" />
 
-	<Resource Path = "Game/Resource">
+	<Resource Path = "Resource">
 		<FishDemo/>
 	</Resource>
 

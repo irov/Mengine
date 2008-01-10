@@ -22,6 +22,7 @@ public:
 	const char * platformBundlePath() override;
 
 	bool createFolder( const char* _path ) override;
+	bool changeDir( const char* _path ) override;
 
 private:
 	Ogre::Archive * m_arch;

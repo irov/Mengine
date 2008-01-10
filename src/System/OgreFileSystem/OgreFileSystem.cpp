@@ -5,6 +5,10 @@
 
 #	include <tchar.h>
 
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
+#	include <direct.h>
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( FileSystemInterface **_system )
 {
@@ -127,3 +131,14 @@ bool OgreFileSystem::createFolder( const char * _path )
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////
+bool OgreFileSystem::changeDir( const char* _path )
+{
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
+	if( !_chdir( _path ) )
+	{
+		return true;
+	}
+#else
+#endif
+	return false;
+}

@@ -59,6 +59,7 @@ namespace Menge
 		virtual bool isFullScreen() const;
 		virtual const std::string& getRenderDriver() const;
 		const std::string& getTitle() const;
+		const std::string& getResourcePath() const;
 
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown );
@@ -82,5 +83,6 @@ namespace Menge
 		std::string m_commandLine;
 		bool m_fixedContentResolution;
 		std::string m_title;
+		std::string m_resourcePath;
 	};
 }

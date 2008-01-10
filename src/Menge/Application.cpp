@@ -57,6 +57,7 @@ namespace Menge
 		, m_commandLine(_args)
 		, m_fixedContentResolution( false )
 		, m_title("Menge-engine")
+		, m_resourcePath("")
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -161,6 +162,8 @@ namespace Menge
 			{
 				// 
 			}
+
+			XML_CASE_VALUE_NODE( "ResourcePath", "Path", m_resourcePath );
 
 			XML_CASE_VALUE_NODE( "Game", "File", m_gameInfo );
 
@@ -296,5 +299,10 @@ namespace Menge
 	const std::string& Application::getTitle() const
 	{
 		return m_title;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const std::string& Application::getResourcePath() const
+	{
+		return m_resourcePath;
 	}
 }

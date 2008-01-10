@@ -204,6 +204,8 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	inputInterface->init( pl );
 	renderInterface->init( m_root, m_renderWindow );
 
+	//fileInterface->loadPath( m_application->getResourcePath().c_str() );
+	fileInterface->changeDir( m_application->getResourcePath().c_str() );
 	m_application->createGame();
 
 	return initialize;
@@ -224,6 +226,8 @@ void OgreApplication::initParams()
 	#endif
 
 	m_root->loadPlugin( m_resourcePath + renderDriver );
+
+	//m_root->loadPlugin( m_resourcePath + "plugins/Plugin_TheoraVideoSystem_d.dll" );
 
 	Ogre::RenderSystem * renderSystem = m_root->getAvailableRenderers()->at( 0 );
 	m_root->setRenderSystem( renderSystem );

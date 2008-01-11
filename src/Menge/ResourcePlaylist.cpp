@@ -24,10 +24,25 @@ namespace Menge
 	{
 		ResourceReference::loader( _xml );
 
+		//<Tracks>
+		//	<Track File = "Game/Sounds/Music/gameplay2.ogg"/>
+		//	</Tracks>
+
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Loop", "Value", m_loop );
 
+			XML_CASE_NODE("Tracks")
+			{
+				XML_PARSE_ELEMENT( this, &ResourcePlaylist::loaderTracks_ );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourcePlaylist::loaderTracks_( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
 			XML_CASE_NODE("Track")
 			{
 				std::string filename;

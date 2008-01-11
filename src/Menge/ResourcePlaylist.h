@@ -56,6 +56,7 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml ) override;
+		void loaderTracks_( XmlElement * _xml );
 
 	protected:
 		bool _compile() override;

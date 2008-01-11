@@ -78,8 +78,8 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_VALUE_NODE( "Resource", "Name", m_resourcename );
-			XML_CASE_VALUE_NODE( "Emitter", "Name", m_emitterName );
+			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( "Emitter", "Name", m_emitterName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

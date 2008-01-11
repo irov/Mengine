@@ -149,7 +149,7 @@ namespace Menge
 		{
 			XML_CASE_NODE("Application")
 			{				
-				XML_PUSH_CLASS_LISTENER( this, &Application::loaderApplication );
+				XML_PARSE_ELEMENT( this, &Application::loaderApplication );
 			}
 		}
 	}
@@ -163,13 +163,13 @@ namespace Menge
 				// 
 			}
 
-			XML_CASE_VALUE_NODE( "ResourcePath", "Path", m_resourcePath );
+			XML_CASE_ATTRIBUTE_NODE( "ResourcePath", "Path", m_resourcePath );
 
-			XML_CASE_VALUE_NODE( "Game", "File", m_gameInfo );
+			XML_CASE_ATTRIBUTE_NODE( "Game", "File", m_gameInfo );
 
 			XML_CASE_NODE("Config")
 			{
-				XML_PUSH_CLASS_LISTENER( this, &Application::loaderConfig );
+				XML_PARSE_ELEMENT( this, &Application::loaderConfig );
 			}
 		}
 	}
@@ -178,13 +178,13 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_VALUE_NODE("Title", "Name", m_title );					
-			XML_CASE_VALUE_NODE("Width", "Value", m_width );					
-			XML_CASE_VALUE_NODE("Height", "Value", m_height );
-			XML_CASE_VALUE_NODE("Bits", "Value", m_bits );
-			XML_CASE_VALUE_NODE("Fullscreen", "Value", m_fullScreen );
-			XML_CASE_VALUE_NODE("RenderDriver", "Name", m_renderDriver );
-			XML_CASE_VALUE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
+			XML_CASE_ATTRIBUTE_NODE("Title", "Name", m_title );					
+			XML_CASE_ATTRIBUTE_NODE("Width", "Value", m_width );					
+			XML_CASE_ATTRIBUTE_NODE("Height", "Value", m_height );
+			XML_CASE_ATTRIBUTE_NODE("Bits", "Value", m_bits );
+			XML_CASE_ATTRIBUTE_NODE("Fullscreen", "Value", m_fullScreen );
+			XML_CASE_ATTRIBUTE_NODE("RenderDriver", "Name", m_renderDriver );
+			XML_CASE_ATTRIBUTE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

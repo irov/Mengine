@@ -221,19 +221,13 @@ namespace	Menge
 		{
 			XML_CASE_NODE("Scene")
 			{
-				XML_PUSH_CLASS_LISTENER( this, &Scene::loaderScene_ );
-			}	
+				XML_PARSE_ELEMENT( this, &Scene::loaderScene_ );
+			}
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::loaderEnd( bool result )
-	{
-		if( result == false )
+		XML_END_NODE()
 		{
-			return;
+			callMethod( "onLoader", "()" );
 		}
-
-		callMethod( "onLoader", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loaderScene_( XmlElement *_xml )
@@ -243,7 +237,7 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_VALUE_NODE("OffsetPosition", "Value", m_offsetPosition );
+			XML_CASE_ATTRIBUTE_NODE("OffsetPosition", "Value", m_offsetPosition );
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////

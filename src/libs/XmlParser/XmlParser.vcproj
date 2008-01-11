@@ -291,6 +291,18 @@
 			>
 		</File>
 		<File
+			RelativePath=".\XmlElementListener.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\XmlElementListener.h"
+			>
+		</File>
+		<File
+			RelativePath=".\XmlElementValueListener.h"
+			>
+		</File>
+		<File
 			RelativePath=".\XmlExpatParser.cpp"
 			>
 		</File>
@@ -312,6 +324,26 @@
 		</File>
 		<File
 			RelativePath=".\XmlParser.h"
+			>
+		</File>
+		<File
+			RelativePath=".\XmlParserCast.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\XmlParserCast.h"
+			>
+		</File>
+		<File
+			RelativePath=".\XmlParserCheckMethod.h"
+			>
+		</File>
+		<File
+			RelativePath=".\XmlParserElement.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\XmlParserElement.h"
 			>
 		</File>
 	</Files>

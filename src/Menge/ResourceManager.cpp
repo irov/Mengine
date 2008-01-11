@@ -35,7 +35,7 @@ namespace Menge
 	void ResourceManager::loadResource( const std::string & _file )
 	{
 		if( Holder<XmlEngine>::hostage()
-			->parseXmlFile( _file, xmlListenerMethod( this, &ResourceManager::loaderDataBlock ) ) == false )
+			->parseXmlFileM( _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{
 			MENGE_LOG("Error: Invalid parse resource '%s' \n", _file.c_str() );
 		}
@@ -47,7 +47,7 @@ namespace Menge
 		{
 			XML_CASE_NODE("DataBlock")
 			{
-				XML_PUSH_CLASS_LISTENER( this, &ResourceManager::loaderResource );
+				XML_PARSE_ELEMENT( this, &ResourceManager::loaderResource );
 			}
 		}
 	}
@@ -92,7 +92,7 @@ namespace Menge
 
 				registerResource( resource );
 
-				XML_PUSH_CLASS_LISTENER( resource, &ResourceReference::loader );
+				XML_PARSE_ELEMENT( resource, &ResourceReference::loader );
 			}		
 
 			//XML_CHECK_NODE("Extend")

@@ -26,7 +26,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_VALUE_NODE( "Loop", "Value", m_loop );
+			XML_CASE_ATTRIBUTE_NODE( "Loop", "Value", m_loop );
 
 			XML_CASE_NODE("Track")
 			{

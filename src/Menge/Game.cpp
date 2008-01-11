@@ -78,7 +78,7 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Game" )
 			{
-				XML_PUSH_CLASS_LISTENER( this, &Game::loaderGame_ );
+				XML_PARSE_ELEMENT( this, &Game::loaderGame_ );
 			}
 		}
 	}
@@ -98,7 +98,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Path", m_pathScenes );
 				}
 
-				XML_PUSH_CLASS_LISTENER( this, &Game::loaderScenes_ );
+				XML_PARSE_ELEMENT( this, &Game::loaderScenes_ );
 			}
 			//<Arrows Path = "Game/Arrows">
 			//	<Default/>
@@ -110,7 +110,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Path", m_pathArrows );
 				}
 
-				XML_PUSH_CLASS_LISTENER( this, &Game::loaderArrows_ );
+				XML_PARSE_ELEMENT( this, &Game::loaderArrows_ );
 
 			}
 
@@ -119,7 +119,7 @@ namespace Menge
 			//</Default>
 			XML_CASE_NODE("Default")
 			{
-				XML_PUSH_CLASS_LISTENER( this, &Game::loaderDefault_ );
+				XML_PARSE_ELEMENT( this, &Game::loaderDefault_ );
 			}
 
 			XML_CASE_NODE("Personality")
@@ -129,7 +129,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Module", m_personality );
 				}
 
-				XML_PUSH_CLASS_LISTENER( this, &Game::loaderPersonality_ );
+				XML_PARSE_ELEMENT( this, &Game::loaderPersonality_ );
 			}
 
 			XML_CASE_NODE("Entities")
@@ -139,7 +139,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Path", m_pathEntities );
 				}
 
-				XML_PUSH_CLASS_LISTENER( this, &Game::loaderEntities_ );
+				XML_PARSE_ELEMENT( this, &Game::loaderEntities_ );
 			}
 
 			XML_CASE_NODE("Resource")
@@ -149,11 +149,11 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Path", m_pathResource );
 				}
 
-				XML_PUSH_CLASS_LISTENER( this, &Game::loaderResources_ );
+				XML_PARSE_ELEMENT( this, &Game::loaderResources_ );
 			}
 			
-			XML_CASE_VALUE_NODE( "Scripts", "Path", m_pathScripts );
-			XML_CASE_VALUE_NODE( "ResourceResolution", "Value", m_resourceResolution );
+			XML_CASE_ATTRIBUTE_NODE( "Scripts", "Path", m_pathScripts );
+			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_resourceResolution );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -193,7 +193,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_VALUE_NODE( "Arrow", "Name", m_defaultArrowName );
+			XML_CASE_ATTRIBUTE_NODE( "Arrow", "Name", m_defaultArrowName );
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -201,9 +201,9 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_VALUE_NODE( "Init", "Function", m_eventInit );
-			XML_CASE_VALUE_NODE( "Update", "Function", m_eventUpdate );
-			XML_CASE_VALUE_NODE( "Fini", "Function", m_eventFini );
+			XML_CASE_ATTRIBUTE_NODE( "Init", "Function", m_eventInit );
+			XML_CASE_ATTRIBUTE_NODE( "Update", "Function", m_eventUpdate );
+			XML_CASE_ATTRIBUTE_NODE( "Fini", "Function", m_eventFini );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -554,7 +554,7 @@ namespace Menge
 			xml_path += "/Scene.xml";
 
 			if( Holder<XmlEngine>::hostage()
-				->parseXmlFileM( xml_path, scene, &Scene::loader, &Scene::loaderEnd ) == false )
+				->parseXmlFileM( xml_path, scene, &Scene::loader ) == false )
 			{
 				MENGE_LOG("Warrning: invalid loader xml '%s' for scene '%s'/n"
 					, xml_path.c_str()

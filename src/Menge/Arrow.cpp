@@ -74,7 +74,7 @@ namespace	Menge
 		{
 			XML_CASE_NODE( "Arrow" )
 			{
-				XML_PUSH_CLASS_LISTENER( this, &Arrow::loaderArrow_ );
+				XML_PARSE_ELEMENT( this, &Arrow::loaderArrow_ );
 			}
 		}
 	}
@@ -85,7 +85,7 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_VALUE_NODE( "ClickOffset", "Value", m_offsetClick );
+			XML_CASE_ATTRIBUTE_NODE( "ClickOffset", "Value", m_offsetClick );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

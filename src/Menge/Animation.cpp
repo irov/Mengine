@@ -29,9 +29,9 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_VALUE_NODE( "Animation", "Name", m_resourcename );
-			XML_CASE_VALUE_NODE( "Looping", "Value", m_looping );
-			XML_CASE_VALUE_NODE( "AutoStart", "Value", m_autoStart );			
+			XML_CASE_ATTRIBUTE_NODE( "Animation", "Name", m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looping );
+			XML_CASE_ATTRIBUTE_NODE( "AutoStart", "Value", m_autoStart );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -27,8 +27,8 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_VALUE_NODE( "File", "Path", m_filename );
-			XML_CASE_VALUE_NODE( "Folder", "Path", m_folder );
+			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
+			XML_CASE_ATTRIBUTE_NODE( "Folder", "Path", m_folder );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

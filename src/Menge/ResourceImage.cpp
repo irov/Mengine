@@ -56,7 +56,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_VALUE_NODE( "Filter", "Value", m_filter );
+			XML_CASE_ATTRIBUTE_NODE( "Filter", "Value", m_filter );
 		}
 	}
 }

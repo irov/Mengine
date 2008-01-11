@@ -11,25 +11,21 @@ namespace Menge
 		: public XmlParser
 	{
 	public:
-		bool parseXmlFile( const std::string & _file, XmlListener * _listener );
-		bool parseXmlBuffer( const std::string & _buffer, XmlListener * _listener );
+		bool parseXmlFile( const std::string & _file, XmlElementListener * _listener );
+		bool parseXmlBuffer( const std::string & _buffer, XmlElementListener * _listener );
 
 		template<class C, class F, class FE>
-		bool parseXmlFileM( const std::string & _file, C * _self, F _method, FE _end )
+		bool parseXmlFileM( const std::string & _file, C * _self, F _method )
 		{
-			XmlListener * listener = new XmlListenerMethod<C,F>(_self, _method );
+			XmlElementListener * listener = new XmlElementListenerMethod<C,F>(_self, _method );
 			bool result = parseXmlFile( _file, listener );
-			if( _end ) 
-			{
-				(_self->*_end)( result );
-			}
 			return result;
 		}
 
 		template<class C, class F>
 		bool parseXmlFileM( const std::string & _file, C * _self, F _method )
 		{
-			XmlListener * listener = new XmlListenerMethod<C,F>(_self, _method );
+			XmlElementListener * listener = new XmlElementListenerMethod<C,F>(_self, _method );
 			bool result = parseXmlFile( _file, listener );
 			return result;
 		}
@@ -37,7 +33,7 @@ namespace Menge
 		template<class F>
 		bool parseXmlFileF( const std::string & _file, F f )
 		{
-			XmlListener * listener = new XmlListenerFunction<F>(f);
+			XmlElementListener * listener = new XmlElementListenerFunction<F>(f);
 			return parseXmlFile( _file, listener );
 		}
 	};

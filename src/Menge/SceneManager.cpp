@@ -60,7 +60,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	class XmlNodeLoaderListener
-		: public XmlListener
+		: public XmlElementListener
 	{
 	public:
 		XmlNodeLoaderListener( Node ** _externalNode )
@@ -87,7 +87,7 @@ namespace Menge
 
 					(*m_externalNode)->setName( name );
 
-					XML_PUSH_CLASS_LISTENER( (*m_externalNode), &Node::loader );
+					XML_PARSE_ELEMENT( (*m_externalNode), &Node::loader );
 				}
 			}
 		}

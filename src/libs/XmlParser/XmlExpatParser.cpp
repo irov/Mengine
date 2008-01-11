@@ -2,7 +2,8 @@
 #	include <stdio.h>
 
 #	include "XmlElement.h"
-#	include "XmlListener.h"
+#	include "XmlElementListener.h"
+#	include "XmlElementValueListener.h"
 
 #ifdef XML_LARGE_SIZE
 #if defined(XML_USE_MSC_EXTENSIONS) && _MSC_VER < 1400
@@ -18,27 +19,35 @@
 static void XMLCALL cbBeginElement( void *userData, const char *name, const char **atts )
 {
 	XmlExpatParser * parser = static_cast<XmlExpatParser*>( userData );
-	XmlListener * parser_listener = parser->topListener();
+	XmlElementListener * parser_listener = parser->topListener();
 
 	XmlElement element( parser, name, atts );
 
 	parser_listener->parseXML( &element );
 
-	XmlListener * incref_listener = parser->topListener();
+	XmlElementListener * incref_listener = parser->topListener();
 	incref_listener->incref();
 }
 //////////////////////////////////////////////////////////////////////////
 static void XMLCALL cbEndElement( void *userData, const char *name )
 {
 	XmlExpatParser * parser = static_cast<XmlExpatParser*>( userData );
-	XmlListener * listener = parser->topListener();
-	if( listener->decref() )
+	XmlElementListener * parser_listener = parser->topListener();
+	if( parser_listener->decref() )
 	{
+		parser_listener->parseXML( 0 );
 		parser->popListener();
 	}
 }
 //////////////////////////////////////////////////////////////////////////
+static void XMLCALL cbCharacterDataHandler( void *userData, const XML_Char *s, int len)
+{
+	XmlExpatParser * parser = static_cast<XmlExpatParser*>( userData );
+	parser->callValueListener( s, len );
+}
+//////////////////////////////////////////////////////////////////////////
 XmlExpatParser::XmlExpatParser()
+	: m_valueListener(0)
 {
 	m_parser = XML_ParserCreate(NULL);
 }
@@ -48,12 +57,12 @@ XmlExpatParser::~XmlExpatParser()
 	XML_ParserFree( m_parser );
 }
 //////////////////////////////////////////////////////////////////////////
-void * XmlExpatParser::makeBuffer( int _size )
+void * XmlExpatParser::makeBuffer( size_t _size )
 {
 	return XML_GetBuffer( m_parser, _size );
 }
 //////////////////////////////////////////////////////////////////////////
-bool XmlExpatParser::parseXML( int _size, XmlListener * _listener )
+bool XmlExpatParser::parseXML( size_t _size, XmlElementListener * _listener )
 {
 	XML_SetUserData( m_parser, this );
 	XML_SetElementHandler( m_parser, cbBeginElement, cbEndElement );
@@ -81,12 +90,12 @@ bool XmlExpatParser::parseXML( int _size, XmlListener * _listener )
 	return done;
 }
 //////////////////////////////////////////////////////////////////////////
-void XmlExpatParser::pushListener( XmlListener * _listener )
+void XmlExpatParser::pushListener( XmlElementListener * _listener )
 {
 	m_listStackListener.push_back( _listener );
 }
 //////////////////////////////////////////////////////////////////////////
-XmlListener * XmlExpatParser::topListener()
+XmlElementListener * XmlExpatParser::topListener()
 {
 	return m_listStackListener.back();
 }
@@ -109,4 +118,39 @@ void XmlExpatParser::clearListener()
 	}
 
 	m_listStackListener.clear();
+}
+//////////////////////////////////////////////////////////////////////////
+void XmlExpatParser::setValueListener( XmlElementValueListener * _listener )
+{
+	m_valueListener = _listener;
+
+	XML_SetCharacterDataHandler( m_parser, cbCharacterDataHandler );
+}
+//////////////////////////////////////////////////////////////////////////
+void XmlExpatParser::callValueListener( const char * _value, int _len )
+{
+	if( m_valueListener == 0 )
+	{
+		return;
+	}
+
+	int begin_trim = -1;
+	char ch = 0;
+	do
+	{
+		ch = _value[ ++begin_trim ];
+	}while( ch == ' ' || ch == '\t' && begin_trim < _len );
+
+	int end_trim = _len;
+	do
+	{
+		ch = _value[ --end_trim ];
+	}while( ch == ' ' || ch == '\t' && begin_trim < end_trim );
+
+	std::string str_value( _value + begin_trim, end_trim - begin_trim + 1 );
+
+	m_valueListener->call( str_value.c_str() );
+	XML_SetCharacterDataHandler( m_parser, 0 );
+	delete m_valueListener;
+	m_valueListener = 0;
 }

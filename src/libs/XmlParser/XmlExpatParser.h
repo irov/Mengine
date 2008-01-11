@@ -3,7 +3,8 @@
 #	include "expat.h"
 #	include <list>
 
-class XmlListener;
+class XmlElementListener;
+class XmlElementValueListener;
 
 class XmlExpatParser
 {
@@ -12,18 +13,23 @@ public:
 	~XmlExpatParser();
 
 public:
-	void * makeBuffer( int _size );
-	bool parseXML( int _size, XmlListener * _listener );	
+	void * makeBuffer( size_t _size );
+	bool parseXML( size_t _size, XmlElementListener * _listener );	
 
 public:
-	void pushListener( XmlListener * _listener );
-	XmlListener * topListener();
+	void pushListener( XmlElementListener * _listener );
+	XmlElementListener * topListener();
 	void popListener();
 	void clearListener();
 
+	void setValueListener( XmlElementValueListener * _listener );
+	void callValueListener( const char * _value, int _len );
+
 protected:
-	typedef std::list<XmlListener *> TListStackListener;
+	typedef std::list<XmlElementListener *> TListStackListener;
 	TListStackListener m_listStackListener;
+
+	XmlElementValueListener * m_valueListener;
 
 	XML_Parser m_parser;
 };

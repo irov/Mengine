@@ -4,7 +4,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlEngine::parseXmlFile( const std::string & _file, XmlListener * _listener )
+	bool XmlEngine::parseXmlFile( const std::string & _file, XmlElementListener * _listener )
 	{
 		FileDataInterface * file = Holder<FileEngine>::hostage()
 			->openFile( _file );
@@ -22,7 +22,7 @@ namespace Menge
 		return XmlParser::parseBuffer( size, _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlEngine::parseXmlBuffer( const std::string & _buffer, XmlListener * _listener )
+	bool XmlEngine::parseXmlBuffer( const std::string & _buffer, XmlElementListener * _listener )
 	{
 		size_t size = _buffer.size();
 

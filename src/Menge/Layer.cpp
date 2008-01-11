@@ -45,8 +45,8 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_VALUE_NODE( "Main", "Value", m_main );
-			XML_CASE_VALUE_NODE( "Size", "Value", m_size );
+			XML_CASE_ATTRIBUTE_NODE( "Main", "Value", m_main );
+			XML_CASE_ATTRIBUTE_NODE( "Size", "Value", m_size );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

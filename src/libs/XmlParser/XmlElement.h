@@ -1,7 +1,8 @@
 #	pragma once
 
 class XmlExpatParser;
-class XmlListener;
+class XmlElementListener;
+class XmlElementValueListener;
 
 class XmlElement
 {
@@ -15,7 +16,8 @@ public:
 	bool compareTitle( const char * _title );
 	bool compareAttributeKey( const char * _title );
 
-	void pushListener( XmlListener * _listener );
+	void pushListener( XmlElementListener * _listener );
+	void setValueListener( XmlElementValueListener * _listener );
 
 public:
 	void beginAttributes();

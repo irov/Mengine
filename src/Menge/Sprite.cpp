@@ -49,13 +49,13 @@ namespace	Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_VALUE_NODE( "ImageMap", "Name", m_resourcename );
-			XML_CASE_VALUE_NODE( "ImageIndex", "Value", m_currentImageIndex );
-			XML_CASE_VALUE_NODE( "CenterAlign", "Value", m_centerAlign );
-			XML_CASE_VALUE_NODE( "Scale", "Value", m_scale );
-			XML_CASE_VALUE_NODE( "Blend", "Source", ((int&)m_blendSrc) );
-			XML_CASE_VALUE_NODE( "Blend", "Dest", ((int&)m_blendDest) );
-			XML_CASE_VALUE_NODE( "Color", "Value", m_color );
+			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_currentImageIndex );
+			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
+			XML_CASE_ATTRIBUTE_NODE( "Scale", "Value", m_scale );
+			XML_CASE_ATTRIBUTE_NODE( "Blend", "Source", ((int&)m_blendSrc) );
+			XML_CASE_ATTRIBUTE_NODE( "Blend", "Dest", ((int&)m_blendDest) );
+			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

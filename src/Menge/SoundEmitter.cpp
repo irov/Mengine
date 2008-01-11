@@ -54,8 +54,8 @@ namespace Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_VALUE_NODE( "Resource", "Name", m_resourcename );
-			XML_CASE_VALUE_NODE( "HeadMode", "Value", m_isHeadMode );
+			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( "HeadMode", "Value", m_isHeadMode );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

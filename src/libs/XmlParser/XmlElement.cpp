@@ -27,9 +27,14 @@ bool XmlElement::compareAttributeKey( const char * _name )
 	return strcmp( m_attrebutes[ m_attrIterator ], _name ) == 0;
 }
 //////////////////////////////////////////////////////////////////////////
-void XmlElement::pushListener( XmlListener * _listener )
+void XmlElement::pushListener( XmlElementListener * _listener )
 {
 	m_expat->pushListener(_listener);
+}
+//////////////////////////////////////////////////////////////////////////
+void XmlElement::setValueListener( XmlElementValueListener * _listener )
+{
+	m_expat->setValueListener( _listener );
 }
 //////////////////////////////////////////////////////////////////////////
 void XmlElement::beginAttributes()

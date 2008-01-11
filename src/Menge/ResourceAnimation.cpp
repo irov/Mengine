@@ -33,14 +33,24 @@ namespace Menge
 	{
 		ResourceReference::loader( _xml );
 
-		Sequence sq;
-
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE( "Sequences" )
+			{
+				XML_PARSE_ELEMENT( this, &ResourceAnimation::loaderSequences_ );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceAnimation::loaderSequences_( XmlElement * _xml )
+	{
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_NODE( "Sequence" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
+					Sequence sq;
 					XML_CASE_ATTRIBUTE( "Index", sq.index );
 					XML_CASE_ATTRIBUTE( "Delay", sq.delay );
 					m_vectorSequence.push_back( sq );
@@ -48,4 +58,6 @@ namespace Menge
 			}
 		}
 	}
+
+
 }

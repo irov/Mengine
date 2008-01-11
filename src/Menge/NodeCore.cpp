@@ -228,7 +228,7 @@ namespace Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_VALUE_NODE("Enable", "Value", m_enable );
+			XML_CASE_ATTRIBUTE_NODE("Enable", "Value", m_enable );
 
 			XML_CASE_NODE("Node")
 			{
@@ -251,7 +251,7 @@ namespace Menge
 				node->setName( name );
 				addChildren( node );
 
-				XML_PUSH_CLASS_LISTENER( node, &Node::loader );
+				XML_PARSE_ELEMENT( node, &Node::loader );
 			}
 
 			//XML_CHECK_NODE("External")

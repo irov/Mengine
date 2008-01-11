@@ -55,6 +55,7 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml );
+		void loaderSequences_( XmlElement * _xml );
 
 	private:
 		struct Sequence

@@ -24,6 +24,18 @@ namespace Menge
 	{
 		ResourceReference::loader( _xml );
 
+		//<Resource Name = "SoundGamePlay" Type = "ResourcePlaylist">
+		//	<File Path = "Sounds/Music/GamePlay.xml"/>
+		//	</Resource>
+
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourcePlaylist::loaderTracks_( XmlElement * _xml )
+	{
 		//<Tracks>
 		//	<Track File = "Game/Sounds/Music/gameplay2.ogg"/>
 		//	</Tracks>
@@ -39,7 +51,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::loaderTracks_( XmlElement * _xml )
+	void ResourcePlaylist::loaderTrack_( XmlElement * _xml )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
@@ -66,15 +78,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePlaylist::_compile()
 	{
-		//if( Holder<XmlEngine>::hostage()
-		//	->parseXml( m_filename, this ) == false )
-		//{
-		//	MENGE_LOG("Warning: resource playlist not find file '%s'\n"
-		//		, m_filename.c_str() 
-		//		);
+		if( Holder<XmlEngine>::hostage()
+			->parseXmlFileM( m_filename, this, &ResourcePlaylist::loader ) == false )
+		{
+			MENGE_LOG("Warning: resource playlist not find file '%s'\n"
+				, m_filename.c_str() 
+				);
 
-		//	return false;
-		//}
+			return false;
+		}
 
 		return true;
 	}

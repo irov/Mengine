@@ -40,13 +40,18 @@ namespace Menge
 		//	<Track File = "Game/Sounds/Music/gameplay2.ogg"/>
 		//	</Tracks>
 
+		//XML_SWITCH_NODE( _xml )
+		//{
+		//	XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
+		//}
+
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Loop", "Value", m_loop );
 
 			XML_CASE_NODE("Tracks")
 			{
-				XML_PARSE_ELEMENT( this, &ResourcePlaylist::loaderTracks_ );
+				XML_PARSE_ELEMENT( this, &ResourcePlaylist::loaderTrack_ );
 			}
 		}
 	}
@@ -79,7 +84,7 @@ namespace Menge
 	bool ResourcePlaylist::_compile()
 	{
 		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( m_filename, this, &ResourcePlaylist::loader ) == false )
+			->parseXmlFileM( m_filename, this, &ResourcePlaylist::loaderTracks_ ) == false )
 		{
 			MENGE_LOG("Warning: resource playlist not find file '%s'\n"
 				, m_filename.c_str() 

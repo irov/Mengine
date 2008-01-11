@@ -48,13 +48,14 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Sequence" )
 			{
+				Sequence sq;
 				XML_FOR_EACH_ATTRIBUTES()
-				{
-					Sequence sq;
+				{					
 					XML_CASE_ATTRIBUTE( "Index", sq.index );
 					XML_CASE_ATTRIBUTE( "Delay", sq.delay );
-					m_vectorSequence.push_back( sq );
+					//if(abs(sq.delay) > 10000) continue;
 				}
+				m_vectorSequence.push_back( sq );
 			}
 		}
 	}

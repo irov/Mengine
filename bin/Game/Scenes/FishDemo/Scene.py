@@ -181,7 +181,7 @@ class Scene( Menge.Scene ):
 			self.testTextField.setMaxLen(80);
 			self.testTextField.setText("Zateryannyi tyjgffgfh gfhfghgfh trytry \n attol\ndfgdfgdfgdfgdfg\dfg");
 			#self.bubble.play();
-			#self.emitterTest.play();
+			self.emitterTest.play();
 
 		if key == 49:
 			print "1"

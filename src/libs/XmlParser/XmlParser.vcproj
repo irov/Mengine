@@ -311,14 +311,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\XmlListener.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\XmlListener.h"
-			>
-		</File>
-		<File
 			RelativePath=".\XmlParser.cpp"
 			>
 		</File>

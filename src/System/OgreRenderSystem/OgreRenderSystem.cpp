@@ -65,6 +65,9 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
 
+	// еще надо приатачить к ноде, и настроить камеру
+	//Ogre::Entity * e = m_sceneMgr->createEntity("head", "ogrehead.mesh");
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////

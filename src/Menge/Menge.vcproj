@@ -68,7 +68,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="pybind_d.lib cal3d_d.lib"
+				AdditionalDependencies="pybind_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Python\libs&quot;;&quot;$(SolutionDir)dependencies\Pybind\lib&quot;;&quot;$(SolutionDir)dependencies\cal3d\cal3d\bin\debug&quot;;$(NOINHERIT)"
@@ -915,20 +915,6 @@
 				<File
 					RelativePath=".\ReversiAI.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\ReversiAI.h"

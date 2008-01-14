@@ -20,9 +20,9 @@ public:
 	~XmlParser();
 
 public:
-	void * makeParser();
-	void * makeBuffer( void * _parser, size_t _size );
-	bool parseBuffer( void * _parser, size_t _size, XmlElementListener * _listener );
+	XmlExpatParser * makeParser();
+	void * makeBuffer( XmlExpatParser * _parser, size_t _size );
+	bool parseBuffer( XmlExpatParser * _parser, size_t _size, XmlElementListener * _listener );
 
 	template<class C, class F>
 	bool parseBufferMember( size_t _size, C * _self, F _method )
@@ -43,9 +43,6 @@ public:
 		XmlElementListener * listener = makeXmlElementListener( _self, _method );
 		return parseBuffer( size, listener );
 	}
-
-protected:
-	XmlExpatParser * m_xmlExpat;
 };
 
 #	define XML_SWITCH_NODE( element )\

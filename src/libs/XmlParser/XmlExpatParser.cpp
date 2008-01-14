@@ -1,8 +1,6 @@
 #	include "XmlExpatParser.h"
 #	include <stdio.h>
 
-#	include "expat.h"
-
 #	include "XmlElement.h"
 #	include "XmlElementListener.h"
 #	include "XmlElementValueListener.h"
@@ -51,49 +49,43 @@ static void XMLCALL cbCharacterDataHandler( void *userData, const XML_Char *s, i
 XmlExpatParser::XmlExpatParser()
 	: m_valueListener(0)
 {
+	m_parser = XML_ParserCreate(NULL);
 }
 //////////////////////////////////////////////////////////////////////////
 XmlExpatParser::~XmlExpatParser()
 {
-	
+	XML_ParserFree( m_parser );
 }
 //////////////////////////////////////////////////////////////////////////
-void * XmlExpatParser::makeParser()
+void * XmlExpatParser::makeBuffer( size_t _size )
 {
-	XML_Parser parser = XML_ParserCreate(NULL);
-	return parser;
+	return XML_GetBuffer( m_parser, _size );
 }
 //////////////////////////////////////////////////////////////////////////
-void * XmlExpatParser::makeBuffer( void * _parser, size_t _size )
+bool XmlExpatParser::parseXML( size_t _size, XmlElementListener * _listener )
 {
-	return XML_GetBuffer( (XML_Parser)_parser, _size );
-}
-//////////////////////////////////////////////////////////////////////////
-bool XmlExpatParser::parseXML( void * _parser, size_t _size, XmlElementListener * _listener )
-{
-	XML_SetUserData( (XML_Parser)_parser, this );
-	XML_SetElementHandler( (XML_Parser)_parser, cbBeginElement, cbEndElement );
-	XML_SetCharacterDataHandler( (XML_Parser)_parser, cbCharacterDataHandler );
+	XML_SetUserData( m_parser, this );
+	XML_SetElementHandler( m_parser, cbBeginElement, cbEndElement );
 
 	pushListener( _listener );
 
 	bool done = true;
 
-	XML_Status status = XML_ParseBuffer( (XML_Parser)_parser, _size, XML_TRUE );
+	XML_Status status = XML_ParseBuffer( m_parser, _size, XML_TRUE );
 
 	if( status == XML_STATUS_ERROR )
 	{
 		fprintf(stderr,
 			"%s at line %" XML_FMT_INT_MOD "u\n",
-			XML_ErrorString(XML_GetErrorCode((XML_Parser)_parser)),
-			XML_GetCurrentLineNumber((XML_Parser)_parser)
+			XML_ErrorString(XML_GetErrorCode(m_parser)),
+			XML_GetCurrentLineNumber(m_parser)
 			);
 
 		done = false;
 	}
 
 	clearListener();
-	XML_ParserFree( (XML_Parser)_parser );
+	XML_ParserReset( m_parser, NULL );
 
 	return done;
 }
@@ -131,6 +123,8 @@ void XmlExpatParser::clearListener()
 void XmlExpatParser::setValueListener( XmlElementValueListener * _listener )
 {
 	m_valueListener = _listener;
+
+	XML_SetCharacterDataHandler( m_parser, cbCharacterDataHandler );
 }
 //////////////////////////////////////////////////////////////////////////
 void XmlExpatParser::callValueListener( const char * _value, int _len )
@@ -156,6 +150,7 @@ void XmlExpatParser::callValueListener( const char * _value, int _len )
 	std::string str_value( _value + begin_trim, end_trim - begin_trim + 1 );
 
 	m_valueListener->call( str_value.c_str() );
+	XML_SetCharacterDataHandler( m_parser, 0 );
 	delete m_valueListener;
 	m_valueListener = 0;
 }

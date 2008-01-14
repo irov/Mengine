@@ -16,7 +16,7 @@ namespace Menge
 
 		size_t size = file->size();
 
-		void * parser = XmlParser::makeParser();
+		XmlExpatParser * parser = XmlParser::makeParser();
 		void * buffer = XmlParser::makeBuffer( parser, size );
 		file->read( buffer, size );
 
@@ -27,7 +27,7 @@ namespace Menge
 	{
 		size_t size = _buffer.size();
 
-		void * parser = XmlParser::makeParser();
+		XmlExpatParser * parser = XmlParser::makeParser();
 		void * buffer = XmlParser::makeBuffer( parser, size );
 
 		memcpy( buffer, _buffer.c_str(), size );

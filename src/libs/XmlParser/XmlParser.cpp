@@ -4,25 +4,23 @@
 //////////////////////////////////////////////////////////////////////////
 XmlParser::XmlParser()
 {
-	m_xmlExpat = new XmlExpatParser;
 }
 //////////////////////////////////////////////////////////////////////////
 XmlParser::~XmlParser()
 {
-	delete m_xmlExpat;
 }
 //////////////////////////////////////////////////////////////////////////
-void * XmlParser::makeParser()
+XmlExpatParser * XmlParser::makeParser()
 {
-	return m_xmlExpat->makeParser();
+	return new XmlExpatParser;
 }
 //////////////////////////////////////////////////////////////////////////
-void * XmlParser::makeBuffer( void * _parser, size_t _size )
+void * XmlParser::makeBuffer( XmlExpatParser * _parser, size_t _size )
 {
-	return m_xmlExpat->makeBuffer( _parser, _size );
+	return _parser->makeBuffer( _size );
 }
 //////////////////////////////////////////////////////////////////////////
-bool XmlParser::parseBuffer( void * _parser, size_t _size, XmlElementListener * _listener )
+bool XmlParser::parseBuffer( XmlExpatParser * _parser, size_t _size, XmlElementListener * _listener )
 {
-	return m_xmlExpat->parseXML( _parser, _size, _listener );
+	return _parser->parseXML( _size, _listener );
 }

@@ -1,6 +1,5 @@
 #	pragma once
 
-#	include "expat.h"
 #	include <list>
 
 class XmlElementListener;
@@ -13,8 +12,9 @@ public:
 	~XmlExpatParser();
 
 public:
-	void * makeBuffer( size_t _size );
-	bool parseXML( size_t _size, XmlElementListener * _listener );	
+	void * makeParser();
+	void * makeBuffer( void * _parser, size_t _size );
+	bool parseXML( void * _parser, size_t _size, XmlElementListener * _listener );	
 
 public:
 	void pushListener( XmlElementListener * _listener );
@@ -30,6 +30,4 @@ protected:
 	TListStackListener m_listStackListener;
 
 	XmlElementValueListener * m_valueListener;
-
-	XML_Parser m_parser;
 };

@@ -12,12 +12,17 @@ XmlParser::~XmlParser()
 	delete m_xmlExpat;
 }
 //////////////////////////////////////////////////////////////////////////
-void * XmlParser::makeBuffer( size_t _size )
+void * XmlParser::makeParser()
 {
-	return m_xmlExpat->makeBuffer( _size );
+	return m_xmlExpat->makeParser();
 }
 //////////////////////////////////////////////////////////////////////////
-bool XmlParser::parseBuffer( size_t _size, XmlElementListener * _listener )
+void * XmlParser::makeBuffer( void * _parser, size_t _size )
 {
-	return m_xmlExpat->parseXML( _size, _listener );
+	return m_xmlExpat->makeBuffer( _parser, _size );
+}
+//////////////////////////////////////////////////////////////////////////
+bool XmlParser::parseBuffer( void * _parser, size_t _size, XmlElementListener * _listener )
+{
+	return m_xmlExpat->parseXML( _parser, _size, _listener );
 }

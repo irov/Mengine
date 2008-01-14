@@ -20,8 +20,9 @@ public:
 	~XmlParser();
 
 public:
-	void * makeBuffer( size_t _size );
-	bool parseBuffer( size_t _size, XmlElementListener * _listener );
+	void * makeParser();
+	void * makeBuffer( void * _parser, size_t _size );
+	bool parseBuffer( void * _parser, size_t _size, XmlElementListener * _listener );
 
 	template<class C, class F>
 	bool parseBufferMember( size_t _size, C * _self, F _method )

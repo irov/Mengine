@@ -203,16 +203,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::directResourceCompile( const std::string & _name )
 	{
-		TMapResource::iterator it_find = m_mapResource.find( _name );
-
-		if( it_find == m_mapResource.end() )
-		{
-			return false;
-		}
-
-		ResourceReference * ref = it_find->second;
-		bool result = ref->compile();
-		return result;
+		ResourceReference * resource = getResource( _name );
+		
+		return resource != 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::directResourceRelease( const std::string & _name )
@@ -225,7 +218,7 @@ namespace Menge
 		}
 
 		ResourceReference * ref = it_find->second;
-		ref->release();
+		ref->decrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::addListener( ResourceManagerListener* _listener )

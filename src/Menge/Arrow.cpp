@@ -63,7 +63,7 @@ namespace	Menge
 			return false;
 		}
 
-		m_currentHotSpot->activate();
+		result = m_currentHotSpot->activate();
 
 		return true;
 	}

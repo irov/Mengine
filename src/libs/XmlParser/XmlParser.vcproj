@@ -109,8 +109,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\tinyxml&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\expat\lib&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;XML_STATIC"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -128,8 +128,8 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="tinyxml_STL.lib"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\tinyxml\Release_STL"
+				AdditionalDependencies="libexpatMT.lib"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\expat\win32\bin\debug&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"

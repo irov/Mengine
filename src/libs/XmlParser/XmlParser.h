@@ -20,7 +20,8 @@ public:
 	~XmlParser();
 
 public:
-	XmlExpatParser * makeParser();
+	XmlExpatParser * newParser();
+	void deleteParser( XmlExpatParser * _parser );
 	void * makeBuffer( XmlExpatParser * _parser, size_t _size );
 	bool parseBuffer( XmlExpatParser * _parser, size_t _size, XmlElementListener * _listener );
 

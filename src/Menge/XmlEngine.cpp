@@ -16,23 +16,29 @@ namespace Menge
 
 		size_t size = file->size();
 
-		XmlExpatParser * parser = XmlParser::makeParser();
+		XmlExpatParser * parser = XmlParser::newParser();
 		void * buffer = XmlParser::makeBuffer( parser, size );
 		file->read( buffer, size );
+		
+		bool result = XmlParser::parseBuffer( parser, size, _listener );
 
-		return XmlParser::parseBuffer( parser, size, _listener );
+		XmlParser::deleteParser( parser );
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool XmlEngine::parseXmlBuffer( const std::string & _buffer, XmlElementListener * _listener )
 	{
 		size_t size = _buffer.size();
 
-		XmlExpatParser * parser = XmlParser::makeParser();
+		XmlExpatParser * parser = XmlParser::newParser();
 		void * buffer = XmlParser::makeBuffer( parser, size );
 
 		memcpy( buffer, _buffer.c_str(), size );
 
-		return XmlParser::parseBuffer( parser, size, _listener );
+		bool result = XmlParser::parseBuffer( parser, size, _listener );
+
+		XmlParser::deleteParser( parser );
+		return result;
 	}
 }
 

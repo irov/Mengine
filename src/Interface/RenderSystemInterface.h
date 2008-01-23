@@ -31,6 +31,13 @@ public:
 	virtual void writeToFile( const char* _filename ) = 0;
 };
 
+class RenderVideoStreamInterface : public RenderImageInterface
+{
+public:
+	virtual void play() = 0;
+	virtual void pause() = 0;
+};
+
 class	RenderSystemInterface
 {
 public:
@@ -54,6 +61,10 @@ public:
 	virtual RenderImageInterface * loadImage( const TextureDesc& _desc ) = 0;
 	// удаления изображения
 	virtual void releaseImage( RenderImageInterface * _image ) = 0;
+	//
+	virtual RenderVideoStreamInterface* loadImageVideoStream( const char* _filename ) = 0;
+	//
+	virtual void releaseImageVideoStream( RenderVideoStreamInterface* _image ) = 0;
 	// отрисовка изображения
 	virtual void renderImage(		
 		const float * _transform, // матрица 3 на 3

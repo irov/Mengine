@@ -11,7 +11,6 @@ class OgreRenderSpriteManager;
 class OgreRenderSystem
 	: public OgreRenderSystemInterface
 	, public Ogre::ManualResourceLoader
-	, public Ogre::FrameListener
 {
 public:
 	OgreRenderSystem();
@@ -78,9 +77,6 @@ private:
 	Ogre::SceneManager * m_sceneMgr;
 
 	OgreRenderSpriteManager * m_spriteMgr;
-
-	bool frameStarted( const Ogre::FrameEvent & evt) override;
-	bool frameEnded( const Ogre::FrameEvent & evt) override;
 
 	Ogre::TheoraVideoController* m_videoControl;
 

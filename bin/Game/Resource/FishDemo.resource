@@ -74,11 +74,11 @@
 	</Resource>
 
 	<Resource Name = "ResourceBarrelGeometry" Type = "ResourcePhysicConvexGeometry">
-		<ConvexGeometryFile Name = "Geoms/barrel.bin"/>
+		<ConvexGeometryFile Name = "ZombieTest/barrel.bin"/>
 	</Resource>
 
 	<Resource Name = "ResourceLevelGeometry" Type = "ResourcePhysicConcaveGeometry">
-		<ConcaveGeometryFile Name = "Geoms/cooked.bin"/>
+		<ConcaveGeometryFile Name = "ZombieTest/cooked.bin"/>
 	</Resource>
 
 </DataBlock>

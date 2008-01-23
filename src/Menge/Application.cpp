@@ -270,7 +270,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::frameStarted()
 	{
-		Holder<RenderEngine>::hostage()->frameStarted();
+		//Holder<RenderEngine>::hostage()->frameStarted();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int Application::getScreenWidth() const

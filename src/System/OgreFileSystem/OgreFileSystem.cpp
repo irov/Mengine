@@ -51,6 +51,8 @@ void OgreFileSystem::unloadPak( const char * _pak )
 //////////////////////////////////////////////////////////////////////////
 FileDataInterface *	OgreFileSystem::openFile( const char * _filename )
 {
+	printf( "OgreFileSystem::openFile: %s\n", _filename );
+
 	try
 	{
 		Ogre::DataStreamPtr data = m_arch->open( _filename );
@@ -133,6 +135,8 @@ bool OgreFileSystem::createFolder( const char * _path )
 //////////////////////////////////////////////////////////////////////////
 bool OgreFileSystem::changeDir( const char* _path )
 {
+	// needed for some plugins
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( _path, "FileSystem", "Default" );
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
 	if( !_chdir( _path ) )
 	{

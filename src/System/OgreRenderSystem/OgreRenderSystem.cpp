@@ -52,7 +52,7 @@ OgreRenderSystem::~OgreRenderSystem()
 //////////////////////////////////////////////////////////////////////////
 Camera3dInterface * OgreRenderSystem::createCamera(const char * _name)
 {
-	Ogre::Camera * camera = m_sceneMgr->createCamera("defaultCamera");
+	Ogre::Camera * camera = m_sceneMgr->createCamera(_name);
 	Camera3dInterface * ogre3dcam = new Ogre3dCamera( camera );
 	m_viewport = m_renderWindow->addViewport( camera );
 	return  ogre3dcam;

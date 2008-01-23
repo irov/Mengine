@@ -647,13 +647,6 @@
 				<File
 					RelativePath=".\Video.cpp"
 					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath=".\Video.h"
@@ -1337,28 +1330,52 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Object3D"
+			>
+			<Filter
+				Name="RenderMesh"
+				>
+				<File
+					RelativePath=".\RenderMesh3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\RenderMesh3D.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="RigidBody"
+				>
+				<File
+					RelativePath=".\RigidBody3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\RigidBody3D.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Light"
+				>
+				<File
+					RelativePath=".\Light.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Light.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
 		<File
 			RelativePath=".\Color.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\Color.h"
-			>
-		</File>
-		<File
-			RelativePath=".\RenderMesh3D.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\RenderMesh3D.h"
-			>
-		</File>
-		<File
-			RelativePath=".\RigidBody3D.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\RigidBody3D.h"
 			>
 		</File>
 	</Files>

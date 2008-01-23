@@ -1,4 +1,4 @@
-#	include "RenderMesh3D.h"
+#	include "Light.h"
 #	include "ObjectImplement.h"
 
 #	include "ScriptEngine.h"
@@ -10,66 +10,58 @@
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OBJECT_IMPLEMENT( RenderMesh3D )
+	OBJECT_IMPLEMENT( Light )
 	//////////////////////////////////////////////////////////////////////////
-	RenderMesh3D::RenderMesh3D()
+	Light::Light()
+	: m_diffuseColor( 1.0f, 1.0f, 1.0f, 1.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderMesh3D::~RenderMesh3D()
+	Light::~Light()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh3D::_update( float _timing )
-	{
-		const mt::vec3f& pos = this->getWorldPosition();
-
-		m_interface->setPosition(pos.x,pos.y,pos.z);
-
-		// не понятно как огр направление юзает, поэтому пока через кватернионы
-		//const mt::vec3f& d = this->getWorldDirection();
-		//m_interface->setDirection((float*)d.m);
-		const mt::mat4f& M = this->getWorldMatrix();
-		mt::quatf q;
-		mt::q_from_rot_m4(q, M);
-		m_interface->setDirection(q.m);
-	}
+	void Light::_update( float _timing )
+	{}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh3D::loader( XmlElement * _xml )
+	void Light::loader( XmlElement * _xml )
 	{
 		SceneNode3D::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Mesh", "Value", m_meshName );
+			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_diffuseColor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderMesh3D::_activate()
+	bool Light::_activate()
 	{
 		bool result = SceneNode3D::_activate();
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh3D::_deactivate()
+	void Light::_deactivate()
 	{
 		SceneNode3D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderMesh3D::_compile()
+	bool Light::_compile()
 	{
 		if( SceneNode3D::_compile() == false )
 		{
 			return false;
 		}
 
-		const std::string & entityName = this->getName();
-		m_interface = Holder<RenderEngine>::hostage()->create3dEntity( entityName, m_meshName );
+		const std::string& name = this->getName();
+		m_interface = Holder<RenderEngine>::hostage()->createLight(name);
 
+		const mt::vec3f & pos = this->getLocalPosition();
+		m_interface->setPosition(pos.x,pos.y,pos.z);
+		m_interface->setDiffuseColor(m_diffuseColor.r, m_diffuseColor.g, m_diffuseColor.b);
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh3D::_release()
+	void Light::_release()
 	{
 		SceneNode3D::_release();
 		//

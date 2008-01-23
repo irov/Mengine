@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="OgreRenderSystem"
-	ProjectGUID="{3380B377-D83A-4BC7-84D3-921E7C646CEE}"
+	Name="PhysXPhysicSystem"
+	ProjectGUID="{8AF4E2F5-C021-40B7-A40C-59200252B28B}"
 	RootNamespace="OgreRenderSystem"
 	Keyword="Win32Proj"
 	>
@@ -41,11 +41,12 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP2"
 				Optimization="0"
-				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\OgreSDK\include&quot;;&quot;$(SolutionDir)dependencies\videoplugin\TheoraVideo\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\Theora\include\&quot;;&quot;$(SolutionDir)dependencies\ogg\include\&quot;;&quot;$(SolutionDir)dependencies\vorbis\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\ptypes-1.8.3\include\&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies/PhysX/SDKs/Physics/include&quot;;&quot;$(SolutionDir)dependencies/PhysX/SDKs/Foundation/include&quot;;&quot;$(SolutionDir)dependencies/PhysX/SDKs/PhysXLoader/include&quot;;&quot;$(SolutionDir)dependencies/PhysX/SDKs/Cooking/include&quot;;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;TRANSPOSED_MAT33;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				BrowseInformation="1"
 				WarningLevel="3"
@@ -63,11 +64,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain_d.lib Plugin_TheoraVideoSystem_d.lib"
+				AdditionalDependencies="NxCooking.lib PhysXLoader.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OgreSDK\lib&quot;;&quot;$(SolutionDir)dependencies\videoplugin\TheoraVideo\bin\debug\&quot;"
-				ModuleDefinitionFile="OgreRenderSystem.def"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies/PhysX/SDKs/lib/win32&quot;"
+				ModuleDefinitionFile="PhysXPhysicSystem.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"
@@ -124,7 +125,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\OgreSDK\include&quot;;&quot;$(SolutionDir)dependencies\videoplugin\TheoraVideo\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\Theora\include\&quot;;&quot;$(SolutionDir)dependencies\ogg\include\&quot;;&quot;$(SolutionDir)dependencies\vorbis\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\ptypes-1.8.3\include\&quot;"
+				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\OgreSDK\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -143,9 +144,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain.lib Plugin_TheoraVideoSystem.lib"
+				AdditionalDependencies="OgreMain.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OgreSDK\lib&quot;;&quot;$(SolutionDir)dependencies\videoplugin\TheoraVideo\bin\release&quot;"
+				AdditionalLibraryDirectories="$(SolutionDir)dependencies\OgreSDK\lib"
 				ModuleDefinitionFile="OgreRenderSystem.def"
 				GenerateDebugInformation="false"
 				SubSystem="2"
@@ -185,67 +186,39 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\Ogre3dCamera.cpp"
+			RelativePath=".\NovodexBallSocketJoint.h"
 			>
 		</File>
 		<File
-			RelativePath=".\Ogre3dCamera.h"
+			RelativePath=".\NovodexBody.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\Ogre3dEntity.cpp"
+			RelativePath=".\NovodexBody.h"
 			>
 		</File>
 		<File
-			RelativePath=".\Ogre3dEntity.h"
+			RelativePath=".\NovodexGeometry.h"
 			>
 		</File>
 		<File
-			RelativePath=".\OgreLight.cpp"
+			RelativePath=".\NovodexPhysicSystem.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\OgreLight.h"
+			RelativePath=".\NovodexPhysicSystem.h"
 			>
 		</File>
 		<File
-			RelativePath=".\OgreRenderImage.cpp"
+			RelativePath=".\PhysXPhysicSystem.def"
 			>
 		</File>
 		<File
-			RelativePath=".\OgreRenderImage.h"
+			RelativePath=".\Stream.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\OgreRenderSpriteManager.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreRenderSpriteManager.h"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreRenderSystem.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreRenderSystem.def"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreRenderSystem.h"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreRenderSystemInterface.h"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreRenderVideoStream.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreRenderVideoStream.h"
+			RelativePath=".\Stream.h"
 			>
 		</File>
 	</Files>

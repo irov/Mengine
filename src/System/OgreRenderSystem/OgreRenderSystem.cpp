@@ -5,6 +5,8 @@
 
 #	include "Ogre3dCamera.h"
 #	include "Ogre3dEntity.h"
+#	include "OgreLight.h"
+
 
 #	include "OgreRenderVideoStream.h"
 #	include "OgreExternalTextureSourceManager.h"
@@ -66,6 +68,13 @@ Entity3dInterface * OgreRenderSystem::create3dEntity(const char * _name, const c
 	return 	ogre3dEntity;
 }
 //////////////////////////////////////////////////////////////////////////
+LightInterface * OgreRenderSystem::createLight(const char * _name)
+{
+	Ogre::Light * light = m_sceneMgr->createLight(_name);
+	LightInterface * ogreLight = new OgreLight(light);
+	return ogreLight;   
+}
+//////////////////////////////////////////////////////////////////////////
 bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow )
 {
 	m_root = _root;
@@ -93,11 +102,6 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
 	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
-	
-    Ogre::Light* l = m_sceneMgr->createLight("MainLight");
-    l->setPosition(0,6,0);
-	//l->setType(Ogre::Light::LT_DIRECTIONAL);
-	l->setDiffuseColour(1.0, 1.0, 1.0);
 
 	return true;
 }

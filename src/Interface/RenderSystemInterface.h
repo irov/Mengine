@@ -53,8 +53,13 @@ public:
 
 class LightInterface
 {
+public:
 	virtual ~LightInterface(){};
-
+	virtual void setPosition( float _x, float _y, float _z ) = 0;
+	virtual void setDiffuseColor( float _r, float _g, float _b ) = 0;
+	virtual void setSpecularColour( float _r, float _g, float _b ) = 0;
+	virtual void setAttenuation(float _range, float _constant, float _linear, float _quadratic) = 0;
+	virtual void setDirection(float _x, float _y, float _z) = 0;
 };
 
 class RenderVideoStreamInterface : public RenderImageInterface
@@ -123,6 +128,7 @@ public:
 	//new
 	virtual Camera3dInterface * createCamera( const char * _name ) = 0;
 	virtual Entity3dInterface * create3dEntity(const char * _name, const char * _meshName) = 0;
+	virtual LightInterface * createLight(const char * _name) = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

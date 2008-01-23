@@ -124,7 +124,7 @@ class Scene( Menge.Scene ):
 		self.c = self.delta;
 		self.d = self.delta;
 
-		self.xoffset = 0;
+		self.xoffset = 40;
 		self.zoffset = 0;
 		self.yoffset = 50;
 

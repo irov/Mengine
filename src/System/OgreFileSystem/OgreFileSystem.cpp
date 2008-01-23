@@ -136,7 +136,7 @@ bool OgreFileSystem::createFolder( const char * _path )
 bool OgreFileSystem::changeDir( const char* _path )
 {
 	// needed for some plugins
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( _path, "FileSystem", "Default" );
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( _path, "FileSystem", "Default",true );
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
 	if( !_chdir( _path ) )
 	{

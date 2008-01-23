@@ -113,6 +113,7 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	std::string DllInputSystem = "Systems_d/OgreInputSystem_d.dll";
 	std::string DllSoundSystem = "Systems_d/ALSoundSystem_d.dll";
 	std::string DllParticleSystem = "Systems_d/AstralaxParticleSystem_d.dll";
+	std::string DllPhysicSystem = "Systems_d/PhysXPhysicSystem_d.dll";
 #else
 	std::string DllModuleSetting = "DllModuleRelease";
 	std::string DllLogSystem = "Systems/OgreLogSystem.dll";
@@ -121,6 +122,7 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	std::string DllInputSystem = "Systems/OgreInputSystem.dll";
 	std::string DllSoundSystem = "Systems/ALSoundSystem.dll";
 	std::string DllParticleSystem = "Systems/AstralaxParticleSystem.dll";
+	std::string DllPhysicSystem = "Systems/PhysXPhysicSystem.dll";
 #endif
 
 	printf("use log system [%s]\n", DllLogSystem.c_str() );
@@ -164,6 +166,14 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 		= addSystem<ParticleSystemInterface>( DllParticleSystem );
 
 	m_application->setParticleSystem( particleInterface );
+
+	printf("use physic system [%s]\n", DllPhysicSystem.c_str() );
+
+	PhysicSystemInterface * physicInterface
+		= addSystem<PhysicSystemInterface>( DllPhysicSystem );
+
+	m_application->setPhysicSystem( physicInterface );
+
 
 	m_resourcePath = fileInterface->platformBundlePath();
 
@@ -224,7 +234,7 @@ void OgreApplication::initParams()
 
 	#ifdef _DEBUG
 		renderDriver += "_d.dll";
-		m_root->loadPlugin( "Plugin_TheoraVideoSystem_d.dll" );
+//		m_root->loadPlugin( "Plugin_TheoraVideoSystem_d.dll" );
 	#else
 		renderDriver += ".dll";
 		m_root->loadPlugin( "Plugin_TheoraVideoSystem.dll" );

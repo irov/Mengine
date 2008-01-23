@@ -84,9 +84,13 @@ public:
 	float getCurrentZ();
 	void  diffZ();
 
-private:
 	void prepareForRender();
 	void doRender();
+
+	void Start();
+	void End();
+
+private:
 
 	float currentZ;
 	Ogre::SceneManager * sceneMan;

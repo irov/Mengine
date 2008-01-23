@@ -7,22 +7,7 @@
 
 		<Size Value = "1536; 768" />
 
-		<Node Name = "Kamen_01" Type = "Sprite">
-			<ImageMap Name = "ReefKamen_01" />
-			<Transformation Value = "1;0;0;1;0;138" />
-		</Node>
-
-		<Node Name = "Kamen_01" Type = "Sprite">
-			<ImageMap Name = "ReefKamen_02" />
-			<Transformation Value = "1;0;0;1;512;138" />
-		</Node> 
-
-		<Node Name = "Kamen_03" Type = "Sprite">
-			<ImageMap Name = "ReefKamen_03" />
-			<Transformation Value = "1;0;0;1;1024;138" />
-		</Node> 
 	</Node> 
-
 
 	<Node Name = "Front" Type = "Layer2D">
 
@@ -41,36 +26,6 @@
 			<Transformation Value = "1;0;0;1;300;200" />
                	</Node>
 
-		<Node Name = "Valun_01" Type = "Sprite">
-			<ImageMap Name = "ReefValun_01" />
-			<Transformation Value = "1;0;0;1;0;256" />
-		</Node>
-
-		<Node Name = "Valun_02" Type = "Sprite">
-			<ImageMap Name = "ReefValun_02" />
-			<Transformation Value = "1;0;0;1;512;256" />
-		</Node> 
-
-		<Node Name = "Valun_03" Type = "Sprite">
-			<ImageMap Name = "ReefValun_03" />
-			<Transformation Value = "1;0;0;1;1024;256" />
-		</Node> 
-
-		<Node Name = "Valun_04" Type = "Sprite">
-			<ImageMap Name = "ReefValun_01" />
-			<Transformation Value = "1;0;0;1;1536;256" />
-		</Node> 
-
-		<Node Name = "Valun_05" Type = "Sprite">
-			<ImageMap Name = "ReefValun_02" />
-			<Transformation Value = "1;0;0;1;2048;256" />
-		</Node> 
-
-		<Node Name = "Valun_06" Type = "Sprite">
-			<ImageMap Name = "ReefValun_03" />
-			<Transformation Value = "1;0;0;1;2560;256" />
-		</Node> 
-		
 		<Node Name = "Arial2112" Type = "TextField">
               		<Font Name = "Arial12"/>
                		<Text Value = ""/>
@@ -80,5 +35,41 @@
 			<CenterAlign Value = "1"/>
 		</Node>
 
+	</Node>
+
+	<Node Name = "Test3D" Type = "Layer3D">
+		<Node Name = "Level" Type = "RenderMesh3D">
+              		<Mesh Value = "ZombieTest/test.mesh"/>
+		</Node>
+
+
+		<Node Name = "BarrelPhysicBody1" Type = "RigidBody3D">
+              		<GeometryResource Name = "ResourceBarrelGeometry"/>
+			<Active Value = "1"/>
+			<Density Value = "1"/>
+			<Transformation Value = "1;0;0;0;1;0;0;0;1;1;40;9" />
+
+			<Node Name = "Barrel1" Type = "RenderMesh3D">
+              			<Mesh Value = "ZombieTest/barrel.mesh"/>
+			</Node>	
+		</Node>	
+
+		<Node Name = "BarrelPhysicBody1" Type = "RigidBody3D">
+              		<GeometryResource Name = "ResourceBarrelGeometry"/>
+			<Active Value = "1"/>
+			<Density Value = "1"/>
+			<Transformation Value = "1;0;0;0;1;0;0;0;1;1;40;1" />
+
+			<Node Name = "Barrel2" Type = "RenderMesh3D">
+              			<Mesh Value = "ZombieTest/barrel.mesh"/>
+			</Node>	
+		</Node>			
+
+		<Node Name = "LevelPhysicBody" Type = "RigidBody3D">
+              		<GeometryResource Name = "ResourceLevelGeometry"/>
+			<Active Value = "0"/>
+			<Density Value = "200"/>
+			<Transformation Value = "1;0;0;0;1;0;0;0;1;0;0;0" />
+		</Node>
 	</Node>
 </Scene>

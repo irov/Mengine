@@ -2,9 +2,16 @@
 
 #	include "OgreRenderSpriteManager.h"
 #	include "OgreRenderImage.h"
+
+#	include "Ogre3dCamera.h"
+#	include "Ogre3dEntity.h"
+
 #	include "OgreRenderVideoStream.h"
 #	include "OgreExternalTextureSourceManager.h"
 
+
+
+#define DRAW2D
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( RenderSystemInterface ** _ptrInterface )
 {
@@ -42,6 +49,26 @@ OgreRenderSystem::~OgreRenderSystem()
 		delete m_spriteMgr;
 	}
 }
+
+Camera3dInterface * OgreRenderSystem::createCamera(const char * _name)
+{
+	Ogre::Camera * camera = m_sceneMgr->createCamera("defaultCamera");
+	Camera3dInterface * ogre3dcam = new Ogre3dCamera( camera );
+	m_viewport = m_renderWindow->addViewport( camera );
+	return  ogre3dcam;
+}
+
+Entity3dInterface * OgreRenderSystem::create3dEntity(const char * _name, const char * _meshName)
+{
+	Ogre::Entity * entity = m_sceneMgr->createEntity(_name, _meshName);
+	Ogre::SceneNode * newNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
+	newNode->attachObject( entity );
+
+	Entity3dInterface * ogre3dEntity = new Ogre3dEntity( newNode/*entity*/ );
+	return 	ogre3dEntity;
+}
+//Ogre::Entity * e = m_sceneMgr->createEntity("head", "E:\\ZombieTest\\test.mesh");
+
 //////////////////////////////////////////////////////////////////////////
 bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow )
 {
@@ -51,29 +78,95 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	m_sceneMgr = m_root->createSceneManager( Ogre::ST_GENERIC, "defaultSceneManager" );
 	m_renderSys = m_root->getRenderSystem();
 
+	#ifdef  DRAW2D
+	
+	
+	m_spriteMgr = new OgreRenderSpriteManager();
+	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
 	//m_sceneMgr->setAmbientLight( Ogre::ColourValue(0.9f, 0.9f, 0.9f));
-	Ogre::Camera * camera = m_sceneMgr->createCamera("defaultCamera");
- 	camera->setNearClipDistance(5);
+	//Ogre::Camera * camera = m_sceneMgr->createCamera("defaultCamera");
+ 	//camera->setNearClipDistance(5);
 	// Position it at 500 in Z direction
-	camera->setPosition(Ogre::Vector3(0,0,500));
+	//camera->setPosition(Ogre::Vector3(0,0,500));
 	// Look back along -Z
-	camera->lookAt(Ogre::Vector3(0,0,-300));
+	//camera->lookAt(Ogre::Vector3(0,0,-300));
 
- 	m_viewport = m_renderWindow->addViewport( camera );
+	#endif
+
+
+	//Ogre::DataStreamPtr data = Ogre::ArchiveManager::getSingleton().open( "E:/ogrehead.mesh" );
+	//Ogre::MeshPtr m = Ogre::MeshManager::getSingleton ().lo.load("E:/ogrehead.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	//e->setMaterialName("Examples/OffsetMapping/Specular");
+
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true );
+//	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest\\", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true );
+
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+	//Ogre::MaterialManager::getSingleton().initialise();
+	//Ogre::MeshPtr m = Ogre::MeshManager::getSingleton ().load("E:\\ZombieTest\\test.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
+	//pass->setSceneBlending(SBT_TRANSPARENT_ALPHA);
+
+    Ogre::Light* l = m_sceneMgr->createLight("MainLight");
+    l->setPosition(0,0,0);
+
+	//l->setAttenuation(8000,1,0,0);
+/*	Ogre::Entity * e = m_sceneMgr->createEntity("sobako", "E:\\ZombieTest\\robot.mesh");
+	Ogre::SceneNode* headNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
+	headNode->attachObject(e);
+
+	Ogre::AnimationState*anim=e->getAnimationState("Walk");
+	anim->setTimePosition(0);
+	anim->setEnabled(true);
+	anim->setLoop(true);
+	anim->addTime(78);
+			*/
+/////////////////////////
+/*	Ogre::Entity * e = m_sceneMgr->createEntity("head", "E:\\ZombieTest\\barrel.mesh");
+
+	Ogre::SceneNode* headNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
+	headNode->attachObject(e);
+
+	Ogre::SubMesh * sm = e->getMesh()->getSubMesh(0);
+	Ogre::VertexDeclaration * vd = sm->vertexData->vertexDeclaration;
+
+	Ogre::HardwareVertexBufferSharedPtr hvb = sm->vertexData->vertexBufferBinding->getBuffer(0);
+
+	float * vertices = (float*)hvb->lock(0,0,Ogre::HardwareBuffer::HBL_NORMAL);
+
+	FILE * f = fopen("E:\\ZombieTest\\converted.txt","wb");
+
+	int nverts = sm->vertexData->vertexCount;
+	fwrite(&nverts,sizeof(int),1,f);
+
+	int ninds = sm->indexData->indexCount;
+	fwrite(&ninds,sizeof(int),1,f);
 
 	m_viewport->setBackgroundColour( Ogre::ColourValue::Green );
 	
-	float width = m_viewport->getActualWidth();
-	float height = m_viewport->getActualHeight();
-	float aspect = width / height;
+	float x, y ,z;
+	for(int i = 0, k = 0; i < sm->vertexData->vertexCount; i++)
+	{
+		x = vertices[k+0];
+		y = vertices[k+1];
+		z = vertices[k+2];
+		k = k + 3 + 3 + 2;
 
- 	camera->setAspectRatio( aspect );
+		fwrite(&x,sizeof(float),1,f);
+		fwrite(&y,sizeof(float),1,f);
+		fwrite(&z,sizeof(float),1,f);
+	}
 
- 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
+	hvb->unlock();
 
-	m_spriteMgr = new OgreRenderSpriteManager();
-	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
 
+	unsigned short*  indecies = (unsigned short*)sm->indexData->indexBuffer->lock(0,0,Ogre::HardwareBuffer::HBL_NORMAL);
+	for(int i = 0; i < sm->indexData->indexCount; i++)
+	{
+		unsigned short ind = indecies[i];
+		fwrite(&ind,sizeof(unsigned short),1,f);
+	}
 
 	m_videoControl = static_cast<Ogre::TheoraVideoController*>
 		(Ogre::ExternalTextureSourceManager::getSingleton().
@@ -83,6 +176,42 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	Ogre::Entity * e = m_sceneMgr->createEntity("ent", Ogre::SceneManager::PrefabType::PT_CUBE );
 	m_sceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject( e );
 
+	sm->indexData->indexBuffer->unlock();
+
+	fclose(f);
+*/
+/////////////////////////
+
+//	e->setMaterialName("Material_#0");
+
+//	Ogre::Entity * e = m_sceneMgr->createEntity("head", "E:\\ZombieTest\\ogrehead.mesh");
+//	e->setMaterialName("Examples/EnvMappedRustySteel");
+
+//	Ogre::SceneNode* headNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
+	
+//	m_sceneMgr->setShadowTechnique(Ogre::SHADOWDETAILTYPE_TEXTURE);
+//	m_sceneMgr->setShadowFarDistance(1000);
+        
+
+//	headNode->attachObject(e);
+//	headNode->setScale(1,1,1);
+//	headNode->setPosition(0,0,0);
+//	e->setNormaliseNormals(true);
+//	e->setCastShadows(true);
+
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+bool OgreRenderSystem::frameStarted( const Ogre::FrameEvent &evt)
+{
+	//m_renderSys->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
+	//m_spriteMgr->Start();
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+bool OgreRenderSystem::frameEnded( const Ogre::FrameEvent &evt)
+{
+	//m_spriteMgr->End();
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -94,6 +223,7 @@ void OgreRenderSystem::setContentResolution( const float * _resolution )
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 {
+	#ifdef  DRAW2D
 	if( Ogre::TextureManager::getSingleton().getByName("__shot__").isNull() == false ) return;
 
 	Ogre::Rect wrect( 0, 0, m_renderWindow->getWidth(), m_renderWindow->getHeight() );
@@ -124,6 +254,7 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 	}
 	
 	Ogre::TextureManager::getSingleton().remove("__shot__");
+#endif
 
 }
 //////////////////////////////////////////////////////////////////////////
@@ -215,17 +346,21 @@ void OgreRenderSystem::renderImage(
 				 EBlendFactor _src,
 				 EBlendFactor _dst)
 {
+	#ifdef  DRAW2D
+
 	TMovieMap::iterator it = m_videoTexturesMap.find( _image );
 	if( it != m_videoTexturesMap.end() )
 	{
 		it->second->blitFrameCheck();
 	}
+
 	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
 	{
 		Ogre::Texture * texture = image->getTexture();
 		float z = m_spriteMgr->getCurrentZ();
 		m_spriteMgr->addQuad1(m_contentResolution,*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color, (Ogre::SceneBlendFactor)_src, (Ogre::SceneBlendFactor)_dst);
 	}
+#endif
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::renderImage(		
@@ -240,6 +375,7 @@ void OgreRenderSystem::renderImage(
 		EBlendFactor _src,
 		EBlendFactor _dst)
 {
+#ifdef  DRAW2D
 	TMovieMap::iterator it = m_videoTexturesMap.find( _image );
 	if( it != m_videoTexturesMap.end() )
 	{
@@ -263,6 +399,7 @@ void OgreRenderSystem::renderImage(
 			(Ogre::SceneBlendFactor)_src,
 			(Ogre::SceneBlendFactor)_dst);
 	}
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -272,13 +409,14 @@ void	OgreRenderSystem::beginLayer()
 //////////////////////////////////////////////////////////////////////////
 void	OgreRenderSystem::endLayer()
 {
+	#ifdef  DRAW2D
 	m_spriteMgr->diffZ();
+	#endif
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setFullscreenMode(  bool _fullscreen )
 {
 	m_renderWindow->setFullscreen( _fullscreen, m_renderWindow->getWidth(), m_renderWindow->getHeight() );
-
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::loadResource( Ogre::Resource* _resource )

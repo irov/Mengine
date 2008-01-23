@@ -66,9 +66,19 @@
 		<Folder Path = "Particles/"/>
 	</Resource>
 
-	<Resource Name = "ResourceEmitterTest2" Type = "ResourceEmitterContainer">
-		<File Path = "serpantin.ptc"/>
-		<Folder Path = "Images/Particles/"/>
+
+	<Resource Name = "ResourceBoxGeom" Type = "ResourcePhysicBoxGeometry">
+		<Width Value = "1"/>
+		<Height Value = "1"/>
+		<Depth Value = "1"/>
+	</Resource>
+
+	<Resource Name = "ResourceBarrelGeometry" Type = "ResourcePhysicConvexGeometry">
+		<ConvexGeometryFile Name = "Geoms/barrel.bin"/>
+	</Resource>
+
+	<Resource Name = "ResourceLevelGeometry" Type = "ResourcePhysicConcaveGeometry">
+		<ConcaveGeometryFile Name = "Geoms/cooked.bin"/>
 	</Resource>
 
 </DataBlock>

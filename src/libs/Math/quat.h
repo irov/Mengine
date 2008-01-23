@@ -14,6 +14,8 @@
 
 namespace mt
 {
+	struct mat4f;
+
 	struct quatf
 	{
 		union
@@ -84,6 +86,9 @@ namespace mt
 
 	void	q_to_rot_m3(mat3f& out, const quatf& _rhs);
 	mat3f	q_to_rot_m3(const quatf& _rhs);
+
+	void	q_from_rot_m4(quatf& out, const mat4f& _rhs);
+	quatf	q_from_rot_m4(const mat4f& _rhs);
 
 	void	q_from_axes(quatf& out, const vec3f& _x, const vec3f& _y, const vec3f& _z);
 	quatf	q_from_axes(const vec3f& _x, const vec3f& _y, const vec3f& _z);

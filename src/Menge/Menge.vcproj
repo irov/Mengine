@@ -499,6 +499,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Physic"
+				>
+				<File
+					RelativePath=".\PhysicEngine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PhysicEngine.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Object2D"
@@ -578,18 +590,6 @@
 				</File>
 				<File
 					RelativePath=".\AnimationGroup.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Trap"
-				>
-				<File
-					RelativePath=".\Trap2D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Trap2D.h"
 					>
 				</File>
 			</Filter>
@@ -714,14 +714,6 @@
 			</File>
 			<File
 				RelativePath=".\Camera3D.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Frustum.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Frustum.h"
 				>
 			</File>
 			<File
@@ -892,6 +884,42 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="PhysicGeometry"
+				>
+				<File
+					RelativePath=".\ResourcePhysicBoxGeometry.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourcePhysicBoxGeometry.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourcePhysicConcaveGeometry.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourcePhysicConcaveGeometry.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourcePhysicConvexGeometry.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourcePhysicConvexGeometry.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourcePhysicGeometry.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourcePhysicGeometry.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Entity"
@@ -1019,18 +1047,6 @@
 						>
 					</File>
 				</Filter>
-				<Filter
-					Name="Collideable2D"
-					>
-					<File
-						RelativePath=".\Collideable2D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Collideable2D.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Layer"
@@ -1076,18 +1092,6 @@
 					</File>
 					<File
 						RelativePath=".\Renderable3D.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Collideable3D"
-					>
-					<File
-						RelativePath=".\Collideable3D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Collideable3D.h"
 						>
 					</File>
 				</Filter>
@@ -1339,6 +1343,22 @@
 		</File>
 		<File
 			RelativePath=".\Color.h"
+			>
+		</File>
+		<File
+			RelativePath=".\RenderMesh3D.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\RenderMesh3D.h"
+			>
+		</File>
+		<File
+			RelativePath=".\RigidBody3D.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\RigidBody3D.h"
 			>
 		</File>
 	</Files>

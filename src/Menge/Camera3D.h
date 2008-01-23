@@ -2,13 +2,12 @@
 
 #	include "SceneNode3D.h"
 
-#	include "Frustum.h"
+class Camera3dInterface;
 
 namespace Menge
 {
 	class Camera3D
 		: public SceneNode3D
-		, public Frustum
 	{
 		OBJECT_DECLARE( Camera3D )
 
@@ -16,23 +15,17 @@ namespace Menge
 		Camera3D();
 
 	public:
-		void yaw( float _degrees );
-		void pitch( float _degrees );
-		
-	public:
 		void lookAt(const mt::vec3f& _targetPoint);
-		mt::vec3f getDirectionFromMouse( float _xm, float _ym );
-
-	public:
-		const mt::mat4f & getViewMatrix();
+		void setPosition(const mt::vec3f& _pos);
+		void setNear( float _dist );
+		void setFar( float _dist );
+		void setAspect( float _aspect );
+	//	mt::vec3f getDirectionFromMouse( float _xm, float _ym );
 
 	public:
 		void loader( XmlElement * _xml ) override;
 
-	protected:
-		void _updateMatrix( Allocator3D * _parent ) override;
-
-	protected:
-		mt::mat4f m_viewMatrix;	
+	private:
+		Camera3dInterface * m_interface;
 	};
 }

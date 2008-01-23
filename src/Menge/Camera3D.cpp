@@ -4,52 +4,52 @@
 
 #	include "XmlEngine.h"
 
+#	include "RenderEngine.h"
+
+#	include "Interface/RenderSystemInterface.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT( Camera3D );
 	//////////////////////////////////////////////////////////////////////////
 	Camera3D::Camera3D()
-	{}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::yaw( float _degrees )
+		: m_interface(0)
 	{
-		const mt::vec3f & axis = getLocalStrafe();
-
-		mt::rotate_axis_m4( m_localMatrix, axis, _degrees);
-		
-		changePivot();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::pitch( float _degrees )
-	{
-		mt::rotate_axis_m4( m_localMatrix, m_fixedUp, _degrees);
-
-		changePivot();
+		m_interface = Holder<RenderEngine>::hostage()->createCamera("default");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::lookAt(const mt::vec3f& _targetPoint)
 	{
-		setDirection( _targetPoint - m_localMatrix.v3_3 );
+		m_interface->lookAt(_targetPoint.x, _targetPoint.y, _targetPoint.z);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Camera3D::getViewMatrix()
-	{	
-		_updateMatrix( m_parent );
-
-		return m_viewMatrix;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::_updateMatrix( Allocator3D * _parent )
+	void Camera3D::setPosition(const mt::vec3f& _pos)
 	{
-		const mt::mat4f & wm = getWorldMatrix();
-
-		mt::inv_m4( m_viewMatrix, wm );
-
-		recalc( m_worldMatrix );
+		m_interface->setPosition(_pos.x, _pos.y, _pos.z);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f Camera3D::getDirectionFromMouse( float _xm, float _ym )
+	void Camera3D::setNear( float _dist )
+	{
+		m_interface->setNearClipDistance(_dist);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::setFar( float _dist )
+	{
+		m_interface->setFarClipDistance(_dist);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::setAspect( float _aspect )
+	{
+		m_interface->setAspectRatio(_aspect);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::loader( XmlElement * _xml )
+	{
+		SceneNode3D::loader( _xml );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	/*mt::vec3f Camera3D::getDirectionFromMouse( float _xm, float _ym )
 	{
 		const mt::mat4f &projMatrix = getProjectionMatrix();
 		const mt::mat4f &viewMatrix = getViewMatrix();
@@ -65,11 +65,5 @@ namespace	Menge
 		mt::mul_v3_m4( out, v, m_worldMatrix );
 
 		return -out;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::loader( XmlElement * _xml )
-	{
-		SceneNode3D::loader( _xml );
-	}
-	//////////////////////////////////////////////////////////////////////////
+	}*/
 }

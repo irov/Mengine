@@ -26,7 +26,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "src\libs\Math\math.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Systems", "Systems", "{433B781E-46DE-4222-964E-5E795FC7FEDE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoundSystem", "src\System\SoundSystem\SoundSystem.vcproj", "{E42D8FF7-12C1-4105-AFFD-4376291B8726}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALSoundSystem", "src\System\SoundSystem\SoundSystem.vcproj", "{E42D8FF7-12C1-4105-AFFD-4376291B8726}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreInputSystem", "src\System\OgreInputSystem\OgreInputSystem.vcproj", "{F055D8C9-3510-4462-BB47-0CBB9224C643}"
 EndProject
@@ -44,6 +44,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OgreLogSystem", "src\System\OgreLogSystem\OgreLogSystem.vcproj", "{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AstralaxParticleSystem", "src\System\AstralaxParticleSystem\AstralaxParticleSystem.vcproj", "{BD7118E1-FE5A-4A90-AA51-EEB8717E2485}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PhysXPhysicSystem", "src\System\PhysXPhysicSystem\PhysXPhysicSystem.vcproj", "{8AF4E2F5-C021-40B7-A40C-59200252B28B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -164,6 +166,16 @@ Global
 		{BD7118E1-FE5A-4A90-AA51-EEB8717E2485}.Static_Debug|Win32.Build.0 = Static_Debug|Win32
 		{BD7118E1-FE5A-4A90-AA51-EEB8717E2485}.Static_Release|Win32.ActiveCfg = Static_Release|Win32
 		{BD7118E1-FE5A-4A90-AA51-EEB8717E2485}.Static_Release|Win32.Build.0 = Static_Release|Win32
+		{8AF4E2F5-C021-40B7-A40C-59200252B28B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8AF4E2F5-C021-40B7-A40C-59200252B28B}.Debug|Win32.Build.0 = Debug|Win32
+		{8AF4E2F5-C021-40B7-A40C-59200252B28B}.DebugExe|Win32.ActiveCfg = Debug|Win32
+		{8AF4E2F5-C021-40B7-A40C-59200252B28B}.DebugExe|Win32.Build.0 = Debug|Win32
+		{8AF4E2F5-C021-40B7-A40C-59200252B28B}.Release|Win32.ActiveCfg = Release|Win32
+		{8AF4E2F5-C021-40B7-A40C-59200252B28B}.Release|Win32.Build.0 = Release|Win32
+		{8AF4E2F5-C021-40B7-A40C-59200252B28B}.Static_Debug|Win32.ActiveCfg = Debug|Win32
+		{8AF4E2F5-C021-40B7-A40C-59200252B28B}.Static_Debug|Win32.Build.0 = Debug|Win32
+		{8AF4E2F5-C021-40B7-A40C-59200252B28B}.Static_Release|Win32.ActiveCfg = Release|Win32
+		{8AF4E2F5-C021-40B7-A40C-59200252B28B}.Static_Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -177,6 +189,7 @@ Global
 		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{BD7118E1-FE5A-4A90-AA51-EEB8717E2485} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
+		{8AF4E2F5-C021-40B7-A40C-59200252B28B} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 	EndGlobalSection
 	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
 		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}

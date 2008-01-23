@@ -37,6 +37,8 @@
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
 
+#	include "Camera3D.h"
+
 #	include "XmlEngine.h"
 
 
@@ -112,6 +114,18 @@ namespace Menge
 		{
 			Holder<Player>::hostage()
 				->setCamera2DPosition( mt::vec2f(x, y) );
+		}
+		
+		static void setCamera3DPosition( float x, float y, float z )
+		{
+			Camera3D * camera = 
+					Holder<Player>::hostage()
+						->getRenderCamera3D();
+
+			camera->setPosition(mt::vec3f(x,y,z));
+
+		//	Holder<Player>::hostage()
+		//		->setCamera2DPosition( mt::vec2f(x, y) );
 		}
 
 		static void setCamera2DDirection( float x, float y )
@@ -263,6 +277,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Emitter );
 	SCRIPT_CLASS_WRAPPING( Point );
 
+
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
 	{
 		pybind::class_<mt::vec2f>("vec2f")
@@ -314,8 +329,6 @@ namespace Menge
 			.def( "reset", &C4AI::reset )
 			;
 
-
-
 		pybind::interface_<Node>("Node", false)
 			.def( "activate", &Node::activate )
 			.def( "deactivate", &Node::deactivate )
@@ -348,7 +361,7 @@ namespace Menge
 
 			.def( "setRotate", &Allocator2D::setRotate )
 			;
-		
+
 		pybind::interface_<NodeRenderable>("NodeRenderable", false)
 			.def( "hide", &NodeRenderable::hide )
 			;
@@ -466,6 +479,8 @@ namespace Menge
 		pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
 		pybind::def( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
 				
+		pybind::def( "setCamera3DPosition", &ScriptMethod::setCamera3DPosition );
+
 		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
 
 		pybind::def( "schedule", &ScriptMethod::schedule );

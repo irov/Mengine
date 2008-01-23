@@ -27,9 +27,11 @@ OgreRenderImage::OgreRenderImage( const TextureDesc& _desc )
 	std::string ext = m_description.substr( index + 1, m_description.size() );
 
 	image.load( data, ext );
+	//image.FILTER_BILINEAR
+
 
 	m_texture = Ogre::TextureManager::getSingletonPtr()
-		->loadImage( m_description, "Default", image, Ogre::TEX_TYPE_2D, 0 );
+		->loadImage( m_description, "Default", image, Ogre::TEX_TYPE_2D, Ogre::MIP_DEFAULT );
 }
 //////////////////////////////////////////////////////////////////////////
 OgreRenderImage::~OgreRenderImage()

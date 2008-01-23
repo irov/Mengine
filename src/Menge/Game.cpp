@@ -15,6 +15,7 @@
 #	include "ResourceManager.h"
 #	include "ScheduleManager.h"
 #	include "LogEngine.h"
+#	include "PhysicEngine.h"
 
 #	include "XmlEngine.h"
 
@@ -337,6 +338,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init( )
 	{
+		Holder<PhysicEngine>::hostage()->init(mt::vec3f(0,-1.0f,0));
+
 		Holder<RenderEngine>::hostage()->setContentResolution( m_resourceResolution );
 
 		ScriptEngine::TListModulePath m_listModulePath;

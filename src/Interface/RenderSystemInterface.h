@@ -31,6 +31,32 @@ public:
 	virtual void writeToFile( const char* _filename ) = 0;
 };
 
+class Camera3dInterface
+{
+public:
+	virtual void setPosition( float x, float y, float z ) = 0;
+	virtual void setDirection( float x, float y, float z ) = 0;
+	virtual void lookAt( float x, float y, float z ) = 0;
+	virtual void setNearClipDistance( float _dist ) = 0;
+	virtual void setFarClipDistance( float _dist ) = 0;
+	virtual void setAspectRatio( float _aspect ) = 0;
+	// more to come...
+};
+
+class Entity3dInterface
+{
+public:
+	virtual void setPosition(float x, float y, float z) = 0;
+	virtual void setDirection(float * q) = 0;
+	virtual void setDirection1(float * q) = 0;
+};
+
+class LightInterface
+{
+	virtual ~LightInterface(){};
+
+};
+
 class RenderVideoStreamInterface : public RenderImageInterface
 {
 public:
@@ -94,6 +120,9 @@ public:
 	virtual void	setFullscreenMode( bool _fullscreen ) = 0;
 	virtual void	setViewportDimensions( float _width, float _height, float _renderFactor ) = 0;
 
+	//new
+	virtual Camera3dInterface * createCamera( const char * _name ) = 0;
+	virtual Entity3dInterface * create3dEntity(const char * _name, const char * _meshName) = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

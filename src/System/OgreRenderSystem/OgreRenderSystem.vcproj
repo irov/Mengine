@@ -184,6 +184,26 @@
 	<References>
 	</References>
 	<Files>
+		<Filter
+			Name="New"
+			>
+			<File
+				RelativePath=".\Ogre3dCamera.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Ogre3dCamera.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Ogre3dEntity.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Ogre3dEntity.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\OgreRenderImage.cpp"
 			>

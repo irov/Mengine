@@ -10,6 +10,7 @@ class InputSystemInterface;
 class RenderSystemInterface;
 class SoundSystemInterface;
 class ParticleSystemInterface;
+class PhysicSystemInterface;
 
 class XmlElement;
 
@@ -40,6 +41,7 @@ namespace Menge
 		virtual void setRenderSystem( RenderSystemInterface * _interface );
 		virtual void setSoundSystem( SoundSystemInterface * _interface );
 		virtual void setParticleSystem( ParticleSystemInterface * _interface );
+		virtual void setPhysicSystem( PhysicSystemInterface * _interface );
 
 		virtual void loadPak( const std::string & _pak );
 

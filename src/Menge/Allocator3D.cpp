@@ -9,7 +9,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Allocator3D::Allocator3D()
 		: m_changePivot(false)
-		, m_fixedUp( 1.0, 0.f, 0.f )
+		, m_fixedUp( 0.f, 1.f, 0.f )
 	{
 		mt::ident_m4(m_localMatrix);
 		mt::ident_m4(m_worldMatrix);
@@ -43,6 +43,7 @@ namespace Menge
 
 		return wm.v2.v3;
 	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & Allocator3D::getWorldStrafe()
 	{
 		const mt::mat4f &wm = getWorldMatrix();
@@ -95,7 +96,7 @@ namespace Menge
 		return m_localMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D::setPosition( const mt::vec3f &position )
+	void Allocator3D::setLocalPosition( const mt::vec3f &position )
 	{
 		mt::vec3f & localPosition = getLocalPosition();
 
@@ -104,12 +105,21 @@ namespace Menge
 		changePivot();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D::setDirection( const mt::vec3f &direction )
+	void Allocator3D::setLocalDirection( const mt::vec3f &direction )
 	{
 		mt::norm_v3( m_localMatrix.v3_2, direction );
 
 		mt::cross_v3_v3_norm( m_localMatrix.v3_0, m_fixedUp, m_localMatrix.v3_2 );
 		mt::cross_v3_v3_norm( m_localMatrix.v3_1, m_localMatrix.v3_2, m_localMatrix.v3_0 );
+
+		changePivot();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Allocator3D::setLocalRotation( const mt::mat3f& M )
+	{
+		m_localMatrix.v0.v3 = M.v0;
+		m_localMatrix.v1.v3 = M.v1;
+		m_localMatrix.v2.v3 = M.v2;
 
 		changePivot();
 	}

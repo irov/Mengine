@@ -206,6 +206,16 @@ namespace Menge
 		m_interface->setViewportDimensions( _width, _height, _renderFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Camera3dInterface * RenderEngine::createCamera(const std::string& _name)
+	{
+		return m_interface->createCamera(_name.c_str());
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Entity3dInterface * RenderEngine::create3dEntity(const std::string& _name, const std::string& _meshName)
+	{
+		return m_interface->create3dEntity(_name.c_str(), _meshName.c_str());
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::frameStarted()
 	{
 		m_interface->render();

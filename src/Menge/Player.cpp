@@ -109,11 +109,11 @@ namespace Menge
 		cmr3d->setAspect( 1.3f );
 		cmr3d->setFar( 1000.0f );
 		cmr3d->setNear( 0.5f );
-		cmr3d->setFov( 3.14f / 4.f );
-		cmr3d->setPosition( mt::vec3f(300,300,0) );
+	//	cmr3d->setFov( 3.14f / 4.f );
+		cmr3d->setPosition( mt::vec3f(100,100,0) );
 		cmr3d->lookAt( mt::vec3f(0,0,0) );
 
-		setRenderCamera3D(cmr3d);
+		setRenderCamera3D( cmr3d );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleKeyEvent( size_t _key, bool _isDown )
@@ -251,7 +251,6 @@ namespace Menge
 		{
 			m_switchScene = false;
 
-
 			m_nextScene->compile();
 			m_nextScene->activate();
 			if( m_scene )
@@ -327,7 +326,7 @@ namespace Menge
 		{
 			m_scene->render();
 		}
-		
+				
 		if( m_arrow )
 		{
 			m_arrow->render();

@@ -75,6 +75,10 @@ namespace Menge
 		void	setFullscreenMode( bool _fullscreen );
 		void	setViewportDimensions( float _width, float _height, float _renderFactor = 0.0f );
 
+
+		Camera3dInterface * createCamera(const std::string& _name);
+		Entity3dInterface * create3dEntity(const std::string& _name, const std::string& _meshName);
+
 		void frameStarted();
 		void frameEnded();
 

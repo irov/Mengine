@@ -11,6 +11,7 @@ class OgreRenderSpriteManager;
 class OgreRenderSystem
 	: public OgreRenderSystemInterface
 	, public Ogre::ManualResourceLoader
+	, public Ogre::FrameListener
 {
 public:
 	OgreRenderSystem();
@@ -63,6 +64,10 @@ public:
 	void loadResource( Ogre::Resource* _resource );
 	void setViewportDimensions( float _width, float _height, float _renderFactor ) override;
 
+	//new 
+	Camera3dInterface * createCamera(const char * _name) override;
+	Entity3dInterface * create3dEntity(const char * _name, const char * _meshName) override;
+
 private:
 	Ogre::Vector2	m_contentResolution;
 	Ogre::Root * m_root;
@@ -73,6 +78,9 @@ private:
 	Ogre::SceneManager * m_sceneMgr;
 
 	OgreRenderSpriteManager * m_spriteMgr;
+
+	bool frameStarted( const Ogre::FrameEvent & evt) override;
+	bool frameEnded( const Ogre::FrameEvent & evt) override;
 
 	Ogre::TheoraVideoController* m_videoControl;
 

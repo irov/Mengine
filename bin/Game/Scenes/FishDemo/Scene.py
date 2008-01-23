@@ -124,6 +124,10 @@ class Scene( Menge.Scene ):
 		self.c = self.delta;
 		self.d = self.delta;
 
+		self.xoffset = 0;
+		self.zoffset = 0;
+		self.yoffset = 50;
+
 		#self.node.setImageIndex(2);
 
 		#self.node.setPercentVisibility( Menge.vec2f( 0.3, 0 ), Menge.vec2f( 0.1, 0 ));
@@ -132,6 +136,7 @@ class Scene( Menge.Scene ):
 
 	def onUpdate( self, timing ):
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
+		Menge.setCamera3DPosition( self.xoffset, self.yoffset, self.zoffset );
 
 		self.camera_x -= timing * 0
 
@@ -202,6 +207,22 @@ class Scene( Menge.Scene ):
 		if key == 53:
 			print "5"
 			self.emitterTest.pause();
+
+		if key == 119:
+			self.xoffset = self.xoffset - 10;
+
+		if key == 100:
+			self.zoffset = self.zoffset - 10;
+
+		if key == 115:
+			self.xoffset = self.xoffset + 10;
+
+		if key == 97:
+			self.zoffset = self.zoffset + 10;
+
+		if key == 120:
+			self.yoffset = self.yoffset - 5;
+
 
 		return False
 		pass

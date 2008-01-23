@@ -18,12 +18,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::render()
 	{
-		//Camera3D * camera = 
-		//	Holder<Player>::hostage()
-		//	->getRenderCamera3D();
-
-		//Holder<RenderEngine>::hostage()->setViewMatrix(camera->getViewMatrix());
-		//Holder<RenderEngine>::hostage()->setProjectionMatrix(camera->getProjectionMatrix());
 		//
 		//for each( SceneNode3D * node in m_listChildren )
 		//{

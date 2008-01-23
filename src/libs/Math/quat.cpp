@@ -1,5 +1,5 @@
 #include "quat.h"
-
+#include "mat4.h"
 namespace	mt
 {
 	quatf::quatf()
@@ -340,6 +340,53 @@ namespace	mt
 	{
 		quatf	out;
 		q_from_rot_m3(out,_rhs);
+		return	out;
+	};
+
+	void q_from_rot_m4(quatf& out, const mat4f& _rhs)
+	{
+		float ftrace = _rhs[0][0]+_rhs[1][1]+_rhs[2][2];
+		float froot;
+
+		if (ftrace > 0.0f)
+		{
+			froot = sqrtf(ftrace + 1.0f );  
+			out[0] = 0.5f*froot;
+			froot = 0.5f/froot;  
+			out[1] = (_rhs[2][1]-_rhs[1][2])*froot;
+			out[2] = (_rhs[0][2]-_rhs[2][0])*froot;
+			out[3] = (_rhs[1][0]-_rhs[0][1])*froot;
+		}
+		else
+		{
+			static int s_iNext[3] = { 1, 2, 0 };
+			int i = 0;
+			if ( _rhs[1][1] > _rhs[0][0] )
+			{
+				i = 1;
+			}
+
+			if ( _rhs[2][2] > _rhs[i][i] )
+			{
+				i = 2;
+			}
+
+			int j = s_iNext[i];
+			int k = s_iNext[j];
+
+			froot = sqrtf(_rhs[i][i]-_rhs[j][j]-_rhs[k][k] + 1.0f);
+			out.v[i] =	0.5f*froot;
+			froot =		0.5f/froot;
+			out[0]	   = (_rhs[k][j]-_rhs[j][k])*froot;
+			out.v[j]   = (_rhs[j][i]+_rhs[i][j])*froot;
+			out.v[k]   = (_rhs[k][i]+_rhs[i][k])*froot;
+		}
+	};
+
+	quatf q_from_rot_m4(const mat4f& _rhs)
+	{
+		quatf	out;
+		q_from_rot_m4(out,_rhs);
 		return	out;
 	};
 

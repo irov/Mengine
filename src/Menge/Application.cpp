@@ -8,6 +8,7 @@
 #	include "SoundEngine.h"
 #	include "ParticleEngine.h"
 #	include "ScriptEngine.h"
+#	include "PhysicEngine.h"
 
 #	include "MousePickerSystem.h"
 #	include "ResourceManager.h"
@@ -69,6 +70,7 @@ namespace Menge
 
 		Holder<Game>::destroy();
 		Holder<ResourceManager>::destroy();
+		Holder<PhysicEngine>::destroy();
 		Holder<ParticleEngine>::destroy();
 		Holder<RenderEngine>::destroy();
 		Holder<FileEngine>::destroy();
@@ -105,6 +107,11 @@ namespace Menge
 	void Application::setParticleSystem( ParticleSystemInterface * _interface )
 	{
 		new ParticleEngine( _interface );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setPhysicSystem( PhysicSystemInterface * _interface )
+	{
+		new PhysicEngine( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPak( const std::string & _pak )
@@ -226,6 +233,7 @@ namespace Menge
 	bool Application::update( float _timing )
 	{	
 		Holder<MousePickerSystem>::hostage()->clear();
+		Holder<PhysicEngine>::hostage()->update( 1.0f/30.0f );
 		Holder<Game>::hostage()->update( _timing );
 		Holder<InputEngine>::hostage()->update();
 		Holder<MousePickerSystem>::hostage()->update();

@@ -5,7 +5,6 @@
 
 #	include "Allocator3D.h"
 #	include "Renderable3D.h"
-#	include "Collideable3D.h"
 
 namespace Menge
 {
@@ -14,7 +13,6 @@ namespace Menge
 		, public NodeChildren<SceneNode3D>
 		, public Allocator3D
 		, public Renderable3D
-		, public Collideable3D
 	{
 	public:
 		const mt::mat4f & getWorldMatrix() override;

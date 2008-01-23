@@ -112,6 +112,7 @@ void OgreRenderSpriteManager::renderQueueEnded(
 {
 	if (afterQueue && queueGroupId == targetQueue)
 	{
+		prepareForRender();
 		doRender();
 		isSorted = true;
 		quadList.clear();
@@ -146,10 +147,10 @@ void OgreRenderSpriteManager::prepareForRender()
 	m_renderSys->_setViewMatrix(Ogre::Matrix4::IDENTITY);
 	m_renderSys->_setProjectionMatrix(Ogre::Matrix4::IDENTITY);
 
+	m_renderSys->_setCullingMode(Ogre::CULL_NONE);
 	m_renderSys->setLightingEnabled(false);
 	m_renderSys->_setDepthBufferParams(false, false);
 	m_renderSys->_setDepthBias(0, 0);
-	m_renderSys->_setCullingMode(Ogre::CULL_NONE);
 	m_renderSys->_setFog(Ogre::FOG_NONE);
 	m_renderSys->_setColourBufferWriteEnabled(true, true, true, true);
 	m_renderSys->unbindGpuProgram(Ogre::GPT_FRAGMENT_PROGRAM);
@@ -161,7 +162,7 @@ void OgreRenderSpriteManager::prepareForRender()
 
 	m_renderSys->_setTextureCoordCalculation(0, Ogre::TEXCALC_NONE);
 	m_renderSys->_setTextureCoordSet(0, 0);
-	m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_POINT);
+	m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_POINT, Ogre::FO_POINT );
 	m_renderSys->_setTextureAddressingMode(0, d_uvwAddressMode);
 	m_renderSys->_setTextureMatrix(0, Ogre::Matrix4::IDENTITY);
 	m_renderSys->_setAlphaRejectSettings(Ogre::CMPF_ALWAYS_PASS, 0);
@@ -223,10 +224,9 @@ void OgreRenderSpriteManager::addQuad1(const Ogre::Vector2 & _contentRes,
 	quad.texture = image->m_texture;
 
 	quad.color = _color;
-
 	quad.source = _src;
 	quad.dest = _dst;
-	
+
 	quadList.push_back(quad);
 }
 
@@ -426,7 +426,7 @@ void OgreRenderSpriteManager::doRender(void)
 		{
 			prepareForRender();
 			first = false;
-		}
+		}		
 
 		m_renderSys->_render( renderOp );
 	}

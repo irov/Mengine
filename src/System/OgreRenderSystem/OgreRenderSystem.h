@@ -3,6 +3,8 @@
 #	include "OgreRenderSystemInterface.h"
 
 #	include "Ogre.h"
+#	include "TheoraVideoController.h"
+#	include "TheoraMovieClip.h"
 
 class OgreRenderSpriteManager;
 
@@ -28,6 +30,9 @@ public:
 	RenderImageInterface* createImage( const char* _name, unsigned int _width, unsigned int _height ) override;
 	RenderImageInterface* createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height ) override;
 	RenderImageInterface* loadImage( const TextureDesc&	_desc ) override;
+	RenderVideoStreamInterface* loadImageVideoStream( const char* _filename ) override;
+	void releaseImageVideoStream( RenderVideoStreamInterface* _image ) override;
+
 	void releaseImage( RenderImageInterface* _image ) override;
 	void renderImage(		
 		const float * _transform, 
@@ -68,4 +73,9 @@ private:
 	Ogre::SceneManager * m_sceneMgr;
 
 	OgreRenderSpriteManager * m_spriteMgr;
+
+	Ogre::TheoraVideoController* m_videoControl;
+
+	typedef std::map< const RenderImageInterface* , Ogre::TheoraMovieClip* > TMovieMap;
+	TMovieMap m_videoTexturesMap;
 };

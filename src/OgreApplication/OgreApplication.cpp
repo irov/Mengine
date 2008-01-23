@@ -175,6 +175,8 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	size_t windowHnd = 0;
 	std::ostringstream windowHndStr;
 
+	//Ogre::LogManager::getSingleton().setLogDetail( Ogre::LoggingLevel::LL_LOW );
+
 	fileInterface->loadPath(".");
 
 	bool initialize = m_application->initialize( _xmlFile );
@@ -205,6 +207,7 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	renderInterface->init( m_root, m_renderWindow );
 
 	//fileInterface->loadPath( m_application->getResourcePath().c_str() );
+	// We cant't use loadPath 'cause of not all libs uses fileSystem interface
 	fileInterface->changeDir( m_application->getResourcePath().c_str() );
 	m_application->createGame();
 
@@ -221,13 +224,14 @@ void OgreApplication::initParams()
 
 	#ifdef _DEBUG
 		renderDriver += "_d.dll";
+		m_root->loadPlugin( "Plugin_TheoraVideoSystem_d.dll" );
 	#else
 		renderDriver += ".dll";
+		m_root->loadPlugin( "Plugin_TheoraVideoSystem.dll" );
 	#endif
 
 	m_root->loadPlugin( m_resourcePath + renderDriver );
 
-	//m_root->loadPlugin( m_resourcePath + "plugins/Plugin_TheoraVideoSystem_d.dll" );
 
 	Ogre::RenderSystem * renderSystem = m_root->getAvailableRenderers()->at( 0 );
 	m_root->setRenderSystem( renderSystem );
@@ -247,6 +251,7 @@ void OgreApplication::initParams()
 //////////////////////////////////////////////////////////////////////////
 bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)
 {
+	//m_application->frameStarted();
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -255,7 +260,6 @@ bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
 	const Ogre::RenderTarget::FrameStats& stats = m_renderWindow->getStatistics();
 	m_frameTime = evt.timeSinceLastFrame;
 	//printf("fps = %f \n", stats.avgFPS);
-	//m_application->frameEnded();
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -299,7 +303,18 @@ void OgreApplication::createWindow( unsigned int _width, unsigned int _height, b
 
 	int width = _width;
 	int height = _height;
+	int left;
+	int top;
 
+	if (!_fullscreen)
+	{
+		dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
+	}
+	else
+	{
+		dwStyle |= WS_POPUP;
+		top = left = 0;
+	}
 	// Calculate window dimensions required
 	// to get the requested client area
 	SetRect(&rc, 0, 0, width, height);
@@ -313,19 +328,10 @@ void OgreApplication::createWindow( unsigned int _width, unsigned int _height, b
 		width = screenw;
 	if ( height > screenh )
 		height = screenh;
-	int left = (screenw - width) / 2;
-	int top = (screenh - height) / 2;
+	left = (screenw - width) / 2;
+	top = (screenh - height) / 2;
 
 
-	if (!_fullscreen)
-	{
-		dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
-	}
-	else
-	{
-		dwStyle |= WS_POPUP;
-		top = left = 0;
-	}
 
 	HINSTANCE hInstance = ::GetModuleHandle( NULL );
 	// Register the window class
@@ -344,7 +350,7 @@ void OgreApplication::createWindow( unsigned int _width, unsigned int _height, b
 	// Create our main window
 	// Pass pointer to self
 	m_hWnd = ::CreateWindow(L"MengeWnd", L"Menge-engine", dwStyle,
-		left, top, width, height, NULL, 0, hInstance, this);
+		left, top, width, height + 1, NULL, 0, hInstance, this);
 
 	TRACKMOUSEEVENT mouseEvent;
 	mouseEvent.cbSize = sizeof( TRACKMOUSEEVENT );

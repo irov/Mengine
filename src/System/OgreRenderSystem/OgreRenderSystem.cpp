@@ -2,6 +2,8 @@
 
 #	include "OgreRenderSpriteManager.h"
 #	include "OgreRenderImage.h"
+#	include "OgreRenderVideoStream.h"
+#	include "OgreExternalTextureSourceManager.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( RenderSystemInterface ** _ptrInterface )
@@ -49,10 +51,17 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	m_sceneMgr = m_root->createSceneManager( Ogre::ST_GENERIC, "defaultSceneManager" );
 	m_renderSys = m_root->getRenderSystem();
 
+	//m_sceneMgr->setAmbientLight( Ogre::ColourValue(0.9f, 0.9f, 0.9f));
 	Ogre::Camera * camera = m_sceneMgr->createCamera("defaultCamera");
  	camera->setNearClipDistance(5);
+	// Position it at 500 in Z direction
+	camera->setPosition(Ogre::Vector3(0,0,500));
+	// Look back along -Z
+	camera->lookAt(Ogre::Vector3(0,0,-300));
 
  	m_viewport = m_renderWindow->addViewport( camera );
+
+	m_viewport->setBackgroundColour( Ogre::ColourValue::Green );
 	
 	float width = m_viewport->getActualWidth();
 	float height = m_viewport->getActualHeight();
@@ -65,8 +74,14 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
 
+
+	m_videoControl = static_cast<Ogre::TheoraVideoController*>
+		(Ogre::ExternalTextureSourceManager::getSingleton().
+		getExternalTextureSource("ogg_video"));
+
 	// еще надо приатачить к ноде, и настроить камеру
-	//Ogre::Entity * e = m_sceneMgr->createEntity("head", "ogrehead.mesh");
+	Ogre::Entity * e = m_sceneMgr->createEntity("ent", Ogre::SceneManager::PrefabType::PT_CUBE );
+	m_sceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject( e );
 
 	return true;
 }
@@ -116,7 +131,6 @@ void OgreRenderSystem::render()
 {
 	Ogre::Root::getSingleton().renderOneFrame();
 }
-
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setProjectionMatrix( const float * _projection )
 {
@@ -148,6 +162,44 @@ RenderImageInterface* OgreRenderSystem::loadImage( const TextureDesc&	_desc )
 	return new OgreRenderImage( _desc );
 }
 //////////////////////////////////////////////////////////////////////////
+RenderVideoStreamInterface* OgreRenderSystem::loadImageVideoStream( const char* _filename )
+{
+	//Sets an input file name - needed by plugin
+	m_videoControl->setInputName( _filename );
+	//Start paused so we can have audio
+	m_videoControl->setPlayMode( Ogre::TextureEffectPause );
+	//! Used for attaching texture to Technique, State, and texture unit layer
+	m_videoControl->setTextureTecPassStateLevel( 0, 0, 0 );
+
+	// Grab Our material, then add a new texture unit
+	Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName( _filename );
+
+	//Create the material the first time through this method
+	if( material.isNull() ) 
+		material = Ogre::MaterialManager::getSingleton().create( _filename, "Default" );
+
+	material->getTechnique(0)->getPass(0)->createTextureUnitState();
+
+	m_videoControl->setSeekEnabled( false );
+
+	m_videoControl->createDefinedTexture( _filename, "Default" );
+	Ogre::TheoraMovieClip* clip = m_videoControl->getMaterialNameClip( _filename );
+	
+	clip->changePlayMode( Ogre::TextureEffectPlay_Looping );
+	OgreRenderVideoStream* video = new OgreRenderVideoStream( clip, _filename );
+	video->m_texture = clip->getVideoDriver()->getTexture();
+	m_videoTexturesMap.insert( std::make_pair( video, clip ) );
+
+	return video;
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::releaseImageVideoStream( RenderVideoStreamInterface* _image )
+{
+	m_videoTexturesMap.erase( _image );
+	m_videoControl->destroyAdvancedTexture( static_cast<OgreRenderVideoStream*>(_image)->getName(), "Default" );
+	delete static_cast<OgreRenderVideoStream*>(_image);
+}
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::releaseImage( RenderImageInterface* _image )
 {
 	delete static_cast<OgreRenderImage*>( _image );
@@ -163,6 +215,11 @@ void OgreRenderSystem::renderImage(
 				 EBlendFactor _src,
 				 EBlendFactor _dst)
 {
+	TMovieMap::iterator it = m_videoTexturesMap.find( _image );
+	if( it != m_videoTexturesMap.end() )
+	{
+		it->second->blitFrameCheck();
+	}
 	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
 	{
 		Ogre::Texture * texture = image->getTexture();
@@ -183,6 +240,11 @@ void OgreRenderSystem::renderImage(
 		EBlendFactor _src,
 		EBlendFactor _dst)
 {
+	TMovieMap::iterator it = m_videoTexturesMap.find( _image );
+	if( it != m_videoTexturesMap.end() )
+	{
+		it->second->blitFrameCheck();
+	}
 	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
 	{
 		Ogre::Texture * texture = image->getTexture();

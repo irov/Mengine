@@ -641,6 +641,25 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Video"
+				>
+				<File
+					RelativePath=".\Video.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Video.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"
@@ -802,6 +821,14 @@
 				</File>
 				<File
 					RelativePath=".\ResourceImageSet.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceImageVideoStream.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceImageVideoStream.h"
 					>
 				</File>
 			</Filter>

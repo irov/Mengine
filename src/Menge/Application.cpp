@@ -131,7 +131,7 @@ namespace Menge
 		if( m_fixedContentResolution )
 		{
 			mt::vec2f res = Holder<Game>::hostage()->getResourceResolution();
-			Holder<RenderEngine>::hostage()->setViewportDimensions( res.x, res.y );
+			//Holder<RenderEngine>::hostage()->setViewportDimensions( res.x, res.y );
 		}
 
 		if( Holder<Game>::hostage()
@@ -268,8 +268,10 @@ namespace Menge
 		m_quit = true; 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::frameEnded()
-	{}
+	void Application::frameStarted()
+	{
+		Holder<RenderEngine>::hostage()->frameStarted();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	int Application::getScreenWidth() const
 	{

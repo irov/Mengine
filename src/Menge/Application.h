@@ -68,6 +68,7 @@ namespace Menge
 		void handleMouseLeave();
 		void handleMouseEnter();
 
+		void frameStarted();
 		void frameEnded();
 
 	private:

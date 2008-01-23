@@ -38,6 +38,7 @@ namespace Menge
 		RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height );
 		RenderImageInterface * loadImage( const TextureDesc & _desc );
 		RenderImageInterface * loadImage( const std::string & _filename, size_t _filter );
+		RenderVideoStreamInterface * loadImageVideoStream( const std::string& _filename );
 
 		void renderImage(
 			const mt::mat3f & _transform, 
@@ -62,6 +63,7 @@ namespace Menge
 			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
 
 		void	releaseImage( RenderImageInterface * _image );
+		void	releaseImageVideoStream( RenderVideoStreamInterface* _image );
 
 		void	setProjectionMatrix( const mt::mat4f& _projection );
 		void	setViewMatrix( const mt::mat4f& _view );
@@ -72,6 +74,9 @@ namespace Menge
 
 		void	setFullscreenMode( bool _fullscreen );
 		void	setViewportDimensions( float _width, float _height, float _renderFactor = 0.0f );
+
+		void frameStarted();
+		void frameEnded();
 
 	protected:
 		RenderSystemInterface * m_interface;

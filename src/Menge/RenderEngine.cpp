@@ -95,6 +95,12 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	RenderVideoStreamInterface* RenderEngine::loadImageVideoStream( const std::string& _filename )
+	{
+		RenderVideoStreamInterface * image = m_interface->loadImageVideoStream( _filename.c_str() );
+		return image;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * RenderEngine::loadImage( const std::string & _filename, size_t _filter )
 	{
 		FileDataInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
@@ -185,6 +191,10 @@ namespace Menge
 	{
 		m_interface->releaseImage( _image );
 	}
+	void RenderEngine::releaseImageVideoStream( RenderVideoStreamInterface* _image )
+	{
+		m_interface->releaseImageVideoStream( _image );
+	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setFullscreenMode( bool _fullscreen )
 	{
@@ -194,5 +204,10 @@ namespace Menge
 	void RenderEngine::setViewportDimensions( float _width, float _height, float _renderFactor )
 	{
 		m_interface->setViewportDimensions( _width, _height, _renderFactor );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::frameStarted()
+	{
+		m_interface->render();
 	}
 }

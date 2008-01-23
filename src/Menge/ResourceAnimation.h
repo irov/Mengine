@@ -61,7 +61,7 @@ namespace Menge
 		struct Sequence
 		{
 			float delay;
-			size_t index;
+			unsigned int index;
 		};
 
 		typedef std::vector<Sequence> TVectorSequence;

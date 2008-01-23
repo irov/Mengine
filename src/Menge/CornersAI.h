@@ -1,9 +1,17 @@
 #	pragma once
 
-typedef struct 
+typedef struct _TPlace
 {
 	int x;
 	int y;
+	_TPlace()
+	{
+	}
+	_TPlace( int _x, int _y )
+		:x( _x )
+		,y( _y )
+	{
+	}
 } TPlace;
 
 typedef struct  
@@ -25,6 +33,16 @@ typedef struct _TMovesTree
 	_TMovesTree* root;
 	_TMovesTree* simpleStep[4];
 	_TMovesTree* jumpStep[4];
+	_TMovesTree( _TMovesTree* _parent, int _x, int _y )
+		: disposition( _x, _y )
+		, root( _parent )
+	{
+		for( int i = 0; i < 4; i++ )
+		{
+			simpleStep[i] = 0;
+			jumpStep[i] = 0;
+		}
+	}
 } TMovesTree;
 
 enum TDirection
@@ -49,9 +67,7 @@ public:
 	CornersAI( const CornersAI& _other );
 	~CornersAI();
 
-	int getState( int _x, int _y );
-	int getTurn();
-	void setInitialPosition(int** board);
+	void setInitialPosition(int* board);
 	void changeTurn();
 	void restartGame();
 	void setPiece( int _x, int _y, int _player );

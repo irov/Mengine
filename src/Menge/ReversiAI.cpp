@@ -1,5 +1,6 @@
 #	include "ReversiAI.h"
 
+#	include "stdio.h"
 
 ReversiAI::ReversiAI()
 {
@@ -28,7 +29,6 @@ ReversiAI::ReversiAI()
 	// space for move structures
 	// 35-max depth; 20-max disks overturned by a move
 	// 40-max moves possible in a position
-	memErr = ( startMoveStruc == 0 )? true : false;
 
 	//set the order of search of depth 2 to be logical
 	order[0] = 0; order[1] = 7; order[2] = 56; order[3] = 63;
@@ -46,18 +46,11 @@ ReversiAI::ReversiAI()
 	order[48] = 48; order[49] = 55; order[50] = 15; order[51] = 8;
 	order[52] = 57; order[53] = 62; order[54] = 6; order[55] = 1;
 	order[56] = 49; order[57] = 54; order[58] = 14; order[59] = 9;
-
-
 }
 
 ReversiAI::~ReversiAI()
 {
 	delete startMoveStruc;
-}
-
-bool ReversiAI::isMemErr()
-{ 
-	return memErr; 
 }
 
 void ReversiAI::setId( int _me, int _you, int _empty )
@@ -90,6 +83,12 @@ void ReversiAI::markCell( int _playerID, int _x, int _y )
 
 int ReversiAI::autoMove()
 {
+	for( int i = 0;  i < 8; i++ )
+	{
+		for( int j = 0; j < 8; j++ )
+			printf( "%d  ", board[ (7 - i)*8 + j]);
+		printf("\n");
+	}
 	count = 0; //the no of leaves evaluated
 	//copy the given board into a local array & simultaneously find the total no of disks
 	totalDisks = 64;
@@ -190,6 +189,7 @@ int ReversiAI::autoMove()
 	deallocMoveStruc();
 
 	curScore = v;
+	printf( "AI move: %d\n", bestMove );
 	return bestMove;
 }
 
@@ -206,221 +206,142 @@ long int ReversiAI::getLeavesEvaluated()
 int ReversiAI::setUpLegalMoves( char* _moveStruc )
 //returns no of legal moves and sets up the legal moves in the move structure move_struc
 {
-	int moveNo = 0;
+	int move_no = 0;
 	int who = toPlay;
 	int other = -toPlay;
 
-	for ( int z = 0; z <= 59; z++ )
+	for (int z = 0; z <= 59; z++ )
 	{
 		int m = order[z];
 
-		_moveStruc[ moveNo * 20 ] = m;		//put m on it for trial
-		int moveEffect = 1;					//it will be overwritten next loop if it
-											// does not present itself as legal move
+		_moveStruc[move_no * 20] = m;	//put m on it for trial
+		int move_effect = 1;  //it will be overwritten next loop if it
+									// does not present itself as legal move
 
 		//begin testing
 		int i,j;
-		int r = m / 8;
-		int c = m % 8;
+		int r = m/8, c = m%8;
 
-		if ( board[m] )
-		{
-			continue;
-		}
+		if (board[m]) continue;
 
-		if ( c <= 5 )
-		{
-			if ( board[ m + 1 ] == other )
-			{
-				for ( i = m + 2; i % 8 != 0; i++ )
-				{
-					if ( board[i] == other )
+		if (c<=5)
+			if (board[m+1]==other)
+				for ( i=m+2; i%8!=0; i++)
 					{
-						continue;
-					}
-					if ( board[i] == who )
-					{
-						for ( j = m + 1; j != i; j++ )
-						{
-							_moveStruc[ moveNo * 20 + moveEffect] = j;
-							moveEffect++;
-						}
-						break;
-					}
-				}
-			}
-		}
-		if ( c >= 2 )
-		{
-			if ( board[ m - 1 ] == other )
-			{
-				for ( i = m - 2; i % 8 != 7 && i != -1; i-- )
-				{
-					if ( board[i] == other )
-					{
-						continue;
-					}
-					if ( board[i] == who )
-					{
-						for ( j = m - 1; j != i; j-- )
-						{
-							_moveStruc[ moveNo * 20 + moveEffect] = j;
-							moveEffect++;
-						}
-						break;
-					}
-				}
-			}
-		}
-		if ( r >= 2 )
-		{
-			if ( board[ m - 8 ] == other )
-			{
-				for ( i = m - 16; i >= 0 ; i -= 8 )
-				{
-					if ( board[i] == other )
-					{
-						continue;
-					}
-					if ( board[i] == who )
-					{
-						for ( j = m - 8; j != i; j -= 8 )
-						{
-							_moveStruc[ moveNo * 20 + moveEffect ] = j;
-							moveEffect++;
-						}
-						break;
-					}
-				}
-			}
-		}
-		if ( r <= 5 )
-		{
-			if ( board[ m + 8 ] == other )
-			{
-				for ( i = m + 16; i <= 63 ; i += 8)
-				{
-					if ( board[i] == other ) 
-					{
-						continue;
-					}
-					if ( board[i] == who )
-					{
-						for ( j = m + 8; j != i; j += 8)
-						{
-							_moveStruc[ moveNo * 20 + moveEffect ] = j;
-							moveEffect++;
-						}
-						break;
-					}
-				}
-			}
-		}
-		if ( r <= 5 && c <= 5 )
-		{
-			if ( board[ m + 9 ] == other )
-			{
-				for ( i = m + 18; ( i <= 63 ) && ( ( i % 8 )!= 0 ) ; i += 9 )
-				{
-					if ( board[i] == other )
-					{
-						continue;
-					}
-					if ( board[i] == who )
-					{
-						for ( j = m + 9; j != i; j += 9 )
-						{
-							_moveStruc[ moveNo * 20 + moveEffect ] = j;
-							moveEffect++;
-						}
-						break;
-					}
-				}
-			}
-		}
-		if ( r <= 5 && c >= 2 )
-		{
-			if ( board[ m + 7 ] == other )
-			{
-				for ( i = m + 14; ( i <= 63 ) && ( ( i % 8 ) != 7 ) ; i += 7 )
-				{
-					if ( board[i] == other ) 
-					{
-						continue;
-					}
-					if ( board[i] == who )
-					{
-						for ( j = m + 7; j != i; j += 7)
-						{
-							_moveStruc[ moveNo * 20 + moveEffect ] = j;
-							moveEffect++;
-						}
-						break;
-					}
-				}
-			}
-		}
-		if ( r >= 2 && c <= 5)
-		{
-			if ( board[ m - 7 ] == other )
-			{
-				for ( i = m - 14; i >= 0 && i % 8 != 0 ; i -= 7)
-				{
-					if ( board[i] == other )
-					{
-						continue;
-					}
-					if ( board[i] == who )
-					{
-						for ( j = m - 7; j != i; j -= 7 )
-						{
-							_moveStruc[ moveNo * 20 + moveEffect ] = j;
-							moveEffect++;
-						}
-						break;
-					}
-				}
-			}
-		}
-		if ( r >= 2 && c >= 2 )
-		{
-			if ( board[ m - 9 ] == other )
-			{
-				for ( i = m - 18; ( i >= 0 ) && ( ( i % 8 ) != 7 ) ; i -= 9)
-				{
-					if ( board[i] == other ) 
-					{
-						continue;
-					}
+					if (board[i]==other) continue;
 					if (board[i]==who)
-					{
-						for ( j = m - 9; j != i; j -= 9 )
-						{
-							_moveStruc[ moveNo * 20 + moveEffect ] = j;
-							moveEffect++;
-						}
-						break;
+						for (j=m+1; j!=i; j++)
+							{
+							_moveStruc[move_no*20 + move_effect] = j;
+							move_effect++;
+							}
+					break;
 					}
-				}
-			}
-		}
+		if (c>=2)
+			if (board[m-1]==other)
+				for ( i=m-2; i%8!=7 && i!=-1; i--)
+					{
+					if (board[i]==other) continue;
+					if (board[i]==who)
+						for ( j=m-1; j!=i; j--)
+							{
+							_moveStruc[move_no*20 + move_effect] = j;
+							move_effect++;
+							}
+					break;
+					}
+		if (r>=2)
+			if (board[m-8]==other)
+				for ( i=m-16; i>=0 ; i-=8)
+					{
+					if (board[i]==other) continue;
+					if (board[i]==who)
+						for (j=m-8; j!=i; j-=8)
+							{
+							_moveStruc[move_no*20 + move_effect] = j;
+							move_effect++;
+							}
+					break;
+					}
+		if (r<=5)
+			if (board[m+8]==other)
+				for ( i=m+16; i<=63 ; i+=8)
+					{
+					if (board[i]==other) continue;
+					if (board[i]==who)
+						for (j=m+8; j!=i; j+=8)
+							{
+							_moveStruc[move_no*20 + move_effect] = j;
+							move_effect++;
+							}
+					break;
+					}
+		if (r<=5 && c<=5)
+			if (board[m+9]==other)
+				for ( i=m+18; (i<=63) && ((i%8)!=0) ; i+=9)
+					{
+					if (board[i]==other) continue;
+					if (board[i]==who)
+						for (j=m+9; j!=i; j+=9)
+							{
+							_moveStruc[move_no*20 + move_effect] = j;
+							move_effect++;
+							}
+					break;
+					}
+		if (r<=5 && c>=2)
+			if (board[m+7]==other)
+				for ( i=m+14; (i<=63) && ((i%8)!=7) ; i+=7)
+					{
+					if (board[i]==other) continue;
+					if (board[i]==who)
+						for ( j=m+7; j!=i; j+=7)
+							{
+							_moveStruc[move_no*20 + move_effect] = j;
+							move_effect++;
+							}
+					break;
+					}
+		if (r>=2 && c<=5)
+			if (board[m-7]==other)
+				for ( i=m-14; i>=0 && i%8 != 0 ; i-=7)
+					{
+					if (board[i]==other) continue;
+					if (board[i]==who)
+						for (j=m-7; j!=i; j-=7)
+							{
+							_moveStruc[move_no*20 + move_effect] = j;
+							move_effect++;
+							}
+					break;
+					}
+		if (r>=2 && c>=2)
+			if (board[m-9]==other)
+				for ( i=m-18; (i>=0) && ((i%8)!=7) ; i-=9)
+					{
+					if (board[i]==other) continue;
+					if (board[i]==who)
+						for (j=m-9; j!=i; j-=9)
+							{
+							_moveStruc[move_no*20 + move_effect] = j;
+							move_effect++;
+							}
+					break;
+					}
 
-		if ( moveEffect > 1 )
-		{
-			if (moveEffect < 20 )
+		if (move_effect>1)
 			{
-				_moveStruc[ moveNo * 20 + moveEffect ] = (char)100;	//indicate termination
+			if (move_effect<20) _moveStruc[move_no*20 + move_effect] = (char)100;	//indicate termination
+			move_no++;	//set pointer ready for next legal move
 			}
-			moveNo++;	//set pointer ready for next legal move
+
 		}
 
-	}
-
-	_moveStruc[ moveNo * 20 ] = (char)100;
+	_moveStruc[ move_no * 20 ] = (char)100;
 
 	//ASSERT(move_no<34);
 
-	return moveNo;
+	return move_no;
 
 }
 

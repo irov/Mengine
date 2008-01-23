@@ -7,8 +7,7 @@
 #define RANDOM(min, max)	( (((double) rand() / (double) (RAND_MAX)) * (max) + (min)))
 
 CornersAI::CornersAI()
-: m_breakFlag( false )
-, m_turn( 1 )
+: m_turn( 1 )
 {
 	int initial[8][8] = 
 	{
@@ -21,15 +20,14 @@ CornersAI::CornersAI()
 		{ 0, 0, 0, 0, 0, 2, 2, 2 },
 		{ 0, 0, 0, 0, 2, 2, 2, 2 }
 	};
-	setInitialPosition( (int **)initial );
+	setInitialPosition( &initial[0][0] );
 }
 
 CornersAI::CornersAI( const CornersAI& _other )
-: m_breakFlag ( false )
+: m_turn( _other.m_turn )
 {
-	memcpy( m_board, _other.m_board, 64 * sizeof( int ) );
-	memcpy( m_initialBoard, _other.m_initialBoard, 64 * sizeof( int ) );
-	m_turn = _other.m_turn;
+	memcpy( &m_board[0][0], &_other.m_board[0][0], 64 * sizeof( int ) );
+	memcpy( &m_initialBoard[0][0], &_other.m_initialBoard[0][0], 64 * sizeof( int ) );
 }
 
 CornersAI::~CornersAI()
@@ -37,19 +35,9 @@ CornersAI::~CornersAI()
 
 }
 
-int CornersAI::getState( int _x, int _y )
+void CornersAI::setInitialPosition( int* board )
 {
-	return m_board[_x][_y];
-}
-
-int CornersAI::getTurn()
-{
-	return m_turn;
-}
-
-void CornersAI::setInitialPosition( int** board )
-{
-	memcpy( m_initialBoard, board, 64 * sizeof( int ) );
+	memcpy( &m_initialBoard[0][0], board, 64 * sizeof( int ) );
 }
 
 void CornersAI::changeTurn()
@@ -67,7 +55,7 @@ void CornersAI::changeTurn()
 
 void CornersAI::restartGame()
 {
-	memcpy( m_board, m_initialBoard, 64 * sizeof( int ) );
+	memcpy( &m_board[0][0], &m_initialBoard[0][0], 64 * sizeof( int ) );
 }
 
 TMoveList* CornersAI::getMoveList()
@@ -102,27 +90,31 @@ TMoveList* CornersAI::getMoveList()
 void CornersAI::createTree( TMovesTree** _head, TMovesTree* _parent, int _x, int _y, bool _isSimple /* = true  */ )
 {
 	// Инициализация
-	initialize( _head, _parent, _x, _y );
+	(*_head) = new TMovesTree( _parent, _x, _y );
 	// Просмотр возможных продолжений хода
 	if (_isSimple)
 	{
 		// Простые шаги обрабатываются только для первого шага
 		// Рекурсия не вызывается, а просто создаются конечные узлы
-		if ( _x != 7 && m_board[_x+1][_y] == Space )
+		if ( _x != 7 && m_board[_x+1][_y] == TState::Space )
 		{
-			initialize( &(*_head)->simpleStep[TDirection::Right], (*_head), _x+1, _y );
+			(*_head)->simpleStep[TDirection::Right] = new TMovesTree( (*_head), _x+1, _y );
+			//initialize( &(*_head)->simpleStep[TDirection::Right], (*_head), _x+1, _y );
 		}
-		if ( _x != 0 && m_board[_x-1][_y] == Space )
+		if ( _x != 0 && m_board[_x-1][_y] == TState::Space )
 		{
-			initialize( &(*_head)->simpleStep[TDirection::Left], (*_head), _x-1, _y );
+			(*_head)->simpleStep[TDirection::Left] = new TMovesTree( (*_head), _x-1, _y );
+			//initialize( &(*_head)->simpleStep[TDirection::Left], (*_head), _x-1, _y );
 		}
-		if ( _y != 7 && m_board[_x][_y+1] == Space )
+		if ( _y != 7 && m_board[_x][_y+1] == TState::Space )
 		{
-			initialize( &(*_head)->simpleStep[TDirection::Up], (*_head), _x, _y+1 );
+			(*_head)->simpleStep[TDirection::Up] = new TMovesTree( (*_head), _x, _y+1 );
+			//initialize( &(*_head)->simpleStep[TDirection::Up], (*_head), _x, _y+1 );
 		}
-		if ( _y != 0 && m_board[_x][_y-1] == Space )
+		if ( _y != 0 && m_board[_x][_y-1] == TState::Space )
 		{
-			initialize( &(*_head)->simpleStep[TDirection::Down], (*_head), _x, _y-1 );
+			(*_head)->simpleStep[TDirection::Down] = new TMovesTree( (*_head), _x, _y-1 );
+			//initialize( &(*_head)->simpleStep[TDirection::Down], (*_head), _x, _y-1 );
 		}
 	}
 	// Обрабатывается для любого шага - прыжки
@@ -130,8 +122,8 @@ void CornersAI::createTree( TMovesTree** _head, TMovesTree* _parent, int _x, int
 	// Вправо
 	if ( _x != 7 
 		&& _x+1 != 7 
-		&& m_board[_x+1][_y] != Space 
-		&& m_board[_x+2][_y] == Space 
+		&& m_board[_x+1][_y] != TState::Space 
+		&& m_board[_x+2][_y] == TState::Space 
 		&& isFirstTime( (*_head), _x+2, _y ) )
 	{
 		createTree( &(*_head)->jumpStep[TDirection::Right], (*_head), _x+2, _y, false );
@@ -139,8 +131,8 @@ void CornersAI::createTree( TMovesTree** _head, TMovesTree* _parent, int _x, int
 	// Влево
 	if ( _x != 0 
 		&& _x-1 != 0 
-		&& m_board[_x-1][_y] != Space 
-		&& m_board[_x-2][_y] == Space 
+		&& m_board[_x-1][_y] != TState::Space 
+		&& m_board[_x-2][_y] == TState::Space 
 		&& isFirstTime( (*_head), _x-2, _y ) )
 	{
 		createTree( &(*_head)->jumpStep[TDirection::Left], (*_head), _x-2, _y, false);
@@ -148,8 +140,8 @@ void CornersAI::createTree( TMovesTree** _head, TMovesTree* _parent, int _x, int
 	// Вверх
 	if ( _y != 7 
 		&& _y+1 != 7 
-		&& m_board[_x][_y+1] != Space 
-		&& m_board[_x][_y+2] == Space 
+		&& m_board[_x][_y+1] != TState::Space 
+		&& m_board[_x][_y+2] == TState::Space 
 		&& isFirstTime( (*_head), _x, _y+2 ) )
 	{
 		createTree( &(*_head)->jumpStep[TDirection::Up], (*_head), _x, _y+2, false );
@@ -157,24 +149,11 @@ void CornersAI::createTree( TMovesTree** _head, TMovesTree* _parent, int _x, int
 	// Вниз
 	if ( _y != 0 
 		&& _y-1 != 0 
-		&& m_board[_x][_y-1] != Space 
-		&& m_board[_x][_y-2] == Space 
+		&& m_board[_x][_y-1] != TState::Space 
+		&& m_board[_x][_y-2] == TState::Space 
 		&& isFirstTime( (*_head), _x, _y-2 ) )
 	{
 		createTree( &(*_head)->jumpStep[TDirection::Down], (*_head), _x, _y-2, false );
-	}
-}
-
-void CornersAI::initialize( TMovesTree** _head, TMovesTree* _parent, int _x, int _y )
-{
-	*_head = new TMovesTree();
-	(*_head)->disposition.x = _x;
-	(*_head)->disposition.y = _y;
-	(*_head)->root = _parent;
-	for ( int i = 0; i < 4; i++ )
-	{
-		(*_head)->simpleStep[i] = NULL;
-		(*_head)->jumpStep[i] = NULL;
 	}
 }
 
@@ -195,23 +174,23 @@ bool CornersAI::isFirstTime( TMovesTree* _node, int _x, int _y )
 void CornersAI::treeToList( TMovesTree* _tree, TMovesTree* _node, TMoveList** _list )
 {
 	TMoveList* temp;
-	bool isFirstTime;
+	bool firstTime;
 
 	// Проверить не является ли корнем, а если является, то пропустить добавление
 	if ( _tree != _node )
 	{
 		// Проверить есть ли текущий ход в списке и если надо - добавить
-		isFirstTime = true;
+		firstTime = true;
 		temp = (*_list);
 		while ( temp != NULL && temp->move.moveFrom.x == _tree->disposition.x && temp->move.moveFrom.y == _tree->disposition.y )
 		{
 			if ( _node->disposition.x == temp->move.moveTo.x && _node->disposition.y == temp->move.moveTo.y )
 			{
-				isFirstTime = false;
+				firstTime = false;
 			}
 			temp = temp->next;
 		}
-		if ( isFirstTime )
+		if ( firstTime )
 		{
 			temp = new TMoveList;									//Создать новый элемент
 			temp->move.moveFrom.x = _tree->disposition.x;			//проинициализировать
@@ -333,7 +312,7 @@ int CornersAI::goalFunc2()
 					WhiteCount++;
 				}
 			}
-			if ( m_board[i][j] == TState::Black )
+			else if ( m_board[i][j] == TState::Black )
 			{
 				// Взвешенная Сумма расстояний до угла белых
 				if ( i > 5 || j > 5)
@@ -437,8 +416,6 @@ int CornersAI::autoMove( int _level )
 	TMove Result;
 
 	//printf( "AI move %d\n", m_turn );
-	// Сбросить флаг остановки
-	m_breakFlag = false;
 	// Посчитать сумму расстояний до целевого угла
 	for ( i = 0; i < 8; i++ )
 	{
@@ -449,7 +426,7 @@ int CornersAI::autoMove( int _level )
 				WhiteR = WhiteR + 16 - i - j;
 				Count++;
 			}
-			if ( m_board[i][j] == TState::Black )
+			else if ( m_board[i][j] == TState::Black )
 			{
 				BlackR = BlackR + i + j;
 			}
@@ -457,7 +434,7 @@ int CornersAI::autoMove( int _level )
 			{
 				BlackSp++;
 			}
-			if( m_initialBoard[i][j] == TState::Black && m_board[i][j] != TState::White )
+			else if( m_initialBoard[i][j] == TState::Black && m_board[i][j] != TState::White )
 			{
 				WhiteSp++;
 			}
@@ -473,24 +450,27 @@ int CornersAI::autoMove( int _level )
 	else
 	{
 		// Выбор хода по правилам второй половины партии
-		/*if ( ( m_turn == TState::White && WhiteSp <= 3 ) || ( m_turn == TState::Black && BlackSp <= 3 ) )
+		if ( ( m_turn == TState::White && WhiteSp <= 3 ) || ( m_turn == TState::Black && BlackSp <= 3 ) )
 		{
-			getBestMove2( Result, MAX( _level, 4) );
+			getBestMove2( Result, MAX( _level, 3) );
 		}
-		else*/
+		else
 		{
 			getBestMove2( Result, _level );
 		}
 	}
-	// Если расчет был прерван, то вернуть ход на месте
-	if ( m_breakFlag )
-	{
-	  Result.moveFrom.x = 0;
-	  Result.moveTo.x = 0;
-	  Result.moveFrom.y = 0;
-	  Result.moveTo.y = 0;
-	}
+
 	// x1-y1-x2-y2
+	for( int i = 0; i < 8; i++ )
+	{
+		for(int j = 0; j < 8; j++)
+		{
+			printf("%d ", m_board[j][i] );
+		}
+		printf("\n");
+	}
+
+	printf( "AI moves\nfrom: %d %d - to: %d %d\n", Result.moveFrom.x, Result.moveFrom.y, Result.moveTo.x, Result.moveTo.y );
 	return Result.moveFrom.x*1000 + Result.moveFrom.y*100 + Result.moveTo.x * 10 + Result.moveTo.y;
 }
 
@@ -536,11 +516,6 @@ int CornersAI::getBestMove( TMove& _bestMove, int _level )
 			//P->makeMove( curMove->move.moveTo, curMove->move.moveFrom );
 			P->makeMove( curMove->move.moveTo.x, curMove->move.moveTo.y, curMove->move.moveFrom.x, curMove->move.moveFrom.y );
 			P->changeTurn();
-			// Проверить необходимость прервать вычисления
-			if ( m_breakFlag )
-			{
-				return BestScore;
-			}
 			// Следующий ход
 			curMove = curMove->next;
 		}
@@ -613,11 +588,7 @@ int CornersAI::getBestMove2( TMove& _bestMove, int _level )
         // Вернуть ход назад
         //P->makeMove( curMove->move.moveTo, curMove->move.moveFrom );
 		P->makeMove( curMove->move.moveTo.x, curMove->move.moveTo.y, curMove->move.moveFrom.x, curMove->move.moveFrom.y );
-        // Проверить необходимость прервать вычисления
-        if ( m_breakFlag )
-		{
-          return BestScore;
-		}
+
         // Следующий ход
         curMove = curMove->next;
 	  }

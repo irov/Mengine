@@ -15,7 +15,6 @@ public:
 	ReversiAI();
 	~ReversiAI();
 
-	bool isMemErr();								// this must be the first function to be called
 	void setId( int _me, int _you, int _empty );	//set nID's used by the user interface
 	void setDepth( int _d );						//set depth to be searched
 	void setEndgameEmpty( int _d );					//set the start of endgame with d squares empty

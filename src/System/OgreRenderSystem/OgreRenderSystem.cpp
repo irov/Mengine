@@ -3,7 +3,7 @@
 #	include "OgreRenderSpriteManager.h"
 #	include "OgreRenderImage.h"
 
-#	include "Ogre3dCamera.h"
+#	include "OgreCamera.h"
 #	include "OgreEntity.h"
 #	include "OgreLight.h"
 #	include "OgreMesh.h"
@@ -51,21 +51,21 @@ OgreRenderSystem::~OgreRenderSystem()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-Camera3dInterface * OgreRenderSystem::createCamera(const char * _name)
+CameraInterface * OgreRenderSystem::createCamera(const char * _name)
 {
 	Ogre::Camera * camera = m_sceneMgr->createCamera(_name);
-	Camera3dInterface * ogre3dcam = new Ogre3dCamera( camera );
+	CameraInterface * ogre3dcam = new Ogre3dCamera( camera );
 	m_viewport = m_renderWindow->addViewport( camera );
 	return  ogre3dcam;
 }
 //////////////////////////////////////////////////////////////////////////
-Entity3dInterface * OgreRenderSystem::create3dEntity(const char * _name, const char * _meshName)
+EntityInterface * OgreRenderSystem::create3dEntity(const char * _name, const char * _meshName)
 {
 	Ogre::Entity * entity = m_sceneMgr->createEntity(_name, _meshName);
 	Ogre::SceneNode * newNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
 	newNode->attachObject( entity );
 
-	Entity3dInterface * ogre3dEntity = new Ogre3dEntity( newNode/*entity*/ );
+	EntityInterface * ogre3dEntity = new Ogre3dEntity( newNode/*entity*/ );
 	return 	ogre3dEntity;
 }
 //////////////////////////////////////////////////////////////////////////

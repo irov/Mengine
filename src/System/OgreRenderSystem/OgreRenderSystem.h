@@ -64,8 +64,8 @@ public:
 	void setViewportDimensions( float _width, float _height, float _renderFactor ) override;
 
 	//new 
-	Camera3dInterface * createCamera(const char * _name) override;
-	Entity3dInterface * create3dEntity(const char * _name, const char * _meshName) override;
+	CameraInterface * createCamera(const char * _name) override;
+	EntityInterface * create3dEntity(const char * _name, const char * _meshName) override;
 	LightInterface * createLight(const char * _name) override;
 	MeshInterface * createMesh(const char * _name) override;
 

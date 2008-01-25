@@ -2,7 +2,7 @@
 
 #	include "SceneNode3D.h"
 
-class Camera3dInterface;
+class CameraInterface;
 
 namespace Menge
 {
@@ -26,6 +26,6 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 	private:
-		Camera3dInterface * m_interface;
+		CameraInterface * m_interface;
 	};
 }

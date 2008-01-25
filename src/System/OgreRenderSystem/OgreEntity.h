@@ -5,7 +5,7 @@
 #	include "Ogre.h"
 
 class Ogre3dEntity
-	: public Entity3dInterface
+	: public EntityInterface
 {
 public:
 	Ogre3dEntity(Ogre::SceneNode * _sceneNode/*Ogre::Entity * _entity*/);

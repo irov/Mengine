@@ -31,7 +31,7 @@ public:
 	virtual void writeToFile( const char* _filename ) = 0;
 };
 
-class Camera3dInterface
+class CameraInterface
 {
 public:
 	virtual void setPosition( float x, float y, float z ) = 0;
@@ -43,7 +43,7 @@ public:
 	// more to come...
 };
 
-class Entity3dInterface
+class EntityInterface
 {
 public:
 	virtual void setPosition(float x, float y, float z) = 0;
@@ -136,8 +136,8 @@ public:
 	virtual void	setViewportDimensions( float _width, float _height, float _renderFactor ) = 0;
 
 	//new
-	virtual Camera3dInterface * createCamera( const char * _name ) = 0;
-	virtual Entity3dInterface * create3dEntity(const char * _name, const char * _meshName) = 0;
+	virtual CameraInterface * createCamera( const char * _name ) = 0;
+	virtual EntityInterface * create3dEntity(const char * _name, const char * _meshName) = 0;
 	virtual LightInterface * createLight(const char * _name) = 0;
 	virtual MeshInterface * createMesh(const char * _name) = 0;
 };

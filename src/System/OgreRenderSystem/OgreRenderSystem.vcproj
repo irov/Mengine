@@ -185,11 +185,11 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\Ogre3dCamera.cpp"
+			RelativePath=".\OgreCamera.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\Ogre3dCamera.h"
+			RelativePath=".\OgreCamera.h"
 			>
 		</File>
 		<File

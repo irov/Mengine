@@ -6,7 +6,7 @@
 #	include <string>
 
 
-class Entity3dInterface;
+class EntityInterface;
 class MeshInterface;
 
 namespace Menge
@@ -48,7 +48,7 @@ namespace Menge
 
 	private:
 		std::string m_meshName;
-		Entity3dInterface * m_interface;
+		EntityInterface * m_interface;
 
 		std::string m_resourcenameMesh;
 		ResourceMesh * m_resourceMesh;

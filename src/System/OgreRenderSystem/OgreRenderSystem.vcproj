@@ -193,11 +193,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Ogre3dEntity.cpp"
+			RelativePath=".\OgreEntity.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\Ogre3dEntity.h"
+			RelativePath=".\OgreEntity.h"
 			>
 		</File>
 		<File

@@ -4,7 +4,7 @@
 #	include "OgreRenderImage.h"
 
 #	include "Ogre3dCamera.h"
-#	include "Ogre3dEntity.h"
+#	include "OgreEntity.h"
 #	include "OgreLight.h"
 #	include "OgreMesh.h"
 
@@ -130,22 +130,20 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
 
 */
-	Ogre::Entity * e = m_sceneMgr->createEntity("hh", "E:\\ZombieTest\\Models\\robot.mesh");
+/*	Ogre::Entity * e = m_sceneMgr->createEntity("hh", "E:\\ZombieTest\\Models\\robot.mesh");
 	Ogre::SceneNode* headNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
 	headNode->attachObject(e);
 
 	headNode->setScale(0.5f,0.5f,0.5f);
-//	e->setMaterialName();
 
 	Ogre::AnimationState*anim;
 	anim=e->getAnimationState("Walk");
 	anim->setTimePosition(0);
 	anim->setEnabled(true);
 	anim->setLoop(false);
-	//anim->
 
 	Ogre::SkeletonInstance *  sc = e->getSkeleton();
-
+*/
 	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
 
 	return true;

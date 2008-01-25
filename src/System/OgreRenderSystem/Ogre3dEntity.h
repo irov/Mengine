@@ -12,7 +12,7 @@ public:
 	~Ogre3dEntity();
 
 	void setPosition(float x, float y, float z) override;
-	void setDirection(float * q) override;
+	void setDirection(float w, float x, float y, float z) override;
 	void setDirection1(float * q);
 public:
 	Ogre::SceneNode * m_sceneNode;

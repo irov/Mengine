@@ -12,26 +12,18 @@ namespace Menge
 		Allocator3D();
 
 	public:
+
+		virtual const mt::quatf & getWorldOrient();
 		virtual const mt::vec3f & getWorldPosition();
-		virtual const mt::vec3f & getWorldDirection();
-		virtual const mt::vec3f & getWorldStrafe();
-		virtual const mt::mat4f & getWorldMatrix();
 
 		const mt::vec3f & getLocalPosition()const;
 		mt::vec3f & getLocalPosition();
 
-		const mt::vec3f & getLocalDirection()const;
-		mt::vec3f & getLocalDirection();
-
-		const mt::vec3f & getLocalStrafe()const;
-		mt::vec3f & getLocalStrafe();
-
-		const mt::mat4f & getLocalMatrix()const;
-		mt::mat4f & getLocalMatrix();
+		const mt::quatf & getLocalOrient()const;
+		mt::quatf & getLocalOrient();
 
 		void setLocalPosition( const mt::vec3f &position );
-		void setLocalDirection( const mt::vec3f &direction );
-		void setLocalRotation( const mt::mat3f& M );
+		void setLocalOrient( const mt::quatf &quat );
 
 		void translate( const mt::vec3f &delta );
 
@@ -41,20 +33,20 @@ namespace Menge
 		void debugRender();
 
 	public:
-		void updateMatrix( Allocator3D * _parent );
+		void updateOrient( Allocator3D * _parent );
+		void updatePosition( Allocator3D * _parent );
 
 		virtual void changePivot();
-		bool isChangePivot()const;
 
 	protected:
 		virtual void _changePivot();
-		virtual void _updateMatrix( Allocator3D * _parent );
 
 	protected:
-		mt::mat4f m_localMatrix;
-		mt::mat4f m_worldMatrix;
+		mt::vec3f m_localPosition;
+		mt::vec3f m_worldPosition;
 
-		mt::vec3f m_fixedUp;
+		mt::quatf m_localOrient;
+		mt::quatf m_worldOrient;
 
 		bool m_changePivot;
 	};

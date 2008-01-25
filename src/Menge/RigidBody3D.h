@@ -17,6 +17,15 @@ namespace Menge
 		RigidBody3D();
 		~RigidBody3D();
 	public:
+		void applyImpulse( const mt::vec3f & _vec );
+		void applyAngularImpulse( const mt::vec3f & _vec );
+		void applyForce( const mt::vec3f & _vec );
+		void applyTorque( const mt::vec3f & _vec );
+		void setLinearVelocity( const mt::vec3f & _vec );
+		void setAngularVelocity( const mt::vec3f & _vec );
+		void setActive( bool _active );
+
+	public:
 		void loader( XmlElement * _xml ) override;
 	
 	protected:

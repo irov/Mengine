@@ -6,6 +6,7 @@
 #	include "Ogre3dCamera.h"
 #	include "Ogre3dEntity.h"
 #	include "OgreLight.h"
+#	include "OgreMesh.h"
 
 
 #	include "OgreRenderVideoStream.h"
@@ -75,6 +76,15 @@ LightInterface * OgreRenderSystem::createLight(const char * _name)
 	return ogreLight;   
 }
 //////////////////////////////////////////////////////////////////////////
+MeshInterface * OgreRenderSystem::createMesh(const char * _name)
+{
+	Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().load(
+		_name, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+	MeshInterface * ogremesh = new OgreMesh(mesh);
+	return ogremesh;
+}
+//////////////////////////////////////////////////////////////////////////
 bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow )
 {
 	m_root = _root;
@@ -99,7 +109,42 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	#endif
 
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true );
+
+	/*Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Models\\", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\Scripts", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\Textures", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+*/
 	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+	//l->setAttenuation(8000,1,0,0);
+/*	Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().load("E:\\ZombieTest\\Models\\robot.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	
+	Ogre::Entity * e = m_sceneMgr->createEntity("hh", "E:\\ZombieTest\\Models\\robot.mesh");
+	//Ogre::SceneNode* headNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
+	//headNode->attachObject(e);
+
+	Ogre::SceneNode* headNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
+	headNode->attachObject(e);
+
+
+
+*/
+	Ogre::Entity * e = m_sceneMgr->createEntity("hh", "E:\\ZombieTest\\Models\\robot.mesh");
+	Ogre::SceneNode* headNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
+	headNode->attachObject(e);
+
+	headNode->setScale(0.5f,0.5f,0.5f);
+//	e->setMaterialName();
+
+	Ogre::AnimationState*anim;
+	anim=e->getAnimationState("Walk");
+	anim->setTimePosition(0);
+	anim->setEnabled(true);
+	anim->setLoop(false);
+	//anim->
+
+	Ogre::SkeletonInstance *  sc = e->getSkeleton();
 
 	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
 

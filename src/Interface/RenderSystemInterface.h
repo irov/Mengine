@@ -47,8 +47,18 @@ class Entity3dInterface
 {
 public:
 	virtual void setPosition(float x, float y, float z) = 0;
-	virtual void setDirection(float * q) = 0;
+	virtual void setDirection(float w, float x, float y, float z) = 0;
 	virtual void setDirection1(float * q) = 0;
+};
+
+class MeshInterface
+{
+	public:
+		virtual bool hasSkeleton() const = 0;
+		virtual float getBoundingSphereRadius() const = 0;
+		virtual const char * getName() const = 0;
+		virtual void getBoneOrientation( const char * _name, float & w, float & x, float & y, float & z ) const = 0;
+		virtual void getBonePos( const char * _name, float & x, float & y, float & z ) const = 0;
 };
 
 class LightInterface
@@ -129,6 +139,7 @@ public:
 	virtual Camera3dInterface * createCamera( const char * _name ) = 0;
 	virtual Entity3dInterface * create3dEntity(const char * _name, const char * _meshName) = 0;
 	virtual LightInterface * createLight(const char * _name) = 0;
+	virtual MeshInterface * createMesh(const char * _name) = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

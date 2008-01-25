@@ -3,16 +3,28 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & SceneNode3D::getWorldMatrix()
+	const mt::quatf & SceneNode3D::getWorldOrient()
 	{
 		if( m_parent == 0 )
 		{
-			return getLocalMatrix();
+			return getLocalOrient();
 		}
 
-		updateMatrix( m_parent );	
+		updateOrient( m_parent );	
 
-		return Allocator3D::getWorldMatrix();
+		return Allocator3D::getWorldOrient();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & SceneNode3D::getWorldPosition()
+	{
+		if( m_parent == 0 )
+		{
+			return getLocalPosition();
+		}
+
+		updatePosition( m_parent );	
+
+		return Allocator3D::getWorldPosition();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::changePivot()

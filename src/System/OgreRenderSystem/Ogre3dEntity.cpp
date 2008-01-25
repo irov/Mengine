@@ -14,9 +14,9 @@ void Ogre3dEntity::setPosition(float x, float y, float z)
 	m_sceneNode->setPosition(x,y,z);
 }
 //////////////////////////////////////////////////////////////////////////
-void Ogre3dEntity::setDirection(float * q)
+void Ogre3dEntity::setDirection(float w, float x, float y, float z)
 {
-	m_sceneNode->setOrientation(*(Ogre::Quaternion *)q);
+	m_sceneNode->setOrientation(w,x,y,z);
 }
 //////////////////////////////////////////////////////////////////////////
 void Ogre3dEntity::setDirection1(float * q)

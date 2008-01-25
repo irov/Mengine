@@ -6,8 +6,7 @@ public:
 	virtual ~RigidBodyInterface(){};
 
 	virtual float * getPosition() = 0;
-	virtual float * getDirection() = 0;
-	virtual float * getRotationMatrix() = 0;
+	virtual float * getOrient() = 0;
 	
 	virtual void applyImpulse( float _x, float _y, float _z ) = 0;
 	virtual void applyAngularImpulse( float _x, float _y, float _z ) = 0;
@@ -18,8 +17,8 @@ public:
 	virtual void setAngularVelocity( float _x, float _y, float _z ) = 0;
 	virtual void setActive(bool _active) = 0;
 
-	virtual void setLocationMatrix( float * _location ) = 0;
 	virtual void setPosition( float _x, float _y, float _z ) = 0;
+	virtual void setOrient( float _w, float _x, float _y, float _z ) = 0;
 };
 
 class GeometryInterface

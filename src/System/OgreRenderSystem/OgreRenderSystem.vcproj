@@ -209,6 +209,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\OgreMesh.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\OgreMesh.h"
+			>
+		</File>
+		<File
 			RelativePath=".\OgreRenderImage.cpp"
 			>
 		</File>

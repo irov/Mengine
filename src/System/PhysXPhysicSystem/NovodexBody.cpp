@@ -7,11 +7,9 @@ NovodexBody::NovodexBody(NxActor * _actor)
 NovodexBody::~NovodexBody() 
 {}
 
-void NovodexBody::setLocationMatrix(float * _location) 
+void NovodexBody::setOrient( float _w, float _x, float _y, float _z )
 {
-	NxMat34 m;
-	m.setColumnMajor44(_location);
-	m_actor->setGlobalPose(m);
+	m_actor->setGlobalOrientationQuat( NxQuat( NxVec3(_x, _y, _z), _w ) );
 }
 
 float * NovodexBody::getPosition()
@@ -20,17 +18,14 @@ float * NovodexBody::getPosition()
 	return m_position.get();
 }
 
-float * NovodexBody::getDirection()
-{
-	m_actor->getGlobalOrientation().getRow(2,m_dir);
-	return m_dir.get();
-}
-
-float * NovodexBody::getRotationMatrix()
+float * NovodexBody::getOrient()
 {
 	NxMat33 M = m_actor->getGlobalOrientation();
 	M.getRowMajor(m_rot);
-	return m_rot;
+
+	static float orient[4] = {};
+	m_actor->getGlobalOrientationQuat().getWXYZ(orient);
+	return orient;
 }
 
 void NovodexBody::setActive( bool _active )

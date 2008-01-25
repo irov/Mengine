@@ -913,6 +913,26 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Mesh"
+				>
+				<File
+					RelativePath=".\ResourceMesh.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceMesh.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceSkeleton.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceSkeleton.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Entity"
@@ -1336,6 +1356,14 @@
 			<Filter
 				Name="RenderMesh"
 				>
+				<File
+					RelativePath=".\Bone.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Bone.h"
+					>
+				</File>
 				<File
 					RelativePath=".\RenderMesh3D.cpp"
 					>

@@ -28,6 +28,13 @@ namespace	mt
 		,w(0.f)
 	{}
 
+	vec4f::vec4f(const vec3f& _v, float _w)
+		:x(_v.x)
+		,y(_v.y)
+		,z(_v.z)
+		,w(_w)
+	{}
+
 	float& vec4f::operator[](int i)
 	{
 		assert(i < 4);

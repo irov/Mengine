@@ -81,4 +81,19 @@
 		<ConcaveGeometryFile Name = "ZombieTest/cooked.bin"/>
 	</Resource>
 
+	<Resource Name = "TestSkeleton" Type = "ResourceSkeleton" >
+		<Bone Name = "1" />
+		<Bone Name = "2" />
+		<Bone Name = "3" />
+	</Resource>
+
+	<Resource Name = "TestMesh" Type = "ResourceMesh" >
+		<Mesh Name = "ZombieTest/test.mesh" />
+	</Resource>
+
+
+	<Resource Name = "TestBarrelMesh" Type = "ResourceMesh" >
+		<Mesh Name = "ZombieTest/barrel.mesh" />
+	</Resource>
+
 </DataBlock>

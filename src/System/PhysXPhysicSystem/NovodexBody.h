@@ -11,11 +11,10 @@ public:
 	~NovodexBody();
 
 public:
-	void setLocationMatrix(float * _location);
+	void setOrient( float _w, float _x, float _y, float _z );
 	
 	float * getPosition() override;
-	float * getDirection() override;
-	float * getRotationMatrix() override;
+	float * getOrient() override;
 		
 	void setActive( bool _active ) override;
 	void applyImpulse( float _x, float _y, float _z ) override;

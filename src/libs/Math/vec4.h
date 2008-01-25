@@ -43,6 +43,7 @@ namespace mt
 		vec4f(float _x, float _y, float _z, float _w);
 		vec4f(const vec4f& _v);
 		explicit vec4f(const vec3f& _v);
+		vec4f(const vec3f& _v, float _w);
 
 		float&		operator [](int i);
 		const float operator [](int i)const;

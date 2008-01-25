@@ -38,66 +38,46 @@
 	</Node>
 
 	<Node Name = "Test3D" Type = "Layer3D">
-		<Node Name = "Level" Type = "RenderMesh3D">
-              		<Mesh Value = "ZombieTest/test.mesh"/>
-		</Node>
 
 		<Node Name = "MainLight" Type = "Light">
-			<Transformation Value = "1;0;0;0;1;0;0;0;1;0;6;0" />
+			<Transformation Value = "0;6;0" />
               		<Color Value = "1;1;1;1"/>
 		</Node>
 
-		<Node Name = "BarrelPhysicBody1" Type = "RigidBody3D">
-              		<GeometryResource Name = "ResourceBarrelGeometry"/>
-			<Active Value = "1"/>
-			<Density Value = "1"/>
-			<Transformation Value = "1;0;0;0;1;0;0;0;1;1;40;9" />
-
-			<Node Name = "Barrel1" Type = "RenderMesh3D">
-              			<Mesh Value = "ZombieTest/barrel.mesh"/>
-			</Node>	
-		</Node>	
-
-		<Node Name = "BarrelPhysicBody1" Type = "RigidBody3D">
-              		<GeometryResource Name = "ResourceBarrelGeometry"/>
-			<Active Value = "1"/>
-			<Density Value = "1"/>
-			<Transformation Value = "1;0;0;0;1;0;0;0;1;1;40;1" />
-
-			<Node Name = "Barrel2" Type = "RenderMesh3D">
-              			<Mesh Value = "ZombieTest/barrel.mesh"/>
-			</Node>	
-		</Node>			
-
-
-		<Node Name = "BarrelPhysicBody2" Type = "RigidBody3D">
-              		<GeometryResource Name = "ResourceBarrelGeometry"/>
-			<Active Value = "1"/>
-			<Density Value = "1"/>
-			<Transformation Value = "1;0;0;0;1;0;0;0;1;7;40;2" />
-
-			<Node Name = "Barrel3" Type = "RenderMesh3D">
-              			<Mesh Value = "ZombieTest/barrel.mesh"/>
-			</Node>	
-		</Node>		
-
-		<Node Name = "BarrelPhysicBody3" Type = "RigidBody3D">
-              		<GeometryResource Name = "ResourceBarrelGeometry"/>
-			<Active Value = "1"/>
-			<Density Value = "1"/>
-			<Transformation Value = "1;0;0;0;1;0;0;0;1;10;10;-15" />
-
-			<Node Name = "Barrel4" Type = "RenderMesh3D">
-              			<Mesh Value = "ZombieTest/barrel.mesh"/>
-			</Node>	
-		</Node>			
-
+		<Node Name = "Level" Type = "RenderMesh3D">
+              		<ResourceMesh Name = "TestMesh"/>
+			<Transformation Value = "0;0;0" />
+		</Node>
 
 		<Node Name = "LevelPhysicBody" Type = "RigidBody3D">
               		<GeometryResource Name = "ResourceLevelGeometry"/>
 			<Active Value = "0"/>
 			<Density Value = "200"/>
-			<Transformation Value = "1;0;0;0;1;0;0;0;1;0;0;0" />
+			<Transformation Value = "0;0;0" />
 		</Node>
+
+
+		<Node Name = "BarrelPhysicBody1" Type = "RigidBody3D">
+              		<GeometryResource Name = "ResourceBarrelGeometry"/>
+			<Active Value = "1"/>
+			<Density Value = "1"/>
+			<Transformation Value = "1;40;9" />
+
+			<Node Name = "Barrel2" Type = "RenderMesh3D">
+              			<ResourceMesh Name = "TestBarrelMesh"/>
+			</Node>	
+		</Node>	
+
+		<Node Name = "BarrelPhysicBody2" Type = "RigidBody3D">
+              		<GeometryResource Name = "ResourceBarrelGeometry"/>
+			<Active Value = "1"/>
+			<Density Value = "1"/>
+			<Transformation Value = "1;40;1" />
+
+			<Node Name = "Barrel1" Type = "RenderMesh3D">
+              			<ResourceMesh Name = "TestBarrelMesh"/>
+			</Node>	
+		</Node>		
+
 	</Node>
 </Scene>

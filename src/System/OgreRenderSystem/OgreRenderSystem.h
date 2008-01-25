@@ -67,6 +67,7 @@ public:
 	Camera3dInterface * createCamera(const char * _name) override;
 	Entity3dInterface * create3dEntity(const char * _name, const char * _meshName) override;
 	LightInterface * createLight(const char * _name) override;
+	MeshInterface * createMesh(const char * _name) override;
 
 private:
 	Ogre::Vector2	m_contentResolution;

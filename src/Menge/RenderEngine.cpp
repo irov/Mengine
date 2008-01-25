@@ -221,6 +221,11 @@ namespace Menge
 		return m_interface->createLight(_name.c_str());
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MeshInterface * RenderEngine::createMesh(const std::string& _name)
+	{
+		return m_interface->createMesh(_name.c_str());
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::frameStarted()
 	{
 		m_interface->render();

@@ -15,7 +15,8 @@ namespace Menge
 		, public Renderable3D
 	{
 	public:
-		const mt::mat4f & getWorldMatrix() override;
+		const mt::quatf & getWorldOrient() override;
+		const mt::vec3f & getWorldPosition() override;
 		void changePivot() override;
 
 	public:

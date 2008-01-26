@@ -46,6 +46,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePhysicConcaveGeometry::_release()
 	{
+		Holder<PhysicEngine>::hostage()->removeGeometry( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const GeometryInterface * ResourcePhysicConcaveGeometry::getGeometry( size_t _index ) const

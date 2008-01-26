@@ -258,3 +258,8 @@ void	NovodexPhysicSystem::createJoint(RigidBodyInterface * body0, RigidBodyInter
 	joint->setLimits(3.14f,3.14f);
 }
 //////////////////////////////////////////////////////////////////////////
+void NovodexPhysicSystem::removeGeometry( GeometryInterface * _geom )
+{
+	delete _geom;
+}
+//////////////////////////////////////////////////////////////////////////

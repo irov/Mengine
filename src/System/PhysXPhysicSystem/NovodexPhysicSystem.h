@@ -26,6 +26,7 @@ public:
 	GeometryInterface * cookConcave( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) override;
 	GeometryInterface * cookConcave( const char * _filename ) override;
 	GeometryInterface * cookBox( float _width, float _height, float _depth ) override;
+	void removeGeometry( GeometryInterface * _geom ) override;
 public:
 	RigidBodyInterface * createRigidBody( float _density, bool _dynamic, const GeometryInterface * _geometry) override;
 	void	removeRigidBody( RigidBodyInterface * _rigidBody ) override;

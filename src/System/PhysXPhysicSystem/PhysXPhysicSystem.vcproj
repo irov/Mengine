@@ -125,8 +125,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\OgreSDK\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
+				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies/PhysX/SDKs/Physics/include&quot;;&quot;$(SolutionDir)dependencies/PhysX/SDKs/Foundation/include&quot;;&quot;$(SolutionDir)dependencies/PhysX/SDKs/PhysXLoader/include&quot;;&quot;$(SolutionDir)dependencies/PhysX/SDKs/Cooking/include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TRANSPOSED_MAT33;"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -144,10 +144,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMain.lib"
+				AdditionalDependencies="NxCooking.lib PhysXLoader.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\OgreSDK\lib"
-				ModuleDefinitionFile="OgreRenderSystem.def"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies/PhysX/SDKs/lib/win32&quot;"
+				ModuleDefinitionFile="PhysXPhysicSystem.def"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"

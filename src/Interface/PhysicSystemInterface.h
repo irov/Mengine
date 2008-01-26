@@ -63,6 +63,7 @@ public:
 	virtual GeometryInterface * cookConcave( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) = 0;
 	virtual GeometryInterface * cookConcave( const char * _filename ) = 0;
 	virtual GeometryInterface * cookBox( float _width, float _height, float _depth ) = 0;
+	virtual void removeGeometry( GeometryInterface * _geom ) = 0;
 public:
 	virtual RigidBodyInterface * createRigidBody( float _density, bool _dynamic, const GeometryInterface * _geometry) = 0;
 	virtual void	removeRigidBody( RigidBodyInterface * _rigidBody ) = 0;

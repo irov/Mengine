@@ -29,6 +29,7 @@ namespace Menge
 		GeometryInterface * cookConcave( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize );
 		GeometryInterface * cookConcave( const std::string& _filename );
 		GeometryInterface * cookBox( float _width, float _height, float _depth );
+		void removeGeometry( GeometryInterface * _geom );
 	public:
 		RigidBodyInterface * createRigidBody( float _density, bool _dynamic, const GeometryInterface * _geometry);
 		void	removeRigidBody( RigidBodyInterface * _rigidBody );

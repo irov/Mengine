@@ -100,12 +100,12 @@ namespace	Menge
 	{
 		SceneNode3D::_release();
 
-		Holder<PhysicEngine>::hostage()->removeRigidBody( m_interface );
-
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resource );
 
 		m_resource = 0;
+
+		Holder<PhysicEngine>::hostage()->removeRigidBody( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::applyImpulse( const mt::vec3f & _vec )

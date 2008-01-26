@@ -50,6 +50,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePhysicBoxGeometry::_release()
 	{
+		Holder<PhysicEngine>::hostage()->removeGeometry( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const GeometryInterface * ResourcePhysicBoxGeometry::getGeometry( size_t _index ) const

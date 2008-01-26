@@ -84,4 +84,8 @@ namespace Menge
 		m_interface->setGravity(_g.x, _g.y, _g.z);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void PhysicEngine::removeGeometry( GeometryInterface * _geom )
+	{
+		m_interface->removeGeometry(_geom);
+	}
 }

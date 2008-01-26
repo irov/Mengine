@@ -71,7 +71,6 @@ namespace Menge
 		void loaderResources_( XmlElement * _xml );
 		void loaderDefault_( XmlElement * _xml );
 		void loaderPersonality_( XmlElement * _xml );
-		void loaderPhysicParams_( XmlElement * _xml );
 		
 	public:
 		bool handleKeyEvent( size_t _key, bool _isDown ) override;
@@ -118,10 +117,5 @@ namespace Menge
 		std::string m_pathEntities;
 		std::string m_pathScenes;
 		std::string m_pathArrows;
-
-		mt::vec3f m_g;
-		float m_restitution;
-		float m_staticFriction; 
-		float m_dynamicFriction;
 	};	
 }

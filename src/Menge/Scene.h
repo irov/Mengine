@@ -62,5 +62,10 @@ namespace Menge
 		Layer * m_mainLayer;
 
 		mt::vec2f m_offsetPosition;
+
+		mt::vec3f m_g;
+		float m_restitution;
+		float m_staticFriction; 
+		float m_dynamicFriction;
 	};
 }

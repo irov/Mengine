@@ -5,6 +5,7 @@
 #	include "MousePickerSystem.h"
 
 #	include "ScriptEngine.h"
+#	include "PhysicEngine.h"
 
 
 #	include "XmlEngine.h"
@@ -16,6 +17,10 @@ namespace	Menge
 	: m_mainLayer(0)
 	, m_isSubScene(false)
 	, m_offsetPosition(0.f,0.f)
+	, m_g(0.0f, -9.8f, 0.0f)
+	, m_restitution(0)
+	, m_staticFriction(0)
+	, m_dynamicFriction(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -202,6 +207,10 @@ namespace	Menge
 
 		callMethod( "onActivate", "() " );
 
+		Holder<PhysicEngine>::hostage()->setRestitution(m_restitution);
+		Holder<PhysicEngine>::hostage()->setStaticFriction(m_staticFriction);
+		Holder<PhysicEngine>::hostage()->setDynamicFriction(m_dynamicFriction);		
+
 		return NodeCore::_activate();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -239,6 +248,14 @@ namespace	Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE("OffsetPosition", "Value", m_offsetPosition );
 		}		
+
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_ATTRIBUTE_NODE( "Gravity", "Value", m_g );
+			XML_CASE_ATTRIBUTE_NODE( "Restitution", "Value", m_restitution );
+			XML_CASE_ATTRIBUTE_NODE( "StaticFriction", "Value", m_staticFriction );
+			XML_CASE_ATTRIBUTE_NODE( "DynamicFriction", "Value", m_dynamicFriction );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Layer * _layer )

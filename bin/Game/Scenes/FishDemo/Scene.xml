@@ -1,4 +1,12 @@
 <Scene>
+
+	<PhysicParams>
+		<Gravity Value = "0.0;-2.667;0.0" />
+		<Restitution Value = "0.2" />
+		<StaticFriction Value = "0.7" />
+		<DynamicFriction Value = "0.7" />
+	</PhysicParams>
+
 	<Node Name = "Water" Type = "Layer2D">
 		<Size Value = "1024; 768" />		
 	</Node>

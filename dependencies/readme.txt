@@ -38,7 +38,7 @@ http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz
 
 TheoraVideo
 [TheoraVideo]
-cvs -z3 -d :pserver:anonymous@cvs.ogre3d.org:/cvsroot/ogre co ogreaddons
+cvs -z3 -d :pserver:anonymous@cvs.ogre3d.org:/cvsroot/ogre co ogreaddons/videoplugin
 
 --------------------------------------------------------------------------------
 TODO:

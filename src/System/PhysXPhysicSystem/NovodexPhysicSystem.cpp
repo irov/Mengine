@@ -59,6 +59,11 @@ void NovodexPhysicSystem::init(float gx, float gy, float gz)
 	//defaultMaterial->setDynamicFriction(0.5f);
 }
 //////////////////////////////////////////////////////////////////////////
+void NovodexPhysicSystem::setGravity( float _x, float _y, float _z )
+{
+	m_scene->setGravity(NxVec3(_x, _y, _z));
+}
+//////////////////////////////////////////////////////////////////////////
 void NovodexPhysicSystem::setRestitution( float _value )
 {
 	NxMaterial * defaultMaterial = m_scene->getMaterialFromIndex(0);

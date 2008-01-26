@@ -15,6 +15,7 @@ public:
 	void init( float gx, float gy, float gz ) override;
 	void update( float _timestep ) override;
 public:
+	void setGravity( float _x, float _y, float _z ) override;
 	void setRestitution( float _value ) override;
 	void setStaticFriction( float _value ) override;
 	void setDynamicFriction( float _value ) override;

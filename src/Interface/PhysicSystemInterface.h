@@ -52,6 +52,7 @@ public:
 	virtual void init( float _gx, float _gy, float _gz) = 0;
 	virtual void update( float _timestep ) = 0;
 public:
+	virtual void setGravity( float _x, float _y, float _z ) = 0;
 	virtual void setRestitution( float _value ) = 0;
 	virtual void setStaticFriction( float _value ) = 0;
 	virtual void setDynamicFriction( float _value ) = 0;

@@ -207,6 +207,7 @@ namespace	Menge
 
 		callMethod( "onActivate", "() " );
 
+		Holder<PhysicEngine>::hostage()->setGravity(m_g);
 		Holder<PhysicEngine>::hostage()->setRestitution(m_restitution);
 		Holder<PhysicEngine>::hostage()->setStaticFriction(m_staticFriction);
 		Holder<PhysicEngine>::hostage()->setDynamicFriction(m_dynamicFriction);		

@@ -59,9 +59,24 @@ namespace Menge
 		return m_interface->createRigidBody( _density, _dynamic, _geometry );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	PhysicEngine::removeRigidBody( RigidBodyInterface * _rigidBody )
+	void PhysicEngine::removeRigidBody( RigidBodyInterface * _rigidBody )
 	{
 		return m_interface->removeRigidBody( _rigidBody );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void PhysicEngine::setRestitution( float _value )
+	{
+		m_interface->setRestitution(_value);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PhysicEngine::setStaticFriction( float _value )
+	{
+		m_interface->setStaticFriction(_value);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PhysicEngine::setDynamicFriction( float _value )
+	{
+		m_interface->setDynamicFriction(_value);
+	}
+
 }

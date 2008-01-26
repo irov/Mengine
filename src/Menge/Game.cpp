@@ -16,6 +16,7 @@
 #	include "ScheduleManager.h"
 #	include "LogEngine.h"
 #	include "PhysicEngine.h"
+#	include "RenderEngine.h"
 
 #	include "XmlEngine.h"
 
@@ -24,8 +25,13 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
-		: m_defaultArrow(0)
+		: m_resourceResolution(0.f, 0.f)
+		, m_defaultArrow(0)
 		, m_pyPersonality(0)
+		, m_g(0.0f, -9.8f, 0.0f)
+		, m_restitution(0)
+		, m_staticFriction(0)
+		, m_dynamicFriction(0)
 	{
 		Holder<Player>::keep( new Player );
 		Holder<Amplifier>::keep( new Amplifier );
@@ -152,9 +158,25 @@ namespace Menge
 
 				XML_PARSE_ELEMENT( this, &Game::loaderResources_ );
 			}
+
+			XML_CASE_NODE("PhysicParams")
+			{
+				XML_PARSE_ELEMENT( this, &Game::loaderPhysicParams_ );
+			}
 			
 			XML_CASE_ATTRIBUTE_NODE( "Scripts", "Path", m_pathScripts );
 			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_resourceResolution );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loaderPhysicParams_( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_ATTRIBUTE_NODE( "Gravity", "Value", m_g );
+			XML_CASE_ATTRIBUTE_NODE( "Restitution", "Value", m_restitution );
+			XML_CASE_ATTRIBUTE_NODE( "StaticFriction", "Value", m_staticFriction );
+			XML_CASE_ATTRIBUTE_NODE( "DynamicFriction", "Value", m_dynamicFriction );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -336,9 +358,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::init( )
+	bool Game::init()
 	{
-		Holder<PhysicEngine>::hostage()->init(mt::vec3f(0,-1.0f,0));
+		Holder<PhysicEngine>::hostage()->init(m_g);
+		Holder<PhysicEngine>::hostage()->setRestitution(m_restitution);
+		Holder<PhysicEngine>::hostage()->setStaticFriction(m_staticFriction);
+		Holder<PhysicEngine>::hostage()->setDynamicFriction(m_dynamicFriction);		
 
 		Holder<RenderEngine>::hostage()->setContentResolution( m_resourceResolution );
 

@@ -27,5 +27,12 @@
 		<FishDemo/>
 	</Resource>
 
+	<PhysicParams>
+		<Gravity Value = "0.0;-2.667;0.0" />
+		<Restitution Value = "0.2" />
+		<StaticFriction Value = "0.7" />
+		<DynamicFriction Value = "0.7" />
+	</PhysicParams>
+
 	<ResourceResolution Value = "1024;768"/>
 </Game>	

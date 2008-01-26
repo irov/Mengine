@@ -69,6 +69,8 @@ public:
 	LightInterface * createLight(const char * _name) override;
 	MeshInterface * createMesh(const char * _name) override;
 
+	void update(float _timing) override;
+
 private:
 	Ogre::Vector2	m_contentResolution;
 	Ogre::Root * m_root;

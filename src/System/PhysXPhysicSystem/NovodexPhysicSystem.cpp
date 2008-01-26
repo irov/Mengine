@@ -4,7 +4,7 @@
 #	include "NovodexBallSocketJoint.h"
 #	include <stdio.h>
 #	include "Stream.h"
-
+//////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( PhysicSystemInterface ** _ptrInterface )
 {
 	try
@@ -23,12 +23,12 @@ void releaseInterfaceSystem( PhysicSystemInterface* _ptrInterface )
 {
 	delete static_cast<NovodexPhysicSystem*>(_ptrInterface);
 }
-
+//////////////////////////////////////////////////////////////////////////
 NovodexPhysicSystem::NovodexPhysicSystem()
 	: m_physicsSDK(0)
 	, m_scene(0)
 {}
-
+//////////////////////////////////////////////////////////////////////////
 NovodexPhysicSystem::~NovodexPhysicSystem()
 {
 	m_physicsSDK->releaseScene(*m_scene);
@@ -38,7 +38,7 @@ NovodexPhysicSystem::~NovodexPhysicSystem()
 		m_physicsSDK->release();	
 	}
 }
-
+//////////////////////////////////////////////////////////////////////////
 void NovodexPhysicSystem::init(float gx, float gy, float gz) 
 {
 	m_physicsSDK = NxCreatePhysicsSDK(NX_PHYSICS_SDK_VERSION);
@@ -53,12 +53,30 @@ void NovodexPhysicSystem::init(float gx, float gy, float gz)
 
 	assert(m_scene);
 
-//	NxMaterial* defaultMaterial = m_scene->getMaterialFromIndex(0);
-//	defaultMaterial->setRestitution(0.2f);
-//	defaultMaterial->setStaticFriction(0.5f);
-//	defaultMaterial->setDynamicFriction(0.5f);
+	//NxMaterial* defaultMaterial = m_scene->getMaterialFromIndex(0);
+	//defaultMaterial->setRestitution(0.2f);
+	//defaultMaterial->setStaticFriction(0.5f);
+	//defaultMaterial->setDynamicFriction(0.5f);
 }
-
+//////////////////////////////////////////////////////////////////////////
+void NovodexPhysicSystem::setRestitution( float _value )
+{
+	NxMaterial * defaultMaterial = m_scene->getMaterialFromIndex(0);
+	defaultMaterial->setRestitution(_value);
+}
+//////////////////////////////////////////////////////////////////////////
+void NovodexPhysicSystem::setStaticFriction( float _value )
+{
+	NxMaterial * defaultMaterial = m_scene->getMaterialFromIndex(0);
+	defaultMaterial->setStaticFriction(_value);
+}
+//////////////////////////////////////////////////////////////////////////
+void NovodexPhysicSystem::setDynamicFriction( float _value )
+{
+	NxMaterial * defaultMaterial = m_scene->getMaterialFromIndex(0);
+	defaultMaterial->setDynamicFriction(_value);
+}
+//////////////////////////////////////////////////////////////////////////
 void NovodexPhysicSystem::update(float _timestep)
 {
 	m_scene->setTiming(_timestep, 1, NX_TIMESTEP_FIXED);
@@ -67,7 +85,7 @@ void NovodexPhysicSystem::update(float _timestep)
 	m_scene->flushStream();
 	m_scene->fetchResults(NX_RIGID_BODY_FINISHED, true);
 }
-
+//////////////////////////////////////////////////////////////////////////
 GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _vertexSize )
 {
 	NxConvexMeshDesc m_convexMesh;
@@ -92,7 +110,7 @@ GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _
 	NovodexGeometry * novodexGeometry = new NovodexGeometry(nxConvexShape);
 	return novodexGeometry;
 }
-
+//////////////////////////////////////////////////////////////////////////
 GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize )
 {
 	NxConvexMeshDesc m_convexMesh;
@@ -118,7 +136,7 @@ GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _
 	NovodexGeometry * novodexGeometry = new NovodexGeometry(nxConvexShape);
 	return novodexGeometry;
 }
-
+//////////////////////////////////////////////////////////////////////////
 GeometryInterface * NovodexPhysicSystem::cookConcave( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize )
 {
 	NxTriangleMeshDesc triMeshDesc;
@@ -146,7 +164,7 @@ GeometryInterface * NovodexPhysicSystem::cookConcave( const float * _verts, int 
 	NovodexGeometry * novodexGeometry = new NovodexGeometry(nxTriShape);
 	return novodexGeometry;
 }
-
+//////////////////////////////////////////////////////////////////////////
 GeometryInterface * NovodexPhysicSystem::cookConvex( const char * _filename )
 {
 	NxConvexShapeDesc * nxTriShape = new NxConvexShapeDesc();
@@ -157,7 +175,7 @@ GeometryInterface * NovodexPhysicSystem::cookConvex( const char * _filename )
 
 	return novodexGeometry;
 }
-
+//////////////////////////////////////////////////////////////////////////
 GeometryInterface * NovodexPhysicSystem::cookConcave( const char * _filename )
 {
 	NxTriangleMeshShapeDesc * nxTriShape = new NxTriangleMeshShapeDesc();
@@ -168,7 +186,7 @@ GeometryInterface * NovodexPhysicSystem::cookConcave( const char * _filename )
 
 	return novodexGeometry;
 }
-
+//////////////////////////////////////////////////////////////////////////
 GeometryInterface * NovodexPhysicSystem::cookBox( float _width, float _height, float _depth )
 {
 	NxBoxShapeDesc * nxBoxDesc = new NxBoxShapeDesc();
@@ -177,7 +195,7 @@ GeometryInterface * NovodexPhysicSystem::cookBox( float _width, float _height, f
 	NovodexGeometry * novodexGeometry = new NovodexGeometry(nxBoxDesc);
 	return novodexGeometry;
 }
-
+//////////////////////////////////////////////////////////////////////////
 RigidBodyInterface * NovodexPhysicSystem::createRigidBody( float _density, bool _dynamic, const GeometryInterface * _geometry)
 {
 	NxActorDesc actorDesc;
@@ -213,7 +231,7 @@ RigidBodyInterface * NovodexPhysicSystem::createRigidBody( float _density, bool 
 
 	return rigidBody;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	NovodexPhysicSystem::removeRigidBody( RigidBodyInterface * _rigidBody )
 {
 	NovodexBody * novodexBody = static_cast<NovodexBody*>(_rigidBody);
@@ -227,10 +245,11 @@ void	NovodexPhysicSystem::removeRigidBody( RigidBodyInterface * _rigidBody )
 
 	delete novodexBody;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	NovodexPhysicSystem::createJoint(RigidBodyInterface * body0, RigidBodyInterface * body1, float x, float y, float z)
 {
 	BallSocketJointInterface * joint = new NovodexBallSocketJoint(m_scene);
 	joint->init(body0,body1,x,y,z);
 	joint->setLimits(3.14f,3.14f);
 }
+//////////////////////////////////////////////////////////////////////////

@@ -84,6 +84,8 @@ namespace Menge
 		void frameStarted();
 		void frameEnded();
 
+		void update(float _timing);
+
 	protected:
 		RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;

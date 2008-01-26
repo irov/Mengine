@@ -84,6 +84,8 @@ MeshInterface * OgreRenderSystem::createMesh(const char * _name)
 	MeshInterface * ogremesh = new OgreMesh(mesh);
 	return ogremesh;
 }
+Ogre::AnimationState* anim0;
+Ogre::AnimationState* anim1;
 //////////////////////////////////////////////////////////////////////////
 bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow )
 {
@@ -110,7 +112,7 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true );
 
-	/*Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Models\\", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+/*	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Models\\", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\Scripts", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\Textures", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
@@ -136,17 +138,33 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
 	headNode->setScale(0.5f,0.5f,0.5f);
 
-	Ogre::AnimationState*anim;
-	anim=e->getAnimationState("Walk");
-	anim->setTimePosition(0);
-	anim->setEnabled(true);
-	anim->setLoop(false);
+	anim0=e->getAnimationState("Walk");
+	anim0->setTimePosition(0);
+	anim0->setEnabled(true);
+	anim0->setLoop(true);
 
-	Ogre::SkeletonInstance *  sc = e->getSkeleton();
+
+	anim1=e->getAnimationState("Shoot");
+	anim1->setTimePosition(0);
+	anim1->setEnabled(true);
+	anim1->setLoop(true);
+
+	anim0->setWeight(0.3f);
+	anim1->setWeight(0.7f);
 */
+	//Ogre::AnimationStateSet *sset = e->getAllAnimationStates();
+
+//	Ogre::SkeletonInstance *  sc = e->getSkeleton();
+
 	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
 
 	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::update(float _timing)
+{
+//	anim0->addTime(_timing / 1000.f);
+//	anim1->addTime(_timing / 1000.f);
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setContentResolution( const float * _resolution )

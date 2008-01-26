@@ -10,10 +10,9 @@ class Ogre3dEntity
 public:
 	Ogre3dEntity(Ogre::SceneNode * _sceneNode/*Ogre::Entity * _entity*/);
 	~Ogre3dEntity();
-
+public:
 	void setPosition(float x, float y, float z) override;
-	void setDirection(float w, float x, float y, float z) override;
-	void setDirection1(float * q);
+	void setOrient(float w, float x, float y, float z) override;
 public:
 	Ogre::SceneNode * m_sceneNode;
 	//

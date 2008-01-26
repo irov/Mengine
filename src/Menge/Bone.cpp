@@ -18,7 +18,7 @@ namespace	Menge
 
 		return m_worldOrient;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & Bone::getWorldPosition()
 	{
 		mt::vec3f worldPos = m_mesh->getBoneWorldPosition(m_boneName);
@@ -29,4 +29,5 @@ namespace	Menge
 
 		return m_worldPosition;
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

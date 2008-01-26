@@ -8,6 +8,7 @@ class OgreLight : public LightInterface
 {
 public:
 	OgreLight(Ogre::Light * _light);
+public:
 	void setPosition( float _x, float _y, float _z ) override;
 	void setDiffuseColor( float _r, float _g, float _b ) override;
 	void setSpecularColour( float _r, float _g, float _b ) override;

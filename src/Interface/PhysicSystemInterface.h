@@ -49,16 +49,20 @@ public:
 class PhysicSystemInterface
 {
 public:
-	virtual ~PhysicSystemInterface(){};
-	virtual void	init( float gx, float gy, float gz) = 0;
-	virtual void	update( float timestep ) = 0;
-
+	virtual void init( float _gx, float _gy, float _gz) = 0;
+	virtual void update( float _timestep ) = 0;
+public:
+	virtual void setRestitution( float _value ) = 0;
+	virtual void setStaticFriction( float _value ) = 0;
+	virtual void setDynamicFriction( float _value ) = 0;
+public:
 	virtual GeometryInterface * cookConvex( const float * _verts, int _vertexSize ) = 0;
 	virtual GeometryInterface * cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) = 0;
 	virtual GeometryInterface * cookConvex( const char * _filename ) = 0;
 	virtual GeometryInterface * cookConcave( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) = 0;
 	virtual GeometryInterface * cookConcave( const char * _filename ) = 0;
 	virtual GeometryInterface * cookBox( float _width, float _height, float _depth ) = 0;
+public:
 	virtual RigidBodyInterface * createRigidBody( float _density, bool _dynamic, const GeometryInterface * _geometry) = 0;
 	virtual void	removeRigidBody( RigidBodyInterface * _rigidBody ) = 0;
 	virtual void	createJoint(RigidBodyInterface * body0, RigidBodyInterface * body1, float x, float y, float z) = 0;

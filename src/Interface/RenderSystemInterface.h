@@ -47,8 +47,7 @@ class EntityInterface
 {
 public:
 	virtual void setPosition(float x, float y, float z) = 0;
-	virtual void setDirection(float w, float x, float y, float z) = 0;
-	virtual void setDirection1(float * q) = 0;
+	virtual void setOrient(float w, float x, float y, float z) = 0;
 };
 
 class MeshInterface
@@ -140,6 +139,7 @@ public:
 	virtual EntityInterface * create3dEntity(const char * _name, const char * _meshName) = 0;
 	virtual LightInterface * createLight(const char * _name) = 0;
 	virtual MeshInterface * createMesh(const char * _name) = 0;
+	virtual void update(float _timing) = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

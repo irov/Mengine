@@ -233,7 +233,8 @@ namespace Menge
 	bool Application::update( float _timing )
 	{	
 		Holder<MousePickerSystem>::hostage()->clear();
-		Holder<PhysicEngine>::hostage()->update( 1.0f/30.0f );
+		Holder<PhysicEngine>::hostage()->update( 1.0f/30.0f );// for test physic!
+		Holder<RenderEngine>::hostage()->update( _timing );//for test anim!
 		Holder<Game>::hostage()->update( _timing );
 		Holder<InputEngine>::hostage()->update();
 		Holder<MousePickerSystem>::hostage()->update();

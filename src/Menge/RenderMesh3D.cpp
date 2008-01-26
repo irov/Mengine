@@ -35,8 +35,8 @@ namespace	Menge
 		const mt::vec3f& pos = this->getWorldPosition();
 		m_interface->setPosition(pos.x,pos.y,pos.z);
 
-		mt::quatf q = this->getWorldOrient();
-		m_interface->setDirection(q.w, q.x, q.y, q.z);
+		const mt::quatf& q = this->getWorldOrient();
+		m_interface->setOrient(q.w, q.x, q.y, q.z);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::quatf & RenderMesh3D::getBoneWorldOrient( const std::string& _name )

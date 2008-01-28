@@ -344,16 +344,4 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::save()
-	{
-		// пишем следующую инфу:
-		/*
-		bool m_active;
-		bool m_enable;
-		bool m_updatable;
-
-		std::string m_name;
-		std::string m_type;
-		*/
-	}
 }

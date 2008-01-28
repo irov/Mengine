@@ -16,7 +16,7 @@ namespace Menge
 
 	public:
 		Layer3D();
-
+	
 	public:
 		void loader( XmlElement * _xml) override;
 		void render() override;
@@ -25,5 +25,7 @@ namespace Menge
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
 
+	private:
+		void _notifyAdded() override;
 	};
 }

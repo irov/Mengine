@@ -14,16 +14,11 @@ namespace Menge
 	OBJECT_IMPLEMENT(Layer3D);
 	//////////////////////////////////////////////////////////////////////////
 	Layer3D::Layer3D()
-	{}
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::render()
-	{
-		//
-		//for each( SceneNode3D * node in m_listChildren )
-		//{
-		//	node->render();
-		//}
-	}
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer3D::handleKeyEvent( size_t _key, bool _isDown )
 	{
@@ -44,5 +39,11 @@ namespace Menge
 	{
 		SceneNode3D::loader(_xml);
 		Layer::loader(_xml);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer3D::_notifyAdded()
+	{
+		m_interface 
+			= Holder<RenderEngine>::hostage()->attachSceneNodeToRoot( this->getName() );
 	}
 }

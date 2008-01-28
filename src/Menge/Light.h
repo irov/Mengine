@@ -30,5 +30,8 @@ namespace Menge
 	private:
 		LightInterface * m_interface;
 		Color m_diffuseColor;
+
+		void render(){}
+		bool isRenderable(){return false;}
 	};
 }

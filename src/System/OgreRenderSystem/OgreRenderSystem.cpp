@@ -7,6 +7,7 @@
 #	include "OgreEntity.h"
 #	include "OgreLight.h"
 #	include "OgreMesh.h"
+#	include "OgreSceneNode.h"
 
 
 #	include "OgreRenderVideoStream.h"
@@ -59,15 +60,13 @@ CameraInterface * OgreRenderSystem::createCamera(const char * _name)
 	return  ogre3dcam;
 }
 //////////////////////////////////////////////////////////////////////////
-EntityInterface * OgreRenderSystem::create3dEntity(const char * _name, const char * _meshName)
+SceneNodeInterface * OgreRenderSystem::attachSceneNodeToRoot( const char * _name )
 {
-	Ogre::Entity * entity = m_sceneMgr->createEntity(_name, _meshName);
-	Ogre::SceneNode * newNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
-	newNode->attachObject( entity );
+	Ogre::SceneNode * sceneNode = 
+		m_sceneMgr->getRootSceneNode()->createChildSceneNode( _name );
 
-	EntityInterface * ogre3dEntity = new Ogre3dEntity( newNode/*entity*/ );
-	return 	ogre3dEntity;
-}
+	return new OgreSceneNode( sceneNode );
+} 
 //////////////////////////////////////////////////////////////////////////
 LightInterface * OgreRenderSystem::createLight(const char * _name)
 {
@@ -86,6 +85,7 @@ MeshInterface * OgreRenderSystem::createMesh(const char * _name)
 }
 Ogre::AnimationState* anim0;
 Ogre::AnimationState* anim1;
+Ogre::Entity * e;
 //////////////////////////////////////////////////////////////////////////
 bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow )
 {
@@ -112,11 +112,11 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true );
 
-/*	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Models\\", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\Scripts", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\Textures", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
-*/
+	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Models\\", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\Scripts", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\Textures", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
+
 	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
 	//l->setAttenuation(8000,1,0,0);
@@ -132,16 +132,66 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
 
 */
-/*	Ogre::Entity * e = m_sceneMgr->createEntity("hh", "E:\\ZombieTest\\Models\\robot.mesh");
+/*	e = m_sceneMgr->createEntity("hh", "E:\\ZombieTest\\Models\\robot.mesh");
 	Ogre::SceneNode* headNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
 	headNode->attachObject(e);
+
+	class	SkeletalAnimation
+	{
+		//////////////////////////////////////////////////////////////////////////
+		void SkeletalAnimation::update( float _timing )
+		{
+			m_animState0->addTime(_timing / 1000.f);
+
+			if(m_animState1 != NULL )
+			{
+				m_animState1->addTime(_timing / 1000.f);
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void SkeletalAnimation::play( const std::string& _name )
+		{
+			m_animState0 = e->getAnimationState(_name);
+			m_animState0->setTimePosition(0);
+			m_animState0->setLoop(false);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void SkeletalAnimation::play( const std::string& _name1, float _weight1, const std::string& _name2, float _weight2 )
+		{
+			m_animState0 = e->getAnimationState(_name1);
+			m_animState0->setTimePosition(0);
+			m_animState0->setLoop(false);
+			m_animState0->setWeight(_weight1);
+
+			m_animState1 = e->getAnimationState(_name2);
+			m_animState1->setTimePosition(0);
+			m_animState1->setLoop(false);
+			m_animState1->setWeight(_weight2);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void SkeletalAnimation::stop()
+		{
+			m_animState0->setEnabled(false);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void SkeletalAnimation::setLooped( bool _looped )
+		{
+			m_animState0->setLoop(_looped);
+		}
+		//////////////////////////////////////////////////////////////////////////
+	private:
+
+		Ogre::AnimationState * m_animState0;
+		Ogre::AnimationState * m_animState1;
+		Ogre::AnimationState * m_currentState;
+	};
 
 	headNode->setScale(0.5f,0.5f,0.5f);
 
 	anim0=e->getAnimationState("Walk");
 	anim0->setTimePosition(0);
 	anim0->setEnabled(true);
-	anim0->setLoop(true);
+	anim0->setLoop(false);
 
 
 	anim1=e->getAnimationState("Shoot");
@@ -149,7 +199,7 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	anim1->setEnabled(true);
 	anim1->setLoop(true);
 
-	anim0->setWeight(0.3f);
+	anim0->setWeight(0.9f);
 	anim1->setWeight(0.7f);
 */
 	//Ogre::AnimationStateSet *sset = e->getAllAnimationStates();
@@ -163,8 +213,18 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::update(float _timing)
 {
-//	anim0->addTime(_timing / 1000.f);
-//	anim1->addTime(_timing / 1000.f);
+/*	anim0->addTime(_timing / 1000.f);
+	float t = anim0->getTimePosition();
+
+	printf("%f \n", t);
+
+	anim1->addTime(_timing / 1000.f);
+
+	t = anim1->getTimePosition();
+*/
+//	anim1->setEnabled(false);
+
+//	printf("%f \n", t);
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setContentResolution( const float * _resolution )

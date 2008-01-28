@@ -23,21 +23,13 @@ namespace	Menge
 	: m_resourceMesh(0)
 	, m_resourceSkeleton(0)
 	, m_interfaceMesh(0)
-	{
-	}
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	RenderMesh3D::~RenderMesh3D()
-	{
-	}
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh3D::_update( float _timing )
-	{
-		const mt::vec3f& pos = this->getWorldPosition();
-		m_interface->setPosition(pos.x,pos.y,pos.z);
-
-		const mt::quatf& q = this->getWorldOrient();
-		m_interface->setOrient(q.w, q.x, q.y, q.z);
-	}
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::quatf & RenderMesh3D::getBoneWorldOrient( const std::string& _name )
 	{
@@ -64,8 +56,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMesh3D::_activate()
 	{
-		bool result = SceneNode3D::_activate();
-		return result;
+		if( SceneNode3D::_activate() == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh3D::_deactivate()
@@ -114,8 +110,9 @@ namespace	Menge
 		}
 
 		const std::string & entityName = this->getName();
-		std::string meshName = m_interfaceMesh->getName();
-		m_interface = Holder<RenderEngine>::hostage()->create3dEntity( entityName, meshName );
+		const std::string & meshName = m_interfaceMesh->getName();
+	
+		m_interface->attachEntity( entityName.c_str(), meshName.c_str() );
 
 		return true;
 	}

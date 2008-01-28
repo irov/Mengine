@@ -26,8 +26,6 @@ namespace Menge
 		*/
 		virtual void destroy() = 0;
 
-		virtual void save() = 0;
-
 	public:
 		//! Node pure virtual. set node name
 		/*!

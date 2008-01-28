@@ -27,5 +27,8 @@ namespace Menge
 
 	private:
 		CameraInterface * m_interface;
+
+		void render(){}
+		bool isRenderable(){return false;}
 	};
 }

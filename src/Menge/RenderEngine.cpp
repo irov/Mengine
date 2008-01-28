@@ -211,10 +211,10 @@ namespace Menge
 		return m_interface->createCamera(_name.c_str());
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EntityInterface * RenderEngine::create3dEntity(const std::string& _name, const std::string& _meshName)
+/*	EntityInterface * RenderEngine::create3dEntity(const std::string& _name, const std::string& _meshName)
 	{
 		return m_interface->create3dEntity(_name.c_str(), _meshName.c_str());
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	LightInterface * RenderEngine::createLight(const std::string& _name)
 	{
@@ -236,4 +236,8 @@ namespace Menge
 		m_interface->update(_timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	SceneNodeInterface * RenderEngine::attachSceneNodeToRoot( const std::string & _name )
+	{
+		return m_interface->attachSceneNodeToRoot(_name.c_str());
+	}
 }

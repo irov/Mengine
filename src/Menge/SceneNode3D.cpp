@@ -1,50 +1,74 @@
 #	include "SceneNode3D.h"
 
+#	include "XmlEngine.h"
+
+#	include "Interface/RenderSystemInterface.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	SceneNode3D::SceneNode3D()
+		: m_interface(0)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	SceneNode3D::~SceneNode3D()
+	{
+		delete m_interface;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::quatf & SceneNode3D::getWorldOrient()
 	{
-		if( m_parent == 0 )
-		{
-			return getLocalOrient();
-		}
-
-		updateOrient( m_parent );	
-
-		return Allocator3D::getWorldOrient();
+		return *(mt::quatf*)m_interface->getWorldOrient();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & SceneNode3D::getWorldPosition()
 	{
-		if( m_parent == 0 )
-		{
-			return getLocalPosition();
-		}
-
-		updatePosition( m_parent );	
-
-		return Allocator3D::getWorldPosition();
+		return *(mt::vec3f*)m_interface->getWorldPosition();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::changePivot()
+	const mt::quatf & SceneNode3D::getLocalOrient() const
 	{
-		Allocator3D::changePivot();
-
-		for( TListChildren::iterator
-			it = m_listChildren.begin(),
-			it_end = m_listChildren.end();
-		it != it_end;
-		++it)
-		{
-			(*it)->changePivot();
-		}
+		return *(mt::quatf*)m_interface->getLocalOrient();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & SceneNode3D::getLocalPosition() const
+	{
+		return *(mt::vec3f*)m_interface->getLocalPosition();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::setLocalPosition( const mt::vec3f & _position )
+	{
+		m_interface->setLocalPosition( _position.m );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::setLocalOrient( const mt::quatf & _quat )
+	{
+		m_interface->setLocalOrient( _quat.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::loader( XmlElement * _xml )
 	{
-		Allocator3D::loader( _xml );
-		Renderable3D::loader( _xml );
 		NodeCore::loader( _xml );
+
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE("Transformation")
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE_MEMBER("Value", &SceneNode3D::setLocalPosition);
+				}
+			}
+		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::_addChildren( SceneNode3D * _node )
+	{
+		const std::string & name = _node->getName();
+
+		_node->m_interface 
+			= m_interface->createChildSceneNode( name.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

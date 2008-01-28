@@ -5,8 +5,6 @@
 #	include "math/quat.h"
 #	include <string>
 
-
-class EntityInterface;
 class MeshInterface;
 
 namespace Menge
@@ -48,7 +46,6 @@ namespace Menge
 
 	private:
 		std::string m_meshName;
-		EntityInterface * m_interface;
 
 		std::string m_resourcenameMesh;
 		ResourceMesh * m_resourceMesh;
@@ -60,5 +57,8 @@ namespace Menge
 
 		mt::quatf	m_worldBoneOrient;
 		mt::vec3f	m_worldBonePos;
+
+		void render(){}
+		bool isRenderable(){return false;}
 	};
 }

@@ -108,9 +108,4 @@ namespace Menge
 	{
 		_node->setLayer( m_layer );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void	SceneNode2D::save()
-	{
-		NodeCore::save();
-	}
 }

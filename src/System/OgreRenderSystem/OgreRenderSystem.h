@@ -65,11 +65,13 @@ public:
 
 	//new 
 	CameraInterface * createCamera(const char * _name) override;
-	EntityInterface * create3dEntity(const char * _name, const char * _meshName) override;
+//	EntityInterface * create3dEntity(const char * _name, const char * _meshName) override;
 	LightInterface * createLight(const char * _name) override;
 	MeshInterface * createMesh(const char * _name) override;
 
 	void update(float _timing) override;
+
+	SceneNodeInterface * attachSceneNodeToRoot( const char * _name ) override;
 
 private:
 	Ogre::Vector2	m_contentResolution;

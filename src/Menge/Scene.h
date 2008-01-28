@@ -67,5 +67,7 @@ namespace Menge
 		float m_restitution;
 		float m_staticFriction; 
 		float m_dynamicFriction;
+
+		void _setPhysicParams();
 	};
 }

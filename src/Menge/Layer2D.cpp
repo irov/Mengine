@@ -29,7 +29,7 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Viewport* Layer2D::getViewport()
+	Viewport * Layer2D::getViewport()
 	{
 		return &m_viewport;
 	}

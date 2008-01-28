@@ -8,11 +8,14 @@ namespace	Menge
 	{
 	public:
 		Bone( RenderMesh3D * _mesh, const std::string & _name );
-		const mt::quatf & getWorldOrient() override;
-		const mt::vec3f & getWorldPosition() override;
+		const mt::quatf & getWorldOrient();
+		const mt::vec3f & getWorldPosition();
 
 	private:
 		RenderMesh3D * m_mesh;
 		std::string m_boneName;
+
+		void render(){}
+		bool isRenderable(){return false;}
 	};
 }

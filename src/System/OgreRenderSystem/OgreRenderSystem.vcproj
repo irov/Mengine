@@ -193,14 +193,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\OgreEntity.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreEntity.h"
-			>
-		</File>
-		<File
 			RelativePath=".\OgreLight.cpp"
 			>
 		</File>
@@ -254,6 +246,14 @@
 		</File>
 		<File
 			RelativePath=".\OgreRenderVideoStream.h"
+			>
+		</File>
+		<File
+			RelativePath=".\OgreSceneNode.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\OgreSceneNode.h"
 			>
 		</File>
 	</Files>

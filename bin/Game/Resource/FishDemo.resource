@@ -82,15 +82,21 @@
 	</Resource>
 
 	<Resource Name = "TestSkeleton" Type = "ResourceSkeleton" >
-		<Bone Name = "1" />
-		<Bone Name = "2" />
-		<Bone Name = "3" />
+		<Bones>
+			<Bone Name = "1" />
+			<Bone Name = "2" />
+			<Bone Name = "3" />
+		</Bones>
+		<Animations>
+			<Animation Name = "Idle" />
+			<Animation Name = "Walk" />
+			<Animation Name = "Die" />
+		</Animations>
 	</Resource>
 
 	<Resource Name = "TestMesh" Type = "ResourceMesh" >
 		<Mesh Name = "ZombieTest/test.mesh" />
 	</Resource>
-
 
 	<Resource Name = "TestBarrelMesh" Type = "ResourceMesh" >
 		<Mesh Name = "ZombieTest/barrel.mesh" />

@@ -38,8 +38,13 @@ namespace Menge
 	private:
 		bool m_active;
 		bool m_density;
+
+		RigidBodyInterface * m_interface;
+
 		std::string m_resourcename;
 		ResourcePhysicGeometry * m_resource;
-		RigidBodyInterface * m_interface;
+
+		void render(){}
+		bool isRenderable(){return false;}
 	};
 }

@@ -43,11 +43,18 @@ public:
 	// more to come...
 };
 
-class EntityInterface
+class	SceneNodeInterface
 {
 public:
-	virtual void setPosition(float x, float y, float z) = 0;
-	virtual void setOrient(float w, float x, float y, float z) = 0;
+	virtual ~SceneNodeInterface(){};
+	virtual const float * getWorldOrient() = 0;
+	virtual const float * getWorldPosition() = 0;
+	virtual float * getLocalPosition() = 0;
+	virtual float * getLocalOrient() = 0;
+	virtual void setLocalPosition( const float * _position ) = 0;
+	virtual void setLocalOrient( const float * _orient ) = 0;
+	virtual SceneNodeInterface * createChildSceneNode( const char * _name ) = 0;
+	virtual void attachEntity(const char * _name, const char * _meshName) = 0;
 };
 
 class MeshInterface
@@ -69,6 +76,23 @@ public:
 	virtual void setSpecularColour( float _r, float _g, float _b ) = 0;
 	virtual void setAttenuation(float _range, float _constant, float _linear, float _quadratic) = 0;
 	virtual void setDirection(float _x, float _y, float _z) = 0;
+};
+
+class AnimationStateInterface
+{
+public:
+    virtual float getTimePosition() const = 0;
+    virtual void setTimePosition( float _timePos ) = 0;
+    virtual float getLength() const = 0;
+    virtual void setLength( float _len ) = 0;
+    virtual float getWeight() const = 0;
+    virtual void setWeight( float _weight ) = 0;
+    virtual void addTime( float _offset ) = 0;
+	virtual bool hasEnded() const = 0;
+    virtual bool getEnabled() const = 0;
+    virtual void setEnabled( bool _enabled );
+    virtual void setLoop( bool _loop ) = 0;
+    virtual bool getLoop() const = 0;
 };
 
 class RenderVideoStreamInterface : public RenderImageInterface
@@ -136,10 +160,12 @@ public:
 
 	//new
 	virtual CameraInterface * createCamera( const char * _name ) = 0;
-	virtual EntityInterface * create3dEntity(const char * _name, const char * _meshName) = 0;
+	//virtual EntityInterface * create3dEntity(const char * _name, const char * _meshName) = 0;
 	virtual LightInterface * createLight(const char * _name) = 0;
 	virtual MeshInterface * createMesh(const char * _name) = 0;
 	virtual void update(float _timing) = 0;
+
+	virtual SceneNodeInterface * attachSceneNodeToRoot( const char * _name ) = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

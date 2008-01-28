@@ -130,8 +130,6 @@ namespace Menge
 
 		void _update( float _timing ) override;
 
-		void save() override;
-	
 	private:
 		void updateAlign_();
 		void updateVisibility_();

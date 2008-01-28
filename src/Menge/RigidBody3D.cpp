@@ -2,7 +2,6 @@
 #	include "ObjectImplement.h"
 
 #	include "ScriptEngine.h"
-#	include "RenderEngine.h"
 #	include "PhysicEngine.h"
 
 #	include "ResourcePhysicGeometry.h"
@@ -13,7 +12,6 @@
 
 #	include "XmlEngine.h"
 
-
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -22,6 +20,8 @@ namespace	Menge
 	RigidBody3D::RigidBody3D()
 		: m_active(true)
 		, m_density(0.0f)
+		, m_interface(0)
+		, m_resource(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -82,11 +82,11 @@ namespace	Menge
 
 		const mt::vec3f & pos = getLocalPosition();
 
-		m_interface->setPosition(pos.x, pos.y, pos.z);
+		m_interface->setPosition( pos.x, pos.y, pos.z );
 
 		const mt::quatf & orient = getLocalOrient();
 
-		m_interface->setOrient(orient.w, orient.x, orient.y, orient.z);
+		m_interface->setOrient( orient.w, orient.x, orient.y, orient.z );
 
 		if( m_resource == 0 )
 		{

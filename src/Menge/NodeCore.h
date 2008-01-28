@@ -68,10 +68,6 @@ namespace Menge
 		virtual void _debugRender();
 
 	protected:
-
-		void	save() override;
-
-	protected:
 		bool m_active;
 		bool m_enable;
 		bool m_updatable;

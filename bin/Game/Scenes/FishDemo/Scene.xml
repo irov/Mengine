@@ -64,14 +64,13 @@
 			<Transformation Value = "0;0;0" />
 		</Node>
 
-
 		<Node Name = "BarrelPhysicBody1" Type = "RigidBody3D">
               		<GeometryResource Name = "ResourceBarrelGeometry"/>
 			<Active Value = "1"/>
 			<Density Value = "1"/>
 			<Transformation Value = "1;40;9" />
 
-			<Node Name = "Barrel2" Type = "RenderMesh3D">
+			<Node Name = "Barrel1" Type = "RenderMesh3D">
               			<ResourceMesh Name = "TestBarrelMesh"/>
 			</Node>	
 		</Node>	
@@ -82,7 +81,7 @@
 			<Density Value = "1"/>
 			<Transformation Value = "1;40;1" />
 
-			<Node Name = "Barrel1" Type = "RenderMesh3D">
+			<Node Name = "Barrel2" Type = "RenderMesh3D">
               			<ResourceMesh Name = "TestBarrelMesh"/>
 			</Node>	
 		</Node>		

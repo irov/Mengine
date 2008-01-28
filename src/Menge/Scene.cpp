@@ -207,10 +207,7 @@ namespace	Menge
 
 		callMethod( "onActivate", "() " );
 
-		Holder<PhysicEngine>::hostage()->setGravity(m_g);
-		Holder<PhysicEngine>::hostage()->setRestitution(m_restitution);
-		Holder<PhysicEngine>::hostage()->setStaticFriction(m_staticFriction);
-		Holder<PhysicEngine>::hostage()->setDynamicFriction(m_dynamicFriction);		
+		_setPhysicParams();
 
 		return NodeCore::_activate();
 	}
@@ -263,10 +260,20 @@ namespace	Menge
 	{
 		_layer->setOffsetPosition(m_offsetPosition);
 		_layer->setScene( this );
+		_layer->notifyAdded();
 
 		if( _layer->isMain() )
 		{
 			m_mainLayer = _layer;
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::_setPhysicParams()
+	{
+		Holder<PhysicEngine>::hostage()->setGravity( m_g );
+		Holder<PhysicEngine>::hostage()->setRestitution( m_restitution );
+		Holder<PhysicEngine>::hostage()->setStaticFriction( m_staticFriction );
+		Holder<PhysicEngine>::hostage()->setDynamicFriction( m_dynamicFriction );		
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

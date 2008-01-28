@@ -16,7 +16,7 @@ namespace Menge
 
 	public:
 
-		const MeshInterface * getMesh() const;
+		MeshInterface * getMesh() const;
 	
 	public:
 		void loader( XmlElement * _xml ) override;

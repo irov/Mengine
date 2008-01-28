@@ -48,7 +48,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const MeshInterface * ResourceMesh::getMesh() const
+	MeshInterface * ResourceMesh::getMesh() const
 	{
 		return m_interface;
 	}

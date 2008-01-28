@@ -33,14 +33,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::quatf & RenderMesh3D::getBoneWorldOrient( const std::string& _name )
 	{
-		m_interfaceMesh->getBoneOrientation( _name.c_str(), m_worldBoneOrient.w, m_worldBoneOrient.x, m_worldBoneOrient.y, m_worldBoneOrient.z );
-		return m_worldBoneOrient;
+		return *(mt::quatf*)m_interfaceMesh->getBoneOrientation( _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & RenderMesh3D::getBoneWorldPosition( const std::string& _name ) 
 	{
-		m_interfaceMesh->getBonePos( _name.c_str(), m_worldBonePos.x, m_worldBonePos.y, m_worldBonePos.z );
-		return m_worldBonePos;
+		return *(mt::vec3f*)m_interfaceMesh->getBonePosition( _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh3D::loader( XmlElement * _xml )

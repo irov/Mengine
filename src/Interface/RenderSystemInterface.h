@@ -63,8 +63,8 @@ class MeshInterface
 		virtual bool hasSkeleton() const = 0;
 		virtual float getBoundingSphereRadius() const = 0;
 		virtual const char * getName() const = 0;
-		virtual void getBoneOrientation( const char * _name, float & w, float & x, float & y, float & z ) const = 0;
-		virtual void getBonePos( const char * _name, float & x, float & y, float & z ) const = 0;
+		virtual const float * getBoneOrientation( const char * _name ) = 0;
+		virtual const float * getBonePosition( const char * _name ) = 0;
 };
 
 class LightInterface

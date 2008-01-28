@@ -53,7 +53,7 @@ namespace Menge
 		std::string m_resourcenameSkeleton;
 		ResourceSkeleton * m_resourceSkeleton;
 
-		const MeshInterface * m_interfaceMesh; 
+		MeshInterface * m_interfaceMesh; 
 
 		mt::quatf	m_worldBoneOrient;
 		mt::vec3f	m_worldBonePos;

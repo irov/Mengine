@@ -10,8 +10,8 @@ public:
 	bool hasSkeleton() const;
 	float getBoundingSphereRadius() const;
 	const char * getName() const;
-	void getBoneOrientation( const char * _name, float & w, float & x, float & y, float & z ) const;
-	void getBonePos( const char * _name, float & x, float & y, float & z ) const;
+	const float * getBoneOrientation( const char * _name );
+	const float * getBonePosition( const char * _name );
 
 private:
 	Ogre::MeshPtr m_mesh;

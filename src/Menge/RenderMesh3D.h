@@ -55,9 +55,6 @@ namespace Menge
 
 		MeshInterface * m_interfaceMesh; 
 
-		mt::quatf	m_worldBoneOrient;
-		mt::vec3f	m_worldBonePos;
-
 		void render(){}
 		bool isRenderable(){return false;}
 	};

@@ -59,12 +59,12 @@ public:
 
 class MeshInterface
 {
-	public:
-		virtual bool hasSkeleton() const = 0;
-		virtual float getBoundingSphereRadius() const = 0;
-		virtual const char * getName() const = 0;
-		virtual const float * getBoneOrientation( const char * _name ) = 0;
-		virtual const float * getBonePosition( const char * _name ) = 0;
+public:
+	virtual bool hasSkeleton() const = 0;
+	virtual float getBoundingSphereRadius() const = 0;
+	virtual const char * getName() const = 0;
+	virtual const float * getBoneOrientation( const char * _name ) = 0;
+	virtual const float * getBonePosition( const char * _name ) = 0;
 };
 
 class LightInterface

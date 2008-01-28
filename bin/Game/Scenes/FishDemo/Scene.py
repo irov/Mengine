@@ -183,8 +183,8 @@ class Scene( Menge.Scene ):
 		if key == 32:
 			print "32"
 			#Menge.setCamera2DDirection( 1, 0)
-			self.testTextField.setMaxLen(80);
-			self.testTextField.setText("Zateryannyi tyjgffgfh gfhfghgfh trytry \n attol\ndfgdfgdfgdfgdfg\dfg");
+			#self.testTextField.setMaxLen(80);
+			self.testTextField.setText("Zater        yannyi\ntyjgffgfh gfhfghgfh trytry\nattol\ndfgdfgdfgdfgdfg\ndfg");
 			#self.bubble.play();
 			self.emitterTest.play();
 

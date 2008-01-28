@@ -2,6 +2,7 @@
 
 #	include "SceneNode2D.h"
 #	include "Color.h"
+#	include <vector>
 
 class	RenderImageInterface;
 
@@ -154,5 +155,6 @@ namespace Menge
 		void renderPass_( const Color & _color, const RenderImageInterface * _renderImage );
 		void createFormattedMessage_( const std::string& _text );
 		float getWordWidth_( const std::string & _text ) const;
+		void splitLine(const std::string& str);
 	};
 }

@@ -326,48 +326,38 @@ namespace	Menge
 		return width;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	TextField::createFormattedMessage_( const std::string & _text )
+	void split(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters)
 	{
-		m_lines.clear();
+		std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
+		std::string::size_type pos     = str.find_first_of(delimiters, lastPos);
 
-		std::string delimiters;
-		delimiters += ' ';
-		delimiters += '\n';
-	
-		bool	check = false;
-
-		std::string::size_type lastPos = _text.find_first_not_of( delimiters, 0);
-		std::string::size_type pos     = _text.find_first_of( delimiters, lastPos );
-
-		if( _text[pos] == '\n' )
+		while (std::string::npos != pos || std::string::npos != lastPos)
 		{
-			check = true;
+			tokens.push_back(str.substr(lastPos, pos - lastPos));
+			lastPos = str.find_first_not_of(delimiters, pos);
+			pos = str.find_first_of(delimiters, lastPos);
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::splitLine(const std::string& _text)
+	{
+		bool revert = false; 
+		std::string::size_type lastPos = 0;
 
-		std::string word;
+		if( _text[0] == ' ' ) revert = true;
+
+		std::string::size_type pos = ( revert == true ) 
+				? _text.find_first_not_of( " ", 0)
+				: _text.find_first_of( " ", 0 );
+
 		std::string line;
-
-		word.reserve(100);
-		line.reserve(200);
 
 		float len = 0.0f;
 		float maxlen = 0.0f;
 
 		while ( std::string::npos != pos || std::string::npos != lastPos )
 		{
-			if(check)
-			{
-				if( len != 0 )
-				{
-					maxlen = std::max( maxlen, len );
-					m_lines.push_back( Line( line, len ));
-				}
-
-				line.clear();
-				len = 0.0f;
-			}
-
-			word = _text.substr( lastPos, pos - lastPos );
+			std::string word = _text.substr( lastPos, pos - lastPos );
 		
 			line += word;
 			line += " ";
@@ -382,21 +372,34 @@ namespace	Menge
 				len = 0.0f;
 			}
 
-			check = false;
-		
-			lastPos = _text.find_first_not_of( delimiters, pos );
-			pos = _text.find_first_of( delimiters, lastPos );
+			lastPos = pos;
 
-			if( _text[pos] == '\n' )
-			{
-				check = true;
-			}
+			pos = ( revert == true ) 
+				? _text.find_first_of( " ", lastPos)
+				: _text.find_first_not_of( " ", lastPos );
+
+			revert = !revert;
 		}
 
 		if( len != 0 )
 		{
 			maxlen = std::max( maxlen, len );
 			m_lines.push_back( Line( line, len ) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::createFormattedMessage_( const std::string & _text )
+	{
+		m_lines.clear();
+
+		std::vector<std::string> lines;
+		split(_text,lines,"\n");
+
+		float maxlen = 0.0f;
+
+		for(std::vector<std::string>::iterator line = lines.begin(); line != lines.end(); line++ )
+		{
+			splitLine(*line);
 		}
 
 		m_length.x = maxlen;

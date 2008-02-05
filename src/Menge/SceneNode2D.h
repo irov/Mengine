@@ -28,6 +28,7 @@ namespace Menge
 		
 		virtual void flip( bool _x ) {}
 		virtual void setScale( const mt::vec2f& _scale ) {}
+		virtual const mt::vec2f& getScale() const { static mt::vec2f s(1.0f, 1.0f); return s; }
 
 	public:
 		void _render() override;

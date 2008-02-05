@@ -8,6 +8,8 @@
 
 #	include "RenderEngine.h"
 
+#	include "Application.h"
+
 #	include "ParticleEngine.h"
 
 #	include "ResourceEmitterContainer.h"
@@ -59,7 +61,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Emitter::_activate()
 	{
-		if( SceneNode2D::_activate() == false )
+		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
+		if( !enabled || SceneNode2D::_activate() == false )
 		{
 			return false;
 		}

@@ -76,7 +76,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene::handleKeyEvent( size_t _key, bool _isDown )
+	bool Scene::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
 	{
 		if( isActivate() == false )
 		{
@@ -87,13 +87,13 @@ namespace	Menge
 		
 		if( handle == false )
 		{
-			askEvent( handle, "KEY", "(Ib)", _key, _isDown );
+			askEvent( handle, "KEY", "(IIb)", _key, _char, _isDown );
 		}
 
 		if( handle == false )
 		{
 			handle = Holder<MousePickerSystem>::hostage()
-				->handleKeyEvent( _key, _isDown );
+				->handleKeyEvent( _key, _char, _isDown );
 		}
 
 		if( handle == false )
@@ -104,7 +104,7 @@ namespace	Menge
 			it != it_end;
 			++it)
 			{
-				if( handle = (*it)->handleKeyEvent( _key, _isDown ) )
+				if( handle = (*it)->handleKeyEvent( _key, _char, _isDown ) )
 				{
 					break;
 				}
@@ -128,7 +128,7 @@ namespace	Menge
 			askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
 		}
 
-		if( handle == false  /*&& !m_isSubScene */)
+		if( handle == false  && !m_isSubScene )
 		{
 			handle = Holder<MousePickerSystem>::hostage()
 				->handleMouseButtonEvent( _button, _isDown );
@@ -207,7 +207,7 @@ namespace	Menge
 
 		callMethod( "onActivate", "() " );
 
-		_setPhysicParams();
+		//_setPhysicParams();
 
 		return NodeCore::_activate();
 	}
@@ -231,10 +231,6 @@ namespace	Menge
 				XML_PARSE_ELEMENT( this, &Scene::loaderScene_ );
 			}
 		}
-		XML_END_NODE()
-		{
-			callMethod( "onLoader", "()" );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loaderScene_( XmlElement *_xml )
@@ -246,6 +242,10 @@ namespace	Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE("OffsetPosition", "Value", m_offsetPosition );
 		}		
+		XML_END_NODE()
+		{
+			callMethod( "onLoader", "()" );
+		}
 
 		XML_SWITCH_NODE( _xml )
 		{

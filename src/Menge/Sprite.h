@@ -74,7 +74,7 @@ namespace Menge
 		/*!
 		\return скейл
 		*/
-		virtual mt::vec2f getScale() const;
+		virtual const mt::vec2f& getScale() const;
 
 		//! Инвертирование спрайта по оси x, если _x = true, иначе по оси y.
 		/*!

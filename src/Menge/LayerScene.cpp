@@ -24,11 +24,11 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LayerScene::handleKeyEvent( size_t _key, bool _isDown )
+	bool LayerScene::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
 	{
 		if( m_subScene )
 		{
-			return m_subScene->handleKeyEvent( _key, _isDown );
+			return m_subScene->handleKeyEvent( _key, _char, _isDown );
 		}
 
 		return false;
@@ -96,9 +96,10 @@ namespace Menge
 			m_subScene = Holder<Game>::hostage()
 				->getScene( m_sceneName );
 
+			m_subScene->setParentScene( m_scene );
+			
 			m_subScene->activate();
 
-			m_subScene->setParentScene( m_scene );
 		}
 
 		return true;

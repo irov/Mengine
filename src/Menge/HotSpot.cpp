@@ -11,6 +11,9 @@
 #	include "Player.h"
 
 #	include "Camera2D.h"
+#	include "Sprite.h"
+
+//#define DEBUG_RENDER
 
 namespace	Menge
 {
@@ -20,6 +23,7 @@ namespace	Menge
 	HotSpot::HotSpot()
 	: m_globalMouseEventListener( false )
 	, m_globalKeyEventListener( false )
+	, m_scale( 1.0f, 1.0f )
 	{
 		this->setHandler( this );
 	}
@@ -43,7 +47,34 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
 	{
-		m_polygon.add_point(_p);
+		m_polygon.add_point( mt::vec2f( _p.x * m_scale.x, _p.y * m_scale.y ) );
+
+#ifdef DEBUG_RENDER
+		Sprite* point = new Sprite();
+		point->setImageResource( "AttrBad" );
+		//point->setName( "point" + std::string(::itoa ) );
+		point->activate();
+		point->enable();
+		point->compile();
+
+		if( m_polygon.num_points() > 1 )
+		{
+			point->setLocalPosition( m_polygon[ m_polygon.num_points() - 2 ] );
+			float sx = ( m_polygon.back() - m_polygon[ m_polygon.num_points() - 2 ]).length();
+			point->setScale( mt::vec2f( sx / 25.0f, 1.0f) );
+			point->setLocalDirection( mt::norm_v2( m_polygon.back() - m_polygon[ m_polygon.num_points() - 2 ] ) );
+
+			sx = ( m_polygon.back() - m_polygon[0]).length();
+			(*m_listChildren.begin())->setScale( mt::vec2f( sx / 25.0f, 1.0f ));
+			(*m_listChildren.begin())->setLocalDirection( mt::norm_v2( m_polygon.back() - m_polygon[ 0 ] ) );
+		}
+		else
+			point->setLocalPosition( m_polygon.back() );
+
+		activate();
+		
+		addChildren( point );
+#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
@@ -92,13 +123,13 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleKeyEvent( size_t _key, bool _isDown )
+	bool HotSpot::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
 	{
 		bool handle = false;
 
 		if( !handle )
 		{
-			askEvent( handle, "KEY", "(OIb)", this->getScript(), _key, _isDown );
+			askEvent( handle, "KEY", "(OIIb)", this->getScript(), _key, _char, _isDown );
 		}
 
 		return handle;
@@ -220,4 +251,27 @@ namespace	Menge
 	void HotSpot::_debugRender()
 	{}
 	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::setScale( const mt::vec2f& _scale )
+	{
+		for( int i = 0; i < m_polygon.num_points(); i++ )
+		{
+			m_polygon[i].x = m_polygon[i].x / m_scale.x * _scale.x;
+			m_polygon[i].y = m_polygon[i].y / m_scale.y * _scale.y;
+		}
+#ifdef DEBUG_RENDER
+		TListChildren::iterator it = m_listChildren.begin();
+		for(; it != m_listChildren.end(); it++)
+		{
+			mt::vec2f pos = (*it)->getLocalPosition();
+			pos.x = pos.x / m_scale.x * _scale.x;
+			pos.y = pos.y / m_scale.y * _scale.y;
+			(*it)->setLocalPosition( pos );
+			mt::vec2f scl = (*it)->getScale();
+			scl.x *= _scale.x;
+			scl.y *= _scale.y;
+			(*it)->setScale( scl );
+		}
+#endif
+		m_scale = _scale;
+	}
 }

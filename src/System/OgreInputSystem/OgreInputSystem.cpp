@@ -156,7 +156,7 @@ bool OgreInputSystem::keyPressed( const OIS::KeyEvent &arg )
 {
 	if( m_handler )
 	{
-		return m_handler->handleKeyEvent( arg.text, true );
+		return m_handler->handleKeyEvent( arg.key, arg.text, true );
 	}
 
 	return false;
@@ -166,7 +166,7 @@ bool OgreInputSystem::keyReleased( const OIS::KeyEvent &arg )
 {
 	if( m_handler )
 	{
-		return m_handler->handleKeyEvent( arg.text, false );
+		return m_handler->handleKeyEvent( arg.key, arg.text, false );
 	}
 
 	return false;

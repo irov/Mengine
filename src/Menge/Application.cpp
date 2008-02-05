@@ -33,9 +33,9 @@ namespace Menge
 		{}
 
 	public:
-		bool handleKeyEvent( size_t _key, bool _isDown ) override
+		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) override
 		{
-			return m_app->handleKeyEvent( _key, _isDown );
+			return m_app->handleKeyEvent( _key, _char, _isDown );
 		}
 
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override
@@ -59,9 +59,22 @@ namespace Menge
 		, m_fixedContentResolution( false )
 		, m_title("Menge-engine")
 		, m_resourcePath("")
+		, m_vsync( true )
+		, m_particles( true )
+		, m_sound( true )
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
+		int idx = _args.find( "-sound" );
+		if( idx >= 0 )
+		{
+			m_sound = false;
+		}
+		idx = _args.find( "-particles" );
+		if( idx >= 0 )
+		{
+			m_particles = false;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
@@ -135,16 +148,17 @@ namespace Menge
 
 		MENGE_LOG("init game ...\n");
 
-		if( m_fixedContentResolution )
-		{
-			mt::vec2f res = Holder<Game>::hostage()->getResourceResolution();
-			//Holder<RenderEngine>::hostage()->setViewportDimensions( res.x, res.y );
-		}
 
 		if( Holder<Game>::hostage()
 			->init() == false )
 		{
 			return false;
+		}
+
+		if( m_fixedContentResolution )
+		{
+			mt::vec2f res = Holder<Game>::hostage()->getResourceResolution();
+			Holder<RenderEngine>::hostage()->setViewportDimensions( res.x, res.y );
 		}
 
 		return true;
@@ -192,6 +206,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE("Fullscreen", "Value", m_fullScreen );
 			XML_CASE_ATTRIBUTE_NODE("RenderDriver", "Name", m_renderDriver );
 			XML_CASE_ATTRIBUTE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
+			XML_CASE_ATTRIBUTE_NODE("VSync", "Value", m_vsync );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -233,7 +248,7 @@ namespace Menge
 	bool Application::update( float _timing )
 	{	
 		Holder<MousePickerSystem>::hostage()->clear();
-		Holder<PhysicEngine>::hostage()->update( 1.0f/30.0f );// for test physic!
+		//Holder<PhysicEngine>::hostage()->update( 1.0f/30.0f );// for test physic!
 		Holder<RenderEngine>::hostage()->update( _timing );//for test anim!
 		Holder<Game>::hostage()->update( _timing );
 		Holder<InputEngine>::hostage()->update();
@@ -246,9 +261,9 @@ namespace Menge
 		return !m_quit;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::handleKeyEvent( size_t _key, bool _isDown )
+	bool Application::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
 	{
-		return Holder<Game>::hostage()->handleKeyEvent( _key, _isDown );
+		return Holder<Game>::hostage()->handleKeyEvent( _key, _char, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::handleMouseButtonEvent( size_t _button, bool _isDown )
@@ -315,5 +330,30 @@ namespace Menge
 	const std::string& Application::getResourcePath() const
 	{
 		return m_resourcePath;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setParticlesEnabled( bool _enabled )
+	{
+		m_particles = _enabled;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getParticlesEnabled() const
+	{
+		return m_particles;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setSoundEnabled( bool _enabled )
+	{
+		m_sound = _enabled;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getSoundEnabled() const
+	{
+		return m_sound;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getVSync() const
+	{
+		return m_vsync;
 	}
 }

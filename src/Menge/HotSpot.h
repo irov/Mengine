@@ -44,7 +44,7 @@ namespace Menge
 		void setHotspotListener( PyObject * _handler );
 		
 	public:
-		bool handleKeyEvent( size_t _key, bool _isDown ) override;
+		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) override;
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
 
@@ -55,12 +55,15 @@ namespace Menge
 	public:
 		void loader( XmlElement *_xml) override;
 
+		virtual void setScale( const mt::vec2f& _scale );
+
 	protected:
 		void _update( float _timing ) override;
 		void _debugRender() override;
 
 	protected:
 		mt::polygon m_polygon;
+		mt::vec2f m_scale;
 
 	private:		
 		bool m_globalMouseEventListener;

@@ -98,22 +98,23 @@ namespace	Menge
 		//
 		if( !m_scrollable ) return;
 
-		if( m_viewport.begin.x < -m_size.x || m_viewport.begin.x > m_size.x )
+		//if( m_viewport.begin.x < -m_size.x || m_viewport.begin.x > m_size.x )
 		{
-			m_viewport.begin.x += m_size.x * ::floorf( m_viewport.begin.x / -m_size.x );
+			float c = ::floorf( m_viewport.begin.x / m_size.x );
+			m_viewport.begin.x -= m_size.x * c;
 			m_viewport.end.x = m_viewport.begin.x + viewport_size.x * 2.0f;
 		}
 
 		if( !m_reRender )
 		{
-			if( m_viewport.begin.x < 0.0f )
+			/*if( m_viewport.begin.x < 0.0f )
 			{
 				m_viewportOffset.x = m_size.x;
 				m_viewportOffset.y = 0.0f;
 				// notify re-render
 				m_needReRender = true;
 			}
-			else if( m_viewport.end.x > m_size.x )
+			else*/ if( m_viewport.end.x > m_size.x )
 			{
 				m_viewportOffset.x = -m_size.x;
 				m_viewportOffset.y = 0.0f;
@@ -133,7 +134,7 @@ namespace	Menge
 		NodeCore::update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer2D::handleKeyEvent( size_t _key, bool _isDown )
+	bool Layer2D::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
 	{
 		return false;
 	}

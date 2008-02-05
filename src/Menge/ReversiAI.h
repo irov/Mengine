@@ -23,6 +23,7 @@ public:
 	int autoMove();
 	int getCurScore();
 	long int getLeavesEvaluated();
+	int getLegalMovesCount( int _playerID );
 
 private:
 	int board[64];

@@ -856,3 +856,13 @@ int ReversiAI::statEval()
 	sum = int( a * sum1 + b * sum2 + d * sum4 + e * sum5 );
 	return sum;
 }
+
+int ReversiAI::getLegalMovesCount( int _playerID )
+{
+	int mark = 0;
+	if( _playerID == meId )
+		mark = 1;
+	else if( _playerID == youId )
+		mark = -1;
+	return noOfLegalMoves( mark );
+}

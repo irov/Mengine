@@ -257,4 +257,46 @@ namespace Menge
 		m_scriptListeners.erase( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	class XmlResourceLoaderListener
+		: public XmlElementListener
+	{
+	public:
+		XmlResourceLoaderListener( ResourceReference ** _externalResource, ResourceManager* _resourceMgr )
+			: m_externalResource( _externalResource )
+			, m_resourceManager( _resourceMgr )
+		{
+		}
+
+	public:
+		void parseXML( XmlElement * _xml ) override
+		{
+			m_resourceManager->loaderResource( _xml );
+		}
+
+	protected:
+		ResourceReference ** m_externalResource;	
+		ResourceManager* m_resourceManager;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	ResourceReference* ResourceManager::createResourceFromXml( const std::string& _xml )
+	{
+		ResourceReference* resource = 0;
+
+		XmlResourceLoaderListener * resourceLoader = new XmlResourceLoaderListener( &resource, this );
+
+		if(  Holder<XmlEngine>::hostage()
+			->parseXmlBuffer( _xml, resourceLoader ) == false )
+		{
+			MENGE_LOG("Invalid parse external node `%s`\n", _xml.c_str() );
+
+			return 0;
+		}
+
+		if( resource == 0 )
+		{
+			MENGE_LOG("This xml file `%s` have invalid external node format\n", _xml.c_str() );
+		}
+
+		return resource;
+	}
 }

@@ -30,6 +30,7 @@ namespace Menge
 		void loadResource( const std::string & _file );
 
 		ResourceReference * createResource( const std::string & _name, const std::string & _type );
+		ResourceReference * createResourceFromXml( const std::string& _xml );
 
 		void registerResource( ResourceReference * _resource );
 		ResourceReference * getResource( const std::string & _name );
@@ -51,9 +52,9 @@ namespace Menge
 		void removeListener( ResourceManagerListener* _listener );
 		void removeListener( PyObject* _listener );
 
-	protected:
 		void loaderDataBlock( XmlElement * _xml );
 		void loaderResource( XmlElement * _xml );
+	protected:
 
 	private:
 		typedef std::map< std::string, ResourceReference * > TMapResource;

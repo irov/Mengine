@@ -49,6 +49,16 @@ namespace Menge
 			return sinf(a);
 		}
 
+		static float mt_tanf( float a )
+		{
+			return tanf( a );
+		}
+
+		static float mt_acosf( float a )
+		{
+			return acosf( a );
+		}
+
 		static float getVec2fX( const mt::vec2f & _vec2f )
 		{
 			return _vec2f.x;
@@ -89,6 +99,8 @@ namespace Menge
 		pybind::def( "absf", &ScriptHelper::mt_absf );
 		pybind::def( "cosf", &ScriptHelper::mt_cosf );
 		pybind::def( "sinf", &ScriptHelper::mt_sinf );
+		pybind::def( "tanf", &ScriptHelper::mt_tanf );
+		pybind::def( "acosf", &ScriptHelper::mt_acosf );
 
 		pybind::def( "getVec2fX", &ScriptHelper::getVec2fX );
 		pybind::def( "getVec2fY", &ScriptHelper::getVec2fY );

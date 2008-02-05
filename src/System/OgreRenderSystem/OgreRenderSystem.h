@@ -8,6 +8,12 @@
 
 class OgreRenderSpriteManager;
 
+namespace CEGUI
+{
+	class System;
+	class OgreCEGUIRenderer;
+};
+
 class OgreRenderSystem
 	: public OgreRenderSystemInterface
 	, public Ogre::ManualResourceLoader
@@ -88,4 +94,7 @@ private:
 
 	typedef std::map< const RenderImageInterface* , Ogre::TheoraMovieClip* > TMovieMap;
 	TMovieMap m_videoTexturesMap;
+
+	CEGUI::OgreCEGUIRenderer* m_GUIRenderer;
+	CEGUI::System*	m_GUISystem;
 };

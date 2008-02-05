@@ -3,6 +3,7 @@
 
 #	include "InputEngine.h"
 #	include "SceneManager.h"
+#	include "FileEngine.h"
 #	include "Scene.h"
 #	include "Game.h"
 
@@ -218,7 +219,9 @@ namespace Menge
 
 			RenderImageInterface * image = resourceImage->getImage( 0 );
 
-			Holder<Application>::hostage()->update( 0.0f );
+			//Holder<Application>::hostage()->update( 0.0f );
+			Holder<Game>::hostage()->update(0.0f);
+			Holder<Game>::hostage()->render();
 
 			Holder<RenderEngine>::hostage()->render( image, rect );
 
@@ -263,6 +266,32 @@ namespace Menge
 			Holder<Game>::hostage()->render();
 			Holder<RenderEngine>::hostage()->render();
 		}
+		static void writeImageToFile( const std::string& _resource, int _frame, const std::string& _filename )
+		{
+			const RenderImageInterface* img = Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( _resource )->getImage( _frame );
+			const_cast<RenderImageInterface*>(img)->writeToFile( _filename.c_str() );
+		}
+		static void setSoundEnabled( bool _enabled )
+		{
+			Holder<Application>::hostage()->setSoundEnabled( _enabled );
+		}
+		static void setParticlesEnabled( bool _enabled )
+		{
+			Holder<Application>::hostage()->setParticlesEnabled( _enabled );
+		}
+		static void createResourceFromXml( const std::string& _xml )
+		{
+			Holder<ResourceManager>::hostage()->createResourceFromXml( _xml );
+		}
+		static bool createFolder( const std::string& _path )
+		{
+			return Holder<FileEngine>::hostage()->createFolder( _path );
+		}
+		static bool deleteFolder( const std::string& _path )
+		{
+			return Holder<FileEngine>::hostage()->deleteFolder( _path );
+		}
+
 	}
 
 	SCRIPT_CLASS_WRAPPING( Node );
@@ -309,6 +338,7 @@ namespace Menge
 			.def( "autoMove", &ReversiAI::autoMove )
 			.def( "getCurScore", &ReversiAI::getCurScore )
 			.def( "getLeavesEvaluated", &ReversiAI::getLeavesEvaluated )
+			.def( "getLegalMovesCount", &ReversiAI::getLegalMovesCount )
 			;
 
 		pybind::class_<CornersAI>("CornersAI")
@@ -359,6 +389,8 @@ namespace Menge
 			.def( "setLocalPosition", &Allocator2D::setLocalPosition )
 			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
 
+			.def( "setWorldPosition", &Allocator2D::getWorldPosition )
+			.def( "SetWorldDirection", &Allocator2D::getWorldDirection )
 			.def( "setRotate", &Allocator2D::setRotate )
 			;
 
@@ -441,6 +473,7 @@ namespace Menge
 				.def( "enableGlobalMouseEvent", &HotSpot::enableGlobalMouseEvent )
 				.def( "addPoint", &HotSpot::addPoint )
 				.def( "clearPoints", &HotSpot::clearPoints )
+				.def( "pick", &HotSpot::pick )
 				;
 
 			pybind::proxy_<Sprite, pybind::bases<SceneNode2D>>("Sprite", false)
@@ -503,6 +536,10 @@ namespace Menge
 		pybind::def( "addResourceListener", &ScriptMethod::addResourceListener );
 		pybind::def( "removeResourceListener", &ScriptMethod::removeResourceListener );
 		pybind::def( "renderOneFrame", &ScriptMethod::renderOneFrame );
+		pybind::def( "writeImageToFile", &ScriptMethod::writeImageToFile );
+		pybind::def( "createResourceFromXml", &ScriptMethod::createResourceFromXml );
+		pybind::def( "createFolder", &ScriptMethod::createFolder );
+		pybind::def( "deleteFolder", &ScriptMethod::deleteFolder );
 
 	}
 }

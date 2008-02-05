@@ -74,4 +74,9 @@ namespace Menge
 	{
 		return m_interface->createFolder( _path.c_str() );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileEngine::deleteFolder( const std::string& _path )
+	{
+		return m_interface->deleteFolder( _path.c_str() );
+	}
 }

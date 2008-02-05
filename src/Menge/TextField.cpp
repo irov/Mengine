@@ -1,22 +1,22 @@
-#	include "TextField.h" 
+#     include "TextField.h" 
 
-#	include "ObjectImplement.h"
+#     include "ObjectImplement.h"
 
-#	include "XmlEngine.h"
+#     include "XmlEngine.h"
 
-#	include "RenderEngine.h"
+#     include "RenderEngine.h"
 
-#	include "ResourceManager.h"
+#     include "ResourceManager.h"
 
-#	include "ResourceFont.h"
+#     include "ResourceFont.h"
 
-#	include "ResourceImage.h"
+#     include "ResourceImage.h"
 
-#	include "LogEngine.h"
+#     include "LogEngine.h"
 
-#	include "math/box2.h"
+#     include "math/box2.h"
 
-namespace	Menge
+namespace     Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT(TextField);
@@ -46,7 +46,7 @@ namespace	Menge
 	{
 		const mt::mat3f & wm = getWorldMatrix();
 
-		mt::box2f	bbox;
+		mt::box2f     bbox;
 
 		mt::set_box_from_oriented_extent( bbox, m_alignOffset, m_length, wm );
 
@@ -160,7 +160,7 @@ namespace	Menge
 
 		for( std::list<Line>::iterator it = m_lines.begin(); it != m_lines.end(); ++it)
 		{
-			const std::string & _line = (*it).text;		
+			const std::string & _line = (*it).text;          
 
 			if( m_centerAlign )
 			{
@@ -172,8 +172,8 @@ namespace	Menge
 			for( std::string::const_iterator
 				it = _line.begin(), 
 				it_end = _line.end();
-				it != it_end; 
-				++it )
+			it != it_end; 
+			++it )
 			{
 				if ( *it == ' ' )
 				{
@@ -182,9 +182,9 @@ namespace	Menge
 				}
 
 				const mt::vec4f & uv = m_resource->getUV( *it );
-		 
+
 				float width = m_resource->getCharRatio( *it ) * m_height;
-				
+
 				mt::vec2f size( width, m_height );
 
 				Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, _color.get(), _renderImage );
@@ -310,7 +310,7 @@ namespace	Menge
 		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float	TextField::getWordWidth_( const std::string & _text ) const
+	float TextField::getWordWidth_( const std::string & _text ) const
 	{
 		float width = 0.0f;
 
@@ -347,8 +347,8 @@ namespace	Menge
 		if( _text[0] == ' ' ) revert = true;
 
 		std::string::size_type pos = ( revert == true ) 
-				? _text.find_first_not_of( " ", 0)
-				: _text.find_first_of( " ", 0 );
+			? _text.find_first_not_of( " ", 0)
+			: _text.find_first_of( " ", 0 );
 
 		std::string line;
 
@@ -358,7 +358,7 @@ namespace	Menge
 		while ( std::string::npos != pos || std::string::npos != lastPos )
 		{
 			std::string word = _text.substr( lastPos, pos - lastPos );
-		
+
 			line += word;
 			line += " ";
 
@@ -399,7 +399,10 @@ namespace	Menge
 
 		for(std::vector<std::string>::iterator line = lines.begin(); line != lines.end(); line++ )
 		{
-			splitLine(*line);
+			// splitLine(*line);
+			float len = getWordWidth_( *line );
+			m_lines.push_back( Line( *line, len ));
+			maxlen = std::max( maxlen, len );
 		}
 
 		m_length.x = maxlen;
@@ -407,6 +410,6 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_debugRender()
-	{	
+	{ 
 	}
 }

@@ -1,10 +1,11 @@
-#	pragma once
+# pragma once
 
-#	include "SceneNode2D.h"
-#	include "Color.h"
+# include "SceneNode2D.h"
+# include "Color.h"
+# include <vector>
 #	include <vector>
 
-class	RenderImageInterface;
+class RenderImageInterface;
 
 namespace Menge
 {
@@ -13,14 +14,14 @@ namespace Menge
 
 	//! TextField - класс для отрисовки шрифта. 
 
-    /*! xml - файл имеет следующую структуру:
-	 *	<Node Name = "имя_ноды" Type = "TextField">
-     *      <Font Name = "имя_ресура_шрифта"/>
-     *	    <Text Value = "отображаемый_текст"/>
-	 *		<Color Value = "цвет"/>
-	 *		<Height Value = "высота глифа"/>
-	 *		<CenterAlign Value = "1/0"/>
-	 *	</Node>
+	/*! xml - файл имеет следующую структуру:
+	* <Node Name = "имя_ноды" Type = "TextField">
+	*      <Font Name = "имя_ресура_шрифта"/>
+	*     <Text Value = "отображаемый_текст"/>
+	*  <Color Value = "цвет"/>
+	*  <Height Value = "высота глифа"/>
+	*  <CenterAlign Value = "1/0"/>
+	* </Node>
 	*/
 
 	class TextField
@@ -115,7 +116,7 @@ namespace Menge
 
 		bool _activate() override;
 		void _deactivate() override;
-		
+
 		bool _compile() override;
 		void _release() override;
 
@@ -123,7 +124,7 @@ namespace Menge
 
 	private:
 		ResourceFont * m_resource;
-		std::string	m_resourcename;
+		std::string m_resourcename;
 
 		float m_changingColorTime;
 		bool m_changingColor;
@@ -131,9 +132,9 @@ namespace Menge
 
 		Color m_color;
 		Color m_outlineColor;
-		float		m_height;
+		float  m_height;
 		std::string m_text;
-		mt::vec2f	m_length;
+		mt::vec2f m_length;
 
 		bool m_centerAlign;
 		mt::vec2f m_alignOffset;
@@ -142,16 +143,16 @@ namespace Menge
 		ResourceImage * m_outlineImage;
 		std::string m_outlineFontName;
 
-		struct	Line
+		struct Line
 		{
-			std::string	text;
-			float		length;
+			std::string text;
+			float  length;
 			Line( const std::string& _text, float _len )
 				: text(_text), length(_len){};
 		};
 
-		std::list<Line>	 m_lines;
-		
+		std::list<Line>  m_lines;
+
 		void renderPass_( const Color & _color, const RenderImageInterface * _renderImage );
 		void createFormattedMessage_( const std::string& _text );
 		float getWordWidth_( const std::string & _text ) const;

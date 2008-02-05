@@ -7,12 +7,16 @@
 #	include "Arrow.h"
 #	include "Player.h"
 
+const unsigned int VECTOR_CAPACITY = 40000;
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerSystem::MousePickerSystem()
 		: m_lastPickerTrap(0)
-	{}
+	{
+		//m_listPickerTrap.reserve( VECTOR_CAPACITY );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update()
 	{
@@ -74,7 +78,7 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleKeyEvent( size_t _key, bool _isDown )
+	bool MousePickerSystem::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
 	{
 		Arrow * arrow = Holder<Player>::hostage()->getArrow();
 
@@ -91,7 +95,7 @@ namespace Menge
 			{
 				InputHandler * handler = trap->handler();
 
-				if( handler->handleKeyEvent( _key, _isDown ) == true )
+				if( handler->handleKeyEvent( _key, _char, _isDown ) == true )
 				{
 					return true;
 				}

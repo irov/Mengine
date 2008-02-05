@@ -8,9 +8,11 @@
 #	include <vector>
 #	include <string>
 #	include <sstream>
+#	include <io.h>
 
-
-int main( int argc, char *argv[] )
+void RedirectIOToConsole();
+//int main( int argc, char *argv[] )
+int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in_opt LPSTR lpCmdLine, __in int nShowCmd )
 {
 #ifdef _DEBUG
 	const char * application_dll  = "Systems_d/OgreApplication_d.dll";
@@ -18,6 +20,10 @@ int main( int argc, char *argv[] )
 	const char * application_dll = "Systems/OgreApplication.dll";
 #endif
 
+	if( strstr(lpCmdLine, "-console") )
+	{
+		RedirectIOToConsole();
+	}
 #ifndef MENGE_STATIC
 	HMODULE hModule = LoadLibraryA( application_dll );
 
@@ -55,17 +61,7 @@ int main( int argc, char *argv[] )
 
 	bool result = false;
 
-//	result = app->init( "application.xml", "ReefLevel1");
-
-	if( argc > 1 )
-	{
-		printf("%s", argv[1]);
-		result = app->init( "application.xml", argv[1] );
-	}
-	else
-	{
-		result = app->init( "application.xml", 0 );
-	}
+	result = app->init( "application.xml", lpCmdLine );
 
 	if( result == true )
 	{
@@ -77,5 +73,40 @@ int main( int argc, char *argv[] )
 	printf("free library '%s' \n", application_dll );
 	FreeLibrary( hModule );
 
-	return 1;
+	return 0;
+}
+
+void RedirectIOToConsole()
+{
+	int hConHandle;
+	HANDLE lStdHandle;
+	CONSOLE_SCREEN_BUFFER_INFO coninfo;
+	FILE *fp;
+	// allocate a console for this app
+	AllocConsole();
+	// set the screen buffer to be big enough to let us scroll text
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
+	coninfo.dwSize.Y = 50;
+	SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
+	// redirect unbuffered STDOUT to the console
+	lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	hConHandle = _open_osfhandle((intptr_t)lStdHandle, 0x4000);
+	fp = _fdopen( hConHandle, "w" );
+	*stdout = *fp;
+	setvbuf( stdout, NULL, _IONBF, 0 );
+	// redirect unbuffered STDIN to the console
+	lStdHandle = GetStdHandle(STD_INPUT_HANDLE);
+	hConHandle = _open_osfhandle((intptr_t)lStdHandle, 0x4000);
+	fp = _fdopen( hConHandle, "r" );
+	*stdin = *fp;
+	setvbuf( stdin, NULL, _IONBF, 0 );
+	// redirect unbuffered STDERR to the console
+	lStdHandle = GetStdHandle(STD_ERROR_HANDLE);
+	hConHandle = _open_osfhandle((intptr_t)lStdHandle, 0x4000);
+	fp = _fdopen( hConHandle, "w" );
+	*stderr = *fp;
+	setvbuf( stderr, NULL, _IONBF, 0 );
+	// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
+	// point to console as well
+	//     ios::sync_with_stdio();
 }

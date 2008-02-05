@@ -94,6 +94,13 @@ namespace Menge
 			Viewport * viewport = m_layer->getViewport();
 			pos -= viewport->begin;
 
+			if( m_layer->isScrollable() )
+			{
+				float c = ::floorf( pos.x / m_layer->getSize().x );
+				pos.x -= m_layer->getSize().x * c;
+			}
+
+
 			// if we have case with 2 viewports, check in what viewport we see point (looks more like a hack)
 			if( m_layer->isScrollable() && pos.x > viewport->end.x )
 			{

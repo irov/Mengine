@@ -13,6 +13,13 @@
 #	include "OgreRenderVideoStream.h"
 #	include "OgreExternalTextureSourceManager.h"
 
+/*#include "CEGUI/CEGUISystem.h"
+#include "CEGUI/CEGUILogger.h"
+#include "CEGUI/CEGUISchemeManager.h"
+#include "CEGUI/CEGUIWindowManager.h"
+#include "CEGUI/CEGUIWindow.h"
+#include "OgreCEGUIRenderer.h"*/
+
 #define DRAW2D
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( RenderSystemInterface ** _ptrInterface )
@@ -40,6 +47,8 @@ OgreRenderSystem::OgreRenderSystem()
 	, m_viewport(0)
 	, m_sceneMgr(0)
 	, m_spriteMgr(0)
+	, m_GUIRenderer(0)
+	, m_GUISystem(0)
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -49,6 +58,16 @@ OgreRenderSystem::~OgreRenderSystem()
 	{
 		m_spriteMgr->end();
 		delete m_spriteMgr;
+	}
+	if(m_GUISystem)
+	{
+		delete m_GUISystem;
+		m_GUISystem = 0;
+	}
+	if(m_GUIRenderer)
+	{
+		delete m_GUIRenderer;
+		m_GUIRenderer = 0;
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -65,7 +84,8 @@ SceneNodeInterface * OgreRenderSystem::attachSceneNodeToRoot( const char * _name
 	Ogre::SceneNode * sceneNode = 
 		m_sceneMgr->getRootSceneNode()->createChildSceneNode( _name );
 
-	return new OgreSceneNode( sceneNode );
+//	return new OgreSceneNode( sceneNode );
+	return NULL;
 } 
 //////////////////////////////////////////////////////////////////////////
 LightInterface * OgreRenderSystem::createLight(const char * _name)
@@ -110,28 +130,41 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
 	#endif
 
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true );
+	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\bin\\Game\\GUITest", "FileSystem", "Default", true );
 
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Models\\", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\Scripts", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\ZombieTest\\Materials\\Textures", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME );
 
+	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
+	// setup GUI system
+	/*m_GUIRenderer = new CEGUI::OgreCEGUIRenderer(m_renderWindow, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, m_sceneMgr);
+	m_GUISystem = new CEGUI::System(m_GUIRenderer);
+	CEGUI::Logger::getSingleton().setLoggingLevel(CEGUI::Informative);
+
+	// load scheme and set up defaults
+	CEGUI::SchemeManager::getSingleton().loadScheme( (CEGUI::utf8*)"TaharezLookSkin.scheme" );
+	m_GUISystem->setDefaultMouseCursor( (CEGUI::utf8*)"TaharezLook", (CEGUI::utf8*)"MouseArrow");
+	m_GUISystem->setDefaultFont((CEGUI::utf8*)"BlueHighway-12");
+
+	CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().loadWindowLayout( (CEGUI::utf8*)"ogregui.layout"); 
+	m_GUISystem->setGUISheet(sheet);*/
 	//l->setAttenuation(8000,1,0,0);
-/*	Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().load("E:\\ZombieTest\\Models\\robot.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-	
-	Ogre::Entity * e = m_sceneMgr->createEntity("hh", "E:\\ZombieTest\\Models\\robot.mesh");
+	//Ogre::MeshPtr mesh = Ogre::MeshManager::getSingleton().load("E:\\ZombieTest\\Models\\robot.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+	//
+	//Ogre::Entity * e = m_sceneMgr->createEntity("hh", "E:\\ZombieTest\\Models\\robot.mesh");
+	////Ogre::SceneNode* headNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
+	////headNode->attachObject(e);
+
 	//Ogre::SceneNode* headNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
 	//headNode->attachObject(e);
 
-	Ogre::SceneNode* headNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
-	headNode->attachObject(e);
 
 
 
-*/
 /*	e = m_sceneMgr->createEntity("hh", "E:\\ZombieTest\\Models\\robot.mesh");
 	Ogre::SceneNode* headNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
 	headNode->attachObject(e);
@@ -194,10 +227,10 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	anim0->setLoop(false);
 
 
-	anim1=e->getAnimationState("Shoot");
-	anim1->setTimePosition(0);
-	anim1->setEnabled(true);
-	anim1->setLoop(true);
+	//anim1=e->getAnimationState("Shoot");
+	//anim1->setTimePosition(0);
+	//anim1->setEnabled(true);
+	//anim1->setLoop(true);
 
 	anim0->setWeight(0.9f);
 	anim1->setWeight(0.7f);
@@ -207,6 +240,45 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 //	Ogre::SkeletonInstance *  sc = e->getSkeleton();
 
 	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
+
+	/*m_root = _root;
+	m_renderWindow = _renderWindow;
+
+	m_sceneMgr = m_root->createSceneManager( Ogre::ST_GENERIC, "defaultSceneManager" );
+	m_renderSys = m_root->getRenderSystem();
+
+	//m_sceneMgr->setAmbientLight( Ogre::ColourValue(0.9f, 0.9f, 0.9f));
+	Ogre::Camera * camera = m_sceneMgr->createCamera("defaultCamera");
+	camera->setNearClipDistance(5);
+	// Position it at 500 in Z direction
+	camera->setPosition(Ogre::Vector3(0,0,500));
+	// Look back along -Z
+	camera->lookAt(Ogre::Vector3(0,0,-300));
+
+	m_viewport = m_renderWindow->addViewport( camera );
+
+	m_viewport->setBackgroundColour( Ogre::ColourValue::Green );
+
+	float width = m_viewport->getActualWidth();
+	float height = m_viewport->getActualHeight();
+	float aspect = width / height;
+
+	camera->setAspectRatio( aspect );
+
+	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
+
+	m_spriteMgr = new OgreRenderSpriteManager();
+	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
+
+
+	m_videoControl = static_cast<Ogre::TheoraVideoController*>
+		(Ogre::ExternalTextureSourceManager::getSingleton().
+		getExternalTextureSource("ogg_video"));
+
+	// еще надо приатачить к ноде, и настроить камеру
+	//Ogre::Entity * e = m_sceneMgr->createEntity("ent", Ogre::SceneManager::PrefabType::PT_CUBE );
+	//m_sceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject( e );*/
+
 
 	return true;
 }

@@ -210,19 +210,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleKeyEvent( size_t _key, bool _isDown )
+	bool Game::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
 	{
 		bool handle = false;
 
 		if( !handle )
 		{
-			askEvent( handle, "KEY", "(Ib)", _key, _isDown );
+			askEvent( handle, "KEY", "(IIb)", _key, _char, _isDown );
 		}
 
 		if( !handle )
 		{
 			handle = Holder<Player>::hostage()
-				->handleKeyEvent( _key, _isDown );
+				->handleKeyEvent( _key, _char, _isDown );
 		}	
 
 		//RenderImageInterface* image = Holder<RenderEngine>::hostage()->createImage( "shot", 200, 200 );
@@ -341,7 +341,7 @@ namespace Menge
 	bool Game::init()
 	{
 
-		Holder<PhysicEngine>::hostage()->init(mt::vec3f(0,-1.0,0));
+		//Holder<PhysicEngine>::hostage()->init(mt::vec3f(0,-1.0,0));
 
 		Holder<RenderEngine>::hostage()->setContentResolution( m_resourceResolution );
 

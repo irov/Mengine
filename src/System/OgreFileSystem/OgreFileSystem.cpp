@@ -7,6 +7,7 @@
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
 #	include <direct.h>
+#	include <ShellAPI.h>
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -108,7 +109,7 @@ bool OgreFileSystem::createFolder( const char * _path )
 {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
 #
-	size_t required_size = mbstowcs( NULL, _path, 0 ) + 1; 
+	/*size_t required_size = mbstowcs( NULL, _path, 0 ) + 1; 
 
 	std::vector<wchar_t> convpath( required_size );
 
@@ -119,17 +120,67 @@ bool OgreFileSystem::createFolder( const char * _path )
 		assert(!"conversion from char to wchar_t failed!");
 		return false;
 	}
-  
 	int res = SHCreateDirectoryEx( NULL, &convpath[0], NULL );
 
 	if ( res == ERROR_SUCCESS || res == ERROR_FILE_EXISTS || res == ERROR_ALREADY_EXISTS )
 	{
 		return true;
+	}*/
+	if( !_mkdir( _path ) )
+	{
+		return true;
 	}
+
 #else
 	assert(!"Not released yet!");
 #endif
 
+	return false;
+}
+//////////////////////////////////////////////////////////////////////////
+bool OgreFileSystem::deleteFolder( const char* _path )
+{
+	// needed for some plugins
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
+	SHFILEOPSTRUCTA fs;
+	ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTA));
+	fs.hwnd = NULL;
+
+	//char* dir = new char[len + 2];
+	char dir[MAX_PATH];
+	::GetCurrentDirectoryA( MAX_PATH, dir );
+	strcat( dir, _path );
+	unsigned int len = strlen( dir );
+	dir[len] = 0;
+	dir[len+1] = 0;
+	fs.pFrom = dir;
+	fs.wFunc = FO_DELETE;
+	fs.hwnd = NULL;
+	fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT;
+	if( !::SHFileOperationA( &fs ) )
+	{
+		return true;
+	}
+#else
+#endif
+	TCHAR szBuf[80]; 
+	LPVOID lpMsgBuf;
+	DWORD dw = GetLastError(); 
+
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+		FORMAT_MESSAGE_FROM_SYSTEM,
+		NULL,
+		dw,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR) &lpMsgBuf,
+		0, NULL );
+
+	wsprintf(szBuf, L"failed with error %d: %s", dw, lpMsgBuf); 
+
+	MessageBox(NULL, szBuf, L"Error", MB_OK); 
+
+	LocalFree(lpMsgBuf);
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////

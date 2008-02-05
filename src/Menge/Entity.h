@@ -18,10 +18,17 @@ namespace Menge
 	public:
 		void moveTo( float _time, const mt::vec2f & _point, bool _changeDirection );
 		void rotateTo( float _time, const mt::vec2f & _point );
+		void accelerateTo( float _speed, const mt::vec2f& _point, bool _changeDirection );
 		void moveStop();
 		void rotateStop();
 		void flip( bool _x, bool _y );
 		void setScale( const mt::vec2f& _scale );
+		const mt::vec2f& getScale() const;
+		const mt::vec2f& getSpeedVec() const;
+		float getSpeed() const;
+		void scaleTo( float _time, const mt::vec2f& _scale );
+		void scaleStop();
+		//void setAcceleration( const mt::vec2f& _acceleration )	{ m_acceleration = _acceleration; }
 
 	protected:
 		bool _activate() override;
@@ -31,15 +38,25 @@ namespace Menge
 		void _update( float _timing ) override;
 
 	protected:
+		mt::vec2f m_speed;
+		mt::vec2f m_acceleration;
+		//float m_acceleration;
+		float m_acTime;
+
 		bool m_moveTo;
 		mt::vec2f m_movePoint;
-		mt::vec2f m_moveDir;
 		float m_moveTime;
-		float m_moveSpeed;
+
+		bool m_scaleTo;
+		mt::vec2f m_scalePoint;
+		float m_scaleTime;
 
 		mt::vec2f m_targetDir;
 		float m_rotateTime;
 		bool m_rotate;
 		mt::vec2f m_scale;
+
+		bool m_accelerateTo;
+		mt::vec2f m_nSpeed;
 	};
 }

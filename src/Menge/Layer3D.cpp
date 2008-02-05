@@ -20,7 +20,7 @@ namespace Menge
 	void Layer3D::render()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer3D::handleKeyEvent( size_t _key, bool _isDown )
+	bool Layer3D::handleKeyEvent( size_t _key, size_t _char,  bool _isDown )
 	{
 		return false;
 	}

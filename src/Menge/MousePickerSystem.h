@@ -23,13 +23,14 @@ namespace Menge
 		void regTrap( MousePickerTrap * _trap, const Viewport & _viewport );
 		MousePickerTrap * pickTrap( HotSpot * _hotspot );
 
-		bool handleKeyEvent( size_t _key, bool _isDown );
+		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown );
 		bool handleMouseButtonEvent( size_t _button, bool _isDown );
 		bool handleMouseMove( int _x, int _y, int _whell );
 
 	private:
 
 		typedef std::list<MousePickerTrap *> TListPickerTrap;
+		//typedef std::vector<MousePickerTrap *> TListPickerTrap;
 		TListPickerTrap m_listPickerTrap;
 
 		MousePickerTrap * m_lastPickerTrap;

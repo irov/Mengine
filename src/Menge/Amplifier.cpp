@@ -4,6 +4,8 @@
 
 #	include "SoundEngine.h"
 
+#	include "Application.h"
+
 #	include "ResourcePlaylist.h"
 
 #	include "LogEngine.h"
@@ -39,6 +41,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::play( const std::string & _playlist )
 	{
+		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
+		if( !enabled )
+		{
+			return;
+		}
 		TMapPlayList::iterator it = m_mapPlayLists.find( _playlist );
 
 		if ( it == m_mapPlayLists.end() )

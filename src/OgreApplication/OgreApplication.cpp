@@ -113,7 +113,7 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	std::string DllInputSystem = "Systems_d/OgreInputSystem_d.dll";
 	std::string DllSoundSystem = "Systems_d/ALSoundSystem_d.dll";
 	std::string DllParticleSystem = "Systems_d/AstralaxParticleSystem_d.dll";
-	std::string DllPhysicSystem = "Systems_d/PhysXPhysicSystem_d.dll";
+	//std::string DllPhysicSystem = "Systems_d/PhysXPhysicSystem_d.dll";
 #else
 	std::string DllModuleSetting = "DllModuleRelease";
 	std::string DllLogSystem = "Systems/OgreLogSystem.dll";
@@ -167,12 +167,12 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 
 	m_application->setParticleSystem( particleInterface );
 
-	printf("use physic system [%s]\n", DllPhysicSystem.c_str() );
+	/*printf("use physic system [%s]\n", DllPhysicSystem.c_str() );
 
 	PhysicSystemInterface * physicInterface
 		= addSystem<PhysicSystemInterface>( DllPhysicSystem );
 
-	m_application->setPhysicSystem( physicInterface );
+	m_application->setPhysicSystem( physicInterface );*/
 
 
 	m_resourcePath = fileInterface->platformBundlePath();
@@ -185,7 +185,7 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	size_t windowHnd = 0;
 	std::ostringstream windowHndStr;
 
-	//Ogre::LogManager::getSingleton().setLogDetail( Ogre::LoggingLevel::LL_LOW );
+	Ogre::LogManager::getSingleton().setLogDetail( Ogre::LL_LOW );
 
 	fileInterface->loadPath(".");
 
@@ -219,6 +219,7 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	//fileInterface->loadPath( m_application->getResourcePath().c_str() );
 	// We cant't use loadPath 'cause of not all libs uses fileSystem interface
 	fileInterface->changeDir( m_application->getResourcePath().c_str() );
+	//Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 	m_application->createGame();
 
 	return initialize;
@@ -231,6 +232,7 @@ void OgreApplication::initParams()
 	int screenHeight = m_application->getScreenHeight();
 	bool fullscreen = m_application->isFullScreen();
 	std::string renderDriver = m_application->getRenderDriver();
+	bool vsync = m_application->getVSync();
 
 	#ifdef _DEBUG
 		renderDriver += "_d.dll";
@@ -254,9 +256,10 @@ void OgreApplication::initParams()
 
 	Ogre::NameValuePairList params;
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( bits ) ) );
+	params.insert( std::make_pair("vsync", Ogre::StringConverter::toString( vsync ) ) );
 	//params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
 
-	m_renderWindow = m_root->createRenderWindow( "Menge-engine", screenWidth, screenHeight, fullscreen, &params );
+	m_renderWindow = m_root->createRenderWindow( m_application->getTitle(), screenWidth, screenHeight, fullscreen, &params );
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)

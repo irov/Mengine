@@ -116,7 +116,7 @@ namespace Menge
 		setRenderCamera3D( cmr3d );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::handleKeyEvent( size_t _key, bool _isDown )
+	bool Player::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
 	{
 		bool handler = false;
 
@@ -129,7 +129,7 @@ namespace Menge
 			++it)
 			{
 				GlobalKeyHandler * keyHandler = *it;
-				if( handler = keyHandler->handleKeyEvent( _key, _isDown ) )
+				if( handler = keyHandler->handleKeyEvent( _key, _char, _isDown ) )
 				{
 					break;
 				}
@@ -140,7 +140,7 @@ namespace Menge
 		{
 			if( m_scene )
 			{
-				handler = m_scene->handleKeyEvent( _key, _isDown );
+				handler = m_scene->handleKeyEvent( _key, _char, _isDown );
 			}
 		}
 

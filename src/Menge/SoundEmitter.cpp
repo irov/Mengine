@@ -4,6 +4,8 @@
 
 #	include "XmlEngine.h"
 
+#	include "Application.h"
+
 #	include "ResourceSound.h"
 
 #	include "ResourceManager.h"
@@ -35,7 +37,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_activate()
 	{
-		if( SceneNode2D::_activate() == false )
+		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
+		if( !enabled || SceneNode2D::_activate() == false )
 		{
 			return false;
 		}

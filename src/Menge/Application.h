@@ -62,9 +62,10 @@ namespace Menge
 		virtual const std::string& getRenderDriver() const;
 		const std::string& getTitle() const;
 		const std::string& getResourcePath() const;
+		bool getVSync() const;
 
 	public:
-		bool handleKeyEvent( size_t _key, bool _isDown );
+		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown );
 		bool handleMouseButtonEvent( size_t _button, bool _isDown );
 		bool handleMouseMove( int _x, int _y, int _whell );
 		void handleMouseLeave();
@@ -72,6 +73,12 @@ namespace Menge
 
 		void frameStarted();
 		void frameEnded();
+
+		void setParticlesEnabled( bool _enabled );
+		bool getParticlesEnabled() const;
+
+		void setSoundEnabled( bool _enabled );
+		bool getSoundEnabled()	const;
 
 	private:
 		bool m_quit;
@@ -82,10 +89,14 @@ namespace Menge
 		int m_height;
 		int m_bits;
 		bool m_fullScreen;
+		bool m_vsync;
 		std::string m_renderDriver;
 		std::string m_commandLine;
 		bool m_fixedContentResolution;
 		std::string m_title;
 		std::string m_resourcePath;
+
+		bool m_particles;
+		bool m_sound;
 	};
 }

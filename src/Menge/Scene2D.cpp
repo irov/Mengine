@@ -13,9 +13,9 @@ namespace	Menge
 		Allocator2D::loader(_xml);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Scene2D::handleKeyEvent( size_t _key, bool _isDown )
+	bool Scene2D::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
 	{
-		return Scene::handleKeyEvent( _key, _isDown );
+		return Scene::handleKeyEvent( _key, _char, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene2D::handleMouseButtonEvent( size_t _button, bool _isDown )

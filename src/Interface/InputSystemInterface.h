@@ -3,7 +3,7 @@
 class InputSystemHandler
 {
 public:
-	virtual bool handleKeyEvent( size_t _key, bool _isDown ) = 0;
+	virtual bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) = 0;
 	virtual bool handleMouseButtonEvent( size_t _button, bool _isDown ) = 0;
 	virtual bool handleMouseMove( int _x, int _y, int _whell ) = 0;
 };

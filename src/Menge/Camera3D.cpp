@@ -16,7 +16,7 @@ namespace	Menge
 	Camera3D::Camera3D()
 		: m_interface(0)
 	{
-		m_interface = Holder<RenderEngine>::hostage()->createCamera("default");
+		m_interface = Holder<RenderEngine>::hostage()->createCamera("defaultCamera");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::lookAt(const mt::vec3f& _targetPoint)

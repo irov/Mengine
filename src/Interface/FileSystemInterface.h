@@ -31,6 +31,7 @@ public:
 	virtual const char * platformBundlePath() = 0;
 
 	virtual bool createFolder( const char * _path ) = 0;
+	virtual bool deleteFolder( const char * _path ) = 0;
 	virtual bool changeDir( const char* _path ) = 0;
 };
 

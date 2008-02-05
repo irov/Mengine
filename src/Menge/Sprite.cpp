@@ -1,5 +1,7 @@
 #	include "Sprite.h" 
 
+#	include "Layer2D.h"
+
 #	include "ObjectImplement.h"
 
 #	include "XmlEngine.h"
@@ -38,7 +40,7 @@ namespace	Menge
 	, m_blendSrc( BF_SOURCE_ALPHA )
 	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
 	, m_listener( 0 )
-	{}
+	{ }
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
 	{}
@@ -116,7 +118,7 @@ namespace	Menge
 		updateAlign_();
 	}
 	///////////////////////////////////////////////////////////////////////////
-	mt::vec2f Sprite::getScale() const
+	const mt::vec2f& Sprite::getScale() const
 	{
 		return m_scale;
 	}
@@ -137,7 +139,13 @@ namespace	Menge
 		const mt::vec2f & offset = m_resource->getOffset( m_currentImageIndex );
 		m_offset = offset + m_alignOffset;
 
-		const mt::mat3f & wm = getWorldMatrix();
+		mt::mat3f wm = getWorldMatrix();
+
+		if( m_layer && m_layer->isScrollable() )
+		{
+			float c = ::floorf( wm.v2.x / m_layer->getSize().x );
+			wm.v2.x -= m_layer->getSize().x * c;
+		}
 
 		mt::box2f bbox;
 
@@ -264,7 +272,13 @@ namespace	Menge
 
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
-		const mt::mat3f & wm = getWorldMatrix();
+		//const mt::mat3f & wm = getWorldMatrix();
+		mt::mat3f wm = getWorldMatrix();
+		if( m_layer && m_layer->isScrollable() )
+		{
+			float c = ::floorf( wm.v2.x / m_layer->getSize().x );
+			wm.v2.x -= m_layer->getSize().x * c;
+		}
 
 		Holder<RenderEngine>::hostage()->renderImage(
 			wm, 

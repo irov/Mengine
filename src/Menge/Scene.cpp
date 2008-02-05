@@ -13,6 +13,7 @@
 
 #	include "Entity3d.h"
 #	include "Camera3d.h"
+#	include "RigidBody3d.h"
 #	include "Light.h"
 #	include "Actor.h"
 
@@ -312,10 +313,40 @@ namespace	Menge
 			{
 				XML_PARSE_ELEMENT( this, &Scene::loaderCameras_ );
 			}
+			
+			XML_CASE_NODE("RigidBodies")
+			{
+				XML_PARSE_ELEMENT( this, &Scene::loaderRigidBodies_ );
+			}
 		}
 		XML_END_NODE()
 		{
 			callMethod( "onLoader", "()" );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::loaderRigidBodies_( XmlElement * _xml )
+	{
+		std::string name;
+
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE("RigidBody")
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", name );
+				}
+
+				RigidBody3D * body = new RigidBody3D();
+
+				body->setName( name );
+				body->setType( "RigidBody3D" );
+
+				addRigidBody( body );
+
+				XML_PARSE_ELEMENT( body, &RigidBody3D::loader );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -394,6 +425,18 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Scene::addRigidBody( RigidBody3D * _rigidBody )
+	{
+		const std::string & name = _rigidBody->getName();
+
+		TMapRigidBody::iterator it_find = m_mapRigidBodies.find( name );
+
+		if( it_find == m_mapRigidBodies.end() )
+		{
+			m_mapRigidBodies.insert( std::make_pair( name, _rigidBody ) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Scene::addCamera( Camera3D * _camera )
 	{
 		const std::string & name = _camera->getName();
@@ -404,6 +447,22 @@ namespace	Menge
 		{
 			m_mapCameras.insert( std::make_pair( name, _camera ) );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RigidBody3D * Scene::getRigidBody( const std::string & _name )
+	{
+		TMapRigidBody::const_iterator it_find = m_mapRigidBodies.find( _name );
+
+		if( it_find == m_mapRigidBodies.end() )
+		{
+			return NULL;
+		}
+
+		RigidBody3D * body = it_find->second;
+
+		body->activate();
+
+		return body;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Camera3D * Scene::getCamera( const std::string & _name )

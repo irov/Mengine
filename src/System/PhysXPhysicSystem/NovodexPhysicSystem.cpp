@@ -37,6 +37,40 @@ NovodexPhysicSystem::~NovodexPhysicSystem()
 		m_physicsSDK->release();	
 	}
 }
+static NxRaycastHit     gHits[100];
+int numHits = 0;
+
+class myRaycastQueryReport : public NxSceneQueryReport
+{
+	virtual	NxQueryReportResult	onBooleanQuery(void* userData, bool result){ return NX_SQR_CONTINUE; };
+	virtual	NxQueryReportResult	onShapeQuery(void* userData, NxU32 nbHits, NxShape** hits){ return NX_SQR_CONTINUE; };
+	virtual	NxQueryReportResult	onSweepQuery(void* userData, NxU32 nbHits, NxSweepQueryHit* hits){ return NX_SQR_CONTINUE; };
+
+	virtual	NxQueryReportResult	onRaycastQuery(void* userData, NxU32 nbHits, const NxRaycastHit* hits)
+	{
+		//unsigned int i = (unsigned int)userData;
+
+		printf("%d \n", nbHits);
+		
+		
+		if(nbHits > 0)
+		{
+		printf("%f \n",hits[0].distance);
+		gHits[0] = hits[0];
+		}
+
+
+	/*	if (nbHits > 0) 
+		{
+			gHits[i] = hits[0];
+		} 
+		else 
+		{
+			gHits[i].shape = NULL;
+		}*/
+		return NX_SQR_CONTINUE;
+	}
+}gQueryReport;
 //////////////////////////////////////////////////////////////////////////
 void NovodexPhysicSystem::init(float gx, float gy, float gz) 
 {
@@ -54,7 +88,7 @@ void NovodexPhysicSystem::init(float gx, float gy, float gz)
 
 	NxSceneQueryDesc sceneQueryDesc;
 	sceneQueryDesc.executeMode = NX_SQE_ASYNCHRONOUS;
-	sceneQueryDesc.report = 0;
+	sceneQueryDesc.report = &gQueryReport;
 	m_SceneQueryObject = m_scene->createSceneQuery(sceneQueryDesc);
 
 
@@ -276,10 +310,11 @@ float NovodexPhysicSystem::rayCast(const char * _name, float * pos, float * dir)
 
 	NxRaycastHit hit;
 
-	m_SceneQueryObject->raycastClosestShape(worldRay, NX_ALL_SHAPES, hit, 0xffffffff, NX_MAX_F32, 0xffffffff, NULL, NULL, NULL);
+	m_SceneQueryObject->raycastClosestShape(worldRay, NX_STATIC_SHAPES, hit, 0xffffffff, NX_MAX_F32, 0xffffffff, NULL, NULL, NULL);
 
 	m_SceneQueryObject->execute();
 	m_SceneQueryObject->finish(true);
 
-	return hit.distance;
+	return gHits[0].distance;
+	//return hit.distance;
 }

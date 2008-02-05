@@ -25,6 +25,9 @@ namespace Menge
 		void setAngularVelocity( const mt::vec3f & _vec );
 		void setActive( bool _active );
 
+		const mt::vec3f & getPosition();
+		const mt::quatf & getOrient();
+
 	public:
 		void loader( XmlElement * _xml ) override;
 	
@@ -37,7 +40,7 @@ namespace Menge
 
 	private:
 		bool m_active;
-		bool m_density;
+		float m_density;
 
 		RigidBodyInterface * m_interface;
 

@@ -22,6 +22,7 @@ namespace Menge
 	class Entity3d;
 	class Camera3D;
 	class SceneNode3D;
+	class RigidBody3D;
 
 	class Scene
 		: public NodeCore
@@ -54,6 +55,7 @@ namespace Menge
 		void loaderEntities_( XmlElement * _xml );
 		void loaderLights_( XmlElement * _xml );
 		void loaderCameras_( XmlElement * _xml );
+		void loaderRigidBodies_( XmlElement * _xml );
 
 	public:
 		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) override;
@@ -80,6 +82,9 @@ namespace Menge
 
 		void actorAppend( SceneNode3D * _node );
 
+		void addRigidBody( RigidBody3D * _rigidBody );
+		RigidBody3D * getRigidBody( const std::string & _name );
+
 	private:
 
 		bool m_isSubScene;
@@ -95,10 +100,12 @@ namespace Menge
 		typedef std::map<std::string,Entity3d* > TMapEntity;
 		typedef std::map<std::string,Light* > TMapLight;
 		typedef std::map<std::string,Camera3D* > TMapCamera;
+		typedef std::map<std::string,RigidBody3D* > TMapRigidBody;
 
 		TMapEntity	m_mapEntities;
 		TMapLight	m_mapLights;
 		TMapCamera	m_mapCameras;
+		TMapRigidBody	m_mapRigidBodies;
 
 		typedef std::list<SceneNode3D*> TListActors;
 

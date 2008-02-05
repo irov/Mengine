@@ -29,6 +29,7 @@
 #	include "RenderMesh3D.h"
 #	include "Entity3d.h"
 #	include "Camera3d.h"
+#	include "RigidBody3D.h"
 
 
 
@@ -315,6 +316,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Entity3d );
 	SCRIPT_CLASS_WRAPPING( SceneNode3D );
 	SCRIPT_CLASS_WRAPPING( Camera3D );
+	SCRIPT_CLASS_WRAPPING( RigidBody3D );
 
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -441,6 +443,10 @@ namespace Menge
 				.def( "setLooped", &RenderMesh3D::setLooped )
 				;
 
+			pybind::proxy_<RigidBody3D, pybind::bases<SceneNode3D>>("RigidBody3D", false)
+				.def( "applyForce", &RigidBody3D::applyForce )
+				;
+
 		pybind::proxy_<Camera3D, pybind::bases<SceneNode3D>>("Camera3D", false)
 				.def( "setPosition", &Camera3D::setPosition )
 				.def( "lookAt", &Camera3D::lookAt )
@@ -519,6 +525,7 @@ namespace Menge
 			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
 				.def( "getEntity", &Scene::getEntity )
 				.def( "getCamera", &Scene::getCamera )
+				.def( "getRigidBody", &Scene::getRigidBody )
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "getNode", &Scene::getNode )
 				.def( "getLayerSize", &Scene::getLayerSize )

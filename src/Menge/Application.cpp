@@ -130,10 +130,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setPhysicSystem( PhysicSystemInterface * _interface )
 	{
-		if( m_usePhysic == true )
-		{
-			new PhysicEngine( _interface );
-		}
+		new PhysicEngine( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPak( const std::string & _pak )

@@ -54,6 +54,14 @@
 		</Entity>
 	</Entities>
 
+	<RigidBodies>
+		<RigidBody Name = "LevelPhysicBody">
+              		<GeometryResource Name = "ResourceLevelGeometry"/>
+			<Active Value = "0"/>
+			<Density Value = "0"/>
+		</RigidBody>
+	</RigidBodies>
+
 	<Lights>
 		<Light Name = "MainLight">
 			<Color Value = "1;1;1;1" />

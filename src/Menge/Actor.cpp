@@ -16,6 +16,8 @@
 
 #	include "Entity3d.h"
 
+#	include "RigidBody3d.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -25,25 +27,41 @@ namespace	Menge
 	: m_dir(0,0,0)
 	, m_initOrient(1,0,0,0)
 	, m_contMovement(0,0,0)
+	, m_body(0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Actor::~Actor()
 	{}
 	//////////////////////////////////////////////////////////////////////////
+	void Actor::setPhysicBody( RigidBody3D * _body )
+	{
+		m_body = _body;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Actor::_update( float _timing )
 	{
-		float step = 0.005 * _timing;
-
-		mt::vec3f workv = mt::vec3f::zero_v3;
-
-		if(m_contMovement != mt::vec3f::zero_v3)
+		if( m_body != NULL )
 		{
-			workv += this->getLocalOrient() * m_contMovement * step;
+			this->setLocalPosition( m_body->getPosition() );
+			this->setLocalOrient( m_body->getOrient() );
 		}
-
-		if(workv != mt::vec3f::zero_v3)
+		else
 		{
-			this->translate( workv );
+			float step = 0.005 * _timing;
+
+			mt::vec3f workv = mt::vec3f::zero_v3;
+
+			if(m_contMovement != mt::vec3f::zero_v3)
+			{
+				workv += this->getLocalOrient() * m_contMovement * step;
+			}
+
+			if(workv != mt::vec3f::zero_v3)
+			{
+					float dist = Holder<PhysicEngine>::hostage()->rayCast("level",getWorldPosition(),mt::vec3f(0,-1,0));
+					workv.y+= 10 - dist;
+				this->translate( workv );
+			}
 		}
 
 		m_entityInterface->update(_timing);

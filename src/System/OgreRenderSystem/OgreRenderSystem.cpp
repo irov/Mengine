@@ -150,9 +150,9 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\bin\\Game\\GUITest", "FileSystem", "Default", true );
 
-	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
-	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "default", true );
-	//Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("default");
+	//Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "default", true );
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("default");
 
 	// setup GUI system
 	/*m_GUIRenderer = new CEGUI::OgreCEGUIRenderer(m_renderWindow, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, m_sceneMgr);

@@ -31,11 +31,21 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::_update( float _timing )
 	{
-		float * R = m_interface->getOrient();
-		this->setLocalOrient(*(mt::quatf *)R);
+	//	float * R = m_interface->getOrient();
+	//	this->setLocalOrient(*(mt::quatf *)R);
 
-		float * pos = m_interface->getPosition();
-		this->setLocalPosition(*(mt::vec3f *)pos);
+	////	float * pos = m_interface->getPosition();
+	//	this->setLocalPosition(*(mt::vec3f *)pos);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & RigidBody3D::getPosition()
+	{
+		return *(mt::vec3f*)m_interface->getPosition();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::quatf & RigidBody3D::getOrient()
+	{
+		return *(mt::quatf*)m_interface->getOrient();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::loader( XmlElement * _xml )
@@ -85,14 +95,14 @@ namespace	Menge
 
 		m_interface = Holder<PhysicEngine>::hostage()->createRigidBody( m_density, m_active, geometry );
 
-		const mt::vec3f & pos = getLocalPosition();
+	/*	const mt::vec3f & pos = getLocalPosition();
 
 		m_interface->setPosition( pos.x, pos.y, pos.z );
 
 		const mt::quatf & orient = getLocalOrient();
 
 		m_interface->setOrient( orient.w, orient.x, orient.y, orient.z );
-
+*/
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

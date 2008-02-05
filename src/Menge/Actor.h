@@ -10,6 +10,7 @@ namespace Menge
 	class ResourceMesh;
 	class ResourceSkeleton;
 	class Entity3d;
+	class RigidBody3D;
 
 	class Actor
 		: public SceneNode3D
@@ -30,6 +31,9 @@ namespace Menge
 
 		void	step( const mt::vec3f & _dir );
 		void	stop();
+	public:
+
+		void	setPhysicBody( RigidBody3D * _body );
 
 	public:
 		void	setParentActor( Actor * _parent, const mt::vec3f & _pos );
@@ -47,6 +51,7 @@ namespace Menge
 		mt::quatf m_initOrient;
 		mt::vec3f m_dir;
 		mt::vec3f m_contMovement;
+		RigidBody3D * m_body;
 
 		void render(){}
 		bool isRenderable(){return false;}

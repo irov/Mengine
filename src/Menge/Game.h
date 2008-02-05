@@ -48,6 +48,7 @@ namespace Menge
 		void setParamString( const std::string& _params );
 
 	public:
+		const std::string & getPathActors() const;
 		const std::string & getPathEntities() const;
 		const std::string & getPathScenes() const;
 		const std::string & getPathArrows() const;
@@ -68,6 +69,7 @@ namespace Menge
 		void loaderScenes_( XmlElement * _xml );
 		void loaderArrows_( XmlElement * _xml );
 		void loaderEntities_( XmlElement * _xml );
+		void loaderActors_( XmlElement * _xml );
 		void loaderResources_( XmlElement * _xml );
 		void loaderDefault_( XmlElement * _xml );
 		void loaderPersonality_( XmlElement * _xml );
@@ -108,10 +110,12 @@ namespace Menge
 
 		typedef std::list<std::string> TListDeclaration;
 		TListDeclaration m_listEntitiesDeclaration;
+		TListDeclaration m_listActorsDeclaration;
 		TListDeclaration m_listArrowsDeclaration;
 		TListDeclaration m_listScenesDeclaration;
 		TListDeclaration m_listResourceDeclaration;
 		
+		std::string m_pathActors;
 		std::string m_pathResource;
 		std::string m_pathScripts;
 		std::string m_pathEntities;

@@ -69,6 +69,21 @@ namespace Menge
 			return _vec2f.y;
 		}
 
+		static float getVec3fX( const mt::vec3f & _vec3f )
+		{
+			return _vec3f.x;
+		}
+
+		static float getVec3fY( const mt::vec3f & _vec3f )
+		{
+			return _vec3f.y;
+		}
+
+		static float getVec3fZ( const mt::vec3f & _vec3f )
+		{
+			return _vec3f.z;
+		}
+
 		static float getA( const Color & _color )
 		{
 			return _color.a;
@@ -104,6 +119,11 @@ namespace Menge
 
 		pybind::def( "getVec2fX", &ScriptHelper::getVec2fX );
 		pybind::def( "getVec2fY", &ScriptHelper::getVec2fY );
+
+
+		pybind::def( "getVec3fX", &ScriptHelper::getVec3fX );
+		pybind::def( "getVec3fY", &ScriptHelper::getVec3fY );
+		pybind::def( "getVec3fZ", &ScriptHelper::getVec3fZ );
 
 		pybind::def( "getA", &ScriptHelper::getA );
 		pybind::def( "getR", &ScriptHelper::getR );

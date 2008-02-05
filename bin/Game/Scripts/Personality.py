@@ -16,8 +16,7 @@ def fini():
 	pass
 
 
-def onHandleKeyEvent( key, isDown ):
-	print "onHandleKeyEvent", key, isDown
+def onHandleKeyEvent( key, char, isDown ):
 	return False
 	pass
 

@@ -102,4 +102,25 @@
 		<Mesh Name = "ZombieTest/barrel.mesh" />
 	</Resource>
 
+	<Resource Name = "TestRobotSkeleton" Type = "ResourceSkeleton" >
+		<Bones>
+			<Bone Name = "1" />
+			<Bone Name = "2" />
+			<Bone Name = "3" />
+		</Bones>
+		<Animations>
+			<Animation Name = "Idle" />
+			<Animation Name = "Walk" />
+			<Animation Name = "Die" />
+		</Animations>
+	</Resource>
+
+	<Resource Name = "TestRobotMesh" Type = "ResourceMesh" >
+		<Mesh Name = "ZombieTest/robot.mesh" />
+	</Resource>
+
+	<Resource Name = "TestZombie" Type = "ResourceMesh" >
+		<Mesh Name = "ZombieTest/z_def.mesh" />
+	</Resource>
+
 </DataBlock>

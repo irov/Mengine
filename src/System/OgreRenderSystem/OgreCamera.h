@@ -17,6 +17,9 @@ public:
 	void setNearClipDistance( float _dist ) override;
 	void setFarClipDistance( float _dist ) override;
 	void setAspectRatio( float _aspect ) override;
+	void yaw( float _angle ) override;
+	void pitch( float _angle ) override;
+	void roll( float _angle ) override;
 private:
 	Ogre::Camera * m_camera;
 };

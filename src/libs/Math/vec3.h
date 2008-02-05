@@ -42,7 +42,7 @@ namespace mt
 		explicit vec3f(const vec2f&	_v, float _z);
 
 		vec3f& operator= (const vec3f& _rhs);
-
+	
 		const float operator[](int i) const;
 		float&		operator[](int i);
 

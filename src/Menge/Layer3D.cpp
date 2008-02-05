@@ -41,9 +41,4 @@ namespace Menge
 		Layer::loader(_xml);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::_notifyAdded()
-	{
-		m_interface 
-			= Holder<RenderEngine>::hostage()->attachSceneNodeToRoot( this->getName() );
-	}
 }

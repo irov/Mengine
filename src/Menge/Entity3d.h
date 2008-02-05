@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "SceneNode3D.h"
+#	include "NodeSinglethon.h"
 
 #	include "math/quat.h"
 #	include <string>
@@ -12,14 +12,14 @@ namespace Menge
 	class ResourceMesh;
 	class ResourceSkeleton;
 
-	class RenderMesh3D
-		: public SceneNode3D
+	class Entity3d
+		: public NodeSinglethon
 	{
-		OBJECT_DECLARE( RenderMesh3D )
+		OBJECT_DECLARE( Entity3d )
 
 	public:
-		RenderMesh3D();
-		~RenderMesh3D();
+		Entity3d();
+		~Entity3d();
 	public:
 		void loader( XmlElement * _xml ) override;
 
@@ -36,6 +36,12 @@ namespace Menge
 
 		void stop();
 		void setLooped( bool _looped );
+
+
+		EntityInterface * get()
+		{
+			return m_entityInterface;
+		}
 
 	protected:
 		bool _activate() override;

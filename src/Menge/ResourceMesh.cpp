@@ -30,17 +30,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMesh::_compile()
 	{
-		m_interface = Holder<RenderEngine>::hostage()->createMesh( m_meshName );
-
-		if( m_interface == 0 )
-		{
-			MENGE_LOG("Warning: resource '%s' can't load mesh\n"
-				, m_meshName.c_str()
-			);
-
-			return false;
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -48,8 +37,19 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MeshInterface * ResourceMesh::getMesh() const
+	const std::string & ResourceMesh::getMeshName() const
 	{
-		return m_interface;
+		return m_meshName;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	const std::string & ResourceMesh::getSkeletonName() const
+	{
+		return m_skeletonName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const std::string & ResourceMesh::getMaterialName() const
+	{
+		return m_materialName;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

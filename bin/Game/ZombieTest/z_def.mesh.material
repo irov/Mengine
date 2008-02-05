@@ -1,0 +1,21 @@
+
+material 01_-_Default
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.584314 0.584314 0.584314 1
+			diffuse 0.584314 0.584314 0.584314 1
+
+			texture_unit
+			{
+				texture_alias Map #3
+				texture z_cop_body.jpg
+				rotate -90
+			}
+		}
+
+	}
+
+}

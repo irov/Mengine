@@ -17,8 +17,6 @@ class Scene( Menge.Scene ):
 			'</Node>'
 			)
 
-		print "asdf2"
-
 		self.node.activate()
 		self.layerAppend( "Water", self.node )
 		
@@ -127,23 +125,62 @@ class Scene( Menge.Scene ):
 		self.xoffset = 40;
 		self.zoffset = 0;
 		self.yoffset = 50;
+		
+		self.levelActor = Menge.createActor("Level1", "Level");
+		self.levelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
 
-		#self.node.setImageIndex(2);
+		self.entityLevel = self.getEntity( "Level" )
+		self.levelActor.attachEntity( self.entityLevel );
 
-		#self.node.setPercentVisibility( Menge.vec2f( 0.3, 0 ), Menge.vec2f( 0.1, 0 ));
+		self.barrelActor = Menge.createActor("Barrel1", "Barrel")
+		self.barrelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
+
+		self.entityBarrel = self.getEntity( "Barrel" )
+		self.barrelActor.attachEntity( self.entityBarrel );
+
+		self.zombieActor = Menge.createActor("Zombie1", "Zombie");
+		self.zombieActor.setParentRoot( Menge.vec3f( 10,0,40 ), Menge.quatf(1,0,0,0) );
+
+		self.entityZombie = self.getEntity( "Zombie" )
+		self.zombieActor.attachEntity( self.entityZombie );
+		self.zombieActor.setScale(10);
+		self.zombieActor.yaw(180);
+
+		self.levelActor.activate();
+		self.barrelActor.activate();
+		self.zombieActor.activate();
+
+		self.actorAppend(self.levelActor);
+		self.actorAppend(self.barrelActor);
+		self.actorAppend(self.zombieActor);
+
+		self.camera = self.getCamera("MainCamera");
+		self.pos = self.zombieActor.getWorldPosition();
+
+		self.camPos = Menge.vec3f( Menge.getVec3fX(self.pos), Menge.getVec3fY(self.pos) + 40, Menge.getVec3fZ(self.pos) );
+
+		self.camera.setPosition( self.camPos );
+
+		self.camera.lookAt( Menge.vec3f( Menge.getVec3fX(self.pos)-15, Menge.getVec3fY(self.pos), Menge.getVec3fZ(self.pos) ) );
+
+		self.camera.yaw(-90);
+
 
 		pass
 
 	def onUpdate( self, timing ):
+		self.camera = self.getCamera("MainCamera");
+		self.pos = self.zombieActor.getWorldPosition();
+
+		self.camPos = Menge.vec3f( Menge.getVec3fX(self.pos), Menge.getVec3fY(self.pos) + 40, Menge.getVec3fZ(self.pos) );
+
+		self.camera.setPosition( self.camPos );
+
+		self.camera.lookAt( Menge.vec3f( Menge.getVec3fX(self.pos)-15, Menge.getVec3fY(self.pos), Menge.getVec3fZ(self.pos) ) );
+
+		self.camera.yaw(-90);
+
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
-		Menge.setCamera3DPosition( self.xoffset, self.yoffset, self.zoffset );
-
-		self.camera_x -= timing * 0
-
-		#self.a = self.a + timing * 0.00005
-
-		#self.node.setPercentVisibility( Menge.vec2f( 1 - self.a, 0 ), Menge.vec2f( 0, 0 ));
-
 		pass
 
 	def onHandleMouseButtonEvent( self, botton, isDown ):
@@ -158,9 +195,11 @@ class Scene( Menge.Scene ):
 		return False
 		pass
 
-	def onHandleKeyEvent( self, key, isDown ):
+	def onHandleKeyEvent( self, key, char, isDown  ):
+		print key
 	
 		if isDown == False:
+			self.zombieActor.stop();
 			return False
 
 		if key == 205:
@@ -184,9 +223,11 @@ class Scene( Menge.Scene ):
 			print "32"
 			#Menge.setCamera2DDirection( 1, 0)
 			#self.testTextField.setMaxLen(80);
-			self.testTextField.setText("Zater        yannyi\ntyjgffgfh gfhfghgfh trytry\nattol\ndfgdfgdfgdfgdfg\ndfg");
+			#self.testTextField.setText("Zater        yannyi\ntyjgffgfh gfhfghgfh trytry\nattol\ndfgdfgdfgdfgdfg\ndfg");
 			#self.bubble.play();
-			self.emitterTest.play();
+			#self.emitterTest.play();
+			self.ROBOT.play("Walk");
+
 
 		if key == 49:
 			print "1"
@@ -223,7 +264,19 @@ class Scene( Menge.Scene ):
 		if key == 120:
 			self.yoffset = self.yoffset - 5;
 
+	
+		if key == 23:
+			self.zombieActor.step( Menge.vec3f( 0, 0, -1 ) );
 
+		if key == 37:
+			self.zombieActor.step( Menge.vec3f( 0, 0, 1 ) );
+
+		if key == 36:
+			self.zombieActor.step( Menge.vec3f( -1, 0, 0 ) );
+
+		if key == 38:
+			self.zombieActor.step( Menge.vec3f( 1, 0, 0 ) );
+	
 		return False
 		pass
 		

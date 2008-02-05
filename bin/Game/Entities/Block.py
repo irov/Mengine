@@ -15,7 +15,7 @@ class Block( Menge.Entity ):
 		self.animation.setAnimationListener( self )
 		pass
 			
-	def onHandleMouseButtonEvent( self, button, isDwon ):
+	def onHandleMouseButtonEvent( self, key, isDown ):
 		print button, isDwon
 		self.animation.play()
 		self.moveTo( 3000, Menge.vec2f( 1000,200 ), False )

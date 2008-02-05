@@ -31,10 +31,9 @@ NovodexPhysicSystem::NovodexPhysicSystem()
 //////////////////////////////////////////////////////////////////////////
 NovodexPhysicSystem::~NovodexPhysicSystem()
 {
-	m_physicsSDK->releaseScene(*m_scene);
-
 	if ( m_physicsSDK )
 	{
+		m_physicsSDK->releaseScene(*m_scene);
 		m_physicsSDK->release();	
 	}
 }
@@ -52,6 +51,12 @@ void NovodexPhysicSystem::init(float gx, float gy, float gz)
 	m_scene = m_physicsSDK->createScene(sceneDesc);
 
 	assert(m_scene);
+
+	NxSceneQueryDesc sceneQueryDesc;
+	sceneQueryDesc.executeMode = NX_SQE_ASYNCHRONOUS;
+	sceneQueryDesc.report = 0;
+	m_SceneQueryObject = m_scene->createSceneQuery(sceneQueryDesc);
+
 
 	//NxMaterial* defaultMaterial = m_scene->getMaterialFromIndex(0);
 	//defaultMaterial->setRestitution(0.2f);
@@ -263,3 +268,18 @@ void NovodexPhysicSystem::removeGeometry( GeometryInterface * _geom )
 	delete _geom;
 }
 //////////////////////////////////////////////////////////////////////////
+float NovodexPhysicSystem::rayCast(const char * _name, float * pos, float * dir)
+{
+	NxRay worldRay;
+	worldRay.dir = NxVec3(dir[0], dir[1], dir[2]);
+	worldRay.orig = NxVec3(pos[0], pos[1], pos[2]);
+
+	NxRaycastHit hit;
+
+	m_SceneQueryObject->raycastClosestShape(worldRay, NX_ALL_SHAPES, hit, 0xffffffff, NX_MAX_F32, 0xffffffff, NULL, NULL, NULL);
+
+	m_SceneQueryObject->execute();
+	m_SceneQueryObject->finish(true);
+
+	return hit.distance;
+}

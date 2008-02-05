@@ -206,24 +206,19 @@ namespace Menge
 		m_interface->setViewportDimensions( _width, _height, _renderFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CameraInterface * RenderEngine::createCamera(const std::string& _name)
+	CameraInterface * RenderEngine::createCamera( const std::string& _name )
 	{
 		return m_interface->createCamera(_name.c_str());
 	}
 	//////////////////////////////////////////////////////////////////////////
-/*	EntityInterface * RenderEngine::create3dEntity(const std::string& _name, const std::string& _meshName)
+	EntityInterface * RenderEngine::createEntity( const std::string& _name, const std::string& _meshName )
 	{
-		return m_interface->create3dEntity(_name.c_str(), _meshName.c_str());
-	}*/
-	//////////////////////////////////////////////////////////////////////////
-	LightInterface * RenderEngine::createLight(const std::string& _name)
-	{
-		return m_interface->createLight(_name.c_str());
+		return m_interface->createEntity(_name.c_str(), _meshName.c_str());
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MeshInterface * RenderEngine::createMesh(const std::string& _name)
+	LightInterface * RenderEngine::createLight( const std::string& _name )
 	{
-		return m_interface->createMesh(_name.c_str());
+		return m_interface->createLight(_name.c_str());
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::frameStarted()
@@ -231,13 +226,19 @@ namespace Menge
 		m_interface->render();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::update(float _timing)
+	void RenderEngine::update( float _timing )
 	{
 		m_interface->update(_timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SceneNodeInterface * RenderEngine::attachSceneNodeToRoot( const std::string & _name )
 	{
-		return m_interface->attachSceneNodeToRoot(_name.c_str());
+		return m_interface->attachSceneNodeToRoot( _name.c_str() );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	float	RenderEngine::getQueryDistance( const std::string& _name, const mt::vec3f & _pos, const mt::vec3f & _dir )
+	{
+		return m_interface->getQueryDistance( _name.c_str(), (float*)_pos.m, (float*)_dir.m );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

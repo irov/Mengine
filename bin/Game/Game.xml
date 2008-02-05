@@ -21,6 +21,12 @@
 		<Ball/>
 	</Entities>
 
+	<Actors Path = "Actors">
+		<Barrel/>
+		<Level/>
+		<Zombie/>
+	</Actors>
+
 	<Scripts Path = "Scripts" />
 
 	<Resource Path = "Resource">
@@ -28,4 +34,4 @@
 	</Resource>
 
 	<ResourceResolution Value = "1024;768"/>
-</Game>	
+</Game>

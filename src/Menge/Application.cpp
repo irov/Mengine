@@ -62,6 +62,7 @@ namespace Menge
 		, m_vsync( true )
 		, m_particles( true )
 		, m_sound( true )
+		, m_usePhysic( false )
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -83,7 +84,12 @@ namespace Menge
 
 		Holder<Game>::destroy();
 		Holder<ResourceManager>::destroy();
-		Holder<PhysicEngine>::destroy();
+
+		if ( m_usePhysic == true )
+		{
+			Holder<PhysicEngine>::destroy();
+		}
+
 		Holder<ParticleEngine>::destroy();
 		Holder<RenderEngine>::destroy();
 		Holder<FileEngine>::destroy();
@@ -124,7 +130,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setPhysicSystem( PhysicSystemInterface * _interface )
 	{
-		new PhysicEngine( _interface );
+		if( m_usePhysic == true )
+		{
+			new PhysicEngine( _interface );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPak( const std::string & _pak )
@@ -148,6 +157,10 @@ namespace Menge
 
 		MENGE_LOG("init game ...\n");
 
+		if( m_usePhysic == true )
+		{
+			Holder<PhysicEngine>::hostage()->init(mt::vec3f(0,-1.0,0));
+		}
 
 		if( Holder<Game>::hostage()
 			->init() == false )
@@ -207,6 +220,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE("RenderDriver", "Name", m_renderDriver );
 			XML_CASE_ATTRIBUTE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
 			XML_CASE_ATTRIBUTE_NODE("VSync", "Value", m_vsync );
+			XML_CASE_ATTRIBUTE_NODE("UsePhysic", "Value", m_usePhysic );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -248,7 +262,12 @@ namespace Menge
 	bool Application::update( float _timing )
 	{	
 		Holder<MousePickerSystem>::hostage()->clear();
-		//Holder<PhysicEngine>::hostage()->update( 1.0f/30.0f );// for test physic!
+
+		if( m_usePhysic == true )
+		{
+			Holder<PhysicEngine>::hostage()->update( 1.0f/30.0f );// for test physic!
+		}
+
 		Holder<RenderEngine>::hostage()->update( _timing );//for test anim!
 		Holder<Game>::hostage()->update( _timing );
 		Holder<InputEngine>::hostage()->update();
@@ -356,4 +375,10 @@ namespace Menge
 	{
 		return m_vsync;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::usePhysic() const
+	{
+		return m_usePhysic;
+	}
 }
+

@@ -180,6 +180,7 @@ material test/Material_#08
 			
 			
 			scene_blend alpha_blend
+alpha_rejection greater_equal 128
 
 			texture_unit
 			{

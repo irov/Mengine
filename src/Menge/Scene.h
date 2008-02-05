@@ -9,11 +9,19 @@
 
 #	include "InputHandler.h"
 
-#	include "Allocator2D.h"
+#	include "InputHandler.h"
+
+#	include "math\vec3.h"
 
 namespace Menge
 {
 	class Camera2D;
+
+	class Actor;
+	class Light;
+	class Entity3d;
+	class Camera3D;
+	class SceneNode3D;
 
 	class Scene
 		: public NodeCore
@@ -31,7 +39,7 @@ namespace Menge
 		void setMainLayer( Layer * _layer );
 		Layer * getMainLayer();
 
-		Node * getNode(const std::string & _name );
+		Node * getNode( const std::string & _name );
 
 	public:
 		void setParentScene( Scene * _scene );
@@ -43,6 +51,9 @@ namespace Menge
 	public:
 		void loader( XmlElement *_xml) override;
 		void loaderScene_( XmlElement * _xml );
+		void loaderEntities_( XmlElement * _xml );
+		void loaderLights_( XmlElement * _xml );
+		void loaderCameras_( XmlElement * _xml );
 
 	public:
 		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) override;
@@ -57,7 +68,20 @@ namespace Menge
 
 		void _addChildren( Layer * _layer ) override;
 
+	public:
+
+		void addEntity( Entity3d * _entity );
+		Entity3d * getEntity( const std::string & _name );
+
+		void addLight( Light * _light );
+
+		void addCamera( Camera3D * _camera );
+		Camera3D * getCamera( const std::string & _name );
+
+		void actorAppend( SceneNode3D * _node );
+
 	private:
+
 		bool m_isSubScene;
 		Layer * m_mainLayer;
 
@@ -68,6 +92,20 @@ namespace Menge
 		float m_staticFriction; 
 		float m_dynamicFriction;
 
-		void _setPhysicParams();
+		typedef std::map<std::string,Entity3d* > TMapEntity;
+		typedef std::map<std::string,Light* > TMapLight;
+		typedef std::map<std::string,Camera3D* > TMapCamera;
+
+		TMapEntity	m_mapEntities;
+		TMapLight	m_mapLights;
+		TMapCamera	m_mapCameras;
+
+		typedef std::list<SceneNode3D*> TListActors;
+
+		TListActors	m_listActors;
+
+		void activateLights_();
+		void activateCameras_();
+		void setPhysicParams_();
 	};
 }

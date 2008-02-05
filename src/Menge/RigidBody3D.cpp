@@ -76,6 +76,11 @@ namespace	Menge
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourcePhysicGeometry>( m_resourcename );
 
+		if( m_resource == 0 )
+		{
+			return false;
+		}
+
 		const GeometryInterface * geometry = m_resource->getGeometry(0);
 
 		m_interface = Holder<PhysicEngine>::hostage()->createRigidBody( m_density, m_active, geometry );
@@ -87,11 +92,6 @@ namespace	Menge
 		const mt::quatf & orient = getLocalOrient();
 
 		m_interface->setOrient( orient.w, orient.x, orient.y, orient.z );
-
-		if( m_resource == 0 )
-		{
-			return false;
-		}
 
 		return true;
 	}

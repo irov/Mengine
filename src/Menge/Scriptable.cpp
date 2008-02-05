@@ -5,6 +5,8 @@
 
 #	include "pybind/pybind.hpp"
 
+#	include <assert.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -29,6 +31,7 @@ namespace Menge
 
 			if( m_scriptable == 0 )
 			{
+				assert(0);
 				return 0;
 			}
 		}

@@ -15,12 +15,13 @@ namespace Menge
 		ResourceMesh( const std::string & _name );
 
 	public:
-
-		MeshInterface * getMesh() const;
-	
-	public:
 		void loader( XmlElement * _xml ) override;
 
+	public:
+
+		const std::string & getMeshName() const;
+		const std::string & getSkeletonName() const;
+		const std::string & getMaterialName() const;
 
 	protected:
 		bool _compile() override;

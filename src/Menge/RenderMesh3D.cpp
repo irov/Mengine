@@ -3,7 +3,6 @@
 
 #	include "ScriptEngine.h"
 #	include "RenderEngine.h"
-#	include "PhysicEngine.h"
 #	include "LogEngine.h"
 
 #	include "ResourceManager.h"
@@ -22,23 +21,37 @@ namespace	Menge
 	RenderMesh3D::RenderMesh3D()
 	: m_resourceMesh(0)
 	, m_resourceSkeleton(0)
-	, m_interfaceMesh(0)
+	, m_entityInterface(0)
+	, m_isGrounded(false)
+	, m_scale(1.0f)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	RenderMesh3D::~RenderMesh3D()
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh3D::_update( float _timing )
-	{}
+	{
+		if(m_isGrounded)
+		{
+			mt::vec3f pos = this->getWorldPosition();
+			printf("%f %f %f\n",pos.x,pos.y,pos.z);
+			float dist = Holder<RenderEngine>::hostage()->getQueryDistance("Level",pos,mt::vec3f(0,-1,0));
+		//	pos.y-=dist;
+		//	this->setLocalPosition(pos);
+			printf("%f \n",dist);
+		}
+
+		m_entityInterface->update( _timing );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::quatf & RenderMesh3D::getBoneWorldOrient( const std::string& _name )
 	{
-		return *(mt::quatf*)m_interfaceMesh->getBoneOrientation( _name.c_str() );
+		return *(mt::quatf*)m_entityInterface->getBoneOrientation( _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & RenderMesh3D::getBoneWorldPosition( const std::string& _name ) 
 	{
-		return *(mt::vec3f*)m_interfaceMesh->getBonePosition( _name.c_str() );
+		return *(mt::vec3f*)m_entityInterface->getBonePosition( _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh3D::loader( XmlElement * _xml )
@@ -49,6 +62,8 @@ namespace	Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ResourceMesh", "Name", m_resourcenameMesh );
 			XML_CASE_ATTRIBUTE_NODE( "ResourceSkeleton", "Name", m_resourcenameSkeleton );
+			XML_CASE_ATTRIBUTE_NODE( "IsGrounded", "Value", m_isGrounded );
+			XML_CASE_ATTRIBUTE_NODE( "Scale", "Value", m_scale );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -84,13 +99,6 @@ namespace	Menge
 			return false;
 		}
 
-		m_interfaceMesh = m_resourceMesh->getMesh();
-
-		if( m_interfaceMesh == 0 )
-		{
-			return false;
-		}
-
 		m_resourceSkeleton = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceSkeleton>( m_resourcenameSkeleton );
@@ -108,9 +116,15 @@ namespace	Menge
 		}
 
 		const std::string & entityName = this->getName();
-		const std::string & meshName = m_interfaceMesh->getName();
-	
-		m_interface->attachEntity( entityName.c_str(), meshName.c_str() );
+		const std::string & meshName = m_resourceMesh->getMeshName();
+
+		m_entityInterface = Holder<RenderEngine>::hostage()->createEntity(entityName, meshName);
+
+		float scale[3] = {m_scale,m_scale,m_scale};
+
+		m_interface->setScale(scale);
+
+		m_interface->attachEntity( m_entityInterface );
 
 		return true;
 	}
@@ -128,18 +142,22 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh3D::play( const std::string& _name )
 	{
+		m_entityInterface->play( _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh3D::play( const std::string& _name1, float _weight1, const std::string& _name2, float _weight2 )
+	void RenderMesh3D::play2( const std::string& _name1, float _weight1, const std::string& _name2, float _weight2 )
 	{
+		m_entityInterface->play( _name1.c_str(), _weight1, _name2.c_str(), _weight2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh3D::stop()
 	{
+		m_entityInterface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh3D::setLooped( bool _looped )
 	{
+		m_entityInterface->setLooped( _looped );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

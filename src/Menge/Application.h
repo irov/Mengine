@@ -63,6 +63,7 @@ namespace Menge
 		const std::string& getTitle() const;
 		const std::string& getResourcePath() const;
 		bool getVSync() const;
+		bool usePhysic() const;
 
 	public:
 		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown );
@@ -98,5 +99,6 @@ namespace Menge
 
 		bool m_particles;
 		bool m_sound;
+		bool m_usePhysic;
 	};
 }

@@ -40,7 +40,25 @@ public:
 	virtual void setNearClipDistance( float _dist ) = 0;
 	virtual void setFarClipDistance( float _dist ) = 0;
 	virtual void setAspectRatio( float _aspect ) = 0;
-	// more to come...
+	virtual void yaw( float _angle ) = 0;
+	virtual void pitch( float _angle ) = 0;
+	virtual void roll( float _angle ) = 0;
+};
+
+class EntityInterface
+{
+public:
+	virtual bool hasSkeleton() const = 0;
+	virtual const float * getBoneOrientation( const char * _name ) = 0;
+	virtual const float * getBonePosition( const char * _name ) = 0;
+	virtual void play( const char * _name ) = 0;
+	virtual void play( 
+		const char * _name1, float _weight1, 
+		const char * _name2, float _weight2 ) = 0;
+	virtual void stop() = 0;
+	virtual void setLooped( bool _looped ) = 0;
+	virtual const char * getName() const = 0;
+	virtual void update( float _timing ) = 0;
 };
 
 class	SceneNodeInterface
@@ -53,18 +71,14 @@ public:
 	virtual float * getLocalOrient() = 0;
 	virtual void setLocalPosition( const float * _position ) = 0;
 	virtual void setLocalOrient( const float * _orient ) = 0;
+	virtual void translate( const float * _pos ) = 0;
+	virtual void setScale( const float * _scale ) = 0;
+	virtual void setScale( float _scale ) = 0;
+	virtual void yaw( float _angle ) = 0;
+	virtual void pitch( float _angle ) = 0;
+	virtual void roll( float _angle ) = 0;
 	virtual SceneNodeInterface * createChildSceneNode( const char * _name ) = 0;
-	virtual void attachEntity(const char * _name, const char * _meshName) = 0;
-};
-
-class MeshInterface
-{
-public:
-	virtual bool hasSkeleton() const = 0;
-	virtual float getBoundingSphereRadius() const = 0;
-	virtual const char * getName() const = 0;
-	virtual const float * getBoneOrientation( const char * _name ) = 0;
-	virtual const float * getBonePosition( const char * _name ) = 0;
+	virtual void attachEntity( EntityInterface * _entity ) = 0;
 };
 
 class LightInterface
@@ -76,23 +90,6 @@ public:
 	virtual void setSpecularColour( float _r, float _g, float _b ) = 0;
 	virtual void setAttenuation(float _range, float _constant, float _linear, float _quadratic) = 0;
 	virtual void setDirection(float _x, float _y, float _z) = 0;
-};
-
-class AnimationStateInterface
-{
-public:
-    virtual float getTimePosition() const = 0;
-    virtual void setTimePosition( float _timePos ) = 0;
-    virtual float getLength() const = 0;
-    virtual void setLength( float _len ) = 0;
-    virtual float getWeight() const = 0;
-    virtual void setWeight( float _weight ) = 0;
-    virtual void addTime( float _offset ) = 0;
-	virtual bool hasEnded() const = 0;
-    virtual bool getEnabled() const = 0;
-    virtual void setEnabled( bool _enabled );
-    virtual void setLoop( bool _loop ) = 0;
-    virtual bool getLoop() const = 0;
 };
 
 class RenderVideoStreamInterface : public RenderImageInterface
@@ -160,12 +157,13 @@ public:
 
 	//new
 	virtual CameraInterface * createCamera( const char * _name ) = 0;
-	//virtual EntityInterface * create3dEntity(const char * _name, const char * _meshName) = 0;
+	virtual EntityInterface * createEntity(const char * _name, const char * _meshName) = 0;
 	virtual LightInterface * createLight(const char * _name) = 0;
-	virtual MeshInterface * createMesh(const char * _name) = 0;
 	virtual void update(float _timing) = 0;
 
 	virtual SceneNodeInterface * attachSceneNodeToRoot( const char * _name ) = 0;
+
+	virtual float	getQueryDistance( const char * _name, float * pos, float * dir ) = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

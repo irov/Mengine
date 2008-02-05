@@ -3,7 +3,6 @@
 
 #	include "ScriptEngine.h"
 #	include "RenderEngine.h"
-#	include "PhysicEngine.h"
 
 #	include "XmlEngine.h"
 
@@ -14,6 +13,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Light::Light()
 	: m_diffuseColor( 1.0f, 1.0f, 1.0f, 1.0f )
+	, m_position( 0.f, 0.f, 0.f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -26,44 +26,45 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Light::loader( XmlElement * _xml )
 	{
-		SceneNode3D::loader(_xml);
+		NodeSinglethon::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_diffuseColor );
+			XML_CASE_ATTRIBUTE_NODE( "Position", "Value", m_position );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Light::_activate()
 	{
-		bool result = SceneNode3D::_activate();
+		bool result = NodeSinglethon::_activate();
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Light::_deactivate()
 	{
-		SceneNode3D::_deactivate();
+		NodeSinglethon::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Light::_compile()
 	{
-		if( SceneNode3D::_compile() == false )
+		if( NodeSinglethon::_compile() == false )
 		{
 			return false;
 		}
 
 		const std::string& name = this->getName();
-		m_interface = Holder<RenderEngine>::hostage()->createLight(name);
+		m_interface = Holder<RenderEngine>::hostage()->createLight( name );
 
-		const mt::vec3f & pos = this->getLocalPosition();
-		m_interface->setPosition(pos.x,pos.y,pos.z);
-		m_interface->setDiffuseColor(m_diffuseColor.r, m_diffuseColor.g, m_diffuseColor.b);
+		m_interface->setPosition( m_position.x, m_position.y, m_position.z );
+		m_interface->setDiffuseColor( m_diffuseColor.r, m_diffuseColor.g, m_diffuseColor.b );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Light::_release()
 	{
-		SceneNode3D::_release();
+		NodeSinglethon::_release();
 		//
 	}
 }

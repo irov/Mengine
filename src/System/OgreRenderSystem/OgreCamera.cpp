@@ -39,3 +39,17 @@ void Ogre3dCamera::setAspectRatio( float _aspect )
 	m_camera->setAspectRatio(_aspect);
 }
 //////////////////////////////////////////////////////////////////////////
+void Ogre3dCamera::yaw( float _angle )
+{
+	m_camera->yaw( Ogre::Degree( _angle ) );
+}
+//////////////////////////////////////////////////////////////////////////
+void Ogre3dCamera::pitch( float _angle )
+{
+	m_camera->pitch( Ogre::Degree( _angle ) );
+}
+//////////////////////////////////////////////////////////////////////////
+void Ogre3dCamera::roll( float _angle )
+{
+	m_camera->roll( Ogre::Degree( _angle ) );
+}

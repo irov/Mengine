@@ -6,9 +6,16 @@
 
 #	include "ScriptEngine.h"
 #	include "PhysicEngine.h"
+#	include "Application.h"
 
 
 #	include "XmlEngine.h"
+
+#	include "Entity3d.h"
+#	include "Camera3d.h"
+#	include "Light.h"
+#	include "Actor.h"
+
 
 namespace	Menge
 {
@@ -65,6 +72,11 @@ namespace	Menge
 		}
 
 		return mt::vec2f::zero_v2;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::actorAppend( SceneNode3D * _node )
+	{
+		m_listActors.push_back( _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerAppend( const std::string & _layer, Node * _node )
@@ -205,11 +217,39 @@ namespace	Menge
 		registerEventMethod( "MOUSE_BUTTON", "onHandleMouseButtonEvent" );
 		registerEventMethod( "MOUSE_MOVE", "onHandleMouseMove" );
 
+		Camera3D * cam3d = this->m_mapCameras.begin()->second;
+
+		activateLights_();
+		activateCameras_();
+		setPhysicParams_();
+
 		callMethod( "onActivate", "() " );
 
-		//_setPhysicParams();
-
 		return NodeCore::_activate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::activateLights_()
+	{
+		for( TMapLight::iterator
+			it = m_mapLights.begin(),
+			it_end = m_mapLights.end();
+		it != it_end;
+		++it)
+		{
+			it->second->activate();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::activateCameras_()
+	{
+		for( TMapCamera::iterator
+			it = m_mapCameras.begin(),
+			it_end = m_mapCameras.end();
+		it != it_end;
+		++it)
+		{
+			it->second->activate();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()
@@ -219,6 +259,16 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
 	{
+
+		for( TListActors::iterator
+			it = m_listActors.begin(),
+			it_end = m_listActors.end();
+		it != it_end;
+		++it)
+		{
+			(*it)->update( _timing );
+		}
+
 		callEvent( "UPDATE", "(f)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -235,32 +285,185 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loaderScene_( XmlElement *_xml )
 	{
+		std::string name;
+
 		NodeCore::loader(_xml);
 		NodeRenderable::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE("OffsetPosition", "Value", m_offsetPosition );
-		}		
-		XML_END_NODE()
-		{
-			callMethod( "onLoader", "()" );
-		}
-
-		XML_SWITCH_NODE( _xml )
-		{
+			XML_CASE_ATTRIBUTE_NODE( "OffsetPosition", "Value", m_offsetPosition );
 			XML_CASE_ATTRIBUTE_NODE( "Gravity", "Value", m_g );
 			XML_CASE_ATTRIBUTE_NODE( "Restitution", "Value", m_restitution );
 			XML_CASE_ATTRIBUTE_NODE( "StaticFriction", "Value", m_staticFriction );
 			XML_CASE_ATTRIBUTE_NODE( "DynamicFriction", "Value", m_dynamicFriction );
+		
+			XML_CASE_NODE("Entities")
+			{
+				XML_PARSE_ELEMENT( this, &Scene::loaderEntities_ );
+			}
+
+			XML_CASE_NODE("Lights")
+			{
+				XML_PARSE_ELEMENT( this, &Scene::loaderLights_ );
+			}
+
+			XML_CASE_NODE("Cameras")
+			{
+				XML_PARSE_ELEMENT( this, &Scene::loaderCameras_ );
+			}
 		}
+		XML_END_NODE()
+		{
+			callMethod( "onLoader", "()" );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::loaderCameras_( XmlElement * _xml )
+	{
+		std::string name;
+
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE("Camera")
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", name );
+				}
+
+				Camera3D * camera = new Camera3D();
+
+				camera->setName( name );
+				camera->setType( "Camera3D" );
+
+				addCamera( camera );
+
+				XML_PARSE_ELEMENT( camera, &Camera3D::loader );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::loaderLights_( XmlElement * _xml )
+	{
+		std::string name;
+
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE("Light")
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", name );
+				}
+
+				Light * light = new Light();
+
+				light->setName( name );
+				light->setType( "Light" );
+
+				addLight( light );
+
+				XML_PARSE_ELEMENT( light, &Light::loader );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::loaderEntities_( XmlElement * _xml )
+	{
+		std::string name;
+
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE("Entity")
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", name );
+				}
+
+				Entity3d * entity = new Entity3d();
+
+				entity->setName( name );
+				entity->setType( "Entity3d" );
+
+				addEntity( entity );
+
+				XML_PARSE_ELEMENT( entity, &Entity3d::loader );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::addCamera( Camera3D * _camera )
+	{
+		const std::string & name = _camera->getName();
+
+		TMapCamera::iterator it_find = m_mapCameras.find( name );
+
+		if( it_find == m_mapCameras.end() )
+		{
+			m_mapCameras.insert( std::make_pair( name, _camera ) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Camera3D * Scene::getCamera( const std::string & _name )
+	{
+		TMapCamera::const_iterator it_find = m_mapCameras.find( _name );
+
+		if( it_find == m_mapCameras.end() )
+		{
+			return NULL;
+		}
+
+		Camera3D * camera = it_find->second;
+
+		return camera;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::addLight( Light * _light )
+	{
+		const std::string & name = _light->getName();
+
+		TMapLight::iterator it_find = m_mapLights.find( name );
+
+		if( it_find == m_mapLights.end() )
+		{
+			m_mapLights.insert( std::make_pair( name, _light ) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::addEntity( Entity3d * _entity )
+	{
+		const std::string & name = _entity->getName();
+
+		TMapEntity::iterator it_find = m_mapEntities.find( name );
+
+		if( it_find == m_mapEntities.end() )
+		{
+			m_mapEntities.insert( std::make_pair( name, _entity ) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Entity3d * Scene::getEntity( const std::string & _name )
+	{
+		TMapEntity::const_iterator it_find = m_mapEntities.find( _name );
+
+		if( it_find == m_mapEntities.end() )
+		{
+			return NULL;
+		}
+
+		Entity3d * entity = it_find->second;
+
+		entity->activate();
+
+		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Layer * _layer )
 	{
 		_layer->setOffsetPosition(m_offsetPosition);
 		_layer->setScene( this );
-		_layer->notifyAdded();
 
 		if( _layer->isMain() )
 		{
@@ -268,12 +471,17 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_setPhysicParams()
+	void Scene::setPhysicParams_()
 	{
-		Holder<PhysicEngine>::hostage()->setGravity( m_g );
-		Holder<PhysicEngine>::hostage()->setRestitution( m_restitution );
-		Holder<PhysicEngine>::hostage()->setStaticFriction( m_staticFriction );
-		Holder<PhysicEngine>::hostage()->setDynamicFriction( m_dynamicFriction );		
+		bool usePhysic = Holder<Application>::hostage()->usePhysic();
+
+		if( usePhysic == true )
+		{
+			Holder<PhysicEngine>::hostage()->setGravity( m_g );
+			Holder<PhysicEngine>::hostage()->setRestitution( m_restitution );
+			Holder<PhysicEngine>::hostage()->setStaticFriction( m_staticFriction );
+			Holder<PhysicEngine>::hostage()->setDynamicFriction( m_dynamicFriction );		
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

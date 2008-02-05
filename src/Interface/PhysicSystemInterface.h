@@ -56,6 +56,7 @@ public:
 	virtual void setRestitution( float _value ) = 0;
 	virtual void setStaticFriction( float _value ) = 0;
 	virtual void setDynamicFriction( float _value ) = 0;
+	virtual float rayCast(const char * _name, float * pos, float * dir) = 0;
 public:
 	virtual GeometryInterface * cookConvex( const float * _verts, int _vertexSize ) = 0;
 	virtual GeometryInterface * cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) = 0;

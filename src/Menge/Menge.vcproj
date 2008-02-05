@@ -950,6 +950,10 @@
 			Name="ScriptWrapper"
 			>
 			<File
+				RelativePath=".\ActorScriptWrapper.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EntityScriptWrapper.cpp"
 				>
 			</File>
@@ -1106,18 +1110,6 @@
 				</File>
 				<File
 					RelativePath=".\LayerScene.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Scene2D"
-				>
-				<File
-					RelativePath=".\Scene2D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Scene2D.h"
 					>
 				</File>
 			</Filter>
@@ -1329,6 +1321,22 @@
 		<Filter
 			Name="Object3D"
 			>
+			<File
+				RelativePath=".\Actor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Actor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Entity3d.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Entity3d.h"
+				>
+			</File>
 			<Filter
 				Name="RenderMesh"
 				>

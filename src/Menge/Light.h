@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "SceneNode3D.h"
+#	include "NodeSinglethon.h"
 #	include "Color.h"
 
 class LightInterface;
@@ -10,7 +10,7 @@ namespace Menge
 	class Scene;
 
 	class Light
-		: public SceneNode3D
+		: public NodeSinglethon
 	{
 		OBJECT_DECLARE( Light )
 
@@ -30,6 +30,7 @@ namespace Menge
 	private:
 		LightInterface * m_interface;
 		Color m_diffuseColor;
+		mt::vec3f	m_position;
 
 		void render(){}
 		bool isRenderable(){return false;}

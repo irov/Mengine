@@ -25,7 +25,6 @@ namespace Menge
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleMouseMove( int _x, int _y, int _whell ) override;
 
-	private:
-		void _notifyAdded() override;
+		bool isRenderable() {return false;};
 	};
 }

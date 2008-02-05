@@ -113,7 +113,7 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	std::string DllInputSystem = "Systems_d/OgreInputSystem_d.dll";
 	std::string DllSoundSystem = "Systems_d/ALSoundSystem_d.dll";
 	std::string DllParticleSystem = "Systems_d/AstralaxParticleSystem_d.dll";
-	//std::string DllPhysicSystem = "Systems_d/PhysXPhysicSystem_d.dll";
+	std::string DllPhysicSystem = "Systems_d/PhysXPhysicSystem_d.dll";
 #else
 	std::string DllModuleSetting = "DllModuleRelease";
 	std::string DllLogSystem = "Systems/OgreLogSystem.dll";
@@ -167,12 +167,12 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 
 	m_application->setParticleSystem( particleInterface );
 
-	/*printf("use physic system [%s]\n", DllPhysicSystem.c_str() );
+	printf("use physic system [%s]\n", DllPhysicSystem.c_str() );
 
 	PhysicSystemInterface * physicInterface
 		= addSystem<PhysicSystemInterface>( DllPhysicSystem );
 
-	m_application->setPhysicSystem( physicInterface );*/
+	m_application->setPhysicSystem( physicInterface );
 
 
 	m_resourcePath = fileInterface->platformBundlePath();
@@ -243,6 +243,8 @@ void OgreApplication::initParams()
 	#endif
 
 	m_root->loadPlugin( m_resourcePath + renderDriver );
+
+	//m_root->loadPlugin( m_resourcePath + "Plugins/Plugin_BSPSceneManager_d.dll" );
 
 
 	Ogre::RenderSystem * renderSystem = m_root->getAvailableRenderers()->at( 0 );

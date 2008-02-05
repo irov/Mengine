@@ -19,6 +19,7 @@ public:
 	void setRestitution( float _value ) override;
 	void setStaticFriction( float _value ) override;
 	void setDynamicFriction( float _value ) override;
+	float rayCast(const char * _name, float * pos, float * dir);
 public:
 	GeometryInterface * cookConvex( const float * _verts, int _vertexSize ) override;
 	GeometryInterface * cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) override;
@@ -35,4 +36,5 @@ public:
 private:
 	NxPhysicsSDK * m_physicsSDK;
 	NxScene		 * m_scene;
+	NxSceneQuery*    m_SceneQueryObject;
 };

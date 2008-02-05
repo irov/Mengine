@@ -12,6 +12,7 @@
 		<Bits Value = "32"/>
 		<Fullscreen Value = "0"/>
 		<RenderDriver Name = "Plugins/RenderSystem_Direct3D9"/>
+		<UsePhysic Value = "0"/>
 	</Config>
 
 </Application>

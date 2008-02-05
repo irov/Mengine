@@ -27,8 +27,6 @@ namespace Menge
 		void setSize( const mt::vec2f & _size );
 		const mt::vec2f & getSize() const;
 
-		void notifyAdded();
-
 	public:
 		virtual void setOffsetPosition( const mt::vec2f & _offset );
 
@@ -40,7 +38,5 @@ namespace Menge
 		mt::vec2f m_size;		
 
 		Scene * m_scene;
-
-		virtual void _notifyAdded();
 	};
 }

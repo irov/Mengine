@@ -4,17 +4,33 @@
 
 #	include "Ogre.h"
 
-class Ogre3dEntity
-//	: public EntityInterface
+class OgreEntity
+	: public EntityInterface
 {
 public:
-	Ogre3dEntity(Ogre::SceneNode * _sceneNode/*Ogre::Entity * _entity*/);
-	~Ogre3dEntity();
+	OgreEntity( Ogre::Entity * _entity );
+	~OgreEntity();
 public:
-	void setPosition(float x, float y, float z);
-	void setOrient(float w, float x, float y, float z);
-public:
-	Ogre::SceneNode * m_sceneNode;
-	//
-	//Ogre::Entity * m_entity;
+
+	bool hasSkeleton() const override;
+	const float * getBoneOrientation( const char * _name ) override;
+	const float * getBonePosition( const char * _name ) override;
+	void play( const char * _name ) override;
+	void play( 
+		const char * _name1, float _weight1, 
+		const char * _name2, float _weight2 ) override;
+	void stop() override;
+	void setLooped( bool _looped ) override;
+	const char * getName() const override;
+	void update( float _timing ) override;
+
+	Ogre::Entity * m_entity;
+
+	Ogre::RaySceneQuery * mRaySceneQuery;
+
+private:
+
+	Ogre::AnimationState * m_animState0;
+	Ogre::AnimationState * m_animState1;
+	Ogre::AnimationState * m_currentState;
 };

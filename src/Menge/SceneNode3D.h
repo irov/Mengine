@@ -13,7 +13,7 @@ namespace Menge
 		: public NodeCore
 		, public NodeChildren<SceneNode3D>
 	{
-	protected:
+	public:
 		SceneNode3D();
 		~SceneNode3D();
 
@@ -21,17 +21,25 @@ namespace Menge
 		virtual const mt::quatf & getWorldOrient();
 		virtual const mt::vec3f & getWorldPosition();
 
-		const mt::quatf & getLocalOrient() const;
-		const mt::vec3f & getLocalPosition() const;
+		const mt::quatf & getLocalOrient();
+		const mt::vec3f & getLocalPosition();
 
 		void setLocalPosition( const mt::vec3f & _position );
 		void setLocalOrient( const mt::quatf & _quat );
 
+		void translate( const mt::vec3f & _delta );
+		void setScale( float _scale );
+		
+		void yaw( float _angle );
+		void pitch( float _angle );
+		void roll( float _angle );
+
 	public:
 		void loader( XmlElement * _xml ) override;
 
-	private:
-		void _addChildren( SceneNode3D * _node ) override;
+		
+		void render(){};
+		bool isRenderable() {return false;};
 
 	protected:
 		SceneNodeInterface * m_interface;

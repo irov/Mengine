@@ -54,6 +54,11 @@ namespace Menge
 		return m_interface->cookBox( _width, _height, _depth  );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float PhysicEngine::rayCast( const std::string & _name, const mt::vec3f & _pos,  const mt::vec3f & _dir )
+	{
+		return m_interface->rayCast( _name.c_str(), (float*)_pos.m, (float*)_dir.m );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	RigidBodyInterface * PhysicEngine::createRigidBody( float _density, bool _dynamic, const GeometryInterface * _geometry)
 	{
 		return m_interface->createRigidBody( _density, _dynamic, _geometry );

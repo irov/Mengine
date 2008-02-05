@@ -27,12 +27,12 @@ namespace Menge
 		return *(mt::vec3f*)m_interface->getWorldPosition();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::quatf & SceneNode3D::getLocalOrient() const
+	const mt::quatf & SceneNode3D::getLocalOrient()
 	{
 		return *(mt::quatf*)m_interface->getLocalOrient();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & SceneNode3D::getLocalPosition() const
+	const mt::vec3f & SceneNode3D::getLocalPosition()
 	{
 		return *(mt::vec3f*)m_interface->getLocalPosition();
 	}
@@ -45,6 +45,31 @@ namespace Menge
 	void SceneNode3D::setLocalOrient( const mt::quatf & _quat )
 	{
 		m_interface->setLocalOrient( _quat.m );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::translate( const mt::vec3f & _delta )
+	{
+		m_interface->translate( _delta.m );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::setScale( float _scale )
+	{
+		m_interface->setScale( _scale );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::yaw( float _angle )
+	{
+		m_interface->yaw( _angle );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::pitch( float _angle )
+	{
+		m_interface->pitch( _angle );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::roll( float _angle )
+	{
+		m_interface->roll( _angle );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::loader( XmlElement * _xml )
@@ -61,14 +86,6 @@ namespace Menge
 				}
 			}
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::_addChildren( SceneNode3D * _node )
-	{
-		const std::string & name = _node->getName();
-
-		_node->m_interface 
-			= m_interface->createChildSceneNode( name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

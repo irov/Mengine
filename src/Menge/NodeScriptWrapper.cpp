@@ -26,6 +26,12 @@
 #	include "AnimationGroup.h"
 #	include "Emitter.h"
 #	include "Point.h"
+#	include "RenderMesh3D.h"
+#	include "Entity3d.h"
+#	include "Camera3d.h"
+
+
+
 
 #	include "Color.h"
 #	include "C4AI.h"
@@ -305,6 +311,10 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( SoundEmitter );
 	SCRIPT_CLASS_WRAPPING( Emitter );
 	SCRIPT_CLASS_WRAPPING( Point );
+	SCRIPT_CLASS_WRAPPING( RenderMesh3D );
+	SCRIPT_CLASS_WRAPPING( Entity3d );
+	SCRIPT_CLASS_WRAPPING( SceneNode3D );
+	SCRIPT_CLASS_WRAPPING( Camera3D );
 
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -322,6 +332,14 @@ namespace Menge
 			//.def( boost::python::self -= boost::python::self )
 			//.def( boost::python::self *= float() )
 			//.def( boost::python::self /= float() )
+			;
+
+		pybind::class_<mt::vec3f>("vec3f")
+			.def( pybind::init<float,float,float>() )
+			;
+
+		pybind::class_<mt::quatf>("quatf")
+			.def( pybind::init<float,float,float,float>() )
 			;
 
 		pybind::class_<Color>("Color")
@@ -402,6 +420,42 @@ namespace Menge
 				.def( "getScreenPosition", &SceneNode2D::getScreenPosition )
 			;
 
+		pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
+				.def( "getWorldOrient", &SceneNode3D::getWorldOrient )
+				.def( "getWorldPosition", &SceneNode3D::getWorldPosition )
+				.def( "getLocalOrient", &SceneNode3D::getLocalOrient )
+				.def( "getLocalPosition", &SceneNode3D::getLocalPosition )
+				.def( "setLocalPosition", &SceneNode3D::setLocalPosition )
+				.def( "setLocalOrient", &SceneNode3D::setLocalOrient )
+				.def( "setScale", &SceneNode3D::setScale )
+				.def( "yaw", &SceneNode3D::yaw )
+				.def( "pitch", &SceneNode3D::pitch )
+				.def( "roll", &SceneNode3D::roll )
+				.def( "translate", &SceneNode3D::translate )
+			;
+
+		{
+		pybind::proxy_<RenderMesh3D, pybind::bases<SceneNode3D>>("RenderMesh3D", false)
+				.def( "play", &RenderMesh3D::play )
+				.def( "stop", &RenderMesh3D::stop )
+				.def( "setLooped", &RenderMesh3D::setLooped )
+				;
+
+		pybind::proxy_<Camera3D, pybind::bases<SceneNode3D>>("Camera3D", false)
+				.def( "setPosition", &Camera3D::setPosition )
+				.def( "lookAt", &Camera3D::lookAt )
+				.def( "yaw", &Camera3D::yaw )
+				.def( "pitch", &Camera3D::pitch )
+				.def( "roll", &Camera3D::roll )
+			;
+
+		
+		pybind::proxy_<Entity3d, pybind::bases<Node>>("Entity3d", false)
+			.def( "play", &Entity3d::play )
+		;
+
+		}
+
 		{
 			pybind::proxy_<Emitter, pybind::bases<SceneNode2D>>("Emitter", false)
 				.def( "play", &Emitter::play )
@@ -463,9 +517,13 @@ namespace Menge
 				;
 
 			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
+				.def( "getEntity", &Scene::getEntity )
+				.def( "getCamera", &Scene::getCamera )
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "getNode", &Scene::getNode )
 				.def( "getLayerSize", &Scene::getLayerSize )
+				.def( "addEntity", &Scene::addEntity )
+				.def( "actorAppend", &Scene::actorAppend )
 				;
 
 			pybind::proxy_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot", false)

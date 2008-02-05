@@ -12,7 +12,6 @@ material 01_-_Default
 			{
 				texture_alias Map #3
 				texture z_cop_body.jpg
-				rotate -90
 			}
 		}
 

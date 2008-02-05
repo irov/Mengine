@@ -73,6 +73,7 @@ CameraInterface * OgreRenderSystem::createCamera(const char * _name)
 {
 	Ogre::Camera * camera = m_sceneMgr->createCamera(_name);
 	CameraInterface * ogre3dcam = new Ogre3dCamera( camera );
+	m_renderWindow->removeViewport(0);
 	m_viewport = m_renderWindow->addViewport( camera );
 	return  ogre3dcam;
 }
@@ -151,7 +152,7 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
 	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "default", true );
-	//Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
+	//Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("default");
 
 	// setup GUI system
 	/*m_GUIRenderer = new CEGUI::OgreCEGUIRenderer(m_renderWindow, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, m_sceneMgr);

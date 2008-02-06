@@ -73,7 +73,7 @@ NxU32 moveCharacter(NxScene& scene, const NxVec3& dispVector, NxF32 elapsedTime,
 	Controller->move(d, collisionGroups, 0.000001f, collisionFlags, sharpness);
 	
 	NxExtendedVec3 v = Controller->getFilteredPosition();
-	printf("Contrloller = %f %f %f\n", v.x, v.y, v.z);
+//	printf("Contrloller = %f %f %f\n", v.x, v.y, v.z);
 	return collisionFlags;
 }
 
@@ -138,7 +138,7 @@ public:
 
 	ControllerManager gCM;
 
-	#define SKINWIDTH	0.1f
+	#define SKINWIDTH	0.9f
 
 	void moveController( float * _dispvec )
 	{

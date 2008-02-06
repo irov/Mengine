@@ -32,16 +32,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::_update( float _timing )
 	{
-		/*if(m_isGrounded)
-		{
-			mt::vec3f pos = this->getWorldPosition();
-			printf("%f %f %f\n",pos.x,pos.y,pos.z);
-			float dist = Holder<RenderEngine>::hostage()->getQueryDistance("Level",pos,mt::vec3f(0,-1,0));
-		//	pos.y-=dist;
-		//	this->setLocalPosition(pos);
-			printf("%f \n",dist);
-		}*/
-
 		m_entityInterface->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////

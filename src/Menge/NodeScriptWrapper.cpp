@@ -312,7 +312,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( SoundEmitter );
 	SCRIPT_CLASS_WRAPPING( Emitter );
 	SCRIPT_CLASS_WRAPPING( Point );
-	SCRIPT_CLASS_WRAPPING( RenderMesh3D );
+	//SCRIPT_CLASS_WRAPPING( RenderMesh3D );
 	SCRIPT_CLASS_WRAPPING( Entity3d );
 	SCRIPT_CLASS_WRAPPING( SceneNode3D );
 	SCRIPT_CLASS_WRAPPING( Camera3D );
@@ -437,12 +437,12 @@ namespace Menge
 			;
 
 		{
-		pybind::proxy_<RenderMesh3D, pybind::bases<SceneNode3D>>("RenderMesh3D", false)
+		/*pybind::proxy_<RenderMesh3D, pybind::bases<SceneNode3D>>("RenderMesh3D", false)
 				.def( "play", &RenderMesh3D::play )
 				.def( "stop", &RenderMesh3D::stop )
 				.def( "setLooped", &RenderMesh3D::setLooped )
 				;
-
+*/
 			pybind::proxy_<RigidBody3D, pybind::bases<SceneNode3D>>("RigidBody3D", false)
 				.def( "applyForce", &RigidBody3D::applyForce )
 				;

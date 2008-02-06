@@ -143,7 +143,7 @@ class Scene( Menge.Scene ):
 
 		self.entityZombie = self.getEntity( "Zombie" )
 		self.zombieActor.attachEntity( self.entityZombie );
-		self.zombieActor.setScale(10);
+		self.zombieActor.setScale(0.10);
 		self.zombieActor.yaw(180);
 
 		self.levelPhysicBody = self.getRigidBody("LevelPhysicBody");

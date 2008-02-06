@@ -1,4 +1,4 @@
-#	include "Bone.h"
+/*#	include "Bone.h"
 
 namespace	Menge
 {
@@ -28,4 +28,4 @@ namespace	Menge
 		return m_worldPosition;
 	}
 	//////////////////////////////////////////////////////////////////////////
-}
+}*/

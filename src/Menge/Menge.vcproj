@@ -1330,6 +1330,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Bone.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Bone.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Entity3d.cpp"
 				>
 			</File>
@@ -1337,26 +1345,6 @@
 				RelativePath=".\Entity3d.h"
 				>
 			</File>
-			<Filter
-				Name="RenderMesh"
-				>
-				<File
-					RelativePath=".\Bone.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Bone.h"
-					>
-				</File>
-				<File
-					RelativePath=".\RenderMesh3D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\RenderMesh3D.h"
-					>
-				</File>
-			</Filter>
 			<Filter
 				Name="RigidBody"
 				>

@@ -58,6 +58,10 @@ public:
 	virtual void setDynamicFriction( float _value ) = 0;
 	virtual float rayCast(const char * _name, float * pos, float * dir) = 0;
 public:
+
+	virtual float * getControllerPos() = 0;
+	virtual void moveController( float * _dispvec ) = 0;
+	virtual void createController( float * _startPos, float _initialRadius, float _initialHeight ) = 0;
 	virtual GeometryInterface * cookConvex( const float * _verts, int _vertexSize ) = 0;
 	virtual GeometryInterface * cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) = 0;
 	virtual GeometryInterface * cookConvex( const char * _filename ) = 0;

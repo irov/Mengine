@@ -33,6 +33,10 @@ NovodexPhysicSystem::~NovodexPhysicSystem()
 {
 	if ( m_physicsSDK )
 	{
+		gCM.purgeControllers();
+
+		//delete controller!! 
+
 		m_physicsSDK->releaseScene(*m_scene);
 		m_physicsSDK->release();	
 	}
@@ -86,11 +90,11 @@ void NovodexPhysicSystem::init(float gx, float gy, float gz)
 
 	assert(m_scene);
 
-	NxSceneQueryDesc sceneQueryDesc;
+/*	NxSceneQueryDesc sceneQueryDesc;
 	sceneQueryDesc.executeMode = NX_SQE_ASYNCHRONOUS;
 	sceneQueryDesc.report = &gQueryReport;
 	m_SceneQueryObject = m_scene->createSceneQuery(sceneQueryDesc);
-
+*/
 
 	//NxMaterial* defaultMaterial = m_scene->getMaterialFromIndex(0);
 	//defaultMaterial->setRestitution(0.2f);
@@ -128,6 +132,18 @@ void NovodexPhysicSystem::update(float _timestep)
 
 	m_scene->flushStream();
 	m_scene->fetchResults(NX_RIGID_BODY_FINISHED, true);
+
+	NxReal maxTimestep;
+	NxTimeStepMethod method;
+	NxU32 maxIter;
+	NxU32 numSubSteps;
+	m_scene->getTiming(maxTimestep, maxIter, method, &numSubSteps);
+
+	if(numSubSteps)	
+	{
+		gCM.updateControllers();
+	}
+
 }
 //////////////////////////////////////////////////////////////////////////
 GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _vertexSize )
@@ -150,6 +166,7 @@ GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _
 	assert(status);
 
 	nxConvexShape->meshData = m_physicsSDK->createConvexMesh( MemoryReadBuffer(buf.data) );
+	nxConvexShape->group = GROUP_COLLIDABLE_PUSHABLE;
 
 	NovodexGeometry * novodexGeometry = new NovodexGeometry(nxConvexShape);
 	return novodexGeometry;
@@ -176,6 +193,7 @@ GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _
 	assert(status);
 
 	nxConvexShape->meshData = m_physicsSDK->createConvexMesh(MemoryReadBuffer(buf.data));
+	nxConvexShape->group = GROUP_COLLIDABLE_PUSHABLE;
 
 	NovodexGeometry * novodexGeometry = new NovodexGeometry(nxConvexShape);
 	return novodexGeometry;
@@ -204,6 +222,7 @@ GeometryInterface * NovodexPhysicSystem::cookConcave( const float * _verts, int 
 	assert(status);
 
 	nxTriShape->meshData = m_physicsSDK->createTriangleMesh(MemoryReadBuffer(buf.data));
+	nxTriShape->group = GROUP_COLLIDABLE_NON_PUSHABLE;
 
 	NovodexGeometry * novodexGeometry = new NovodexGeometry(nxTriShape);
 	return novodexGeometry;
@@ -214,6 +233,7 @@ GeometryInterface * NovodexPhysicSystem::cookConvex( const char * _filename )
 	NxConvexShapeDesc * nxTriShape = new NxConvexShapeDesc();
 
 	nxTriShape->meshData = m_physicsSDK->createConvexMesh(UserStream(_filename, true));
+	nxTriShape->group = GROUP_COLLIDABLE_PUSHABLE;
 
 	NovodexGeometry * novodexGeometry = new NovodexGeometry(nxTriShape);
 
@@ -225,6 +245,7 @@ GeometryInterface * NovodexPhysicSystem::cookConcave( const char * _filename )
 	NxTriangleMeshShapeDesc * nxTriShape = new NxTriangleMeshShapeDesc();
 
 	nxTriShape->meshData = m_physicsSDK->createTriangleMesh(UserStream(_filename, true));
+	nxTriShape->group = GROUP_COLLIDABLE_PUSHABLE;
 
 	NovodexGeometry * novodexGeometry = new NovodexGeometry(nxTriShape);
 
@@ -235,6 +256,7 @@ GeometryInterface * NovodexPhysicSystem::cookBox( float _width, float _height, f
 {
 	NxBoxShapeDesc * nxBoxDesc = new NxBoxShapeDesc();
 	nxBoxDesc->dimensions = NxVec3( _width * 0.5f, _height * 0.5f, _depth * 0.5f );
+	nxBoxDesc->group = GROUP_COLLIDABLE_PUSHABLE;
 
 	NovodexGeometry * novodexGeometry = new NovodexGeometry(nxBoxDesc);
 	return novodexGeometry;

@@ -49,6 +49,8 @@ namespace	Menge
 		{
 			float step = 0.005 * _timing;
 
+			//mt::vec3f workv = mt::vec3f::zero_v3;
+
 			mt::vec3f workv = mt::vec3f::zero_v3;
 
 			if(m_contMovement != mt::vec3f::zero_v3)
@@ -58,9 +60,19 @@ namespace	Menge
 
 			if(workv != mt::vec3f::zero_v3)
 			{
-					float dist = Holder<PhysicEngine>::hostage()->rayCast("level",getWorldPosition(),mt::vec3f(0,-1,0));
-					workv.y+= 10 - dist;
-				this->translate( workv );
+			//		float dist = Holder<PhysicEngine>::hostage()->rayCast("level",getWorldPosition(),mt::vec3f(0,-1,0));
+			//		workv.y+= 10 - dist;
+				mt::vec3f expp = getWorldPosition();
+				//this->translate( workv );
+
+				//printf("Actor = %f %f %f\n", expp.x, expp.y, expp.z);
+
+				workv +=mt::vec3f(0,-9.8,0);
+
+				Holder<PhysicEngine>::hostage()->moveController(workv);
+
+				//Holder<PhysicEngine>::hostage()->getControllerPos();
+				this->setLocalPosition(Holder<PhysicEngine>::hostage()->getControllerPos());
 			}
 		}
 
@@ -85,6 +97,11 @@ namespace	Menge
 		this->registerEventMethod("UPDATE", "onUpdate" );
 
 		this->callMethod("onActivate", "()" );
+
+		if( getName() == "Zombie1")
+		{
+			Holder<PhysicEngine>::hostage()->createController( this->getWorldPosition(),1,1 );
+		}
 
 		return true;
 	}
@@ -155,14 +172,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::step( const mt::vec3f & _v )
 	{
-		m_entityInterface->play("walk");
+		m_entityInterface->play("move forward");
 		m_entityInterface->setLooped(true);
 		m_contMovement = m_initOrient * _v;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::stop()
 	{
-		m_entityInterface->play("idle");
+		m_entityInterface->play("idle1");
 		m_contMovement = mt::vec3f::zero_v3;
 	}
 }

@@ -23,6 +23,11 @@ namespace Menge
 		void setStaticFriction( float _value );
 		void setDynamicFriction( float _value );
 		float rayCast( const std::string & _name, const mt::vec3f & _pos,  const mt::vec3f & _dir );
+
+		const mt::vec3f & getControllerPos();
+		void moveController( const mt::vec3f & _dispvec );
+		void createController( const mt::vec3f & _startPos, float _initialRadius, float _initialHeight );
+
 	public:
 		GeometryInterface * cookConvex( const float * _verts, int _vertexSize );
 		GeometryInterface * cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize );

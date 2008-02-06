@@ -1,4 +1,4 @@
-#	pragma once	
+/*#	pragma once	
 
 #	include "RenderMesh3D.h"
 
@@ -23,4 +23,4 @@ namespace	Menge
 		void render(){}
 		bool isRenderable(){return false;}
 	};
-}
+}*/

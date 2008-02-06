@@ -5,8 +5,8 @@ material 01_-_Default
 	{
 		pass
 		{
-			ambient 0.584314 0.584314 0.584314 1
-			diffuse 0.584314 0.584314 0.584314 1
+			ambient 1 1 1 1
+			specular 1 1 1 1
 
 			texture_unit
 			{

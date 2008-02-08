@@ -22,7 +22,6 @@ static void XMLCALL cbBeginElement( void *userData, const char *name, const char
 	XmlElementListener * parser_listener = parser->topListener();
 
 	XmlElement element( parser, name, atts );
-
 	parser_listener->parseXML( &element );
 
 	XmlElementListener * incref_listener = parser->topListener();

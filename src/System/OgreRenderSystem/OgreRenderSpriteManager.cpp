@@ -147,13 +147,13 @@ void OgreRenderSpriteManager::prepareForRender()
 	d_alphaBlendMode.source2	= Ogre::LBS_DIFFUSE;
 	d_alphaBlendMode.operation	= Ogre::LBX_MODULATE;
 
-	//d_uvwAddressMode.u = Ogre::TextureUnitState::TAM_CLAMP;
-	//d_uvwAddressMode.v = Ogre::TextureUnitState::TAM_CLAMP;
-	//d_uvwAddressMode.w = Ogre::TextureUnitState::TAM_CLAMP;
+	d_uvwAddressMode.u = Ogre::TextureUnitState::TAM_CLAMP;
+	d_uvwAddressMode.v = Ogre::TextureUnitState::TAM_CLAMP;
+	d_uvwAddressMode.w = Ogre::TextureUnitState::TAM_CLAMP;
 
-	d_uvwAddressMode.u = Ogre::TextureUnitState::TAM_WRAP;
-	d_uvwAddressMode.v = Ogre::TextureUnitState::TAM_WRAP;
-	d_uvwAddressMode.w = Ogre::TextureUnitState::TAM_WRAP;
+	//d_uvwAddressMode.u = Ogre::TextureUnitState::TAM_WRAP;
+	//d_uvwAddressMode.v = Ogre::TextureUnitState::TAM_WRAP;
+	//d_uvwAddressMode.w = Ogre::TextureUnitState::TAM_WRAP;
 
 	m_renderSys->_setWorldMatrix(Ogre::Matrix4::IDENTITY);
 	m_renderSys->_setViewMatrix(Ogre::Matrix4::IDENTITY);

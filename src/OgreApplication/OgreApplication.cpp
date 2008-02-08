@@ -185,7 +185,7 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	size_t windowHnd = 0;
 	std::ostringstream windowHndStr;
 
-	Ogre::LogManager::getSingleton().setLogDetail( Ogre::LL_LOW );
+	//Ogre::LogManager::getSingleton().setLogDetail( Ogre::LL_LOW );
 
 	fileInterface->loadPath(".");
 
@@ -199,7 +199,7 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	if( error == ERROR_ALREADY_EXISTS )
 	{
 		std::string message = std::string("Another instance of ") + title + std::string(" is already running");
-		::MessageBoxA( NULL, message.c_str(), "Menge-engine", MB_ICONWARNING );
+		::MessageBoxA( NULL, message.c_str(), title.c_str(), MB_ICONWARNING );
 		return false;
 	}
 
@@ -260,8 +260,27 @@ void OgreApplication::initParams()
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( bits ) ) );
 	params.insert( std::make_pair("vsync", Ogre::StringConverter::toString( vsync ) ) );
 	//params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
+	
+	/// patch for ansi names
+	char *ansistr = NULL;
+	int length = MultiByteToWideChar(CP_UTF8, 0, m_application->getTitle().c_str(), m_application->getTitle().length(), NULL, NULL );
+	WCHAR *lpszW = NULL;
 
-	m_renderWindow = m_root->createRenderWindow( m_application->getTitle(), screenWidth, screenHeight, fullscreen, &params );
+	lpszW = new WCHAR[length+1];
+	ansistr = ( char * ) calloc ( sizeof(char), length+5 );
+
+	//this step intended only to use WideCharToMultiByte
+	MultiByteToWideChar(CP_UTF8, 0, m_application->getTitle().c_str(), -1, lpszW, length );
+
+	//Conversion to ANSI (CP_ACP)
+	WideCharToMultiByte(CP_ACP, 0, lpszW, -1, ansistr, length, NULL, NULL);
+
+	ansistr[length] = 0;
+
+	delete[] lpszW;
+	////
+
+	m_renderWindow = m_root->createRenderWindow( ansistr, screenWidth, screenHeight, fullscreen, &params );
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)

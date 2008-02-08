@@ -34,6 +34,7 @@ namespace     Menge
 		, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_outlineImage( 0 )
 		, m_maxWidth( 2048.f )
+		, m_charOffset( 0.0f )
 	{
 		m_outlineFontName.clear();
 	}
@@ -147,6 +148,7 @@ namespace     Menge
 			XML_CASE_ATTRIBUTE_NODE( "OutlineColor", "Value", m_outlineColor);
 			XML_CASE_ATTRIBUTE_NODE( "OutlineImage", "Name", m_outlineFontName);
 			XML_CASE_ATTRIBUTE_NODE( "MaxWidth", "Value", m_maxWidth);
+			XML_CASE_ATTRIBUTE_NODE( "CharOffset", "Value", m_charOffset);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -189,7 +191,7 @@ namespace     Menge
 
 				Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, _color.get(), _renderImage );
 
-				offset.x += width;
+				offset.x += width + m_charOffset;
 			}
 
 			offset.y += m_height;
@@ -320,7 +322,7 @@ namespace     Menge
 		it != it_end; 
 		++it )
 		{
-			width += m_resource->getCharRatio( *it ) * m_height;
+			width += m_resource->getCharRatio( *it ) * m_height + m_charOffset;
 		}
 
 		return width;

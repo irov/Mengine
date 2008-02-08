@@ -26,7 +26,7 @@
 #	include "AnimationGroup.h"
 #	include "Emitter.h"
 #	include "Point.h"
-#	include "RenderMesh3D.h"
+//#	include "RenderMesh3D.h"
 #	include "Entity3d.h"
 #	include "Camera3d.h"
 #	include "RigidBody3D.h"

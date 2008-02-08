@@ -25,14 +25,15 @@ namespace XmlParserCast
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( unsigned int & _var, const char * _value )
-	{
-		return attribute_value_cast_format( _var, _value, "%u" );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool attribute_value_cast( int & _var, const char * _value )
 	{
 		return attribute_value_cast_format( _var, _value, "%d" );
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	bool attribute_value_cast( unsigned int & _var, const char * _value )
+	{
+		return attribute_value_cast_format( _var, _value, "%u" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool attribute_value_cast( float & _var, const char * _value )

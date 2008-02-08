@@ -94,13 +94,6 @@ namespace Menge
 			Viewport * viewport = m_layer->getViewport();
 			pos -= viewport->begin;
 
-			if( m_layer->isScrollable() )
-			{
-				float c = ::floorf( pos.x / m_layer->getSize().x );
-				pos.x -= m_layer->getSize().x * c;
-			}
-
-
 			// if we have case with 2 viewports, check in what viewport we see point (looks more like a hack)
 			if( m_layer->isScrollable() && pos.x > viewport->end.x )
 			{
@@ -114,5 +107,21 @@ namespace Menge
 	void SceneNode2D::_addChildren( SceneNode2D * _node )
 	{
 		_node->setLayer( m_layer );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::_update( float _timing )
+	{
+		if( m_layer && m_layer->isScrollable() )
+		{
+			mt::vec2f& pos = getLocalPositionModify();
+			if( pos.x > m_layer->getSize().x )
+			{
+				pos.x -= m_layer->getSize().x;
+			}
+			else if( pos.x < 0 )
+			{
+				pos.x += m_layer->getSize().x;
+			}
+		}
 	}
 }

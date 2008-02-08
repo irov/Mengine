@@ -2,6 +2,7 @@
 #	include "ObjectImplement.h"
 
 #	include "ScriptEngine.h"
+#	include "Layer2D.h"
 
 namespace	Menge
 {
@@ -38,12 +39,12 @@ namespace	Menge
 	{
 		const mt::vec2f & _pos = getLocalPosition();
 		float length = mt::length_v2_v2( _pos, _point );
-		if( length > 0.00001f )
+		if( length > 0.00001f && _time > 0.00001f )
 		{
-			/*if( m_moveTo )
+			if( m_moveTo )
 			{
 				moveStop();
-			}*/
+			}
 			m_speed = ( _point - _pos ) / _time;
 			m_movePoint = _point;
 			if( _changeDirection )
@@ -127,7 +128,10 @@ namespace	Menge
 	void Entity::rotateTo( float _time, const mt::vec2f & _point )
 	{
 		const mt::vec2f & _pos = getLocalPosition();
-		float length = mt::length_v2_v2( _pos, _point );
+		//float length = mt::length_v2_v2( _pos, _point );
+		m_targetDir = mt::norm_v2( _point - _pos );
+		const mt::vec2f& dir = getLocalDirection();
+		float length = mt::length_v2_v2( dir, m_targetDir );
 		if( length > 0.00001f )
 		{
 	
@@ -144,7 +148,7 @@ namespace	Menge
 			m_rotate = true;
 			m_rotateTime = _time;
 			m_targetDir = mt::norm_v2( _point - _pos );
-			//printf( "rotateto: %.4f %.4f\n", m_targetDir.x, m_targetDir.y );
+			printf( "rotateto: %.4f %.4f %.4f ms\n", m_targetDir.x, m_targetDir.y, _time );
 		}
 		else
 		{
@@ -186,7 +190,6 @@ namespace	Menge
 		m_moveTo = true;
 		m_nSpeed = dir * _speed;
 		m_accelerateTo = true;
-		//m_startPoint = pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::flip( bool _x, bool _y )
@@ -316,6 +319,19 @@ namespace	Menge
 				mt::vec2f curr_scl = m_scalePoint * t + scl * ( 1.0f - t );
 
 				setScale( curr_scl );
+			}
+		}
+
+		if( m_layer && m_layer->isScrollable() )
+		{
+			mt::vec2f& pos = getLocalPositionModify();
+			if( pos.x > m_layer->getSize().x )
+			{
+				pos.x -= m_layer->getSize().x;
+			}
+			else if( pos.x < 0 )
+			{
+				pos.x += m_layer->getSize().x;
 			}
 		}
 		this->callEvent("UPDATE", "(f)", _timing );

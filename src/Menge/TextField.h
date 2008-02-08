@@ -140,6 +140,7 @@ namespace Menge
 		mt::vec2f m_alignOffset;
 
 		float m_maxWidth;
+		float m_charOffset;
 		ResourceImage * m_outlineImage;
 		std::string m_outlineFontName;
 

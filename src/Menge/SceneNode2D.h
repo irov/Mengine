@@ -32,6 +32,7 @@ namespace Menge
 
 	public:
 		void _render() override;
+		void _update( float _timing ) override;
 	
 	public:
 		void loader( XmlElement * _xml ) override;

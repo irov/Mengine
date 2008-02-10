@@ -24,19 +24,9 @@ namespace Menge
 		return m_interface->update( _timestep );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & PhysicEngine::getControllerPos()
+	ControllerInterface * PhysicEngine::createCapsuleController( const mt::vec3f & _startPos, float _initialRadius, float _initialHeight )
 	{
-		return *(mt::vec3f*)m_interface->getControllerPos();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void	PhysicEngine::moveController( const mt::vec3f & _dispvec )
-	{
-		m_interface->moveController( (float*)_dispvec.m );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void	PhysicEngine::createController( const mt::vec3f & _startPos, float _initialRadius, float _initialHeight )
-	{
-		m_interface->createController( (float*)_startPos.m, _initialRadius, _initialHeight );
+		return m_interface->createCapsuleController( (float*)_startPos.m, _initialRadius, _initialHeight );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	GeometryInterface * PhysicEngine::cookConvex( const float * _verts, int _vertexSize )
@@ -67,11 +57,6 @@ namespace Menge
 	GeometryInterface * PhysicEngine::cookBox( float _width, float _height, float _depth )
 	{
 		return m_interface->cookBox( _width, _height, _depth  );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float PhysicEngine::rayCast( const std::string & _name, const mt::vec3f & _pos,  const mt::vec3f & _dir )
-	{
-		return m_interface->rayCast( _name.c_str(), (float*)_pos.m, (float*)_dir.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RigidBodyInterface * PhysicEngine::createRigidBody( float _density, bool _dynamic, const GeometryInterface * _geometry)

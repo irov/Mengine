@@ -75,9 +75,13 @@ namespace Menge
 		void	setFullscreenMode( bool _fullscreen );
 		void	setViewportDimensions( float _width, float _height, float _renderFactor = 0.0f );
 
-		CameraInterface * createCamera(const std::string& _name);
-		EntityInterface * createEntity(const std::string& _name, const std::string& _meshName);
-		LightInterface * createLight(const std::string& _name);
+		CameraInterface * createCamera( const std::string& _name );
+		EntityInterface * createEntity( const std::string& _name, const std::string& _meshName );
+		LightInterface * createLight( const std::string& _name );
+
+		void releaseCamera( CameraInterface * _camera );
+		void releaseEntity( EntityInterface * _entity );
+		void releaseLight( LightInterface * _light );
 
 		void frameStarted();
 		void frameEnded();
@@ -85,8 +89,6 @@ namespace Menge
 		void update(float _timing);
 
 		SceneNodeInterface * attachSceneNodeToRoot( const std::string & _name );
-
-		float	getQueryDistance( const std::string& _name, const mt::vec3f & _pos, const mt::vec3f & _dir );
 
 	protected:
 		RenderSystemInterface * m_interface;

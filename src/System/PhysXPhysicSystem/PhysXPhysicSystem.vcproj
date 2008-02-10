@@ -280,6 +280,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\NovodexCapsuleController.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\NovodexCapsuleController.h"
+			>
+		</File>
+		<File
 			RelativePath=".\NovodexGeometry.h"
 			>
 		</File>

@@ -34,50 +34,9 @@ class Scene( Menge.Scene ):
 
 		posX = Menge.getVec2fX(block.getWorldPosition())
 		posY = Menge.getVec2fY(block.getWorldPosition())
-
-		#self.atg = self.getNode( "TestAnimationGroup1" )
-		#self.atg.play("Test1")
-		#self.atg.play("Test2")
 		
 		x = 0
 		y = -100
-
-		#if x > posX:
-		#	block.rotateTo( 3000, Menge.vec2f( x, y ) )
-		#else:
-		#	mirrorX = posX + ( posX - x )
-		#	mirrorY = posY + ( posY - y )
-		#	block.rotateTo( 3000, Menge.vec2f( mirrorX, mirrorY ) )
-		
-		#block.moveTo( 30000, Menge.vec2f( 1000,200 ), False )
-		
-		#block.rotateTo( 3000, Menge.vec2f( 0,0 ) )
-
-		#block.setRotate( 3.14/3.0  )
-
-		#block.setLocalDirection(Menge.vec2f( 0,-1 ))
-
-
-		#self.testSound = self.getNode( "SoundEmitterTest" )
-		#self.testSound.setSoundResource("ResourceSoundTest")
-		#self.testSound.play()
-		#self.testSound.setVolume(1.0)
-
-		#Menge.soundSetVolume( 0.1 )
-
-		#self.testSound1 = self.getNode( "SoundEmitterTest1" )
-		#self.testSound1.setSoundResource("ResourceSoundTest1")
-		#self.testSound1.play()
-		#self.testSound1.setVolume(1.0)
-
-
-		#Menge.musicPlayList("ResourcePlayListTest1");
-		#Menge.musicSetVolume( 0.3 )
-		#Menge.musicSetVolume( 0.2 )
-
-		#Menge.musicPlayList("ResourcePlayListTest1");
-
-		#Menge.stopMusic();
 		
 		self.testTextField = self.getNode( "Arial2112" )
 		self.testTextField.setLocalPosition( Menge.vec2f( 200,100 ) )
@@ -115,16 +74,6 @@ class Scene( Menge.Scene ):
 		
 		self.layerAppend( "Deep", block )
 
-		self.delta = -2.75
-
-		self.a = self.delta;
-		self.b = self.delta;
-		self.c = self.delta;
-		self.d = self.delta;
-
-		self.xoffset = 40;
-		self.zoffset = 0;
-		self.yoffset = 50;
 		
 		self.levelActor = Menge.createActor("Level1", "Level");
 		self.levelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
@@ -132,11 +81,11 @@ class Scene( Menge.Scene ):
 		self.entityLevel = self.getEntity( "Level" )
 		self.levelActor.attachEntity( self.entityLevel );
 
-		#self.barrelActor = Menge.createActor("Barrel1", "Barrel")
-		#self.barrelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
+		self.barrelActor = Menge.createActor("Barrel1", "Barrel")
+		self.barrelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
 
-		#self.entityBarrel = self.getEntity( "Barrel" )
-		#self.barrelActor.attachEntity( self.entityBarrel );
+		self.entityBarrel = self.getEntity( "Barrel" )
+		self.barrelActor.attachEntity( self.entityBarrel );
 
 		self.zombieActor = Menge.createActor("Zombie1", "Zombie");
 		self.zombieActor.setParentRoot( Menge.vec3f( 10,0,40 ), Menge.quatf(1,0,0,0) );
@@ -147,14 +96,18 @@ class Scene( Menge.Scene ):
 		self.zombieActor.yaw(180);
 
 		self.levelPhysicBody = self.getRigidBody("LevelPhysicBody");
-		self.levelActor.setPhysicBody(self.levelPhysicBody);
+		self.levelPhysicBody.attachSceneNode( self.levelActor );
+
+		self.barrelPhysicBody = self.getRigidBody("BarrelPhysicBody");
+		self.barrelPhysicBody.attachSceneNode( self.barrelActor );
+		self.barrelPhysicBody.setPosition( Menge.vec3f( 10,20,5 ) );
 
 		self.levelActor.activate();
-		#self.barrelActor.activate();
+		self.barrelActor.activate();
 		self.zombieActor.activate();
 
 		self.actorAppend(self.levelActor);
-		#self.actorAppend(self.barrelActor);
+		self.actorAppend(self.barrelActor);
 		self.actorAppend(self.zombieActor);
 
 		self.camera = self.getCamera("MainCamera");
@@ -190,11 +143,9 @@ class Scene( Menge.Scene ):
 		if isDown == True:
 			print "left pressed"
 			self.isMouseDown = True
-			self.emitterTest.play( False );
 		else:
 			print "left unpressed"
 			self.isMouseDown = False
-			#self.emitterTest.play( False );
 		return False
 		pass
 
@@ -205,69 +156,6 @@ class Scene( Menge.Scene ):
 			self.zombieActor.stop();
 			return False
 
-		if key == 205:
-			shoted = Menge.createShot("shot", Menge.vec2f( 0, 0 ), Menge.vec2f( 500, 500 ) );
-			self.node.addChildren( shoted );
-
-			#self.node.flip(True);
-			#self.node.deactivate();
-			#self.a = self.a + self.delta;
-			#self.node.setPercentVisibility( Menge.vec2f( 0, self.a ), Menge.vec2f( 0, 0 ));
-
-		if key == 203:	
-			self.node.flip(False);
-			#self.c = self.c + self.delta;
-			#self.node.setPercentVisibility( Menge.vec2f( 0, 0 ), Menge.vec2f( self.c, 0 ));
-		
-		if key == 208:	
-			self.node.setPercentVisibility( Menge.vec2f( self.a, 0 ), Menge.vec2f( 0, 0 ));
-		
-		if key == 32:
-			print "32"
-			#Menge.setCamera2DDirection( 1, 0)
-			#self.testTextField.setMaxLen(80);
-			#self.testTextField.setText("Zater        yannyi\ntyjgffgfh gfhfghgfh trytry\nattol\ndfgdfgdfgdfgdfg\ndfg");
-			#self.bubble.play();
-			#self.emitterTest.play();
-			self.ROBOT.play("Walk");
-
-
-		if key == 49:
-			print "1"
-			self.emitterTest.stop();
-
-		if key == 50:
-			print "2"
-			self.emitterTest.setLooped( 0 );
-
-		if key == 51:
-			print "3"
-			self.emitterTest.setLooped( 1 );
-
-		if key == 52:
-			print "4"
-			self.emitterTest.setLooped( 2 );
-
-		if key == 53:
-			print "5"
-			self.emitterTest.pause();
-
-		if key == 119:
-			self.xoffset = self.xoffset - 10;
-
-		if key == 100:
-			self.zoffset = self.zoffset - 10;
-
-		if key == 115:
-			self.xoffset = self.xoffset + 10;
-
-		if key == 97:
-			self.zoffset = self.zoffset + 10;
-
-		if key == 120:
-			self.yoffset = self.yoffset - 5;
-
-	
 		if key == 23:
 			self.zombieActor.step( Menge.vec3f( 0, 0, -1 ) );
 

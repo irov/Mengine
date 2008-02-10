@@ -13,6 +13,7 @@ namespace Menge
 
 	public:
 		Camera3D();
+		~Camera3D();
 
 	public:
 		void lookAt(const mt::vec3f& _targetPoint);

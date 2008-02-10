@@ -26,7 +26,6 @@
 #	include "AnimationGroup.h"
 #	include "Emitter.h"
 #	include "Point.h"
-//#	include "RenderMesh3D.h"
 #	include "Entity3d.h"
 #	include "Camera3d.h"
 #	include "RigidBody3D.h"
@@ -312,7 +311,6 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( SoundEmitter );
 	SCRIPT_CLASS_WRAPPING( Emitter );
 	SCRIPT_CLASS_WRAPPING( Point );
-	//SCRIPT_CLASS_WRAPPING( RenderMesh3D );
 	SCRIPT_CLASS_WRAPPING( Entity3d );
 	SCRIPT_CLASS_WRAPPING( SceneNode3D );
 	SCRIPT_CLASS_WRAPPING( Camera3D );
@@ -437,14 +435,19 @@ namespace Menge
 			;
 
 		{
-		/*pybind::proxy_<RenderMesh3D, pybind::bases<SceneNode3D>>("RenderMesh3D", false)
-				.def( "play", &RenderMesh3D::play )
-				.def( "stop", &RenderMesh3D::stop )
-				.def( "setLooped", &RenderMesh3D::setLooped )
-				;
-*/
-			pybind::proxy_<RigidBody3D, pybind::bases<SceneNode3D>>("RigidBody3D", false)
+			pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)
 				.def( "applyForce", &RigidBody3D::applyForce )
+				.def( "applyImpulse", &RigidBody3D::applyImpulse )
+				.def( "applyAngularImpulse", &RigidBody3D::applyAngularImpulse )
+				.def( "applyTorque", &RigidBody3D::applyTorque )
+				.def( "setLinearVelocity", &RigidBody3D::setLinearVelocity )
+				.def( "setAngularVelocity", &RigidBody3D::setAngularVelocity )
+				.def( "setActive", &RigidBody3D::setActive )
+				.def( "getPosition", &RigidBody3D::getPosition )
+				.def( "getOrientation", &RigidBody3D::getOrientation )
+				.def( "attachSceneNode", &RigidBody3D::attachSceneNode )
+				.def( "setPosition", &RigidBody3D::setPosition )
+				.def( "setOrientation", &RigidBody3D::setOrientation )
 				;
 
 		pybind::proxy_<Camera3D, pybind::bases<SceneNode3D>>("Camera3D", false)

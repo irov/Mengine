@@ -2,6 +2,7 @@
 
 #	include "NovodexGeometry.h"
 #	include "NovodexBallSocketJoint.h"
+#	include "NovodexCapsuleController.h"
 #	include <stdio.h>
 #	include "Stream.h"
 //////////////////////////////////////////////////////////////////////////
@@ -41,40 +42,6 @@ NovodexPhysicSystem::~NovodexPhysicSystem()
 		m_physicsSDK->release();	
 	}
 }
-static NxRaycastHit     gHits[100];
-int numHits = 0;
-
-class myRaycastQueryReport : public NxSceneQueryReport
-{
-	virtual	NxQueryReportResult	onBooleanQuery(void* userData, bool result){ return NX_SQR_CONTINUE; };
-	virtual	NxQueryReportResult	onShapeQuery(void* userData, NxU32 nbHits, NxShape** hits){ return NX_SQR_CONTINUE; };
-	virtual	NxQueryReportResult	onSweepQuery(void* userData, NxU32 nbHits, NxSweepQueryHit* hits){ return NX_SQR_CONTINUE; };
-
-	virtual	NxQueryReportResult	onRaycastQuery(void* userData, NxU32 nbHits, const NxRaycastHit* hits)
-	{
-		//unsigned int i = (unsigned int)userData;
-
-		printf("%d \n", nbHits);
-		
-		
-		if(nbHits > 0)
-		{
-		printf("%f \n",hits[0].distance);
-		gHits[0] = hits[0];
-		}
-
-
-	/*	if (nbHits > 0) 
-		{
-			gHits[i] = hits[0];
-		} 
-		else 
-		{
-			gHits[i].shape = NULL;
-		}*/
-		return NX_SQR_CONTINUE;
-	}
-}gQueryReport;
 //////////////////////////////////////////////////////////////////////////
 void NovodexPhysicSystem::init(float gx, float gy, float gz) 
 {
@@ -145,6 +112,29 @@ void NovodexPhysicSystem::update(float _timestep)
 	}
 
 }
+//////////////////////////////////////////////////////////////////////////
+ControllerInterface * NovodexPhysicSystem::createCapsuleController( float * _startPos, float _initialRadius, float _initialHeight )
+{
+	NxCapsuleControllerDesc desc;
+
+	desc.interactionFlag	= NXIF_INTERACTION_INCLUDE;
+
+	desc.position.x			= _startPos[0];
+	desc.position.y			= _startPos[1];
+	desc.position.z			= _startPos[2];
+	desc.radius				= _initialRadius;
+	desc.height				= _initialHeight;
+	desc.upDirection		= NX_Y;
+	desc.slopeLimit			= 0.0f;
+	desc.slopeLimit			= cosf(NxMath::degToRad(90.0f));
+	desc.skinWidth			= SKINWIDTH;
+	desc.stepOffset			= _initialRadius;
+	desc.callback			= 0;
+
+	NxCapsuleController * contr = static_cast<NxCapsuleController*>(gCM.createController(m_scene, desc));
+	ControllerInterface * cap = new NovodexCapsuleController(contr);
+	return cap;
+};
 //////////////////////////////////////////////////////////////////////////
 GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _vertexSize )
 {
@@ -324,19 +314,3 @@ void NovodexPhysicSystem::removeGeometry( GeometryInterface * _geom )
 	delete _geom;
 }
 //////////////////////////////////////////////////////////////////////////
-float NovodexPhysicSystem::rayCast(const char * _name, float * pos, float * dir)
-{
-	NxRay worldRay;
-	worldRay.dir = NxVec3(dir[0], dir[1], dir[2]);
-	worldRay.orig = NxVec3(pos[0], pos[1], pos[2]);
-
-	NxRaycastHit hit;
-
-	m_SceneQueryObject->raycastClosestShape(worldRay, NX_STATIC_SHAPES, hit, 0xffffffff, NX_MAX_F32, 0xffffffff, NULL, NULL, NULL);
-
-	m_SceneQueryObject->execute();
-	m_SceneQueryObject->finish(true);
-
-	return gHits[0].distance;
-	//return hit.distance;
-}

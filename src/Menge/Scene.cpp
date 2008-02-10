@@ -8,7 +8,6 @@
 #	include "PhysicEngine.h"
 #	include "Application.h"
 
-
 #	include "XmlEngine.h"
 
 #	include "Entity3d.h"
@@ -16,7 +15,6 @@
 #	include "RigidBody3d.h"
 #	include "Light.h"
 #	include "Actor.h"
-
 
 namespace	Menge
 {
@@ -218,8 +216,6 @@ namespace	Menge
 		registerEventMethod( "MOUSE_BUTTON", "onHandleMouseButtonEvent" );
 		registerEventMethod( "MOUSE_MOVE", "onHandleMouseMove" );
 
-		Camera3D * cam3d = this->m_mapCameras.begin()->second;
-
 		activateLights_();
 		activateCameras_();
 		setPhysicParams_();
@@ -255,7 +251,86 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()
 	{
+		for( TMapLight::iterator
+			it = m_mapLights.begin(),
+			it_end = m_mapLights.end();
+		it != it_end;
+		++it)
+		{
+			it->second->deactivate();
+		}
+
+		for( TMapCamera::iterator
+			it = m_mapCameras.begin(),
+			it_end = m_mapCameras.end();
+		it != it_end;
+		++it)
+		{
+			it->second->deactivate();
+		}
+
+		for( TMapRigidBody::iterator
+			it = m_mapRigidBodies.begin(),
+			it_end = m_mapRigidBodies.end();
+		it != it_end;
+		++it)
+		{
+			it->second->deactivate();
+		}
+
+		for( TMapEntity::iterator
+			it = m_mapEntities.begin(),
+			it_end = m_mapEntities.end();
+		it != it_end;
+		++it)
+		{
+			it->second->deactivate();
+		}
+
 		callMethod( "onDeactivate", "() ");
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::_release()
+	{
+		for( TMapLight::iterator
+			it = m_mapLights.begin(),
+			it_end = m_mapLights.end();
+		it != it_end;
+		++it)
+		{
+			it->second->release();
+			delete it->second;
+		}
+
+		for( TMapCamera::iterator
+			it = m_mapCameras.begin(),
+			it_end = m_mapCameras.end();
+		it != it_end;
+		++it)
+		{
+			it->second->release();
+			delete it->second;
+		}
+
+		for( TMapRigidBody::iterator
+			it = m_mapRigidBodies.begin(),
+			it_end = m_mapRigidBodies.end();
+		it != it_end;
+		++it)
+		{
+			it->second->release();
+			delete it->second;
+		}
+
+		for( TMapEntity::iterator
+			it = m_mapEntities.begin(),
+			it_end = m_mapEntities.end();
+		it != it_end;
+		++it)
+		{
+			it->second->release();
+			delete it->second;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
@@ -449,36 +524,6 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RigidBody3D * Scene::getRigidBody( const std::string & _name )
-	{
-		TMapRigidBody::const_iterator it_find = m_mapRigidBodies.find( _name );
-
-		if( it_find == m_mapRigidBodies.end() )
-		{
-			return NULL;
-		}
-
-		RigidBody3D * body = it_find->second;
-
-		body->activate();
-
-		return body;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Camera3D * Scene::getCamera( const std::string & _name )
-	{
-		TMapCamera::const_iterator it_find = m_mapCameras.find( _name );
-
-		if( it_find == m_mapCameras.end() )
-		{
-			return NULL;
-		}
-
-		Camera3D * camera = it_find->second;
-
-		return camera;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::addLight( Light * _light )
 	{
 		const std::string & name = _light->getName();
@@ -517,6 +562,36 @@ namespace	Menge
 		entity->activate();
 
 		return entity;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Camera3D * Scene::getCamera( const std::string & _name )
+	{
+		TMapCamera::const_iterator it_find = m_mapCameras.find( _name );
+
+		if( it_find == m_mapCameras.end() )
+		{
+			return NULL;
+		}
+
+		Camera3D * camera = it_find->second;
+
+		return camera;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RigidBody3D * Scene::getRigidBody( const std::string & _name )
+	{
+		TMapRigidBody::const_iterator it_find = m_mapRigidBodies.find( _name );
+
+		if( it_find == m_mapRigidBodies.end() )
+		{
+			return NULL;
+		}
+
+		RigidBody3D * body = it_find->second;
+
+		body->activate();
+
+		return body;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Layer * _layer )

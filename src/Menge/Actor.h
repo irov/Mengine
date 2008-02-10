@@ -5,6 +5,8 @@
 #	include "math/quat.h"
 #	include <string>
 
+class ControllerInterface;
+
 namespace Menge
 {
 	class ResourceMesh;
@@ -52,6 +54,7 @@ namespace Menge
 		mt::vec3f m_dir;
 		mt::vec3f m_contMovement;
 		RigidBody3D * m_body;
+		ControllerInterface * m_controller;
 
 		void render(){}
 		bool isRenderable(){return false;}

@@ -67,6 +67,7 @@ namespace Menge
 		void _deactivate() override;
 
 		void _update( float _timing ) override;
+		void _release() override;
 
 		void _addChildren( Layer * _layer ) override;
 

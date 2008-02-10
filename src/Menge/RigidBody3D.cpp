@@ -12,6 +12,8 @@
 
 #	include "XmlEngine.h"
 
+#	include "SceneNode3D.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -22,20 +24,30 @@ namespace	Menge
 		, m_density(0.0f)
 		, m_interface(0)
 		, m_resource(0)
-	{
-	}
+	{}	
 	//////////////////////////////////////////////////////////////////////////
 	RigidBody3D::~RigidBody3D()
+	{}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody3D::attachSceneNode( SceneNode3D * _node )
 	{
+		assert(_node);
+		_node->attachMotionModifier( this );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody3D::setPosition( const mt::vec3f & _position )
+	{
+		m_interface->setPosition( _position.x, _position.y, _position.z );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody3D::setOrientation( const mt::quatf & _quat )
+	{
+		m_interface->setOrient( _quat.w, _quat.x, _quat.y, _quat.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::_update( float _timing )
 	{
-	//	float * R = m_interface->getOrient();
-	//	this->setLocalOrient(*(mt::quatf *)R);
-
-	////	float * pos = m_interface->getPosition();
-	//	this->setLocalPosition(*(mt::vec3f *)pos);
+		assert(0);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & RigidBody3D::getPosition()
@@ -43,15 +55,13 @@ namespace	Menge
 		return *(mt::vec3f*)m_interface->getPosition();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::quatf & RigidBody3D::getOrient()
+	const mt::quatf & RigidBody3D::getOrientation()
 	{
 		return *(mt::quatf*)m_interface->getOrient();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::loader( XmlElement * _xml )
 	{
-		SceneNode3D::loader(_xml);
-
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE("GeometryResource", "Name", m_resourcename );
@@ -62,26 +72,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody3D::_activate()
 	{
-		if( SceneNode3D::_activate() == false )
-		{
-			return false;
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::_deactivate()
 	{
-		SceneNode3D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody3D::_compile()
 	{
-		if( SceneNode3D::_compile() == false )
-		{
-			return false;
-		}
-
 		m_resource = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourcePhysicGeometry>( m_resourcename );
@@ -95,21 +94,11 @@ namespace	Menge
 
 		m_interface = Holder<PhysicEngine>::hostage()->createRigidBody( m_density, m_active, geometry );
 
-	/*	const mt::vec3f & pos = getLocalPosition();
-
-		m_interface->setPosition( pos.x, pos.y, pos.z );
-
-		const mt::quatf & orient = getLocalOrient();
-
-		m_interface->setOrient( orient.w, orient.x, orient.y, orient.z );
-*/
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::_release()
 	{
-		SceneNode3D::_release();
-
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resource );
 

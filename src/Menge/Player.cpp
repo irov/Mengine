@@ -37,11 +37,6 @@ namespace Menge
 		{
 			delete m_renderCamera2D;
 		}
-
-		if( m_renderCamera3D )
-		{
-			delete m_renderCamera3D;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setCurrentScene( const std::string & _name, bool _destroyOld )
@@ -253,6 +248,7 @@ namespace Menge
 
 			m_nextScene->compile();
 			m_nextScene->activate();
+
 			if( m_scene )
 			{
 				m_scene->deactivate();

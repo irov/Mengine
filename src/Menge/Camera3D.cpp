@@ -25,6 +25,11 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Camera3D::~Camera3D()
+	{
+		Holder<RenderEngine>::hostage()->releaseCamera( m_interface );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::lookAt(const mt::vec3f& _targetPoint)
 	{
 		m_interface->lookAt(_targetPoint.x, _targetPoint.y, _targetPoint.z);

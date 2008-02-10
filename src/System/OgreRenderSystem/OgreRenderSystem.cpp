@@ -99,39 +99,20 @@ EntityInterface * OgreRenderSystem::createEntity( const char * _name, const char
 	EntityInterface * ent = new OgreEntity(entity);
 	return ent;
 }
-/// Query the distance to the ground or an object
-Ogre::Real OgreRenderSystem::_sceneQueryDistance( const std::string& mName, const Ogre::Ray & myRay, bool sort ) 
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::releaseCamera( CameraInterface * _camera )
 {
-    if(!mRaySceneQuery) 
-    {
-        return -1;
-    }
-    mRaySceneQuery->setRay(myRay);
-    mRaySceneQuery->setSortByDistance(sort);
-	Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
-    Ogre::RaySceneQueryResult::iterator itr;
-    for (itr = result.begin(); itr != result.end(); ++itr) 
-    {
-        if (itr->worldFragment)
-        {
-            return itr->distance;
-        }
-
-        if (itr->movable && itr->movable->getMovableType() == "Entity")
-		{
-			Ogre::String getname = itr->movable->getName();
-            if (getname == mName)   
-            {
-                return itr->distance;
-            }
-		}
-    }
-    return -1;                       
+	delete static_cast<CameraInterface*>( _camera );
 }
 //////////////////////////////////////////////////////////////////////////
-float	OgreRenderSystem::getQueryDistance( const char * _name, float * pos, float * dir )
+void OgreRenderSystem::releaseEntity( EntityInterface * _entity )
 {
-	return _sceneQueryDistance( _name, Ogre::Ray( *(Ogre::Vector3*)pos,*(Ogre::Vector3*)dir ),true);
+	delete static_cast<EntityInterface*>( _entity );
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::releaseLight( LightInterface * _light )
+{
+	delete static_cast<LightInterface*>( _light );
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow )

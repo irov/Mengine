@@ -28,6 +28,7 @@ namespace	Menge
 	, m_initOrient(1,0,0,0)
 	, m_contMovement(0,0,0)
 	, m_body(0)
+	, m_controller(0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Actor::~Actor()
@@ -40,10 +41,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::_update( float _timing )
 	{
+		SceneNode3D::_update( _timing );
 		if( m_body != NULL )
 		{
-			this->setLocalPosition( m_body->getPosition() );
-			this->setLocalOrient( m_body->getOrient() );
+		//	this->setLocalPosition( m_body->getPosition() );
+		//	this->setLocalOrient( m_body->getOrientation() );
 		}
 		else
 		{
@@ -67,12 +69,16 @@ namespace	Menge
 
 				//printf("Actor = %f %f %f\n", expp.x, expp.y, expp.z);
 
-				workv +=mt::vec3f(0,-9.8,0);
+				//workv +=mt::vec3f(0,-9.8f,0);
 
-				Holder<PhysicEngine>::hostage()->moveController(workv);
+				//Holder<PhysicEngine>::hostage()->moveController(workv);
+				m_controller->setPosition(workv.m);
 
 				//Holder<PhysicEngine>::hostage()->getControllerPos();
-				this->setLocalPosition(Holder<PhysicEngine>::hostage()->getControllerPos());
+				this->setLocalPosition(
+					//Holder<PhysicEngine>::hostage()->getControllerPos()
+					*(mt::vec3f*)m_controller->getFilteredPosition()
+					);
 			}
 		}
 
@@ -100,7 +106,7 @@ namespace	Menge
 
 		if( getName() == "Zombie1")
 		{
-			Holder<PhysicEngine>::hostage()->createController( this->getWorldPosition(),1,1 );
+			m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( this->getWorldPosition(),0.1f,1.0f );
 		}
 
 		return true;

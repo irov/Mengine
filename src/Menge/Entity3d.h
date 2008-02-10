@@ -37,10 +37,9 @@ namespace Menge
 		void stop();
 		void setLooped( bool _looped );
 
-
 		EntityInterface * get()
 		{
-			return m_entityInterface;
+			return m_interface;
 		}
 
 	protected:
@@ -59,9 +58,7 @@ namespace Menge
 		std::string m_resourcenameSkeleton;
 		ResourceSkeleton * m_resourceSkeleton;
 
-		EntityInterface * m_entityInterface;
-
-		bool	m_isGrounded;
+		EntityInterface * m_interface;
 
 		float m_scale;
 

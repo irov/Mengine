@@ -1424,6 +1424,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CapsuleController.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CapsuleController.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Entity3d.cpp"
 				>
 			</File>
@@ -1431,18 +1439,18 @@
 				RelativePath=".\Entity3d.h"
 				>
 			</File>
-			<Filter
-				Name="RigidBody"
+			<File
+				RelativePath=".\MotionModifier.h"
 				>
-				<File
-					RelativePath=".\RigidBody3D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\RigidBody3D.h"
-					>
-				</File>
-			</Filter>
+			</File>
+			<File
+				RelativePath=".\RigidBody3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RigidBody3D.h"
+				>
+			</File>
 			<Filter
 				Name="Light"
 				>

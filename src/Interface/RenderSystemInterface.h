@@ -157,13 +157,16 @@ public:
 
 	//new
 	virtual CameraInterface * createCamera( const char * _name ) = 0;
-	virtual EntityInterface * createEntity(const char * _name, const char * _meshName) = 0;
-	virtual LightInterface * createLight(const char * _name) = 0;
+	virtual EntityInterface * createEntity( const char * _name, const char * _meshName ) = 0;
+	virtual LightInterface * createLight( const char * _name ) = 0;
+
+	virtual void releaseCamera( CameraInterface * _camera ) = 0;
+	virtual void releaseEntity( EntityInterface * _entity ) = 0;
+	virtual void releaseLight( LightInterface * _light ) = 0;
+
 	virtual void update(float _timing) = 0;
 
 	virtual SceneNodeInterface * attachSceneNodeToRoot( const char * _name ) = 0;
-
-	virtual float	getQueryDistance( const char * _name, float * pos, float * dir ) = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

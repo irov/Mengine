@@ -33,6 +33,14 @@ public:
 	virtual ~JointInterface(){};
 };
 
+class	ControllerInterface
+{
+public:
+	virtual ~ControllerInterface(){};
+	virtual void setPosition( float * _pos ) = 0;
+	virtual float * getFilteredPosition() = 0;
+};
+
 class	BallSocketJointInterface : public JointInterface
 {
 public:
@@ -56,12 +64,9 @@ public:
 	virtual void setRestitution( float _value ) = 0;
 	virtual void setStaticFriction( float _value ) = 0;
 	virtual void setDynamicFriction( float _value ) = 0;
-	virtual float rayCast(const char * _name, float * pos, float * dir) = 0;
 public:
+	virtual ControllerInterface * createCapsuleController( float * _startPos, float _initialRadius, float _initialHeight ) = 0;
 
-	virtual float * getControllerPos() = 0;
-	virtual void moveController( float * _dispvec ) = 0;
-	virtual void createController( float * _startPos, float _initialRadius, float _initialHeight ) = 0;
 	virtual GeometryInterface * cookConvex( const float * _verts, int _vertexSize ) = 0;
 	virtual GeometryInterface * cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) = 0;
 	virtual GeometryInterface * cookConvex( const char * _filename ) = 0;

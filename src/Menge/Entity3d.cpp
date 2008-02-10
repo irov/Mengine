@@ -21,28 +21,29 @@ namespace	Menge
 	Entity3d::Entity3d()
 		: m_resourceMesh(0)
 		, m_resourceSkeleton(0)
-		, m_entityInterface(0)
-		, m_isGrounded(false)
+		, m_interface(0)
 		, m_scale(1.0f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Entity3d::~Entity3d()
-	{}
+	{
+		Holder<RenderEngine>::hostage()->releaseEntity( m_interface );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::_update( float _timing )
 	{
-		m_entityInterface->update( _timing );
+		m_interface->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::quatf & Entity3d::getBoneWorldOrient( const std::string& _name )
 	{
-		return *(mt::quatf*)m_entityInterface->getBoneOrientation( _name.c_str() );
+		return *(mt::quatf*)m_interface->getBoneOrientation( _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & Entity3d::getBoneWorldPosition( const std::string& _name ) 
 	{
-		return *(mt::vec3f*)m_entityInterface->getBonePosition( _name.c_str() );
+		return *(mt::vec3f*)m_interface->getBonePosition( _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::loader( XmlElement * _xml )
@@ -53,7 +54,6 @@ namespace	Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ResourceMesh", "Name", m_resourcenameMesh );
 			XML_CASE_ATTRIBUTE_NODE( "ResourceSkeleton", "Name", m_resourcenameSkeleton );
-			XML_CASE_ATTRIBUTE_NODE( "IsGrounded", "Value", m_isGrounded );
 			XML_CASE_ATTRIBUTE_NODE( "Scale", "Value", m_scale );
 		}
 	}
@@ -109,7 +109,7 @@ namespace	Menge
 		const std::string & entityName = this->getName();
 		const std::string & meshName = m_resourceMesh->getMeshName();
 
-		m_entityInterface = Holder<RenderEngine>::hostage()->createEntity(entityName, meshName);
+		m_interface = Holder<RenderEngine>::hostage()->createEntity(entityName, meshName);
 
 		float scale[3] = {m_scale,m_scale,m_scale};
 
@@ -133,22 +133,22 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::play( const std::string& _name )
 	{
-		m_entityInterface->play( _name.c_str() );
+		m_interface->play( _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::play2( const std::string& _name1, float _weight1, const std::string& _name2, float _weight2 )
 	{
-		m_entityInterface->play( _name1.c_str(), _weight1, _name2.c_str(), _weight2 );
+		m_interface->play( _name1.c_str(), _weight1, _name2.c_str(), _weight2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::stop()
 	{
-		m_entityInterface->stop();
+		m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::setLooped( bool _looped )
 	{
-		m_entityInterface->setLooped( _looped );
+		m_interface->setLooped( _looped );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

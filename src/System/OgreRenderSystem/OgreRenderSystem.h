@@ -74,13 +74,13 @@ public:
 	LightInterface * createLight(const char * _name) override;
 	EntityInterface * createEntity(const char * _name, const char * _mesh ) override;
 
+	void releaseCamera( CameraInterface * _camera ) override;
+	void releaseEntity( EntityInterface * _entity ) override;
+	void releaseLight( LightInterface * _light ) override;
+
 	void update(float _timing) override;
 
 	SceneNodeInterface * attachSceneNodeToRoot( const char * _name ) override;
-
-	float	getQueryDistance( const char * _name, float * pos, float * dir ) override;
-
-	Ogre::Real _sceneQueryDistance( const std::string& mName, const Ogre::Ray & myRay, bool sort );
 
 private:
 	Ogre::Vector2	m_contentResolution;

@@ -60,6 +60,11 @@
 			<Active Value = "0"/>
 			<Density Value = "0"/>
 		</RigidBody>
+		<RigidBody Name = "BarrelPhysicBody">
+              		<GeometryResource Name = "ResourceBarrelGeometry"/>
+			<Active Value = "1"/>
+			<Density Value = "100"/>
+		</RigidBody>
 	</RigidBodies>
 
 	<Lights>

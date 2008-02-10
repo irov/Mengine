@@ -5,36 +5,24 @@
 
 #	include "MotionModifier.h"
 
-class RigidBodyInterface;
+class ControllerInterface;
 
 namespace Menge
 {
 	class SceneNode3D;
-	class ResourcePhysicGeometry;
 
-	class RigidBody3D
+	class CapsuleController
 		: public NodeSinglethon, public MotionModifier
 	{
-		OBJECT_DECLARE( RigidBody3D )
+		OBJECT_DECLARE( CapsuleController )
 
 	public:
-		RigidBody3D();
-		~RigidBody3D();
+		CapsuleController();
+		~CapsuleController();
 	public:
-		void applyImpulse( const mt::vec3f & _vec );
-		void applyAngularImpulse( const mt::vec3f & _vec );
-		void applyForce( const mt::vec3f & _vec );
-		void applyTorque( const mt::vec3f & _vec );
-		void setLinearVelocity( const mt::vec3f & _vec );
-		void setAngularVelocity( const mt::vec3f & _vec );
-		void setActive( bool _active );
-
 		void setPosition( const mt::vec3f & _position );
-		void setOrientation( const mt::quatf & _quat );
-
 		const mt::vec3f & getPosition() override;
 		const mt::quatf & getOrientation() override;
-
 		void attachSceneNode( SceneNode3D * _node );
 
 	public:
@@ -48,13 +36,12 @@ namespace Menge
 		void _update( float _timing ) override;
 
 	private:
-		bool m_active;
-		float m_density;
-
-		RigidBodyInterface * m_interface;
+		float m_radius;
+		float m_height;
+		ControllerInterface * m_interface;
 
 		std::string m_resourcename;
-		ResourcePhysicGeometry * m_resource;
+		//ResourcePhysicGeometry * m_resource;
 
 		void render(){}
 		bool isRenderable(){return false;}

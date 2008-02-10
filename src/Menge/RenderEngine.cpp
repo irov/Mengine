@@ -221,6 +221,21 @@ namespace Menge
 		return m_interface->createLight(_name.c_str());
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::releaseCamera( CameraInterface * _camera )
+	{
+		return m_interface->releaseCamera( _camera );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::releaseEntity( EntityInterface * _entity )
+	{
+		return m_interface->releaseEntity( _entity );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::releaseLight( LightInterface * _light )
+	{
+		return m_interface->releaseLight( _light );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::frameStarted()
 	{
 		m_interface->render();
@@ -234,11 +249,6 @@ namespace Menge
 	SceneNodeInterface * RenderEngine::attachSceneNodeToRoot( const std::string & _name )
 	{
 		return m_interface->attachSceneNodeToRoot( _name.c_str() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float	RenderEngine::getQueryDistance( const std::string& _name, const mt::vec3f & _pos, const mt::vec3f & _dir )
-	{
-		return m_interface->getQueryDistance( _name.c_str(), (float*)_pos.m, (float*)_dir.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

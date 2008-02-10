@@ -1,5 +1,7 @@
 #	include "SceneNode3D.h"
 
+#	include "MotionModifier.h"
+
 #	include "XmlEngine.h"
 
 #	include "Interface/RenderSystemInterface.h"
@@ -9,12 +11,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::SceneNode3D()
 		: m_interface(0)
-	{
-	}
+		, m_modifier(0)
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::~SceneNode3D()
 	{
 		delete m_interface;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::_update( float _timing )
+	{
+		if( m_modifier != NULL )
+		{// учитывать собственные трансформации?
+			setLocalPosition( m_modifier->getPosition() );
+			setLocalOrient( m_modifier->getOrientation() );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::attachMotionModifier( MotionModifier * _modifier )
+	{
+		m_modifier = _modifier;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::quatf & SceneNode3D::getWorldOrient()

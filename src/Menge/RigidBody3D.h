@@ -13,7 +13,7 @@ namespace Menge
 	class ResourcePhysicGeometry;
 
 	class RigidBody3D
-		: public NodeSinglethon, public MotionModifier
+		: public NodeSinglethon
 	{
 		OBJECT_DECLARE( RigidBody3D )
 
@@ -32,10 +32,8 @@ namespace Menge
 		void setPosition( const mt::vec3f & _position );
 		void setOrientation( const mt::quatf & _quat );
 
-		const mt::vec3f & getPosition() override;
-		const mt::quatf & getOrientation() override;
-
-		void attachSceneNode( SceneNode3D * _node );
+		const mt::vec3f & getPosition();
+		const mt::quatf & getOrientation();
 
 	public:
 		void loader( XmlElement * _xml ) override;

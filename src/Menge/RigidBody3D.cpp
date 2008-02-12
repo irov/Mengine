@@ -29,12 +29,6 @@ namespace	Menge
 	RigidBody3D::~RigidBody3D()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody3D::attachSceneNode( SceneNode3D * _node )
-	{
-		assert(_node);
-		_node->attachMotionModifier( this );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::setPosition( const mt::vec3f & _position )
 	{
 		m_interface->setPosition( _position.x, _position.y, _position.z );

@@ -29,29 +29,19 @@ namespace	Menge
 	, m_contMovement(0,0,0)
 	, m_body(0)
 	, m_controller(0)
+	, m_charPos(0,0,0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Actor::~Actor()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void Actor::setPhysicBody( RigidBody3D * _body )
-	{
-		m_body = _body;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Actor::_update( float _timing )
 	{
 		SceneNode3D::_update( _timing );
-		if( m_body != NULL )
-		{
-		//	this->setLocalPosition( m_body->getPosition() );
-		//	this->setLocalOrient( m_body->getOrientation() );
-		}
-		else
+
+		if( m_body == NULL )
 		{
 			float step = 0.005f * _timing;
-
-			//mt::vec3f workv = mt::vec3f::zero_v3;
 
 			mt::vec3f workv = mt::vec3f::zero_v3;
 
@@ -62,24 +52,14 @@ namespace	Menge
 
 			if(workv != mt::vec3f::zero_v3)
 			{
-			//		float dist = Holder<PhysicEngine>::hostage()->rayCast("level",getWorldPosition(),mt::vec3f(0,-1,0));
-			//		workv.y+= 10 - dist;
-				mt::vec3f expp = getWorldPosition();
-				//this->translate( workv );
-
-				//printf("Actor = %f %f %f\n", expp.x, expp.y, expp.z);
-
-				//workv +=mt::vec3f(0,-9.8f,0);
-
-				//Holder<PhysicEngine>::hostage()->moveController(workv);
 				m_controller->setPosition(workv.m);
-
-				//Holder<PhysicEngine>::hostage()->getControllerPos();
 				this->setLocalPosition(
-					//Holder<PhysicEngine>::hostage()->getControllerPos()
 					*(mt::vec3f*)m_controller->getFilteredPosition()
 					);
 			}
+
+			//m_charPos+this->getLocalPosition()*step;
+			//this->setLocalPosition( m_charPos*step+this->getLocalPosition() );
 		}
 
 		m_entityInterface->update(_timing);
@@ -174,18 +154,26 @@ namespace	Menge
 
 		this->setLocalPosition( _pos );
 		this->setLocalOrient( _q );
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::step( const mt::vec3f & _v )
 	{
-		m_entityInterface->play("move forward");
+		m_entityInterface->play("idle2");
 		m_entityInterface->setLooped(true);
 		m_contMovement = m_initOrient * _v;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Actor::left()
+	{
+		m_entityInterface->play("move forward");
+		m_entityInterface->setLooped(true);
+		m_charPos += mt::vec3f(0,0,-1)*1.0f;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Actor::stop()
 	{
-		m_entityInterface->play("idle1");
+		m_entityInterface->play("idle2");
 		m_contMovement = mt::vec3f::zero_v3;
 	}
 }

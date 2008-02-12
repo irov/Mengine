@@ -445,7 +445,6 @@ namespace Menge
 				.def( "setActive", &RigidBody3D::setActive )
 				.def( "getPosition", &RigidBody3D::getPosition )
 				.def( "getOrientation", &RigidBody3D::getOrientation )
-				.def( "attachSceneNode", &RigidBody3D::attachSceneNode )
 				.def( "setPosition", &RigidBody3D::setPosition )
 				.def( "setOrientation", &RigidBody3D::setOrientation )
 				;

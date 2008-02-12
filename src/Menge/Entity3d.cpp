@@ -22,7 +22,6 @@ namespace	Menge
 		: m_resourceMesh(0)
 		, m_resourceSkeleton(0)
 		, m_interface(0)
-		, m_scale(1.0f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -54,7 +53,6 @@ namespace	Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ResourceMesh", "Name", m_resourcenameMesh );
 			XML_CASE_ATTRIBUTE_NODE( "ResourceSkeleton", "Name", m_resourcenameSkeleton );
-			XML_CASE_ATTRIBUTE_NODE( "Scale", "Value", m_scale );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -111,10 +109,7 @@ namespace	Menge
 
 		m_interface = Holder<RenderEngine>::hostage()->createEntity(entityName, meshName);
 
-		float scale[3] = {m_scale,m_scale,m_scale};
-
-	//	m_interface->setScale(scale);
-
+	
 //		m_interface->attachEntity( m_entityInterface );
 
 		return true;

@@ -27,12 +27,6 @@ namespace	Menge
 	CapsuleController::~CapsuleController()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void CapsuleController::attachSceneNode( SceneNode3D * _node )
-	{
-		assert(_node);
-		_node->attachMotionModifier( this );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void CapsuleController::setPosition( const mt::vec3f & _position )
 	{
 		m_interface->setPosition( (float*)_position.m );

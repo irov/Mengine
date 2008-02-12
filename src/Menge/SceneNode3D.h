@@ -9,8 +9,6 @@ class SceneNodeInterface;
 
 namespace Menge
 {
-	class MotionModifier;
-
 	class SceneNode3D
 		: public NodeCore
 		, public NodeChildren<SceneNode3D>
@@ -36,8 +34,6 @@ namespace Menge
 		void pitch( float _angle );
 		void roll( float _angle );
 
-		void attachMotionModifier( MotionModifier * _modifier );
-
 	public:
 		void loader( XmlElement * _xml ) override;
 
@@ -50,6 +46,5 @@ namespace Menge
 		void _update( float _timing ) override;
 
 		SceneNodeInterface * m_interface;
-		MotionModifier * m_modifier;
 	};
 }

@@ -60,8 +60,6 @@ namespace Menge
 
 		EntityInterface * m_interface;
 
-		float m_scale;
-
 		void render(){}
 		bool isRenderable(){return false;}
 	};

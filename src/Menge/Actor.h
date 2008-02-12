@@ -32,11 +32,8 @@ namespace Menge
 		void	attachEntity( Entity3d * _entity );
 
 		void	step( const mt::vec3f & _dir );
+		void	left();
 		void	stop();
-	public:
-
-		void	setPhysicBody( RigidBody3D * _body );
-
 	public:
 		void	setParentActor( Actor * _parent, const mt::vec3f & _pos );
 		void	setParentRoot( const mt::vec3f & _pos, const mt::quatf & _q );
@@ -55,6 +52,8 @@ namespace Menge
 		mt::vec3f m_contMovement;
 		RigidBody3D * m_body;
 		ControllerInterface * m_controller;
+
+		mt::vec3f m_charPos;
 
 		void render(){}
 		bool isRenderable(){return false;}

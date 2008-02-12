@@ -28,6 +28,7 @@ namespace Menge
 		float getSpeed() const;
 		void scaleTo( float _time, const mt::vec2f& _scale );
 		void scaleStop();
+		void setSpeed( const mt::vec2f& _speed );
 		//void setAcceleration( const mt::vec2f& _acceleration )	{ m_acceleration = _acceleration; }
 
 	protected:

@@ -56,6 +56,7 @@ void CornersAI::changeTurn()
 void CornersAI::restartGame()
 {
 	memcpy( &m_board[0][0], &m_initialBoard[0][0], 64 * sizeof( int ) );
+	m_turn = 1;
 }
 
 TMoveList* CornersAI::getMoveList()

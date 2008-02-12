@@ -95,10 +95,11 @@ namespace Menge
 			pos -= viewport->begin;
 
 			// if we have case with 2 viewports, check in what viewport we see point (looks more like a hack)
-			if( m_layer->isScrollable() && pos.x > viewport->end.x )
+			if( m_layer->isScrollable() && ( pos.x > viewport->end.x || pos.x < viewport->begin.x ))
 			{
 				pos -= m_layer->getViewportOffset();
 			}
+
 		}
 
 		return pos;
@@ -109,8 +110,9 @@ namespace Menge
 		_node->setLayer( m_layer );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::_update( float _timing )
+	void SceneNode2D::update( float _timing )
 	{
+		NodeCore::update( _timing );
 		if( m_layer && m_layer->isScrollable() )
 		{
 			mt::vec2f& pos = getLocalPositionModify();

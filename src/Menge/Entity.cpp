@@ -148,7 +148,7 @@ namespace	Menge
 			m_rotate = true;
 			m_rotateTime = _time;
 			m_targetDir = mt::norm_v2( _point - _pos );
-			printf( "rotateto: %.4f %.4f %.4f ms\n", m_targetDir.x, m_targetDir.y, _time );
+			//printf( "rotateto: %.4f %.4f %.4f ms\n", m_targetDir.x, m_targetDir.y, _time );
 		}
 		else
 		{
@@ -169,26 +169,39 @@ namespace	Menge
 	{
 
 		const mt::vec2f & pos = getLocalPosition();	
-		float v = m_speed.length();
 
-		if( fabsf( _speed - v ) < 0.0001f )
+		float len = ( _point - pos ).length();
+		mt::vec2f dir;
+		dir = ( _point - pos ) / len;
+		m_nSpeed = dir * _speed;
+		float v = mt::length_v2_v2( m_speed, m_nSpeed );
+
+		if( v < 0.0001f )
 		{
 			moveStop();
 			this->callEvent("MOVE_END", "()" );
 			return;
 		}
-		float len = ( _point - pos ).length();
-		mt::vec2f dir;
-		if( v == 0.0f )
-			dir = ( _point - pos ) / len;
-		else
-			dir = m_speed / v;
+		//float len = ( _point - pos ).length();
+		//mt::vec2f dir;
+		//if( v == 0.0f )
+		//	dir = ( _point - pos ) / len;
+		//else
+		//	dir = m_speed / v;
+		if( _changeDirection )
+		{
+			rotateStop();
+			mt::vec2f dir = mt::norm_v2( _point - pos );
+			setLocalDirection( dir );
+		}
 
-		m_moveTime = 2.0f * len / ( v + _speed );
-		m_acceleration = dir * ( _speed - v ) / m_moveTime;
+		//m_moveTime = 2.0f * len / ( v + _speed );
+		//m_acceleration = dir * ( _speed - v ) / m_moveTime;
+		m_moveTime = 2.0f * ( _point.x - pos.x ) / ( m_nSpeed.x + m_speed.x );
+		m_acceleration.x = ( m_nSpeed.x - m_speed.x ) / m_moveTime;
+		m_acceleration.y = ( m_nSpeed.y - m_speed.y ) / m_moveTime;
 		m_movePoint = _point;
 		m_moveTo = true;
-		m_nSpeed = dir * _speed;
 		m_accelerateTo = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -322,18 +335,6 @@ namespace	Menge
 			}
 		}
 
-		if( m_layer && m_layer->isScrollable() )
-		{
-			mt::vec2f& pos = getLocalPositionModify();
-			if( pos.x > m_layer->getSize().x )
-			{
-				pos.x -= m_layer->getSize().x;
-			}
-			else if( pos.x < 0 )
-			{
-				pos.x += m_layer->getSize().x;
-			}
-		}
 		this->callEvent("UPDATE", "(f)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -390,5 +391,10 @@ namespace	Menge
 	float Entity::getSpeed() const
 	{
 		return m_speed.length();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::setSpeed( const mt::vec2f& _speed )
+	{
+		m_speed = _speed;
 	}
 }

@@ -31,8 +31,11 @@ namespace Menge
 		virtual const mt::vec2f& getScale() const { static mt::vec2f s(1.0f, 1.0f); return s; }
 
 	public:
+
+		void update( float _timing ) override;
+
 		void _render() override;
-		void _update( float _timing ) override;
+		//void _update( float _timing ) override;
 	
 	public:
 		void loader( XmlElement * _xml ) override;

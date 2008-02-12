@@ -179,7 +179,7 @@ namespace     Menge
 			{
 				if ( *it == ' ' )
 				{
-					offset.x += spaceWidth;
+					offset.x += spaceWidth + m_charOffset;
 					continue;
 				}
 

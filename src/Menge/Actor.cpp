@@ -49,7 +49,7 @@ namespace	Menge
 		}
 		else
 		{
-			float step = 0.005 * _timing;
+			float step = 0.005f * _timing;
 
 			//mt::vec3f workv = mt::vec3f::zero_v3;
 

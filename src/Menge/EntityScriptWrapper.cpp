@@ -91,6 +91,7 @@ namespace Menge
 			.def( "getSpeed", &Entity::getSpeed )
 			.def( "scaleTo", &Entity::scaleTo )
 			.def( "scaleStop", &Entity::scaleStop )
+			.def( "setSpeed", &Entity::setSpeed )
 			//.def( "setAcceleration", &Entity::setAcceleration )
 			;
 

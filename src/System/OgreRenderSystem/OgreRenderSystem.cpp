@@ -47,21 +47,26 @@ OgreRenderSystem::OgreRenderSystem()
 	, m_spriteMgr(0)
 	, m_GUIRenderer(0)
 	, m_GUISystem(0)
+	, m_rootSceneNode(0)
 {
 }
 //////////////////////////////////////////////////////////////////////////
 OgreRenderSystem::~OgreRenderSystem()
 {
+	delete m_rootSceneNode;
+
 	if( m_spriteMgr )
 	{
 		m_spriteMgr->end();
 		delete m_spriteMgr;
 	}
+
 	if(m_GUISystem)
 	{
 		delete m_GUISystem;
 		m_GUISystem = 0;
 	}
+
 	if(m_GUIRenderer)
 	{
 		delete m_GUIRenderer;
@@ -78,12 +83,42 @@ CameraInterface * OgreRenderSystem::createCamera(const char * _name)
 	return  ogre3dcam;
 }
 //////////////////////////////////////////////////////////////////////////
-SceneNodeInterface * OgreRenderSystem::attachSceneNodeToRoot( const char * _name )
+SceneNodeInterface * OgreRenderSystem::createSceneNode( const std::string & _name )
 {
-	Ogre::SceneNode * sceneNode = 
-		m_sceneMgr->getRootSceneNode()->createChildSceneNode( _name );
+	Ogre::SceneNode * sceneNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode( _name );
 
-	return new OgreSceneNode( sceneNode );
+	OgreSceneNode * ogreNode = new OgreSceneNode( sceneNode, m_rootSceneNode );
+	//m_rootSceneNode->addChild( ogreNode ); //не имеет смысла, т.к. на уровне root level - 1 все и так удалится
+
+	return ogreNode;
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::releaseSceneNode( SceneNodeInterface * _interface )
+{
+	OgreSceneNode * node = static_cast<OgreSceneNode*>(_interface);
+
+	if( node == NULL )
+	{
+		return;
+	}
+
+	Ogre::SceneNode * sceneNode = node->getOgreSceneNode();
+
+	delete node;
+
+	if ( sceneNode )
+	{
+		if ( sceneNode->getParent() )
+		{
+			sceneNode->getParent()->removeChild( sceneNode );
+		}
+
+		sceneNode->detachAllObjects();
+		sceneNode->removeAndDestroyAllChildren(); 
+		
+		m_sceneMgr->destroySceneNode( sceneNode->getName() );
+		sceneNode = 0;
+	}
 } 
 //////////////////////////////////////////////////////////////////////////
 LightInterface * OgreRenderSystem::createLight( const char * _name )
@@ -100,19 +135,35 @@ EntityInterface * OgreRenderSystem::createEntity( const char * _name, const char
 	return ent;
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSystem::releaseCamera( CameraInterface * _camera )
-{
-	delete static_cast<CameraInterface*>( _camera );
-}
-//////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::releaseEntity( EntityInterface * _entity )
 {
+	Ogre::Entity * entity = static_cast<OgreEntity*>(_entity)->getOgreEntity();
+
+	#if OGRE_VERSION_MINOR >= 1 
+		m_sceneMgr->destroyEntity( entity );
+	#else
+		m_sceneMgr->removeEntity( entity );
+	#endif
+
 	delete static_cast<EntityInterface*>( _entity );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::releaseLight( LightInterface * _light )
 {
+	Ogre::Light * light = static_cast<OgreLight*>(_light)->getOgreLight();
+
+	#if OGRE_VERSION_MINOR >= 1 
+		m_sceneMgr->destroyLight( light );
+	#else
+		m_sceneMgr->removeLight( light );
+	#endif
+
 	delete static_cast<LightInterface*>( _light );
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::releaseCamera( CameraInterface * _camera )
+{
+	delete static_cast<CameraInterface*>( _camera );
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow )
@@ -128,13 +179,16 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
 	Ogre::Camera* sceneCam = m_sceneMgr->createCamera("defaultCamera");
 	m_viewport = m_renderWindow->addViewport( sceneCam );
+
+
+	m_rootSceneNode = new OgreSceneNode( m_sceneMgr->getRootSceneNode(), 0 );
 	
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\bin\\Game\\GUITest", "FileSystem", "Default", true );
-	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "Default", true );
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
-	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "default", true );
-	//Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("default");
+	//Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
+	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "Default", true );
+	//Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "default", true );
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("default");
 
 	// setup GUI system
 	/*m_GUIRenderer = new CEGUI::OgreCEGUIRenderer(m_renderWindow, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, m_sceneMgr);
@@ -160,9 +214,6 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 */
 	return true;
 }
-//////////////////////////////////////////////////////////////////////////
-void OgreRenderSystem::update(float _timing)
-{}
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setContentResolution( const float * _resolution )
 {

@@ -130,9 +130,6 @@ namespace Menge
 						->getRenderCamera3D();
 
 			camera->setPosition(mt::vec3f(x,y,z));
-
-		//	Holder<Player>::hostage()
-		//		->setCamera2DPosition( mt::vec2f(x, y) );
 		}
 
 		static void setCamera2DDirection( float x, float y )
@@ -432,6 +429,7 @@ namespace Menge
 				.def( "pitch", &SceneNode3D::pitch )
 				.def( "roll", &SceneNode3D::roll )
 				.def( "translate", &SceneNode3D::translate )
+				.def( "addChild", &SceneNode3D::addChild )
 			;
 
 		{

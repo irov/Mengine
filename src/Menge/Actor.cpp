@@ -131,7 +131,7 @@ namespace	Menge
 			const std::string & name = this->getName();
 
 			SceneNodeInterface * interface
-				= Holder<RenderEngine>::hostage()->attachSceneNodeToRoot( name );
+				= Holder<RenderEngine>::hostage()->createSceneNode( name );
 
 			m_interface = interface;
 		}
@@ -148,7 +148,7 @@ namespace	Menge
 		const std::string & name = this->getName();
 
 		SceneNodeInterface * interface
-			= Holder<RenderEngine>::hostage()->attachSceneNodeToRoot( name );
+			= Holder<RenderEngine>::hostage()->createSceneNode( name );
 
 		m_interface = interface;
 

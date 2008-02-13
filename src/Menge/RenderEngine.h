@@ -78,17 +78,16 @@ namespace Menge
 		CameraInterface * createCamera( const std::string& _name );
 		EntityInterface * createEntity( const std::string& _name, const std::string& _meshName );
 		LightInterface * createLight( const std::string& _name );
+		SceneNodeInterface * createSceneNode( const std::string & _name );
 
 		void releaseCamera( CameraInterface * _camera );
 		void releaseEntity( EntityInterface * _entity );
 		void releaseLight( LightInterface * _light );
+		void releaseSceneNode( SceneNodeInterface * _interface );
 
 		void frameStarted();
 		void frameEnded();
 
-		void update(float _timing);
-
-		SceneNodeInterface * attachSceneNodeToRoot( const std::string & _name );
 
 	protected:
 		RenderSystemInterface * m_interface;

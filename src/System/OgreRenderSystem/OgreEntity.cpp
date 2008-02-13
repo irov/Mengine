@@ -1,9 +1,10 @@
 #	include "OgreEntity.h"
+#	include "OgreSkeleton.h"
 //////////////////////////////////////////////////////////////////////////
 OgreEntity::OgreEntity( Ogre::Entity * _entity )
 : m_entity( _entity )
-, m_animState0(0)
-, m_animState1(0)
+//, m_animState0(0)
+//, m_animState1(0)
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -11,7 +12,62 @@ OgreEntity::~OgreEntity()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreEntity::hasSkeleton() const 
+Ogre::Entity * OgreEntity::getOgreEntity()
+{
+	return m_entity;
+}
+//////////////////////////////////////////////////////////////////////////
+SkeletonInterface* OgreEntity::getSkeleton() const
+{
+	if ( m_entity->hasSkeleton() )
+	{
+		return new OgreSkeleton( *m_entity );
+	}
+	else
+	{
+		return NULL;
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreEntity::setCastsShadow( bool _castsShadow )
+{
+	if (m_entity)
+	{
+		m_entity->setCastShadows( _castsShadow );
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreEntity::setVisible( bool visible )
+{
+	if (m_entity)
+	{
+		m_entity->setVisible( visible );
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreEntity::setMaterial( const std::string & materialName )
+{
+	if (m_entity)
+	{
+		m_entity->setMaterialName( materialName );
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreEntity::setSubEntityMaterial( const std::string & subEntity, const std::string & materialName )
+{
+	if (m_entity)
+	{
+		Ogre::SubEntity* pSubEntity = m_entity->getSubEntity( subEntity );
+
+		if (pSubEntity)
+		{
+            pSubEntity->setMaterialName( materialName );
+		}
+	}
+}
+//-------------------------------------------------------------
+//////////////////////////////////////////////////////////////////////////
+/*bool OgreEntity::hasSkeleton() const 
 {
 	Ogre::MeshPtr mesh = m_entity->getMesh();
 	return mesh->hasSkeleton();
@@ -87,3 +143,4 @@ void OgreEntity::update( float _timing )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
+*/

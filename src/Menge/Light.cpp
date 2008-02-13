@@ -57,8 +57,8 @@ namespace	Menge
 		const std::string& name = this->getName();
 		m_interface = Holder<RenderEngine>::hostage()->createLight( name );
 
-		m_interface->setPosition( m_position.x, m_position.y, m_position.z );
-		m_interface->setDiffuseColor( m_diffuseColor.r, m_diffuseColor.g, m_diffuseColor.b );
+		//m_interface->setPosition( m_position.x, m_position.y, m_position.z );
+		//m_interface->setDiffuseColor( m_diffuseColor.r, m_diffuseColor.g, m_diffuseColor.b );
 
 		return true;
 	}

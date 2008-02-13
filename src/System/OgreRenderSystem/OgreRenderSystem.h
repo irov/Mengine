@@ -7,12 +7,14 @@
 #	include "TheoraMovieClip.h"
 
 class OgreRenderSpriteManager;
+class OgreSceneNode;
 
 namespace CEGUI
 {
 	class System;
 	class OgreCEGUIRenderer;
 };
+
 
 class OgreRenderSystem
 	: public OgreRenderSystemInterface
@@ -69,7 +71,7 @@ public:
 	void loadResource( Ogre::Resource* _resource );
 	void setViewportDimensions( float _width, float _height, float _renderFactor ) override;
 
-	//new 
+	///////////////////////////////////////////////////////////////////////////////////
 	CameraInterface * createCamera(const char * _name) override;
 	LightInterface * createLight(const char * _name) override;
 	EntityInterface * createEntity(const char * _name, const char * _mesh ) override;
@@ -78,11 +80,13 @@ public:
 	void releaseEntity( EntityInterface * _entity ) override;
 	void releaseLight( LightInterface * _light ) override;
 
-	void update(float _timing) override;
-
-	SceneNodeInterface * attachSceneNodeToRoot( const char * _name ) override;
+	SceneNodeInterface * createSceneNode( const std::string & _name ) override;
+	void releaseSceneNode( SceneNodeInterface * _interface ) override;
 
 private:
+
+	OgreSceneNode * m_rootSceneNode;
+
 	Ogre::Vector2	m_contentResolution;
 	Ogre::Root * m_root;
 	Ogre::RenderWindow * m_renderWindow;

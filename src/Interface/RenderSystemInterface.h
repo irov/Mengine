@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include <string>
+
 struct	TextureDesc
 {
 	const char *	name;
@@ -31,6 +33,86 @@ public:
 	virtual void writeToFile( const char* _filename ) = 0;
 };
 
+class EntityInterface;
+
+class SkeletonInterface
+{
+public:
+	virtual ~SkeletonInterface(){};
+
+	virtual void enableAnimation( const std::string & _anim, bool _enable ) = 0;
+	virtual void advanceAnimation( const std::string & _anim, float _timeDelta ) = 0;
+	virtual void advanceAllAnimations( float _timeDelta ) = 0;
+	virtual void setAnimationWeight( const std::string & _anim, float _weight ) = 0;
+	virtual void attachEntityToBone( const std::string & _bone, EntityInterface * _entity ) = 0;
+};
+
+class EntityInterface
+{
+public:
+/*	virtual bool hasSkeleton() const = 0;
+	virtual const float * getBoneOrientation( const char * _name ) = 0;
+	virtual const float * getBonePosition( const char * _name ) = 0;
+	virtual void play( const char * _name ) = 0;
+	virtual void play( 
+		const char * _name1, float _weight1, 
+		const char * _name2, float _weight2 ) = 0;
+	virtual void stop() = 0;
+	virtual void setLooped( bool _looped ) = 0;
+	virtual const char * getName() const = 0;
+	virtual void update( float _timing ) = 0;
+*/
+	virtual SkeletonInterface* getSkeleton() const = 0;
+	virtual void setCastsShadow( bool _castsShadow ) = 0;
+	virtual void setVisible( bool _visible ) = 0;
+	virtual void setMaterial( const std::string & _material ) = 0;
+	virtual void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material ) = 0;
+};
+
+class LightInterface
+{
+public:
+	enum LightType
+	{
+		LT_POINT,
+		LT_DIRECTIONAL,
+		LT_SPOT
+	};
+
+	virtual ~LightInterface(){};
+
+	virtual void setType( const LightType type ) = 0;
+	virtual LightType getType() const = 0;
+
+	virtual void setAttenuation( float range, float constant, float linear, float quadratic ) = 0;
+	virtual float getAttenuationRange() const = 0;
+	virtual float getAttenuationConstFactor() const = 0;
+	virtual float getAttenuationLinearFactor() const = 0;
+	virtual float getAttenuationQuadraticFactor() const = 0;
+
+	virtual void setSpotlightRange( float innerAngle, float outerAngle, float falloff ) = 0;
+	virtual float getSpotlightInnerAngle() const = 0;
+	virtual float getSpotlightOuterAngle() const = 0;
+	virtual float getSpotlightFalloff() const = 0;
+
+	virtual void setDiffuseColour( float _r, float _g, float _b ) = 0;
+	virtual void setSpecularColour( float _r, float _g, float _b ) = 0;
+
+	virtual bool isEnabled() const = 0;
+	virtual void setEnabled( bool enabled ) = 0;
+	virtual void setCastsShadows( bool enabled ) = 0;
+
+	virtual void setDirection( float _x, float _y, float _z ) = 0;
+
+	//virtual math::Vector3 getDirection() const = 0;
+
+	//virtual void setPosition( float _x, float _y, float _z ) = 0;
+	//virtual void setDiffuseColor( float _r, float _g, float _b ) = 0;
+	//virtual void setSpecularColor( float _r, float _g, float _b ) = 0;
+	//virtual void setAttenuation(float _range, float _constant, float _linear, float _quadratic) = 0;
+	//virtual void setDirection(float _x, float _y, float _z) = 0;
+};
+
 class CameraInterface
 {
 public:
@@ -43,22 +125,6 @@ public:
 	virtual void yaw( float _angle ) = 0;
 	virtual void pitch( float _angle ) = 0;
 	virtual void roll( float _angle ) = 0;
-};
-
-class EntityInterface
-{
-public:
-	virtual bool hasSkeleton() const = 0;
-	virtual const float * getBoneOrientation( const char * _name ) = 0;
-	virtual const float * getBonePosition( const char * _name ) = 0;
-	virtual void play( const char * _name ) = 0;
-	virtual void play( 
-		const char * _name1, float _weight1, 
-		const char * _name2, float _weight2 ) = 0;
-	virtual void stop() = 0;
-	virtual void setLooped( bool _looped ) = 0;
-	virtual const char * getName() const = 0;
-	virtual void update( float _timing ) = 0;
 };
 
 class	SceneNodeInterface
@@ -77,19 +143,9 @@ public:
 	virtual void yaw( float _angle ) = 0;
 	virtual void pitch( float _angle ) = 0;
 	virtual void roll( float _angle ) = 0;
-	virtual SceneNodeInterface * createChildSceneNode( const char * _name ) = 0;
 	virtual void attachEntity( EntityInterface * _entity ) = 0;
-};
-
-class LightInterface
-{
-public:
-	virtual ~LightInterface(){};
-	virtual void setPosition( float _x, float _y, float _z ) = 0;
-	virtual void setDiffuseColor( float _r, float _g, float _b ) = 0;
-	virtual void setSpecularColour( float _r, float _g, float _b ) = 0;
-	virtual void setAttenuation(float _range, float _constant, float _linear, float _quadratic) = 0;
-	virtual void setDirection(float _x, float _y, float _z) = 0;
+	virtual void attachLight( LightInterface * _light ) = 0;
+	virtual void addChild( SceneNodeInterface * _node ) = 0;
 };
 
 class RenderVideoStreamInterface : public RenderImageInterface
@@ -159,14 +215,12 @@ public:
 	virtual CameraInterface * createCamera( const char * _name ) = 0;
 	virtual EntityInterface * createEntity( const char * _name, const char * _meshName ) = 0;
 	virtual LightInterface * createLight( const char * _name ) = 0;
+	virtual SceneNodeInterface * createSceneNode( const std::string & _name ) = 0;
 
 	virtual void releaseCamera( CameraInterface * _camera ) = 0;
 	virtual void releaseEntity( EntityInterface * _entity ) = 0;
 	virtual void releaseLight( LightInterface * _light ) = 0;
-
-	virtual void update(float _timing) = 0;
-
-	virtual SceneNodeInterface * attachSceneNodeToRoot( const char * _name ) = 0;
+	virtual void releaseSceneNode( SceneNodeInterface * _interface ) = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

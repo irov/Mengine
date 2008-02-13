@@ -1,43 +1,76 @@
 #	include "OgreSceneNode.h"
 #	include "OgreEntity.h"
+#	include "OgreLight.h"
 //////////////////////////////////////////////////////////////////////////
-OgreSceneNode::OgreSceneNode(Ogre::SceneNode * _node)
+OgreSceneNode::OgreSceneNode(Ogre::SceneNode * _node, OgreSceneNode * _parent = 0)
 : m_sceneNode(_node)
+, m_parentNode(_parent)
 {
+
+}
+//////////////////////////////////////////////////////////////////////////
+OgreSceneNode::~OgreSceneNode()
+{
+	if ( m_parentNode )
+	{
+		m_parentNode->detach( this );
+		m_parentNode = 0;
+	}
+
+	for each( LightInterface * light in m_lights )
+	{
+		OgreLight * pObj = static_cast<OgreLight*>(light);
+		m_sceneNode->detachObject( pObj->getOgreLight() );
+		delete light;
+	}
+
+	m_lights.clear();
+}
+//////////////////////////////////////////////////////////////////////////
+Ogre::SceneNode * OgreSceneNode::getOgreSceneNode()
+{
+	return m_sceneNode;
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreSceneNode::detach( SceneNodeInterface * pNode )
+{
+	OgreSceneNode * ogreChild = static_cast<OgreSceneNode*>(pNode);
+	Ogre::SceneNode * child = ogreChild->getOgreSceneNode();
+	m_sceneNode->removeChild( child->getName() );	
+
+	static_cast<OgreSceneNode*>(pNode)->m_parentNode = NULL;
 }
 //////////////////////////////////////////////////////////////////////////
 const float * OgreSceneNode::getWorldOrient()
 {
-	const Ogre::Quaternion & orient = m_sceneNode->getWorldOrientation();
-	return orient.ptr();
+	return m_sceneNode->getWorldOrientation().ptr();
 }
 //////////////////////////////////////////////////////////////////////////
 const float * OgreSceneNode::getWorldPosition()
 {
-	const Ogre::Vector3 & pos = m_sceneNode->getWorldPosition();
-	return pos.ptr();
+	return m_sceneNode->getWorldPosition().ptr();
 }
 //////////////////////////////////////////////////////////////////////////
 float * OgreSceneNode::getLocalPosition()
 {
-	return m_position.ptr();
+	return (float*)m_sceneNode->getPosition().ptr();
 }
 //////////////////////////////////////////////////////////////////////////
 float * OgreSceneNode::getLocalOrient()
 {
-	return m_localOrient.ptr();
+	return (float*)m_sceneNode->getOrientation().ptr();
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreSceneNode::setLocalPosition( const float * _position )
 {
-	m_position = Ogre::Vector3( _position );
-	m_sceneNode->setPosition( m_position );
+	m_sceneNode->setPosition( 
+		Ogre::Vector3( _position ) );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreSceneNode::setLocalOrient( const float * _orient )
 {
-	m_localOrient = Ogre::Quaternion( _orient[0], _orient[1], _orient[2], _orient[3] );
-	m_sceneNode->setOrientation( m_localOrient );
+	m_sceneNode->setOrientation( 
+		Ogre::Quaternion( _orient[0], _orient[1], _orient[2], _orient[3] ) );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreSceneNode::translate( const float * _pos )
@@ -70,15 +103,43 @@ void OgreSceneNode::roll( float _angle )
 	m_sceneNode->roll( Ogre::Degree( _angle ) );
 }
 //////////////////////////////////////////////////////////////////////////
-SceneNodeInterface * OgreSceneNode::createChildSceneNode( const char * _name )
-{
-	Ogre::SceneNode * sceneNode = m_sceneNode->createChildSceneNode( _name );
-	return new OgreSceneNode( sceneNode );
-}
-//////////////////////////////////////////////////////////////////////////
 void OgreSceneNode::attachEntity( EntityInterface * _entity )
 {
 	OgreEntity * ent = static_cast<OgreEntity*>(_entity);
-	m_sceneNode->attachObject( ent->m_entity );
+	m_sceneNode->attachObject( ent->getOgreEntity() );
 }
 //////////////////////////////////////////////////////////////////////////
+void OgreSceneNode::attachLight( LightInterface * _light )
+{
+	OgreLight * ogreLight = static_cast<OgreLight*>( _light );
+	m_sceneNode->attachObject( ogreLight->getOgreLight() );
+	m_lights.push_back( _light );
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreSceneNode::addChild( SceneNodeInterface * _node )
+{
+	OgreSceneNode * ogreSceneNode = static_cast<OgreSceneNode*>( _node );
+
+	OgreSceneNode * otherParent = ogreSceneNode->m_parentNode;
+
+	if ( otherParent )
+	{
+		otherParent->detach( ogreSceneNode );
+	}
+
+	Ogre::SceneNode * child = ogreSceneNode->m_sceneNode;
+
+	Ogre::SceneNode * parent = static_cast<Ogre::SceneNode*>( child->getParent() );
+
+	if ( parent && parent != m_sceneNode )
+	{
+		parent->removeChild( child );
+	}
+
+	if ( parent != m_sceneNode )
+	{
+		m_sceneNode->addChild( child );
+	}
+
+	ogreSceneNode->m_parentNode = this;
+}

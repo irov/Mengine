@@ -2,6 +2,8 @@
 
 #	include "XmlEngine.h"
 
+#	include "RenderEngine.h"
+
 #	include "Interface/RenderSystemInterface.h"
 
 namespace Menge
@@ -13,7 +15,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::~SceneNode3D()
 	{
-		delete m_interface;
+		Holder<RenderEngine>::hostage()->releaseSceneNode( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::_update( float _timing )
@@ -73,6 +75,11 @@ namespace Menge
 	void SceneNode3D::roll( float _angle )
 	{
 		m_interface->roll( _angle );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::addChild( SceneNode3D * _node )
+	{
+		m_interface->addChild( _node->m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::loader( XmlElement * _xml )

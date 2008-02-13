@@ -3,8 +3,6 @@
 #	include "NodeSinglethon.h"
 #	include "math/quat.h"
 
-#	include "MotionModifier.h"
-
 class RigidBodyInterface;
 
 namespace Menge

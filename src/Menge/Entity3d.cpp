@@ -32,17 +32,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::_update( float _timing )
 	{
-		m_interface->update( _timing );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::quatf & Entity3d::getBoneWorldOrient( const std::string& _name )
-	{
-		return *(mt::quatf*)m_interface->getBoneOrientation( _name.c_str() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & Entity3d::getBoneWorldPosition( const std::string& _name ) 
-	{
-		return *(mt::vec3f*)m_interface->getBonePosition( _name.c_str() );
+	//	m_interface->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::loader( XmlElement * _xml )
@@ -128,22 +118,22 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::play( const std::string& _name )
 	{
-		m_interface->play( _name.c_str() );
+	//	m_interface->play( _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::play2( const std::string& _name1, float _weight1, const std::string& _name2, float _weight2 )
 	{
-		m_interface->play( _name1.c_str(), _weight1, _name2.c_str(), _weight2 );
+	//	m_interface->play( _name1.c_str(), _weight1, _name2.c_str(), _weight2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::stop()
 	{
-		m_interface->stop();
+	//	m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::setLooped( bool _looped )
 	{
-		m_interface->setLooped( _looped );
+	//	m_interface->setLooped( _looped );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -241,14 +241,13 @@ namespace Menge
 		m_interface->render();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::update( float _timing )
+	SceneNodeInterface * RenderEngine::createSceneNode( const std::string & _name )
 	{
-		m_interface->update(_timing);
+		return m_interface->createSceneNode( _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SceneNodeInterface * RenderEngine::attachSceneNodeToRoot( const std::string & _name )
+	void RenderEngine::releaseSceneNode( SceneNodeInterface * _interface )
 	{
-		return m_interface->attachSceneNodeToRoot( _name.c_str() );
+		return m_interface->releaseSceneNode( _interface );
 	}
-	//////////////////////////////////////////////////////////////////////////
 }

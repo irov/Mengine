@@ -34,10 +34,11 @@ namespace Menge
 		void pitch( float _angle );
 		void roll( float _angle );
 
+		void addChild( SceneNode3D * _node );
+
 	public:
 		void loader( XmlElement * _xml ) override;
 
-		
 		void render(){};
 		bool isRenderable() {return false;};
 

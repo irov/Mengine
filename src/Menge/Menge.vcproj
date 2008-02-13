@@ -1415,14 +1415,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Bone.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Bone.h"
-				>
-			</File>
-			<File
 				RelativePath=".\CapsuleController.cpp"
 				>
 			</File>

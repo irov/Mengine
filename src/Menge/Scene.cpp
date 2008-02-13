@@ -331,6 +331,16 @@ namespace	Menge
 			it->second->release();
 			delete it->second;
 		}
+
+		for( TListActors::reverse_iterator
+			it = m_listActors.rbegin(),
+			it_end = m_listActors.rend();
+		it != it_end;
+		++it)
+		{
+			delete (*it);
+		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )

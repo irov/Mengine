@@ -25,8 +25,8 @@ namespace Menge
 
 	public:
 
-		const mt::quatf & getBoneWorldOrient( const std::string& _name );
-		const mt::vec3f & getBoneWorldPosition( const std::string& _name );
+	//	const mt::quatf & getBoneWorldOrient( const std::string& _name );
+	//	const mt::vec3f & getBoneWorldPosition( const std::string& _name );
 
 	public:
 

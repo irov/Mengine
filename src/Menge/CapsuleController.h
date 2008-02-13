@@ -3,8 +3,6 @@
 #	include "NodeSinglethon.h"
 #	include "math/quat.h"
 
-#	include "MotionModifier.h"
-
 class ControllerInterface;
 
 namespace Menge
@@ -12,7 +10,7 @@ namespace Menge
 	class SceneNode3D;
 
 	class CapsuleController
-		: public NodeSinglethon//, public MotionModifier
+		: public NodeSinglethon
 	{
 		OBJECT_DECLARE( CapsuleController )
 
@@ -21,9 +19,8 @@ namespace Menge
 		~CapsuleController();
 	public:
 		void setPosition( const mt::vec3f & _position );
-		const mt::vec3f & getPosition();// override;
-		const mt::quatf & getOrientation();// override;
-	//	void attachSceneNode( SceneNode3D * _node );
+		const mt::vec3f & getPosition();
+		const mt::quatf & getOrientation();
 
 	public:
 		void loader( XmlElement * _xml ) override;

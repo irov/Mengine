@@ -7,7 +7,8 @@
 class	OgreSceneNode : public SceneNodeInterface
 {
 public:
-	OgreSceneNode(Ogre::SceneNode * _node);
+	OgreSceneNode( Ogre::SceneNode * _node, OgreSceneNode * _parent );
+	~OgreSceneNode();
 public:
 	const float * getWorldOrient() override;
 	const float * getWorldPosition() override;
@@ -21,11 +22,21 @@ public:
 	void yaw( float _angle ) override;
 	void pitch( float _angle ) override;
 	void roll( float _angle ) override;
-	SceneNodeInterface * createChildSceneNode( const char * _name ) override;
 	void attachEntity( EntityInterface * _entity ) override;
+	void attachLight( LightInterface * _light ) override;
+	void addChild( SceneNodeInterface * _node ) override;
+
+public:
+
+	Ogre::SceneNode * getOgreSceneNode();
 
 private:
+
+	void detach( SceneNodeInterface * pNode );
+
 	Ogre::SceneNode * m_sceneNode;
-	Ogre::Vector3 m_position;
-	Ogre::Quaternion m_localOrient;
+
+	OgreSceneNode * m_parentNode;
+
+	std::list<LightInterface*> m_lights;
 };

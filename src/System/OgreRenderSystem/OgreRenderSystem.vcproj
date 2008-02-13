@@ -39,7 +39,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP2"
 				Optimization="0"
 				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\OgreSDK\include&quot;;&quot;$(SolutionDir)dependencies\videoplugin\TheoraVideo\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\Theora\include\&quot;;&quot;$(SolutionDir)dependencies\ogg\include\&quot;;&quot;$(SolutionDir)dependencies\vorbis\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\ptypes-1.8.3\include\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
@@ -336,6 +335,14 @@
 		</File>
 		<File
 			RelativePath=".\OgreSceneNode.h"
+			>
+		</File>
+		<File
+			RelativePath=".\OgreSkeleton.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\OgreSkeleton.h"
 			>
 		</File>
 	</Files>

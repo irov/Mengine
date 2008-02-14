@@ -50,6 +50,9 @@ namespace Menge
 		void _update( float _timing ) override;
 
 	private:
+
+		std::string m_animName;
+
 		std::string m_meshName;
 
 		std::string m_resourcenameMesh;

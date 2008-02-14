@@ -120,7 +120,7 @@
 	</Resource>
 
 	<Resource Name = "TestZombie" Type = "ResourceMesh" >
-		<Mesh Name = "ZombieTest/z_def.mesh" />
+		<Mesh Name = "ZombieTest/Cylinder04.mesh" />
 	</Resource>
 
 </DataBlock>

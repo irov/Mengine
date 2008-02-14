@@ -10,8 +10,6 @@
 #	include "ResourceMesh.h"
 #	include "ResourceSkeleton.h"
 
-#	include "Bone.h"
-
 #	include "XmlEngine.h"
 
 #	include "Entity3d.h"

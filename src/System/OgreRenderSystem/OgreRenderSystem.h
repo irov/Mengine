@@ -102,8 +102,6 @@ private:
 	typedef std::map< const RenderImageInterface* , Ogre::TheoraMovieClip* > TMovieMap;
 	TMovieMap m_videoTexturesMap;
 
-	Ogre::RaySceneQuery *mRaySceneQuery;
-
 	CEGUI::OgreCEGUIRenderer* m_GUIRenderer;
 	CEGUI::System*	m_GUISystem;
 };

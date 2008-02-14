@@ -10,16 +10,16 @@ public:
 	OgreLight(Ogre::Light * _light);
 public:
 
-	void setType( const LightType type ) override;
+	void setType( LightType _type ) override;
 	LightType getType() const override;
 
-	void setAttenuation( float range, float constant, float linear, float quadratic ) override;
+	void setAttenuation( float _range, float _constant, float _linear, float _quadratic ) override;
 	float getAttenuationRange() const override;
 	float getAttenuationConstFactor() const override;
 	float getAttenuationLinearFactor() const override;
 	float getAttenuationQuadraticFactor() const override;
 
-	void setSpotlightRange( float innerAngle, float outerAngle, float falloff ) override;
+	void setSpotlightRange( float _innerAngle, float _outerAngle, float _falloff ) override;
 	float getSpotlightInnerAngle() const override;
 	float getSpotlightOuterAngle() const override;
 	float getSpotlightFalloff() const override;
@@ -28,18 +28,12 @@ public:
 	void setSpecularColour( float _r, float _g, float _b ) override;
 
 	bool isEnabled() const override;
-	void setEnabled( bool enabled ) override;
-	void setCastsShadows( bool enabled ) override;
+	void setEnabled( bool _enabled ) override;
+	void setCastsShadows( bool _enabled ) override;
 
 	void setDirection( float _x, float _y, float _z ) override;
 
-/*	void setPosition( float _x, float _y, float _z ) override;
-	void setDiffuseColor( float _r, float _g, float _b ) override;
-	void setSpecularColour( float _r, float _g, float _b ) override;
-	void setAttenuation(float _range, float _constant, float _linear, float _quadratic) override;
-	void setDirection(float _x, float _y, float _z) override;
-	*/
-	
+public:
 	Ogre::Light * getOgreLight();
 
 private:

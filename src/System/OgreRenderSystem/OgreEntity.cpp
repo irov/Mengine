@@ -3,13 +3,13 @@
 //////////////////////////////////////////////////////////////////////////
 OgreEntity::OgreEntity( Ogre::Entity * _entity )
 : m_entity( _entity )
-//, m_animState0(0)
-//, m_animState1(0)
+, m_skeleton(0)
 {
 }
 //////////////////////////////////////////////////////////////////////////
 OgreEntity::~OgreEntity()
 {
+	delete m_skeleton;
 }
 //////////////////////////////////////////////////////////////////////////
 Ogre::Entity * OgreEntity::getOgreEntity()
@@ -19,49 +19,52 @@ Ogre::Entity * OgreEntity::getOgreEntity()
 //////////////////////////////////////////////////////////////////////////
 SkeletonInterface* OgreEntity::getSkeleton() const
 {
-	if ( m_entity->hasSkeleton() )
-	{
-		return new OgreSkeleton( *m_entity );
-	}
-	else
+	if ( m_entity->hasSkeleton() == false )
 	{
 		return NULL;
 	}
+
+	if ( m_skeleton == NULL )
+	{
+		m_skeleton = new OgreSkeleton( *m_entity );
+	}
+		
+	return m_skeleton;
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreEntity::setCastsShadow( bool _castsShadow )
 {
-	if (m_entity)
+	if ( m_entity )
 	{
 		m_entity->setCastShadows( _castsShadow );
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreEntity::setVisible( bool visible )
+void OgreEntity::setVisible( bool _visible )
 {
-	if (m_entity)
+	if ( m_entity )
 	{
-		m_entity->setVisible( visible );
+		m_entity->setVisible( _visible );
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreEntity::setMaterial( const std::string & materialName )
+void OgreEntity::setMaterial( const std::string & _material )
 {
-	if (m_entity)
+	if ( m_entity )
 	{
-		m_entity->setMaterialName( materialName );
+		m_entity->setMaterialName( _material );
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreEntity::setSubEntityMaterial( const std::string & subEntity, const std::string & materialName )
+void OgreEntity::setSubEntityMaterial( const std::string & _subEntity, const std::string & _material )
 {
-	if (m_entity)
+	if ( m_entity )
 	{
-		Ogre::SubEntity* pSubEntity = m_entity->getSubEntity( subEntity );
+		Ogre::SubEntity * ogreSubEntity = m_entity->getSubEntity( _subEntity );
 
-		if (pSubEntity)
+		if ( ogreSubEntity )
 		{
-            pSubEntity->setMaterialName( materialName );
+            ogreSubEntity->setMaterialName( _material );
 		}
 	}
 }

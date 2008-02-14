@@ -9,19 +9,19 @@ Ogre3dCamera::~Ogre3dCamera()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void Ogre3dCamera::setPosition( float x, float y, float z )
+void Ogre3dCamera::setPosition( float _x, float _y, float _z )
 {
-	m_camera->setPosition(x,y,z);
+	m_camera->setPosition( _x, _y, _z );
 }
 //////////////////////////////////////////////////////////////////////////
-void Ogre3dCamera::setDirection( float x, float y, float z )
+void Ogre3dCamera::setDirection( float _x, float _y, float _z )
 {
-	m_camera->setDirection(x,y,z);
+	m_camera->setDirection( _x, _y, _z );
 }
 //////////////////////////////////////////////////////////////////////////
-void Ogre3dCamera::lookAt( float x, float y, float z )
+void Ogre3dCamera::lookAt( float _x, float _y, float _z )
 {
-	m_camera->lookAt(x,y,z);
+	m_camera->lookAt( _x, _y, _z );
 }
 //////////////////////////////////////////////////////////////////////////
 void Ogre3dCamera::setNearClipDistance( float _dist )

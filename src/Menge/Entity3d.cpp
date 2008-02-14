@@ -9,8 +9,6 @@
 #	include "ResourceMesh.h"
 #	include "ResourceSkeleton.h"
 
-#	include "Bone.h"
-
 #	include "XmlEngine.h"
 
 namespace	Menge
@@ -32,6 +30,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::_update( float _timing )
 	{
+		if(m_animName.empty()==false)
+		{
+			SkeletonInterface * skeleton = m_interface->getSkeleton();
+			skeleton->advanceAnimation(m_animName, _timing / 1000.f);
+		}
 	//	m_interface->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -118,6 +121,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity3d::play( const std::string& _name )
 	{
+		SkeletonInterface * skeleton = m_interface->getSkeleton();
+		skeleton->enableAnimation( _name, true );
+		m_animName = _name;
 	//	m_interface->play( _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////

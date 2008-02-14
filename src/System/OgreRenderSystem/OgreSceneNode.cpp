@@ -32,13 +32,14 @@ Ogre::SceneNode * OgreSceneNode::getOgreSceneNode()
 	return m_sceneNode;
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreSceneNode::detach( SceneNodeInterface * pNode )
+void OgreSceneNode::detach( SceneNodeInterface * _node )
 {
-	OgreSceneNode * ogreChild = static_cast<OgreSceneNode*>(pNode);
+	OgreSceneNode * ogreChild = static_cast<OgreSceneNode*>(_node);
 	Ogre::SceneNode * child = ogreChild->getOgreSceneNode();
-	m_sceneNode->removeChild( child->getName() );	
+	const std::string & name = child->getName();
+	m_sceneNode->removeChild( name );	
 
-	static_cast<OgreSceneNode*>(pNode)->m_parentNode = NULL;
+	ogreChild->m_parentNode = NULL;
 }
 //////////////////////////////////////////////////////////////////////////
 const float * OgreSceneNode::getWorldOrient()

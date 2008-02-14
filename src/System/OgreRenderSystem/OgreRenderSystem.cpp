@@ -205,8 +205,6 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
 	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
 
-	mRaySceneQuery = m_sceneMgr->createRayQuery(Ogre::Ray());
-
 	/*
 	m_videoControl = static_cast<Ogre::TheoraVideoController*>
 		(Ogre::ExternalTextureSourceManager::getSingleton().

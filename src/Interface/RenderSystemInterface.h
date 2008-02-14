@@ -62,7 +62,7 @@ public:
 	virtual const char * getName() const = 0;
 	virtual void update( float _timing ) = 0;
 */
-	virtual SkeletonInterface* getSkeleton() const = 0;
+	virtual SkeletonInterface * getSkeleton() const = 0;
 	virtual void setCastsShadow( bool _castsShadow ) = 0;
 	virtual void setVisible( bool _visible ) = 0;
 	virtual void setMaterial( const std::string & _material ) = 0;
@@ -81,16 +81,16 @@ public:
 
 	virtual ~LightInterface(){};
 
-	virtual void setType( const LightType type ) = 0;
+	virtual void setType( LightType _type ) = 0;
 	virtual LightType getType() const = 0;
 
-	virtual void setAttenuation( float range, float constant, float linear, float quadratic ) = 0;
+	virtual void setAttenuation( float _range, float _constant, float _linear, float _quadratic ) = 0;
 	virtual float getAttenuationRange() const = 0;
 	virtual float getAttenuationConstFactor() const = 0;
 	virtual float getAttenuationLinearFactor() const = 0;
 	virtual float getAttenuationQuadraticFactor() const = 0;
 
-	virtual void setSpotlightRange( float innerAngle, float outerAngle, float falloff ) = 0;
+	virtual void setSpotlightRange( float _innerAngle, float _outerAngle, float _falloff ) = 0;
 	virtual float getSpotlightInnerAngle() const = 0;
 	virtual float getSpotlightOuterAngle() const = 0;
 	virtual float getSpotlightFalloff() const = 0;
@@ -99,26 +99,18 @@ public:
 	virtual void setSpecularColour( float _r, float _g, float _b ) = 0;
 
 	virtual bool isEnabled() const = 0;
-	virtual void setEnabled( bool enabled ) = 0;
-	virtual void setCastsShadows( bool enabled ) = 0;
+	virtual void setEnabled( bool _enabled ) = 0;
+	virtual void setCastsShadows( bool _enabled ) = 0;
 
 	virtual void setDirection( float _x, float _y, float _z ) = 0;
-
-	//virtual math::Vector3 getDirection() const = 0;
-
-	//virtual void setPosition( float _x, float _y, float _z ) = 0;
-	//virtual void setDiffuseColor( float _r, float _g, float _b ) = 0;
-	//virtual void setSpecularColor( float _r, float _g, float _b ) = 0;
-	//virtual void setAttenuation(float _range, float _constant, float _linear, float _quadratic) = 0;
-	//virtual void setDirection(float _x, float _y, float _z) = 0;
 };
 
 class CameraInterface
 {
 public:
-	virtual void setPosition( float x, float y, float z ) = 0;
-	virtual void setDirection( float x, float y, float z ) = 0;
-	virtual void lookAt( float x, float y, float z ) = 0;
+	virtual void setPosition( float _x, float _y, float _z ) = 0;
+	virtual void setDirection( float _x, float _y, float _z ) = 0;
+	virtual void lookAt( float _x, float _y, float _z ) = 0;
 	virtual void setNearClipDistance( float _dist ) = 0;
 	virtual void setFarClipDistance( float _dist ) = 0;
 	virtual void setAspectRatio( float _aspect ) = 0;

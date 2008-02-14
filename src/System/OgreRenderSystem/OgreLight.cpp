@@ -10,9 +10,9 @@ Ogre::Light * OgreLight::getOgreLight()
 	return m_light;
 }
 //////////////////////////////////////////////////////////////////////////
-Ogre::Light::LightTypes menge2Ogre( const LightInterface::LightType type )
+Ogre::Light::LightTypes menge2Ogre( const LightInterface::LightType _type )
 {
-	switch (type)
+	switch (_type)
 	{
 	case LightInterface::LT_POINT: 
 		return Ogre::Light::LT_POINT;
@@ -28,9 +28,9 @@ Ogre::Light::LightTypes menge2Ogre( const LightInterface::LightType type )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-LightInterface::LightType ogre2Menge( const Ogre::Light::LightTypes type )
+LightInterface::LightType ogre2Menge( const Ogre::Light::LightTypes _type )
 {
-	switch (type)
+	switch ( _type )
 	{
 	case Ogre::Light::LT_POINT: 
 		return LightInterface::LT_POINT;
@@ -46,9 +46,9 @@ LightInterface::LightType ogre2Menge( const Ogre::Light::LightTypes type )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreLight::setType( const LightType type )
+void OgreLight::setType( const LightType _type )
 {
-	m_light->setType( menge2Ogre( type ) );
+	m_light->setType( menge2Ogre( _type ) );
 }
 //////////////////////////////////////////////////////////////////////////
 LightInterface::LightType OgreLight::getType() const
@@ -56,9 +56,9 @@ LightInterface::LightType OgreLight::getType() const
 	return ogre2Menge( m_light->getType() );
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreLight::setAttenuation( float range, float constant, float linear, float quadratic )
+void OgreLight::setAttenuation( float _range, float _constant, float _linear, float _quadratic )
 {
-	m_light->setAttenuation( range, constant, linear, quadratic );
+	m_light->setAttenuation( _range, _constant, _linear, _quadratic );
 }
 //////////////////////////////////////////////////////////////////////////
 float OgreLight::getAttenuationRange() const
@@ -116,18 +116,18 @@ bool OgreLight::isEnabled() const
 	return m_light->isVisible();
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreLight::setEnabled( bool enabled )
+void OgreLight::setEnabled( bool _enabled )
 {
-	m_light->setVisible( enabled );
+	m_light->setVisible( _enabled );
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreLight::setCastsShadows( bool enabled )
+void OgreLight::setCastsShadows( bool _enabled )
 {
-	m_light->setCastShadows( enabled );
+	m_light->setCastShadows( _enabled );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreLight::setDirection( float _x, float _y, float _z )
 {
-	m_light->setDirection(_x,_y,_z);
+	m_light->setDirection( _x, _y, _z );
 }
 //////////////////////////////////////////////////////////////////////////

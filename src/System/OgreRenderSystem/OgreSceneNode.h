@@ -32,7 +32,7 @@ public:
 
 private:
 
-	void detach( SceneNodeInterface * pNode );
+	void detach( SceneNodeInterface * _node );
 
 	Ogre::SceneNode * m_sceneNode;
 

@@ -606,7 +606,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Layer * _layer )
 	{
-		_layer->setOffsetPosition(m_offsetPosition);
+		_layer->setOffsetPosition( m_offsetPosition );
 		_layer->setScene( this );
 
 		if( _layer->isMain() )

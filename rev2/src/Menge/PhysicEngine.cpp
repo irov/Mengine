@@ -71,26 +71,32 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine::setRestitution( float _value )
 	{
-		m_interface->setRestitution(_value);
+		return m_interface->setRestitution(_value);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine::setStaticFriction( float _value )
 	{
-		m_interface->setStaticFriction(_value);
+		return m_interface->setStaticFriction(_value);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine::setDynamicFriction( float _value )
 	{
-		m_interface->setDynamicFriction(_value);
+		return m_interface->setDynamicFriction(_value);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine::setGravity( const mt::vec3f& _g )
 	{
-		m_interface->setGravity(_g.x, _g.y, _g.z);
+		return m_interface->setGravity(_g.x, _g.y, _g.z);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine::removeGeometry( GeometryInterface * _geom )
 	{
-		m_interface->removeGeometry(_geom);
+		return m_interface->removeGeometry(_geom);
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void PhysicEngine::releaseCapsuleController( ControllerInterface * _capsule )
+	{
+		return m_interface->releaseCapsuleController( _capsule );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

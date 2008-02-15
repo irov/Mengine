@@ -66,6 +66,7 @@ public:
 	virtual void setDynamicFriction( float _value ) = 0;
 public:
 	virtual ControllerInterface * createCapsuleController( float * _startPos, float _initialRadius, float _initialHeight ) = 0;
+	virtual void releaseCapsuleController( ControllerInterface * _capsule ) = 0;
 
 	virtual GeometryInterface * cookConvex( const float * _verts, int _vertexSize ) = 0;
 	virtual GeometryInterface * cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) = 0;

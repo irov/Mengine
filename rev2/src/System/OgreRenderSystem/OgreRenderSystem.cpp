@@ -221,9 +221,13 @@ void OgreRenderSystem::setContentResolution( const float * _resolution )
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 {
-	if( Ogre::TextureManager::getSingleton().getByName("__shot__").isNull() == false ) return;
+	if( Ogre::TextureManager::getSingleton().getByName("__shot__").isNull() == false ) 
+	{
+		return;
+	}
 
 	Ogre::Rect wrect( 0, 0, m_renderWindow->getWidth(), m_renderWindow->getHeight() );
+
 	if(rect)
 	{
 		wrect.left = rect[0];
@@ -302,7 +306,9 @@ RenderVideoStreamInterface* OgreRenderSystem::loadImageVideoStream( const char* 
 
 	//Create the material the first time through this method
 	if( material.isNull() ) 
+	{
 		material = Ogre::MaterialManager::getSingleton().create( _filename, "Default" );
+	}
 
 	material->getTechnique(0)->getPass(0)->createTextureUnitState();
 
@@ -414,25 +420,30 @@ void OgreRenderSystem::loadResource( Ogre::Resource* _resource )
 void OgreRenderSystem::setViewportDimensions( float _width, float _height, float _renderFactor )
 {
 	m_renderWindow->update();
+
 	float realWidth = m_renderWindow->getWidth();
 	float realHeight = m_renderWindow->getHeight();
 	float aspect = _width / _height;
 	float width = _width / realWidth;
 	float height = _height / realHeight;
+
 	if( width > 1.0f )
 	{
 		width = 1.0f;
 		height = realWidth / aspect / realHeight;
 	}
+
 	if( height > 1.0f )
 	{
 		height = 1.0f;
 		width = realHeight * aspect / realWidth;
 	}
+
 	if( _renderFactor )
 	{
 		width += ( 1.0f - width ) * _renderFactor;
 		height += ( 1.0f - height ) * _renderFactor;
 	}
+
 	m_viewport->setDimensions( 0.5f - width / 2.0f, 0.5f - height / 2.0f, width, height );
 }

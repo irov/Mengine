@@ -85,6 +85,7 @@ namespace	Menge
 		if( getName() == "Zombie1")
 		{
 			m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( this->getWorldPosition(),0.1f,1.0f );
+			//releaseCapsuleController
 		}
 
 		return true;
@@ -110,7 +111,7 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::_release()
-	{
+	{//rev2
 		SceneNode3D::_release();
 		
 		this->callMethod("onRelease", "()" );

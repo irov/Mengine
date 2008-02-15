@@ -13,7 +13,7 @@
 #	include "Camera2D.h"
 #	include "Sprite.h"
 
-//#define DEBUG_RENDER
+#define DEBUG_RENDER
 
 namespace	Menge
 {

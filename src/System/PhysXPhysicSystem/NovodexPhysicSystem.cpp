@@ -36,8 +36,6 @@ NovodexPhysicSystem::~NovodexPhysicSystem()
 	{
 		gCM.purgeControllers();
 
-		//delete controller!! 
-
 		m_physicsSDK->releaseScene(*m_scene);
 		m_physicsSDK->release();	
 	}
@@ -111,6 +109,11 @@ void NovodexPhysicSystem::update(float _timestep)
 		gCM.updateControllers();
 	}
 
+}
+//////////////////////////////////////////////////////////////////////////
+void NovodexPhysicSystem::releaseCapsuleController( ControllerInterface * _capsule )
+{
+	delete static_cast<NovodexCapsuleController*>( _capsule );
 }
 //////////////////////////////////////////////////////////////////////////
 ControllerInterface * NovodexPhysicSystem::createCapsuleController( float * _startPos, float _initialRadius, float _initialHeight )

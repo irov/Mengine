@@ -87,7 +87,6 @@ namespace Menge
 	void SoundEngine::setCommonVolume( float _volume )
 	{
 		m_commonVolume = _volume;
-		setSoundSourceVolume( m_soundVolume );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getCommonVolume() const

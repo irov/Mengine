@@ -200,11 +200,6 @@ namespace Menge
 	{
 		m_interface->setFullscreenMode( _fullscreen );
 	}
-	////////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::getFullscreenMode( )
-	{
-		return m_interface->getFullscreenMode();
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setViewportDimensions( float _width, float _height, float _renderFactor )
 	{

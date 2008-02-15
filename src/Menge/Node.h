@@ -155,7 +155,6 @@ namespace Menge
 		*/
 		virtual void update( float _timing ) = 0;
 		virtual bool isUpdatable() = 0;
-		virtual bool updatable() = 0;
 
 		//! Node pure virtual. setup node from xml
 		/*!

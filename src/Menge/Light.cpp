@@ -52,7 +52,7 @@ namespace	Menge
 		if( NodeSinglethon::_compile() == false )
 		{
 			return false;
-		}
+		}//rev2
 
 		const std::string& name = this->getName();
 		m_interface = Holder<RenderEngine>::hostage()->createLight( name );

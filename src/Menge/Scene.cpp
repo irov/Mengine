@@ -220,8 +220,6 @@ namespace	Menge
 		activateCameras_();
 		setPhysicParams_();
 
-		m_updatable = true;
-
 		callMethod( "onActivate", "() " );
 
 		return NodeCore::_activate();
@@ -608,7 +606,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Layer * _layer )
 	{
-		_layer->setOffsetPosition(m_offsetPosition);
+		_layer->setOffsetPosition( m_offsetPosition );
 		_layer->setScene( this );
 
 		if( _layer->isMain() )

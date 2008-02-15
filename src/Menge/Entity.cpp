@@ -174,7 +174,6 @@ namespace	Menge
 		mt::vec2f dir;
 		dir = ( _point - pos ) / len;
 		m_nSpeed = dir * _speed;
-		m_speed = dir * m_speed.length();
 		float v = mt::length_v2_v2( m_speed, m_nSpeed );
 
 		if( v < 0.0001f )
@@ -196,20 +195,11 @@ namespace	Menge
 			setLocalDirection( dir );
 		}
 
-		m_moveTime = 2.0f * len / ( m_speed.length() + _speed );
-		m_acceleration = dir * ( _speed - m_speed.length() ) / m_moveTime;
-		/*m_moveTime = 2.0f * ( _point.x - pos.x ) / ( m_nSpeed.x + m_speed.x );
+		//m_moveTime = 2.0f * len / ( v + _speed );
+		//m_acceleration = dir * ( _speed - v ) / m_moveTime;
+		m_moveTime = 2.0f * ( _point.x - pos.x ) / ( m_nSpeed.x + m_speed.x );
 		m_acceleration.x = ( m_nSpeed.x - m_speed.x ) / m_moveTime;
-		m_acceleration.y = ( m_nSpeed.y - m_speed.y ) / m_moveTime;*/
-	
-//		float timex = 2.0f * ( _point.x - pos.x ) / ( m_nSpeed.x + m_speed.x );
-//		float timey = 2.0f * ( _point.y - pos.y ) / ( m_nSpeed.y + m_speed.y );
-/*		float cosf2 = dir.x;
-		float sinf2 = dir.y;
-		float cosf1 = m_speed.x / m_speed.length();
-		float sinf2 = m_speed.y / m_speed.length();
-		float sx1 = */
-
+		m_acceleration.y = ( m_nSpeed.y - m_speed.y ) / m_moveTime;
 		m_movePoint = _point;
 		m_moveTo = true;
 		m_accelerateTo = true;

@@ -10,18 +10,14 @@
 
 #	include <ControllerManager.h>
 
-//#include <windows.h>
-
-//#include <stdio.h>
-
 #	define SKINWIDTH	0.9f
 
-    enum GameGroup
-    {
-        GROUP_NON_COLLIDABLE,
-        GROUP_COLLIDABLE_NON_PUSHABLE,
-        GROUP_COLLIDABLE_PUSHABLE,
-    };
+enum GameGroup
+{
+    GROUP_NON_COLLIDABLE,
+    GROUP_COLLIDABLE_NON_PUSHABLE,
+    GROUP_COLLIDABLE_PUSHABLE,
+};
 
 class NovodexPhysicSystem: public PhysicSystemInterface
 {
@@ -38,6 +34,7 @@ public:
 	void setDynamicFriction( float _value ) override;
 public:
 	ControllerInterface * createCapsuleController( float * _startPos, float _initialRadius, float _initialHeight ) override;
+	void releaseCapsuleController( ControllerInterface * _capsule ) override;
 
 	GeometryInterface * cookConvex( const float * _verts, int _vertexSize ) override;
 	GeometryInterface * cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) override;
@@ -50,7 +47,7 @@ public:
 	RigidBodyInterface * createRigidBody( float _density, bool _dynamic, const GeometryInterface * _geometry) override;
 	void	removeRigidBody( RigidBodyInterface * _rigidBody ) override;
 public:
-	void	createJoint(RigidBodyInterface * body0, RigidBodyInterface * body1, float x, float y, float z) override;
+	void	createJoint( RigidBodyInterface * body0, RigidBodyInterface * body1, float x, float y, float z ) override;
 private:
 	NxPhysicsSDK * m_physicsSDK;
 	NxScene		 * m_scene;

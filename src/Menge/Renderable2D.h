@@ -8,7 +8,7 @@ namespace Menge
 	class Viewport;
 
 	class Renderable2D
-		: public NodeRenderable
+		: public virtual NodeRenderable
 	{
 	public:
 		Renderable2D();

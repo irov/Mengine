@@ -11,10 +11,10 @@
 #	include <sstream>
 #	include <io.h>
 
-//void RedirectIOToConsole();
 #	ifdef _CONSOLE
 int main( int argc, char *argv[] )
-#	elif
+#	else
+void RedirectIOToConsole();
 int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in_opt LPSTR lpCmdLine, __in int nShowCmd )
 #	endif
 {
@@ -32,7 +32,7 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 #	endif
 #ifndef MENGE_STATIC
 	HMODULE hModule = LoadLibraryA( application_dll );
-
+	
 	if( hModule == 0 )
 	{
 		printf("Error: load library '%s' is failed\n", application_dll );
@@ -68,15 +68,28 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	bool result = false;
 
 #	ifdef _CONSOLE
-	if( argc > 0 )
+	if( argc > 1 )
 	{
-		result = app->init( "application.xml", argv[1] );
+		char* cmdline = 0;
+		size_t l = 0;
+		for ( int i = 1; i < argc; i++ )
+		{
+			l += strlen( argv[i] );
+		}
+		cmdline = new char[l+1];
+		cmdline[0] = '\0';
+		for ( int i = 1; i < argc; i++ )
+		{
+			strcat_s( cmdline, l+1, argv[i] );
+		}
+		result = app->init( "application.xml", cmdline );
+		delete[] cmdline;
 	}
 	else
 	{
 		result = app->init( "application.xml", 0 );
 	}
-#	elif
+#	else
 	result = app->init( "application.xml", lpCmdLine );
 #	endif
 

@@ -95,7 +95,7 @@ namespace Menge
 			pos -= viewport->begin;
 
 			// if we have case with 2 viewports, check in what viewport we see point (looks more like a hack)
-			if( m_layer->isScrollable() && ( pos.x > viewport->end.x || pos.x < viewport->begin.x ))
+			if ( pos.x < 0 )
 			{
 				pos -= m_layer->getViewportOffset();
 			}

@@ -50,6 +50,7 @@ OgreApplication::OgreApplication()
 , m_frameTime( 0.0f )
 //, m_cursorInArea( false )
 , m_mutex(0)
+, m_focus( true )
 {}
 //////////////////////////////////////////////////////////////////////////
 OgreApplication::~OgreApplication()
@@ -193,12 +194,31 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 
 	const std::string& title = m_application->getTitle();
 
+	/// patch for ansi names
+	char *ansistr = NULL;
+	int length = MultiByteToWideChar(CP_UTF8, 0, m_application->getTitle().c_str(), m_application->getTitle().length(), NULL, NULL );
+	WCHAR *lpszW = NULL;
+
+	lpszW = new WCHAR[length+1];
+	ansistr = ( char * ) calloc ( sizeof(char), length+5 );
+
+	//this step intended only to use WideCharToMultiByte
+	MultiByteToWideChar(CP_UTF8, 0, m_application->getTitle().c_str(), -1, lpszW, length );
+
+	//Conversion to ANSI (CP_ACP)
+	WideCharToMultiByte(CP_ACP, 0, lpszW, -1, ansistr, length, NULL, NULL);
+
+	ansistr[length] = 0;
+
+	delete[] lpszW;
+	////
+
 	m_mutex = ::CreateMutexA( NULL, FALSE, title.c_str() );
 	DWORD error = ::GetLastError();
 
 	if( error == ERROR_ALREADY_EXISTS )
 	{
-		std::string message = std::string("Another instance of ") + title + std::string(" is already running");
+		std::string message = std::string("Another instance of ") + std::string( ansistr ) + std::string(" is already running");
 		::MessageBoxA( NULL, message.c_str(), title.c_str(), MB_ICONWARNING );
 		return false;
 	}
@@ -300,6 +320,7 @@ bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
 void OgreApplication::run()
 {
 	MSG  msg;
+	static bool resetTime = false;
 //	POINT pos;
 	while( m_running )
 	{
@@ -319,11 +340,29 @@ void OgreApplication::run()
 			DispatchMessage( &msg );
 		}
 		m_running = m_renderWindow->isClosed() == false;
+		
 		if( m_renderWindow->isActive() )
 		{
+			if( !m_focus )
+			{
+				m_focus = true;
+				m_application->onFocus( true );
+				resetTime = true;
+			}
 			//Ogre::WindowEventUtilities::messagePump();
 			m_running = m_application->update(  m_frameTime * 1000.f ) && m_renderWindow->isClosed() == false;
 			m_root->renderOneFrame();
+
+			if ( resetTime )
+			{
+				m_frameTime = 0.0f;
+				resetTime = false;
+			}
+		}
+		else if( !m_renderWindow->isActive() && m_focus )
+		{
+			m_focus = false;
+			m_application->onFocus( false );
 		}
 
 		::Sleep(1);

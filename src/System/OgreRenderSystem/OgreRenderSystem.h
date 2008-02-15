@@ -68,6 +68,7 @@ public:
 	void	endLayer() override;
 
 	void setFullscreenMode( bool _fullscreen ) override;
+	bool getFullscreenMode() override;
 	void loadResource( Ogre::Resource* _resource );
 	void setViewportDimensions( float _width, float _height, float _renderFactor ) override;
 

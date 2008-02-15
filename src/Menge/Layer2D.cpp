@@ -28,6 +28,7 @@ namespace	Menge
 	, m_viewportOffset( 0.0f, 0.0f )
 	{
 	}
+
 	//////////////////////////////////////////////////////////////////////////
 	Viewport * Layer2D::getViewport()
 	{
@@ -303,5 +304,11 @@ namespace	Menge
 		};
 
 		_node->foreachChildren( ForeachRender(this) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f Layer2D::screenToLocal( const mt::vec2f& _point )
+	{
+		const mt::vec2f& pos = getLocalPosition();
+		return pos + m_viewport.begin + _point;
 	}
 }

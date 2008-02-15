@@ -29,7 +29,7 @@
 #	include "Entity3d.h"
 #	include "Camera3d.h"
 #	include "RigidBody3D.h"
-
+#	include "Layer2D.h"
 
 
 
@@ -44,6 +44,7 @@
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
 
+#	include "Camera2D.h"
 #	include "Camera3D.h"
 
 #	include "XmlEngine.h"
@@ -123,6 +124,12 @@ namespace Menge
 				->setCamera2DPosition( mt::vec2f(x, y) );
 		}
 		
+		static const mt::vec2f& getCamera2DPosition()
+		{
+			Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
+			return camera->getLocalPosition();
+		}
+
 		static void setCamera3DPosition( float x, float y, float z )
 		{
 			Camera3D * camera = 
@@ -256,6 +263,11 @@ namespace Menge
 			Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
 		}
 
+		static bool getFullscreenMode()
+		{
+			return Holder<RenderEngine>::hostage()->getFullscreenMode();
+		}
+
 		static void addResourceListener( PyObject* _listener )
 		{
 			Holder<ResourceManager>::hostage()->addListener( _listener );
@@ -293,6 +305,11 @@ namespace Menge
 		static bool deleteFolder( const std::string& _path )
 		{
 			return Holder<FileEngine>::hostage()->deleteFolder( _path );
+		}
+		static mt::vec2f screenToLocal( const std::string& _layerName, const mt::vec2f& _point )
+		{
+			Layer2D* layer = Holder<Player>::hostage()->getCurrentScene()->getChildrenT<Layer2D>( _layerName, false );
+			return layer->screenToLocal( _point );
 		}
 
 	}
@@ -392,6 +409,7 @@ namespace Menge
 			.def( "addChildren", &Node::addChildren )
 			.def( "removeChildren", &Node::removeChildren )
 			.def( "getChildren", &Node::getChildren )
+			.def( "updatable", &Node::updatable )
 			;
 
 		pybind::interface_<Allocator2D>("Allocator2D", false)
@@ -463,6 +481,10 @@ namespace Menge
 		}
 
 		{
+			/*pybind::proxy_<Layer2D, pybind::bases<SceneNode2D>>("Layer2D", false)
+				.def( "screenToLocal", &Layer2D::screenToLocal )
+				;*/
+
 			pybind::proxy_<Emitter, pybind::bases<SceneNode2D>>("Emitter", false)
 				.def( "play", &Emitter::play )
 				.def( "stop", &Emitter::stop )
@@ -575,6 +597,7 @@ namespace Menge
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
 		pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
 		pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
+		pybind::def( "getCamera2DPosition", &ScriptMethod::getCamera2DPosition );
 		pybind::def( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
 				
 		pybind::def( "setCamera3DPosition", &ScriptMethod::setCamera3DPosition );
@@ -598,6 +621,7 @@ namespace Menge
 		pybind::def( "quitApplication", &ScriptMethod::quitApplication );
 		pybind::def( "createShot", &ScriptMethod::createShot );
 		pybind::def( "setFullscreenMode", &ScriptMethod::setFullscreenMode );
+		pybind::def( "getFullscreenMode", &ScriptMethod::getFullscreenMode );
 		pybind::def( "addResourceListener", &ScriptMethod::addResourceListener );
 		pybind::def( "removeResourceListener", &ScriptMethod::removeResourceListener );
 		pybind::def( "renderOneFrame", &ScriptMethod::renderOneFrame );
@@ -606,5 +630,6 @@ namespace Menge
 		pybind::def( "createFolder", &ScriptMethod::createFolder );
 		pybind::def( "deleteFolder", &ScriptMethod::deleteFolder );
 
+		pybind::def( "screenToLocal", &ScriptMethod::screenToLocal );
 	}
 }

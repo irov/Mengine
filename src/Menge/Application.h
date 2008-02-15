@@ -81,6 +81,8 @@ namespace Menge
 		void setSoundEnabled( bool _enabled );
 		bool getSoundEnabled()	const;
 
+		void onFocus( bool _focus );
+
 	private:
 		bool m_quit;
 		std::string m_gameInfo;

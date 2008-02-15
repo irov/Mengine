@@ -220,6 +220,8 @@ namespace	Menge
 		activateCameras_();
 		setPhysicParams_();
 
+		m_updatable = true;
+
 		callMethod( "onActivate", "() " );
 
 		return NodeCore::_activate();

@@ -376,4 +376,18 @@ namespace Menge
 	{
 		return m_usePhysic;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::onFocus( bool _focus )
+	{
+		static float volume = 1.0f;
+		if( !_focus )
+		{
+			volume = Holder<SoundEngine>::hostage()->getCommonVolume();
+			Holder<SoundEngine>::hostage()->setCommonVolume( 0.0f );
+		}
+		else
+		{
+			Holder<SoundEngine>::hostage()->setCommonVolume( volume );
+		}
+	}
 }

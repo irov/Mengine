@@ -201,6 +201,7 @@ public:
 	virtual	void	endLayer() = 0;
 
 	virtual void	setFullscreenMode( bool _fullscreen ) = 0;
+	virtual bool	getFullscreenMode() = 0;
 	virtual void	setViewportDimensions( float _width, float _height, float _renderFactor ) = 0;
 
 	//new

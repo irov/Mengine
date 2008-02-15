@@ -73,6 +73,7 @@ namespace Menge
 		void	endLayer();
 
 		void	setFullscreenMode( bool _fullscreen );
+		bool	getFullscreenMode();
 		void	setViewportDimensions( float _width, float _height, float _renderFactor = 0.0f );
 
 		CameraInterface * createCamera( const std::string& _name );

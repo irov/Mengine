@@ -344,4 +344,8 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool NodeCore::updatable()
+	{
+		return m_updatable;
+	}
 }

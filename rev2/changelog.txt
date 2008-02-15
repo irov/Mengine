@@ -1,0 +1,147 @@
+===========================================================================
+Menge Engine
+
+===========================================================================
+staue: development 
+version: 0.0.0.9
+date: 
+
+[General]
+* fixed Hotspot onLeave, now call this callback if this hotspot is active
+
+[Framework]
+% change Hotspot.handleKeyEvent attributes, add self. [self,key,isdown]
+% change Hotspot.handleMouseButtonEvent attributes, add self. [self,button,isdown]
+% change Hotspot.handleMouseMove attributes, add self. [self,x,y,z,whell]
+
+
+===========================================================================
+staue: development 
+version: 0.0.0.8
+date: 25.10.07
+
+[Genereal]
++ support Event warning's and errors
++ support ResourceImageDefault multi-frames
++ added new Node TextField
++ support TextField Text:Value attribute
++ support TextField Font:Name attribute
+
+[Framework]
+% change Hotspot.setInputHandler -> Hotspot.setHotspotListener
++ added TextField.setText( str )
+
+===========================================================================
+staue: development 
+version: 0.0.0.7
+date: 16.10.07
+
+[Genereal]
+* fixed randint, provide srand
++ added new Type LayerScene
++ added LayerScene Scene:Name attribute
+
+[Framework]
++ added Node.deactivate()
+
+===========================================================================
+staue: development 
+version: 0.0.0.6
+date: 16.10.07
+
+[General]
+* fixed Animation.stop()
+% change Animation.onAnimationEnd( animation )
+- remove Entity.onMoveStop()
+ 
+
+===========================================================================
+staue: development 
+version: 0.0.0.5
+date: 15.10.07
+
+[Genereal]
+* fixed Hotspot parallax-scrolling behavior
+* fixed bug scheduleManager
++ support timing update
++ support Entity move
++ added Entity.onMoveEnd callback
++ added Entity.onMoveStop callback
++ support Allocator Transformation:Position attribute
++ support Allocator Transformation:Direction attribute
++ support Allocator Transformation:Rotate attribute
++ support reset scene
+
+[Framework]
++ added Entity.moveTo( time, vec2f, bool )
++ added Entity.moveStop()
+
+
+===========================================================================
+staue: development 
+version: 0.0.0.4
+date: 11.10.07
+
+[General]
++ added Sprite support ImageIndex:Value attribute
++ added Animation support AutoStart:Value attribute
+* fixed bug scheduleManager
+* fixed bug ResourceImageCell
+* fixed Windows event
+
+[Framework]
++ added Menge.getMouseX()
++ added Menge.getMouseY()
++ added Menge.getArrow()
++ added Arrow.setOffsetClick( vec2f )
++ added Arrow.getOffsetClick()
+
+
+===========================================================================
+staue: development 
+version: 0.0.0.3
+date: 11.10.07
+
+[General]
++ added Entity.onLoader callback
+
+[Framework]
++ added support class Animation
++ added Animation.play()
++ added Animation.stop()
++ added Animation.pause()
++ added Animation.setLooped( bool )
++ added Animation.getLooped()
++ added Animation.setAnimationListener( script )
++ added Animation.setAnimationResource( string )
++ added HotSpot.addPoint( vec2f )
++ added HotSpot.clearPoints();
++ added Menge.getCurrentScene()
++ added Menge.schedule( timing, script )
++ added Menge.scheduleRemove( id )
+
+===========================================================================
+staue: development 
+version: 0.0.0.2
+date: 08.10.07
+
+[Genereal]
+* fixed hotspot, but don't corect work in scrolling
++ added support [Entity].xml for build children node
+
+[Framework]
++ added Scene.getNode( NodeName )
++ added Node.getChildren( NodeName, isRecursive )
++ added Node.setLocalPosition( vec2f )
++ added Node.getLocalPosition()
++ added Node.setLocalDirection( vec2f )
++ added Node.getLocalDirection()
++ added Node.getWorldPosition()
+* fixed Renderable.hide( bool )
+
+===========================================================================
+staue: development 
+version: 0.0.0.1
+date: 05.10.07
+
+* test

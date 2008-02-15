@@ -1,0 +1,4 @@
+LIBRARY	"SoundSystem"
+EXPORTS
+	initInterfaceSystem		@1
+	releaseInterfaceSystem	@2

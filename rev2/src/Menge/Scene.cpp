@@ -109,9 +109,9 @@ namespace	Menge
 
 		if( handle == false )
 		{
-			for( TListChildren::reverse_iterator 
-				it = m_listChildren.rbegin(),
-				it_end = m_listChildren.rend();
+			for( TLayerList::reverse_iterator 
+				it = m_listLayers.rbegin(),
+				it_end = m_listLayers.rend();
 			it != it_end;
 			++it)
 			{
@@ -147,9 +147,9 @@ namespace	Menge
 
 		if( handle == false )
 		{
-			for( TListChildren::reverse_iterator 
-				it = m_listChildren.rbegin(),
-				it_end = m_listChildren.rend();
+			for( TLayerList::reverse_iterator 
+				it = m_listLayers.rbegin(),
+				it_end = m_listLayers.rend();
 			it != it_end;
 			++it)
 			{
@@ -185,9 +185,10 @@ namespace	Menge
 	
 		if( handle == false )
 		{
-			for( TListChildren::reverse_iterator 
-				it = m_listChildren.rbegin(),
-				it_end = m_listChildren.rend();
+			//тут было m_childrenList
+			for( TLayerList::reverse_iterator 
+				it = m_listLayers.rbegin(),
+				it_end = m_listLayers.rend();
 			it != it_end;
 			++it)
 			{
@@ -604,14 +605,18 @@ namespace	Menge
 		return body;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_addChildren( Layer * _layer )
+	void Scene::_addChildren( Node * _layer )
 	{
-		_layer->setOffsetPosition( m_offsetPosition );
-		_layer->setScene( this );
+		//!! добавил m_listLayers
+		Layer * layer = dynamic_cast<Layer*>(_layer);
+		m_listLayers.push_back(layer);
 
-		if( _layer->isMain() )
+		layer->setOffsetPosition( m_offsetPosition );
+		layer->setScene( this );
+
+		if( layer->isMain() )
 		{
-			m_mainLayer = _layer;
+			m_mainLayer = layer;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

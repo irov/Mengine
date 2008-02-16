@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "NodeCore.h"
-#	include "NodeChildren.h"
 
 #	include "Scriptable.h"
 
@@ -27,7 +26,6 @@ namespace Menge
 	class Scene
 		: public NodeCore
 		, public NodeRenderable
-		, public NodeChildren<Layer>
 		, public InputHandler
 	{
 	public:
@@ -69,7 +67,7 @@ namespace Menge
 		void _update( float _timing ) override;
 		void _release() override;
 
-		void _addChildren( Layer * _layer ) override;
+		void _addChildren( Node * _layer ) override;
 
 	public:
 
@@ -111,6 +109,10 @@ namespace Menge
 		typedef std::list<SceneNode3D*> TListActors;
 
 		TListActors	m_listActors;
+
+		typedef std::list<Layer*> TLayerList;
+
+		TLayerList m_listLayers;
 
 		void activateLights_();
 		void activateCameras_();

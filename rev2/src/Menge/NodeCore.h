@@ -10,6 +10,8 @@
 
 #	include <list>
 
+#	include <algorithm>
+
 #	include <map>
 
 namespace Menge
@@ -57,6 +59,28 @@ namespace Menge
 
 	public:		
 		void debugRender() override;
+
+	public:
+		void setParent( Node * _parent ) override;
+		Node * getParent();
+		bool addChildren( Node * _node ) override;
+		void removeChildren( Node *_node) override;
+		bool isChildren( Node *_node) override;
+		void foreachChildren( NodeForeach & _foreach ) override;
+		Node * getChildren( const std::string & _name, bool _recursion ) override;
+		//////////////////////////////////////////////////////////////////////////
+		template<class T>
+		T * getChildrenT( const std::string & _name, bool recursion = false )
+		{
+			return dynamic_cast< T * >( getChildren( _name, recursion ) );
+		}	
+		//////////////////////////////////////////////////////////////////////////
+		virtual void _addChildren( Node * _node );
+	protected:
+		Node * m_parent;
+
+		typedef std::list< Node * > TListChildren;
+		TListChildren m_listChildren;
 
 	protected:
 		virtual void _destroy();

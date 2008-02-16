@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "NodeCore.h"
-#	include "NodeChildren.h"
 
 #	include "math/quat.h"
 
@@ -11,7 +10,6 @@ namespace Menge
 {
 	class SceneNode3D
 		: public NodeCore
-		, public NodeChildren<SceneNode3D>
 	{
 	public:
 		SceneNode3D();

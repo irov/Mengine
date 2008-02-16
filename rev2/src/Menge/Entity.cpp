@@ -210,19 +210,21 @@ namespace	Menge
 		TListChildren::iterator it = m_listChildren.begin();
 		for(; it != m_listChildren.end(); it++)
 		{
-			mt::vec2f pos = (*it)->getLocalPosition();
-			mt::vec2f dir = (*it)->getLocalDirection();
+			SceneNode2D* sceneNode = dynamic_cast<SceneNode2D*>((*it));
+
+			mt::vec2f pos = sceneNode->getLocalPosition();
+			mt::vec2f dir = sceneNode->getLocalDirection();
 			if( _x )
 			{
 				pos.x = - pos.x;
-				(*it)->flip( true );
+				sceneNode->flip( true );
 			}
 			if( _y )
 			{
 				pos.y = - pos.y;
-				(*it)->flip( false );
+				sceneNode->flip( false );
 			}
-			(*it)->setLocalPosition( pos );
+			sceneNode->setLocalPosition( pos );
 			//(*it)->setLocalDirection( -dir );
 			
 		}
@@ -233,11 +235,12 @@ namespace	Menge
 		TListChildren::iterator it = m_listChildren.begin();
 		for(; it != m_listChildren.end(); it++)
 		{
-			mt::vec2f pos = (*it)->getLocalPosition();
+			SceneNode2D* sceneNode = dynamic_cast<SceneNode2D*>((*it));
+			mt::vec2f pos = sceneNode->getLocalPosition();
 			pos.x = pos.x / m_scale.x * _scale.x;
 			pos.y = pos.y / m_scale.y * _scale.y;
-			(*it)->setLocalPosition( pos );
-			(*it)->setScale( _scale );
+			sceneNode->setLocalPosition( pos );
+			sceneNode->setScale( _scale );
 		}
 		m_scale = _scale;
 	}

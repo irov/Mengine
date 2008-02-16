@@ -19,30 +19,50 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode2D::SceneNode2D()
 		: m_layer( NULL )
-	{}
+		, m_changePivot( true )
+	{
+		mt::ident_m3( m_localMatrix );
+		mt::ident_m3( m_worldMatrix );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::loader( XmlElement * _xml )
 	{
 		NodeCore::loader( _xml );
-		Allocator2D::loader( _xml );
 		Renderable2D::loader( _xml );
+
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE("Transformation")
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE_MEMBER( "Value", &SceneNode2D::setLocalMatrix );
+					XML_CASE_ATTRIBUTE_MEMBER( "Position", &SceneNode2D::setLocalPosition );
+					XML_CASE_ATTRIBUTE_MEMBER( "Direction", &SceneNode2D::setLocalDirection );
+					XML_CASE_ATTRIBUTE_MEMBER( "Rotate", &SceneNode2D::setRotate );
+				}
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & SceneNode2D::getWorldMatrix()
 	{
-		if( m_parent == 0 )
+		//убрать в Node!! тогда никакого dynamic_cast
+		SceneNode2D * parent = dynamic_cast<SceneNode2D*>(m_parent);
+
+		if( parent == 0 )
 		{
 			return getLocalMatrix();
 		}
 
-		updateMatrix( m_parent );
-		
-		return Allocator2D::getWorldMatrix();
+		updateMatrix( parent );	
+
+		return m_worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::changePivot()
 	{
-		Allocator2D::changePivot();
+		_changePivot();
 
 		for( TListChildren::iterator
 			it = m_listChildren.begin(),
@@ -50,7 +70,9 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->changePivot();
+			//убрать в Node!! тогда никакого dynamic_cast
+			SceneNode2D * children = dynamic_cast<SceneNode2D*>(*it);
+			children->changePivot();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -105,9 +127,9 @@ namespace Menge
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::_addChildren( SceneNode2D * _node )
+	void SceneNode2D::_addChildren( Node * _node )
 	{
-		_node->setLayer( m_layer );
+		dynamic_cast<SceneNode2D*>(_node)->setLayer( m_layer );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::update( float _timing )
@@ -125,5 +147,117 @@ namespace Menge
 				pos.x += m_layer->getSize().x;
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & SceneNode2D::getWorldPosition()
+	{
+		const mt::mat3f &wm = getWorldMatrix();
+
+		return wm.v2.v2;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & SceneNode2D::getWorldDirection()
+	{
+		const mt::mat3f &wm = getWorldMatrix();
+
+		return wm.v0.v2;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & SceneNode2D::getLocalPosition()const
+	{
+		return m_localMatrix.v2.v2;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & SceneNode2D::getLocalDirection()const
+	{
+		return m_localMatrix.v0.v2;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::mat3f & SceneNode2D::getLocalMatrix()const
+	{
+		return m_localMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f & SceneNode2D::getLocalPositionModify()
+	{
+		return m_localMatrix.v2.v2;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f & SceneNode2D::getLocalDirectionModify()
+	{
+		return m_localMatrix.v0.v2;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::mat3f & SceneNode2D::getLocalMatrixModify()
+	{
+		return m_localMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::setLocalMatrix( const mt::mat3f & _matrix )
+	{
+		m_localMatrix = _matrix;
+
+		changePivot();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::setLocalPosition( const mt::vec2f & _position )
+	{
+		mt::vec2f & localPosition = getLocalPositionModify();
+
+		localPosition = _position;
+
+		changePivot();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::setLocalDirection( const mt::vec2f & _direction )
+	{
+		m_localMatrix.v0.v2 = _direction;
+		m_localMatrix.v1.v2 = mt::perp( _direction );
+
+		changePivot();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::setRotate( float _alpha )
+	{
+		float cos_alpha = cosf(_alpha);
+		float sin_alpha = sinf(_alpha);
+		m_localMatrix[0][0] = cos_alpha;
+		m_localMatrix[0][1] = -sin_alpha;
+		m_localMatrix[1][0] = sin_alpha;
+		m_localMatrix[1][1] = cos_alpha;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::translate( const mt::vec2f & _delta )
+	{
+		m_localMatrix.v2.v2 += _delta;
+
+		changePivot();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::updateMatrix( SceneNode2D * _parent )
+	{
+		if( m_changePivot == false )
+		{
+			return;
+		}
+	
+		const mt::mat3f & parentMatrix =
+			_parent->getWorldMatrix();
+	
+		mt::mul_m3_m3( m_worldMatrix, m_localMatrix, parentMatrix );
+
+		_updateMatrix( _parent );
+	
+		m_changePivot = false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::_updateMatrix( SceneNode2D * _parent )
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::_changePivot()
+	{
+		m_changePivot = true;
 	}
 }

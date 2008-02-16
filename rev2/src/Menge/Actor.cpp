@@ -55,7 +55,7 @@ namespace	Menge
 					*(mt::vec3f*)m_controller->getFilteredPosition()
 					);
 			}
-
+ 
 			//m_charPos+this->getLocalPosition()*step;
 			//this->setLocalPosition( m_charPos*step+this->getLocalPosition() );
 		}
@@ -65,7 +65,7 @@ namespace	Menge
 		this->callEvent("UPDATE", "(f)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Actor::_activate()
+	bool Actor::_activate() 
 	{
 		if( SceneNode3D::_activate() == false )
 		{

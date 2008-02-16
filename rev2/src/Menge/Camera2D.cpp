@@ -17,7 +17,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::loader( XmlElement * _xml )
 	{
-		Allocator2D::loader( _xml );
+//		Allocator2D::loader( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera2D::_activate()
@@ -32,7 +32,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::_changePivot()
 	{
-		Allocator2D::_changePivot();
+		//Allocator2D::_changePivot();
 
 		updateViewport();
 	}

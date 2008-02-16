@@ -31,6 +31,8 @@
 #	include "RigidBody3D.h"
 
 
+#	include "NodeForeach.h"
+
 
 
 #	include "Color.h"
@@ -394,27 +396,25 @@ namespace Menge
 			.def( "getChildren", &Node::getChildren )
 			;
 
-		pybind::interface_<Allocator2D>("Allocator2D", false)
-			.def( "getLocalPosition", &Allocator2D::getLocalPosition )
-			.def( "getLocalDirection", &Allocator2D::getLocalDirection )
-
-			.def( "getWorldPosition", &Allocator2D::getWorldPosition )
-			.def( "getWorldDirection", &Allocator2D::getWorldDirection )
-
-			.def( "setLocalPosition", &Allocator2D::setLocalPosition )
-			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
-
-			.def( "setWorldPosition", &Allocator2D::getWorldPosition )
-			.def( "SetWorldDirection", &Allocator2D::getWorldDirection )
-			.def( "setRotate", &Allocator2D::setRotate )
-			;
-
 		pybind::interface_<NodeRenderable>("NodeRenderable", false)
 			.def( "hide", &NodeRenderable::hide )
 			;
 
-		pybind::proxy_<SceneNode2D, pybind::bases<Node, Allocator2D, NodeRenderable>>("SceneNode2D", false)
+		pybind::proxy_<SceneNode2D, pybind::bases<Node, /*Allocator2D, */NodeRenderable>>("SceneNode2D", false)
 				.def( "getScreenPosition", &SceneNode2D::getScreenPosition )
+
+				.def( "getLocalPosition", &SceneNode2D::getLocalPosition )
+				.def( "getLocalDirection", &SceneNode2D::getLocalDirection )
+
+				.def( "getWorldPosition", &SceneNode2D::getWorldPosition )
+				.def( "getWorldDirection", &SceneNode2D::getWorldDirection )
+
+				.def( "setLocalPosition", &SceneNode2D::setLocalPosition )
+				.def( "setLocalDirection", &SceneNode2D::setLocalDirection )
+
+				.def( "setWorldPosition", &SceneNode2D::getWorldPosition )
+				.def( "SetWorldDirection", &SceneNode2D::getWorldDirection )
+				.def( "setRotate", &SceneNode2D::setRotate )
 			;
 
 		pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)

@@ -1103,18 +1103,6 @@
 				>
 			</File>
 			<Filter
-				Name="Layer3D"
-				>
-				<File
-					RelativePath=".\Layer3D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Layer3D.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="SceneNode2D"
 				>
 				<File
@@ -1125,18 +1113,6 @@
 					RelativePath=".\SceneNode2D.h"
 					>
 				</File>
-				<Filter
-					Name="Allocator2D"
-					>
-					<File
-						RelativePath=".\Allocator2D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Allocator2D.h"
-						>
-					</File>
-				</Filter>
 				<Filter
 					Name="Renderable2D"
 					>
@@ -1242,18 +1218,6 @@
 					</File>
 					<File
 						RelativePath=".\Scriptable.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Children"
-					>
-					<File
-						RelativePath=".\NodeChildren.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\NodeChildren.h"
 						>
 					</File>
 				</Filter>

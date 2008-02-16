@@ -23,11 +23,102 @@ namespace Menge
 		: m_active(false)
 		, m_enable(true)
 		, m_updatable(true)
+		, m_parent(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	NodeCore::~NodeCore()
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeCore::_addChildren( Node * _node )
+	{
+		//	Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeCore::setParent( Node * _parent )
+	{
+		m_parent = dynamic_cast<Node *>(_parent);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * NodeCore::getParent()
+	{
+		return m_parent;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool NodeCore::addChildren( Node * _node )
+	{
+		if( isChildren( _node ) )
+		{
+			return false;
+		}
+
+		Node * t_node = dynamic_cast<Node *>( _node );
+
+		t_node->setParent( this );
+
+		m_listChildren.push_back( t_node );
+
+		_addChildren( t_node );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeCore::removeChildren( Node *_node)
+	{
+		TListChildren::iterator it_find = 
+			std::find( m_listChildren.begin(), m_listChildren.end(), _node );
+
+		if( it_find != m_listChildren.end() )
+		{
+			m_listChildren.erase( it_find );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool NodeCore::isChildren( Node *_node)
+	{
+		TListChildren::iterator it_find = 
+			std::find( m_listChildren.begin(), m_listChildren.end(), _node );
+
+		return it_find != m_listChildren.end();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeCore::foreachChildren( NodeForeach & _foreach )
+	{
+		for( TListChildren::iterator
+			it = m_listChildren.begin(),
+			it_end = m_listChildren.end();
+		it != it_end;
+		++it)
+		{
+			_foreach.apply( *it );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * NodeCore::getChildren( const std::string & _name, bool _recursion )
+	{
+		for( TListChildren::iterator
+			it = m_listChildren.begin(),
+			it_end = m_listChildren.end();
+		it != it_end;
+		++it)
+		{
+			Node * children = *it;
+			if( children->getName() == _name )
+			{
+				return children;
+			}
+
+			if( _recursion )
+			{
+				if( Node * result = children->getChildren( _name, _recursion ) )
+				{
+					return result;
+				}
+			}
+		}
+
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::destroy()
@@ -253,47 +344,6 @@ namespace Menge
 
 				XML_PARSE_ELEMENT( node, &Node::loader );
 			}
-
-			//XML_CHECK_NODE("External")
-			//{
-			//	std::string file;
-
-			//	XML_FOR_EACH_ATTRIBUTES()
-			//	{
-			//		XML_CHECK_ATTRIBUTE("File", file );
-			//	}
-			//	
-			//	TiXmlDocument * document = Holder<FileEngine>::hostage()
-			//		->loadXml( file );
-
-			//	XML_FOR_EACH_DOCUMENT( document )
-			//	{
-			//		XML_CHECK_NODE("Node")
-			//		{
-			//			XML_DEF_ATTRIBUTES_NODE(Name);
-			//			XML_DEF_ATTRIBUTES_NODE(Type);
-
-			//			Node *node = SceneManager::createNode( Type );
-
-			//			if(node == 0)
-			//			{
-			//				continue;
-			//			}
-
-			//			addChildren( node );
-
-			//			node->setName( Name );
-			//			node->loader( XML_CURRENT_NODE );
-			//		}				
-			//	}
-			//	XML_INVALID_PARSE()
-			//	{
-			//		MENGE_LOG("Invalid parse external node %s for %s\n"
-			//			, File.c_str()
-			//			, m_name.c_str()
-			//			);
-			//	}
-			//}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

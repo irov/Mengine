@@ -15,6 +15,8 @@
 #	include "LogEngine.h"
 #	include "Game.h"
 
+#	include "NodeForeach.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -283,9 +285,9 @@ namespace	Menge
 			->endLayer();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::_addChildren( SceneNode2D * _node )
+	void Layer2D::_addChildren( Node * _node )
 	{
-		_node->setLayer( this );
+		dynamic_cast<SceneNode2D*>(_node)->setLayer( this );
 
 		// прости господи
 		struct ForeachRender

@@ -33,6 +33,14 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool NodeCore::registerEventMethod( const std::string & _name, const std::string & _method  )
+	{
+		Scriptable * scriptable = getScriptable();
+		PyObject * module = scriptable->getScript();
+
+		return Eventable::registerEventListener( _name, _method, module );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::hide( bool _value )
 	{
 		m_hide = _value;
@@ -388,7 +396,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::loader( XmlElement * _xml )
 	{
-		NodeEventable::loader( _xml );
+		//NodeEventable::loader( _xml );
 
 		XML_SWITCH_NODE(_xml)
 		{

@@ -1351,10 +1351,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\MotionModifier.h"
-				>
-			</File>
-			<File
 				RelativePath=".\RigidBody3D.cpp"
 				>
 			</File>

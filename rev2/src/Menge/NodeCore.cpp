@@ -425,7 +425,6 @@ namespace Menge
 
 				XML_PARSE_ELEMENT( node, &Node::loader );
 			}
-
 			//
 			XML_CASE_NODE("Hide")
 			{

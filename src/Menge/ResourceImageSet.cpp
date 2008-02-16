@@ -34,6 +34,8 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
+			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
+
 			XML_CASE_NODE( "Frame" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -46,9 +48,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageSet::_compile()
 	{
-		ImageFrame image = loadImageFrame( m_filename );
+		m_imageFrame = loadImageFrame( m_filename );
 
 		size_t size = m_uvs.size();
+		
+		if( size == 0 )
+		{
+			return false;
+		}
+
 		m_sizes.resize( size );
 
 		for( size_t frame = 0; frame != size; ++frame )

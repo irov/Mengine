@@ -47,7 +47,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SceneNode2D::isRenderable()
 	{
-		if( NodeRenderable::isRenderable() == false )
+		if( NodeCore::isRenderable() == false )
 		{
 			return false;
 		}

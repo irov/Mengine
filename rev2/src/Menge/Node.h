@@ -26,6 +26,9 @@ namespace Menge
 		*/
 		virtual void destroy() = 0;
 
+		virtual void hide( bool _value ) = 0;
+		virtual bool isHide() const = 0;	
+
 	public:
 		//! Node pure virtual. set node name
 		/*!

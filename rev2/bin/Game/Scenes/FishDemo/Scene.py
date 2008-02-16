@@ -8,7 +8,7 @@ class Scene( Menge.Scene ):
 		pass
 
 	def onActivate( self ):
-		print "asdf"
+		print "im in onActivate"
 
 		self.node = Menge.createNodeFromXml(
 			'<Node Name = "Water_01" Type = "Sprite">'
@@ -16,9 +16,12 @@ class Scene( Menge.Scene ):
 			'<Transformation Value = "1;0;0;1;0;0;" />'
 			'</Node>'
 			)
+		print "im in onActivate2"
 
 		self.node.activate()
+		print "im in onActivate3"
 		self.layerAppend( "Water", self.node )
+		print "im in onActivate4"
 		
 		self.node1 = self.getNode("Water_01")
 	
@@ -28,8 +31,11 @@ class Scene( Menge.Scene ):
 		print Menge.getVec2fX(position), Menge.getVec2fY(position)
 
 		
+		print "im in onActivate5"
 		self.node1.hide( False )
 		
+		print "im in onActivate6"
+
 		block = Menge.createEntity("Block",Menge.vec2f( 100, 100 ), Menge.vec2f( 1, 0 ) )
 
 		posX = Menge.getVec2fX(block.getWorldPosition())
@@ -54,6 +60,7 @@ class Scene( Menge.Scene ):
 			'</Node>'
 			);
 
+
 		self.bubble.activate();
 
 		self.layerAppend( "Water", self.bubble )
@@ -66,6 +73,7 @@ class Scene( Menge.Scene ):
 			);
 
 		self.bubble1.activate();
+
 
 		self.layerAppend( "Water", self.bubble1 )
 
@@ -119,6 +127,7 @@ class Scene( Menge.Scene ):
 
 		self.camera.yaw(-90);'''
 
+
 		pass
 
 	def onUpdate( self, timing ):
@@ -138,6 +147,7 @@ class Scene( Menge.Scene ):
 		self.camera.yaw(-90);
 
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
+
 		pass
 
 	def onHandleMouseButtonEvent( self, botton, isDown ):

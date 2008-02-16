@@ -26,8 +26,26 @@ namespace Menge
 		NodeCore();
 
 		~NodeCore();
+
 		void destroy() override;
 
+	public:
+		void render() override;
+		bool isRenderable() override;
+	
+	public:
+		/*virtual */void hide( bool _value );
+		/*virtual */bool isHide() const;	
+
+	protected:
+		virtual void _render();
+
+		virtual bool _renderBegin();
+		virtual void _renderEnd();
+
+	protected:
+		bool m_hide;
+	//
 	public:
 		bool activate() override;
 		void deactivate() override;
@@ -38,6 +56,9 @@ namespace Menge
 		void disable() override;
 		bool isEnable() override;
 
+	public:
+		void update( float _timing ) override;
+		bool isUpdatable() override;
 		void setUpdatable( bool _updatable ) override;
 
 	public:
@@ -46,10 +67,6 @@ namespace Menge
 
 		void setType( const std::string & _type ) override;
 		const std::string & getType() const override;
-				
-	public:
-		void update( float _timing ) override;
-		bool isUpdatable() override;
 
 	public:
 		void loader( XmlElement *xml ) override;
@@ -63,18 +80,15 @@ namespace Menge
 	public:
 		void setParent( Node * _parent ) override;
 		Node * getParent();
+
 		bool addChildren( Node * _node ) override;
 		void removeChildren( Node *_node) override;
+
 		bool isChildren( Node *_node) override;
 		void foreachChildren( NodeForeach & _foreach ) override;
+
 		Node * getChildren( const std::string & _name, bool _recursion ) override;
 		virtual void _addChildren( Node * _node );
-
-	protected:
-		Node * m_parent;
-
-		typedef std::list< Node * > TListChildren;
-		TListChildren m_listChildren;
 
 	protected:
 		virtual void _destroy();
@@ -92,6 +106,12 @@ namespace Menge
 
 		std::string m_name;
 		std::string m_type;
+
+	protected:
+		Node * m_parent;
+
+		typedef std::list< Node * > TListChildren;
+		TListChildren m_listChildren;
 	};
 
 }

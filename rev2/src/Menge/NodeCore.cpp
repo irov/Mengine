@@ -24,11 +24,83 @@ namespace Menge
 		, m_enable(true)
 		, m_updatable(true)
 		, m_parent(0)
+		, m_hide( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	NodeCore::~NodeCore()
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeCore::hide( bool _value )
+	{
+		m_hide = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool NodeCore::isHide() const
+	{
+		return m_hide;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool NodeCore::isRenderable()
+	{
+		if( isEnable() == false )
+		{
+			return false;
+		}
+
+		if( isActivate() == false )
+		{
+			return false;
+		}
+
+		if( m_hide == true )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeCore::render()
+	{
+		if( isRenderable() == false )
+		{
+			return;
+		}
+
+		if( _renderBegin() )
+		{
+			_render();
+
+			struct ForeachRender
+				: public NodeForeach
+			{
+				void apply( Node * children ) override
+				{
+					children->render();
+				}
+			};
+
+			foreachChildren( ForeachRender() );
+
+			_renderEnd();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeCore::_render()
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool NodeCore::_renderBegin()
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void NodeCore::_renderEnd()
+	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::_addChildren( Node * _node )
@@ -343,6 +415,15 @@ namespace Menge
 				addChildren( node );
 
 				XML_PARSE_ELEMENT( node, &Node::loader );
+			}
+
+			//
+			XML_CASE_NODE("Hide")
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE("Value", m_hide);
+				}
 			}
 		}
 	}

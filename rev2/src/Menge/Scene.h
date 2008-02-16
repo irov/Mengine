@@ -25,7 +25,7 @@ namespace Menge
 
 	class Scene
 		: public NodeCore
-		, public NodeRenderable
+		//, public NodeRenderable
 		, public InputHandler
 	{
 	public:

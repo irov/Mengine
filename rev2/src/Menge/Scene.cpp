@@ -376,7 +376,7 @@ namespace	Menge
 		std::string name;
 
 		NodeCore::loader(_xml);
-		NodeRenderable::loader(_xml);
+//		NodeRenderable::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
 		{

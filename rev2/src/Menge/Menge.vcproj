@@ -1261,18 +1261,6 @@
 						>
 					</File>
 				</Filter>
-				<Filter
-					Name="Renderable"
-					>
-					<File
-						RelativePath=".\NodeRenderable.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\NodeRenderable.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="MousePickerTrap"

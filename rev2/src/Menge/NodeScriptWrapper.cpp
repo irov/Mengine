@@ -23,7 +23,7 @@
 #	include "Arrow.h"
 #	include "TextField.h"
 #	include "SoundEmitter.h"
-#	include "AnimationGroup.h"
+//#	include "AnimationGroup.h"
 #	include "Emitter.h"
 #	include "Point.h"
 #	include "Entity3d.h"
@@ -306,7 +306,9 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Animation );
 	SCRIPT_CLASS_WRAPPING( Arrow );
 	SCRIPT_CLASS_WRAPPING( TextField );
-	SCRIPT_CLASS_WRAPPING( AnimationGroup );
+	SCRIPT_CLASS_WRAPPING( SceneNode2D );
+	//SCRIPT_CLASS_WRAPPING( NodeCore );
+//	SCRIPT_CLASS_WRAPPING( AnimationGroup );
 	SCRIPT_CLASS_WRAPPING( SoundEmitter );
 	SCRIPT_CLASS_WRAPPING( Emitter );
 	SCRIPT_CLASS_WRAPPING( Point );
@@ -394,13 +396,14 @@ namespace Menge
 			.def( "addChildren", &Node::addChildren )
 			.def( "removeChildren", &Node::removeChildren )
 			.def( "getChildren", &Node::getChildren )
+			.def( "hide", &Node::hide )
 			;
 
-		pybind::interface_<NodeRenderable>("NodeRenderable", false)
+	/*	pybind::interface_<NodeRenderable>("NodeRenderable", false)
 			.def( "hide", &NodeRenderable::hide )
 			;
-
-		pybind::proxy_<SceneNode2D, pybind::bases<Node, /*Allocator2D, */NodeRenderable>>("SceneNode2D", false)
+*/
+		pybind::proxy_<SceneNode2D, pybind::bases<Node /*,Allocator2D, NodeRenderable*/>>("SceneNode2D", false)
 				.def( "getScreenPosition", &SceneNode2D::getScreenPosition )
 
 				.def( "getLocalPosition", &SceneNode2D::getLocalPosition )
@@ -485,7 +488,7 @@ namespace Menge
 				.def( "setSoundResource", &SoundEmitter::setSoundResource )
 				;
 
-			pybind::proxy_<AnimationGroup, pybind::bases<SceneNode2D>>("AnimationGroup", false)
+/*			pybind::proxy_<AnimationGroup, pybind::bases<SceneNode2D>>("AnimationGroup", false)
 				.def( "play", &AnimationGroup::play )
 				.def( "stop", &AnimationGroup::stop )
 				.def( "pause", &AnimationGroup::pause )
@@ -494,7 +497,7 @@ namespace Menge
 				.def( "setAnimationListener", &AnimationGroup::setAnimationListener )
 				.def( "setAnimationResource", &AnimationGroup::setAnimationResource )
 				;
-			
+			*/
 			pybind::proxy_<TextField, pybind::bases<SceneNode2D>>("TextField", false)
 				.def( "setText", &TextField::setText )
 				.def( "setHeight", &TextField::setHeight )

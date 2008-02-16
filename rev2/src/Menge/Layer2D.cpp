@@ -227,7 +227,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::render()
 	{
-		if( NodeRenderable::isRenderable() == false )
+		if( NodeCore::isRenderable() == false )
 		{
 			return;
 		}
@@ -245,7 +245,7 @@ namespace	Menge
 				}
 			};
 
-			foreachChildren( ForeachRender() );
+			NodeCore::foreachChildren( ForeachRender() );
 
 			_renderEnd();
 		}
@@ -265,7 +265,7 @@ namespace	Menge
 					}
 				};
 
-				foreachChildren( ForeachRender() );
+				NodeCore::foreachChildren( ForeachRender() );
 
 				_renderEnd();
 			}

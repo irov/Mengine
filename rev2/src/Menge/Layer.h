@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Node.h"
-#	include "NodeRenderable.h"
+#	include "NodeCore.h"
 #	include "InputHandler.h"
 
 #	include "Math/vec2.h"
@@ -11,7 +11,7 @@ namespace Menge
 	class Scene;
 
 	class Layer
-		: public virtual NodeRenderable
+		: public /*virtual */NodeCore//NodeRenderable
 		, public InputHandler
 	{
 	public:

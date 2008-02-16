@@ -68,14 +68,8 @@ namespace Menge
 		bool isChildren( Node *_node) override;
 		void foreachChildren( NodeForeach & _foreach ) override;
 		Node * getChildren( const std::string & _name, bool _recursion ) override;
-		//////////////////////////////////////////////////////////////////////////
-		template<class T>
-		T * getChildrenT( const std::string & _name, bool recursion = false )
-		{
-			return dynamic_cast< T * >( getChildren( _name, recursion ) );
-		}	
-		//////////////////////////////////////////////////////////////////////////
 		virtual void _addChildren( Node * _node );
+
 	protected:
 		Node * m_parent;
 

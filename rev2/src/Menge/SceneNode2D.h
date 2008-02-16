@@ -2,7 +2,9 @@
 
 #	include "NodeCore.h"
 
-#	include "Renderable2D.h"
+#	include "NodeRenderable.h"
+
+#	include "Viewport.h"
 
 #	include "math/mat3.h"
 
@@ -13,10 +15,16 @@ namespace Menge
 
 	class SceneNode2D
 		: public NodeCore
-		, public virtual Renderable2D
+		, public NodeRenderable
 	{
 	public:
 		SceneNode2D();
+
+	public:
+		bool isRenderable() override;
+
+	public:
+		virtual bool isVisible( const Viewport & _viewport );
 
 	public:
 		void setLayer( Layer2D* _layer );

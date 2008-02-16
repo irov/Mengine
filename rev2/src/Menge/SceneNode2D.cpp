@@ -28,7 +28,7 @@ namespace Menge
 	void SceneNode2D::loader( XmlElement * _xml )
 	{
 		NodeCore::loader( _xml );
-		Renderable2D::loader( _xml );
+//		Renderable2D::loader( _xml );
 
 		XML_SWITCH_NODE( _xml )
 		{
@@ -43,6 +43,30 @@ namespace Menge
 				}
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SceneNode2D::isRenderable()
+	{
+		if( NodeRenderable::isRenderable() == false )
+		{
+			return false;
+		}
+		
+		const Viewport & viewport =
+			Holder<RenderEngine>::hostage()
+			->getRenderViewport();
+
+		if( isVisible( viewport ) == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SceneNode2D::isVisible( const Viewport & _viewPort )
+	{
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & SceneNode2D::getWorldMatrix()

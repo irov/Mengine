@@ -669,14 +669,6 @@
 					RelativePath=".\Animation.h"
 					>
 				</File>
-				<File
-					RelativePath=".\AnimationGroup.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\AnimationGroup.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="TextField"
@@ -1113,18 +1105,6 @@
 					RelativePath=".\SceneNode2D.h"
 					>
 				</File>
-				<Filter
-					Name="Renderable2D"
-					>
-					<File
-						RelativePath=".\Renderable2D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Renderable2D.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Layer"

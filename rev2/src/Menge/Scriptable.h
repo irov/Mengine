@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Node.h"
+#	include <string>
 
 extern "C" 
 { 
@@ -10,12 +10,15 @@ extern "C"
 
 namespace Menge
 {
+	class Node;
+
 	class Scriptable
-		: public virtual Node
 	{
 	public:
 		Scriptable();
 		virtual ~Scriptable();
+
+		void setWrapp( Node * _node );
 
 	public:
 		void setScript( PyObject * _scriptable );
@@ -27,5 +30,8 @@ namespace Menge
 
 	protected:
 		PyObject * m_scriptable;
+
+	private:
+		Node * m_node;
 	};
 }

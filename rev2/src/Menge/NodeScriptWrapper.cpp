@@ -23,7 +23,6 @@
 #	include "Arrow.h"
 #	include "TextField.h"
 #	include "SoundEmitter.h"
-//#	include "AnimationGroup.h"
 #	include "Emitter.h"
 #	include "Point.h"
 #	include "Entity3d.h"

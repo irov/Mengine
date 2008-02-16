@@ -2,8 +2,6 @@
 
 #	include "NodeCore.h"
 
-//#	include "NodeRenderable.h"
-
 #	include "Viewport.h"
 
 #	include "math/mat3.h"
@@ -15,7 +13,6 @@ namespace Menge
 
 	class SceneNode2D
 		: public NodeCore
-		//, public NodeRenderable
 	{
 	public:
 		SceneNode2D();

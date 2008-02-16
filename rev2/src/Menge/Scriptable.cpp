@@ -5,6 +5,8 @@
 
 #	include "pybind/pybind.hpp"
 
+#	include "Node.h"
+
 #	include <assert.h>
 
 namespace Menge
@@ -12,10 +14,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable::Scriptable()
 	: m_scriptable(0)
+	, m_node(0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable::~Scriptable()
 	{}
+	//////////////////////////////////////////////////////////////////////////
+	void Scriptable::setWrapp( Node * _node )
+	{
+		m_node = _node;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scriptable::setScript( PyObject * _scriptable )
 	{
@@ -27,7 +35,7 @@ namespace Menge
 		if( m_scriptable == 0 )
 		{
 			m_scriptable = Holder<ScriptEngine>::hostage()
-				->wrapp( this );
+				->wrapp( /*this*/m_node );
 
 			if( m_scriptable == 0 )
 			{

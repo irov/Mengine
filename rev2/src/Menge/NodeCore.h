@@ -34,12 +34,12 @@ namespace Menge
 		bool isRenderable() override;
 	
 	public:
-		/*virtual */void hide( bool _value );
-		/*virtual */bool isHide() const;	
-
+		void hide( bool _value );
+		bool isHide() const;	
+ 
 	protected:
 		virtual void _render();
-
+  
 		virtual bool _renderBegin();
 		virtual void _renderEnd();
 

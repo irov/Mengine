@@ -26,6 +26,7 @@ namespace Menge
 		, m_parent(0)
 		, m_hide( false )
 	{
+		this->setWrapp( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	NodeCore::~NodeCore()

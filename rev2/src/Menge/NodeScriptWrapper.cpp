@@ -22,6 +22,7 @@
 #	include "HotSpot.h"
 #	include "Arrow.h"
 #	include "TextField.h"
+#	include "CapsuleController.h"
 #	include "SoundEmitter.h"
 #	include "Emitter.h"
 #	include "Point.h"
@@ -398,11 +399,7 @@ namespace Menge
 			.def( "hide", &Node::hide )
 			;
 
-	/*	pybind::interface_<NodeRenderable>("NodeRenderable", false)
-			.def( "hide", &NodeRenderable::hide )
-			;
-*/
-		pybind::proxy_<SceneNode2D, pybind::bases<Node /*,Allocator2D, NodeRenderable*/>>("SceneNode2D", false)
+		pybind::proxy_<SceneNode2D, pybind::bases<Node>>("SceneNode2D", false)
 				.def( "getScreenPosition", &SceneNode2D::getScreenPosition )
 
 				.def( "getLocalPosition", &SceneNode2D::getLocalPosition )
@@ -449,6 +446,12 @@ namespace Menge
 				.def( "setOrientation", &RigidBody3D::setOrientation )
 				;
 
+			pybind::proxy_<CapsuleController, pybind::bases<Node>>("CapsuleController", false)
+				.def( "move", &CapsuleController::move )
+				.def( "setPosition", &CapsuleController::setPosition )
+				.def( "getFilteredPosition", &CapsuleController::getFilteredPosition )
+				;
+
 		pybind::proxy_<Camera3D, pybind::bases<SceneNode3D>>("Camera3D", false)
 				.def( "setPosition", &Camera3D::setPosition )
 				.def( "lookAt", &Camera3D::lookAt )
@@ -487,16 +490,6 @@ namespace Menge
 				.def( "setSoundResource", &SoundEmitter::setSoundResource )
 				;
 
-/*			pybind::proxy_<AnimationGroup, pybind::bases<SceneNode2D>>("AnimationGroup", false)
-				.def( "play", &AnimationGroup::play )
-				.def( "stop", &AnimationGroup::stop )
-				.def( "pause", &AnimationGroup::pause )
-				.def( "setLooped", &AnimationGroup::setLooped )
-				.def( "getLooped", &AnimationGroup::getLooped )
-				.def( "setAnimationListener", &AnimationGroup::setAnimationListener )
-				.def( "setAnimationResource", &AnimationGroup::setAnimationResource )
-				;
-			*/
 			pybind::proxy_<TextField, pybind::bases<SceneNode2D>>("TextField", false)
 				.def( "setText", &TextField::setText )
 				.def( "setHeight", &TextField::setHeight )

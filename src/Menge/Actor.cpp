@@ -50,12 +50,12 @@ namespace	Menge
 
 			if(workv != mt::vec3f::zero_v3)
 			{
-				m_controller->setPosition(workv.m);
+				m_controller->move(workv.m);
 				this->setLocalPosition(
 					*(mt::vec3f*)m_controller->getFilteredPosition()
 					);
 			}
-
+ 
 			//m_charPos+this->getLocalPosition()*step;
 			//this->setLocalPosition( m_charPos*step+this->getLocalPosition() );
 		}
@@ -65,20 +65,20 @@ namespace	Menge
 		this->callEvent("UPDATE", "(f)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Actor::_activate()
+	bool Actor::_activate() 
 	{
 		if( SceneNode3D::_activate() == false )
 		{
 			return false;
 		}
 		
-		this->registerEventMethod("MOVE_END", "onMoveEnd" );
-		this->registerEventMethod("MOVE_STOP", "onMoveStop" );
+		this->registerEvent("MOVE_END", "onMoveEnd" );
+		this->registerEvent("MOVE_STOP", "onMoveStop" );
 		
-		this->registerEventMethod("ROTATE_END", "onRotateEnd" );
-		this->registerEventMethod("ROTATE_STOP", "onRotateStop" );
+		this->registerEvent("ROTATE_END", "onRotateEnd" );
+		this->registerEvent("ROTATE_STOP", "onRotateStop" );
 
-		this->registerEventMethod("UPDATE", "onUpdate" );
+		this->registerEvent("UPDATE", "onUpdate" );
 
 		this->callMethod("onActivate", "()" );
 

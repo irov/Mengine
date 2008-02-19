@@ -669,14 +669,6 @@
 					RelativePath=".\Animation.h"
 					>
 				</File>
-				<File
-					RelativePath=".\AnimationGroup.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\AnimationGroup.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="TextField"
@@ -1018,6 +1010,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Controller"
+				>
+				<File
+					RelativePath=".\ResourceCapsuleController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceCapsuleController.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Entity"
@@ -1270,18 +1274,6 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="Eventable"
-					>
-					<File
-						RelativePath=".\NodeEventable.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\NodeEventable.h"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="Factory"
 					>
 					<File
@@ -1428,10 +1420,6 @@
 			</File>
 			<File
 				RelativePath=".\Entity3d.h"
-				>
-			</File>
-			<File
-				RelativePath=".\MotionModifier.h"
 				>
 			</File>
 			<File

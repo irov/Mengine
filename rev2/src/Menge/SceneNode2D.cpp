@@ -28,7 +28,6 @@ namespace Menge
 	void SceneNode2D::loader( XmlElement * _xml )
 	{
 		NodeCore::loader( _xml );
-//		Renderable2D::loader( _xml );
 
 		XML_SWITCH_NODE( _xml )
 		{

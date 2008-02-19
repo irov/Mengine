@@ -24,6 +24,7 @@ namespace Menge
 		, m_enable(true)
 		, m_updatable(true)
 	{
+		this->setWrapp( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	NodeCore::~NodeCore()
@@ -46,6 +47,14 @@ namespace Menge
 		_destroy();
 
 		delete this;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool NodeCore::registerEvent( const std::string & _name, const std::string & _method  )
+	{
+		Scriptable * scriptable = getScriptable();
+		PyObject * module = scriptable->getScript();
+
+		return Eventable::registerEventListener( _name, _method, module );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeCore::activate()
@@ -224,8 +233,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::loader( XmlElement * _xml )
 	{
-		NodeEventable::loader( _xml );
-
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE("Enable", "Value", m_enable );

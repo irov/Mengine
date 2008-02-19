@@ -7,7 +7,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeEventable::registerEventMethod( const std::string & _name, const std::string & _method  )
+	bool NodeEventable::registerEvent( const std::string & _name, const std::string & _method  )
 	{
 		Scriptable * scriptable = getScriptable();
 		PyObject * module = scriptable->getScript();
@@ -30,7 +30,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Function", function );
 				}
 
-				registerEventMethod( type, function );
+				registerEvent( type, function );
 			}
 		}
 	}

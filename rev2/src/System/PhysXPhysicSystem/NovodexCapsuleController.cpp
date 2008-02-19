@@ -6,7 +6,12 @@ NovodexCapsuleController::NovodexCapsuleController( NxCapsuleController * _contr
 
 void NovodexCapsuleController::setPosition( float * _pos )
 {
-	NxVec3 d = *(NxVec3*)_pos;
+	m_controller->setPosition( NxExtendedVec3( _pos[0], _pos[1], _pos[2] ) );
+}
+
+void NovodexCapsuleController::move( float * _displacement )
+{
+	NxVec3 d = *(NxVec3*)_displacement;
 	d+=NxVec3(0,-9.8f,0);
 	NxU32 collisionFlags;
 	m_controller->move( d, 6, 0.000001f, collisionFlags, 1.0f );

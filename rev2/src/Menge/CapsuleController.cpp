@@ -4,7 +4,7 @@
 #	include "ScriptEngine.h"
 #	include "PhysicEngine.h"
 
-#	include "ResourcePhysicGeometry.h"
+#	include "ResourceCapsuleController.h"
 
 #	include "ResourceManager.h"
 
@@ -21,15 +21,28 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	CapsuleController::CapsuleController()
 		: m_interface(0)
+		, m_startPosition(0.f, 0.f, 0.f)
+		, m_radius(1.f)
+		, m_height(1.f)
 		//, m_resource(0)
 	{}	
 	//////////////////////////////////////////////////////////////////////////
 	CapsuleController::~CapsuleController()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void CapsuleController::setPosition( const mt::vec3f & _position )
+	void CapsuleController::move( const mt::vec3f & _displacement )
 	{
-		m_interface->setPosition( (float*)_position.m );
+		m_interface->move( (float*)_displacement.m );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & CapsuleController::getFilteredPosition()
+	{
+		return *(mt::vec3f*)m_interface->getFilteredPosition();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void CapsuleController::setPosition( const mt::vec3f & _pos )
+	{
+		m_interface->setPosition( (float*)_pos.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CapsuleController::_update( float _timing )
@@ -37,23 +50,12 @@ namespace	Menge
 		assert(0);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & CapsuleController::getPosition()
-	{
-		return *(mt::vec3f*)m_interface->getFilteredPosition();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::quatf & CapsuleController::getOrientation()
-	{
-		static mt::quatf q(1,0,0,0);
-		return	q;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void CapsuleController::loader( XmlElement * _xml )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE("Radius", "Value", m_radius );					
-			XML_CASE_ATTRIBUTE_NODE("Height", "Value", m_height );					
+			XML_CASE_ATTRIBUTE_NODE("StartPosition", "Value", m_startPosition );					
+			XML_CASE_ATTRIBUTE_NODE("Resource", "Name", m_resourcename );					
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -68,28 +70,36 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool CapsuleController::_compile()
 	{
-	/*	m_resource = 
+		m_resource = 
 			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourcePhysicGeometry>( m_resourcename );
+			->getResourceT<ResourceCapsuleController>( m_resourcename );
 
-		if( m_resource == 0 )
+		if( m_resource == NULL )
+		{
+			MENGE_LOG( "Error: Emitter can't open resource file '%s'\n", m_resourcename.c_str() );
+			return false;
+		}
+
+		m_interface = Holder<PhysicEngine>::hostage()->createCapsuleController(
+			m_startPosition, m_resource->getRadius(), m_resource->getHeight()
+			);
+
+		if( m_interface == 0 )
 		{
 			return false;
 		}
-*/
-		//m_interface = Holder<PhysicEngine>::hostage()->createCapsuleController( m_density, m_radius, m_height );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CapsuleController::_release()
 	{
-		//Holder<ResourceManager>::hostage()
-		//	->releaseResource( m_resource );
+		Holder<ResourceManager>::hostage()
+			->releaseResource( m_resource );
 
-		//m_resource = 0;
+		m_resource = 0;
 
-		//Holder<PhysicEngine>::hostage()->removeRigidBody( m_interface );
+		Holder<PhysicEngine>::hostage()->releaseCapsuleController( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

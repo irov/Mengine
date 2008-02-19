@@ -70,8 +70,8 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_deactivate()
 	{
-		this->registerEventMethod("COLOR_END", "onColorEnd" );
-		this->registerEventMethod("COLOR_STOP", "onColorStop" );
+		this->registerEvent("COLOR_END", "onColorEnd" );
+		this->registerEvent("COLOR_STOP", "onColorStop" );
 
 		SceneNode2D::_deactivate();
 	}

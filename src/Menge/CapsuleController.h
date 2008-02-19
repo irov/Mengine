@@ -9,6 +9,8 @@ namespace Menge
 {
 	class SceneNode3D;
 
+	class ResourceCapsuleController;
+
 	class CapsuleController
 		: public NodeSinglethon
 	{
@@ -18,9 +20,9 @@ namespace Menge
 		CapsuleController();
 		~CapsuleController();
 	public:
-		void setPosition( const mt::vec3f & _position );
-		const mt::vec3f & getPosition();
-		const mt::quatf & getOrientation();
+		void move( const mt::vec3f & _displacement );
+		void setPosition( const mt::vec3f & _pos );
+		const mt::vec3f & getFilteredPosition();
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -35,10 +37,12 @@ namespace Menge
 	private:
 		float m_radius;
 		float m_height;
+		mt::vec3f m_startPosition;
+
 		ControllerInterface * m_interface;
 
 		std::string m_resourcename;
-		//ResourcePhysicGeometry * m_resource;
+		ResourceCapsuleController * m_resource;
 
 		void render(){}
 		bool isRenderable(){return false;}

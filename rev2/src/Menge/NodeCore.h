@@ -30,7 +30,7 @@ namespace Menge
 		void destroy() override;
 
 	public:
-		bool registerEventMethod( const std::string & _name, const std::string & _method );
+		bool registerEvent( const std::string & _name, const std::string & _method );
 
 	public:
 		void render() override;

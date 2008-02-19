@@ -16,7 +16,7 @@ namespace Menge
 	{
 	public:
 		Scriptable();
-		virtual ~Scriptable();
+		virtual ~Scriptable();//virtual??? зачем?
 
 		void setWrapp( Node * _node );
 

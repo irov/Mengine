@@ -38,6 +38,7 @@ class	ControllerInterface
 public:
 	virtual ~ControllerInterface(){};
 	virtual void setPosition( float * _pos ) = 0;
+	virtual void move( float * _displacement ) = 0;
 	virtual float * getFilteredPosition() = 0;
 };
 

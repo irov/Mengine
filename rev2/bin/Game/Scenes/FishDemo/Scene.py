@@ -1,5 +1,16 @@
 import Menge
 
+class Button:
+     def __init__( self ):
+	  print "Button"
+          pass
+
+class RadioButton( Button ):
+     def __init__( self ):
+	  Button.__init__(self)
+          print "RadioButton"
+          pass
+
 class Scene( Menge.Scene ):
 	def __init__( self ):
 		self.camera_x = 512
@@ -9,6 +20,8 @@ class Scene( Menge.Scene ):
 
 	def onActivate( self ):
 		print "im in onActivate"
+
+		#self.b = RadioButton();
 
 		self.node = Menge.createNodeFromXml(
 			'<Node Name = "Water_01" Type = "Sprite">'

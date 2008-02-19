@@ -342,16 +342,16 @@ namespace	Menge
 	{
 		bool result = SceneNode2D::_activate();
 
-		this->registerEventMethod("MOVE_END", "onMoveEnd" );
-		this->registerEventMethod("MOVE_STOP", "onMoveStop" );
+		this->registerEvent("MOVE_END", "onMoveEnd" );
+		this->registerEvent("MOVE_STOP", "onMoveStop" );
 		
-		this->registerEventMethod("ROTATE_END", "onRotateEnd" );
-		this->registerEventMethod("ROTATE_STOP", "onRotateStop" );
+		this->registerEvent("ROTATE_END", "onRotateEnd" );
+		this->registerEvent("ROTATE_STOP", "onRotateStop" );
 
-		this->registerEventMethod("SCALE_END", "onScaleEnd" );
-		this->registerEventMethod("SCALE_STOP", "onScaleStop" );
+		this->registerEvent("SCALE_END", "onScaleEnd" );
+		this->registerEvent("SCALE_STOP", "onScaleStop" );
 
-		this->registerEventMethod("UPDATE", "onUpdate" );
+		this->registerEvent("UPDATE", "onUpdate" );
 
 		this->callMethod("onActivate", "()" );
 

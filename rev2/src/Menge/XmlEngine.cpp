@@ -23,6 +23,10 @@ namespace Menge
 		bool result = XmlParser::parseBuffer( parser, size, _listener );
 
 		XmlParser::deleteParser( parser );
+
+		Holder<FileEngine>::hostage()
+			->closeFile( file );
+
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////

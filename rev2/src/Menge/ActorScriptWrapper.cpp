@@ -66,7 +66,7 @@ namespace Menge
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlFileM( xml_path, entity, &Entity::loader ) )
 			{
-				entity->registerEventMethod( "LOADER", "onLoader" );
+				entity->registerEvent( "LOADER", "onLoader" );
 				entity->callEvent("LOADER", "()");
 			}
 */

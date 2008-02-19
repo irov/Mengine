@@ -1010,6 +1010,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="CapsuleController"
+				>
+				<File
+					RelativePath=".\ResourceCapsuleController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceCapsuleController.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Entity"

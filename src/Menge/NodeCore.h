@@ -1,10 +1,10 @@
 #	pragma once
 
 #	include "Node.h"
-#	include "NodeEventable.h"
 #	include "NodeResource.h"
 
 #	include "Scriptable.h"
+#	include "Eventable.h"
 
 #	include "ObjectDeclare.h"
 
@@ -16,7 +16,7 @@ namespace Menge
 {
 	class NodeCore
 		: public virtual Node
-		, public NodeEventable
+		, public Eventable
 		, public NodeResource
 		, public Scriptable
 	{
@@ -25,6 +25,9 @@ namespace Menge
 
 		~NodeCore();
 		void destroy() override;
+
+	public:
+		bool registerEvent( const std::string & _name, const std::string & _method );
 
 	public:
 		bool activate() override;

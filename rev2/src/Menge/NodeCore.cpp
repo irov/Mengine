@@ -33,7 +33,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeCore::registerEventMethod( const std::string & _name, const std::string & _method  )
+	bool NodeCore::registerEvent( const std::string & _name, const std::string & _method  )
 	{
 		Scriptable * scriptable = getScriptable();
 		PyObject * module = scriptable->getScript();
@@ -119,7 +119,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::setParent( Node * _parent )
 	{
-		m_parent = dynamic_cast<Node *>(_parent);
+		m_parent = _parent;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * NodeCore::getParent()
@@ -134,13 +134,11 @@ namespace Menge
 			return false;
 		}
 
-		Node * t_node = dynamic_cast<Node *>( _node );
+		_node->setParent( this );
 
-		t_node->setParent( this );
+		m_listChildren.push_back( _node );
 
-		m_listChildren.push_back( t_node );
-
-		_addChildren( t_node );
+		_addChildren( _node );
 
 		return true;
 	}
@@ -396,8 +394,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::loader( XmlElement * _xml )
 	{
-		//NodeEventable::loader( _xml );
-
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE("Enable", "Value", m_enable );
@@ -413,9 +409,9 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Type", type );
 				}
 
-				Node *node = SceneManager::createNode( type );
+				Node * node = SceneManager::createNode( type );
 
-				if(node == 0)
+				if( node == 0 )
 				{
 					continue;
 				}

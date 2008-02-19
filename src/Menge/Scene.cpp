@@ -210,11 +210,11 @@ namespace	Menge
 			return false;
 		}
 
-		registerEventMethod( "UPDATE", "onUpdate" );
+		registerEvent( "UPDATE", "onUpdate" );
 
-		registerEventMethod( "KEY", "onHandleKeyEvent" );
-		registerEventMethod( "MOUSE_BUTTON", "onHandleMouseButtonEvent" );
-		registerEventMethod( "MOUSE_MOVE", "onHandleMouseMove" );
+		registerEvent( "KEY", "onHandleKeyEvent" );
+		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent" );
+		registerEvent( "MOUSE_MOVE", "onHandleMouseMove" );
 
 		activateLights_();
 		activateCameras_();

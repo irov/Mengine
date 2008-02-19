@@ -42,7 +42,7 @@ namespace Menge
 		void debugRender() override;
 
 	protected:
-		Layer2D* m_layer;
+		Layer2D * m_layer;
 
 		void _addChildren( SceneNode2D * _node ) override;
 	};

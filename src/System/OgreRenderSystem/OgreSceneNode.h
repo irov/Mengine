@@ -25,6 +25,7 @@ public:
 	void attachEntity( EntityInterface * _entity ) override;
 	void attachLight( LightInterface * _light ) override;
 	void addChild( SceneNodeInterface * _node ) override;
+	SceneNodeInterface * createChildSceneNode( const char * _name ) override;
 
 public:
 

@@ -144,3 +144,9 @@ void OgreSceneNode::addChild( SceneNodeInterface * _node )
 
 	ogreSceneNode->m_parentNode = this;
 }
+//////////////////////////////////////////////////////////////////////////
+SceneNodeInterface * OgreSceneNode::createChildSceneNode( const char * _name )
+{
+	Ogre::SceneNode * ogreSceneNode = m_sceneNode->createChildSceneNode( _name );
+	return new OgreSceneNode(ogreSceneNode, this);
+}

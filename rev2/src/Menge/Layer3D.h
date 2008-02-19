@@ -27,11 +27,6 @@ namespace Menge
 	protected:
 
 		bool _activate() override;
-		void _addChildren( SceneNode3D * _node ) override;
-
-	private:
-		void render(){}
-		bool isRenderable(){return false;}
-	
+		void _addChildren( Node * _node ) override;
 	};
 }

@@ -72,7 +72,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::loader( XmlElement * _xml )
 	{
-		SceneNode3D::loader( _xml );
+		//SceneNode3D::loader( _xml );
 
 		XML_SWITCH_NODE(_xml)
 		{

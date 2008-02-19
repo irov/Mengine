@@ -166,6 +166,11 @@ void OgreRenderSystem::releaseCamera( CameraInterface * _camera )
 	delete static_cast<CameraInterface*>( _camera );
 }
 //////////////////////////////////////////////////////////////////////////
+SceneNodeInterface * OgreRenderSystem::getRootSceneNode() const
+{
+	return m_rootSceneNode;
+}
+//////////////////////////////////////////////////////////////////////////
 bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow )
 {
 	m_root = _root;

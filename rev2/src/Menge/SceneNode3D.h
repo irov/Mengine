@@ -26,7 +26,7 @@ namespace Menge
 		void setLocalOrient( const mt::quatf & _quat );
 
 		void translate( const mt::vec3f & _delta );
-		void setScale( float _scale );
+		void setScale( const mt::vec3f & _scale );
 		
 		void yaw( float _angle );
 		void pitch( float _angle );
@@ -42,6 +42,7 @@ namespace Menge
 
 	protected:
 
+		void _addChildren( Node * _node ) override;
 		void _update( float _timing ) override;
 
 		SceneNodeInterface * m_interface;

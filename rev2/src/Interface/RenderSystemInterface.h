@@ -213,6 +213,8 @@ public:
 	virtual void releaseEntity( EntityInterface * _entity ) = 0;
 	virtual void releaseLight( LightInterface * _light ) = 0;
 	virtual void releaseSceneNode( SceneNodeInterface * _interface ) = 0;
+
+	virtual SceneNodeInterface * getRootSceneNode() const = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

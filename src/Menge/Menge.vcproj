@@ -1170,6 +1170,22 @@
 				Name="SceneNode3D"
 				>
 				<File
+					RelativePath=".\DiscreteEntity.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\DiscreteEntity.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Movable.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Movable.h"
+					>
+				</File>
+				<File
 					RelativePath=".\SceneNode3D.cpp"
 					>
 				</File>

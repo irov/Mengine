@@ -9,10 +9,14 @@ class SceneNodeInterface;
 
 namespace Menge
 {
+	class Movable;
+	class DiscreteEntity;
+
 	class SceneNode3D
 		: public NodeCore
 		, public NodeChildren<SceneNode3D>
 	{
+		OBJECT_DECLARE(SceneNode3D);
 	public:
 		SceneNode3D();
 		~SceneNode3D();
@@ -28,7 +32,7 @@ namespace Menge
 		void setLocalOrient( const mt::quatf & _quat );
 
 		void translate( const mt::vec3f & _delta );
-		void setScale( float _scale );
+		void setScale( const mt::vec3f & _scale );
 		
 		void yaw( float _angle );
 		void pitch( float _angle );
@@ -36,16 +40,28 @@ namespace Menge
 
 		void addChild( SceneNode3D * _node );
 
+		void attachToRootNode();
+
 	public:
 		void loader( XmlElement * _xml ) override;
-
-		void render(){};
-		bool isRenderable() {return false;};
+		void loaderTransformation_( XmlElement * _xml );
+		void loaderEntities_( XmlElement * _xml );
 
 	protected:
 
-		void _update( float _timing ) override;
 
+		bool _activate() override;
+		void _addChildren( SceneNode3D * _node ) override;
+
+	protected:
 		SceneNodeInterface * m_interface;
+
+	private:
+		std::list<Movable*>	m_movables;
+
+
+		// шо с этим бредом делать??
+		void render(){};
+		bool isRenderable() {return false;};
 	};
 }

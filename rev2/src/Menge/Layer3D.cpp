@@ -57,9 +57,13 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::_addChildren( SceneNode3D * _node )
+	void Layer3D::_addChildren( Node * _node )
 	{
-		_node->attachToRootNode();
+//		SceneNodeInterface * root
+//			= Holder<RenderEngine>::hostage()->getRootSceneNode();
+//будет ли тут в рут добавлятся?
+		SceneNode3D * node = dynamic_cast<SceneNode3D*>(_node);
+		this->addChild( node );
+		//m_interface->addChild( node->m_interface );
 	}
-	//////////////////////////////////////////////////////////////////////////
 }

@@ -236,6 +236,11 @@ namespace Menge
 		return m_interface->releaseLight( _light );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	SceneNodeInterface * RenderEngine::getRootSceneNode() const
+	{
+		return m_interface->getRootSceneNode();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::frameStarted()
 	{
 		m_interface->render();

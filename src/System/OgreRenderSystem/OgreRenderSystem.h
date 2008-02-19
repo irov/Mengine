@@ -68,7 +68,6 @@ public:
 	void	endLayer() override;
 
 	void setFullscreenMode( bool _fullscreen ) override;
-	bool getFullscreenMode() override;
 	void loadResource( Ogre::Resource* _resource );
 	void setViewportDimensions( float _width, float _height, float _renderFactor ) override;
 
@@ -76,13 +75,14 @@ public:
 	CameraInterface * createCamera(const char * _name) override;
 	LightInterface * createLight(const char * _name) override;
 	EntityInterface * createEntity(const char * _name, const char * _mesh ) override;
-
+	SceneNodeInterface * createSceneNode( const std::string & _name ) override;
+	
 	void releaseCamera( CameraInterface * _camera ) override;
 	void releaseEntity( EntityInterface * _entity ) override;
 	void releaseLight( LightInterface * _light ) override;
-
-	SceneNodeInterface * createSceneNode( const std::string & _name ) override;
 	void releaseSceneNode( SceneNodeInterface * _interface ) override;
+
+	SceneNodeInterface * getRootSceneNode() const override;
 
 private:
 

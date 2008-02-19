@@ -57,11 +57,6 @@ namespace Menge
 		m_interface->translate( _delta.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::setScale( float _scale )
-	{
-		m_interface->setScale( _scale );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::yaw( float _angle )
 	{
 		m_interface->yaw( _angle );
@@ -82,17 +77,44 @@ namespace Menge
 		m_interface->addChild( _node->m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::setScale( const mt::vec3f & _scale )
+	{
+		m_interface->setScale( (float*)_scale.m);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::_addChildren( Node * _node )
+	{
+		SceneNode3D * node = dynamic_cast<SceneNode3D*>(_node);
+		this->addChild( node );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::loader( XmlElement * _xml )
 	{
 		NodeCore::loader( _xml );
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Transformation")
+			XML_CASE_NODE("Position")
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE_MEMBER("Value", &SceneNode3D::setLocalPosition);
+				}
+			}
+
+			XML_CASE_NODE("Scale")
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE_MEMBER("Value", &SceneNode3D::setScale);
+				}
+			}
+
+			XML_CASE_NODE("Rotation")
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+				//	XML_CASE_ATTRIBUTE_MEMBER("Value", &SceneNode3D::setLocalOrient);
 				}
 			}
 		}

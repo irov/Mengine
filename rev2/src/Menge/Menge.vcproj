@@ -1166,6 +1166,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Layer3D"
+				>
+				<File
+					RelativePath=".\Layer3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Layer3D.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Kernel"

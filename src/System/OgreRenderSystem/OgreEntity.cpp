@@ -68,7 +68,6 @@ void OgreEntity::setSubEntityMaterial( const std::string & _subEntity, const std
 		}
 	}
 }
-//-------------------------------------------------------------
 //////////////////////////////////////////////////////////////////////////
 /*bool OgreEntity::hasSkeleton() const 
 {

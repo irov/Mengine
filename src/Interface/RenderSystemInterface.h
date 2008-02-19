@@ -138,6 +138,7 @@ public:
 	virtual void attachEntity( EntityInterface * _entity ) = 0;
 	virtual void attachLight( LightInterface * _light ) = 0;
 	virtual void addChild( SceneNodeInterface * _node ) = 0;
+	virtual SceneNodeInterface * createChildSceneNode( const char * _name ) = 0;
 };
 
 class RenderVideoStreamInterface : public RenderImageInterface
@@ -201,7 +202,6 @@ public:
 	virtual	void	endLayer() = 0;
 
 	virtual void	setFullscreenMode( bool _fullscreen ) = 0;
-	virtual bool	getFullscreenMode() = 0;
 	virtual void	setViewportDimensions( float _width, float _height, float _renderFactor ) = 0;
 
 	//new
@@ -214,6 +214,8 @@ public:
 	virtual void releaseEntity( EntityInterface * _entity ) = 0;
 	virtual void releaseLight( LightInterface * _light ) = 0;
 	virtual void releaseSceneNode( SceneNodeInterface * _interface ) = 0;
+
+	virtual SceneNodeInterface * getRootSceneNode() const = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

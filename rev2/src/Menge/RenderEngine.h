@@ -85,6 +85,8 @@ namespace Menge
 		void releaseLight( LightInterface * _light );
 		void releaseSceneNode( SceneNodeInterface * _interface );
 
+		SceneNodeInterface * getRootSceneNode() const;
+
 		void frameStarted();
 		void frameEnded();
 

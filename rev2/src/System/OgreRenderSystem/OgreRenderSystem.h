@@ -82,6 +82,8 @@ public:
 	void releaseLight( LightInterface * _light ) override;
 	void releaseSceneNode( SceneNodeInterface * _interface ) override;
 
+	SceneNodeInterface * getRootSceneNode() const override;
+
 private:
 
 	OgreSceneNode * m_rootSceneNode;

@@ -1,4 +1,27 @@
 <Scene>
+	<Node Name = "LevelScene" Type = "Layer3D">
+		<Node Name = "Node01" Type = "SceneNode3D">
+			<Transformation>
+				<Scale Value = "1;1;1" />
+       				<Position Value = "0;0;0" />
+       				<Rotation Value ="0;0;0;1" />
+			</Transformation>
+			<Entities>
+				<Entity Name = "Level">
+					<ResourceMesh Name = "TestMesh" />
+				</Entity>
+			</Entities>
+
+			<Node Name = "Node02" Type = "SceneNode3D">
+				<Transformation>
+					<Scale Value = "1;1;1" />
+       					<Position Value = "0;0;0" />
+       					<Rotation Value ="0;0;0;1" />
+				</Transformation>
+               		</Node>
+               	</Node>
+	</Node>
+
 	<Node Name = "Water" Type = "Layer2D">
 		<Size Value = "1024; 768" />		
 	</Node>

@@ -17,6 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::SceneNode3D()
 		: m_interface(0)
+		, m_entity(0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::~SceneNode3D()
@@ -139,12 +140,12 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Name", name );
 				}
 
-				DiscreteEntity * entity = new DiscreteEntity( name );
+				m_entity = new DiscreteEntity( name );
 
-				entity->setParentNode( this );
+				m_entity->setParentNode( this );
 
-				m_movables.push_back( entity );
-				XML_PARSE_ELEMENT( entity, &DiscreteEntity::loader );
+			//	m_movables.push_back( entity );
+				XML_PARSE_ELEMENT( m_entity, &DiscreteEntity::loader );
 			}
 		}
 	}
@@ -169,9 +170,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SceneNode3D::_activate()
 	{
-		for (std::list<Movable*>::iterator it = m_movables.begin(); it != m_movables.end(); ++it)
+	/*	for (std::list<Movable*>::iterator it = m_movables.begin(); it != m_movables.end(); ++it)
 		{
 			(*it)->activate();
+		}
+*/
+		if(m_entity!=NULL)
+		{
+			m_entity->activate();
+		m_interface->attachEntity( m_entity->get() );
 		}
 
 		return true;

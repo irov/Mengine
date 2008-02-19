@@ -59,6 +59,7 @@ namespace Menge
 	private:
 		std::list<Movable*>	m_movables;
 
+		DiscreteEntity * m_entity;
 
 		// шо с этим бредом делать??
 		void render(){};

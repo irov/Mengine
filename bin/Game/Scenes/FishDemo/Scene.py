@@ -73,11 +73,11 @@ class Scene( Menge.Scene ):
 		
 		self.layerAppend( "Deep", block )
 
-		self.levelActor = Menge.createActor("Level1", "Level");
-		self.levelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
+		#self.levelActor = Menge.createActor("Level1", "Level");
+		#self.levelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
 
-		self.entityLevel = self.getEntity( "Level" )
-		self.levelActor.attachEntity( self.entityLevel );
+		#self.entityLevel = self.getEntity( "Level" )
+		#self.levelActor.attachEntity( self.entityLevel );
 
 		self.barrelActor = Menge.createActor("Barrel1", "Barrel")
 		self.barrelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
@@ -98,13 +98,13 @@ class Scene( Menge.Scene ):
 		self.barrelPhysicBody = self.getRigidBody("BarrelPhysicBody");
 		self.barrelPhysicBody.setPosition( Menge.vec3f( 10,20,5 ) );
 
-		self.levelActor.addChild(self.barrelActor);
+		#self.levelActor.addChild(self.barrelActor);
 
 		self.barrelActor.activate();
-		self.levelActor.activate();
+		#self.levelActor.activate();
 		self.zombieActor.activate();
 
-		self.actorAppend(self.levelActor);
+		#self.actorAppend(self.levelActor);
 		self.actorAppend(self.barrelActor);
 		self.actorAppend(self.zombieActor);
 

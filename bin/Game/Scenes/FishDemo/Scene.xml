@@ -66,9 +66,6 @@
 	</PhysicParams>
 
 	<Entities>
-		<Entity Name = "Level">
-			<ResourceMesh Name = "TestMesh" />
-		</Entity>
 		<Entity Name = "Barrel">
 			<ResourceMesh Name = "TestBarrelMesh" />
 		</Entity>

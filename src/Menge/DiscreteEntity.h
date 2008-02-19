@@ -31,6 +31,12 @@ namespace Menge
 		void setMaterial( const std::string & _material );
 		void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material );
 
+		//hmmmmmmmmm
+		EntityInterface * get()
+		{
+			return m_interface;
+		}
+
 	private:
 
 		std::string m_name;

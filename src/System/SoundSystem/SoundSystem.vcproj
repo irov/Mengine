@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)Bin\Systems_d"
+			OutputDirectory="$(SolutionDir)Root\Bin_d\Systems"
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
@@ -69,6 +69,7 @@
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenALSDK\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\PThreads\lib&quot;;&quot;$(SolutionDir)dependencies\freealut\lib&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\VorbisFile_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\Vorbis_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\ogg\win32\Static_Debug&quot;"
 				ModuleDefinitionFile="SoundSystemInterface.def"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="2"
 				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"
 				TargetMachine="1"
@@ -100,7 +101,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)Bin\Systems"
+			OutputDirectory="$(SolutionDir)Root\Bin\Systems"
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="2"

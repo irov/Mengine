@@ -108,13 +108,13 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 
 #ifdef _DEBUG
 	std::string DllModuleSetting = "DllModuleDebug";
-	std::string DllLogSystem = "Systems_d/OgreLogSystem_d.dll";
-	std::string DllFileSystem = "Systems_d/OgreFileSystem_d.dll";
-	std::string DllRenderSystem = "Systems_d/OgreRenderSystem_d.dll";
-	std::string DllInputSystem = "Systems_d/OgreInputSystem_d.dll";
-	std::string DllSoundSystem = "Systems_d/ALSoundSystem_d.dll";
-	std::string DllParticleSystem = "Systems_d/AstralaxParticleSystem_d.dll";
-	std::string DllPhysicSystem = "Systems_d/PhysXPhysicSystem_d.dll";
+	std::string DllLogSystem = "Systems/OgreLogSystem_d.dll";
+	std::string DllFileSystem = "Systems/OgreFileSystem_d.dll";
+	std::string DllRenderSystem = "Systems/OgreRenderSystem_d.dll";
+	std::string DllInputSystem = "Systems/OgreInputSystem_d.dll";
+	std::string DllSoundSystem = "Systems/ALSoundSystem_d.dll";
+	std::string DllParticleSystem = "Systems/AstralaxParticleSystem_d.dll";
+	std::string DllPhysicSystem = "Systems/PhysXPhysicSystem_d.dll";
 #else
 	std::string DllModuleSetting = "DllModuleRelease";
 	std::string DllLogSystem = "Systems/OgreLogSystem.dll";
@@ -274,12 +274,12 @@ void OgreApplication::initParams()
 
 	m_root->addFrameListener( this );
 
-	//createWindow( screenWidth, screenHeight, fullscreen );
+	createWindow( screenWidth, screenHeight, fullscreen );
 
 	Ogre::NameValuePairList params;
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( bits ) ) );
 	params.insert( std::make_pair("vsync", Ogre::StringConverter::toString( vsync ) ) );
-	//params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
+	params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
 	
 	/// patch for ansi names
 	char *ansistr = NULL;

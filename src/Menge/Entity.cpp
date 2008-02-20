@@ -174,6 +174,10 @@ namespace	Menge
 		mt::vec2f dir;
 		dir = ( _point - pos ) / len;
 		m_nSpeed = dir * _speed;
+
+		float s = mt::dot_v2_v2( m_speed, dir );
+		m_speed = dir * s;
+
 		float v = mt::length_v2_v2( m_speed, m_nSpeed );
 
 		if( v < 0.0001f )
@@ -197,9 +201,11 @@ namespace	Menge
 
 		//m_moveTime = 2.0f * len / ( v + _speed );
 		//m_acceleration = dir * ( _speed - v ) / m_moveTime;
-		m_moveTime = 2.0f * ( _point.x - pos.x ) / ( m_nSpeed.x + m_speed.x );
-		m_acceleration.x = ( m_nSpeed.x - m_speed.x ) / m_moveTime;
-		m_acceleration.y = ( m_nSpeed.y - m_speed.y ) / m_moveTime;
+		//m_moveTime = 2.0f * ( _point.x - pos.x ) / ( m_nSpeed.x + m_speed.x );
+		m_moveTime = 2.0f * len / ( m_nSpeed.length() + s );
+		//m_acceleration.x = ( m_nSpeed.x - m_speed.x ) / m_moveTime;
+		//m_acceleration.y = ( m_nSpeed.y - m_speed.y ) / m_moveTime;
+		m_acceleration = ( m_nSpeed - m_speed ) / m_moveTime;
 		m_movePoint = _point;
 		m_moveTo = true;
 		m_accelerateTo = true;

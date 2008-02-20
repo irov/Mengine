@@ -4,6 +4,7 @@
 
 #	include <map>
 #	include <list>
+#	include "FileEngine.h"
 
 extern "C" 
 { 
@@ -43,6 +44,7 @@ namespace Menge
 		bool isEntityType( const std::string & _type );		
 		PyObject * getEntityModule( const std::string & _type );
 		bool registerEntityType( const std::string & _type );
+		FileDataInterface * getEntityXML( const std::string & _type );
 
 		static PyObject * wrapp( Node * _node );
 		static PyObject * proxy( PyObject * _module, const std::string & _name, void * _impl );
@@ -84,6 +86,9 @@ namespace Menge
 
 		typedef std::map<std::string, PyObject *> TMapEntitiesType;
 		TMapEntitiesType m_mapEntitiesType;
+
+		typedef std::map<std::string, FileDataInterface *> TMapEntitiesXML;
+		TMapEntitiesXML m_mapEntitiesXML;
 
 		typedef std::map<std::string, PyObject *> TMapModule;
 		TMapModule m_mapModule;

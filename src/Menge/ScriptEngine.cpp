@@ -3,10 +3,11 @@
 #	include "ScriptModuleDeclaration.h"
 #	include "ScriptClassWrapper.h"
 
-#	include "FileEngine.h"
+//#	include "FileEngine.h"
 #	include "Entity.h"
 #	include "Scene.h"
 #	include "Arrow.h"
+#	include "Game.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -103,6 +104,19 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	FileDataInterface * ScriptEngine::getEntityXML( const std::string & _type )
+	{
+		TMapEntitiesXML::iterator it_find = 
+			m_mapEntitiesXML.find( _type );
+
+		if( it_find == m_mapEntitiesXML.end() )
+		{
+			return 0;
+		}
+
+		return it_find->second;
+	}	
+	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::registerEntityType( const std::string & _type )
 	{
 		std::cout << "register entity type " << _type << "...";
@@ -135,6 +149,16 @@ namespace Menge
 		}
 
 		m_mapEntitiesType.insert( std::make_pair( _type, module ) );
+
+		std::string xml_path = Holder<Game>::hostage()
+			->getPathEntities();
+
+		xml_path += '/';
+		xml_path += _type;
+		xml_path += ".xml";
+
+
+		m_mapEntitiesXML.insert( std::make_pair( _type, Holder<FileEngine>::hostage()->openFile( xml_path ) ) );
 
 		return true;
 	}

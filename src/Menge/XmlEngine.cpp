@@ -1,5 +1,5 @@
 #	include "XmlEngine.h"
-#	include "FileEngine.h"
+//#	include "FileEngine.h"
 
 namespace Menge
 {
@@ -23,8 +23,32 @@ namespace Menge
 		bool result = XmlParser::parseBuffer( parser, size, _listener );
 
 		XmlParser::deleteParser( parser );
+
+		Holder<FileEngine>::hostage()->closeFile( file );
+
 		return result;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool XmlEngine::parseXmlFile( FileDataInterface* _file, XmlElementListener * _listener )
+	{
+		if( _file == 0 )
+		{
+			return false;				 
+		}
+
+		size_t size = _file->size();
+
+		XmlExpatParser * parser = XmlParser::newParser();
+		void * buffer = XmlParser::makeBuffer( parser, size );
+		_file->read( buffer, size );
+		_file->seek( 0 );
+		
+		bool result = XmlParser::parseBuffer( parser, size, _listener );
+
+		XmlParser::deleteParser( parser );
+
+		return result;
+	}	
 	//////////////////////////////////////////////////////////////////////////
 	bool XmlEngine::parseXmlBuffer( const std::string & _buffer, XmlElementListener * _listener )
 	{

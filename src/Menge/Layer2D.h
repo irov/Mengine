@@ -22,6 +22,7 @@ namespace Menge
 		Viewport* getViewport();
 		const mt::vec2f& getViewportOffset() const;
 		bool isScrollable();
+		mt::vec2f screenToLocal( const mt::vec2f& _point );
 
 	public:
 		void loader( XmlElement * _xml ) override;

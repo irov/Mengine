@@ -304,4 +304,9 @@ namespace	Menge
 
 		_node->foreachChildren( ForeachRender(this) );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f Layer2D::screenToLocal( const mt::vec2f& _point )
+	{
+		return m_viewport.begin + _point;
+	}
 }

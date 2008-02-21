@@ -25,13 +25,13 @@ namespace Menge
 
 class SystemDLL;
 
-class OgreApplication
+class WinApplication
 	: public ApplicationInterface
 	, public Ogre::FrameListener
 {
 public:
-	OgreApplication();
-	~OgreApplication();
+	WinApplication();
+	~WinApplication();
 
 public:
 	bool init( const char * _xmlFile, const char * _args ) override;

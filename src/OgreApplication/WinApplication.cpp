@@ -1,4 +1,4 @@
-#	include "OgreApplication.h"
+#	include "WinApplication.h"
 
 #	include "Menge/Application.h"
 
@@ -22,7 +22,7 @@ bool initInterfaceSystem( ApplicationInterface** _ptrInterface )
 {
 	try
 	{
-		*_ptrInterface = new OgreApplication();
+		*_ptrInterface = new WinApplication();
 	}
 	catch (...)
 	{
@@ -34,16 +34,16 @@ bool initInterfaceSystem( ApplicationInterface** _ptrInterface )
 //////////////////////////////////////////////////////////////////////////
 void releaseInterfaceSystem( ApplicationInterface* _ptrInterface )
 {
-	delete static_cast<OgreApplication*>(_ptrInterface);
+	delete static_cast<WinApplication*>(_ptrInterface);
 }
 //////////////////////////////////////////////////////////////////////////
-Ogre::RenderWindow* OgreApplication::m_renderWindow = NULL;
-Menge::Application* OgreApplication::m_application = NULL;
-HWND OgreApplication::m_hWnd = 0;
-bool OgreApplication::m_cursorInArea = false;
-WINDOWINFO OgreApplication::m_wndInfo;
+Ogre::RenderWindow* WinApplication::m_renderWindow = NULL;
+Menge::Application* WinApplication::m_application = NULL;
+HWND WinApplication::m_hWnd = 0;
+bool WinApplication::m_cursorInArea = false;
+WINDOWINFO WinApplication::m_wndInfo;
 
-OgreApplication::OgreApplication() 
+WinApplication::WinApplication() 
 : m_root(0)
 //, m_hWnd(0)
 , m_running( true )
@@ -53,7 +53,7 @@ OgreApplication::OgreApplication()
 , m_focus( true )
 {}
 //////////////////////////////////////////////////////////////////////////
-OgreApplication::~OgreApplication()
+WinApplication::~WinApplication()
 {
 	m_application->finalize();
 
@@ -94,7 +94,7 @@ OgreApplication::~OgreApplication()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreApplication::init( const char * _xmlFile, const char * _args )
+bool WinApplication::init( const char * _xmlFile, const char * _args )
 {
 
 	std::string args;
@@ -245,7 +245,7 @@ bool OgreApplication::init( const char * _xmlFile, const char * _args )
 	return initialize;
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreApplication::initParams()
+void WinApplication::initParams()
 {
 	int bits = m_application->getScreenBits();
 	int screenWidth = m_application->getScreenWidth();
@@ -303,13 +303,13 @@ void OgreApplication::initParams()
 	m_renderWindow = m_root->createRenderWindow( ansistr, screenWidth, screenHeight, fullscreen, &params );
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreApplication::frameStarted( const Ogre::FrameEvent &evt)
+bool WinApplication::frameStarted( const Ogre::FrameEvent &evt)
 {
 	//m_application->frameStarted();
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
+bool WinApplication::frameEnded( const Ogre::FrameEvent &evt)
 {
 	const Ogre::RenderTarget::FrameStats& stats = m_renderWindow->getStatistics();
 	m_frameTime = evt.timeSinceLastFrame;
@@ -317,7 +317,7 @@ bool OgreApplication::frameEnded( const Ogre::FrameEvent &evt)
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreApplication::run()
+void WinApplication::run()
 {
 	MSG  msg;
 	static bool resetTime = false;
@@ -370,7 +370,7 @@ void OgreApplication::run()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreApplication::createWindow( unsigned int _width, unsigned int _height, bool _fullscreen )
+void WinApplication::createWindow( unsigned int _width, unsigned int _height, bool _fullscreen )
 {
 	DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
 	RECT rc;
@@ -412,7 +412,7 @@ void OgreApplication::createWindow( unsigned int _width, unsigned int _height, b
 	// NB allow 4 bytes of window data for D3D9RenderWindow pointer
 	WNDCLASS wc = 
 	{ 0,
-	OgreApplication::_wndProc,
+	WinApplication::_wndProc,
 	0, 
 	0, 
 	hInstance,
@@ -435,7 +435,7 @@ void OgreApplication::createWindow( unsigned int _width, unsigned int _height, b
 	::GetWindowInfo( m_hWnd, &m_wndInfo);
 }
 //////////////////////////////////////////////////////////////////////////
-LRESULT CALLBACK OgreApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
+LRESULT CALLBACK WinApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
 	switch( uMsg )
 	{

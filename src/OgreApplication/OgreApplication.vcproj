@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="OgreApplication"
+	Name="WinApplication"
 	ProjectGUID="{00D7F770-9D10-4A51-B099-94CE79AC3F85}"
 	RootNamespace="OgreApplication"
 	Keyword="Win32Proj"
@@ -66,7 +66,7 @@
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(SolutionDir)dependencies\ogrenew\lib"
-				ModuleDefinitionFile="OgreApplication.def"
+				ModuleDefinitionFile="WinApplication.def"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="2"
@@ -147,7 +147,7 @@
 				AdditionalDependencies="OgreMain.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(SolutionDir)dependencies\Ogrenew\lib"
-				ModuleDefinitionFile="OgreApplication.def"
+				ModuleDefinitionFile="WinApplication.def"
 				GenerateDebugInformation="false"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -412,23 +412,23 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\OgreApplication.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreApplication.def"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreApplication.h"
-			>
-		</File>
-		<File
 			RelativePath=".\SystemDLL.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\SystemDLL.h"
+			>
+		</File>
+		<File
+			RelativePath=".\WinApplication.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\WinApplication.def"
+			>
+		</File>
+		<File
+			RelativePath=".\WinApplication.h"
 			>
 		</File>
 	</Files>

@@ -19,9 +19,9 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 #	endif
 {
 #ifdef _DEBUG
-	const char * application_dll  = "Systems/OgreApplication_d.dll";
+	const char * application_dll  = "Systems/WinApplication_d.dll";
 #else
-	const char * application_dll = "Systems/OgreApplication.dll";
+	const char * application_dll = "Systems/WinApplication.dll";
 #endif
 
 #	ifndef _CONSOLE

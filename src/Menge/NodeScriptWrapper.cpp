@@ -396,6 +396,7 @@ namespace Menge
 			.def( "addChildren", &Node::addChildren )
 			.def( "removeChildren", &Node::removeChildren )
 			.def( "getChildren", &Node::getChildren )
+			.def( "updatable", &Node::updatable )
 			;
 
 		pybind::interface_<Allocator2D>("Allocator2D", false)

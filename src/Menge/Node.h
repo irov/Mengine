@@ -102,6 +102,7 @@ namespace Menge
 		virtual bool isEnable() = 0;
 
 		virtual void setUpdatable( bool _updatable ) = 0;
+		virtual bool updatable() = 0;
 
 	public:
 

@@ -51,6 +51,7 @@ namespace Menge
 	public:
 		void update( float _timing ) override;
 		bool isUpdatable() override;
+		bool updatable() override;
 
 	public:
 		void loader( XmlElement *xml ) override;

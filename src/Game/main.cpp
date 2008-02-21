@@ -18,11 +18,11 @@ void RedirectIOToConsole();
 int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in_opt LPSTR lpCmdLine, __in int nShowCmd )
 #	endif
 {
-/*#ifdef _DEBUG
-	const char * application_dll  = "Systems_d/OgreApplication_d.dll";
-#else*/
+#ifdef _DEBUG
+	const char * application_dll  = "Systems/OgreApplication_d.dll";
+#else
 	const char * application_dll = "Systems/OgreApplication.dll";
-//#endif
+#endif
 
 #	ifndef _CONSOLE
 	if( strstr(lpCmdLine, "-console") )

@@ -67,7 +67,6 @@
 				AdditionalLibraryDirectories="$(SolutionDir)dependencies\OgreSDK\lib"
 				ModuleDefinitionFile="OgreLogSystem.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="2"
 				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"
 				TargetMachine="1"

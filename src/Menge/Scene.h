@@ -86,6 +86,8 @@ namespace Menge
 		void addRigidBody( RigidBody3D * _rigidBody );
 		RigidBody3D * getRigidBody( const std::string & _name );
 
+		void setOffsetPosition( const mt::vec2f& _offset );
+
 	private:
 
 		bool m_isSubScene;

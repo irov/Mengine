@@ -531,6 +531,7 @@ namespace Menge
 				.def( "getLayerSize", &Scene::getLayerSize )
 				.def( "addEntity", &Scene::addEntity )
 				.def( "actorAppend", &Scene::actorAppend )
+				.def( "setOffsetPosition", &Scene::setOffsetPosition )
 				;
 
 			pybind::proxy_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot", false)

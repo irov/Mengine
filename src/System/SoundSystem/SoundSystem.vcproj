@@ -69,7 +69,6 @@
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenALSDK\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\PThreads\lib&quot;;&quot;$(SolutionDir)dependencies\freealut\lib&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\VorbisFile_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\Vorbis_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\ogg\win32\Static_Debug&quot;"
 				ModuleDefinitionFile="SoundSystemInterface.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
 				SubSystem="2"
 				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"
 				TargetMachine="1"

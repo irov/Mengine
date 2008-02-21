@@ -628,4 +628,17 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Scene::setOffsetPosition( const mt::vec2f& _offset )
+	{
+		m_offsetPosition = _offset;
+
+		for( TListChildren::iterator
+			it = m_listChildren.begin(),
+			it_end = m_listChildren.end();
+		it != it_end;
+		++it)
+		{
+			static_cast<Layer*>(*it)->setOffsetPosition( m_offsetPosition );
+		}
+	}
 }

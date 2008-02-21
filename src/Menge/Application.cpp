@@ -390,4 +390,9 @@ namespace Menge
 			Holder<SoundEngine>::hostage()->setCommonVolume( volume );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::minimizeWindow()
+	{
+
+	}
 }

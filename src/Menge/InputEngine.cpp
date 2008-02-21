@@ -33,14 +33,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	int InputEngine::getMouseX() const
 	{
-		return m_interface->getMouseX();
-		//return m_mouseX;
+		//return m_interface->getMouseX();
+		return m_mouseX;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int InputEngine::getMouseY() const
 	{
-		return m_interface->getMouseY();
-		//return m_mouseY;
+		//return m_interface->getMouseY();
+		return m_mouseY;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int InputEngine::getMouseWhell() const

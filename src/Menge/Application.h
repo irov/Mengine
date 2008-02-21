@@ -82,6 +82,7 @@ namespace Menge
 		bool getSoundEnabled()	const;
 
 		void onFocus( bool _focus );
+		void minimizeWindow();
 
 	private:
 		bool m_quit;

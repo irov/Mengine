@@ -321,10 +321,10 @@ void OgreApplication::run()
 {
 	MSG  msg;
 	static bool resetTime = false;
-//	POINT pos;
+	POINT pos;
 	while( m_running )
 	{
-		/*::GetCursorPos( &pos );
+		::GetCursorPos( &pos );
 		if( m_cursorInArea 
 			&& ( pos.x < m_wndInfo.rcClient.left 
 			|| pos.x > m_wndInfo.rcClient.right 
@@ -333,7 +333,8 @@ void OgreApplication::run()
 		{
 			::ShowCursor( TRUE );
 			m_application->handleMouseLeave();
-		}*/
+			m_cursorInArea = false;
+		}
 		while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 		{
 			TranslateMessage( &msg );
@@ -349,7 +350,7 @@ void OgreApplication::run()
 				m_application->onFocus( true );
 				resetTime = true;
 			}
-			//Ogre::WindowEventUtilities::messagePump();
+			Ogre::WindowEventUtilities::messagePump();
 			m_running = m_application->update(  m_frameTime * 1000.f ) && m_renderWindow->isClosed() == false;
 			m_root->renderOneFrame();
 
@@ -423,7 +424,7 @@ void OgreApplication::createWindow( unsigned int _width, unsigned int _height, b
 	// Create our main window
 	// Pass pointer to self
 	m_hWnd = ::CreateWindow(L"MengeWnd", L"Menge-engine", dwStyle,
-		left, top, width, height + 1, NULL, 0, hInstance, this);
+		left, top, width, height, NULL, 0, hInstance, this);
 
 	TRACKMOUSEEVENT mouseEvent;
 	mouseEvent.cbSize = sizeof( TRACKMOUSEEVENT );
@@ -503,7 +504,7 @@ LRESULT CALLBACK OgreApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 		m_renderWindow->destroy();
 		break;
-	/*case WM_MOUSEMOVE:
+	case WM_MOUSEMOVE:
 		if( !m_cursorInArea )
 		{
 			m_cursorInArea = true;
@@ -529,7 +530,7 @@ LRESULT CALLBACK OgreApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 		break;
 	case WM_MBUTTONUP:
 		m_application->handleMouseButtonEvent( 3, false );
-		break;*/
+		break;
 	}
 	return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 }

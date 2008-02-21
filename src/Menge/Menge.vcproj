@@ -72,7 +72,6 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Python\libs&quot;;&quot;$(SolutionDir)dependencies\Pybind\lib&quot;;&quot;$(SolutionDir)dependencies\cal3d\cal3d\bin\debug&quot;;$(NOINHERIT)"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(TargetDir)/$(ProjectName)_d.pdb"
 				SubSystem="2"
 				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"
 				TargetMachine="1"

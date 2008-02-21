@@ -53,8 +53,9 @@ namespace Menge
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	Application::Application( const std::string& _args )
-		: m_quit( false )
+	Application::Application( /*const std::string& _platform,*/ const std::string& _args )
+		: /*m_platform( _platform )
+		,*/ m_quit( false )
 		, m_commandLine(_args)
 		, m_fixedContentResolution( false )
 		, m_title("Menge-engine")

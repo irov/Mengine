@@ -103,5 +103,7 @@ namespace Menge
 		bool m_particles;
 		bool m_sound;
 		bool m_usePhysic;
+
+		std::string m_platform;
 	};
 }

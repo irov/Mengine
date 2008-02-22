@@ -6,11 +6,13 @@
 #	include "math/quat.h"
 
 class SceneNodeInterface;
+class EntityInterface;
 
 namespace Menge
 {
 	class Movable;
 	class DiscreteEntity;
+	class Light;
 
 	class SceneNode3D
 		: public NodeCore
@@ -38,7 +40,11 @@ namespace Menge
 		void pitch( float _angle );
 		void roll( float _angle );
 
-		void addChild( SceneNode3D * _node );
+	public:
+		void attachEntity(DiscreteEntity * _entity);
+		void attachLight(Light * _entity);
+
+		void addChild(SceneNode3D * _node);
 
 		void attachToRootNode();
 
@@ -46,9 +52,9 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 		void loaderTransformation_( XmlElement * _xml );
 		void loaderEntities_( XmlElement * _xml );
+		void loaderLights_( XmlElement * _xml );
 
 	protected:
-
 
 		bool _activate() override;
 		void _addChildren( SceneNode3D * _node ) override;
@@ -60,9 +66,9 @@ namespace Menge
 		std::list<Movable*>	m_movables;
 
 		DiscreteEntity * m_entity;
+		Light * m_light;
 
-		// шо с этим бредом делать??
-		void render(){};
-		bool isRenderable() {return false;};
+		void render();
+		bool isRenderable();
 	};
 }

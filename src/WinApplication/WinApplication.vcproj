@@ -65,7 +65,7 @@
 				AdditionalDependencies="OgreMain_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\ogrenew\lib"
+				AdditionalLibraryDirectories="$(SolutionDir)dependencies\OgreSDK\lib"
 				ModuleDefinitionFile="WinApplication.def"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"

@@ -17,7 +17,7 @@ Ogre::Entity * OgreEntity::getOgreEntity()
 	return m_entity;
 }
 //////////////////////////////////////////////////////////////////////////
-SkeletonInterface* OgreEntity::getSkeleton() const
+SkeletonInterface * OgreEntity::getSkeleton() const
 {
 	if ( m_entity->hasSkeleton() == false )
 	{

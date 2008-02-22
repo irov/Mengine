@@ -3,6 +3,8 @@
 #	include "RenderEngine.h"
 #	include "XmlEngine.h"
 #	include "LogEngine.h"
+#	include "SceneNode3D.h"
+#	include "Skeleton.h"
 
 #	include "ResourceManager.h"
 #	include "ResourceMesh.h"
@@ -17,11 +19,23 @@ namespace Menge
 		, m_resourceSkeleton(0)
 		, m_castShadows(false)
 		, m_receiveShadows(false)
+		, m_skeleton(0)
+		, m_parent(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DiscreteEntity::~DiscreteEntity()
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	SceneNode3D * DiscreteEntity::getParentNode() const
+	{
+		return m_parent;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DiscreteEntity::setParentNode( SceneNode3D * _node ) 
+	{
+		m_parent = _node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::loader( XmlElement * _xml )
@@ -63,23 +77,33 @@ namespace Menge
 			}
 		}*/
 
-		const std::string & meshName = m_resourceMesh->getMeshName();
+		const std::string & mesh = m_resourceMesh->getMeshName();
 
-		m_interface = Holder<RenderEngine>::hostage()->createEntity(m_name, meshName);
+		m_interface = Holder<RenderEngine>::hostage()->createEntity(m_name, mesh);
 
-		m_interface->setCastsShadow( m_castShadows );
+		m_interface->setCastsShadow(m_castShadows);
+
+		SkeletonInterface * _interface = m_interface->getSkeleton();
+
+		if(_interface != NULL)
+		{
+			m_skeleton = new Skeleton(_interface);
+		}
+
+		this->getParentNode()->attachEntity(this);
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::deactivate()
 	{
+		delete m_skeleton;
 		Holder<RenderEngine>::hostage()->releaseEntity( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SkeletonInterface * DiscreteEntity::getSkeleton() const
+	Skeleton * DiscreteEntity::getSkeleton() const
 	{
-		return m_interface->getSkeleton();
+		return m_skeleton;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::setCastsShadow( bool _castsShadow )

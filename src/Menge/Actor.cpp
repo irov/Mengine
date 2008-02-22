@@ -12,7 +12,7 @@
 
 #	include "XmlEngine.h"
 
-#	include "Entity3d.h"
+#	include "DiscreteEntity.h"
 
 #	include "RigidBody3d.h"
 
@@ -59,8 +59,6 @@ namespace	Menge
 			//m_charPos+this->getLocalPosition()*step;
 			//this->setLocalPosition( m_charPos*step+this->getLocalPosition() );
 		}
-
-		m_entityInterface->update(_timing);
 
 		this->callEvent("UPDATE", "(f)", _timing );
 	}
@@ -117,7 +115,7 @@ namespace	Menge
 		this->callMethod("onRelease", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Actor::attachEntity( Entity3d * _entity )
+	void Actor::attachEntity( DiscreteEntity * _entity )
 	{
 		m_entityInterface = _entity;
 		m_interface->attachEntity( _entity->get() );
@@ -158,21 +156,21 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::step( const mt::vec3f & _v )
 	{
-		m_entityInterface->play("idle2");
-		m_entityInterface->setLooped(true);
-		m_contMovement = m_initOrient * _v;
+//		m_entityInterface->play("idle2");
+//		m_entityInterface->setLooped(true);
+//		m_contMovement = m_initOrient * _v;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::left()
 	{
-		m_entityInterface->play("move forward");
-		m_entityInterface->setLooped(true);
-		m_charPos += mt::vec3f(0,0,-1)*1.0f;
+//		m_entityInterface->play("move forward");
+///		m_entityInterface->setLooped(true);
+//		m_charPos += mt::vec3f(0,0,-1)*1.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::stop()
 	{
-		m_entityInterface->play("idle2");
-		m_contMovement = mt::vec3f::zero_v3;
+//		m_entityInterface->play("idle2");
+//		m_contMovement = mt::vec3f::zero_v3;
 	}
 }

@@ -157,8 +157,9 @@ namespace Menge
 		xml_path += _type;
 		xml_path += ".xml";
 
+		FileDataInterface * _data = Holder<FileEngine>::hostage()->openFile( xml_path );
 
-		m_mapEntitiesXML.insert( std::make_pair( _type, Holder<FileEngine>::hostage()->openFile( xml_path ) ) );
+		m_mapEntitiesXML.insert( std::make_pair( _type, _data ) );
 
 		return true;
 	}

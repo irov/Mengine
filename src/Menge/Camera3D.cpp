@@ -16,12 +16,12 @@ namespace	Menge
 	OBJECT_IMPLEMENT( Camera3D );
 	//////////////////////////////////////////////////////////////////////////
 	Camera3D::Camera3D()
-		: m_interface(0)
-		, m_near(10.0f)
-		, m_far(1000.0f)
-		, m_position(0.f, 0.f, 0.f)
-		, m_at(0.f, 0.f, 0.f)
-		, m_main(false)
+	: m_interface(0)
+	, m_near(10.0f)
+	, m_far(1000.0f)
+	, m_position(0.f, 0.f, 0.f)
+	, m_at(0.f, 0.f, 0.f)
+	, m_main(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

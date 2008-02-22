@@ -131,3 +131,8 @@ void OgreLight::setDirection( float _x, float _y, float _z )
 	m_light->setDirection( _x, _y, _z );
 }
 //////////////////////////////////////////////////////////////////////////
+void OgreLight::setPosition( float _x, float _y, float _z )
+{
+	m_light->setPosition(_x,_y,_z);
+}
+//////////////////////////////////////////////////////////////////////////

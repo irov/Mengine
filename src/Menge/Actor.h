@@ -11,7 +11,7 @@ namespace Menge
 {
 	class ResourceMesh;
 	class ResourceSkeleton;
-	class Entity3d;
+	class DiscreteEntity;
 	class RigidBody3D;
 
 	class Actor
@@ -25,11 +25,7 @@ namespace Menge
 
 	public:
 
-		//! Установка энтити(меш, анимация, материал)
-		/*!
-		\param _entity указатель на энтити.
-		*/
-		void	attachEntity( Entity3d * _entity );
+		void	attachEntity( DiscreteEntity * _entity );
 
 		void	step( const mt::vec3f & _dir );
 		void	left();
@@ -46,7 +42,7 @@ namespace Menge
 		void _update( float _timing ) override;
 
 	private:
-		Entity3d * m_entityInterface;
+		DiscreteEntity * m_entityInterface;
 		mt::quatf m_initOrient;
 		mt::vec3f m_dir;
 		mt::vec3f m_contMovement;

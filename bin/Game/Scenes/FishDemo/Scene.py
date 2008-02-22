@@ -73,25 +73,20 @@ class Scene( Menge.Scene ):
 		
 		self.layerAppend( "Deep", block )
 
-		#self.levelActor = Menge.createActor("Level1", "Level");
-		#self.levelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
+		
+		#self.barrelActor = Menge.createActor("Barrel1", "Barrel")
+		#self.barrelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
 
-		#self.entityLevel = self.getEntity( "Level" )
-		#self.levelActor.attachEntity( self.entityLevel );
+		#self.entityBarrel = self.getEntity( "Barrel" )
+		#self.barrelActor.attachEntity( self.entityBarrel );
 
-		self.barrelActor = Menge.createActor("Barrel1", "Barrel")
-		self.barrelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
+		#self.zombieActor = Menge.createActor("Zombie1", "Zombie");
+		#self.zombieActor.setParentRoot( Menge.vec3f( 10,10,40 ), Menge.quatf(1,0,0,0) );
 
-		self.entityBarrel = self.getEntity( "Barrel" )
-		self.barrelActor.attachEntity( self.entityBarrel );
-
-		self.zombieActor = Menge.createActor("Zombie1", "Zombie");
-		self.zombieActor.setParentRoot( Menge.vec3f( 10,10,40 ), Menge.quatf(1,0,0,0) );
-
-		self.entityZombie = self.getEntity( "Zombie" )
-		self.zombieActor.attachEntity( self.entityZombie );
+		#self.entityZombie = self.getEntity( "Zombie" )
+		#self.zombieActor.attachEntity( self.entityZombie );
 		#self.zombieActor.setScale(0.010);
-		self.zombieActor.yaw(180);
+		#self.zombieActor.yaw(180);
 
 		self.levelPhysicBody = self.getRigidBody("LevelPhysicBody");
 
@@ -100,13 +95,11 @@ class Scene( Menge.Scene ):
 
 		#self.levelActor.addChild(self.barrelActor);
 
-		self.barrelActor.activate();
-		#self.levelActor.activate();
+		'''self.barrelActor.activate();
 		self.zombieActor.activate();
 
-		#self.actorAppend(self.levelActor);
 		self.actorAppend(self.barrelActor);
-		self.actorAppend(self.zombieActor);
+		self.actorAppend(self.zombieActor);'''
 
 		'''self.camera = self.getCamera("MainCamera");
 		self.pos = self.zombieActor.getWorldPosition();
@@ -123,11 +116,13 @@ class Scene( Menge.Scene ):
 
 	def onUpdate( self, timing ):
 
-		self.barrelActor.setLocalPosition( self.barrelPhysicBody.getPosition() )
-		self.barrelActor.setLocalOrient( self.barrelPhysicBody.getOrientation() )
+		#self.barrelActor.setLocalPosition( self.barrelPhysicBody.getPosition() )
+		#self.barrelActor.setLocalOrient( self.barrelPhysicBody.getOrientation() )
 
 		self.camera = self.getCamera("MainCamera");
-		self.pos = self.zombieActor.getWorldPosition();
+		#self.pos = self.levelPhysicBody.getPosition();
+
+		self.pos = Menge.vec3f(0,10,0);
 
 		self.camPos = Menge.vec3f( Menge.getVec3fX(self.pos), Menge.getVec3fY(self.pos) + 40, Menge.getVec3fZ(self.pos) );
 

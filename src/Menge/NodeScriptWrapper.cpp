@@ -25,10 +25,10 @@
 #	include "SoundEmitter.h"
 #	include "Emitter.h"
 #	include "Point.h"
-#	include "Entity3d.h"
 #	include "Camera3d.h"
 #	include "RigidBody3D.h"
 #	include "CapsuleController.h"
+#	include "Skeleton.h"
 
 #	include "Layer2D.h"
 
@@ -312,7 +312,6 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( SoundEmitter );
 	SCRIPT_CLASS_WRAPPING( Emitter );
 	SCRIPT_CLASS_WRAPPING( Point );
-	SCRIPT_CLASS_WRAPPING( Entity3d );
 	SCRIPT_CLASS_WRAPPING( SceneNode3D );
 	SCRIPT_CLASS_WRAPPING( Camera3D );
 	SCRIPT_CLASS_WRAPPING( RigidBody3D );
@@ -414,6 +413,14 @@ namespace Menge
 			.def( "setRotate", &Allocator2D::setRotate )
 			;
 
+		pybind::interface_<Skeleton>("Skeleton", false)
+			.def( "enableAnimation", &Skeleton::enableAnimation )
+			.def( "advanceAnimation", &Skeleton::advanceAnimation )
+			.def( "advanceAllAnimations", &Skeleton::advanceAllAnimations )
+			.def( "setAnimationWeight", &Skeleton::setAnimationWeight )
+			.def( "attachEntityToBone", &Skeleton::attachEntityToBone )
+			;
+
 		pybind::interface_<NodeRenderable>("NodeRenderable", false)
 			.def( "hide", &NodeRenderable::hide )
 			;
@@ -467,10 +474,10 @@ namespace Menge
 			;
 
 		
-		pybind::proxy_<Entity3d, pybind::bases<Node>>("Entity3d", false)
+	/*	pybind::proxy_<Entity3d, pybind::bases<Node>>("Entity3d", false)
 			.def( "play", &Entity3d::play )
 		;
-
+*/
 		}
 
 		{
@@ -524,13 +531,11 @@ namespace Menge
 				;
 
 			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
-				.def( "getEntity", &Scene::getEntity )
 				.def( "getCamera", &Scene::getCamera )
 				.def( "getRigidBody", &Scene::getRigidBody )
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "getNode", &Scene::getNode )
 				.def( "getLayerSize", &Scene::getLayerSize )
-				.def( "addEntity", &Scene::addEntity )
 				.def( "actorAppend", &Scene::actorAppend )
 				.def( "setOffsetPosition", &Scene::setOffsetPosition )
 				;

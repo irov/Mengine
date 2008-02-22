@@ -1,4 +1,51 @@
 <Scene>
+	<PhysicParams>
+		<Gravity Value = "0.0;-2.667;0.0" />
+		<Restitution Value = "0.2" />
+		<StaticFriction Value = "0.7" />
+		<DynamicFriction Value = "0.7" />
+	</PhysicParams>
+
+	<Entities>
+		<Entity Name = "Barrel">
+			<ResourceMesh Name = "TestBarrelMesh" />
+		</Entity>
+		<Entity Name = "Zombie">
+			<ResourceMesh Name = "TestZombie" />
+		</Entity>
+	</Entities>
+
+	<RigidBodies>
+		<RigidBody Name = "LevelPhysicBody">
+              		<GeometryResource Name = "ResourceLevelGeometry"/>
+			<Active Value = "0"/>
+			<Density Value = "0"/>
+		</RigidBody>
+		<RigidBody Name = "BarrelPhysicBody">
+              		<GeometryResource Name = "ResourceBarrelGeometry"/>
+			<Active Value = "1"/>
+			<Density Value = "100"/>
+		</RigidBody>
+	</RigidBodies>
+
+	<Controllers>
+		<Controller Name = "Cap">
+              		<Resource Name = "TestCap"/>
+			<StartPosition Value = "0;0;0"/>
+		</Controller>
+	</Controllers>
+
+	<Cameras>
+		<Camera Name = "MainCamera">
+			<Main Value = "1" />
+			<Aspect Value = "1.3" />
+			<Near Value = "0.5f" />
+			<Far Value = "1000" />
+			<Position Value = "-20;100;0" />
+			<At Value = "-120;0;0" />
+		</Camera>
+	</Cameras>
+
 	<Node Name = "LevelScene" Type = "Layer3D">
 		<Node Name = "Node01" Type = "SceneNode3D">
 			<Transformation>
@@ -11,13 +58,18 @@
 					<ResourceMesh Name = "TestMesh" />
 				</Entity>
 			</Entities>
-
 			<Node Name = "Node02" Type = "SceneNode3D">
 				<Transformation>
 					<Scale Value = "1;1;1" />
        					<Position Value = "0;0;0" />
-       					<Rotation Value ="0;0;0;1" />
+       					<Rotation Value = "0;0;0;1" />
 				</Transformation>
+				<Lights>
+					<Light Name = "MainLight">
+						<Color Value = "1;1;1;1" />
+						<Position Value = "0;0;0" />
+					</Light>
+				</Lights>
                		</Node>
                	</Node>
 	</Node>
@@ -55,54 +107,5 @@
 			<Height Value = "24"/>
 			<CenterAlign Value = "1"/>
 		</Node>
-
 	</Node>
-
-	<PhysicParams>
-		<Gravity Value = "0.0;-2.667;0.0" />
-		<Restitution Value = "0.2" />
-		<StaticFriction Value = "0.7" />
-		<DynamicFriction Value = "0.7" />
-	</PhysicParams>
-
-	<Entities>
-		<Entity Name = "Barrel">
-			<ResourceMesh Name = "TestBarrelMesh" />
-		</Entity>
-		<Entity Name = "Zombie">
-			<ResourceMesh Name = "TestZombie" />
-		</Entity>
-	</Entities>
-
-	<RigidBodies>
-		<RigidBody Name = "LevelPhysicBody">
-              		<GeometryResource Name = "ResourceLevelGeometry"/>
-			<Active Value = "0"/>
-			<Density Value = "0"/>
-		</RigidBody>
-		<RigidBody Name = "BarrelPhysicBody">
-              		<GeometryResource Name = "ResourceBarrelGeometry"/>
-			<Active Value = "1"/>
-			<Density Value = "100"/>
-		</RigidBody>
-	</RigidBodies>
-
-	<Lights>
-		<Light Name = "MainLight">
-			<Color Value = "1;1;1;1" />
-			<Position Value = "0;0;0" />
-		</Light>
-	</Lights>
-
-	<Cameras>
-		<Camera Name = "MainCamera">
-			<Main Value = "1" />
-			<Aspect Value = "1.3" />
-			<Near Value = "0.5f" />
-			<Far Value = "1000" />
-			<Position Value = "-20;100;0" />
-			<At Value = "-120;0;0" />
-		</Camera>
-	</Cameras>
-
 </Scene>

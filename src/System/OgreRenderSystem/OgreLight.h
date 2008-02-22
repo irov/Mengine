@@ -32,6 +32,7 @@ public:
 	void setCastsShadows( bool _enabled ) override;
 
 	void setDirection( float _x, float _y, float _z ) override;
+	void setPosition( float _x, float _y, float _z ) override;
 
 public:
 	Ogre::Light * getOgreLight();

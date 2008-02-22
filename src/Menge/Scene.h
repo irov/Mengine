@@ -23,6 +23,7 @@ namespace Menge
 	class Camera3D;
 	class SceneNode3D;
 	class RigidBody3D;
+	class CapsuleController;
 
 	class Scene
 		: public NodeCore
@@ -52,10 +53,9 @@ namespace Menge
 	public:
 		void loader( XmlElement *_xml) override;
 		void loaderScene_( XmlElement * _xml );
-		void loaderEntities_( XmlElement * _xml );
-		void loaderLights_( XmlElement * _xml );
 		void loaderCameras_( XmlElement * _xml );
 		void loaderRigidBodies_( XmlElement * _xml );
+		void loaderControllers_( XmlElement * _xml );
 
 	public:
 		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) override;
@@ -73,19 +73,17 @@ namespace Menge
 
 	public:
 
-		void addEntity( Entity3d * _entity );
-		Entity3d * getEntity( const std::string & _name );
-
-		void addLight( Light * _light );
-
 		void addCamera( Camera3D * _camera );
 		Camera3D * getCamera( const std::string & _name );
-
-		void actorAppend( SceneNode3D * _node );
 
 		void addRigidBody( RigidBody3D * _rigidBody );
 		RigidBody3D * getRigidBody( const std::string & _name );
 
+		void addCapsuleController( CapsuleController * _capsule );
+		CapsuleController * getController( const std::string & _name );
+
+		void actorAppend( SceneNode3D * _node );
+	public:
 		void setOffsetPosition( const mt::vec2f& _offset );
 
 	private:
@@ -100,21 +98,18 @@ namespace Menge
 		float m_staticFriction; 
 		float m_dynamicFriction;
 
-		typedef std::map<std::string,Entity3d* > TMapEntity;
-		typedef std::map<std::string,Light* > TMapLight;
 		typedef std::map<std::string,Camera3D* > TMapCamera;
 		typedef std::map<std::string,RigidBody3D* > TMapRigidBody;
+		typedef std::map<std::string,CapsuleController* > TMapControllers;
 
-		TMapEntity	m_mapEntities;
-		TMapLight	m_mapLights;
 		TMapCamera	m_mapCameras;
 		TMapRigidBody	m_mapRigidBodies;
+		TMapControllers m_mapControllers;
 
 		typedef std::list<SceneNode3D*> TListActors;
 
 		TListActors	m_listActors;
 
-		void activateLights_();
 		void activateCameras_();
 		void setPhysicParams_();
 	};

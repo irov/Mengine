@@ -123,4 +123,9 @@
 		<Mesh Name = "ZombieTest/Cylinder04.mesh" />
 	</Resource>
 
+	<Resource Name = "TestCap" Type = "ResourceCapsuleController" >
+		<Radius Value = "1" />
+		<Height Value = "1" />
+	</Resource>
+
 </DataBlock>

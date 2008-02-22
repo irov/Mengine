@@ -103,6 +103,7 @@ public:
 	virtual void setCastsShadows( bool _enabled ) = 0;
 
 	virtual void setDirection( float _x, float _y, float _z ) = 0;
+	virtual void setPosition( float _x, float _y, float _z ) = 0;
 };
 
 class CameraInterface

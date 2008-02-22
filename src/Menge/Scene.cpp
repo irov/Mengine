@@ -10,11 +10,11 @@
 
 #	include "XmlEngine.h"
 
-#	include "Entity3d.h"
 #	include "Camera3d.h"
 #	include "RigidBody3d.h"
 #	include "Light.h"
 #	include "Actor.h"
+#	include "CapsuleController.h"
 
 namespace	Menge
 {
@@ -216,25 +216,12 @@ namespace	Menge
 		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent" );
 		registerEvent( "MOUSE_MOVE", "onHandleMouseMove" );
 
-		activateLights_();
 		activateCameras_();
 		setPhysicParams_();
 
 		callMethod( "onActivate", "() " );
 
 		return NodeCore::_activate();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::activateLights_()
-	{
-		for( TMapLight::iterator
-			it = m_mapLights.begin(),
-			it_end = m_mapLights.end();
-		it != it_end;
-		++it)
-		{
-			it->second->activate();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::activateCameras_()
@@ -251,15 +238,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()
 	{
-		for( TMapLight::iterator
-			it = m_mapLights.begin(),
-			it_end = m_mapLights.end();
-		it != it_end;
-		++it)
-		{
-			it->second->deactivate();
-		}
-
 		for( TMapCamera::iterator
 			it = m_mapCameras.begin(),
 			it_end = m_mapCameras.end();
@@ -272,15 +250,6 @@ namespace	Menge
 		for( TMapRigidBody::iterator
 			it = m_mapRigidBodies.begin(),
 			it_end = m_mapRigidBodies.end();
-		it != it_end;
-		++it)
-		{
-			it->second->deactivate();
-		}
-
-		for( TMapEntity::iterator
-			it = m_mapEntities.begin(),
-			it_end = m_mapEntities.end();
 		it != it_end;
 		++it)
 		{
@@ -292,16 +261,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_release()
 	{
-		for( TMapLight::iterator
-			it = m_mapLights.begin(),
-			it_end = m_mapLights.end();
-		it != it_end;
-		++it)
-		{
-			it->second->release();
-			delete it->second;
-		}
-
 		for( TMapCamera::iterator
 			it = m_mapCameras.begin(),
 			it_end = m_mapCameras.end();
@@ -315,16 +274,6 @@ namespace	Menge
 		for( TMapRigidBody::iterator
 			it = m_mapRigidBodies.begin(),
 			it_end = m_mapRigidBodies.end();
-		it != it_end;
-		++it)
-		{
-			it->second->release();
-			delete it->second;
-		}
-
-		for( TMapEntity::iterator
-			it = m_mapEntities.begin(),
-			it_end = m_mapEntities.end();
 		it != it_end;
 		++it)
 		{
@@ -384,16 +333,6 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "StaticFriction", "Value", m_staticFriction );
 			XML_CASE_ATTRIBUTE_NODE( "DynamicFriction", "Value", m_dynamicFriction );
 		
-			XML_CASE_NODE("Entities")
-			{
-				XML_PARSE_ELEMENT( this, &Scene::loaderEntities_ );
-			}
-
-			XML_CASE_NODE("Lights")
-			{
-				XML_PARSE_ELEMENT( this, &Scene::loaderLights_ );
-			}
-
 			XML_CASE_NODE("Cameras")
 			{
 				XML_PARSE_ELEMENT( this, &Scene::loaderCameras_ );
@@ -402,6 +341,11 @@ namespace	Menge
 			XML_CASE_NODE("RigidBodies")
 			{
 				XML_PARSE_ELEMENT( this, &Scene::loaderRigidBodies_ );
+			}
+
+			XML_CASE_NODE("Controllers")
+			{
+				XML_PARSE_ELEMENT( this, &Scene::loaderControllers_ );
 			}
 		}
 		XML_END_NODE()
@@ -460,52 +404,27 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::loaderLights_( XmlElement * _xml )
+	void Scene::loaderControllers_( XmlElement * _xml )
 	{
 		std::string name;
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Light")
+			XML_CASE_NODE("Controller")
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Name", name );
 				}
 
-				Light * light = new Light();
+				CapsuleController * capsule = new CapsuleController();
 
-				light->setName( name );
-				light->setType( "Light" );
+				capsule->setName( name );
+				capsule->setType( "CapsuleController" );
 
-				addLight( light );
+				addCapsuleController( capsule );
 
-				XML_PARSE_ELEMENT( light, &Light::loader );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::loaderEntities_( XmlElement * _xml )
-	{
-		std::string name;
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE("Entity")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-				}
-
-				Entity3d * entity = new Entity3d();
-
-				entity->setName( name );
-				entity->setType( "Entity3d" );
-
-				addEntity( entity );
-
-				XML_PARSE_ELEMENT( entity, &Entity3d::loader );
+				XML_PARSE_ELEMENT( capsule, &CapsuleController::loader );
 			}
 		}
 	}
@@ -534,58 +453,32 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::addLight( Light * _light )
+	void Scene::addCapsuleController( CapsuleController * _capsule )
 	{
-		const std::string & name = _light->getName();
+		const std::string & name = _capsule->getName();
 
-		TMapLight::iterator it_find = m_mapLights.find( name );
+		TMapControllers::iterator it_find = m_mapControllers.find( name );
 
-		if( it_find == m_mapLights.end() )
+		if( it_find == m_mapControllers.end() )
 		{
-			m_mapLights.insert( std::make_pair( name, _light ) );
+			m_mapControllers.insert( std::make_pair( name, _capsule ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::addEntity( Entity3d * _entity )
+	CapsuleController * Scene::getController( const std::string & _name )
 	{
-		const std::string & name = _entity->getName();
+		TMapControllers::const_iterator it_find = m_mapControllers.find( _name );
 
-		TMapEntity::iterator it_find = m_mapEntities.find( name );
-
-		if( it_find == m_mapEntities.end() )
-		{
-			m_mapEntities.insert( std::make_pair( name, _entity ) );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Entity3d * Scene::getEntity( const std::string & _name )
-	{
-		TMapEntity::const_iterator it_find = m_mapEntities.find( _name );
-
-		if( it_find == m_mapEntities.end() )
+		if( it_find == m_mapControllers.end() )
 		{
 			return NULL;
 		}
 
-		Entity3d * entity = it_find->second;
+		CapsuleController * cap = it_find->second;
 
-		entity->activate();
+		cap->activate();
 
-		return entity;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Camera3D * Scene::getCamera( const std::string & _name )
-	{
-		TMapCamera::const_iterator it_find = m_mapCameras.find( _name );
-
-		if( it_find == m_mapCameras.end() )
-		{
-			return NULL;
-		}
-
-		Camera3D * camera = it_find->second;
-
-		return camera;
+		return cap;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RigidBody3D * Scene::getRigidBody( const std::string & _name )
@@ -602,6 +495,21 @@ namespace	Menge
 		body->activate();
 
 		return body;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////
+	Camera3D * Scene::getCamera( const std::string & _name )
+	{
+		TMapCamera::const_iterator it_find = m_mapCameras.find( _name );
+
+		if( it_find == m_mapCameras.end() )
+		{
+			return NULL;
+		}
+
+		Camera3D * camera = it_find->second;
+
+		return camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Layer * _layer )

@@ -1,6 +1,5 @@
 #	pragma once
 
-#	include "Movable.h"
 #	include "math/quat.h"
 #	include <string>
 
@@ -14,34 +13,43 @@ namespace Menge
 	class ResourceMesh;
 	class ResourceSkeleton;
 
-	class DiscreteEntity : public Movable
+	class Skeleton;
+	class SceneNode3D;
+
+	class DiscreteEntity
 	{
 	public:
 		DiscreteEntity( const std::string & _name );
 		~DiscreteEntity();
 	public:
-		void loader( XmlElement * _xml );
-		bool activate();
-		void deactivate();
-
-	public:
-		SkeletonInterface * getSkeleton() const;
+		Skeleton * getSkeleton() const;
 		void setCastsShadow( bool _castsShadow );
 		void setVisible( bool _visible );
 		void setMaterial( const std::string & _material );
 		void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material );
 
-		//hmmmmmmmmm
+		//hack ??
 		EntityInterface * get()
 		{
 			return m_interface;
 		}
+
+	public:
+		virtual void loader( XmlElement * _xml );
+		virtual bool activate();
+		virtual void deactivate();
+
+	public:
+		SceneNode3D * getParentNode() const;
+		void setParentNode( SceneNode3D * _node );
 
 	private:
 
 		std::string m_name;
 
 		EntityInterface * m_interface;
+
+		Skeleton * m_skeleton;
 
 		std::string m_resourcenameMesh;
 		ResourceMesh * m_resourceMesh;
@@ -51,5 +59,7 @@ namespace Menge
 
 		bool m_castShadows;
 		bool m_receiveShadows;
+
+		SceneNode3D * m_parent;
 	};
 }

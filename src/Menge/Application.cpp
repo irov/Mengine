@@ -197,8 +197,8 @@ namespace Menge
 			/*XML_CASE_ATTRIBUTE_NODE("Title", "Name", m_title );					
 			XML_CASE_ATTRIBUTE_NODE("RenderDriver", "Name", m_renderDriver );
 			XML_CASE_ATTRIBUTE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
-			XML_CASE_ATTRIBUTE_NODE("VSync", "Value", m_vsync );
-			XML_CASE_ATTRIBUTE_NODE("UsePhysic", "Value", m_usePhysic );*/
+			XML_CASE_ATTRIBUTE_NODE("VSync", "Value", m_vsync );*/
+			XML_CASE_ATTRIBUTE_NODE("UsePhysic", "Value", m_usePhysic );
 			XML_CASE_ATTRIBUTE_NODE("LogSystem", "Name", m_logSystemName );
 			XML_CASE_ATTRIBUTE_NODE("InputSystem", "Name", m_inputSystemName );
 			XML_CASE_ATTRIBUTE_NODE("RenderSystem", "Name", m_renderSystemName );

@@ -71,16 +71,16 @@ public:
 	virtual void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material ) = 0;
 };
 
+enum LightType
+{
+	LT_POINT,
+	LT_DIRECTIONAL,
+	LT_SPOT
+};
+
 class LightInterface
 {
 public:
-	enum LightType
-	{
-		LT_POINT,
-		LT_DIRECTIONAL,
-		LT_SPOT
-	};
-
 	virtual ~LightInterface(){};
 
 	virtual void setType( LightType _type ) = 0;
@@ -100,8 +100,8 @@ public:
 	virtual void setDiffuseColour( float _r, float _g, float _b ) = 0;
 	virtual void setSpecularColour( float _r, float _g, float _b ) = 0;
 
-	virtual bool isEnabled() const = 0;
-	virtual void setEnabled( bool _enabled ) = 0;
+	virtual bool isVisible() const = 0;
+	virtual void setVisible( bool _enabled ) = 0;
 	virtual void setCastsShadows( bool _enabled ) = 0;
 
 	virtual void setDirection( float _x, float _y, float _z ) = 0;

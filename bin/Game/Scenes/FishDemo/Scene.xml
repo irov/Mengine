@@ -57,13 +57,23 @@
 				</Transformation>
 				<Lights>
 					<Light Name = "MainLight">
-						<Color Value = "1;1;1;1" />
+						<Type Value = "2" />
+						<Diffuse Value = "1;1;1;1" />
+						<Specular Value = "1;1;1;1" />
+						<Range Value = "800" />
+						<AttenuationConst Value = "1" />
+						<AttenuationLinear Value = "0.0005" />
+						<AttenuationQuad Value = "0" />
 						<Position Value = "0;0;0" />
+						<Direction Value = "0;-1;0"/>
+						<SpotInner Value = "45"/>
+						<SpotOuter Value = "30"/>
 					</Light>
 				</Lights>
 				<Entities>
 					<Entity Name = "LightMesh">
 						<ResourceMesh Name = "TestBarrelMesh" />
+						<CastShadows Value = "1"/>
 					</Entity>
 				</Entities>
                		</Node>

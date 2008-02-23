@@ -83,7 +83,7 @@ float OgreLight::getAttenuationQuadraticFactor() const
 //////////////////////////////////////////////////////////////////////////
 void OgreLight::setSpotlightRange( float innerAngle, float outerAngle, float falloff )
 {
-	m_light->setSpotlightRange( Ogre::Radian(Ogre::Degree(innerAngle)), Ogre::Radian(Ogre::Degree(outerAngle)), falloff );
+	m_light->setSpotlightRange( Ogre::Degree(innerAngle), Ogre::Degree(outerAngle), falloff );
 }
 //////////////////////////////////////////////////////////////////////////
 float OgreLight::getSpotlightInnerAngle() const

@@ -3,6 +3,7 @@
 #	include "math/quat.h"
 #	include <string>
 #	include "Color.h"
+//#	include "Interface/RenderSystemInterface.h"
 
 class LightInterface;
 
@@ -11,6 +12,10 @@ class XmlElement;
 namespace Menge
 {
 	class SceneNode3D;
+
+	const int LIGHT_POINT = 0;
+	const int LIGHT_DIRECTIONAL = 1;
+	const int LIGHT_SPOT = 2;
 
 	class Light
 	{
@@ -31,13 +36,12 @@ namespace Menge
 		void setDiffuseColour( float _r, float _g, float _b );
 		void setSpecularColour( float _r, float _g, float _b );
 
-		bool isEnabled() const;
-		void setEnabled( bool _enabled );
+		bool isVisible() const;
+		void setVisible( bool _enabled );
 		void setCastsShadows( bool _enabled );
 
 		void setDirection( float _x, float _y, float _z );
-		void setPosition( float _x, float _y, float _z );
-
+	
 		//hack ??
 		LightInterface * get()
 		{
@@ -54,8 +58,19 @@ namespace Menge
 	private:
 		std::string m_name;
 		LightInterface * m_interface;
-		Color m_diffuseColor;
-		mt::vec3f	m_position;
 		SceneNode3D * m_parent;
+
+		int m_lightType;
+		mt::vec3f	m_position;
+        Color m_diffuse;
+        Color m_specular;
+		mt::vec3f m_direction;
+		float m_spotOuter;
+        float m_spotInner;
+        float m_spotFalloff;
+		float m_range;
+		float m_attenuationConst;
+		float m_attenuationLinear;
+        float m_attenuationQuad;
 	};
 }

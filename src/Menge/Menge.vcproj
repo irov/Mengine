@@ -594,6 +594,10 @@
 					RelativePath=".\PhysicEngine.h"
 					>
 				</File>
+				<File
+					RelativePath=".\PhysicEngine2D.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

@@ -1,5 +1,7 @@
 #	pragma once
 
+typedef void* WINDOW_HANDLE;
+
 class InputSystemHandler
 {
 public:
@@ -11,6 +13,7 @@ public:
 class InputSystemInterface
 {
 public:
+	virtual bool initialize( WINDOW_HANDLE _winHandle ) = 0;
 	virtual void update() = 0;
 	virtual void destroy() = 0;
 

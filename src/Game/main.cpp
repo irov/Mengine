@@ -6,10 +6,14 @@
 
 #	include <stdio.h>
 
-#	include <vector>
+//#	include <vector>
 #	include <string>
 #	include <sstream>
 #	include <io.h>
+
+#include "../Menge/Application.h"
+
+//#define API_PLATFORM	"WinApplication"
 
 #	ifdef _CONSOLE
 int main( int argc, char *argv[] )
@@ -20,8 +24,10 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 {
 #ifdef _DEBUG
 	const char * application_dll  = "Systems/WinApplication_d.dll";
+	const char * config_file = "application_d.xml";
 #else
 	const char * application_dll = "Systems/WinApplication.dll";
+	const char * config_file = "application.xml";
 #endif
 
 #	ifndef _CONSOLE
@@ -30,6 +36,7 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 		RedirectIOToConsole();
 	}
 #	endif
+
 #ifndef MENGE_STATIC
 	HMODULE hModule = LoadLibraryA( application_dll );
 	
@@ -57,15 +64,16 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	}
 #endif
 
-	ApplicationInterface * app = 0;
+	ApplicationInterface * platform = 0;
 
-	if( initInterfaceSystem( &app ) == false )
+	if( initInterfaceSystem( &platform ) == false )
 	{
 		printf("invalid init system application '%s'", application_dll );
 		return 0;
 	}
 
 	bool result = false;
+	Menge::Application app( platform );
 
 #	ifdef _CONSOLE
 	if( argc > 1 )
@@ -82,23 +90,28 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 		{
 			strcat_s( cmdline, l+1, argv[i] );
 		}
-		result = app->init( "application.xml", cmdline );
+		//result = app->init( "application.xml", cmdline );
+		result = app.initialize( config_file, cmdline );
 		delete[] cmdline;
 	}
 	else
 	{
-		result = app->init( "application.xml", 0 );
+		//result = app->init( "application.xml", 0 );
+		result = app.initialize( config_file, 0 );
 	}
 #	else
-	result = app->init( "application.xml", lpCmdLine );
+	//Menge::Application app( platform );
+
+	result = app.initialize( config_file, lpCmdLine );
+	//result = app->init( config_file, lpCmdLine );
 #	endif
 
 	if( result == true )
 	{
-		app->run();
+		app.run();
 	}
 
-	releaseInterfaceSystem( app );
+	releaseInterfaceSystem( platform );
 
 	printf("free library '%s' \n", application_dll );
 	FreeLibrary( hModule );

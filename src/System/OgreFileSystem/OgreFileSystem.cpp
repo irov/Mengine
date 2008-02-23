@@ -33,6 +33,8 @@ void releaseInterfaceSystem( FileSystemInterface *_system )
 OgreFileSystem::OgreFileSystem()
 : m_arch(0)
 {
+	/// !!! FIXME !!!! ///
+	Ogre::Root* root = new Ogre::Root("", "", "Menge.log" );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::loadPath( const char * _path )

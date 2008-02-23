@@ -1,9 +1,10 @@
 #	pragma once
 
-#	include "System/OgreInputSystem/OgreInputSystemInterface.h"
+#	include "Interface/InputSystemInterface.h"
+#	include "OIS/OIS.h"
 
 class OgreInputSystem
-	: public OgreInputSystemInterface
+	: public InputSystemInterface
 	, public OIS::MouseListener
 	, public OIS::KeyListener
 {
@@ -12,7 +13,7 @@ public:
 	~OgreInputSystem();
 
 public:
-	bool init( const OIS::ParamList & _params ) override;
+	bool initialize( WINDOW_HANDLE _winHandle ) override;
 
 public:
 	void update() override;

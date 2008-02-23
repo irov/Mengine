@@ -1,5 +1,6 @@
 #	include "OgreInputSystem.h"
-#	include <Windows.h>
+//#	include <Windows.h>
+#	include <sstream>
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem(InputSystemInterface **_system)
@@ -33,11 +34,15 @@ OgreInputSystem::~OgreInputSystem()
 	destroy();
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreInputSystem::init( const OIS::ParamList & _params )
+bool OgreInputSystem::initialize( WINDOW_HANDLE _winHandle )
 {
-	OIS::ParamList local_params = _params;
+	std::ostringstream windowHndStr;
+	windowHndStr << (int)_winHandle;
+	OIS::ParamList pl;
+	pl.insert( std::make_pair(	"WINDOW", windowHndStr.str() ) );
 
-	m_inputManager = OIS::InputManager::createInputSystem( local_params );
+
+	m_inputManager = OIS::InputManager::createInputSystem( pl );
 
 	m_keyboard = static_cast<OIS::Keyboard*>( m_inputManager->createInputObject( OIS::OISKeyboard, true ) );
 	//m_mouse = static_cast<OIS::Mouse*>( m_inputManager->createInputObject( OIS::OISMouse, true ) );

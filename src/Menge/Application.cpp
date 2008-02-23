@@ -40,12 +40,12 @@ namespace Menge
 
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override
 		{
-			return m_app->handleMouseButtonEvent( _button, _isDown );
+			return m_app->onMouseButtonEvent( _button, _isDown );
 		}
 
 		bool handleMouseMove( int _x, int _y, int _whell ) override
 		{
-			return m_app->handleMouseMove( _x, _y, _whell );
+			return m_app->onMouseMove( _x, _y, _whell );
 		}
 
 	private:
@@ -53,10 +53,10 @@ namespace Menge
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	Application::Application( /*const std::string& _platform,*/ const std::string& _args )
-		: /*m_platform( _platform )
-		,*/ m_quit( false )
-		, m_commandLine(_args)
+	Application::Application( ApplicationInterface* _interface )
+		: m_interface( _interface )
+		, m_quit( false )
+		, m_commandLine("")
 		, m_fixedContentResolution( false )
 		, m_title("Menge-engine")
 		, m_resourcePath("")
@@ -64,39 +64,23 @@ namespace Menge
 		, m_particles( true )
 		, m_sound( true )
 		, m_usePhysic( false )
+		, m_logSystemName( "OgreLogSystem" )
+		, m_renderSystemName( "OgreRenderSystem" )
+		, m_inputSystemName( "OgreInputSystem" )
+		, m_soundSystemName( "ALSoundSystem" )
+		, m_particleSystemName( "None" )
+		, m_physicSystemName( "None" )
 	{
+		//ASSERT( m_interface );
+
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
-		int idx = _args.find( "-sound" );
-		if( idx >= 0 )
-		{
-			m_sound = false;
-		}
-		idx = _args.find( "-particles" );
-		if( idx >= 0 )
-		{
-			m_particles = false;
-		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
 	{
-		delete m_handler;
 
-		Holder<Game>::destroy();
-		Holder<ResourceManager>::destroy();
-
-		if ( m_usePhysic == true )
-		{
-			Holder<PhysicEngine>::destroy();
-		}
-
-		Holder<ParticleEngine>::destroy();
-		Holder<RenderEngine>::destroy();
-		Holder<FileEngine>::destroy();
-		Holder<InputEngine>::destroy();
-		Holder<SoundEngine>::destroy();
-		Holder<ScriptEngine>::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setLogSystem( LogSystemInterface * _interface )
@@ -210,21 +194,66 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE("Title", "Name", m_title );					
+			/*XML_CASE_ATTRIBUTE_NODE("Title", "Name", m_title );					
+			XML_CASE_ATTRIBUTE_NODE("RenderDriver", "Name", m_renderDriver );
+			XML_CASE_ATTRIBUTE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
+			XML_CASE_ATTRIBUTE_NODE("VSync", "Value", m_vsync );
+			XML_CASE_ATTRIBUTE_NODE("UsePhysic", "Value", m_usePhysic );*/
+			XML_CASE_ATTRIBUTE_NODE("LogSystem", "Name", m_logSystemName );
+			XML_CASE_ATTRIBUTE_NODE("InputSystem", "Name", m_inputSystemName );
+			XML_CASE_ATTRIBUTE_NODE("RenderSystem", "Name", m_renderSystemName );
+			XML_CASE_ATTRIBUTE_NODE("SoundSystem", "Name", m_soundSystemName );
+			XML_CASE_ATTRIBUTE_NODE("ParticleSystem", "Name", m_particleSystemName );
+			XML_CASE_ATTRIBUTE_NODE("PhysicSystem", "Name", m_physicSystemName );
+			XML_CASE_ATTRIBUTE_NODE("RenderDriver", "Name", m_renderDriver );
 			XML_CASE_ATTRIBUTE_NODE("Width", "Value", m_width );					
 			XML_CASE_ATTRIBUTE_NODE("Height", "Value", m_height );
 			XML_CASE_ATTRIBUTE_NODE("Bits", "Value", m_bits );
 			XML_CASE_ATTRIBUTE_NODE("Fullscreen", "Value", m_fullScreen );
-			XML_CASE_ATTRIBUTE_NODE("RenderDriver", "Name", m_renderDriver );
-			XML_CASE_ATTRIBUTE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
 			XML_CASE_ATTRIBUTE_NODE("VSync", "Value", m_vsync );
-			XML_CASE_ATTRIBUTE_NODE("UsePhysic", "Value", m_usePhysic );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initialize( const std::string & _applicationFile )
+	bool Application::initialize( const std::string & _applicationFile, const std::string& _args )
 	{
+
+		if( !m_interface->init( _applicationFile.c_str(), _args.c_str(), this ) )
+		{
+			return false;
+		}
+
+		int idx = _args.find( "-sound" );
+		if( idx >= 0 )
+		{
+			m_sound = false;
+		}
+		idx = _args.find( "-particles" );
+		if( idx >= 0 )
+		{
+			m_particles = false;
+		}
+		
+		setFileSystem( m_interface->getFileSystemInterface() );
+
 		Holder<XmlEngine>::keep( new XmlEngine );
+
+		if( Holder<XmlEngine>::hostage()
+			->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
+		{
+			MENGE_LOG("parse application xml failed '%s'\n"
+				, _applicationFile.c_str()
+				);
+		}
+
+		if( !_initSystems() )
+		{
+			return false;
+		}
+
+		WINDOW_HANDLE winHandle = m_interface->createWindow( "window name", m_width, m_height, m_fullScreen );
+		Holder<RenderEngine>::hostage()->initialize( m_renderDriver, m_width, m_height, m_bits, m_fullScreen, winHandle );
+		Holder<InputEngine>::hostage()->initialize( winHandle );
+
 		Holder<ScriptEngine>::keep( new ScriptEngine );
 
 		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
@@ -238,13 +267,8 @@ namespace Menge
 
 		Holder<ResourceManager>::keep( new ResourceManager );
 
-		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
-		{
-			MENGE_LOG("parse application xml failed '%s'\n"
-				, _applicationFile.c_str()
-				);
-		}
+		Holder<FileEngine>::hostage()->changeDir( m_resourcePath );
+		createGame();
 
 		return true;
 	}
@@ -273,6 +297,7 @@ namespace Menge
 
 		Holder<Game>::hostage()->render();
 		Holder<Game>::hostage()->debugRender();
+		Holder<RenderEngine>::hostage()->render();
 
 		return !m_quit;
 	}
@@ -282,30 +307,34 @@ namespace Menge
 		return Holder<Game>::hostage()->handleKeyEvent( _key, _char, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::handleMouseButtonEvent( size_t _button, bool _isDown )
+	bool Application::onMouseButtonEvent( int _button, bool _isDown )
 	{
 		return Holder<Game>::hostage()->handleMouseButtonEvent( _button, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::handleMouseMove( int _x, int _y, int _whell )
+	bool Application::onMouseMove( int _x, int _y, int _whell )
 	{
-		Holder<InputEngine>::hostage()->setMousePos( _x, _y );
-		return Holder<Game>::hostage()->handleMouseMove( _x, _y, _whell );
+		InputEngine* inpEng = Holder<InputEngine>::hostage();
+		int oldx = inpEng->getMouseX();
+		int oldy = inpEng->getMouseY();
+		inpEng->setMousePos( _x, _y );
+		return Holder<Game>::hostage()->handleMouseMove( _x - oldx, _y - oldy, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::handleMouseLeave()
+	void Application::onMouseLeave()
 	{
 		Holder<Game>::hostage()->handleMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::handleMouseEnter()
+	void Application::onMouseEnter()
 	{
 		Holder<Game>::hostage()->handleMouseEnter();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
 	{
-		m_quit = true; 
+		//m_quit = true; 
+		m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::frameStarted()
@@ -393,6 +422,98 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::minimizeWindow()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::_initSystems()
+	{
+		SystemDLLInterface* dll = NULL;
+
+		// LogSystem
+		dll = m_interface->loadSystemDLL( m_logSystemName.c_str() );
+		setLogSystem( dll->getInterface<LogSystemInterface>() );
+		m_systemDLLs.push_back( dll );
+
+		// RenderSystem
+		dll = m_interface->loadSystemDLL( m_renderSystemName.c_str() );
+		setRenderSystem( dll->getInterface<RenderSystemInterface>() );
+		m_systemDLLs.push_back( dll );
+
+		// InputSystem
+		dll = m_interface->loadSystemDLL( m_inputSystemName.c_str() );
+		setInputSystem( dll->getInterface<InputSystemInterface>() );
+		m_systemDLLs.push_back( dll );
+
+		// SoundSystem
+		dll = m_interface->loadSystemDLL( m_soundSystemName.c_str() );
+		setSoundSystem( dll->getInterface<SoundSystemInterface>() );
+		m_systemDLLs.push_back( dll );
+
+		// ParticleSystem
+		if( m_particleSystemName != "None" )
+		{
+			dll = m_interface->loadSystemDLL( m_particleSystemName.c_str() );
+			setParticleSystem( dll->getInterface<ParticleSystemInterface>() );
+			m_systemDLLs.push_back( dll );
+		}
+		
+		// PhysicSystem
+		if( m_physicSystemName != "None" )
+		{
+			dll = m_interface->loadSystemDLL( m_physicSystemName.c_str() );
+			setPhysicSystem( dll->getInterface<PhysicSystemInterface>() );
+			m_systemDLLs.push_back( dll );
+		}
+		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::run()
+	{
+		m_interface->run();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::onUpdate( float _timing )
+	{
+		//printf( "%.4f\n", _timing );
+		update( _timing );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::onClose()
+	{
+		m_interface->stop();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::onDestroy()
+	{
+		delete m_handler;
+
+		Holder<Game>::destroy();
+		Holder<ResourceManager>::destroy();
+
+		if ( m_usePhysic == true )
+		{
+			Holder<PhysicEngine>::destroy();
+		}
+
+		Holder<ParticleEngine>::destroy();
+		Holder<RenderEngine>::destroy();
+		Holder<FileEngine>::destroy();
+		Holder<InputEngine>::destroy();
+		Holder<SoundEngine>::destroy();
+		Holder<ScriptEngine>::destroy();
+
+		for( TSystemDLLVector::iterator it = m_systemDLLs.begin()
+			,it_end = m_systemDLLs.end();
+			it != it_end;
+		it++ )
+		{
+			m_interface->unloadSystemDLL( (*it) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::onWindowMovedOrResized()
 	{
 
 	}

@@ -14,6 +14,8 @@ namespace Menge
 		InputEngine( InputSystemInterface * _interface );
 		~InputEngine();
 
+		bool initialize( WINDOW_HANDLE _winHandle );
+
 	public:
 		void update();
 

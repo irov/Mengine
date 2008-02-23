@@ -3,6 +3,7 @@
 #	include "MengeExport.h"
 
 #	include <string>
+#	include <vector>
 
 class LogSystemInterface;
 class FileSystemInterface;
@@ -13,6 +14,8 @@ class ParticleSystemInterface;
 class PhysicSystemInterface;
 
 class XmlElement;
+
+#include "Interface\ApplicationInterface.h"
 
 namespace Menge
 {
@@ -25,29 +28,31 @@ namespace Menge
 	*/
 
 	class MENGE_API Application
+		: public ApplicationListenerInterface
 	{
 	public:
-		Application( const std::string& _args );
+		Application( ApplicationInterface* _interface );
 		~Application();
 
 	public:
-		virtual bool initialize( const std::string & _applicationFile );
-		virtual void finalize();
-		virtual bool update( float _timing );
+		bool initialize( const std::string & _applicationFile, const std::string& _args );
+		void finalize();
+		bool update( float _timing );
 
-		virtual void setLogSystem( LogSystemInterface * _interface );
-		virtual void setFileSystem( FileSystemInterface * _interface );
-		virtual void setInputSystem( InputSystemInterface * _interface );
-		virtual void setRenderSystem( RenderSystemInterface * _interface );
-		virtual void setSoundSystem( SoundSystemInterface * _interface );
-		virtual void setParticleSystem( ParticleSystemInterface * _interface );
-		virtual void setPhysicSystem( PhysicSystemInterface * _interface );
+		void setLogSystem( LogSystemInterface * _interface );
+		void setFileSystem( FileSystemInterface * _interface );
+		void setInputSystem( InputSystemInterface * _interface );
+		void setRenderSystem( RenderSystemInterface * _interface );
+		void setSoundSystem( SoundSystemInterface * _interface );
+		void setParticleSystem( ParticleSystemInterface * _interface );
+		void setPhysicSystem( PhysicSystemInterface * _interface );
 
-		virtual void loadPak( const std::string & _pak );
+		void loadPak( const std::string & _pak );
 
-		virtual bool createGame();
+		bool createGame();
 
-		virtual void quit();
+		void run();
+		void quit();
 
 	public:
 		void loader( XmlElement * _xml );
@@ -66,11 +71,16 @@ namespace Menge
 		bool usePhysic() const;
 
 	public:
+		void onUpdate( float _timing ) override;
+		void onFocus( bool _focus ) override;
+		void onClose() override;
+		void onDestroy() override;
+		void onWindowMovedOrResized() override;
+		void onMouseLeave() override;
+		void onMouseEnter() override;
+		bool onMouseButtonEvent( int _button, bool _isDown ) override;
+		bool onMouseMove( int _x, int _y, int _whell ) override;
 		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown );
-		bool handleMouseButtonEvent( size_t _button, bool _isDown );
-		bool handleMouseMove( int _x, int _y, int _whell );
-		void handleMouseLeave();
-		void handleMouseEnter();
 
 		void frameStarted();
 		void frameEnded();
@@ -81,10 +91,11 @@ namespace Menge
 		void setSoundEnabled( bool _enabled );
 		bool getSoundEnabled()	const;
 
-		void onFocus( bool _focus );
 		void minimizeWindow();
 
 	private:
+		ApplicationInterface* m_interface;
+
 		bool m_quit;
 		std::string m_gameInfo;
 		InputHandler * m_handler;
@@ -104,6 +115,16 @@ namespace Menge
 		bool m_sound;
 		bool m_usePhysic;
 
-		std::string m_platform;
+		std::string m_logSystemName;
+		std::string m_renderSystemName;
+		std::string m_inputSystemName;
+		std::string m_soundSystemName;
+		std::string m_particleSystemName;
+		std::string m_physicSystemName;
+
+		typedef std::vector<SystemDLLInterface*> TSystemDLLVector;
+		TSystemDLLVector m_systemDLLs;
+
+		bool _initSystems();
 	};
 }

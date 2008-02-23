@@ -33,6 +33,7 @@ namespace Menge
 		FileBuffer getFileBuffer( const std::string& _filename );
 
 		void closeFile( FileDataInterface * _fd );
+		bool changeDir( const std::string& _dir );
 
 	protected:
 		FileSystemInterface * m_interface;

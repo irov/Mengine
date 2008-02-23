@@ -23,6 +23,9 @@ namespace Menge
 		RenderEngine( RenderSystemInterface * _interface );
 		
 	public:
+
+		bool initialize( const std::string& _driver, int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle = 0 );
+
 		void render( RenderImageInterface* _renderTargetImage, const int* rect = NULL );
 		void render();
 

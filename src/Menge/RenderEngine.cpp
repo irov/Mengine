@@ -17,6 +17,11 @@ namespace Menge
 		Holder<RenderEngine>::keep( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::initialize( const std::string& _driver, int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle )
+	{
+		return m_interface->initialize( _driver.c_str(), _width, _height, _bits, _fullscreen, _winHandle );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render( RenderImageInterface* _image, const int* rect )
 	{
 		m_interface->render( _image, rect );

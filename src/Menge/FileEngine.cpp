@@ -79,4 +79,9 @@ namespace Menge
 	{
 		return m_interface->deleteFolder( _path.c_str() );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileEngine::changeDir( const std::string& _dir )
+	{
+		return m_interface->changeDir( _dir.c_str() );
+	}
 }

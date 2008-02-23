@@ -44,8 +44,8 @@ namespace Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ResourceMesh", "Name", m_resourcenameMesh );
 			XML_CASE_ATTRIBUTE_NODE( "ResourceSkeleton", "Name", m_resourcenameSkeleton );
-			XML_CASE_ATTRIBUTE_NODE( "CastShadows", "Name", m_castShadows );
-			XML_CASE_ATTRIBUTE_NODE( "ReceiveShadows", "Name", m_receiveShadows );
+			XML_CASE_ATTRIBUTE_NODE( "CastShadows", "Value", m_castShadows );
+			XML_CASE_ATTRIBUTE_NODE( "ReceiveShadows", "Value", m_receiveShadows );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

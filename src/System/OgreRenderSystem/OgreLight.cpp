@@ -10,17 +10,17 @@ Ogre::Light * OgreLight::getOgreLight()
 	return m_light;
 }
 //////////////////////////////////////////////////////////////////////////
-Ogre::Light::LightTypes menge2Ogre( const LightInterface::LightType _type )
+Ogre::Light::LightTypes menge2Ogre( const LightType _type )
 {
 	switch (_type)
 	{
-	case LightInterface::LT_POINT: 
+	case LT_POINT: 
 		return Ogre::Light::LT_POINT;
 
-	case LightInterface::LT_SPOT: 
+	case LT_SPOT: 
 		return Ogre::Light::LT_SPOTLIGHT;
 
-	case LightInterface::LT_DIRECTIONAL: 
+	case LT_DIRECTIONAL: 
 		return Ogre::Light::LT_DIRECTIONAL;
 
 	default:
@@ -28,21 +28,21 @@ Ogre::Light::LightTypes menge2Ogre( const LightInterface::LightType _type )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-LightInterface::LightType ogre2Menge( const Ogre::Light::LightTypes _type )
+LightType ogre2Menge( const Ogre::Light::LightTypes _type )
 {
 	switch ( _type )
 	{
 	case Ogre::Light::LT_POINT: 
-		return LightInterface::LT_POINT;
+		return LT_POINT;
 
 	case Ogre::Light::LT_SPOTLIGHT: 
-		return LightInterface::LT_SPOT;
+		return LT_SPOT;
 
 	case Ogre::Light::LT_DIRECTIONAL: 
-		return LightInterface::LT_DIRECTIONAL;
+		return LT_DIRECTIONAL;
 	
 	default:
-		return LightInterface::LT_POINT;
+		return LT_POINT;
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ void OgreLight::setType( const LightType _type )
 	m_light->setType( menge2Ogre( _type ) );
 }
 //////////////////////////////////////////////////////////////////////////
-LightInterface::LightType OgreLight::getType() const
+LightType OgreLight::getType() const
 {
 	return ogre2Menge( m_light->getType() );
 }
@@ -83,7 +83,7 @@ float OgreLight::getAttenuationQuadraticFactor() const
 //////////////////////////////////////////////////////////////////////////
 void OgreLight::setSpotlightRange( float innerAngle, float outerAngle, float falloff )
 {
-	m_light->setSpotlightRange( Ogre::Radian(innerAngle), Ogre::Radian(outerAngle), falloff );
+	m_light->setSpotlightRange( Ogre::Radian(Ogre::Degree(innerAngle)), Ogre::Radian(Ogre::Degree(outerAngle)), falloff );
 }
 //////////////////////////////////////////////////////////////////////////
 float OgreLight::getSpotlightInnerAngle() const
@@ -111,12 +111,12 @@ void OgreLight::setSpecularColour( float _r, float _g, float _b )
 	m_light->setSpecularColour( _r, _g, _b );
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreLight::isEnabled() const
+bool OgreLight::isVisible() const
 {
 	return m_light->isVisible();
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreLight::setEnabled( bool _enabled )
+void OgreLight::setVisible( bool _enabled )
 {
 	m_light->setVisible( _enabled );
 }

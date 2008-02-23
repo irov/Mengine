@@ -27,8 +27,8 @@ public:
 	void setDiffuseColour( float _r, float _g, float _b ) override;
 	void setSpecularColour( float _r, float _g, float _b ) override;
 
-	bool isEnabled() const override;
-	void setEnabled( bool _enabled ) override;
+	bool isVisible() const override;
+	void setVisible( bool _enabled ) override;
 	void setCastsShadows( bool _enabled ) override;
 
 	void setDirection( float _x, float _y, float _z ) override;

@@ -218,6 +218,8 @@ bool OgreRenderSystem::initialize( const char* _driver, int _width, int _height,
 	CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().loadWindowLayout( (CEGUI::utf8*)"ogregui.layout"); 
 	m_GUISystem->setGUISheet(sheet);*/
 
+	m_sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+
 	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
 
 	m_renderWindow->setActive( true );

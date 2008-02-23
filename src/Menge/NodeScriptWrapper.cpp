@@ -45,6 +45,7 @@
 #	include "RenderEngine.h"
 
 #	include "Camera3D.h"
+#	include "Layer3D.h"
 
 #	include "XmlEngine.h"
 
@@ -315,6 +316,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( SceneNode3D );
 	SCRIPT_CLASS_WRAPPING( Camera3D );
 	SCRIPT_CLASS_WRAPPING( RigidBody3D );
+	SCRIPT_CLASS_WRAPPING( Layer3D );
 
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -445,6 +447,16 @@ namespace Menge
 			;
 
 		{
+			pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Scene", false)
+				.def( "addCamera", &Layer3D::addCamera )
+				.def( "getCamera", &Layer3D::getCamera )
+				.def( "addRigidBody", &Layer3D::addRigidBody )
+				.def( "getRigidBody", &Layer3D::getRigidBody )
+				.def( "addController", &Layer3D::addController )
+				.def( "getController", &Layer3D::getController )		
+				.def( "getNode", &Layer3D::getNode )
+				;
+
 			pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)
 				.def( "applyForce", &RigidBody3D::applyForce )
 				.def( "applyImpulse", &RigidBody3D::applyImpulse )
@@ -530,13 +542,11 @@ namespace Menge
 				.def( "testHotSpot", &Point::testHotSpot )
 				;
 
+
 			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
-				.def( "getCamera", &Scene::getCamera )
-				.def( "getRigidBody", &Scene::getRigidBody )
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "getNode", &Scene::getNode )
 				.def( "getLayerSize", &Scene::getLayerSize )
-				.def( "actorAppend", &Scene::actorAppend )
 				.def( "setOffsetPosition", &Scene::setOffsetPosition )
 				;
 

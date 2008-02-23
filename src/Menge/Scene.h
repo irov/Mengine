@@ -17,14 +17,6 @@ namespace Menge
 {
 	class Camera2D;
 
-	class Actor;
-	class Light;
-	class Entity3d;
-	class Camera3D;
-	class SceneNode3D;
-	class RigidBody3D;
-	class CapsuleController;
-
 	class Scene
 		: public NodeCore
 		, public NodeRenderable
@@ -53,9 +45,6 @@ namespace Menge
 	public:
 		void loader( XmlElement *_xml) override;
 		void loaderScene_( XmlElement * _xml );
-		void loaderCameras_( XmlElement * _xml );
-		void loaderRigidBodies_( XmlElement * _xml );
-		void loaderControllers_( XmlElement * _xml );
 
 	public:
 		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) override;
@@ -72,18 +61,6 @@ namespace Menge
 		void _addChildren( Layer * _layer ) override;
 
 	public:
-
-		void addCamera( Camera3D * _camera );
-		Camera3D * getCamera( const std::string & _name );
-
-		void addRigidBody( RigidBody3D * _rigidBody );
-		RigidBody3D * getRigidBody( const std::string & _name );
-
-		void addCapsuleController( CapsuleController * _capsule );
-		CapsuleController * getController( const std::string & _name );
-
-		void actorAppend( SceneNode3D * _node );
-	public:
 		void setOffsetPosition( const mt::vec2f& _offset );
 
 	private:
@@ -93,7 +70,7 @@ namespace Menge
 
 		mt::vec2f m_offsetPosition;
 
-		mt::vec3f m_g;
+	/*	mt::vec3f m_g;
 		float m_restitution;
 		float m_staticFriction; 
 		float m_dynamicFriction;
@@ -112,5 +89,6 @@ namespace Menge
 
 		void activateCameras_();
 		void setPhysicParams_();
+		*/
 	};
 }

@@ -73,6 +73,9 @@ class Scene( Menge.Scene ):
 		
 		self.layerAppend( "Deep", block )
 
+
+		#and the 3d is starting...
+		self.layer3d = self.getNode("Level3D");
 		
 		#self.barrelActor = Menge.createActor("Barrel1", "Barrel")
 		#self.barrelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
@@ -88,9 +91,9 @@ class Scene( Menge.Scene ):
 		#self.zombieActor.setScale(0.010);
 		#self.zombieActor.yaw(180);
 
-		self.levelPhysicBody = self.getRigidBody("LevelPhysicBody");
+		self.levelPhysicBody = self.layer3d.getRigidBody("LevelPhysicBody");
 
-		self.barrelPhysicBody = self.getRigidBody("BarrelPhysicBody");
+		self.barrelPhysicBody = self.layer3d.getRigidBody("BarrelPhysicBody");
 		self.barrelPhysicBody.setPosition( Menge.vec3f( 10,20,5 ) );
 
 		#self.levelActor.addChild(self.barrelActor);
@@ -112,14 +115,18 @@ class Scene( Menge.Scene ):
 
 		self.camera.yaw(-90);'''
 
+		self.light = self.layer3d.getNode("Light1")
+
 		pass
 
 	def onUpdate( self, timing ):
 
+		self.light.translate( Menge.vec3f( 0,0.1,0) )
+
 		#self.barrelActor.setLocalPosition( self.barrelPhysicBody.getPosition() )
 		#self.barrelActor.setLocalOrient( self.barrelPhysicBody.getOrientation() )
 
-		self.camera = self.getCamera("MainCamera");
+		self.camera = self.layer3d.getCamera("MainCamera");
 		#self.pos = self.levelPhysicBody.getPosition();
 
 		self.pos = Menge.vec3f(0,10,0);

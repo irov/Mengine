@@ -5,16 +5,7 @@
 #	include "MousePickerSystem.h"
 
 #	include "ScriptEngine.h"
-#	include "PhysicEngine.h"
-#	include "Application.h"
-
 #	include "XmlEngine.h"
-
-#	include "Camera3d.h"
-#	include "RigidBody3d.h"
-#	include "Light.h"
-#	include "Actor.h"
-#	include "CapsuleController.h"
 
 namespace	Menge
 {
@@ -23,10 +14,6 @@ namespace	Menge
 	: m_mainLayer(0)
 	, m_isSubScene(false)
 	, m_offsetPosition(0.f,0.f)
-	, m_g(0.0f, -9.8f, 0.0f)
-	, m_restitution(0)
-	, m_staticFriction(0)
-	, m_dynamicFriction(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -71,11 +58,6 @@ namespace	Menge
 		}
 
 		return mt::vec2f::zero_v2;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::actorAppend( SceneNode3D * _node )
-	{
-		m_listActors.push_back( _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerAppend( const std::string & _layer, Node * _node )
@@ -216,94 +198,22 @@ namespace	Menge
 		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent" );
 		registerEvent( "MOUSE_MOVE", "onHandleMouseMove" );
 
-		activateCameras_();
-		setPhysicParams_();
-
 		callMethod( "onActivate", "() " );
 
 		return NodeCore::_activate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::activateCameras_()
-	{
-		for( TMapCamera::iterator
-			it = m_mapCameras.begin(),
-			it_end = m_mapCameras.end();
-		it != it_end;
-		++it)
-		{
-			it->second->activate();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()
 	{
-		for( TMapCamera::iterator
-			it = m_mapCameras.begin(),
-			it_end = m_mapCameras.end();
-		it != it_end;
-		++it)
-		{
-			it->second->deactivate();
-		}
-
-		for( TMapRigidBody::iterator
-			it = m_mapRigidBodies.begin(),
-			it_end = m_mapRigidBodies.end();
-		it != it_end;
-		++it)
-		{
-			it->second->deactivate();
-		}
-
 		callMethod( "onDeactivate", "() ");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_release()
 	{
-		for( TMapCamera::iterator
-			it = m_mapCameras.begin(),
-			it_end = m_mapCameras.end();
-		it != it_end;
-		++it)
-		{
-			it->second->release();
-			delete it->second;
-		}
-
-		for( TMapRigidBody::iterator
-			it = m_mapRigidBodies.begin(),
-			it_end = m_mapRigidBodies.end();
-		it != it_end;
-		++it)
-		{
-			it->second->release();
-			delete it->second;
-		}
-
-		for( TListActors::reverse_iterator
-			it = m_listActors.rbegin(),
-			it_end = m_listActors.rend();
-		it != it_end;
-		++it)
-		{
-			delete (*it);
-		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
 	{
-
-		for( TListActors::iterator
-			it = m_listActors.begin(),
-			it_end = m_listActors.end();
-		it != it_end;
-		++it)
-		{
-			(*it)->update( _timing );
-		}
-
 		callEvent( "UPDATE", "(f)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -328,188 +238,11 @@ namespace	Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "OffsetPosition", "Value", m_offsetPosition );
-			XML_CASE_ATTRIBUTE_NODE( "Gravity", "Value", m_g );
-			XML_CASE_ATTRIBUTE_NODE( "Restitution", "Value", m_restitution );
-			XML_CASE_ATTRIBUTE_NODE( "StaticFriction", "Value", m_staticFriction );
-			XML_CASE_ATTRIBUTE_NODE( "DynamicFriction", "Value", m_dynamicFriction );
-		
-			XML_CASE_NODE("Cameras")
-			{
-				XML_PARSE_ELEMENT( this, &Scene::loaderCameras_ );
-			}
-			
-			XML_CASE_NODE("RigidBodies")
-			{
-				XML_PARSE_ELEMENT( this, &Scene::loaderRigidBodies_ );
-			}
-
-			XML_CASE_NODE("Controllers")
-			{
-				XML_PARSE_ELEMENT( this, &Scene::loaderControllers_ );
-			}
 		}
 		XML_END_NODE()
 		{
 			callMethod( "onLoader", "()" );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::loaderRigidBodies_( XmlElement * _xml )
-	{
-		std::string name;
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE("RigidBody")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-				}
-
-				RigidBody3D * body = new RigidBody3D();
-
-				body->setName( name );
-				body->setType( "RigidBody3D" );
-
-				addRigidBody( body );
-
-				XML_PARSE_ELEMENT( body, &RigidBody3D::loader );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::loaderCameras_( XmlElement * _xml )
-	{
-		std::string name;
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE("Camera")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-				}
-
-				Camera3D * camera = new Camera3D();
-
-				camera->setName( name );
-				camera->setType( "Camera3D" );
-
-				addCamera( camera );
-
-				XML_PARSE_ELEMENT( camera, &Camera3D::loader );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::loaderControllers_( XmlElement * _xml )
-	{
-		std::string name;
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE("Controller")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-				}
-
-				CapsuleController * capsule = new CapsuleController();
-
-				capsule->setName( name );
-				capsule->setType( "CapsuleController" );
-
-				addCapsuleController( capsule );
-
-				XML_PARSE_ELEMENT( capsule, &CapsuleController::loader );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::addRigidBody( RigidBody3D * _rigidBody )
-	{
-		const std::string & name = _rigidBody->getName();
-
-		TMapRigidBody::iterator it_find = m_mapRigidBodies.find( name );
-
-		if( it_find == m_mapRigidBodies.end() )
-		{
-			m_mapRigidBodies.insert( std::make_pair( name, _rigidBody ) );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::addCamera( Camera3D * _camera )
-	{
-		const std::string & name = _camera->getName();
-
-		TMapCamera::iterator it_find = m_mapCameras.find( name );
-
-		if( it_find == m_mapCameras.end() )
-		{
-			m_mapCameras.insert( std::make_pair( name, _camera ) );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::addCapsuleController( CapsuleController * _capsule )
-	{
-		const std::string & name = _capsule->getName();
-
-		TMapControllers::iterator it_find = m_mapControllers.find( name );
-
-		if( it_find == m_mapControllers.end() )
-		{
-			m_mapControllers.insert( std::make_pair( name, _capsule ) );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	CapsuleController * Scene::getController( const std::string & _name )
-	{
-		TMapControllers::const_iterator it_find = m_mapControllers.find( _name );
-
-		if( it_find == m_mapControllers.end() )
-		{
-			return NULL;
-		}
-
-		CapsuleController * cap = it_find->second;
-
-		cap->activate();
-
-		return cap;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RigidBody3D * Scene::getRigidBody( const std::string & _name )
-	{
-		TMapRigidBody::const_iterator it_find = m_mapRigidBodies.find( _name );
-
-		if( it_find == m_mapRigidBodies.end() )
-		{
-			return NULL;
-		}
-
-		RigidBody3D * body = it_find->second;
-
-		body->activate();
-
-		return body;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////
-	Camera3D * Scene::getCamera( const std::string & _name )
-	{
-		TMapCamera::const_iterator it_find = m_mapCameras.find( _name );
-
-		if( it_find == m_mapCameras.end() )
-		{
-			return NULL;
-		}
-
-		Camera3D * camera = it_find->second;
-
-		return camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Layer * _layer )
@@ -520,19 +253,6 @@ namespace	Menge
 		if( _layer->isMain() )
 		{
 			m_mainLayer = _layer;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::setPhysicParams_()
-	{
-		bool usePhysic = Holder<Application>::hostage()->usePhysic();
-
-		if( usePhysic == true )
-		{
-			Holder<PhysicEngine>::hostage()->setGravity( m_g );
-			Holder<PhysicEngine>::hostage()->setRestitution( m_restitution );
-			Holder<PhysicEngine>::hostage()->setStaticFriction( m_staticFriction );
-			Holder<PhysicEngine>::hostage()->setDynamicFriction( m_dynamicFriction );		
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

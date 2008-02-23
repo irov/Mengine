@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "OgreRenderSystemInterface.h"
+#	include "Interface/RenderSystemInterface.h"
 
 #	include "Ogre.h"
 #	include "TheoraVideoController.h"
@@ -17,7 +17,7 @@ namespace CEGUI
 
 
 class OgreRenderSystem
-	: public OgreRenderSystemInterface
+	: public RenderSystemInterface
 	, public Ogre::ManualResourceLoader
 {
 public:
@@ -25,7 +25,8 @@ public:
 	~OgreRenderSystem();
 
 public:
-	bool init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow ) override;
+	bool initialize( const char* _driver, int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle ) override;
+
 	void render( RenderImageInterface* _outImage, const int* rect = NULL ) override;
 	void render() override;
 

@@ -5,7 +5,7 @@
 #	include <assert.h>
 
 //////////////////////////////////////////////////////////////////////////
-SystemDLL::SystemDLL( const std::string &_filename )
+WinSystemDLL::WinSystemDLL(const std::string &_filename )
 : m_filename( _filename )
 {
 	m_hInstance = LoadLibraryA( _filename.c_str() );
@@ -32,7 +32,7 @@ SystemDLL::SystemDLL( const std::string &_filename )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-SystemDLL::~SystemDLL()
+WinSystemDLL::~WinSystemDLL()
 {
 	printf("free library - %s \n", m_filename.c_str() );
 	if( FreeLibrary( (HMODULE) m_hInstance ) == 0 )

@@ -14,67 +14,53 @@
 
 #	include "Interface/ApplicationInterface.h"
 
-#	include "Ogre.h"
+//#	include "Ogre.h"
 
-#	include <list>
-
-namespace Menge
-{
-	class Application;
-}
+//#	include <list>
+#	include <Windows.h>
+#	include <string>
 
 class SystemDLL;
 
 class WinApplication
 	: public ApplicationInterface
-	, public Ogre::FrameListener
+	//, public Ogre::FrameListener
 {
 public:
 	WinApplication();
 	~WinApplication();
 
 public:
-	bool init( const char * _xmlFile, const char * _args ) override;
+	bool init( const char* _name, const char * _args, ApplicationListenerInterface* _listener ) override;
 	void run() override;
-
+	void stop()	override;
+	WINDOW_HANDLE createWindow( const char* _name, unsigned int _width, unsigned int _height, bool _fullscreen ) override;
+	FileSystemInterface* getFileSystemInterface() override;
+	SystemDLLInterface* loadSystemDLL( const char* _dll ) override;
+	void unloadSystemDLL(SystemDLLInterface* _interface ) override;
 	//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
 
-protected:
-	void createWindow( unsigned int _width, unsigned int _height, bool _fullscreen );
+//protected:
 
-	bool frameStarted( const Ogre::FrameEvent & evt) override;
-	bool frameEnded( const Ogre::FrameEvent & evt) override;
+	//bool frameStarted( const Ogre::FrameEvent & evt) override;
+	//bool frameEnded( const Ogre::FrameEvent & evt) override;
 
 private:
-	Ogre::Root * m_root;
-	static Ogre::RenderWindow * m_renderWindow;
-	static Menge::Application * m_application;
-	std::string m_resourcePath;
+	static ApplicationListenerInterface* m_listener;
+	LARGE_INTEGER m_timerFrequency;
+	LARGE_INTEGER m_lastTime;
 	bool	m_running;
+	static bool	m_active;
 	float	m_frameTime;
 	static HWND	m_hWnd;
 	static bool	m_cursorInArea;
 	static WINDOWINFO m_wndInfo;
 	HANDLE m_mutex;	// for multiple instance tracking
 	bool m_focus;
+	std::string m_name;
 
 	static LRESULT CALLBACK _wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
-	typedef std::list<SystemDLL *> TListApplicationDLL;
-	TListApplicationDLL m_listApplicationDLL;
-
-	template<class T>
-	T * addSystem( const std::string & _file )
-	{
-		SystemInterfaceDLL<T> * InterfaceDLL = 
-			new SystemInterfaceDLL<T>( _file );
-
-		m_listApplicationDLL.push_back( InterfaceDLL  );
-
-		T * interface_ = InterfaceDLL ->getInterface();
-
-		return interface_;
-	}
-
-	void initParams();
+	SystemDLLInterface* m_fileSystemDLL;
+	FileSystemInterface* m_fileSystem;
 };

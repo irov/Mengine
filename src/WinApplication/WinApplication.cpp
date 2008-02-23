@@ -336,13 +336,13 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, unsigned int _wid
 	0, 
 	hInstance,
 	LoadIcon(0, IDI_APPLICATION), LoadCursor(NULL, IDC_ARROW),
-	(HBRUSH)GetStockObject(BLACK_BRUSH), 0, L"MengeWnd" 
+	(HBRUSH)GetStockObject(BLACK_BRUSH), 0, "MengeWnd" 
 	};
 	::RegisterClass(&wc);
 
 	// Create our main window
 	// Pass pointer to self
-	m_hWnd = ::CreateWindow(L"MengeWnd", L"Menge-engine", dwStyle,
+	m_hWnd = ::CreateWindow("MengeWnd", _name, dwStyle,
 		left, top, width, height, NULL, 0, hInstance, this);
 
 	TRACKMOUSEEVENT mouseEvent;

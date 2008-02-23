@@ -171,13 +171,24 @@ SceneNodeInterface * OgreRenderSystem::getRootSceneNode() const
 	return m_rootSceneNode;
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWindow )
+bool OgreRenderSystem::initialize( const char* _driver, int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle )
 {
-	m_root = _root;
-	m_renderWindow = _renderWindow;
+	//m_root = new Ogre::Root( "","", "Menge.log" );
+	m_root = Ogre::Root::getSingletonPtr();
+	m_root->loadPlugin( _driver );
+
+	m_renderSys = m_root->getAvailableRenderers()->at( 0 );
+	m_root->setRenderSystem( m_renderSys );
+	m_root->initialise( false );
+
+	Ogre::NameValuePairList params;
+	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( _bits ) ) );
+	//params.insert( std::make_pair("vsync", Ogre::StringConverter::toString( vsync ) ) );
+	params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)_winHandle)  ) ) );
+
+	m_renderWindow = m_root->createRenderWindow( _driver, _width, _height, _fullscreen, &params );
 
 	m_sceneMgr = m_root->createSceneManager( Ogre::ST_GENERIC, "defaultSceneManager" );
-	m_renderSys = m_root->getRenderSystem();
 
 	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
@@ -185,11 +196,10 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 	Ogre::Camera* sceneCam = m_sceneMgr->createCamera("defaultCamera");
 	m_viewport = m_renderWindow->addViewport( sceneCam );
 
-
 	m_rootSceneNode = new OgreSceneNode( m_sceneMgr->getRootSceneNode(), 0 );
-	
+
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\bin\\Game\\GUITest", "FileSystem", "Default", true );
-	//Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
+	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "Default", true );
 	//Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
 	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "default", true );
@@ -210,11 +220,7 @@ bool OgreRenderSystem::init( Ogre::Root * _root, Ogre::RenderWindow * _renderWin
 
 	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
 
-	/*
-	m_videoControl = static_cast<Ogre::TheoraVideoController*>
-		(Ogre::ExternalTextureSourceManager::getSingleton().
-		getExternalTextureSource("ogg_video"));
-*/
+	m_renderWindow->setActive( true );
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////

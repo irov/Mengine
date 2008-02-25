@@ -69,7 +69,6 @@ namespace Menge
 		void loaderScenes_( XmlElement * _xml );
 		void loaderArrows_( XmlElement * _xml );
 		void loaderEntities_( XmlElement * _xml );
-		void loaderActors_( XmlElement * _xml );
 		void loaderResources_( XmlElement * _xml );
 		void loaderDefault_( XmlElement * _xml );
 		void loaderPersonality_( XmlElement * _xml );
@@ -110,7 +109,6 @@ namespace Menge
 
 		typedef std::list<std::string> TListDeclaration;
 		TListDeclaration m_listEntitiesDeclaration;
-		TListDeclaration m_listActorsDeclaration;
 		TListDeclaration m_listArrowsDeclaration;
 		TListDeclaration m_listScenesDeclaration;
 		TListDeclaration m_listResourceDeclaration;

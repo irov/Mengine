@@ -1417,10 +1417,6 @@
 				RelativePath=".\ScheduleManager.h"
 				>
 			</File>
-			<File
-				RelativePath=".\TimerManager.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Object3D"

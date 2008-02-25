@@ -69,26 +69,5 @@ namespace Menge
 		Layer * m_mainLayer;
 
 		mt::vec2f m_offsetPosition;
-
-	/*	mt::vec3f m_g;
-		float m_restitution;
-		float m_staticFriction; 
-		float m_dynamicFriction;
-
-		typedef std::map<std::string,Camera3D* > TMapCamera;
-		typedef std::map<std::string,RigidBody3D* > TMapRigidBody;
-		typedef std::map<std::string,CapsuleController* > TMapControllers;
-
-		TMapCamera	m_mapCameras;
-		TMapRigidBody	m_mapRigidBodies;
-		TMapControllers m_mapControllers;
-
-		typedef std::list<SceneNode3D*> TListActors;
-
-		TListActors	m_listActors;
-
-		void activateCameras_();
-		void setPhysicParams_();
-		*/
 	};
 }

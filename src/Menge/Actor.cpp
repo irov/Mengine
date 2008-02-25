@@ -35,13 +35,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::loader( XmlElement * _xml )
 	{
+		SceneNode3D::loader(_xml);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::_update( float _timing )
 	{
 		SceneNode3D::_update( _timing );
 
-		if( m_body == NULL )
+	/*	if( m_body == NULL )
 		{
 			float step = 0.005f * _timing;
 
@@ -63,7 +64,7 @@ namespace	Menge
 			//m_charPos+this->getLocalPosition()*step;
 			//this->setLocalPosition( m_charPos*step+this->getLocalPosition() );
 		}
-
+*/
 		this->callEvent("UPDATE", "(f)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -74,22 +75,21 @@ namespace	Menge
 			return false;
 		}
 		
-		this->registerEvent("MOVE_END", "onMoveEnd" );
+	/*	this->registerEvent("MOVE_END", "onMoveEnd" );
 		this->registerEvent("MOVE_STOP", "onMoveStop" );
 		
 		this->registerEvent("ROTATE_END", "onRotateEnd" );
 		this->registerEvent("ROTATE_STOP", "onRotateStop" );
 
 		this->registerEvent("UPDATE", "onUpdate" );
-
+*/
 		this->callMethod("onActivate", "()" );
 
-		if( getName() == "Zombie1")
+	/*	if( getName() == "Zombie1")
 		{
 			m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( this->getWorldPosition(),0.1f,1.0f );
-			//releaseCapsuleController
 		}
-
+*/
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::_release()
-	{//rev2
+	{
 		SceneNode3D::_release();
 		
 		this->callMethod("onRelease", "()" );

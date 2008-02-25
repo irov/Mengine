@@ -25,8 +25,8 @@ namespace Menge
 
 	public:
 		//
-		//void setController();
-		//void setRigidBody();
+		void setController();
+		void setRigidBody();
 		//
 	public:
 		void loader( XmlElement * _xml ) override;

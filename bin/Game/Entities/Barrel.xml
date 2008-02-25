@@ -1,0 +1,12 @@
+<Actor>
+<Transformation>
+	<Scale Value = "1;1;1" />
+       	<Position Value = "0;0;0" />
+       	<Rotation Value ="0;0;0;1" />
+</Transformation>
+<Entities>
+	<Entity Name = "BarrelEntity">
+		<ResourceMesh Name = "TestBarrelMesh" />
+	</Entity>
+</Entities>
+</Actor>

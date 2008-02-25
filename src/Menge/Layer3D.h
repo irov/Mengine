@@ -31,7 +31,7 @@ namespace Menge
 		void addController( CapsuleController * _capsule );
 		CapsuleController * getController( const std::string & _name );
 
-		SceneNode3D * getNode(const std::string & _name );
+		SceneNode3D * getNode( const std::string & _name );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -54,7 +54,6 @@ namespace Menge
 
 		void _addChildren( SceneNode3D * _node ) override;
 
-	
 	private:
 
 		mt::vec3f m_g;

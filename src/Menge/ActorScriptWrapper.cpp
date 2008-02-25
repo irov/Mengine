@@ -56,20 +56,25 @@ namespace Menge
 			actor->setType( "Actor" );
 			actor->setScript( result );
 
-		/*	std::string xml_path = Holder<Game>::hostage()
+			std::string xml_path = Holder<Game>::hostage()
 				->getPathActors();
 			
+			actor->attachToRootNode();
+
 			xml_path += '/';
 			xml_path += _type;
 			xml_path += ".xml";
 
+		//	if( Holder<XmlEngine>::hostage()
+		//		->parseXmlFileM( xml_path, actor, &Actor::loader ) )
 			if( Holder<XmlEngine>::hostage()
-				->parseXmlFileM( xml_path, entity, &Entity::loader ) )
+				->parseXmlFileM( Holder<ScriptEngine>::hostage()->getEntityXML( _type ), actor, &Actor::loader ) )
+	
 			{
-				entity->registerEventMethod( "LOADER", "onLoader" );
-				entity->callEvent("LOADER", "()");
+				actor->registerEvent( "LOADER", "onLoader" );
+				actor->callEvent("LOADER", "()");
 			}
-*/
+
 		//	actor->setLocalPosition( _pos );
 		//	actor->setLocalOrient( _dir );
 
@@ -84,6 +89,7 @@ namespace Menge
 		pybind::proxy_<Actor, pybind::bases<SceneNode3D> >("Actor", false)
 			.def( "step", &Actor::step )
 			.def( "stop", &Actor::stop )
+			.def( "update", &Actor::update )
 			.def( "left", &Actor::left )
 			.def( "setParentActor", &Actor::setParentActor )
 			.def( "setParentRoot", &Actor::setParentRoot )

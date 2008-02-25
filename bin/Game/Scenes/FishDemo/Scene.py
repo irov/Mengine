@@ -74,48 +74,29 @@ class Scene( Menge.Scene ):
 		self.layerAppend( "Deep", block )
 
 
+
+
+
+
 		#and the 3d is starting...
 		self.layer3d = self.getNode("Level3D");
 		
-		#self.barrelActor = Menge.createActor("Barrel1", "Barrel")
-		#self.barrelActor.setParentRoot( Menge.vec3f( 0,0,0 ), Menge.quatf(1,0,0,0) );
-
-		#self.entityBarrel = self.getEntity( "Barrel" )
-		#self.barrelActor.attachEntity( self.entityBarrel );
-
-		#self.zombieActor = Menge.createActor("Zombie1", "Zombie");
-		#self.zombieActor.setParentRoot( Menge.vec3f( 10,10,40 ), Menge.quatf(1,0,0,0) );
-
-		#self.entityZombie = self.getEntity( "Zombie" )
-		#self.zombieActor.attachEntity( self.entityZombie );
-		#self.zombieActor.setScale(0.010);
-		#self.zombieActor.yaw(180);
 
 		self.levelPhysicBody = self.layer3d.getRigidBody("LevelPhysicBody");
 
 		self.barrelPhysicBody = self.layer3d.getRigidBody("BarrelPhysicBody");
 		self.barrelPhysicBody.setPosition( Menge.vec3f( 10,20,5 ) );
 
-		#self.levelActor.addChild(self.barrelActor);
-
-		'''self.barrelActor.activate();
-		self.zombieActor.activate();
-
-		self.actorAppend(self.barrelActor);
-		self.actorAppend(self.zombieActor);'''
-
-		'''self.camera = self.getCamera("MainCamera");
-		self.pos = self.zombieActor.getWorldPosition();
-
-		self.camPos = Menge.vec3f( Menge.getVec3fX(self.pos), Menge.getVec3fY(self.pos) + 40, Menge.getVec3fZ(self.pos) );
-
-		self.camera.setPosition( self.camPos );
-
-		self.camera.lookAt( Menge.vec3f( Menge.getVec3fX(self.pos)-15, Menge.getVec3fY(self.pos), Menge.getVec3fZ(self.pos) ) );
-
-		self.camera.yaw(-90);'''
 
 		self.light = self.layer3d.getNode("Light1")
+
+
+		self.barrelActor = Menge.createActor("Barrel1", "Barrel")
+		#self.barrelActor.setParentRoot( Menge.vec3f( 10,30,10 ), Menge.quatf(1,0,0,0) )
+		self.barrelActor.setPosition( Menge.vec3f( 0,25,0 ) );
+		self.barrelActor.setOrient( Menge.quatf(1,0,0,0) );
+		self.barrelActor.activate()
+
 
 		pass
 
@@ -140,6 +121,7 @@ class Scene( Menge.Scene ):
 		self.camera.yaw(-90);
 
 		Menge.setCamera2DPosition( self.camera_x, self.camera_y );
+
 		pass
 
 	def onHandleMouseButtonEvent( self, botton, isDown ):
@@ -161,7 +143,6 @@ class Scene( Menge.Scene ):
 
 		if key == 23:
 			self.zombieActor.step( Menge.vec3f( 0, 0, -1 ) );
-			#self.zombieActor.left();
 
 		if key == 37:
 			self.zombieActor.step( Menge.vec3f( 0, 0, 1 ) );

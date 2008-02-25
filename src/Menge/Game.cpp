@@ -144,16 +144,6 @@ namespace Menge
 				XML_PARSE_ELEMENT( this, &Game::loaderEntities_ );
 			}
 
-			XML_CASE_NODE("Actors")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", m_pathActors );
-				}
-
-				XML_PARSE_ELEMENT( this, &Game::loaderActors_ );
-			}
-
 			XML_CASE_NODE("Resource")
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -190,14 +180,6 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			m_listEntitiesDeclaration.push_back( XML_TITLE_NODE );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loaderActors_( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			m_listActorsDeclaration.push_back( XML_TITLE_NODE );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -381,16 +363,6 @@ namespace Menge
 		for( TListDeclaration::iterator
 			it = m_listEntitiesDeclaration.begin(),
 			it_end = m_listEntitiesDeclaration.end();
-		it != it_end;
-		++it)			
-		{
-			Holder<ScriptEngine>::hostage()
-				->registerEntityType( *it );
-		}
-
-		for( TListDeclaration::iterator
-			it = m_listActorsDeclaration.begin(),
-			it_end = m_listActorsDeclaration.end();
 		it != it_end;
 		++it)			
 		{

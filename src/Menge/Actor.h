@@ -24,6 +24,13 @@ namespace Menge
 		~Actor();
 
 	public:
+		//
+		//void setController();
+		//void setRigidBody();
+		//
+	public:
+		void loader( XmlElement * _xml ) override;
+	public:
 
 		void	attachEntity( DiscreteEntity * _entity );
 

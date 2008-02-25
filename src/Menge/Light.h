@@ -3,7 +3,6 @@
 #	include "math/quat.h"
 #	include <string>
 #	include "Color.h"
-//#	include "Interface/RenderSystemInterface.h"
 
 class LightInterface;
 

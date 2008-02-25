@@ -6,6 +6,8 @@
 
 #	include "LogEngine.h"
 
+#	include <map>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -17,9 +19,42 @@ namespace Menge
 		Holder<RenderEngine>::keep( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::initialize( const std::string& _driver, int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle )
+	bool RenderEngine::initialize( const std::string& _driver, int _width, int _height, int _bits, bool _fullscreen, float _aspect, WINDOW_HANDLE _winHandle )
 	{
-		return m_interface->initialize( _driver.c_str(), _width, _height, _bits, _fullscreen, _winHandle );
+		m_interface->initialize( _driver.c_str() );
+		int* rl;
+		int count = m_interface->getResolutionList( &rl );
+
+		int needWidth = _height * _aspect;
+
+		int bestWidth = _width;
+		int bestHeight = _height;
+		
+		typedef std::map< int, std::vector<int> > TResolutionMap;
+		TResolutionMap resMap;
+		for( int i = 0; i < count / 2; i++ )
+		{
+			resMap[ rl[2*i + 1] ].push_back( rl[2*i] );
+		}
+		bool done = false;
+		for( TResolutionMap::iterator it = resMap.begin(),
+			 it_end = resMap.end(); it != it_end; it++ )
+		{
+			if( it->first < _height ) continue;
+			for( int i = 0; i < it->second.size(); i++ )
+			{
+				if( it->second[i] >= needWidth )
+				{
+					bestWidth = it->second[i];
+					bestHeight = it->first;
+					done = true;
+					break;
+				}
+			}
+			if( done ) break;
+		}
+
+		return m_interface->createRenderWindow( bestWidth, bestHeight, _bits, _fullscreen, _winHandle );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render( RenderImageInterface* _image, const int* rect )
@@ -259,5 +294,10 @@ namespace Menge
 	void RenderEngine::releaseSceneNode( SceneNodeInterface * _interface )
 	{
 		return m_interface->releaseSceneNode( _interface );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::getBestDisplayResolution( int& _defWidth, int& _defHeigth, float _aspect )
+	{
+
 	}
 }

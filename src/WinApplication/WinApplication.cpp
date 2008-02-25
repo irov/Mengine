@@ -42,6 +42,7 @@ HWND WinApplication::m_hWnd = 0;
 bool WinApplication::m_cursorInArea = false;
 WINDOWINFO WinApplication::m_wndInfo;
 bool WinApplication::m_active = false;
+float WinApplication::m_primaryMonitorAspect = 1.3333f;
 
 WinApplication::WinApplication() 
 : m_running( true )
@@ -101,132 +102,10 @@ bool WinApplication::init( const char* _name, const char * _args, ApplicationLis
 
 	m_fileSystem->loadPath(".");
 
-	//bool initialize = m_application->initialize( _xmlFile );
-
-	//const std::string& title = m_application->getTitle();
-
-	/// patch for ansi names
-	char *ansistr = NULL;
-	int length = MultiByteToWideChar(CP_UTF8, 0, _name, strlen( _name ), NULL, NULL );
-	WCHAR *lpszW = NULL;
-
-	lpszW = new WCHAR[length+1];
-	ansistr = ( char * ) calloc ( sizeof(char), length+5 );
-
-	//this step intended only to use WideCharToMultiByte
-	MultiByteToWideChar(CP_UTF8, 0, _name, -1, lpszW, length );
-
-	//Conversion to ANSI (CP_ACP)
-	WideCharToMultiByte(CP_ACP, 0, lpszW, -1, ansistr, length, NULL, NULL);
-
-	ansistr[length] = 0;
-
-	delete[] lpszW;
-	////
-
-	m_mutex = ::CreateMutexA( NULL, FALSE, _name );
-	DWORD error = ::GetLastError();
-
-	if( error == ERROR_ALREADY_EXISTS )
-	{
-		std::string message = std::string("Another instance of ") + std::string( ansistr ) + std::string(" is already running");
-		::MessageBoxA( NULL, message.c_str(), _name, MB_ICONWARNING );
-		return false;
-	}
-
-	//initParams();
-
-	//m_renderWindow->getCustomAttribute("WINDOW", &windowHnd);
-	//windowHndStr << windowHnd;
-
-	//OIS::ParamList pl;
-
-	//pl.insert( std::make_pair(	"WINDOW", windowHndStr.str() ) );
-
-
-	//inputInterface->init( pl );
-	//renderInterface->init( m_root, m_renderWindow );
-
-	//fileInterface->loadPath( m_application->getResourcePath().c_str() );
-	// We cant't use loadPath 'cause of not all libs uses fileSystem interface
-	//fileInterface->changeDir( m_application->getResourcePath().c_str() );
-	//Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-	//m_application->createGame();
+	EnumDisplayMonitors( NULL, NULL, &WinApplication::_monitorEnumProc, 0 );
 
 	return true;
 }
-//////////////////////////////////////////////////////////////////////////
-//void WinApplication::initParams()
-//{
-	/*int bits = m_application->getScreenBits();
-	int screenWidth = m_application->getScreenWidth();
-	int screenHeight = m_application->getScreenHeight();
-	bool fullscreen = m_application->isFullScreen();
-	std::string renderDriver = m_application->getRenderDriver();
-	bool vsync = m_application->getVSync();
-
-#ifdef _DEBUG
-	renderDriver += "_d.dll";
-	//		m_root->loadPlugin( "Plugin_TheoraVideoSystem_d.dll" );
-#else
-	renderDriver += ".dll";
-	m_root->loadPlugin( "Plugin_TheoraVideoSystem.dll" );
-#endif
-
-	m_root->loadPlugin( m_resourcePath + renderDriver );
-
-	//m_root->loadPlugin( m_resourcePath + "Plugins/Plugin_BSPSceneManager_d.dll" );
-
-
-	Ogre::RenderSystem * renderSystem = m_root->getAvailableRenderers()->at( 0 );
-	m_root->setRenderSystem( renderSystem );
-
-	m_root->initialise( false );
-
-	m_root->addFrameListener( this );
-
-	createWindow( screenWidth, screenHeight, fullscreen );
-
-	Ogre::NameValuePairList params;
-	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( bits ) ) );
-	params.insert( std::make_pair("vsync", Ogre::StringConverter::toString( vsync ) ) );
-	params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)m_hWnd)  ) ) );
-
-	/// patch for ansi names
-	char *ansistr = NULL;
-	int length = MultiByteToWideChar(CP_UTF8, 0, m_application->getTitle().c_str(), m_application->getTitle().length(), NULL, NULL );
-	WCHAR *lpszW = NULL;
-
-	lpszW = new WCHAR[length+1];
-	ansistr = ( char * ) calloc ( sizeof(char), length+5 );
-
-	//this step intended only to use WideCharToMultiByte
-	MultiByteToWideChar(CP_UTF8, 0, m_application->getTitle().c_str(), -1, lpszW, length );
-
-	//Conversion to ANSI (CP_ACP)
-	WideCharToMultiByte(CP_ACP, 0, lpszW, -1, ansistr, length, NULL, NULL);
-
-	ansistr[length] = 0;
-
-	delete[] lpszW;
-	////
-
-	m_renderWindow = m_root->createRenderWindow( ansistr, screenWidth, screenHeight, fullscreen, &params );*/
-//}
-//////////////////////////////////////////////////////////////////////////
-/*bool WinApplication::frameStarted( const Ogre::FrameEvent &evt)
-{
-	//m_application->frameStarted();
-	return true;
-}*/
-//////////////////////////////////////////////////////////////////////////
-/*bool WinApplication::frameEnded( const Ogre::FrameEvent &evt)
-{
-	const Ogre::RenderTarget::FrameStats& stats = m_renderWindow->getStatistics();
-	m_frameTime = evt.timeSinceLastFrame;
-	//printf("fps = %f \n", stats.avgFPS);
-	return true;
-}*/
 //////////////////////////////////////////////////////////////////////////
 void WinApplication::run()
 {
@@ -325,6 +204,36 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, unsigned int _wid
 	top = (screenh - height) / 2;
 
 
+	/// patch for ansi names
+	char *ansistr = NULL;
+	int length = MultiByteToWideChar(CP_UTF8, 0, _name, strlen( _name ), NULL, NULL );
+	WCHAR *lpszW = NULL;
+
+	lpszW = new WCHAR[length+1];
+	ansistr = ( char * ) calloc ( sizeof(char), length+5 );
+
+	//this step intended only to use WideCharToMultiByte
+	MultiByteToWideChar(CP_UTF8, 0, _name, -1, lpszW, length );
+
+	//Conversion to ANSI (CP_ACP)
+	WideCharToMultiByte(CP_ACP, 0, lpszW, -1, ansistr, length, NULL, NULL);
+
+	ansistr[length] = 0;
+
+	delete[] lpszW;
+	////
+
+	m_name.assign( ansistr );
+
+	m_mutex = ::CreateMutexA( NULL, FALSE, _name );
+	DWORD error = ::GetLastError();
+
+	if( error == ERROR_ALREADY_EXISTS )
+	{
+		std::string message = std::string("Another instance of ") + std::string( ansistr ) + std::string(" is already running");
+		::MessageBoxA( NULL, message.c_str(), _name, MB_ICONWARNING );
+		return false;
+	}
 
 	HINSTANCE hInstance = ::GetModuleHandle( NULL );
 	// Register the window class
@@ -342,7 +251,7 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, unsigned int _wid
 
 	// Create our main window
 	// Pass pointer to self
-	m_hWnd = ::CreateWindow("MengeWnd", _name, dwStyle,
+	m_hWnd = ::CreateWindow("MengeWnd", ansistr, dwStyle,
 		left, top, width, height, NULL, 0, hInstance, this);
 
 	TRACKMOUSEEVENT mouseEvent;
@@ -466,4 +375,27 @@ LRESULT CALLBACK WinApplication::_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, 
 		break;
 	}
 	return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
+}
+	
+//////////////////////////////////////////////////////////////////////////
+BOOL CALLBACK WinApplication::_monitorEnumProc( HMONITOR _hMonitor, HDC _hdc, LPRECT, LPARAM )
+{
+	MONITORINFO info;
+	ZeroMemory( &info, sizeof( MONITORINFO ) );
+	info.cbSize = sizeof( MONITORINFO );
+	
+	::GetMonitorInfo( _hMonitor, &info );
+	if( info.dwFlags == MONITORINFOF_PRIMARY )
+	{
+		int width = info.rcMonitor.right - info.rcMonitor.left;
+		int height = info.rcMonitor.bottom - info.rcMonitor.top;
+		m_primaryMonitorAspect = static_cast<float>( width ) / static_cast<float> ( height );
+		return FALSE;
+	}
+	return TRUE;
+}
+
+float WinApplication::getMonitorAspectRatio()
+{
+	return m_primaryMonitorAspect;	
 }

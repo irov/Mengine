@@ -171,7 +171,7 @@ SceneNodeInterface * OgreRenderSystem::getRootSceneNode() const
 	return m_rootSceneNode;
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreRenderSystem::initialize( const char* _driver, int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle )
+bool OgreRenderSystem::initialize( const char* _driver )
 {
 	//m_root = new Ogre::Root( "","", "Menge.log" );
 	m_root = Ogre::Root::getSingletonPtr();
@@ -181,12 +181,17 @@ bool OgreRenderSystem::initialize( const char* _driver, int _width, int _height,
 	m_root->setRenderSystem( m_renderSys );
 	m_root->initialise( false );
 
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle )
+{
 	Ogre::NameValuePairList params;
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( _bits ) ) );
 	//params.insert( std::make_pair("vsync", Ogre::StringConverter::toString( vsync ) ) );
 	params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)_winHandle)  ) ) );
 
-	m_renderWindow = m_root->createRenderWindow( _driver, _width, _height, _fullscreen, &params );
+	m_renderWindow = m_root->createRenderWindow( "Menge", _width, _height, _fullscreen, &params );
 
 	m_sceneMgr = m_root->createSceneManager( Ogre::ST_GENERIC, "defaultSceneManager" );
 
@@ -197,13 +202,12 @@ bool OgreRenderSystem::initialize( const char* _driver, int _width, int _height,
 	m_viewport = m_renderWindow->addViewport( sceneCam );
 
 	m_rootSceneNode = new OgreSceneNode( m_sceneMgr->getRootSceneNode(), 0 );
-
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\bin\\Game\\GUITest", "FileSystem", "Default", true );
-	//Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
-	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "Default", true );
+	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\root\\Game\\ZombieTest", "FileSystem", "Default", true );
 	//Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "default", true );
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("default");
+	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "default", true );
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
 
 	// setup GUI system
 	/*m_GUIRenderer = new CEGUI::OgreCEGUIRenderer(m_renderWindow, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, m_sceneMgr);
@@ -218,12 +222,28 @@ bool OgreRenderSystem::initialize( const char* _driver, int _width, int _height,
 	CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().loadWindowLayout( (CEGUI::utf8*)"ogregui.layout"); 
 	m_GUISystem->setGUISheet(sheet);*/
 
-	m_sceneMgr->setShadowTechnique(Ogre::SHADOWDETAILTYPE_TEXTURE);
+	m_sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
 
 	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
 
 	m_renderWindow->setActive( true );
 	return true;
+}
+int OgreRenderSystem::getResolutionList( int** _list )
+{
+	Ogre::ConfigOptionMap& configMap = m_renderSys->getConfigOptions();
+	Ogre::StringVector res = configMap["Video Mode"].possibleValues;
+	for( int i = 0; i < res.size(); i++ )
+	{
+		int p1 = res[i].find('x');
+		int p2 = res[i].find('@');
+		int w = Ogre::StringConverter::parseInt( res[i].substr( 0, p1 - 1 ) );
+		int h = Ogre::StringConverter::parseInt( res[i].substr( p1 + 2, p2 - p1 - 2) );
+		m_displayResolutionList.push_back( w );
+		m_displayResolutionList.push_back( h );
+	}
+	*_list = &m_displayResolutionList[0]; 
+	return m_displayResolutionList.size();
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setContentResolution( const float * _resolution )

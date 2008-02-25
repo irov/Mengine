@@ -27,6 +27,7 @@ namespace Menge
 		: m_resourceResolution(0.f, 0.f)
 		, m_defaultArrow(0)
 		, m_pyPersonality(0)
+		, m_title("Game")
 	{
 		Holder<Player>::keep( new Player );
 		Holder<Amplifier>::keep( new Amplifier );
@@ -156,7 +157,8 @@ namespace Menge
 
 			XML_CASE_ATTRIBUTE_NODE( "Scripts", "Path", m_pathScripts );
 			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_resourceResolution );
-		}
+			XML_CASE_ATTRIBUTE_NODE( "Title", "Name", m_title );
+	}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loaderScenes_( XmlElement * _xml )
@@ -629,5 +631,10 @@ namespace Menge
 			Holder<ScriptEngine>::hostage()
 				->callModuleFunction( m_pyPersonality, "onHandleResourceUnLoaded" );
 		}	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const std::string& Game::getTitle() const
+	{
+		return m_title;
 	}
 }

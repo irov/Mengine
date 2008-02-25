@@ -38,6 +38,7 @@ public:
 	FileSystemInterface* getFileSystemInterface() override;
 	SystemDLLInterface* loadSystemDLL( const char* _dll ) override;
 	void unloadSystemDLL(SystemDLLInterface* _interface ) override;
+	float getMonitorAspectRatio() override;
 	//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
 
 //protected:
@@ -60,6 +61,9 @@ private:
 	std::string m_name;
 
 	static LRESULT CALLBACK _wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+
+	static BOOL CALLBACK _monitorEnumProc( HMONITOR _hMonitor, HDC _hdc, LPRECT, LPARAM );
+	static float m_primaryMonitorAspect;
 
 	SystemDLLInterface* m_fileSystemDLL;
 	FileSystemInterface* m_fileSystem;

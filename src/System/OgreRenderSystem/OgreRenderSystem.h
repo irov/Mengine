@@ -25,7 +25,9 @@ public:
 	~OgreRenderSystem();
 
 public:
-	bool initialize( const char* _driver, int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle ) override;
+	bool initialize( const char* _driver ) override;
+	bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle ) override;
+	int getResolutionList( int** _list ) override;
 
 	void render( RenderImageInterface* _outImage, const int* rect = NULL ) override;
 	void render() override;
@@ -106,4 +108,6 @@ private:
 
 	CEGUI::OgreCEGUIRenderer* m_GUIRenderer;
 	CEGUI::System*	m_GUISystem;
+
+	std::vector<int> m_displayResolutionList;
 };

@@ -144,16 +144,20 @@ namespace Menge
 			Holder<PhysicEngine>::hostage()->init(mt::vec3f(0,-1.0,0));
 		}
 
-		if( Holder<Game>::hostage()
-			->init() == false )
-		{
-			return false;
-		}
+		WINDOW_HANDLE winHandle = m_interface->createWindow( Holder<Game>::hostage()->getTitle().c_str(), m_width, m_height, m_fullScreen );
+		Holder<RenderEngine>::hostage()->initialize( m_renderDriver, m_width, m_height, m_bits, m_fullScreen, m_interface->getMonitorAspectRatio(), winHandle );
+		Holder<InputEngine>::hostage()->initialize( winHandle );
 
 		if( m_fixedContentResolution )
 		{
 			mt::vec2f res = Holder<Game>::hostage()->getResourceResolution();
 			Holder<RenderEngine>::hostage()->setViewportDimensions( res.x, res.y );
+		}
+
+		if( Holder<Game>::hostage()
+			->init() == false )
+		{
+			return false;
 		}
 
 		return true;
@@ -195,10 +199,8 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			/*XML_CASE_ATTRIBUTE_NODE("Title", "Name", m_title );					
-			XML_CASE_ATTRIBUTE_NODE("RenderDriver", "Name", m_renderDriver );
 			XML_CASE_ATTRIBUTE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
 			XML_CASE_ATTRIBUTE_NODE("VSync", "Value", m_vsync );*/
-			XML_CASE_ATTRIBUTE_NODE("UsePhysic", "Value", m_usePhysic );
 			XML_CASE_ATTRIBUTE_NODE("LogSystem", "Name", m_logSystemName );
 			XML_CASE_ATTRIBUTE_NODE("InputSystem", "Name", m_inputSystemName );
 			XML_CASE_ATTRIBUTE_NODE("RenderSystem", "Name", m_renderSystemName );
@@ -249,10 +251,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		WINDOW_HANDLE winHandle = m_interface->createWindow( "window name", m_width, m_height, m_fullScreen );
-		Holder<RenderEngine>::hostage()->initialize( m_renderDriver, m_width, m_height, m_bits, m_fullScreen, winHandle );
-		Holder<InputEngine>::hostage()->initialize( winHandle );
 
 		Holder<ScriptEngine>::keep( new ScriptEngine );
 
@@ -464,6 +462,7 @@ namespace Menge
 			dll = m_interface->loadSystemDLL( m_physicSystemName.c_str() );
 			setPhysicSystem( dll->getInterface<PhysicSystemInterface>() );
 			m_systemDLLs.push_back( dll );
+			m_usePhysic = true;
 		}
 		
 		return true;

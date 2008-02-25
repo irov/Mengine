@@ -48,6 +48,7 @@ public:
 	virtual FileSystemInterface* getFileSystemInterface() = 0;
 	virtual SystemDLLInterface* loadSystemDLL( const char* _dll ) = 0;
 	virtual void unloadSystemDLL( SystemDLLInterface* ) = 0;
+	virtual float getMonitorAspectRatio() = 0;
 };
 
 

@@ -155,7 +155,9 @@ class	RenderSystemInterface
 {
 public:
 
-	virtual bool initialize( const char* _driver, int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle ) = 0;
+	virtual bool initialize( const char* _driver ) = 0;
+	virtual bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle ) = 0;
+	virtual int getResolutionList( int** ) = 0;
 	// Render frame into _image
 	// int rect[4] - rectangle represents desired frame area in pixels
 	virtual void render( RenderImageInterface* _image, const int* rect = 0 ) = 0;

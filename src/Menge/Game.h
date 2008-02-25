@@ -85,9 +85,11 @@ namespace Menge
 		
 	public:
 		const mt::vec2f & getResourceResolution() const;
+		const std::string& getTitle() const;
 
 	protected:
 
+		std::string m_title;
 		mt::vec2f	m_resourceResolution;
 
 		std::string m_defaultArrowName;

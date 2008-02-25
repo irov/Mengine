@@ -8,6 +8,10 @@ public:
 	virtual const float * getOrientation() = 0;
 
 	virtual void setLinearVelocity( float x, float y ) = 0;
+	virtual const float* getLinearVelocity() = 0;
+	virtual void setAngularVelocity( float w ) = 0;
+	virtual float getAngularVelocity() = 0;
+	virtual void applyForce( float forceX, float forceY, float pointX, float pointY ) = 0;
 };
 
 class PhysicSystem2DInterface

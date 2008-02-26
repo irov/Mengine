@@ -394,8 +394,13 @@ BOOL CALLBACK WinApplication::_monitorEnumProc( HMONITOR _hMonitor, HDC _hdc, LP
 	}
 	return TRUE;
 }
-
+//////////////////////////////////////////////////////////////////////////
 float WinApplication::getMonitorAspectRatio()
 {
 	return m_primaryMonitorAspect;	
+}
+//////////////////////////////////////////////////////////////////////////
+void WinApplication::minimizeWindow()
+{
+	::ShowWindow( m_hWnd, SW_MINIMIZE );
 }

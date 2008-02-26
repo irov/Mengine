@@ -9,6 +9,7 @@
 #	include "ParticleEngine.h"
 #	include "ScriptEngine.h"
 #	include "PhysicEngine.h"
+#	include "PhysicEngine2D.h"
 
 #	include "MousePickerSystem.h"
 #	include "ResourceManager.h"
@@ -69,6 +70,8 @@ namespace Menge
 		, m_soundSystemName( "ALSoundSystem" )
 		, m_particleSystemName( "None" )
 		, m_physicSystemName( "None" )
+		, m_physicSystem2DName( "None" )
+		, m_physicEngine2D( NULL )
 	{
 		//ASSERT( m_interface );
 
@@ -112,6 +115,11 @@ namespace Menge
 		new ParticleEngine( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::setPhysicSystem2D( PhysicSystem2DInterface * _interface )
+	{
+		m_physicEngine2D = new PhysicEngine2D( _interface );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Application::setPhysicSystem( PhysicSystemInterface * _interface )
 	{
 		new PhysicEngine( _interface );
@@ -144,7 +152,11 @@ namespace Menge
 		}
 
 		Holder<RenderEngine>::hostage()->initialize( m_renderDriver );
-		mt::vec2f bestRes = Holder<RenderEngine>::hostage()->getBestDisplayResolution( m_width, m_height, m_interface->getMonitorAspectRatio() );
+		mt::vec2f bestRes( m_width, m_height );
+		if( m_fullScreen )
+		{
+			mt::vec2f bestRes = Holder<RenderEngine>::hostage()->getBestDisplayResolution( m_width, m_height, m_interface->getMonitorAspectRatio() );
+		}
 
 		WINDOW_HANDLE winHandle = m_interface->createWindow( Holder<Game>::hostage()->getTitle().c_str(), bestRes.x, bestRes.y, m_fullScreen );
 		Holder<RenderEngine>::hostage()->createRenderWindow( bestRes.x, bestRes.y, m_bits, m_fullScreen, winHandle );
@@ -209,6 +221,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE("SoundSystem", "Name", m_soundSystemName );
 			XML_CASE_ATTRIBUTE_NODE("ParticleSystem", "Name", m_particleSystemName );
 			XML_CASE_ATTRIBUTE_NODE("PhysicSystem", "Name", m_physicSystemName );
+			XML_CASE_ATTRIBUTE_NODE("PhysicSystem2D", "Name", m_physicSystem2DName );
 			XML_CASE_ATTRIBUTE_NODE("RenderDriver", "Name", m_renderDriver );
 			XML_CASE_ATTRIBUTE_NODE("Width", "Value", m_width );					
 			XML_CASE_ATTRIBUTE_NODE("Height", "Value", m_height );
@@ -288,6 +301,11 @@ namespace Menge
 		if( m_usePhysic == true )
 		{
 			Holder<PhysicEngine>::hostage()->update( 1.0f/30.0f );// for test physic!
+		}
+
+		if( m_physicEngine2D )
+		{
+			m_physicEngine2D->update( 1.0f / 60.0f, 10 );
 		}
 
 		Holder<Game>::hostage()->update( _timing );
@@ -423,7 +441,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::minimizeWindow()
 	{
-
+		m_interface->minimizeWindow();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::_initSystems()
@@ -458,13 +476,21 @@ namespace Menge
 			m_systemDLLs.push_back( dll );
 		}
 		
-		// PhysicSystem
+		// PhysicSystem3D
 		if( m_physicSystemName != "None" )
 		{
 			dll = m_interface->loadSystemDLL( m_physicSystemName.c_str() );
 			setPhysicSystem( dll->getInterface<PhysicSystemInterface>() );
 			m_systemDLLs.push_back( dll );
 			m_usePhysic = true;
+		}
+
+		// PhysicSystem2D
+		if( m_physicSystem2DName != "None" )
+		{
+			dll = m_interface->loadSystemDLL( m_physicSystem2DName.c_str() );
+			setPhysicSystem2D( dll->getInterface<PhysicSystem2DInterface>() );
+			m_systemDLLs.push_back( dll );
 		}
 		
 		return true;
@@ -495,6 +521,10 @@ namespace Menge
 		if ( m_usePhysic == true )
 		{
 			Holder<PhysicEngine>::destroy();
+		}
+		if( m_physicEngine2D )
+		{
+			Holder<PhysicEngine2D>::destroy();
 		}
 
 		Holder<ParticleEngine>::destroy();

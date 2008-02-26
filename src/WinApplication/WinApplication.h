@@ -39,6 +39,7 @@ public:
 	SystemDLLInterface* loadSystemDLL( const char* _dll ) override;
 	void unloadSystemDLL(SystemDLLInterface* _interface ) override;
 	float getMonitorAspectRatio() override;
+	void minimizeWindow() override;
 	//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
 
 //protected:

@@ -595,6 +595,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\PhysicEngine2D.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\PhysicEngine2D.h"
 					>
 				</File>
@@ -730,6 +734,18 @@
 				</File>
 				<File
 					RelativePath=".\Video.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="RigidBody2D"
+				>
+				<File
+					RelativePath=".\RigidBody2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\RigidBody2D.h"
 					>
 				</File>
 			</Filter>

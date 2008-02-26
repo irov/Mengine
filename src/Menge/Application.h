@@ -12,6 +12,8 @@ class RenderSystemInterface;
 class SoundSystemInterface;
 class ParticleSystemInterface;
 class PhysicSystemInterface;
+class PhysicSystem2DInterface;
+
 
 class XmlElement;
 
@@ -21,6 +23,7 @@ namespace Menge
 {
 	class Game;
 	class InputHandler;
+	class PhysicEngine2D;
 
 	//! Application - .
 	/*! 
@@ -46,6 +49,7 @@ namespace Menge
 		void setSoundSystem( SoundSystemInterface * _interface );
 		void setParticleSystem( ParticleSystemInterface * _interface );
 		void setPhysicSystem( PhysicSystemInterface * _interface );
+		void setPhysicSystem2D( PhysicSystem2DInterface * _interface );
 
 		void loadPak( const std::string & _pak );
 
@@ -120,6 +124,9 @@ namespace Menge
 		std::string m_soundSystemName;
 		std::string m_particleSystemName;
 		std::string m_physicSystemName;
+		std::string m_physicSystem2DName;
+
+		PhysicEngine2D* m_physicEngine2D;
 
 		typedef std::vector<SystemDLLInterface*> TSystemDLLVector;
 		TSystemDLLVector m_systemDLLs;

@@ -11,7 +11,7 @@ public:
 	Box2DPhysicSystem();
 	virtual ~Box2DPhysicSystem();
 
-	void createWorld( float* _upperLeft, float* _lowerRight, float* _gravity, bool _doSleep ) override;
+	void createWorld( const float* _upperLeft, const float* _lowerRight, const float* _gravity, bool _doSleep ) override;
 	void destroyWorld() override;
 	void update( float _timing, int _iterations ) override;
 
@@ -27,7 +27,7 @@ public:
 													float _shapeX, float _shapeY,
 													unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) override;
 
-	PhysicBody2DInterface* createPhysicBodyConvex( float _pointsNum, float* _convex,
+	PhysicBody2DInterface* createPhysicBodyConvex( int _pointsNum, const float* _convex,
 													float _posX, float _posY, float _angle,
 													float _density, float _friction, float _restitution,
 													float _shapeX, float _shapeY, float _shapeAngle,

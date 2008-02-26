@@ -37,7 +37,7 @@ Box2DPhysicSystem::~Box2DPhysicSystem()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicSystem::createWorld( float* _upperLeft, float* _lowerRight, float* _gravity, bool _doSleep )
+void Box2DPhysicSystem::createWorld( const float* _upperLeft, const float* _lowerRight, const float* _gravity, bool _doSleep )
 {
 	b2AABB worldAABB;
 	worldAABB.minVertex.Set( _upperLeft[0], _upperLeft[1] );
@@ -55,7 +55,22 @@ void Box2DPhysicSystem::destroyWorld()
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::update( float _timing, int _iterations )
 {
+	/*for( b2Body* body = m_world->GetBodyList(); body; body = body->GetNext() )
+	{
+		body->WakeUp();
+	}*/
 	m_world->Step( _timing, _iterations );
+	//m_world->Step( 0.0f, 1 );
+	//m_world->m_broadPhase->Validate();
+
+	for( b2Contact* c = m_world->GetContactList(); c; c = c->GetNext() )
+	{
+		for( int i = 0; i < c->GetManifoldCount(); i++ )
+		{
+			static_cast<Box2DPhysicBody*>( c->GetShape1()->GetBody()->m_userData )->_collide( c->GetShape2()->GetBody(), c );
+			static_cast<Box2DPhysicBody*>( c->GetShape2()->GetBody()->m_userData )->_collide( c->GetShape1()->GetBody(), c );
+		}
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 PhysicBody2DInterface* Box2DPhysicSystem::createPhysicBodyBox( float _width, float _heigth, 
@@ -107,7 +122,7 @@ PhysicBody2DInterface* Box2DPhysicSystem::createPhysicBodyCircle( float _radius,
 	return static_cast<PhysicBody2DInterface*>( new Box2DPhysicBody( m_world, bodyDef ) );
 }
 //////////////////////////////////////////////////////////////////////////
-PhysicBody2DInterface* Box2DPhysicSystem::createPhysicBodyConvex( float _pointsNum, float* _convex,
+PhysicBody2DInterface* Box2DPhysicSystem::createPhysicBodyConvex( int _pointsNum, const float* _convex,
 																	float _posX, float _posY, float _angle,
 																	float _density, float _friction, float _restitution,
 																	float _shapeX, float _shapeY, float _shapeAngle,

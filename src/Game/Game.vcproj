@@ -157,6 +157,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
+				ManifestFile="$(OutDir)\$(TargetFileName).intermediate.manifest"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="false"
 				SubSystem="2"

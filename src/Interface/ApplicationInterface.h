@@ -49,6 +49,7 @@ public:
 	virtual SystemDLLInterface* loadSystemDLL( const char* _dll ) = 0;
 	virtual void unloadSystemDLL( SystemDLLInterface* ) = 0;
 	virtual float getMonitorAspectRatio() = 0;
+	virtual void minimizeWindow() = 0;
 };
 
 

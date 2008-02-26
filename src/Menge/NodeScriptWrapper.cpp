@@ -300,6 +300,10 @@ namespace Menge
 			Layer2D* layer = Holder<Player>::hostage()->getCurrentScene()->getChildrenT<Layer2D>( _layerName, false );
 			return layer->screenToLocal( _point );
 		}
+		static void minimizeWindow()
+		{
+			Holder<Application>::hostage()->minimizeWindow();
+		}
 
 	}
 
@@ -623,6 +627,7 @@ namespace Menge
 		pybind::def( "createFolder", &ScriptMethod::createFolder );
 		pybind::def( "deleteFolder", &ScriptMethod::deleteFolder );
 		pybind::def( "screenToLocal", &ScriptMethod::screenToLocal );
+		pybind::def( "minimizeWindow", &ScriptMethod::minimizeWindow );
 
 	}
 }

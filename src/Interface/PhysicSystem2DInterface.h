@@ -1,23 +1,35 @@
 #	pragma once
 
+class PhysicBody2DInterface;
+
+class PhysicBody2DCollisionListener
+{
+public:
+	virtual void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) = 0;
+};
+
 class PhysicBody2DInterface
 {
 public:
 
-	virtual const float * getPosition() = 0;
+	virtual const float * getPosition() const = 0;
+	virtual void setPosition( float _x, float _y ) = 0;
 	virtual const float * getOrientation() = 0;
+	virtual void setOrientation( float _angle ) = 0;
 
 	virtual void setLinearVelocity( float x, float y ) = 0;
 	virtual const float* getLinearVelocity() = 0;
 	virtual void setAngularVelocity( float w ) = 0;
 	virtual float getAngularVelocity() = 0;
 	virtual void applyForce( float forceX, float forceY, float pointX, float pointY ) = 0;
+
+	virtual void setCollisionListener( PhysicBody2DCollisionListener* ) = 0;
 };
 
 class PhysicSystem2DInterface
 {
 public:
-	virtual void createWorld( float* _upperLeft, float* _lowerRight, float* _gravity, bool _doSleep ) = 0;
+	virtual void createWorld( const float* _upperLeft, const float* _lowerRight, const float* _gravity, bool _doSleep ) = 0;
 	virtual void destroyWorld() = 0;
 	virtual void update( float _timing, int _iterations ) = 0;
 	
@@ -31,7 +43,7 @@ public:
 															float _density, float _friction, float _restitution,
 															float _shapeX, float _shapeY,
 															unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) = 0;
-	virtual PhysicBody2DInterface* createPhysicBodyConvex( float _pointsNum, float* _convex,
+	virtual PhysicBody2DInterface* createPhysicBodyConvex( int _pointsNum, const float* _convex,
 															float _posX, float _posY, float _angle,
 															float _density, float _friction, float _restitution,
 															float _shapeX, float _shapeY, float _shapeAngle,

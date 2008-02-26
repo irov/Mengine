@@ -83,6 +83,13 @@ namespace XmlParserCast
 		return res == 3;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool attribute_value_cast( mt::quatf & _var, const char * _value )
+	{
+		int res = sscanf( _value, "%f;%f;%f;%f", &_var.x, &_var.y, &_var.z, &_var.w );
+
+		return res == 4;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool attribute_value_cast( mt::vec4f & _var, const char * _value )
 	{
 		int res = sscanf( _value, "%f;%f;%f;%f", &_var.x, &_var.y, &_var.z, &_var.w );

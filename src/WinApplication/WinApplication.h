@@ -31,7 +31,7 @@ public:
 	~WinApplication();
 
 public:
-	bool init( const char* _name, const char * _args, ApplicationListenerInterface* _listener ) override;
+	bool init( const char* _name, ApplicationListenerInterface* _listener ) override;
 	void run() override;
 	void stop()	override;
 	WINDOW_HANDLE createWindow( const char* _name, unsigned int _width, unsigned int _height, bool _fullscreen ) override;

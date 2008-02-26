@@ -15,6 +15,7 @@
 #	include "DiscreteEntity.h"
 
 #	include "RigidBody3d.h"
+#	include "CapsuleController.h"
 
 namespace	Menge
 {
@@ -28,10 +29,21 @@ namespace	Menge
 	, m_body(0)
 	, m_controller(0)
 	, m_charPos(0,0,0)
+	, m_rigidBody(0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Actor::~Actor()
 	{}
+	//////////////////////////////////////////////////////////////////////////
+	void Actor::setController( CapsuleController * _controller )
+	{
+		m_controller = _controller;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Actor::setRigidBody( RigidBody3D * _rb )
+	{
+		m_rigidBody = _rb;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::loader( XmlElement * _xml )
 	{
@@ -42,7 +54,7 @@ namespace	Menge
 	{
 		SceneNode3D::_update( _timing );
 
-	/*	if( m_body == NULL )
+		if( m_controller != NULL )
 		{
 			float step = 0.005f * _timing;
 
@@ -55,16 +67,13 @@ namespace	Menge
 
 			if(workv != mt::vec3f::zero_v3)
 			{
-				m_controller->move(workv.m);
+				m_controller->move(workv);
 				this->setLocalPosition(
-					*(mt::vec3f*)m_controller->getFilteredPosition()
+					m_controller->getFilteredPosition()
 					);
 			}
- 
-			//m_charPos+this->getLocalPosition()*step;
-			//this->setLocalPosition( m_charPos*step+this->getLocalPosition() );
 		}
-*/
+
 		this->callEvent("UPDATE", "(f)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -162,7 +171,7 @@ namespace	Menge
 	{
 //		m_entityInterface->play("idle2");
 //		m_entityInterface->setLooped(true);
-//		m_contMovement = m_initOrient * _v;
+		m_contMovement = m_initOrient * _v;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::left()
@@ -175,6 +184,6 @@ namespace	Menge
 	void Actor::stop()
 	{
 //		m_entityInterface->play("idle2");
-//		m_contMovement = mt::vec3f::zero_v3;
+		m_contMovement = mt::vec3f::zero_v3;
 	}
 }

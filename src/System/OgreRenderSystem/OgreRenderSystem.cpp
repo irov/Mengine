@@ -203,10 +203,10 @@ bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, b
 
 	m_rootSceneNode = new OgreSceneNode( m_sceneMgr->getRootSceneNode(), 0 );
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\bin\\Game\\GUITest", "FileSystem", "Default", true );
-	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\root\\Game\\ZombieTest", "FileSystem", "Default", true );
+	//Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
+	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\root\\Game\\ZombieTest", "FileSystem", "Default", true );
 	//Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
-	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "default", true );
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "default", true );
 	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
 
 	// setup GUI system
@@ -222,7 +222,7 @@ bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, b
 	CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().loadWindowLayout( (CEGUI::utf8*)"ogregui.layout"); 
 	m_GUISystem->setGUISheet(sheet);*/
 
-	m_sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
+	m_sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
 
 	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
 

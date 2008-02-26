@@ -24,6 +24,7 @@ public:
 	void roll( float _angle ) override;
 	void attachEntity( EntityInterface * _entity ) override;
 	void attachLight( LightInterface * _light ) override;
+	void attachCamera( CameraInterface * _camera ) override;
 	void addChild( SceneNodeInterface * _node ) override;
 	SceneNodeInterface * createChildSceneNode( const char * _name ) override;
 

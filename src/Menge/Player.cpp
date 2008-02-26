@@ -24,7 +24,6 @@ namespace Menge
 	, m_scene(0)
 	, m_arrow(0)
 	, m_renderCamera2D(0)
-	, m_renderCamera3D(0)
 	, m_switchScene(false)
 	, m_nextScene(0)
 	, m_destroyOldScene( false )
@@ -290,29 +289,11 @@ namespace Menge
 		return m_renderCamera2D;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setRenderCamera3D( Camera3D * _camera)
-	{
-		m_renderCamera3D = _camera;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Camera3D * Player::getRenderCamera3D()
-	{
-		return m_renderCamera3D;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Player::setCamera2DPosition( const mt::vec2f & _pos )
 	{
 		if( m_renderCamera2D )
 		{
 			m_renderCamera2D->setLocalPosition( _pos );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::setCamera3DPosition( const mt::vec3f & _pos )
-	{
-		if( m_renderCamera3D )
-		{
-			m_renderCamera3D->setPosition( _pos );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

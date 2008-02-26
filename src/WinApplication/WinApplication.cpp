@@ -67,7 +67,7 @@ WinApplication::~WinApplication()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool WinApplication::init( const char* _name, const char * _args, ApplicationListenerInterface* _listener )
+bool WinApplication::init( const char* _name, ApplicationListenerInterface* _listener )
 {
 	if( !_listener )
 	{
@@ -78,13 +78,6 @@ bool WinApplication::init( const char* _name, const char * _args, ApplicationLis
 	if( !::QueryPerformanceFrequency( &m_timerFrequency ) )
 	{
 		return false;
-	}
-
-	std::string args;
-
-	if( _args != NULL )
-	{
-		args = _args;
 	}
 
 	m_name.assign( _name );

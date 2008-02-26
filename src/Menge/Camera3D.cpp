@@ -1,7 +1,5 @@
 #	include "Camera3D.h"
 
-#	include "ObjectImplement.h"
-
 #	include "XmlEngine.h"
 
 #	include "RenderEngine.h"
@@ -12,22 +10,29 @@
 
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	OBJECT_IMPLEMENT( Camera3D );
-	//////////////////////////////////////////////////////////////////////////
 	Camera3D::Camera3D()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Camera3D::Camera3D( const std::string & _name )
 	: m_interface(0)
 	, m_near(10.0f)
 	, m_far(1000.0f)
 	, m_position(0.f, 0.f, 0.f)
 	, m_at(0.f, 0.f, 0.f)
-	, m_main(false)
+	, m_name(_name)
+	, m_parent(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Camera3D::~Camera3D()
 	{
 		Holder<RenderEngine>::hostage()->releaseCamera( m_interface );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const std::string & Camera3D::getName()
+	{
+		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::lookAt(const mt::vec3f& _targetPoint)
@@ -70,13 +75,20 @@ namespace	Menge
 		m_interface->roll(_angle);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	SceneNode3D * Camera3D::getParentNode() const
+	{
+		return m_parent;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::setParentNode( SceneNode3D * _node ) 
+	{
+		m_parent = _node;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::loader( XmlElement * _xml )
 	{
-		//SceneNode3D::loader( _xml );
-
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Main", "Value", m_main );
 			XML_CASE_ATTRIBUTE_NODE( "Aspect", "Value", m_aspect );
 			XML_CASE_ATTRIBUTE_NODE( "Near", "Value", m_near);
 			XML_CASE_ATTRIBUTE_NODE( "Far", "Value", m_far);
@@ -85,9 +97,11 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Camera3D::_activate()
+	bool Camera3D::activate()
 	{
-		m_interface = Holder<RenderEngine>::hostage()->createCamera( m_name );
+		m_name = "MainCamera";
+		m_interface = Holder<RenderEngine>::hostage()->createCamera(
+			m_name );
 
 		this->setAspect( m_aspect );
 		this->setNear( m_near );
@@ -95,29 +109,16 @@ namespace	Menge
 		this->setPosition( m_position );
 		this->lookAt( m_at );
 
-		if( m_main == true )
-		{
-			Holder<Player>::hostage()->setRenderCamera3D( this );
-		}
+		this->getParentNode()->attachCamera(this);
 
 		return true;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	/*mt::vec3f Camera3D::getDirectionFromMouse( float _xm, float _ym )
+	void Camera3D::deactivate()
 	{
-		const mt::mat4f &projMatrix = getProjectionMatrix();
-		const mt::mat4f &viewMatrix = getViewMatrix();
-		
-		mt::vec3f v(
-			( 1.f - 2.f * _xm ) / projMatrix[0][0],
-			-( 1.f - 2.f * _ym ) / projMatrix[1][1],
-			1.f
-			);
-		
-		mt::vec3f out;
-
-		mt::mul_v3_m4( out, v, m_worldMatrix );
-
-		return -out;
-	}*/
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::release()
+	{
+	}
 }

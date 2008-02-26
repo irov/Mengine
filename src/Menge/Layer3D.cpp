@@ -41,16 +41,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::update( float _timing )
 	{
-		
-		for( TListActors::iterator
-			it = m_listActors.begin(),
-			it_end = m_listActors.end();
-		it != it_end;
-		++it)
-		{
-			(*it)->update( _timing );
-		}
-
 		NodeCore::update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -89,11 +79,6 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "StaticFriction", "Value", m_staticFriction );
 			XML_CASE_ATTRIBUTE_NODE( "DynamicFriction", "Value", m_dynamicFriction );
 		
-			XML_CASE_NODE("Cameras")
-			{
-				XML_PARSE_ELEMENT( this, &Layer3D::loaderCameras_ );
-			}
-			
 			XML_CASE_NODE("RigidBodies")
 			{
 				XML_PARSE_ELEMENT( this, &Layer3D::loaderRigidBodies_ );
@@ -112,34 +97,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer3D::_activate()
 	{
-		activateCameras_();
 		setPhysicParams_();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::activateCameras_()
-	{
-		for( TMapCamera::iterator
-			it = m_mapCameras.begin(),
-			it_end = m_mapCameras.end();
-		it != it_end;
-		++it)
-		{
-			it->second->activate();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::_deactivate()
 	{
-		for( TMapCamera::iterator
-			it = m_mapCameras.begin(),
-			it_end = m_mapCameras.end();
-		it != it_end;
-		++it)
-		{
-			it->second->deactivate();
-		}
-
 		for( TMapRigidBody::iterator
 			it = m_mapRigidBodies.begin(),
 			it_end = m_mapRigidBodies.end();
@@ -154,16 +117,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::_release()
 	{
-		for( TMapCamera::iterator
-			it = m_mapCameras.begin(),
-			it_end = m_mapCameras.end();
-		it != it_end;
-		++it)
-		{
-			it->second->release();
-			delete it->second;
-		}
-
 		for( TMapRigidBody::iterator
 			it = m_mapRigidBodies.begin(),
 			it_end = m_mapRigidBodies.end();
@@ -173,16 +126,6 @@ namespace	Menge
 			it->second->release();
 			delete it->second;
 		}
-
-		for( TListActors::reverse_iterator
-			it = m_listActors.rbegin(),
-			it_end = m_listActors.rend();
-		it != it_end;
-		++it)
-		{
-			delete (*it);
-		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::_addChildren( SceneNode3D * _node )
@@ -211,31 +154,6 @@ namespace	Menge
 				addRigidBody( body );
 
 				XML_PARSE_ELEMENT( body, &RigidBody3D::loader );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::loaderCameras_( XmlElement * _xml )
-	{
-		std::string name;
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE("Camera")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-				}
-
-				Camera3D * camera = new Camera3D();
-
-				camera->setName( name );
-				camera->setType( "Camera3D" );
-
-				addCamera( camera );
-
-				XML_PARSE_ELEMENT( camera, &Camera3D::loader );
 			}
 		}
 	}
@@ -274,18 +192,6 @@ namespace	Menge
 		if( it_find == m_mapRigidBodies.end() )
 		{
 			m_mapRigidBodies.insert( std::make_pair( name, _rigidBody ) );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::addCamera( Camera3D * _camera )
-	{
-		const std::string & name = _camera->getName();
-
-		TMapCamera::iterator it_find = m_mapCameras.find( name );
-
-		if( it_find == m_mapCameras.end() )
-		{
-			m_mapCameras.insert( std::make_pair( name, _camera ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -331,21 +237,6 @@ namespace	Menge
 		body->activate();
 
 		return body;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////
-	Camera3D * Layer3D::getCamera( const std::string & _name )
-	{
-		TMapCamera::const_iterator it_find = m_mapCameras.find( _name );
-
-		if( it_find == m_mapCameras.end() )
-		{
-			return NULL;
-		}
-
-		Camera3D * camera = it_find->second;
-
-		return camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::setPhysicParams_()

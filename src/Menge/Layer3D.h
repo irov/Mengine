@@ -7,7 +7,6 @@ namespace Menge
 {
 	class Light;
 	class Entity3d;
-	class Camera3D;
 	class SceneNode3D;
 	class RigidBody3D;
 	class CapsuleController;
@@ -22,9 +21,6 @@ namespace Menge
 		Layer3D();
 
 	public:
-		void addCamera( Camera3D * _camera );
-		Camera3D * getCamera( const std::string & _name );
-
 		void addRigidBody( RigidBody3D * _rigidBody );
 		RigidBody3D * getRigidBody( const std::string & _name );
 
@@ -35,7 +31,6 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml ) override;
-		void loaderCameras_( XmlElement * _xml );
 		void loaderRigidBodies_( XmlElement * _xml );
 		void loaderControllers_( XmlElement * _xml );
 
@@ -61,19 +56,12 @@ namespace Menge
 		float m_staticFriction; 
 		float m_dynamicFriction;
 
-		typedef std::map<std::string,Camera3D* > TMapCamera;
 		typedef std::map<std::string,RigidBody3D* > TMapRigidBody;
 		typedef std::map<std::string,CapsuleController* > TMapControllers;
 
-		TMapCamera	m_mapCameras;
 		TMapRigidBody	m_mapRigidBodies;
 		TMapControllers m_mapControllers;
 
-		typedef std::list<SceneNode3D*> TListActors;
-
-		TListActors	m_listActors;
-
-		void activateCameras_();
 		void setPhysicParams_();
 
 	private:

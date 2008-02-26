@@ -1,6 +1,7 @@
 #	include "OgreSceneNode.h"
 #	include "OgreEntity.h"
 #	include "OgreLight.h"
+#	include "OgreCamera.h"
 //////////////////////////////////////////////////////////////////////////
 OgreSceneNode::OgreSceneNode(Ogre::SceneNode * _node, OgreSceneNode * _parent = 0)
 : m_sceneNode(_node)
@@ -115,6 +116,13 @@ void OgreSceneNode::attachLight( LightInterface * _light )
 	OgreLight * ogreLight = static_cast<OgreLight*>( _light );
 	m_sceneNode->attachObject( ogreLight->getOgreLight() );
 	m_lights.push_back( _light );
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreSceneNode::attachCamera( CameraInterface * _camera )
+{
+	Ogre3dCamera * ogreCam = static_cast<Ogre3dCamera*>( _camera );
+	m_sceneNode->attachObject( ogreCam->getOgreCamera() );
+//	m_lights.push_back( _light );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreSceneNode::addChild( SceneNodeInterface * _node )

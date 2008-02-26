@@ -35,8 +35,11 @@ namespace mt
 
 		quatf();
 		quatf(float _w, float _x, float _y, float _z);
+		quatf(float _angle, const mt::vec3f & _v);
 		quatf(const quatf& _q);
 
+		void rotate(vec3f & v) const;
+		void multiply(const quatf& left, const vec3f& right);
 		float& operator[](int i);
 		const float operator[](int i)const;
 

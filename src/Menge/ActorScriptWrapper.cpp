@@ -89,12 +89,14 @@ namespace Menge
 		pybind::proxy_<Actor, pybind::bases<SceneNode3D> >("Actor", false)
 			.def( "step", &Actor::step )
 			.def( "stop", &Actor::stop )
-			.def( "update", &Actor::update )
+		//	.def( "update", &Actor::update )
 			.def( "left", &Actor::left )
 			.def( "setParentActor", &Actor::setParentActor )
 			.def( "setParentRoot", &Actor::setParentRoot )
 			.def( "attachEntity", &Actor::attachEntity )
-			;
+			.def( "setController", &Actor::setController )
+			.def( "setRigidBody", &Actor::setRigidBody )
+		;
 
 		pybind::def( "createActor", &ScriptMethod::createActor );
 	}

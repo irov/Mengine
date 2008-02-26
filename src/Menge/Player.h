@@ -37,12 +37,7 @@ namespace Menge
 	public:
 		void setRenderCamera2D( Camera2D * _camera);
 		Camera2D * getRenderCamera2D();
-
-		void setRenderCamera3D( Camera3D * _camera);
-		Camera3D * getRenderCamera3D();
-
 		void setCamera2DPosition( const mt::vec2f & _pos );
-		void setCamera3DPosition( const mt::vec3f & _pos );
 
 		void updateChangeScene();
 
@@ -69,8 +64,7 @@ namespace Menge
 		Arrow * m_arrow;
 		
 		Camera2D * m_renderCamera2D;
-		Camera3D * m_renderCamera3D;
-
+		
 		bool m_switchScene;
 		bool m_destroyOldScene;
 		Scene * m_nextScene;

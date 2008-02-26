@@ -12,6 +12,7 @@ namespace Menge
 	class ResourceMesh;
 	class ResourceSkeleton;
 	class DiscreteEntity;
+	class CapsuleController;
 	class RigidBody3D;
 
 	class Actor
@@ -25,8 +26,8 @@ namespace Menge
 
 	public:
 		//
-		void setController();
-		void setRigidBody();
+		void setController( CapsuleController * _controller );
+		void setRigidBody( RigidBody3D * _rb );
 		//
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -49,12 +50,15 @@ namespace Menge
 		void _update( float _timing ) override;
 
 	private:
+		CapsuleController * m_controller;
+		RigidBody3D * m_rigidBody;
+
 		DiscreteEntity * m_entityInterface;
 		mt::quatf m_initOrient;
 		mt::vec3f m_dir;
 		mt::vec3f m_contMovement;
 		RigidBody3D * m_body;
-		ControllerInterface * m_controller;
+		//ControllerInterface * m_controller;
 
 		mt::vec3f m_charPos;
 

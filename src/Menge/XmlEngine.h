@@ -47,6 +47,7 @@ namespace XmlParserCast
 	bool attribute_value_cast( mt::vec2f & _var, const char * _value );
 	bool attribute_value_cast( mt::vec3f & _var, const char * _value );
 	bool attribute_value_cast( mt::vec4f & _var, const char * _value );
+	bool attribute_value_cast( mt::quatf & _var, const char * _value );
 	bool attribute_value_cast( mt::mat3f & _var, const char * _value );
 	bool attribute_value_cast( mt::mat4f & _var, const char * _value );
 }

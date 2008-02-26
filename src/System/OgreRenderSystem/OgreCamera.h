@@ -20,6 +20,9 @@ public:
 	void yaw( float _angle ) override;
 	void pitch( float _angle ) override;
 	void roll( float _angle ) override;
+public:
+	Ogre::Camera * getOgreCamera();
+
 private:
 	Ogre::Camera * m_camera;
 };

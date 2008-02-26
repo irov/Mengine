@@ -53,3 +53,8 @@ void Ogre3dCamera::roll( float _angle )
 {
 	m_camera->roll( Ogre::Degree( _angle ) );
 }
+//////////////////////////////////////////////////////////////////////////
+Ogre::Camera * Ogre3dCamera::getOgreCamera()
+{
+	return m_camera;
+}

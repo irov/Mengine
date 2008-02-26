@@ -116,6 +116,18 @@ namespace	mt
 		return !operator==(_a, _b);
 	}
 
+	void vec3f::cross(const vec3f &left, const vec3f & right)	//prefered version, w/o temp object.
+	{
+		// temps needed in case left or right is this.
+		float a = (left.y * right.z) - (left.z * right.y);
+		float b = (left.z * right.x) - (left.x * right.z);
+		float c = (left.x * right.y) - (left.y * right.x);
+
+		x = a;
+		y = b;
+		z = c;
+	}
+
 	/*	Addition of vecs  */
 	void	add_v3_v3(vec3f& _out,const vec3f& _a, const vec3f& _b)
 	{

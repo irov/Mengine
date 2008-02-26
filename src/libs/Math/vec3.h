@@ -38,6 +38,9 @@ namespace mt
 		vec3f(float _x, float _y, float _z);
 		vec3f(const vec3f& _v);
 
+
+		void cross(const vec3f &left, const vec3f & right);
+
 		explicit vec3f(const vec2f&	_v);
 		explicit vec3f(const vec2f&	_v, float _z);
 

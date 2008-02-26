@@ -10,9 +10,9 @@ class EntityInterface;
 
 namespace Menge
 {
-	class Movable;
 	class DiscreteEntity;
 	class Light;
+	class Camera3D;
 
 	class SceneNode3D
 		: public NodeCore
@@ -43,6 +43,9 @@ namespace Menge
 	public:
 		void attachEntity(DiscreteEntity * _entity);
 		void attachLight(Light * _entity);
+		void attachCamera(Camera3D * _camera);
+
+		Camera3D * getCamera() const;
 
 		void addChild(SceneNode3D * _node);
 
@@ -53,20 +56,22 @@ namespace Menge
 		void loaderTransformation_( XmlElement * _xml );
 		void loaderEntities_( XmlElement * _xml );
 		void loaderLights_( XmlElement * _xml );
+		void loaderCameras_( XmlElement * _xml );
 
 	protected:
 
 		bool _activate() override;
+		void _deactivate() override;
+		void _release() override;
 		void _addChildren( SceneNode3D * _node ) override;
 
 	protected:
 		SceneNodeInterface * m_interface;
 
 	private:
-		std::list<Movable*>	m_movables;
-
 		DiscreteEntity * m_entity;
 		Light * m_light;
+		Camera3D * m_camera;
 
 		void render();
 		bool isRenderable();

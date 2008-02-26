@@ -234,7 +234,7 @@ namespace Menge
 	bool Application::initialize( const std::string & _applicationFile, const std::string& _args )
 	{
 
-		if( !m_interface->init( _applicationFile.c_str(), _args.c_str(), this ) )
+		if( !m_interface->init( _applicationFile.c_str(), this ) )
 		{
 			return false;
 		}

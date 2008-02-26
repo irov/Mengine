@@ -798,14 +798,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Camera3D.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Camera3D.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Viewport.cpp"
 				>
 			</File>
@@ -1189,11 +1181,27 @@
 				Name="SceneNode3D"
 				>
 				<File
+					RelativePath=".\Camera3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Camera3D.h"
+					>
+				</File>
+				<File
 					RelativePath=".\DiscreteEntity.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\DiscreteEntity.h"
+					>
+				</File>
+				<File
+					RelativePath=".\FFCamera.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\FFCamera.h"
 					>
 				</File>
 				<File

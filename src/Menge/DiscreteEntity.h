@@ -35,9 +35,11 @@ namespace Menge
 		}
 
 	public:
-		virtual void loader( XmlElement * _xml );
-		virtual bool activate();
-		virtual void deactivate();
+		void loader( XmlElement * _xml );
+		bool activate();
+		void deactivate();
+		void release();
+
 
 	public:
 		SceneNode3D * getParentNode() const;

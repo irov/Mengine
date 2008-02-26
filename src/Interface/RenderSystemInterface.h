@@ -140,6 +140,7 @@ public:
 	virtual void roll( float _angle ) = 0;
 	virtual void attachEntity( EntityInterface * _entity ) = 0;
 	virtual void attachLight( LightInterface * _light ) = 0;
+	virtual void attachCamera( CameraInterface * _camera ) = 0;
 	virtual void addChild( SceneNodeInterface * _node ) = 0;
 	virtual SceneNodeInterface * createChildSceneNode( const char * _name ) = 0;
 };

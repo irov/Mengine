@@ -12,6 +12,11 @@ namespace	mt
 		,z(_z)
 	{}
 
+	quatf::quatf(float _angle, const mt::vec3f & _v)
+	{
+		*this = q_from_angle_axis(_v,_angle);
+	}
+
 	quatf::quatf(const quatf& _q)
 		:w(_q.w)
 		,x(_q.x)
@@ -41,6 +46,38 @@ namespace	mt
 	float quatf::norm() const
 	{
 		return x*x+y*y+z*z+w*w;
+	}
+
+	void quatf::multiply(const quatf& left, const vec3f& right)		
+	{
+		float a,b,c,d;
+
+		a = - left.x*right.x - left.y*right.y - left.z *right.z;
+		b =   left.w*right.x + left.y*right.z - right.y*left.z;
+		c =   left.w*right.y + left.z*right.x - right.z*left.x;
+		d =   left.w*right.z + left.x*right.y - right.x*left.y;
+
+		w = a;
+		x = b;
+		y = c;
+		z = d;
+	}
+
+	void quatf::rotate(vec3f & v) const						
+	{
+		quatf myInverse;
+		myInverse.x = -x;//*msq;
+		myInverse.y = -y;//*msq;
+		myInverse.z = -z;//*msq;
+		myInverse.w =  w;//*msq;
+
+		quatf left;
+
+		left.multiply(*this,v);
+
+		v.x =left.w*myInverse.x + myInverse.w*left.x + left.y*myInverse.z - myInverse.y*left.z;
+		v.y =left.w*myInverse.y + myInverse.w*left.y + left.z*myInverse.x - myInverse.z*left.x;
+		v.z =left.w*myInverse.z + myInverse.w*left.z + left.x*myInverse.y - myInverse.x*left.y;
 	}
 
 	bool	cmp_q_q(const quatf& _a, const quatf& _b, float eps)
@@ -186,12 +223,15 @@ namespace	mt
 	/* ohter stuff */
 	void q_from_angle_axis(quatf& out, const vec3f& _rhs, float _val)
 	{
-		float hangle = 0.5f * _val;
+		float hangle = 0.01745329251994329547 * _val * 0.5f;
 		float fsin = sin(hangle);
+
+		float i_length =  1.0f / sqrtf( _rhs.x*_rhs.x + _rhs.y*_rhs.y + _rhs.z*_rhs.z );
+	
 		out.w = cos(hangle);
-		out.x = fsin * _rhs[0];
-		out.y = fsin * _rhs[1];
-		out.z = fsin * _rhs[2];
+		out.x = fsin * _rhs[0] * i_length;
+		out.y = fsin * _rhs[1] * i_length;
+		out.z = fsin * _rhs[2] * i_length;
 	};
 
 	quatf q_from_angle_axis(const vec3f& _rhs, float _val)

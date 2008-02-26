@@ -1,0 +1,18 @@
+<Entity>
+	<Node Name = "AN_01" Type = "Animation">
+		<ImageMap Name = "grid"/>
+		<Animation Name = "BallRedCNG" />
+	</Node>
+	
+	<Node Name = "HS_01" Type = "HotSpot">
+		<Point Value = "0;0" />
+		<Point Value = "100;0" />
+		<Point Value = "100;100" />
+		<Point Value = "0;100" />
+	</Node>
+
+	<Node Name = "SoundEmitterTest" Type = "SoundEmitter">
+             	<Resource Name = "ResourceSoundTest"/>
+               	<HeadMode Value = "0"/>
+	</Node>
+</Entity>

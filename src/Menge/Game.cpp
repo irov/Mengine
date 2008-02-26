@@ -28,6 +28,7 @@ namespace Menge
 		, m_defaultArrow(0)
 		, m_pyPersonality(0)
 		, m_title("Game")
+		, m_fixedContentResolution( false )
 	{
 		Holder<Player>::keep( new Player );
 		Holder<Amplifier>::keep( new Amplifier );
@@ -158,6 +159,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "Scripts", "Path", m_pathScripts );
 			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_resourceResolution );
 			XML_CASE_ATTRIBUTE_NODE( "Title", "Name", m_title );
+			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
 	}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -636,5 +638,10 @@ namespace Menge
 	const std::string& Game::getTitle() const
 	{
 		return m_title;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::isContentResolutionFixed() const
+	{
+		return m_fixedContentResolution;
 	}
 }

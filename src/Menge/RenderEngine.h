@@ -24,13 +24,14 @@ namespace Menge
 		
 	public:
 
-		bool initialize( const std::string& _driver, int _width, int _height, int _bits, bool _fullscreen, float _aspect, WINDOW_HANDLE _winHandle = 0 );
+		bool initialize( const std::string& _driver );
+		bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle = 0 );
 
 		void render( RenderImageInterface* _renderTargetImage, const int* rect = NULL );
 		void render();
 
 		void setContentResolution( const mt::vec2f _resolution );
-		void getBestDisplayResolution( int& _defWidth, int& _defHeigth, float _aspect );
+		mt::vec2f getBestDisplayResolution( int _defWidth, int _defHeigth, float _aspect );
 
 		void setRenderViewport( const Viewport & _viewport );
 		const Viewport & getRenderViewport() const;

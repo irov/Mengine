@@ -57,7 +57,6 @@ namespace Menge
 		: m_interface( _interface )
 		, m_quit( false )
 		, m_commandLine("")
-		, m_fixedContentResolution( false )
 		, m_title("Menge-engine")
 		, m_resourcePath("")
 		, m_vsync( true )
@@ -144,11 +143,14 @@ namespace Menge
 			Holder<PhysicEngine>::hostage()->init(mt::vec3f(0,-1.0,0));
 		}
 
-		WINDOW_HANDLE winHandle = m_interface->createWindow( Holder<Game>::hostage()->getTitle().c_str(), m_width, m_height, m_fullScreen );
-		Holder<RenderEngine>::hostage()->initialize( m_renderDriver, m_width, m_height, m_bits, m_fullScreen, m_interface->getMonitorAspectRatio(), winHandle );
+		Holder<RenderEngine>::hostage()->initialize( m_renderDriver );
+		mt::vec2f bestRes = Holder<RenderEngine>::hostage()->getBestDisplayResolution( m_width, m_height, m_interface->getMonitorAspectRatio() );
+
+		WINDOW_HANDLE winHandle = m_interface->createWindow( Holder<Game>::hostage()->getTitle().c_str(), bestRes.x, bestRes.y, m_fullScreen );
+		Holder<RenderEngine>::hostage()->createRenderWindow( bestRes.x, bestRes.y, m_bits, m_fullScreen, winHandle );
 		Holder<InputEngine>::hostage()->initialize( winHandle );
 
-		if( m_fixedContentResolution )
+		if( Holder<Game>::hostage()->isContentResolutionFixed() )
 		{
 			mt::vec2f res = Holder<Game>::hostage()->getResourceResolution();
 			Holder<RenderEngine>::hostage()->setViewportDimensions( res.x, res.y );

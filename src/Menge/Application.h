@@ -107,7 +107,6 @@ namespace Menge
 		bool m_vsync;
 		std::string m_renderDriver;
 		std::string m_commandLine;
-		bool m_fixedContentResolution;
 		std::string m_title;
 		std::string m_resourcePath;
 

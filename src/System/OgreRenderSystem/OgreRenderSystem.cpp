@@ -453,7 +453,6 @@ void OgreRenderSystem::loadResource( Ogre::Resource* _resource )
 void OgreRenderSystem::setViewportDimensions( float _width, float _height, float _renderFactor )
 {
 	m_renderWindow->update();
-
 	float realWidth = m_renderWindow->getWidth();
 	float realHeight = m_renderWindow->getHeight();
 	float aspect = _width / _height;

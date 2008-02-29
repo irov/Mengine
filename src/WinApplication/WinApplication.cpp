@@ -54,7 +54,11 @@ WinApplication::WinApplication()
 //////////////////////////////////////////////////////////////////////////
 WinApplication::~WinApplication()
 {
-	m_listener->onDestroy();
+	if( m_listener )
+	{
+		m_listener->onDestroy();
+	}
+
 	//m_application->finalize();
 	unloadSystemDLL( m_fileSystemDLL );
 

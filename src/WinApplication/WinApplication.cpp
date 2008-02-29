@@ -189,6 +189,7 @@ static LRESULT CALLBACK s_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 {
 	switch( uMsg )
 	{
+	case WM_NCCREATE:
 	case WM_CREATE:
 		LPCREATESTRUCT createStruct = (LPCREATESTRUCT)lParam;
 		WinApplication * app = (WinApplication *)createStruct->lpCreateParams;
@@ -196,7 +197,7 @@ static LRESULT CALLBACK s_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		break;
 	}
 
-	WinApplication * app = reinterpret_cast<WinApplication*>(GetWindowLongPtr( hWnd, GWL_USERDATA ));
+	WinApplication * app = (WinApplication*)GetWindowLongPtr( hWnd, GWL_USERDATA );
 
 	if( app )
 	{

@@ -40,7 +40,11 @@ public:
 	void unloadSystemDLL(SystemDLLInterface* _interface ) override;
 	float getMonitorAspectRatio() override;
 	void minimizeWindow() override;
+	void setPrimaryMonitorAspect( float _aspect );
 	//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
+
+public:
+	LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
 //protected:
 
@@ -48,23 +52,20 @@ public:
 	//bool frameEnded( const Ogre::FrameEvent & evt) override;
 
 private:
-	static ApplicationListenerInterface* m_listener;
+	ApplicationListenerInterface* m_listener;
 	LARGE_INTEGER m_timerFrequency;
 	LARGE_INTEGER m_lastTime;
 	bool	m_running;
-	static bool	m_active;
+	bool	m_active;
 	float	m_frameTime;
-	static HWND	m_hWnd;
-	static bool	m_cursorInArea;
-	static WINDOWINFO m_wndInfo;
+	HWND	m_hWnd;
+	bool	m_cursorInArea;
+	WINDOWINFO m_wndInfo;
 	HANDLE m_mutex;	// for multiple instance tracking
 	bool m_focus;
 	std::string m_name;
 
-	static LRESULT CALLBACK _wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-
-	static BOOL CALLBACK _monitorEnumProc( HMONITOR _hMonitor, HDC _hdc, LPRECT, LPARAM );
-	static float m_primaryMonitorAspect;
+	float m_primaryMonitorAspect;
 
 	SystemDLLInterface* m_fileSystemDLL;
 	FileSystemInterface* m_fileSystem;

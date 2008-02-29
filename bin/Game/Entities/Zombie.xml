@@ -1,5 +1,0 @@
-<Entity>
-	<Node Name = "gridImage" Type = "Sprite">
-		<ImageMap Name = "grid" />
-	</Node>
-</Entity>

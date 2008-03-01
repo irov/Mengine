@@ -19,13 +19,10 @@ namespace Menge
 		bool activate();
 
 	private:
-		int mx;
-		int my;
-
 		CameraInterface * m_interface;
 
-		mt::vec3f gCameraPos;
-		mt::vec3f gCameraForward;
-		mt::vec3f gCameraRight;
+		mt::vec3f m_cameraPos;
+		mt::vec3f m_cameraForward;
+		mt::vec3f m_cameraRight;
 	};
 }

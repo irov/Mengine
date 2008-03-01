@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\cal3d\cal3d\src\&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\cal3d\cal3d\src\&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MENGE_EXPORT"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -70,7 +70,7 @@
 				AdditionalDependencies="pybind_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Python\libs&quot;;&quot;$(SolutionDir)dependencies\Pybind\lib&quot;;&quot;$(SolutionDir)dependencies\cal3d\cal3d\bin\debug&quot;;$(NOINHERIT)"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Python\libs&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)dependencies\cal3d\cal3d\bin\debug&quot;;$(NOINHERIT)"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				ImportLibrary="$(SolutionDir)Lib\$(ProjectName)_d.lib"

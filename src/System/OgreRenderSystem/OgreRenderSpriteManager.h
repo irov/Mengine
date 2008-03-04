@@ -27,6 +27,8 @@ struct QuadInfo
 	Ogre::SceneBlendFactor source;
 	Ogre::SceneBlendFactor dest;
 
+	Ogre::Viewport* viewport;
+
 	float z;
 
     unsigned int        color;
@@ -41,7 +43,7 @@ class OgreRenderSpriteManager
 	: public Ogre::RenderQueueListener
 {
 public:
-	void addQuad1(const Ogre::Vector2 & _contentRes,
+	void addQuad1( Ogre::Viewport* _viewport, const Ogre::Vector2 & _contentRes,
 		const Ogre::Vector4 & _uv,const Ogre::Matrix3 & _transform,
 		const Ogre::Vector2 & _offset,
 		const Ogre::Vector2 & _size, float z,
@@ -50,7 +52,7 @@ public:
 		Ogre::SceneBlendFactor _src,
 		Ogre::SceneBlendFactor _dst);
 
-	void addQuad2(const Ogre::Vector2 & _contentRes,
+	void addQuad2( Ogre::Viewport* _viewport, const Ogre::Vector2 & _contentRes,
 		const Ogre::Vector4 & _uv,
 		const Ogre::Matrix3 & _transform,
 		const Ogre::Vector2 & _a,
@@ -87,9 +89,6 @@ public:
 	void prepareForRender();
 	void doRender();
 
-	void Start();
-	void End();
-
 private:
 
 	float currentZ;
@@ -102,6 +101,7 @@ private:
 	size_t underusedFramecount; 
 	Ogre::HardwareVertexBufferSharedPtr	vertexBuffer;
 	Ogre::TexturePtr			currTexture;	
+	Ogre::Viewport*				currViewport;
 	Ogre::RenderOperation		renderOp;
 	typedef std::vector<QuadInfo>		QuadList;
 	QuadList quadList;

@@ -156,6 +156,16 @@ namespace Menge
 				XML_PARSE_ELEMENT( this, &Game::loaderResources_ );
 			}
 
+			XML_CASE_NODE("ResourceLocation")
+			{
+				std::string path("");
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Path", path );
+					m_listResourceLocation.push_back( path );
+				}
+			}
+
 			XML_CASE_ATTRIBUTE_NODE( "Scripts", "Path", m_pathScripts );
 			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_resourceResolution );
 			XML_CASE_ATTRIBUTE_NODE( "Title", "Name", m_title );
@@ -400,6 +410,17 @@ namespace Menge
 		{
 			getScene( *it );
 		}
+
+		FileEngine* fileEngine = Holder<FileEngine>::hostage();
+		for( TListDeclaration::iterator
+			it = m_listResourceLocation.begin(),
+			it_end = m_listResourceLocation.end();
+		it != it_end;
+		++it)	
+		{
+			fileEngine->addResourceLocation( *it );
+		}
+		fileEngine->initResources();
 
 		m_defaultArrow = getArrow( m_defaultArrowName );
 

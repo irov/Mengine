@@ -84,4 +84,14 @@ namespace Menge
 	{
 		return m_interface->changeDir( _dir.c_str() );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::addResourceLocation( const std::string& _path )
+	{
+		m_interface->addResourceLocation( _path.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::initResources()
+	{
+		m_interface->initResources();
+	}
 }

@@ -19,6 +19,7 @@ namespace Menge
 
 	public:
 		Layer3D();
+		virtual ~Layer3D();
 
 	public:
 		void addRigidBody( RigidBody3D * _rigidBody );

@@ -95,9 +95,9 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height )
+	RenderImageInterface * RenderEngine::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera  )
 	{
-		RenderImageInterface * image = m_interface->createRenderTargetImage( _name, _width, _height );
+		RenderImageInterface * image = m_interface->createRenderTargetImage( _name, _width, _height, _camera );
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -162,6 +162,7 @@ namespace Menge
 		mt::mat3f transform = _transform;
 		transform.v2.v2 -= m_renderViewport.begin;
 		m_interface->renderImage(
+			m_renderViewport.getCamera().c_str(),
 			transform.m,
 			_offset.m,
 			_uv.m,
@@ -187,6 +188,7 @@ namespace Menge
 		mt::mat3f transform = _transform;
 		transform.v2.v2 -= m_renderViewport.begin;
 		m_interface->renderImage(
+			m_renderViewport.getCamera().c_str(),
 			transform.m,
 			_a.m,
 			_b.m,

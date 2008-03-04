@@ -1,13 +1,15 @@
 #	pragma once
 
-#	include "SceneNode2D.h"
+//#	include "SceneNode2D.h"
+#	include "RigidBody2D.h"
 
 namespace Menge
 {
 	class Scene;
 
 	class Entity
-		: public SceneNode2D
+		//: public SceneNode2D
+		: public RigidBody2D
 	{
 		OBJECT_DECLARE( Entity )
 
@@ -30,6 +32,9 @@ namespace Menge
 		void scaleStop();
 		void setSpeed( const mt::vec2f& _speed );
 		//void setAcceleration( const mt::vec2f& _acceleration )	{ m_acceleration = _acceleration; }
+		void loader( XmlElement * _xml );
+		void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY );
+		void s_applyForce( float _forceX, float _forceY, float _pointX, float _pointY ) { RigidBody2D::s_applyForce( _forceX, _forceY, _pointX, _pointY ) ;}
 
 	protected:
 		bool _activate() override;
@@ -37,6 +42,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 		void _update( float _timing ) override;
+
 
 	protected:
 		mt::vec2f m_speed;
@@ -59,5 +65,8 @@ namespace Menge
 
 		bool m_accelerateTo;
 		mt::vec2f m_nSpeed;
+
+		bool m_physicController;
+		void _loaderPhysic( XmlElement * _xml );
 	};
 }

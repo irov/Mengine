@@ -62,7 +62,7 @@ namespace	Menge
 	{
 		m_interface = Holder<RenderEngine>::hostage()->createLight( m_name );
 
-		this->getParentNode()->attachLight(this);
+		//this->getParentNode()->attachLight(this);
 
 		m_interface->setType((LightType)m_lightType);
 		m_interface->setPosition(m_position.x,m_position.y,m_position.z);

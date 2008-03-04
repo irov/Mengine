@@ -21,7 +21,7 @@ namespace Menge
 		OBJECT_DECLARE(SceneNode3D);
 	public:
 		SceneNode3D();
-		~SceneNode3D();
+		virtual ~SceneNode3D();
 
 	public:
 		virtual const mt::quatf & getWorldOrient();
@@ -41,8 +41,8 @@ namespace Menge
 		void roll( float _angle );
 
 	public:
-		void attachEntity(DiscreteEntity * _entity);
-		void attachLight(Light * _entity);
+		//void attachEntity(DiscreteEntity * _entity);
+		//void attachLight(Light * _entity);
 		void attachCamera(Camera3D * _camera);
 
 		Camera3D * getCamera() const;
@@ -52,15 +52,15 @@ namespace Menge
 		void attachToRootNode();
 
 	public:
-		void loader( XmlElement * _xml ) override;
+		virtual void loader( XmlElement * _xml ) override;
 		void loaderTransformation_( XmlElement * _xml );
-		void loaderEntities_( XmlElement * _xml );
-		void loaderLights_( XmlElement * _xml );
+		//void loaderEntities_( XmlElement * _xml );
+		//void loaderLights_( XmlElement * _xml );
 		void loaderCameras_( XmlElement * _xml );
 
 	protected:
 
-		bool _activate() override;
+		virtual bool _activate() override;
 		void _deactivate() override;
 		void _release() override;
 		void _addChildren( SceneNode3D * _node ) override;
@@ -69,8 +69,8 @@ namespace Menge
 		SceneNodeInterface * m_interface;
 
 	private:
-		DiscreteEntity * m_entity;
-		Light * m_light;
+		//DiscreteEntity * m_entity;
+		//Light * m_light;
 		Camera3D * m_camera;
 
 		void render();

@@ -33,6 +33,8 @@ public:
 	virtual bool createFolder( const char * _path ) = 0;
 	virtual bool deleteFolder( const char * _path ) = 0;
 	virtual bool changeDir( const char* _path ) = 0;
+	virtual void addResourceLocation( const char* _path ) = 0;
+	virtual void initResources() = 0;
 };
 
 bool initInterfaceSystem(FileSystemInterface**	_ptrFileSystem);

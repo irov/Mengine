@@ -29,6 +29,7 @@ namespace Menge
 
 	public:
 		virtual void setOffsetPosition( const mt::vec2f & _offset );
+		virtual void setRenderTarget( const std::string& _cameraName );
 
 	public:
 		void loader( XmlElement * _xml ) override;

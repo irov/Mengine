@@ -4,6 +4,8 @@
 #	include "ScriptEngine.h"
 #	include "Layer2D.h"
 
+#	include "XmlEngine.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -28,6 +30,8 @@ namespace	Menge
 	, m_scaleTo( false )
 	, m_scalePoint( 1.0f, 1.0f )
 	, m_scaleTime( 0.0f )
+
+	, m_physicController( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -255,6 +259,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_update( float _timing )
 	{
+		if( m_physicController )
+		{
+			RigidBody2D::_update( _timing );
+			this->callEvent("UPDATE", "(f)", _timing );
+			return;
+		}
+
 		if( m_moveTo )
 		{
 			if( m_moveTime < _timing )
@@ -359,6 +370,8 @@ namespace	Menge
 
 		this->registerEvent("UPDATE", "onUpdate" );
 
+		this->registerEvent("COLLIDE", "onCollide" );
+
 		this->callMethod("onActivate", "()" );
 
 		//m_oldPos = getLocalPosition();
@@ -379,12 +392,22 @@ namespace	Menge
 
 		this->callMethod("onCompile", "()" );
 
+		if( m_physicController )
+		{
+			RigidBody2D::_compile();
+		}
+
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_release()
 	{
 		SceneNode2D::_release();
+
+		if( m_physicController )
+		{
+			RigidBody2D::_release();
+		}
 
 		this->callMethod("onRelease", "()" );
 	}
@@ -402,5 +425,39 @@ namespace	Menge
 	void Entity::setSpeed( const mt::vec2f& _speed )
 	{
 		m_speed = _speed;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::loader( XmlElement * _xml )
+	{
+		SceneNode2D::loader( _xml );
+
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE( "PhysicBody" )
+			{
+				XML_PARSE_ELEMENT( this, &Entity::_loaderPhysic );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::_loaderPhysic( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE( "Shape" )
+			{
+				XML_PARSE_ELEMENT( this, &Entity::_loaderShape );
+			}
+
+			XML_CASE_ATTRIBUTE_NODE("Density", "Value", m_density );
+			XML_CASE_ATTRIBUTE_NODE("Friction", "Value", m_friction );
+			XML_CASE_ATTRIBUTE_NODE("Restitution", "Value", m_restitution );
+		}
+		m_physicController = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY )
+	{
+		this->callEvent( "COLLIDE", "(OOffff)", RigidBody2D::getScript(), _otherObj->getUserData(), _worldX, _worldY, _normalX, _normalY );
 	}
 }

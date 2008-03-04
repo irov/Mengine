@@ -63,7 +63,6 @@ namespace Menge
 		, m_vsync( true )
 		, m_particles( true )
 		, m_sound( true )
-		, m_usePhysic( false )
 		, m_logSystemName( "OgreLogSystem" )
 		, m_renderSystemName( "OgreRenderSystem" )
 		, m_inputSystemName( "OgreInputSystem" )
@@ -72,6 +71,7 @@ namespace Menge
 		, m_physicSystemName( "None" )
 		, m_physicSystem2DName( "None" )
 		, m_physicEngine2D( NULL )
+		, m_physicEngine( NULL )
 	{
 		//ASSERT( m_interface );
 
@@ -112,7 +112,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setParticleSystem( ParticleSystemInterface * _interface )
 	{
-		new ParticleEngine( _interface );
+		 new ParticleEngine( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setPhysicSystem2D( PhysicSystem2DInterface * _interface )
@@ -122,7 +122,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setPhysicSystem( PhysicSystemInterface * _interface )
 	{
-		new PhysicEngine( _interface );
+		m_physicEngine = new PhysicEngine( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPak( const std::string & _pak )
@@ -146,20 +146,21 @@ namespace Menge
 
 		MENGE_LOG("init game ...\n");
 
-		if( m_usePhysic == true )
+		if( m_physicEngine )
 		{
-			Holder<PhysicEngine>::hostage()->init(mt::vec3f(0,-1.0,0));
+			m_physicEngine->init(mt::vec3f(0,-1.0,0));
 		}
 
 		Holder<RenderEngine>::hostage()->initialize( m_renderDriver );
-		mt::vec2f bestRes( m_width, m_height );
+		m_currentResolution.x = m_width;
+		m_currentResolution.y = m_height;
 		if( m_fullScreen )
 		{
-			mt::vec2f bestRes = Holder<RenderEngine>::hostage()->getBestDisplayResolution( m_width, m_height, m_interface->getMonitorAspectRatio() );
+			m_currentResolution = Holder<RenderEngine>::hostage()->getBestDisplayResolution( m_width, m_height, m_interface->getMonitorAspectRatio() );
 		}
 
-		WINDOW_HANDLE winHandle = m_interface->createWindow( Holder<Game>::hostage()->getTitle().c_str(), bestRes.x, bestRes.y, m_fullScreen );
-		Holder<RenderEngine>::hostage()->createRenderWindow( bestRes.x, bestRes.y, m_bits, m_fullScreen, winHandle );
+		WINDOW_HANDLE winHandle = m_interface->createWindow( Holder<Game>::hostage()->getTitle().c_str(), m_currentResolution.x, m_currentResolution.y, m_fullScreen );
+		Holder<RenderEngine>::hostage()->createRenderWindow( m_currentResolution.x, m_currentResolution.y, m_bits, m_fullScreen, winHandle );
 		Holder<InputEngine>::hostage()->initialize( winHandle );
 
 		if( Holder<Game>::hostage()->isContentResolutionFixed() )
@@ -298,9 +299,9 @@ namespace Menge
 	{	
 		Holder<MousePickerSystem>::hostage()->clear();
 
-		if( m_usePhysic == true )
+		if( m_physicEngine )
 		{
-			Holder<PhysicEngine>::hostage()->update( 1.0f/30.0f );// for test physic!
+			m_physicEngine->update( 1.0f/30.0f );// for test physic!
 		}
 
 		if( m_physicEngine2D )
@@ -415,14 +416,18 @@ namespace Menge
 		return m_sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Application::usePhysic() const
+	{
+		if( m_physicEngine )
+		{
+			return true;
+		}
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Application::getVSync() const
 	{
 		return m_vsync;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::usePhysic() const
-	{
-		return m_usePhysic;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onFocus( bool _focus )
@@ -452,21 +457,25 @@ namespace Menge
 		dll = m_interface->loadSystemDLL( m_logSystemName.c_str() );
 		setLogSystem( dll->getInterface<LogSystemInterface>() );
 		m_systemDLLs.push_back( dll );
+		MENGE_LOG( "LogSystem loaded");
 
 		// RenderSystem
 		dll = m_interface->loadSystemDLL( m_renderSystemName.c_str() );
-		setRenderSystem( dll->getInterface<RenderSystemInterface>() );
+		setRenderSystem( dll->getInterface<RenderSystemInterface>() );  
 		m_systemDLLs.push_back( dll );
+		MENGE_LOG( "RenderSystem loaded");
 
 		// InputSystem
 		dll = m_interface->loadSystemDLL( m_inputSystemName.c_str() );
 		setInputSystem( dll->getInterface<InputSystemInterface>() );
 		m_systemDLLs.push_back( dll );
+		MENGE_LOG( "InputSystem loaded");
 
 		// SoundSystem
 		dll = m_interface->loadSystemDLL( m_soundSystemName.c_str() );
 		setSoundSystem( dll->getInterface<SoundSystemInterface>() );
 		m_systemDLLs.push_back( dll );
+		MENGE_LOG( "SoundSystem loaded");
 
 		// ParticleSystem
 		if( m_particleSystemName != "None" )
@@ -474,6 +483,7 @@ namespace Menge
 			dll = m_interface->loadSystemDLL( m_particleSystemName.c_str() );
 			setParticleSystem( dll->getInterface<ParticleSystemInterface>() );
 			m_systemDLLs.push_back( dll );
+			MENGE_LOG( "ParticleSystem loaded");
 		}
 		
 		// PhysicSystem3D
@@ -482,7 +492,7 @@ namespace Menge
 			dll = m_interface->loadSystemDLL( m_physicSystemName.c_str() );
 			setPhysicSystem( dll->getInterface<PhysicSystemInterface>() );
 			m_systemDLLs.push_back( dll );
-			m_usePhysic = true;
+			MENGE_LOG( "PhysicSystem3D loaded");
 		}
 
 		// PhysicSystem2D
@@ -491,6 +501,7 @@ namespace Menge
 			dll = m_interface->loadSystemDLL( m_physicSystem2DName.c_str() );
 			setPhysicSystem2D( dll->getInterface<PhysicSystem2DInterface>() );
 			m_systemDLLs.push_back( dll );
+			MENGE_LOG( "PhysicSystem2D loaded");
 		}
 		
 		return true;
@@ -518,7 +529,7 @@ namespace Menge
 		Holder<Game>::destroy();
 		Holder<ResourceManager>::destroy();
 
-		if ( m_usePhysic == true )
+		if ( m_physicEngine )
 		{
 			Holder<PhysicEngine>::destroy();
 		}
@@ -546,5 +557,10 @@ namespace Menge
 	void Application::onWindowMovedOrResized()
 	{
 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& Application::getCurrentResolution() const
+	{
+		return m_currentResolution;
 	}
 }

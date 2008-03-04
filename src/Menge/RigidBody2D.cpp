@@ -17,6 +17,7 @@ namespace Menge
 	, m_density( 1.0f )
 	, m_friction( 1.0f )
 	, m_restitution( 0.0f )
+	, m_scriptListener( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -24,24 +25,17 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::setPosition( const mt::vec2f& _pos )
-	{
-		m_interface->setPosition( _pos.x, _pos.y );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f RigidBody2D::getPosition() const
-	{
-		const float* pos = m_interface->getPosition();
-		return mt::vec2f( pos[0], pos[1] );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY )
 	{
-		printf( "onCollide!!!!\n" );
+		if( m_scriptListener )
+		{
+			callEvent( "ON_COLLIDE", "(OOffff)", this->getScript(), _otherObj->getUserData(), _worldX, _worldY, _normalX, _normalY );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::loader( XmlElement * _xml )
 	{
+		//SceneNode2D::loader( _xml );
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_NODE( "Shape" )
@@ -71,19 +65,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::render()
-	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RigidBody2D::isRenderable()
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_update( float _timing )
 	{
-		m_interface->setPosition( getWorldPosition().x, getWorldPosition().y );
+		if( !(m_interface->isFrozen() || m_interface->isStatic() || m_interface->isSleeping()) )
+		{
+			const float* pos = m_interface->getPosition();
+			setLocalPosition( mt::vec2f( pos[0], pos[1] ) );
+			const float* orient = m_interface->getOrientation();
+			setLocalDirection( mt::vec2f( orient[0], orient[1] ) );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody2D::_activate()
@@ -97,8 +87,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody2D::_compile()
 	{
-		m_interface = Holder<PhysicEngine2D>::hostage()->createPhysicBody( m_shape, mt::vec2f(0.0f, 0.0f), m_density, m_friction, m_restitution );
+		m_interface = Holder<PhysicEngine2D>::hostage()->createPhysicBody( m_shape, getWorldPosition(), m_density, m_friction, m_restitution );
 		m_interface->setCollisionListener( this );
+		m_interface->setUserData( this );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -106,5 +97,42 @@ namespace Menge
 	{
 		Holder<PhysicEngine2D>::hostage()->destroyPhysicBody( m_interface );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::s_setListener( PyObject * _listener )
+	{
+		m_scriptListener = _listener;
 
+		registerEventListener("ON_COLLIDE", "onCollide", m_scriptListener );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject* RigidBody2D::s_getListener()
+	{
+		return m_scriptListener;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::s_setPosition( float _x, float _y )
+	{
+		m_interface->setPosition( _x, _y  );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f RigidBody2D::s_getPosition()
+	{
+		const float* pos = m_interface->getPosition();
+		return mt::vec2f( pos[0], pos[1] );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::s_applyForce( float _forceX, float _forceY, float _pointX, float _pointY )
+	{
+		m_interface->applyForce( _forceX, _forceY, _pointX, _pointY );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::s_applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY )
+	{
+		m_interface->applyImpulse( _impulseX, _impulseY, _pointX, _pointY );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::s_setOrientation( float _angle )
+	{
+		m_interface->setOrientation( _angle );
+	}
 } // namespace Menge

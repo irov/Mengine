@@ -16,18 +16,26 @@ public:
 	const float * getOrientation() override;
 	void setOrientation( float _angle ) override;
 
-	void setLinearVelocity( float x, float y ) override;
+	void setLinearVelocity( float _x, float _y ) override;
 	const float* getLinearVelocity() override;
-	void setAngularVelocity( float w ) override;
+	void setAngularVelocity( float _w ) override;
 	float getAngularVelocity() override;
-	void applyForce( float forceX, float forceY, float pointX, float pointY ) override;
+	void applyForce( float _forceX, float _forceY, float _pointX, float _pointY ) override;
+	void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY ) override;
 
 	void setCollisionListener( PhysicBody2DCollisionListener* _listener ) override;
+	void setUserData( void* _data ) override;
+	void* getUserData() const override;
+
+	bool isFrozen() const override;
+	bool isSleeping() const override;
+	bool isStatic() const override;
 
 private:
 	b2World* m_world;
 	b2Body* m_body;
 	PhysicBody2DCollisionListener* m_listener;
+	void* m_userData;
 
 	friend void Box2DPhysicSystem::update( float _timing, int _iterations );
 	void _collide( b2Body* _otherBody, b2Contact* _contact );

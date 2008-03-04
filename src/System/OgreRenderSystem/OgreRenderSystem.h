@@ -39,13 +39,14 @@ public:
 	void setWorldMatrix( const float * _world ) override;
 
 	RenderImageInterface* createImage( const char* _name, unsigned int _width, unsigned int _height ) override;
-	RenderImageInterface* createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height ) override;
+	RenderImageInterface* createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera  ) override;
 	RenderImageInterface* loadImage( const TextureDesc&	_desc ) override;
 	RenderVideoStreamInterface* loadImageVideoStream( const char* _filename ) override;
 	void releaseImageVideoStream( RenderVideoStreamInterface* _image ) override;
 
 	void releaseImage( RenderImageInterface* _image ) override;
-	void renderImage(		
+	void renderImage(	
+		const char * _camera,
 		const float * _transform, 
 		const float * _offset,
 		const float * _uv,
@@ -56,6 +57,7 @@ public:
 		EBlendFactor _dst) override;
 
 	void renderImage(		
+		const char * _camera,
 		const float * _transform, 
 		const float * _a,
 		const float * _b,

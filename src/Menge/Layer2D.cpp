@@ -309,4 +309,9 @@ namespace	Menge
 	{
 		return m_viewport.begin + _point;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::setRenderTarget( const std::string& _cameraName )
+	{
+		m_viewport.setCamera( _cameraName );
+	}
 }

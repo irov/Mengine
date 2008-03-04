@@ -4,6 +4,7 @@
 
 #	include <string>
 #	include <vector>
+#	include "math/vec2.h"
 
 class LogSystemInterface;
 class FileSystemInterface;
@@ -24,6 +25,7 @@ namespace Menge
 	class Game;
 	class InputHandler;
 	class PhysicEngine2D;
+	class PhysicEngine;
 
 	//! Application - .
 	/*! 
@@ -73,6 +75,7 @@ namespace Menge
 		const std::string& getResourcePath() const;
 		bool getVSync() const;
 		bool usePhysic() const;
+		const mt::vec2f& getCurrentResolution() const;
 
 	public:
 		void onUpdate( float _timing ) override;
@@ -107,6 +110,7 @@ namespace Menge
 		int m_width;
 		int m_height;
 		int m_bits;
+		mt::vec2f m_currentResolution;
 		bool m_fullScreen;
 		bool m_vsync;
 		std::string m_renderDriver;
@@ -117,6 +121,7 @@ namespace Menge
 		bool m_particles;
 		bool m_sound;
 		bool m_usePhysic;
+		bool m_mouseBounded;
 
 		std::string m_logSystemName;
 		std::string m_renderSystemName;
@@ -127,6 +132,7 @@ namespace Menge
 		std::string m_physicSystem2DName;
 
 		PhysicEngine2D* m_physicEngine2D;
+		PhysicEngine* m_physicEngine;
 
 		typedef std::vector<SystemDLLInterface*> TSystemDLLVector;
 		TSystemDLLVector m_systemDLLs;

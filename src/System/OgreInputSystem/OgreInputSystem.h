@@ -14,6 +14,8 @@ public:
 
 public:
 	bool initialize( WINDOW_HANDLE _winHandle ) override;
+	bool captureMouse( int _x, int _y, int _maxX, int _maxY ) override;
+	void releaseMouse() override;
 
 public:
 	void update() override;

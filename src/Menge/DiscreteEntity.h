@@ -3,6 +3,8 @@
 #	include "math/quat.h"
 #	include <string>
 
+#	include "SceneNode3D.h"
+
 class EntityInterface;
 class SkeletonInterface;
 
@@ -17,9 +19,13 @@ namespace Menge
 	class SceneNode3D;
 
 	class DiscreteEntity
+		: public SceneNode3D
 	{
+		OBJECT_DECLARE(DiscreteEntity);
+
 	public:
-		DiscreteEntity( const std::string & _name );
+		//DiscreteEntity( const std::string & _name );
+		DiscreteEntity();
 		~DiscreteEntity();
 	public:
 		Skeleton * getSkeleton() const;
@@ -31,15 +37,19 @@ namespace Menge
 		//hack ??
 		EntityInterface * get()
 		{
-			return m_interface;
+			return m_entInterface;
 		}
+		////
+		void createRenderToTexture( const std::string& _renderCamera );
 
 	public:
-		void loader( XmlElement * _xml );
-		bool activate();
-		void deactivate();
-		void release();
-
+		virtual void loader( XmlElement * _xml );
+		//virtual bool activate();
+		//virtual void deactivate();
+		virtual bool _activate();
+		virtual void _deactivate();
+		virtual bool _compile();
+		virtual void _release();
 
 	public:
 		SceneNode3D * getParentNode() const;
@@ -49,7 +59,7 @@ namespace Menge
 
 		std::string m_name;
 
-		EntityInterface * m_interface;
+		EntityInterface * m_entInterface;
 
 		Skeleton * m_skeleton;
 

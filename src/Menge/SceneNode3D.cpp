@@ -8,8 +8,6 @@
 
 #	include "Light.h"
 
-#	include "Camera3D.h"
-
 #	include "Interface/RenderSystemInterface.h"
 
 #	include "ObjectImplement.h"
@@ -21,9 +19,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::SceneNode3D()
 		: m_interface(0)
-		, m_entity(0)
-		, m_light(0)
-		, m_camera(0)
+		//, m_entity(0)
+		//, m_light(0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::~SceneNode3D()
@@ -97,25 +94,15 @@ namespace Menge
 		m_interface = Holder<RenderEngine>::hostage()->createSceneNode( name );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::attachEntity( DiscreteEntity * _entity )
+	/*void SceneNode3D::attachEntity( DiscreteEntity * _entity )
 	{
 		m_interface->attachEntity(_entity->get());
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::attachLight( Light * _light )
+	/*void SceneNode3D::attachLight( Light * _entity )
 	{
-		m_interface->attachLight( _light->get() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::attachCamera(Camera3D * _camera)
-	{
-		m_interface->attachCamera( _camera->get() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Camera3D * SceneNode3D::getCamera() const
-	{
-		return m_camera;
-	}
+		m_interface->attachLight( _entity->get() );
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::_addChildren( SceneNode3D * _node )
 	{
@@ -147,13 +134,13 @@ namespace Menge
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER("Value", &SceneNode3D::setLocalOrient);
+				//	XML_CASE_ATTRIBUTE_MEMBER("Value", &SceneNode3D::setLocalOrient);
 				}
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::loaderEntities_( XmlElement * _xml )
+	/*void SceneNode3D::loaderEntities_( XmlElement * _xml )
 	{
 		std::string name;
 
@@ -169,6 +156,7 @@ namespace Menge
 				m_entity = new DiscreteEntity( name );
 				m_entity->setParentNode( this );
 
+			//	m_movables.push_back( entity );
 				XML_PARSE_ELEMENT( m_entity, &DiscreteEntity::loader );
 			}
 		}
@@ -190,32 +178,11 @@ namespace Menge
 				m_light = new Light( name );
 				m_light->setParentNode( this );
 
+				//	m_movables.push_back( entity );
 				XML_PARSE_ELEMENT( m_light, &Light::loader );
 			}
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::loaderCameras_( XmlElement * _xml )
-	{
-		std::string name;
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE("Camera")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-				}
-
-				m_camera = new Camera3D( name );
-				m_camera->setParentNode( this );
-
-				//	m_movables.push_back( entity );
-				XML_PARSE_ELEMENT( m_camera, &Camera3D::loader );
-			}
-		}
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::loader( XmlElement * _xml )
 	{
@@ -228,7 +195,7 @@ namespace Menge
 				XML_PARSE_ELEMENT( this, &SceneNode3D::loaderTransformation_ );
 			}
 
-			XML_CASE_NODE("Entities")
+			/*XML_CASE_NODE("Entities")
 			{
 				XML_PARSE_ELEMENT( this, &SceneNode3D::loaderEntities_ );
 			}
@@ -236,12 +203,8 @@ namespace Menge
 			XML_CASE_NODE("Lights")
 			{
 				XML_PARSE_ELEMENT( this, &SceneNode3D::loaderLights_ );
-			}
+			}*/
 
-			XML_CASE_NODE("Cameras")
-			{
-				XML_PARSE_ELEMENT( this, &SceneNode3D::loaderCameras_ );
-			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -252,7 +215,7 @@ namespace Menge
 			(*it)->activate();
 		}
 */
-		if(m_entity!=NULL)
+		/*if(m_entity!=NULL)
 		{
 			m_entity->activate();
 		}
@@ -260,53 +223,9 @@ namespace Menge
 		if(m_light!=NULL)
 		{
 			m_light->activate();
-		}
-
-		if(m_camera!=NULL)
-		{
-			m_camera->activate();
-		}
+		}*/
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::_deactivate()
-	{
-		if(m_entity!=NULL)
-		{
-			m_entity->deactivate();
-		}
-
-		if(m_light!=NULL)
-		{
-			m_light->deactivate();
-		}
-
-		if(m_camera!=NULL)
-		{
-			m_camera->deactivate();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::_release()
-	{
-		if(m_entity!=NULL)
-		{
-			m_entity->release();
-			delete m_entity;
-		}
-
-		if(m_light!=NULL)
-		{
-			m_light->release();
-			delete m_light;
-		}
-
-		if(m_camera!=NULL)
-		{
-			m_camera->release();
-			delete m_camera;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::render()

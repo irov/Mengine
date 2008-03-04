@@ -274,7 +274,7 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, unsigned int _wid
 	if( error == ERROR_ALREADY_EXISTS )
 	{
 		std::string message = std::string("Another instance of ") + std::string( ansistr ) + std::string(" is already running");
-		::MessageBoxA( NULL, message.c_str(), _name, MB_ICONWARNING );
+		::MessageBoxA( NULL, message.c_str(), ansistr, MB_ICONWARNING );
 		return false;
 	}
 
@@ -300,12 +300,6 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, unsigned int _wid
 
 	m_hWnd = ::CreateWindow("MengeWnd", ansistr, dwStyle,
 		left, top, width, height, NULL, 0, hInstance, (LPVOID)this);
-
-	TRACKMOUSEEVENT mouseEvent;
-	mouseEvent.cbSize = sizeof( TRACKMOUSEEVENT );
-	mouseEvent.dwFlags = TME_LEAVE;
-	mouseEvent.hwndTrack = m_hWnd;
-	::TrackMouseEvent( &mouseEvent );
 
 	::GetWindowInfo( m_hWnd, &m_wndInfo);
 	return static_cast<WINDOW_HANDLE>( m_hWnd ); 

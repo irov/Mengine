@@ -69,6 +69,7 @@ public:
 	virtual void setVisible( bool _visible ) = 0;
 	virtual void setMaterial( const std::string & _material ) = 0;
 	virtual void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material ) = 0;
+	virtual void createRenderToTexture( const char* _cameraName ) = 0;
 };
 
 enum LightType
@@ -173,7 +174,7 @@ public:
 	// create empty render image
 	virtual RenderImageInterface * createImage( const char* _name, unsigned int _width, unsigned int _height ) = 0;
 	// create render target image
-	virtual RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height ) = 0;
+	virtual RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera ) = 0;
 	// загрузка изображения
 	virtual RenderImageInterface * loadImage( const TextureDesc& _desc ) = 0;
 	// удаления изображения
@@ -184,6 +185,7 @@ public:
 	virtual void releaseImageVideoStream( RenderVideoStreamInterface* _image ) = 0;
 	// отрисовка изображения
 	virtual void renderImage(		
+		const char * _camera,
 		const float * _transform, // матрица 3 на 3
 		const float * _offset,	  // смещение, вектор2
 		const float * _uv,		  // текстурные координаты, вектор4, u0, v0, u1, v1
@@ -194,6 +196,7 @@ public:
 		EBlendFactor _dst) = 0;
 
 	virtual void renderImage(		
+		const char * _camera,
 		const float * _transform, 
 		const float * _a,
 		const float * _b,

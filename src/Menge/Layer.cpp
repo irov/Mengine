@@ -54,4 +54,9 @@ namespace Menge
 	{
 		//Empty
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer::setRenderTarget( const std::string& _cameraName )
+	{
+		//Empty
+	}
 }

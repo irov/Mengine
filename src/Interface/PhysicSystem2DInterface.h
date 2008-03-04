@@ -17,13 +17,20 @@ public:
 	virtual const float * getOrientation() = 0;
 	virtual void setOrientation( float _angle ) = 0;
 
-	virtual void setLinearVelocity( float x, float y ) = 0;
+	virtual void setLinearVelocity( float _x, float _y ) = 0;
 	virtual const float* getLinearVelocity() = 0;
-	virtual void setAngularVelocity( float w ) = 0;
+	virtual void setAngularVelocity( float _w ) = 0;
 	virtual float getAngularVelocity() = 0;
-	virtual void applyForce( float forceX, float forceY, float pointX, float pointY ) = 0;
+	virtual void applyForce( float _forceX, float _forceY, float _pointX, float _pointY ) = 0;
+	virtual void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY ) = 0;
 
 	virtual void setCollisionListener( PhysicBody2DCollisionListener* ) = 0;
+	virtual void setUserData( void* ) = 0;
+	virtual void* getUserData() const = 0;
+
+	virtual bool isFrozen() const = 0;
+	virtual bool isSleeping() const = 0;
+	virtual bool isStatic() const = 0;
 };
 
 class PhysicSystem2DInterface

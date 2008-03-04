@@ -9,18 +9,25 @@
 #	include "ResourceManager.h"
 #	include "ResourceMesh.h"
 #	include "ResourceSkeleton.h"
+#	include "ObjectImplement.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DiscreteEntity::DiscreteEntity( const std::string & _name )
-		: m_name(_name)
+	OBJECT_IMPLEMENT(DiscreteEntity);
+	//////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////
+//	DiscreteEntity::DiscreteEntity( const std::string & _name )
+	DiscreteEntity::DiscreteEntity( )
+		: m_name("Entity")
 		, m_resourceMesh(0)
 		, m_resourceSkeleton(0)
 		, m_castShadows(false)
 		, m_receiveShadows(false)
 		, m_skeleton(0)
 		, m_parent(0)
+		, m_entInterface( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -49,8 +56,23 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DiscreteEntity::activate()
+	bool DiscreteEntity::_activate()
 	{
+		if( SceneNode3D::_activate() == false )
+		{
+			return false;
+		}
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool DiscreteEntity::_compile()
+	{
+
+		if( SceneNode3D::_compile() == false )
+		{
+			return false;
+		}
+
 		m_resourceMesh = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceMesh>( m_resourcenameMesh );
@@ -79,30 +101,37 @@ namespace Menge
 
 		const std::string & mesh = m_resourceMesh->getMeshName();
 
-		m_interface = Holder<RenderEngine>::hostage()->createEntity(m_name, mesh);
+		m_entInterface = Holder<RenderEngine>::hostage()->createEntity(m_name, mesh);
 
-		m_interface->setCastsShadow(m_castShadows);
+		m_entInterface->setCastsShadow(m_castShadows);
 
-		SkeletonInterface * _interface = m_interface->getSkeleton();
+		SkeletonInterface * _interface = m_entInterface->getSkeleton();
 
 		if(_interface != NULL)
 		{
 			m_skeleton = new Skeleton(_interface);
 		}
 
-		this->getParentNode()->attachEntity(this);
+		m_interface->attachEntity( m_entInterface );
+		//this->getParentNode()->attachEntity(this);
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DiscreteEntity::deactivate()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DiscreteEntity::release()
+	void DiscreteEntity::_release()
 	{
 		delete m_skeleton;
-		Holder<RenderEngine>::hostage()->releaseEntity( m_interface );
+		Holder<RenderEngine>::hostage()->releaseEntity( m_entInterface );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	/*void DiscreteEntity::release()
+	{
+
+	}*/
+	//////////////////////////////////////////////////////////////////////////
+	void DiscreteEntity::_deactivate()
+	{
+		SceneNode3D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Skeleton * DiscreteEntity::getSkeleton() const
@@ -112,22 +141,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::setCastsShadow( bool _castsShadow )
 	{
-		return m_interface->setCastsShadow( _castsShadow );
+		return m_entInterface->setCastsShadow( _castsShadow );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::setVisible( bool _visible )
 	{
-		return m_interface->setVisible( _visible );
+		return m_entInterface->setVisible( _visible );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::setMaterial( const std::string & _material )
 	{
-		return m_interface->setMaterial( _material.c_str() );
+		return m_entInterface->setMaterial( _material.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::setSubEntityMaterial( const std::string & _subEntity, const std::string & _material )
 	{
-		return m_interface->setSubEntityMaterial( _subEntity.c_str(), _material.c_str() );
+		return m_entInterface->setSubEntityMaterial( _subEntity.c_str(), _material.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void DiscreteEntity::createRenderToTexture( const std::string& _renderCamera )
+	{
+		m_entInterface->createRenderToTexture( _renderCamera.c_str() );
+	}
 }

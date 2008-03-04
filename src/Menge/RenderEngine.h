@@ -40,7 +40,7 @@ namespace Menge
 		Camera3D * getRenderCamera();
 
 		RenderImageInterface * createImage( const char* _name, unsigned int _width, unsigned int _height );
-		RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height );
+		RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera  );
 		RenderImageInterface * loadImage( const TextureDesc & _desc );
 		RenderImageInterface * loadImage( const std::string & _filename, size_t _filter );
 		RenderVideoStreamInterface * loadImageVideoStream( const std::string& _filename );

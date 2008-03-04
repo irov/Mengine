@@ -55,13 +55,13 @@ void Box2DPhysicSystem::destroyWorld()
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::update( float _timing, int _iterations )
 {
-	/*for( b2Body* body = m_world->GetBodyList(); body; body = body->GetNext() )
+	for( b2Body* body = m_world->GetBodyList(); body; body = body->GetNext() )
 	{
 		body->WakeUp();
-	}*/
+	}
 	m_world->Step( _timing, _iterations );
 	//m_world->Step( 0.0f, 1 );
-	//m_world->m_broadPhase->Validate();
+	m_world->m_broadPhase->Validate();
 
 	for( b2Contact* c = m_world->GetContactList(); c; c = c->GetNext() )
 	{
@@ -147,6 +147,8 @@ PhysicBody2DInterface* Box2DPhysicSystem::createPhysicBodyConvex( int _pointsNum
 	bodyDef.AddShape( &shape );
 	bodyDef.position.Set( _posX, _posY );
 	bodyDef.rotation = _angle;
+	//bodyDef.allowSleep = false;
+	bodyDef.linearDamping = 0.02f;
 
 	return static_cast<PhysicBody2DInterface*>( new Box2DPhysicBody( m_world, bodyDef ) );
 }

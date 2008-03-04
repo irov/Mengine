@@ -1,9 +1,10 @@
 #	include "OgreEntity.h"
 #	include "OgreSkeleton.h"
 //////////////////////////////////////////////////////////////////////////
-OgreEntity::OgreEntity( Ogre::Entity * _entity )
+OgreEntity::OgreEntity( Ogre::Entity * _entity, Ogre::SceneManager* _sceneMgr )
 : m_entity( _entity )
 , m_skeleton(0)
+, m_sceneMgr( _sceneMgr )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -67,6 +68,27 @@ void OgreEntity::setSubEntityMaterial( const std::string & _subEntity, const std
             ogreSubEntity->setMaterialName( _material );
 		}
 	}
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreEntity::createRenderToTexture( const char* _cameraName )
+{
+	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual( Ogre::String("rtt") + Ogre::String( _cameraName ), "Default", Ogre::TEX_TYPE_2D,
+		1024, 768, 0, 0, Ogre::PF_X8R8G8B8, Ogre::TU_RENDERTARGET, NULL );
+	Ogre::Camera* rttCam = NULL;
+	if( !m_sceneMgr->hasCamera( _cameraName ) )
+	{
+		rttCam = m_sceneMgr->createCamera( _cameraName );
+	}
+	else
+	{
+		rttCam = m_sceneMgr->getCamera( _cameraName );
+	}
+	texture->getBuffer()->getRenderTarget()->addViewport( rttCam );
+	texture->getBuffer()->getRenderTarget()->setActive( false );
+	Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().create( Ogre::String("rttMat") + Ogre::String( _cameraName ), "Default" );
+	Ogre::TextureUnitState* t = mat->getTechnique(0)->getPass(0)->createTextureUnitState( Ogre::String("rtt") + Ogre::String( _cameraName ) );
+	t->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+	m_entity->setMaterialName( Ogre::String("rttMat") + Ogre::String( _cameraName ) );
 }
 //////////////////////////////////////////////////////////////////////////
 /*bool OgreEntity::hasSkeleton() const 

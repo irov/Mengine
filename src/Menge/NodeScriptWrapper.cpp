@@ -32,6 +32,8 @@
 
 #	include "Layer2D.h"
 
+#	include "RigidBody2D.h"
+
 
 #	include "Color.h"
 #	include "C4AI.h"
@@ -39,6 +41,7 @@
 #	include "CornersAI.h"
 
 #	include "Camera3D.h"
+#	include "DiscreteEntity.h"
 
 #	include "SoundEngine.h"
 #	include "LogEngine.h"
@@ -207,7 +210,7 @@ namespace Menge
 				resourceImage = new ResourceImageDynamic( _name );
 				//FIXME
 				RenderImageInterface * imageInterface
-					= Holder<RenderEngine>::hostage()->createRenderTargetImage( _name.c_str(), rect[2] - rect[0], rect[3] - rect[1] );
+					= Holder<RenderEngine>::hostage()->createRenderTargetImage( _name.c_str(), rect[2] - rect[0], rect[3] - rect[1], "defaultCamera" );
 
 				resourceImage->setRenderImage( imageInterface );
 
@@ -297,6 +300,10 @@ namespace Menge
 		{
 			Holder<Application>::hostage()->minimizeWindow();
 		}
+		static void s_setMouseBounded( bool _bounded )
+		{
+			Holder<InputEngine>::hostage()->setMouseBounded( _bounded );
+		}
 
 	}
 
@@ -312,9 +319,11 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( Point );
 	SCRIPT_CLASS_WRAPPING( SceneNode3D );
 //	SCRIPT_CLASS_WRAPPING( Camera3D );
+	SCRIPT_CLASS_WRAPPING( DiscreteEntity );
 	SCRIPT_CLASS_WRAPPING( RigidBody3D );
 	SCRIPT_CLASS_WRAPPING( Layer3D );
-	SCRIPT_CLASS_WRAPPING( CapsuleController );
+	SCRIPT_CLASS_WRAPPING( RigidBody2D );
+//	SCRIPT_CLASS_WRAPPING( CapsuleController );
 
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -345,6 +354,10 @@ namespace Menge
 		pybind::class_<Color>("Color")
 			.def( pybind::init<float,float,float,float>() )
 			.def( "set", &Color::set )
+			.def( "getA", &Color::getA )
+			.def( "getR", &Color::getR )
+			.def( "getG", &Color::getG )
+			.def( "getB", &Color::getB )
 			;
 
 		pybind::class_<ReversiAI>("ReversiAI")
@@ -447,6 +460,7 @@ namespace Menge
 
 		pybind::proxy_<SceneNode2D, pybind::bases<Node, Allocator2D, NodeRenderable>>("SceneNode2D", false)
 				.def( "getScreenPosition", &SceneNode2D::getScreenPosition )
+				.def( "getParent", &SceneNode2D::getParent )
 			;
 
 		pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
@@ -467,6 +481,8 @@ namespace Menge
 
 		{
 			pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
+				//.def( "addCamera", &Layer3D::addCamera )
+				.def( "getCamera", &Layer3D::getCamera )	
 				.def( "addRigidBody", &Layer3D::addRigidBody )
 				.def( "getRigidBody", &Layer3D::getRigidBody )
 				.def( "addController", &Layer3D::addController )
@@ -494,7 +510,19 @@ namespace Menge
 				.def( "getFilteredPosition", &CapsuleController::getFilteredPosition )
 				;
 
+			pybind::proxy_<Camera3D, pybind::bases<SceneNode3D>>("Camera3D", false)
+				.def( "setPosition", &Camera3D::setPosition )
+				.def( "lookAt", &Camera3D::lookAt )
+				.def( "yaw", &Camera3D::yaw )
+				.def( "pitch", &Camera3D::pitch )
+				.def( "roll", &Camera3D::roll )
+				;
 
+			pybind::proxy_<DiscreteEntity, pybind::bases<SceneNode3D>>("DiscreteEntity", false)
+				.def( "createRenderToTexture", &DiscreteEntity::createRenderToTexture )
+				;
+
+		
 	/*	pybind::proxy_<Entity3d, pybind::bases<Node>>("Entity3d", false)
 			.def( "play", &Entity3d::play )
 		;
@@ -538,6 +566,7 @@ namespace Menge
 				.def( "getOutlineColor", &TextField::getOutlineColor )
 				.def( "getLength", &TextField::getLength )
 				.def( "setMaxLen", &TextField::setMaxLen )
+				.def( "setListener", &TextField::setListener )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)
@@ -557,6 +586,7 @@ namespace Menge
 				.def( "getNode", &Scene::getNode )
 				.def( "getLayerSize", &Scene::getLayerSize )
 				.def( "setOffsetPosition", &Scene::setOffsetPosition )
+				.def( "setRenderTarget", &Scene::setRenderTarget )
 				;
 
 			pybind::proxy_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot", false)
@@ -596,6 +626,17 @@ namespace Menge
 					.def( "getAnimationFactor", &Animation::getAnimationFactor )
 					;
 			}
+
+			pybind::proxy_<RigidBody2D, pybind::bases<SceneNode2D>>("RigidBody2D", false)
+				.def( "setListener", &RigidBody2D::s_setListener )
+				.def( "getListener", &RigidBody2D::s_getListener )
+				.def( "setPosition", &RigidBody2D::s_setPosition )
+				.def( "getPosition", &RigidBody2D::s_getPosition )
+				.def( "applyForce", &RigidBody2D::s_applyForce )
+				.def( "applyImpulse", &RigidBody2D::s_applyImpulse )
+				.def( "setOrientation", &RigidBody2D::s_setOrientation )
+				;
+
 		}		
 
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
@@ -631,6 +672,7 @@ namespace Menge
 		pybind::def( "deleteFolder", &ScriptMethod::deleteFolder );
 		pybind::def( "screenToLocal", &ScriptMethod::screenToLocal );
 		pybind::def( "minimizeWindow", &ScriptMethod::minimizeWindow );
+		pybind::def( "setMouseBounded", &ScriptMethod::s_setMouseBounded );
 
 	}
 }

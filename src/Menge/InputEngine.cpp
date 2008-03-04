@@ -1,5 +1,6 @@
 #	include "InputEngine.h"
 #	include "InputHandler.h"
+#	include "Application.h"
 
 namespace Menge
 {
@@ -8,6 +9,7 @@ namespace Menge
 		: m_interface( _interface )
 		, m_mouseX(-1)
 		, m_mouseY(-1)
+		, m_mouseBounded( false )
 	{
 		Holder<InputEngine>::keep(this);
 	}
@@ -38,13 +40,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	int InputEngine::getMouseX() const
 	{
-		//return m_interface->getMouseX();
+		if( m_mouseBounded )
+		{
+			return m_interface->getMouseX();
+		}
 		return m_mouseX;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int InputEngine::getMouseY() const
 	{
-		//return m_interface->getMouseY();
+		if( m_mouseBounded )
+		{
+			return m_interface->getMouseY();
+		}
 		return m_mouseY;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -72,5 +80,23 @@ namespace Menge
 	{
 		m_mouseX = _x;
 		m_mouseY = _y;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void InputEngine::setMouseBounded( bool _bounded )
+	{
+		if( m_mouseBounded == _bounded ) return;
+
+		m_mouseBounded = _bounded;
+
+		if( m_mouseBounded )
+		{
+			const mt::vec2f& res = Holder<Application>::hostage()->getCurrentResolution();
+			m_interface->captureMouse( m_mouseX, m_mouseY, res.x, res.y );
+		}
+		else
+		{
+			m_interface->releaseMouse();
+		}
+
 	}
 }

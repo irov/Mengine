@@ -35,6 +35,7 @@ namespace     Menge
 		, m_outlineImage( 0 )
 		, m_maxWidth( 2048.f )
 		, m_charOffset( 0.0f )
+		, m_listener( NULL )
 	{
 		m_outlineFontName.clear();
 	}
@@ -70,9 +71,6 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_deactivate()
 	{
-		this->registerEvent("COLOR_END", "onColorEnd" );
-		this->registerEvent("COLOR_STOP", "onColorStop" );
-
 		SceneNode2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -217,13 +215,15 @@ namespace     Menge
 			if( m_changingColorTime < _timing )
 			{
 				m_color = m_newColor;
+				m_outlineColor = m_newOutlineColor;
 				m_changingColor = false;
-				this->callEvent( "COLOR_END", "()" );
+				callEvent( "COLOR_END", "(O)", this->getScript() );
 			}
 			else
 			{
 				float d = _timing / m_changingColorTime;
 				m_color = m_newColor * d + m_color * ( 1.0f - d );
+				m_outlineColor = m_newOutlineColor * d + m_outlineColor * ( 1.0f - d );
 				m_changingColorTime -= _timing;
 			}
 		}
@@ -257,7 +257,7 @@ namespace     Menge
 
 		if( m_changingColor )
 		{
-			this->callEvent( "COLOR_STOP", "()" );
+			callEvent( "COLOR_STOP", "(O)", this->getScript() );
 		}
 
 		m_changingColor = true;
@@ -267,11 +267,13 @@ namespace     Menge
 	{
 		m_newColor = m_color;
 		m_newColor.a = _alpha;
+		m_newOutlineColor = m_outlineColor;
+		m_newOutlineColor.a = _alpha;
 		m_changingColorTime = _time;
 
 		if( m_changingColor )
 		{
-			this->callEvent( "COLOR_STOP", "()" );
+			callEvent( "COLOR_STOP", "(O)", this->getScript() );
 		}
 
 		m_changingColor = true;
@@ -285,6 +287,7 @@ namespace     Menge
 	void TextField::setAlpha( float _alpha )
 	{
 		m_color.a = _alpha;
+		m_outlineColor.a = _alpha;	// outline too
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Color& TextField::getColor() const
@@ -413,5 +416,12 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_debugRender()
 	{ 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setListener( PyObject* _listener )
+	{
+		m_listener = _listener;
+		registerEventListener("COLOR_END", "onColorEnd", m_listener );
+		registerEventListener("COLOR_STOP", "onColorStop", m_listener );
 	}
 }

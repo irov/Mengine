@@ -115,6 +115,7 @@ namespace Menge
 		TListDeclaration m_listArrowsDeclaration;
 		TListDeclaration m_listScenesDeclaration;
 		TListDeclaration m_listResourceDeclaration;
+		TListDeclaration m_listResourceLocation;
 		
 		std::string m_pathResource;
 		std::string m_pathScripts;

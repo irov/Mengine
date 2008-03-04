@@ -188,8 +188,6 @@ bool OgreFileSystem::deleteFolder( const char* _path )
 //////////////////////////////////////////////////////////////////////////
 bool OgreFileSystem::changeDir( const char* _path )
 {
-	// needed for some plugins
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( _path, "FileSystem", "Default",true );
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
 	if( !_chdir( _path ) )
 	{
@@ -198,4 +196,17 @@ bool OgreFileSystem::changeDir( const char* _path )
 #else
 #endif
 	return false;
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreFileSystem::addResourceLocation( const char* _path )
+{
+	char dir[MAX_PATH];
+	::GetCurrentDirectoryA( MAX_PATH, dir );
+
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( Ogre::String(dir) + Ogre::String(_path), "FileSystem", "Default", false );
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreFileSystem::initResources()
+{
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
 }

@@ -24,6 +24,8 @@ public:
 	bool createFolder( const char* _path ) override;
 	bool deleteFolder( const char * _path ) override;
 	bool changeDir( const char* _path ) override;
+	void addResourceLocation( const char* _path ) override;
+	void initResources() override;
 
 private:
 	Ogre::Archive * m_arch;

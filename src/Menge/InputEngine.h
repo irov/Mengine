@@ -34,10 +34,14 @@ namespace Menge
 
 		void setMousePos( int _x, int _y );
 
+		void setMouseBounded( bool _bounded );
+		bool getMouseBounded() const;
+
 	protected:
 		int m_mouseX;
 		int m_mouseY;
 		InputSystemInterface * m_interface;
 		InputHandler * m_handle;
+		bool m_mouseBounded;
 	};
 }

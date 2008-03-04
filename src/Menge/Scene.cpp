@@ -7,6 +7,7 @@
 #	include "ScriptEngine.h"
 #	include "XmlEngine.h"
 
+#	include "Layer2D.h"
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -267,6 +268,23 @@ namespace	Menge
 		++it)
 		{
 			static_cast<Layer*>(*it)->setOffsetPosition( m_offsetPosition );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::_render()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::setRenderTarget( const std::string& _cameraName )
+	{
+		for( TListChildren::iterator
+			it = m_listChildren.begin(),
+			it_end = m_listChildren.end();
+		it != it_end;
+		++it)
+		{
+			static_cast<Layer*>(*it)->setRenderTarget( _cameraName );
 		}
 	}
 }

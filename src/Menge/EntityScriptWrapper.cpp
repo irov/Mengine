@@ -93,6 +93,7 @@ namespace Menge
 			.def( "scaleStop", &Entity::scaleStop )
 			.def( "setSpeed", &Entity::setSpeed )
 			//.def( "setAcceleration", &Entity::setAcceleration )
+			.def( "applyForce", &Entity::s_applyForce )
 			;
 
 		pybind::def( "createEntity", &ScriptMethod::createEntity );

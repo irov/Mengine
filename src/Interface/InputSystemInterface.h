@@ -14,6 +14,8 @@ class InputSystemInterface
 {
 public:
 	virtual bool initialize( WINDOW_HANDLE _winHandle ) = 0;
+	virtual bool captureMouse( int _x, int _y, int _maxX, int _maxY ) = 0;
+	virtual void releaseMouse() = 0;
 	virtual void update() = 0;
 	virtual void destroy() = 0;
 

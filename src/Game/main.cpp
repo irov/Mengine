@@ -11,7 +11,7 @@
 #	include <sstream>
 #	include <io.h>
 
-#include "../Menge/Application.h"
+#include "..\Menge\Application.h"
 
 //#define API_PLATFORM	"WinApplication"
 
@@ -22,6 +22,11 @@ void RedirectIOToConsole();
 int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in_opt LPSTR lpCmdLine, __in int nShowCmd )
 #	endif
 {
+#ifndef _CONSOLE
+	UNREFERENCED_PARAMETER( hInstance );
+	UNREFERENCED_PARAMETER( hPrevInstance );
+	UNREFERENCED_PARAMETER( nShowCmd );
+#endif	
 #ifdef _DEBUG
 	const char * application_dll  = "Systems/WinApplication_d.dll";
 	const char * config_file = "application_d.xml";
@@ -97,7 +102,7 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	else
 	{
 		//result = app->init( "application.xml", 0 );
-		result = app.initialize( config_file, 0 );
+		result = app.initialize( config_file, "" );
 	}
 #	else
 	//Menge::Application app( platform );

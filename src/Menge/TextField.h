@@ -106,6 +106,8 @@ namespace Menge
 
 		const mt::vec2f& getLength() const;
 
+		void setListener( PyObject* _listener );
+
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;
 		void loader( XmlElement * _xml ) override;
@@ -129,6 +131,7 @@ namespace Menge
 		float m_changingColorTime;
 		bool m_changingColor;
 		Color m_newColor;
+		Color m_newOutlineColor;
 
 		Color m_color;
 		Color m_outlineColor;
@@ -143,6 +146,8 @@ namespace Menge
 		float m_charOffset;
 		ResourceImage * m_outlineImage;
 		std::string m_outlineFontName;
+
+		PyObject* m_listener;
 
 		struct Line
 		{

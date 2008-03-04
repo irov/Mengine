@@ -131,7 +131,7 @@ LightInterface * OgreRenderSystem::createLight( const char * _name )
 EntityInterface * OgreRenderSystem::createEntity( const char * _name, const char * _mesh )
 {
 	Ogre::Entity * entity = m_sceneMgr->createEntity( _name, _mesh );
-	EntityInterface * ent = new OgreEntity(entity);
+	EntityInterface * ent = new OgreEntity(entity, m_sceneMgr );
 	return ent;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -199,15 +199,14 @@ bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, b
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
 
 	Ogre::Camera* sceneCam = m_sceneMgr->createCamera("defaultCamera");
+	sceneCam->setPosition( 0.0f, 200.0f, 200.0f );
+	sceneCam->lookAt( 0.0f, 0.0f, 0.0f );
+	sceneCam->setFarClipDistance( 1000.0f );
+	sceneCam->setNearClipDistance( 0.2f );
 	m_viewport = m_renderWindow->addViewport( sceneCam );
+	//m_viewport->setBackgroundColour( Ogre::ColourValue::White );
 
 	m_rootSceneNode = new OgreSceneNode( m_sceneMgr->getRootSceneNode(), 0 );
-	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\bin\\Game\\GUITest", "FileSystem", "Default", true );
-	//Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
-	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\root\\Game\\ZombieTest", "FileSystem", "Default", true );
-	//Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\root\\Game\\ZombieTest", "FileSystem", "default", true );
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
 
 	// setup GUI system
 	/*m_GUIRenderer = new CEGUI::OgreCEGUIRenderer(m_renderWindow, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, m_sceneMgr);
@@ -222,7 +221,7 @@ bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, b
 	CEGUI::Window* sheet = CEGUI::WindowManager::getSingleton().loadWindowLayout( (CEGUI::utf8*)"ogregui.layout"); 
 	m_GUISystem->setGUISheet(sheet);*/
 
-	m_sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
+	//m_sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
 
 	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
 
@@ -286,7 +285,8 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 		Ogre::Image::Box imagebox( wrect.left, wrect.top, wrect.right, wrect.bottom );
 		static_cast<OgreRenderImage*>( _image )->m_texture->getBuffer()->blit(pixb, imagebox, Ogre::Image::Box(0, 0, _image->getWidth(), _image->getHeight() ));
 	}
-	
+	m_renderWindow->removeViewport(0);
+	m_renderWindow->addViewport( sceneCam );
 	Ogre::TextureManager::getSingleton().remove("__shot__");
 }
 //////////////////////////////////////////////////////////////////////////
@@ -315,9 +315,14 @@ RenderImageInterface* OgreRenderSystem::createImage( const char* _name, unsigned
 	return new OgreRenderImage( _name, _width, _height, Ogre::TU_DEFAULT, this );
 }
 //////////////////////////////////////////////////////////////////////////
-RenderImageInterface* OgreRenderSystem::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height )
+RenderImageInterface* OgreRenderSystem::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera  )
 {
-	return new OgreRenderImage( _name, _width, _height, Ogre::TU_RENDERTARGET, this );
+	OgreRenderImage* image = new OgreRenderImage( _name, _width, _height, Ogre::TU_RENDERTARGET, this );
+	//Ogre::Camera* rttCamera = m_sceneMgr->createCamera( _name );
+	//m_renderWindow->addViewport( rttCamera );
+	//rttCamera->
+	//image->getTexture()->getBuffer()->getRenderTarget()->addViewport( rttCamera );
+	return image;
 }
 //////////////////////////////////////////////////////////////////////////
 RenderImageInterface* OgreRenderSystem::loadImage( const TextureDesc&	_desc )
@@ -371,6 +376,7 @@ void OgreRenderSystem::releaseImage( RenderImageInterface* _image )
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::renderImage(		
+				 const char * _camera,
 				 const float * _transform, 
 				 const float * _offset,
 				 const float * _uv,
@@ -388,13 +394,15 @@ void OgreRenderSystem::renderImage(
 
 	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
 	{
+		Ogre::Viewport* viewport = m_sceneMgr->getCamera( _camera )->getViewport();
 		Ogre::Texture * texture = image->getTexture();
 		float z = m_spriteMgr->getCurrentZ();
-		m_spriteMgr->addQuad1(m_contentResolution,*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color, (Ogre::SceneBlendFactor)_src, (Ogre::SceneBlendFactor)_dst);
+		m_spriteMgr->addQuad1(viewport, m_contentResolution,*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color, (Ogre::SceneBlendFactor)_src, (Ogre::SceneBlendFactor)_dst);
 	}
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::renderImage(		
+		const char * _camera,
 		const float * _transform, 
 		const float * _a,
 		const float * _b,
@@ -413,9 +421,11 @@ void OgreRenderSystem::renderImage(
 	}
 	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
 	{
+		Ogre::Viewport* viewport = m_sceneMgr->getCamera( _camera )->getViewport();
 		Ogre::Texture * texture = image->getTexture();
 		float z = m_spriteMgr->getCurrentZ();
 		m_spriteMgr->addQuad2(
+			viewport,
 			m_contentResolution,
 			*(Ogre::Vector4*)_uv,
 			*(Ogre::Matrix3*)_transform,

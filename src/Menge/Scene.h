@@ -58,10 +58,13 @@ namespace Menge
 		void _update( float _timing ) override;
 		void _release() override;
 
+		void _render() override;
+
 		void _addChildren( Layer * _layer ) override;
 
 	public:
 		void setOffsetPosition( const mt::vec2f& _offset );
+		void setRenderTarget( const std::string& _cameraName );
 
 	private:
 

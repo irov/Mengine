@@ -112,24 +112,13 @@ void OgreRenderSpriteManager::renderQueueEnded(
 {
 	if (afterQueue && queueGroupId == targetQueue)
 	{
-		prepareForRender();
+		//prepareForRender();
 		doRender();
 		isSorted = true;
 		quadList.clear();
 	}
 }
-//////////////////////////////////////////////////////////////////////////
-void OgreRenderSpriteManager::Start()
-{
-	currentZ = 1.0f;
-}
-//////////////////////////////////////////////////////////////////////////
-void OgreRenderSpriteManager::End()
-{
-	doRender();
-	isSorted = true;
-	quadList.clear();
-}
+
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::prepareForRender()
 {
@@ -185,7 +174,8 @@ void OgreRenderSpriteManager::prepareForRender()
 	m_renderSys->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSpriteManager::addQuad1(const Ogre::Vector2 & _contentRes,
+void OgreRenderSpriteManager::addQuad1( Ogre::Viewport* _viewport,
+									   const Ogre::Vector2 & _contentRes,
 									   const Ogre::Vector4 & _uv,
 									   const Ogre::Matrix3 & _transform,
 									   const Ogre::Vector2 & _offset,
@@ -204,6 +194,8 @@ void OgreRenderSpriteManager::addQuad1(const Ogre::Vector2 & _contentRes,
   	float heigth = _contentRes.y;
 
 	//FIXME:
+
+	quad.viewport = _viewport;
 
 	quad.points[0].x = _transform[0][0] * _offset[0] + _transform[1][0] * _offset[1] + _transform[2][0];
 	quad.points[0].y = _transform[0][1] * _offset[0] + _transform[1][1] * _offset[1] + _transform[2][1];
@@ -242,7 +234,8 @@ void OgreRenderSpriteManager::addQuad1(const Ogre::Vector2 & _contentRes,
 	quadList.push_back(quad);
 }
 
-void OgreRenderSpriteManager::addQuad2(const Ogre::Vector2 & _contentRes,
+void OgreRenderSpriteManager::addQuad2( Ogre::Viewport* _viewport,
+									   const Ogre::Vector2 & _contentRes,
 									   const Ogre::Vector4 & _uv,
 									   const Ogre::Matrix3 & _transform,
 									   const Ogre::Vector2 & _a,
@@ -262,6 +255,8 @@ void OgreRenderSpriteManager::addQuad2(const Ogre::Vector2 & _contentRes,
   	float heigth = _contentRes.y;
 
 	//FIXME:
+
+	quad.viewport = _viewport;
 
 	quad.points[0].x = _transform[0][0] * _a[0] + _transform[1][0] * _a[1] + _transform[2][0];
 	quad.points[0].y = _transform[0][1] * _a[0] + _transform[1][1] * _a[1] + _transform[2][1];
@@ -405,12 +400,17 @@ void OgreRenderSpriteManager::doRender(void)
 
 	size_t bufferPos = 0;
 	bool first = true;
+	bool changeViewport = false;
+	//Ogre::Viewport* main = m_renderSys->_getViewport();
+	//bool debug = false;
 
 	QuadList::iterator it = quadList.begin();
 
 	while( it != quadList.end() )
 	{
 		currTexture = it->texture;
+		currViewport = it->viewport;
+		//currViewport = m_renderSys->_getViewport();
 		renderOp.vertexData->vertexStart = bufferPos;
 		Ogre::SceneBlendFactor src = it->source;
 		Ogre::SceneBlendFactor dst = it->dest;
@@ -419,7 +419,13 @@ void OgreRenderSpriteManager::doRender(void)
 		{
 			const QuadInfo& quad = (*it);
 
-			if ( currTexture != quad.texture )
+			if( currViewport != quad.viewport )
+			{
+				changeViewport = true;
+				//currViewport = quad.viewport;
+			}
+
+			if ( (currTexture != quad.texture) || changeViewport )
 			{
 				break;
 			}
@@ -429,7 +435,13 @@ void OgreRenderSpriteManager::doRender(void)
 
 		renderOp.vertexData->vertexCount = bufferPos - renderOp.vertexData->vertexStart;
 		
-		//m_renderSys->_setSceneBlending(it->source, it->dest);
+		//if( debug )
+		//	m_renderSys->_setViewport( main );
+		//else
+			m_renderSys->_setViewport( currViewport );
+		//debug = !debug;
+		changeViewport = false;
+
 		m_renderSys->_setSceneBlending( src, dst );
 
 		m_renderSys->_setTexture( 0, true, currTexture );

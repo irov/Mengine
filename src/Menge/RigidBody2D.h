@@ -9,6 +9,7 @@ class PhysicBody2DInterface;
 
 namespace Menge
 {
+	//class PyObject;
 
 	class RigidBody2D
 		: public SceneNode2D
@@ -20,31 +21,38 @@ namespace Menge
 		RigidBody2D();
 		virtual ~RigidBody2D();
 
-		mt::vec2f getPosition() const;
-		void setPosition( const mt::vec2f& _pos );
-
-		void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) override;
+		virtual void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) override;
 
 	public:
-		void render() override;
-		bool isRenderable() override;
-		void loader( XmlElement * _xml ) override;
+		virtual void loader( XmlElement * _xml ) override;
+
+	// scripted
+	public:
+		void s_setListener( PyObject * _listener );
+		PyObject* s_getListener();
+		void s_setPosition( float _x, float _y );
+		mt::vec2f s_getPosition();
+		void s_applyForce( float _forceX, float _forceY, float _pointX, float _pointY );
+		void s_applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY );
+		void s_setOrientation( float _angle );
 
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
-		bool _compile() override;
+		virtual bool _compile() override;
 		void _release() override;
-		void _update( float _timing ) override;
+		virtual void _update( float _timing ) override;
 
-	private:
-		PhysicBody2DInterface* m_interface;
-		mt::polygon m_shape;
+		void _loaderShape( XmlElement * _xml );
 		float m_density;
 		float m_friction;
 		float m_restitution;
+		mt::polygon m_shape;
 
-		void _loaderShape( XmlElement * _xml );
+	private:
+		PhysicBody2DInterface* m_interface;
+		PyObject* m_scriptListener;
+
 	};
 
 }	// namespace Menge

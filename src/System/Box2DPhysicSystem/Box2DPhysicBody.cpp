@@ -44,9 +44,9 @@ const float* Box2DPhysicBody::getLinearVelocity()
 	return &(m_body->GetLinearVelocity().x);
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicBody::setAngularVelocity( float w )
+void Box2DPhysicBody::setAngularVelocity( float _w )
 {
-	m_body->SetAngularVelocity( w );
+	m_body->SetAngularVelocity( _w );
 }
 //////////////////////////////////////////////////////////////////////////
 float Box2DPhysicBody::getAngularVelocity()
@@ -54,9 +54,14 @@ float Box2DPhysicBody::getAngularVelocity()
 	return m_body->GetAngularVelocity();
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicBody::applyForce( float forceX, float forceY, float pointX, float pointY )
+void Box2DPhysicBody::applyForce( float _forceX, float _forceY, float _pointX, float _pointY )
 {
-	m_body->ApplyForce( b2Vec2( forceX, forceY ), b2Vec2( pointX, pointY ) );
+	m_body->ApplyForce( b2Vec2( _forceX, _forceY ), b2Vec2( _pointX, _pointY ) );
+}
+//////////////////////////////////////////////////////////////////////////
+void Box2DPhysicBody::applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY )
+{
+	m_body->ApplyImpulse( b2Vec2( _impulseX, _impulseY ), b2Vec2( _pointX, _pointY ) );
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::setCollisionListener( PhysicBody2DCollisionListener* _listener )
@@ -72,7 +77,39 @@ void Box2DPhysicBody::_collide( b2Body* _otherBody, b2Contact* _contact )
 	b2Manifold* manifolds = _contact->GetManifolds();
 	for( int i = 0; i < _contact->GetManifoldCount(); i++ )
 	{
+		/*for( int j = 0; j < manifolds[i].pointCount; j++ )
+		{
+			m_listener->onCollide( _otherObj, manifolds[i].points[j].position.x, manifolds[i].points[j].position.y,
+									manifolds[i].normal.x, manifolds[i].normal.y );
+		}*/
 		m_listener->onCollide( _otherObj, manifolds[i].points[0].position.x, manifolds[i].points[0].position.y,
-								manifolds[i].normal.x, manifolds[i].normal.y );
+			manifolds[i].normal.x, manifolds[i].normal.y );
+
 	}
 }
+//////////////////////////////////////////////////////////////////////////
+void Box2DPhysicBody::setUserData( void* _data )
+{
+	m_userData = _data;
+}
+//////////////////////////////////////////////////////////////////////////
+void* Box2DPhysicBody::getUserData() const
+{
+	return m_userData;
+}
+//////////////////////////////////////////////////////////////////////////
+bool Box2DPhysicBody::isFrozen() const
+{
+	return m_body->IsFrozen();
+}
+//////////////////////////////////////////////////////////////////////////
+bool Box2DPhysicBody::isSleeping() const
+{
+	return m_body->IsSleeping();
+}
+//////////////////////////////////////////////////////////////////////////
+bool Box2DPhysicBody::isStatic() const
+{
+	return m_body->IsStatic();
+}
+//////////////////////////////////////////////////////////////////////////

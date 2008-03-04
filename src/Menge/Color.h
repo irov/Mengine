@@ -13,6 +13,10 @@ namespace	Menge
 
 		void set( unsigned int _val );
 		unsigned int get() const;
+		float getA() const;
+		float getR() const;
+		float getG() const;
+		float getB() const;
 
 		float operator [] ( const size_t _i ) const;
 		float& operator [] ( const size_t _i );

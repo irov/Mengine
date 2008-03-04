@@ -31,7 +31,7 @@ OgreRenderImage::OgreRenderImage( const TextureDesc& _desc )
 
 
 	m_texture = Ogre::TextureManager::getSingletonPtr()
-		->loadImage( m_description, "Default", image, Ogre::TEX_TYPE_2D, Ogre::MIP_DEFAULT );
+		->loadImage( m_description, "Default", image, Ogre::TEX_TYPE_2D, 0 );
 }
 //////////////////////////////////////////////////////////////////////////
 OgreRenderImage::~OgreRenderImage()

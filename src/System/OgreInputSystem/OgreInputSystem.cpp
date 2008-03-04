@@ -45,20 +45,40 @@ bool OgreInputSystem::initialize( WINDOW_HANDLE _winHandle )
 	m_inputManager = OIS::InputManager::createInputSystem( pl );
 
 	m_keyboard = static_cast<OIS::Keyboard*>( m_inputManager->createInputObject( OIS::OISKeyboard, true ) );
-	//m_mouse = static_cast<OIS::Mouse*>( m_inputManager->createInputObject( OIS::OISMouse, true ) );
-
+	
 	//m_mouse->getMouseState().width = 1024;
 	//m_mouse->getMouseState().height = 768;
-
 	//m_mouse->setEventCallback( this );
 	m_keyboard->setEventCallback( this );
 
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
+bool OgreInputSystem::captureMouse( int _x, int _y, int _maxX, int _maxY )
+{
+	m_mouse = static_cast<OIS::Mouse*>( m_inputManager->createInputObject( OIS::OISMouse, true ) );
+	OIS::MouseState& state = const_cast<OIS::MouseState&>( m_mouse->getMouseState() );
+	state.width = _maxX;
+	state.height = _maxY;
+	state.X.abs = _x;
+	state.Y.abs = _y;
+	m_mouse->setEventCallback( this );
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreInputSystem::releaseMouse()
+{
+	m_mouse->setEventCallback( NULL );
+	m_inputManager->destroyInputObject( m_mouse );
+	m_mouse = NULL;
+}
+//////////////////////////////////////////////////////////////////////////
 void OgreInputSystem::update()
 {
-	//m_mouse->capture();
+	if( m_mouse )
+	{
+		m_mouse->capture();
+	}
 	m_keyboard->capture();
 }
 //////////////////////////////////////////////////////////////////////////
@@ -131,48 +151,48 @@ bool OgreInputSystem::mouseMoved( const OIS::MouseEvent &arg )
 {
 	if( m_handler )
 	{
-		return m_handler->handleMouseMove( arg.state.X.rel, arg.state.Y.rel, arg.state.Z.rel );
+		m_handler->handleMouseMove( arg.state.X.rel, arg.state.Y.rel, arg.state.Z.rel );
 	}
 
-	return false;
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreInputSystem::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
 	if( m_handler )
 	{
-		return m_handler->handleMouseButtonEvent( id, true );
+		m_handler->handleMouseButtonEvent( id, true );
 	}
 
-	return false;
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreInputSystem::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
 	if( m_handler )
 	{
-		return m_handler->handleMouseButtonEvent( id, false );
+		m_handler->handleMouseButtonEvent( id, false );
 	}
 
-	return false;
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreInputSystem::keyPressed( const OIS::KeyEvent &arg )
 {
 	if( m_handler )
 	{
-		return m_handler->handleKeyEvent( arg.key, arg.text, true );
+		m_handler->handleKeyEvent( arg.key, arg.text, true );
 	}
 
-	return false;
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 bool OgreInputSystem::keyReleased( const OIS::KeyEvent &arg )
 {
 	if( m_handler )
 	{
-		return m_handler->handleKeyEvent( arg.key, arg.text, false );
+		m_handler->handleKeyEvent( arg.key, arg.text, false );
 	}
 
-	return false;
+	return true;
 }

@@ -319,11 +319,6 @@ namespace Menge
 			->debugRender();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & Game::getPathActors() const
-	{
-		return m_pathActors;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const std::string & Game::getPathEntities() const
 	{
 		return m_pathEntities;
@@ -354,7 +349,6 @@ namespace Menge
 
 		m_listModulePath.push_back( m_pathScripts );
 		m_listModulePath.push_back( m_pathEntities );
-		m_listModulePath.push_back( m_pathActors );	
 		m_listModulePath.push_back( m_pathScenes );
 		m_listModulePath.push_back( m_pathArrows );	
 
@@ -514,21 +508,7 @@ namespace Menge
 			{
 
 			}
-			//TiXmlDocument * document = Holder<FileEngine>::hostage()
-			//	->loadXml( xml_path );
-
-			//XML_FOR_EACH_DOCUMENT( document )
-			//{
-			//	XML_CHECK_NODE("Arrow")
-			//	{
-			//		arrow->loader(XML_CURRENT_NODE);
-			//	}
-			//}
-			//XML_INVALID_PARSE()
-			//{
-
-			//}
-
+	
 			m_mapArrow.insert( std::make_pair( _name, arrow ) );
 
 			return arrow;

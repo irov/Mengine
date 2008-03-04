@@ -35,7 +35,7 @@ namespace Menge
 		if( m_scriptable == 0 )
 		{
 			m_scriptable = Holder<ScriptEngine>::hostage()
-				->wrapp( /*this*/m_node );
+				->wrap( /*this*/m_node );
 
 			if( m_scriptable == 0 )
 			{

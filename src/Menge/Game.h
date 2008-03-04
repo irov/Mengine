@@ -48,7 +48,6 @@ namespace Menge
 		void setParamString( const std::string& _params );
 
 	public:
-		const std::string & getPathActors() const;
 		const std::string & getPathEntities() const;
 		const std::string & getPathScenes() const;
 		const std::string & getPathArrows() const;
@@ -117,7 +116,6 @@ namespace Menge
 		TListDeclaration m_listScenesDeclaration;
 		TListDeclaration m_listResourceDeclaration;
 		
-		std::string m_pathActors;
 		std::string m_pathResource;
 		std::string m_pathScripts;
 		std::string m_pathEntities;

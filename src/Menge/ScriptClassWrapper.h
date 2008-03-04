@@ -15,13 +15,13 @@ namespace Menge
 	class ScriptClassWrapper
 	{
 	public:
-		virtual PyObject * wrapp( Node * _node ) = 0;
+		virtual PyObject * wrap( Node * _node ) = 0;
 	};
 
 	class ScriptClassWrapperFactory
 	{
 	public:
 		static void regWrapping( const std::string & _type, ScriptClassWrapper * _wrapper );
-		static PyObject * wrapp( const std::string & _type, Node * _node );
+		static PyObject * wrap( const std::string & _type, Node * _node );
 	};
 }

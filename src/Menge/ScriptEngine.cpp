@@ -477,14 +477,14 @@ namespace Menge
 		{
 			pybind::check_error();
 		}
-		pybind::class_core::wrapp_holder( result, _impl );
+		pybind::class_core::wrap_holder( result, _impl );
 		return result;
 	}	
 	//////////////////////////////////////////////////////////////////////////|
-	PyObject * ScriptEngine::wrapp( Node * _node )
+	PyObject * ScriptEngine::wrap( Node * _node )
 	{
 		const std::string & type = _node->getType();
-		PyObject * pyNode = ScriptClassWrapperFactory::wrapp( type, _node );
+		PyObject * pyNode = ScriptClassWrapperFactory::wrap( type, _node );
 		return pyNode;
 	}
 	//////////////////////////////////////////////////////////////////////////

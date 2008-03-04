@@ -206,7 +206,7 @@ bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, b
 	//Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 	//Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "D:\\Development\\Menge\\root\\Game\\ZombieTest", "FileSystem", "Default", true );
 	//Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\bin\\Game\\ZombieTest", "FileSystem", "default", true );
+	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( "E:\\Menge\\root\\Game\\ZombieTest", "FileSystem", "default", true );
 	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
 
 	// setup GUI system

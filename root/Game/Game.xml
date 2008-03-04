@@ -19,13 +19,10 @@
 		<Block/>
 		<Grid/>
 		<Ball/>
-	</Entities>
-
-	<Actors Path = "Actors">
 		<Barrel/>
 		<Level/>
 		<Zombie/>
-	</Actors>
+	</Entities>
 
 	<Scripts Path = "Scripts" />
 

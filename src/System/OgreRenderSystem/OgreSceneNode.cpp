@@ -17,7 +17,7 @@ OgreSceneNode::~OgreSceneNode()
 		m_parentNode->detach( this );
 		m_parentNode = 0;
 	}
-
+/*
 	for each( LightInterface * light in m_lights )
 	{
 		OgreLight * pObj = static_cast<OgreLight*>(light);
@@ -25,7 +25,7 @@ OgreSceneNode::~OgreSceneNode()
 		delete light;
 	}
 
-	m_lights.clear();
+	m_lights.clear();*/
 }
 //////////////////////////////////////////////////////////////////////////
 Ogre::SceneNode * OgreSceneNode::getOgreSceneNode()

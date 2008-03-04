@@ -60,26 +60,11 @@ namespace Menge
 			{
 				std::string name;
 				std::string type;
+
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					int u = 0;
-					u++;
 					XML_CASE_ATTRIBUTE("Name", name );
-					u++;
-
-				/*	for( bool xmlengine_parse_once = true ; xmlengine_parse_once == true; )
-					{
-						for( ; xmlengine_parse_once == true && XmlParserElement::element_compare_attribute_key( xmlengine_element, "Type" ); )
-						{
-							for( ; xmlengine_parse_once == true; xmlengine_parse_once = false )
-							{
-							XmlParserCast::attribute_value_cast( type, XmlParserElement::element_get_attribute_value( xmlengine_element ) );
-							}
-						}
-					}
-*/
 					XML_CASE_ATTRIBUTE("Type", type );
-				//	u++;
 				}
 
 				ResourceReference * resource = createResource( name, type );

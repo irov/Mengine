@@ -466,7 +466,7 @@ namespace Menge
 			;
 
 		{
-			pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Scene", false)
+			pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
 				.def( "addRigidBody", &Layer3D::addRigidBody )
 				.def( "getRigidBody", &Layer3D::getRigidBody )
 				.def( "addController", &Layer3D::addController )

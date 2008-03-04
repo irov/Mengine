@@ -57,7 +57,7 @@ namespace Menge
 			actor->setScript( result );
 
 			std::string xml_path = Holder<Game>::hostage()
-				->getPathActors();
+				->getPathEntities();
 			
 			actor->attachToRootNode();
 
@@ -67,13 +67,13 @@ namespace Menge
 
 		//	if( Holder<XmlEngine>::hostage()
 		//		->parseXmlFileM( xml_path, actor, &Actor::loader ) )
-			if( Holder<XmlEngine>::hostage()
+		/*	if( Holder<XmlEngine>::hostage()
 				->parseXmlFileM( Holder<ScriptEngine>::hostage()->getEntityXML( _type ), actor, &Actor::loader ) )
 	
 			{
 				actor->registerEvent( "LOADER", "onLoader" );
 				actor->callEvent("LOADER", "()");
-			}
+			}*/
 
 		//	actor->setLocalPosition( _pos );
 		//	actor->setLocalOrient( _dir );

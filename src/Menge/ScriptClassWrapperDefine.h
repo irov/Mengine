@@ -12,7 +12,7 @@ public:\
 	ScriptClassWrapperFactory::regWrapping( #Class, this );\
 };\
 public:\
-	PyObject * wrapp( Node * _node ) override\
+	PyObject * wrap( Node * _node ) override\
 {\
 	Class * _cast = dynamic_cast<Class *>( _node );\
 	PyObject * obj =  pybind::class_holder<Class>( _cast );\
@@ -21,7 +21,7 @@ public:\
 } s_##Class##ScriptWrapper;\
 static struct Class##PtrExtract\
 : public pybind::interface_<Class>::extract_ptr_type{\
-	PyObject * wrapp( Class * _node ) override\
+	PyObject * wrap( Class * _node ) override\
 	{\
 		if( _node == 0 ) return 0;\
 		Scriptable * scriptable = _node->getScriptable();\

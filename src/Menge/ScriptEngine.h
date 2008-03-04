@@ -46,7 +46,7 @@ namespace Menge
 		bool registerEntityType( const std::string & _type );
 		FileDataInterface * getEntityXML( const std::string & _type );
 
-		static PyObject * wrapp( Node * _node );
+		static PyObject * wrap( Node * _node );
 		static PyObject * proxy( PyObject * _module, const std::string & _name, void * _impl );
 
 		static void incref( PyObject * _object );

@@ -7,6 +7,7 @@
 	<Game File = "Game.xml" />
 
 	<Config>
+		<PhysicSystem Name = "systems/PhysXPhysicSystem_d"/>
 		<LogSystem Name = "systems/OgreLogSystem_d"/>
 		<InputSystem Name = "systems/OgreInputSystem_d"/>
 		<RenderSystem Name = "systems/OgreRenderSystem_d"/>

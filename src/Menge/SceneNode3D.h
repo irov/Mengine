@@ -43,7 +43,7 @@ namespace Menge
 	public:
 		//void attachEntity(DiscreteEntity * _entity);
 		//void attachLight(Light * _entity);
-		void attachCamera(Camera3D * _camera);
+		//void attachCamera(Camera3D * _camera);
 
 		Camera3D * getCamera() const;
 
@@ -61,7 +61,7 @@ namespace Menge
 	protected:
 
 		virtual bool _activate() override;
-		void _deactivate() override;
+		//void _deactivate() override;
 		void _release() override;
 		void _addChildren( SceneNode3D * _node ) override;
 

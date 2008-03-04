@@ -16,12 +16,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT(DiscreteEntity);
 	//////////////////////////////////////////////////////////////////////////
-
 	//////////////////////////////////////////////////////////////////////////
 //	DiscreteEntity::DiscreteEntity( const std::string & _name )
 	DiscreteEntity::DiscreteEntity( )
-		: m_name("Entity")
-		, m_resourceMesh(0)
+		: m_resourceMesh(0)
 		, m_resourceSkeleton(0)
 		, m_castShadows(false)
 		, m_receiveShadows(false)
@@ -101,7 +99,9 @@ namespace Menge
 
 		const std::string & mesh = m_resourceMesh->getMeshName();
 
-		m_entInterface = Holder<RenderEngine>::hostage()->createEntity(m_name, mesh);
+		const std::string & name = this->getName();
+
+		m_entInterface = Holder<RenderEngine>::hostage()->createEntity(name, mesh);
 
 		m_entInterface->setCastsShadow(m_castShadows);
 

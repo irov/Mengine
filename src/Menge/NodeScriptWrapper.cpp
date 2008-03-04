@@ -476,13 +476,13 @@ namespace Menge
 				.def( "roll", &SceneNode3D::roll )
 				.def( "translate", &SceneNode3D::translate )
 				.def( "addChild", &SceneNode3D::addChild )
-				.def( "getCamera", &SceneNode3D::getCamera )
+				//.def( "getCamera", &SceneNode3D::getCamera )
 			;
 
 		{
 			pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
 				//.def( "addCamera", &Layer3D::addCamera )
-				.def( "getCamera", &Layer3D::getCamera )	
+				//.def( "getCamera", &Layer3D::getCamera )	
 				.def( "addRigidBody", &Layer3D::addRigidBody )
 				.def( "getRigidBody", &Layer3D::getRigidBody )
 				.def( "addController", &Layer3D::addController )
@@ -510,7 +510,7 @@ namespace Menge
 				.def( "getFilteredPosition", &CapsuleController::getFilteredPosition )
 				;
 
-			pybind::proxy_<Camera3D, pybind::bases<SceneNode3D>>("Camera3D", false)
+			pybind::proxy_<Camera3D/*, pybind::bases<SceneNode3D>*/>("Camera3D", false)
 				.def( "setPosition", &Camera3D::setPosition )
 				.def( "lookAt", &Camera3D::lookAt )
 				.def( "yaw", &Camera3D::yaw )

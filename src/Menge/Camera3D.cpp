@@ -109,7 +109,7 @@ namespace	Menge
 		this->setPosition( m_position );
 		this->lookAt( m_at );
 
-		this->getParentNode()->attachCamera(this);
+//		this->getParentNode()->attachCamera(this);
 
 		return true;
 	};

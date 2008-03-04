@@ -57,8 +57,6 @@ namespace Menge
 
 	private:
 
-		std::string m_name;
-
 		EntityInterface * m_entInterface;
 
 		Skeleton * m_skeleton;

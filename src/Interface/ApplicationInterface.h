@@ -45,9 +45,6 @@ public:
 	virtual WINDOW_HANDLE createWindow( const char* _name, unsigned int _width, unsigned int _height, bool _fullscreen ) = 0;
 	virtual void run() = 0;
 	virtual void stop() = 0;
-	virtual FileSystemInterface* getFileSystemInterface() = 0;
-	virtual SystemDLLInterface* loadSystemDLL( const char* _dll ) = 0;
-	virtual void unloadSystemDLL( SystemDLLInterface* ) = 0;
 	virtual float getMonitorAspectRatio() = 0;
 	virtual void minimizeWindow() = 0;
 };

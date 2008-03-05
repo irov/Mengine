@@ -23,7 +23,7 @@ OgreRenderImage::OgreRenderImage( const TextureDesc& _desc )
 
 	Ogre::DataStreamPtr data( new Ogre::MemoryDataStream( _desc.buffer, _desc.size ) );
 	
-	size_t index = m_description.find_last_of(".");
+	Ogre::String::size_type index = m_description.find_last_of(".");
 	std::string ext = m_description.substr( index + 1, m_description.size() );
 
 	image.load( data, ext );
@@ -74,7 +74,7 @@ void OgreRenderImage::writeToFile( const char* _filename )
 
     // Get codec 
 	Ogre::String filename(_filename);
-    size_t pos = filename.find_last_of(".");
+	Ogre::String::size_type pos = filename.find_last_of(".");
 	Ogre::String extension;
 	if( pos == Ogre::String::npos )
 	{

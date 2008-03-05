@@ -7,6 +7,7 @@ class CameraInterface;
 namespace Menge
 {
 	class Camera3D
+		: public SceneNode3D
 	{
 	public:
 		Camera3D();

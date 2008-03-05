@@ -1,22 +1,5 @@
 #	include "WinApplication.h"
 
-//#	include "Menge/Application.h"
-
-//#	include "System/OgreInputSystem/OgreInputSystemInterface.h"
-//#	include "System/OgreRenderSystem/OgreRenderSystemInterface.h"
-
-//#	include "Interface/LogSystemInterface.h"
-//#	include "Interface/SoundSystemInterface.h"
-//#	include "Interface/ParticleSystemInterface.h"
-#	include "Interface/FileSystemInterface.h"
-
-
-//#	include "OIS/OIS.h"
-
-#	include "SystemDLL.h"
-
-//#	include <map>
-
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( ApplicationInterface** _ptrInterface )
 {
@@ -42,9 +25,7 @@ WinApplication::WinApplication()
 , m_frameTime( 0.f )
 , m_mutex(0)
 , m_focus( true )
-, m_fileSystem( 0 )
-, m_name("Menge-engine")
-, m_fileSystemDLL( 0 )
+, m_name("Mengine")
 , m_listener(0)
 , m_hWnd(0)
 , m_cursorInArea(false)
@@ -58,9 +39,6 @@ WinApplication::~WinApplication()
 	{
 		m_listener->onDestroy();
 	}
-
-	//m_application->finalize();
-	unloadSystemDLL( m_fileSystemDLL );
 
 	if( m_mutex )
 	{
@@ -109,19 +87,10 @@ bool WinApplication::init( const char* _name, ApplicationListenerInterface* _lis
 	}
 
 	m_name.assign( _name );
-	//printf("use file system [%s]\n", DllFileSystem.c_str() );
-#ifdef _DEBUG
-	std::string DllModuleSetting = "DllModuleDebug";
-	std::string DllFileSystem = "Systems/OgreFileSystem_d.dll";
-#else
-	std::string DllModuleSetting = "DllModuleRelease";
-	std::string DllFileSystem = "Systems/OgreFileSystem.dll";
-#endif
 
-	m_fileSystemDLL = loadSystemDLL( DllFileSystem.c_str() );
-	m_fileSystem = m_fileSystemDLL->getInterface<FileSystemInterface>();
+	//initInterfaceSystem( &m_fileSystem );
 
-	m_fileSystem->loadPath(".");
+	//m_fileSystem->loadPath(".");
 
 	EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
 
@@ -303,21 +272,6 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, unsigned int _wid
 
 	::GetWindowInfo( m_hWnd, &m_wndInfo);
 	return static_cast<WINDOW_HANDLE>( m_hWnd ); 
-}
-//////////////////////////////////////////////////////////////////////////
-FileSystemInterface* WinApplication::getFileSystemInterface()
-{
-	return m_fileSystem;
-}
-//////////////////////////////////////////////////////////////////////////
-SystemDLLInterface* WinApplication::loadSystemDLL( const char* _dll )
-{
-	return new WinSystemDLL( _dll );
-}
-//////////////////////////////////////////////////////////////////////////
-void WinApplication::unloadSystemDLL( SystemDLLInterface* _interface )
-{
-	delete static_cast<WinSystemDLL*>( _interface );
 }
 //////////////////////////////////////////////////////////////////////////
 LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )

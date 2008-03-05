@@ -232,12 +232,16 @@ int OgreRenderSystem::getResolutionList( int** _list )
 {
 	Ogre::ConfigOptionMap& configMap = m_renderSys->getConfigOptions();
 	Ogre::StringVector res = configMap["Video Mode"].possibleValues;
-	for( int i = 0; i < res.size(); i++ )
+	for( Ogre::StringVector::size_type
+		it = 0,
+		it_end = res.size();
+	it != it_end; 
+	++it )
 	{
-		int p1 = res[i].find('x');
-		int p2 = res[i].find('@');
-		int w = Ogre::StringConverter::parseInt( res[i].substr( 0, p1 - 1 ) );
-		int h = Ogre::StringConverter::parseInt( res[i].substr( p1 + 2, p2 - p1 - 2) );
+		int p1 = res[it].find('x');
+		int p2 = res[it].find('@');
+		int w = Ogre::StringConverter::parseInt( res[it].substr( 0, p1 - 1 ) );
+		int h = Ogre::StringConverter::parseInt( res[it].substr( p1 + 2, p2 - p1 - 2) );
 		m_displayResolutionList.push_back( w );
 		m_displayResolutionList.push_back( h );
 	}

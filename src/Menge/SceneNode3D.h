@@ -45,7 +45,7 @@ namespace Menge
 		//void attachLight(Light * _entity);
 		//void attachCamera(Camera3D * _camera);
 
-		Camera3D * getCamera() const;
+		//Camera3D * getCamera() const;
 
 		void addChild(SceneNode3D * _node);
 
@@ -59,8 +59,7 @@ namespace Menge
 		void loaderCameras_( XmlElement * _xml );
 
 	protected:
-
-		virtual bool _activate() override;
+		bool _activate() override;
 		//void _deactivate() override;
 		void _release() override;
 		void _addChildren( SceneNode3D * _node ) override;

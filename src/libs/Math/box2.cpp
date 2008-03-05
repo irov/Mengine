@@ -75,7 +75,7 @@ namespace mt
 
 		mt::vec2f temp;
 			
-		for(size_t i = 1; i < 4; ++i)
+		for( unsigned int i = 1; i < 4; ++i)
 		{
 			mt::mul_v2_m3(temp, bounds[i], _wm );
 

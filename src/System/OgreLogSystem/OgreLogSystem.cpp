@@ -3,7 +3,7 @@
 #	include "Ogre.h"
 
 //////////////////////////////////////////////////////////////////////////
-bool	initInterfaceSystem( LogSystemInterface** _interface )
+bool initInterfaceSystem( LogSystemInterface** _interface )
 {
 	if( _interface == 0 )
 	{
@@ -15,7 +15,7 @@ bool	initInterfaceSystem( LogSystemInterface** _interface )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void	releaseInterfaceSystem( LogSystemInterface* _interface )
+void releaseInterfaceSystem( LogSystemInterface* _interface )
 {
 	if( _interface )
 	{

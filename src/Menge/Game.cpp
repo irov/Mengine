@@ -359,6 +359,7 @@ namespace Menge
 
 		m_listModulePath.push_back( m_pathScripts );
 		m_listModulePath.push_back( m_pathEntities );
+		//m_listModulePath.push_back( m_pathActors );	
 		m_listModulePath.push_back( m_pathScenes );
 		m_listModulePath.push_back( m_pathArrows );	
 
@@ -411,16 +412,17 @@ namespace Menge
 			getScene( *it );
 		}
 
-		FileEngine* fileEngine = Holder<FileEngine>::hostage();
-		for( TListDeclaration::iterator
-			it = m_listResourceLocation.begin(),
-			it_end = m_listResourceLocation.end();
-		it != it_end;
-		++it)	
-		{
-			fileEngine->addResourceLocation( *it );
-		}
-		fileEngine->initResources();
+		//FileEngine* fileEngine = Holder<FileEngine>::hostage();
+		//for( TListDeclaration::iterator
+		//	it = m_listResourceLocation.begin(),
+		//	it_end = m_listResourceLocation.end();
+		//it != it_end;
+		//++it)	
+		//{
+		//	fileEngine->addResourceLocation( *it );
+		//}
+
+		//fileEngine->initResources();
 
 		m_defaultArrow = getArrow( m_defaultArrowName );
 

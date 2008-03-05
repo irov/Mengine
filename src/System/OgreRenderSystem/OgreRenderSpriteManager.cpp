@@ -1,10 +1,10 @@
 #	include "OgreRenderSpriteManager.h"
 #	include "OgreRenderImage.h"
 
-const size_t	VERTEX_PER_QUAD			= 6;
-const size_t	VERTEXBUFFER_INITIAL_CAPACITY	= 70000;
-const size_t    UNDERUSED_FRAME_THRESHOLD = 70000;
-const size_t    VECTOR_CAPACITY = 40000;
+const unsigned int VERTEX_PER_QUAD			= 6;
+const unsigned int VERTEXBUFFER_INITIAL_CAPACITY	= 70000;
+const unsigned int UNDERUSED_FRAME_THRESHOLD = 70000;
+const unsigned int VECTOR_CAPACITY = 40000;
 
 //////////////////////////////////////////////////////////////////////////
 OgreRenderSpriteManager::OgreRenderSpriteManager()
@@ -29,7 +29,7 @@ void  OgreRenderSpriteManager::diffZ()
 }
 //////////////////////////////////////////////////////////////////////////
 static void createQuadRenderOp(Ogre::RenderOperation &renderOp, 
-    Ogre::HardwareVertexBufferSharedPtr &vertexBuffer, size_t nquads)
+    Ogre::HardwareVertexBufferSharedPtr &vertexBuffer, unsigned int nquads)
 {
 	renderOp.vertexData = new Ogre::VertexData;
 	renderOp.vertexData->vertexStart = 0;
@@ -306,7 +306,7 @@ void OgreRenderSpriteManager::doRender(void)
 
 		#ifdef VBVB
 			size_t size = vertexBuffer->getNumVertices();
-			size_t requestedSize = quadList.size() * VERTEX_PER_QUAD;
+			TQuadList::size_type requestedSize = quadList.size() * VERTEX_PER_QUAD;
 
 			if( size < requestedSize )
 			{
@@ -330,7 +330,11 @@ void OgreRenderSpriteManager::doRender(void)
 
 		QuadVertex * buffmem = static_cast<QuadVertex*>( vertexBuffer->lock( Ogre::HardwareVertexBuffer::HBL_DISCARD ) );
 		
-		for ( QuadList::iterator it = quadList.begin(); it != quadList.end(); ++it )
+		for ( TQuadList::iterator 
+			it = quadList.begin(),
+			it_end = quadList.end(); 
+		it != it_end; 
+		++it )
 		{
 			const QuadInfo& quad = (*it);
 		
@@ -404,9 +408,10 @@ void OgreRenderSpriteManager::doRender(void)
 	//Ogre::Viewport* main = m_renderSys->_getViewport();
 	//bool debug = false;
 
-	QuadList::iterator it = quadList.begin();
+	TQuadList::iterator it = quadList.begin();
+	TQuadList::iterator it_end = quadList.end();
 
-	while( it != quadList.end() )
+	while( it != it_end )
 	{
 		currTexture = it->texture;
 		currViewport = it->viewport;
@@ -415,7 +420,7 @@ void OgreRenderSpriteManager::doRender(void)
 		Ogre::SceneBlendFactor src = it->source;
 		Ogre::SceneBlendFactor dst = it->dest;
 
-		for ( ;it != quadList.end(); ++it )
+		for ( ;it != it_end; ++it )
 		{
 			const QuadInfo& quad = (*it);
 

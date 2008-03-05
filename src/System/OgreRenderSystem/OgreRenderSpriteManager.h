@@ -103,6 +103,6 @@ private:
 	Ogre::TexturePtr			currTexture;	
 	Ogre::Viewport*				currViewport;
 	Ogre::RenderOperation		renderOp;
-	typedef std::vector<QuadInfo>		QuadList;
-	QuadList quadList;
+	typedef std::vector<QuadInfo> TQuadList;
+	TQuadList quadList;
 };

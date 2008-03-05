@@ -6,6 +6,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool XmlEngine::parseXmlFile( const std::string & _file, XmlElementListener * _listener )
 	{
+		if( Holder<FileEngine>::hostage()
+			->existFile( _file ) == false )
+		{
+			return false;
+		}
+
 		FileDataInterface * file = Holder<FileEngine>::hostage()
 			->openFile( _file );
 
@@ -19,12 +25,13 @@ namespace Menge
 		XmlExpatParser * parser = XmlParser::newParser();
 		void * buffer = XmlParser::makeBuffer( parser, size );
 		file->read( buffer, size );
+
+		Holder<FileEngine>::hostage()
+			->closeFile( file );
 		
 		bool result = XmlParser::parseBuffer( parser, size, _listener );
 
 		XmlParser::deleteParser( parser );
-
-		Holder<FileEngine>::hostage()->closeFile( file );
 
 		return result;
 	}

@@ -1,5 +1,15 @@
 #	include "Interface/ApplicationInterface.h"
 
+#	include "Interface/LogSystemInterface.h"
+#	include "Interface/FileSystemInterface.h"
+#	include "Interface/InputSystemInterface.h"
+#	include "Interface/RenderSystemInterface.h"
+#	include "Interface/SoundSystemInterface.h"
+#	include "Interface/ParticleSystemInterface.h"
+#	include "Interface/PhysicSystemInterface.h"
+#	include "Interface/PhysicSystem2DInterface.h"
+
+
 #	define WIN32_LEAN_AND_MEAN
 #	define _WIN32_WINNT 0x0500
 #	include <windows.h>
@@ -28,10 +38,8 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	UNREFERENCED_PARAMETER( nShowCmd );
 #endif	
 #ifdef _DEBUG
-	const char * application_dll  = "Systems/WinApplication_d.dll";
 	const char * config_file = "application_d.xml";
 #else
-	const char * application_dll = "Systems/WinApplication.dll";
 	const char * config_file = "application.xml";
 #endif
 
@@ -42,44 +50,46 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	}
 #	endif
 
-#ifndef MENGE_STATIC
-	HMODULE hModule = LoadLibraryA( application_dll );
-	
-	if( hModule == 0 )
-	{
-		printf("Error: load library '%s' is failed\n", application_dll );
-		return 0;
-	}
-
-	printf("load library '%s'\n", application_dll );
-	
-	typedef bool (*FInterfaceInitial)( ApplicationInterface **);
-	typedef void (*FInterfaceRelease)( ApplicationInterface *);
-
-	FInterfaceInitial initInterfaceSystem = 
-		(FInterfaceInitial)GetProcAddress( (HMODULE) hModule, "initInterfaceSystem" );
-
-	FInterfaceRelease releaseInterfaceSystem = 
-		(FInterfaceRelease)GetProcAddress( (HMODULE) hModule, "releaseInterfaceSystem" );
-
-	if( initInterfaceSystem == 0 || releaseInterfaceSystem == 0 )
-	{
-		printf("invalid open system application dll '%s'", application_dll );
-		return 0;
-	}
-#endif
-
 	ApplicationInterface * platform = 0;
 
 	if( initInterfaceSystem( &platform ) == false )
 	{
-		printf("invalid init system application '%s'", application_dll );
+		printf("invalid init system application \n" );
 		return 0;
 	}
 
 	bool result = false;
 	Menge::Application app( platform );
 
+	FileSystemInterface * fileSystem;
+	initInterfaceSystem( &fileSystem );
+	fileSystem->loadPath(".");
+	app.setFileSystem( fileSystem );
+
+	InputSystemInterface * inputSystem;
+	initInterfaceSystem( &inputSystem );
+	app.setInputSystem( inputSystem );
+	
+	LogSystemInterface * logSystem;
+	initInterfaceSystem( &logSystem );
+	app.setLogSystem( logSystem );
+
+	ParticleSystemInterface * particleSystem;
+	initInterfaceSystem( &particleSystem );
+	app.setParticleSystem( particleSystem );
+
+	PhysicSystem2DInterface * physicSystem2D;
+	initInterfaceSystem( &physicSystem2D );
+	app.setPhysicSystem2D( physicSystem2D );
+
+	RenderSystemInterface * renderSystem;
+	initInterfaceSystem( &renderSystem );
+	app.setRenderSystem( renderSystem );
+
+	SoundSystemInterface * soundSystem;
+	initInterfaceSystem( &soundSystem );
+	app.setSoundSystem( soundSystem );
+	
 #	ifdef _CONSOLE
 	if( argc > 1 )
 	{
@@ -117,9 +127,6 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	}
 
 	releaseInterfaceSystem( platform );
-
-	printf("free library '%s' \n", application_dll );
-	FreeLibrary( hModule );
 
 	return 0;
 }

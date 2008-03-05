@@ -178,9 +178,9 @@ bool OgreFileSystem::deleteFolder( const char* _path )
 		(LPTSTR) &lpMsgBuf,
 		0, NULL );
 
-	wsprintf(szBuf, L"failed with error %d: %s", dw, lpMsgBuf); 
+	sprintf(szBuf, "failed with error %d: %s", dw, lpMsgBuf); 
 
-	MessageBox(NULL, szBuf, L"Error", MB_OK); 
+	MessageBox(NULL, szBuf, "Error", MB_OK); 
 
 	LocalFree(lpMsgBuf);
 	return false;
@@ -203,10 +203,16 @@ void OgreFileSystem::addResourceLocation( const char* _path )
 	char dir[MAX_PATH];
 	::GetCurrentDirectoryA( MAX_PATH, dir );
 
-	Ogre::ResourceGroupManager::getSingleton().addResourceLocation( Ogre::String(dir) + Ogre::String(_path), "FileSystem", "Default", false );
+	Ogre::ResourceGroupManager * resourceGroupMgr = 
+		Ogre::ResourceGroupManager::getSingletonPtr();
+
+	resourceGroupMgr->addResourceLocation( Ogre::String(dir) + Ogre::String(_path), "FileSystem", "Default", false );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::initResources()
 {
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Default");
+	Ogre::ResourceGroupManager * resourceGroupMgr = 
+		Ogre::ResourceGroupManager::getSingletonPtr();
+
+	resourceGroupMgr->initialiseResourceGroup("Default");
 }

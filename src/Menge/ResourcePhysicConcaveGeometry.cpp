@@ -29,17 +29,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePhysicConcaveGeometry::_compile()
 	{
-		m_interface = Holder<PhysicEngine>::hostage()->cookConcave( m_filename );
+		//m_interface = Holder<PhysicEngine>::hostage()->cookConcave( m_filename );
 
-		if( m_interface == 0 )
-		{
-			MENGE_LOG("Warning: resource '%s' can't load concave geometry file '%s'\n"
-				, m_name.c_str()
-				, m_filename.c_str()
-				);
+		//if( m_interface == 0 )
+		//{
+		//	MENGE_LOG("Warning: resource '%s' can't load concave geometry file '%s'\n"
+		//		, m_name.c_str()
+		//		, m_filename.c_str()
+		//		);
 
-			return false;
-		}
+		//	return false;
+		//}
 
 		return true;
 	}

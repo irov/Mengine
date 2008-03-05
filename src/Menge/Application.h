@@ -131,12 +131,7 @@ namespace Menge
 		std::string m_physicSystemName;
 		std::string m_physicSystem2DName;
 
-		PhysicEngine2D* m_physicEngine2D;
-		PhysicEngine* m_physicEngine;
-
-		typedef std::vector<SystemDLLInterface*> TSystemDLLVector;
-		TSystemDLLVector m_systemDLLs;
-
-		bool _initSystems();
+		PhysicEngine * m_physicEngine;
+		PhysicEngine2D * m_physicEngine2D;
 	};
 }

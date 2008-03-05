@@ -6,5 +6,5 @@ class OgreLogSystem
 	: public LogSystemInterface
 {
 public:
-	void logMessage( const char * _message, bool _maskDebug );
+	void logMessage( const char * _message, bool _maskDebug ) override;
 };

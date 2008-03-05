@@ -223,12 +223,12 @@ namespace	mt
 	/* ohter stuff */
 	void q_from_angle_axis(quatf& out, const vec3f& _rhs, float _val)
 	{
-		float hangle = 0.01745329251994329547 * _val * 0.5f;
+		float hangle = 0.01745329251994329547f * _val * 0.5f;
 		float fsin = sin(hangle);
 
 		float i_length =  1.0f / sqrtf( _rhs.x*_rhs.x + _rhs.y*_rhs.y + _rhs.z*_rhs.z );
 	
-		out.w = cos(hangle);
+		out.w = cosf(hangle);
 		out.x = fsin * _rhs[0] * i_length;
 		out.y = fsin * _rhs[1] * i_length;
 		out.z = fsin * _rhs[2] * i_length;
@@ -275,9 +275,9 @@ namespace	mt
 		*/
 
 		float angle = sqrtf(_rhs.x*_rhs.x+_rhs.y*_rhs.y+_rhs.z*_rhs.z);
-		float fsin = sin(angle);
+		float fsin = sinf(angle);
 
-		_out.w = cos(angle);
+		_out.w = cosf(angle);
 
 		if (fabs(fsin) >= 0.00001f)
 		{
@@ -313,9 +313,9 @@ namespace	mt
 
 		if (fabsf(_rhs[0]) < 1.0f)
 		{
-			float angle = cos(_rhs.w);
-			float fsin = sin(angle);
-			if (fabs(fsin) >= 0.00001f)
+			float angle = cosf(_rhs.w);
+			float fsin = sinf(angle);
+			if (fabsf(fsin) >= 0.00001f)
 			{
 				float coef = angle/fsin;
 				_out.x = coef * _rhs.x;
@@ -474,7 +474,7 @@ namespace	mt
 		float fsqrlen = _rhs[1]*_rhs[1]+_rhs[2]*_rhs[2]+_rhs[3]*_rhs[3];
 		if (fsqrlen > 0.0f)
 		{
-			_out1 = 2.0f * acos(_rhs[0]);
+			_out1 = 2.0f * acosf(_rhs[0]);
 			float invl = 1.0f/sqrtf(fsqrlen);
 			_out[0] = _rhs[1]*invl;
 			_out[1] = _rhs[2]*invl;

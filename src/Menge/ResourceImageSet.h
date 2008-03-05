@@ -38,6 +38,7 @@ namespace Menge
 		bool _compile() override;
 
 	public:
-		std::vector<mt::vec2f> m_sizes;
+		typedef std::vector<mt::vec2f> TVectorSizes;
+		TVectorSizes m_sizes;
 	};
 }

@@ -16,21 +16,23 @@ namespace mt
 {
 	struct polygon
 	{
+		typedef std::vector<vec2f> TVectorPoints;
+
 		polygon();
-		polygon(size_t n);
-		polygon(const polygon&	_rhs);
+		polygon( TVectorPoints::size_type n );
+		polygon( const polygon & _rhs );
 
-		void	clear_points();
+		void clear_points();
 
-		void	add_point(const vec2f& v);
-		void	insert(size_t after, const vec2f& v);
+		void add_point(const vec2f& v);
+		void insert( TVectorPoints::size_type after, const vec2f & v );
 
-		size_t	num_points() const;
+		TVectorPoints::size_type num_points() const;
 
-		polygon&	operator=(const polygon& _rhs);
+		polygon & operator = (const polygon& _rhs);
 
-		const vec2f&	operator[](size_t i) const;
-		vec2f&			operator[](size_t i);
+		const vec2f & operator [] ( TVectorPoints::size_type i ) const;
+		vec2f & operator [] ( TVectorPoints::size_type i );
 
 		vec2f & front();
 		const vec2f & front()const;
@@ -38,17 +40,17 @@ namespace mt
 		vec2f & back();
 		const vec2f & back() const;
 
-		bool	is_convex() const;
+		bool is_convex() const;
 
 		//	return extrem point in direction
-		mt::vec2f	support( const mt::vec2f& normal )  const;
+		mt::vec2f support( const mt::vec2f& normal )  const;
 
-	private:
-		std::vector<vec2f> points;
+	private:		
+		TVectorPoints points;
 
 		char convex_value;
 		bool convex_state;
-		void check_edges_convex(size_t i);
+		void check_edges_convex( TVectorPoints::size_type i );
 	};
 
 	bool	cmp_poly_poly(const polygon& _a, const polygon& _b);

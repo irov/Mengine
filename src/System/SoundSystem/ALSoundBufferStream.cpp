@@ -43,7 +43,6 @@ void ALSoundBufferStreamUpdater::start(ALuint _sourcename)
 	// Fill all the Buffers with decoded audio data from the OggVorbis file
 	m_buffer = new char[m_bufferSize];
 	unsigned int count = 0;
-	int stream;
 	unsigned int amt = 0;
 	unsigned long bytesWritten = 0;
 	for (int i = 0; i < 2; i++)

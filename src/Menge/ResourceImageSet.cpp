@@ -50,7 +50,7 @@ namespace Menge
 	{
 		m_imageFrame = loadImageFrame( m_filename );
 
-		size_t size = m_uvs.size();
+		TVectorSizes::size_type size = m_uvs.size();
 		
 		if( size == 0 )
 		{
@@ -59,7 +59,7 @@ namespace Menge
 
 		m_sizes.resize( size );
 
-		for( size_t frame = 0; frame != size; ++frame )
+		for( TVectorSizes::size_type frame = 0; frame != size; ++frame )
 		{
 			float u = m_uvs[ frame ].z - m_uvs[ frame ].x;
 			float v = m_uvs[ frame ].w - m_uvs[ frame ].y;

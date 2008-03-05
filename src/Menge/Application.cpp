@@ -234,7 +234,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const std::string & _applicationFile, const std::string& _args )
 	{
-
 		if( !m_interface->init( _applicationFile.c_str(), this ) )
 		{
 			return false;
@@ -251,8 +250,6 @@ namespace Menge
 			m_particles = false;
 		}
 		
-		setFileSystem( m_interface->getFileSystemInterface() );
-
 		Holder<XmlEngine>::keep( new XmlEngine );
 
 		if( Holder<XmlEngine>::hostage()
@@ -261,11 +258,6 @@ namespace Menge
 			MENGE_LOG("parse application xml failed '%s'\n"
 				, _applicationFile.c_str()
 				);
-		}
-
-		if( !_initSystems() )
-		{
-			return false;
 		}
 
 		Holder<ScriptEngine>::keep( new ScriptEngine );
@@ -282,7 +274,11 @@ namespace Menge
 		Holder<ResourceManager>::keep( new ResourceManager );
 
 		Holder<FileEngine>::hostage()->changeDir( m_resourcePath );
-		createGame();
+		
+		if( createGame() == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -449,64 +445,6 @@ namespace Menge
 		m_interface->minimizeWindow();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::_initSystems()
-	{
-		SystemDLLInterface* dll = NULL;
-
-		// LogSystem
-		dll = m_interface->loadSystemDLL( m_logSystemName.c_str() );
-		setLogSystem( dll->getInterface<LogSystemInterface>() );
-		m_systemDLLs.push_back( dll );
-		MENGE_LOG( "LogSystem loaded");
-
-		// RenderSystem
-		dll = m_interface->loadSystemDLL( m_renderSystemName.c_str() );
-		setRenderSystem( dll->getInterface<RenderSystemInterface>() );  
-		m_systemDLLs.push_back( dll );
-		MENGE_LOG( "RenderSystem loaded");
-
-		// InputSystem
-		dll = m_interface->loadSystemDLL( m_inputSystemName.c_str() );
-		setInputSystem( dll->getInterface<InputSystemInterface>() );
-		m_systemDLLs.push_back( dll );
-		MENGE_LOG( "InputSystem loaded");
-
-		// SoundSystem
-		dll = m_interface->loadSystemDLL( m_soundSystemName.c_str() );
-		setSoundSystem( dll->getInterface<SoundSystemInterface>() );
-		m_systemDLLs.push_back( dll );
-		MENGE_LOG( "SoundSystem loaded");
-
-		// ParticleSystem
-		if( m_particleSystemName != "None" )
-		{
-			dll = m_interface->loadSystemDLL( m_particleSystemName.c_str() );
-			setParticleSystem( dll->getInterface<ParticleSystemInterface>() );
-			m_systemDLLs.push_back( dll );
-			MENGE_LOG( "ParticleSystem loaded");
-		}
-		
-		// PhysicSystem3D
-		if( m_physicSystemName != "None" )
-		{
-			dll = m_interface->loadSystemDLL( m_physicSystemName.c_str() );
-			setPhysicSystem( dll->getInterface<PhysicSystemInterface>() );
-			m_systemDLLs.push_back( dll );
-			MENGE_LOG( "PhysicSystem3D loaded");
-		}
-
-		// PhysicSystem2D
-		if( m_physicSystem2DName != "None" )
-		{
-			dll = m_interface->loadSystemDLL( m_physicSystem2DName.c_str() );
-			setPhysicSystem2D( dll->getInterface<PhysicSystem2DInterface>() );
-			m_systemDLLs.push_back( dll );
-			MENGE_LOG( "PhysicSystem2D loaded");
-		}
-		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Application::run()
 	{
 		m_interface->run();
@@ -544,14 +482,6 @@ namespace Menge
 		Holder<InputEngine>::destroy();
 		Holder<SoundEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
-
-		for( TSystemDLLVector::iterator it = m_systemDLLs.begin()
-			,it_end = m_systemDLLs.end();
-			it != it_end;
-		it++ )
-		{
-			m_interface->unloadSystemDLL( (*it) );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onWindowMovedOrResized()

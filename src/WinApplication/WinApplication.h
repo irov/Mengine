@@ -14,9 +14,6 @@
 
 #	include "Interface/ApplicationInterface.h"
 
-//#	include "Ogre.h"
-
-//#	include <list>
 #	include <Windows.h>
 #	include <string>
 
@@ -24,7 +21,6 @@ class SystemDLL;
 
 class WinApplication
 	: public ApplicationInterface
-	//, public Ogre::FrameListener
 {
 public:
 	WinApplication();
@@ -35,9 +31,6 @@ public:
 	void run() override;
 	void stop()	override;
 	WINDOW_HANDLE createWindow( const char* _name, unsigned int _width, unsigned int _height, bool _fullscreen ) override;
-	FileSystemInterface* getFileSystemInterface() override;
-	SystemDLLInterface* loadSystemDLL( const char* _dll ) override;
-	void unloadSystemDLL(SystemDLLInterface* _interface ) override;
 	float getMonitorAspectRatio() override;
 	void minimizeWindow() override;
 	void setPrimaryMonitorAspect( float _aspect );
@@ -66,7 +59,4 @@ private:
 	std::string m_name;
 
 	float m_primaryMonitorAspect;
-
-	SystemDLLInterface* m_fileSystemDLL;
-	FileSystemInterface* m_fileSystem;
 };

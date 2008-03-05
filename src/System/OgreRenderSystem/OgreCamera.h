@@ -11,7 +11,10 @@ public:
 	Ogre3dCamera(Ogre::Camera * _camera);
 	~Ogre3dCamera();
 public:
+	void rotate(float * _dir, float _angle) override;
 	void setPosition( float _x, float _y, float _z ) override;
+	const float * getPosition() const override;
+	const float * getDirection() const override;
 	void setDirection( float _x, float _y, float _z ) override;
 	void lookAt( float _x, float _y, float _z ) override;
 	void setNearClipDistance( float _dist ) override;

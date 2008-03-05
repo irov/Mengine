@@ -1,5 +1,6 @@
 #include "vec2.h"
 #include "mat2.h"
+#include <assert.h>
 
 namespace	mt
 {

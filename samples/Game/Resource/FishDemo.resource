@@ -95,11 +95,11 @@
 	</Resource>
 
 	<Resource Name = "TestMesh" Type = "ResourceMesh" >
-		<Mesh Name = "ZombieTest/test.mesh" />
+		<Mesh Name = "test.mesh" />
 	</Resource>
 
 	<Resource Name = "TestBarrelMesh" Type = "ResourceMesh" >
-		<Mesh Name = "ZombieTest/barrel.mesh" />
+		<Mesh Name = "barrel.mesh" />
 	</Resource>
 
 	<Resource Name = "TestRobotSkeleton" Type = "ResourceSkeleton" >

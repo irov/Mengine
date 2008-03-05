@@ -38,47 +38,16 @@
 			</Cameras>
 		</Node>
 
-		<Node Name = "LevelNode" Type = "SceneNode3D">
+		<Node Name = "LevelNode" Type = "DiscreteEntity">
 			<Transformation>
 				<Scale Value = "1;1;1" />
        				<Position Value = "0;0;0" />
        				<Rotation Value ="0;0;0;1" />
 			</Transformation>
-			<Entities>
-				<Entity Name = "Level">
-					<ResourceMesh Name = "TestMesh" />
-				</Entity>
-			</Entities>
+			<ResourceMesh Name = "TestMesh" />
 		</Node>
 
-		<Node Name = "Light1" Type = "SceneNode3D">
-			<Transformation>
-				<Scale Value = "1;1;1" />
-       				<Position Value = "0;30;0" />
-       				<Rotation Value = "0;0;0;1" />
-			</Transformation>
-			<Lights>
-				<Light Name = "MainLight">
-					<Type Value = "2" />
-					<Diffuse Value = "1;1;0;0" />
-					<Specular Value = "1;1;1;1" />
-					<Range Value = "100" />
-					<AttenuationConst Value = "0.1" />
-					<AttenuationLinear Value = "0.0005" />
-					<AttenuationQuad Value = "0.0" />
-					<Position Value = "0;0;0" />
-					<Direction Value = "0;-1;0"/>
-					<SpotInner Value = "45"/>
-					<SpotOuter Value = "30"/>
-				</Light>
-			</Lights>
-			<Entities>
-				<Entity Name = "LightMesh">
-					<ResourceMesh Name = "TestBarrelMesh" />
-					<CastShadows Value = "1"/>
-				</Entity>
-			</Entities>
-               	</Node>
+	
 	</Node>
 
 	<Node Name = "Water" Type = "Layer2D">

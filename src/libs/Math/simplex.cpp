@@ -1,5 +1,5 @@
 #	include	"simplex.h"
-
+#include <assert.h>
 namespace	mt
 {
 	simplex_solver::simplex_solver()

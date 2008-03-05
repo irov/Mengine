@@ -1062,10 +1062,6 @@
 					Name="Children"
 					>
 					<File
-						RelativePath=".\NodeChildren.cpp"
-						>
-					</File>
-					<File
 						RelativePath=".\NodeChildren.h"
 						>
 					</File>

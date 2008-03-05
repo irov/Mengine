@@ -1,6 +1,6 @@
 #	include	"polygon.h"
 #	include	"simplex.h"
-
+#include <assert.h>
 namespace mt
 {
 	polygon::polygon()

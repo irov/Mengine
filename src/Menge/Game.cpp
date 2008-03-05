@@ -412,17 +412,17 @@ namespace Menge
 			getScene( *it );
 		}
 
-		//FileEngine* fileEngine = Holder<FileEngine>::hostage();
-		//for( TListDeclaration::iterator
-		//	it = m_listResourceLocation.begin(),
-		//	it_end = m_listResourceLocation.end();
-		//it != it_end;
-		//++it)	
-		//{
-		//	fileEngine->addResourceLocation( *it );
-		//}
+		FileEngine * fileEngine = Holder<FileEngine>::hostage();
+		for( TListDeclaration::iterator
+			it = m_listResourceLocation.begin(),
+			it_end = m_listResourceLocation.end();
+		it != it_end;
+		++it)	
+		{
+			fileEngine->addResourceLocation( *it );
+		}
 
-		//fileEngine->initResources();
+		fileEngine->initResources();
 
 		m_defaultArrow = getArrow( m_defaultArrowName );
 

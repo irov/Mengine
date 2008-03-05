@@ -17,8 +17,14 @@ namespace Menge
 		void left( float s );
 		void set2Direction(int x, int y);
 		bool activate();
+		void rotate( float t );
 
 	private:
+
+		float m_fRotateSpeed;
+		float m_fMaxYawAngle;
+		float m_fMinYawAngle;
+
 		CameraInterface * m_interface;
 
 		mt::vec3f m_cameraPos;

@@ -1,4 +1,7 @@
-#include "vec3.h"
+#	define _USE_MATH_DEFINES
+#	include "vec3.h"
+#	include <math.h>
+#	include <assert.h>
 
 namespace	mt
 {
@@ -279,5 +282,54 @@ namespace	mt
 		vec3f	out;
 		norm_safe_v3(out, _rhs);
 		return	out;
+	}
+
+	float get_axis_angle(const vec3f& dir, int axis)
+	{
+		assert(axis >= 0 && axis < 3);
+
+		int ind1, ind2;
+
+		if(axis == 0)	
+		{
+			ind1 = 1; 
+			ind2 = 2;
+		}
+		else if(axis == 1)	
+		{
+			ind1 = 0; 
+			ind2 = 2;
+		}
+		else if(axis == 2)
+		{
+			ind1 = 0; 
+			ind2 = 1;
+		}
+
+		float result = 0.f;
+
+		vec2f n = mt::norm_v2(vec2f(dir.m[ind1], dir.m[ind2]));
+
+		if ( (n.x >= 0) && (n.y >= 0) )
+		{
+			result = asinf(n.y);
+		}
+
+		if ( (n.x <= 0) && (n.y <= 0) )
+		{
+			result = M_PI + asinf(-n.y);
+		}
+
+		if ( (n.x >= 0) && (n.y <= 0) )
+		{
+			result = M_2_PI - asinf(-n.y);
+		}
+
+		if ( (n.x <= 0) && (n.y >= 0) )
+		{
+			result = M_PI - asinf(n.y);
+		}
+
+		return M_PI_2 - result;
 	}
 }

@@ -1,5 +1,5 @@
 #include "mat3.h"
-
+#include <assert.h>
 namespace	mt
 { 
 	mat3f::mat3f()

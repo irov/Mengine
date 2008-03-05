@@ -14,6 +14,21 @@ void Ogre3dCamera::setPosition( float _x, float _y, float _z )
 	m_camera->setPosition( _x, _y, _z );
 }
 //////////////////////////////////////////////////////////////////////////
+const float * Ogre3dCamera::getPosition() const
+{
+	return m_camera->getPosition().ptr();
+}
+//////////////////////////////////////////////////////////////////////////
+void Ogre3dCamera::rotate(float * _dir, float _angle)
+{
+	m_camera->rotate(Ogre::Vector3(_dir[0],_dir[1],_dir[2]),Ogre::Radian(_angle));
+}
+//////////////////////////////////////////////////////////////////////////
+const float * Ogre3dCamera::getDirection() const
+{
+	return m_camera->getDirection().ptr();
+}
+//////////////////////////////////////////////////////////////////////////
 void Ogre3dCamera::setDirection( float _x, float _y, float _z )
 {
 	m_camera->setDirection( _x, _y, _z );

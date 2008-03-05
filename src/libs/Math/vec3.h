@@ -8,7 +8,6 @@
 #include "vec2.h"
 
 #include "math.h"
-#include <assert.h>
 
 namespace mt
 {
@@ -91,4 +90,6 @@ namespace mt
 	vec3f	norm_v3(const vec3f& _rhs);
 	void	norm_safe_v3(vec3f& out, const vec3f& _rhs, float err = 1e-06);
 	vec3f	norm_safe_v3(const vec3f& _rhs);
+
+	float	get_axis_angle(const vec3f& dir, int axis);
 };

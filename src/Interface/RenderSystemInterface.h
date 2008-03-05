@@ -112,6 +112,9 @@ public:
 class CameraInterface
 {
 public:
+	virtual void rotate(float * _dir, float _angle) = 0;
+	virtual const float * getPosition() const = 0;
+	virtual const float * getDirection() const = 0;
 	virtual void setPosition( float _x, float _y, float _z ) = 0;
 	virtual void setDirection( float _x, float _y, float _z ) = 0;
 	virtual void lookAt( float _x, float _y, float _z ) = 0;

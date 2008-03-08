@@ -304,6 +304,16 @@ namespace Menge
 		{
 			Holder<InputEngine>::hostage()->setMouseBounded( _bounded );
 		}
+		static bool setBlow( bool _active )
+		{
+			return Holder<SoundEngine>::hostage()
+				->setBlow( _active );
+		}
+		static float getBlow()
+		{
+			return Holder<SoundEngine>::hostage()
+				->getBlow();
+		}
 
 	}
 
@@ -675,5 +685,7 @@ namespace Menge
 		pybind::def( "minimizeWindow", &ScriptMethod::minimizeWindow );
 		pybind::def( "setMouseBounded", &ScriptMethod::s_setMouseBounded );
 
+		pybind::def( "setBlow", &ScriptMethod::setBlow );
+		pybind::def( "getBlow", &ScriptMethod::getBlow );
 	}
 }

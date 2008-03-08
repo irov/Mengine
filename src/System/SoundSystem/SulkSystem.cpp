@@ -12,7 +12,9 @@ SulkSystem::SulkSystem( float _enoughBlow )
 	, m_szDefaultCaptureDevice(0)
 	, m_pCaptureDevice(0)
 	, m_iSamplesAvailable(0)
-	, m_bufferSize(0)
+	, m_bufferSize(256)
+	, m_blockAlign(16)
+	, m_active(false)
 {
 	m_buffer = new ALCint [ m_bufferSize ];
 }
@@ -57,6 +59,11 @@ bool SulkSystem::initialize()
 //////////////////////////////////////////////////////////////////////////
 void SulkSystem::update( float _timing )
 {
+	if( m_active == false )
+	{
+		return;
+	}
+
 	// Find out how many samples have been captured
 	alcGetIntegerv( m_pCaptureDevice, ALC_CAPTURE_SAMPLES, 1, &m_iSamplesAvailable);
 
@@ -87,6 +94,18 @@ void SulkSystem::update( float _timing )
 
 		m_dispersion = sqrtf(disp);
 	}
+}
+//////////////////////////////////////////////////////////////////////////
+bool SulkSystem::setBlow( bool _active )
+{
+	if( m_active == true && m_initialize == false )
+	{
+		m_active = initialize();
+		return m_active;
+	}
+
+	m_active = _active;
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 float SulkSystem::getBlow()

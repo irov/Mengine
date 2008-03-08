@@ -44,6 +44,7 @@ public:
 	void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) override;
 	void releaseSoundNode( SoundSourceInterface * _sn ) override;
 
+	bool setBlow( bool _active ) override;
 	float getBlow() override;
 
 	void update() override;

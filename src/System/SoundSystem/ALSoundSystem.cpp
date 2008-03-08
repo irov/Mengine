@@ -93,11 +93,6 @@ m_sourceNamesNum(0)
 	setDistanceModel(m_distanceModel);
 
 	m_sulk = new SulkSystem( 70.f );
-	if( m_sulk->initialize() == false )
-	{
-		delete m_sulk;
-		m_sulk = 0;
-	}
 }
 
 ALSoundSystem::~ALSoundSystem()
@@ -286,9 +281,24 @@ void ALSoundSystem::update()
 	m_sulk->update( 0.f );
 }
 
+bool ALSoundSystem::setBlow( bool _active )
+{
+	if( m_sulk )
+	{
+		return m_sulk->setBlow( _active );
+	}
+
+	return false;
+};
+
 float ALSoundSystem::getBlow()
 {
-	return m_sulk->getBlow();
+	if( m_sulk )
+	{
+		return m_sulk->getBlow();
+	}
+
+	return 0.f;
 }
 
 void	ALSoundSystem::setSoundVelocity(float _velocity)

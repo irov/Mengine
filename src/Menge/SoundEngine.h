@@ -38,6 +38,9 @@ namespace Menge
 		void releaseSoundBuffer( SoundBufferInterface * _soundBuffer );
 		void releaseSoundSource( SoundSourceInterface * _node );
 
+		bool setBlow( bool _active );
+		float getBlow();
+
 		void update();
 
 	public:

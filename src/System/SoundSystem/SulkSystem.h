@@ -13,10 +13,16 @@ public:
 	bool initialize();
 
 public:
-	void update( float _timing );
+	bool setBlow( bool _active );
 	float getBlow();
 
+public:
+	void update( float _timing );
+
 protected:
+	bool m_active;
+	bool m_initialize;
+
 	float m_enoughBlow;
 	float m_dispersion;
 	float m_average;

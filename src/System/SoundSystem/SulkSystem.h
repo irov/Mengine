@@ -35,5 +35,5 @@ protected:
 	ALCint m_iSamplesAvailable;
 	ALCsizei m_bufferSize;
 	ALCsizei m_blockAlign;
-	ALCint * m_buffer;
+	ALchar * m_buffer;
 };

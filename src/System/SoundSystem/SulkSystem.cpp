@@ -12,11 +12,12 @@ SulkSystem::SulkSystem( float _enoughBlow )
 	, m_szDefaultCaptureDevice(0)
 	, m_pCaptureDevice(0)
 	, m_iSamplesAvailable(0)
-	, m_bufferSize(256)
-	, m_blockAlign(16)
+	, m_bufferSize(4410)
+	, m_blockAlign(2)
 	, m_active(false)
+	, m_initialize(false)
 {
-	m_buffer = new ALCint [ m_bufferSize ];
+	m_buffer = new ALchar [ m_bufferSize ];
 }
 //////////////////////////////////////////////////////////////////////////
 SulkSystem::~SulkSystem()
@@ -45,7 +46,7 @@ bool SulkSystem::initialize()
 
 	// Open the default Capture device to record a 22050Hz 16bit Mono Stream using an internal buffer
 	// of BUFFERSIZE Samples (== BUFFERSIZE * 2 bytes)
-	m_pCaptureDevice = alcCaptureOpenDevice( m_szDefaultCaptureDevice, 22050, AL_FORMAT_MONO16, m_bufferSize );
+	m_pCaptureDevice = alcCaptureOpenDevice( m_szDefaultCaptureDevice, 22050, AL_FORMAT_MONO16, 22050 );
 	if ( !m_pCaptureDevice )
 	{
 		return false;
@@ -68,7 +69,7 @@ void SulkSystem::update( float _timing )
 	alcGetIntegerv( m_pCaptureDevice, ALC_CAPTURE_SAMPLES, 1, &m_iSamplesAvailable);
 
 	// When we have enough data to fill our BUFFERSIZE byte buffer, grab the samples
-	if ( m_iSamplesAvailable > (m_bufferSize / m_blockAlign) )
+	//if ( m_iSamplesAvailable > (m_bufferSize / m_blockAlign) )
 	{
 		// Consume Samples
 		alcCaptureSamples( m_pCaptureDevice, m_buffer, m_bufferSize / m_blockAlign );
@@ -88,7 +89,6 @@ void SulkSystem::update( float _timing )
 		for (int x = 0; x < m_bufferSize - 1; ++x)
 		{
 			disp += powf( (int)m_buffer[x] - average, 2 );
-			//disp += powf( (int)Buffer_[x] - (int)Buffer_[x+1], 2 );
 		}
 		disp /= m_bufferSize;
 
@@ -98,7 +98,7 @@ void SulkSystem::update( float _timing )
 //////////////////////////////////////////////////////////////////////////
 bool SulkSystem::setBlow( bool _active )
 {
-	if( m_active == true && m_initialize == false )
+	if( _active == true && m_initialize == false )
 	{
 		m_active = initialize();
 		return m_active;

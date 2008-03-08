@@ -60,9 +60,12 @@ class ALSoundBufferStream : public ALSoundBuffer
 {
 public:
 	ALSoundBufferStream();
-	ALSoundBufferStream(const char* _filename);
 	virtual ~ALSoundBufferStream();
 
+public:
+	bool initialize( const char* _filename );
+
+public:
 	virtual bool isStreamed() const	{ return true; }
 
 	void record(ALuint sourcename);

@@ -143,7 +143,14 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 
 	if(_isStream)
 	{
-		buffer = new ALSoundBufferStream(_filename);
+		ALSoundBufferStream * strambuffer = new ALSoundBufferStream();
+
+		if( strambuffer->initialize( _filename ) == false )
+		{
+			delete strambuffer;
+		}
+	
+		buffer = strambuffer;
 	}
 	else
 	{
@@ -154,11 +161,21 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 		ALvoid *data = NULL;
 		ALboolean loop;
 
+		bool done = false;
+
 		if( !strcmp( _filename + (strlen(_filename) - 4), ".wav" ) )
 		{
 			alutLoadWAVFile((ALbyte*)_filename, &format, &data, &size, &freq, &loop);
-			
-			buffer->setLenghtMs(size * 1000 / (freq * GetSampleSize(format) ));
+
+			if( data )
+			{
+				buffer->setLenghtMs(size * 1000 / (freq * GetSampleSize(format) ));
+			}
+			else
+			{
+				delete buffer;
+				buffer = NULL;
+			}
 		}
 		else if( !strcmp( _filename + (strlen(_filename) - 4), ".ogg" ) )
 		{
@@ -185,15 +202,20 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 
 				data = malloc(size);
 				DecodeOggVorbis(&oggfile, (char*)data, size, ogginfo->channels);
-
+				
+				ov_clear(&oggfile);
+				fclose(filehandle);
 			} 
 			else
 			{
 				delete buffer;
 				buffer = NULL;
 			}
-			ov_clear(&oggfile);
-			fclose(filehandle);
+		}
+		else
+		{
+			delete buffer;
+			buffer = NULL;
 		}
 
 		if(data) 

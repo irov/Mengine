@@ -54,7 +54,13 @@ void OgreFileSystem::unloadPak( const char * _pak )
 //////////////////////////////////////////////////////////////////////////
 FileDataInterface *	OgreFileSystem::openFile( const char * _filename )
 {
-	printf( "OgreFileSystem::openFile: %s\n", _filename );
+	OgreFileData * fileData = 0;
+
+	if( m_arch->exists( _filename ) == false )
+	{
+		printf( "OgreFileSystem::openFile: %s is not exists\n", _filename );
+		return 0;
+	}
 
 	try
 	{
@@ -62,15 +68,17 @@ FileDataInterface *	OgreFileSystem::openFile( const char * _filename )
 
 		if( data.isNull() )
 		{
-			return 0;
+			printf( "OgreFileSystem::openFile: %s data is null\n", _filename );
+			return fileData;
 		}
 
-		return new OgreFileData( data );
+		fileData = new OgreFileData( data );
 	}
 	catch ( ... )
 	{
-		return 0;
 	}
+
+	return fileData;
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::closeFile( FileDataInterface * _fd )

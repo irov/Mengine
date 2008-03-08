@@ -278,68 +278,74 @@ m_buffer2(0)
 {
 	alGenBuffers(1, &m_buffer2);
 }
-
-ALSoundBufferStream::ALSoundBufferStream(const char* _filename) : 
-ALSoundBuffer(),
-m_updater(NULL),
-m_buffer2(0)
+//////////////////////////////////////////////////////////////////////////
+ALSoundBufferStream::~ALSoundBufferStream()
 {
+	delete m_updater;
 
+	alDeleteBuffers(1, &m_buffer2);
+}
+//////////////////////////////////////////////////////////////////////////
+bool ALSoundBufferStream::initialize( const char* _filename )
+{
 	alGenBuffers(1, &m_buffer2);
 
 	FILE * filehandle = 0;
 	fopen_s( &filehandle, _filename, "rb");
 
+	if( filehandle == 0 )
+	{
+		return false;
+	}
+
 	unsigned int buffersize, format, freq;
 	// Check for file type, create a FileStreamUpdater if a known type is
 	// detected, otherwise throw an error.
 	OggVorbis_File oggfile;
-	if(ov_open(filehandle, &oggfile, NULL, 0) >= 0) 
+	if( ov_open(filehandle, &oggfile, NULL, 0) < 0 ) 
 	{
-		vorbis_info *ogginfo = ov_info(&oggfile, -1);
-		freq = ogginfo->rate;
-		m_lenghtMs = static_cast<unsigned int>( ov_time_total(&oggfile, -1) * 1000 );
-		if (ogginfo->channels == 1)
-		{
-			format = AL_FORMAT_MONO16;
-			// Set BufferSize to 250ms (Frequency * 2 (16bit) divided by 4 (quarter of a second))
-			buffersize = freq >> 1;
-			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
-			buffersize -= (buffersize % 2);
-		}
-		else if (ogginfo->channels == 2)
-		{
-			format = AL_FORMAT_STEREO16;
-			// Set BufferSize to 250ms (Frequency * 4 (16bit stereo) divided by 4 (quarter of a second))
-			buffersize = freq;
-			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
-			buffersize -= (buffersize % 4);
-		}
-		else if (ogginfo->channels == 4)
-		{
-			format = alGetEnumValue("AL_FORMAT_QUAD16");
-			// Set BufferSize to 250ms (Frequency * 8 (16bit 4-channel) divided by 4 (quarter of a second))
-			buffersize = freq * 2;
-			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
-			buffersize -= (buffersize % 8);
-		}
-		else if (ogginfo->channels == 6)
-		{
-			format = alGetEnumValue("AL_FORMAT_51CHN16");
-			// Set BufferSize to 250ms (Frequency * 12 (16bit 6-channel) divided by 4 (quarter of a second))
-			buffersize = freq * 3;
-			// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
-			buffersize -= (buffersize % 12);
-		}
-	    
-		m_updater = new ALSoundBufferStreamUpdater( oggfile, getBufferName(), m_buffer2, format, ogginfo->rate, buffersize, ogginfo->channels ); 
+		return false;
 	}
-}
 
-ALSoundBufferStream::~ALSoundBufferStream()
-{
-	delete m_updater;
-	alDeleteBuffers(1, &m_buffer2);
+	vorbis_info *ogginfo = ov_info(&oggfile, -1);
+	freq = ogginfo->rate;
+	m_lenghtMs = static_cast<unsigned int>( ov_time_total(&oggfile, -1) * 1000 );
+	if (ogginfo->channels == 1)
+	{
+		format = AL_FORMAT_MONO16;
+		// Set BufferSize to 250ms (Frequency * 2 (16bit) divided by 4 (quarter of a second))
+		buffersize = freq >> 1;
+		// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
+		buffersize -= (buffersize % 2);
+	}
+	else if (ogginfo->channels == 2)
+	{
+		format = AL_FORMAT_STEREO16;
+		// Set BufferSize to 250ms (Frequency * 4 (16bit stereo) divided by 4 (quarter of a second))
+		buffersize = freq;
+		// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
+		buffersize -= (buffersize % 4);
+	}
+	else if (ogginfo->channels == 4)
+	{
+		format = alGetEnumValue("AL_FORMAT_QUAD16");
+		// Set BufferSize to 250ms (Frequency * 8 (16bit 4-channel) divided by 4 (quarter of a second))
+		buffersize = freq * 2;
+		// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
+		buffersize -= (buffersize % 8);
+	}
+	else if (ogginfo->channels == 6)
+	{
+		format = alGetEnumValue("AL_FORMAT_51CHN16");
+		// Set BufferSize to 250ms (Frequency * 12 (16bit 6-channel) divided by 4 (quarter of a second))
+		buffersize = freq * 3;
+		// IMPORTANT : The Buffer Size must be an exact multiple of the BlockAlignment ...
+		buffersize -= (buffersize % 12);
+	}
+
+	m_updater = new ALSoundBufferStreamUpdater( oggfile, getBufferName(), m_buffer2, format, ogginfo->rate, buffersize, ogginfo->channels ); 
+
+	return true;
 }
 
 void ALSoundBufferStream::record(ALuint sourcename)

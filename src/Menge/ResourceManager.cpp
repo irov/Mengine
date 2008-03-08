@@ -270,7 +270,7 @@ namespace Menge
 		XmlResourceLoaderListener * resourceLoader = new XmlResourceLoaderListener( &resource, this );
 
 		if(  Holder<XmlEngine>::hostage()
-			->parseXmlBuffer( _xml, resourceLoader ) == false )
+			->parseXmlString( _xml, resourceLoader ) == false )
 		{
 			MENGE_LOG("Invalid parse external node `%s`\n", _xml.c_str() );
 

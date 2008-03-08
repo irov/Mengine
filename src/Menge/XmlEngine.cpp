@@ -61,13 +61,26 @@ namespace Menge
 		return result;
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlEngine::parseXmlBuffer( const std::string & _buffer, XmlElementListener * _listener )
+	bool XmlEngine::parseXmlString( const std::string & _buffer, XmlElementListener * _listener )
 	{
 		size_t size = _buffer.size();
 
 		void * buffer = XmlParser::makeBuffer( m_parser, size );
 
 		memcpy( buffer, _buffer.c_str(), size );
+
+		bool result = XmlParser::parseBuffer( m_parser, size, _listener );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool XmlEngine::parseXmlBuffer( const TVectorChar & _buffer, XmlElementListener * _listener )
+	{
+		size_t size = _buffer.size();
+
+		void * buffer = XmlParser::makeBuffer( m_parser, size );
+
+		memcpy( buffer, &_buffer[0], size );
 
 		bool result = XmlParser::parseBuffer( m_parser, size, _listener );
 

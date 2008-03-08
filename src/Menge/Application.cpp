@@ -146,10 +146,10 @@ namespace Menge
 
 		MENGE_LOG("init game ...\n");
 
-		if( m_physicEngine )
-		{
-			m_physicEngine->init(mt::vec3f(0,-1.0,0));
-		}
+		//if( m_physicEngine )
+		//{
+		//	m_physicEngine->init(mt::vec3f(0,-1.0,0));
+		//}
 
 		Holder<RenderEngine>::hostage()->initialize( m_renderDriver );
 		m_currentResolution.x = m_width;
@@ -295,10 +295,10 @@ namespace Menge
 	{	
 		Holder<MousePickerSystem>::hostage()->clear();
 
-		if( m_physicEngine )
-		{
-			m_physicEngine->update( 1.0f/30.0f );// for test physic!
-		}
+		//if( m_physicEngine )
+		//{
+		//	m_physicEngine->update( 1.0f/30.0f );// for test physic!
+		//}
 
 		if( m_physicEngine2D )
 		{

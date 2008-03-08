@@ -104,7 +104,7 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileDataInterface * ScriptEngine::getEntityXML( const std::string & _type )
+	TVectorChar * ScriptEngine::getEntityXML( const std::string & _type )
 	{
 		TMapEntitiesXML::iterator it_find = 
 			m_mapEntitiesXML.find( _type );
@@ -114,7 +114,7 @@ namespace Menge
 			return 0;
 		}
 
-		return it_find->second;
+		return &it_find->second;
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::registerEntityType( const std::string & _type )
@@ -146,6 +146,7 @@ namespace Menge
 		catch (...)
 		{
 			handleException();
+			return false;
 		}
 
 		m_mapEntitiesType.insert( std::make_pair( _type, module ) );
@@ -157,9 +158,21 @@ namespace Menge
 		xml_path += _type;
 		xml_path += ".xml";
 
-		FileDataInterface * _data = Holder<FileEngine>::hostage()->openFile( xml_path );
+		FileDataInterface * file = 
+			Holder<FileEngine>::hostage()
+			->openFile( xml_path );
+		 
+		TMapEntitiesXML::iterator it_insert =
+			m_mapEntitiesXML.insert( std::make_pair( _type, TVectorChar() ) ).first;
 
-		m_mapEntitiesXML.insert( std::make_pair( _type, _data ) );
+		size_t size = file->size();
+		TVectorChar & blob = it_insert->second;
+		
+		blob.resize( size );
+		file->read( &blob[0], size );
+		
+		Holder<FileEngine>::hostage()
+			->closeFile( file );
 
 		return true;
 	}

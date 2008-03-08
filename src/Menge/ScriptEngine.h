@@ -44,7 +44,7 @@ namespace Menge
 		bool isEntityType( const std::string & _type );		
 		PyObject * getEntityModule( const std::string & _type );
 		bool registerEntityType( const std::string & _type );
-		FileDataInterface * getEntityXML( const std::string & _type );
+		TVectorChar * getEntityXML( const std::string & _type );
 
 		static PyObject * wrap( Node * _node );
 		static PyObject * proxy( PyObject * _module, const std::string & _name, void * _impl );
@@ -87,7 +87,7 @@ namespace Menge
 		typedef std::map<std::string, PyObject *> TMapEntitiesType;
 		TMapEntitiesType m_mapEntitiesType;
 
-		typedef std::map<std::string, FileDataInterface *> TMapEntitiesXML;
+		typedef std::map<std::string, TVectorChar > TMapEntitiesXML;
 		TMapEntitiesXML m_mapEntitiesXML;
 
 		typedef std::map<std::string, PyObject *> TMapModule;

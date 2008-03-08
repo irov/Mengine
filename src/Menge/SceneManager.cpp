@@ -125,7 +125,7 @@ namespace Menge
 		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node );
 
 		if(  Holder<XmlEngine>::hostage()
-			->parseXmlBuffer( _xml_data, nodeLoader ) == false )
+			->parseXmlString( _xml_data, nodeLoader ) == false )
 		{
 			MENGE_LOG("Invalid parse external xml data `%s`\n", _xml_data.c_str() );
 

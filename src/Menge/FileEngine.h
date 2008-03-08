@@ -15,6 +15,8 @@ namespace Menge
 		size_t size;
 	};
 
+	typedef std::vector<char> TVectorChar;
+
 	class FileEngine
 	{
 	public:

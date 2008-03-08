@@ -149,8 +149,10 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 		{
 			delete strambuffer;
 		}
-	
-		buffer = strambuffer;
+		else
+		{
+			buffer = strambuffer;
+		}
 	}
 	else
 	{

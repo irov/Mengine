@@ -309,6 +309,7 @@ namespace	Menge
 			{
 				m_color = m_newColor;
 				m_changingColor = false;
+				m_changingColorTime = 0.f;	
 				this->callEvent( "COLOR_END", "(O)", this->getScript() );
 			}
 			else

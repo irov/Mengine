@@ -158,7 +158,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32&quot;;&quot;$(SolutionDir)dependencies\Pybind\lib&quot;;$(NOINHERIT)"
 				IgnoreAllDefaultLibraries="false"
-				GenerateDebugInformation="false"
+				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

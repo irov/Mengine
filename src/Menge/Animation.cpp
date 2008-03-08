@@ -95,8 +95,13 @@ namespace	Menge
 					m_playing = false;
 					--m_currentFrame;
 
+					m_delay = 0;
+
+					size_t currentImageIndex = m_resource->getSequenceIndex( m_currentFrame );
+					setImageIndex( currentImageIndex );
+
 					callEvent( "END_ANIMATION", "(O)", this->getScript() );
-					return;
+					break;
 				}
 				else
 				{

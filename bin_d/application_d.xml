@@ -2,7 +2,7 @@
 	<Paks>
 	</Paks>
 
-	<ResourcePath Path = "../samples/Game" />
+	<ResourcePath Path = "../samples/Blow" />
 
 	<Game File = "Game.xml" />
 

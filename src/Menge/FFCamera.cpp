@@ -33,7 +33,7 @@ namespace Menge
 			DiscreteEntity * ent = m_actor->getChildrenT<DiscreteEntity>("BarrelNode",true);
 			if(m_interface->isAABBIntersect(ent->get()) == 0)
 			{
-				m_interface->translate(mt::vec3f(1,0,0).m);
+				m_interface->translate(mt::vec3f(0,0,1).m);
 			}
 
 		//	float min[3];

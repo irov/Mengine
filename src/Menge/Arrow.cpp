@@ -41,12 +41,12 @@ namespace	Menge
 		
 		mt::vec2f pos( (float)mx, (float)my );
 		setLocalPosition( pos + m_offsetClick );
-
-		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()
 	{
+		SceneNode2D::_activate();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

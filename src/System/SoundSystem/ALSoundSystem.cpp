@@ -7,6 +7,8 @@
 #include "ALSoundSource.h"
 #include "ALSoundSystem.h"
 
+#	include "SulkSystem.h"
+
 //#include <stdlib.h>
 #include <algorithm>
 
@@ -89,6 +91,13 @@ m_sourceNamesNum(0)
 	//alDopplerVelocity(mSoundVelocity);
 	alDopplerFactor(m_dopplerFactor);
 	setDistanceModel(m_distanceModel);
+
+	m_sulk = new SulkSystem( 70.f );
+	if( m_sulk->initialize() == false )
+	{
+		delete m_sulk;
+		m_sulk = 0;
+	}
 }
 
 ALSoundSystem::~ALSoundSystem()
@@ -100,6 +109,8 @@ ALSoundSystem::~ALSoundSystem()
 	alcMakeContextCurrent(NULL);
 	alcDestroyContext(m_context);
 	alcCloseDevice(m_device);
+
+	delete m_sulk;
 }
 
 void    ALSoundSystem::setListenerOrient( float * _position, float * _front, float * _top)
@@ -271,6 +282,13 @@ void ALSoundSystem::update()
 	{
 		m_streams[i]->getUpdater()->update();
 	}
+
+	m_sulk->update( 0.f );
+}
+
+float ALSoundSystem::getBlow()
+{
+	return m_sulk->getBlow();
 }
 
 void	ALSoundSystem::setSoundVelocity(float _velocity)

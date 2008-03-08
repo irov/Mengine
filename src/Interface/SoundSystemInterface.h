@@ -55,6 +55,8 @@ public:
 	virtual void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) = 0;
 	virtual void releaseSoundNode( SoundSourceInterface * _sn ) = 0;
 
+	virtual float getBlow() = 0;
+
 	virtual void update() = 0;
 };
 

@@ -26,6 +26,7 @@ TALSourceName;
 
 class ALSoundSource;
 class ALSoundBufferStream;
+class SulkSystem;
 
 class ALSoundSystem : public SoundSystemInterface
 {
@@ -34,16 +35,18 @@ public:
 	virtual ~ALSoundSystem();
 
 public:
-	virtual void    setListenerOrient( float * _position, float * _front, float * top);
-	virtual SoundSourceInterface*   createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener );
+	void setListenerOrient( float * _position, float * _front, float * top) override;
+	SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener ) override;
 
-	virtual SoundBufferInterface *  createSoundBufferFromFile( const char * _filename, bool _isStream );
-	virtual SoundBufferInterface *  createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem );
+	SoundBufferInterface * createSoundBufferFromFile( const char * _filename, bool _isStream ) override;
+	SoundBufferInterface * createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) override;
 
-	virtual void    releaseSoundBuffer( SoundBufferInterface * _soundBuffer );
-	virtual void    releaseSoundNode( SoundSourceInterface * _sn );
+	void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) override;
+	void releaseSoundNode( SoundSourceInterface * _sn ) override;
 
-	virtual void	update();
+	float getBlow() override;
+
+	void update() override;
 
 public:
 	void	setSoundVelocity( float _velocity );
@@ -74,4 +77,5 @@ private:
 	ALCdevice* m_device;
 	ALCcontext_struct* m_context;
 
+	SulkSystem * m_sulk;
 };

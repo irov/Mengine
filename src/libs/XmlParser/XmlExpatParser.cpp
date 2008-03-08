@@ -60,6 +60,11 @@ void * XmlExpatParser::makeBuffer( size_t _size )
 {
 	return XML_GetBuffer( m_parser, _size );
 }
+////////////////////////////////////////////////////////////////////////////
+//void XmlExpatParser::releaseBuffer( void * _buffer )
+//{
+//	XML_ReleaseBuffer
+//}
 //////////////////////////////////////////////////////////////////////////
 bool XmlExpatParser::parseXML( size_t _size, XmlElementListener * _listener )
 {

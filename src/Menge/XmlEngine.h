@@ -6,12 +6,17 @@
 #	include "Math/mat4.h"
 #	include "FileEngine.h"
 
+class XmlExpatParser;
+
 namespace Menge
 {
-
 	class XmlEngine
 		: public XmlParser
 	{
+	public:
+		XmlEngine();
+		~XmlEngine();
+
 	public:
 		bool parseXmlFile( const std::string & _file, XmlElementListener * _listener );
 		bool parseXmlFile( FileDataInterface* _file, XmlElementListener * _listener );
@@ -39,6 +44,9 @@ namespace Menge
 			XmlElementListener * listener = new XmlElementListenerFunction<F>(f);
 			return parseXmlFile( _file, listener );
 		}
+
+	protected:
+		XmlExpatParser * m_parser;
 	};
 }
 

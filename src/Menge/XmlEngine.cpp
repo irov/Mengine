@@ -4,6 +4,16 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	XmlEngine::XmlEngine()
+	{
+		m_parser = XmlParser::newParser( );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	XmlEngine::~XmlEngine()
+	{
+		XmlParser::deleteParser( m_parser );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool XmlEngine::parseXmlFile( const std::string & _file, XmlElementListener * _listener )
 	{
 		if( Holder<FileEngine>::hostage()
@@ -21,17 +31,14 @@ namespace Menge
 		}
 
 		size_t size = file->size();
-
-		XmlExpatParser * parser = XmlParser::newParser();
-		void * buffer = XmlParser::makeBuffer( parser, size );
+	
+		void * buffer = XmlParser::makeBuffer( m_parser, size );
 		file->read( buffer, size );
 
 		Holder<FileEngine>::hostage()
 			->closeFile( file );
 		
-		bool result = XmlParser::parseBuffer( parser, size, _listener );
-
-		XmlParser::deleteParser( parser );
+		bool result = XmlParser::parseBuffer( m_parser, size, _listener );
 
 		return result;
 	}
@@ -45,14 +52,11 @@ namespace Menge
 
 		size_t size = _file->size();
 
-		XmlExpatParser * parser = XmlParser::newParser();
-		void * buffer = XmlParser::makeBuffer( parser, size );
+		void * buffer = XmlParser::makeBuffer( m_parser, size );
 		_file->read( buffer, size );
 		_file->seek( 0 );
 		
-		bool result = XmlParser::parseBuffer( parser, size, _listener );
-
-		XmlParser::deleteParser( parser );
+		bool result = XmlParser::parseBuffer( m_parser, size, _listener );
 
 		return result;
 	}	
@@ -61,14 +65,12 @@ namespace Menge
 	{
 		size_t size = _buffer.size();
 
-		XmlExpatParser * parser = XmlParser::newParser();
-		void * buffer = XmlParser::makeBuffer( parser, size );
+		void * buffer = XmlParser::makeBuffer( m_parser, size );
 
 		memcpy( buffer, _buffer.c_str(), size );
 
-		bool result = XmlParser::parseBuffer( parser, size, _listener );
+		bool result = XmlParser::parseBuffer( m_parser, size, _listener );
 
-		XmlParser::deleteParser( parser );
 		return result;
 	}
 }

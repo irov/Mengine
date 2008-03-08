@@ -61,8 +61,12 @@ namespace Menge
 			xml_path += _type;
 			xml_path += ".xml";
 
+			FileDataInterface * entityXml = 
+				Holder<ScriptEngine>::hostage()
+				->getEntityXML( _type );
+
 			if( Holder<XmlEngine>::hostage()
-				->parseXmlFileM( Holder<ScriptEngine>::hostage()->getEntityXML( _type ), entity, &Entity::loader ) )
+				->parseXmlFileM( entityXml, entity, &Entity::loader ) )
 			{
 				entity->registerEvent( "LOADER", "onLoader" );
 				entity->callEvent("LOADER", "()");

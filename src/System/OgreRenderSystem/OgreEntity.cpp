@@ -91,6 +91,18 @@ void OgreEntity::createRenderToTexture( const char* _cameraName )
 	m_entity->setMaterialName( Ogre::String("rttMat") + Ogre::String( _cameraName ) );
 }
 //////////////////////////////////////////////////////////////////////////
+void OgreEntity::getAABB( float * _min, float * _max ) const
+{
+	const Ogre::AxisAlignedBox & aabb = m_entity->getWorldBoundingBox();
+	_min[0] = aabb.getMinimum().x;
+	_min[1] = aabb.getMinimum().y;
+	_min[2] = aabb.getMinimum().z;
+
+	_max[0] = aabb.getMaximum().x;
+	_max[1] = aabb.getMaximum().y;
+	_max[2] = aabb.getMaximum().z;
+}
+//////////////////////////////////////////////////////////////////////////
 /*bool OgreEntity::hasSkeleton() const 
 {
 	Ogre::MeshPtr mesh = m_entity->getMesh();

@@ -40,12 +40,6 @@ namespace Menge
 		void setCastsShadows( bool _enabled );
 
 		void setDirection( float _x, float _y, float _z );
-	
-		//hack ??
-		LightInterface * get()
-		{
-			return m_interface;
-		}
 
 	public:
 		void loader( XmlElement * _xml );

@@ -323,7 +323,7 @@ namespace Menge
 	SCRIPT_CLASS_WRAPPING( RigidBody3D );
 	SCRIPT_CLASS_WRAPPING( Layer3D );
 	SCRIPT_CLASS_WRAPPING( RigidBody2D );
-//	SCRIPT_CLASS_WRAPPING( CapsuleController );
+	SCRIPT_CLASS_WRAPPING( CapsuleController );
 
 
 	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -452,6 +452,7 @@ namespace Menge
 			.def( "activate", &FFCamera3D::activate )
 			.def( "forward", &FFCamera3D::forward )
 			.def( "left", &FFCamera3D::left )
+			.def( "setActor", &FFCamera3D::setActor )
 			;
 
 		pybind::interface_<NodeRenderable>("NodeRenderable", false)

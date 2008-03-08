@@ -63,9 +63,17 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void DiscreteEntity::update( float _timing )
+	{
+	/*	float min[3];
+		float max[3];
+		m_entInterface->getAABB(min,max);
+		printf("min x = %f, y = %f, z = %f \n",min[0],min[1],min[2]);
+*/
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool DiscreteEntity::_compile()
 	{
-
 		if( SceneNode3D::_compile() == false )
 		{
 			return false;

@@ -41,22 +41,13 @@ namespace Menge
 		void roll( float _angle );
 
 	public:
-		//void attachEntity(DiscreteEntity * _entity);
-		//void attachLight(Light * _entity);
-		//void attachCamera(Camera3D * _camera);
-
-		//Camera3D * getCamera() const;
-
 		void addChild(SceneNode3D * _node);
-
 		void attachToRootNode();
 
 	public:
 		virtual void loader( XmlElement * _xml ) override;
+
 		void loaderTransformation_( XmlElement * _xml );
-		//void loaderEntities_( XmlElement * _xml );
-		//void loaderLights_( XmlElement * _xml );
-		void loaderCameras_( XmlElement * _xml );
 
 	protected:
 		bool _activate() override;
@@ -68,8 +59,6 @@ namespace Menge
 		SceneNodeInterface * m_interface;
 
 	private:
-		//DiscreteEntity * m_entity;
-		//Light * m_light;
 		Camera3D * m_camera;
 
 		void render();

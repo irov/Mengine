@@ -75,19 +75,18 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody3D::_compile()
 	{
-		//m_resource = 
-		//	Holder<ResourceManager>::hostage()
-		//	->getResourceT<ResourcePhysicGeometry>( m_resourcename );
+		m_resource = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourcePhysicGeometry>( m_resourcename );
 
-		//if( m_resource == 0 )
-		//{
-		//	return false;
-		//}
+		if( m_resource == 0 )
+		{
+			return false;
+		}
 
-		//const GeometryInterface * geometry = m_resource->getGeometry(0);
+		const GeometryInterface * geometry = m_resource->getGeometry(0);
 
-		//m_interface = Holder<PhysicEngine>::hostage()->createRigidBody( m_density, m_active, geometry );
-
+		m_interface = Holder<PhysicEngine>::hostage()->createRigidBody( m_density, m_active, geometry );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

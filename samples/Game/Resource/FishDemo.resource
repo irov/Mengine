@@ -98,7 +98,7 @@
 		<Mesh Name = "test.mesh" />
 	</Resource>
 
-	<Resource Name = "TestBarrelMesh" Type = "ResourceMesh" >
+	<Resource Name = "TestBarrel" Type = "ResourceMesh" >
 		<Mesh Name = "barrel.mesh" />
 	</Resource>
 

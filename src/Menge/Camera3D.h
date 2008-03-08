@@ -38,11 +38,7 @@ namespace Menge
 
 		const std::string & getName();
 
-		//hack ??
-		CameraInterface * get()
-		{
-			return m_interface;
-		}
+	
 
 	private:
 		SceneNode3D * m_parent;

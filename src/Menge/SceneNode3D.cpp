@@ -19,8 +19,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::SceneNode3D()
 		: m_interface(0)
-		//, m_entity(0)
-		//, m_light(0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::~SceneNode3D()
@@ -94,16 +92,6 @@ namespace Menge
 		m_interface = Holder<RenderEngine>::hostage()->createSceneNode( name );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*void SceneNode3D::attachEntity( DiscreteEntity * _entity )
-	{
-		m_interface->attachEntity(_entity->get());
-	}*/
-	//////////////////////////////////////////////////////////////////////////
-	/*void SceneNode3D::attachLight( Light * _entity )
-	{
-		m_interface->attachLight( _entity->get() );
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::_addChildren( SceneNode3D * _node )
 	{
 		const std::string & name = _node->getName();
@@ -140,50 +128,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*void SceneNode3D::loaderEntities_( XmlElement * _xml )
-	{
-		std::string name;
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE("Entity")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-				}
-
-				m_entity = new DiscreteEntity( name );
-				m_entity->setParentNode( this );
-
-			//	m_movables.push_back( entity );
-				XML_PARSE_ELEMENT( m_entity, &DiscreteEntity::loader );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::loaderLights_( XmlElement * _xml )
-	{
-		std::string name;
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE("Light")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-				}
-
-				m_light = new Light( name );
-				m_light->setParentNode( this );
-
-				//	m_movables.push_back( entity );
-				XML_PARSE_ELEMENT( m_light, &Light::loader );
-			}
-		}
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::loader( XmlElement * _xml )
 	{
 		NodeCore::loader( _xml );
@@ -194,37 +138,11 @@ namespace Menge
 			{
 				XML_PARSE_ELEMENT( this, &SceneNode3D::loaderTransformation_ );
 			}
-
-			/*XML_CASE_NODE("Entities")
-			{
-				XML_PARSE_ELEMENT( this, &SceneNode3D::loaderEntities_ );
-			}
-
-			XML_CASE_NODE("Lights")
-			{
-				XML_PARSE_ELEMENT( this, &SceneNode3D::loaderLights_ );
-			}*/
-
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SceneNode3D::_activate()
 	{
-	/*	for (std::list<Movable*>::iterator it = m_movables.begin(); it != m_movables.end(); ++it)
-		{
-			(*it)->activate();
-		}
-*/
-		/*if(m_entity!=NULL)
-		{
-			m_entity->activate();
-		}
-
-		if(m_light!=NULL)
-		{
-			m_light->activate();
-		}*/
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

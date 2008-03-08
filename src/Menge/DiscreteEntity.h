@@ -44,8 +44,9 @@ namespace Menge
 
 	public:
 		virtual void loader( XmlElement * _xml );
-		//virtual bool activate();
-		//virtual void deactivate();
+		void update( float _timing ) override;
+
+	protected:
 		virtual bool _activate();
 		virtual void _deactivate();
 		virtual bool _compile();

@@ -19,6 +19,7 @@ public:
 	void setMaterial( const std::string & _material ) override;
 	void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material ) override;
 	void createRenderToTexture( const char* _cameraName ) override;
+	void getAABB( float * _min, float * _max ) const override;
 
 public:
 	Ogre::Entity * getOgreEntity();

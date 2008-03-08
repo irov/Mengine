@@ -2,6 +2,8 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "RenderEngine.h"
 #	include "Holder.h"
+#	include "Actor.h"
+#	include "DiscreteEntity.h"
 
 namespace Menge
 {
@@ -9,17 +11,37 @@ namespace Menge
 	: m_cameraPos(0,20,0)
 	, m_cameraForward(0,0,-1)
 	, m_cameraRight(1,0,0)
-	, m_fMinYawAngle(0)
-	, m_fMaxYawAngle(0)
-	, m_fRotateSpeed(0)
+	, m_fMinYawAngle(-3.1415f/2.f)
+	, m_fMaxYawAngle(3.1415f/2.f)
+	, m_fRotateSpeed(0.01f)
+	, m_actor(0)
 	{
 	}
 
 	FFCamera3D::~FFCamera3D()
 	{}
 
-	void FFCamera3D::update()
+	void FFCamera3D::setActor(Actor * _actor)
 	{
+		m_actor = _actor;
+	}
+
+	void FFCamera3D::update(float _timing)
+	{
+		if(m_actor)
+		{
+			DiscreteEntity * ent = m_actor->getChildrenT<DiscreteEntity>("BarrelNode",true);
+			if(m_interface->isAABBIntersect(ent->get()) == 0)
+			{
+				m_interface->translate(mt::vec3f(1,0,0).m);
+			}
+
+		//	float min[3];
+		//	float max[3];
+		//	m_interface->getAABB(min,max);
+		//	printf("min x = %f, y = %f, z = %f \n",min[0],min[1],min[2]);
+		}
+	//	rotate(_timing);
 		m_interface->lookAt(
 			m_cameraPos.x + m_cameraForward.x,
 			m_cameraPos.y + m_cameraForward.y, 
@@ -44,36 +66,46 @@ namespace Menge
 
 		mt::vec3f cameraDir = *(mt::vec3f*)m_interface->getDirection();
 
-		float curAngle = mt::get_axis_angle(cameraDir,2);
+		mt::quatf orientDir = *(mt::quatf*)m_interface->getOrient();
+		cameraDir = orientDir * mt::vec3f(0,0,-1);
+
+		float curAngle = mt::get_axis_angle(cameraDir,1);
+
+		printf("curAngle = %f \n", curAngle);
 
 		mt::vec3f charPos(0,0,0);
 
 		mt::vec3f dir = charPos - *(mt::vec3f*)m_interface->getPosition();
 		
-		mt::norm_v3(dir);
-		float toCharacterAngle	= mt::get_axis_angle(dir,2);
+		mt::norm_v3(dir,dir);
+		float toCharacterAngle	= mt::get_axis_angle(dir,1);
 		
-		if(toCharacterAngle > m_fMaxYawAngle)	toCharacterAngle	= m_fMaxYawAngle;
-		if(toCharacterAngle < m_fMinYawAngle)	toCharacterAngle	= m_fMinYawAngle;
+	//	if(toCharacterAngle > m_fMaxYawAngle)	toCharacterAngle	= m_fMaxYawAngle;
+	//	if(toCharacterAngle < m_fMinYawAngle)	toCharacterAngle	= m_fMinYawAngle;
 
 		float angle = toCharacterAngle - curAngle;
 
+		printf("toCharacterAngle = %f \n", angle);
+
 		if(fabs(angle) > 0.00001)
 		{
+			printf("%f \n",t);
 			// Делаем вращение камерой плавное
 			if(fabs(angle) > t * m_fRotateSpeed)
 			{
 				// Сильно быстро двигается камера, замедляем скорость
-				if(angle > 0)
+			/*	if(angle > 0)
 					angle	= t * m_fRotateSpeed;
 				else
-					angle	= -(t * m_fRotateSpeed);
+					angle	= -(t * m_fRotateSpeed);*/
 			}
 
-			m_interface->rotate(mt::vec3f(0, 0, -1).m, angle);
-			// Угол должен быть в грудусах, из-за этого такое умножение
+			mt::quatf q = mt::q_from_angle_axis(mt::vec3f(0, -1, 0),angle * 180.f / 3.141596f);
+
+			//m_interface->setOrient(q.m);
+		//	m_interface->rotate(mt::vec3f(0, -1, 0).m, angle* 180.f / 3.141596f);
+			m_interface->setDirection(dir.x,dir.y,dir.z);
 //			m_Cameraf.Rotate(vec3f(0, 0, -1), (angle) * 180.f / 3.141596f);
-	//		m_bRecalViewProj	= true;
 		}
 	}
 
@@ -108,7 +140,9 @@ namespace Menge
 		m_interface->setAspectRatio( 1.3f );
 		m_interface->setNearClipDistance( 10.0f );
 		m_interface->setFarClipDistance( 1000.0f );
-		m_interface->setPosition( 0, 20, 0 );
+		m_interface->setPosition( 0, 70, 0 );
+
+		m_interface->lookAt(0,0,0);
 
 		return true;
 	}

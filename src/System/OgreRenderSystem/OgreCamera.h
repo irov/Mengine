@@ -11,6 +11,8 @@ public:
 	Ogre3dCamera(Ogre::Camera * _camera);
 	~Ogre3dCamera();
 public:
+	void setOrient(float * _q) override;
+	const float * getOrient() const override;
 	void rotate(float * _dir, float _angle) override;
 	void setPosition( float _x, float _y, float _z ) override;
 	const float * getPosition() const override;
@@ -23,6 +25,9 @@ public:
 	void yaw( float _angle ) override;
 	void pitch( float _angle ) override;
 	void roll( float _angle ) override;
+	void getAABB( float * _min, float * _max ) const override;
+	void translate( float * _v ) override;
+	int isAABBIntersect( EntityInterface * _entity );
 public:
 	Ogre::Camera * getOgreCamera();
 

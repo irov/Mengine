@@ -70,6 +70,7 @@ public:
 	virtual void setMaterial( const std::string & _material ) = 0;
 	virtual void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material ) = 0;
 	virtual void createRenderToTexture( const char* _cameraName ) = 0;
+	virtual void getAABB( float * _min, float * _max ) const = 0;
 };
 
 enum LightType
@@ -109,12 +110,24 @@ public:
 	virtual void setPosition( float _x, float _y, float _z ) = 0;
 };
 
+enum EFrustumPlanes
+{
+	PLANE_NEAR   = 0,
+	PLANE_FAR    = 1,
+	PLANE_LEFT   = 2,
+	PLANE_RIGHT  = 3,
+	PLANE_TOP    = 4,
+	PLANE_BOTTOM = 5
+};
+
 class CameraInterface
 {
 public:
+	virtual void setOrient(float * _q) = 0;
 	virtual void rotate(float * _dir, float _angle) = 0;
 	virtual const float * getPosition() const = 0;
 	virtual const float * getDirection() const = 0;
+	virtual const float * getOrient() const = 0;
 	virtual void setPosition( float _x, float _y, float _z ) = 0;
 	virtual void setDirection( float _x, float _y, float _z ) = 0;
 	virtual void lookAt( float _x, float _y, float _z ) = 0;
@@ -124,6 +137,9 @@ public:
 	virtual void yaw( float _angle ) = 0;
 	virtual void pitch( float _angle ) = 0;
 	virtual void roll( float _angle ) = 0;
+	virtual void getAABB( float * _min, float * _max ) const = 0;
+	virtual int isAABBIntersect( EntityInterface * _entity ) = 0;
+	virtual void translate( float * _v ) = 0;
 };
 
 class	SceneNodeInterface

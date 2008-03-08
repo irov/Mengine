@@ -150,7 +150,7 @@ namespace	mt
 		vec3f uuv;
 		cross_v3_v3(uv,_rhs.v,_v);
 		cross_v3_v3(uuv,_rhs.v,uv); 
-		uv*=2.0f*_rhs.x;
+		uv*=2.0f*_rhs.w;
 		uuv*=2.0f;
 		add_v3_v3(uv,uv,uuv);
 		add_v3_v3(out,_v,uv);

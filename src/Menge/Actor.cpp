@@ -26,10 +26,9 @@ namespace	Menge
 	: m_dir(0,0,0)
 	, m_initOrient(1,0,0,0)
 	, m_contMovement(0,0,0)
-	, m_body(0)
 	, m_controller(0)
-	, m_charPos(0,0,0)
 	, m_rigidBody(0)
+	//, m_charPos(0,0,0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Actor::~Actor()
@@ -128,45 +127,6 @@ namespace	Menge
 		this->callMethod("onRelease", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Actor::attachEntity( DiscreteEntity * _entity )
-	{
-		m_entityInterface = _entity;
-		m_interface->attachEntity( _entity->get() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Actor::setParentActor( Actor * _parent, const mt::vec3f & _pos )
-	{
-		if( _parent == NULL )
-		{
-			const std::string & name = this->getName();
-
-			SceneNodeInterface * interface
-				= Holder<RenderEngine>::hostage()->createSceneNode( name );
-
-			m_interface = interface;
-		}
-		else
-		{
-			m_interface = _parent->m_interface;
-		}
-
-		this->setLocalPosition( _pos );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Actor::setParentRoot( const mt::vec3f & _pos, const mt::quatf & _q )
-	{
-		const std::string & name = this->getName();
-
-		SceneNodeInterface * interface
-			= Holder<RenderEngine>::hostage()->createSceneNode( name );
-
-		m_interface = interface;
-
-		this->setLocalPosition( _pos );
-		this->setLocalOrient( _q );
-
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Actor::step( const mt::vec3f & _v )
 	{
 //		m_entityInterface->play("idle2");
@@ -186,4 +146,37 @@ namespace	Menge
 //		m_entityInterface->play("idle2");
 		m_contMovement = mt::vec3f::zero_v3;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	/*	void Actor::setParentRoot( const mt::vec3f & _pos, const mt::quatf & _q )
+	{
+	const std::string & name = this->getName();
+
+	SceneNodeInterface * interface
+	= Holder<RenderEngine>::hostage()->createSceneNode( name );
+
+	m_interface = interface;
+
+	this->setLocalPosition( _pos );
+	this->setLocalOrient( _q );
+
+	}*/
+	//////////////////////////////////////////////////////////////////////////
+	/*	void Actor::setParentActor( Actor * _parent, const mt::vec3f & _pos )
+	{
+	if( _parent == NULL )
+	{
+	const std::string & name = this->getName();
+
+	SceneNodeInterface * interface
+	= Holder<RenderEngine>::hostage()->createSceneNode( name );
+
+	m_interface = interface;
+	}
+	else
+	{
+	m_interface = _parent->m_interface;
+	}
+
+	this->setLocalPosition( _pos );
+	}*/
 }

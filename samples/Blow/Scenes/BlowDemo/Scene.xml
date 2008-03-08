@@ -1,7 +1,7 @@
 <Scene>
 	<Node Name = "Front" Type = "Layer2D">
 		<Main Value = "1" />
-		<Size Value = "3072; 768" />
+		<Size Value = "1024; 768" />
 
 		<Node Name = "Sulk" Type = "Sprite" >
 			<ImageMap Name = "Sulk" />

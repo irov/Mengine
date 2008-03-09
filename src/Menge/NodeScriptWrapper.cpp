@@ -314,6 +314,41 @@ namespace Menge
 			return Holder<SoundEngine>::hostage()
 				->getBlow();
 		}
+		static void setEnoughBlow( float _enoughBlow )
+		{
+			Holder<SoundEngine>::hostage()
+				->setEnoughBlow( _enoughBlow );
+		}
+
+		class PySoundSulkCallback
+			: public SoundSulkCallback
+		{
+		public:
+			PySoundSulkCallback( PyObject * _callback )
+				: m_callback(_callback)
+			{
+				pybind::incref( m_callback );
+			}
+
+			~PySoundSulkCallback()
+			{
+				pybind::decref( m_callback );
+			}
+
+			void blow( float _blow ) override
+			{
+				pybind::call( m_callback, "(f)", _blow );
+			}
+
+		protected:
+			PyObject * m_callback;
+		};
+
+		static void setBlowCallback( PyObject * _sulkcallback )
+		{
+			Holder<SoundEngine>::hostage()
+				->setSulkCallback( new PySoundSulkCallback( _sulkcallback ) );
+		}
 
 	}
 
@@ -687,5 +722,8 @@ namespace Menge
 
 		pybind::def( "setBlow", &ScriptMethod::setBlow );
 		pybind::def( "getBlow", &ScriptMethod::getBlow );
+		pybind::def( "setEnoughBlow", &ScriptMethod::setEnoughBlow );
+		pybind::def( "setBlowCallback", &ScriptMethod::setBlowCallback );
+		
 	}
 }

@@ -47,6 +47,9 @@ public:
 	bool setBlow( bool _active ) override;
 	float getBlow() override;
 
+	void setEnoughBlow( float _enoughBlow ) override;
+	void setBlowCallback( SoundSulkCallbackInterface * _callback ) override;
+
 	void update() override;
 
 public:

@@ -43,6 +43,12 @@ public:
 	virtual void setSoundNodeListener(SoundNodeListenerInterface * _listener) = 0;
 };
 
+class SoundSulkCallbackInterface
+{
+public:
+	virtual void blow( float _blow ) = 0;
+};
+
 class SoundSystemInterface
 {
 public:
@@ -57,6 +63,9 @@ public:
 
 	virtual bool setBlow( bool _active ) = 0;
 	virtual float getBlow() = 0;
+
+	virtual void setEnoughBlow( float _enoughBlow ) = 0;
+	virtual void setBlowCallback( SoundSulkCallbackInterface * _callback ) = 0;
 
 	virtual void update() = 0;
 };

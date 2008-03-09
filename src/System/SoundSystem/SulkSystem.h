@@ -3,21 +3,29 @@
 #	include "al.h"
 #	include "alc.h"
 
+class SoundSulkCallbackInterface;
+
 class SulkSystem
 {
 public:
-	SulkSystem( float _enoughBlow );
+	SulkSystem();
 	~SulkSystem();
 
 public:
 	bool initialize();
 
 public:
-	bool setBlow( bool _active );
-	float getBlow();
+	void setEnoughBlow( float _enoughBlow );
+	float getEnoughBlow() const;
 
 public:
-	void update( float _timing );
+	void setCallback( SoundSulkCallbackInterface * _callback );
+
+	bool activate( bool _activate );
+	float getBlow() const;
+
+public:
+	void update();
 
 protected:
 	bool m_active;
@@ -26,6 +34,8 @@ protected:
 	float m_enoughBlow;
 	float m_dispersion;
 	float m_average;
+
+	SoundSulkCallbackInterface * m_sulkcallback;
 
 	ALCcontext * m_pContext;
 	ALCdevice * m_pDevice;

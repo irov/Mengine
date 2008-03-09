@@ -13,6 +13,13 @@ namespace Menge
 	class SoundEmitter;
 	class ResourceSound;
 
+	class SoundSulkCallback
+		: public SoundSulkCallbackInterface
+	{
+	public:
+		virtual ~SoundSulkCallback();
+	};
+
 	class SoundEngine
 	{
 	public:
@@ -40,14 +47,20 @@ namespace Menge
 
 		bool setBlow( bool _active );
 		float getBlow();
+		void setSulkCallback( SoundSulkCallback * _sulkcallback );
+
+		void setEnoughBlow( float _enoughBlow );
 
 		void update();
 
 	public:
 		void registerSoundEmitter( SoundEmitter * _emitter );
 		void unregisterSoundEmitter( SoundEmitter * _emitter );
+
 	protected:
 		SoundSystemInterface * m_interface;
+		SoundSulkCallback * m_sulkcallback;
+
 	private:
 
 		float m_soundVolume;

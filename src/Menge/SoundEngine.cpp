@@ -5,8 +5,15 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	SoundSulkCallback::~SoundSulkCallback()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::SoundEngine( SoundSystemInterface * _interface )
 	: m_interface( _interface )
+	, m_sulkcallback(0)
 	, m_soundVolume( 1.0f )
 	, m_commonVolume( 1.0f )
 	{
@@ -104,9 +111,20 @@ namespace Menge
 		return m_interface->getBlow();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::setEnoughBlow( float _enoughBlow )
+	{
+		m_interface->setEnoughBlow( _enoughBlow );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::update()
 	{
 		m_interface->update();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::setSulkCallback( SoundSulkCallback * _sulkcallback )
+	{
+		delete m_sulkcallback;
+		m_sulkcallback = _sulkcallback;
+		m_interface->setBlowCallback( m_sulkcallback );
+	}
 }

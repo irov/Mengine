@@ -92,7 +92,7 @@ m_sourceNamesNum(0)
 	alDopplerFactor(m_dopplerFactor);
 	setDistanceModel(m_distanceModel);
 
-	m_sulk = new SulkSystem( 70.f );
+	m_sulk = new SulkSystem();
 }
 
 ALSoundSystem::~ALSoundSystem()
@@ -278,14 +278,14 @@ void ALSoundSystem::update()
 		m_streams[i]->getUpdater()->update();
 	}
 
-	m_sulk->update( 0.f );
+	m_sulk->update();
 }
 
 bool ALSoundSystem::setBlow( bool _active )
 {
 	if( m_sulk )
 	{
-		return m_sulk->setBlow( _active );
+		return m_sulk->activate( _active );
 	}
 
 	return false;
@@ -300,6 +300,22 @@ float ALSoundSystem::getBlow()
 
 	return 0.f;
 }
+
+void ALSoundSystem::setEnoughBlow( float _enoughBlow )
+{
+	if( m_sulk )
+	{
+		m_sulk->setEnoughBlow( _enoughBlow );
+	}
+};
+
+void ALSoundSystem::setBlowCallback( SoundSulkCallbackInterface * _callback )
+{
+	if( m_sulk )
+	{
+		m_sulk->setCallback( _callback );
+	}
+};
 
 void	ALSoundSystem::setSoundVelocity(float _velocity)
 {

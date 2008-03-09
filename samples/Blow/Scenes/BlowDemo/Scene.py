@@ -5,7 +5,13 @@ class Scene( Menge.Scene ):
 		self.camera_x = 512
 		self.camera_y = 384
 
+		Menge.setEnoughBlow( 70 )
 		Menge.setBlow( True )
+		Menge.setBlowCallback( self.onBlow )
+		pass
+
+	def onBlow( self, blow ):
+		print blow
 		pass
 
 	def onActivate( self ):

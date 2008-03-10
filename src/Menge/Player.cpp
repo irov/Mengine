@@ -138,6 +138,12 @@ namespace Menge
 			}
 		}
 
+		if( handler == false )
+		{
+			handler = Holder<MousePickerSystem>::hostage()
+				->handleKeyEvent( _key, _char, _isDown );
+		}
+
 		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -169,6 +175,12 @@ namespace Menge
 			}
 		}
 
+		if( handler == false )
+		{
+			handler = Holder<MousePickerSystem>::hostage()
+				->handleMouseButtonEvent( _button, _isDown );
+		}
+
 		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -192,12 +204,19 @@ namespace Menge
 			}
 		}
 
+
 		if( handler == false )
 		{
 			if( m_scene )
 			{
 				handler = m_scene->handleMouseMove( _x, _y, _whell );
 			}
+		}
+
+		if( handler == false )
+		{
+			handler = Holder<MousePickerSystem>::hostage()
+				->handleMouseMove( _x, _y, _whell );
 		}
 
 		return handler;

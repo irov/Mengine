@@ -76,22 +76,15 @@ namespace	Menge
 		{
 			return false;
 		}
-		if( updatable() == false )
-		{
-			return false;
-		}
 
 		bool handle = false;
 		
-		if( handle == false )
+		if( updatable() )
 		{
-			askEvent( handle, "KEY", "(IIb)", _key, _char, _isDown );
-		}
-
-		if( handle == false )
-		{
-			handle = Holder<MousePickerSystem>::hostage()
-				->handleKeyEvent( _key, _char, _isDown );
+			if( handle == false )
+			{
+				askEvent( handle, "KEY", "(IIb)", _key, _char, _isDown );
+			}
 		}
 
 		if( handle == false )
@@ -118,22 +111,15 @@ namespace	Menge
 		{
 			return false;
 		}
-		if( updatable() == false )
-		{
-			return false;
-		}
-
+		
 		bool handle = false;
-
-		if( handle == false )
+		
+		if( updatable() )
 		{
-			askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
-		}
-
-		if( handle == false  && !m_isSubScene )
-		{
-			handle = Holder<MousePickerSystem>::hostage()
-				->handleMouseButtonEvent( _button, _isDown );
+			if( handle == false )
+			{
+				askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
+			}
 		}
 
 		if( handle == false )
@@ -160,22 +146,15 @@ namespace	Menge
 		{
 			return false;
 		}
-		if( updatable() == false )
-		{
-			return false;
-		}
-
+		
 		bool handle = false;
-
-		if( handle == false )
+		
+		if( updatable() )
 		{
-			askEvent( handle, "MOUSE_MOVE", "(iii)", _x, _y, _whell );
-		}
-
-		if( handle == false )
-		{
-			handle = Holder<MousePickerSystem>::hostage()
-				->handleMouseMove( _x, _y, _whell );
+			if( handle == false )
+			{
+				askEvent( handle, "MOUSE_MOVE", "(iii)", _x, _y, _whell );
+			}
 		}
 	
 		if( handle == false )

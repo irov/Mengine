@@ -18,7 +18,7 @@ public:
 	void setVisible( bool _visible ) override;
 	void setMaterial( const std::string & _material ) override;
 	void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material ) override;
-	void createRenderToTexture( const char* _cameraName ) override;
+	void createRenderToTexture( const char* _cameraName, int _width, int _height ) override;
 	void getAABB( float * _min, float * _max ) const override;
 
 public:

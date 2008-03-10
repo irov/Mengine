@@ -216,14 +216,14 @@ namespace Menge
 			/*XML_CASE_ATTRIBUTE_NODE("Title", "Name", m_title );					
 			XML_CASE_ATTRIBUTE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
 			XML_CASE_ATTRIBUTE_NODE("VSync", "Value", m_vsync );*/
-			XML_CASE_ATTRIBUTE_NODE("LogSystem", "Name", m_logSystemName );
+			/*XML_CASE_ATTRIBUTE_NODE("LogSystem", "Name", m_logSystemName );
 			XML_CASE_ATTRIBUTE_NODE("InputSystem", "Name", m_inputSystemName );
 			XML_CASE_ATTRIBUTE_NODE("RenderSystem", "Name", m_renderSystemName );
 			XML_CASE_ATTRIBUTE_NODE("SoundSystem", "Name", m_soundSystemName );
 			XML_CASE_ATTRIBUTE_NODE("ParticleSystem", "Name", m_particleSystemName );
-			XML_CASE_ATTRIBUTE_NODE("PhysicSystem", "Name", m_physicSystemName );
-			XML_CASE_ATTRIBUTE_NODE("PhysicSystem2D", "Name", m_physicSystem2DName );
+			XML_CASE_ATTRIBUTE_NODE("PhysicSystem2D", "Name", m_physicSystem2DName );*/
 			XML_CASE_ATTRIBUTE_NODE("RenderDriver", "Name", m_renderDriver );
+			XML_CASE_ATTRIBUTE_NODE("PhysicSystem", "Name", m_physicSystemName );
 			XML_CASE_ATTRIBUTE_NODE("Width", "Value", m_width );					
 			XML_CASE_ATTRIBUTE_NODE("Height", "Value", m_height );
 			XML_CASE_ATTRIBUTE_NODE("Bits", "Value", m_bits );
@@ -248,6 +248,12 @@ namespace Menge
 		if( idx >= 0 )
 		{
 			m_particles = false;
+		}
+
+		if( m_physicSystemName != "None" )
+		{
+			SystemDLLInterface* dll = m_interface->loadSystemDLL( m_physicSystemName.c_str() );
+			setPhysicSystem( dll->getInterface<PhysicSystemInterface>() );
 		}
 		
 		Holder<XmlEngine>::keep( new XmlEngine );

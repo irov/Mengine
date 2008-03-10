@@ -412,7 +412,7 @@ namespace Menge
 			getScene( *it );
 		}
 
-		FileEngine * fileEngine = Holder<FileEngine>::hostage();
+		FileEngine* fileEngine = Holder<FileEngine>::hostage();
 		for( TListDeclaration::iterator
 			it = m_listResourceLocation.begin(),
 			it_end = m_listResourceLocation.end();

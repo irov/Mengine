@@ -40,7 +40,7 @@ namespace Menge
 			return m_entInterface;
 		}
 		////
-		void createRenderToTexture( const std::string& _renderCamera );
+		void createRenderToTexture( const std::string& _renderCamera, int _width, int _height );
 
 	public:
 		virtual void loader( XmlElement * _xml );

@@ -9,6 +9,7 @@ namespace Menge
 	class Camera3D
 		: public SceneNode3D
 	{
+		OBJECT_DECLARE(Camera3D);
 	public:
 		Camera3D();
 		Camera3D( const std::string & _name );
@@ -26,22 +27,17 @@ namespace Menge
 		void roll( float _angle );
 
 	public:
-		SceneNode3D * getParentNode() const;
-		void setParentNode( SceneNode3D * _node );
-
-	public:
 		void loader( XmlElement * _xml );
 
-		bool activate();
-		void deactivate();
-		void release();
+		bool _activate();
+		void _deactivate();
+		void _release();
 
 		const std::string & getName();
 
 	
 
 	private:
-		SceneNode3D * m_parent;
 
 		CameraInterface * m_interface;
 		

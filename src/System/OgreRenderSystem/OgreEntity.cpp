@@ -70,10 +70,10 @@ void OgreEntity::setSubEntityMaterial( const std::string & _subEntity, const std
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreEntity::createRenderToTexture( const char* _cameraName )
+void OgreEntity::createRenderToTexture( const char* _cameraName, int _width, int _height )
 {
 	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual( Ogre::String("rtt") + Ogre::String( _cameraName ), "Default", Ogre::TEX_TYPE_2D,
-		1024, 768, 0, 0, Ogre::PF_X8R8G8B8, Ogre::TU_RENDERTARGET, NULL );
+		_width, _height, 0, 0, Ogre::PF_X8R8G8B8, Ogre::TU_RENDERTARGET, NULL );
 	Ogre::Camera* rttCam = NULL;
 	if( !m_sceneMgr->hasCamera( _cameraName ) )
 	{

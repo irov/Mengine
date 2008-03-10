@@ -11,10 +11,9 @@
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Light::Light( const std::string & _name )
-		: m_name(_name)
-		, m_parent(0)
-		, m_lightType(LT_POINT)
+	//Light::Light( const std::string & _name )
+	Light::Light()
+		: m_lightType(LT_POINT)
 		, m_position(0.f, 0.f, 0.f)
         , m_diffuse(1.0f, 1.0f, 1.0f, 1.0f)
         , m_specular(1.0f, 1.0f, 1.0f, 1.0f)
@@ -29,14 +28,8 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SceneNode3D * Light::getParentNode() const
+	Light::~Light()
 	{
-		return m_parent;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Light::setParentNode( SceneNode3D * _node ) 
-	{
-		m_parent = _node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Light::loader( XmlElement * _xml )
@@ -58,8 +51,27 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Light::activate()
+	bool Light::_activate()
 	{
+		if( SceneNode3D::_activate() == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Light::_deactivate()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Light::_compile()
+	{
+		if( SceneNode3D::_compile() == false )
+		{
+			return false;
+		}
+
 		m_interface = Holder<RenderEngine>::hostage()->createLight( m_name );
 
 		//this->getParentNode()->attachLight(this);
@@ -80,11 +92,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Light::deactivate()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Light::release()
+	void Light::_release()
 	{
 		Holder<RenderEngine>::hostage()->releaseLight( m_interface );
 	}

@@ -167,8 +167,8 @@ namespace Menge
 		return m_entInterface->setSubEntityMaterial( _subEntity.c_str(), _material.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DiscreteEntity::createRenderToTexture( const std::string& _renderCamera )
+	void DiscreteEntity::createRenderToTexture( const std::string& _renderCamera, int _width, int _height )
 	{
-		m_entInterface->createRenderToTexture( _renderCamera.c_str() );
+		m_entInterface->createRenderToTexture( _renderCamera.c_str(), _width, _height );
 	}
 }

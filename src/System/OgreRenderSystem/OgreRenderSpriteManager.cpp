@@ -299,6 +299,7 @@ void OgreRenderSpriteManager::addQuad2( Ogre::Viewport* _viewport,
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::doRender(void)
 {
+
 	if( !isSorted )
 	{
 		std::sort( quadList.begin(), quadList.end() );
@@ -404,9 +405,7 @@ void OgreRenderSpriteManager::doRender(void)
 
 	size_t bufferPos = 0;
 	bool first = true;
-	bool changeViewport = false;
-	//Ogre::Viewport* main = m_renderSys->_getViewport();
-	//bool debug = false;
+	bool changeViewport = true;
 
 	TQuadList::iterator it = quadList.begin();
 	TQuadList::iterator it_end = quadList.end();
@@ -440,26 +439,27 @@ void OgreRenderSpriteManager::doRender(void)
 
 		renderOp.vertexData->vertexCount = bufferPos - renderOp.vertexData->vertexStart;
 		
-		//if( debug )
-		//	m_renderSys->_setViewport( main );
-		//else
-			m_renderSys->_setViewport( currViewport );
-		//debug = !debug;
-		changeViewport = false;
+		m_renderSys->_setViewport( currViewport );
+
+		if ( first || changeViewport )
+		{
+			prepareForRender();
+			first = false;
+		}		
+		m_renderSys->_setCullingMode(Ogre::CULL_NONE);
+
+		m_renderSys->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
+
 
 		m_renderSys->_setSceneBlending( src, dst );
 
 		m_renderSys->_setTexture( 0, true, currTexture );
 
-		if ( first )
-		{
-			prepareForRender();
-			first = false;
-		}		
+		changeViewport = false;
 
 		m_renderSys->_render( renderOp );
-	}
 
+	}
 	#ifdef VBVB
 
 		if( bufferPos < vertexBuffer->getNumVertices()/2 )

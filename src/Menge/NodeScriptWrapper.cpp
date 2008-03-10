@@ -253,6 +253,11 @@ namespace Menge
 			Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
 		}
 
+		static bool s_getFullscreenMode()
+		{
+			return Holder<RenderEngine>::hostage()->getFullscreenMode();
+		}
+
 		static void addResourceListener( PyObject* _listener )
 		{
 			Holder<ResourceManager>::hostage()->addListener( _listener );
@@ -707,6 +712,7 @@ namespace Menge
 		pybind::def( "quitApplication", &ScriptMethod::quitApplication );
 		pybind::def( "createShot", &ScriptMethod::createShot );
 		pybind::def( "setFullscreenMode", &ScriptMethod::setFullscreenMode );
+		pybind::def( "getFullscreenMode", &ScriptMethod::s_getFullscreenMode );
 		pybind::def( "addResourceListener", &ScriptMethod::addResourceListener );
 		pybind::def( "removeResourceListener", &ScriptMethod::removeResourceListener );
 		pybind::def( "renderOneFrame", &ScriptMethod::renderOneFrame );

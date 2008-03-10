@@ -115,7 +115,10 @@ namespace	Menge
 	{
 		m_scale = _scale;
 
-		updateAlign_();
+		if( m_active )
+		{
+			updateAlign_();
+		}
 	}
 	///////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Sprite::getScale() const

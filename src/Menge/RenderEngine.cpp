@@ -26,6 +26,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle /* = 0  */)
 	{
+		m_fullscreen = _fullscreen;
 		return m_interface->createRenderWindow( _width, _height, _bits, _fullscreen, _winHandle );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -304,5 +305,10 @@ namespace Menge
 			if( done ) break;
 		}
 		return mt::vec2f( bestWidth, bestHeight );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::getFullscreenMode()
+	{
+		return m_fullscreen;
 	}
 }

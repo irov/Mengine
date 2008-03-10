@@ -1,5 +1,6 @@
 #	include "WinApplication.h"
 
+#	include "SystemDLL.h"
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( ApplicationInterface** _ptrInterface )
 {
@@ -324,8 +325,13 @@ LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 		m_listener->onWindowMovedOrResized();
 		break;
 	case WM_DISPLAYCHANGE:
-		::GetWindowInfo( m_hWnd, &m_wndInfo);
-		m_listener->onWindowMovedOrResized();
+		{
+			::GetWindowInfo( m_hWnd, &m_wndInfo);
+			m_listener->onWindowMovedOrResized();
+
+			DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN | WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
+			::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
+		}
 		break;
 	case WM_SIZE:
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
@@ -381,3 +387,19 @@ void WinApplication::minimizeWindow()
 {
 	::ShowWindow( m_hWnd, SW_MINIMIZE );
 }
+//////////////////////////////////////////////////////////////////////////
+void WinApplication::notifyWindowModeChanged( bool _fullscreen )
+{
+
+}
+//////////////////////////////////////////////////////////////////////////
+SystemDLLInterface* WinApplication::loadSystemDLL( const char* _dll )
+{
+	return new WinSystemDLL( _dll );
+}
+//////////////////////////////////////////////////////////////////////////
+void WinApplication::unloadSystemDLL( SystemDLLInterface* _interface )
+{
+	delete static_cast<WinSystemDLL*>( _interface );
+}
+//////////////////////////////////////////////////////////////////////////

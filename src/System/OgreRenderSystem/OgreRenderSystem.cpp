@@ -76,10 +76,11 @@ OgreRenderSystem::~OgreRenderSystem()
 //////////////////////////////////////////////////////////////////////////
 CameraInterface * OgreRenderSystem::createCamera(const char * _name)
 {
-	Ogre::Camera * camera = m_sceneMgr->createCamera(_name);
+	/*Ogre::Camera * camera = m_sceneMgr->createCamera(_name);
 	CameraInterface * ogre3dcam = new Ogre3dCamera( camera );
 	m_renderWindow->removeViewport(0);
-	m_viewport = m_renderWindow->addViewport( camera );
+	m_viewport = m_renderWindow->addViewport( camera );*/
+	CameraInterface* ogre3dcam = new Ogre3dCamera( m_sceneMgr->getCamera("defaultCamera") );
 	return  ogre3dcam;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -199,8 +200,10 @@ bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, b
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
 
 	Ogre::Camera* sceneCam = m_sceneMgr->createCamera("defaultCamera");
-	sceneCam->setPosition( 0.0f, 200.0f, 200.0f );
-	sceneCam->lookAt( 0.0f, 0.0f, 0.0f );
+	//sceneCam->setPosition( -8.0f, 300.0f, 200.0f );
+	//sceneCam->lookAt( -8.0f, 0.0f, 20.0f );
+	sceneCam->setPosition( 2.0f, 345.0f, 100.0f );
+	sceneCam->lookAt( 2.0f, 0.0f, 20.0f );
 	sceneCam->setFarClipDistance( 1000.0f );
 	sceneCam->setNearClipDistance( 0.2f );
 	m_viewport = m_renderWindow->addViewport( sceneCam );
@@ -297,6 +300,7 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 void OgreRenderSystem::render()
 {
 	Ogre::Root::getSingleton().renderOneFrame();
+	m_spriteMgr->doRender();
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setProjectionMatrix( const float * _projection )

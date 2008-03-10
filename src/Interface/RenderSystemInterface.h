@@ -69,7 +69,7 @@ public:
 	virtual void setVisible( bool _visible ) = 0;
 	virtual void setMaterial( const std::string & _material ) = 0;
 	virtual void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material ) = 0;
-	virtual void createRenderToTexture( const char* _cameraName ) = 0;
+	virtual void createRenderToTexture( const char* _cameraName, int _width, int _height  ) = 0;
 	virtual void getAABB( float * _min, float * _max ) const = 0;
 };
 

@@ -76,6 +76,10 @@ namespace	Menge
 		{
 			return false;
 		}
+		if( updatable() == false )
+		{
+			return false;
+		}
 
 		bool handle = false;
 		
@@ -114,6 +118,10 @@ namespace	Menge
 		{
 			return false;
 		}
+		if( updatable() == false )
+		{
+			return false;
+		}
 
 		bool handle = false;
 
@@ -149,6 +157,10 @@ namespace	Menge
 	bool Scene::handleMouseMove( int _x, int _y, int _whell )
 	{
 		if( isActivate() == false )
+		{
+			return false;
+		}
+		if( updatable() == false )
 		{
 			return false;
 		}
@@ -271,10 +283,10 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_render()
+	/*void Scene::_render()
 	{
 
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setRenderTarget( const std::string& _cameraName )
 	{

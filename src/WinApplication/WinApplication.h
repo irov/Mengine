@@ -34,7 +34,10 @@ public:
 	float getMonitorAspectRatio() override;
 	void minimizeWindow() override;
 	void setPrimaryMonitorAspect( float _aspect );
+	void notifyWindowModeChanged( bool _fullscreen ) override;
 	//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
+	SystemDLLInterface* loadSystemDLL( const char* _dll ) override;
+	void unloadSystemDLL(SystemDLLInterface* _interface ) override;
 
 public:
 	LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );

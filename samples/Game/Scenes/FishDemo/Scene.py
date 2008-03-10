@@ -8,42 +8,20 @@ class Scene( Menge.Scene ):
 		pass
 
 	def onActivate( self ):
-		block = Menge.createEntity("Block",Menge.vec2f( 100, 100 ), Menge.vec2f( 1, 0 ) )
-		block.activate();
-
-		self.layerAppend( "Deep", block )
-
-		#and there 3d is starting...
 		self.layer3d = self.getNode("Level3D");
 		
 		self.levelPhysicBody = self.layer3d.getRigidBody("LevelPhysicBody");
 
-		#self.barrelPhysicBody = self.layer3d.getRigidBody("BarrelPhysicBody");
-		#self.barrelPhysicBody.setPosition( Menge.vec3f( 10,20,5 ) );
-		#self.light = self.layer3d.getNode("Light1")
-		#self.light.activate()
-
 		self.zombieCap = self.layer3d.getController("Cap");
 
 		self.zombieActor = Menge.createActor("Barrel1", "Barrel")
-		self.zombieActor.setPosition( Menge.vec3f( 0,35,0 ) );
+		self.zombieActor.setPosition( Menge.vec3f( 0,20,38 ) );
 		self.zombieActor.setOrient( Menge.quatf(1,0,0,0) );
 		self.zombieActor.setController(self.zombieCap)
 
 		self.zombieActor.activate()
 
-		'''self.camera = self.getNode("NodeCamera").getCamera();
-
-		self.pos = self.zombieActor.getPosition();
-
-		self.camPos = Menge.vec3f( Menge.getVec3fX(self.pos), Menge.getVec3fY(self.pos) + 20, Menge.getVec3fZ(self.pos) );
-
-		self.camera.setPosition( self.camPos );
-		self.camera.lookAt( Menge.vec3f( Menge.getVec3fX(self.pos)-15, Menge.getVec3fY(self.pos), Menge.getVec3fZ(self.pos) ) )
-		self.camera.yaw(-90);'''
-
-
-		#self.zombieActor.addChild(self.getNode("NodeCamera"))
+		self.zombieCap.setPosition(Menge.vec3f( 0,20,38 ))
 
 		self.FreeCam = Menge.FFCamera3D()
 		self.FreeCam.activate()
@@ -93,15 +71,19 @@ class Scene( Menge.Scene ):
 
 		if key == 23:
 			self.zombieActor.step( Menge.vec3f( 0, 0, -1 ) )
+			#self.FreeCam.forward(2)
 
 		if key == 37:
 			self.zombieActor.step( Menge.vec3f( 0, 0, 1 ) )
+			#self.FreeCam.forward(-2)
 
 		if key == 36:
 			self.zombieActor.step( Menge.vec3f( -1, 0, 0 ) )
+			#self.FreeCam.left(-2)
 
 		if key == 38:
 			self.zombieActor.step( Menge.vec3f( 1, 0, 0 ) )
+			#self.FreeCam.left(2)
 		
 		if isDown == False:
 			self.zombieActor.stop()

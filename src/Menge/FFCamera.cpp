@@ -15,6 +15,7 @@ namespace Menge
 	, m_fMaxYawAngle(3.1415f/2.f)
 	, m_fRotateSpeed(0.01f)
 	, m_actor(0)
+	, m_direction(0,0,0)
 	{
 	}
 
@@ -31,10 +32,20 @@ namespace Menge
 		if(m_actor)
 		{
 			DiscreteEntity * ent = m_actor->getChildrenT<DiscreteEntity>("BarrelNode",true);
+			//printf("cam pos: x = %f, y = %f, z = %f \n",m_interface->getPosition()[0],m_interface->getPosition()[1],m_interface->getPosition()[2]);
+			//printf("cam dir: x = %f, y = %f, z = %f \n",m_interface->getPosition()[0] + m_cameraForward.x,m_interface->getPosition()[1] + m_cameraForward.y,m_interface->getPosition()[2] + m_cameraForward.z);
+
+
+		//	m_interface->translate(m_direction.m);
+	
 			if(m_interface->isAABBIntersect(ent->get()) == 0)
 			{
-				m_interface->translate(mt::vec3f(0,0,1).m);
+			//	m_direction = m_actor->getWorldOrient() * mt::vec3f(0,0,-1);
+			//	m_direction *= 0.01;
+				//printf("act dir: x = %f, y = %f, z = %f \n",m_direction[0],m_direction[1],m_direction[2]);
+		//		m_interface->translate(m_direction.m);
 			}
+		//	else m_direction = mt::vec3f::zero_v3;
 
 		//	float min[3];
 		//	float max[3];
@@ -46,16 +57,19 @@ namespace Menge
 			m_cameraPos.x + m_cameraForward.x,
 			m_cameraPos.y + m_cameraForward.y, 
 			m_cameraPos.z + m_cameraForward.z);
+			
 	}
 
 	void FFCamera3D::forward( float s )
 	{
+		m_direction = m_cameraForward * s * 0.01;
 		m_cameraPos += m_cameraForward * s;
 		m_interface->setPosition(m_cameraPos.x, m_cameraPos.y, m_cameraPos.z);
 	}
 
 	void FFCamera3D::left( float s )
 	{
+		m_direction = m_cameraRight * s * 0.01;
 		m_cameraPos += m_cameraRight * s;
 		m_interface->setPosition(m_cameraPos.x, m_cameraPos.y, m_cameraPos.z);
 	}
@@ -140,9 +154,9 @@ namespace Menge
 		m_interface->setAspectRatio( 1.3f );
 		m_interface->setNearClipDistance( 10.0f );
 		m_interface->setFarClipDistance( 1000.0f );
-		m_interface->setPosition( 0, 70, 0 );
+		m_interface->setPosition( 0, 27.5f, 38.3f );
 
-		m_interface->lookAt(0,0,0);
+		m_interface->lookAt(0,6.5f,38.0f);
 
 		return true;
 	}

@@ -36,5 +36,7 @@ namespace Menge
 		mt::vec3f m_cameraPos;
 		mt::vec3f m_cameraForward;
 		mt::vec3f m_cameraRight;
+
+		mt::vec3f m_direction;
 	};
 }

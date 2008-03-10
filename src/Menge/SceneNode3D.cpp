@@ -122,7 +122,7 @@ namespace Menge
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-				//	XML_CASE_ATTRIBUTE_MEMBER("Value", &SceneNode3D::setLocalOrient);
+					XML_CASE_ATTRIBUTE_MEMBER("Value", &SceneNode3D::setLocalOrient);
 				}
 			}
 		}

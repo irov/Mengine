@@ -129,7 +129,7 @@ int Ogre3dCamera::isAABBIntersect( EntityInterface * _entity )
 			}
 		}
 
-		if(iPtIn)
+		if(iPtIn == 0)
 		planes.push_back(p);
 
 
@@ -145,6 +145,12 @@ int Ogre3dCamera::isAABBIntersect( EntityInterface * _entity )
 	{
 		return 1;
 	}
+
+	for(int i = 0; i < planes.size(); i++)
+	{
+		printf("%d ",planes[i]);
+	}
+	printf("\n");
 
 	printf("false\n");
 	return 0;

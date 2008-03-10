@@ -45,6 +45,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::loader( XmlElement * _xml )
 	{
+		SceneNode3D::loader(_xml);
+
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ResourceMesh", "Name", m_resourcenameMesh );

@@ -16,9 +16,6 @@
 	</Arrows>
 
 	<Entities Path = "Entities">
-		<Block/>
-		<Grid/>
-		<Ball/>
 		<Barrel/>
 		<Level/>
 		<Zombie/>

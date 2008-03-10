@@ -27,7 +27,7 @@ namespace Menge
 
 		if( file == 0 )
 		{
-			return false;				 
+			return false;
 		}
 
 		size_t size = file->size();

@@ -98,40 +98,31 @@ namespace Menge
 		Holder<PhysicEngine2D>::hostage()->destroyPhysicBody( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::s_setListener( PyObject * _listener )
+	void RigidBody2D::setListener( PyObject * _listener )
 	{
 		m_scriptListener = _listener;
 
 		registerEventListener("ON_COLLIDE", "onCollide", m_scriptListener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject* RigidBody2D::s_getListener()
+	PyObject* RigidBody2D::getListener()
 	{
 		return m_scriptListener;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::s_setPosition( float _x, float _y )
+	void RigidBody2D::applyForce( float _forceX, float _forceY, float _pointX, float _pointY )
 	{
-		m_interface->setPosition( _x, _y  );
+		const mt::vec2f & position = getWorldPosition();
+
+		m_interface->applyForce( _forceX, _forceY, position.x + _pointX, position.y + _pointY );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f RigidBody2D::s_getPosition()
-	{
-		const float* pos = m_interface->getPosition();
-		return mt::vec2f( pos[0], pos[1] );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::s_applyForce( float _forceX, float _forceY, float _pointX, float _pointY )
-	{
-		m_interface->applyForce( _forceX, _forceY, _pointX, _pointY );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::s_applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY )
+	void RigidBody2D::applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY )
 	{
 		m_interface->applyImpulse( _impulseX, _impulseY, _pointX, _pointY );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::s_setOrientation( float _angle )
+	void RigidBody2D::setOrientation( float _angle )
 	{
 		m_interface->setOrientation( _angle );
 	}

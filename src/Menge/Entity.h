@@ -34,7 +34,6 @@ namespace Menge
 		//void setAcceleration( const mt::vec2f& _acceleration )	{ m_acceleration = _acceleration; }
 		void loader( XmlElement * _xml );
 		void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY );
-		void s_applyForce( float _forceX, float _forceY, float _pointX, float _pointY ) { RigidBody2D::s_applyForce( _forceX, _forceY, _pointX, _pointY ) ;}
 
 	protected:
 		bool _activate() override;

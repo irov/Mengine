@@ -28,20 +28,19 @@ namespace Menge
 
 	// scripted
 	public:
-		void s_setListener( PyObject * _listener );
-		PyObject* s_getListener();
-		void s_setPosition( float _x, float _y );
-		mt::vec2f s_getPosition();
-		void s_applyForce( float _forceX, float _forceY, float _pointX, float _pointY );
-		void s_applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY );
-		void s_setOrientation( float _angle );
+		void setListener( PyObject * _listener );
+		PyObject* getListener();
+
+		void applyForce( float _forceX, float _forceY, float _pointX, float _pointY );
+		void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY );
+		void setOrientation( float _angle );
 
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
-		virtual bool _compile() override;
+		bool _compile() override;
 		void _release() override;
-		virtual void _update( float _timing ) override;
+		void _update( float _timing ) override;
 
 		void _loaderShape( XmlElement * _xml );
 		float m_density;

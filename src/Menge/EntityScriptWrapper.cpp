@@ -86,7 +86,7 @@ namespace Menge
 
 	REGISTER_SCRIPT_CLASS( Menge, Entity, Node )
 	{
-		pybind::proxy_<Entity, pybind::bases<SceneNode2D> >("Entity", false)
+		pybind::proxy_<Entity, pybind::bases<RigidBody2D> >("Entity", false)
 			.def( "moveTo", &Entity::moveTo )
 			.def( "moveStop", &Entity::moveStop )
 			.def( "rotateTo", &Entity::rotateTo )
@@ -99,8 +99,6 @@ namespace Menge
 			.def( "scaleTo", &Entity::scaleTo )
 			.def( "scaleStop", &Entity::scaleStop )
 			.def( "setSpeed", &Entity::setSpeed )
-			//.def( "setAcceleration", &Entity::setAcceleration )
-			.def( "applyForce", &Entity::s_applyForce )
 			;
 
 		pybind::def( "createEntity", &ScriptMethod::createEntity );

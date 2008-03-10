@@ -16,6 +16,7 @@
 	</Arrows>
 
 	<Entities Path = "Entities">
+		<Blow/>
 	</Entities>
 
 	<Scripts Path = "Scripts" />

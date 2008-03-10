@@ -674,13 +674,11 @@ namespace Menge
 			}
 
 			pybind::proxy_<RigidBody2D, pybind::bases<SceneNode2D>>("RigidBody2D", false)
-				.def( "setListener", &RigidBody2D::s_setListener )
-				.def( "getListener", &RigidBody2D::s_getListener )
-				.def( "setPosition", &RigidBody2D::s_setPosition )
-				.def( "getPosition", &RigidBody2D::s_getPosition )
-				.def( "applyForce", &RigidBody2D::s_applyForce )
-				.def( "applyImpulse", &RigidBody2D::s_applyImpulse )
-				.def( "setOrientation", &RigidBody2D::s_setOrientation )
+				.def( "setListener", &RigidBody2D::setListener )
+				.def( "getListener", &RigidBody2D::getListener )
+				.def( "applyForce", &RigidBody2D::applyForce )
+				.def( "applyImpulse", &RigidBody2D::applyImpulse )
+				.def( "setOrientation", &RigidBody2D::setOrientation )
 				;
 
 		}		

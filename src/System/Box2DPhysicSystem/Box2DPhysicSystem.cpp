@@ -157,4 +157,3 @@ void Box2DPhysicSystem::destroyBody( PhysicBody2DInterface* _body )
 {
 	delete static_cast<Box2DPhysicBody*>( _body );
 }
-//////////////////////////////////////////////////////////////////////////

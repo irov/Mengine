@@ -8,9 +8,9 @@
 				<Point Value = "-24; 24" />
 			</Shape>
 			
-			<Density Value = "10" />
-			<Friction Value = "10" />
-			<Restitution Value = "10" />
+			<Density Value = "1" />
+			<Friction Value = "1" />
+			<Restitution Value = "0" />
 		</PhysicBody>
 		
 

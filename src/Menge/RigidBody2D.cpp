@@ -87,7 +87,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody2D::_compile()
 	{
-		m_interface = Holder<PhysicEngine2D>::hostage()->createPhysicBody( m_shape, getWorldPosition(), m_density, m_friction, m_restitution );
+		const mt::vec2f & position = getWorldPosition();
+		m_interface = Holder<PhysicEngine2D>::hostage()->createPhysicBody( m_shape, position, m_density, m_friction, m_restitution );
 		m_interface->setCollisionListener( this );
 		m_interface->setUserData( this );
 		return true;
@@ -119,7 +120,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY )
 	{
-		m_interface->applyImpulse( _impulseX, _impulseY, _pointX, _pointY );
+		const mt::vec2f & position = getWorldPosition();
+
+		m_interface->applyImpulse( _impulseX, _impulseY, position.x + _pointX, position.y + _pointY );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::setOrientation( float _angle )

@@ -10,7 +10,7 @@ namespace Menge
 	{
 		Holder<PhysicEngine2D>::keep( this );
 
-		createScene( mt::vec2f( 0.0f, 0.0f ), mt::vec2f(2048.0f, 2048.0f), mt::vec2f(0.0f, 0.0f), true );
+		createScene( mt::vec2f( 0.0f, 0.0f ), mt::vec2f(2048.0f, 2048.0f), mt::vec2f(0.0f, 50.0f), true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicEngine2D::~PhysicEngine2D()

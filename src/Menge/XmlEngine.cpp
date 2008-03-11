@@ -66,11 +66,25 @@ namespace Menge
 
 		size_t size = _file->size();
 
-		void * buffer = XmlParser::makeBuffer( m_parser, size );
+		XmlExpatParser * parser = m_parser;
+		bool new_parser = false;
+
+		if( XmlParser::parseStatus( m_parser ) == true )
+		{
+			parser = XmlParser::newParser();
+			new_parser = true;
+		}
+
+		void * buffer = XmlParser::makeBuffer( parser, size );
 		_file->read( buffer, size );
 		_file->seek( 0 );
 		
-		bool result = XmlParser::parseBuffer( m_parser, size, _listener );
+		bool result = XmlParser::parseBuffer( parser, size, _listener );
+
+		if( new_parser )
+		{
+			XmlParser::deleteParser( parser );
+		}
 
 		return result;
 	}	
@@ -79,11 +93,25 @@ namespace Menge
 	{
 		size_t size = _buffer.size();
 
-		void * buffer = XmlParser::makeBuffer( m_parser, size );
+		XmlExpatParser * parser = m_parser;
+		bool new_parser = false;
+
+		if( XmlParser::parseStatus( m_parser ) == true )
+		{
+			parser = XmlParser::newParser();
+			new_parser = true;
+		}
+
+		void * buffer = XmlParser::makeBuffer( parser, size );
 
 		memcpy( buffer, _buffer.c_str(), size );
 
-		bool result = XmlParser::parseBuffer( m_parser, size, _listener );
+		bool result = XmlParser::parseBuffer( parser, size, _listener );
+
+		if( new_parser )
+		{
+			XmlParser::deleteParser( parser );
+		}
 
 		return result;
 	}
@@ -92,11 +120,25 @@ namespace Menge
 	{
 		size_t size = _buffer.size();
 
-		void * buffer = XmlParser::makeBuffer( m_parser, size );
+		XmlExpatParser * parser = m_parser;
+		bool new_parser = false;
+
+		if( XmlParser::parseStatus( m_parser ) == true )
+		{
+			parser = XmlParser::newParser();
+			new_parser = true;
+		}
+
+		void * buffer = XmlParser::makeBuffer( parser, size );
 
 		memcpy( buffer, &_buffer[0], size );
 
-		bool result = XmlParser::parseBuffer( m_parser, size, _listener );
+		bool result = XmlParser::parseBuffer( parser, size, _listener );
+
+		if( new_parser )
+		{
+			XmlParser::deleteParser( parser );
+		}
 
 		return result;
 	}

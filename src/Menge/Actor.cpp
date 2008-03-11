@@ -67,6 +67,10 @@ namespace	Menge
 			if(workv != mt::vec3f::zero_v3)
 			{
 				m_controller->move(workv);
+
+				mt::vec3f v = m_controller->getFilteredPosition();
+				printf("filt pos = %f; %f; %f\n",v.x,v.y,v.z);
+
 				this->setLocalPosition(
 					m_controller->getFilteredPosition()
 					);

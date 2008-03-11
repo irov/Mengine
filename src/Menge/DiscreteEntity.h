@@ -24,7 +24,6 @@ namespace Menge
 		OBJECT_DECLARE(DiscreteEntity);
 
 	public:
-		//DiscreteEntity( const std::string & _name );
 		DiscreteEntity();
 		~DiscreteEntity();
 	public:
@@ -43,7 +42,7 @@ namespace Menge
 		void createRenderToTexture( const std::string& _renderCamera, int _width, int _height );
 
 	public:
-		virtual void loader( XmlElement * _xml );
+		void loader( XmlElement * _xml );
 		void update( float _timing ) override;
 
 	protected:

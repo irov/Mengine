@@ -122,7 +122,10 @@ int Ogre3dCamera::isAABBIntersect( EntityInterface * _entity )
 		
 		for(int i = 0; i < 8; ++i)
 		{
-			if(plane.getSide(corner[i]) == Ogre::Plane::NEGATIVE_SIDE)
+			Ogre::Vector3 c = corner[i];
+			c.x *= 1.2f;
+	
+			if(plane.getSide(c) == Ogre::Plane::NEGATIVE_SIDE)
 			{
 				iPtIn = 0;
 				--iInCount;
@@ -143,7 +146,7 @@ int Ogre3dCamera::isAABBIntersect( EntityInterface * _entity )
 
 	if(iTotalIn == 6)
 	{
-		return 1;
+		return -2;
 	}
 
 	for(int i = 0; i < planes.size(); i++)
@@ -153,7 +156,7 @@ int Ogre3dCamera::isAABBIntersect( EntityInterface * _entity )
 	printf("\n");
 
 	printf("false\n");
-	return 0;
+	return *planes.begin();
 }
 //////////////////////////////////////////////////////////////////////////
 void Ogre3dCamera::translate( float * _v )

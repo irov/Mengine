@@ -10,7 +10,7 @@
 
 #	include <ControllerManager.h>
 
-#	define SKINWIDTH	0.9f
+#	define SKINWIDTH	0.1f
 
 enum GameGroup
 {

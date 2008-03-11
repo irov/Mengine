@@ -14,7 +14,7 @@ void NovodexCapsuleController::move( float * _displacement )
 	NxVec3 d = *(NxVec3*)_displacement;
 	d+=NxVec3(0,-9.8f,0);
 	NxU32 collisionFlags;
-	m_controller->move( d, 6, 0.000001f, collisionFlags, 1.0f );
+	m_controller->move( d, 6, 0.0001f, collisionFlags, 1.0f );
 }
 
 float * NovodexCapsuleController::getFilteredPosition()

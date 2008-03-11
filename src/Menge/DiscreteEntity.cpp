@@ -16,8 +16,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT(DiscreteEntity);
 	//////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////
-//	DiscreteEntity::DiscreteEntity( const std::string & _name )
 	DiscreteEntity::DiscreteEntity( )
 		: m_resourceMesh(0)
 		, m_resourceSkeleton(0)
@@ -67,11 +65,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::update( float _timing )
 	{
-	/*	float min[3];
-		float max[3];
-		m_entInterface->getAABB(min,max);
-		printf("min x = %f, y = %f, z = %f \n",min[0],min[1],min[2]);
-*/
+	//	float min[3];
+	//float max[3];
+	//	m_entInterface->getAABB(min,max);
+	//	printf("min x = %f, y = %f, z = %f \n",min[0],min[1],min[2]);
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DiscreteEntity::_compile()
@@ -133,11 +131,6 @@ namespace Menge
 		delete m_skeleton;
 		Holder<RenderEngine>::hostage()->releaseEntity( m_entInterface );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	/*void DiscreteEntity::release()
-	{
-
-	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::_deactivate()
 	{

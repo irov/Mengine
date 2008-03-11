@@ -129,9 +129,9 @@ ControllerInterface * NovodexPhysicSystem::createCapsuleController( float * _sta
 	desc.height				= _initialHeight;
 	desc.upDirection		= NX_Y;
 	desc.slopeLimit			= 0.0f;
-	desc.slopeLimit			= cosf(NxMath::degToRad(90.0f));
+	desc.slopeLimit			= cosf(NxMath::degToRad(45.0f));
 	desc.skinWidth			= SKINWIDTH;
-	desc.stepOffset			= _initialRadius;
+	desc.stepOffset			= 0;
 	desc.callback			= 0;
 
 	NxCapsuleController * contr = static_cast<NxCapsuleController*>(gCM.createController(m_scene, desc));

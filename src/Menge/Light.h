@@ -12,8 +12,6 @@ class XmlElement;
 
 namespace Menge
 {
-	//class SceneNode3D;
-
 	const int LIGHT_POINT = 0;
 	const int LIGHT_DIRECTIONAL = 1;
 	const int LIGHT_SPOT = 2;
@@ -22,7 +20,6 @@ namespace Menge
 		: public SceneNode3D
 	{
 	public:
-		//Light( const std::string & _name );
 		Light();
 		~Light();
 	public:
@@ -48,21 +45,14 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml );
-		//bool activate();
-		//void deactivate();
-		//void release();
 		bool _activate();
 		bool _compile();
 		void _deactivate();
 		void _release();
-	public:
-		//SceneNode3D * getParentNode() const;
-		//void setParentNode( SceneNode3D * _node );
+	
 	private:
-		//std::string m_name;
-		LightInterface * m_interface;
-		//SceneNode3D * m_parent;
-
+		LightInterface * m_lightInterface;
+	
 		int m_lightType;
 		mt::vec3f	m_position;
         Color m_diffuse;

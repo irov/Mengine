@@ -38,8 +38,28 @@ namespace Menge
 
 		//	m_interface->translate(m_direction.m);
 	
-			if(m_interface->isAABBIntersect(ent->get()) == 0)
+			int plane = -1;
+			if((plane = m_interface->isAABBIntersect(ent->get())) >= 0)
 			{
+			/*	if(plane == 4)
+				{
+					m_interface->translate(mt::vec3f(0,0,-0.1).m);
+				}
+
+				if(plane == 5)
+				{
+					m_interface->translate(mt::vec3f(0,0,0.1).m);
+				}
+
+				if(plane == 2)
+				{
+					m_interface->translate(mt::vec3f(-0.01,0,0).m);
+				}
+
+				if(plane == 3)
+				{
+					m_interface->translate(mt::vec3f(0.1,0,0).m);
+				}*/
 			//	m_direction = m_actor->getWorldOrient() * mt::vec3f(0,0,-1);
 			//	m_direction *= 0.01;
 				//printf("act dir: x = %f, y = %f, z = %f \n",m_direction[0],m_direction[1],m_direction[2]);
@@ -52,12 +72,18 @@ namespace Menge
 		//	m_interface->getAABB(min,max);
 		//	printf("min x = %f, y = %f, z = %f \n",min[0],min[1],min[2]);
 		}
+
+		//m_interface->translate(mt::vec3f(0,0,-0.001).m);
+
+	//	mt::vec3f pos = *(mt::vec3f*)m_interface->getPosition();
+	//	m_interface->lookAt(pos.x,pos.y - 15,pos.z-2);
+
 	//	rotate(_timing);
 		m_interface->lookAt(
 			m_cameraPos.x + m_cameraForward.x,
 			m_cameraPos.y + m_cameraForward.y, 
 			m_cameraPos.z + m_cameraForward.z);
-			
+	
 	}
 
 	void FFCamera3D::forward( float s )
@@ -69,9 +95,9 @@ namespace Menge
 
 	void FFCamera3D::left( float s )
 	{
-		m_direction = m_cameraRight * s * 0.01;
-		m_cameraPos += m_cameraRight * s;
-		m_interface->setPosition(m_cameraPos.x, m_cameraPos.y, m_cameraPos.z);
+//		m_direction = m_cameraRight * s * 0.01;
+	//	m_cameraPos += m_cameraRight * s;
+	//	m_interface->setPosition(m_cameraPos.x, m_cameraPos.y, m_cameraPos.z);
 	}
 
 	void FFCamera3D::rotate( float t )
@@ -154,9 +180,15 @@ namespace Menge
 		m_interface->setAspectRatio( 1.3f );
 		m_interface->setNearClipDistance( 10.0f );
 		m_interface->setFarClipDistance( 1000.0f );
-		m_interface->setPosition( 0, 27.5f, 38.3f );
 
-		m_interface->lookAt(0,6.5f,38.0f);
+//		mt::vec3f	start(0, 27.5f, 38.3f);
+//		mt::vec3f	to(0,6.5f,38.0f);
+
+//		m_interface->setPosition(start.x,start.y,start.z);
+
+		m_interface->setPosition(0, 57.5f, 38.3f );
+		mt::vec3f pos = *(mt::vec3f*)m_interface->getPosition();
+		m_interface->lookAt(pos.x,pos.y - 15,pos.z-2);
 
 		return true;
 	}

@@ -1,7 +1,7 @@
 #	include "OgreSkeleton.h"
 #	include "OgreEntity.h"
 //////////////////////////////////////////////////////////////////////////
-OgreSkeleton::OgreSkeleton( Ogre::Entity& _entity )
+OgreSkeleton::OgreSkeleton( Ogre::Entity & _entity )
 	: m_entity( _entity )
 {
 }
@@ -35,8 +35,7 @@ void OgreSkeleton::attachEntityToBone( const std::string & _bone, EntityInterfac
 //////////////////////////////////////////////////////////////////////////
 void OgreSkeleton::advanceAllAnimations( float _timeOffset )
 {
-/*	
-	Ogre::AnimationStateSet* pAnimStates = mEntity.getAllAnimationStates();
+	Ogre::AnimationStateSet* pAnimStates = m_entity.getAllAnimationStates();
 	Ogre::AnimationStateIterator i = pAnimStates->getAnimationStateIterator();
 	
 	while( i.hasMoreElements() )
@@ -44,7 +43,9 @@ void OgreSkeleton::advanceAllAnimations( float _timeOffset )
 		Ogre::AnimationState* pAnimState = i.getNext();
 		
 		if ( pAnimState->getEnabled() )
-			pAnimState->addTime( timeOffset );
-	}*/
+		{
+			pAnimState->addTime( _timeOffset );
+		}
+	}
 }
 //////////////////////////////////////////////////////////////////////////

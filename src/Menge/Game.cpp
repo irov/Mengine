@@ -359,7 +359,6 @@ namespace Menge
 
 		m_listModulePath.push_back( m_pathScripts );
 		m_listModulePath.push_back( m_pathEntities );
-		//m_listModulePath.push_back( m_pathActors );	
 		m_listModulePath.push_back( m_pathScenes );
 		m_listModulePath.push_back( m_pathArrows );	
 

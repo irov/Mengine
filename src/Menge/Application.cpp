@@ -250,12 +250,6 @@ namespace Menge
 			m_particles = false;
 		}
 
-		if( m_physicSystemName != "None" )
-		{
-			SystemDLLInterface* dll = m_interface->loadSystemDLL( m_physicSystemName.c_str() );
-			setPhysicSystem( dll->getInterface<PhysicSystemInterface>() );
-		}
-		
 		Holder<XmlEngine>::keep( new XmlEngine );
 
 		if( Holder<XmlEngine>::hostage()
@@ -264,6 +258,12 @@ namespace Menge
 			MENGE_LOG("parse application xml failed '%s'\n"
 				, _applicationFile.c_str()
 				);
+		}
+
+		if( m_physicSystemName != "None" )
+		{
+			SystemDLLInterface* dll = m_interface->loadSystemDLL( m_physicSystemName.c_str() );
+			setPhysicSystem( dll->getInterface<PhysicSystemInterface>() );
 		}
 
 		Holder<ScriptEngine>::keep( new ScriptEngine );

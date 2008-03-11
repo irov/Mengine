@@ -159,7 +159,7 @@ void OgreRenderSpriteManager::prepareForRender()
 	m_renderSys->setShadingType(Ogre::SO_GOURAUD);
 	m_renderSys->_setPolygonMode(Ogre::PM_SOLID);
 
-	//m_renderSys->_setPolygonMode(Ogre::PM_WIREFRAME);
+	m_renderSys->_setPolygonMode(Ogre::PM_WIREFRAME);
 
 	m_renderSys->_setTextureCoordCalculation(0, Ogre::TEXCALC_NONE);
 	m_renderSys->_setTextureCoordSet(0, 0);

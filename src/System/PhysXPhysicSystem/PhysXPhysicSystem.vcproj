@@ -40,7 +40,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP2"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies/PhysX/SDKs/Physics/include&quot;;&quot;$(SolutionDir)dependencies/PhysX/SDKs/Foundation/include&quot;;&quot;$(SolutionDir)dependencies/PhysX/SDKs/PhysXLoader/include&quot;;&quot;$(SolutionDir)dependencies/PhysX/SDKs/Cooking/include&quot;;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies/PhysX/SDKs/NxCharacter/include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;TRANSPOSED_MAT33;"
@@ -69,6 +68,7 @@
 				AdditionalDependencies="NxCooking.lib PhysXLoader.lib NxCharacter.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies/PhysX/SDKs/lib/win32&quot;"
+				ModuleDefinitionFile="PhysXPhysicSystem.def"
 			/>
 			<Tool
 				Name="VCALinkTool"

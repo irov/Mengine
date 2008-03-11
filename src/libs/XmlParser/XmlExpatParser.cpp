@@ -60,11 +60,6 @@ void * XmlExpatParser::makeBuffer( size_t _size )
 {
 	return XML_GetBuffer( m_parser, _size );
 }
-////////////////////////////////////////////////////////////////////////////
-//void XmlExpatParser::releaseBuffer( void * _buffer )
-//{
-//	XML_ReleaseBuffer
-//}
 //////////////////////////////////////////////////////////////////////////
 bool XmlExpatParser::parseXML( size_t _size, XmlElementListener * _listener )
 {
@@ -92,6 +87,14 @@ bool XmlExpatParser::parseXML( size_t _size, XmlElementListener * _listener )
 	XML_ParserReset( m_parser, NULL );
 
 	return done;
+}
+//////////////////////////////////////////////////////////////////////////
+bool XmlExpatParser::parseStatus()
+{
+	XML_ParsingStatus status;
+	XML_GetParsingStatus( m_parser, &status );
+
+	return status.parsing == XML_PARSING;
 }
 //////////////////////////////////////////////////////////////////////////
 void XmlExpatParser::pushListener( XmlElementListener * _listener )

@@ -31,14 +31,28 @@ namespace Menge
 		}
 
 		size_t size = file->size();
-	
-		void * buffer = XmlParser::makeBuffer( m_parser, size );
+
+		XmlExpatParser * parser = m_parser;
+		bool new_parser = false;
+
+		if( XmlParser::parseStatus( m_parser ) == true )
+		{
+			parser = XmlParser::newParser();
+			new_parser = true;
+		}
+
+		void * buffer = XmlParser::makeBuffer( parser, size );
 		file->read( buffer, size );
 
 		Holder<FileEngine>::hostage()
 			->closeFile( file );
 		
-		bool result = XmlParser::parseBuffer( m_parser, size, _listener );
+		bool result = XmlParser::parseBuffer( parser, size, _listener );
+
+		if( new_parser )
+		{
+			XmlParser::deleteParser( parser );
+		}
 
 		return result;
 	}

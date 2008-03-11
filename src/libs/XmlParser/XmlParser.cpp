@@ -29,3 +29,8 @@ bool XmlParser::parseBuffer( XmlExpatParser * _parser, size_t _size, XmlElementL
 {
 	return _parser->parseXML( _size, _listener );
 }
+//////////////////////////////////////////////////////////////////////////
+bool XmlParser::parseStatus( XmlExpatParser * _parser )
+{
+	return _parser->parseStatus();
+}

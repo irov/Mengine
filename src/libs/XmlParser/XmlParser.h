@@ -25,6 +25,8 @@ public:
 	void * makeBuffer( XmlExpatParser * _parser, size_t _size );
 	bool parseBuffer( XmlExpatParser * _parser, size_t _size, XmlElementListener * _listener );
 
+	bool parseStatus( XmlExpatParser * _parser );
+
 	template<class C, class F>
 	bool parseBufferMember( size_t _size, C * _self, F _method )
 	{

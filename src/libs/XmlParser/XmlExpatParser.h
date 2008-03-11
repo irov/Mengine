@@ -15,6 +15,7 @@ public:
 public:
 	void * makeBuffer( size_t _size );
 	bool parseXML( size_t _size, XmlElementListener * _listener );	
+	bool parseStatus();
 
 public:
 	void pushListener( XmlElementListener * _listener );

@@ -55,9 +55,6 @@ namespace	Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ResourceMesh", "Name", m_resourcenameMesh );
-			/*XML_CASE_ATTRIBUTE_NODE( "ResourceSkeleton", "Name", m_resourcenameSkeleton );
-			XML_CASE_ATTRIBUTE_NODE( "CastShadows", "Value", m_castShadows );
-			XML_CASE_ATTRIBUTE_NODE( "ReceiveShadows", "Value", m_receiveShadows );*/
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -119,11 +116,6 @@ namespace	Menge
 */
 		this->callMethod("onActivate", "()" );
 
-	/*	if( getName() == "Zombie1")
-		{
-			m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( this->getWorldPosition(),0.1f,1.0f );
-		}
-*/
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -150,16 +142,15 @@ namespace	Menge
 			MENGE_LOG( "Error: Actor can't open resource file '%s'\n", m_resourcenameMesh.c_str() );
 			return false;
 		}
+
 		const std::string & mesh = resourceMesh->getMeshName();
 		const std::string & name = this->getName();
 
 		m_entity = Holder<RenderEngine>::hostage()->createEntity(name, mesh);
-//		m_entity->setCastsShadow(m_castShadows);
 
 		m_skeleton = m_entity->getSkeleton();
 
 		m_interface->attachEntity( m_entity );
-
 
 		// Creating physics controller
 		m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( getWorldPosition(), 0.5f, 2.0f );
@@ -204,42 +195,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::stop()
 	{
-//		m_entityInterface->play("idle2");
 		m_contMovement = mt::vec3f::zero_v3;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	/*	void Actor::setParentRoot( const mt::vec3f & _pos, const mt::quatf & _q )
-	{
-	const std::string & name = this->getName();
-
-	SceneNodeInterface * interface
-	= Holder<RenderEngine>::hostage()->createSceneNode( name );
-
-	m_interface = interface;
-
-	this->setLocalPosition( _pos );
-	this->setLocalOrient( _q );
-
-	}*/
-	//////////////////////////////////////////////////////////////////////////
-	/*	void Actor::setParentActor( Actor * _parent, const mt::vec3f & _pos )
-	{
-	if( _parent == NULL )
-	{
-	const std::string & name = this->getName();
-
-	SceneNodeInterface * interface
-	= Holder<RenderEngine>::hostage()->createSceneNode( name );
-
-	m_interface = interface;
-	}
-	else
-	{
-	m_interface = _parent->m_interface;
-	}
-
-	this->setLocalPosition( _pos );
-	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Actor::setAnimationEnabled( const std::string& _animName, bool _enable )
 	{

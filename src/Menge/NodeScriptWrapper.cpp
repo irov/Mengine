@@ -494,11 +494,13 @@ namespace Menge
 		pybind::class_<FFCamera3D>("FFCamera3D")
 			.def( pybind::init<>() )
 			.def( "update", &FFCamera3D::update )
-			.def( "set2Direction", &FFCamera3D::set2Direction )
 			.def( "activate", &FFCamera3D::activate )
 			.def( "forward", &FFCamera3D::forward )
 			.def( "left", &FFCamera3D::left )
 			.def( "setActor", &FFCamera3D::setActor )
+			.def( "yaw", &FFCamera3D::yaw )
+			.def( "pitch", &FFCamera3D::pitch )
+			.def( "zoom", &FFCamera3D::zoom )
 			;
 
 		pybind::interface_<NodeRenderable>("NodeRenderable", false)

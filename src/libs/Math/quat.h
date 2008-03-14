@@ -46,6 +46,9 @@ namespace mt
 		quatf& operator=(const quatf &q);
 
 		float norm()	const;
+
+		float getYaw(bool _reprojectAxis = true) const;
+		float getPitch(bool _reprojectAxis = true) const;
 	};
 
 	bool	operator==(const quatf& _a, const quatf& _b);
@@ -98,4 +101,6 @@ namespace mt
 
 	void	q_to_angle_axis(vec3f& _out, float& _out1, const quatf& _rhs);
 	vec3f	q_to_angle_axis(float& _out, const quatf& _rhs);
+
+	void	rotate_q(quatf& _out, const vec3f& axis, float angle);
 };

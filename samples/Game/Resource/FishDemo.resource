@@ -53,8 +53,8 @@
 	</Resource>
 
 	<Resource Name = "TestCap" Type = "ResourceCapsuleController" >
-		<Radius Value = "1" />
-		<Height Value = "1" />
+		<Radius Value = "0.5" />
+		<Height Value = "2" />
 	</Resource>
 
 </DataBlock>

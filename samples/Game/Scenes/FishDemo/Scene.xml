@@ -30,7 +30,7 @@
 			<Transformation>
 				<Scale Value = "1;1;1" />
        				<Position Value = "0;0;0" />
-       				<Rotation Value ="0;0;0;1" />
+       				<Rotation Value ="1;0;0;0" />
 			</Transformation>
 			<ResourceMesh Name = "TestLevel" />
 		</Node>

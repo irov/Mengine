@@ -80,6 +80,51 @@ namespace	mt
 		v.z =left.w*myInverse.z + myInverse.w*left.z + left.x*myInverse.y - myInverse.x*left.y;
 	}
 
+	float quatf::getPitch(bool _reprojectAxis) const
+	{
+		if (_reprojectAxis)
+		{
+			// pitch = atan2(localy.z, localy.y)
+			// pick parts of yAxis() implementation that we need
+			float fTx  = 2.0*x;
+			float fTy  = 2.0*y;
+			float fTz  = 2.0*z;
+			float fTwx = fTx*w;
+			float fTxx = fTx*x;
+			float fTyz = fTz*y;
+			float fTzz = fTz*z;
+
+			// Vector3(fTxy-fTwz, 1.0-(fTxx+fTzz), fTyz+fTwx);
+			return (atan2(fTyz+fTwx, 1.0f-(fTxx+fTzz))) * 180.f/3.14f;
+		}
+		else
+		{
+			// internal version
+			return (atan2(2*(y*z + w*x), w*w - x*x - y*y + z*z));
+		}
+	}
+
+	float quatf::getYaw(bool _reprojectAxis) const
+	{
+		if (_reprojectAxis)
+		{
+			float fTx  = 2.0*x;
+			float fTy  = 2.0*y;
+			float fTz  = 2.0*z;
+			float fTwy = fTy*w;
+			float fTxx = fTx*x;
+			float fTxz = fTz*x;
+			float fTyy = fTy*y;
+
+			return (atan2(fTxz+fTwy, 1.0f-(fTxx+fTyy)));
+
+		}
+		else
+		{
+			return (asin(-2*(x*z - w*y)));
+		}
+	}
+
 	bool	cmp_q_q(const quatf& _a, const quatf& _b, float eps)
 	{
 		return	(fabs(_a.w - _b.w) < eps) && (fabs(_a.x - _b.x) < eps) && (fabs(_a.y - _b.y) < eps) && (fabs(_a.z - _b.z) < eps);
@@ -494,5 +539,11 @@ namespace	mt
 		vec3f	out;
 		q_to_angle_axis(out,_out,_rhs);
 		return	out;
+	}
+
+	void rotate_q(quatf& _out, const vec3f& axis, float angle)
+	{
+		quatf q = q_from_angle_axis(axis,angle);
+		_out = _out * q;
 	}
 }

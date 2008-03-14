@@ -27,7 +27,7 @@ public:
 	void roll( float _angle ) override;
 	void getAABB( float * _min, float * _max ) const override;
 	void translate( float * _v ) override;
-	int isAABBIntersect( EntityInterface * _entity );
+	int isAABBIntersect( float * _min, float * _max, float & _dx, float & _dz );
 public:
 	Ogre::Camera * getOgreCamera();
 

@@ -1,0 +1,20 @@
+material MyMaterial
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.866667 0.866667 0.803922 
+			diffuse 0.866667 0.866667 0.803922 
+			specular 0 0 0 1
+			emissive 0 0 0 
+
+			texture_unit 
+			{
+				texture z_cop_body.jpg
+			}
+		}
+	}
+}
+
+

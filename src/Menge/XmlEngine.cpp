@@ -163,7 +163,7 @@ namespace XmlParserCast
 	//////////////////////////////////////////////////////////////////////////
 	bool attribute_value_cast( mt::quatf & _var, const char * _value )
 	{
-		int res = sscanf( _value, "%f;%f;%f;%f", &_var.x, &_var.y, &_var.z, &_var.w );
+		int res = sscanf( _value, "%f;%f;%f;%f", &_var.w, &_var.x, &_var.y, &_var.z );
 
 		return res == 4;
 	}

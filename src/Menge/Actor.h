@@ -53,12 +53,13 @@ namespace Menge
 		void	setRollSpeed( float _speed );
 		//void	
 
+		void _update( float _timing ) override;
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
 		bool _compile() override;
 		void _release() override;
-		void _update( float _timing ) override;
+		
 
 	private:
 		//CapsuleController * m_controller;
@@ -80,10 +81,6 @@ namespace Menge
 
 		typedef std::vector<std::string> TStringVector;
 		TStringVector m_playingAnimations;
-		//	public:
-		//		void	setParentActor( Actor * _parent, const mt::vec3f & _pos );
-		//		void	setParentRoot( const mt::vec3f & _pos, const mt::quatf & _q );
-		//mt::vec3f m_charPos;
 
 		void render(){}
 		bool isRenderable(){return false;}

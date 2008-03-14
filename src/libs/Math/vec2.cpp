@@ -247,4 +247,11 @@ namespace	mt
 		
 		return a;
 	}
+
+	void rotate_v2(vec2f& _out, float _angle)
+	{
+		vec2f _v = _out;
+		_out.x = cos(_angle) * _v.x - sin(_angle) * _v.y;
+		_out.y = cos(_angle) * _v.y + sin(_angle) * _v.x;
+	}
 }

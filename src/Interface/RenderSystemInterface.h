@@ -52,18 +52,6 @@ public:
 class EntityInterface
 {
 public:
-/*	virtual bool hasSkeleton() const = 0;
-	virtual const float * getBoneOrientation( const char * _name ) = 0;
-	virtual const float * getBonePosition( const char * _name ) = 0;
-	virtual void play( const char * _name ) = 0;
-	virtual void play( 
-		const char * _name1, float _weight1, 
-		const char * _name2, float _weight2 ) = 0;
-	virtual void stop() = 0;
-	virtual void setLooped( bool _looped ) = 0;
-	virtual const char * getName() const = 0;
-	virtual void update( float _timing ) = 0;
-*/
 	virtual SkeletonInterface * getSkeleton() const = 0;
 	virtual void setCastsShadow( bool _castsShadow ) = 0;
 	virtual void setVisible( bool _visible ) = 0;
@@ -152,7 +140,7 @@ public:
 	virtual void pitch( float _angle ) = 0;
 	virtual void roll( float _angle ) = 0;
 	virtual void getAABB( float * _min, float * _max ) const = 0;
-	virtual int isAABBIntersect( EntityInterface * _entity ) = 0;
+	virtual int isAABBIntersect( float * _min, float * _max, float & _dx, float & _dz ) = 0;
 	virtual void translate( float * _v ) = 0;
 };
 

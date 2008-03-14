@@ -101,7 +101,7 @@ namespace Menge
 			//.def( "setParentActor", &Actor::setParentActor )
 			//.def( "setParentRoot", &Actor::setParentRoot )
 			//.def( "attachEntity", &Actor::attachEntity )
-			//.def( "update", &Actor::update )
+			.def( "update", &Actor::_update )
 		;
 
 		pybind::def( "createActor", &ScriptMethod::createActor );

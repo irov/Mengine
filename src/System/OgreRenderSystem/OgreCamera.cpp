@@ -97,54 +97,74 @@ void Ogre3dCamera::getAABB( float * _min, float * _max ) const
 	_max[2] = aabb.getMaximum().z;
 }
 //////////////////////////////////////////////////////////////////////////
-int Ogre3dCamera::isAABBIntersect( EntityInterface * _entity )
+int Ogre3dCamera::isAABBIntersect( float * _min, float * _max, float & _dx, float & _dz )
 {
-	OgreEntity * ogreEntity = static_cast<OgreEntity*>(_entity);
-	Ogre::Entity * entity = ogreEntity->getOgreEntity();
+	Ogre::Vector3 max = *(Ogre::Vector3*)_max;
+	Ogre::Vector3 min = *(Ogre::Vector3*)_min;
 
-	const Ogre::AxisAlignedBox & aabb = entity->getWorldBoundingBox();
+	Ogre::Vector3 dir = max - min;
+	Ogre::Vector3 uvh[3];
 
-	if(aabb.isNull()) 
-		return -1;
+	uvh[0] = Ogre::Vector3(dir.x, 0, 0);
+	uvh[1] = Ogre::Vector3(0, dir.y, 0);
+	uvh[2] = Ogre::Vector3(0, 0, dir.z);
 
-	const Ogre::Vector3 * corner = aabb.getAllCorners();
+	Ogre::Vector3 point[8];
 
-	int iTotalIn = 0;
+	point[0] = min;
+	point[1] = min + uvh[0];
+	point[4] = min + uvh[2];
+	point[5] = min + uvh[0] + uvh[2];
+
+	point[2] = min + uvh[0] + uvh[1];
+	point[3] = min + uvh[1];
+	point[6] = min + uvh[0] + uvh[1] + uvh[2];
+	point[7] = min + uvh[1] + uvh[2];
+
+	int totalIn = 0;
 
 	std::vector<int> planes;
 
-	for(int p = 0; p < 6; ++p)
+	Ogre::Vector3 direction;
+
+	Ogre::AxisAlignedBox box = m_camera->getBoundingBox();
+	printf("%f \n",box.getMinimum().y);
+
+	// NEAR, FAR skipped
+	for(int p = 2; p < 6; ++p)
 	{
-		int iInCount = 8;
-		int iPtIn = 1;	
+		int inCount = 8;
+		int pointIn = 1;	
 
 		const Ogre::Plane & plane = m_camera->getFrustumPlane(p);
 		
 		for(int i = 0; i < 8; ++i)
 		{
-			Ogre::Vector3 c = corner[i];
-			c.x *= 1.2f;
+			Ogre::Vector3 & c = point[i];
 	
 			if(plane.getSide(c) == Ogre::Plane::NEGATIVE_SIDE)
 			{
-				iPtIn = 0;
-				--iInCount;
+				pointIn = 0;
+				--inCount;
+				direction = plane.projectVector(c);
 			}
 		}
 
-		if(iPtIn == 0)
-		planes.push_back(p);
+		if(pointIn == 0)
+		{
+			planes.push_back(p);
+		}
 
-
-		if(iInCount == 0)
+		if(inCount == 0)
 		{
 			return -1;
 		}
 
-		iTotalIn += iPtIn;
+		totalIn += pointIn;
 	}
+	// вообще ни с одной.
 
-	if(iTotalIn == 6)
+	if(totalIn == 4)
 	{
 		return -2;
 	}
@@ -156,6 +176,13 @@ int Ogre3dCamera::isAABBIntersect( EntityInterface * _entity )
 	printf("\n");
 
 	printf("false\n");
+
+	//direction-=m_camera->getPosition();
+	//direction.normalise();
+
+	_dx = direction.x;
+	_dz = direction.z;
+
 	return *planes.begin();
 }
 //////////////////////////////////////////////////////////////////////////

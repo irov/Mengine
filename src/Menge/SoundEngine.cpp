@@ -94,6 +94,10 @@ namespace Menge
 	void SoundEngine::setCommonVolume( float _volume )
 	{
 		m_commonVolume = _volume;
+		for( TSetSoundEmitters::iterator it = m_soundEmitters.begin(); it != m_soundEmitters.end(); ++it )
+		{
+			(*it)->updateVolume();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getCommonVolume() const
@@ -116,9 +120,9 @@ namespace Menge
 		m_interface->setEnoughBlow( _enoughBlow );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::update()
+	void SoundEngine::update( float _timing )
 	{
-		m_interface->update();
+		m_interface->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setSulkCallback( SoundSulkCallback * _sulkcallback )

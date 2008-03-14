@@ -4,6 +4,7 @@
 #include "../../Interface/SoundSystemInterface.h"
 
 #include <vector>
+#include <map>
 #include <AL.h>
 #include <ALC.h>
 
@@ -50,7 +51,8 @@ public:
 	void setEnoughBlow( float _enoughBlow ) override;
 	void setBlowCallback( SoundSulkCallbackInterface * _callback ) override;
 
-	void update() override;
+	void update( float _timing ) override;
+
 
 public:
 	void	setSoundVelocity( float _velocity );
@@ -64,6 +66,7 @@ public:
 
 	void	addStream( ALSoundBufferStream* _stream );
 	void	removeStream( ALSoundBufferStream* _stream );
+	void registerPlaying( ALSoundSource* _source, float _timeMs );
 
 private:
 	TALSourceName m_sourceNames[MAX_SOURCENAMES_NUM];
@@ -72,6 +75,9 @@ private:
 	
 	typedef std::vector<ALSoundBufferStream*> TVectorALSoundBufferStream;
 	TVectorALSoundBufferStream m_streams;
+
+	typedef std::map<ALSoundSource*, float> TSourcesMap;
+	TSourcesMap m_playingSources;
 
 	float m_soundVelocity;
 	float m_dopplerFactor;

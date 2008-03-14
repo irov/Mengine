@@ -99,11 +99,11 @@ namespace Menge
 		bool getSoundEnabled()	const;
 
 		void minimizeWindow();
+		void notifyWindowModeChanged( bool _fullscreen );
 
 	private:
 		ApplicationInterface* m_interface;
 
-		bool m_quit;
 		std::string m_gameInfo;
 		InputHandler * m_handler;
 

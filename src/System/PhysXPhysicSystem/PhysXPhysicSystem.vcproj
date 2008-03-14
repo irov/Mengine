@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(ProjectDir)$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)Bin_d"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			ATLMinimizesCRunTimeLibraryUsage="true"

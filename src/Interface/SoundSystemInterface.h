@@ -67,7 +67,7 @@ public:
 	virtual void setEnoughBlow( float _enoughBlow ) = 0;
 	virtual void setBlowCallback( SoundSulkCallbackInterface * _callback ) = 0;
 
-	virtual void update() = 0;
+	virtual void update( float _timing ) = 0;
 };
 
 bool initInterfaceSystem( SoundSystemInterface** );

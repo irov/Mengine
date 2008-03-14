@@ -42,6 +42,8 @@ ALSoundSource::~ALSoundSource()
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSource::play()
 {
+	if( m_playing ) return;
+
 	m_sourceName = m_soundSystem->getFreeSourceName();
 	if(!m_sourceName || !m_soundBuffer) 
 	{
@@ -66,8 +68,11 @@ void ALSoundSource::play()
 		alSourcePlay( m_sourceName->name );
 	}
 
-
-	CreateTimerQueueTimer( &m_stopCallbackHandle, NULL, (WAITORTIMERCALLBACK)ListenStoppedCallback, this, getLengthMs(), 0, WT_EXECUTEONLYONCE );
+	if( !m_looped )
+	{
+		m_soundSystem->registerPlaying( this, getLengthMs() );
+	}
+	//CreateTimerQueueTimer( &m_stopCallbackHandle, NULL, (WAITORTIMERCALLBACK)ListenStoppedCallback, this, getLengthMs(), 0, WT_EXECUTEONLYONCE );
 	m_playing = true;
 }
 //////////////////////////////////////////////////////////////////////////

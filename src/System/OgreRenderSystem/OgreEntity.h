@@ -21,6 +21,19 @@ public:
 	void createRenderToTexture( const char* _cameraName, int _width, int _height ) override;
 	void getAABB( float * _min, float * _max ) const override;
 
+	void setAnimationEnabled( const char* _animName, bool _enabled ) override;
+	bool getAnimationEnabled( const char* _animName ) override;
+	void setAnimationTimePosition( const char* _animName, float _timePos ) override;
+	float getAnimationTimePosition( const char* _animName ) override;
+	void setAnimationLength( const char* _animName, float _length ) override;
+	float getAnimationLength( const char* _animName ) override;
+	void setAnimationWeight( const char* _animName, float _weight ) override;
+	float getAnimationWeigth( const char* _animName ) override;
+	void animationAddTime( const char* _animName, float _time ) override;
+	bool animationHasEnded( const char* _animName ) override;
+	void animationSetLooped( const char* _animName, bool _looped ) override;
+	bool animationGetLooped( const char* _animName ) override;
+
 public:
 	Ogre::Entity * getOgreEntity();
 

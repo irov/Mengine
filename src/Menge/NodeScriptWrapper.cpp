@@ -478,10 +478,6 @@ namespace Menge
 			;
 
 		pybind::interface_<Skeleton>("Skeleton", false)
-			.def( "enableAnimation", &Skeleton::enableAnimation )
-			.def( "advanceAnimation", &Skeleton::advanceAnimation )
-			.def( "advanceAllAnimations", &Skeleton::advanceAllAnimations )
-			.def( "setAnimationWeight", &Skeleton::setAnimationWeight )
 			.def( "attachEntityToBone", &Skeleton::attachEntityToBone )
 			;
 

@@ -6,6 +6,7 @@
 #	include "FileEngine.h"
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
+#	include "Amplifier.h"
 #	include "ParticleEngine.h"
 #	include "ScriptEngine.h"
 #	include "PhysicEngine.h"
@@ -56,7 +57,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application( ApplicationInterface* _interface )
 		: m_interface( _interface )
-		, m_quit( false )
 		, m_commandLine("")
 		, m_title("Menge-engine")
 		, m_resourcePath("")
@@ -297,32 +297,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::update( float _timing )
-	{	
-		Holder<MousePickerSystem>::hostage()->clear();
-
-		if( m_physicEngine )
-		{
-			m_physicEngine->update( 1.0f/30.0f );// for test physic!
-		}
-
-		if( m_physicEngine2D )
-		{
-			m_physicEngine2D->update( 1.0f / 60.0f, 10 );
-		}
-
-		Holder<Game>::hostage()->update( _timing );
-		Holder<InputEngine>::hostage()->update();
-		Holder<MousePickerSystem>::hostage()->update();
-		Holder<SoundEngine>::hostage()->update();
-
-		Holder<Game>::hostage()->render();
-		Holder<Game>::hostage()->debugRender();
-		Holder<RenderEngine>::hostage()->render();
-
-		return !m_quit;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Application::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
 	{
 		return Holder<Game>::hostage()->handleKeyEvent( _key, _char, _isDown );
@@ -435,14 +409,18 @@ namespace Menge
 	void Application::onFocus( bool _focus )
 	{
 		static float volume = 1.0f;
+		static float avolume = 1.0f;
 		if( !_focus )
 		{
 			volume = Holder<SoundEngine>::hostage()->getCommonVolume();
+			avolume = Holder<Amplifier>::hostage()->getVolume();
 			Holder<SoundEngine>::hostage()->setCommonVolume( 0.0f );
+			Holder<Amplifier>::hostage()->setVolume( 0.0f );
 		}
 		else
 		{
 			Holder<SoundEngine>::hostage()->setCommonVolume( volume );
+			Holder<Amplifier>::hostage()->setVolume( avolume );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -458,7 +436,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onUpdate( float _timing )
 	{
-		update( _timing );
+		Holder<MousePickerSystem>::hostage()->clear();
+
+		if( m_physicEngine )
+		{
+			m_physicEngine->update( 1.0f/30.0f );// for test physic!
+		}
+
+		if( m_physicEngine2D )
+		{
+			m_physicEngine2D->update( 1.0f / 60.0f, 10 );
+		}
+
+		Holder<Game>::hostage()->update( _timing );
+		Holder<InputEngine>::hostage()->update();
+		Holder<MousePickerSystem>::hostage()->update();
+		Holder<SoundEngine>::hostage()->update( _timing );
+
+		Holder<Game>::hostage()->render();
+		Holder<Game>::hostage()->debugRender();
+		Holder<RenderEngine>::hostage()->render();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()
@@ -492,11 +489,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onWindowMovedOrResized()
 	{
-
+		Holder<RenderEngine>::hostage()->onWindowMovedOrResized();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Application::getCurrentResolution() const
 	{
 		return m_currentResolution;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::notifyWindowModeChanged( bool _fullscreen )
+	{
+		m_interface->notifyWindowModeChanged( _fullscreen );
 	}
 }

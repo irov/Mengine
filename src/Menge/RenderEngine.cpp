@@ -8,6 +8,8 @@
 
 #	include <map>
 
+#	include "Application.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -15,6 +17,10 @@ namespace Menge
 		: m_interface( _interface )
 		, m_renderViewport( mt::vec2f(0.f,0.f), mt::vec2f(1024.f,768.f) )
 		, m_renderCamera(0)
+		, m_windowCreated( false )
+		, m_renderFactor( 1.0f )
+		, m_viewportWidth(1024)
+		, m_viewportHeight(768)
 	{
 		Holder<RenderEngine>::keep( this );
 	}
@@ -27,7 +33,10 @@ namespace Menge
 	bool RenderEngine::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle /* = 0  */)
 	{
 		m_fullscreen = _fullscreen;
-		return m_interface->createRenderWindow( _width, _height, _bits, _fullscreen, _winHandle );
+		m_viewportWidth = _width;
+		m_viewportHeight = _height;
+		m_windowCreated = m_interface->createRenderWindow( _width, _height, _bits, _fullscreen, _winHandle );
+		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render( RenderImageInterface* _image, const int* rect )
@@ -206,6 +215,7 @@ namespace Menge
 	{
 		m_interface->releaseImage( _image );
 	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImageVideoStream( RenderVideoStreamInterface* _image )
 	{
 		m_interface->releaseImageVideoStream( _image );
@@ -213,11 +223,21 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setFullscreenMode( bool _fullscreen )
 	{
-		m_interface->setFullscreenMode( _fullscreen );
+		if( m_fullscreen == _fullscreen ) return;
+
+		m_fullscreen = _fullscreen;
+		int width = Holder<Application>::hostage()->getScreenWidth();
+		int height = Holder<Application>::hostage()->getScreenHeight();
+		m_interface->setFullscreenMode( width, height, _fullscreen );
+
+		Holder<Application>::hostage()->notifyWindowModeChanged( m_fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setViewportDimensions( float _width, float _height, float _renderFactor )
 	{
+		m_viewportWidth = _width;
+		m_viewportHeight = _height;
+		m_renderFactor = _renderFactor;
 		m_interface->setViewportDimensions( _width, _height, _renderFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -310,5 +330,13 @@ namespace Menge
 	bool RenderEngine::getFullscreenMode()
 	{
 		return m_fullscreen;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::onWindowMovedOrResized()
+	{
+		if( m_windowCreated )
+		{
+			m_interface->setViewportDimensions( m_viewportWidth, m_viewportHeight, m_renderFactor );
+		}
 	}
 }

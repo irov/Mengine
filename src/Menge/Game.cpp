@@ -421,7 +421,10 @@ namespace Menge
 			fileEngine->addResourceLocation( *it );
 		}
 
-		fileEngine->initResources();
+		if( !m_listResourceLocation.empty() )
+		{
+			fileEngine->initResources();
+		}
 
 		m_defaultArrow = getArrow( m_defaultArrowName );
 

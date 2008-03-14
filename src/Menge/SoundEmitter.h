@@ -29,6 +29,7 @@ namespace Menge
 
 			void setVolume( float _volume );
 			float getVolume();
+			void updateVolume();
  
 			void setLooped( bool _loop );
 			bool isLooping();
@@ -52,11 +53,13 @@ namespace Menge
 		private:
 			PyObject * m_listener;
 
+			float m_volume;
 			ResourceSound * m_resource;
 			std::string m_resourcename;
 			
 			SoundSourceInterface * m_interface;
 
 			bool m_isHeadMode;
+			bool m_looped;
 	};
 };

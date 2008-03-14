@@ -42,10 +42,10 @@ class SkeletonInterface
 public:
 	virtual ~SkeletonInterface(){};
 
-	virtual void enableAnimation( const std::string & _anim, bool _enable ) = 0;
-	virtual void advanceAnimation( const std::string & _anim, float _timeDelta ) = 0;
-	virtual void advanceAllAnimations( float _timeDelta ) = 0;
-	virtual void setAnimationWeight( const std::string & _anim, float _weight ) = 0;
+	//virtual void enableAnimation( const std::string & _anim, bool _enable ) = 0;
+	//virtual void advanceAnimation( const std::string & _anim, float _timeDelta ) = 0;
+	//virtual void advanceAllAnimations( float _timeDelta ) = 0;
+	//virtual void setAnimationWeight( const std::string & _anim, float _weight ) = 0;
 	virtual void attachEntityToBone( const std::string & _bone, EntityInterface * _entity ) = 0;
 };
 
@@ -71,6 +71,20 @@ public:
 	virtual void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material ) = 0;
 	virtual void createRenderToTexture( const char* _cameraName, int _width, int _height  ) = 0;
 	virtual void getAABB( float * _min, float * _max ) const = 0;
+
+	//////////////////////////////////////////////////////////////////////////
+	virtual void setAnimationEnabled( const char* _animName, bool _enabled ) = 0;
+	virtual bool getAnimationEnabled( const char* _animName ) = 0;
+	virtual void setAnimationTimePosition( const char* _animName, float _timePos ) = 0;
+	virtual float getAnimationTimePosition( const char* _animName ) = 0;
+	virtual void setAnimationLength( const char* _animName, float _length ) = 0;
+	virtual float getAnimationLength( const char* _animName ) = 0;
+	virtual void setAnimationWeight( const char* _animName, float _weight ) = 0;
+	virtual float getAnimationWeigth( const char* _animName ) = 0;
+	virtual void animationAddTime( const char* _animName, float _time ) = 0;
+	virtual bool animationHasEnded( const char* _animName ) = 0;
+	virtual void animationSetLooped( const char* _animName, bool _looped ) = 0;
+	virtual bool animationGetLooped( const char* _animName ) = 0;
 };
 
 enum LightType
@@ -230,7 +244,7 @@ public:
 	virtual	void	beginLayer() = 0;
 	virtual	void	endLayer() = 0;
 
-	virtual void	setFullscreenMode( bool _fullscreen ) = 0;
+	virtual void	setFullscreenMode( unsigned int _width, unsigned int _height, bool _fullscreen ) = 0;
 	virtual void	setViewportDimensions( float _width, float _height, float _renderFactor ) = 0;
 
 	//new

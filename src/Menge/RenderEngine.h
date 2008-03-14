@@ -96,11 +96,16 @@ namespace Menge
 		void frameStarted();
 		void frameEnded();
 
+		void onWindowMovedOrResized();
 
 	protected:
 		RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;
 		Camera3D * m_renderCamera;
+		bool m_windowCreated;
 		bool m_fullscreen;
+		int m_viewportWidth;
+		int m_viewportHeight;
+		float m_renderFactor;
 	};
 }

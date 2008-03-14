@@ -51,7 +51,7 @@ namespace Menge
 
 		void setEnoughBlow( float _enoughBlow );
 
-		void update();
+		void update( float _timing );
 
 	public:
 		void registerSoundEmitter( SoundEmitter * _emitter );

@@ -198,12 +198,12 @@ bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, b
 
 	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
-
+	
 	Ogre::Camera* sceneCam = m_sceneMgr->createCamera("defaultCamera");
 	//sceneCam->setPosition( -8.0f, 300.0f, 200.0f );
 	//sceneCam->lookAt( -8.0f, 0.0f, 20.0f );
-	sceneCam->setPosition( 2.0f, 345.0f, 100.0f );
-	sceneCam->lookAt( 2.0f, 0.0f, 20.0f );
+	sceneCam->setPosition( 0.0f, 100.0f, 100.0f );
+	sceneCam->lookAt( 0.0f, 0.0f, 0.0f );
 	sceneCam->setFarClipDistance( 1000.0f );
 	sceneCam->setNearClipDistance( 0.2f );
 	m_viewport = m_renderWindow->addViewport( sceneCam );
@@ -281,10 +281,9 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 	
 	Ogre::Camera* sceneCam = m_sceneMgr->getCamera("defaultCamera");
 	rtgt->addViewport( sceneCam );
+	rtgt->setActive( false );
 
-	m_renderWindow->getViewport(0)->setClearEveryFrame(false);
 	Ogre::Root::getSingleton().renderOneFrame();
-	m_renderWindow->getViewport(0)->setClearEveryFrame(true);
 
 	if( _image )
 	{
@@ -300,7 +299,7 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 void OgreRenderSystem::render()
 {
 	Ogre::Root::getSingleton().renderOneFrame();
-	m_spriteMgr->doRender();
+	//m_spriteMgr->doRender();
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setProjectionMatrix( const float * _projection )
@@ -402,10 +401,10 @@ void OgreRenderSystem::renderImage(
 
 	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
 	{
-		Ogre::Viewport* viewport = m_sceneMgr->getCamera( _camera )->getViewport();
+		Ogre::Camera* camera = m_sceneMgr->getCamera( _camera );
 		Ogre::Texture * texture = image->getTexture();
 		float z = m_spriteMgr->getCurrentZ();
-		m_spriteMgr->addQuad1(viewport, m_contentResolution,*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color, (Ogre::SceneBlendFactor)_src, (Ogre::SceneBlendFactor)_dst);
+		m_spriteMgr->addQuad1(camera, m_contentResolution,*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color, (Ogre::SceneBlendFactor)_src, (Ogre::SceneBlendFactor)_dst);
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -429,11 +428,11 @@ void OgreRenderSystem::renderImage(
 	}
 	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
 	{
-		Ogre::Viewport* viewport = m_sceneMgr->getCamera( _camera )->getViewport();
+		Ogre::Camera* camera = m_sceneMgr->getCamera( _camera );
 		Ogre::Texture * texture = image->getTexture();
 		float z = m_spriteMgr->getCurrentZ();
 		m_spriteMgr->addQuad2(
-			viewport,
+			camera,
 			m_contentResolution,
 			*(Ogre::Vector4*)_uv,
 			*(Ogre::Matrix3*)_transform,
@@ -459,9 +458,9 @@ void	OgreRenderSystem::endLayer()
 	m_spriteMgr->diffZ();
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSystem::setFullscreenMode(  bool _fullscreen )
+void OgreRenderSystem::setFullscreenMode( unsigned int _width, unsigned int _height, bool _fullscreen )
 {
-	m_renderWindow->setFullscreen( _fullscreen, m_renderWindow->getWidth(), m_renderWindow->getHeight() );
+	m_renderWindow->setFullscreen( _fullscreen, _width, _height );
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::loadResource( Ogre::Resource* _resource )
@@ -470,7 +469,7 @@ void OgreRenderSystem::loadResource( Ogre::Resource* _resource )
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setViewportDimensions( float _width, float _height, float _renderFactor )
 {
-	m_renderWindow->update();
+//	m_renderWindow->update();
 	float realWidth = m_renderWindow->getWidth();
 	float realHeight = m_renderWindow->getHeight();
 	float aspect = _width / _height;

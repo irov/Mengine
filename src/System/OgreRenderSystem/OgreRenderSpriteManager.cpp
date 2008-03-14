@@ -159,7 +159,7 @@ void OgreRenderSpriteManager::prepareForRender()
 	m_renderSys->setShadingType(Ogre::SO_GOURAUD);
 	m_renderSys->_setPolygonMode(Ogre::PM_SOLID);
 
-	m_renderSys->_setPolygonMode(Ogre::PM_WIREFRAME);
+	//m_renderSys->_setPolygonMode(Ogre::PM_WIREFRAME);
 
 	m_renderSys->_setTextureCoordCalculation(0, Ogre::TEXCALC_NONE);
 	m_renderSys->_setTextureCoordSet(0, 0);
@@ -174,7 +174,7 @@ void OgreRenderSpriteManager::prepareForRender()
 	m_renderSys->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSpriteManager::addQuad1( Ogre::Viewport* _viewport,
+void OgreRenderSpriteManager::addQuad1( Ogre::Camera* _camera,
 									   const Ogre::Vector2 & _contentRes,
 									   const Ogre::Vector4 & _uv,
 									   const Ogre::Matrix3 & _transform,
@@ -195,7 +195,7 @@ void OgreRenderSpriteManager::addQuad1( Ogre::Viewport* _viewport,
 
 	//FIXME:
 
-	quad.viewport = _viewport;
+	quad.camera = _camera;
 
 	quad.points[0].x = _transform[0][0] * _offset[0] + _transform[1][0] * _offset[1] + _transform[2][0];
 	quad.points[0].y = _transform[0][1] * _offset[0] + _transform[1][1] * _offset[1] + _transform[2][1];
@@ -234,7 +234,7 @@ void OgreRenderSpriteManager::addQuad1( Ogre::Viewport* _viewport,
 	quadList.push_back(quad);
 }
 
-void OgreRenderSpriteManager::addQuad2( Ogre::Viewport* _viewport,
+void OgreRenderSpriteManager::addQuad2( Ogre::Camera* _camera,
 									   const Ogre::Vector2 & _contentRes,
 									   const Ogre::Vector4 & _uv,
 									   const Ogre::Matrix3 & _transform,
@@ -256,7 +256,7 @@ void OgreRenderSpriteManager::addQuad2( Ogre::Viewport* _viewport,
 
 	//FIXME:
 
-	quad.viewport = _viewport;
+	quad.camera = _camera;
 
 	quad.points[0].x = _transform[0][0] * _a[0] + _transform[1][0] * _a[1] + _transform[2][0];
 	quad.points[0].y = _transform[0][1] * _a[0] + _transform[1][1] * _a[1] + _transform[2][1];
@@ -329,7 +329,8 @@ void OgreRenderSpriteManager::doRender(void)
 			}
 		#endif
 
-		QuadVertex * buffmem = static_cast<QuadVertex*>( vertexBuffer->lock( Ogre::HardwareVertexBuffer::HBL_DISCARD ) );
+		//QuadVertex * buffmem = static_cast<QuadVertex*>( vertexBuffer->lock( Ogre::HardwareVertexBuffer::HBL_DISCARD ) );
+		QuadVertex * buffmem = static_cast<QuadVertex*>( vertexBuffer->lock( Ogre::HardwareVertexBuffer::HBL_NORMAL ) );
 		
 		for ( TQuadList::iterator 
 			it = quadList.begin(),
@@ -413,7 +414,7 @@ void OgreRenderSpriteManager::doRender(void)
 	while( it != it_end )
 	{
 		currTexture = it->texture;
-		currViewport = it->viewport;
+		currCamera = it->camera;
 		//currViewport = m_renderSys->_getViewport();
 		renderOp.vertexData->vertexStart = bufferPos;
 		Ogre::SceneBlendFactor src = it->source;
@@ -423,7 +424,7 @@ void OgreRenderSpriteManager::doRender(void)
 		{
 			const QuadInfo& quad = (*it);
 
-			if( currViewport != quad.viewport )
+			if( currCamera != quad.camera )
 			{
 				changeViewport = true;
 				//currViewport = quad.viewport;
@@ -436,10 +437,10 @@ void OgreRenderSpriteManager::doRender(void)
 
 			bufferPos += VERTEX_PER_QUAD;
 		}
-
+		//m_renderSys->_beginFrame();
 		renderOp.vertexData->vertexCount = bufferPos - renderOp.vertexData->vertexStart;
 		
-		m_renderSys->_setViewport( currViewport );
+		m_renderSys->_setViewport( currCamera->getViewport() );
 
 		if ( first || changeViewport )
 		{
@@ -448,7 +449,7 @@ void OgreRenderSpriteManager::doRender(void)
 		}		
 		m_renderSys->_setCullingMode(Ogre::CULL_NONE);
 
-		m_renderSys->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
+		//m_renderSys->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 
 
 		m_renderSys->_setSceneBlending( src, dst );
@@ -458,7 +459,7 @@ void OgreRenderSpriteManager::doRender(void)
 		changeViewport = false;
 
 		m_renderSys->_render( renderOp );
-
+		//m_renderSys->_endFrame();
 	}
 	#ifdef VBVB
 

@@ -1,6 +1,8 @@
 #	include "WinApplication.h"
 
 #	include "SystemDLL.h"
+
+#	define MAX_UPDATE_TIMING 100
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( ApplicationInterface** _ptrInterface )
 {
@@ -136,6 +138,10 @@ void WinApplication::run()
 			m_listener->onUpdate( m_frameTime );
 			::QueryPerformanceCounter(&time);
 			m_frameTime = static_cast<float>( time.QuadPart - m_lastTime.QuadPart ) / m_timerFrequency.QuadPart * 1000.0f;
+			if( m_frameTime > MAX_UPDATE_TIMING )
+			{
+				m_frameTime = MAX_UPDATE_TIMING;
+			}
 			m_lastTime = time;
 
 			if ( resetTime )
@@ -281,7 +287,7 @@ LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 	{
 	case WM_ACTIVATE:
 		{
-			::GetWindowInfo( m_hWnd, &m_wndInfo);
+			//::GetWindowInfo( m_hWnd, &m_wndInfo);
 			m_active = (LOWORD(wParam) != WA_INACTIVE);
 			/*if(m_renderWindow)
 				m_renderWindow->setActive( active );*/
@@ -321,20 +327,20 @@ LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 		break;
 	case WM_MOVE:
 
-		::GetWindowInfo( m_hWnd, &m_wndInfo);
+		//::GetWindowInfo( m_hWnd, &m_wndInfo);
 		m_listener->onWindowMovedOrResized();
 		break;
 	case WM_DISPLAYCHANGE:
 		{
-			::GetWindowInfo( m_hWnd, &m_wndInfo);
+			//::GetWindowInfo( m_hWnd, &m_wndInfo);
 			m_listener->onWindowMovedOrResized();
 
-			DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN | WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
-			::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
+			//DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN | WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
+			//::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 		}
 		break;
 	case WM_SIZE:
-		::GetWindowInfo( m_hWnd, &m_wndInfo);
+		//::GetWindowInfo( m_hWnd, &m_wndInfo);
 		m_listener->onWindowMovedOrResized();
 		break;
 	case WM_GETMINMAXINFO:
@@ -390,7 +396,19 @@ void WinApplication::minimizeWindow()
 //////////////////////////////////////////////////////////////////////////
 void WinApplication::notifyWindowModeChanged( bool _fullscreen )
 {
+	DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
+	if( !_fullscreen )
+	{
+		dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
+	}
+	else
+	{
+		dwStyle |= WS_POPUP;
+	}
 
+	::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
+
+	m_listener->onWindowMovedOrResized();
 }
 //////////////////////////////////////////////////////////////////////////
 SystemDLLInterface* WinApplication::loadSystemDLL( const char* _dll )

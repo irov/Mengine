@@ -52,6 +52,7 @@ m_sourceNamesNum(0)
 		m_sourceNames[m_sourceNamesNum].name = sourceName;
 	}
 	m_sources.reserve(MAX_SOUND_SOURCES);
+	::alutInitWithoutContext(NULL, NULL);
 //	m_buffers.reserve(100);
 	/*ALuint t;
 	for(int i=0; i < 30; i++)
@@ -101,6 +102,7 @@ ALSoundSystem::~ALSoundSystem()
 	for(unsigned int i = 0; i < m_sources.size(); i++)
 		delete m_sources[i];
 
+	::alutExit();
 	alcMakeContextCurrent(NULL);
 	alcDestroyContext(m_context);
 	alcCloseDevice(m_device);
@@ -167,17 +169,19 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 		ALsizei size,freq;
 		ALenum format;
 		ALvoid *data = NULL;
-		ALboolean loop;
 
 		bool done = false;
 
 		if( !strcmp( _filename + (strlen(_filename) - 4), ".wav" ) )
 		{
-			alutLoadWAVFile((ALbyte*)_filename, &format, &data, &size, &freq, &loop);
+			ALfloat frequency;
+			data = alutLoadMemoryFromFile( _filename, &format, &size, &frequency);
+			freq = frequency;
+			//buffer->setBufferName( alutCreateBufferFromFile( _filename ) ); 
 
 			if( data )
 			{
-				buffer->setLenghtMs(size * 1000 / (freq * GetSampleSize(format) ));
+				buffer->setLenghtMs(size * 1000 / (frequency * GetSampleSize(format) ));
 			}
 			else
 			{
@@ -229,7 +233,8 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 		if(data) 
 		{
 			alBufferData( buffer->getBufferName(), format, data, size, freq );
-			free(data);
+			//if ( alGetError() != AL_FALSE ) printf("ALERROR!\n");
+			//free(data);
 		} 
 	}
 	return buffer;
@@ -240,11 +245,13 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buff
 	ALsizei size,freq;
 	ALenum format;
 	ALvoid *data = NULL;
-	ALboolean loop;
+	ALfloat ffreq;
 
 	//if( !strcmp( _filename + (strlen(_filename) - 4), ".wav" ) )
 	{
-		alutLoadWAVMemory((ALbyte*)_buffer, &format, &data, &size, &freq, &loop);
+		//alutLoadWAVMemory((ALbyte*)_buffer, &format, &data, &size, &freq, &loop);
+		alutLoadMemoryFromFileImage( _buffer, _size, &format, &size, &ffreq );
+		freq = ffreq;
 	}
 
 	if(data) 
@@ -271,7 +278,7 @@ void    ALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 	}
 }
 
-void ALSoundSystem::update()
+void ALSoundSystem::update( float _timing )
 {
 	for(unsigned int i = 0; i < m_streams.size(); i++)
 	{
@@ -279,6 +286,21 @@ void ALSoundSystem::update()
 	}
 
 	m_sulk->update();
+
+	for( TSourcesMap::iterator it = m_playingSources.begin(),
+			it_end = m_playingSources.end(); it != it_end; /* empty */ )
+	{
+		it->second -= _timing;
+		if( it->second <= 0 )
+		{
+			it->first->stop();
+			m_playingSources.erase( it++ );
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
 
 bool ALSoundSystem::setBlow( bool _active )
@@ -407,7 +429,7 @@ void Swap(short &s1, short &s2)
 	s1 = s2;
 	s2 = sTemp;
 }
-
+//////////////////////////////////////////////////////////////////////////
 unsigned int GetSampleSize(ALenum format) 
 {
   switch(format) 
@@ -426,7 +448,7 @@ unsigned int GetSampleSize(ALenum format)
       return 0;
   }
 }
-
+//////////////////////////////////////////////////////////////////////////
 TALSourceName* ALSoundSystem::getFreeSourceName()
 {
 	for(int i = 0; i < m_sourceNamesNum; i++)
@@ -449,3 +471,9 @@ TALSourceName* ALSoundSystem::getFreeSourceName()
 	
 	return 0;
 }
+//////////////////////////////////////////////////////////////////////////
+void ALSoundSystem::registerPlaying( ALSoundSource* _source, float _timeMs )
+{
+	m_playingSources[_source] = _timeMs;
+}
+//////////////////////////////////////////////////////////////////////////

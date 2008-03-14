@@ -24,6 +24,8 @@ namespace Menge
 		, m_interface(0)
 		, m_isHeadMode(false)
 		, m_listener(0)
+		, m_volume( 1.0f )
+		, m_looped( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -59,6 +61,7 @@ namespace Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourcename );
 			XML_CASE_ATTRIBUTE_NODE( "HeadMode", "Value", m_isHeadMode );
+			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looped );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -98,6 +101,7 @@ namespace Menge
 			return false;
 		}
 
+		m_interface->setLooped( m_looped );
 		Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
 		return true;
 	}
@@ -171,18 +175,25 @@ namespace Menge
 	void SoundEmitter::setVolume( float _volume )
 	{
 		//float soundSourceVol = _volume * Holder<SoundEngine>::hostage()->getSoundSourceVolume();
-		float commonVol = _volume * Holder<SoundEngine>::hostage()->getCommonVolume();
+		m_volume = _volume;
+		float commonVol = m_volume * Holder<SoundEngine>::hostage()->getCommonVolume();
 		return m_interface->setVolume( commonVol );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::updateVolume()
+	{
+		setVolume( m_volume );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEmitter::getVolume()
 	{
-		return m_interface->getVolume();
+		return m_volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setLooped( bool _loop )
 	{
-		return m_interface->setLooped( _loop );
+		m_looped = _loop;
+		return m_interface->setLooped( m_looped );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::isLooping()

@@ -72,8 +72,12 @@ void OgreEntity::setSubEntityMaterial( const std::string & _subEntity, const std
 //////////////////////////////////////////////////////////////////////////
 void OgreEntity::createRenderToTexture( const char* _cameraName, int _width, int _height )
 {
-	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().createManual( Ogre::String("rtt") + Ogre::String( _cameraName ), "Default", Ogre::TEX_TYPE_2D,
-		_width, _height, 0, 0, Ogre::PF_X8R8G8B8, Ogre::TU_RENDERTARGET, NULL );
+	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().getByName( Ogre::String("rtt") + Ogre::String( _cameraName ) );
+	if( texture.isNull() )
+	{
+		texture = Ogre::TextureManager::getSingleton().createManual( Ogre::String("rtt") + Ogre::String( _cameraName ), "Default", Ogre::TEX_TYPE_2D,
+			_width, _height, 0, 0, Ogre::PF_X8R8G8B8, Ogre::TU_RENDERTARGET, NULL );
+	}
 	Ogre::Camera* rttCam = NULL;
 	if( !m_sceneMgr->hasCamera( _cameraName ) )
 	{
@@ -83,11 +87,16 @@ void OgreEntity::createRenderToTexture( const char* _cameraName, int _width, int
 	{
 		rttCam = m_sceneMgr->getCamera( _cameraName );
 	}
+	texture->getBuffer()->getRenderTarget()->removeAllViewports();
 	texture->getBuffer()->getRenderTarget()->addViewport( rttCam );
 	texture->getBuffer()->getRenderTarget()->setActive( false );
-	Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().create( Ogre::String("rttMat") + Ogre::String( _cameraName ), "Default" );
-	Ogre::TextureUnitState* t = mat->getTechnique(0)->getPass(0)->createTextureUnitState( Ogre::String("rtt") + Ogre::String( _cameraName ) );
-	t->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+	Ogre::MaterialManager::ResourceCreateOrRetrieveResult mresult = Ogre::MaterialManager::getSingleton().createOrRetrieve( Ogre::String("rttMat") + Ogre::String( _cameraName ), "Default" );
+	Ogre::MaterialPtr mat = mresult.first;
+	if( mresult.second )
+	{
+		Ogre::TextureUnitState* t = mat->getTechnique(0)->getPass(0)->createTextureUnitState( Ogre::String("rtt") + Ogre::String( _cameraName ) );
+		t->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+	}
 	m_entity->setMaterialName( Ogre::String("rttMat") + Ogre::String( _cameraName ) );
 }
 //////////////////////////////////////////////////////////////////////////
@@ -101,6 +110,66 @@ void OgreEntity::getAABB( float * _min, float * _max ) const
 	_max[0] = aabb.getMaximum().x;
 	_max[1] = aabb.getMaximum().y;
 	_max[2] = aabb.getMaximum().z;
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreEntity::setAnimationEnabled( const char* _animName, bool _enabled )
+{
+	m_entity->getAnimationState( _animName )->setEnabled( _enabled );
+}
+//////////////////////////////////////////////////////////////////////////
+bool OgreEntity::getAnimationEnabled( const char* _animName )
+{
+	return m_entity->getAnimationState( _animName )->getEnabled();
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreEntity::setAnimationTimePosition( const char* _animName, float _timePos )
+{
+	m_entity->getAnimationState( _animName )->setTimePosition( _timePos );
+}
+//////////////////////////////////////////////////////////////////////////
+float OgreEntity::getAnimationTimePosition( const char* _animName )
+{
+	return m_entity->getAnimationState( _animName )->getTimePosition();
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreEntity::setAnimationLength( const char* _animName, float _length )
+{
+	m_entity->getAnimationState( _animName )->setLength( _length );
+}
+//////////////////////////////////////////////////////////////////////////
+float OgreEntity::getAnimationLength( const char* _animName )
+{
+	return m_entity->getAnimationState( _animName )->getLength();
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreEntity::setAnimationWeight( const char* _animName, float _weight )
+{
+	m_entity->getAnimationState( _animName )->setWeight( _weight );
+}
+//////////////////////////////////////////////////////////////////////////
+float OgreEntity::getAnimationWeigth( const char* _animName )
+{
+	return m_entity->getAnimationState( _animName )->getWeight();
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreEntity::animationAddTime( const char* _animName, float _time )
+{
+	m_entity->getAnimationState( _animName )->addTime( _time / 1000.0f );
+}
+//////////////////////////////////////////////////////////////////////////
+bool OgreEntity::animationHasEnded( const char* _animName )
+{
+	return m_entity->getAnimationState( _animName )->hasEnded();
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreEntity::animationSetLooped( const char* _animName, bool _looped )
+{
+	m_entity->getAnimationState( _animName )->setLoop( _looped );
+}
+//////////////////////////////////////////////////////////////////////////
+bool OgreEntity::animationGetLooped( const char* _animName )
+{
+	return m_entity->getAnimationState( _animName )->getLoop();
 }
 //////////////////////////////////////////////////////////////////////////
 /*bool OgreEntity::hasSkeleton() const 

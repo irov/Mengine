@@ -14,6 +14,8 @@
 
 #	include "SceneNode3D.h"
 
+#	include "Interface/RenderSystemInterface.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -22,40 +24,26 @@ namespace	Menge
 	RigidBody3D::RigidBody3D()
 		: m_active(true)
 		, m_density(0.0f)
-		, m_interface(0)
+		, m_physInterface(0)
 		, m_resource(0)
 	{}	
 	//////////////////////////////////////////////////////////////////////////
 	RigidBody3D::~RigidBody3D()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody3D::setPosition( const mt::vec3f & _position )
-	{
-		//m_interface->setPosition( _position.x, _position.y, _position.z );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RigidBody3D::setOrientation( const mt::quatf & _quat )
-	{
-		//m_interface->setOrient( _quat.w, _quat.x, _quat.y, _quat.z );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::_update( float _timing )
 	{
-		assert(0);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & RigidBody3D::getPosition()
-	{
-		return *(mt::vec3f*)m_interface->getPosition();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::quatf & RigidBody3D::getOrientation()
-	{
-		return *(mt::quatf*)m_interface->getOrient();
+		const float* pos = m_physInterface->getPosition();
+		m_interface->setLocalPosition( pos );
+
+		const float* orient = m_physInterface->getOrient();
+		m_interface->setLocalOrient( orient );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::loader( XmlElement * _xml )
 	{
+		SceneNode3D::loader(_xml); // надо?
+
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE("GeometryResource", "Name", m_resourcename );
@@ -75,6 +63,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody3D::_compile()
 	{
+		SceneNode3D::_compile();
+
 		m_resource = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourcePhysicGeometry>( m_resourcename );
@@ -86,7 +76,13 @@ namespace	Menge
 
 		const GeometryInterface * geometry = m_resource->getGeometry(0);
 
-		m_interface = Holder<PhysicEngine>::hostage()->createRigidBody( m_density, m_active, geometry );
+		m_physInterface = Holder<PhysicEngine>::hostage()->createRigidBody( m_density, m_active, geometry );
+
+		const mt::vec3f & position = getWorldPosition();
+		m_physInterface->setPosition(position.x, position.y, position.z);
+
+		const mt::quatf & orient = getWorldOrient();
+		m_physInterface->setOrient(orient.w,orient.x,orient.y,orient.z);
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -97,42 +93,42 @@ namespace	Menge
 
 		m_resource = 0;
 
-		Holder<PhysicEngine>::hostage()->removeRigidBody( m_interface );
+		Holder<PhysicEngine>::hostage()->removeRigidBody( m_physInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::applyImpulse( const mt::vec3f & _vec )
 	{
-		m_interface->applyImpulse( _vec.x, _vec.y, _vec.z );
+		m_physInterface->applyImpulse( _vec.x, _vec.y, _vec.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::applyAngularImpulse( const mt::vec3f & _vec )
 	{
-		m_interface->applyAngularImpulse( _vec.x, _vec.y, _vec.z );
+		m_physInterface->applyAngularImpulse( _vec.x, _vec.y, _vec.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::applyForce( const mt::vec3f & _vec )
 	{
-		m_interface->applyForce( _vec.x, _vec.y, _vec.z );
+		m_physInterface->applyForce( _vec.x, _vec.y, _vec.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::applyTorque( const mt::vec3f & _vec )
 	{
-		m_interface->applyTorque( _vec.x, _vec.y, _vec.z );
+		m_physInterface->applyTorque( _vec.x, _vec.y, _vec.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::setLinearVelocity( const mt::vec3f & _vec )
 	{
-		m_interface->setLinearVelocity( _vec.x, _vec.y, _vec.z );
+		m_physInterface->setLinearVelocity( _vec.x, _vec.y, _vec.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::setAngularVelocity( const mt::vec3f & _vec )
 	{
-		m_interface->setAngularVelocity( _vec.x, _vec.y, _vec.z );
+		m_physInterface->setAngularVelocity( _vec.x, _vec.y, _vec.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::setActive( bool _active )
 	{
-		m_interface->setActive( _active );
+		m_physInterface->setActive( _active );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -4,19 +4,18 @@
 		<Restitution Value = "0.2" />
 		<StaticFriction Value = "0.7" />
 		<DynamicFriction Value = "0.7" />
-		
-		<RigidBodies>
-			<RigidBody Name = "LevelPhysicBody">
-              			<GeometryResource Name = "ResourceLevelGeometry"/>
-				<Active Value = "0"/>
-				<Density Value = "0"/>
-			</RigidBody>
-			<RigidBody Name = "BarrelPhysicBody">
-              			<GeometryResource Name = "ResourceBarrelGeometry"/>
-				<Active Value = "1"/>
-				<Density Value = "100"/>
-			</RigidBody>
-		</RigidBodies>
+
+		<Node Name = "LevelPhysicBody" Type = "RigidBody3D">
+			<Transformation>
+				<Scale Value = "1;1;1" />
+       				<Position Value = "0;0;0" />
+       				<Rotation Value ="0;0;0;1" />
+			</Transformation>
+
+          		<GeometryResource Name = "ResourceLevelGeometry"/>
+			<Active Value = "0"/>
+			<Density Value = "0"/>
+		</Node>
 
 		<Node Name = "LevelNode" Type = "DiscreteEntity">
 			<Transformation>
@@ -43,8 +42,6 @@
 			</Transformation>
 			<ResourceMesh Name = "TestZombie"/>
 		</Node>
-
-	
 	</Node>
 
 </Scene>

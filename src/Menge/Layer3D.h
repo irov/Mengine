@@ -8,7 +8,6 @@ namespace Menge
 	class Light;
 	class Entity3d;
 	class SceneNode3D;
-	class RigidBody3D;
 	class CapsuleController;
 
 	class Layer3D
@@ -22,9 +21,6 @@ namespace Menge
 		virtual ~Layer3D();
 
 	public:
-		void addRigidBody( RigidBody3D * _rigidBody );
-		RigidBody3D * getRigidBody( const std::string & _name );
-
 		void addController( CapsuleController * _capsule );
 		CapsuleController * getController( const std::string & _name );
 
@@ -32,7 +28,6 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml ) override;
-		void loaderRigidBodies_( XmlElement * _xml );
 		void loaderControllers_( XmlElement * _xml );
 
 		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) override;
@@ -57,10 +52,8 @@ namespace Menge
 		float m_staticFriction; 
 		float m_dynamicFriction;
 
-		typedef std::map<std::string,RigidBody3D* > TMapRigidBody;
 		typedef std::map<std::string,CapsuleController* > TMapControllers;
 
-		TMapRigidBody	m_mapRigidBodies;
 		TMapControllers m_mapControllers;
 
 		void setPhysicParams_();

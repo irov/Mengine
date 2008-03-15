@@ -13,32 +13,15 @@ class Scene( Menge.Scene ):
 		pass
 
 	def onActivate( self ):
-		'''
-		#and there 3d is starting...
-		self.scene = self.getNode("Scene");
-		
-		self.levelPhysicBody = self.layer3d.getRigidBody("LevelPhysicBody");
-		'''
 		self.player.playAnimation("Idle00")
 		pass
 
 	def onUpdate( self, timing ):
-		'''
-		self.zombieActor.update(timing)
-
-		self.FreeCam.update(timing)
-
-		if self.isMouseDown == True:
-			self.FreeCam.set2Direction( Menge.getMouseX(), Menge.getMouseY() )
-		pass
-		'''
-
 		pass
 
 	def onHandleMouseButtonEvent( self, botton, isDown ):
 		if isDown == True:
 			print "left pressed"
-			self.FreeCam.set2Direction( Menge.getMouseX(), Menge.getMouseY() )
 			self.isMouseDown = True
 		else:
 			print "left unpressed"
@@ -52,34 +35,6 @@ class Scene( Menge.Scene ):
 
 		if key == 2:
 			self.player.playAnimation("Idle00")
-
-		if key == 17:
-			self.FreeCam.forward(2)
-
-		if key == 30:
-			self.FreeCam.left(-2)
-
-		if key == 32:
-			self.FreeCam.left(2)
-
-		if key == 31:
-			self.FreeCam.forward(-2)
-
-		if key == 23:
-			self.zombieActor.step( Menge.vec3f( 0, 0, -1 ) )
-
-		if key == 37:
-			self.zombieActor.step( Menge.vec3f( 0, 0, 1 ) )
-
-		if key == 36:
-			self.zombieActor.step( Menge.vec3f( -1, 0, 0 ) )
-
-		if key == 38:
-			self.zombieActor.step( Menge.vec3f( 1, 0, 0 ) )
-		
-		#if isDown == False:
-		#	self.zombieActor.stop()
-		#	return False
 
 		if key == 200:
 			if isDown == True:

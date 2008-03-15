@@ -84,11 +84,6 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "StaticFriction", "Value", m_staticFriction );
 			XML_CASE_ATTRIBUTE_NODE( "DynamicFriction", "Value", m_dynamicFriction );
 		
-			XML_CASE_NODE("RigidBodies")
-			{
-				XML_PARSE_ELEMENT( this, &Layer3D::loaderRigidBodies_ );
-			}
-
 			XML_CASE_NODE("Controllers")
 			{
 				XML_PARSE_ELEMENT( this, &Layer3D::loaderControllers_ );
@@ -108,59 +103,16 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::_deactivate()
 	{
-		for( TMapRigidBody::iterator
-			it = m_mapRigidBodies.begin(),
-			it_end = m_mapRigidBodies.end();
-		it != it_end;
-		++it)
-		{
-			it->second->deactivate();
-		}
-
 		callMethod( "onDeactivate", "() ");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::_release()
 	{
-		for( TMapRigidBody::iterator
-			it = m_mapRigidBodies.begin(),
-			it_end = m_mapRigidBodies.end();
-		it != it_end;
-		++it)
-		{
-			it->second->release();
-			delete it->second;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::_addChildren( SceneNode3D * _node )
 	{
 		_node->attachToRootNode();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::loaderRigidBodies_( XmlElement * _xml )
-	{
-		std::string name;
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE("RigidBody")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-				}
-
-				RigidBody3D * body = new RigidBody3D();
-
-				body->setName( name );
-				body->setType( "RigidBody3D" );
-
-				addRigidBody( body );
-
-				XML_PARSE_ELEMENT( body, &RigidBody3D::loader );
-			}
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::loaderControllers_( XmlElement * _xml )
@@ -185,18 +137,6 @@ namespace	Menge
 
 				XML_PARSE_ELEMENT( capsule, &CapsuleController::loader );
 			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::addRigidBody( RigidBody3D * _rigidBody )
-	{
-		const std::string & name = _rigidBody->getName();
-
-		TMapRigidBody::iterator it_find = m_mapRigidBodies.find( name );
-
-		if( it_find == m_mapRigidBodies.end() )
-		{
-			m_mapRigidBodies.insert( std::make_pair( name, _rigidBody ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -226,22 +166,6 @@ namespace	Menge
 		cap->activate();
 
 		return cap;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RigidBody3D * Layer3D::getRigidBody( const std::string & _name )
-	{
-		TMapRigidBody::const_iterator it_find = m_mapRigidBodies.find( _name );
-
-		if( it_find == m_mapRigidBodies.end() )
-		{
-			return NULL;
-		}
-
-		RigidBody3D * body = it_find->second;
-
-		body->activate();
-
-		return body;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::setPhysicParams_()

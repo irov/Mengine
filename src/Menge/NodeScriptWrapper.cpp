@@ -532,8 +532,6 @@ namespace Menge
 			pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
 				//.def( "addCamera", &Layer3D::addCamera )
 				//.def( "getCamera", &Layer3D::getCamera )	
-				.def( "addRigidBody", &Layer3D::addRigidBody )
-				.def( "getRigidBody", &Layer3D::getRigidBody )
 				.def( "addController", &Layer3D::addController )
 				.def( "getController", &Layer3D::getController )		
 				.def( "getNode", &Layer3D::getNode )
@@ -547,10 +545,6 @@ namespace Menge
 				.def( "setLinearVelocity", &RigidBody3D::setLinearVelocity )
 				.def( "setAngularVelocity", &RigidBody3D::setAngularVelocity )
 				.def( "setActive", &RigidBody3D::setActive )
-				.def( "getPosition", &RigidBody3D::getPosition )
-				.def( "getOrientation", &RigidBody3D::getOrientation )
-				.def( "setPosition", &RigidBody3D::setPosition )
-				.def( "setOrientation", &RigidBody3D::setOrientation )
 				;
 
 			pybind::proxy_<CapsuleController, pybind::bases<Node>>("CapsuleController", false)

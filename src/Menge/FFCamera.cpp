@@ -7,8 +7,6 @@
 
 namespace Menge
 {
-	mt::quatf orient(1,0,0,0);
-
 	FFCamera3D::FFCamera3D()
 	: m_actor(0)
 	, m_yawAngle(0)
@@ -19,22 +17,22 @@ namespace Menge
 	, m_transOrient(1.f,0.f,0.f,0.f)
 	{
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	FFCamera3D::~FFCamera3D()
 	{}
-
+	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::setActor(Actor * _actor)
 	{
 		m_actor = _actor;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::update(float _timing)
 	{
 		m_yawAngle = 0;
 		m_pitchAngle = 0;
 		m_translate = mt::vec3f::zero_v3;
 	}
-	
+	//////////////////////////////////////////////////////////////////////////	
 	void FFCamera3D::_updateCamera( bool _isOrient )
 	{
 		m_interface->yaw(m_yawAngle);
@@ -57,31 +55,31 @@ namespace Menge
 		m_yawAngle = _yaw;
 		_updateCamera();
 	}
-	//
+	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::pitch( float _pitch )
 	{
 		m_pitchAngle = _pitch;
 		_updateCamera();
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::forward( float s )
 	{
 		m_translate.z += s;
 		_updateCamera();
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::zoom( float _dist )
 	{
 		m_interface->translate(mt::vec3f(_dist,_dist,_dist).m);
 		_updateCamera();
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::left( float s )
 	{
 		m_translate.x+=s;
 		_updateCamera();
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	bool FFCamera3D::activate()
 	{
 		std::string m_name = "FreeCamera";
@@ -96,8 +94,9 @@ namespace Menge
 		m_interface->setPosition(0, 37, 38 );
 
 		mt::vec3f pos = *(mt::vec3f*)m_interface->getPosition();
-		m_interface->lookAt(pos.x,pos.y - 15,pos.z-1);
+		m_interface->lookAt(pos.x,pos.y - 15,pos.z-0.001);
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -1,9 +1,10 @@
 #	pragma once
 
-#	include "NodeSinglethon.h"
+#	include "SceneNode3D.h"
 #	include "math/quat.h"
 
 class RigidBodyInterface;
+class SceneNodeInterface;
 
 namespace Menge
 {
@@ -11,7 +12,7 @@ namespace Menge
 	class ResourcePhysicGeometry;
 
 	class RigidBody3D
-		: public NodeSinglethon
+		: public SceneNode3D
 	{
 		OBJECT_DECLARE( RigidBody3D )
 
@@ -27,12 +28,6 @@ namespace Menge
 		void setAngularVelocity( const mt::vec3f & _vec );
 		void setActive( bool _active );
 
-		void setPosition( const mt::vec3f & _position );
-		void setOrientation( const mt::quatf & _quat );
-
-		const mt::vec3f & getPosition();
-		const mt::quatf & getOrientation();
-
 	public:
 		void loader( XmlElement * _xml ) override;
 	
@@ -47,7 +42,7 @@ namespace Menge
 		bool m_active;
 		float m_density;
 
-		RigidBodyInterface * m_interface;
+		RigidBodyInterface * m_physInterface;
 
 		std::string m_resourcename;
 		ResourcePhysicGeometry * m_resource;

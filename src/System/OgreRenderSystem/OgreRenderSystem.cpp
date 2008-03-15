@@ -206,6 +206,7 @@ bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, b
 	sceneCam->lookAt( 0.0f, 0.0f, 0.0f );
 	sceneCam->setFarClipDistance( 1000.0f );
 	sceneCam->setNearClipDistance( 0.2f );
+	//sceneCam->setFOVy(90);
 	m_viewport = m_renderWindow->addViewport( sceneCam );
 	//m_viewport->setBackgroundColour( Ogre::ColourValue::White );
 

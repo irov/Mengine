@@ -53,7 +53,7 @@ namespace Menge
 	//
 	void FFCamera3D::yaw( float _yaw )
 	{
-		rotate_q(m_transOrient,mt::vec3f(0,1,0),_yaw);
+		mt::rotate_q(m_transOrient, mt::vec3f(0,1,0), _yaw);
 		m_yawAngle = _yaw;
 		_updateCamera();
 	}
@@ -96,7 +96,7 @@ namespace Menge
 		m_interface->setPosition(0, 37, 38 );
 
 		mt::vec3f pos = *(mt::vec3f*)m_interface->getPosition();
-		m_interface->lookAt(pos.x,pos.y - 15,pos.z);
+		m_interface->lookAt(pos.x,pos.y - 15,pos.z-1);
 
 		return true;
 	}

@@ -3,7 +3,7 @@
 		<Transformation>
 			<Scale Value = "1;7.17;1" />
 	  		<Position Value = "0;0;0" />
-       			<Rotation Value ="1;0;0;0" />
+       			<Rotation Value ="0;0;0;1" />
 		</Transformation>
 		<ResourceMesh Name = "TestZombie" />
 	</Node>

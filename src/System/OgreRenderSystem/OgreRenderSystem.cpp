@@ -202,7 +202,7 @@ bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, b
 	Ogre::Camera* sceneCam = m_sceneMgr->createCamera("defaultCamera");
 	//sceneCam->setPosition( -8.0f, 300.0f, 200.0f );
 	//sceneCam->lookAt( -8.0f, 0.0f, 20.0f );
-	sceneCam->setPosition( 0.0f, 0.0f, 0.0f );
+	sceneCam->setPosition( 0.0f, 10.0f, 10.0f );
 	sceneCam->lookAt( 0.0f, 0.0f, 0.0f );
 	sceneCam->setFarClipDistance( 1000.0f );
 	sceneCam->setNearClipDistance( 0.2f );

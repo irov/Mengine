@@ -56,6 +56,7 @@ FileDataInterface *	OgreFileSystem::openFile( const char * _filename )
 {
 	OgreFileData * fileData = 0;
 
+	printf("OgreFileSystem: opening file %s\n", _filename );
 	if( m_arch->exists( _filename ) == false )
 	{
 		printf( "OgreFileSystem::openFile: %s is not exists\n", _filename );

@@ -82,7 +82,7 @@ namespace	Menge
 				//printf("filt pos = %f; %f; %f\n",v.x,v.y,v.z);
 
 				float* fpos = m_controller->getFilteredPosition();
-				this->setLocalPosition( mt::vec3f( fpos[0], fpos[1], fpos[2] ) );
+				this->setLocalPosition( mt::vec3f( fpos[0], fpos[1] - 0.8f, fpos[2] ) );
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace	Menge
 		m_interface->attachEntity( m_entity );
 
 		// Creating physics controller
-		m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( getWorldPosition(), 0.5f, 2.0f );
+		m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( getWorldPosition() + mt::vec3f( 0.0f, 0.8f, 0.0f ), 0.3f, 1.0f );
 
 		this->callMethod("onCompile", "()" );
 

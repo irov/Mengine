@@ -6,6 +6,8 @@
 
 #	include "Stream.h"
 
+#	include <istream>
+#	include <ostream>
 /*
 	_verts - pointer vertices
 	_numVertices - number of vertices
@@ -14,6 +16,9 @@
 	_numTriangles - number of triangles
 	_is32bit - is 32 bit indecies?
 */
+
+std::string inname = "";
+std::string outname = "";
 
 void cookConcave( const void * _verts, int _numVertices, int _stride, const void * _indecies, int _numTriangles, bool _is32bit )
 {
@@ -38,7 +43,7 @@ void cookConcave( const void * _verts, int _numVertices, int _stride, const void
 
 	NxInitCooking();
 
-	bool status = NxCookTriangleMesh(triMeshDesc, UserStream("level.bin", false));
+	bool status = NxCookTriangleMesh(triMeshDesc, UserStream(outname.c_str(), false));
 
 	assert(status);
 
@@ -90,9 +95,15 @@ void	main()
 
 	Ogre::RenderWindow * m_renderWindow = m_root->createRenderWindow( "Menge", 320, 240, 0 );
 
-	Ogre::MeshManager::getSingleton().load("col.mesh","Default");
+	std::cout<<"Ogre Mesh: \n";
+	std::cin>>inname;
 
-	Ogre::MeshPtr mesh = (Ogre::MeshPtr)Ogre::MeshManager::getSingleton().getByName("col.mesh");
+	std::cout<<"PhysX Mesh: \n";
+	std::cin>>outname;
+
+	Ogre::MeshManager::getSingleton().load(inname,"Default");
+
+	Ogre::MeshPtr mesh = (Ogre::MeshPtr)Ogre::MeshManager::getSingleton().getByName(inname);
 
 	assert(mesh->getSubMeshNameMap().size() == 1);
 

@@ -18,7 +18,7 @@ namespace	Menge
 
 	//////////////////////////////////////////////////////////////////////////
 	Camera3D::Camera3D()
-	: m_interface(0)
+	: m_camera( NULL )
 	, m_near(10.0f)
 	, m_far(1000.0f)
 	, m_position(0.f, 0.f, 0.f)
@@ -32,7 +32,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Camera3D::~Camera3D()
 	{
-		Holder<RenderEngine>::hostage()->releaseCamera( m_interface );
+		Holder<RenderEngine>::hostage()->releaseCamera( m_camera );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string & Camera3D::getName()
@@ -42,42 +42,42 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::lookAt(const mt::vec3f& _targetPoint)
 	{
-		m_interface->lookAt(_targetPoint.x, _targetPoint.y, _targetPoint.z);
+		m_camera->lookAt(_targetPoint.x, _targetPoint.y, _targetPoint.z);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::setPosition(const mt::vec3f& _pos)
 	{
-		m_interface->setPosition(_pos.x, _pos.y, _pos.z);
+		m_camera->setPosition(_pos.x, _pos.y, _pos.z);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::setNear( float _dist )
 	{
-		m_interface->setNearClipDistance(_dist);
+		m_camera->setNearClipDistance(_dist);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::setFar( float _dist )
 	{
-		m_interface->setFarClipDistance(_dist);
+		m_camera->setFarClipDistance(_dist);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::setAspect( float _aspect )
 	{
-		m_interface->setAspectRatio(_aspect);
+		m_camera->setAspectRatio(_aspect);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::yaw( float _angle )
 	{
-		m_interface->yaw(_angle);
+		m_camera->yaw(_angle);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::pitch( float _angle )
 	{
-		m_interface->pitch(_angle);
+		m_camera->pitch(_angle);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::roll( float _angle )
 	{
-		m_interface->roll(_angle);
+		m_camera->roll(_angle);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::loader( XmlElement * _xml )
@@ -96,7 +96,7 @@ namespace	Menge
 	{
 
 		m_name = "MainCamera";
-		m_interface = Holder<RenderEngine>::hostage()->createCamera(
+		m_camera = Holder<RenderEngine>::hostage()->createCamera(
 			m_name );
 
 		this->setAspect( m_aspect );

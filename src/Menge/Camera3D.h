@@ -39,7 +39,7 @@ namespace Menge
 
 	private:
 
-		CameraInterface * m_interface;
+		CameraInterface * m_camera;
 		
 		float m_aspect;
 		float m_near;

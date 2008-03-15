@@ -152,6 +152,7 @@ namespace Menge
 		}
 
 		//Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
+		//printf("playing %s looped = %d\n", m_resourcename.c_str(), m_looped );
 		return m_interface->play();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -162,6 +163,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::stop()
 	{
+		//printf("stopping %s\n", m_resourcename.c_str());
 		m_interface->stop();	
 		//Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
 		return ;

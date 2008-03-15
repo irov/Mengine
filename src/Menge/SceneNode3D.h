@@ -59,7 +59,7 @@ namespace Menge
 		SceneNodeInterface * m_interface;
 
 	private:
-		Camera3D * m_camera;
+		//Camera3D * m_camera;
 
 		void render();
 		bool isRenderable();

@@ -53,6 +53,7 @@ m_sourceNamesNum(0)
 	}
 	m_sources.reserve(MAX_SOUND_SOURCES);
 	::alutInitWithoutContext(NULL, NULL);
+	m_deletingSources.reserve(MAX_SOUND_SOURCES);
 //	m_buffers.reserve(100);
 	/*ALuint t;
 	for(int i=0; i < 30; i++)
@@ -287,18 +288,20 @@ void ALSoundSystem::update( float _timing )
 
 	m_sulk->update();
 
+	for( TSourceVector::iterator it = m_deletingSources.begin(), 
+			it_end = m_deletingSources.end(); it != it_end; it++ )
+	{
+		m_playingSources.erase( (*it) );
+	}
+	m_deletingSources.clear();
+
 	for( TSourcesMap::iterator it = m_playingSources.begin(),
-			it_end = m_playingSources.end(); it != it_end; /* empty */ )
+			it_end = m_playingSources.end(); it != it_end; it++ )
 	{
 		it->second -= _timing;
 		if( it->second <= 0 )
 		{
 			it->first->stop();
-			m_playingSources.erase( it++ );
-		}
-		else
-		{
-			++it;
 		}
 	}
 }
@@ -475,5 +478,10 @@ TALSourceName* ALSoundSystem::getFreeSourceName()
 void ALSoundSystem::registerPlaying( ALSoundSource* _source, float _timeMs )
 {
 	m_playingSources[_source] = _timeMs;
+}
+//////////////////////////////////////////////////////////////////////////
+void ALSoundSystem::unregisterPlaying( ALSoundSource* _source )
+{
+	m_deletingSources.push_back( _source );
 }
 //////////////////////////////////////////////////////////////////////////

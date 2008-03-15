@@ -67,17 +67,20 @@ public:
 	void	addStream( ALSoundBufferStream* _stream );
 	void	removeStream( ALSoundBufferStream* _stream );
 	void registerPlaying( ALSoundSource* _source, float _timeMs );
+	void unregisterPlaying( ALSoundSource* _source );
 
 private:
 	TALSourceName m_sourceNames[MAX_SOURCENAMES_NUM];
 	int m_sourceNamesNum;
-	std::vector<ALSoundSource*>	m_sources;
+	typedef std::vector<ALSoundSource*> TSourceVector;
+	TSourceVector	m_sources;
 	
 	typedef std::vector<ALSoundBufferStream*> TVectorALSoundBufferStream;
 	TVectorALSoundBufferStream m_streams;
 
 	typedef std::map<ALSoundSource*, float> TSourcesMap;
 	TSourcesMap m_playingSources;
+	TSourceVector m_deletingSources;
 
 	float m_soundVelocity;
 	float m_dopplerFactor;

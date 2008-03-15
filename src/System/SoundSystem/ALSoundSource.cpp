@@ -35,18 +35,26 @@ ALSoundSource::ALSoundSource(ALSoundSystem* _soundSystem)
 //////////////////////////////////////////////////////////////////////////
 ALSoundSource::~ALSoundSource()
 {
-	stop();
+	if( m_playing )
+	{
+		stop();
+	}
 	if( m_soundBuffer )
 		m_soundBuffer->removeSource( this );
 }
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSource::play()
 {
-	if( m_playing ) return;
+	if( m_playing ) 
+	{
+		//printf("already playing - returning\n");
+		return;
+	}
 
 	m_sourceName = m_soundSystem->getFreeSourceName();
 	if(!m_sourceName || !m_soundBuffer) 
 	{
+		//printf("no free sourceName or soundBuffer - returning\n");
 		return;
 	}
 
@@ -64,12 +72,16 @@ void ALSoundSource::play()
 	}
 	else
 	{
+		//printf("playing\n");
 		alSourcei( m_sourceName->name, AL_BUFFER, m_soundBuffer->getBufferName() );
+		if( alGetError() != AL_FALSE ) printf("ALERROR!\n");
 		alSourcePlay( m_sourceName->name );
+		if( alGetError() != AL_FALSE ) printf("ALERROR!\n");
 	}
 
 	if( !m_looped )
 	{
+		//printf("register playing %d ms\n", getLengthMs());
 		m_soundSystem->registerPlaying( this, getLengthMs() );
 	}
 	//CreateTimerQueueTimer( &m_stopCallbackHandle, NULL, (WAITORTIMERCALLBACK)ListenStoppedCallback, this, getLengthMs(), 0, WT_EXECUTEONLYONCE );
@@ -88,10 +100,7 @@ void ALSoundSource::pause()
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSource::stop()
 {
-	if( !m_playing )
-	{
-		return;
-	}
+	//printf("stopping\n");
 
 	m_playing = false;
 
@@ -113,7 +122,8 @@ void ALSoundSource::stop()
 	}
 
 	m_sourceName->busy = false;
-	DeleteTimerQueueTimer( NULL, m_stopCallbackHandle, NULL );
+	m_soundSystem->unregisterPlaying( this );
+	//DeleteTimerQueueTimer( NULL, m_stopCallbackHandle, NULL );
 
 	if( m_busy && m_listener )
 	{

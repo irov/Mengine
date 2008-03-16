@@ -20,7 +20,7 @@ namespace	Menge
 	, m_rotateTime(0)
 
 	, m_scale( 1.0f, 1.0f )
-	, m_speed( 0.0f, 0.0f )
+	, m_velocity( 0.0f, 0.0f )
 	, m_acceleration( 0.0f, 0.0f )
 
 	, m_nSpeed( 0.0f, 0.0f )
@@ -49,7 +49,7 @@ namespace	Menge
 			{
 				moveStop();
 			}
-			m_speed = ( _point - _pos ) / _time;
+			m_velocity = ( _point - _pos ) / _time;
 			m_movePoint = _point;
 			if( _changeDirection )
 			{
@@ -179,10 +179,10 @@ namespace	Menge
 		dir = ( _point - pos ) / len;
 		m_nSpeed = dir * _speed;
 
-		float s = mt::dot_v2_v2( m_speed, dir );
-		m_speed = dir * s;
+		float s = mt::dot_v2_v2( m_velocity, dir );
+		m_velocity = dir * s;
 
-		float v = mt::length_v2_v2( m_speed, m_nSpeed );
+		float v = mt::length_v2_v2( m_velocity, m_nSpeed );
 
 		if( v < 0.0001f )
 		{
@@ -209,7 +209,7 @@ namespace	Menge
 		m_moveTime = 2.0f * len / ( m_nSpeed.length() + s );
 		//m_acceleration.x = ( m_nSpeed.x - m_speed.x ) / m_moveTime;
 		//m_acceleration.y = ( m_nSpeed.y - m_speed.y ) / m_moveTime;
-		m_acceleration = ( m_nSpeed - m_speed ) / m_moveTime;
+		m_acceleration = ( m_nSpeed - m_velocity ) / m_moveTime;
 		m_movePoint = _point;
 		m_moveTo = true;
 		m_accelerateTo = true;
@@ -274,7 +274,7 @@ namespace	Menge
 
 				m_moveTo = false;
 				if( m_accelerateTo )
-					m_speed = m_nSpeed;
+					m_velocity = m_nSpeed;
 				m_acceleration.x = 0.0f;
 				m_acceleration.y = 0.0f;
 				m_accelerateTo = false;
@@ -285,11 +285,11 @@ namespace	Menge
 			{
 				m_moveTime -= _timing;
 				
-				mt::vec2f way_offset = m_speed * _timing;// + dir * m_acceleration * _timing * _timing * 0.5f;
+				mt::vec2f way_offset = m_velocity * _timing;// + dir * m_acceleration * _timing * _timing * 0.5f;
 
 				//mt::vec2f dir = m_speed / m_speed.length();
 
-				m_speed += m_acceleration * _timing;
+				m_velocity += m_acceleration * _timing;
 				
 				mt::vec2f & pos = getLocalPositionModify();
 
@@ -412,19 +412,19 @@ namespace	Menge
 		this->callMethod("onRelease", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Entity::getSpeedVec() const
+	void Entity::setVelocity( const mt::vec2f & _velocity )
 	{
-		return m_speed;
+		m_velocity = _velocity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Entity::getSpeed() const
+	const mt::vec2f & Entity::getVelocity() const
 	{
-		return m_speed.length();
+		return m_velocity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::setSpeed( const mt::vec2f& _speed )
+	float Entity::getVelocitySpeed() const
 	{
-		m_speed = _speed;
+		return m_velocity.length();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::loader( XmlElement * _xml )

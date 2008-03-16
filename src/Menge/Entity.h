@@ -24,14 +24,17 @@ namespace Menge
 		void moveStop();
 		void rotateStop();
 		void flip( bool _x, bool _y );
+		
 		void setScale( const mt::vec2f& _scale );
 		const mt::vec2f& getScale() const;
-		const mt::vec2f& getSpeedVec() const;
-		float getSpeed() const;
+
+		void setVelocity( const mt::vec2f& _velocity );
+		const mt::vec2f& getVelocity() const;
+		float getVelocitySpeed() const;
+
 		void scaleTo( float _time, const mt::vec2f& _scale );
 		void scaleStop();
-		void setSpeed( const mt::vec2f& _speed );
-		//void setAcceleration( const mt::vec2f& _acceleration )	{ m_acceleration = _acceleration; }
+		
 		void loader( XmlElement * _xml );
 		void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY );
 
@@ -44,7 +47,7 @@ namespace Menge
 
 
 	protected:
-		mt::vec2f m_speed;
+		mt::vec2f m_velocity;
 		mt::vec2f m_acceleration;
 		//float m_acceleration;
 		float m_acTime;

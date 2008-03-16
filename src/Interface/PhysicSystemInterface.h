@@ -65,6 +65,8 @@ public:
 	virtual void setRestitution( float _value ) = 0;
 	virtual void setStaticFriction( float _value ) = 0;
 	virtual void setDynamicFriction( float _value ) = 0;
+
+	virtual float * getGravity() const = 0;
 public:
 	virtual ControllerInterface * createCapsuleController( float * _startPos, float _initialRadius, float _initialHeight ) = 0;
 	virtual void releaseCapsuleController( ControllerInterface * _capsule ) = 0;

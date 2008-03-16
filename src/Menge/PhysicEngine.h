@@ -23,6 +23,8 @@ namespace Menge
 		void setStaticFriction( float _value );
 		void setDynamicFriction( float _value );
 
+		const mt::vec3f & getGravity() const;
+
 	public:
 		ControllerInterface * createCapsuleController( const mt::vec3f & _startPos, float _initialRadius, float _initialHeight );
 		GeometryInterface * cookConvex( const float * _verts, int _vertexSize );

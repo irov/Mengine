@@ -28,22 +28,16 @@ namespace Menge
 		~Actor();
 
 	public:
-		//
-		//void setController( CapsuleController * _controller );
-		void setRigidBody( RigidBody3D * _rb );
-		//
-	public:
-		void loader( XmlElement * _xml ) override;
-	public:
+		void	setRigidBody( RigidBody3D * _rb );
 
-		void	step( const mt::vec3f & _dir );
-		void	left();
-		void	stop();
+	public:
+		void	loader( XmlElement * _xml ) override;
+	public:
 
 		void	setAnimationEnabled( const std::string& _animName, bool _enable );
-		void	playAnimation( const std::string& _animName );		// enables animation
-		void	pauseAnimation( const std::string& _animName );		// stops playing animation but not disables it
-		void	stopAnimation( const std::string& _animName );		// returns animation to first frame and disables it
+		void	playAnimation( const std::string& _animName );	
+		void	pauseAnimation( const std::string& _animName );
+		void	stopAnimation( const std::string& _animName );	
 		void	stopAllAnimations();
 
 		void	setPhysicControllerEnabled( bool _enabled );
@@ -51,28 +45,24 @@ namespace Menge
 		void	setYawSpeed( float _speed );
 		void	setPitchSpeed( float _speed );
 		void	setRollSpeed( float _speed );
-		//void	
-
-		void _update( float _timing ) override;
+			
 	protected:
-		bool _activate() override;
-		void _deactivate() override;
-		bool _compile() override;
-		void _release() override;
-		
+		bool	_activate() override;
+		void	_deactivate() override;
+		bool	_compile() override;
+		void	_release() override;
+		void	_update( float _timing ) override;
 
 	private:
-		//CapsuleController * m_controller;
-		ControllerInterface* m_controller;
-		RigidBody3D * m_rigidBody;
-		
-		std::string m_resourcenameMesh;
-		EntityInterface* m_entity;
-		SkeletonInterface* m_skeleton;
 
-		mt::quatf m_initOrient;
-		mt::vec3f m_dir;
-		mt::vec3f m_contMovement;
+		RigidBody3D * m_rigidBody;
+
+		ControllerInterface * m_controller;
+		EntityInterface * m_entity;
+		SkeletonInterface * m_skeleton;
+
+		std::string m_resourcename;
+		ResourceMesh * m_resource;
 
 		mt::vec3f m_moveSpeed;
 		float m_yawSpeed;

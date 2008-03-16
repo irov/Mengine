@@ -32,7 +32,10 @@ public:
 	void setRestitution( float _value ) override;
 	void setStaticFriction( float _value ) override;
 	void setDynamicFriction( float _value ) override;
+
+	float * getGravity() const override;
 public:
+
 	ControllerInterface * createCapsuleController( float * _startPos, float _initialRadius, float _initialHeight ) override;
 	void releaseCapsuleController( ControllerInterface * _capsule ) override;
 

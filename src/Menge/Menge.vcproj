@@ -939,51 +939,11 @@
 				Name="SceneNode3D"
 				>
 				<File
-					RelativePath=".\Camera3D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Camera3D.h"
-					>
-				</File>
-				<File
-					RelativePath=".\DiscreteEntity.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\DiscreteEntity.h"
-					>
-				</File>
-				<File
-					RelativePath=".\FFCamera.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\FFCamera.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Light.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Light.h"
-					>
-				</File>
-				<File
 					RelativePath=".\SceneNode3D.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\SceneNode3D.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Skeleton.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Skeleton.h"
 					>
 				</File>
 			</Filter>
@@ -1208,6 +1168,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Camera3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Camera3D.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CapsuleController.cpp"
 				>
 			</File>
@@ -1216,11 +1184,43 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DiscreteEntity.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DiscreteEntity.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FFCamera.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FFCamera.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Light.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Light.h"
+				>
+			</File>
+			<File
 				RelativePath=".\RigidBody3D.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\RigidBody3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Skeleton.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Skeleton.h"
 				>
 			</File>
 		</Filter>

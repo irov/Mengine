@@ -12,7 +12,8 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Light::Light()
-		: m_lightType(LT_POINT)
+		: m_lightInterface(0)
+		, m_lightType(LT_POINT)
 		, m_position(0.f, 0.f, 0.f)
         , m_diffuse(1.0f, 1.0f, 1.0f, 1.0f)
         , m_specular(1.0f, 1.0f, 1.0f, 1.0f)
@@ -95,6 +96,7 @@ namespace	Menge
 	void Light::_release()
 	{
 		Holder<RenderEngine>::hostage()->releaseLight( m_lightInterface );
+		m_lightInterface = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Light::setAttenuation( float _range, float _constant, float _linear, float _quadratic )
@@ -171,7 +173,7 @@ namespace	Menge
 	{
 		return m_lightInterface->setDirection(_x,_y,_z);
 	}
-	// ןמ טהוט קונוח SceneNode 
+	// ןמ טהוט קונוח SceneNode, ץמעÿ??
 	//////////////////////////////////////////////////////////////////////////
 /*	void Light::setPosition( float _x, float _y, float _z )
 	{

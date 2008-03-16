@@ -41,6 +41,13 @@ NovodexPhysicSystem::~NovodexPhysicSystem()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
+float * NovodexPhysicSystem::getGravity() const
+{
+	static NxVec3 g(0,0,0);
+	m_scene->getGravity(g);
+	return g.get();
+}
+//////////////////////////////////////////////////////////////////////////
 void NovodexPhysicSystem::init(float gx, float gy, float gz) 
 {
 	m_physicsSDK = NxCreatePhysicsSDK(NX_PHYSICS_SDK_VERSION);

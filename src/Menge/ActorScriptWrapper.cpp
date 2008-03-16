@@ -84,10 +84,6 @@ namespace Menge
 	REGISTER_SCRIPT_CLASS( Menge, Actor, Node )
 	{
 		pybind::proxy_<Actor, pybind::bases<SceneNode3D> >("Actor", false)
-			.def( "step", &Actor::step )
-			.def( "stop", &Actor::stop )
-			.def( "left", &Actor::left )
-			//.def( "setController", &Actor::setController )
 			.def( "setRigidBody", &Actor::setRigidBody )
 			.def( "setAnimationEnabled", &Actor::setAnimationEnabled )
 			.def( "playAnimation", &Actor::playAnimation )
@@ -101,7 +97,7 @@ namespace Menge
 			//.def( "setParentActor", &Actor::setParentActor )
 			//.def( "setParentRoot", &Actor::setParentRoot )
 			//.def( "attachEntity", &Actor::attachEntity )
-			.def( "update", &Actor::_update )
+		//	.def( "update", &Actor::_update )
 		;
 
 		pybind::def( "createActor", &ScriptMethod::createActor );

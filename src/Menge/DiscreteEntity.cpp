@@ -60,6 +60,7 @@ namespace Menge
 		{
 			return false;
 		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -69,7 +70,6 @@ namespace Menge
 	//float max[3];
 	//	m_entInterface->getAABB(min,max);
 	//	printf("min x = %f, y = %f, z = %f \n",min[0],min[1],min[2]);
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DiscreteEntity::_compile()
@@ -121,13 +121,14 @@ namespace Menge
 		}
 
 		m_interface->attachEntity( m_entInterface );
-		//this->getParentNode()->attachEntity(this);
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::_release()
 	{
+		SceneNode3D::_release();
+
 		delete m_skeleton;
 		Holder<RenderEngine>::hostage()->releaseEntity( m_entInterface );
 	}

@@ -89,6 +89,11 @@ namespace Menge
 		return m_interface->setGravity(_g.x, _g.y, _g.z);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & PhysicEngine::getGravity() const
+	{
+		return *(mt::vec3f*)m_interface->getGravity();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine::removeGeometry( GeometryInterface * _geom )
 	{
 		return m_interface->removeGeometry(_geom);

@@ -32,7 +32,5 @@ namespace Menge
 		std::string m_meshName;
 		std::string m_skeletonName;
 		std::string m_materialName;
-
-		MeshInterface * m_interface;
 	};
 }

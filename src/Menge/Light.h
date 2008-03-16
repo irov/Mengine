@@ -45,6 +45,8 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml );
+
+	protected:
 		bool _activate();
 		bool _compile();
 		void _deactivate();

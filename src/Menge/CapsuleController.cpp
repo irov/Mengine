@@ -32,7 +32,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CapsuleController::move( const mt::vec3f & _displacement )
 	{
-		m_interface->move( (float*)_displacement.m );
+		m_interface->move( _displacement.x, _displacement.y, _displacement.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & CapsuleController::getFilteredPosition()
@@ -42,7 +42,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CapsuleController::setPosition( const mt::vec3f & _pos )
 	{
-		m_interface->setPosition( (float*)_pos.m );
+		m_interface->setPosition( _pos.x, _pos.y, _pos.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CapsuleController::_update( float _timing )

@@ -33,6 +33,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::_update( float _timing )
 	{
+		SceneNode3D::_update(_timing);
+
 		const float* pos = m_physInterface->getPosition();
 		m_interface->setLocalPosition( pos );
 
@@ -54,11 +56,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody3D::_activate()
 	{
+		if(SceneNode3D::_activate() == false)
+		{
+			return false;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::_deactivate()
 	{
+		SceneNode3D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody3D::_compile()
@@ -88,6 +96,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody3D::_release()
 	{
+		SceneNode3D::_release();
+
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resource );
 

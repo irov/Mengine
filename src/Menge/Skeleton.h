@@ -17,7 +17,7 @@ namespace Menge
 		//void advanceAllAnimations( float _timeDelta );
 		//void setAnimationWeight( const std::string & _anim, float _weight );
 		void attachEntityToBone( const std::string & _bone, DiscreteEntity * _entity );
-	private:
+	private://
 		SkeletonInterface * m_interface;
 	};
 }

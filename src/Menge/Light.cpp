@@ -12,19 +12,19 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Light::Light()
-		: m_lightInterface(0)
-		, m_lightType(LT_POINT)
-		, m_position(0.f, 0.f, 0.f)
-        , m_diffuse(1.0f, 1.0f, 1.0f, 1.0f)
-        , m_specular(1.0f, 1.0f, 1.0f, 1.0f)
-        , m_direction(0,0,1)
-		, m_spotOuter(40) 
-        , m_spotInner(30)
-        , m_spotFalloff(1.0f)
-		, m_range(100000)
-		, m_attenuationConst(1.0f)
-		, m_attenuationLinear(0.0f)
-        , m_attenuationQuad(0.0f)
+	: m_lightInterface(0)
+	, m_lightType(LT_POINT)
+	, m_position(0.f, 0.f, 0.f)
+    , m_diffuse(1.0f, 1.0f, 1.0f, 1.0f)
+    , m_specular(1.0f, 1.0f, 1.0f, 1.0f)
+    , m_direction(0,0,1)
+	, m_spotOuter(40) 
+    , m_spotInner(30)
+    , m_spotFalloff(1.0f)
+	, m_range(100000)
+	, m_attenuationConst(1.0f)
+	, m_attenuationLinear(0.0f)
+    , m_attenuationQuad(0.0f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -34,6 +34,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Light::loader( XmlElement * _xml )
 	{
+		SceneNode3D::loader(_xml);
+
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Type", "Value", m_lightType );
@@ -63,6 +65,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Light::_deactivate()
 	{
+		SceneNode3D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Light::_compile()
@@ -93,8 +96,15 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Light::_update( float _timing )
+	{
+		SceneNode3D::_update(_timing);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Light::_release()
 	{
+		SceneNode3D::_release();
+
 		Holder<RenderEngine>::hostage()->releaseLight( m_lightInterface );
 		m_lightInterface = 0;
 	}

@@ -26,12 +26,12 @@ void OgreSkeleton::setAnimationWeight( const std::string & _anim, float _weight 
 {
 	Ogre::AnimationState * state = m_entity.getAnimationState( _anim );
 	state->setWeight( _weight );
-}*/
+}
 //////////////////////////////////////////////////////////////////////////
 void OgreSkeleton::attachEntityToBone( const std::string & _bone, EntityInterface * _entity )
 {
 	m_entity.attachObjectToBone( _bone, static_cast<OgreEntity*>( _entity )->getOgreEntity() );
-}
+}*/
 //////////////////////////////////////////////////////////////////////////
 /*void OgreSkeleton::advanceAllAnimations( float _timeOffset )
 {

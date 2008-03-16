@@ -53,10 +53,8 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Actor::_update( float _timing )
+	void Actor::_updateMovement( float _timing )
 	{
-		SceneNode3D::_update( _timing );
-
 		if( m_controller != NULL )
 		{
 			mt::vec3f translation = getLocalOrient() * m_moveSpeed * _timing * 0.001f;
@@ -66,24 +64,36 @@ namespace	Menge
 				const mt::vec3f & g = Holder<PhysicEngine>::hostage()->getGravity();
 				translation += g;
 
-				m_controller->move( translation.m );
+				m_controller->move( translation.x, translation.y, translation.z );
 
-				float * fpos = m_controller->getFilteredPosition();
+				const double * fpos = m_controller->getFilteredPosition();
 				this->setLocalPosition( mt::vec3f( fpos[0], fpos[1] - 0.8f, fpos[2] ) );
 
-				//printf("filt pos = %f; %f; %f\n",v.x,v.y,v.z);
+				printf("filt pos = %f; %f; %f\n",fpos[0],fpos[1],fpos[2]);
 			}
 		}
 
 		yaw( m_yawSpeed * _timing );
 		pitch( m_pitchSpeed * _timing );
 		roll( m_rollSpeed * _timing );
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Actor::_updateAnimation( float _timing )
+	{
 		for( TStringVector::iterator it = m_playingAnimations.begin(),
-				it_end = m_playingAnimations.end(); it != it_end; it++ )
+			it_end = m_playingAnimations.end(); it != it_end; it++ )
 		{
 			m_entity->animationAddTime( (*it).c_str(), _timing );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Actor::_update( float _timing )
+	{
+		SceneNode3D::_update( _timing );
+
+		_updateMovement(_timing);
+
+		_updateAnimation(_timing);
 
 		this->callEvent("UPDATE", "(f)", _timing );
 	}

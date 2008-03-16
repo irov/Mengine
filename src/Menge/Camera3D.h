@@ -35,8 +35,6 @@ namespace Menge
 
 		const std::string & getName();
 
-	
-
 	private:
 
 		CameraInterface * m_camera;

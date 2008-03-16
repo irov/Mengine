@@ -22,38 +22,26 @@ namespace Menge
 		: public SceneNode3D
 	{
 		OBJECT_DECLARE(DiscreteEntity);
-
 	public:
 		DiscreteEntity();
 		~DiscreteEntity();
 	public:
-		Skeleton * getSkeleton() const;
-		void setCastsShadow( bool _castsShadow );
-		void setVisible( bool _visible );
-		void setMaterial( const std::string & _material );
-		void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material );
-
-		//hack ??
-		EntityInterface * get()
-		{
-			return m_entInterface;
-		}
-		////
-		void createRenderToTexture( const std::string& _renderCamera, int _width, int _height );
+		Skeleton * getSkeleton() const;//kill
+		void	setCastsShadow( bool _castsShadow );
+		void	setVisible( bool _visible );
+		void	setMaterial( const std::string & _material );
+		void	setSubEntityMaterial( const std::string & _subEntity, const std::string & _material );
+		void	createRenderToTexture( const std::string& _renderCamera, int _width, int _height );
 
 	public:
-		void loader( XmlElement * _xml );
-		void update( float _timing ) override;
+		void	loader( XmlElement * _xml );
 
 	protected:
-		virtual bool _activate();
-		virtual void _deactivate();
-		virtual bool _compile();
-		virtual void _release();
-
-	public:
-		SceneNode3D * getParentNode() const;
-		void setParentNode( SceneNode3D * _node );
+		bool	_activate() override;
+		void	_deactivate() override;
+		bool	_compile() override;
+		void	_release() override;
+		void	_update( float _timing ) override;
 
 	private:
 

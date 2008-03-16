@@ -11,8 +11,6 @@ public:
 	~NovodexBody();
 
 public:
-	void setOrient( float _w, float _x, float _y, float _z );
-	
 	float * getPosition() override;
 	float * getOrient() override;
 		
@@ -24,13 +22,12 @@ public:
 	void setLinearVelocity( float _x, float _y, float _z ) override;
 	void setAngularVelocity( float _x, float _y, float _z ) override;
 	void setPosition(float _x, float _y, float _z) override;
+	void setOrient( float _w, float _x, float _y, float _z ) override;
+
+	bool isSleeping() const override;
 public:
 	NxActor * getNxActor() const;
 
 private:
-	NxActor *	m_actor;
-	NxVec3  m_position;
-	NxVec3  m_dir;
-	float   m_quat[4];
-	float	m_rot[9];
+	NxActor * m_actor;
 };

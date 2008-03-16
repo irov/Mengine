@@ -19,6 +19,8 @@ enum GameGroup
     GROUP_COLLIDABLE_PUSHABLE,
 };
 
+#	define COLLIDABLE_MASK	(1<<GROUP_COLLIDABLE_NON_PUSHABLE) | (1<<GROUP_COLLIDABLE_PUSHABLE)
+
 class NovodexPhysicSystem: public PhysicSystemInterface
 {
 public:
@@ -32,7 +34,6 @@ public:
 	void setRestitution( float _value ) override;
 	void setStaticFriction( float _value ) override;
 	void setDynamicFriction( float _value ) override;
-
 	float * getGravity() const override;
 public:
 
@@ -54,5 +55,5 @@ public:
 private:
 	NxPhysicsSDK * m_physicsSDK;
 	NxScene		 * m_scene;
-	ControllerManager gCM;
+	ControllerManager m_controllerManager;
 };

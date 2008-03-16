@@ -8,7 +8,6 @@ class SceneNodeInterface;
 
 namespace Menge
 {
-	class SceneNode3D;
 	class ResourcePhysicGeometry;
 
 	class RigidBody3D

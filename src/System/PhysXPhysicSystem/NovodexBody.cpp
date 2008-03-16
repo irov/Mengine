@@ -14,18 +14,12 @@ void NovodexBody::setOrient( float _w, float _x, float _y, float _z )
 //////////////////////////////////////////////////////////////////////////
 float * NovodexBody::getPosition()
 {
-	m_position = m_actor->getGlobalPosition();
-	return m_position.get();
+	return m_actor->getGlobalPosition().get();
 }
 //////////////////////////////////////////////////////////////////////////
 float * NovodexBody::getOrient()
 {
-	NxMat33 M = m_actor->getGlobalOrientation();
-	M.getRowMajor(m_rot);
-
-	static float orient[4] = {};
-	m_actor->getGlobalOrientationQuat().getWXYZ(orient);
-	return orient;
+	return &(m_actor->getGlobalOrientationQuat().x);
 }
 //////////////////////////////////////////////////////////////////////////
 void NovodexBody::setActive( bool _active )
@@ -38,6 +32,11 @@ void NovodexBody::setActive( bool _active )
 	{
 		m_actor->putToSleep();
 	}
+}
+//////////////////////////////////////////////////////////////////////////
+bool NovodexBody::isSleeping() const
+{
+	return m_actor->isSleeping();
 }
 //////////////////////////////////////////////////////////////////////////
 void NovodexBody::applyImpulse( float _x, float _y, float _z ) 
@@ -57,9 +56,11 @@ void NovodexBody::applyForce( float _x, float _y, float _z )
 void NovodexBody::applyAngularImpulse( float _x, float _y, float _z )
 {
 	NxVec3 v = m_actor->getAngularMomentum();
+
 	v.x += _x;
 	v.y += _y;
 	v.z += _z;
+
 	m_actor->setAngularMomentum(v);
 }
 //////////////////////////////////////////////////////////////////////////

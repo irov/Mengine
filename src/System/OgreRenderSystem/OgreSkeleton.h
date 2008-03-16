@@ -14,7 +14,7 @@ public:
 	//void advanceAnimation( const std::string & _anim, float _timeDelta ) override;
 	//void advanceAllAnimations( float _timeDelta ) override;
 	//void setAnimationWeight( const std::string & _anim, float _weight ) override;
-	void attachEntityToBone( const std::string & _bone, EntityInterface * _entity ) override;
+//	void attachEntityToBone( const std::string & _bone, EntityInterface * _entity ) override;
 private:
 	Ogre::Entity & m_entity;
 };

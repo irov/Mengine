@@ -31,16 +31,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SceneNode3D * DiscreteEntity::getParentNode() const
-	{
-		return m_parent;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DiscreteEntity::setParentNode( SceneNode3D * _node ) 
-	{
-		m_parent = _node;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::loader( XmlElement * _xml )
 	{
 		SceneNode3D::loader(_xml);
@@ -64,7 +54,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DiscreteEntity::update( float _timing )
+	void DiscreteEntity::_update( float _timing )
 	{
 	//	float min[3];
 	//float max[3];
@@ -167,4 +157,5 @@ namespace Menge
 	{
 		m_entInterface->createRenderToTexture( _renderCamera.c_str(), _width, _height );
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

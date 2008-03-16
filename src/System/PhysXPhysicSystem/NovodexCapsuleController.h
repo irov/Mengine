@@ -9,9 +9,9 @@ class	NovodexCapsuleController : public ControllerInterface
 public:
 	NovodexCapsuleController( NxCapsuleController * _controller );
 public:
-	void setPosition( float * _pos ) override;
-	void move( float * _displacement ) override;
-	float * getFilteredPosition() override;
+	void setPosition( float _x, float _y, float _z ) override;
+	void move( float _x, float _y, float _z ) override;
+	const double * getFilteredPosition() const;
 private:
 	NxCapsuleController * m_controller;
 };

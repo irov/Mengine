@@ -3,8 +3,6 @@
 class RigidBodyInterface
 {
 public:
-	virtual ~RigidBodyInterface(){};
-
 	virtual float * getPosition() = 0;
 	virtual float * getOrient() = 0;
 	
@@ -19,6 +17,7 @@ public:
 
 	virtual void setPosition( float _x, float _y, float _z ) = 0;
 	virtual void setOrient( float _w, float _x, float _y, float _z ) = 0;
+	virtual bool isSleeping() const = 0;
 };
 
 class GeometryInterface
@@ -33,15 +32,6 @@ public:
 	virtual ~JointInterface(){};
 };
 
-class	ControllerInterface
-{
-public:
-	virtual ~ControllerInterface(){};
-	virtual void setPosition( float * _pos ) = 0;
-	virtual void move( float * _displacement ) = 0;
-	virtual float * getFilteredPosition() = 0;
-};
-
 class	BallSocketJointInterface : public JointInterface
 {
 public:
@@ -53,6 +43,15 @@ public:
 		float x, float y, float z) = 0;
 
 	virtual void setLimits(float cone_limit_rad, float twist_limit_rad) = 0;
+};
+
+
+class	ControllerInterface
+{
+public:
+	virtual void setPosition( float _x, float _y, float _z ) = 0;
+	virtual void move( float _x, float _y, float _z ) = 0;
+	virtual const double * getFilteredPosition() const = 0;
 };
 
 class PhysicSystemInterface

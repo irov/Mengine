@@ -12,7 +12,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Skeleton::attachEntityToBone( const std::string & _bone, DiscreteEntity * _entity )
 	{
-		m_interface->attachEntityToBone(_bone, _entity->get());
+		assert(0);
+//		m_interface->attachEntityToBone(_bone, _entity->get());
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

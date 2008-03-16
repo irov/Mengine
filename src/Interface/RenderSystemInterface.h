@@ -46,7 +46,7 @@ public:
 	//virtual void advanceAnimation( const std::string & _anim, float _timeDelta ) = 0;
 	//virtual void advanceAllAnimations( float _timeDelta ) = 0;
 	//virtual void setAnimationWeight( const std::string & _anim, float _weight ) = 0;
-	virtual void attachEntityToBone( const std::string & _bone, EntityInterface * _entity ) = 0;
+	//virtual void attachEntityToBone( const std::string & _bone, EntityInterface * _entity ) = 0;
 };
 
 class EntityInterface

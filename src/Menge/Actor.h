@@ -3,7 +3,7 @@
 #	include "SceneNode3D.h"
 
 #	include "math/quat.h"
-#	include <string>
+
 #	include <vector>
 
 class ControllerInterface;
@@ -13,9 +13,6 @@ class SkeletonInterface;
 namespace Menge
 {
 	class ResourceMesh;
-	class ResourceSkeleton;
-	class DiscreteEntity;
-	class CapsuleController;
 	class RigidBody3D;
 
 	class Actor
@@ -54,6 +51,9 @@ namespace Menge
 		void	_update( float _timing ) override;
 
 	private:
+
+		void	_updateMovement( float _timing );
+		void	_updateAnimation( float _timing );
 
 		RigidBody3D * m_rigidBody;
 

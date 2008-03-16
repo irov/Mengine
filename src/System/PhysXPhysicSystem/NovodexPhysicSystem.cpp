@@ -34,7 +34,7 @@ NovodexPhysicSystem::~NovodexPhysicSystem()
 {
 	if ( m_physicsSDK )
 	{
-		gCM.purgeControllers();
+		m_controllerManager.purgeControllers();
 
 		m_physicsSDK->releaseScene(*m_scene);
 		m_physicsSDK->release();	
@@ -113,7 +113,7 @@ void NovodexPhysicSystem::update(float _timestep)
 
 	if(numSubSteps)	
 	{
-		gCM.updateControllers();
+		m_controllerManager.updateControllers();
 	}
 
 }
@@ -141,7 +141,7 @@ ControllerInterface * NovodexPhysicSystem::createCapsuleController( float * _sta
 	desc.stepOffset			= 0;
 	desc.callback			= 0;
 
-	NxCapsuleController * contr = static_cast<NxCapsuleController*>(gCM.createController(m_scene, desc));
+	NxCapsuleController * contr = static_cast<NxCapsuleController*>(m_controllerManager.createController(m_scene, desc));
 	ControllerInterface * cap = new NovodexCapsuleController(contr);
 	return cap;
 };

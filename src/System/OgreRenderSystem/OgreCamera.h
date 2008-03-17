@@ -28,7 +28,8 @@ public:
 	void getAABB( float * _min, float * _max ) const override;
 	void translate( float * _v ) override;
 	int isAABBIntersect( float * _min, float * _max, float & _dx, float & _dz );
-	int isSphereIntersect( float x, float y, float z, float R, float * q );
+	bool getSphereFrustumContact(int _numPlane, float x, float y, float z, float R, float & depth, float & px, float & py, float & pz) override;
+	int isSphereIntersect( float x, float y, float z, float R, float * q, float t );
 public:
 	Ogre::Camera * getOgreCamera();
 

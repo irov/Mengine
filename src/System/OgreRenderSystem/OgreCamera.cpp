@@ -97,22 +97,61 @@ void Ogre3dCamera::getAABB( float * _min, float * _max ) const
 	_max[2] = aabb.getMaximum().z;
 }
 //////////////////////////////////////////////////////////////////////////
-int Ogre3dCamera::isSphereIntersect( float x, float y, float z, float R, float * q )
+bool Ogre3dCamera::getSphereFrustumContact(int _numPlane, float x, float y, float z, float R, float & depth, float & px, float & py, float & pz)
+{
+	Ogre::Vector3 spherePos(x,y,z);
+
+	const Ogre::Plane & plane = m_camera->getFrustumPlane(_numPlane);
+
+	float distanceToPlane = plane.getDistance(spherePos);
+
+	if(distanceToPlane >= R)
+	{
+		return false;
+	}
+
+	float l = plane.normal.length();
+
+	float k = -plane.normal.dotProduct(spherePos);
+
+	depth = plane.d - k + R;
+
+	if (depth >= 0)
+	{
+		Ogre::Vector3 pos = spherePos - plane.normal * R;
+
+		px = pos.x;
+		py = pos.y;
+		pz = pos.z;
+
+		return true;
+	}
+
+	return false;
+}
+//////////////////////////////////////////////////////////////////////////
+int Ogre3dCamera::isSphereIntersect( float x, float y, float z, float R, float * q, float t )
 {
 //	Ogre::Vector3 ttt = Ogre::Plane(Ogre::Vector3(0,1,0),0).projectVector(Ogre::Vector3(1,0,0));
 
 //	R *= 2;
-	Ogre::Vector3 NNN;
-	Ogre::Quaternion qq = (*(Ogre::Quaternion*)q);
-
-	Ogre::Radian rrr;
-	qq.ToAngleAxis(rrr,NNN);
-
-	//printf("%f \n",rrr.valueDegrees());
-	NNN = Ogre::Vector3(sinf(rrr.valueRadians()),0,cosf(rrr.valueRadians()));
-
 	Ogre::Vector3 spherePos(x,y,z);
 
+//	Ogre::Vector3 CPos = spherePos/*Pos*/ - (m_camera->getPosition());
+
+//	CPos.y = 0;
+
+//	printf("LENGTH = %f\n",CPos.length());
+
+
+//	printf("Sphere = %f %f %f\n",spherePos.x,spherePos.y,spherePos.z);
+//	printf("Cam = %f %f %f\n",m_camera->getPosition().x,m_camera->getPosition().y,m_camera->getPosition().z);
+
+	//if(CPos.length() <= R)
+	//{
+	//	return 0;
+	//}
+	//printf("Cam = %f %f %f\n",m_camera->getPosition().x,m_camera->getPosition().y,m_camera->getPosition().z);
 
 	// NEAR, FAR skipped
 	for(int p = 2; p < 6; ++p)
@@ -133,25 +172,31 @@ int Ogre3dCamera::isSphereIntersect( float x, float y, float z, float R, float *
 
 		if (depth >= 0) 
 		{
-			qq.normalise();
-			Ogre::Vector3 Normal = NNN;//plane.normal;
+			Ogre::Vector3 Normal = plane.normal;
 			Ogre::Vector3 Pos = spherePos - Normal * R;
-			Ogre::Vector3 CPos = spherePos/*Pos*/ - (m_camera->getPosition());
+			Ogre::Vector3 CPos = /*spherePos*/Pos - (m_camera->getPosition());
+			//Ogre::Vector3 CPos = (m_camera->getPosition())-Pos;
 
 			CPos.y = 0;
 
-//			printf("LENGTH = %f\n",CPos.length());
+			printf("LENGTH = %f\n",CPos.length());
 
+		/*	if(CPos.length() < 2*R + 1)
+			{
+				CPos = (m_camera->getPosition())-Pos;
+				CPos.y = 0;
+			//	return 2;
+			}
+*/
 			CPos.normalise();
 
 			Normal = CPos;
 
-		//	printf("Sphere = %f %f %f\n",spherePos.x,spherePos.y,spherePos.z);
-		//	printf("Cam = %f %f %f\n",m_camera->getPosition().x,m_camera->getPosition().y,m_camera->getPosition().z);
-			//m_camera->setPosition(m_camera->getPosition() + Normal * depth);
-
+			printf("COntact = %f %f %f\n",Pos.x,Pos.y,Pos.z);
+			//printf("Sphere = %f %f %f\n",spherePos.x,spherePos.y,spherePos.z);
+			printf("Cam = %f %f %f\n",m_camera->getPosition().x,m_camera->getPosition().y,m_camera->getPosition().z);
 			Ogre::Vector3 pos = m_camera->getPosition();
-			pos+=Normal * 0.06;
+			pos+=Normal * t * 0.004f;
 			m_camera->setPosition(pos);
 			return 1;
 		}

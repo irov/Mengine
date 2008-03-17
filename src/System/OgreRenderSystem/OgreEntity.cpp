@@ -33,6 +33,11 @@ SkeletonInterface * OgreEntity::getSkeleton() const
 	return m_skeleton;
 }
 //////////////////////////////////////////////////////////////////////////
+float OgreEntity::getBoundingRadius() const
+{
+	return m_entity->getBoundingRadius();
+}
+//////////////////////////////////////////////////////////////////////////
 void OgreEntity::setCastsShadow( bool _castsShadow )
 {
 	if ( m_entity )

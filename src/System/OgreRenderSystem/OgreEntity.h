@@ -20,6 +20,7 @@ public:
 	void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material ) override;
 	void createRenderToTexture( const char* _cameraName, int _width, int _height ) override;
 	void getAABB( float * _min, float * _max ) const override;
+	float getBoundingRadius() const override;
 
 	void setAnimationEnabled( const char* _animName, bool _enabled ) override;
 	bool getAnimationEnabled( const char* _animName ) override;

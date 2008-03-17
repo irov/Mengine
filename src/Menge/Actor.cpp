@@ -53,6 +53,11 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float Actor::getBoundingRadius() const
+	{
+		return m_entity->getBoundingRadius();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Actor::_updateMovement( float _timing )
 	{
 		if( m_controller != NULL )
@@ -69,7 +74,7 @@ namespace	Menge
 				const double * fpos = m_controller->getFilteredPosition();
 				this->setLocalPosition( mt::vec3f( fpos[0], fpos[1] - 0.8f, fpos[2] ) );
 
-				printf("filt pos = %f; %f; %f\n",fpos[0],fpos[1],fpos[2]);
+				//printf("filt pos = %f; %f; %f\n",fpos[0],fpos[1],fpos[2]);
 			}
 		}
 

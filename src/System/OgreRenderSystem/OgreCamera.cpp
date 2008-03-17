@@ -97,6 +97,71 @@ void Ogre3dCamera::getAABB( float * _min, float * _max ) const
 	_max[2] = aabb.getMaximum().z;
 }
 //////////////////////////////////////////////////////////////////////////
+int Ogre3dCamera::isSphereIntersect( float x, float y, float z, float R, float * q )
+{
+//	Ogre::Vector3 ttt = Ogre::Plane(Ogre::Vector3(0,1,0),0).projectVector(Ogre::Vector3(1,0,0));
+
+//	R *= 2;
+	Ogre::Vector3 NNN;
+	Ogre::Quaternion qq = (*(Ogre::Quaternion*)q);
+
+	Ogre::Radian rrr;
+	qq.ToAngleAxis(rrr,NNN);
+
+	//printf("%f \n",rrr.valueDegrees());
+	NNN = Ogre::Vector3(sinf(rrr.valueRadians()),0,cosf(rrr.valueRadians()));
+
+	Ogre::Vector3 spherePos(x,y,z);
+
+
+	// NEAR, FAR skipped
+	for(int p = 2; p < 6; ++p)
+	{
+		const Ogre::Plane & plane = m_camera->getFrustumPlane(p);
+
+		float dd = plane.getDistance(spherePos);
+		if(dd >= R)
+		{
+			continue;
+		}
+
+		float l = plane.normal.length();
+
+		float k = -plane.normal.dotProduct(spherePos);
+
+		float depth = plane.d - k + R;
+
+		if (depth >= 0) 
+		{
+			qq.normalise();
+			Ogre::Vector3 Normal = NNN;//plane.normal;
+			Ogre::Vector3 Pos = spherePos - Normal * R;
+			Ogre::Vector3 CPos = spherePos/*Pos*/ - (m_camera->getPosition());
+
+			CPos.y = 0;
+
+//			printf("LENGTH = %f\n",CPos.length());
+
+			CPos.normalise();
+
+			Normal = CPos;
+
+		//	printf("Sphere = %f %f %f\n",spherePos.x,spherePos.y,spherePos.z);
+		//	printf("Cam = %f %f %f\n",m_camera->getPosition().x,m_camera->getPosition().y,m_camera->getPosition().z);
+			//m_camera->setPosition(m_camera->getPosition() + Normal * depth);
+
+			Ogre::Vector3 pos = m_camera->getPosition();
+			pos+=Normal * 0.06;
+			m_camera->setPosition(pos);
+			return 1;
+		}
+		else 
+		{
+			return 0;
+		}
+	}
+}
+//////////////////////////////////////////////////////////////////////////
 int Ogre3dCamera::isAABBIntersect( float * _min, float * _max, float & _dx, float & _dz )
 {
 	Ogre::Vector3 max = *(Ogre::Vector3*)_max;
@@ -126,6 +191,9 @@ int Ogre3dCamera::isAABBIntersect( float * _min, float * _max, float & _dx, floa
 	std::vector<int> planes;
 
 	Ogre::Vector3 direction;
+
+
+	m_camera->getBoundingRadius();
 
 	Ogre::AxisAlignedBox box = m_camera->getBoundingBox();
 	printf("%f \n",box.getMinimum().y);

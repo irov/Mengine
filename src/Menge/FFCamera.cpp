@@ -28,6 +28,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::update(float _timing)
 	{
+
+		const mt::vec3f & pos = m_actor->getWorldPosition();
+		float R = 2 * m_actor->getBoundingRadius();
+		m_interface->isSphereIntersect(pos.x,pos.y,pos.z,R,m_transOrient.m);
+
 		m_yawAngle = 0;
 		m_pitchAngle = 0;
 		m_translate = mt::vec3f::zero_v3;
@@ -51,6 +56,7 @@ namespace Menge
 	//
 	void FFCamera3D::yaw( float _yaw )
 	{
+		printf("%f;%f;%f;%f\n",m_transOrient.x,m_transOrient.y,m_transOrient.z,m_transOrient.w);
 		mt::rotate_q(m_transOrient, mt::vec3f(0,1,0), _yaw);
 		m_yawAngle = _yaw;
 		_updateCamera();
@@ -70,7 +76,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::zoom( float _dist )
 	{
-		m_interface->translate(mt::vec3f(_dist,_dist,_dist).m);
+		mt::vec3f pos = m_actor->getWorldPosition();
+		pos-=*(mt::vec3f*)m_interface->getPosition();
+		printf("%f \n",pos.length());
+		if(pos.length()<15 && _dist < 0)
+		{
+			return;
+		}
+		
+		m_interface->translate(mt::vec3f(0,_dist,0).m);
 		_updateCamera();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -91,7 +105,7 @@ namespace Menge
 		m_interface->setNearClipDistance( 10.0f );
 		m_interface->setFarClipDistance( 1000.0f );
 
-		m_interface->setPosition(0, 37, 38 );
+		m_interface->setPosition(0, 16, 30 );
 
 		mt::vec3f pos = *(mt::vec3f*)m_interface->getPosition();
 		m_interface->lookAt(pos.x,pos.y - 15,pos.z-0.001);

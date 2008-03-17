@@ -59,6 +59,7 @@ public:
 	virtual void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material ) = 0;
 	virtual void createRenderToTexture( const char* _cameraName, int _width, int _height  ) = 0;
 	virtual void getAABB( float * _min, float * _max ) const = 0;
+	virtual float getBoundingRadius() const = 0;
 
 	//////////////////////////////////////////////////////////////////////////
 	virtual void setAnimationEnabled( const char* _animName, bool _enabled ) = 0;
@@ -141,6 +142,7 @@ public:
 	virtual void roll( float _angle ) = 0;
 	virtual void getAABB( float * _min, float * _max ) const = 0;
 	virtual int isAABBIntersect( float * _min, float * _max, float & _dx, float & _dz ) = 0;
+	virtual int isSphereIntersect( float x, float y, float z, float R, float * q ) = 0;
 	virtual void translate( float * _v ) = 0;
 };
 

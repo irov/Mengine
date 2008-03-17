@@ -42,6 +42,8 @@ namespace Menge
 		void	setYawSpeed( float _speed );
 		void	setPitchSpeed( float _speed );
 		void	setRollSpeed( float _speed );
+
+		float	getBoundingRadius() const;
 			
 	protected:
 		bool	_activate() override;

@@ -141,8 +141,7 @@ public:
 	virtual void pitch( float _angle ) = 0;
 	virtual void roll( float _angle ) = 0;
 	virtual void getAABB( float * _min, float * _max ) const = 0;
-	virtual int isAABBIntersect( float * _min, float * _max, float & _dx, float & _dz ) = 0;
-	virtual int isSphereIntersect( float x, float y, float z, float R, float * q ) = 0;
+	virtual bool getSphereFrustumContact(int _numPlane, float x, float y, float z, float R, float & depth, float & px, float & py, float & pz) = 0;
 	virtual void translate( float * _v ) = 0;
 };
 

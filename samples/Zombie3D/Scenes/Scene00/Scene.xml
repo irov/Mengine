@@ -26,12 +26,13 @@
 			<ResourceMesh Name = "TestMesh" />
 		</Node>
 
-		<Node Name = "Camera" Type = "Camera3D">
+		<Node Name = "Camera" Type = "FFCamera3D">
 			<Aspect Value = "1.333"/>
 			<Near Value = "0.2" />
 			<Far Value = "2000"/>
-			<Position Value = "0;5;30"/>
-			<At Value = "0;0;0"/>
+			<Position Value = "0;16;30"/>
+			<At Value = "0;1;29.999"/>
+			<ScrollSpeed Value = "0.004"/>
 		</Node>
 
 		<Node Name = "Pers" Type = "Actor">

@@ -9,21 +9,18 @@ class Scene( Menge.Scene ):
 
 	def onLoader( self ):
 		self.player = self.getNode("Pers")
+		self.camera = self.getNode("Camera")
+		self.camera.setActor(self.player)
+
 		self.moving = False
 		pass
 
 	def onActivate( self ):
 		self.player.playAnimation("Idle00")
-
-
-		self.FreeCam = Menge.FFCamera3D()
-		self.FreeCam.activate()
-		self.FreeCam.setActor(self.player)
-
 		pass
 
 	def onUpdate( self, timing ):
-		self.FreeCam.update(timing)
+		#self.FreeCam.update(timing)
 		pass
 
 	def onHandleMouseButtonEvent( self, botton, isDown ):
@@ -40,22 +37,22 @@ class Scene( Menge.Scene ):
 		print key
 
 		if key == 16:
-			self.FreeCam.yaw(0.5)
+			self.camera.yaw(0.5)
 
 		if key == 18:
-			self.FreeCam.yaw(-0.5)
+			self.camera.yaw(-0.5)
 
 		if key == 44:
-			self.FreeCam.pitch(0.5)
+			self.camera.pitch(0.5)
 
 		if key == 45:
-			self.FreeCam.pitch(-0.5)
+			self.camera.pitch(-0.5)
 
 		if key == 19:
-			self.FreeCam.zoom(-0.1)
+			self.camera.zoom(-0.1)
 
 		if key == 20:
-			self.FreeCam.zoom(0.1)
+			self.camera.zoom(0.1)
 
 
 		if key == 2:

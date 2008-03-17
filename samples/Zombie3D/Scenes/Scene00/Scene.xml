@@ -37,7 +37,7 @@
 		<Node Name = "Pers" Type = "Actor">
 			<Transformation>
 				<Scale Value = "1;1;1" />
-       				<Position Value = "0;0;20" />
+       				<Position Value = "0;0;28" />
        				<Rotation Value ="0;0;0;1" />
 			</Transformation>
 			<ResourceMesh Name = "TestZombie"/>

@@ -123,7 +123,7 @@ namespace Menge
 			++it)
 			{
 				GlobalKeyHandler * keyHandler = *it;
-				if( handler = keyHandler->handleKeyEvent( _key, _char, _isDown ) )
+				if( handler = keyHandler->handleGlobalKeyEvent( _key, _char, _isDown ) )
 				{
 					break;
 				}

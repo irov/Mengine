@@ -20,6 +20,6 @@ namespace Menge
 	class GlobalKeyHandler
 	{
 	public:
-		virtual bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) = 0;
+		virtual bool handleGlobalKeyEvent( size_t _key, size_t _char, bool _isDown ) = 0;
 	};
 }

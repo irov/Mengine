@@ -51,6 +51,7 @@ namespace Menge
 	public:
 		bool handleGlobalMouseButtonEvent( size_t _button, bool _isDown ) override;
 		bool handleGlobalMouseMove( int _x, int _y, int _whell ) override;
+		bool handleGlobalKeyEvent( size_t _key, size_t _char, bool _isDown ) override;
 
 	public:
 		void loader( XmlElement *_xml) override;

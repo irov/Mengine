@@ -183,6 +183,18 @@ namespace	Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleGlobalKeyEvent( size_t _key, size_t _char, bool _isDown )
+	{
+		bool handle = false;
+
+		if( !handle )
+		{
+			askEvent( handle, "GLOBAL_KEY", "(OIIb)", this->getScript(), _key, _char, _isDown );
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::enableGlobalMouseEvent( bool _value )
 	{
 		m_globalMouseEventListener = _value;
@@ -223,7 +235,8 @@ namespace	Menge
 
 		registerEventListener( "GLOBAL_MOUSE_BUTTON", "onGlobalHandleMouseButtonEvent", _listener );
 		registerEventListener( "GLOBAL_MOUSE_MOVE", "onGlobalHandleMouseMove", _listener );
-
+		registerEventListener( "GLOBAL_KEY", "onGlobalHandleKeyEvent", _listener );
+		
 		registerEventListener( "LEAVE", "onLeave", _listener );
 		registerEventListener( "ENTER", "onEnter", _listener );		
 	}

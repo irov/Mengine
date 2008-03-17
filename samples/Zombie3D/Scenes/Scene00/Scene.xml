@@ -33,6 +33,7 @@
 			<Position Value = "0;16;30"/>
 			<At Value = "0;1;29.999"/>
 			<ScrollSpeed Value = "0.004"/>
+			<ScaleBoundingR Value = "2" />
 		</Node>
 
 		<Node Name = "Pers" Type = "Actor">

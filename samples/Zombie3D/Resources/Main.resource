@@ -11,7 +11,7 @@
 	</Resource>
 
 	<Resource Name = "ResourceLevelGeometry" Type = "ResourcePhysicConcaveGeometry">
-		<ConcaveGeometryFile Name = "Resources/Models/cooked.bin"/>
+		<ConcaveGeometryFile Name = "Resources/Models/Scene00.bin"/>
 	</Resource>
 
 	<Resource Name = "TestSkeleton" Type = "ResourceSkeleton" >
@@ -28,7 +28,7 @@
 	</Resource>
 
 	<Resource Name = "TestMesh" Type = "ResourceMesh" >
-		<Mesh Name = "Scene00.mesh" />
+		<Mesh Name = "scene00.mesh" />
 	</Resource>
 
 	<Resource Name = "TestBarrel" Type = "ResourceMesh" >

@@ -42,6 +42,7 @@ namespace Menge
 		float m_yawAngle;
 		float m_pitchAngle;
 		float m_scrollSpeed;
+		float m_scaleBoundingR;
 
 		mt::vec3f m_translate;
 		mt::quatf m_transOrient;

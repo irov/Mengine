@@ -12,9 +12,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FFCamera3D::FFCamera3D()
 	: m_actor(0)
-	, m_yawAngle(0)
-	, m_pitchAngle(0)
-	, m_scrollSpeed(0)
+	, m_yawAngle(0.f)
+	, m_pitchAngle(0.f)
+	, m_scrollSpeed(0.f)
+	, m_scaleBoundingR(1.f)
 	, m_translate(mt::vec3f::zero_v3)
 	, m_transOrient(1.f,0.f,0.f,0.f)
 	{
@@ -30,6 +31,7 @@ namespace Menge
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ScrollSpeed", "Value", m_scrollSpeed );
+			XML_CASE_ATTRIBUTE_NODE( "ScaleBoundingR", "Value", m_scaleBoundingR );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,7 +42,7 @@ namespace Menge
 		if(m_actor)
 		{
 			const mt::vec3f & pos = m_actor->getWorldPosition();
-			float R = m_actor->getBoundingRadius();
+			float R = m_scaleBoundingR * m_actor->getBoundingRadius();
 			float pd = 0;
 			mt::vec3f contact(0,0,0);
 
@@ -110,17 +112,30 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::zoom( float _dist )
 	{
-		mt::vec3f pos = m_actor->getWorldPosition();
-		pos-=*(mt::vec3f*)m_camera->getPosition();
-		//printf("%f \n",pos.length());
+		const mt::vec3f & pos = m_actor->getWorldPosition();
+		float R = m_scaleBoundingR * m_actor->getBoundingRadius();
+		float pd = 0;
+		mt::vec3f contact(0,0,0);
 
-		if(pos.length()<15 && _dist < 0)
+	//	m_camera->translate(mt::vec3f(0,_dist,0).m);
+		if(m_camera->getSphereFrustumContact(
+			0,pos.x,pos.y,pos.z,R,pd,contact.x,contact.y,contact.z))
 		{
-			return;
+			mt::vec3f camPos = *(mt::vec3f*)m_camera->getPosition();
+
+			mt::vec3f normal = camPos - contact;
+
+			//normal = mt::norm_v3(normal);
+
+			camPos += normal/* * pd*/;
+
+			m_camera->setPosition(camPos.x,camPos.y,camPos.z);
 		}
-		
+		else
+
 		m_camera->translate(mt::vec3f(0,_dist,0).m);
-		_updateCamera();
+
+		//_updateCamera();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::left( float s )

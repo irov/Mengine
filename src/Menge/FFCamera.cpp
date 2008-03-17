@@ -70,8 +70,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////	
 	void FFCamera3D::_updateCamera( bool _isOrient )
 	{
-		m_interface->yaw(m_yawAngle);
-		m_interface->pitch(m_pitchAngle);
+		m_camera->yaw(m_yawAngle);
+		m_camera->pitch(m_pitchAngle);
 		
 		mt::vec3f transformed = m_translate;
 
@@ -80,7 +80,7 @@ namespace Menge
 			transformed = m_transOrient * m_translate;
 		}
 
-		m_interface->translate(transformed.m);
+		m_camera->translate(transformed.m);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::setActor(Actor * _actor)
@@ -119,7 +119,7 @@ namespace Menge
 			return;
 		}
 		
-		m_interface->translate(mt::vec3f(0,_dist,0).m);
+		m_camera->translate(mt::vec3f(0,_dist,0).m);
 		_updateCamera();
 	}
 	//////////////////////////////////////////////////////////////////////////

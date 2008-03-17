@@ -635,6 +635,7 @@ namespace Menge
 			pybind::proxy_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot", false)
 				.def( "setHotspotListener", &HotSpot::setHotspotListener )
 				.def( "enableGlobalMouseEvent", &HotSpot::enableGlobalMouseEvent )
+				.def( "enableGlobalKeyEvent", &HotSpot::enableGlobalKeyEvent )				
 				.def( "addPoint", &HotSpot::addPoint )
 				.def( "clearPoints", &HotSpot::clearPoints )
 				.def( "pick", &HotSpot::pick )

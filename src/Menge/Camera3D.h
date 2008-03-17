@@ -29,22 +29,23 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml );
 
-		bool _activate();
-		void _deactivate();
-		void _release();
+	protected:
+		bool	_activate() override;
+		void	_deactivate() override;
+		bool	_compile() override;
+		void	_release() override;
+		void	_update( float _timing ) override;
 
-		const std::string & getName();
+	protected:
+		CameraInterface * m_camera;
 
 	private:
 
-		CameraInterface * m_camera;
-		
 		float m_aspect;
 		float m_near;
 		float m_far;
 
 		mt::vec3f m_position;
 		mt::vec3f m_at;
-		std::string m_name;
 	};
 }

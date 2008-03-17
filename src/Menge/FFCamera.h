@@ -2,43 +2,52 @@
 #	include "Math/vec2.h"
 #	include "Math/quat.h"
 
-class CameraInterface;
+#	include "Camera3D.h"
 
 namespace Menge
 {
 	class Actor;
 
-	class FFCamera3D
+	class FFCamera3D : public Camera3D
 	{
+		OBJECT_DECLARE(FFCamera3D);
 	public:
 
 		FFCamera3D();
 		~FFCamera3D();
 
-		void update(float _timing);
+	public:
+
 		void forward( float s );
 		void left( float s );
-		bool activate();
+
 		void setActor(Actor * _actor);
 
 		void yaw( float _yaw );
 		void pitch( float _pitch );
 		void zoom( float _dist );
 
+	public:
+		void loader( XmlElement * _xml );
+
+	protected:
+		bool	_activate() override;
+		void	_deactivate() override;
+		bool	_compile() override;
+		void	_release() override;
+		void	_update( float _timing ) override;
+
 	private:
 
 		float m_yawAngle;
 		float m_pitchAngle;
-		float m_pitchMinAngle;
-		float m_pitchMaxAngle;
+		float m_scrollSpeed;
 
 		mt::vec3f m_translate;
 		mt::quatf m_transOrient;
 
-		void _updateCamera( bool _isOrient = true );
-
 		Actor * m_actor;
 
-		CameraInterface * m_interface;
+		void _updateCamera( bool _isOrient = true );
 	};
 }

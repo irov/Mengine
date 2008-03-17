@@ -1,18 +1,20 @@
 #	include "FFCamera.h"
 #	include "Interface/RenderSystemInterface.h"
-#	include "RenderEngine.h"
-#	include "Holder.h"
 #	include "Actor.h"
 #	include "DiscreteEntity.h"
+#	include "ObjectImplement.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	OBJECT_IMPLEMENT(FFCamera3D);
+	//////////////////////////////////////////////////////////////////////////
 	FFCamera3D::FFCamera3D()
 	: m_actor(0)
 	, m_yawAngle(0)
 	, m_pitchAngle(0)
-	, m_pitchMinAngle(-20)
-	, m_pitchMaxAngle(20)
+	, m_scrollSpeed(0)
 	, m_translate(mt::vec3f::zero_v3)
 	, m_transOrient(1.f,0.f,0.f,0.f)
 	{
@@ -21,17 +23,45 @@ namespace Menge
 	FFCamera3D::~FFCamera3D()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void FFCamera3D::setActor(Actor * _actor)
+	void FFCamera3D::loader( XmlElement * _xml )
 	{
-		m_actor = _actor;
+		Camera3D::loader(_xml);
+
+		XML_SWITCH_NODE(_xml)
+		{
+			XML_CASE_ATTRIBUTE_NODE( "ScrollSpeed", "Value", m_scrollSpeed );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FFCamera3D::update(float _timing)
+	void FFCamera3D::_update(float _timing)
 	{
+		Camera3D::_update(_timing);
 
-		const mt::vec3f & pos = m_actor->getWorldPosition();
-		float R = 2 * m_actor->getBoundingRadius();
-		m_interface->isSphereIntersect(pos.x,pos.y,pos.z,R,m_transOrient.m);
+		if(m_actor)
+		{
+			const mt::vec3f & pos = m_actor->getWorldPosition();
+			float R = m_actor->getBoundingRadius();
+			float pd = 0;
+			mt::vec3f contact(0,0,0);
+
+			for(int i = 2; i < 6; i++)
+			{
+				if(m_camera->getSphereFrustumContact(
+					i,pos.x,pos.y,pos.z,R,pd,contact.x,contact.y,contact.z) == true)
+				{
+					mt::vec3f camPos = *(mt::vec3f*)m_camera->getPosition();
+
+					mt::vec3f normal = contact - camPos;
+
+					normal.y = 0;
+					normal = mt::norm_v3(normal);
+
+					camPos += normal * _timing * m_scrollSpeed;
+
+					m_camera->setPosition(camPos.x,camPos.y,camPos.z);
+				}
+			}
+		}
 
 		m_yawAngle = 0;
 		m_pitchAngle = 0;
@@ -42,18 +72,22 @@ namespace Menge
 	{
 		m_interface->yaw(m_yawAngle);
 		m_interface->pitch(m_pitchAngle);
-		// двигаемся учитываю ориентацию камеры
-
-		mt::vec3f tt = m_translate;
+		
+		mt::vec3f transformed = m_translate;
 
 		if(_isOrient == true)
 		{
-			tt = m_transOrient * m_translate;
+			transformed = m_transOrient * m_translate;
 		}
 
-		m_interface->translate(tt.m);
+		m_interface->translate(transformed.m);
 	}
-	//
+	//////////////////////////////////////////////////////////////////////////
+	void FFCamera3D::setActor(Actor * _actor)
+	{
+		m_actor = _actor;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::yaw( float _yaw )
 	{
 		printf("%f;%f;%f;%f\n",m_transOrient.x,m_transOrient.y,m_transOrient.z,m_transOrient.w);
@@ -77,8 +111,9 @@ namespace Menge
 	void FFCamera3D::zoom( float _dist )
 	{
 		mt::vec3f pos = m_actor->getWorldPosition();
-		pos-=*(mt::vec3f*)m_interface->getPosition();
-		printf("%f \n",pos.length());
+		pos-=*(mt::vec3f*)m_camera->getPosition();
+		//printf("%f \n",pos.length());
+
 		if(pos.length()<15 && _dist < 0)
 		{
 			return;
@@ -90,25 +125,36 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::left( float s )
 	{
-		m_translate.x+=s;
+		m_translate.x += s;
 		_updateCamera();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FFCamera3D::activate()
+	bool FFCamera3D::_activate()
 	{
-		std::string m_name = "FreeCamera";
+		if(Camera3D::_activate() == false)
+		{
+			return false;
+		}
 
-		m_interface = Holder<RenderEngine>::hostage()->createCamera(
-			m_name );
-
-		m_interface->setAspectRatio( 1.3f );
-		m_interface->setNearClipDistance( 10.0f );
-		m_interface->setFarClipDistance( 1000.0f );
-
-		m_interface->setPosition(0, 16, 30 );
-
-		mt::vec3f pos = *(mt::vec3f*)m_interface->getPosition();
-		m_interface->lookAt(pos.x,pos.y - 15,pos.z-0.001);
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FFCamera3D::_deactivate()
+	{
+		Camera3D::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FFCamera3D::_release()
+	{
+		Camera3D::_release();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FFCamera3D::_compile()
+	{
+		if(Camera3D::_compile() == false)
+		{
+			return false;
+		}
 
 		return true;
 	}

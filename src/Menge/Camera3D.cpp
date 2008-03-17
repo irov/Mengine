@@ -35,11 +35,6 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()->releaseCamera( m_camera );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & Camera3D::getName()
-	{
-		return m_name;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::lookAt(const mt::vec3f& _targetPoint)
 	{
 		m_camera->lookAt(_targetPoint.x, _targetPoint.y, _targetPoint.z);
@@ -117,4 +112,14 @@ namespace	Menge
 	void Camera3D::_release()
 	{
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::_update( float _timing )
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Camera3D::_compile()
+	{
+		return true;
+	}
 }
+

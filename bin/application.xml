@@ -2,21 +2,7 @@
 	<Paks>
 	</Paks>
 
-	<ResourcePath Path = "../samples/Game" />
-
-	<Game File = "Game.xml" />
-
-	<Config>
-		<LogSystem Name = "systems/OgreLogSystem"/>
-		<InputSystem Name = "systems/OgreInputSystem"/>
-		<RenderSystem Name = "systems/OgreRenderSystem"/>
-		<SoundSystem Name = "systems/ALSoundSystem"/>
-		<ParticleSystem Name = "systems/AstralaxParticleSystem"/>
-		<RenderDriver Name = "Plugins/RenderSystem_Direct3D9"/>
-		<Width Value = "1024"/>
-		<Height Value = "768"/>
-		<Bits Value = "32"/>
-		<Fullscreen Value = "0"/>
-	</Config>
+	<Game File = "Game/Game.xml" />
+	<Resource File = "Game/Resource.xml" />
 
 </Application>

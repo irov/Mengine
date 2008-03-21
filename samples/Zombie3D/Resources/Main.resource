@@ -11,7 +11,7 @@
 	</Resource>
 
 	<Resource Name = "ResourceLevelGeometry" Type = "ResourcePhysicConcaveGeometry">
-		<ConcaveGeometryFile Name = "Resources/Models/Scene00.bin"/>
+		<ConcaveGeometryFile Name = "Resources/Models/cooked.bin"/>
 	</Resource>
 
 	<Resource Name = "TestSkeleton" Type = "ResourceSkeleton" >

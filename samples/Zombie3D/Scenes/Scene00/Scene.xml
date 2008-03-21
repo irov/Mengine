@@ -32,7 +32,7 @@
 			<Far Value = "2000"/>
 			<Position Value = "0;16;30"/>
 			<At Value = "0;1;29.999"/>
-			<ScrollSpeed Value = "0.004"/>
+			<ScrollSpeed Value = "0.003"/>
 			<ScaleBoundingR Value = "2" />
 		</Node>
 

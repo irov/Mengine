@@ -46,6 +46,7 @@
 #	include "SoundEngine.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
+#	include "PhysicEngine2D.h"
 
 #	include "Camera3D.h"
 #	include "Layer3D.h"
@@ -355,6 +356,17 @@ namespace Menge
 				->setSulkCallback( new PySoundSulkCallback( _sulkcallback ) );
 		}
 
+		static void s_createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _offset2, bool _collideBodies )
+		{
+			Holder<PhysicEngine2D>::hostage()->createDistanceJoint( _body1, _body2, _offset1, _offset2, _collideBodies );
+		}
+
+		static void s_createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, bool _collideBodies )
+		{
+			Holder<PhysicEngine2D>::hostage()->createHingeJoint( _body1, _body2, _offset1, _collideBodies );
+		}
+
+
 	}
 
 	SCRIPT_CLASS_WRAPPING( Node );
@@ -564,6 +576,8 @@ namespace Menge
 
 			pybind::proxy_<DiscreteEntity, pybind::bases<SceneNode3D>>("DiscreteEntity", false)
 				.def( "createRenderToTexture", &DiscreteEntity::createRenderToTexture )
+				.def( "playAnimation", &DiscreteEntity::playAnimation )
+				//.def( "playAnimation", &DiscreteEntity::playAnimation )
 				;
 
 		
@@ -678,6 +692,11 @@ namespace Menge
 				.def( "applyForce", &RigidBody2D::applyForce )
 				.def( "applyImpulse", &RigidBody2D::applyImpulse )
 				.def( "setOrientation", &RigidBody2D::setOrientation )
+				.def( "setPosition", &RigidBody2D::setPosition )
+				.def( "applyConstantForce", &RigidBody2D::applyConstantForce )
+				.def( "removeConstantForce", &RigidBody2D::removeConstantForce )
+				.def( "setDirectionForce", &RigidBody2D::setDirectionForce )
+				.def( "wakeUp", &RigidBody2D::wakeUp )
 				;
 
 		}		
@@ -722,6 +741,9 @@ namespace Menge
 		pybind::def( "getBlow", &ScriptMethod::getBlow );
 		pybind::def( "setEnoughBlow", &ScriptMethod::setEnoughBlow );
 		pybind::def( "setBlowCallback", &ScriptMethod::setBlowCallback );
+
+		pybind::def( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
+		pybind::def( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
 		
 	}
 }

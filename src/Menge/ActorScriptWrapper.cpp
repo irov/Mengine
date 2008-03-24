@@ -57,7 +57,7 @@ namespace Menge
 			actor->setScript( result );
 
 			std::string xml_path = Holder<Game>::hostage()
-				->getPathEntities();
+				->getPathEntities( _type );
 			
 			actor->attachToRootNode();
 

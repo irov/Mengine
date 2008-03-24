@@ -121,7 +121,21 @@ namespace Menge
 	{
 		m_resourcename = _name;
 
-		recompile();		
+		//recompile();		
+		m_resource = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceSound>( m_resourcename );
+
+		if( m_resource == 0 )
+		{
+			MENGE_LOG("Warning: sound emitter '%s' can't get resource '%s'\n"
+				, m_name.c_str()
+				, m_resourcename.c_str()
+				);
+
+			return;
+		}
+		m_interface->setSoundBuffer( m_resource->get() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setSoundListener( PyObject * _listener )

@@ -64,7 +64,7 @@ void ALSoundSource::play()
 
 	if( m_soundBuffer && m_soundBuffer->isStreamed() )
 	{
-		alSourcei( m_sourceName->name, AL_BUFFER, NULL );
+		//alSourcei( m_sourceName->name, AL_BUFFER, NULL );
 	    alSourcei( m_sourceName->name, AL_LOOPING, AL_FALSE ); //Streaming sources can't loop
 		static_cast<ALSoundBufferStream*>( m_soundBuffer )
 			->record( m_sourceName->name );
@@ -79,7 +79,7 @@ void ALSoundSource::play()
 		if( alGetError() != AL_FALSE ) printf("ALERROR!\n");
 	}
 
-	if( !m_looped )
+	if( !m_looped && !m_soundBuffer->isStreamed() )
 	{
 		//printf("register playing %d ms\n", getLengthMs());
 		m_soundSystem->registerPlaying( this, getLengthMs() );
@@ -165,11 +165,14 @@ int ALSoundSource::getPosMs()
 	return pos;
 }
 //////////////////////////////////////////////////////////////////////////
-void ALSoundSource::setSoundBuffer( ALSoundBuffer* _soundBuffer )
+void ALSoundSource::setSoundBuffer( SoundBufferInterface* _soundBuffer )
 {
-	m_soundBuffer = _soundBuffer;
+	m_soundBuffer = static_cast<ALSoundBuffer*>( _soundBuffer );
 	if( m_soundBuffer )
+	{
+		m_soundBuffer->removeSource( this );
 		m_soundBuffer->addSource( this );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSource::setVolume(float _volume)

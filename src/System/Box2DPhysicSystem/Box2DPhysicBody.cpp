@@ -16,7 +16,9 @@ Box2DPhysicBody::~Box2DPhysicBody()
 //////////////////////////////////////////////////////////////////////////
 const float* Box2DPhysicBody::getPosition() const
 {
-	return &(m_body->GetOriginPosition().x);
+	static b2Vec2 s_pos;
+	s_pos = m_body->GetOriginPosition();
+	return &s_pos.x;
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::setPosition( float _x, float _y )
@@ -113,3 +115,12 @@ bool Box2DPhysicBody::isStatic() const
 	return m_body->IsStatic();
 }
 //////////////////////////////////////////////////////////////////////////
+b2Body* Box2DPhysicBody::getBody()
+{
+	return m_body;
+}
+//////////////////////////////////////////////////////////////////////////
+void Box2DPhysicBody::wakeUp()
+{
+	m_body->WakeUp();
+}

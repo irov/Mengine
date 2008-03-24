@@ -34,6 +34,9 @@ WinApplication::WinApplication()
 , m_cursorInArea(false)
 , m_active(false)
 , m_primaryMonitorAspect(4.f/3.f)
+, m_winWidth( 800 )
+, m_winHeight( 600 )
+, m_fullscreen( false )
 {}
 //////////////////////////////////////////////////////////////////////////
 WinApplication::~WinApplication()
@@ -192,6 +195,8 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, unsigned int _wid
 	DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
 	RECT rc;
 
+	m_winWidth = _width;
+	m_winHeight = _height;
 	int width = _width;
 	int height = _height;
 	int left;
@@ -331,13 +336,7 @@ LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 		m_listener->onWindowMovedOrResized();
 		break;
 	case WM_DISPLAYCHANGE:
-		{
-			//::GetWindowInfo( m_hWnd, &m_wndInfo);
-			m_listener->onWindowMovedOrResized();
 
-			//DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN | WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
-			//::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
-		}
 		break;
 	case WM_SIZE:
 		//::GetWindowInfo( m_hWnd, &m_wndInfo);
@@ -394,19 +393,28 @@ void WinApplication::minimizeWindow()
 	::ShowWindow( m_hWnd, SW_MINIMIZE );
 }
 //////////////////////////////////////////////////////////////////////////
-void WinApplication::notifyWindowModeChanged( bool _fullscreen )
+void WinApplication::notifyWindowModeChanged( unsigned int _width, unsigned int _height, bool _fullscreen )
 {
+	m_winWidth = _width;
+	m_winHeight = _height;
+	m_fullscreen = _fullscreen;
+
 	DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
 	if( !_fullscreen )
 	{
 		dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
+
+		SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
+		SetWindowPos(m_hWnd, HWND_NOTOPMOST, 0, 0, _width, _height,
+			SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOACTIVATE);
+
 	}
 	else
 	{
 		dwStyle |= WS_POPUP;
 	}
+	//::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 
-	::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 
 	m_listener->onWindowMovedOrResized();
 }

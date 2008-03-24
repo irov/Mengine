@@ -41,6 +41,8 @@ public:
 	virtual int getPosMs() = 0;
 
 	virtual void setSoundNodeListener(SoundNodeListenerInterface * _listener) = 0;
+
+	virtual void setSoundBuffer( SoundBufferInterface* _soundBuffer ) = 0;
 };
 
 class SoundSulkCallbackInterface

@@ -63,17 +63,8 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml );
 		void loaderApplication( XmlElement * _xml );
-		void loaderConfig( XmlElement * _xml );
 
 	public:
-		virtual int getScreenWidth() const;
-		virtual int getScreenHeight() const;
-		virtual int getScreenBits() const;
-		virtual bool isFullScreen() const;
-		virtual const std::string& getRenderDriver() const;
-		const std::string& getTitle() const;
-		const std::string& getResourcePath() const;
-		bool getVSync() const;
 		bool usePhysic() const;
 		const mt::vec2f& getCurrentResolution() const;
 
@@ -99,7 +90,7 @@ namespace Menge
 		bool getSoundEnabled()	const;
 
 		void minimizeWindow();
-		void notifyWindowModeChanged( bool _fullscreen );
+		void notifyWindowModeChanged( unsigned int _width, unsigned int _height, bool _fullscreen );
 
 	private:
 		ApplicationInterface* m_interface;
@@ -107,29 +98,18 @@ namespace Menge
 		std::string m_gameInfo;
 		InputHandler * m_handler;
 
-		int m_width;
-		int m_height;
-		int m_bits;
 		mt::vec2f m_currentResolution;
-		bool m_fullScreen;
-		bool m_vsync;
-		std::string m_renderDriver;
 		std::string m_commandLine;
-		std::string m_title;
-		std::string m_resourcePath;
+
+		typedef std::vector<std::string> TStringVector;
+		TStringVector m_resourcePaths;
 
 		bool m_particles;
 		bool m_sound;
 		bool m_usePhysic;
 		bool m_mouseBounded;
 
-		std::string m_logSystemName;
-		std::string m_renderSystemName;
-		std::string m_inputSystemName;
-		std::string m_soundSystemName;
-		std::string m_particleSystemName;
-		std::string m_physicSystemName;
-		std::string m_physicSystem2DName;
+		float m_phycisTiming;
 
 		PhysicEngine * m_physicEngine;
 		PhysicEngine2D * m_physicEngine2D;

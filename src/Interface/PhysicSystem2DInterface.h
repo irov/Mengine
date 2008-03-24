@@ -31,6 +31,8 @@ public:
 	virtual bool isFrozen() const = 0;
 	virtual bool isSleeping() const = 0;
 	virtual bool isStatic() const = 0;
+
+	virtual void wakeUp() = 0;
 };
 
 class PhysicSystem2DInterface
@@ -56,6 +58,9 @@ public:
 															float _shapeX, float _shapeY, float _shapeAngle,
 															unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) = 0;
 	virtual void destroyBody( PhysicBody2DInterface* _body ) = 0;
+
+	virtual void createDistanceJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _offsetBody2, bool _collideBodies ) = 0;
+	virtual void createHingeJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, bool _collideBodies ) = 0;
 };
 
 bool initInterfaceSystem(PhysicSystem2DInterface** _ptrInterface);

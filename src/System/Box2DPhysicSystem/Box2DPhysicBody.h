@@ -31,6 +31,10 @@ public:
 	bool isSleeping() const override;
 	bool isStatic() const override;
 
+	void wakeUp() override;
+
+	b2Body* getBody();
+
 private:
 	b2World* m_world;
 	b2Body* m_body;

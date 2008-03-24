@@ -99,4 +99,9 @@ namespace Menge
 		}
 
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool InputEngine::getMouseBounded() const
+	{
+		return m_mouseBounded;
+	}
 }

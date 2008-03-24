@@ -56,10 +56,11 @@ public:
 };
 
 
-class ALSoundBufferStream : public ALSoundBuffer
+class ALSoundBufferStream 
+	: public ALSoundBuffer
 {
 public:
-	ALSoundBufferStream();
+	ALSoundBufferStream( const std::string& _filename );
 	virtual ~ALSoundBufferStream();
 
 public:

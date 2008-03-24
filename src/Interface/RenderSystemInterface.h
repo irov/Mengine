@@ -174,7 +174,13 @@ public:
 	virtual void play() = 0;
 	virtual void pause() = 0;
 };
-
+//////////////////////////////////////////////////////////////////////////
+class RenderSystemListener
+{
+public:
+	virtual void onDeviceRestored() = 0;
+};
+//////////////////////////////////////////////////////////////////////////
 class	RenderSystemInterface
 {
 public:
@@ -248,6 +254,7 @@ public:
 	virtual void releaseSceneNode( SceneNodeInterface * _interface ) = 0;
 
 	virtual SceneNodeInterface * getRootSceneNode() const = 0;
+	virtual void setEventListener( RenderSystemListener* _listener ) = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

@@ -37,4 +37,9 @@ namespace Menge
 	void NodeSinglethon::foreachChildren( NodeForeach & _foreach )
 	{
 	}
+	//////////////////////////////////////////////////////////////////////////
+	Node* NodeSinglethon::getParent()
+	{
+		return NULL;
+	}
 }

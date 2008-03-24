@@ -58,20 +58,12 @@ namespace Menge
 	Application::Application( ApplicationInterface* _interface )
 		: m_interface( _interface )
 		, m_commandLine("")
-		, m_title("Menge-engine")
-		, m_resourcePath("")
-		, m_vsync( true )
+		//, m_resourcePaths("")
 		, m_particles( true )
 		, m_sound( true )
-		, m_logSystemName( "OgreLogSystem" )
-		, m_renderSystemName( "OgreRenderSystem" )
-		, m_inputSystemName( "OgreInputSystem" )
-		, m_soundSystemName( "ALSoundSystem" )
-		, m_particleSystemName( "None" )
-		, m_physicSystemName( "None" )
-		, m_physicSystem2DName( "None" )
 		, m_physicEngine2D( NULL )
 		, m_physicEngine( NULL )
+		, m_phycisTiming(0.f)
 	{
 		//ASSERT( m_interface );
 
@@ -135,14 +127,6 @@ namespace Menge
 	{
 		MENGE_LOG("create game file [%s] ...\n", m_gameInfo.c_str() );
 
-		Holder<Game>::keep( new Game );
-
-		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( m_gameInfo, Holder<Game>::hostage(), &Game::loader ) == false )
-		{
-			MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
-			return false;
-		}
 
 		MENGE_LOG("init game ...\n");
 
@@ -151,26 +135,27 @@ namespace Menge
 			m_physicEngine->init(mt::vec3f(0,-1.0,0));
 		}
 
-		Holder<RenderEngine>::hostage()->initialize( m_renderDriver );
-		m_currentResolution.x = m_width;
-		m_currentResolution.y = m_height;
-		if( m_fullScreen )
+		Game* game = Holder<Game>::hostage();
+
+		Holder<RenderEngine>::hostage()->initialize( game->getRenderDriverName() );
+		m_currentResolution.x = game->getWidth();
+		m_currentResolution.y = game->getHeight();
+		if( game->getFullscreen() )
 		{
-			m_currentResolution = Holder<RenderEngine>::hostage()->getBestDisplayResolution( m_width, m_height, m_interface->getMonitorAspectRatio() );
+			m_currentResolution = Holder<RenderEngine>::hostage()->getBestDisplayResolution( game->getWidth(), game->getHeight(), m_interface->getMonitorAspectRatio() );
 		}
 
-		WINDOW_HANDLE winHandle = m_interface->createWindow( Holder<Game>::hostage()->getTitle().c_str(), m_currentResolution.x, m_currentResolution.y, m_fullScreen );
-		Holder<RenderEngine>::hostage()->createRenderWindow( m_currentResolution.x, m_currentResolution.y, m_bits, m_fullScreen, winHandle );
+		WINDOW_HANDLE winHandle = m_interface->createWindow( game->getTitle().c_str(), m_currentResolution.x, m_currentResolution.y, game->getFullscreen() );
+		Holder<RenderEngine>::hostage()->createRenderWindow( m_currentResolution.x, m_currentResolution.y, game->getBits(), game->getFullscreen(), winHandle );
 		Holder<InputEngine>::hostage()->initialize( winHandle );
 
-		if( Holder<Game>::hostage()->isContentResolutionFixed() )
+		if( game->isContentResolutionFixed() )
 		{
-			mt::vec2f res = Holder<Game>::hostage()->getResourceResolution();
+			mt::vec2f res = game->getResourceResolution();
 			Holder<RenderEngine>::hostage()->setViewportDimensions( res.x, res.y );
 		}
 
-		if( Holder<Game>::hostage()
-			->init() == false )
+		if( game->init() == false )
 		{
 			return false;
 		}
@@ -198,37 +183,24 @@ namespace Menge
 				// 
 			}
 
-			XML_CASE_ATTRIBUTE_NODE( "ResourcePath", "Path", m_resourcePath );
-
 			XML_CASE_ATTRIBUTE_NODE( "Game", "File", m_gameInfo );
 
-			XML_CASE_NODE("Config")
+			XML_CASE_NODE( "Resource" )
+			{
+				std::string filename;
+				XML_FOR_EACH_ATTRIBUTES()
+				{					
+					XML_CASE_ATTRIBUTE( "File", filename );
+				}
+				m_resourcePaths.push_back( filename );
+			}
+	
+			//XML_CASE_ATTRIBUTE_NODE( "Resources", "File", m_resourcePath );
+
+			/*XML_CASE_NODE("Config")
 			{
 				XML_PARSE_ELEMENT( this, &Application::loaderConfig );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::loaderConfig( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			/*XML_CASE_ATTRIBUTE_NODE("Title", "Name", m_title );					
-			XML_CASE_ATTRIBUTE_NODE("FixedContentResolution", "Value", m_fixedContentResolution );
-			XML_CASE_ATTRIBUTE_NODE("VSync", "Value", m_vsync );*/
-			/*XML_CASE_ATTRIBUTE_NODE("LogSystem", "Name", m_logSystemName );
-			XML_CASE_ATTRIBUTE_NODE("InputSystem", "Name", m_inputSystemName );
-			XML_CASE_ATTRIBUTE_NODE("RenderSystem", "Name", m_renderSystemName );
-			XML_CASE_ATTRIBUTE_NODE("SoundSystem", "Name", m_soundSystemName );
-			XML_CASE_ATTRIBUTE_NODE("ParticleSystem", "Name", m_particleSystemName );
-			XML_CASE_ATTRIBUTE_NODE("PhysicSystem2D", "Name", m_physicSystem2DName );*/
-			XML_CASE_ATTRIBUTE_NODE("RenderDriver", "Name", m_renderDriver );
-			XML_CASE_ATTRIBUTE_NODE("PhysicSystem", "Name", m_physicSystemName );
-			XML_CASE_ATTRIBUTE_NODE("Width", "Value", m_width );					
-			XML_CASE_ATTRIBUTE_NODE("Height", "Value", m_height );
-			XML_CASE_ATTRIBUTE_NODE("Bits", "Value", m_bits );
-			XML_CASE_ATTRIBUTE_NODE("Fullscreen", "Value", m_fullScreen );
-			XML_CASE_ATTRIBUTE_NODE("VSync", "Value", m_vsync );
+			}*/
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -244,14 +216,21 @@ namespace Menge
 		{
 			m_sound = false;
 		}
+		
+		//Временная запись
+		//добавил Вова
+		//m_sound = false;
+
 		idx = _args.find( "-particles" );
 		if( idx >= 0 )
 		{
 			m_particles = false;
 		}
 
+		// Initializing XML-engine
 		Holder<XmlEngine>::keep( new XmlEngine );
 
+		// Reading resources
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
 		{
@@ -260,18 +239,39 @@ namespace Menge
 				);
 		}
 
-		if( m_physicSystemName != "None" )
+		// prepare file system
+		Holder<FileEngine>::hostage()->changeDir( "../" );
+
+		// prepare resources
+		Holder<ScriptEngine>::keep( new ScriptEngine );
+		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
+		MENGE_LOG("init scriptEngine ...\n");
+		scriptEngine->init();
+
+		Game* game = new Game;
+		Holder<Game>::keep( game );
+
+		if( Holder<XmlEngine>::hostage()
+			->parseXmlFileM( m_gameInfo, game, &Game::loader ) == false )
 		{
-			SystemDLLInterface* dll = m_interface->loadSystemDLL( m_physicSystemName.c_str() );
+			MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
+			return false;
+		}
+
+		//prepareResources();
+		for( TStringVector::iterator it = m_resourcePaths.begin(), 
+				it_end = m_resourcePaths.end(); it != it_end; it++ )
+		{
+			game->readResourceFile( *it );
+		}
+		
+		const std::string& physicSystemName = game->getPhysicSystemName();
+		if( physicSystemName != "None" )
+		{
+			SystemDLLInterface* dll = m_interface->loadSystemDLL( physicSystemName.c_str() );
 			setPhysicSystem( dll->getInterface<PhysicSystemInterface>() );
 		}
 
-		Holder<ScriptEngine>::keep( new ScriptEngine );
-
-		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
-
-		MENGE_LOG("init scriptEngine ...\n");
-		scriptEngine->init();
 
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
@@ -279,7 +279,6 @@ namespace Menge
 
 		Holder<ResourceManager>::keep( new ResourceManager );
 
-		Holder<FileEngine>::hostage()->changeDir( m_resourcePath );
 		
 		if( createGame() == false )
 		{
@@ -310,9 +309,14 @@ namespace Menge
 	bool Application::onMouseMove( int _x, int _y, int _whell )
 	{
 		InputEngine* inpEng = Holder<InputEngine>::hostage();
-		int oldx = inpEng->getMouseX();
-		int oldy = inpEng->getMouseY();
-		inpEng->setMousePos( _x, _y );
+		int oldx = 0;
+		int oldy = 0;
+		if( !inpEng->getMouseBounded() )
+		{ 
+			oldx = inpEng->getMouseX();
+			oldy = inpEng->getMouseY();
+			inpEng->setMousePos( _x, _y );
+		}
 		return Holder<Game>::hostage()->handleMouseMove( _x - oldx, _y - oldy, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -337,40 +341,10 @@ namespace Menge
 		//Holder<RenderEngine>::hostage()->frameStarted();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int Application::getScreenWidth() const
-	{
-		return m_width;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int Application::getScreenHeight() const
-	{
-		return m_height;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	int Application::getScreenBits() const
-	{
-		return m_bits;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::isFullScreen() const
-	{
-		return m_fullScreen;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const std::string& Application::getRenderDriver() const
-	{
-		return m_renderDriver;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const std::string& Application::getTitle() const
-	{
-		return m_title;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const std::string& Application::getResourcePath() const
+	/*const std::string& Application::getResourcePath() const
 	{
 		return m_resourcePath;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setParticlesEnabled( bool _enabled )
 	{
@@ -399,11 +373,6 @@ namespace Menge
 			return true;
 		}
 		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::getVSync() const
-	{
-		return m_vsync;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onFocus( bool _focus )
@@ -445,7 +414,13 @@ namespace Menge
 
 		if( m_physicEngine2D )
 		{
-			m_physicEngine2D->update( 1.0f / 60.0f, 10 );
+			float timeStep = 1.f / 60.f;
+			m_phycisTiming += _timing;
+			while( m_phycisTiming >= timeStep * 1000.f )
+			{
+				m_physicEngine2D->update( timeStep, 10.f );
+				m_phycisTiming -= timeStep * 1000.f;
+			}
 		}
 
 		Holder<Game>::hostage()->update( _timing );
@@ -460,7 +435,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()
 	{
-		m_interface->stop();
+		quit();
+		//m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onDestroy()
@@ -497,8 +473,8 @@ namespace Menge
 		return m_currentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::notifyWindowModeChanged( bool _fullscreen )
+	void Application::notifyWindowModeChanged( unsigned int _width, unsigned int _height, bool _fullscreen )
 	{
-		m_interface->notifyWindowModeChanged( _fullscreen );
+		m_interface->notifyWindowModeChanged( _width, _height, _fullscreen );
 	}
 }

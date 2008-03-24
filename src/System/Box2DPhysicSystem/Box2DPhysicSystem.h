@@ -35,6 +35,10 @@ public:
 
 	void destroyBody( PhysicBody2DInterface* _body ) override;
 
+	void createDistanceJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _offsetBody2, bool _collideBodies ) override;
+	void createHingeJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, bool _collideBodies ) override;
+
+
 private:
 	 b2World* m_world;
 };

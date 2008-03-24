@@ -40,9 +40,9 @@ public:
 	virtual int getPosMs();
 	
 	virtual void setSoundNodeListener(SoundNodeListenerInterface* _listener);
+	virtual void setSoundBuffer( SoundBufferInterface* _soundBuffer ) override;
 
 public:
-	void setSoundBuffer( ALSoundBuffer* _soundBuffer );
 	void setAmbient( bool _ambient );
 	bool isAmbient() const;
 	bool isBusy() const;

@@ -6,11 +6,13 @@
 #include "../../Interface/SoundSystemInterface.h"
 
 #include <vector>
+#include <string>
 
-class ALSoundBuffer : public SoundBufferInterface
+class ALSoundBuffer 
+	: public SoundBufferInterface
 {
 public:
-	ALSoundBuffer();
+	ALSoundBuffer( const std::string& _filename );
 	virtual ~ALSoundBuffer();
 
 	virtual bool isStreamed()	const	{ return false; }
@@ -28,4 +30,5 @@ protected:
 	TVectorSoundSourceInterface m_sources;
 	ALuint m_bufferName;
 	unsigned int m_lenghtMs;
+	std::string m_filename;
 };

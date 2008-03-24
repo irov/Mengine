@@ -9,6 +9,7 @@
 #	include <map>
 
 #	include "Application.h"
+#	include "Game.h"
 
 namespace Menge
 {
@@ -27,7 +28,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize( const std::string& _driver )
 	{
-		return m_interface->initialize( _driver.c_str() );
+		bool result = m_interface->initialize( _driver.c_str() );
+		m_interface->setEventListener( this );
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle /* = 0  */)
@@ -226,11 +229,11 @@ namespace Menge
 		if( m_fullscreen == _fullscreen ) return;
 
 		m_fullscreen = _fullscreen;
-		int width = Holder<Application>::hostage()->getScreenWidth();
-		int height = Holder<Application>::hostage()->getScreenHeight();
+		int width = Holder<Game>::hostage()->getWidth();
+		int height = Holder<Game>::hostage()->getHeight();
 		m_interface->setFullscreenMode( width, height, _fullscreen );
 
-		Holder<Application>::hostage()->notifyWindowModeChanged( m_fullscreen );
+		//Holder<Application>::hostage()->notifyWindowModeChanged( width, height, m_fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setViewportDimensions( float _width, float _height, float _renderFactor )
@@ -339,4 +342,12 @@ namespace Menge
 			m_interface->setViewportDimensions( m_viewportWidth, m_viewportHeight, m_renderFactor );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::onDeviceRestored()
+	{
+		int width = Holder<Game>::hostage()->getWidth();
+		int height = Holder<Game>::hostage()->getHeight();
+		Holder<Application>::hostage()->notifyWindowModeChanged( width, height, m_fullscreen );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

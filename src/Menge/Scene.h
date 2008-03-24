@@ -12,6 +12,7 @@
 #	include "InputHandler.h"
 
 #	include "math\vec3.h"
+#	include "math\vec4.h"
 
 namespace Menge
 {
@@ -46,6 +47,8 @@ namespace Menge
 		void loader( XmlElement *_xml) override;
 		void loaderScene_( XmlElement * _xml );
 
+		bool compile() override;
+
 	public:
 		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) override;
 		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
@@ -72,5 +75,9 @@ namespace Menge
 		Layer * m_mainLayer;
 
 		mt::vec2f m_offsetPosition;
+
+		bool m_physWorld2D;
+		mt::vec2f m_gravity2D;
+		mt::vec4f m_physWorldBox2D;
 	};
 }

@@ -48,10 +48,11 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				BufferSecurityCheck="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				GenerateXMLDocumentationFiles="false"
-				BrowseInformation="0"
+				BrowseInformation="1"
 				WarningLevel="2"
 				WarnAsError="false"
 				Detect64BitPortabilityProblems="true"
@@ -1021,6 +1022,10 @@
 				<Filter
 					Name="Children"
 					>
+					<File
+						RelativePath=".\NodeChildren.cpp"
+						>
+					</File>
 					<File
 						RelativePath=".\NodeChildren.h"
 						>

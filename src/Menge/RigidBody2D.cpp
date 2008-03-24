@@ -18,6 +18,10 @@ namespace Menge
 	, m_friction( 1.0f )
 	, m_restitution( 0.0f )
 	, m_scriptListener( NULL )
+	, m_force( 0.0f, 0.0f )
+	, m_forcePoint( 0.0f, 0.0f )
+	, m_constantForce( false )
+	, m_directionForce( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -29,13 +33,19 @@ namespace Menge
 	{
 		if( m_scriptListener )
 		{
-			callEvent( "ON_COLLIDE", "(OOffff)", this->getScript(), _otherObj->getUserData(), _worldX, _worldY, _normalX, _normalY );
+			RigidBody2D* other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
+			callEvent( "ON_COLLIDE", "(OOffff)", this->getScript(), other->getScript(), _worldX, _worldY, _normalX, _normalY );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::loader( XmlElement * _xml )
 	{
-		//SceneNode2D::loader( _xml );
+		SceneNode2D::loader( _xml );
+		_loaderPhysics( _xml );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::_loaderPhysics( XmlElement * _xml )
+	{
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_NODE( "Shape" )
@@ -69,10 +79,33 @@ namespace Menge
 	{
 		if( !(m_interface->isFrozen() || m_interface->isStatic() || m_interface->isSleeping()) )
 		{
+
 			const float* pos = m_interface->getPosition();
 			setLocalPosition( mt::vec2f( pos[0], pos[1] ) );
 			const float* orient = m_interface->getOrientation();
 			setLocalDirection( mt::vec2f( orient[0], orient[1] ) );
+
+			if( m_constantForce )
+			{
+				//const mt::vec2f & position = getWorldPosition();
+
+				mt::vec2f force;
+				mt::vec2f point;
+
+				if( m_directionForce )
+				{
+					mt::mul_v2_m3_r( force, m_force, getWorldMatrix() );
+				}
+				else
+				{
+					force = m_force;
+				}
+
+				mt::mul_v2_m3( point, m_forcePoint, getWorldMatrix() );
+
+				m_interface->applyForce( force.x, force.y, point.x, point.y );
+			}
+
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -128,5 +161,40 @@ namespace Menge
 	void RigidBody2D::setOrientation( float _angle )
 	{
 		m_interface->setOrientation( _angle );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::setPosition( float _x, float _y )
+	{
+		const mt::vec2f & position = getWorldPosition();
+		m_interface->setPosition( _x, _y );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::applyConstantForce( float _forceX, float _forceY, float _pointX, float _pointY )
+	{
+		m_force.x = _forceX;
+		m_force.y = _forceY;
+		m_forcePoint.x = _pointX;
+		m_forcePoint.y = _pointY;
+		m_constantForce = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::removeConstantForce()
+	{
+		m_constantForce = false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PhysicBody2DInterface* RigidBody2D::getInterface()
+	{
+		return m_interface;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::setDirectionForce( bool _relative )
+	{
+		m_directionForce = _relative;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::wakeUp()
+	{
+		m_interface->wakeUp();
 	}
 } // namespace Menge

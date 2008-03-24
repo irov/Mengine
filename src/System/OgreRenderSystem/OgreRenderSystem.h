@@ -19,6 +19,7 @@ namespace CEGUI
 class OgreRenderSystem
 	: public RenderSystemInterface
 	, public Ogre::ManualResourceLoader
+	, public Ogre::RenderSystem::Listener
 {
 public:
 	OgreRenderSystem();
@@ -89,6 +90,9 @@ public:
 
 	SceneNodeInterface * getRootSceneNode() const override;
 
+	void setEventListener( RenderSystemListener* _listener ) override;
+	void eventOccurred( const Ogre::String& eventName, const Ogre::NameValuePairList* parameters = 0 );
+
 private:
 
 	OgreSceneNode * m_rootSceneNode;
@@ -112,4 +116,7 @@ private:
 	CEGUI::System*	m_GUISystem;
 
 	std::vector<int> m_displayResolutionList;
+	RenderSystemListener* m_eventListener;
+
+	float m_viewportDimensions[4];
 };

@@ -55,7 +55,7 @@ namespace Menge
 			entity->setScript( result );
 
 			std::string xml_path = Holder<Game>::hostage()
-				->getPathEntities();
+				->getPathEntities( _type );
 			
 			xml_path += '/';
 			xml_path += _type;
@@ -80,6 +80,11 @@ namespace Menge
 
 			return result;
 		}
+
+		static void createEntityBody( Entity * _this, const std::string & _xml )
+		{
+
+		}
 	}
 
 	SCRIPT_CLASS_WRAPPING( Entity );
@@ -100,6 +105,7 @@ namespace Menge
 			.def( "setVelocity", &Entity::setVelocity )
 			.def( "getVelocity", &Entity::getVelocity )
 			.def( "getVelocitySpeed", &Entity::getVelocitySpeed )
+			//.def( "createEntityBody", &ScriptMethod::createEntityBody )
 			;
 
 		pybind::def( "createEntity", &ScriptMethod::createEntity );

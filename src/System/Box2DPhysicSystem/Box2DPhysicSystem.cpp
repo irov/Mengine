@@ -39,6 +39,8 @@ Box2DPhysicSystem::~Box2DPhysicSystem()
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::createWorld( const float* _upperLeft, const float* _lowerRight, const float* _gravity, bool _doSleep )
 {
+	if( m_world ) return;
+
 	b2AABB worldAABB;
 	worldAABB.minVertex.Set( _upperLeft[0], _upperLeft[1] );
 	worldAABB.maxVertex.Set( _lowerRight[0], _lowerRight[1] );
@@ -55,10 +57,12 @@ void Box2DPhysicSystem::destroyWorld()
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::update( float _timing, int _iterations )
 {
-	for( b2Body* body = m_world->GetBodyList(); body; body = body->GetNext() )
+	if( !m_world ) return;
+
+	/*for( b2Body* body = m_world->GetBodyList(); body; body = body->GetNext() )
 	{
 		body->WakeUp();
-	}
+	}*/
 	m_world->Step( _timing, _iterations );
 	//m_world->Step( 0.0f, 1 );
 	m_world->m_broadPhase->Validate();
@@ -157,3 +161,30 @@ void Box2DPhysicSystem::destroyBody( PhysicBody2DInterface* _body )
 {
 	delete static_cast<Box2DPhysicBody*>( _body );
 }
+//////////////////////////////////////////////////////////////////////////
+void Box2DPhysicSystem::createDistanceJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _offsetBody2, bool _collideBodies )
+{
+	b2DistanceJointDef jointDef;
+	jointDef.body1 = static_cast<Box2DPhysicBody*>( _body1 )->getBody();
+	jointDef.body2 = static_cast<Box2DPhysicBody*>( _body2 )->getBody();
+	jointDef.collideConnected = _collideBodies;
+	b2Vec2 anchor1 = jointDef.body1->GetCenterPosition() + b2Vec2( _offsetBody1[0], _offsetBody1[1] );
+	b2Vec2 anchor2 = jointDef.body2->GetCenterPosition() + b2Vec2( _offsetBody2[0], _offsetBody2[1] );
+	jointDef.anchorPoint1 = anchor1;
+	jointDef.anchorPoint2 = anchor2;
+
+	m_world->CreateJoint( &jointDef );
+}
+//////////////////////////////////////////////////////////////////////////
+void Box2DPhysicSystem::createHingeJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, bool _collideBodies )
+{
+	b2RevoluteJointDef jointDef;
+	jointDef.body1 = static_cast<Box2DPhysicBody*>( _body1 )->getBody();
+	jointDef.body2 = static_cast<Box2DPhysicBody*>( _body2 )->getBody();
+	jointDef.collideConnected = _collideBodies;
+	b2Vec2 anchor1 = jointDef.body1->GetCenterPosition() + b2Vec2( _offsetBody1[0], _offsetBody1[1] );
+	jointDef.anchorPoint = anchor1;
+	
+	m_world->CreateJoint( &jointDef );
+}
+//////////////////////////////////////////////////////////////////////////

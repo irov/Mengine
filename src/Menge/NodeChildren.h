@@ -8,6 +8,11 @@
 
 namespace Menge
 {	
+	namespace Helper
+	{
+		void errorMessageChildrenIncorrectType( Node * _parent, Node *_children );
+	}
+
 	template<class TNode >
 	class NodeChildren
 		: public virtual Node
@@ -23,7 +28,7 @@ namespace Menge
 			m_parent = dynamic_cast<TNode *>(_parent);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		TNode * getParent()
+		Node * getParent() override
 		{
 			return m_parent;
 		}
@@ -36,6 +41,17 @@ namespace Menge
 			}
 
 			TNode * t_node = dynamic_cast<TNode *>( _node );
+
+			if( t_node == 0 )
+			{
+				Helper::errorMessageChildrenIncorrectType( this, _node );
+				return false;
+			}
+
+			if( _node->getParent() )
+			{
+				_node->getParent()->removeChildren( _node );
+			}
 
 			t_node->setParent( this );
 
@@ -67,14 +83,16 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void foreachChildren( NodeForeach & _foreach ) override
 		{
+
 			for( TListChildren::iterator
 				it = m_listChildren.begin(),
 				it_end = m_listChildren.end();
 			it != it_end;
-			++it)
+			/*++it*/)
 			{
-				_foreach.apply( *it );
+				_foreach.apply( *it++ );
 			}
+			
 		}
 		//////////////////////////////////////////////////////////////////////////
 		Node * getChildren( const std::string & _name, bool _recursion ) override
@@ -113,6 +131,8 @@ namespace Menge
 		{
 			//Empty
 		}
+		//////////////////////////////////////////////////////////////////////////
+
 	protected:
 		TNode * m_parent;
 

@@ -47,6 +47,8 @@ namespace Menge
 		void _renderEnd() override;
 
 		bool _activate() override;
+		void _deactivate() override;
+		bool _compile() override;
 
 	protected:
 		void updateViewport();

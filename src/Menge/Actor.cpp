@@ -148,7 +148,10 @@ namespace	Menge
 
 		m_interface->attachEntity( m_entity );
 
-		m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( getWorldPosition() + mt::vec3f( 0.0f, 0.8f, 0.0f ), 0.3f, 1.0f );
+		if( Holder<PhysicEngine>::hostage() )
+		{
+			m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( getWorldPosition() + mt::vec3f( 0.0f, 0.8f, 0.0f ), 0.3f, 1.0f );
+		}
 
 		this->callMethod("onCompile", "()" );
 

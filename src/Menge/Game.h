@@ -48,7 +48,7 @@ namespace Menge
 		void setParamString( const std::string& _params );
 
 	public:
-		const std::string & getPathEntities() const;
+		const std::string & getPathEntities( const std::string& _entity ) const;
 		const std::string & getPathScenes() const;
 		const std::string & getPathArrows() const;
 
@@ -71,6 +71,10 @@ namespace Menge
 		void loaderResources_( XmlElement * _xml );
 		void loaderDefault_( XmlElement * _xml );
 		void loaderPersonality_( XmlElement * _xml );
+
+		void readResourceFile( const std::string& _file );
+		void loaderResourceFile( XmlElement * _xml );
+		void loaderResourceFile_( XmlElement * _xml );
 		
 	public:
 		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) override;
@@ -86,6 +90,13 @@ namespace Menge
 		const mt::vec2f & getResourceResolution() const;
 		const std::string& getTitle() const;
 		bool isContentResolutionFixed() const;
+		int getWidth() const;
+		int getHeight() const;
+		int getBits() const;
+		bool getFullscreen() const;
+		bool getVSync() const;
+		const std::string& getRenderDriverName() const;
+		const std::string& getPhysicSystemName() const;
 
 	protected:
 
@@ -111,16 +122,31 @@ namespace Menge
 		TMapScene m_mapScene;
 
 		typedef std::list<std::string> TListDeclaration;
-		TListDeclaration m_listEntitiesDeclaration;
-		TListDeclaration m_listArrowsDeclaration;
-		TListDeclaration m_listScenesDeclaration;
-		TListDeclaration m_listResourceDeclaration;
+		typedef std::map<std::string, TListDeclaration > TMapDeclaration;
+		TMapDeclaration m_mapEntitiesDeclaration;
+		TMapDeclaration m_mapArrowsDeclaration;
+		TMapDeclaration m_mapScenesDeclaration;
+		TMapDeclaration m_mapResourceDeclaration;
 		TListDeclaration m_listResourceLocation;
 		
-		std::string m_pathResource;
-		std::string m_pathScripts;
-		std::string m_pathEntities;
-		std::string m_pathScenes;
-		std::string m_pathArrows;
+		//std::string m_pathResource;
+		//std::string m_pathScripts;
+		//std::string m_pathEntities;
+		//std::string m_pathScenes;
+		std::string m_currentResourcePath;
+		TListDeclaration m_pathResource;
+		TListDeclaration m_pathScripts;
+		TListDeclaration m_pathEntities;
+		TListDeclaration m_pathScenes;
+		TListDeclaration m_pathArrows;
+		//std::string m_pathArrows;
+		int m_width;
+		int m_height;
+		int m_bits;
+		bool m_fullScreen;
+		bool m_vsync;
+		std::string m_renderDriver;
+		std::string m_physicSystemName;
+
 	};	
 }

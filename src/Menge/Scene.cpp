@@ -6,6 +6,7 @@
 
 #	include "ScriptEngine.h"
 #	include "XmlEngine.h"
+#	include "PhysicEngine2D.h"
 
 #	include "Layer2D.h"
 namespace	Menge
@@ -15,6 +16,9 @@ namespace	Menge
 	: m_mainLayer(0)
 	, m_isSubScene(false)
 	, m_offsetPosition(0.f,0.f)
+	, m_gravity2D( 0.0f, 0.0f )
+	, m_physWorldBox2D( 0.0f, 0.0f, 0.0f, 0.0f )
+	, m_physWorld2D( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -202,6 +206,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_release()
 	{
+		if( m_physWorld2D )
+		{
+			Holder<PhysicEngine2D>::hostage()->destroyScene();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
@@ -230,6 +238,15 @@ namespace	Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "OffsetPosition", "Value", m_offsetPosition );
+			XML_CASE_ATTRIBUTE_NODE( "Gravity2D", "Value", m_gravity2D );
+			XML_CASE_NODE( "PhysicWorld2DBox" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{					
+					XML_CASE_ATTRIBUTE( "Value", m_physWorldBox2D );
+				}
+				m_physWorld2D = true;
+			}
 		}
 		XML_END_NODE()
 		{
@@ -278,4 +295,14 @@ namespace	Menge
 			static_cast<Layer*>(*it)->setRenderTarget( _cameraName );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::compile()
+	{
+		if( m_physWorld2D )
+		{
+			Holder<PhysicEngine2D>::hostage()->createScene( mt::vec2f( m_physWorldBox2D.x, m_physWorldBox2D.y ),mt::vec2f( m_physWorldBox2D.z, m_physWorldBox2D.w ), m_gravity2D );
+		}
+		return NodeCore::compile();
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

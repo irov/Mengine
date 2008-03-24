@@ -112,6 +112,8 @@ namespace Menge
 		*/
 		virtual void setParent( Node * _node ) = 0;
 
+		virtual Node* getParent() = 0;
+
 		//! Node pure virtual. add children
 		/*!
 		\param _node the first argument, children node.

@@ -2,6 +2,7 @@
 
 #	include "math/quat.h"
 #	include <string>
+#	include <vector>
 
 #	include "SceneNode3D.h"
 
@@ -33,6 +34,12 @@ namespace Menge
 		void	setSubEntityMaterial( const std::string & _subEntity, const std::string & _material );
 		void	createRenderToTexture( const std::string& _renderCamera, int _width, int _height );
 
+		void	setAnimationEnabled( const std::string& _animName, bool _enable );
+		void	playAnimation( const std::string& _animName );	
+		void	pauseAnimation( const std::string& _animName );
+		void	stopAnimation( const std::string& _animName );	
+		void	stopAllAnimations();
+
 	public:
 		void	loader( XmlElement * _xml );
 
@@ -59,5 +66,9 @@ namespace Menge
 		bool m_receiveShadows;
 
 		SceneNode3D * m_parent;
+		typedef std::vector<std::string> TStringVector;
+		TStringVector m_playingAnimations;
+		void	_updateAnimation( float _timing );
+
 	};
 }

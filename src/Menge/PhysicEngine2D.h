@@ -10,6 +10,8 @@ class PhysicBody2DInterface;
 namespace Menge
 {
 
+	class RigidBody2D;
+
 	class PhysicEngine2D
 	{
 	public:
@@ -22,6 +24,9 @@ namespace Menge
 			
 		PhysicBody2DInterface* createPhysicBody( const mt::polygon& _shape, const mt::vec2f& _pos, float _density, float _friction, float _restitution );
 		void destroyPhysicBody( PhysicBody2DInterface* _bodyInterface );
+
+		void createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies );
+		void createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, bool _collideBodies );
 
 		void update( float _timing, int _iterations );
 

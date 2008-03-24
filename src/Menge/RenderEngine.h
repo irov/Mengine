@@ -18,6 +18,7 @@ namespace Menge
 	class Camera3D;
 
 	class RenderEngine
+		: public RenderSystemListener
 	{
 	public:
 		RenderEngine( RenderSystemInterface * _interface );
@@ -95,6 +96,8 @@ namespace Menge
 
 		void frameStarted();
 		void frameEnded();
+
+		void onDeviceRestored() override;
 
 		void onWindowMovedOrResized();
 

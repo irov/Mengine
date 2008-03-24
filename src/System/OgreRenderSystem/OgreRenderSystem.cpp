@@ -48,6 +48,7 @@ OgreRenderSystem::OgreRenderSystem()
 	, m_GUIRenderer(0)
 	, m_GUISystem(0)
 	, m_rootSceneNode(0)
+	, m_eventListener( NULL )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -181,7 +182,8 @@ bool OgreRenderSystem::initialize( const char* _driver )
 	m_renderSys = m_root->getAvailableRenderers()->at( 0 );
 	m_root->setRenderSystem( m_renderSys );
 	m_root->initialise( false );
-
+	
+	m_renderSys->addListener( this );
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -189,28 +191,30 @@ bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, b
 {
 	Ogre::NameValuePairList params;
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( _bits ) ) );
-	//params.insert( std::make_pair("vsync", Ogre::StringConverter::toString( vsync ) ) );
+	params.insert( std::make_pair("vsync", Ogre::StringConverter::toString( true ) ) );
 	params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)_winHandle)  ) ) );
 
 	m_renderWindow = m_root->createRenderWindow( "Menge", _width, _height, _fullscreen, &params );
 
 	m_sceneMgr = m_root->createSceneManager( Ogre::ST_GENERIC, "defaultSceneManager" );
+	Ogre::Camera* sceneCam = m_sceneMgr->createCamera("defaultCamera");
+	//sceneCam->setNearClipDistance( 5 );
+	m_viewport = m_renderWindow->addViewport( sceneCam );
+
+	//Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 
 	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
-	
-	Ogre::Camera* sceneCam = m_sceneMgr->createCamera("defaultCamera");
 	//sceneCam->setPosition( -8.0f, 300.0f, 200.0f );
 	//sceneCam->lookAt( -8.0f, 0.0f, 20.0f );
-	sceneCam->setPosition( 0.0f, 10.0f, 10.0f );
+	/*sceneCam->setPosition( 0.0f, 10.0f, 10.0f );
 	sceneCam->lookAt( 0.0f, 0.0f, 0.0f );
 	sceneCam->setFarClipDistance( 1000.0f );
 	sceneCam->setNearClipDistance( 0.2f );
 	//sceneCam->setFOVy(90);
-	m_viewport = m_renderWindow->addViewport( sceneCam );
 	//m_viewport->setBackgroundColour( Ogre::ColourValue::White );
 
-	m_rootSceneNode = new OgreSceneNode( m_sceneMgr->getRootSceneNode(), 0 );
+	m_rootSceneNode = new OgreSceneNode( m_sceneMgr->getRootSceneNode(), 0 );*/
 
 	// setup GUI system
 	/*m_GUIRenderer = new CEGUI::OgreCEGUIRenderer(m_renderWindow, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, m_sceneMgr);
@@ -227,9 +231,9 @@ bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, b
 
 	//m_sceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
 
-	m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
+	//m_sceneMgr->setAmbientLight(Ogre::ColourValue(1.0, 1.0, 1.0));
 
-	m_renderWindow->setActive( true );
+	//m_renderWindow->setActive( true );
 	return true;
 }
 int OgreRenderSystem::getResolutionList( int** _list )
@@ -281,6 +285,8 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 	Ogre::RenderTarget* rtgt = rtt->getBuffer()->getRenderTarget();
 	
 	Ogre::Camera* sceneCam = m_sceneMgr->getCamera("defaultCamera");
+	//int left, top, width, height;
+	//sceneCam->getViewport()->getActualDimensions( left, top, width, height );
 	rtgt->addViewport( sceneCam );
 	rtgt->setActive( false );
 
@@ -294,6 +300,7 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 	}
 	m_renderWindow->removeViewport(0);
 	m_renderWindow->addViewport( sceneCam );
+	sceneCam->getViewport()->setDimensions( m_viewportDimensions[0], m_viewportDimensions[1], m_viewportDimensions[2], m_viewportDimensions[3] );
 	Ogre::TextureManager::getSingleton().remove("__shot__");
 }
 //////////////////////////////////////////////////////////////////////////
@@ -496,5 +503,27 @@ void OgreRenderSystem::setViewportDimensions( float _width, float _height, float
 		height += ( 1.0f - height ) * _renderFactor;
 	}
 
-	m_viewport->setDimensions( 0.5f - width / 2.0f, 0.5f - height / 2.0f, width, height );
+	m_viewportDimensions[0] = 0.5f - width / 2.0f;
+	m_viewportDimensions[1] = 0.5f - height / 2.0f;
+	m_viewportDimensions[2] = width;
+	m_viewportDimensions[3] = height;
+
+	m_viewport->setDimensions( m_viewportDimensions[0], m_viewportDimensions[1], m_viewportDimensions[2], m_viewportDimensions[3] );
 }
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::setEventListener( RenderSystemListener* _listener )
+{
+	m_eventListener = _listener;
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::eventOccurred( const Ogre::String& eventName, const Ogre::NameValuePairList* parameters /* = 0 */ )
+{
+	if( eventName == "DeviceRestored" )
+	{
+		if( m_eventListener )
+		{
+			m_eventListener->onDeviceRestored();
+		}
+	}
+}
+//////////////////////////////////////////////////////////////////////////

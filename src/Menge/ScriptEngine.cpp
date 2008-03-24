@@ -152,7 +152,7 @@ namespace Menge
 		m_mapEntitiesType.insert( std::make_pair( _type, module ) );
 
 		std::string xml_path = Holder<Game>::hostage()
-			->getPathEntities();
+			->getPathEntities( _type );
 
 		xml_path += '/';
 		xml_path += _type;

@@ -4,10 +4,11 @@
 
 #include <algorithm>
 
-ALSoundBuffer::ALSoundBuffer() :
-m_bufferName(0),
-m_lenghtMs(0)
+ALSoundBuffer::ALSoundBuffer( const std::string& _filename ) 
+:m_bufferName(0)
+,m_lenghtMs(0)
 {
+	m_filename = _filename;
 	alGenBuffers(1, &m_bufferName);
 }
 

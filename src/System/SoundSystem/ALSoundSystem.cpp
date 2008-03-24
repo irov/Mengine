@@ -152,20 +152,20 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 
 	if(_isStream)
 	{
-		ALSoundBufferStream * strambuffer = new ALSoundBufferStream();
+		ALSoundBufferStream * streambuffer = new ALSoundBufferStream( _filename );
 
-		if( strambuffer->initialize( _filename ) == false )
+		if( streambuffer->initialize( _filename ) == false )
 		{
-			delete strambuffer;
+			delete streambuffer;
 		}
 		else
 		{
-			buffer = strambuffer;
+			buffer = streambuffer;
 		}
 	}
 	else
 	{
-		buffer = new ALSoundBuffer();
+		buffer = new ALSoundBuffer( _filename );
 
 		ALsizei size,freq;
 		ALenum format;
@@ -242,7 +242,7 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 }
 SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem )
 {
-	ALSoundBuffer* buffer = new ALSoundBuffer();
+	ALSoundBuffer* buffer = new ALSoundBuffer( "bufferMemory" );
 	ALsizei size,freq;
 	ALenum format;
 	ALvoid *data = NULL;
@@ -288,12 +288,6 @@ void ALSoundSystem::update( float _timing )
 
 	m_sulk->update();
 
-	for( TSourceVector::iterator it = m_deletingSources.begin(), 
-			it_end = m_deletingSources.end(); it != it_end; it++ )
-	{
-		m_playingSources.erase( (*it) );
-	}
-	m_deletingSources.clear();
 
 	for( TSourcesMap::iterator it = m_playingSources.begin(),
 			it_end = m_playingSources.end(); it != it_end; it++ )
@@ -304,6 +298,13 @@ void ALSoundSystem::update( float _timing )
 			it->first->stop();
 		}
 	}
+
+	for( TSourceVector::iterator it = m_deletingSources.begin(), 
+		it_end = m_deletingSources.end(); it != it_end; it++ )
+	{
+		m_playingSources.erase( (*it) );
+	}
+	m_deletingSources.clear();
 }
 
 bool ALSoundSystem::setBlow( bool _active )

@@ -40,6 +40,7 @@ namespace	Menge
 		m_listener = _listener;
 
 		registerEventListener("END_ANIMATION", "onAnimationEnd", m_listener );
+		registerEventListener("END_FRAME", "onFrameEnd", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationResource( const std::string & _resource )
@@ -87,6 +88,7 @@ namespace	Menge
 			m_delay -= delay;
 			
 			size_t frameSize = m_resource->getSequenceCount();
+			callEvent( "END_FRAME", "(OI)", this->getScript(), m_currentFrame );
 
 			if( ++m_currentFrame == frameSize )
 			{

@@ -261,7 +261,13 @@ namespace	Menge
 	{
 		if( m_physicController )
 		{
+			if( m_velocity != mt::vec2f::zero_v2 )
+			{
+				mt::vec2f pos = getLocalPosition() + m_velocity * _timing;
+				setPosition( pos.x, pos.y );
+			}
 			RigidBody2D::_update( _timing );
+			//m_interface->set
 			this->callEvent("UPDATE", "(f)", _timing );
 			return;
 		}
@@ -435,29 +441,16 @@ namespace	Menge
 		{
 			XML_CASE_NODE( "PhysicBody" )
 			{
-				XML_PARSE_ELEMENT( this, &Entity::_loaderPhysic );
+				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderPhysics );
+				m_physicController = true;
 			}
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::_loaderPhysic( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Shape" )
-			{
-				XML_PARSE_ELEMENT( this, &Entity::_loaderShape );
-			}
-
-			XML_CASE_ATTRIBUTE_NODE("Density", "Value", m_density );
-			XML_CASE_ATTRIBUTE_NODE("Friction", "Value", m_friction );
-			XML_CASE_ATTRIBUTE_NODE("Restitution", "Value", m_restitution );
-		}
-		m_physicController = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY )
 	{
-		this->callEvent( "COLLIDE", "(OOffff)", RigidBody2D::getScript(), _otherObj->getUserData(), _worldX, _worldY, _normalX, _normalY );
+		RigidBody2D* other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
+		this->callEvent( "COLLIDE", "(OOffff)", RigidBody2D::getScript(), other->getScript(), _worldX, _worldY, _normalX, _normalY );
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

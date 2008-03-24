@@ -69,6 +69,5 @@ namespace Menge
 		mt::vec2f m_nSpeed;
 
 		bool m_physicController;
-		void _loaderPhysic( XmlElement * _xml );
 	};
 }

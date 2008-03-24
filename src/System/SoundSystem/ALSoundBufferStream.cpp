@@ -198,6 +198,11 @@ void ALSoundBufferStreamUpdater::update()
 	// Request the number of OpenAL Buffers have been processed (played) on the Source
 	buffersProcessed = 0;
 	alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &buffersProcessed );
+	ALenum error = alGetError();
+	if( alGetError() != AL_FALSE )
+	{
+		printf( "ALERROR!" );
+	}
 
 	// For each processed buffer, remove it from the Source Queue, read next chunk of audio
 	// data from disk, fill buffer with new data, and add it to the Source Queue
@@ -206,6 +211,11 @@ void ALSoundBufferStreamUpdater::update()
 		// Remove the Buffer from the Queue.  (uiBuffer contains the Buffer ID for the unqueued Buffer)
 		albuffer = 0;
 		alSourceUnqueueBuffers( m_source, 1, &albuffer );
+		error = alGetError();
+		if( error != AL_FALSE )
+		{
+			printf( "ALERROR!" );
+		}
 
 		// Read more audio data (if there is any)
 		bytesWritten = decodeOggVorbis( m_oggFile, m_buffer, m_bufferSize, m_channels );
@@ -225,19 +235,43 @@ void ALSoundBufferStreamUpdater::update()
 		}
 
 		alBufferData( albuffer, m_format, m_buffer, bytesWritten, m_frequency );
+		error = alGetError();
+		if( error != AL_FALSE )
+		{
+			printf( "ALERROR!" );
+		}
 		alSourceQueueBuffers( m_source, 1, &albuffer );
+		error = alGetError();
+		if( error != AL_FALSE )
+		{
+			//printf( "ALERROR!" );
+			if( error == AL_INVALID_OPERATION )
+			{
+				alSourcei( m_source, AL_BUFFER, NULL );
+				alSourceQueueBuffers( m_source, 1, &albuffer );
+			}
+		}
 		buffersProcessed--;
 	}
 
 	// Check the status of the Source.  If it is not playing, then playback was completed,
 	// or the Source was starved of audio data, and needs to be restarted.
 	alGetSourcei( m_source, AL_SOURCE_STATE, &state );
+	error = alGetError();
+	if( error != AL_FALSE )
+	{
+		printf( "ALERROR!" );
+	}
 
 	if (state != AL_PLAYING)
 	{
 		// If there are Buffers in the Source Queue then the Source was starved of audio
 		// data, so needs to be restarted (because there is more audio data to play)
 		alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queuedBuffers );
+		if( alGetError() != AL_FALSE )
+		{
+			printf( "ALERROR!" );
+		}
 
 		if ( queuedBuffers )
 		{
@@ -272,9 +306,10 @@ unsigned int ALSoundBufferStreamUpdater::decodeOggVorbis(OggVorbis_File* _oggVor
 	return bytesDone;
 }
 
-ALSoundBufferStream::ALSoundBufferStream() :
-m_updater(NULL),
-m_buffer2(0)
+ALSoundBufferStream::ALSoundBufferStream( const std::string& _filename ) 
+: ALSoundBuffer( _filename )
+, m_updater(NULL)
+, m_buffer2(0)
 {
 	alGenBuffers(1, &m_buffer2);
 }
@@ -288,7 +323,7 @@ ALSoundBufferStream::~ALSoundBufferStream()
 //////////////////////////////////////////////////////////////////////////
 bool ALSoundBufferStream::initialize( const char* _filename )
 {
-	alGenBuffers(1, &m_buffer2);
+	//alGenBuffers(1, &m_buffer2);
 
 	FILE * filehandle = 0;
 	fopen_s( &filehandle, _filename, "rb");

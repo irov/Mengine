@@ -11,6 +11,7 @@
 #	include "Player.h"
 
 #	include "RenderEngine.h"
+#	include "PhysicEngine2D.h"
 
 #	include "LogEngine.h"
 #	include "Game.h"
@@ -189,14 +190,23 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_main )
-		{
-			m_scene->setMainLayer( this );
-		}
 
 		m_viewport.begin = mt::vec2f( 0.f, 0.f );
 		m_viewport.end = mt::vec2f( 1024.f, 768.f );
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::_deactivate()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer2D::_compile()
+	{
+		if( m_main )
+		{
+			m_scene->setMainLayer( this );
+		}
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

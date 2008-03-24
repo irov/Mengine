@@ -60,6 +60,7 @@ namespace Menge
 	//float max[3];
 	//	m_entInterface->getAABB(min,max);
 	//	printf("min x = %f, y = %f, z = %f \n",min[0],min[1],min[2]);
+		_updateAnimation(_timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DiscreteEntity::_compile()
@@ -158,4 +159,56 @@ namespace Menge
 		m_entInterface->createRenderToTexture( _renderCamera.c_str(), _width, _height );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void DiscreteEntity::setAnimationEnabled( const std::string& _animName, bool _enable )
+	{
+		m_entInterface->setAnimationEnabled( _animName.c_str(), _enable );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DiscreteEntity::playAnimation( const std::string& _animName )
+	{
+		TStringVector::iterator it = std::find( m_playingAnimations.begin(), m_playingAnimations.end(), _animName );
+
+		if( it == m_playingAnimations.end() )
+		{
+			m_entInterface->setAnimationEnabled( _animName.c_str(), true );
+			m_playingAnimations.push_back( _animName );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DiscreteEntity::pauseAnimation( const std::string& _animName )
+	{
+		m_playingAnimations.erase( std::find( m_playingAnimations.begin(), m_playingAnimations.end(), _animName ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DiscreteEntity::stopAnimation( const std::string& _animName )
+	{
+		m_entInterface->setAnimationEnabled( _animName.c_str(), false );
+		m_entInterface->setAnimationTimePosition( _animName.c_str(), 0.0f );
+
+		m_playingAnimations.erase( 
+			std::remove( m_playingAnimations.begin(), m_playingAnimations.end(), _animName ),
+			m_playingAnimations.end() 
+			);
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DiscreteEntity::stopAllAnimations()
+	{
+		for( TStringVector::iterator it = m_playingAnimations.begin(),
+			it_end = m_playingAnimations.end(); it != it_end; it++ )
+		{
+			m_entInterface->setAnimationEnabled( (*it).c_str(), false );
+		}
+
+		m_playingAnimations.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DiscreteEntity::_updateAnimation( float _timing )
+	{
+		for( TStringVector::iterator it = m_playingAnimations.begin(),
+			it_end = m_playingAnimations.end(); it != it_end; it++ )
+		{
+			m_entInterface->animationAddTime( (*it).c_str(), _timing );
+		}
+	}
 }

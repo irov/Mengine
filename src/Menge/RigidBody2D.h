@@ -33,7 +33,15 @@ namespace Menge
 
 		void applyForce( float _forceX, float _forceY, float _pointX, float _pointY );
 		void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY );
+		void applyConstantForce( float _forceX, float _forceY, float _pointX, float _pointY );
+		void removeConstantForce();
 		void setOrientation( float _angle );
+		void setPosition( float _x, float _y );
+		void _loaderPhysics( XmlElement * _xml );
+		void setDirectionForce( bool _relative );
+		void wakeUp();
+
+		PhysicBody2DInterface* getInterface();
 
 	protected:
 		bool _activate() override;
@@ -51,7 +59,10 @@ namespace Menge
 	private:
 		PhysicBody2DInterface* m_interface;
 		PyObject* m_scriptListener;
-
+		bool m_constantForce;
+		bool m_directionForce;
+		mt::vec2f m_force;
+		mt::vec2f m_forcePoint;
 	};
 
 }	// namespace Menge

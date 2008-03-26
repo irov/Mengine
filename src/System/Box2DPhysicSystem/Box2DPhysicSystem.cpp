@@ -153,6 +153,7 @@ PhysicBody2DInterface* Box2DPhysicSystem::createPhysicBodyConvex( int _pointsNum
 	bodyDef.rotation = _angle;
 	//bodyDef.allowSleep = false;
 	bodyDef.linearDamping = 0.02f;
+	//bodyDef.angularDamping = 1.0f;
 
 	return static_cast<PhysicBody2DInterface*>( new Box2DPhysicBody( m_world, bodyDef ) );
 }

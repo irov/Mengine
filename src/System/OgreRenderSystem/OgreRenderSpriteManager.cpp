@@ -173,6 +173,7 @@ void OgreRenderSpriteManager::prepareForRender()
 	m_renderSys->_disableTextureUnitsFrom(1);
 
 	m_renderSys->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
+	//m_renderSys->clearFrameBuffer(0);
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSpriteManager::addQuad1( Ogre::Camera* _camera,

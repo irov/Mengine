@@ -508,6 +508,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="TileMap"
+				>
+				<File
+					RelativePath=".\TileMap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TileMap.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"
@@ -789,6 +801,26 @@
 				</File>
 				<File
 					RelativePath=".\ResourceCapsuleController.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="TileMap"
+				>
+				<File
+					RelativePath=".\ResourceTileMap.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceTileMap.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceTileSet.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceTileSet.h"
 					>
 				</File>
 			</Filter>

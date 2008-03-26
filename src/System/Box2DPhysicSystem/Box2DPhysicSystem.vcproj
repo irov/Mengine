@@ -127,7 +127,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="box2d.lib"
-				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
 				AdditionalLibraryDirectories="$(SolutionDir)dependencies\Box2D\Library"
 			/>
 			<Tool

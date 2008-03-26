@@ -81,9 +81,57 @@ namespace Menge
 			return result;
 		}
 
-		static void createEntityBody( Entity * _this, const std::string & _xml )
+		static PyObject * createEntityFromXml( const std::string& _type, const std::string & _xml, const mt::vec2f & _pos, const mt::vec2f & _dir )
 		{
+			PyObject * module = Holder<ScriptEngine>::hostage()
+				->getEntityModule( _type );
 
+			if( module == 0 )
+			{
+				MENGE_LOG("Cant't create entity [%s] (not module)\n"
+					, _type.c_str() 
+					);
+			}
+
+			PyObject * result = pybind::call_method( module, _type.c_str(), "()" );
+
+			if( result == 0 )
+			{
+				return pybind::ret_none();
+			}
+
+			Entity * entity = pybind::extract<Entity*>( result );
+
+			if( entity == 0 )
+			{
+				MENGE_LOG("Can't create entity [%s]\n"
+					, _type.c_str() 
+					);
+
+				return pybind::ret_none();
+			}
+
+			entity->setType("Entity");
+			entity->setScript( result );
+
+			std::string xml_path = Holder<Game>::hostage()
+				->getPathEntities( _type );
+
+			xml_path += '/';
+			xml_path += _type;
+			xml_path += ".xml";
+
+			if( Holder<XmlEngine>::hostage()
+				->parseXmlBufferM( _xml, entity, &Entity::loader ) )
+			{
+				entity->registerEvent( "LOADER", "onLoader" );
+				entity->callEvent("LOADER", "()");
+			}
+
+			entity->setLocalPosition( _pos );
+			entity->setLocalDirection( _dir );
+
+			return result;
 		}
 	}
 
@@ -105,9 +153,10 @@ namespace Menge
 			.def( "setVelocity", &Entity::setVelocity )
 			.def( "getVelocity", &Entity::getVelocity )
 			.def( "getVelocitySpeed", &Entity::getVelocitySpeed )
-			//.def( "createEntityBody", &ScriptMethod::createEntityBody )
+			.def( "createPhysicBodyXml", &Entity::createPhysicBodyXml )
 			;
 
 		pybind::def( "createEntity", &ScriptMethod::createEntity );
+		pybind::def( "createEntityFromXml", &ScriptMethod::createEntityFromXml );
 	}
 }

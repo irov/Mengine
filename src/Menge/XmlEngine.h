@@ -31,6 +31,13 @@ namespace Menge
 			return result;
 		}
 
+		template<class C, class F>
+		bool parseXmlBufferM( const std::string & _buffer, C * _self, F _method )
+		{
+			XmlElementListener * listener = new XmlElementListenerMethod<C,F>(_self, _method );
+			bool result = parseXmlString( _buffer, listener );
+			return result;
+		}
 		
 
 		template<class C, class F>

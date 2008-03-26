@@ -453,4 +453,8 @@ namespace	Menge
 		this->callEvent( "COLLIDE", "(OOffff)", RigidBody2D::getScript(), other->getScript(), _worldX, _worldY, _normalX, _normalY );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Entity::createPhysicBodyXml( const std::string& _xmlData )
+	{
+
+	}
 }

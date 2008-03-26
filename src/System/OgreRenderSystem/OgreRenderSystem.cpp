@@ -87,7 +87,8 @@ CameraInterface * OgreRenderSystem::createCamera(const char * _name)
 //////////////////////////////////////////////////////////////////////////
 SceneNodeInterface * OgreRenderSystem::createSceneNode( const std::string & _name )
 {
-	Ogre::SceneNode * sceneNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode( _name );
+	//Ogre::SceneNode * sceneNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode( _name );
+	Ogre::SceneNode * sceneNode = m_sceneMgr->getRootSceneNode()->createChildSceneNode();
 
 	OgreSceneNode * ogreNode = new OgreSceneNode( sceneNode, m_rootSceneNode );
 	//m_rootSceneNode->addChild( ogreNode ); //не имеет смысла, т.к. на уровне root level - 1 все и так удалится
@@ -288,7 +289,7 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 	//int left, top, width, height;
 	//sceneCam->getViewport()->getActualDimensions( left, top, width, height );
 	rtgt->addViewport( sceneCam );
-	rtgt->setActive( false );
+	//rtgt->setActive( false );
 
 	Ogre::Root::getSingleton().renderOneFrame();
 

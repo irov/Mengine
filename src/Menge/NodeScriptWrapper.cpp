@@ -485,8 +485,8 @@ namespace Menge
 			.def( "setLocalPosition", &Allocator2D::setLocalPosition )
 			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
 
-			.def( "setWorldPosition", &Allocator2D::getWorldPosition )
-			.def( "SetWorldDirection", &Allocator2D::getWorldDirection )
+			//.def( "setWorldPosition", &Allocator2D::setWorldPosition )
+			//.def( "setWorldDirection", &Allocator2D::setWorldDirection )
 			.def( "setRotate", &Allocator2D::setRotate )
 			;
 

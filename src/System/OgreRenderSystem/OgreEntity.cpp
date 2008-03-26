@@ -95,6 +95,7 @@ void OgreEntity::createRenderToTexture( const char* _cameraName, int _width, int
 	texture->getBuffer()->getRenderTarget()->removeAllViewports();
 	texture->getBuffer()->getRenderTarget()->addViewport( rttCam );
 	texture->getBuffer()->getRenderTarget()->setActive( false );
+	//texture->getBuffer()->getRenderTarget()->getViewport(0)->setClearEveryFrame( true );
 	Ogre::MaterialManager::ResourceCreateOrRetrieveResult mresult = Ogre::MaterialManager::getSingleton().createOrRetrieve( Ogre::String("rttMat") + Ogre::String( _cameraName ), "Default" );
 	Ogre::MaterialPtr mat = mresult.first;
 	if( mresult.second )

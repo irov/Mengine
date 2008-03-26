@@ -38,6 +38,8 @@ namespace Menge
 		void loader( XmlElement * _xml );
 		void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY );
 
+		void createPhysicBodyXml( const std::string& _xmlData );
+
 	protected:
 		bool _activate() override;
 		void _deactivate() override;

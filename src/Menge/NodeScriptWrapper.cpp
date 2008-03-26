@@ -744,6 +744,5 @@ namespace Menge
 
 		pybind::def( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
 		pybind::def( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
-		
 	}
 }

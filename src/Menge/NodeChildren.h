@@ -10,7 +10,9 @@ namespace Menge
 {	
 	namespace Helper
 	{
-		void errorMessageChildrenIncorrectType( Node * _parent, Node *_children );
+		void errorMessageChildrenIncorrectType( Node * _parent, Node * _children );
+		void errorMessageChildrenAlreadyExsist( Node * _parent, Node * _children );
+		void errorMessageParentIncorrectType( Node * _current, Node * _parent );
 	}
 
 	template<class TNode >
@@ -25,7 +27,14 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void setParent( Node * _parent ) override
 		{
-			m_parent = dynamic_cast<TNode *>(_parent);
+			TNode * node_t = dynamic_cast<TNode *>(_parent);
+
+			if( node_t == 0 )
+			{
+				Helper::errorMessageParentIncorrectType( this, _parent );
+			}
+		
+			m_parent = node_t;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		Node * getParent() override
@@ -37,6 +46,7 @@ namespace Menge
 		{
 			if( isChildren( _node ) )
 			{
+				Helper::errorMessageChildrenAlreadyExsist( this, _node );
 				return false;
 			}
 

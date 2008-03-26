@@ -260,47 +260,6 @@ namespace Menge
 
 				XML_PARSE_ELEMENT( node, &Node::loader );
 			}
-
-			//XML_CHECK_NODE("External")
-			//{
-			//	std::string file;
-
-			//	XML_FOR_EACH_ATTRIBUTES()
-			//	{
-			//		XML_CHECK_ATTRIBUTE("File", file );
-			//	}
-			//	
-			//	TiXmlDocument * document = Holder<FileEngine>::hostage()
-			//		->loadXml( file );
-
-			//	XML_FOR_EACH_DOCUMENT( document )
-			//	{
-			//		XML_CHECK_NODE("Node")
-			//		{
-			//			XML_DEF_ATTRIBUTES_NODE(Name);
-			//			XML_DEF_ATTRIBUTES_NODE(Type);
-
-			//			Node *node = SceneManager::createNode( Type );
-
-			//			if(node == 0)
-			//			{
-			//				continue;
-			//			}
-
-			//			addChildren( node );
-
-			//			node->setName( Name );
-			//			node->loader( XML_CURRENT_NODE );
-			//		}				
-			//	}
-			//	XML_INVALID_PARSE()
-			//	{
-			//		MENGE_LOG("Invalid parse external node %s for %s\n"
-			//			, File.c_str()
-			//			, m_name.c_str()
-			//			);
-			//	}
-			//}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

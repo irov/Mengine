@@ -20,6 +20,12 @@ namespace Menge
 	class Arrow;
 	class Scene;
 
+	class ScriptLogger
+	{
+	public:
+		void write( const std::string & _msg );
+	};
+
 	class ScriptEngine
 	{
 	public:
@@ -83,6 +89,8 @@ namespace Menge
 
 	private:
 		PyObject * m_global;
+
+		ScriptLogger m_loger;
 
 		typedef std::map<std::string, PyObject *> TMapEntitiesType;
 		TMapEntitiesType m_mapEntitiesType;

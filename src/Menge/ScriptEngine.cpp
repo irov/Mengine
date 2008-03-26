@@ -3,7 +3,8 @@
 #	include "ScriptModuleDeclaration.h"
 #	include "ScriptClassWrapper.h"
 
-//#	include "FileEngine.h"
+#	include "LogEngine.h"
+
 #	include "Entity.h"
 #	include "Scene.h"
 #	include "Arrow.h"
@@ -43,6 +44,11 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ScriptLogger::write( const std::string & _msg )
+	{
+		MENGE_LOG( _msg.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::init()
 	{
 		pybind::initialize();
@@ -51,7 +57,16 @@ namespace Menge
 		m_global = pybind::module_dict( main );
 
 		PyObject * py_menge = initModule("Menge");
-		
+
+		pybind::class_<ScriptLogger>("ScriptLogger")
+			.def("write", &ScriptLogger::write )
+			;
+
+		PyObject * pyLogger = pybind::ptr(m_loger);
+
+		pybind::setStdErrorHandle( pyLogger );
+		pybind::setStdOutHandle( pyLogger );
+
 		ScriptModuleDeclaration::init( py_menge );
 	}
 	//////////////////////////////////////////////////////////////////////////

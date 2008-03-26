@@ -38,7 +38,7 @@ namespace Menge
 		return m_interface->isModifierDown( _modifier );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int InputEngine::getMouseX() const
+	float InputEngine::getMouseX() const
 	{
 		if( m_mouseBounded )
 		{
@@ -47,7 +47,7 @@ namespace Menge
 		return m_mouseX;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int InputEngine::getMouseY() const
+	float InputEngine::getMouseY() const
 	{
 		if( m_mouseBounded )
 		{
@@ -76,7 +76,7 @@ namespace Menge
 		return m_interface->regHandle( _handle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::setMousePos( int _x, int _y )
+	void InputEngine::setMousePos( float _x, float _y )
 	{
 		m_mouseX = _x;
 		m_mouseY = _y;

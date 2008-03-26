@@ -96,7 +96,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & ResourcePlaylist::getTrack( size_t _track ) const
+	const std::string & ResourcePlaylist::getTrack( unsigned int _track ) const
 	{
 		if( _track >= m_tracks.size() || _track < 0 )
 		{

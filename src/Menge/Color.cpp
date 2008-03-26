@@ -15,13 +15,13 @@ namespace	Menge
 	{ 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Color::operator [] ( const size_t _i ) const
+	float Color::operator [] ( const unsigned int _i ) const
 	{
 		assert( _i < 4 );
 		return *(&r + _i);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float& Color::operator [] ( const size_t _i )
+	float& Color::operator [] ( const unsigned int _i )
 	{
 		assert( _i < 4 );
 		return *(&r + _i);

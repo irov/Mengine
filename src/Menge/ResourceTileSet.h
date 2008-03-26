@@ -29,7 +29,7 @@ namespace Menge
 		ResourceTileSet( const std::string & _name );
 
 		ImageBlock getImageBlock( int tile );
-		unsigned int getTileSize();
+		float getTileSize();
 	public:
 		void loader( XmlElement * _xml ) override;
 
@@ -43,7 +43,7 @@ namespace Menge
 		RenderImageInterface* m_image;
 		typedef std::map< int, mt::vec4f > TTileSet;
 		TTileSet m_tileSet;
-		unsigned int m_tileSize;
+		float m_tileSize;
 		
 		//ImageBlock m_tiles[ MAX_TILESET_SIZE ][ MAX_TILESET_SIZE ]
 	};

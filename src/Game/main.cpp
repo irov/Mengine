@@ -99,10 +99,10 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	if( argc > 1 )
 	{
 		char* cmdline = 0;
-		size_t l = 0;
-		for ( int i = 1; i < argc; i++ )
+		unsigned int l = 0;
+		for ( int i = 1; i != argc; ++i )
 		{
-			l += strlen( argv[i] );
+			l += (unsigned int)strlen( argv[i] );
 		}
 		cmdline = new char[l+1];
 		cmdline[0] = '\0';

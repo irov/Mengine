@@ -5,16 +5,16 @@
 class	FileDataInterface
 {
 public:
-	virtual size_t read( void* _buffer, size_t _count ) = 0;
+	virtual unsigned int read( void* _buffer, unsigned int _count ) = 0;
 	virtual bool eof() const = 0;
 
-	virtual size_t size() const = 0;
+	virtual unsigned int size() const = 0;
 
-	virtual void seek( size_t _pos ) = 0;
-	virtual size_t tell() const = 0;
+	virtual void seek( unsigned int _pos ) = 0;
+	virtual unsigned int tell() const = 0;
 
 	virtual std::string getLine( bool _trimAfter ) const = 0;
-	virtual size_t skipLine( const std::string& _delim ) = 0;
+	virtual unsigned int skipLine( const std::string& _delim ) = 0;
 };
 
 class	FileSystemInterface

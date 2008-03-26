@@ -115,7 +115,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::string ResourceFont::getFontDir( const std::string & _fontName )
 	{
-		size_t index = _fontName.find_last_of("/");
+		std::string::size_type index = _fontName.find_last_of("/");
 
 		std::string fontDir = _fontName;
 
@@ -174,7 +174,7 @@ namespace Menge
                 continue;
             }
 
-			size_t start = line.find_first_of( "\t\n " );
+			std::string::size_type start = line.find_first_of( "\t\n " );
 			std::string name = line.substr( 0, start );
 			std::string value = line.substr( start + 1, line.size() );
 		

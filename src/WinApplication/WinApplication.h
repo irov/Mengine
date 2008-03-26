@@ -30,11 +30,11 @@ public:
 	bool init( const char* _name, ApplicationListenerInterface* _listener ) override;
 	void run() override;
 	void stop()	override;
-	WINDOW_HANDLE createWindow( const char* _name, unsigned int _width, unsigned int _height, bool _fullscreen ) override;
+	WINDOW_HANDLE createWindow( const char* _name, float _width, float _height, bool _fullscreen ) override;
 	float getMonitorAspectRatio() override;
 	void minimizeWindow() override;
 	void setPrimaryMonitorAspect( float _aspect );
-	void notifyWindowModeChanged( unsigned int _width, unsigned int _height, bool _fullscreen ) override;
+	void notifyWindowModeChanged( float _width, float _height, bool _fullscreen ) override;
 	//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
 	SystemDLLInterface* loadSystemDLL( const char* _dll ) override;
 	void unloadSystemDLL(SystemDLLInterface* _interface ) override;
@@ -60,8 +60,8 @@ private:
 	HANDLE m_mutex;	// for multiple instance tracking
 	bool m_focus;
 	std::string m_name;
-	unsigned int m_winWidth;
-	unsigned int m_winHeight;
+	float m_winWidth;
+	float m_winHeight;
 	bool	m_fullscreen;
 
 	float m_primaryMonitorAspect;

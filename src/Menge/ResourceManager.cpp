@@ -124,7 +124,7 @@ namespace Menge
 
 		ResourceReference * resource = it_find->second;
 
-		size_t inc = resource->incrementReference();
+		unsigned int inc = resource->incrementReference();
 		// resource has been loaded
 		if( inc == 1 && m_listeners.size() )
 		{
@@ -162,7 +162,7 @@ namespace Menge
 
 		if( it_find != m_mapResource.end() )
 		{
-			size_t inc = _resource->decrementReference();
+			unsigned int inc = _resource->decrementReference();
 			// resource has been unloaded
 			if( inc == 0 && m_listeners.size() )
 			{

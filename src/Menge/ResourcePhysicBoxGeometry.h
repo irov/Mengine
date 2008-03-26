@@ -14,7 +14,7 @@ namespace Menge
 
 	public:
 	
-		const GeometryInterface * getGeometry( size_t _index ) const;
+		const GeometryInterface * getGeometry( unsigned int _index ) const;
 
 	public:
 		void loader( XmlElement * _xml ) override;

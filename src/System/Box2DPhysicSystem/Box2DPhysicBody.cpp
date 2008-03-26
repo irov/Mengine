@@ -38,7 +38,7 @@ void Box2DPhysicBody::addShapeConvex(unsigned int _pointsNum, const float* _conv
 {
 	b2PolygonDef shape;
 	shape.vertexCount = _pointsNum;
-	for( int i = 0; i < _pointsNum; i++ )
+	for( unsigned int i = 0; i < _pointsNum; i++ )
 	{
 		shape.vertices[i].Set( _convex[ 2*i ], _convex[ 2*i + 1 ] );
 	}

@@ -87,7 +87,7 @@ namespace	Menge
 		{
 			m_delay -= delay;
 			
-			size_t frameSize = m_resource->getSequenceCount();
+			unsigned int frameSize = m_resource->getSequenceCount();
 			callEvent( "END_FRAME", "(OI)", this->getScript(), m_currentFrame );
 
 			if( ++m_currentFrame == frameSize )
@@ -109,7 +109,7 @@ namespace	Menge
 			delay *= m_animationFactor;
 		}
 
-		size_t currentImageIndex = m_resource->getSequenceIndex( m_currentFrame );
+		unsigned int currentImageIndex = m_resource->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
 
 	}
@@ -129,7 +129,7 @@ namespace	Menge
 		{
 			m_currentFrame = 0;
 
-			size_t currentImageIndex = m_resource->getSequenceIndex( m_currentFrame );
+			unsigned int currentImageIndex = m_resource->getSequenceIndex( m_currentFrame );
 			setImageIndex( currentImageIndex );
 		}
 
@@ -178,7 +178,7 @@ namespace	Menge
 			callEvent( "END_ANIMATION", "(O)", this->getScript() );
 		}
 
-		size_t currentImageIndex = m_resource->getSequenceIndex(m_currentFrame);
+		unsigned int currentImageIndex = m_resource->getSequenceIndex(m_currentFrame);
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -203,7 +203,7 @@ namespace	Menge
 		m_delay = 0;
 		m_currentFrame = 0;
 
-		size_t currentImageIndex = m_resource->getSequenceIndex( m_currentFrame );
+		unsigned int currentImageIndex = m_resource->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -44,14 +44,14 @@ namespace Menge
 		void setHotspotListener( PyObject * _handler );
 		
 	public:
-		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) override;
-		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
-		bool handleMouseMove( int _x, int _y, int _whell ) override;
+		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
+		bool handleMouseMove( float _x, float _y, int _whell ) override;
 
 	public:
-		bool handleGlobalMouseButtonEvent( size_t _button, bool _isDown ) override;
-		bool handleGlobalMouseMove( int _x, int _y, int _whell ) override;
-		bool handleGlobalKeyEvent( size_t _key, size_t _char, bool _isDown ) override;
+		bool handleGlobalMouseButtonEvent( unsigned int _button, bool _isDown ) override;
+		bool handleGlobalMouseMove( float _x, float _y, int _whell ) override;
+		bool handleGlobalKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
 
 	public:
 		void loader( XmlElement *_xml) override;

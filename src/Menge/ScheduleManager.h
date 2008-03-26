@@ -19,14 +19,14 @@ namespace Menge
 		{
 			bool dead;
 			bool updating;
-			size_t id;
+			unsigned int id;
 			float timing;
 			PyObject * script;
 		};
 
 	public:
-		size_t schedule( float _timing, PyObject * _func );
-		void remove( size_t _id );
+		unsigned int schedule( float _timing, PyObject * _func );
+		void remove( unsigned int _id );
 		void removeAll();
 
 	public:
@@ -38,7 +38,7 @@ namespace Menge
 
 		bool m_updating;
 		bool m_updatable;
-		size_t m_schedulesID;
+		unsigned int m_schedulesID;
 		TListSchedules m_schedules;
 	};
 }

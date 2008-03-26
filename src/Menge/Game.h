@@ -77,9 +77,9 @@ namespace Menge
 		void loaderResourceFile_( XmlElement * _xml );
 		
 	public:
-		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) override;
-		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override;
-		bool handleMouseMove( int _x, int _y, int _whell ) override;
+		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
+		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
+		bool handleMouseMove( float _x, float _y, int _whell ) override;
 		void handleMouseLeave();
 		void handleMouseEnter();
 
@@ -90,8 +90,8 @@ namespace Menge
 		const mt::vec2f & getResourceResolution() const;
 		const std::string& getTitle() const;
 		bool isContentResolutionFixed() const;
-		int getWidth() const;
-		int getHeight() const;
+		float getWidth() const;
+		float getHeight() const;
 		int getBits() const;
 		bool getFullscreen() const;
 		bool getVSync() const;
@@ -140,8 +140,8 @@ namespace Menge
 		TListDeclaration m_pathScenes;
 		TListDeclaration m_pathArrows;
 		//std::string m_pathArrows;
-		int m_width;
-		int m_height;
+		float m_width;
+		float m_height;
 		int m_bits;
 		bool m_fullScreen;
 		bool m_vsync;

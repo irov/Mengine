@@ -180,7 +180,7 @@ namespace Menge
 		TMapEntitiesXML::iterator it_insert =
 			m_mapEntitiesXML.insert( std::make_pair( _type, TVectorChar() ) ).first;
 
-		size_t size = file->size();
+		unsigned int size = file->size();
 		TVectorChar & blob = it_insert->second;
 		
 		blob.resize( size );
@@ -192,7 +192,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::doBuffer( const char * _buffer, size_t _size )
+	void ScriptEngine::doBuffer( const char * _buffer, unsigned int _size )
 	{		
 		try
 		{
@@ -217,6 +217,13 @@ namespace Menge
 		{
 			ScriptEngine::handleException();
 		}	
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScriptEngine::compileString( const std::string & _string, const std::string & _file )
+	{
+		pybind::compile_string( _string.c_str(), _file.c_str() );
 
 		return true;
 	}

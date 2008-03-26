@@ -25,14 +25,14 @@ namespace Menge
 		ResourceImageCell( const std::string & _name );
 
 	public:
-		size_t getCount() const override;
+		unsigned int getCount() const override;
 
-		const mt::vec2f & getMaxSize( size_t _frame ) const override;
-		const mt::vec2f & getSize( size_t _frame ) const override;
-		const mt::vec2f & getOffset( size_t _frame ) const override;
-		const mt::vec4f & getUV( size_t _frame ) const override;		
+		const mt::vec2f & getMaxSize( unsigned int _frame ) const override;
+		const mt::vec2f & getSize( unsigned int _frame ) const override;
+		const mt::vec2f & getOffset( unsigned int _frame ) const override;
+		const mt::vec4f & getUV( unsigned int _frame ) const override;		
 
-		const RenderImageInterface * getImage( size_t _frame ) const override;
+		const RenderImageInterface * getImage( unsigned int _frame ) const override;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -44,11 +44,13 @@ namespace Menge
 	protected:
 		std::string m_filename;
 
-		size_t m_numX;
-		size_t m_numY;
+		unsigned int m_numX;
+		unsigned int m_numY;
 
 		mt::vec2f m_offset;
-		std::vector<mt::vec4f>	m_uvs;
+		
+		typedef std::vector<mt::vec4f> TVectorUV;
+		TVectorUV m_uvs;
 
 		ImageFrame m_imageFrame;
 	};

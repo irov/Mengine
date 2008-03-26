@@ -24,7 +24,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LayerScene::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
+	bool LayerScene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		if( m_subScene )
 		{
@@ -34,7 +34,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LayerScene::handleMouseButtonEvent( size_t _button, bool _isDown )
+	bool LayerScene::handleMouseButtonEvent( unsigned int _button, bool _isDown )
 	{
 		if( m_subScene )
 		{
@@ -44,7 +44,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LayerScene::handleMouseMove( int _x, int _y, int _whell )
+	bool LayerScene::handleMouseMove( float _x, float _y, int _whell )
 	{
 		if( m_subScene )
 		{

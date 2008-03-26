@@ -27,7 +27,7 @@ namespace Menge
 		unsigned int getWidth() const;
 		unsigned int getHeight() const;
 		ImageBlock getTile( int _x, int _y );
-		unsigned int getTileSize();
+		float getTileSize();
 
 	public:
 		void loader( XmlElement * _xml ) override;

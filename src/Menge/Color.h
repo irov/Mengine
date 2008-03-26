@@ -18,8 +18,8 @@ namespace	Menge
 		float getG() const;
 		float getB() const;
 
-		float operator [] ( const size_t _i ) const;
-		float& operator [] ( const size_t _i );
+		float operator [] ( const unsigned int _i ) const;
+		float& operator [] ( const unsigned int _i );
 
 		Color operator * ( float _s ) const;
 		Color operator + ( const Color & _color ) const;

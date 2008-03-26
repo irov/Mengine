@@ -23,9 +23,9 @@ namespace Menge
 		void regTrap( MousePickerTrap * _trap, const Viewport & _viewport );
 		MousePickerTrap * pickTrap( HotSpot * _hotspot );
 
-		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown );
-		bool handleMouseButtonEvent( size_t _button, bool _isDown );
-		bool handleMouseMove( int _x, int _y, int _whell );
+		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
+		bool handleMouseButtonEvent( unsigned int _button, bool _isDown );
+		bool handleMouseMove( float _x, float _y, int _whell );
 
 	private:
 

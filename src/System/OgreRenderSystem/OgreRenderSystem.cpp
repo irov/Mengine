@@ -62,17 +62,17 @@ OgreRenderSystem::~OgreRenderSystem()
 		delete m_spriteMgr;
 	}
 
-	if(m_GUISystem)
-	{
-		delete m_GUISystem;
-		m_GUISystem = 0;
-	}
+	//if(m_GUISystem)
+	//{
+	//	delete m_GUISystem;
+	//	m_GUISystem = 0;
+	//}
 
-	if(m_GUIRenderer)
-	{
-		delete m_GUIRenderer;
-		m_GUIRenderer = 0;
-	}
+	//if(m_GUIRenderer)
+	//{
+	//	delete m_GUIRenderer;
+	//	m_GUIRenderer = 0;
+	//}
 }
 //////////////////////////////////////////////////////////////////////////
 CameraInterface * OgreRenderSystem::createCamera(const char * _name)
@@ -188,7 +188,7 @@ bool OgreRenderSystem::initialize( const char* _driver )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle )
+bool OgreRenderSystem::createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle )
 {
 	Ogre::NameValuePairList params;
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( _bits ) ) );
@@ -237,7 +237,8 @@ bool OgreRenderSystem::createRenderWindow( int _width, int _height, int _bits, b
 	//m_renderWindow->setActive( true );
 	return true;
 }
-int OgreRenderSystem::getResolutionList( int** _list )
+//////////////////////////////////////////////////////////////////////////
+unsigned int OgreRenderSystem::getResolutionList( float ** _list )
 {
 	Ogre::ConfigOptionMap& configMap = m_renderSys->getConfigOptions();
 	Ogre::StringVector res = configMap["Video Mode"].possibleValues;
@@ -247,15 +248,17 @@ int OgreRenderSystem::getResolutionList( int** _list )
 	it != it_end; 
 	++it )
 	{
-		int p1 = res[it].find('x');
-		int p2 = res[it].find('@');
-		int w = Ogre::StringConverter::parseInt( res[it].substr( 0, p1 - 1 ) );
-		int h = Ogre::StringConverter::parseInt( res[it].substr( p1 + 2, p2 - p1 - 2) );
-		m_displayResolutionList.push_back( w );
-		m_displayResolutionList.push_back( h );
+		float p1 = res[it].find('x');
+		float p2 = res[it].find('@');
+		float w = Ogre::StringConverter::parseReal( res[it].substr( 0, p1 - 1 ) );
+		float h = Ogre::StringConverter::parseReal( res[it].substr( p1 + 2, p2 - p1 - 2) );
+		m_resolutions.push_back( w );
+		m_resolutions.push_back( h );
 	}
-	*_list = &m_displayResolutionList[0]; 
-	return m_displayResolutionList.size();
+
+	*_list = &m_resolutions[0];
+
+	return m_resolutions.size();
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setContentResolution( const float * _resolution )
@@ -467,7 +470,7 @@ void	OgreRenderSystem::endLayer()
 	m_spriteMgr->diffZ();
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSystem::setFullscreenMode( unsigned int _width, unsigned int _height, bool _fullscreen )
+void OgreRenderSystem::setFullscreenMode( float _width, float _height, bool _fullscreen )
 {
 	m_renderWindow->setFullscreen( _fullscreen, _width, _height );
 }

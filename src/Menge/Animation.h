@@ -106,7 +106,7 @@ namespace Menge
 		bool m_autoStart;
 		bool m_playing;
 		bool m_looping;
-		size_t m_currentFrame;
+		unsigned int m_currentFrame;
 
 		float m_animationFactor;
 

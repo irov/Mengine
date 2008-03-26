@@ -13,8 +13,8 @@ public:
 	~XmlExpatParser();
 
 public:
-	void * makeBuffer( size_t _size );
-	bool parseXML( size_t _size, XmlElementListener * _listener );	
+	void * makeBuffer( unsigned int _size );
+	bool parseXML( unsigned int _size, XmlElementListener * _listener );	
 	bool parseStatus();
 
 public:

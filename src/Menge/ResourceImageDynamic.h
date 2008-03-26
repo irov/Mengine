@@ -15,14 +15,14 @@ namespace Menge
 		ResourceImageDynamic( const std::string & _name );
 
 	public:
-		virtual size_t getCount() const override;
-		virtual const mt::vec2f & getMaxSize( size_t _frame ) const override;
-		virtual const mt::vec2f & getSize( size_t _frame ) const override;
-		virtual const mt::vec2f & getOffset( size_t _frame ) const override;
-		virtual const mt::vec4f & getUV( size_t _frame ) const override;		
-		virtual const RenderImageInterface * getImage( size_t _frame ) const override;
+		virtual unsigned int getCount() const override;
+		virtual const mt::vec2f & getMaxSize( unsigned int _frame ) const override;
+		virtual const mt::vec2f & getSize( unsigned int _frame ) const override;
+		virtual const mt::vec2f & getOffset( unsigned int _frame ) const override;
+		virtual const mt::vec4f & getUV( unsigned int _frame ) const override;		
+		virtual const RenderImageInterface * getImage( unsigned int _frame ) const override;
 
-		RenderImageInterface * getImage( size_t _frame );
+		RenderImageInterface * getImage( unsigned int _frame );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -35,7 +35,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		ImageFrame  m_frame;
+		ImageFrame m_frame;
 		mt::vec2f m_offset;
 		mt::vec4f m_uv;
 	};

@@ -16,32 +16,32 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getMaxSize( size_t _frame ) const
+	const mt::vec2f & ResourceImageDefault::getMaxSize( unsigned int _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceImageDefault::getCount() const
+	unsigned int ResourceImageDefault::getCount() const
 	{
 		return m_vectorImageFrames.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getSize( size_t _frame ) const
+	const mt::vec2f & ResourceImageDefault::getSize( unsigned int _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getOffset( size_t _frame ) const
+	const mt::vec2f & ResourceImageDefault::getOffset( unsigned int _frame ) const
 	{
 		return m_offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageDefault::getUV( size_t _frame ) const
+	const mt::vec4f & ResourceImageDefault::getUV( unsigned int _frame ) const
 	{
 		return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceImageDefault::getImage( size_t _frame ) const
+	const RenderImageInterface * ResourceImageDefault::getImage( unsigned int _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].image;
 	}

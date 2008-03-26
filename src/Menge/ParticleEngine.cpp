@@ -26,7 +26,7 @@ namespace Menge
 			return 0;
 		}
 
-		size_t length = file->size();
+		unsigned int length = file->size();
 
 		std::vector<char> buffer;
 		buffer.resize( length );

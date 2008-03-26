@@ -22,13 +22,13 @@ public:
 public:
 	XmlExpatParser * newParser();
 	void deleteParser( XmlExpatParser * _parser );
-	void * makeBuffer( XmlExpatParser * _parser, size_t _size );
-	bool parseBuffer( XmlExpatParser * _parser, size_t _size, XmlElementListener * _listener );
+	void * makeBuffer( XmlExpatParser * _parser, unsigned int _size );
+	bool parseBuffer( XmlExpatParser * _parser, unsigned int _size, XmlElementListener * _listener );
 
 	bool parseStatus( XmlExpatParser * _parser );
 
 	template<class C, class F>
-	bool parseBufferMember( size_t _size, C * _self, F _method )
+	bool parseBufferMember( unsigned int _size, C * _self, F _method )
 	{
 		XmlElementListener * listener = makeXmlElementListener( _self, _method );
 		return parseBuffer( _size, listener );
@@ -38,7 +38,7 @@ public:
 	template<class C, class F>
 	bool parseMember( const char * _xml, C * _self, F _method )
 	{
-		size_t size = strlen( _xml );
+		unsigned int size = strlen( _xml );
 		void * buffer = makeBuffer( size );
 
 		memcpy( buffer, _xml, size );

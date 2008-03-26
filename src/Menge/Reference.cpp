@@ -9,7 +9,7 @@ namespace Menge
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Reference::incrementReference()
+	unsigned int Reference::incrementReference()
 	{
 		if( ++m_refcounter == 1 )
 		{
@@ -18,7 +18,7 @@ namespace Menge
 		return m_refcounter;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Reference::decrementReference()
+	unsigned int Reference::decrementReference()
 	{
 		if( m_refcounter == 0 )
 		{			
@@ -33,7 +33,7 @@ namespace Menge
 		return m_refcounter;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Reference::countReference()
+	unsigned int Reference::countReference()
 	{
 		return m_refcounter;
 	}

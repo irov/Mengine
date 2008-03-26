@@ -16,32 +16,32 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCell::getMaxSize( size_t _frame ) const
+	const mt::vec2f & ResourceImageCell::getMaxSize( unsigned int _frame ) const
 	{
 		return m_imageFrame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceImageCell::getCount() const 
+	unsigned int ResourceImageCell::getCount() const 
 	{
 		return m_uvs.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCell::getSize( size_t _frame ) const
+	const mt::vec2f & ResourceImageCell::getSize( unsigned int _frame ) const
 	{
 		return m_imageFrame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCell::getOffset( size_t _frame ) const
+	const mt::vec2f & ResourceImageCell::getOffset( unsigned int _frame ) const
 	{
 		return m_offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageCell::getUV( size_t _frame ) const
+	const mt::vec4f & ResourceImageCell::getUV( unsigned int _frame ) const
 	{
 		return m_uvs[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceImageCell::getImage( size_t _frame ) const
+	const RenderImageInterface * ResourceImageCell::getImage( unsigned int _frame ) const
 	{
 		return m_imageFrame.image;
 	}
@@ -69,16 +69,16 @@ namespace Menge
 	{
 		m_imageFrame = loadImageFrame( m_filename );
 
-		size_t count = m_numX * m_numY;
+		TVectorUV::size_type count = m_numX * m_numY;
 
 		m_imageFrame.size.x /= (float)m_numX;
 		m_imageFrame.size.y /= (float)m_numY;
 
 		m_uvs.resize( count );
 
-		for( size_t index = 0; index < count; ++index )
+		for( TVectorUV::size_type index = 0; index < count; ++index )
 		{
-			size_t offset = index / m_numX;
+			unsigned int offset = index / m_numX;
 
 			m_uvs[index].x = float( index % m_numX ) / m_numX;
 			m_uvs[index].y = float( offset ) / m_numY;

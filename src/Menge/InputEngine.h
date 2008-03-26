@@ -25,21 +25,21 @@ namespace Menge
 
 		void regHandle( InputHandler * _handle );
 
-		int getMouseX() const;
-		int getMouseY() const;
+		float getMouseX() const;
+		float getMouseY() const;
 		int getMouseWhell() const;
 
 		bool isAnyButtonDown() const;
 		bool isButtonDown( int _button ) const;
 
-		void setMousePos( int _x, int _y );
+		void setMousePos( float _x, float _y );
 
 		void setMouseBounded( bool _bounded );
 		bool getMouseBounded() const;
 
 	protected:
-		int m_mouseX;
-		int m_mouseY;
+		float m_mouseX;
+		float m_mouseY;
 		InputSystemInterface * m_interface;
 		InputHandler * m_handle;
 		bool m_mouseBounded;

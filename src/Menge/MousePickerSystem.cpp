@@ -78,7 +78,7 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
+	bool MousePickerSystem::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		Arrow * arrow = Holder<Player>::hostage()->getArrow();
 
@@ -105,7 +105,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseButtonEvent( size_t _button, bool _isDown )
+	bool MousePickerSystem::handleMouseButtonEvent( unsigned int _button, bool _isDown )
 	{
 		Arrow * arrow = Holder<Player>::hostage()->getArrow();
 
@@ -132,7 +132,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseMove( int _x, int _y, int _whell )
+	bool MousePickerSystem::handleMouseMove( float _x, float _y, int _whell )
 	{
 		Arrow * arrow = Holder<Player>::hostage()->getArrow();
 

@@ -49,7 +49,7 @@ namespace Menge
 		Holder<PhysicEngine>::hostage()->removeGeometry( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const GeometryInterface * ResourcePhysicConcaveGeometry::getGeometry( size_t _index ) const
+	const GeometryInterface * ResourcePhysicConcaveGeometry::getGeometry( unsigned int _index ) const
 	{
 		return m_interface;
 	}

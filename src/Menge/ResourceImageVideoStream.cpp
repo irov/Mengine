@@ -13,7 +13,6 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		ResourceImageVideoStream::ResourceImageVideoStream( const std::string & _name )
 		: ResourceImage( _name )
-		, m_filename("")
 		, m_uv( 0.0f, 0.0f, 1.0f, 1.0f )
 		, m_offset( 0.0f, 0.0f )
 		, m_size( 0.0f, 0.0f )
@@ -58,37 +57,37 @@ namespace Menge
 			->releaseImageVideoStream( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceImageVideoStream::getCount() const
+	unsigned int ResourceImageVideoStream::getCount() const
 	{
 		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageVideoStream::getSize( size_t _frame ) const
+	const mt::vec2f & ResourceImageVideoStream::getSize( unsigned int _frame ) const
 	{
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& ResourceImageVideoStream::getMaxSize( size_t _frame ) const
+	const mt::vec2f& ResourceImageVideoStream::getMaxSize( unsigned int _frame ) const
 	{
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageVideoStream::getOffset( size_t _frame ) const
+	const mt::vec2f & ResourceImageVideoStream::getOffset( unsigned int _frame ) const
 	{
 		return m_offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageVideoStream::getUV( size_t _frame ) const
+	const mt::vec4f & ResourceImageVideoStream::getUV( unsigned int _frame ) const
 	{
 		return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceImageVideoStream::getImage( size_t _frame ) const
+	const RenderImageInterface * ResourceImageVideoStream::getImage( unsigned int _frame ) const
 	{
 		return m_interface;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* ResourceImageVideoStream::getImage( size_t _frame )
+	RenderImageInterface* ResourceImageVideoStream::getImage( unsigned int _frame )
 	{
 		return m_interface;
 	}

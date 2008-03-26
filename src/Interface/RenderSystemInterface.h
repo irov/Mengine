@@ -6,11 +6,11 @@ typedef void* WINDOW_HANDLE;
 
 struct	TextureDesc
 {
-	const char *	name;
-	size_t			filter;
+	const char * name;
+	unsigned int filter;
 
-	void*			buffer;
-	size_t			size;
+	void * buffer;
+	unsigned int size;
 };
 
 enum EBlendFactor 
@@ -30,8 +30,8 @@ enum EBlendFactor
 class RenderImageInterface
 {
 public:
-	virtual size_t getWidth() const = 0;
-	virtual size_t getHeight() const = 0;
+	virtual float getWidth() const = 0;
+	virtual float getHeight() const = 0;
 	virtual void writeToFile( const char* _filename ) = 0;
 };
 
@@ -186,8 +186,8 @@ class	RenderSystemInterface
 public:
 
 	virtual bool initialize( const char* _driver ) = 0;
-	virtual bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle ) = 0;
-	virtual int getResolutionList( int** ) = 0;
+	virtual bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle ) = 0;
+	virtual unsigned int getResolutionList( float ** ) = 0;
 	// Render frame into _image
 	// int rect[4] - rectangle represents desired frame area in pixels
 	virtual void render( RenderImageInterface* _image, const int* rect = 0 ) = 0;
@@ -239,7 +239,7 @@ public:
 	virtual	void	beginLayer() = 0;
 	virtual	void	endLayer() = 0;
 
-	virtual void	setFullscreenMode( unsigned int _width, unsigned int _height, bool _fullscreen ) = 0;
+	virtual void	setFullscreenMode( float _width, float _height, bool _fullscreen ) = 0;
 	virtual void	setViewportDimensions( float _width, float _height, float _renderFactor ) = 0;
 
 	//new

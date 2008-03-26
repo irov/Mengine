@@ -190,17 +190,13 @@ static LRESULT CALLBACK s_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 	return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 }
 //////////////////////////////////////////////////////////////////////////
-WINDOW_HANDLE WinApplication::createWindow( const char* _name, unsigned int _width, unsigned int _height, bool _fullscreen )
+WINDOW_HANDLE WinApplication::createWindow( const char* _name, float _width, float _height, bool _fullscreen )
 {
 	DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
 	RECT rc;
 
 	m_winWidth = _width;
 	m_winHeight = _height;
-	int width = _width;
-	int height = _height;
-	int left;
-	int top;
 
 	if (!_fullscreen)
 	{
@@ -209,14 +205,13 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, unsigned int _wid
 	else
 	{
 		dwStyle |= WS_POPUP;
-		top = left = 0;
 	}
 	// Calculate window dimensions required
 	// to get the requested client area
-	SetRect(&rc, 0, 0, width, height);
+	SetRect(&rc, 0, 0, (int)m_winWidth, (int)m_winHeight);
 	AdjustWindowRect(&rc, dwStyle, false);
-	width = rc.right - rc.left;
-	height = rc.bottom - rc.top;
+	LONG width = rc.right - rc.left;
+	LONG height = rc.bottom - rc.top;
 
 	int screenw = ::GetSystemMetrics(SM_CXSCREEN);
 	int screenh = ::GetSystemMetrics(SM_CYSCREEN);
@@ -224,8 +219,8 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, unsigned int _wid
 		width = screenw;
 	if ( height > screenh )
 		height = screenh;
-	left = (screenw - width) / 2;
-	top = (screenh - height) / 2;
+	LONG left = (screenw - width) / 2;
+	LONG top = (screenh - height) / 2;
 
 
 	/// patch for ansi names
@@ -359,7 +354,7 @@ LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 			::ShowCursor( FALSE );
 			m_listener->onMouseEnter();
 		}
-		m_listener->onMouseMove( (int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), 0 );
+		m_listener->onMouseMove( (float)(short)LOWORD(lParam), (float)(short)HIWORD(lParam), 0 );
 		break;
 	case WM_LBUTTONDOWN:
 		m_listener->onMouseButtonEvent( 0, true );
@@ -393,7 +388,7 @@ void WinApplication::minimizeWindow()
 	::ShowWindow( m_hWnd, SW_MINIMIZE );
 }
 //////////////////////////////////////////////////////////////////////////
-void WinApplication::notifyWindowModeChanged( unsigned int _width, unsigned int _height, bool _fullscreen )
+void WinApplication::notifyWindowModeChanged( float _width, float _height, bool _fullscreen )
 {
 	m_winWidth = _width;
 	m_winHeight = _height;
@@ -405,7 +400,7 @@ void WinApplication::notifyWindowModeChanged( unsigned int _width, unsigned int 
 		dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
 
 		SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
-		SetWindowPos(m_hWnd, HWND_NOTOPMOST, 0, 0, _width, _height,
+		SetWindowPos(m_hWnd, HWND_NOTOPMOST, 0, 0, (int)_width, (int)_height,
 			SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOACTIVATE);
 
 	}

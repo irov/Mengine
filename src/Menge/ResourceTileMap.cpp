@@ -101,7 +101,7 @@ namespace Menge
 		return m_height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ResourceTileMap::getTileSize()
+	float ResourceTileMap::getTileSize()
 	{
 		return m_tileSet->getTileSize();
 	}

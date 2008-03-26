@@ -14,17 +14,17 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceAnimation::getSequenceCount() const
+	unsigned int ResourceAnimation::getSequenceCount() const
 	{
 		return m_vectorSequence.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceAnimation::getSequenceDelay( size_t _sequence ) const
+	float ResourceAnimation::getSequenceDelay( unsigned int _sequence ) const
 	{
 		return m_vectorSequence[ _sequence ].delay;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceAnimation::getSequenceIndex( size_t _sequence ) const
+	unsigned int ResourceAnimation::getSequenceIndex( unsigned int _sequence ) const
 	{
 		return m_vectorSequence[ _sequence ].index;
 	}

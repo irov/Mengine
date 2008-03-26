@@ -56,12 +56,12 @@ XmlExpatParser::~XmlExpatParser()
 	XML_ParserFree( m_parser );
 }
 //////////////////////////////////////////////////////////////////////////
-void * XmlExpatParser::makeBuffer( size_t _size )
+void * XmlExpatParser::makeBuffer( unsigned int _size )
 {
 	return XML_GetBuffer( m_parser, _size );
 }
 //////////////////////////////////////////////////////////////////////////
-bool XmlExpatParser::parseXML( size_t _size, XmlElementListener * _listener )
+bool XmlExpatParser::parseXML( unsigned int _size, XmlElementListener * _listener )
 {
 	XML_SetUserData( m_parser, this );
 	XML_SetElementHandler( m_parser, cbBeginElement, cbEndElement );

@@ -44,13 +44,13 @@ namespace Menge
 		/*!
 		\param _index индекс.
 		*/
-		virtual void setImageIndex( size_t _index );
+		virtual void setImageIndex( unsigned int _index );
 
 		//! ¬озвращает текущий индекс в списке изображений
 		/*!
 		\return индекс
 		*/
-		virtual size_t getImageIndex() const;
+		virtual unsigned int getImageIndex() const;
 
 		//! ”становка ресурса.
 		/*!
@@ -140,7 +140,7 @@ namespace Menge
 		ResourceImage * m_resource;
 		std::string m_resourcename;
 
-		size_t m_currentImageIndex;
+		unsigned int m_currentImageIndex;
 
 		bool m_centerAlign;
 		bool m_flipX;

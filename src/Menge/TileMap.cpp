@@ -74,11 +74,11 @@ namespace	Menge
 		const Viewport& viewport = Holder<RenderEngine>::hostage()->getRenderViewport();
 		// TODO: viewport filtering
 		const mt::mat3f & wm = getWorldMatrix();
-		unsigned int tileSize = m_resourceMap->getTileSize();
+		float tileSize = m_resourceMap->getTileSize();
 
-		for( int i = 0; i < m_width; i++ )
+		for( unsigned int i = 0; i < m_width; i++ )
 		{
-			for( int j = 0; j < m_height; j++ )
+			for( unsigned int j = 0; j < m_height; j++ )
 			{
 				ImageBlock tile = m_resourceMap->getTile( i, j );
 

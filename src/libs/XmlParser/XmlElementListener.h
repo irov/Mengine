@@ -16,7 +16,7 @@ public:
 	virtual void parseXML( XmlElement * _xml ) = 0;
 
 protected:
-	size_t m_reference;
+	unsigned int m_reference;
 };
 
 template<class C, class M>

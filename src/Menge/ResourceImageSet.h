@@ -28,8 +28,8 @@ namespace Menge
 		void addFrameUV( const mt::vec4f & _uv );
 
 	public:
-		const mt::vec2f & getMaxSize( size_t _frame ) const override;
-		const mt::vec2f & getSize( size_t _frame ) const override;
+		const mt::vec2f & getMaxSize( unsigned int _frame ) const override;
+		const mt::vec2f & getSize( unsigned int _frame ) const override;
 
 	public:
 		void loader( XmlElement * _xml ) override;

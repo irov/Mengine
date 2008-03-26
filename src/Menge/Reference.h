@@ -13,25 +13,25 @@ namespace Menge
 		//! Увеличивает счетчик на еденицу
 		/*!
 		*/
-		virtual size_t incrementReference();
+		virtual unsigned int incrementReference();
 
 		//! Уменьшает счетчик на еденицу
 		/*!
 			return количество ссылок.
 		*/
-		virtual size_t decrementReference();
+		virtual unsigned int decrementReference();
 
 		//! Количество ссылок
 		/*!
 			return количество ссылок.
 		*/
-		virtual size_t countReference();
+		virtual unsigned int countReference();
 
 	public:
 		virtual void _incrementZero();
 		virtual void _decrementZero();
 
 	protected:
-		size_t m_refcounter;
+		unsigned int m_refcounter;
 	};
 }

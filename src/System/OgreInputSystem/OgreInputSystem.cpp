@@ -54,14 +54,14 @@ bool OgreInputSystem::initialize( WINDOW_HANDLE _winHandle )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreInputSystem::captureMouse( int _x, int _y, int _maxX, int _maxY )
+bool OgreInputSystem::captureMouse( float _x, float _y, float _maxX, float _maxY )
 {
 	m_mouse = static_cast<OIS::Mouse*>( m_inputManager->createInputObject( OIS::OISMouse, true ) );
 	OIS::MouseState& state = const_cast<OIS::MouseState&>( m_mouse->getMouseState() );
-	state.width = _maxX;
-	state.height = _maxY;
-	state.X.abs = _x;
-	state.Y.abs = _y;
+	state.width = int(_maxX);
+	state.height = int(_maxY);
+	state.X.abs = int(_x);
+	state.Y.abs = int(_y);
 	m_mouse->setEventCallback( this );
 	return true;
 }
@@ -117,16 +117,16 @@ bool OgreInputSystem::isModifierDown( int _modifier )
 	return m_keyboard->isModifierDown( OIS::Keyboard::Modifier(_modifier) );
 }
 //////////////////////////////////////////////////////////////////////////
-int OgreInputSystem::getMouseX() const
+float OgreInputSystem::getMouseX() const
 {
 	const OIS::MouseState & ms = m_mouse->getMouseState();
-	return ms.X.abs;
+	return float(ms.X.abs);
 }
 //////////////////////////////////////////////////////////////////////////
-int OgreInputSystem::getMouseY() const
+float OgreInputSystem::getMouseY() const
 {
 	const OIS::MouseState & ms = m_mouse->getMouseState();
-	return ms.Y.abs;
+	return float(ms.Y.abs);
 }
 //////////////////////////////////////////////////////////////////////////
 int OgreInputSystem::getMouseWhell() const
@@ -151,7 +151,7 @@ bool OgreInputSystem::mouseMoved( const OIS::MouseEvent &arg )
 {
 	if( m_handler )
 	{
-		m_handler->handleMouseMove( arg.state.X.rel, arg.state.Y.rel, arg.state.Z.rel );
+		m_handler->handleMouseMove( float(arg.state.X.rel), float(arg.state.Y.rel), arg.state.Z.rel );
 	}
 
 	return true;

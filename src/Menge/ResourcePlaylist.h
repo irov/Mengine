@@ -46,7 +46,7 @@ namespace Menge
 		\param _track индекс трека
 		\return имя трека
 		*/
-		const std::string & getTrack( size_t _track ) const;
+		const std::string & getTrack( unsigned int _track ) const;
 
 		//! Возвращает флаг зацикливания
 		/*!

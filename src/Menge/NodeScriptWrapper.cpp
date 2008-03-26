@@ -60,13 +60,13 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		static size_t schedule( float _timing, PyObject * _script )
+		static unsigned int schedule( float _timing, PyObject * _script )
 		{
 			return Holder<ScheduleManager>::hostage()
 				->schedule( _timing, _script );
 		}
 
-		static void scheduleRemove( size_t _id )
+		static void scheduleRemove( unsigned int _id )
 		{
 			Holder<ScheduleManager>::hostage()
 				->remove( _id );
@@ -90,13 +90,13 @@ namespace Menge
 				->setUpdatable( true );
 		}
 		
-		static int getMouseX()
+		static float getMouseX()
 		{
 			return Holder<InputEngine>::hostage()
 				->getMouseX();
 		}
 
-		static int getMouseY()
+		static float getMouseY()
 		{
 			return Holder<InputEngine>::hostage()
 				->getMouseY();

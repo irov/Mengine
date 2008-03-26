@@ -36,14 +36,14 @@ namespace Menge
 		/*!
 		\return количество изображений
 		*/
-		virtual size_t getSequenceCount() const;
+		virtual unsigned int getSequenceCount() const;
 
 		//! ¬озвращает задержку дл€ _sequence кадра
 		/*!
 		\param _sequence индекс кадра
 		\return задержка
 		*/
-		virtual float getSequenceDelay( size_t _sequence ) const;
+		virtual float getSequenceDelay( unsigned int _sequence ) const;
 
 		
 		//! ¬озвращает индекс изображени€
@@ -51,7 +51,7 @@ namespace Menge
 		\param _sequence индекс кадра
 		\return индекс изображени€
 		*/
-		virtual size_t getSequenceIndex( size_t _sequence ) const;
+		virtual unsigned int getSequenceIndex( unsigned int _sequence ) const;
 
 	public:
 		void loader( XmlElement * _xml );

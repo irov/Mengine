@@ -12,7 +12,7 @@ namespace Menge
 	struct FileBuffer
 	{
 		void * buffer;
-		size_t size;
+		unsigned int size;
 	};
 
 	typedef std::vector<char> TVectorChar;

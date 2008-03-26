@@ -31,5 +31,5 @@ protected:
 
 	const char * m_title;
 	const char ** m_attrebutes;
-	size_t m_attrIterator;
+	unsigned int m_attrIterator;
 };

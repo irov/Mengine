@@ -123,7 +123,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
+	bool HotSpot::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		bool handle = false;
 
@@ -135,7 +135,7 @@ namespace	Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleMouseButtonEvent( size_t _button, bool _isDown )
+	bool HotSpot::handleMouseButtonEvent( unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
 
@@ -147,19 +147,19 @@ namespace	Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleMouseMove( int _x, int _y, int _whell )
+	bool HotSpot::handleMouseMove( float _x, float _y, int _whell )
 	{
 		bool handle = false;
 
 		if( !handle )
 		{
-			askEvent( handle, "MOUSE_MOVE", "(Oiii)", this->getScript(), _x, _y, _whell );
+			askEvent( handle, "MOUSE_MOVE", "(Offi)", this->getScript(), _x, _y, _whell );
 		}
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleGlobalMouseButtonEvent( size_t _button, bool _isDown )
+	bool HotSpot::handleGlobalMouseButtonEvent( unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
 
@@ -171,19 +171,19 @@ namespace	Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleGlobalMouseMove( int _x, int _y, int _whell )
+	bool HotSpot::handleGlobalMouseMove( float _x, float _y, int _whell )
 	{
 		bool handle = false;
 
 		if( !handle )
 		{
-			askEvent( handle, "GLOBAL_MOUSE_MOVE", "(Oiii)", this->getScript(), _x, _y, _whell );
+			askEvent( handle, "GLOBAL_MOUSE_MOVE", "(Offi)", this->getScript(), _x, _y, _whell );
 		}
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleGlobalKeyEvent( size_t _key, size_t _char, bool _isDown )
+	bool HotSpot::handleGlobalKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		bool handle = false;
 

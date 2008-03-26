@@ -13,13 +13,13 @@ namespace Menge
 	class GlobalMouseHandler
 	{
 	public:
-		virtual bool handleGlobalMouseButtonEvent( size_t _button, bool _isDown ) = 0;
-		virtual bool handleGlobalMouseMove( int _x, int _y, int _whell ) = 0;
+		virtual bool handleGlobalMouseButtonEvent( unsigned int _button, bool _isDown ) = 0;
+		virtual bool handleGlobalMouseMove( float _x, float _y, int _whell ) = 0;
 	};
 
 	class GlobalKeyHandler
 	{
 	public:
-		virtual bool handleGlobalKeyEvent( size_t _key, size_t _char, bool _isDown ) = 0;
+		virtual bool handleGlobalKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) = 0;
 	};
 }

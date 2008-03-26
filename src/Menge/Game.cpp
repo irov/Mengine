@@ -332,7 +332,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
+	bool Game::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		bool handle = false;
 
@@ -355,7 +355,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseButtonEvent( size_t _button, bool _isDown )
+	bool Game::handleMouseButtonEvent( unsigned int _button, bool _isDown )
 	{
 		bool handle = false;
 
@@ -372,13 +372,13 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseMove( int _x, int _y, int _whell )
+	bool Game::handleMouseMove( float _x, float _y, int _whell )
 	{
 		bool handle = false;
 
 		if( !handle )
 		{
-			askEvent( handle, "MOUSE_MOVE", "(iii)", _x, _y, _whell );
+			askEvent( handle, "MOUSE_MOVE", "(ffi)", _x, _y, _whell );
 		}
 		
 		if( !handle )
@@ -875,12 +875,12 @@ namespace Menge
 		return m_fixedContentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int Game::getWidth() const
+	float Game::getWidth() const
 	{
 		return m_width;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int Game::getHeight() const
+	float Game::getHeight() const
 	{
 		return m_height;
 	}

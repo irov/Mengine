@@ -78,7 +78,7 @@ namespace Menge
 	{
 		for( TVecTrack::size_type i = 0; i < m_tracks.size(); ++i ) 
 		{
-			size_t rnd = rand() % m_tracks.size();
+			unsigned int rnd = rand() % m_tracks.size();
 			std::swap( m_tracks[i], m_tracks[rnd] );
 		}
 

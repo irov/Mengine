@@ -77,8 +77,8 @@ namespace Menge
 		void onMouseLeave() override;
 		void onMouseEnter() override;
 		bool onMouseButtonEvent( int _button, bool _isDown ) override;
-		bool onMouseMove( int _x, int _y, int _whell ) override;
-		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown );
+		bool onMouseMove( float _x, float _y, int _whell ) override;
+		bool onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
 
 		void frameStarted();
 		void frameEnded();
@@ -90,7 +90,7 @@ namespace Menge
 		bool getSoundEnabled()	const;
 
 		void minimizeWindow();
-		void notifyWindowModeChanged( unsigned int _width, unsigned int _height, bool _fullscreen );
+		void notifyWindowModeChanged( float _width, float _height, bool _fullscreen );
 
 	private:
 		ApplicationInterface* m_interface;

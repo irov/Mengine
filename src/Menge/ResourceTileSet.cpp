@@ -4,10 +4,10 @@
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
 
-static int s_tileNumToCode( int tile, int tileNum )
+static unsigned int s_tileNumToCode( unsigned int tile, unsigned int tileNum )
 {
-	int ret = 0;
-	int d = 1;
+	unsigned int ret = 0;
+	unsigned int d = 1;
 	while( tile )
 	{
 		ret += ( tile % tileNum ) * d;
@@ -57,13 +57,13 @@ namespace Menge
 
 		unsigned int tileSetSize = m_tiles * m_tiles;
 		m_tileSize = m_image->getWidth() / tileSetSize;
-		int tilesNum = tileSetSize * tileSetSize;
+		unsigned int tilesNum = tileSetSize * tileSetSize;
 
-		for( int tile = 0; tile < tilesNum; tile++ )
+		for( unsigned int tile = 0; tile < tilesNum; tile++ )
 		{
-			int tileCode = s_tileNumToCode( tile, m_tiles );
-			int y = tile / tileSetSize;
-			int x = tile % tileSetSize;
+			unsigned int tileCode = s_tileNumToCode( tile, m_tiles );
+			unsigned int y = tile / tileSetSize;
+			unsigned int x = tile % tileSetSize;
 			mt::vec4f uv( x * m_tileSize, y * m_tileSize, ( x + 1 ) * m_tileSize, ( y + 1 ) * m_tileSize );
 			uv /= m_image->getWidth();
 			m_tileSet[ tileCode ] = uv;
@@ -85,7 +85,7 @@ namespace Menge
 		return block;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ResourceTileSet::getTileSize()
+	float ResourceTileSet::getTileSize()
 	{
 		return m_tileSize;
 	}

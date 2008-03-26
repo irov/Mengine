@@ -27,8 +27,8 @@ public:
 
 public:
 	bool initialize( const char* _driver ) override;
-	bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle ) override;
-	int getResolutionList( int** _list ) override;
+	bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle ) override;
+	unsigned int getResolutionList(  float ** _list ) override;
 
 	void render( RenderImageInterface* _outImage, const int* rect = NULL ) override;
 	void render() override;
@@ -73,7 +73,7 @@ public:
 	void	beginLayer() override;
 	void	endLayer() override;
 
-	void setFullscreenMode( unsigned int _width, unsigned int _height, bool _fullscreen ) override;
+	void setFullscreenMode( float _width, float _height, bool _fullscreen ) override;
 	void loadResource( Ogre::Resource* _resource );
 	void setViewportDimensions( float _width, float _height, float _renderFactor ) override;
 
@@ -115,7 +115,9 @@ private:
 	CEGUI::OgreCEGUIRenderer* m_GUIRenderer;
 	CEGUI::System*	m_GUISystem;
 
-	std::vector<int> m_displayResolutionList;
+	typedef std::vector<float> TVectorResolution;
+	TVectorResolution m_resolutions;
+
 	RenderSystemListener* m_eventListener;
 
 	float m_viewportDimensions[4];

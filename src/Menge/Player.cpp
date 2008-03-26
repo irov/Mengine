@@ -110,7 +110,7 @@ namespace Menge
 		*/
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
+	bool Player::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		bool handler = false;
 
@@ -147,7 +147,7 @@ namespace Menge
 		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::handleMouseButtonEvent( size_t _button, bool _isDown )
+	bool Player::handleMouseButtonEvent( unsigned int _button, bool _isDown )
 	{
 		bool handler = false;
 
@@ -184,7 +184,7 @@ namespace Menge
 		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::handleMouseMove( int _x, int _y, int _whell )
+	bool Player::handleMouseMove( float _x, float _y, int _whell )
 	{
 		bool handler = false;
 

@@ -49,17 +49,17 @@ namespace	Menge
 		NodeCore::update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer3D::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
+	bool Layer3D::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer3D::handleMouseButtonEvent( size_t _button, bool _isDown )
+	bool Layer3D::handleMouseButtonEvent( unsigned int _button, bool _isDown )
 	{
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer3D::handleMouseMove( int _x, int _y, int _whell )
+	bool Layer3D::handleMouseMove( float _x, float _y, int _whell )
 	{
 		return false;
 	}

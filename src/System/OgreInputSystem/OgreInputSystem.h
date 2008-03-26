@@ -14,7 +14,7 @@ public:
 
 public:
 	bool initialize( WINDOW_HANDLE _winHandle ) override;
-	bool captureMouse( int _x, int _y, int _maxX, int _maxY ) override;
+	bool captureMouse( float _x, float _y, float _maxX, float _maxY ) override;
 	void releaseMouse() override;
 
 public:
@@ -27,8 +27,8 @@ public:
 	bool isKeyDown( int _key ) override;
 	bool isModifierDown( int _modifier ) override;
 
-	int getMouseX() const override;
-	int getMouseY() const override;
+	float getMouseX() const override;
+	float getMouseY() const override;
 	int getMouseWhell() const override;
 
 	bool isAnyButtonDown() const override;

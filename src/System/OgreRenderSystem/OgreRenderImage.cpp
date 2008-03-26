@@ -40,12 +40,12 @@ OgreRenderImage::~OgreRenderImage()
 		->remove( m_description );
 }
 //////////////////////////////////////////////////////////////////////////
-size_t OgreRenderImage::getWidth() const
+float OgreRenderImage::getWidth() const
 { 
 	return m_texture->getWidth();
 }
 //////////////////////////////////////////////////////////////////////////
-size_t OgreRenderImage::getHeight() const
+float OgreRenderImage::getHeight() const
 {
 	return m_texture->getHeight();
 }

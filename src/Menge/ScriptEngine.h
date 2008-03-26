@@ -37,6 +37,8 @@ namespace Menge
 	public:
 		void init();
 
+		bool compileString( const std::string & _string, const std::string & _file );
+
 		bool doFile( const std::string & _file );
 		bool doString( const std::string & _string );
 
@@ -57,7 +59,7 @@ namespace Menge
 
 		static void incref( PyObject * _object );
 		static void decref( PyObject * _object );
-		static size_t refCount( PyObject * _obj );
+		static unsigned int refCount( PyObject * _obj );
 
 	public:
 		PyObject * genEvent( const std::string &_name );
@@ -84,7 +86,7 @@ namespace Menge
 		static void handleException();
 	
 	private:
-		void doBuffer( const char * _buffer, size_t _size );
+		void doBuffer( const char * _buffer, unsigned int _size );
 		
 
 	private:

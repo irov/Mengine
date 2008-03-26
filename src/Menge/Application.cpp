@@ -35,17 +35,17 @@ namespace Menge
 		{}
 
 	public:
-		bool handleKeyEvent( size_t _key, size_t _char, bool _isDown ) override
+		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override
 		{
-			return m_app->handleKeyEvent( _key, _char, _isDown );
+			return m_app->onKeyEvent( _key, _char, _isDown );
 		}
 
-		bool handleMouseButtonEvent( size_t _button, bool _isDown ) override
+		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override
 		{
 			return m_app->onMouseButtonEvent( _button, _isDown );
 		}
 
-		bool handleMouseMove( int _x, int _y, int _whell ) override
+		bool handleMouseMove( float _x, float _y, int _whell ) override
 		{
 			return m_app->onMouseMove( _x, _y, _whell );
 		}
@@ -296,7 +296,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::handleKeyEvent( size_t _key, size_t _char, bool _isDown )
+	bool Application::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		return Holder<Game>::hostage()->handleKeyEvent( _key, _char, _isDown );
 	}
@@ -306,11 +306,11 @@ namespace Menge
 		return Holder<Game>::hostage()->handleMouseButtonEvent( _button, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onMouseMove( int _x, int _y, int _whell )
+	bool Application::onMouseMove( float _x, float _y, int _whell )
 	{
 		InputEngine* inpEng = Holder<InputEngine>::hostage();
-		int oldx = 0;
-		int oldy = 0;
+		float oldx = 0.f;
+		float oldy = 0.f;
 		if( !inpEng->getMouseBounded() )
 		{ 
 			oldx = inpEng->getMouseX();
@@ -418,7 +418,7 @@ namespace Menge
 			m_phycisTiming += _timing;
 			while( m_phycisTiming >= timeStep * 1000.f )
 			{
-				m_physicEngine2D->update( timeStep, 10.f );
+				m_physicEngine2D->update( timeStep, 10 );
 				m_phycisTiming -= timeStep * 1000.f;
 			}
 		}
@@ -473,7 +473,7 @@ namespace Menge
 		return m_currentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::notifyWindowModeChanged( unsigned int _width, unsigned int _height, bool _fullscreen )
+	void Application::notifyWindowModeChanged( float _width, float _height, bool _fullscreen )
 	{
 		m_interface->notifyWindowModeChanged( _width, _height, _fullscreen );
 	}

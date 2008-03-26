@@ -15,7 +15,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ScheduleManager::schedule( float _timing, PyObject * _func )
+	unsigned int ScheduleManager::schedule( float _timing, PyObject * _func )
 	{
 		ScheduleEvent event;
 
@@ -33,11 +33,11 @@ namespace Menge
 		return event.id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::remove( size_t _id )
+	void ScheduleManager::remove( unsigned int _id )
 	{
 		struct FScheduleFind
 		{
-			FScheduleFind( size_t _id )
+			FScheduleFind( unsigned int _id )
 				: m_id(_id)
 			{
 			}
@@ -47,7 +47,7 @@ namespace Menge
 				return _event.id == m_id;
 			}
 
-			size_t m_id;
+			unsigned int m_id;
 		};
 			
 		TListSchedules::iterator it_find = 

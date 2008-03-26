@@ -26,12 +26,12 @@ void OgreRenderVideoStream::pause()
 	m_clip->changePlayMode( Ogre::TextureEffectPause );
 }
 //////////////////////////////////////////////////////////////////////////
-size_t OgreRenderVideoStream::getWidth() const
+float OgreRenderVideoStream::getWidth() const
 {
 	return m_texture->getWidth();
 }
 //////////////////////////////////////////////////////////////////////////
-size_t OgreRenderVideoStream::getHeight() const
+float OgreRenderVideoStream::getHeight() const
 {
 	return m_texture->getHeight();
 }

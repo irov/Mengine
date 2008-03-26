@@ -20,12 +20,12 @@ void XmlParser::deleteParser( XmlExpatParser * _parser )
 	delete _parser;
 }
 //////////////////////////////////////////////////////////////////////////
-void * XmlParser::makeBuffer( XmlExpatParser * _parser, size_t _size )
+void * XmlParser::makeBuffer( XmlExpatParser * _parser, unsigned int _size )
 {
 	return _parser->makeBuffer( _size );
 }
 //////////////////////////////////////////////////////////////////////////
-bool XmlParser::parseBuffer( XmlExpatParser * _parser, size_t _size, XmlElementListener * _listener )
+bool XmlParser::parseBuffer( XmlExpatParser * _parser, unsigned int _size, XmlElementListener * _listener )
 {
 	return _parser->parseXML( _size, _listener );
 }

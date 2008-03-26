@@ -159,12 +159,12 @@ namespace	Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setImageIndex( size_t _index )
+	void Sprite::setImageIndex( unsigned int _index )
 	{
 		m_currentImageIndex = _index;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Sprite::getImageIndex() const
+	unsigned int Sprite::getImageIndex() const
 	{
 		return m_currentImageIndex;
 	}

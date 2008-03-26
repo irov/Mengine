@@ -36,10 +36,10 @@ namespace	Menge
 
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
-		int mx = inputEng->getMouseX();
-		int my = inputEng->getMouseY();
+		float mx = inputEng->getMouseX();
+		float my = inputEng->getMouseY();
 		
-		mt::vec2f pos( (float)mx, (float)my );
+		mt::vec2f pos( mx, my );
 		setLocalPosition( pos + m_offsetClick );
 	}
 	//////////////////////////////////////////////////////////////////////////

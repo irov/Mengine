@@ -20,8 +20,8 @@ namespace Menge
 		, m_renderCamera(0)
 		, m_windowCreated( false )
 		, m_renderFactor( 1.0f )
-		, m_viewportWidth(1024)
-		, m_viewportHeight(768)
+		, m_viewportWidth(1024.f)
+		, m_viewportHeight(768.f)
 	{
 		Holder<RenderEngine>::keep( this );
 	}
@@ -33,7 +33,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle /* = 0  */)
+	bool RenderEngine::createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle /* = 0  */)
 	{
 		m_fullscreen = _fullscreen;
 		m_viewportWidth = _width;
@@ -126,7 +126,7 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::loadImage( const std::string & _filename, size_t _filter )
+	RenderImageInterface * RenderEngine::loadImage( const std::string & _filename, unsigned int _filter )
 	{
 		FileDataInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
 
@@ -138,7 +138,7 @@ namespace Menge
 
 		static std::vector<char> s_buff;
 
-		size_t buff_size = file->size();
+		unsigned int buff_size = file->size();
 		s_buff.resize( buff_size );
 		file->read( &s_buff[0], buff_size );
 
@@ -229,8 +229,8 @@ namespace Menge
 		if( m_fullscreen == _fullscreen ) return;
 
 		m_fullscreen = _fullscreen;
-		int width = Holder<Game>::hostage()->getWidth();
-		int height = Holder<Game>::hostage()->getHeight();
+		float width = Holder<Game>::hostage()->getWidth();
+		float height = Holder<Game>::hostage()->getHeight();
 		m_interface->setFullscreenMode( width, height, _fullscreen );
 
 		//Holder<Application>::hostage()->notifyWindowModeChanged( width, height, m_fullscreen );
@@ -294,28 +294,40 @@ namespace Menge
 		return m_interface->releaseSceneNode( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f RenderEngine::getBestDisplayResolution( int _defWidth, int _defHeigth, float _aspect )
+	mt::vec2f RenderEngine::getBestDisplayResolution( float _defWidth, float _defHeigth, float _aspect )
 	{
-		int* rl;
-		int count = m_interface->getResolutionList( &rl );
+		float * rl;
+		unsigned int count = m_interface->getResolutionList( &rl );
 
-		int needWidth = _defHeigth * _aspect;
+		float needWidth = _defHeigth * _aspect;
 
-		int bestWidth = _defWidth;
-		int bestHeight = _defHeigth;
+		float bestWidth = _defWidth;
+		float bestHeight = _defHeigth;
 
-		typedef std::map< int, std::vector<int> > TResolutionMap;
+		typedef std::vector<float> TResolutionVector;
+		typedef std::map< float, TResolutionVector > TResolutionMap;
 		TResolutionMap resMap;
-		for( int i = 0; i < count / 2; i++ )
+		for( unsigned int i = 0; i < count / 2; i++ )
 		{
 			resMap[ rl[2*i + 1] ].push_back( rl[2*i] );
 		}
 		bool done = false;
-		for( TResolutionMap::iterator it = resMap.begin(),
-			it_end = resMap.end(); it != it_end; it++ )
+		for( TResolutionMap::iterator 
+			it = resMap.begin(),
+			it_end = resMap.end();
+		it != it_end; 
+		++it )
 		{
-			if( it->first < _defHeigth ) continue;
-			for( int i = 0; i < it->second.size(); i++ )
+			if( it->first < _defHeigth ) 
+			{
+				continue;
+			}
+
+			for( TResolutionVector::size_type 
+				i = 0,
+				i_end = it->second.size();
+			i != i_end; 
+			++i)
 			{
 				if( it->second[i] >= needWidth )
 				{
@@ -345,8 +357,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onDeviceRestored()
 	{
-		int width = Holder<Game>::hostage()->getWidth();
-		int height = Holder<Game>::hostage()->getHeight();
+		float width = Holder<Game>::hostage()->getWidth();
+		float height = Holder<Game>::hostage()->getHeight();
 		Holder<Application>::hostage()->notifyWindowModeChanged( width, height, m_fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////

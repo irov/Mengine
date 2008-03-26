@@ -13,8 +13,8 @@ public:
 	~OgreRenderVideoStream();
 
 public:
-	size_t getWidth() const override;
-	size_t getHeight() const override;
+	float getWidth() const override;
+	float getHeight() const override;
 	void writeToFile( const char* _filename ) override;
 	void play();
 	void pause();

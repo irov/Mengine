@@ -45,7 +45,7 @@ namespace Menge
 			mapGenerator().erase(name);
 		}
 
-		static size_t registration(const TKey &_key, TGenFunc _func)
+		static unsigned int registration(const TKey &_key, TGenFunc _func)
 		{				
 			TMapGenerator::iterator it_find = mapGenerator().find(_key);
 

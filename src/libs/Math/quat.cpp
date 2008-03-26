@@ -86,9 +86,9 @@ namespace	mt
 		{
 			// pitch = atan2(localy.z, localy.y)
 			// pick parts of yAxis() implementation that we need
-			float fTx  = 2.0*x;
-			float fTy  = 2.0*y;
-			float fTz  = 2.0*z;
+			float fTx  = 2.f*x;
+			float fTy  = 2.f*y;
+			float fTz  = 2.f*z;
 			float fTwx = fTx*w;
 			float fTxx = fTx*x;
 			float fTyz = fTz*y;
@@ -108,9 +108,9 @@ namespace	mt
 	{
 		if (_reprojectAxis)
 		{
-			float fTx  = 2.0*x;
-			float fTy  = 2.0*y;
-			float fTz  = 2.0*z;
+			float fTx  = 2.f*x;
+			float fTy  = 2.f*y;
+			float fTz  = 2.f*z;
 			float fTwy = fTy*w;
 			float fTxx = fTx*x;
 			float fTxz = fTz*x;

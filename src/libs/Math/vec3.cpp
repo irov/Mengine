@@ -317,19 +317,19 @@ namespace	mt
 
 		if ( (n.x <= 0) && (n.y <= 0) )
 		{
-			result = M_PI + asinf(-n.y);
+			result = float(M_PI) + asinf(-n.y);
 		}
 
 		if ( (n.x >= 0) && (n.y <= 0) )
 		{
-			result = M_2_PI - asinf(-n.y);
+			result = float(M_2_PI) - asinf(-n.y);
 		}
 
 		if ( (n.x <= 0) && (n.y >= 0) )
 		{
-			result = M_PI - asinf(n.y);
+			result = float(M_PI) - asinf(n.y);
 		}
 
-		return M_PI_2 - result;
+		return float(M_PI_2) - result;
 	}
 }

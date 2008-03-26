@@ -10,7 +10,6 @@ class	GeometryInterface;
 
 namespace Menge
 {
-
 	class ResourcePhysicGeometry
 		: public ResourceReference
 	{
@@ -19,6 +18,6 @@ namespace Menge
 	public:
 		ResourcePhysicGeometry( const std::string & _name );
 
-		virtual const GeometryInterface * getGeometry( size_t _index ) const = 0;
+		virtual const GeometryInterface * getGeometry( unsigned int _index ) const = 0;
 	};
 }

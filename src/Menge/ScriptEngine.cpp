@@ -58,14 +58,14 @@ namespace Menge
 
 		PyObject * py_menge = initModule("Menge");
 
-		pybind::class_<ScriptLogger>("ScriptLogger")
+		/*pybind::class_<ScriptLogger>("ScriptLogger")
 			.def("write", &ScriptLogger::write )
 			;
 
 		PyObject * pyLogger = pybind::ptr(m_loger);
 
 		pybind::setStdErrorHandle( pyLogger );
-		pybind::setStdOutHandle( pyLogger );
+		pybind::setStdOutHandle( pyLogger );*/
 
 		ScriptModuleDeclaration::init( py_menge );
 	}

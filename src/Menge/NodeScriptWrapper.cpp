@@ -356,16 +356,20 @@ namespace Menge
 				->setSulkCallback( new PySoundSulkCallback( _sulkcallback ) );
 		}
 
-		static void s_createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _offset2, bool _collideBodies )
+		static PhysicJoint2DInterface* s_createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _offset2, bool _collideBodies )
 		{
-			Holder<PhysicEngine2D>::hostage()->createDistanceJoint( _body1, _body2, _offset1, _offset2, _collideBodies );
+			return Holder<PhysicEngine2D>::hostage()->createDistanceJoint( _body1, _body2, _offset1, _offset2, _collideBodies );
 		}
 
-		static void s_createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, bool _collideBodies )
+		static PhysicJoint2DInterface* s_createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, bool _collideBodies )
 		{
-			Holder<PhysicEngine2D>::hostage()->createHingeJoint( _body1, _body2, _offset1, _collideBodies );
+			return Holder<PhysicEngine2D>::hostage()->createHingeJoint( _body1, _body2, _offset1, _collideBodies );
 		}
 
+		static void s_destroyJoint( PhysicJoint2DInterface* _joint )
+		{
+			return Holder<PhysicEngine2D>::hostage()->destroyJoint( _joint );
+		}
 
 	}
 
@@ -422,6 +426,11 @@ namespace Menge
 			.def( "getG", &Color::getG )
 			.def( "getB", &Color::getB )
 			;
+
+		pybind::class_<PhysicJoint2DInterface>("Joint2D")
+			//.def( pybind::init<float,float>() )
+			;
+
 
 		pybind::class_<ReversiAI>("ReversiAI")
 			.def( pybind::init<>() )
@@ -744,5 +753,6 @@ namespace Menge
 
 		pybind::def( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
 		pybind::def( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
+		pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
 	}
 }

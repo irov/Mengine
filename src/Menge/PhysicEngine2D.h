@@ -6,6 +6,7 @@
 
 class PhysicSystem2DInterface;
 class PhysicBody2DInterface;
+class PhysicJoint2DInterface;
 
 namespace Menge
 {
@@ -22,11 +23,15 @@ namespace Menge
 		void destroyScene();
 
 			
-		PhysicBody2DInterface* createPhysicBody( const mt::polygon& _shape, const mt::vec2f& _pos, float _density, float _friction, float _restitution );
+		PhysicBody2DInterface* createDynamicBody( const mt::vec2f& _pos, float _angle, float _linearDamping, float _angularDamping,
+													bool _allowSleep, bool _isBullet, bool _fixedRotation );
+		PhysicBody2DInterface* createStaticBody( const mt::vec2f& _pos, float _angle );
+
 		void destroyPhysicBody( PhysicBody2DInterface* _bodyInterface );
 
-		void createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies );
-		void createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, bool _collideBodies );
+		PhysicJoint2DInterface*  createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies );
+		PhysicJoint2DInterface*  createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, bool _collideBodies );
+		void destroyJoint( PhysicJoint2DInterface* _joint );
 
 		void update( float _timing, int _iterations );
 

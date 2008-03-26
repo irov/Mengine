@@ -25,6 +25,7 @@ namespace Menge
 
 	public:
 		virtual void loader( XmlElement * _xml ) override;
+		void _loaderPhysics( XmlElement * _xml );
 
 	// scripted
 	public:
@@ -37,7 +38,6 @@ namespace Menge
 		void removeConstantForce();
 		void setOrientation( float _angle );
 		void setPosition( float _x, float _y );
-		void _loaderPhysics( XmlElement * _xml );
 		void setDirectionForce( bool _relative );
 		void wakeUp();
 
@@ -51,9 +51,30 @@ namespace Menge
 		void _update( float _timing ) override;
 
 		void _loaderShape( XmlElement * _xml );
+		void _loaderShapeCircle( XmlElement * _xml );
+		void _loaderShapeBox( XmlElement * _xml );
+
+		float m_linearDamping;
+		float m_angularDamping;
+		bool m_allowSleep;
+		bool m_isBullet;
+		bool m_fixedRotation;
 		float m_density;
 		float m_friction;
 		float m_restitution;
+		unsigned int m_collisionMask;
+		unsigned int m_categoryBits;
+		unsigned int m_groupIndex;
+		
+		typedef std::vector<mt::polygon> TShapeList;
+		TShapeList m_shapeList;
+		
+		typedef std::vector< std::pair< float, mt::vec2f > > TShapeCircleList;
+		TShapeCircleList m_shapeCircleList;
+
+		typedef std::vector< std::pair< std::pair< float, float >, std::pair< mt::vec2f, float > > > TShapeBoxList;
+		TShapeBoxList m_shapeBoxList;
+
 		mt::polygon m_shape;
 
 	private:

@@ -1,12 +1,12 @@
 #	include "Box2DPhysicBody.h"
 
 //////////////////////////////////////////////////////////////////////////
-Box2DPhysicBody::Box2DPhysicBody( b2World* _world, const b2BodyDef& _bodyDef )
+Box2DPhysicBody::Box2DPhysicBody( b2World* _world, bool _static )
 : m_world( _world )
 , m_listener( NULL )
+, m_body( NULL )
+, m_isStatic( _static )
 {
-	m_body = m_world->CreateBody( &_bodyDef );
-	m_body->m_userData = this;
 }
 //////////////////////////////////////////////////////////////////////////
 Box2DPhysicBody::~Box2DPhysicBody()
@@ -14,26 +14,106 @@ Box2DPhysicBody::~Box2DPhysicBody()
 	m_world->DestroyBody( m_body );
 }
 //////////////////////////////////////////////////////////////////////////
+bool Box2DPhysicBody::initialize( const b2BodyDef& _bodyDef )
+{
+	if( m_isStatic )
+	{
+		m_body = m_world->CreateStaticBody( &_bodyDef );
+	}
+	else
+	{
+		m_body = m_world->CreateDynamicBody( &_bodyDef );
+	}
+	if( !m_body )
+	{
+		return false;
+	}
+	m_body->m_userData = this;
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void Box2DPhysicBody::addShapeConvex(unsigned int _pointsNum, const float* _convex,
+									 float _density, float _friction, float _restitution,
+									 unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
+{
+	b2PolygonDef shape;
+	shape.vertexCount = _pointsNum;
+	for( int i = 0; i < _pointsNum; i++ )
+	{
+		shape.vertices[i].Set( _convex[ 2*i ], _convex[ 2*i + 1 ] );
+	}
+	shape.density = _density;
+	shape.friction = _friction;
+	shape.restitution = _restitution;
+	shape.maskBits = _collisionMask;
+	shape.categoryBits = _categoryBits;
+	shape.groupIndex = _groupIndex;
+
+	m_body->CreateShape( &shape );
+	m_body->SetMassFromShapes();
+
+}
+//////////////////////////////////////////////////////////////////////////
+void Box2DPhysicBody::addShapeCircle(float _radius, const float* _localPos,
+									 float _density, float _friction, float _restitution,
+									 unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
+{
+	b2CircleDef shape;
+	shape.radius = _radius;
+	shape.density = _density;
+	shape.friction = _friction;
+	shape.restitution = _restitution;
+	shape.localPosition.Set( _localPos[0], _localPos[1] );
+	shape.maskBits = _collisionMask;
+	shape.categoryBits = _categoryBits;
+	shape.groupIndex = _groupIndex;
+
+	m_body->CreateShape( &shape );
+	m_body->SetMassFromShapes();
+}
+//////////////////////////////////////////////////////////////////////////
+void Box2DPhysicBody::addShapeBox(float _width, float _height, const float* _localPos, float _angle,
+								  float _density, float _friction, float _restitution,
+								  unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
+{
+	b2PolygonDef shape;
+	shape.SetAsBox( _width, _height, b2Vec2( _localPos[0], _localPos[1] ), _angle );
+	shape.density = _density;
+	shape.friction = _friction;
+	shape.restitution = _restitution;
+	shape.maskBits = _collisionMask;
+	shape.categoryBits = _categoryBits;
+	shape.groupIndex = _groupIndex;
+
+	m_body->CreateShape( &shape );
+	m_body->SetMassFromShapes();
+}
+//////////////////////////////////////////////////////////////////////////
 const float* Box2DPhysicBody::getPosition() const
 {
 	static b2Vec2 s_pos;
-	s_pos = m_body->GetOriginPosition();
+	s_pos = m_body->GetPosition();
 	return &s_pos.x;
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::setPosition( float _x, float _y )
 {
-	m_body->SetOriginPosition( b2Vec2( _x, _y ), m_body->GetRotation() );
+	m_body->SetXForm( b2Vec2( _x, _y ), m_body->GetAngle() );
 }
 //////////////////////////////////////////////////////////////////////////
 const float* Box2DPhysicBody::getOrientation()
 {
-	return &(m_body->GetRotationMatrix().col1.x);
+	return &(m_body->GetXForm().R.col1.x);
+}
+//////////////////////////////////////////////////////////////////////////
+float Box2DPhysicBody::getAngle()
+{
+	return m_body->GetAngle();
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::setOrientation( float _angle )
 {
-	m_body->SetOriginPosition( m_body->GetOriginPosition(), _angle );
+	m_body->SetXForm( m_body->GetPosition(), _angle );
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::setLinearVelocity( float _x, float _y )
@@ -71,23 +151,14 @@ void Box2DPhysicBody::setCollisionListener( PhysicBody2DCollisionListener* _list
 	m_listener = _listener;
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicBody::_collide( b2Body* _otherBody, b2Contact* _contact )
+void Box2DPhysicBody::_collide( b2Body* _otherBody, b2ContactPoint* _contact )
 {
 	if( !m_listener ) return;
 
 	Box2DPhysicBody* _otherObj = static_cast<Box2DPhysicBody*> ( _otherBody->m_userData );
-	b2Manifold* manifolds = _contact->GetManifolds();
-	for( int i = 0; i < _contact->GetManifoldCount(); i++ )
-	{
-		/*for( int j = 0; j < manifolds[i].pointCount; j++ )
-		{
-			m_listener->onCollide( _otherObj, manifolds[i].points[j].position.x, manifolds[i].points[j].position.y,
-									manifolds[i].normal.x, manifolds[i].normal.y );
-		}*/
-		m_listener->onCollide( _otherObj, manifolds[i].points[0].position.x, manifolds[i].points[0].position.y,
-			manifolds[i].normal.x, manifolds[i].normal.y );
+	
+	m_listener->onCollide( _otherObj, _contact->position.x, _contact->position.y, _contact->normal.x, _contact->normal.y );
 
-	}
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::setUserData( void* _data )

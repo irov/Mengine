@@ -22,6 +22,14 @@ namespace Menge
 	, m_forcePoint( 0.0f, 0.0f )
 	, m_constantForce( false )
 	, m_directionForce( false )
+	, m_linearDamping( 0.0f )
+	, m_angularDamping( 0.0f )
+	, m_allowSleep( true )
+	, m_isBullet( false )
+	, m_fixedRotation( false )
+	, m_collisionMask( 0xFFFF )
+	, m_categoryBits( 1 )
+	, m_groupIndex( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -50,12 +58,34 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Shape" )
 			{
+				mt::polygon n;
+				m_shapeList.push_back( n );
 				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderShape );
+			}
+			XML_CASE_NODE( "ShapeCircle" )
+			{
+				std::pair< float, mt::vec2f > n;
+				m_shapeCircleList.push_back( n );
+				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderShapeCircle );
+			}
+			XML_CASE_NODE( "ShapeBox" )
+			{
+				std::pair< std::pair< float, float >, std::pair< mt::vec2f, float > > n;
+				m_shapeBoxList.push_back( n );
+				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderShapeBox );
 			}
 
 			XML_CASE_ATTRIBUTE_NODE("Density", "Value", m_density );
 			XML_CASE_ATTRIBUTE_NODE("Friction", "Value", m_friction );
 			XML_CASE_ATTRIBUTE_NODE("Restitution", "Value", m_restitution );
+			XML_CASE_ATTRIBUTE_NODE("CollisionMask", "Value", m_collisionMask );
+			XML_CASE_ATTRIBUTE_NODE("CategoryBits", "Value", m_categoryBits );
+			XML_CASE_ATTRIBUTE_NODE("GroupIndex", "Value", m_groupIndex );
+			XML_CASE_ATTRIBUTE_NODE("LinearDamping", "Value", m_linearDamping );
+			XML_CASE_ATTRIBUTE_NODE("AngularDamping", "Value", m_angularDamping );
+			XML_CASE_ATTRIBUTE_NODE("AllowSleep", "Value", m_allowSleep );
+			XML_CASE_ATTRIBUTE_NODE("IsBullet", "Value", m_isBullet );
+			XML_CASE_ATTRIBUTE_NODE("FixedRotation", "Value", m_fixedRotation );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -70,7 +100,75 @@ namespace Menge
 				{					
 					XML_CASE_ATTRIBUTE( "Value", point );
 				}
-				m_shape.add_point( point );
+				m_shapeList.back().add_point( point );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::_loaderShapeCircle( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			float radius;
+			mt::vec2f pos;
+			XML_CASE_NODE( "Radius" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{					
+					XML_CASE_ATTRIBUTE( "Value", radius );
+				}
+				m_shapeCircleList.back().first = radius;
+			}
+			XML_CASE_NODE( "Position" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{					
+					XML_CASE_ATTRIBUTE( "Value", pos );
+				}
+				m_shapeCircleList.back().second = pos;
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::_loaderShapeBox( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			float width;
+			float height;
+			float angle;
+			mt::vec2f pos;
+			XML_CASE_NODE( "Width" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{					
+					XML_CASE_ATTRIBUTE( "Value", width );
+				}
+				m_shapeBoxList.back().first.first = width;
+			}
+			XML_CASE_NODE( "Height" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{					
+					XML_CASE_ATTRIBUTE( "Value", height );
+				}
+				m_shapeBoxList.back().first.second = height;
+			}
+			XML_CASE_NODE( "Position" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{					
+					XML_CASE_ATTRIBUTE( "Value", pos );
+				}
+				m_shapeBoxList.back().second.first = pos;
+			}
+			XML_CASE_NODE( "Angle" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{					
+					XML_CASE_ATTRIBUTE( "Value", angle );
+				}
+				m_shapeBoxList.back().second.second = angle;
 			}
 		}
 	}
@@ -121,9 +219,44 @@ namespace Menge
 	bool RigidBody2D::_compile()
 	{
 		const mt::vec2f & position = getWorldPosition();
-		m_interface = Holder<PhysicEngine2D>::hostage()->createPhysicBody( m_shape, position, m_density, m_friction, m_restitution );
+		if( m_density == 0.0f )
+		{
+			m_interface = Holder<PhysicEngine2D>::hostage()->createStaticBody( position, 0.0f );
+		}
+		else
+		{
+			m_interface = Holder<PhysicEngine2D>::hostage()->createDynamicBody( position, 0.0f, m_linearDamping, m_angularDamping, m_allowSleep,
+																			m_isBullet, m_fixedRotation );
+		}
 		m_interface->setCollisionListener( this );
 		m_interface->setUserData( this );
+
+		for( TShapeList::iterator it = m_shapeList.begin(),
+				it_end = m_shapeList.end();
+				it != it_end;
+				it++ )
+		{
+			m_interface->addShapeConvex( (*it).num_points(), &(((*it)[0]).x), m_density, m_friction, m_restitution,
+											m_collisionMask, m_categoryBits, m_groupIndex );
+		}
+
+		for( TShapeCircleList::iterator it = m_shapeCircleList.begin(),
+			it_end = m_shapeCircleList.end();
+			it != it_end;
+			it++ )
+		{
+			m_interface->addShapeCircle( it->first, it->second.m, m_density, m_friction, m_restitution,
+											m_collisionMask, m_categoryBits, m_groupIndex );
+		}
+
+		for( TShapeBoxList::iterator it = m_shapeBoxList.begin(),
+			it_end = m_shapeBoxList.end();
+			it != it_end;
+			it++ )
+		{
+			m_interface->addShapeBox( it->first.first, it->first.second, it->second.first.m, it->second.second, m_density, m_friction, m_restitution,
+										m_collisionMask, m_categoryBits, m_groupIndex );
+		}
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -148,7 +281,7 @@ namespace Menge
 	{
 		const mt::vec2f & position = getWorldPosition();
 
-		m_interface->applyForce( _forceX, _forceY, position.x + _pointX, position.y + _pointY );
+		m_interface->applyForce( 100*_forceX, 100*_forceY, position.x + _pointX, position.y + _pointY );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY )

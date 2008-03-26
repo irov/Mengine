@@ -159,6 +159,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Box2DPhysicJoint.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Box2DPhysicJoint.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Box2DPhysicSystem.cpp"
 			>
 		</File>

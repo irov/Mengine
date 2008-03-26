@@ -500,6 +500,14 @@
 				Name="RigidBody2D"
 				>
 				<File
+					RelativePath=".\Joint2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Joint2D.h"
+					>
+				</File>
+				<File
 					RelativePath=".\RigidBody2D.cpp"
 					>
 				</File>

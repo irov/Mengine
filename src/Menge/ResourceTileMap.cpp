@@ -32,41 +32,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceTileMap::_compile()
 	{
-		m_width = 0;
-		m_height = 0;
-		FileDataInterface* mapFile = Holder<FileEngine>::hostage()->openFile( m_tileMapFile );
-		std::string line1 = mapFile->getLine( true );
-		m_width = line1.size() - 1;
-		std::string line2;
-		/*std::string line2 = mapFile->getLine( true );
-		if( m_width != line2.size() - 1)
-		{
-			MENGE_LOG( "ResourceTileMap::_compile -> Invalid TileMap format in %s", m_tileMapFile );
-			return false;
-		}
-		for( int i = 0; i < m_width; i++ )
-		{
-			int a = line1[2*i] - 48;
-			m_tileMap[i][m_height] = ( line1[2*i] - 48 ) * 1000 + ( line1[2*i + 1] - 48 ) * 100 + ( line2[ 2*i + 1] - 48 ) * 10 + ( line2[2*i] - 48 );
-		}*/
-		while( !mapFile->eof() )
-		{		
-			//line1 = mapFile->getLine( true );
-			line2 = mapFile->getLine( true );
-			if( m_width != line2.size() - 1 )
-			{
-				MENGE_LOG( "ResourceTileMap::_compile -> Invalid TileMap format in %s", m_tileMapFile );
-				return false;
-			}
-			for( unsigned int i = 0; i < m_width; i++ )
-			{
-				m_tileMap[i][m_height] = ( line1[i] - 48 ) * 1000 + ( line1[i + 1] - 48 ) * 100 + ( line2[ i + 1] - 48 ) * 10 + ( line2[i] - 48 );
-			}
-			m_height++;
-			line1 = line2;
-		}
-		//m_height++;
-		Holder<FileEngine>::hostage()->closeFile( mapFile );
+		m_physXml = "";
+		m_physXml += "<Node Name = \"" + m_name + "_collision\" Type = \"RigidBody2D\">";
+
 
 		m_tileSet = 
 			Holder<ResourceManager>::hostage()
@@ -77,6 +45,62 @@ namespace Menge
 			MENGE_LOG( "ResourceTileMap::_compile -> compiling resource %s failed", m_tileSetName.c_str() );
 			return false;
 		}
+
+		char buffer[6];
+		int solidSize = m_tileSet->getTileSize() / 2;
+		std::string strSolidSize( _itoa( solidSize, buffer, 10 ) );
+
+		m_width = 0;
+		m_height = 0;
+		FileDataInterface* mapFile = Holder<FileEngine>::hostage()->openFile( m_tileMapFile );
+		std::string line1 = mapFile->getLine( true );
+		m_width = line1.size() - 1;
+		std::string line2;
+
+		for( int i = 0; i < line1.size(); i++ )
+		{
+			if( line1[i] == '1' )
+			{
+				m_physXml += "<ShapeBox><Width Value = \"" + strSolidSize + "\"/><Height Value = \"" + strSolidSize + "\"/><Position Value = \"" +
+					std::string( _itoa( i*solidSize+ solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
+			}
+
+		}
+		while( !mapFile->eof() )
+		{		
+			line2 = mapFile->getLine( true );
+			if( m_width != line2.size() - 1 )
+			{
+				MENGE_LOG( "ResourceTileMap::_compile -> Invalid TileMap format in %s", m_tileMapFile );
+				return false;
+			}
+			for( unsigned int i = 0; i < m_width; i++ )
+			{
+
+
+				m_tileMap[i][m_height] = ( line1[i] - 48 ) * 1000 + ( line1[i + 1] - 48 ) * 100 + ( line2[ i + 1] - 48 ) * 10 + ( line2[i] - 48 );
+
+				//
+				if( line2[i] == '1' )
+				{
+				m_physXml += "<ShapeBox><Width Value = \"" + strSolidSize + "\"/><Height Value = \"" + strSolidSize + "\"/><Position Value = \"" +
+					std::string( _itoa( i*solidSize + solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( (m_height+1)*solidSize + solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
+				}
+			}
+			if( line2[m_width] == '1' )
+			{
+				m_physXml += "<ShapeBox><Width Value = \"" + strSolidSize + "\"/><Height Value = \"" + strSolidSize + "\"/><Position Value = \"" +
+					std::string( _itoa( m_width*solidSize + solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( (m_height+1)*solidSize + solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
+			}
+			m_height++;
+			line1 = line2;
+		}
+
+		Holder<FileEngine>::hostage()->closeFile( mapFile );
+
+		m_physXml += "<Density Value = \"0.0\"/>";
+
+		m_physXml += "</Node>";
 
 		return true;
 	}
@@ -104,6 +128,11 @@ namespace Menge
 	float ResourceTileMap::getTileSize()
 	{
 		return m_tileSet->getTileSize();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const std::string& ResourceTileMap::getPhysXml() const
+	{
+		return m_physXml;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namescape Menge

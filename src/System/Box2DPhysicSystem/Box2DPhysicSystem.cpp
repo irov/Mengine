@@ -28,7 +28,6 @@ void releaseInterfaceSystem( PhysicSystem2DInterface *_system )
 Box2DPhysicSystem::Box2DPhysicSystem()
 : m_world( 0 )
 {
-	//m_contacts.reserve( MAX_CONTACTS_NUM );
 }
 //////////////////////////////////////////////////////////////////////////
 Box2DPhysicSystem::~Box2DPhysicSystem()
@@ -45,8 +44,8 @@ void Box2DPhysicSystem::createWorld( const float* _upperLeft, const float* _lowe
 	if( m_world ) return;
 
 	b2AABB worldAABB;
-	worldAABB.lowerBound.Set( _upperLeft[0], _upperLeft[1] );
-	worldAABB.upperBound.Set( _lowerRight[0], _lowerRight[1] );
+	worldAABB.lowerBound.Set( _upperLeft[0] * physicsScaler, _upperLeft[1] * physicsScaler );
+	worldAABB.upperBound.Set( _lowerRight[0] * physicsScaler, _lowerRight[1] * physicsScaler );
 	b2Vec2 gravity( _gravity[0], _gravity[1] );
 
 	m_world = new b2World( worldAABB, gravity, _doSleep );
@@ -67,13 +66,9 @@ void Box2DPhysicSystem::update( float _timing, int _iterations )
 	{
 		body->WakeUp();
 	}*/
-	//m_contacts.clear();
 
 	m_world->Step( _timing, _iterations );
-	//std::sort( m_contacts.begin(), m_contacts.end() );
-	//m_contacts.erase( m_contacts.begin(), 
-	//				std::unique( m_contacts.begin(),
-	//								m_contacts.end() ) );
+
 	m_world->m_broadPhase->Validate();
 
 	for( TJointDefList::iterator it = m_jointDefList.begin(),
@@ -85,29 +80,15 @@ void Box2DPhysicSystem::update( float _timing, int _iterations )
 		delete it->first;
 	}
 	m_jointDefList.clear();
-	/*for( b2Contact* c = m_world->m_contactList; c; c = c->GetNext() )
-	{
-		for( int i = 0; i < c->GetManifoldCount(); i++ )
-		{
-			static_cast<Box2DPhysicBody*>( c->GetShape1()->GetBody()->m_userData )->_collide( c->GetShape2()->GetBody(), c );
-			static_cast<Box2DPhysicBody*>( c->GetShape2()->GetBody()->m_userData )->_collide( c->GetShape1()->GetBody(), c );
-		}
-	}*/
-
-	/*for( TContactPointList::iterator it = m_contacts.begin()
-				, it_end = m_contacts.end();
-				it != it_end; it++ )
-	{
-		static_cast<Box2DPhysicBody*>( (*it)->shape1->GetBody()->GetUserData() )->_collide( (*it)->shape2->GetBody(), (*it) );
-		static_cast<Box2DPhysicBody*>( (*it)->shape2->GetBody()->GetUserData() )->_collide( (*it)->shape1->GetBody(), (*it) );
-	}*/
 }
 //////////////////////////////////////////////////////////////////////////
 PhysicBody2DInterface* Box2DPhysicSystem::createDynamicBody( const float* _pos, float _angle, float _linearDamping, float _angularDamping,
 														   bool _allowSleep, bool _isBullet, bool _fixedRotation )
 {
 	b2BodyDef bodyDef;
-	bodyDef.position.Set( _pos[0], _pos[1] );
+
+	bodyDef.position.Set( _pos[0] * physicsScaler, _pos[1] * physicsScaler );
+
 	bodyDef.angle = _angle;
 	bodyDef.linearDamping = _linearDamping;
 	bodyDef.angularDamping = _angularDamping;
@@ -124,14 +105,13 @@ PhysicBody2DInterface* Box2DPhysicSystem::createDynamicBody( const float* _pos, 
 PhysicBody2DInterface* Box2DPhysicSystem::createStaticBody( const float* _pos, float _angle )
 {
 	b2BodyDef bodyDef;
-	bodyDef.position.Set( _pos[0], _pos[1] );
+	bodyDef.position.Set( _pos[0] * physicsScaler, _pos[1] * physicsScaler );
 	bodyDef.angle = _angle;
 
 	Box2DPhysicBody* body = new Box2DPhysicBody( m_world, true );
 	body->initialize( bodyDef );
 
 	return static_cast<PhysicBody2DInterface*>( body );
-	
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::destroyBody( PhysicBody2DInterface* _body )
@@ -145,11 +125,20 @@ PhysicJoint2DInterface* Box2DPhysicSystem::createDistanceJoint( PhysicBody2DInte
 	b2Body* body1 = static_cast<Box2DPhysicBody*>( _body1 )->getBody();
 	b2Body* body2 = static_cast<Box2DPhysicBody*>( _body2 )->getBody();
 	jointDef->collideConnected = _collideBodies;
-	b2Vec2 anchor1 = body1->GetPosition() + b2Vec2( _offsetBody1[0], _offsetBody1[1] );
-	b2Vec2 anchor2 = body2->GetPosition() + b2Vec2( _offsetBody2[0], _offsetBody2[1] );
+
+	b2Vec2 offsetBody1( _offsetBody1[0] * physicsScaler, _offsetBody1[1] * physicsScaler);
+	b2Vec2 offsetBody2( _offsetBody2[0] * physicsScaler, _offsetBody2[1] * physicsScaler);
+
+	b2Vec2 positionBody1 = body1->GetPosition();
+	b2Vec2 positionBody2 = body2->GetPosition();
+
+	b2Vec2 anchor1 = positionBody1 + offsetBody1;
+	b2Vec2 anchor2 = positionBody2 + offsetBody2;
+
 	jointDef->Initialize( body1, body2, anchor1, anchor2 );
 
 	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL );
+
 	if( m_world->m_lock )
 	{
 		m_jointDefList.push_back( std::make_pair( static_cast<b2JointDef*>( jointDef ), joint ) );
@@ -168,7 +157,11 @@ PhysicJoint2DInterface* Box2DPhysicSystem::createHingeJoint( PhysicBody2DInterfa
 	b2Body* body1 = static_cast<Box2DPhysicBody*>( _body1 )->getBody();
 	b2Body* body2 = static_cast<Box2DPhysicBody*>( _body2 )->getBody();
 	jointDef->collideConnected = _collideBodies;
-	b2Vec2 anchor1 = body1->GetPosition() + b2Vec2( _offsetBody1[0], _offsetBody1[1] );
+
+	b2Vec2 offsetBody1( _offsetBody1[0] * physicsScaler, _offsetBody1[1] * physicsScaler);
+	b2Vec2 positionBody1 = body1->GetPosition();
+
+	b2Vec2 anchor1 = positionBody1 + offsetBody1;
 
 	jointDef->Initialize( body1, body2, anchor1 );
 	
@@ -195,8 +188,12 @@ void Box2DPhysicSystem::destroyJoint( PhysicJoint2DInterface* _joint )
 void Box2DPhysicSystem::Add( b2ContactPoint* point )
 {
 	//m_contacts.push_back( *point );
-	static_cast<Box2DPhysicBody*>( point->shape1->GetBody()->GetUserData() )->_collide( point->shape2->GetBody(), point );
-	static_cast<Box2DPhysicBody*>( point->shape2->GetBody()->GetUserData() )->_collide( point->shape1->GetBody(), point );
+
+	b2Body* body1 = point->shape1->GetBody();
+	b2Body* body2 = point->shape2->GetBody();
+
+	static_cast<Box2DPhysicBody*>( body1->GetUserData() )->_collide( body2, point );
+	static_cast<Box2DPhysicBody*>( body2->GetUserData() )->_collide( body1, point );
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::Persist( b2ContactPoint* point )

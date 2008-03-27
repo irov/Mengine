@@ -1,5 +1,7 @@
 #	pragma once
 
+const float physicsScaler = 0.01f; 
+
 class PhysicBody2DInterface;
 
 class PhysicBody2DCollisionListener

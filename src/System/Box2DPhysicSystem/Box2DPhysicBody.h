@@ -2,7 +2,7 @@
 
 #	include "../../Interface/PhysicSystem2DInterface.h"
 #	include "Box2D.h"
-#	include "Box2DPhysicSystem.h"
+#	include "Box2DPhysicSystem.h"	
 
 class Box2DPhysicBody
 	: public PhysicBody2DInterface

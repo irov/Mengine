@@ -281,7 +281,7 @@ namespace Menge
 	{
 		const mt::vec2f & position = getWorldPosition();
 
-		m_interface->applyForce( 100*_forceX, 100*_forceY, position.x + _pointX, position.y + _pointY );
+		m_interface->applyForce( _forceX, _forceY, position.x + _pointX, position.y + _pointY );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY )

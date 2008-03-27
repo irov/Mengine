@@ -28,6 +28,7 @@ namespace Menge
 		unsigned int getHeight() const;
 		ImageBlock getTile( int _x, int _y );
 		float getTileSize();
+		const std::string& getPhysXml() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -44,6 +45,7 @@ namespace Menge
 		std::string m_tileMapFile;
 		std::string m_tileSetName;
 		ResourceTileSet* m_tileSet;
+		std::string m_physXml;
 
 	};
 }	// namespace Menge

@@ -44,7 +44,7 @@ namespace Menge
 
 		va_end(argList);
 		std::stringstream strMessage;
-		strMessage << m_file << std::endl << str;
+		strMessage <</* m_file << std::endl <<*/ str;
 
 		const std::string & message = strMessage.str();
 

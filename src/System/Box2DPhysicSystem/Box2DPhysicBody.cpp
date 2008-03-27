@@ -24,11 +24,14 @@ bool Box2DPhysicBody::initialize( const b2BodyDef& _bodyDef )
 	{
 		m_body = m_world->CreateDynamicBody( &_bodyDef );
 	}
-	if( !m_body )
+
+	if( m_body == 0 )
 	{
 		return false;
 	}
+
 	m_body->m_userData = this;
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -36,12 +39,35 @@ void Box2DPhysicBody::addShapeConvex(unsigned int _pointsNum, const float* _conv
 									 float _density, float _friction, float _restitution,
 									 unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
 {
+	//float area = 0.0f;
 	b2PolygonDef shape;
 	shape.vertexCount = _pointsNum;
-	for( unsigned int i = 0; i < _pointsNum; i++ )
+
+	for( unsigned int i = 0; i != _pointsNum; ++i )
 	{
-		shape.vertices[i].Set( _convex[ 2*i ], _convex[ 2*i + 1 ] );
+		float point1 = _convex[ 2*i ] * physicsScaler;
+		float point2 = _convex[ 2*i + 1 ] * physicsScaler;
+
+		shape.vertices[i].Set( point1, point2 );
 	}
+
+	/*for( int i = 0; i< _pointsNum; i++ )
+	{
+		// calc area
+		// Triangle vertices.
+		b2Vec2 p1(0.0f, 0.0f);
+		b2Vec2 p2 = shape.vertices[i];
+		b2Vec2 p3 = i + 1 < _pointsNum ? shape.vertices[i+1] : shape.vertices[0];
+
+		b2Vec2 e1 = p2 - p1;
+		b2Vec2 e2 = p3 - p1;
+
+		float32 D = b2Cross(e1, e2);
+
+		float32 triangleArea = 0.5f * D;
+		area += triangleArea;
+
+	}*/
 	shape.density = _density;
 	shape.friction = _friction;
 	shape.restitution = _restitution;
@@ -59,11 +85,11 @@ void Box2DPhysicBody::addShapeCircle(float _radius, const float* _localPos,
 									 unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
 {
 	b2CircleDef shape;
-	shape.radius = _radius;
+	shape.radius = _radius * physicsScaler;
 	shape.density = _density;
 	shape.friction = _friction;
 	shape.restitution = _restitution;
-	shape.localPosition.Set( _localPos[0], _localPos[1] );
+	shape.localPosition.Set( _localPos[0] * physicsScaler, _localPos[1] * physicsScaler );
 	shape.maskBits = _collisionMask;
 	shape.categoryBits = _categoryBits;
 	shape.groupIndex = _groupIndex;
@@ -77,7 +103,12 @@ void Box2DPhysicBody::addShapeBox(float _width, float _height, const float* _loc
 								  unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
 {
 	b2PolygonDef shape;
-	shape.SetAsBox( _width, _height, b2Vec2( _localPos[0], _localPos[1] ), _angle );
+	shape.SetAsBox( 
+		_width * physicsScaler
+		, _height * physicsScaler
+		, b2Vec2( _localPos[0] * physicsScaler, _localPos[1] * physicsScaler )
+		, _angle );
+
 	shape.density = _density;
 	shape.friction = _friction;
 	shape.restitution = _restitution;
@@ -91,14 +122,19 @@ void Box2DPhysicBody::addShapeBox(float _width, float _height, const float* _loc
 //////////////////////////////////////////////////////////////////////////
 const float* Box2DPhysicBody::getPosition() const
 {
-	static b2Vec2 s_pos;
-	s_pos = m_body->GetPosition();
-	return &s_pos.x;
+	b2Vec2 pos = m_body->GetPosition();
+
+	pos.x /= physicsScaler;
+	pos.y /= physicsScaler;
+
+	return &pos.x;
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::setPosition( float _x, float _y )
 {
-	m_body->SetXForm( b2Vec2( _x, _y ), m_body->GetAngle() );
+	b2Vec2 position( _x * physicsScaler, _y * physicsScaler );
+	float angle = m_body->GetAngle();
+	m_body->SetXForm( position, angle );
 }
 //////////////////////////////////////////////////////////////////////////
 const float* Box2DPhysicBody::getOrientation()
@@ -118,12 +154,18 @@ void Box2DPhysicBody::setOrientation( float _angle )
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::setLinearVelocity( float _x, float _y )
 {
-	return m_body->SetLinearVelocity( b2Vec2( _x, _y ) );
+	b2Vec2 velocity( _x * physicsScaler, _y * physicsScaler );
+	return m_body->SetLinearVelocity( velocity );
 }
 //////////////////////////////////////////////////////////////////////////
 const float* Box2DPhysicBody::getLinearVelocity()
 {
-	return &(m_body->GetLinearVelocity().x);
+	b2Vec2 velocity = m_body->GetLinearVelocity();
+
+	velocity.x /= physicsScaler;
+	velocity.y /= physicsScaler;
+	
+	return &(velocity.x);
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::setAngularVelocity( float _w )
@@ -138,12 +180,18 @@ float Box2DPhysicBody::getAngularVelocity()
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::applyForce( float _forceX, float _forceY, float _pointX, float _pointY )
 {
-	m_body->ApplyForce( b2Vec2( _forceX, _forceY ), b2Vec2( _pointX, _pointY ) );
+	b2Vec2 force( _forceX, _forceY );
+	b2Vec2 point( _pointX * physicsScaler, _pointY * physicsScaler );
+
+	m_body->ApplyForce( force, point );
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY )
 {
-	m_body->ApplyImpulse( b2Vec2( _impulseX, _impulseY ), b2Vec2( _pointX, _pointY ) );
+	b2Vec2 impulse( _impulseX, _impulseY );
+	b2Vec2 point( _pointX, _pointY );
+
+	m_body->ApplyImpulse( impulse, point );
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::setCollisionListener( PhysicBody2DCollisionListener* _listener )
@@ -157,7 +205,12 @@ void Box2DPhysicBody::_collide( b2Body* _otherBody, b2ContactPoint* _contact )
 
 	Box2DPhysicBody* _otherObj = static_cast<Box2DPhysicBody*> ( _otherBody->m_userData );
 	
-	m_listener->onCollide( _otherObj, _contact->position.x, _contact->position.y, _contact->normal.x, _contact->normal.y );
+	b2Vec2 contact_position = _contact->position;
+
+	contact_position.x /= physicsScaler;
+	contact_position.y /= physicsScaler;
+
+	m_listener->onCollide( _otherObj, contact_position.x, contact_position.y, _contact->normal.x * _contact->normalForce, _contact->normal.y * _contact->normalForce );
 
 }
 //////////////////////////////////////////////////////////////////////////

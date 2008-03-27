@@ -7,6 +7,8 @@
 #	include "ResourceTileMap.h"
 #	include "ResourceTileSet.h"
 #	include "RenderEngine.h"
+#	include "RigidBody2D.h"
+#	include "SceneManager.h"
 
 namespace	Menge
 {
@@ -55,6 +57,10 @@ namespace	Menge
 
 		m_width = m_resourceMap->getWidth();
 		m_height = m_resourceMap->getHeight();
+
+		RigidBody2D* collision = dynamic_cast<RigidBody2D*>(SceneManager::createNodeFromXmlData( m_resourceMap->getPhysXml() ) );
+		collision->compile();
+		addChildren( collision );
 
 		return true;
 	}

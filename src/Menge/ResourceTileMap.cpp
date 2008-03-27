@@ -58,7 +58,7 @@ namespace Menge
 				MENGE_LOG( "ResourceTileMap::_compile -> Invalid TileMap format in %s", m_tileMapFile );
 				return false;
 			}
-			for( int i = 0; i < m_width; i++ )
+			for( unsigned int i = 0; i < m_width; i++ )
 			{
 				m_tileMap[i][m_height] = ( line1[i] - 48 ) * 1000 + ( line1[i + 1] - 48 ) * 100 + ( line2[ i + 1] - 48 ) * 10 + ( line2[i] - 48 );
 			}

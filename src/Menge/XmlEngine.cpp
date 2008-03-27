@@ -91,7 +91,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool XmlEngine::parseXmlString( const std::string & _buffer, XmlElementListener * _listener )
 	{
-		unsigned int size = _buffer.size();
+		std::string::size_type size = _buffer.size();
 
 		XmlExpatParser * parser = m_parser;
 		bool new_parser = false;
@@ -118,7 +118,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool XmlEngine::parseXmlBuffer( const TVectorChar & _buffer, XmlElementListener * _listener )
 	{
-		unsigned int size = _buffer.size();
+		std::string::size_type size = _buffer.size();
 
 		XmlExpatParser * parser = m_parser;
 		bool new_parser = false;

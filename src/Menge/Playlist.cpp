@@ -76,10 +76,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::shuffle()
 	{
-		for( TVecTrack::size_type i = 0; i < m_tracks.size(); ++i ) 
+		for( TVecTrack::size_type 
+			it = 0,
+			it_end = m_tracks.size(); 
+		it != it_end; 
+		++it ) 
 		{
-			unsigned int rnd = rand() % m_tracks.size();
-			std::swap( m_tracks[i], m_tracks[rnd] );
+			TVecTrack::size_type rnd = rand() % it_end;
+			std::swap( m_tracks[it], m_tracks[rnd] );
 		}
 
 		first();

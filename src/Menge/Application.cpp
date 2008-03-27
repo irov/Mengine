@@ -211,7 +211,7 @@ namespace Menge
 			return false;
 		}
 
-		int idx = _args.find( "-sound" );
+		std::string::size_type idx = _args.find( "-sound" );
 		if( idx >= 0 )
 		{
 			m_sound = false;

@@ -266,10 +266,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::setScale( const mt::vec2f& _scale )
 	{
-		for( int i = 0; i < m_polygon.num_points(); i++ )
+		for( mt::polygon::TVectorPoints::size_type 
+			it = 0,
+			it_end = m_polygon.num_points();
+		it != it_end; 
+		++it )
 		{
-			m_polygon[i].x = m_polygon[i].x / m_scale.x * _scale.x;
-			m_polygon[i].y = m_polygon[i].y / m_scale.y * _scale.y;
+			m_polygon[it].x = m_polygon[it].x / m_scale.x * _scale.x;
+			m_polygon[it].y = m_polygon[it].y / m_scale.y * _scale.y;
 		}
 #ifdef DEBUG_RENDER
 		TListChildren::iterator it = m_listChildren.begin();

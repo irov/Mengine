@@ -78,7 +78,7 @@ namespace Menge
 
 		for( TVectorUV::size_type index = 0; index < count; ++index )
 		{
-			unsigned int offset = index / m_numX;
+			TVectorUV::size_type offset = index / m_numX;
 
 			m_uvs[index].x = float( index % m_numX ) / m_numX;
 			m_uvs[index].y = float( offset ) / m_numY;

@@ -45,7 +45,7 @@ namespace Menge
 			mapGenerator().erase(name);
 		}
 
-		static unsigned int registration(const TKey &_key, TGenFunc _func)
+		static void registration(const TKey &_key, TGenFunc _func)
 		{				
 			TMapGenerator::iterator it_find = mapGenerator().find(_key);
 
@@ -53,8 +53,6 @@ namespace Menge
 			{
 				mapGenerator().insert(std::make_pair(_key,_func));
 			}
-
-			return mapGenerator().size();
 		}
 
 		static TBase generate( const TKey & _name, const TGenStruct & _struct  )

@@ -122,7 +122,8 @@ void Box2DPhysicBody::addShapeBox(float _width, float _height, const float* _loc
 //////////////////////////////////////////////////////////////////////////
 const float* Box2DPhysicBody::getPosition() const
 {
-	b2Vec2 pos = m_body->GetPosition();
+	static b2Vec2 pos(0.0f, 0.0f);
+	pos = m_body->GetPosition();
 
 	pos.x /= physicsScaler;
 	pos.y /= physicsScaler;

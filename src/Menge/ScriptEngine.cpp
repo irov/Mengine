@@ -60,7 +60,7 @@ namespace Menge
 
 		ScriptModuleDeclaration::init( py_menge );
 
-		pybind::class_<ScriptLogger>("ScriptLogger", py_menge )
+		pybind::class_<ScriptLogger>("ScriptLogger", true, py_menge )
 			.def("write", &ScriptLogger::write )
 			;
 

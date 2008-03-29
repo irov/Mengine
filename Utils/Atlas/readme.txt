@@ -5,4 +5,7 @@
 
 example
 
-atlas TButtons.resource output.png 512 2048
+atlas TButtons.resource output 512 2048
+
+if texture doesnot fit into atlas, then
+new atlas created.

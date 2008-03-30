@@ -7,5 +7,11 @@ example
 
 atlas TButtons.resource output 512 2048
 
+result:
+
+output.png
+output.xml
+
+
 if texture doesnot fit into atlas, then
 new atlas created.

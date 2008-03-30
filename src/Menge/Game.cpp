@@ -34,7 +34,11 @@ namespace Menge
 		, m_height( 768 )
 		, m_fullScreen( true )
 		, m_vsync( false )
+#ifndef _DEBUG
 		, m_renderDriver("RenderSystem_Direct3D9")
+#else
+		, m_renderDriver("RenderSystem_Direct3D9_d")
+#endif
 	{
 		Holder<Player>::keep( new Player );
 		Holder<Amplifier>::keep( new Amplifier );

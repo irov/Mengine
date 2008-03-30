@@ -132,7 +132,7 @@ namespace Menge
 
 		if( m_physicEngine )
 		{
-			m_physicEngine->init(mt::vec3f(0,-1.0,0));
+			m_physicEngine->init(mt::vec3f(0.f,-1.f,0.f));
 		}
 
 		Game* game = Holder<Game>::hostage();

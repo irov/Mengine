@@ -23,7 +23,6 @@ namespace Menge
 		: m_resource(0)
 		, m_interface(0)
 		, m_isHeadMode(false)
-		, m_listener(0)
 		, m_volume( 1.0f )
 		, m_looped( false )
 	{
@@ -138,13 +137,13 @@ namespace Menge
 		m_interface->setSoundBuffer( m_resource->get() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setSoundListener( PyObject * _listener )
+	/*void SoundEmitter::setSoundListener( PyObject * _listener )
 	{
 		m_listener = _listener;
 
 		registerEventListener("STOP_PLAYING", "onStopped", m_listener );
 		registerEventListener("PAUSE_PLAYING", "onPaused", m_listener );
-	}
+	}*/
 
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenPaused( bool _pause )
@@ -220,6 +219,14 @@ namespace Menge
 	int SoundEmitter::getLengthMs()
 	{
 		return m_interface->getLengthMs();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_onSetListener()
+	{
+		SceneNode2D::_onSetListener();
+
+		registerEventListener("STOP_PLAYING", "onStopped", m_listener );
+		registerEventListener("PAUSE_PLAYING", "onPaused", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

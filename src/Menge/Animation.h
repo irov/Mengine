@@ -60,7 +60,7 @@ namespace Menge
 		/*!
 		\param _listener слушатель
 		*/
-		void setAnimationListener( PyObject * _listener );
+		//void setAnimationListener( PyObject * _listener );
 
 		//! Установка ресурса анимации.
 		/*!
@@ -109,7 +109,7 @@ namespace Menge
 		unsigned int m_currentFrame;
 
 		float m_animationFactor;
-
+		virtual void _onSetListener();
 		//PyObject * m_listener;
 	};
 }

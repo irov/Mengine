@@ -27,7 +27,7 @@ public:
 	void destroyBody( PhysicBody2DInterface* _body ) override;
 
 	PhysicJoint2DInterface* createDistanceJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _offsetBody2, bool _collideBodies ) override;
-	PhysicJoint2DInterface* createHingeJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, bool _collideBodies ) override;
+	PhysicJoint2DInterface* createHingeJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _limits, bool _collideBodies ) override;
 	void destroyJoint( PhysicJoint2DInterface* _joint );
 
 
@@ -38,8 +38,8 @@ public:
 private:
 	 b2World* m_world;
 
-	 //typedef std::vector<b2ContactPoint> TContactPointList;
-	 //TContactPointList m_contacts;
+	 typedef std::vector<b2ContactPoint> TContactPointList;
+	 TContactPointList m_contacts;
 
 	 typedef std::vector< std::pair< b2JointDef*, Box2DPhysicJoint* > > TJointDefList;
 	 TJointDefList m_jointDefList;

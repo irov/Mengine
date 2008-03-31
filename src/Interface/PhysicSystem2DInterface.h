@@ -29,6 +29,7 @@ public:
 	virtual const float * getOrientation() = 0;
 	virtual float getAngle() = 0;
 	virtual void setOrientation( float _angle ) = 0;
+	virtual	float getMass() const = 0;
 
 	virtual void setLinearVelocity( float _x, float _y ) = 0;
 	virtual const float* getLinearVelocity() = 0;
@@ -68,7 +69,7 @@ public:
 	virtual void destroyBody( PhysicBody2DInterface* _body ) = 0;
 
 	virtual PhysicJoint2DInterface* createDistanceJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _offsetBody2, bool _collideBodies ) = 0;
-	virtual PhysicJoint2DInterface* createHingeJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, bool _collideBodies ) = 0;
+	virtual PhysicJoint2DInterface* createHingeJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _limits, bool _collideBodies ) = 0;
 	virtual void destroyJoint( PhysicJoint2DInterface* ) = 0;
 };
 

@@ -55,9 +55,9 @@ namespace Menge
 		return m_interface->createDistanceJoint( _body1->getInterface(), _body2->getInterface(), _offsetBody1.m, _offsetBody2.m, _collideBodies );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PhysicJoint2DInterface* PhysicEngine2D::createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, bool _collideBodies )
+	PhysicJoint2DInterface* PhysicEngine2D::createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _limits, bool _collideBodies )
 	{
-		return m_interface->createHingeJoint( _body1->getInterface(), _body2->getInterface(), _offsetBody1.m, _collideBodies );
+		return m_interface->createHingeJoint( _body1->getInterface(), _body2->getInterface(), _offsetBody1.m, _limits.m, _collideBodies );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine2D::destroyJoint( PhysicJoint2DInterface* _joint )

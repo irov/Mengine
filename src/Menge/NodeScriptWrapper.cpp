@@ -29,6 +29,7 @@
 #	include "RigidBody3D.h"
 #	include "CapsuleController.h"
 #	include "Skeleton.h"
+#	include "Camera2D.h"
 
 #	include "Layer2D.h"
 
@@ -361,9 +362,9 @@ namespace Menge
 			return Holder<PhysicEngine2D>::hostage()->createDistanceJoint( _body1, _body2, _offset1, _offset2, _collideBodies );
 		}
 
-		static PhysicJoint2DInterface* s_createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, bool _collideBodies )
+		static PhysicJoint2DInterface* s_createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offset1, const mt::vec2f& _limits, bool _collideBodies )
 		{
-			return Holder<PhysicEngine2D>::hostage()->createHingeJoint( _body1, _body2, _offset1, _collideBodies );
+			return Holder<PhysicEngine2D>::hostage()->createHingeJoint( _body1, _body2, _offset1, _limits, _collideBodies );
 		}
 
 		static void s_destroyJoint( PhysicJoint2DInterface* _joint )
@@ -371,6 +372,17 @@ namespace Menge
 			return Holder<PhysicEngine2D>::hostage()->destroyJoint( _joint );
 		}
 
+		static void s_setCamera2DTarget( PyObject* _object )
+		{
+			Entity * entity = pybind::extract<Entity*>( _object);
+
+			Holder<Player>::hostage()->getRenderCamera2D()->setTarget( (SceneNode2D*)entity );
+		}
+
+		static void s_enableCamera2DTargetFollowing( bool _enable, float _force )
+		{
+			Holder<Player>::hostage()->getRenderCamera2D()->enableTargetFollowing( _enable, _force );
+		}
 	}
 
 	SCRIPT_CLASS_WRAPPING( Node );
@@ -532,6 +544,7 @@ namespace Menge
 		pybind::proxy_<SceneNode2D, pybind::bases<Node, Allocator2D, NodeRenderable>>("SceneNode2D", false)
 				.def( "getScreenPosition", &SceneNode2D::getScreenPosition )
 				.def( "getParent", &SceneNode2D::getParent )
+				.def( "setListener", &SceneNode2D::setListener )
 			;
 
 		pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
@@ -615,7 +628,6 @@ namespace Menge
 				.def( "getVolume", &SoundEmitter::getVolume )
 				.def( "setLooped", &SoundEmitter::setLooped )
 				.def( "isLooping", &SoundEmitter::isLooping )
-				.def( "setSoundListener", &SoundEmitter::setSoundListener )
 				.def( "setSoundResource", &SoundEmitter::setSoundResource )
 				;
 
@@ -688,7 +700,6 @@ namespace Menge
 					.def( "pause", &Animation::pause )
 					.def( "setLooped", &Animation::setLooped )
 					.def( "getLooped", &Animation::getLooped )					
-					.def( "setAnimationListener", &Animation::setAnimationListener )
 					.def( "setAnimationResource", &Animation::setAnimationResource )
 					.def( "setAnimationFactor", &Animation::setAnimationFactor )
 					.def( "getAnimationFactor", &Animation::getAnimationFactor )
@@ -700,13 +711,16 @@ namespace Menge
 				.def( "getListener", &RigidBody2D::getListener )
 				.def( "applyForce", &RigidBody2D::applyForce )
 				.def( "applyImpulse", &RigidBody2D::applyImpulse )
-				.def( "setOrientation", &RigidBody2D::setOrientation )
+				.def( "setAngle", &RigidBody2D::setAngle )
+				.def( "setDirection", &RigidBody2D::setDirection )
 				.def( "setPosition", &RigidBody2D::setPosition )
 				.def( "applyConstantForce", &RigidBody2D::applyConstantForce )
 				.def( "removeConstantForce", &RigidBody2D::removeConstantForce )
 				.def( "setDirectionForce", &RigidBody2D::setDirectionForce )
 				.def( "wakeUp", &RigidBody2D::wakeUp )
-				;
+				.def( "getMass", &RigidBody2D::getMass )
+				.def( "getLinearVelocity", &RigidBody2D::getLinearVelocity )
+			;
 
 		}		
 
@@ -714,6 +728,8 @@ namespace Menge
 		pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
 		pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
 		pybind::def( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
+		pybind::def( "setCamera2DTarget", &ScriptMethod::s_setCamera2DTarget );
+		pybind::def( "enableCamera2DFollowing", &ScriptMethod::s_enableCamera2DTargetFollowing );
 				
 		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
 

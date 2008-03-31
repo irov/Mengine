@@ -21,6 +21,9 @@ namespace Menge
 
 	public:
 		void setViewportSize( const mt::vec2f & _size );
+
+		void setTarget( SceneNode2D* _target );
+		void enableTargetFollowing( bool _enable, float _force );
 		
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -37,5 +40,9 @@ namespace Menge
 		Viewport m_viewport;
 
 		mt::vec2f m_viewportSize;
+
+		SceneNode2D* m_target;
+		bool m_targetFollowing;
+		float m_followingForce;
 	};
 }

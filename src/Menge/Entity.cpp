@@ -259,6 +259,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_update( float _timing )
 	{
+
 		if( m_physicController )
 		{
 			if( m_velocity != mt::vec2f::zero_v2 )
@@ -266,6 +267,38 @@ namespace	Menge
 				mt::vec2f pos = getLocalPosition() + m_velocity * _timing;
 				setPosition( pos.x, pos.y );
 			}
+
+			if( m_rotate )
+			{
+				if( m_rotateTime <= _timing  )
+				{
+					//setLocalDirection( m_targetDir );
+					setDirection( m_targetDir );
+
+					m_rotate = false;
+
+					this->callEvent("ROTATE_END", "()" );
+				}
+				else
+				{
+					m_rotateTime -= _timing;
+
+					float t = _timing / m_rotateTime;
+
+					//const mt::vec2f & dir = getLocalDirection();
+					float angle = m_interface->getAngle();
+					mt::vec2f dir( cosf(angle), sinf(angle) );
+
+					mt::vec2f curr_dir = mt::slerp_v2_v2( dir, m_targetDir, t );
+					//mt::vec2f curr_dir = m_targetDir * t + dir * ( 1.0f - t );
+					//curr_dir = mt::norm_v2( curr_dir );
+					//printf( "dir: %.4f %.4f\n", curr_dir.x, curr_dir.y );
+
+					//setLocalDirection( curr_dir );
+					setDirection( curr_dir );
+				}
+			}
+
 			RigidBody2D::_update( _timing );
 			//m_interface->set
 			this->callEvent("UPDATE", "(f)", _timing );

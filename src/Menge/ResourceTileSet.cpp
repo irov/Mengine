@@ -56,12 +56,13 @@ namespace Menge
 		}
 
 		unsigned int tileSetSize = m_tiles * m_tiles;
-		m_tileSize = m_image->getWidth() / tileSetSize;
+		m_tileSize = m_image->getWidth() / tileSetSize - 1;
 		unsigned int tilesNum = tileSetSize * tileSetSize;
-
+		mt::vec4f uv( 0.0f, 0.0f, 1.0f, 1.0f );
 		for( unsigned int tile = 0; tile < tilesNum; tile++ )
 		{
 			unsigned int tileCode = s_tileNumToCode( tile, m_tiles );
+			
 			unsigned int y = tile / tileSetSize;
 			unsigned int x = tile % tileSetSize;
 			mt::vec4f uv( x * m_tileSize, y * m_tileSize, ( x + 1 ) * m_tileSize, ( y + 1 ) * m_tileSize );

@@ -29,6 +29,7 @@ namespace Menge
 		virtual void flip( bool _x ) {}
 		virtual void setScale( const mt::vec2f& _scale ) {}
 		virtual const mt::vec2f& getScale() const { static mt::vec2f s(1.0f, 1.0f); return s; }
+		void setListener( PyObject* _listener );
 
 	public:
 
@@ -43,7 +44,9 @@ namespace Menge
 
 	protected:
 		Layer2D * m_layer;
+		PyObject * m_listener;
 
 		void _addChildren( SceneNode2D * _node ) override;
+		virtual void _onSetListener();
 	};
 }

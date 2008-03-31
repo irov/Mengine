@@ -61,6 +61,7 @@ EmitterContainerInterface * AstralaxParticleSystem::createEmitterContainerFromMe
 						init = true;
 					}
 
+					Magic_SetEmitterPositionMode( id, false );
 					container->addEmitterId( name, id );
 				}
 			}
@@ -100,6 +101,7 @@ void AstralaxParticleSystem::lockEmitter( EmitterInterface * _emitter, int _type
 	HM_EMITTER id = emitter->getId();
 
 	Magic_GetEmitterPosition( id, &m_currentX, &m_currentY );
+	bool pos =  Magic_GetEmitterPositionMode( id );
 
 	Magic_LockParticlesType( id, _typeParticle );
 
@@ -119,7 +121,7 @@ RenderParticle * AstralaxParticleSystem::nextParticle()
 
 	MAGIC_TEXTURE * magic_texture = & m_texture;	
 
-	MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture, m_currentX, m_currentY );
+	MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture, 0, 0 );
 
 	rp.x1 = vertex_rectangle->x1;
 	rp.x2 = vertex_rectangle->x2;
@@ -130,10 +132,16 @@ RenderParticle * AstralaxParticleSystem::nextParticle()
 	rp.y3 = vertex_rectangle->y3;
 	rp.y4 = vertex_rectangle->y4;
 
-	rp.u0 = magic_texture->left;
+	/*rp.u0 = magic_texture->left;
 	rp.v0 = magic_texture->top;
 	rp.u1 = magic_texture->right;
-	rp.v1 = magic_texture->bottom;
+	rp.v1 = magic_texture->bottom;*/
+
+	rp.u0 = 0.0f;
+	rp.v0 = 0.0f;
+	rp.u1 = 1.0f;
+	rp.v1 = 1.0f;
+
 
 	rp.color = particle->color;
 

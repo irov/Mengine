@@ -10,14 +10,19 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	void CollisionListenerProxy::onCollide(PhysicBody2DInterface *_otherObj, float _worldX, float _worldY, float _normalX, float _normalY)
+	{
+		m_body->onCollide( _otherObj, _worldX, _worldY, _normalX, _normalY );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT( RigidBody2D )
 	//////////////////////////////////////////////////////////////////////////
 	RigidBody2D::RigidBody2D()
 	: m_interface( NULL )
-	, m_density( 1.0f )
+	, m_density( 0.0f )
 	, m_friction( 1.0f )
 	, m_restitution( 0.0f )
-	, m_scriptListener( NULL )
 	, m_force( 0.0f, 0.0f )
 	, m_forcePoint( 0.0f, 0.0f )
 	, m_constantForce( false )
@@ -30,16 +35,22 @@ namespace Menge
 	, m_collisionMask( 0xFFFF )
 	, m_categoryBits( 1 )
 	, m_groupIndex( 0 )
+	, m_collisionListenerProxy( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RigidBody2D::~RigidBody2D()
 	{
+		if( m_collisionListenerProxy )
+		{
+			delete m_collisionListenerProxy;
+			m_collisionListenerProxy = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY )
 	{
-		if( m_scriptListener )
+		if( m_listener )
 		{
 			RigidBody2D* other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
 			callEvent( "ON_COLLIDE", "(OOffff)", this->getScript(), other->getScript(), _worldX, _worldY, _normalX, _normalY );
@@ -228,7 +239,9 @@ namespace Menge
 			m_interface = Holder<PhysicEngine2D>::hostage()->createDynamicBody( position, 0.0f, m_linearDamping, m_angularDamping, m_allowSleep,
 																			m_isBullet, m_fixedRotation );
 		}
-		m_interface->setCollisionListener( this );
+
+		m_collisionListenerProxy = new CollisionListenerProxy( this );
+		m_interface->setCollisionListener( m_collisionListenerProxy );
 		m_interface->setUserData( this );
 
 		for( TShapeList::iterator it = m_shapeList.begin(),
@@ -265,16 +278,16 @@ namespace Menge
 		Holder<PhysicEngine2D>::hostage()->destroyPhysicBody( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::setListener( PyObject * _listener )
+	/*void RigidBody2D::setListener( PyObject * _listener )
 	{
 		m_scriptListener = _listener;
 
 		registerEventListener("ON_COLLIDE", "onCollide", m_scriptListener );
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	PyObject* RigidBody2D::getListener()
 	{
-		return m_scriptListener;
+		return m_listener;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::applyForce( float _forceX, float _forceY, float _pointX, float _pointY )
@@ -291,9 +304,16 @@ namespace Menge
 		m_interface->applyImpulse( _impulseX, _impulseY, position.x + _pointX, position.y + _pointY );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::setOrientation( float _angle )
+	void RigidBody2D::setAngle( float _angle )
 	{
 		m_interface->setOrientation( _angle );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::setDirection( const mt::vec2f& _dir )
+	{
+		float sign = _dir.y < 0? -1 : 1;
+		float angle = ::acos( _dir.x ) * sign;
+		m_interface->setOrientation( angle );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::setPosition( float _x, float _y )
@@ -329,5 +349,28 @@ namespace Menge
 	void RigidBody2D::wakeUp()
 	{
 		m_interface->wakeUp();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float RigidBody2D::getMass() const
+	{
+		return m_interface->getMass();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f RigidBody2D::getLinearVelocity() const
+	{
+		const float* v = m_interface->getLinearVelocity();
+		return mt::vec2f( v[0], v[1] );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::_addShapeBox( float _width, float _heigth, const mt::vec2f& _pos, float _angle )
+	{
+		m_shapeBoxList.push_back( std::make_pair( std::make_pair( _width, _heigth ), std::make_pair( _pos, _angle ) ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::_onSetListener()
+	{
+		SceneNode2D::_onSetListener();
+
+		registerEventListener("ON_COLLIDE", "onCollide", m_listener );
 	}
 } // namespace Menge

@@ -39,7 +39,6 @@ namespace	Menge
 	, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
 	, m_blendSrc( BF_SOURCE_ALPHA )
 	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
-	, m_listener( 0 )
 	{ }
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -328,9 +327,10 @@ namespace	Menge
 	void Sprite::_debugRender()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setListener( PyObject* _listener )
+	void Sprite::_onSetListener()
 	{
-		m_listener = _listener;
+		//m_listener = _listener;
+		SceneNode2D::_onSetListener();
 
 		registerEventListener("COLOR_END", "onColorEnd", m_listener );
 		registerEventListener("COLOR_STOP", "onColorStop", m_listener );

@@ -3,6 +3,7 @@
 #	include "SceneNode2D.h"
 
 #	include "../Interface/RenderSystemInterface.h"
+#	include "../Interface/ParticleSystemInterface.h"
 
 #	include "math/mat3.h"
 
@@ -16,6 +17,7 @@ namespace Menge
 
 	class Emitter
 		: public SceneNode2D
+		, public ParticleEmitterListenerInterface
 	{
 		OBJECT_DECLARE(Emitter);
 	public:
@@ -34,6 +36,7 @@ namespace Menge
 		virtual bool isVisible( const Viewport & _viewPort );
 
 		void loader( XmlElement * _xml ) override;
+		void onStopped() override;
 
 	protected:
 		void _render() override;
@@ -59,5 +62,7 @@ namespace Menge
 
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;
+
+		virtual void _onSetListener();
 	};
 }

@@ -109,7 +109,7 @@ namespace Menge
 		\return цвет
 		*/
 
-		void setListener( PyObject* _listener );
+		//void setListener( PyObject* _listener );
 
 		const Color & getColor() const;
 
@@ -163,6 +163,7 @@ namespace Menge
 
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;
-		PyObject * m_listener;
+		//PyObject * m_listener;
+		virtual void _onSetListener();
 	};
 }

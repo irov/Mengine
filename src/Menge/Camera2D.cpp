@@ -10,6 +10,8 @@ namespace	Menge
 	OBJECT_IMPLEMENT( Camera2D );
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::Camera2D()
+		: m_target( NULL )
+		, m_targetFollowing( false )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::~Camera2D()
@@ -27,7 +29,24 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::_update( float _timing )
 	{
-		//Empty
+		if( m_targetFollowing && m_target )
+		{
+			mt::vec2f pos = getWorldPosition();
+			mt::vec2f tpos = m_target->getWorldPosition();
+			mt::vec2f dir = tpos - pos;
+			float slen = dir.sqrlength();
+
+			float way = m_followingForce * _timing;
+			if( way*way > slen )
+			{
+				pos = tpos;
+			}
+			else
+			{
+				pos += dir * way;
+			}
+			setLocalPosition( pos );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::_changePivot()
@@ -55,4 +74,16 @@ namespace	Menge
 		m_viewportSize = _size;
 		updateViewport();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::setTarget(Menge::SceneNode2D *_target)
+	{
+		m_target = _target;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::enableTargetFollowing( bool _enable, float _force )
+	{
+		m_targetFollowing = true;
+		m_followingForce = _force;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

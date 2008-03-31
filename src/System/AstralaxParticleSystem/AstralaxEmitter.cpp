@@ -1,5 +1,6 @@
 #	include "AstralaxEmitter.h"
 #	include <assert.h>
+
 //////////////////////////////////////////////////////////////////////////
 AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 	: m_id( _id )
@@ -7,9 +8,16 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 	, m_leftBorder( 0.0f )
 	, m_total_rate( 0.0f )
 	, m_looped( false )
+	, m_listener( NULL )
 {
 	HM_EMITTER duplicated_id;
 	Magic_DuplicateEmitter( m_id, &duplicated_id );
+	m_typesCount = Magic_GetParticlesTypeCount( m_id );
+	assert( m_typesCount < 20 && "Particles type count over 20!" );
+	for( int i = 0; i < m_typesCount; i++ )
+	{
+		m_factor[i] = Magic_GetDiagramFactor( m_id, i, MAGIC_DIAGRAM_NUMBER );
+	}
 	m_id = duplicated_id;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -32,9 +40,15 @@ void AstralaxEmitter::play()
 {
 	if ( Magic_IsRestart( m_id ) ) 
 	{ 
+
 		Magic_Restart( m_id );
 	}
 
+	for( int i = 0; i < m_typesCount; i++ )
+	{
+		Magic_SetDiagramFactor( m_id, i, MAGIC_DIAGRAM_NUMBER, m_factor[i] );
+	}
+	//m_factor = Magic_GetDiagramFactor( m_id, 0, MAGIC_DIAGRAM_NUMBER );
 	//Magic_SetPosition( m_id, 0 );
 
 	/*if( m_leftBorder > 0 )
@@ -57,9 +71,14 @@ int AstralaxEmitter::getLooped() const
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::stop()
 {
-	m_start = false;
+	//m_start = false;
 
-	Magic_Stop( m_id );
+	//Magic_Stop( m_id );
+	//Magic_SetDiagramFactor( m_id, 0, 3, 0.0f );
+	for( int i = 0; i < m_typesCount; i++ )
+	{
+		Magic_SetDiagramFactor( m_id, i, MAGIC_DIAGRAM_NUMBER, 0.0f );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::pause()
@@ -86,6 +105,10 @@ void AstralaxEmitter::update( float _timing )
         if ( Magic_IsRestart( m_id ) )
         { 
 			m_start = false;
+			if( m_listener )
+			{
+				m_listener->onStopped();
+			}
         }
     }
 }
@@ -145,5 +168,15 @@ void AstralaxEmitter::_leftVisibleInterval( double _left )
 bool	AstralaxEmitter::isIntensive() const
 {
 	return Magic_IsIntensive();
+}
+//////////////////////////////////////////////////////////////////////////
+void AstralaxEmitter::setListener( ParticleEmitterListenerInterface* _listener )
+{
+	m_listener = _listener;
+}
+//////////////////////////////////////////////////////////////////////////
+void AstralaxEmitter::setPosition(float _x, float _y)
+{
+	Magic_SetEmitterPosition( m_id, _x, _y );
 }
 //////////////////////////////////////////////////////////////////////////

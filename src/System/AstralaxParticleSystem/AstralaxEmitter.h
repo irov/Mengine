@@ -27,6 +27,8 @@ public:
 
 	bool	isIntensive() const override;
 
+	void	setListener( ParticleEmitterListenerInterface* _listener ) override;
+	void	setPosition( float _x, float _y ) override;
 public:
 	HM_EMITTER	getId() const;
 
@@ -37,5 +39,9 @@ private:
 	bool		m_start;
 //	bool		m_stop;
 	bool		m_looped;
+	ParticleEmitterListenerInterface* m_listener;
 	void	_leftVisibleInterval( double _left );
+
+	float m_factor[20];
+	int m_typesCount;
 };

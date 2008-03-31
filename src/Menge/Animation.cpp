@@ -35,13 +35,13 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setAnimationListener( PyObject * _listener )
+	/*void Animation::setAnimationListener( PyObject * _listener )
 	{
 		m_listener = _listener;
 
 		registerEventListener("END_ANIMATION", "onAnimationEnd", m_listener );
 		registerEventListener("END_FRAME", "onFrameEnd", m_listener );
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationResource( const std::string & _resource )
 	{
@@ -207,4 +207,12 @@ namespace	Menge
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Animation::_onSetListener()
+	{
+		Sprite::_onSetListener();
+
+		registerEventListener("END_ANIMATION", "onAnimationEnd", m_listener );
+		registerEventListener("END_FRAME", "onFrameEnd", m_listener );
+	}
+
 }

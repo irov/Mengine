@@ -58,7 +58,13 @@ namespace	Menge
 		m_width = m_resourceMap->getWidth();
 		m_height = m_resourceMap->getHeight();
 
-		RigidBody2D* collision = dynamic_cast<RigidBody2D*>(SceneManager::createNodeFromXmlData( m_resourceMap->getPhysXml() ) );
+		RigidBody2D* collision = SceneManager::createNodeT<RigidBody2D>( "RigidBody2D" ) ;
+		const std::vector< mt::vec2f >& pos = m_resourceMap->_getPhysPos();
+		float width = m_resourceMap->_getPhysWidth();
+		for( int i = 0; i < pos.size(); i++ )
+		{
+			collision->_addShapeBox( width, width, pos[i], 0.0f );
+		}
 		collision->compile();
 		addChildren( collision );
 
@@ -92,7 +98,7 @@ namespace	Menge
 					wm, 
 					mt::vec2f( i * tileSize, j * tileSize ),
 					tile.uv,
-					mt::vec2f( tileSize + 1, tileSize + 1 ),
+					mt::vec2f( tileSize, tileSize ),
 					0xffffffff,
 					tile.image,
 					BF_SOURCE_ALPHA,

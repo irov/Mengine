@@ -119,6 +119,8 @@ namespace	Menge
 			return false;
 		}
 
+		m_interface->setListener( this );
+
 		int count = m_interface->getNumTypes();
 
 		for ( int i = count - 1; i >= 0; i-- )
@@ -162,7 +164,9 @@ namespace	Menge
 
 		int count = m_interface->getNumTypes();
 
-		const mt::mat3f & wm = getWorldMatrix();
+		//const mt::mat3f & wm = getWorldMatrix();
+		mt::mat3f wm;
+		mt::ident_m3( wm );
 
 		for ( int i = count - 1; i >= 0; i-- )
 		{
@@ -229,6 +233,7 @@ namespace	Menge
 	void Emitter::stop()
 	{
 		m_interface->stop();
+		this->callEvent( "EMITTER_STOP", "(O)", this->getScript() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::setLooped( int _loop )
@@ -249,6 +254,8 @@ namespace	Menge
 	void Emitter::_update( float _timing )
 	{
 		SceneNode2D::_update( _timing );
+		const mt::vec2f& pos = getWorldPosition();
+		m_interface->setPosition( pos.x, pos.y );
 		m_interface->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -256,4 +263,16 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Emitter::onStopped()
+	{
+		this->callEvent( "EMITTER_END", "(O)", this->getScript() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Emitter::_onSetListener()
+	{
+		SceneNode2D::_onSetListener();
+
+		registerEventListener("EMITTER_END", "onEmitterEnd", m_listener );
+		registerEventListener("EMITTER_STOP", "onEmitterStop", m_listener );
+	}
 }

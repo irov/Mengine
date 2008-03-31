@@ -143,6 +143,11 @@ const float* Box2DPhysicBody::getOrientation()
 	return &(m_body->GetXForm().R.col1.x);
 }
 //////////////////////////////////////////////////////////////////////////
+float Box2DPhysicBody::getMass() const
+{
+	return m_body->GetMass();
+}
+//////////////////////////////////////////////////////////////////////////
 float Box2DPhysicBody::getAngle()
 {
 	return m_body->GetAngle();
@@ -161,7 +166,8 @@ void Box2DPhysicBody::setLinearVelocity( float _x, float _y )
 //////////////////////////////////////////////////////////////////////////
 const float* Box2DPhysicBody::getLinearVelocity()
 {
-	b2Vec2 velocity = m_body->GetLinearVelocity();
+	static b2Vec2 velocity(0.0f, 0.0f);
+	velocity = m_body->GetLinearVelocity();
 
 	velocity.x /= physicsScaler;
 	velocity.y /= physicsScaler;
@@ -211,7 +217,7 @@ void Box2DPhysicBody::_collide( b2Body* _otherBody, b2ContactPoint* _contact )
 	contact_position.x /= physicsScaler;
 	contact_position.y /= physicsScaler;
 
-	m_listener->onCollide( _otherObj, contact_position.x, contact_position.y, _contact->normal.x * _contact->normalForce, _contact->normal.y * _contact->normalForce );
+	m_listener->onCollide( _otherObj, contact_position.x, contact_position.y, _contact->normal.x, _contact->normal.y );
 
 }
 //////////////////////////////////////////////////////////////////////////

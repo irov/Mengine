@@ -32,8 +32,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceTileMap::_compile()
 	{
-		m_physXml = "";
-		m_physXml += "<Node Name = \"" + m_name + "_collision\" Type = \"RigidBody2D\">";
+		//m_physXml = "";
+		//m_physXml += "<Node Name = \"" + m_name + "_collision\" Type = \"RigidBody2D\">";
 
 
 		m_tileSet = 
@@ -46,9 +46,10 @@ namespace Menge
 			return false;
 		}
 
-		char buffer[6];
-		int solidSize = m_tileSet->getTileSize() / 2;
-		std::string strSolidSize( _itoa( solidSize, buffer, 10 ) );
+		/*char buffer[6];
+		float solidSize = m_tileSet->getTileSize() / 2;
+		std::string strSolidSize( _itoa( solidSize, buffer, 10 ) );*/
+		m_physWidth = m_tileSet->getTileSize() / 2;
 
 		m_width = 0;
 		m_height = 0;
@@ -61,8 +62,9 @@ namespace Menge
 		{
 			if( line1[i] == '1' )
 			{
-				m_physXml += "<ShapeBox><Width Value = \"" + strSolidSize + "\"/><Height Value = \"" + strSolidSize + "\"/><Position Value = \"" +
-					std::string( _itoa( i*solidSize+ solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
+				//m_physXml += "<ShapeBox><Width Value = \"" + strSolidSize + "\"/><Height Value = \"" + strSolidSize + "\"/><Position Value = \"" +
+				//	std::string( _itoa( i*solidSize+ solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
+				m_physPos.push_back( mt::vec2f( i * m_physWidth * 2, 0.0f ) );
 			}
 
 		}
@@ -83,14 +85,16 @@ namespace Menge
 				//
 				if( line2[i] == '1' )
 				{
-				m_physXml += "<ShapeBox><Width Value = \"" + strSolidSize + "\"/><Height Value = \"" + strSolidSize + "\"/><Position Value = \"" +
-					std::string( _itoa( i*solidSize + solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( (m_height+1)*solidSize + solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
+				//m_physXml += "<ShapeBox><Width Value = \"" + strSolidSize + "\"/><Height Value = \"" + strSolidSize + "\"/><Position Value = \"" +
+				//	std::string( _itoa( i*solidSize + solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( (m_height+1)*solidSize + solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
+					m_physPos.push_back( mt::vec2f( i * m_physWidth * 2, (m_height+1)*m_physWidth * 2 ) );
 				}
 			}
 			if( line2[m_width] == '1' )
 			{
-				m_physXml += "<ShapeBox><Width Value = \"" + strSolidSize + "\"/><Height Value = \"" + strSolidSize + "\"/><Position Value = \"" +
-					std::string( _itoa( m_width*solidSize + solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( (m_height+1)*solidSize + solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
+				//m_physXml += "<ShapeBox><Width Value = \"" + strSolidSize + "\"/><Height Value = \"" + strSolidSize + "\"/><Position Value = \"" +
+				//	std::string( _itoa( m_width*solidSize + solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( (m_height+1)*solidSize + solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
+				m_physPos.push_back( mt::vec2f( m_width * m_physWidth * 2, (m_height+1)*m_physWidth * 2 ) );
 			}
 			m_height++;
 			line1 = line2;
@@ -98,9 +102,9 @@ namespace Menge
 
 		Holder<FileEngine>::hostage()->closeFile( mapFile );
 
-		m_physXml += "<Density Value = \"0.0\"/>";
+//		m_physXml += "<Density Value = \"0.0\"/>";
 
-		m_physXml += "</Node>";
+	//	m_physXml += "</Node>";
 
 		return true;
 	}
@@ -130,9 +134,19 @@ namespace Menge
 		return m_tileSet->getTileSize();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string& ResourceTileMap::getPhysXml() const
+	/*const std::string& ResourceTileMap::getPhysXml() const
 	{
 		return m_physXml;
+	}*/
+	//////////////////////////////////////////////////////////////////////////
+	const std::vector< mt::vec2f >& ResourceTileMap::_getPhysPos() const
+	{
+		return m_physPos;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ResourceTileMap::_getPhysWidth() const
+	{
+		return m_physWidth;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namescape Menge

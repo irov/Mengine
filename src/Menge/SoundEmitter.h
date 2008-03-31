@@ -36,7 +36,7 @@ namespace Menge
 
 			int	getLengthMs();
 
-			void setSoundListener( PyObject * _listener );
+			//void setSoundListener( PyObject * _listener );
 
 			void setSoundResource( const std::string & _name );
 
@@ -51,7 +51,9 @@ namespace Menge
 			void _release() override;
 
 		private:
-			PyObject * m_listener;
+			//PyObject * m_listener;
+			virtual void _onSetListener();
+
 
 			float m_volume;
 			ResourceSound * m_resource;
@@ -61,5 +63,6 @@ namespace Menge
 
 			bool m_isHeadMode;
 			bool m_looped;
+
 	};
 };

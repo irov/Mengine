@@ -1,4 +1,4 @@
-#	pragma once
+ #	pragma once
 
 #	include "Holder.h"
 #	include "Math/vec2.h"
@@ -30,7 +30,7 @@ namespace Menge
 		void destroyPhysicBody( PhysicBody2DInterface* _bodyInterface );
 
 		PhysicJoint2DInterface*  createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies );
-		PhysicJoint2DInterface*  createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, bool _collideBodies );
+		PhysicJoint2DInterface*  createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _limits, bool _collideBodies );
 		void destroyJoint( PhysicJoint2DInterface* _joint );
 
 		void update( float _timing, int _iterations );

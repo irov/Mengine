@@ -22,11 +22,13 @@ public:
 		float _density, float _friction, float _restitution,	
 		unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) override;
 
+
 	const float * getPosition() const override;
 	void setPosition( float _x, float _y ) override;
 	const float * getOrientation() override;
 	float getAngle() override;
 	void setOrientation( float _angle ) override;
+	float getMass() const override;
 
 	void setLinearVelocity( float _x, float _y ) override;
 	const float* getLinearVelocity() override;
@@ -54,6 +56,7 @@ private:
 	void* m_userData;
 	bool m_isStatic;
 
-	friend void Box2DPhysicSystem::Add( b2ContactPoint* _point );
+	//friend void Box2DPhysicSystem::Add( b2ContactPoint* _point );
+	friend void Box2DPhysicSystem::update( float , int );
 	void _collide( b2Body* _otherBody, b2ContactPoint* _contact );
 };

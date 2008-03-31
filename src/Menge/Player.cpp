@@ -262,6 +262,8 @@ namespace Menge
 	{
 		if( m_switchScene == true )
 		{
+			m_renderCamera2D->deactivate();
+
 			m_switchScene = false;
 
 			m_nextScene->compile();
@@ -280,12 +282,18 @@ namespace Menge
 
 			m_scene = m_nextScene;
 			//m_scene->activate();
+			m_renderCamera2D->activate();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update( float _timing )
 	{
 		updateChangeScene();
+
+		if( m_renderCamera2D )
+		{
+			m_renderCamera2D->update( _timing );
+		}
 
 		if( m_scene )
 		{

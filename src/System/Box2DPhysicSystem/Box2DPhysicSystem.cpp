@@ -66,20 +66,31 @@ void Box2DPhysicSystem::update( float _timing, int _iterations )
 	{
 		body->WakeUp();
 	}*/
-
-	m_world->Step( _timing, _iterations );
-
-	m_world->m_broadPhase->Validate();
-
-	for( TJointDefList::iterator it = m_jointDefList.begin(),
-			it_end = m_jointDefList.end();
-			it != it_end;
-			it++ )
+	/*for( TJointDefList::iterator it = m_jointDefList.begin(),
+		it_end = m_jointDefList.end();
+		it != it_end;
+	it++ )
 	{
 		_createJoint( it->first, it->second );
 		delete it->first;
 	}
-	m_jointDefList.clear();
+	m_jointDefList.clear();*/
+	for( TContactPointList::iterator it = m_contacts.begin(),
+		it_end = m_contacts.end(); it != it_end; it++ )
+	{
+		b2Body* body1 = it->shape1->GetBody();
+		b2Body* body2 = it->shape2->GetBody();
+
+		static_cast<Box2DPhysicBody*>( body1->GetUserData() )->_collide( body2, &(*it) );
+		static_cast<Box2DPhysicBody*>( body2->GetUserData() )->_collide( body1, &(*it) );
+	}
+
+	m_contacts.clear();
+	m_world->Step( _timing, _iterations );
+
+	m_world->m_broadPhase->Validate();
+
+
 }
 //////////////////////////////////////////////////////////////////////////
 PhysicBody2DInterface* Box2DPhysicSystem::createDynamicBody( const float* _pos, float _angle, float _linearDamping, float _angularDamping,
@@ -151,18 +162,25 @@ PhysicJoint2DInterface* Box2DPhysicSystem::createDistanceJoint( PhysicBody2DInte
 	return static_cast<PhysicJoint2DInterface*>( joint );
 }
 //////////////////////////////////////////////////////////////////////////
-PhysicJoint2DInterface* Box2DPhysicSystem::createHingeJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, bool _collideBodies )
+PhysicJoint2DInterface* Box2DPhysicSystem::createHingeJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _limits, bool _collideBodies )
 {
 	b2RevoluteJointDef* jointDef = new b2RevoluteJointDef();
 	b2Body* body1 = static_cast<Box2DPhysicBody*>( _body1 )->getBody();
 	b2Body* body2 = static_cast<Box2DPhysicBody*>( _body2 )->getBody();
 	jointDef->collideConnected = _collideBodies;
+	
 
 	b2Vec2 offsetBody1( _offsetBody1[0] * physicsScaler, _offsetBody1[1] * physicsScaler);
 	b2Vec2 positionBody1 = body1->GetPosition();
-
+	
 	b2Vec2 anchor1 = positionBody1 + offsetBody1;
 
+	if( _limits[0] != _limits[1] )
+	{
+		jointDef->enableLimit = true;
+		jointDef->lowerAngle = _limits[0];
+		jointDef->upperAngle = _limits[1];
+	}
 	jointDef->Initialize( body1, body2, anchor1 );
 	
 	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL );
@@ -187,13 +205,13 @@ void Box2DPhysicSystem::destroyJoint( PhysicJoint2DInterface* _joint )
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::Add( b2ContactPoint* point )
 {
-	//m_contacts.push_back( *point );
+	m_contacts.push_back( *point );
 
-	b2Body* body1 = point->shape1->GetBody();
+	/*b2Body* body1 = point->shape1->GetBody();
 	b2Body* body2 = point->shape2->GetBody();
 
 	static_cast<Box2DPhysicBody*>( body1->GetUserData() )->_collide( body2, point );
-	static_cast<Box2DPhysicBody*>( body2->GetUserData() )->_collide( body1, point );
+	static_cast<Box2DPhysicBody*>( body2->GetUserData() )->_collide( body1, point );*/
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::Persist( b2ContactPoint* point )

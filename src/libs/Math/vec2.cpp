@@ -235,8 +235,10 @@ namespace	mt
 	vec2f	slerp_v2_v2(const vec2f& a, const vec2f& b, float t)
 	{
 		float s = sqrtf(a.sqrlength() * b.sqrlength());
-		float theta = acosf(mt::dot_v2_v2(a,b) / s);
-
+		float cos = mt::dot_v2_v2(a,b) / s;
+		if( cos > 1.0f ) cos = 1.0f;
+		else if( cos < -1.0f ) cos = -1.0f;
+		float theta = acosf( cos );
 		if (theta != 0.0f)
 		{
 			float d = 1.0f / sin(theta);

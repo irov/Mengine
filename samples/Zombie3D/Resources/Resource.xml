@@ -1,0 +1,22 @@
+<Resources>
+
+	<Scenes Path = "Scenes">
+		<Scene00/>
+	</Scenes>
+
+	<Arrows Path = "Arrows">
+		<Default/>
+	</Arrows>
+
+	<Entities Path = "Entities">
+	</Entities>
+
+	<Scripts Path = "Scripts" />
+
+	<Resource Path = "Resources">
+		<Main/>
+	</Resource>
+
+	<ResourceLocation Path = "Models"/>
+
+</Resources>

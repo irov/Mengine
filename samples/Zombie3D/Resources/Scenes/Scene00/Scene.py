@@ -16,7 +16,7 @@ class Scene( Menge.Scene ):
 		pass
 
 	def onActivate( self ):
-		self.player.playAnimation("Idle00")
+		#self.player.playAnimation("Idle00")
 		pass
 
 	def onUpdate( self, timing ):

@@ -8,7 +8,6 @@ import compileall
 import re
 
 source = '.'
-dest = 'rest2web-dist'
 bad_ext = ['.py']
 bad_files = ['thumbs.db']
 bad_dirs = ['thumbnails', '.svn']

@@ -21,7 +21,6 @@ def copytree(src, dst):
 
     os.mkdir(dst)
 
-    errors = []
     for name in names:
         if (name in bad_dirs) or (name in bad_files):
             continue
@@ -33,16 +32,10 @@ def copytree(src, dst):
         srcname = os.path.join(src, name)
         dstname = os.path.join(dst, name)
         
-        try:
-            if os.path.isdir(srcname):
-                copytree(srcname, dstname)
-            else:
+        if os.path.isdir(srcname):
+        	copytree(srcname, dstname)
+        else:
                 shutil.copy2(srcname, dstname)
-                
-        except (IOError, os.error), why:
-            errors.append((srcname, dstname, why))
-    if errors:
-        raise Error, errors
 
 def main():
 

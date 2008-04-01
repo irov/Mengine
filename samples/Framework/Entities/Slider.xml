@@ -1,0 +1,10 @@
+<Entity>
+	
+	<Node Name = "Background" Type = "Sprite">
+		<Transformation Value = "1;0;0;1;0;18"/>
+	</Node>
+	
+	<Node Name = "HotSpot" Type = "HotSpot"/>
+	
+	
+</Entity>

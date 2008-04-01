@@ -1,0 +1,13 @@
+<Scene>
+
+	<Node Name = "Back" Type = "Layer2D">
+		<Size Value = "1024;768"/>
+		<Main Value = "1"/>
+		
+		<Node Name = "HealthIndicator" Type = "Sprite">
+			<ImageMap Name = "HealthIndicator"/>
+			<Transformation Value = "1;0;0;1;10;500"/>
+		</Node>
+	</Node>
+
+</Scene>

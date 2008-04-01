@@ -1,0 +1,9 @@
+<Arrow>
+	<Node Type = "Sprite" >
+		<ImageMap Name = "default" />
+		<Transformation Value = "1;0;0;1;-18;-17"/>
+	</Node>
+	<!--
+	<ClickOffset Value = "-5;-11" />
+	-->
+</Arrow>

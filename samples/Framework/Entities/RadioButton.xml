@@ -1,0 +1,24 @@
+<Entity>
+	
+	<Node Name = "ButtonPassive" Type = "Sprite"/>
+	
+	<Node Name = "ButtonActive" Type = "Sprite"/>
+	
+	<Node Name = "ButtonPressed" Type = "Sprite"/>
+	
+	<Node Name = "ButtonAttention" Type = "Sprite"/>
+	
+	<Node Name = "ButtonHotSpot" Type = "HotSpot"/>
+	
+	
+	<Node Name = "ButtonSoundDirect" Type = "SoundEmitter">
+		<Resource Name = "SoundBtnDirect"/>
+		<HeadMode Value = "0"/>
+	</Node>
+	
+	<Node Name = "ButtonSoundClick" Type = "SoundEmitter">
+		<Resource Name = "SoundBtnClick"/>
+		<HeadMode Value = "0"/>
+	</Node>
+	
+</Entity>

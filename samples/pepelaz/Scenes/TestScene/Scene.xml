@@ -1,0 +1,129 @@
+<Scene>
+	
+	<Gravity2D Value = "0;1"/>
+	<PhysicWorld2DBox Value = "-100;-100;10340;7780"/>
+
+	<Node Name = "Back" Type = "Layer2D">
+		<Size Value = "1024;768"/>
+		
+		<Node Name = "Background" Type = "Sprite">
+			<ImageMap Name = "LevelBack"/>
+		</Node>
+
+		<!--
+		<Node Name = "LevelBorders" Type = "RigidBody2D">
+			<ShapeBox>
+				<Width Value = "10"/>
+				<Height Value = "768"/>
+				<Position Value = "5; 384"/>
+				<Angle Value = "0"/>
+			</ShapeBox>
+			<ShapeBox>
+				<Width Value = "10"/>
+				<Height Value = "768"/>
+				<Position Value = "1019; 384"/>
+				<Angle Value = "0"/>
+			</ShapeBox>
+			<ShapeBox>
+				<Width Value = "1024"/>
+				<Height Value = "10"/>
+				<Position Value = "512; 5"/>
+				<Angle Value = "0"/>
+			</ShapeBox>
+			<ShapeBox>
+				<Width Value = "1024"/>
+				<Height Value = "10"/>
+				<Position Value = "512; 763"/>
+				<Angle Value = "0"/>
+			</ShapeBox>
+
+			<Density Value = "0.0"/>
+			<Friction Value = "0.5"/>
+			<Restitution Value = "0.5"/>
+			<Transformation Value = "1;0;0;1;0;0"/>
+		</Node>
+		-->
+		
+	</Node>
+	
+	<Node Name = "BackParticles" Type = "Layer2D">
+		<Size Value = "1024;768"/>
+		
+		<Node Name = "DustRain" Type = "Emitter">
+			<Resource Name = "Particles"/>
+			<Emitter Name = "DustRain"/>
+			<Transformation Value = "1;0;0;1;0;384"/>
+		</Node>
+	</Node>
+	
+	<Node Name = "Middle" Type = "Layer2D">
+		<Size Value = "3072;2304"/>
+	
+		<Node Name = "Background" Type = "Sprite">
+			<ImageMap Name = "LevelSecondPlan11"/>
+			<Transformation Value = "1;0;0;1;0;0"/>
+		</Node>
+		
+		<Node Name = "Background" Type = "Sprite">
+			<ImageMap Name = "LevelSecondPlan12"/>
+			<Transformation Value = "1;0;0;1;1024;0"/>
+		</Node>
+		
+		<Node Name = "Background" Type = "Sprite">
+			<ImageMap Name = "LevelSecondPlan13"/>
+			<Transformation Value = "1;0;0;1;2048;0"/>
+		</Node>
+		
+		<Node Name = "Background" Type = "Sprite">
+			<ImageMap Name = "LevelSecondPlan21"/>
+			<Transformation Value = "1;0;0;1;0;768"/>
+		</Node>
+		
+		<Node Name = "Background" Type = "Sprite">
+			<ImageMap Name = "LevelSecondPlan22"/>
+			<Transformation Value = "1;0;0;1;1024;768"/>
+		</Node>
+		
+		<Node Name = "Background" Type = "Sprite">
+			<ImageMap Name = "LevelSecondPlan23"/>
+			<Transformation Value = "1;0;0;1;2048;768"/>
+		</Node>
+		
+		<Node Name = "Background" Type = "Sprite">
+			<ImageMap Name = "LevelSecondPlan31"/>
+			<Transformation Value = "1;0;0;1;0;1536"/>
+		</Node>
+		
+		<Node Name = "Background" Type = "Sprite">
+			<ImageMap Name = "LevelSecondPlan32"/>
+			<Transformation Value = "1;0;0;1;1024;1536"/>
+		</Node>
+		
+		<Node Name = "Background" Type = "Sprite">
+			<ImageMap Name = "LevelSecondPlan33"/>
+			<Transformation Value = "1;0;0;1;2048;1536"/>
+		</Node>
+		
+		
+		
+	</Node>
+	
+	<Node Name = "Front" Type = "Layer2D">
+		<Size Value = "10240;7680"/>
+		<Main Value = "1"/>
+		
+		<Node Name = "TileMap" Type = "TileMap">
+			<TileMap Name = "TestTileMap"/>
+		</Node>
+	</Node>
+	
+	<Node Name = "AimLayer" Type = "Layer2D">
+		<Size Value = "10240;7680"/>
+		
+	</Node>
+	
+	<Node Name = "HUD" Type = "LayerScene">
+		<Scene Name = "HUD"/>
+	</Node>
+	
+</Scene>

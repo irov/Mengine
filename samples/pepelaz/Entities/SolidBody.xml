@@ -1,0 +1,21 @@
+<Entity>
+	<!--
+	<PhysicBody>
+		<Shape>
+			<Point Value = "-25; -25"/>
+			<Point Value = "25; -25"/>
+			<Point Value = "25; 25"/>
+			<Point Value = "-25; 25"/>
+		</Shape>
+		<Density Value = "0.001"/>
+		<Friction Value = "0.8"/>
+		<Restitution Value = "0.5"/>
+	</PhysicBody>
+	
+	<Node Name = "Passive" Type = "Animation">
+		<Animation Name = "PplEngineAnimation"/>
+		<ImageMap Name = "Box"/>
+		<CenterAlign Value = "1"/>
+	</Node>
+	-->
+</Entity>

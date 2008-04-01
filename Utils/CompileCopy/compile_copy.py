@@ -4,28 +4,49 @@ import sys
 import os.path
 import shutil
 import string
+import compileall
+import re
 
-def compile_copy(srcdir,destdir):
+source = '.'
+dest = 'rest2web-dist'
+bad_ext = ['.py']
+bad_files = ['thumbs.db']
+bad_dirs = ['thumbnails', '.svn']
+good_files = []
 
-    os.mkdir(destdir)
+def copytree(src, dst):
     
-    for root, dirs, files in os.walk(srcdir):
-        for file in files:
-            
-            fulldest = os.path.join(destdir, file)
-            fullpath = os.path.join(root, file)
+    compileall.compile_dir(src, rx=re.compile('/[.]svn'), force=True)
+    
+    names = os.listdir(src)
+
+    os.mkdir(dst)
+
+    errors = []
+    for name in names:
+        if (name in bad_dirs) or (name in bad_files):
+            continue
+        ext = os.path.splitext(name)[1]
+        
+        if (ext in bad_ext) and not (name in good_files):
+            continue
+        
+        srcname = os.path.join(src, name)
+        dstname = os.path.join(dst, name)
+        
+        try:
+            if os.path.isdir(srcname):
+                copytree(srcname, dstname)
+            else:
+                shutil.copy2(srcname, dstname)
                 
-            if file.endswith('.py'):
-                compiler.compileFile(fullpath)
-                
-                pycext = os.path.splitext(file)[0]+".pyc";
-                fullpath = os.path.join(root,pycext)
-                fulldest = os.path.join(destdir,pycext)
-                
-            shutil.copyfile(fullpath,fulldest)
-              
+        except (IOError, os.error), why:
+            errors.append((srcname, dstname, why))
+    if errors:
+        raise Error, errors
+
 def main():
-    
-    compile_copy(".","..\Dir")
-    
+
+    copytree("Game","New1")
+
 main()

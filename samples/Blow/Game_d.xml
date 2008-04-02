@@ -2,11 +2,11 @@
 	<Title Name = "Пепелац"/>
 	<ResourceResolution Value = "1024;768"/>
 
-	<RenderDriver Name = "RenderSystem_Direct3D9"/>
+	<RenderDriver Name = "RenderSystem_Direct3D9_d"/>
 	<Width Value = "1024"/>
 	<Height Value = "768"/>
 	<Bits Value = "32"/>
-	<Fullscreen Value = "1"/>
+	<Fullscreen Value = "0"/>
 
 	<Default>
 		<Arrow Name = "Default" />

@@ -1,0 +1,25 @@
+<Resources>
+
+	<Scenes Path = "Scenes">
+		<BlowDemo/>
+	</Scenes>
+
+	<Arrows Path = "Arrows">
+		<Default/>
+	</Arrows>
+
+	<Entities Path = "Entities">
+		<Blow/>
+	</Entities>
+
+	<Scripts Path = "Scripts" />
+	
+	<Resource Path = "Resource">
+		<BlowDemo/>
+	</Resource>
+	
+	<ResourceLocation Path = ""/>
+
+	<ResourceResolution Value = "1024;768"/>
+
+</Resources>	

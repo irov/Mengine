@@ -123,7 +123,7 @@ void WinApplication::run()
 			m_listener->onMouseLeave();
 			m_cursorInArea = false;
 		}
-		if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
+		while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 		{
 			TranslateMessage( &msg );
 			DispatchMessage( &msg );
@@ -407,6 +407,7 @@ void WinApplication::notifyWindowModeChanged( float _width, float _height, bool 
 	else
 	{
 		dwStyle |= WS_POPUP;
+		SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 	}
 	//::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 

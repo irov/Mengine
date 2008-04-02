@@ -227,18 +227,20 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::setHotspotListener( PyObject * _listener )
+	void HotSpot::_onSetListener()
 	{
-		registerEventListener( "KEY", "onHandleKeyEvent", _listener );
-		registerEventListener( "MOUSE_BUTTON", "onHandleMouseButtonEvent", _listener );
-		registerEventListener( "MOUSE_MOVE", "onHandleMouseMove", _listener );
+		SceneNode2D::_onSetListener();
 
-		registerEventListener( "GLOBAL_MOUSE_BUTTON", "onGlobalHandleMouseButtonEvent", _listener );
-		registerEventListener( "GLOBAL_MOUSE_MOVE", "onGlobalHandleMouseMove", _listener );
-		registerEventListener( "GLOBAL_KEY", "onGlobalHandleKeyEvent", _listener );
+		registerEventListener( "KEY", "onHandleKeyEvent", m_listener );
+		registerEventListener( "MOUSE_BUTTON", "onHandleMouseButtonEvent", m_listener );
+		registerEventListener( "MOUSE_MOVE", "onHandleMouseMove", m_listener );
+
+		registerEventListener( "GLOBAL_MOUSE_BUTTON", "onGlobalHandleMouseButtonEvent", m_listener );
+		registerEventListener( "GLOBAL_MOUSE_MOVE", "onGlobalHandleMouseMove", m_listener );
+		registerEventListener( "GLOBAL_KEY", "onGlobalHandleKeyEvent", m_listener );
 		
-		registerEventListener( "LEAVE", "onLeave", _listener );
-		registerEventListener( "ENTER", "onEnter", _listener );		
+		registerEventListener( "LEAVE", "onLeave", m_listener );
+		registerEventListener( "ENTER", "onEnter", m_listener );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_update( float _timing )

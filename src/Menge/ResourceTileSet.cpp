@@ -43,7 +43,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceTileSet::_compile()
 	{
-		m_image = Holder<RenderEngine>::hostage()->loadImage( m_tileSetFile, 0 );
+		/*m_image = Holder<RenderEngine>::hostage()->loadImage( m_tileSetFile, 0 );
 		
 		if( m_image == 0 )
 		{
@@ -65,9 +65,21 @@ namespace Menge
 			
 			unsigned int y = tile / tileSetSize;
 			unsigned int x = tile % tileSetSize;
-			mt::vec4f uv( x * m_tileSize, y * m_tileSize, ( x + 1 ) * m_tileSize, ( y + 1 ) * m_tileSize );
+			mt::vec4f uv( x * ( m_tileSize + 0.5f ), y * ( m_tileSize + 0.5f ), ( x + 1 ) * ( m_tileSize + 1 ), ( y + 1 ) * ( m_tileSize + 1 ) );
 			uv /= m_image->getWidth();
 			m_tileSet[ tileCode ] = uv;
+		}*/
+		unsigned int tileSetSize = m_tiles * m_tiles;
+		unsigned int tilesNum = tileSetSize * tileSetSize;
+	
+		for( unsigned int tile = 0; tile < tilesNum; tile++ )
+		{
+			unsigned int tileCode = s_tileNumToCode( tile, m_tiles );
+			char buffer[10];
+			std::string tilestr( itoa(tileCode, buffer, 10) );
+			RenderImageInterface* image = Holder<RenderEngine>::hostage()->loadImage( m_tileSetFile + tilestr + ".png", 0 );
+			m_tileSize = image->getWidth();
+			m_tileSet[ tileCode ] = image;
 		}
 
 		return true;
@@ -75,14 +87,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTileSet::_release()
 	{
-		Holder<RenderEngine>::hostage()->releaseImage( m_image );
+		for( TTileSet::iterator it = m_tileSet.begin(),
+			it_end = m_tileSet.end(); 
+			it != it_end;
+		it++ )
+		{
+			Holder<RenderEngine>::hostage()->releaseImage( it->second );
+		}
+		m_tileSet.clear();
+		//Holder<RenderEngine>::hostage()->releaseImage( m_image );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageBlock ResourceTileSet::getImageBlock( int tile )
 	{
 		ImageBlock block;
-		block.image = m_image;
-		block.uv = m_tileSet[ tile ];
+		//block.image = m_image;
+		//block.uv = m_tileSet[ tile ];
+		block.image = m_tileSet[ tile ];
+		block.uv = mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f );
 		return block;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -32,6 +32,9 @@ namespace	Menge
 	, m_scaleTime( 0.0f )
 
 	, m_physicController( false )
+	, m_stabilityAngle( 0.0f )
+	, m_stabilization( false )
+	, m_stabilityForce( 1.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -262,6 +265,14 @@ namespace	Menge
 
 		if( m_physicController )
 		{
+			if( m_stabilization )
+			{
+				float dif = m_interface->getAngle() - m_stabilityAngle;
+				if( fabsf( dif ) > 0.1f )
+				{
+					m_interface->applyTorque( -dif * fabsf( dif ) * m_stabilityForce );
+				}
+			}
 			if( m_velocity != mt::vec2f::zero_v2 )
 			{
 				mt::vec2f pos = getLocalPosition() + m_velocity * _timing;
@@ -287,13 +298,14 @@ namespace	Menge
 
 					//const mt::vec2f & dir = getLocalDirection();
 					float angle = m_interface->getAngle();
+					//printf( "angle %.2f\n", angle );
 					mt::vec2f dir( cosf(angle), sinf(angle) );
 
 					mt::vec2f curr_dir = mt::slerp_v2_v2( dir, m_targetDir, t );
 					//mt::vec2f curr_dir = m_targetDir * t + dir * ( 1.0f - t );
-					//curr_dir = mt::norm_v2( curr_dir );
-					//printf( "dir: %.4f %.4f\n", curr_dir.x, curr_dir.y );
+					curr_dir = mt::norm_v2( curr_dir );
 
+					//printf( "%.2f %.2f \n", curr_dir.x, curr_dir.y );
 					//setLocalDirection( curr_dir );
 					setDirection( curr_dir );
 				}
@@ -486,8 +498,11 @@ namespace	Menge
 		this->callEvent( "COLLIDE", "(OOffff)", RigidBody2D::getScript(), other->getScript(), _worldX, _worldY, _normalX, _normalY );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::createPhysicBodyXml( const std::string& _xmlData )
+	void Entity::enableStabilization( bool _enable, float _stabilityAngle, float _stabilityForce )
 	{
-
+		m_stabilization = _enable;
+		m_stabilityAngle = _stabilityAngle;
+		m_stabilityForce = _stabilityForce;
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

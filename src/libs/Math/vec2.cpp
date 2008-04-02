@@ -239,6 +239,7 @@ namespace	mt
 		if( cos > 1.0f ) cos = 1.0f;
 		else if( cos < -1.0f ) cos = -1.0f;
 		float theta = acosf( cos );
+
 		if (theta != 0.0f)
 		{
 			float d = 1.0f / sin(theta);

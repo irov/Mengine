@@ -49,7 +49,7 @@ namespace Menge
 		/*char buffer[6];
 		float solidSize = m_tileSet->getTileSize() / 2;
 		std::string strSolidSize( _itoa( solidSize, buffer, 10 ) );*/
-		m_physWidth = m_tileSet->getTileSize() / 2;
+		m_physWidth = m_tileSet->getTileSize();
 
 		m_width = 0;
 		m_height = 0;
@@ -64,7 +64,7 @@ namespace Menge
 			{
 				//m_physXml += "<ShapeBox><Width Value = \"" + strSolidSize + "\"/><Height Value = \"" + strSolidSize + "\"/><Position Value = \"" +
 				//	std::string( _itoa( i*solidSize+ solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
-				m_physPos.push_back( mt::vec2f( i * m_physWidth * 2, 0.0f ) );
+				m_physPos.push_back( mt::vec2f( i * m_physWidth, 0.0f ) );
 			}
 
 		}
@@ -73,29 +73,34 @@ namespace Menge
 			line2 = mapFile->getLine( true );
 			if( m_width != line2.size() - 1 )
 			{
-				MENGE_LOG( "ResourceTileMap::_compile -> Invalid TileMap format in %s", m_tileMapFile );
+				MENGE_LOG( "ResourceTileMap::_compile -> Invalid TileMap format in %s", m_tileMapFile.c_str() );
 				return false;
 			}
+
+			std::vector< int > vect;
 			for( unsigned int i = 0; i < m_width; i++ )
 			{
 
 
-				m_tileMap[i][m_height] = ( line1[i] - 48 ) * 1000 + ( line1[i + 1] - 48 ) * 100 + ( line2[ i + 1] - 48 ) * 10 + ( line2[i] - 48 );
+				//m_tileMap[i][m_height] = ( line1[i] - 48 ) * 1000 + ( line1[i + 1] - 48 ) * 100 + ( line2[ i + 1] - 48 ) * 10 + ( line2[i] - 48 );
+				int t = ( line1[i] - 48 ) * 1000 + ( line1[i + 1] - 48 ) * 100 + ( line2[ i + 1] - 48 ) * 10 + ( line2[i] - 48 );
+				vect.push_back( t );
 
 				//
 				if( line2[i] == '1' )
 				{
 				//m_physXml += "<ShapeBox><Width Value = \"" + strSolidSize + "\"/><Height Value = \"" + strSolidSize + "\"/><Position Value = \"" +
 				//	std::string( _itoa( i*solidSize + solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( (m_height+1)*solidSize + solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
-					m_physPos.push_back( mt::vec2f( i * m_physWidth * 2, (m_height+1)*m_physWidth * 2 ) );
+					m_physPos.push_back( mt::vec2f( i * m_physWidth, (m_height+1)*m_physWidth ) );
 				}
 			}
 			if( line2[m_width] == '1' )
 			{
 				//m_physXml += "<ShapeBox><Width Value = \"" + strSolidSize + "\"/><Height Value = \"" + strSolidSize + "\"/><Position Value = \"" +
 				//	std::string( _itoa( m_width*solidSize + solidSize/2, buffer, 10 ) ) + ";" + std::string( _itoa( (m_height+1)*solidSize + solidSize/2, buffer, 10 ) ) + "\"/><Angle Value = \"0\"/></ShapeBox>";
-				m_physPos.push_back( mt::vec2f( m_width * m_physWidth * 2, (m_height+1)*m_physWidth * 2 ) );
+				m_physPos.push_back( mt::vec2f( m_width * m_physWidth, (m_height+1)*m_physWidth ) );
 			}
+			m_tileMap.push_back( vect );
 			m_height++;
 			line1 = line2;
 		}
@@ -116,7 +121,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ImageBlock ResourceTileMap::getTile( int _x, int _y )
 	{
-		return m_tileSet->getImageBlock( m_tileMap[ _x ][ _y ] );
+		return m_tileSet->getImageBlock( m_tileMap[ _y ][ _x ] );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ResourceTileMap::getWidth() const
@@ -146,7 +151,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceTileMap::_getPhysWidth() const
 	{
-		return m_physWidth;
+		return (m_physWidth)/2.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namescape Menge

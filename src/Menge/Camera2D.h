@@ -24,6 +24,7 @@ namespace Menge
 
 		void setTarget( SceneNode2D* _target );
 		void enableTargetFollowing( bool _enable, float _force );
+		void setBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
 		
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -44,5 +45,7 @@ namespace Menge
 		SceneNode2D* m_target;
 		bool m_targetFollowing;
 		float m_followingForce;
+		mt::vec2f m_boundLeftUpper;
+		mt::vec2f m_boundRightLower;
 	};
 }

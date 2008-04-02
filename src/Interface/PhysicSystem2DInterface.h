@@ -37,6 +37,7 @@ public:
 	virtual float getAngularVelocity() = 0;
 	virtual void applyForce( float _forceX, float _forceY, float _pointX, float _pointY ) = 0;
 	virtual void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY ) = 0;
+	virtual void applyTorque( float _torque ) = 0;
 
 	virtual void setCollisionListener( PhysicBody2DCollisionListener* ) = 0;
 	virtual void setUserData( void* ) = 0;

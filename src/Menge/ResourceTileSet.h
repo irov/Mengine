@@ -40,8 +40,9 @@ namespace Menge
 	private:
 		std::string m_tileSetFile;
 		unsigned int m_tiles;
-		RenderImageInterface* m_image;
-		typedef std::map< int, mt::vec4f > TTileSet;
+		//RenderImageInterface* m_image;
+		//typedef std::map< int, mt::vec4f > TTileSet;
+		typedef std::map< int, RenderImageInterface* > TTileSet;
 		TTileSet m_tileSet;
 		float m_tileSize;
 		

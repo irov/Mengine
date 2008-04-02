@@ -255,3 +255,8 @@ void Box2DPhysicBody::wakeUp()
 {
 	m_body->WakeUp();
 }
+//////////////////////////////////////////////////////////////////////////
+void Box2DPhysicBody::applyTorque( float _torque )
+{
+	m_body->ApplyTorque( _torque );
+}

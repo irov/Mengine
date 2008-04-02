@@ -40,7 +40,9 @@ namespace Menge
 		void _release() override;
 
 	private:
-		int m_tileMap[MAX_TILEMAP_WIDTH][MAX_TILEMAP_HEIGHT];
+
+		std::vector< std::vector< int > > m_tileMap;
+		//int m_tileMap[MAX_TILEMAP_WIDTH][MAX_TILEMAP_HEIGHT];
 		unsigned int m_width;
 		unsigned int m_height;
 

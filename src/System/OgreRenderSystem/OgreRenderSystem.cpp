@@ -211,11 +211,11 @@ bool OgreRenderSystem::createRenderWindow( float _width, float _height, int _bit
 	/*sceneCam->setPosition( 0.0f, 10.0f, 10.0f );
 	sceneCam->lookAt( 0.0f, 0.0f, 0.0f );
 	sceneCam->setFarClipDistance( 1000.0f );
-	sceneCam->setNearClipDistance( 0.2f );
+	sceneCam->setNearClipDistance( 0.2f );*/
 	//sceneCam->setFOVy(90);
-	//m_viewport->setBackgroundColour( Ogre::ColourValue::White );
+	//m_viewport->setBackgroundColour( Ogre::ColourValue::Green );
 
-	m_rootSceneNode = new OgreSceneNode( m_sceneMgr->getRootSceneNode(), 0 );*/
+	//m_rootSceneNode = new OgreSceneNode( m_sceneMgr->getRootSceneNode(), 0 );*/
 
 	// setup GUI system
 	/*m_GUIRenderer = new CEGUI::OgreCEGUIRenderer(m_renderWindow, Ogre::RENDER_QUEUE_OVERLAY, false, 3000, m_sceneMgr);

@@ -35,7 +35,6 @@ namespace     Menge
 		, m_outlineImage( 0 )
 		, m_maxWidth( 2048.f )
 		, m_charOffset( 0.0f )
-		, m_listener( NULL )
 	{
 		m_outlineFontName.clear();
 	}
@@ -418,9 +417,9 @@ namespace     Menge
 	{ 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setListener( PyObject* _listener )
+	void TextField::_onSetListener()
 	{
-		m_listener = _listener;
+		SceneNode2D::_onSetListener();
 		registerEventListener("COLOR_END", "onColorEnd", m_listener );
 		registerEventListener("COLOR_STOP", "onColorStop", m_listener );
 	}

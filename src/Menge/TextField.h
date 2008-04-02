@@ -106,7 +106,7 @@ namespace Menge
 
 		const mt::vec2f& getLength() const;
 
-		void setListener( PyObject* _listener );
+		//void setListener( PyObject* _listener );
 
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;
@@ -123,6 +123,7 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _timing ) override;
+		virtual void _onSetListener();
 
 	private:
 		ResourceFont * m_resource;
@@ -147,7 +148,7 @@ namespace Menge
 		ResourceImage * m_outlineImage;
 		std::string m_outlineFontName;
 
-		PyObject* m_listener;
+		//PyObject* m_listener;
 
 		struct Line
 		{

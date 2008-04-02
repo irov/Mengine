@@ -383,6 +383,11 @@ namespace Menge
 		{
 			Holder<Player>::hostage()->getRenderCamera2D()->enableTargetFollowing( _enable, _force );
 		}
+
+		static void s_setCamera2DBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower )
+		{
+			Holder<Player>::hostage()->getRenderCamera2D()->setBounds( _leftUpper, _rightLower );
+		}
 	}
 
 	SCRIPT_CLASS_WRAPPING( Node );
@@ -669,7 +674,6 @@ namespace Menge
 				;
 
 			pybind::proxy_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot", false)
-				.def( "setHotspotListener", &HotSpot::setHotspotListener )
 				.def( "enableGlobalMouseEvent", &HotSpot::enableGlobalMouseEvent )
 				.def( "enableGlobalKeyEvent", &HotSpot::enableGlobalKeyEvent )				
 				.def( "addPoint", &HotSpot::addPoint )
@@ -730,7 +734,8 @@ namespace Menge
 		pybind::def( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
 		pybind::def( "setCamera2DTarget", &ScriptMethod::s_setCamera2DTarget );
 		pybind::def( "enableCamera2DFollowing", &ScriptMethod::s_enableCamera2DTargetFollowing );
-				
+		pybind::def( "setCamera2DBounds", &ScriptMethod::s_setCamera2DBounds );
+			
 		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
 
 		pybind::def( "schedule", &ScriptMethod::schedule );

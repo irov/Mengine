@@ -312,7 +312,11 @@ namespace Menge
 	void RigidBody2D::setDirection( const mt::vec2f& _dir )
 	{
 		float sign = _dir.y < 0? -1 : 1;
-		float angle = ::acos( _dir.x ) * sign;
+		float cos = _dir.x;
+		if( cos < -1.0f ) cos = -1.0f;
+		else if( cos > 1.0f ) cos = 1.0f;
+		float angle = ::acos( cos ) * sign;
+		//printf( "setAngle %.2f\n", angle);
 		m_interface->setOrientation( angle );
 	}
 	//////////////////////////////////////////////////////////////////////////

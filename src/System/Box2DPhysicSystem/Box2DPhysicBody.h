@@ -36,6 +36,7 @@ public:
 	float getAngularVelocity() override;
 	void applyForce( float _forceX, float _forceY, float _pointX, float _pointY ) override;
 	void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY ) override;
+	void applyTorque( float _torque ) override;
 
 	void setCollisionListener( PhysicBody2DCollisionListener* _listener ) override;
 	void setUserData( void* _data ) override;

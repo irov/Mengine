@@ -61,6 +61,7 @@ namespace	Menge
 		RigidBody2D* collision = SceneManager::createNodeT<RigidBody2D>( "RigidBody2D" ) ;
 		const std::vector< mt::vec2f >& pos = m_resourceMap->_getPhysPos();
 		float width = m_resourceMap->_getPhysWidth();
+		collision->setName( "WorldPhysObject" );
 		for( int i = 0; i < pos.size(); i++ )
 		{
 			collision->_addShapeBox( width, width, pos[i], 0.0f );
@@ -84,19 +85,28 @@ namespace	Menge
 	void TileMap::_render()
 	{
 		const Viewport& viewport = Holder<RenderEngine>::hostage()->getRenderViewport();
-		// TODO: viewport filtering
+
 		const mt::mat3f & wm = getWorldMatrix();
 		float tileSize = m_resourceMap->getTileSize();
 
-		for( unsigned int i = 0; i < m_width; i++ )
+		int init_i = viewport.begin.x / tileSize;
+		int init_j = viewport.begin.y / tileSize;
+		if( init_i < 0 ) init_i = 0;
+		if( init_j < 0 ) init_j = 0;
+		int end_i = viewport.end.x / tileSize + 1;
+		int end_j = viewport.end.y / tileSize + 1;
+		if( end_i > m_width ) end_i = m_width;
+		if( end_j > m_height ) end_j = m_height;
+
+		for( int i = init_i; i < end_i; i++ )
 		{
-			for( unsigned int j = 0; j < m_height; j++ )
+			for( int j = init_j; j < end_j; j++ )
 			{
 				ImageBlock tile = m_resourceMap->getTile( i, j );
 
 				Holder<RenderEngine>::hostage()->renderImage(
 					wm, 
-					mt::vec2f( i * tileSize, j * tileSize ),
+					mt::vec2f( i * (tileSize), j * (tileSize) ),
 					tile.uv,
 					mt::vec2f( tileSize, tileSize ),
 					0xffffffff,

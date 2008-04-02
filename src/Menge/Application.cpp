@@ -149,6 +149,11 @@ namespace Menge
 		Holder<RenderEngine>::hostage()->createRenderWindow( m_currentResolution.x, m_currentResolution.y, game->getBits(), game->getFullscreen(), winHandle );
 		Holder<InputEngine>::hostage()->initialize( winHandle );
 
+		if( game->getFullscreen() )
+		{
+			Holder<InputEngine>::hostage()->setMouseBounded( true );
+		}
+
 		if( game->isContentResolutionFixed() )
 		{
 			mt::vec2f res = game->getResourceResolution();

@@ -51,12 +51,6 @@ namespace Menge
 		*/
 		virtual bool getLooped() const;
 
-		//! Установка слушателя.
-		/*!
-		\param _listener слушатель
-		*/
-		void setAnimationListener( PyObject * _listener );
-
 		//! Установка ресурса анимации.
 		/*!
 		\param _resource имя ресурса.
@@ -85,5 +79,6 @@ namespace Menge
 		bool m_autoStart;
 		bool m_playing;
 		bool m_looping;
+		virtual void _onSetListener();
 	};
 }

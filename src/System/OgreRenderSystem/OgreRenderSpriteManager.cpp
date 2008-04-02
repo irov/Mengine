@@ -189,6 +189,8 @@ void OgreRenderSpriteManager::addQuad1( Ogre::Camera* _camera,
 									   Ogre::SceneBlendFactor _dst)
 
 {
+	if( quadList.capacity() == quadList.size() ) return;
+
 	isSorted = false;
 	QuadInfo quad;
 	
@@ -250,6 +252,8 @@ void OgreRenderSpriteManager::addQuad2( Ogre::Camera* _camera,
 									   Ogre::SceneBlendFactor _src,
 									   Ogre::SceneBlendFactor _dst)
 {
+	if( quadList.capacity() == quadList.size() ) return;
+
 	isSorted = false;
 	QuadInfo quad;
 	
@@ -331,8 +335,8 @@ void OgreRenderSpriteManager::doRender(void)
 			}
 		#endif
 
-		//QuadVertex * buffmem = static_cast<QuadVertex*>( vertexBuffer->lock( Ogre::HardwareVertexBuffer::HBL_DISCARD ) );
-		QuadVertex * buffmem = static_cast<QuadVertex*>( vertexBuffer->lock( Ogre::HardwareVertexBuffer::HBL_NORMAL ) );
+		QuadVertex * buffmem = static_cast<QuadVertex*>( vertexBuffer->lock( Ogre::HardwareVertexBuffer::HBL_DISCARD ) );
+		//QuadVertex * buffmem = static_cast<QuadVertex*>( vertexBuffer->lock( Ogre::HardwareVertexBuffer::HBL_NORMAL ) );
 		
 		for ( TQuadList::iterator 
 			it = quadList.begin(),

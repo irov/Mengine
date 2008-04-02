@@ -12,6 +12,8 @@ namespace	Menge
 	Camera2D::Camera2D()
 		: m_target( NULL )
 		, m_targetFollowing( false )
+		, m_boundLeftUpper( 512.0f, 368.0f )
+		, m_boundRightLower( 512.0f, 368.0f )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::~Camera2D()
@@ -34,16 +36,36 @@ namespace	Menge
 			mt::vec2f pos = getWorldPosition();
 			mt::vec2f tpos = m_target->getWorldPosition();
 			mt::vec2f dir = tpos - pos;
-			float slen = dir.sqrlength();
+			float len = dir.length();
+			if( len < 0.01f ) return;
+			dir /= len;
 
-			float way = m_followingForce * _timing;
-			if( way*way > slen )
+			float force = m_followingForce *  len ;
+			float way = force * _timing * 0.001f;
+			if( way > len )
 			{
 				pos = tpos;
 			}
 			else
 			{
 				pos += dir * way;
+			}
+
+			if( pos.x < m_boundLeftUpper.x )
+			{
+				pos.x = m_boundLeftUpper.x;
+			}
+			else if( pos.x > m_boundRightLower.x )
+			{
+				pos.x = m_boundRightLower.x;
+			}
+			if( pos.y < m_boundLeftUpper.y )
+			{
+				pos.y = m_boundLeftUpper.y;
+			}
+			else if( pos.y > m_boundRightLower.y )
+			{
+				pos.y = m_boundRightLower.y;
 			}
 			setLocalPosition( pos );
 		}
@@ -84,6 +106,12 @@ namespace	Menge
 	{
 		m_targetFollowing = true;
 		m_followingForce = _force;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::setBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower )
+	{
+		m_boundLeftUpper = _leftUpper + m_viewportSize * 0.5f;
+		m_boundRightLower = _rightLower - m_viewportSize * 0.5f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

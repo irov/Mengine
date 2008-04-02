@@ -22,7 +22,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceImageCell )
 
 	public:
-		ResourceImageCell( const std::string & _name );
+		ResourceImageCell( const ResourceFactoryParam & _name );
 
 	public:
 		unsigned int getCount() const override;
@@ -33,6 +33,9 @@ namespace Menge
 		const mt::vec4f & getUV( unsigned int _frame ) const override;		
 
 		const RenderImageInterface * getImage( unsigned int _frame ) const override;
+
+	public:
+		void setFilePath( const std::string & _path );
 
 	public:
 		void loader( XmlElement * _xml ) override;

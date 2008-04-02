@@ -9,8 +9,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ResourceImage( const std::string & _name )
-		: ResourceReference( _name )
+	ResourceImage::ResourceImage( const ResourceFactoryParam & _params )
+		: ResourceReference( _params )
 		, m_filter(1)
 	{
 	}
@@ -26,7 +26,7 @@ namespace Menge
 		if( image == 0 )
 		{
 			MENGE_LOG("Warning: resource '%s' can't load image file '%s'\n"
-				, m_name.c_str()
+				, getName().c_str()
 				, _fileName.c_str()
 				);
 

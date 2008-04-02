@@ -25,7 +25,10 @@ namespace Menge
 		/*!
 		\param _name имя ресурса.
 		*/
-		ResourceSound( const std::string & _name );
+		ResourceSound( const ResourceFactoryParam & _params );
+
+	public:
+		void setFilePath( const std::string & _path );
 
 	public:
 		void loader( XmlElement * _xml ) override;

@@ -10,7 +10,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourcePhysicBoxGeometry )
 
 	public:
-		ResourcePhysicBoxGeometry( const std::string & _name );
+		ResourcePhysicBoxGeometry( const ResourceFactoryParam & _params );
 
 	public:
 	

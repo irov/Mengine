@@ -12,7 +12,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceImageVideoStream )
 
 	public:
-		ResourceImageVideoStream( const std::string & _name );
+		ResourceImageVideoStream( const ResourceFactoryParam & _params );
 
 	public:
 		virtual unsigned int getCount() const override;
@@ -24,6 +24,8 @@ namespace Menge
 
 		RenderImageInterface * getImage( unsigned int _frame );
 		RenderVideoStreamInterface* getStream();
+
+		void setFilePath( const std::string & _path );
 
 	public:
 		void loader( XmlElement * _xml ) override;

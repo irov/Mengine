@@ -6,10 +6,11 @@
 
 namespace Menge
 {
-	RESOURCE_IMPLEMENT( ResourceImageSet )
-		//////////////////////////////////////////////////////////////////////////
-		ResourceImageSet::ResourceImageSet( const std::string & _name )
-		: ResourceImageCell( _name )
+	//////////////////////////////////////////////////////////////////////////
+	RESOURCE_IMPLEMENT( ResourceImageSet );
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImageSet::ResourceImageSet( const ResourceFactoryParam & _params )
+	: ResourceImageCell( _params )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -34,7 +35,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceImageCell::setFilePath );
 
 			XML_CASE_NODE( "Frame" )
 			{
@@ -61,10 +62,15 @@ namespace Menge
 
 		for( TVectorSizes::size_type frame = 0; frame != size; ++frame )
 		{
-			float u = m_uvs[ frame ].z - m_uvs[ frame ].x;
-			float v = m_uvs[ frame ].w - m_uvs[ frame ].y;
-			m_sizes[ frame ].x = m_imageFrame.size.x * u;
-			m_sizes[ frame ].y = m_imageFrame.size.y * v;
+			TVectorUV::value_type & uv = m_uvs[ frame ];
+
+			float u = uv.z - uv.x;
+			float v = uv.w - uv.y;
+
+			TVectorSizes::value_type & size = m_sizes[ frame ];
+
+			size.x = m_imageFrame.size.x * u;
+			size.y = m_imageFrame.size.y * v;
 		}
 
 		return true;

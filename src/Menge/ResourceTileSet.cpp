@@ -20,15 +20,18 @@ static unsigned int s_tileNumToCode( unsigned int tile, unsigned int tileNum )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceTileSet )
+	RESOURCE_IMPLEMENT( ResourceTileSet );
 	//////////////////////////////////////////////////////////////////////////
-
-	//////////////////////////////////////////////////////////////////////////
-	ResourceTileSet::ResourceTileSet( const std::string & _name )
-		: ResourceReference( _name )
+	ResourceTileSet::ResourceTileSet( const ResourceFactoryParam & _params )
+		: ResourceReference( _params )
 		, m_tileSize( 0 )
 		, m_tiles( 0 )
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceTileSet::setFilePath( const std::string & _path )
+	{
+		m_tileSetFile = m_params.category + _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTileSet::loader( XmlElement * _xml )
@@ -36,7 +39,7 @@ namespace Menge
 		ResourceReference::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "TileSet", "File", m_tileSetFile );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "TileSet", "File", &ResourceTileSet::setFilePath );
 			XML_CASE_ATTRIBUTE_NODE( "Tiles", "Value", m_tiles );
 		}
 	}
@@ -48,7 +51,7 @@ namespace Menge
 		if( m_image == 0 )
 		{
 			MENGE_LOG("Error: resource '%s' can't load image file '%s'\n"
-				, m_name.c_str()
+				, getName().c_str()
 				, m_tileSetFile.c_str()
 				);
 

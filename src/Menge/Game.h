@@ -48,12 +48,13 @@ namespace Menge
 		void setParamString( const std::string& _params );
 
 	public:
-		const std::string & getPathEntities( const std::string& _entity ) const;
-		const std::string & getPathScenes() const;
-		const std::string & getPathArrows() const;
+		std::string getPathEntities( const std::string& _entity ) const;
+//		const std::string & getPathScenes() const;
+//		const std::string & getPathArrows() const;
 
 	public:
 		Arrow * getArrow( const std::string & _name );
+		bool loadArrow( const std::string & _name, const std::string & _path );
 		void removeArrow( const std::string & _name );
 
 		Arrow * getDefaultArrow();
@@ -121,8 +122,9 @@ namespace Menge
 		typedef std::map<std::string, Scene*> TMapScene;
 		TMapScene m_mapScene;
 
-		typedef std::list<std::string> TListDeclaration;
-		typedef std::map<std::string, TListDeclaration > TMapDeclaration;
+		typedef std::pair<std::string, std::string> TPairDeclaration;
+		typedef std::list< TPairDeclaration > TListDeclaration;
+		typedef std::map<std::string, TPairDeclaration > TMapDeclaration;
 		TMapDeclaration m_mapEntitiesDeclaration;
 		TMapDeclaration m_mapArrowsDeclaration;
 		TMapDeclaration m_mapScenesDeclaration;

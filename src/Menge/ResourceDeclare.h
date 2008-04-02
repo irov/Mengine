@@ -5,6 +5,7 @@
 struct ResourceFactoryParam
 {
 	std::string name;
+	std::string category;
 };
 
 #	define RESOURCE_DECLARE(C)\

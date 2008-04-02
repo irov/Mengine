@@ -32,7 +32,7 @@ namespace Menge
 		/*!
 		\param _name имя ресурса.
 		*/
-		ResourcePlaylist( const std::string & _name );
+		ResourcePlaylist( const ResourceFactoryParam & _params );
 
 	public:
 		//! Возвращает вектор треков.
@@ -53,6 +53,8 @@ namespace Menge
 		\return флаг зацикливания
 		*/
 		bool getLoop() const;
+
+		void setFilePath( const std::string & _path );
 
 	public:
 		void loader( XmlElement * _xml ) override;

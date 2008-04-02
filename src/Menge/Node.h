@@ -66,7 +66,7 @@ namespace Menge
 		/*!
 		\return result of activated
 		*/
-		virtual bool isActivate() = 0;
+		virtual bool isActivate() const = 0;
 
 	public:
 		//! Node pure virtual. compile node, setup resource for work

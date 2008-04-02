@@ -10,10 +10,11 @@
 
 namespace Menge
 {
-	RESOURCE_IMPLEMENT( ResourcePhysicConcaveGeometry )
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePhysicConcaveGeometry::ResourcePhysicConcaveGeometry( const std::string & _name )
-		: ResourcePhysicGeometry( _name )
+	RESOURCE_IMPLEMENT( ResourcePhysicConcaveGeometry );
+	//////////////////////////////////////////////////////////////////////////
+	ResourcePhysicConcaveGeometry::ResourcePhysicConcaveGeometry( const ResourceFactoryParam & _params )
+		: ResourcePhysicGeometry( _params )
 		, m_interface(0)
 	{
 	}
@@ -34,7 +35,7 @@ namespace Menge
 		if( m_interface == 0 )
 		{
 			MENGE_LOG("Warning: resource '%s' can't load concave geometry file '%s'\n"
-				, m_name.c_str()
+				, getName().c_str()
 				, m_filename.c_str()
 				);
 

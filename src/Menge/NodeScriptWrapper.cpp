@@ -209,7 +209,13 @@ namespace Menge
 
 			if( resourceImage == NULL )
 			{
-				resourceImage = new ResourceImageDynamic( _name );
+				ResourceFactoryParam param;
+				param.name = _name;
+
+				//TODO: Fix me. wtf i need to pass to category????
+				param.category = "";
+
+				resourceImage = new ResourceImageDynamic( param );
 				//FIXME
 				RenderImageInterface * imageInterface
 					= Holder<RenderEngine>::hostage()->createRenderTargetImage( _name.c_str(), rect[2] - rect[0], rect[3] - rect[1], "defaultCamera" );

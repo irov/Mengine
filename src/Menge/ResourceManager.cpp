@@ -32,8 +32,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::loadResource( const std::string & _file )
+	void ResourceManager::loadResource( const std::string & _category, const std::string & _file )
 	{
+		m_currentCategory = _category;
+
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{
@@ -93,6 +95,7 @@ namespace Menge
 	{
 		ResourceFactoryParam param;
 		param.name = _name;
+		param.category = m_currentCategory;
 		return TFactoryResource::generate( _type, param );
 	}
 	//////////////////////////////////////////////////////////////////////////

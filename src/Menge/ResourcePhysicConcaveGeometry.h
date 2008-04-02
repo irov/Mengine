@@ -10,7 +10,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourcePhysicConcaveGeometry )
 
 	public:
-		ResourcePhysicConcaveGeometry( const std::string & _name );
+		ResourcePhysicConcaveGeometry( const ResourceFactoryParam & _params );
 
 	public:
 	

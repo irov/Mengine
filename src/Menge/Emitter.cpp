@@ -227,27 +227,52 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::pause()
 	{
+		if( isActivate() == false )
+		{
+			return;
+		}
+
 		m_interface->pause();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::stop()
 	{
+		if( isActivate() == false )
+		{
+			return;
+		}
+
 		m_interface->stop();
 		this->callEvent( "EMITTER_STOP", "(O)", this->getScript() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::setLooped( int _loop )
 	{
+		if( isActivate() == false )
+		{
+			return;
+		}
+
 		m_interface->setLooped( _loop );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int Emitter::getLooped() const
 	{
+		if( isActivate() == false )
+		{
+			return 0;
+		}
+
 		return m_interface->getLooped();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::setLeftBorder( float _leftBorder )
 	{
+		if( isActivate() == false )
+		{
+			return;
+		}
+
 		return m_interface->setLeftBorder( _leftBorder );
 	}
 	//////////////////////////////////////////////////////////////////////////

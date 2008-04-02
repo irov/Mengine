@@ -8,8 +8,8 @@ namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageDefault )
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImageDefault::ResourceImageDefault( const std::string & _name )
-		: ResourceImage( _name )
+	ResourceImageDefault::ResourceImageDefault( const ResourceFactoryParam & _params )
+		: ResourceImage( _params )
 		, m_offset( 0.f, 0.f )
 		, m_uv( 0.f, 0.f, 1.f, 1.f )
 		, m_filter( 1 )
@@ -48,7 +48,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::addFrameFile( const std::string & _path )
 	{
-		m_vectorFileNames.push_back( _path );
+		m_vectorFileNames.push_back( m_params.category + _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::loader( XmlElement * _xml )

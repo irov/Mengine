@@ -32,7 +32,7 @@ namespace Menge
 	public:
 		bool activate() override;
 		void deactivate() override;
-		bool isActivate() override;
+		bool isActivate() const override;
 
 	public:
 		void enable() override;

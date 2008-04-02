@@ -13,13 +13,18 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceFont )
-		//////////////////////////////////////////////////////////////////////////
-		ResourceFont::ResourceFont( const std::string & _name )
-		: ResourceReference( _name )
+	RESOURCE_IMPLEMENT( ResourceFont );
+	//////////////////////////////////////////////////////////////////////////
+	ResourceFont::ResourceFont( const ResourceFactoryParam & _params )
+		: ResourceReference( _params )
 		, m_image( 0 )
 		, m_whsRatio( 3.0f )
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceFont::setFontPath( const std::string & _path )
+	{
+		m_filename = m_params.category + _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::loader( XmlElement * _xml )
@@ -28,7 +33,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

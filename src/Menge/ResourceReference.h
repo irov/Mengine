@@ -14,7 +14,7 @@ namespace Menge
 		, public Reference
 	{
 	public:
-		ResourceReference( const std::string & _name );
+		ResourceReference( const ResourceFactoryParam & _params );
 
 	public:
 		void setName( const std::string & _name );
@@ -28,6 +28,6 @@ namespace Menge
 		void _decrementZero() override;
 
 	protected:
-		std::string m_name;
+		ResourceFactoryParam m_params;
 	};
 }

@@ -113,7 +113,7 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeCore::isActivate()
+	bool NodeCore::isActivate() const
 	{
 		return m_active;
 	}

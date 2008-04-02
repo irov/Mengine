@@ -27,7 +27,7 @@ namespace Menge
 		~ResourceManager();
 
 	public:
-		void loadResource( const std::string & _file );
+		void loadResource( const std::string & _category, const std::string & _file );
 
 		ResourceReference * createResource( const std::string & _name, const std::string & _type );
 		ResourceReference * createResourceFromXml( const std::string& _xml );
@@ -59,6 +59,7 @@ namespace Menge
 	private:
 		typedef std::map< std::string, ResourceReference * > TMapResource;
 
+		std::string m_currentCategory;		
 		TMapResource m_mapResource;
 
 		typedef std::list< ResourceManagerListener* > TListResourceManagerListener;

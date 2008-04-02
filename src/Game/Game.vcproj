@@ -76,7 +76,6 @@
 				AdditionalLibraryDirectories=""
 				GenerateManifest="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(TargetDir)/$(ProjectName)_d.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>

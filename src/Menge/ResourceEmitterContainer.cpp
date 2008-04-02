@@ -13,12 +13,22 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceEmitterContainer )
+	RESOURCE_IMPLEMENT( ResourceEmitterContainer );
 	//////////////////////////////////////////////////////////////////////////
-	ResourceEmitterContainer::ResourceEmitterContainer( const std::string & _name )
-		: ResourceReference( _name )
+	ResourceEmitterContainer::ResourceEmitterContainer( const ResourceFactoryParam & _params )
+		: ResourceReference( _params )
 		, m_container( 0 )
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceEmitterContainer::setFilePath( const std::string & _path )
+	{
+		m_filename = m_params.category + _path;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceEmitterContainer::setFolderPath( const std::string & _path )
+	{
+		m_folder = m_params.category + _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceEmitterContainer::loader( XmlElement * _xml )
@@ -27,8 +37,8 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
-			XML_CASE_ATTRIBUTE_NODE( "Folder", "Path", m_folder );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceEmitterContainer::setFilePath );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Folder", "Path", &ResourceEmitterContainer::setFolderPath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

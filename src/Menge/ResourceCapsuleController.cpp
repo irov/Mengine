@@ -10,10 +10,11 @@
 
 namespace Menge
 {
-	RESOURCE_IMPLEMENT( ResourceCapsuleController )
 	//////////////////////////////////////////////////////////////////////////
-	ResourceCapsuleController::ResourceCapsuleController( const std::string & _name )
-		: ResourceReference( _name )
+	RESOURCE_IMPLEMENT( ResourceCapsuleController );
+	//////////////////////////////////////////////////////////////////////////
+	ResourceCapsuleController::ResourceCapsuleController( const ResourceFactoryParam & _params )
+		: ResourceReference( _params )
 		, m_radius(1.f)
 		, m_height(1.f)
 	{

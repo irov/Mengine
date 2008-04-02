@@ -22,7 +22,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceTileMap )
 
 	public:
-		ResourceTileMap( const std::string & _name );
+		ResourceTileMap( const ResourceFactoryParam & _params );
 
 		unsigned int getWidth() const;
 		unsigned int getHeight() const;

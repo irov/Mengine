@@ -29,7 +29,7 @@ namespace Menge
 		/*!
 		\param _name имя ресурса.
 		*/
-		ResourceFont( const std::string & _name );
+		ResourceFont( const ResourceFactoryParam & _params );
 
 	public:
 		//! Возвращает uv - координаты глифа.
@@ -51,6 +51,8 @@ namespace Menge
 		\return изображение
 		*/
 		const RenderImageInterface * getImage() const;
+
+		void setFontPath( const std::string & _path );
 
 	public:
 		void loader( XmlElement * _xml ) override;

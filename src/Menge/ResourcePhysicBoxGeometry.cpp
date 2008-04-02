@@ -10,10 +10,11 @@
 
 namespace Menge
 {
-	RESOURCE_IMPLEMENT( ResourcePhysicBoxGeometry )
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePhysicBoxGeometry::ResourcePhysicBoxGeometry( const std::string & _name )
-		: ResourcePhysicGeometry( _name )
+	RESOURCE_IMPLEMENT( ResourcePhysicBoxGeometry );
+	//////////////////////////////////////////////////////////////////////////
+	ResourcePhysicBoxGeometry::ResourcePhysicBoxGeometry( const ResourceFactoryParam & _params )
+		: ResourcePhysicGeometry( _params )
 		, m_width(0.0f)
 		, m_height(0.0f)
 		, m_depth(0.0f)
@@ -39,7 +40,7 @@ namespace Menge
 		if( m_interface == 0 )
 		{
 			MENGE_LOG("Warning: resource '%s' can't cook box geometry\n"
-				, m_name.c_str()
+				, getName().c_str()
 			);
 
 			return false;

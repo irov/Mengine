@@ -12,7 +12,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceImageDynamic )
 
 	public:
-		ResourceImageDynamic( const std::string & _name );
+		ResourceImageDynamic( const ResourceFactoryParam & _params );
 
 	public:
 		virtual unsigned int getCount() const override;

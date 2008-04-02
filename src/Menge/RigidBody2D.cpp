@@ -311,7 +311,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::setDirection( const mt::vec2f& _dir )
 	{
-		float sign = _dir.y < 0? -1 : 1;
+		float sign = _dir.y < 0.f ? -1.f : 1.f;
 		float cos = _dir.x;
 		if( cos < -1.0f ) cos = -1.0f;
 		else if( cos > 1.0f ) cos = 1.0f;

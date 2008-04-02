@@ -21,7 +21,7 @@ namespace Menge
 		/*!
 		\param _name имя ресурса.
 		*/
-		ResourceImage( const std::string & _name );
+		ResourceImage( const ResourceFactoryParam & _params );
 
 		struct ImageFrame
 		{

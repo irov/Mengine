@@ -8,8 +8,8 @@ namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageCell )
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImageCell::ResourceImageCell( const std::string & _name )
-		: ResourceImage( _name )
+	ResourceImageCell::ResourceImageCell( const ResourceFactoryParam & _params )
+		: ResourceImage( _params )
 		, m_numX(0)
 		, m_numY(0)
 		, m_offset(0.f,0.f)
@@ -46,13 +46,18 @@ namespace Menge
 		return m_imageFrame.image;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageCell::setFilePath( const std::string & _path )
+	{
+		m_filename = m_params.category + _path;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageCell::loader( XmlElement * _xml )
 	{
 		ResourceImage::loader( _xml );
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceImageCell::setFilePath );
 
 			XML_CASE_NODE( "Cell" )
 			{

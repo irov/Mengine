@@ -10,10 +10,11 @@
 
 namespace Menge
 {
-	RESOURCE_IMPLEMENT( ResourceSkeleton )
 	//////////////////////////////////////////////////////////////////////////
-	ResourceSkeleton::ResourceSkeleton( const std::string & _name )
-		: ResourceReference(_name)
+	RESOURCE_IMPLEMENT( ResourceSkeleton );
+	//////////////////////////////////////////////////////////////////////////
+	ResourceSkeleton::ResourceSkeleton( const ResourceFactoryParam & _params )
+		: ResourceReference( _params )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

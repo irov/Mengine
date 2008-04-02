@@ -26,10 +26,13 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceTileSet )
 
 	public:
-		ResourceTileSet( const std::string & _name );
+		ResourceTileSet( const ResourceFactoryParam & _params );
 
 		ImageBlock getImageBlock( int tile );
 		float getTileSize();
+
+		void setFilePath( const std::string & _path );
+
 	public:
 		void loader( XmlElement * _xml ) override;
 

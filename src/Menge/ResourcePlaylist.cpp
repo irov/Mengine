@@ -12,12 +12,17 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourcePlaylist )
+	RESOURCE_IMPLEMENT( ResourcePlaylist );
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePlaylist::ResourcePlaylist( const std::string & _name )
-		: ResourceReference( _name )
+	ResourcePlaylist::ResourcePlaylist( const ResourceFactoryParam & _params )
+		: ResourceReference( _params )
 		, m_loop( true )
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourcePlaylist::setFilePath( const std::string & _path )
+	{
+		m_filename = m_params.category + _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePlaylist::loader( XmlElement * _xml )
@@ -30,7 +35,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourcePlaylist::setFilePath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -69,13 +74,15 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "File", filename );
 				}
 
-				if( Holder<FileEngine>::hostage()->existFile( filename ) == false )
+				std::string filepath = m_params.category + filename;
+
+				if( Holder<FileEngine>::hostage()->existFile( filepath ) == false )
 				{
-					MENGE_LOG("ResourcePlaylist : %s not exist. \n", filename.c_str() );
+					MENGE_LOG("ResourcePlaylist : %s not exist. \n", filepath.c_str() );
 				}
 				else
 				{
-					m_tracks.push_back( filename );
+					m_tracks.push_back( filepath );
 				}
 			}
 		}
@@ -103,7 +110,7 @@ namespace Menge
 			static std::string empty;
 			return empty;
 		}
-		
+
 		return m_tracks[ _track ];
 	}
 	//////////////////////////////////////////////////////////////////////////

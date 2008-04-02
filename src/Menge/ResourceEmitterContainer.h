@@ -29,10 +29,13 @@ namespace Menge
 		/*!
 		\param _name имя ресурса.
 		*/
-		ResourceEmitterContainer( const std::string & _name );
+		ResourceEmitterContainer( const ResourceFactoryParam & _params );
 
 	public:
 		void loader( XmlElement * _xml ) override;
+		
+		void setFilePath( const std::string & _path );
+		void setFolderPath( const std::string & _path );
 
 	public:
 

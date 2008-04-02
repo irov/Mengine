@@ -217,7 +217,8 @@ namespace Menge
 				{
 					XML_CASE_ATTRIBUTE( "Path", path );
 				}
-				m_pathScenes.push_back( m_currentResourcePath + path );
+				
+				m_pathScenes.push_back( std::make_pair( m_currentResourcePath, path ) );
 
 				XML_PARSE_ELEMENT( this, &Game::loaderScenes_ );
 			}
@@ -229,7 +230,7 @@ namespace Menge
 				{
 					XML_CASE_ATTRIBUTE( "Path", path );
 				}
-				m_pathArrows.push_back( m_currentResourcePath + path );
+				m_pathArrows.push_back( std::make_pair( m_currentResourcePath, path ) );
 
 				XML_PARSE_ELEMENT( this, &Game::loaderArrows_ );
 
@@ -242,7 +243,7 @@ namespace Menge
 				{
 					XML_CASE_ATTRIBUTE( "Path", path );
 				}
-				m_pathEntities.push_back( m_currentResourcePath + path );
+				m_pathEntities.push_back( std::make_pair( m_currentResourcePath, path ) );
 
 				XML_PARSE_ELEMENT( this, &Game::loaderEntities_ );
 			}
@@ -254,7 +255,7 @@ namespace Menge
 				{
 					XML_CASE_ATTRIBUTE( "Path", path );
 				}
-				m_pathResource.push_back( m_currentResourcePath + path );
+				m_pathResource.push_back( std::make_pair( m_currentResourcePath, path ) );
 
 				XML_PARSE_ELEMENT( this, &Game::loaderResources_ );
 			}
@@ -265,7 +266,7 @@ namespace Menge
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Path", path );
-					m_listResourceLocation.push_back( m_currentResourcePath + path );
+					m_listResourceLocation.push_back( std::make_pair( m_currentResourcePath, path ) );
 				}
 			}
 
@@ -276,7 +277,7 @@ namespace Menge
 				{
 					XML_CASE_ATTRIBUTE( "Path", path );
 				}
-				m_pathScripts.push_back( m_currentResourcePath + path );
+				m_pathScripts.push_back( std::make_pair( m_currentResourcePath, path ) );
 			}
 		}
 
@@ -287,7 +288,8 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			//m_listScenesDeclaration.push_back( XML_TITLE_NODE );
-			m_mapScenesDeclaration[ m_pathScenes.back() ].push_back( XML_TITLE_NODE );
+			const TPairDeclaration & pair = m_pathScenes.back();
+			m_mapScenesDeclaration[ XML_TITLE_NODE ] = pair;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -296,7 +298,8 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			//m_listArrowsDeclaration.push_back( XML_TITLE_NODE );
-			m_mapArrowsDeclaration[ m_pathArrows.back() ].push_back( XML_TITLE_NODE );
+			TPairDeclaration & pair = m_pathArrows.back();
+			m_mapArrowsDeclaration[ XML_TITLE_NODE ] = pair;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -305,7 +308,8 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			//m_listEntitiesDeclaration.push_back( XML_TITLE_NODE );
-			m_mapEntitiesDeclaration[ m_pathEntities.back() ].push_back( XML_TITLE_NODE );
+			TPairDeclaration & pair = m_pathEntities.back();
+			m_mapEntitiesDeclaration[ XML_TITLE_NODE ] = pair;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -314,7 +318,8 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			//m_listResourceDeclaration.push_back( XML_TITLE_NODE );
-			m_mapResourceDeclaration[ m_pathResource.back() ].push_back( XML_TITLE_NODE );
+			TPairDeclaration & pair = m_pathResource.back();
+			m_mapResourceDeclaration[ XML_TITLE_NODE ] = pair;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -442,25 +447,31 @@ namespace Menge
 			->debugRender();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & Game::getPathEntities( const std::string& _entity ) const
+	std::string Game::getPathEntities( const std::string& _entity ) const
 	{
-		for( TMapDeclaration::const_iterator it = m_mapEntitiesDeclaration.begin(),
-				it_end = m_mapEntitiesDeclaration.end();
-				it != it_end;
-				it++ )
+		TMapDeclaration::const_iterator it_find = m_mapEntitiesDeclaration.find( _entity );
+
+		if( it_find == m_mapEntitiesDeclaration.end() )
 		{
-			if( std::find( it->second.begin(), it->second.end(), _entity ) != it->second.end() )
-			{
-				return it->first;
-			}
+			static std::string empty;
+			return empty;
 		}
-		return m_pathEntities.front();
+
+		return it_find->second.first + it_find->second.second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & Game::getPathArrows() const
-	{
-		return m_pathArrows.front();
-	}
+	//const std::string & Game::getPathArrows() const
+	//{
+	//	TMapDeclaration::const_iterator it_find = m_mapArrowsDeclaration.find( _entity );
+
+	//	if( it_find == m_mapArrowsDeclaration.end() )
+	//	{
+	//		static std::string empty;
+	//		return empty;
+	//	}
+
+	//	return it_find->second;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setParamString( const std::string& _params )
 	{
@@ -484,27 +495,27 @@ namespace Menge
 		for( TListDeclaration::iterator it = m_pathScripts.begin(),
 				it_end = m_pathScripts.end(); it != it_end; it++ )
 		{
-			m_listModulePath.push_back( *it );
+			m_listModulePath.push_back( it->first + it->second );
 		}
 		//m_listModulePath.push_back( m_pathEntities );
 		for( TListDeclaration::iterator it = m_pathEntities.begin(),
 			it_end = m_pathEntities.end(); it != it_end; it++ )
 		{
-			m_listModulePath.push_back( *it );
+			m_listModulePath.push_back( it->first + it->second );
 		}
 
 		//m_listModulePath.push_back( m_pathScenes );
 		for( TListDeclaration::iterator it = m_pathScenes.begin(),
 			it_end = m_pathScenes.end(); it != it_end; it++ )
 		{
-			m_listModulePath.push_back( *it );
+			m_listModulePath.push_back( it->first + it->second );
 		}
 
 		//m_listModulePath.push_back( m_pathArrows );	
 		for( TListDeclaration::iterator it = m_pathArrows.begin(),
 			it_end = m_pathArrows.end(); it != it_end; it++ )
 		{
-			m_listModulePath.push_back( *it );
+			m_listModulePath.push_back( it->first + it->second );
 		}
 
 
@@ -520,15 +531,8 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			for( TListDeclaration::iterator
-				itl = it->second.begin(),
-				itl_end = it->second.end();
-			itl != itl_end;
-			itl++)
-			{
-				Holder<ScriptEngine>::hostage()
-					->registerEntityType( *itl );
-			}
+			Holder<ScriptEngine>::hostage()
+				->registerEntityType( it->first );
 		}
 		/*for( TListDeclaration::iterator
 			it = m_listEntitiesDeclaration.begin(),
@@ -560,20 +564,14 @@ namespace Menge
 				it != it_end;
 				it++ )
 		{
-			for( TListDeclaration::iterator
-					itl = it->second.begin(),
-					itl_end = it->second.end();
-					itl != itl_end;
-					itl++)
-			{
-				std::string path = it->first;
-				path += '/';
-				path += *itl;
-				path += ".resource";
+			std::string path = it->second.first;
+			path += it->second.second;
+			path += '/';
+			path += it->first;
+			path += ".resource";
 
-				Holder<ResourceManager>::hostage()
-					->loadResource( path );
-			}
+			Holder<ResourceManager>::hostage()
+				->loadResource( it->second.first, path );
 		}
 
 		/*for( TListDeclaration::iterator
@@ -590,15 +588,10 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			for( TListDeclaration::iterator
-				itl = it->second.begin(),
-				itl_end = it->second.end();
-			itl != itl_end;
-			itl++)
-			{
-				getArrow( *itl );
-			}
+			std::string path = it->second.first;
+			path += it->second.second;
 
+			loadArrow( it->first, path );
 		}
 
 		/*for( TMapDeclaration::iterator
@@ -632,7 +625,7 @@ namespace Menge
 		it != it_end;
 		++it)	
 		{
-			fileEngine->addResourceLocation( "/" + (*it) );
+			fileEngine->addResourceLocation( "/" + (*it).first + (*it).second  );
 		}
 
 		if( !m_listResourceLocation.empty() )
@@ -722,38 +715,43 @@ namespace Menge
 
 		if( it_find == m_mapArrow.end() )
 		{
-			std::string arrowModule = _name;
-			arrowModule += ".Arrow";
-
-			Arrow * arrow = Holder<ScriptEngine>::hostage()
-				->createArrow( arrowModule );
-
-			if( arrow == 0 )
-			{
-				MENGE_LOG("Can't create arrow [%s]\n"
-					, _name.c_str() 
-					);
-
-				return 0;
-			}
-
-			std::string xml_path = m_pathArrows.front();
-			xml_path += "/";
-			xml_path += _name;
-			xml_path += "/Arrow.xml";
-
-			if( Holder<XmlEngine>::hostage()
-				->parseXmlFileM( xml_path, arrow, &Arrow::loader ) == false )
-			{
-
-			}
-	
-			m_mapArrow.insert( std::make_pair( _name, arrow ) );
-
-			return arrow;
+			return 0;
 		}
 
 		return it_find->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::loadArrow( const std::string & _name, const std::string & _path )
+	{
+		std::string arrowModule = _name;
+		arrowModule += ".Arrow";
+
+		Arrow * arrow = Holder<ScriptEngine>::hostage()
+			->createArrow( arrowModule );
+
+		if( arrow == 0 )
+		{
+			MENGE_LOG("Can't create arrow [%s]\n"
+				, _name.c_str() 
+				);
+
+			return false;
+		}
+
+		std::string xml_path = _path;
+		xml_path += "/";
+		xml_path += _name;
+		xml_path += "/Arrow.xml";
+
+		if( Holder<XmlEngine>::hostage()
+			->parseXmlFileM( xml_path, arrow, &Arrow::loader ) == false )
+		{
+
+		}
+
+		m_mapArrow.insert( std::make_pair( _name, arrow ) );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Game::getScene(const std::string & _name )
@@ -781,19 +779,27 @@ namespace Menge
 
 			std::string xml_path;
 
-			for( TMapDeclaration::iterator it = m_mapScenesDeclaration.begin(),
-					it_end = m_mapScenesDeclaration.end();
-					it != it_end;
-					it++ )
-			{
-				if( std::find( it->second.begin(), it->second.end(), _name ) != it->second.end() )
-				{
-					xml_path = it->first;
-					xml_path += "/";
-					xml_path += _name;
-					xml_path += "/Scene.xml";
-				}
-			}
+			const TPairDeclaration & pair = m_mapScenesDeclaration[ _name ];
+
+			xml_path = pair.first;
+			xml_path += pair.second;
+			xml_path += "/";
+			xml_path += _name;
+			xml_path += "/Scene.xml";
+
+			//for( TMapDeclaration::iterator it = m_mapScenesDeclaration.begin(),
+			//		it_end = m_mapScenesDeclaration.end();
+			//		it != it_end;
+			//		it++ )
+			//{
+			//	if( std::find( it->second.begin(), it->second.end(), _name ) != it->second.end() )
+			//	{
+			//		xml_path = it->first;
+			//		xml_path += "/";
+			//		xml_path += _name;
+			//		xml_path += "/Scene.xml";
+			//	}
+			//}
 			/*std::string xml_path = m_pathScenes.front();
 			xml_path += "/";
 			xml_path += _name;

@@ -9,12 +9,10 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceTileMap )
+	RESOURCE_IMPLEMENT( ResourceTileMap );
 	//////////////////////////////////////////////////////////////////////////
-	
-	//////////////////////////////////////////////////////////////////////////
-	ResourceTileMap::ResourceTileMap( const std::string & _name )
-	: ResourceReference( _name )
+	ResourceTileMap::ResourceTileMap( const ResourceFactoryParam & _params )
+	: ResourceReference( _params )
 	, m_width( 0 )
 	, m_height( 0 )
 	{

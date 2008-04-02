@@ -22,7 +22,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceImageDefault )
 
 	public:
-		ResourceImageDefault( const std::string & _name );
+		ResourceImageDefault( const ResourceFactoryParam & _params );
 
 	public:
 		void addFrameFile( const std::string & _path );

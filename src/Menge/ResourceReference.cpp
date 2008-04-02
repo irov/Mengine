@@ -3,19 +3,19 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference::ResourceReference( const std::string & _name )
-	: m_name( _name )
+	ResourceReference::ResourceReference( const ResourceFactoryParam & _params )
+	: m_params( _params )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceReference::setName( const std::string & _name )
 	{
-		m_name = _name;
+		m_params.name = _name;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string & ResourceReference::getName()
 	{
-		return m_name;
+		return m_params.name;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceReference::loader(XmlElement * _xml)

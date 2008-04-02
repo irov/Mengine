@@ -9,7 +9,7 @@ namespace Menge
 
 #	define RESOURCE_IMPLEMENT(C)\
 ResourceReference * C::genObject(const ResourceFactoryParam & _struct){\
-return new C( _struct.name );\
+return new C( _struct );\
 }\
 namespace {\
 volatile static TFactoryResource::\

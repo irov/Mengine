@@ -10,7 +10,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourcePhysicConvexGeometry )
 
 	public:
-		ResourcePhysicConvexGeometry( const std::string & _name );
+		ResourcePhysicConvexGeometry( const ResourceFactoryParam & _params );
 
 	public:
 		const GeometryInterface * getGeometry( unsigned int _index ) const;

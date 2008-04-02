@@ -9,14 +9,19 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceImageVideoStream )
-		//////////////////////////////////////////////////////////////////////////
-		ResourceImageVideoStream::ResourceImageVideoStream( const std::string & _name )
-		: ResourceImage( _name )
+	RESOURCE_IMPLEMENT( ResourceImageVideoStream );
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImageVideoStream::ResourceImageVideoStream( const ResourceFactoryParam & _params )
+		: ResourceImage( _params )
 		, m_uv( 0.0f, 0.0f, 1.0f, 1.0f )
 		, m_offset( 0.0f, 0.0f )
 		, m_size( 0.0f, 0.0f )
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageVideoStream::setFilePath( const std::string & _path )
+	{
+		m_filename = m_params.category + _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageVideoStream::loader( XmlElement * _xml )
@@ -25,7 +30,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceImageVideoStream::setFilePath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -38,7 +43,7 @@ namespace Menge
 		if( m_interface == 0 )
 		{
 			MENGE_LOG("Warning: resource '%s' can't load video file '%s'\n"
-				, m_name.c_str()
+				, getName().c_str()
 				, m_filename.c_str()
 				);
 

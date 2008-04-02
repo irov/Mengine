@@ -9,8 +9,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePhysicGeometry::ResourcePhysicGeometry( const std::string & _name )
-		: ResourceReference( _name )
+	ResourcePhysicGeometry::ResourcePhysicGeometry( const ResourceFactoryParam & _params )
+		: ResourceReference( _params )
 	{
 	}
 }

@@ -12,7 +12,7 @@ namespace Menge
 		RESOURCE_DECLARE( ResourceMesh )
 
 	public:
-		ResourceMesh( const std::string & _name );
+		ResourceMesh( const ResourceFactoryParam & _params );
 
 	public:
 		void loader( XmlElement * _xml ) override;

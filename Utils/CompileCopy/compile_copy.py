@@ -6,6 +6,8 @@ import shutil
 import string
 import compileall
 import re
+import xml.dom.minidom
+import subprocess
 
 source = '.'
 bad_ext = ['.py']
@@ -13,8 +15,24 @@ bad_files = ['thumbs.db']
 bad_dirs = ['thumbnails', '.svn']
 good_files = []
 
-def copytree(src, dst):
+allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
+
+def formreslist(src):
+    dom = xml.dom.minidom.parse(src)
+
+    app_tag = dom.getElementsByTagName("Application")[0]
+    resources = app_tag.getElementsByTagName("Resource")
+
+    resource_list = []
     
+    for resource in resources:
+        resource_list.append(resource.getAttribute("File"))
+	
+    #TODO kill unique resources
+    
+    return resource_list
+	
+def copytree(src, dst):
     compileall.compile_dir(src, rx=re.compile('/[.]svn'), force=True)
     
     names = os.listdir(src)
@@ -24,12 +42,17 @@ def copytree(src, dst):
     for name in names:
         if (name in bad_dirs) or (name in bad_files):
             continue
+	
         ext = os.path.splitext(name)[1]
         
         if (ext in bad_ext) and not (name in good_files):
             continue
         
         srcname = os.path.join(src, name)
+	
+	if (srcname in bad_files):
+            continue
+	
         dstname = os.path.join(dst, name)
         
         if os.path.isdir(srcname):
@@ -37,8 +60,79 @@ def copytree(src, dst):
         else:
                 shutil.copy2(srcname, dstname)
 
+		
+def copytonewfolder(src, dst):
+    
+    os.mkdir(dst)
+    
+    filelist = formreslist(src)
+    
+    for file in filelist:
+	basedir = os.path.dirname(file)
+	destdir = os.path.join(dst,basedir)
+	atlas(file,destdir)
+	copytree(basedir,destdir)    
+
+#   input - resource.xml
+#   output - 
+def get_resource_path(dom,src):
+    resources_tag = dom.getElementsByTagName("Resources")[0]
+    resource = resources_tag.getElementsByTagName("Resource")
+    
+    if(resource == []):
+	return []
+		    
+    path_resources = resource[0].getAttribute("Path");
+    
+    path_resources = os.path.join(src,path_resources)
+    
+    resource_list = []
+    
+    for node in resource[0].childNodes:
+	if node.nodeType == node.ELEMENT_NODE:
+	    resource_list.append(os.path.join(path_resources,node.localName)+".resource")
+    
+    return resource_list
+    
+def atlas(src,destdir):
+    dom = xml.dom.minidom.parse(src)
+
+    resource_list = get_resource_path(dom,os.path.dirname(src))
+       
+    for resource in resource_list:
+
+	exe = 'AtlasCreationTool.exe %(resource_name)s %(output_resource)s %(width)i %(height)i' % \
+	    {'resource_name' : resource, 'output_resource' : 'output','width' : 512, 'height' : 512}
+	
+	subprocess.call(exe)
+	
+	bad_files.append(resource)
+	
+	dom = xml.dom.minidom.parse(resource)
+	resources = dom.getElementsByTagName("DataBlock")[0].getElementsByTagName("Resource")
+	
+	for resource in resources:
+	    type = resource.getAttribute("Type")
+	    if(type in allowed_type):
+		files = resource.getElementsByTagName("File")
+		if(files != []):
+		    for file in files:
+			value = file.getAttribute("Path")
+			value = os.path.normpath(value)
+			bad_files.append(value)
+			print value
+			
+	dom.unlink()
+
 def main():
-
-    copytree("Game","New1")
-
+    copytonewfolder("application_d.xml","TestDir")
+    
+    #resource_list = formreslist("application_d.xml")
+    #res = resource_list[0]
+    #atlas("Resource.xml")
+    #subprocess.call("AtlasCreationTool.exe Safari.resource output 1024 1024")
+    #print formreslist("application_d.xml")
+    #copytonewfolder("application_d.xml","TestDir")
+    #print os.path.dirname("Game\\sdfsdf\\ioipiop\\Resource\\1.xml")
+    #copytree("Game","New1")
 main()

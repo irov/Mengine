@@ -9,11 +9,16 @@ import re
 import xml.dom.minidom
 import subprocess
 
-source = '.'
-bad_ext = ['.py']
+#skipped extensions
+bad_ext = ['.py']  
+#skipped files
 bad_files = ['thumbs.db']
+#skipped folders
 bad_dirs = ['thumbnails', '.svn']
+#files with bad extension, but needed. Example - log file
 good_files = []
+
+copy_files = []
 
 allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
 
@@ -31,6 +36,13 @@ def formreslist(src):
     #TODO kill unique resources
     
     return resource_list
+	
+def copyfiles(files):
+    for file in files:
+	src = os.path.basename(file)
+	shutil.copy2(src, file)
+	copy_files.remove(file)
+	os.remove(src)	
 	
 def copytree(src, dst):
     compileall.compile_dir(src, rx=re.compile('/[.]svn'), force=True)
@@ -62,19 +74,28 @@ def copytree(src, dst):
 
 		
 def copytonewfolder(src, dst):
+    # if dest path exist, just return.
+    if os.path.exists(dst):
+	return
     
     os.mkdir(dst)
-    
+    # get resources list from application.xml. Example "Game\\Resource\\Resource.xml"
     filelist = formreslist(src)
     
+    # for each xml' resources - copy resource folders
     for file in filelist:
 	basedir = os.path.dirname(file)
+	# TestDir\\Game
 	destdir = os.path.join(dst,basedir)
+	# 
 	atlas(file,destdir)
-	copytree(basedir,destdir)    
+	copytree(basedir,destdir)  
+	
+	copyfiles(copy_files)
 
 #   input - resource.xml
-#   output - 
+#   output - game\resources\resource.default, ...
+	
 def get_resource_path(dom,src):
     resources_tag = dom.getElementsByTagName("Resources")[0]
     resource = resources_tag.getElementsByTagName("Resource")
@@ -100,11 +121,25 @@ def atlas(src,destdir):
     resource_list = get_resource_path(dom,os.path.dirname(src))
        
     for resource in resource_list:
-
+	
 	exe = 'AtlasCreationTool.exe %(resource_name)s %(output_resource)s %(width)i %(height)i' % \
 	    {'resource_name' : resource, 'output_resource' : 'output','width' : 512, 'height' : 512}
 	
 	subprocess.call(exe)
+
+	copydir = os.path.join(os.path.dirname(destdir),os.path.dirname(resource))
+
+	f = open("output.txt")
+	line = f.readline()
+	f.close()
+	
+	lines = line.split()
+	
+	for line in lines:
+	    line = os.path.join(copydir,line)
+	    copy_files.append(line)
+	    print line
+
 	
 	bad_files.append(resource)
 	
@@ -126,13 +161,5 @@ def atlas(src,destdir):
 
 def main():
     copytonewfolder("application_d.xml","TestDir")
-    
-    #resource_list = formreslist("application_d.xml")
-    #res = resource_list[0]
-    #atlas("Resource.xml")
-    #subprocess.call("AtlasCreationTool.exe Safari.resource output 1024 1024")
-    #print formreslist("application_d.xml")
-    #copytonewfolder("application_d.xml","TestDir")
-    #print os.path.dirname("Game\\sdfsdf\\ioipiop\\Resource\\1.xml")
-    #copytree("Game","New1")
+
 main()

@@ -816,14 +816,6 @@
 				Name="TileMap"
 				>
 				<File
-					RelativePath=".\ResourceTileCell.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceTileCell.h"
-					>
-				</File>
-				<File
 					RelativePath=".\ResourceTileMap.cpp"
 					>
 				</File>

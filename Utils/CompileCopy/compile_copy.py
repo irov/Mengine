@@ -12,7 +12,7 @@ import subprocess
 #skipped extensions
 bad_ext = ['.py']  
 #skipped files
-bad_files = ['thumbs.db']
+bad_files = ['thumbs.db','Thumbs.db']
 #skipped folders
 bad_dirs = ['thumbnails', '.svn']
 #files with bad extension, but needed. Example - log file
@@ -53,7 +53,7 @@ def copytree(src, dst):
     
     names = os.listdir(src)
 
-    os.mkdir(dst)
+    os.makedirs(dst)
 
     for name in names:
         if (name in bad_dirs) or (name in bad_files):
@@ -104,20 +104,24 @@ def atlas(src,destdir):
     print "getting resource list from xml"
     resource_list = get_resource_path(dom,os.path.dirname(src))
        
+    offset_path = os.path.dirname(src)
+    
     for resource in resource_list:
 	
-	exe = 'AtlasCreationTool.exe %(resource_name)s %(output_resource)s %(width)i %(height)i' % \
-	    {'resource_name' : resource, 'output_resource' : 'output','width' : atlas_width, 'height' : atlas_height}
+	exe = 'AtlasCreationTool.exe %(resource_name)s %(output_resource)s %(width)i %(height)i %(offset_path)s' % \
+	    {'resource_name' : resource, 'output_resource' : 'output','width' : atlas_width, \
+	     'height' : atlas_height, 'offset_path' : offset_path}
 	
 	subprocess.call(exe)
-
-	copydir = os.path.join(os.path.dirname(destdir),os.path.dirname(resource))
 
 	f = open("output.txt")
 	line = f.readline()
 	f.close()
 	
 	lines = line.split()
+	
+	#copydir = os.path.join(os.path.dirname(destdir),os.path.dirname(resource))
+	copydir = os.path.join(destdir,os.path.dirname(resource))
 	
 	for line in lines:
 	    line = os.path.join(copydir,line)
@@ -163,7 +167,8 @@ def copytonewfolder(src, dst):
 	# TestDir\\Game
 	destdir = os.path.join(dst,basedir)
 	# 
-	atlas(file,destdir)
+	'''destdir'''
+	atlas(file,dst)
 	copytree(basedir,destdir)  
 	
 	copyfiles()

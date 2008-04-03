@@ -20,6 +20,9 @@ good_files = []
 
 copy_files = []
 
+atlas_width = 2048
+atlas_height = 2048
+
 allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
 
 def formreslist(src):
@@ -37,12 +40,13 @@ def formreslist(src):
     
     return resource_list
 	
-def copyfiles(files):
-    for file in files:
+def copyfiles():
+    for file in copy_files:
 	src = os.path.basename(file)
 	shutil.copy2(src, file)
-	copy_files.remove(file)
 	os.remove(src)	
+    
+    del copy_files[:]
 	
 def copytree(src, dst):
     compileall.compile_dir(src, rx=re.compile('/[.]svn'), force=True)
@@ -72,27 +76,6 @@ def copytree(src, dst):
         else:
                 shutil.copy2(srcname, dstname)
 
-		
-def copytonewfolder(src, dst):
-    # if dest path exist, just return.
-    if os.path.exists(dst):
-	return
-    
-    os.mkdir(dst)
-    # get resources list from application.xml. Example "Game\\Resource\\Resource.xml"
-    filelist = formreslist(src)
-    
-    # for each xml' resources - copy resource folders
-    for file in filelist:
-	basedir = os.path.dirname(file)
-	# TestDir\\Game
-	destdir = os.path.join(dst,basedir)
-	# 
-	atlas(file,destdir)
-	copytree(basedir,destdir)  
-	
-	copyfiles(copy_files)
-
 #   input - resource.xml
 #   output - game\resources\resource.default, ...
 	
@@ -118,12 +101,13 @@ def get_resource_path(dom,src):
 def atlas(src,destdir):
     dom = xml.dom.minidom.parse(src)
 
+    print "getting resource list from xml"
     resource_list = get_resource_path(dom,os.path.dirname(src))
        
     for resource in resource_list:
 	
 	exe = 'AtlasCreationTool.exe %(resource_name)s %(output_resource)s %(width)i %(height)i' % \
-	    {'resource_name' : resource, 'output_resource' : 'output','width' : 512, 'height' : 512}
+	    {'resource_name' : resource, 'output_resource' : 'output','width' : atlas_width, 'height' : atlas_height}
 	
 	subprocess.call(exe)
 
@@ -155,10 +139,37 @@ def atlas(src,destdir):
 			value = file.getAttribute("Path")
 			value = os.path.normpath(value)
 			bad_files.append(value)
-			print value
+			#print value
 			
 	dom.unlink()
 
+def copytonewfolder(src, dst):
+    # if dest path exist, just return.
+    if os.path.exists(dst):
+	print "output directory already exist!"
+	return
+    
+    os.mkdir(dst)
+    # get resources list from application.xml. Example "Game\\Resource\\Resource.xml"
+    filelist = formreslist(src)
+    
+    if filelist == []:
+	print "xml's resources are empty!"
+	return
+    
+    # for each xml' resources - copy resource folders
+    for file in filelist:
+	basedir = os.path.dirname(file)
+	# TestDir\\Game
+	destdir = os.path.join(dst,basedir)
+	# 
+	atlas(file,destdir)
+	copytree(basedir,destdir)  
+	
+	copyfiles()
+	
+    print "done!"
+    
 def main():
     copytonewfolder("application_d.xml","TestDir")
 

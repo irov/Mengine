@@ -54,8 +54,6 @@ OgreRenderSystem::OgreRenderSystem()
 //////////////////////////////////////////////////////////////////////////
 OgreRenderSystem::~OgreRenderSystem()
 {
-	assert(m_renderImages.size() == 0);
-
 	delete m_rootSceneNode;
 
 	if( m_spriteMgr )
@@ -334,7 +332,6 @@ void OgreRenderSystem::setWorldMatrix( const float * _world )
 RenderImageInterface* OgreRenderSystem::createImage( const char* _name, unsigned int _width, unsigned int _height )
 {
 	RenderImageInterface * renderImage = new OgreRenderImage( _name, _width, _height, Ogre::TU_DEFAULT, this );
-	m_renderImages.insert(std::make_pair(_name,renderImage));
 	return renderImage;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -348,23 +345,22 @@ RenderImageInterface* OgreRenderSystem::createRenderTargetImage( const char* _na
 	return image;
 }
 //////////////////////////////////////////////////////////////////////////
-RenderImageInterface* OgreRenderSystem::getImage( const char * _name ) const
-{
-	TMapImages::const_iterator it = m_renderImages.find(_name);
-
-	if(it == m_renderImages.end())
-	{
-		return 0;
-	}
-
-	return (*it).second;
-}
-//////////////////////////////////////////////////////////////////////////
 RenderImageInterface* OgreRenderSystem::loadImage( const TextureDesc& _desc )
 {
-	RenderImageInterface * renderImage = new OgreRenderImage( _desc );
-	m_renderImages.insert(std::make_pair(_desc.name,renderImage));
-	return renderImage;
+	RenderImageInterface * renderImage = NULL;
+
+	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().getByName(_desc.name);
+
+	if( texture.isNull() == true ) 
+	{
+		renderImage = new OgreRenderImage( _desc );
+	}
+	else
+	{
+		renderImage = new OgreRenderImage( _desc.name );
+	}
+
+	return renderImage; 
 }
 //////////////////////////////////////////////////////////////////////////
 RenderVideoStreamInterface* OgreRenderSystem::loadImageVideoStream( const char* _filename )
@@ -407,18 +403,9 @@ void OgreRenderSystem::releaseImageVideoStream( RenderVideoStreamInterface* _ima
 	delete static_cast<OgreRenderVideoStream*>(_image);
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSystem::releaseImage( const char * _description )
+void OgreRenderSystem::releaseImage( RenderImageInterface * _image )
 {
-	TMapImages::iterator it = m_renderImages.find(_description);
-
-	if(it == m_renderImages.end())
-	{
-		return;
-	}
-
-	OgreRenderImage * ogreImage = static_cast<OgreRenderImage*>((*it).second);
-	delete ogreImage;
-	m_renderImages.erase(it);
+	delete static_cast<OgreRenderImage*>(_image);
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::renderImage(		

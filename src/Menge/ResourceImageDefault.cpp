@@ -85,9 +85,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::_release()
 	{
-		for( TVectorFileNames::iterator
-			it = m_vectorFileNames.begin(),
-			it_end = m_vectorFileNames.end();
+		for( TVectorImageFrame::iterator
+			it = m_vectorImageFrames.begin(),
+			it_end = m_vectorImageFrames.end();
 		it != it_end;
 		++it)
 		{

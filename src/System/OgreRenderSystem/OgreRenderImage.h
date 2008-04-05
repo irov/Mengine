@@ -9,6 +9,7 @@ class OgreRenderImage
 {
 public:
 	OgreRenderImage();
+	OgreRenderImage( const std::string & _description);
 	OgreRenderImage( const char* _description, unsigned int _width, unsigned int _height, Ogre::TextureUsage _usage, Ogre::ManualResourceLoader* _loader );
 	OgreRenderImage( const TextureDesc&	_desc );
 	~OgreRenderImage();

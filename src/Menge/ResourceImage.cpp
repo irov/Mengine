@@ -44,10 +44,10 @@ namespace Menge
 		return imageFrame;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImage::releaseImageFrame( const std::string & _description )
+	void ResourceImage::releaseImageFrame(const ImageFrame & _frame)
 	{
 		Holder<RenderEngine>::hostage()
-			->releaseImage( _description );
+			->releaseImage( _frame.image );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImage::loader( XmlElement * _xml )

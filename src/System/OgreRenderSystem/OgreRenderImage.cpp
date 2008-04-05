@@ -8,6 +8,12 @@ OgreRenderImage::OgreRenderImage()
 {
 }
 //////////////////////////////////////////////////////////////////////////
+OgreRenderImage::OgreRenderImage( const std::string & _description)
+: m_description( _description )
+{
+	m_texture = Ogre::TextureManager::getSingleton().getByName(m_description);
+}
+//////////////////////////////////////////////////////////////////////////
 OgreRenderImage::OgreRenderImage( const char* _description, unsigned int _width, unsigned int _height, Ogre::TextureUsage _usage, Ogre::ManualResourceLoader* _loader  )
 : m_description( _description )
 {

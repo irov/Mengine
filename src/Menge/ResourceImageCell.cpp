@@ -96,6 +96,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageCell::_release()
 	{
-		releaseImageFrame( m_filename );
+		releaseImageFrame( m_imageFrame );
 	}
 }

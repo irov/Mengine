@@ -68,7 +68,7 @@ namespace Menge
 			EBlendFactor _src = BF_SOURCE_ALPHA,
 			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
 
-		void	releaseImage( const std::string & _description );
+		void	releaseImage( RenderImageInterface * _image );
 		void	releaseImageVideoStream( RenderVideoStreamInterface* _image );
 
 		void	setProjectionMatrix( const mt::mat4f& _projection );

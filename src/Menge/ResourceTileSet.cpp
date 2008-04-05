@@ -83,8 +83,6 @@ namespace Menge
 			std::string name = m_tileSetFile + tilestr + ".png";
 			RenderImageInterface* image = Holder<RenderEngine>::hostage()->loadImage( name, 0 );
 
-			m_vectorFileNames.push_back(name);
-
 			m_tileSize = image->getWidth();
 			m_tileSet[ tileCode ] = image;
 		}
@@ -94,13 +92,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTileSet::_release()
 	{
-		for( TVectorFileNames::iterator
-			it = m_vectorFileNames.begin(),
-			it_end = m_vectorFileNames.end();
+		for( TTileSet::iterator
+			it = m_tileSet.begin(),
+			it_end = m_tileSet.end();
 		it != it_end;
 		++it)
 		{
-			Holder<RenderEngine>::hostage()->releaseImage( *it );
+			Holder<RenderEngine>::hostage()->releaseImage( (*it).second );
 		}
 		m_vectorFileNames.clear();
 		m_tileSet.clear();

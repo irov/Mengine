@@ -102,7 +102,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::_release()
 	{
-		Holder<RenderEngine>::hostage()->releaseImage( m_fullname );
+		Holder<RenderEngine>::hostage()->releaseImage( m_image );
 		m_image = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////

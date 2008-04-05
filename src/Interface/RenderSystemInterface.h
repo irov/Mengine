@@ -201,9 +201,7 @@ public:
 	// загрузка изображения
 	virtual RenderImageInterface * loadImage( const TextureDesc& _desc ) = 0;
 	// удаления изображения
-	virtual void releaseImage( const char * _description ) = 0;
-	//
-	virtual RenderImageInterface* getImage( const char * _name ) const = 0;
+	virtual void releaseImage( RenderImageInterface * _image ) = 0;
 	//
 	virtual RenderVideoStreamInterface* loadImageVideoStream( const char* _filename ) = 0;
 	//

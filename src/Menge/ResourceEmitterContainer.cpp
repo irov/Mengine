@@ -64,7 +64,7 @@ namespace Menge
 		++it)
 		{
 			Holder<RenderEngine>::hostage()
-				->releaseImage( it->first );
+				->releaseImage( it->second );
 		}
 		m_mapImageEmitters.clear();
 	}

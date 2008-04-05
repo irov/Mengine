@@ -20,8 +20,8 @@ good_files = []
 
 copy_files = []
 
-atlas_width = 2048
-atlas_height = 2048
+atlas_width = 1024
+atlas_height = 1024
 
 allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
 
@@ -102,14 +102,17 @@ def atlas(src,destdir):
     dom = xml.dom.minidom.parse(src)
 
     print "getting resource list from xml"
+    
     resource_list = get_resource_path(dom,os.path.dirname(src))
        
     offset_path = os.path.dirname(src)
     
     for resource in resource_list:
+
+	resource_output_name = os.path.basename(resource)
 	
 	exe = 'AtlasCreationTool.exe %(resource_name)s %(output_resource)s %(width)i %(height)i %(offset_path)s' % \
-	    {'resource_name' : resource, 'output_resource' : 'output','width' : atlas_width, \
+	    {'resource_name' : resource, 'output_resource' : resource_output_name,'width' : atlas_width, \
 	     'height' : atlas_height, 'offset_path' : offset_path}
 	
 	subprocess.call(exe)
@@ -120,14 +123,16 @@ def atlas(src,destdir):
 	
 	lines = line.split()
 	
-	#copydir = os.path.join(os.path.dirname(destdir),os.path.dirname(resource))
-	copydir = os.path.join(destdir,os.path.dirname(resource))
+	copy_files.append(os.path.join(destdir,os.path.dirname(resource),line))
+	
+	copydir = os.path.join(destdir,os.path.dirname(os.path.dirname(resource)))
+	
+	lines.remove(lines[0])
 	
 	for line in lines:
 	    line = os.path.join(copydir,line)
 	    copy_files.append(line)
 	    print line
-
 	
 	bad_files.append(resource)
 	
@@ -167,7 +172,6 @@ def copytonewfolder(src, dst):
 	# TestDir\\Game
 	destdir = os.path.join(dst,basedir)
 	# 
-	'''destdir'''
 	atlas(file,dst)
 	copytree(basedir,destdir)  
 	
@@ -176,6 +180,6 @@ def copytonewfolder(src, dst):
     print "done!"
     
 def main():
-    copytonewfolder("application_d.xml","TestDir")
+    copytonewfolder("application.xml","TestDir")
 
 main()

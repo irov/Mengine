@@ -4,6 +4,7 @@
 
 #	include "XmlParser/XmlParser.h"
 #	include "Math/mat4.h"
+#	include "Math/quat.h"
 #	include "FileEngine.h"
 
 class XmlExpatParser;

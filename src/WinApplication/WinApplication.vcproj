@@ -108,9 +108,16 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
 				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\OgreSDK\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OGREAPPLICATION_EXPORTS"
+				StringPooling="true"
+				MinimalRebuild="false"
 				RuntimeLibrary="2"
+				FloatingPointModel="2"
 				UsePrecompiledHeader="0"
 				BrowseInformation="0"
 				WarningLevel="3"

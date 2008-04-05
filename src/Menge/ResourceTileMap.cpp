@@ -18,12 +18,17 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceTileMap::setTileMapPath( const std::string & _path )
+	{
+		m_tileMapFile = m_params.category + _path;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceTileMap::loader( XmlElement * _xml )
 	{
 		ResourceReference::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "TileMap", "File", m_tileMapFile );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "TileMap", "File", &ResourceTileMap::setTileMapPath );
 			XML_CASE_ATTRIBUTE_NODE( "ResourceTileSet", "Name", m_tileSetName );
 		}
 	}

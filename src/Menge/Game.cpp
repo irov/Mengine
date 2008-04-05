@@ -776,7 +776,7 @@ namespace Menge
 			}
 
 			scene->setName( _name );
-
+			
 			std::string xml_path;
 
 			const TPairDeclaration & pair = m_mapScenesDeclaration[ _name ];

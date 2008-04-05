@@ -109,10 +109,17 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\OgreSDK\include&quot;;&quot;$(SolutionDir)dependencies\videoplugin\TheoraVideo\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\Theora\include\&quot;;&quot;$(SolutionDir)dependencies\ogg\include\&quot;;&quot;$(SolutionDir)dependencies\vorbis\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\ptypes-1.8.3\include\&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
+				StringPooling="true"
+				MinimalRebuild="false"
 				RuntimeLibrary="2"
+				FloatingPointModel="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"

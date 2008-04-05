@@ -30,6 +30,8 @@ namespace Menge
 		float getTileSize();
 		//const std::string& getPhysXml() const;
 
+		void setTileMapPath( const std::string & _path );
+
 	public:
 		void loader( XmlElement * _xml ) override;
 		const std::vector< mt::vec2f >& _getPhysPos() const;

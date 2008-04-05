@@ -111,9 +111,15 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				StringPooling="true"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
+				FloatingPointModel="2"
 				UsePrecompiledHeader="0"
 				ProgramDataBaseFileName="$(OutDir)\$(ProjectName).pdb"
 				WarningLevel="3"

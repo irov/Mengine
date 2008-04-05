@@ -30,3 +30,7 @@ namespace mt
 		mt::vec3f Q[3];
 	};
 };
+
+#	if MATH_FORCE_INLINE == 1
+#	include	"simplex_inline.h"
+#	endif

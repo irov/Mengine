@@ -38,11 +38,8 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	UNREFERENCED_PARAMETER( hPrevInstance );
 	UNREFERENCED_PARAMETER( nShowCmd );
 #endif	
-#ifdef _DEBUG
-	const char * config_file = "application_d.xml";
-#else
+
 	const char * config_file = "application.xml";
-#endif
 
 #	ifndef _CONSOLE
 	if( strstr(lpCmdLine, "-console") )

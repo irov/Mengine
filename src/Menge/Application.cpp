@@ -137,7 +137,18 @@ namespace Menge
 
 		Game* game = Holder<Game>::hostage();
 
-		Holder<RenderEngine>::hostage()->initialize( game->getRenderDriverName() );
+
+		const std::string & renderDriver = game->getRenderDriverName();
+
+		if( renderDriver == "D3D9" )
+		{
+#	ifndef _DEBUG
+			Holder<RenderEngine>::hostage()->initialize( "RenderSystem_Direct3D9" );
+#	else 
+			Holder<RenderEngine>::hostage()->initialize( "RenderSystem_Direct3D9_d" );
+#	endif
+		}
+
 		m_currentResolution.x = game->getWidth();
 		m_currentResolution.y = game->getHeight();
 		if( game->getFullscreen() )

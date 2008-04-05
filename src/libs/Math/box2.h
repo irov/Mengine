@@ -1,6 +1,7 @@
 #	pragma once
 
-#	include "vec2.h"
+#	include "config.h"
+
 #	include "mat3.h"
 
 namespace mt
@@ -14,17 +15,21 @@ namespace mt
 			struct {vec2f min,max;};
 		};
 
-		box2f();
-		box2f( const box2f & _box );
-		box2f( const vec2f & _vb, const vec2f & _ve );
+		MATH_INLINE box2f();
+		MATH_INLINE box2f( const box2f & _box );
+		MATH_INLINE box2f( const vec2f & _vb, const vec2f & _ve );
 	};
 
-	void reset(box2f & box,const vec2f & initValue);
-	void reset(box2f & box,float x, float y);
-	void add_internal_point(box2f & box, float x,float y);
-	void add_internal_point(box2f & box, const vec2f & p);
-	void set_box_from_min_max(box2f & box, const vec2f & min, const vec2f & max);
-	void set_box_from_center_and_extent(box2f & box, const vec2f & center, const vec2f & extent);
-	void set_box_from_oriented_extent( box2f & box, const mt::vec2f & _offset, const mt::vec2f & _size, const mt::mat3f & _wm );
-	bool is_intersect(const box2f & _a, const box2f & _b);
+	MATH_INLINE void reset(box2f & box,const vec2f & initValue);
+	MATH_INLINE void reset(box2f & box,float x, float y);
+	MATH_INLINE void add_internal_point(box2f & box, float x,float y);
+	MATH_INLINE void add_internal_point(box2f & box, const vec2f & p);
+	MATH_INLINE void set_box_from_min_max(box2f & box, const vec2f & min, const vec2f & max);
+	MATH_INLINE void set_box_from_center_and_extent(box2f & box, const vec2f & center, const vec2f & extent);
+	MATH_INLINE void set_box_from_oriented_extent( box2f & box, const mt::vec2f & _offset, const mt::vec2f & _size, const mt::mat3f & _wm );
+	MATH_INLINE bool is_intersect(const box2f & _a, const box2f & _b);
 }
+
+#	if MATH_FORCE_INLINE == 1
+#	include "box2_inline.h"
+#	endif

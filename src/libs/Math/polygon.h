@@ -1,16 +1,16 @@
+#	pragma once
+
 /*	
 	Polygon class.
 	-	determine location of a point in convex/concave (O(nlogn), O(n)) polygon.
 	-	test if polygon	convex.
 */
-#pragma once
+#	include "config.h"
 
-#include <vector>
-#include <algorithm>
-#include "vec2.h"
-#include "mat3.h"
+#	include "mat3.h"
 
-
+#	include <vector>
+#	include <algorithm>
 
 namespace mt
 {
@@ -18,59 +18,65 @@ namespace mt
 	{
 		typedef std::vector<vec2f> TVectorPoints;
 
-		polygon();
-		polygon( TVectorPoints::size_type n );
-		polygon( const polygon & _rhs );
+		MATH_INLINE polygon();
+		MATH_INLINE polygon( TVectorPoints::size_type n );
+		MATH_INLINE polygon( const polygon & _rhs );
 
-		void clear_points();
+		MATH_INLINE void clear_points();
 
-		void add_point(const vec2f& v);
-		void insert( TVectorPoints::size_type after, const vec2f & v );
+		MATH_INLINE void add_point(const vec2f& v);
+		MATH_INLINE void insert( TVectorPoints::size_type after, const vec2f & v );
 
-		TVectorPoints::size_type num_points() const;
+		MATH_INLINE TVectorPoints::size_type num_points() const;
 
-		polygon & operator = (const polygon& _rhs);
+		MATH_INLINE polygon & operator = (const polygon& _rhs);
 
-		const vec2f & operator [] ( TVectorPoints::size_type i ) const;
-		vec2f & operator [] ( TVectorPoints::size_type i );
+		MATH_INLINE const vec2f & operator [] ( TVectorPoints::size_type i ) const;
+		MATH_INLINE vec2f & operator [] ( TVectorPoints::size_type i );
 
-		vec2f & front();
-		const vec2f & front()const;
+		MATH_INLINE vec2f & front();
+		MATH_INLINE const vec2f & front()const;
 
-		vec2f & back();
-		const vec2f & back() const;
+		MATH_INLINE vec2f & back();
+		MATH_INLINE const vec2f & back() const;
 
-		bool is_convex() const;
+		MATH_INLINE bool is_convex() const;
 
 		//	return extrem point in direction
-		mt::vec2f support( const mt::vec2f& normal )  const;
+		MATH_INLINE mt::vec2f support( const mt::vec2f& normal )  const;
+
+	private:
+		MATH_INLINE void check_edges_convex( TVectorPoints::size_type i );
 
 	private:		
 		TVectorPoints points;
 
 		char convex_value;
-		bool convex_state;
-		void check_edges_convex( TVectorPoints::size_type i );
+		bool convex_state;		
 	};
 
-	bool	cmp_poly_poly(const polygon& _a, const polygon& _b);
-	bool	is_point_inside_convex_polygon(const polygon& poly, const vec2f& p);
-	bool	is_point_inside_polygon(const polygon& poly, const vec2f& p);
-	bool	is_convex_polygon(const polygon& poly);
-	float	orient_polygon(const polygon& poly);
+	MATH_INLINE bool cmp_poly_poly(const polygon& _a, const polygon& _b);
+	MATH_INLINE bool is_point_inside_convex_polygon(const polygon& poly, const vec2f& p);
+	MATH_INLINE bool is_point_inside_polygon(const polygon& poly, const vec2f& p);
+	MATH_INLINE bool is_convex_polygon(const polygon& poly);
+	MATH_INLINE float orient_polygon(const polygon& poly);
 
-	bool	is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::vec2f& _position, const mt::vec2f& _direction );
-	bool	is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::mat3f& wm );
+	MATH_INLINE bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::vec2f& _position, const mt::vec2f& _direction );
+	MATH_INLINE bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::mat3f& wm );
 
-	bool	intersect_poly_poly( const polygon& _a, const polygon& _b,
+	MATH_INLINE bool intersect_poly_poly( const polygon& _a, const polygon& _b,
 		const mt::vec2f & _dirA, const mt::vec2f & _posA,
 		const mt::vec2f & _dirB, const mt::vec2f & _posB );
 
-	bool	intersect_poly_poly( 
+	MATH_INLINE bool intersect_poly_poly( 
 		const polygon& _a, const polygon& _b, 
 		const mt::mat3f & worldMatrixA,
 		const mt::mat3f & worldMatrixB);
 
-	bool	operator==(const polygon& _a, const polygon& _b);
-	bool	operator!=(const polygon& _a, const polygon& _b);
+	MATH_INLINE bool operator==(const polygon& _a, const polygon& _b);
+	MATH_INLINE bool operator!=(const polygon& _a, const polygon& _b);
 };
+
+#	if MATH_FORCE_INLINE == 1
+#	include "polygon_inline.h"
+#	endif

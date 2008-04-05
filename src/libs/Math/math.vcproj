@@ -163,6 +163,10 @@
 				RelativePath=".\vec2.h"
 				>
 			</File>
+			<File
+				RelativePath=".\vec2_inline.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="vec3"
@@ -173,6 +177,10 @@
 			</File>
 			<File
 				RelativePath=".\vec3.h"
+				>
+			</File>
+			<File
+				RelativePath=".\vec3_inline.h"
 				>
 			</File>
 		</Filter>
@@ -187,6 +195,10 @@
 				RelativePath=".\mat2.h"
 				>
 			</File>
+			<File
+				RelativePath=".\mat2_inline.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="mat3"
@@ -197,6 +209,10 @@
 			</File>
 			<File
 				RelativePath=".\mat3.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mat3_inline.h"
 				>
 			</File>
 		</Filter>
@@ -211,6 +227,10 @@
 				RelativePath=".\mat4.h"
 				>
 			</File>
+			<File
+				RelativePath=".\mat4_inline.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="plane"
@@ -221,6 +241,10 @@
 			</File>
 			<File
 				RelativePath=".\plane.h"
+				>
+			</File>
+			<File
+				RelativePath=".\plane_inline.h"
 				>
 			</File>
 		</Filter>
@@ -235,6 +259,10 @@
 				RelativePath=".\vec4.h"
 				>
 			</File>
+			<File
+				RelativePath=".\vec4_inline.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="quat"
@@ -245,6 +273,10 @@
 			</File>
 			<File
 				RelativePath=".\quat.h"
+				>
+			</File>
+			<File
+				RelativePath=".\quat_inline.h"
 				>
 			</File>
 		</Filter>
@@ -259,6 +291,10 @@
 				RelativePath=".\box3.h"
 				>
 			</File>
+			<File
+				RelativePath=".\box3_inline.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="box2"
@@ -269,6 +305,10 @@
 			</File>
 			<File
 				RelativePath=".\box2.h"
+				>
+			</File>
+			<File
+				RelativePath=".\box2_inline.h"
 				>
 			</File>
 		</Filter>
@@ -283,6 +323,10 @@
 				RelativePath=".\polygon.h"
 				>
 			</File>
+			<File
+				RelativePath=".\polygon_inline.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="simplex"
@@ -295,6 +339,10 @@
 				RelativePath=".\simplex.h"
 				>
 			</File>
+			<File
+				RelativePath=".\simplex_inline.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="rand"
@@ -304,6 +352,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\config.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

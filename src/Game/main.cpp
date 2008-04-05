@@ -40,7 +40,6 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 #endif	
 
 	const char * config_file = "application.xml";
-
 #	ifndef _CONSOLE
 	if( strstr(lpCmdLine, "-console") )
 	{

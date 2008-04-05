@@ -26,6 +26,9 @@ namespace Menge
 
 	public:
 		void addFrameFile( const std::string & _path );
+		void addFrameAtlasUV( const mt::vec4f & _v );
+		void addFrameAtlasOffset( const mt::vec2f & _v );
+		void addFrameAtlasMaxSize( const mt::vec2f & _v );
 
 	public:
 		unsigned int getCount() const override;
@@ -45,9 +48,6 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		mt::vec2f m_offset;
-		mt::vec4f m_uv;
-
 		unsigned int m_filter;
 
 		typedef std::vector<std::string> TVectorFileNames;
@@ -55,5 +55,9 @@ namespace Menge
 
 		typedef std::vector<ImageFrame> TVectorImageFrame;
 		TVectorImageFrame m_vectorImageFrames;
+
+		std::vector<mt::vec4f> m_vectorAtlasUVs;
+		std::vector<mt::vec2f> m_vectorAtlasOffsets;
+		std::vector<mt::vec2f> m_vectorAtlasMaxSizes;
 	};
 }

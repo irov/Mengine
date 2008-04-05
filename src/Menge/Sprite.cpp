@@ -286,7 +286,7 @@ namespace	Menge
 			wm, 
 			m_offset,
 			m_uv,
-			m_size,
+			m_size,/////////////
 			m_color.get(),
 			renderImage,
 			m_blendSrc,

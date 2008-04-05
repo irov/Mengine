@@ -26,6 +26,8 @@ namespace Menge
 		struct ImageFrame
 		{
 			mt::vec2f size;
+			mt::vec2f offset;
+			mt::vec4f uv;
 			RenderImageInterface * image;
 		};
 

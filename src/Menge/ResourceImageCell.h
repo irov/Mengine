@@ -56,5 +56,9 @@ namespace Menge
 		TVectorUV m_uvs;
 
 		ImageFrame m_imageFrame;
+
+		mt::vec4f m_vectorAtlasUV;
+		mt::vec2f m_vectorAtlasOffset;
+		mt::vec2f m_vectorAtlasMaxSize;
 	};
 }

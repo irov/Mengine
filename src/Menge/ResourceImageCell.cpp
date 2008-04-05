@@ -12,7 +12,7 @@ namespace Menge
 		: ResourceImage( _params )
 		, m_numX(0)
 		, m_numY(0)
-		, m_offset(0.f,0.f)
+		//, m_offset(0.f,0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageCell::getOffset( unsigned int _frame ) const
 	{
-		return m_offset;
+		return m_vectorAtlasOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f & ResourceImageCell::getUV( unsigned int _frame ) const
@@ -58,6 +58,9 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceImageCell::setFilePath );
+			XML_CASE_ATTRIBUTE( "UV", m_vectorAtlasUV );
+			XML_CASE_ATTRIBUTE( "Offset", m_vectorAtlasOffset );
+			XML_CASE_ATTRIBUTE( "MaxSize", m_vectorAtlasMaxSize );
 
 			XML_CASE_NODE( "Cell" )
 			{
@@ -76,6 +79,12 @@ namespace Menge
 
 		TVectorUV::size_type count = m_numX * m_numY;
 
+		float u = m_imageFrame.uv.z - m_imageFrame.uv.x;
+		float v = m_imageFrame.uv.w - m_imageFrame.uv.y;
+
+		mt::vec2f size(m_imageFrame.size.x * u,m_imageFrame.size.y * v);
+		m_imageFrame.size = size;
+
 		m_imageFrame.size.x /= (float)m_numX;
 		m_imageFrame.size.y /= (float)m_numY;
 
@@ -89,6 +98,7 @@ namespace Menge
 			m_uvs[index].y = float( offset ) / m_numY;
 			m_uvs[index].z = float( index % m_numX + 1 ) / m_numX;
 			m_uvs[index].w = float( offset + 1 ) / m_numY;
+			m_uvs[index] += m_vectorAtlasUV;
 		}
 
 		return true;

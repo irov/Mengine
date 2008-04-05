@@ -35,8 +35,8 @@ namespace Menge
 			return imageFrame;
 		}
 
-		float width = (float)image->getWidth();
-		float height = (float)image->getHeight();
+		float width = image->getWidth();
+		float height = image->getHeight();
 
 		imageFrame.size = mt::vec2f( width, height );
 		imageFrame.image = image;

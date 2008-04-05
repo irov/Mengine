@@ -84,7 +84,7 @@ namespace Menge
 		\return изображение
 		*/
 		ImageFrame loadImageFrame( const std::string & _filename );
-		void releaseImageFrame( const ImageFrame & _frame );
+		void releaseImageFrame( const std::string & _description );
 
 	protected:
 		unsigned int m_filter;

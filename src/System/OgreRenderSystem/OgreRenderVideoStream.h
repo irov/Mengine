@@ -16,6 +16,7 @@ public:
 	float getWidth() const override;
 	float getHeight() const override;
 	void writeToFile( const char* _filename ) override;
+	const char * getDescription() const override;
 	void play();
 	void pause();
 

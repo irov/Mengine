@@ -8,10 +8,10 @@ OgreRenderImage::OgreRenderImage()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-OgreRenderImage::OgreRenderImage( const char* _name, unsigned int _width, unsigned int _height, Ogre::TextureUsage _usage, Ogre::ManualResourceLoader* _loader  )
-: m_description( _name )
+OgreRenderImage::OgreRenderImage( const char* _description, unsigned int _width, unsigned int _height, Ogre::TextureUsage _usage, Ogre::ManualResourceLoader* _loader  )
+: m_description( _description )
 {
-	m_texture = Ogre::TextureManager::getSingleton().createManual( _name, "Default", Ogre::TEX_TYPE_2D,
+	m_texture = Ogre::TextureManager::getSingleton().createManual( _description, "Default", Ogre::TEX_TYPE_2D,
 																	_width, _height, 0, 0, Ogre::PF_X8R8G8B8, 
 																	_usage, _loader );
 }
@@ -28,7 +28,6 @@ OgreRenderImage::OgreRenderImage( const TextureDesc& _desc )
 
 	image.load( data, ext );
 	//image.FILTER_BILINEAR
-
 
 	m_texture = Ogre::TextureManager::getSingletonPtr()
 		->loadImage( m_description, "Default", image, Ogre::TEX_TYPE_2D, 0 );
@@ -48,6 +47,11 @@ float OgreRenderImage::getWidth() const
 float OgreRenderImage::getHeight() const
 {
 	return m_texture->getHeight();
+}
+//////////////////////////////////////////////////////////////////////////
+const char * OgreRenderImage::getDescription() const
+{
+	return m_description.c_str();
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderImage::writeToFile( const char* _filename )
@@ -78,7 +82,7 @@ void OgreRenderImage::writeToFile( const char* _filename )
 	Ogre::String extension;
 	if( pos == Ogre::String::npos )
 	{
-		// TODO: invalid extension exception
+		assert(!"invalid extension exception");
 	}
 	while( pos != filename.length() - 1 )
 	{

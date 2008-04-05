@@ -128,6 +128,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * RenderEngine::loadImage( const std::string & _filename, unsigned int _filter )
 	{
+		RenderImageInterface * image = m_interface->getImage(_filename.c_str());
+
+		if(image != NULL)
+		{
+			return image;
+		}
+
 		FileDataInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
 
 		if( file == 0 )
@@ -148,14 +155,13 @@ namespace Menge
 		textureDesc.name = _filename.c_str();
 		textureDesc.filter = _filter;
 
-		RenderImageInterface * image = loadImage( textureDesc );
+		image = loadImage( textureDesc );
 
 		Holder<FileEngine>::hostage()->closeFile( file );
 
 		if( image == 0 )
 		{
 			MENGE_LOG( "Error: Image from file '%s' not loader\n", _filename.c_str() );
-
 			return 0;
 		}	
 
@@ -214,9 +220,9 @@ namespace Menge
 			_dst);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseImage( RenderImageInterface * _image )
+	void RenderEngine::releaseImage( const std::string & _description )
 	{
-		m_interface->releaseImage( _image );
+		m_interface->releaseImage( _description.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImageVideoStream( RenderVideoStreamInterface* _image )

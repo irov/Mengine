@@ -33,6 +33,7 @@ public:
 	virtual float getWidth() const = 0;
 	virtual float getHeight() const = 0;
 	virtual void writeToFile( const char* _filename ) = 0;
+	virtual const char * getDescription() const = 0;
 };
 
 class EntityInterface;
@@ -41,12 +42,6 @@ class SkeletonInterface
 {
 public:
 	virtual ~SkeletonInterface(){};
-
-	//virtual void enableAnimation( const std::string & _anim, bool _enable ) = 0;
-	//virtual void advanceAnimation( const std::string & _anim, float _timeDelta ) = 0;
-	//virtual void advanceAllAnimations( float _timeDelta ) = 0;
-	//virtual void setAnimationWeight( const std::string & _anim, float _weight ) = 0;
-	//virtual void attachEntityToBone( const std::string & _bone, EntityInterface * _entity ) = 0;
 };
 
 class EntityInterface
@@ -206,7 +201,9 @@ public:
 	// загрузка изображения
 	virtual RenderImageInterface * loadImage( const TextureDesc& _desc ) = 0;
 	// удаления изображения
-	virtual void releaseImage( RenderImageInterface * _image ) = 0;
+	virtual void releaseImage( const char * _description ) = 0;
+	//
+	virtual RenderImageInterface* getImage( const char * _name ) const = 0;
 	//
 	virtual RenderVideoStreamInterface* loadImageVideoStream( const char* _filename ) = 0;
 	//

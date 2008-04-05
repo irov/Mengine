@@ -89,6 +89,7 @@ namespace Menge
 
 		std::string m_filename;
 		std::string m_fontDir;
+		std::string m_fullname;
 
 		float m_whsRatio;
 

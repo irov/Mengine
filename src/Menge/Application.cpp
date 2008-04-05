@@ -466,6 +466,12 @@ namespace Menge
 		Holder<InputEngine>::destroy();
 		Holder<SoundEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
+
+		if( m_physicEngine != 0 )
+		{
+			//??
+			//m_interface->unloadSystemDLL(m_physicEngine->);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onWindowMovedOrResized()

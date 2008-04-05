@@ -36,6 +36,11 @@ float OgreRenderVideoStream::getHeight() const
 	return m_texture->getHeight();
 }
 //////////////////////////////////////////////////////////////////////////
+const char * OgreRenderVideoStream::getDescription() const
+{
+	return m_name.c_str();
+}
+//////////////////////////////////////////////////////////////////////////
 void OgreRenderVideoStream::writeToFile( const char* _filename )
 {
 

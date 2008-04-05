@@ -133,6 +133,14 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 
 	releaseInterfaceSystem( platform );
 
+	releaseInterfaceSystem( soundSystem );
+	releaseInterfaceSystem( renderSystem );
+	releaseInterfaceSystem( physicSystem2D );
+	releaseInterfaceSystem( particleSystem );
+	releaseInterfaceSystem( logSystem );
+	releaseInterfaceSystem( inputSystem );
+	releaseInterfaceSystem( fileSystem );
+	
 	return 0;
 }
 

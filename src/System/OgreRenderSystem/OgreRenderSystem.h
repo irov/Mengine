@@ -45,7 +45,7 @@ public:
 	RenderVideoStreamInterface* loadImageVideoStream( const char* _filename ) override;
 	void releaseImageVideoStream( RenderVideoStreamInterface* _image ) override;
 
-	void releaseImage( RenderImageInterface* _image ) override;
+	void releaseImage( const char * _description ) override;
 	void renderImage(	
 		const char * _camera,
 		const float * _transform, 
@@ -93,6 +93,7 @@ public:
 	void setEventListener( RenderSystemListener* _listener ) override;
 	void eventOccurred( const Ogre::String& eventName, const Ogre::NameValuePairList* parameters = 0 );
 
+	RenderImageInterface* getImage( const char * _name ) const override;
 private:
 
 	OgreSceneNode * m_rootSceneNode;
@@ -119,6 +120,9 @@ private:
 	TVectorResolution m_resolutions;
 
 	RenderSystemListener* m_eventListener;
+
+	typedef std::map<std::string, RenderImageInterface*> TMapImages;
+	TMapImages	m_renderImages;
 
 	float m_viewportDimensions[4];
 };

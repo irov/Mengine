@@ -102,7 +102,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::_release()
 	{
-		Holder<RenderEngine>::hostage()->releaseImage( m_image );
+		Holder<RenderEngine>::hostage()->releaseImage( m_fullname );
 		m_image = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -151,13 +151,13 @@ namespace Menge
 		}
 		else if ( name == "source" )
 		{
-			std::string fullname = m_fontDir + params;
+			m_fullname = m_fontDir + params;
 
-			m_image = Holder<RenderEngine>::hostage()->loadImage( fullname, 1 );
+			m_image = Holder<RenderEngine>::hostage()->loadImage( m_fullname, 1 );
 
 			if( m_image == 0 )
 			{
-				MENGE_LOG( "Error: Image can't loaded '%s'", fullname.c_str() );
+				MENGE_LOG( "Error: Image can't loaded '%s'", m_fullname.c_str() );
 				return false;
 			}
 		}

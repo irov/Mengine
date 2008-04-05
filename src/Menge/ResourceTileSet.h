@@ -4,6 +4,7 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Math/vec4.h"
 #	include <map>
+#	include <vector>
 
 #	define MAX_TILE_NUM 4
 #	define MAX_TILESET_WIDTH MAX_TILE_NUM*MAX_TILE_NUM
@@ -48,6 +49,9 @@ namespace Menge
 		typedef std::map< int, RenderImageInterface* > TTileSet;
 		TTileSet m_tileSet;
 		float m_tileSize;
+
+		typedef std::vector<std::string> TVectorFileNames;
+		TVectorFileNames m_vectorFileNames;
 		
 		//ImageBlock m_tiles[ MAX_TILESET_SIZE ][ MAX_TILESET_SIZE ]
 	};

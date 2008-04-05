@@ -80,7 +80,11 @@ namespace Menge
 			unsigned int tileCode = s_tileNumToCode( tile, m_tiles );
 			char buffer[10];
 			std::string tilestr( itoa(tileCode, buffer, 10) );
-			RenderImageInterface* image = Holder<RenderEngine>::hostage()->loadImage( m_tileSetFile + tilestr + ".png", 0 );
+			std::string name = m_tileSetFile + tilestr + ".png";
+			RenderImageInterface* image = Holder<RenderEngine>::hostage()->loadImage( name, 0 );
+
+			m_vectorFileNames.push_back(name);
+
 			m_tileSize = image->getWidth();
 			m_tileSet[ tileCode ] = image;
 		}
@@ -90,13 +94,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTileSet::_release()
 	{
-		for( TTileSet::iterator it = m_tileSet.begin(),
-			it_end = m_tileSet.end(); 
-			it != it_end;
-		it++ )
+		for( TVectorFileNames::iterator
+			it = m_vectorFileNames.begin(),
+			it_end = m_vectorFileNames.end();
+		it != it_end;
+		++it)
 		{
-			Holder<RenderEngine>::hostage()->releaseImage( it->second );
+			Holder<RenderEngine>::hostage()->releaseImage( *it );
 		}
+		m_vectorFileNames.clear();
 		m_tileSet.clear();
 		//Holder<RenderEngine>::hostage()->releaseImage( m_image );
 	}

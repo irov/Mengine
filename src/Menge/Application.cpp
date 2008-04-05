@@ -148,6 +148,19 @@ namespace Menge
 			Holder<RenderEngine>::hostage()->initialize( "RenderSystem_Direct3D9_d" );
 #	endif
 		}
+		else if( renderDriver == "OGL" )
+		{
+#	ifndef _DEBUG
+			Holder<RenderEngine>::hostage()->initialize( "RenderSystem_GL" );
+#	else 
+			Holder<RenderEngine>::hostage()->initialize( "RenderSystem_GL_d" );
+#	endif
+		}
+		else
+		{
+			MENGE_LOG("Please select render drive 'D3D9' or 'OGL'. Thanks!");
+			return false;
+		}
 
 		m_currentResolution.x = game->getWidth();
 		m_currentResolution.y = game->getHeight();

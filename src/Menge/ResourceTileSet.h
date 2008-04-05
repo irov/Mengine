@@ -49,9 +49,6 @@ namespace Menge
 		typedef std::map< int, RenderImageInterface* > TTileSet;
 		TTileSet m_tileSet;
 		float m_tileSize;
-
-		typedef std::vector<std::string> TVectorFileNames;
-		TVectorFileNames m_vectorFileNames;
 		
 		//ImageBlock m_tiles[ MAX_TILESET_SIZE ][ MAX_TILESET_SIZE ]
 	};

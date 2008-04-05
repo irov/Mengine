@@ -128,35 +128,40 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * RenderEngine::loadImage( const std::string & _filename, unsigned int _filter )
 	{
-		FileDataInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
+		RenderImageInterface * image = m_interface->getImage(_filename.c_str());
 
-		if( file == 0 )
+		if(image == 0)
 		{
-			MENGE_LOG( "Error: Image can't open resource file '%s'\n", _filename.c_str() );
-			return 0;
+			FileDataInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
+
+			if( file == 0 )
+			{
+				MENGE_LOG( "Error: Image can't open resource file '%s'\n", _filename.c_str() );
+				return 0;
+			}
+
+			static std::vector<char> s_buff;
+
+			unsigned int buff_size = file->size();
+			s_buff.resize( buff_size );
+			file->read( &s_buff[0], buff_size );
+
+			TextureDesc	textureDesc;
+			textureDesc.buffer = &s_buff[0];
+			textureDesc.size = buff_size;
+			textureDesc.name = _filename.c_str();
+			textureDesc.filter = _filter;
+
+			image = loadImage( textureDesc );
+
+			Holder<FileEngine>::hostage()->closeFile( file );
+
+			if( image == 0 )
+			{
+				MENGE_LOG( "Error: Image from file '%s' not loader\n", _filename.c_str() );
+				return 0;
+			}	
 		}
-
-		static std::vector<char> s_buff;
-
-		unsigned int buff_size = file->size();
-		s_buff.resize( buff_size );
-		file->read( &s_buff[0], buff_size );
-
-		TextureDesc	textureDesc;
-		textureDesc.buffer = &s_buff[0];
-		textureDesc.size = buff_size;
-		textureDesc.name = _filename.c_str();
-		textureDesc.filter = _filter;
-
-		RenderImageInterface * image = loadImage( textureDesc );
-
-		Holder<FileEngine>::hostage()->closeFile( file );
-
-		if( image == 0 )
-		{
-			MENGE_LOG( "Error: Image from file '%s' not loader\n", _filename.c_str() );
-			return 0;
-		}	
 
 		return image;
 	}

@@ -93,6 +93,7 @@ public:
 	void setEventListener( RenderSystemListener* _listener ) override;
 	void eventOccurred( const Ogre::String& eventName, const Ogre::NameValuePairList* parameters = 0 );
 
+	RenderImageInterface * getImage( const char * _desc ) const override;
 private:
 
 	OgreSceneNode * m_rootSceneNode;

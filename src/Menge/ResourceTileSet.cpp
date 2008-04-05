@@ -100,7 +100,6 @@ namespace Menge
 		{
 			Holder<RenderEngine>::hostage()->releaseImage( (*it).second );
 		}
-		m_vectorFileNames.clear();
 		m_tileSet.clear();
 		//Holder<RenderEngine>::hostage()->releaseImage( m_image );
 	}

@@ -347,20 +347,22 @@ RenderImageInterface* OgreRenderSystem::createRenderTargetImage( const char* _na
 //////////////////////////////////////////////////////////////////////////
 RenderImageInterface* OgreRenderSystem::loadImage( const TextureDesc& _desc )
 {
-	RenderImageInterface * renderImage = NULL;
-
-	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().getByName(_desc.name);
+	RenderImageInterface * renderImage = new OgreRenderImage( _desc );
+	return renderImage; 
+}
+//////////////////////////////////////////////////////////////////////////
+RenderImageInterface * OgreRenderSystem::getImage( const char * _desc ) const
+{ 
+	Ogre::TexturePtr texture = Ogre::TextureManager::getSingleton().getByName(_desc);
 
 	if( texture.isNull() == true ) 
 	{
-		renderImage = new OgreRenderImage( _desc );
-	}
-	else
-	{
-		renderImage = new OgreRenderImage( _desc.name );
+		return 0;
 	}
 
-	return renderImage; 
+	RenderImageInterface * renderImage = new OgreRenderImage( _desc );
+
+	return renderImage;
 }
 //////////////////////////////////////////////////////////////////////////
 RenderVideoStreamInterface* OgreRenderSystem::loadImageVideoStream( const char* _filename )

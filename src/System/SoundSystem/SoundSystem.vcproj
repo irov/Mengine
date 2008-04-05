@@ -141,7 +141,7 @@
 				Name="VCLibrarianTool"
 				AdditionalDependencies="OpenAL32.lib alut.lib vorbis_static.lib vorbisfile_static.lib ogg_static.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenALSDK\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\PThreads\lib&quot;;&quot;$(SolutionDir)dependencies\freealut\lib&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\VorbisFile_Static_Release\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\Vorbis_Static_Release\&quot;;&quot;$(SolutionDir)dependencies\ogg\win32\Static_Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenALSDK\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\freealut\lib&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\VorbisFile_Static_Release\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\Vorbis_Static_Release\&quot;;&quot;$(SolutionDir)dependencies\ogg\win32\Static_Release&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"

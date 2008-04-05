@@ -111,6 +111,7 @@
 			OutputDirectory="$(SolutionDir)Bin"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
+			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
 			WholeProgramOptimization="0"
 			>

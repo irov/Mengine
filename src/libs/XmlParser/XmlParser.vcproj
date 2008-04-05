@@ -140,7 +140,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="libexpatMT.lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\expat\win32\bin\debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\expat\win32\bin\release&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"

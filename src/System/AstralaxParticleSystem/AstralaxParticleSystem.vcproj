@@ -66,9 +66,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="magic.lib"
+				AdditionalDependencies="magic_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\astralax\"
+				AdditionalLibraryDirectories="$(SolutionDir)dependencies\astralax\Debug"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -142,7 +142,7 @@
 				Name="VCLibrarianTool"
 				AdditionalDependencies="magic.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\astralax\&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\astralax\Release&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"

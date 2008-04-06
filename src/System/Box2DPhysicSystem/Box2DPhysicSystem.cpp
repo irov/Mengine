@@ -49,7 +49,7 @@ void Box2DPhysicSystem::createWorld( const float* _upperLeft, const float* _lowe
 	b2Vec2 gravity( _gravity[0], _gravity[1] );
 
 	m_world = new b2World( worldAABB, gravity, _doSleep );
-	m_world->SetListener( this );
+	m_world->SetContactListener( this );
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::destroyWorld()
@@ -88,7 +88,7 @@ void Box2DPhysicSystem::update( float _timing, int _iterations )
 	m_contacts.clear();
 	m_world->Step( _timing, _iterations );
 
-	m_world->m_broadPhase->Validate();
+	//m_world->m_broadPhase->Validate();
 
 
 }
@@ -108,6 +108,8 @@ PhysicBody2DInterface* Box2DPhysicSystem::createDynamicBody( const float* _pos, 
 	bodyDef.fixedRotation = _fixedRotation;
 	
 	Box2DPhysicBody* body = new Box2DPhysicBody( m_world, false );
+	bodyDef.userData = body;
+
 	body->initialize( bodyDef );
 
 	return static_cast<PhysicBody2DInterface*>( body );
@@ -120,6 +122,7 @@ PhysicBody2DInterface* Box2DPhysicSystem::createStaticBody( const float* _pos, f
 	bodyDef.angle = _angle;
 
 	Box2DPhysicBody* body = new Box2DPhysicBody( m_world, true );
+	bodyDef.userData = body;
 	body->initialize( bodyDef );
 
 	return static_cast<PhysicBody2DInterface*>( body );
@@ -150,15 +153,15 @@ PhysicJoint2DInterface* Box2DPhysicSystem::createDistanceJoint( PhysicBody2DInte
 
 	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL );
 
-	if( m_world->m_lock )
-	{
-		m_jointDefList.push_back( std::make_pair( static_cast<b2JointDef*>( jointDef ), joint ) );
-	}
-	else
-	{
+	//if( m_world->m_lock )
+	//{
+	//	m_jointDefList.push_back( std::make_pair( static_cast<b2JointDef*>( jointDef ), joint ) );
+	//}
+	//else
+	//{
 		_createJoint( jointDef, joint );
 		delete jointDef;
-	}
+	//}
 	return static_cast<PhysicJoint2DInterface*>( joint );
 }
 //////////////////////////////////////////////////////////////////////////
@@ -184,15 +187,15 @@ PhysicJoint2DInterface* Box2DPhysicSystem::createHingeJoint( PhysicBody2DInterfa
 	jointDef->Initialize( body1, body2, anchor1 );
 	
 	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL );
-	if( m_world->m_lock )
-	{
-		m_jointDefList.push_back( std::make_pair( static_cast<b2JointDef*>( jointDef ), joint ) );
-	}
-	else
-	{
+	//if( m_world->m_lock )
+	//{
+	//	m_jointDefList.push_back( std::make_pair( static_cast<b2JointDef*>( jointDef ), joint ) );
+	//}
+	//else
+	//{
 		_createJoint( jointDef, joint );
 		delete jointDef;
-	}
+	//}
 
 	return static_cast<PhysicJoint2DInterface*>( joint );
 }

@@ -30,8 +30,6 @@ bool Box2DPhysicBody::initialize( const b2BodyDef& _bodyDef )
 		return false;
 	}
 
-	m_body->m_userData = this;
-
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -210,7 +208,7 @@ void Box2DPhysicBody::_collide( b2Body* _otherBody, b2ContactPoint* _contact )
 {
 	if( !m_listener ) return;
 
-	Box2DPhysicBody* _otherObj = static_cast<Box2DPhysicBody*> ( _otherBody->m_userData );
+	Box2DPhysicBody* _otherObj = static_cast<Box2DPhysicBody*> ( _otherBody->GetUserData() );
 	
 	b2Vec2 contact_position = _contact->position;
 

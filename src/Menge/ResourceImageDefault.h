@@ -50,14 +50,18 @@ namespace Menge
 	protected:
 		unsigned int m_filter;
 
-		typedef std::vector<std::string> TVectorFileNames;
-		TVectorFileNames m_vectorFileNames;
+		struct ImageDesc
+		{
+			std::string fileName;
+			mt::vec4f uv;
+			mt::vec2f offset;
+			mt::vec2f maxSize;
+		};
+
+		typedef std::vector<ImageDesc> TVectorImageDesc;
+		TVectorImageDesc m_vectorImageDescs;
 
 		typedef std::vector<ImageFrame> TVectorImageFrame;
 		TVectorImageFrame m_vectorImageFrames;
-
-		std::vector<mt::vec4f> m_vectorAtlasUVs;
-		std::vector<mt::vec2f> m_vectorAtlasOffsets;
-		std::vector<mt::vec2f> m_vectorAtlasMaxSizes;
 	};
 }

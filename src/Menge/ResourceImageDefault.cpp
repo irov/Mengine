@@ -10,15 +10,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDefault::ResourceImageDefault( const ResourceFactoryParam & _params )
 		: ResourceImage( _params )
-//		, m_offset( 0.f, 0.f )
-//		, m_uv( 0.f, 0.f, 1.f, 1.f )
 		, m_filter( 1 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageDefault::getMaxSize( unsigned int _frame ) const
 	{
-		return m_vectorImageFrames[ _frame ].size;
+		return m_vectorImageFrames[ _frame ].maxSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ResourceImageDefault::getCount() const
@@ -28,47 +26,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageDefault::getSize( unsigned int _frame ) const
 	{
-		//return m_vectorImageFrames[ _frame ].size;
-		//return m_vectorAtlasMaxSizes[ _frame ];
 		return m_vectorImageFrames[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageDefault::getOffset( unsigned int _frame ) const
 	{
-		//return m_vectorAtlasOffsets[_frame];
 		return m_vectorImageFrames[ _frame ].offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f & ResourceImageDefault::getUV( unsigned int _frame ) const
 	{
-		//return m_vectorAtlasUVs[_frame];
 		return m_vectorImageFrames[ _frame ].uv;
-		//return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const RenderImageInterface * ResourceImageDefault::getImage( unsigned int _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::addFrameFile( const std::string & _path )
-	{
-		m_vectorFileNames.push_back( m_params.category + _path );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::addFrameAtlasUV( const mt::vec4f & _v )
-	{
-		m_vectorAtlasUVs.push_back( _v );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::addFrameAtlasOffset( const mt::vec2f & _v )
-	{
-		m_vectorAtlasOffsets.push_back( _v );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::addFrameAtlasMaxSize( const mt::vec2f & _v )
-	{
-		m_vectorAtlasMaxSizes.push_back( _v );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::loader( XmlElement * _xml )
@@ -79,13 +52,24 @@ namespace Menge
 		{
 			XML_CASE_NODE("File")
 			{
+				ImageDesc desc;
+				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
+				desc.offset = mt::vec2f(0.f,0.f);
+				desc.maxSize = mt::vec2f(0.f,0.f);
+
+				std::string fileName; 
+
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER( "Path", &ResourceImageDefault::addFrameFile );
-					XML_CASE_ATTRIBUTE_MEMBER( "UV", &ResourceImageDefault::addFrameAtlasUV );
-					XML_CASE_ATTRIBUTE_MEMBER( "Offset", &ResourceImageDefault::addFrameAtlasOffset );
-					XML_CASE_ATTRIBUTE_MEMBER( "MaxSize", &ResourceImageDefault::addFrameAtlasMaxSize );
-				}				
+					XML_CASE_ATTRIBUTE( "Path", fileName );
+					XML_CASE_ATTRIBUTE( "UV", desc.uv );
+					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
+					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
+				}
+
+				desc.fileName = m_params.category + fileName;
+
+				m_vectorImageDescs.push_back( desc );
 			}
 		}
 	}
@@ -93,21 +77,32 @@ namespace Menge
 	bool ResourceImageDefault::_compile()
 	{	
 		int i = 0;
-		for( TVectorFileNames::iterator
-			it = m_vectorFileNames.begin(),
-			it_end = m_vectorFileNames.end();
+		for( TVectorImageDesc::iterator
+			it = m_vectorImageDescs.begin(),
+			it_end = m_vectorImageDescs.end();
 		it != it_end;
 		++it)
 		{
-			ImageFrame frame = loadImageFrame( *it );
+			ImageFrame frame = loadImageFrame( it->fileName );
 
-			frame.uv = m_vectorAtlasUVs[i];
+			frame.uv = it->uv;
 
 			float u = frame.uv.z - frame.uv.x;
 			float v = frame.uv.w - frame.uv.y;
 
-			frame.size = mt::vec2f(frame.size.x * u,frame.size.y * v);;
-			frame.offset =  m_vectorAtlasOffsets[i++];
+
+			frame.size = mt::vec2f(frame.size.x * u,frame.size.y * v);
+
+			//TODO: provide to save maxSize value!! AGHTUNG!!!!
+			//TODO: provide to save maxSize value!! AGHTUNG!!!!
+			//TODO: provide to save maxSize value!! AGHTUNG!!!!
+			//TODO: provide to save maxSize value!! AGHTUNG!!!!
+			frame.maxSize = frame.size;
+			//TODO: provide to save maxSize value!! AGHTUNG!!!!
+			//TODO: provide to save maxSize value!! AGHTUNG!!!!
+			//TODO: provide to save maxSize value!! AGHTUNG!!!!
+
+			frame.offset =  it->offset;
 
 			m_vectorImageFrames.push_back( frame );
 		}
@@ -127,7 +122,5 @@ namespace Menge
 		}
 
 		m_vectorImageFrames.clear();
-		m_vectorAtlasUVs.clear();
-		m_vectorAtlasOffsets.clear();
 	}
 }

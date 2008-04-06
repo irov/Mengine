@@ -177,6 +177,6 @@ void AstralaxEmitter::setListener( ParticleEmitterListenerInterface* _listener )
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::setPosition(float _x, float _y)
 {
-	Magic_SetEmitterPosition( m_id, _x, _y );
+	Magic_SetEmitterPosition( m_id, int(_x), int(_y) );
 }
 //////////////////////////////////////////////////////////////////////////

@@ -8,6 +8,8 @@ import compileall
 import re
 import xml.dom.minidom
 import subprocess
+from Tkinter import *
+import tkFileDialog
 
 #skipped extensions
 bad_ext = ['.py']  
@@ -20,8 +22,8 @@ good_files = []
 
 copy_files = []
 
-atlas_width = 1024
-atlas_height = 1024
+atlas_width = 2048
+atlas_height = 2048
 
 allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
 
@@ -123,14 +125,11 @@ def atlas(src,destdir):
 	
 	lines = line.split()
 	
-	copy_files.append(os.path.join(destdir,os.path.dirname(resource),line))
+	copydir = os.path.join(destdir,os.path.dirname(resource))
+	copy_files.append(os.path.join(copydir,lines[0]))
 	
-	copydir = os.path.join(destdir,os.path.dirname(os.path.dirname(resource)))
-	
-	lines.remove(lines[0])
-	
-	for line in lines:
-	    line = os.path.join(copydir,line)
+	for line in lines[1:]:
+	    line = os.path.join(os.path.dirname(copydir),line)
 	    copy_files.append(line)
 	    print line
 	
@@ -180,6 +179,19 @@ def copytonewfolder(src, dst):
     print "done!"
     
 def main():
-    copytonewfolder("application.xml","TestDir")
-
+    master = Tk()
+    master.withdraw()
+ 
+    file_path = tkFileDialog.askopenfilename(title="Open file",\
+					     filetypes=[("application file",".xml"),("All files",".*")])
+ 
+    if file_path != "":
+	print "you chose file with path:", file_path
+	file_dir = tkFileDialog.asksaveasfilename(initialfile='foo')
+    else:
+	print "you didn't open anything!"
+	return
+   
+    copytonewfolder(file_path,file_dir)
+    
 main()

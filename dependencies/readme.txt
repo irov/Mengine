@@ -40,6 +40,11 @@ TheoraVideo
 [TheoraVideo]
 cvs -z3 -d :pserver:anonymous@cvs.ogre3d.org:/cvsroot/ogre co ogreaddons/videoplugin
 
+
+Box2D
+[Box2D]
+https://box2d.svn.sourceforge.net/svnroot/box2d
+
 --------------------------------------------------------------------------------
 TODO:
 

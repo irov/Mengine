@@ -1,37 +1,34 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "src\Game\Game.vcproj", "{6EDB3869-39FE-4AE5-869E-B6AA9C574E96}"
+	ProjectSection(ProjectDependencies) = postProject
+		{61566E24-14DC-456C-A864-772C5064FDBA} = {61566E24-14DC-456C-A864-772C5064FDBA}
+		{17127636-4C7D-42C4-AA40-79DAEE145E8B} = {17127636-4C7D-42C4-AA40-79DAEE145E8B}
+		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0} = {41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}
+		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD} = {FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}
+		{007FE38A-A6E1-411A-AAA8-E1EFBE6B80F8} = {007FE38A-A6E1-411A-AAA8-E1EFBE6B80F8}
+		{F055D8C9-3510-4462-BB47-0CBB9224C643} = {F055D8C9-3510-4462-BB47-0CBB9224C643}
+		{BD7118E1-FE5A-4A90-AA51-EEB8717E2485} = {BD7118E1-FE5A-4A90-AA51-EEB8717E2485}
+		{8AF4E2F5-C021-40B7-A40C-59200252B28B} = {8AF4E2F5-C021-40B7-A40C-59200252B28B}
+		{3380B377-D83A-4BC7-84D3-921E7C646CEE} = {3380B377-D83A-4BC7-84D3-921E7C646CEE}
+		{E42D8FF7-12C1-4105-AFFD-4376291B8726} = {E42D8FF7-12C1-4105-AFFD-4376291B8726}
+	EndProjectSection
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-	ProjectSection(ProjectDependencies) = postProject
-		{E42D8FF7-12C1-4105-AFFD-4376291B8726} = {E42D8FF7-12C1-4105-AFFD-4376291B8726}
-		{3380B377-D83A-4BC7-84D3-921E7C646CEE} = {3380B377-D83A-4BC7-84D3-921E7C646CEE}
-		{BD7118E1-FE5A-4A90-AA51-EEB8717E2485} = {BD7118E1-FE5A-4A90-AA51-EEB8717E2485}
-		{F055D8C9-3510-4462-BB47-0CBB9224C643} = {F055D8C9-3510-4462-BB47-0CBB9224C643}
-		{007FE38A-A6E1-411A-AAA8-E1EFBE6B80F8} = {007FE38A-A6E1-411A-AAA8-E1EFBE6B80F8}
-		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD} = {FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}
-		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0} = {41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}
-		{17127636-4C7D-42C4-AA40-79DAEE145E8B} = {17127636-4C7D-42C4-AA40-79DAEE145E8B}
-		{61566E24-14DC-456C-A864-772C5064FDBA} = {61566E24-14DC-456C-A864-772C5064FDBA}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Menge", "src\Menge\Menge.vcproj", "{61566E24-14DC-456C-A864-772C5064FDBA}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
 	ProjectSection(ProjectDependencies) = postProject
 		{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0} = {CBADA4A8-0E45-4C56-883F-90F87AC5FFF0}
 		{73E25478-3097-462B-913C-2B5EFC8ADD62} = {73E25478-3097-462B-913C-2B5EFC8ADD62}
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interface", "Interface", "{3D722BE0-FA23-4F25-9EB5-DE38822083E6}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interface", "Interface", "{3D722BE0-FA23-4F25-9EB5-DE38822083E6}"
 	ProjectSection(SolutionItems) = preProject
 		src\Interface\ApplicationInterface.h = src\Interface\ApplicationInterface.h
 		src\Interface\FileSystemInterface.h = src\Interface\FileSystemInterface.h
@@ -41,6 +38,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interface", "Interface", "{
 		src\Interface\PhysicSystemInterface.h = src\Interface\PhysicSystemInterface.h
 		src\Interface\RenderSystemInterface.h = src\Interface\RenderSystemInterface.h
 		src\Interface\SoundSystemInterface.h = src\Interface\SoundSystemInterface.h
+	EndProjectSection
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{AD697881-E6E1-46E5-9220-2D07D6AA1850}"

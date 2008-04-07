@@ -35,9 +35,6 @@ namespace Menge
 		const RenderImageInterface * getImage( unsigned int _frame ) const override;
 
 	public:
-		void setFilePath( const std::string & _path );
-
-	public:
 		void loader( XmlElement * _xml ) override;
 
 	protected:
@@ -45,8 +42,6 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		std::string m_filename;
-
 		unsigned int m_numX;
 		unsigned int m_numY;
 
@@ -57,8 +52,14 @@ namespace Menge
 
 		ImageFrame m_imageFrame;
 
-		mt::vec4f m_vectorAtlasUV;
-		mt::vec2f m_vectorAtlasOffset;
-		mt::vec2f m_vectorAtlasMaxSize;
+		struct ImageDesc
+		{
+			std::string fileName;
+			mt::vec4f uv;
+			mt::vec2f offset;
+			mt::vec2f maxSize;
+		};
+
+		ImageDesc m_imageDesc;
 	};
 }

@@ -76,7 +76,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_compile()
 	{	
-		int i = 0;
 		for( TVectorImageDesc::iterator
 			it = m_vectorImageDescs.begin(),
 			it_end = m_vectorImageDescs.end();
@@ -86,21 +85,12 @@ namespace Menge
 			ImageFrame frame = loadImageFrame( it->fileName );
 
 			frame.uv = it->uv;
+			frame.maxSize = it->maxSize;
 
 			float u = frame.uv.z - frame.uv.x;
 			float v = frame.uv.w - frame.uv.y;
 
-
 			frame.size = mt::vec2f(frame.size.x * u,frame.size.y * v);
-
-			//TODO: provide to save maxSize value!! AGHTUNG!!!!
-			//TODO: provide to save maxSize value!! AGHTUNG!!!!
-			//TODO: provide to save maxSize value!! AGHTUNG!!!!
-			//TODO: provide to save maxSize value!! AGHTUNG!!!!
-			frame.maxSize = frame.size;
-			//TODO: provide to save maxSize value!! AGHTUNG!!!!
-			//TODO: provide to save maxSize value!! AGHTUNG!!!!
-			//TODO: provide to save maxSize value!! AGHTUNG!!!!
 
 			frame.offset =  it->offset;
 

@@ -133,7 +133,8 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible( const Viewport & _viewPort )
 	{
-		m_size = m_resource->getMaxSize( m_currentImageIndex );
+		/*Max*/
+		m_size = m_resource->getSize( m_currentImageIndex );
 	
 		m_size.x *= m_scale.x;
 		m_size.y *= m_scale.y;

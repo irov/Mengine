@@ -85,6 +85,7 @@ namespace Menge
 			ImageFrame frame = loadImageFrame( it->fileName );
 
 			frame.uv = it->uv;
+			
 			frame.maxSize = it->maxSize;
 			frame.offset =  it->offset;
 
@@ -92,6 +93,13 @@ namespace Menge
 			float kv = frame.uv.w - frame.uv.y;
 
 			frame.size = mt::vec2f(frame.size.x * ku, frame.size.y * kv);
+			
+			float uv_half_pixel = (1.f/2048.f) * 0.5f;
+
+			frame.uv.x += uv_half_pixel;
+			frame.uv.y += uv_half_pixel;
+			frame.uv.z -= uv_half_pixel;
+			frame.uv.w -= uv_half_pixel;
 
 			if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )
 			{

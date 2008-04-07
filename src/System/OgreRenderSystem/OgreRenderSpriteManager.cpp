@@ -136,13 +136,13 @@ void OgreRenderSpriteManager::prepareForRender()
 	d_alphaBlendMode.source2	= Ogre::LBS_DIFFUSE;
 	d_alphaBlendMode.operation	= Ogre::LBX_MODULATE;
 
-	//d_uvwAddressMode.u = Ogre::TextureUnitState::TAM_CLAMP;
-	//d_uvwAddressMode.v = Ogre::TextureUnitState::TAM_CLAMP;
-	//d_uvwAddressMode.w = Ogre::TextureUnitState::TAM_CLAMP;
+	d_uvwAddressMode.u = Ogre::TextureUnitState::TAM_CLAMP;
+	d_uvwAddressMode.v = Ogre::TextureUnitState::TAM_CLAMP;
+	d_uvwAddressMode.w = Ogre::TextureUnitState::TAM_CLAMP;
 
-	d_uvwAddressMode.u = Ogre::TextureUnitState::TAM_BORDER;
-	d_uvwAddressMode.v = Ogre::TextureUnitState::TAM_BORDER;
-	d_uvwAddressMode.w = Ogre::TextureUnitState::TAM_BORDER;
+	//d_uvwAddressMode.u = Ogre::TextureUnitState::TAM_BORDER;
+	//d_uvwAddressMode.v = Ogre::TextureUnitState::TAM_BORDER;
+	//d_uvwAddressMode.w = Ogre::TextureUnitState::TAM_BORDER;
 
 	//d_uvwAddressMode.u = Ogre::TextureUnitState::TAM_WRAP;
 	//d_uvwAddressMode.v = Ogre::TextureUnitState::TAM_WRAP;
@@ -166,9 +166,10 @@ void OgreRenderSpriteManager::prepareForRender()
 	//m_renderSys->_setPolygonMode(Ogre::PM_WIREFRAME);
 
 	m_renderSys->_setTextureCoordCalculation(0, Ogre::TEXCALC_NONE);
-	m_renderSys->_setTextureCoordSet(0, 0);
+	m_renderSys->_setTextureCoordSet(0.f, 0.f);
 	//m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_POINT, Ogre::FO_POINT );
 	//m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_POINT );
+	//m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_LINEAR );
 	m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_POINT, Ogre::FO_POINT, Ogre::FO_POINT );
 	m_renderSys->_setTextureAddressingMode(0, d_uvwAddressMode);
 	m_renderSys->_setTextureMatrix(0, Ogre::Matrix4::IDENTITY);

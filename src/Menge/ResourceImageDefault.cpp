@@ -55,7 +55,7 @@ namespace Menge
 				ImageDesc desc;
 				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
 				desc.offset = mt::vec2f(0.f,0.f);
-				desc.maxSize = mt::vec2f(0.f,0.f);
+				desc.maxSize = mt::vec2f(-1.f,-1.f);
 
 				std::string fileName; 
 
@@ -92,6 +92,11 @@ namespace Menge
 			float kv = frame.uv.w - frame.uv.y;
 
 			frame.size = mt::vec2f(frame.size.x * ku, frame.size.y * kv);
+
+			if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )
+			{
+				frame.maxSize = frame.size;
+			}
 
 			m_vectorImageFrames.push_back( frame );
 		}

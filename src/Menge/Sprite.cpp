@@ -29,7 +29,7 @@ namespace	Menge
 	, m_alignOffset( 0.f, 0.f )
 	, m_scale( 1.0f, 1.0f )
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
-	, m_uv( 0.0f, 0.0f, 0.0f, 0.0f )
+	, m_uv( 0.0f, 0.0f, 1.0f, 1.0f )
 	, m_offset( 0.0f, 0.0f )
 	, m_size( 0.0f, 0.0f )
 	, m_changingColorTime( 0.0f )

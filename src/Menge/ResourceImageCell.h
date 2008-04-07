@@ -45,8 +45,6 @@ namespace Menge
 		unsigned int m_numX;
 		unsigned int m_numY;
 
-		mt::vec2f m_offset;
-		
 		typedef std::vector<mt::vec4f> TVectorUV;
 		TVectorUV m_uvs;
 

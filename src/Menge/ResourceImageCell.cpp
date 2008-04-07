@@ -85,24 +85,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageCell::_compile()
 	{
+		m_imageFrame = loadImageFrame( m_imageDesc.fileName );
+
 		m_imageFrame.uv = m_imageDesc.uv;
 		m_imageFrame.maxSize = m_imageDesc.maxSize;
 		m_imageFrame.offset = m_imageDesc.offset;
 
-		m_imageFrame = loadImageFrame( m_imageDesc.fileName );
+		float ku = m_imageFrame.uv.z - m_imageFrame.uv.x;
+		float kv = m_imageFrame.uv.w - m_imageFrame.uv.y;
 
-		TVectorUV::size_type count = m_numX * m_numY;
-
-		float u = m_imageFrame.uv.z - m_imageFrame.uv.x;
-		float v = m_imageFrame.uv.w - m_imageFrame.uv.y;
-
-		m_imageFrame.size = mt::vec2f(m_imageFrame.size.x * u,m_imageFrame.size.y * v);
+		m_imageFrame.size = mt::vec2f(m_imageFrame.size.x * ku,m_imageFrame.size.y * kv);
 
 		m_imageFrame.size.x /= (float)m_numX;
 		m_imageFrame.size.y /= (float)m_numY;
 
 		m_imageFrame.maxSize.x /= (float)m_numX;
 		m_imageFrame.maxSize.y /= (float)m_numY;
+
+		TVectorUV::size_type count = m_numX * m_numY;
 
 		m_uvs.resize( count );
 
@@ -114,7 +114,8 @@ namespace Menge
 			m_uvs[index].y = float( offset ) / m_numY;
 			m_uvs[index].z = float( index % m_numX + 1 ) / m_numX;
 			m_uvs[index].w = float( offset + 1 ) / m_numY;
-			m_uvs[index] += m_imageFrame.uv;
+
+			//m_uvs[index] += m_imageFrame.uv; // ?? или при getUV ??
 		}
 
 		return true;

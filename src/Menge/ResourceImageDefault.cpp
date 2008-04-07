@@ -86,13 +86,12 @@ namespace Menge
 
 			frame.uv = it->uv;
 			frame.maxSize = it->maxSize;
-
-			float u = frame.uv.z - frame.uv.x;
-			float v = frame.uv.w - frame.uv.y;
-
-			frame.size = mt::vec2f(frame.size.x * u,frame.size.y * v);
-
 			frame.offset =  it->offset;
+
+			float ku = frame.uv.z - frame.uv.x;
+			float kv = frame.uv.w - frame.uv.y;
+
+			frame.size = mt::vec2f(frame.size.x * ku, frame.size.y * kv);
 
 			m_vectorImageFrames.push_back( frame );
 		}

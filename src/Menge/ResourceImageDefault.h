@@ -25,12 +25,6 @@ namespace Menge
 		ResourceImageDefault( const ResourceFactoryParam & _params );
 
 	public:
-		void addFrameFile( const std::string & _path );
-		void addFrameAtlasUV( const mt::vec4f & _v );
-		void addFrameAtlasOffset( const mt::vec2f & _v );
-		void addFrameAtlasMaxSize( const mt::vec2f & _v );
-
-	public:
 		unsigned int getCount() const override;
 
 		const mt::vec2f & getMaxSize( unsigned int _frame ) const override;
@@ -50,6 +44,9 @@ namespace Menge
 	protected:
 		unsigned int m_filter;
 
+		typedef std::vector<ImageFrame> TVectorImageFrame;
+		TVectorImageFrame m_vectorImageFrames;
+	private:
 		struct ImageDesc
 		{
 			std::string fileName;
@@ -60,8 +57,5 @@ namespace Menge
 
 		typedef std::vector<ImageDesc> TVectorImageDesc;
 		TVectorImageDesc m_vectorImageDescs;
-
-		typedef std::vector<ImageFrame> TVectorImageFrame;
-		TVectorImageFrame m_vectorImageFrames;
 	};
 }

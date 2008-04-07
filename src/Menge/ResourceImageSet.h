@@ -17,7 +17,7 @@ namespace Menge
 	*/
 
 	class ResourceImageSet
-		: public ResourceImageCell
+		: public ResourceImage
 	{
 		RESOURCE_DECLARE( ResourceImageSet )
 
@@ -28,8 +28,14 @@ namespace Menge
 		void addFrameUV( const mt::vec4f & _uv );
 
 	public:
+		unsigned int getCount() const override;
+
 		const mt::vec2f & getMaxSize( unsigned int _frame ) const override;
 		const mt::vec2f & getSize( unsigned int _frame ) const override;
+		const mt::vec2f & getOffset( unsigned int _frame ) const override;
+		const mt::vec4f & getUV( unsigned int _frame ) const override;		
+
+		const RenderImageInterface * getImage( unsigned int _frame ) const override;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -37,8 +43,23 @@ namespace Menge
 	protected:
 		bool _compile() override;
 
-	public:
+		ImageFrame m_imageFrame;
+
+		typedef std::vector<mt::vec4f> TVectorUV;
+		TVectorUV m_uvs;
+
 		typedef std::vector<mt::vec2f> TVectorSizes;
 		TVectorSizes m_sizes;
+
+	private:
+		struct ImageDesc
+		{
+			std::string fileName;
+			mt::vec4f uv;
+			mt::vec2f offset;
+			mt::vec2f maxSize;
+		};
+
+		ImageDesc m_imageDesc;
 	};
 }

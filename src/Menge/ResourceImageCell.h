@@ -50,6 +50,8 @@ namespace Menge
 
 		ImageFrame m_imageFrame;
 
+	private:
+
 		struct ImageDesc
 		{
 			std::string fileName;

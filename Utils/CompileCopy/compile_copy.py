@@ -187,6 +187,8 @@ def copytonewfolder(src, dst):
         copytree(srcdir,destdir)
         copyfiles()
         
+    copytree(os.path.join(game_dir,"Bin"),os.path.join(dst,"Bin"))
+    
     print "done!"
     
 def main():

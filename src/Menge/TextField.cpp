@@ -149,7 +149,7 @@ namespace     Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::renderPass_( const Color & _color, const RenderImageInterface * _renderImage )
+	void TextField::renderPass_( const Color & _color, const RenderImageInterface * _renderImage, mt::vec4f _uv, float k, float h )
 	{
 		float spaceWidth = m_resource->getCharRatio(' ') * m_height;
 
@@ -180,7 +180,17 @@ namespace     Menge
 					continue;
 				}
 
-				const mt::vec4f & uv = m_resource->getUV( *it );
+				mt::vec4f uv = m_resource->getUV( *it );
+
+				if((k != 0.f) && (h != 0.f))
+				{
+					float t = uv.z - uv.x;
+					float s = uv.w - uv.y;
+					uv.x = _uv.x + k * uv.x;
+					uv.y = _uv.y + h * uv.y;
+					uv.z = uv.x + k * t;
+					uv.w = uv.y + h * s;
+				}
 
 				float width = m_resource->getCharRatio( *it ) * m_height;
 
@@ -197,13 +207,20 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render()
 	{
+		const RenderImageInterface * renderImage = m_resource->getImage();
+
 		if( m_outlineImage != NULL )
 		{
 			const RenderImageInterface * outlineImage = m_outlineImage->getImage(0);
-			renderPass_( m_outlineColor, outlineImage );
+
+			mt::vec4f uv = m_outlineImage->getUV(0);
+
+			float k = renderImage->getWidth() / outlineImage->getWidth();
+			float h = renderImage->getHeight() / outlineImage->getHeight();
+
+			renderPass_( m_outlineColor, outlineImage, uv, k, h );
 		}
 
-		const RenderImageInterface * renderImage = m_resource->getImage();
 		renderPass_( m_color, renderImage );
 	}
 	//////////////////////////////////////////////////////////////////////////

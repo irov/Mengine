@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="OpenAL32.lib alut.lib vorbis_static_d.lib vorbisfile_static_d.lib ogg_static_d.lib PThreadVC2.lib"
+				AdditionalDependencies="OpenAL32.lib alut.lib vorbis_static_d.lib vorbisfile_static_d.lib ogg_static_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenALSDK\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\PThreads\lib&quot;;&quot;$(SolutionDir)dependencies\freealut\lib&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\VorbisFile_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\Vorbis_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\ogg\win32\Static_Debug&quot;"
 			/>
@@ -233,10 +233,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

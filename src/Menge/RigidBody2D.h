@@ -80,6 +80,7 @@ namespace Menge
 		bool m_allowSleep;
 		bool m_isBullet;
 		bool m_fixedRotation;
+		bool m_isSensor;
 		float m_density;
 		float m_friction;
 		float m_restitution;

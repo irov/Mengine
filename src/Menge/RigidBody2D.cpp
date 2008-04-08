@@ -36,6 +36,7 @@ namespace Menge
 	, m_categoryBits( 1 )
 	, m_groupIndex( 0 )
 	, m_collisionListenerProxy( NULL )
+	, m_isSensor( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -97,6 +98,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE("AllowSleep", "Value", m_allowSleep );
 			XML_CASE_ATTRIBUTE_NODE("IsBullet", "Value", m_isBullet );
 			XML_CASE_ATTRIBUTE_NODE("FixedRotation", "Value", m_fixedRotation );
+			XML_CASE_ATTRIBUTE_NODE("IsSensor", "Value", m_isSensor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -214,7 +216,6 @@ namespace Menge
 
 				m_interface->applyForce( force.x, force.y, point.x, point.y );
 			}
-
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -249,7 +250,7 @@ namespace Menge
 				it != it_end;
 				it++ )
 		{
-			m_interface->addShapeConvex( (*it).num_points(), &(((*it)[0]).x), m_density, m_friction, m_restitution,
+			m_interface->addShapeConvex( (*it).num_points(), &(((*it)[0]).x), m_density, m_friction, m_restitution, m_isSensor,
 											m_collisionMask, m_categoryBits, m_groupIndex );
 		}
 
@@ -258,7 +259,7 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
-			m_interface->addShapeCircle( it->first, it->second.m, m_density, m_friction, m_restitution,
+			m_interface->addShapeCircle( it->first, it->second.m, m_density, m_friction, m_restitution, m_isSensor,
 											m_collisionMask, m_categoryBits, m_groupIndex );
 		}
 
@@ -267,7 +268,7 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
-			m_interface->addShapeBox( it->first.first, it->first.second, it->second.first.m, it->second.second, m_density, m_friction, m_restitution,
+			m_interface->addShapeBox( it->first.first, it->first.second, it->second.first.m, it->second.second, m_density, m_friction, m_restitution, m_isSensor,
 										m_collisionMask, m_categoryBits, m_groupIndex );
 		}
 		return true;

@@ -9,6 +9,7 @@
 #	include "Layer2D.h"
 
 #	include "FileEngine.h"
+#	include "Application.h"
 
 #	include "XmlEngine.h"
 
@@ -96,8 +97,13 @@ namespace Menge
 			pos -= viewport->begin;
 
 			// if we have case with 2 viewports, check in what viewport we see point (looks more like a hack)
-			if( m_layer->isScrollable() && ( pos.x > viewport->end.x || pos.x < viewport->begin.x ))
+			if( m_layer->needReRender() )
 			{
+				const mt::vec2f& screen = Holder<Application>::hostage()->getCurrentResolution();
+				if( pos.x >= 0.0f && pos.x <= screen.x )
+				{
+					return pos;
+				}
 				pos -= m_layer->getViewportOffset();
 			}
 
@@ -111,22 +117,25 @@ namespace Menge
 		_node->setLayer( m_layer );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::update( float _timing )
+	/*void SceneNode2D::update( float _timing )
 	{
-		NodeCore::update( _timing );
 		if( m_layer && m_layer->isScrollable() )
 		{
-			mt::vec2f& pos = getLocalPositionModify();
+			const mt::vec2f& pos = getWorldPosition();
 			if( pos.x > m_layer->getSize().x )
 			{
-				pos.x -= m_layer->getSize().x;
+				//pos.x -= m_layer->getSize().x;
+				translate( mt::vec2f( -m_layer->getSize().x, 0.0f ));
 			}
 			else if( pos.x < 0 )
 			{
-				pos.x += m_layer->getSize().x;
+				//pos.x += m_layer->getSize().x;
+				translate( mt::vec2f( m_layer->getSize().x, 0.0f ));
 			}
+			//changePivot();
 		}
-	}
+		NodeCore::update( _timing );
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::setListener( PyObject* _listener )
 	{
@@ -136,5 +145,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::_onSetListener()
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Layer2D* SceneNode2D::getLayer() const
+	{
+		return m_layer;
 	}
 }

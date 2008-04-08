@@ -23,5 +23,6 @@ namespace	Menge
 
 		Color operator * ( float _s ) const;
 		Color operator + ( const Color & _color ) const;
+		
 	};
 }

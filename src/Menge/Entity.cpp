@@ -275,7 +275,9 @@ namespace	Menge
 			}
 			if( m_velocity != mt::vec2f::zero_v2 )
 			{
-				mt::vec2f pos = getLocalPosition() + m_velocity * _timing;
+				const float* ppos = m_interface->getPosition();
+				mt::vec2f pos( ppos[0], ppos[1] );
+				pos += m_velocity * _timing;
 				setPosition( pos.x, pos.y );
 			}
 

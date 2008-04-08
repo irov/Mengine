@@ -34,7 +34,7 @@ bool Box2DPhysicBody::initialize( const b2BodyDef& _bodyDef )
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::addShapeConvex(unsigned int _pointsNum, const float* _convex,
-									 float _density, float _friction, float _restitution,
+									 float _density, float _friction, float _restitution, bool _isSensor,
 									 unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
 {
 	//float area = 0.0f;
@@ -79,7 +79,7 @@ void Box2DPhysicBody::addShapeConvex(unsigned int _pointsNum, const float* _conv
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::addShapeCircle(float _radius, const float* _localPos,
-									 float _density, float _friction, float _restitution,
+									 float _density, float _friction, float _restitution, bool _isSensor,
 									 unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
 {
 	b2CircleDef shape;
@@ -97,7 +97,7 @@ void Box2DPhysicBody::addShapeCircle(float _radius, const float* _localPos,
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::addShapeBox(float _width, float _height, const float* _localPos, float _angle,
-								  float _density, float _friction, float _restitution,
+								  float _density, float _friction, float _restitution, bool _isSensor,
 								  unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
 {
 	b2PolygonDef shape;
@@ -113,6 +113,7 @@ void Box2DPhysicBody::addShapeBox(float _width, float _height, const float* _loc
 	shape.maskBits = _collisionMask;
 	shape.categoryBits = _categoryBits;
 	shape.groupIndex = _groupIndex;
+	shape.isSensor = _isSensor;
 
 	m_body->CreateShape( &shape );
 	m_body->SetMassFromShapes();

@@ -206,14 +206,14 @@ bool OgreRenderSystem::createRenderWindow( float _width, float _height, int _bit
 
 	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
-	//sceneCam->setPosition( -8.0f, 300.0f, 200.0f );
-	//sceneCam->lookAt( -8.0f, 0.0f, 20.0f );
+	//sceneCam->setPosition( 0.0f, 340.0f, 0.01f );
+	//sceneCam->lookAt( 0.0f, 0.0f, 0.0f );
 	/*sceneCam->setPosition( 0.0f, 10.0f, 10.0f );
 	sceneCam->lookAt( 0.0f, 0.0f, 0.0f );
 	sceneCam->setFarClipDistance( 1000.0f );
 	sceneCam->setNearClipDistance( 0.2f );*/
 	//sceneCam->setFOVy(90);
-	//m_viewport->setBackgroundColour( Ogre::ColourValue::Green );
+	//m_viewport->setBackgroundColour( Ogre::ColourValue::Blue );
 
 	//m_rootSceneNode = new OgreSceneNode( m_sceneMgr->getRootSceneNode(), 0 );*/
 
@@ -289,8 +289,7 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 	Ogre::RenderTarget* rtgt = rtt->getBuffer()->getRenderTarget();
 	
 	Ogre::Camera* sceneCam = m_sceneMgr->getCamera("defaultCamera");
-	//int left, top, width, height;
-	//sceneCam->getViewport()->getActualDimensions( left, top, width, height );
+
 	rtgt->addViewport( sceneCam );
 	//rtgt->setActive( false );
 
@@ -429,10 +428,17 @@ void OgreRenderSystem::renderImage(
 
 	if( const OgreRenderImage * image = static_cast<const OgreRenderImage *>( _image ) )
 	{
+		Ogre::uint8 renderQueue = Ogre::RENDER_QUEUE_OVERLAY;
 		Ogre::Camera* camera = m_sceneMgr->getCamera( _camera );
+		/*if( camera->getName() != "defaultCamera" )
+		{
+			renderQueue = Ogre::RENDER_QUEUE_MAIN;
+		}*/
 		Ogre::Texture * texture = image->getTexture();
 		float z = m_spriteMgr->getCurrentZ();
-		m_spriteMgr->addQuad1(camera, m_contentResolution,*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color, (Ogre::SceneBlendFactor)_src, (Ogre::SceneBlendFactor)_dst);
+		m_spriteMgr->addQuad1(camera, m_contentResolution,*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,
+								*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color, 
+								(Ogre::SceneBlendFactor)_src, (Ogre::SceneBlendFactor)_dst, renderQueue );
 	}
 }
 //////////////////////////////////////////////////////////////////////////

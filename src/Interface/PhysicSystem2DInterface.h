@@ -15,13 +15,13 @@ class PhysicBody2DInterface
 public:
 
 	virtual void addShapeConvex( unsigned int _pointsNum, const float* _convex,
-								 float _density, float _friction, float _restitution,
+								 float _density, float _friction, float _restitution, bool _isSensor,
 								 unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) = 0;
 	virtual void addShapeCircle( float _radius, const float* _localPos,
-								 float _density, float _friction, float _restitution,
+								 float _density, float _friction, float _restitution, bool _isSensor,
 								 unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) = 0;
 	virtual void addShapeBox( float _width, float _height, const float* _localPos, float _angle,
-								 float _density, float _friction, float _restitution,	
+								 float _density, float _friction, float _restitution, bool _isSensor,
 								 unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) = 0;
 
 	virtual const float * getPosition() const = 0;

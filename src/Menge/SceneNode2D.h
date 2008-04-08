@@ -22,6 +22,7 @@ namespace Menge
 
 	public:
 		void setLayer( Layer2D* _layer );
+		Layer2D* getLayer() const;
 		virtual mt::vec2f getScreenPosition();
 		const mt::mat3f & getWorldMatrix() override;
 		void changePivot() override;
@@ -33,7 +34,7 @@ namespace Menge
 
 	public:
 
-		void update( float _timing ) override;
+		//void update( float _timing ) override;
 
 		void _render() override;
 		//void _update( float _timing ) override;

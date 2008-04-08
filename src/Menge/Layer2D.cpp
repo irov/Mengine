@@ -99,6 +99,7 @@ namespace	Menge
 		//
 		if( !m_scrollable ) return;
 
+		m_needReRender = false;
 		//if( m_viewport.begin.x < -m_size.x || m_viewport.begin.x > m_size.x )
 		{
 			float c = ::floorf( m_viewport.begin.x / m_size.x );
@@ -132,6 +133,33 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()
 			->setRenderViewport( m_viewport );
 
+		struct ForeachScrollTest
+			: public NodeForeach
+		{
+			void apply( Node * children ) override
+			{
+				SceneNode2D* node = dynamic_cast< SceneNode2D* >( children );
+			
+				const mt::vec2f& pos = node->getWorldPosition();
+				const mt::vec2f& size = node->getLayer()->getSize();
+				if( pos.x > size.x )
+				{
+					//pos.x -= m_layer->getSize().x;
+					node->translate( mt::vec2f( -size.x, 0.0f ));
+				}
+				else if( pos.x < 0 )
+				{
+					//pos.x += m_layer->getSize().x;
+					node->translate( mt::vec2f( size.x, 0.0f ));
+				}
+				//changePivot();
+			}
+		};
+
+		if( m_scrollable )
+		{
+			foreachChildren( ForeachScrollTest() );
+		}
 		NodeCore::update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -218,6 +246,7 @@ namespace	Menge
 		if( m_reRender )
 		{
 			Viewport viewport;
+			viewport.setCamera( m_viewport.getCamera() );
 			viewport.begin = m_viewport.begin + m_viewportOffset;
 			viewport.end = m_viewport.end + m_viewportOffset;
 			//m_viewport.begin += m_viewportOffset;
@@ -277,7 +306,7 @@ namespace	Menge
 
 				_renderEnd();
 			}
-			m_needReRender = false;
+			//m_needReRender = false;
 			m_reRender = false;
 		}
 	}
@@ -323,5 +352,10 @@ namespace	Menge
 	void Layer2D::setRenderTarget( const std::string& _cameraName )
 	{
 		m_viewport.setCamera( _cameraName );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer2D::needReRender()
+	{
+		return m_needReRender;
 	}
 }

@@ -50,7 +50,8 @@ public:
 		const OgreRenderImage * image,
 		unsigned int _color,
 		Ogre::SceneBlendFactor _src,
-		Ogre::SceneBlendFactor _dst);
+		Ogre::SceneBlendFactor _dst,
+		Ogre::uint8 _renderQueue = Ogre::RENDER_QUEUE_OVERLAY );
 
 	void addQuad2( Ogre::Camera* _camera, const Ogre::Vector2 & _contentRes,
 		const Ogre::Vector4 & _uv,
@@ -63,7 +64,8 @@ public:
 		const OgreRenderImage * image,
 		unsigned int _color,
 		Ogre::SceneBlendFactor _src,
-		Ogre::SceneBlendFactor _dst);
+		Ogre::SceneBlendFactor _dst,
+		Ogre::uint8 _renderQueue = Ogre::RENDER_QUEUE_OVERLAY );
 
 	OgreRenderSpriteManager();
 	~OgreRenderSpriteManager();
@@ -87,7 +89,9 @@ public:
 	void  diffZ();
 
 	void prepareForRender();
-	void doRender();
+
+	typedef std::vector<QuadInfo> TQuadList;
+	void doRender( TQuadList& _quadList );
 
 private:
 
@@ -95,7 +99,7 @@ private:
 	Ogre::SceneManager * sceneMan;
 	Ogre::RenderSystem * m_renderSys;
 	Ogre::Viewport * m_viewport;
-	Ogre::uint8 targetQueue;
+	//Ogre::uint8 targetQueue;
 	bool afterQueue;
 	bool isSorted;
 	size_t underusedFramecount; 
@@ -103,6 +107,8 @@ private:
 	Ogre::TexturePtr			currTexture;	
 	Ogre::Camera*				currCamera;
 	Ogre::RenderOperation		renderOp;
-	typedef std::vector<QuadInfo> TQuadList;
-	TQuadList quadList;
+	//TQuadList m_quadList;
+	typedef std::map< Ogre::uint8, TQuadList > TQuadMap;
+	TQuadMap m_quadMap;
+	//TQuadList m_quadListPostrender;
 };

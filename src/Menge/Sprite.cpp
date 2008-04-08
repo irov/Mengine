@@ -139,7 +139,16 @@ namespace	Menge
 		m_size.x *= m_scale.x;
 		m_size.y *= m_scale.y;
 
-		const mt::vec2f & offset = m_resource->getOffset( m_currentImageIndex );
+		mt::vec2f offset = m_resource->getOffset( m_currentImageIndex );
+		if( m_flipX )
+		{
+			offset.x = m_resource->getMaxSize( m_currentImageIndex ).x - ( m_resource->getSize( m_currentImageIndex ).x + offset.x );
+		}
+		if( m_flipY )
+		{
+			offset.y = m_resource->getMaxSize( m_currentImageIndex ).y - ( m_resource->getSize( m_currentImageIndex ).y + offset.y );
+		}
+
 		m_offset = offset + m_alignOffset;
 
 		mt::mat3f wm = getWorldMatrix();

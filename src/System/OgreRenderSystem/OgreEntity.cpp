@@ -83,6 +83,7 @@ void OgreEntity::createRenderToTexture( const char* _cameraName, int _width, int
 		texture = Ogre::TextureManager::getSingleton().createManual( Ogre::String("rtt") + Ogre::String( _cameraName ), "Default", Ogre::TEX_TYPE_2D,
 			_width, _height, 0, 0, Ogre::PF_X8R8G8B8, Ogre::TU_RENDERTARGET, NULL );
 	}
+	
 	Ogre::Camera* rttCam = NULL;
 	if( !m_sceneMgr->hasCamera( _cameraName ) )
 	{
@@ -92,10 +93,11 @@ void OgreEntity::createRenderToTexture( const char* _cameraName, int _width, int
 	{
 		rttCam = m_sceneMgr->getCamera( _cameraName );
 	}
-	texture->getBuffer()->getRenderTarget()->removeAllViewports();
-	texture->getBuffer()->getRenderTarget()->addViewport( rttCam );
-	texture->getBuffer()->getRenderTarget()->setActive( false );
-	//texture->getBuffer()->getRenderTarget()->getViewport(0)->setClearEveryFrame( true );
+	Ogre::RenderTarget* rtgt = texture->getBuffer()->getRenderTarget();
+	rtgt->removeAllViewports();
+	rtgt->addViewport( rttCam )->setBackgroundColour( Ogre::ColourValue::Green );
+	rtgt->setActive( false );
+	//texture->getBuffer()->getRenderTarget()->getViewport(0)->setClearEveryFrame( false );
 	Ogre::MaterialManager::ResourceCreateOrRetrieveResult mresult = Ogre::MaterialManager::getSingleton().createOrRetrieve( Ogre::String("rttMat") + Ogre::String( _cameraName ), "Default" );
 	Ogre::MaterialPtr mat = mresult.first;
 	if( mresult.second )

@@ -13,13 +13,13 @@ public:
 	bool initialize( const b2BodyDef& _bodyDef );
 
 	void addShapeConvex( unsigned int _pointsNum, const float* _convex,
-		float _density, float _friction, float _restitution,
+		float _density, float _friction, float _restitution, bool _isSensor,
 		unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) override;
 	void addShapeCircle( float _radius, const float* _localPos,
-		float _density, float _friction, float _restitution,
+		float _density, float _friction, float _restitution, bool _isSensor,
 		unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) override;
 	void addShapeBox( float _width, float _height, const float* _localPos, float _angle,
-		float _density, float _friction, float _restitution,	
+		float _density, float _friction, float _restitution, bool _isSensor,
 		unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) override;
 
 

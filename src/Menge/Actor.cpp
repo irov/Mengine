@@ -72,7 +72,7 @@ namespace	Menge
 				m_controller->move( translation.x, translation.y, translation.z );
 
 				const double * fpos = m_controller->getFilteredPosition();
-				this->setLocalPosition( mt::vec3f( fpos[0], fpos[1] - 0.8f+10, fpos[2] ) );
+				this->setLocalPosition( mt::vec3f( fpos[0], fpos[1] - 0.8f+10.f, fpos[2] ) );
 
 				//printf("filt pos = %f; %f; %f\n",fpos[0],fpos[1],fpos[2]);
 			}

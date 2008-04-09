@@ -24,7 +24,7 @@ namespace Menge
 		, m_enable(true)
 		, m_updatable(true)
 	{
-		this->setWrapp( this );
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	NodeCore::~NodeCore()

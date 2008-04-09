@@ -14,15 +14,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable::Scriptable()
 	: m_scriptable(0)
-	, m_node(0)
-	{}
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable::~Scriptable()
-	{}
-	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::setWrapp( Node * _node )
 	{
-		m_node = _node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scriptable::setScript( PyObject * _scriptable )
@@ -35,7 +31,7 @@ namespace Menge
 		if( m_scriptable == 0 )
 		{
 			m_scriptable = Holder<ScriptEngine>::hostage()
-				->wrap( /*this*/m_node );
+				->wrap( this );
 
 			if( m_scriptable == 0 )
 			{

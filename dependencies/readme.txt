@@ -17,8 +17,9 @@ cal3d
 [snapshot]
 svn://svn.gna.org/svn/cal3d/trunk
 
-OgreSDK
-[1.4.5]
+OGRE Source
+[1.4.7]
+http://downloads.sourceforge.net/ogre/ogre-win32-v1-4-7.zip
 
 OpenALSDK
 [1.1]

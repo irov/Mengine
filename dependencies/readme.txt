@@ -21,6 +21,10 @@ OGRE Source
 [1.4.7]
 http://downloads.sourceforge.net/ogre/ogre-win32-v1-4-7.zip
 
+OIS
+[1.0]
+http://sourceforge.net/projects/wgois
+
 OpenALSDK
 [1.1]
 http://openal.org/downloads.html

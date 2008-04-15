@@ -12,6 +12,7 @@
 #	include "OgreRenderVideoStream.h"
 #	include "OgreExternalTextureSourceManager.h"
 
+#	include "OgreD3D9Plugin.h"
 /*#include "CEGUI/CEGUISystem.h"
 #include "CEGUI/CEGUILogger.h"
 #include "CEGUI/CEGUISchemeManager.h"
@@ -49,12 +50,24 @@ OgreRenderSystem::OgreRenderSystem()
 	, m_GUISystem(0)
 	, m_rootSceneNode(0)
 	, m_eventListener( NULL )
+	, m_renderPlugin( NULL )
 {
 }
 //////////////////////////////////////////////////////////////////////////
 OgreRenderSystem::~OgreRenderSystem()
 {
+
 	delete m_rootSceneNode;
+
+	// destroy RenderSystem depended objects
+	m_sceneMgr->destroyAllCameras();
+	// unload all resources
+	Ogre::ResourceGroupManager::getSingleton().shutdownAll();
+
+	if( m_renderWindow )
+	{
+		m_renderWindow->removeListener( m_spriteMgr );
+	}
 
 	if( m_spriteMgr )
 	{
@@ -73,6 +86,12 @@ OgreRenderSystem::~OgreRenderSystem()
 	//	delete m_GUIRenderer;
 	//	m_GUIRenderer = 0;
 	//}
+
+	if( m_renderPlugin )
+	{
+		m_root->uninstallPlugin( m_renderPlugin );
+		delete m_renderPlugin;
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 CameraInterface * OgreRenderSystem::createCamera(const char * _name)
@@ -134,7 +153,7 @@ LightInterface * OgreRenderSystem::createLight( const char * _name )
 EntityInterface * OgreRenderSystem::createEntity( const char * _name, const char * _mesh )
 {
 	Ogre::Entity * entity = m_sceneMgr->createEntity( _name, _mesh );
-	EntityInterface * ent = new OgreEntity(entity, m_sceneMgr );
+	EntityInterface * ent = new OgreEntity( this, entity, m_sceneMgr );
 	return ent;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -178,7 +197,17 @@ bool OgreRenderSystem::initialize( const char* _driver )
 {
 	//m_root = new Ogre::Root( "","", "Menge.log" );
 	m_root = Ogre::Root::getSingletonPtr();
-	m_root->loadPlugin( _driver );
+	
+	if( !strcmp( _driver, "D3D9") )
+	{
+		m_renderPlugin = new Ogre::D3D9Plugin();
+	}
+/*	else if( !strcmp( _driver, "OGL" ) )
+	{
+		m_renderPlugin = new Ogre::OpenGLPlugin();
+	}*/
+	m_root->installPlugin( m_renderPlugin );
+	//m_root->loadPlugin( _driver );
 
 	m_renderSys = m_root->getAvailableRenderers()->at( 0 );
 	m_root->setRenderSystem( m_renderSys );
@@ -203,9 +232,9 @@ bool OgreRenderSystem::createRenderWindow( float _width, float _height, int _bit
 	m_viewport = m_renderWindow->addViewport( sceneCam );
 
 	//Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
-
 	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
+	m_renderWindow->addListener( m_spriteMgr );
 	//sceneCam->setPosition( 0.0f, 340.0f, 0.01f );
 	//sceneCam->lookAt( 0.0f, 0.0f, 0.0f );
 	/*sceneCam->setPosition( 0.0f, 10.0f, 10.0f );
@@ -289,7 +318,7 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 	Ogre::RenderTarget* rtgt = rtt->getBuffer()->getRenderTarget();
 	
 	Ogre::Camera* sceneCam = m_sceneMgr->getCamera("defaultCamera");
-
+	
 	rtgt->addViewport( sceneCam );
 	//rtgt->setActive( false );
 
@@ -436,7 +465,7 @@ void OgreRenderSystem::renderImage(
 		}*/
 		Ogre::Texture * texture = image->getTexture();
 		float z = m_spriteMgr->getCurrentZ();
-		m_spriteMgr->addQuad1(camera, m_contentResolution,*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,
+		m_spriteMgr->addQuad1(camera->getViewport(), m_contentResolution,*(Ogre::Vector4*)_uv,*(Ogre::Matrix3*)_transform,
 								*(Ogre::Vector2*)_offset,*(Ogre::Vector2*)_size, z,image, _color, 
 								(Ogre::SceneBlendFactor)_src, (Ogre::SceneBlendFactor)_dst, renderQueue );
 	}
@@ -466,7 +495,7 @@ void OgreRenderSystem::renderImage(
 		Ogre::Texture * texture = image->getTexture();
 		float z = m_spriteMgr->getCurrentZ();
 		m_spriteMgr->addQuad2(
-			camera,
+			camera->getViewport(),
 			m_contentResolution,
 			*(Ogre::Vector4*)_uv,
 			*(Ogre::Matrix3*)_transform,
@@ -551,5 +580,10 @@ void OgreRenderSystem::eventOccurred( const Ogre::String& eventName, const Ogre:
 			m_eventListener->onDeviceRestored();
 		}
 	}
+}
+//////////////////////////////////////////////////////////////////////////
+OgreRenderSpriteManager* OgreRenderSystem::getRenderSpriteManager() const
+{
+	return m_spriteMgr;
 }
 //////////////////////////////////////////////////////////////////////////

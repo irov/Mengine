@@ -30,7 +30,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourcePhysicConcaveGeometry::_compile()
 	{
-		m_interface = Holder<PhysicEngine>::hostage()->cookConcave( m_filename );
+		m_interface = Holder<PhysicEngine>::hostage()->cookConcave( m_params.category + m_filename );
 
 		if( m_interface == 0 )
 		{

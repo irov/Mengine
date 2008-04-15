@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP2"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\OgreSDK\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\ogrenew\Ogremain\include&quot;;&quot;$(SolutionDir)dependencies\ogrenew\dependencies\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OGREINPUTSYSTEM_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -65,9 +65,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="ois_d.lib"
+				AdditionalDependencies="OIS_static_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\OgreSDK\lib"
+				AdditionalLibraryDirectories="$(SolutionDir)dependencies\OIS\lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -116,8 +116,8 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\OgreSDK\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\ogrenew\ogremain\include&quot;;&quot;$(SolutionDir)dependencies\ogrenew\dependencies\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OGRE_STATIC_LIB"
 				StringPooling="true"
 				MinimalRebuild="false"
 				RuntimeLibrary="2"
@@ -139,9 +139,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="ois.lib"
+				AdditionalDependencies="OIS_static.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\OgreSDK\lib"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OIS\lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"

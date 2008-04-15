@@ -52,12 +52,18 @@ namespace Menge
 		void	_release() override;
 		void	_update( float _timing ) override;
 
+		void	_loaderPhysicController( XmlElement * _xml );
+
 	private:
 
 		void	_updateMovement( float _timing );
 		void	_updateAnimation( float _timing );
 
 		RigidBody3D * m_rigidBody;
+		bool m_physicController;
+		mt::vec3f m_physCapsuleCenter;
+		float m_physCapsuleRadius;
+		float m_physCapsuleHeight;
 
 		ControllerInterface * m_controller;
 		EntityInterface * m_entity;

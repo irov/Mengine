@@ -138,8 +138,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="OgreMain.lib"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\OgreSDK\lib"
+				AdditionalLibraryDirectories=""
 			/>
 			<Tool
 				Name="VCALinkTool"

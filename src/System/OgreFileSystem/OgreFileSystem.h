@@ -9,6 +9,7 @@ class OgreFileSystem
 {
 public:
 	OgreFileSystem();
+	~OgreFileSystem();
 
 public:
 	void loadPath( const char * _path ) override;

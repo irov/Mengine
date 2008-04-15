@@ -64,7 +64,7 @@ namespace Menge
 	const std::string& ParticleEngine::getTextureName() const
 	{
 		static std::string name;
-		//name = m_interface->getTextureName() ? m_interface->getTextureName() : "";
+		name = m_interface->getTextureName() ? m_interface->getTextureName() : "";
 		return name;
 	}
 	//////////////////////////////////////////////////////////////////////////

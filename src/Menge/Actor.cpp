@@ -33,6 +33,10 @@ namespace	Menge
 	, m_yawSpeed( 0.0f )
 	, m_pitchSpeed( 0.0f )
 	, m_rollSpeed( 0.0f )
+	, m_physicController( false )
+	, m_physCapsuleCenter( 0.0f, 0.0f, 0.0f )
+	, m_physCapsuleRadius( 0.5f )
+	, m_physCapsuleHeight( 1.0f )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Actor::~Actor()
@@ -50,6 +54,11 @@ namespace	Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ResourceMesh", "Name", m_resourcename );
+			XML_CASE_NODE("PhysicController")
+			{
+				XML_PARSE_ELEMENT( this, &Actor::_loaderPhysicController );
+				m_physicController = true;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -72,7 +81,7 @@ namespace	Menge
 				m_controller->move( translation.x, translation.y, translation.z );
 
 				const double * fpos = m_controller->getFilteredPosition();
-				this->setLocalPosition( mt::vec3f( fpos[0], fpos[1] - 0.8f+10.f, fpos[2] ) );
+				this->setLocalPosition( mt::vec3f( fpos[0], fpos[1] - 0.8f, fpos[2] ) );
 
 				//printf("filt pos = %f; %f; %f\n",fpos[0],fpos[1],fpos[2]);
 			}
@@ -148,9 +157,9 @@ namespace	Menge
 
 		m_interface->attachEntity( m_entity );
 
-		if( Holder<PhysicEngine>::hostage() )
+		if( m_physicController )
 		{
-			m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( getWorldPosition() + mt::vec3f( 0.0f, 0.8f, 0.0f ), 0.3f, 1.0f );
+			m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( getWorldPosition() + m_physCapsuleCenter, m_physCapsuleRadius, m_physCapsuleHeight );
 		}
 
 		this->callMethod("onCompile", "()" );
@@ -243,6 +252,16 @@ namespace	Menge
 	void Actor::setRollSpeed( float _speed )
 	{
 		m_rollSpeed = _speed;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Actor::_loaderPhysicController( XmlElement * _xml )
+	{
+		XML_SWITCH_NODE( _xml )	
+		{
+			XML_CASE_ATTRIBUTE_NODE( "Center", "Value", m_physCapsuleCenter );
+			XML_CASE_ATTRIBUTE_NODE( "Radius", "Value", m_physCapsuleRadius );
+			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_physCapsuleHeight );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

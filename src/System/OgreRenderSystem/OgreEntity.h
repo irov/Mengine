@@ -5,12 +5,13 @@
 #	include "Ogre.h"
 
 class OgreSkeleton;
+class OgreRenderSystem;
 
 class OgreEntity
 	: public EntityInterface
 {
 public:
-	OgreEntity( Ogre::Entity * _entity, Ogre::SceneManager* _sceneMgr );
+	OgreEntity( OgreRenderSystem* _rendSys, Ogre::Entity * _entity, Ogre::SceneManager* _sceneMgr );
 	~OgreEntity();
 public:
 	SkeletonInterface * getSkeleton() const override;
@@ -41,6 +42,7 @@ public:
 private:
 	Ogre::Entity * m_entity;
 	Ogre::SceneManager* m_sceneMgr;
+	OgreRenderSystem* m_rendSys;
 
 	mutable OgreSkeleton * m_skeleton;
 };

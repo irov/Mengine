@@ -1,5 +1,5 @@
 
-#include "AL/ALut.h"
+//#include "AL/ALut.h"
 #include "Vorbis/Vorbisfile.h"
 
 #include "ALSoundBuffer.h"
@@ -52,7 +52,7 @@ m_sourceNamesNum(0)
 		m_sourceNames[m_sourceNamesNum].name = sourceName;
 	}
 	m_sources.reserve(MAX_SOUND_SOURCES);
-	::alutInitWithoutContext(NULL, NULL);
+	//::alutInitWithoutContext(NULL, NULL);
 	m_deletingSources.reserve(MAX_SOUND_SOURCES);
 //	m_buffers.reserve(100);
 	/*ALuint t;
@@ -103,7 +103,7 @@ ALSoundSystem::~ALSoundSystem()
 	for(unsigned int i = 0; i < m_sources.size(); i++)
 		delete m_sources[i];
 
-	::alutExit();
+	//::alutExit();
 	alcMakeContextCurrent(NULL);
 	alcDestroyContext(m_context);
 	alcCloseDevice(m_device);
@@ -173,7 +173,7 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 
 		bool done = false;
 
-		if( !strcmp( _filename + (strlen(_filename) - 4), ".wav" ) )
+		/*if( !strcmp( _filename + (strlen(_filename) - 4), ".wav" ) )
 		{
 			ALfloat frequency;
 			data = alutLoadMemoryFromFile( _filename, &format, &size, &frequency);
@@ -190,7 +190,7 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 				buffer = NULL;
 			}
 		}
-		else if( !strcmp( _filename + (strlen(_filename) - 4), ".ogg" ) )
+		else*/ if( !strcmp( _filename + (strlen(_filename) - 4), ".ogg" ) )
 		{
 			OggVorbis_File oggfile;
 			FILE* filehandle = NULL;
@@ -243,7 +243,7 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem )
 {
 	ALSoundBuffer* buffer = new ALSoundBuffer( "bufferMemory" );
-	ALsizei size,freq;
+	/*ALsizei size,freq;
 	ALenum format;
 	ALvoid *data = NULL;
 	ALfloat ffreq;
@@ -259,7 +259,7 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buff
 	{
 		buffer->setLenghtMs(size * 1000 / (freq * GetSampleSize(format)));
 		alBufferData( buffer->getBufferName(), format, data, size, freq );
-	} 
+	} */
 	return buffer;
 }
 

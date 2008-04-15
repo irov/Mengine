@@ -94,6 +94,8 @@ public:
 	void eventOccurred( const Ogre::String& eventName, const Ogre::NameValuePairList* parameters = 0 );
 
 	RenderImageInterface * getImage( const char * _desc ) const override;
+
+	OgreRenderSpriteManager* getRenderSpriteManager() const;
 private:
 
 	OgreSceneNode * m_rootSceneNode;
@@ -122,4 +124,5 @@ private:
 	RenderSystemListener* m_eventListener;
 
 	float m_viewportDimensions[4];
+	Ogre::Plugin*	m_renderPlugin;
 };

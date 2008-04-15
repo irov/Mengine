@@ -37,6 +37,12 @@ OgreFileSystem::OgreFileSystem()
 	Ogre::Root* root = new Ogre::Root("", "", "Menge.log" );
 }
 //////////////////////////////////////////////////////////////////////////
+OgreFileSystem::~OgreFileSystem()
+{
+	Ogre::Root* root = Ogre::Root::getSingletonPtr();
+	delete root;
+}
+//////////////////////////////////////////////////////////////////////////
 void OgreFileSystem::loadPath( const char * _path )
 {
 	m_arch = Ogre::ArchiveManager::getSingleton().load( _path, "FileSystem" );

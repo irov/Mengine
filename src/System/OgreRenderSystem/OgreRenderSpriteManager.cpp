@@ -10,6 +10,8 @@ const unsigned int VECTOR_CAPACITY = 40000;
 OgreRenderSpriteManager::OgreRenderSpriteManager()
 : currentZ(1.0f)
 , isSorted(false)
+, m_hTexelOffset( 0.0f )
+, m_vTexelOffset( 0.0f )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -89,8 +91,10 @@ void OgreRenderSpriteManager::init(Ogre::SceneManager* sceneMan, Ogre::RenderSys
 
 	m_renderSys = Ogre::Root::getSingleton().getRenderSystem();
 
-	m_quadMap[ Ogre::RENDER_QUEUE_MAIN ].reserve( VECTOR_CAPACITY );
-	m_quadMap[ Ogre::RENDER_QUEUE_OVERLAY ].reserve( VECTOR_CAPACITY );
+	m_hTexelOffset = m_renderSys->getHorizontalTexelOffset();
+	m_vTexelOffset = m_renderSys->getVerticalTexelOffset();
+	//m_quadMap[ Ogre::RENDER_QUEUE_MAIN ].reserve( VECTOR_CAPACITY );
+	//m_quadMap[ Ogre::RENDER_QUEUE_OVERLAY ].reserve( VECTOR_CAPACITY );
 	//quadList.reserve( VECTOR_CAPACITY );
 }
 //////////////////////////////////////////////////////////////////////////
@@ -106,22 +110,10 @@ void OgreRenderSpriteManager::renderQueueStarted(
 	//if (!afterQueue && queueGroupId == targetQueue)
 	{
 	}
-	/*TQuadMap::iterator it = m_quadMap.find( queueGroupId );
-	if( it != m_quadMap.end() && !it->second.empty() )
-	{
-		prepareForRender();
-		doRender( it->second );
-		isSorted = true;
-		it->second.clear();
-	}*/
+	if( queueGroupId != Ogre::RENDER_QUEUE_OVERLAY ) return;
+
 	currentZ = 1.0f;
-}
-//////////////////////////////////////////////////////////////////////////
-void OgreRenderSpriteManager::renderQueueEnded(
-									 Ogre::uint8 queueGroupId, const Ogre::String &invocation, bool &repeatThisInvocation)
-{
-	TQuadMap::iterator it = m_quadMap.find( queueGroupId );
-	//if (afterQueue && queueGroupId == targetQueue)
+	TQuadMap::iterator it = m_quadMap.find( currViewport );
 	if( it != m_quadMap.end() && !it->second.empty() )
 	{
 		prepareForRender();
@@ -129,6 +121,20 @@ void OgreRenderSpriteManager::renderQueueEnded(
 		isSorted = true;
 		it->second.clear();
 	}
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSpriteManager::renderQueueEnded(
+									 Ogre::uint8 queueGroupId, const Ogre::String &invocation, bool &repeatThisInvocation)
+{
+	/*TQuadMap::iterator it = m_quadMap.find( queueGroupId );
+	//if (afterQueue && queueGroupId == targetQueue)
+	if( it != m_quadMap.end() && !it->second.empty() )
+	{
+		prepareForRender();
+		doRender( it->second );
+		isSorted = true;
+		it->second.clear();
+	}*/
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -181,20 +187,21 @@ void OgreRenderSpriteManager::prepareForRender()
 	m_renderSys->_setTextureCoordSet(0.f, 0.f);
 	//m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_POINT, Ogre::FO_POINT );
 	//m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_POINT );
-	m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_LINEAR );
-	//m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_POINT, Ogre::FO_POINT, Ogre::FO_POINT );
+	//m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_LINEAR );
+	m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_POINT, Ogre::FO_POINT, Ogre::FO_POINT );
 	m_renderSys->_setTextureAddressingMode(0, d_uvwAddressMode);
 	m_renderSys->_setTextureMatrix(0, Ogre::Matrix4::IDENTITY);
 	m_renderSys->_setAlphaRejectSettings(Ogre::CMPF_ALWAYS_PASS, 0);
 	m_renderSys->_setTextureBlendMode(0, d_colourBlendMode);
 	m_renderSys->_setTextureBlendMode(0, d_alphaBlendMode);
 	m_renderSys->_disableTextureUnitsFrom(1);
+	//static const Ogre::TexturePtr s_nullTexture;
+	//m_renderSys->_setVertexTexture( 0, s_nullTexture );
 
 	m_renderSys->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
-	//m_renderSys->clearFrameBuffer(2);
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSpriteManager::addQuad1( Ogre::Camera* _camera,
+void OgreRenderSpriteManager::addQuad1( Ogre::Viewport* _viewport,
 									   const Ogre::Vector2 & _contentRes,
 									   const Ogre::Vector4 & _uv,
 									   const Ogre::Matrix3 & _transform,
@@ -208,18 +215,30 @@ void OgreRenderSpriteManager::addQuad1( Ogre::Camera* _camera,
 									   Ogre::uint8 _renderQueue /* = Ogre::RENDER_QUEUE_OVERLAY */ )
 
 {
-	//if( quadList.capacity() == quadList.size() ) return;
-	if( m_quadMap[ _renderQueue ].capacity() == m_quadMap[ _renderQueue ].size() ) return;
+	if( m_quadMap.find(_viewport) == m_quadMap.end() )
+	{
+		m_quadMap[_viewport].reserve( VECTOR_CAPACITY );
+	}
+
+	if( m_quadMap[ _viewport ].capacity() == m_quadMap[ _viewport ].size() ) return;
 
 	isSorted = false;
 	QuadInfo quad;
 	
 	float width = _contentRes.x;
-  	float heigth = _contentRes.y;
+  	float height = _contentRes.y;
+	//float width = _viewport->getActualWidth();
+	//float height = _viewport->getActualHeight();
 
 	//FIXME:
+	float vOffset = 0.0f;
+	float hOffset = 0.0f;
 
-	quad.camera = _camera;
+	/*if( _viewport->getCamera()->getName() == "defaultCamera" )
+	{
+		vOffset = m_vTexelOffset / ( 0.5f * _viewport->getActualWidth() );
+		hOffset = m_hTexelOffset / ( 0.5f * _viewport->getActualHeight() );
+	}*/
 
 	quad.points[0].x = _transform[0][0] * _offset[0] + _transform[1][0] * _offset[1] + _transform[2][0];
 	quad.points[0].y = _transform[0][1] * _offset[0] + _transform[1][1] * _offset[1] + _transform[2][1];
@@ -233,17 +252,17 @@ void OgreRenderSpriteManager::addQuad1( Ogre::Camera* _camera,
 	quad.points[3].x = _transform[0][0] * (_offset[0]) + _transform[1][0] * (_offset[1] + _size[1]) + _transform[2][0];
 	quad.points[3].y = _transform[0][1] * (_offset[0]) + _transform[1][1] * (_offset[1] + _size[1]) + _transform[2][1];
 
-	quad.points[0].x = CONVERT_MENGE_TO_OGRE_X(quad.points[0].x,width);
-   	quad.points[0].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[0].y,heigth);
+	quad.points[0].x = CONVERT_MENGE_TO_OGRE_X(quad.points[0].x,width) + hOffset;
+   	quad.points[0].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[0].y,height) - vOffset;
 
-	quad.points[1].x = CONVERT_MENGE_TO_OGRE_X(quad.points[1].x,width);
-   	quad.points[1].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[1].y,heigth);
+	quad.points[1].x = CONVERT_MENGE_TO_OGRE_X(quad.points[1].x,width) + hOffset;
+   	quad.points[1].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[1].y,height) - vOffset;
 
-	quad.points[2].x = CONVERT_MENGE_TO_OGRE_X(quad.points[2].x,width);
-   	quad.points[2].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[2].y,heigth);
+	quad.points[2].x = CONVERT_MENGE_TO_OGRE_X(quad.points[2].x,width) + hOffset;
+   	quad.points[2].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[2].y,height) - vOffset;
 
-	quad.points[3].x = CONVERT_MENGE_TO_OGRE_X(quad.points[3].x,width);
-   	quad.points[3].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[3].y,heigth);
+	quad.points[3].x = CONVERT_MENGE_TO_OGRE_X(quad.points[3].x,width) + hOffset;
+   	quad.points[3].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[3].y,height) - vOffset;
 
 	quad.z = z - 1;
 
@@ -256,10 +275,10 @@ void OgreRenderSpriteManager::addQuad1( Ogre::Camera* _camera,
 	quad.dest = _dst;
 
 	//quadList.push_back(quad);
-	m_quadMap[ _renderQueue ].push_back( quad );
+	m_quadMap[ _viewport ].push_back( quad );
 }
 
-void OgreRenderSpriteManager::addQuad2( Ogre::Camera* _camera,
+void OgreRenderSpriteManager::addQuad2( Ogre::Viewport* _viewport,
 									   const Ogre::Vector2 & _contentRes,
 									   const Ogre::Vector4 & _uv,
 									   const Ogre::Matrix3 & _transform,
@@ -274,8 +293,12 @@ void OgreRenderSpriteManager::addQuad2( Ogre::Camera* _camera,
 									   Ogre::SceneBlendFactor _dst,
 									   Ogre::uint8 _renderQueue /* = Ogre::RENDER_QUEUE_OVERLAY */)
 {
-	//if( quadList.capacity() == quadList.size() ) return;
-	if( m_quadMap[ _renderQueue ].capacity() == m_quadMap[ _renderQueue ].size() ) return;
+	if( m_quadMap.find(_viewport) == m_quadMap.end() )
+	{
+		m_quadMap[_viewport].reserve( VECTOR_CAPACITY );
+	}
+
+	if( m_quadMap[ _viewport ].capacity() == m_quadMap[ _viewport ].size() ) return;
 
 	isSorted = false;
 	QuadInfo quad;
@@ -285,19 +308,17 @@ void OgreRenderSpriteManager::addQuad2( Ogre::Camera* _camera,
 
 	//FIXME:
 
-	quad.camera = _camera;
+	quad.points[0].x = _transform[0][0] * _a[0] + _transform[1][0] * _a[1] + _transform[2][0] + m_hTexelOffset;
+	quad.points[0].y = _transform[0][1] * _a[0] + _transform[1][1] * _a[1] + _transform[2][1] + m_vTexelOffset;
 
-	quad.points[0].x = _transform[0][0] * _a[0] + _transform[1][0] * _a[1] + _transform[2][0];
-	quad.points[0].y = _transform[0][1] * _a[0] + _transform[1][1] * _a[1] + _transform[2][1];
+	quad.points[1].x = _transform[0][0] * _b[0] + _transform[1][0] * _b[1] + _transform[2][0] + m_hTexelOffset;
+	quad.points[1].y = _transform[0][1] * _b[0] + _transform[1][1] * _b[1] + _transform[2][1] + m_vTexelOffset;
 
-	quad.points[1].x = _transform[0][0] * _b[0] + _transform[1][0] * _b[1] + _transform[2][0];
-	quad.points[1].y = _transform[0][1] * _b[0] + _transform[1][1] * _b[1] + _transform[2][1];
+	quad.points[2].x = _transform[0][0] * _c[0] + _transform[1][0] * _c[1] + _transform[2][0] + m_hTexelOffset;
+	quad.points[2].y = _transform[0][1] * _c[0] + _transform[1][1] * _c[1] + _transform[2][1] + m_vTexelOffset;
 
-	quad.points[2].x = _transform[0][0] * _c[0] + _transform[1][0] * _c[1] + _transform[2][0];
-	quad.points[2].y = _transform[0][1] * _c[0] + _transform[1][1] * _c[1] + _transform[2][1];
-
-	quad.points[3].x = _transform[0][0] * _d[0] + _transform[1][0] * _d[1] + _transform[2][0];
-	quad.points[3].y = _transform[0][1] * _d[0] + _transform[1][1] * _d[1] + _transform[2][1];
+	quad.points[3].x = _transform[0][0] * _d[0] + _transform[1][0] * _d[1] + _transform[2][0] + m_hTexelOffset;
+	quad.points[3].y = _transform[0][1] * _d[0] + _transform[1][1] * _d[1] + _transform[2][1] + m_vTexelOffset;
 
 	quad.points[0].x = CONVERT_MENGE_TO_OGRE_X(quad.points[0].x,width);
    	quad.points[0].y = CONVERT_MENGE_TO_OGRE_Y(quad.points[0].y,heigth);
@@ -323,7 +344,7 @@ void OgreRenderSpriteManager::addQuad2( Ogre::Camera* _camera,
 	quad.dest = _dst;
 
 	//quadList.push_back(quad);
-	m_quadMap[ _renderQueue ].push_back( quad );
+	m_quadMap[ _viewport ].push_back( quad );
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -444,7 +465,6 @@ void OgreRenderSpriteManager::doRender( TQuadList& _quadList )
 	while( it != it_end )
 	{
 		currTexture = it->texture;
-		currCamera = it->camera;
 		//currViewport = m_renderSys->_getViewport();
 		renderOp.vertexData->vertexStart = bufferPos;
 		Ogre::SceneBlendFactor src = it->source;
@@ -454,13 +474,8 @@ void OgreRenderSpriteManager::doRender( TQuadList& _quadList )
 		{
 			const QuadInfo& quad = (*it);
 
-			if( currCamera != quad.camera )
-			{
-				changeViewport = true;
-				//currViewport = quad.viewport;
-			}
 
-			if ( (currTexture != quad.texture) || changeViewport )
+			if ( currTexture != quad.texture )
 			{
 				break;
 			}
@@ -470,13 +485,8 @@ void OgreRenderSpriteManager::doRender( TQuadList& _quadList )
 		//m_renderSys->_beginFrame();
 		renderOp.vertexData->vertexCount = bufferPos - renderOp.vertexData->vertexStart;
 		
-		m_renderSys->_setViewport( currCamera->getViewport() );
+		//m_renderSys->_setViewport( currCamera->getViewport() );
 
-		if ( first || changeViewport )
-		{
-			//prepareForRender();
-			first = false;
-		}		
 		m_renderSys->_setCullingMode(Ogre::CULL_NONE);
 
 		//m_renderSys->_setSceneBlending(Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
@@ -504,3 +514,11 @@ void OgreRenderSpriteManager::doRender( TQuadList& _quadList )
 	
 	#endif
 }
+
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSpriteManager::preViewportUpdate( const Ogre::RenderTargetViewportEvent& evt )
+{
+	currViewport = evt.source;
+}
+//////////////////////////////////////////////////////////////////////////
+

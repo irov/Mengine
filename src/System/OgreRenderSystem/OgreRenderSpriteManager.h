@@ -27,8 +27,6 @@ struct QuadInfo
 	Ogre::SceneBlendFactor source;
 	Ogre::SceneBlendFactor dest;
 
-	Ogre::Camera* camera;
-
 	float z;
 
     unsigned int        color;
@@ -41,9 +39,10 @@ struct QuadInfo
 
 class OgreRenderSpriteManager
 	: public Ogre::RenderQueueListener
+	, public Ogre::RenderTargetListener
 {
 public:
-	void addQuad1( Ogre::Camera* _camera, const Ogre::Vector2 & _contentRes,
+	void addQuad1( Ogre::Viewport* _viewport, const Ogre::Vector2 & _contentRes,
 		const Ogre::Vector4 & _uv,const Ogre::Matrix3 & _transform,
 		const Ogre::Vector2 & _offset,
 		const Ogre::Vector2 & _size, float z,
@@ -53,7 +52,7 @@ public:
 		Ogre::SceneBlendFactor _dst,
 		Ogre::uint8 _renderQueue = Ogre::RENDER_QUEUE_OVERLAY );
 
-	void addQuad2( Ogre::Camera* _camera, const Ogre::Vector2 & _contentRes,
+	void addQuad2( Ogre::Viewport* _viewport, const Ogre::Vector2 & _contentRes,
 		const Ogre::Vector4 & _uv,
 		const Ogre::Matrix3 & _transform,
 		const Ogre::Vector2 & _a,
@@ -93,6 +92,15 @@ public:
 	typedef std::vector<QuadInfo> TQuadList;
 	void doRender( TQuadList& _quadList );
 
+
+	virtual void preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt) { }
+	virtual void postRenderTargetUpdate(const Ogre::RenderTargetEvent& evt) { }
+	virtual void preViewportUpdate(const Ogre::RenderTargetViewportEvent& evt);
+	virtual void postViewportUpdate(const Ogre::RenderTargetViewportEvent& evt) { }
+	virtual void viewportAdded(const Ogre::RenderTargetViewportEvent& evt) {}
+	virtual void viewportRemoved(const Ogre::RenderTargetViewportEvent& evt) {}
+
+
 private:
 
 	float currentZ;
@@ -106,9 +114,12 @@ private:
 	Ogre::HardwareVertexBufferSharedPtr	vertexBuffer;
 	Ogre::TexturePtr			currTexture;	
 	Ogre::Camera*				currCamera;
+	Ogre::Viewport*				currViewport;
 	Ogre::RenderOperation		renderOp;
+	float m_vTexelOffset;
+	float m_hTexelOffset;
 	//TQuadList m_quadList;
-	typedef std::map< Ogre::uint8, TQuadList > TQuadMap;
+	typedef std::map< Ogre::Viewport*, TQuadList > TQuadMap;
 	TQuadMap m_quadMap;
 	//TQuadList m_quadListPostrender;
 };

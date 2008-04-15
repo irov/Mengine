@@ -1,10 +1,13 @@
 #	include "OgreEntity.h"
 #	include "OgreSkeleton.h"
+#	include "OgreRenderSystem.h"
+#	include "OgreRenderSpriteManager.h"
 //////////////////////////////////////////////////////////////////////////
-OgreEntity::OgreEntity( Ogre::Entity * _entity, Ogre::SceneManager* _sceneMgr )
+OgreEntity::OgreEntity( OgreRenderSystem* _rendSys, Ogre::Entity * _entity, Ogre::SceneManager* _sceneMgr )
 : m_entity( _entity )
 , m_skeleton(0)
 , m_sceneMgr( _sceneMgr )
+, m_rendSys( _rendSys )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -96,7 +99,8 @@ void OgreEntity::createRenderToTexture( const char* _cameraName, int _width, int
 	Ogre::RenderTarget* rtgt = texture->getBuffer()->getRenderTarget();
 	rtgt->removeAllViewports();
 	rtgt->addViewport( rttCam )->setBackgroundColour( Ogre::ColourValue::Green );
-	rtgt->setActive( false );
+	rtgt->addListener( m_rendSys->getRenderSpriteManager() );
+	//rtgt->setActive( false );
 	//texture->getBuffer()->getRenderTarget()->getViewport(0)->setClearEveryFrame( false );
 	Ogre::MaterialManager::ResourceCreateOrRetrieveResult mresult = Ogre::MaterialManager::getSingleton().createOrRetrieve( Ogre::String("rttMat") + Ogre::String( _cameraName ), "Default" );
 	Ogre::MaterialPtr mat = mresult.first;

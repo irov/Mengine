@@ -140,7 +140,8 @@ namespace Menge
 
 		const std::string & renderDriver = game->getRenderDriverName();
 
-		if( renderDriver == "D3D9" )
+		Holder<RenderEngine>::hostage()->initialize( renderDriver.c_str() );
+		/*if( renderDriver == "D3D9" )
 		{
 #	ifndef _DEBUG
 			Holder<RenderEngine>::hostage()->initialize( "RenderSystem_Direct3D9" );
@@ -160,7 +161,7 @@ namespace Menge
 		{
 			MENGE_LOG("Please select render drive 'D3D9' or 'OGL'. Thanks!");
 			return false;
-		}
+		}*/
 
 		m_currentResolution.x = game->getWidth();
 		m_currentResolution.y = game->getHeight();

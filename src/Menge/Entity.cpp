@@ -298,17 +298,12 @@ namespace	Menge
 
 					float t = _timing / m_rotateTime;
 
-					//const mt::vec2f & dir = getLocalDirection();
 					float angle = m_interface->getAngle();
-					//printf( "angle %.2f\n", angle );
 					mt::vec2f dir( cosf(angle), sinf(angle) );
 
 					mt::vec2f curr_dir = mt::slerp_v2_v2( dir, m_targetDir, t );
-					//mt::vec2f curr_dir = m_targetDir * t + dir * ( 1.0f - t );
 					curr_dir = mt::norm_v2( curr_dir );
 
-					//printf( "%.2f %.2f \n", curr_dir.x, curr_dir.y );
-					//setLocalDirection( curr_dir );
 					setDirection( curr_dir );
 				}
 			}

@@ -556,6 +556,7 @@ namespace Menge
 				.def( "getScreenPosition", &SceneNode2D::getScreenPosition )
 				.def( "getParent", &SceneNode2D::getParent )
 				.def( "setListener", &SceneNode2D::setListener )
+				.def( "isHide", &SceneNode2D::isHide )
 			;
 
 		pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)

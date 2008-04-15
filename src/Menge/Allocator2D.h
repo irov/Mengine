@@ -49,6 +49,7 @@ namespace Menge
 		mt::mat3f m_localMatrix;
 		mt::mat3f m_worldMatrix;
 
+		bool m_fixedRotation;
 		bool m_changePivot;
 	};
 }

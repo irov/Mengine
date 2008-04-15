@@ -7,6 +7,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Allocator2D::Allocator2D()
 		: m_changePivot( true )
+		, m_fixedRotation( false )
 	{
 		mt::ident_m3( m_localMatrix );
 		mt::ident_m3( m_worldMatrix );
@@ -127,7 +128,15 @@ namespace Menge
 		const mt::mat3f & parentMatrix =
 			_parent->getWorldMatrix();
 	
-		mt::mul_m3_m3( m_worldMatrix, m_localMatrix, parentMatrix );
+		if( m_fixedRotation )
+		{
+			m_worldMatrix = m_localMatrix;
+			mt::mul_v2_m3( m_worldMatrix.v2.v2, m_localMatrix.v2.v2, parentMatrix );
+		}
+		else
+		{
+			mt::mul_m3_m3( m_worldMatrix, m_localMatrix, parentMatrix );
+		}
 
 		_updateMatrix( _parent );
 	
@@ -153,6 +162,8 @@ namespace Menge
 					XML_CASE_ATTRIBUTE_MEMBER( "Rotate", &Allocator2D::setRotate );
 				}
 			}
+
+			XML_CASE_ATTRIBUTE_NODE( "FixedRotation", "Value", m_fixedRotation );
 		}
 	}
 }

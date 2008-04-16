@@ -108,6 +108,8 @@ namespace Menge
 		mt::vec2f m_forcePoint;
 		virtual void _onSetListener();
 
+		void _debugRender() override;
+
 	};
 
 }	// namespace Menge

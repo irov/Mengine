@@ -218,6 +218,14 @@ namespace Menge
 			_dst);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderLine(	
+		unsigned int _color,
+		const mt::vec2f & _begin,
+		const mt::vec2f & _end)
+	{
+		m_interface->renderLine( m_renderViewport.getCamera().c_str(), _color,_begin.m,_end.m );		
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )
 	{
 		m_interface->releaseImage( _image );

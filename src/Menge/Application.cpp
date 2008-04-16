@@ -61,15 +61,14 @@ namespace Menge
 		//, m_resourcePaths("")
 		, m_particles( true )
 		, m_sound( true )
+		, m_debugRender( true )
 		, m_physicEngine2D( NULL )
 		, m_physicEngine( NULL )
 		, m_phycisTiming(0.f)
 	{
 		//ASSERT( m_interface );
-
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
@@ -255,6 +254,12 @@ namespace Menge
 		if( idx >= 0 )
 		{
 			m_particles = false;
+		}
+
+		idx = _args.find( "-debugRender" );
+		if( idx >= 0 )
+		{
+			m_debugRender = false;
 		}
 
 		// Initializing XML-engine
@@ -459,7 +464,13 @@ namespace Menge
 		Holder<SoundEngine>::hostage()->update( _timing );
 
 		Holder<Game>::hostage()->render();
-		Holder<Game>::hostage()->debugRender();
+
+
+		if(m_debugRender)
+		{
+			Holder<Game>::hostage()->debugRender();
+		}
+
 		Holder<RenderEngine>::hostage()->render();
 	}
 	//////////////////////////////////////////////////////////////////////////

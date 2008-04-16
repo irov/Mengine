@@ -95,7 +95,9 @@ public:
 
 	RenderImageInterface * getImage( const char * _desc ) const override;
 
+	void renderLine(const char * _camera, unsigned int _color,  const float * _begin, const float * _end);
 	OgreRenderSpriteManager* getRenderSpriteManager() const;
+
 private:
 
 	OgreSceneNode * m_rootSceneNode;

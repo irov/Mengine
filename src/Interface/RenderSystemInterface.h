@@ -233,6 +233,8 @@ public:
 		EBlendFactor _src,
 		EBlendFactor _dst) = 0;
 
+	virtual void	renderLine(const char * _camera, unsigned int _color, const float * _begin, const float * _end) = 0;
+
 	virtual	void	beginLayer() = 0;
 	virtual	void	endLayer() = 0;
 

@@ -4,6 +4,7 @@
 #	include "RigidBody2D.h"
 
 #	include "PhysicEngine2D.h"
+#	include "RenderEngine.h"
 #	include "XmlEngine.h"
 
 
@@ -199,7 +200,6 @@ namespace Menge
 			if( m_constantForce )
 			{
 				//const mt::vec2f & position = getWorldPosition();
-
 				mt::vec2f force;
 				mt::vec2f point;
 
@@ -377,5 +377,27 @@ namespace Menge
 		SceneNode2D::_onSetListener();
 
 		registerEventListener("ON_COLLIDE", "onCollide", m_listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::_debugRender()
+	{
+		for( TShapeList::iterator it = m_shapeList.begin(),
+			it_end = m_shapeList.end();
+			it != it_end;
+		it++ )
+		{
+			const mt::polygon & poly = *it;
+
+			for(int i = 0; i < poly.num_points(); i++)
+			{
+				mt::vec2f beg = poly[i];
+				mt::vec2f end = poly[(i+1) % poly.num_points()];
+
+				beg+=getWorldPosition();
+				end+=getWorldPosition();
+
+				Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF,beg,end);
+			}
+		}
 	}
 } // namespace Menge

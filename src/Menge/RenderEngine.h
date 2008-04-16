@@ -68,6 +68,11 @@ namespace Menge
 			EBlendFactor _src = BF_SOURCE_ALPHA,
 			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
 
+		void renderLine(
+			unsigned int _color,
+			const mt::vec2f & _begin,
+			const mt::vec2f & _end);
+
 		void	releaseImage( RenderImageInterface * _image );
 		void	releaseImageVideoStream( RenderVideoStreamInterface* _image );
 

@@ -530,30 +530,7 @@ namespace Menge
 			Holder<ScriptEngine>::hostage()
 				->registerEntityType( it->first );
 		}
-		/*for( TListDeclaration::iterator
-			it = m_listEntitiesDeclaration.begin(),
-			it_end = m_listEntitiesDeclaration.end();
-		it != it_end;
-		++it)			
-		{
-			Holder<ScriptEngine>::hostage()
-				->registerEntityType( *it );
-		}
 
-		for( TListDeclaration::iterator
-			it = m_listResourceDeclaration.begin(),
-			it_end = m_listResourceDeclaration.end();
-		it != it_end;
-		++it)	
-		{
-			std::string path = m_pathResource.front();
-			path += '/';
-			path += *it;
-			path += ".resource";
-
-			Holder<ResourceManager>::hostage()
-				->loadResource( path );
-		}*/
 		for( TMapDeclaration::iterator
 				it = m_mapResourceDeclaration.begin(),
 				it_end = m_mapResourceDeclaration.end();
@@ -570,14 +547,7 @@ namespace Menge
 				->loadResource( it->second.first, path );
 		}
 
-		/*for( TListDeclaration::iterator
-			it = m_listArrowsDeclaration.begin(),
-			it_end = m_listArrowsDeclaration.end();
-		it != it_end;
-		++it)	
-		{
-			getArrow( *it );
-		}*/
+
 		for( TMapDeclaration::iterator
 			it = m_mapArrowsDeclaration.begin(),
 			it_end = m_mapArrowsDeclaration.end();
@@ -590,29 +560,6 @@ namespace Menge
 			loadArrow( it->first, path );
 		}
 
-		/*for( TMapDeclaration::iterator
-			it = m_mapScenesDeclaration.begin(),
-			it_end = m_mapScenesDeclaration.end();
-		it != it_end;
-		it++ )
-		{
-			for( TListDeclaration::iterator
-				itl = it->second.begin(),
-				itl_end = it->second.end();
-			itl != itl_end;
-			itl++)
-			{
-				getScene( *itl );
-			}
-		}
-		/*for( TListDeclaration::iterator
-			it = m_listScenesDeclaration.begin(),
-			it_end = m_listScenesDeclaration.end();
-		it != it_end;
-		++it)	
-		{
-			getScene( *it );
-		}*/
 
 		FileEngine* fileEngine = Holder<FileEngine>::hostage();
 		for( TListDeclaration::iterator

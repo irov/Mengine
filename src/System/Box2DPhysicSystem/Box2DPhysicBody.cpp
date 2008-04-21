@@ -72,6 +72,7 @@ void Box2DPhysicBody::addShapeConvex(unsigned int _pointsNum, const float* _conv
 	shape.maskBits = _collisionMask;
 	shape.categoryBits = _categoryBits;
 	shape.groupIndex = _groupIndex;
+	shape.isSensor = _isSensor;
 
 	m_body->CreateShape( &shape );
 	m_body->SetMassFromShapes();
@@ -91,6 +92,7 @@ void Box2DPhysicBody::addShapeCircle(float _radius, const float* _localPos,
 	shape.maskBits = _collisionMask;
 	shape.categoryBits = _categoryBits;
 	shape.groupIndex = _groupIndex;
+	shape.isSensor = _isSensor;
 
 	m_body->CreateShape( &shape );
 	m_body->SetMassFromShapes();

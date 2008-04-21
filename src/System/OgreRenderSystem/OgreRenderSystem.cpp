@@ -12,7 +12,25 @@
 #	include "OgreRenderVideoStream.h"
 #	include "OgreExternalTextureSourceManager.h"
 
-#	include "OgreD3D9Plugin.h"
+#	include "Config/Config.h"
+
+
+#if	RENDER_SYSTEM == RS_D3D9
+	#include "OgreD3D9Plugin.h"
+	#ifdef _DEBUG
+		#pragma comment( lib, "RenderSystem_Direct3D9Static_d.lib" )
+	#else
+		#pragma comment( lib, "RenderSystem_Direct3D9Static.lib" )
+	#endif
+#elif RENDER_SYSTEM == RS_D3D7
+	#include "OgreD3D7Plugin.h"
+	#ifdef _DEBUG
+		#pragma comment( lib, "RenderSystem_Direct3D7Static_d.lib" )
+	#else
+		#pragma comment( lib, "RenderSystem_Direct3D7Static.lib" )
+	#endif
+#endif
+
 /*#include "CEGUI/CEGUISystem.h"
 #include "CEGUI/CEGUILogger.h"
 #include "CEGUI/CEGUISchemeManager.h"
@@ -198,14 +216,12 @@ bool OgreRenderSystem::initialize( const char* _driver )
 	//m_root = new Ogre::Root( "","", "Menge.log" );
 	m_root = Ogre::Root::getSingletonPtr();
 	
-	if( !strcmp( _driver, "D3D9") )
-	{
-		m_renderPlugin = new Ogre::D3D9Plugin();
-	}
-/*	else if( !strcmp( _driver, "OGL" ) )
-	{
-		m_renderPlugin = new Ogre::OpenGLPlugin();
-	}*/
+#if	RENDER_SYSTEM == RS_D3D9
+	m_renderPlugin = new Ogre::D3D9Plugin();
+#elif	RENDER_SYSTEM == RS_D3D7
+	m_renderPlugin = new Ogre::D3D7Plugin();
+#endif
+
 	m_root->installPlugin( m_renderPlugin );
 	//m_root->loadPlugin( _driver );
 
@@ -328,6 +344,9 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 	{
 		Ogre::HardwarePixelBufferSharedPtr pixb = rtt->getBuffer();
 		Ogre::Image::Box imagebox( wrect.left, wrect.top, wrect.right, wrect.bottom );
+
+		// наху€ доху€ наху€рили ху€рей? расху€ривайте нахуй!
+		// ху€ри - функции.
 		static_cast<OgreRenderImage*>( _image )->m_texture->getBuffer()->blit(pixb, imagebox, Ogre::Image::Box(0, 0, _image->getWidth(), _image->getHeight() ));
 	}
 	m_renderWindow->removeViewport(0);
@@ -457,7 +476,7 @@ void OgreRenderSystem::renderLine(const char * _camera, unsigned int _color, con
 
 		static OgreRenderImage ogreImage;
 
-		m_spriteMgr->addQuad1(camera, m_contentResolution,Ogre::Vector4(0,0,1,1),matrix,
+		m_spriteMgr->addQuad1(camera->getViewport(), m_contentResolution,Ogre::Vector4(0,0,1,1),matrix,
 			Ogre::Vector2(0,0),size, z,&ogreImage, _color, 
 			Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA, renderQueue );
 	
@@ -610,5 +629,10 @@ void OgreRenderSystem::eventOccurred( const Ogre::String& eventName, const Ogre:
 OgreRenderSpriteManager* OgreRenderSystem::getRenderSpriteManager() const
 {
 	return m_spriteMgr;
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::onWindowMovedOrResized()
+{
+	m_renderWindow->windowMovedOrResized();
 }
 //////////////////////////////////////////////////////////////////////////

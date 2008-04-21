@@ -36,6 +36,7 @@ public:
 	void animationSetLooped( const char* _animName, bool _looped ) override;
 	bool animationGetLooped( const char* _animName ) override;
 
+	void attachEntity( const char* _bone, EntityInterface* _entity ) override;
 public:
 	Ogre::Entity * getOgreEntity();
 

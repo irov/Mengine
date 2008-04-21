@@ -42,11 +42,6 @@ public:
 public:
 	LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
-//protected:
-
-	//bool frameStarted( const Ogre::FrameEvent & evt) override;
-	//bool frameEnded( const Ogre::FrameEvent & evt) override;
-
 private:
 	ApplicationListenerInterface* m_listener;
 	LARGE_INTEGER m_timerFrequency;
@@ -65,4 +60,5 @@ private:
 	bool	m_fullscreen;
 
 	float m_primaryMonitorAspect;
+
 };

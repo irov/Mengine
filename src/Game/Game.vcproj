@@ -71,7 +71,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				RegisterOutput="false"
-				AdditionalDependencies="OgreMainStatic_d.lib RenderSystem_Direct3D9Static_d.lib"
+				AdditionalDependencies="OgreMainStatic_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(SolutionDir)\dependencies\ogrenew\lib"
@@ -165,7 +165,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMainStatic.lib RenderSystem_Direct3D9Static.lib"
+				AdditionalDependencies="OgreMainStatic.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(SolutionDir)\dependencies\ogrenew\lib"
 				IgnoreAllDefaultLibraries="false"
@@ -256,7 +256,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMainStatic.lib RenderSystem_Direct3D9Static.lib"
+				AdditionalDependencies="OgreMainStatic.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_con.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(SolutionDir)\dependencies\ogrenew\lib"

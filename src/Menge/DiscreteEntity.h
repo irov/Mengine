@@ -40,6 +40,7 @@ namespace Menge
 		void	stopAnimation( const std::string& _animName );	
 		void	stopAllAnimations();
 
+
 	public:
 		void	loader( XmlElement * _xml );
 

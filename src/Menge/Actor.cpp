@@ -264,4 +264,13 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Actor::attachEntity( const std::string& _boneName, SceneNode3D* _node )
+	{
+		m_entity->attachEntity( _boneName.c_str(), static_cast<Actor*>(_node)->getEntity() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	EntityInterface* Actor::getEntity()
+	{
+		return m_entity;
+	}
 }

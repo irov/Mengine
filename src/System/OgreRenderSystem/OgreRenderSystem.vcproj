@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\ogrenew\ogremain\include&quot;;&quot;$(SolutionDir)dependencies\videoplugin\TheoraVideo\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\Theora\include\&quot;;&quot;$(SolutionDir)dependencies\ogg\include\&quot;;&quot;$(SolutionDir)dependencies\vorbis\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\ptypes-1.8.3\include\&quot;;&quot;$(SolutionDir)Dependencies\ogrenew\RenderSystems\Direct3D9\include&quot;;D:\Development\d3dsdk\include"
+				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\ogrenew\ogremain\include&quot;;&quot;$(SolutionDir)dependencies\videoplugin\TheoraVideo\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\Theora\include\&quot;;&quot;$(SolutionDir)dependencies\ogg\include\&quot;;&quot;$(SolutionDir)dependencies\vorbis\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\ptypes-1.8.3\include\&quot;;&quot;$(SolutionDir)Dependencies\ogrenew\RenderSystems\Direct3D9\include&quot;;&quot;$(SolutionDir)Dependencies\ogrenew\RenderSystems\Direct3D7\include&quot;;&quot;$(SolutionDir)Dependencies\Directx\DX9\include&quot;;&quot;$(SolutionDir)Dependencies\Directx\DX7\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;OGRE_STATIC_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -115,7 +115,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\ogrenew\ogremain\include&quot;;&quot;$(SolutionDir)dependencies\videoplugin\TheoraVideo\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\Theora\include\&quot;;&quot;$(SolutionDir)dependencies\ogg\include\&quot;;&quot;$(SolutionDir)dependencies\vorbis\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\ptypes-1.8.3\include\&quot;;&quot;$(SolutionDir)dependencies\ogrenew\RenderSystems\Direct3D9\include&quot;;D:\Development\d3dsdk\include"
+				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\ogrenew\ogremain\include&quot;;&quot;$(SolutionDir)dependencies\videoplugin\TheoraVideo\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\Theora\include\&quot;;&quot;$(SolutionDir)dependencies\ogg\include\&quot;;&quot;$(SolutionDir)dependencies\vorbis\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\ptypes-1.8.3\include\&quot;;&quot;$(SolutionDir)dependencies\ogrenew\RenderSystems\Direct3D9\include&quot;;&quot;$(SolutionDir)Dependencies\ogrenew\RenderSystems\Direct3D7\include&quot;;&quot;$(SolutionDir)Dependencies\DirectX\DX7\include&quot;;&quot;$(SolutionDir)Dependencies\DirectX\DX9\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;OGRE_STATIC_LIB"
 				StringPooling="true"
 				MinimalRebuild="false"

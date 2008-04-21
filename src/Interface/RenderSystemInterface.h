@@ -69,6 +69,8 @@ public:
 	virtual bool animationHasEnded( const char* _animName ) = 0;
 	virtual void animationSetLooped( const char* _animName, bool _looped ) = 0;
 	virtual bool animationGetLooped( const char* _animName ) = 0;
+	//////////////////////////////////////////////////////////////////////////
+	virtual void attachEntity( const char* _bone, EntityInterface* _entity ) = 0;
 };
 
 enum LightType
@@ -254,6 +256,7 @@ public:
 
 	virtual SceneNodeInterface * getRootSceneNode() const = 0;
 	virtual void setEventListener( RenderSystemListener* _listener ) = 0;
+	virtual void onWindowMovedOrResized() = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

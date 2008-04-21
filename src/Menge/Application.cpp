@@ -23,6 +23,9 @@
 
 #	include "XmlEngine.h"
 
+#	include "SceneManager.h"
+#	include "TextField.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -65,10 +68,17 @@ namespace Menge
 		, m_physicEngine2D( NULL )
 		, m_physicEngine( NULL )
 		, m_phycisTiming(0.f)
+		, m_resetTiming( false )
+		, m_maxTiming( 100.0f )
+		, m_debugInfo( false )
+		, m_debugTextField( NULL )
+		, m_FPS( 0.0f )
 	{
 		//ASSERT( m_interface );
+
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
@@ -189,6 +199,13 @@ namespace Menge
 			return false;
 		}
 
+		if( m_debugInfo )	
+		{
+			m_debugTextField = Menge::SceneManager::createNodeFromXmlT<TextField>( m_debugResourcesPath + "DebugInfo.xml" );
+			m_debugTextField->compile();
+			m_debugTextField->activate();
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -224,6 +241,7 @@ namespace Menge
 				m_resourcePaths.push_back( filename );
 			}
 	
+			XML_CASE_ATTRIBUTE_NODE( "DebugResources", "Path", m_debugResourcesPath );
 			//XML_CASE_ATTRIBUTE_NODE( "Resources", "File", m_resourcePath );
 
 			/*XML_CASE_NODE("Config")
@@ -260,6 +278,12 @@ namespace Menge
 		if( idx >= 0 )
 		{
 			m_debugRender = false;
+		}
+
+		idx = _args.find( "-debuginfo" );
+		if( idx >= 0 )
+		{
+			m_debugInfo = true;
 		}
 
 		// Initializing XML-engine
@@ -314,7 +338,6 @@ namespace Menge
 
 		Holder<ResourceManager>::keep( new ResourceManager );
 
-		
 		if( createGame() == false )
 		{
 			return false;
@@ -423,6 +446,7 @@ namespace Menge
 		}
 		else
 		{
+			m_resetTiming = true;
 			Holder<SoundEngine>::hostage()->setCommonVolume( volume );
 			Holder<Amplifier>::hostage()->setVolume( avolume );
 		}
@@ -440,6 +464,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onUpdate( float _timing )
 	{
+
+		if( m_debugInfo )
+		{
+			static int d = 0;
+			d++;
+			if( !(d % 5) )
+			{
+				m_FPS = 1000.0f / _timing;
+			}
+		}
+
+		if( _timing > m_maxTiming )
+		{
+			_timing = m_maxTiming;
+		}
+
+		if( m_resetTiming )
+		{
+			_timing = 0.0f;
+			m_resetTiming = false;
+		}
+
 		Holder<MousePickerSystem>::hostage()->clear();
 
 		if( m_physicEngine )
@@ -464,14 +510,21 @@ namespace Menge
 		Holder<SoundEngine>::hostage()->update( _timing );
 
 		Holder<Game>::hostage()->render();
-
-
+		Holder<Game>::hostage()->debugRender();
+		
+		if( m_debugInfo )
+		{
+			sprintf( m_debugText, "FPS:%.2f\n", m_FPS );
+			m_debugTextField->setText( m_debugText );
+			m_debugTextField->render();
+		}
 		if(m_debugRender)
 		{
 			Holder<Game>::hostage()->debugRender();
 		}
 
 		Holder<RenderEngine>::hostage()->render();
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()
@@ -483,6 +536,12 @@ namespace Menge
 	void Application::onDestroy()
 	{
 		delete m_handler;
+
+		if( m_debugTextField )
+		{
+			m_debugTextField->release();
+			delete m_debugTextField;
+		}
 
 		Holder<Game>::destroy();
 		Holder<ResourceManager>::destroy();

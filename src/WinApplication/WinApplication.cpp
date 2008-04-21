@@ -2,7 +2,54 @@
 
 #	include "SystemDLL.h"
 
-#	define MAX_UPDATE_TIMING 100
+#	include "Config/Config.h"
+
+#if	SAVE_DUMP == 1
+	#include <dbghelp.h>
+	#include <shellapi.h>
+	#include <shlobj.h>
+	#include <strsafe.h>
+
+	#pragma  comment( lib, "dbghelp.lib")
+
+	//////////////////////////////////////////////////////////////////////////
+	static LONG WINAPI s_generateDump(EXCEPTION_POINTERS* pExceptionPointers)
+	{
+		BOOL bMiniDumpSuccessful;
+		WCHAR szPath[MAX_PATH]; 
+		WCHAR szFileName[MAX_PATH]; 
+		WCHAR* szAppName = L"Mengine_Dump";
+		WCHAR* szVersion = L"v1.0";
+		DWORD dwBufferSize = MAX_PATH;
+		HANDLE hDumpFile;
+		SYSTEMTIME stLocalTime;
+		MINIDUMP_EXCEPTION_INFORMATION ExpParam;
+
+		GetLocalTime( &stLocalTime );
+		GetTempPathW( dwBufferSize, szPath );
+
+		StringCchPrintfW( szFileName, MAX_PATH, L"%s%s", szPath, szAppName );
+		CreateDirectoryW( szFileName, NULL );
+
+		StringCchPrintfW( szFileName, MAX_PATH, L"%s%s\\%s-%04d%02d%02d-%02d%02d%02d-%ld-%ld.dmp", 
+			szPath, szAppName, szVersion, 
+			stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay, 
+			stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond, 
+			GetCurrentProcessId(), GetCurrentThreadId());
+		hDumpFile = CreateFileW(szFileName, GENERIC_READ|GENERIC_WRITE, 
+			FILE_SHARE_WRITE|FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
+
+		ExpParam.ThreadId = GetCurrentThreadId();
+		ExpParam.ExceptionPointers = pExceptionPointers;
+		ExpParam.ClientPointers = TRUE;
+
+		bMiniDumpSuccessful = MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), 
+			hDumpFile, MiniDumpWithDataSegs, &ExpParam, NULL, NULL);
+
+		return EXCEPTION_EXECUTE_HANDLER;
+
+	}
+#endif
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( ApplicationInterface** _ptrInterface )
 {
@@ -81,6 +128,11 @@ void WinApplication::setPrimaryMonitorAspect( float _aspect )
 //////////////////////////////////////////////////////////////////////////
 bool WinApplication::init( const char* _name, ApplicationListenerInterface* _listener )
 {
+
+#if SAVE_DUMP == 1
+	::SetUnhandledExceptionFilter( &s_generateDump );
+#endif
+
 	if( !_listener )
 	{
 		return false;
@@ -106,7 +158,7 @@ bool WinApplication::init( const char* _name, ApplicationListenerInterface* _lis
 void WinApplication::run()
 {
 	MSG  msg;
-	static bool resetTime = false;
+	//static bool resetTime = false;
 	POINT pos;
 	LARGE_INTEGER time;
 	::QueryPerformanceCounter(&m_lastTime);
@@ -136,22 +188,23 @@ void WinApplication::run()
 			{
 				m_focus = true;
 				m_listener->onFocus( true );
-				resetTime = true;
+				//resetTime = true;
 			}
 			m_listener->onUpdate( m_frameTime );
 			::QueryPerformanceCounter(&time);
 			m_frameTime = static_cast<float>( time.QuadPart - m_lastTime.QuadPart ) / m_timerFrequency.QuadPart * 1000.0f;
-			if( m_frameTime > MAX_UPDATE_TIMING )
+			/*if( m_frameTime > MAX_UPDATE_TIMING )
 			{
 				m_frameTime = MAX_UPDATE_TIMING;
-			}
+			}*/
 			m_lastTime = time;
 
-			if ( resetTime )
+			/*if ( resetTime )
 			{
 				m_frameTime = 0.0f;
 				resetTime = false;
 			}
+			printf("timing %.2f\n", m_frameTime );*/
 		}
 		else if( !m_active && m_focus )
 		{

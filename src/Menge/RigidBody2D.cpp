@@ -212,6 +212,8 @@ namespace Menge
 					force = m_force;
 				}
 
+				force *= /*m_interface->getMass() **/ _timing;
+
 				mt::mul_v2_m3( point, m_forcePoint, getWorldMatrix() );
 
 				m_interface->applyForce( force.x, force.y, point.x, point.y );

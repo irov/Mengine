@@ -44,6 +44,9 @@ namespace Menge
 		void	setRollSpeed( float _speed );
 
 		float	getBoundingRadius() const;
+
+		void	attachEntity( const std::string& _boneName, SceneNode3D* _node );
+		EntityInterface*	getEntity();
 			
 	protected:
 		bool	_activate() override;

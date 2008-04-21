@@ -184,3 +184,9 @@ bool OgreEntity::animationGetLooped( const char* _animName )
 	return m_entity->getAnimationState( _animName )->getLoop();
 }
 //////////////////////////////////////////////////////////////////////////
+void OgreEntity::attachEntity( const char* _bone, EntityInterface* _entity )
+{
+	Ogre::Entity* ent = static_cast<OgreEntity*>(_entity)->getOgreEntity();
+	ent->getParentSceneNode()->detachObject(ent);
+	m_entity->attachObjectToBone( _bone, ent );
+}

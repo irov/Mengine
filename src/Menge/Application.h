@@ -18,6 +18,7 @@ class PhysicSystem2DInterface;
 
 class XmlElement;
 
+
 #include "Interface\ApplicationInterface.h"
 
 namespace Menge
@@ -26,6 +27,7 @@ namespace Menge
 	class InputHandler;
 	class PhysicEngine2D;
 	class PhysicEngine;
+	class TextField;
 
 	//! Application - .
 	/*! 
@@ -107,12 +109,20 @@ namespace Menge
 		bool m_particles;
 		bool m_sound;
 		bool m_debugRender;
+		bool m_debugInfo;
 		bool m_usePhysic;
 		bool m_mouseBounded;
 
 		float m_phycisTiming;
+		bool m_resetTiming;
+		float m_maxTiming;
 
 		PhysicEngine * m_physicEngine;
 		PhysicEngine2D * m_physicEngine2D;
+
+		std::string m_debugResourcesPath;
+		TextField* m_debugTextField;
+		char m_debugText[128];
+		float m_FPS;
 	};
 }

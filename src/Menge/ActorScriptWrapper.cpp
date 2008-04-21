@@ -94,6 +94,7 @@ namespace Menge
 			.def( "setYawSpeed", &Actor::setYawSpeed )
 			.def( "setPitchSpeed", &Actor::setPitchSpeed )
 			.def( "setRollSpeed", &Actor::setRollSpeed )
+			.def( "attachEntity", &Actor::attachEntity )
 			//.def( "setParentActor", &Actor::setParentActor )
 			//.def( "setParentRoot", &Actor::setParentRoot )
 			//.def( "attachEntity", &Actor::attachEntity )

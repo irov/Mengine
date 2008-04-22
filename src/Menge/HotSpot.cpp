@@ -264,7 +264,18 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_debugRender()
-	{}
+	{
+		for(int i = 0; i < m_polygon.num_points(); i++)
+		{
+			mt::vec2f beg = m_polygon[i];
+			mt::vec2f end = m_polygon[(i+1) % m_polygon.num_points()];
+
+			beg+=getWorldPosition();
+			end+=getWorldPosition();
+
+			Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF,beg,end);
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::setScale( const mt::vec2f& _scale )
 	{

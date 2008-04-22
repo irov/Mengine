@@ -33,10 +33,12 @@ namespace Menge
 		PhysicJoint2DInterface*  createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _limits, bool _collideBodies );
 		void destroyJoint( PhysicJoint2DInterface* _joint );
 
-		void update( float _timing, int _iterations );
+		void update( float _timing );
 
 	private:
 		PhysicSystem2DInterface* m_interface;
-
+		float m_timing;
+		float m_timeStep;
+		int m_iterating;
 	};
 }	// namespace Menge

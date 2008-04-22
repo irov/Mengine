@@ -8,6 +8,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PhysicEngine2D::PhysicEngine2D( PhysicSystem2DInterface * _interface )
 		: m_interface( _interface )
+		, m_timing(0.f)
+		, m_timeStep(1.f/60.f)
+		, m_iterating(10)
 	{
 		Holder<PhysicEngine2D>::keep( this );
 
@@ -45,9 +48,14 @@ namespace Menge
 		m_interface->destroyBody( _bodyInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PhysicEngine2D::update( float _timing, int _iterations )
+	void PhysicEngine2D::update( float _timing )
 	{
-		m_interface->update( _timing, _iterations );
+		m_timing += _timing;
+		while( m_timing >= m_timeStep * 1000.f )
+		{
+			m_interface->update( _timing, m_iterating );
+			m_timing -= m_timeStep * 1000.f;
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface* PhysicEngine2D::createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies )

@@ -495,13 +495,7 @@ namespace Menge
 
 		if( m_physicEngine2D )
 		{
-			float timeStep = 1.f / 60.f;
-			m_phycisTiming += _timing;
-			while( m_phycisTiming >= timeStep * 1000.f )
-			{
-				m_physicEngine2D->update( timeStep, 10 );
-				m_phycisTiming -= timeStep * 1000.f;
-			}
+			m_physicEngine2D->update( _timing );
 		}
 
 		Holder<Game>::hostage()->update( _timing );

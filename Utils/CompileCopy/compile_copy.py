@@ -9,7 +9,7 @@ import re
 import xml.dom.minidom
 import subprocess
 from Tkinter import *
-import tkFileDialog
+import tkFileDialog, tkMessageBox
 
 #skipped extensions
 bad_ext = ['.py']  
@@ -24,6 +24,9 @@ copy_files = []
 
 atlas_width = 2048
 atlas_height = 2048
+
+optipng_use = True
+jpg_png_use = True
 
 allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
 
@@ -45,7 +48,40 @@ def formreslist(src):
 def copyfiles():
     for file in copy_files:
         src = os.path.basename(file)
+       
+        '''exe = 'png2jpg.exe %(file)s -75' % \
+            {'file' : src }'''
+
+        if os.path.splitext(src)[1] == ".png":
+        
+            if optipng_use:
+                exe = 'optipng.exe %(file)s -o1' % \
+                {'file' : src }
+
+                subprocess.call(exe)
+                
+            if jpg_png_use:
+            
+                src_rgb = os.path.splitext(src)[0] + ".jpg"
+            
+                dst_rgb = os.path.splitext(file)[0] + ".jpg"
+                   
+                exe = 'convert.exe %(input)s -channel rgb -quality 90 -separate %(output)s' % \
+                    {'input' : src, 'output' : src_rgb }
+    
+                subprocess.call(exe)
+                
+                shutil.copy2(src_rgb, dst_rgb)
+                
+                os.remove(src_rgb)
+                
+                exe = 'convert.exe %(input)s -channel alpha -separate %(output)s' % \
+                    {'input' : src, 'output' : src }
+    
+                subprocess.call(exe)
+                
         shutil.copy2(src, file)
+        
         os.remove(src)	
     
     del copy_files[:]
@@ -70,14 +106,9 @@ def copytree(src, dst):
         srcname = os.path.normpath(srcname)
         srcname = srcname.lower()
         
-        print srcname
         if (srcname in bad_files):
-            print 1
             continue
-        else:
-            print 0
-    
-        
+                
         dstname = os.path.join(dst, name)
         
         if os.path.isdir(srcname):
@@ -120,7 +151,7 @@ def atlas(src,destdir):
 
         resource_output_name = os.path.basename(resource)
         
-        exe = 'AtlasCreationTool.exe %(resource_name)s %(output_resource)s %(width)i %(height)i %(gamedir)s' % \
+        exe = 'AtlasMaker.exe %(resource_name)s %(output_resource)s %(width)i %(height)i %(gamedir)s' % \
             {'resource_name' : resource, \
              'output_resource' : resource_output_name,\
              'width' : atlas_width, \
@@ -194,7 +225,12 @@ def copytonewfolder(src, dst):
 def main():
     master = Tk()
     master.withdraw()
- 
+        
+    '''optipng_use = False
+    
+    if tkMessageBox.askyesno("optipng", "Use optipng?"):
+        optipng_use = True'''
+         
     appfile_path = tkFileDialog.askopenfilename(title="Open file",\
                                              filetypes=[("application file",".xml"),\
                                                         ("All files",".*")])

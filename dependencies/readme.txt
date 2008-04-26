@@ -13,11 +13,7 @@ https://pybind.svn.sourceforge.net/svnroot/pybind
 [2.0.1] -
 
 
-cal3d
-[snapshot]
-svn://svn.gna.org/svn/cal3d/trunk
-
-OGRE Source
+OgreSDK
 [1.4.7]
 http://downloads.sourceforge.net/ogre/ogre-win32-v1-4-7.zip
 
@@ -57,9 +53,10 @@ pycurl
 [pycurl]
 http://pycurl.sourceforge.net/download/pycurl-7.16.2.1.tar.gz
 
-expat
-[2.0.1]
-
 PThreads
 [2.8.0]
 ftp://sourceware.org/pub/pthreads-win32
+
+cal3d
+[snapshot]
+svn://svn.gna.org/svn/cal3d/trunk

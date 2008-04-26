@@ -273,7 +273,7 @@ namespace	Menge
 			beg+=getWorldPosition();
 			end+=getWorldPosition();
 
-			Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF,beg,end);
+			Holder<RenderEngine>::hostage()->renderLine(0xFFFF0000,beg,end);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

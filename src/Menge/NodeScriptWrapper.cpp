@@ -731,6 +731,7 @@ namespace Menge
 				.def( "wakeUp", &RigidBody2D::wakeUp )
 				.def( "getMass", &RigidBody2D::getMass )
 				.def( "getLinearVelocity", &RigidBody2D::getLinearVelocity )
+				.def( "setLinearVelocity", &RigidBody2D::setLinearVelocity )
 			;
 
 		}		

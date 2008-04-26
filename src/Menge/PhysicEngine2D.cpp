@@ -11,6 +11,7 @@ namespace Menge
 		, m_timing(0.f)
 		, m_timeStep(1.f/60.f)
 		, m_iterating(10)
+		, m_gravity( 0.0f, 0.0f )
 	{
 		Holder<PhysicEngine2D>::keep( this );
 
@@ -24,7 +25,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine2D::createScene( const mt::vec2f& _upperLeft, const mt::vec2f& _lowerRight, const mt::vec2f& _gravity, bool _doSleep /* = true  */)
 	{
-		m_interface->createWorld( &_upperLeft.x, &_lowerRight.x, &_gravity.x, _doSleep );
+		m_gravity = _gravity;
+		m_interface->createWorld( &_upperLeft.x, &_lowerRight.x, &m_gravity.x, _doSleep );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine2D::destroyScene()
@@ -50,11 +52,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine2D::update( float _timing )
 	{
-		m_timing += _timing;
-		while( m_timing >= m_timeStep * 1000.f )
+		m_timing += _timing * 0.001f;
+		while( m_timing >= m_timeStep )
 		{
-			m_interface->update( _timing, m_iterating );
-			m_timing -= m_timeStep * 1000.f;
+			m_interface->update( m_timeStep, m_iterating );
+			m_timing -= m_timeStep;
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -73,4 +75,9 @@ namespace Menge
 		m_interface->destroyJoint( _joint );
 	}
 	//////////////////////////////////////////////////////////////////////////
-} // namespace Menge
+	const mt::vec2f& PhysicEngine2D::getGravity() const
+	{
+		return m_gravity;
+	}
+	//////////////////////////////////////////////////////////////////////////
+}	// namespace Menge

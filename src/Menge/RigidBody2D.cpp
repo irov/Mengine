@@ -11,9 +11,14 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	void CollisionListenerProxy::onCollide(PhysicBody2DInterface *_otherObj, float _worldX, float _worldY, float _normalX, float _normalY)
+	void BodyListenerProxy::onCollide(PhysicBody2DInterface *_otherObj, float _worldX, float _worldY, float _normalX, float _normalY)
 	{
 		m_body->onCollide( _otherObj, _worldX, _worldY, _normalX, _normalY );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BodyListenerProxy::applyForceAndTorque()
+	{
+		m_body->onApplyForceAndTorque();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
@@ -36,17 +41,18 @@ namespace Menge
 	, m_collisionMask( 0xFFFF )
 	, m_categoryBits( 1 )
 	, m_groupIndex( 0 )
-	, m_collisionListenerProxy( NULL )
+	, m_listenerProxy( NULL )
 	, m_isSensor( false )
+	, m_linearVelocity( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RigidBody2D::~RigidBody2D()
 	{
-		if( m_collisionListenerProxy )
+		if( m_listenerProxy )
 		{
-			delete m_collisionListenerProxy;
-			m_collisionListenerProxy = NULL;
+			delete m_listenerProxy;
+			m_listenerProxy = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -197,27 +203,7 @@ namespace Menge
 			const float* orient = m_interface->getOrientation();
 			setLocalDirection( mt::vec2f( orient[0], orient[1] ) );
 
-			if( m_constantForce )
-			{
-				//const mt::vec2f & position = getWorldPosition();
-				mt::vec2f force;
-				mt::vec2f point;
 
-				if( m_directionForce )
-				{
-					mt::mul_v2_m3_r( force, m_force, getWorldMatrix() );
-				}
-				else
-				{
-					force = m_force;
-				}
-
-				force *= /*m_interface->getMass() **/ _timing;
-
-				mt::mul_v2_m3( point, m_forcePoint, getWorldMatrix() );
-
-				m_interface->applyForce( force.x, force.y, point.x, point.y );
-			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -243,8 +229,8 @@ namespace Menge
 																			m_isBullet, m_fixedRotation );
 		}
 
-		m_collisionListenerProxy = new CollisionListenerProxy( this );
-		m_interface->setCollisionListener( m_collisionListenerProxy );
+		m_listenerProxy = new BodyListenerProxy( this );
+		m_interface->setBodyListener( m_listenerProxy );
 		m_interface->setUserData( this );
 
 		for( TShapeList::iterator it = m_shapeList.begin(),
@@ -369,6 +355,15 @@ namespace Menge
 		return mt::vec2f( v[0], v[1] );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::setLinearVelocity( float _x, float _y )
+	{
+		m_constantForce = false;
+		m_linearVelocity = true;
+		m_velocity.x = _x;
+		m_velocity.y = _y;
+		//m_interface->setLinearVelocity( _x, _y );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_addShapeBox( float _width, float _heigth, const mt::vec2f& _pos, float _angle )
 	{
 		m_shapeBoxList.push_back( std::make_pair( std::make_pair( _width, _heigth ), std::make_pair( _pos, _angle ) ) );
@@ -401,5 +396,61 @@ namespace Menge
 				Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF,beg,end);
 			}
 		}
+		for( TShapeBoxList::iterator itb = m_shapeBoxList.begin(),
+			itb_end = m_shapeBoxList.end();
+			itb != itb_end;
+		itb++ )
+		{
+			float width = itb->first.first;
+			float height = itb->first.second;
+			mt::vec2f pos = itb->second.first;
+			float angle = itb->second.second;
+
+			RenderEngine* reng = Holder<RenderEngine>::hostage();
+
+			pos += getWorldPosition();
+
+			reng->renderLine(0xFFFFFFFF, mt::vec2f( pos.x - width/2.0f, pos.y - height/2.0f ), mt::vec2f( pos.x + width/2.0f, pos.y - height/2.0f ) );
+			reng->renderLine(0xFFFFFFFF, mt::vec2f( pos.x - width/2.0f, pos.y - height/2.0f ), mt::vec2f( pos.x - width/2.0f, pos.y + height/2.0f ) );
+			reng->renderLine(0xFFFFFFFF, mt::vec2f( pos.x + width/2.0f, pos.y - height/2.0f ), mt::vec2f( pos.x + width/2.0f, pos.y + height/2.0f ) );
+			reng->renderLine(0xFFFFFFFF, mt::vec2f( pos.x - width/2.0f, pos.y + height/2.0f ), mt::vec2f( pos.x + width/2.0f, pos.y + height/2.0f ) );
+		
+		}
 	}
-} // namespace Menge
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::onApplyForceAndTorque()
+	{
+		//printf( "onApplyForceAndTorque\n" );
+		if( m_constantForce )
+		{
+			//const mt::vec2f & position = getWorldPosition();
+			mt::vec2f force;
+			mt::vec2f point;
+
+			if( m_directionForce )
+			{
+				mt::mul_v2_m3_r( force, m_force, getWorldMatrix() );
+			}
+			else
+			{
+				force = m_force;
+			}
+
+			//force *= /*m_interface->getMass() **/ _timing;
+
+			mt::mul_v2_m3( point, m_forcePoint, getWorldMatrix() );
+
+			m_interface->applyForce( force.x, force.y, point.x, point.y );
+		}
+		else if( m_linearVelocity )
+		{
+			const float* v = m_interface->getLinearVelocity();
+			mt::vec2f cv( v[0], v[1] );
+			mt::vec2f force = ( m_velocity - cv ) * m_interface->getMass();// * 60.0f;
+			force -= Holder<PhysicEngine2D>::hostage()->getGravity() * m_interface->getMass();
+			const float* pos = m_interface->getPosition();
+			m_interface->applyForce( force.x, force.y, pos[0], pos[1] );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+}	// namespace Menge

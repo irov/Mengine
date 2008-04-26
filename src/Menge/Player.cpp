@@ -27,6 +27,7 @@ namespace Menge
 	, m_switchScene(false)
 	, m_nextScene(0)
 	, m_destroyOldScene( false )
+	, m_restartScene( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -49,6 +50,10 @@ namespace Menge
 			return;
 		}
 
+		if( m_nextScene == m_scene )
+		{
+			m_restartScene = true;
+		}
 		m_switchScene = true;
 		m_destroyOldScene = _destroyOld;
 	}
@@ -260,7 +265,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::updateChangeScene()
 	{
-		if( m_switchScene == true )
+		if( m_restartScene )		// just restart scene
+		{
+			std::string name = m_scene->getName();
+			m_scene->deactivate();
+			m_scene->release();
+			if( m_destroyOldScene )
+			{
+				Holder<MousePickerSystem>::hostage()->reset();
+				Holder<Game>::hostage()->destroyScene( m_scene->getName() );
+			}
+			m_scene = Holder<Game>::hostage()->getScene( name );
+			m_scene->compile();
+			m_scene->activate();
+
+			m_restartScene = false;
+			m_switchScene = false;
+		}
+		else if( m_switchScene == true )
 		{
 			m_renderCamera2D->deactivate();
 

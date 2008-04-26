@@ -8,6 +8,7 @@
 
 class OgreRenderSpriteManager;
 class OgreSceneNode;
+class OgreRenderImage;
 
 namespace CEGUI
 {
@@ -127,4 +128,6 @@ private:
 
 	float m_viewportDimensions[4];
 	Ogre::Plugin*	m_renderPlugin;
+
+	OgreRenderImage* m_pixelTexture;
 };

@@ -348,7 +348,6 @@ namespace Menge
 
 		arrow->setType( "Arrow" );
 		arrow->setScript( result );
-		arrow->activate();
 
 		return arrow;
 	}

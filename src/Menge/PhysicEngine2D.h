@@ -35,10 +35,13 @@ namespace Menge
 
 		void update( float _timing );
 
+		const mt::vec2f& getGravity() const;
+
 	private:
 		PhysicSystem2DInterface* m_interface;
 		float m_timing;
 		float m_timeStep;
 		int m_iterating;
+		mt::vec2f m_gravity;
 	};
 }	// namespace Menge

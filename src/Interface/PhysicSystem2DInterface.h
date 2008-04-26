@@ -4,10 +4,11 @@ const float physicsScaler = 0.01f;
 
 class PhysicBody2DInterface;
 
-class PhysicBody2DCollisionListener
+class PhysicBody2DListener
 {
 public:
 	virtual void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) = 0;
+	virtual void applyForceAndTorque() = 0;
 };
 
 class PhysicBody2DInterface
@@ -39,7 +40,7 @@ public:
 	virtual void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY ) = 0;
 	virtual void applyTorque( float _torque ) = 0;
 
-	virtual void setCollisionListener( PhysicBody2DCollisionListener* ) = 0;
+	virtual void setBodyListener( PhysicBody2DListener* ) = 0;
 	virtual void setUserData( void* ) = 0;
 	virtual void* getUserData() const = 0;
 

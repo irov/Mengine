@@ -107,7 +107,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
 	{
-		srand( clock() );
+		srand( (unsigned)time( NULL ) );
 
 		pybind::def( "randint", &ScriptHelper::mt_randint );
 		pybind::def( "sqrtf", &ScriptHelper::mt_sqrtf );

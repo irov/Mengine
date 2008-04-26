@@ -29,6 +29,13 @@
 	#else
 		#pragma comment( lib, "RenderSystem_Direct3D7Static.lib" )
 	#endif
+#elif RENDER_SYSTEM == RS_OGL
+	#include "OgreGLPlugin.h"
+	#ifdef _DEBUG
+		#pragma comment( lib, "RenderSystem_GLStatic_d.lib" )
+	#else
+		#pragma comment( lib, "RenderSystem_GLStatic.lib" )
+	#endif
 #endif
 
 /*#include "CEGUI/CEGUISystem.h"
@@ -69,6 +76,7 @@ OgreRenderSystem::OgreRenderSystem()
 	, m_rootSceneNode(0)
 	, m_eventListener( NULL )
 	, m_renderPlugin( NULL )
+	, m_pixelTexture( NULL )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -105,6 +113,11 @@ OgreRenderSystem::~OgreRenderSystem()
 	//	m_GUIRenderer = 0;
 	//}
 
+	if( m_pixelTexture )
+	{
+		delete m_pixelTexture;
+		m_pixelTexture = NULL;
+	}
 	if( m_renderPlugin )
 	{
 		m_root->uninstallPlugin( m_renderPlugin );
@@ -220,6 +233,8 @@ bool OgreRenderSystem::initialize( const char* _driver )
 	m_renderPlugin = new Ogre::D3D9Plugin();
 #elif	RENDER_SYSTEM == RS_D3D7
 	m_renderPlugin = new Ogre::D3D7Plugin();
+#elif RENDER_SYSTEM == RS_OGL
+	m_renderPlugin = new Ogre::GLPlugin();
 #endif
 
 	m_root->installPlugin( m_renderPlugin );
@@ -230,6 +245,8 @@ bool OgreRenderSystem::initialize( const char* _driver )
 	m_root->initialise( false );
 	
 	m_renderSys->addListener( this );
+
+	m_pixelTexture = new OgreRenderImage();
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -237,7 +254,7 @@ bool OgreRenderSystem::createRenderWindow( float _width, float _height, int _bit
 {
 	Ogre::NameValuePairList params;
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( _bits ) ) );
-	params.insert( std::make_pair("vsync", Ogre::StringConverter::toString( true ) ) );
+	//params.insert( std::make_pair("vsync", Ogre::StringConverter::toString( true ) ) );
 	params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)_winHandle)  ) ) );
 
 	m_renderWindow = m_root->createRenderWindow( "Menge", _width, _height, _fullscreen, &params );
@@ -474,10 +491,8 @@ void OgreRenderSystem::renderLine(const char * _camera, unsigned int _color, con
 
 		Ogre::Matrix3 matrix(dir.x,dir.y,0,-dir.y,dir.x,0,_begin[0],_begin[1],1);
 
-		static OgreRenderImage ogreImage;
-
 		m_spriteMgr->addQuad1(camera->getViewport(), m_contentResolution,Ogre::Vector4(0,0,1,1),matrix,
-			Ogre::Vector2(0,0),size, z,&ogreImage, _color, 
+			Ogre::Vector2(0,0),size, z,m_pixelTexture, _color, 
 			Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA, renderQueue );
 	
 }

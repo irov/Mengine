@@ -53,7 +53,7 @@ namespace	Menge
 	bool Arrow::_compile()
 	{
 		m_currentHotSpot = new HotSpot();
-		m_currentHotSpot->addPoint( mt::vec2f::zero_v2 );
+		m_currentHotSpot->addPoint( -m_offsetClick );
 		m_currentHotSpot->setName("MainHotSpotArrow");
 
 		bool result = this->addChildren( m_currentHotSpot );

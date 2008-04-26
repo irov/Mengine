@@ -35,6 +35,7 @@ public:
 	void minimizeWindow() override;
 	void setPrimaryMonitorAspect( float _aspect );
 	void notifyWindowModeChanged( float _width, float _height, bool _fullscreen ) override;
+	float getDeltaTime() override;
 	//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
 	SystemDLLInterface* loadSystemDLL( const char* _dll ) override;
 	void unloadSystemDLL(SystemDLLInterface* _interface ) override;
@@ -49,6 +50,7 @@ private:
 	bool	m_running;
 	bool	m_active;
 	float	m_frameTime;
+	LARGE_INTEGER m_timer;
 	HWND	m_hWnd;
 	bool	m_cursorInArea;
 	WINDOWINFO m_wndInfo;

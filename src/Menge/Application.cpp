@@ -64,7 +64,7 @@ namespace Menge
 		//, m_resourcePaths("")
 		, m_particles( true )
 		, m_sound( true )
-		, m_debugRender( true )
+		, m_debugRender( false )
 		, m_physicEngine2D( NULL )
 		, m_physicEngine( NULL )
 		, m_phycisTiming(0.f)
@@ -277,7 +277,7 @@ namespace Menge
 		idx = _args.find( "-debugRender" );
 		if( idx >= 0 )
 		{
-			m_debugRender = false;
+			m_debugRender = true;
 		}
 
 		idx = _args.find( "-debuginfo" );
@@ -464,14 +464,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onUpdate( float _timing )
 	{
+		//MENGE_LOG("WinApplication: %.2f\n", m_interface->getDeltaTime() );
 
 		if( m_debugInfo )
 		{
 			static int d = 0;
 			d++;
-			if( !(d % 5) )
+			if( !(d % 10) )
 			{
 				m_FPS = 1000.0f / _timing;
+				//printf("fps: %.2f\n", m_FPS );
 			}
 		}
 
@@ -497,14 +499,21 @@ namespace Menge
 		{
 			m_physicEngine2D->update( _timing );
 		}
+		//MENGE_LOG("Physic2DUpdate: %.2f\n", m_interface->getDeltaTime() );
+
 
 		Holder<Game>::hostage()->update( _timing );
+		//MENGE_LOG("GameUpdate: %.2f\n", m_interface->getDeltaTime() );
 		Holder<InputEngine>::hostage()->update();
+		//MENGE_LOG("InputUpdate: %.2f\n", m_interface->getDeltaTime() );
 		Holder<MousePickerSystem>::hostage()->update();
+		//MENGE_LOG("MousePickerUpdate: %.2f\n", m_interface->getDeltaTime() );
 		Holder<SoundEngine>::hostage()->update( _timing );
+		//MENGE_LOG("SoundUpdate: %.2f\n", m_interface->getDeltaTime() );
 
 		Holder<Game>::hostage()->render();
-		Holder<Game>::hostage()->debugRender();
+		//MENGE_LOG("GameRender: %.2f\n", m_interface->getDeltaTime() );
+		//Holder<Game>::hostage()->debugRender();
 		
 		if( m_debugInfo )
 		{
@@ -518,6 +527,7 @@ namespace Menge
 		}
 
 		Holder<RenderEngine>::hostage()->render();
+		//MENGE_LOG("RenderTime: %.2f\n", m_interface->getDeltaTime() );
 
 	}
 	//////////////////////////////////////////////////////////////////////////

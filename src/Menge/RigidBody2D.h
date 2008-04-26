@@ -12,15 +12,16 @@ namespace Menge
 	//class PyObject;
 	class RigidBody2D;
 
-	class CollisionListenerProxy
-		: public PhysicBody2DCollisionListener
+	class BodyListenerProxy
+		: public PhysicBody2DListener
 	{
 	public:
-		CollisionListenerProxy( RigidBody2D* _body )
+		BodyListenerProxy( RigidBody2D* _body )
 			: m_body( _body )
 		{
 		}
-		virtual void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) override;
+		void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) override;
+		void applyForceAndTorque() override;
 
 	private:
 		RigidBody2D* m_body;
@@ -48,6 +49,7 @@ namespace Menge
 		//void setListener( PyObject * _listener );
 		PyObject* getListener();
 
+		void onApplyForceAndTorque();
 		void applyForce( float _forceX, float _forceY, float _pointX, float _pointY );
 		void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY );
 		void applyConstantForce( float _forceX, float _forceY, float _pointX, float _pointY );
@@ -58,6 +60,7 @@ namespace Menge
 		void setDirectionForce( bool _relative );
 		float getMass() const;
 		mt::vec2f getLinearVelocity() const;
+		void setLinearVelocity( float _x, float _y );
 		void wakeUp();
 
 		PhysicBody2DInterface* getInterface();
@@ -73,7 +76,7 @@ namespace Menge
 		void _loaderShapeCircle( XmlElement * _xml );
 		void _loaderShapeBox( XmlElement * _xml );
 
-		CollisionListenerProxy* m_collisionListenerProxy;
+		BodyListenerProxy* m_listenerProxy;
 
 		float m_linearDamping;
 		float m_angularDamping;
@@ -104,8 +107,10 @@ namespace Menge
 		//PyObject* m_scriptListener;
 		bool m_constantForce;
 		bool m_directionForce;
+		bool m_linearVelocity;
 		mt::vec2f m_force;
 		mt::vec2f m_forcePoint;
+		mt::vec2f m_velocity;
 		virtual void _onSetListener();
 
 		void _debugRender() override;

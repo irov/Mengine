@@ -6,6 +6,7 @@
 
 class Box2DPhysicBody
 	: public PhysicBody2DInterface
+	, public b2BodyListener
 {
 public:
 	Box2DPhysicBody( b2World* _world, bool _static );
@@ -38,7 +39,7 @@ public:
 	void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY ) override;
 	void applyTorque( float _torque ) override;
 
-	void setCollisionListener( PhysicBody2DCollisionListener* _listener ) override;
+	void setBodyListener( PhysicBody2DListener* _listener ) override;
 	void setUserData( void* _data ) override;
 	void* getUserData() const override;
 
@@ -48,12 +49,14 @@ public:
 
 	void wakeUp() override;
 
+	void applyForceAndTorque() override;
+
 	b2Body* getBody();
 
 private:
 	b2World* m_world;
 	b2Body* m_body;
-	PhysicBody2DCollisionListener* m_listener;
+	PhysicBody2DListener* m_listener;
 	void* m_userData;
 	bool m_isStatic;
 

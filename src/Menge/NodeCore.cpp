@@ -278,10 +278,10 @@ namespace Menge
 				children->debugRender();
 			}
 		};
+		_debugRender();
 
 		foreachChildren( ForeachDebugRender() );
 
-		_debugRender();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::_debugRender()

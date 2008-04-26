@@ -144,6 +144,8 @@ bool WinApplication::init( const char* _name, ApplicationListenerInterface* _lis
 		return false;
 	}
 
+	::QueryPerformanceCounter(&m_timer);
+
 	m_name.assign( _name );
 
 	//initInterfaceSystem( &m_fileSystem );
@@ -380,14 +382,14 @@ LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 		break;
 	case WM_MOVE:
 
-		//::GetWindowInfo( m_hWnd, &m_wndInfo);
+		::GetWindowInfo( m_hWnd, &m_wndInfo);
 		m_listener->onWindowMovedOrResized();
 		break;
 	case WM_DISPLAYCHANGE:
 
 		break;
 	case WM_SIZE:
-		//::GetWindowInfo( m_hWnd, &m_wndInfo);
+		::GetWindowInfo( m_hWnd, &m_wndInfo);
 		m_listener->onWindowMovedOrResized();
 		break;
 	case WM_GETMINMAXINFO:
@@ -478,3 +480,12 @@ void WinApplication::unloadSystemDLL( SystemDLLInterface* _interface )
 	delete static_cast<WinSystemDLL*>( _interface );
 }
 //////////////////////////////////////////////////////////////////////////
+float WinApplication::getDeltaTime()
+{
+	LARGE_INTEGER time;
+	::QueryPerformanceCounter( &time );
+	float deltaTime = static_cast<float>( time.QuadPart - m_timer.QuadPart )  / m_timerFrequency.QuadPart * 1000.0f;
+	m_timer = time;
+
+	return deltaTime;
+}

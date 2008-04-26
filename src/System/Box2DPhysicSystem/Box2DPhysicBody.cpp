@@ -30,6 +30,8 @@ bool Box2DPhysicBody::initialize( const b2BodyDef& _bodyDef )
 		return false;
 	}
 
+	m_body->m_listener = this;
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -103,9 +105,9 @@ void Box2DPhysicBody::addShapeBox(float _width, float _height, const float* _loc
 								  unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
 {
 	b2PolygonDef shape;
-	shape.SetAsBox( 
-		_width * physicsScaler
-		, _height * physicsScaler
+	shape.SetAsBox(
+		_width * 0.5f * physicsScaler
+		, _height * 0.5f * physicsScaler
 		, b2Vec2( _localPos[0] * physicsScaler, _localPos[1] * physicsScaler )
 		, _angle );
 
@@ -202,7 +204,7 @@ void Box2DPhysicBody::applyImpulse( float _impulseX, float _impulseY, float _poi
 	m_body->ApplyImpulse( impulse, point );
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicBody::setCollisionListener( PhysicBody2DCollisionListener* _listener )
+void Box2DPhysicBody::setBodyListener( PhysicBody2DListener* _listener )
 {
 	m_listener = _listener;
 }
@@ -260,4 +262,12 @@ void Box2DPhysicBody::wakeUp()
 void Box2DPhysicBody::applyTorque( float _torque )
 {
 	m_body->ApplyTorque( _torque );
+}
+//////////////////////////////////////////////////////////////////////////
+void Box2DPhysicBody::applyForceAndTorque()
+{
+	if( m_listener )
+	{
+		m_listener->applyForceAndTorque();
+	}
 }

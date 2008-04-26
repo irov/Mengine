@@ -316,6 +316,12 @@ namespace	Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Layer2D::_debugRender()
+	{
+		Holder<RenderEngine>::hostage()
+			->setRenderViewport( m_viewport );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::_renderEnd()
 	{
 		Holder<RenderEngine>::hostage()

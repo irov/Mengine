@@ -67,6 +67,7 @@ namespace Menge
 		
 		bool m_switchScene;
 		bool m_destroyOldScene;
+		bool m_restartScene;
 		Scene * m_nextScene;
 
 		typedef std::set<GlobalMouseHandler *> TSetGlobalMouseHandler;

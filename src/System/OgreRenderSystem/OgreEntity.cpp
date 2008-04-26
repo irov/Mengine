@@ -84,7 +84,7 @@ void OgreEntity::createRenderToTexture( const char* _cameraName, int _width, int
 	if( texture.isNull() )
 	{
 		texture = Ogre::TextureManager::getSingleton().createManual( Ogre::String("rtt") + Ogre::String( _cameraName ), "Default", Ogre::TEX_TYPE_2D,
-			_width, _height, 0, 0, Ogre::PF_X8R8G8B8, Ogre::TU_RENDERTARGET, NULL );
+			_width, _height, 0, Ogre::PF_X8R8G8B8, Ogre::TU_RENDERTARGET, NULL );
 	}
 	
 	Ogre::Camera* rttCam = NULL;

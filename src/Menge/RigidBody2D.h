@@ -60,7 +60,7 @@ namespace Menge
 		void setDirectionForce( bool _relative );
 		float getMass() const;
 		mt::vec2f getLinearVelocity() const;
-		void setLinearVelocity( float _x, float _y );
+		void setLinearVelocity( float _x, float _y, bool _countGravity );
 		void wakeUp();
 
 		PhysicBody2DInterface* getInterface();
@@ -111,6 +111,7 @@ namespace Menge
 		mt::vec2f m_force;
 		mt::vec2f m_forcePoint;
 		mt::vec2f m_velocity;
+		bool m_countGravity;
 		virtual void _onSetListener();
 
 		void _debugRender() override;

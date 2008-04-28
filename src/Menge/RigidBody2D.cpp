@@ -44,6 +44,7 @@ namespace Menge
 	, m_listenerProxy( NULL )
 	, m_isSensor( false )
 	, m_linearVelocity( false )
+	, m_countGravity( true )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -355,12 +356,13 @@ namespace Menge
 		return mt::vec2f( v[0], v[1] );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::setLinearVelocity( float _x, float _y )
+	void RigidBody2D::setLinearVelocity( float _x, float _y, bool _countGravity )
 	{
 		m_constantForce = false;
 		m_linearVelocity = true;
 		m_velocity.x = _x;
 		m_velocity.y = _y;
+		m_countGravity = _countGravity;
 		//m_interface->setLinearVelocity( _x, _y );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -447,7 +449,10 @@ namespace Menge
 			const float* v = m_interface->getLinearVelocity();
 			mt::vec2f cv( v[0], v[1] );
 			mt::vec2f force = ( m_velocity - cv ) * m_interface->getMass();// * 60.0f;
-			force -= Holder<PhysicEngine2D>::hostage()->getGravity() * m_interface->getMass();
+			if( m_countGravity )
+			{
+				force -= Holder<PhysicEngine2D>::hostage()->getGravity() * m_interface->getMass();
+			}
 			const float* pos = m_interface->getPosition();
 			m_interface->applyForce( force.x, force.y, pos[0], pos[1] );
 		}

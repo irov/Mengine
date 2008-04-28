@@ -26,6 +26,9 @@
 #	include "SceneManager.h"
 #	include "TextField.h"
 
+
+#define MENGE_DELETE(x) if(x) { delete (x); (x) = NULL; }
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -65,14 +68,19 @@ namespace Menge
 		, m_particles( true )
 		, m_sound( true )
 		, m_debugRender( false )
-		, m_physicEngine2D( NULL )
-		, m_physicEngine( NULL )
 		, m_phycisTiming(0.f)
 		, m_resetTiming( false )
 		, m_maxTiming( 100.0f )
 		, m_debugInfo( false )
 		, m_debugTextField( NULL )
 		, m_FPS( 0.0f )
+		, m_logEngine( NULL )
+		, m_fileEngine( NULL )
+		, m_renderEngine( NULL )
+		, m_soundEngine( NULL )
+		, m_particleEngine( NULL )
+		, m_physicEngine2D( NULL )
+		, m_physicEngine( NULL )
 	{
 		//ASSERT( m_interface );
 
@@ -88,48 +96,56 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setLogSystem( LogSystemInterface * _interface )
 	{
-		new LogEngine( _interface );
+		m_logEngine = new LogEngine( _interface );
+		Holder<LogEngine>::keep( m_logEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFileSystem( FileSystemInterface * _interface )
 	{
-		new FileEngine( _interface );
+		m_fileEngine = new FileEngine( _interface );
+		Holder<FileEngine>::keep( m_fileEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setInputSystem( InputSystemInterface * _interface )
 	{
-		new InputEngine( _interface );
+		m_inputEngine = new InputEngine( _interface );
+		Holder<InputEngine>::keep( m_inputEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setRenderSystem( RenderSystemInterface * _interface )
 	{
-		new RenderEngine( _interface );
+		m_renderEngine = new RenderEngine( _interface );
+		Holder<RenderEngine>::keep( m_renderEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setSoundSystem( SoundSystemInterface * _interface )
 	{
-		new SoundEngine( _interface );
+		m_soundEngine = new SoundEngine( _interface );
+		Holder<SoundEngine>::keep( m_soundEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setParticleSystem( ParticleSystemInterface * _interface )
 	{
-		 new ParticleEngine( _interface );
+		 m_particleEngine = new ParticleEngine( _interface );
+		 Holder<ParticleEngine>::keep( m_particleEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setPhysicSystem2D( PhysicSystem2DInterface * _interface )
 	{
 		m_physicEngine2D = new PhysicEngine2D( _interface );
+		Holder<PhysicEngine2D>::keep( m_physicEngine2D );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setPhysicSystem( PhysicSystemInterface * _interface )
 	{
 		m_physicEngine = new PhysicEngine( _interface );
+		Holder<PhysicEngine>::keep( m_physicEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loadPak( const std::string & _pak )
 	{
 		MENGE_LOG("load pack [%s]...\n", _pak.c_str() );
-		Holder<FileEngine>::hostage()->loadPak( _pak );
+		m_fileEngine->loadPak( _pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createGame()
@@ -149,7 +165,7 @@ namespace Menge
 
 		const std::string & renderDriver = game->getRenderDriverName();
 
-		Holder<RenderEngine>::hostage()->initialize( renderDriver.c_str() );
+		m_renderEngine->initialize( renderDriver.c_str() );
 		/*if( renderDriver == "D3D9" )
 		{
 #	ifndef _DEBUG
@@ -176,22 +192,22 @@ namespace Menge
 		m_currentResolution.y = game->getHeight();
 		if( game->getFullscreen() )
 		{
-			m_currentResolution = Holder<RenderEngine>::hostage()->getBestDisplayResolution( game->getWidth(), game->getHeight(), m_interface->getMonitorAspectRatio() );
+			m_currentResolution = m_renderEngine->getBestDisplayResolution( game->getWidth(), game->getHeight(), m_interface->getMonitorAspectRatio() );
 		}
 
 		WINDOW_HANDLE winHandle = m_interface->createWindow( game->getTitle().c_str(), m_currentResolution.x, m_currentResolution.y, game->getFullscreen() );
-		Holder<RenderEngine>::hostage()->createRenderWindow( m_currentResolution.x, m_currentResolution.y, game->getBits(), game->getFullscreen(), winHandle );
-		Holder<InputEngine>::hostage()->initialize( winHandle );
+		m_renderEngine->createRenderWindow( m_currentResolution.x, m_currentResolution.y, game->getBits(), game->getFullscreen(), winHandle );
+		m_inputEngine->initialize( winHandle );
 
 		if( game->getFullscreen() )
 		{
-			Holder<InputEngine>::hostage()->setMouseBounded( true );
+			m_inputEngine->setMouseBounded( true );
 		}
 
 		if( game->isContentResolutionFixed() )
 		{
 			mt::vec2f res = game->getResourceResolution();
-			Holder<RenderEngine>::hostage()->setViewportDimensions( res.x, res.y );
+			m_renderEngine->setViewportDimensions( res.x, res.y );
 		}
 
 		if( game->init() == false )
@@ -299,7 +315,7 @@ namespace Menge
 		}
 
 		// prepare file system
-		Holder<FileEngine>::hostage()->changeDir( "../" );
+		m_fileEngine->changeDir( "../" );
 
 		// prepare resources
 		Holder<ScriptEngine>::keep( new ScriptEngine );
@@ -331,10 +347,7 @@ namespace Menge
 			setPhysicSystem( dll->getInterface<PhysicSystemInterface>() );
 		}
 
-
-		InputEngine * inputEng = Holder<InputEngine>::hostage();
-
-		inputEng->regHandle( m_handler );
+		m_inputEngine->regHandle( m_handler );
 
 		Holder<ResourceManager>::keep( new ResourceManager );
 
@@ -441,13 +454,13 @@ namespace Menge
 		{
 			volume = Holder<SoundEngine>::hostage()->getCommonVolume();
 			avolume = Holder<Amplifier>::hostage()->getVolume();
-			Holder<SoundEngine>::hostage()->setCommonVolume( 0.0f );
+			m_soundEngine->setCommonVolume( 0.0f );
 			Holder<Amplifier>::hostage()->setVolume( 0.0f );
 		}
 		else
 		{
 			m_resetTiming = true;
-			Holder<SoundEngine>::hostage()->setCommonVolume( volume );
+			m_soundEngine->setCommonVolume( volume );
 			Holder<Amplifier>::hostage()->setVolume( avolume );
 		}
 	}
@@ -504,11 +517,11 @@ namespace Menge
 
 		Holder<Game>::hostage()->update( _timing );
 		//MENGE_LOG("GameUpdate: %.2f\n", m_interface->getDeltaTime() );
-		Holder<InputEngine>::hostage()->update();
+		m_inputEngine->update();
 		//MENGE_LOG("InputUpdate: %.2f\n", m_interface->getDeltaTime() );
 		Holder<MousePickerSystem>::hostage()->update();
 		//MENGE_LOG("MousePickerUpdate: %.2f\n", m_interface->getDeltaTime() );
-		Holder<SoundEngine>::hostage()->update( _timing );
+		m_soundEngine->update( _timing );
 		//MENGE_LOG("SoundUpdate: %.2f\n", m_interface->getDeltaTime() );
 
 		Holder<Game>::hostage()->render();
@@ -526,7 +539,7 @@ namespace Menge
 			Holder<Game>::hostage()->debugRender();
 		}
 
-		Holder<RenderEngine>::hostage()->render();
+		m_renderEngine->render();
 		//MENGE_LOG("RenderTime: %.2f\n", m_interface->getDeltaTime() );
 
 	}
@@ -550,20 +563,22 @@ namespace Menge
 		Holder<Game>::destroy();
 		Holder<ResourceManager>::destroy();
 
-		if ( m_physicEngine )
-		{
-			Holder<PhysicEngine>::destroy();
-		}
-		if( m_physicEngine2D )
-		{
-			Holder<PhysicEngine2D>::destroy();
-		}
+		Holder<PhysicEngine>::empty();
+		Holder<PhysicEngine2D>::empty();
+		Holder<ParticleEngine>::empty();
+		Holder<RenderEngine>::empty();
+		Holder<FileEngine>::empty();
+		Holder<InputEngine>::empty();
+		Holder<SoundEngine>::empty();
 
-		Holder<ParticleEngine>::destroy();
-		Holder<RenderEngine>::destroy();
-		Holder<FileEngine>::destroy();
-		Holder<InputEngine>::destroy();
-		Holder<SoundEngine>::destroy();
+		MENGE_DELETE( m_physicEngine );
+		MENGE_DELETE( m_physicEngine2D );
+		MENGE_DELETE( m_particleEngine );
+		MENGE_DELETE( m_renderEngine );
+		MENGE_DELETE( m_fileEngine );
+		MENGE_DELETE( m_inputEngine );
+		MENGE_DELETE( m_soundEngine );
+		
 		Holder<ScriptEngine>::destroy();
 
 		if( m_physicEngine != 0 )

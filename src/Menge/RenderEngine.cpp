@@ -23,7 +23,6 @@ namespace Menge
 		, m_viewportWidth(1024.f)
 		, m_viewportHeight(768.f)
 	{
-		Holder<RenderEngine>::keep( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize( const std::string& _driver )

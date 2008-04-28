@@ -13,8 +13,6 @@ namespace Menge
 		, m_iterating(10)
 		, m_gravity( 0.0f, 0.0f )
 	{
-		Holder<PhysicEngine2D>::keep( this );
-
 		//createScene( mt::vec2f( 0.0f, 0.0f ), mt::vec2f(2048.0f, 2048.0f), mt::vec2f(0.0f, 50.0f), true );
 	}
 	//////////////////////////////////////////////////////////////////////////

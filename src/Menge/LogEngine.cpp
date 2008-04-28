@@ -10,7 +10,6 @@ namespace Menge
 	LogEngine::LogEngine( LogSystemInterface * _interface )
 		: m_interface( _interface )
 	{
-		Holder<LogEngine>::keep(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::logMessage( const std::string & _message, bool _maskDebug )

@@ -11,7 +11,6 @@ namespace Menge
 		, m_mouseY(-1)
 		, m_mouseBounded( false )
 	{
-		Holder<InputEngine>::keep(this);
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	InputEngine::~InputEngine()

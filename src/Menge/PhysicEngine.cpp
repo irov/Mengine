@@ -7,7 +7,6 @@ namespace Menge
 	PhysicEngine::PhysicEngine( PhysicSystemInterface * _interface )
 	: m_interface( _interface )
 	{
-		Holder<PhysicEngine>::keep( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicEngine::~PhysicEngine()

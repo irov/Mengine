@@ -8,7 +8,6 @@ namespace Menge
 	FileEngine::FileEngine( FileSystemInterface * _interface )
 		: m_interface( _interface )
 	{
-		Holder<FileEngine>::keep( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::~FileEngine()

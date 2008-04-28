@@ -17,7 +17,6 @@ namespace Menge
 	, m_soundVolume( 1.0f )
 	, m_commonVolume( 1.0f )
 	{
-		Holder<SoundEngine>::keep( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::~SoundEngine()

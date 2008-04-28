@@ -23,10 +23,17 @@ class XmlElement;
 
 namespace Menge
 {
-	class Game;
-	class InputHandler;
+	class LogEngine;
+	class FileEngine;
+	class InputEngine;
+	class RenderEngine;
+	class SoundEngine;
+	class ParticleEngine;
 	class PhysicEngine2D;
 	class PhysicEngine;
+
+	class Game;
+	class InputHandler;
 	class TextField;
 
 	//! Application - .
@@ -117,12 +124,19 @@ namespace Menge
 		bool m_resetTiming;
 		float m_maxTiming;
 
-		PhysicEngine * m_physicEngine;
-		PhysicEngine2D * m_physicEngine2D;
 
 		std::string m_debugResourcesPath;
 		TextField* m_debugTextField;
 		char m_debugText[128];
 		float m_FPS;
+
+		LogEngine* m_logEngine;
+		FileEngine* m_fileEngine;
+		InputEngine* m_inputEngine;
+		RenderEngine* m_renderEngine;
+		SoundEngine* m_soundEngine;
+		ParticleEngine* m_particleEngine;
+		PhysicEngine * m_physicEngine;
+		PhysicEngine2D * m_physicEngine2D;
 	};
 }

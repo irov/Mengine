@@ -1,0 +1,276 @@
+<?xml version="1.0"?>
+<!DOCTYPE Code::Blocks_project_file>
+<Code::Blocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="RenderSystem_Direct3D7"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Option default_target="-1"/>
+		<Option compiler="0"/>
+		<Build>
+			<Target title="Debug">
+				<Option output="..\bin\debug\rendersystem_direct3d7.dll"/>
+				<Option object_output="..\obj\Debug"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option compiler="0"/>
+				<Option includeInTargetAll="0"/>
+				<Option createStaticLib="1"/>
+				<Compiler>
+					<Add option="-DWIN32"/>
+					<Add option="-D_DEBUG"/>
+					<Add option="-D_WINDOWS"/>
+					<Add option="-D_USRDLL"/>
+					<Add option="-DOGRED3DENGINEDLL_EXPORTS"/>
+					<Add option="-W"/>
+					<Add option="-g"/>
+					<Add directory="..\include"/>
+					<Add directory="..\..\..\OgreMain\include"/>
+					<Add directory="..\..\..\Dependencies\include"/>
+				</Compiler>
+				<Linker>
+					<Add library="OgreMain_d"/>
+					<Add library="dxguid"/>
+					<Add library="ddraw"/>
+					<Add library="d3dx"/>
+					<Add directory="..\..\..\OgreMain\lib\Debug"/>
+					<Add directory="..\..\..\Dependencies\lib\Debug"/>
+				</Linker>
+				<ExtraCommands>
+					<Add after="copy ..\bin\Debug\RenderSystem_Direct3D7.dll ..\..\..\Samples\Common\Bin\Debug"/>
+				</ExtraCommands>
+			</Target>
+			<Target title="Release">
+				<Option output="..\bin\release\rendersystem_direct3d7.dll"/>
+				<Option object_output="..\obj\Release"/>
+				<Option deps_output=".deps"/>
+				<Option external_deps=""/>
+				<Option type="3"/>
+				<Option compiler="0"/>
+				<Option createStaticLib="1"/>
+				<Compiler>
+					<Add option="-W"/>
+					<Add option="-DWIN32"/>
+					<Add option="-DNDEBUG"/>
+					<Add option="-D_WINDOWS"/>
+					<Add option="-D_USRDLL"/>
+					<Add option="-DRENDERSYSTEM_DIRECT3D7_EXPORTS"/>
+					<Add option="-DOGRED3DENGINEDLL_EXPORTS"/>
+					<Add directory="..\include"/>
+					<Add directory="..\..\..\OgreMain\include"/>
+					<Add directory="..\..\..\Dependencies\include"/>
+				</Compiler>
+				<Linker>
+					<Add library="OgreMain"/>
+					<Add library="gdi32"/>
+					<Add library="d3dx8d"/>
+					<Add library="dxguid"/>
+					<Add library="ddraw"/>
+					<Add directory="..\..\..\OgreMain\lib\Release"/>
+					<Add directory="..\..\..\Dependencies\lib\Release"/>
+				</Linker>
+				<ExtraCommands>
+					<Add after="..\..\..\Dependencies\bin\cp.exe ..\bin\Release\RenderSystem_Direct3D7.dll ..\..\..\Samples\Common\Bin\Release"/>
+					<Add after="strip ..\..\..\Samples\Common\Bin\Release\RenderSystem_Direct3D7.dll"/>
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-g"/>
+		</Compiler>
+		<Linker>
+			<Add option="-Wl,--enable-runtime-pseudo-reloc"/>
+		</Linker>
+		<Unit filename="..\include\OgreD3D7Callbacks.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreD3D7Device.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreD3D7DeviceList.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreD3D7GpuProgramManager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreD3D7HardwareBufferManager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreD3D7HardwarePixelBuffer.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreD3D7Prerequisites.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreD3D7RenderSystem.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreD3D7RenderWindow.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreD3D7Texture.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreD3D7TextureManager.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreDDDriver.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreDDDriverList.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreDDVideoMode.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\OgreDDVideoModeList.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\include\d3dutil.h">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\misc\OgreD3D7RenderSystem.def">
+			<Option compilerVar=""/>
+			<Option compile="0"/>
+			<Option link="0"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreD3D7Callbacks.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreD3D7Device.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreD3D7DeviceList.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreD3D7EngineDll.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreD3D7HardwarePixelBuffer.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreD3D7RenderSystem.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreD3D7RenderWindow.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreD3D7Texture.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreD3D7TextureManager.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreDDDriver.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreDDDriverList.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreDDVideoMode.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\OgreDDVideoModeList.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+		<Unit filename="..\src\d3dutil.cpp">
+			<Option compilerVar="CPP"/>
+			<Option target="Debug"/>
+			<Option target="Release"/>
+		</Unit>
+	</Project>
+</Code::Blocks_project_file>

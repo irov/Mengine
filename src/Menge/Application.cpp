@@ -81,6 +81,7 @@ namespace Menge
 		, m_particleEngine( NULL )
 		, m_physicEngine2D( NULL )
 		, m_physicEngine( NULL )
+		, m_xmlEngine( NULL )
 	{
 		//ASSERT( m_interface );
 
@@ -303,11 +304,11 @@ namespace Menge
 		}
 
 		// Initializing XML-engine
-		Holder<XmlEngine>::keep( new XmlEngine );
+		m_xmlEngine = new XmlEngine;
+		Holder<XmlEngine>::keep( m_xmlEngine );
 
 		// Reading resources
-		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
+		if( m_xmlEngine->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
 		{
 			MENGE_LOG("parse application xml failed '%s'\n"
 				, _applicationFile.c_str()
@@ -326,8 +327,7 @@ namespace Menge
 		Game* game = new Game;
 		Holder<Game>::keep( game );
 
-		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( m_gameInfo, game, &Game::loader ) == false )
+		if( m_xmlEngine->parseXmlFileM( m_gameInfo, game, &Game::loader ) == false )
 		{
 			MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
 			return false;
@@ -570,6 +570,7 @@ namespace Menge
 		Holder<FileEngine>::empty();
 		Holder<InputEngine>::empty();
 		Holder<SoundEngine>::empty();
+		Holder<XmlEngine>::empty();
 
 		MENGE_DELETE( m_physicEngine );
 		MENGE_DELETE( m_physicEngine2D );
@@ -578,6 +579,7 @@ namespace Menge
 		MENGE_DELETE( m_fileEngine );
 		MENGE_DELETE( m_inputEngine );
 		MENGE_DELETE( m_soundEngine );
+		MENGE_DELETE( m_xmlEngine );
 		
 		Holder<ScriptEngine>::destroy();
 
@@ -590,7 +592,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onWindowMovedOrResized()
 	{
-		Holder<RenderEngine>::hostage()->onWindowMovedOrResized();
+		m_renderEngine->onWindowMovedOrResized();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Application::getCurrentResolution() const

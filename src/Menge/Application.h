@@ -31,6 +31,7 @@ namespace Menge
 	class ParticleEngine;
 	class PhysicEngine2D;
 	class PhysicEngine;
+	class XmlEngine;
 
 	class Game;
 	class InputHandler;
@@ -138,5 +139,6 @@ namespace Menge
 		ParticleEngine* m_particleEngine;
 		PhysicEngine * m_physicEngine;
 		PhysicEngine2D * m_physicEngine2D;
+		XmlEngine*	m_xmlEngine;
 	};
 }

@@ -190,7 +190,7 @@ float Box2DPhysicBody::getAngularVelocity()
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::applyForce( float _forceX, float _forceY, float _pointX, float _pointY )
 {
-	b2Vec2 force( _forceX, _forceY );
+	b2Vec2 force( _forceX * physicsScaler, _forceY * physicsScaler );
 	b2Vec2 point( _pointX * physicsScaler, _pointY * physicsScaler );
 
 	m_body->ApplyForce( force, point );

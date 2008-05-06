@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="Box2D\include"
+				AdditionalIncludeDirectories="Box2D\include;&quot;$(SolutionDir)dependencies\box2d\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -64,7 +64,7 @@
 				Name="VCLibrarianTool"
 				AdditionalDependencies="box2d_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="Box2D\Library"
+				AdditionalLibraryDirectories="Box2D\Library;&quot;$(SolutionDir)dependencies\box2d\library&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"

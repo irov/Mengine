@@ -363,6 +363,7 @@ namespace Menge
 		m_velocity.x = _x;
 		m_velocity.y = _y;
 		m_countGravity = _countGravity;
+		m_interface->wakeUp();
 		//m_interface->setLinearVelocity( _x, _y );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -448,7 +449,7 @@ namespace Menge
 		{
 			const float* v = m_interface->getLinearVelocity();
 			mt::vec2f cv( v[0], v[1] );
-			mt::vec2f force = ( m_velocity - cv ) * m_interface->getMass();// * 60.0f;
+			mt::vec2f force = ( m_velocity - cv ) * m_interface->getMass() * 60.0f;
 			if( m_countGravity )
 			{
 				force -= Holder<PhysicEngine2D>::hostage()->getGravity() * m_interface->getMass();

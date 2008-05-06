@@ -1,5 +1,7 @@
 #	include "ScriptEngine.h"
 
+#	include "ScriptWrapper.h"
+
 #	include "ScriptModuleDeclaration.h"
 #	include "ScriptClassWrapper.h"
 
@@ -58,7 +60,15 @@ namespace Menge
 
 		PyObject * py_menge = initModule("Menge");
 
-		ScriptModuleDeclaration::init( py_menge );
+		pybind::set_currentmodule( py_menge );
+
+		//ScriptModuleDeclaration::init( py_menge );
+
+		ScriptWrapper::nodeWrap();
+		ScriptWrapper::helperWrap();
+		ScriptWrapper::soundWrap();
+		ScriptWrapper::actorWrap();
+		ScriptWrapper::entityWrap();
 
 		pybind::class_<ScriptLogger>("ScriptLogger", true, py_menge )
 			.def("write", &ScriptLogger::write )

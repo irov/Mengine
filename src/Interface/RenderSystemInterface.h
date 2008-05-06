@@ -257,6 +257,8 @@ public:
 	virtual SceneNodeInterface * getRootSceneNode() const = 0;
 	virtual void setEventListener( RenderSystemListener* _listener ) = 0;
 	virtual void onWindowMovedOrResized() = 0;
+	virtual void onWindowActive( bool _active ) = 0;
+	virtual void onWindowClose() = 0;
 };
 
 bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);

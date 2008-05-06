@@ -7,7 +7,7 @@
 #	include "Arrow.h"
 #	include "Player.h"
 
-const unsigned int VECTOR_CAPACITY = 40000;
+const unsigned int VECTOR_CAPACITY = 100;
 
 namespace Menge
 {
@@ -15,7 +15,7 @@ namespace Menge
 	MousePickerSystem::MousePickerSystem()
 		: m_lastPickerTrap(0)
 	{
-		//m_listPickerTrap.reserve( VECTOR_CAPACITY );
+		m_listPickerTrap.reserve( VECTOR_CAPACITY );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update()
@@ -57,7 +57,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::regTrap( MousePickerTrap * _trap, const Viewport & _viewport )
 	{
-		m_listPickerTrap.push_front( _trap );
+		//m_listPickerTrap.push_front( _trap );
+		m_listPickerTrap.push_back( _trap );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerTrap * MousePickerSystem::pickTrap( HotSpot * _hotspot ) 

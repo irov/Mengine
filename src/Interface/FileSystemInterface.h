@@ -1,5 +1,11 @@
 #	pragma once
 
+#	include "Config/Config.h"
+
+#	if TARGET_PLATFORM == TP_WINDOWS
+#		include <windows.h>
+#	endif
+
 #	include <string>
 
 class	FileDataInterface
@@ -35,6 +41,8 @@ public:
 	virtual bool changeDir( const char* _path ) = 0;
 	virtual void addResourceLocation( const char* _path ) = 0;
 	virtual void initResources() = 0;
+
+	virtual const TCHAR * getApplicationDataPath( const TCHAR* _game ) = 0;
 };
 
 bool initInterfaceSystem(FileSystemInterface**	_ptrFileSystem);

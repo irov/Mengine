@@ -1,3 +1,5 @@
+#	include "ScriptWrapper.h"
+
 #	include "ScriptClassWrapperDefine.h"
 
 #	include "ScriptDeclarationDefine.h"
@@ -135,10 +137,16 @@ namespace Menge
 		}
 	}
 
-	SCRIPT_CLASS_WRAPPING( Entity );
-
-	REGISTER_SCRIPT_CLASS( Menge, Entity, Node )
+	static void classWrapping()
 	{
+		SCRIPT_CLASS_WRAPPING( Entity );
+	}
+
+	//REGISTER_SCRIPT_CLASS( Menge, Entity, Node )
+	void ScriptWrapper::entityWrap()
+	{
+		classWrapping();
+
 		pybind::proxy_<Entity, pybind::bases<RigidBody2D> >("Entity", false)
 			.def( "moveTo", &Entity::moveTo )
 			.def( "moveStop", &Entity::moveStop )

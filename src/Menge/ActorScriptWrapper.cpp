@@ -1,3 +1,5 @@
+#	include "ScriptWrapper.h"
+
 #	include "ScriptClassWrapperDefine.h"
 
 #	include "ScriptDeclarationDefine.h"
@@ -79,10 +81,16 @@ namespace Menge
 		}
 	}
 
-	SCRIPT_CLASS_WRAPPING( Actor );
-
-	REGISTER_SCRIPT_CLASS( Menge, Actor, Node )
+	static void classWrapping()
 	{
+		SCRIPT_CLASS_WRAPPING( Actor );
+	}
+
+	//REGISTER_SCRIPT_CLASS( Menge, Actor, Node )
+	void ScriptWrapper::actorWrap()
+	{
+		classWrapping();
+		
 		pybind::proxy_<Actor, pybind::bases<SceneNode3D> >("Actor", false)
 			.def( "setRigidBody", &Actor::setRigidBody )
 			.def( "setAnimationEnabled", &Actor::setAnimationEnabled )

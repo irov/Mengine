@@ -58,6 +58,9 @@ namespace Menge
 		*/
 		virtual void setImageResource( const std::string & _name );
 
+		virtual mt::vec2f getImageSize();
+		virtual bool getCenterAlign();
+
 		//! Возвращает имя ресурса
 		/*!
 		\return имя ресурса

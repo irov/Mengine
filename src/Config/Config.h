@@ -10,3 +10,11 @@
 
 // Save MiniDump on unhandled exception	//
 #	define SAVE_DUMP	(1)
+
+// Build-in particle system
+#	define MENGE_PARTICLES	(1)
+
+//	Target Platform
+#	define TP_WINDOWS		(1)
+
+#	define TARGET_PLATFORM	TP_WINDOWS

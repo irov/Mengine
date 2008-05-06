@@ -12,6 +12,8 @@
 #	include "LogEngine.h"
 #	include "ScriptEngine.h"
 
+#	include "NodeFactory.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

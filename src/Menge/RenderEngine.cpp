@@ -374,4 +374,20 @@ namespace Menge
 		Holder<Application>::hostage()->notifyWindowModeChanged( width, height, m_fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::onWindowActive( bool _active )
+	{
+		if( m_windowCreated )
+		{
+			m_interface->onWindowActive( _active );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::onWindowClose()
+	{
+		if( m_windowCreated )
+		{
+			m_interface->onWindowClose();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

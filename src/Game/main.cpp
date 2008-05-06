@@ -21,9 +21,20 @@
 #	include <sstream>
 #	include <io.h>
 
-#include "..\Menge\Application.h"
+#	include "Config\Config.h"
+#	include "..\Menge\Application.h"
 
 //#define API_PLATFORM	"WinApplication"
+
+
+#	if	MENGE_PARTICLES	== (1)
+#		ifdef _DEBUG
+#			pragma comment( lib, "AstralaxParticleSystem_d.lib" )
+#		else
+#			pragma comment( lib, "AstralaxParticleSystem.lib" )
+#		endif
+#	endif
+
 
 #	ifdef _CONSOLE
 int main( int argc, char *argv[] )
@@ -71,9 +82,13 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	initInterfaceSystem( &logSystem );
 	app.setLogSystem( logSystem );
 
+#	if	MENGE_PARTICLES	== (1)
+
 	ParticleSystemInterface * particleSystem;
 	initInterfaceSystem( &particleSystem );
 	app.setParticleSystem( particleSystem );
+
+#	endif
 
 	PhysicSystem2DInterface * physicSystem2D;
 	initInterfaceSystem( &physicSystem2D );
@@ -132,7 +147,9 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	releaseInterfaceSystem( soundSystem );
 	releaseInterfaceSystem( renderSystem );
 	releaseInterfaceSystem( physicSystem2D );
+#	if	MENGE_PARTICLES	== (1)
 	releaseInterfaceSystem( particleSystem );
+#	endif
 	releaseInterfaceSystem( logSystem );
 	releaseInterfaceSystem( inputSystem );
 	releaseInterfaceSystem( fileSystem );

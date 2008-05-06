@@ -344,8 +344,7 @@ LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 		{
 			//::GetWindowInfo( m_hWnd, &m_wndInfo);
 			m_active = (LOWORD(wParam) != WA_INACTIVE);
-			/*if(m_renderWindow)
-				m_renderWindow->setActive( active );*/
+			m_listener->onActive( m_active );
 			break;
 		}
 	case WM_SYSKEYDOWN:
@@ -386,6 +385,7 @@ LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 		m_listener->onWindowMovedOrResized();
 		break;
 	case WM_DISPLAYCHANGE:
+		m_listener->onWindowMovedOrResized();
 
 		break;
 	case WM_SIZE:
@@ -399,7 +399,7 @@ LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 		break;
 	case WM_CLOSE:
 
-		//m_renderWindow->destroy();
+		
 		m_listener->onClose();
 		break;
 	case WM_MOUSEMOVE:

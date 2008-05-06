@@ -182,7 +182,7 @@ namespace     Menge
 
 				mt::vec4f uv = m_resource->getUV( *it );
 
-				if((k != 0.f) && (h != 0.f))
+				/*if((k != 0.f) && (h != 0.f))
 				{
 					float t = uv.z - uv.x;
 					float s = uv.w - uv.y;
@@ -190,7 +190,7 @@ namespace     Menge
 					uv.y = _uv.y + h * uv.y;
 					uv.z = uv.x + k * t;
 					uv.w = uv.y + h * s;
-				}
+				}*/
 
 				float width = m_resource->getCharRatio( *it ) * m_height;
 
@@ -218,7 +218,7 @@ namespace     Menge
 			float k = renderImage->getWidth() / outlineImage->getWidth();
 			float h = renderImage->getHeight() / outlineImage->getHeight();
 
-			renderPass_( m_outlineColor, outlineImage, uv, k, h );
+			renderPass_( m_outlineColor, outlineImage , uv, k, h );
 		}
 
 		renderPass_( m_color, renderImage );
@@ -387,7 +387,7 @@ namespace     Menge
 
 			if( len >= m_maxWidth )
 			{
-				maxlen = std::max( maxlen, len );
+				maxlen = (std::max)( maxlen, len );
 				m_lines.push_back( Line( line, len ) );
 				line.clear();
 				len = 0.0f;
@@ -404,7 +404,7 @@ namespace     Menge
 
 		if( len != 0 )
 		{
-			maxlen = std::max( maxlen, len );
+			maxlen = (std::max)( maxlen, len );
 			m_lines.push_back( Line( line, len ) );
 		}
 	}
@@ -423,7 +423,7 @@ namespace     Menge
 			// splitLine(*line);
 			float len = getWordWidth_( *line );
 			m_lines.push_back( Line( *line, len ));
-			maxlen = std::max( maxlen, len );
+			maxlen = (std::max)( maxlen, len );
 		}
 
 		m_length.x = maxlen;

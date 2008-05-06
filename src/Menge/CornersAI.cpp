@@ -497,7 +497,7 @@ int CornersAI::getBestMove( TMove& _bestMove, int _level )
 
 		// Инициализация цикла
 		curMove = list;
-		BestScore = -10000;
+		BestScore = -1000000;
 		// Для каждого возможного хода:
 		while ( curMove )
 		{
@@ -571,7 +571,7 @@ int CornersAI::getBestMove2( TMove& _bestMove, int _level )
   
       //Инициализация цикла 
       curMove = list;
-      BestScore = -100000;
+      BestScore = -1000000;
       // Для каждого возможного хода:
       while ( curMove )
 	  {

@@ -109,6 +109,8 @@ namespace Menge
 		m_localMatrix[0][1] = -sin_alpha;
 		m_localMatrix[1][0] = sin_alpha;
 		m_localMatrix[1][1] = cos_alpha;
+
+		changePivot();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::translate( const mt::vec2f & _delta )

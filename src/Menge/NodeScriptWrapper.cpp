@@ -1,3 +1,5 @@
+#	include "ScriptWrapper.h"
+
 #	include "ScriptClassWrapperDefine.h"
 #	include "ScriptDeclarationDefine.h"
 
@@ -101,6 +103,12 @@ namespace Menge
 		{
 			return Holder<InputEngine>::hostage()
 				->getMouseY();
+		}
+
+		static bool s_isKeyDown( int _key )
+		{
+			return Holder<InputEngine>::hostage()
+				->isKeyDown( _key );
 		}
 
 		static void setCurrentScene( const std::string & _name, bool _destroyOld = false )
@@ -396,28 +404,33 @@ namespace Menge
 		}
 	}
 
-	SCRIPT_CLASS_WRAPPING( Node );
-	SCRIPT_CLASS_WRAPPING( Scene );
-	SCRIPT_CLASS_WRAPPING( HotSpot );
-	SCRIPT_CLASS_WRAPPING( Sprite );
-	SCRIPT_CLASS_WRAPPING( Animation );
-	SCRIPT_CLASS_WRAPPING( Arrow );
-	SCRIPT_CLASS_WRAPPING( TextField );
-	SCRIPT_CLASS_WRAPPING( SoundEmitter );
-	SCRIPT_CLASS_WRAPPING( Emitter );
-	SCRIPT_CLASS_WRAPPING( Point );
-	SCRIPT_CLASS_WRAPPING( SceneNode3D );
-	SCRIPT_CLASS_WRAPPING( Camera3D );
-	SCRIPT_CLASS_WRAPPING( FFCamera3D );
-	SCRIPT_CLASS_WRAPPING( DiscreteEntity );
-	SCRIPT_CLASS_WRAPPING( RigidBody3D );
-	SCRIPT_CLASS_WRAPPING( Layer3D );
-	SCRIPT_CLASS_WRAPPING( RigidBody2D );
-	SCRIPT_CLASS_WRAPPING( CapsuleController );
-
-
-	REGISTER_SCRIPT_CLASS( Menge, Node, Base )
+	static void classWrapping()
 	{
+		SCRIPT_CLASS_WRAPPING( Node );
+		SCRIPT_CLASS_WRAPPING( Scene );
+		SCRIPT_CLASS_WRAPPING( HotSpot );
+		SCRIPT_CLASS_WRAPPING( Sprite );
+		SCRIPT_CLASS_WRAPPING( Animation );
+		SCRIPT_CLASS_WRAPPING( Arrow );
+		SCRIPT_CLASS_WRAPPING( TextField );
+		SCRIPT_CLASS_WRAPPING( SoundEmitter );
+		SCRIPT_CLASS_WRAPPING( Emitter );
+		SCRIPT_CLASS_WRAPPING( Point );
+		SCRIPT_CLASS_WRAPPING( SceneNode3D );
+		SCRIPT_CLASS_WRAPPING( Camera3D );
+		SCRIPT_CLASS_WRAPPING( FFCamera3D );
+		SCRIPT_CLASS_WRAPPING( DiscreteEntity );
+		SCRIPT_CLASS_WRAPPING( RigidBody3D );
+		SCRIPT_CLASS_WRAPPING( Layer3D );
+		SCRIPT_CLASS_WRAPPING( RigidBody2D );
+		SCRIPT_CLASS_WRAPPING( CapsuleController );
+	}
+
+	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
+	void ScriptWrapper::nodeWrap()
+	{
+		classWrapping();
+
 		pybind::class_<mt::vec2f>("vec2f")
 			.def( pybind::init<float,float>() )
 			//.attr( "x", &vec2f::x )
@@ -693,6 +706,7 @@ namespace Menge
 				.def( "getImageIndex", &Sprite::getImageIndex )
 				.def( "setImageResource", &Sprite::setImageResource )
 				.def( "getImageResource", &Sprite::getImageResource )
+				.def( "getImageSize", &Sprite::getImageSize )
 				.def( "setScale", &Sprite::setScale )
 				.def( "getScale", &Sprite::getScale )
 				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
@@ -703,6 +717,7 @@ namespace Menge
 				.def( "alphaTo", &Sprite::alphaTo )
 				.def( "flip", &Sprite::flip )
 				.def( "setListener", &Sprite::setListener )
+				.def( "getCenterAlign", &Sprite::getCenterAlign )
 				;
 			{
 				pybind::proxy_<Animation, pybind::bases<Sprite>>("Animation", false)
@@ -783,5 +798,7 @@ namespace Menge
 		pybind::def( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
 		pybind::def( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
 		pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
+
+		pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );
 	}
 }

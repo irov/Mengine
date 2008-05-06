@@ -1,3 +1,5 @@
+#	include "ScriptWrapper.h"
+
 #	include "ScriptClassWrapperDefine.h"
 #	include "ScriptDeclarationDefine.h"
 
@@ -59,7 +61,8 @@ namespace	Menge
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	REGISTER_SCRIPT_CLASS( Menge, ScriptSoundHelper, Base )
+	//REGISTER_SCRIPT_CLASS( Menge, ScriptSoundHelper, Base )
+	void ScriptWrapper::soundWrap()
 	{
 		pybind::def( "soundSetVolume", &ScriptSoundHelper::soundSetVolume );
 		pybind::def( "soundGetVolume", &ScriptSoundHelper::soundGetVolume );

@@ -26,6 +26,55 @@
 #	include "SceneManager.h"
 #	include "TextField.h"
 
+#	include "Camera2D.h"
+
+#	include "NodeFactory.h"
+
+#include "Entity.h"
+#include "Animation.h"
+#include "Arrow.h"
+#include "Emitter.h"
+#include "HotSpot.h"
+#include "Point.h"
+#include "RigidBody2D.h"
+#include "SoundEmitter.h"
+#include "Sprite.h"
+#include "TextField.h"
+#include "TileMap.h"
+#include "Track.h"
+#include "Video.h"
+#include "Actor.h"
+#include "Camera3D.h"
+#include "CapsuleController.h"
+#include "DiscreteEntity.h"
+#include "FFCamera.h"
+#include "RigidBody3D.h"
+#include "Layer2D.h"
+#include "Layer3D.h"
+#include "LayerScene.h"
+#include "SceneNode3D.h"
+
+# include "ResourceAnimation.h"
+# include "ResourceCapsuleController.h"
+# include "ResourceEmitterContainer.h"
+# include "ResourceFont.h"
+# include "ResourceImageCell.h"
+# include "ResourceImageDefault.h"
+# include "ResourceImageDynamic.h"
+# include "ResourceImageSet.h"
+# include "ResourceImageVideoStream.h"
+# include "ResourceMesh.h"
+# include "ResourceSkeleton.h"
+# include "ResourcePhysicBoxGeometry.h"
+# include "ResourcePhysicConcaveGeometry.h"
+# include "ResourcePhysicConvexGeometry.h"
+# include "ResourcePlaylist.h"
+# include "ResourceSound.h"
+# include "ResourceTileMap.h"
+# include "ResourceTileSet.h"
+
+
+
 
 #define MENGE_DELETE(x) if(x) { delete (x); (x) = NULL; }
 
@@ -270,6 +319,52 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const std::string & _applicationFile, const std::string& _args )
 	{
+
+		OBJECT_FACTORY( Camera2D );
+		OBJECT_FACTORY( Entity );
+		OBJECT_FACTORY( Animation );
+		OBJECT_FACTORY( Arrow );
+		OBJECT_FACTORY( Emitter );
+		OBJECT_FACTORY( HotSpot );
+		OBJECT_FACTORY( Point );
+		OBJECT_FACTORY( RigidBody2D );
+		OBJECT_FACTORY( SoundEmitter );
+		OBJECT_FACTORY( Sprite );
+		OBJECT_FACTORY( TextField );
+		OBJECT_FACTORY( TileMap );
+		OBJECT_FACTORY( Track );
+		OBJECT_FACTORY( Video );
+		OBJECT_FACTORY( Actor );
+		OBJECT_FACTORY( Camera3D );
+		OBJECT_FACTORY( CapsuleController );
+		OBJECT_FACTORY( DiscreteEntity );
+		OBJECT_FACTORY( FFCamera3D );
+		OBJECT_FACTORY( RigidBody3D );
+		OBJECT_FACTORY( Layer2D );
+		OBJECT_FACTORY( Layer3D );
+		OBJECT_FACTORY( LayerScene );
+		OBJECT_FACTORY( SceneNode3D );
+
+
+		RESOURCE_FACTORY( ResourceAnimation );
+		RESOURCE_FACTORY( ResourceCapsuleController );
+		RESOURCE_FACTORY( ResourceEmitterContainer );
+		RESOURCE_FACTORY( ResourceFont );
+		RESOURCE_FACTORY( ResourceImageCell );
+		RESOURCE_FACTORY( ResourceImageDefault );
+		RESOURCE_FACTORY( ResourceImageDynamic );
+		RESOURCE_FACTORY( ResourceImageSet );
+		RESOURCE_FACTORY( ResourceImageVideoStream );
+		RESOURCE_FACTORY( ResourceMesh );
+		RESOURCE_FACTORY( ResourceSkeleton );
+		RESOURCE_FACTORY( ResourcePhysicBoxGeometry );
+		RESOURCE_FACTORY( ResourcePhysicConcaveGeometry );
+		RESOURCE_FACTORY( ResourcePhysicConvexGeometry );
+		RESOURCE_FACTORY( ResourcePlaylist );
+		RESOURCE_FACTORY( ResourceSound );
+		RESOURCE_FACTORY( ResourceTileMap );
+		RESOURCE_FACTORY( ResourceTileSet );
+		
 		if( !m_interface->init( _applicationFile.c_str(), this ) )
 		{
 			return false;
@@ -546,6 +641,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()
 	{
+		m_renderEngine->onWindowClose();
 		quit();
 		//m_interface->stop();
 	}
@@ -604,4 +700,10 @@ namespace Menge
 	{
 		m_interface->notifyWindowModeChanged( _width, _height, _fullscreen );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::onActive( bool _active )
+	{
+		m_renderEngine->onWindowActive( _active );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

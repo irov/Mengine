@@ -8,6 +8,7 @@ class ApplicationListenerInterface
 public:
 	virtual void onUpdate( float _timing ) = 0;
 	virtual void onFocus( bool _focus ) = 0;
+	virtual void onActive( bool _active ) = 0;
 	virtual void onWindowMovedOrResized() = 0;
 	virtual void onClose() = 0;
 	virtual void onDestroy() = 0;

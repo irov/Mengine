@@ -2,7 +2,8 @@
 
 #	include "Viewport.h"
 
-#	include <list>
+//#	include <list>
+#	include <vector>
 
 namespace Menge
 {
@@ -29,8 +30,8 @@ namespace Menge
 
 	private:
 
-		typedef std::list<MousePickerTrap *> TListPickerTrap;
-		//typedef std::vector<MousePickerTrap *> TListPickerTrap;
+		//typedef std::list<MousePickerTrap *> TListPickerTrap;
+		typedef std::vector<MousePickerTrap *> TListPickerTrap;
 		TListPickerTrap m_listPickerTrap;
 
 		MousePickerTrap * m_lastPickerTrap;

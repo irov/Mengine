@@ -79,7 +79,7 @@ namespace Menge
 		{
 			unsigned int tileCode = s_tileNumToCode( tile, m_tiles );
 			char buffer[10];
-			std::string tilestr( itoa(tileCode, buffer, 10) );
+			std::string tilestr( _itoa(tileCode, buffer, 10) );
 			std::string name = m_tileSetFile + tilestr + ".png";
 			RenderImageInterface* image = Holder<RenderEngine>::hostage()->loadImage( name, 0 );
 

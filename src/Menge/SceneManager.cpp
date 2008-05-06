@@ -17,7 +17,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Node* SceneManager::createNode( const std::string & _type )
 	{
-		Node *node = NodeFactory::genNode(_type);
+		FactoryGenStruct gs;
+		gs.type = _type;
+
+		Node * node = TFactoryNode::generate( _type, gs );
 
 		if( node )
 		{

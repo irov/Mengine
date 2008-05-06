@@ -81,6 +81,7 @@ namespace Menge
 	public:
 		void onUpdate( float _timing ) override;
 		void onFocus( bool _focus ) override;
+		void onActive( bool _active ) override;
 		void onClose() override;
 		void onDestroy() override;
 		void onWindowMovedOrResized() override;
@@ -140,5 +141,7 @@ namespace Menge
 		PhysicEngine * m_physicEngine;
 		PhysicEngine2D * m_physicEngine2D;
 		XmlEngine*	m_xmlEngine;
+
+
 	};
 }

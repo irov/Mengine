@@ -105,6 +105,8 @@ namespace Menge
 		void onDeviceRestored() override;
 
 		void onWindowMovedOrResized();
+		void onWindowActive( bool _active );
+		void onWindowClose();
 
 	protected:
 		RenderSystemInterface * m_interface;

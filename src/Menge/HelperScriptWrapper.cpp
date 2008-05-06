@@ -1,3 +1,5 @@
+#	include "ScriptWrapper.h"
+
 #	include "ScriptClassWrapperDefine.h"
 #	include "ScriptDeclarationDefine.h"
 
@@ -105,7 +107,8 @@ namespace Menge
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
-	REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
+	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
+	void ScriptWrapper::helperWrap()
 	{
 		srand( (unsigned)time( NULL ) );
 

@@ -99,6 +99,9 @@ public:
 	void renderLine(const char * _camera, unsigned int _color,  const float * _begin, const float * _end);
 	OgreRenderSpriteManager* getRenderSpriteManager() const;
 	void onWindowMovedOrResized() override;
+	void onWindowActive( bool _active ) override;
+	void onWindowClose() override;
+
 private:
 
 	OgreSceneNode * m_rootSceneNode;

@@ -28,6 +28,8 @@ public:
 	void addResourceLocation( const char* _path ) override;
 	void initResources() override;
 
+	const TCHAR* getApplicationDataPath( const TCHAR* _game ) override;
+
 private:
 	Ogre::Archive * m_arch;
 };

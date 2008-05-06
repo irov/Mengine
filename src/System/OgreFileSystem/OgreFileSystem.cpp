@@ -231,3 +231,19 @@ void OgreFileSystem::initResources()
 
 	resourceGroupMgr->initialiseResourceGroup("Default");
 }
+//////////////////////////////////////////////////////////////////////////
+const TCHAR* OgreFileSystem::getApplicationDataPath( const TCHAR* _game )
+{
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32 
+	static TCHAR path[MAX_PATH];
+	::SHGetFolderPathAndSubDir(NULL,
+								CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
+								NULL,
+								SHGFP_TYPE_CURRENT,
+								_game,
+								path);
+	return path;
+	//	TEXT()
+#endif
+	return NULL;
+}

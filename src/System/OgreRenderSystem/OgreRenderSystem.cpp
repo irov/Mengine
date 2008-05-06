@@ -459,6 +459,7 @@ RenderVideoStreamInterface* OgreRenderSystem::loadImageVideoStream( const char* 
 	video->m_texture = clip->getVideoDriver()->getTexture();
 	m_videoTexturesMap.insert( std::make_pair( video, clip ) );
 
+	//return NULL; 
 	return video;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -649,5 +650,15 @@ OgreRenderSpriteManager* OgreRenderSystem::getRenderSpriteManager() const
 void OgreRenderSystem::onWindowMovedOrResized()
 {
 	m_renderWindow->windowMovedOrResized();
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::onWindowActive( bool _active )
+{
+	m_renderWindow->setActive( _active );
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::onWindowClose()
+{
+	m_renderWindow->destroy();
 }
 //////////////////////////////////////////////////////////////////////////

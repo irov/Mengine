@@ -126,7 +126,6 @@ namespace Menge
 		bool m_resetTiming;
 		float m_maxTiming;
 
-
 		std::string m_debugResourcesPath;
 		TextField* m_debugTextField;
 		char m_debugText[128];

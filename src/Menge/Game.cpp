@@ -35,6 +35,7 @@ namespace Menge
 		, m_fullScreen( true )
 		, m_vsync( false )
 		, m_renderDriver("D3D9")
+		, m_textureFiltering( true )
 	{
 		Holder<Player>::keep( new Player );
 		Holder<Amplifier>::keep( new Amplifier );
@@ -103,6 +104,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "Bits", "Value", m_bits );
 			XML_CASE_ATTRIBUTE_NODE( "Fullscreen", "Value", m_fullScreen );
 			XML_CASE_ATTRIBUTE_NODE( "VSync", "Value", m_vsync );
+			XML_CASE_ATTRIBUTE_NODE( "TextureFiltering", "Value", m_textureFiltering );
 			/*XML_CASE_NODE("Scenes")
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -863,6 +865,11 @@ namespace Menge
 	const std::string& Game::getPhysicSystemName() const
 	{
 		return m_physicSystemName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::getTextureFiltering() const
+	{
+		return m_textureFiltering;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

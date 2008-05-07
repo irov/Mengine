@@ -662,3 +662,7 @@ void OgreRenderSystem::onWindowClose()
 	m_renderWindow->destroy();
 }
 //////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::setTextureFiltering( bool _filter )
+{
+	m_spriteMgr->setTextureFiltering( _filter );
+}

@@ -98,6 +98,7 @@ namespace Menge
 		bool getVSync() const;
 		const std::string& getRenderDriverName() const;
 		const std::string& getPhysicSystemName() const;
+		bool getTextureFiltering() const;
 
 	protected:
 
@@ -147,6 +148,7 @@ namespace Menge
 		int m_bits;
 		bool m_fullScreen;
 		bool m_vsync;
+		bool m_textureFiltering;
 		std::string m_renderDriver;
 		std::string m_physicSystemName;
 

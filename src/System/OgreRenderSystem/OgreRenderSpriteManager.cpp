@@ -12,6 +12,7 @@ OgreRenderSpriteManager::OgreRenderSpriteManager()
 , isSorted(false)
 , m_hTexelOffset( 0.0f )
 , m_vTexelOffset( 0.0f )
+, m_textureFiltering( false )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -186,9 +187,15 @@ void OgreRenderSpriteManager::prepareForRender()
 	m_renderSys->_setTextureCoordCalculation(0, Ogre::TEXCALC_NONE);
 	m_renderSys->_setTextureCoordSet(0.f, 0.f);
 	//m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_POINT, Ogre::FO_POINT );
-	m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_POINT );
 	//m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_LINEAR );
-	//m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_POINT, Ogre::FO_POINT, Ogre::FO_POINT );
+	if( m_textureFiltering )
+	{
+		m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_LINEAR, Ogre::FO_LINEAR, Ogre::FO_POINT );
+	}
+	else
+	{
+		m_renderSys->_setTextureUnitFiltering(0, Ogre::FO_POINT, Ogre::FO_POINT, Ogre::FO_POINT );
+	}
 	m_renderSys->_setTextureAddressingMode(0, d_uvwAddressMode);
 	m_renderSys->_setTextureMatrix(0, Ogre::Matrix4::IDENTITY);
 	m_renderSys->_setAlphaRejectSettings(Ogre::CMPF_ALWAYS_PASS, 0);
@@ -521,4 +528,8 @@ void OgreRenderSpriteManager::preViewportUpdate( const Ogre::RenderTargetViewpor
 	currViewport = evt.source;
 }
 //////////////////////////////////////////////////////////////////////////
-
+void OgreRenderSpriteManager::setTextureFiltering( bool _filter )
+{
+	m_textureFiltering = _filter;
+}
+//////////////////////////////////////////////////////////////////////////

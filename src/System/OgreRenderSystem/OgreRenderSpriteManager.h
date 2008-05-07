@@ -100,6 +100,7 @@ public:
 	virtual void viewportAdded(const Ogre::RenderTargetViewportEvent& evt) {}
 	virtual void viewportRemoved(const Ogre::RenderTargetViewportEvent& evt) {}
 
+	void setTextureFiltering( bool _filter );
 
 private:
 
@@ -108,6 +109,7 @@ private:
 	Ogre::RenderSystem * m_renderSys;
 	Ogre::Viewport * m_viewport;
 	//Ogre::uint8 targetQueue;
+	bool m_textureFiltering;
 	bool afterQueue;
 	bool isSorted;
 	size_t underusedFramecount; 

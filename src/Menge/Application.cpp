@@ -216,6 +216,7 @@ namespace Menge
 		const std::string & renderDriver = game->getRenderDriverName();
 
 		m_renderEngine->initialize( renderDriver.c_str() );
+
 		/*if( renderDriver == "D3D9" )
 		{
 #	ifndef _DEBUG
@@ -248,6 +249,8 @@ namespace Menge
 		WINDOW_HANDLE winHandle = m_interface->createWindow( game->getTitle().c_str(), m_currentResolution.x, m_currentResolution.y, game->getFullscreen() );
 		m_renderEngine->createRenderWindow( m_currentResolution.x, m_currentResolution.y, game->getBits(), game->getFullscreen(), winHandle );
 		m_inputEngine->initialize( winHandle );
+
+		m_renderEngine->setTextureFiltering( game->getTextureFiltering() );
 
 		if( game->getFullscreen() )
 		{

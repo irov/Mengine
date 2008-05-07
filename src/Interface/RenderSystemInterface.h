@@ -254,6 +254,7 @@ public:
 	virtual void releaseLight( LightInterface * _light ) = 0;
 	virtual void releaseSceneNode( SceneNodeInterface * _interface ) = 0;
 
+	virtual void setTextureFiltering( bool _filter ) = 0;
 	virtual SceneNodeInterface * getRootSceneNode() const = 0;
 	virtual void setEventListener( RenderSystemListener* _listener ) = 0;
 	virtual void onWindowMovedOrResized() = 0;

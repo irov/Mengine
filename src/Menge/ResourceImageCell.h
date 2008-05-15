@@ -58,6 +58,7 @@ namespace Menge
 			mt::vec4f uv;
 			mt::vec2f offset;
 			mt::vec2f maxSize;
+			mt::vec2f size;
 		};
 
 		ImageDesc m_imageDesc;

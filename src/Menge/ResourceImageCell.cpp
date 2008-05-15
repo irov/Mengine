@@ -57,6 +57,7 @@ namespace Menge
 				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
 				desc.offset = mt::vec2f(0.f,0.f);
 				desc.maxSize = mt::vec2f(0.f,0.f);
+				desc.size = mt::vec2f(0.f,0.f);
 
 				std::string fileName; 
 
@@ -66,6 +67,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "UV", desc.uv );
 					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
 					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
+					XML_CASE_ATTRIBUTE( "Size", desc.size );
 				}
 
 				desc.fileName = m_params.category + fileName;
@@ -91,10 +93,12 @@ namespace Menge
 		m_imageFrame.maxSize = m_imageDesc.maxSize;
 		m_imageFrame.offset = m_imageDesc.offset;
 
-		float ku = m_imageFrame.uv.z - m_imageFrame.uv.x;
+	/*	float ku = m_imageFrame.uv.z - m_imageFrame.uv.x;
 		float kv = m_imageFrame.uv.w - m_imageFrame.uv.y;
 
 		m_imageFrame.size = mt::vec2f(m_imageFrame.size.x * ku,m_imageFrame.size.y * kv);
+	*/
+		m_imageFrame.size = m_imageDesc.size;
 
 		m_imageFrame.size.x /= (float)m_numX;
 		m_imageFrame.size.y /= (float)m_numY;

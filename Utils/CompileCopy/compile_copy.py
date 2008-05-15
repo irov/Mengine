@@ -25,8 +25,10 @@ copy_files = []
 atlas_width = 2048
 atlas_height = 2048
 
-optipng_use = True
-jpg_png_use = True
+optipng_use = False
+
+# always false
+jpg_png_use = False
 
 allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
 
@@ -55,7 +57,7 @@ def copyfiles():
         if os.path.splitext(src)[1] == ".png":
         
             if optipng_use:
-                exe = 'optipng.exe %(file)s -o1' % \
+                exe = 'optipng.exe %(file)s -o2' % \
                 {'file' : src }
 
                 subprocess.call(exe)

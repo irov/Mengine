@@ -103,6 +103,8 @@ namespace Menge
 		void minimizeWindow();
 		void notifyWindowModeChanged( float _width, float _height, bool _fullscreen );
 
+		void setMouseBounded( bool _bounded );
+
 	private:
 		ApplicationInterface* m_interface;
 

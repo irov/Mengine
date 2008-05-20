@@ -21,7 +21,10 @@ namespace Menge
 		void setNear( float _dist );
 		void setFar( float _dist );
 		void setAspect( float _aspect );
+		mt::vec3f getDirection();
 	
+		virtual const mt::quatf & getLocalOrient();
+
 		void yaw( float _angle );
 		void pitch( float _angle );
 		void roll( float _angle );
@@ -34,16 +37,15 @@ namespace Menge
 		void	_deactivate() override;
 		bool	_compile() override;
 		void	_release() override;
-		void	_update( float _timing ) override;
+		//void	_update( float _timing ) override;
 
 	protected:
 		CameraInterface * m_camera;
 
 	private:
-
-		float m_aspect;
 		float m_near;
 		float m_far;
+		float m_aspect;
 
 		mt::vec3f m_position;
 		mt::vec3f m_at;

@@ -62,7 +62,31 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::yaw( float _angle )
 	{
-		m_camera->yaw(_angle);
+		m_yaw += _angle;
+		if( m_yaw <= m_yawLimits.x )
+		{
+			m_yaw -= _angle;
+			_angle = m_yawLimits.x - m_yaw;
+			m_yaw = m_yawLimits.x;
+			m_yt = false;
+			this->callEvent( "YAW_STOP_LIMIT", "(O)", this->getScript() );
+			m_camera->yaw(_angle);
+			return;
+		}
+		else if( m_yaw >= m_yawLimits.y )
+		{
+			m_yaw -= _angle;
+			_angle = m_yawLimits.y - m_yaw;
+			m_yaw = m_yawLimits.y;
+			m_yt = false;
+			this->callEvent( "YAW_STOP_LIMIT", "(O)", this->getScript() );
+			m_camera->yaw(_angle);
+			return;
+		}
+		else
+		{
+			m_camera->yaw(_angle);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::pitch( float _angle )
@@ -90,7 +114,7 @@ namespace	Menge
 	bool Camera3D::_activate()
 	{
 
-		m_name = "MainCamera";
+		//m_name = "MainCamera";
 		m_camera = Holder<RenderEngine>::hostage()->createCamera(
 			m_name );
 
@@ -113,13 +137,24 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::_update( float _timing )
+	/*void Camera3D::_update( float _timing )
 	{
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera3D::_compile()
 	{
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec3f Camera3D::getDirection()
+	{
+		const float * dir = m_camera->getDirection();
+		return mt::vec3f( dir[0], dir[1], dir[2] );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::quatf & Camera3D::getLocalOrient()
+	{
+		return *(mt::quatf*)m_camera->getLocalOrient();
 	}
 }
 

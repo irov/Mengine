@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="OgreRenderSystem"
 	ProjectGUID="{3380B377-D83A-4BC7-84D3-921E7C646CEE}"
 	RootNamespace="OgreRenderSystem"
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\ogrenew\ogremain\include&quot;;&quot;$(SolutionDir)dependencies\videoplugin\TheoraVideo\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\Theora\include\&quot;;&quot;$(SolutionDir)dependencies\ogg\include\&quot;;&quot;$(SolutionDir)dependencies\vorbis\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\ptypes-1.8.3\include\&quot;;&quot;$(SolutionDir)Dependencies\ogrenew\RenderSystems\Direct3D9\include&quot;;&quot;$(SolutionDir)Dependencies\ogrenew\RenderSystems\Direct3D7\include&quot;;&quot;$(SolutionDir)dependencies\ogrenew\RenderSystems\GL\include&quot;;&quot;$(SolutionDir)dependencies\ogrenew\RenderSystems\GL\src\GLSL\include\&quot;;&quot;D:\Development\Microsoft DirectX SDK (March 2008)\Include&quot;"
+				AdditionalIncludeDirectories="Common\;&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\ogrenew\ogremain\include&quot;;&quot;$(SolutionDir)dependencies\videoplugin\TheoraVideo\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\Theora\include\&quot;;&quot;$(SolutionDir)dependencies\ogg\include\&quot;;&quot;$(SolutionDir)dependencies\vorbis\include\&quot;;&quot;$(SolutionDir)dependencies\videoplugin\ptypes-1.8.3\include\&quot;;&quot;$(SolutionDir)Dependencies\ogrenew\RenderSystems\Direct3D9\include&quot;;&quot;$(SolutionDir)Dependencies\ogrenew\RenderSystems\Direct3D7\include&quot;;&quot;$(SolutionDir)dependencies\ogrenew\RenderSystems\GL\include&quot;;&quot;$(SolutionDir)dependencies\ogrenew\RenderSystems\GL\src\GLSL\include\&quot;;&quot;D:\Development\Microsoft DirectX SDK (March 2008)\Include&quot;;&quot;$(SolutionDir)dependencies\DirectX\DX7\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB;OGRE_STATIC_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

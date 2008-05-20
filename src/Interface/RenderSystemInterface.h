@@ -140,6 +140,7 @@ public:
 	virtual void getAABB( float * _min, float * _max ) const = 0;
 	virtual bool getSphereFrustumContact(int _numPlane, float x, float y, float z, float R, float & depth, float & px, float & py, float & pz) = 0;
 	virtual void translate( float * _v ) = 0;
+	virtual const float * getLocalOrient() = 0;
 };
 
 class	SceneNodeInterface
@@ -158,6 +159,7 @@ public:
 	virtual void yaw( float _angle ) = 0;
 	virtual void pitch( float _angle ) = 0;
 	virtual void roll( float _angle ) = 0;
+	virtual void setFixedYawAxis( bool _fixed ) = 0;
 	virtual void attachEntity( EntityInterface * _entity ) = 0;
 	virtual void attachLight( LightInterface * _light ) = 0;
 	virtual void attachCamera( CameraInterface * _camera ) = 0;
@@ -183,7 +185,8 @@ class	RenderSystemInterface
 public:
 
 	virtual bool initialize( const char* _driver ) = 0;
-	virtual bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle ) = 0;
+	virtual bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
+										int _FSAAType, int _FSAAQuality ) = 0;
 	virtual unsigned int getResolutionList( float ** ) = 0;
 	// Render frame into _image
 	// int rect[4] - rectangle represents desired frame area in pixels

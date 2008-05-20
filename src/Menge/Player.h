@@ -57,6 +57,8 @@ namespace Menge
 		void unregGlobalKeyEventable( GlobalKeyHandler * _handler );
 
 		void debugRender();
+		void onMouseLeave();
+		void onMouseEnter();
 	
 	private:
 		Avatar * m_avatar;
@@ -65,6 +67,7 @@ namespace Menge
 		
 		Camera2D * m_renderCamera2D;
 		
+		bool m_arrowHided;
 		bool m_switchScene;
 		bool m_destroyOldScene;
 		bool m_restartScene;

@@ -250,12 +250,15 @@ bool OgreRenderSystem::initialize( const char* _driver )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreRenderSystem::createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle )
+bool OgreRenderSystem::createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
+											int _FSAAType, int _FSAAQuality )
 {
 	Ogre::NameValuePairList params;
 	params.insert( std::make_pair("Colour Depth", Ogre::StringConverter::toString( _bits ) ) );
 	//params.insert( std::make_pair("vsync", Ogre::StringConverter::toString( true ) ) );
 	params.insert( std::make_pair( "externalWindowHandle", Ogre::StringConverter::toString( ( (unsigned int)_winHandle)  ) ) );
+	params.insert( std::make_pair( "FSAA", Ogre::StringConverter::toString( _FSAAType ) ) );
+	params.insert( std::make_pair( "FSAAQuality", Ogre::StringConverter::toString( _FSAAQuality ) ) );
 
 	m_renderWindow = m_root->createRenderWindow( "Menge", _width, _height, _fullscreen, &params );
 
@@ -275,8 +278,9 @@ bool OgreRenderSystem::createRenderWindow( float _width, float _height, int _bit
 	sceneCam->setFarClipDistance( 1000.0f );
 	sceneCam->setNearClipDistance( 0.2f );*/
 	//sceneCam->setFOVy(90);
-	//m_viewport->setBackgroundColour( Ogre::ColourValue::Blue );
-
+#ifdef _DEBUG
+	m_viewport->setBackgroundColour( Ogre::ColourValue::Blue );
+#endif
 	//m_rootSceneNode = new OgreSceneNode( m_sceneMgr->getRootSceneNode(), 0 );*/
 
 	// setup GUI system

@@ -247,8 +247,13 @@ namespace Menge
 		}
 
 		WINDOW_HANDLE winHandle = m_interface->createWindow( game->getTitle().c_str(), m_currentResolution.x, m_currentResolution.y, game->getFullscreen() );
-		m_renderEngine->createRenderWindow( m_currentResolution.x, m_currentResolution.y, game->getBits(), game->getFullscreen(), winHandle );
+		m_renderEngine->createRenderWindow( m_currentResolution.x, m_currentResolution.y, game->getBits(), game->getFullscreen(), winHandle,
+											game->getFSAAType(), game->getFSAAQuality() );
 		m_inputEngine->initialize( winHandle );
+		if( game->getFullscreen() )
+		{
+			setMouseBounded( true );
+		}
 
 		m_renderEngine->setTextureFiltering( game->getTextureFiltering() );
 
@@ -670,6 +675,7 @@ namespace Menge
 		Holder<InputEngine>::empty();
 		Holder<SoundEngine>::empty();
 		Holder<XmlEngine>::empty();
+		Holder<LogEngine>::empty();
 
 		MENGE_DELETE( m_physicEngine );
 		MENGE_DELETE( m_physicEngine2D );
@@ -679,6 +685,7 @@ namespace Menge
 		MENGE_DELETE( m_inputEngine );
 		MENGE_DELETE( m_soundEngine );
 		MENGE_DELETE( m_xmlEngine );
+		MENGE_DELETE( m_logEngine );
 		
 		Holder<ScriptEngine>::destroy();
 
@@ -707,6 +714,13 @@ namespace Menge
 	void Application::onActive( bool _active )
 	{
 		m_renderEngine->onWindowActive( _active );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setMouseBounded( bool _bounded )
+	{
+		if( m_renderEngine->getFullscreenMode() ) return;
+		m_inputEngine->setMouseBounded( _bounded );
+		m_interface->setHandleMouse( !_bounded );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

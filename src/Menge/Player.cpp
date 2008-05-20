@@ -28,6 +28,7 @@ namespace Menge
 	, m_nextScene(0)
 	, m_destroyOldScene( false )
 	, m_restartScene( false )
+	, m_arrowHided( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -305,6 +306,7 @@ namespace Menge
 			m_scene = m_nextScene;
 			//m_scene->activate();
 			m_renderCamera2D->activate();
+			//Holder<ResourceManager>::hostage()->_dumpResources();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -366,4 +368,17 @@ namespace Menge
 			m_scene->debugRender();
 		}		
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::onMouseLeave()
+	{
+		m_arrowHided = m_arrow->isHide();
+		m_arrow->hide( true );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::onMouseEnter()
+	{
+		if( !m_arrowHided )
+			m_arrow->hide( false );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

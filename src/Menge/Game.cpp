@@ -36,8 +36,11 @@ namespace Menge
 		, m_vsync( false )
 		, m_renderDriver("D3D9")
 		, m_textureFiltering( true )
+		, m_FSAAType( 0 )
+		, m_FSAAQuality( 0 )
 	{
-		Holder<Player>::keep( new Player );
+		m_player = new Player();
+		Holder<Player>::keep( m_player );
 		Holder<Amplifier>::keep( new Amplifier );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -71,7 +74,8 @@ namespace Menge
 		}
 
 		Holder<Amplifier>::destroy();
-		Holder<Player>::destroy();
+		Holder<Player>::empty();
+		delete m_player; m_player = NULL;
 		Holder<ScheduleManager>::destroy();
 		Holder<MousePickerSystem>::destroy();
 	}
@@ -105,6 +109,8 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "Fullscreen", "Value", m_fullScreen );
 			XML_CASE_ATTRIBUTE_NODE( "VSync", "Value", m_vsync );
 			XML_CASE_ATTRIBUTE_NODE( "TextureFiltering", "Value", m_textureFiltering );
+			XML_CASE_ATTRIBUTE_NODE( "FSAAType", "Value", m_FSAAType );
+			XML_CASE_ATTRIBUTE_NODE( "FSAAQuality", "Value", m_FSAAQuality );
 			/*XML_CASE_NODE("Scenes")
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -350,8 +356,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			handle = Holder<Player>::hostage()
-				->handleKeyEvent( _key, _char, _isDown );
+			handle = m_player->handleKeyEvent( _key, _char, _isDown );
 		}	
 
 		//RenderImageInterface* image = Holder<RenderEngine>::hostage()->createImage( "shot", 200, 200 );
@@ -373,7 +378,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			handle = Holder<Player>::hostage()->handleMouseButtonEvent( _button, _isDown );
+			handle = m_player->handleMouseButtonEvent( _button, _isDown );
 		}	
 
 		return handle;
@@ -390,8 +395,7 @@ namespace Menge
 		
 		if( !handle )
 		{
-			handle = Holder<Player>::hostage()
-				->handleMouseMove( _x, _y, _whell );
+			handle = m_player->handleMouseMove( _x, _y, _whell );
 		}		
 
 		return handle;
@@ -405,6 +409,7 @@ namespace Menge
 			Holder<ScriptEngine>::hostage()
 				->callModuleFunction( m_pyPersonality, "onMouseLeave" );
 		}
+		m_player->onMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::handleMouseEnter()
@@ -415,12 +420,12 @@ namespace Menge
 			Holder<ScriptEngine>::hostage()
 				->callModuleFunction( m_pyPersonality, "onMouseEnter" );
 		}
+		m_player->onMouseEnter();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update( float _timing )
 	{
-		Holder<Player>::hostage()
-			->update( _timing );
+		m_player->update( _timing );
 
 		Holder<ScheduleManager>::hostage()
 			->update( _timing );
@@ -435,14 +440,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()
 	{
-		Holder<Player>::hostage()
-			->render();
+		m_player->render();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::debugRender()
 	{
-		Holder<Player>::hostage()
-			->debugRender();
+		m_player->debugRender();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::string Game::getPathEntities( const std::string& _entity ) const
@@ -475,8 +478,7 @@ namespace Menge
 	{
 		if( _params.empty() == false )
 		{
-			Holder<Player>::hostage()
-					->setCurrentScene( _params );
+			m_player->setCurrentScene( _params );
 		}
 		else
 		{
@@ -592,8 +594,7 @@ namespace Menge
 		registerEventListener( "MOUSE_BUTTON", "onHandleMouseButtonEvent", m_pyPersonality );
 		registerEventListener( "MOUSE_MOVE", "onHandleMouseMove", m_pyPersonality );
 
-		Holder<Player>::hostage()
-			->init();
+		m_player->init();
 
 		bool result = false;
 
@@ -802,7 +803,7 @@ namespace Menge
 		return m_resourceResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::onResourceLoaded()
+	void Game::onResourceLoaded( const std::string& _name )
 	{
 		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, "onHandleResourceLoaded" ) )
@@ -870,6 +871,16 @@ namespace Menge
 	bool Game::getTextureFiltering() const
 	{
 		return m_textureFiltering;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int Game::getFSAAType() const
+	{
+		return m_FSAAType;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int Game::getFSAAQuality() const
+	{
+		return m_FSAAQuality;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

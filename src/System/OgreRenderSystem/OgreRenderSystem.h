@@ -28,7 +28,8 @@ public:
 
 public:
 	bool initialize( const char* _driver ) override;
-	bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle ) override;
+	bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
+								int _FSAAType, int _FSAAQuality ) override;
 	unsigned int getResolutionList(  float ** _list ) override;
 
 	void render( RenderImageInterface* _outImage, const int* rect = NULL ) override;

@@ -19,6 +19,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::SceneNode3D()
 		: m_interface(0)
+		, m_yt( false )
+		, m_yawSpeed( 0.0f )
+		, m_yawTime( 400.0f )
+		, m_yawAddSpeed( 0.0f )
+		, m_yawAccelDown( 150.0f )
+		, m_yawSpeedLimit( 0.01f )
+		, m_yaw( 0.0f )
+		, m_pitch( 0.0f )
+		, m_yawLimits( -180.0f, 180.0f )
+		, m_listener( NULL )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::~SceneNode3D()
@@ -63,11 +73,36 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::yaw( float _angle )
 	{
-		m_interface->yaw( _angle );
+		m_yaw += _angle;
+		if( m_yaw <= m_yawLimits.x )
+		{
+			m_yaw -= _angle;
+			_angle = m_yawLimits.x - m_yaw;
+			m_yaw = m_yawLimits.x;
+			m_yt = false;
+			this->callEvent( "YAW_STOP_LIMIT", "(O)", this->getScript() );
+			m_interface->yaw(_angle);
+			return;
+		}
+		else if( m_yaw >= m_yawLimits.y )
+		{
+			m_yaw -= _angle;
+			_angle = m_yawLimits.y - m_yaw;
+			m_yaw = m_yawLimits.y;
+			m_yt = false;
+			this->callEvent( "YAW_STOP_LIMIT", "(O)", this->getScript() );
+			m_interface->yaw(_angle);
+			return;
+		}
+		else
+		{
+			m_interface->yaw( _angle );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::pitch( float _angle )
 	{
+		m_pitch += _angle;
 		m_interface->pitch( _angle );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -146,6 +181,32 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::_update( float _timing )
+	{
+		if( m_yt )
+		{
+			yaw( m_yawSpeed );
+
+			if( ::fabsf( m_yawSpeed ) > m_yawSpeedLimit )
+			{
+				m_yawSpeed /= ::powf( 2, _timing / m_yawAccelDown );
+			}
+			else
+			{
+				m_yawSpeed = 0.0f;
+				m_yt = false;
+				this->callEvent( "YAW_STOP", "(O)", this->getScript() );
+			}
+
+			m_yawSpeed += m_yawAddSpeed * _timing / m_yawTime;
+			m_yawTiming -= _timing;
+			if ( m_yawSpeed > m_yawAddSpeed || m_yawSpeed < m_yawAddSpeed || m_yawTiming < 0 )
+			{
+				m_yawAddSpeed = 0.0f;
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::render()
 	{
 	};
@@ -158,4 +219,47 @@ namespace Menge
 	void SceneNode3D::_release()
 	{
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::setYawSpeed( float _yawAddSpeed, float _accelDown, float _yawTime )
+	{
+		m_yt = true;
+		m_yawAddSpeed = _yawAddSpeed;
+		m_yawTiming = m_yawTime;
+		m_yawAccelDown = _accelDown;
+		m_yawTime = _yawTime;
+		//m_yawSpeed = 0.0f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::setYawLimits( const mt::vec2f& _limits )
+	{
+		m_yawLimits = _limits;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SceneNode3D::getYaw() const
+	{
+		return m_yaw;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::setListener( PyObject* _listener )
+	{
+		m_listener = _listener;
+		this->_onSetListener();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::_onSetListener()
+	{
+		registerEventListener("YAW_STOP", "onYawStop", m_listener );
+		registerEventListener("YAW_STOP_LIMIT", "onYawStopLimit", m_listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode3D::setFixedYawAxis( bool _fixed )
+	{
+		m_interface->setFixedYawAxis( _fixed );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SceneNode3D::getPitch() const
+	{
+		return m_pitch;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

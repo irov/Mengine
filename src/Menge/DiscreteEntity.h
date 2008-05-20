@@ -33,7 +33,7 @@ namespace Menge
 		void	setMaterial( const std::string & _material );
 		void	setSubEntityMaterial( const std::string & _subEntity, const std::string & _material );
 		void	createRenderToTexture( const std::string& _renderCamera, int _width, int _height );
-
+	
 		void	setAnimationEnabled( const std::string& _animName, bool _enable );
 		void	playAnimation( const std::string& _animName );	
 		void	pauseAnimation( const std::string& _animName );

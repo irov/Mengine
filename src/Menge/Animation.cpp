@@ -45,6 +45,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationResource( const std::string & _resource )
 	{
+		if( m_resourcename == _resource ) return;
 		m_resourcename = _resource;
 		recompile();
 	}
@@ -98,7 +99,7 @@ namespace	Menge
 					--m_currentFrame;
 
 					callEvent( "END_ANIMATION", "(O)", this->getScript() );
-					return;
+					break;
 				}
 				else
 				{

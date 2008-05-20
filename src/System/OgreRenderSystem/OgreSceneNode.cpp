@@ -149,7 +149,7 @@ void OgreSceneNode::addChild( SceneNodeInterface * _node )
 	{
 		m_sceneNode->addChild( child );
 	}
-
+	
 	ogreSceneNode->m_parentNode = this;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -158,3 +158,9 @@ SceneNodeInterface * OgreSceneNode::createChildSceneNode( const char * _name )
 	Ogre::SceneNode * ogreSceneNode = m_sceneNode->createChildSceneNode( _name );
 	return new OgreSceneNode(ogreSceneNode, this);
 }
+//////////////////////////////////////////////////////////////////////////
+void OgreSceneNode::setFixedYawAxis( bool _fixed )
+{
+	m_sceneNode->setFixedYawAxis( _fixed );
+}
+//////////////////////////////////////////////////////////////////////////

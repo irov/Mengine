@@ -29,6 +29,8 @@ namespace Menge
 		
 		virtual void flip( bool _x ) {}
 		virtual void setScale( const mt::vec2f& _scale ) {}
+		virtual void alphaTo( float _alpha, float _time );
+		virtual void setAlpha( float _alpha );
 		virtual const mt::vec2f& getScale() const { static mt::vec2f s(1.0f, 1.0f); return s; }
 		void setListener( PyObject* _listener );
 

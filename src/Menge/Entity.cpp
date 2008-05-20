@@ -308,6 +308,31 @@ namespace	Menge
 				}
 			}
 
+			if( m_scaleTo )
+			{
+				if( m_scaleTime <= _timing  )
+				{
+					setScale( m_scalePoint );
+
+					m_scaleTo = false;
+
+					this->callEvent("SCALE_END", "()" );
+				}
+				else
+				{
+					m_scaleTime -= _timing;
+
+					float t = _timing / m_scaleTime;
+
+					const mt::vec2f & scl = getScale();
+
+					//mt::vec2f curr_dir = mt::slerp_v2_v2( dir, m_targetDir, t );
+					mt::vec2f curr_scl = m_scalePoint * t + scl * ( 1.0f - t );
+
+					setScale( curr_scl );
+				}
+			}
+
 			RigidBody2D::_update( _timing );
 			//m_interface->set
 			this->callEvent("UPDATE", "(f)", _timing );

@@ -56,6 +56,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DiscreteEntity::_update( float _timing )
 	{
+		SceneNode3D::_update( _timing );
 	//	float min[3];
 	//float max[3];
 	//	m_entInterface->getAABB(min,max);

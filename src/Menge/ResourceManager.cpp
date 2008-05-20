@@ -137,16 +137,18 @@ namespace Menge
 				it != m_listeners.end();
 				it++)
 			{
-				(*it)->onResourceLoaded();
+				(*it)->onResourceLoaded( _name );
 			}
 
 			for( TMapResourceManagerListenerScript::iterator it = m_scriptListeners.begin();
 				it != m_scriptListeners.end();
 				it++)
 			{
+				//static char str[100];
+				//strcpy( str, _name.c_str() );
 				PyObject * result = 
 					Holder<ScriptEngine>::hostage()
-					->callFunction( it->second, "()", it->first );
+					->callFunction( it->second, "(s)", _name.c_str() );
 			}
 
 		}
@@ -289,4 +291,35 @@ namespace Menge
 
 		return resource;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::directResourceUnload( const std::string & _name )
+	{
+		TMapResource::iterator it_find = m_mapResource.find( _name );
+
+		if( it_find == m_mapResource.end() )
+		{
+			return;
+		}
+
+		ResourceReference * ref = it_find->second;
+		while( ref->countReference() )
+		{
+			ref->decrementReference();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::_dumpResources()
+	{
+		FILE* file = fopen( "ResourceDump.log", "a" );
+		fprintf( file, "Dumping resources...\n");
+		for( TMapResource::iterator it = m_mapResource.begin()
+			, it_end = m_mapResource.end()
+			; it != it_end
+			; it++ )
+		{
+			fprintf( file, "--> %s : %d\n", it->first.c_str(), it->second->countReference() );
+		}
+		fclose( file );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -27,7 +27,7 @@ namespace Menge
 		virtual const mt::quatf & getWorldOrient();
 		virtual const mt::vec3f & getWorldPosition();
 
-		const mt::quatf & getLocalOrient();
+		virtual const mt::quatf & getLocalOrient();
 		const mt::vec3f & getLocalPosition();
 
 		void setLocalPosition( const mt::vec3f & _position );
@@ -36,9 +36,14 @@ namespace Menge
 		void translate( const mt::vec3f & _delta );
 		void setScale( const mt::vec3f & _scale );
 		
-		void yaw( float _angle );
-		void pitch( float _angle );
-		void roll( float _angle );
+		virtual void yaw( float _angle );
+		virtual void pitch( float _angle );
+		virtual void roll( float _angle );
+		void setFixedYawAxis( bool _fixed );
+		void setYawSpeed( float _yawSpeed, float _accelDown, float _yawTime );
+		void setYawLimits( const mt::vec2f& _limits );
+		float getYaw() const;
+		float getPitch() const;
 
 	public:
 		void addChild(SceneNode3D * _node);
@@ -49,14 +54,31 @@ namespace Menge
 
 		void loaderTransformation_( XmlElement * _xml );
 
+		void setListener( PyObject* _listener );
+
 	protected:
 		bool _activate() override;
 		//void _deactivate() override;
 		void _release() override;
 		void _addChildren( SceneNode3D * _node ) override;
+		void _update( float _timing ) override;
 
 	protected:
 		SceneNodeInterface * m_interface;
+
+		float m_yaw;
+		float m_pitch;
+		mt::vec2f m_yawLimits;
+		bool m_yt;
+		float m_yawSpeed;
+		float m_yawTime;
+		float m_yawAddSpeed;
+		float m_yawTiming;
+		float m_yawSpeedLimit;
+		float m_yawAccelDown;
+
+		PyObject * m_listener;
+		virtual void _onSetListener();
 
 	private:
 		//Camera3D * m_camera;

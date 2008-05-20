@@ -39,6 +39,7 @@ public:
 	//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
 	SystemDLLInterface* loadSystemDLL( const char* _dll ) override;
 	void unloadSystemDLL(SystemDLLInterface* _interface ) override;
+	void setHandleMouse( bool _handle ) override;
 
 public:
 	LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
@@ -60,6 +61,7 @@ private:
 	float m_winWidth;
 	float m_winHeight;
 	bool	m_fullscreen;
+	bool m_handleMouse;
 
 	float m_primaryMonitorAspect;
 

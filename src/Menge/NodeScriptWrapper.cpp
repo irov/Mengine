@@ -208,6 +208,12 @@ namespace Menge
 				->directResourceRelease( _nameResource );
 		}
 
+		static void directResourceUnload( const std::string & _nameResource )
+		{
+			Holder<ResourceManager>::hostage()
+				->directResourceUnload( _nameResource );
+		}
+
 		static PyObject * createShot( const std::string& _name, mt::vec2f _min,  mt::vec2f _max )
 		{
 			int rect[4] = { (int)_min.x , (int)_min.y, (int)_max.x, (int)_max.y };
@@ -266,6 +272,7 @@ namespace Menge
 
 		static void setFullscreenMode( bool _fullscreen )
 		{
+			Holder<Application>::hostage()->setMouseBounded( true );
 			Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
 		}
 
@@ -323,7 +330,7 @@ namespace Menge
 		}
 		static void s_setMouseBounded( bool _bounded )
 		{
-			Holder<InputEngine>::hostage()->setMouseBounded( _bounded );
+			Holder<Application>::hostage()->setMouseBounded( _bounded );
 		}
 		static bool setBlow( bool _active )
 		{
@@ -539,14 +546,15 @@ namespace Menge
 			.def( "attachEntityToBone", &Skeleton::attachEntityToBone )
 			;
 
-		pybind::class_<Camera3D>("Camera3D")
+		/*pybind::class_<Camera3D>("Camera3D")
 			.def( pybind::init<>() )
 			.def( "setPosition", &Camera3D::setPosition )
 			.def( "lookAt", &Camera3D::lookAt )
-			.def( "yaw", &Camera3D::yaw )
+			//.def( "yaw", &Camera3D::yaw )
 			.def( "pitch", &Camera3D::pitch )
 			.def( "roll", &Camera3D::roll )
-			;
+			.def( "getDirection", &Camera3D::getDirection )
+			;*/
 
 		
 		pybind::class_<FFCamera3D>("FFCamera3D")
@@ -570,12 +578,14 @@ namespace Menge
 				.def( "getParent", &SceneNode2D::getParent )
 				.def( "setListener", &SceneNode2D::setListener )
 				.def( "isHide", &SceneNode2D::isHide )
+				.def( "alphaTo", &SceneNode2D::alphaTo )
+				.def( "setAlpha", &SceneNode2D::setAlpha )
 			;
 
 		pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
 				.def( "getWorldOrient", &SceneNode3D::getWorldOrient )
 				.def( "getWorldPosition", &SceneNode3D::getWorldPosition )
-				.def( "getOrient", &SceneNode3D::getLocalOrient )
+				.def( "getLocalOrient", &SceneNode3D::getLocalOrient )
 				.def( "getPosition", &SceneNode3D::getLocalPosition )
 				.def( "setPosition", &SceneNode3D::setLocalPosition )
 				.def( "setOrient", &SceneNode3D::setLocalOrient )
@@ -583,8 +593,15 @@ namespace Menge
 				.def( "yaw", &SceneNode3D::yaw )
 				.def( "pitch", &SceneNode3D::pitch )
 				.def( "roll", &SceneNode3D::roll )
+				.def( "setFixedYawAxis", &SceneNode3D::setFixedYawAxis )
 				.def( "translate", &SceneNode3D::translate )
 				.def( "addChild", &SceneNode3D::addChild )
+				.def( "setYawSpeed", &SceneNode3D::setYawSpeed )
+				.def( "setYawLimits", &SceneNode3D::setYawLimits )
+				.def( "getYaw", &SceneNode3D::getYaw )
+				.def( "getPitch", &SceneNode3D::getPitch )
+				.def( "setListener", &SceneNode3D::setListener )
+
 				//.def( "getCamera", &SceneNode3D::getCamera )
 			;
 
@@ -613,17 +630,19 @@ namespace Menge
 				.def( "getFilteredPosition", &CapsuleController::getFilteredPosition )
 				;
 
-			pybind::proxy_<Camera3D/*, pybind::bases<SceneNode3D>*/>("Camera3D", false)
+			pybind::proxy_<Camera3D, pybind::bases<SceneNode3D> >("Camera3D", false)
 				.def( "setPosition", &Camera3D::setPosition )
 				.def( "lookAt", &Camera3D::lookAt )
-				.def( "yaw", &Camera3D::yaw )
-				.def( "pitch", &Camera3D::pitch )
-				.def( "roll", &Camera3D::roll )
+			//	.def( "yaw", &Camera3D::yaw )
+			//	.def( "pitch", &Camera3D::pitch )
+			//	.def( "roll", &Camera3D::roll )
+				.def( "getDirection", &Camera3D::getDirection )
 				;
 
 			pybind::proxy_<DiscreteEntity, pybind::bases<SceneNode3D>>("DiscreteEntity", false)
 				.def( "createRenderToTexture", &DiscreteEntity::createRenderToTexture )
 				.def( "playAnimation", &DiscreteEntity::playAnimation )
+				.def( "setMaterial", &DiscreteEntity::setMaterial )
 				//.def( "playAnimation", &DiscreteEntity::playAnimation )
 				;
 
@@ -664,8 +683,8 @@ namespace Menge
 				.def( "setColor", &TextField::setColor )
 				.def( "getColor", &TextField::getColor )
 				.def( "colorTo", &TextField::colorTo )
-				.def( "alphaTo", &TextField::alphaTo )
-				.def( "setAlpha", &TextField::setAlpha )
+				//.def( "alphaTo", &TextField::alphaTo )
+				//.def( "setAlpha", &TextField::setAlpha )
 				.def( "setOutlineColor", &TextField::setOutlineColor )
 				.def( "getOutlineColor", &TextField::getOutlineColor )
 				.def( "getLength", &TextField::getLength )
@@ -712,9 +731,9 @@ namespace Menge
 				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
 				.def( "setColor", &Sprite::setColor )
 				.def( "getColor", &Sprite::getColor )
-				.def( "setAlpha", &Sprite::setAlpha )
+				//.def( "setAlpha", &Sprite::setAlpha )
 				.def( "colorTo", &Sprite::colorTo )
-				.def( "alphaTo", &Sprite::alphaTo )
+				//.def( "alphaTo", &Sprite::alphaTo )
 				.def( "flip", &Sprite::flip )
 				.def( "setListener", &Sprite::setListener )
 				.def( "getCenterAlign", &Sprite::getCenterAlign )
@@ -774,6 +793,7 @@ namespace Menge
 
 		pybind::def( "directResourceCompile", &ScriptMethod::directResourceCompile );
 		pybind::def( "directResourceRelease", &ScriptMethod::directResourceRelease );
+		pybind::def( "directResourceUnload", &ScriptMethod::directResourceUnload );
 
 		pybind::def( "quitApplication", &ScriptMethod::quitApplication );
 		pybind::def( "createShot", &ScriptMethod::createShot );

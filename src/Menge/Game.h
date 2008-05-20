@@ -84,7 +84,7 @@ namespace Menge
 		void handleMouseLeave();
 		void handleMouseEnter();
 
-		void onResourceLoaded() override;
+		void onResourceLoaded( const std::string& _name ) override;
 		void onResourceUnLoaded() override;
 		
 	public:
@@ -99,9 +99,12 @@ namespace Menge
 		const std::string& getRenderDriverName() const;
 		const std::string& getPhysicSystemName() const;
 		bool getTextureFiltering() const;
+		int getFSAAType() const;
+		int getFSAAQuality() const;
 
 	protected:
 
+		Player* m_player;
 		std::string m_title;
 		mt::vec2f	m_resourceResolution;
 		bool m_fixedContentResolution;
@@ -149,6 +152,8 @@ namespace Menge
 		bool m_fullScreen;
 		bool m_vsync;
 		bool m_textureFiltering;
+		int	m_FSAAType;
+		int m_FSAAQuality;
 		std::string m_renderDriver;
 		std::string m_physicSystemName;
 

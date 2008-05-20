@@ -151,4 +151,26 @@ namespace Menge
 	{
 		return m_layer;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::alphaTo( float _alpha, float _time )
+	{
+		for( TListChildren::iterator it = m_listChildren.begin(),
+				it_end = m_listChildren.end();
+				it != it_end;
+			it++ )
+		{
+			static_cast<SceneNode2D*>(*it)->alphaTo( _alpha, _time );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SceneNode2D::setAlpha( float _alpha )
+	{
+		for( TListChildren::iterator it = m_listChildren.begin(),
+				it_end = m_listChildren.end();
+				it != it_end;
+			it++ )
+		{
+			static_cast<SceneNode2D*>(*it)->setAlpha( _alpha );
+		}
+	}
 }

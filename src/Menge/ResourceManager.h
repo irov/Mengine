@@ -16,7 +16,7 @@ namespace Menge
 	class ResourceManagerListener
 	{
 	public:
-		virtual void onResourceLoaded() = 0;
+		virtual void onResourceLoaded( const std::string& _name ) = 0;
 		virtual void onResourceUnLoaded() = 0;
 	};
 
@@ -46,6 +46,7 @@ namespace Menge
 	public:
 		bool directResourceCompile( const std::string & _name );
 		void directResourceRelease( const std::string & _name );
+		void directResourceUnload( const std::string & _name );
 
 		void addListener( ResourceManagerListener* _listener );
 		void addListener( PyObject* _listener );
@@ -54,6 +55,10 @@ namespace Menge
 
 		void loaderDataBlock( XmlElement * _xml );
 		void loaderResource( XmlElement * _xml );
+
+#ifdef _DEBUG
+		void _dumpResources();
+#endif
 	protected:
 
 	private:
@@ -67,5 +72,7 @@ namespace Menge
 
 		typedef std::map< PyObject*, PyObject* > TMapResourceManagerListenerScript;
 		TMapResourceManagerListenerScript m_scriptListeners;
+
+
 	};
 }

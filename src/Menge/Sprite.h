@@ -100,7 +100,7 @@ namespace Menge
 		virtual void colorTo( const Color & _color, float _time );
 
 		void setAlpha( float _alpha );
-		virtual void alphaTo( float _alpha, float _time );
+		void alphaTo( float _alpha, float _time );
 		//! Установка цвета спрайта.
 		/*!
 		\param _color значение цвета

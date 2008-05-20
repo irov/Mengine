@@ -84,6 +84,7 @@ WinApplication::WinApplication()
 , m_winWidth( 800 )
 , m_winHeight( 600 )
 , m_fullscreen( false )
+, m_handleMouse( true )
 {}
 //////////////////////////////////////////////////////////////////////////
 WinApplication::~WinApplication()
@@ -215,6 +216,13 @@ void WinApplication::run()
 		}
 
 		::Sleep(1);
+	}
+
+	// Clean up
+	if( m_hWnd )
+	{
+		::DestroyWindow( m_hWnd );
+		m_hWnd = NULL;
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -403,13 +411,16 @@ LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 		m_listener->onClose();
 		break;
 	case WM_MOUSEMOVE:
-		if( !m_cursorInArea )
+		if( m_handleMouse )
 		{
-			m_cursorInArea = true;
-			::ShowCursor( FALSE );
-			m_listener->onMouseEnter();
+			if( !m_cursorInArea )
+			{
+				m_cursorInArea = true;
+				::ShowCursor( FALSE );
+				m_listener->onMouseEnter();
+			}
+			m_listener->onMouseMove( (float)(short)LOWORD(lParam), (float)(short)HIWORD(lParam), 0 );
 		}
-		m_listener->onMouseMove( (float)(short)LOWORD(lParam), (float)(short)HIWORD(lParam), 0 );
 		break;
 	case WM_LBUTTONDOWN:
 		m_listener->onMouseButtonEvent( 0, true );
@@ -489,3 +500,9 @@ float WinApplication::getDeltaTime()
 
 	return deltaTime;
 }
+//////////////////////////////////////////////////////////////////////////
+void WinApplication::setHandleMouse( bool _handle )
+{
+	m_handleMouse = _handle;
+}
+//////////////////////////////////////////////////////////////////////////

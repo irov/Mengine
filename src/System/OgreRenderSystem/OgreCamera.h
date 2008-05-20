@@ -30,6 +30,7 @@ public:
 	int isAABBIntersect( float * _min, float * _max, float & _dx, float & _dz );
 	bool getSphereFrustumContact(int _numPlane, float x, float y, float z, float R, float & depth, float & px, float & py, float & pz) override;
 	int isSphereIntersect( float x, float y, float z, float R, float * q, float t );
+	const float * getLocalOrient() override;
 public:
 	Ogre::Camera * getOgreCamera();
 

@@ -32,7 +32,8 @@ void Ogre3dCamera::rotate(float * _dir, float _angle)
 //////////////////////////////////////////////////////////////////////////
 const float * Ogre3dCamera::getDirection() const
 {
-	return m_camera->getDirection().ptr();
+	static Ogre::Vector3 dir = m_camera->getDirection();
+	return dir.ptr();
 }
 //////////////////////////////////////////////////////////////////////////
 void Ogre3dCamera::setOrient(float * _q)
@@ -306,4 +307,10 @@ void Ogre3dCamera::translate( float * _v )
 	pos.y+=_v[1];
 	pos.z+=_v[2];
 	m_camera->setPosition(pos);
+}
+//////////////////////////////////////////////////////////////////////////
+const float * Ogre3dCamera::getLocalOrient()
+{
+	const Ogre::Quaternion& orient = m_camera->getOrientation();
+	return orient.ptr();
 }

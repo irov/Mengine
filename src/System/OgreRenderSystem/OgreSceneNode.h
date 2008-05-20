@@ -13,7 +13,7 @@ public:
 	const float * getWorldOrient() override;
 	const float * getWorldPosition() override;
 	float * getLocalPosition() override;
-	float * getLocalOrient() override;
+	virtual float * getLocalOrient() override;
 	void setLocalPosition( const float * _position ) override;
 	void setLocalOrient( const float * _orient ) override;
 	void translate( const float * _pos ) override;
@@ -22,6 +22,7 @@ public:
 	void yaw( float _angle ) override;
 	void pitch( float _angle ) override;
 	void roll( float _angle ) override;
+	void setFixedYawAxis( bool _fixed ) override;
 	void attachEntity( EntityInterface * _entity ) override;
 	void attachLight( LightInterface * _light ) override;
 	void attachCamera( CameraInterface * _camera ) override;

@@ -6,6 +6,8 @@
 
 #	include "AstralaxEmitter.h"
 
+#	define MAX_TEXTURES 20
+
 class AstralaxParticleSystem : public ParticleSystemInterface
 {
 public:
@@ -21,7 +23,7 @@ public:
 	RenderParticle * nextParticle();
 	void unlockEmitter( EmitterInterface * _emitter );
 private:
-	MAGIC_TEXTURE m_texture;
+	MAGIC_TEXTURE m_texture[MAX_TEXTURES];
 	int m_currentX;
 	int m_currentY;
 

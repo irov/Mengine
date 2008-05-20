@@ -32,12 +32,14 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle /* = 0  */)
+	bool RenderEngine::createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle /* = 0  */,
+											int _FSAAType, int _FSAAQuality )
 	{
 		m_fullscreen = _fullscreen;
 		m_viewportWidth = _width;
 		m_viewportHeight = _height;
-		m_windowCreated = m_interface->createRenderWindow( _width, _height, _bits, _fullscreen, _winHandle );
+		m_windowCreated = m_interface->createRenderWindow( _width, _height, _bits, _fullscreen, _winHandle,
+															_FSAAType, _FSAAQuality );
 		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////

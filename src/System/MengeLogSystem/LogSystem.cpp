@@ -1,4 +1,4 @@
-#	include "OgreLogSystem.h"
+#	include "LogSystem.h"
 
 #	include <iostream>
 #	include <time.h>
@@ -12,7 +12,7 @@ bool initInterfaceSystem( LogSystemInterface** _interface )
 		return false;
 	}
 	
-	*_interface = new OgreLogSystem();
+	*_interface = new MengeLogSystem();
 	
 	return true;
 }
@@ -25,21 +25,21 @@ void releaseInterfaceSystem( LogSystemInterface* _interface )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-OgreLogSystem::OgreLogSystem()
+MengeLogSystem::MengeLogSystem()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-OgreLogSystem::~OgreLogSystem()
+MengeLogSystem::~MengeLogSystem()
 {
 	m_logStream.close();
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreLogSystem::startLog( const char* _filename )
+void MengeLogSystem::startLog( const char* _filename )
 {
 	m_logStream.open( _filename );
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreLogSystem::logMessage( const char * _message, bool _maskDebug )
+void MengeLogSystem::logMessage( const char * _message, bool _maskDebug )
 {
 	if ( !_maskDebug )
 		std::cerr << _message << std::endl;

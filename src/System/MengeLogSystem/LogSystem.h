@@ -4,12 +4,12 @@
 //#	include "Interface/FileSystemInterface.h"
 #	include <fstream>
 
-class OgreLogSystem
+class MengeLogSystem
 	: public LogSystemInterface
 {
 public:
-	OgreLogSystem();
-	~OgreLogSystem();
+	MengeLogSystem();
+	~MengeLogSystem();
 
 	void startLog( const char* _filename ) override;
 

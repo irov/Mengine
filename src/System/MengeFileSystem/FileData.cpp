@@ -1,5 +1,5 @@
 
-#	include "OgreFileData.h"
+#	include "FileData.h"
 
 #	include <assert.h>
 #	include <fstream>

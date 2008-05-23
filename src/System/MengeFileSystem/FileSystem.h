@@ -1,17 +1,15 @@
 #	pragma once
 
-#	include "Ogre.h"
-
 #	include "Interface\FileSystemInterface.h"
 
 class FileManager;
 
-class OgreFileSystem
+class MengeFileSystem
 	: public FileSystemInterface
 {
 public:
-	OgreFileSystem();
-	~OgreFileSystem();
+	MengeFileSystem();
+	~MengeFileSystem();
 
 public:
 	void loadPath( const char * _path ) override;

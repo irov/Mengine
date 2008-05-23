@@ -1,6 +1,6 @@
 
 #	include "FileManager.h"
-#	include "OgreFileData.h"
+#	include "FileData.h"
 
 #	include "Config/Config.h"
 

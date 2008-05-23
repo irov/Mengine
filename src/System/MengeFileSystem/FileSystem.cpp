@@ -1,6 +1,6 @@
 
-#	include "OgreFileSystem.h"
-#	include "OgreFileData.h"
+#	include "FileSystem.h"
+#	include "FileData.h"
 #	include "FileManager.h"
 
 #	include "shlobj.h"
@@ -19,7 +19,7 @@ bool initInterfaceSystem( FileSystemInterface **_system )
 {
 	try
 	{
-		*_system = new OgreFileSystem();
+		*_system = new MengeFileSystem();
 	}
 	catch (...)
 	{
@@ -31,36 +31,36 @@ bool initInterfaceSystem( FileSystemInterface **_system )
 //////////////////////////////////////////////////////////////////////////
 void releaseInterfaceSystem( FileSystemInterface *_system )
 {
-	delete static_cast<OgreFileSystem*>( _system );
+	delete static_cast<MengeFileSystem*>( _system );
 }
 //////////////////////////////////////////////////////////////////////////
-OgreFileSystem::OgreFileSystem()
+MengeFileSystem::MengeFileSystem()
 {
 	m_fileManager = new FileManager("");
 }
 //////////////////////////////////////////////////////////////////////////
-OgreFileSystem::~OgreFileSystem()
+MengeFileSystem::~MengeFileSystem()
 {
 	delete m_fileManager;
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreFileSystem::loadPath( const char * _path )
+void MengeFileSystem::loadPath( const char * _path )
 {
 	//m_arch = Ogre::ArchiveManager::getSingleton().load( _path, "FileSystem" );
 	m_fileManager->setInitPath( _path );
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreFileSystem::loadPak( const char * _pak )
+void MengeFileSystem::loadPak( const char * _pak )
 {
 	//Ogre::ArchiveManager::getSingleton().load( _pak, "Zip" );
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreFileSystem::unloadPak( const char * _pak )
+void MengeFileSystem::unloadPak( const char * _pak )
 {
 	//Ogre::ArchiveManager::getSingleton().unload( _pak );
 }
 //////////////////////////////////////////////////////////////////////////
-FileDataInterface *	OgreFileSystem::openFile( const char * _filename )
+FileDataInterface *	MengeFileSystem::openFile( const char * _filename )
 {
 	MengeFileData * fileData = 0;
 
@@ -90,17 +90,17 @@ FileDataInterface *	OgreFileSystem::openFile( const char * _filename )
 	return fileData;
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreFileSystem::closeFile( FileDataInterface * _fd )
+void MengeFileSystem::closeFile( FileDataInterface * _fd )
 {
 	delete static_cast<MengeFileData*>(_fd);
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreFileSystem::existFile( const char * _filename )
+bool MengeFileSystem::existFile( const char * _filename )
 {
 	return m_fileManager->exists( _filename );
 }
 //////////////////////////////////////////////////////////////////////////
-const char * OgreFileSystem::platformBundlePath()
+const char * MengeFileSystem::platformBundlePath()
 {
 #if OTARGET_PLATFORM == TP_APPLE
 #	include <CoreFoundation/CoreFoundation.h>
@@ -124,7 +124,7 @@ const char * OgreFileSystem::platformBundlePath()
 #endif
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreFileSystem::createFolder( const char * _path )
+bool MengeFileSystem::createFolder( const char * _path )
 {
 #if TARGET_PLATFORM == TP_WINDOWS 
 #
@@ -157,7 +157,7 @@ bool OgreFileSystem::createFolder( const char * _path )
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreFileSystem::deleteFolder( const char* _path )
+bool MengeFileSystem::deleteFolder( const char* _path )
 {
 	// needed for some plugins
 #if TARGET_PLATFORM == TP_WINDOWS 
@@ -168,7 +168,7 @@ bool OgreFileSystem::deleteFolder( const char* _path )
 	//char* dir = new char[len + 2];
 	char dir[MAX_PATH];
 	::GetCurrentDirectoryA( MAX_PATH, dir );
-	strcat( dir, _path );
+	strcat_s( dir, _path );
 	std::size_t len = strlen( dir );
 	dir[len] = 0;
 	dir[len+1] = 0;
@@ -195,7 +195,7 @@ bool OgreFileSystem::deleteFolder( const char* _path )
 		(LPTSTR) &lpMsgBuf,
 		0, NULL );
 
-	sprintf(szBuf, "failed with error %d: %s", dw, lpMsgBuf); 
+	sprintf_s(szBuf, "failed with error %d: %s", dw, lpMsgBuf); 
 
 	MessageBox(NULL, szBuf, "Error", MB_OK); 
 
@@ -203,7 +203,7 @@ bool OgreFileSystem::deleteFolder( const char* _path )
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreFileSystem::changeDir( const char* _path )
+bool MengeFileSystem::changeDir( const char* _path )
 {
 #if TARGET_PLATFORM == TP_WINDOWS 
 	if( !_chdir( _path ) )
@@ -215,7 +215,7 @@ bool OgreFileSystem::changeDir( const char* _path )
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////
-const TCHAR* OgreFileSystem::getApplicationDataPath( const TCHAR* _game )
+const TCHAR* MengeFileSystem::getApplicationDataPath( const TCHAR* _game )
 {
 #if TARGET_PLATFORM == TP_WINDOWS 
 	static TCHAR path[MAX_PATH];

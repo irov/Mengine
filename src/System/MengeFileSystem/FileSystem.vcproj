@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="OgreFileSystem"
+	Name="MengeFileSystem"
 	ProjectGUID="{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}"
 	RootNamespace="OgreFileSystem"
 	Keyword="Win32Proj"
@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(ProjectDir)$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)lib"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="4"
 			ATLMinimizesCRunTimeLibraryUsage="true"
@@ -162,6 +162,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\FileData.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\FileData.h"
+			>
+		</File>
+		<File
 			RelativePath=".\FileManager.cpp"
 			>
 		</File>
@@ -170,23 +178,11 @@
 			>
 		</File>
 		<File
-			RelativePath=".\OgreFileData.cpp"
+			RelativePath=".\FileSystem.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\OgreFileData.h"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreFileSystem.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreFileSystem.def"
-			>
-		</File>
-		<File
-			RelativePath=".\OgreFileSystem.h"
+			RelativePath=".\FileSystem.h"
 			>
 		</File>
 	</Files>

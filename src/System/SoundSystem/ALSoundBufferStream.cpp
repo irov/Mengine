@@ -1,5 +1,6 @@
 
 #include "ALSoundBufferStream.h"
+#include "ALSoundSource.h"
 
 #include "AL/Alut.h"
 #include <windows.h>
@@ -185,9 +186,9 @@ void ALSoundBufferStreamUpdater::stop()
 	return 0;
 }*/
 
-void ALSoundBufferStreamUpdater::update()
+bool ALSoundBufferStreamUpdater::update()
 {
-	if( !m_updating ) return;
+	if( !m_updating ) return false;
 
 	int buffersProcessed;
 	int queuedBuffers;
@@ -282,9 +283,10 @@ void ALSoundBufferStreamUpdater::update()
 			// Finished playing
 			//break;
 			m_updating = false;
+			return false;
 		}
 	}
-
+	return true;
 }
 
 unsigned int ALSoundBufferStreamUpdater::decodeOggVorbis(OggVorbis_File* _oggVorbisFile, char* _decodeBuffer, unsigned int _bufferSize, unsigned int _channels)
@@ -307,11 +309,13 @@ unsigned int ALSoundBufferStreamUpdater::decodeOggVorbis(OggVorbis_File* _oggVor
 }
 
 ALSoundBufferStream::ALSoundBufferStream( const std::string& _filename ) 
-: ALSoundBuffer( _filename )
+: ALSoundBuffer()
 , m_updater(NULL)
 , m_buffer2(0)
 {
-	alGenBuffers(1, &m_buffer2);
+	m_filename = _filename;
+	alGenBuffers( 1, &m_alID );
+	alGenBuffers( 1, &m_buffer2 );
 }
 //////////////////////////////////////////////////////////////////////////
 ALSoundBufferStream::~ALSoundBufferStream()
@@ -390,5 +394,10 @@ void ALSoundBufferStream::record(ALuint sourcename)
 
 void ALSoundBufferStream::stop()
 {
+	/*for(unsigned int i = 0; i < m_sources.size(); i++)
+	{
+		m_sources[i]->stop();
+		static_cast<ALSoundSource*>(m_sources[i])->setSoundBuffer(NULL);
+	}*/
 	m_updater->stop();
 }

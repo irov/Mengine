@@ -16,5 +16,7 @@
 
 //	Target Platform
 #	define TP_WINDOWS		(1)
+#	define TP_APPLE			(2)
+#	define TP_LINUX			(3)
 
 #	define TARGET_PLATFORM	TP_WINDOWS

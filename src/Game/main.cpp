@@ -78,9 +78,6 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	initInterfaceSystem( &inputSystem );
 	app.setInputSystem( inputSystem );
 	
-	LogSystemInterface * logSystem;
-	initInterfaceSystem( &logSystem );
-	app.setLogSystem( logSystem );
 
 #	if	MENGE_PARTICLES	== (1)
 
@@ -97,6 +94,10 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	RenderSystemInterface * renderSystem;
 	initInterfaceSystem( &renderSystem );
 	app.setRenderSystem( renderSystem );
+
+	LogSystemInterface * logSystem;
+	initInterfaceSystem( &logSystem );
+	app.setLogSystem( logSystem );
 
 	SoundSystemInterface * soundSystem;
 	initInterfaceSystem( &soundSystem );
@@ -145,12 +146,12 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	releaseInterfaceSystem( platform );
 
 	releaseInterfaceSystem( soundSystem );
+	releaseInterfaceSystem( logSystem );
 	releaseInterfaceSystem( renderSystem );
 	releaseInterfaceSystem( physicSystem2D );
 #	if	MENGE_PARTICLES	== (1)
 	releaseInterfaceSystem( particleSystem );
 #	endif
-	releaseInterfaceSystem( logSystem );
 	releaseInterfaceSystem( inputSystem );
 	releaseInterfaceSystem( fileSystem );
 	

@@ -200,10 +200,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createGame()
 	{
-		MENGE_LOG("create game file [%s] ...\n", m_gameInfo.c_str() );
+		//MENGE_LOG("create game file [%s] ...\n", m_gameInfo.c_str() );
 
 
-		MENGE_LOG("init game ...\n");
+		//MENGE_LOG("init game ...\n");
 
 		if( m_physicEngine )
 		{
@@ -424,7 +424,7 @@ namespace Menge
 		// prepare resources
 		Holder<ScriptEngine>::keep( new ScriptEngine );
 		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
-		MENGE_LOG("init scriptEngine ...\n");
+		//MENGE_LOG("init scriptEngine ...\n");
 		scriptEngine->init();
 
 		Game* game = new Game;
@@ -432,7 +432,7 @@ namespace Menge
 
 		if( m_xmlEngine->parseXmlFileM( m_gameInfo, game, &Game::loader ) == false )
 		{
-			MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
+			//MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
 			return false;
 		}
 

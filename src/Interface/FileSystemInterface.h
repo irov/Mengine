@@ -39,8 +39,6 @@ public:
 	virtual bool createFolder( const char * _path ) = 0;
 	virtual bool deleteFolder( const char * _path ) = 0;
 	virtual bool changeDir( const char* _path ) = 0;
-	virtual void addResourceLocation( const char* _path ) = 0;
-	virtual void initResources() = 0;
 
 	virtual const TCHAR * getApplicationDataPath( const TCHAR* _game ) = 0;
 };

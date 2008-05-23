@@ -36,8 +36,6 @@ namespace Menge
 
 		void closeFile( FileDataInterface * _fd );
 		bool changeDir( const std::string& _dir );
-		void addResourceLocation( const std::string& _path );
-		void initResources();
 
 	protected:
 		FileSystemInterface * m_interface;

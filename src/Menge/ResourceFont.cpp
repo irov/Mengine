@@ -95,6 +95,10 @@ namespace Menge
 		
 		m_whsRatio = getCharRatio('A');
 
+		TMapGlyph::const_iterator it = m_glyphs.find('A');
+		mt::vec4f rect = it->second.rect;
+		m_initSize = static_cast<int>( ( rect[3] - rect[1] ) * m_image->getHeight() );
+
 		Holder<FileEngine>::hostage()->closeFile( stream );
 
 		return true;
@@ -192,6 +196,11 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int ResourceFont::getInitSize()
+	{
+		return m_initSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

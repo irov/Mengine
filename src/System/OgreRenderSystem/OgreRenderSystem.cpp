@@ -123,6 +123,9 @@ OgreRenderSystem::~OgreRenderSystem()
 		m_root->uninstallPlugin( m_renderPlugin );
 		delete m_renderPlugin;
 	}
+
+	Ogre::Root* root = Ogre::Root::getSingletonPtr();
+	delete root;
 }
 //////////////////////////////////////////////////////////////////////////
 CameraInterface * OgreRenderSystem::createCamera(const char * _name)
@@ -226,8 +229,7 @@ SceneNodeInterface * OgreRenderSystem::getRootSceneNode() const
 //////////////////////////////////////////////////////////////////////////
 bool OgreRenderSystem::initialize( const char* _driver )
 {
-	//m_root = new Ogre::Root( "","", "Menge.log" );
-	m_root = Ogre::Root::getSingletonPtr();
+	m_root = new Ogre::Root( "","", "Menge.log" );
 	
 #if	RENDER_SYSTEM == RS_D3D9
 	m_renderPlugin = new Ogre::D3D9Plugin();
@@ -670,3 +672,23 @@ void OgreRenderSystem::setTextureFiltering( bool _filter )
 {
 	m_spriteMgr->setTextureFiltering( _filter );
 }
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::addResourceLocation( const char* _path )
+{
+	char dir[MAX_PATH];
+	::GetCurrentDirectoryA( MAX_PATH, dir );
+
+	Ogre::ResourceGroupManager * resourceGroupMgr = 
+	Ogre::ResourceGroupManager::getSingletonPtr();
+
+	resourceGroupMgr->addResourceLocation( Ogre::String(dir) + Ogre::String(_path), "FileSystem", "Default", false );
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::initResources()
+{
+	Ogre::ResourceGroupManager * resourceGroupMgr = 
+	Ogre::ResourceGroupManager::getSingletonPtr();
+
+	resourceGroupMgr->initialiseResourceGroup("Default");
+}
+//////////////////////////////////////////////////////////////////////////

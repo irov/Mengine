@@ -29,6 +29,9 @@ namespace Menge
 		bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle = 0,
 								int _FSAAType = 0, int _FSAAQuality = 0 );
 
+		void addResourceLocation( const std::string& _path );
+		void initResources();
+
 		void render( RenderImageInterface* _renderTargetImage, const int* rect = NULL );
 		void render();
 

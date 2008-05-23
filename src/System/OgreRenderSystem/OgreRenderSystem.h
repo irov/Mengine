@@ -30,6 +30,10 @@ public:
 	bool initialize( const char* _driver ) override;
 	bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
 								int _FSAAType, int _FSAAQuality ) override;
+
+	void addResourceLocation( const char* _path ) override;
+	void initResources() override;
+
 	unsigned int getResolutionList(  float ** _list ) override;
 
 	void render( RenderImageInterface* _outImage, const int* rect = NULL ) override;

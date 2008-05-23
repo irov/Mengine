@@ -26,7 +26,7 @@ namespace     Menge
 		, m_length( 0.0f, 0.0f )
 		, m_color( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_outlineColor( 1.0f, 1.0f, 1.0f, 1.0f )
-		, m_height( 12.0f )
+		, m_height( 0.0f )
 		, m_centerAlign( false )
 		, m_alignOffset( 0.f, 0.f )
 		, m_changingColorTime( 0.0f )
@@ -115,6 +115,11 @@ namespace     Menge
 				MENGE_LOG( "Error: Outline Image can't loaded '%s'", m_outlineFontName.c_str() );
 				return false;
 			}
+		}
+
+		if( m_height == 0.0f )
+		{
+			m_height = m_resource->getInitSize();
 		}
 
 		return true;

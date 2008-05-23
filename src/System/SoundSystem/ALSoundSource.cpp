@@ -72,14 +72,16 @@ void ALSoundSource::play()
 	}
 	else
 	{
-		//printf("playing\n");
+		//::Sleep( 100 );
+		//printf("playing %s\n", m_soundBuffer->getFilename().c_str() );
+		//alSourcei( m_sourceName->name, AL_BUFFER, NULL );
 		alSourcei( m_sourceName->name, AL_BUFFER, m_soundBuffer->getBufferName() );
 		if( alGetError() != AL_FALSE ) printf("ALERROR!\n");
 		alSourcePlay( m_sourceName->name );
 		if( alGetError() != AL_FALSE ) printf("ALERROR!\n");
 	}
 
-	if( !m_looped && !m_soundBuffer->isStreamed() )
+	if( !m_looped /*&& !m_soundBuffer->isStreamed()*/ )
 	{
 		//printf("register playing %d ms\n", getLengthMs());
 		m_soundSystem->registerPlaying( this, getLengthMs() );

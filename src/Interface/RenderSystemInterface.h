@@ -188,6 +188,10 @@ public:
 	virtual bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
 										int _FSAAType, int _FSAAQuality ) = 0;
 	virtual unsigned int getResolutionList( float ** ) = 0;
+
+	virtual void addResourceLocation( const char* _path ) = 0;
+	virtual void initResources() = 0;
+
 	// Render frame into _image
 	// int rect[4] - rectangle represents desired frame area in pixels
 	virtual void render( RenderImageInterface* _image, const int* rect = 0 ) = 0;

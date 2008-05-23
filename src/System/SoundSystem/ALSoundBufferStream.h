@@ -20,7 +20,7 @@ public:
 
 	static void* run(void*);
 
-	void update();
+	bool update();
 
 	void setLooping(bool _looping)	{ m_looping = _looping; }
 	bool isLooping()				{ return m_looping; }

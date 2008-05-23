@@ -487,7 +487,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
-		Holder<RenderEngine>::hostage()->setContentResolution( m_resourceResolution );
+		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+		renderEngine->setContentResolution( m_resourceResolution );
 
 		ScriptEngine::TListModulePath m_listModulePath;
 
@@ -572,12 +573,12 @@ namespace Menge
 		it != it_end;
 		++it)	
 		{
-			fileEngine->addResourceLocation( "/" + (*it).first + (*it).second  );
+			renderEngine->addResourceLocation( "/" + (*it).first + (*it).second  );
 		}
 
 		if( !m_listResourceLocation.empty() )
 		{
-			fileEngine->initResources();
+			renderEngine->initResources();
 		}
 
 		m_defaultArrow = getArrow( m_defaultArrowName );

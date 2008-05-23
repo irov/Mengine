@@ -1,6 +1,6 @@
 
 //#include "AL/ALut.h"
-#include "Vorbis/Vorbisfile.h"
+//#include "Vorbis/Vorbisfile.h"
 
 #include "ALSoundBuffer.h"
 #include "ALSoundBufferStream.h"
@@ -12,36 +12,70 @@
 //#include <stdlib.h>
 #include <algorithm>
 
-unsigned int DecodeOggVorbis(OggVorbis_File *psOggVorbisFile, char *pDecodeBuffer, unsigned int ulBufferSize, unsigned int ulChannels);
-void Swap(short &s1, short &s2);
-unsigned int GetSampleSize(ALenum format);
-
-ALSoundSystem::ALSoundSystem() :
-m_soundVelocity(343.0f),
-m_dopplerFactor(1.0f),
-m_distanceModel(None),
-m_sourceNamesNum(0)
+//unsigned int DecodeOggVorbis(OggVorbis_File *psOggVorbisFile, char *pDecodeBuffer, unsigned int ulBufferSize, unsigned int ulChannels);
+//void Swap(short &s1, short &s2);
+//unsigned int GetSampleSize(ALenum format);
+//////////////////////////////////////////////////////////////////////////
+ALSoundSystem::ALSoundSystem()
+: m_soundVelocity(343.0f)
+, m_dopplerFactor(1.0f)
+, m_distanceModel(None)
+, m_sourceNamesNum(0)
+, m_initialized( false )
 {
-	char *initString = 0L;//"DirectSound", "DirectSound3D", ;
-	m_device = alcOpenDevice(NULL);
-
-    if(!m_device)
+}
+//////////////////////////////////////////////////////////////////////////
+ALSoundSystem::~ALSoundSystem()
+{
+	//alDeleteSources(m_sourceNum, m_sources);
+	for( TSourceVector::size_type i = 0; i < m_sources.size(); i++ )
 	{
-		// TODO: error handling
+		delete m_sources[i];
+	}
+	m_sources.clear();
+
+	//::alutExit();
+	alcMakeContextCurrent(NULL);
+	alcDestroyContext(m_context);
+	alcCloseDevice(m_device);
+
+	delete m_sulk;
+}
+//////////////////////////////////////////////////////////////////////////
+bool ALSoundSystem::initialize()
+{
+	if( m_initialized )
+	{
+		return false;
 	}
 
-    m_context = alcCreateContext(m_device, NULL);
-    if(!m_context || alcGetError(m_device) != ALC_NO_ERROR) 
-	{
-      if(m_context)
-	  {
-	      alcDestroyContext(m_context);
-	  }
-      alcCloseDevice(m_device);
+	//char *initString = 0L;//"DirectSound", "DirectSound3D", ;
+	m_device = alcOpenDevice( NULL );
 
-    } 
-    alcMakeContextCurrent(m_context);
- 
+	if( !m_device )
+	{
+		return false;
+	}
+
+	m_context = alcCreateContext( m_device, NULL );
+	if( !m_context || alcGetError( m_device ) != ALC_NO_ERROR) 
+	{
+		if( m_context )
+		{
+			alcDestroyContext( m_context );
+		}
+		alcCloseDevice( m_device );
+		return false;
+	} 
+
+	alcMakeContextCurrent( m_context );
+
+	//
+	m_soundVelocity = 343.0f;
+	m_dopplerFactor = 1.0f;
+	m_distanceModel = None;
+	m_sourceNamesNum = 0;
+
 	for(;m_sourceNamesNum < MAX_SOURCENAMES_NUM; m_sourceNamesNum++)
 	{
 		ALuint sourceName;
@@ -52,65 +86,19 @@ m_sourceNamesNum(0)
 		m_sourceNames[m_sourceNamesNum].name = sourceName;
 	}
 	m_sources.reserve(MAX_SOUND_SOURCES);
-	//::alutInitWithoutContext(NULL, NULL);
 	m_deletingSources.reserve(MAX_SOUND_SOURCES);
-//	m_buffers.reserve(100);
-	/*ALuint t;
-	for(int i=0; i < 30; i++)
-	alGenSources(1, &t);
-	int ms[1] = { -1 };
-	alcGetIntegerv(mDevice, ALC_STEREO_SOURCES, 1, ms);
-	printf("%d\n", ms[1]);*/
-	// Check for EAX 2.0 support
-  /*  unsigned char szFnName[256];
-    ALboolean g_bEAX = alIsExtensionPresent("EAX2.0");
-    if (g_bEAX == AL_TRUE)
-    {
-      sprintf((char*)szFnName, "EAXSet");
-      ALvoid *eaxSet = alGetProcAddress((const ALchar*)szFnName);
-      if (eaxSet == NULL) g_bEAX = AL_FALSE;
-    }
-    if (g_bEAX == AL_TRUE)
-    {
-      sprintf((char*)szFnName,"EAXGet");
-      ALvoid *eaxGet = alGetProcAddress((const ALchar*)szFnName);
-      if (eaxGet == NULL) g_bEAX = AL_FALSE;
-    }
-    if (g_bEAX == AL_TRUE)
-	{
-		WF_INFO_LOG("Using OpenAL EAX2.0 extension");
-      //std::cerr << "Using OpenAL EAX2.0 extension" << std::endl;
-	}
-    else
-	{
-		WF_INFO_LOG("No OpenAL EAX2.0 extensions available");
-      //std::cerr << "No OpenAL EAX2.0 extensions available" << std::endl;
-	}
-  }*/
 
 	// Environment settings 
 	alSpeedOfSound(m_soundVelocity);
-	//alDopplerVelocity(mSoundVelocity);
 	alDopplerFactor(m_dopplerFactor);
 	setDistanceModel(m_distanceModel);
 
 	m_sulk = new SulkSystem();
+
+	m_initialized = true;
+	return true;
 }
-
-ALSoundSystem::~ALSoundSystem()
-{
-	//alDeleteSources(m_sourceNum, m_sources);
-	for(unsigned int i = 0; i < m_sources.size(); i++)
-		delete m_sources[i];
-
-	//::alutExit();
-	alcMakeContextCurrent(NULL);
-	alcDestroyContext(m_context);
-	alcCloseDevice(m_device);
-
-	delete m_sulk;
-}
-
+//////////////////////////////////////////////////////////////////////////
 void    ALSoundSystem::setListenerOrient( float * _position, float * _front, float * _top)
 {
 	memcpy( m_listenerPosition, _position, sizeof(float)*3 );
@@ -120,7 +108,7 @@ void    ALSoundSystem::setListenerOrient( float * _position, float * _front, flo
 	alListenerfv(AL_POSITION, m_listenerPosition);
 	alListenerfv(AL_ORIENTATION, m_listenerOrientation);
 }
-
+//////////////////////////////////////////////////////////////////////////
 SoundSourceInterface*   ALSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener )
 {
 	//ALSoundSource* source = new ALSoundSource(this);
@@ -139,13 +127,13 @@ SoundSourceInterface*   ALSoundSystem::createSoundSource( bool _isHeadMode, Soun
 	}
 
 	source->setSoundBuffer( static_cast<ALSoundBuffer*>(_sample) );
-	source->setAmbient(_isHeadMode);
-	source->setSoundNodeListener(_listener);
-	source->setUsed(true);
+	source->setAmbient( _isHeadMode );
+	source->setSoundNodeListener( _listener );
+	source->setUsed( true );
 
 	return source;
 }
-
+//////////////////////////////////////////////////////////////////////////
 SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _filename, bool _isStream )
 {
 	ALSoundBuffer* buffer = NULL;
@@ -165,61 +153,12 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 	}
 	else
 	{
-		buffer = new ALSoundBuffer( _filename );
+		buffer = new ALSoundBuffer();
 
-		ALsizei size,freq;
-		ALenum format;
-		ALvoid *data = NULL;
 
-		bool done = false;
-
-		/*if( !strcmp( _filename + (strlen(_filename) - 4), ".wav" ) )
+		if( !strcmp( _filename + (strlen(_filename) - 4), ".ogg" ) )
 		{
-			ALfloat frequency;
-			data = alutLoadMemoryFromFile( _filename, &format, &size, &frequency);
-			freq = frequency;
-			//buffer->setBufferName( alutCreateBufferFromFile( _filename ) ); 
-
-			if( data )
-			{
-				buffer->setLenghtMs(size * 1000 / (frequency * GetSampleSize(format) ));
-			}
-			else
-			{
-				delete buffer;
-				buffer = NULL;
-			}
-		}
-		else*/ if( !strcmp( _filename + (strlen(_filename) - 4), ".ogg" ) )
-		{
-			OggVorbis_File oggfile;
-			FILE* filehandle = NULL;
-			fopen_s(&filehandle, _filename, "rb");
-
-			if( ov_open( filehandle, &oggfile, NULL, 0 ) >= 0 ) 
-			{
-				vorbis_info *ogginfo = ov_info(&oggfile,-1);
-				freq = ogginfo->rate; 
-				if(ogginfo->channels == 1)
-					format = AL_FORMAT_MONO16;
-				else if(ogginfo->channels == 2)
-					format = AL_FORMAT_STEREO16;
-				else if(ogginfo->channels == 4)
-					format = alGetEnumValue("AL_FORMAT_QUAD16");
-				else if(ogginfo->channels == 6)
-					format = alGetEnumValue("AL_FORMAT_51CHN16");
-
-				buffer->setLenghtMs(static_cast<unsigned int>( ov_time_total(&oggfile, -1) * 1000 ));
-
-				size = ov_pcm_total(&oggfile, -1) * GetSampleSize(format);
-
-				data = malloc(size);
-				DecodeOggVorbis(&oggfile, (char*)data, size, ogginfo->channels);
-				
-				ov_clear(&oggfile);
-				fclose(filehandle);
-			} 
-			else
+			if( !buffer->loadOgg( _filename ) )
 			{
 				delete buffer;
 				buffer = NULL;
@@ -231,18 +170,13 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 			buffer = NULL;
 		}
 
-		if(data) 
-		{
-			alBufferData( buffer->getBufferName(), format, data, size, freq );
-			//if ( alGetError() != AL_FALSE ) printf("ALERROR!\n");
-			//free(data);
-		} 
 	}
 	return buffer;
 }
+//////////////////////////////////////////////////////////////////////////
 SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem )
 {
-	ALSoundBuffer* buffer = new ALSoundBuffer( "bufferMemory" );
+	ALSoundBuffer* buffer = new ALSoundBuffer();
 	/*ALsizei size,freq;
 	ALenum format;
 	ALvoid *data = NULL;
@@ -262,13 +196,13 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buff
 	} */
 	return buffer;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void    ALSoundSystem::releaseSoundBuffer( SoundBufferInterface * _soundBuffer )
 {
 	//_soundBuffer->unload();
 	delete static_cast<ALSoundBuffer*>(_soundBuffer);
 }
-
+//////////////////////////////////////////////////////////////////////////
 void    ALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 {
 //	delete _sn;
@@ -278,12 +212,16 @@ void    ALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 		static_cast<ALSoundSource*>(_sn)->stop();
 	}
 }
-
+//////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::update( float _timing )
 {
 	for(unsigned int i = 0; i < m_streams.size(); i++)
 	{
 		m_streams[i]->getUpdater()->update();
+		/*if( !m_streams[i]->getUpdater()->update() )
+		{
+			m_streams[i]->stop();
+		}*/
 	}
 
 	m_sulk->update();
@@ -306,7 +244,7 @@ void ALSoundSystem::update( float _timing )
 	}
 	m_deletingSources.clear();
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool ALSoundSystem::setBlow( bool _active )
 {
 	if( m_sulk )
@@ -316,7 +254,7 @@ bool ALSoundSystem::setBlow( bool _active )
 
 	return false;
 };
-
+//////////////////////////////////////////////////////////////////////////
 float ALSoundSystem::getBlow()
 {
 	if( m_sulk )
@@ -326,7 +264,7 @@ float ALSoundSystem::getBlow()
 
 	return 0.f;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::setEnoughBlow( float _enoughBlow )
 {
 	if( m_sulk )
@@ -334,7 +272,7 @@ void ALSoundSystem::setEnoughBlow( float _enoughBlow )
 		m_sulk->setEnoughBlow( _enoughBlow );
 	}
 };
-
+//////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::setBlowCallback( SoundSulkCallbackInterface * _callback )
 {
 	if( m_sulk )
@@ -342,19 +280,19 @@ void ALSoundSystem::setBlowCallback( SoundSulkCallbackInterface * _callback )
 		m_sulk->setCallback( _callback );
 	}
 };
-
+//////////////////////////////////////////////////////////////////////////
 void	ALSoundSystem::setSoundVelocity(float _velocity)
 {
 	m_soundVelocity = _velocity;
 	alDopplerVelocity(m_soundVelocity);
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	ALSoundSystem::setDopplerFactor(float _factor)
 {
 	m_dopplerFactor = _factor;
 	alDopplerFactor(m_dopplerFactor);
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	ALSoundSystem::setDistanceModel(EDistanceModel _model)
 {
 
@@ -393,7 +331,7 @@ void ALSoundSystem::removeStream( ALSoundBufferStream* _stream )
 		m_streams.erase(it);
 }
 
-unsigned int DecodeOggVorbis(OggVorbis_File* _oggVorbisFile, char* _decodeBuffer, unsigned int _bufferSize, unsigned int _channels)
+/*unsigned int DecodeOggVorbis(OggVorbis_File* _oggVorbisFile, char* _decodeBuffer, unsigned int _bufferSize, unsigned int _channels)
 {
 	int currentSection;
 	int decodeSize;
@@ -451,7 +389,7 @@ unsigned int GetSampleSize(ALenum format)
     default:
       return 0;
   }
-}
+}*/
 //////////////////////////////////////////////////////////////////////////
 TALSourceName* ALSoundSystem::getFreeSourceName()
 {

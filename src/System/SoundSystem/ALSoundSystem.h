@@ -35,6 +35,8 @@ public:
 	ALSoundSystem();
 	virtual ~ALSoundSystem();
 
+	bool initialize();
+
 public:
 	void setListenerOrient( float * _position, float * _front, float * top) override;
 	SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener ) override;
@@ -82,6 +84,7 @@ private:
 	TSourcesMap m_playingSources;
 	TSourceVector m_deletingSources;
 
+	bool m_initialized;
 	float m_soundVelocity;
 	float m_dopplerFactor;
 	EDistanceModel m_distanceModel;

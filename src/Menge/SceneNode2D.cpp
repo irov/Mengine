@@ -58,14 +58,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::_render()
 	{
-		for( TListChildren::iterator
+		/*for( TListChildren::iterator
 			it = m_listChildren.begin(),
 			it_end = m_listChildren.end();
 		it != it_end;
 		++it)
 		{
 			(*it)->render();
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::debugRender()

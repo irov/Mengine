@@ -54,6 +54,8 @@ namespace Menge
 
 		void setFontPath( const std::string & _path );
 
+		int getInitSize();
+
 	public:
 		void loader( XmlElement * _xml ) override;
 
@@ -92,6 +94,7 @@ namespace Menge
 		std::string m_fullname;
 
 		float m_whsRatio;
+		int m_initSize;
 
 		RenderImageInterface * m_image;
 	};

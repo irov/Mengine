@@ -20,9 +20,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 bool    initInterfaceSystem( SoundSystemInterface** _pSoundSystemInterface)
 {
 	*_pSoundSystemInterface = (SoundSystemInterface*) new ALSoundSystem();
-	if(*_pSoundSystemInterface)
-		return true;
-	return false;
+	bool init = static_cast<ALSoundSystem*>( *_pSoundSystemInterface )->initialize();
+	return init;
 }
 
 void    releaseInterfaceSystem( SoundSystemInterface* _pSoundSystemInterface)

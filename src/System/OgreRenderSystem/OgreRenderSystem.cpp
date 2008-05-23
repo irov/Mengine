@@ -229,7 +229,7 @@ SceneNodeInterface * OgreRenderSystem::getRootSceneNode() const
 //////////////////////////////////////////////////////////////////////////
 bool OgreRenderSystem::initialize( const char* _driver )
 {
-	m_root = new Ogre::Root( "","", "Menge.log" );
+	m_root = new Ogre::Root( "","", "Ogre.log" );
 	
 #if	RENDER_SYSTEM == RS_D3D9
 	m_renderPlugin = new Ogre::D3D9Plugin();
@@ -306,7 +306,7 @@ bool OgreRenderSystem::createRenderWindow( float _width, float _height, int _bit
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-unsigned int OgreRenderSystem::getResolutionList( float ** _list )
+std::size_t OgreRenderSystem::getResolutionList( float ** _list )
 {
 	Ogre::ConfigOptionMap& configMap = m_renderSys->getConfigOptions();
 	Ogre::StringVector res = configMap["Video Mode"].possibleValues;

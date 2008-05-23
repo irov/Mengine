@@ -34,7 +34,7 @@ public:
 	void addResourceLocation( const char* _path ) override;
 	void initResources() override;
 
-	unsigned int getResolutionList(  float ** _list ) override;
+	std::size_t getResolutionList(  float ** _list ) override;
 
 	void render( RenderImageInterface* _outImage, const int* rect = NULL ) override;
 	void render() override;

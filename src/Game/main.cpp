@@ -69,6 +69,10 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	bool result = false;
 	Menge::Application app( platform );
 
+	LogSystemInterface * logSystem;
+	initInterfaceSystem( &logSystem );
+	app.setLogSystem( logSystem );
+
 	FileSystemInterface * fileSystem;
 	initInterfaceSystem( &fileSystem );
 	fileSystem->loadPath(".");
@@ -95,9 +99,6 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	initInterfaceSystem( &renderSystem );
 	app.setRenderSystem( renderSystem );
 
-	LogSystemInterface * logSystem;
-	initInterfaceSystem( &logSystem );
-	app.setLogSystem( logSystem );
 
 	SoundSystemInterface * soundSystem;
 	initInterfaceSystem( &soundSystem );
@@ -146,7 +147,6 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	releaseInterfaceSystem( platform );
 
 	releaseInterfaceSystem( soundSystem );
-	releaseInterfaceSystem( logSystem );
 	releaseInterfaceSystem( renderSystem );
 	releaseInterfaceSystem( physicSystem2D );
 #	if	MENGE_PARTICLES	== (1)
@@ -154,6 +154,7 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 #	endif
 	releaseInterfaceSystem( inputSystem );
 	releaseInterfaceSystem( fileSystem );
+	releaseInterfaceSystem( logSystem );
 	
 	return 0;
 }

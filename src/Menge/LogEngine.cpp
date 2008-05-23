@@ -10,6 +10,8 @@ namespace Menge
 	LogEngine::LogEngine( LogSystemInterface * _interface )
 		: m_interface( _interface )
 	{
+		m_interface->startLog( "Menge.log" );
+		m_interface->logMessage( ">>>> LOGGING STARTED\n\n >> Starting Mengine...\n", false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::logMessage( const std::string & _message, bool _maskDebug )

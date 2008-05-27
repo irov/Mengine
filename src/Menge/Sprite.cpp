@@ -292,6 +292,8 @@ namespace	Menge
 			wm.v2.x -= m_layer->getSize().x * c;
 		}
 
+		
+
 		Holder<RenderEngine>::hostage()->renderImage(
 			wm, 
 			m_offset,

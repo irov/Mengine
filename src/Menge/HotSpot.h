@@ -5,7 +5,11 @@
 #	include "InputHandler.h"
 #	include "MousePickerTrap.h"
 
-#	include "Math/polygon.h"
+//#	include "Math/b2Polygon.h"
+
+#	include <vector>
+
+#	include "Math/convexpoly2.h"
 
 extern "C" 
 { 
@@ -58,13 +62,15 @@ namespace Menge
 
 	protected:
 		void _update( float _timing ) override;
+		bool _compile() override;
+
 		void _debugRender() override;
 		virtual void _onSetListener();
 
 	protected:
-		mt::polygon m_polygon;
+		std::vector<mt::vec2f> m_points;
+		mt::TVecConvex m_polygons;
 		mt::vec2f m_scale;
-
 	private:		
 		bool m_globalMouseEventListener;
 		bool m_globalKeyEventListener;

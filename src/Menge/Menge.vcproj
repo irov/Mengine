@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB;MENGE_EXPORT"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB;MENGE_EXPORT;OGRE_STATIC_LIB"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

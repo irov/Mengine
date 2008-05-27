@@ -2,7 +2,6 @@
 
 #	include "Holder.h"
 #	include "Math/vec2.h"
-#	include "Math/polygon.h"
 
 class PhysicSystem2DInterface;
 class PhysicBody2DInterface;

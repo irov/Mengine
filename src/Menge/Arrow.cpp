@@ -54,6 +54,7 @@ namespace	Menge
 	{
 		m_currentHotSpot = new HotSpot();
 		m_currentHotSpot->addPoint( -m_offsetClick );
+
 		m_currentHotSpot->setName("MainHotSpotArrow");
 
 		bool result = this->addChildren( m_currentHotSpot );

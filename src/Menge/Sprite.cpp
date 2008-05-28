@@ -97,6 +97,8 @@ namespace	Menge
 			return false;
 		}
 
+		updateAlphaBlend_();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -171,6 +173,7 @@ namespace	Menge
 	void Sprite::setImageIndex( unsigned int _index )
 	{
 		m_currentImageIndex = _index;
+		updateAlphaBlend_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int Sprite::getImageIndex() const
@@ -212,6 +215,20 @@ namespace	Menge
 		else
 		{
 			m_flipY = !m_flipY;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::updateAlphaBlend_()
+	{
+		m_blendSrc = BF_SOURCE_ALPHA;
+		m_blendDest = BF_ONE_MINUS_SOURCE_ALPHA;
+
+		bool isAlpha = m_resource->isAlpha(m_currentImageIndex);
+
+		if(isAlpha == false)
+		{
+			m_blendSrc = BF_ZERO;
+			m_blendDest = BF_ONE;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -285,14 +302,13 @@ namespace	Menge
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
 		//const mt::mat3f & wm = getWorldMatrix();
+
 		mt::mat3f wm = getWorldMatrix();
 		if( m_layer && m_layer->isScrollable() )
 		{
 			float c = ::floorf( wm.v2.x / m_layer->getSize().x );
 			wm.v2.x -= m_layer->getSize().x * c;
 		}
-
-		
 
 		Holder<RenderEngine>::hostage()->renderImage(
 			wm, 

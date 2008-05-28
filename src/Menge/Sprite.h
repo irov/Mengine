@@ -137,6 +137,7 @@ namespace Menge
 		void updateAlign_();
 		void updateVisibility_();
 		void updateFlip_();
+		void updateAlphaBlend_();
 
 	protected:
 

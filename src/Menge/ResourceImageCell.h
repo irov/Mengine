@@ -31,6 +31,7 @@ namespace Menge
 		const mt::vec2f & getSize( unsigned int _frame ) const override;
 		const mt::vec2f & getOffset( unsigned int _frame ) const override;
 		const mt::vec4f & getUV( unsigned int _frame ) const override;		
+		bool isAlpha( unsigned int _frame ) const;
 
 		const RenderImageInterface * getImage( unsigned int _frame ) const override;
 
@@ -59,6 +60,7 @@ namespace Menge
 			mt::vec2f offset;
 			mt::vec2f maxSize;
 			mt::vec2f size;
+			bool isAlpha;
 		};
 
 		ImageDesc m_imageDesc;

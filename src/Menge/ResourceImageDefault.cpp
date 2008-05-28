@@ -44,6 +44,11 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].image;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImageDefault::isAlpha( unsigned int _frame ) const
+	{
+		return m_vectorImageFrames[ _frame ].isAlpha;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::loader( XmlElement * _xml )
 	{
 		ResourceImage::loader( _xml );
@@ -57,6 +62,7 @@ namespace Menge
 				desc.offset = mt::vec2f(0.f,0.f);
 				desc.maxSize = mt::vec2f(-1.f,-1.f);
 				desc.size = mt::vec2f(-1.f,-1.f);
+				desc.isAlpha = true; //
 
 				std::string fileName; 
 
@@ -67,6 +73,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
 					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
 					XML_CASE_ATTRIBUTE( "Size", desc.size );
+					XML_CASE_ATTRIBUTE( "Alpha", desc.isAlpha );
 				}
 
 				desc.fileName = m_params.category + fileName;
@@ -100,6 +107,8 @@ namespace Menge
 			{
 				frame.maxSize = frame.size;
 			}
+
+			frame.isAlpha = it->isAlpha;
 
 			m_vectorImageFrames.push_back( frame );
 		}

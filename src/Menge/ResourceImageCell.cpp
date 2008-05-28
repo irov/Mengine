@@ -40,6 +40,11 @@ namespace Menge
 		return m_uvs[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImageCell::isAlpha( unsigned int _frame ) const
+	{
+		return m_imageFrame.isAlpha;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const RenderImageInterface * ResourceImageCell::getImage( unsigned int _frame ) const
 	{
 		return m_imageFrame.image;
@@ -58,6 +63,7 @@ namespace Menge
 				desc.offset = mt::vec2f(0.f,0.f);
 				desc.maxSize = mt::vec2f(0.f,0.f);
 				desc.size = mt::vec2f(0.f,0.f);
+				desc.isAlpha = true;
 
 				std::string fileName; 
 
@@ -68,6 +74,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
 					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
 					XML_CASE_ATTRIBUTE( "Size", desc.size );
+					XML_CASE_ATTRIBUTE( "Alpha", desc.isAlpha );
 				}
 
 				desc.fileName = m_params.category + fileName;
@@ -105,6 +112,8 @@ namespace Menge
 
 		m_imageFrame.maxSize.x /= (float)m_numX;
 		m_imageFrame.maxSize.y /= (float)m_numY;
+
+		m_imageFrame.isAlpha = m_imageDesc.isAlpha;
 
 		TVectorUV::size_type count = m_numX * m_numY;
 

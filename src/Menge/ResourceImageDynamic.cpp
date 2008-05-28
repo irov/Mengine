@@ -47,6 +47,12 @@ namespace Menge
 		return m_frame.image;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImageDynamic::isAlpha( unsigned int _frame ) const
+	{
+		assert(!"ResourceImageDynamic::isAlpha not implemented");
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface* ResourceImageDynamic::getImage( unsigned int _frame )
 	{
 		return m_frame.image;

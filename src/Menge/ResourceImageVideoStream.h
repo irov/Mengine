@@ -20,6 +20,7 @@ namespace Menge
 		virtual const mt::vec2f & getSize( unsigned int _frame ) const override;
 		virtual const mt::vec2f & getOffset( unsigned int _frame ) const override;
 		virtual const mt::vec4f & getUV( unsigned int _frame ) const override;		
+		virtual bool isAlpha( unsigned int _frame ) const override;
 		virtual const RenderImageInterface * getImage( unsigned int _frame ) const override;
 
 		RenderImageInterface * getImage( unsigned int _frame );

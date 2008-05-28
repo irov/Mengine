@@ -29,6 +29,7 @@ namespace Menge
 			mt::vec2f size;
 			mt::vec2f offset;
 			mt::vec4f uv;
+			bool isAlpha;
 			RenderImageInterface * image;
 		};
 
@@ -67,6 +68,8 @@ namespace Menge
 		\return текстурные координаты
 		*/
 		virtual const mt::vec4f & getUV( unsigned int _frame ) const = 0;		
+
+		virtual bool isAlpha( unsigned int _frame ) const = 0;
 
 		//! ¬озвращает frame изображение
 		/*!

@@ -39,6 +39,12 @@ namespace Menge
 		return m_uvs[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImageSet::isAlpha( unsigned int _frame ) const
+	{
+		assert(!"ResourceImageSet::isAlpha not implemented");
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const RenderImageInterface * ResourceImageSet::getImage( unsigned int _frame ) const
 	{
 		return m_imageFrame.image;

@@ -87,6 +87,12 @@ namespace Menge
 		return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImageVideoStream::isAlpha( unsigned int _frame ) const
+	{
+		assert(!"ResourceImageVideoStream::isAlpha not implemented");
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const RenderImageInterface * ResourceImageVideoStream::getImage( unsigned int _frame ) const
 	{
 		return m_interface;
@@ -101,4 +107,5 @@ namespace Menge
 	{
 		return m_interface;
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

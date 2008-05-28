@@ -483,24 +483,24 @@ void OgreRenderSystem::releaseImage( RenderImageInterface * _image )
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::renderLine(const char * _camera, unsigned int _color, const float * _begin, const float * _end)
 {
-		Ogre::uint8 renderQueue = Ogre::RENDER_QUEUE_OVERLAY;
-		Ogre::Camera* camera = m_sceneMgr->getCamera( _camera );
+	Ogre::uint8 renderQueue = Ogre::RENDER_QUEUE_OVERLAY;
+	Ogre::Camera* camera = m_sceneMgr->getCamera( _camera );
 
-		float z = m_spriteMgr->getCurrentZ();
+	float z = m_spriteMgr->getCurrentZ();
 
-		Ogre::Vector2 dir(_end[0]-_begin[0],_end[1]-_begin[1]);
+	Ogre::Vector2 dir(_end[0]-_begin[0],_end[1]-_begin[1]);
 
-		float L = std::max(fabs(dir.x),fabs(dir.y));
+	float L = std::max(fabs(dir.x),fabs(dir.y));
 
-		Ogre::Vector2 size(L,1);
+	Ogre::Vector2 size(L,1);
 
-		dir.normalise();
+	dir.normalise();
 
-		Ogre::Matrix3 matrix(dir.x,dir.y,0,-dir.y,dir.x,0,_begin[0],_begin[1],1);
+	Ogre::Matrix3 matrix(dir.x,dir.y,0,-dir.y,dir.x,0,_begin[0],_begin[1],1);
 
-		m_spriteMgr->addQuad1(camera->getViewport(), m_contentResolution,Ogre::Vector4(0,0,1,1),matrix,
-			Ogre::Vector2(0,0),size, z,m_pixelTexture, _color, 
-			Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA, renderQueue );
+	m_spriteMgr->addQuad1(camera->getViewport(), m_contentResolution,Ogre::Vector4(0,0,1,1),matrix,
+		Ogre::Vector2(0,0),size, z,m_pixelTexture, _color, 
+		Ogre::SBF_SOURCE_ALPHA, Ogre::SBF_ONE_MINUS_SOURCE_ALPHA, renderQueue );
 	
 }
 //////////////////////////////////////////////////////////////////////////

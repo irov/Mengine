@@ -121,7 +121,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_compile()
 	{
-		mt::decompose_concave(m_points,m_polygons);
+		if(mt::is_convex_pointsoup(m_points) == false)
+		{
+			mt::decompose_concave(m_points,m_polygons);
+		}
+		else
+		{
+			m_polygons.push_back(mt::convexpoly2(m_points));
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

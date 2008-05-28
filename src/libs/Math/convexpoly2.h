@@ -11,6 +11,7 @@ namespace mt
 		typedef std::vector<vec2f> TVectorPoints;
 
 		MATH_INLINE convexpoly2();
+		MATH_INLINE convexpoly2(const std::vector<mt::vec2f> & _points);
 		MATH_INLINE void set_transformation(const mt::vec2f& _dirA,const mt::vec2f& _posA);
 
 		MATH_INLINE mt::vec2f get_transformed_vertex(int i) const;
@@ -36,6 +37,7 @@ namespace mt
 	MATH_INLINE bool is_point_inside_polygon(TVecConvex & polys, const mt::vec2f & _p, const mt::vec2f & _posA, const mt::vec2f & _dirA, const mt::vec2f & _posB, const mt::vec2f & _dirB);
 	MATH_INLINE bool intersect_poly_poly(TVecConvex & polygonsA, TVecConvex & polygonsB,  const mt::vec2f & _posA, const mt::vec2f & _dirA, const mt::vec2f & _posB, const mt::vec2f & _dirB);
 
+	MATH_INLINE bool is_convex_pointsoup(const std::vector<mt::vec2f> & _points);
 	int decompose_concave(std::vector<mt::vec2f> & points, TVecConvex & results);
 }
 

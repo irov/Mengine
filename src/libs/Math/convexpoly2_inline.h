@@ -7,6 +7,11 @@ namespace mt
 		mt::ident_m3(worldMatrix);
 	}
 
+	MATH_INLINE convexpoly2::convexpoly2(const std::vector<mt::vec2f> & _points)
+	{
+		std::copy(_points.begin(),_points.end(),m_points.begin());
+	}
+
 	MATH_INLINE void convexpoly2::set_transformation(const mt::vec2f& _dirA,const mt::vec2f& _posA)
 	{
 		worldMatrix.v0 = mt::vec3f(_dirA,1);
@@ -149,6 +154,45 @@ namespace mt
 		}
 
 		return true;
+	}
+
+	MATH_INLINE bool is_convex_pointsoup(const std::vector<mt::vec2f> & _points)
+	{	   
+		if (_points.size() < 3)
+		{
+			return false;
+		}
+
+		int flag = 0;
+
+		float z = 0;
+
+		int n = _points.size();
+
+		for (int i = 0; i < n; i++) 
+		{
+			int j = (i + 1) % n;
+			int k = (i + 2) % n;
+
+			z  = (_points[j].x - _points[i].x) * (_points[k].y - _points[j].y);
+			z -= (_points[j].y - _points[i].y) * (_points[k].x - _points[j].x);
+
+			if (z < 0)
+			{
+				flag |= 1;
+			}
+			else if (z > 0)
+			{
+				flag |= 2;
+			}
+
+			if (flag == 3)
+			{
+				return false;
+			}
+		}
+
+		return (flag != 0);
 	}
 
 	MATH_INLINE bool is_point_inside_polygon(TVecConvex & polys, const mt::vec2f & _p, const mt::vec2f & _pos, const mt::vec2f & _dir)

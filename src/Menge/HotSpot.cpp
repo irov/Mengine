@@ -50,8 +50,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
 	{
+		assert(!"HotSpot addPoint deprecated!");
 		//!!!!!!!
-		m_points.push_back( mt::vec2f( _p.x * m_scale.x, _p.y * m_scale.y ) );
+		//m_points.push_back( mt::vec2f( _p.x * m_scale.x, _p.y * m_scale.y ) );
 		//m_polygon.add_point( mt::vec2f( _p.x * m_scale.x, _p.y * m_scale.y ) );
 
 #ifdef DEBUG_RENDER
@@ -84,6 +85,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
 	{
+		assert(!"HotSpot clearPoints deprecated!");
 		//m_polygon.clear_points();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -129,6 +131,8 @@ namespace	Menge
 		{
 			m_polygons.push_back(mt::convexpoly2(m_points));
 		}
+
+		m_points.clear();
 
 		return true;
 	}

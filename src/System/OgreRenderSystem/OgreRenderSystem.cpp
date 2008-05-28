@@ -370,6 +370,7 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 
 		// наху€ доху€ наху€рили ху€рей? расху€ривайте нахуй!
 		// ху€ри - функции.
+		// јвотхуй.
 		static_cast<OgreRenderImage*>( _image )->m_texture->getBuffer()->blit(pixb, imagebox, Ogre::Image::Box(0, 0, _image->getWidth(), _image->getHeight() ));
 	}
 	m_renderWindow->removeViewport(0);

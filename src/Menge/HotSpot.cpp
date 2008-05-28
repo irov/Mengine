@@ -50,10 +50,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
 	{
-		assert(!"HotSpot addPoint deprecated!");
-		//!!!!!!!
-		//m_points.push_back( mt::vec2f( _p.x * m_scale.x, _p.y * m_scale.y ) );
-		//m_polygon.add_point( mt::vec2f( _p.x * m_scale.x, _p.y * m_scale.y ) );
+		//assert(!"HotSpot addPoint deprecated!");
+		m_points.push_back( mt::vec2f( _p.x * m_scale.x, _p.y * m_scale.y ) );
 
 #ifdef DEBUG_RENDER
 		Sprite* point = new Sprite();
@@ -85,8 +83,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
 	{
-		assert(!"HotSpot clearPoints deprecated!");
-		//m_polygon.clear_points();
+		//assert(!"HotSpot clearPoints deprecated!");
+		m_points.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::pick( HotSpot * _hotspot )

@@ -9,7 +9,7 @@ namespace mt
 
 	MATH_INLINE convexpoly2::convexpoly2(const std::vector<mt::vec2f> & _points)
 	{
-		std::copy(_points.begin(),_points.end(),m_points.begin());
+		std::copy(_points.begin(),_points.end(),std::back_inserter(m_points));
 	}
 
 	MATH_INLINE void convexpoly2::set_transformation(const mt::vec2f& _dirA,const mt::vec2f& _posA)

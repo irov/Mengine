@@ -223,12 +223,15 @@ namespace	Menge
 		m_blendSrc = BF_SOURCE_ALPHA;
 		m_blendDest = BF_ONE_MINUS_SOURCE_ALPHA;
 
-		bool isAlpha = m_resource->isAlpha(m_currentImageIndex);
-
-		if(isAlpha == false)
+		if(m_resource != NULL)
 		{
-			m_blendSrc = BF_ZERO;
-			m_blendDest = BF_ONE;
+			bool isAlpha = m_resource->isAlpha(m_currentImageIndex);
+
+			if(isAlpha == false)
+			{
+			//	m_blendSrc = BF_ONE; // не хочет так работать
+			//	m_blendDest = BF_ZERO;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

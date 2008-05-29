@@ -77,7 +77,7 @@ namespace Menge
 
 		if( stream == 0 )
 		{
-			MENGE_LOG("Warning: resource font not find fond file '%s'\n"
+			MENGE_LOG("Warning: resource font not find font file '%s'\n"
 				, m_filename.c_str() 
 				);
 
@@ -87,6 +87,8 @@ namespace Menge
 		m_fontDir = getFontDir( m_filename );
 
 		bool result = parseFontdef( stream );
+
+		Holder<FileEngine>::hostage()->closeFile( stream );
 
 		if( result == false )
 		{
@@ -98,8 +100,6 @@ namespace Menge
 		TMapGlyph::const_iterator it = m_glyphs.find('A');
 		mt::vec4f rect = it->second.rect;
 		m_initSize = static_cast<int>( ( rect[3] - rect[1] ) * m_image->getHeight() );
-
-		Holder<FileEngine>::hostage()->closeFile( stream );
 
 		return true;
 	}

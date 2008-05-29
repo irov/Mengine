@@ -187,7 +187,7 @@ namespace     Menge
 
 				mt::vec4f uv = m_resource->getUV( *it );
 
-		/*		if((k != 0.f) && (h != 0.f))
+				if((k != 0.f) && (h != 0.f))
 				{
 					float t = uv.z - uv.x;
 					float s = uv.w - uv.y;
@@ -195,7 +195,7 @@ namespace     Menge
 					uv.y = _uv.y + h * uv.y;
 					uv.z = uv.x + k * t;
 					uv.w = uv.y + h * s;
-				}*/
+				}
 
 				float width = m_resource->getCharRatio( *it ) * m_height;
 
@@ -219,6 +219,8 @@ namespace     Menge
 			const RenderImageInterface * outlineImage = m_outlineImage->getImage(0);
 
 			mt::vec4f uv = m_outlineImage->getUV(0);
+
+			int w = renderImage->getWidth();
 
 			float k = renderImage->getWidth() / outlineImage->getWidth();
 			float h = renderImage->getHeight() / outlineImage->getHeight();

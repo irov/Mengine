@@ -17,7 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const std::string & _filename )
 	{
-		FileDataInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
+		DataStreamInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
 
 		if( file == 0 )
 		{
@@ -32,7 +32,7 @@ namespace Menge
 
 		file->read( &buffer[0], length );
 
-		Holder<FileEngine>::hostage()->closeFile( file );
+		Holder<FileEngine>::hostage()->closeStream( file );
 
 		EmitterContainerInterface * container = m_interface->createEmitterContainerFromMemory( &buffer[0] );
 

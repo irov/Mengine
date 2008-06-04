@@ -1,11 +1,11 @@
 #	include "LogSystem.h"
 
 #	include <iostream>
-#	include <time.h>
+#	include <ctime>
 #	include <iomanip>
 
 //////////////////////////////////////////////////////////////////////////
-bool initInterfaceSystem( LogSystemInterface** _interface )
+bool initInterfaceSystem( Menge::LogSystemInterface** _interface )
 {
 	if( _interface == 0 )
 	{
@@ -17,11 +17,11 @@ bool initInterfaceSystem( LogSystemInterface** _interface )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void releaseInterfaceSystem( LogSystemInterface* _interface )
+void releaseInterfaceSystem( Menge::LogSystemInterface* _interface )
 {
 	if( _interface )
 	{
-		delete _interface;
+		delete static_cast<MengeLogSystem*>( _interface );
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -34,24 +34,37 @@ MengeLogSystem::~MengeLogSystem()
 	m_logStream.close();
 }
 //////////////////////////////////////////////////////////////////////////
-void MengeLogSystem::startLog( const char* _filename )
+void MengeLogSystem::startLog( const Menge::String& _filename )
 {
-	m_logStream.open( _filename );
+	m_logStream.open( _filename.c_str() );
 }
 //////////////////////////////////////////////////////////////////////////
-void MengeLogSystem::logMessage( const char * _message, bool _maskDebug )
+void MengeLogSystem::logMessage( const Menge::String& _message, bool _maskDebug, bool _endl, bool _timeStamp )
 {
 	if ( !_maskDebug )
-		std::cerr << _message << std::endl;
+	{
+		std::cerr << _message;
 
-	time_t ctTime; 
-	time(&ctTime);
-	tm sTime;
-	localtime_s( &sTime, &ctTime );
-	m_logStream << std::setw(2) << std::setfill('0') << sTime.tm_hour
-		<< ":" << std::setw(2) << std::setfill('0') << sTime.tm_min
-		<< ":" << std::setw(2) << std::setfill('0') << sTime.tm_sec 
-		<< ": " << _message << std::endl;
+		if( _endl )
+		{
+			std::cerr << std::endl;
+		}
+	}
+
+	std::time_t ctTime; 
+	std::time(&ctTime);
+	std::tm* sTime = std::localtime( &ctTime );
+	if( _timeStamp )
+	{
+		m_logStream << std::setw(2) << std::setfill('0') << sTime->tm_hour
+			<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_min
+			<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_sec << ":";
+	}
+	m_logStream	<< _message;
+	if( _endl )
+	{
+		m_logStream << std::endl;
+	}
 
 	// Flush stcmdream to ensure it is written (incase of a crash, we need log to be up to date)
 	m_logStream.flush();

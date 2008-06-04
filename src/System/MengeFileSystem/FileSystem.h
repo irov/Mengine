@@ -12,21 +12,22 @@ public:
 	~MengeFileSystem();
 
 public:
-	void loadPath( const char * _path ) override;
-	void loadPak( const char * _pak ) override;
-	void unloadPak( const char * _pak ) override;
+	void loadPath( const Menge::String& _path ) override;
+	void loadPak( const Menge::String& _pak ) override;
+	void unloadPak( const Menge::String& _pak ) override;
 
-	FileDataInterface *	openFile(const char * _filename) override;
-	void closeFile( FileDataInterface * _fd ) override;
-	bool existFile( const char * _filename  ) override;
+	DataStreamInterface* openFile( const Menge::String& _filename ) override;
+	DataStreamInterface* createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose ) override;
+	void closeStream( DataStreamInterface * _fd ) override;
+	bool existFile( const Menge::String& _filename  ) override;
 
 	const char * platformBundlePath() override;
 
-	bool createFolder( const char* _path ) override;
-	bool deleteFolder( const char * _path ) override;
-	bool changeDir( const char* _path ) override;
+	bool createFolder( const Menge::String& _path ) override;
+	bool deleteFolder( const Menge::String& _path ) override;
+	bool changeDir( const Menge::String& _path ) override;
 
-	const TCHAR* getApplicationDataPath( const TCHAR* _game ) override;
+	//const TCHAR* getApplicationDataPath( const TCHAR* _game ) override;
 
 private:
 	FileManager* m_fileManager;

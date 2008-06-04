@@ -10,13 +10,13 @@ DataStream::DataStream()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-DataStream::DataStream( const std::string& _name )
+DataStream::DataStream( const Menge::String& _name )
 : m_name( _name )
 , m_size( 0 ) 
 {
 }
 //////////////////////////////////////////////////////////////////////////
-const std::string& DataStream::getName() const
+const Menge::String& DataStream::getName() const
 {
 	return m_name;
 }
@@ -27,10 +27,10 @@ template <typename T> DataStream& DataStream::operator >>( T& _val )
 	return *this;
 }
 //////////////////////////////////////////////////////////////////////////
-std::string DataStream::getLine( bool _trimAfter )
+Menge::String DataStream::getLine( bool _trimAfter )
 {
 	char tmpBuf[MENGE_STREAM_TEMP_SIZE];
-	std::string retString;
+	Menge::String retString;
 	std::size_t readCount;
 	// Keep looping while not hitting delimiter
 	while ( ( readCount = read( tmpBuf, MENGE_STREAM_TEMP_SIZE - 1 ) ) != 0 )
@@ -63,7 +63,7 @@ std::string DataStream::getLine( bool _trimAfter )
 
 	if ( _trimAfter )
 	{
-		static const std::string delims = " \t\r";
+		static const Menge::String delims = " \t\r";
 		retString.erase( retString.find_last_not_of( delims ) + 1 ); // trim right
 		retString.erase( 0, retString.find_first_not_of( delims ) ); // trim left
 	}
@@ -71,11 +71,11 @@ std::string DataStream::getLine( bool _trimAfter )
 	return retString;
 }
 //////////////////////////////////////////////////////////////////////////
-std::size_t DataStream::readLine( char* _buf, std::size_t _maxCount, const std::string& _delim )
+std::size_t DataStream::readLine( char* _buf, std::size_t _maxCount, const Menge::String& _delim )
 {
 	// Deal with both Unix & Windows LFs
 	bool trimCR = false;
-	if ( _delim.find_first_of('\n') != std::string::npos )
+	if ( _delim.find_first_of('\n') != Menge::String::npos )
 	{
 		trimCR = true;
 	}
@@ -127,7 +127,7 @@ std::size_t DataStream::readLine( char* _buf, std::size_t _maxCount, const std::
 	return totalCount;
 }
 //////////////////////////////////////////////////////////////////////////
-std::size_t DataStream::skipLine( const std::string& _delim )
+std::size_t DataStream::skipLine( const Menge::String& _delim )
 {
 	char tmpBuf[MENGE_STREAM_TEMP_SIZE];
 	std::size_t total = 0;
@@ -158,7 +158,7 @@ std::size_t DataStream::skipLine( const std::string& _delim )
 	return total;
 }
 //////////////////////////////////////////////////////////////////////////
-std::string DataStream::getAsString()
+Menge::String DataStream::getAsString()
 {
 	// Read the entire buffer
 	char* pBuf = new char[m_size+1];
@@ -166,7 +166,7 @@ std::string DataStream::getAsString()
 	seek(0);
 	read( pBuf, m_size );
 	pBuf[m_size] = '\0';
-	std::string str;
+	Menge::String str;
 	str.insert( 0, pBuf, m_size );
 	delete [] pBuf;
 	return str;
@@ -187,7 +187,7 @@ MemoryDataStream::MemoryDataStream( void* _pMem, std::size_t _size, bool _freeOn
 	m_freeOnClose = _freeOnClose;
 }
 //////////////////////////////////////////////////////////////////////////
-MemoryDataStream::MemoryDataStream( const std::string& _name, void* _pMem, std::size_t _size, 
+MemoryDataStream::MemoryDataStream( const Menge::String& _name, void* _pMem, std::size_t _size, 
 	bool _freeOnClose)
 	: DataStream( _name )
 {
@@ -219,7 +219,7 @@ MemoryDataStream::MemoryDataStream( DataStream* _sourceStream, bool _freeOnClose
 	m_freeOnClose = _freeOnClose;
 }
 //////////////////////////////////////////////////////////////////////////
-MemoryDataStream::MemoryDataStream( const std::string& _name, DataStream& _sourceStream, 
+MemoryDataStream::MemoryDataStream( const Menge::String& _name, DataStream& _sourceStream, 
 	bool _freeOnClose)
 	: DataStream( _name )
 {
@@ -231,7 +231,7 @@ MemoryDataStream::MemoryDataStream( const std::string& _name, DataStream& _sourc
 	m_freeOnClose = _freeOnClose;
 }
 //////////////////////////////////////////////////////////////////////////
-MemoryDataStream::MemoryDataStream( const std::string& _name, DataStream* _sourceStream, 
+MemoryDataStream::MemoryDataStream( const Menge::String& _name, DataStream* _sourceStream, 
 	bool _freeOnClose )
 	: DataStream( _name )
 {
@@ -253,7 +253,7 @@ MemoryDataStream::MemoryDataStream( std::size_t _size, bool _freeOnClose )
 	m_end = m_data + m_size;
 }
 //////////////////////////////////////////////////////////////////////////
-MemoryDataStream::MemoryDataStream( const std::string& _name, std::size_t _size, 
+MemoryDataStream::MemoryDataStream( const Menge::String& _name, std::size_t _size, 
 	bool _freeOnClose)
 	: DataStream( _name )
 {
@@ -294,11 +294,11 @@ std::size_t MemoryDataStream::read( void* _buf, std::size_t _count )
 }
 //////////////////////////////////////////////////////////////////////////
 std::size_t MemoryDataStream::readLine(char* _buf, std::size_t _maxCount, 
-										const std::string& _delim)
+										const Menge::String& _delim)
 {
 	// Deal with both Unix & Windows LFs
 	bool trimCR = false;
-	if ( _delim.find_first_of('\n') != std::string::npos )
+	if ( _delim.find_first_of('\n') != Menge::String::npos )
 	{
 		trimCR = true;
 	}
@@ -308,7 +308,7 @@ std::size_t MemoryDataStream::readLine(char* _buf, std::size_t _maxCount,
 	// Make sure pos can never go past the end of the data 
 	while ( pos < _maxCount && m_pos < m_end )
 	{
-		if ( _delim.find(*m_pos) != std::string::npos )
+		if ( _delim.find(*m_pos) != Menge::String::npos )
 		{
 			// Trim off trailing CR if this was a CR/LF entry
 			if (trimCR && pos && _buf[pos-1] == '\r')
@@ -331,7 +331,7 @@ std::size_t MemoryDataStream::readLine(char* _buf, std::size_t _maxCount,
 	return pos;
 }
 //////////////////////////////////////////////////////////////////////////
-std::size_t MemoryDataStream::skipLine( const std::string& _delim )
+std::size_t MemoryDataStream::skipLine( const Menge::String& _delim )
 {
 	std::size_t pos = 0;
 
@@ -339,7 +339,7 @@ std::size_t MemoryDataStream::skipLine( const std::string& _delim )
 	while ( m_pos < m_end )
 	{
 		++pos;
-		if ( _delim.find(*m_pos++) != std::string::npos )
+		if ( _delim.find(*m_pos++) != Menge::String::npos )
 		{
 			// Found terminator, break out
 			break;
@@ -388,11 +388,23 @@ void MemoryDataStream::setFreeOnClose( bool _free )
 	m_freeOnClose = _free; 
 }
 //////////////////////////////////////////////////////////////////////////
+void* MemoryDataStream::getBuffer()
+{
+	return getPtr();
+}
+//////////////////////////////////////////////////////////////////////////
+bool MemoryDataStream::isMemory() const
+{
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 FileStreamDataStream::FileStreamDataStream( std::ifstream* _s, bool _freeOnClose )
 : DataStream()
 , m_stream( _s )
 , m_freeOnClose( _freeOnClose )
+, m_freeBuffer( true )
+, m_buffer( NULL )
 {
 	// calculate the size
 	m_stream->seekg( 0, std::ios_base::end );
@@ -401,10 +413,12 @@ FileStreamDataStream::FileStreamDataStream( std::ifstream* _s, bool _freeOnClose
 
 }
 //////////////////////////////////////////////////////////////////////////
-FileStreamDataStream::FileStreamDataStream( const std::string& _name, std::ifstream* _s, bool _freeOnClose )
+FileStreamDataStream::FileStreamDataStream( const Menge::String& _name, std::ifstream* _s, bool _freeOnClose )
 : DataStream( _name )
 , m_stream( _s )
 , m_freeOnClose( _freeOnClose )
+, m_freeBuffer( true )
+, m_buffer( NULL )
 {
 	// calculate the size
 	m_stream->seekg( 0, std::ios_base::end );
@@ -412,11 +426,13 @@ FileStreamDataStream::FileStreamDataStream( const std::string& _name, std::ifstr
 	m_stream->seekg( 0, std::ios_base::beg );
 }
 //////////////////////////////////////////////////////////////////////////
-FileStreamDataStream::FileStreamDataStream( const std::string& _name, 
+FileStreamDataStream::FileStreamDataStream( const Menge::String& _name, 
 	std::ifstream* _s, std::size_t _size, bool _freeOnClose )
 : DataStream( _name )
 , m_stream( _s )
 , m_freeOnClose( _freeOnClose )
+, m_freeBuffer( true )
+, m_buffer( NULL )
 {
 	m_size = _size;
 }
@@ -433,7 +449,7 @@ std::size_t FileStreamDataStream::read( void* _buf, std::size_t _count )
 }
 //////////////////////////////////////////////////////////////////////////
 std::size_t FileStreamDataStream::readLine( char* _buf, std::size_t _maxCount, 
-											const std::string& _delim )
+											const Menge::String& _delim )
 {
 	assert( !_delim.empty() &&  "FileStreamDataStream::readLine -> No delimiter provided" );
 
@@ -545,6 +561,29 @@ void FileStreamDataStream::close()
 			m_stream = 0;
 		}
 	}
+	if( m_freeBuffer && m_buffer )
+	{
+		delete[] m_buffer;
+		m_buffer = NULL;
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void* FileStreamDataStream::getBuffer()
+{
+	m_buffer = new unsigned char[m_size];
+	seek( 0 );
+	read( m_buffer, m_size );
+	return m_buffer;
+}
+//////////////////////////////////////////////////////////////////////////
+bool FileStreamDataStream::isMemory() const
+{
+	return false;
+}
+//////////////////////////////////////////////////////////////////////////
+void FileStreamDataStream::setFreeOnClose( bool _free )
+{
+	m_freeBuffer = _free;
 }
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -558,7 +597,7 @@ FileHandleDataStream::FileHandleDataStream( FILE* _handle )
 	fseek( m_fileHandle, 0, SEEK_SET );
 }
 //////////////////////////////////////////////////////////////////////////
-FileHandleDataStream::FileHandleDataStream( const std::string& _name, FILE* _handle )
+FileHandleDataStream::FileHandleDataStream( const Menge::String& _name, FILE* _handle )
 : DataStream( _name )
 , m_fileHandle( _handle )
 {
@@ -604,49 +643,20 @@ void FileHandleDataStream::close()
 	m_fileHandle = 0;
 }
 //////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-MengeFileData::MengeFileData( DataStream* _data )
-: m_data( _data )
+void* FileHandleDataStream::getBuffer()
 {
+	assert( 0 && "Not Implemented" );
+	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-MengeFileData::~MengeFileData()
+bool FileHandleDataStream::isMemory() const
 {
-	m_data->close();
+	return false;
 }
 //////////////////////////////////////////////////////////////////////////
-std::size_t MengeFileData::read( void* _buffer, std::size_t _count )
+void FileHandleDataStream::setFreeOnClose( bool _free )
 {
-	return m_data->read( _buffer, _count );
+	// nothing to do
 }
 //////////////////////////////////////////////////////////////////////////
-bool MengeFileData::eof() const
-{
-	return m_data->eof();
-}
-//////////////////////////////////////////////////////////////////////////
-std::size_t MengeFileData::size() const
-{
-	return m_data->size();
-}
-//////////////////////////////////////////////////////////////////////////
-void MengeFileData::seek( std::size_t _pos )
-{
-	m_data->seek( _pos );
-}
-//////////////////////////////////////////////////////////////////////////
-std::size_t MengeFileData::tell() const
-{
-	return m_data->tell();
-}
-//////////////////////////////////////////////////////////////////////////
-std::string MengeFileData::getLine( bool _trimAfter ) const
-{
-	return m_data->getLine( _trimAfter );
-}
-//////////////////////////////////////////////////////////////////////////
-std::size_t MengeFileData::skipLine( const std::string & _delim )
-{
-	return m_data->skipLine( _delim );
-}
-//////////////////////////////////////////////////////////////////////////
+

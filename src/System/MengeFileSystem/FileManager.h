@@ -1,18 +1,15 @@
 #	pragma once
 
-#	include	<vector>
-#	include <string>
-
-typedef std::vector<std::string> TStringVector;
+#	include "Config/Typedef.h"
 
 struct FileInfo 
 {
 	/// The file's fully qualified name
-	std::string filename;
+	Menge::String filename;
 	/// Path name; separated by '/' and ending with '/'
-	std::string path;
+	Menge::String path;
 	/// Base filename
-	std::string basename;
+	Menge::String basename;
 	/// Compressed size
 	std::size_t compressedSize;
 	/// Uncompressed size
@@ -26,25 +23,25 @@ class DataStream;
 class FileManager
 {
 public:
-	FileManager( const std::string& _initPath );
+	FileManager( const Menge::String& _initPath );
 	~FileManager();
 
-	void setInitPath( const std::string& _path );
+	void setInitPath( const Menge::String& _path );
 	bool isCaseSensitive() const;
 
-	DataStream* open( const std::string& _filename ) const;
+	DataStream* open( const Menge::String& _filename ) const;
 
 	TStringVector* list( bool _recursive = true, bool _dirs = false );
 
 	TFileInfoVector* listFileInfo( bool _recursive = true, bool _dirs = false);
 
-	TStringVector* find( const std::string& _pattern, bool _recursive = true,
+	TStringVector* find( const Menge::String& _pattern, bool _recursive = true,
 		bool _dirs = false);
 
-	TFileInfoVector* findFileInfo( const std::string& _pattern, bool _recursive = true,
+	TFileInfoVector* findFileInfo( const Menge::String& _pattern, bool _recursive = true,
 		bool _dirs = false );
 
-	bool exists( const std::string& _filename );
+	bool exists( const Menge::String& _filename );
 
 protected:
 	//Utility method to retrieve all files in a directory matching pattern.
@@ -56,8 +53,8 @@ protected:
 	//@param detailList Populated if retrieving a detailed list
 	//@param currentDir The current directory relative to the base of the 
 	//archive, for file naming
-	void findFiles(const std::string& _pattern, bool _recursive, bool _dirs,
+	void findFiles( const Menge::String& _pattern, bool _recursive, bool _dirs,
 		TStringVector* _simpleList, TFileInfoVector* _detailList);
 
-	std::string m_initPath;
+	Menge::String m_initPath;
 };

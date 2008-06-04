@@ -44,44 +44,42 @@ MengeFileSystem::~MengeFileSystem()
 	delete m_fileManager;
 }
 //////////////////////////////////////////////////////////////////////////
-void MengeFileSystem::loadPath( const char * _path )
+void MengeFileSystem::loadPath( const Menge::String& _path )
 {
 	//m_arch = Ogre::ArchiveManager::getSingleton().load( _path, "FileSystem" );
 	m_fileManager->setInitPath( _path );
 }
 //////////////////////////////////////////////////////////////////////////
-void MengeFileSystem::loadPak( const char * _pak )
+void MengeFileSystem::loadPak( const Menge::String& _pak )
 {
 	//Ogre::ArchiveManager::getSingleton().load( _pak, "Zip" );
 }
 //////////////////////////////////////////////////////////////////////////
-void MengeFileSystem::unloadPak( const char * _pak )
+void MengeFileSystem::unloadPak( const Menge::String& _pak )
 {
 	//Ogre::ArchiveManager::getSingleton().unload( _pak );
 }
 //////////////////////////////////////////////////////////////////////////
-FileDataInterface *	MengeFileSystem::openFile( const char * _filename )
+DataStreamInterface* MengeFileSystem::openFile( const Menge::String& _filename )
 {
-	MengeFileData * fileData = 0;
+	DataStream* fileData = 0;
 
-	printf("OgreFileSystem: opening file %s\n", _filename );
+	printf("MengeFileSystem: opening file %s\n", _filename.c_str() );
 	if( m_fileManager->exists( _filename ) == false )
 	{
-		printf( "OgreFileSystem::openFile: %s is not exists\n", _filename );
+		printf( "MengeFileSystem::openFile: %s is not exists\n", _filename.c_str() );
 		return 0;
 	}
 
 	try
 	{
-		DataStream* data = m_fileManager->open( _filename );
+		fileData = m_fileManager->open( _filename );
 
-		if( !data )
+		if( !fileData )
 		{
-			printf( "OgreFileSystem::openFile: %s data is null\n", _filename );
+			printf( "MengeFileSystem::openFile: %s data is null\n", _filename.c_str() );
 			return fileData;
 		}
-
-		fileData = new MengeFileData( data );
 	}
 	catch ( ... )
 	{
@@ -90,19 +88,31 @@ FileDataInterface *	MengeFileSystem::openFile( const char * _filename )
 	return fileData;
 }
 //////////////////////////////////////////////////////////////////////////
-void MengeFileSystem::closeFile( FileDataInterface * _fd )
+DataStreamInterface* MengeFileSystem::createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose )
 {
-	delete static_cast<MengeFileData*>(_fd);
+	return static_cast<DataStreamInterface*>( new MemoryDataStream( _data, _size, _freeOnClose ) );
 }
 //////////////////////////////////////////////////////////////////////////
-bool MengeFileSystem::existFile( const char * _filename )
+void MengeFileSystem::closeStream( DataStreamInterface* _stream )
+{
+	if( _stream->isMemory() )
+	{
+		delete static_cast<MemoryDataStream*>(_stream);
+	}
+	else
+	{
+		delete static_cast<FileStreamDataStream*>(_stream);
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+bool MengeFileSystem::existFile( const Menge::String& _filename )
 {
 	return m_fileManager->exists( _filename );
 }
 //////////////////////////////////////////////////////////////////////////
 const char * MengeFileSystem::platformBundlePath()
 {
-#if OTARGET_PLATFORM == TP_APPLE
+#if MENGE_PLATFORM == MENGE_PLATFORM_APPLE
 #	include <CoreFoundation/CoreFoundation.h>
 	char path[1024];
 	CFBundleRef mainBundle = CFBundleGetMainBundle();    
@@ -124,9 +134,9 @@ const char * MengeFileSystem::platformBundlePath()
 #endif
 }
 //////////////////////////////////////////////////////////////////////////
-bool MengeFileSystem::createFolder( const char * _path )
+bool MengeFileSystem::createFolder( const Menge::String& _path )
 {
-#if TARGET_PLATFORM == TP_WINDOWS 
+#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
 #
 	/*size_t required_size = mbstowcs( NULL, _path, 0 ) + 1; 
 
@@ -145,7 +155,7 @@ bool MengeFileSystem::createFolder( const char * _path )
 	{
 		return true;
 	}*/
-	if( !_mkdir( _path ) )
+	if( !_mkdir( _path.c_str() ) )
 	{
 		return true;
 	}
@@ -157,10 +167,10 @@ bool MengeFileSystem::createFolder( const char * _path )
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////
-bool MengeFileSystem::deleteFolder( const char* _path )
+bool MengeFileSystem::deleteFolder( const Menge::String& _path )
 {
 	// needed for some plugins
-#if TARGET_PLATFORM == TP_WINDOWS 
+#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 	SHFILEOPSTRUCTA fs;
 	ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTA));
 	fs.hwnd = NULL;
@@ -168,7 +178,7 @@ bool MengeFileSystem::deleteFolder( const char* _path )
 	//char* dir = new char[len + 2];
 	char dir[MAX_PATH];
 	::GetCurrentDirectoryA( MAX_PATH, dir );
-	strcat_s( dir, _path );
+	strcat_s( dir, _path.c_str() );
 	std::size_t len = strlen( dir );
 	dir[len] = 0;
 	dir[len+1] = 0;
@@ -203,10 +213,10 @@ bool MengeFileSystem::deleteFolder( const char* _path )
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////
-bool MengeFileSystem::changeDir( const char* _path )
+bool MengeFileSystem::changeDir( const Menge::String& _path )
 {
-#if TARGET_PLATFORM == TP_WINDOWS 
-	if( !_chdir( _path ) )
+#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
+	if( !_chdir( _path.c_str() ) )
 	{
 		return true;
 	}
@@ -215,9 +225,9 @@ bool MengeFileSystem::changeDir( const char* _path )
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////
-const TCHAR* MengeFileSystem::getApplicationDataPath( const TCHAR* _game )
+/*const TCHAR* MengeFileSystem::getApplicationDataPath( const TCHAR* _game )
 {
-#if TARGET_PLATFORM == TP_WINDOWS 
+#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
 	static TCHAR path[MAX_PATH];
 	::SHGetFolderPathAndSubDir(NULL,
 								CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
@@ -229,4 +239,4 @@ const TCHAR* MengeFileSystem::getApplicationDataPath( const TCHAR* _game )
 	//	TEXT()
 #endif
 	return NULL;
-}
+}*/

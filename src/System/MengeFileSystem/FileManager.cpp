@@ -9,46 +9,46 @@
 #	include <assert.h>
 #	include <fstream>
 
-#if TARGET_PLATFORM == TP_LINUX || TARGET_PLATFORM == TP_APPLE
+#if MENGE_PLATFORM == MENGE_PLATFORM_LINUX || MENGE_PLATFORM == MENGE_PLATFORM_APPLE
 //#   include "OgreSearchOps.h"
 #   include <sys/param.h>
 #   define MAX_PATH MAXPATHLEN
 #endif
 
-#if TARGET_PLATFORM == TP_WINDOWS
+#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 #   include <windows.h>
 #   include <direct.h>
 #   include <io.h>
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-FileManager::FileManager( const std::string& _initPath )
+FileManager::FileManager( const Menge::String& _initPath )
 : m_initPath( _initPath )
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void FileManager::setInitPath( const std::string& _path )
+void FileManager::setInitPath( const Menge::String& _path )
 {
 	m_initPath = _path;
 }
 //////////////////////////////////////////////////////////////////////////
 bool FileManager::isCaseSensitive() const
 {
-#if TARGET_PLATFORM == TP_WINDOWS
+#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 	return false;
 #else
 	return true;
 #endif
 }
 //////////////////////////////////////////////////////////////////////////
-static bool s_isReservedDir( const char *_fn )
+static bool s_isReservedDir( const Menge::String& _fn )
 {
 	return ( _fn [0] == '.' && ( _fn [1] == 0 || ( _fn [1] == '.' && _fn [2] == 0 ) ) );
 }
 //////////////////////////////////////////////////////////////////////////
-static bool s_isAbsolutePath( const char* _path )
+static bool s_isAbsolutePath( const Menge::String& _path )
 {
-#if TARGET_PLATFORM == TP_WINDOWS
+#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 	if ( ::isalpha( unsigned char( _path[0] ) ) && _path[1] == ':' )
 	{
 		return true;
@@ -57,7 +57,7 @@ static bool s_isAbsolutePath( const char* _path )
 	return _path[0] == '/' || _path[0] == '\\';
 }
 //////////////////////////////////////////////////////////////////////////
-static std::string s_concatenatePath( const std::string& _base, const std::string& _name )
+static std::string s_concatenatePath( const Menge::String& _base, const Menge::String& _name )
 {
 	if ( _base.empty() || s_isAbsolutePath( _name.c_str() ) )
 	{
@@ -69,7 +69,7 @@ static std::string s_concatenatePath( const std::string& _base, const std::strin
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void FileManager::findFiles( const std::string& _pattern, bool _recursive, 
+void FileManager::findFiles( const Menge::String& _pattern, bool _recursive, 
 	bool _dirs, TStringVector* _simpleList, TFileInfoVector* _detailList )
 {
 	long lHandle, res;
@@ -82,13 +82,13 @@ void FileManager::findFiles( const std::string& _pattern, bool _recursive,
 	{
 		pos1 = pos2;
 	}
-	std::string directory;
+	Menge::String directory;
 	if ( pos1 != _pattern.npos )
 	{
 		directory = _pattern.substr (0, pos1 + 1);
 	}
 
-	std::string full_pattern = s_concatenatePath( m_initPath, _pattern );
+	Menge::String full_pattern = s_concatenatePath( m_initPath, _pattern );
 
 	lHandle = static_cast<long>( _findfirst( full_pattern.c_str(), &tagData ) );
 	res = 0;
@@ -123,7 +123,7 @@ void FileManager::findFiles( const std::string& _pattern, bool _recursive,
 	// Now find directories
 	if( _recursive )
 	{
-		std::string base_dir = m_initPath;
+		Menge::String base_dir = m_initPath;
 		if ( !directory.empty() )
 		{
 			base_dir = s_concatenatePath( m_initPath, directory );
@@ -133,7 +133,7 @@ void FileManager::findFiles( const std::string& _pattern, bool _recursive,
 		base_dir.append("/*");
 
 		// Remove directory name from pattern
-		std::string mask("/");
+		Menge::String mask("/");
 		if( pos1 != _pattern.npos )
 		{
 			mask.append( _pattern.substr( pos1 + 1 ) );
@@ -169,7 +169,7 @@ FileManager::~FileManager()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-DataStream* FileManager::open( const std::string& _filename ) const
+DataStream* FileManager::open( const Menge::String& _filename ) const
 {
 	std::string full_path = s_concatenatePath( m_initPath, _filename );
 
@@ -217,7 +217,7 @@ TFileInfoVector* FileManager::listFileInfo( bool _recursive, bool _dirs )
 	return ret;
 }
 //////////////////////////////////////////////////////////////////////////
-TStringVector* FileManager::find( const std::string& _pattern, bool _recursive, bool _dirs )
+TStringVector* FileManager::find( const Menge::String& _pattern, bool _recursive, bool _dirs )
 {
 	TStringVector* ret( new TStringVector() );
 
@@ -226,7 +226,7 @@ TStringVector* FileManager::find( const std::string& _pattern, bool _recursive, 
 	return ret;
 }
 //////////////////////////////////////////////////////////////////////////
-TFileInfoVector* FileManager::findFileInfo( const std::string& _pattern, 
+TFileInfoVector* FileManager::findFileInfo( const Menge::String& _pattern, 
 	bool _recursive, bool _dirs )
 {
 	TFileInfoVector* ret( new TFileInfoVector() );
@@ -236,7 +236,7 @@ TFileInfoVector* FileManager::findFileInfo( const std::string& _pattern,
 	return ret;
 }
 //////////////////////////////////////////////////////////////////////////
-bool FileManager::exists( const std::string& _filename )
+bool FileManager::exists( const Menge::String& _filename )
 {
 	std::string full_path = s_concatenatePath( m_initPath, _filename );
 

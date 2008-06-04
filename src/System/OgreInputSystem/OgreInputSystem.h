@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Interface/InputSystemInterface.h"
-#	include "OIS/OIS.h"
+#	include "OIS.h"
 
 class OgreInputSystem
 	: public InputSystemInterface

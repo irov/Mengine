@@ -4,17 +4,17 @@
 
 #define MENGE_STREAM_TEMP_SIZE 128
 
-class DataStream
+class DataStream : public DataStreamInterface
 {
 public:
 	/// Constructor for creating unnamed streams
 	DataStream();
 
 	/// Constructor for creating named streams
-	DataStream( const std::string& _name );
+	DataStream( const Menge::String& _name );
 
 	/// Returns the name of the stream, if it has one.
-	const std::string& getName() const;
+	const Menge::String& getName() const;
 
 	virtual ~DataStream() {}
 
@@ -41,7 +41,7 @@ public:
 	//@param maxCount The maximum length of data to be read, excluding the terminating character
 	//@param delim The delimiter to stop at
 	//@returns The number of bytes read, excluding the terminating character
-	virtual std::size_t readLine( char* _buf, std::size_t _maxCount, const std::string& _delim = "\n" );
+	virtual std::size_t readLine( char* _buf, std::size_t _maxCount, const Menge::String& _delim = "\n" );
 
 	//Returns a String containing the next line of data, optionally 
 	//trimmed for whitespace. 
@@ -56,13 +56,13 @@ public:
 	//@param 
 	//trimAfter If true, the line is trimmed for whitespace (as in 
 	//String.trim(true,true))
-	virtual std::string getLine( bool _trimAfter = true );
+	virtual Menge::String getLine( bool _trimAfter = true );
 
 	//Returns a String containing the entire stream. 
 	//@remarks
 	//This is a convenience method for text streams only, allowing you to 
 	//retrieve a String object containing all the data in the stream.
-	virtual std::string getAsString( void );
+	virtual Menge::String getAsString( void );
 
 	//Skip a single line from the stream.
 	//@note
@@ -70,7 +70,7 @@ public:
 	//otherwise, it'll produce unexpected results.
 	//@param delim The delimiter(s) to stop at
 	//@returns The number of bytes skipped
-	virtual std::size_t skipLine( const std::string& _delim = "\n" );
+	virtual std::size_t skipLine( const Menge::String& _delim = "\n" );
 
 	//Skip a defined number of bytes. This can also be a negative value, in which case
 	//the file pointer rewinds a defined number of bytes.
@@ -92,9 +92,18 @@ public:
 	// Close the stream; this makes further operations invalid.
 	virtual void close( void ) = 0;
 
+	// 
+	virtual void* getBuffer() = 0;
+
+	//
+	virtual bool isMemory() const = 0;
+
+	//
+	virtual void setFreeOnClose( bool _free ) = 0;
+
 protected:
 	/// The name (e.g. resource name) that can be used to identify the source fot his data (optional)
-	std::string m_name;		
+	Menge::String m_name;		
 	/// Size of the data in the stream (may be 0 if size cannot be determined)
 	std::size_t m_size;
 
@@ -127,7 +136,7 @@ public:
 	//@param size The size of the memory chunk in bytes
 	//@param freeOnClose If true, the memory associated will be destroyed
 	//when the stream is destroyed.
-	MemoryDataStream( const std::string& _name, void* _pMem, std::size_t _size, 
+	MemoryDataStream( const Menge::String& _name, void* _pMem, std::size_t _size, 
 		bool _freeOnClose = false);
 
 	//Create a stream which pre-buffers the contents of another stream.
@@ -163,7 +172,7 @@ public:
 	//of data
 	//@param freeOnClose If true, the memory associated will be destroyed
 	//when the stream is destroyed.
-	MemoryDataStream( const std::string& _name, DataStream& _sourceStream, bool _freeOnClose = true );
+	MemoryDataStream( const Menge::String& _name, DataStream& _sourceStream, bool _freeOnClose = true );
 
 	//Create a named stream which pre-buffers the contents of 
 	//another stream.
@@ -176,7 +185,7 @@ public:
 	//of data
 	//@param freeOnClose If true, the memory associated will be destroyed
 	//when the stream is destroyed.
-	MemoryDataStream( const std::string& _name, DataStream* _sourceStream, bool _freeOnClose = true);
+	MemoryDataStream( const Menge::String& _name, DataStream* _sourceStream, bool _freeOnClose = true);
 
 	//Create a stream with a brand new empty memory chunk.
 	//@param size The size of the memory chunk to create in bytes
@@ -190,7 +199,7 @@ public:
 	//@param freeOnClose If true, the memory associated will be destroyed
 	//when the stream is destroyed.
 	
-	MemoryDataStream( const std::string& _name, std::size_t _size, bool _freeOnClose = true);
+	MemoryDataStream( const Menge::String& _name, std::size_t _size, bool _freeOnClose = true);
 
 	~MemoryDataStream();
 
@@ -204,10 +213,10 @@ public:
 	std::size_t read( void* _buf, std::size_t _count );
 
 	// @copydoc DataStream::readLine
-	std::size_t readLine( char* _buf, std::size_t _maxCount, const std::string& _delim = "\n" );
+	std::size_t readLine( char* _buf, std::size_t _maxCount, const Menge::String& _delim = "\n" );
 
 	// @copydoc DataStream::skipLine
-	std::size_t skipLine( const std::string& _delim = "\n" );
+	std::size_t skipLine( const Menge::String& _delim = "\n" );
 
 	// @copydoc DataStream::skip
 	void skip( long _count );
@@ -226,14 +235,17 @@ public:
 
 	// Sets whether or not to free the encapsulated memory on close.
 	void setFreeOnClose( bool _free );
+
+	// 
+	void* getBuffer();
+
+	//
+	bool isMemory() const;
+
 };
 
 class FileStreamDataStream : public DataStream
 {
-protected:
-	/// Reference to source stream
-	std::ifstream* m_stream;
-	bool m_freeOnClose;			
 public:
 	//Construct stream from an STL stream
 	//@param s Pointer to source stream
@@ -246,7 +258,7 @@ public:
 	//@param s Pointer to source stream
 	//@param freeOnClose Whether to delete the underlying stream on 
 	//destruction of this class
-	FileStreamDataStream( const std::string& _name, std::ifstream* _s, bool _freeOnClose = true );
+	FileStreamDataStream( const Menge::String& _name, std::ifstream* _s, bool _freeOnClose = true );
 
 	//Construct named stream from an STL stream, and tell it the size
 	//@remarks
@@ -259,7 +271,7 @@ public:
 	//@param size Size of the stream contents in bytes
 	//@param freeOnClose Whether to delete the underlying stream on 
 	//destruction of this class
-	FileStreamDataStream( const std::string& _name, std::ifstream* _s, std::size_t _size, 
+	FileStreamDataStream( const Menge::String& _name, std::ifstream* _s, std::size_t _size, 
 		bool _freeOnClose = true );
 
 	~FileStreamDataStream();
@@ -268,7 +280,7 @@ public:
 	std::size_t read( void* _buf, std::size_t _count );
 
 	// @copydoc DataStream::readLine
-	std::size_t readLine( char* _buf, std::size_t _maxCount, const std::string& _delim = "\n");
+	std::size_t readLine( char* _buf, std::size_t _maxCount, const Menge::String& _delim = "\n");
 
 	// @copydoc DataStream::skip
 	void skip( long _count );
@@ -285,6 +297,21 @@ public:
 	// @copydoc DataStream::close
 	void close();
 
+	// 
+	virtual void* getBuffer();
+
+	//
+	virtual bool isMemory() const;
+
+	//
+	void setFreeOnClose( bool _free );
+
+protected:
+	/// Reference to source stream
+	std::ifstream* m_stream;
+	bool m_freeOnClose;
+	bool m_freeBuffer;
+	unsigned char* m_buffer;
 };
 
 class FileHandleDataStream : public DataStream
@@ -295,7 +322,7 @@ public:
 	/// Create stream from a C file handle
 	FileHandleDataStream( FILE* _handle );
 	/// Create named stream from a C file handle
-	FileHandleDataStream( const std::string& _name, FILE* _handle);
+	FileHandleDataStream( const Menge::String& _name, FILE* _handle);
 	~FileHandleDataStream();
 
 	// @copydoc DataStream::read
@@ -316,27 +343,12 @@ public:
 	// @copydoc DataStream::close
 	void close(void);
 
-};
+	// 
+	void* getBuffer();
 
-class MengeFileData
-	: public FileDataInterface
-{
-public:
-	MengeFileData( DataStream* _data );
-	~MengeFileData();
+	//
+	bool isMemory() const;
 
-public:
-	std::size_t read( void* _buffer, std::size_t _count ) override;
-	bool eof() const override;
-
-	std::size_t size() const override;
-
-	void seek( size_t _pos ) override;
-	std::size_t tell() const override;
-
-	std::string getLine( bool _trimAfter )  const;
-	std::size_t skipLine( const std::string & _delim );
-
-private:
-	DataStream* m_data;
+	//
+	void setFreeOnClose( bool _free );
 };

@@ -137,7 +137,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
 				AdditionalLibraryDirectories=""
 			/>
 			<Tool

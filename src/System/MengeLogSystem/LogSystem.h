@@ -5,15 +5,15 @@
 #	include <fstream>
 
 class MengeLogSystem
-	: public LogSystemInterface
+	: public Menge::LogSystemInterface
 {
 public:
 	MengeLogSystem();
 	~MengeLogSystem();
 
-	void startLog( const char* _filename ) override;
+	void startLog( const Menge::String& _filename ) override;
 
-	void logMessage( const char * _message, bool _maskDebug ) override;
+	void logMessage( const Menge::String& _message, bool _maskDebug, bool _endl, bool _timeStamp ) override;
 
 private:
 	std::ofstream m_logStream;

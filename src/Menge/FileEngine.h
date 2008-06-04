@@ -31,11 +31,14 @@ namespace Menge
 		bool createFolder( const std::string& _path );
 		bool deleteFolder( const std::string& _path );
 
-		FileDataInterface * openFile( const std::string& _filename );
-		FileBuffer getFileBuffer( const std::string& _filename );
+		DataStreamInterface* openFile( const Menge::String& _filename );
+		DataStreamInterface* createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose );
 
-		void closeFile( FileDataInterface * _fd );
-		bool changeDir( const std::string& _dir );
+		FileBuffer getFileBuffer( const Menge::String& _filename );
+
+		void closeStream( DataStreamInterface* _stream );
+
+		bool changeDir( const Menge::String& _dir );
 
 	protected:
 		FileSystemInterface * m_interface;

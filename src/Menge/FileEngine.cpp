@@ -34,19 +34,19 @@ namespace Menge
 		return m_interface->existFile( _filename.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileDataInterface* FileEngine::openFile( const std::string& _filename )
+	DataStreamInterface* FileEngine::openFile( const std::string& _filename )
 	{
 		return m_interface->openFile( _filename.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeFile( FileDataInterface* _fd )
+	void FileEngine::closeStream( DataStreamInterface* _stream )
 	{
-		m_interface->closeFile( _fd );
+		m_interface->closeStream( _stream );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileBuffer FileEngine::getFileBuffer( const std::string& _filename )
 	{
-		FileDataInterface * file = openFile( _filename );
+		DataStreamInterface* file = openFile( _filename );
 
 		FileBuffer fb;
 
@@ -64,7 +64,7 @@ namespace Menge
 
 		file->read( fb.buffer, fb.size );
 
-		closeFile( file );
+		closeStream( file );
 
 		return fb;
 	}
@@ -83,4 +83,10 @@ namespace Menge
 	{
 		return m_interface->changeDir( _dir.c_str() );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	DataStreamInterface* FileEngine::createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose )
+	{
+		return m_interface->createMemoryFile( _data, _size, _freeOnClose );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

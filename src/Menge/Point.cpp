@@ -8,7 +8,7 @@
 
 #	include "RenderEngine.h"
 #	include "Sprite.h"
-//#define DEBUG_RENDER
+#define DEBUG_RENDER
 
 namespace	Menge
 {

@@ -13,7 +13,7 @@ namespace	Menge
 	OBJECT_IMPLEMENT(Video)
 		//////////////////////////////////////////////////////////////////////////
 		Video::Video()
-		: m_resource(0)
+		: m_resourceVideo(0)
 		, m_playing(false)
 		, m_autoStart(false)
 		, m_looping(false)
@@ -39,7 +39,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::setAnimationResource( const std::string & _resource )
 	{
-		m_resourcename = _resource;
+		m_resourceVideoName = _resource;
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -91,10 +91,10 @@ namespace	Menge
 			return false;
 		}
 
-		m_resource = Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImageVideoStream>( m_resourcename );
+		m_resourceVideo = Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceImageVideoStream>( m_resourceVideoName );
 
-		if( m_resource == 0 )
+		if( m_resourceVideo == 0 )
 		{
 			return false;
 		}
@@ -107,7 +107,7 @@ namespace	Menge
 		Sprite::_release();
 
 		Holder<ResourceManager>::hostage()
-			->releaseResource( m_resource );
+			->releaseResource( m_resourceVideo );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::stop()
@@ -122,9 +122,9 @@ namespace	Menge
 	void Video::pause()
 	{
 		m_playing = false;
-		if( m_resource )
+		if( m_resourceVideo )
 		{
-			m_resource->getStream()->pause();
+			m_resourceVideo->getStream()->pause();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -141,9 +141,9 @@ namespace	Menge
 	void Video::play_()
 	{
 		m_playing = true;
-		if( m_resource )
+		if( m_resourceVideo )
 		{
-			m_resource->getStream()->play();
+			m_resourceVideo->getStream()->play();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

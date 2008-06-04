@@ -73,8 +73,8 @@ namespace Menge
 		void play_();
 
 	protected:
-		ResourceImageVideoStream* m_resource;
-		std::string m_resourcename;
+		ResourceImageVideoStream* m_resourceVideo;
+		std::string m_resourceVideoName;
 
 		bool m_autoStart;
 		bool m_playing;

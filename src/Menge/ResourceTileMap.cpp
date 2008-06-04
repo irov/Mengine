@@ -56,7 +56,7 @@ namespace Menge
 
 		m_width = 0;
 		m_height = 0;
-		FileDataInterface* mapFile = Holder<FileEngine>::hostage()->openFile( m_tileMapFile );
+		DataStreamInterface* mapFile = Holder<FileEngine>::hostage()->openFile( m_tileMapFile );
 		std::string line1 = mapFile->getLine( true );
 		m_width = line1.size() - 1;
 		std::string line2;
@@ -108,7 +108,7 @@ namespace Menge
 			line1 = line2;
 		}
 
-		Holder<FileEngine>::hostage()->closeFile( mapFile );
+		Holder<FileEngine>::hostage()->closeStream( mapFile );
 
 //		m_physXml += "<Density Value = \"0.0\"/>";
 

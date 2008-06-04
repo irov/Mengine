@@ -4,7 +4,7 @@
 
 #	include <vector>
 
-class FileDataInterface;
+//class FileDataInterface;
 
 namespace Menge
 {

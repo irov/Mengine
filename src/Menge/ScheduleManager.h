@@ -26,6 +26,7 @@ namespace Menge
 
 	public:
 		unsigned int schedule( float _timing, PyObject * _func );
+		unsigned int timerSchedule( float _timing, PyObject* _func );
 		void remove( unsigned int _id );
 		void removeAll();
 
@@ -40,5 +41,6 @@ namespace Menge
 		bool m_updatable;
 		unsigned int m_schedulesID;
 		TListSchedules m_schedules;
+		TListSchedules m_timerSchedules;
 	};
 }

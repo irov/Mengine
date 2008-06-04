@@ -57,6 +57,15 @@ namespace Menge
 		{
 			it_find->dead = true;
 		}
+		else
+		{
+			it_find = std::find_if( m_timerSchedules.begin(), m_timerSchedules.end(), FScheduleFind(_id) );
+
+			if( it_find != m_timerSchedules.end() )
+			{
+				it_find->dead = true;
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::removeAll()
@@ -64,6 +73,15 @@ namespace Menge
 		for( TListSchedules::iterator 
 			it = m_schedules.begin(),
 			it_end = m_schedules.end();
+		it != it_end;
+		++it)
+		{
+			it->dead = true;
+		}
+
+		for( TListSchedules::iterator 
+			it = m_timerSchedules.begin(),
+			it_end = m_timerSchedules.end();
 		it != it_end;
 		++it)
 		{
@@ -109,6 +127,39 @@ namespace Menge
 			}
 		}
 
+		for( TListSchedules::iterator 
+			it = m_timerSchedules.begin(),
+			it_end = m_timerSchedules.end();
+		it != it_end;
+		++it)
+		{
+			if( it->dead )
+			{
+				continue;
+			}
+
+			if( it->updating )
+			{
+				continue;
+			}
+
+			if( it->timing < _timing )
+			{
+				float time = _timing;
+				while( time > it->timing )
+				{
+					Holder<ScriptEngine>::hostage()
+						->callFunction( it->script, "()" );
+					time -= it->timing;
+				}
+				it->dead = true;
+			}
+			else
+			{
+				it->timing -= _timing;
+			}
+		}
+
 		m_updating = false;
 
 
@@ -144,5 +195,22 @@ namespace Menge
 	void ScheduleManager::setUpdatable( bool _upatable )
 	{
 		m_updatable = _upatable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	unsigned int ScheduleManager::timerSchedule( float _timing, PyObject* _func )
+	{
+		ScheduleEvent event;
+
+		event.dead = false;
+		event.updating = m_updating;
+		event.timing = _timing;
+		event.script = _func;
+		event.id = ++m_schedulesID;
+
+		ScriptEngine::incref( _func );
+
+		m_timerSchedules.push_back( event );
+
+		return event.id;
 	}
 }

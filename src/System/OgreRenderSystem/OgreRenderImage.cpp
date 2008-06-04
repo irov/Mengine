@@ -25,18 +25,21 @@ OgreRenderImage::OgreRenderImage( const char* _description, unsigned int _width,
 OgreRenderImage::OgreRenderImage( const TextureDesc& _desc )
 : m_description( _desc.name )
 {
-	Ogre::Image image;
+	//Ogre::Image image;
 
 	Ogre::DataStreamPtr data( new Ogre::MemoryDataStream( _desc.buffer, _desc.size ) );
-	
-	Ogre::String::size_type index = m_description.find_last_of(".");
-	std::string ext = m_description.substr( index + 1, m_description.size() );
+	//Ogre::String::size_type index = m_description.find_last_of(".");
+	//std::string ext = m_description.substr( index + 1, m_description.size() );
 
-	image.load( data, ext );
+	//image.load( data, ext );
 	//image.FILTER_BILINEAR
+	
+	/*m_texture = Ogre::TextureManager::getSingletonPtr()
+		->loadImage( m_description, "Default", image, Ogre::TEX_TYPE_2D, 0 );/*/
+	m_texture = Ogre::TextureManager::getSingleton().
+		loadRawData( _desc.name, "Default", data, 
+		_desc.width, _desc.height, static_cast<Ogre::PixelFormat>( _desc.pixelFormat ) );
 
-	m_texture = Ogre::TextureManager::getSingletonPtr()
-		->loadImage( m_description, "Default", image, Ogre::TEX_TYPE_2D, 0 );
 }
 //////////////////////////////////////////////////////////////////////////
 OgreRenderImage::~OgreRenderImage()

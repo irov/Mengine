@@ -7,7 +7,7 @@
 #	include <map>
 
 class RenderImageInterface;
-class FileDataInterface;
+class DataStreamInterface;
 
 namespace Menge
 {
@@ -68,7 +68,7 @@ namespace Menge
 		void setGlyph( unsigned int _id, float _u1, float _v1, float _u2, float _v2 );
 		std::string getFontDir( const std::string & _fontName );
 
-		bool parseFontdef( FileDataInterface * _stream );
+		bool parseFontdef( DataStreamInterface * _stream );
 		bool parseAttribute( const std::string & name, const std::string & params );
 
 	private:

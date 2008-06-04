@@ -5,7 +5,7 @@
 #	include <map>
 
 class EmitterContainerInterface;
-class FileDataInterface;
+//class FileDataInterface;
 class RenderImageInterface;
 
 namespace Menge

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="Game"
 	ProjectGUID="{6EDB3869-39FE-4AE5-869E-B6AA9C574E96}"
 	RootNamespace="Game"
@@ -71,10 +71,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				RegisterOutput="false"
-				AdditionalDependencies="OgreMainStatic_d.lib pybind_d.lib python25_d.lib"
+				AdditionalDependencies="OgreMainStatic_d.lib pybind_d.lib python25_d.lib FreeImaged.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\dependencies\ogrenew\lib&quot;;&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\dependencies\ogrenew\lib&quot;;&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Dist\&quot;"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""
@@ -166,9 +166,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMainStatic.lib pybind.lib python25.lib"
+				AdditionalDependencies="OgreMainStatic.lib pybind.lib python25.lib FreeImage.lib"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\dependencies\ogrenew\lib&quot;;&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Release&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\dependencies\ogrenew\lib&quot;;&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Release&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Dist\&quot;"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""
@@ -259,10 +259,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMainStatic.lib pybind.lib python25.lib"
+				AdditionalDependencies="OgreMainStatic.lib pybind.lib python25.lib FreeImage.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_con.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)\dependencies\ogrenew\lib&quot;;&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Release&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)\dependencies\ogrenew\lib&quot;;&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Release&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Dist\&quot;"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""

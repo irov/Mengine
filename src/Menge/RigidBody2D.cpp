@@ -78,7 +78,7 @@ namespace Menge
 		{
 			XML_CASE_NODE( "Shape" )
 			{
-				mt::convexpoly2 n;
+				mt::polygon n;
 				m_shapeList.push_back( n );
 				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderShape );
 			}
@@ -386,7 +386,7 @@ namespace Menge
 			it != it_end;
 		it++ )
 		{
-			const mt::convexpoly2 & poly = *it;
+			const mt::polygon & poly = *it;
 
 			for(int i = 0; i < poly.num_points(); i++)
 			{

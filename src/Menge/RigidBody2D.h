@@ -3,7 +3,7 @@
 #	include "SceneNode2D.h"
 #	include "Interface/PhysicSystem2DInterface.h"
 
-#	include "Math/convexpoly2.h"
+#	include "Math/polygon.h"
 
 class PhysicBody2DInterface;
 
@@ -91,7 +91,7 @@ namespace Menge
 		unsigned int m_categoryBits;
 		unsigned int m_groupIndex;
 		
-		typedef std::vector<mt::convexpoly2> TShapeList;
+		typedef std::vector<mt::polygon> TShapeList;
 		TShapeList m_shapeList;
 		
 		typedef std::vector< std::pair< float, mt::vec2f > > TShapeCircleList;
@@ -100,7 +100,7 @@ namespace Menge
 		typedef std::vector< std::pair< std::pair< float, float >, std::pair< mt::vec2f, float > > > TShapeBoxList;
 		TShapeBoxList m_shapeBoxList;
 
-		mt::convexpoly2 m_shape;
+		mt::polygon m_shape;
 
 	protected:
 		PhysicBody2DInterface* m_interface;

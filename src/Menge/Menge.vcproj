@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="Menge"
 	ProjectGUID="{61566E24-14DC-456C-A864-772C5064FDBA}"
 	RootNamespace="RvEngine"
@@ -42,8 +42,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB;MENGE_EXPORT;OGRE_STATIC_LIB"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Source&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB;MENGE_EXPORT;FREEIMAGE_LIB;"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -124,8 +124,8 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\cal3d\cal3d\src\&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB;MENGE_EXPORT"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\cal3d\cal3d\src\&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Source&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB;MENGE_EXPORT;FREEIMAGE_LIB;"
 				StringPooling="true"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
@@ -246,11 +246,103 @@
 				Name="Render"
 				>
 				<File
+					RelativePath=".\Bitwise.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Codec.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Codec.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ColourValue.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ColourValue.h"
+					>
+				</File>
+				<File
+					RelativePath=".\FreeImageCodec.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\FreeImageCodec.h"
+					>
+				</File>
+				<File
+					RelativePath=".\HardwareBuffer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\HardwareBuffer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\HardwarePixelBuffer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\HardwarePixelBuffer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Image.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Image.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ImageCodec.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ImageResampler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\PixelFormat.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\PixelFormat.h"
+					>
+				</File>
+				<File
 					RelativePath=".\RenderEngine.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\RenderEngine.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Texture.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath=".\Texture.h"
 					>
 				</File>
 			</Filter>

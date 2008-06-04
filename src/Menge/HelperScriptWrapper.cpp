@@ -8,7 +8,11 @@
 
 #	include "Color.h"
 
-#	include <time.h>
+#	include "Config/Typedef.h"
+
+#	include <ctime>
+#	include <sstream>
+#	include <iomanip>
 
 namespace Menge
 {
@@ -110,12 +114,24 @@ namespace Menge
 		{
 			return _color.b;
 		}
+
+		static String s_getTimeString()
+		{
+			std::time_t ctTime; 
+			std::time(&ctTime);
+			std::tm* sTime = std::localtime( &ctTime );
+			std::ostringstream str;
+			str << std::setw(2) << std::setfill('0') << sTime->tm_hour
+				<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_min
+				<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_sec;
+			return str.str();
+		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
 	void ScriptWrapper::helperWrap()
 	{
-		srand( (unsigned)time( NULL ) );
+		srand( (unsigned)std::time( NULL ) );
 
 		pybind::def( "randint", &ScriptHelper::mt_randint );
 		pybind::def( "sqrtf", &ScriptHelper::mt_sqrtf );
@@ -138,5 +154,7 @@ namespace Menge
 		pybind::def( "getR", &ScriptHelper::getR );
 		pybind::def( "getG", &ScriptHelper::getG );
 		pybind::def( "getB", &ScriptHelper::getB );
+
+		pybind::def( "getTimeString", &ScriptHelper::s_getTimeString );
 	}
 }

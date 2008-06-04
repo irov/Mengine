@@ -87,15 +87,20 @@ namespace	Menge
 			return false;
 		}
 
-		m_resource = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImage>( m_resourcename );
-
-		if( m_resource == 0 )
+		if( m_resourcename != "" )
 		{
-			MENGE_LOG( "Image resource not getting '%s'\n", m_resourcename.c_str() );
-			return false;
+			m_resource = 
+				Holder<ResourceManager>::hostage()
+				->getResourceT<ResourceImage>( m_resourcename );
+
+			if( m_resource == 0 )
+			{
+				MENGE_LOG( "Image resource not getting '%s'", m_resourcename.c_str() );
+				return false;
+			}
 		}
+		else
+			return false;
 
 		updateAlphaBlend_();
 
@@ -135,6 +140,14 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	bool Sprite::isVisible( const Viewport & _viewPort )
 	{
+		if( m_resource == NULL )
+		{
+			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
+				, getName().c_str()
+				, m_resourcename.c_str() 
+				);
+		}
+
 		/*Max*/
 		m_size = m_resource->getSize( m_currentImageIndex );
 	
@@ -197,6 +210,14 @@ namespace	Menge
 	{
 		if( m_centerAlign )
 		{
+			if( m_resource == NULL )
+			{
+				MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
+					, getName().c_str()
+					, m_resourcename.c_str() 
+					);
+			}
+
 			mt::vec2f size = m_resource->getMaxSize( 0 );
 		
 			size.x *= m_scale.x;
@@ -237,6 +258,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateVisibility_()
 	{	
+		if( m_resource == NULL )
+		{
+			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
+				, getName().c_str()
+				, m_resourcename.c_str() 
+				);
+		}
+
 		m_uv = m_resource->getUV( m_currentImageIndex );
 
 		m_offset.x += m_size.x * m_percent.x;
@@ -301,6 +330,14 @@ namespace	Menge
 		updateVisibility_();
 
 		updateFlip_();
+
+		if( m_resource == NULL )
+		{
+			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
+				, getName().c_str()
+				, m_resourcename.c_str() 
+				);
+		}
 
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
@@ -369,6 +406,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Sprite::getImageSize()
 	{
+		if( m_resource == NULL )
+		{
+			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
+				, getName().c_str()
+				, m_resourcename.c_str() 
+				);
+		}
+
 		return m_resource->getSize( m_currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////

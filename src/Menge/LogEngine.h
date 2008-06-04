@@ -14,7 +14,7 @@ namespace Menge
 		LogEngine( LogSystemInterface * _interface );
 
 	public:
-		void logMessage( const std::string & _message, bool _maskDebug );
+		void logMessage( const std::string & _message, bool _maskDebug, bool _endl = true, bool _timeStamp = true );
 
 	protected:
 		LogSystemInterface * m_interface;

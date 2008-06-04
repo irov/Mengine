@@ -465,20 +465,33 @@ void WinApplication::notifyWindowModeChanged( float _width, float _height, bool 
 	{
 		dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
 
-		SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
-		SetWindowPos(m_hWnd, HWND_NOTOPMOST, 0, 0, (int)_width, (int)_height,
-			SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOACTIVATE);
+		// When switching back to windowed mode, need to reset window size 
+		// after device has been restored
+		RECT rc;
+		SetRect(&rc, 0, 0, _width, _height);
+		//AdjustWindowRect(&rc, GetWindowLong(m_hWnd, GWL_STYLE), false);
+		AdjustWindowRect(&rc, dwStyle, false);
+		unsigned int winWidth = rc.right - rc.left;
+		unsigned int winHeight = rc.bottom - rc.top;
+		int screenw = GetSystemMetrics(SM_CXSCREEN);
+		int screenh = GetSystemMetrics(SM_CYSCREEN);
+		int left = (screenw - winWidth) / 2;
+		int top = (screenh - winHeight) / 2;
+
+		SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
+		SetWindowPos(m_hWnd, HWND_NOTOPMOST, left, top, winWidth, winHeight,
+			SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOACTIVATE);
 
 	}
 	else
 	{
-		dwStyle |= WS_POPUP;
-		SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
+		//dwStyle |= WS_POPUP;
+		//SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 	}
 	//::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 
 
-	m_listener->onWindowMovedOrResized();
+	//m_listener->onWindowMovedOrResized();
 }
 //////////////////////////////////////////////////////////////////////////
 SystemDLLInterface* WinApplication::loadSystemDLL( const char* _dll )

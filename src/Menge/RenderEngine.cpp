@@ -11,6 +11,8 @@
 #	include "Application.h"
 #	include "Game.h"
 
+#	include "Image.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -25,7 +27,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::initialize( const std::string& _driver )
+	bool RenderEngine::initialize( const String& _driver )
 	{
 		bool result = m_interface->initialize( _driver.c_str() );
 		m_interface->setEventListener( this );
@@ -133,29 +135,36 @@ namespace Menge
 
 		if(image == 0)
 		{
-			FileDataInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
+			//DataStreamInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
 
-			if( file == 0 )
+			/*if( file == 0 )
 			{
 				MENGE_LOG( "Error: Image can't open resource file '%s'\n", _filename.c_str() );
 				return 0;
-			}
+			}*/
 
-			static std::vector<char> s_buff;
+			/*static std::vector<char> s_buff;
 
 			unsigned int buff_size = file->size();
 			s_buff.resize( buff_size );
-			file->read( &s_buff[0], buff_size );
+			file->read( &s_buff[0], buff_size );*/
+			Image cimage;
+			cimage.load( _filename );
 
 			TextureDesc	textureDesc;
-			textureDesc.buffer = &s_buff[0];
-			textureDesc.size = buff_size;
+			textureDesc.buffer = cimage.getData();
+			textureDesc.size = cimage.getSize();
+			textureDesc.width = cimage.getWidth();
+			textureDesc.height = cimage.getHeight();
+			textureDesc.pixelFormat = cimage.getFormat();
+			//textureDesc.buffer = &s_buff[0];
+			//textureDesc.size = buff_size;
 			textureDesc.name = _filename.c_str();
 			textureDesc.filter = _filter;
 
 			image = loadImage( textureDesc );
 
-			Holder<FileEngine>::hostage()->closeFile( file );
+			//Holder<FileEngine>::hostage()->closeStream( file );
 
 			if( image == 0 )
 			{

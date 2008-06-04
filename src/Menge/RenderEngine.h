@@ -25,7 +25,7 @@ namespace Menge
 		
 	public:
 
-		bool initialize( const std::string& _driver );
+		bool initialize( const String& _driver );
 		bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle = 0,
 								int _FSAAType = 0, int _FSAAQuality = 0 );
 

@@ -33,9 +33,6 @@ namespace	Menge
 		Holder<Player>::hostage()
 			->unregGlobalMouseEventable( this );
 
-		Holder<Player>::hostage()
-			->unregGlobalKeyEventable( this );
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()
@@ -50,8 +47,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
 	{
-		//assert(!"HotSpot addPoint deprecated!");
-		m_points.push_back( mt::vec2f( _p.x * m_scale.x, _p.y * m_scale.y ) );
+		m_polygon.add_point( mt::vec2f( _p.x * m_scale.x, _p.y * m_scale.y ) );
 
 #ifdef DEBUG_RENDER
 		Sprite* point = new Sprite();
@@ -83,8 +79,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
 	{
-		//assert(!"HotSpot clearPoints deprecated!");
-		m_points.clear();
+		m_polygon.clear_points();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::pick( HotSpot * _hotspot )
@@ -100,7 +95,16 @@ namespace	Menge
 		const mt::vec2f & dirB = _hotspot->getLocalDirection();
 		const mt::vec2f & posB = _hotspot->getScreenPosition();
 
-		return mt::intersect_poly_poly(m_polygons,_hotspot->m_polygons,posA,dirA,posB,dirB);
+		bool is_intersect = mt::intersect_poly_poly( 
+			m_polygon, _hotspot->m_polygon, 
+			dirA, posA, dirB, posB );
+
+	/*	if(is_intersect)
+		{
+			//printf("%f;%f  and %f;%f \n", wmA.v2.v2.x, wmA.v2.v2.y, wmB.v2.v2.x, wmB.v2.v2.y);
+		}*/
+	
+		return is_intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::loader( XmlElement * _xml)
@@ -117,22 +121,6 @@ namespace	Menge
 				}
 			}
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::_compile()
-	{
-		if(mt::is_convex_pointsoup(m_points) == false)
-		{
-			mt::decompose_concave(m_points,m_polygons);
-		}
-		else
-		{
-			m_polygons.push_back(mt::convexpoly2(m_points));
-		}
-
-		m_points.clear();
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
@@ -267,44 +255,39 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )
 	{
+	//	mt::mat3f wm = getWorldMatrix();
+	//	wm.v2.v2 = this->getScreenPosition();
 		const mt::vec2f & direction = this->getLocalDirection();
 		const mt::vec2f & position = this->getScreenPosition();
-
-		return mt::is_point_inside_polygon(m_polygons, _p, position, direction);
+		bool result = mt::is_point_inside_polygon( m_polygon, _p, position, direction  );
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_debugRender()
 	{
-		for(int j = 0; j < m_polygons.size(); j++)
+		for(int i = 0; i < m_polygon.num_points(); i++)
 		{
-			for(int i = 0; i < m_polygons[j].num_points(); i++)
-			{
-				mt::vec2f beg = m_polygons[j][i];
-				mt::vec2f end = m_polygons[j][(i+1) % m_polygons[j].num_points()];
+			mt::vec2f beg = m_polygon[i];
+			mt::vec2f end = m_polygon[(i+1) % m_polygon.num_points()];
 
-				beg+=getWorldPosition();
-				end+=getWorldPosition();
+			beg+=getWorldPosition();
+			end+=getWorldPosition();
 
-				Holder<RenderEngine>::hostage()->renderLine(0xFFFF0000,beg,end);
-			}
+			Holder<RenderEngine>::hostage()->renderLine(0xFFFF0000,beg,end);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::setScale( const mt::vec2f& _scale )
 	{
-		for(int i = 0; i < m_polygons.size(); i++)
+		for( mt::polygon::TVectorPoints::size_type 
+			it = 0,
+			it_end = m_polygon.num_points();
+		it != it_end; 
+		++it )
 		{
-			for( mt::convexpoly2::TVectorPoints::size_type 
-				it = 0,
-				it_end = m_polygons[i].num_points();
-			it != it_end; 
-			++it )
-			{
-				m_polygons[i][it].x = m_polygons[i][it].x / m_scale.x * _scale.x;
-				m_polygons[i][it].y = m_polygons[i][it].y / m_scale.y * _scale.y;
-			}
+			m_polygon[it].x = m_polygon[it].x / m_scale.x * _scale.x;
+			m_polygon[it].y = m_polygon[it].y / m_scale.y * _scale.y;
 		}
-
 #ifdef DEBUG_RENDER
 		TListChildren::iterator it = m_listChildren.begin();
 		for(; it != m_listChildren.end(); it++)

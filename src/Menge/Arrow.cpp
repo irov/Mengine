@@ -9,6 +9,7 @@
 #	include "HotSpot.h"
 
 #	include "XmlEngine.h"
+#	include "Application.h"
 
 namespace	Menge
 {
@@ -34,13 +35,13 @@ namespace	Menge
 	{
 		SceneNode2D::_update( _timing );
 
-		InputEngine * inputEng = Holder<InputEngine>::hostage();
+		/*InputEngine * inputEng = Holder<InputEngine>::hostage();
 
 		float mx = inputEng->getMouseX();
 		float my = inputEng->getMouseY();
 		
 		mt::vec2f pos( mx, my );
-		setLocalPosition( pos + m_offsetClick );
+		setLocalPosition( pos + m_offsetClick );*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()
@@ -52,6 +53,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_compile()
 	{
+		setLocalPosition( m_offsetClick );
 		m_currentHotSpot = new HotSpot();
 		m_currentHotSpot->addPoint( -m_offsetClick );
 
@@ -66,6 +68,7 @@ namespace	Menge
 
 		result = m_currentHotSpot->activate();
 
+		m_window = Holder<Application>::hostage()->getCurrentResolution();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -136,6 +139,29 @@ namespace	Menge
 	void Arrow::_debugRender()
 	{
 		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::onMouseMove( int _dx, int _dy )
+	{
+		const mt::vec2f& pos = getLocalPosition();
+		mt::vec2f nPos = mt::vec2f( pos.x + _dx, pos.y + _dy );
+		if( nPos.x < 0.0f )
+		{
+			nPos.x = 0.0f;
+		}
+		else if( nPos.x > m_window.x )
+		{
+			nPos.x = m_window.x;
+		}
+		if( nPos.y < 0.0f )
+		{
+			nPos.y = 0.0f;
+		}
+		else if( nPos.y > m_window.y )
+		{
+			nPos.y = m_window.y;
+		}
+		setLocalPosition( nPos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

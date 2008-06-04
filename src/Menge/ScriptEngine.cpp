@@ -48,7 +48,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::write( const std::string & _msg )
 	{
-		MENGE_LOG( _msg.c_str() );
+		//MENGE_LOG( _msg.c_str() );
+		Holder<LogEngine>::hostage()->logMessage( _msg, false, false, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::init()
@@ -184,7 +185,7 @@ namespace Menge
 		xml_path += _type;
 		xml_path += ".xml";
 
-		FileDataInterface * file = 
+		DataStreamInterface * file = 
 			Holder<FileEngine>::hostage()
 			->openFile( xml_path );
 		 
@@ -198,7 +199,7 @@ namespace Menge
 		file->read( &blob[0], size );
 		
 		Holder<FileEngine>::hostage()
-			->closeFile( file );
+			->closeStream( file );
 
 		return true;
 	}

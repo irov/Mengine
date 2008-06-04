@@ -69,6 +69,11 @@ namespace Menge
 				->schedule( _timing, _script );
 		}
 
+		static unsigned int s_scheduleTimer( float _timing, PyObject* _script )
+		{
+			return Holder<ScheduleManager>::hostage()->timerSchedule( _timing, _script );
+		}
+
 		static void scheduleRemove( unsigned int _id )
 		{
 			Holder<ScheduleManager>::hostage()
@@ -272,7 +277,7 @@ namespace Menge
 
 		static void setFullscreenMode( bool _fullscreen )
 		{
-			Holder<Application>::hostage()->setMouseBounded( true );
+			Holder<Application>::hostage()->setMouseBounded( _fullscreen );
 			Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
 		}
 
@@ -408,6 +413,12 @@ namespace Menge
 		static void s_setCamera2DBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower )
 		{
 			Holder<Player>::hostage()->getRenderCamera2D()->setBounds( _leftUpper, _rightLower );
+		}
+
+		static void s_setCursorPosition( int _x, int _y )
+		{
+			Arrow* arrow = Holder<Player>::hostage()->getArrow();
+			arrow->setLocalPosition( mt::vec2f( _x, _y ) + arrow->getOffsetClick() );
 		}
 	}
 
@@ -781,6 +792,7 @@ namespace Menge
 		pybind::def( "createNodeFromXml", &ScriptMethod::createNodeFromXml );
 
 		pybind::def( "schedule", &ScriptMethod::schedule );
+		pybind::def( "scheduleTimer", &ScriptMethod::s_scheduleTimer );
 		pybind::def( "scheduleRemove", &ScriptMethod::scheduleRemove );
 		pybind::def( "scheduleRemoveAll", &ScriptMethod::scheduleRemoveAll );
 		pybind::def( "scheduleStopAll", &ScriptMethod::scheduleStopAll );
@@ -788,6 +800,7 @@ namespace Menge
 
 		pybind::def( "getMouseX", &ScriptMethod::getMouseX );
 		pybind::def( "getMouseY", &ScriptMethod::getMouseY );
+		pybind::def( "setCursorPosition", &ScriptMethod::s_setCursorPosition );
 
 		pybind::def( "getArrow", &ScriptMethod::getArrow );
 

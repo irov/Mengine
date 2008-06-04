@@ -5,11 +5,7 @@
 #	include "InputHandler.h"
 #	include "MousePickerTrap.h"
 
-//#	include "Math/b2Polygon.h"
-
-#	include <vector>
-
-#	include "Math/convexpoly2.h"
+#	include "Math/polygon.h"
 
 extern "C" 
 { 
@@ -44,6 +40,8 @@ namespace Menge
 
 		void enableGlobalMouseEvent( bool _value );
 		void enableGlobalKeyEvent( bool _value );
+
+		//void setHotspotListener( PyObject * _handler );
 		
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -62,15 +60,13 @@ namespace Menge
 
 	protected:
 		void _update( float _timing ) override;
-		bool _compile() override;
-
 		void _debugRender() override;
-		virtual void _onSetListener();
+		void _onSetListener() override;
 
 	protected:
-		std::vector<mt::vec2f> m_points;
-		mt::TVecConvex m_polygons;
+		mt::polygon m_polygon;
 		mt::vec2f m_scale;
+
 	private:		
 		bool m_globalMouseEventListener;
 		bool m_globalKeyEventListener;

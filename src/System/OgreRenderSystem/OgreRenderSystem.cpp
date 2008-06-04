@@ -230,7 +230,7 @@ SceneNodeInterface * OgreRenderSystem::getRootSceneNode() const
 bool OgreRenderSystem::initialize( const char* _driver )
 {
 	m_root = new Ogre::Root( "","", "Ogre.log" );
-	
+	Ogre::LogManager::getSingleton().setLogDetail( Ogre::LL_LOW );
 #if	RENDER_SYSTEM == RS_D3D9
 	m_renderPlugin = new Ogre::D3D9Plugin();
 #elif	RENDER_SYSTEM == RS_D3D7
@@ -269,7 +269,7 @@ bool OgreRenderSystem::createRenderWindow( float _width, float _height, int _bit
 	//sceneCam->setNearClipDistance( 5 );
 	m_viewport = m_renderWindow->addViewport( sceneCam );
 
-	//Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
+	Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(0);
 	m_spriteMgr = new OgreRenderSpriteManager();
 	m_spriteMgr->init( m_sceneMgr, m_renderSys, m_viewport, Ogre::RENDER_QUEUE_OVERLAY, true);
 	m_renderWindow->addListener( m_spriteMgr );

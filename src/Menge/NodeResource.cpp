@@ -41,9 +41,7 @@ namespace Menge
 
 		if( result == false )
 		{
-			MENGE_LOG("Error: compiled Node '%s' is failed\n"
-				, getName().c_str() 
-				);
+			MENGE_LOG("Error: compiled Node '%s' is failed", getName().c_str() );
 		}
 
 		return result;

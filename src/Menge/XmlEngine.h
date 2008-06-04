@@ -20,7 +20,7 @@ namespace Menge
 
 	public:
 		bool parseXmlFile( const std::string & _file, XmlElementListener * _listener );
-		bool parseXmlFile( FileDataInterface* _file, XmlElementListener * _listener );
+		bool parseXmlFile( DataStreamInterface* _file, XmlElementListener * _listener );
 		bool parseXmlString( const std::string & _string, XmlElementListener * _listener );
 		bool parseXmlBuffer( const TVectorChar & _buffer, XmlElementListener * _listener );
 
@@ -50,7 +50,7 @@ namespace Menge
 		}
 
 		template<class C, class F>
-		bool parseXmlFileM( FileDataInterface* _file, C * _self, F _method )
+		bool parseXmlFileM( DataStreamInterface* _file, C * _self, F _method )
 		{
 			XmlElementListener * listener = new XmlElementListenerMethod<C,F>(_self, _method );
 			bool result = parseXmlFile( _file, listener );

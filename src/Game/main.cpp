@@ -69,7 +69,7 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	bool result = false;
 	Menge::Application app( platform );
 
-	LogSystemInterface * logSystem;
+	Menge::LogSystemInterface * logSystem;
 	initInterfaceSystem( &logSystem );
 	app.setLogSystem( logSystem );
 

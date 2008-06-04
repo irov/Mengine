@@ -141,6 +141,11 @@ namespace	Menge
 			}
 		}
 
+		if( updatable() )
+		{
+			askEvent( handle, "MOUSE_BUTTON_END", "(Ib)", _button, _isDown );
+		}
+
 		return handle;	
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -193,6 +198,7 @@ namespace	Menge
 		registerEvent( "KEY", "onHandleKeyEvent" );
 		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent" );
 		registerEvent( "MOUSE_MOVE", "onHandleMouseMove" );
+		registerEvent( "MOUSE_BUTTON_END", "onHandleMouseButtonEventEnd" );
 
 		callMethod( "onActivate", "() " );
 

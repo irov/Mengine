@@ -192,6 +192,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleMouseMove( float _x, float _y, int _whell )
 	{
+		m_arrow->onMouseMove( _x, _y );
+
 		bool handler = false;
 
 		if( handler == false )
@@ -371,14 +373,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onMouseLeave()
 	{
-		m_arrowHided = m_arrow->isHide();
-		m_arrow->hide( true );
+		//m_arrowHided = m_arrow->isHide();
+		//m_arrow->hide( true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onMouseEnter()
 	{
-		if( !m_arrowHided )
-			m_arrow->hide( false );
+		//if( !m_arrowHided )
+		//	m_arrow->hide( false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

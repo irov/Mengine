@@ -1,6 +1,8 @@
 #	include "InputEngine.h"
 #	include "InputHandler.h"
 #	include "Application.h"
+#	include "Player.h"
+#	include "Arrow.h"
 
 namespace Menge
 {
@@ -94,7 +96,10 @@ namespace Menge
 		}
 		else
 		{
+			float x = m_interface->getMouseX();
+			float y = m_interface->getMouseY();
 			m_interface->releaseMouse();
+			Holder<Player>::hostage()->getArrow()->setLocalPosition( mt::vec2f(x, y ) );
 		}
 
 	}

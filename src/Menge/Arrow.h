@@ -35,6 +35,8 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 		void loaderArrow_( XmlElement * _xml );
 
+		void onMouseMove( int _dx, int _dy );
+
 	protected:
 		bool _renderBegin() override;
 		void _renderEnd() override;
@@ -47,7 +49,7 @@ namespace Menge
 
 	protected:
 		mt::vec2f m_offsetClick;
-
+		mt::vec2f m_window;
 		HotSpot * m_currentHotSpot;
 	};
 }

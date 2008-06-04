@@ -79,10 +79,7 @@ namespace Menge
 		{
 			if( compile() == false )
 			{
-				MENGE_LOG("Error: activate Node '%s' is failed, becouse compiled is failed\n"
-					, m_name.c_str() 
-					);
-
+				MENGE_LOG("Error: activate Node '%s' is failed, becouse compiled is failed", m_name.c_str()	);
 				return false;
 			}
 		}

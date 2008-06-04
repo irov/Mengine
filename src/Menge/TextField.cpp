@@ -197,7 +197,7 @@ namespace     Menge
 					uv.w = uv.y + h * s;
 				}
 
-				float width = m_resource->getCharRatio( *it ) * m_height;
+				int width = static_cast<int>( m_resource->getCharRatio( *it ) * m_height );
 
 				mt::vec2f size( width, m_height );
 

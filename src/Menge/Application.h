@@ -6,7 +6,6 @@
 #	include <vector>
 #	include "math/vec2.h"
 
-class LogSystemInterface;
 class FileSystemInterface;
 class InputSystemInterface;
 class RenderSystemInterface;
@@ -23,6 +22,8 @@ class XmlElement;
 
 namespace Menge
 {
+	class LogSystemInterface;
+
 	class LogEngine;
 	class FileEngine;
 	class InputEngine;

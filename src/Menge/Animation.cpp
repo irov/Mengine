@@ -7,13 +7,14 @@
 #	include "ResourceAnimation.h"
 
 #	include "XmlEngine.h"
+#	include "LogEngine.h"
 
 namespace	Menge
 {
 	OBJECT_IMPLEMENT(Animation)
 	//////////////////////////////////////////////////////////////////////////
 	Animation::Animation()
-	: m_resource(0)
+	: m_resourceAnimation(0)
 	, m_playing(false)
 	, m_autoStart(false)
 	, m_looping(false)
@@ -29,7 +30,7 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Animation", "Name", m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( "Animation", "Name", m_resourceAnimationName );
 			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looping );
 			XML_CASE_ATTRIBUTE_NODE( "AutoStart", "Value", m_autoStart );			
 		}
@@ -45,8 +46,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationResource( const std::string & _resource )
 	{
-		if( m_resourcename == _resource ) return;
-		m_resourcename = _resource;
+		if( m_resourceAnimationName == _resource ) return;
+		m_resourceAnimationName = _resource;
 		recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -79,16 +80,24 @@ namespace	Menge
 			return; 
 		}
 
+		if( m_resourceAnimation == NULL )
+		{
+			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
+				, getName().c_str()
+				, m_resourceAnimationName.c_str() 
+				);
+		}
+
 		m_delay += _timing;
 
-		float delay = m_resource->getSequenceDelay( m_currentFrame );
+		float delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
 		delay *= m_animationFactor;
 
 		while( m_delay >= delay )
 		{
 			m_delay -= delay;
 			
-			unsigned int frameSize = m_resource->getSequenceCount();
+			unsigned int frameSize = m_resourceAnimation->getSequenceCount();
 			callEvent( "END_FRAME", "(OI)", this->getScript(), m_currentFrame );
 
 			if( ++m_currentFrame == frameSize )
@@ -106,11 +115,11 @@ namespace	Menge
 					m_currentFrame = 0;
 				}
 			}	
-			delay = m_resource->getSequenceDelay( m_currentFrame );
+			delay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
 			delay *= m_animationFactor;
 		}
 
-		unsigned int currentImageIndex = m_resource->getSequenceIndex( m_currentFrame );
+		unsigned int currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
 
 	}
@@ -130,7 +139,15 @@ namespace	Menge
 		{
 			m_currentFrame = 0;
 
-			unsigned int currentImageIndex = m_resource->getSequenceIndex( m_currentFrame );
+			if( m_resourceAnimation == NULL )
+			{
+				MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
+					, getName().c_str()
+					, m_resourceAnimationName.c_str() 
+					);
+			}
+
+			unsigned int currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
 			setImageIndex( currentImageIndex );
 		}
 
@@ -149,10 +166,10 @@ namespace	Menge
 			return false;
 		}
 
-		m_resource = Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceAnimation>( m_resourcename );
+		m_resourceAnimation = Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceAnimation>( m_resourceAnimationName );
 
-		if( m_resource == 0 )
+		if( m_resourceAnimation == 0 )
 		{
 			return false;
 		}
@@ -165,7 +182,7 @@ namespace	Menge
 		Sprite::_release();
 
 		Holder<ResourceManager>::hostage()
-			->releaseResource( m_resource );
+			->releaseResource( m_resourceAnimation );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::stop()
@@ -179,7 +196,7 @@ namespace	Menge
 			callEvent( "END_ANIMATION", "(O)", this->getScript() );
 		}
 
-		unsigned int currentImageIndex = m_resource->getSequenceIndex(m_currentFrame);
+		unsigned int currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -204,7 +221,7 @@ namespace	Menge
 		m_delay = 0;
 		m_currentFrame = 0;
 
-		unsigned int currentImageIndex = m_resource->getSequenceIndex( m_currentFrame );
+		unsigned int currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -73,7 +73,7 @@
 # include "ResourceTileMap.h"
 # include "ResourceTileSet.h"
 
-
+#	include "FreeImageCodec.h"
 
 
 #define MENGE_DELETE(x) if(x) { delete (x); (x) = NULL; }
@@ -200,10 +200,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createGame()
 	{
-		//MENGE_LOG("create game file [%s] ...\n", m_gameInfo.c_str() );
+		MENGE_LOG("create game file [%s] ...\n", m_gameInfo.c_str() );
 
 
-		//MENGE_LOG("init game ...\n");
+		MENGE_LOG("init game ...\n");
 
 		if( m_physicEngine )
 		{
@@ -424,7 +424,7 @@ namespace Menge
 		// prepare resources
 		Holder<ScriptEngine>::keep( new ScriptEngine );
 		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
-		//MENGE_LOG("init scriptEngine ...\n");
+		MENGE_LOG("init scriptEngine ...\n");
 		scriptEngine->init();
 
 		Game* game = new Game;
@@ -432,7 +432,7 @@ namespace Menge
 
 		if( m_xmlEngine->parseXmlFileM( m_gameInfo, game, &Game::loader ) == false )
 		{
-			//MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
+			MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
 			return false;
 		}
 
@@ -451,6 +451,8 @@ namespace Menge
 		}
 
 		m_inputEngine->regHandle( m_handler );
+
+		FreeImageCodec::startup();
 
 		Holder<ResourceManager>::keep( new ResourceManager );
 
@@ -689,6 +691,8 @@ namespace Menge
 		
 		Holder<ScriptEngine>::destroy();
 
+		FreeImageCodec::shutdown();
+
 		if( m_physicEngine != 0 )
 		{
 			//??
@@ -718,7 +722,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setMouseBounded( bool _bounded )
 	{
-		if( m_renderEngine->getFullscreenMode() ) return;
+		//if( m_renderEngine->getFullscreenMode() ) return;
 		m_inputEngine->setMouseBounded( _bounded );
 		m_interface->setHandleMouse( !_bounded );
 	}

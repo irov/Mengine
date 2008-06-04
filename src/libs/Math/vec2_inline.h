@@ -2,9 +2,6 @@
 
 #	include <math.h>
 
-#	include <float.h>
-#	include <algorithm>
-
 namespace mt
 {
 	MATH_INLINE vec2f::vec2f() 
@@ -77,20 +74,6 @@ namespace mt
 	MATH_INLINE float vec2f::length() const
 	{
 		return sqrtf(sqrlength());
-	}
-
-	MATH_INLINE float vec2f::normalize()
-	{
-		float l = length();
-		if (l < FLT_EPSILON)
-		{
-			return 0.0f;
-		}
-		float invLength = 1.0f / l;
-		x *= invLength;
-		y *= invLength;
-
-		return l;
 	}
 
 	MATH_INLINE float length_v2_v2(const vec2f& _a, const vec2f& _b)
@@ -241,18 +224,6 @@ namespace mt
 		return a.x * b.y - a.y * b.x;
 	}
 
-	MATH_INLINE mt::vec2f pseudo_cross_v2(const mt::vec2f& a, float s)
-	{
-		vec2f v(s * a.y, -s * a.x);
-		return v;
-	}
-
-	MATH_INLINE mt::vec2f pseudo_cross_v2(float s, const mt::vec2f& a)
-	{
-		vec2f v(s * a.y, -s * a.x);
-		return v;
-	}
-
 	MATH_INLINE void project_v2_v2(const vec2f& a, const vec2f& b, mt::vec2f& result) 
 	{
 		float dp = dot_v2_v2(a, b);
@@ -287,21 +258,5 @@ namespace mt
 		float cos_angle = cosf(_angle);
 		_out.x = cos_angle * _v.x - sin_angle * _v.y;
 		_out.y = cos_angle * _v.y + sin_angle * _v.x;
-	}
-
-	MATH_INLINE vec2f b2Min(const vec2f& a, const vec2f& b)
-	{
-		vec2f c;
-		c.x = (((a.x) < (b.x)) ? (a.x) : (b.x));
-		c.y = (((a.y) < (b.y)) ? (a.y) : (b.y));
-		return c;
-	}
-
-	MATH_INLINE vec2f b2Max(const vec2f& a, const vec2f& b)
-	{
-		vec2f c;
-		c.x = (((a.x) > (b.x)) ? (a.x) : (b.x));
-		c.y = (((a.y) > (b.y)) ? (a.y) : (b.y));
-		return c;
 	}
 }

@@ -325,19 +325,31 @@
 			Name="polygon"
 			>
 			<File
-				RelativePath=".\convexpoly2.cpp"
+				RelativePath=".\polygon.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\convexpoly2.h"
+				RelativePath=".\polygon.h"
 				>
 			</File>
 			<File
-				RelativePath=".\convexpoly2_inline.h"
+				RelativePath=".\polygon_inline.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="simplex"
+			>
+			<File
+				RelativePath=".\simplex.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\decomposition.cpp"
+				RelativePath=".\simplex.h"
+				>
+			</File>
+			<File
+				RelativePath=".\simplex_inline.h"
 				>
 			</File>
 		</Filter>
@@ -346,18 +358,6 @@
 			>
 			<File
 				RelativePath=".\rand.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="line"
-			>
-			<File
-				RelativePath=".\line2.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\line2.h"
 				>
 			</File>
 		</Filter>

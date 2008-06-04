@@ -35,12 +35,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interface", "Interface", "{
 	ProjectSection(SolutionItems) = preProject
 		src\Interface\ApplicationInterface.h = src\Interface\ApplicationInterface.h
 		src\Interface\FileSystemInterface.h = src\Interface\FileSystemInterface.h
+		src\Interface\HardwareBufferInterface.h = src\Interface\HardwareBufferInterface.h
 		src\Interface\InputSystemInterface.h = src\Interface\InputSystemInterface.h
 		src\Interface\LogSystemInterface.h = src\Interface\LogSystemInterface.h
 		src\Interface\PhysicSystem2DInterface.h = src\Interface\PhysicSystem2DInterface.h
 		src\Interface\PhysicSystemInterface.h = src\Interface\PhysicSystemInterface.h
 		src\Interface\RenderSystemInterface.h = src\Interface\RenderSystemInterface.h
 		src\Interface\SoundSystemInterface.h = src\Interface\SoundSystemInterface.h
+		src\Interface\TextureInterface.h = src\Interface\TextureInterface.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{AD697881-E6E1-46E5-9220-2D07D6AA1850}"
@@ -116,6 +118,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{A5E5AB
 	EndProjectSection
 	ProjectSection(SolutionItems) = preProject
 		src\Config\Config.h = src\Config\Config.h
+		src\Config\Typedef.h = src\Config\Typedef.h
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MengeFileSystem", "src\System\MengeFileSystem\FileSystem.vcproj", "{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}"
@@ -125,6 +128,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MengeFileSystem", "src\Syst
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MengeLogSystem", "src\System\MengeLogSystem\MengeLogSystem.vcproj", "{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderSystem_Direct3D7", "src\System\Direct3D7\RenderSystem_Direct3D7_vc8.vcproj", "{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -342,6 +351,21 @@ Global
 		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}.Release|Win32.ActiveCfg = Release|Win32
 		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}.Release|Win32.Build.0 = Release|Win32
 		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}.Release|x64.ActiveCfg = Release|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.Debug|Win32.Build.0 = Debug|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.Debug|x64.ActiveCfg = Debug|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.PGInstrument|Win32.ActiveCfg = Release|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.PGInstrument|Win32.Build.0 = Release|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.PGInstrument|x64.ActiveCfg = Release|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.PGUpdate|Win32.ActiveCfg = Release|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.PGUpdate|Win32.Build.0 = Release|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.PGUpdate|x64.ActiveCfg = Release|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.Release_con|Win32.ActiveCfg = Release|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.Release_con|Win32.Build.0 = Release|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.Release_con|x64.ActiveCfg = Release|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.Release|Win32.ActiveCfg = Release|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.Release|Win32.Build.0 = Release|Win32
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -357,5 +381,6 @@ Global
 		{17127636-4C7D-42C4-AA40-79DAEE145E8B} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
+		{4FCE5A80-E8AC-448E-AAA0-B1A35AB9551B} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 	EndGlobalSection
 EndGlobal

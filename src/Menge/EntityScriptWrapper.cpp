@@ -155,6 +155,7 @@ namespace Menge
 			.def( "rotateStop", &Entity::rotateStop )
 			.def( "flip", &Entity::flip )
 			.def( "setScale", &Entity::setScale )
+			.def( "getScale", &Entity::getScale )
 			.def( "getParent", &Entity::getParent )
 			.def( "scaleTo", &Entity::scaleTo )
 			.def( "scaleStop", &Entity::scaleStop )

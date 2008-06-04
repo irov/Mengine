@@ -1,11 +1,18 @@
 #	pragma once
 
-class LogSystemInterface
-{
-public:
-	virtual void startLog( const char* _filename ) = 0;
-	virtual void logMessage( const char * _message, bool _maskDebug ) = 0;
-};
+#	include "Config/Typedef.h"
 
-bool	initInterfaceSystem( LogSystemInterface** );
-void	releaseInterfaceSystem( LogSystemInterface* );
+namespace Menge
+{
+
+	class LogSystemInterface
+	{
+	public:
+		virtual void startLog( const String& _filename ) = 0;
+		virtual void logMessage( const String& _message, bool _maskDebug = false, bool _endl = true, bool _timeStamp = true ) = 0;
+	};
+
+}
+
+bool	initInterfaceSystem( Menge::LogSystemInterface** );
+void	releaseInterfaceSystem( Menge::LogSystemInterface* );

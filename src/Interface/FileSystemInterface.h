@@ -1,47 +1,42 @@
 #	pragma once
 
-#	include "Config/Config.h"
+#	include "Config/Typedef.h"
 
-#	if TARGET_PLATFORM == TP_WINDOWS
-#		include <windows.h>
-#	endif
-
-#	include <string>
-
-class	FileDataInterface
+class	DataStreamInterface
 {
 public:
-	virtual unsigned int read( void* _buffer, unsigned int _count ) = 0;
+	virtual std::size_t read( void* _buf, std::size_t _count ) = 0;
+	virtual Menge::String getLine( bool _trimAfter = true ) = 0;
+	virtual std::size_t skipLine(  const Menge::String& _delim ) = 0;
+	virtual void seek( std::size_t _pos ) = 0;
+	virtual std::size_t tell() const = 0;
 	virtual bool eof() const = 0;
-
-	virtual unsigned int size() const = 0;
-
-	virtual void seek( unsigned int _pos ) = 0;
-	virtual unsigned int tell() const = 0;
-
-	virtual std::string getLine( bool _trimAfter ) const = 0;
-	virtual unsigned int skipLine( const std::string& _delim ) = 0;
+	virtual std::size_t size() const = 0;
+	virtual void* getBuffer() = 0;
+	virtual bool isMemory() const = 0;
+	virtual void setFreeOnClose( bool _free ) = 0;
 };
 
 class	FileSystemInterface
 {
 public:
-	virtual void loadPath( const char * _path ) = 0;
-	virtual void loadPak(const char * _filename ) = 0;
-	virtual void unloadPak(const char * _filename) = 0;
+	virtual void loadPath( const Menge::String& _path ) = 0;
+	virtual void loadPak( const Menge::String& _pak ) = 0;
+	virtual void unloadPak( const Menge::String& _pak ) = 0;
 
-	virtual bool existFile(const char * _filename) = 0;
-	virtual FileDataInterface *	openFile(const char *	_filename) = 0;
-	virtual void closeFile(FileDataInterface* _fd) = 0;
+	virtual bool existFile( const Menge::String& _filename ) = 0;
+	virtual DataStreamInterface* openFile( const Menge::String& _filename ) = 0;
+	virtual DataStreamInterface* createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose ) = 0;
+	virtual void closeStream( DataStreamInterface* _stream ) = 0;
 
 	virtual const char * platformBundlePath() = 0;
 
-	virtual bool createFolder( const char * _path ) = 0;
-	virtual bool deleteFolder( const char * _path ) = 0;
-	virtual bool changeDir( const char* _path ) = 0;
+	virtual bool createFolder(  const Menge::String& _path  ) = 0;
+	virtual bool deleteFolder(  const Menge::String& _path  ) = 0;
+	virtual bool changeDir(  const Menge::String& _path  ) = 0;
 
-	virtual const TCHAR * getApplicationDataPath( const TCHAR* _game ) = 0;
+	//virtual const TCHAR * getApplicationDataPath( const TCHAR* _game ) = 0;
 };
 
-bool initInterfaceSystem(FileSystemInterface**	_ptrFileSystem);
-void releaseInterfaceSystem(FileSystemInterface* _ptrFileSystem);
+bool initInterfaceSystem( FileSystemInterface**	_ptrFileSystem );
+void releaseInterfaceSystem( FileSystemInterface* _ptrFileSystem );

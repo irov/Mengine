@@ -168,7 +168,7 @@ void WinApplication::run()
 	while( m_running )
 	{
 		::GetCursorPos( &pos );
-		if( m_cursorInArea 
+		if( m_cursorInArea && m_handleMouse
 			&& ( pos.x < m_wndInfo.rcClient.left 
 			|| pos.x > m_wndInfo.rcClient.right 
 			|| pos.y < m_wndInfo.rcClient.top

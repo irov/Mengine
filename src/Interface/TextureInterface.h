@@ -58,6 +58,8 @@ namespace Menge
 		virtual int getPixelFormat() = 0;
 		virtual std::size_t getWidth() = 0;	// Hardware width
 		virtual std::size_t getHeight() = 0; // Hardware height
+
+		virtual HardwarePixelBufferInterface* createHardwarePixelBuffer( EHardwareBufferUsage _usage ) = 0;
 	};
 
 }	// namespace Menge

@@ -66,6 +66,8 @@ namespace Menge
 
 		// slice pitch
 		std::size_t slicePitch;
+
+		std::size_t left, top, right, bottom, front, back;
 	};
 
 	class HardwarePixelBufferInterface
@@ -82,6 +84,8 @@ namespace Menge
 
 		virtual void blit( const HardwarePixelBufferInterface* _src ) = 0; 
 
-		//virtual void blitToMemory( const Image::Box& _srcBox, const PixelBox& _dst ) = 0;
+		virtual void blitFromMemory( const LockData& _src ) = 0;
+		virtual void blitFromMemory( const LockData& _src, const std::size_t* _box ) = 0;
+		//virtual void blitToMemory( const float* _box, const LockData& _dst ) = 0;
 	};
 }

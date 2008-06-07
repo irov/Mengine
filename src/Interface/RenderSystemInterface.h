@@ -5,6 +5,10 @@
 #	include "Config/Typedef.h"
 
 //#	include "PixelFormat.h"
+namespace Menge
+{
+	class LogSystemInterface;
+}
 
 typedef void* WINDOW_HANDLE;
 
@@ -193,9 +197,9 @@ class	RenderSystemInterface
 {
 public:
 
-	virtual bool initialize( const char* _driver ) = 0;
+	virtual bool initialize( Menge::LogSystemInterface* _logSystem ) = 0;
 	virtual bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
-										int _FSAAType, int _FSAAQuality ) = 0;
+		int _FSAAType, int _FSAAQuality ) = 0;
 	virtual unsigned int getResolutionList( float ** ) = 0;
 
 	virtual void addResourceLocation( const char* _path ) = 0;
@@ -253,6 +257,8 @@ public:
 
 	virtual void	renderLine(const char * _camera, unsigned int _color, const float * _begin, const float * _end) = 0;
 
+	virtual void	beginScene() = 0;
+	virtual void	endScene() = 0;
 	virtual	void	beginLayer() = 0;
 	virtual	void	endLayer() = 0;
 
@@ -278,6 +284,115 @@ public:
 	virtual void onWindowClose() = 0;
 };
 
+namespace Menge
+{
+	// The pixel format used for images, textures, and render surfaces
+	enum PixelFormat
+	{
+		/// Unknown pixel format.
+		PF_UNKNOWN = 0,
+		/// 8-bit pixel format, all bits luminace.
+		PF_L8 = 1,
+		PF_BYTE_L = PF_L8,
+		/// 16-bit pixel format, all bits luminace.
+		PF_L16 = 2,
+		PF_SHORT_L = PF_L16,
+		/// 8-bit pixel format, all bits alpha.
+		PF_A8 = 3,
+		PF_BYTE_A = PF_A8,
+		/// 8-bit pixel format, 4 bits alpha, 4 bits luminace.
+		PF_A4L4 = 4,
+		/// 2 byte pixel format, 1 byte luminance, 1 byte alpha
+		PF_BYTE_LA = 5,
+		/// 16-bit pixel format, 5 bits red, 6 bits green, 5 bits blue.
+		PF_R5G6B5 = 6,
+		/// 16-bit pixel format, 5 bits red, 6 bits green, 5 bits blue.
+		PF_B5G6R5 = 7,
+		/// 8-bit pixel format, 2 bits blue, 3 bits green, 3 bits red.
+		PF_R3G3B2 = 31,
+		/// 16-bit pixel format, 4 bits for alpha, red, green and blue.
+		PF_A4R4G4B4 = 8,
+		/// 16-bit pixel format, 5 bits for blue, green, red and 1 for alpha.
+		PF_A1R5G5B5 = 9,
+		/// 24-bit pixel format, 8 bits for red, green and blue.
+		PF_R8G8B8 = 10,
+		/// 24-bit pixel format, 8 bits for blue, green and red.
+		PF_B8G8R8 = 11,
+		/// 32-bit pixel format, 8 bits for alpha, red, green and blue.
+		PF_A8R8G8B8 = 12,
+		/// 32-bit pixel format, 8 bits for blue, green, red and alpha.
+		PF_A8B8G8R8 = 13,
+		/// 32-bit pixel format, 8 bits for blue, green, red and alpha.
+		PF_B8G8R8A8 = 14,
+		/// 32-bit pixel format, 8 bits for red, green, blue and alpha.
+		PF_R8G8B8A8 = 28,
+		/// 32-bit pixel format, 8 bits for red, 8 bits for green, 8 bits for blue
+		/// like PF_A8R8G8B8, but alpha will get discarded
+		PF_X8R8G8B8 = 26,
+		/// 32-bit pixel format, 8 bits for blue, 8 bits for green, 8 bits for red
+		/// like PF_A8B8G8R8, but alpha will get discarded
+		PF_X8B8G8R8 = 27,
+#if MENGE_ENDIAN == MENGE_ENDIAN_BIG
+		/// 3 byte pixel format, 1 byte for red, 1 byte for green, 1 byte for blue
+		PF_BYTE_RGB = PF_R8G8B8,
+		/// 3 byte pixel format, 1 byte for blue, 1 byte for green, 1 byte for red
+		PF_BYTE_BGR = PF_B8G8R8,
+		/// 4 byte pixel format, 1 byte for blue, 1 byte for green, 1 byte for red and one byte for alpha
+		PF_BYTE_BGRA = PF_B8G8R8A8,
+		/// 4 byte pixel format, 1 byte for red, 1 byte for green, 1 byte for blue, and one byte for alpha
+		PF_BYTE_RGBA = PF_R8G8B8A8,
+#else
+		/// 3 byte pixel format, 1 byte for red, 1 byte for green, 1 byte for blue
+		PF_BYTE_RGB = PF_B8G8R8,
+		/// 3 byte pixel format, 1 byte for blue, 1 byte for green, 1 byte for red
+		PF_BYTE_BGR = PF_R8G8B8,
+		/// 4 byte pixel format, 1 byte for blue, 1 byte for green, 1 byte for red and one byte for alpha
+		PF_BYTE_BGRA = PF_A8R8G8B8,
+		/// 4 byte pixel format, 1 byte for red, 1 byte for green, 1 byte for blue, and one byte for alpha
+		PF_BYTE_RGBA = PF_A8B8G8R8,
+#endif        
+		/// 32-bit pixel format, 2 bits for alpha, 10 bits for red, green and blue.
+		PF_A2R10G10B10 = 15,
+		/// 32-bit pixel format, 10 bits for blue, green and red, 2 bits for alpha.
+		PF_A2B10G10R10 = 16,
+		/// DDS (DirectDraw Surface) DXT1 format
+		PF_DXT1 = 17,
+		/// DDS (DirectDraw Surface) DXT2 format
+		PF_DXT2 = 18,
+		/// DDS (DirectDraw Surface) DXT3 format
+		PF_DXT3 = 19,
+		/// DDS (DirectDraw Surface) DXT4 format
+		PF_DXT4 = 20,
+		/// DDS (DirectDraw Surface) DXT5 format
+		PF_DXT5 = 21,
+		// 16-bit pixel format, 16 bits (float) for red
+		PF_FLOAT16_R = 32,
+		// 48-bit pixel format, 16 bits (float) for red, 16 bits (float) for green, 16 bits (float) for blue
+		PF_FLOAT16_RGB = 22,
+		// 64-bit pixel format, 16 bits (float) for red, 16 bits (float) for green, 16 bits (float) for blue, 16 bits (float) for alpha
+		PF_FLOAT16_RGBA = 23,
+		// 16-bit pixel format, 16 bits (float) for red
+		PF_FLOAT32_R = 33,
+		// 96-bit pixel format, 32 bits (float) for red, 32 bits (float) for green, 32 bits (float) for blue
+		PF_FLOAT32_RGB = 24,
+		// 128-bit pixel format, 32 bits (float) for red, 32 bits (float) for green, 32 bits (float) for blue, 32 bits (float) for alpha
+		PF_FLOAT32_RGBA = 25,
+		// 32-bit, 2-channel s10e5 floating point pixel format, 16-bit green, 16-bit red
+		PF_FLOAT16_GR = 35,
+		// 64-bit, 2-channel floating point pixel format, 32-bit green, 32-bit red
+		PF_FLOAT32_GR = 36,
+		// Depth texture format
+		PF_DEPTH = 29,
+		// 64-bit pixel format, 16 bits for red, green, blue and alpha
+		PF_SHORT_RGBA = 30,
+		// 32-bit pixel format, 16-bit green, 16-bit red
+		PF_SHORT_GR = 34,
+		// 48-bit pixel format, 16 bits for red, green and blue
+		PF_SHORT_RGB = 37,
+		// Number of pixel formats currently defined
+		PF_COUNT = 38
+	};
+}
 /*namespace Menge
 {
 	class Resource;
@@ -476,6 +591,7 @@ public:
 		GPT_FRAGMENT_PROGRAM
 	};
 
+
 	typedef std::map< String, TConfigOption > TConfigOptionMap;
 
 	/// Name / value parameter pair (first = name, second = value)
@@ -513,7 +629,7 @@ public:
 		//@returns
 		//A 'map' of options, i.e. a list of options which is also
 		//indexed by option name.
-		virtual TConfigOptionMap& getConfigOptions() = 0;
+		//virtual TConfigOptionMap& getConfigOptions() = 0;
 
 		//Sets an option for this API
 		//@remarks
@@ -544,7 +660,7 @@ public:
 		//Validates the options set for the rendering system, returning a message if there are problems.
 		//@note
 		//If the returned string is empty, there are no problems.
-		virtual String validateConfigOptions() = 0;
+		//virtual String validateConfigOptions() = 0;
 
 		//Start up the renderer using the settings selected (Or the defaults if none have been selected).
 		//@remarks
@@ -561,35 +677,35 @@ public:
 		//for this parameter and do it manually.
 		//@returns
 		//A pointer to the automatically created window, if requested, otherwise null.
-		virtual void initialise() = 0;
+		virtual void initialise( LogSystemInterface* _logInterface ) = 0;
 
 		// Restart the renderer (normally following a change in settings).
-		virtual void reinitialise() = 0;
+		//virtual void reinitialise() = 0;
 
 		// Shutdown the renderer and cleanup resources.
 		virtual void shutdown() = 0;
 
 		// Sets the colour & strength of the ambient (global directionless) light in the world.
-		virtual void setAmbientLight( float _r, float _g, float _b ) = 0;
+		//virtual void setAmbientLight( float _r, float _g, float _b ) = 0;
 
 		// Sets the type of light shading required (default = Gouraud).
-		virtual void setShadingType( ShadeOptions _so ) = 0;
+		//virtual void setShadingType( ShadeOptions _so ) = 0;
 
 		//Sets whether or not dynamic lighting is enabled.
 		//@param
 		//enabled If true, dynamic lighting is performed on geometry with normals supplied, geometry without
 		//normals will not be displayed. If false, no lighting is applied and all geometry will be full brightness.
-		virtual void setLightingEnabled( bool _enabled ) = 0;
+		//virtual void setLightingEnabled( bool _enabled ) = 0;
 
 		//Sets whether or not W-buffers are enabled if they are avalible for this renderer.
 		//@param
 		//enabled If true and the renderer supports them W-buffers will be used.  If false 
 		//W-buffers will not be used even if avalible.  W-buffers are enabled by default 
 		//for 16bit depth buffers and disabled for all other depths.
-		void setWBufferEnabled( bool _enabled );
+		//void setWBufferEnabled( bool _enabled );
 
 		// Returns true if the renderer will try to use W-buffers when avalible.
-		bool getWBufferEnabled() const;
+		//bool getWBufferEnabled() const;
 
 		//Creates a new rendering window.
 		//@remarks
@@ -708,7 +824,7 @@ public:
 		//Description: Enable the use of nVidia NVPerfHUD
 		//Values: true, false
 		//Default: false
-		virtual RenderWindow* createRenderWindow( const String& _name, unsigned int _width, unsigned int _height, 
+		virtual bool createRenderWindow( const String& _name, unsigned int _width, unsigned int _height, 
 			bool _fullScreen, const NameValuePairList* _miscParams = 0) = 0;
 
 		//Creates and registers a render texture object.
@@ -736,9 +852,9 @@ public:
 		//This method is deprecated, and exists only for backward compatibility. You can create
 		//arbitrary rendertextures with the TextureManager::createManual call with usage
 		//TU_RENDERTARGET.
-		virtual RenderTexture* createRenderTexture( const String& _name, unsigned int _width, unsigned int _height,
-			TextureType _texType = TEX_TYPE_2D, PixelFormat _internalFormat = PF_X8R8G8B8, 
-			const NameValuePairList* _miscParams = 0 ) = 0; 
+		//virtual RenderTexture* createRenderTexture( const String& _name, unsigned int _width, unsigned int _height,
+		//	TextureType _texType = TEX_TYPE_2D, PixelFormat _internalFormat = PF_X8R8G8B8, 
+		//	const NameValuePairList* _miscParams = 0 ) = 0; 
 
 		//Create a MultiRenderTarget, which is a render target that renders to multiple RenderTextures
 		//at once. Surfaces can be bound and unbound at will.
@@ -746,24 +862,24 @@ public:
 		//virtual MultiRenderTarget * createMultiRenderTarget( const String& _name ) = 0; 
 
 		// Destroys a render window
-		virtual void destroyRenderWindow( const String& _name ) = 0;
+		//virtual void destroyRenderWindow( const String& _name ) = 0;
 		// Destroys a render texture
-		virtual void destroyRenderTexture( const String& _name ) = 0;
+		//virtual void destroyRenderTexture( const String& _name ) = 0;
 		// Destroys a render target of any sort
-		virtual void destroyRenderTarget( const String& _name ) = 0;
+		//virtual void destroyRenderTarget( const String& _name ) = 0;
 
 		// Attaches the passed render target to the render system.
-		virtual void attachRenderTarget( RenderTarget& _target ) = 0;
+		//virtual void attachRenderTarget( RenderTarget& _target ) = 0;
 
 		//Returns a pointer to the render target with the passed name, or NULL if that
 		//render target cannot be found.
-		virtual RenderTarget * getRenderTarget( const String& _name ) = 0;
+		//virtual RenderTarget * getRenderTarget( const String& _name ) = 0;
 
 		//Detaches the render target with the passed name from the render system and
 		//returns a pointer to it.
 		//@note
 		//If the render target cannot be found, NULL is returned.
-		virtual RenderTarget * detachRenderTarget( const String& _name ) = 0;
+		//virtual RenderTarget * detachRenderTarget( const String& _name ) = 0;
 
 		/// Iterator over RenderTargets
 		//typedef MapIterator<TRenderTargetMap> TRenderTargetIterator;
@@ -774,7 +890,7 @@ public:
 		//}
 
 		// Returns a description of an error code.
-		virtual String getErrorDescription( long _errorNumber ) const = 0;
+		//virtual String getErrorDescription( long _errorNumber ) const = 0;
 
 		//Defines whether or now fullscreen render windows wait for the vertical blank before flipping buffers.
 		//@remarks
@@ -788,10 +904,10 @@ public:
 		//Has NO effect on windowed mode render targets. Only affects fullscreen mode.
 		//@param
 		//enabled If true, the system waits for vertical blanks - quality over speed. If false it doesn't - speed over quality.
-		virtual void setWaitForVerticalBlank( bool _enabled ) = 0;
+		//virtual void setWaitForVerticalBlank( bool _enabled ) = 0;
 
 		// Returns true if the system is synchronising frames with the monitor vertical blank.
-		virtual bool getWaitForVerticalBlank() const = 0;
+		//virtual bool getWaitForVerticalBlank() const = 0;
 
 		// ------------------------------------------------------------------------
 		//                     Internal Rendering Access
@@ -800,24 +916,24 @@ public:
 		//Tells the rendersystem to use the attached set of lights (and no others) 
 		//up to the number specified (this allows the same list to be used with different
 		//count limits)
-		virtual void _useLights( const TLightList& _lights, unsigned short _limit ) = 0;
+		//virtual void _useLights( const TLightList& _lights, unsigned short _limit ) = 0;
 		// Sets the world transform matrix.
-		virtual void _setWorldMatrix( const float* _m ) = 0;
+		//virtual void _setWorldMatrix( const float* _m ) = 0;
 		// Sets multiple world matrices (vertex blending).
 		//virtual void _setWorldMatrices( const Matrix4* _m, unsigned short _count );
 		// Sets the view transform matrix 
-		virtual void _setViewMatrix( const float* _m ) = 0;
+		//virtual void _setViewMatrix( const float* _m ) = 0;
 		// Sets the projection transform matrix
-		virtual void _setProjectionMatrix( const float* _m ) = 0;
+		//virtual void _setProjectionMatrix( const float* _m ) = 0;
 		//Utility function for setting all the properties of a texture unit at once.
 		//This method is also worth using over the individual texture unit settings because it
 		//only sets those settings which are different from the current settings for this
 		//unit, thus minimising render state changes.
-		virtual void _setTextureUnitSettings( std::size_t _texUnit, TextureUnitState& _tl ) = 0;
+		//virtual void _setTextureUnitSettings( std::size_t _texUnit, TextureUnitState& _tl ) = 0;
 		// Turns off a texture unit.
-		virtual void _disableTextureUnit( std::size_t _texUnit ) = 0;
+		//virtual void _disableTextureUnit( std::size_t _texUnit ) = 0;
 		// Disables all texture units from the given unit upwards
-		virtual void _disableTextureUnitsFrom( std::size_t _texUnit ) = 0;
+		//virtual void _disableTextureUnitsFrom( std::size_t _texUnit ) = 0;
 		// Sets the surface properties to be used for future rendering.
 
 		//This method sets the the properties of the surfaces of objects
@@ -850,15 +966,15 @@ public:
 		//its ColourValue is ignored. This is a combination of TVC_AMBIENT, TVC_DIFFUSE, TVC_SPECULAR(note that the shininess value is still
 		//taken from shininess) and TVC_EMISSIVE. TVC_NONE means that there will be no material property
 		//tracking the vertex colours.
-		virtual void _setSurfaceParams( const ColourValue& _ambient, const ColourValue& _diffuse,
-			const ColourValue& _specular, const ColourValue& _emissive, float _shininess,
-			int _tracking = TVC_NONE ) = 0;
+		//virtual void _setSurfaceParams( const float* _ambient, const float* _diffuse,
+		//	const float* _specular, const float* _emissive, float _shininess,
+		//	int _tracking = TVC_NONE ) = 0;
 
 		//Sets whether or not rendering points using OT_POINT_LIST will 
 		//render point sprites (textured quads) or plain points.
 		//@param enabled True enables point sprites, false returns to normal
 		//point rendering.
-		virtual void _setPointSpritesEnabled( bool _enabled ) = 0;
+		//virtual void _setPointSpritesEnabled( bool _enabled ) = 0;
 
 		//Sets the size of points and how they are attenuated with distance.
 		//@remarks
@@ -869,8 +985,8 @@ public:
 		//For example, to disable distance attenuation (constant screensize) 
 		//you would set constant to 1, and linear and quadratic to 0. A
 		//standard perspective attenuation would be 0, 1, 0 respectively.
-		virtual void _setPointParameters( float _size, bool _attenuationEnabled, float _constant,
-			float _linear, float _quadratic, float _minSize, float _maxSize ) = 0;
+		//virtual void _setPointParameters( float _size, bool _attenuationEnabled, float _constant,
+		//	float _linear, float _quadratic, float _minSize, float _maxSize ) = 0;
 
 		//Sets the texture to bind to a given texture unit.
 
@@ -882,7 +998,7 @@ public:
 		//RenderSystemCapabilites::getNumTextureUnits)
 		//@param enabled Boolean to turn the unit on/off
 		//@param texPtr Pointer to the texture to use.
-		virtual void _setTexture( std::size_t _unit, bool _enabled, const Texture* _texPtr ) = 0;
+		//virtual void _setTexture( std::size_t _unit, bool _enabled, const Texture* _texPtr ) = 0;
 
 		//Sets the texture to bind to a given texture unit.
 
@@ -895,7 +1011,7 @@ public:
 		//@param enabled Boolean to turn the unit on/off
 		//@param texname The name of the texture to use - this should have
 		//already been loaded with TextureManager::load.
-		virtual void _setTexture( std::size_t _unit, bool _enabled, const String& _texname ) = 0;
+		//virtual void _setTexture( std::size_t _unit, bool _enabled, const String& _texname ) = 0;
 
 		//Binds a texture to a vertex sampler.
 		//@remarks
@@ -905,7 +1021,7 @@ public:
 		//regular texture samplers which are shared between the vertex and
 		//fragment units; calling this method will throw an exception.
 		//@see RenderSystemCapabilites::getVertexTextureUnitsShared
-		virtual void _setVertexTexture( std::size_t _unit, const Texture* _tex ) = 0;
+		//virtual void _setVertexTexture( std::size_t _unit, const Texture* _tex ) = 0;
 
 		//Sets the texture coordinate set to use for a texture unit.
 
@@ -914,45 +1030,45 @@ public:
 
 		//@param unit Texture unit as above
 		//@param index The index of the texture coordinate set to use.
-		virtual void _setTextureCoordSet( std::size_t _unit, std::size_t _index ) = 0;
+		//virtual void _setTextureCoordSet( std::size_t _unit, std::size_t _index ) = 0;
 
 		//Sets a method for automatically calculating texture coordinates for a stage.
 		//Should not be used by apps - for use by Ogre only.
 		//@param unit Texture unit as above
 		//@param m Calculation method to use
 		//@param frustum Optional Frustum param, only used for projective effects
-		virtual void _setTextureCoordCalculation( std::size_t _unit, TexCoordCalcMethod _m, 
-			const Frustum* _frustum = 0 ) = 0;
+		//virtual void _setTextureCoordCalculation( std::size_t _unit, TexCoordCalcMethod _m, 
+		//	const Frustum* _frustum = 0 ) = 0;
 
 		//Sets the texture blend modes from a TextureUnitState record.
 		//Meant for use internally only - apps should use the Material
 		//and TextureUnitState classes.
 		//@param unit Texture unit as above
 		//@param bm Details of the blending mode
-		virtual void _setTextureBlendMode( std::size_t _unit, const LayerBlendModeEx& _bm ) = 0;
+		//virtual void _setTextureBlendMode( std::size_t _unit, const LayerBlendModeEx& _bm ) = 0;
 
 		//Sets the filtering options for a given texture unit.
 		//@param unit The texture unit to set the filtering options for
 		//@param minFilter The filter used when a texture is reduced in size
 		//@param magFilter The filter used when a texture is magnified
 		//@param mipFilter The filter used between mipmap levels, FO_NONE disables mipmapping
-		virtual void _setTextureUnitFiltering( std::size_t _unit, FilterOptions _minFilter,
-			FilterOptions _magFilter, FilterOptions _mipFilter ) = 0;
+		//virtual void _setTextureUnitFiltering( std::size_t _unit, FilterOptions _minFilter,
+		//	FilterOptions _magFilter, FilterOptions _mipFilter ) = 0;
 
 		//Sets a single filter for a given texture unit.
 		//@param unit The texture unit to set the filtering options for
 		//@param ftype The filter type
 		//@param filter The filter to be used
-		virtual void _setTextureUnitFiltering( std::size_t _unit, FilterType _ftype, FilterOptions _filter ) = 0;
+		//virtual void _setTextureUnitFiltering( std::size_t _unit, FilterType _ftype, FilterOptions _filter ) = 0;
 
 		// Sets the maximal anisotropy for the specified texture unit.
-		virtual void _setTextureLayerAnisotropy( std::size_t _unit, unsigned int _maxAnisotropy ) = 0;
+		//virtual void _setTextureLayerAnisotropy( std::size_t _unit, unsigned int _maxAnisotropy ) = 0;
 
 		// Sets the texture addressing mode for a texture unit.
-		virtual void _setTextureAddressingMode( std::size_t _unit, const TextureUnitState::UVWAddressingMode& _uvw ) = 0;
+		//virtual void _setTextureAddressingMode( std::size_t _unit, const TextureUnitState::UVWAddressingMode& _uvw ) = 0;
 
 		// Sets the texture border colour for a texture unit.
-		virtual void _setTextureBorderColour( std::size_t _unit, const ColourValue& _colour ) = 0;
+		//virtual void _setTextureBorderColour( std::size_t _unit, const float* _colour ) = 0;
 
 		//Sets the mipmap bias value for a given texture unit.
 		//@remarks
@@ -961,12 +1077,12 @@ public:
 		//positive values force a smaller mipmap to be used. Units are in numbers
 		//of levels, so +1 forces the mipmaps to one smaller level.
 		//@note Only does something if render system has capability RSC_MIPMAP_LOD_BIAS.
-		virtual void _setTextureMipmapBias( std::size_t _unit, float _bias ) = 0;
+		//virtual void _setTextureMipmapBias( std::size_t _unit, float _bias ) = 0;
 
 		//Sets the texture coordinate transformation matrix for a texture unit.
 		//@param unit Texture unit to affect
 		//@param xform The 4x4 matrix
-		virtual void _setTextureMatrix( std::size_t unit, const float* _xform ) = 0;
+		//virtual void _setTextureMatrix( std::size_t unit, const float* _xform ) = 0;
 
 		//Sets the global blending factors for combining subsequent renders with the existing frame contents.
 		//The result of the blending operation is:</p>
@@ -975,30 +1091,30 @@ public:
 		//enumerated type.
 		//@param sourceFactor The source factor in the above calculation, i.e. multiplied by the texture colour components.
 		//@param destFactor The destination factor in the above calculation, i.e. multiplied by the pixel colour components.
-		virtual void _setSceneBlending( EBlendFactor _sourceFactor, EBlendFactor _destFactor ) = 0;
+		//virtual void _setSceneBlending( EBlendFactor _sourceFactor, EBlendFactor _destFactor ) = 0;
 
 		//Sets the global alpha rejection approach for future renders.
 		//By default images are rendered regardless of texture alpha. This method lets you change that.
 		//@param func The comparison function which must pass for a pixel to be written.
 		//@param val The value to compare each pixels alpha value to (0-255)
-		virtual void _setAlphaRejectSettings( CompareFunction _func, unsigned char _value ) = 0;
+		//virtual void _setAlphaRejectSettings( CompareFunction _func, unsigned char _value ) = 0;
 
 		//Signifies the beginning of a frame, ie the start of rendering on a single viewport. Will occur
 		//several times per complete frame if multiple viewports exist.
-		virtual void _beginFrame() = 0;
+		//virtual void _beginFrame() = 0;
 
 		// Ends rendering of a frame to the current viewport.
-		virtual void _endFrame() = 0;
+		//virtual void _endFrame() = 0;
 
 		//Sets the provided viewport as the active one for future
 		//rendering operations. This viewport is aware of it's own
 		//camera and render target. Must be implemented by subclass.
 
 		//@param target Pointer to the appropriate viewport.
-		virtual void _setViewport( Viewport* _vp ) = 0;
+		//virtual void _setViewport( Viewport* _vp ) = 0;
 
 		// Get the current active viewport for rendering.
-		virtual Viewport* _getViewport() = 0;
+		//virtual Viewport* _getViewport() = 0;
 
 		//Sets the culling mode for the render system based on the 'vertex winding'.
 		//A typical way for the rendering engine to cull triangles is based on the
@@ -1010,9 +1126,9 @@ public:
 		//for example. You can alter this culling mode if you wish but it is not advised unless you know what you are doing.
 		//You may wish to use the CULL_NONE option for mesh data that you cull yourself where the vertex
 		//winding is uncertain.
-		virtual void _setCullingMode( CullingMode _mode ) = 0;
+		//virtual void _setCullingMode( CullingMode _mode ) = 0;
 
-		virtual CullingMode _getCullingMode() const = 0;
+		//virtual CullingMode _getCullingMode() const = 0;
 
 		//Sets the mode of operation for depth buffer tests from this point onwards.
 		//Sometimes you may wish to alter the behaviour of the depth buffer to achieve
@@ -1026,17 +1142,17 @@ public:
 		//@param depthWrite If true, the depth buffer is updated with the depth of the new pixel if the depth test succeeds.
 		//If false, the depth buffer is left unchanged even if a new pixel is written.
 		//@param depthFunction Sets the function required for the depth test.
-		virtual void _setDepthBufferParams( bool _depthTest = true, bool _depthWrite = true, CompareFunction _depthFunction = CMPF_LESS_EQUAL) = 0;
+		//virtual void _setDepthBufferParams( bool _depthTest = true, bool _depthWrite = true, CompareFunction _depthFunction = CMPF_LESS_EQUAL) = 0;
 
 		//Sets whether or not the depth buffer check is performed before a pixel write.
 		//@param enabled If true, the depth buffer is tested for each pixel and the frame buffer is only updated
 		//if the depth function test succeeds. If false, no test is performed and pixels are always written.
-		virtual void _setDepthBufferCheckEnabled( bool _enabled = true ) = 0;
+		//virtual void _setDepthBufferCheckEnabled( bool _enabled = true ) = 0;
 
 		//Sets whether or not the depth buffer is updated after a pixel write.
 		//@param enabled If true, the depth buffer is updated with the depth of the new pixel if the depth test succeeds.
 		//If false, the depth buffer is left unchanged even if a new pixel is written.
-		virtual void _setDepthBufferWriteEnabled( bool _enabled = true ) = 0;
+		//virtual void _setDepthBufferWriteEnabled( bool _enabled = true ) = 0;
 
 		//Sets the comparison function for the depth buffer check.
 		//Advanced use only - allows you to choose the function applied to compare the depth values of
@@ -1044,7 +1160,7 @@ public:
 		//(see _setDepthBufferCheckEnabled)
 		//@param  func The comparison between the new depth and the existing depth which must return true
 		//for the new pixel to be written.
-		virtual void _setDepthBufferFunction( CompareFunction _func = CMPF_LESS_EQUAL) = 0;
+		//virtual void _setDepthBufferFunction( CompareFunction _func = CMPF_LESS_EQUAL) = 0;
 
 		//Sets whether or not colour buffer writing is enabled, and for which channels. 
 		//@remarks
@@ -1053,7 +1169,7 @@ public:
 		//in a rendering pass. However, the chances are that you really want to use this option
 		//through the Material class.
 		//@param red, green, blue, alpha Whether writing is enabled for each of the 4 colour channels.
-		virtual void _setColourBufferWriteEnabled( bool _red, bool _green, bool _blue, bool _alpha ) = 0;
+		//virtual void _setColourBufferWriteEnabled( bool _red, bool _green, bool _blue, bool _alpha ) = 0;
 		
 		//Sets the depth bias, NB you should use the Material version of this. 
 		//@remarks
@@ -1075,7 +1191,7 @@ public:
 		//@param slopeScaleBias The bias value which is factored by the maximum slope
 		//of the polygon, see the description above. This is not supported by all
 		//cards.
-		virtual void _setDepthBias( float _constantBias, float _slopeScaleBias = 0.0f ) = 0;
+		//virtual void _setDepthBias( float _constantBias, float _slopeScaleBias = 0.0f ) = 0;
 		
 		//Sets the fogging mode for future geometry.
 		//@param mode Set up the mode of fog as described in the FogMode enum, or set to FOG_NONE to turn off.
@@ -1087,16 +1203,16 @@ public:
 		//as a parametric value between 0 and 1, with 0 being the near clipping plane, and 1 being the far clipping plane. Only applicable if mode is FOG_LINEAR.
 		//@param linearEnd Distance at which linear fog becomes completely opaque.The distance must be passed
 		//as a parametric value between 0 and 1, with 0 being the near clipping plane, and 1 being the far clipping plane. Only applicable if mode is FOG_LINEAR.
-		virtual void _setFog( FogMode _mode = FOG_NONE, const ColourValue& _colour = ColourValue::White, float _expDensity = 1.0f, float _linearStart = 0.0f, float _linearEnd = 1.0f ) = 0;
+		//virtual void _setFog( FogMode _mode, const float* _colour, float _expDensity = 1.0f, float _linearStart = 0.0f, float _linearEnd = 1.0f ) = 0;
 
 		// The RenderSystem will keep a count of tris rendered, this resets the count.
-		virtual void _beginGeometryCount();
+		//virtual void _beginGeometryCount();
 		// Reports the number of tris rendered since the last _beginGeometryCount call.
-		virtual unsigned int _getFaceCount() const;
+		//virtual unsigned int _getFaceCount() const;
 		// Reports the number of batches rendered since the last _beginGeometryCount call.
-		virtual unsigned int _getBatchCount() const;
+		//virtual unsigned int _getBatchCount() const;
 		// Reports the number of vertices passed to the renderer since the last _beginGeometryCount call.
-		virtual unsigned int _getVertexCount() const;
+		//virtual unsigned int _getVertexCount() const;
 
 		//Generates a packed data version of the passed in ColourValue suitable for
 		//use as with this RenderSystem.
@@ -1105,42 +1221,42 @@ public:
 		//RGBA for GL, ARGB for D3D) this method allows you to use 1 method for all.
 		//@param colour The colour to convert
 		//@param pDest Pointer to location to put the result.
-		virtual void convertColourValue( const ColourValue& _colour, uint32* _pDest );
+		//virtual void convertColourValue( const float* _colour, uint32* _pDest );
 
 		//Get the native VertexElementType for a compact 32-bit colour value
 		//for this rendersystem.
-		virtual VertexElementType getColourVertexElementType() const = 0;
+		//virtual VertexElementType getColourVertexElementType() const = 0;
 
 		//Converts a uniform projection matrix to suitable for this render system.
 		//@remarks
 		//Because different APIs have different requirements (some incompatible) for the
 		//projection matrix, this method allows each to implement their own correctly and pass
 		//back a generic OGRE matrix for storage in the engine.
-		virtual void _convertProjectionMatrix( const float* _matrix, float* _dest, bool _forGpuProgram = false ) = 0;
+		//virtual void _convertProjectionMatrix( const float* _matrix, float* _dest, bool _forGpuProgram = false ) = 0;
 
 		//Builds a perspective projection matrix suitable for this render system.
 		//@remarks
 		//Because different APIs have different requirements (some incompatible) for the
 		//projection matrix, this method allows each to implement their own correctly and pass
 		//back a generic OGRE matrix for storage in the engine.
-		virtual void _makeProjectionMatrix( const float _fovy, float _aspect, float _nearPlane, float _farPlane, 
-			float* _dest, bool _forGpuProgram = false ) = 0;
+		//virtual void _makeProjectionMatrix( const float _fovy, float _aspect, float _nearPlane, float _farPlane, 
+		//	float* _dest, bool _forGpuProgram = false ) = 0;
 
 		//Builds a perspective projection matrix for the case when frustum is
 		//not centered around camera.
 		//@remarks
 		//Viewport coordinates are in camera coordinate frame, i.e. camera is 
 		//at the origin.
-		virtual void _makeProjectionMatrix( float _left, float _right, float _bottom, float _top, 
-			float _nearPlane, float _farPlane, float* _dest, bool _forGpuProgram = false) = 0;
+		//virtual void _makeProjectionMatrix( float _left, float _right, float _bottom, float _top, 
+		//	float _nearPlane, float _farPlane, float* _dest, bool _forGpuProgram = false) = 0;
 
 		//Builds an orthographic projection matrix suitable for this render system.
 		//@remarks
 		//Because different APIs have different requirements (some incompatible) for the
 		//projection matrix, this method allows each to implement their own correctly and pass
 		//back a generic OGRE matrix for storage in the engine.
-		virtual void _makeOrthoMatrix( const float _fovy, float _aspect, float _nearPlane, float _farPlane, 
-			float* _dest, bool _forGpuProgram = false ) = 0;
+		//virtual void _makeOrthoMatrix( const float _fovy, float _aspect, float _nearPlane, float _farPlane, 
+		//	float* _dest, bool _forGpuProgram = false ) = 0;
 
 		//Update a perspective projection matrix to use 'oblique depth projection'.
 		//@remarks
@@ -1157,17 +1273,17 @@ public:
 		//@param plane The plane which is to be used as the clipping plane. This
 		//plane must be in CAMERA (view) space.
 		//@param forGpuProgram Is this for use with a Gpu program or fixed-function
-		virtual void _applyObliqueDepthProjection( float* _matrix, const float* _plane, bool _forGpuProgram ) = 0;
+		//virtual void _applyObliqueDepthProjection( float* _matrix, const float* _plane, bool _forGpuProgram ) = 0;
 
 		// Sets how to rasterise triangles, as points, wireframe or solid polys.
-		virtual void _setPolygonMode( PolygonMode _level ) = 0;
+		//virtual void _setPolygonMode( PolygonMode _level ) = 0;
 
 		//Turns stencil buffer checking on or off. 
 		//@remarks
 		//Stencilling (masking off areas of the rendering target based on the stencil 
 		//buffer) canbe turned on or off using this method. By default, stencilling is
 		//disabled.
-		virtual void setStencilCheckEnabled( bool _enabled ) = 0;
+		//virtual void setStencilCheckEnabled( bool _enabled ) = 0;
 
 		//Determines if this system supports hardware accelerated stencil buffer. 
 		//@remarks
@@ -1220,15 +1336,15 @@ public:
 		//@param twoSidedOperation If set to true, then if you render both back and front faces 
 		//(you'll have to turn off culling) then these parameters will apply for front faces, 
 		//and the inverse of them will happen for back faces (keep remains the same).
-		virtual void setStencilBufferParams( CompareFunction _func = CMPF_ALWAYS_PASS, 
-			uint32 _refValue = 0, uint32 _mask = 0xFFFFFFFF, StencilOperation _stencilFailOp = SOP_KEEP, 
-			StencilOperation _depthFailOp = SOP_KEEP, StencilOperation _passOp = SOP_KEEP, 
-			bool _twoSidedOperation = false ) = 0;
+		//virtual void setStencilBufferParams( CompareFunction _func = CMPF_ALWAYS_PASS, 
+		//	uint32 _refValue = 0, uint32 _mask = 0xFFFFFFFF, StencilOperation _stencilFailOp = SOP_KEEP, 
+		//	StencilOperation _depthFailOp = SOP_KEEP, StencilOperation _passOp = SOP_KEEP, 
+		//	bool _twoSidedOperation = false ) = 0;
 
 		// Sets the current vertex declaration, ie the source of vertex data.
-		virtual void setVertexDeclaration( VertexDeclaration* _decl ) = 0;
+		//virtual void setVertexDeclaration( VertexDeclaration* _decl ) = 0;
 		// Sets the current vertex buffer binding state.
-		virtual void setVertexBufferBinding( VertexBufferBinding* _binding ) = 0;
+		//virtual void setVertexBufferBinding( VertexBufferBinding* _binding ) = 0;
 
 		//Sets whether or not normals are to be automatically normalised.
 		//@remarks
@@ -1239,7 +1355,7 @@ public:
 		//You should not normally call this direct unless you are rendering
 		//world geometry; set it on the Renderable because otherwise it will be
 		//overridden by material settings. 
-		virtual void setNormaliseNormals( bool _normalise ) = 0;
+		//virtual void setNormaliseNormals( bool _normalise ) = 0;
 
 		//Render something to the active viewport.
 
@@ -1251,52 +1367,52 @@ public:
 
 		//@param op A rendering operation instance, which contains
 		//details of the operation to be performed.
-		virtual void _render( const RenderOperation& _op );
+		//virtual void _render( const RenderOperation& _op );
 
 		// Gets the capabilities of the render system.
-		virtual const RenderSystemCapabilities* getCapabilities() const = 0;
+		//virtual const RenderSystemCapabilities* getCapabilities() const = 0;
 
 		//Binds a given GpuProgram (but not the parameters). 
 		//@remarks Only one GpuProgram of each type can be bound at once, binding another
 		//one will simply replace the exsiting one.
-		virtual void bindGpuProgram( GpuProgram* prg );
+		//virtual void bindGpuProgram( GpuProgram* prg );
 
 		//Bind Gpu program parameters.
 		//virtual void bindGpuProgramParameters( GpuProgramType _gptype, GpuProgramParametersSharedPtr _params ) = 0;
 		// Only binds Gpu program parameters used for passes that have more than one iteration rendering
-		virtual void bindGpuProgramPassIterationParameters(GpuProgramType gptype) = 0;
+		//virtual void bindGpuProgramPassIterationParameters(GpuProgramType gptype) = 0;
 
 		//Unbinds GpuPrograms of a given GpuProgramType.
 		//@remarks
 		//This returns the pipeline to fixed-function processing for this type.
-		virtual void unbindGpuProgram( GpuProgramType _gptype );
+		//virtual void unbindGpuProgram( GpuProgramType _gptype );
 
 		// Returns whether or not a Gpu program of the given type is currently bound.
-		virtual bool isGpuProgramBound( GpuProgramType _gptype );
+		//virtual bool isGpuProgramBound( GpuProgramType _gptype );
 
 		// sets the clipping region.
 		//virtual void setClipPlanes( const TPlaneVector& _clipPlanes ) = 0;
 
 		// Utility method for initialising all render targets attached to this rendering system.
-		virtual void _initRenderTargets();
+		//virtual void _initRenderTargets();
 
 		//Utility method to notify all render targets that a camera has been removed, 
 		//incase they were referring to it as their viewer. 
-		virtual void _notifyCameraRemoved( const Camera* _cam );
+		//virtual void _notifyCameraRemoved( const Camera* _cam );
 
 		// Internal method for updating all render targets attached to this rendering system.
-		virtual void _updateAllRenderTargets();
+		//virtual void _updateAllRenderTargets();
 
 		// Set a clipping plane.
-		virtual void setClipPlane( unsigned short _index, const float* _plane ) = 0;
+		//virtual void setClipPlane( unsigned short _index, const float* _plane ) = 0;
 		// Set a clipping plane.
-		virtual void setClipPlane( unsigned short _index, float _A, float _B, float _C, float _D ) = 0;
+		//virtual void setClipPlane( unsigned short _index, float _A, float _B, float _C, float _D ) = 0;
 		// Enable the clipping plane.
-		virtual void enableClipPlane( unsigned short _index, bool _enable ) = 0;
+		//virtual void enableClipPlane( unsigned short _index, bool _enable ) = 0;
 
 		//Sets whether or not vertex windings set should be inverted; this can be important
 		//for rendering reflections.
-		virtual void setInvertVertexWinding( bool _invert );
+		//virtual void setInvertVertexWinding( bool _invert );
 
 		//Sets the 'scissor region' ie the region of the target in which rendering can take place.
 		//@remarks
@@ -1308,8 +1424,8 @@ public:
 		//@param enabled True to enable the scissor test, false to disable it.
 		//@param left, top, right, bottom The location of the corners of the rectangle, expressed in
 		//<i>pixels</i>.
-		virtual void setScissorTest( bool _enabled, std::size_t _left = 0, std::size_t _top = 0, 
-			std::size_t _right = 800, std::size_t _bottom = 600 ) = 0;
+		//virtual void setScissorTest( bool _enabled, std::size_t _left = 0, std::size_t _top = 0, 
+		//	std::size_t _right = 800, std::size_t _bottom = 600 ) = 0;
 
 		//Clears one or more frame buffers on the active render target. 
 		//@param buffers Combination of one or more elements of FrameBufferType
@@ -1317,8 +1433,8 @@ public:
 		//@param colour The colour to clear the colour buffer with, if enabled
 		//@param depth The value to initialise the depth buffer with, if enabled
 		//@param stencil The value to initialise the stencil buffer with, if enabled.
-		virtual void clearFrameBuffer( unsigned int _buffers, const ColourValue& _colour = ColourValue::Black, 
-			float _depth = 1.0f, unsigned short _stencil = 0 ) = 0;
+		//virtual void clearFrameBuffer( unsigned int _buffers, const float* _colour, 
+		//	float _depth = 1.0f, unsigned short _stencil = 0 ) = 0;
 		
 		//Returns the horizontal texel offset value required for mapping 
 		//texel origins to pixel origins in this rendersystem.
@@ -1328,7 +1444,7 @@ public:
 		//implement generically. This method allows you to retrieve the offset
 		//required to map the origin of a texel to the origin of a pixel in
 		//the horizontal direction.
-		virtual float getHorizontalTexelOffset() = 0;
+		//virtual float getHorizontalTexelOffset() = 0;
 
 		//Returns the vertical texel offset value required for mapping 
 		//texel origins to pixel origins in this rendersystem.
@@ -1338,7 +1454,7 @@ public:
 		//implement generically. This method allows you to retrieve the offset
 		//required to map the origin of a texel to the origin of a pixel in
 		//the vertical direction.
-		virtual float getVerticalTexelOffset() = 0;
+		//virtual float getVerticalTexelOffset() = 0;
 
 		//Gets the minimum (closest) depth value to be used when rendering
 		//using identity transforms.
@@ -1347,7 +1463,7 @@ public:
 		//of a vertex; however the input values required differ per
 		//rendersystem. This method lets you retrieve the correct value.
 		//@see Renderable::getUseIdentityView, Renderable::getUseIdentityProjection
-		virtual float getMinimumDepthInputValue() = 0;
+		//virtual float getMinimumDepthInputValue() = 0;
 
 		//Gets the maximum (farthest) depth value to be used when rendering
 		//using identity transforms.
@@ -1356,29 +1472,29 @@ public:
 		//of a vertex; however the input values required differ per
 		//rendersystem. This method lets you retrieve the correct value.
 		//@see Renderable::getUseIdentityView, Renderable::getUseIdentityProjection
-		virtual float getMaximumDepthInputValue() = 0;
+		//virtual float getMaximumDepthInputValue() = 0;
 
 		//set the current multi pass count value.  This must be set prior to 
 		//calling _render() if multiple renderings of the same pass state are 
 		//required.
 		//@param count Number of times to render the current state.
-		virtual void setCurrentPassIterationCount( const std::size_t _count ) = 0;
+		//virtual void setCurrentPassIterationCount( const std::size_t _count ) = 0;
 
 		//Defines a listener on the custom events that this render system 
 		//can raise.
 		//@see RenderSystem::addListener
-		class Listener
-		{
-		public:
-			Listener() {}
-			virtual ~Listener() {}
+		//class Listener
+		//{
+		//public:
+		//	Listener() {}
+		//	virtual ~Listener() {}
 
-			//A rendersystem-specific event occurred.
-			//@param eventName The name of the event which has occurred
-			//@param parameters A list of parameters that may belong to this event,
-			//may be null if there are no parameters
-			virtual void eventOccurred( const String& _eventName, const NameValuePairList* _parameters = 0) = 0;
-		};
+		//	//A rendersystem-specific event occurred.
+		//	//@param eventName The name of the event which has occurred
+		//	//@param parameters A list of parameters that may belong to this event,
+		//	//may be null if there are no parameters
+		//	virtual void eventOccurred( const String& _eventName, const NameValuePairList* _parameters = 0) = 0;
+		//};
 
 		//Adds a listener to the custom events that this render system can raise.
 		//@remarks
@@ -1392,15 +1508,15 @@ public:
 		//restoration of a device in DirectX; which OGRE deals with, but you 
 		//may wish to know when it happens. 
 		//@see RenderSystem::getRenderSystemEvents
-		virtual void addListener( Listener* _l ) = 0;
+		//virtual void addListener( Listener* _l ) = 0;
 
 		// Remove a listener to the custom events that this render system can raise.
-		virtual void removeListener( Listener* _l ) = 0;
+		//virtual void removeListener( Listener* _l ) = 0;
 
 		//Gets a list of the rendersystem specific events that this rendersystem
 		//can raise.
 		//@see RenderSystem::addListener
-		virtual const TStringVector& getRenderSystemEvents() const = 0;
+		//virtual const TStringVector& getRenderSystemEvents() const = 0;
 
 		//Tell the rendersystem to perform any prep tasks it needs to directly
 		//before other threads which might access the rendering API are registered.
@@ -1417,12 +1533,12 @@ public:
 		//</ol>
 		//Once this init sequence is completed the threads are independent but
 		//this startup sequence must be respected.
-		virtual void preExtraThreadsStarted() = 0;
+		//virtual void preExtraThreadsStarted() = 0;
 
 		//Tell the rendersystem to perform any tasks it needs to directly
 		//after other threads which might access the rendering API are registered.
 		//@see RenderSystem::preExtraThreadsStarted
-		virtual void postExtraThreadsStarted() = 0;
+		//virtual void postExtraThreadsStarted() = 0;
 
 		//Register the an additional thread which may make calls to rendersystem-related 
 		//objects.
@@ -1435,30 +1551,33 @@ public:
 		//@note
 		//This method takes no parameters - it must be called from the thread being
 		//registered and that context is enough.
-		virtual void registerThread() = 0;
+		//virtual void registerThread() = 0;
 
 		//Unregister an additional thread which may make calls to rendersystem-related objects.
 		//@see RenderSystem::registerThread
-		virtual void unregisterThread() = 0;
-	};
+		//virtual void unregisterThread() = 0;
+//	};
+//
+//	class TextureManagerInterface
+//	{
+//	public:
+//		virtual void reloadAfterLostDevice() = 0;
+//
+//		virtual PixelFormat getNativeFormat( TextureType ttype, PixelFormat format, int usage ) = 0;
+//
+//		virtual bool isHardwareFilteringSupported( TextureType ttype, PixelFormat format, int usage,
+//			bool preciseFormatOnly = false ) = 0;
+//
+//		protected:
+//		Resource* createImpl( const String& name, ResourceHandle handle, 
+//		const String& group, bool isManual, ManualResourceLoader* loader, 
+//		const NameValuePairList* createParams ) = 0;
+//	};
+//
+//}*/
 
-	class TextureManagerInterface
-	{
-	public:
-		virtual void reloadAfterLostDevice() = 0;
+bool initInterfaceSystem(::RenderSystemInterface** _ptrRenderSystem);
+void releaseInterfaceSystem(::RenderSystemInterface* _ptrRenderSystem);
 
-		virtual PixelFormat getNativeFormat( TextureType ttype, PixelFormat format, int usage ) = 0;
-
-		virtual bool isHardwareFilteringSupported( TextureType ttype, PixelFormat format, int usage,
-			bool preciseFormatOnly = false ) = 0;
-
-		/*protected:
-		Resource* createImpl( const String& name, ResourceHandle handle, 
-		const String& group, bool isManual, ManualResourceLoader* loader, 
-		const NameValuePairList* createParams ) = 0;
-	};
-
-}*/
-
-bool initInterfaceSystem(RenderSystemInterface** _ptrRenderSystem);
-void releaseInterfaceSystem(RenderSystemInterface* _ptrRenderSystem);
+//bool initInterfaceSystem( Menge::RenderSystemInterface** _ptrRenderSystem);
+//void releaseInterfaceSystem( Menge::RenderSystemInterface* _ptrRenderSystem);

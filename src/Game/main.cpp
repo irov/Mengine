@@ -95,6 +95,11 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	initInterfaceSystem( &physicSystem2D );
 	app.setPhysicSystem2D( physicSystem2D );
 
+	//Menge::RenderSystemInterface* rs;
+	//initInterfaceSystem( &rs );
+	//rs->initialise( logSystem );
+	//rs->shutdown();
+
 	RenderSystemInterface * renderSystem;
 	initInterfaceSystem( &renderSystem );
 	app.setRenderSystem( renderSystem );

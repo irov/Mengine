@@ -77,7 +77,7 @@
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\dependencies\ogrenew\lib&quot;;&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Dist\&quot;"
 				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
-				IgnoreDefaultLibraryNames=""
+				IgnoreDefaultLibraryNames="libci.lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"

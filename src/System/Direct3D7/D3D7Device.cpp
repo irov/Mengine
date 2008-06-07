@@ -20,28 +20,29 @@ namespace Menge
         vec = (std::vector<DDPIXELFORMAT>*)pFormats;
 
         if (pddpf->dwFlags & DDPF_ZBUFFER)
+		{
             vec->push_back(*pddpf);
+		}
         return D3DENUMRET_OK;
 
     }
 	//////////////////////////////////////////////////////////////////////////
-    D3DDevice D3DDevice::operator=(const D3DDevice &orig)
+    D3DDevice D3DDevice::operator=( const D3DDevice& orig )
     {
         m_deviceName = orig.m_deviceName;
         m_deviceDescription = orig.m_deviceDescription;
         m_D3DDeviceDesc = orig.m_D3DDeviceDesc;
         m_isHardwareAccelerated = orig.m_isHardwareAccelerated;
         m_needsZBuffer = orig.m_needsZBuffer;
-
+		m_initialized = orig.m_initialized;
 
         return *this;
     }
 	//////////////////////////////////////////////////////////////////////////
     D3DDevice::D3DDevice()
+		: m_initialized( false )
+		, lpD3D( NULL )
     {
-        // Init pointers
-        lpD3D = NULL;
-
     }
 	//////////////////////////////////////////////////////////////////////////
     D3DDevice::D3DDevice(const D3DDevice &ob)
@@ -79,15 +80,19 @@ namespace Menge
 
 		std::ostringstream str;
         str << "Detected Direct3D Device " << lpDeviceDesc;
-        LogManager::getSingleton().logMessage(str.str());
+        m_logManager->logMessage( str.str() );
         logCaps();
 
         // Do we need a Z Buffer?
         m_needsZBuffer = !(m_D3DDeviceDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_ZBUFFERLESSHSR);
         if (m_needsZBuffer)
-            LogManager::getSingleton().logMessage("This device needs a Z-Buffer");
+		{
+            m_logManager->logMessage("This device needs a Z-Buffer");
+		}
         else
-            LogManager::getSingleton().logMessage("This device does not need a Z-Buffer");
+		{
+            m_logManager->logMessage("This device does not need a Z-Buffer");
+		}
 
 
     }
@@ -120,36 +125,36 @@ namespace Menge
     void D3DDevice::logCaps() const
     {
         // Sends capabilities of this driver to the log
-        String msg;
+		std::ostringstream msg;
 
-        //LogManager::getSingleton().logMessage("Direct3D Device Capabilities:");
+        m_logManager->logMessage("Direct3D Device Capabilities:");
 
-        msg << "  Hardware Accelerated: " << hardwareAccelerated();
-        //LogManager::getSingleton().logMessage(msg);
+        msg << "  Hardware Accelerated: " << isHardwareAccelerated();
+        m_logManager->logMessage( msg.str() ); msg.clear();
 
         msg << "  Mipmapping: " << canMipmap();
-        //LogManager::getSingleton().logMessage(msg);
+        m_logManager->logMessage( msg.str() ); msg.clear();
 
-        msg << "  Bilinear Filtering: " << canBilinearFilter());
-        //LogManager::getSingleton().logMessage(msg);
+        msg << "  Bilinear Filtering: " << canBilinearFilter();
+        m_logManager->logMessage( msg.str() ); msg.clear();
 
-        msg << "  Trilinear Filtering: " << canTrilinearFilter());
-        //LogManager::getSingleton().logMessage(msg);
+        msg << "  Trilinear Filtering: " << canTrilinearFilter();
+        m_logManager->logMessage( msg.str() ); msg.clear();
 
         msg << "  Hardware Transform & Light: " << canHWTransformAndLight();
-        //LogManager::getSingleton().logMessage(msg);
+        m_logManager->logMessage( msg.str() ); msg.clear();
 
         msg << "  Max rendering colour depth: " << renderBitDepth();
-        //LogManager::getSingleton().logMessage(msg);
+        m_logManager->logMessage( msg.str() ); msg.clear();
 
         msg << "  Max single-pass texture layers: " << maxSinglePassTextureLayers();
-        //LogManager::getSingleton().logMessage(msg);
+        m_logManager->logMessage( msg.str() ); msg.clear();
 
-        msg << "  Pixel fog supported: " << ( m_D3DDeviceDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGTABLE ) );
-        //LogManager::getSingleton().logMessage(msg);
+        msg << "  Pixel fog supported: " << ( m_D3DDeviceDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGTABLE );
+        m_logManager->logMessage( msg.str() ); msg.clear();
 
-        msg << "  Vertex fog supported: " << ( m_D3DDeviceDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX) );
-        //LogManager::getSingleton().logMessage(msg);
+        msg << "  Vertex fog supported: " << ( m_D3DDeviceDesc.dpcTriCaps.dwRasterCaps & D3DPRASTERCAPS_FOGVERTEX);
+        m_logManager->logMessage( msg.str() ); msg.clear();
     }
 	//////////////////////////////////////////////////////////////////////////
     void D3DDevice::cleanup()
@@ -159,12 +164,12 @@ namespace Menge
         lpD3D = NULL;
     }
 	//////////////////////////////////////////////////////////////////////////
-    String D3DDevice::deviceName() const
+    const String& D3DDevice::getDeviceName() const
     {
         return m_deviceName;
     }
 	//////////////////////////////////////////////////////////////////////////
-    String D3DDevice::deviceDescription() const
+    const String& D3DDevice::getDeviceDescription() const
     {
         return m_deviceDescription;
     }
@@ -177,7 +182,7 @@ namespace Menge
         LPDIRECTDRAWSURFACE7 lpZBuffer;
         HRESULT hr;
 
-        LogManager::getSingleton().logMessage("Direct3D - Creating Z-Buffer");
+        m_logManager->logMessage("Direct3D - Creating Z-Buffer");
 
         // First check we NEED a depth buffer - e.g. PowerVR doesn't need one
         if (m_needsZBuffer)
@@ -238,30 +243,25 @@ namespace Menge
             // Create the depth-buffer.
             renderTarget->GetDDInterface( (VOID**)&lpDD7 );
             lpDD7->Release();
+			hr = lpDD7->CreateSurface( &ddsd, &lpZBuffer, NULL );
+            assert( SUCCEEDED( hr ) && 
+				"D3DDevice::createDepthBuffer -> Error creating depth buffer" );
 
-            if( FAILED( hr = lpDD7->CreateSurface( &ddsd, &lpZBuffer, NULL ) ) )
-                OGRE_EXCEPT(
-                    Exception::ERR_RENDERINGAPI_ERROR, 
-                    "Error creating depth buffer",
-                    "D3DDevice::createDepthBuffer" );
+			hr = renderTarget->AddAttachedSurface( lpZBuffer );
 
-            if( FAILED( hr = renderTarget->AddAttachedSurface(lpZBuffer) ) )
-                OGRE_EXCEPT(
-                    Exception::ERR_RENDERINGAPI_ERROR, 
-                    "Error attaching depth buffer to render target",
-                    "D3DDevice::createDepthBuffer" );
+            assert( SUCCEEDED( hr ) && 
+                    "D3DDevice::createDepthBuffer -> Error attaching depth buffer to render target" );
 
             // Log stencil buffer depth
             m_stencilBufferDepth = ddsd.ddpfPixelFormat.dwStencilBitDepth;
 
-            StringUtil::StrStreamType str;
+			std::ostringstream str;
             str << "Depth-Buffer created (" << ddsd.ddpfPixelFormat.dwZBufferBitDepth
                 << "-bit, " << m_stencilBufferDepth << "-bit stencil)";
-            LogManager::getSingleton().logMessage( 
-                LML_NORMAL, str.str());
+            m_logManager->logMessage( str.str() );
             if (m_stencilBufferDepth == 0)
             {
-                LogManager::getSingleton().logMessage("Warning: software stencilling " 
+                m_logManager->logMessage("Warning: software stencilling " 
                     "in use, stencil operations will not be hardware accelerated.");
             }
         }
@@ -272,17 +272,17 @@ namespace Menge
         return (m_D3DDeviceDesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_MIPNEAREST) > 0;
     }
 	//////////////////////////////////////////////////////////////////////////
-    bool D3DDevice::CanBilinearFilter(void) const
+    bool D3DDevice::canBilinearFilter(void) const
     {
         return (m_D3DDeviceDesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_LINEAR) > 0;
     }
 	//////////////////////////////////////////////////////////////////////////
-    bool D3DDevice::CanTrilinearFilter(void) const
+    bool D3DDevice::canTrilinearFilter(void) const
     {
         return (m_D3DDeviceDesc.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_LINEARMIPLINEAR) > 0;
     }
 	//////////////////////////////////////////////////////////////////////////
-    unsigned int D3DDevice::RenderBitDepth(void) const
+    unsigned int D3DDevice::renderBitDepth(void) const
     {
 
         if (m_D3DDeviceDesc.dwDeviceRenderBitDepth & DDBD_32)
@@ -297,7 +297,7 @@ namespace Menge
             return 0;
     }
 	//////////////////////////////////////////////////////////////////////////
-    unsigned int D3DDevice::ZBufferBitDepth(void) const
+    unsigned int D3DDevice::zBufferBitDepth(void) const
     {
         switch(m_D3DDeviceDesc.dwDeviceZBufferBitDepth)
         {
@@ -315,26 +315,32 @@ namespace Menge
 
     }
 	//////////////////////////////////////////////////////////////////////////
-    bool D3DDevice::NeedsZBuffer(void) const
+    bool D3DDevice::needsZBuffer() const
     {
         return m_needsZBuffer;
     }
 	//////////////////////////////////////////////////////////////////////////
-    bool D3DDevice::CanHWTransformAndLight(void) const
+    bool D3DDevice::canHWTransformAndLight(void) const
     {
         return (m_D3DDeviceDesc.dwDevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) > 0;
     }
 	//////////////////////////////////////////////////////////////////////////
-    unsigned int D3DDevice::MaxSinglePassTextureLayers(void) const
+    unsigned int D3DDevice::maxSinglePassTextureLayers(void) const
     {
         // The maximum number of texture layers the device can support in a singe pass
 
         return m_D3DDeviceDesc.wMaxSimultaneousTextures;
     }
 	//////////////////////////////////////////////////////////////////////////
-    ushort D3DDevice::StencilBufferBitDepth(void) const
+    unsigned short D3DDevice::stencilBufferBitDepth(void) const
     {
         return m_stencilBufferDepth;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void D3DDevice::initialize( LogSystemInterface* _logSystem )
+	{
+		m_initialized = true;
+		m_logManager = _logSystem;
+	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

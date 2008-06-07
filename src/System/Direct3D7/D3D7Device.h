@@ -13,14 +13,16 @@ namespace Menge
     public:
         // Constructors
         D3DDevice(); // Default
-        D3DDevice(const D3DDevice &ob); // Copy
         D3DDevice(LPDIRECT3D7 lpDirect3D, LPSTR lpDeviceDesc, LPSTR lpDeviceName,
                     LPD3DDEVICEDESC7 lpD3DDeviceDesc);
+        D3DDevice(const D3DDevice &ob); // Copy
         ~D3DDevice();
+
+		void initialize( LogSystemInterface* _logSystem );
         void cleanup(void);
         void logCaps(void) const;
 
-        /** Creates a new per-rendering surface device */
+        // Creates a new per-rendering surface device
         LPDIRECT3DDEVICE7 createDevice(LPDIRECTDRAWSURFACE7 renderTarget);
         LPDIRECT3D7 getID3D(void);
 
@@ -31,7 +33,7 @@ namespace Menge
         const String& getDeviceName() const;
         const String& getDeviceDescription() const;
         bool isHardwareAccelerated() const;
-        bool NeedsZBuffer() const;
+        bool needsZBuffer() const;
 
         void createDepthBuffer(LPDIRECTDRAWSURFACE7 renderTarget);
 
@@ -66,6 +68,7 @@ namespace Menge
 		D3DRECT rcViewportRect;
 
 		DDDriver* m_parentDriver;
-
+		bool m_initialized;
+		LogSystemInterface* m_logManager;
     };
 } // Namespace Menge

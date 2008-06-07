@@ -20,7 +20,7 @@ namespace Menge
 
         deviceList = (D3DDeviceList*) lpContext;
 
-        deviceList->AddDevice(lpDeviceDescription, lpDeviceName,
+        deviceList->addDevice_(lpDeviceDescription, lpDeviceName,
                                 lpD3DDeviceDesc);
 
         // Continue enumeration
@@ -30,9 +30,8 @@ namespace Menge
     D3DDeviceList::D3DDeviceList(LPDIRECT3D7 direct3D)
     {
         // Will create a  new driver list and enumerate it
-        if (direct3D == NULL)
-            throw Exception(Exception::ERR_INVALIDPARAMS, "NULL has been incorrectly passed as a "
-                "D3D interface pointer.", "D3DDeviceList Contructor");
+        assert( direct3D && "D3DDeviceList Contructor -> NULL has been incorrectly passed as a "
+                "D3D interface pointer." );
 
         lpD3D = direct3D;
         // Enumerate the list
@@ -42,30 +41,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     D3DDeviceList::~D3DDeviceList()
     {
-		for(size_t i=0; i<count(); i++)
+		for( std::size_t i=0; i < count(); i++ )
 		{
 			item(i)->cleanup();
 		}
-        mDeviceList.clear();
-
+        m_deviceList.clear();
     }
 	//////////////////////////////////////////////////////////////////////////
     BOOL D3DDeviceList::enumerate()
     {
         HRESULT hr;
 
-        LogManager::getSingleton().logMessage("----- Direct3D Detection Starts");
+        m_logManager->logMessage("----- Direct3D Detection Starts");
 
         hr = lpD3D->EnumDevices(D3DEnumDevicesCallback, this);
-        if (FAILED(hr))
-            throw Exception(Exception::ERR_RENDERINGAPI_ERROR, "Error enumerating 3D devices", "D3DDeviceList - enumerate");
+        assert( SUCCEEDED(hr) && "D3DDeviceList - enumerate -> Error enumerating 3D devices" );
 
-        LogManager::getSingleton().logMessage("----- Direct3D Detection Ends");
+        m_logManager->logMessage("----- Direct3D Detection Ends");
 
         return TRUE;
     }
 	//////////////////////////////////////////////////////////////////////////
-    void D3DDeviceList::AddDevice(LPSTR lpDeviceDesc,
+    void D3DDeviceList::addDevice_(LPSTR lpDeviceDesc,
                                        LPSTR lpDeviceName,
                                        LPD3DDEVICEDESC7 lpD3DDeviceDesc)
     {
@@ -78,71 +75,82 @@ namespace Menge
 
 
         // Create new driver
-        newD3D = new D3DDevice(lpD3D, lpDeviceDesc, lpDeviceName, lpD3DDeviceDesc);
+        newD3D = new D3DDevice( lpD3D, lpDeviceDesc, lpDeviceName, lpD3DDeviceDesc );
+		newD3D->initialize( m_logManager );
 
         // Add it to my list
-        mDeviceList.push_back(*newD3D);
+        m_deviceList.push_back(*newD3D);
 
         delete newD3D;
     }
 	//////////////////////////////////////////////////////////////////////////
-    size_t D3DDeviceList::count(void)
+	std::size_t D3DDeviceList::count()
     {
-        return mDeviceList.size();
+        return m_deviceList.size();
     }
 	//////////////////////////////////////////////////////////////////////////
-    D3DDevice* D3DDeviceList::item(size_t index)
+	D3DDevice* D3DDeviceList::item( std::size_t _index )
     {
-		return &mDeviceList[index];
+		return &m_deviceList[_index];
     }
 	//////////////////////////////////////////////////////////////////////////
-    D3DDevice* D3DDeviceList::getBest(unsigned int minColourDepth)
+    D3DDevice* D3DDeviceList::getBest( unsigned int _minColourDepth )
     {
 
-        std::vector<D3DDevice>::iterator p = mDeviceList.begin();
-        std::vector<D3DDevice>::iterator bestDevice = mDeviceList.end();
+        std::vector<D3DDevice>::iterator p = m_deviceList.begin();
+        std::vector<D3DDevice>::iterator bestDevice = m_deviceList.end();
         static D3DDevice* savedBest = 0;
 
-        if (savedBest)
+        if( savedBest )
+		{
             return savedBest;
-        LogManager::getSingleton().logMessage("Determining best 3D Device...");
+		}
+        m_logManager->logMessage("Determining best 3D Device...");
 
         // For now, just get ANY hardware device that can match the following
         // minimum requirements
         // 2. Colour depth = primary surface colour depth
         // Add preference to TnL devices
-        while (p != mDeviceList.end())
+        while (p != m_deviceList.end())
         {
-            if (p->HardwareAccelerated())
+            if (p->isHardwareAccelerated())
             {
                 // Check minimum render depth
-                if ( (p->RenderBitDepth() >= minColourDepth))
+                if ( (p->renderBitDepth() >= _minColourDepth))
                 {
                     // Ok, minimum caps have been satisfied so we can consider using HW
                     // Any device yet?
-                    if (bestDevice == mDeviceList.end())
+                    if (bestDevice == m_deviceList.end())
+					{
                         bestDevice = p;
+					}
                     // Always override SW device
-                    else if (!bestDevice->HardwareAccelerated())
+                    else if (!bestDevice->isHardwareAccelerated())
+					{
                         bestDevice = p;
+					}
                     // Add preference to HW TnL
-                    else if (p->CanHWTransformAndLight())
+                    else if (p->canHWTransformAndLight())
+					{
                         bestDevice = p;
+					}
 
                 }
             }
             else
             {
                 // Software device, save for fallback
-                if (bestDevice == mDeviceList.end())
+                if (bestDevice == m_deviceList.end())
+				{
                     bestDevice = p;
+				}
             }
 
             p++;
 
         }
 
-        LogManager::getSingleton().logMessage("Best 3D Device is: " + bestDevice->DeviceDescription());
+        m_logManager->logMessage("Best 3D Device is: " + bestDevice->getDeviceDescription() );
 
         savedBest = &(*bestDevice);
         return savedBest;

@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+#	include "Interface/LogSystemInterface.h"
 // Precompiler options
 #include "D3D7Prerequisites.h"
 
@@ -111,6 +113,8 @@ namespace Menge
 		LPDIRECTDRAWCLIPPER lpDDClipper;
 
 		// Private accessor functions
-		void _restoreSurfaces();
+		void restoreSurfaces_();
+
+		LogSystemInterface* m_logManager;
     };
 }

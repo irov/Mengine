@@ -27,7 +27,7 @@ public:
 	~OgreRenderSystem();
 
 public:
-	bool initialize( const char* _driver ) override;
+	bool initialize( Menge::LogSystemInterface* _logSystem ) override;
 	bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
 								int _FSAAType, int _FSAAQuality ) override;
 
@@ -76,6 +76,8 @@ public:
 		EBlendFactor _src,
 		EBlendFactor _dst) override;
 
+	void	beginScene() override;
+	void	endScene() override;
 	void	beginLayer() override;
 	void	endLayer() override;
 

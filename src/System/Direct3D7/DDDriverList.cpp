@@ -35,6 +35,7 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
     DDDriverList::DDDriverList( LogSystemInterface* _logInterface )
+		: m_logInterface( _logInterface )
     {
         // Default constructor
         // Will create a  new driver list and enumerate it

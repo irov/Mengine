@@ -41,7 +41,9 @@ namespace Menge
 		// STL list of drivers (Vector used to allow random access)
 		std::vector<D3DDevice> m_deviceList;
 
-		void _addDevice( LPSTR lpDeviceDesc, LPSTR lpDeviceName, LPD3DDEVICEDESC7 lpD3DDeviceDesc );
+		void addDevice_( LPSTR lpDeviceDesc, LPSTR lpDeviceName, LPD3DDEVICEDESC7 lpD3DDeviceDesc );
+
+		LogSystemInterface* m_logManager;
     };
 
 }// Namespace Menge

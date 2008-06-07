@@ -44,14 +44,12 @@ bool OgreInputSystem::initialize( WINDOW_HANDLE _winHandle )
 
 	m_inputManager = OIS::InputManager::createInputSystem( pl );
 
-	//OIS::Object * obj = m_inputManager->createInputObject( OIS::OISKeyboard, true );
-
-	//m_keyboard = static_cast<OIS::Keyboard*>( m_inputManager->createInputObject( OIS::OISKeyboard, true ) );
+	m_keyboard = static_cast<OIS::Keyboard*>( m_inputManager->createInputObject( OIS::OISKeyboard, true ) );
 	
 	//m_mouse->getMouseState().width = 1024;
 	//m_mouse->getMouseState().height = 768;
 	//m_mouse->setEventCallback( this );
-	//m_keyboard->setEventCallback( this );
+	m_keyboard->setEventCallback( this );
 
 	return true;
 }
@@ -81,8 +79,7 @@ void OgreInputSystem::update()
 	{
 		m_mouse->capture();
 	}
-	
-	//m_keyboard->capture();
+	m_keyboard->capture();
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreInputSystem::destroy()

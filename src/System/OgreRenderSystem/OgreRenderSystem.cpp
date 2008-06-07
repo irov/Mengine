@@ -227,7 +227,7 @@ SceneNodeInterface * OgreRenderSystem::getRootSceneNode() const
 	return m_rootSceneNode;
 }
 //////////////////////////////////////////////////////////////////////////
-bool OgreRenderSystem::initialize( const char* _driver )
+bool OgreRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 {
 	m_root = new Ogre::Root( "","", "Ogre.log" );
 	Ogre::LogManager::getSingleton().setLogDetail( Ogre::LL_LOW );
@@ -371,10 +371,14 @@ void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
 		// наху€ доху€ наху€рили ху€рей? расху€ривайте нахуй!
 		// ху€ри - функции.
 		// јвотхуй.
-		static_cast<OgreRenderImage*>( _image )->m_texture->getBuffer()->blit(pixb, imagebox, Ogre::Image::Box(0, 0, _image->getWidth(), _image->getHeight() ));
+		static_cast<OgreRenderImage*>( _image )->m_texture->
+			getBuffer()->blit( pixb, imagebox,
+			Ogre::Image::Box(0, 0, _image->getWidth(), _image->getHeight() )
+			);
 	}
+	rtgt->removeAllViewports();
 	m_renderWindow->removeViewport(0);
-	m_renderWindow->addViewport( sceneCam );
+	m_viewport = m_renderWindow->addViewport( sceneCam );
 	sceneCam->getViewport()->setDimensions( m_viewportDimensions[0], m_viewportDimensions[1], m_viewportDimensions[2], m_viewportDimensions[3] );
 	Ogre::TextureManager::getSingleton().remove("__shot__");
 }
@@ -691,5 +695,15 @@ void OgreRenderSystem::initResources()
 	Ogre::ResourceGroupManager::getSingletonPtr();
 
 	resourceGroupMgr->initialiseResourceGroup("Default");
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::beginScene()
+{
+
+}
+//////////////////////////////////////////////////////////////////////////
+void OgreRenderSystem::endScene()
+{
+
 }
 //////////////////////////////////////////////////////////////////////////

@@ -8,19 +8,23 @@
 #include "D3D7DeviceList.h"
 #include "D3D7Device.h"
 
+#	include <map>
+
 namespace Menge
 {
+	typedef std::map<String, String> NameValuePairList;
+
     // Defines the rendering window on Win32 systems
     //    @remarks
     //        This class represents the rendering window on the
     //        Windows family of operating systems.
-    class D3D7RenderWindow : public RenderWindow
+    class D3D7RenderWindow// : public RenderWindow
     {
     public:
-        D3D7RenderWindow(HINSTANCE instance, DDDriver *driver);
+        D3D7RenderWindow( DDDriver *driver );
         ~D3D7RenderWindow();
 
-		void create(const String& name, unsigned int width, unsigned int height,
+		void create( const String& name, unsigned int width, unsigned int height,
 			bool fullScreen, const NameValuePairList *miscParams);
 
         // Overridden - see RenderWindow 
@@ -89,15 +93,17 @@ namespace Menge
 		void createDepthBuffer(void);
 
     protected:
-		HINSTANCE mInstance;			// Process instance
-		DDDriver *mDriver;			// D3D9 driver
+		//HINSTANCE mInstance;			// Process instance
+		DDDriver* m_driver;			// D3D9 driver
         // Win32-specific data members
-        bool mIsUsingDirectDraw;
-        HWND mHWnd;                    // Win32 Window handle
-        HWND mParentHWnd;
-		bool mIsExternal;			// window not created by Ogre
-        bool mReady;                // Is ready i.e. available for update
-        bool mClosed;
+        bool m_isUsingDirectDraw;
+        //HWND mHWnd;                    // Win32 Window handle
+        //HWND mParentHWnd;
+		//bool mIsExternal;			// window not created by Ogre
+		bool m_isFullScreen;
+		bool m_active;
+        bool m_ready;                // Is ready i.e. available for update
+        bool m_closed;
 
         RECT rcBlitDest;            // Target for blit operation
                                     // == window client area
@@ -114,14 +120,14 @@ namespace Menge
         // ---------------------------------------------------------
 
         // Pointer to DDDriver encapsulating DirectDraw driver (if DirectX in use)
-        DDDriver* mlpDDDriver;
+        DDDriver* m_lpDDDriver;
 
         // Pointers to DX surfaces
         LPDIRECTDRAWSURFACE7 mlpDDSFront; // Pointer to primary (front) buffer surface
         LPDIRECTDRAWSURFACE7 mlpDDSBack; // Pointer to back buffer
 
         // Pointer to the 3D Device specific for this window
-        LPDIRECT3DDEVICE7 mlpD3DDevice;
+        LPDIRECT3DDEVICE7 m_lpD3DDevice;
 
 
         // Method for dealing with resize / move & 3d library
@@ -129,4 +135,3 @@ namespace Menge
         
     };
 }
-#endif

@@ -186,7 +186,7 @@ namespace Menge
 			{
 				assert( 0 && "D3DTexture::createInternalResources -> Unknown texture type" );
 			}
-			createSurfaceList_();
+			createSurfaceList_( _mipmapsNum );
 		}
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -306,7 +306,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	int Menge::D3DTexture::getPixelFormat()
 	{
-		static_cast<int>( m_format );
+		return static_cast<int>( m_format );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void D3DTexture::createSurface2D( std::size_t _srcWidth, std::size_t _srcHeight, std::size_t _mipmapsNum )
@@ -617,165 +617,165 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	HardwarePixelBufferInterface* D3DTexture::getBuffer( std::size_t _idx )
 	{
-		assert( _idx < m_surfaceList.size() );
-
-		return m_surfaceList[_idx];
+		//assert( _idx < m_surfaceList.size() );
+		return NULL;
+		//return m_surfaceList[_idx];
 	}
     //////////////////////////////////////////////////////////////////////////
 	// Macro to hide ugly cast
-	#define GETLEVEL( _face, _mip ) \
-	 	static_cast<D3D7HardwarePixelBuffer*>( m_surfaceList[face*(mNumMipmaps+1)+mip].get())
-	void D3DTexture::createSurfaceList_()
-	{
-		HRESULT hr;
-		std::size_t face;
-		m_surfaceList.clear();
-		D3D7HardwarePixelBuffer* buffer;
+	//#define GETLEVEL( _face, _mip ) \
+	// 	static_cast<D3D7HardwarePixelBuffer*>( m_surfaceList[face * ( _mipmapsNum + 1) + _mip])
+	//void D3DTexture::createSurfaceList_( std::size_t _mipmapsNum )
+	//{
+	//	HRESULT hr;
+	//	std::size_t face;
+	//	m_surfaceList.clear();
+	//	D3D7HardwarePixelBuffer* buffer;
 
-		// Get real number of mipmaps
-		DDSURFACEDESC2 desc;
-		desc.dwSize = sizeof(DDSURFACEDESC2);
-		hr = m_surface->GetSurfaceDesc(&desc);
-		assert( ( hr == D3D_OK ) && "D3DTexture::_createSurfaceList() -> Could not get surface information" );
+	//	// Get real number of mipmaps
+	//	DDSURFACEDESC2 desc;
+	//	desc.dwSize = sizeof(DDSURFACEDESC2);
+	//	hr = m_surface->GetSurfaceDesc(&desc);
+	//	assert( ( hr == D3D_OK ) && "D3DTexture::_createSurfaceList() -> Could not get surface information" );
 
-		if(desc.dwFlags & DDSD_MIPMAPCOUNT)
-		{
-			m_numMipmaps = desc.dwMipMapCount;
-		}
-		else
-		{
-			m_numMipmaps = 0;
-		}
+	//	/*if( desc.dwFlags & DDSD_MIPMAPCOUNT )
+	//	{
+	//		m_numMipmaps = desc.dwMipMapCount;
+	//	}
+	//	else
+	//	{
+	//		m_numMipmaps = 0;
+	//	}*/
 
-		// Create the list
-		unsigned int bufusage;
-		if( ( m_usage & TU_DYNAMIC ) )
-		{
-			bufusage = HBU_DYNAMIC;
-		}
-		else
-		{
-			bufusage = HBU_STATIC;
-		}
-		if( m_usage & TU_RENDERTARGET )
-		{
-			bufusage |= TU_RENDERTARGET;
-		}
+	//	// Create the list
+	//	unsigned int bufusage;
+	//	if( ( m_usage & TU_DYNAMIC ) )
+	//	{
+	//		bufusage = HBU_DYNAMIC;
+	//	}
+	//	else
+	//	{
+	//		bufusage = HBU_STATIC;
+	//	}
+	//	if( m_usage & TU_RENDERTARGET )
+	//	{
+	//		bufusage |= TU_RENDERTARGET;
+	//	}
 
-		bool updateOldList = m_surfaceList.size() == ( getNumFaces() * ( m_numMipmaps + 1 ) );
-		if( !updateOldList )
-		{
-			// Create new list of surfaces
-			m_surfaceList.clear();
-			for( size_t face=0; face<getNumFaces(); ++face )
-			{
-				for( size_t mip=0; mip<=mNumMipmaps; ++mip )
-				{
-					buffer = new D3D7HardwarePixelBuffer( (HardwareBuffer::Usage)bufusage, m_D3DDevice );
-					m_surfaceList.push_back( static_cast<HardwarePixelBufferInterface*>( buffer ) );
-				}
-			}
-		}
+	//	bool updateOldList = m_surfaceList.size() == ( getNumFaces() * ( _mipmapsNum + 1 ) );
+	//	if( !updateOldList )
+	//	{
+	//		// Create new list of surfaces
+	//		m_surfaceList.clear();
+	//		for( std::size_t face = 0; face < getNumFaces(); ++face )
+	//		{
+	//			for( std::size_t mip = 0; mip <= _mipmapsNum; ++mip )
+	//			{
+	//				buffer = new D3D7HardwarePixelBuffer( (EHardwareBufferUsage)bufusage, m_D3DDevice );
+	//				m_surfaceList.push_back( static_cast<HardwarePixelBufferInterface*>( buffer ) );
+	//			}
+	//		}
+	//	}
 
-		/*for(face=0; face < getNumFaces(); ++face)
-		{
-			for(size_t mip=0; mip<=mNumMipmaps; ++mip)
-			{
-				mSurfaceList.push_back(
-					HardwarePixelBufferSharedPtr(
-						new D3D7HardwarePixelBuffer((HardwareBuffer::Usage)bufusage, mD3DDevice)
-					)
-				);
-			}
-		}*/
+	//	/*for(face=0; face < getNumFaces(); ++face)
+	//	{
+	//		for(size_t mip=0; mip<=mNumMipmaps; ++mip)
+	//		{
+	//			mSurfaceList.push_back(
+	//				HardwarePixelBufferSharedPtr(
+	//					new D3D7HardwarePixelBuffer((HardwareBuffer::Usage)bufusage, mD3DDevice)
+	//				)
+	//			);
+	//		}
+	//	}*/
 
-		// Enumerate all surfaces
-        for (face = 0; face < getNumFaces(); ++face)
-		{
-			LPDIRECTDRAWSURFACE7 pCubeFace;
-			if( m_type == TEX_TYPE_CUBE_MAP)
-			{
-				// Get cube map face to blit to
-				DDSCAPS2 cubeCaps;
-				ZeroMemory(&cubeCaps, sizeof(DDSCAPS2));
-				switch (face)
-				{
-				case 0:
-					// left
-					cubeCaps.dwCaps2 = DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_POSITIVEX;
-					break;
-				case 1:
-					// right
-					cubeCaps.dwCaps2 = DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_NEGATIVEX;
-					break;
-				case 2:
-					// up
-					cubeCaps.dwCaps2 = DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_POSITIVEY;
-					break;
-				case 3:
-					// down
-					cubeCaps.dwCaps2 = DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_NEGATIVEY;
-					break;
-				case 4:
-					// front - NB DirectX is backwards
-					cubeCaps.dwCaps2 = DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_POSITIVEZ;
-					break;
-				case 5:
-					// back - NB DirectX is backwards
-					cubeCaps.dwCaps2 = DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_NEGATIVEZ;
-					break;
-				}
-				
-				hr = m_surface->GetAttachedSurface( &cubeCaps, &pCubeFace );
-				assert( SUCCEEDED( hr ) &&  "D3DTexture::_createSurfaceList -> Error getting cube face surface." );
+	//	// Enumerate all surfaces
+ //       for (face = 0; face < getNumFaces(); ++face)
+	//	{
+	//		LPDIRECTDRAWSURFACE7 pCubeFace;
+	//		if( m_type == TEX_TYPE_CUBE_MAP)
+	//		{
+	//			// Get cube map face to blit to
+	//			DDSCAPS2 cubeCaps;
+	//			ZeroMemory(&cubeCaps, sizeof(DDSCAPS2));
+	//			switch (face)
+	//			{
+	//			case 0:
+	//				// left
+	//				cubeCaps.dwCaps2 = DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_POSITIVEX;
+	//				break;
+	//			case 1:
+	//				// right
+	//				cubeCaps.dwCaps2 = DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_NEGATIVEX;
+	//				break;
+	//			case 2:
+	//				// up
+	//				cubeCaps.dwCaps2 = DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_POSITIVEY;
+	//				break;
+	//			case 3:
+	//				// down
+	//				cubeCaps.dwCaps2 = DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_NEGATIVEY;
+	//				break;
+	//			case 4:
+	//				// front - NB DirectX is backwards
+	//				cubeCaps.dwCaps2 = DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_POSITIVEZ;
+	//				break;
+	//			case 5:
+	//				// back - NB DirectX is backwards
+	//				cubeCaps.dwCaps2 = DDSCAPS2_CUBEMAP | DDSCAPS2_CUBEMAP_NEGATIVEZ;
+	//				break;
+	//			}
+	//			
+	//			hr = m_surface->GetAttachedSurface( &cubeCaps, &pCubeFace );
+	//			assert( SUCCEEDED( hr ) &&  "D3DTexture::_createSurfaceList -> Error getting cube face surface." );
 
-			}
-			else
-			{
-				pCubeFace = m_surface;
-				pCubeFace->AddRef();
-			}
+	//		}
+	//		else
+	//		{
+	//			pCubeFace = m_surface;
+	//			pCubeFace->AddRef();
+	//		}
 
-			GETLEVEL(face, 0)->bind(pCubeFace, mFormat);
+	//		GETLEVEL(face, 0)->bind( pCubeFace, m_format );
 
-			LPDIRECTDRAWSURFACE7 ddsMipLevel, ddsNextLevel;
-			DDSCAPS2 ddsCaps;
-			HRESULT mipRes = DD_OK;
-			size_t mipLevel = 1;
+	//		LPDIRECTDRAWSURFACE7 ddsMipLevel, ddsNextLevel;
+	//		DDSCAPS2 ddsCaps;
+	//		HRESULT mipRes = DD_OK;
+	//		size_t mipLevel = 1;
 
-			ZeroMemory(&ddsCaps, sizeof(DDSCAPS2));
-			ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_MIPMAP;
+	//		ZeroMemory(&ddsCaps, sizeof(DDSCAPS2));
+	//		ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_MIPMAP;
 
-			// Get the base level and increae the reference count. 
-			ddsMipLevel = pCubeFace;
-			ddsMipLevel->AddRef();
+	//		// Get the base level and increae the reference count. 
+	//		ddsMipLevel = pCubeFace;
+	//		ddsMipLevel->AddRef();
 
-			/// While we can get a next level in the mip-map chain. 
-			while( ddsMipLevel->GetAttachedSurface( &ddsCaps, &ddsNextLevel ) == DD_OK )
-			{
-				GETLEVEL(face, mipLevel)->bind(ddsNextLevel, mFormat);
-				// Release the current level and get the next one, incrementing the mip depth. 
-				ddsMipLevel->Release();
-				ddsMipLevel = ddsNextLevel;
-				mipLevel++;
-			}
+	//		/// While we can get a next level in the mip-map chain. 
+	//		while( ddsMipLevel->GetAttachedSurface( &ddsCaps, &ddsNextLevel ) == DD_OK )
+	//		{
+	//			GETLEVEL(face, mipLevel)->bind( ddsNextLevel, m_format );
+	//			// Release the current level and get the next one, incrementing the mip depth. 
+	//			ddsMipLevel->Release();
+	//			ddsMipLevel = ddsNextLevel;
+	//			mipLevel++;
+	//		}
 
-			// Release the last mip-map level surface. 
-			ddsMipLevel->Release();
-			// Release face reference
-			pCubeFace->Release();
-		}
+	//		// Release the last mip-map level surface. 
+	//		ddsMipLevel->Release();
+	//		// Release face reference
+	//		pCubeFace->Release();
+	//	}
 
-		// Set autogeneration of mipmaps for each face of the texture, if it is enabled
-		if( mNumMipmaps > 0 && ( m_usage & TU_AUTOMIPMAP ) ) 
-		{
-			for( std::size_t face = 0; face < getNumFaces(); ++face )
-			{
-				GETLEVEL(face, 0)->_setMipmapping(true);
-			}
-		}
-	}
-	#undef GETLEVEL
+	//	// Set autogeneration of mipmaps for each face of the texture, if it is enabled
+	//	if( _mipmapsNum > 0 && ( m_usage & TU_AUTOMIPMAP ) ) 
+	//	{
+	//		for( std::size_t face = 0; face < getNumFaces(); ++face )
+	//		{
+	//			GETLEVEL(face, 0)->_setMipmapping( true );
+	//		}
+	//	}
+	//}
+	//#undef GETLEVEL
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t D3DTexture::getWidth()
 	{
@@ -785,6 +785,18 @@ namespace Menge
 	std::size_t D3DTexture::getHeight()
 	{
 		return m_height;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t D3DTexture::getNumFaces() const
+	{
+		return m_type == TEX_TYPE_CUBE_MAP ? 6 : 1;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	HardwarePixelBufferInterface* D3DTexture::createHardwarePixelBuffer( EHardwareBufferUsage _usage )
+	{
+		//D3D7HardwarePixelBuffer* buffer = NULL;
+		//buffer = new D3D7HardwarePixelBuffer( _usage, m_D3DDevice );
+		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

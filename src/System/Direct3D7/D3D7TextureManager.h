@@ -1,5 +1,6 @@
 #	pragma once
 
+#	include "Interface/TextureInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 #	include "D3D7Prerequisites.h"
 
@@ -9,7 +10,7 @@
 namespace Menge
 {
     // Direct3D-specific implementation of a TextureManager
-    class D3DTextureManager : public TextureManagerInterface
+    class D3DTextureManager //: public TextureManagerInterface
     {
     public:
         D3DTextureManager( LPDIRECT3DDEVICE7 lpD3DDevice );
@@ -18,9 +19,9 @@ namespace Menge
 		// Restore the contents of all surfaces following a lost device.
 		void reloadAfterLostDevice();
 
-		PixelFormat getNativeFormat( TextureType ttype, PixelFormat format, int usage );
+		PixelFormat getNativeFormat( ETextureType ttype, PixelFormat format, int usage );
 
-		bool isHardwareFilteringSupported( TextureType ttype, PixelFormat format, int usage,
+		bool isHardwareFilteringSupported( ETextureType ttype, PixelFormat format, int usage,
 			bool preciseFormatOnly = false );
 
 

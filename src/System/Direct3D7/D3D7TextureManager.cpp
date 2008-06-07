@@ -46,14 +46,14 @@ namespace Menge
 	{
 		// We've been restored after a lost device and need to repopulate the
 		// texture data
-		for (ResourceMap::iterator i = mResources.begin(); i != mResources.end(); ++i)
+		/*for (ResourceMap::iterator i = mResources.begin(); i != mResources.end(); ++i)
 		{
 			D3DTexturePtr t = i->second;
 			t->restoreFromLostDevice();
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PixelFormat D3DTextureManager::getNativeFormat(TextureType ttype, PixelFormat format, int usage)
+	PixelFormat D3DTextureManager::getNativeFormat( ETextureType ttype, PixelFormat format, int usage )
 	{
 		// Basic filtering
 		//D3DFORMAT d3dPF = D3D9Mappings::_getPF(D3D9Mappings::_getClosestSupportedPF(format));
@@ -92,7 +92,7 @@ namespace Menge
 		return format;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool D3DTextureManager::isHardwareFilteringSupported(TextureType ttype, PixelFormat format, int usage, bool preciseFormatOnly)
+	bool D3DTextureManager::isHardwareFilteringSupported( ETextureType ttype, PixelFormat format, int usage, bool preciseFormatOnly)
 	{
 		/*if (!preciseFormatOnly)
 			format = getNativeFormat(ttype, format, usage);

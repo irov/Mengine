@@ -3,6 +3,9 @@
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/RenderSystemInterface.h"
+#	include "Interface/TextureInterface.h"
+
+#	include "Menge/Color.h"
 
 #include "D3D7Prerequisites.h"
 
@@ -16,61 +19,64 @@ namespace Menge
     class DDDriverList;
     class DDDriver;
 
+	class TextureManager;
     // Implementation of DirectX as a rendering system.
     class D3DRenderSystem : public RenderSystemInterface
     {
 	public:
         // Default constructor / destructor
-        D3DRenderSystem( HINSTANCE _hInstance );
+        D3DRenderSystem();
         ~D3DRenderSystem();
 
         const String& getName() const override;
 
-        TConfigOptionMap& getConfigOptions() override;
+//        TConfigOptionMap& getConfigOptions() override;
 
         void setConfigOption( const String& _name, const String& _value ) override;
 
-        String validateConfigOptions() override;
+//        String validateConfigOptions() override;
 
-		void initialise() override;
+		void initialise( LogSystemInterface* _logInterface ) override;
 
-		void reinitialise() override; // Used if settings changed mid-rendering
+//		void reinitialise() override; // Used if settings changed mid-rendering
 
 		void shutdown() override;
 
-		void setAmbientLight( float _r, float _g, float _b ) override;
+//		void setAmbientLight( float _r, float _g, float _b ) override;
 
-		void setShadingType( ShadeOptions _so ) override;
+//		void setShadingType( ShadeOptions _so ) override;
 
-		void setLightingEnabled( bool _enabled ) override;
+//		void setLightingEnabled( bool _enabled ) override;
         
-		RenderWindow* createRenderWindow( const String& _name, unsigned int _width, unsigned int _height, 
+		bool createRenderWindow( const String& _name, unsigned int _width, unsigned int _height, 
 			bool _fullScreen, const NameValuePairList* _miscParams = 0 ) override;
 
-		RenderTexture* createRenderTexture( const String& _name, unsigned int _width, unsigned int _height,
-			TextureType _texType = TEX_TYPE_2D, PixelFormat _internalFormat = PF_X8R8G8B8, 
-			const NameValuePairList* _miscParams = 0 ) override; 
+//		RenderTexture* createRenderTexture( const String& _name, unsigned int _width, unsigned int _height,
+	//		/*TextureType _texType = TEX_TYPE_2D, */PixelFormat _internalFormat = PF_X8R8G8B8, 
+	//		const NameValuePairList* _miscParams = 0 ) override; 
 
 
-		void destroyRenderWindow( const String& _name ) override;
+//		void destroyRenderWindow( const String& _name ) override;
 
-		void destroyRenderTexture( const String& _name ) override;
+//		void destroyRenderTexture( const String& _name ) override;
 
-		void destroyRenderTarget( const String& _name ) override;
+//		void destroyRenderTarget( const String& _name ) override;
 
-		void attachRenderTarget( RenderTarget& _target ) override;
+//		void attachRenderTarget( RenderTarget& _target ) override;
 
-		RenderTarget * getRenderTarget( const String& _name ) override;
+//		RenderTarget * getRenderTarget( const String& _name ) override;
+
+//		RenderTarget * detachRenderTarget( const String& _name ) override;
 
         void destroyRenderWindow(RenderWindow* pWin);
 
-        String getErrorDescription( long _errorNumber ) const override;
+//        String getErrorDescription( long _errorNumber ) const override;
 
-		void setWaitForVerticalBlank( bool _enabled ) override;
+		void setWaitForVerticalBlank( bool _enabled ) /*override*/;
 
-		bool getWaitForVerticalBlank() const override;
+		bool getWaitForVerticalBlank() const /*override*/;
 
-        void convertColourValue( const ColourValue& _colour, uint32* pDest );
+        void convertColourValue( const float* _colour, uint32* pDest );
 
 		/// Notify of a device lost
 		void _notifyDeviceLost();
@@ -81,18 +87,20 @@ namespace Menge
 		/// Recreate the primary context
 		void _recreateContext();
 
-        void _useLights( const TLightList& _lights, unsigned short _limit ) override;
+//        void _useLights( const TLightList& _lights, unsigned short _limit ) override;
 
-		void _setWorldMatrix( const float* _m ) override;
+//		void _setWorldMatrix( const float* _m ) override;
 
-		void _setViewMatrix( const float* _m ) override;
+//		void _setViewMatrix( const float* _m ) override;
 
-		void _setProjectionMatrix( const float* _m ) override;
+//		void _setProjectionMatrix( const float* _m ) override;
 
-		void _setSurfaceParams( const ColourValue& _ambient, const ColourValue& _diffuse, const ColourValue& _specular,
-            const ColourValue& _emissive, float _shininess, int _tracking );
+//		void _setSurfaceParams( const float* _ambient, const float* _diffuse, const float* _specular,
+ //           const float* _emissive, float _shininess, int _tracking ) override;
 
 		void _setTexture( std::size_t _unit, bool _enabled, const String& _texname );
+
+//		void _setTextureUnitSettings( std::size_t _texUnit, TextureUnitState& _tl ) override;
 
 		void _setTextureBlendMode( std::size_t _unit, const LayerBlendModeEx& _bm );
 
@@ -110,6 +118,31 @@ namespace Menge
 		void _setAlphaRejectSettings( CompareFunction _func, unsigned char _value );
 
 		void _setViewport( Viewport* _vp );
+
+//		Viewport* _getViewport() override;
+
+//		void _disableTextureUnitsFrom( std::size_t _texUnit ) override;
+
+//		void _disableTextureUnit( std::size_t _texUnit ) override;
+
+//		void _setVertexTexture( std::size_t _unit, const Texture* _tex ) override;
+
+//		void _setTextureUnitFiltering( std::size_t _unit, FilterOptions _minFilter,
+//			FilterOptions _magFilter, FilterOptions _mipFilter ) override;
+
+//		CullingMode _getCullingMode() const override;
+
+//		const RenderSystemCapabilities* getCapabilities() const override;
+
+//		void setClipPlane( unsigned short _index, const float* _plane ) override;
+
+//		void setCurrentPassIterationCount( const std::size_t _count ) override;
+
+//		void addListener( Listener* _l ) override;
+
+//		void removeListener( Listener* _l ) override;
+
+//		const TStringVector& getRenderSystemEvents() const override;
 
 		void _beginFrame();
 
@@ -131,7 +164,7 @@ namespace Menge
 
 		void _setColourBufferWriteEnabled( bool _red, bool _green, bool _blue, bool _alpha );
 
-		void _setFog( FogMode _mode, const ColourValue& _colour, float _density, float _start, float _end );
+//		void _setFog( FogMode _mode, const float* _colour, float _density, float _start, float _end ) override;
 
 		void _makeProjectionMatrix( const float _fovy, float _aspect, float _nearPlane, 
             float _farPlane, float* _dest, bool _forGpuProgram = false );
@@ -175,28 +208,28 @@ namespace Menge
 		void setScissorTest( bool _enabled, std::size_t _left = 0, std::size_t _top = 0, std::size_t _right = 800, std::size_t _bottom = 600 )
         { /* do nothing, d3d7 does not support scissor rect */ }
 
-		void clearFrameBuffer( unsigned int _buffers, const ColourValue& _colour = ColourValue::Black, 
-								float _depth = 1.0f, unsigned short _stencil = 0 );
+//		void clearFrameBuffer( unsigned int _buffers, const float* _colour, 
+//								float _depth = 1.0f, unsigned short _stencil = 0 ) override;
 
         void setClipPlane( unsigned short _index, float _A, float _B, float _C, float _D );
         void enableClipPlane( unsigned short _index, bool _enable );
 
 		//HardwareOcclusionQuery* createHardwareOcclusionQuery() override;
 		//void destroyHardwareOcclusionQuery( HardwareOcclusionQuery* _hq ) override;
-        float getHorizontalTexelOffset() override;
-        float getVerticalTexelOffset() override;
+//        float getHorizontalTexelOffset() override;
+//        float getVerticalTexelOffset() override;
         float getMinimumDepthInputValue();
         float getMaximumDepthInputValue();
 
 		//
 		//MultiRenderTarget * createMultiRenderTarget( const String& _name ) override; 
-		void _setPointSpritesEnabled( bool _enabled ) override;
-		void _setPointParameters( float _size, bool _attenuationEnabled, 
-			float _constant, float _linear, float _quadratic, float _minSize, float _maxSize ) override;
-		void _setTexture( std::size_t _unit, bool _enabled, const Texture* _texPtr ) override;
+//		void _setPointSpritesEnabled( bool _enabled ) override;
+//		void _setPointParameters( float _size, bool _attenuationEnabled, 
+//			float _constant, float _linear, float _quadratic, float _minSize, float _maxSize ) override;
+//		void _setTexture( std::size_t _unit, bool _enabled, const Texture* _texPtr ) override;
 		void _setTextureAddressingMode(size_t unit, const TextureUnitState::UVWAddressingMode& uvw);
-		void _setTextureBorderColour(size_t unit, const ColourValue& colour);
-		void _setTextureMipmapBias(size_t unit, float bias);
+//		void _setTextureBorderColour( std::size_t _unit, const float* _colour ) override;
+		void _setTextureMipmapBias( std::size_t _unit, float _bias );
 		void _setDepthBias(float constantBias, float slopeScaleBias = 0.0f);
 		VertexElementType getColourVertexElementType(void) const;
 		void _convertProjectionMatrix( const float* _matrix, float* _dest, bool _forGpuProgram = false );
@@ -243,7 +276,7 @@ namespace Menge
 		size_t mVertexCount;
 
 		/// Saved manual colour blends
-		ColourValue mManualBlendColours[MENGE_MAX_TEXTURE_LAYERS][2];
+		Color mManualBlendColours[MENGE_MAX_TEXTURE_LAYERS][2];
 
 		bool mInvertVertexWinding;
 
@@ -262,7 +295,7 @@ namespace Menge
 		TStringVector m_eventNames;
 
 		/// Internal method for firing a rendersystem event
-		virtual void fireEvent( const String& _name, const NameValuePairList* _params = 0);
+		//virtual void fireEvent( const String& _name, const NameValuePairList* _params = 0);
 
 		typedef std::list<Listener*> TListenerList;
 		TListenerList m_eventListeners;
@@ -304,10 +337,10 @@ namespace Menge
 		};
 
 		/// return the D3DtexType equivalent of a Ogre tex. type
-		eD3DTexType _ogreTexTypeToD3DTexType(TextureType ogreTexType)
+		eD3DTexType _ogreTexTypeToD3DTexType( ETextureType _texType )
 		{
 			eD3DTexType ret;
-			switch (ogreTexType)
+			switch (_texType)
 			{
 			case TEX_TYPE_1D :
 			case TEX_TYPE_2D :
@@ -369,6 +402,7 @@ namespace Menge
 
 		// LogSystemInterface
 		LogSystemInterface* m_logInterface;
+		bool m_initialized;
     };
 }
 

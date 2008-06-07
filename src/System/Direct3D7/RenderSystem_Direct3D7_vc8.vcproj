@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)src/Menge&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies/DirectX/DX7/include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)src/Menge&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies/DirectX/DX8/include&quot;;&quot;$(SolutionDir)src/libs&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,9 +63,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="ddraw.lib d3dim.lib d3drm.lib d3dx.lib dxguid.lib"
+				AdditionalDependencies="ddraw.lib d3d8.lib d3dxd.lib dxguid.lib"
 				OutputFile="$(OutDir)\RenderSystem_Direct3D7Static_d.lib"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\DirectX\DX8\lib&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -81,7 +81,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy ..\bin\$(ConfigurationName)\$(TargetFileName) ..\..\..\Samples\Common\Bin\$(ConfigurationName)"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -269,7 +269,6 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"

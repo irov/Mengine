@@ -39,8 +39,10 @@ namespace Menge
 		static bool OgreFormat_to_DDPixelFormat( PixelFormat format, DDPIXELFORMAT & out );
 
 		int getPixelFormat();
+		std::size_t getNumFaces() const;
 		/// Restore this texture from a lost device
 		//void restoreFromLostDevice(void);
+		HardwarePixelBufferInterface* createHardwarePixelBuffer( EHardwareBufferUsage _usage ) override;
 
     protected:
         IDirect3DDevice7 * m_D3DDevice;       ///< A pointer to the Direct3D device.
@@ -50,8 +52,8 @@ namespace Menge
 		std::size_t m_width;
 		std::size_t m_height;
 		/// Vector of pointers to subsurfaces
-		typedef std::vector<HardwarePixelBufferInterface*> TSurfaceList;
-		TSurfaceList	m_surfaceList;
+		//typedef std::vector<HardwarePixelBufferInterface*> TSurfaceList;
+		//TSurfaceList	m_surfaceList;
 
 		ETextureType m_type;
 		PixelFormat m_format;
@@ -74,7 +76,7 @@ namespace Menge
 		//{ assert( _face < 6 ); return m_cubeFaceNames[_face]; }
 
 		// Create the list of surfaces
-		void createSurfaceList_();
+		void createSurfaceList_( std::size_t _mipmapsNum );
     };
 
     //Specialisation of SharedPtr to allow SharedPtr to be assigned to D3DTexturePtr 

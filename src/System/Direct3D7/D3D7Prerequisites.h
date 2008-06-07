@@ -5,11 +5,12 @@
 
 // Define versions for if DirectX is in use (Win32 only)
 #define DIRECT3D_VERSION  0x0700
-#define DIRECTINPUT_VERSION 0x0700
+#define DIRECTINPUT_VERSION 0x0800
 #define DIRECTDRAW_VERSION 0x0700
 
 // Include D3D and DirectDraw stuff
 #define D3D_OVERLOADS
+#undef NOMINMAX
 #define NOMINMAX // required to stop windows.h screwing up std::min definition
 #include <ddraw.h>
 #include <d3d.h>

@@ -37,11 +37,14 @@ namespace Menge
 			return false;
 		}
 
+		//MENGE_LOG( "Compiling Resource %s", this->getName().c_str() );
 		bool result = Resource::compile();
 
 		if( result == false )
 		{
-			MENGE_LOG("Error: compiled Node '%s' is failed", getName().c_str() );
+			//MENGE_LOG("Error: compiled Node '%s' is failed"
+			//	, getName().c_str()
+			//	);
 		}
 
 		return result;

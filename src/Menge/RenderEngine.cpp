@@ -16,7 +16,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
+	RenderEngine::RenderEngine( ::RenderSystemInterface * _interface )
 		: m_interface( _interface )
 		, m_renderViewport( mt::vec2f(0.f,0.f), mt::vec2f(1024.f,768.f) )
 		, m_renderCamera(0)
@@ -29,7 +29,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize( const String& _driver )
 	{
-		bool result = m_interface->initialize( _driver.c_str() );
+		bool result = m_interface->initialize( Holder<LogEngine>::hostage()->getInterface() );
 		m_interface->setEventListener( this );
 		return result;
 	}
@@ -148,7 +148,7 @@ namespace Menge
 			unsigned int buff_size = file->size();
 			s_buff.resize( buff_size );
 			file->read( &s_buff[0], buff_size );*/
-			Image cimage;
+			/*Image cimage;
 			cimage.load( _filename );
 
 			TextureDesc	textureDesc;
@@ -160,11 +160,18 @@ namespace Menge
 			//textureDesc.buffer = &s_buff[0];
 			//textureDesc.size = buff_size;
 			textureDesc.name = _filename.c_str();
-			textureDesc.filter = _filter;
+			textureDesc.filter = _filter;*/
+
+			DataStreamInterface* file = Holder<FileEngine>::hostage()->openFile( _filename );
+
+			TextureDesc textureDesc;
+			textureDesc.buffer = file->getBuffer();
+			textureDesc.name = _filename.c_str();
+			textureDesc.size = file->size();
 
 			image = loadImage( textureDesc );
 
-			//Holder<FileEngine>::hostage()->closeStream( file );
+			Holder<FileEngine>::hostage()->closeStream( file );
 
 			if( image == 0 )
 			{
@@ -414,6 +421,16 @@ namespace Menge
 	void RenderEngine::initResources()
 	{
 		m_interface->initResources();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::beginScene()
+	{
+		m_interface->beginScene();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::endScene()
+	{
+		m_interface->endScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

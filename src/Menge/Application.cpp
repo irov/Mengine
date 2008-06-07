@@ -162,7 +162,7 @@ namespace Menge
 		Holder<InputEngine>::keep( m_inputEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setRenderSystem( RenderSystemInterface * _interface )
+	void Application::setRenderSystem( ::RenderSystemInterface * _interface )
 	{
 		m_renderEngine = new RenderEngine( _interface );
 		Holder<RenderEngine>::keep( m_renderEngine );
@@ -629,7 +629,11 @@ namespace Menge
 		m_soundEngine->update( _timing );
 		//MENGE_LOG("SoundUpdate: %.2f\n", m_interface->getDeltaTime() );
 
+		m_renderEngine->beginScene();
+
 		Holder<Game>::hostage()->render();
+
+		m_renderEngine->endScene();
 		//MENGE_LOG("GameRender: %.2f\n", m_interface->getDeltaTime() );
 		//Holder<Game>::hostage()->debugRender();
 		

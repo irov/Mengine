@@ -35,6 +35,7 @@ namespace     Menge
 		, m_outlineImage( 0 )
 		, m_maxWidth( 2048.f )
 		, m_charOffset( 0.0f )
+		, m_lineOffset( 0 )
 	{
 		m_outlineFontName.clear();
 	}
@@ -122,6 +123,11 @@ namespace     Menge
 			m_height = m_resource->getInitSize();
 		}
 
+		if( !m_lineOffset )
+		{
+			m_lineOffset = m_height;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -151,6 +157,7 @@ namespace     Menge
 			XML_CASE_ATTRIBUTE_NODE( "OutlineImage", "Name", m_outlineFontName);
 			XML_CASE_ATTRIBUTE_NODE( "MaxWidth", "Value", m_maxWidth);
 			XML_CASE_ATTRIBUTE_NODE( "CharOffset", "Value", m_charOffset);
+			XML_CASE_ATTRIBUTE_NODE( "LineOffset", "Value", m_lineOffset);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -206,7 +213,7 @@ namespace     Menge
 				offset.x += width + m_charOffset;
 			}
 
-			offset.y += m_height;
+			offset.y += m_lineOffset;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -447,4 +454,15 @@ namespace     Menge
 		registerEventListener("COLOR_END", "onColorEnd", m_listener );
 		registerEventListener("COLOR_STOP", "onColorStop", m_listener );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	int TextField::getLineOffset() const
+	{
+		return m_lineOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setLineOffset( int _offset )
+	{
+		m_lineOffset = _offset;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

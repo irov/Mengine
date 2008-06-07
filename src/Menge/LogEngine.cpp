@@ -19,6 +19,11 @@ namespace Menge
 		m_interface->logMessage( _message.c_str(), _maskDebug, _endl, _timeStamp );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	LogSystemInterface* LogEngine::getInterface()
+	{
+		return m_interface;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	LoggerOperator::LoggerOperator( const char * _file, bool _maskDebug )
 		: m_file(_file)
 		, m_maskDebug(_maskDebug)

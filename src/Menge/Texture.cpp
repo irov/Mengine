@@ -8,6 +8,21 @@
 
 namespace Menge
 {
+	LockData s_pixelBoxToLockData( const PixelBox& _box )
+	{
+		LockData data;
+		data.data = _box.data;
+		data.format = _box.format;
+		data.rowPitch = _box.rowPitch;
+		data.slicePitch = _box.slicePitch;
+		data.left = _box.left;
+		data.right = _box.right;
+		data.top = _box.top;
+		data.bottom = _box.bottom;
+		data.back = _box.back;
+		data.front = _box.front;
+		return data;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Texture::Texture( const String& _name )
 		: m_name( _name )
@@ -256,7 +271,7 @@ namespace Menge
 		// Scoped
 		{
 			// Print data about first destination surface
-			HardwarePixelBufferInterface* buf = getBuffer( 0, 0 ); 
+			HardwarePixelBuffer* buf = getBuffer( 0, 0 ); 
 			str << " Internal format is " << PixelUtil::getFormatName( static_cast<PixelFormat>( buf->getFormat() ) ) << 
 				"," << buf->getWidth() << "x" << buf->getHeight() << "x" << buf->getDepth() << ".";
 		}
@@ -301,6 +316,7 @@ namespace Menge
 
 					// Destination: entire texture. blitFromMemory does the scaling to
 					// a power of two for us when needed
+					//LockData correctedData = s_pixelBoxToLockData( corrected );
 					getBuffer( i, mip )->blitFromMemory( corrected );
 					delete[] buf;
 				}
@@ -324,7 +340,7 @@ namespace Menge
 			if( !m_restoring )
 			{
 				m_interface->createInternalResourcesImpl( m_textureType, m_usage, PixelUtil::hasAlpha( m_format ),
-					m_srcWidth, m_srcHeight );
+					m_srcWidth, m_srcHeight, m_numMipmaps );
 				// resolving hardware supporting format
 				m_format = static_cast<PixelFormat>( m_interface->getPixelFormat() );
 			}
@@ -364,13 +380,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HardwarePixelBufferInterface* Texture::getBuffer( std::size_t face /*= 0*/, std::size_t _mipmap /*= 0 */ )
+	HardwarePixelBuffer* Texture::getBuffer( std::size_t face /*= 0*/, std::size_t _mipmap /*= 0 */ )
 	{
 		assert( ( face < getNumFaces() ) && "Texture::getBuffer -> A three dimensional cube has six faces" );
 		assert( ( _mipmap <= getNumMipmaps() ) && "Texture::getBuffer -> Mipmap index out of range" );
 		int idx = face * ( m_numMipmaps + 1 ) + _mipmap;
 
-		return m_interface->getBuffer( idx );
+		return m_surfaceList[idx];
+		//return m_interface->getBuffer( idx );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Texture::loadImage3D( const Image _imgs[] )
@@ -392,7 +409,7 @@ namespace Menge
 			m_restoring = true;
 			// Mark as unloaded even though we're not so we can reload content
 			//mIsLoaded = false;
-			m_loadingState = ELoadingState::LOADSTATE_UNLOADED;
+			m_loadingState = LOADSTATE_UNLOADED;
 			load();
 			m_restoring = false;
 		}

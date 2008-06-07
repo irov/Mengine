@@ -106,7 +106,8 @@ namespace Menge
 
 		const mt::vec2f& getLength() const;
 
-		//void setListener( PyObject* _listener );
+		int getLineOffset() const;
+		void setLineOffset( int _offset );
 
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;
@@ -148,6 +149,7 @@ namespace Menge
 		ResourceImage * m_outlineImage;
 		std::string m_outlineFontName;
 
+		int m_lineOffset;
 		//PyObject* m_listener;
 
 		struct Line

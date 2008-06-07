@@ -24,7 +24,7 @@ namespace Menge
 		LOADSTATE_UNLOADING
 	};
 
-	//class HardwarePixelBufferInterface;
+	class HardwarePixelBuffer;
 
 	// Abstract class representing a Texture resource.
 	// @remarks
@@ -225,7 +225,7 @@ namespace Menge
 		//@returns	A shared pointer to a hardware pixel buffer
 		//@remarks	The buffer is invalidated when the resource is unloaded or destroyed.
 		//Do not use it after the lifetime of the containing texture.
-		HardwarePixelBufferInterface* getBuffer( std::size_t face = 0, std::size_t _mipmap = 0 );
+		HardwarePixelBuffer* getBuffer( std::size_t face = 0, std::size_t _mipmap = 0 );
 
 		void restoreFromLostDevice();
 
@@ -290,6 +290,9 @@ namespace Menge
 
 		/// Are we restoring from a lost device?
 		bool m_restoring;
+
+		typedef std::vector<HardwarePixelBuffer*> TSurfaceList;
+		TSurfaceList m_surfaceList;
 	};
 
 }	// namespace Menge

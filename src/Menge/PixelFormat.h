@@ -8,6 +8,8 @@
 #	include <string>
 #	include <cassert>
 
+#	include "Interface/RenderSystemInterface.h"
+
 namespace Menge {
 
 	struct Box
@@ -74,7 +76,7 @@ namespace Menge {
 	};
 
 	// The pixel format used for images, textures, and render surfaces
-	enum PixelFormat
+	/*enum PixelFormat
 	{
 		/// Unknown pixel format.
 		PF_UNKNOWN = 0,
@@ -178,7 +180,7 @@ namespace Menge {
 		PF_SHORT_RGB = 37,
 		// Number of pixel formats currently defined
 		PF_COUNT = 38
-	};
+	};*/
 
 	//////////////////////////////////////////////////////////////////////////
 	// Flags defining some on/off properties of pixel formats

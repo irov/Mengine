@@ -58,7 +58,7 @@ namespace Menge
 		void setLogSystem( LogSystemInterface * _interface );
 		void setFileSystem( FileSystemInterface * _interface );
 		void setInputSystem( InputSystemInterface * _interface );
-		void setRenderSystem( RenderSystemInterface * _interface );
+		void setRenderSystem( ::RenderSystemInterface * _interface );
 		void setSoundSystem( SoundSystemInterface * _interface );
 		void setParticleSystem( ParticleSystemInterface * _interface );
 		void setPhysicSystem( PhysicSystemInterface * _interface );

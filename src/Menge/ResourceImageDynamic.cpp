@@ -49,7 +49,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDynamic::isAlpha( unsigned int _frame ) const
 	{
-		assert(!"ResourceImageDynamic::isAlpha not implemented");
+		//assert(!"ResourceImageDynamic::isAlpha not implemented");
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

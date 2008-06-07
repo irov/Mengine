@@ -21,7 +21,7 @@ namespace Menge
 		: public RenderSystemListener
 	{
 	public:
-		RenderEngine( RenderSystemInterface * _interface );
+		RenderEngine( ::RenderSystemInterface * _interface );
 		
 	public:
 
@@ -84,6 +84,8 @@ namespace Menge
 		void	setViewMatrix( const mt::mat4f& _view );
 		void	setWorldMatrix( const mt::mat4f& _world );
 
+		void	beginScene();
+		void	endScene();
 		void	beginLayer();
 		void	endLayer();
 
@@ -114,7 +116,7 @@ namespace Menge
 		void onWindowClose();
 
 	protected:
-		RenderSystemInterface * m_interface;
+		::RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;
 		Camera3D * m_renderCamera;
 		bool m_windowCreated;

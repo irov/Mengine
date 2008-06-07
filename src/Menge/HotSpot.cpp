@@ -32,6 +32,8 @@ namespace	Menge
 	{
 		Holder<Player>::hostage()
 			->unregGlobalMouseEventable( this );
+		Holder<Player>::hostage()
+			->unregGlobalKeyEventable( this );
 
 	}
 	//////////////////////////////////////////////////////////////////////////

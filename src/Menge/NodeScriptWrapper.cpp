@@ -100,14 +100,16 @@ namespace Menge
 		
 		static float getMouseX()
 		{
-			return Holder<InputEngine>::hostage()
-				->getMouseX();
+			//return Holder<InputEngine>::hostage()
+			//	->getMouseX();
+			return Holder<Player>::hostage()->getArrow()->getLocalPosition().x;
 		}
 
 		static float getMouseY()
 		{
-			return Holder<InputEngine>::hostage()
-				->getMouseY();
+			//return Holder<InputEngine>::hostage()
+			//	->getMouseY();
+			return Holder<Player>::hostage()->getArrow()->getLocalPosition().y;
 		}
 
 		static bool s_isKeyDown( int _key )
@@ -296,7 +298,9 @@ namespace Menge
 		}
 		static void renderOneFrame()
 		{
+			Holder<RenderEngine>::hostage()->beginScene();
 			Holder<Game>::hostage()->render();
+			Holder<RenderEngine>::hostage()->endScene();
 			Holder<RenderEngine>::hostage()->render();
 		}
 		static void writeImageToFile( const std::string& _resource, int _frame, const std::string& _filename )
@@ -700,7 +704,9 @@ namespace Menge
 				.def( "getOutlineColor", &TextField::getOutlineColor )
 				.def( "getLength", &TextField::getLength )
 				.def( "setMaxLen", &TextField::setMaxLen )
-				.def( "setListener", &TextField::setListener )
+				//.def( "setListener", &TextField::setListener )
+				.def( "getLineOffset", &TextField::getLineOffset )
+				.def( "setLineOffset", &TextField::setLineOffset )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)
@@ -715,7 +721,7 @@ namespace Menge
 				;
 
 
-			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
+			pybind::proxy_<Scene, pybind::bases<Node, NodeRenderable> >("Scene", false)
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "getNode", &Scene::getNode )
 				.def( "getLayerSize", &Scene::getLayerSize )

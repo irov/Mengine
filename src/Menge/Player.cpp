@@ -373,14 +373,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onMouseLeave()
 	{
-		//m_arrowHided = m_arrow->isHide();
-		//m_arrow->hide( true );
+		m_arrowHided = m_arrow->isHide();
+		m_arrow->hide( true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onMouseEnter()
 	{
-		//if( !m_arrowHided )
-		//	m_arrow->hide( false );
+		if( !m_arrowHided )
+			m_arrow->hide( false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

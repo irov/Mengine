@@ -73,13 +73,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Image& Image::flipAroundY()
 	{
-		if( !m_buffer )
-		{
-			/*OGRE_EXCEPT( 
-				Exception::ERR_INTERNAL_ERROR,
-				"Can not flip an unitialized texture",
-				"Image::flipAroundY" );*/
-		}
+		assert( m_buffer &&
+				"Image::flipAroundY -> Can not flip an unitialized texture" );
 
 		m_numMipmaps = 0; // Image operations lose precomputed mipmaps
 
@@ -154,10 +149,7 @@ namespace Menge
 			break;
 
 		default:
-			/*OGRE_EXCEPT( 
-				Exception::ERR_INTERNAL_ERROR,
-				"Unknown pixel depth",
-				"Image::flipAroundY" );*/
+			assert( 0 && "Image::flipAroundY -> Unknown pixel depth" );
 			break;
 		}
 
@@ -167,13 +159,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Image & Image::flipAroundX()
 	{
-		if( !m_buffer )
-		{
-			/*OGRE_EXCEPT( 
-				Exception::ERR_INTERNAL_ERROR,
-				"Can not flip an unitialized texture",
-				"Image::flipAroundX" );*/
-		}
+		assert( m_buffer &&
+				"Image::flipAroundX -> Can not flip an unitialized texture" );
 
 		m_numMipmaps = 0; // Image operations lose precomputed mipmaps
 
@@ -219,9 +206,9 @@ namespace Menge
 		if( _numFaces == 6 )
 			m_flags |= IF_CUBEMAP;
 		if( _numFaces != 6 && _numFaces != 1 )
-			/*OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
-			"Number of faces currently must be 6 or 1.", 
-			"Image::loadDynamicImage")*/;
+		{
+			assert( 0 && "Image::loadDynamicImage -> Number of faces currently must be 6 or 1." );
+		}
 
 		m_size = calculateSize( _numMipMaps, _numFaces, _width, _height, _depth, _format );
 		m_buffer = _data;
@@ -235,12 +222,8 @@ namespace Menge
 		PixelFormat _format, std::size_t _numFaces, std::size_t _numMipMaps )
 	{
 		std::size_t size = calculateSize( _numMipMaps, _numFaces, _width, _height, _depth, _format );
-		if ( size != _stream->size() )
-		{
-			/*OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, 
-				"Stream size does not match calculated image size", 
-				"Image::loadRawData");*/
-		}
+		assert( ( size == _stream->size() ) && 
+				"Image::loadRawData -> Stream size does not match calculated image size" );
 
 		unsigned char *buffer = new unsigned char[ size ];
 		_stream->read( buffer, size );
@@ -304,29 +287,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Image::save( const std::string& _filename )
 	{
-		if( !m_buffer )
-		{
-			/*OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "No image data loaded", 
-				"Image::save")*/;
-		}
+		assert( m_buffer && "Image::save -> No image data loaded" );
 
 		std::string strExt;
 		std::size_t pos = _filename.find_last_of(".");
-		if( pos == std::string::npos )/*
-			OGRE_EXCEPT(
-			Exception::ERR_INVALIDPARAMS, 
-			"Unable to save image file '" + filename + "' - invalid extension.",
-			"Image::save" )*/;
+		assert( ( pos != std::string::npos ) && String(
+			"Image::save -> Unable to save image file '" + _filename + "' - invalid extension.").c_str() );
 
 		while( pos != _filename.length() - 1 )
 			strExt += _filename[++pos];
 
 		Codec * pCodec = Codec::getCodec( strExt );
-		if( !pCodec )
-			/*OGRE_EXCEPT(
-			Exception::ERR_INVALIDPARAMS, 
-			"Unable to save image file '" + filename + "' - invalid extension.",
-			"Image::save" )*/;
+		assert( pCodec && String(
+			"Image::save -> Unable to save image file '" + _filename + "' - invalid extension.").c_str()
+			);
 
 		ImageCodec::ImageData* imgData = new ImageCodec::ImageData();
 		imgData->format = m_format;
@@ -336,7 +310,8 @@ namespace Menge
 		// Wrap in CodecDataPtr, this will delete
 		Codec::CodecData* codeDataPtr(imgData);
 		// Wrap memory, be sure not to delete when stream destroyed
-		DataStreamInterface* wrapper = Holder<FileEngine>::hostage()->createMemoryFile( m_buffer, m_size, false );
+		DataStreamInterface* wrapper = Holder<FileEngine>::hostage()
+											->createMemoryFile( m_buffer, m_size, false );
 
 		pCodec->codeToFile( wrapper, _filename, codeDataPtr );
 	}
@@ -352,11 +327,8 @@ namespace Menge
 		std::string strType = _type;
 
 		Codec * codec = Codec::getCodec( strType );
-		if( !codec )/*
-			OGRE_EXCEPT(
-			Exception::ERR_INVALIDPARAMS, 
-			"Unable to load image - invalid extension.",
-			"Image::load" )*/;
+		assert( codec && 
+			"Image::load -> Unable to load image - invalid extension." );
 
 		Codec::DecodeResult res = codec->decode( _stream );
 
@@ -640,13 +612,8 @@ namespace Menge
 		// face 1, mip 1
 		// face 1, mip 2
 		// etc
-		if( _mipmap > getNumMipmaps() )
-			/*OGRE_EXCEPT( Exception::ERR_NOT_IMPLEMENTED,
-			"Mipmap index out of range",
-			"Image::getPixelBox" ) */;
-		if( _face >= getNumFaces() )
-			/*OGRE_EXCEPT(Exception::ERR_INVALIDPARAMS, "Face index out of range",
-			"Image::getPixelBox")*/;
+		assert( ( _mipmap <= getNumMipmaps() ) && "Image::getPixelBox -> Mipmap index out of range" );
+		assert( ( _face < getNumFaces() ) && "Image::getPixelBox -> Face index out of range" );
 		// Calculate mipmap offset and size
 		unsigned char* offset = const_cast<unsigned char*>( getData() );
 		// Base offset is number of full faces

@@ -96,10 +96,10 @@ namespace Menge
 		}
 		else
 		{
-			float x = m_interface->getMouseX();
-			float y = m_interface->getMouseY();
+			//float x = m_interface->getMouseX();
+			//float y = m_interface->getMouseY();
 			m_interface->releaseMouse();
-			Holder<Player>::hostage()->getArrow()->setLocalPosition( mt::vec2f(x, y ) );
+			Holder<Player>::hostage()->getArrow()->setLocalPosition( mt::vec2f(m_mouseX, m_mouseY) );
 		}
 
 	}

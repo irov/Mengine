@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Node.h"
-#	include "InputHandler.h"
 
 #	include "Math/vec2.h"
 

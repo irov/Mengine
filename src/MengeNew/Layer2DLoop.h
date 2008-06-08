@@ -7,19 +7,13 @@ namespace Menge
 {
 	class Camera2D;
 
-	class Layer2D
-		: public Layer
+	class Layer2DLoop
+		: public Layer2D
 	{
-		OBJECT_DECLARE(Layer2D);
+		OBJECT_DECLARE(Layer2DLoop);
 
 	public:
-		Layer2D();
-
-	public:
-		void setParallaxFactor( const mt::vec2f & _factor );
-		const mt::vec2f & getParallaxFactor() const;
-
-		Viewport getParallaxViewport( const Viewport & _viewport );
+		Layer2DLoop();
 
 	public:
 		void setOffsetPosition( const mt::vec2f & _offset ) override;
@@ -27,6 +21,7 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 		void render( const Viewport & _viewport ) override;
+
 
 	protected:
 		void _debugRender( const Viewport & _viewport ) override;

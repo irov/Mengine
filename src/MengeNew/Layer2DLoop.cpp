@@ -1,4 +1,4 @@
-#	include "Layer2D.h"
+#	include "Layer2DLoop.h"
 
 #	include "ObjectImplement.h"
 
@@ -25,10 +25,10 @@
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OBJECT_IMPLEMENT(Layer2D);
+	OBJECT_IMPLEMENT(Layer2DLoop);
 	//////////////////////////////////////////////////////////////////////////
-	Layer2D::Layer2D()
-	: m_factorParallax(1.f,1.f)
+	Layer2DLoop::Layer2DLoop()
+		: m_factorParallax(1.f,1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -72,8 +72,9 @@ namespace	Menge
 		: public VisitorAdapter<VisitorRenderLayer2D>
 	{
 	public:
-		VisitorRenderLayer2D( const Viewport & _viewport )
+		VisitorRenderLayer2D( const Viewport & _viewport, const mt::vec2f & _size )
 			: m_viewport(_viewport)
+			, m_size(_size)
 		{
 		}
 
@@ -82,6 +83,47 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
+				const mt::box2f & sprite_bbox = _node->getWorldBoundingBox();
+
+				if( m_viewport.end.x < sprite_bbox.vb.x ) 
+				{
+					if( sprite_bbox.ve.x < m_size.x )
+					{
+						return;
+					}
+
+					float segment_x = sprite_bbox.ve.x - m_size.x;
+
+					if( segment_x < m_viewport.begin.x )
+					{
+						return;
+					}
+
+					Viewport viewport = m_viewport;
+					viewport.begin += mt::vec2f( m_size.x, 0.f );
+					viewport.end += mt::vec2f( m_size.x, 0.f );
+					_node->renderSelf( viewport );
+				}
+				else if( m_viewport.begin.x > sprite_bbox.ve.x ) 
+				{
+					if( m_viewport.end.x < m_size.x )
+					{
+						return;
+					}
+
+					float segment_x = m_viewport.end.x - m_size.x;
+
+					if( segment_x < sprite_bbox.vb.x )
+					{
+						return;
+					}
+
+					Viewport viewport = m_viewport;
+					viewport.begin += mt::vec2f( -m_size.x, 0.f );
+					viewport.end += mt::vec2f( -m_size.x, 0.f );
+					_node->renderSelf( viewport );
+				}
+
 				_node->renderSelf( m_viewport );
 			}
 
@@ -95,6 +137,7 @@ namespace	Menge
 
 	protected:
 		Viewport m_viewport;
+		mt::vec2f m_size;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::render( const Viewport & _viewport )
@@ -112,8 +155,8 @@ namespace	Menge
 		viewport.begin.y *= m_factorParallax.y;
 
 		viewport.end = viewport.begin + viewport_size;
-		
-		VisitorRenderLayer2D visitorRender( viewport );
+
+		VisitorRenderLayer2D visitorRender( viewport, m_size );
 
 		visitChildren( &visitorRender );
 
@@ -131,4 +174,19 @@ namespace	Menge
 	{
 		_node->setLayer( this );
 	}
+	////////////////////////////////////////////////////////////////////////////
+	//mt::vec2f Layer2D::screenToLocal( const mt::vec2f& _point )
+	//{
+	//	return m_viewport.begin + _point;
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//void Layer2D::setRenderTarget( const std::string& _cameraName )
+	//{
+	//	m_viewport.setCamera( _cameraName );
+	//}
+	////////////////////////////////////////////////////////////////////////////
+	//bool Layer2D::needReRender()
+	//{
+	//	return m_needReRender;
+	//}
 }

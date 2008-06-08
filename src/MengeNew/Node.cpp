@@ -180,6 +180,7 @@ namespace Menge
 		}
 
 		_node->setParent( this );
+		_node->setLayer( m_layer );
 
 		m_childrens.push_back( _node );
 

@@ -970,6 +970,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="LayerLoop"
+				>
+				<File
+					RelativePath=".\Layer2DLoop.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Layer2DLoop.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Kernel"

@@ -37,6 +37,26 @@ namespace mt
 		add_internal_point(box,p.x, p.y);
 	}
 
+	MATH_INLINE void merge_box( box2f & box, const box2f & external_box )
+	{
+		if ( external_box.max.x > box.max.x ) box.max.x = external_box.max.x;
+		if ( external_box.max.y > box.max.y ) box.max.y = external_box.max.y;
+		if ( external_box.max.x < box.min.x ) box.min.x = external_box.max.x;
+		if ( external_box.max.y < box.min.y ) box.min.y = external_box.max.y;
+	}
+
+	MATH_INLINE bool exist_box( const box2f & box, const box2f & external_box )
+	{
+		bool exist = true;
+
+		if ( external_box.max.x > box.max.x ) exist = false;
+		if ( external_box.max.y > box.max.y ) exist = false;
+		if ( external_box.max.x < box.min.x ) exist = false;
+		if ( external_box.max.y < box.min.y ) exist = false;
+
+		return exist;
+	}
+
 	MATH_INLINE void set_box_from_min_max( box2f & box, const vec2f &min, const vec2f &max)
 	{
 		box.vb = min;

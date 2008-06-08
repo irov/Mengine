@@ -24,6 +24,8 @@ namespace mt
 	MATH_INLINE void reset(box2f & box,float x, float y);
 	MATH_INLINE void add_internal_point(box2f & box, float x,float y);
 	MATH_INLINE void add_internal_point(box2f & box, const vec2f & p);
+	MATH_INLINE void merge_box( box2f & box, const box2f & external_box );
+	MATH_INLINE bool exist_box( const box2f & box, const box2f & external_box );
 	MATH_INLINE void set_box_from_min_max(box2f & box, const vec2f & min, const vec2f & max);
 	MATH_INLINE void set_box_from_center_and_extent(box2f & box, const vec2f & center, const vec2f & extent);
 	MATH_INLINE void set_box_from_oriented_extent( box2f & box, const mt::vec2f & _offset, const mt::vec2f & _size, const mt::mat3f & _wm );

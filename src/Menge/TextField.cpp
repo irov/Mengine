@@ -28,6 +28,7 @@ namespace     Menge
 		, m_outlineColor( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_height( 0.0f )
 		, m_centerAlign( false )
+		, m_rightAlign( false )
 		, m_alignOffset( 0.f, 0.f )
 		, m_changingColorTime( 0.0f )
 		, m_changingColor( false )
@@ -153,6 +154,7 @@ namespace     Menge
 			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color);
 			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height);
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
+			XML_CASE_ATTRIBUTE_NODE( "RightAlign", "Value", m_rightAlign );
 			XML_CASE_ATTRIBUTE_NODE( "OutlineColor", "Value", m_outlineColor);
 			XML_CASE_ATTRIBUTE_NODE( "OutlineImage", "Name", m_outlineFontName);
 			XML_CASE_ATTRIBUTE_NODE( "MaxWidth", "Value", m_maxWidth);
@@ -176,6 +178,11 @@ namespace     Menge
 			if( m_centerAlign )
 			{
 				m_alignOffset = mt::vec2f( (*it).length * -0.5f, 0 );
+			}
+
+			if( m_rightAlign )
+			{
+				m_alignOffset = mt::vec2f( (*it).length * 0.5f, 0 );
 			}
 
 			offset.x = m_alignOffset.x;
@@ -228,11 +235,12 @@ namespace     Menge
 			mt::vec4f uv = m_outlineImage->getUV(0);
 
 			int w = renderImage->getWidth();
+			int ow = outlineImage->getWidth();
 
 			float k = renderImage->getWidth() / outlineImage->getWidth();
 			float h = renderImage->getHeight() / outlineImage->getHeight();
 
-			renderPass_( m_outlineColor, outlineImage , uv, k, h );
+			renderPass_( m_outlineColor, outlineImage, uv, k, h );
 		}
 
 		renderPass_( m_color, renderImage );

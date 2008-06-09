@@ -144,6 +144,8 @@ namespace Menge
 		bool m_centerAlign;
 		mt::vec2f m_alignOffset;
 
+		bool m_rightAlign;
+
 		float m_maxWidth;
 		float m_charOffset;
 		ResourceImage * m_outlineImage;

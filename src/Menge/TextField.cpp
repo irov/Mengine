@@ -177,12 +177,12 @@ namespace     Menge
 
 			if( m_centerAlign )
 			{
-				m_alignOffset = mt::vec2f( (*it).length * -0.5f, 0 );
+				m_alignOffset = mt::vec2f( -(*it).length * 0.5f, 0 );
 			}
 
 			if( m_rightAlign )
 			{
-				m_alignOffset = mt::vec2f( (*it).length * 0.5f, 0 );
+				m_alignOffset = mt::vec2f( -(*it).length, 0 );
 			}
 
 			offset.x = m_alignOffset.x;

@@ -443,7 +443,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( FFCamera3D );
 		SCRIPT_CLASS_WRAPPING( DiscreteEntity );
 		SCRIPT_CLASS_WRAPPING( RigidBody3D );
-		SCRIPT_CLASS_WRAPPING( Layer3D );
+		//SCRIPT_CLASS_WRAPPING( Layer3D );
 		SCRIPT_CLASS_WRAPPING( RigidBody2D );
 		SCRIPT_CLASS_WRAPPING( CapsuleController );
 	}
@@ -707,6 +707,7 @@ namespace Menge
 				//.def( "setListener", &TextField::setListener )
 				.def( "getLineOffset", &TextField::getLineOffset )
 				.def( "setLineOffset", &TextField::setLineOffset )
+				.def( "setResource", &TextField::setResource )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)

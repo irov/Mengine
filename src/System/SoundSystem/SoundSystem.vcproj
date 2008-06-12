@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(ProjectDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)lib"
+			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			ATLMinimizesCRunTimeLibraryUsage="true"
 			CharacterSet="2"
@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP2"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\vorbis\include&quot;;&quot;$(SolutionDir)dependencies\PThreads\include&quot;;&quot;$(SolutionDir)dependencies\OpenALSDK\include&quot;;&quot;$(SolutionDir)dependencies\freealut\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\vorbis\include&quot;;&quot;$(SolutionDir)dependencies\OpenALSDK\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -67,7 +67,7 @@
 				Name="VCLibrarianTool"
 				AdditionalDependencies="OpenAL32.lib vorbis_static_d.lib vorbisfile_static_d.lib ogg_static_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenALSDK\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\PThreads\lib&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\VorbisFile_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\Vorbis_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\ogg\win32\Static_Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenALSDK\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\VorbisFile_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\Vorbis_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\ogg\win32\Static_Debug&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -87,8 +87,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(ProjectDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)lib"
+			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
@@ -140,7 +140,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="OpenAL32.lib vorbis_static.lib vorbisfile_static.lib ogg_static.lib"
-				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenALSDK\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\VorbisFile_Static_Release\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\Vorbis_Static_Release\&quot;;&quot;$(SolutionDir)dependencies\ogg\win32\Static_Release&quot;"
 			/>
 			<Tool

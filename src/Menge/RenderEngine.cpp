@@ -47,7 +47,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render( RenderImageInterface* _image, const int* rect )
 	{
-		m_interface->render( _image, rect );
+		m_interface->screenshot( _image, rect );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render()
@@ -80,14 +80,14 @@ namespace Menge
 		return m_renderCamera;
 	}
 	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::beginLayer()
+	void RenderEngine::beginLayer2D()
 	{
-		m_interface->beginLayer();
+		m_interface->beginLayer2D();
 	}
 	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::endLayer()
+	void RenderEngine::endLayer2D()
 	{
-		m_interface->endLayer();
+		m_interface->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	RenderEngine::setProjectionMatrix( const mt::mat4f& _projection )
@@ -148,7 +148,7 @@ namespace Menge
 			unsigned int buff_size = file->size();
 			s_buff.resize( buff_size );
 			file->read( &s_buff[0], buff_size );*/
-			/*Image cimage;
+			Image cimage;
 			cimage.load( _filename );
 
 			TextureDesc	textureDesc;
@@ -160,18 +160,24 @@ namespace Menge
 			//textureDesc.buffer = &s_buff[0];
 			//textureDesc.size = buff_size;
 			textureDesc.name = _filename.c_str();
-			textureDesc.filter = _filter;*/
+			textureDesc.filter = _filter;
 
-			DataStreamInterface* file = Holder<FileEngine>::hostage()->openFile( _filename );
+			/*DataStreamInterface* file = Holder<FileEngine>::hostage()->openFile( _filename );
 
 			TextureDesc textureDesc;
 			textureDesc.buffer = file->getBuffer();
 			textureDesc.name = _filename.c_str();
-			textureDesc.size = file->size();
+			textureDesc.size = file->size();*/
+			if( textureDesc.buffer == 0 )
+			{
+				MENGE_LOG( "Error: Image from file '%s' not loader\n", _filename.c_str() );
+				return 0;
+			}	
+
 
 			image = loadImage( textureDesc );
 
-			Holder<FileEngine>::hostage()->closeStream( file );
+			//Holder<FileEngine>::hostage()->closeStream( file );
 
 			if( image == 0 )
 			{
@@ -262,7 +268,7 @@ namespace Menge
 		float height = Holder<Game>::hostage()->getHeight();
 		m_interface->setFullscreenMode( width, height, _fullscreen );
 
-		//Holder<Application>::hostage()->notifyWindowModeChanged( width, height, m_fullscreen );
+		Holder<Application>::hostage()->notifyWindowModeChanged( width, height, m_fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setViewportDimensions( float _width, float _height, float _renderFactor )
@@ -325,7 +331,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f RenderEngine::getBestDisplayResolution( float _defWidth, float _defHeigth, float _aspect )
 	{
-		float * rl;
+		int * rl;
 		unsigned int count = m_interface->getResolutionList( &rl );
 
 		float needWidth = _defHeigth * _aspect;
@@ -333,8 +339,8 @@ namespace Menge
 		float bestWidth = _defWidth;
 		float bestHeight = _defHeigth;
 
-		typedef std::vector<float> TResolutionVector;
-		typedef std::map< float, TResolutionVector > TResolutionMap;
+		typedef std::vector<int> TResolutionVector;
+		typedef std::map< int, TResolutionVector > TResolutionMap;
 		TResolutionMap resMap;
 		for( unsigned int i = 0; i < count / 2; i++ )
 		{
@@ -431,6 +437,16 @@ namespace Menge
 	void RenderEngine::endScene()
 	{
 		m_interface->endScene();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderMesh( const std::vector<TVertex>& _vertexData, TMaterial* _material )
+	{
+		m_interface->renderMesh( &(_vertexData[0]), _vertexData.size(), _material );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::beginLayer3D()
+	{
+		m_interface->beginLayer3D();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

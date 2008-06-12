@@ -12,6 +12,17 @@
 #include <d3dx8.h>
 #	include <cassert>
 
+void s_copySurfaceData( char* _dstData, int _dstPitch, const char* _srcData, int _srcPitch, RECT _srcRect )
+{
+	size_t width = _srcRect.right - _srcRect.left;
+	for( size_t y = _srcRect.top; y < _srcRect.bottom; y++ )
+	{
+		memcpy( _dstData, _srcData, width * 4 );
+		_dstData += _dstPitch;
+		_srcData += _srcPitch;
+	}
+}
+
 void CALL HGE_Impl::Gfx_Clear( DWORD color )
 {
 	if( pCurTarget )
@@ -567,7 +578,7 @@ void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
 
 //////// Implementation ////////
 
-void HGE_Impl::_render_batch(bool bEndScene)
+void HGE_Impl::_render_batch( bool bEndScene )
 {
 	if(VertArray)
 	{
@@ -593,8 +604,14 @@ void HGE_Impl::_render_batch(bool bEndScene)
 			nPrim=0;
 		}
 
-		if(bEndScene) VertArray = 0;
-		else pVB->Lock( 0, 0, (BYTE**)&VertArray, 0 );
+		if( bEndScene )
+		{
+			VertArray = 0;
+		}
+		else 
+		{
+			pVB->Lock( 0, 0, (BYTE**)&VertArray, 0 );
+		}
 	}
 }
 
@@ -641,8 +658,8 @@ bool HGE_Impl::_GfxInit()
 	
 // Init D3D
 							
-	pD3D=Direct3DCreate8(120); // D3D_SDK_VERSION
-	if(pD3D==NULL)
+	pD3D=Direct3DCreate8( D3D_SDK_VERSION ); // D3D_SDK_VERSION
+	if( pD3D == NULL )
 	{
 		_PostError("Can't create D3D interface");
 		return false;
@@ -676,6 +693,7 @@ bool HGE_Impl::_GfxInit()
 	d3dppW.MultiSampleType  = D3DMULTISAMPLE_NONE;
 	d3dppW.hDeviceWindow    = hwnd;
 	d3dppW.Windowed         = TRUE;
+	d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
 	if(nHGEFPS==HGEFPS_VSYNC) d3dppW.SwapEffect = D3DSWAPEFFECT_COPY_VSYNC;
 	else					  d3dppW.SwapEffect = D3DSWAPEFFECT_COPY;
@@ -693,6 +711,14 @@ bool HGE_Impl::_GfxInit()
 	for(i=0; i<nModes; i++)
 	{
 		pD3D->EnumAdapterModes(D3DADAPTER_DEFAULT, i, &Mode);
+		m_displayModes.push_back( Mode );
+		m_resList.push_back( Mode.Width );
+		m_resList.push_back( Mode.Height );
+	}
+
+	for(i=0; i<nModes; i++)
+	{
+		Mode = m_displayModes[i];
 		if(Mode.Width != (UINT)nScreenWidth || Mode.Height != (UINT)nScreenHeight) continue;
 		if(nScreenBPP==16 && (_format_id(Mode.Format) > _format_id(D3DFMT_A1R5G5B5))) continue;
 		if(_format_id(Mode.Format) > _format_id(Format)) Format=Mode.Format;
@@ -716,6 +742,7 @@ bool HGE_Impl::_GfxInit()
 
 	d3dppFS.SwapEffect       = D3DSWAPEFFECT_FLIP;
 	d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+	d3dppFS.Flags			 = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
 	if(nHGEFPS==HGEFPS_VSYNC) d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 	else					  d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
@@ -747,17 +774,22 @@ bool HGE_Impl::_GfxInit()
 
 // Create vertex batch buffer
 
-	VertArray=0;
-	textures=0;
+	VertArray = 0;
+	textures = 0;
 
 // Init all stuff that can be lost
 
 	_SetProjectionMatrix(nScreenWidth, nScreenHeight);
 	D3DXMatrixIdentity(&matView);
 	
-	if(!_init_lost()) return false;
+	m_layer3D = false;	// starting with 2D
+	if(!_init_lost()) 
+	{
+		return false;
+	}
 
 	Gfx_Clear(0);
+
 
 	return true;
 }
@@ -774,7 +806,7 @@ int HGE_Impl::_format_id(D3DFORMAT fmt)
 	}
 }
 
-void HGE_Impl::_AdjustWindow()
+/*void HGE_Impl::_AdjustWindow()
 {
 	RECT *rc;
 	LONG style;
@@ -794,7 +826,7 @@ void HGE_Impl::_AdjustWindow()
 		SetWindowLong(hwnd, GWL_EXSTYLE, style | WS_EX_TOPMOST);
 	    SetWindowPos(hwnd, HWND_TOPMOST, rc->left, rc->top, rc->right-rc->left, rc->bottom-rc->top, SWP_FRAMECHANGED);
 	}
-}
+}*/
 
 void HGE_Impl::_Resize(int width, int height)
 {
@@ -820,8 +852,16 @@ void HGE_Impl::_GfxDone()
 	
 	while(textures)	Texture_Free(textures->tex);
 
-	if(pScreenSurf) { pScreenSurf->Release(); pScreenSurf=0; }
-	if(pScreenDepth) { pScreenDepth->Release(); pScreenDepth=0; }
+	if(pScreenSurf) 
+	{ 
+		pScreenSurf->Release();
+		pScreenSurf=0; 
+	}
+	if(pScreenDepth) 
+	{ 
+		pScreenDepth->Release();
+		pScreenDepth=0; 
+	}
 
 	while(target)
 	{
@@ -832,22 +872,48 @@ void HGE_Impl::_GfxDone()
 		target=next_target;
 	}
 	pTargets=0;
-
-	if(pIB)
+	
+	if( pD3DDevice )
 	{
-		pD3DDevice->SetIndices(NULL,0);
-		pIB->Release();
-		pIB=0;
-	}
-	if(pVB)
-	{
-		if(VertArray) {	pVB->Unlock(); VertArray=0;	}
 		pD3DDevice->SetStreamSource( 0, NULL, sizeof(hgeVertex) );
-		pVB->Release();
-		pVB=0;
+		pD3DDevice->SetIndices(NULL,0);
 	}
-	if(pD3DDevice) { pD3DDevice->Release(); pD3DDevice=0; }
-	if(pD3D) { pD3D->Release(); pD3D=0; }
+
+	if( pIB )
+	{
+		pIB->Release();
+		pIB = 0;
+	}
+	if( pIB3D )
+	{
+		pIB3D->Release();
+		pIB3D = 0;
+	}
+	if( pVB )
+	{
+		if( VertArray ) 
+		{	
+			pVB->Unlock(); 
+			VertArray = 0;
+		}
+		pVB->Release();
+		pVB = 0;
+	}
+	if( pVB3D )
+	{
+		pVB3D->Release();
+		pVB3D = 0;
+	}
+	if(pD3DDevice) 
+	{ 
+		pD3DDevice->Release(); 
+		pD3DDevice=0; 
+	}
+	if(pD3D) 
+	{ 
+		pD3D->Release();
+		pD3D=0; 
+	}
 }
 
 
@@ -868,14 +934,30 @@ bool HGE_Impl::_GfxRestore()
 		target=target->next;
 	}
 
-	if(pIB)
+	if( pIB || pIB3D )
 	{
 		pD3DDevice->SetIndices(NULL,0);
+	}
+
+	if( pVB || pVB3D )
+	{
+		pD3DDevice->SetStreamSource( 0, NULL, sizeof(hgeVertex) );
+	}
+
+	if(pIB)
+	{
 		pIB->Release();
 	}
 	if(pVB)
 	{
-		pD3DDevice->SetStreamSource( 0, NULL, sizeof(hgeVertex) );
+		pVB->Release();
+	}
+	if(pIB3D)
+	{
+		pIB->Release();
+	}
+	if(pVB3D)
+	{
 		pVB->Release();
 	}
 
@@ -923,8 +1005,17 @@ bool HGE_Impl::_init_lost()
 		return false;
 	}
 
-	pD3DDevice->SetVertexShader( D3DFVF_HGEVERTEX );
-	pD3DDevice->SetStreamSource( 0, pVB, sizeof(hgeVertex) );
+	if( FAILED (pD3DDevice->CreateVertexBuffer(VERTEX_BUFFER_SIZE*sizeof(mengeVertex),
+		D3DUSAGE_WRITEONLY,
+		D3DFVF_MENGEVERTEX,
+		D3DPOOL_DEFAULT, &pVB3D )))
+	{
+		_PostError("Can't create Menge D3D vertex buffer");
+		return false;
+	}
+
+	//pD3DDevice->SetVertexShader( D3DFVF_HGEVERTEX );
+	//pD3DDevice->SetStreamSource( 0, pVB, sizeof(hgeVertex) );
 
 // Create and setup Index buffer
 
@@ -955,12 +1046,21 @@ bool HGE_Impl::_init_lost()
 	}
 
 	pIB->Unlock();
-	pD3DDevice->SetIndices(pIB,0);
+	//pD3DDevice->SetIndices(pIB,0);
+
+	if( FAILED( pD3DDevice->CreateIndexBuffer(VERTEX_BUFFER_SIZE*sizeof(WORD),
+		D3DUSAGE_WRITEONLY,
+		D3DFMT_INDEX16,
+		D3DPOOL_DEFAULT, &pIB3D ) ) )
+	{
+		_PostError("Can't create Menge D3D index buffer");
+		return false;
+	}
 
 // Set common render states
 
 	//pD3DDevice->SetRenderState( D3DRS_LASTPIXEL, FALSE );
-	pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+	/*pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
 	pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
 	
 	pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE,   TRUE );
@@ -998,7 +1098,151 @@ bool HGE_Impl::_init_lost()
 	CurTexture = NULL;
 
 	pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
-	pD3DDevice->SetTransform(D3DTS_PROJECTION, &matProj);
+	pD3DDevice->SetTransform(D3DTS_PROJECTION, &matProj);*/
+	if( m_layer3D )
+	{
+		Gfx_Prepare3D();
+	}
+	else
+	{
+		Gfx_Prepare2D();
+	}
 
 	return true;
+}
+
+void HGE_Impl::Gfx_Snapshot( HTEXTURE tex, RECT _rect )
+{
+	LPDIRECT3DSURFACE8 surf;
+	pD3DDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &surf );
+	D3DLOCKED_RECT data;
+	D3DLOCKED_RECT dst;
+	
+	HRESULT hr = surf->LockRect( &data, &_rect, D3DLOCK_READONLY );
+	IDirect3DTexture8* dtext = reinterpret_cast<IDirect3DTexture8*>( tex );
+	dtext->LockRect( 0, &dst, NULL, D3DLOCK_DISCARD );
+	char* bits = static_cast<char*>( data.pBits );
+	char* dbits = static_cast<char*>( dst.pBits );
+	s_copySurfaceData( dbits, dst.Pitch, bits, data.Pitch, _rect );
+	surf->UnlockRect();
+	dtext->UnlockRect(0);
+	surf->Release();
+	//D3DXSaveTextureToFile( L"shot.bmp", D3DXIFF_BMP, dtext, NULL );
+}
+
+void HGE_Impl::Texture_WriteToFile( HTEXTURE _hTex, const TCHAR* _filename )
+{
+	IDirect3DTexture8* tex = reinterpret_cast<IDirect3DTexture8*>( _hTex );
+	D3DXSaveTextureToFileA( (LPCSTR)_filename, D3DXIFF_PNG, tex, NULL );
+}
+
+void HGE_Impl::Gfx_ChangeMode( int _width, int _height, int _bpp, bool _fullscreen )
+{
+	bWindowed = !_fullscreen;
+	d3dpp = _fullscreen ? &d3dppFS : &d3dppW;
+	d3dpp->BackBufferWidth = _width;
+	d3dpp->BackBufferHeight = _height;
+
+	_GfxRestore();
+}
+
+const std::vector<int>& HGE_Impl::Gfx_GetModeList()
+{
+	return m_resList;
+}
+
+void HGE_Impl::Gfx_SetProjectionMatrix( const float* _projMat )
+{
+	std::copy( _projMat, _projMat + 16, &(matProj._11) );
+	pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj );
+}
+
+void HGE_Impl::Gfx_SetViewMatrix( const float* _viewMat )
+{
+	std::copy( _viewMat, _viewMat + 16, &(matView._11) );
+	pD3DDevice->SetTransform( D3DTS_VIEW, &matView );
+}
+
+void HGE_Impl::Gfx_SetWorldMatrix( const float* _worldMat )
+{
+	std::copy( _worldMat, _worldMat + 16, &(matWorld._11) );
+	pD3DDevice->SetTransform( D3DTS_WORLD, &matWorld );
+}
+
+void HGE_Impl::Gfx_Prepare2D() 
+{
+	_render_batch( false );
+
+	pD3DDevice->SetVertexShader( D3DFVF_HGEVERTEX );
+	pD3DDevice->SetStreamSource( 0, pVB, sizeof(hgeVertex) );
+	pD3DDevice->SetIndices(pIB,0);
+
+	///
+	pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+	pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
+
+	pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE,   TRUE );
+	pD3DDevice->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
+	pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+
+	pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
+	pD3DDevice->SetRenderState( D3DRS_ALPHAREF,        0x01 );
+	pD3DDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
+
+	pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP,   D3DTOP_MODULATE );
+	pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+	pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+
+	pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
+	pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+	pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+
+	pD3DDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTEXF_POINT);
+
+	if(bTextureFilter)
+	{
+		pD3DDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTEXF_LINEAR);
+		pD3DDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTEXF_LINEAR);
+	}
+	else
+	{
+		pD3DDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTEXF_POINT);
+		pD3DDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTEXF_POINT);
+	}
+
+	nPrim=0;
+	CurPrimType=HGEPRIM_QUADS;
+	CurBlendMode = BLEND_DEFAULT;
+	CurTexture = NULL;
+
+	D3DXMatrixIdentity( &matView );
+	D3DXMatrixIdentity( &matWorld );
+	_SetProjectionMatrix( nScreenWidth, nScreenHeight );
+	pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj );
+	pD3DDevice->SetTransform( D3DTS_VIEW, &matView );
+	pD3DDevice->SetTransform( D3DTS_WORLD, &matWorld );
+
+	m_layer3D = false;
+}
+
+void HGE_Impl::Gfx_Prepare3D()
+{
+	_render_batch( false );
+
+	pD3DDevice->SetStreamSource( 0, pVB3D, sizeof(mengeVertex) );
+	pD3DDevice->SetVertexShader( D3DFVF_MENGEVERTEX );
+	pD3DDevice->SetIndices(0,0);
+	//pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CW );
+
+	m_layer3D = true;
+}
+
+void HGE_Impl::Gfx_RenderMesh( const mengeVertex* _vertices, size_t _verticesNum )
+{
+	BYTE* vertexData = 0;
+	const BYTE* dstData = reinterpret_cast<const BYTE*>( &(_vertices[0]) );
+	pVB3D->Lock( 0, 0, &vertexData, 0 );
+	std::copy( dstData, dstData + _verticesNum * sizeof( mengeVertex ), vertexData );
+	pVB3D->Unlock();
+	pD3DDevice->DrawPrimitive( D3DPT_TRIANGLELIST, 0, _verticesNum );
 }

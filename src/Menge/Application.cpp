@@ -53,6 +53,8 @@
 #include "Layer3D.h"
 #include "LayerScene.h"
 #include "SceneNode3D.h"
+# include "RenderMesh.h"
+# include "Camera3D-649.h"
 
 # include "ResourceAnimation.h"
 # include "ResourceCapsuleController.h"
@@ -352,6 +354,8 @@ namespace Menge
 		OBJECT_FACTORY( Layer3D );
 		OBJECT_FACTORY( LayerScene );
 		OBJECT_FACTORY( SceneNode3D );
+		OBJECT_FACTORY( RenderMesh );
+		OBJECT_FACTORY( Camera3D_ );
 
 
 		RESOURCE_FACTORY( ResourceAnimation );

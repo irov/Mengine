@@ -473,4 +473,16 @@ namespace     Menge
 		m_lineOffset = _offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TextField::setResource( const String& _resName )
+	{
+		if( m_resourcename != _resName )
+		{
+			m_resourcename = _resName;
+			if( isCompile() )
+			{
+				recompile();
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -11,7 +11,7 @@ namespace Menge
 		: m_interface( _interface )
 	{
 		m_interface->startLog( "Menge.log" );
-		m_interface->logMessage( ">>>> LOGGING STARTED\n\n >> Starting Mengine...\n\n", false, true, true );
+		m_interface->logMessage( "\n>>>> LOGGING STARTED\n\n >> Starting Mengine...\n\n", false, true, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::logMessage( const std::string & _message, bool _maskDebug, bool _endl, bool _timeStamp )

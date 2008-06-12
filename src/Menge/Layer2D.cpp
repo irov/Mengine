@@ -241,7 +241,7 @@ namespace	Menge
 	bool Layer2D::_renderBegin()
 	{
 		Holder<RenderEngine>::hostage()
-			->beginLayer();
+			->beginLayer2D();
 
 		if( m_reRender )
 		{
@@ -325,7 +325,7 @@ namespace	Menge
 	void Layer2D::_renderEnd()
 	{
 		Holder<RenderEngine>::hostage()
-			->endLayer();
+			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::_addChildren( SceneNode2D * _node )

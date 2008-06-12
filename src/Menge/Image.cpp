@@ -257,6 +257,10 @@ namespace Menge
 
 		DataStreamInterface* encoded = Holder<FileEngine>::hostage()->openFile( _strFileName );
 
+		if( !encoded )
+		{
+			return *this;
+		}
 		Codec::DecodeResult res = codec->decode( encoded );
 
 		Holder<FileEngine>::hostage()->closeStream( encoded );

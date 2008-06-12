@@ -17,6 +17,12 @@ namespace Menge
 	class FileEngine;
 	class Camera3D;
 
+	/*typedef struct _tVertex
+	{
+		mt::vec3f position;
+		mt::vec3f normal;
+	} TVertex;*/
+
 	class RenderEngine
 		: public RenderSystemListener
 	{
@@ -72,6 +78,9 @@ namespace Menge
 			EBlendFactor _src = BF_SOURCE_ALPHA,
 			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
 
+		void renderMesh(
+			const std::vector<TVertex>& _vertexData, TMaterial* _material );
+
 		void renderLine(
 			unsigned int _color,
 			const mt::vec2f & _begin,
@@ -86,8 +95,10 @@ namespace Menge
 
 		void	beginScene();
 		void	endScene();
-		void	beginLayer();
-		void	endLayer();
+		void	beginLayer2D();
+		void	endLayer2D();
+		void	beginLayer3D();
+		void	endLayer3D();
 
 		void	setFullscreenMode( bool _fullscreen );
 		bool	getFullscreenMode();

@@ -44,10 +44,10 @@ namespace	Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::update( float _timing )
+	/*void Layer3D::update( float _timing )
 	{
 		NodeCore::update( _timing );
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer3D::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
@@ -89,10 +89,10 @@ namespace	Menge
 				XML_PARSE_ELEMENT( this, &Layer3D::loaderControllers_ );
 			}
 		}
-		XML_END_NODE()
-		{
-			callMethod( "onLoader", "()" );
-		}
+		//XML_END_NODE()
+		//{
+		//	callMethod( "onLoader", "()" );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer3D::_activate()
@@ -103,7 +103,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::_deactivate()
 	{
-		callMethod( "onDeactivate", "() ");
+		//callMethod( "onDeactivate", "() ");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::_release()
@@ -180,4 +180,11 @@ namespace	Menge
 			Holder<PhysicEngine>::hostage()->setDynamicFriction( m_dynamicFriction );		
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer3D::_renderBegin()
+	{
+		Holder<RenderEngine>::hostage()->beginLayer3D();
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

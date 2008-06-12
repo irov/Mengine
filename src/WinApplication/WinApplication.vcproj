@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="WinApplication"
 	ProjectGUID="{007FE38A-A6E1-411A-AAA8-E1EFBE6B80F8}"
 	RootNamespace="OgreApplication"
@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(ProjectDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)lib"
+			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			ATLMinimizesCRunTimeLibraryUsage="true"
 			CharacterSet="2"
@@ -84,8 +84,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(ProjectDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)lib"
+			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
@@ -114,8 +114,8 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\OgreSDK\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB;OGREAPPLICATION_EXPORTS"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB"
 				StringPooling="true"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"

@@ -1,13 +1,13 @@
 #	pragma once
 
 #	include "Layer.h"
+//#	include "SceneNode3D-649.h"
 #	include "SceneNode3D.h"
-
 namespace Menge
 {
 	class Light;
 	class Entity3d;
-	class SceneNode3D;
+	//class SceneNode3D_;
 	class CapsuleController;
 
 	class Layer3D
@@ -34,8 +34,8 @@ namespace Menge
 		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
 		bool handleMouseMove( float _x, float _y, int _whell ) override;
 
-	public:
-		void update( float _timing ) override;
+	//public:
+		//void update( float _timing ) override;
 	
 	protected:
 
@@ -44,6 +44,8 @@ namespace Menge
 		void _release() override;
 
 		void _addChildren( SceneNode3D * _node ) override;
+
+		bool _renderBegin() override;
 
 	private:
 
@@ -59,8 +61,8 @@ namespace Menge
 		void setPhysicParams_();
 
 	private:
-		void render(){}
-		bool isRenderable(){return false;}
+		void render(){ NodeRenderable::render(); }
+		bool isRenderable(){ return true; }
 	
 	};
 }

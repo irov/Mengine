@@ -16,16 +16,13 @@
 
 #	include <stdio.h>
 
-//#	include <vector>
 #	include <string>
 #	include <sstream>
 #	include <io.h>
+#	include <iosfwd>
 
 #	include "Config\Config.h"
 #	include "..\Menge\Application.h"
-
-//#define API_PLATFORM	"WinApplication"
-
 
 #	if	MENGE_PARTICLES	== (1)
 #		ifdef _DEBUG
@@ -36,27 +33,20 @@
 #	endif
 
 
-#	ifdef _CONSOLE
-int main( int argc, char *argv[] )
-#	else
 void RedirectIOToConsole();
 int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in_opt LPSTR lpCmdLine, __in int nShowCmd )
-#	endif
 {
-#ifndef _CONSOLE
 	// keep compiler happy
 	UNREFERENCED_PARAMETER( hInstance );
 	UNREFERENCED_PARAMETER( hPrevInstance );
 	UNREFERENCED_PARAMETER( nShowCmd );
-#endif	
 
 	const char * config_file = "application.xml";
-#	ifndef _CONSOLE
+
 	if( strstr(lpCmdLine, "-console") )
 	{
 		RedirectIOToConsole();
 	}
-#	endif
 
 	ApplicationInterface * platform = 0;
 
@@ -95,11 +85,6 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	initInterfaceSystem( &physicSystem2D );
 	app.setPhysicSystem2D( physicSystem2D );
 
-	//Menge::RenderSystemInterface* rs;
-	//initInterfaceSystem( &rs );
-	//rs->initialise( logSystem );
-	//rs->shutdown();
-
 	RenderSystemInterface * renderSystem;
 	initInterfaceSystem( &renderSystem );
 	app.setRenderSystem( renderSystem );
@@ -113,36 +98,10 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	initInterfaceSystem( &physicSystem3D );
 	app.setPhysicSystem( physicSystem3D );*/
 	
-#	ifdef _CONSOLE
-	if( argc > 1 )
-	{
-		char* cmdline = 0;
-		unsigned int l = 0;
-		for ( int i = 1; i != argc; ++i )
-		{
-			l += (unsigned int)strlen( argv[i] );
-		}
-		cmdline = new char[l+1];
-		cmdline[0] = '\0';
-		for ( int i = 1; i < argc; i++ )
-		{
-			strcat_s( cmdline, l+1, argv[i] );
-		}
-		//result = app->init( "application.xml", cmdline );
-		result = app.initialize( config_file, cmdline );
-		delete[] cmdline;
-	}
-	else
-	{
-		//result = app->init( "application.xml", 0 );
-		result = app.initialize( config_file, "" );
-	}
-#	else
 	//Menge::Application app( platform );
 
 	result = app.initialize( config_file, lpCmdLine );
 	//result = app->init( config_file, lpCmdLine );
-#	endif
 
 	if( result == true )
 	{
@@ -170,14 +129,17 @@ void RedirectIOToConsole()
 	HANDLE lStdHandle;
 	CONSOLE_SCREEN_BUFFER_INFO coninfo;
 	FILE *fp;
-	//BOOL b = AttachConsole( ATTACH_PARENT_PROCESS );
-	
+	// try to attach to calling console first
+	BOOL b = AttachConsole( ATTACH_PARENT_PROCESS );
 	// allocate a console for this app
-	AllocConsole();
-	// set the screen buffer to be big enough to let us scroll text
-	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
-	coninfo.dwSize.Y = 1000;
-	SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
+	if( !b )
+	{
+		AllocConsole();
+		// set the screen buffer to be big enough to let us scroll text
+		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
+		coninfo.dwSize.Y = 1000;
+		SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
+	}
 	// redirect unbuffered STDOUT to the console
 	lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	hConHandle = _open_osfhandle((intptr_t)lStdHandle, 0x4000);
@@ -199,5 +161,5 @@ void RedirectIOToConsole()
 	//::MoveWindow( GetConsoleWindow(), 0, 650, 0, 0, TRUE );
 	// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
 	// point to console as well
-	//     ios::sync_with_stdio();
+	std::ios::sync_with_stdio();
 }

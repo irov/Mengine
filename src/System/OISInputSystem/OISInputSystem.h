@@ -3,14 +3,14 @@
 #	include "Interface/InputSystemInterface.h"
 #	include "OIS.h"
 
-class OgreInputSystem
+class OISInputSystem
 	: public InputSystemInterface
 	, public OIS::MouseListener
 	, public OIS::KeyListener
 {
 public:
-	OgreInputSystem();
-	~OgreInputSystem();
+	OISInputSystem();
+	~OISInputSystem();
 
 public:
 	bool initialize( WINDOW_HANDLE _winHandle ) override;

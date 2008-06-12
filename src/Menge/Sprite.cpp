@@ -196,9 +196,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageResource( const std::string & _name )
 	{
-		m_resourcename = _name;
+		if( m_resourcename != _name )
+		{
+			m_resourcename = _name;
 
-		recompile();
+			recompile();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string & Sprite::getImageResource() const

@@ -285,6 +285,11 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, float _width, flo
 	LONG left = (screenw - width) / 2;
 	LONG top = (screenh - height) / 2;
 
+	if( _fullscreen )
+	{
+		left = 0;
+		top = 0;
+	}
 
 	/// patch for ansi names
 	char *ansistr = NULL;
@@ -471,8 +476,8 @@ void WinApplication::notifyWindowModeChanged( float _width, float _height, bool 
 		SetRect(&rc, 0, 0, _width, _height);
 		//AdjustWindowRect(&rc, GetWindowLong(m_hWnd, GWL_STYLE), false);
 		AdjustWindowRect(&rc, dwStyle, false);
-		unsigned int winWidth = rc.right - rc.left;
-		unsigned int winHeight = rc.bottom - rc.top;
+		int winWidth = rc.right - rc.left;
+		int winHeight = rc.bottom - rc.top;
 		int screenw = GetSystemMetrics(SM_CXSCREEN);
 		int screenh = GetSystemMetrics(SM_CYSCREEN);
 		int left = (screenw - winWidth) / 2;
@@ -485,9 +490,11 @@ void WinApplication::notifyWindowModeChanged( float _width, float _height, bool 
 	}
 	else
 	{
-		//dwStyle |= WS_POPUP;
-		//SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
+		dwStyle |= WS_POPUP;
+		SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
+		SetWindowPos( m_hWnd, NULL, 0, 0, _width, _height, SWP_NOACTIVATE );
 	}
+	::ShowWindow( m_hWnd, SW_NORMAL );
 	//::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 
 

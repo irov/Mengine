@@ -306,7 +306,7 @@ bool OgreRenderSystem::createRenderWindow( float _width, float _height, int _bit
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-std::size_t OgreRenderSystem::getResolutionList( float ** _list )
+std::size_t OgreRenderSystem::getResolutionList( int ** _list )
 {
 	Ogre::ConfigOptionMap& configMap = m_renderSys->getConfigOptions();
 	Ogre::StringVector res = configMap["Video Mode"].possibleValues;
@@ -316,10 +316,10 @@ std::size_t OgreRenderSystem::getResolutionList( float ** _list )
 	it != it_end; 
 	++it )
 	{
-		float p1 = res[it].find('x');
-		float p2 = res[it].find('@');
-		float w = Ogre::StringConverter::parseReal( res[it].substr( 0, p1 - 1 ) );
-		float h = Ogre::StringConverter::parseReal( res[it].substr( p1 + 2, p2 - p1 - 2) );
+		std::size_t p1 = res[it].find('x');
+		std::size_t p2 = res[it].find('@');
+		int w = Ogre::StringConverter::parseInt( res[it].substr( 0, p1 - 1 ) );
+		int h = Ogre::StringConverter::parseInt( res[it].substr( p1 + 2, p2 - p1 - 2) );
 		m_resolutions.push_back( w );
 		m_resolutions.push_back( h );
 	}
@@ -335,7 +335,7 @@ void OgreRenderSystem::setContentResolution( const float * _resolution )
 	m_contentResolution.y = _resolution[1];
 }
 //////////////////////////////////////////////////////////////////////////
-void OgreRenderSystem::render( RenderImageInterface* _image, const int* rect )
+void OgreRenderSystem::screenshot( RenderImageInterface* _image, const int* rect )
 {
 	if( Ogre::TextureManager::getSingleton().getByName("__shot__").isNull() == false ) 
 	{
@@ -583,13 +583,22 @@ void OgreRenderSystem::renderImage(
 }
 
 //////////////////////////////////////////////////////////////////////////
-void	OgreRenderSystem::beginLayer()
+void	OgreRenderSystem::beginLayer2D()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void	OgreRenderSystem::endLayer()
+void	OgreRenderSystem::endLayer2D()
 {
 	m_spriteMgr->diffZ();
+}
+//////////////////////////////////////////////////////////////////////////
+void	OgreRenderSystem::beginLayer3D()
+{
+}
+//////////////////////////////////////////////////////////////////////////
+void	OgreRenderSystem::endLayer3D()
+{
+
 }
 //////////////////////////////////////////////////////////////////////////
 void OgreRenderSystem::setFullscreenMode( float _width, float _height, bool _fullscreen )

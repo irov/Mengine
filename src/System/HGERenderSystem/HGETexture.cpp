@@ -10,6 +10,15 @@ HGETexture::HGETexture( HGE* _hge )
 
 }
 //////////////////////////////////////////////////////////////////////////
+HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _width, std::size_t _height )
+: m_hge( _hge )
+, m_name( _name )
+, m_width( _width )
+, m_height( _height )
+{
+	m_hTexture = m_hge->Texture_Create( _width, _height );
+}
+//////////////////////////////////////////////////////////////////////////
 HGETexture::~HGETexture()
 {
 	unload();
@@ -46,7 +55,7 @@ float HGETexture::getHeight() const
 //////////////////////////////////////////////////////////////////////////
 void HGETexture::writeToFile( const char* _filename )
 {
-
+	m_hge->Texture_WriteToFile( m_hTexture, (const TCHAR*)_filename );
 }
 //////////////////////////////////////////////////////////////////////////
 const char * HGETexture::getDescription() const 

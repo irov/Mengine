@@ -96,7 +96,7 @@ namespace	Menge
 	bool Arrow::_renderBegin()
 	{
 		Holder<RenderEngine>::hostage()
-			->beginLayer();
+			->beginLayer2D();
 
 		Viewport viewport;
 		viewport.begin = mt::vec2f( 0.f, 0.f );
@@ -111,7 +111,7 @@ namespace	Menge
 	void Arrow::_renderEnd()
 	{
 		Holder<RenderEngine>::hostage()
-			->endLayer();
+			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::addHotSpot( HotSpot * _hotspot )

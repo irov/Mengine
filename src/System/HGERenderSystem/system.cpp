@@ -76,8 +76,8 @@ bool CALL HGE_Impl::System_Initiate( Menge::LogSystemInterface* _logSystem )
 	OSVERSIONINFO	os_ver;
 	SYSTEMTIME		tm;
 	MEMORYSTATUS	mem_st;
-	WNDCLASS		winclass;
-	int				width, height;
+//	WNDCLASS		winclass;
+	//int				width, height;
 
 	m_logSystem = _logSystem;
 	// Log system info
@@ -386,7 +386,7 @@ void CALL HGE_Impl::System_SetStateBool(hgeBoolState state, bool value)
 									else nScreenBPP=32;
 
 									_GfxRestore();
-									_AdjustWindow();
+									//_AdjustWindow();
 								}
 								else bWindowed=value;
 								break;
@@ -641,11 +641,11 @@ bool CALL HGE_Impl::System_Launch(const char *url)
 
 void CALL HGE_Impl::System_Snapshot(const char *filename)
 {
-	/*LPDIRECT3DSURFACE8 pSurf;
-	char *shotname, tempname[_MAX_PATH];
-	int i;
+	LPDIRECT3DSURFACE8 pSurf;
+//	char *shotname, tempname[_MAX_PATH];
+//	int i;
 
-	if(!filename)
+	/*if(!filename)
 	{
 		i=0;
 		shotname=Resource_EnumFiles("shot???.bmp");
@@ -656,14 +656,14 @@ void CALL HGE_Impl::System_Snapshot(const char *filename)
 		}
 		sprintf(tempname, "shot%03d.bmp", i);
 		filename=Resource_MakePath(tempname);
-	}
+	}*/
 
 	if(pD3DDevice)
 	{
 		pD3DDevice->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &pSurf);
-		D3DXSaveSurfaceToFile(filename, D3DXIFF_BMP, pSurf, NULL, NULL);
+		D3DXSaveSurfaceToFileA(filename, D3DXIFF_BMP, pSurf, NULL, NULL);
 		pSurf->Release();
-	}*/
+	}
 }
 
 //////// Implementation ////////
@@ -695,7 +695,7 @@ HGE_Impl::HGE_Impl()
 	hSearch = 0;
 	res = 0;
 
-	queue = 0;
+	//queue = 0;
 	Char = VKey = Zpos = 0;
 	Xpos = Ypos = 0.0f;
 	bMouseOver = false;

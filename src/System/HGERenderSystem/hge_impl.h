@@ -15,9 +15,12 @@
 #include <d3d8.h>
 #include <d3dx8.h>
 
+#	include <vector>
+
 #define DEMO
 
 #define D3DFVF_HGEVERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1)
+#define D3DFVF_MENGEVERTEX ( D3DFVF_HGEVERTEX | D3DFVF_NORMAL )
 #define VERTEX_BUFFER_SIZE 4000
 
 
@@ -47,7 +50,7 @@ struct CResourceList
 	CResourceList*		next;
 };
 
-struct CStreamList
+/*struct CStreamList
 {
 	HSTREAM				hstream;
 	void*				data;
@@ -58,7 +61,7 @@ struct CInputEventList
 {
 	hgeInputEvent		event;
 	CInputEventList*	next;
-};
+};*/
 
 
 void DInit();
@@ -176,6 +179,16 @@ public:
 	virtual void		CALL	Gfx_FinishBatch(int nprim);
 	virtual void		CALL	Gfx_SetClipping(int x=0, int y=0, int w=0, int h=0);
 	virtual void		CALL	Gfx_SetTransform(float x=0, float y=0, float dx=0, float dy=0, float rot=0, float hscale=0, float vscale=0); 
+	virtual void		CALL	Gfx_RenderMesh( const mengeVertex* _vertices, size_t _verticesNum );
+
+	virtual void		CALL	Gfx_Snapshot( HTEXTURE tex, RECT _rect );
+	virtual void		CALL	Gfx_ChangeMode( int _width, int _height, int _bpp, bool _fullscreen );
+	virtual const std::vector<int>& CALL	Gfx_GetModeList();
+	virtual void		CALL	Gfx_SetProjectionMatrix( const float* _projMat );
+	virtual void		CALL	Gfx_SetViewMatrix( const float* _viewMat );
+	virtual void		CALL	Gfx_SetWorldMatrix( const float* _worldMat );
+	virtual void		CALL	Gfx_Prepare2D();
+	virtual void		CALL	Gfx_Prepare3D();
 
 	virtual HTARGET		CALL	Target_Create(int width, int height, bool zbuffer);
 	virtual void		CALL	Target_Free(HTARGET target);
@@ -188,6 +201,8 @@ public:
 	virtual int			CALL	Texture_GetHeight(HTEXTURE tex, bool bOriginal=false);
 	virtual DWORD*		CALL	Texture_Lock(HTEXTURE tex, bool bReadOnly=true, int left=0, int top=0, int width=0, int height=0);
 	virtual void		CALL	Texture_Unlock(HTEXTURE tex);
+
+	virtual void		CALL	Texture_WriteToFile(HTEXTURE tex, const TCHAR* _filename );
 
 	//////// Implementation ////////
 
@@ -264,6 +279,8 @@ public:
 	IDirect3DDevice8*		pD3DDevice;
 	IDirect3DVertexBuffer8*	pVB;
 	IDirect3DIndexBuffer8*	pIB;
+	IDirect3DVertexBuffer8*	pVB3D;
+	IDirect3DIndexBuffer8*	pIB3D;
 
 	IDirect3DSurface8*	pScreenSurf;
 	IDirect3DSurface8*	pScreenDepth;
@@ -272,6 +289,7 @@ public:
 
 	D3DXMATRIX			matView;
 	D3DXMATRIX			matProj;
+	D3DXMATRIX			matWorld;
 
 	CTextureList*		textures;
 	hgeVertex*			VertArray;
@@ -284,7 +302,7 @@ public:
 	bool				_GfxInit();
 	void				_GfxDone();
 	bool				_GfxRestore();
-	void				_AdjustWindow();
+	//void				_AdjustWindow();
 	void				_Resize(int width, int height);
 	bool				_init_lost();
 	void				_render_batch(bool bEndScene=false);
@@ -292,16 +310,16 @@ public:
 	void				_SetBlendMode(int blend);
 	void				_SetProjectionMatrix(int width, int height);
 	
-
+	bool				m_layer3D;
 	// Audio
-	HINSTANCE			hBass;
+	/*HINSTANCE			hBass;
 	bool				bSilent;
 	CStreamList*		streams;
 	bool				_SoundInit();
 	void				_SoundDone();
 	void				_SetMusVolume(int vol);
 	void				_SetStreamVolume(int vol);
-	void				_SetFXVolume(int vol);
+	void				_SetFXVolume(int vol);*/
 
 
 	// Input
@@ -313,7 +331,7 @@ public:
 	bool				bMouseOver;
 	bool				bCaptured;
 	char				keyz[256];
-	CInputEventList*	queue;
+	//CInputEventList*	queue;
 	void				_UpdateMouse();
 	void				_InputInit();
 	void				_ClearQueue();
@@ -335,6 +353,9 @@ public:
 	DWORD				t0, t0fps, dt;
 	int					cfps;
 
+	typedef std::vector<D3DDISPLAYMODE> TDispModes;
+	TDispModes m_displayModes;
+	std::vector<int>	m_resList;
 
 private:
 	HGE_Impl();

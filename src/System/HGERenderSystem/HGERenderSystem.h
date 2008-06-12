@@ -1,6 +1,7 @@
 #	pragma once
 #	include "Interface/RenderSystemInterface.h"
-
+#	include "libs/Math/vec2.h"
+#	include "libs/Math/box2.h"
 class HGE;
 
 class HGERenderSystem :
@@ -13,10 +14,10 @@ public:
 	bool initialize( Menge::LogSystemInterface* _logSystem ) override;
 	bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
 		int _FSAAType, int _FSAAQuality ) override;
-	unsigned int getResolutionList( float ** ) override;
+	unsigned int getResolutionList( int ** ) override;
 	void addResourceLocation( const char* _path ) override;
 	void initResources() override;
-	void render( RenderImageInterface* _image, const int* rect = 0 ) override;
+	void screenshot( RenderImageInterface* _image, const int* rect = 0 ) override;
 	void render() override; 
 	void setContentResolution( const float * _resolution ) override;
 	void setProjectionMatrix( const float * _projection ) override;
@@ -53,12 +54,17 @@ public:
 		EBlendFactor _src,
 		EBlendFactor _dst) override;
 
+	void renderMesh( const TVertex* _vertices, std::size_t _verticesNum,
+					TMaterial* _material ) override;
+
 	void	renderLine(const char * _camera, unsigned int _color, const float * _begin, const float * _end) override;
 
 	void	beginScene() override;
 	void	endScene()	override;
-	void	beginLayer() override;
-	void	endLayer() override;
+	void	beginLayer2D() override;
+	void	endLayer2D() override;
+	void	beginLayer3D() override;
+	void	endLayer3D() override;
 
 	void	setFullscreenMode( float _width, float _height, bool _fullscreen ) override;
 	void	setViewportDimensions( float _width, float _height, float _renderFactor ) override;
@@ -81,6 +87,8 @@ public:
 
 private:
 	Menge::LogSystemInterface* m_logSystem;
+	mt::vec2f m_contentResolution;
 	HGE* m_hge;
 	float m_layer;
+	mt::box2f m_viewport;
 };

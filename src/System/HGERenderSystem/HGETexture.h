@@ -9,6 +9,7 @@ class HGETexture :
 {
 public:
 	HGETexture( HGE* _hge );
+	HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _width, std::size_t _height );
 	~HGETexture();
 
 	void load( const TextureDesc& _desc );

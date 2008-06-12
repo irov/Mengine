@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)Bin_d"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)lib"
+			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			ATLMinimizesCRunTimeLibraryUsage="true"
@@ -93,7 +93,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)Bin"
-			IntermediateDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfATL="0"
@@ -124,7 +124,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\cal3d\cal3d\src\&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Source&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Source&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB;MENGE_EXPORT;FREEIMAGE_LIB;"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -274,22 +274,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\HardwareBuffer.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\HardwareBuffer.h"
-					>
-				</File>
-				<File
-					RelativePath=".\HardwarePixelBuffer.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\HardwarePixelBuffer.h"
-					>
-				</File>
-				<File
 					RelativePath=".\Image.cpp"
 					>
 				</File>
@@ -319,29 +303,6 @@
 				</File>
 				<File
 					RelativePath=".\RenderEngine.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Texture.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\Texture.h"
 					>
 				</File>
 			</Filter>
@@ -636,11 +597,51 @@
 			Name="Camera"
 			>
 			<File
+				RelativePath=".\Allocator3D-649.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Allocator3D-649.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Camera2D.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Camera2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Camera3D-649.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Camera3D-649.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Frustum.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Frustum.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Renderable3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Renderable3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SceneNode3D-649.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SceneNode3D-649.h"
 				>
 			</File>
 			<File
@@ -1321,6 +1322,14 @@
 			</File>
 			<File
 				RelativePath=".\Light.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RenderMesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RenderMesh.h"
 				>
 			</File>
 			<File

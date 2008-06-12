@@ -1,9 +1,10 @@
 # pragma once
 
+#	include "Config/Typedef.h"
+
 # include "SceneNode2D.h"
 # include "Color.h"
 # include <vector>
-#	include <vector>
 
 class RenderImageInterface;
 
@@ -108,6 +109,8 @@ namespace Menge
 
 		int getLineOffset() const;
 		void setLineOffset( int _offset );
+
+		void setResource( const String& _resName );
 
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;

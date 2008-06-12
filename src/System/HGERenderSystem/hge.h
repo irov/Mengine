@@ -12,7 +12,7 @@
 
 
 #include <windows.h>
-
+#include <vector>
 #define HGE_VERSION 0x180
 
 #ifdef HGEDLL
@@ -65,10 +65,10 @@ typedef unsigned char       BYTE;
 */
 typedef DWORD HTEXTURE;
 typedef DWORD HTARGET;
-typedef DWORD HEFFECT;
-typedef DWORD HMUSIC;
-typedef DWORD HSTREAM;
-typedef DWORD HCHANNEL;
+//typedef DWORD HEFFECT;
+//typedef DWORD HMUSIC;
+//typedef DWORD HSTREAM;
+//typedef DWORD HCHANNEL;
 
 
 /*
@@ -193,6 +193,7 @@ typedef bool (*hgeCallback)();
 #define HGEPRIM_LINES		2
 #define HGEPRIM_TRIPLES		3
 #define HGEPRIM_QUADS		4
+#define HGEPRIM_MESH		5
 
 
 /*
@@ -206,6 +207,13 @@ struct hgeVertex
 	float			tx, ty;		// texture coordinates
 };
 
+struct mengeVertex
+{
+	float x, y, z;
+	float nx, ny, nz;
+	DWORD col;
+	float tx, ty;
+};
 
 /*
 ** HGE Triple structure
@@ -232,7 +240,7 @@ struct hgeQuad
 /*
 ** HGE Input Event structure
 */
-struct hgeInputEvent
+/*struct hgeInputEvent
 {
 	int		type;			// event type
 	int		key;			// key code
@@ -241,31 +249,31 @@ struct hgeInputEvent
 	int		wheel;			// wheel shift
 	float	x;				// mouse cursor x-coordinate
 	float	y;				// mouse cursor y-coordinate
-};
+};*/
 
 
 /*
 ** HGE Input Event type constants
 */
-#define INPUT_KEYDOWN		1
+/*#define INPUT_KEYDOWN		1
 #define INPUT_KEYUP			2
 #define INPUT_MBUTTONDOWN	3
 #define INPUT_MBUTTONUP		4
 #define INPUT_MOUSEMOVE		5
 #define INPUT_MOUSEWHEEL	6
-
+*/
 
 /*
 ** HGE Input Event flags
 */
-#define HGEINP_SHIFT		1
+/*#define HGEINP_SHIFT		1
 #define HGEINP_CTRL			2
 #define HGEINP_ALT			4
 #define HGEINP_CAPSLOCK		8
 #define HGEINP_SCROLLLOCK	16
 #define HGEINP_NUMLOCK		32
 #define HGEINP_REPEAT		64
-
+*/
 namespace Menge
 {
 	class LogSystemInterface;
@@ -393,8 +401,18 @@ public:
 	virtual void		CALL	Gfx_RenderQuad(const hgeQuad *quad) = 0;
 	virtual hgeVertex*	CALL	Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim) = 0;
 	virtual void		CALL	Gfx_FinishBatch(int nprim) = 0;
+	virtual void		CALL	Gfx_RenderMesh( const mengeVertex* _vertices, size_t _verticesNum ) = 0;
 	virtual void		CALL	Gfx_SetClipping(int x=0, int y=0, int w=0, int h=0) = 0;
 	virtual void		CALL	Gfx_SetTransform(float x=0, float y=0, float dx=0, float dy=0, float rot=0, float hscale=0, float vscale=0) = 0; 
+
+	virtual void		CALL	Gfx_Snapshot( HTEXTURE tex, RECT _rect ) = 0;
+	virtual void		CALL	Gfx_ChangeMode( int _width, int _height, int _bpp, bool _fullscreen ) = 0;
+	virtual const std::vector<int>& CALL	Gfx_GetModeList() = 0;
+	virtual void		CALL	Gfx_SetProjectionMatrix( const float* _projMat ) = 0;
+	virtual void		CALL	Gfx_SetViewMatrix( const float* _viewMat ) = 0;
+	virtual void		CALL	Gfx_SetWorldMatrix( const float* _worldMat ) = 0;
+	virtual void		CALL	Gfx_Prepare2D() = 0;
+	virtual void		CALL	Gfx_Prepare3D() = 0;
 
 	virtual HTARGET		CALL	Target_Create(int width, int height, bool zbuffer) = 0;
 	virtual void		CALL	Target_Free(HTARGET target) = 0;
@@ -407,6 +425,8 @@ public:
 	virtual int			CALL	Texture_GetHeight(HTEXTURE tex, bool bOriginal=false) = 0;
 	virtual DWORD*		CALL	Texture_Lock(HTEXTURE tex, bool bReadOnly=true, int left=0, int top=0, int width=0, int height=0) = 0;
 	virtual void		CALL	Texture_Unlock(HTEXTURE tex) = 0;
+
+	virtual void		CALL	Texture_WriteToFile(HTEXTURE tex, const TCHAR* _filename ) = 0;
 };
 
 extern "C" { EXPORT HGE * CALL hgeCreate(int ver); }

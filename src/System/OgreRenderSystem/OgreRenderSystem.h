@@ -34,9 +34,9 @@ public:
 	void addResourceLocation( const char* _path ) override;
 	void initResources() override;
 
-	std::size_t getResolutionList(  float ** _list ) override;
+	std::size_t getResolutionList(  int ** _list ) override;
 
-	void render( RenderImageInterface* _outImage, const int* rect = NULL ) override;
+	void screenshot( RenderImageInterface* _outImage, const int* rect = NULL ) override;
 	void render() override;
 
 	void setContentResolution( const float * _resolution );
@@ -78,8 +78,10 @@ public:
 
 	void	beginScene() override;
 	void	endScene() override;
-	void	beginLayer() override;
-	void	endLayer() override;
+	void	beginLayer2D() override;
+	void	endLayer2D() override;
+	void	beginLayer3D() override;
+	void	endLayer3D() override;
 
 	void setFullscreenMode( float _width, float _height, bool _fullscreen ) override;
 	void loadResource( Ogre::Resource* _resource );
@@ -110,6 +112,8 @@ public:
 	void onWindowActive( bool _active ) override;
 	void onWindowClose() override;
 
+	void renderMesh( const TVertex* _vertices, std::size_t _verticesNum, TMaterial* _material ) override {}
+
 private:
 
 	OgreSceneNode * m_rootSceneNode;
@@ -132,7 +136,7 @@ private:
 	CEGUI::OgreCEGUIRenderer* m_GUIRenderer;
 	CEGUI::System*	m_GUISystem;
 
-	typedef std::vector<float> TVectorResolution;
+	typedef std::vector<int> TVectorResolution;
 	TVectorResolution m_resolutions;
 
 	RenderSystemListener* m_eventListener;

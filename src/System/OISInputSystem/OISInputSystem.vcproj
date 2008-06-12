@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="OgreInputSystem"
+	Name="OISInputSystem"
 	ProjectGUID="{F055D8C9-3510-4462-BB47-0CBB9224C643}"
 	RootNamespace="OgreInputSystem"
 	Keyword="Win32Proj"
@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(ProjectDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)lib"
+			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			ATLMinimizesCRunTimeLibraryUsage="true"
 			CharacterSet="2"
@@ -88,8 +88,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(ProjectDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)lib"
+			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="2"
@@ -118,7 +118,7 @@
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies/OIS/includes&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB;OGRE_STATIC_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB"
 				StringPooling="true"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
@@ -141,7 +141,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="OIS_static.lib"
-				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OIS\lib&quot;"
 			/>
 			<Tool
@@ -165,15 +165,15 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\OgreInputSystem.cpp"
+			RelativePath=".\OISInputSystem.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\OgreInputSystem.def"
+			RelativePath=".\OISInputSystem.def"
 			>
 		</File>
 		<File
-			RelativePath=".\OgreInputSystem.h"
+			RelativePath=".\OISInputSystem.h"
 			>
 		</File>
 	</Files>

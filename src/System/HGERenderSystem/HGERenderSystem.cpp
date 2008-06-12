@@ -26,6 +26,7 @@ void releaseInterfaceSystem( RenderSystemInterface* _ptrInterface )
 HGERenderSystem::HGERenderSystem()
 : m_hge( NULL )
 , m_layer( 1.0f )
+, m_contentResolution( 1024.0f, 768.0f )
 {
 
 }
@@ -56,14 +57,17 @@ bool HGERenderSystem::createRenderWindow( float _width, float _height, int _bits
 	m_hge->System_SetState( HGE_SCREENBPP, _bits );
 	m_hge->System_SetState( HGE_WINDOWED, !_fullscreen );
 	m_hge->System_SetState( HGE_HWND, (HWND)_winHandle );
+	//m_hge->System_SetState( HGE_ZBUFFER, true );
 	bool ret = false;
 	ret = m_hge->System_Initiate( m_logSystem );
 	return ret;
 }
 //////////////////////////////////////////////////////////////////////////
-unsigned int HGERenderSystem::getResolutionList( float ** )
+unsigned int HGERenderSystem::getResolutionList( int ** _list )
 {
-	return 0;
+	static std::vector<int> list = m_hge->Gfx_GetModeList();
+	*_list = &(list[0]);
+	return list.size();
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::addResourceLocation( const char* _path )
@@ -76,9 +80,25 @@ void HGERenderSystem::initResources()
 
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::render( RenderImageInterface* _image, const int* rect /*= 0 */ )
+void HGERenderSystem::screenshot( RenderImageInterface* _image, const int* _rect /*= 0 */ )
 {
-
+	RECT rect;
+	if( _rect )
+	{
+		rect.left = _rect[0];
+		rect.top = _rect[1];
+		rect.right = _rect[2];
+		rect.bottom = _rect[3];
+	}
+	else
+	{
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = m_hge->System_GetState( HGE_SCREENWIDTH );
+		rect.bottom = m_hge->System_GetState( HGE_SCREENHEIGHT );
+	}
+	HGETexture* tex = static_cast<HGETexture*>( _image );
+	m_hge->Gfx_Snapshot( tex->getHandle(), rect );
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::render()
@@ -89,27 +109,30 @@ void HGERenderSystem::render()
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::setContentResolution( const float * _resolution )
 {
-
+	m_contentResolution.x = _resolution[0];
+	m_contentResolution.y = _resolution[1];
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::setProjectionMatrix( const float * _projection )
 {
-	
+	m_hge->Gfx_SetProjectionMatrix( _projection );	
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::setViewMatrix( const float * _view )
 {
-
+	m_hge->Gfx_SetViewMatrix( _view );
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::setWorldMatrix( const float * _world )
 {
-
+	m_hge->Gfx_SetWorldMatrix( _world );
 }
 //////////////////////////////////////////////////////////////////////////
-RenderImageInterface * HGERenderSystem::createImage( const char* _name, unsigned int _width, unsigned int _height )
+RenderImageInterface * HGERenderSystem::createImage( const char* _name,
+													unsigned int _width, unsigned int _height )
 {
-	return NULL;
+	HGETexture* texture = new HGETexture( m_hge, _name, _width, _height );
+	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
 RenderImageInterface * HGERenderSystem::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera )
@@ -150,15 +173,15 @@ void HGERenderSystem::renderImage( const char * _camera,
 								  const float * _offset, // смещение, вектор2 
 								  const float * _uv, // текстурные координаты, вектор4, u0, v0, u1, v1 
 								  const float * _size, // размер изображения, вектор2 
-								  unsigned int _color, // цвет, порядок ARGB
+								  unsigned int _color, // цвет, порядок RGBA
 								  const RenderImageInterface * _image, 
 								  EBlendFactor _src, 
 								  EBlendFactor _dst ) 
 {
 	hgeQuad quad;
 
-	quad.v[0].x = _transform[0] * _offset[0] + _transform[3] * _offset[1] + _transform[6];
-	quad.v[0].y = _transform[1] * _offset[0] + _transform[4] * _offset[1] + _transform[7];
+	quad.v[0].x = _transform[0] * _offset[0] + _transform[3] * _offset[1] + _transform[6] + m_viewport.min.x;
+	quad.v[0].y = _transform[1] * _offset[0] + _transform[4] * _offset[1] + _transform[7] + m_viewport.min.y;
 	quad.v[0].z = m_layer;
 	quad.v[0].col = _color;
 
@@ -172,8 +195,8 @@ void HGERenderSystem::renderImage( const char * _camera,
 	quad.v[2].z = m_layer;
 	quad.v[2].col = _color;
 
-	quad.v[3].x = _transform[0] * (_offset[0]) + _transform[3] * (_offset[1] + _size[1]) + _transform[6];
-	quad.v[3].y = _transform[1] * (_offset[0]) + _transform[4] * (_offset[1] + _size[1]) + _transform[7];
+	quad.v[3].x = _transform[0] * (_offset[0]) + _transform[3] * (_offset[1] + _size[1]) + _transform[6] + m_viewport.min.x;
+	quad.v[3].y = _transform[1] * (_offset[0]) + _transform[4] * (_offset[1] + _size[1]) + _transform[7] + m_viewport.min.y;
 	quad.v[3].z = m_layer;
 	quad.v[3].col = _color;
 
@@ -203,23 +226,23 @@ void HGERenderSystem::renderImage( const char * _camera,
 {
 	hgeQuad quad;
 
-	quad.v[0].x = _transform[0] * _a[0] + _transform[3] * _a[1] + _transform[6];
-	quad.v[0].y = _transform[1] * _a[0] + _transform[4] * _a[1] + _transform[7];
+	quad.v[0].x = _transform[0] * _a[0] + _transform[3] * _a[1] + _transform[6] + m_viewport.min.x;
+	quad.v[0].y = _transform[1] * _a[0] + _transform[4] * _a[1] + _transform[7] + m_viewport.min.y;
 	quad.v[0].z = m_layer;
 	quad.v[0].col = _color;
 
-	quad.v[1].x = _transform[0] * _b[0] + _transform[6] * _b[1] + _transform[6];
-	quad.v[1].y = _transform[1] * _b[0] + _transform[4] * _b[1] + _transform[7];
+	quad.v[1].x = _transform[0] * _b[0] + _transform[6] * _b[1] + _transform[6] + m_viewport.min.x;
+	quad.v[1].y = _transform[1] * _b[0] + _transform[4] * _b[1] + _transform[7] + m_viewport.min.y;
 	quad.v[1].z = m_layer;
 	quad.v[1].col = _color;
 
-	quad.v[2].x = _transform[0] * _c[0] + _transform[3] * _c[1] + _transform[6];
-	quad.v[2].y = _transform[1] * _c[0] + _transform[4] * _c[1] + _transform[7];
+	quad.v[2].x = _transform[0] * _c[0] + _transform[3] * _c[1] + _transform[6] + m_viewport.min.x;
+	quad.v[2].y = _transform[1] * _c[0] + _transform[4] * _c[1] + _transform[7] + m_viewport.min.y;
 	quad.v[2].z = m_layer;
 	quad.v[2].col = _color;
 
-	quad.v[3].x = _transform[0] * _d[0] + _transform[3] * _d[1] + _transform[6];
-	quad.v[3].y = _transform[1] * _d[0] + _transform[4] * _d[1] + _transform[7];
+	quad.v[3].x = _transform[0] * _d[0] + _transform[3] * _d[1] + _transform[6] + m_viewport.min.x;
+	quad.v[3].y = _transform[1] * _d[0] + _transform[4] * _d[1] + _transform[7] + m_viewport.min.y;
 	quad.v[3].z = m_layer;
 	quad.v[3].col = _color;
 
@@ -235,16 +258,21 @@ void HGERenderSystem::renderImage( const char * _camera,
 	m_hge->Gfx_RenderQuad( &quad );
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::renderLine( const char * _camera, unsigned int _color, const float * _begin, const float * _end )
+void HGERenderSystem::renderLine( const char * _camera, 
+								 unsigned int _color, 
+								 const float * _begin, 
+								 const float * _end )
 {
-
+	m_hge->Gfx_RenderLine( _begin[0], _begin[1], _end[0], _end[1], _color, m_layer );
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::beginScene()
 {
 	m_layer = 1.0f;
 	m_hge->Gfx_BeginScene();
+	m_hge->Gfx_SetClipping( 0, 0, m_hge->System_GetState( HGE_SCREENWIDTH ), m_hge->System_GetState( HGE_SCREENHEIGHT ) );
 	m_hge->Gfx_Clear( 255 );
+	m_hge->Gfx_SetClipping( m_viewport.min.x, m_viewport.min.y, m_viewport.max.x, m_viewport.max.y );
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::endScene()
@@ -252,24 +280,73 @@ void HGERenderSystem::endScene()
 	m_hge->Gfx_EndScene();
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::beginLayer()
+void HGERenderSystem::beginLayer2D()
 {
-	//m_hge->Gfx_BeginScene();
+	m_hge->Gfx_Prepare2D();
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::endLayer()
+void HGERenderSystem::endLayer2D()
 {
-	//m_hge->Gfx_EndScene();
+
 	m_layer -= 0.001f;
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::setFullscreenMode( float _width, float _height, bool _fullscreen )
+void HGERenderSystem::beginLayer3D()
+{
+	m_hge->Gfx_Prepare3D();
+}
+//////////////////////////////////////////////////////////////////////////
+void HGERenderSystem::endLayer3D()
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
+void HGERenderSystem::setFullscreenMode( float _width, float _height, bool _fullscreen )
+{
+	m_hge->Gfx_ChangeMode( _width, _height, 32, _fullscreen );
+}
+//////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::setViewportDimensions( float _width, float _height, float _renderFactor )
 {
+	float realWidth = m_hge->System_GetState( HGE_SCREENWIDTH );
+	float realHeight = m_hge->System_GetState( HGE_SCREENHEIGHT );
+	float aspect = _width / _height;
+	float width = _width / realWidth;
+	float height = _height / realHeight;
+
+	if( width > 1.0f )
+	{
+		width = 1.0f;
+		height = realWidth / aspect / realHeight;
+	}
+
+	if( height > 1.0f )
+	{
+		height = 1.0f;
+		width = realHeight * aspect / realWidth;
+	}
+
+	if( _renderFactor )
+	{
+		width += ( 1.0f - width ) * _renderFactor;
+		height += ( 1.0f - height ) * _renderFactor;
+	}
+
+	/*m_viewportDimensions[0] = 0.5f - width / 2.0f;
+	m_viewportDimensions[1] = 0.5f - height / 2.0f;
+	m_viewportDimensions[2] = width;
+	m_viewportDimensions[3] = height;*/
+
+	m_viewport.min.x = ( 0.5f - width / 2.0f ) * realWidth;
+	m_viewport.min.y = ( 0.5f - height / 2.0f ) * realHeight;
+	m_viewport.max.x = width * realWidth;
+	m_viewport.max.y = height * realHeight;
+
+	/*m_hge->Gfx_Clear( 255 );
+	m_hge->Gfx_SetClipping( x, y, w, h );*/
+
+
+	//m_viewport->setDimensions( m_viewportDimensions[0], m_viewportDimensions[1], m_viewportDimensions[2], m_viewportDimensions[3] );
 
 }
 //////////////////////////////////////////////////////////////////////////
@@ -340,5 +417,26 @@ void HGERenderSystem::onWindowActive( bool _active )
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::onWindowClose()
 {
+}
+//////////////////////////////////////////////////////////////////////////
+void HGERenderSystem::renderMesh( const TVertex* _vertices, std::size_t _verticesNum, TMaterial* _material )
+{
+	static std::vector<mengeVertex> vtx;
+	vtx.clear();
+	vtx.reserve( _verticesNum );
+	mengeVertex v;
+	for( size_t i = 0; i < _verticesNum; i++ )
+	{
+		v.x = _vertices[i].x;
+		v.y = _vertices[i].y;
+		v.z = _vertices[i].z;
+		v.nx = _vertices[i].nx;
+		v.ny = _vertices[i].ny;
+		v.nz = _vertices[i].nz;
+		v.tx = v.ty = 0;
+		v.col = 0xFF00FF00;
+		vtx.push_back( v );
+	}
+	 m_hge->Gfx_RenderMesh( &(vtx[0]), _verticesNum );
 }
 //////////////////////////////////////////////////////////////////////////

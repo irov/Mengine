@@ -34,7 +34,7 @@ public:
 	float getMonitorAspectRatio() override;
 	void minimizeWindow() override;
 	void setPrimaryMonitorAspect( float _aspect );
-	void notifyWindowModeChanged( float _width, float _height, bool _fullscreen ) override;
+	void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 	float getDeltaTime() override;
 	//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
 	SystemDLLInterface* loadSystemDLL( const char* _dll ) override;

@@ -5,7 +5,7 @@
 
 #	include "shlobj.h"
 
-#	include <tchar.h>
+//#	include <tchar.h>
 
 #	include <Config/Config.h>
 
@@ -225,18 +225,56 @@ bool MengeFileSystem::changeDir( const Menge::String& _path )
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////
-/*const TCHAR* MengeFileSystem::getApplicationDataPath( const TCHAR* _game )
+bool MengeFileSystem::initAppDataPath( const Menge::String& _game )
 {
-#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
-	static TCHAR path[MAX_PATH];
-	::SHGetFolderPathAndSubDir(NULL,
-								CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
-								NULL,
-								SHGFP_TYPE_CURRENT,
-								_game,
-								path);
-	return path;
-	//	TEXT()
+#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
+
+	/// patch for ansi names
+	char *ansistr = NULL;
+	size_t length = MultiByteToWideChar(CP_UTF8, 0, _game.c_str(), _game.length(), NULL, NULL );
+	WCHAR *lpszW = NULL;
+
+	lpszW = new WCHAR[length+1];
+	ansistr = ( char * ) calloc ( sizeof(char), length+5 );
+
+	//this step intended only to use WideCharToMultiByte
+	MultiByteToWideChar(CP_UTF8, 0, _game.c_str(), -1, lpszW, length );
+
+	//Conversion to ANSI (CP_ACP)
+	WideCharToMultiByte(CP_ACP, 0, lpszW, -1, ansistr, length, NULL, NULL);
+
+	ansistr[length] = 0;
+
+	delete[] lpszW;
+	////
+
+	HRESULT hr;
+	TCHAR szPath[MAX_PATH];
+
+	hr = SHGetFolderPathAndSubDir(NULL,					//hWnd	
+			CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
+			NULL,										//hToken
+			SHGFP_TYPE_CURRENT,							//dwFlags
+			ansistr,								//pszSubDir
+			szPath);									//pszPath
+
+	if( SUCCEEDED( hr ) )
+	{
+		m_appDataPath = Menge::String( szPath );
+	}
+	else
+	{
+		return false;
+	}
+	free( ansistr );
+	return true;
+#else
+	return false;
 #endif
-	return NULL;
-}*/
+}
+//////////////////////////////////////////////////////////////////////////
+const Menge::String& MengeFileSystem::getAppDataPath()
+{
+	return m_appDataPath;
+}
+//////////////////////////////////////////////////////////////////////////

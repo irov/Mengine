@@ -112,6 +112,8 @@ namespace Menge
 
 		void setResource( const String& _resName );
 
+		void setOutlineResource( const String& _outlineName );
+
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;
 		void loader( XmlElement * _xml ) override;

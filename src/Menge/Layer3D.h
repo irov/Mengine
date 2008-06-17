@@ -1,18 +1,17 @@
 #	pragma once
 
 #	include "Layer.h"
-//#	include "SceneNode3D-649.h"
-#	include "SceneNode3D.h"
+#	include "SceneNode3D-649.h"
+//#	include "SceneNode3D.h"
 namespace Menge
 {
 	class Light;
 	class Entity3d;
-	//class SceneNode3D_;
 	class CapsuleController;
 
 	class Layer3D
 		: public Layer
-		, public SceneNode3D
+		, public SceneNode3D_
 	{
 		OBJECT_DECLARE(Layer3D);
 
@@ -24,7 +23,7 @@ namespace Menge
 		void addController( CapsuleController * _capsule );
 		CapsuleController * getController( const std::string & _name );
 
-		SceneNode3D * getNode( const std::string & _name );
+		//SceneNode3D * getNode( const std::string & _name );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -43,7 +42,7 @@ namespace Menge
 		void _deactivate() override;
 		void _release() override;
 
-		void _addChildren( SceneNode3D * _node ) override;
+		//void _addChildren( SceneNode3D * _node ) override;
 
 		bool _renderBegin() override;
 

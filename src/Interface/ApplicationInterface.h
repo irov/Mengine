@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+
 class FileSystemInterface;
 typedef void* WINDOW_HANDLE;
 
@@ -48,7 +50,7 @@ public:
 	virtual void stop() = 0;
 	virtual float getMonitorAspectRatio() = 0;
 	virtual void minimizeWindow() = 0;
-	virtual void notifyWindowModeChanged( float _width, float _height, bool _fullscreen ) = 0;
+	virtual void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 	virtual float getDeltaTime() = 0;
 	virtual void setHandleMouse( bool _handle ) = 0;
 

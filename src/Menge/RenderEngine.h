@@ -42,7 +42,7 @@ namespace Menge
 		void render();
 
 		void setContentResolution( const mt::vec2f _resolution );
-		mt::vec2f getBestDisplayResolution( float _defWidth, float _defHeigth, float _aspect );
+		mt::vec2f getBestDisplayResolution( std::size_t _defWidth, std::size_t _defHeigth, float _aspect );
 
 		void setRenderViewport( const Viewport & _viewport );
 		const Viewport & getRenderViewport() const;

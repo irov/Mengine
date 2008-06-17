@@ -363,10 +363,10 @@ namespace     Menge
 		it != it_end; 
 		++it )
 		{
-			width += m_resource->getCharRatio( *it ) * m_height + m_charOffset;
+			width += static_cast<int>( m_resource->getCharRatio( *it ) * m_height ) + m_charOffset;
 		}
 
-		return width;
+		return width;	// don't count offset after last char
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void split(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters)
@@ -478,6 +478,18 @@ namespace     Menge
 		if( m_resourcename != _resName )
 		{
 			m_resourcename = _resName;
+			if( isCompile() )
+			{
+				recompile();
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setOutlineResource( const String& _outlineName )
+	{
+		if( m_outlineFontName != _outlineName )
+		{
+			m_outlineFontName = _outlineName;
 			if( isCompile() )
 			{
 				recompile();

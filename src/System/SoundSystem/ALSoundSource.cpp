@@ -64,7 +64,7 @@ void ALSoundSource::play()
 
 	if( m_soundBuffer && m_soundBuffer->isStreamed() )
 	{
-		//alSourcei( m_sourceName->name, AL_BUFFER, NULL );
+		alSourcei( m_sourceName->name, AL_BUFFER, NULL );
 	    alSourcei( m_sourceName->name, AL_LOOPING, AL_FALSE ); //Streaming sources can't loop
 		static_cast<ALSoundBufferStream*>( m_soundBuffer )
 			->record( m_sourceName->name );
@@ -103,7 +103,7 @@ void ALSoundSource::pause()
 void ALSoundSource::stop()
 {
 	//printf("stopping\n");
-
+	if( !m_playing ) return;
 	m_playing = false;
 
 	if( !m_sourceName )

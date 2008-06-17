@@ -148,7 +148,7 @@ namespace Menge
 			unsigned int buff_size = file->size();
 			s_buff.resize( buff_size );
 			file->read( &s_buff[0], buff_size );*/
-			Image cimage;
+			/*Image cimage;
 			cimage.load( _filename );
 
 			TextureDesc	textureDesc;
@@ -160,14 +160,14 @@ namespace Menge
 			//textureDesc.buffer = &s_buff[0];
 			//textureDesc.size = buff_size;
 			textureDesc.name = _filename.c_str();
-			textureDesc.filter = _filter;
+			textureDesc.filter = _filter;*/
 
-			/*DataStreamInterface* file = Holder<FileEngine>::hostage()->openFile( _filename );
+			DataStreamInterface* file = Holder<FileEngine>::hostage()->openFile( _filename );
 
 			TextureDesc textureDesc;
 			textureDesc.buffer = file->getBuffer();
 			textureDesc.name = _filename.c_str();
-			textureDesc.size = file->size();*/
+			textureDesc.size = file->size();
 			if( textureDesc.buffer == 0 )
 			{
 				MENGE_LOG( "Error: Image from file '%s' not loader\n", _filename.c_str() );
@@ -177,7 +177,7 @@ namespace Menge
 
 			image = loadImage( textureDesc );
 
-			//Holder<FileEngine>::hostage()->closeStream( file );
+			Holder<FileEngine>::hostage()->closeStream( file );
 
 			if( image == 0 )
 			{
@@ -329,15 +329,15 @@ namespace Menge
 		return m_interface->releaseSceneNode( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f RenderEngine::getBestDisplayResolution( float _defWidth, float _defHeigth, float _aspect )
+	mt::vec2f RenderEngine::getBestDisplayResolution( std::size_t _defWidth, std::size_t _defHeigth, float _aspect )
 	{
 		int * rl;
 		unsigned int count = m_interface->getResolutionList( &rl );
 
 		float needWidth = _defHeigth * _aspect;
 
-		float bestWidth = _defWidth;
-		float bestHeight = _defHeigth;
+		std::size_t bestWidth = _defWidth;
+		std::size_t bestHeight = _defHeigth;
 
 		typedef std::vector<int> TResolutionVector;
 		typedef std::map< int, TResolutionVector > TResolutionMap;

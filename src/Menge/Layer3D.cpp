@@ -64,11 +64,11 @@ namespace	Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SceneNode3D * Layer3D::getNode(const std::string & _name )
+	/*SceneNode3D * Layer3D::getNode(const std::string & _name )
 	{
 		SceneNode3D * node = getChildrenT<SceneNode3D>( _name, true );
 		return node;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::loader( XmlElement * _xml )
 	{
@@ -110,10 +110,10 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::_addChildren( SceneNode3D * _node )
+	/*void Layer3D::_addChildren( SceneNode3D * _node )
 	{
 		_node->attachToRootNode();
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::loaderControllers_( XmlElement * _xml )
 	{

@@ -2,13 +2,14 @@
 #	include "Image.h"
 #	include "ImageCodec.h"
 #	include "ImageResampler.h"
+#	include "LogEngine.h"
 
 namespace Menge 
 {
+	//////////////////////////////////////////////////////////////////////////
 	ImageCodec::~ImageCodec() 
 	{
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	Image::Image()
 	: m_width( 0 )
@@ -252,8 +253,12 @@ namespace Menge
 		}
 
 		Codec* codec = Codec::getCodec( strExt );
-		assert( codec && String( "Image::load -> Unable to load image file '" 
-									+ _strFileName + "' - invalid extension.").c_str() );
+		//assert( codec && String( "Image::load -> Unable to load image file '" 
+		//							+ _strFileName + "' - invalid extension.").c_str() );
+		if( !codec )
+		{
+			MENGE_LOG( "Warning: Image codec for extension %s was not found", strExt.c_str() );
+		}
 
 		DataStreamInterface* encoded = Holder<FileEngine>::hostage()->openFile( _strFileName );
 

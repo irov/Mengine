@@ -135,4 +135,14 @@ namespace Menge
 
 		return 0;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool LayerScene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	{
+		if( m_subScene )
+		{
+			return m_subScene->handleMouseButtonEventEnd( _button, _isDown );
+		}
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

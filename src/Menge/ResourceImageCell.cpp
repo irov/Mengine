@@ -13,6 +13,9 @@ namespace Menge
 		, m_numX(0)
 		, m_numY(0)
 	{
+		m_imageDesc.isAlpha = true;
+		m_imageDesc.maxSize = mt::vec2f( 0.0f, 0.0f );
+		m_imageDesc.offset = mt::vec2f( 0.0f, 0.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageCell::getMaxSize( unsigned int _frame ) const
@@ -105,7 +108,17 @@ namespace Menge
 
 		m_imageFrame.size = mt::vec2f(m_imageFrame.size.x * ku,m_imageFrame.size.y * kv);
 	*/
-		m_imageFrame.size = m_imageDesc.size;
+		if( m_imageFrame.size.x == 0.0f &&
+			m_imageFrame.size.y == 0.0f )
+		{
+			m_imageFrame.size = m_imageDesc.size;
+		}
+
+		if( m_imageFrame.maxSize.x == 0.0f &&
+			m_imageFrame.maxSize.y == 0.0f )
+		{
+			m_imageFrame.maxSize = m_imageFrame.size;
+		}
 
 		m_imageFrame.size.x /= (float)m_numX;
 		m_imageFrame.size.y /= (float)m_numY;

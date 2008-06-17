@@ -148,10 +148,10 @@ namespace	Menge
 			return false;
 		}
 
-		const std::string & mesh = m_resource->getMeshName();
+//		const std::string & mesh = m_resource->getMeshName();
 		const std::string & name = this->getName();
 
-		m_entity = Holder<RenderEngine>::hostage()->createEntity(name, mesh);
+//		m_entity = Holder<RenderEngine>::hostage()->createEntity(name, mesh);
 
 		m_skeleton = m_entity->getSkeleton();
 

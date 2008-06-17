@@ -187,6 +187,11 @@ namespace Menge
 				->handleMouseButtonEvent( _button, _isDown );
 		}
 
+		if( m_scene )
+		{
+			m_scene->handleMouseButtonEventEnd( _button, _isDown );
+		}
+
 		return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////

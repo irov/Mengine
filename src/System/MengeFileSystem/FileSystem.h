@@ -12,6 +12,7 @@ public:
 	~MengeFileSystem();
 
 public:
+
 	void loadPath( const Menge::String& _path ) override;
 	void loadPak( const Menge::String& _pak ) override;
 	void unloadPak( const Menge::String& _pak ) override;
@@ -27,8 +28,10 @@ public:
 	bool deleteFolder( const Menge::String& _path ) override;
 	bool changeDir( const Menge::String& _path ) override;
 
-	//const TCHAR* getApplicationDataPath( const TCHAR* _game ) override;
+	bool initAppDataPath( const Menge::String& _game ) override;
+	const Menge::String& getAppDataPath() override;
 
 private:
 	FileManager* m_fileManager;
+	Menge::String m_appDataPath;
 };

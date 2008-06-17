@@ -89,7 +89,7 @@ namespace Menge
 		float m_restitution;
 		unsigned int m_collisionMask;
 		unsigned int m_categoryBits;
-		unsigned int m_groupIndex;
+		int m_groupIndex;
 		
 		typedef std::vector<mt::polygon> TShapeList;
 		TShapeList m_shapeList;

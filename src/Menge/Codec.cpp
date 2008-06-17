@@ -37,8 +37,12 @@ namespace Menge
 			std::tolower);
 
 		TCodecMap::const_iterator i = ms_mapCodecs.find( lwrcase );
-		assert( ( i != ms_mapCodecs.end() ) &&
-			String( "Codec::getCodec -> Cannot find codec for extension " + _extension ).c_str() );
+		//assert( ( i != ms_mapCodecs.end() ) &&
+		//	String( "Codec::getCodec -> Cannot find codec for extension " + _extension ).c_str() );
+		if( i == ms_mapCodecs.end() )
+		{
+			return NULL;
+		}
 
 		return i->second;
 

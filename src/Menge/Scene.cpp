@@ -141,10 +141,10 @@ namespace	Menge
 			}
 		}
 
-		if( updatable() )
+		/*if( updatable() )
 		{
 			askEvent( handle, "MOUSE_BUTTON_END", "(Ib)", _button, _isDown );
-		}
+		}*/
 
 		return handle;	
 	}
@@ -309,6 +309,25 @@ namespace	Menge
 			Holder<PhysicEngine2D>::hostage()->createScene( mt::vec2f( m_physWorldBox2D.x, m_physWorldBox2D.y ),mt::vec2f( m_physWorldBox2D.z, m_physWorldBox2D.w ), m_gravity2D );
 		}
 		return NodeCore::compile();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
+	{
+		for( TListChildren::reverse_iterator 
+			it = m_listChildren.rbegin(),
+			it_end = m_listChildren.rend();
+		it != it_end;
+		++it)
+		{
+			(*it)->handleMouseButtonEventEnd( _button, _isDown );
+		}
+
+		bool handle = false;
+		if( updatable() )
+		{
+			askEvent( handle, "MOUSE_BUTTON_END", "(Ib)", _button, _isDown );
+		}
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

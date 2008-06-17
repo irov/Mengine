@@ -28,6 +28,8 @@ namespace	Menge
 		, m_resource( 0 )
 		, m_blendSrc( BF_SOURCE_ALPHA )
 		, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
+		, m_autoPlay( false )
+		, m_looped( false )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Emitter::~Emitter()
@@ -67,6 +69,16 @@ namespace	Menge
 			return false;
 		}
 
+		if( m_autoPlay )
+		{
+			m_interface->play();
+		}
+
+		if( m_looped )
+		{
+			m_interface->setLooped( m_looped );
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -83,6 +95,8 @@ namespace	Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourcename );
 			XML_CASE_ATTRIBUTE_NODE( "Emitter", "Name", m_emitterName );
+			XML_CASE_ATTRIBUTE_NODE( "AutoPlay", "Value", m_autoPlay );
+			XML_CASE_ATTRIBUTE_NODE( "Looped", "Value", m_looped );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -198,10 +212,10 @@ namespace	Menge
 					// terrible :(
 					Holder<RenderEngine>::hostage()->renderImage(
 						wm, 
-						mt::vec2f(p->x1, p->y1),
 						mt::vec2f(p->x2, p->y2),
-						mt::vec2f(p->x3, p->y3),
+						mt::vec2f(p->x1, p->y1),
 						mt::vec2f(p->x4, p->y4),
+						mt::vec2f(p->x3, p->y3),
 						mt::vec4f(p->u0, p->v0, p->u1, p->v1),
 						p->color,
 						image,

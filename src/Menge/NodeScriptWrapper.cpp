@@ -43,7 +43,6 @@
 #	include "ReversiAI.h"
 #	include "CornersAI.h"
 
-#	include "Camera3D.h"
 #	include "DiscreteEntity.h"
 
 #	include "SoundEngine.h"
@@ -51,7 +50,6 @@
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
 
-#	include "Camera3D.h"
 #	include "Layer3D.h"
 
 #	include "FFCamera.h"
@@ -621,13 +619,13 @@ namespace Menge
 			;
 
 		{
-			pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
+			/*pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
 				//.def( "addCamera", &Layer3D::addCamera )
 				//.def( "getCamera", &Layer3D::getCamera )	
 				.def( "addController", &Layer3D::addController )
 				.def( "getController", &Layer3D::getController )		
 				.def( "getNode", &Layer3D::getNode )
-				;
+				;*/
 
 			pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)
 				.def( "applyForce", &RigidBody3D::applyForce )
@@ -708,6 +706,7 @@ namespace Menge
 				.def( "getLineOffset", &TextField::getLineOffset )
 				.def( "setLineOffset", &TextField::setLineOffset )
 				.def( "setResource", &TextField::setResource )
+				.def( "setOutlineResource", &TextField::setOutlineResource )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)

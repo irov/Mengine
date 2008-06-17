@@ -2,7 +2,7 @@
 #	include "OgreRenderImage.h"
 
 const unsigned int VERTEX_PER_QUAD			= 6;
-const unsigned int VERTEXBUFFER_INITIAL_CAPACITY	= 70000;
+const unsigned int VERTEXBUFFER_INITIAL_CAPACITY	= 2400000;
 const unsigned int UNDERUSED_FRAME_THRESHOLD = 70000;
 const unsigned int VECTOR_CAPACITY = 40000;
 

@@ -20,6 +20,7 @@ public:
 class	FileSystemInterface
 {
 public:
+
 	virtual void loadPath( const Menge::String& _path ) = 0;
 	virtual void loadPak( const Menge::String& _pak ) = 0;
 	virtual void unloadPak( const Menge::String& _pak ) = 0;
@@ -35,7 +36,8 @@ public:
 	virtual bool deleteFolder(  const Menge::String& _path  ) = 0;
 	virtual bool changeDir(  const Menge::String& _path  ) = 0;
 
-	//virtual const TCHAR * getApplicationDataPath( const TCHAR* _game ) = 0;
+	virtual bool initAppDataPath( const Menge::String& _game ) = 0;
+	virtual const Menge::String& getAppDataPath() = 0;
 };
 
 bool initInterfaceSystem( FileSystemInterface**	_ptrFileSystem );

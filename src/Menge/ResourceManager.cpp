@@ -318,7 +318,10 @@ namespace Menge
 			; it != it_end
 			; it++ )
 		{
-			fprintf( file, "--> %s : %d\n", it->first.c_str(), it->second->countReference() );
+			if( it->second->countReference() )
+			{
+				fprintf( file, "--> %s : %d\n", it->first.c_str(), it->second->countReference() );
+			}
 		}
 		fclose( file );
 	}

@@ -74,6 +74,7 @@
 # include "ResourceSound.h"
 # include "ResourceTileMap.h"
 # include "ResourceTileSet.h"
+# include "ResourceMeshMS3D.h"
 
 #	include "FreeImageCodec.h"
 
@@ -219,28 +220,6 @@ namespace Menge
 
 		m_renderEngine->initialize( renderDriver.c_str() );
 
-		/*if( renderDriver == "D3D9" )
-		{
-#	ifndef _DEBUG
-			Holder<RenderEngine>::hostage()->initialize( "RenderSystem_Direct3D9" );
-#	else 
-			Holder<RenderEngine>::hostage()->initialize( "RenderSystem_Direct3D9_d" );
-#	endif
-		}
-		else if( renderDriver == "OGL" )
-		{
-#	ifndef _DEBUG
-			Holder<RenderEngine>::hostage()->initialize( "RenderSystem_GL" );
-#	else 
-			Holder<RenderEngine>::hostage()->initialize( "RenderSystem_GL_d" );
-#	endif
-		}
-		else
-		{
-			MENGE_LOG("Please select render drive 'D3D9' or 'OGL'. Thanks!");
-			return false;
-		}*/
-
 		m_currentResolution.x = game->getWidth();
 		m_currentResolution.y = game->getHeight();
 		if( game->getFullscreen() )
@@ -376,6 +355,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceSound );
 		RESOURCE_FACTORY( ResourceTileMap );
 		RESOURCE_FACTORY( ResourceTileSet );
+		RESOURCE_FACTORY( ResourceMeshMS3D );
 		
 		if( !m_interface->init( _applicationFile.c_str(), this ) )
 		{
@@ -459,6 +439,12 @@ namespace Menge
 		FreeImageCodec::startup();
 
 		Holder<ResourceManager>::keep( new ResourceManager );
+
+		const String& title = game->getTitle();
+		if( !m_fileEngine->initAppDataPath( title ) )
+		{
+			MENGE_LOG( "Warning: Can't initialize user's data path" );
+		}
 
 		if( createGame() == false )
 		{

@@ -40,6 +40,9 @@ namespace Menge
 
 		bool changeDir( const Menge::String& _dir );
 
+		bool initAppDataPath( const Menge::String& _game );
+		const String& getAppDataPath();
+
 	protected:
 		FileSystemInterface * m_interface;
 

@@ -585,6 +585,18 @@
 			Name="Player"
 			>
 			<File
+				RelativePath=".\Account.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GameSettings.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\GameSettings.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Player.cpp"
 				>
 			</File>
@@ -857,6 +869,22 @@
 				</File>
 				<File
 					RelativePath=".\ResourceMesh.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceMeshMD3.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceMeshMD3.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceMeshMS3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceMeshMS3D.h"
 					>
 				</File>
 				<File

@@ -97,24 +97,24 @@ void CornersAI::createTree( TMovesTree** _head, TMovesTree* _parent, int _x, int
 	{
 		// Простые шаги обрабатываются только для первого шага
 		// Рекурсия не вызывается, а просто создаются конечные узлы
-		if ( _x != 7 && m_board[_x+1][_y] == TState::Space )
+		if ( _x != 7 && m_board[_x+1][_y] == Space )
 		{
-			(*_head)->simpleStep[TDirection::Right] = new TMovesTree( (*_head), _x+1, _y );
+			(*_head)->simpleStep[Right] = new TMovesTree( (*_head), _x+1, _y );
 			//initialize( &(*_head)->simpleStep[TDirection::Right], (*_head), _x+1, _y );
 		}
-		if ( _x != 0 && m_board[_x-1][_y] == TState::Space )
+		if ( _x != 0 && m_board[_x-1][_y] == Space )
 		{
-			(*_head)->simpleStep[TDirection::Left] = new TMovesTree( (*_head), _x-1, _y );
+			(*_head)->simpleStep[Left] = new TMovesTree( (*_head), _x-1, _y );
 			//initialize( &(*_head)->simpleStep[TDirection::Left], (*_head), _x-1, _y );
 		}
-		if ( _y != 7 && m_board[_x][_y+1] == TState::Space )
+		if ( _y != 7 && m_board[_x][_y+1] == Space )
 		{
-			(*_head)->simpleStep[TDirection::Up] = new TMovesTree( (*_head), _x, _y+1 );
+			(*_head)->simpleStep[Up] = new TMovesTree( (*_head), _x, _y+1 );
 			//initialize( &(*_head)->simpleStep[TDirection::Up], (*_head), _x, _y+1 );
 		}
-		if ( _y != 0 && m_board[_x][_y-1] == TState::Space )
+		if ( _y != 0 && m_board[_x][_y-1] == Space )
 		{
-			(*_head)->simpleStep[TDirection::Down] = new TMovesTree( (*_head), _x, _y-1 );
+			(*_head)->simpleStep[Down] = new TMovesTree( (*_head), _x, _y-1 );
 			//initialize( &(*_head)->simpleStep[TDirection::Down], (*_head), _x, _y-1 );
 		}
 	}
@@ -123,38 +123,38 @@ void CornersAI::createTree( TMovesTree** _head, TMovesTree* _parent, int _x, int
 	// Вправо
 	if ( _x != 7 
 		&& _x+1 != 7 
-		&& m_board[_x+1][_y] != TState::Space 
-		&& m_board[_x+2][_y] == TState::Space 
+		&& m_board[_x+1][_y] != Space 
+		&& m_board[_x+2][_y] == Space 
 		&& isFirstTime( (*_head), _x+2, _y ) )
 	{
-		createTree( &(*_head)->jumpStep[TDirection::Right], (*_head), _x+2, _y, false );
+		createTree( &(*_head)->jumpStep[Right], (*_head), _x+2, _y, false );
 	}
 	// Влево
 	if ( _x != 0 
 		&& _x-1 != 0 
-		&& m_board[_x-1][_y] != TState::Space 
-		&& m_board[_x-2][_y] == TState::Space 
+		&& m_board[_x-1][_y] != Space 
+		&& m_board[_x-2][_y] == Space 
 		&& isFirstTime( (*_head), _x-2, _y ) )
 	{
-		createTree( &(*_head)->jumpStep[TDirection::Left], (*_head), _x-2, _y, false);
+		createTree( &(*_head)->jumpStep[Left], (*_head), _x-2, _y, false);
 	}
 	// Вверх
 	if ( _y != 7 
 		&& _y+1 != 7 
-		&& m_board[_x][_y+1] != TState::Space 
-		&& m_board[_x][_y+2] == TState::Space 
+		&& m_board[_x][_y+1] != Space 
+		&& m_board[_x][_y+2] == Space 
 		&& isFirstTime( (*_head), _x, _y+2 ) )
 	{
-		createTree( &(*_head)->jumpStep[TDirection::Up], (*_head), _x, _y+2, false );
+		createTree( &(*_head)->jumpStep[Up], (*_head), _x, _y+2, false );
 	}
 	// Вниз
 	if ( _y != 0 
 		&& _y-1 != 0 
-		&& m_board[_x][_y-1] != TState::Space 
-		&& m_board[_x][_y-2] == TState::Space 
+		&& m_board[_x][_y-1] != Space 
+		&& m_board[_x][_y-2] == Space 
 		&& isFirstTime( (*_head), _x, _y-2 ) )
 	{
-		createTree( &(*_head)->jumpStep[TDirection::Down], (*_head), _x, _y-2, false );
+		createTree( &(*_head)->jumpStep[Down], (*_head), _x, _y-2, false );
 	}
 }
 
@@ -261,13 +261,13 @@ int CornersAI::goalFunc()
 	{
 		for ( j = 0; j < 8; j++ )
 		{
-			if ( m_board[i][j] == TState::White )
+			if ( m_board[i][j] == White )
 			{
 				// Сумма расстояний до угла черных
 				// WhiteR:=WhiteR+16-ord(i)-ord(j);
 				WhiteR = WhiteR + ( 16 - MIN(i, 7) - MIN(j, 7) );
 			}
-			if ( m_board[i][j] == TState::Black )
+			if ( m_board[i][j] == Black )
 			{
 				// Сумма расстояний до угла белых
 				// BlackR:=BlackR+ord(i)+ord(j);
@@ -275,7 +275,7 @@ int CornersAI::goalFunc()
 			}
 		}
 	}
-	if ( m_turn == TState::Black )
+	if ( m_turn == Black )
 	{
 		return ( WhiteR - BlackR )*10 + RANDOM(0, 10);
 	}
@@ -296,7 +296,7 @@ int CornersAI::goalFunc2()
 	{
 		for ( j = 0; j < 8; j++ )
 		{
-			if ( m_board[i][j] == TState::White )
+			if ( m_board[i][j] == White )
 			{
 				// Взвешенная Сумма расстояний до угла черных
 				if ( i < 4 || j < 2 )
@@ -308,12 +308,12 @@ int CornersAI::goalFunc2()
 					WhiteR = WhiteR + 16 - i - j;
 				}
 				// Количество достигших своего места
-				if ( m_initialBoard[i][j] == TState::Black )
+				if ( m_initialBoard[i][j] == Black )
 				{
 					WhiteCount++;
 				}
 			}
-			else if ( m_board[i][j] == TState::Black )
+			else if ( m_board[i][j] == Black )
 			{
 				// Взвешенная Сумма расстояний до угла белых
 				if ( i > 5 || j > 5)
@@ -325,7 +325,7 @@ int CornersAI::goalFunc2()
 					BlackR = BlackR + i + j;
 				}
 				// Количество достигших своего места}
-				if ( m_initialBoard[i][j] == TState::White )
+				if ( m_initialBoard[i][j] == White )
 				{
 					BlackCount++;
 				}
@@ -333,7 +333,7 @@ int CornersAI::goalFunc2()
 		}
 	}
 
-	if ( m_turn == TState::Black )
+	if ( m_turn == Black )
 	{
 		return +BlackCount*50 - BlackR*10 + RANDOM(0, 10);
 	}
@@ -353,18 +353,18 @@ void CornersAI::setPiece( const TPlace& _place, int _player )
 
 void CornersAI::removePiece( int _x, int _y )
 {
-	m_board[_x][_y] = TState::Space;
+	m_board[_x][_y] = Space;
 }
 
 void CornersAI::remvoePiece( const TPlace& _place )
 {
-	m_board[_place.x][_place.y] = TState::Space;
+	m_board[_place.x][_place.y] = Space;
 }
 
 void CornersAI::makeMove( int _x1, int _y1, int _x2, int _y2 )
 {
 	m_board[_x2][_y2] = m_board[_x1][_y1];
-	m_board[_x1][_y1] = TState::Space;
+	m_board[_x1][_y1] = Space;
 }
 
 /*void CornersAI::makeMove( const TPlace& _start, const TPlace& _end )
@@ -422,20 +422,20 @@ int CornersAI::autoMove( int _level )
 	{
 		for ( j = 0; j < 8; j++ )
 		{
-			if ( m_board[i][j] == TState::White )
+			if ( m_board[i][j] == White )
 			{
 				WhiteR = WhiteR + 16 - i - j;
 				Count++;
 			}
-			else if ( m_board[i][j] == TState::Black )
+			else if ( m_board[i][j] == Black )
 			{
 				BlackR = BlackR + i + j;
 			}
-			if( m_initialBoard[i][j] == TState::White && m_board[i][j] != TState::Black )
+			if( m_initialBoard[i][j] == White && m_board[i][j] != Black )
 			{
 				BlackSp++;
 			}
-			else if( m_initialBoard[i][j] == TState::Black && m_board[i][j] != TState::White )
+			else if( m_initialBoard[i][j] == Black && m_board[i][j] != White )
 			{
 				WhiteSp++;
 			}
@@ -443,7 +443,7 @@ int CornersAI::autoMove( int _level )
 	}
 
 	// Выбрать алгоритм вычисления следующего хода
-	if ( ( m_turn == TState::White && WhiteR > Count*5 ) || ( m_turn == TState::Black && BlackR > Count*5) )
+	if ( ( m_turn == White && WhiteR > Count*5 ) || ( m_turn == Black && BlackR > Count*5) )
 	{
 		// Выбор хода по правилам первой половины партии
 		getBestMove( Result, _level );
@@ -451,7 +451,7 @@ int CornersAI::autoMove( int _level )
 	else
 	{
 		// Выбор хода по правилам второй половины партии
-		if ( ( m_turn == TState::White && WhiteSp <= 3 ) || ( m_turn == TState::Black && BlackSp <= 3 ) )
+		if ( ( m_turn == White && WhiteSp <= 3 ) || ( m_turn == Black && BlackSp <= 3 ) )
 		{
 			getBestMove2( Result, MAX( _level, 3) );
 		}
@@ -618,12 +618,12 @@ int CornersAI::getWinner()
   // Для черных
   for ( i = 0; i < 8; i++ )
   {
-	  if ( m_initialBoard[i][0] != TState::White ) goto a;
+	  if ( m_initialBoard[i][0] != White ) goto a;
       for ( j = 0; j < 8; j++ )
 	  {
-		  if ( m_initialBoard[i][j] = TState::White )
+		  if ( m_initialBoard[i][j] = White )
 		  {
-			  if ( m_board[i][j] != TState::Black )
+			  if ( m_board[i][j] != Black )
 			  {
 				NotBlack = true;
 				goto a;
@@ -640,12 +640,12 @@ b: //Просто прервали внутренний цикл
 a: //Для белых
   for ( i = 7; i > -1; i-- )
   {
-	  if ( m_initialBoard[i][7] != TState::Black ) goto c;
+	  if ( m_initialBoard[i][7] != Black ) goto c;
       for ( j = 7; j > -1; j-- )
 	  {
-		  if ( m_initialBoard[i][j] == TState::Black )
+		  if ( m_initialBoard[i][j] == Black )
 		  {
-			  if ( m_board[i][j] != TState::White )
+			  if ( m_board[i][j] != White )
 			  {
 				NotWhite = true;
 				goto c;
@@ -662,17 +662,17 @@ d: //Просто прервали внутренний цикл
 c: //Посмотрим что получили
   if ( NotWhite && NotBlack )
   {
-	  return TState::Space;
+	  return Space;
   }
   else
   {
       if ( NotWhite )
 	  {
-		  return TState::Black;
+		  return Black;
 	  }
 	  else 
 	  {
-		  return TState::White;
+		  return White;
 	  }
   }
 }

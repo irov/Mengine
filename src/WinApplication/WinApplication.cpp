@@ -293,7 +293,7 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, float _width, flo
 
 	/// patch for ansi names
 	char *ansistr = NULL;
-	int length = MultiByteToWideChar(CP_UTF8, 0, _name, strlen( _name ), NULL, NULL );
+	size_t length = MultiByteToWideChar(CP_UTF8, 0, _name, strlen( _name ), NULL, NULL );
 	WCHAR *lpszW = NULL;
 
 	lpszW = new WCHAR[length+1];
@@ -459,7 +459,7 @@ void WinApplication::minimizeWindow()
 	::ShowWindow( m_hWnd, SW_MINIMIZE );
 }
 //////////////////////////////////////////////////////////////////////////
-void WinApplication::notifyWindowModeChanged( float _width, float _height, bool _fullscreen )
+void WinApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
 {
 	m_winWidth = _width;
 	m_winHeight = _height;

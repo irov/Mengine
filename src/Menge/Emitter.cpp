@@ -172,9 +172,9 @@ namespace	Menge
 		m_resource = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Emitter::_render()
+	void Emitter::_render( bool _enableDebug )
 	{
-		SceneNode2D::_render();
+		SceneNode2D::_render( _enableDebug );
 
 		int count = m_interface->getNumTypes();
 
@@ -307,11 +307,11 @@ namespace	Menge
 		this->callEvent( "EMITTER_END", "(O)", this->getScript() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Emitter::_onSetListener()
+	void Emitter::setListener( PyObject* _listener )
 	{
-		SceneNode2D::_onSetListener();
+		SceneNode2D::setListener( _listener );
 
-		registerEventListener("EMITTER_END", "onEmitterEnd", m_listener );
-		registerEventListener("EMITTER_STOP", "onEmitterStop", m_listener );
+		registerEventListener( "EMITTER_END", "onEmitterEnd", _listener );
+		registerEventListener( "EMITTER_STOP", "onEmitterStop", _listener );
 	}
 }

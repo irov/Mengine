@@ -7,7 +7,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	GameSettings::GameSettings()
 	{
-		(*this) = ms_defaultSettings;
+		m_settings = ms_defaultSettings;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	GameSettings::~GameSettings()
@@ -27,6 +27,7 @@ namespace Menge
 			if( vit != it->second.possibleValues.end() )
 			{
 				it->second.value = _value;
+				m_toApply.push_back( it->first );
 				return true;
 			}
 		}
@@ -52,6 +53,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void GameSettings::apply()
 	{
+		m_toApply.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void GameSettings::setDefaults()
+	{
+		for( TSetttingsMap::iterator it = ms_defaultSettings.begin(), it_end = ms_defaultSettings.end()
+			; it != it_end
+			; it++ )
+		{
+			set( it->first, it->second.value );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool GameSettings::changed()
+	{
+		return !m_toApply.empty();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

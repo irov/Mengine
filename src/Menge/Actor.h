@@ -83,7 +83,7 @@ namespace Menge
 		typedef std::vector<std::string> TStringVector;
 		TStringVector m_playingAnimations;
 
-		void render(){}
+		void render( bool _debugRender ){}
 		bool isRenderable(){return false;}
 	};
 }

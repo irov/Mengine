@@ -229,20 +229,20 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_onSetListener()
+	void HotSpot::setListener( PyObject* _listener )
 	{
-		SceneNode2D::_onSetListener();
+		SceneNode2D::setListener( _listener );
 
-		registerEventListener( "KEY", "onHandleKeyEvent", m_listener );
-		registerEventListener( "MOUSE_BUTTON", "onHandleMouseButtonEvent", m_listener );
-		registerEventListener( "MOUSE_MOVE", "onHandleMouseMove", m_listener );
+		registerEventListener( "KEY", "onHandleKeyEvent", _listener );
+		registerEventListener( "MOUSE_BUTTON", "onHandleMouseButtonEvent", _listener );
+		registerEventListener( "MOUSE_MOVE", "onHandleMouseMove", _listener );
 
-		registerEventListener( "GLOBAL_MOUSE_BUTTON", "onGlobalHandleMouseButtonEvent", m_listener );
-		registerEventListener( "GLOBAL_MOUSE_MOVE", "onGlobalHandleMouseMove", m_listener );
-		registerEventListener( "GLOBAL_KEY", "onGlobalHandleKeyEvent", m_listener );
+		registerEventListener( "GLOBAL_MOUSE_BUTTON", "onGlobalHandleMouseButtonEvent", _listener );
+		registerEventListener( "GLOBAL_MOUSE_MOVE", "onGlobalHandleMouseMove", _listener );
+		registerEventListener( "GLOBAL_KEY", "onGlobalHandleKeyEvent", _listener );
 		
-		registerEventListener( "LEAVE", "onLeave", m_listener );
-		registerEventListener( "ENTER", "onEnter", m_listener );		
+		registerEventListener( "LEAVE", "onLeave", _listener );
+		registerEventListener( "ENTER", "onEnter", _listener );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_update( float _timing )
@@ -306,4 +306,22 @@ namespace	Menge
 #endif
 		m_scale = _scale;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_render( bool _enableDebug )
+	{
+		if( _enableDebug )
+		{
+			for(int i = 0; i < m_polygon.num_points(); i++)
+			{
+				mt::vec2f beg = m_polygon[i];
+				mt::vec2f end = m_polygon[(i+1) % m_polygon.num_points()];
+
+				beg+=getWorldPosition();
+				end+=getWorldPosition();
+
+				Holder<RenderEngine>::hostage()->renderLine(0xFFFF0000,beg,end);
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -1,7 +1,8 @@
 
 #	include "HGERenderSystem.h"
-#	include "HGE.h"
+//#	include "HGE.h"
 #	include "HGETexture.h"
+#	include "Interface/LogSystemInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( RenderSystemInterface ** _ptrInterface )
@@ -27,6 +28,13 @@ HGERenderSystem::HGERenderSystem()
 : m_hge( NULL )
 , m_layer( 1.0f )
 , m_contentResolution( 1024.0f, 768.0f )
+, m_inRender( false )
+, m_layer3D( false )
+#ifdef _DEBUG
+, m_clearColor( 255 )
+#else
+, m_clearColor( 0 )
+#endif
 {
 
 }
@@ -56,7 +64,10 @@ bool HGERenderSystem::createRenderWindow( float _width, float _height, int _bits
 	m_hge->System_SetState( HGE_SCREENBPP, _bits );
 	m_hge->System_SetState( HGE_WINDOWED, !_fullscreen );
 	m_hge->System_SetState( HGE_HWND, (HWND)_winHandle );
-	//m_hge->System_SetState( HGE_ZBUFFER, true );
+	m_hge->System_SetState( HGE_ZBUFFER, true );
+	//m_hge->System_SetState( HGE_TEXTUREFILTER, false );
+	m_currentRenderTarget = "defaultCamera";
+	m_targetMap.insert( std::make_pair( m_currentRenderTarget, 0 ) );
 	bool ret = false;
 	ret = m_hge->System_Initiate( m_logSystem );
 	return ret;
@@ -136,7 +147,10 @@ RenderImageInterface * HGERenderSystem::createImage( const char* _name,
 //////////////////////////////////////////////////////////////////////////
 RenderImageInterface * HGERenderSystem::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera )
 {
-	return NULL;
+	HTARGET htgt = m_hge->Target_Create( _width, _height, 0 );
+	m_targetMap.insert( std::make_pair( _name, htgt ) );
+	HGETexture* texture = new HGETexture( m_hge, m_hge->Target_GetTexture( htgt ), _name );
+	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
 RenderImageInterface * HGERenderSystem::loadImage( const TextureDesc& _desc )
@@ -149,6 +163,12 @@ RenderImageInterface * HGERenderSystem::loadImage( const TextureDesc& _desc )
 void HGERenderSystem::releaseImage( RenderImageInterface * _image )
 {
 	HGETexture* texture = static_cast<HGETexture*>( _image );
+	TTargetMap::iterator it = m_targetMap.find( texture->getDescription() );
+	if( it != m_targetMap.end() )
+	{
+		m_hge->Target_Free( it->second );
+		m_targetMap.erase( it );
+	}
 	delete texture;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -270,29 +290,35 @@ void HGERenderSystem::beginScene()
 	m_layer = 1.0f;
 	m_hge->Gfx_BeginScene();
 	m_hge->Gfx_SetClipping( 0, 0, m_hge->System_GetState( HGE_SCREENWIDTH ), m_hge->System_GetState( HGE_SCREENHEIGHT ) );
-	m_hge->Gfx_Clear( 255 );
+	m_hge->Gfx_Clear( m_clearColor );
 	m_hge->Gfx_SetClipping( m_viewport.min.x, m_viewport.min.y, m_viewport.max.x, m_viewport.max.y );
+	m_inRender = true;
+	m_currentRenderTarget = "defaultCamera";
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::endScene()
 {
 	m_hge->Gfx_EndScene();
+	m_inRender = false;
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::beginLayer2D()
 {
+	if( m_layer3D == false ) return;	// already 2D
 	m_hge->Gfx_Prepare2D();
+	m_layer3D = false;
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::endLayer2D()
 {
-
 	m_layer -= 0.001f;
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::beginLayer3D()
 {
+	if( m_layer3D ) return;	// already 3D
 	m_hge->Gfx_Prepare3D();
+	m_layer3D = true;
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::endLayer3D()
@@ -418,7 +444,9 @@ void HGERenderSystem::onWindowClose()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::renderMesh( const TVertex* _vertices, std::size_t _verticesNum, TMaterial* _material )
+void HGERenderSystem::renderMesh( const TVertex* _vertices, std::size_t _verticesNum,
+								 const Menge::uint16*	_indices, std::size_t _indicesNum,
+								 TMaterial* _material )
 {
 	static std::vector<mengeVertex> vtx;
 	vtx.clear();
@@ -426,16 +454,46 @@ void HGERenderSystem::renderMesh( const TVertex* _vertices, std::size_t _vertice
 	mengeVertex v;
 	for( size_t i = 0; i < _verticesNum; i++ )
 	{
-		v.x = _vertices[i].x;
-		v.y = _vertices[i].y;
-		v.z = _vertices[i].z;
-		v.nx = _vertices[i].nx;
-		v.ny = _vertices[i].ny;
-		v.nz = _vertices[i].nz;
-		v.tx = v.ty = 0;
-		v.col = 0xFF00FF00;
+		v.x = _vertices[i].pos[0];
+		v.y = _vertices[i].pos[1];
+		v.z = _vertices[i].pos[2];
+		v.nx = _vertices[i].n[0];
+		v.ny = _vertices[i].n[1];
+		v.nz = _vertices[i].n[2];
+		v.tx = _vertices[i].uv[0];
+		v.ty = _vertices[i].uv[1];
+		v.col = _vertices[i].col;
 		vtx.push_back( v );
 	}
-	 m_hge->Gfx_RenderMesh( &(vtx[0]), _verticesNum );
+	HTEXTURE htex = 0;
+	if( _material )
+	{
+		HGETexture* tex = static_cast<HGETexture*>( _material->texture );
+		if( tex )
+		{
+			htex = tex->getHandle();
+		}
+	}
+	m_hge->Gfx_RenderMesh( &(vtx[0]), _verticesNum, _indices, _indicesNum, htex );
+}
+//////////////////////////////////////////////////////////////////////////
+void HGERenderSystem::setRenderTarget( const Menge::String& _name )
+{
+	if( m_currentRenderTarget == _name ) return;
+	TTargetMap::iterator it = m_targetMap.find( _name );
+	if( it != m_targetMap.end() )
+	{
+		if( m_inRender )
+		{
+			m_hge->Gfx_EndScene( false );
+		}
+		m_currentRenderTarget = _name;
+		m_hge->Gfx_BeginScene( it->second );
+	}
+	else
+	{
+		m_logSystem->logMessage( "Warning: Invalid Render Target name ", false, false, true );
+		m_logSystem->logMessage( _name, false, true, false );
+	}
 }
 //////////////////////////////////////////////////////////////////////////

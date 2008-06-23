@@ -10,7 +10,7 @@ namespace Menge
 	public:
 		NodeRenderable();
 
-		void render() override;
+		void render( bool _enableDebug ) override;
 		bool isRenderable() override;
 	
 	public:
@@ -18,7 +18,7 @@ namespace Menge
 		virtual bool isHide() const;	
 
 	protected:
-		virtual void _render();
+		virtual void _render( bool _enableDebug );
 
 		virtual bool _renderBegin();
 		virtual void _renderEnd();

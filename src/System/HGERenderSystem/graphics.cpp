@@ -210,11 +210,11 @@ bool CALL HGE_Impl::Gfx_BeginScene( HTARGET targ )
 	return true;
 }
 
-void CALL HGE_Impl::Gfx_EndScene()
+void CALL HGE_Impl::Gfx_EndScene( bool _swapBuffers )
 {
 	_render_batch(true);
 	pD3DDevice->EndScene();
-	if(!pCurTarget) pD3DDevice->Present( NULL, NULL, NULL, NULL );
+	if(!pCurTarget && _swapBuffers ) pD3DDevice->Present( NULL, NULL, NULL, NULL );
 }
 
 void CALL HGE_Impl::Gfx_RenderLine(float x1, float y1, float x2, float y2, DWORD color, float z)
@@ -1173,6 +1173,8 @@ void HGE_Impl::Gfx_Prepare2D()
 {
 	_render_batch( false );
 
+	pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+
 	pD3DDevice->SetVertexShader( D3DFVF_HGEVERTEX );
 	pD3DDevice->SetStreamSource( 0, pVB, sizeof(hgeVertex) );
 	pD3DDevice->SetIndices(pIB,0);
@@ -1229,20 +1231,32 @@ void HGE_Impl::Gfx_Prepare3D()
 {
 	_render_batch( false );
 
+	pD3DDevice->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
+
 	pD3DDevice->SetStreamSource( 0, pVB3D, sizeof(mengeVertex) );
 	pD3DDevice->SetVertexShader( D3DFVF_MENGEVERTEX );
-	pD3DDevice->SetIndices(0,0);
+	pD3DDevice->SetIndices( pIB3D, 0 );
 	//pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CW );
 
 	m_layer3D = true;
 }
 
-void HGE_Impl::Gfx_RenderMesh( const mengeVertex* _vertices, size_t _verticesNum )
+void HGE_Impl::Gfx_RenderMesh( const mengeVertex* _vertices, size_t _verticesNum,
+							   const unsigned short* _indices, size_t _indicesNum,
+							   HTEXTURE _htex )
 {
 	BYTE* vertexData = 0;
 	const BYTE* dstData = reinterpret_cast<const BYTE*>( &(_vertices[0]) );
 	pVB3D->Lock( 0, 0, &vertexData, 0 );
-	std::copy( dstData, dstData + _verticesNum * sizeof( mengeVertex ), vertexData );
+	std::copy( _vertices, _vertices + _verticesNum, (mengeVertex *)vertexData );
 	pVB3D->Unlock();
-	pD3DDevice->DrawPrimitive( D3DPT_TRIANGLELIST, 0, _verticesNum );
+
+	//const BYTE* dstIData = reinterpret_cast<const BYTE*>( &(_indices[0]) );
+	pIB3D->Lock( 0, 0, &vertexData, 0 );
+	std::copy( _indices, _indices + _indicesNum, (unsigned short *)vertexData );
+	pIB3D->Unlock();
+
+	pD3DDevice->SetTexture( 0, reinterpret_cast<IDirect3DTexture8*>( _htex ) );
+
+	pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, _verticesNum, 0, _indicesNum / 3 );
 }

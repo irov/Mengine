@@ -44,7 +44,7 @@ namespace Menge
 		std::string m_resourcename;
 		ResourceCapsuleController * m_resource;
 
-		void render(){}
+		void render( bool _enableDebug ){}
 		bool isRenderable(){return false;}
 	};
 }

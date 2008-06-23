@@ -27,6 +27,8 @@ namespace Menge
 
 		void removeAllEvent();
 
+		virtual void setListener( PyObject* _listener );
+
 	private:
 		typedef std::map<std::string, PyObject *> TMapEvent;
 		TMapEvent m_mapEvent;

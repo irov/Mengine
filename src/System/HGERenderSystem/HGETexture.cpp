@@ -1,20 +1,31 @@
 
 #	include "HGETexture.h"
-#	include "HGE.h"
+//#	include "HGE.h"
 
 //////////////////////////////////////////////////////////////////////////
-HGETexture::HGETexture( HGE* _hge )
+HGETexture::HGETexture( HGE* _hge, bool _freeOnDelete )
 : m_hge( _hge )
 , m_hTexture( 0 )
+, m_freeOnDelete( _freeOnDelete )
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _width, std::size_t _height )
+HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, bool _freeOnDelete )
+: m_hge( _hge )
+, m_hTexture( _htex )
+, m_name( _name )
+, m_freeOnDelete( _freeOnDelete )
+{
+
+}
+//////////////////////////////////////////////////////////////////////////
+HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete )
 : m_hge( _hge )
 , m_name( _name )
 , m_width( _width )
 , m_height( _height )
+, m_freeOnDelete( _freeOnDelete )
 {
 	m_hTexture = m_hge->Texture_Create( _width, _height );
 }
@@ -36,7 +47,7 @@ void HGETexture::load( const TextureDesc& _desc )
 //////////////////////////////////////////////////////////////////////////
 void HGETexture::unload()
 {
-	if( m_hTexture )
+	if( m_hTexture && m_freeOnDelete )
 	{
 		m_hge->Texture_Free( m_hTexture );
 		m_hTexture = 0;

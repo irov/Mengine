@@ -60,6 +60,8 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 
+		void setListener( PyObject* _listener ) override;
+
 	protected:
 		void _update( float _timing ) override;
 
@@ -79,6 +81,6 @@ namespace Menge
 		bool m_autoStart;
 		bool m_playing;
 		bool m_looping;
-		virtual void _onSetListener();
+		//virtual void _onSetListener();
 	};
 }

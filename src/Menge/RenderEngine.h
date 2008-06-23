@@ -79,7 +79,9 @@ namespace Menge
 			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
 
 		void renderMesh(
-			const std::vector<TVertex>& _vertexData, TMaterial* _material );
+			const std::vector<TVertex>& _vertexData,
+			const std::vector<uint16>& _indexData, 
+			TMaterial* _material );
 
 		void renderLine(
 			unsigned int _color,

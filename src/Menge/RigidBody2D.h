@@ -48,6 +48,7 @@ namespace Menge
 	public:
 		//void setListener( PyObject * _listener );
 		PyObject* getListener();
+		virtual void setListener( PyObject* _listener ) override;
 
 		void onApplyForceAndTorque();
 		void applyForce( float _forceX, float _forceY, float _pointX, float _pointY );
@@ -112,7 +113,7 @@ namespace Menge
 		mt::vec2f m_forcePoint;
 		mt::vec2f m_velocity;
 		bool m_countGravity;
-		virtual void _onSetListener();
+		//virtual void _onSetListener();
 
 		void _debugRender() override;
 

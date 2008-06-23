@@ -38,13 +38,13 @@ namespace Menge
 
 	public:
 		void update( float _timing ) override;
-		void render() override;
+		void render( bool _enableDebug ) override;
 
 		void _addChildren( SceneNode2D * _node ) override;
 		
 	protected:
 		bool _renderBegin() override;
-		void _render() override;
+		void _render( bool _enableDebug ) override;
 		void _renderEnd() override;
 		void _debugRender() override;
 

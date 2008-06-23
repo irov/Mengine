@@ -7,6 +7,7 @@ namespace Menge
 {
 
 	class ResourceMesh;
+	class ResourceMaterial;
 
 	class RenderMesh 
 		: public SceneNode3D_
@@ -17,16 +18,25 @@ namespace Menge
 		virtual ~RenderMesh();
 
 		void loader( XmlElement * _xml ) override;
-		void _render() override;
+		void _render( bool _enableDebug ) override;
+
+		void createRenderTarget( const String& _name, std::size_t _width, std::size_t _height );
+		void setMaterial( const String& _materialName );
 
 	protected:
 		bool _compile() override;
 		void _release() override;
 
+		void compileMaterial_();
+		void releaseMaterial_();
+
 	protected:
 		String m_resourceName;
+		String m_materialName;
 		ResourceMesh* m_resourceMesh;
-		//std::vector<TVertex> m_vertexData;
+		ResourceMaterial* m_resourceMaterial;
+		TMaterial m_material;
+		RenderImageInterface* m_renderTarget;
 	};
 
 }	// namespace Menge

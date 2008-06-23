@@ -221,12 +221,12 @@ namespace Menge
 		return m_interface->getLengthMs();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_onSetListener()
+	void SoundEmitter::setListener( PyObject* _listener )
 	{
-		SceneNode2D::_onSetListener();
+		SceneNode2D::setListener( _listener );
 
-		registerEventListener("STOP_PLAYING", "onStopped", m_listener );
-		registerEventListener("PAUSE_PLAYING", "onPaused", m_listener );
+		registerEventListener("STOP_PLAYING", "onStopped", _listener );
+		registerEventListener("PAUSE_PLAYING", "onPaused", _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

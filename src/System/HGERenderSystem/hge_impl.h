@@ -21,7 +21,7 @@
 
 #define D3DFVF_HGEVERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1)
 #define D3DFVF_MENGEVERTEX ( D3DFVF_HGEVERTEX | D3DFVF_NORMAL )
-#define VERTEX_BUFFER_SIZE 4000
+#define VERTEX_BUFFER_SIZE 10000
 
 
 typedef BOOL (WINAPI *GetSystemPowerStatusFunc)(LPSYSTEM_POWER_STATUS);
@@ -170,7 +170,7 @@ public:
 	//virtual bool		CALL	Input_GetEvent(hgeInputEvent *event);
 
 	virtual bool		CALL	Gfx_BeginScene(HTARGET target=0);
-	virtual void		CALL	Gfx_EndScene();
+	virtual void		CALL	Gfx_EndScene( bool _swapBuffers = true );
 	virtual void		CALL	Gfx_Clear(DWORD color);
 	virtual void		CALL	Gfx_RenderLine(float x1, float y1, float x2, float y2, DWORD color=0xFFFFFFFF, float z=0.5f);
 	virtual void		CALL	Gfx_RenderTriple(const hgeTriple *triple);
@@ -179,7 +179,9 @@ public:
 	virtual void		CALL	Gfx_FinishBatch(int nprim);
 	virtual void		CALL	Gfx_SetClipping(int x=0, int y=0, int w=0, int h=0);
 	virtual void		CALL	Gfx_SetTransform(float x=0, float y=0, float dx=0, float dy=0, float rot=0, float hscale=0, float vscale=0); 
-	virtual void		CALL	Gfx_RenderMesh( const mengeVertex* _vertices, size_t _verticesNum );
+	virtual void		CALL	Gfx_RenderMesh( const mengeVertex* _vertices, size_t _verticesNum,
+												const unsigned short* _indices, size_t _indicesNum,
+												HTEXTURE _htex );
 
 	virtual void		CALL	Gfx_Snapshot( HTEXTURE tex, RECT _rect );
 	virtual void		CALL	Gfx_ChangeMode( int _width, int _height, int _bpp, bool _fullscreen );

@@ -82,7 +82,7 @@ namespace	Menge
 		m_resourceMap = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TileMap::_render()
+	void TileMap::_render( bool _enableDebug )
 	{
 		const Viewport& viewport = Holder<RenderEngine>::hostage()->getRenderViewport();
 

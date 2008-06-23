@@ -83,7 +83,7 @@ namespace Menge
 	private:
 		//Camera3D * m_camera;
 
-		void render();
+		void render( bool _enableDebug );
 		bool isRenderable();
 	};
 }

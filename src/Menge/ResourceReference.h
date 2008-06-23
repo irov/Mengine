@@ -24,7 +24,7 @@ namespace Menge
 		virtual void loader( XmlElement * _xml );
 
 	protected:
-		void _incrementZero() override;
+		bool _incrementZero() override;
 		void _decrementZero() override;
 
 	protected:

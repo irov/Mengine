@@ -438,9 +438,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::render()
+	void Game::render( bool _enableDebug )
 	{
-		m_player->render();
+		m_player->render( _enableDebug );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::debugRender()
@@ -614,7 +614,7 @@ namespace Menge
 			return false;
 		}
 
-		Holder<ResourceManager>::hostage()->addListener( this );
+		//Holder<ResourceManager>::hostage()->addListener( this );
 
 		return result;
 	}
@@ -644,6 +644,8 @@ namespace Menge
 		{
 			it->second->deactivate();
 		}		
+
+		//Holder<ResourceManager>::hostage()->removeListener( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::removeArrow( const std::string & _name )
@@ -757,7 +759,7 @@ namespace Menge
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlFileM( xml_path, scene, &Scene::loader ) == false )
 			{
-				MENGE_LOG("Warrning: invalid loader xml '%s' for scene '%s'/n"
+				MENGE_LOG("Warrning: invalid loader xml '%s' for scene '%s'"
 					, xml_path.c_str()
 					, _name.c_str()
 					);

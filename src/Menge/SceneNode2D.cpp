@@ -20,7 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode2D::SceneNode2D()
 		: m_layer( NULL )
-		, m_listener( NULL )
+	//	, m_listener( NULL )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::loader( XmlElement * _xml )
@@ -56,7 +56,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::_render()
+	void SceneNode2D::_render( bool _enableDebug )
 	{
 		/*for( TListChildren::iterator
 			it = m_listChildren.begin(),
@@ -139,13 +139,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::setListener( PyObject* _listener )
 	{
-		m_listener = _listener;
-		this->_onSetListener();
+		//m_listener = _listener;
+		//this->_onSetListener();
+		Eventable::setListener( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::_onSetListener()
+	/*void SceneNode2D::_onSetListener()
 	{
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D* SceneNode2D::getLayer() const
 	{

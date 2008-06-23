@@ -39,7 +39,7 @@ namespace Menge
 		void onStopped() override;
 
 	protected:
-		void _render() override;
+		void _render( bool _enableDebug ) override;
 		void _debugRender() override;
 
 		bool _activate() override;
@@ -49,6 +49,8 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _timing ) override;
+
+		void setListener( PyObject* _listener ) override;
 
 	private:
 		ResourceEmitterContainer * m_resource;
@@ -63,7 +65,7 @@ namespace Menge
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;
 
-		virtual void _onSetListener();
+		//virtual void _onSetListener();
 
 		bool m_autoPlay;
 		bool m_looped;

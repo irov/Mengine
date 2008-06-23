@@ -224,7 +224,7 @@ namespace     Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_render()
+	void TextField::_render( bool _enableDebug )
 	{
 		const RenderImageInterface * renderImage = m_resource->getImage();
 
@@ -456,11 +456,11 @@ namespace     Menge
 	{ 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_onSetListener()
+	void TextField::setListener( PyObject* _listener )
 	{
-		SceneNode2D::_onSetListener();
-		registerEventListener("COLOR_END", "onColorEnd", m_listener );
-		registerEventListener("COLOR_STOP", "onColorStop", m_listener );
+		SceneNode2D::setListener( _listener );
+		registerEventListener("COLOR_END", "onColorEnd", _listener );
+		registerEventListener("COLOR_STOP", "onColorStop", _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getLineOffset() const

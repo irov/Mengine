@@ -37,7 +37,7 @@ namespace Menge
 
 	public:
 		void update( float _timing );
-		void render();
+		void render( bool _enableDebug = false );
 
 	public:
 		bool init();

@@ -75,6 +75,7 @@
 # include "ResourceTileMap.h"
 # include "ResourceTileSet.h"
 # include "ResourceMeshMS3D.h"
+# include "ResourceMaterial.h"
 
 #	include "FreeImageCodec.h"
 
@@ -335,6 +336,7 @@ namespace Menge
 		OBJECT_FACTORY( SceneNode3D );
 		OBJECT_FACTORY( RenderMesh );
 		OBJECT_FACTORY( Camera3D_ );
+		OBJECT_FACTORY( SceneNode3D_ );
 
 
 		RESOURCE_FACTORY( ResourceAnimation );
@@ -356,6 +358,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceTileMap );
 		RESOURCE_FACTORY( ResourceTileSet );
 		RESOURCE_FACTORY( ResourceMeshMS3D );
+		RESOURCE_FACTORY( ResourceMaterial );
 		
 		if( !m_interface->init( _applicationFile.c_str(), this ) )
 		{
@@ -441,7 +444,7 @@ namespace Menge
 		Holder<ResourceManager>::keep( new ResourceManager );
 
 		const String& title = game->getTitle();
-		if( !m_fileEngine->initAppDataPath( title ) )
+		if( !m_fileEngine->initAppDataPath( "Menge\\" + title ) )
 		{
 			MENGE_LOG( "Warning: Can't initialize user's data path" );
 		}
@@ -621,9 +624,8 @@ namespace Menge
 
 		m_renderEngine->beginScene();
 
-		Holder<Game>::hostage()->render();
+		Holder<Game>::hostage()->render( m_debugRender );
 
-		m_renderEngine->endScene();
 		//MENGE_LOG("GameRender: %.2f\n", m_interface->getDeltaTime() );
 		//Holder<Game>::hostage()->debugRender();
 		
@@ -631,12 +633,13 @@ namespace Menge
 		{
 			sprintf( m_debugText, "FPS:%.2f\n", m_FPS );
 			m_debugTextField->setText( m_debugText );
-			m_debugTextField->render();
+			m_debugTextField->render( false );
 		}
-		if(m_debugRender)
+		/*if(m_debugRender)
 		{
 			Holder<Game>::hostage()->debugRender();
-		}
+		}*/
+		m_renderEngine->endScene();
 
 		m_renderEngine->render();
 		//MENGE_LOG("RenderTime: %.2f\n", m_interface->getDeltaTime() );

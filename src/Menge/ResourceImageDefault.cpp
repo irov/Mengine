@@ -93,6 +93,11 @@ namespace Menge
 		{
 			ImageFrame frame = loadImageFrame( it->fileName );
 
+			if( frame.image == NULL )
+			{
+				return false;
+			}
+
 			frame.uv = it->uv;
 			
 			frame.maxSize = it->maxSize;

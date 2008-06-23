@@ -25,6 +25,7 @@ namespace Menge
 		//const std::string & getSkeletonName() const;
 		//const std::string & getMaterialName() const;
 		virtual const std::vector<TVertex>& getVertexData();
+		virtual const std::vector<uint16>& getIndexData();
 
 	protected:
 		bool _compile() override;

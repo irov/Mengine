@@ -28,7 +28,7 @@ namespace Menge
 		virtual unsigned int countReference();
 
 	public:
-		virtual void _incrementZero();
+		virtual bool _incrementZero();
 		virtual void _decrementZero();
 
 	protected:

@@ -2,7 +2,10 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "libs/Math/vec2.h"
 #	include "libs/Math/box2.h"
-class HGE;
+
+#	include "HGE.h"
+
+#	include <map>
 
 class HGERenderSystem :
 	public RenderSystemInterface
@@ -55,6 +58,7 @@ public:
 		EBlendFactor _dst) override;
 
 	void renderMesh( const TVertex* _vertices, std::size_t _verticesNum,
+					const Menge::uint16*	_indices, std::size_t _indicesNum,
 					TMaterial* _material ) override;
 
 	void	renderLine(const char * _camera, unsigned int _color, const float * _begin, const float * _end) override;
@@ -68,6 +72,8 @@ public:
 
 	void	setFullscreenMode( float _width, float _height, bool _fullscreen ) override;
 	void	setViewportDimensions( float _width, float _height, float _renderFactor ) override;
+	void	setRenderTarget( const Menge::String& _name );
+
 	CameraInterface * createCamera( const char * _name ) override;
 	EntityInterface * createEntity( const char * _name, const char * _meshName ) override;
 	LightInterface * createLight( const char * _name ) override;
@@ -91,4 +97,12 @@ private:
 	HGE* m_hge;
 	float m_layer;
 	mt::box2f m_viewport;
+	bool m_inRender;
+	Menge::String m_currentRenderTarget;
+
+	typedef std::map< Menge::String, HTARGET > TTargetMap;
+	TTargetMap m_targetMap;
+
+	bool m_layer3D;
+	unsigned int m_clearColor;
 };

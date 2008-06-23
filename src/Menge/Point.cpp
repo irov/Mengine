@@ -57,4 +57,17 @@ namespace	Menge
 	void Point::_debugRender()
 	{}
 	//////////////////////////////////////////////////////////////////////////
+	void Point::_render( bool _enableDebug )
+	{
+		if( _enableDebug )
+		{
+			const mt::vec2f& pos = getWorldPosition();
+			mt::vec2f offs( 5.0f, 5.0f );
+			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos + mt::vec2f( -5.0f, -5.0f ), pos + mt::vec2f( 5.0f, -5.0f ) );
+			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos + mt::vec2f( 5.0f, -5.0f ), pos + mt::vec2f( 5.0f, 5.0f ) );
+			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos + mt::vec2f( -5.0f, -5.0f ), pos + mt::vec2f( -5.0f, 5.0f ) );
+			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos + mt::vec2f( -5.0f, 5.0f ), pos + mt::vec2f( 5.0f, 5.0f ) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

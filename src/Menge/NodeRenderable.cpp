@@ -41,7 +41,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeRenderable::render()
+	void NodeRenderable::render( bool _enableDebug )
 	{
 		if( isRenderable() == false )
 		{
@@ -50,24 +50,29 @@ namespace Menge
 
 		if( _renderBegin() )
 		{
-			_render();
+			_render( _enableDebug );
 
 			struct ForeachRender
 				: public NodeForeach
 			{
+				bool m_debug;
+				ForeachRender( bool _enableDebug )
+					: m_debug( _enableDebug )
+				{
+				}
 				void apply( Node * children ) override
 				{
-					children->render();
+					children->render( m_debug );
 				}
 			};
 
-			foreachChildren( ForeachRender() );
+			foreachChildren( ForeachRender( _enableDebug ) );
 
 			_renderEnd();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeRenderable::_render()
+	void NodeRenderable::_render( bool _enableDebug )
 	{
 		//Empty
 	}

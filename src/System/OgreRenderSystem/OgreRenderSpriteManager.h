@@ -7,8 +7,8 @@
 
 class	OgreRenderImage;
 
-#	define CONVERT_MENGE_TO_OGRE_X(x,width) (2.0f * static_cast<int>(x) / width - 1)
-#	define CONVERT_MENGE_TO_OGRE_Y(y,heigth) (1 - 2.0f * static_cast<int>(y) / heigth)
+#	define CONVERT_MENGE_TO_OGRE_X(x,width) (2.0f * floorf(x + 0.5f) / width - 1)
+#	define CONVERT_MENGE_TO_OGRE_Y(y,heigth) (1 - 2.0f * floorf(y + 0.5f) / heigth)
 
 struct QuadVertex 
 {

@@ -71,7 +71,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				RegisterOutput="false"
-				AdditionalDependencies="OgreMainStatic_d.lib pybind_d.lib python25_d.lib FreeImaged.lib"
+				AdditionalDependencies="pybind_d.lib python25_d.lib FreeImaged.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\dependencies\ogrenew\lib&quot;;&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Dist\&quot;"
@@ -166,7 +166,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="OgreMainStatic.lib pybind.lib python25.lib FreeImage.lib"
+				AdditionalDependencies="pybind.lib python25.lib FreeImage.lib"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\dependencies\ogrenew\lib&quot;;&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Release&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Dist\&quot;"
 				GenerateManifest="false"

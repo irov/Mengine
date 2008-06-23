@@ -13,6 +13,7 @@ namespace Menge
 
 	class GameSettings
 	{
+		typedef std::map< String, TSettingValue > TSetttingsMap;
 	public:
 		GameSettings();
 		~GameSettings();
@@ -21,10 +22,11 @@ namespace Menge
 		const String& get( const String& _setting );
 
 		void apply();
+		bool changed();
+		void setDefaults();
 
-		static GameSettings ms_defaultSettings;
+		static TSetttingsMap ms_defaultSettings;
 	protected:
-		typedef std::map< String, TSettingValue > TSetttingsMap;
 		TSetttingsMap m_settings;
 		std::vector<String> m_toApply;
 	};

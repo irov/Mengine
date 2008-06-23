@@ -72,11 +72,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LayerScene::render()
+	void LayerScene::render( bool _enableDebug )
 	{	
 		if( m_subScene )
 		{
-			m_subScene->render();
+			m_subScene->render( _enableDebug );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

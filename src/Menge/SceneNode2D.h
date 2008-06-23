@@ -32,13 +32,13 @@ namespace Menge
 		virtual void alphaTo( float _alpha, float _time );
 		virtual void setAlpha( float _alpha );
 		virtual const mt::vec2f& getScale() const { static mt::vec2f s(1.0f, 1.0f); return s; }
-		void setListener( PyObject* _listener );
+		virtual void setListener( PyObject* _listener ) override;
 
 	public:
 
 		//void update( float _timing ) override;
 
-		void _render() override;
+		void _render( bool _enableDebug ) override;
 		//void _update( float _timing ) override;
 	
 	public:
@@ -47,9 +47,9 @@ namespace Menge
 
 	protected:
 		Layer2D * m_layer;
-		PyObject * m_listener;
+		//PyObject * m_listener;
 
 		void _addChildren( SceneNode2D * _node ) override;
-		virtual void _onSetListener();
+		//virtual void _onSetListener();
 	};
 }

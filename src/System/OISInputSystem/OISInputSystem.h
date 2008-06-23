@@ -46,6 +46,7 @@ private:
 	OIS::InputManager* m_inputManager;
 	OIS::Mouse*    m_mouse;
 	OIS::Keyboard* m_keyboard;
+	bool m_mouseReleasing;
 
 	InputSystemHandler * m_handler;
 };

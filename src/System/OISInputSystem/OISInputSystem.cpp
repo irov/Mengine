@@ -25,6 +25,7 @@ OISInputSystem::OISInputSystem()
 : m_inputManager(0)
 , m_mouse(0)
 , m_keyboard(0)
+, m_mouseReleasing( false )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -67,9 +68,7 @@ bool OISInputSystem::captureMouse( float _x, float _y, float _maxX, float _maxY 
 //////////////////////////////////////////////////////////////////////////
 void OISInputSystem::releaseMouse()
 {
-	m_mouse->setEventCallback( NULL );
-	m_inputManager->destroyInputObject( m_mouse );
-	m_mouse = NULL;
+	m_mouseReleasing = true;
 }
 //////////////////////////////////////////////////////////////////////////
 void OISInputSystem::update()
@@ -77,6 +76,13 @@ void OISInputSystem::update()
 	if( m_mouse )
 	{
 		m_mouse->capture();
+	}
+	if( m_mouseReleasing )
+	{
+		m_mouse->setEventCallback( NULL );
+		m_inputManager->destroyInputObject( m_mouse );
+		m_mouse = NULL;
+		m_mouseReleasing = false;
 	}
 	m_keyboard->capture();
 }

@@ -149,7 +149,7 @@ namespace Menge
 		//! Node pure virtual. render node
 		/*!
 		*/
-		virtual void render() = 0;
+		virtual void render( bool _enableDebug ) = 0;
 		virtual bool isRenderable() = 0;
 
 		//! Node pure virtual. update node

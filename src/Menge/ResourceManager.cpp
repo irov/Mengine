@@ -152,6 +152,10 @@ namespace Menge
 			}
 
 		}
+		else if( inc == 0 )
+		{
+			return 0;
+		}
 
 		return resource;
 	}

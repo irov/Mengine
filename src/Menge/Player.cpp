@@ -355,16 +355,16 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::render()
+	void Player::render( bool _enableDebug )
 	{
 		if( m_scene )
 		{
-			m_scene->render();
+			m_scene->render( _enableDebug  );
 		}
 				
 		if( m_arrow )
 		{
-			m_arrow->render();
+			m_arrow->render( _enableDebug );
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////

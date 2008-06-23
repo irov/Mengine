@@ -3,6 +3,8 @@
 #	include "Layer.h"
 #	include "SceneNode3D-649.h"
 //#	include "SceneNode3D.h"
+#	include "Viewport.h"
+
 namespace Menge
 {
 	class Light;
@@ -60,8 +62,8 @@ namespace Menge
 		void setPhysicParams_();
 
 	private:
-		void render(){ NodeRenderable::render(); }
+		void render( bool _enableDebug ){ NodeRenderable::render( _enableDebug ); }
 		bool isRenderable(){ return true; }
-	
+		Viewport m_viewport;
 	};
 }

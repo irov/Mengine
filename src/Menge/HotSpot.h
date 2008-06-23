@@ -58,10 +58,13 @@ namespace Menge
 
 		virtual void setScale( const mt::vec2f& _scale );
 
+		void setListener( PyObject* _listener ) override;
+
 	protected:
 		void _update( float _timing ) override;
+		void _render( bool _enableDebug ) override;
 		void _debugRender() override;
-		void _onSetListener() override;
+		//void _onSetListener() override;
 
 	protected:
 		mt::polygon m_polygon;

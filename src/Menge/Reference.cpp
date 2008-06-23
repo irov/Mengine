@@ -13,7 +13,10 @@ namespace Menge
 	{
 		if( ++m_refcounter == 1 )
 		{
-			_incrementZero();
+			if( _incrementZero() == false )
+			{
+				m_refcounter = 0;
+			}
 		}
 		return m_refcounter;
 	}
@@ -38,9 +41,9 @@ namespace Menge
 		return m_refcounter;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Reference::_incrementZero()
+	bool Reference::_incrementZero()
 	{
-		//Empty
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Reference::_decrementZero()

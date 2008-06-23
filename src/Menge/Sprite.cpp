@@ -328,7 +328,7 @@ namespace	Menge
 		m_changingColor = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_render()
+	void Sprite::_render( bool _enableDebug )
 	{
 		updateVisibility_();
 
@@ -398,13 +398,14 @@ namespace	Menge
 	void Sprite::_debugRender()
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_onSetListener()
+	void Sprite::setListener( PyObject* _listener )
 	{
 		//m_listener = _listener;
-		SceneNode2D::_onSetListener();
+		//SceneNode2D::_onSetListener();
+		SceneNode2D::setListener( _listener );
 
-		registerEventListener("COLOR_END", "onColorEnd", m_listener );
-		registerEventListener("COLOR_STOP", "onColorStop", m_listener );
+		registerEventListener("COLOR_END", "onColorEnd", _listener );
+		registerEventListener("COLOR_STOP", "onColorStop", _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Sprite::getImageSize()

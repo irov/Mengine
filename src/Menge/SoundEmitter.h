@@ -43,6 +43,8 @@ namespace Menge
 			void	listenPaused( bool _pause );
 			void	listenStopped();
 
+			void setListener( PyObject* _listener ) override;
+
 		protected:
 			bool _activate() override;
 			void _deactivate() override;
@@ -52,7 +54,7 @@ namespace Menge
 
 		private:
 			//PyObject * m_listener;
-			virtual void _onSetListener();
+			//virtual void _onSetListener();
 
 
 			float m_volume;

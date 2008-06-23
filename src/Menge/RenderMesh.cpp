@@ -5,6 +5,7 @@
 #	include "ResourceMesh.h"
 #	include "ResourceManager.h"
 #	include "LogEngine.h"
+#	include "ResourceMaterial.h"
 
 namespace Menge
 {
@@ -13,20 +14,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderMesh::RenderMesh()
 		: m_resourceMesh( NULL )
+		, m_renderTarget( NULL )
+		, m_resourceMaterial( 0 )
 	{
-		/*TVertex v;
-		for( int i=0; i<50; i++ )
-		{
-			float theta = (2*mt::m_pi*i)/(50-1);
-			
-			v.x = sinf(theta); v.y = -1.0f; v.z = cosf(theta);
-			v.nx = sinf(theta); v.ny = 0.0f; v.nz = cosf(theta);
-			m_vertexData.push_back( v );
-			v.x = sinf(theta); v.y = 1.0f; v.z = cosf(theta);
-			v.nx = sinf(theta); v.ny = 0.0f; v.nz = cosf(theta);
-			m_vertexData.push_back( v );
-		}*/
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderMesh::~RenderMesh()
@@ -39,13 +29,20 @@ namespace Menge
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourceName );
+			XML_CASE_ATTRIBUTE_NODE( "Material", "Name", m_materialName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh::_render()
+	void RenderMesh::_render( bool _enableDebug )
 	{
 		Holder<RenderEngine>::hostage()
-			->renderMesh( m_resourceMesh->getVertexData(), 0 );
+			->setWorldMatrix( getLocalMatrix() );
+
+		Holder<RenderEngine>::hostage()
+			->renderMesh( m_resourceMesh->getVertexData(),
+			m_resourceMesh->getIndexData(), 
+			&m_material 
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMesh::_compile()
@@ -63,7 +60,7 @@ namespace Menge
 
 			if( m_resourceMesh == 0 )
 			{
-				MENGE_LOG( "Image resource not getting '%s'", m_resourceName.c_str() );
+				MENGE_LOG( "Error: Can't find mesh resource '%s'", m_resourceName.c_str() );
 				return false;
 			}
 		}
@@ -71,6 +68,8 @@ namespace Menge
 		{
 			return false;
 		}
+
+		compileMaterial_();
 
 		return true;
 	}
@@ -82,7 +81,63 @@ namespace Menge
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceMesh );
 
+		if( m_renderTarget )
+		{
+			Holder<RenderEngine>::hostage()
+				->releaseImage( m_renderTarget );
+		}
+
+		releaseMaterial_();
+
 		m_resourceMesh = 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderMesh::createRenderTarget( const String& _name, std::size_t _width, std::size_t _height )
+	{
+		m_renderTarget = Holder<RenderEngine>::hostage()->
+										createRenderTargetImage( _name.c_str(), _width, _height, "" );
+		m_material.texture = m_renderTarget;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderMesh::setMaterial( const String& _materialName )
+	{
+		if( m_materialName != _materialName )
+		{
+			m_materialName = _materialName;
+			releaseMaterial_();
+			compileMaterial_();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderMesh::compileMaterial_()
+	{
+		if( m_materialName != "" )
+		{
+			m_resourceMaterial = 
+				Holder<ResourceManager>::hostage()
+				->getResourceT<ResourceMaterial>( m_materialName );
+
+			if( m_resourceMaterial == 0 )
+			{
+				MENGE_LOG( "Warning: Can't find material '%s. RenderMesh '%s' will be proceeded whitout material",
+					m_materialName.c_str(),
+					m_resourceName.c_str()
+					);
+			}
+			else
+			{
+				m_material = m_resourceMaterial->getMaterial();
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderMesh::releaseMaterial_()
+	{
+		if( m_resourceMaterial )
+		{
+			Holder<ResourceManager>::hostage()
+				->releaseResource( m_resourceMaterial );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

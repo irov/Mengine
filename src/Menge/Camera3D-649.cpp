@@ -11,25 +11,8 @@ namespace	Menge
 	OBJECT_IMPLEMENT( Camera3D_ );
 	//////////////////////////////////////////////////////////////////////////
 	Camera3D_::Camera3D_()
+		: m_at( 0.0f, 0.0f, 0.0f )
 	{
-		setPosition( mt::vec3f( 0.0f, 5.0f, -3.0f ) );
-		lookAt( mt::vec3f( 0, 0, 0 ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera3D_::yaw( float _degrees )
-	{
-		const mt::vec3f & axis = getLocalStrafe();
-
-		mt::rotate_axis_m4( m_localMatrix, axis, _degrees);
-		
-		changePivot();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera3D_::pitch( float _degrees )
-	{
-		mt::rotate_axis_m4( m_localMatrix, m_fixedUp, _degrees);
-
-		changePivot();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D_::lookAt(const mt::vec3f& _targetPoint)
@@ -39,17 +22,21 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Camera3D_::getViewMatrix()
 	{	
-		_updateMatrix( m_parent );
+		updateMatrix( m_parent );
 
 		return m_viewMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D_::_updateMatrix( Allocator3D_ * _parent )
 	{
-		const mt::mat4f & wm = getWorldMatrix();
+		//const mt::mat4f & wm = getLocalMatrix();
 
-		mt::inv_m4( m_viewMatrix, wm );
+		mt::inv_m4( m_viewMatrix, m_worldMatrix );
 
+		m_viewMatrix[0][0] = -m_viewMatrix[0][0];
+		m_viewMatrix[1][0] = -m_viewMatrix[1][0];
+		m_viewMatrix[2][0] = -m_viewMatrix[2][0];
+		m_viewMatrix[3][0] = -m_viewMatrix[3][0];
 		recalc( m_worldMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -74,6 +61,13 @@ namespace	Menge
 	void Camera3D_::loader( XmlElement * _xml )
 	{
 		SceneNode3D_::loader( _xml );
+		XML_SWITCH_NODE(_xml)
+		{
+			XML_CASE_ATTRIBUTE_NODE( "Aspect", "Value", m_aspect );
+			XML_CASE_ATTRIBUTE_NODE( "Near", "Value", m_near);
+			XML_CASE_ATTRIBUTE_NODE( "Far", "Value", m_far);
+			XML_CASE_ATTRIBUTE_NODE( "At", "Value", m_at );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera3D_::_renderBegin()
@@ -81,6 +75,13 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()->setViewMatrix( getViewMatrix() );
 		Holder<RenderEngine>::hostage()->setProjectionMatrix( getProjectionMatrix() );
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Camera3D_::_activate()
+	{
+		lookAt( m_at );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -225,12 +225,12 @@ namespace	Menge
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_onSetListener()
+	void Animation::setListener( PyObject* _listener )
 	{
-		Sprite::_onSetListener();
+		Sprite::setListener( _listener );
 
-		registerEventListener("END_ANIMATION", "onAnimationEnd", m_listener );
-		registerEventListener("END_FRAME", "onFrameEnd", m_listener );
+		registerEventListener("END_ANIMATION", "onAnimationEnd", _listener );
+		registerEventListener("END_FRAME", "onFrameEnd", _listener );
 	}
 
 }

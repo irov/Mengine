@@ -394,14 +394,14 @@ public:
 	//virtual bool		CALL	Input_GetEvent(hgeInputEvent *event) = 0;
 
 	virtual bool		CALL	Gfx_BeginScene(HTARGET target=0) = 0;
-	virtual void		CALL	Gfx_EndScene() = 0;
+	virtual void		CALL	Gfx_EndScene( bool _swapBuffers = true ) = 0;
 	virtual void		CALL	Gfx_Clear(DWORD color) = 0;
 	virtual void		CALL	Gfx_RenderLine(float x1, float y1, float x2, float y2, DWORD color=0xFFFFFFFF, float z=0.5f) = 0;
 	virtual void		CALL	Gfx_RenderTriple(const hgeTriple *triple) = 0;
 	virtual void		CALL	Gfx_RenderQuad(const hgeQuad *quad) = 0;
 	virtual hgeVertex*	CALL	Gfx_StartBatch(int prim_type, HTEXTURE tex, int blend, int *max_prim) = 0;
 	virtual void		CALL	Gfx_FinishBatch(int nprim) = 0;
-	virtual void		CALL	Gfx_RenderMesh( const mengeVertex* _vertices, size_t _verticesNum ) = 0;
+	virtual void		CALL	Gfx_RenderMesh( const mengeVertex* _vertices, size_t _verticesNum, const unsigned short* _indices, size_t _indicesNum, HTEXTURE _htex ) = 0;
 	virtual void		CALL	Gfx_SetClipping(int x=0, int y=0, int w=0, int h=0) = 0;
 	virtual void		CALL	Gfx_SetTransform(float x=0, float y=0, float dx=0, float dy=0, float rot=0, float hscale=0, float vscale=0) = 0; 
 

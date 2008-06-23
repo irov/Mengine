@@ -63,6 +63,7 @@ namespace Menge
 	void RenderEngine::setRenderViewport( const Viewport & _viewport )
 	{
 		m_renderViewport = _viewport;
+		m_interface->setRenderTarget( m_renderViewport.getCamera() );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	const Viewport & RenderEngine::getRenderViewport() const
@@ -135,14 +136,6 @@ namespace Menge
 
 		if(image == 0)
 		{
-			//DataStreamInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
-
-			/*if( file == 0 )
-			{
-				MENGE_LOG( "Error: Image can't open resource file '%s'\n", _filename.c_str() );
-				return 0;
-			}*/
-
 			/*static std::vector<char> s_buff;
 
 			unsigned int buff_size = file->size();
@@ -163,12 +156,15 @@ namespace Menge
 			textureDesc.filter = _filter;*/
 
 			DataStreamInterface* file = Holder<FileEngine>::hostage()->openFile( _filename );
-
 			TextureDesc textureDesc;
-			textureDesc.buffer = file->getBuffer();
-			textureDesc.name = _filename.c_str();
-			textureDesc.size = file->size();
-			if( textureDesc.buffer == 0 )
+
+			if( file )
+			{
+				textureDesc.buffer = file->getBuffer();
+				textureDesc.name = _filename.c_str();
+				textureDesc.size = file->size();
+			}
+			if( !file || textureDesc.buffer == 0 )
 			{
 				MENGE_LOG( "Error: Image from file '%s' not loader\n", _filename.c_str() );
 				return 0;
@@ -439,9 +435,13 @@ namespace Menge
 		m_interface->endScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderMesh( const std::vector<TVertex>& _vertexData, TMaterial* _material )
+	void RenderEngine::renderMesh( const std::vector<TVertex>& _vertexData, 
+									const std::vector<uint16>& _indexData,
+									TMaterial* _material )
 	{
-		m_interface->renderMesh( &(_vertexData[0]), _vertexData.size(), _material );
+		m_interface->renderMesh( &(_vertexData[0]), _vertexData.size(), 
+								&(_indexData[0]), _indexData.size(),
+								_material );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer3D()

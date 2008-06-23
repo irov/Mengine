@@ -116,13 +116,15 @@ namespace Menge
 
 		const Color & getColor() const;
 
+		virtual void setListener( PyObject* _listener ) override;
+
 	public:
 		virtual bool isVisible( const Viewport & _viewPort );
 
 		void loader( XmlElement * _xml ) override;
 
 	protected:
-		void _render() override;
+		void _render( bool _enableDebug ) override;
 		void _debugRender() override;
 
 		bool _activate() override;
@@ -168,6 +170,6 @@ namespace Menge
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;
 		//PyObject * m_listener;
-		virtual void _onSetListener();
+		//virtual void _onSetListener();
 	};
 }

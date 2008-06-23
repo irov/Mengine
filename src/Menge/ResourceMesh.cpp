@@ -36,6 +36,12 @@ namespace Menge
 		return std::vector<TVertex>();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const std::vector<uint16>& ResourceMesh::getIndexData()
+	{
+		assert( 0 && "Object of this class must never exist" );
+		return std::vector<uint16>();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMesh::_compile()
 	{
 		return true;

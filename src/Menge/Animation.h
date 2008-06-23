@@ -85,6 +85,7 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 
+		void setListener( PyObject* _listener ) override;
 	protected:
 		void _update( float _timing ) override;
 
@@ -109,7 +110,7 @@ namespace Menge
 		unsigned int m_currentFrame;
 
 		float m_animationFactor;
-		virtual void _onSetListener();
+		//virtual void _onSetListener();
 		//PyObject * m_listener;
 	};
 }

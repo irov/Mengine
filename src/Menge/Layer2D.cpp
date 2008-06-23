@@ -130,8 +130,8 @@ namespace	Menge
 	{
 		updateViewport();
 
-		Holder<RenderEngine>::hostage()
-			->setRenderViewport( m_viewport );
+		//Holder<RenderEngine>::hostage()
+		//	->setRenderViewport( m_viewport );
 
 		struct ForeachScrollTest
 			: public NodeForeach
@@ -240,9 +240,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::_renderBegin()
 	{
-		Holder<RenderEngine>::hostage()
-			->beginLayer2D();
-
 		if( m_reRender )
 		{
 			Viewport viewport;
@@ -259,10 +256,13 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()
 			->setRenderViewport( m_viewport );
 
+		Holder<RenderEngine>::hostage()
+			->beginLayer2D();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::render()
+	void Layer2D::render( bool _enableDebug )
 	{
 		if( NodeRenderable::isRenderable() == false )
 		{
@@ -271,18 +271,24 @@ namespace	Menge
 
 		if( _renderBegin() )
 		{
-			_render();
+			_render( _enableDebug );
 
 			struct ForeachRender
 				: public NodeForeach
 			{
+				bool m_debug;
+
+				ForeachRender(  bool _enableDebug )
+					: m_debug( _enableDebug )
+				{
+				}
 				void apply( Node * children ) override
 				{
-					children->render();
+					children->render( m_debug );
 				}
 			};
 
-			foreachChildren( ForeachRender() );
+			foreachChildren( ForeachRender( _enableDebug ) );
 
 			_renderEnd();
 		}
@@ -291,18 +297,24 @@ namespace	Menge
 			m_reRender = true;
 			if( _renderBegin() )
 			{
-				_render();
+				_render( _enableDebug );
 
 				struct ForeachRender
 					: public NodeForeach
 				{
+					bool m_debug;
+
+					ForeachRender(  bool _enableDebug )
+						: m_debug( _enableDebug )
+					{
+					}
 					void apply( Node * children ) override
 					{
-						children->render();
+						children->render( m_debug );
 					}
 				};
 
-				foreachChildren( ForeachRender() );
+				foreachChildren( ForeachRender( _enableDebug ) );
 
 				_renderEnd();
 			}
@@ -311,7 +323,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::_render()
+	void Layer2D::_render( bool _enableDebug )
 	{
 
 	}

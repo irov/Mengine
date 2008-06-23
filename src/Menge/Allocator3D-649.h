@@ -29,7 +29,7 @@ namespace Menge
 		const mt::mat4f & getLocalMatrix()const;
 		mt::mat4f & getLocalMatrix();
 
-		void setPosition( const mt::vec3f &position );
+		void setLocalPosition( const mt::vec3f &position );
 		void setDirection( const mt::vec3f &direction );
 		
 		void translate( const mt::vec3f &delta );

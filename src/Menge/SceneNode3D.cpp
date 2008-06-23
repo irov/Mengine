@@ -207,7 +207,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::render()
+	void SceneNode3D::render( bool _enableDebug )
 	{
 		//NodeRenderable::render();
 	};

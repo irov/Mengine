@@ -53,6 +53,9 @@
 #	include "Layer3D.h"
 
 #	include "FFCamera.h"
+#	include "SceneNode3D-649.h"
+#	include "Camera3D-649.h"
+#	include "RenderMesh.h"
 
 #	include "XmlEngine.h"
 
@@ -444,6 +447,9 @@ namespace Menge
 		//SCRIPT_CLASS_WRAPPING( Layer3D );
 		SCRIPT_CLASS_WRAPPING( RigidBody2D );
 		SCRIPT_CLASS_WRAPPING( CapsuleController );
+		SCRIPT_CLASS_WRAPPING( SceneNode3D_ );
+		SCRIPT_CLASS_WRAPPING( Camera3D_ );
+		SCRIPT_CLASS_WRAPPING( RenderMesh );
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -659,7 +665,33 @@ namespace Menge
 				//.def( "playAnimation", &DiscreteEntity::playAnimation )
 				;
 
-		
+				;
+
+		pybind::proxy_<SceneNode3D_, pybind::bases<Node> >("SceneNode3D_", false)
+					.def( "yaw", &SceneNode3D_::yaw )
+					.def( "pitch", &SceneNode3D_::pitch )
+					.def( "getYaw", &SceneNode3D_::getYaw )
+					.def( "getPitch", &SceneNode3D_::getPitch )
+					.def( "yawTime", &SceneNode3D_::yawTime )
+					.def( "pitchTime", &SceneNode3D_::pitchTime )
+					.def( "setListener", &SceneNode3D_::setListener )
+			;
+		{
+
+				pybind::proxy_< RenderMesh, pybind::bases<SceneNode3D_> >("RenderMesh", false)
+					.def( "createRenderTarget", &RenderMesh::createRenderTarget )
+					.def( "setMaterial", &RenderMesh::setMaterial )
+					;
+
+				pybind::proxy_<Camera3D_, pybind::bases<SceneNode3D_> >("Camera3D_", false)
+				//	.def( "setPosition", &Camera3D_::setPosition )
+				//	.def( "lookAt", &Camera3D_::lookAt )
+				//	.def( "yaw", &Camera3D::yaw )
+				//	.def( "pitch", &Camera3D::pitch )
+				//	.def( "roll", &Camera3D::roll )
+				//	.def( "getDirection", &Camera3D_::getDirection )
+					;
+		}
 	/*	pybind::proxy_<Entity3d, pybind::bases<Node>>("Entity3d", false)
 			.def( "play", &Entity3d::play )
 		;

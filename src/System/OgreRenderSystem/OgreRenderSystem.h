@@ -86,6 +86,7 @@ public:
 	void setFullscreenMode( float _width, float _height, bool _fullscreen ) override;
 	void loadResource( Ogre::Resource* _resource );
 	void setViewportDimensions( float _width, float _height, float _renderFactor ) override;
+	void setRenderTarget( const Menge::String& _tgt ) override {}
 
 	///////////////////////////////////////////////////////////////////////////////////
 	CameraInterface * createCamera(const char * _name) override;
@@ -112,7 +113,7 @@ public:
 	void onWindowActive( bool _active ) override;
 	void onWindowClose() override;
 
-	void renderMesh( const TVertex* _vertices, std::size_t _verticesNum, TMaterial* _material ) override {}
+	void renderMesh(const TVertex *,size_t,const Menge::uint16 *,size_t,TMaterial *) override {}
 
 private:
 

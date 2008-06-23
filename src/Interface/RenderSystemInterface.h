@@ -37,8 +37,32 @@ enum EBlendFactor
 
 typedef struct _tVertex
 {
-	float x, y, z;
-	float nx, ny, nz;
+	float pos[3];
+	float n[3];
+	unsigned long col;
+	float uv[2];
+
+	_tVertex()
+		: col( 0xFFFFFFFF )
+	{
+		uv[0] = uv[1] = 0.0f;
+	}
+
+	_tVertex( const _tVertex& _other )
+	{
+		//std::copy( (_tVertex*)&_other, &_other + sizeof( _tVertex ), &(*this) );
+		operator=( _other );
+	}
+
+	const _tVertex& operator=( const _tVertex& _other )
+	{
+		pos[0] = _other.pos[0]; pos[1] = _other.pos[1]; pos[2] = _other.pos[2];
+		n[0] = _other.n[0]; n[1] = _other.n[1]; n[2] = _other.n[2];
+		col = _other.col;
+		uv[0] = _other.uv[0]; uv[1] = _other.uv[1];
+		return (*this);
+	}
+
 } TVertex;
 
 
@@ -53,7 +77,12 @@ public:
 
 typedef struct _tMaterial
 {
-	RenderImageInterface* _texture;
+	RenderImageInterface* texture;
+
+	_tMaterial()
+		: texture( 0 )
+	{
+	}
 }TMaterial;
 
 class EntityInterface;
@@ -263,6 +292,7 @@ public:
 		EBlendFactor _dst) = 0;
 
 	virtual void	renderMesh( const TVertex* _vertices, std::size_t _verticesNum,
+								const Menge::uint16* _indices, std::size_t _indicesNum,
 								TMaterial* _material ) = 0;
 
 	virtual void	renderLine(const char * _camera, unsigned int _color, const float * _begin, const float * _end) = 0;
@@ -276,6 +306,7 @@ public:
 
 	virtual void	setFullscreenMode( float _width, float _height, bool _fullscreen ) = 0;
 	virtual void	setViewportDimensions( float _width, float _height, float _renderFactor ) = 0;
+	virtual void	setRenderTarget( const Menge::String& _name ) = 0;
 
 	//new
 	virtual CameraInterface * createCamera( const char * _name ) = 0;

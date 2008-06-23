@@ -44,7 +44,7 @@ namespace Menge
 	public:
 		void init();
 		void update( float _timing );
-		void render();
+		void render( bool _enableDebug );
 
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
 		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;

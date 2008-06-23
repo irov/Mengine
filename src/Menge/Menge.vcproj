@@ -92,7 +92,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)Bin"
+			OutputDirectory="$(SolutionDir)lib"
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -585,6 +585,10 @@
 			Name="Player"
 			>
 			<File
+				RelativePath=".\Account.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Account.h"
 				>
 			</File>
@@ -928,6 +932,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Material"
+				>
+				<File
+					RelativePath=".\ResourceMaterial.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceMaterial.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Entity"
@@ -1134,6 +1150,10 @@
 			</File>
 			<File
 				RelativePath=".\ObjectImplement.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ValueInterpolator.h"
 				>
 			</File>
 			<Filter

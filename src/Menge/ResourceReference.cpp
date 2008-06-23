@@ -23,9 +23,9 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceReference::_incrementZero()
+	bool ResourceReference::_incrementZero()
 	{
-		compile();
+		return compile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceReference::_decrementZero()

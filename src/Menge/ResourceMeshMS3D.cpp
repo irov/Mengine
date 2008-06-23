@@ -84,7 +84,7 @@ namespace Menge
 		unsigned short numVertices = *read_buffer<unsigned short>(buffer);
 
 		m_vertices.resize(numVertices);
-		m_tvertices.resize(numVertices);
+		//m_tvertices.resize(numVertices);
 
 		for (int i = 0; i < numVertices; i++)
 		{
@@ -95,7 +95,7 @@ namespace Menge
 			m_vertices[i].boneId = *read_buffer<char>(buffer);
 			m_vertices[i].referenceCount = *read_buffer<unsigned char>(buffer);
 		}
-		///
+		/*///
 		for (int i = 0; i < numVertices; i++)
 		{
 			m_tvertices[i].x = m_vertices[i].vertex[0];
@@ -104,10 +104,11 @@ namespace Menge
 			//m_vertices[i].boneId = *read_buffer<char>(buffer);
 			//m_vertices[i].referenceCount = *read_buffer<unsigned char>(buffer);
 		}
-		///
+		///*/
 		unsigned short numTriangles = *read_buffer<unsigned short>(buffer);
 		m_triangles.resize(numTriangles);
-
+		
+		//m_indices.resize( numTriangles * 3 );
 		for (int i = 0; i < numTriangles; i++)
 		{
 
@@ -128,7 +129,7 @@ namespace Menge
 			m_triangles[i].vertexNormals[2][1] = *read_buffer<float>(buffer);
 			m_triangles[i].vertexNormals[2][2] = *read_buffer<float>(buffer);
 
-			///
+			/*///
 			m_tvertices[m_triangles[i].vertexIndices[0]].nx = m_triangles[i].vertexNormals[0][0];
 			m_tvertices[m_triangles[i].vertexIndices[0]].ny = m_triangles[i].vertexNormals[0][1];
 			m_tvertices[m_triangles[i].vertexIndices[0]].nz = m_triangles[i].vertexNormals[0][2];
@@ -138,7 +139,10 @@ namespace Menge
 			m_tvertices[m_triangles[i].vertexIndices[2]].nx = m_triangles[i].vertexNormals[2][0];
 			m_tvertices[m_triangles[i].vertexIndices[2]].nx = m_triangles[i].vertexNormals[2][1];
 			m_tvertices[m_triangles[i].vertexIndices[2]].nx = m_triangles[i].vertexNormals[2][2];
-			///
+			m_indices[i*3 + 0] = m_triangles[i].vertexIndices[0];
+			m_indices[i*3 + 1] = m_triangles[i].vertexIndices[1];
+			m_indices[i*3 + 2] = m_triangles[i].vertexIndices[2];
+			///*/
 
 			m_triangles[i].s[0] = *read_buffer<float>(buffer);
 			m_triangles[i].s[1] = *read_buffer<float>(buffer);
@@ -428,39 +432,40 @@ namespace Menge
 
 		Holder<FileEngine>::hostage()->closeStream(file);
 
-		std::vector<S3DVertex> *Vertices;
-		std::vector<unsigned short> Indices;
+		//std::vector<S3DVertex> *Vertices;
+		//std::vector<unsigned short> Indices;
 
-		S3DVertex v;
+		//S3DVertex v;
+		TVertex v;
 
-		/*for (int i=0; i<numTriangles; ++i)
+		for( int i = 0; i < numTriangles; ++i )
 		{
 			unsigned int tmp = m_groups[m_triangles[i].groupIndex].materialIndex;
 			//Vertices = &AnimatedMesh->getMeshBuffers()[tmp]->Vertices_Standard;
 
-			for (unsigned short j = 0; j<3; ++j)
+			for( unsigned short j = 0; j < 3; ++j )
 			{
-				v.TCoords[0] = m_triangles[i].s[j];
-				v.TCoords[1] = m_triangles[i].t[j];
+				v.uv[0] = m_triangles[i].s[j];
+				v.uv[1] = m_triangles[i].t[j];
 
-				v.Normal[0] = m_triangles[i].vertexNormals[j][0];
-				v.Normal[1] = m_triangles[i].vertexNormals[j][1];
-				v.Normal[2] = m_triangles[i].vertexNormals[j][2];
+				v.n[0] = m_triangles[i].vertexNormals[j][0];
+				v.n[1] = m_triangles[i].vertexNormals[j][1];
+				v.n[2] = m_triangles[i].vertexNormals[j][2];
 
-				v.Pos[0] = m_vertices[m_triangles[i].vertexIndices[j]].vertex[0];
-				v.Pos[1] = m_vertices[m_triangles[i].vertexIndices[j]].vertex[1];
-				v.Pos[2] = m_vertices[m_triangles[i].vertexIndices[j]].vertex[2];
+				// flip x and z, fucking milkshape do this while converting from 3DS
+				v.pos[0] = m_vertices[m_triangles[i].vertexIndices[j]].vertex[0];
+				v.pos[1] = m_vertices[m_triangles[i].vertexIndices[j]].vertex[1];
+				v.pos[2] = m_vertices[m_triangles[i].vertexIndices[j]].vertex[2];
 
 				int index = -1;
 
-				for (int iV = 0; iV < Vertices->size(); ++iV)
+				for( int iV = 0; iV < m_tvertices.size(); ++iV )
 				{
-					S3DVertex v2 = (*Vertices)[iV];
+					TVertex v2 = m_tvertices[iV];
 
-					if (v.Color[0] == v2.Color[0]&&v.Color[1] == v2.Color[1]&&v.Color[2] == v2.Color[2]
-					&&v.Pos[0] == v2.Pos[0]&&v.Pos[1] == v2.Pos[1]&&v.Pos[2] == v2.Pos[2]&&
-						v.Normal[0] == v2.Normal[0]&&v.Normal[1] == v2.Normal[1]&&v.Normal[2] == v2.Normal[2]&&
-						v.TCoords[0] == v2.TCoords[0]&&v.TCoords[1] == v2.TCoords[1]
+					if( v.col == v2.col	&&v.pos[0] == v2.pos[0] && v.pos[1] == v2.pos[1] && v.pos[2] == v2.pos[2] &&
+						v.n[0] == v2.n[0] && v.n[1] == v2.n[1] && v.n[2] == v2.n[2]&&
+						v.uv[0] == v2.uv[0] && v.uv[1] == v2.uv[1]
 					)
 					{
 						index = (int)iV;
@@ -470,13 +475,12 @@ namespace Menge
 
 				if(index == -1)
 				{
-					index = Vertices->size();
-					Vertices->push_back(v);
+					index = m_tvertices.size();
+					m_tvertices.push_back(v);
 				}
-
-				Indices.push_back(index);
+				m_indices.push_back(index);
 			}
-		}*/
+		}
 
 		return true;
 
@@ -539,6 +543,11 @@ namespace Menge
 	const std::vector<TVertex>& ResourceMeshMS3D::getVertexData()
 	{
 		return m_tvertices;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const std::vector<uint16>& ResourceMeshMS3D::getIndexData()
+	{
+		return m_indices;
 	}
 	/*const std::string & ResourceMesh::getMeshName() const
 	{

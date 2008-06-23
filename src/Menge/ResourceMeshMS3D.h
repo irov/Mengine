@@ -147,6 +147,7 @@ namespace Menge
 		//const std::string & getSkeletonName() const;
 		//const std::string & getMaterialName() const;
 		const std::vector<TVertex>& getVertexData() override;
+		const std::vector<uint16>& getIndexData() override;
 
 	protected:
 		bool _compile() override;
@@ -159,7 +160,8 @@ namespace Menge
 		std::vector<ms3d_group_t> m_groups;
 		std::vector<ms3d_material_t> m_materials;
 
-		std::vector<TVertex> m_tvertices; 
+		std::vector<TVertex> m_tvertices;
+		std::vector<uint16> m_indices;
 
 		float m_animationFps;
 		float m_currentTime;

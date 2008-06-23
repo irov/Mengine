@@ -46,6 +46,8 @@ namespace Menge
 		float m_far;
 		float m_near;
 		float m_aspect;
+		float m_focalLength;
+		mt::vec2f m_frustumOffset;
 
 		float m_coeffL[2];
 		float m_coeffR[2];

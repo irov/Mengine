@@ -9,7 +9,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Allocator3D_::Allocator3D_()
 		: m_changePivot(false)
-		, m_fixedUp( 1.0, 0.f, 0.f )
+		, m_fixedUp( 0.0, 1.f, 0.f )
 	{
 		mt::ident_m4(m_localMatrix);
 		mt::ident_m4(m_worldMatrix);
@@ -95,7 +95,7 @@ namespace Menge
 		return m_localMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D_::setPosition( const mt::vec3f &position )
+	void Allocator3D_::setLocalPosition( const mt::vec3f &position )
 	{
 		mt::vec3f & localPosition = getLocalPosition();
 
@@ -128,12 +128,15 @@ namespace Menge
 			return;
 		}
 
+		if( _parent )
+		{
+			const mt::mat4f & parentMatrix =
+				_parent->getWorldMatrix();
+
+			mt::mul_m4_m4(m_worldMatrix,m_localMatrix,parentMatrix);		
+		}
+
 		_updateMatrix( _parent );
-
-		const mt::mat4f & parentMatrix =
-			_parent->getWorldMatrix();
-
-		mt::mul_m4_m4(m_worldMatrix,m_localMatrix,parentMatrix);		
 
 		m_changePivot = false;
 	}
@@ -151,7 +154,8 @@ namespace Menge
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE("Value", m_localMatrix);
+					//XML_CASE_ATTRIBUTE("Value", m_localMatrix);
+					XML_CASE_ATTRIBUTE_MEMBER( "Position", &Allocator3D_::setLocalPosition );
 				}
 
 				changePivot();

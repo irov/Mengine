@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="MengeFileSystem"
 	ProjectGUID="{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}"
 	RootNamespace="OgreFileSystem"
@@ -162,11 +162,19 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\FileData.cpp"
+			RelativePath=".\DataStream.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\FileData.h"
+			RelativePath=".\DataStream.h"
+			>
+		</File>
+		<File
+			RelativePath=".\FileHandleDataStream.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\FileHandleDataStream.h"
 			>
 		</File>
 		<File
@@ -178,11 +186,27 @@
 			>
 		</File>
 		<File
+			RelativePath=".\FileStreamDataStream.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\FileStreamDataStream.h"
+			>
+		</File>
+		<File
 			RelativePath=".\FileSystem.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\FileSystem.h"
+			>
+		</File>
+		<File
+			RelativePath=".\MemoryDataStream.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\MemoryDataStream.h"
 			>
 		</File>
 	</Files>

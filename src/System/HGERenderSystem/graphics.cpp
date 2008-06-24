@@ -10,6 +10,7 @@
 #include "hge_impl.h"
 #include <d3d8.h>
 #include <d3dx8.h>
+#include <d3d8types.h>
 #	include <cassert>
 
 void s_copySurfaceData( char* _dstData, int _dstPitch, const char* _srcData, int _srcPitch, RECT _srcRect )
@@ -20,6 +21,51 @@ void s_copySurfaceData( char* _dstData, int _dstPitch, const char* _srcData, int
 		memcpy( _dstData, _srcData, width * 4 );
 		_dstData += _dstPitch;
 		_srcData += _srcPitch;
+	}
+	
+}
+
+D3DFORMAT s_toD3DFormat( int _format )
+{
+	switch( _format )
+	{
+	case 1:
+		return D3DFMT_L8;
+	case 3:
+		return D3DFMT_A8;
+	case 4:
+		return D3DFMT_A4L4;
+	case 5:
+		return D3DFMT_A8L8; // Assume little endian here
+	case 31:
+		return D3DFMT_R3G3B2;
+	case 9:
+		return D3DFMT_A1R5G5B5;
+	case 6:
+		return D3DFMT_R5G6B5;
+	case 8:
+		return D3DFMT_A4R4G4B4;
+	case 10:
+		return D3DFMT_R8G8B8;
+	case 12:
+		return D3DFMT_A8R8G8B8;
+	case 26:
+		return D3DFMT_X8R8G8B8;
+	case 34:
+		return D3DFMT_G16R16;
+	case 17:
+		return D3DFMT_DXT1;
+	case 18:
+		return D3DFMT_DXT2;
+	case 19:
+		return D3DFMT_DXT3;
+	case 20:
+		return D3DFMT_DXT4;
+	case 21:
+		return D3DFMT_DXT5;
+	case 0:
+	default:
+		return D3DFMT_UNKNOWN;
 	}
 }
 
@@ -396,6 +442,14 @@ HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
 		return NULL;
 	}
 
+	CTextureList *texItem;
+	texItem=new CTextureList;
+	texItem->tex=(HTEXTURE)pTex;
+	texItem->width=width;
+	texItem->height=height;
+	texItem->next=textures;
+	textures=texItem;
+
 	return (HTEXTURE)pTex;
 }
 
@@ -468,6 +522,23 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, DWORD size, bool bMip
 	textures=texItem;
 
 	return (HTEXTURE)pTex;
+}
+
+void CALL HGE_Impl::Texture_LoadRawData( HTEXTURE _hTex, const char* data, int _pitch, int _width, int _height, int _format )
+{
+	IDirect3DTexture8* tex = reinterpret_cast<IDirect3DTexture8*>( _hTex );
+	LPDIRECT3DSURFACE8 surf;
+	tex->GetSurfaceLevel( 0, &surf );
+	D3DFORMAT fmt = s_toD3DFormat( _format );
+	RECT rect;
+	rect.top = 0; rect.left = 0;
+	rect.right = _width; rect.bottom = _height;
+	HRESULT hr = D3DXLoadSurfaceFromMemory( surf, NULL, NULL, data, fmt, _pitch, NULL, &rect, D3DX_DEFAULT, 0 );
+	if( FAILED( hr ) )
+	{
+		_PostError( "Error: Failed to load texture data" );
+		return;
+	}
 }
 
 void CALL HGE_Impl::Texture_Free(HTEXTURE tex)
@@ -759,14 +830,46 @@ bool HGE_Impl::_GfxInit()
 	else nScreenBPP=32;
 	
 // Create D3D Device
+	HRESULT hr;
 
-	if( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+	hr = pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+		D3DCREATE_HARDWARE_VERTEXPROCESSING,
+		d3dpp, &pD3DDevice );
+
+	if( FAILED( hr ) )
+	{
+		hr = pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+			D3DCREATE_HARDWARE_VERTEXPROCESSING,
+			d3dpp, &pD3DDevice );
+	}
+
+	if( FAILED( hr ) )
+	{
+		hr = pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+			D3DCREATE_MIXED_VERTEXPROCESSING,
+			d3dpp, &pD3DDevice );
+
+		if( FAILED( hr ) )
+		{
+			hr = pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+				D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+				d3dpp, &pD3DDevice );
+
+		}
+	}
+
+	if( FAILED ( hr ) )
+	{
+		_PostError("Can't create D3D device");
+		return false;
+	}
+	/*if( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
                                   D3DCREATE_SOFTWARE_VERTEXPROCESSING,
                                   d3dpp, &pD3DDevice ) ) )
 	{
 		_PostError("Can't create D3D device");
 		return false;
-	}
+	}*/
 
 	//_AdjustWindow();
 
@@ -954,11 +1057,11 @@ bool HGE_Impl::_GfxRestore()
 	}
 	if(pIB3D)
 	{
-		pIB->Release();
+		pIB3D->Release();
 	}
 	if(pVB3D)
 	{
-		pVB->Release();
+		pVB3D->Release();
 	}
 
 	pD3DDevice->Reset(d3dpp);
@@ -1115,25 +1218,19 @@ void HGE_Impl::Gfx_Snapshot( HTEXTURE tex, RECT _rect )
 {
 	LPDIRECT3DSURFACE8 surf;
 	pD3DDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &surf );
-	D3DLOCKED_RECT data;
-	D3DLOCKED_RECT dst;
-	
-	HRESULT hr = surf->LockRect( &data, &_rect, D3DLOCK_READONLY );
+
 	IDirect3DTexture8* dtext = reinterpret_cast<IDirect3DTexture8*>( tex );
-	dtext->LockRect( 0, &dst, NULL, D3DLOCK_DISCARD );
-	char* bits = static_cast<char*>( data.pBits );
-	char* dbits = static_cast<char*>( dst.pBits );
-	s_copySurfaceData( dbits, dst.Pitch, bits, data.Pitch, _rect );
-	surf->UnlockRect();
-	dtext->UnlockRect(0);
+	LPDIRECT3DSURFACE8 dsurf;
+	dtext->GetSurfaceLevel(0, &dsurf );
+
+	D3DXLoadSurfaceFromSurface( dsurf, NULL, NULL, surf, NULL, &_rect, D3DX_DEFAULT, 0 );
 	surf->Release();
-	//D3DXSaveTextureToFile( L"shot.bmp", D3DXIFF_BMP, dtext, NULL );
 }
 
-void HGE_Impl::Texture_WriteToFile( HTEXTURE _hTex, const TCHAR* _filename )
+void HGE_Impl::Texture_WriteToFile( HTEXTURE _hTex, const char* _filename )
 {
 	IDirect3DTexture8* tex = reinterpret_cast<IDirect3DTexture8*>( _hTex );
-	D3DXSaveTextureToFileA( (LPCSTR)_filename, D3DXIFF_PNG, tex, NULL );
+	D3DXSaveTextureToFileA( (LPCSTR)_filename, D3DXIFF_BMP, tex, NULL );
 }
 
 void HGE_Impl::Gfx_ChangeMode( int _width, int _height, int _bpp, bool _fullscreen )

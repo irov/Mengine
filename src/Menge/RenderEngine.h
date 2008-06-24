@@ -38,7 +38,7 @@ namespace Menge
 		void addResourceLocation( const std::string& _path );
 		void initResources();
 
-		void render( RenderImageInterface* _renderTargetImage, const int* rect = NULL );
+		void screenshot( RenderImageInterface* _renderTargetImage, const int* rect = NULL );
 		void render();
 
 		void setContentResolution( const mt::vec2f _resolution );

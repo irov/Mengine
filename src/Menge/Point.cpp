@@ -61,7 +61,7 @@ namespace	Menge
 	{
 		if( _enableDebug )
 		{
-			const mt::vec2f& pos = getWorldPosition();
+			const mt::vec2f& pos = getScreenPosition();
 			mt::vec2f offs( 5.0f, 5.0f );
 			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos + mt::vec2f( -5.0f, -5.0f ), pos + mt::vec2f( 5.0f, -5.0f ) );
 			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos + mt::vec2f( 5.0f, -5.0f ), pos + mt::vec2f( 5.0f, 5.0f ) );

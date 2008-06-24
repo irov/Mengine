@@ -197,14 +197,15 @@ public:
 	virtual HTEXTURE	CALL	Target_GetTexture(HTARGET target);
 
 	virtual HTEXTURE	CALL	Texture_Create(int width, int height);
-	virtual HTEXTURE	CALL	Texture_Load(const char *filename, DWORD size=0, bool bMipmap=false);
+	virtual HTEXTURE	CALL	Texture_Load( const char *filename, DWORD size = 0, bool bMipmap = false );
+	virtual void		CALL	Texture_LoadRawData( HTEXTURE _hTex, const char* data, int _pitch, int _width, int _height, int _format );
 	virtual void		CALL	Texture_Free(HTEXTURE tex);
 	virtual int			CALL	Texture_GetWidth(HTEXTURE tex, bool bOriginal=false);
 	virtual int			CALL	Texture_GetHeight(HTEXTURE tex, bool bOriginal=false);
 	virtual DWORD*		CALL	Texture_Lock(HTEXTURE tex, bool bReadOnly=true, int left=0, int top=0, int width=0, int height=0);
 	virtual void		CALL	Texture_Unlock(HTEXTURE tex);
 
-	virtual void		CALL	Texture_WriteToFile(HTEXTURE tex, const TCHAR* _filename );
+	virtual void		CALL	Texture_WriteToFile(HTEXTURE tex, const char* _filename );
 
 	//////// Implementation ////////
 

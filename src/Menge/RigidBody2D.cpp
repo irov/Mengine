@@ -459,4 +459,69 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::_render( bool _enableDebug )
+	{
+		if( _enableDebug )
+		{
+			for( TShapeList::iterator it = m_shapeList.begin(),
+				it_end = m_shapeList.end();
+				it != it_end;
+			it++ )
+			{
+				const mt::polygon & poly = *it;
+				const mt::mat3f& mtx = getLocalMatrix();
+				mt::vec2f pos = getLocalPosition();
+				//mt::mul_v2_m3_r( pos, pos, mtx );
+
+				for(int i = 0; i < poly.num_points(); i++)
+				{
+					
+					mt::vec2f beg = poly[i];
+					mt::vec2f end = poly[(i+1) % poly.num_points()];
+
+					beg += pos;
+					end += pos;
+
+					Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF,beg,end);
+				}
+			}
+			for( TShapeBoxList::iterator itb = m_shapeBoxList.begin(),
+				itb_end = m_shapeBoxList.end();
+				itb != itb_end;
+			itb++ )
+			{
+				float width = itb->first.first;
+				float height = itb->first.second;
+				mt::vec2f pos = itb->second.first;
+				float angle = itb->second.second;
+
+				RenderEngine* reng = Holder<RenderEngine>::hostage();
+
+				pos += getWorldPosition();
+				const mt::mat3f& mtx = getWorldMatrix();
+
+				mt::vec2f temp[4] = 
+				{
+					mt::vec2f( -width/2.0f, -height/2.0f ),
+					mt::vec2f( width/2.0f, -height/2.0f ),
+					mt::vec2f( width/2.0f, height/2.0f ),
+					mt::vec2f( -width/2.0f, height/2.0f )
+				};
+
+				mt::vec2f pts[4];
+
+				for( int i = 0; i < 4; i++ )
+				{
+					mt::mul_v2_m3( pts[i], temp[i], mtx );
+				}
+
+				reng->renderLine(0xFFFFFFFF, pts[0], pts[1] );
+				reng->renderLine(0xFFFFFFFF, pts[0], pts[3] );
+				reng->renderLine(0xFFFFFFFF, pts[1], pts[2] );
+				reng->renderLine(0xFFFFFFFF, pts[3], pts[2] );
+
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

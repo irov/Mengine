@@ -240,8 +240,7 @@ namespace Menge
 				resourceImage = new ResourceImageDynamic( param );
 				//FIXME
 				RenderImageInterface * imageInterface
-					= Holder<RenderEngine>::hostage()->createRenderTargetImage( _name.c_str(), rect[2] - rect[0], rect[3] - rect[1], "defaultCamera" );
-
+					= Holder<RenderEngine>::hostage()->createImage( _name.c_str(), rect[2] - rect[0], rect[3] - rect[1] );
 				resourceImage->setRenderImage( imageInterface );
 
 				Holder<ResourceManager>::hostage()->registerResource( resourceImage );
@@ -251,9 +250,16 @@ namespace Menge
 
 			//Holder<Application>::hostage()->update( 0.0f );
 			Holder<Game>::hostage()->update(0.0f);
+			
+			Holder<RenderEngine>::hostage()->beginScene();
+		
 			Holder<Game>::hostage()->render();
 
-			Holder<RenderEngine>::hostage()->render( image, rect );
+			Holder<RenderEngine>::hostage()->screenshot( image, rect );
+
+			Holder<RenderEngine>::hostage()->endScene();
+
+			//image->writeToFile( "bl.bmp" );
 
 			Sprite * nodeSprite = SceneManager::createNodeT<Sprite>("Sprite");
 

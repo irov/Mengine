@@ -316,8 +316,11 @@ namespace	Menge
 				mt::vec2f beg = m_polygon[i];
 				mt::vec2f end = m_polygon[(i+1) % m_polygon.num_points()];
 
-				beg+=getWorldPosition();
-				end+=getWorldPosition();
+				//beg+=getWorldPosition();
+				//end+=getWorldPosition();
+				beg+=getScreenPosition();
+				end+=getScreenPosition();
+
 
 				Holder<RenderEngine>::hostage()->renderLine(0xFFFF0000,beg,end);
 			}

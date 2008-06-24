@@ -7,6 +7,7 @@ HGETexture::HGETexture( HGE* _hge, bool _freeOnDelete )
 : m_hge( _hge )
 , m_hTexture( 0 )
 , m_freeOnDelete( _freeOnDelete )
+, m_ref( 0 )
 {
 
 }
@@ -16,6 +17,7 @@ HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, b
 , m_hTexture( _htex )
 , m_name( _name )
 , m_freeOnDelete( _freeOnDelete )
+, m_ref( 0 )
 {
 
 }
@@ -26,6 +28,7 @@ HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _widt
 , m_width( _width )
 , m_height( _height )
 , m_freeOnDelete( _freeOnDelete )
+, m_ref( 0 )
 {
 	m_hTexture = m_hge->Texture_Create( _width, _height );
 }
@@ -38,11 +41,14 @@ HGETexture::~HGETexture()
 void HGETexture::load( const TextureDesc& _desc )
 {
 	m_name = _desc.name;
-	//m_width = _desc.width;
-	//m_height = _desc.height;
-	m_hTexture = m_hge->Texture_Load( static_cast<char*>( _desc.buffer ), _desc.size, false );
-	m_width = m_hge->Texture_GetWidth( m_hTexture );
-	m_height = m_hge->Texture_GetHeight( m_hTexture );
+	m_hTexture = m_hge->Texture_Create( _desc.width, _desc.height );
+	int hw = m_hge->Texture_GetWidth( m_hTexture );
+	int hh = m_hge->Texture_GetHeight( m_hTexture );
+	m_hge->Texture_LoadRawData( m_hTexture, static_cast<char*>( _desc.buffer ), 
+		_desc.size / _desc.height, _desc.width, _desc.height, _desc.pixelFormat );
+
+	m_width = _desc.width;
+	m_height = _desc.height;
 }
 //////////////////////////////////////////////////////////////////////////
 void HGETexture::unload()
@@ -66,7 +72,7 @@ float HGETexture::getHeight() const
 //////////////////////////////////////////////////////////////////////////
 void HGETexture::writeToFile( const char* _filename )
 {
-	m_hge->Texture_WriteToFile( m_hTexture, (const TCHAR*)_filename );
+	m_hge->Texture_WriteToFile( m_hTexture, _filename );
 }
 //////////////////////////////////////////////////////////////////////////
 const char * HGETexture::getDescription() const 

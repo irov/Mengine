@@ -261,7 +261,7 @@ public:
 	// удаления изображения
 	virtual void releaseImage( RenderImageInterface * _image ) = 0;
 	//
-	virtual RenderImageInterface * getImage( const char * _desc ) const = 0;
+	virtual RenderImageInterface * getImage( const Menge::String& _desc ) const = 0;
 	//
 	virtual RenderVideoStreamInterface* loadImageVideoStream( const char* _filename ) = 0;
 	//

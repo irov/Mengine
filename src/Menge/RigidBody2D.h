@@ -115,6 +115,7 @@ namespace Menge
 		bool m_countGravity;
 		//virtual void _onSetListener();
 
+		void _render( bool _enableDebug ) override;
 		void _debugRender() override;
 
 	};

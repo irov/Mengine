@@ -20,6 +20,10 @@ public:
 	void writeToFile( const char* _filename ) override;
 	const char * getDescription() const override;
 	unsigned long getHandle() const;
+
+	int incRef() { return ++m_ref; }
+	int decRef() { return --m_ref; }
+
 private:
 	HGE* m_hge;
 	Menge::String m_name;
@@ -27,4 +31,5 @@ private:
 	std::size_t m_width;
 	std::size_t m_height;
 	bool m_freeOnDelete;
+	int m_ref;
 };

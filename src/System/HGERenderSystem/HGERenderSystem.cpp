@@ -142,12 +142,14 @@ RenderImageInterface * HGERenderSystem::createImage( const char* _name,
 													unsigned int _width, unsigned int _height )
 {
 	HGETexture* texture = new HGETexture( m_hge, _name, _width, _height );
+	m_textureMap.insert( std::make_pair( _name, static_cast<RenderImageInterface*>( texture ) ) );
+	texture->incRef();
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
 RenderImageInterface * HGERenderSystem::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera )
 {
-	HTARGET htgt = m_hge->Target_Create( _width, _height, 0 );
+	HTARGET htgt = m_hge->Target_Create( _width, _height, true );
 	m_targetMap.insert( std::make_pair( _name, htgt ) );
 	HGETexture* texture = new HGETexture( m_hge, m_hge->Target_GetTexture( htgt ), _name );
 	return texture;
@@ -157,6 +159,8 @@ RenderImageInterface * HGERenderSystem::loadImage( const TextureDesc& _desc )
 {
 	HGETexture* texture = new HGETexture( m_hge );
 	texture->load( _desc );
+	m_textureMap.insert( std::make_pair( _desc.name, static_cast<RenderImageInterface*>( texture ) ) );
+	texture->incRef();
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -168,12 +172,30 @@ void HGERenderSystem::releaseImage( RenderImageInterface * _image )
 	{
 		m_hge->Target_Free( it->second );
 		m_targetMap.erase( it );
+		delete texture;
 	}
-	delete texture;
+	else
+	{
+		TTextureMap::iterator itt = m_textureMap.find( texture->getDescription() );
+		if( itt != m_textureMap.end() )
+		{
+			if( texture->decRef() == 0 )
+			{
+				m_textureMap.erase( itt );
+				delete texture;
+			}
+		}
+	}
 }
 //////////////////////////////////////////////////////////////////////////
-RenderImageInterface * HGERenderSystem::getImage( const char * _desc ) const 
+RenderImageInterface* HGERenderSystem::getImage( const Menge::String& _desc ) const 
 {
+	TTextureMap::const_iterator it = m_textureMap.find( _desc );
+	if( it != m_textureMap.end() )
+	{
+		static_cast<HGETexture*>( it->second )->incRef();
+		return it->second;
+	}
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -197,8 +219,9 @@ void HGERenderSystem::renderImage( const char * _camera,
 								  EBlendFactor _src, 
 								  EBlendFactor _dst ) 
 {
-	hgeQuad quad;
 
+	hgeQuad quad;
+	const HGETexture* tex = static_cast<const HGETexture*>( _image );
 	quad.v[0].x = _transform[0] * _offset[0] + _transform[3] * _offset[1] + _transform[6] + m_viewport.min.x;
 	quad.v[0].y = _transform[1] * _offset[0] + _transform[4] * _offset[1] + _transform[7] + m_viewport.min.y;
 	quad.v[0].z = m_layer;
@@ -221,12 +244,16 @@ void HGERenderSystem::renderImage( const char * _camera,
 
 	quad.blend = BLEND_DEFAULT;
 
-	quad.v[0].tx = _uv[0]; quad.v[0].ty = _uv[1];
-	quad.v[1].tx = _uv[2]; quad.v[1].ty = _uv[1];
-	quad.v[2].tx = _uv[2]; quad.v[2].ty = _uv[3];
-	quad.v[3].tx = _uv[0]; quad.v[3].ty = _uv[3];
+	quad.v[0].tx = _uv[0];
+	quad.v[0].ty = _uv[1];
+	quad.v[1].tx = _uv[2]; 
+	quad.v[1].ty = _uv[1];
+	quad.v[2].tx = _uv[2]; 
+	quad.v[2].ty = _uv[3];
+	quad.v[3].tx = _uv[0]; 
+	quad.v[3].ty = _uv[3];
 
-	quad.tex = static_cast<const HGETexture*>( _image )->getHandle();
+	quad.tex = tex->getHandle();
 	
 	m_hge->Gfx_RenderQuad( &quad );
 }
@@ -489,6 +516,7 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name )
 		}
 		m_currentRenderTarget = _name;
 		m_hge->Gfx_BeginScene( it->second );
+		m_hge->Gfx_Clear( 0 );
 	}
 	else
 	{

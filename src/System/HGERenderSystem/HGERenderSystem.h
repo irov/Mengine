@@ -30,7 +30,7 @@ public:
 	RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera ) override;
 	RenderImageInterface * loadImage( const TextureDesc& _desc ) override;
 	void releaseImage( RenderImageInterface * _image ) override;
-	RenderImageInterface * getImage( const char * _desc ) const override;
+	RenderImageInterface* getImage( const Menge::String& _desc ) const override;
 	RenderVideoStreamInterface* loadImageVideoStream( const char* _filename ) override;
 	void releaseImageVideoStream( RenderVideoStreamInterface* _image ) override;
 	void renderImage(		
@@ -72,7 +72,7 @@ public:
 
 	void	setFullscreenMode( float _width, float _height, bool _fullscreen ) override;
 	void	setViewportDimensions( float _width, float _height, float _renderFactor ) override;
-	void	setRenderTarget( const Menge::String& _name );
+	void	setRenderTarget( const Menge::String& _name ) override;
 
 	CameraInterface * createCamera( const char * _name ) override;
 	EntityInterface * createEntity( const char * _name, const char * _meshName ) override;
@@ -102,6 +102,9 @@ private:
 
 	typedef std::map< Menge::String, HTARGET > TTargetMap;
 	TTargetMap m_targetMap;
+
+	typedef std::map< Menge::String, RenderImageInterface* > TTextureMap;
+	TTextureMap m_textureMap;
 
 	bool m_layer3D;
 	unsigned int m_clearColor;

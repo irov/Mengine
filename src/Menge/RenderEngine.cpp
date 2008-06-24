@@ -45,7 +45,7 @@ namespace Menge
 		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::render( RenderImageInterface* _image, const int* rect )
+	void RenderEngine::screenshot( RenderImageInterface* _image, const int* rect )
 	{
 		m_interface->screenshot( _image, rect );
 	}
@@ -141,7 +141,7 @@ namespace Menge
 			unsigned int buff_size = file->size();
 			s_buff.resize( buff_size );
 			file->read( &s_buff[0], buff_size );*/
-			/*Image cimage;
+			Image cimage;
 			cimage.load( _filename );
 
 			TextureDesc	textureDesc;
@@ -150,12 +150,10 @@ namespace Menge
 			textureDesc.width = cimage.getWidth();
 			textureDesc.height = cimage.getHeight();
 			textureDesc.pixelFormat = cimage.getFormat();
-			//textureDesc.buffer = &s_buff[0];
-			//textureDesc.size = buff_size;
 			textureDesc.name = _filename.c_str();
-			textureDesc.filter = _filter;*/
+			textureDesc.filter = _filter;
 
-			DataStreamInterface* file = Holder<FileEngine>::hostage()->openFile( _filename );
+			/*DataStreamInterface* file = Holder<FileEngine>::hostage()->openFile( _filename );
 			TextureDesc textureDesc;
 
 			if( file )
@@ -163,8 +161,8 @@ namespace Menge
 				textureDesc.buffer = file->getBuffer();
 				textureDesc.name = _filename.c_str();
 				textureDesc.size = file->size();
-			}
-			if( !file || textureDesc.buffer == 0 )
+			}*/
+			if( /*!file ||*/ textureDesc.buffer == 0 )
 			{
 				MENGE_LOG( "Error: Image from file '%s' not loader\n", _filename.c_str() );
 				return 0;
@@ -173,7 +171,7 @@ namespace Menge
 
 			image = loadImage( textureDesc );
 
-			Holder<FileEngine>::hostage()->closeStream( file );
+			//Holder<FileEngine>::hostage()->closeStream( file );
 
 			if( image == 0 )
 			{

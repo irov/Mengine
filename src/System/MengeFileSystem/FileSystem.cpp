@@ -50,23 +50,23 @@ namespace Menge
 		delete m_fileManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::loadPath( const Menge::String& _path )
+	void FileSystem::loadPath( const String& _path )
 	{
 		//m_arch = Ogre::ArchiveManager::getSingleton().load( _path, "FileSystem" );
 		m_fileManager->setInitPath( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::loadPak( const Menge::String& _pak )
+	void FileSystem::loadPak( const String& _pak )
 	{
 		//Ogre::ArchiveManager::getSingleton().load( _pak, "Zip" );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::unloadPak( const Menge::String& _pak )
+	void FileSystem::unloadPak( const String& _pak )
 	{
 		//Ogre::ArchiveManager::getSingleton().unload( _pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileSystem::openFile( const Menge::String& _filename )
+	DataStreamInterface* FileSystem::openFile( const String& _filename )
 	{
 		DataStream* fileData = 0;
 
@@ -111,7 +111,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::existFile( const Menge::String& _filename )
+	bool FileSystem::existFile( const String& _filename )
 	{
 		return m_fileManager->exists( _filename );
 	}
@@ -140,7 +140,7 @@ namespace Menge
 #endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::createFolder( const Menge::String& _path )
+	bool FileSystem::createFolder( const String& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
 #
@@ -173,7 +173,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::deleteFolder( const Menge::String& _path )
+	bool FileSystem::deleteFolder( const String& _path )
 	{
 		// needed for some plugins
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
@@ -219,7 +219,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::changeDir( const Menge::String& _path )
+	bool FileSystem::changeDir( const String& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
 		if( !_chdir( _path.c_str() ) )
@@ -231,7 +231,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::initAppDataPath( const Menge::String& _game )
+	bool FileSystem::initAppDataPath( const String& _game )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 
@@ -266,7 +266,7 @@ namespace Menge
 
 		if( SUCCEEDED( hr ) )
 		{
-			m_appDataPath = Menge::String( szPath );
+			m_appDataPath = String( szPath );
 		}
 		else
 		{

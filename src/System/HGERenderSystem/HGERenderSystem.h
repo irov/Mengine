@@ -108,4 +108,7 @@ private:
 
 	bool m_layer3D;
 	unsigned int m_clearColor;
+
+	float m_renderX;
+	float m_renderY;
 };

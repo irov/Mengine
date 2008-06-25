@@ -47,6 +47,8 @@ namespace Menge
 			m_material.texture = const_cast<RenderImageInterface*>( m_resourceImage->getImage( 0 ) );
 		}
 
+		m_material.color = m_color.get();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -75,6 +77,7 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Texture", "Name", m_textureName );
+			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -365,10 +365,14 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
 	pTarget->pTex=0;
 	pTarget->pDepth=0;
 
-	if(FAILED(D3DXCreateTexture(pD3DDevice, width, height, 1, D3DUSAGE_RENDERTARGET,
-						d3dpp->BackBufferFormat, D3DPOOL_DEFAULT, &pTarget->pTex)))
+	D3DFORMAT fmt = d3dpp->BackBufferFormat;
+	D3DXCheckTextureRequirements( pD3DDevice, NULL, NULL, 0, D3DUSAGE_RENDERTARGET, &fmt, D3DPOOL_DEFAULT );
+	HRESULT hr = D3DXCreateTexture(pD3DDevice, width, height, 1, D3DUSAGE_RENDERTARGET,
+		fmt, D3DPOOL_DEFAULT, &pTarget->pTex);
+	if( FAILED( hr ) )
 	{
 		_PostError("Can't create render target texture");
+		System_Log( " HR = %d", hr );
 		delete pTarget;
 		return 0;
 	}
@@ -408,8 +412,16 @@ void CALL HGE_Impl::Target_Free(HTARGET target)
 			else
 				pTargets = pTarget->next;
 
-			if(pTarget->pTex) pTarget->pTex->Release();
-			if(pTarget->pDepth) pTarget->pDepth->Release();
+			if(pTarget->pTex) 
+			{
+				// dirty hack =(
+				while( pTarget->pTex->Release() );
+			}
+			if(pTarget->pDepth) 
+			{
+				// dirty hack =(
+				while( pTarget->pDepth->Release() );
+			}
 
 			delete pTarget;
 			return;
@@ -558,7 +570,11 @@ void CALL HGE_Impl::Texture_Free(HTEXTURE tex)
 		texPrev=texItem;
 		texItem=texItem->next;
 	}
-	if(pTex != NULL) pTex->Release();
+	if(pTex != NULL) 
+	{
+		// dirty hack =(
+		while( pTex->Release() );
+	}
 }
 
 int CALL HGE_Impl::Texture_GetWidth(HTEXTURE tex, bool bOriginal)

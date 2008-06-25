@@ -78,9 +78,10 @@ public:
 typedef struct _tMaterial
 {
 	RenderImageInterface* texture;
-
+	unsigned int color;
 	_tMaterial()
 		: texture( 0 )
+		, color( 0xFFFFFFFF )
 	{
 	}
 }TMaterial;

@@ -35,6 +35,8 @@ HGERenderSystem::HGERenderSystem()
 #else
 , m_clearColor( 0 )
 #endif
+, m_renderX( 1.0f )
+, m_renderY( 1.0f )
 {
 
 }
@@ -242,6 +244,15 @@ void HGERenderSystem::renderImage( const char * _camera,
 	quad.v[3].z = m_layer;
 	quad.v[3].col = _color;
 
+	quad.v[0].x *= m_renderX;
+	quad.v[0].y *= m_renderY;
+	quad.v[1].x *= m_renderX;
+	quad.v[1].y *= m_renderY;
+	quad.v[2].x *= m_renderX;
+	quad.v[2].y *= m_renderY;
+	quad.v[3].x *= m_renderX;
+	quad.v[3].y *= m_renderY;
+
 	quad.blend = BLEND_DEFAULT;
 
 	quad.v[0].tx = _uv[0];
@@ -277,7 +288,7 @@ void HGERenderSystem::renderImage( const char * _camera,
 	quad.v[0].z = m_layer;
 	quad.v[0].col = _color;
 
-	quad.v[1].x = _transform[0] * _b[0] + _transform[6] * _b[1] + _transform[6] + m_viewport.min.x;
+	quad.v[1].x = _transform[0] * _b[0] + _transform[3] * _b[1] + _transform[6] + m_viewport.min.x;
 	quad.v[1].y = _transform[1] * _b[0] + _transform[4] * _b[1] + _transform[7] + m_viewport.min.y;
 	quad.v[1].z = m_layer;
 	quad.v[1].col = _color;
@@ -292,12 +303,25 @@ void HGERenderSystem::renderImage( const char * _camera,
 	quad.v[3].z = m_layer;
 	quad.v[3].col = _color;
 
+	quad.v[0].x *= m_renderX;
+	quad.v[0].y *= m_renderY;
+	quad.v[1].x *= m_renderX;
+	quad.v[1].y *= m_renderY;
+	quad.v[2].x *= m_renderX;
+	quad.v[2].y *= m_renderY;
+	quad.v[3].x *= m_renderX;
+	quad.v[3].y *= m_renderY;
+
 	quad.blend = BLEND_DEFAULT;
 
-	quad.v[0].tx = _uv[0]; quad.v[0].ty = _uv[1];
-	quad.v[1].tx = _uv[2]; quad.v[1].ty = _uv[1];
-	quad.v[2].tx = _uv[2]; quad.v[2].ty = _uv[3];
-	quad.v[3].tx = _uv[0]; quad.v[3].ty = _uv[3];
+	quad.v[0].tx = _uv[0];
+	quad.v[0].ty = _uv[1];
+	quad.v[1].tx = _uv[2];
+	quad.v[1].ty = _uv[1];
+	quad.v[2].tx = _uv[2];
+	quad.v[2].ty = _uv[3];
+	quad.v[3].tx = _uv[0]; 
+	quad.v[3].ty = _uv[3];
 
 	quad.tex = static_cast<const HGETexture*>( _image )->getHandle();
 
@@ -489,7 +513,8 @@ void HGERenderSystem::renderMesh( const TVertex* _vertices, std::size_t _vertice
 		v.nz = _vertices[i].n[2];
 		v.tx = _vertices[i].uv[0];
 		v.ty = _vertices[i].uv[1];
-		v.col = _vertices[i].col;
+		v.col = _material->color;
+		//v.col = _vertices[i].col;
 		vtx.push_back( v );
 	}
 	HTEXTURE htex = 0;
@@ -517,6 +542,17 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name )
 		m_currentRenderTarget = _name;
 		m_hge->Gfx_BeginScene( it->second );
 		m_hge->Gfx_Clear( 0 );
+
+		if( it->second )
+		{
+			m_renderX =  m_hge->Texture_GetWidth( m_hge->Target_GetTexture( it->second ) ) / m_contentResolution.x;
+			m_renderY = m_hge->Texture_GetHeight( m_hge->Target_GetTexture( it->second ) ) / m_contentResolution.y;
+		}
+		else
+		{
+			m_renderX = 1.0f;
+			m_renderY = 1.0f;
+		}
 	}
 	else
 	{

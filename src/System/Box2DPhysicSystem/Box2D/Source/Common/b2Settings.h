@@ -81,7 +81,7 @@ const int32 b2_maxPairs = 8 * b2_maxProxies;	// this must be a power of two
 
 /// A small length used as a collision and constraint tolerance. Usually it is
 /// chosen to be numerically significant, but visually insignificant.
-const float32 b2_linearSlop = 0.005f;	// 0.5 cm
+const float32 b2_linearSlop = 0.0005f;	// 0.5 cm
 
 /// A small angle used as a collision and constraint tolerance. Usually it is
 /// chosen to be numerically significant, but visually insignificant.

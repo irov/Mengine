@@ -97,9 +97,9 @@ namespace Menge
 			}
 		}*/
 
-		const std::string & mesh = m_resourceMesh->getMeshName();
+		//const std::string & mesh = m_resourceMesh->getMeshName();
 
-		const std::string & name = this->getName();
+		/*const std::string & name = this->getName();
 
 		m_entInterface = Holder<RenderEngine>::hostage()->createEntity(name, mesh);
 
@@ -113,7 +113,7 @@ namespace Menge
 		}
 
 		m_interface->attachEntity( m_entInterface );
-		
+		*/
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

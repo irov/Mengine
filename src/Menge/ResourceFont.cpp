@@ -18,6 +18,7 @@ namespace Menge
 	ResourceFont::ResourceFont( const ResourceFactoryParam & _params )
 		: ResourceReference( _params )
 		, m_image( 0 )
+		, m_outline( 0 )
 		, m_whsRatio( 3.0f )
 	{
 	}
@@ -40,6 +41,11 @@ namespace Menge
 	const RenderImageInterface * ResourceFont::getImage() const
 	{
 		return m_image;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderImageInterface * ResourceFont::getOutlineImage() const
+	{
+		return m_outline;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec4f & ResourceFont::getUV( unsigned int _id ) const
@@ -108,6 +114,12 @@ namespace Menge
 	{
 		Holder<RenderEngine>::hostage()->releaseImage( m_image );
 		m_image = 0;
+
+		if( m_outline )
+		{
+			Holder<RenderEngine>::hostage()->releaseImage( m_outline );
+			m_outline = 0;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceFont::getCharRatio( char _id ) const
@@ -163,6 +175,18 @@ namespace Menge
 			{
 				MENGE_LOG( "Error: Image can't loaded '%s'", m_fullname.c_str() );
 				return false;
+			}
+		}
+		else if ( name == "outline" )
+		{
+			m_fullname = m_fontDir + params;
+
+			m_outline = Holder<RenderEngine>::hostage()->loadImage( m_fullname, 1 );
+
+			if( m_outline == 0 )
+			{
+				MENGE_LOG( "Error: Image can't loaded '%s'", m_fullname.c_str() );
+				//return false;
 			}
 		}
 

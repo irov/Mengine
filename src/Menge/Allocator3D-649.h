@@ -37,8 +37,6 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml );
 
-		void debugRender();
-
 	public:
 		void updateMatrix( Allocator3D_ * _parent );
 

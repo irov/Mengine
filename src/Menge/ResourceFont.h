@@ -52,6 +52,12 @@ namespace Menge
 		*/
 		const RenderImageInterface * getImage() const;
 
+		//! Возвращает аутлан - изображение для шрифта.
+		/*!
+		\return изображение
+		*/
+		const RenderImageInterface * getOutlineImage() const;
+
 		void setFontPath( const std::string & _path );
 
 		int getInitSize();
@@ -97,5 +103,7 @@ namespace Menge
 		int m_initSize;
 
 		RenderImageInterface * m_image;
+
+		RenderImageInterface * m_outline;
 	};
 }

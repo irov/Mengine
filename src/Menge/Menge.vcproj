@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="Menge"
 	ProjectGUID="{61566E24-14DC-456C-A864-772C5064FDBA}"
 	RootNamespace="RvEngine"
@@ -553,6 +553,26 @@
 				</File>
 				<File
 					RelativePath=".\TileMap.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Shadows"
+				>
+				<File
+					RelativePath=".\Light2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Light2D.h"
+					>
+				</File>
+				<File
+					RelativePath=".\ShadowCaster2D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ShadowCaster2D.h"
 					>
 				</File>
 			</Filter>
@@ -1305,6 +1325,18 @@
 				</File>
 				<File
 					RelativePath=".\Reference.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="LightSystem"
+				>
+				<File
+					RelativePath=".\LightSystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\LightSystem.h"
 					>
 				</File>
 			</Filter>

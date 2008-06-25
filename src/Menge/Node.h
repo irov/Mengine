@@ -164,12 +164,5 @@ namespace Menge
 		\param xml the first argument, xml element [XmlElement]
 		*/
 		virtual void loader( XmlElement * xml ) = 0;
-
-	public:
-
-		//! Node pure virtual. debug render this node
-		/*!
-		*/
-		virtual void debugRender() = 0;
 	};
 }

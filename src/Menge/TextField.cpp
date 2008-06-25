@@ -452,10 +452,6 @@ namespace     Menge
 		m_length.y = m_height * m_lines.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_debugRender()
-	{ 
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void TextField::setListener( PyObject* _listener )
 	{
 		SceneNode2D::setListener( _listener );

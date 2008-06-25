@@ -77,7 +77,6 @@ namespace Menge
 		void loader(XmlElement * _xml ) override;
 
 	protected:
-		void _debugRender() override;
 		void _update( float _timing )  override;
 
 		bool _activate() override;

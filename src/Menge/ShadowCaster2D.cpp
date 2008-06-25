@@ -1,0 +1,112 @@
+#	include "ShadowCaster2D.h"
+
+#	include "Light2D.h"
+
+#	include "ObjectImplement.h"
+
+#	include "XmlEngine.h"
+
+#	include "LightSystem.h"
+
+#	include "RenderEngine.h"
+
+namespace Menge
+{
+	//////////////////////////////////////////////////////////////////////////
+	OBJECT_IMPLEMENT(ShadowCaster2D);
+	//////////////////////////////////////////////////////////////////////////
+	ShadowCaster2D::ShadowCaster2D()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ShadowCaster2D::isVisible( const Viewport & _viewPort )
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ShadowCaster2D::loader( XmlElement * _xml )
+	{
+		SceneNode2D::loader(_xml);
+
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE("Vertex")
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE_MEMBER( "Value", &ShadowCaster2D::addVertex );
+				}
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ShadowCaster2D::_render( bool _enableDebug )
+	{
+		if(_enableDebug)
+		{
+			for(int i = 0; i < m_poly.num_points(); i++)
+			{
+				Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF, m_poly[i], m_poly[(i + 1) % m_poly.num_points() ] );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ShadowCaster2D::_activate()
+	{
+		if( SceneNode2D::_activate() == false )
+		{
+			return false;
+		}
+
+		Holder<LightSystem>::hostage()->regShadowCaster(this);
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ShadowCaster2D::_deactivate()
+	{
+		SceneNode2D::_deactivate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ShadowCaster2D::_compile()
+	{
+		if( SceneNode2D::_compile() == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ShadowCaster2D::_release()
+	{
+		SceneNode2D::_release();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ShadowCaster2D::_update( float _timing )
+	{
+		SceneNode2D::_update(_timing);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ShadowCaster2D::addVertex(const mt::vec2f & _vertex)
+	{
+		m_poly.add_point(_vertex);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & ShadowCaster2D::getVertex(int i) const
+	{
+		return m_poly[i % m_poly.num_points()];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f ShadowCaster2D::getEdge(int i) const
+	{
+		int next = (i + 1) % m_poly.num_points();
+		return m_poly[next] - m_poly[i];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ShadowCaster2D::size() const
+	{
+		return m_poly.num_points();
+	}
+	//////////////////////////////////////////////////////////////////////////
+}

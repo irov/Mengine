@@ -264,27 +264,7 @@ namespace Menge
 	{
 		return this;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::debugRender()
-	{
-		struct ForeachDebugRender
-			: public NodeForeach
-		{
-			void apply( Node * children ) override
-			{
-				children->debugRender();
-			}
-		};
-		_debugRender();
 
-		foreachChildren( ForeachDebugRender() );
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::_debugRender()
-	{
-		//Empty
-	}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeCore::_activate()
 	{

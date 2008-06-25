@@ -18,7 +18,6 @@ namespace Menge
 
 	protected:
 		void _render( bool _enableDebug ) override;
-		//void _debugRender() override;
 
 		//bool _activate() override;
 		//void _deactivate() override;

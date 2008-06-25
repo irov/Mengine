@@ -59,17 +59,12 @@ namespace Menge
 	public:
 		Scriptable * getScriptable() override;
 
-	public:		
-		void debugRender() override;
-
 	protected:
 		virtual void _destroy();
 		virtual void _update( float _timing );
 
 		virtual bool _activate();
 		virtual void _deactivate();
-
-		virtual void _debugRender();
 
 	protected:
 		bool m_active;

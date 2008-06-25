@@ -35,7 +35,7 @@ namespace Menge
 
 			if( m_scriptable == 0 )
 			{
-				assert(0);
+				//assert(!"Scriptable error!");
 				return 0;
 			}
 		}

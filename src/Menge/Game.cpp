@@ -8,6 +8,7 @@
 #	include "Amplifier.h"
 
 #	include "MousePickerSystem.h"
+#	include "LightSystem.h"
 
 #	include "ScriptEngine.h"
 #	include "FileEngine.h"
@@ -78,6 +79,7 @@ namespace Menge
 		delete m_player; m_player = NULL;
 		Holder<ScheduleManager>::destroy();
 		Holder<MousePickerSystem>::destroy();
+		Holder<LightSystem>::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loader( XmlElement * _xml )
@@ -443,11 +445,6 @@ namespace Menge
 		m_player->render( _enableDebug );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::debugRender()
-	{
-		m_player->debugRender();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	std::string Game::getPathEntities( const std::string& _entity ) const
 	{
 		TMapDeclaration::const_iterator it_find = m_mapEntitiesDeclaration.find( _entity );
@@ -525,6 +522,7 @@ namespace Menge
 
 		Holder<ScheduleManager>::keep( new ScheduleManager );
 		Holder<MousePickerSystem>::keep( new MousePickerSystem );
+		Holder<LightSystem>::keep( new LightSystem );
 
 		for( TMapDeclaration::iterator
 			it = m_mapEntitiesDeclaration.begin(),

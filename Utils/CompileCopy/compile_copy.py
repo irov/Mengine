@@ -28,7 +28,7 @@ atlas_height = 4096
 optipng_use = False
 
 # always false
-jpg_png_use = True
+jpg_png_use = False
 
 allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
 

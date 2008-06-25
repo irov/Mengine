@@ -46,7 +46,6 @@ namespace Menge
 		bool _renderBegin() override;
 		void _render( bool _enableDebug ) override;
 		void _renderEnd() override;
-		void _debugRender() override;
 
 		bool _activate() override;
 		void _deactivate() override;

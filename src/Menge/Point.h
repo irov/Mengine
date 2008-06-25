@@ -24,6 +24,5 @@ namespace Menge
 		void _update( float _timing ) override;
 		bool _activate() override;
 		void _render( bool _enableDebug ) override;
-		void _debugRender() override;
 	};
 }

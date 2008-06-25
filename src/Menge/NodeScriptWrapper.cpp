@@ -22,6 +22,8 @@
 #	include "Sprite.h"
 #	include "Animation.h"
 #	include "HotSpot.h"
+#	include "Light2D.h"
+#	include "ShadowCaster2D.h"
 #	include "Arrow.h"
 #	include "TextField.h"
 #	include "SoundEmitter.h"
@@ -438,6 +440,8 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Node );
 		SCRIPT_CLASS_WRAPPING( Scene );
 		SCRIPT_CLASS_WRAPPING( HotSpot );
+		SCRIPT_CLASS_WRAPPING( Light2D );
+		SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
 		SCRIPT_CLASS_WRAPPING( Sprite );
 		SCRIPT_CLASS_WRAPPING( Animation );
 		SCRIPT_CLASS_WRAPPING( Arrow );

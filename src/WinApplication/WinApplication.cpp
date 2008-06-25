@@ -293,7 +293,7 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, float _width, flo
 
 	/// patch for ansi names
 	char *ansistr = NULL;
-	size_t length = MultiByteToWideChar(CP_UTF8, 0, _name, strlen( _name ), NULL, NULL );
+	int length = MultiByteToWideChar(CP_UTF8, 0, _name, strlen( _name ), NULL, NULL );
 	WCHAR *lpszW = NULL;
 
 	lpszW = new WCHAR[length+1];

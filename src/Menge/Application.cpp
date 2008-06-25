@@ -13,6 +13,7 @@
 #	include "PhysicEngine2D.h"
 
 #	include "MousePickerSystem.h"
+#	include "LightSystem.h"
 #	include "ResourceManager.h"
 
 #	include "Game.h"
@@ -35,6 +36,8 @@
 #include "Arrow.h"
 #include "Emitter.h"
 #include "HotSpot.h"
+#include "Light2D.h"
+#include "ShadowCaster2D.h"
 #include "Point.h"
 #include "RigidBody2D.h"
 #include "SoundEmitter.h"
@@ -60,6 +63,7 @@
 # include "ResourceCapsuleController.h"
 # include "ResourceEmitterContainer.h"
 # include "ResourceFont.h"
+//# include "ResourceImageAtlas.h"
 # include "ResourceImageCell.h"
 # include "ResourceImageDefault.h"
 # include "ResourceImageDynamic.h"
@@ -78,6 +82,8 @@
 # include "ResourceMaterial.h"
 
 #	include "FreeImageCodec.h"
+
+#include <FreeImage.h>
 
 
 #define MENGE_DELETE(x) if(x) { delete (x); (x) = NULL; }
@@ -306,6 +312,7 @@ namespace Menge
 			}*/
 		}
 	}
+
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const std::string & _applicationFile, const std::string& _args )
 	{
@@ -316,6 +323,8 @@ namespace Menge
 		OBJECT_FACTORY( Arrow );
 		OBJECT_FACTORY( Emitter );
 		OBJECT_FACTORY( HotSpot );
+		OBJECT_FACTORY( Light2D );
+		OBJECT_FACTORY( ShadowCaster2D );
 		OBJECT_FACTORY( Point );
 		OBJECT_FACTORY( RigidBody2D );
 		OBJECT_FACTORY( SoundEmitter );
@@ -343,6 +352,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceCapsuleController );
 		RESOURCE_FACTORY( ResourceEmitterContainer );
 		RESOURCE_FACTORY( ResourceFont );
+		//RESOURCE_FACTORY( ResourceImageAtlas );
 		RESOURCE_FACTORY( ResourceImageCell );
 		RESOURCE_FACTORY( ResourceImageDefault );
 		RESOURCE_FACTORY( ResourceImageDynamic );
@@ -626,8 +636,9 @@ namespace Menge
 
 		Holder<Game>::hostage()->render( m_debugRender );
 
+		Holder<LightSystem>::hostage()->update();
+
 		//MENGE_LOG("GameRender: %.2f\n", m_interface->getDeltaTime() );
-		//Holder<Game>::hostage()->debugRender();
 		
 		if( m_debugInfo )
 		{
@@ -635,10 +646,7 @@ namespace Menge
 			m_debugTextField->setText( m_debugText );
 			m_debugTextField->render( false );
 		}
-		/*if(m_debugRender)
-		{
-			Holder<Game>::hostage()->debugRender();
-		}*/
+
 		m_renderEngine->endScene();
 
 		m_renderEngine->render();

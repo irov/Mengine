@@ -379,48 +379,6 @@ namespace Menge
 		registerEventListener("ON_COLLIDE", "onCollide", _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_debugRender()
-	{
-		for( TShapeList::iterator it = m_shapeList.begin(),
-			it_end = m_shapeList.end();
-			it != it_end;
-		it++ )
-		{
-			const mt::polygon & poly = *it;
-
-			for(int i = 0; i < poly.num_points(); i++)
-			{
-				mt::vec2f beg = poly[i];
-				mt::vec2f end = poly[(i+1) % poly.num_points()];
-
-				beg+=getWorldPosition();
-				end+=getWorldPosition();
-
-				Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF,beg,end);
-			}
-		}
-		for( TShapeBoxList::iterator itb = m_shapeBoxList.begin(),
-			itb_end = m_shapeBoxList.end();
-			itb != itb_end;
-		itb++ )
-		{
-			float width = itb->first.first;
-			float height = itb->first.second;
-			mt::vec2f pos = itb->second.first;
-			float angle = itb->second.second;
-
-			RenderEngine* reng = Holder<RenderEngine>::hostage();
-
-			pos += getWorldPosition();
-
-			reng->renderLine(0xFFFFFFFF, mt::vec2f( pos.x - width/2.0f, pos.y - height/2.0f ), mt::vec2f( pos.x + width/2.0f, pos.y - height/2.0f ) );
-			reng->renderLine(0xFFFFFFFF, mt::vec2f( pos.x - width/2.0f, pos.y - height/2.0f ), mt::vec2f( pos.x - width/2.0f, pos.y + height/2.0f ) );
-			reng->renderLine(0xFFFFFFFF, mt::vec2f( pos.x + width/2.0f, pos.y - height/2.0f ), mt::vec2f( pos.x + width/2.0f, pos.y + height/2.0f ) );
-			reng->renderLine(0xFFFFFFFF, mt::vec2f( pos.x - width/2.0f, pos.y + height/2.0f ), mt::vec2f( pos.x + width/2.0f, pos.y + height/2.0f ) );
-		
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::onApplyForceAndTorque()
 	{
 		//printf( "onApplyForceAndTorque\n" );

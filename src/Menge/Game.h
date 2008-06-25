@@ -42,7 +42,6 @@ namespace Menge
 	public:
 		bool init();
 		void release();
-		void debugRender();
 
 	public:
 		void setParamString( const std::string& _params );

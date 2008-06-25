@@ -63,7 +63,6 @@ namespace Menge
 	protected:
 		void _update( float _timing ) override;
 		void _render( bool _enableDebug ) override;
-		void _debugRender() override;
 		//void _onSetListener() override;
 
 	protected:

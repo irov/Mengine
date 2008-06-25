@@ -56,7 +56,6 @@ namespace Menge
 		void regGlobalKeyEventable( GlobalKeyHandler * _handler );
 		void unregGlobalKeyEventable( GlobalKeyHandler * _handler );
 
-		void debugRender();
 		void onMouseLeave();
 		void onMouseEnter();
 	

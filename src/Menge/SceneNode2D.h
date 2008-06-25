@@ -43,7 +43,6 @@ namespace Menge
 	
 	public:
 		void loader( XmlElement * _xml ) override;
-		void debugRender() override;
 
 	protected:
 		Layer2D * m_layer;

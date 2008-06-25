@@ -68,20 +68,6 @@ namespace Menge
 		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::debugRender()
-	{
-		NodeCore::debugRender();
-
-		/*for( TListChildren::iterator
-			it = m_listChildren.begin(),
-			it_end = m_listChildren.end();
-		it != it_end;
-		++it)
-		{
-			(*it)->debugRender();
-		}	*/	
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::setLayer( Layer2D* _layer )
 	{
 		m_layer = _layer;

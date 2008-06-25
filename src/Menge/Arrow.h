@@ -44,7 +44,6 @@ namespace Menge
 	protected:
 		void _update( float _timing ) override;
 		bool _activate() override;
-		void _debugRender() override;
 		bool _compile() override;
 
 	protected:

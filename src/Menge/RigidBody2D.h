@@ -116,7 +116,6 @@ namespace Menge
 		//virtual void _onSetListener();
 
 		void _render( bool _enableDebug ) override;
-		void _debugRender() override;
 
 	};
 

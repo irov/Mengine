@@ -22,13 +22,13 @@ good_files = []
 
 copy_files = []
 
-atlas_width = 2048
-atlas_height = 2048
+atlas_width = 4096
+atlas_height = 4096
 
 optipng_use = False
 
 # always false
-jpg_png_use = False
+jpg_png_use = True
 
 allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
 

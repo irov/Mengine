@@ -22,13 +22,16 @@ good_files = []
 
 copy_files = []
 
-atlas_width = 4096
-atlas_height = 4096
+atlas_width = 2048
+atlas_height = 2048
 
 optipng_use = False
 
 # always false
 jpg_png_use = False
+
+# use halftexel
+halftexel_use = False
 
 allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
 
@@ -153,12 +156,14 @@ def atlas(src,destdir):
 
         resource_output_name = os.path.basename(resource)
         
-        exe = 'AtlasMaker.exe %(resource_name)s %(output_resource)s %(width)i %(height)i %(gamedir)s' % \
+        exe = 'AtlasMaker.exe %(resource_name)s %(output_resource)s %(width)i %(height)i %(gamedir)s %(halftexel)i' % \
             {'resource_name' : resource, \
              'output_resource' : resource_output_name,\
              'width' : atlas_width, \
              'height' : atlas_height, \
-             'gamedir' : gamedir}
+             'gamedir' : gamedir, \
+             'halftexel' : halftexel_use \
+            }
         
         subprocess.call(exe)
 

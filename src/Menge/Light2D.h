@@ -35,16 +35,12 @@ namespace Menge
 	public:
 		void setShadowLength(float _length);
 		void setPenumbraRadius(float _radius);
-		void makeShadow(const ShadowCaster2D & _caster);
+
+		float getShadowLength() const;
+		float getPenumbraRadius() const;
 
 	private:
 		float m_shadowLength;
 		float m_shadowPenumbraR;
-		std::pair<int, int> m_chain;
-
-	private:
-		bool isVisibleEdge(const ShadowCaster2D & _caster, int i) const;
-		void drawUmbra(const ShadowCaster2D & _caster, int first, int last);
-		void drawPenumbra(const ShadowCaster2D & _caster, int first, int last);
 	};
 };

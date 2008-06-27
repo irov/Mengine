@@ -51,20 +51,11 @@ namespace Menge
 		Camera3D * getRenderCamera();
 
 		RenderImageInterface * createImage( const char* _name, unsigned int _width, unsigned int _height );
-		RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera  );
+		RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height );
 		RenderImageInterface * loadImage( const TextureDesc & _desc );
 		RenderImageInterface * loadImage( const std::string & _filename, unsigned int _filter );
 		RenderVideoStreamInterface * loadImageVideoStream( const std::string& _filename );
 
-		void renderImage(
-			const mt::mat3f & _transform, 
-			const mt::vec2f & _offset,
-			const mt::vec4f & _uv,
-			const mt::vec2f & _size,
-			unsigned int _color, 
-			const RenderImageInterface* _image,
-			EBlendFactor _src = BF_SOURCE_ALPHA,
-			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
 
 		void renderImage(		
 			const mt::mat3f & _transform, 

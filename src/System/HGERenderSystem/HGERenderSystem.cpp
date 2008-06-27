@@ -69,6 +69,7 @@ bool HGERenderSystem::createRenderWindow( float _width, float _height, int _bits
 	m_hge->System_SetState( HGE_ZBUFFER, true );
 	//m_hge->System_SetState( HGE_TEXTUREFILTER, false );
 	m_currentRenderTarget = "defaultCamera";
+	m_viewport = mt::box2f( mt::vec2f( 0.0f, 0.0f ), mt::vec2f( _width, _height ) );
 	m_targetMap.insert( std::make_pair( m_currentRenderTarget, 0 ) );
 	bool ret = false;
 	ret = m_hge->System_Initiate( m_logSystem );
@@ -149,7 +150,7 @@ RenderImageInterface * HGERenderSystem::createImage( const char* _name,
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
-RenderImageInterface * HGERenderSystem::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera )
+RenderImageInterface * HGERenderSystem::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height )
 {
 	HTARGET htgt = m_hge->Target_Create( _width, _height, true );
 	m_targetMap.insert( std::make_pair( _name, htgt ) );
@@ -211,66 +212,7 @@ void HGERenderSystem::releaseImageVideoStream( RenderVideoStreamInterface* _imag
 
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::renderImage( const char * _camera,
-								  const float * _transform, // матрица 3 на 3 
-								  const float * _offset, // смещение, вектор2 
-								  const float * _uv, // текстурные координаты, вектор4, u0, v0, u1, v1 
-								  const float * _size, // размер изображения, вектор2 
-								  unsigned int _color, // цвет, порядок RGBA
-								  const RenderImageInterface * _image, 
-								  EBlendFactor _src, 
-								  EBlendFactor _dst ) 
-{
-
-	hgeQuad quad;
-	const HGETexture* tex = static_cast<const HGETexture*>( _image );
-	quad.v[0].x = _transform[0] * _offset[0] + _transform[3] * _offset[1] + _transform[6] + m_viewport.min.x;
-	quad.v[0].y = _transform[1] * _offset[0] + _transform[4] * _offset[1] + _transform[7] + m_viewport.min.y;
-	quad.v[0].z = m_layer;
-	quad.v[0].col = _color;
-
-	quad.v[1].x = quad.v[0].x + _transform[0] * _size[0];
-	quad.v[1].y = quad.v[0].y + _transform[1] * _size[0];
-	quad.v[1].z = m_layer;
-	quad.v[1].col = _color;
-
-	quad.v[2].x = quad.v[1].x + _transform[3] * _size[1];
-	quad.v[2].y = quad.v[1].y + _transform[4] * _size[1];
-	quad.v[2].z = m_layer;
-	quad.v[2].col = _color;
-
-	quad.v[3].x = _transform[0] * (_offset[0]) + _transform[3] * (_offset[1] + _size[1]) + _transform[6] + m_viewport.min.x;
-	quad.v[3].y = _transform[1] * (_offset[0]) + _transform[4] * (_offset[1] + _size[1]) + _transform[7] + m_viewport.min.y;
-	quad.v[3].z = m_layer;
-	quad.v[3].col = _color;
-
-	quad.v[0].x *= m_renderX;
-	quad.v[0].y *= m_renderY;
-	quad.v[1].x *= m_renderX;
-	quad.v[1].y *= m_renderY;
-	quad.v[2].x *= m_renderX;
-	quad.v[2].y *= m_renderY;
-	quad.v[3].x *= m_renderX;
-	quad.v[3].y *= m_renderY;
-
-	quad.blend = BLEND_DEFAULT;
-
-	quad.v[0].tx = _uv[0];
-	quad.v[0].ty = _uv[1];
-	quad.v[1].tx = _uv[2]; 
-	quad.v[1].ty = _uv[1];
-	quad.v[2].tx = _uv[2]; 
-	quad.v[2].ty = _uv[3];
-	quad.v[3].tx = _uv[0]; 
-	quad.v[3].ty = _uv[3];
-
-	quad.tex = tex->getHandle();
-	
-	m_hge->Gfx_RenderQuad( &quad );
-}
-//////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::renderImage( const char * _camera, 
-								  const float * _transform,  
+void HGERenderSystem::renderImage(const float * _transform,  
 								  const float * _a, 
 								  const float * _b, 
 								  const float * _c, 
@@ -314,22 +256,23 @@ void HGERenderSystem::renderImage( const char * _camera,
 
 	quad.blend = BLEND_DEFAULT;
 
-	quad.v[0].tx = _uv[0];
-	quad.v[0].ty = _uv[1];
-	quad.v[1].tx = _uv[2];
-	quad.v[1].ty = _uv[1];
-	quad.v[2].tx = _uv[2];
-	quad.v[2].ty = _uv[3];
-	quad.v[3].tx = _uv[0]; 
-	quad.v[3].ty = _uv[3];
+	const HGETexture* tex = static_cast<const HGETexture*>( _image );
+	const mt::vec2f& uvMask = tex->getUVMask();
+	quad.v[0].tx = _uv[0] * uvMask.x;
+	quad.v[0].ty = _uv[1] * uvMask.y;
+	quad.v[1].tx = _uv[2] * uvMask.x;
+	quad.v[1].ty = _uv[1] * uvMask.y;
+	quad.v[2].tx = _uv[2] * uvMask.x;
+	quad.v[2].ty = _uv[3] * uvMask.y;
+	quad.v[3].tx = _uv[0] * uvMask.x; 
+	quad.v[3].ty = _uv[3] * uvMask.y;
 
-	quad.tex = static_cast<const HGETexture*>( _image )->getHandle();
+	quad.tex = tex->getHandle();
 
 	m_hge->Gfx_RenderQuad( &quad );
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::renderLine( const char * _camera, 
-								 unsigned int _color, 
+void HGERenderSystem::renderLine( unsigned int _color, 
 								 const float * _begin, 
 								 const float * _end )
 {

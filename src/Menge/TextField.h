@@ -154,8 +154,9 @@ namespace Menge
 
 		float m_maxWidth;
 		float m_charOffset;
-		ResourceImage * m_outlineImage;
-		std::string m_outlineFontName;
+		//ResourceImage * m_outlineImage;
+		//std::string m_outlineFontName;
+		bool m_outline;
 
 		int m_lineOffset;
 		//PyObject* m_listener;

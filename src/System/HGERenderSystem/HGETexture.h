@@ -4,6 +4,8 @@
 
 #	include "HGE.h"
 
+#	include "libs/Math/vec2.h"
+
 class HGETexture :
 	public RenderImageInterface
 {
@@ -19,11 +21,16 @@ public:
 	float getHeight() const override;
 	void writeToFile( const char* _filename ) override;
 	const char * getDescription() const override;
+	unsigned char* lock() override;
+	void unlock() override;
+	Menge::PixelFormat getPixelFormat();
+
 	unsigned long getHandle() const;
 
 	int incRef() { return ++m_ref; }
 	int decRef() { return --m_ref; }
 
+	const mt::vec2f& getUVMask() const;
 private:
 	HGE* m_hge;
 	Menge::String m_name;
@@ -32,4 +39,6 @@ private:
 	std::size_t m_height;
 	bool m_freeOnDelete;
 	int m_ref;
+	mt::vec2f m_uvMask;
+	Menge::PixelFormat m_pixelFormat;
 };

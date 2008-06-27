@@ -27,25 +27,14 @@ public:
 	void setViewMatrix( const float * _view ) override;
 	void setWorldMatrix( const float * _world ) override;
 	RenderImageInterface * createImage( const char* _name, unsigned int _width, unsigned int _height ) override;
-	RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera ) override;
+	RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height ) override;
 	RenderImageInterface * loadImage( const TextureDesc& _desc ) override;
 	void releaseImage( RenderImageInterface * _image ) override;
 	RenderImageInterface* getImage( const Menge::String& _desc ) const override;
 	RenderVideoStreamInterface* loadImageVideoStream( const char* _filename ) override;
 	void releaseImageVideoStream( RenderVideoStreamInterface* _image ) override;
-	void renderImage(		
-		const char * _camera,
-		const float * _transform, // матрица 3 на 3
-		const float * _offset,	  // смещение, вектор2
-		const float * _uv,		  // текстурные координаты, вектор4, u0, v0, u1, v1
-		const float * _size,	  // размер изображения, вектор2
-		unsigned int _color,	  // цвет, порядок RGBA
-		const RenderImageInterface * _image,
-		EBlendFactor _src,
-		EBlendFactor _dst) override;
 
 	void renderImage(		
-		const char * _camera,
 		const float * _transform, 
 		const float * _a,
 		const float * _b,
@@ -61,7 +50,7 @@ public:
 					const Menge::uint16*	_indices, std::size_t _indicesNum,
 					TMaterial* _material ) override;
 
-	void	renderLine(const char * _camera, unsigned int _color, const float * _begin, const float * _end) override;
+	void	renderLine( unsigned int _color, const float * _begin, const float * _end ) override;
 
 	void	beginScene() override;
 	void	endScene()	override;

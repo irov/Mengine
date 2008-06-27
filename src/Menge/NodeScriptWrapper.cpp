@@ -60,6 +60,7 @@
 #	include "RenderMesh.h"
 
 #	include "XmlEngine.h"
+#	include "Image.h"
 
 
 namespace Menge
@@ -99,6 +100,12 @@ namespace Menge
 		{
 			Holder<ScheduleManager>::hostage()
 				->setUpdatable( true );
+		}
+
+		static void s_scheduleFreeze( unsigned int _id, bool _freeze )
+		{
+			Holder<ScheduleManager>::hostage()
+				->freeze( _id, _freeze );
 		}
 		
 		static float getMouseX()
@@ -314,8 +321,11 @@ namespace Menge
 		}
 		static void writeImageToFile( const std::string& _resource, int _frame, const std::string& _filename )
 		{
-			const RenderImageInterface* img = Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( _resource )->getImage( _frame );
-			const_cast<RenderImageInterface*>(img)->writeToFile( _filename.c_str() );
+			RenderImageInterface* img = const_cast<RenderImageInterface*>( Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( _resource )->getImage( _frame ) );
+			Image wImage;
+			wImage.loadDynamicImage( img->lock(), img->getWidth(), img->getHeight(), 1, img->getPixelFormat() );
+			wImage.save( _filename );
+			//const_cast<RenderImageInterface*>(img)->writeToFile( _filename.c_str() );
 		}
 		static void setSoundEnabled( bool _enabled )
 		{
@@ -845,6 +855,7 @@ namespace Menge
 		pybind::def( "scheduleRemoveAll", &ScriptMethod::scheduleRemoveAll );
 		pybind::def( "scheduleStopAll", &ScriptMethod::scheduleStopAll );
 		pybind::def( "scheduleResumeAll", &ScriptMethod::scheduleResumeAll );
+		pybind::def( "scheduleFreeze", &ScriptMethod::s_scheduleFreeze );
 
 		pybind::def( "getMouseX", &ScriptMethod::getMouseX );
 		pybind::def( "getMouseY", &ScriptMethod::getMouseY );

@@ -104,15 +104,19 @@ namespace	Menge
 			{
 				ImageBlock tile = m_resourceMap->getTile( i, j );
 
+				mt::vec2f offset( i * tileSize, j * tileSize );
+				mt::vec2f size( tileSize, tileSize );
 				Holder<RenderEngine>::hostage()->renderImage(
-					wm, 
-					mt::vec2f( i * (tileSize), j * (tileSize) ),
+					wm,
+					offset,
+					offset + mt::vec2f( size.x, 0.0f ),
+					offset + size,
+					offset + mt::vec2f( 0.0f, size.y ),
 					tile.uv,
-					mt::vec2f( tileSize, tileSize ),
-					0xffffffff,
-					tile.image,
-					BF_SOURCE_ALPHA,
-					BF_ONE_MINUS_SOURCE_ALPHA);
+					0xFFFFFFFF,
+					tile.image
+					);
+
 			}
 		}
 	}

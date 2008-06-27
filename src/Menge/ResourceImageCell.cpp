@@ -4,6 +4,8 @@
 
 #	include "XmlEngine.h"
 
+#	include "Interface/RenderSystemInterface.h"
+
 namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageCell )
@@ -141,7 +143,7 @@ namespace Menge
 			m_uvs[index].z = float( index % m_numX + 1 ) / m_numX;
 			m_uvs[index].w = float( offset + 1 ) / m_numY;
 
-			//m_uvs[index] += m_imageFrame.uv; // ?? или при getUV ??
+			//m_uvs[index] += m_imageFrame.offset / m_imageFrame.size; // ?? или при getUV ??
 		}
 
 		return true;

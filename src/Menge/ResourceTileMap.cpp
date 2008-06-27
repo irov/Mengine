@@ -37,7 +37,7 @@ namespace Menge
 	{
 		//m_physXml = "";
 		//m_physXml += "<Node Name = \"" + m_name + "_collision\" Type = \"RigidBody2D\">";
-
+		m_physPos.clear();
 
 		m_tileSet = 
 			Holder<ResourceManager>::hostage()
@@ -154,7 +154,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float ResourceTileMap::_getPhysWidth() const
 	{
-		return (m_physWidth)/2.0f;
+		return m_physWidth;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namescape Menge

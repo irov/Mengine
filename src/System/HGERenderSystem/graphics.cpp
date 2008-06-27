@@ -138,7 +138,7 @@ void CALL HGE_Impl::Gfx_SetClipping( int x, int y, int w, int h )
 	_render_batch();
 	pD3DDevice->SetViewport(&vp);
 
-	D3DXMATRIX tmp;
+	D3DXMATRIXA16 tmp;
 	D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
 	D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
 	D3DXMatrixMultiply(&matProj, &matProj, &tmp);
@@ -149,7 +149,7 @@ void CALL HGE_Impl::Gfx_SetClipping( int x, int y, int w, int h )
 
 void CALL HGE_Impl::Gfx_SetTransform(float x, float y, float dx, float dy, float rot, float hscale, float vscale)
 {
-	D3DXMATRIX tmp;
+	D3DXMATRIXA16 tmp;
 
 	if( vscale == 0.0f ) 
 	{
@@ -545,10 +545,11 @@ void CALL HGE_Impl::Texture_LoadRawData( HTEXTURE _hTex, const char* data, int _
 	RECT rect;
 	rect.top = 0; rect.left = 0;
 	rect.right = _width; rect.bottom = _height;
-	HRESULT hr = D3DXLoadSurfaceFromMemory( surf, NULL, NULL, data, fmt, _pitch, NULL, &rect, D3DX_DEFAULT, 0 );
+	HRESULT hr = D3DXLoadSurfaceFromMemory( surf, NULL, &rect, data, fmt, _pitch, NULL, &rect, D3DX_DEFAULT, 0 );
 	if( FAILED( hr ) )
 	{
 		_PostError( "Error: Failed to load texture data" );
+		System_Log( "HR = %d", hr );
 		return;
 	}
 }
@@ -727,7 +728,7 @@ void HGE_Impl::_SetBlendMode(int blend)
 
 void HGE_Impl::_SetProjectionMatrix(int width, int height)
 {
-	D3DXMATRIX tmp;
+	D3DXMATRIXA16 tmp;
 	D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
 	D3DXMatrixTranslation(&tmp, -0.5f, height+0.5f, 0.0f);
 	D3DXMatrixMultiply(&matProj, &matProj, &tmp);
@@ -1349,7 +1350,7 @@ void HGE_Impl::Gfx_Prepare3D()
 	pD3DDevice->SetStreamSource( 0, pVB3D, sizeof(mengeVertex) );
 	pD3DDevice->SetVertexShader( D3DFVF_MENGEVERTEX );
 	pD3DDevice->SetIndices( pIB3D, 0 );
-	//pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CW );
+	pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CW );
 
 	m_layer3D = true;
 }

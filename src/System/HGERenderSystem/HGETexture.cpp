@@ -8,6 +8,8 @@ HGETexture::HGETexture( HGE* _hge, bool _freeOnDelete )
 , m_hTexture( 0 )
 , m_freeOnDelete( _freeOnDelete )
 , m_ref( 0 )
+, m_uvMask( 1.0f, 1.0f )
+, m_pixelFormat( Menge::PF_A8R8G8B8 )
 {
 
 }
@@ -18,6 +20,8 @@ HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, b
 , m_name( _name )
 , m_freeOnDelete( _freeOnDelete )
 , m_ref( 0 )
+, m_uvMask( 1.0f, 1.0f )
+, m_pixelFormat( Menge::PF_A8R8G8B8 )
 {
 
 }
@@ -29,6 +33,8 @@ HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _widt
 , m_height( _height )
 , m_freeOnDelete( _freeOnDelete )
 , m_ref( 0 )
+, m_uvMask( 1.0f, 1.0f )
+, m_pixelFormat( Menge::PF_A8R8G8B8 )
 {
 	m_hTexture = m_hge->Texture_Create( _width, _height );
 }
@@ -49,6 +55,10 @@ void HGETexture::load( const TextureDesc& _desc )
 
 	m_width = _desc.width;
 	m_height = _desc.height;
+	m_pixelFormat = static_cast<Menge::PixelFormat>( _desc.pixelFormat );
+
+	m_uvMask.x = static_cast<float>( m_width ) / hw;
+	m_uvMask.y = static_cast<float>( m_height ) / hh;
 }
 //////////////////////////////////////////////////////////////////////////
 void HGETexture::unload()
@@ -83,5 +93,25 @@ const char * HGETexture::getDescription() const
 unsigned long HGETexture::getHandle() const
 {
 	return m_hTexture;
+}
+//////////////////////////////////////////////////////////////////////////
+const mt::vec2f& HGETexture::getUVMask() const
+{
+	return m_uvMask;
+}
+//////////////////////////////////////////////////////////////////////////
+unsigned char* HGETexture::lock()
+{
+	return reinterpret_cast< unsigned char* >( m_hge->Texture_Lock( m_hTexture ) );
+}
+//////////////////////////////////////////////////////////////////////////
+void HGETexture::unlock()
+{
+	m_hge->Texture_Unlock( m_hTexture );
+}
+//////////////////////////////////////////////////////////////////////////
+Menge::PixelFormat HGETexture::getPixelFormat()
+{
+	return m_pixelFormat;
 }
 //////////////////////////////////////////////////////////////////////////

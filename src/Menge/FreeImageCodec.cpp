@@ -308,7 +308,14 @@ namespace Menge
 
 		FIBITMAP* fiBitmap = FreeImage_LoadFromMemory( (FREE_IMAGE_FORMAT)m_freeImageType, fiMem );
 
-		assert( fiBitmap && "FreeImageCodec::decode -> Error decoding image" );
+		//assert( fiBitmap && "FreeImageCodec::decode -> Error decoding image" );
+		if( fiBitmap == 0 )	// can't decode
+		{
+			DecodeResult res;
+			res.first = 0;
+			res.second = 0;
+			return res;
+		}
 
 		ImageData* imgData = new ImageData();
 		DataStreamInterface* output;

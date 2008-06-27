@@ -63,6 +63,10 @@ namespace Menge
 	void RenderEngine::setRenderViewport( const Viewport & _viewport )
 	{
 		m_renderViewport = _viewport;
+		m_renderViewport.begin.x = ::floorf( m_renderViewport.begin.x + 0.5f );
+		m_renderViewport.begin.y = ::floorf( m_renderViewport.begin.y + 0.5f );
+		m_renderViewport.end.x = ::floorf( m_renderViewport.end.x + 0.5f );
+		m_renderViewport.end.y = ::floorf( m_renderViewport.end.y + 0.5f );
 		m_interface->setRenderTarget( m_renderViewport.getCamera() );
 	}
 	////////////////////////////////////////////////////////////////////////////
@@ -112,9 +116,9 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height, const char* _camera  )
+	RenderImageInterface * RenderEngine::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height )
 	{
-		RenderImageInterface * image = m_interface->createRenderTargetImage( _name, _width, _height, _camera );
+		RenderImageInterface * image = m_interface->createRenderTargetImage( _name, _width, _height );
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -183,30 +187,6 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderImage(
-		const mt::mat3f & _transform, 
-		const mt::vec2f & _offset,
-		const mt::vec4f & _uv,
-		const mt::vec2f & _size,
-		unsigned int _color, 
-		const RenderImageInterface * _image,
-		EBlendFactor _src,
-		EBlendFactor _dst)
-	{
-		mt::mat3f transform = _transform;
-		transform.v2.v2 -= m_renderViewport.begin;
-		m_interface->renderImage(
-			m_renderViewport.getCamera().c_str(),
-			transform.m,
-			_offset.m,
-			_uv.m,
-			_size.m,
-			_color,
-			_image,
-			_src,
-			_dst);
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderImage(		
 			const mt::mat3f & _transform, 
 			const mt::vec2f & _a,
@@ -222,7 +202,6 @@ namespace Menge
 		mt::mat3f transform = _transform;
 		transform.v2.v2 -= m_renderViewport.begin;
 		m_interface->renderImage(
-			m_renderViewport.getCamera().c_str(),
 			transform.m,
 			_a.m,
 			_b.m,
@@ -240,7 +219,9 @@ namespace Menge
 		const mt::vec2f & _begin,
 		const mt::vec2f & _end)
 	{
-		m_interface->renderLine( m_renderViewport.getCamera().c_str(), _color,_begin.m,_end.m );		
+		mt::vec2f begin = _begin - m_renderViewport.begin;
+		mt::vec2f end = _end - m_renderViewport.begin;
+		m_interface->renderLine( _color, begin.m, end.m );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )

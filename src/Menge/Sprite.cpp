@@ -227,6 +227,8 @@ namespace	Menge
 			size.y *= m_scale.y;
 
 			m_alignOffset = size * -0.5f;
+			m_alignOffset.x = ::floorf( m_alignOffset.x + 0.5f );
+			m_alignOffset.y = ::floorf( m_alignOffset.y + 0.5f );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -354,14 +356,17 @@ namespace	Menge
 		}
 
 		Holder<RenderEngine>::hostage()->renderImage(
-			wm, 
+			wm,
 			m_offset,
+			m_offset + mt::vec2f( m_size.x, 0.0f ),
+			m_offset + m_size,
+			m_offset + mt::vec2f( 0.0f, m_size.y ),
 			m_uv,
-			m_size,
 			m_color.get(),
 			renderImage,
 			m_blendSrc,
-			m_blendDest);
+			m_blendDest 
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setColor( const Color & _color )

@@ -131,7 +131,7 @@ namespace Menge
 
 		unsigned int inc = resource->incrementReference();
 		// resource has been loaded
-		if( inc == 1 && m_listeners.size() )
+		if( inc == 1 && ( !m_listeners.empty() || !m_scriptListeners.empty() ) )
 		{
 			for( TListResourceManagerListener::iterator it = m_listeners.begin();
 				it != m_listeners.end();
@@ -144,8 +144,6 @@ namespace Menge
 				it != m_scriptListeners.end();
 				it++)
 			{
-				//static char str[100];
-				//strcpy( str, _name.c_str() );
 				PyObject * result = 
 					Holder<ScriptEngine>::hostage()
 					->callFunction( it->second, "(s)", _name.c_str() );

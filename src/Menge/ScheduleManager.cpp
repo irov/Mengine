@@ -17,20 +17,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ScheduleManager::schedule( float _timing, PyObject * _func )
 	{
-		ScheduleEvent event;
+		ScheduleEvent event_;
 
-
-		event.dead = false;
-		event.updating = m_updating;
-		event.timing = _timing;
-		event.script = _func;
-		event.id = ++m_schedulesID;
+		event_.dead = false;
+		event_.updating = m_updating;
+		event_.timing = _timing;
+		event_.script = _func;
+		event_.id = ++m_schedulesID;
+		event_.paused = !m_updatable;
 
 		ScriptEngine::incref( _func );
 
-		m_schedules.push_back( event );
+		m_schedules.push_back( event_ );
 
-		return event.id;
+		return event_.id;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::remove( unsigned int _id )
@@ -91,10 +91,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::update( float _timing )
 	{
-		if( !m_updatable )
+		/*if( !m_updatable )
 		{
 			return;
-		}
+		}*/
 
 		m_updating = true;
 
@@ -104,16 +104,11 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			if( it->dead )
+			if( it->dead || it->updating || it->paused )
 			{
 				continue;
 			}
 			
-			if( it->updating )
-			{
-				continue;
-			}
-
 			if( it->timing < _timing )
 			{
 				Holder<ScriptEngine>::hostage()
@@ -188,13 +183,19 @@ namespace Menge
 				_event.updating = false;
 			}
 		};
-
+		
 		std::for_each( m_schedules.begin(), m_schedules.end(), FScheduleUpdating() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::setUpdatable( bool _upatable )
 	{
 		m_updatable = _upatable;
+		for( TListSchedules::iterator it = m_schedules.begin(), it_end = m_schedules.end();
+			it != it_end;
+			it++ )
+		{
+			it->paused = !_upatable;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int ScheduleManager::timerSchedule( float _timing, PyObject* _func )
@@ -212,5 +213,40 @@ namespace Menge
 		m_timerSchedules.push_back( event );
 
 		return event.id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScheduleManager::freeze( unsigned int _id, bool _freeze )
+	{
+		struct FScheduleFind
+		{
+			FScheduleFind( unsigned int _id )
+				: m_id(_id)
+			{
+			}
+
+			bool operator()( const ScheduleEvent & _event ) const
+			{
+				return _event.id == m_id;
+			}
+
+			unsigned int m_id;
+		};
+
+		TListSchedules::iterator it_find = 
+			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
+
+		if( it_find != m_schedules.end() )
+		{
+			it_find->paused = _freeze;
+		}
+		else
+		{
+			it_find = std::find_if( m_timerSchedules.begin(), m_timerSchedules.end(), FScheduleFind(_id) );
+
+			if( it_find != m_timerSchedules.end() )
+			{
+				it_find->paused = _freeze;
+			}
+		}
 	}
 }

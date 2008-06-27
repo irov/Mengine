@@ -56,6 +56,7 @@ void Box2DPhysicSystem::destroyWorld()
 {
 	delete m_world;
 	m_world = 0;
+	m_contacts.clear();
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::update( float _timing, int _iterations )
@@ -81,6 +82,10 @@ void Box2DPhysicSystem::update( float _timing, int _iterations )
 		b2Body* body1 = it->shape1->GetBody();
 		b2Body* body2 = it->shape2->GetBody();
 
+		/*if( !body1 || !body2 )
+		{
+			continue;
+		}*/
 		static_cast<Box2DPhysicBody*>( body1->GetUserData() )->_collide( body2, &(*it) );
 		static_cast<Box2DPhysicBody*>( body2->GetUserData() )->_collide( body1, &(*it) );
 	}

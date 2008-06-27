@@ -19,6 +19,7 @@ namespace Menge
 		{
 			bool dead;
 			bool updating;
+			bool paused;
 			unsigned int id;
 			float timing;
 			PyObject * script;
@@ -29,6 +30,7 @@ namespace Menge
 		unsigned int timerSchedule( float _timing, PyObject* _func );
 		void remove( unsigned int _id );
 		void removeAll();
+		void freeze( unsigned int _id, bool _freeze );
 
 	public:
 		void update( float _timing );

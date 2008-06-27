@@ -33,12 +33,13 @@ namespace     Menge
 		, m_changingColorTime( 0.0f )
 		, m_changingColor( false )
 		, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
-		, m_outlineImage( 0 )
+		//, m_outlineImage( 0 )
 		, m_maxWidth( 2048.f )
 		, m_charOffset( 0.0f )
 		, m_lineOffset( 0 )
+		, m_outline( true )
 	{
-		m_outlineFontName.clear();
+		//m_outlineFontName.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TextField::~TextField()
@@ -106,7 +107,7 @@ namespace     Menge
 			return false;
 		}
 
-		if( m_outlineFontName.empty() == false )
+		/*if( m_outlineFontName.empty() == false )
 		{
 			m_outlineImage = 
 				Holder<ResourceManager>::hostage()
@@ -117,7 +118,7 @@ namespace     Menge
 				MENGE_LOG( "Error: Outline Image can't loaded '%s'", m_outlineFontName.c_str() );
 				return false;
 			}
-		}
+		}*/
 
 		if( m_height == 0.0f )
 		{
@@ -139,8 +140,8 @@ namespace     Menge
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resource );
 
-		Holder<ResourceManager>::hostage()
-			->releaseResource( m_outlineImage );
+		//Holder<ResourceManager>::hostage()
+		//	->releaseResource( m_outlineImage );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::loader( XmlElement * _xml )
@@ -150,16 +151,17 @@ namespace     Menge
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Font", "Name", m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE( "Text", "Value", m_text);
-			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color);
-			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height);
+			XML_CASE_ATTRIBUTE_NODE( "Text", "Value", m_text );
+			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
+			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
 			XML_CASE_ATTRIBUTE_NODE( "RightAlign", "Value", m_rightAlign );
-			XML_CASE_ATTRIBUTE_NODE( "OutlineColor", "Value", m_outlineColor);
-			XML_CASE_ATTRIBUTE_NODE( "OutlineImage", "Name", m_outlineFontName);
-			XML_CASE_ATTRIBUTE_NODE( "MaxWidth", "Value", m_maxWidth);
-			XML_CASE_ATTRIBUTE_NODE( "CharOffset", "Value", m_charOffset);
-			XML_CASE_ATTRIBUTE_NODE( "LineOffset", "Value", m_lineOffset);
+			XML_CASE_ATTRIBUTE_NODE( "OutlineColor", "Value", m_outlineColor );
+			//XML_CASE_ATTRIBUTE_NODE( "OutlineImage", "Name", m_outlineFontName);
+			XML_CASE_ATTRIBUTE_NODE( "Outline", "Value", m_outline );
+			XML_CASE_ATTRIBUTE_NODE( "MaxWidth", "Value", m_maxWidth );
+			XML_CASE_ATTRIBUTE_NODE( "CharOffset", "Value", m_charOffset );
+			XML_CASE_ATTRIBUTE_NODE( "LineOffset", "Value", m_lineOffset );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -215,7 +217,17 @@ namespace     Menge
 
 				mt::vec2f size( width, m_height );
 
-				Holder<RenderEngine>::hostage()->renderImage( wm, offset, uv, size, _color.get(), _renderImage );
+				Holder<RenderEngine>::hostage()->renderImage(
+					wm,
+					offset,
+					offset + mt::vec2f( size.x, 0.0f ),
+					offset + size,
+					offset + mt::vec2f( 0.0f, size.y ),
+					uv,
+					_color.get(),
+					_renderImage
+					);
+
 
 				offset.x += width + m_charOffset;
 			}
@@ -228,7 +240,7 @@ namespace     Menge
 	{
 		const RenderImageInterface * renderImage = m_resource->getImage();
 
-		if( m_outlineImage != NULL )
+		/*if( m_outlineImage != NULL )
 		{
 			const RenderImageInterface * outlineImage = m_outlineImage->getImage(0);
 
@@ -241,6 +253,12 @@ namespace     Menge
 			float h = renderImage->getHeight() / outlineImage->getHeight();
 
 			renderPass_( m_outlineColor, outlineImage, uv, k, h );
+		}*/
+		const RenderImageInterface * outlineImage = m_resource->getOutlineImage();
+		if( m_outline && outlineImage )
+		{
+
+			renderPass_( m_outlineColor, outlineImage );
 		}
 
 		renderPass_( m_color, renderImage );
@@ -483,14 +501,14 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setOutlineResource( const String& _outlineName )
 	{
-		if( m_outlineFontName != _outlineName )
+		/*if( m_outlineFontName != _outlineName )
 		{
 			m_outlineFontName = _outlineName;
 			if( isCompile() )
 			{
 				recompile();
 			}
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -290,9 +290,9 @@ public:
 	CRenderTargetList*	pTargets;
 	CRenderTargetList*	pCurTarget;
 
-	D3DXMATRIX			matView;
-	D3DXMATRIX			matProj;
-	D3DXMATRIX			matWorld;
+	D3DXMATRIXA16		matView;
+	D3DXMATRIXA16		matProj;
+	D3DXMATRIXA16		matWorld;
 
 	CTextureList*		textures;
 	hgeVertex*			VertArray;

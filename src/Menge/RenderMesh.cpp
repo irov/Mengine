@@ -95,7 +95,7 @@ namespace Menge
 	void RenderMesh::createRenderTarget( const String& _name, std::size_t _width, std::size_t _height )
 	{
 		m_renderTarget = Holder<RenderEngine>::hostage()->
-										createRenderTargetImage( _name.c_str(), _width, _height, "" );
+										createRenderTargetImage( _name.c_str(), _width, _height );
 		m_material.texture = m_renderTarget;
 	}
 	//////////////////////////////////////////////////////////////////////////

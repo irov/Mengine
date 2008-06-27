@@ -270,6 +270,12 @@ namespace Menge
 
 		Holder<FileEngine>::hostage()->closeStream( encoded );
 
+		if( res.second == 0 )
+		{
+			MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _strFileName.c_str() );
+			return *this;
+		}
+
 		ImageCodec::ImageData* data = 
 			static_cast<ImageCodec::ImageData*>( res.second );
 

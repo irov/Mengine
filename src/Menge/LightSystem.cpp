@@ -20,7 +20,6 @@ namespace Menge
 
 			//static int i = 0;
 			//light->setLocalPosition(mt::vec2f(i++,i++));
-
 			for(TListShadowCaster::iterator it = m_shadowCasters.begin(); it != m_shadowCasters.end(); it++)
 			{
 				makeShadow(*light,*it);

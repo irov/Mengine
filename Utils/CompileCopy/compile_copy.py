@@ -8,6 +8,8 @@ import compileall
 import re
 import xml.dom.minidom
 import subprocess
+import struct
+
 from Tkinter import *
 import tkFileDialog, tkMessageBox
 
@@ -16,7 +18,7 @@ bad_ext = ['.py']
 #skipped files
 bad_files = ['thumbs.db','Thumbs.db']
 #skipped folders
-bad_dirs = ['thumbnails', '.svn']
+bad_dirs = ['thumbnails','.svn']
 #files with bad extension, but needed. Example - log file
 good_files = []
 
@@ -27,13 +29,16 @@ atlas_height = 2048
 
 optipng_use = False
 
-# always false
-jpg_png_use = False
+# *.mne creation
+make_mne_format = True
 
 # use halftexel
 halftexel_use = False
 
-allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
+# jpg quality, in percent
+jpg_quality = 95
+
+allowed_type = ['ResourceImageDefault'] #,'ResourceImageSet','ResourceImageCell']
 
 def formreslist(src):
     dom = xml.dom.minidom.parse(src)
@@ -51,10 +56,10 @@ def formreslist(src):
     return resource_list
         
 def copyfiles():
-    for file in copy_files:
-        src = os.path.basename(file)
+    for copiedfile in copy_files:
+        src = os.path.basename(copiedfile)
        
-        '''exe = 'png2jpg.exe %(file)s -75' % \
+        '''exe = 'png2jpg.exe %(copiedfile)s -75' % \
             {'file' : src }'''
 
         if os.path.splitext(src)[1] == ".png":
@@ -65,28 +70,76 @@ def copyfiles():
 
                 subprocess.call(exe)
                 
-            if jpg_png_use:
+            if make_mne_format:
             
                 src_rgb = os.path.splitext(src)[0] + ".jpg"
             
-                dst_rgb = os.path.splitext(file)[0] + ".jpg"
+                dst_rgb = os.path.splitext(copiedfile)[0] + ".jpg"
                    
-                exe = 'convert.exe %(input)s -channel rgb -quality 90 -separate %(output)s' % \
-                    {'input' : src, 'output' : src_rgb }
+                exe = 'convert.exe %(input)s -channel rgb -quality %(percent)i -separate %(output)s' % \
+                    {'input' : src, 'output' : src_rgb, 'percent' : jpg_quality }
     
                 subprocess.call(exe)
                 
-                shutil.copy2(src_rgb, dst_rgb)
+                is_alpha = string.find(copiedfile, '$') != -1
+                         
+                if is_alpha == True:
+                    
+                    exe = 'convert.exe -negate -separate -channel alpha %(input)s -type grayscale +dither -treedepth 8 -colors 256 png8:%(output)s' % \
+                        {'input' : src, 'output' : src }
                 
-                os.remove(src_rgb)
-                
-                exe = 'convert.exe %(input)s -channel alpha -separate %(output)s' % \
-                    {'input' : src, 'output' : src }
+                    subprocess.call(exe)
+                    
+                menge_file = str(os.path.normpath(os.path.splitext(copiedfile)[0] + ".mne"))
+                                    
+                fout = file(menge_file,'wb')
     
-                subprocess.call(exe)
+                fin  = file(src_rgb,'rb')
+                        
+                filesize = os.path.getsize(src_rgb)
+                        
+                data = struct.pack('L', is_alpha)
+    
+                fout.write(data)
                 
-        shutil.copy2(src, file)
+                data = struct.pack('L', filesize)
+    
+                fout.write(data)
+                        
+                while True:
+                    data = fin.read(65536)
+                    if not data:
+                        break
+                    fout.write(data)
+                    
+                fin.close()
+                             
+                if is_alpha == True:
+                    fin  = file(src,'rb')
+                            
+                    filesize = os.path.getsize(src)
+                            
+                    data = struct.pack('L', filesize)
         
+                    fout.write(data)
+                            
+                    while True:
+                        data = fin.read(65536)
+                        if not data:
+                            break
+                        fout.write(data)
+                        
+                    fin.close()
+                                 
+                
+                
+                fout.close()
+                    
+                os.remove(src)
+                os.remove(src_rgb)
+                continue
+                
+        shutil.copy2(src,copiedfile)
         os.remove(src)	
     
     del copy_files[:]
@@ -230,6 +283,7 @@ def copytonewfolder(src, dst):
     print "done!"
     
 def main():
+
     master = Tk()
     master.withdraw()
         

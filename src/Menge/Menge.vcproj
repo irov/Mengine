@@ -760,6 +760,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\ResourceImageAtlas.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceImageAtlas.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ResourceImageCell.cpp"
 					>
 				</File>
@@ -1435,6 +1443,14 @@
 		</File>
 		<File
 			RelativePath=".\Color.h"
+			>
+		</File>
+		<File
+			RelativePath=".\MengeCodec.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\MengeCodec.h"
 			>
 		</File>
 	</Files>

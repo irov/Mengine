@@ -266,8 +266,9 @@ namespace Menge
 		{
 			return *this;
 		}
-		Codec::DecodeResult res = codec->decode( encoded );
 
+		Codec::DecodeResult res = codec->decode( encoded );
+	
 		Holder<FileEngine>::hostage()->closeStream( encoded );
 
 		if( res.second == 0 )

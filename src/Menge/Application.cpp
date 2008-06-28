@@ -63,7 +63,7 @@
 # include "ResourceCapsuleController.h"
 # include "ResourceEmitterContainer.h"
 # include "ResourceFont.h"
-//# include "ResourceImageAtlas.h"
+# include "ResourceImageAtlas.h"
 # include "ResourceImageCell.h"
 # include "ResourceImageDefault.h"
 # include "ResourceImageDynamic.h"
@@ -82,6 +82,10 @@
 # include "ResourceMaterial.h"
 
 #	include "FreeImageCodec.h"
+
+#	include "MengeCodec.h"
+#include "image.h"
+
 
 #include <FreeImage.h>
 
@@ -312,7 +316,6 @@ namespace Menge
 			}*/
 		}
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const std::string & _applicationFile, const std::string& _args )
 	{
@@ -352,7 +355,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceCapsuleController );
 		RESOURCE_FACTORY( ResourceEmitterContainer );
 		RESOURCE_FACTORY( ResourceFont );
-		//RESOURCE_FACTORY( ResourceImageAtlas );
+		RESOURCE_FACTORY( ResourceImageAtlas );
 		RESOURCE_FACTORY( ResourceImageCell );
 		RESOURCE_FACTORY( ResourceImageDefault );
 		RESOURCE_FACTORY( ResourceImageDynamic );
@@ -450,6 +453,8 @@ namespace Menge
 		m_inputEngine->regHandle( m_handler );
 
 		FreeImageCodec::startup();
+
+		MengeCodec::startup();
 
 		Holder<ResourceManager>::keep( new ResourceManager );
 

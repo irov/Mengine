@@ -260,7 +260,14 @@ void CALL HGE_Impl::Gfx_EndScene( bool _swapBuffers )
 {
 	_render_batch(true);
 	pD3DDevice->EndScene();
-	if(!pCurTarget && _swapBuffers ) pD3DDevice->Present( NULL, NULL, NULL, NULL );
+	if(!pCurTarget && _swapBuffers ) 
+	{
+		HRESULT hr = pD3DDevice->Present( NULL, NULL, NULL, NULL );
+		if( FAILED( hr ) )
+		{
+			System_Log("Error: D3D8 failed to swap buffers" );
+		}
+	}
 }
 
 void CALL HGE_Impl::Gfx_RenderLine(float x1, float y1, float x2, float y2, DWORD color, float z)
@@ -668,6 +675,7 @@ void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
 
 void HGE_Impl::_render_batch( bool bEndScene )
 {
+	HRESULT hr;
 	if(VertArray)
 	{
 		pVB->Unlock();
@@ -677,7 +685,11 @@ void HGE_Impl::_render_batch( bool bEndScene )
 			switch(CurPrimType)
 			{
 				case HGEPRIM_QUADS:
-					pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, nPrim<<2, 0, nPrim<<1);
+					hr = pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, nPrim<<2, 0, nPrim<<1);
+					if( FAILED( hr ) )
+					{
+						System_Log("ERROR!!!");
+					}
 					break;
 
 				case HGEPRIM_TRIPLES:

@@ -622,7 +622,6 @@ namespace Menge
 		}
 		//MENGE_LOG("Physic2DUpdate: %.2f\n", m_interface->getDeltaTime() );
 
-
 		Holder<Game>::hostage()->update( _timing );
 		//MENGE_LOG("GameUpdate: %.2f\n", m_interface->getDeltaTime() );
 		m_inputEngine->update();

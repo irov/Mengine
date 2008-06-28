@@ -5,8 +5,8 @@
 
 #include <vector>
 #include <map>
-#include <AL.h>
-#include <ALC.h>
+#include <AL/AL.h>
+#include <AL/ALC.h>
 
 #define MAX_SOURCENAMES_NUM 100
 #define MAX_SOUND_SOURCES 200
@@ -83,6 +83,7 @@ private:
 	typedef std::map<ALSoundSource*, float> TSourcesMap;
 	TSourcesMap m_playingSources;
 	TSourceVector m_deletingSources;
+	std::vector< std::pair< ALSoundSource*, float> > m_addingSources;
 
 	bool m_initialized;
 	float m_soundVelocity;

@@ -201,7 +201,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(SolutionDir)Utils\upx\upx.exe -9 $(SolutionDir)Bin\Game.exe&#x0D;&#x0A;"
+				CommandLine="$(SolutionDir)Utils\upx\upx.exe -9 $(SolutionDir)Bin\Game.exe"
 			/>
 		</Configuration>
 		<Configuration

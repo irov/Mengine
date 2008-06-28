@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP2"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\vorbis\include&quot;;&quot;$(SolutionDir)dependencies\OpenALSDK\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\vorbis\include&quot;;&quot;$(SolutionDir)dependencies\OpenAL\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -65,9 +65,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="OpenAL32.lib vorbis_static_d.lib vorbisfile_static_d.lib ogg_static_d.lib"
+				AdditionalDependencies="wrap_oal_d.lib vorbis_static_d.lib vorbisfile_static_d.lib ogg_static_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenALSDK\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\VorbisFile_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\Vorbis_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\ogg\win32\Static_Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenAL\OpenAL-Windows\OpenAL32\Debug\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\VorbisFile_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\Vorbis_Static_Debug\&quot;;&quot;$(SolutionDir)dependencies\ogg\win32\Static_Debug&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -116,7 +116,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\vorbis\include&quot;;&quot;$(SolutionDir)dependencies\PThreads\include&quot;;&quot;$(SolutionDir)dependencies\OpenALSDK\include&quot;;&quot;$(SolutionDir)dependencies\freealut\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\vorbis\include&quot;;&quot;$(SolutionDir)dependencies\OpenAL\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB;SOUNDSYSTEMINTERFACE_EXPORTS"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -139,9 +139,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="OpenAL32.lib vorbis_static.lib vorbisfile_static.lib ogg_static.lib"
+				AdditionalDependencies="wrap_oal.lib vorbis_static.lib vorbisfile_static.lib ogg_static.lib"
 				OutputFile="$(OutDir)\$(ProjectName).lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenALSDK\libs\Win32&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\VorbisFile_Static_Release\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\Vorbis_Static_Release\&quot;;&quot;$(SolutionDir)dependencies\ogg\win32\Static_Release&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenAL\OpenAL-Windows\OpenAL32\Release\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\VorbisFile_Static_Release\&quot;;&quot;$(SolutionDir)dependencies\vorbis\win32\Vorbis_Static_Release\&quot;;&quot;$(SolutionDir)dependencies\ogg\win32\Static_Release&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"

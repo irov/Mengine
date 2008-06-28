@@ -443,6 +443,11 @@ namespace Menge
 			Arrow* arrow = Holder<Player>::hostage()->getArrow();
 			arrow->setLocalPosition( mt::vec2f( _x, _y ) + arrow->getOffsetClick() );
 		}
+
+		static bool s_isInViewport( const mt::vec2f _pos )
+		{
+			return Holder<RenderEngine>::hostage()->getRenderViewport().testPoint( _pos );
+		}
 	}
 
 	static void classWrapping()
@@ -892,5 +897,6 @@ namespace Menge
 		pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
 
 		pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );
+		pybind::def( "isInViewport", &ScriptMethod::s_isInViewport );
 	}
 }

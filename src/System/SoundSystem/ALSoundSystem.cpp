@@ -215,6 +215,13 @@ void    ALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::update( float _timing )
 {
+
+	for( std::size_t i = 0; i < m_addingSources.size(); i++ )
+	{
+		m_playingSources[ m_addingSources[i].first ] = m_addingSources[i].second;
+	}
+	m_addingSources.clear();
+
 	for(unsigned int i = 0; i < m_streams.size(); i++)
 	{
 		m_streams[i]->getUpdater()->update();
@@ -318,78 +325,18 @@ void	ALSoundSystem::setDistanceModel(EDistanceModel _model)
 	}
 	m_distanceModel = _model;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::addStream( ALSoundBufferStream *_stream )
 {
 	m_streams.push_back( _stream );
 }
-
+//////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::removeStream( ALSoundBufferStream* _stream )
 {
 	TVectorALSoundBufferStream::iterator it = std::find( m_streams.begin(), m_streams.end(), _stream );
 	if(it != m_streams.end())
 		m_streams.erase(it);
 }
-
-/*unsigned int DecodeOggVorbis(OggVorbis_File* _oggVorbisFile, char* _decodeBuffer, unsigned int _bufferSize, unsigned int _channels)
-{
-	int currentSection;
-	int decodeSize;
-	unsigned int sampleNum;
-	short* samples;
-
-	unsigned int bytesDone = 0;
-	while (decodeSize = ov_read(_oggVorbisFile, _decodeBuffer + bytesDone, _bufferSize - bytesDone, 0, 2, 1, &currentSection))
-	{
-		bytesDone += decodeSize;
-
-		if (bytesDone >= _bufferSize)
-			break;
-	}
-	
-	// Mono, Stereo and 4-Channel files decode into the same channel order as WAVEFORMATEXTENSIBLE,
-	// however 6-Channels files need to be re-ordered
-	if (_channels == 6)
-	{		
-		samples = (short*)_decodeBuffer;
-		for (sampleNum = 0; sampleNum < (_bufferSize>>1); sampleNum += 6)
-		{
-			// WAVEFORMATEXTENSIBLE Order : FL, FR, FC, LFE, RL, RR
-			// OggVorbis Order            : FL, FC, FR,  RL, RR, LFE
-			Swap(samples[sampleNum+1], samples[sampleNum+2]);
-			Swap(samples[sampleNum+3], samples[sampleNum+5]);
-			Swap(samples[sampleNum+4], samples[sampleNum+5]);
-		}
-	}
-
-	return bytesDone;
-}
-
-void Swap(short &s1, short &s2)
-{
-	short sTemp = s1;
-	s1 = s2;
-	s2 = sTemp;
-}
-//////////////////////////////////////////////////////////////////////////
-unsigned int GetSampleSize(ALenum format) 
-{
-  switch(format) 
-  {
-    case(AL_FORMAT_MONO8):
-      return 1;
-      break;
-    case(AL_FORMAT_STEREO8):
-    case(AL_FORMAT_MONO16):
-      return 2;
-      break;
-    case(AL_FORMAT_STEREO16):
-      return 4;
-      break;
-    default:
-      return 0;
-  }
-}*/
 //////////////////////////////////////////////////////////////////////////
 TALSourceName* ALSoundSystem::getFreeSourceName()
 {
@@ -416,7 +363,8 @@ TALSourceName* ALSoundSystem::getFreeSourceName()
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::registerPlaying( ALSoundSource* _source, float _timeMs )
 {
-	m_playingSources[_source] = _timeMs;
+	//m_playingSources[_source] = _timeMs;
+	m_addingSources.push_back( std::make_pair( _source, _timeMs ) );
 }
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::unregisterPlaying( ALSoundSource* _source )

@@ -256,6 +256,11 @@ void HGERenderSystem::renderImage(const float * _transform,
 
 	quad.blend = BLEND_DEFAULT;
 
+	if( _dst == BF_ONE )
+	{
+		quad.blend ^= BLEND_ALPHABLEND;
+	}
+
 	const HGETexture* tex = static_cast<const HGETexture*>( _image );
 	const mt::vec2f& uvMask = tex->getUVMask();
 	quad.v[0].tx = _uv[0] * uvMask.x;
@@ -282,10 +287,14 @@ void HGERenderSystem::renderLine( unsigned int _color,
 void HGERenderSystem::beginScene()
 {
 	m_layer = 1.0f;
-	m_hge->Gfx_BeginScene();
+	if( !m_hge->Gfx_BeginScene() )
+	{
+		m_logSystem->logMessage("Error: D3D8 Failed to BeginScene");
+	}
 	m_hge->Gfx_SetClipping( 0, 0, m_hge->System_GetState( HGE_SCREENWIDTH ), m_hge->System_GetState( HGE_SCREENHEIGHT ) );
 	m_hge->Gfx_Clear( m_clearColor );
 	m_hge->Gfx_SetClipping( m_viewport.min.x, m_viewport.min.y, m_viewport.max.x, m_viewport.max.y );
+
 	m_inRender = true;
 	m_currentRenderTarget = "defaultCamera";
 }

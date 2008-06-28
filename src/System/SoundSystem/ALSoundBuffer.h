@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "AL.h"
+#include "AL/AL.h"
 
 #include "../../Interface/SoundSystemInterface.h"
 

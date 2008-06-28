@@ -12,18 +12,13 @@ https://pybind.svn.sourceforge.net/svnroot/pybind
 [expatl
 [2.0.1] -
 
-
-OgreSDK
-[1.4.7]
-http://downloads.sourceforge.net/ogre/ogre-win32-v1-4-7.zip
-
 OIS
 [1.0]
 http://sourceforge.net/projects/wgois
 
-OpenALSDK
+OpenAL
 [1.1]
-http://openal.org/downloads.html
+http://www.openal.org/repos/openal/trunk
 
 ogg
 [1.1.3]
@@ -36,7 +31,6 @@ http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz
 TheoraVideo
 [TheoraVideo]
 cvs -z3 -d :pserver:anonymous@cvs.ogre3d.org:/cvsroot/ogre co ogreaddons/videoplugin
-
 
 Box2D
 [Box2D]

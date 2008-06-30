@@ -196,19 +196,19 @@ namespace Menge
 
 		};
 
-		unsigned char* srcData = FreeImage_GetBits(fiBitmap);
+		unsigned char * srcData = FreeImage_GetBits(fiBitmap);
 		unsigned srcPitch = FreeImage_GetPitch(fiBitmap);
 
 		// Final data - invert image and trim pitch at the same time
 		size_t dstPitch = imgData->width * PixelUtil::getNumElemBytes(imgData->format);
 		imgData->size = dstPitch * imgData->height;
 		// Bind output buffer
-		unsigned char* data = new unsigned char[imgData->size];
+		unsigned char * data = new unsigned char[imgData->size];
 		output = Holder<FileEngine>::hostage()->createMemoryFile( data, imgData->size, true );
 
-		unsigned char* pSrc;
+		unsigned char * pSrc = 0;
 		//unsigned char* pDst = static_cast<unsigned char*>( output->getBuffer() );
-		unsigned char* pDst = data;
+		unsigned char * pDst = data;
 		for( std::size_t y = 0; y < imgData->height; ++y )
 		{
 			pSrc = srcData + (imgData->height - y - 1) * srcPitch;

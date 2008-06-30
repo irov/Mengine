@@ -36,9 +36,9 @@ make_mne_format = False
 halftexel_use = False
 
 # jpg quality, in percent
-jpg_quality = 95
+jpg_quality = 100
 
-allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
+allowed_type = ['ResourceImageDefault'] #,'ResourceImageSet','ResourceImageCell']
 
 def formreslist(src):
     dom = xml.dom.minidom.parse(src)
@@ -209,13 +209,14 @@ def atlas(src,destdir):
 
         resource_output_name = os.path.basename(resource)
         
-        exe = 'AtlasMaker.exe %(resource_name)s %(output_resource)s %(width)i %(height)i %(gamedir)s %(halftexel)i' % \
+        exe = 'AtlasMaker.exe %(resource_name)s %(output_resource)s %(width)i %(height)i %(gamedir)s %(halftexel)i %(jpgquality)i' % \
             {'resource_name' : resource, \
              'output_resource' : resource_output_name,\
              'width' : atlas_width, \
              'height' : atlas_height, \
              'gamedir' : gamedir, \
-             'halftexel' : halftexel_use \
+             'halftexel' : halftexel_use, \
+             'jpgquality' : jpg_quality \
             }
         
         subprocess.call(exe)

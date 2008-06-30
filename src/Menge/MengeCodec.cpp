@@ -40,38 +40,30 @@ namespace Menge
 
 		FIMEMORY * fiMemRGBImage = FreeImage_OpenMemory(jpg_buffer,jpg_size); 
 		FIBITMAP * fiBitmap = FreeImage_LoadFromMemory( FIF_JPEG, fiMemRGBImage );
-
-		_input->seek(jpg_size+2*sizeof(unsigned long));
-
-		unsigned long png_size = 0;
-		_input->read(&png_size,sizeof(unsigned long));
-
-		unsigned char * png_buffer = (unsigned char*)_input->getBuffer();
-		png_buffer += (jpg_size+3*sizeof(unsigned long));
-
-		FIMEMORY * fiMemAlphaImage = FreeImage_OpenMemory(png_buffer, png_size);
-		FIBITMAP * fiAlpha = FreeImage_LoadFromMemory( FIF_PNG, fiMemAlphaImage );
-
-		assert(fiMemAlphaImage);
-
-		FIBITMAP * fiMemRGBImage32 = 0;
 		
 		if(is_alpha == 1)
 		{
-			fiMemRGBImage32 = FreeImage_ConvertTo32Bits(fiBitmap);
+			_input->seek(jpg_size+2*sizeof(unsigned long));
+
+			unsigned long png_size = 0;
+			_input->read(&png_size,sizeof(unsigned long));
+
+			unsigned char * png_buffer = (unsigned char*)_input->getBuffer();
+			png_buffer += (jpg_size+3*sizeof(unsigned long));
+
+			FIMEMORY * fiMemAlphaImage = FreeImage_OpenMemory(png_buffer, png_size);
+			FIBITMAP * fiAlpha = FreeImage_LoadFromMemory( FIF_PNG, fiMemAlphaImage );
+
+			FIBITMAP * fiMemRGBImage32 = FreeImage_ConvertTo32Bits(fiBitmap);
+			FreeImage_Unload( fiBitmap );
+
+			fiBitmap = fiMemRGBImage32;
+
 			BOOL res = FreeImage_SetChannel(fiMemRGBImage32,fiAlpha,FICC_ALPHA);
+
+			FreeImage_Unload( fiAlpha );
+			FreeImage_CloseMemory( fiMemAlphaImage );
 		}
-		else
-		{
-			fiMemRGBImage32 = fiBitmap;
-		}
-
-		FreeImage_CloseMemory( fiMemRGBImage );
-		FreeImage_Unload( fiAlpha );
-
-		FreeImage_CloseMemory( fiMemAlphaImage );
-
-		fiBitmap = fiMemRGBImage32;
 
 		if( fiBitmap == 0 )	// can't decode
 		{
@@ -218,7 +210,7 @@ namespace Menge
 
 
 		FreeImage_Unload( fiBitmap );
-		//FreeImage_CloseMemory( fiMem );
+		FreeImage_CloseMemory( fiMemRGBImage );
 
 		DecodeResult ret;
 		ret.first = output;

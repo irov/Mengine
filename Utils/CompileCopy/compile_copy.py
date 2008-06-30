@@ -30,7 +30,7 @@ atlas_height = 2048
 optipng_use = False
 
 # *.mne creation
-make_mne_format = True
+make_mne_format = False
 
 # use halftexel
 halftexel_use = False
@@ -38,7 +38,7 @@ halftexel_use = False
 # jpg quality, in percent
 jpg_quality = 95
 
-allowed_type = ['ResourceImageDefault'] #,'ResourceImageSet','ResourceImageCell']
+allowed_type = ['ResourceImageDefault','ResourceImageSet','ResourceImageCell']
 
 def formreslist(src):
     dom = xml.dom.minidom.parse(src)

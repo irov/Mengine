@@ -24,10 +24,8 @@ good_files = []
 
 copy_files = []
 
-atlas_width = 2048
-atlas_height = 2048
-
-optipng_use = False
+atlas_width = 1024
+atlas_height = 1024
 
 # *.mne creation
 make_mne_format = False
@@ -36,7 +34,7 @@ make_mne_format = False
 halftexel_use = False
 
 # jpg quality, in percent
-jpg_quality = 100
+jpg_quality = 95
 
 allowed_type = ['ResourceImageDefault'] #,'ResourceImageSet','ResourceImageCell']
 
@@ -58,87 +56,6 @@ def formreslist(src):
 def copyfiles():
     for copiedfile in copy_files:
         src = os.path.basename(copiedfile)
-       
-        '''exe = 'png2jpg.exe %(copiedfile)s -75' % \
-            {'file' : src }'''
-
-        if os.path.splitext(src)[1] == ".png":
-        
-            if optipng_use:
-                exe = 'optipng.exe %(file)s -o2' % \
-                {'file' : src }
-
-                subprocess.call(exe)
-                
-            if make_mne_format:
-            
-                src_rgb = os.path.splitext(src)[0] + ".jpg"
-            
-                dst_rgb = os.path.splitext(copiedfile)[0] + ".jpg"
-                   
-                exe = 'convert.exe %(input)s -channel rgb -quality %(percent)i -separate %(output)s' % \
-                    {'input' : src, 'output' : src_rgb, 'percent' : jpg_quality }
-    
-                subprocess.call(exe)
-                
-                is_alpha = string.find(copiedfile, '$') != -1
-                         
-                if is_alpha == True:
-                    
-                    exe = 'convert.exe -negate -separate -channel alpha %(input)s -type grayscale +dither -treedepth 8 -colors 256 png8:%(output)s' % \
-                        {'input' : src, 'output' : src }
-                
-                    subprocess.call(exe)
-                    
-                menge_file = str(os.path.normpath(os.path.splitext(copiedfile)[0] + ".mne"))
-                                    
-                fout = file(menge_file,'wb')
-    
-                fin  = file(src_rgb,'rb')
-                        
-                filesize = os.path.getsize(src_rgb)
-                        
-                data = struct.pack('L', is_alpha)
-    
-                fout.write(data)
-                
-                data = struct.pack('L', filesize)
-    
-                fout.write(data)
-                        
-                while True:
-                    data = fin.read(65536)
-                    if not data:
-                        break
-                    fout.write(data)
-                    
-                fin.close()
-                             
-                if is_alpha == True:
-                    fin  = file(src,'rb')
-                            
-                    filesize = os.path.getsize(src)
-                            
-                    data = struct.pack('L', filesize)
-        
-                    fout.write(data)
-                            
-                    while True:
-                        data = fin.read(65536)
-                        if not data:
-                            break
-                        fout.write(data)
-                        
-                    fin.close()
-                                 
-                
-                
-                fout.close()
-                    
-                os.remove(src)
-                os.remove(src_rgb)
-                continue
-                
         shutil.copy2(src,copiedfile)
         os.remove(src)	
     
@@ -288,11 +205,6 @@ def main():
     master = Tk()
     master.withdraw()
         
-    '''optipng_use = False
-    
-    if tkMessageBox.askyesno("optipng", "Use optipng?"):
-        optipng_use = True'''
-         
     appfile_path = tkFileDialog.askopenfilename(title="Open file",\
                                              filetypes=[("application file",".xml"),\
                                                         ("All files",".*")])

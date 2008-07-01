@@ -1307,6 +1307,18 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Identity"
+					>
+					<File
+						RelativePath=".\Identity.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Identity.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="MousePickerTrap"
@@ -1459,14 +1471,6 @@
 		</File>
 		<File
 			RelativePath=".\Color.h"
-			>
-		</File>
-		<File
-			RelativePath=".\Identity.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Identity.h"
 			>
 		</File>
 		<File

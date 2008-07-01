@@ -3,11 +3,7 @@
 #	include <map>
 #	include <string>
 
-extern "C" 
-{ 
-	struct _object; 
-	typedef _object PyObject;
-}
+#	include "pybind/pybind.hpp"
 
 namespace Menge
 {

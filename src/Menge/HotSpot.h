@@ -43,8 +43,6 @@ namespace Menge
 
 		void enableGlobalMouseEvent( bool _value );
 		void enableGlobalKeyEvent( bool _value );
-
-		//void setHotspotListener( PyObject * _handler );
 		
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -66,8 +64,6 @@ namespace Menge
 		void _render( bool _enableDebug ) override;
 
 		void _setListener() override;
-
-		//void _onSetListener() override;
 
 	protected:
 		mt::polygon m_polygon;

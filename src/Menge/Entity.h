@@ -1,6 +1,5 @@
 #	pragma once
 
-//#	include "SceneNode2D.h"
 #	include "RigidBody2D.h"
 
 namespace Menge
@@ -8,7 +7,6 @@ namespace Menge
 	class Scene;
 
 	class Entity
-		//: public SceneNode2D
 		: public RigidBody2D
 	{
 		OBJECT_DECLARE( Entity )

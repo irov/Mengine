@@ -41,4 +41,12 @@ namespace Menge
 	{
 		return m_camera;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Viewport::parallax( const mt::vec2f & _factor )
+	{
+		begin.x *= _factor.x;
+		end.x *= _factor.x;
+		begin.y *= _factor.y;
+		end.y *= _factor.y;
+	}
 }

@@ -165,14 +165,17 @@ def atlas(src,destdir):
         
         for resource in resources:
             type = resource.getAttribute("Type")
-            if(type in allowed_type):
+            noAtlas = resource.getAttribute("NoAtlas") != ''
+        
+            if(type in allowed_type and noAtlas == False):
                 files = resource.getElementsByTagName("File")
                 if(files != []):
                     for file in files:
                         value = file.getAttribute("Path")
                         value = os.path.join(gamedir,value).lower()
                         bad_files.append(os.path.normpath(value))
-                     
+
+        
         dom.unlink()
 
 def copytonewfolder(src, dst):

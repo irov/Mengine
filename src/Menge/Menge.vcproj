@@ -1309,7 +1309,7 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="_MousePickerTrap"
+				Name="MousePickerTrap"
 				>
 				<File
 					RelativePath=".\MousePickerSystem.cpp"

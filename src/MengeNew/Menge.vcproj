@@ -1022,7 +1022,7 @@
 					>
 				</File>
 				<Filter
-					Name="Scriptable"
+					Name="_Scriptable"
 					>
 					<File
 						RelativePath=".\Scriptable.cpp"
@@ -1046,7 +1046,7 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="Identity"
+					Name="_Identity"
 					>
 					<File
 						RelativePath=".\Identity.cpp"
@@ -1070,7 +1070,7 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="BoundingBox"
+					Name="_BoundingBox"
 					>
 					<File
 						RelativePath=".\BoundingBox.cpp"
@@ -1127,7 +1127,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Reference"
+				Name="_Reference"
 				>
 				<File
 					RelativePath=".\Reference.cpp"

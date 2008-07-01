@@ -30,7 +30,6 @@ namespace Menge
 		{
 			if( m_lastPickerTrap )
 			{
-			//	if( m_lastPickerTrap->isActivate() )
 				if( m_lastPickerTrap->_pickerActive() )
 				{
 					m_lastPickerTrap->onLeave();
@@ -58,7 +57,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::regTrap( MousePickerTrap * _trap, const Viewport & _viewport )
 	{
-		//m_listPickerTrap.push_front( _trap );
 		m_listPickerTrap.push_back( _trap );
 	}
 	//////////////////////////////////////////////////////////////////////////

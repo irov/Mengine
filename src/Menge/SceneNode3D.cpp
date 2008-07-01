@@ -249,8 +249,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::_onSetListener()
 	{
-		registerEventListener("YAW_STOP", "onYawStop", m_listener );
-		registerEventListener("YAW_STOP_LIMIT", "onYawStopLimit", m_listener );
+		registerEvent("YAW_STOP", "onYawStop", m_listener );
+		registerEvent("YAW_STOP_LIMIT", "onYawStopLimit", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::setFixedYawAxis( bool _fixed )

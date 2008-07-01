@@ -432,20 +432,21 @@ namespace	Menge
 	{
 		bool result = SceneNode2D::_activate();
 
-		this->registerEvent("MOVE_END", "onMoveEnd" );
-		this->registerEvent("MOVE_STOP", "onMoveStop" );
+		this->registerEvent("MOVE_END", "onMoveEnd", this->getEmbedding() );
+		this->registerEvent("MOVE_STOP", "onMoveStop", this->getEmbedding() );
 		
-		this->registerEvent("ROTATE_END", "onRotateEnd" );
-		this->registerEvent("ROTATE_STOP", "onRotateStop" );
+		this->registerEvent("ROTATE_END", "onRotateEnd", this->getEmbedding() );
+		this->registerEvent("ROTATE_STOP", "onRotateStop", this->getEmbedding() );
 
-		this->registerEvent("SCALE_END", "onScaleEnd" );
-		this->registerEvent("SCALE_STOP", "onScaleStop" );
+		this->registerEvent("SCALE_END", "onScaleEnd", this->getEmbedding() );
+		this->registerEvent("SCALE_STOP", "onScaleStop", this->getEmbedding() );
 
-		this->registerEvent("UPDATE", "onUpdate" );
+		this->registerEvent("UPDATE", "onUpdate", this->getEmbedding() );
 
-		this->registerEvent("COLLIDE", "onCollide" );
+		this->registerEvent("COLLIDE", "onCollide", this->getEmbedding() );
 
 		this->callMethod("onActivate", "()" );
+
 
 		//m_oldPos = getLocalPosition();
 

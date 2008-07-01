@@ -30,7 +30,8 @@ namespace Menge
 		{
 			if( m_lastPickerTrap )
 			{
-				if( m_lastPickerTrap->isActivate() )
+			//	if( m_lastPickerTrap->isActivate() )
+				if( m_lastPickerTrap->_pickerActive() )
 				{
 					m_lastPickerTrap->onLeave();
 				}
@@ -70,7 +71,7 @@ namespace Menge
 		++it)
 		{
 			MousePickerTrap * trap = *it;
-			if( trap->isActivate() == true && trap->pick( _hotspot ) == true )
+			if( trap->_pickerActive() == true && trap->pick( _hotspot ) == true )
 			{
 				return trap;
 			}
@@ -92,7 +93,7 @@ namespace Menge
 		++it)
 		{
 			MousePickerTrap * trap = *it;
-			if( trap->isActivate() == true &&  trap->pick( hotspot ) == true )
+			if( trap->_pickerActive() == true &&  trap->pick( hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -119,7 +120,7 @@ namespace Menge
 		++it)
 		{
 			MousePickerTrap * trap = *it;
-			if( trap->isActivate() == true &&  trap->pick( hotspot ) == true )
+			if( trap->_pickerActive() == true &&  trap->pick( hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -146,7 +147,7 @@ namespace Menge
 		++it)
 		{
 			MousePickerTrap * trap = *it;
-			if( trap->isActivate() == true && trap->pick( hotspot ) == true )
+			if( trap->_pickerActive() == true && trap->pick( hotspot ) == true )
 			{
 				InputHandler * handler = trap->handler();
 

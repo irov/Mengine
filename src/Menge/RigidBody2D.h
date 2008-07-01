@@ -46,9 +46,7 @@ namespace Menge
 
 	// scripted
 	public:
-		//void setListener( PyObject * _listener );
 		PyObject* getListener();
-		virtual void setListener( PyObject* _listener ) override;
 
 		void onApplyForceAndTorque();
 		void applyForce( float _forceX, float _forceY, float _pointX, float _pointY );
@@ -72,6 +70,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 		void _update( float _timing ) override;
+		void _setListener() override;
 
 		void _loaderShape( XmlElement * _xml );
 		void _loaderShapeCircle( XmlElement * _xml );

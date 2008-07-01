@@ -30,11 +30,11 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::setListener( PyObject* _listener )
+	void Video::_setListener()
 	{
-		Sprite::setListener( _listener );
+		Sprite::_setListener();
 
-		registerEventListener("END_VIDEO", "onVideoEnd", _listener );
+		registerEvent("END_VIDEO", "onVideoEnd", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::setAnimationResource( const std::string & _resource )

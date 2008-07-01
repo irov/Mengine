@@ -34,10 +34,9 @@ namespace Menge
 
 		virtual void loader( XmlElement * _xml ) override;
 
-		virtual void setListener( PyObject* _listener ) override;
-
 	protected:
 		virtual void _update( float _timing ) override;
+		void _setListener() override;
 
 
 		ValueInterpolator<float> m_yawTime;

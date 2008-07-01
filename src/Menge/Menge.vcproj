@@ -1295,9 +1295,21 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="Bounding Box"
+					>
+					<File
+						RelativePath=".\BoundingBox.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\BoundingBox.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
-				Name="MousePickerTrap"
+				Name="_MousePickerTrap"
 				>
 				<File
 					RelativePath=".\MousePickerSystem.cpp"

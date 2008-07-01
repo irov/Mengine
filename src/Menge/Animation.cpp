@@ -21,6 +21,8 @@ namespace	Menge
 	, m_delay(0)
 	, m_currentFrame(0)
 	//, m_listener(0)
+	, m_onEndFrameEvent(false)
+	, m_onEndAnimationEvent(false)
 	, m_animationFactor(1.f)
 	{}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,8 +42,8 @@ namespace	Menge
 	{
 		m_listener = _listener;
 
-		registerEventListener("END_ANIMATION", "onAnimationEnd", m_listener );
-		registerEventListener("END_FRAME", "onFrameEnd", m_listener );
+		registerEvent("END_ANIMATION", "onAnimationEnd", m_listener );
+		registerEvent("END_FRAME", "onFrameEnd", m_listener );
 	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationResource( const std::string & _resource )
@@ -225,12 +227,12 @@ namespace	Menge
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setListener( PyObject* _listener )
+	void Animation::_setListener()
 	{
-		Sprite::setListener( _listener );
+		Sprite::_setListener();
 
-		registerEventListener("END_ANIMATION", "onAnimationEnd", _listener );
-		registerEventListener("END_FRAME", "onFrameEnd", _listener );
+		m_onEndAnimationEvent = registerEvent("END_ANIMATION", "onAnimationEnd", m_listener );
+		m_onEndFrameEvent = registerEvent("END_FRAME", "onFrameEnd", m_listener );
 	}
 
 }

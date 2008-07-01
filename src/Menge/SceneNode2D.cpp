@@ -123,12 +123,12 @@ namespace Menge
 		NodeCore::update( _timing );
 	}*/
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode2D::setListener( PyObject* _listener )
+	/*void SceneNode2D::setListener( PyObject* _listener )
 	{
 		//m_listener = _listener;
 		//this->_onSetListener();
 		Eventable::setListener( _listener );
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	/*void SceneNode2D::_onSetListener()
 	{

@@ -28,6 +28,9 @@ namespace Menge
 		HotSpot();
 		~HotSpot();
 
+	protected:
+		bool _pickerActive() override;
+
 	public:
 		bool pick( HotSpot * _hotspot ) override;
 		void onLeave() override;
@@ -58,11 +61,12 @@ namespace Menge
 
 		virtual void setScale( const mt::vec2f& _scale );
 
-		void setListener( PyObject* _listener ) override;
-
 	protected:
 		void _update( float _timing ) override;
 		void _render( bool _enableDebug ) override;
+
+		void _setListener() override;
+
 		//void _onSetListener() override;
 
 	protected:
@@ -72,5 +76,8 @@ namespace Menge
 	private:		
 		bool m_globalMouseEventListener;
 		bool m_globalKeyEventListener;
+
+		bool m_onLeaveEvent;
+		bool m_onEnterEvent;
 	};
 }

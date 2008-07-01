@@ -28,7 +28,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEventListener( const std::string & _name, const std::string & _method, PyObject * _module )
+	bool Eventable::registerEvent( const std::string & _name, const std::string & _method, PyObject * _module )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -58,7 +58,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEventCallback( const std::string & _name, PyObject * _callback )
+	bool Eventable::registerEvent( const std::string & _name, PyObject * _callback )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -158,10 +158,4 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Eventable::setListener( PyObject* _listener )
-	{
-		// implement in derived classes
-	}
-	//////////////////////////////////////////////////////////////////////////
 }

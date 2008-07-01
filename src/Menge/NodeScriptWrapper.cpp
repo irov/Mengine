@@ -52,6 +52,8 @@
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
 
+#	include "Identity.h"
+
 #	include "Layer3D.h"
 
 #	include "FFCamera.h"
@@ -518,6 +520,10 @@ namespace Menge
 			//.def( pybind::init<float,float>() )
 			;
 
+		pybind::class_<Identity>("Identity")
+			//.def( pybind::init<float,float>() )
+		;
+
 
 		pybind::class_<ReversiAI>("ReversiAI")
 			.def( pybind::init<>() )
@@ -549,7 +555,8 @@ namespace Menge
 			.def( "reset", &C4AI::reset )
 			;
 
-		pybind::interface_<Node>("Node", false)
+		//Identity в bases? в некоторых местах без этого падало
+		pybind::interface_<Node, pybind::bases<Identity>>("Node", false)
 			.def( "activate", &Node::activate )
 			.def( "deactivate", &Node::deactivate )
 			.def( "isActivate", &Node::isActivate )
@@ -569,6 +576,7 @@ namespace Menge
 			.def( "getChildren", &Node::getChildren )
 			.def( "updatable", &Node::updatable )
 			.def( "update", &Node::update )
+			.def( "setListener", &Node::setListener )
 			;
 
 		pybind::interface_<Allocator2D>("Allocator2D", false)
@@ -620,7 +628,7 @@ namespace Menge
 		pybind::proxy_<SceneNode2D, pybind::bases<Node, Allocator2D, NodeRenderable>>("SceneNode2D", false)
 				.def( "getScreenPosition", &SceneNode2D::getScreenPosition )
 				.def( "getParent", &SceneNode2D::getParent )
-				.def( "setListener", &SceneNode2D::setListener )
+				//.def( "setListener", &SceneNode2D::setListener )
 				.def( "isHide", &SceneNode2D::isHide )
 				.def( "alphaTo", &SceneNode2D::alphaTo )
 				.def( "setAlpha", &SceneNode2D::setAlpha )
@@ -809,7 +817,7 @@ namespace Menge
 				.def( "colorTo", &Sprite::colorTo )
 				//.def( "alphaTo", &Sprite::alphaTo )
 				.def( "flip", &Sprite::flip )
-				.def( "setListener", &Sprite::setListener )
+				//.def( "setListener", &Sprite::setListener )
 				.def( "getCenterAlign", &Sprite::getCenterAlign )
 				;
 			{
@@ -826,7 +834,7 @@ namespace Menge
 			}
 
 			pybind::proxy_<RigidBody2D, pybind::bases<SceneNode2D>>("RigidBody2D", false)
-				.def( "setListener", &RigidBody2D::setListener )
+				//.def( "setListener", &RigidBody2D::setListener )
 				.def( "getListener", &RigidBody2D::getListener )
 				.def( "applyForce", &RigidBody2D::applyForce )
 				.def( "applyImpulse", &RigidBody2D::applyImpulse )

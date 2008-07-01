@@ -70,8 +70,8 @@ namespace Menge
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlFileM( xml_path, actor, &Actor::loader ) )
 			{
-				actor->registerEvent( "LOADER", "onLoader" );
-				actor->callEvent("LOADER", "()");
+			//	actor->registerEvent( "LOADER", "onLoader" );
+			///	actor->callEvent("LOADER", "()");
 			}
 
 		//	actor->setLocalPosition( _pos );

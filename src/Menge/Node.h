@@ -3,6 +3,7 @@
 #	include <string>
 #	include "Identity.h"
 #	include "Scriptable.h"
+#	include "Eventable.h"
 
 class XmlElement;
 
@@ -18,8 +19,10 @@ namespace Menge
 	class Node
 		: public Identity
 		, public Scriptable
+		, public Eventable
 	{
 	public:
+		Node();
 		//! Node virtual destructor.
 		/*!
 		*/
@@ -143,8 +146,17 @@ namespace Menge
 		\param xml the first argument, xml element [XmlElement]
 		*/
 		virtual void loader( XmlElement * xml ) = 0;
+
 	protected:
 		PyObject * _embedded() override;
 
+	public:
+		void setListener( PyObject * _listener );
+
+	protected:
+		virtual void _setListener();
+
+	protected:
+		PyObject * m_listener;
 	};
 }

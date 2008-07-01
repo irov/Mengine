@@ -193,12 +193,11 @@ namespace	Menge
 			return false;
 		}
 
-		registerEvent( "UPDATE", "onUpdate" );
+		registerEvent( "UPDATE", "onUpdate", this->getEmbedding() );
 
-		registerEvent( "KEY", "onHandleKeyEvent" );
-		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent" );
-		registerEvent( "MOUSE_MOVE", "onHandleMouseMove" );
-		registerEvent( "MOUSE_BUTTON_END", "onHandleMouseButtonEventEnd" );
+		registerEvent( "KEY", "onHandleKeyEvent", this->getEmbedding() );
+		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent", this->getEmbedding() );
+		registerEvent( "MOUSE_MOVE", "onHandleMouseMove", this->getEmbedding() );
 
 		callMethod( "onActivate", "() " );
 

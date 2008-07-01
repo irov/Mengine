@@ -32,7 +32,7 @@ namespace Menge
 		virtual void alphaTo( float _alpha, float _time );
 		virtual void setAlpha( float _alpha );
 		virtual const mt::vec2f& getScale() const { static mt::vec2f s(1.0f, 1.0f); return s; }
-		virtual void setListener( PyObject* _listener ) override;
+//		virtual void setListener( PyObject* _listener ) override;
 
 	public:
 

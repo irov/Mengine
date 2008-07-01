@@ -589,9 +589,9 @@ namespace Menge
 			return false;
 		}
 
-		registerEventListener( "KEY", "onHandleKeyEvent", m_pyPersonality );
-		registerEventListener( "MOUSE_BUTTON", "onHandleMouseButtonEvent", m_pyPersonality );
-		registerEventListener( "MOUSE_MOVE", "onHandleMouseMove", m_pyPersonality );
+		registerEvent( "KEY", "onHandleKeyEvent", m_pyPersonality );
+		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent", m_pyPersonality );
+		registerEvent( "MOUSE_MOVE", "onHandleMouseMove", m_pyPersonality );
 
 		m_player->init();
 

@@ -49,7 +49,7 @@ namespace Menge
 
 		void _update( float _timing ) override;
 
-		void setListener( PyObject* _listener ) override;
+		void _setListener() override;
 
 	private:
 		ResourceEmitterContainer * m_resource;

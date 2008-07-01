@@ -112,11 +112,7 @@ namespace Menge
 		\return цвет
 		*/
 
-		//void setListener( PyObject* _listener );
-
 		const Color & getColor() const;
-
-		virtual void setListener( PyObject* _listener ) override;
 
 	public:
 		virtual bool isVisible( const Viewport & _viewPort );
@@ -133,6 +129,7 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _timing ) override;
+		void _setListener() override;
 
 	private:
 		void updateAlign_();

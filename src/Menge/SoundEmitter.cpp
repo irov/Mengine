@@ -141,8 +141,8 @@ namespace Menge
 	{
 		m_listener = _listener;
 
-		registerEventListener("STOP_PLAYING", "onStopped", m_listener );
-		registerEventListener("PAUSE_PLAYING", "onPaused", m_listener );
+		registerEvent("STOP_PLAYING", "onStopped", m_listener );
+		registerEvent("PAUSE_PLAYING", "onPaused", m_listener );
 	}*/
 
 	//////////////////////////////////////////////////////////////////////////
@@ -221,12 +221,12 @@ namespace Menge
 		return m_interface->getLengthMs();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setListener( PyObject* _listener )
+	void SoundEmitter::_setListener()
 	{
-		SceneNode2D::setListener( _listener );
+		Node::_setListener();
 
-		registerEventListener("STOP_PLAYING", "onStopped", _listener );
-		registerEventListener("PAUSE_PLAYING", "onPaused", _listener );
+		registerEvent( "STOP_PLAYING", "onStopped", m_listener );
+		registerEvent( "PAUSE_PLAYING", "onPaused", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -43,14 +43,13 @@ namespace Menge
 			void	listenPaused( bool _pause );
 			void	listenStopped();
 
-			void setListener( PyObject* _listener ) override;
-
 		protected:
 			bool _activate() override;
 			void _deactivate() override;
 
 			bool _compile() override;
 			void _release() override;
+			void _setListener() override;
 
 		private:
 			//PyObject * m_listener;

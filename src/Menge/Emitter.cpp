@@ -303,11 +303,11 @@ namespace	Menge
 		this->callEvent( "EMITTER_END", "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Emitter::setListener( PyObject* _listener )
+	void Emitter::_setListener()
 	{
-		SceneNode2D::setListener( _listener );
+		Node::_setListener();
 
-		registerEventListener( "EMITTER_END", "onEmitterEnd", _listener );
-		registerEventListener( "EMITTER_STOP", "onEmitterStop", _listener );
+		registerEvent("EMITTER_END", "onEmitterEnd", m_listener );
+		registerEvent("EMITTER_STOP", "onEmitterStop", m_listener );
 	}
 }

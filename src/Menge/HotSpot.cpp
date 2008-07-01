@@ -23,6 +23,8 @@ namespace	Menge
 	HotSpot::HotSpot()
 	: m_globalMouseEventListener( false )
 	, m_globalKeyEventListener( false )
+	, m_onLeaveEvent( false )
+	, m_onEnterEvent( false )
 	, m_scale( 1.0f, 1.0f )
 	{
 		this->setHandler( this );
@@ -35,6 +37,11 @@ namespace	Menge
 		Holder<Player>::hostage()
 			->unregGlobalKeyEventable( this );
 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::_pickerActive()
+	{
+		return this->isActivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()
@@ -229,20 +236,20 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::setListener( PyObject* _listener )
+	void HotSpot::_setListener()
 	{
-		SceneNode2D::setListener( _listener );
+		Node::_setListener();
 
-		registerEventListener( "KEY", "onHandleKeyEvent", _listener );
-		registerEventListener( "MOUSE_BUTTON", "onHandleMouseButtonEvent", _listener );
-		registerEventListener( "MOUSE_MOVE", "onHandleMouseMove", _listener );
+		registerEvent( "KEY", "onHandleKeyEvent", m_listener );
+		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent", m_listener );
+		registerEvent( "MOUSE_MOVE", "onHandleMouseMove", m_listener );
 
-		registerEventListener( "GLOBAL_MOUSE_BUTTON", "onGlobalHandleMouseButtonEvent", _listener );
-		registerEventListener( "GLOBAL_MOUSE_MOVE", "onGlobalHandleMouseMove", _listener );
-		registerEventListener( "GLOBAL_KEY", "onGlobalHandleKeyEvent", _listener );
+		registerEvent( "GLOBAL_MOUSE_BUTTON", "onGlobalHandleMouseButtonEvent", m_listener );
+		registerEvent( "GLOBAL_MOUSE_MOVE", "onGlobalHandleMouseMove", m_listener );
+		registerEvent( "GLOBAL_KEY", "onGlobalHandleKeyEvent", m_listener );
 		
-		registerEventListener( "LEAVE", "onLeave", _listener );
-		registerEventListener( "ENTER", "onEnter", _listener );		
+		m_onLeaveEvent = registerEvent( "LEAVE", "onLeave", m_listener );
+		m_onEnterEvent = registerEvent( "ENTER", "onEnter", m_listener );	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_update( float _timing )

@@ -268,13 +268,6 @@ namespace Menge
 		Holder<PhysicEngine2D>::hostage()->destroyPhysicBody( m_interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*void RigidBody2D::setListener( PyObject * _listener )
-	{
-		m_scriptListener = _listener;
-
-		registerEventListener("ON_COLLIDE", "onCollide", m_scriptListener );
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	PyObject* RigidBody2D::getListener()
 	{
 		return getEvent( "ON_COLLIDE" );
@@ -372,11 +365,9 @@ namespace Menge
 		m_shapeBoxList.push_back( std::make_pair( std::make_pair( _width, _heigth ), std::make_pair( _pos, _angle ) ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::setListener( PyObject* _listener )
+	void RigidBody2D::_setListener()
 	{
-		SceneNode2D::setListener( _listener );
-
-		registerEventListener("ON_COLLIDE", "onCollide", _listener );
+		registerEvent("ON_COLLIDE", "onCollide", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::onApplyForceAndTorque()
@@ -481,5 +472,4 @@ namespace Menge
 			}
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

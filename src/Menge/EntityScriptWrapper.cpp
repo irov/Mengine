@@ -72,8 +72,9 @@ namespace Menge
 				if( Holder<XmlEngine>::hostage()
 					->parseXmlBufferM( *entityXml, entity, &Entity::loader ) )
 				{
-					entity->registerEvent( "LOADER", "onLoader" );
-					entity->callEvent("LOADER", "()");
+					//entity->registerEvent( "LOADER", "onLoader" );
+					//entity->callEvent("LOADER", "()");
+					entity->callMethod("onLoader", "()");
 				}
 			}
 
@@ -126,8 +127,9 @@ namespace Menge
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlBufferM( _xml, entity, &Entity::loader ) )
 			{
-				entity->registerEvent( "LOADER", "onLoader" );
-				entity->callEvent("LOADER", "()");
+				//entity->registerEvent( "LOADER", "onLoader" );
+				//entity->callEvent("LOADER", "()");
+				entity->callMethod( "onLoader", "()");
 			}
 
 			entity->setLocalPosition( _pos );

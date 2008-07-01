@@ -16,7 +16,7 @@ namespace Menge
 {
 	class NodeCore
 		: public virtual Node
-		, public Eventable
+		//, public Eventable
 		, public NodeResource
 	//	, public Scriptable
 	{
@@ -27,7 +27,7 @@ namespace Menge
 		void destroy() override;
 
 	public:
-		bool registerEvent( const std::string & _name, const std::string & _method );
+//		bool registerEvent( const std::string & _name, const std::string & _method );
 
 	public:
 		bool activate() override;

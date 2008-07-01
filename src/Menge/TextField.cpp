@@ -470,11 +470,12 @@ namespace     Menge
 		m_length.y = m_height * m_lines.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setListener( PyObject* _listener )
+	void TextField::_setListener()
 	{
-		SceneNode2D::setListener( _listener );
-		registerEventListener("COLOR_END", "onColorEnd", _listener );
-		registerEventListener("COLOR_STOP", "onColorStop", _listener );
+		Node::_setListener();
+
+		registerEvent("COLOR_END", "onColorEnd", m_listener );
+		registerEvent("COLOR_STOP", "onColorStop", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getLineOffset() const

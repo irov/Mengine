@@ -118,8 +118,6 @@ namespace Menge
 		bool isVisible( const Viewport & _viewPort ) override;
 		void loader( XmlElement * _xml ) override;
 
-		virtual void setListener( PyObject* _listener ) override;
-
 	protected:
 		void _render( bool _enableDebug ) override;
 		
@@ -130,6 +128,9 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _timing ) override;
+
+		void _setListener() override;
+
 		//virtual void _onSetListener();
 
 	private:

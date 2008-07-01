@@ -400,14 +400,10 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setListener( PyObject* _listener )
+	void Sprite::_setListener()
 	{
-		//m_listener = _listener;
-		//SceneNode2D::_onSetListener();
-		SceneNode2D::setListener( _listener );
-
-		registerEventListener("COLOR_END", "onColorEnd", _listener );
-		registerEventListener("COLOR_STOP", "onColorStop", _listener );
+		this->registerEvent("COLOR_END", "onColorEnd", m_listener );
+		this->registerEvent("COLOR_STOP", "onColorStop", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Sprite::getImageSize()

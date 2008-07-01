@@ -49,13 +49,13 @@ namespace Menge
 		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeCore::registerEvent( const std::string & _name, const std::string & _method  )
+/*	bool NodeCore::registerEvent( const std::string & _name, const std::string & _method  )
 	{
 		Scriptable * scriptable = getScriptable();
 		PyObject * module = scriptable->getEmbedding();
 
-		return Eventable::registerEventListener( _name, _method, module );
-	}
+		return Eventable::registerEvent( _name, _method, module );
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeCore::activate()
 	{

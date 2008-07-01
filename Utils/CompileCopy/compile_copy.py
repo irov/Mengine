@@ -27,9 +27,6 @@ copy_files = []
 atlas_width = 1024
 atlas_height = 1024
 
-# *.mne creation
-make_mne_format = False
-
 # use halftexel
 halftexel_use = False
 
@@ -112,6 +109,19 @@ def get_resource_path(dom,src):
             resource_list.append(os.path.join(path_resources,node.localName)+".resource")
     
     return resource_list
+
+def read_output_file(src):
+    dom = xml.dom.minidom.parse(src)
+
+    app_tag = dom.getElementsByTagName("resources")[0]
+    resources = app_tag.getElementsByTagName("resource")
+
+    resource_list = []
+    
+    for resource in resources:
+        resource_list.append(resource.getAttribute("value"))
+        
+    return resource_list
     
 def atlas(src,destdir):
     dom = xml.dom.minidom.parse(src)
@@ -137,12 +147,9 @@ def atlas(src,destdir):
             }
         
         subprocess.call(exe)
-
-        f = open("output.txt")
-        line = f.readline()
-        f.close()
         
-        lines = line.split()
+        
+        lines = read_output_file("output.xml")
         
         copy_files.append(os.path.join(destdir,os.path.join("Resource",lines[0])))
         
@@ -150,7 +157,7 @@ def atlas(src,destdir):
             line = os.path.join(destdir,line)
             copy_files.append(line)
             print line
-        
+                   
         bad_files.append(resource)
         
         dom = xml.dom.minidom.parse(resource)

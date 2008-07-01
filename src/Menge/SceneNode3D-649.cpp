@@ -85,7 +85,7 @@ namespace Menge
 		{
 			if( m_yawTime.update( _timing, &v ) )
 			{
-				this->callEvent( "YAWTIME_END", "(O)", this->getScript() );
+				this->callEvent( "YAWTIME_END", "(O)", this->getEmbedding() );
 			}
 			yaw( m_yawTime.getDelta() );
 		}
@@ -94,7 +94,7 @@ namespace Menge
 		{
 			if( m_pitchTime.update( _timing, &v ) )
 			{
-				this->callEvent( "PITCHTIME_END", "(O)", this->getScript() );
+				this->callEvent( "PITCHTIME_END", "(O)", this->getEmbedding() );
 			}
 			pitch( m_pitchTime.getDelta() );
 		}

@@ -38,7 +38,7 @@ namespace Menge
 		unsigned char * jpg_buffer = (unsigned char*)_input->getBuffer();
 		jpg_buffer += 2*sizeof(unsigned long);
 
-		FIMEMORY * fiMemRGBImage = FreeImage_OpenMemory(jpg_buffer,jpg_size); 
+		FIMEMORY * fiMemRGBImage = FreeImage_OpenMemory( jpg_buffer, jpg_size ); 
 		FIBITMAP * fiBitmap = FreeImage_LoadFromMemory( FIF_JPEG, fiMemRGBImage );
 		
 		if(is_alpha == 1)

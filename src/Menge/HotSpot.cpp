@@ -39,12 +39,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()
 	{
-		callEvent( "LEAVE", "(O)", this->getScript() );
+		callEvent( "LEAVE", "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onEnter()
 	{
-		callEvent( "ENTER", "(O)", this->getScript() );
+		callEvent( "ENTER", "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
@@ -131,7 +131,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "KEY", "(OIIb)", this->getScript(), _key, _char, _isDown );
+			askEvent( handle, "KEY", "(OIIb)", this->getEmbedding(), _key, _char, _isDown );
 		}
 
 		return handle;
@@ -143,7 +143,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "MOUSE_BUTTON", "(OIb)", this->getScript(), _button, _isDown );
+			askEvent( handle, "MOUSE_BUTTON", "(OIb)", this->getEmbedding(), _button, _isDown );
 		}
 
 		return handle;
@@ -155,7 +155,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "MOUSE_MOVE", "(Offi)", this->getScript(), _x, _y, _whell );
+			askEvent( handle, "MOUSE_MOVE", "(Offi)", this->getEmbedding(), _x, _y, _whell );
 		}
 
 		return handle;
@@ -167,7 +167,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "GLOBAL_MOUSE_BUTTON", "(OIb)", this->getScript(), _button, _isDown );
+			askEvent( handle, "GLOBAL_MOUSE_BUTTON", "(OIb)", this->getEmbedding(), _button, _isDown );
 		}
 
 		return handle;
@@ -179,7 +179,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "GLOBAL_MOUSE_MOVE", "(Offi)", this->getScript(), _x, _y, _whell );
+			askEvent( handle, "GLOBAL_MOUSE_MOVE", "(Offi)", this->getEmbedding(), _x, _y, _whell );
 		}
 
 		return handle;
@@ -191,7 +191,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "GLOBAL_KEY", "(OIIb)", this->getScript(), _key, _char, _isDown );
+			askEvent( handle, "GLOBAL_KEY", "(OIIb)", this->getEmbedding(), _key, _char, _isDown );
 		}
 
 		return handle;

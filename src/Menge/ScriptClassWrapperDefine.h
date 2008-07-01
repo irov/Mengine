@@ -25,7 +25,7 @@ static struct Class##PtrExtract\
 	{\
 		if( _node == 0 ) return 0;\
 		Scriptable * scriptable = _node->getScriptable();\
-		PyObject * pyObj = scriptable->getScript();\
+		PyObject * pyObj = scriptable->getEmbedding();\
 		return pyObj;\
 	}\
 } s_##Class##PtrExtract;

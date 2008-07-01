@@ -1200,6 +1200,10 @@
 				Name="Node"
 				>
 				<File
+					RelativePath=".\Node.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Node.h"
 					>
 				</File>
@@ -1443,6 +1447,14 @@
 		</File>
 		<File
 			RelativePath=".\Color.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Identity.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Identity.h"
 			>
 		</File>
 		<File

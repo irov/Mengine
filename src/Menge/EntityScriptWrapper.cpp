@@ -54,7 +54,7 @@ namespace Menge
 			}
 
 			entity->setType("Entity");
-			entity->setScript( result );
+			entity->setEmbedding( result );
 
 			std::string xml_path = Holder<Game>::hostage()
 				->getPathEntities( _type );
@@ -114,7 +114,7 @@ namespace Menge
 			}
 
 			entity->setType("Entity");
-			entity->setScript( result );
+			entity->setEmbedding( result );
 
 			std::string xml_path = Holder<Game>::hostage()
 				->getPathEntities( _type );

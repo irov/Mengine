@@ -80,7 +80,7 @@ namespace Menge
 			_angle = m_yawLimits.x - m_yaw;
 			m_yaw = m_yawLimits.x;
 			m_yt = false;
-			this->callEvent( "YAW_STOP_LIMIT", "(O)", this->getScript() );
+			this->callEvent( "YAW_STOP_LIMIT", "(O)", this->getEmbedding() );
 			m_interface->yaw(_angle);
 			return;
 		}
@@ -90,7 +90,7 @@ namespace Menge
 			_angle = m_yawLimits.y - m_yaw;
 			m_yaw = m_yawLimits.y;
 			m_yt = false;
-			this->callEvent( "YAW_STOP_LIMIT", "(O)", this->getScript() );
+			this->callEvent( "YAW_STOP_LIMIT", "(O)", this->getEmbedding() );
 			m_interface->yaw(_angle);
 			return;
 		}
@@ -195,7 +195,7 @@ namespace Menge
 			{
 				m_yawSpeed = 0.0f;
 				m_yt = false;
-				this->callEvent( "YAW_STOP", "(O)", this->getScript() );
+				this->callEvent( "YAW_STOP", "(O)", this->getEmbedding() );
 			}
 
 			m_yawSpeed += m_yawAddSpeed * _timing / m_yawTime;

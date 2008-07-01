@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include "Node.h"
-
 #	include <string>
 
 extern "C" 
@@ -13,21 +11,22 @@ extern "C"
 namespace Menge
 {
 	class Scriptable
-		: public virtual Node
 	{
 	public:
 		Scriptable();
 		~Scriptable();
 
 	public:
-		void setScript( PyObject * _scriptable );
-		PyObject * getScript();
-		bool isScriptable() const;
+		PyObject * getEmbedding();
+		void setEmbedding( PyObject * _embedding );
+
+	protected:
+		virtual PyObject * _embedded() = 0;
 
 	public:
 		void callMethod( const std::string & _method, const char * _format, ... );
 
 	protected:
-		PyObject * m_scriptable;
+		PyObject * m_embedding;
 	};
 }

@@ -148,13 +148,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenPaused( bool _pause )
 	{
-		callEvent( "PAUSE_PLAYING", "(O)", this->getScript() );
+		callEvent( "PAUSE_PLAYING", "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenStopped()
 	{
 		//Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
-		callEvent( "STOP_PLAYING", "(O)", this->getScript() );
+		callEvent( "STOP_PLAYING", "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::play()

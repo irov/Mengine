@@ -52,7 +52,7 @@ namespace Menge
 	bool NodeCore::registerEvent( const std::string & _name, const std::string & _method  )
 	{
 		Scriptable * scriptable = getScriptable();
-		PyObject * module = scriptable->getScript();
+		PyObject * module = scriptable->getEmbedding();
 
 		return Eventable::registerEventListener( _name, _method, module );
 	}
@@ -128,26 +128,6 @@ namespace Menge
 	bool NodeCore::isEnable()
 	{
 		return m_enable;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::setName(const std::string & _name)
-	{
-		m_name = _name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const std::string & NodeCore::getName()const
-	{	
-		return m_name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::setType( const std::string & _type)
-	{
-		m_type = _type;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const std::string & NodeCore::getType()const
-	{
-		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::setUpdatable( bool _updatable )

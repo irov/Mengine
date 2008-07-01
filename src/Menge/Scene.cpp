@@ -33,7 +33,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setParentScene( Scene * _scene )
 	{
-		callMethod( "onSubScene", "(O)", _scene->getScript() );
+		callMethod( "onSubScene", "(O)", _scene->getEmbedding() );
 
 		m_isSubScene = true;
 	}

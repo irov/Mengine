@@ -56,7 +56,7 @@ namespace Menge
 
 			actor->setName( _name );
 			actor->setType( "Actor" );
-			actor->setScript( result );
+			actor->setEmbedding( result );
 
 			std::string xml_path = Holder<Game>::hostage()
 				->getPathEntities( _type );

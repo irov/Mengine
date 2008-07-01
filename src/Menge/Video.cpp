@@ -115,7 +115,7 @@ namespace	Menge
 		if( m_playing == true )
 		{
 			m_playing = false;
-			callEvent( "END_VIDEO ", "(O)", this->getScript() );
+			callEvent( "END_VIDEO ", "(O)", this->getEmbedding() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -1,19 +1,23 @@
 #	pragma once
 
 #	include <string>
+#	include "Identity.h"
+#	include "Scriptable.h"
 
 class XmlElement;
 
 namespace Menge
 {	
 	class NodeForeach;
-	class Scriptable;	
+//	class Scriptable;	
 
 	//! Node - базовый pure virtual class
 	/*! 
 	* 
 	*/
 	class Node
+		: public Identity
+		, public Scriptable
 	{
 	public:
 		//! Node virtual destructor.
@@ -25,31 +29,6 @@ namespace Menge
 		/*!
 		*/
 		virtual void destroy() = 0;
-
-	public:
-		//! Node pure virtual. set node name
-		/*!
-		\param _name the first argument.
-		*/
-		virtual void setName(const std::string & _name) = 0;
-
-		//! Node pure virtual. get node name
-		/*!
-		\return name
-		*/
-		virtual const std::string & getName() const = 0;
-
-		//! Node pure virtual. set node type
-		/*!
-		\param type the first argument.
-		*/
-		virtual void setType( const std::string & _type ) = 0;
-
-		//! Node pure virtual. get node type
-		/*!
-		\return type
-		*/
-		virtual const std::string & getType() const = 0;
 
 	public:
 		//! Node pure virtual. activate node
@@ -164,5 +143,8 @@ namespace Menge
 		\param xml the first argument, xml element [XmlElement]
 		*/
 		virtual void loader( XmlElement * xml ) = 0;
+	protected:
+		PyObject * _embedded() override;
+
 	};
 }

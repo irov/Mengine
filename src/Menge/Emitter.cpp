@@ -257,7 +257,7 @@ namespace	Menge
 		}
 
 		m_interface->stop();
-		this->callEvent( "EMITTER_STOP", "(O)", this->getScript() );
+		this->callEvent( "EMITTER_STOP", "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::setLooped( int _loop )
@@ -300,7 +300,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::onStopped()
 	{
-		this->callEvent( "EMITTER_END", "(O)", this->getScript() );
+		this->callEvent( "EMITTER_END", "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::setListener( PyObject* _listener )

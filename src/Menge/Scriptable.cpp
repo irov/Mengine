@@ -11,49 +11,51 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 	Scriptable::Scriptable()
-	: m_scriptable(0)
+		: m_embedding(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scriptable::~Scriptable()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::setScript( PyObject * _scriptable )
-	{
-		m_scriptable = _scriptable;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * Scriptable::getScript()
-	{
-		if( m_scriptable == 0 )
+		if( m_embedding )
 		{
-			m_scriptable = Holder<ScriptEngine>::hostage()
-				->wrap( this );
+			pybind::decref( m_embedding );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scriptable::setEmbedding( PyObject * _embedding )
+	{
+		m_embedding = _embedding;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * Scriptable::getEmbedding()
+	{
+		if( m_embedding == 0 )
+		{
+			m_embedding = _embedded();
 
-			if( m_scriptable == 0 )
+			if( m_embedding == 0 )
 			{
-				//assert(!"Scriptable error!");
 				return 0;
 			}
 		}
 
-		pybind::incref( m_scriptable );
+		pybind::incref( m_embedding );
 
-		return m_scriptable;
+		return m_embedding;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scriptable::callMethod( const std::string & _method, const char * _format, ... )
 	{
-		PyObject * module = getScript();
+		PyObject * _embedding = getEmbedding();
 
 		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( module, _method ) )
+			->hasModuleFunction( _embedding, _method ) )
 		{
 			PyObject * function = Holder<ScriptEngine>::hostage()
-				->getModuleFunction( module, _method );
+				->getModuleFunction( _embedding, _method );
 
 			va_list valist;
 			va_start(valist, _format);
@@ -76,10 +78,9 @@ namespace Menge
 					);
 			}
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Scriptable::isScriptable() const
-	{
-		return m_scriptable != 0;
+		else
+		{
+			//pybind::decref( _embedding );
+		}
 	}
 }

@@ -195,7 +195,7 @@ namespace Menge
 			}
 
 			Scriptable * scriptable = node->getScriptable();
-			PyObject * pyNode = scriptable->getScript();
+			PyObject * pyNode = scriptable->getEmbedding();
 
 			if( pyNode == 0 )
 			{
@@ -282,7 +282,7 @@ namespace Menge
 			}
 
 			Scriptable * scriptable = nodeSprite->getScriptable();
-			PyObject * pyNode = scriptable->getScript();
+			PyObject * pyNode = scriptable->getEmbedding();
 
 			if( pyNode == 0 )
 			{

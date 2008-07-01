@@ -358,7 +358,7 @@ namespace Menge
 		Arrow * arrow = pybind::extract<Arrow*>( result );
 
 		arrow->setType( "Arrow" );
-		arrow->setScript( result );
+		arrow->setEmbedding( result );
 
 		return arrow;
 	}
@@ -382,7 +382,7 @@ namespace Menge
 
 		Scene * scene = pybind::extract<Scene*>( result );
 
-		scene->setScript( result );
+		scene->setEmbedding( result );
 		scene->setType( "Scene" );
 
 		return scene;
@@ -472,7 +472,7 @@ namespace Menge
 	bool ScriptEngine::hasMethod( Node * _node, const std::string & _name )
 	{
 		Scriptable * scriptable = _node->getScriptable();
-		PyObject * script = scriptable->getScript();
+		PyObject * script = scriptable->getEmbedding();
 
 		if( script == 0 )
 		{
@@ -487,7 +487,7 @@ namespace Menge
 	PyObject * ScriptEngine::callMethod( Node * _node, const std::string & _name, const char * _params, ...  )
 	{
 		Scriptable * scriptable = _node->getScriptable();
-		PyObject * script = scriptable->getScript();
+		PyObject * script = scriptable->getEmbedding();
 
 		if( script == 0 )
 		{

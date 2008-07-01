@@ -18,7 +18,7 @@ namespace Menge
 		: public virtual Node
 		, public Eventable
 		, public NodeResource
-		, public Scriptable
+	//	, public Scriptable
 	{
 	public:
 		NodeCore();
@@ -41,13 +41,6 @@ namespace Menge
 
 		void setUpdatable( bool _updatable ) override;
 
-	public:
-		void setName( const std::string & _name ) override;
-		const std::string & getName() const override;
-
-		void setType( const std::string & _type ) override;
-		const std::string & getType() const override;
-				
 	public:
 		void update( float _timing ) override;
 		bool isUpdatable() override;

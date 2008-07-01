@@ -30,7 +30,6 @@ namespace Menge
 		bool existFile( const std::string& _filename );
 		bool createFolder( const std::string& _path );
 		bool deleteFolder( const std::string& _path );
-
 		DataStreamInterface* openFile( const Menge::String& _filename );
 		DataStreamInterface* createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose );
 

@@ -308,7 +308,7 @@ namespace	Menge
 		m_changingColorTime = _time;
 		if( m_changingColor )
 		{
-			this->callEvent( "COLOR_STOP", "(O)", this->getScript() );
+			this->callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
 		}
 		m_changingColor = true;
 	}
@@ -325,7 +325,7 @@ namespace	Menge
 		m_changingColorTime = _time;
 		if( m_changingColor )
 		{
-			this->callEvent( "COLOR_STOP", "(O)", this->getScript() );
+			this->callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
 		}
 		m_changingColor = true;
 	}
@@ -388,7 +388,7 @@ namespace	Menge
 				m_color = m_newColor;
 				m_changingColor = false;
 				m_changingColorTime = 0.f;	
-				this->callEvent( "COLOR_END", "(O)", this->getScript() );
+				this->callEvent( "COLOR_END", "(O)", this->getEmbedding() );
 			}
 			else
 			{

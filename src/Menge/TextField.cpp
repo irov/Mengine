@@ -273,7 +273,7 @@ namespace     Menge
 				m_color = m_newColor;
 				m_outlineColor = m_newOutlineColor;
 				m_changingColor = false;
-				callEvent( "COLOR_END", "(O)", this->getScript() );
+				callEvent( "COLOR_END", "(O)", this->getEmbedding() );
 			}
 			else
 			{
@@ -313,7 +313,7 @@ namespace     Menge
 
 		if( m_changingColor )
 		{
-			callEvent( "COLOR_STOP", "(O)", this->getScript() );
+			callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
 		}
 
 		m_changingColor = true;
@@ -329,7 +329,7 @@ namespace     Menge
 
 		if( m_changingColor )
 		{
-			callEvent( "COLOR_STOP", "(O)", this->getScript() );
+			callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
 		}
 
 		m_changingColor = true;

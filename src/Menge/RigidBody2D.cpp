@@ -62,7 +62,7 @@ namespace Menge
 		if( getEvent( "ON_COLLIDE" ) )
 		{
 			RigidBody2D* other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
-			callEvent( "ON_COLLIDE", "(OOffff)", this->getScript(), other->getScript(), _worldX, _worldY, _normalX, _normalY );
+			callEvent( "ON_COLLIDE", "(OOffff)", this->getEmbedding(), other->getEmbedding(), _worldX, _worldY, _normalX, _normalY );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

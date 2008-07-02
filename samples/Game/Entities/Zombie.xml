@@ -1,8 +1,0 @@
-<Node Name = "LevelNode" Type = "DiscreteEntity">
-	<Transformation>
-		<Scale Value = "1;1;1" />
-  		<Position Value = "0;0;0" />
-       		<Rotation Value ="0;0;0;1" />
-		</Transformation>
-	<ResourceMesh Name = "TestBarrel" />
-</Node>

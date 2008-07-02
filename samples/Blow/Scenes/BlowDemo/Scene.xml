@@ -1,9 +1,0 @@
-<Scene>
-  <Gravity2D Value = "0;1"/>
-  <PhysicWorld2DBox Value = "-100;-100;10240;7780"/>
-
-  <Node Name = "Front" Type = "Layer2D">
-		<Main Value = "1" />
-		<Size Value = "1024; 768" />
-	</Node>
-</Scene>

@@ -62,7 +62,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerTrap * MousePickerSystem::pickTrap( HotSpot * _hotspot ) 
 	{
-		for( TListPickerTrap::iterator
+		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
 		it != it_end;
@@ -84,7 +84,7 @@ namespace Menge
 
 		HotSpot * hotspot = arrow->getCurrentHotSpot();
 
-		for( TListPickerTrap::iterator
+		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
 		it != it_end;
@@ -111,7 +111,7 @@ namespace Menge
 
 		HotSpot * hotspot = arrow->getCurrentHotSpot();
 
-		for( TListPickerTrap::iterator
+		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
 		it != it_end;
@@ -138,7 +138,7 @@ namespace Menge
 
 		HotSpot * hotspot = arrow->getCurrentHotSpot();
 
-		for( TListPickerTrap::iterator
+		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
 		it != it_end;

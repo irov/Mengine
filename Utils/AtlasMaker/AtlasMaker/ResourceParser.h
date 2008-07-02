@@ -3,7 +3,7 @@
 #	include <algorithm>
 #	include "pugixml.hpp"
 
-#	include "MengeTexture.h"
+#	include "Texture2D.h"
 #	include "AtlasTexture.h"
 #	include "AtlasTextureContainer.h"
 #	include "Utils.h"
@@ -12,46 +12,52 @@
 class ResourceParser
 {
 public:
+
 	typedef void (*ResourceType)(ResourceParser *, pugi::xml_node &);
 
 	ResourceParser();
 	~ResourceParser();
+
 public:
+
+	void execute( const std::string & _input );
+
+public:
+
 	void setStandartAtlasWidth(int _width);
 	void setStandartAtlasHeight(int _height);
-
 	void setGameDirectory(const std::string & _gamedir);
 	const std::string & getGameDirectory() const;
 
-	void setOutputName(const std::string & _filename);
+	Texture2D * getTexture(const std::string & _texturename);
 
-	MengeTexture2D * getTexture(const std::string & _texturename);
-
-	void loadTexturesFromResource(const std::string & _filename);
-	void createAtlases();
-
-	void addResourceConverter(const std::string & _from, ResourceType _resourceType)
-	{
-		std::map<std::string, ResourceType>::iterator it = m_resources.find(_from);
-
-		if(it != m_resources.end())
-		{
-			return;
-		}
-
-		m_resources.insert(std::make_pair(_from, _resourceType));
-	}
+	void addResourceCallback(const std::string & _from, ResourceType _resourceType);
+	std::string getTextureLocation( const std::string & _name );
 
 private:
 
-	std::map< std::string, ResourceType> m_resources;
+	void	_loadResourceLocations( const std::string & _input );
+	void	_loadTexturesFromResource( const std::string & _filename );
+	void	_saveModifiedResource( const std::string & _input );
+	void	_saveResultsToFile( const std::vector<std::string> & _names );
+
+	typedef std::vector<std::string> VectorResources;
+	typedef std::map<std::string, ResourceType> MapCallbacks;
+	typedef std::map<std::string, Texture2D*> MapTextures;
+
+	VectorResources m_resources;
+	VectorResources m_outputResourceNames;
+
+	MapCallbacks m_resourceCallbacks;
+	MapTextures m_textures;
 
 	bool isResourceAllowed(const std::string & _resource);
 
-	std::map<std::string, MengeTexture2D * > m_textures;
 	std::string m_gamedir;
 	std::string m_inputName;
 	std::string m_outputName;
 	int m_widthAtlas;
 	int m_heightAtlas;
+
+	FILE * m_log;
 };

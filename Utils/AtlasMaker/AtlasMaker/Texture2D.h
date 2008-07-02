@@ -6,7 +6,7 @@
 
 class AtlasTexture;
 
-class MengeTexture2D
+class Texture2D
 {
 public:
 
@@ -47,13 +47,12 @@ public:
 
 public:
 
-	MengeTexture2D();
-	~MengeTexture2D();
+	Texture2D();
+	~Texture2D();
 
 public:
-	void	setAtlas(AtlasTexture * _atlas);
+	void setAtlas(AtlasTexture * _atlas);
 	AtlasTexture * getAtlas() const;
-
 	const	TextureDesc& getDesc() const;
 
 public:
@@ -62,11 +61,11 @@ public:
 	const	std::string & getFilename() const;
 
 public:
-	long	getWidth()  const;
-	long	getHeight() const;
-	long	getBPP() const;
+	int	getWidth() const;
+	int	getHeight() const;
+	int	getBPP() const;
+	bool isAlphaChannel() const;
 	FIBITMAP * getTexture() const;
-	bool	isAlphaChannel() const;
 
 private:
 

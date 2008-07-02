@@ -195,15 +195,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\MengeTexture.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\RectangleAreaPacker.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ResourceParser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Texture2D.cpp"
 				>
 			</File>
 			<File
@@ -225,15 +225,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\MengeTexture.h"
-				>
-			</File>
-			<File
 				RelativePath=".\RectangleAreaPacker.h"
 				>
 			</File>
 			<File
 				RelativePath=".\ResourceParser.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Texture2D.h"
 				>
 			</File>
 			<File

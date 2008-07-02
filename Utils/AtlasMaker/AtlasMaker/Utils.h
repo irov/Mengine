@@ -6,7 +6,6 @@
 class Utility
 {
 	public:
-		static bool useHalfTexel;
 		static int JPEGQuality;
 		static const char* convert_number_to_string(double value);
 };

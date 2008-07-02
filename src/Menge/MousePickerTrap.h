@@ -9,7 +9,6 @@ namespace Menge
 	class InputHandler;
 
 	class MousePickerTrap
-	//	: public virtual Node
 	{
 	public:
 		MousePickerTrap();

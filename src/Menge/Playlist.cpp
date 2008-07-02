@@ -4,6 +4,8 @@
 
 #	include "ResourceManager.h"
 
+#	include "Utils.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -67,8 +69,7 @@ namespace Menge
 	{
 		if( m_track == m_tracks.end() )
 		{
-			static std::string empty;
-			return empty;
+			return emptyString();
 		}
 
 		return	*m_track;

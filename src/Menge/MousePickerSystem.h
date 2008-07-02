@@ -2,7 +2,6 @@
 
 #	include "Viewport.h"
 
-//#	include <list>
 #	include <vector>
 
 namespace Menge
@@ -29,10 +28,8 @@ namespace Menge
 		bool handleMouseMove( float _x, float _y, int _whell );
 
 	private:
-
-		//typedef std::list<MousePickerTrap *> TListPickerTrap;
-		typedef std::vector<MousePickerTrap *> TListPickerTrap;
-		TListPickerTrap m_listPickerTrap;
+		typedef std::vector<MousePickerTrap *> TVectorPickerTrap;
+		TVectorPickerTrap m_listPickerTrap;
 
 		MousePickerTrap * m_lastPickerTrap;
 	};

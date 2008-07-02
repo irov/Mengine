@@ -1,65 +1,65 @@
-#	include "MengeTexture.h"
+#	include "Texture2D.h"
 #	include "AtlasTexture.h"
 #	include "Utils.h"
 
-MengeTexture2D::MengeTexture2D()
+Texture2D::Texture2D()
 	: m_filename("")
 	, m_texture(0)
 	, m_atlas(0)
 	, m_isAlphaChannelSupport(false)
 {}
 
-MengeTexture2D::~MengeTexture2D()
+Texture2D::~Texture2D()
 {
 	FreeImage_Unload(m_texture);
 }
 
-FIBITMAP * MengeTexture2D::getTexture() const
+FIBITMAP * Texture2D::getTexture() const
 {
 	return m_texture;
 }
 
-void MengeTexture2D::setAtlas(AtlasTexture * _atlas)
+void Texture2D::setAtlas(AtlasTexture * _atlas)
 {
 	m_atlas = _atlas;
 }
 
-AtlasTexture * MengeTexture2D::getAtlas() const
+AtlasTexture * Texture2D::getAtlas() const
 {
 	return m_atlas;
 }
 
-const std::string & MengeTexture2D::getFilename() const
+const std::string & Texture2D::getFilename() const
 {
 	return m_filename;
 }
 
-const MengeTexture2D::TextureDesc& MengeTexture2D::getDesc() const
+const Texture2D::TextureDesc& Texture2D::getDesc() const
 {
 	return m_textureDesc;
 }
 
-long MengeTexture2D::getWidth()  const
+int Texture2D::getWidth()  const
 {
 	return FreeImage_GetWidth(m_texture);
 }
 
-long MengeTexture2D::getHeight() const
+int Texture2D::getHeight() const
 {
 	return FreeImage_GetHeight(m_texture);
 }
 
-long MengeTexture2D::getBPP() const
+int Texture2D::getBPP() const
 {
 	return FreeImage_GetBPP(m_texture);
 }
 
-bool	MengeTexture2D::isAlphaChannel() const
+bool Texture2D::isAlphaChannel() const
 {
 	return m_isAlphaChannelSupport;
 }
 
-bool MengeTexture2D::loadTexture(const std::string & _filename)
+bool Texture2D::loadTexture(const std::string & _filename)
 {
 	m_filename = _filename;
 
@@ -75,11 +75,11 @@ bool MengeTexture2D::loadTexture(const std::string & _filename)
 	return true;
 }
 
-void MengeTexture2D::sliceAlpha()
+void Texture2D::sliceAlpha()
 {
-	unsigned int width = FreeImage_GetWidth(m_texture);
-	unsigned int height = FreeImage_GetHeight(m_texture);
-	unsigned int pitch  = FreeImage_GetPitch(m_texture); 
+	int width = FreeImage_GetWidth(m_texture);
+	int height = FreeImage_GetHeight(m_texture);
+	int pitch  = FreeImage_GetPitch(m_texture); 
 
 	m_textureDesc.sizeX = width;
 	m_textureDesc.sizeY = height;
@@ -139,11 +139,10 @@ void MengeTexture2D::sliceAlpha()
 		maxY = height;
 	}
 
-	m_textureDesc.sizeX = maxX - minX;
-	m_textureDesc.sizeY = maxY - minY;
-
 	m_textureDesc.offsetX = minX;
 	m_textureDesc.offsetY = minY;
+	m_textureDesc.sizeX = maxX - minX;
+	m_textureDesc.sizeY = maxY - minY;
 
 	FIBITMAP * clampedTexture = FreeImage_Copy(m_texture,minX,minY,maxX,maxY);
 

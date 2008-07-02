@@ -3,7 +3,6 @@
 #	include <algorithm>
 #	include "pugixml.hpp"
 
-bool Utility::useHalfTexel = false;
 int Utility::JPEGQuality = 95;
 
 const char* Utility::convert_number_to_string(double value)

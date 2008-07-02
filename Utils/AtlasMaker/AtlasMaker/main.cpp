@@ -1,26 +1,4 @@
-#	include <windows.h>
-#	include <commctrl.h>
-#	include <commdlg.h>
-#	include <basetsd.h>
-#	include <stdio.h>
-#	include <d3dx9.h>
-#	include <algorithm>
-
-#	include "pugixml.hpp"
-
-#	include <fstream>
-#	include <iostream>
-#	include <list>
-
-#	include <vector>
-#	include <map>
-#	include "RectangleAreaPacker.h"
-#	include "MengeTexture.h"
-#	include "AtlasTexture.h"
-#	include "AtlasTextureContainer.h"
-#	include "Utils.h"
 #	include "ResourceParser.h"
-#	include "FreeImage.h"
 
 void ConvertImageDefaultToAtlas(ResourceParser * resourceParser, pugi::xml_node & resource)
 {
@@ -29,9 +7,9 @@ void ConvertImageDefaultToAtlas(ResourceParser * resourceParser, pugi::xml_node 
 	for (pugi::xml_node file = resource.child("File"); 
 		file; file = file.next_sibling("File"))
 	{
-		std::string value = resourceParser->getGameDirectory() + "/" + file.attribute("Path").value();
+		std::string value = resourceParser->getTextureLocation(file.attribute("Path").value());
 
-		MengeTexture2D * texture = resourceParser->getTexture(value);
+		Texture2D * texture = resourceParser->getTexture(value);
 
 		if(texture != NULL)
 		{
@@ -45,7 +23,7 @@ void ConvertImageDefaultToAtlas(ResourceParser * resourceParser, pugi::xml_node 
 
 			std::string uv_value;
 
-			MengeTexture2D::TextureDesc desc = texture->getDesc();
+			Texture2D::TextureDesc desc = texture->getDesc();
 
 			uv_value+=Utility::convert_number_to_string(desc.u);
 			uv_value+=";";
@@ -107,38 +85,24 @@ void ConvertImageDefaultToAtlas(ResourceParser * resourceParser, pugi::xml_node 
 
 int main( int argc, char **argv )
 {
-	FreeImage_Initialise(false);
-
 	if(argc == 1)
 	{
 		return 0;
 	}
 
 	std::string infilename = argv[1];
-	std::string outfilename = argv[2];
-
-	int width = atoi(argv[3]);
-	int height = atoi(argv[4]);
-
-	std::string gamedir = argv[5];
-
-	Utility::useHalfTexel = atoi(argv[6]);
-
-	Utility::JPEGQuality = atoi(argv[7]); 
+	int width = atoi(argv[2]);
+	int height = atoi(argv[3]);
+	std::string gamedir = argv[4];
+	Utility::JPEGQuality = atoi(argv[5]); 
 
 	ResourceParser resourceParser;
 
 	resourceParser.setStandartAtlasWidth(width);
 	resourceParser.setStandartAtlasHeight(height);
-	resourceParser.setOutputName(outfilename);
 	resourceParser.setGameDirectory(gamedir);
+	resourceParser.addResourceCallback("ResourceImageDefault",ConvertImageDefaultToAtlas);
 
-	resourceParser.addResourceConverter("ResourceImageDefault",ConvertImageDefaultToAtlas);
-	resourceParser.loadTexturesFromResource(infilename);
-
-	resourceParser.createAtlases();
-
-	FreeImage_DeInitialise();
-
+	resourceParser.execute(infilename);
 	return 0;
 }

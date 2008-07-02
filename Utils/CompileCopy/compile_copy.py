@@ -6,12 +6,16 @@ import shutil
 import string
 import compileall
 import re
-import xml.dom.minidom
+import xml.dom.minidom 
+import pprint
 import subprocess
 import struct
 
 from Tkinter import *
 import tkFileDialog, tkMessageBox
+
+from xml.dom import *
+
 
 #skipped extensions
 bad_ext = ['.py']  
@@ -110,18 +114,44 @@ def get_resource_path(dom,src):
     
     return resource_list
 
-def read_output_file(src):
+def make_input_for_atlas_make(resource_list):
+    doc = xml.dom.minidom.Document()
+    
+    root = doc.createElement("resources")
+    doc.appendChild(root)
+    
+    for resource in resource_list:
+        location_element = doc.createElement("resource")
+        location_element.setAttribute('value',os.path.normpath(resource))
+        
+        root.appendChild(location_element)
+    
+    thefile=open("input.xml","w")
+    doc.writexml(thefile)
+    thefile.close()
+    pass
+
+
+def read_output_file(src, destdir):
+    
+    resources_list = []
+    
     dom = xml.dom.minidom.parse(src)
 
-    app_tag = dom.getElementsByTagName("resources")[0]
-    resources = app_tag.getElementsByTagName("resource")
-
-    resource_list = []
+    app_tag = dom.getElementsByTagName("datapack")[0]
+    atlases = dom.getElementsByTagName("atlas")
+        
+    for atlas in atlases:
+        val = atlas.getAttribute("value")
+        copy_files.append(os.path.join(destdir,val))
+        
+    resources = dom.getElementsByTagName("resource")
     
     for resource in resources:
-        resource_list.append(resource.getAttribute("value"))
+        val = resource.getAttribute("value")
+        copy_files.append(os.path.join(destdir,os.path.join("Resource",val)))
         
-    return resource_list
+    pass
     
 def atlas(src,destdir):
     dom = xml.dom.minidom.parse(src)
@@ -132,32 +162,20 @@ def atlas(src,destdir):
        
     gamedir = os.path.dirname(src)
     
-    for resource in resource_list:
-
-        resource_output_name = os.path.basename(resource)
-        
-        exe = 'AtlasMaker.exe %(resource_name)s %(output_resource)s %(width)i %(height)i %(gamedir)s %(halftexel)i %(jpgquality)i' % \
-            {'resource_name' : resource, \
-             'output_resource' : resource_output_name,\
-             'width' : atlas_width, \
+    make_input_for_atlas_make(resource_list)
+    
+    exe = 'AtlasMaker.exe input.xml %(width)i %(height)i %(gamedir)s %(jpgquality)i' % \
+            {'width' : atlas_width, \
              'height' : atlas_height, \
              'gamedir' : gamedir, \
-             'halftexel' : halftexel_use, \
              'jpgquality' : jpg_quality \
             }
         
-        subprocess.call(exe)
-        
-        
-        lines = read_output_file("output.xml")
-        
-        copy_files.append(os.path.join(destdir,os.path.join("Resource",lines[0])))
-        
-        for line in lines[1:]:
-            line = os.path.join(destdir,line)
-            copy_files.append(line)
-            print line
-                   
+    subprocess.call(exe)
+    
+    read_output_file("output.xml", destdir)
+                          
+    for resource in resource_list:
         bad_files.append(resource)
         
         dom = xml.dom.minidom.parse(resource)

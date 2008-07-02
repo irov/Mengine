@@ -1,28 +1,42 @@
 #	include "AtlasTexture.h"
 #	include "Utils.h"
 
-AtlasTexture::AtlasTexture(int _width, int _height, int bpp)
+AtlasTexture::AtlasTexture(FILE * _log, int _width, int _height, int _bpp)
 : m_atlasTexture(0)
 , m_packWidth(_width)
 , m_packHeight(_height)
+, m_bpp(_bpp)
+, m_log(_log)
+{}
+
+bool AtlasTexture::bake()
 {
 	m_atlasTexture = FreeImage_AllocateT(FIT_BITMAP,m_packWidth,m_packHeight);
 
+	if(m_atlasTexture == NULL)
+	{
+		fprintf(m_log, "Error: can't create texture with [%d;%d] !", m_packWidth, m_packHeight);
+		return false;
+	}
+
 	FIBITMAP * tmp = 0;
 
-	if(bpp == 32)
+	if(m_bpp == 32)
 	{
 		tmp = FreeImage_ConvertTo32Bits(m_atlasTexture);
 	}
-
-	if(bpp == 24)
+	else if(m_bpp == 24)
 	{
 		tmp = FreeImage_ConvertTo24Bits(m_atlasTexture);
-	}
-
-	if(bpp == 8)
+	} 
+	else if(m_bpp == 8)
 	{
 		tmp = FreeImage_ConvertTo8Bits(m_atlasTexture);
+	}
+	else
+	{
+		fprintf(m_log, "Error: unknown bpp = %d !", m_bpp);
+		return false;
 	}
 
 	FreeImage_Unload(m_atlasTexture);
@@ -43,9 +57,21 @@ AtlasTexture::AtlasTexture(int _width, int _height, int bpp)
 	} 
 
 	m_areaPacker.reset(m_packWidth, m_packHeight);
+
+	return true;
 }
 
-long AtlasTexture::getBPP() const
+int AtlasTexture::getWidth() const
+{
+	return FreeImage_GetWidth(m_atlasTexture);
+}
+
+int AtlasTexture::getHeight() const
+{
+	return FreeImage_GetHeight(m_atlasTexture);
+}
+
+int AtlasTexture::getBPP() const
 {
 	return FreeImage_GetBPP(m_atlasTexture);
 }
@@ -55,12 +81,12 @@ const std::string & AtlasTexture::getFilename() const
 	return m_filename;
 }
 
-bool	AtlasTexture::isFitting(const MengeTexture2D & _texture) const
+bool	AtlasTexture::isFitting(const Texture2D & _texture) const
 {
 	return ( _texture.getWidth() <= m_packWidth ) && ( _texture.getHeight() <= m_packHeight );
 }
 
-bool	AtlasTexture::insertTexture(MengeTexture2D & _texture)
+bool	AtlasTexture::insertTexture(Texture2D & _texture)
 {
 	int X = 0;
 	int Y = 0;
@@ -84,18 +110,6 @@ bool	AtlasTexture::insertTexture(MengeTexture2D & _texture)
 
 		_texture.m_textureDesc.w = (float(_texture.m_textureDesc.X) + _texture.getWidth()) / float(m_packWidth);
 		_texture.m_textureDesc.z = (float(_texture.m_textureDesc.Y) + _texture.getHeight()) / float(m_packWidth);
-
-		if(Utility::useHalfTexel == true)
-		{
-			float uv_half_pixel_width = (0.5f / m_packWidth);
-			float uv_half_pixel_height = (0.5f / m_packHeight);
-
-			_texture.m_textureDesc.u += uv_half_pixel_width;
-			_texture.m_textureDesc.v += uv_half_pixel_height;
-
-			_texture.m_textureDesc.w -= uv_half_pixel_width;
-			_texture.m_textureDesc.z -= uv_half_pixel_height;
-		}
 		
 		return true;
 	}
@@ -128,9 +142,9 @@ BYTE * GrabMemory(FIBITMAP * bitmap, FREE_IMAGE_FORMAT type, DWORD & size, int f
 
 void	AtlasTexture::writeToDisc(const std::string & _name)
 {
-	std::string basename = _name.substr(0,_name.find_last_of("."));
+	m_filename = _name;
 
-	m_filename = basename + ".mne";
+	//FreeImage_Save(FIF_PNG,m_atlasTexture,(_name+".png").c_str());
 
 	FIBITMAP * rgb = FreeImage_ConvertTo24Bits(m_atlasTexture);
 

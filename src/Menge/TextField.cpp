@@ -16,6 +16,8 @@
 
 #     include "math/box2.h"
 
+#     include "Utils.h"
+
 namespace     Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -387,80 +389,18 @@ namespace     Menge
 		return width;	// don't count offset after last char
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void split(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters)
-	{
-		std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
-		std::string::size_type pos     = str.find_first_of(delimiters, lastPos);
-
-		while (std::string::npos != pos || std::string::npos != lastPos)
-		{
-			tokens.push_back(str.substr(lastPos, pos - lastPos));
-			lastPos = str.find_first_not_of(delimiters, pos);
-			pos = str.find_first_of(delimiters, lastPos);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::splitLine(const std::string& _text)
-	{
-		bool revert = false; 
-		std::string::size_type lastPos = 0;
-
-		if( _text[0] == ' ' ) revert = true;
-
-		std::string::size_type pos = ( revert == true ) 
-			? _text.find_first_not_of( " ", 0)
-			: _text.find_first_of( " ", 0 );
-
-		std::string line;
-
-		float len = 0.0f;
-		float maxlen = 0.0f;
-
-		while ( std::string::npos != pos || std::string::npos != lastPos )
-		{
-			std::string word = _text.substr( lastPos, pos - lastPos );
-
-			line += word;
-			line += " ";
-
-			len += getWordWidth_( word );
-
-			if( len >= m_maxWidth )
-			{
-				maxlen = (std::max)( maxlen, len );
-				m_lines.push_back( Line( line, len ) );
-				line.clear();
-				len = 0.0f;
-			}
-
-			lastPos = pos;
-
-			pos = ( revert == true ) 
-				? _text.find_first_of( " ", lastPos)
-				: _text.find_first_not_of( " ", lastPos );
-
-			revert = !revert;
-		}
-
-		if( len != 0 )
-		{
-			maxlen = (std::max)( maxlen, len );
-			m_lines.push_back( Line( line, len ) );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void TextField::createFormattedMessage_( const std::string & _text )
 	{
 		m_lines.clear();
 
 		std::vector<std::string> lines;
-		split(_text,lines,"\n");
+
+		lines = split(_text,"\n");
 
 		float maxlen = 0.0f;
 
 		for(std::vector<std::string>::iterator line = lines.begin(); line != lines.end(); line++ )
 		{
-			// splitLine(*line);
 			float len = getWordWidth_( *line );
 			m_lines.push_back( Line( *line, len ));
 			maxlen = (std::max)( maxlen, len );

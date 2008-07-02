@@ -1,23 +1,28 @@
 #	pragma once
-#	include "MengeTexture.h"
+#	include "Texture2D.h"
 #	include "RectangleAreaPacker.h"
 #	include "FreeImage.h"
 
 class AtlasTexture
 {
 public:
-	AtlasTexture(int _width, int _height, int bpp);
-
+	AtlasTexture(FILE * _log, int _width, int _height, int _bpp);
 public:
-	bool isFitting(const MengeTexture2D & _texture) const;
-	bool insertTexture(MengeTexture2D & _texture);
+	bool bake();
+public:
+	bool isFitting(const Texture2D & _texture) const;
+	bool insertTexture(Texture2D & _texture);
 	void writeToDisc(const std::string & _name);
 	const std::string & getFilename() const;
-	long getBPP() const;
+	int getBPP() const;
+	int getWidth() const;
+	int getHeight() const;
 private:
 	RectangleAreaPacker m_areaPacker;
 	std::string m_filename;
 	FIBITMAP * m_atlasTexture;
 	int m_packWidth;
 	int m_packHeight;
+	int m_bpp;
+	FILE * m_log;
 };

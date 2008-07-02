@@ -35,6 +35,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh::_render( bool _enableDebug )
 	{
+
 		Holder<RenderEngine>::hostage()
 			->setWorldMatrix( getLocalMatrix() );
 

@@ -37,6 +37,9 @@ namespace Menge
 
 		void closeStream( DataStreamInterface* _stream );
 
+		OutStreamInterface* openOutStream( const String& _filename, bool _binary );
+		void closeOutStream( OutStreamInterface* _outStream );
+
 		bool changeDir( const Menge::String& _dir );
 
 		bool initAppDataPath( const Menge::String& _game );

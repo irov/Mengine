@@ -99,4 +99,14 @@ namespace Menge
 		return m_interface->getAppDataPath();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	OutStreamInterface* FileEngine::openOutStream( const String& _filename, bool _binary )
+	{
+		return m_interface->openOutStream( _filename, _binary );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::closeOutStream( OutStreamInterface* _outStream )
+	{
+		m_interface->closeOutStream( _outStream );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

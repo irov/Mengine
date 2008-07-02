@@ -5,6 +5,7 @@
 #	include "DataStream.h"
 #	include "MemoryDataStream.h"
 #	include "FileStreamDataStream.h"
+#	include "FileStreamOutStream.h"
 
 #	include "shlobj.h"
 
@@ -283,4 +284,26 @@ namespace Menge
 	{
 		return m_appDataPath;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	OutStreamInterface* FileSystem::openOutStream( const Menge::String& _filename, bool _binary )
+	{
+		String fileName = m_appDataPath + "\\" + _filename;
+		wchar_t lpszW[MAX_PATH];
+		MultiByteToWideChar(CP_ACP, 0, fileName.c_str(), -1, lpszW, fileName.size() );
+		lpszW[fileName.size()] = 0;
+
+		FileStreamOutStream* outStream = new FileStreamOutStream();
+		if( !outStream->open( lpszW, _binary ) )
+		{
+			delete outStream;
+			return NULL;
+		}
+		return outStream;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileSystem::closeOutStream( OutStreamInterface* _stream )
+	{
+		delete static_cast<FileStreamOutStream*>( _stream );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

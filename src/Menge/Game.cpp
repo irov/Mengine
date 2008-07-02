@@ -35,10 +35,10 @@ namespace Menge
 		, m_height( 768 )
 		, m_fullScreen( true )
 		, m_vsync( false )
-		, m_renderDriver("D3D9")
 		, m_textureFiltering( true )
 		, m_FSAAType( 0 )
 		, m_FSAAQuality( 0 )
+		, m_currentAccount( 0 )
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
@@ -47,6 +47,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
+		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
+			it != it_end;
+			it++ )
+		{
+			delete it->second;
+		}
+		m_accounts.clear();
+
 		for( TMapScene::iterator 
 			it = m_mapScene.begin(),
 			it_end = m_mapScene.end();
@@ -97,13 +105,10 @@ namespace Menge
 	{	
 		XML_SWITCH_NODE( _xml )
 		{
-			//<Scenes Path = "Game/Scenes">
-			//	<Default/>
-			//</Scenes>
+
 			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_resourceResolution );
 			XML_CASE_ATTRIBUTE_NODE( "Title", "Name", m_title );
 			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
-			XML_CASE_ATTRIBUTE_NODE( "RenderDriver", "Name", m_renderDriver );
 			XML_CASE_ATTRIBUTE_NODE( "PhysicSystem", "Name", m_physicSystemName );
 			XML_CASE_ATTRIBUTE_NODE( "Width", "Value", m_width );					
 			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );
@@ -113,32 +118,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "TextureFiltering", "Value", m_textureFiltering );
 			XML_CASE_ATTRIBUTE_NODE( "FSAAType", "Value", m_FSAAType );
 			XML_CASE_ATTRIBUTE_NODE( "FSAAQuality", "Value", m_FSAAQuality );
-			/*XML_CASE_NODE("Scenes")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", m_pathScenes );
-				}
 
-				XML_PARSE_ELEMENT( this, &Game::loaderScenes_ );
-			}*/
-			//<Arrows Path = "Game/Arrows">
-			//	<Default/>
-			//</Arrows>
-			/*XML_CASE_NODE("Arrows")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", m_pathArrows );
-				}
-
-				XML_PARSE_ELEMENT( this, &Game::loaderArrows_ );
-
-			}*/
-
-			//<Default>
-			//	<Arrow Type = "Default"/>
-			//</Default>
 			XML_CASE_NODE("Default")
 			{
 				XML_PARSE_ELEMENT( this, &Game::loaderDefault_ );
@@ -154,37 +134,6 @@ namespace Menge
 				XML_PARSE_ELEMENT( this, &Game::loaderPersonality_ );
 			}
 
-			/*XML_CASE_NODE("Entities")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", m_pathEntities );
-				}
-
-				XML_PARSE_ELEMENT( this, &Game::loaderEntities_ );
-			}
-
-			XML_CASE_NODE("Resource")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", m_pathResource );
-				}
-
-				XML_PARSE_ELEMENT( this, &Game::loaderResources_ );
-			}
-
-			XML_CASE_NODE("ResourceLocation")
-			{
-				std::string path("");
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", path );
-					m_listResourceLocation.push_back( path );
-				}
-			}
-
-			XML_CASE_ATTRIBUTE_NODE( "Scripts", "Path", m_pathScripts );*/
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -859,12 +808,7 @@ namespace Menge
 		return m_vsync;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string& Game::getRenderDriverName() const
-	{
-		return m_renderDriver;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const std::string& Game::getPhysicSystemName() const
+	const String& Game::getPhysicSystemName() const
 	{
 		return m_physicSystemName;
 	}
@@ -884,4 +828,69 @@ namespace Menge
 		return m_FSAAQuality;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Game::createAccount( const String& _accountName )
+	{
+		Account* newAccount = new Account( _accountName );
+		m_accounts.insert( std::make_pair( _accountName, newAccount ) );
+
+		OutStreamInterface* outStream = Holder<FileEngine>::hostage()->
+											openOutStream( "Accounts.ini", false );
+
+		outStream->write( "<Accounts>\n" );
+
+		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
+			it != it_end;
+			it++ )
+		{
+			outStream->write( "\t<Account Name = \"" + _accountName + "\"/>\n" );
+		}
+
+		outStream->write( "</Accounts>" );
+
+		Holder<FileEngine>::hostage()->closeOutStream( outStream );
+		Holder<ScriptEngine>::hostage()
+			->callModuleFunction( m_pyPersonality, "onCreateAccount", "(s)", _accountName.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::deleteAccount( const String& _accountName )
+	{
+		if( m_currentAccount->getName() == _accountName )
+		{
+			selectAccount( "Player1" );
+		}
+		TAccountMap::iterator it = m_accounts.find( _accountName );
+		if( it != m_accounts.end() )
+		{
+			delete it->second;
+			m_accounts.erase( it );
+		}
+		else
+		{
+			MENGE_LOG("Error: Can't delete account '%s'. There is no account with such name",
+				_accountName.c_str() );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::selectAccount( const String& _accountName )
+	{
+		TAccountMap::iterator it = m_accounts.find( _accountName );
+		if( it != m_accounts.end() )
+		{
+			it->second->load();
+			m_currentAccount = it->second;
+		}
+		else
+		{
+			MENGE_LOG("Error: Can't select account '%s'. There is no account with such name",
+				_accountName.c_str() );
+		}
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Account* Game::getCurrentAccount()
+	{
+		return m_currentAccount;
+	}
+	//////////////////////////////////////////////////////////////////////////
+
 }

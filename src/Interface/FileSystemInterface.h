@@ -17,6 +17,14 @@ public:
 	virtual void setFreeOnClose( bool _free ) = 0;
 };
 
+class OutStreamInterface
+{
+public:
+	virtual void write( const char* _data, int _count ) = 0;
+	virtual void write( const Menge::String& _str ) = 0;
+	virtual void write( int _num ) = 0;
+};
+
 class	FileSystemInterface
 {
 public:
@@ -29,6 +37,9 @@ public:
 	virtual DataStreamInterface* openFile( const Menge::String& _filename ) = 0;
 	virtual DataStreamInterface* createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose ) = 0;
 	virtual void closeStream( DataStreamInterface* _stream ) = 0;
+
+	virtual OutStreamInterface* openOutStream( const Menge::String& _filename, bool _binary ) = 0;
+	virtual void closeOutStream( OutStreamInterface* _stream ) = 0;
 
 	virtual const char * platformBundlePath() = 0;
 

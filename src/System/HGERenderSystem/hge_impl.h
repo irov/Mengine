@@ -189,6 +189,7 @@ public:
 	virtual void		CALL	Gfx_SetProjectionMatrix( const float* _projMat );
 	virtual void		CALL	Gfx_SetViewMatrix( const float* _viewMat );
 	virtual void		CALL	Gfx_SetWorldMatrix( const float* _worldMat );
+	virtual void		CALL	Gfx_SetTextureMatrix( const float* _texMat );
 	virtual void		CALL	Gfx_Prepare2D();
 	virtual void		CALL	Gfx_Prepare3D();
 
@@ -293,6 +294,7 @@ public:
 	D3DXMATRIXA16		matView;
 	D3DXMATRIXA16		matProj;
 	D3DXMATRIXA16		matWorld;
+	D3DXMATRIXA16		matTexture;
 
 	CTextureList*		textures;
 	hgeVertex*			VertArray;

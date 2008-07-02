@@ -3,6 +3,7 @@
 //#	include "HGE.h"
 #	include "HGETexture.h"
 #	include "Interface/LogSystemInterface.h"
+#	include "libs/Math/mat4.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( RenderSystemInterface ** _ptrInterface )
@@ -295,6 +296,9 @@ void HGERenderSystem::beginScene()
 	m_hge->Gfx_Clear( m_clearColor );
 	m_hge->Gfx_SetClipping( m_viewport.min.x, m_viewport.min.y, m_viewport.max.x, m_viewport.max.y );
 
+	m_renderX = (m_viewport.max - m_viewport.min).x / m_contentResolution.x;
+	m_renderY = (m_viewport.max - m_viewport.min).y / m_contentResolution.y;
+
 	m_inRender = true;
 	m_currentRenderTarget = "defaultCamera";
 }
@@ -475,10 +479,19 @@ void HGERenderSystem::renderMesh( const TVertex* _vertices, std::size_t _vertice
 		HGETexture* tex = static_cast<HGETexture*>( _material->texture );
 		if( tex )
 		{
+			mt::mat4f mtex;
+			mt::ident_m4( mtex );
+			mtex[0][0] = tex->getUVMask().x;
+			mtex[1][1] = tex->getUVMask().y;
+			m_hge->Gfx_SetTextureMatrix( mtex.m );
 			htex = tex->getHandle();
 		}
 	}
 	m_hge->Gfx_RenderMesh( &(vtx[0]), _verticesNum, _indices, _indicesNum, htex );
+
+	mt::mat4f ident;
+	mt::ident_m4( ident );
+	m_hge->Gfx_SetTextureMatrix( ident.m );
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::setRenderTarget( const Menge::String& _name )
@@ -502,8 +515,8 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name )
 		}
 		else
 		{
-			m_renderX = 1.0f;
-			m_renderY = 1.0f;
+			m_renderX = (m_viewport.max - m_viewport.min).x / m_contentResolution.x;
+			m_renderY = (m_viewport.max - m_viewport.min).y / m_contentResolution.y;
 		}
 	}
 	else

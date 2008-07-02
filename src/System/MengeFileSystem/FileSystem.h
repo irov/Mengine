@@ -24,6 +24,9 @@ namespace Menge
 		void closeStream( DataStreamInterface * _fd ) override;
 		bool existFile( const String& _filename  ) override;
 
+		OutStreamInterface* openOutStream( const Menge::String& _filename, bool _binary ) override;
+		void closeOutStream( OutStreamInterface* _stream ) override;
+
 		const char * platformBundlePath() override;
 
 		bool createFolder( const String& _path ) override;

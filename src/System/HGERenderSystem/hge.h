@@ -411,6 +411,7 @@ public:
 	virtual void		CALL	Gfx_SetProjectionMatrix( const float* _projMat ) = 0;
 	virtual void		CALL	Gfx_SetViewMatrix( const float* _viewMat ) = 0;
 	virtual void		CALL	Gfx_SetWorldMatrix( const float* _worldMat ) = 0;
+	virtual void		CALL	Gfx_SetTextureMatrix( const float* _texMat ) = 0;
 	virtual void		CALL	Gfx_Prepare2D() = 0;
 	virtual void		CALL	Gfx_Prepare3D() = 0;
 

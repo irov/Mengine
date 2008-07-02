@@ -1,7 +1,8 @@
 
-#include "FreeImageCodec.h"
-#include "Image.h"
+#	include "FreeImageCodec.h"
+#	include "Image.h"
 #	include "LogEngine.h"
+#	include "Utils.h"
 
 #include <FreeImage.h>
 
@@ -53,11 +54,11 @@ namespace Menge
 			first = false;
 			strExt << exts;
 
-			ImageCodec* codec = new FreeImageCodec( exts, i );
-			ms_codecList.push_back( codec );
-			Codec::registerCodec( codec );
+			//ImageCodec* codec = new FreeImageCodec( exts, i );
+			//ms_codecList.push_back( codec );
+			//Codec::registerCodec( codec );
 			// Pull off individual formats (separated by comma by FI)
-			/*TStringVector extsVector = StringUtil::split(exts, ",");
+			TStringVector extsVector = split(exts, ",");
 			for( TStringVector::iterator v = extsVector.begin(), v_end = extsVector.end();
 					v != v_end;
 					++v )
@@ -65,7 +66,7 @@ namespace Menge
 				ImageCodec* codec = new FreeImageCodec(*v, i);
 				ms_codecList.push_back( codec );
 				Codec::registerCodec( codec );
-			}*/
+			}
 		}
 		MENGE_LOG( strExt.str().c_str() );
 

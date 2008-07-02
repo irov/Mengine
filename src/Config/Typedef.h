@@ -16,7 +16,6 @@ namespace Menge
 
 typedef _StringBase String;
 
-static const String BlankString;
 //
 
 #	if MENGE_COMPILER == MENGE_COMPILER_MSVC

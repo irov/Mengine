@@ -210,11 +210,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody2D::_activate()
 	{
+		if( m_interface == 0 ) // maybe just deactivated, try to compile
+		{
+			_compile();
+		}
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_deactivate()
 	{
+		Holder<PhysicEngine2D>::hostage()->destroyPhysicBody( m_interface );
+		m_interface = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody2D::_compile()

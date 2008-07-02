@@ -5,15 +5,15 @@
 
 namespace Menge
 {
-	typedef struct _tSettingValue
+	/*typedef struct _tSettingValue
 	{
 		String value;
 		std::vector<String> possibleValues;
-	} TSettingValue;
+	} TSettingValue;*/
 
 	class GameSettings
 	{
-		typedef std::map< String, TSettingValue > TSetttingsMap;
+		typedef std::map< String, String > TSetttingsMap;
 	public:
 		GameSettings();
 		~GameSettings();

@@ -5,6 +5,7 @@
 #	include "InputHandler.h"
 #	include "Eventable.h"
 #	include "math/vec3.h"
+#	include "Account.h"
 
 #	include <list>
 #	include <map>
@@ -95,11 +96,16 @@ namespace Menge
 		int getBits() const;
 		bool getFullscreen() const;
 		bool getVSync() const;
-		const std::string& getRenderDriverName() const;
-		const std::string& getPhysicSystemName() const;
+		const String& getPhysicSystemName() const;
 		bool getTextureFiltering() const;
 		int getFSAAType() const;
 		int getFSAAQuality() const;
+
+		void createAccount( const String& _accountName );
+		void deleteAccount( const String& _accountName );
+		void selectAccount( const String& _accountName );
+
+		Account* getCurrentAccount();
 
 	protected:
 
@@ -134,17 +140,13 @@ namespace Menge
 		TMapDeclaration m_mapResourceDeclaration;
 		TListDeclaration m_listResourceLocation;
 		
-		//std::string m_pathResource;
-		//std::string m_pathScripts;
-		//std::string m_pathEntities;
-		//std::string m_pathScenes;
 		std::string m_currentResourcePath;
 		TListDeclaration m_pathResource;
 		TListDeclaration m_pathScripts;
 		TListDeclaration m_pathEntities;
 		TListDeclaration m_pathScenes;
 		TListDeclaration m_pathArrows;
-		//std::string m_pathArrows;
+
 		float m_width;
 		float m_height;
 		int m_bits;
@@ -153,8 +155,12 @@ namespace Menge
 		bool m_textureFiltering;
 		int	m_FSAAType;
 		int m_FSAAQuality;
-		std::string m_renderDriver;
 		std::string m_physicSystemName;
 
+		TStringVector m_settings;
+		typedef std::map<String, Account*> TAccountMap;
+		TAccountMap m_accounts;
+
+		Account* m_currentAccount;
 	};	
 }

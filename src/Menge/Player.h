@@ -5,7 +5,6 @@
 #	include "InputHandler.h"
 
 #	include "Math/vec3.h"
-
 #	include <string>
 #	include <set>
 

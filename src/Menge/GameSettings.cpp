@@ -2,6 +2,7 @@
 #	include "GameSettings.h"
 #	include "LogEngine.h"
 #	include <algorithm>
+#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -19,12 +20,12 @@ namespace Menge
 		TSetttingsMap::iterator it = m_settings.find( _setting );
 		if( it != m_settings.end() )
 		{
-			std::vector<String>::iterator vit = 
+			/*std::vector<String>::iterator vit = 
 				std::find( 
 				it->second.possibleValues.begin(), 
 				it->second.possibleValues.end(), 
 				_value );
-			if( vit != it->second.possibleValues.end() )
+			if( vit != it->second.possibleValues.end() )*/
 			{
 				it->second.value = _value;
 				m_toApply.push_back( it->first );
@@ -48,7 +49,7 @@ namespace Menge
 		MENGE_LOG( "Warning: Game Setting %s does not exist"
 				, _setting.c_str() );
 
-		return BlankString;
+		return emptyString();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GameSettings::apply()

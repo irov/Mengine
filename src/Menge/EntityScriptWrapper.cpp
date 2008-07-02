@@ -52,7 +52,8 @@ namespace Menge
 
 				return pybind::ret_none();
 			}
-
+			
+			entity->setName( _type );
 			entity->setType("Entity");
 			entity->setEmbedding( result );
 
@@ -114,6 +115,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
+			entity->setName( _type );
 			entity->setType("Entity");
 			entity->setEmbedding( result );
 

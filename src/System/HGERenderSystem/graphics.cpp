@@ -1386,3 +1386,10 @@ void HGE_Impl::Gfx_RenderMesh( const mengeVertex* _vertices, size_t _verticesNum
 
 	pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, _verticesNum, 0, _indicesNum / 3 );
 }
+
+void HGE_Impl::Gfx_SetTextureMatrix( const float* _texMat )
+{
+	std::copy( _texMat, _texMat + 16, &(matTexture._11) );
+	pD3DDevice->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
+	pD3DDevice->SetTransform( D3DTS_TEXTURE0, &matTexture );
+}

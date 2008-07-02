@@ -226,10 +226,7 @@ namespace Menge
 
 		Game* game = Holder<Game>::hostage();
 
-
-		const std::string & renderDriver = game->getRenderDriverName();
-
-		m_renderEngine->initialize( renderDriver.c_str() );
+		m_renderEngine->initialize( "" );
 
 		m_currentResolution.x = game->getWidth();
 		m_currentResolution.y = game->getHeight();
@@ -378,8 +375,8 @@ namespace Menge
 			return false;
 		}
 
-		int idx = _args.find( "-sound" );
-		if( idx >= 0 )
+		String::size_type idx = _args.find( "-sound" );
+		if( idx != String::npos )
 		{
 			m_sound = false;
 		}
@@ -389,19 +386,19 @@ namespace Menge
 		//m_sound = false;
 
 		idx = _args.find( "-particles" );
-		if( idx >= 0 )
+		if( idx != String::npos )
 		{
 			m_particles = false;
 		}
 
 		idx = _args.find( "-debugRender" );
-		if( idx >= 0 )
+		if( idx != String::npos )
 		{
 			m_debugRender = true;
 		}
 
 		idx = _args.find( "-debuginfo" );
-		if( idx >= 0 )
+		if( idx != String::npos )
 		{
 			m_debugInfo = true;
 		}

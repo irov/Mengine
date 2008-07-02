@@ -1,3 +1,5 @@
+#	include "Config/Typedef.h"
+
 #	include "ScriptWrapper.h"
 
 #	include "ScriptClassWrapperDefine.h"
@@ -7,8 +9,8 @@
 #	include "Math/rand.h"
 
 #	include "Color.h"
-
-#	include "Config/Typedef.h"
+#	include "Account.h"
+#	include "Game.h"
 
 #	include <ctime>
 #	include <sstream>
@@ -126,6 +128,34 @@ namespace Menge
 				<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_sec;
 			return str.str();
 		}
+
+		static void s_addSetting( const String& _setting, PyObject* _applyFunc )
+		{
+			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
+			currentAccount->addSetting( _setting, _applyFunc );
+		}
+
+		static void s_changeSetting( const String& _setting, const String& _value )
+		{
+			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
+			currentAccount->changeSetting( _setting, _value );
+		}
+
+		static const String& s_getSetting( const String& _setting )
+		{
+			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
+			return currentAccount->getSetting( _setting );
+		}
+
+		static void s_createAccount( const String& _accountName )
+		{
+			Holder<Game>::hostage()->createAccount( _accountName );
+		}
+
+		static void s_selectAccount( const String& _accountName )
+		{
+			Holder<Game>::hostage()->selectAccount( _accountName );
+		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
@@ -156,5 +186,11 @@ namespace Menge
 		pybind::def( "getB", &ScriptHelper::getB );
 
 		pybind::def( "getTimeString", &ScriptHelper::s_getTimeString );
+
+		pybind::def( "addSetting", &ScriptHelper::s_addSetting );
+		pybind::def( "changeSetting", &ScriptHelper::s_changeSetting );
+		pybind::def( "getSetting", &ScriptHelper::s_getSetting );
+		pybind::def( "createAccount", &ScriptHelper::s_createAccount );
+		pybind::def( "selectAccount", &ScriptHelper::s_selectAccount );
 	}
 }

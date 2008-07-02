@@ -165,9 +165,10 @@ def atlas(src,destdir):
         
         for resource in resources:
             type = resource.getAttribute("Type")
-            noAtlas = resource.getAttribute("NoAtlas") != ''
+            #noAtlas = resource.getAttribute("NoAtlas") != ''
         
-            if(type in allowed_type and noAtlas == False):
+            #if(type in allowed_type and noAtlas == False):
+            if(type in allowed_type):
                 files = resource.getElementsByTagName("File")
                 if(files != []):
                     for file in files:

@@ -5,6 +5,7 @@
 #	include "Scriptable.h"
 #	include "Eventable.h"
 #	include "Resource.h"
+#	include "InputHandler.h"
 
 class XmlElement;
 
@@ -22,6 +23,7 @@ namespace Menge
 		, public Resource
 		, public Scriptable
 		, public Eventable
+		, public InputHandler
 	{
 	public:
 		Node();

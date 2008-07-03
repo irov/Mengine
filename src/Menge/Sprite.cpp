@@ -335,12 +335,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( bool _enableDebug )
 	{
-		if(getName()=="CloudsScreen2")
-		{
-			int u = 0;
-			u = 0;
-		}
-
 		updateVisibility_();
 
 		updateFlip_();

@@ -396,6 +396,10 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\InputHandler.cpp"
+				>
+			</File>
 			<Filter
 				Name="Sprite"
 				>
@@ -1260,18 +1264,6 @@
 					</File>
 					<File
 						RelativePath=".\NodeSinglethon.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Resource"
-					>
-					<File
-						RelativePath=".\NodeResource.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\NodeResource.h"
 						>
 					</File>
 				</Filter>

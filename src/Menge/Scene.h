@@ -7,10 +7,6 @@
 
 #	include "Layer.h"
 
-#	include "InputHandler.h"
-
-#	include "InputHandler.h"
-
 #	include "math\vec3.h"
 #	include "math\vec4.h"
 
@@ -22,7 +18,6 @@ namespace Menge
 		: public NodeCore
 		, public NodeRenderable
 		, public NodeChildren<Layer>
-		, public InputHandler
 	{
 	public:
 		Scene();

@@ -17,7 +17,6 @@ namespace Menge
 {
 	class HotSpot
 		: public SceneNode2D
-		, public InputHandler
 		, public GlobalMouseHandler
 		, public GlobalKeyHandler
 		, public MousePickerTrap

@@ -2,7 +2,6 @@
 
 #	include "Node.h"
 #	include "NodeRenderable.h"
-#	include "InputHandler.h"
 
 #	include "Math/vec2.h"
 
@@ -12,7 +11,6 @@ namespace Menge
 
 	class Layer
 		: public virtual NodeRenderable
-		, public InputHandler
 	{
 	public:
 		Layer();

@@ -28,7 +28,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Resource::isCompile()
+	bool Resource::isCompile() const
 	{
 		return m_compile;
 	}

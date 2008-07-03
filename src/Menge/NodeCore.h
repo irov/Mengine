@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Node.h"
-#	include "NodeResource.h"
 
 #	include "Scriptable.h"
 #	include "Eventable.h"
@@ -17,7 +16,7 @@ namespace Menge
 	class NodeCore
 		: public virtual Node
 		//, public Eventable
-		, public NodeResource
+		//, public NodeResource
 	//	, public Scriptable
 	{
 	public:

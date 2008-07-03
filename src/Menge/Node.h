@@ -4,6 +4,7 @@
 #	include "Identity.h"
 #	include "Scriptable.h"
 #	include "Eventable.h"
+#	include "Resource.h"
 
 class XmlElement;
 
@@ -18,6 +19,7 @@ namespace Menge
 	*/
 	class Node
 		: public Identity
+		, public Resource
 		, public Scriptable
 		, public Eventable
 	{
@@ -51,20 +53,9 @@ namespace Menge
 		virtual bool isActivate() const = 0;
 
 	public:
-		//! Node pure virtual. compile node, setup resource for work
-		/*!
-		\return result of compilated
-		*/
-		virtual bool compile() = 0;
-
-		//! Node pure virtual. release node, remove resource for work
-		/*!
-		*/
-		virtual void release() = 0;
-
-		virtual bool recompile() = 0;
-
-		virtual bool isCompile() = 0;
+		bool compile();
+		void release();
+		bool recompile();
 
 	public:
 		//! Node pure virtual. enable node

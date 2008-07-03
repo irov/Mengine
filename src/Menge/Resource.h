@@ -32,7 +32,7 @@ namespace Menge
 		/*!
 		* return если скомпилирован
 		*/
-		virtual bool isCompile();
+		bool isCompile() const;
 
 	protected:
 		virtual bool _compile();

@@ -10,12 +10,9 @@ import xml.dom.minidom
 import pprint
 import subprocess
 import struct
-
 from Tkinter import *
 import tkFileDialog, tkMessageBox
-
 from xml.dom import *
-
 
 #skipped extensions
 bad_ext = ['.py']  
@@ -25,21 +22,21 @@ bad_files = ['thumbs.db','Thumbs.db']
 bad_dirs = ['thumbnails','.svn']
 #files with bad extension, but needed. Example - log file
 good_files = []
-
+#file to copy
 copy_files = []
 
-atlas_width = 1024
-atlas_height = 1024
-
-# use halftexel
-halftexel_use = False
+atlas_width = 2048
+atlas_height = 2048
 
 # jpg quality, in percent
 jpg_quality = 95
 
 allowed_type = ['ResourceImageDefault'] #,'ResourceImageSet','ResourceImageCell']
 
-def formreslist(src):
+def getGameDirectory(src):
+    return os.path.dirname(os.path.dirname(src))
+
+def getFileResourcesFromAppXML(src):
     dom = xml.dom.minidom.parse(src)
 
     app_tag = dom.getElementsByTagName("Application")[0]
@@ -53,23 +50,52 @@ def formreslist(src):
     #TODO kill unique resources
     
     return resource_list
+
+def getResourcePaths(src):
+    dom = xml.dom.minidom.parse(src)
+    resources_tag = dom.getElementsByTagName("Resources")[0]
+    resource = resources_tag.getElementsByTagName("Resource")
+    
+    if(resource == []):
+        return []
+                    
+    path_resources = resource[0].getAttribute("Path");
+    
+    path_resources = os.path.join(os.path.dirname(src),path_resources)
+    
+    resource_list = []
+    
+    for node in resource[0].childNodes:
+        if node.nodeType == node.ELEMENT_NODE:
+            resource_list.append(os.path.join(path_resources,node.localName)+".resource")
+    
+    dom.unlink()
+    
+    return resource_list
         
 def copyfiles():
-    for copiedfile in copy_files:
-        src = os.path.basename(copiedfile)
-        shutil.copy2(src,copiedfile)
-        os.remove(src)	
+    for file in copy_files:
+        src = os.path.basename(file)
+        
+        try:
+            shutil.copy2(src,file)
+            
+        except (IOError, os.error), why:
+            print "Error: can't copy %s to %s: %s" % (`src`, `file`, str(why))
+        
+        os.remove(src)
     
     del copy_files[:]
         
 def copytree(src, dst):
     compileall.compile_dir(src, rx=re.compile('/[.]svn'), force=True)
     
+    os.makedirs(dst)
+    
     names = os.listdir(src)
 
-    os.makedirs(dst)
-
     for name in names:
+        
         if (name in bad_dirs) or (name in bad_files):
             continue
         
@@ -90,29 +116,12 @@ def copytree(src, dst):
         if os.path.isdir(srcname):
                 copytree(srcname, dstname)
         else:
+            try:
                 shutil.copy2(srcname, dstname)
-
-#   input - resource.xml
-#   output - game\resources\resource.default, ...
-        
-def get_resource_path(dom,src):
-    resources_tag = dom.getElementsByTagName("Resources")[0]
-    resource = resources_tag.getElementsByTagName("Resource")
+            except (IOError, os.error), why:
+                print "Error: can't copy %s to %s: %s" % (`srcname`, `dstname`, str(why))
     
-    if(resource == []):
-        return []
-                    
-    path_resources = resource[0].getAttribute("Path");
-    
-    path_resources = os.path.join(src,path_resources)
-    
-    resource_list = []
-    
-    for node in resource[0].childNodes:
-        if node.nodeType == node.ELEMENT_NODE:
-            resource_list.append(os.path.join(path_resources,node.localName)+".resource")
-    
-    return resource_list
+    pass
 
 def make_input_for_atlas_make(resource_list):
     doc = xml.dom.minidom.Document()
@@ -129,6 +138,8 @@ def make_input_for_atlas_make(resource_list):
     thefile=open("input.xml","w")
     doc.writexml(thefile)
     thefile.close()
+    doc.unlink()
+    
     pass
 
 
@@ -151,18 +162,15 @@ def read_output_file(src, destdir):
         val = resource.getAttribute("value")
         copy_files.append(os.path.join(destdir,os.path.join("Resource",val)))
         
+    dom.unlink()        
     pass
     
 def atlas(src,destdir):
-    dom = xml.dom.minidom.parse(src)
-
-    print "getting resource list from xml"
+    resourceList = getResourcePaths(src)
+  
+    make_input_for_atlas_make(resourceList)
     
-    resource_list = get_resource_path(dom,os.path.dirname(src))
-       
     gamedir = os.path.dirname(src)
-    
-    make_input_for_atlas_make(resource_list)
     
     exe = 'AtlasMaker.exe input.xml %(width)i %(height)i %(gamedir)s %(jpgquality)i' % \
             {'width' : atlas_width, \
@@ -174,8 +182,8 @@ def atlas(src,destdir):
     subprocess.call(exe)
     
     read_output_file("output.xml", destdir)
-                          
-    for resource in resource_list:
+                              
+    for resource in resourceList:
         bad_files.append(resource)
         
         dom = xml.dom.minidom.parse(resource)
@@ -184,7 +192,6 @@ def atlas(src,destdir):
         for resource in resources:
             type = resource.getAttribute("Type")
             #noAtlas = resource.getAttribute("NoAtlas") != ''
-        
             #if(type in allowed_type and noAtlas == False):
             if(type in allowed_type):
                 files = resource.getElementsByTagName("File")
@@ -197,37 +204,38 @@ def atlas(src,destdir):
         
         dom.unlink()
 
-def copytonewfolder(src, dst):
-    # get game directory from 'e:/game/bin/app.xml', so game dir is 'e:/game/'
-    game_dir = os.path.dirname(os.path.dirname(src))
-        
-    # if dest path exist, just return.
-    if os.path.exists(dst):
-        print "output directory already exist!"
+def copytonewfolder(src, DestGameDir):
+    
+    if os.path.exists(DestGameDir):
+        print "Error: Output directory already exist!"
         return
     
-    os.mkdir(dst)
-    # get resources list from application.xml. Example "Game\\Resource\\Resource.xml"
-    filelist = formreslist(src)
+    FileResources = getFileResourcesFromAppXML(src)
     
-    if filelist == []:
-        print "xml's resources are empty!"
+    if FileResources == []:
+        print "Error: resources are empty in %s!" % ('src')
         return
     
-    # for each xml' resources - copy resource folders
-    for file in filelist:
-        srcdir = os.path.join(game_dir,os.path.dirname(file))
-        destdir = os.path.join(dst,os.path.dirname(file))
+    SourceGameDir = getGameDirectory(src)
+
+    try:
+        os.mkdir(DestGameDir)
+    except (IOError, os.error), why:
+        print "Error: can't create output directory %s: %s" % (`src`, str(why))
+    
+    for file in FileResources:
+        SourceDir = os.path.join(SourceGameDir, os.path.dirname(file))
+        DestDir = os.path.join(DestGameDir, os.path.dirname(file))
         
-        srcfile = os.path.join(game_dir,file)
-        atlas(srcfile,destdir)
+        srcfile = os.path.join(SourceGameDir, file)
+        atlas(srcfile, DestDir)
         
-        copytree(srcdir,destdir)
+        copytree(SourceDir,DestDir)
         copyfiles()
         
-    copytree(os.path.join(game_dir,"Bin"),os.path.join(dst,"Bin"))
+    copytree(os.path.join(SourceGameDir,"Bin"),os.path.join(DestGameDir,"Bin"))
     
-    print "done!"
+    print "Done!"
     
 def main():
 

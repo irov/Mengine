@@ -380,7 +380,7 @@ namespace Menge
 		{
 			m_sound = false;
 		}
-		
+
 		//Временная запись
 		//добавил Вова
 		//m_sound = false;

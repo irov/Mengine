@@ -45,9 +45,6 @@ namespace Menge
 		void release();
 
 	public:
-		void setParamString( const std::string& _params );
-
-	public:
 		std::string getPathEntities( const std::string& _entity ) const;
 //		const std::string & getPathScenes() const;
 //		const std::string & getPathArrows() const;

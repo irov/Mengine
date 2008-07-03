@@ -38,14 +38,6 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*void Animation::setAnimationListener( PyObject * _listener )
-	{
-		m_listener = _listener;
-
-		registerEvent("END_ANIMATION", "onAnimationEnd", m_listener );
-		registerEvent("END_FRAME", "onFrameEnd", m_listener );
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	void Animation::setAnimationResource( const std::string & _resource )
 	{
 		if( m_resourceAnimationName == _resource ) return;
@@ -234,5 +226,5 @@ namespace	Menge
 		m_onEndAnimationEvent = registerEvent("END_ANIMATION", "onAnimationEnd", m_listener );
 		m_onEndFrameEvent = registerEvent("END_FRAME", "onFrameEnd", m_listener );
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 }

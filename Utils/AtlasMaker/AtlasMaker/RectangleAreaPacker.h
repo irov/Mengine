@@ -5,6 +5,8 @@ class RectangleAreaPacker
 {
 public:
 	RectangleAreaPacker();
+	int getFilledWidth() const;
+	int getFilledHeight() const;
 public:
 	void reset(int _width, int _height);
 	bool insert(int _width, int _height, int & X, int & Y);

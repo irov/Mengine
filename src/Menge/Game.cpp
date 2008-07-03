@@ -407,30 +407,6 @@ namespace Menge
 		return it_find->second.first + it_find->second.second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//const std::string & Game::getPathArrows() const
-	//{
-	//	TMapDeclaration::const_iterator it_find = m_mapArrowsDeclaration.find( _entity );
-
-	//	if( it_find == m_mapArrowsDeclaration.end() )
-	//	{
-	//		static std::string empty;
-	//		return empty;
-	//	}
-
-	//	return it_find->second;
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::setParamString( const std::string& _params )
-	{
-		if( _params.empty() == false )
-		{
-			m_player->setCurrentScene( _params );
-		}
-		else
-		{
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();

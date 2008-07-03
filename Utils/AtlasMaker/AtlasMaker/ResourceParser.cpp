@@ -166,10 +166,40 @@ void ResourceParser::_loadResourceLocations( const std::string & _input )
 	}
 }
 
-int compare(const Texture2D* xrect, const Texture2D* yrect)
+int compare_area(const Texture2D* s1, const Texture2D * s2)
 {
-	return xrect->getHeight() * xrect->getWidth() < yrect->getHeight() * yrect->getWidth();
+	return s1->getHeight() * s1->getWidth() < s2->getHeight() * s2->getWidth();
 }
+
+int compare_height(const Texture2D* s1, const Texture2D * s2)
+{
+	if (   (s1->getHeight() > s2->getHeight())
+             && (s1->getHeight()*s1->getWidth() == s2->getHeight()*s2->getWidth()))
+	{
+        return true;
+	}
+
+	return false;
+}
+
+ /*   if (s1->getHeight()*s1->getWidth() > s2->getHeight()*s2->getWidth())
+	{
+        return true;
+	}
+    else if (   (s1->getHeight() > s2->getHeight())
+             && (s1->getHeight()*s1->getWidth() == s2->getHeight()*s2->getWidth()))
+	{
+        return true;
+	}
+    else if (   (s1->getWidth()  > s2->getWidth())
+             && (s1->getHeight()*s1->getWidth() == s2->getHeight()*s2->getWidth()))
+	{
+        return true;
+	}
+	else
+	{
+		return false;
+	}*/
 
 void ResourceParser::_loadTexturesFromResource(const std::string & _filename)
 {
@@ -236,7 +266,9 @@ void ResourceParser::_loadTexturesFromResource(const std::string & _filename)
 		}
 	}
 	//sort by area.
-	std::sort(textures.begin(),textures.end(),compare);
+	std::sort(textures.begin(),textures.end(),compare_area);
+
+	std::sort(textures.begin(),textures.end(),compare_height);
 
 	for (int i = 0; i < textures.size(); ++i)
 	{

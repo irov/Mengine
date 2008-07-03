@@ -165,6 +165,9 @@ namespace	Menge
 		}
 
 		m_offset = offset + m_alignOffset;
+	
+		m_offset.x *= m_scale.x;
+		m_offset.y *= m_scale.y;
 
 		mt::mat3f wm = getWorldMatrix();
 
@@ -332,6 +335,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( bool _enableDebug )
 	{
+		if(getName()=="CloudsScreen2")
+		{
+			int u = 0;
+			u = 0;
+		}
+
 		updateVisibility_();
 
 		updateFlip_();
@@ -345,8 +354,6 @@ namespace	Menge
 		}
 
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
-
-		//const mt::mat3f & wm = getWorldMatrix();
 
 		mt::mat3f wm = getWorldMatrix();
 		if( m_layer && m_layer->isScrollable() )

@@ -11,6 +11,16 @@ RectangleAreaPacker::RectangleAreaPacker()
 	reset(2048,2048);
 }
 
+int RectangleAreaPacker::getFilledWidth() const
+{
+	return m_collumn;
+}
+
+int RectangleAreaPacker::getFilledHeight() const
+{
+	return m_lineHeight;
+}
+
 bool RectangleAreaPacker::insert(int _width, int _height, int & X, int & Y)
 {
 	if( (_width > m_packingAreaWidth) || (_height > m_packingAreaHeight))

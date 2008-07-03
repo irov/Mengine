@@ -1,6 +1,6 @@
 #	include "AtlasTexture.h"
 #	include "Utils.h"
-
+//////////////////////////////////////////////////////////////////////////
 AtlasTexture::AtlasTexture(FILE * _log, int _width, int _height, int _bpp)
 : m_atlasTexture(0)
 , m_packWidth(_width)
@@ -8,7 +8,7 @@ AtlasTexture::AtlasTexture(FILE * _log, int _width, int _height, int _bpp)
 , m_bpp(_bpp)
 , m_log(_log)
 {}
-
+//////////////////////////////////////////////////////////////////////////
 bool AtlasTexture::bake()
 {
 	m_atlasTexture = FreeImage_AllocateT(FIT_BITMAP,m_packWidth,m_packHeight);
@@ -60,32 +60,32 @@ bool AtlasTexture::bake()
 
 	return true;
 }
-
+//////////////////////////////////////////////////////////////////////////
 int AtlasTexture::getWidth() const
 {
 	return FreeImage_GetWidth(m_atlasTexture);
 }
-
+//////////////////////////////////////////////////////////////////////////
 int AtlasTexture::getHeight() const
 {
 	return FreeImage_GetHeight(m_atlasTexture);
 }
-
+//////////////////////////////////////////////////////////////////////////
 int AtlasTexture::getBPP() const
 {
 	return FreeImage_GetBPP(m_atlasTexture);
 }
-
+//////////////////////////////////////////////////////////////////////////
 const std::string & AtlasTexture::getFilename() const
 {
 	return m_filename;
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool	AtlasTexture::isFitting(const Texture2D & _texture) const
 {
 	return ( _texture.getWidth() <= m_packWidth ) && ( _texture.getHeight() <= m_packHeight );
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool	AtlasTexture::insertTexture(Texture2D & _texture)
 {
 	int X = 0;
@@ -116,7 +116,7 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 
 	return false;
 }
-
+//////////////////////////////////////////////////////////////////////////
 BYTE * GrabMemory(FIBITMAP * bitmap, FREE_IMAGE_FORMAT type, DWORD & size, int flags = 0)
 {
 	FIMEMORY * memory = FreeImage_OpenMemory();
@@ -139,11 +139,15 @@ BYTE * GrabMemory(FIBITMAP * bitmap, FREE_IMAGE_FORMAT type, DWORD & size, int f
 
 	return ourData;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void	AtlasTexture::writeToDisc(const std::string & _name)
 {
 	m_filename = _name;
 
+	int width = m_areaPacker.getFilledWidth();
+	int height = m_areaPacker.getFilledHeight();
+
+	//uncomment for test
 	//FreeImage_Save(FIF_PNG,m_atlasTexture,(_name+".png").c_str());
 
 	FIBITMAP * rgb = FreeImage_ConvertTo24Bits(m_atlasTexture);

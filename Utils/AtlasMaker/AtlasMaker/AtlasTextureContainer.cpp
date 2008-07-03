@@ -1,18 +1,18 @@
 #	include "AtlasTextureContainer.h"
 #	include "Utils.h"
-
+//////////////////////////////////////////////////////////////////////////
 AtlasTextureContainer::AtlasTextureContainer(FILE * _log, int _width, int _height)
 : m_atlases(0)
 , m_width(_width)
 , m_height(_height)
 , m_log(_log)
 {}
-
+//////////////////////////////////////////////////////////////////////////
 AtlasTextureContainer::~AtlasTextureContainer()
 {
 	delete[] m_atlases;
 }
-
+//////////////////////////////////////////////////////////////////////////
 const std::vector<std::string>& AtlasTextureContainer::compileAtlas(std::map<std::string, Texture2D*> & textures, const std::string& _outputFilename )
 {
 	fprintf(m_log, "Process: Compiling atlases. \n");
@@ -62,7 +62,7 @@ const std::vector<std::string>& AtlasTextureContainer::compileAtlas(std::map<std
 
 	return output_names;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void AtlasTextureContainer::insertAtlas(int index, int bpp, const TTextureVector& textures)
 {
 	for (int i = 0; i < textures.size(); ++i)
@@ -115,3 +115,4 @@ void AtlasTextureContainer::insertAtlas(int index, int bpp, const TTextureVector
 		}
 	}
 }
+//////////////////////////////////////////////////////////////////////////

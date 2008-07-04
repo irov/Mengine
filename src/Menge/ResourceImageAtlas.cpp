@@ -100,12 +100,6 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			if(strcmp(it->fileName.c_str(),"Game/atlas2.mne")==0)
-			{
-				int u = 0;
-				u++;
-			}
-
 			ImageFrame frame = loadImageFrame( it->fileName );
 
 			

@@ -3,6 +3,8 @@
 #	include "LogEngine.h"
 #	include "pybind/pybind.hpp"
 #	include "Utils.h"
+#	include "FileEngine.h"
+#	include "XmlEngine.h"
 
 namespace Menge
 {
@@ -21,12 +23,12 @@ namespace Menge
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Account::addSetting( const String& _setting, PyObject* _applyFunc )
+	void Account::addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
 	{
 		TSettingsMap::iterator it = m_settings.find( _setting );
 		if( it == m_settings.end() )
 		{
-			m_settings[_setting] = std::make_pair( "", _applyFunc );
+			m_settings[_setting] = std::make_pair( _defaultValue, _applyFunc );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -62,7 +64,71 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Account::load()
 	{
+		FileEngine* fileEngine = Holder<FileEngine>::hostage();
+		String fileName = fileEngine->getAppDataPath() + "\\" + m_name + "\\" + "settings.ini";
+		DataStreamInterface* file = fileEngine->openFile( fileName );
+		if( file == 0 )
+		{
+			MENGE_LOG("Error: Failed to load account '%s' settings. Can't open file",
+				m_name.c_str() );
+			return;
+		}
 
+		if( Holder<XmlEngine>::hostage()
+			->parseXmlFileM( file, this, &Account::loader_ ) == false )
+		{
+			MENGE_LOG("Parsing Account settings xml failed '%s'",
+				fileName.c_str() );
+		}
+
+		fileEngine->closeStream( file );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Account::save()
+	{
+		FileEngine* fileEngine = Holder<FileEngine>::hostage();
+		String fileName = m_name + "\\" + "settings.ini";
+		OutStreamInterface* file = fileEngine->openOutStream( fileName, false );
+		if( file == 0 )
+		{
+			MENGE_LOG( "Error: can't open file for writing. Account '%s' settings not saved",
+				m_name.c_str() );
+		}
+		file->write( "<Settings>\n" );
+
+		for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
+			it != it_end;
+			it++ )
+		{
+			file->write( "\t<" + it->first + " Value = \"" + it->second.first + "\"/>\n" );
+		}
+
+		file->write( "</Settings>" );
+
+		fileEngine->closeOutStream( file );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Account::loader_( XmlElement* _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
+				it != it_end;
+				it++ )
+			{
+				XML_CASE_ATTRIBUTE_NODE( it->first.c_str(), "Value", it->second.first );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Account::apply()
+	{
+		for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
+			it != it_end;
+			it++ )
+		{
+			pybind::call( it->second.second, "(s)", it->second.first.c_str() );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

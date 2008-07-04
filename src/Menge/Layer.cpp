@@ -1,6 +1,7 @@
 #	include "Layer.h"
 
 #	include "XmlEngine.h"
+#	include "RenderEngine.h"
 
 namespace Menge
 {
@@ -9,6 +10,7 @@ namespace Menge
 		: m_main(false)
 		, m_size(0.f, 0.f)
 		, m_scene(0)
+		, m_renderArea( 0.0f, 0.0f, 0.0f, 0.0f )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::setMain( bool _main )
@@ -47,6 +49,7 @@ namespace Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Main", "Value", m_main );
 			XML_CASE_ATTRIBUTE_NODE( "Size", "Value", m_size );
+			XML_CASE_ATTRIBUTE_NODE( "RenderArea", "Value", m_renderArea );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -63,6 +66,23 @@ namespace Menge
 	bool Layer::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
 	{
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer::setRenderArea( const mt::vec4f& _renderArea )
+	{
+		m_renderArea = _renderArea;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec4f& Layer::getRenderArea() const
+	{
+		return m_renderArea;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer::_renderBegin()
+	{
+		Holder<RenderEngine>::hostage()
+			->setRenderArea( m_renderArea );
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

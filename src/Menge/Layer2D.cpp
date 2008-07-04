@@ -240,6 +240,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::_renderBegin()
 	{
+		Layer::_renderBegin();
+
 		if( m_reRender )
 		{
 			Viewport viewport;

@@ -320,6 +320,7 @@ namespace	Menge
 				}
 				else
 				{
+
 					m_scaleTime -= _timing;
 
 					float t = _timing / m_scaleTime;
@@ -328,7 +329,7 @@ namespace	Menge
 
 					//mt::vec2f curr_dir = mt::slerp_v2_v2( dir, m_targetDir, t );
 					mt::vec2f curr_scl = m_scalePoint * t + scl * ( 1.0f - t );
-
+					//printf( "Scale %.4f %.4f\n", curr_scl.x, curr_scl.y );
 					setScale( curr_scl );
 				}
 			}

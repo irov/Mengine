@@ -392,6 +392,8 @@ public:
 	//virtual int			CALL	Input_GetKey() = 0;
 	//virtual int			CALL	Input_GetChar() = 0;
 	//virtual bool		CALL	Input_GetEvent(hgeInputEvent *event) = 0;
+	
+	virtual bool		CALL	Gfx_CreateRenderWindow() = 0;
 
 	virtual bool		CALL	Gfx_BeginScene(HTARGET target=0) = 0;
 	virtual void		CALL	Gfx_EndScene( bool _swapBuffers = true ) = 0;

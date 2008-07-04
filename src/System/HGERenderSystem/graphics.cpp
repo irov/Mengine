@@ -750,7 +750,6 @@ void HGE_Impl::_SetProjectionMatrix(int width, int height)
 
 bool HGE_Impl::_GfxInit()
 {
-	static const char *szFormats[]={"UNKNOWN", "R5G6B5", "X1R5G5B5", "A1R5G5B5", "X8R8G8B8", "A8R8G8B8"};
 	D3DADAPTER_IDENTIFIER8 AdID;
 	D3DDISPLAYMODE Mode;
 	D3DFORMAT Format=D3DFMT_UNKNOWN;
@@ -785,24 +784,12 @@ bool HGE_Impl::_GfxInit()
 	}
 	
 	ZeroMemory(&d3dppW, sizeof(d3dppW));
-
-	d3dppW.BackBufferWidth  = nScreenWidth;
-	d3dppW.BackBufferHeight = nScreenHeight;
 	d3dppW.BackBufferFormat = Mode.Format;
-	d3dppW.BackBufferCount  = 1;
 	d3dppW.MultiSampleType  = D3DMULTISAMPLE_NONE;
-	d3dppW.hDeviceWindow    = hwnd;
 	d3dppW.Windowed         = TRUE;
 	d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+	d3dppW.BackBufferCount  = 1;
 
-	if(nHGEFPS==HGEFPS_VSYNC) d3dppW.SwapEffect = D3DSWAPEFFECT_COPY_VSYNC;
-	else					  d3dppW.SwapEffect = D3DSWAPEFFECT_COPY;
-
-	if(bZBuffer)
-	{
-		d3dppW.EnableAutoDepthStencil = TRUE;
-		d3dppW.AutoDepthStencilFormat = D3DFMT_D16;
-	}
 
 // Set up Full Screen presentation parameters
 
@@ -831,18 +818,38 @@ bool HGE_Impl::_GfxInit()
 	}
 
 	ZeroMemory(&d3dppFS, sizeof(d3dppFS));
-
-	d3dppFS.BackBufferWidth  = nScreenWidth;
-	d3dppFS.BackBufferHeight = nScreenHeight;
 	d3dppFS.BackBufferFormat = Format;
 	d3dppFS.BackBufferCount  = 1;
 	d3dppFS.MultiSampleType  = D3DMULTISAMPLE_NONE;
-	d3dppFS.hDeviceWindow    = hwnd;
 	d3dppFS.Windowed         = FALSE;
-
 	d3dppFS.SwapEffect       = D3DSWAPEFFECT_FLIP;
 	d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 	d3dppFS.Flags			 = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+
+	return true;
+}
+
+bool HGE_Impl::Gfx_CreateRenderWindow()
+{
+	static const char *szFormats[]={"UNKNOWN", "R5G6B5", "X1R5G5B5", "A1R5G5B5", "X8R8G8B8", "A8R8G8B8"};
+
+	d3dppW.BackBufferWidth  = nScreenWidth;
+	d3dppW.BackBufferHeight = nScreenHeight;
+	d3dppW.hDeviceWindow    = hwnd;
+
+	if(nHGEFPS==HGEFPS_VSYNC) d3dppW.SwapEffect = D3DSWAPEFFECT_COPY_VSYNC;
+	else					  d3dppW.SwapEffect = D3DSWAPEFFECT_COPY;
+
+	if(bZBuffer)
+	{
+		d3dppW.EnableAutoDepthStencil = TRUE;
+		d3dppW.AutoDepthStencilFormat = D3DFMT_D16;
+	}
+
+	d3dppFS.BackBufferWidth  = nScreenWidth;
+	d3dppFS.BackBufferHeight = nScreenHeight;
+	d3dppFS.hDeviceWindow    = hwnd;
+
 
 	if(nHGEFPS==HGEFPS_VSYNC) d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 	else					  d3dppFS.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
@@ -857,8 +864,8 @@ bool HGE_Impl::_GfxInit()
 
 	if(_format_id(d3dpp->BackBufferFormat) < 4) nScreenBPP=16;
 	else nScreenBPP=32;
-	
-// Create D3D Device
+
+	// Create D3D Device
 	HRESULT hr;
 
 	hr = pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
@@ -893,27 +900,27 @@ bool HGE_Impl::_GfxInit()
 		return false;
 	}
 	/*if( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
-                                  D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                                  d3dpp, &pD3DDevice ) ) )
+	D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+	d3dpp, &pD3DDevice ) ) )
 	{
-		_PostError("Can't create D3D device");
-		return false;
+	_PostError("Can't create D3D device");
+	return false;
 	}*/
 
 	//_AdjustWindow();
 
-	System_Log("Mode: %d x %d x %s\n",nScreenWidth,nScreenHeight,szFormats[_format_id(Format)]);
+	System_Log("Mode: %d x %d x %s\n",nScreenWidth,nScreenHeight,szFormats[_format_id(d3dpp->BackBufferFormat)]);
 
-// Create vertex batch buffer
+	// Create vertex batch buffer
 
 	VertArray = 0;
 	textures = 0;
 
-// Init all stuff that can be lost
+	// Init all stuff that can be lost
 
 	_SetProjectionMatrix(nScreenWidth, nScreenHeight);
 	D3DXMatrixIdentity(&matView);
-	
+
 	m_layer3D = false;	// starting with 2D
 	if(!_init_lost()) 
 	{
@@ -921,7 +928,6 @@ bool HGE_Impl::_GfxInit()
 	}
 
 	Gfx_Clear(0);
-
 
 	return true;
 }
@@ -1326,6 +1332,9 @@ void HGE_Impl::Gfx_Prepare2D()
 	pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
 
 	pD3DDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTEXF_POINT);
+
+	pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_BORDER );
+	pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_BORDER );
 
 	if(bTextureFilter)
 	{

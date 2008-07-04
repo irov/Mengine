@@ -105,6 +105,9 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()
 			->setRenderViewport( viewport );
 
+		Holder<RenderEngine>::hostage()
+			->setRenderArea( mt::vec4f::zero_v4 );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

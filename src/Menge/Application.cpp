@@ -238,6 +238,17 @@ namespace Menge
 		WINDOW_HANDLE winHandle = m_interface->createWindow( game->getTitle().c_str(), m_currentResolution.x, m_currentResolution.y, game->getFullscreen() );
 		m_renderEngine->createRenderWindow( m_currentResolution.x, m_currentResolution.y, game->getBits(), game->getFullscreen(), winHandle,
 											game->getFSAAType(), game->getFSAAQuality() );
+
+
+		ResourceFactoryParam param;
+		param.name = "WhitePixel";
+		param.category = "";
+
+		ResourceImageDynamic* image = new ResourceImageDynamic( param );
+		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
+		image->incrementReference();
+		Holder<ResourceManager>::hostage()->registerResource( image );
+
 		m_inputEngine->initialize( winHandle );
 		if( game->getFullscreen() )
 		{
@@ -460,6 +471,8 @@ namespace Menge
 		{
 			MENGE_LOG( "Warning: Can't initialize user's data path" );
 		}
+
+		//game->loadAccounts();
 
 		if( createGame() == false )
 		{

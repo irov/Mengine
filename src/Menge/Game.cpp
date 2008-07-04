@@ -47,6 +47,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
+		release();
 		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
 			it != it_end;
 			it++ )
@@ -514,6 +515,9 @@ namespace Menge
 			return false;
 		}
 
+
+		loadAccounts();
+
 		registerEvent( "KEY", "onHandleKeyEvent", m_pyPersonality );
 		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent", m_pyPersonality );
 		registerEvent( "MOUSE_MOVE", "onHandleMouseMove", m_pyPersonality );
@@ -806,37 +810,48 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::createAccount( const String& _accountName )
 	{
+		TAccountMap::iterator it = m_accounts.find( _accountName );
+		if( it != m_accounts.end() )
+		{
+			MENGE_LOG("Warning: Account with name '%s' already exist. Account not created",
+				_accountName.c_str() );
+			return;
+		}
+
+		Holder<FileEngine>::hostage()->
+			createFolder( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _accountName );
+
 		Account* newAccount = new Account( _accountName );
 		m_accounts.insert( std::make_pair( _accountName, newAccount ) );
 
-		OutStreamInterface* outStream = Holder<FileEngine>::hostage()->
-											openOutStream( "Accounts.ini", false );
+		m_currentAccount = newAccount;
 
-		outStream->write( "<Accounts>\n" );
-
-		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
-			it != it_end;
-			it++ )
+		if( Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, "onCreateAccount" ) )
 		{
-			outStream->write( "\t<Account Name = \"" + _accountName + "\"/>\n" );
+			Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, "onCreateAccount", "(s)", _accountName.c_str() );
+		}
+		else
+		{
+			MENGE_LOG("Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
 		}
 
-		outStream->write( "</Accounts>" );
-
-		Holder<FileEngine>::hostage()->closeOutStream( outStream );
-		Holder<ScriptEngine>::hostage()
-			->callModuleFunction( m_pyPersonality, "onCreateAccount", "(s)", _accountName.c_str() );
+		//m_currentAccount->apply();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::deleteAccount( const String& _accountName )
 	{
-		if( m_currentAccount->getName() == _accountName )
-		{
-			selectAccount( "Player1" );
-		}
 		TAccountMap::iterator it = m_accounts.find( _accountName );
 		if( it != m_accounts.end() )
 		{
+			if( m_currentAccount->getName() == _accountName )
+			{
+				m_currentAccount = 0;
+			}
+
+			Holder<FileEngine>::hostage()->
+				deleteFolder( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _accountName );
 			delete it->second;
 			m_accounts.erase( it );
 		}
@@ -852,8 +867,9 @@ namespace Menge
 		TAccountMap::iterator it = m_accounts.find( _accountName );
 		if( it != m_accounts.end() )
 		{
-			it->second->load();
 			m_currentAccount = it->second;
+			it->second->load();
+			it->second->apply();
 		}
 		else
 		{
@@ -868,5 +884,85 @@ namespace Menge
 		return m_currentAccount;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Game::loaderAccounts_( XmlElement* _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			String accountName;
 
+			XML_CASE_NODE( "Account" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Name", accountName );
+				}
+				m_accounts.insert( std::make_pair( accountName, static_cast<Account*>(0) ) );
+			}
+			XML_CASE_ATTRIBUTE_NODE( "DefaultAccount", "Name", m_defaultAccountName );
+		}		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::loadAccounts()
+	{
+		String file = Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + "Accounts.ini";
+		
+		if( Holder<FileEngine>::hostage()->existFile( file ) )
+		{
+			if( Holder<XmlEngine>::hostage()
+				->parseXmlFileM( file, this, &Game::loaderAccounts_ ) == false )
+			{
+				MENGE_LOG("Parsing Accounts xml failed '%s'\n"
+					, file.c_str()
+					);
+				return;
+			}
+			TStringVector accountNames;
+
+			for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
+				it != it_end;
+				it++ )
+			{
+				accountNames.push_back( it->first );
+			}
+			m_accounts.clear();
+
+			for( TStringVector::iterator it = accountNames.begin(), it_end = accountNames.end();
+				it != it_end;
+				it++ )
+			{
+				createAccount( (*it) );
+			}
+
+			selectAccount( m_defaultAccountName );
+		}
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::saveAccountsInfo()
+	{
+		OutStreamInterface* outStream = Holder<FileEngine>::hostage()->
+			openOutStream( "Accounts.ini", false );
+
+		outStream->write( "<Accounts>\n" );
+
+		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
+			it != it_end;
+			it++ )
+		{
+			outStream->write( "\t<Account Name = \"" + it->first + "\"/>\n" );
+		}
+		outStream->write( "\t<DefaultAccount Name = \"" + m_currentAccount->getName() + "\"/>\n" );
+
+		outStream->write( "</Accounts>" );
+
+		Holder<FileEngine>::hostage()->closeOutStream( outStream );
+
+		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
+			it != it_end;
+			it++ )
+		{
+			it->second->save();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

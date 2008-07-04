@@ -73,6 +73,9 @@ namespace Menge
 		void readResourceFile( const std::string& _file );
 		void loaderResourceFile( XmlElement * _xml );
 		void loaderResourceFile_( XmlElement * _xml );
+
+		void loadAccounts();
+		void loaderAccounts_( XmlElement* _xml );
 		
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -103,6 +106,8 @@ namespace Menge
 		void selectAccount( const String& _accountName );
 
 		Account* getCurrentAccount();
+
+		void saveAccountsInfo();
 
 	protected:
 
@@ -154,10 +159,11 @@ namespace Menge
 		int m_FSAAQuality;
 		std::string m_physicSystemName;
 
-		TStringVector m_settings;
+		TStringVector m_loadedAccounts;
 		typedef std::map<String, Account*> TAccountMap;
 		TAccountMap m_accounts;
 
+		String m_defaultAccountName;
 		Account* m_currentAccount;
 	};	
 }

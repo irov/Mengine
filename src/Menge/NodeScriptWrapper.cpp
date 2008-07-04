@@ -326,7 +326,7 @@ namespace Menge
 			RenderImageInterface* img = const_cast<RenderImageInterface*>( Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( _resource )->getImage( _frame ) );
 			Image wImage;
 			wImage.loadDynamicImage( img->lock(), img->getWidth(), img->getHeight(), 1, img->getPixelFormat() );
-			wImage.save( _filename );
+			wImage.save( Holder<FileEngine>::hostage()->getAppDataPath() + _filename );
 			//const_cast<RenderImageInterface*>(img)->writeToFile( _filename.c_str() );
 		}
 		static void setSoundEnabled( bool _enabled )
@@ -772,6 +772,7 @@ namespace Menge
 				.def( "setLineOffset", &TextField::setLineOffset )
 				.def( "setResource", &TextField::setResource )
 				.def( "setOutlineResource", &TextField::setOutlineResource )
+				.def( "getCenterAlign", &TextField::getCenterAlign )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)

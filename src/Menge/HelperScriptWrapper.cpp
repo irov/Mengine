@@ -11,6 +11,7 @@
 #	include "Color.h"
 #	include "Account.h"
 #	include "Game.h"
+#	include "Application.h"
 
 #	include <ctime>
 #	include <sstream>
@@ -129,10 +130,10 @@ namespace Menge
 			return str.str();
 		}
 
-		static void s_addSetting( const String& _setting, PyObject* _applyFunc )
+		static void s_addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
 		{
 			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
-			currentAccount->addSetting( _setting, _applyFunc );
+			currentAccount->addSetting( _setting, _defaultValue, _applyFunc );
 		}
 
 		static void s_changeSetting( const String& _setting, const String& _value )
@@ -155,6 +156,16 @@ namespace Menge
 		static void s_selectAccount( const String& _accountName )
 		{
 			Holder<Game>::hostage()->selectAccount( _accountName );
+		}
+
+		static void s_saveAccountsInfo()
+		{
+			Holder<Game>::hostage()->saveAccountsInfo();
+		}
+
+		static void s_setParticlesEnabled( bool _enable )
+		{
+			Holder<Application>::hostage()->setParticlesEnabled( _enable );
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -192,5 +203,8 @@ namespace Menge
 		pybind::def( "getSetting", &ScriptHelper::s_getSetting );
 		pybind::def( "createAccount", &ScriptHelper::s_createAccount );
 		pybind::def( "selectAccount", &ScriptHelper::s_selectAccount );
+		pybind::def( "saveAccountsInfo", &ScriptHelper::s_saveAccountsInfo );
+
+		pybind::def( "setParticlesEnabled", &ScriptHelper::s_setParticlesEnabled );
 	}
 }

@@ -55,7 +55,7 @@ bool HGERenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	bool initialized = false;
 	if( m_hge )
 	{
-		initialized = true;
+		initialized =  m_hge->System_Initiate( m_logSystem );
 	}
 	return initialized;
 }
@@ -73,7 +73,7 @@ bool HGERenderSystem::createRenderWindow( float _width, float _height, int _bits
 	m_viewport = mt::box2f( mt::vec2f( 0.0f, 0.0f ), mt::vec2f( _width, _height ) );
 	m_targetMap.insert( std::make_pair( m_currentRenderTarget, 0 ) );
 	bool ret = false;
-	ret = m_hge->System_Initiate( m_logSystem );
+	ret = m_hge->Gfx_CreateRenderWindow();
 	return ret;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -171,6 +171,10 @@ RenderImageInterface * HGERenderSystem::loadImage( const TextureDesc& _desc )
 void HGERenderSystem::releaseImage( RenderImageInterface * _image )
 {
 	HGETexture* texture = static_cast<HGETexture*>( _image );
+	if( !_image )
+	{
+		return;
+	}
 	TTargetMap::iterator it = m_targetMap.find( texture->getDescription() );
 	if( it != m_targetMap.end() )
 	{
@@ -262,20 +266,42 @@ void HGERenderSystem::renderImage(const float * _transform,
 		quad.blend ^= BLEND_ALPHABLEND;
 	}
 
-	const HGETexture* tex = static_cast<const HGETexture*>( _image );
-	const mt::vec2f& uvMask = tex->getUVMask();
-	quad.v[0].tx = _uv[0] * uvMask.x;
-	quad.v[0].ty = _uv[1] * uvMask.y;
-	quad.v[1].tx = _uv[2] * uvMask.x;
-	quad.v[1].ty = _uv[1] * uvMask.y;
-	quad.v[2].tx = _uv[2] * uvMask.x;
-	quad.v[2].ty = _uv[3] * uvMask.y;
-	quad.v[3].tx = _uv[0] * uvMask.x; 
-	quad.v[3].ty = _uv[3] * uvMask.y;
+	quad.v[0].tx = _uv[0];
+	quad.v[0].ty = _uv[1];
+	quad.v[1].tx = _uv[2];
+	quad.v[1].ty = _uv[1];
+	quad.v[2].tx = _uv[2];
+	quad.v[2].ty = _uv[3];
+	quad.v[3].tx = _uv[0]; 
+	quad.v[3].ty = _uv[3];
 
-	quad.tex = tex->getHandle();
+	const HGETexture* tex = static_cast<const HGETexture*>( _image );
+	mt::mat4f texmat;
+	mt::ident_m4( texmat );
+	if( tex )
+	{
+		const mt::vec2f& uvMask = tex->getUVMask();
+
+		texmat[0][0] = uvMask.x;
+		texmat[1][1] = uvMask.y;
+
+		m_hge->Gfx_SetTextureMatrix( texmat.m );
+
+		quad.tex = tex->getHandle();
+	}
+	else
+	{
+		quad.tex = 0;
+	}
 
 	m_hge->Gfx_RenderQuad( &quad );
+
+	if( tex )
+	{
+		texmat[0][0] = 1.0f;
+		texmat[1][1] = 1.0f;
+		m_hge->Gfx_SetTextureMatrix( texmat.m );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::renderLine( unsigned int _color, 
@@ -524,5 +550,13 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name )
 		m_logSystem->logMessage( "Warning: Invalid Render Target name ", false, false, true );
 		m_logSystem->logMessage( _name, false, true, false );
 	}
+}
+//////////////////////////////////////////////////////////////////////////
+void HGERenderSystem::setRenderArea( const float* _renderArea )
+{
+	int w = _renderArea[2] - _renderArea[0];
+	int h = _renderArea[3] - _renderArea[1];
+
+	m_hge->Gfx_SetClipping( _renderArea[0], _renderArea[1], w, h );
 }
 //////////////////////////////////////////////////////////////////////////

@@ -63,8 +63,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Emitter::_activate()
 	{
-		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
-		if( !enabled || SceneNode2D::_activate() == false )
+		//bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
+		if( /*!enabled ||*/ SceneNode2D::_activate() == false )
 		{
 			return false;
 		}
@@ -174,6 +174,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_render( bool _enableDebug )
 	{
+		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
+		if( !enabled )
+		{
+			return;
+		}
+
 		SceneNode2D::_render( _enableDebug );
 
 		int count = m_interface->getNumTypes();

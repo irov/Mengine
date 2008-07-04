@@ -114,6 +114,8 @@ namespace Menge
 
 		void setOutlineResource( const String& _outlineName );
 
+		bool getCenterAlign();
+
 	public:
 		bool isVisible( const Viewport & _viewPort ) override;
 		void loader( XmlElement * _xml ) override;

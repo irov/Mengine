@@ -24,6 +24,7 @@ namespace Menge
 		virtual bool isAlpha( unsigned int _frame ) const override;
 
 		RenderImageInterface * getImage( unsigned int _frame );
+		void setSize( const mt::vec2f& _size );
 
 	public:
 		void loader( XmlElement * _xml ) override;

@@ -93,6 +93,8 @@ namespace Menge
 		void	beginLayer3D();
 		void	endLayer3D();
 
+		void	setRenderArea( const mt::vec4f& _renderArea );
+
 		void	setFullscreenMode( bool _fullscreen );
 		bool	getFullscreenMode();
 		void	setViewportDimensions( float _width, float _height, float _renderFactor = 0.0f );

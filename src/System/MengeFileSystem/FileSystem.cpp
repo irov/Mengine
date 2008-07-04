@@ -192,14 +192,14 @@ namespace Menge
 		fs.pFrom = dir;
 		fs.wFunc = FO_DELETE;
 		fs.hwnd = NULL;
-		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT;
+		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
 		if( !::SHFileOperationA( &fs ) )
 		{
 			return true;
 		}
 #else
 #endif
-		TCHAR szBuf[80]; 
+		/*TCHAR szBuf[80]; 
 		LPVOID lpMsgBuf;
 		DWORD dw = GetLastError(); 
 
@@ -216,7 +216,7 @@ namespace Menge
 
 		MessageBox(NULL, szBuf, "Error", MB_OK); 
 
-		LocalFree(lpMsgBuf);
+		LocalFree(lpMsgBuf);*/
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////

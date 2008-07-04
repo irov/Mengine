@@ -406,6 +406,8 @@ public:
 	virtual	void	beginLayer3D() = 0;
 	virtual	void	endLayer3D() = 0;
 
+	virtual void	setRenderArea( const float* _renderArea ) = 0;
+
 	virtual void	setFullscreenMode( float _width, float _height, bool _fullscreen ) = 0;
 	virtual void	setViewportDimensions( float _width, float _height, float _renderFactor ) = 0;
 	virtual void	setRenderTarget( const Menge::String& _name ) = 0;

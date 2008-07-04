@@ -100,7 +100,15 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
+			if(strcmp(it->fileName.c_str(),"Game/atlas2.mne")==0)
+			{
+				int u = 0;
+				u++;
+			}
+
 			ImageFrame frame = loadImageFrame( it->fileName );
+
+			
 
 			if( frame.image == NULL )
 			{
@@ -109,9 +117,23 @@ namespace Menge
 
 			frame.uv = it->uv;
 			
+		//	frame.maxSize = frame.size;
+
 			frame.maxSize = it->maxSize;
 			frame.offset =  it->offset;
+
 			frame.size = it->size;
+
+			/*if( frame.maxSize.x < 0.f || frame.maxSize.y < 0.f )
+			{
+				frame.maxSize = frame.size;
+			}
+			else
+			{
+				frame.size = it->size;
+			}*/
+
+			//frame.size = it->size;
 			frame.isAlpha = it->isAlpha;
 
 			m_vectorImageFrames.push_back( frame );

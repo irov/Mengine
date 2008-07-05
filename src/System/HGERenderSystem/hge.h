@@ -63,8 +63,8 @@ typedef unsigned char       BYTE;
 /*
 ** HGE Handle types
 */
-typedef DWORD HTEXTURE;
-typedef DWORD HTARGET;
+typedef void * HTEXTURE;
+typedef void * HTARGET;
 //typedef DWORD HEFFECT;
 //typedef DWORD HMUSIC;
 //typedef DWORD HSTREAM;

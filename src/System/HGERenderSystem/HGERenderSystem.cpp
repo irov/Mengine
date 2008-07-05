@@ -71,7 +71,9 @@ bool HGERenderSystem::createRenderWindow( float _width, float _height, int _bits
 	//m_hge->System_SetState( HGE_TEXTUREFILTER, false );
 	m_currentRenderTarget = "defaultCamera";
 	m_viewport = mt::box2f( mt::vec2f( 0.0f, 0.0f ), mt::vec2f( _width, _height ) );
-	m_targetMap.insert( std::make_pair( m_currentRenderTarget, 0 ) );
+
+	HTARGET * voidTarget = 0;
+	m_targetMap.insert( std::make_pair( m_currentRenderTarget, voidTarget ) );
 	bool ret = false;
 	ret = m_hge->Gfx_CreateRenderWindow();
 	return ret;

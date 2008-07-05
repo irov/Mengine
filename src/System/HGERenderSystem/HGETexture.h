@@ -25,7 +25,7 @@ public:
 	void unlock() override;
 	Menge::PixelFormat getPixelFormat();
 
-	unsigned long getHandle() const;
+	HTEXTURE getHandle() const;
 
 	int incRef() { return ++m_ref; }
 	int decRef() { return --m_ref; }
@@ -34,7 +34,7 @@ public:
 private:
 	HGE* m_hge;
 	Menge::String m_name;
-	unsigned long m_hTexture;
+	HTEXTURE m_hTexture;
 	std::size_t m_width;
 	std::size_t m_height;
 	bool m_freeOnDelete;

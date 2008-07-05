@@ -90,7 +90,7 @@ const char * HGETexture::getDescription() const
 	return m_name.c_str();
 }
 //////////////////////////////////////////////////////////////////////////
-unsigned long HGETexture::getHandle() const
+HTEXTURE HGETexture::getHandle() const
 {
 	return m_hTexture;
 }

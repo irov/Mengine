@@ -49,7 +49,7 @@ Texture2D * ResourceParser::getTexture(const std::string & _texturename)
 	return it->second;
 }
 
-bool ResourceParser::isResourceAllowed(const std::string & _resource)
+bool ResourceParser::_isResourceAllowed(const std::string & _resource)
 {
 	return m_resourceCallbacks.find(_resource) != m_resourceCallbacks.end();
 }
@@ -137,7 +137,7 @@ void ResourceParser::_saveModifiedResource( const std::string & _input )
 	{
 		std::string resourceType = resource.attribute("Type").value();
 
-		if(isResourceAllowed(resourceType))
+		if(_isResourceAllowed(resourceType))
 		{
 			MapCallbacks::iterator it = m_resourceCallbacks.find(resourceType);
 			it->second(this, resource);
@@ -218,7 +218,7 @@ void ResourceParser::_loadTexturesFromResource(const std::string & _filename)
 
 	for (pugi::xml_node resource = data_block.child("Resource"); resource; resource = resource.next_sibling("Resource"))
 	{
-		if(isResourceAllowed(resource.attribute("Type").value()))
+		if(_isResourceAllowed(resource.attribute("Type").value()))
 		{
 			for (pugi::xml_node file = resource.child("File"); file; file = file.next_sibling("File"))
 			{
@@ -267,7 +267,7 @@ void ResourceParser::_loadTexturesFromResource(const std::string & _filename)
 	}
 	//sort by area.
 	std::sort(textures.begin(),textures.end(),compare_area);
-
+	//sort by height.
 	std::sort(textures.begin(),textures.end(),compare_height);
 
 	for (int i = 0; i < textures.size(); ++i)

@@ -61,28 +61,22 @@ def getResourcePaths(src):
                     
     path_resources = resource[0].getAttribute("Path");
     
-    path_resources = os.path.join(os.path.dirname(src),path_resources)
+    path_resources_src = os.path.join(os.path.dirname(src),path_resources)
     
     resource_list = []
     
     for node in resource[0].childNodes:
         if node.nodeType == node.ELEMENT_NODE:
-            resource_list.append(os.path.join(path_resources,node.localName)+".resource")
+            resource_list.append(os.path.join(path_resources_src,node.localName)+".resource")
     
     dom.unlink()
     
-    return resource_list
+    return (resource_list,path_resources)
         
 def copyfiles():
     for file in copy_files:
         src = os.path.basename(file)
-        
-        try:
-            shutil.copy2(src,file)
-            
-        except (IOError, os.error), why:
-            print "Error: can't copy %s to %s: %s" % (`src`, `file`, str(why))
-        
+        shutil.copy2(src,file)
         os.remove(src)
     
     del copy_files[:]
@@ -114,12 +108,9 @@ def copytree(src, dst):
         dstname = os.path.join(dst, name)
         
         if os.path.isdir(srcname):
-                copytree(srcname, dstname)
+            copytree(srcname, dstname)
         else:
-            try:
-                shutil.copy2(srcname, dstname)
-            except (IOError, os.error), why:
-                print "Error: can't copy %s to %s: %s" % (`srcname`, `dstname`, str(why))
+            shutil.copy2(srcname, dstname)
     
     pass
 
@@ -143,7 +134,7 @@ def make_input_for_atlas_make(resource_list):
     pass
 
 
-def read_output_file(src, destdir):
+def read_output_file(src, destdir, resourcepath):
     
     resources_list = []
     
@@ -160,15 +151,18 @@ def read_output_file(src, destdir):
     
     for resource in resources:
         val = resource.getAttribute("value")
-        copy_files.append(os.path.join(destdir,os.path.join("Resource",val)))
+        copy_files.append(os.path.join(destdir,os.path.join(resourcepath,val)))
         
     dom.unlink()        
     pass
     
 def atlas(src,destdir):
     resourceList = getResourcePaths(src)
+    
+    if resourceList == []:
+        return
   
-    make_input_for_atlas_make(resourceList)
+    make_input_for_atlas_make(resourceList[0])
     
     gamedir = os.path.dirname(src)
     
@@ -181,9 +175,9 @@ def atlas(src,destdir):
         
     subprocess.call(exe)
     
-    read_output_file("output.xml", destdir)
+    read_output_file("output.xml", destdir, resourceList[1])
                               
-    for resource in resourceList:
+    for resource in resourceList[0]:
         bad_files.append(resource)
         
         dom = xml.dom.minidom.parse(resource)
@@ -191,8 +185,7 @@ def atlas(src,destdir):
         
         for resource in resources:
             type = resource.getAttribute("Type")
-            #noAtlas = resource.getAttribute("NoAtlas") != ''
-            #if(type in allowed_type and noAtlas == False):
+            
             if(type in allowed_type):
                 files = resource.getElementsByTagName("File")
                 if(files != []):
@@ -218,10 +211,7 @@ def copytonewfolder(src, DestGameDir):
     
     SourceGameDir = getGameDirectory(src)
 
-    try:
-        os.mkdir(DestGameDir)
-    except (IOError, os.error), why:
-        print "Error: can't create output directory %s: %s" % (`src`, str(why))
+    os.mkdir(DestGameDir)
     
     for file in FileResources:
         SourceDir = os.path.join(SourceGameDir, os.path.dirname(file))

@@ -27,32 +27,33 @@ namespace Menge
 	{
 	public:
 		Node();
-		//! Node virtual destructor.
-		/*!
-		*/
-		virtual ~Node(){};
 
-		//! Node pure virtual. need call this, if you want delete this object
-		/*!
-		*/
+		virtual ~Node(){};
 		virtual void destroy() = 0;
+	
+	public:
+		void hide( bool _value );
+		bool isHide() const;
 
 	public:
-		//! Node pure virtual. activate node
-		/*!
-		*/
-		virtual bool activate() = 0;
+		// ”¡–¿“‹ ¬»–“”¿À
+		virtual bool isRenderable();
 
-		//! Node pure virtual. deactivate node
-		/*!
-		*/
-		virtual void deactivate() = 0;
+	protected:
+		bool m_hide;
+		bool m_active;
+		bool m_enable;
+		bool m_updatable;
 
-		//! Node pure virtual. check activated node
-		/*!
-		\return result of activated
-		*/
-		virtual bool isActivate() const = 0;
+	public:
+		bool isActivate() const;
+		bool isUpdatable() const;
+
+	public:
+		virtual bool activate();
+		virtual bool _activate();
+		virtual void deactivate();
+		virtual void _deactivate();
 
 	public:
 		bool compile();
@@ -60,21 +61,9 @@ namespace Menge
 		bool recompile();
 
 	public:
-		//! Node pure virtual. enable node
-		/*!
-		*/
-		virtual void enable() = 0;
-
-		//! Node pure virtual. disable node
-		/*!
-		*/
-		virtual void disable() = 0;
-
-		//! Node pure virtual. check enabled node
-		/*!
-		\return result of enabled
-		*/
-		virtual bool isEnable() = 0;
+		virtual void enable();
+		virtual void disable();
+		virtual bool isEnable();
 
 		virtual void setUpdatable( bool _updatable ) = 0;
 		virtual bool updatable() = 0;
@@ -125,14 +114,12 @@ namespace Menge
 		/*!
 		*/
 		virtual void render( bool _enableDebug ) = 0;
-		virtual bool isRenderable() = 0;
 
 		//! Node pure virtual. update node
 		/*!
 		\param _timing the first argument, timing for need update
 		*/
 		virtual void update( float _timing ) = 0;
-		virtual bool isUpdatable() = 0;
 
 		//! Node pure virtual. setup node from xml
 		/*!

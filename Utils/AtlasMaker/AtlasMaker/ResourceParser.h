@@ -40,6 +40,7 @@ private:
 	void	_loadTexturesFromResource( const std::string & _filename );
 	void	_saveModifiedResource( const std::string & _input );
 	void	_saveResultsToFile( const std::vector<std::string> & _names );
+	bool	_isResourceAllowed( const std::string & _resource );
 
 	typedef std::vector<std::string> VectorResources;
 	typedef std::map<std::string, ResourceType> MapCallbacks;
@@ -50,8 +51,6 @@ private:
 
 	MapCallbacks m_resourceCallbacks;
 	MapTextures m_textures;
-
-	bool isResourceAllowed(const std::string & _resource);
 
 	std::string m_gamedir;
 	std::string m_inputName;

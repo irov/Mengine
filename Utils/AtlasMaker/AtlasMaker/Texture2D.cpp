@@ -1,65 +1,64 @@
 #	include "Texture2D.h"
 #	include "AtlasTexture.h"
-#	include "Utils.h"
-
+#	include "FreeImageWrapper.h"
+//////////////////////////////////////////////////////////////////////////
 Texture2D::Texture2D()
 	: m_filename("")
 	, m_texture(0)
 	, m_atlas(0)
-	, m_isAlphaChannelSupport(false)
 {}
-
+//////////////////////////////////////////////////////////////////////////
 Texture2D::~Texture2D()
 {
 	FreeImage_Unload(m_texture);
 }
-
+//////////////////////////////////////////////////////////////////////////
 FIBITMAP * Texture2D::getTexture() const
 {
 	return m_texture;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void Texture2D::setAtlas(AtlasTexture * _atlas)
 {
 	m_atlas = _atlas;
 }
-
+//////////////////////////////////////////////////////////////////////////
 AtlasTexture * Texture2D::getAtlas() const
 {
 	return m_atlas;
 }
-
+//////////////////////////////////////////////////////////////////////////
 const std::string & Texture2D::getFilename() const
 {
 	return m_filename;
 }
-
+//////////////////////////////////////////////////////////////////////////
 const Texture2D::TextureDesc& Texture2D::getDesc() const
 {
 	return m_textureDesc;
 }
-
+//////////////////////////////////////////////////////////////////////////
 int Texture2D::getWidth()  const
 {
 	return FreeImage_GetWidth(m_texture);
 }
-
+//////////////////////////////////////////////////////////////////////////
 int Texture2D::getHeight() const
 {
 	return FreeImage_GetHeight(m_texture);
 }
-
+//////////////////////////////////////////////////////////////////////////
 int Texture2D::getBPP() const
 {
 	return FreeImage_GetBPP(m_texture);
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool Texture2D::isAlphaChannel() const
 {
-	return m_isAlphaChannelSupport;
+	return FreeImage_GetBPP(m_texture) == 32;
 }
-
-bool Texture2D::loadTexture(const std::string & _filename)
+//////////////////////////////////////////////////////////////////////////
+bool Texture2D::loadTexture( const std::string & _filename )
 {
 	m_filename = _filename;
 
@@ -70,56 +69,47 @@ bool Texture2D::loadTexture(const std::string & _filename)
 		return false;
 	}
 
-	sliceAlpha();
+	_sliceAlpha();
 
 	return true;
 }
-
-void Texture2D::sliceAlpha()
+//////////////////////////////////////////////////////////////////////////
+void Texture2D::_sliceAlpha()
 {
 	int width = FreeImage_GetWidth(m_texture);
 	int height = FreeImage_GetHeight(m_texture);
 	int pitch  = FreeImage_GetPitch(m_texture); 
 
-	m_textureDesc.sizeX = width;
-	m_textureDesc.sizeY = height;
+	RECT imageRect = {0, 0, width, height};
 
-	m_textureDesc.maxSizeX = width;
-	m_textureDesc.maxSizeY = height;
+	m_textureDesc.setRectImage(width, height);
 
-	if(FreeImage_GetBPP(m_texture) < 32)
+	if(isAlphaChannel() == false)
 	{
-		m_isAlphaChannelSupport = false;
 		return;
 	}
 
-	m_isAlphaChannelSupport = true;
-
-	int minX = INT_MAX; 
-	int minY = INT_MAX;
-
-	int maxX = -1; 
-	int maxY = -1;
+	RECT boundingBox = {INT_MAX, INT_MAX, -1, -1};
 
 	bool found = false;
 
 	int bytespp = FreeImage_GetLine(m_texture) / FreeImage_GetWidth(m_texture); 
 	  
-    for(int y = FreeImage_GetHeight(m_texture)-1; y >= 0; y--)
+    for(int y = FreeImage_GetHeight(m_texture) - 1; y >= 0; y--)
 	{ 
-		BYTE *bits = FreeImage_GetScanLine(m_texture, y); 
-	 
+		BYTE * bits = FreeImage_GetScanLine(m_texture, y); 
+	  
 		for(int x = 0; x < FreeImage_GetWidth(m_texture); x++)
 		{ 
 		  	if(bits[FI_RGBA_ALPHA] != 0)
 			{
-				int cy = FreeImage_GetHeight(m_texture)-1 - y;
+				int cy = FreeImage_GetHeight(m_texture) - 1 - y;
 
-				if (cy < minY) minY = cy;
-				if (cy > maxY) maxY = cy;
+				if (cy < boundingBox.top) boundingBox.top = cy;
+				if (cy > boundingBox.bottom) boundingBox.bottom = cy;
 
-				if (x < minX) minX = x;
-				if (x > maxX) maxX = x;
+				if (x < boundingBox.left) boundingBox.left = x;
+				if (x > boundingBox.right) boundingBox.right = x;
 
 				found = true;
 			}
@@ -128,25 +118,20 @@ void Texture2D::sliceAlpha()
 		} 
 	}
 
-	maxX++;
-	maxY++;
+	boundingBox.right++;
+	boundingBox.bottom++;
 
 	if(found == false)
 	{
-		minX = 0; 
-		minY = 0;
-		maxX = width; 
-		maxY = height;
+		boundingBox = imageRect;
 	}
 
-	m_textureDesc.offsetX = minX;
-	m_textureDesc.offsetY = minY;
-	m_textureDesc.sizeX = maxX - minX;
-	m_textureDesc.sizeY = maxY - minY;
+	m_textureDesc.offsetX = boundingBox.left;
+	m_textureDesc.offsetY = boundingBox.top;
 
-	FIBITMAP * clampedTexture = FreeImage_Copy(m_texture,minX,minY,maxX,maxY);
+	m_textureDesc.sizeX = boundingBox.right - boundingBox.left;
+	m_textureDesc.sizeY = boundingBox.bottom - boundingBox.top;
 
-	FreeImage_Unload(m_texture);
-
-	m_texture = clampedTexture;
+	FreeImageWrapper::CropImage(m_texture, boundingBox);
 }
+//////////////////////////////////////////////////////////////////////////

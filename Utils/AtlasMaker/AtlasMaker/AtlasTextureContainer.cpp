@@ -34,7 +34,7 @@ const std::vector<std::string>& AtlasTextureContainer::compileAtlas(std::map<std
 	for (TNewFormatMap::iterator fmIter = formatMap.begin(); fmIter != formatMap.end(); ++fmIter)
 	{
 		fprintf(m_log, "Process: %d bpp found. \n", fmIter->first);
-		insertAtlas(i++, fmIter->first, fmIter->second);
+		_insertAtlas(i++, fmIter->first, fmIter->second);
 	}
 
 	static std::vector<std::string>	output_names;
@@ -63,7 +63,7 @@ const std::vector<std::string>& AtlasTextureContainer::compileAtlas(std::map<std
 	return output_names;
 }
 //////////////////////////////////////////////////////////////////////////
-void AtlasTextureContainer::insertAtlas(int index, int bpp, const TTextureVector& textures)
+void AtlasTextureContainer::_insertAtlas(int index, int bpp, const TTextureVector& textures)
 {
 	for (int i = 0; i < textures.size(); ++i)
 	{

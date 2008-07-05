@@ -7,22 +7,20 @@
 namespace Menge
 {
 	NodeRenderable::NodeRenderable()
-		: m_hide( false )
+	//	: m_hide( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeRenderable::hide( bool _value )
-	{
-		m_hide = _value;
-	}
+//	void NodeRenderable::hide( bool _value )
+///		m_hide = _value;
+//	}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeRenderable::isHide() const
-	{
-		return m_hide;
-	}
+//	bool NodeRenderable::isHide() const
+//	{
+//	}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeRenderable::isRenderable()
-	{
+/*	bool NodeRenderable::isRenderable()
+/	{
 		if( isEnable() == false )
 		{
 			return false;
@@ -39,7 +37,7 @@ namespace Menge
 		}
 
 		return true;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void NodeRenderable::render( bool _enableDebug )
 	{

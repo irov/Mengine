@@ -43,6 +43,22 @@ public:
 		float v;
 		float w;
 		float z;
+
+		void setRectImage(int width, int height)
+		{
+			X = 0; 
+			Y = 0;
+			offsetX = 0; 
+			offsetY = 0;
+			maxSizeX = width;
+			maxSizeY = height;
+			sizeX = width;
+			sizeY = height;
+			u = 0.f;
+			v = 0.f;
+			w = 1.f;
+			z = 1.f;
+		}
 	};
 
 public:
@@ -74,8 +90,7 @@ private:
 	AtlasTexture * m_atlas;
 	std::string m_filename;
 
-	bool	m_isAlphaChannelSupport;
+	void	_sliceAlpha();
 
-	void	sliceAlpha();
 	friend class AtlasTexture;
 };

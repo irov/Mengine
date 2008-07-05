@@ -191,6 +191,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\FreeImageWrapper.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
 				>
 			</File>
@@ -222,6 +226,10 @@
 			</File>
 			<File
 				RelativePath=".\AtlasTextureContainer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FreeImageWrapper.h"
 				>
 			</File>
 			<File

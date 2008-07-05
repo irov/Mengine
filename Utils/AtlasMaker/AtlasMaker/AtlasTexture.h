@@ -1,7 +1,7 @@
 #	pragma once
+
 #	include "Texture2D.h"
 #	include "RectangleAreaPacker.h"
-#	include "FreeImage.h"
 
 class AtlasTexture
 {
@@ -17,6 +17,7 @@ public:
 	int getBPP() const;
 	int getWidth() const;
 	int getHeight() const;
+	bool isAlphaChannel() const;
 private:
 	RectangleAreaPacker m_areaPacker;
 	std::string m_filename;

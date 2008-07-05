@@ -20,9 +20,9 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	NodeCore::NodeCore()
-		: m_active(false)
-		, m_enable(true)
-		, m_updatable(true)
+		//: m_active(false)
+		//, m_enable(true)
+		//: m_updatable(true)
 	{
 
 	}
@@ -49,87 +49,6 @@ namespace Menge
 		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-/*	bool NodeCore::registerEvent( const std::string & _name, const std::string & _method  )
-	{
-		Scriptable * scriptable = getScriptable();
-		PyObject * module = scriptable->getEmbedding();
-
-		return Eventable::registerEvent( _name, _method, module );
-	}*/
-	//////////////////////////////////////////////////////////////////////////
-	bool NodeCore::activate()
-	{
-		struct ForeachActivate
-			: public NodeForeach
-		{
-			void apply( Node * children ) override
-			{
-				children->activate();
-			}
-		};
-
-		foreachChildren( ForeachActivate() );
-
-		if( m_active )
-		{
-			return true;
-		}
-
-		if( isCompile() == false )
-		{
-			if( compile() == false )
-			{
-				//MENGE_LOG("Error: activate Node '%s' is failed, becouse compiled is failed", m_name.c_str()	);
-				return false;
-			}
-		}
-
-		m_active = _activate();
-
-		return m_active;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::deactivate()
-	{
-		struct ForeachDeactivate
-			: public NodeForeach
-		{
-			void apply( Node * children ) override
-			{
-				children->deactivate();
-			}
-		};
-
-		foreachChildren( ForeachDeactivate() );
-
-		if( m_active )
-		{
-			m_active = false;
-
-			_deactivate();
-		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool NodeCore::isActivate() const
-	{
-		return m_active;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::enable()
-	{
-		m_enable = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::disable()
-	{
-		m_enable = false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool NodeCore::isEnable()
-	{
-		return m_enable;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::setUpdatable( bool _updatable )
 	{
 		m_updatable = _updatable;
@@ -154,26 +73,6 @@ namespace Menge
 
 		foreachChildren( ForeachSetUpdatable( _updatable ) );
 		//// !!!!
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool NodeCore::isUpdatable()
-	{
-		/*if( m_updatable == false )
-		{
-			return false;
-		}*/
-
-		if( m_enable == false )
-		{
-			return false;
-		}
-
-		if( m_active == false )
-		{
-			return false;
-		}
-		
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::update( float _timing )
@@ -243,18 +142,6 @@ namespace Menge
 	Scriptable * NodeCore::getScriptable()
 	{
 		return this;
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-	bool NodeCore::_activate()
-	{
-		//Empty
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeCore::_deactivate()
-	{
-		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeCore::_update( float _timing )

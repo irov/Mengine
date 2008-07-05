@@ -16,7 +16,6 @@ public:
 	AtlasTextureContainer(FILE * _log, int _width, int _height);
 	~AtlasTextureContainer();
 public:
-
 	const std::vector<std::string>& compileAtlas(
 		std::map<std::string, Texture2D*> & _textures, 
 		const std::string& _outputFilename );
@@ -27,5 +26,5 @@ private:
 	int m_width;
 	int m_height;
 
-	void insertAtlas(int index, int bpp, const TTextureVector& textures);
+	void _insertAtlas(int index, int bpp, const TTextureVector& textures);
 };

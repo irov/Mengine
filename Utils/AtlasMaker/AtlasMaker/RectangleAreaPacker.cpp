@@ -8,7 +8,6 @@ RectangleAreaPacker::RectangleAreaPacker()
 , m_currentLine(0)
 , m_lineHeight(0)
 {
-	reset(2048,2048);
 }
 
 int RectangleAreaPacker::getFilledWidth() const

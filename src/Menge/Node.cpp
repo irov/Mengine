@@ -7,6 +7,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Node::Node()
 		: m_listener(0)
+		, m_hide(false)
+		, m_active(false)
+		, m_enable(true)
+		, m_updatable(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -106,6 +110,140 @@ namespace Menge
 		if( status )
 		{
 			activate();
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::hide( bool _value )
+	{
+		m_hide = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::isHide() const
+	{
+		return m_hide;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::_activate()
+	{
+		//Empty
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_deactivate()
+	{
+		//Empty
+	}
+		//////////////////////////////////////////////////////////////////////////
+	bool Node::activate()
+	{
+		struct ForeachActivate
+			: public NodeForeach
+		{
+			void apply( Node * children ) override
+			{
+				children->activate();
+			}
+		};
+
+		foreachChildren( ForeachActivate() );
+
+		if( m_active )
+		{
+			return true;
+		}
+
+		if( isCompile() == false )
+		{
+			if( compile() == false )
+			{
+				//MENGE_LOG("Error: activate Node '%s' is failed, becouse compiled is failed", m_name.c_str()	);
+				return false;
+			}
+		}
+
+		m_active = _activate();
+
+		return m_active;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::deactivate()
+	{
+		struct ForeachDeactivate
+			: public NodeForeach
+		{
+			void apply( Node * children ) override
+			{
+				children->deactivate();
+			}
+		};
+
+		foreachChildren( ForeachDeactivate() );
+
+		if( m_active )
+		{
+			m_active = false;
+
+			_deactivate();
+		}		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::isRenderable()
+	{
+		if( isEnable() == false )
+		{
+			return false;
+		}
+
+		if( isActivate() == false )
+		{
+			return false;
+		}
+
+		if( m_hide == true )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::isActivate() const
+	{
+		return m_active;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::enable()
+	{
+		m_enable = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::disable()
+	{
+		m_enable = false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::isEnable()
+	{
+		return m_enable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::isUpdatable() const
+	{
+		/*if( m_updatable == false )
+		{
+		return false;
+		}*/
+
+		if( m_enable == false )
+		{
+			return false;
+		}
+
+		if( m_active == false )
+		{
+			return false;
 		}
 
 		return true;

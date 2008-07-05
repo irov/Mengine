@@ -276,16 +276,21 @@ void HGERenderSystem::renderImage(const float * _transform,
 	quad.v[3].ty = _uv[3];
 
 	const HGETexture* tex = static_cast<const HGETexture*>( _image );
-	mt::mat4f texmat;
-	mt::ident_m4( texmat );
+	//mt::mat4f texmat;
+	//mt::ident_m4( texmat );
 	if( tex )
 	{
 		const mt::vec2f& uvMask = tex->getUVMask();
 
-		texmat[0][0] = uvMask.x;
-		texmat[1][1] = uvMask.y;
+		//texmat[0][0] = uvMask.x;
+		//texmat[1][1] = uvMask.y;
+		for( int i = 0; i < 4; i++ )
+		{
+			quad.v[i].tx *= uvMask.x;
+			quad.v[i].ty *= uvMask.y;
+		}
 
-		m_hge->Gfx_SetTextureMatrix( texmat.m );
+		//m_hge->Gfx_SetTextureMatrix( texmat.m );
 
 		quad.tex = tex->getHandle();
 	}
@@ -296,12 +301,12 @@ void HGERenderSystem::renderImage(const float * _transform,
 
 	m_hge->Gfx_RenderQuad( &quad );
 
-	if( tex )
+	/*if( tex )
 	{
 		texmat[0][0] = 1.0f;
 		texmat[1][1] = 1.0f;
 		m_hge->Gfx_SetTextureMatrix( texmat.m );
-	}
+	}*/
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::renderLine( unsigned int _color, 

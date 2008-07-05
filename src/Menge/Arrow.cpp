@@ -19,6 +19,7 @@ namespace	Menge
 	Arrow::Arrow()
 	: m_offsetClick(0,0)
 	, m_currentHotSpot(0)
+	, m_hided( false )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setOffsetClick( const mt::vec2f & _offsetClick )
@@ -160,6 +161,25 @@ namespace	Menge
 			nPos.y = m_window.y;
 		}
 		setLocalPosition( nPos );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::hide( bool _value )
+	{
+		NodeRenderable::hide( _value );
+		m_hided = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::onMouseLeave()
+	{
+		NodeRenderable::hide( true );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::onMouseEnter()
+	{
+		if( !m_hided )
+		{
+			NodeRenderable::hide( false );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

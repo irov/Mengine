@@ -85,8 +85,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::setMouseBounded( bool _bounded )
 	{
-		if( m_mouseBounded == _bounded ) return;
-
 		m_mouseBounded = _bounded;
 
 		if( m_mouseBounded )

@@ -166,8 +166,8 @@ namespace	Menge
 
 		m_offset = offset + m_alignOffset;
 	
-		m_offset.x *= m_scale.x;
-		m_offset.y *= m_scale.y;
+		//m_offset.x *= m_scale.x;
+		//m_offset.y *= m_scale.y;
 
 		mt::mat3f wm = getWorldMatrix();
 

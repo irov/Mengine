@@ -297,8 +297,9 @@ namespace Menge
 
 		static void setFullscreenMode( bool _fullscreen )
 		{
-			Holder<Application>::hostage()->setMouseBounded( _fullscreen );
-			Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
+			Holder<Application>::hostage()->setFullscreenMode( _fullscreen );
+			//Holder<Application>::hostage()->setMouseBounded( _fullscreen );
+			//Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
 		}
 
 		static bool s_getFullscreenMode()

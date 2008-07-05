@@ -145,6 +145,7 @@ namespace Menge
 		, m_physicEngine2D( NULL )
 		, m_physicEngine( NULL )
 		, m_xmlEngine( NULL )
+		, m_mouseBounded( false )
 	{
 		//ASSERT( m_interface );
 
@@ -741,9 +742,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setMouseBounded( bool _bounded )
 	{
-		//if( m_renderEngine->getFullscreenMode() ) return;
-		m_inputEngine->setMouseBounded( _bounded );
-		m_interface->setHandleMouse( !_bounded );
+		if( m_mouseBounded != _bounded )
+		{
+			m_inputEngine->setMouseBounded( _bounded );
+			m_interface->setHandleMouse( !_bounded );
+			m_mouseBounded = _bounded;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setFullscreenMode( bool _fullscreen )
+	{
+		if( !m_mouseBounded )
+		{
+			if( !_fullscreen )
+			{
+				m_inputEngine->setMouseBounded( false );
+			}
+			else
+			{
+				m_inputEngine->setMouseBounded( true );
+			}
+		}
+		Holder<RenderEngine>::hostage()->
+			setFullscreenMode( _fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

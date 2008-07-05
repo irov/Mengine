@@ -106,6 +106,8 @@ namespace Menge
 
 		void setMouseBounded( bool _bounded );
 
+		void setFullscreenMode( bool _fullscreen );
+
 	private:
 		ApplicationInterface* m_interface;
 

@@ -24,6 +24,8 @@ namespace Menge
 	public:
 		Arrow();
 
+		void hide( bool _value );
+
 	public:
 		void setOffsetClick( const mt::vec2f & _offsetClick );
 		const mt::vec2f & getOffsetClick() const;
@@ -36,6 +38,8 @@ namespace Menge
 		void loaderArrow_( XmlElement * _xml );
 
 		void onMouseMove( int _dx, int _dy );
+		void onMouseLeave();
+		void onMouseEnter();
 
 	protected:
 		bool _renderBegin() override;
@@ -50,5 +54,6 @@ namespace Menge
 		mt::vec2f m_offsetClick;
 		mt::vec2f m_window;
 		HotSpot * m_currentHotSpot;
+		bool m_hided;
 	};
 }

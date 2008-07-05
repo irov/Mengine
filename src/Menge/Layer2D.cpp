@@ -160,7 +160,7 @@ namespace	Menge
 		{
 			foreachChildren( ForeachScrollTest() );
 		}
-		NodeCore::update( _timing );
+		Node::update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
@@ -185,7 +185,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::loader( XmlElement * _xml )
 	{
-		NodeCore::loader(_xml);
+		Node::loader(_xml);
 		Layer::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )

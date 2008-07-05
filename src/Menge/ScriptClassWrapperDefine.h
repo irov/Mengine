@@ -24,8 +24,7 @@ static struct Class##PtrExtract\
 	PyObject * wrap( Class * _node ) override\
 	{\
 		if( _node == 0 ) return 0;\
-		Scriptable * scriptable = _node->getScriptable();\
-		PyObject * pyObj = scriptable->getEmbedding();\
+		PyObject * pyObj = _node->getEmbedding();\
 		return pyObj;\
 	}\
 } s_##Class##PtrExtract;

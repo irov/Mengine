@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "NodeCore.h"
+#	include "Node.h"
 #	include "NodeChildren.h"
 
 #	include "math/quat.h"
@@ -15,7 +15,7 @@ namespace Menge
 	class Camera3D;
 
 	class SceneNode3D
-		: public NodeCore
+		: public virtual Node
 		, public NodeChildren<SceneNode3D>
 	{
 		OBJECT_DECLARE(SceneNode3D);

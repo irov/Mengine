@@ -45,7 +45,7 @@ namespace Menge
 		Allocator3D_::loader( _xml );
 		Renderable3D::loader( _xml );
 
-		NodeCore::loader( _xml );
+		Node::loader( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D_::yaw( float _degrees )

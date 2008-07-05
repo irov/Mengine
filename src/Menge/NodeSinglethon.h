@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "NodeCore.h"
+#	include "Node.h"
 
 #	include <list>
 
 namespace Menge
 {
 	class NodeSinglethon
-		: public NodeCore
+		: public virtual Node
 	{
 	public: 
 		void setParent( Node * _parent ) override;

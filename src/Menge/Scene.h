@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "NodeCore.h"
+#	include "Node.h"
 #	include "NodeChildren.h"
 
 #	include "Scriptable.h"
@@ -15,7 +15,7 @@ namespace Menge
 	class Camera2D;
 
 	class Scene
-		: public NodeCore
+		: public virtual Node
 		, public NodeRenderable
 		, public NodeChildren<Layer>
 	{

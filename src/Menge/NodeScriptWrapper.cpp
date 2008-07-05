@@ -196,8 +196,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			Scriptable * scriptable = node->getScriptable();
-			PyObject * pyNode = scriptable->getEmbedding();
+			PyObject * pyNode = node->getEmbedding();
 
 			if( pyNode == 0 )
 			{
@@ -283,8 +282,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			Scriptable * scriptable = nodeSprite->getScriptable();
-			PyObject * pyNode = scriptable->getEmbedding();
+			PyObject * pyNode = nodeSprite->getEmbedding();
 
 			if( pyNode == 0 )
 			{

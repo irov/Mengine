@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "NodeCore.h"
+#	include "Node.h"
 #	include "NodeChildren.h"
 
 #	include "Allocator3D-649.h"
@@ -11,7 +11,7 @@
 namespace Menge
 {
 	class SceneNode3D_
-		: public NodeCore
+		: public virtual Node
 		, public NodeChildren<SceneNode3D_>
 		, public Allocator3D_
 		, public Renderable3D

@@ -25,7 +25,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode2D::loader( XmlElement * _xml )
 	{
-		NodeCore::loader( _xml );
+		Node::loader( _xml );
 		Allocator2D::loader( _xml );
 		Renderable2D::loader( _xml );
 	}

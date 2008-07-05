@@ -201,7 +201,7 @@ namespace	Menge
 
 		callMethod( "onActivate", "() " );
 
-		return NodeCore::_activate();
+		return Node::_activate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()
@@ -237,7 +237,7 @@ namespace	Menge
 	{
 		std::string name;
 
-		NodeCore::loader(_xml);
+		Node::loader(_xml);
 		NodeRenderable::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
@@ -307,7 +307,7 @@ namespace	Menge
 		{
 			Holder<PhysicEngine2D>::hostage()->createScene( mt::vec2f( m_physWorldBox2D.x, m_physWorldBox2D.y ),mt::vec2f( m_physWorldBox2D.z, m_physWorldBox2D.w ), m_gravity2D );
 		}
-		return NodeCore::compile();
+		return Node::compile();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )

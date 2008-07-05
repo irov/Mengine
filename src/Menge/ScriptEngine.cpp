@@ -471,8 +471,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::hasMethod( Node * _node, const std::string & _name )
 	{
-		Scriptable * scriptable = _node->getScriptable();
-		PyObject * script = scriptable->getEmbedding();
+		PyObject * script = _node->getEmbedding();
 
 		if( script == 0 )
 		{
@@ -486,8 +485,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::callMethod( Node * _node, const std::string & _name, const char * _params, ...  )
 	{
-		Scriptable * scriptable = _node->getScriptable();
-		PyObject * script = scriptable->getEmbedding();
+		PyObject * script = _node->getEmbedding();
 
 		if( script == 0 )
 		{

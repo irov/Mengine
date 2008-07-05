@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "NodeCore.h"
+//#	include "Node.h"
 #	include "NodeChildren.h"
 
 #	include "Allocator2D.h"
@@ -12,7 +12,7 @@ namespace Menge
 	class Camera2D;
 
 	class SceneNode2D
-		: public NodeCore
+		: public virtual Node
 		, public NodeChildren<SceneNode2D>
 		, public Allocator2D
 		, public virtual Renderable2D

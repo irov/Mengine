@@ -165,7 +165,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::loader( XmlElement * _xml )
 	{
-		NodeCore::loader( _xml );
+		Node::loader( _xml );
 
 		XML_SWITCH_NODE( _xml )
 		{

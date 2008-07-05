@@ -744,8 +744,11 @@ namespace Menge
 	{
 		if( m_mouseBounded != _bounded )
 		{
-			m_inputEngine->setMouseBounded( _bounded );
-			m_interface->setHandleMouse( !_bounded );
+			if( !m_renderEngine->getFullscreenMode() )
+			{
+				m_inputEngine->setMouseBounded( _bounded );
+				m_interface->setHandleMouse( !_bounded );
+			}
 			m_mouseBounded = _bounded;
 		}
 	}

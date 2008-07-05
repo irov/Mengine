@@ -96,7 +96,6 @@ namespace Menge
 	void Allocator2D::setLocalDirection( const mt::vec2f & _direction )
 	{
 		m_localMatrix.v0.v2 = mt::norm_safe_v2( _direction );//_direction;
-		//m_localMatrix.v1.v2 = mt::perp( _direction );
 		m_localMatrix.v1.v2 = mt::perp( m_localMatrix.v0.v2 );
 
 		changePivot();

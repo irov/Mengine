@@ -25,7 +25,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Codec* Codec::getCodec( const String& _extension )
+	Codec * Codec::getCodec( const String& _extension )
 	{
 		String lwrcase = _extension;
 		

@@ -1,8 +1,7 @@
 #	include "ParticleEngine.h"
 #	include "FileEngine.h"
 #	include "LogEngine.h"
-
-#	include <vector>
+#	include "Utils.h"
 
 namespace Menge
 {
@@ -17,24 +16,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const std::string & _filename )
 	{
-		DataStreamInterface * file = Holder<FileEngine>::hostage()->openFile( _filename );
+		FileBuffer fb = Holder<FileEngine>::hostage()->getFileBuffer( _filename );
 
-		if( file == 0 )
+		if( fb.buffer == 0 )
 		{
 			MENGE_LOG( "Error: ParticleEngine can't open file '%s'\n", _filename.c_str() );
 			return 0;
 		}
 
-		unsigned int length = file->size();
-
-		std::vector<char> buffer;
-		buffer.resize( length );
-
-		file->read( &buffer[0], length );
-
-		Holder<FileEngine>::hostage()->closeStream( file );
-
-		EmitterContainerInterface * container = m_interface->createEmitterContainerFromMemory( &buffer[0] );
+		EmitterContainerInterface * container = m_interface->createEmitterContainerFromMemory( fb.buffer );
 
 		if( container == 0 )
 		{
@@ -63,7 +53,7 @@ namespace Menge
 	const std::string& ParticleEngine::getTextureName() const
 	{
 		static std::string name;
-		name = m_interface->getTextureName() ? m_interface->getTextureName() : "";
+		name = m_interface->getTextureName() ? m_interface->getTextureName() : emptyString();
 		return name;
 	}
 	//////////////////////////////////////////////////////////////////////////

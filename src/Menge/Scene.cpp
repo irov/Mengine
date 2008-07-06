@@ -238,7 +238,7 @@ namespace	Menge
 		std::string name;
 
 		Node::loader(_xml);
-		NodeRenderable::loader(_xml);
+		//NodeRenderable::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
 		{

@@ -68,7 +68,7 @@ namespace Menge
 		m_currentPlayList = it->second;
 		m_currentPlayList->first();
 
-		play_();
+		_play();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::stop()
@@ -76,13 +76,13 @@ namespace Menge
 		if( m_music )
 		{
 			m_music->stop();
-			release_();
+			_release();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::listenStopped()
 	{
-		play_();	//	play next track in playlist
+		_play();	//	play next track in playlist
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::listenPaused( bool _pause )
@@ -105,9 +105,9 @@ namespace Menge
 		return m_volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::play_()
+	void Amplifier::_play()
 	{
-		release_();
+		_release();
 
 		const std::string & filename = m_currentPlayList->getTrack();
 
@@ -139,7 +139,7 @@ namespace Menge
 		m_currentPlayList->next();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::release_()
+	void Amplifier::_release()
 	{
 		Holder<SoundEngine>::hostage()->releaseSoundSource( m_music );
 		Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_buffer );

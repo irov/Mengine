@@ -7,37 +7,8 @@
 namespace Menge
 {
 	NodeRenderable::NodeRenderable()
-	//	: m_hide( false )
 	{
 	}
-	//////////////////////////////////////////////////////////////////////////
-//	void NodeRenderable::hide( bool _value )
-///		m_hide = _value;
-//	}
-	//////////////////////////////////////////////////////////////////////////
-//	bool NodeRenderable::isHide() const
-//	{
-//	}
-	//////////////////////////////////////////////////////////////////////////
-/*	bool NodeRenderable::isRenderable()
-/	{
-		if( isEnable() == false )
-		{
-			return false;
-		}
-
-		if( isActivate() == false )
-		{
-			return false;
-		}
-
-		if( m_hide == true )
-		{
-			return false;
-		}
-
-		return true;
-	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void NodeRenderable::render( bool _enableDebug )
 	{

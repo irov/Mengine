@@ -46,27 +46,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileBuffer FileEngine::getFileBuffer( const std::string& _filename )
 	{
-		DataStreamInterface* file = openFile( _filename );
+		DataStreamInterface * file = openFile( _filename );
 
-		FileBuffer fb;
-
-		fb.buffer = 0;
-		fb.size = 0;
+		FileBuffer fileBuffer = {NULL, 0};
 
 		if( file == 0 )
 		{
-			return fb;
+			return fileBuffer;
 		}
 	
-		fb.size = file->size();
-		m_fileCache.resize( fb.size + 2 );
-		fb.buffer = &m_fileCache[0];
+		fileBuffer.size = file->size();
+		m_fileCache.resize( fileBuffer.size + 2 );
+		fileBuffer.buffer = &m_fileCache[0];
 
-		file->read( fb.buffer, fb.size );
+		file->read( fileBuffer.buffer, fileBuffer.size );
 
 		closeStream( file );
 
-		return fb;
+		return fileBuffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::createFolder( const std::string& _path )
@@ -84,7 +81,7 @@ namespace Menge
 		return m_interface->changeDir( _dir.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileEngine::createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose )
+	DataStreamInterface * FileEngine::createMemoryFile( void * _data, std::size_t _size, bool _freeOnClose )
 	{
 		return m_interface->createMemoryFile( _data, _size, _freeOnClose );
 	}
@@ -99,12 +96,12 @@ namespace Menge
 		return m_interface->getAppDataPath();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutStreamInterface* FileEngine::openOutStream( const String& _filename, bool _binary )
+	OutStreamInterface * FileEngine::openOutStream( const String& _filename, bool _binary )
 	{
 		return m_interface->openOutStream( _filename, _binary );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::closeOutStream( OutStreamInterface* _outStream )
+	void FileEngine::closeOutStream( OutStreamInterface * _outStream )
 	{
 		m_interface->closeOutStream( _outStream );
 	}

@@ -30,15 +30,15 @@ namespace Menge
 		bool existFile( const std::string& _filename );
 		bool createFolder( const std::string& _path );
 		bool deleteFolder( const std::string& _path );
-		DataStreamInterface* openFile( const Menge::String& _filename );
-		DataStreamInterface* createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose );
+		DataStreamInterface * openFile( const Menge::String& _filename );
+		DataStreamInterface * createMemoryFile( void * _data, std::size_t _size, bool _freeOnClose );
 
 		FileBuffer getFileBuffer( const Menge::String& _filename );
 
-		void closeStream( DataStreamInterface* _stream );
+		void closeStream( DataStreamInterface * _stream );
 
-		OutStreamInterface* openOutStream( const String& _filename, bool _binary );
-		void closeOutStream( OutStreamInterface* _outStream );
+		OutStreamInterface * openOutStream( const String& _filename, bool _binary );
+		void closeOutStream( OutStreamInterface * _outStream );
 
 		bool changeDir( const Menge::String& _dir );
 

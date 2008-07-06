@@ -11,8 +11,7 @@ namespace Menge
 		NodeRenderable();
 
 		void render( bool _enableDebug ) override;
-		//bool isRenderable() override;
-
+		
 	protected:
 		virtual void _render( bool _enableDebug );
 

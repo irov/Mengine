@@ -258,6 +258,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Color.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Color.h"
+					>
+				</File>
+				<File
 					RelativePath=".\ColourValue.cpp"
 					>
 				</File>
@@ -287,6 +295,14 @@
 				</File>
 				<File
 					RelativePath=".\ImageResampler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\MengeCodec.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MengeCodec.h"
 					>
 				</File>
 				<File
@@ -1437,22 +1453,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\Color.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\Color.h"
-			>
-		</File>
-		<File
-			RelativePath=".\MengeCodec.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\MengeCodec.h"
-			>
-		</File>
 		<File
 			RelativePath=".\Utils.cpp"
 			>

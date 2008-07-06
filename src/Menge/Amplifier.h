@@ -66,7 +66,7 @@ namespace	Menge
 
 			void	listenPaused( bool _pause );
 			void	listenStopped();
-			void	release_();	
-			void	play_();
+			void	_release();	
+			void	_play();
 	};
 }

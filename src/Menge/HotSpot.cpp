@@ -13,8 +13,6 @@
 #	include "Camera2D.h"
 #	include "Sprite.h"
 
-//#define DEBUG_RENDER
-
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -57,33 +55,6 @@ namespace	Menge
 	void HotSpot::addPoint( const mt::vec2f & _p )
 	{
 		m_polygon.add_point( mt::vec2f( _p.x * m_scale.x, _p.y * m_scale.y ) );
-
-#ifdef DEBUG_RENDER
-		Sprite* point = new Sprite();
-		point->setImageResource( "AttrBad" );
-		//point->setName( "point" + std::string(::itoa ) );
-		point->activate();
-		point->enable();
-		point->compile();
-
-		if( m_polygon.num_points() > 1 )
-		{
-			point->setLocalPosition( m_polygon[ m_polygon.num_points() - 2 ] );
-			float sx = ( m_polygon.back() - m_polygon[ m_polygon.num_points() - 2 ]).length();
-			point->setScale( mt::vec2f( sx / 25.0f, 1.0f) );
-			point->setLocalDirection( mt::norm_v2( m_polygon.back() - m_polygon[ m_polygon.num_points() - 2 ] ) );
-
-			sx = ( m_polygon.back() - m_polygon[0]).length();
-			(*m_listChildren.begin())->setScale( mt::vec2f( sx / 25.0f, 1.0f ));
-			(*m_listChildren.begin())->setLocalDirection( mt::norm_v2( m_polygon.back() - m_polygon[ 0 ] ) );
-		}
-		else
-			point->setLocalPosition( m_polygon.back() );
-
-		activate();
-		
-		addChildren( point );
-#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
@@ -283,20 +254,7 @@ namespace	Menge
 			m_polygon[it].x = m_polygon[it].x / m_scale.x * _scale.x;
 			m_polygon[it].y = m_polygon[it].y / m_scale.y * _scale.y;
 		}
-#ifdef DEBUG_RENDER
-		TListChildren::iterator it = m_listChildren.begin();
-		for(; it != m_listChildren.end(); it++)
-		{
-			mt::vec2f pos = (*it)->getLocalPosition();
-			pos.x = pos.x / m_scale.x * _scale.x;
-			pos.y = pos.y / m_scale.y * _scale.y;
-			(*it)->setLocalPosition( pos );
-			mt::vec2f scl = (*it)->getScale();
-			scl.x *= _scale.x;
-			scl.y *= _scale.y;
-			(*it)->setScale( scl );
-		}
-#endif
+
 		m_scale = _scale;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -309,10 +267,10 @@ namespace	Menge
 				mt::vec2f beg = m_polygon[i];
 				mt::vec2f end = m_polygon[(i+1) % m_polygon.num_points()];
 
-				//beg+=getWorldPosition();
-				//end+=getWorldPosition();
-				beg+=getScreenPosition();
-				end+=getScreenPosition();
+				beg+=getWorldPosition();
+				end+=getWorldPosition();
+				//beg+=getScreenPosition();
+				//end+=getScreenPosition();
 
 
 				Holder<RenderEngine>::hostage()->renderLine(0xFFFF0000,beg,end);

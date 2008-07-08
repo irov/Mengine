@@ -143,6 +143,15 @@ void CALL HGE_Impl::Gfx_SetClipping( int x, int y, int w, int h )
 	_render_batch();
 	pD3DDevice->SetViewport(&vp);
 
+/*	float clip[4];
+	clip[0] = -1.0f;
+	clip[1] = 0.0f;
+	clip[2] = 0.0f;
+	clip[3] = x + w;
+
+	pD3DDevice->SetClipPlane( 0, clip );
+	pD3DDevice->SetRenderState( D3DRS_CLIPPLANEENABLE, D3DCLIPPLANE0 );*/
+
 	D3DXMATRIXA16 tmp;
 	D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
 	D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
@@ -1339,8 +1348,10 @@ void HGE_Impl::Gfx_Prepare2D()
 
 	pD3DDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTEXF_POINT);
 
-	pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_BORDER );
-	pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_BORDER );
+	pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
+	pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
+	//pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_BORDER );
+	//pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_BORDER );
 
 	if(bTextureFilter)
 	{

@@ -8,7 +8,6 @@
 
 #	include "RenderEngine.h"
 #	include "Sprite.h"
-//#define DEBUG_RENDER
 
 namespace	Menge
 {
@@ -32,19 +31,6 @@ namespace	Menge
 	void Point::loader( XmlElement * _xml )
 	{
 		SceneNode2D::loader( _xml );
-#ifdef DEBUG_RENDER
-		Sprite* point = new Sprite();
-		point->setImageResource( "AttrGood" );
-		//point->setName( "point" + std::string(::itoa ) );
-		point->activate();
-		point->enable();
-		point->compile();
-		point->setLocalPosition( getLocalPosition() );
-
-		activate();
-		
-		addChildren( point );	
-#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Point::testHotSpot( HotSpot * _hotspot )
@@ -58,7 +44,7 @@ namespace	Menge
 	{
 		if( _enableDebug )
 		{
-			const mt::vec2f& pos = getScreenPosition();
+			const mt::vec2f& pos = getWorldPosition();
 			mt::vec2f offs( 5.0f, 5.0f );
 			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos + mt::vec2f( -5.0f, -5.0f ), pos + mt::vec2f( 5.0f, -5.0f ) );
 			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos + mt::vec2f( 5.0f, -5.0f ), pos + mt::vec2f( 5.0f, 5.0f ) );

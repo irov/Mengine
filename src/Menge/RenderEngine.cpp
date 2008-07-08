@@ -12,6 +12,8 @@
 #	include "Game.h"
 
 #	include "Image.h"
+#	include "Player.h"
+#	include "Arrow.h"
 
 namespace Menge
 {
@@ -22,8 +24,8 @@ namespace Menge
 		, m_renderCamera(0)
 		, m_windowCreated( false )
 		, m_renderFactor( 1.0f )
-		, m_viewportWidth(1024.f)
-		, m_viewportHeight(768.f)
+		//, m_viewportWidth(1024.f)
+		//, m_viewportHeight(768.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -38,8 +40,8 @@ namespace Menge
 											int _FSAAType, int _FSAAQuality )
 	{
 		m_fullscreen = _fullscreen;
-		m_viewportWidth = _width;
-		m_viewportHeight = _height;
+		m_windowWidth = _width;
+		m_windowHeight = _height;
 		m_windowCreated = m_interface->createRenderWindow( _width, _height, _bits, _fullscreen, _winHandle,
 															_FSAAType, _FSAAQuality );
 
@@ -66,9 +68,6 @@ namespace Menge
 			dw = _height * contentAspect / _width;
 		}
 
-		//dw += ( 1.0f - dw ) * 0.8f;
-		//dh += ( 1.0f - dh ) * 0.8f;
-
 		float areaWidth = dw * _width;
 		float areaHeight = dh * _height;
 
@@ -77,55 +76,19 @@ namespace Menge
 		m_renderArea.z = m_renderArea.x + areaWidth;
 		m_renderArea.w = m_renderArea.y + areaHeight;
 
+		m_rendFactPix = m_renderArea.y;
+
 		if( m_renderArea.y > 0.0f )
 		{
 			m_renderFactor = m_renderArea.x / aspect / m_renderArea.y;
 
-			areaHeight += m_renderFactor * m_renderArea.y * 2;
-			areaWidth = areaHeight * contentAspect;
-			if( areaWidth > _width )
-			{
-				areaWidth = _width;
-			}
-
-			m_renderArea.x = ( _width - areaWidth ) * 0.5f;
-			m_renderArea.y = ( _height - areaHeight ) * 0.5f;
-			m_renderArea.z = m_renderArea.x + areaWidth;
-			m_renderArea.w = m_renderArea.y + areaHeight;
 		}
+		else
+		{
+			m_renderFactor = 0.0f;
+		}
+		setRenderFactor( m_renderFactor );
 	
-		mt::ident_m3( m_renderTransform );
-		m_renderTransform[2][0] = m_renderArea.x;
-		m_renderTransform[2][1] = m_renderArea.y;
-		m_renderTransform[0][0] = areaWidth / m_contentResolution.x;
-		m_renderTransform[1][1] = areaHeight / m_contentResolution.y;
-
-		mt::ident_m4( m_renderTransform4 );
-		//m_renderTransform4[3][0] = m_renderArea.x;
-		//m_renderTransform4[3][1] = m_renderArea.y;
-		m_renderTransform4[0][0] = areaWidth / _width;
-		m_renderTransform4[1][1] = areaHeight / _height;
-
-		m_overlays[0] = mt::vec2f( 0.0f, 0.0f );
-		m_overlays[1] = mt::vec2f( _width, 0.0f );
-		m_overlays[2] = mt::vec2f( _width, m_renderArea.y );
-		m_overlays[3] = mt::vec2f( 0.0f, m_renderArea.y );
-
-		m_overlays[4] = mt::vec2f( 0.0f, m_renderArea.y );
-		m_overlays[5] = mt::vec2f( m_renderArea.x, m_renderArea.y );
-		m_overlays[6] = mt::vec2f( m_renderArea.x, m_renderArea.y + areaHeight );
-		m_overlays[7] = mt::vec2f( 0.0f, m_renderArea.y + areaHeight );
-
-		m_overlays[8] = mt::vec2f( m_renderArea.x + areaWidth, m_renderArea.y );
-		m_overlays[9] = mt::vec2f( _width, m_renderArea.y );
-		m_overlays[10] = mt::vec2f( _width, m_renderArea.y + areaHeight );
-		m_overlays[11] = mt::vec2f( m_renderArea.x + areaWidth, m_renderArea.y + areaHeight );
-
-		m_overlays[12] = mt::vec2f( 0.0f, m_renderArea.y + areaHeight );
-		m_overlays[13] = mt::vec2f( _width, m_renderArea.y + areaHeight);
-		m_overlays[14] = mt::vec2f( _width, _height );
-		m_overlays[15] = mt::vec2f( 0.0f, _height );
-
 		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -299,7 +262,10 @@ namespace Menge
 	{
 		mt::vec2f begin = _begin - m_renderViewport.begin;
 		mt::vec2f end = _end - m_renderViewport.begin;
-		m_interface->renderLine( _color, begin.m, end.m );		
+		mt::vec2f rb, re;
+		mt::mul_v2_m3( rb, begin, m_renderTransform );
+		mt::mul_v2_m3( re, end, m_renderTransform );
+		m_interface->renderLine( _color, rb.m, re.m );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )
@@ -326,10 +292,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setViewportDimensions( float _width, float _height, float _renderFactor )
 	{
-		m_viewportWidth = _width;
+		/*m_viewportWidth = _width;
 		m_viewportHeight = _height;
 		m_renderFactor = _renderFactor;
-		m_interface->setViewportDimensions( _width, _height, _renderFactor );
+		m_interface->setViewportDimensions( _width, _height, _renderFactor );*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CameraInterface * RenderEngine::createCamera( const std::string& _name )
@@ -440,11 +406,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onWindowMovedOrResized()
 	{
-		if( m_windowCreated )
+		/*if( m_windowCreated )
 		{
 			m_interface->setViewportDimensions( m_viewportWidth, m_viewportHeight, m_renderFactor );
 			m_interface->onWindowMovedOrResized();
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onDeviceRestored()
@@ -493,7 +459,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endScene()
 	{
-		/*m_interface->beginLayer2D();
+		m_interface->beginLayer2D();
 		mt::vec4f v_zero = mt::vec4f::zero_v4;
 		m_interface->setRenderArea( v_zero.m );
 		for( int i = 0; i < 4; i++ )
@@ -510,7 +476,10 @@ namespace Menge
 										0,
 										BF_ONE,
 										BF_ZERO );
-		}*/
+		}
+
+		Holder<Player>::hostage()->getArrow()->render( false );
+
 		m_interface->endScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -532,6 +501,76 @@ namespace Menge
 	{
 		mt::vec4f renderArea = m_renderArea + _renderArea;
 		m_interface->setRenderArea( renderArea.m );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setRenderFactor( float _factor )
+	{
+		m_renderFactor = _factor;
+		if( m_renderFactor < 0.0f )
+		{
+			MENGE_LOG("Warning: RenderFactor Value < 0. Setting to 0");
+			m_renderFactor = 0.0f;
+		}
+		else if( m_renderFactor > 1.0f )
+		{
+			MENGE_LOG("Warning: RenderFactor Value > 1. Setting to 1");
+			m_renderFactor = 1.0f;
+		}
+
+		float areaWidth = m_renderArea.z - m_renderArea.x;
+		float areaHeight = m_renderArea.w - m_renderArea.y;
+		
+		if( m_rendFactPix > 0.0f )
+		{
+			areaHeight += m_renderFactor * m_rendFactPix * 2;
+			areaWidth = areaHeight * m_contentResolution.x / m_contentResolution.y;
+			if( areaWidth > m_windowWidth )
+			{
+				areaWidth = m_windowWidth;
+			}
+
+			m_renderArea.x = ( m_windowWidth - areaWidth ) * 0.5f;
+			m_renderArea.y = ( m_windowHeight - areaHeight ) * 0.5f;
+			m_renderArea.z = m_renderArea.x + areaWidth;
+			m_renderArea.w = m_renderArea.y + areaHeight;
+
+			/*m_renderArea.x = ::floorf( m_renderArea.x + 0.5f );
+			m_renderArea.y = ::floorf( m_renderArea.y + 0.5f );
+			m_renderArea.z = ::floorf( m_renderArea.z + 0.5f );
+			m_renderArea.w = ::floorf( m_renderArea.w + 0.5f );*/
+		}
+
+		mt::ident_m3( m_renderTransform );
+		m_renderTransform[2][0] = m_renderArea.x;
+		m_renderTransform[2][1] = m_renderArea.y;
+		m_renderTransform[0][0] = areaWidth / m_contentResolution.x;
+		m_renderTransform[1][1] = areaHeight / m_contentResolution.y;
+
+		mt::ident_m4( m_renderTransform4 );
+		//m_renderTransform4[3][0] = m_renderArea.x;
+		//m_renderTransform4[3][1] = m_renderArea.y;
+		m_renderTransform4[0][0] = areaWidth / m_windowWidth;
+		m_renderTransform4[1][1] = areaHeight / m_windowHeight;
+
+		m_overlays[0] = mt::vec2f( 0.0f, 0.0f );
+		m_overlays[1] = mt::vec2f( m_windowWidth, 0.0f );
+		m_overlays[2] = mt::vec2f( m_windowWidth, m_renderArea.y );
+		m_overlays[3] = mt::vec2f( 0.0f, m_renderArea.y );
+
+		m_overlays[4] = mt::vec2f( 0.0f, m_renderArea.y );
+		m_overlays[5] = mt::vec2f( m_renderArea.x, m_renderArea.y );
+		m_overlays[6] = mt::vec2f( m_renderArea.x, m_renderArea.y + areaHeight );
+		m_overlays[7] = mt::vec2f( 0.0f, m_renderArea.y + areaHeight );
+
+		m_overlays[8] = mt::vec2f( m_renderArea.x + areaWidth, m_renderArea.y );
+		m_overlays[9] = mt::vec2f( m_windowWidth, m_renderArea.y );
+		m_overlays[10] = mt::vec2f( m_windowWidth, m_renderArea.y + areaHeight );
+		m_overlays[11] = mt::vec2f( m_renderArea.x + areaWidth, m_renderArea.y + areaHeight );
+
+		m_overlays[12] = mt::vec2f( 0.0f, m_renderArea.y + areaHeight );
+		m_overlays[13] = mt::vec2f( m_windowWidth, m_renderArea.y + areaHeight);
+		m_overlays[14] = mt::vec2f( m_windowWidth, m_windowHeight );
+		m_overlays[15] = mt::vec2f( 0.0f, m_windowHeight );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

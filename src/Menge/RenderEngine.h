@@ -115,6 +115,8 @@ namespace Menge
 		void onWindowActive( bool _active );
 		void onWindowClose();
 
+		void setRenderFactor( float _factor );
+
 	protected:
 		::RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;
@@ -129,5 +131,8 @@ namespace Menge
 		mt::mat3f m_renderTransform;
 		mt::mat4f m_renderTransform4;
 		mt::vec2f m_overlays[16];
+		float m_rendFactPix;
+		int m_windowWidth;
+		int m_windowHeight;
 	};
 }

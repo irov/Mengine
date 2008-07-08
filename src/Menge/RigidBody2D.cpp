@@ -312,7 +312,10 @@ namespace Menge
 	void RigidBody2D::setPosition( float _x, float _y )
 	{
 		const mt::vec2f & position = getWorldPosition();
-		m_interface->setPosition( _x, _y );
+		if( m_interface )
+		{
+			m_interface->setPosition( _x, _y );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::applyConstantForce( float _forceX, float _forceY, float _pointX, float _pointY )
@@ -341,7 +344,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::wakeUp()
 	{
-		m_interface->wakeUp();
+		if( m_interface )
+		{
+			m_interface->wakeUp();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float RigidBody2D::getMass() const
@@ -362,7 +368,10 @@ namespace Menge
 		m_velocity.x = _x;
 		m_velocity.y = _y;
 		m_countGravity = _countGravity;
-		m_interface->wakeUp();
+		if( m_interface )
+		{
+			m_interface->wakeUp();
+		}
 		//m_interface->setLinearVelocity( _x, _y );
 	}
 	//////////////////////////////////////////////////////////////////////////

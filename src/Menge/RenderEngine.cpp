@@ -77,19 +77,22 @@ namespace Menge
 		m_renderArea.z = m_renderArea.x + areaWidth;
 		m_renderArea.w = m_renderArea.y + areaHeight;
 
-		m_renderFactor = m_renderArea.x / aspect / m_renderArea.y;
-
-		areaHeight += m_renderFactor * m_renderArea.y * 2;
-		areaWidth = areaHeight * contentAspect;
-		if( areaWidth > _width )
+		if( m_renderArea.y > 0.0f )
 		{
-			areaWidth = _width;
-		}
+			m_renderFactor = m_renderArea.x / aspect / m_renderArea.y;
 
-		m_renderArea.x = ( _width - areaWidth ) * 0.5f;
-		m_renderArea.y = ( _height - areaHeight ) * 0.5f;
-		m_renderArea.z = m_renderArea.x + areaWidth;
-		m_renderArea.w = m_renderArea.y + areaHeight;
+			areaHeight += m_renderFactor * m_renderArea.y * 2;
+			areaWidth = areaHeight * contentAspect;
+			if( areaWidth > _width )
+			{
+				areaWidth = _width;
+			}
+
+			m_renderArea.x = ( _width - areaWidth ) * 0.5f;
+			m_renderArea.y = ( _height - areaHeight ) * 0.5f;
+			m_renderArea.z = m_renderArea.x + areaWidth;
+			m_renderArea.w = m_renderArea.y + areaHeight;
+		}
 	
 		mt::ident_m3( m_renderTransform );
 		m_renderTransform[2][0] = m_renderArea.x;
@@ -490,7 +493,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endScene()
 	{
-		m_interface->beginLayer2D();
+		/*m_interface->beginLayer2D();
 		mt::vec4f v_zero = mt::vec4f::zero_v4;
 		m_interface->setRenderArea( v_zero.m );
 		for( int i = 0; i < 4; i++ )
@@ -507,7 +510,7 @@ namespace Menge
 										0,
 										BF_ONE,
 										BF_ZERO );
-		}
+		}*/
 		m_interface->endScene();
 	}
 	//////////////////////////////////////////////////////////////////////////

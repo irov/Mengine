@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "RigidBody2D.h"
+#	include "ValueInterpolator.h"
 
 namespace Menge
 {
@@ -57,9 +58,10 @@ namespace Menge
 		mt::vec2f m_movePoint;
 		float m_moveTime;
 
-		bool m_scaleTo;
-		mt::vec2f m_scalePoint;
-		float m_scaleTime;
+		//bool m_scaleTo;
+		//mt::vec2f m_scalePoint;
+		//float m_scaleTime;
+		ValueInterpolator<mt::vec2f> m_scaleTo;
 
 		mt::vec2f m_targetDir;
 		float m_rotateTime;

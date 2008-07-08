@@ -68,6 +68,7 @@ bool HGERenderSystem::createRenderWindow( int _width, int _height, int _bits, bo
 	m_hge->System_SetState( HGE_WINDOWED, !_fullscreen );
 	m_hge->System_SetState( HGE_HWND, (HWND)_winHandle );
 	m_hge->System_SetState( HGE_ZBUFFER, true );
+	m_hge->System_SetState( HGE_FPS, HGEFPS_VSYNC );
 	//m_hge->System_SetState( HGE_TEXTUREFILTER, false );
 	m_currentRenderTarget = "defaultCamera";
 	m_viewport = mt::box2f( mt::vec2f( 0.0f, 0.0f ), mt::vec2f( _width, _height ) );
@@ -157,7 +158,7 @@ RenderImageInterface * HGERenderSystem::createRenderTargetImage( const char* _na
 {
 	HTARGET htgt = m_hge->Target_Create( _width, _height, true );
 	m_targetMap.insert( std::make_pair( _name, htgt ) );
-	HGETexture* texture = new HGETexture( m_hge, m_hge->Target_GetTexture( htgt ), _name );
+	HGETexture* texture = new HGETexture( m_hge, m_hge->Target_GetTexture( htgt ), _name, _width, _height );
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////

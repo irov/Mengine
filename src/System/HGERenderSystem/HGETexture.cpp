@@ -14,7 +14,7 @@ HGETexture::HGETexture( HGE* _hge, bool _freeOnDelete )
 
 }
 //////////////////////////////////////////////////////////////////////////
-HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, bool _freeOnDelete )
+HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete )
 : m_hge( _hge )
 , m_hTexture( _htex )
 , m_name( _name )
@@ -22,8 +22,13 @@ HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, b
 , m_ref( 0 )
 , m_uvMask( 1.0f, 1.0f )
 , m_pixelFormat( Menge::PF_A8R8G8B8 )
+, m_width( _width )
+, m_height( _height )
 {
-
+	int hw = m_hge->Texture_GetWidth( m_hTexture );
+	int hh = m_hge->Texture_GetHeight( m_hTexture );
+	m_uvMask.x = static_cast<float>( m_width ) / hw;
+	m_uvMask.y = static_cast<float>( m_height ) / hh;
 }
 //////////////////////////////////////////////////////////////////////////
 HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete )

@@ -27,9 +27,9 @@ namespace	Menge
 	, m_acTime( 0.0f )
 	, m_accelerateTo( false )
 
-	, m_scaleTo( false )
-	, m_scalePoint( 1.0f, 1.0f )
-	, m_scaleTime( 0.0f )
+	//, m_scaleTo( false )
+	//, m_scalePoint( 1.0f, 1.0f )
+	//, m_scaleTime( 0.0f )
 
 	, m_physicController( false )
 	, m_stabilityAngle( 0.0f )
@@ -83,16 +83,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::scaleTo( float _time, const mt::vec2f& _scale )
 	{
-		const mt::vec2f & scl = getScale();
+		/*const mt::vec2f & scl = getScale();
 		float length = mt::length_v2_v2( scl, _scale );
 		if( length > 0.00001f )
 		{
-			/*if( m_moveTo )
-			{
-				moveStop();
-			}*/
-			//m_speed = ( _point - _pos ) / _time;
-			m_scalePoint = _scale;
+		m_scalePoint = _scale;
 			m_scaleTo = true;
 			m_scaleTime = _time;
 		}
@@ -107,6 +102,16 @@ namespace	Menge
 
 			m_scaleTo = false;
 
+			this->callEvent("SCALE_END", "()" );
+		}*/
+		const mt::vec2f & scl = getScale();
+		if( m_scaleTo.start( scl, _scale, _time, mt::length_v2 ) == false )
+		{
+			if( m_scaleTo.isStarted() )
+			{
+				scaleStop();
+			}
+			setScale( _scale );
 			this->callEvent("SCALE_END", "()" );
 		}
 	}
@@ -127,7 +132,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::scaleStop()
 	{
-		m_scaleTo = false;
+		m_scaleTo.stop();
 
 		this->callEvent("SCALE_STOP", "()" );
 	}
@@ -308,7 +313,7 @@ namespace	Menge
 				}
 			}
 
-			if( m_scaleTo )
+			/*if( m_scaleTo )
 			{
 				if( m_scaleTime <= _timing  )
 				{
@@ -332,6 +337,15 @@ namespace	Menge
 					//printf( "Scale %.4f %.4f\n", curr_scl.x, curr_scl.y );
 					setScale( curr_scl );
 				}
+			}*/
+			if( m_scaleTo.isStarted() )
+			{
+				mt::vec2f scale;
+				if( m_scaleTo.update( _timing, &scale ) )
+				{
+					this->callEvent("SCALE_END", "()" );
+				}
+				setScale( scale );
 			}
 
 			RigidBody2D::_update( _timing );
@@ -401,7 +415,7 @@ namespace	Menge
 			}
 		}
 
-		if( m_scaleTo )
+		/*if( m_scaleTo )
 		{
 			if( m_scaleTime <= _timing  )
 			{
@@ -424,6 +438,15 @@ namespace	Menge
 
 				setScale( curr_scl );
 			}
+		}*/
+		if( m_scaleTo.isStarted() )
+		{
+			mt::vec2f scale;
+			if( m_scaleTo.update( _timing, &scale ) )
+			{
+				this->callEvent("SCALE_END", "()" );
+			}
+			setScale( scale );
 		}
 
 		this->callEvent("UPDATE", "(f)", _timing );

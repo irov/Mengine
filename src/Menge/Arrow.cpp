@@ -35,14 +35,6 @@ namespace	Menge
 	void Arrow::_update( float _timing )
 	{
 		SceneNode2D::_update( _timing );
-
-		/*InputEngine * inputEng = Holder<InputEngine>::hostage();
-
-		float mx = inputEng->getMouseX();
-		float my = inputEng->getMouseY();
-		
-		mt::vec2f pos( mx, my );
-		setLocalPosition( pos + m_offsetClick );*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()
@@ -101,7 +93,7 @@ namespace	Menge
 
 		Viewport viewport;
 		viewport.begin = mt::vec2f( 0.f, 0.f );
-		viewport.end = mt::vec2f( 1024.f, 768.f );
+		viewport.end = mt::vec2f( m_window.x, m_window.y );
 
 		Holder<RenderEngine>::hostage()
 			->setRenderViewport( viewport );

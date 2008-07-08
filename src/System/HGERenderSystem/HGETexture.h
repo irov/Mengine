@@ -11,7 +11,7 @@ class HGETexture :
 {
 public:
 	HGETexture( HGE* _hge, bool _freeOnDelete = true );
-	HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, bool _freeOnDelete = false );
+	HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete = false );
 	HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete = true );
 	~HGETexture();
 

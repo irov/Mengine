@@ -76,6 +76,11 @@ namespace mt
 		return sqrtf(sqrlength());
 	}
 
+	MATH_INLINE float length_v2(const vec2f& _a)
+	{
+		return _a.length();
+	}
+
 	MATH_INLINE float length_v2_v2(const vec2f& _a, const vec2f& _b)
 	{
 		vec2f c = _a - _b;

@@ -70,12 +70,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D_::yawTime( float _degrees, float _time )
 	{
-		m_yawTime.start( 0.0f, _degrees, _time );
+		m_yawTime.start( 0.0f, _degrees, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D_::pitchTime( float _degrees, float _time )
 	{
-		m_pitchTime.start( 0.0f, _degrees, _time );
+		m_pitchTime.start( 0.0f, _degrees, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D_::_update( float _timing )

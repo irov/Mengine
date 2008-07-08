@@ -12,9 +12,11 @@ namespace Menge
 			, m_started( false )
 		{
 		}
-		void start( const T& _value1, const T& _value2, float _time )
+
+		template<class ABS>
+		bool start( const T& _value1, const T& _value2, float _time, ABS _abs )
 		{
-			if( _time < 0.00001f || ::fabsf( _value2 - _value1 ) < 0.00001f ) return;
+			if( _time < 0.00001f || _abs( _value2 - _value1 ) < 0.00001f ) return false;
 			m_started = true;
 			m_value1 = _value1;
 			m_value2 = _value2;
@@ -22,8 +24,14 @@ namespace Menge
 			m_timing = 0.0f;
 			m_invTime = 1.0f / m_time;
 			m_prev = m_value1;
-			m_delta = 0.0f;
+			return true;
 		}
+
+		void stop()
+		{
+			m_started = false;
+		}
+
 		bool update( float _timing, T* _out )
 		{
 			if( ( m_timing + _timing ) > m_time )

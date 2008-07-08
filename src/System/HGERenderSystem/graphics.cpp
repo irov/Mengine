@@ -100,6 +100,11 @@ void CALL HGE_Impl::Gfx_SetClipping( int x, int y, int w, int h )
 	D3DVIEWPORT8 vp;
 	int scr_width, scr_height;
 
+	/*m_viewportX = x;
+	m_viewportY = y;
+	m_viewportWidth = w;
+	m_viewportHeight = h;*/
+
 	if(!pCurTarget) 
 	{
 		scr_width=pHGE->System_GetStateInt(HGE_SCREENWIDTH);
@@ -826,6 +831,7 @@ bool HGE_Impl::_GfxInit()
 	d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 	d3dppFS.Flags			 = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
+	//m_viewportX = m_viewportY = m_viewportWidth = m_viewportHeight = 0;
 	return true;
 }
 
@@ -1355,7 +1361,7 @@ void HGE_Impl::Gfx_Prepare2D()
 	D3DXMatrixIdentity( &matView );
 	D3DXMatrixIdentity( &matWorld );
 	_SetProjectionMatrix( nScreenWidth, nScreenHeight );
-	pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj );
+	/*pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj );*/
 	pD3DDevice->SetTransform( D3DTS_VIEW, &matView );
 	pD3DDevice->SetTransform( D3DTS_WORLD, &matWorld );
 

@@ -17,12 +17,6 @@ namespace Menge
 	class FileEngine;
 	class Camera3D;
 
-	/*typedef struct _tVertex
-	{
-		mt::vec3f position;
-		mt::vec3f normal;
-	} TVertex;*/
-
 	class RenderEngine
 		: public RenderSystemListener
 	{
@@ -32,7 +26,7 @@ namespace Menge
 	public:
 
 		bool initialize( const String& _driver );
-		bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle = 0,
+		bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle = 0,
 								int _FSAAType = 0, int _FSAAQuality = 0 );
 
 		void addResourceLocation( const std::string& _path );
@@ -42,7 +36,7 @@ namespace Menge
 		void render();
 
 		void setContentResolution( const mt::vec2f _resolution );
-		mt::vec2f getBestDisplayResolution( std::size_t _defWidth, std::size_t _defHeigth, float _aspect );
+		mt::vec2f getBestDisplayResolution( int _defWidth, int _defHeigth, float _aspect );
 
 		void setRenderViewport( const Viewport & _viewport );
 		const Viewport & getRenderViewport() const;
@@ -130,5 +124,10 @@ namespace Menge
 		float m_viewportWidth;
 		float m_viewportHeight;
 		float m_renderFactor;
+		mt::vec2f m_contentResolution;
+		mt::vec4f m_renderArea;
+		mt::mat3f m_renderTransform;
+		mt::mat4f m_renderTransform4;
+		mt::vec2f m_overlays[16];
 	};
 }

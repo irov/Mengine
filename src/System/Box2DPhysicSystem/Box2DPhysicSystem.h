@@ -6,6 +6,7 @@
 #	include <vector>
 
 class Box2DPhysicJoint;
+class Box2DPhysicBody;
 
 class Box2DPhysicSystem
 	: public PhysicSystem2DInterface
@@ -43,6 +44,9 @@ private:
 
 	 typedef std::vector< std::pair< b2JointDef*, Box2DPhysicJoint* > > TJointDefList;
 	 TJointDefList m_jointDefList;
+
+	 typedef std::vector< Box2DPhysicBody* > TBodyVector;
+	 TBodyVector m_deletingBodies;
 
 	void _createJoint( b2JointDef* _jointDef, Box2DPhysicJoint* _joint );
 };

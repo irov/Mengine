@@ -15,7 +15,7 @@ public:
 	~HGERenderSystem();
 
 	bool initialize( Menge::LogSystemInterface* _logSystem ) override;
-	bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
+	bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
 		int _FSAAType, int _FSAAQuality ) override;
 	unsigned int getResolutionList( int ** ) override;
 	void addResourceLocation( const char* _path ) override;

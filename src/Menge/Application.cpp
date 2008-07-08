@@ -229,11 +229,16 @@ namespace Menge
 
 		m_renderEngine->initialize( "" );
 
+		m_currentResolution = game->getResourceResolution();
+		m_renderEngine->setContentResolution( m_currentResolution );
+
 		m_currentResolution.x = game->getWidth();
 		m_currentResolution.y = game->getHeight();
 		if( game->getFullscreen() )
 		{
-			m_currentResolution = m_renderEngine->getBestDisplayResolution( game->getWidth(), game->getHeight(), m_interface->getMonitorAspectRatio() );
+			//m_currentResolution = m_renderEngine->getBestDisplayResolution( game->getWidth(), game->getHeight(), m_interface->getMonitorAspectRatio() );
+			m_currentResolution = m_renderEngine->getBestDisplayResolution( 
+				m_currentResolution.x, m_currentResolution.y, m_interface->getMonitorAspectRatio() );
 		}
 
 		WINDOW_HANDLE winHandle = m_interface->createWindow( game->getTitle().c_str(), m_currentResolution.x, m_currentResolution.y, game->getFullscreen() );
@@ -263,11 +268,11 @@ namespace Menge
 			m_inputEngine->setMouseBounded( true );
 		}
 
-		if( game->isContentResolutionFixed() )
+		/*if( game->isContentResolutionFixed() )
 		{
 			mt::vec2f res = game->getResourceResolution();
-			m_renderEngine->setViewportDimensions( res.x, res.y );
-		}
+			m_renderEngine->setViewportDimensions( res.x, res.y, 0.8f );
+		}*/
 
 		if( game->init() == false )
 		{

@@ -189,6 +189,7 @@ namespace	Menge
 		mt::ident_m3( wm );
 
 		for ( int i = count - 1; i >= 0; i-- )
+		//for( int i = 0; i < count; i++ )
 		{
 			bool nextParticleType = false;
 

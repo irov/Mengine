@@ -34,7 +34,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle /* = 0  */,
+	bool RenderEngine::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle /* = 0  */,
 											int _FSAAType, int _FSAAQuality )
 	{
 		m_fullscreen = _fullscreen;
@@ -42,6 +42,87 @@ namespace Menge
 		m_viewportHeight = _height;
 		m_windowCreated = m_interface->createRenderWindow( _width, _height, _bits, _fullscreen, _winHandle,
 															_FSAAType, _FSAAQuality );
+
+
+		m_renderArea.x = 0.0f;
+		m_renderArea.y = 0.0f;
+		m_renderArea.z = _width;
+		m_renderArea.w = _height;
+
+		float contentAspect = m_contentResolution.x / m_contentResolution.y;
+		float dw = m_contentResolution.x / _width;
+		float dh = m_contentResolution.y / _height;
+		float aspect = static_cast<float>( _width ) / _height;
+
+		if( dw > 1.0f )
+		{
+			dw = 1.0f;
+			dh = _width / contentAspect / _height;
+		}
+
+		if( dh > 1.0f )
+		{
+			dh = 1.0f;
+			dw = _height * contentAspect / _width;
+		}
+
+		//dw += ( 1.0f - dw ) * 0.8f;
+		//dh += ( 1.0f - dh ) * 0.8f;
+
+		float areaWidth = dw * _width;
+		float areaHeight = dh * _height;
+
+		m_renderArea.x = ( _width - areaWidth ) * 0.5f;
+		m_renderArea.y = ( _height - areaHeight ) * 0.5f;
+		m_renderArea.z = m_renderArea.x + areaWidth;
+		m_renderArea.w = m_renderArea.y + areaHeight;
+
+		m_renderFactor = m_renderArea.x / aspect / m_renderArea.y;
+
+		areaHeight += m_renderFactor * m_renderArea.y * 2;
+		areaWidth = areaHeight * contentAspect;
+		if( areaWidth > _width )
+		{
+			areaWidth = _width;
+		}
+
+		m_renderArea.x = ( _width - areaWidth ) * 0.5f;
+		m_renderArea.y = ( _height - areaHeight ) * 0.5f;
+		m_renderArea.z = m_renderArea.x + areaWidth;
+		m_renderArea.w = m_renderArea.y + areaHeight;
+	
+		mt::ident_m3( m_renderTransform );
+		m_renderTransform[2][0] = m_renderArea.x;
+		m_renderTransform[2][1] = m_renderArea.y;
+		m_renderTransform[0][0] = areaWidth / m_contentResolution.x;
+		m_renderTransform[1][1] = areaHeight / m_contentResolution.y;
+
+		mt::ident_m4( m_renderTransform4 );
+		//m_renderTransform4[3][0] = m_renderArea.x;
+		//m_renderTransform4[3][1] = m_renderArea.y;
+		m_renderTransform4[0][0] = areaWidth / _width;
+		m_renderTransform4[1][1] = areaHeight / _height;
+
+		m_overlays[0] = mt::vec2f( 0.0f, 0.0f );
+		m_overlays[1] = mt::vec2f( _width, 0.0f );
+		m_overlays[2] = mt::vec2f( _width, m_renderArea.y );
+		m_overlays[3] = mt::vec2f( 0.0f, m_renderArea.y );
+
+		m_overlays[4] = mt::vec2f( 0.0f, m_renderArea.y );
+		m_overlays[5] = mt::vec2f( m_renderArea.x, m_renderArea.y );
+		m_overlays[6] = mt::vec2f( m_renderArea.x, m_renderArea.y + areaHeight );
+		m_overlays[7] = mt::vec2f( 0.0f, m_renderArea.y + areaHeight );
+
+		m_overlays[8] = mt::vec2f( m_renderArea.x + areaWidth, m_renderArea.y );
+		m_overlays[9] = mt::vec2f( _width, m_renderArea.y );
+		m_overlays[10] = mt::vec2f( _width, m_renderArea.y + areaHeight );
+		m_overlays[11] = mt::vec2f( m_renderArea.x + areaWidth, m_renderArea.y + areaHeight );
+
+		m_overlays[12] = mt::vec2f( 0.0f, m_renderArea.y + areaHeight );
+		m_overlays[13] = mt::vec2f( _width, m_renderArea.y + areaHeight);
+		m_overlays[14] = mt::vec2f( _width, _height );
+		m_overlays[15] = mt::vec2f( 0.0f, _height );
+
 		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -57,7 +138,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setContentResolution( const mt::vec2f _resolution )
 	{
-		m_interface->setContentResolution( _resolution.m );
+		//m_interface->setContentResolution( _resolution.m );
+		m_contentResolution = _resolution;
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderViewport( const Viewport & _viewport )
@@ -102,11 +184,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void	RenderEngine::setViewMatrix( const mt::mat4f& _view )
 	{
-		return m_interface->setViewMatrix( _view.m );
+		mt::mat4f mat;
+		mt::mul_m4_m4( mat, _view, m_renderTransform4 );
+		return m_interface->setViewMatrix( mat.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	RenderEngine::setWorldMatrix( const mt::mat4f& _world )
 	{
+		//mt::mat4f mat;
+		//mt::mul_m4_m4( mat, _world, m_renderTransform4 );
 		return m_interface->setWorldMatrix( _world.m );
 	}	
 	//////////////////////////////////////////////////////////////////////////
@@ -140,11 +226,7 @@ namespace Menge
 
 		if(image == 0)
 		{
-			/*static std::vector<char> s_buff;
 
-			unsigned int buff_size = file->size();
-			s_buff.resize( buff_size );
-			file->read( &s_buff[0], buff_size );*/
 			Image cimage;
 			cimage.load( _filename );
 
@@ -157,25 +239,13 @@ namespace Menge
 			textureDesc.name = _filename.c_str();
 			textureDesc.filter = _filter;
 
-			/*DataStreamInterface* file = Holder<FileEngine>::hostage()->openFile( _filename );
-			TextureDesc textureDesc;
-
-			if( file )
-			{
-				textureDesc.buffer = file->getBuffer();
-				textureDesc.name = _filename.c_str();
-				textureDesc.size = file->size();
-			}*/
-			if( /*!file ||*/ textureDesc.buffer == 0 )
+			if( textureDesc.buffer == 0 )
 			{
 				MENGE_LOG( "Error: Image from file '%s' not loader\n", _filename.c_str() );
 				return 0;
 			}	
 
-
 			image = loadImage( textureDesc );
-
-			//Holder<FileEngine>::hostage()->closeStream( file );
 
 			if( image == 0 )
 			{
@@ -200,9 +270,14 @@ namespace Menge
 			EBlendFactor _dst)
 	{
 		mt::mat3f transform = _transform;
-		transform.v2.v2 -= m_renderViewport.begin;
+		transform.v2.v2 += -m_renderViewport.begin;
+		mt::mat3f tr = transform;
+		if( m_renderViewport.m_camera == "defaultCamera" )
+		{
+			mt::mul_m3_m3( tr, transform, m_renderTransform );
+		}
 		m_interface->renderImage(
-			transform.m,
+			tr.m,
 			_a.m,
 			_b.m,
 			_c.m,
@@ -304,22 +379,25 @@ namespace Menge
 		return m_interface->releaseSceneNode( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f RenderEngine::getBestDisplayResolution( std::size_t _defWidth, std::size_t _defHeigth, float _aspect )
+	mt::vec2f RenderEngine::getBestDisplayResolution( int _defWidth, int _defHeigth, float _aspect )
 	{
 		int * rl;
 		unsigned int count = m_interface->getResolutionList( &rl );
 
 		float needWidth = _defHeigth * _aspect;
 
-		std::size_t bestWidth = _defWidth;
-		std::size_t bestHeight = _defHeigth;
+		int bestWidth = _defWidth;
+		int bestHeight = _defHeigth;
 
 		typedef std::vector<int> TResolutionVector;
 		typedef std::map< int, TResolutionVector > TResolutionMap;
 		TResolutionMap resMap;
 		for( unsigned int i = 0; i < count / 2; i++ )
 		{
-			resMap[ rl[2*i + 1] ].push_back( rl[2*i] );
+			if( fabsf( ( static_cast<float>( rl[2*i] ) / rl[2*i+1] ) - _aspect ) < 0.01f )
+			{
+				resMap[ rl[2*i + 1] ].push_back( rl[2*i] );
+			}
 		}
 		bool done = false;
 		for( TResolutionMap::iterator 
@@ -407,10 +485,29 @@ namespace Menge
 	void RenderEngine::beginScene()
 	{
 		m_interface->beginScene();
+		m_interface->setRenderArea( m_renderArea.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endScene()
 	{
+		m_interface->beginLayer2D();
+		mt::vec4f v_zero = mt::vec4f::zero_v4;
+		m_interface->setRenderArea( v_zero.m );
+		for( int i = 0; i < 4; i++ )
+		{
+			mt::mat3f mt;
+			mt::ident_m3( mt );
+			mt::vec4f uv( 0.0f, 0.0f, 1.0f, 1.0f );
+			m_interface->renderImage( mt.m, m_overlays[i*4].m,
+										m_overlays[i*4+1].m,
+										m_overlays[i*4+2].m,
+										m_overlays[i*4+3].m,
+										uv.m,
+										0xFF000000,
+										0,
+										BF_ONE,
+										BF_ZERO );
+		}
 		m_interface->endScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -430,7 +527,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderArea( const mt::vec4f& _renderArea )
 	{
-		m_interface->setRenderArea( _renderArea.m );
+		mt::vec4f renderArea = m_renderArea + _renderArea;
+		m_interface->setRenderArea( renderArea.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

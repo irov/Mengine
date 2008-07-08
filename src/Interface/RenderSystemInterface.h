@@ -347,7 +347,7 @@ class	RenderSystemInterface
 public:
 
 	virtual bool initialize( Menge::LogSystemInterface* _logSystem ) = 0;
-	virtual bool createRenderWindow( float _width, float _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
+	virtual bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
 		int _FSAAType, int _FSAAQuality ) = 0;
 	virtual unsigned int getResolutionList( int ** ) = 0;
 

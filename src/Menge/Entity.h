@@ -19,6 +19,7 @@ namespace Menge
 		void moveTo( float _time, const mt::vec2f & _point, bool _changeDirection );
 		void rotateTo( float _time, const mt::vec2f & _point );
 		void accelerateTo( float _speed, const mt::vec2f& _point, bool _changeDirection );
+		void directTo( float _time, const mt::vec2f& _dir );
 		void moveStop();
 		void rotateStop();
 		void flip( bool _x, bool _y );

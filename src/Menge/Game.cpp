@@ -410,9 +410,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
-		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-		renderEngine->setContentResolution( m_resourceResolution );
-
 		ScriptEngine::TListModulePath m_listModulePath;
 
 		//m_listModulePath.push_back( m_pathScripts );
@@ -487,22 +484,6 @@ namespace Menge
 			path += it->second.second;
 
 			loadArrow( it->first, path );
-		}
-
-
-		FileEngine* fileEngine = Holder<FileEngine>::hostage();
-		for( TListDeclaration::iterator
-			it = m_listResourceLocation.begin(),
-			it_end = m_listResourceLocation.end();
-		it != it_end;
-		++it)	
-		{
-			renderEngine->addResourceLocation( "/" + (*it).first + (*it).second  );
-		}
-
-		if( !m_listResourceLocation.empty() )
-		{
-			renderEngine->initResources();
 		}
 
 		m_defaultArrow = getArrow( m_defaultArrowName );

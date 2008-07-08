@@ -431,7 +431,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
 	{
-		bool result = SceneNode2D::_activate();
+		bool result = RigidBody2D::_activate();
 
 		this->registerEvent("MOVE_END", "onMoveEnd", this->getEmbedding() );
 		this->registerEvent("MOVE_STOP", "onMoveStop", this->getEmbedding() );
@@ -456,7 +456,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_deactivate()
 	{
-		SceneNode2D::_deactivate();
+		RigidBody2D::_deactivate();
 
 		this->callMethod("onDeactivate", "()" );
 	}
@@ -527,6 +527,12 @@ namespace	Menge
 		m_stabilization = _enable;
 		m_stabilityAngle = _stabilityAngle;
 		m_stabilityForce = _stabilityForce;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::directTo( float _time, const mt::vec2f& _dir )
+	{
+		const mt::vec2f & _pos = getLocalPosition();
+		rotateTo( _time, _pos + _dir );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

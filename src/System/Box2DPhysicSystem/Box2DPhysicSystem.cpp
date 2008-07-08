@@ -57,6 +57,7 @@ void Box2DPhysicSystem::destroyWorld()
 	delete m_world;
 	m_world = 0;
 	m_contacts.clear();
+	m_deletingBodies.clear();
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::update( float _timing, int _iterations )
@@ -89,8 +90,16 @@ void Box2DPhysicSystem::update( float _timing, int _iterations )
 		static_cast<Box2DPhysicBody*>( body1->GetUserData() )->_collide( body2, &(*it) );
 		static_cast<Box2DPhysicBody*>( body2->GetUserData() )->_collide( body1, &(*it) );
 	}
-
 	m_contacts.clear();
+
+	for( TBodyVector::iterator it = m_deletingBodies.begin(), it_end = m_deletingBodies.end();
+		it != it_end;
+		it++ )
+	{
+		delete (*it);
+	}
+	m_deletingBodies.clear();
+
 	m_world->Step( _timing, _iterations );
 
 	//m_world->m_broadPhase->Validate();
@@ -135,7 +144,8 @@ PhysicBody2DInterface* Box2DPhysicSystem::createStaticBody( const float* _pos, f
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::destroyBody( PhysicBody2DInterface* _body )
 {
-	delete static_cast<Box2DPhysicBody*>( _body );
+	//delete static_cast<Box2DPhysicBody*>( _body );
+	m_deletingBodies.push_back( static_cast<Box2DPhysicBody*>( _body ) );
 }
 //////////////////////////////////////////////////////////////////////////
 PhysicJoint2DInterface* Box2DPhysicSystem::createDistanceJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _offsetBody2, bool _collideBodies )

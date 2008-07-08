@@ -100,10 +100,10 @@ void AstralaxParticleSystem::lockEmitter( EmitterInterface * _emitter, int _type
 	AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
 	HM_EMITTER id = emitter->getId();
 
+	Magic_LockParticlesType( id, _typeParticle );
+
 	Magic_GetEmitterPosition( id, &m_currentX, &m_currentY );
 	bool pos =  Magic_GetEmitterPositionMode( id );
-
-	Magic_LockParticlesType( id, _typeParticle );
 
 	int texCount = Magic_GetTextureCount();
 	if( texCount > MAX_TEXTURES ) texCount = MAX_TEXTURES;

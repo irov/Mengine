@@ -362,6 +362,7 @@ public:
 	typedef std::vector<D3DDISPLAYMODE> TDispModes;
 	TDispModes m_displayModes;
 	std::vector<int>	m_resList;
+	//int m_viewportX, m_viewportY, m_viewportWidth, m_viewportHeight;
 
 private:
 	HGE_Impl();

@@ -68,7 +68,7 @@ namespace Menge
 		ScriptWrapper::nodeWrap();
 		ScriptWrapper::helperWrap();
 		ScriptWrapper::soundWrap();
-		ScriptWrapper::actorWrap();
+		//ScriptWrapper::actorWrap();
 		ScriptWrapper::entityWrap();
 
 		pybind::class_<ScriptLogger>("ScriptLogger", true, py_menge )

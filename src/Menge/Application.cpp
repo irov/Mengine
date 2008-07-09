@@ -46,16 +46,16 @@
 #	include "TileMap.h"
 #	include "Track.h"
 #	include "Video.h"
-#	include "Actor.h"
-#	include "Camera3D.h"
+//#	include "Actor.h"
+//#	include "Camera3D.h"
 #	include "CapsuleController.h"
-#	include "DiscreteEntity.h"
-#	include "FFCamera.h"
-#	include "RigidBody3D.h"
+//#	include "DiscreteEntity.h"
+//#	include "FFCamera.h"
+//#	include "RigidBody3D.h"
 #	include "Layer2D.h"
 #	include "Layer3D.h"
 #	include "LayerScene.h"
-#	include "SceneNode3D.h"
+//#	include "SceneNode3D.h"
 #	include "RenderMesh.h"
 #	include "Camera3D-649.h"
 
@@ -350,16 +350,16 @@ namespace Menge
 		OBJECT_FACTORY( TileMap );
 		OBJECT_FACTORY( Track );
 		OBJECT_FACTORY( Video );
-		OBJECT_FACTORY( Actor );
-		OBJECT_FACTORY( Camera3D );
-		OBJECT_FACTORY( CapsuleController );
-		OBJECT_FACTORY( DiscreteEntity );
-		OBJECT_FACTORY( FFCamera3D );
-		OBJECT_FACTORY( RigidBody3D );
+//		OBJECT_FACTORY( Actor );
+//		OBJECT_FACTORY( Camera3D );
+//		OBJECT_FACTORY( CapsuleController );
+//		OBJECT_FACTORY( DiscreteEntity );
+//		OBJECT_FACTORY( FFCamera3D );
+//		OBJECT_FACTORY( RigidBody3D );
 		OBJECT_FACTORY( Layer2D );
-		OBJECT_FACTORY( Layer3D );
+//		OBJECT_FACTORY( Layer3D );
 		OBJECT_FACTORY( LayerScene );
-		OBJECT_FACTORY( SceneNode3D );
+//		OBJECT_FACTORY( SceneNode3D );
 		OBJECT_FACTORY( RenderMesh );
 		OBJECT_FACTORY( Camera3D_ );
 		OBJECT_FACTORY( SceneNode3D_ );

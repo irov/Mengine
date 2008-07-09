@@ -8,7 +8,7 @@
 
 #	include "Camera2D.h"
 
-#	include "Camera3D.h"
+//#	include "Camera3D.h"
 
 #	include "Arrow.h"
 

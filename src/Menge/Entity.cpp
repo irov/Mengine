@@ -341,11 +341,12 @@ namespace	Menge
 			if( m_scaleTo.isStarted() )
 			{
 				mt::vec2f scale;
-				if( m_scaleTo.update( _timing, &scale ) )
+				m_scaleTo.update( _timing, &scale );
+				setScale( scale );
+				if( m_scaleTo.isStarted() == false )
 				{
 					this->callEvent("SCALE_END", "()" );
 				}
-				setScale( scale );
 			}
 
 			RigidBody2D::_update( _timing );
@@ -442,11 +443,12 @@ namespace	Menge
 		if( m_scaleTo.isStarted() )
 		{
 			mt::vec2f scale;
-			if( m_scaleTo.update( _timing, &scale ) )
+			m_scaleTo.update( _timing, &scale );
+			setScale( scale );
+			if( m_scaleTo.isStarted() == false )
 			{
 				this->callEvent("SCALE_END", "()" );
 			}
-			setScale( scale );
 		}
 
 		this->callEvent("UPDATE", "(f)", _timing );

@@ -29,9 +29,9 @@
 #	include "SoundEmitter.h"
 #	include "Emitter.h"
 #	include "Point.h"
-#	include "Camera3d.h"
-#	include "RigidBody3D.h"
-#	include "CapsuleController.h"
+//#	include "Camera3d.h"
+//#	include "RigidBody3D.h"
+//#	include "CapsuleController.h"
 #	include "Skeleton.h"
 #	include "Camera2D.h"
 
@@ -45,7 +45,7 @@
 #	include "ReversiAI.h"
 #	include "CornersAI.h"
 
-#	include "DiscreteEntity.h"
+//#	include "DiscreteEntity.h"
 
 #	include "SoundEngine.h"
 #	include "LogEngine.h"
@@ -54,9 +54,9 @@
 
 #	include "Identity.h"
 
-#	include "Layer3D.h"
+//#	include "Layer3D.h"
 
-#	include "FFCamera.h"
+//#	include "FFCamera.h"
 #	include "SceneNode3D-649.h"
 #	include "Camera3D-649.h"
 #	include "RenderMesh.h"
@@ -465,14 +465,14 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( SoundEmitter );
 		SCRIPT_CLASS_WRAPPING( Emitter );
 		SCRIPT_CLASS_WRAPPING( Point );
-		SCRIPT_CLASS_WRAPPING( SceneNode3D );
-		SCRIPT_CLASS_WRAPPING( Camera3D );
-		SCRIPT_CLASS_WRAPPING( FFCamera3D );
-		SCRIPT_CLASS_WRAPPING( DiscreteEntity );
-		SCRIPT_CLASS_WRAPPING( RigidBody3D );
+		//SCRIPT_CLASS_WRAPPING( SceneNode3D );
+		//SCRIPT_CLASS_WRAPPING( Camera3D );
+		//SCRIPT_CLASS_WRAPPING( FFCamera3D );
+		//SCRIPT_CLASS_WRAPPING( DiscreteEntity );
+		//SCRIPT_CLASS_WRAPPING( RigidBody3D );
 		//SCRIPT_CLASS_WRAPPING( Layer3D );
 		SCRIPT_CLASS_WRAPPING( RigidBody2D );
-		SCRIPT_CLASS_WRAPPING( CapsuleController );
+		//SCRIPT_CLASS_WRAPPING( CapsuleController );
 		SCRIPT_CLASS_WRAPPING( SceneNode3D_ );
 		SCRIPT_CLASS_WRAPPING( Camera3D_ );
 		SCRIPT_CLASS_WRAPPING( RenderMesh );
@@ -593,9 +593,9 @@ namespace Menge
 			.def( "setRotate", &Allocator2D::setRotate )
 			;
 
-		pybind::interface_<Skeleton>("Skeleton", false)
+		/*pybind::interface_<Skeleton>("Skeleton", false)
 			.def( "attachEntityToBone", &Skeleton::attachEntityToBone )
-			;
+			;*/
 
 		/*pybind::class_<Camera3D>("Camera3D")
 			.def( pybind::init<>() )
@@ -608,7 +608,7 @@ namespace Menge
 			;*/
 
 		
-		pybind::class_<FFCamera3D>("FFCamera3D")
+		/*pybind::class_<FFCamera3D>("FFCamera3D")
 			.def( pybind::init<>() )
 			.def( "update", &FFCamera3D::update )
 			.def( "activate", &FFCamera3D::activate )
@@ -618,7 +618,7 @@ namespace Menge
 			.def( "yaw", &FFCamera3D::yaw )
 			.def( "pitch", &FFCamera3D::pitch )
 			.def( "zoom", &FFCamera3D::zoom )
-			;
+			;*/
 
 		pybind::interface_<NodeRenderable>("NodeRenderable", false)
 			.def( "hide", &NodeRenderable::hide )
@@ -633,7 +633,7 @@ namespace Menge
 				.def( "setAlpha", &SceneNode2D::setAlpha )
 			;
 
-		pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
+		/*pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
 				.def( "getWorldOrient", &SceneNode3D::getWorldOrient )
 				.def( "getWorldPosition", &SceneNode3D::getWorldPosition )
 				.def( "getLocalOrient", &SceneNode3D::getLocalOrient )
@@ -656,7 +656,7 @@ namespace Menge
 				//.def( "getCamera", &SceneNode3D::getCamera )
 			;
 
-		{
+		{*/
 			/*pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
 				//.def( "addCamera", &Layer3D::addCamera )
 				//.def( "getCamera", &Layer3D::getCamera )	
@@ -665,7 +665,7 @@ namespace Menge
 				.def( "getNode", &Layer3D::getNode )
 				;*/
 
-			pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)
+			/*pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)
 				.def( "applyForce", &RigidBody3D::applyForce )
 				.def( "applyImpulse", &RigidBody3D::applyImpulse )
 				.def( "applyAngularImpulse", &RigidBody3D::applyAngularImpulse )
@@ -697,7 +697,7 @@ namespace Menge
 				//.def( "playAnimation", &DiscreteEntity::playAnimation )
 				;
 
-				;
+				;*/
 
 		pybind::proxy_<SceneNode3D_, pybind::bases<Node> >("SceneNode3D_", false)
 					.def( "yaw", &SceneNode3D_::yaw )
@@ -723,11 +723,6 @@ namespace Menge
 				//	.def( "roll", &Camera3D::roll )
 				//	.def( "getDirection", &Camera3D_::getDirection )
 					;
-		}
-	/*	pybind::proxy_<Entity3d, pybind::bases<Node>>("Entity3d", false)
-			.def( "play", &Entity3d::play )
-		;
-*/
 		}
 
 		{

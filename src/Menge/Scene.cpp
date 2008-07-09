@@ -198,6 +198,7 @@ namespace	Menge
 		registerEvent( "KEY", "onHandleKeyEvent", this->getEmbedding() );
 		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent", this->getEmbedding() );
 		registerEvent( "MOUSE_MOVE", "onHandleMouseMove", this->getEmbedding() );
+		registerEvent( "MOUSE_BUTTON_END", "onHandleMouseButtonEventEnd", this->getEmbedding() );
 
 		callMethod( "onActivate", "() " );
 

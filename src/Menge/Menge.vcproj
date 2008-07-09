@@ -1015,6 +1015,14 @@
 			<File
 				RelativePath=".\ActorScriptWrapper.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\EntityScriptWrapper.cpp"
@@ -1147,14 +1155,6 @@
 			<Filter
 				Name="SceneNode3D"
 				>
-				<File
-					RelativePath=".\SceneNode3D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SceneNode3D.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Layer2D"
@@ -1383,38 +1383,46 @@
 			<File
 				RelativePath=".\Actor.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Actor.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Camera3D.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Camera3D.h"
-				>
-			</File>
-			<File
 				RelativePath=".\CapsuleController.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\CapsuleController.h"
 				>
 			</File>
 			<File
-				RelativePath=".\DiscreteEntity.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\DiscreteEntity.h"
-				>
-			</File>
-			<File
 				RelativePath=".\FFCamera.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\FFCamera.h"
@@ -1423,6 +1431,14 @@
 			<File
 				RelativePath=".\Light.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Light.h"
@@ -1439,6 +1455,14 @@
 			<File
 				RelativePath=".\RigidBody3D.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\RigidBody3D.h"
@@ -1447,6 +1471,14 @@
 			<File
 				RelativePath=".\Skeleton.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Skeleton.h"

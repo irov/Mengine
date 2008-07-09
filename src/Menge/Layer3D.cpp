@@ -17,10 +17,10 @@
 
 #	include "NodeForeach.h"
 
-#	include "Camera3d.h"
-#	include "RigidBody3d.h"
-#	include "Light.h"
-#	include "Actor.h"
+//#	include "Camera3d.h"
+//#	include "RigidBody3d.h"
+//#	include "Light.h"
+//#	include "Actor.h"
 #	include "CapsuleController.h"
 #	include "Application.h"
 #	include "PhysicEngine.h"

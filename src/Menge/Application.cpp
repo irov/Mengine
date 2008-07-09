@@ -357,7 +357,7 @@ namespace Menge
 //		OBJECT_FACTORY( FFCamera3D );
 //		OBJECT_FACTORY( RigidBody3D );
 		OBJECT_FACTORY( Layer2D );
-//		OBJECT_FACTORY( Layer3D );
+		OBJECT_FACTORY( Layer3D );
 		OBJECT_FACTORY( LayerScene );
 //		OBJECT_FACTORY( SceneNode3D );
 		OBJECT_FACTORY( RenderMesh );

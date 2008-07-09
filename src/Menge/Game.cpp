@@ -918,7 +918,10 @@ namespace Menge
 				createAccount( (*it) );
 			}
 
-			selectAccount( m_defaultAccountName );
+			if( m_defaultAccountName != "" )
+			{
+				selectAccount( m_defaultAccountName );
+			}
 		}
 
 	}
@@ -936,7 +939,11 @@ namespace Menge
 		{
 			outStream->write( "\t<Account Name = \"" + it->first + "\"/>\n" );
 		}
-		outStream->write( "\t<DefaultAccount Name = \"" + m_currentAccount->getName() + "\"/>\n" );
+
+		if( m_currentAccount != 0 )
+		{
+			outStream->write( "\t<DefaultAccount Name = \"" + m_currentAccount->getName() + "\"/>\n" );
+		}
 
 		outStream->write( "</Accounts>" );
 

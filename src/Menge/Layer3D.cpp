@@ -121,7 +121,7 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Controller")
+			/*XML_CASE_NODE("Controller")
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
@@ -136,25 +136,25 @@ namespace	Menge
 				addController( capsule );
 
 				XML_PARSE_ELEMENT( capsule, &CapsuleController::loader );
-			}
+			}*/
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::addController( CapsuleController * _capsule )
 	{
-		const std::string & name = _capsule->getName();
+		/*const std::string & name = _capsule->getName();
 
 		TMapControllers::iterator it_find = m_mapControllers.find( name );
 
 		if( it_find == m_mapControllers.end() )
 		{
 			m_mapControllers.insert( std::make_pair( name, _capsule ) );
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CapsuleController * Layer3D::getController( const std::string & _name )
 	{
-		TMapControllers::const_iterator it_find = m_mapControllers.find( _name );
+		/*TMapControllers::const_iterator it_find = m_mapControllers.find( _name );
 
 		if( it_find == m_mapControllers.end() )
 		{
@@ -165,7 +165,8 @@ namespace	Menge
 
 		cap->activate();
 
-		return cap;
+		return cap;*/
+		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::setPhysicParams_()

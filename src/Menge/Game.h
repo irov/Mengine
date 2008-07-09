@@ -104,6 +104,8 @@ namespace Menge
 		void createAccount( const String& _accountName );
 		void deleteAccount( const String& _accountName );
 		void selectAccount( const String& _accountName );
+		void saveAccount( const String& _accountName );
+		void saveAccounts();
 
 		Account* getCurrentAccount();
 

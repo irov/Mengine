@@ -817,7 +817,10 @@ namespace Menge
 		{
 			MENGE_LOG("Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
 		}
-
+		if( m_currentAccount != 0 )
+		{
+			saveAccountsInfo();
+		}
 		//m_currentAccount->apply();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -841,6 +844,7 @@ namespace Menge
 			MENGE_LOG("Error: Can't delete account '%s'. There is no account with such name",
 				_accountName.c_str() );
 		}
+		saveAccountsInfo();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::selectAccount( const String& _accountName )
@@ -938,9 +942,33 @@ namespace Menge
 
 		Holder<FileEngine>::hostage()->closeOutStream( outStream );
 
-		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
+		/*for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
 			it != it_end;
 			it++ )
+		{
+			it->second->save();
+		}*/
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::saveAccount( const String& _accountName )
+	{
+		TAccountMap::iterator it = m_accounts.find( _accountName );
+		if( it != m_accounts.end() )
+		{
+			it->second->save();
+		}
+		else
+		{
+			MENGE_LOG("Warning: Account '%s' does not exist. Can't save",
+				_accountName.c_str() );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::saveAccounts()
+	{
+		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
+		it != it_end;
+		it++ )
 		{
 			it->second->save();
 		}

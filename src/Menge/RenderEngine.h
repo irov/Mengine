@@ -130,7 +130,6 @@ namespace Menge
 		mt::vec4f m_renderArea;
 		mt::mat3f m_renderTransform;
 		mt::mat4f m_renderTransform4;
-		mt::vec2f m_overlays[16];
 		float m_rendFactPix;
 		int m_windowWidth;
 		int m_windowHeight;

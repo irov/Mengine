@@ -30,6 +30,11 @@ namespace Menge
 		{
 			m_settings[_setting] = std::make_pair( _defaultValue, _applyFunc );
 		}
+		else
+		{
+			MENGE_LOG( "Warning: Setting %s already exist",
+				_setting.c_str() );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::changeSetting( const String& _setting, const String& _value )
@@ -127,7 +132,7 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
-			pybind::call( it->second.second, "(s)", it->second.first.c_str() );
+			pybind::call( it->second.second, "(ss)", it->first.c_str(), it->second.first.c_str() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

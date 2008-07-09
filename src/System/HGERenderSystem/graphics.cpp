@@ -141,7 +141,11 @@ void CALL HGE_Impl::Gfx_SetClipping( int x, int y, int w, int h )
 	vp.MaxZ=1.0f;
 
 	_render_batch();
-	pD3DDevice->SetViewport(&vp);
+	HRESULT hr = pD3DDevice->SetViewport(&vp);
+	if( FAILED( hr ) )
+	{
+		System_Log("Error: D3D8 failed to SetViewport" );
+	}
 
 /*	float clip[4];
 	clip[0] = -1.0f;

@@ -326,14 +326,7 @@ void HGERenderSystem::beginScene()
 	{
 		m_logSystem->logMessage("Error: D3D8 Failed to BeginScene");
 	}
-	//m_hge->Gfx_SetClipping( 0, 0, m_hge->System_GetState( HGE_SCREENWIDTH ), m_hge->System_GetState( HGE_SCREENHEIGHT ) );
-	// clear entire screen
-	m_hge->Gfx_SetClipping();
 	m_hge->Gfx_Clear( m_clearColor );
-	//m_hge->Gfx_SetClipping( m_viewport.min.x, m_viewport.min.y, m_viewport.max.x, m_viewport.max.y );
-
-	//m_renderX = (m_viewport.max - m_viewport.min).x / m_contentResolution.x;
-	//m_renderY = (m_viewport.max - m_viewport.min).y / m_contentResolution.y;
 
 	m_inRender = true;
 	m_currentRenderTarget = "defaultCamera";

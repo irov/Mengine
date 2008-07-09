@@ -12,6 +12,7 @@
 #	include "Account.h"
 #	include "Game.h"
 #	include "Application.h"
+#	include "FileEngine.h"
 
 #	include <ctime>
 #	include <sstream>
@@ -158,15 +159,44 @@ namespace Menge
 			Holder<Game>::hostage()->selectAccount( _accountName );
 		}
 
+		static void s_saveAccount( const String& _accountName )
+		{
+			Holder<Game>::hostage()->saveAccount( _accountName );
+		}
+	
+		static void s_saveAccounts()
+		{
+			Holder<Game>::hostage()->saveAccounts();
+		}
+
 		static void s_saveAccountsInfo()
 		{
 			Holder<Game>::hostage()->saveAccountsInfo();
+		}
+
+		static void s_deleteAccount( const String& _accountName )
+		{
+			Holder<Game>::hostage()->deleteAccount( _accountName );
+		}
+
+		static const String& s_getCurrentAccountName()
+		{
+			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
+			return currentAccount->getName();
+		}
+
+		static String s_getDataPath()
+		{
+			String path = Holder<FileEngine>::hostage()->getAppDataPath();
+			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
+			return path + currentAccount->getName();
 		}
 
 		static void s_setParticlesEnabled( bool _enable )
 		{
 			Holder<Application>::hostage()->setParticlesEnabled( _enable );
 		}
+
 	};
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
@@ -203,7 +233,12 @@ namespace Menge
 		pybind::def( "getSetting", &ScriptHelper::s_getSetting );
 		pybind::def( "createAccount", &ScriptHelper::s_createAccount );
 		pybind::def( "selectAccount", &ScriptHelper::s_selectAccount );
+		pybind::def( "deleteAccount", &ScriptHelper::s_deleteAccount );
+		pybind::def( "saveAccount", &ScriptHelper::s_saveAccount );
+		pybind::def( "saveAccounts", &ScriptHelper::s_saveAccounts );
 		pybind::def( "saveAccountsInfo", &ScriptHelper::s_saveAccountsInfo );
+		pybind::def( "getDataPath", &ScriptHelper::s_getDataPath );
+		pybind::def( "getCurrentAccountName", &ScriptHelper::s_getCurrentAccountName );
 
 		pybind::def( "setParticlesEnabled", &ScriptHelper::s_setParticlesEnabled );
 	}

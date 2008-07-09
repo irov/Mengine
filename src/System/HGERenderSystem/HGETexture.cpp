@@ -43,6 +43,10 @@ HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _widt
 , m_pixelFormat( Menge::PF_A8R8G8B8 )
 {
 	m_hTexture = m_hge->Texture_Create( _width, _height );
+	int hw = m_hge->Texture_GetWidth( m_hTexture );
+	int hh = m_hge->Texture_GetHeight( m_hTexture );
+	m_uvMask.x = static_cast<float>( m_width ) / hw;
+	m_uvMask.y = static_cast<float>( m_height ) / hh;
 }
 //////////////////////////////////////////////////////////////////////////
 HGETexture::~HGETexture()
@@ -61,6 +65,7 @@ void HGETexture::load( const TextureDesc& _desc )
 
 	m_width = _desc.width;
 	m_height = _desc.height;
+
 	m_pixelFormat = static_cast<Menge::PixelFormat>( _desc.pixelFormat );
 
 	m_uvMask.x = static_cast<float>( m_width ) / hw;
@@ -76,12 +81,12 @@ void HGETexture::unload()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-float HGETexture::getWidth() const 
+std::size_t HGETexture::getWidth() const 
 {
 	return m_width;
 }
 //////////////////////////////////////////////////////////////////////////
-float HGETexture::getHeight() const 
+std::size_t HGETexture::getHeight() const 
 {
 	return m_height;
 }

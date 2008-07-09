@@ -118,6 +118,7 @@ namespace Menge
 
 			frame.isAlpha = it->isAlpha;
 
+
 			m_vectorImageFrames.push_back( frame );
 		}
 
@@ -141,10 +142,13 @@ namespace Menge
 	void ResourceImageDefault::addImagePath( const String& _imagePath )
 	{
 		ImageDesc desc;
+		desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
+		desc.offset = mt::vec2f(0.f,0.f);
+		desc.maxSize = mt::vec2f(-1.f,-1.f);
+		desc.size = mt::vec2f(-1.f,-1.f);
+		desc.isAlpha = true; //
 		desc.fileName = _imagePath;
-		desc.isAlpha = false;
-		desc.offset = mt::vec2f( 0.0f, 0.0f );
-		desc.uv = mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f );
+
 		m_vectorImageDescs.push_back( desc );
 	}
 }

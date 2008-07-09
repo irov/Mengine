@@ -94,7 +94,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::screenshot( RenderImageInterface* _image, const int* rect )
 	{
-		m_interface->screenshot( _image, rect );
+		int shotrect[4];
+		shotrect[0] = m_renderArea.x + rect[0];
+		shotrect[1] = m_renderArea.y + rect[1];
+		shotrect[2] = m_renderArea.x + rect[2];
+		shotrect[3] = m_renderArea.y + rect[3];
+		m_interface->screenshot( _image, &(shotrect[0]) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render()
@@ -474,7 +479,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderArea( const mt::vec4f& _renderArea )
 	{
-		mt::vec4f renderArea = m_renderArea + _renderArea;
+		mt::vec4f renderArea;
+		renderArea.v2_0 = m_renderArea.v2_0 + _renderArea.v2_0;
+		renderArea.v2_1 = m_renderArea.v2_0 + _renderArea.v2_1;
 		m_interface->setRenderArea( renderArea.m );
 	}
 	//////////////////////////////////////////////////////////////////////////

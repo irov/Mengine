@@ -165,6 +165,7 @@ namespace Menge
 		typedef std::map<String, Account*> TAccountMap;
 		TAccountMap m_accounts;
 
+		bool m_loadingAccounts;
 		String m_defaultAccountName;
 		Account* m_currentAccount;
 	};	

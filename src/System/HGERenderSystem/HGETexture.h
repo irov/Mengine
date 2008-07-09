@@ -17,8 +17,8 @@ public:
 
 	void load( const TextureDesc& _desc );
 	void unload();
-	float getWidth() const override;
-	float getHeight() const override;
+	std::size_t getWidth() const override;
+	std::size_t getHeight() const override;
 	void writeToFile( const char* _filename ) override;
 	const char * getDescription() const override;
 	unsigned char* lock() override;

@@ -39,6 +39,7 @@ namespace Menge
 		, m_FSAAType( 0 )
 		, m_FSAAQuality( 0 )
 		, m_currentAccount( 0 )
+		, m_loadingAccounts( false )
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
@@ -817,8 +818,9 @@ namespace Menge
 		{
 			MENGE_LOG("Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
 		}
-		if( m_currentAccount != 0 )
+		if( m_loadingAccounts == false )
 		{
+			newAccount->save();
 			saveAccountsInfo();
 		}
 		//m_currentAccount->apply();
@@ -889,6 +891,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loadAccounts()
 	{
+		m_loadingAccounts = true;
+
 		String file = Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + "Accounts.ini";
 		
 		if( Holder<FileEngine>::hostage()->existFile( file ) )
@@ -924,6 +928,7 @@ namespace Menge
 			}
 		}
 
+		m_loadingAccounts = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::saveAccountsInfo()

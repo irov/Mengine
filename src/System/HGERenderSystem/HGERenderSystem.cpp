@@ -71,7 +71,6 @@ bool HGERenderSystem::createRenderWindow( int _width, int _height, int _bits, bo
 	m_hge->System_SetState( HGE_FPS, HGEFPS_VSYNC );
 	//m_hge->System_SetState( HGE_TEXTUREFILTER, false );
 	m_currentRenderTarget = "defaultCamera";
-	m_viewport = mt::box2f( mt::vec2f( 0.0f, 0.0f ), mt::vec2f( _width, _height ) );
 
 	HTARGET * voidTarget = 0;
 	m_targetMap.insert( std::make_pair( m_currentRenderTarget, voidTarget ) );
@@ -233,34 +232,34 @@ void HGERenderSystem::renderImage(const float * _transform,
 {
 	hgeQuad quad;
 
-	quad.v[0].x = _transform[0] * _a[0] + _transform[3] * _a[1] + _transform[6] + m_viewport.min.x;
-	quad.v[0].y = _transform[1] * _a[0] + _transform[4] * _a[1] + _transform[7] + m_viewport.min.y;
+	quad.v[0].x = _transform[0] * _a[0] + _transform[3] * _a[1] + _transform[6];
+	quad.v[0].y = _transform[1] * _a[0] + _transform[4] * _a[1] + _transform[7];
 	quad.v[0].z = m_layer;
 	quad.v[0].col = _color;
 
-	quad.v[1].x = _transform[0] * _b[0] + _transform[3] * _b[1] + _transform[6] + m_viewport.min.x;
-	quad.v[1].y = _transform[1] * _b[0] + _transform[4] * _b[1] + _transform[7] + m_viewport.min.y;
+	quad.v[1].x = _transform[0] * _b[0] + _transform[3] * _b[1] + _transform[6];
+	quad.v[1].y = _transform[1] * _b[0] + _transform[4] * _b[1] + _transform[7];
 	quad.v[1].z = m_layer;
 	quad.v[1].col = _color;
 
-	quad.v[2].x = _transform[0] * _c[0] + _transform[3] * _c[1] + _transform[6] + m_viewport.min.x;
-	quad.v[2].y = _transform[1] * _c[0] + _transform[4] * _c[1] + _transform[7] + m_viewport.min.y;
+	quad.v[2].x = _transform[0] * _c[0] + _transform[3] * _c[1] + _transform[6];
+	quad.v[2].y = _transform[1] * _c[0] + _transform[4] * _c[1] + _transform[7];
 	quad.v[2].z = m_layer;
 	quad.v[2].col = _color;
 
-	quad.v[3].x = _transform[0] * _d[0] + _transform[3] * _d[1] + _transform[6] + m_viewport.min.x;
-	quad.v[3].y = _transform[1] * _d[0] + _transform[4] * _d[1] + _transform[7] + m_viewport.min.y;
+	quad.v[3].x = _transform[0] * _d[0] + _transform[3] * _d[1] + _transform[6];
+	quad.v[3].y = _transform[1] * _d[0] + _transform[4] * _d[1] + _transform[7];
 	quad.v[3].z = m_layer;
 	quad.v[3].col = _color;
 
-	quad.v[0].x *= m_renderX;
+	/*quad.v[0].x *= m_renderX;
 	quad.v[0].y *= m_renderY;
 	quad.v[1].x *= m_renderX;
 	quad.v[1].y *= m_renderY;
 	quad.v[2].x *= m_renderX;
 	quad.v[2].y *= m_renderY;
 	quad.v[3].x *= m_renderX;
-	quad.v[3].y *= m_renderY;
+	quad.v[3].y *= m_renderY;*/
 
 	quad.blend = BLEND_DEFAULT;
 
@@ -366,50 +365,6 @@ void HGERenderSystem::endLayer3D()
 void HGERenderSystem::setFullscreenMode( float _width, float _height, bool _fullscreen )
 {
 	m_hge->Gfx_ChangeMode( _width, _height, 32, _fullscreen );
-}
-//////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::setViewportDimensions( float _width, float _height, float _renderFactor )
-{
-	float realWidth = m_hge->System_GetState( HGE_SCREENWIDTH );
-	float realHeight = m_hge->System_GetState( HGE_SCREENHEIGHT );
-	float aspect = _width / _height;
-	float width = _width / realWidth;
-	float height = _height / realHeight;
-
-	if( width > 1.0f )
-	{
-		width = 1.0f;
-		height = realWidth / aspect / realHeight;
-	}
-
-	if( height > 1.0f )
-	{
-		height = 1.0f;
-		width = realHeight * aspect / realWidth;
-	}
-
-	if( _renderFactor )
-	{
-		width += ( 1.0f - width ) * _renderFactor;
-		height += ( 1.0f - height ) * _renderFactor;
-	}
-
-	/*m_viewportDimensions[0] = 0.5f - width / 2.0f;
-	m_viewportDimensions[1] = 0.5f - height / 2.0f;
-	m_viewportDimensions[2] = width;
-	m_viewportDimensions[3] = height;*/
-
-	m_viewport.min.x = ( 0.5f - width / 2.0f ) * realWidth;
-	m_viewport.min.y = ( 0.5f - height / 2.0f ) * realHeight;
-	m_viewport.max.x = width * realWidth;
-	m_viewport.max.y = height * realHeight;
-
-	/*m_hge->Gfx_Clear( 255 );
-	m_hge->Gfx_SetClipping( x, y, w, h );*/
-
-
-	//m_viewport->setDimensions( m_viewportDimensions[0], m_viewportDimensions[1], m_viewportDimensions[2], m_viewportDimensions[3] );
-
 }
 //////////////////////////////////////////////////////////////////////////
 CameraInterface * HGERenderSystem::createCamera( const char * _name )
@@ -538,16 +493,6 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name )
 		m_hge->Gfx_BeginScene( it->second );
 		m_hge->Gfx_Clear( m_clearColor );
 
-		if( it->second )
-		{
-			//m_renderX =  m_hge->Texture_GetWidth( m_hge->Target_GetTexture( it->second ) ) / m_contentResolution.x;
-			//m_renderY = m_hge->Texture_GetHeight( m_hge->Target_GetTexture( it->second ) ) / m_contentResolution.y;
-		}
-		else
-		{
-			//m_renderX = (m_viewport.max - m_viewport.min).x / m_contentResolution.x;
-			//m_renderY = (m_viewport.max - m_viewport.min).y / m_contentResolution.y;
-		}
 	}
 	else
 	{

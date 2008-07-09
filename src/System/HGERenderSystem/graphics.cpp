@@ -1278,7 +1278,12 @@ void HGE_Impl::Gfx_Snapshot( HTEXTURE tex, RECT _rect )
 	LPDIRECT3DSURFACE8 dsurf;
 	dtext->GetSurfaceLevel(0, &dsurf );
 
-	D3DXLoadSurfaceFromSurface( dsurf, NULL, NULL, surf, NULL, &_rect, D3DX_DEFAULT, 0 );
+	RECT dest_rect;
+	dest_rect.top = 0;
+	dest_rect.left = 0;
+	dest_rect.right = _rect.right - _rect.left;
+	dest_rect.bottom = _rect.bottom - _rect.top;
+	D3DXLoadSurfaceFromSurface( dsurf, NULL, &dest_rect, surf, NULL, &_rect, D3DX_DEFAULT, 0 );
 	surf->Release();
 }
 

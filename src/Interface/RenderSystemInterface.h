@@ -178,8 +178,8 @@ namespace Menge
 class RenderImageInterface
 {
 public:
-	virtual float getWidth() const = 0;
-	virtual float getHeight() const = 0;
+	virtual std::size_t getWidth() const = 0;
+	virtual std::size_t getHeight() const = 0;
 	virtual void writeToFile( const char* _filename ) = 0;
 	virtual const char * getDescription() const = 0;
 	virtual unsigned char* lock() = 0;
@@ -409,7 +409,6 @@ public:
 	virtual void	setRenderArea( const float* _renderArea ) = 0;
 
 	virtual void	setFullscreenMode( float _width, float _height, bool _fullscreen ) = 0;
-	virtual void	setViewportDimensions( float _width, float _height, float _renderFactor ) = 0;
 	virtual void	setRenderTarget( const Menge::String& _name ) = 0;
 
 	//new

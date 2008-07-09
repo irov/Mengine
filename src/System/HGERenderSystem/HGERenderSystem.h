@@ -62,7 +62,6 @@ public:
 	void	setRenderArea( const float* _renderArea ) override;
 
 	void	setFullscreenMode( float _width, float _height, bool _fullscreen ) override;
-	void	setViewportDimensions( float _width, float _height, float _renderFactor ) override;
 	void	setRenderTarget( const Menge::String& _name ) override;
 
 	CameraInterface * createCamera( const char * _name ) override;

@@ -356,6 +356,10 @@ namespace	Menge
 			wm.v2.x -= m_layer->getSize().x * c;
 		}
 
+		/*mt::vec2f b = m_offset + mt::vec2f( m_size.x, 0.0f );
+		mt::vec2f c = m_offset + m_size;
+		mt::vec2f d = m_offset + mt::vec2f( 0.0f, m_size.y );*/
+
 		Holder<RenderEngine>::hostage()->renderImage(
 			wm,
 			m_offset,

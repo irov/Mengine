@@ -427,7 +427,7 @@ public:
 	virtual void		CALL	Texture_Free(HTEXTURE tex) = 0;
 	virtual int			CALL	Texture_GetWidth(HTEXTURE tex, bool bOriginal=false) = 0;
 	virtual int			CALL	Texture_GetHeight(HTEXTURE tex, bool bOriginal=false) = 0;
-	virtual DWORD*		CALL	Texture_Lock(HTEXTURE tex, bool bReadOnly=true, int left=0, int top=0, int width=0, int height=0) = 0;
+	virtual DWORD*		CALL	Texture_Lock(HTEXTURE tex, int* _pitch, bool bReadOnly=true, int left=0, int top=0, int width=0, int height=0) = 0;
 	virtual void		CALL	Texture_Unlock(HTEXTURE tex) = 0;
 
 	virtual void		CALL	Texture_WriteToFile(HTEXTURE tex, const char* _filename ) = 0;

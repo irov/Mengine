@@ -1,5 +1,6 @@
 
 #	include "HGETexture.h"
+#	include "Menge\PixelFormat.h"
 //#	include "HGE.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -107,11 +108,27 @@ const mt::vec2f& HGETexture::getUVMask() const
 //////////////////////////////////////////////////////////////////////////
 unsigned char* HGETexture::lock()
 {
-	return reinterpret_cast< unsigned char* >( m_hge->Texture_Lock( m_hTexture ) );
+	int pitch;
+	unsigned char* lock = reinterpret_cast< unsigned char* >( m_hge->Texture_Lock( m_hTexture, &pitch, true, 0, 0, m_width, m_height ) );
+	m_lockBuffer = new unsigned char[m_height * pitch];
+	
+	int mPitch = Menge::PixelUtil::getNumElemBytes( m_pixelFormat ) * m_width;
+	for( int i = 0; i < m_height; i++ )
+	{
+		std::copy( lock, lock + mPitch, m_lockBuffer );
+		//memcpy( _dstData, _srcData, width * 4 );
+		m_lockBuffer += mPitch;
+		lock += pitch;
+	}
+
+	m_lockBuffer -= mPitch * m_height;
+
+	return m_lockBuffer;
 }
 //////////////////////////////////////////////////////////////////////////
 void HGETexture::unlock()
 {
+	delete[] m_lockBuffer;
 	m_hge->Texture_Unlock( m_hTexture );
 }
 //////////////////////////////////////////////////////////////////////////

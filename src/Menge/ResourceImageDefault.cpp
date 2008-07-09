@@ -137,4 +137,14 @@ namespace Menge
 
 		m_vectorImageFrames.clear();
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageDefault::addImagePath( const String& _imagePath )
+	{
+		ImageDesc desc;
+		desc.fileName = _imagePath;
+		desc.isAlpha = false;
+		desc.offset = mt::vec2f( 0.0f, 0.0f );
+		desc.uv = mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f );
+		m_vectorImageDescs.push_back( desc );
+	}
 }

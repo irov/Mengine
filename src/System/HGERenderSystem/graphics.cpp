@@ -649,7 +649,7 @@ int CALL HGE_Impl::Texture_GetHeight(HTEXTURE tex, bool bOriginal)
 }
 
 
-DWORD * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int top, int width, int height)
+DWORD * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, int* _pitch, bool bReadOnly, int left, int top, int width, int height)
 {
 	LPDIRECT3DTEXTURE8 pTex=(LPDIRECT3DTEXTURE8)tex;
 	D3DSURFACE_DESC TDesc;
@@ -679,6 +679,7 @@ DWORD * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, bool bReadOnly, int left, int 
 		return 0;
 	}
 
+	*_pitch = TRect.Pitch;
 	return (DWORD *)TRect.pBits;
 }
 

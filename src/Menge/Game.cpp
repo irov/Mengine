@@ -829,7 +829,7 @@ namespace Menge
 		TAccountMap::iterator it = m_accounts.find( _accountName );
 		if( it != m_accounts.end() )
 		{
-			if( m_currentAccount->getName() == _accountName )
+			if( m_currentAccount && ( m_currentAccount->getName() == _accountName ) )
 			{
 				m_currentAccount = 0;
 			}

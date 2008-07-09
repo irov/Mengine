@@ -326,6 +326,7 @@ void HGERenderSystem::beginScene()
 	{
 		m_logSystem->logMessage("Error: D3D8 Failed to BeginScene");
 	}
+	m_hge->Gfx_SetClipping();
 	m_hge->Gfx_Clear( m_clearColor );
 
 	m_inRender = true;

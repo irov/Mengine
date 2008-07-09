@@ -189,7 +189,7 @@ namespace Menge
 		{
 			String path = Holder<FileEngine>::hostage()->getAppDataPath();
 			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
-			return path + currentAccount->getName();
+			return path + "\\" + currentAccount->getName();
 		}
 
 		static void s_setParticlesEnabled( bool _enable )

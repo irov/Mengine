@@ -2,6 +2,8 @@
 
 #	include "ResourceImage.h"
 
+#	include "Config/Typedef.h"
+
 #	include <vector>
 
 namespace Menge
@@ -34,6 +36,7 @@ namespace Menge
 		bool isAlpha( unsigned int _frame ) const override;
 
 		const RenderImageInterface * getImage( unsigned int _frame ) const override;
+		void addImagePath( const String& _imagePath );
 
 	public:
 		void loader( XmlElement * _xml ) override;

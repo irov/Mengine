@@ -176,27 +176,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::deleteFolder( const String& _path )
 	{
-		// needed for some plugins
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
-		SHFILEOPSTRUCTA fs;
-		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTA));
+		SHFILEOPSTRUCTW fs;
+		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTW));
 		fs.hwnd = NULL;
 
-		//char* dir = new char[len + 2];
-		char dir[MAX_PATH];
-		::GetCurrentDirectoryA( MAX_PATH, dir );
-		strcat_s( dir, _path.c_str() );
-		std::size_t len = strlen( dir );
-		dir[len] = 0;
-		dir[len+1] = 0;
-		fs.pFrom = dir;
+		wchar_t lpszW[MAX_PATH];
+		MultiByteToWideChar(CP_ACP, 0, _path.c_str(), -1, lpszW, _path.size() );
+		lpszW[_path.size()] = 0;
+		lpszW[_path.size()+1] = 0;
+
+		fs.pFrom = lpszW;
 		fs.wFunc = FO_DELETE;
 		fs.hwnd = NULL;
 		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
-		if( !::SHFileOperationA( &fs ) )
+		if( ::SHFileOperationW( &fs ) != 0 )
 		{
-			return true;
+			return false;
 		}
+		return true;
 #else
 #endif
 		/*TCHAR szBuf[80]; 
@@ -216,8 +214,8 @@ namespace Menge
 
 		MessageBox(NULL, szBuf, "Error", MB_OK); 
 
-		LocalFree(lpMsgBuf);*/
-		return false;
+		LocalFree(lpMsgBuf);
+		return false;*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::changeDir( const String& _path )

@@ -14,6 +14,7 @@
 
 #	include "ResourceManager.h"
 #	include "ResourceImageDynamic.h"
+#	include "ResourceImageDefault.h"
 
 #	include "Player.h"
 #	include "Application.h"
@@ -325,7 +326,8 @@ namespace Menge
 			RenderImageInterface* img = const_cast<RenderImageInterface*>( Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( _resource )->getImage( _frame ) );
 			Image wImage;
 			wImage.loadDynamicImage( img->lock(), img->getWidth(), img->getHeight(), 1, img->getPixelFormat() );
-			wImage.save( Holder<FileEngine>::hostage()->getAppDataPath() + _filename );
+			wImage.save( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _filename );
+			img->unlock();
 			//const_cast<RenderImageInterface*>(img)->writeToFile( _filename.c_str() );
 		}
 		static void setSoundEnabled( bool _enabled )
@@ -340,6 +342,16 @@ namespace Menge
 		{
 			Holder<ResourceManager>::hostage()->createResourceFromXml( _xml );
 		}
+
+		static void s_createImageResource( const String& _resourceName, const String& _filename )
+		{
+			ResourceImageDefault* resImage = 
+				static_cast<ResourceImageDefault*>
+				( Holder<ResourceManager>::hostage()->createResource( _resourceName, "ResourceImageDefault" ) );
+			resImage->addImagePath( _filename );
+			Holder<ResourceManager>::hostage()->registerResource( resImage );
+		}
+
 		static bool createFolder( const std::string& _path )
 		{
 			return Holder<FileEngine>::hostage()->createFolder( _path );
@@ -884,6 +896,7 @@ namespace Menge
 		pybind::def( "renderOneFrame", &ScriptMethod::renderOneFrame );
 		pybind::def( "writeImageToFile", &ScriptMethod::writeImageToFile );
 		pybind::def( "createResourceFromXml", &ScriptMethod::createResourceFromXml );
+		pybind::def( "createImageResource", &ScriptMethod::s_createImageResource );
 		pybind::def( "createFolder", &ScriptMethod::createFolder );
 		pybind::def( "deleteFolder", &ScriptMethod::deleteFolder );
 		pybind::def( "screenToLocal", &ScriptMethod::screenToLocal );

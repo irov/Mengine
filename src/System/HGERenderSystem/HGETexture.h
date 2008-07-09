@@ -41,4 +41,5 @@ private:
 	int m_ref;
 	mt::vec2f m_uvMask;
 	Menge::PixelFormat m_pixelFormat;
+	unsigned char* m_lockBuffer;
 };

@@ -306,15 +306,19 @@
 			Name="Resource"
 			>
 			<File
+				RelativePath=".\Buttons.ico"
+				>
+			</File>
+			<File
 				RelativePath=".\Game.rc"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\Share\pepepepe\ico.ico"
+				RelativePath="..\..\..\..\Share\pepepepe\menge.ico"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\Share\pepepepe\menge.ico"
+				RelativePath="..\..\..\..\Share\pepepepe\Pepelaz.ico"
 				>
 			</File>
 			<File

@@ -61,7 +61,7 @@ namespace	Menge
 
 		result = m_currentHotSpot->activate();
 
-		m_window = Holder<Application>::hostage()->getCurrentResolution();
+		m_window = Holder<RenderEngine>::hostage()->getRenderArea();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,13 +93,13 @@ namespace	Menge
 
 		Viewport viewport;
 		viewport.begin = mt::vec2f( 0.f, 0.f );
-		viewport.end = mt::vec2f( m_window.x, m_window.y );
+		viewport.end = mt::vec2f( 1024.0f, 768.0f );
 
 		Holder<RenderEngine>::hostage()
 			->setRenderViewport( viewport );
 
-		/*Holder<RenderEngine>::hostage()
-			->setRenderArea( mt::vec4f::zero_v4 );*/
+		Holder<RenderEngine>::hostage()
+			->setRenderArea( mt::vec4f::zero_v4 );
 
 		return true;
 	}
@@ -140,17 +140,17 @@ namespace	Menge
 		{
 			nPos.x = 0.0f;
 		}
-		else if( nPos.x > m_window.x )
+		else if( nPos.x > 1024.0f )
 		{
-			nPos.x = m_window.x;
+			nPos.x = 1024.0f;
 		}
 		if( nPos.y < 0.0f )
 		{
 			nPos.y = 0.0f;
 		}
-		else if( nPos.y > m_window.y )
+		else if( nPos.y > 768.0f )
 		{
-			nPos.y = m_window.y;
+			nPos.y = 768.0f;
 		}
 		setLocalPosition( nPos );
 	}

@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "SceneNode2D.h"
+#	include "Math/vec4.h"
 
 namespace Menge
 {
@@ -52,7 +53,7 @@ namespace Menge
 
 	protected:
 		mt::vec2f m_offsetClick;
-		mt::vec2f m_window;
+		mt::vec4f m_window;
 		HotSpot * m_currentHotSpot;
 		bool m_hided;
 	};

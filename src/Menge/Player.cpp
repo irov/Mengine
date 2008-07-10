@@ -362,10 +362,10 @@ namespace Menge
 			m_scene->render( _enableDebug  );
 		}
 				
-		/*if( m_arrow )
+		if( m_arrow )
 		{
 			m_arrow->render( _enableDebug );
-		}	*/
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onMouseLeave()

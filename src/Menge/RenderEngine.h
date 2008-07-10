@@ -129,6 +129,9 @@ namespace Menge
 		void onWindowClose();
 
 		void setRenderFactor( float _factor );
+		void setRenderTarget( const String& _target );
+		const mt::vec4f& getRenderArea() const;
+		const mt::mat3f& getRenderTransform() const;
 
 	protected:
 		::RenderSystemInterface * m_interface;
@@ -146,5 +149,6 @@ namespace Menge
 		float m_rendFactPix;
 		int m_windowWidth;
 		int m_windowHeight;
+		String m_currentRenderTarget;
 	};
 }

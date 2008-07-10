@@ -14,14 +14,11 @@ namespace Menge
 	public:
 		bool testPoint( const mt::vec2f & _point ) const;
 		bool testRectangle( const mt::vec2f & _min,  const mt::vec2f & _max ) const;
-		void setCamera( const std::string& _name );
-		const std::string& getCamera() const;
 	public:
 		void parallax( const mt::vec2f & _factor );
 
 	public:
 		mt::vec2f begin;
 		mt::vec2f end;
-		std::string m_camera;
 	};
 }

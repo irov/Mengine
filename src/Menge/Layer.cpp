@@ -11,6 +11,7 @@ namespace Menge
 		, m_size(0.f, 0.f)
 		, m_scene(0)
 		, m_renderArea( 0.0f, 0.0f, 0.0f, 0.0f )
+		, m_renderTarget( "defaultCamera" )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::setMain( bool _main )
@@ -60,7 +61,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::setRenderTarget( const std::string& _cameraName )
 	{
-		//Empty
+		m_renderTarget = _cameraName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
@@ -80,6 +81,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::_renderBegin()
 	{
+		Holder<RenderEngine>::hostage()
+			->setRenderTarget( m_renderTarget );
+
 		Holder<RenderEngine>::hostage()
 			->setRenderArea( m_renderArea );
 		return true;

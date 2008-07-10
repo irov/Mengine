@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+
 #	include "Node.h"
 #	include "NodeRenderable.h"
 
@@ -45,6 +47,7 @@ namespace Menge
 		mt::vec2f m_size;		
 
 		mt::vec4f m_renderArea;
+		String m_renderTarget;
 
 		Scene * m_scene;
 	};

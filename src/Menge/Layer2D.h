@@ -33,7 +33,6 @@ namespace Menge
 
 	public:
 		void setOffsetPosition( const mt::vec2f & _offset ) override;
-		void setRenderTarget( const std::string& _cameraName ) override;
 		bool needReRender();
 
 	public:

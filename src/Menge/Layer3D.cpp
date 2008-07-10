@@ -184,7 +184,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer3D::_renderBegin()
 	{
-		Holder<RenderEngine>::hostage()->setRenderViewport( m_viewport );
+		//Holder<RenderEngine>::hostage()->setRenderViewport( m_viewport );
+		Layer::_renderBegin();
 		Holder<RenderEngine>::hostage()->beginLayer3D();
 		return true;
 	}

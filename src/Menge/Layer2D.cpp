@@ -245,7 +245,6 @@ namespace	Menge
 		if( m_reRender )
 		{
 			Viewport viewport;
-			viewport.setCamera( m_viewport.getCamera() );
 			viewport.begin = m_viewport.begin + m_viewportOffset;
 			viewport.end = m_viewport.end + m_viewportOffset;
 			//m_viewport.begin += m_viewportOffset;
@@ -361,11 +360,6 @@ namespace	Menge
 	mt::vec2f Layer2D::screenToLocal( const mt::vec2f& _point )
 	{
 		return m_viewport.begin + _point;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::setRenderTarget( const std::string& _cameraName )
-	{
-		m_viewport.setCamera( _cameraName );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2D::needReRender()

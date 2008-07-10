@@ -61,7 +61,7 @@ namespace Menge
 		void setPhysicParams_();
 
 	private:
-		void render( bool _enableDebug ){ NodeRenderable::render( _enableDebug ); }
+		//void render( bool _enableDebug ){ NodeRenderable::render( _enableDebug ); }
 		bool isRenderable(){ return true; }
 		Viewport m_viewport;
 	};

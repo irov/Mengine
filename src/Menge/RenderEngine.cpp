@@ -14,6 +14,7 @@
 #	include "Image.h"
 #	include "Player.h"
 #	include "Arrow.h"
+#	include "Math/box2.h"
 
 namespace Menge
 {
@@ -94,11 +95,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::screenshot( RenderImageInterface* _image, const int* rect )
 	{
+		mt::vec2f offset;
+		mt::mul_v2_m3( offset, mt::vec2f( rect[0], rect[1] ), m_renderTransform );
+		int w = rect[2] - rect[0];
+		int h = rect[3] - rect[1];
 		int shotrect[4];
-		shotrect[0] = m_renderArea.x + rect[0];
-		shotrect[1] = m_renderArea.y + rect[1];
-		shotrect[2] = m_renderArea.x + rect[2];
-		shotrect[3] = m_renderArea.y + rect[3];
+		shotrect[0] = offset.x;
+		shotrect[1] = offset.y;
+		shotrect[2] = offset.x + w;
+		shotrect[3] = offset.y + h;
 		m_interface->screenshot( _image, &(shotrect[0]) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -115,16 +120,13 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderViewport( const Viewport & _viewport )
 	{
+
 		m_renderViewport = _viewport;
 		m_renderViewport.begin.x = ::floorf( m_renderViewport.begin.x + 0.5f );
 		m_renderViewport.begin.y = ::floorf( m_renderViewport.begin.y + 0.5f );
 		m_renderViewport.end.x = ::floorf( m_renderViewport.end.x + 0.5f );
 		m_renderViewport.end.y = ::floorf( m_renderViewport.end.y + 0.5f );
-		m_interface->setRenderTarget( m_renderViewport.getCamera() );
-		if( m_renderViewport.getCamera() == "defaultCamera" )
-		{
-			m_interface->setRenderArea( m_renderArea.m );
-		}
+
 	}
 	////////////////////////////////////////////////////////////////////////////
 	const Viewport & RenderEngine::getRenderViewport() const
@@ -243,7 +245,7 @@ namespace Menge
 		mt::mat3f transform = _transform;
 		transform.v2.v2 += -m_renderViewport.begin;
 		mt::mat3f tr = transform;
-		if( m_renderViewport.m_camera == "defaultCamera" )
+		if( m_currentRenderTarget == "defaultCamera" )
 		{
 			mt::mul_m3_m3( tr, transform, m_renderTransform );
 		}
@@ -490,9 +492,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endScene()
 	{
-		m_interface->beginLayer2D();
+		//m_interface->beginLayer2D();
 
-		Holder<Player>::hostage()->getArrow()->render( false );
+		//Holder<Player>::hostage()->getArrow()->render( false );
 
 		m_interface->endScene();
 	}
@@ -513,9 +515,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderArea( const mt::vec4f& _renderArea )
 	{
-		mt::vec4f renderArea;
-		renderArea.v2_0 = m_renderArea.v2_0 + _renderArea.v2_0;
-		renderArea.v2_1 = m_renderArea.v2_0 + _renderArea.v2_1;
+		mt::vec4f renderArea = _renderArea;
+		if( m_currentRenderTarget == "defaultCamera" )
+		{
+			mt::vec2f size = _renderArea.v2_1 - _renderArea.v2_0;
+			if( size == mt::vec2f::zero_v2 )
+			{
+				renderArea = m_renderArea;
+			}
+			else
+			{
+				mt::box2f area;
+				mt::set_box_from_oriented_extent( area, _renderArea.v2_0, _renderArea.v2_1 - _renderArea.v2_0, m_renderTransform );
+				renderArea.v2_0 = area.min;
+				renderArea.v2_1 = area.max;
+			}
+		}
 		m_interface->setRenderArea( renderArea.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -568,6 +583,25 @@ namespace Menge
 		m_renderTransform4[0][0] = areaWidth / m_windowWidth;
 		m_renderTransform4[1][1] = areaHeight / m_windowHeight;
 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::setRenderTarget( const String& _target )
+	{
+		if( m_currentRenderTarget != _target )
+		{
+			m_currentRenderTarget = _target;
+			m_interface->setRenderTarget( m_currentRenderTarget );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec4f& RenderEngine::getRenderArea() const
+	{
+		return m_renderArea;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::mat3f& RenderEngine::getRenderTransform() const
+	{
+		return m_renderTransform;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

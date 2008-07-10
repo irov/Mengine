@@ -110,4 +110,11 @@ namespace mt
 		delete V; 
 		return true;
 	}
+
+	MATH_INLINE bool triangulate_polygon(const mt::polygon & _polygon,
+			  std::vector<mt::vec2f> & _result)
+	{
+		return triangulate_polygon( _polygon.get_points(), _result);
+	}
+
 }

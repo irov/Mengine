@@ -21,7 +21,6 @@ namespace Menge
 		m_body->onApplyForceAndTorque();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT( RigidBody2D )
 	//////////////////////////////////////////////////////////////////////////
 	RigidBody2D::RigidBody2D()
@@ -57,11 +56,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY )
+	void RigidBody2D::onCollide( PhysicBody2DInterface * _otherObj, float _worldX, float _worldY, float _normalX, float _normalY )
 	{
 		if( getEvent( "ON_COLLIDE" ) )
 		{
-			RigidBody2D* other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
+			RigidBody2D * other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
 			callEvent( "ON_COLLIDE", "(OOffff)", this->getEmbedding(), other->getEmbedding(), _worldX, _worldY, _normalX, _normalY );
 		}
 	}
@@ -132,6 +131,7 @@ namespace Menge
 		{
 			float radius;
 			mt::vec2f pos;
+
 			XML_CASE_NODE( "Radius" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -140,6 +140,7 @@ namespace Menge
 				}
 				m_shapeCircleList.back().first = radius;
 			}
+
 			XML_CASE_NODE( "Position" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -159,6 +160,7 @@ namespace Menge
 			float height;
 			float angle;
 			mt::vec2f pos;
+
 			XML_CASE_NODE( "Width" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -167,6 +169,7 @@ namespace Menge
 				}
 				m_shapeBoxList.back().first.first = width;
 			}
+
 			XML_CASE_NODE( "Height" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -175,6 +178,7 @@ namespace Menge
 				}
 				m_shapeBoxList.back().first.second = height;
 			}
+
 			XML_CASE_NODE( "Position" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -183,6 +187,7 @@ namespace Menge
 				}
 				m_shapeBoxList.back().second.first = pos;
 			}
+
 			XML_CASE_NODE( "Angle" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
@@ -198,13 +203,11 @@ namespace Menge
 	{
 		if( !(m_interface->isFrozen() || m_interface->isStatic() || m_interface->isSleeping()) )
 		{
-
-			const float* pos = m_interface->getPosition();
+			const float * pos = m_interface->getPosition();
 			setLocalPosition( mt::vec2f( pos[0], pos[1] ) );
-			const float* orient = m_interface->getOrientation();
+
+			const float * orient = m_interface->getOrientation();
 			setLocalDirection( mt::vec2f( orient[0], orient[1] ) );
-
-
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -214,6 +217,7 @@ namespace Menge
 		{
 			_compile();
 		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -226,6 +230,7 @@ namespace Menge
 	bool RigidBody2D::_compile()
 	{
 		const mt::vec2f & position = getWorldPosition();
+
 		if( m_density == 0.0f )
 		{
 			m_interface = Holder<PhysicEngine2D>::hostage()->createStaticBody( position, 0.0f );
@@ -333,7 +338,7 @@ namespace Menge
 		m_constantForce = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PhysicBody2DInterface* RigidBody2D::getInterface()
+	PhysicBody2DInterface * RigidBody2D::getInterface()
 	{
 		return m_interface;
 	}
@@ -358,7 +363,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f RigidBody2D::getLinearVelocity() const
 	{
-		const float* v = m_interface->getLinearVelocity();
+		const float * v = m_interface->getLinearVelocity();
 		return mt::vec2f( v[0], v[1] );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -369,6 +374,7 @@ namespace Menge
 		m_velocity.x = _x;
 		m_velocity.y = _y;
 		m_countGravity = _countGravity;
+
 		if( m_interface )
 		{
 			m_interface->wakeUp();

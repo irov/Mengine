@@ -38,6 +38,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::loader( XmlElement * _xml )
 	{
+		//RigidBody2D::loader(_xml);
 		SceneNode2D::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
@@ -57,7 +58,7 @@ namespace Menge
 	void TilePolygon::_render( bool _enableDebug )
 	{
 		_renderPass( m_penumbra_triangles, 0xFFAAFFBB );
-		_renderPass( m_triangles, 0xFFFFFFFF );
+		_renderPass( m_triangles, 0xFFCFFFFF );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_renderPass( const std::vector<mt::vec2f> & _triangles, unsigned int _color )
@@ -87,7 +88,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TilePolygon::_activate()
 	{
-		if( SceneNode2D::_activate() == false )
+		if( RigidBody2D::_activate() == false )
 		{
 			return false;
 		}
@@ -97,16 +98,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_deactivate()
 	{
-		SceneNode2D::_deactivate();
+		RigidBody2D::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TilePolygon::_compile()
 	{
-		if( SceneNode2D::_compile() == false )
-		{
-			return false;
-		}
-
 		int size = m_poly.size();
 		int capacity = 5 * size;
 
@@ -153,21 +149,28 @@ namespace Menge
 
 		result = mt::decompose_concave(contour,polys);
 	
+		for(int i = 0; i < polys.size(); i++)
+		{
+			m_shapeList.push_back(polys[i]);
+		}
+
 		if(result == false)
 		{
 			MENGE_LOG( "Error: can't divide into polygons \n" );
 			return false;
 		}
 
-		//test
-		//setLocalPosition(mt::vec2f(200,50));
+		if( RigidBody2D::_compile() == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_release()
 	{
-		SceneNode2D::_release();
+		RigidBody2D::_release();
 
 		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
 
@@ -176,7 +179,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_update( float _timing )
 	{
-		SceneNode2D::_update(_timing);
+		RigidBody2D::_update(_timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_addVertex(const mt::vec2f & _vertex)

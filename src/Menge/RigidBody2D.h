@@ -41,8 +41,11 @@ namespace Menge
 
 	public:
 		virtual void loader( XmlElement * _xml ) override;
+
 		void _loaderPhysics( XmlElement * _xml );
 		void _addShapeBox( float _width, float _heigth, const mt::vec2f& _pos, float _angle );
+
+		void _addShapePolygon( std::vector<mt::vec2f> & _points );
 
 	// scripted
 	public:
@@ -76,7 +79,7 @@ namespace Menge
 		void _loaderShapeCircle( XmlElement * _xml );
 		void _loaderShapeBox( XmlElement * _xml );
 
-		BodyListenerProxy* m_listenerProxy;
+		BodyListenerProxy * m_listenerProxy;
 
 		float m_linearDamping;
 		float m_angularDamping;

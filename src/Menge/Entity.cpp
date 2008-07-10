@@ -543,7 +543,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY )
 	{
-		RigidBody2D* other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
+		RigidBody2D * other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
 		this->callEvent( "COLLIDE", "(OOffff)", RigidBody2D::getEmbedding(), other->getEmbedding(), _worldX, _worldY, _normalX, _normalY );
 	}
 	//////////////////////////////////////////////////////////////////////////

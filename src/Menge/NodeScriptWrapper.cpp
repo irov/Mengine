@@ -40,6 +40,8 @@
 
 #	include "RigidBody2D.h"
 
+#	include "TilePolygon.h"
+
 
 #	include "Color.h"
 #	include "C4AI.h"
@@ -477,6 +479,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( SoundEmitter );
 		SCRIPT_CLASS_WRAPPING( Emitter );
 		SCRIPT_CLASS_WRAPPING( Point );
+		SCRIPT_CLASS_WRAPPING( TilePolygon );
 		//SCRIPT_CLASS_WRAPPING( FFCamera3D );
 		//SCRIPT_CLASS_WRAPPING( DiscreteEntity );
 		//SCRIPT_CLASS_WRAPPING( RigidBody3D );
@@ -642,6 +645,7 @@ namespace Menge
 				.def( "alphaTo", &SceneNode2D::alphaTo )
 				.def( "setAlpha", &SceneNode2D::setAlpha )
 			;
+
 
 		/*pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
 				.def( "getWorldOrient", &SceneNode3D::getWorldOrient )
@@ -855,6 +859,9 @@ namespace Menge
 				.def( "setLinearVelocity", &RigidBody2D::setLinearVelocity )
 			;
 
+			
+			pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D>>("TilePolygon", false)
+			;
 		}		
 
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );

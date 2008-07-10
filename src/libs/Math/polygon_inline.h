@@ -248,6 +248,11 @@ namespace mt
 		return points.front();
 	}
 
+	MATH_INLINE const std::vector<mt::vec2f> & polygon::get_points() const
+	{
+		return points;
+	}
+
 	MATH_INLINE vec2f & polygon::back()
 	{
 		return points.back();

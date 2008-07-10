@@ -42,6 +42,8 @@ namespace mt
 		MATH_INLINE vec2f & back();
 		MATH_INLINE const vec2f & back() const;
 
+		MATH_INLINE const std::vector<mt::vec2f> & get_points() const;
+
 		//	return extrem point in direction
 		MATH_INLINE mt::vec2f support( const mt::vec2f& normal )  const;
 
@@ -72,6 +74,7 @@ namespace mt
 	MATH_INLINE bool operator==(const polygon& _a, const polygon& _b);
 	MATH_INLINE bool operator!=(const polygon& _a, const polygon& _b);
 	MATH_INLINE float polygon_area( const std::vector<mt::vec2f> & _contour );
+	int decompose_concave(std::vector<mt::vec2f> & points, std::vector<mt::polygon> & results);
 };
 
 #	if MATH_FORCE_INLINE == 1

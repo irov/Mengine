@@ -1,15 +1,15 @@
 #	pragma once
 #	include "math\vec2.h"
 #	include "math\polygon.h"
-#	include "math\convexpoly2.h"
-#	include "SceneNode2D.h"
+#	include "math\polygon.h"
+#	include "RigidBody2D.h"
 
 namespace Menge
 {
 	class ResourceImage;
 
 	class TilePolygon
-		: public SceneNode2D
+		: public RigidBody2D
 	{
 		OBJECT_DECLARE(TilePolygon)
 
@@ -37,7 +37,7 @@ namespace Menge
 		std::string m_resourcename;
 		
 		std::vector<mt::vec2f> m_poly;
-		std::vector<mt::convexpoly2> polys;
+		std::vector<mt::polygon> polys;
 		std::vector<mt::vec2f> m_triangles;
 		std::vector<mt::vec2f> m_penumbra_triangles;
 		

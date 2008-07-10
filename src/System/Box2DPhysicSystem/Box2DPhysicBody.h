@@ -23,7 +23,6 @@ public:
 		float _density, float _friction, float _restitution, bool _isSensor,
 		unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) override;
 
-
 	const float * getPosition() const override;
 	void setPosition( float _x, float _y ) override;
 	const float * getOrientation() override;

@@ -9,6 +9,8 @@
 
 #	include "mat3.h"
 
+#	include	"line.h"
+
 #	include <vector>
 #	include <algorithm>
 
@@ -40,19 +42,11 @@ namespace mt
 		MATH_INLINE vec2f & back();
 		MATH_INLINE const vec2f & back() const;
 
-		MATH_INLINE bool is_convex() const;
-
 		//	return extrem point in direction
 		MATH_INLINE mt::vec2f support( const mt::vec2f& normal )  const;
 
-	private:
-		MATH_INLINE void check_edges_convex( TVectorPoints::size_type i );
-
 	private:		
 		TVectorPoints points;
-
-		char convex_value;
-		bool convex_state;		
 	};
 
 	MATH_INLINE bool cmp_poly_poly(const polygon& _a, const polygon& _b);
@@ -73,8 +67,11 @@ namespace mt
 		const mt::mat3f & worldMatrixA,
 		const mt::mat3f & worldMatrixB);
 
+	MATH_INLINE bool make_countour_polygon( const std::vector<mt::vec2f> & _polygon, float _width, std::vector<mt::vec2f> & _contour );
+
 	MATH_INLINE bool operator==(const polygon& _a, const polygon& _b);
 	MATH_INLINE bool operator!=(const polygon& _a, const polygon& _b);
+	MATH_INLINE float polygon_area( const std::vector<mt::vec2f> & _contour );
 };
 
 #	if MATH_FORCE_INLINE == 1

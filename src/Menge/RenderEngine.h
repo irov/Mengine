@@ -63,6 +63,19 @@ namespace Menge
 			EBlendFactor _src = BF_SOURCE_ALPHA,
 			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
 
+		void renderTriple(		
+			const mt::mat3f & _transform, 
+			const mt::vec2f & _a,
+			const mt::vec2f & _b,
+			const mt::vec2f & _c,
+			const mt::vec2f & _uv0,
+			const mt::vec2f & _uv1,
+			const mt::vec2f & _uv2,
+			unsigned int _color, 
+			const RenderImageInterface* _image,
+			EBlendFactor _src = BF_SOURCE_ALPHA,
+			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
+
 		void renderMesh(
 			const std::vector<TVertex>& _vertexData,
 			const std::vector<uint16>& _indexData, 

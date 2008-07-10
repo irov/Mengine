@@ -40,6 +40,7 @@
 #	include "ShadowCaster2D.h"
 #	include "Point.h"
 #	include "RigidBody2D.h"
+#	include "TilePolygon.h"
 #	include "SoundEmitter.h"
 #	include "Sprite.h"
 #	include "TextField.h"
@@ -342,6 +343,7 @@ namespace Menge
 		OBJECT_FACTORY( HotSpot );
 		OBJECT_FACTORY( Light2D );
 		OBJECT_FACTORY( ShadowCaster2D );
+		OBJECT_FACTORY( TilePolygon );
 		OBJECT_FACTORY( Point );
 		OBJECT_FACTORY( RigidBody2D );
 		OBJECT_FACTORY( SoundEmitter );

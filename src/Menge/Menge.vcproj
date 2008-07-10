@@ -1550,6 +1550,14 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath=".\TilePolygon.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\TilePolygon.h"
+			>
+		</File>
+		<File
 			RelativePath=".\Utils.cpp"
 			>
 		</File>

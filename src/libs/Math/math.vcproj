@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="Math"
 	ProjectGUID="{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0}"
 	RootNamespace="MathProject"
@@ -274,18 +274,18 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="quat"
+			Name="line"
 			>
 			<File
-				RelativePath=".\quat.cpp"
+				RelativePath=".\line.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\quat.h"
+				RelativePath=".\line.h"
 				>
 			</File>
 			<File
-				RelativePath=".\quat_inline.h"
+				RelativePath=".\line_inline.h"
 				>
 			</File>
 		</Filter>
@@ -358,6 +358,38 @@
 			>
 			<File
 				RelativePath=".\rand.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="quat"
+			>
+			<File
+				RelativePath=".\quat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\quat.h"
+				>
+			</File>
+			<File
+				RelativePath=".\quat_inline.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="triangulation"
+			>
+			<File
+				RelativePath=".\triangulation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\triangulation.h"
+				>
+			</File>
+			<File
+				RelativePath=".\triangulation_inline.h"
 				>
 			</File>
 		</Filter>

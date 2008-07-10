@@ -5,20 +5,14 @@
 namespace mt
 {
 	MATH_INLINE polygon::polygon()
-		: convex_value(0)
-		, convex_state(false)
 	{}
 
 	MATH_INLINE polygon::polygon( TVectorPoints::size_type n)
-		: convex_value(0)
-		, convex_state(false)
 	{
 		points.resize(n);
 	}
 
 	MATH_INLINE polygon::polygon( const polygon & _rhs )
-		: convex_value(0)
-		, convex_state(false)
 	{
 		points = _rhs.points;
 	}
@@ -213,36 +207,6 @@ namespace mt
 	MATH_INLINE void polygon::add_point(const vec2f& v)
 	{
 		points.push_back(v);
-
-		if( points.size() > 2) 
-		{
-			check_edges_convex(points.size() - 3);
-		}
-	}
-
-	MATH_INLINE void polygon::check_edges_convex( size_t i )
-	{
-		TVectorPoints::size_type size = points.size();
-		TVectorPoints::size_type j = (i + 1) % size;
-		TVectorPoints::size_type k = (i + 2) % size;
-
-		float value  = pseudo_cross_v2(points[j] - points[i], points[k] - points[j]);
-
-		if (value < 0)
-		{
-			convex_value |= 1;
-		}
-		else if (value > 0) 
-		{
-			convex_value |= 2;
-		}
-
-		if (convex_value == 3)
-		{
-			convex_state = false;
-		}
-
-		convex_state = (convex_value != 0);
 	}
 
 	MATH_INLINE void polygon::insert( TVectorPoints::size_type after, const vec2f & v )
@@ -252,26 +216,11 @@ namespace mt
 		if(after < size)
 		{
 			points.insert(points.begin() + after, v);
-
-			if( points.size() > 2) 
-			{
-				check_edges_convex(after - 1);
-			}
-
-			if( after + 2 < points.size() ) 
-			{
-				check_edges_convex(after);
-			}
 		}
 		else
 		{
 			points.push_back(v);
 		}
-	}
-
-	MATH_INLINE bool polygon::is_convex() const
-	{
-		return convex_state;
 	}
 
 	MATH_INLINE polygon::TVectorPoints::size_type polygon::num_points() const
@@ -553,4 +502,79 @@ namespace mt
 		}
 		return	rmin == 0 ? is_left_v2(poly[size - 1], poly[0], poly[1]) : is_left_v2(poly[rmin - 1], poly[rmin], poly[rmin + 1]);
 	}
+	//////////////////////////////////////////////////////////////////////////
+	MATH_INLINE bool make_countour_polygon( const std::vector<mt::vec2f> & _polygon, float _width, std::vector<mt::vec2f> & _contour )
+	{
+		// CCW порядок! // if (!CCW) _width*=-1;
+		// no holes!!
+		if(_polygon.size() < 3)
+		{
+			return false;
+		}
+
+		mt::vec2f common_point;
+
+		mt::vec2f edge = _polygon[1] - _polygon[0];
+		mt::vec2f normal = mt::perp(edge);
+
+		normal = mt::norm_safe_v2(normal);
+
+		mt::vec2f prevStart = _polygon[0] - normal * _width;
+		mt::vec2f prevEnd = _polygon[1] - normal * _width;
+
+		mt::vec2f start;
+		mt::vec2f end;
+
+		_contour.push_back(prevStart);
+		_contour.push_back(prevEnd);
+			
+		for(int i = 1; i < _polygon.size();i++)
+		{
+			int next_i = (i + 1) % _polygon.size();
+
+			edge = _polygon[next_i] - _polygon[i];
+
+			normal = mt::perp(edge);
+
+			normal = mt::norm_safe_v2(normal);
+
+			start = _polygon[i] - normal * _width;
+			end = _polygon[next_i] - normal * _width;
+
+			bool result = mt::line_intersect_v2(
+				prevStart, prevEnd, start, end, common_point);
+
+			if(result == true)
+			{
+				_contour.pop_back();
+				_contour.push_back(common_point);
+			}
+			else
+			{
+				_contour.push_back(start);
+			}
+
+			_contour.push_back(end);
+
+			prevStart = start;
+			prevEnd = end;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MATH_INLINE float polygon_area( const std::vector<mt::vec2f> & _contour )
+	{  
+		int n = _contour.size(); 
+
+		float A = 0.0f;  
+		
+		for(int p = n-1, q = 0; q < n; p = q++)
+		{
+			A += _contour[p].x * _contour[q].y - _contour[q].x * _contour[p].y;
+		}
+
+		return A * 0.5f;
+	}   
+	//////////////////////////////////////////////////////////////////////////
 };

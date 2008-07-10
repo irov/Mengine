@@ -71,6 +71,8 @@ D3DFORMAT s_toD3DFormat( int _format )
 
 void CALL HGE_Impl::Gfx_Clear( DWORD color )
 {
+
+	//pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 	if( pCurTarget )
 	{
 		if( pCurTarget->pDepth )
@@ -712,7 +714,20 @@ void HGE_Impl::_render_batch( bool bEndScene )
 					break;
 
 				case HGEPRIM_TRIPLES:
+					//добавил сет рендер стейт
+					//DWORD state;
+					//pD3DDevice->GetRenderState(D3DRS_WRAP0,&state);
+					//pD3DDevice->SetRenderState(D3DRS_WRAP0,D3DWRAP_U | D3DWRAP_V);
+					pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_WRAP);
+					pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_WRAP);
+					//
 					pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, nPrim);
+
+					pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
+					pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
+
+					//
+					//pD3DDevice->SetRenderState(D3DRS_WRAP0,state);
 					break;
 
 				case HGEPRIM_LINES:

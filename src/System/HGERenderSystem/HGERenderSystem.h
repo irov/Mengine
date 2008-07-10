@@ -46,6 +46,18 @@ public:
 		EBlendFactor _src,
 		EBlendFactor _dst) override;
 
+	void renderTriple(const float * _transform,  
+								  const float * _a, 
+								  const float * _b, 
+								  const float * _c, 
+								  const float * _uv0, 
+								  const float * _uv1,
+								  const float * _uv2, 
+								  unsigned int _color,  
+								  const RenderImageInterface * _image, 
+								  EBlendFactor _src, 
+								  EBlendFactor _dst ) override;
+
 	void renderMesh( const TVertex* _vertices, std::size_t _verticesNum,
 					const Menge::uint16*	_indices, std::size_t _indicesNum,
 					TMaterial* _material ) override;

@@ -260,6 +260,40 @@ namespace Menge
 			_dst);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderTriple(		
+			const mt::mat3f & _transform, 
+			const mt::vec2f & _a,
+			const mt::vec2f & _b,
+			const mt::vec2f & _c,
+			const mt::vec2f & _uv0,
+			const mt::vec2f & _uv1,
+			const mt::vec2f & _uv2,
+			unsigned int _color, 
+			const RenderImageInterface* _image,
+			EBlendFactor _src,
+			EBlendFactor _dst)
+	{
+		mt::mat3f transform = _transform;
+		transform.v2.v2 += -m_renderViewport.begin;
+		mt::mat3f tr = transform;
+		if( m_renderViewport.m_camera == "defaultCamera" )
+		{
+			mt::mul_m3_m3( tr, transform, m_renderTransform );
+		}
+		m_interface->renderTriple(
+			tr.m,
+			_a.m,
+			_b.m,
+			_c.m,
+			_uv0.m,
+			_uv1.m,
+			_uv2.m,
+			_color,
+			_image,
+			_src,
+			_dst);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderLine(	
 		unsigned int _color,
 		const mt::vec2f & _begin,

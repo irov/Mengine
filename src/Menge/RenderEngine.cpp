@@ -278,7 +278,7 @@ namespace Menge
 		mt::mat3f transform = _transform;
 		transform.v2.v2 += -m_renderViewport.begin;
 		mt::mat3f tr = transform;
-		if( m_renderViewport.m_camera == "defaultCamera" )
+		if( m_currentRenderTarget == "defaultCamera" )
 		{
 			mt::mul_m3_m3( tr, transform, m_renderTransform );
 		}

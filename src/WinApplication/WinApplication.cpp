@@ -4,6 +4,8 @@
 
 #	include "Config/Config.h"
 
+#	include "Game/resource.h"
+
 #if	SAVE_DUMP == 1
 	#include <dbghelp.h>
 	#include <shellapi.h>
@@ -331,7 +333,7 @@ WINDOW_HANDLE WinApplication::createWindow( const char* _name, float _width, flo
 	0, 
 	0, 
 	hInstance,
-	LoadIcon(0, IDI_APPLICATION), LoadCursor(NULL, IDC_ARROW),
+	LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MENGE)), LoadCursor(NULL, IDC_ARROW),
 	(HBRUSH)GetStockObject(BLACK_BRUSH), 0, "MengeWnd" 
 	};
 	::RegisterClass(&wc);

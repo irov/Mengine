@@ -30,7 +30,7 @@ namespace Menge
 			return false;
 		}
 
-		unsigned int size = file->size();
+		std::size_t size = file->size();
 
 		XmlExpatParser * parser = m_parser;
 		bool new_parser = false;
@@ -64,7 +64,7 @@ namespace Menge
 			return false;				 
 		}
 
-		unsigned int size = _file->size();
+		std::size_t size = _file->size();
 
 		XmlExpatParser * parser = m_parser;
 		bool new_parser = false;

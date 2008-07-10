@@ -1,20 +1,20 @@
-#	include "SceneNode3D-649.h"
+#	include "SceneNode3D.h"
 #	include "ObjectImplement.h"
 #	include "LogEngine.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OBJECT_IMPLEMENT( SceneNode3D_ );
+	OBJECT_IMPLEMENT( SceneNode3D );
 	//////////////////////////////////////////////////////////////////////////
-	SceneNode3D_::SceneNode3D_()
+	SceneNode3D::SceneNode3D()
 		: m_yaw( 0.0f )
 		, m_pitch( 0.0f )
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & SceneNode3D_::getWorldMatrix()
+	const mt::mat4f & SceneNode3D::getWorldMatrix()
 	{
 		if( m_parent == 0 )
 		{
@@ -23,12 +23,12 @@ namespace Menge
 
 		updateMatrix( m_parent );
 
-		return Allocator3D_::getWorldMatrix();
+		return Allocator3D::getWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D_::changePivot()
+	void SceneNode3D::changePivot()
 	{
-		Allocator3D_::changePivot();
+		Allocator3D::changePivot();
 
 		for( TListChildren::iterator
 			it = m_listChildren.begin(),
@@ -40,15 +40,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D_::loader( XmlElement * _xml )
+	void SceneNode3D::loader( XmlElement * _xml )
 	{
-		Allocator3D_::loader( _xml );
+		Allocator3D::loader( _xml );
 		Renderable3D::loader( _xml );
 
 		Node::loader( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D_::yaw( float _degrees )
+	void SceneNode3D::yaw( float _degrees )
 	{
 		mt::rotate_axis_m4( m_localMatrix, m_fixedUp, _degrees);
 
@@ -57,7 +57,7 @@ namespace Menge
 		m_yaw += _degrees;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D_::pitch( float _degrees )
+	void SceneNode3D::pitch( float _degrees )
 	{
 		const mt::vec3f & axis = getLocalStrafe();
 
@@ -68,17 +68,17 @@ namespace Menge
 		m_pitch += _degrees;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D_::yawTime( float _degrees, float _time )
+	void SceneNode3D::yawTime( float _degrees, float _time )
 	{
 		m_yawTime.start( 0.0f, _degrees, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D_::pitchTime( float _degrees, float _time )
+	void SceneNode3D::pitchTime( float _degrees, float _time )
 	{
 		m_pitchTime.start( 0.0f, _degrees, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D_::_update( float _timing )
+	void SceneNode3D::_update( float _timing )
 	{
 		float v;
 		if( m_yawTime.isStarted() )
@@ -100,17 +100,17 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SceneNode3D_::getYaw()
+	float SceneNode3D::getYaw()
 	{
 		return m_yaw;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SceneNode3D_::getPitch()
+	float SceneNode3D::getPitch()
 	{
 		return m_pitch;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D_::_setListener()
+	void SceneNode3D::_setListener()
 	{
 		registerEvent( "YAWTIME_END", "onYawTimeEnd", m_listener );
 		registerEvent( "PITCHTIME_END", "onPitchTimeEnd", m_listener );

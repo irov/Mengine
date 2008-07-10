@@ -1,8 +1,7 @@
 #	pragma once
 
 #	include "Layer.h"
-#	include "SceneNode3D-649.h"
-//#	include "SceneNode3D.h"
+#	include "SceneNode3D.h"
 #	include "Viewport.h"
 
 namespace Menge
@@ -13,7 +12,7 @@ namespace Menge
 
 	class Layer3D
 		: public Layer
-		, public SceneNode3D_
+		, public SceneNode3D
 	{
 		OBJECT_DECLARE(Layer3D);
 

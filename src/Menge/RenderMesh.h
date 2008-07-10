@@ -1,5 +1,5 @@
 #	pragma once
-#	include "SceneNode3D-649.h"
+#	include "SceneNode3D.h"
 
 #	include "RenderEngine.h"
 
@@ -10,7 +10,7 @@ namespace Menge
 	class ResourceMaterial;
 
 	class RenderMesh 
-		: public SceneNode3D_
+		: public SceneNode3D
 	{
 		OBJECT_DECLARE( RenderMesh );
 	public:

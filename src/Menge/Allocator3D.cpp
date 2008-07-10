@@ -1,4 +1,4 @@
-#	include "Allocator3D-649.h"
+#	include "Allocator3D.h"
 
 #	include "XmlEngine.h"
 
@@ -7,7 +7,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Allocator3D_::Allocator3D_()
+	Allocator3D::Allocator3D()
 		: m_changePivot(false)
 		, m_fixedUp( 0.0, 1.f, 0.f )
 	{
@@ -15,87 +15,87 @@ namespace Menge
 		mt::ident_m4(m_worldMatrix);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D_::changePivot()
+	void Allocator3D::changePivot()
 	{
 		_changePivot();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D_::_changePivot()
+	void Allocator3D::_changePivot()
 	{
 		m_changePivot = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Allocator3D_::isChangePivot()const
+	bool Allocator3D::isChangePivot()const
 	{
 		return m_changePivot;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & Allocator3D_::getWorldPosition()
+	const mt::vec3f & Allocator3D::getWorldPosition()
 	{
 		const mt::mat4f &wm = getWorldMatrix();
 
 		return wm.v3.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & Allocator3D_::getWorldDirection()
+	const mt::vec3f & Allocator3D::getWorldDirection()
 	{
 		const mt::mat4f &wm = getWorldMatrix();
 
 		return wm.v2.v3;
 	}
-	const mt::vec3f & Allocator3D_::getWorldStrafe()
+	const mt::vec3f & Allocator3D::getWorldStrafe()
 	{
 		const mt::mat4f &wm = getWorldMatrix();
 
 		return wm.v0.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Allocator3D_::getWorldMatrix()
+	const mt::mat4f & Allocator3D::getWorldMatrix()
 	{
 		return m_worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & Allocator3D_::getLocalPosition()const
+	const mt::vec3f & Allocator3D::getLocalPosition()const
 	{
 		return m_localMatrix.v3.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f & Allocator3D_::getLocalPosition()
+	mt::vec3f & Allocator3D::getLocalPosition()
 	{
 		return m_localMatrix.v3.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & Allocator3D_::getLocalDirection()const
+	const mt::vec3f & Allocator3D::getLocalDirection()const
 	{
 		return m_localMatrix.v2.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f & Allocator3D_::getLocalDirection()
+	mt::vec3f & Allocator3D::getLocalDirection()
 	{
 		return m_localMatrix.v2.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & Allocator3D_::getLocalStrafe()const
+	const mt::vec3f & Allocator3D::getLocalStrafe()const
 	{
 		return m_localMatrix.v0.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f & Allocator3D_::getLocalStrafe()
+	mt::vec3f & Allocator3D::getLocalStrafe()
 	{
 		return m_localMatrix.v0.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Allocator3D_::getLocalMatrix()const
+	const mt::mat4f & Allocator3D::getLocalMatrix()const
 	{
 		return m_localMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::mat4f & Allocator3D_::getLocalMatrix()
+	mt::mat4f & Allocator3D::getLocalMatrix()
 	{
 		return m_localMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D_::setLocalPosition( const mt::vec3f &position )
+	void Allocator3D::setLocalPosition( const mt::vec3f &position )
 	{
 		mt::vec3f & localPosition = getLocalPosition();
 
@@ -104,7 +104,7 @@ namespace Menge
 		changePivot();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D_::setDirection( const mt::vec3f &direction )
+	void Allocator3D::setDirection( const mt::vec3f &direction )
 	{
 		mt::norm_v3( m_localMatrix.v3_2, direction );
 
@@ -114,14 +114,14 @@ namespace Menge
 		changePivot();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D_::translate( const mt::vec3f &delta )
+	void Allocator3D::translate( const mt::vec3f &delta )
 	{
 		m_localMatrix.v3.v3 += delta;
 
 		changePivot();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D_::updateMatrix( Allocator3D_ * _parent )
+	void Allocator3D::updateMatrix( Allocator3D * _parent )
 	{
 		if( m_changePivot == false )
 		{
@@ -141,12 +141,12 @@ namespace Menge
 		m_changePivot = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D_::_updateMatrix( Allocator3D_ * _parent )
+	void Allocator3D::_updateMatrix( Allocator3D * _parent )
 	{
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D_::loader( XmlElement * _xml )
+	void Allocator3D::loader( XmlElement * _xml )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
@@ -155,7 +155,7 @@ namespace Menge
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					//XML_CASE_ATTRIBUTE("Value", m_localMatrix);
-					XML_CASE_ATTRIBUTE_MEMBER( "Position", &Allocator3D_::setLocalPosition );
+					XML_CASE_ATTRIBUTE_MEMBER( "Position", &Allocator3D::setLocalPosition );
 				}
 
 				changePivot();

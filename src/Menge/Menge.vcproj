@@ -657,14 +657,6 @@
 			Name="Camera"
 			>
 			<File
-				RelativePath=".\Allocator3D-649.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Allocator3D-649.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Camera2D.cpp"
 				>
 			</File>
@@ -673,11 +665,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Camera3D-649.cpp"
+				RelativePath=".\Camera3D.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\Camera3D-649.h"
+				RelativePath=".\Camera3D.h"
 				>
 			</File>
 			<File
@@ -686,22 +678,6 @@
 			</File>
 			<File
 				RelativePath=".\Frustum.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Renderable3D.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Renderable3D.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SceneNode3D-649.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SceneNode3D-649.h"
 				>
 			</File>
 			<File
@@ -1163,6 +1139,38 @@
 			<Filter
 				Name="SceneNode3D"
 				>
+				<File
+					RelativePath=".\SceneNode3D.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\SceneNode3D.h"
+					>
+				</File>
+				<Filter
+					Name="Allocator3D"
+					>
+					<File
+						RelativePath=".\Allocator3D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Allocator3D.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Renderable3D"
+					>
+					<File
+						RelativePath=".\Renderable3D.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\Renderable3D.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Layer2D"

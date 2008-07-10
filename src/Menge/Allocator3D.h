@@ -6,10 +6,10 @@ class XmlElement;
 
 namespace Menge
 {
-	class Allocator3D_
+	class Allocator3D
 	{
 	public:
-		Allocator3D_();
+		Allocator3D();
 
 	public:
 		virtual const mt::vec3f & getWorldPosition();
@@ -38,14 +38,14 @@ namespace Menge
 		void loader( XmlElement * _xml );
 
 	public:
-		void updateMatrix( Allocator3D_ * _parent );
+		void updateMatrix( Allocator3D * _parent );
 
 		virtual void changePivot();
 		bool isChangePivot()const;
 
 	protected:
 		virtual void _changePivot();
-		virtual void _updateMatrix( Allocator3D_ * _parent );
+		virtual void _updateMatrix( Allocator3D * _parent );
 
 	protected:
 		mt::mat4f m_localMatrix;

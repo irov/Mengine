@@ -1,19 +1,19 @@
 #	pragma once
 
-#	include "SceneNode3D-649.h"
+#	include "SceneNode3D.h"
 
 #	include "Frustum.h"
 
 namespace Menge
 {
-	class Camera3D_
-		: public SceneNode3D_
+	class Camera3D
+		: public SceneNode3D
 		, public Frustum
 	{
-		OBJECT_DECLARE( Camera3D_ )
+		OBJECT_DECLARE( Camera3D )
 
 	public:
-		Camera3D_();
+		Camera3D();
 
 		void lookAt(const mt::vec3f& _targetPoint);
 		mt::vec3f getDirectionFromMouse( float _xm, float _ym );
@@ -23,7 +23,7 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 	protected:
-		void _updateMatrix( Allocator3D_ * _parent ) override;
+		void _updateMatrix( Allocator3D * _parent ) override;
 		bool _renderBegin() override;
 		bool _activate() override;
 

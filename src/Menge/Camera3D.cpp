@@ -1,4 +1,4 @@
-#	include "Camera3D-649.h"
+#	include "Camera3D.h"
 
 #	include "ObjectImplement.h"
 
@@ -8,26 +8,26 @@
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OBJECT_IMPLEMENT( Camera3D_ );
+	OBJECT_IMPLEMENT( Camera3D );
 	//////////////////////////////////////////////////////////////////////////
-	Camera3D_::Camera3D_()
+	Camera3D::Camera3D()
 		: m_at( 0.0f, 0.0f, 0.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera3D_::lookAt(const mt::vec3f& _targetPoint)
+	void Camera3D::lookAt(const mt::vec3f& _targetPoint)
 	{
 		setDirection( _targetPoint - m_localMatrix.v3_3 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & Camera3D_::getViewMatrix()
+	const mt::mat4f & Camera3D::getViewMatrix()
 	{	
 		updateMatrix( m_parent );
 
 		return m_viewMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera3D_::_updateMatrix( Allocator3D_ * _parent )
+	void Camera3D::_updateMatrix( Allocator3D * _parent )
 	{
 		//const mt::mat4f & wm = getLocalMatrix();
 
@@ -40,7 +40,7 @@ namespace	Menge
 		recalc( m_worldMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f Camera3D_::getDirectionFromMouse( float _xm, float _ym )
+	mt::vec3f Camera3D::getDirectionFromMouse( float _xm, float _ym )
 	{
 		const mt::mat4f &projMatrix = getProjectionMatrix();
 		const mt::mat4f &viewMatrix = getViewMatrix();
@@ -58,9 +58,9 @@ namespace	Menge
 		return -out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera3D_::loader( XmlElement * _xml )
+	void Camera3D::loader( XmlElement * _xml )
 	{
-		SceneNode3D_::loader( _xml );
+		SceneNode3D::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Aspect", "Value", m_aspect );
@@ -70,14 +70,14 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Camera3D_::_renderBegin()
+	bool Camera3D::_renderBegin()
 	{		
 		Holder<RenderEngine>::hostage()->setViewMatrix( getViewMatrix() );
 		Holder<RenderEngine>::hostage()->setProjectionMatrix( getProjectionMatrix() );
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Camera3D_::_activate()
+	bool Camera3D::_activate()
 	{
 		lookAt( m_at );
 

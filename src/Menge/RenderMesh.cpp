@@ -25,7 +25,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh::loader( XmlElement * _xml )
 	{
-		SceneNode3D_::loader( _xml );
+		SceneNode3D::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourceName );
@@ -48,7 +48,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMesh::_compile()
 	{
-		if( SceneNode3D_::_compile() == false )
+		if( SceneNode3D::_compile() == false )
 		{
 			return false;
 		}
@@ -77,7 +77,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh::_release()
 	{
-		SceneNode3D_::_release();
+		SceneNode3D::_release();
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceMesh );

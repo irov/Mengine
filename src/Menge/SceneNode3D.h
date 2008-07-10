@@ -3,23 +3,23 @@
 #	include "Node.h"
 #	include "NodeChildren.h"
 
-#	include "Allocator3D-649.h"
+#	include "Allocator3D.h"
 #	include "Renderable3D.h"
 
 #	include "ValueInterpolator.h"
 
 namespace Menge
 {
-	class SceneNode3D_
+	class SceneNode3D
 		: public virtual Node
-		, public NodeChildren<SceneNode3D_>
-		, public Allocator3D_
+		, public NodeChildren<SceneNode3D>
+		, public Allocator3D
 		, public Renderable3D
 	{
-		OBJECT_DECLARE( SceneNode3D_ );
+		OBJECT_DECLARE( SceneNode3D );
 	public:
 
-		SceneNode3D_();
+		SceneNode3D();
 
 		void yaw( float _degrees );
 		void pitch( float _degrees );

@@ -84,7 +84,8 @@ void ALSoundSource::play()
 	if( !m_looped /*&& !m_soundBuffer->isStreamed()*/ )
 	{
 		//printf("register playing %d ms\n", getLengthMs());
-		m_soundSystem->registerPlaying( this, getLengthMs() );
+		int lengthMs = getLengthMs();
+		m_soundSystem->registerPlaying( this, lengthMs );
 	}
 	//CreateTimerQueueTimer( &m_stopCallbackHandle, NULL, (WAITORTIMERCALLBACK)ListenStoppedCallback, this, getLengthMs(), 0, WT_EXECUTEONLYONCE );
 	m_playing = true;

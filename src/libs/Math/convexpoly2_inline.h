@@ -19,19 +19,19 @@ namespace mt
 		worldMatrix.v2 = mt::vec3f(_posA,1);
 	}
 
-	MATH_INLINE mt::vec2f convexpoly2::get_transformed_vertex(int i) const
+	MATH_INLINE mt::vec2f convexpoly2::get_transformed_vertex(std::size_t i) const
 	{
 		mt::vec2f point;
 		mt::mul_v2_m3( point, m_points[i], worldMatrix );
 		return point;
 	}
 
-	MATH_INLINE mt::vec2f convexpoly2::get_transformed_edge(int i) const
+	MATH_INLINE mt::vec2f convexpoly2::get_transformed_edge(std::size_t i) const
 	{
 		return get_transformed_vertex((i+1)%num_points()) - get_transformed_vertex(i);
 	}
 
-	MATH_INLINE int convexpoly2::num_points() const
+	MATH_INLINE std::size_t convexpoly2::num_points() const
 	{
 		return m_points.size();
 	}
@@ -58,7 +58,7 @@ namespace mt
 
 	MATH_INLINE bool is_point_inside_polygon(mt::convexpoly2& poly, const mt::vec2f& _p)
 	{
-		int size = poly.num_points();
+		std::size_t size = poly.num_points();
 
 		if( size == 0 )
 		{
@@ -70,7 +70,7 @@ namespace mt
 		mt::vec2f prev;
 		prev = poly.get_transformed_vertex(size - 1);
 
-		for( convexpoly2::TVectorPoints::size_type i = 0; i < size; ++i )
+		for( convexpoly2::TVectorPoints::size_type i = 0; i != size; ++i )
 		{
 			mt::vec2f point;
 			point = poly.get_transformed_vertex( i );
@@ -95,7 +95,7 @@ namespace mt
 		min = d;
 		max = d;
 
-		for (int i = 0; i < polygon.num_points(); i++) 
+		for (std::size_t i = 0; i < polygon.num_points(); i++) 
 		{
 			d = mt::dot_v2_v2(axis,polygon.get_transformed_vertex(i));
 
@@ -120,12 +120,12 @@ namespace mt
 
 	MATH_INLINE bool intersect_poly_poly(const convexpoly2 & polygonA, const convexpoly2 & polygonB) 
 	{
-		int edgeCountA = polygonA.num_points();
-		int edgeCountB = polygonB.num_points();
+		std::size_t edgeCountA = polygonA.num_points();
+		std::size_t edgeCountB = polygonB.num_points();
 
 		mt::vec2f edge(0,0);
 
-		for (int edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++) 
+		for (std::size_t edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++) 
 		{
 			if (edgeIndex < edgeCountA) 
 			{
@@ -168,12 +168,12 @@ namespace mt
 
 		float z = 0;
 
-		int n = _points.size();
+		std::vector<mt::vec2f>::size_type n = _points.size();
 
-		for (int i = 0; i < n; i++) 
+		for (std::vector<mt::vec2f>::size_type i = 0; i < n; i++) 
 		{
-			int j = (i + 1) % n;
-			int k = (i + 2) % n;
+			std::vector<mt::vec2f>::size_type j = (i + 1) % n;
+			std::vector<mt::vec2f>::size_type k = (i + 2) % n;
 
 			z  = (_points[j].x - _points[i].x) * (_points[k].y - _points[j].y);
 			z -= (_points[j].y - _points[i].y) * (_points[k].x - _points[j].x);
@@ -198,7 +198,7 @@ namespace mt
 
 	MATH_INLINE bool is_point_inside_polygon(TVecConvex & polys, const mt::vec2f & _p, const mt::vec2f & _pos, const mt::vec2f & _dir)
 	{
-		for(int i = 0; i < polys.size(); i++)
+		for(TVecConvex::size_type i = 0; i < polys.size(); i++)
 		{
 			mt::convexpoly2 & convexpoly = polys[i];
 
@@ -216,9 +216,9 @@ namespace mt
 
 	MATH_INLINE bool intersect_poly_poly(TVecConvex & polygonsA, TVecConvex & polygonsB,  const mt::vec2f & _posA, const mt::vec2f & _dirA, const mt::vec2f & _posB, const mt::vec2f & _dirB)
 	{
-		for(int i = 0; i < polygonsA.size(); i++)
+		for(TVecConvex::size_type i = 0; i < polygonsA.size(); i++)
 		{
-			for(int j = 0; j < polygonsB.size(); j++)
+			for(TVecConvex::size_type j = 0; j < polygonsB.size(); j++)
 			{
 				mt::convexpoly2 & convexpolyA = polygonsA[i];
 				mt::convexpoly2 & convexpolyB = polygonsB[i];

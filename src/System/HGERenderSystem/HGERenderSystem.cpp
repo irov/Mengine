@@ -252,14 +252,11 @@ void HGERenderSystem::renderImage(const float * _transform,
 	quad.v[3].z = m_layer;
 	quad.v[3].col = _color;
 
-	/*quad.v[0].x *= m_renderX;
-	quad.v[0].y *= m_renderY;
-	quad.v[1].x *= m_renderX;
-	quad.v[1].y *= m_renderY;
-	quad.v[2].x *= m_renderX;
-	quad.v[2].y *= m_renderY;
-	quad.v[3].x *= m_renderX;
-	quad.v[3].y *= m_renderY;*/
+	for( int i = 0; i < 4; i++ )
+	{
+		quad.v[i].x = ::floorf( quad.v[i].x + 0.5f );
+		quad.v[i].y = ::floorf( quad.v[i].y + 0.5f );
+	}
 
 	quad.blend = BLEND_DEFAULT;
 
@@ -569,7 +566,6 @@ void HGERenderSystem::renderMesh( const TVertex* _vertices, std::size_t _vertice
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::setRenderTarget( const Menge::String& _name )
 {
-	if( m_currentRenderTarget == _name ) return;
 	TTargetMap::iterator it = m_targetMap.find( _name );
 	if( it != m_targetMap.end() )
 	{

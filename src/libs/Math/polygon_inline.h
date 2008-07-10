@@ -505,8 +505,12 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MATH_INLINE bool make_countour_polygon( const std::vector<mt::vec2f> & _polygon, float _width, std::vector<mt::vec2f> & _contour )
 	{
-		// CCW порядок! // if (!CCW) _width*=-1;
 		// no holes!!
+		if(polygon_area(_polygon) < 0)
+		{
+			_width *= -1;
+		}
+
 		if(_polygon.size() < 3)
 		{
 			return false;

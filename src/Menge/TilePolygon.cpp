@@ -54,11 +54,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_render( bool _enableDebug )
 	{
-		_renderPass(m_penumbra_triangles);
-		_renderPass(m_triangles);
+		_renderPass(m_penumbra_triangles, 0xFFAAFFBB);
+		_renderPass(m_triangles, 0xFFFFFFFF);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::_renderPass( const std::vector<mt::vec2f> & _triangles )
+	void TilePolygon::_renderPass( const std::vector<mt::vec2f> & _triangles, unsigned int _color )
 	{
 		for(int i = 0; i < _triangles.size(); i+=3)
 		{
@@ -75,9 +75,11 @@ namespace Menge
 			mt::vec2f uv1(b.x / w, b.y / h);
 			mt::vec2f uv2(c.x / w, c.y / h);
 
-			Holder<RenderEngine>::hostage()->renderTriple(getWorldMatrix(), a, b, c,
+			const mt::mat3f & wm = getWorldMatrix();
+
+			Holder<RenderEngine>::hostage()->renderTriple(wm, a, b, c,
 				uv0, uv1, uv2,
-				0xFFFFFFFF, image);
+				_color, image);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -104,7 +106,7 @@ namespace Menge
 		}
 
 		int size = m_poly.size();
-		int capacity = 4 * size;
+		int capacity = 5 * size;
 
 		m_triangles.reserve(capacity);
 		m_penumbra_triangles.reserve(capacity);
@@ -117,11 +119,11 @@ namespace Menge
 			return false;
 		}
 
-		std::vector<mt::vec2f> m_contour;
+		std::vector<mt::vec2f> contour;
 
-		m_contour.reserve(capacity);
+		contour.reserve(capacity);
 	
-		result = mt::make_countour_polygon(m_poly,10,m_contour);
+		result = mt::make_countour_polygon(m_poly,10,contour);
 
 		if(result == false)
 		{
@@ -129,7 +131,7 @@ namespace Menge
 			return false;
 		}
 
-		result = mt::triangulate_polygon(m_contour,m_penumbra_triangles);
+		result = mt::triangulate_polygon(contour,m_penumbra_triangles);
 
 		if(result == false)
 		{
@@ -147,7 +149,8 @@ namespace Menge
 			return false;
 		}
 
-		setLocalPosition(mt::vec2f(400,50));
+		//test
+		//setLocalPosition(mt::vec2f(200,50));
 
 		return true;
 	}

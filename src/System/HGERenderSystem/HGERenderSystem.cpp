@@ -320,47 +320,44 @@ void HGERenderSystem::renderTriple(const float * _transform,
 								  EBlendFactor _src, 
 								  EBlendFactor _dst )
 {
-	hgeTriple quad;
+	hgeTriple triangle;
 
-	quad.v[0].x = _transform[0] * _a[0] + _transform[3] * _a[1] + _transform[6] + m_viewport.min.x;
-	quad.v[0].y = _transform[1] * _a[0] + _transform[4] * _a[1] + _transform[7] + m_viewport.min.y;
-	quad.v[0].z = m_layer;
-	quad.v[0].col = _color;
+	triangle.v[0].x = _transform[0] * _a[0] + _transform[3] * _a[1] + _transform[6];
+	triangle.v[0].y = _transform[1] * _a[0] + _transform[4] * _a[1] + _transform[7];
+	triangle.v[0].z = m_layer;
+	triangle.v[0].col = _color;
 
-	quad.v[1].x = _transform[0] * _b[0] + _transform[3] * _b[1] + _transform[6] + m_viewport.min.x;
-	quad.v[1].y = _transform[1] * _b[0] + _transform[4] * _b[1] + _transform[7] + m_viewport.min.y;
-	quad.v[1].z = m_layer;
-	quad.v[1].col = _color;
+	triangle.v[1].x = _transform[0] * _b[0] + _transform[3] * _b[1] + _transform[6];
+	triangle.v[1].y = _transform[1] * _b[0] + _transform[4] * _b[1] + _transform[7];
+	triangle.v[1].z = m_layer;
+	triangle.v[1].col = _color;
 
-	quad.v[2].x = _transform[0] * _c[0] + _transform[3] * _c[1] + _transform[6] + m_viewport.min.x;
-	quad.v[2].y = _transform[1] * _c[0] + _transform[4] * _c[1] + _transform[7] + m_viewport.min.y;
-	quad.v[2].z = m_layer;
-	quad.v[2].col = _color;
+	triangle.v[2].x = _transform[0] * _c[0] + _transform[3] * _c[1] + _transform[6];
+	triangle.v[2].y = _transform[1] * _c[0] + _transform[4] * _c[1] + _transform[7];
+	triangle.v[2].z = m_layer;
+	triangle.v[2].col = _color;
 
-	quad.v[0].x *= m_renderX;
-	quad.v[0].y *= m_renderY;
+	for( int i = 0; i < 3; i++ )
+	{
+		triangle.v[i].x = ::floorf( triangle.v[i].x + 0.5f );
+		triangle.v[i].y = ::floorf( triangle.v[i].y + 0.5f );
+	}
 
-	quad.v[1].x *= m_renderX;
-	quad.v[1].y *= m_renderY;
-
-	quad.v[2].x *= m_renderX;
-	quad.v[2].y *= m_renderY;
-
-	quad.blend = BLEND_DEFAULT;
+	triangle.blend = BLEND_DEFAULT;
 
 	if( _dst == BF_ONE )
 	{
-		quad.blend ^= BLEND_ALPHABLEND;
+		triangle.blend ^= BLEND_ALPHABLEND;
 	}
 
-	quad.v[0].tx = _uv0[0];
-	quad.v[0].ty = _uv0[1];
+	triangle.v[0].tx = _uv0[0];
+	triangle.v[0].ty = _uv0[1];
 
-	quad.v[1].tx = _uv1[0];
-	quad.v[1].ty = _uv1[1];
+	triangle.v[1].tx = _uv1[0];
+	triangle.v[1].ty = _uv1[1];
 
-	quad.v[2].tx = _uv2[0];
-	quad.v[2].ty = _uv2[1];
+	triangle.v[2].tx = _uv2[0];
+	triangle.v[2].ty = _uv2[1];
 
 	const HGETexture* tex = static_cast<const HGETexture*>( _image );
 	//mt::mat4f texmat;
@@ -373,20 +370,20 @@ void HGERenderSystem::renderTriple(const float * _transform,
 		//texmat[1][1] = uvMask.y;
 		for( int i = 0; i < 3; i++ )
 		{
-			quad.v[i].tx *= uvMask.x;
-			quad.v[i].ty *= uvMask.y;
+			triangle.v[i].tx *= uvMask.x;
+			triangle.v[i].ty *= uvMask.y;
 		}
 
 		//m_hge->Gfx_SetTextureMatrix( texmat.m );
 
-		quad.tex = tex->getHandle();
+		triangle.tex = tex->getHandle();
 	}
 	else
 	{
-		quad.tex = 0;
+		triangle.tex = 0;
 	}
 
-	m_hge->Gfx_RenderTriple( &quad );
+	m_hge->Gfx_RenderTriple( &triangle );
 
 	/*if( tex )
 	{

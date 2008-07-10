@@ -41,7 +41,7 @@ namespace Menge
 		
 		ResourceImage * m_resource;
 
-		void _renderPass(const std::vector<mt::vec2f> & _triangles);
-		void _addVertex(const mt::vec2f & _vertex);
+		void _renderPass( const std::vector<mt::vec2f> & _triangles, unsigned int _color );
+		void _addVertex( const mt::vec2f & _vertex);
 	};
 };

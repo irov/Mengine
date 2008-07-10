@@ -17,7 +17,8 @@
 //unsigned int GetSampleSize(ALenum format);
 //////////////////////////////////////////////////////////////////////////
 ALSoundSystem::ALSoundSystem()
-: m_soundVelocity(343.0f)
+: m_device(0) 
+, m_soundVelocity(343.0f)
 , m_dopplerFactor(1.0f)
 , m_distanceModel(None)
 , m_sourceNamesNum(0)

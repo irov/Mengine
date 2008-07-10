@@ -17,4 +17,5 @@ public:
 
 private:
 	std::ofstream m_logStream;
+	bool m_error;
 };

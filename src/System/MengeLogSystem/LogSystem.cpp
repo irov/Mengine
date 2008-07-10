@@ -26,21 +26,31 @@ void releaseInterfaceSystem( Menge::LogSystemInterface* _interface )
 }
 //////////////////////////////////////////////////////////////////////////
 MengeLogSystem::MengeLogSystem()
+: m_error( false )
 {
 }
 //////////////////////////////////////////////////////////////////////////
 MengeLogSystem::~MengeLogSystem()
 {
-	m_logStream.close();
+	if( m_error == false )
+	{
+		m_logStream.close();
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void MengeLogSystem::startLog( const Menge::String& _filename )
 {
 	m_logStream.open( _filename.c_str() );
+	if( m_logStream.fail() )
+	{
+		m_error = true;
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void MengeLogSystem::logMessage( const Menge::String& _message, bool _maskDebug, bool _endl, bool _timeStamp )
 {
+	if( m_error ) return;
+
 	if ( !_maskDebug )
 	{
 		std::cerr << _message;

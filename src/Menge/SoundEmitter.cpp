@@ -86,10 +86,14 @@ namespace Menge
 			return false;
 		}
 
-		m_interface = Holder<SoundEngine>::hostage()->createSoundSource(
-			m_isHeadMode,
-			m_resource->get(),
-			this );
+		SoundBufferInterface * soundBuffer = m_resource->get();
+
+		m_interface = Holder<SoundEngine>::hostage()
+			->createSoundSource( 
+			m_isHeadMode
+			, soundBuffer
+			, this 
+			);
 
 		if( m_interface == 0 )
 		{

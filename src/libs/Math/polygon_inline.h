@@ -539,9 +539,9 @@ namespace mt
 		_contour.push_back(prev_start);
 		_contour.push_back(prev_end);
 			
-		for(int i = 1; i < _polygon.size();i++)
+		for(std::vector<mt::vec2f>::size_type i = 1; i < _polygon.size();i++)
 		{
-			int next_i = (i + 1) % _polygon.size();
+			std::vector<mt::vec2f>::size_type next_i = (i + 1) % _polygon.size();
 
 			edge = _polygon[next_i] - _polygon[i];
 
@@ -577,11 +577,11 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MATH_INLINE float polygon_area( const std::vector<mt::vec2f> & _contour )
 	{  
-		int n = _contour.size(); 
+		std::vector<mt::vec2f>::size_type n = _contour.size(); 
 
 		float A = 0.0f;  
 		
-		for(int p = n-1, q = 0; q < n; p = q++)
+		for(std::vector<mt::vec2f>::size_type p = n-1, q = 0; q < n; p = q++)
 		{
 			A += _contour[p].x * _contour[q].y - _contour[q].x * _contour[p].y;
 		}

@@ -266,6 +266,7 @@ namespace Menge
 			m_interface->addShapeBox( it->first.first, it->first.second, it->second.first.m, it->second.second, m_density, m_friction, m_restitution, m_isSensor,
 										m_collisionMask, m_categoryBits, m_groupIndex );
 		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

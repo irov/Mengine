@@ -393,6 +393,26 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="convex_poly"
+			>
+			<File
+				RelativePath=".\convexpoly2.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\convexpoly2.h"
+				>
+			</File>
+			<File
+				RelativePath=".\convexpoly2_inline.h"
+				>
+			</File>
+			<File
+				RelativePath=".\decomposition.cpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\config.h"
 			>

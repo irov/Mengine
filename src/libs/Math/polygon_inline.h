@@ -506,8 +506,10 @@ namespace mt
 	MATH_INLINE bool make_countour_polygon( const std::vector<mt::vec2f> & _polygon, float _width, std::vector<mt::vec2f> & _contour )
 	{
 		// no holes!!
+
 		if(polygon_area(_polygon) < 0)
 		{
+			// this is for CW oriented polygons. 
 			_width *= -1;
 		}
 
@@ -523,14 +525,14 @@ namespace mt
 
 		normal = mt::norm_safe_v2(normal);
 
-		mt::vec2f prevStart = _polygon[0] - normal * _width;
-		mt::vec2f prevEnd = _polygon[1] - normal * _width;
+		mt::vec2f prev_start = _polygon[0] - normal * _width;
+		mt::vec2f prev_end = _polygon[1] - normal * _width;
 
 		mt::vec2f start;
 		mt::vec2f end;
 
-		_contour.push_back(prevStart);
-		_contour.push_back(prevEnd);
+		_contour.push_back(prev_start);
+		_contour.push_back(prev_end);
 			
 		for(int i = 1; i < _polygon.size();i++)
 		{
@@ -540,13 +542,14 @@ namespace mt
 
 			normal = mt::perp(edge);
 
+			// how to kill normalize ?
 			normal = mt::norm_safe_v2(normal);
 
 			start = _polygon[i] - normal * _width;
 			end = _polygon[next_i] - normal * _width;
 
 			bool result = mt::line_intersect_v2(
-				prevStart, prevEnd, start, end, common_point);
+				prev_start, prev_end, start, end, common_point);
 
 			if(result == true)
 			{
@@ -560,8 +563,8 @@ namespace mt
 
 			_contour.push_back(end);
 
-			prevStart = start;
-			prevEnd = end;
+			prev_start = start;
+			prev_end = end;
 		}
 
 		return true;

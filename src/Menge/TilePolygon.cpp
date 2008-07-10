@@ -18,6 +18,8 @@
 
 #	include "LogEngine.h"
 
+#	include "math/convexpoly2.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -54,8 +56,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_render( bool _enableDebug )
 	{
-		_renderPass(m_penumbra_triangles, 0xFFAAFFBB);
-		_renderPass(m_triangles, 0xFFFFFFFF);
+		_renderPass( m_penumbra_triangles, 0xFFAAFFBB );
+		_renderPass( m_triangles, 0xFFFFFFFF );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_renderPass( const std::vector<mt::vec2f> & _triangles, unsigned int _color )
@@ -146,6 +148,14 @@ namespace Menge
 		if( m_resource == 0 )
 		{
 			MENGE_LOG( "Image resource not getting '%s'", m_resourcename.c_str() );
+			return false;
+		}
+
+		result = mt::decompose_concave(contour,polys);
+	
+		if(result == false)
+		{
+			MENGE_LOG( "Error: can't divide into polygons \n" );
 			return false;
 		}
 

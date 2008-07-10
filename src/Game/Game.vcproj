@@ -302,6 +302,26 @@
 	<References>
 	</References>
 	<Files>
+		<Filter
+			Name="Resource"
+			>
+			<File
+				RelativePath=".\Game.rc"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Share\pepepepe\ico.ico"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\Share\pepepepe\menge.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\resource.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\main.cpp"
 			>

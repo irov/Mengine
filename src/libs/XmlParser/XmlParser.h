@@ -22,13 +22,13 @@ public:
 public:
 	XmlExpatParser * newParser();
 	void deleteParser( XmlExpatParser * _parser );
-	void * makeBuffer( XmlExpatParser * _parser, unsigned int _size );
-	bool parseBuffer( XmlExpatParser * _parser, unsigned int _size, XmlElementListener * _listener );
+	void * makeBuffer( XmlExpatParser * _parser, std::size_t _size );
+	bool parseBuffer( XmlExpatParser * _parser, std::size_t _size, XmlElementListener * _listener );
 
 	bool parseStatus( XmlExpatParser * _parser );
 
 	template<class C, class F>
-	bool parseBufferMember( unsigned int _size, C * _self, F _method )
+	bool parseBufferMember( std::size_t _size, C * _self, F _method )
 	{
 		XmlElementListener * listener = makeXmlElementListener( _self, _method );
 		return parseBuffer( _size, listener );

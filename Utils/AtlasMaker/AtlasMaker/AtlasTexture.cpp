@@ -8,47 +8,38 @@ AtlasTexture::AtlasTexture(FILE * _log, int _width, int _height, int _bpp)
 , m_packHeight(_height)
 , m_bpp(_bpp)
 , m_log(_log)
-{}
-//////////////////////////////////////////////////////////////////////////
-bool AtlasTexture::bake()
 {
-	m_atlasTexture = FreeImageWrapper::AllocateImage( m_packWidth, m_packHeight, m_bpp );
-
-	FreeImageWrapper::FillChannel( m_atlasTexture, FI_RGBA_ALPHA, 0 );
-
 	m_areaPacker.reset(m_packWidth, m_packHeight);
-
-	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+AtlasTexture::~AtlasTexture()
+{
+	FreeImage_Unload(m_atlasTexture);
 }
 //////////////////////////////////////////////////////////////////////////
 int AtlasTexture::getWidth() const
 {
-	return FreeImage_GetWidth(m_atlasTexture);
+	return m_packWidth;
 }
 //////////////////////////////////////////////////////////////////////////
 int AtlasTexture::getHeight() const
 {
-	return FreeImage_GetHeight(m_atlasTexture);
+	return m_packHeight;
 }
 //////////////////////////////////////////////////////////////////////////
 int AtlasTexture::getBPP() const
 {
-	return FreeImage_GetBPP(m_atlasTexture);
+	return m_bpp;
 }
 //////////////////////////////////////////////////////////////////////////
 bool AtlasTexture::isAlphaChannel() const
 {
-	return FreeImage_GetBPP(m_atlasTexture) == 32;
+	return m_bpp == 32;
 }
 //////////////////////////////////////////////////////////////////////////
 const std::string & AtlasTexture::getFilename() const
 {
 	return m_filename;
-}
-//////////////////////////////////////////////////////////////////////////
-bool	AtlasTexture::isFitting(const Texture2D & _texture) const
-{
-	return ( _texture.getWidth() <= m_packWidth ) && ( _texture.getHeight() <= m_packHeight );
 }
 //////////////////////////////////////////////////////////////////////////
 bool	AtlasTexture::insertTexture(Texture2D & _texture)
@@ -65,16 +56,19 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 	{
 		_texture.setAtlas(this);
 
-		bool res = FreeImage_Paste(m_atlasTexture,_texture.getTexture(),X,Y,256);
+		TextureAtlasDesc desc;
 
-		_texture.m_textureDesc.X = X;
-		_texture.m_textureDesc.Y = Y;
+		desc.texture = &_texture;
+		desc.X = X;
+		desc.Y = Y;
+		desc.offsetX = _texture.getOffsetX();
+		desc.offsetY = _texture.getOffsetY();
+		desc.sizeX = _texture.getNonAlphaWidth();
+		desc.sizeY = _texture.getNonAlphaHeight();
+		desc.maxSizeX = _texture.getWidth();
+		desc.maxSizeY = _texture.getHeight();
 
-		_texture.m_textureDesc.u = float(_texture.m_textureDesc.X) / float(m_packWidth);
-		_texture.m_textureDesc.v = float(_texture.m_textureDesc.Y) / float(m_packHeight);
-
-		_texture.m_textureDesc.w = (_texture.m_textureDesc.X + _texture.getWidth()) / float(m_packWidth);
-		_texture.m_textureDesc.z = (_texture.m_textureDesc.Y + _texture.getHeight()) / float(m_packWidth);
+		m_insertedTextures.insert( std::make_pair( _texture.getFilename(), desc ) );
 		
 		return true;
 	}
@@ -82,12 +76,59 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 	return false;
 }
 //////////////////////////////////////////////////////////////////////////
-void	AtlasTexture::writeToDisc(const std::string & _name)
+const TextureAtlasDesc & AtlasTexture::getTextureDesc(const std::string & _filename)
+{
+	MapTextureInfo::const_iterator it = m_insertedTextures.find(_filename);
+
+	if(it == m_insertedTextures.end())
+	{
+		assert(!"ERRROROROOROR1!!");
+	}
+
+	return it->second;
+}
+//////////////////////////////////////////////////////////////////////////
+void	AtlasTexture::writeToDisc( const std::string & _name )
 {
 	m_filename = _name;
 
-	int width = m_areaPacker.getFilledWidth();
-	int height = m_areaPacker.getFilledHeight();
+	int correctedWidth = m_areaPacker.getMaxWidth();
+	int correctedHeight = m_areaPacker.getMaxHeight();
+
+	correctedWidth = FreeImageWrapper::getPow2Size(correctedWidth);
+	correctedHeight = FreeImageWrapper::getPow2Size(correctedHeight);
+
+	bool result = _allocateAtlasTexture(correctedWidth, correctedHeight);
+
+	if(result == false)
+	{
+		fprintf(m_log, "Error: Creating Atlas texture failed! Size = [%d;%d] \n", correctedWidth, correctedHeight);
+		return;
+	}
+
+	for(MapTextureInfo::iterator it = m_insertedTextures.begin(); 
+		it != m_insertedTextures.end(); ++it)
+	{
+		TextureAtlasDesc & desc = it->second;
+
+		Texture2D * texture = desc.texture;
+
+		int X = desc.X;
+		int Y = desc.Y;
+
+		bool result = FreeImage_Paste(m_atlasTexture, texture->getTexture(), X, Y, 256);
+
+		if(result == false)
+		{
+			assert(!"ERROR!!!");
+		}
+
+		desc.u = X / float(correctedWidth);
+		desc.v = Y / float(correctedHeight);
+
+		desc.w = (X + desc.sizeX) / float(correctedWidth);
+		desc.z = (Y + desc.sizeY) / float(correctedHeight);
+	}
 
 	//uncomment for test
 	//FreeImage_Save(FIF_PNG,m_atlasTexture,(_name+".png").c_str());
@@ -123,6 +164,22 @@ void	AtlasTexture::writeToDisc(const std::string & _name)
 
 		FreeImage_Unload(alpha);
 	}
-
-	FreeImage_Unload(m_atlasTexture);
 }
+//////////////////////////////////////////////////////////////////////////
+bool AtlasTexture::_allocateAtlasTexture(int _width, int _height)
+{
+	m_packWidth = _width;
+	m_packHeight = _height;
+
+	m_atlasTexture = FreeImageWrapper::AllocateImage( m_packWidth, m_packHeight, m_bpp );
+
+	if(m_atlasTexture == NULL)
+	{
+		return false;
+	}
+
+	FreeImageWrapper::FillChannel( m_atlasTexture, FI_RGBA_ALPHA, 0 );
+
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////

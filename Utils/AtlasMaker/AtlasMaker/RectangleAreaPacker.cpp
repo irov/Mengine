@@ -1,31 +1,31 @@
 #	include "RectangleAreaPacker.h"
 #	include <algorithm>
-
+//////////////////////////////////////////////////////////////////////////
 RectangleAreaPacker::RectangleAreaPacker()
 : m_packingAreaWidth(0)
 , m_packingAreaHeight(0)
 , m_collumn(0)
 , m_currentLine(0)
 , m_lineHeight(0)
+, m_maxWidth(0)
+, m_maxHeight(0)
 {
 }
-
-int RectangleAreaPacker::getFilledWidth() const
+//////////////////////////////////////////////////////////////////////////
+int RectangleAreaPacker::getMaxWidth() const
 {
-	return m_collumn;
+	return m_maxWidth;
 }
-
-int RectangleAreaPacker::getFilledHeight() const
+//////////////////////////////////////////////////////////////////////////
+int RectangleAreaPacker::getMaxHeight() const
 {
-	return m_lineHeight;
+	return m_maxHeight;
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool RectangleAreaPacker::insert(int _width, int _height, int & X, int & Y)
 {
 	if( (_width > m_packingAreaWidth) || (_height > m_packingAreaHeight))
 	{ 
-		X = 0;
-		Y = 0;
 		return false; 
 	} 
 	  
@@ -38,8 +38,6 @@ bool RectangleAreaPacker::insert(int _width, int _height, int & X, int & Y)
 
 	if(m_currentLine + _height > m_packingAreaHeight) 
 	{ 
-		X = 0;
-		Y = 0;
 		return false; 
 	} 
 
@@ -52,10 +50,13 @@ bool RectangleAreaPacker::insert(int _width, int _height, int & X, int & Y)
 	{
 		m_lineHeight = _height;
 	}
-	
+
+	m_maxWidth = std::max(m_maxWidth, X + _width);
+	m_maxHeight = std::max(m_maxHeight, Y + _height);
+
 	return true; 
 }
-
+//////////////////////////////////////////////////////////////////////////
 void RectangleAreaPacker::reset(int _width, int _height)
 {
 	m_collumn = 0;
@@ -65,3 +66,4 @@ void RectangleAreaPacker::reset(int _width, int _height)
 	m_packingAreaWidth = _width;
 	m_packingAreaHeight = _height;
 }
+//////////////////////////////////////////////////////////////////////////

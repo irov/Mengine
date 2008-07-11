@@ -6,6 +6,12 @@ Texture2D::Texture2D()
 	: m_filename("")
 	, m_texture(0)
 	, m_atlas(0)
+	, m_offsetX(0)
+	, m_offsetY(0)
+	, m_nonAlphaWidth(0)
+	, m_nonAlphaHeight(0)
+	, m_withAlphaWidth(0)
+	, m_withAlphaHeight(0)
 {}
 //////////////////////////////////////////////////////////////////////////
 Texture2D::~Texture2D()
@@ -33,19 +39,34 @@ const std::string & Texture2D::getFilename() const
 	return m_filename;
 }
 //////////////////////////////////////////////////////////////////////////
-const Texture2D::TextureDesc& Texture2D::getDesc() const
-{
-	return m_textureDesc;
-}
-//////////////////////////////////////////////////////////////////////////
 int Texture2D::getWidth()  const
 {
-	return FreeImage_GetWidth(m_texture);
+	return m_withAlphaWidth;
 }
 //////////////////////////////////////////////////////////////////////////
 int Texture2D::getHeight() const
 {
-	return FreeImage_GetHeight(m_texture);
+	return m_withAlphaHeight;
+}
+//////////////////////////////////////////////////////////////////////////
+int Texture2D::getNonAlphaWidth()  const
+{
+	return m_nonAlphaWidth;
+}
+//////////////////////////////////////////////////////////////////////////
+int Texture2D::getNonAlphaHeight() const
+{
+	return m_nonAlphaHeight;
+}
+//////////////////////////////////////////////////////////////////////////
+int Texture2D::getOffsetX() const
+{
+	return m_offsetX;
+}
+//////////////////////////////////////////////////////////////////////////
+int Texture2D::getOffsetY() const
+{
+	return m_offsetY;
 }
 //////////////////////////////////////////////////////////////////////////
 int Texture2D::getBPP() const
@@ -69,6 +90,9 @@ bool Texture2D::loadTexture( const std::string & _filename )
 		return false;
 	}
 
+	m_withAlphaWidth = FreeImage_GetWidth(m_texture);
+	m_withAlphaHeight = FreeImage_GetHeight(m_texture);
+
 	_sliceAlpha();
 
 	return true;
@@ -76,62 +100,21 @@ bool Texture2D::loadTexture( const std::string & _filename )
 //////////////////////////////////////////////////////////////////////////
 void Texture2D::_sliceAlpha()
 {
-	int width = FreeImage_GetWidth(m_texture);
-	int height = FreeImage_GetHeight(m_texture);
-	int pitch  = FreeImage_GetPitch(m_texture); 
+	RECT bbox;
 
-	RECT imageRect = {0, 0, width, height};
+	bool result = FreeImageWrapper::FindAlphaBoundingBox(m_texture, bbox);
 
-	m_textureDesc.setRectImage(width, height);
-
-	if(isAlphaChannel() == false)
+	if(result == false)
 	{
 		return;
 	}
 
-	RECT boundingBox = {INT_MAX, INT_MAX, -1, -1};
+	m_offsetX = bbox.left;
+	m_offsetY = bbox.top;
 
-	bool found = false;
+	m_nonAlphaWidth = bbox.right - bbox.left;
+	m_nonAlphaHeight = bbox.bottom - bbox.top;
 
-	int bytespp = FreeImage_GetLine(m_texture) / FreeImage_GetWidth(m_texture); 
-	  
-    for(int y = FreeImage_GetHeight(m_texture) - 1; y >= 0; y--)
-	{ 
-		BYTE * bits = FreeImage_GetScanLine(m_texture, y); 
-	  
-		for(int x = 0; x < FreeImage_GetWidth(m_texture); x++)
-		{ 
-		  	if(bits[FI_RGBA_ALPHA] != 0)
-			{
-				int cy = FreeImage_GetHeight(m_texture) - 1 - y;
-
-				if (cy < boundingBox.top) boundingBox.top = cy;
-				if (cy > boundingBox.bottom) boundingBox.bottom = cy;
-
-				if (x < boundingBox.left) boundingBox.left = x;
-				if (x > boundingBox.right) boundingBox.right = x;
-
-				found = true;
-			}
-
-			bits += bytespp; 
-		} 
-	}
-
-	boundingBox.right++;
-	boundingBox.bottom++;
-
-	if(found == false)
-	{
-		boundingBox = imageRect;
-	}
-
-	m_textureDesc.offsetX = boundingBox.left;
-	m_textureDesc.offsetY = boundingBox.top;
-
-	m_textureDesc.sizeX = boundingBox.right - boundingBox.left;
-	m_textureDesc.sizeY = boundingBox.bottom - boundingBox.top;
-
-	FreeImageWrapper::CropImage(m_texture, boundingBox);
+	FreeImageWrapper::CropImage(m_texture, bbox);
 }
 //////////////////////////////////////////////////////////////////////////

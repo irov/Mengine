@@ -14,4 +14,8 @@ public:
 	static bool CropImage(FIBITMAP * &_image, RECT bbox);
 
 	static void FillChannel( FIBITMAP * _image, int _channel, unsigned char _color );
+
+	static bool FindAlphaBoundingBox(FIBITMAP * _texture, RECT & _bbox);
+
+	static int getPow2Size(int _size);
 };

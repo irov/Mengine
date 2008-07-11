@@ -26,5 +26,6 @@ private:
 	int m_width;
 	int m_height;
 
-	void _insertAtlas(int index, int bpp, const TTextureVector& textures);
+	bool _isFitting( const AtlasTexture & _atlas, const Texture2D & _texture);
+	void _insertAtlas( int _index, int _bpp, const TTextureVector& _textures);
 };

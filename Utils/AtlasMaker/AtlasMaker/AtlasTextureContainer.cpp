@@ -13,7 +13,7 @@ AtlasTextureContainer::~AtlasTextureContainer()
 	delete[] m_atlases;
 }
 //////////////////////////////////////////////////////////////////////////
-const std::vector<std::string>& AtlasTextureContainer::compileAtlas(std::map<std::string, Texture2D*> & textures, const std::string& _outputFilename )
+const std::vector<std::string> & AtlasTextureContainer::compileAtlas(std::map<std::string, Texture2D*> & textures, const std::string& _outputFilename )
 {
 	fprintf(m_log, "Process: Compiling atlases. \n");
 	TNewFormatMap   formatMap;
@@ -63,6 +63,11 @@ const std::vector<std::string>& AtlasTextureContainer::compileAtlas(std::map<std
 	return output_names;
 }
 //////////////////////////////////////////////////////////////////////////
+bool AtlasTextureContainer::_isFitting(const AtlasTexture & _atlas, const Texture2D & _texture)
+{
+	return ( _texture.getWidth() <= _atlas.getWidth() ) && ( _texture.getHeight() <= _atlas.getHeight() );
+}
+//////////////////////////////////////////////////////////////////////////
 void AtlasTextureContainer::_insertAtlas(int index, int bpp, const TTextureVector& textures)
 {
 	for (int i = 0; i < textures.size(); ++i)
@@ -75,7 +80,7 @@ void AtlasTextureContainer::_insertAtlas(int index, int bpp, const TTextureVecto
 		{
 			AtlasTexture & Atlas = *it;
 
-			if(Atlas.isFitting(texture) == false)
+			if( _isFitting(Atlas,texture) == false )
 			{
 				fprintf(m_log, "Warning: Atlas [%d;%d] smaller than texture %s [%d;%d] \n", 
 					Atlas.getWidth(), Atlas.getHeight(), 
@@ -99,8 +104,6 @@ void AtlasTextureContainer::_insertAtlas(int index, int bpp, const TTextureVecto
 			m_atlases[index].push_back( AtlasTexture( m_log, m_width, m_height, bpp ) );
 
 			AtlasTexture & Atlas = m_atlases[index].back();
-
-			Atlas.bake();
 
 			bool result = Atlas.insertTexture(texture);
 

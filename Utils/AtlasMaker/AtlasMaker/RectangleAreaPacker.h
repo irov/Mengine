@@ -5,12 +5,14 @@ class RectangleAreaPacker
 {
 public:
 	RectangleAreaPacker();
-	int getFilledWidth() const;
-	int getFilledHeight() const;
+	int getMaxWidth() const;
+	int getMaxHeight() const;
 public:
 	void reset(int _width, int _height);
 	bool insert(int _width, int _height, int & X, int & Y);
 private:
+	int m_maxWidth;
+	int m_maxHeight;
 	int m_currentLine;
 	int m_lineHeight;
 	int m_collumn;

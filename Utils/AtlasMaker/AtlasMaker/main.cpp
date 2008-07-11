@@ -19,11 +19,13 @@ void ConvertImageDefaultToAtlas(ResourceParser * resourceParser, pugi::xml_node 
 				file.attribute("Path").set_value(filename.c_str());
 			}
 
+			const TextureAtlasDesc & desc = texture->getAtlas()->getTextureDesc(value);
+
 			pugi::xml_attribute uv = file.append_attribute("UV");
 
 			std::string uv_value;
 
-			Texture2D::TextureDesc desc = texture->getDesc();
+			//Texture2D::TextureDesc desc = texture->getDesc();
 
 			uv_value+=Utility::convert_number_to_string(desc.u);
 			uv_value+=";";

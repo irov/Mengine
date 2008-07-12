@@ -9,17 +9,16 @@
 #	include "HotSpot.h"
 
 #	include "XmlEngine.h"
-#	include "Application.h"
 
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT( Arrow )
-	//////////////////////////////////////////////////////////////////////////
-	Arrow::Arrow()
-	: m_offsetClick(0,0)
-	, m_currentHotSpot(0)
-	, m_hided( false )
+		//////////////////////////////////////////////////////////////////////////
+		Arrow::Arrow()
+		: m_offsetClick(0,0)
+		, m_currentHotSpot(0)
+		, m_hided(false)
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setOffsetClick( const mt::vec2f & _offsetClick )
@@ -34,22 +33,28 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::_update( float _timing )
 	{
-		SceneNode2D::_update( _timing );
+		Node::_update( _timing );
+
+		InputEngine * inputEng = Holder<InputEngine>::hostage();
+
+		float mx = inputEng->getMouseX();
+		float my = inputEng->getMouseY();
+
+		mt::vec2f pos( mx, my );
+		setLocalPosition( pos + m_offsetClick );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()
 	{
-		SceneNode2D::_activate();
+		Node::_activate();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_compile()
 	{
-		setLocalPosition( m_offsetClick );
 		m_currentHotSpot = new HotSpot();
 		m_currentHotSpot->addPoint( -m_offsetClick );
-
 		m_currentHotSpot->setName("MainHotSpotArrow");
 
 		bool result = this->addChildren( m_currentHotSpot );
@@ -61,7 +66,6 @@ namespace	Menge
 
 		result = m_currentHotSpot->activate();
 
-		m_window = Holder<RenderEngine>::hostage()->getRenderArea();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -78,36 +82,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////	
 	void Arrow::loaderArrow_( XmlElement * _xml )
 	{
-		SceneNode2D::loader( _xml );
+		Node::loader( _xml );
 
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "ClickOffset", "Value", m_offsetClick );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Arrow::_renderBegin()
-	{
-		Holder<RenderEngine>::hostage()
-			->beginLayer2D();
-
-		Viewport viewport;
-		viewport.begin = mt::vec2f( 0.f, 0.f );
-		viewport.end = mt::vec2f( 1024.0f, 768.0f );
-
-		Holder<RenderEngine>::hostage()
-			->setRenderViewport( viewport );
-
-		Holder<RenderEngine>::hostage()
-			->setRenderArea( mt::vec4f::zero_v4 );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Arrow::_renderEnd()
-	{
-		Holder<RenderEngine>::hostage()
-			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::addHotSpot( HotSpot * _hotspot )
@@ -154,12 +134,7 @@ namespace	Menge
 		}
 		setLocalPosition( nPos );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Arrow::hide( bool _value )
-	{
-		Node/*Renderable*/::hide( _value );
-		m_hided = _value;
-	}
+
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::onMouseLeave()
 	{
@@ -173,5 +148,4 @@ namespace	Menge
 			Node/*Renderable*/::hide( false );
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
 }

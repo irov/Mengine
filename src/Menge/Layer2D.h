@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Layer.h"
-#	include "SceneNode2D.h"
 #	include "Viewport.h"
 
 namespace Menge
@@ -10,7 +9,6 @@ namespace Menge
 
 	class Layer2D
 		: public Layer
-		, public SceneNode2D
 	{
 		OBJECT_DECLARE(Layer2D);
 
@@ -19,47 +17,22 @@ namespace Menge
 
 	public:
 		void setParallaxFactor( const mt::vec2f & _factor );
-		Viewport* getViewport();
-		const mt::vec2f& getViewportOffset() const;
-		bool isScrollable();
-		mt::vec2f screenToLocal( const mt::vec2f& _point );
+		const mt::vec2f & getParallaxFactor() const;
 
-	public:
-		void loader( XmlElement * _xml ) override;
-
-		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
-		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( float _x, float _y, int _whell ) override;
+		Viewport getParallaxViewport( const Viewport & _viewport );
 
 	public:
 		void setOffsetPosition( const mt::vec2f & _offset ) override;
-		bool needReRender();
 
 	public:
-		void update( float _timing ) override;
-		void render( bool _enableDebug ) override;
+		void loader( XmlElement * _xml ) override;
+		void render( const Viewport & _viewport ) override;
 
-		void _addChildren( SceneNode2D * _node ) override;
-		
 	protected:
-		bool _renderBegin() override;
-		void _render( bool _enableDebug ) override;
-		void _renderEnd() override;
-
+		void _addChildren( Node * _node ) override;
 		bool _activate() override;
-		void _deactivate() override;
-		bool _compile() override;
-
-	protected:
-		void updateViewport();
 
 	protected:
 		mt::vec2f m_factorParallax;
-
-		Viewport m_viewport;
-		bool m_needReRender;
-		bool m_reRender;
-		bool m_scrollable;
-		mt::vec2f m_viewportOffset;
 	};
 }

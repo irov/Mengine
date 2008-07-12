@@ -13,7 +13,7 @@ namespace Menge
 
 	public:
 		virtual const mt::mat3f & getWorldMatrix();
-		virtual void updateMatrix( Allocator2D * _parent );
+		const mt::mat3f & updateWorldMatrix( const mt::mat3f & _parentMatrix );
 
 		const mt::vec2f & getWorldPosition();
 		const mt::vec2f & getWorldDirection();
@@ -43,7 +43,7 @@ namespace Menge
 
 	protected:
 		virtual void _changePivot();
-		virtual void _updateMatrix( Allocator2D * _parent );
+		virtual void _updateMatrix( const mt::mat3f & _parentMatrix );
 
 	protected:
 		mt::mat3f m_localMatrix;

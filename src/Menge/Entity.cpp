@@ -225,7 +225,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::flip( bool _x, bool _y )
 	{
-		TListChildren::iterator it = m_listChildren.begin();
+	/*	TListChildren::iterator it = m_listChildren.begin();
 		for(; it != m_listChildren.end(); it++)
 		{
 			mt::vec2f pos = (*it)->getLocalPosition();
@@ -241,14 +241,13 @@ namespace	Menge
 				(*it)->flip( false );
 			}
 			(*it)->setLocalPosition( pos );
-			//(*it)->setLocalDirection( -dir );
-			
 		}
+		*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::setScale( const mt::vec2f& _scale )
 	{
-		TListChildren::iterator it = m_listChildren.begin();
+/*		TListChildren::iterator it = m_listChildren.begin();
 		for(; it != m_listChildren.end(); it++)
 		{
 			mt::vec2f pos = (*it)->getLocalPosition();
@@ -257,7 +256,7 @@ namespace	Menge
 			(*it)->setLocalPosition( pos );
 			(*it)->setScale( _scale );
 		}
-		m_scale = _scale;
+		m_scale = _scale;*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Entity::getScale() const
@@ -488,7 +487,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
 	{
-		bool result = SceneNode2D::_compile();
+		bool result = Node::_compile();
 
 		this->callMethod("onCompile", "()" );
 
@@ -502,7 +501,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_release()
 	{
-		SceneNode2D::_release();
+		Node::_release();
 
 		if( m_physicController )
 		{
@@ -529,7 +528,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::loader( XmlElement * _xml )
 	{
-		SceneNode2D::loader( _xml );
+		Node::loader( _xml );
 
 		XML_SWITCH_NODE( _xml )
 		{

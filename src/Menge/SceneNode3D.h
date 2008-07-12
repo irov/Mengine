@@ -10,9 +10,9 @@
 
 namespace Menge
 {
-	class SceneNode3D
+/*	class SceneNode3D
 		: public virtual Node
-		, public NodeChildren<SceneNode3D>
+		//, public NodeChildren<SceneNode3D>
 		, public Allocator3D
 		, public Renderable3D
 	{
@@ -44,5 +44,5 @@ namespace Menge
 
 		float m_yaw;
 		float m_pitch;
-	};
+	};*/
 }

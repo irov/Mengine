@@ -1,12 +1,12 @@
 #	pragma once
-#	include "SceneNode2D.h"
+#	include "Node.h"
 
 namespace Menge
 {
 	class ResourceTileMap;
 
 	class TileMap
-		: public SceneNode2D
+		: public Node
 	{
 		OBJECT_DECLARE( TileMap );
 	public:
@@ -17,7 +17,7 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 	protected:
-		void _render( bool _enableDebug ) override;
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 		//bool _activate() override;
 		//void _deactivate() override;

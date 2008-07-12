@@ -1,14 +1,14 @@
 #	pragma once
 
 #	include "Node.h"
-#	include "NodeForeach.h"
+//#	include "NodeForeach.h"
 
 #	include <list>
 #	include <algorithm>
 
 namespace Menge
 {	
-	namespace Helper
+/*	namespace Helper
 	{
 		void errorMessageChildrenIncorrectType( Node * _parent, Node * _children );
 		void errorMessageChildrenAlreadyExsist( Node * _parent, Node * _children );
@@ -98,7 +98,7 @@ namespace Menge
 				it = m_listChildren.begin(),
 				it_end = m_listChildren.end();
 			it != it_end;
-			/*++it*/)
+			)
 			{
 				_foreach.apply( *it++ );
 			}
@@ -148,5 +148,5 @@ namespace Menge
 
 		typedef std::list< TNode * > TListChildren;
 		TListChildren m_listChildren;
-	};
+	};*/
 }

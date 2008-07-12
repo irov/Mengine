@@ -10,7 +10,7 @@ namespace Menge
 	class Entity3d;
 	class CapsuleController;
 
-	class Layer3D
+/*	class Layer3D
 		: public Layer
 		, public SceneNode3D
 	{
@@ -64,5 +64,5 @@ namespace Menge
 		//void render( bool _enableDebug ){ NodeRenderable::render( _enableDebug ); }
 		bool isRenderable(){ return true; }
 		Viewport m_viewport;
-	};
+	};*/
 }

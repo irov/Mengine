@@ -19,7 +19,7 @@ namespace Menge
 	OBJECT_IMPLEMENT(LayerScene);
 	//////////////////////////////////////////////////////////////////////////
 	LayerScene::LayerScene()
-	: m_subScene(0)
+		: m_subScene(0)
 	{
 
 	}
@@ -72,11 +72,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LayerScene::render( bool _enableDebug )
+	void LayerScene::render( const Viewport & _viewport )
 	{	
 		if( m_subScene )
 		{
-			m_subScene->render( _enableDebug );
+			m_subScene->render( _viewport );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ namespace Menge
 				->getScene( m_sceneName );
 
 			m_subScene->setParentScene( m_scene );
-			
+
 			m_subScene->activate();
 
 		}
@@ -135,14 +135,4 @@ namespace Menge
 
 		return 0;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool LayerScene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
-	{
-		if( m_subScene )
-		{
-			return m_subScene->handleMouseButtonEventEnd( _button, _isDown );
-		}
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
 }

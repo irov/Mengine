@@ -30,7 +30,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TileMap::loader( XmlElement * _xml )
 	{
-		SceneNode2D::loader(_xml);
+		Node::loader(_xml);
 
 		XML_SWITCH_NODE(_xml)
 		{
@@ -40,7 +40,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TileMap::_compile()
 	{
-		if( SceneNode2D::_compile() == false )
+		if( Node::_compile() == false )
 		{
 			return false;
 		}
@@ -74,7 +74,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TileMap::_release()
 	{
-		SceneNode2D::_release();
+		Node::_release();
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceMap );
@@ -82,7 +82,7 @@ namespace	Menge
 		m_resourceMap = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TileMap::_render( bool _enableDebug )
+	void TileMap::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 		const Viewport& viewport = Holder<RenderEngine>::hostage()->getRenderViewport();
 

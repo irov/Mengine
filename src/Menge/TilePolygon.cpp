@@ -31,15 +31,10 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TilePolygon::isVisible( const Viewport & _viewPort )
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::loader( XmlElement * _xml )
 	{
 		//RigidBody2D::loader(_xml);
-		SceneNode2D::loader(_xml);
+		Node::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
 		{
@@ -55,7 +50,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::_render( bool _enableDebug )
+	void TilePolygon::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 		_renderPass( m_penumbra_triangles, 0xFFAAFFBB );
 		_renderPass( m_triangles, 0xFFCFFFFF );

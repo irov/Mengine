@@ -2,7 +2,7 @@
 
 #	include "Config/Typedef.h"
 
-# include "SceneNode2D.h"
+# include "Node.h"
 # include "Color.h"
 # include <vector>
 
@@ -26,7 +26,7 @@ namespace Menge
 	*/
 
 	class TextField
-		: public SceneNode2D
+		: public Node
 	{
 		OBJECT_DECLARE(TextField);
 	public:
@@ -117,11 +117,10 @@ namespace Menge
 		bool getCenterAlign();
 
 	public:
-		bool isVisible( const Viewport & _viewPort ) override;
 		void loader( XmlElement * _xml ) override;
 
 	protected:
-		void _render( bool _enableDebug ) override;
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 		
 		bool _activate() override;
 		void _deactivate() override;

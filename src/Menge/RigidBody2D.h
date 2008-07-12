@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "SceneNode2D.h"
+#	include "Node.h"
 #	include "Interface/PhysicSystem2DInterface.h"
 
 #	include "Math/polygon.h"
@@ -28,7 +28,7 @@ namespace Menge
 	};
 
 	class RigidBody2D
-		: public SceneNode2D
+		: public Node
 		//, public PhysicBody2DCollisionListener
 	{
 		OBJECT_DECLARE( RigidBody2D )
@@ -117,7 +117,7 @@ namespace Menge
 		bool m_countGravity;
 		//virtual void _onSetListener();
 
-		void _render( bool _enableDebug ) override;
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 	};
 

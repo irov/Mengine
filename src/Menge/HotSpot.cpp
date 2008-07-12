@@ -68,28 +68,35 @@ namespace	Menge
 		{
 			return false;
 		}
-		
+
+		Camera2D * camera = Holder<Player>::hostage()
+			->getRenderCamera2D();
+
+		const Viewport & viewport = camera->getViewport();
+
 		const mt::vec2f & dirA = this->getLocalDirection();
-		const mt::vec2f & posA = this->getScreenPosition();
+		const mt::vec2f & posA = this->getScreenPosition( viewport );
 
 		const mt::vec2f & dirB = _hotspot->getLocalDirection();
-		const mt::vec2f & posB = _hotspot->getScreenPosition();
+		const mt::vec2f & posB = _hotspot->getScreenPosition( viewport );
 
 		bool is_intersect = mt::intersect_poly_poly( 
 			m_polygon, _hotspot->m_polygon, 
 			dirA, posA, dirB, posB );
 
-	/*	if(is_intersect)
+		if(is_intersect)
 		{
-			//printf("%f;%f  and %f;%f \n", wmA.v2.v2.x, wmA.v2.v2.y, wmB.v2.v2.x, wmB.v2.v2.y);
-		}*/
-	
+			int u=0;
+			u++;
+				//printf("%f;%f  and %f;%f \n", wmA.v2.v2.x, wmA.v2.v2.y, wmB.v2.v2.x, wmB.v2.v2.y);
+		}
+
 		return is_intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::loader( XmlElement * _xml)
 	{
-		SceneNode2D::loader(_xml);
+		Node::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
 		{
@@ -235,11 +242,16 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )
 	{
-	//	mt::mat3f wm = getWorldMatrix();
-	//	wm.v2.v2 = this->getScreenPosition();
+		Camera2D * camera = Holder<Player>::hostage()
+			->getRenderCamera2D();
+
+		const Viewport & viewport = camera->getViewport();
+
 		const mt::vec2f & direction = this->getLocalDirection();
-		const mt::vec2f & position = this->getScreenPosition();
-		bool result = mt::is_point_inside_polygon( m_polygon, _p, position, direction  );
+		const mt::vec2f & position = this->getScreenPosition( viewport );
+
+		bool result = mt::is_point_inside_polygon(m_polygon, _p, position, direction);
+
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -258,7 +270,7 @@ namespace	Menge
 		m_scale = _scale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_render( bool _enableDebug )
+	void HotSpot::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 		if( _enableDebug )
 		{

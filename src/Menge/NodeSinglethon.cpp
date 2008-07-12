@@ -11,7 +11,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	void NodeSinglethon::setParent( Node * _parent )
+	/*void NodeSinglethon::setParent( Node * _parent )
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -41,5 +41,5 @@ namespace Menge
 	Node* NodeSinglethon::getParent()
 	{
 		return NULL;
-	}
+	}*/
 }

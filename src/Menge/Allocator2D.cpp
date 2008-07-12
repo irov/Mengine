@@ -120,32 +120,26 @@ namespace Menge
 		changePivot();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::updateMatrix( Allocator2D * _parent )
+	const mt::mat3f & Allocator2D::updateWorldMatrix( const mt::mat3f & _parentMatrix )
 	{
-		if( m_changePivot == false )
-		{
-			return;
-		}
-	
-		const mt::mat3f & parentMatrix =
-			_parent->getWorldMatrix();
-	
 		if( m_fixedRotation )
 		{
 			m_worldMatrix = m_localMatrix;
-			mt::mul_v2_m3( m_worldMatrix.v2.v2, m_localMatrix.v2.v2, parentMatrix );
+			mt::mul_v2_m3( m_worldMatrix.v2.v2, m_localMatrix.v2.v2, _parentMatrix );
 		}
 		else
 		{
-			mt::mul_m3_m3( m_worldMatrix, m_localMatrix, parentMatrix );
+			mt::mul_m3_m3( m_worldMatrix, m_localMatrix, _parentMatrix );
 		}
 
-		_updateMatrix( _parent );
-	
+		_updateMatrix( _parentMatrix );
+
 		m_changePivot = false;
+
+		return m_worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::_updateMatrix( Allocator2D * _parent )
+	void Allocator2D::_updateMatrix( const mt::mat3f & _parentMatrix )
 	{
 		//Empty
 	}

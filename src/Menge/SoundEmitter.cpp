@@ -39,7 +39,7 @@ namespace Menge
 	bool SoundEmitter::_activate()
 	{
 		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
-		if( !enabled || SceneNode2D::_activate() == false )
+		if( !enabled || Node::_activate() == false )
 		{
 			return false;
 		}
@@ -49,12 +49,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_deactivate()
 	{
-		SceneNode2D::_deactivate();
+		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::loader( XmlElement * _xml )
 	{
-		SceneNode2D::loader(_xml);
+		Node::loader(_xml);
 
 		XML_SWITCH_NODE(_xml)
 		{
@@ -66,7 +66,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_compile()
 	{
-		if( SceneNode2D::_compile() == false )
+		if( Node::_compile() == false )
 		{
 			return false;
 		}

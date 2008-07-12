@@ -57,7 +57,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Track::_activate()
 	{
-		if( SceneNode2D::_activate() == false )
+		if( Node::_activate() == false )
 		{
 			return false;
 		}
@@ -73,7 +73,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Track::_update( float _timing )
 	{
-		SceneNode2D::_update( _timing );
+		Node::_update( _timing );
 
 		if( m_listChain.empty() == true )
 		{
@@ -131,7 +131,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Track::loader( XmlElement * _xml )
 	{
-		//SceneNode2D::loader( _xml );
+		//Node::loader( _xml );
 
 		//mt::vec2f pos;
 

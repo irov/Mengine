@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "../Interface/RenderSystemInterface.h"
-#	include "SceneNode2D.h"
+#	include "Node.h"
 #	include "Color.h"
 
 #	include "math/mat3.h"
@@ -25,7 +25,7 @@ namespace Menge
 	*/
 
 	class Sprite
-		: public SceneNode2D
+		: public Node
 	{
 		OBJECT_DECLARE(Sprite);
 	public:
@@ -115,12 +115,10 @@ namespace Menge
 		const Color & getColor() const;
 
 	public:
-		virtual bool isVisible( const Viewport & _viewPort );
-
 		void loader( XmlElement * _xml ) override;
 
 	protected:
-		void _render( bool _enableDebug ) override;
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 		bool _activate() override;
 		void _deactivate() override;
@@ -136,8 +134,11 @@ namespace Menge
 		void updateVisibility_();
 		void updateFlip_();
 		void updateAlphaBlend_();
+			private:
+				void updateSprite_();
 
 	protected:
+
 
 		ResourceImage * m_resource;
 		std::string m_resourcename;

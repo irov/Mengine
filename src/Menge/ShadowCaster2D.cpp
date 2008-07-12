@@ -19,14 +19,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ShadowCaster2D::isVisible( const Viewport & _viewPort )
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ShadowCaster2D::loader( XmlElement * _xml )
 	{
-		SceneNode2D::loader(_xml);
+		Node::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
 		{
@@ -40,7 +35,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ShadowCaster2D::_render( bool _enableDebug )
+	void ShadowCaster2D::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 		if(_enableDebug)
 		{
@@ -53,7 +48,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ShadowCaster2D::_activate()
 	{
-		if( SceneNode2D::_activate() == false )
+		if( Node::_activate() == false )
 		{
 			return false;
 		}
@@ -65,12 +60,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ShadowCaster2D::_deactivate()
 	{
-		SceneNode2D::_deactivate();
+		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ShadowCaster2D::_compile()
 	{
-		if( SceneNode2D::_compile() == false )
+		if( Node::_compile() == false )
 		{
 			return false;
 		}
@@ -80,12 +75,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ShadowCaster2D::_release()
 	{
-		SceneNode2D::_release();
+		Node::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ShadowCaster2D::_update( float _timing )
 	{
-		SceneNode2D::_update(_timing);
+		Node::_update(_timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ShadowCaster2D::addVertex(const mt::vec2f & _vertex)

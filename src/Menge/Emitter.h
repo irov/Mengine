@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "SceneNode2D.h"
+#	include "Node.h"
 
 #	include "../Interface/RenderSystemInterface.h"
 #	include "../Interface/ParticleSystemInterface.h"
@@ -16,7 +16,7 @@ namespace Menge
 	class ResourceEmitterContainer;
 
 	class Emitter
-		: public SceneNode2D
+		: public Node
 		, public ParticleEmitterListenerInterface
 	{
 		OBJECT_DECLARE(Emitter);
@@ -33,13 +33,11 @@ namespace Menge
 		void setLeftBorder( float _leftBorder );
 	
 	public:
-		virtual bool isVisible( const Viewport & _viewPort );
-
 		void loader( XmlElement * _xml ) override;
 		void onStopped() override;
 
 	protected:
-		void _render( bool _enableDebug ) override;
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 		bool _activate() override;
 		void _deactivate() override;

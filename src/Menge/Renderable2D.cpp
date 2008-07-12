@@ -5,7 +5,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Renderable2D::Renderable2D()
+/*	Renderable2D::Renderable2D()
 	{
 
 	}
@@ -32,6 +32,6 @@ namespace Menge
 	bool Renderable2D::isVisible( const Viewport & _viewPort )
 	{
 		return true;
-	}
+	}*/
 
 }

@@ -46,7 +46,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::loader( XmlElement * _xml )
 	{
-		SceneNode2D::loader(_xml);
+		Node::loader(_xml);
 
 		XML_SWITCH_NODE(_xml)
 		{
@@ -62,12 +62,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_activate()
 	{
-		if( SceneNode2D::_activate() == false )
+		if( Node::_activate() == false )
 		{
 			return false;
 		}
 
-		updateAlign_();
+		updateSprite_();
 
 		//this->registerEventMethod("COLOR_END", "onColorEnd" );
 		//this->registerEventMethod("COLOR_STOP", "onColorStop" );
@@ -77,12 +77,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_deactivate()
 	{
-		SceneNode2D::_deactivate();
+		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_compile()
 	{
-		if( SceneNode2D::_compile() == false )
+		if( Node::_compile() == false )
 		{
 			return false;
 		}
@@ -109,7 +109,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_release()
 	{
-		SceneNode2D::_release();
+		Node::_release();
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resource );
@@ -123,7 +123,7 @@ namespace	Menge
 
 		if( m_active )
 		{
-			updateAlign_();
+			updateSprite_();
 		}
 	}
 	///////////////////////////////////////////////////////////////////////////
@@ -131,65 +131,30 @@ namespace	Menge
 	{
 		return m_scale;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::flip( bool _x )
+	{
+		if( _x )
+		{
+			m_flipX = !m_flipX;
+		}
+		else
+		{
+			m_flipY = !m_flipY;
+		}
+	}
 	///////////////////////////////////////////////////////////////////////////
 	void Sprite::setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY )
 	{
 		m_percent.v2_0 = _percentX;
 		m_percent.v2_1 = _percentY;
-	}
-	///////////////////////////////////////////////////////////////////////////
-	bool Sprite::isVisible( const Viewport & _viewPort )
-	{
-		if( m_resource == NULL )
-		{
-			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
-				, getName().c_str()
-				, m_resourcename.c_str() 
-				);
-		}
-
-		/*Max*/
-		m_size = m_resource->getSize( m_currentImageIndex );
-	
-		m_size.x *= m_scale.x;
-		m_size.y *= m_scale.y;
-
-		mt::vec2f offset = m_resource->getOffset( m_currentImageIndex );
-		if( m_flipX )
-		{
-			offset.x = m_resource->getMaxSize( m_currentImageIndex ).x - ( m_resource->getSize( m_currentImageIndex ).x + offset.x );
-		}
-		if( m_flipY )
-		{
-			offset.y = m_resource->getMaxSize( m_currentImageIndex ).y - ( m_resource->getSize( m_currentImageIndex ).y + offset.y );
-		}
-
-		m_offset = offset + m_alignOffset;
-	
-		//m_offset.x *= m_scale.x;
-		//m_offset.y *= m_scale.y;
-
-		mt::mat3f wm = getWorldMatrix();
-
-		if( m_layer && m_layer->isScrollable() )
-		{
-			float c = ::floorf( wm.v2.x / m_layer->getSize().x );
-			wm.v2.x -= m_layer->getSize().x * c;
-		}
-
-		mt::box2f bbox;
-
-		mt::set_box_from_oriented_extent( bbox, m_offset, m_size, wm );
-
-		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
-
-		return result;
+		updateSprite_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageIndex( unsigned int _index )
 	{
 		m_currentImageIndex = _index;
-		updateAlphaBlend_();
+		updateSprite_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int Sprite::getImageIndex() const
@@ -212,41 +177,6 @@ namespace	Menge
 		return m_resourcename;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::updateAlign_()
-	{
-		if( m_centerAlign )
-		{
-			if( m_resource == NULL )
-			{
-				MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
-					, getName().c_str()
-					, m_resourcename.c_str() 
-					);
-			}
-
-			mt::vec2f size = m_resource->getMaxSize( 0 );
-		
-			size.x *= m_scale.x;
-			size.y *= m_scale.y;
-
-			m_alignOffset = size * -0.5f;
-			m_alignOffset.x = ::floorf( m_alignOffset.x + 0.5f );
-			m_alignOffset.y = ::floorf( m_alignOffset.y + 0.5f );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::flip( bool _x )
-	{
-		if( _x )
-		{
-			m_flipX = !m_flipX;
-		}
-		else
-		{
-			m_flipY = !m_flipY;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateAlphaBlend_()
 	{
 		m_blendSrc = BF_SOURCE_ALPHA;
@@ -264,36 +194,57 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::updateVisibility_()
-	{	
-		if( m_resource == NULL )
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::updateSprite_()
+	{
+		m_size = m_resource->getSize( m_currentImageIndex );
+
+		m_size.x *= m_scale.x;
+		m_size.y *= m_scale.y;
+
+		m_size.x *= ( 1.0f - m_percent.x );
+		m_size.x *= ( 1.0f - m_percent.z );
+
+		m_size.y *= ( 1.0f - m_percent.y );
+		m_size.y *= ( 1.0f - m_percent.w );
+
+		if( m_centerAlign )
 		{
-			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
-				, getName().c_str()
-				, m_resourcename.c_str() 
-				);
+			mt::vec2f size = m_resource->getMaxSize( 0 );
+
+			size.x *= m_scale.x;
+			size.y *= m_scale.y;
+
+			m_alignOffset = size * -0.5f;
 		}
+
+		mt::vec2f offset = m_resource->getOffset( m_currentImageIndex );
+		const mt::vec2f & maxSize = m_resource->getMaxSize( m_currentImageIndex );
+		const mt::vec2f & size = m_resource->getSize( m_currentImageIndex );
+
+		if( m_flipX )
+		{
+			offset.x = maxSize.x - ( size.x + offset.x );
+		}
+
+		if( m_flipY )
+		{
+			offset.y = maxSize.y - ( size.y + offset.y );
+		}
+
+		offset.x *= m_scale.x;
+		offset.y *= m_scale.y;
+
+		m_offset = offset + m_alignOffset;
 
 		m_uv = m_resource->getUV( m_currentImageIndex );
 
-		m_offset.x += m_size.x * m_percent.x;
-		m_offset.y += m_size.y * m_percent.y;
-
-        m_size.x *= ( 1.0f - m_percent.x );
-        m_size.x *= ( 1.0f - m_percent.z );
-
-        m_size.y *= ( 1.0f - m_percent.y );
-        m_size.y *= ( 1.0f - m_percent.w );
-		
 		m_uv.x = m_uv.x * ( 1.0f - m_percent.x ) + m_percent.x * m_uv.z; 
-        m_uv.y = m_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * m_uv.w;
+		m_uv.y = m_uv.y * ( 1.0f - m_percent.y ) + m_percent.y * m_uv.w;
 
 		m_uv.z = m_uv.x * m_percent.z + ( 1.0f - m_percent.z ) * m_uv.z; 
-		m_uv.w = m_uv.y * m_percent.w + ( 1.0f - m_percent.w ) * m_uv.w; 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::updateFlip_()
-	{	
+		m_uv.w = m_uv.y * m_percent.w + ( 1.0f - m_percent.w ) * m_uv.w;
+
 		if( m_flipX == true )
 		{
 			std::swap( m_uv.x, m_uv.z );
@@ -303,6 +254,8 @@ namespace	Menge
 		{
 			std::swap( m_uv.y, m_uv.w );
 		}
+
+		updateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::colorTo( const Color & _color, float _time )
@@ -333,11 +286,11 @@ namespace	Menge
 		m_changingColor = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_render( bool _enableDebug )
+	void Sprite::_render( const Viewport & _viewport, bool _enableDebug )
 	{
-		updateVisibility_();
+		//updateVisibility_();
 
-		updateFlip_();
+		//updateFlip_();
 
 		if( m_resource == NULL )
 		{
@@ -350,16 +303,7 @@ namespace	Menge
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
 		mt::mat3f wm = getWorldMatrix();
-		if( m_layer && m_layer->isScrollable() )
-		{
-			float c = ::floorf( wm.v2.x / m_layer->getSize().x );
-			wm.v2.x -= m_layer->getSize().x * c;
-		}
-
-		/*mt::vec2f b = m_offset + mt::vec2f( m_size.x, 0.0f );
-		mt::vec2f c = m_offset + m_size;
-		mt::vec2f d = m_offset + mt::vec2f( 0.0f, m_size.y );*/
-
+	
 		Holder<RenderEngine>::hostage()->renderImage(
 			wm,
 			m_offset,

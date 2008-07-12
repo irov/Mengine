@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	class Camera3D
+/*	class Camera3D
 		: public SceneNode3D
 		, public Frustum
 	{
@@ -30,5 +30,5 @@ namespace Menge
 
 		mt::mat4f m_viewMatrix;	
 		mt::vec3f m_at;
-	};
+	};*/
 }

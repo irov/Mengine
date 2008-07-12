@@ -13,7 +13,7 @@ namespace Menge
 	class Scene;
 
 	class Layer
-		: public virtual NodeRenderable
+		: public Node
 	{
 	public:
 		Layer();
@@ -38,9 +38,6 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml ) override;
-
-	protected:
-		bool _renderBegin() override;
 
 	protected:
 		bool m_main;

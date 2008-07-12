@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	NodeRenderable::NodeRenderable()
+/*	NodeRenderable::NodeRenderable()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeRenderable::_render( bool _enableDebug )
+	void NodeRenderable::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 		//Empty
 	}
@@ -68,5 +68,5 @@ namespace Menge
 				}
 			}
 		}
-	}
+	}*/
 }

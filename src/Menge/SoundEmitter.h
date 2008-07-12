@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "SceneNode2D.h"
+#	include "Node.h"
 
 #	include "Interface/SoundSystemInterface.h"
 
@@ -11,7 +11,7 @@ namespace Menge
 	class	ResourceSound;
 
 	class	SoundEmitter
-		: public SceneNode2D, public SoundNodeListenerInterface
+		: public Node, public SoundNodeListenerInterface
 	{
 			OBJECT_DECLARE(SoundEmitter);
 		public:

@@ -97,7 +97,7 @@ namespace	Menge
 		updateViewport();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setTarget(Menge::SceneNode2D *_target)
+	void Camera2D::setTarget( Node *_target)
 	{
 		m_target = _target;
 	}

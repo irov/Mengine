@@ -10,7 +10,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OBJECT_IMPLEMENT( RenderMesh );
+/*	OBJECT_IMPLEMENT( RenderMesh );
 	//////////////////////////////////////////////////////////////////////////
 	RenderMesh::RenderMesh()
 		: m_resourceMesh( NULL )
@@ -33,7 +33,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh::_render( bool _enableDebug )
+	void RenderMesh::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 
 		Holder<RenderEngine>::hostage()
@@ -139,6 +139,6 @@ namespace Menge
 			Holder<ResourceManager>::hostage()
 				->releaseResource( m_resourceMaterial );
 		}
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

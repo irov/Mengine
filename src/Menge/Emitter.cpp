@@ -34,37 +34,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Emitter::~Emitter()
 	{}	
-	///////////////////////////////////////////////////////////////////////////
-	bool Emitter::isVisible( const Viewport & _viewPort )
-	{
-		if( SceneNode2D::isVisible( _viewPort ) == false )
-		{
-			return false;
-		}
 
-		int left;
-		int top; 
-		int right;
-		int bottom;
-
-		m_interface->getBoundingBox( left, top, right, bottom );
-
-		const mt::mat3f & wm = getWorldMatrix();
-
-		mt::box2f bbox;	//сделать box2i
-
-		mt::mul_v2_m3( bbox.min, mt::vec2f( float(left), float(top) ), wm );
-		mt::mul_v2_m3( bbox.max, mt::vec2f( float(right), float(bottom) ), wm );
-
-		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
-
-		return result;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Emitter::_activate()
 	{
 		//bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
-		if( /*!enabled ||*/ SceneNode2D::_activate() == false )
+		if( /*!enabled ||*/ Node::_activate() == false )
 		{
 			return false;
 		}
@@ -84,12 +59,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_deactivate()
 	{
-		SceneNode2D::_deactivate();
+		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::loader( XmlElement * _xml )
 	{
-		SceneNode2D::loader( _xml );
+		Node::loader( _xml );
 
 		XML_SWITCH_NODE( _xml )
 		{
@@ -102,7 +77,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Emitter::_compile()
 	{
-		if( SceneNode2D::_compile() == false )
+		if( Node::_compile() == false )
 		{
 			return false;
 		}
@@ -161,7 +136,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_release()
 	{
-		SceneNode2D::_release();
+		Node::_release();
 
 		Holder<ParticleEngine>::hostage()->releaseEmitter( m_interface );
 
@@ -172,7 +147,7 @@ namespace	Menge
 		m_resource = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Emitter::_render( bool _enableDebug )
+	void Emitter::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
 		if( !enabled )
@@ -180,7 +155,7 @@ namespace	Menge
 			return;
 		}
 
-		SceneNode2D::_render( _enableDebug );
+		//Node::_render( _enableDebug );
 
 		int count = m_interface->getNumTypes();
 
@@ -299,7 +274,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_update( float _timing )
 	{
-		SceneNode2D::_update( _timing );
+		Node::_update( _timing );
 		const mt::vec2f& pos = getWorldPosition();
 		m_interface->setPosition( pos.x, pos.y );
 		m_interface->update( _timing );

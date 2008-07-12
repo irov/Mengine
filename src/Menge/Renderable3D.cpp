@@ -7,7 +7,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Renderable3D::Renderable3D()
+/*	Renderable3D::Renderable3D()
 	{
 
 	}
@@ -34,5 +34,5 @@ namespace Menge
 	bool Renderable3D::isVisible( const Camera3D * _camera )
 	{
 		return true;
-	}
+	}*/
 }

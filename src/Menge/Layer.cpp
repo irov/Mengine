@@ -46,6 +46,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::loader( XmlElement * _xml )
 	{
+		Node::loader( _xml );
+
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Main", "Value", m_main );
@@ -78,15 +80,4 @@ namespace Menge
 	{
 		return m_renderArea;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Layer::_renderBegin()
-	{
-		Holder<RenderEngine>::hostage()
-			->setRenderTarget( m_renderTarget );
-
-		Holder<RenderEngine>::hostage()
-			->setRenderArea( m_renderArea );
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 }

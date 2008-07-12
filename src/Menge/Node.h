@@ -6,12 +6,20 @@
 #	include "Eventable.h"
 #	include "Resource.h"
 #	include "InputHandler.h"
+#	include "BoundingBox.h"
 #	include "ObjectDeclare.h"
+#	include "Viewport.h"
+#	include "Allocator2D.h"
+#	include <list>
 
 class XmlElement;
 
 namespace Menge
 {	
+	class Visitor;
+	class Layer2D;
+	typedef std::list<class Node *> TContainerChildrens;
+
 	class NodeForeach;
 
 	class Node
@@ -19,6 +27,8 @@ namespace Menge
 		, public Resource
 		, public Scriptable
 		, public Eventable
+		, public BoundingBox
+		, public Allocator2D
 		, public InputHandler
 	{
 	public:
@@ -26,7 +36,52 @@ namespace Menge
 		virtual ~Node(){};
 
 	public:
+		void setLayer( Layer2D * _layer );
+		Layer2D * getLayer() const;
+	public:
+		void changePivot();
+
+		void _changePivot() override;
+
+	protected:
+		Layer2D * m_layer;
+
+	protected:
+		virtual void _render( const Viewport & _viewport, bool _enableDebug );
+
+	public:
+		virtual void render( const Viewport & _viewport );
+		void renderSelf( const Viewport & _viewport );
+		bool isRenderable() const;
+
+	public:
 		void destroy();
+
+		virtual void visit( Visitor * _visitor );
+		virtual void visitChildren( Visitor * _visitor );
+
+	public:
+		const mt::mat3f & getWorldMatrix();
+		const mt::vec2f & getWorldPosition();
+		const mt::vec2f & getWorldDirection();
+
+
+		mt::vec2f getScreenPosition( const Viewport & _viewport );
+
+	public:
+		void setParent( Node * _node );
+		Node* getParent();
+		bool addChildren( Node * _node );
+		void removeChildren( Node * _node );
+		virtual Node * getChildren( const std::string & _name, bool _recursion );
+		bool isChildren( Node * _node ) const;
+		virtual void _addChildren( Node * _node );
+		virtual void _removeChildren( Node * _node );
+
+	protected:
+		TContainerChildrens m_childrens;
+
+		Node * m_parent;
 
 	protected:
 		virtual void _destroy();
@@ -45,10 +100,6 @@ namespace Menge
 		bool isHide() const;
 
 	public:
-		// kill virtual
-		virtual bool isRenderable();
-
-	public:
 		bool isUpdatable() const;
 
 	public:
@@ -59,28 +110,13 @@ namespace Menge
 	public:
 		void enable();
 		void disable();
-		bool isEnable();
+		bool isEnable() const;
 
 		void setUpdatable( bool _updatable );
 		bool updatable();
 
 	public:
 
-		virtual void setParent( Node * _node ) = 0;
-		virtual Node* getParent() = 0;
-
-		virtual bool addChildren( Node * _node ) = 0;
-		virtual void removeChildren( Node * _node ) = 0;
-
-		virtual Node * getChildren( const std::string & _name, bool _recursion ) = 0;
-		virtual bool isChildren( Node * _node ) = 0;
-
-		virtual void foreachChildren( NodeForeach & _foreach ) = 0;
-
-	public:
-
-		virtual void render( bool _enableDebug ) = 0;
-	// why virtual? 
 		virtual void update( float _timing );
 		virtual void loader( XmlElement * xml );
 
@@ -103,5 +139,10 @@ namespace Menge
 		bool m_updatable;
 
 		virtual void _update( float _timing );
+
+	public:
+		const mt::box2f & getWorldBoundingBox();
+
+		void _changeBoundingBox() override;
 	};
 }

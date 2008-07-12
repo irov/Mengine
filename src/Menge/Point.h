@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "SceneNode2D.h"
+#	include "Node.h"
 
 namespace Menge
 {
 	class HotSpot;
 
 	class Point
-		: public SceneNode2D
+		: public Node
 	{
 		OBJECT_DECLARE(Point)
 
@@ -23,6 +23,6 @@ namespace Menge
 	protected:
 		void _update( float _timing ) override;
 		bool _activate() override;
-		void _render( bool _enableDebug ) override;
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 	};
 }

@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "SceneNode2D.h"
+#	include "Node.h"
 
 #	include "TrackChain.h"
 
@@ -15,7 +15,7 @@ namespace Menge
 
 	typedef std::list<TrackChain> TListTrackChain;
 
-	//! Track - путь по которому может двигаться объект, наследуемый от SceneNode2D.
+	//! Track - путь по которому может двигаться объект, наследуемый от Node.
 	/*! 
 	*
 	*/
@@ -32,7 +32,7 @@ namespace Menge
 	*/
 
 	class Track
-		: public SceneNode2D
+		: public Node
 	{
 		OBJECT_DECLARE(Track);
 

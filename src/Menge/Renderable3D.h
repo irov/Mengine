@@ -5,7 +5,7 @@
 namespace Menge
 {
 	class Camera3D;
-
+/*
 	class Renderable3D
 		: public NodeRenderable
 	{
@@ -17,5 +17,5 @@ namespace Menge
 
 	public:
 		virtual bool isVisible( const Camera3D * _camera );
-	};
+	};*/
 }

@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "SceneNode2D.h"
+#	include "Node.h"
 #	include "Viewport.h"
 
 namespace Menge
@@ -9,7 +9,7 @@ namespace Menge
 	class Viewport;
 
 	class Camera2D
-		: public SceneNode2D
+		: public Node
 	{
 		OBJECT_DECLARE( Camera2D )
 	public:
@@ -22,7 +22,7 @@ namespace Menge
 	public:
 		void setViewportSize( const mt::vec2f & _size );
 
-		void setTarget( SceneNode2D* _target );
+		void setTarget( Node* _target );
 		void enableTargetFollowing( bool _enable, float _force );
 		void setBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
 		
@@ -42,7 +42,7 @@ namespace Menge
 
 		mt::vec2f m_viewportSize;
 
-		SceneNode2D* m_target;
+		Node* m_target;
 		bool m_targetFollowing;
 		float m_followingForce;
 		mt::vec2f m_boundLeftUpper;

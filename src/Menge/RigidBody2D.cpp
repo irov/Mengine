@@ -67,7 +67,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::loader( XmlElement * _xml )
 	{
-		SceneNode2D::loader( _xml );
+		Node::loader( _xml );
 		_loaderPhysics( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -430,7 +430,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_render( bool _enableDebug )
+	void RigidBody2D::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 		if( _enableDebug )
 		{

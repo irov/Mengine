@@ -56,7 +56,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Scene::getLayerSize( const std::string & _name )
 	{
-		Layer * layer = getChildrenT<Layer>( _name, false );
+		Layer * layer = getLayer_( _name );
 		if( layer )
 		{
 			return layer->getSize();
@@ -67,11 +67,23 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::layerAppend( const std::string & _layer, Node * _node )
 	{
-		Layer * layer = getChildrenT<Layer>( _layer, false );
+		Layer * layer = getLayer_( _layer );
 		if( layer )
 		{
 			layer->addChildren( _node );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Layer * Scene::getLayer_( const std::string & _name )
+	{
+		Node * children = getChildren( _name, false );
+
+		if( Layer * layer = dynamic_cast<Layer*>(children) )
+		{
+			return layer;
+		}
+
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
@@ -82,20 +94,20 @@ namespace	Menge
 		}
 
 		bool handle = false;
-		
+
 		if( updatable() )
 		{
 			if( handle == false )
 			{
-				askEvent( handle, "KEY", "(IIb)", _key, _char, _isDown );
+				handle = askEvent( handle, "KEY", "(IIb)", _key, _char, _isDown );
 			}
 		}
 
 		if( handle == false )
 		{
-			for( TListChildren::reverse_iterator 
-				it = m_listChildren.rbegin(),
-				it_end = m_listChildren.rend();
+			for( TContainerChildrens::reverse_iterator 
+				it = m_childrens.rbegin(),
+				it_end = m_childrens.rend();
 			it != it_end;
 			++it)
 			{
@@ -115,22 +127,22 @@ namespace	Menge
 		{
 			return false;
 		}
-		
+
 		bool handle = false;
-		
+
 		if( updatable() )
 		{
 			if( handle == false )
 			{
-				askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
+				handle = askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
 			}
 		}
 
 		if( handle == false )
 		{
-			for( TListChildren::reverse_iterator 
-				it = m_listChildren.rbegin(),
-				it_end = m_listChildren.rend();
+			for( TContainerChildrens::reverse_iterator 
+				it = m_childrens.rbegin(),
+				it_end = m_childrens.rend();
 			it != it_end;
 			++it)
 			{
@@ -141,11 +153,6 @@ namespace	Menge
 			}
 		}
 
-		/*if( updatable() )
-		{
-			askEvent( handle, "MOUSE_BUTTON_END", "(Ib)", _button, _isDown );
-		}*/
-
 		return handle;	
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -155,22 +162,22 @@ namespace	Menge
 		{
 			return false;
 		}
-		
+
 		bool handle = false;
-		
+
 		if( updatable() )
 		{
 			if( handle == false )
 			{
-				askEvent( handle, "MOUSE_MOVE", "(ffi)", _x, _y, _whell );
+				handle = askEvent( handle, "MOUSE_MOVE", "(ffi)", _x, _y, _whell );
 			}
 		}
-	
+
 		if( handle == false )
 		{
-			for( TListChildren::reverse_iterator 
-				it = m_listChildren.rbegin(),
-				it_end = m_listChildren.rend();
+			for( TContainerChildrens::reverse_iterator 
+				it = m_childrens.rbegin(),
+				it_end = m_childrens.rend();
 			it != it_end;
 			++it)
 			{
@@ -239,8 +246,7 @@ namespace	Menge
 		std::string name;
 
 		Node::loader(_xml);
-		//NodeRenderable::loader(_xml);
-
+		
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "OffsetPosition", "Value", m_offsetPosition );
@@ -260,14 +266,12 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_addChildren( Layer * _layer )
+	void Scene::_addChildren( Node * _node )
 	{
-		_layer->setOffsetPosition( m_offsetPosition );
-		_layer->setScene( this );
-
-		if( _layer->isMain() )
+		if( Layer * layer = dynamic_cast<Layer*>(_node) )
 		{
-			m_mainLayer = _layer;
+			layer->setOffsetPosition( m_offsetPosition );
+			layer->setScene( this );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -275,14 +279,14 @@ namespace	Menge
 	{
 		m_offsetPosition = _offset;
 
-		for( TListChildren::iterator
+	/*	for( TListChildren::iterator
 			it = m_listChildren.begin(),
 			it_end = m_listChildren.end();
 		it != it_end;
 		++it)
 		{
 			static_cast<Layer*>(*it)->setOffsetPosition( m_offsetPosition );
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	/*void Scene::_render()
@@ -292,14 +296,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setRenderTarget( const std::string& _cameraName )
 	{
-		for( TListChildren::iterator
+/*		for( TListChildren::iterator
 			it = m_listChildren.begin(),
 			it_end = m_listChildren.end();
 		it != it_end;
 		++it)
 		{
 			static_cast<Layer*>(*it)->setRenderTarget( _cameraName );
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::compile()
@@ -313,13 +317,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
 	{
-		for( TListChildren::reverse_iterator 
-			it = m_listChildren.rbegin(),
-			it_end = m_listChildren.rend();
+		for( TContainerChildrens::reverse_iterator 
+			it = m_childrens.rbegin(),
+			it_end = m_childrens.rend();
 		it != it_end;
 		++it)
 		{
-			(*it)->handleMouseButtonEventEnd( _button, _isDown );
+//			(*it)->handleMouseButtonEventEnd( _button, _isDown );
 		}
 
 		bool handle = false;

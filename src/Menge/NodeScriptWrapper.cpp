@@ -163,7 +163,7 @@ namespace Menge
 		
 		static void setCamera2DDirection( float x, float y )
 		{
-			Scene * scene = getCurrentScene();
+		/*	Scene * scene = getCurrentScene();
 
 			struct ForeachRender
 				: public NodeForeach
@@ -175,12 +175,13 @@ namespace Menge
 
 				void apply( Node * children ) override
 				{
-					SceneNode2D * child = dynamic_cast<SceneNode2D*>(children);
+					Node * child = dynamic_cast<Node*>(children);
 					child->setLocalDirection(dir);
 				}
 			};
 
 			scene->foreachChildren( ForeachRender(mt::vec2f(x,y)) );
+			*/
 		}
 
 		static PyObject * createNodeFromXml( PyObject * _params  )
@@ -364,8 +365,9 @@ namespace Menge
 		}
 		static mt::vec2f screenToLocal( const std::string& _layerName, const mt::vec2f& _point )
 		{
-			Layer2D* layer = Holder<Player>::hostage()->getCurrentScene()->getChildrenT<Layer2D>( _layerName, false );
-			return layer->screenToLocal( _point );
+			//Layer2D* layer = Holder<Player>::hostage()->getCurrentScene()->getChildrenT<Layer2D>( _layerName, false );
+			//return layer->screenToLocal( _point );
+			return mt::vec2f(0,0);
 		}
 		static void minimizeWindow()
 		{
@@ -440,7 +442,7 @@ namespace Menge
 		{
 			Entity * entity = pybind::extract<Entity*>( _object);
 
-			Holder<Player>::hostage()->getRenderCamera2D()->setTarget( (SceneNode2D*)entity );
+			Holder<Player>::hostage()->getRenderCamera2D()->setTarget( (Node*)entity );
 		}
 
 		static void s_enableCamera2DTargetFollowing( bool _enable, float _force )
@@ -486,9 +488,9 @@ namespace Menge
 		//SCRIPT_CLASS_WRAPPING( Layer3D );
 		SCRIPT_CLASS_WRAPPING( RigidBody2D );
 		//SCRIPT_CLASS_WRAPPING( CapsuleController );
-		SCRIPT_CLASS_WRAPPING( SceneNode3D );
-		SCRIPT_CLASS_WRAPPING( Camera3D );
-		SCRIPT_CLASS_WRAPPING( RenderMesh );
+//		SCRIPT_CLASS_WRAPPING( SceneNode3D );
+//		SCRIPT_CLASS_WRAPPING( Camera3D );
+//		SCRIPT_CLASS_WRAPPING( RenderMesh );
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -567,8 +569,21 @@ namespace Menge
 			.def( "reset", &C4AI::reset )
 			;
 
+		pybind::interface_<Allocator2D>("Allocator2D", false)
+			.def( "getLocalPosition", &Allocator2D::getLocalPosition )
+			.def( "getLocalDirection", &Allocator2D::getLocalDirection )
+
+			.def( "getWorldPosition", &Allocator2D::getWorldPosition )
+			.def( "getWorldDirection", &Allocator2D::getWorldDirection )
+
+			.def( "setLocalPosition", &Allocator2D::setLocalPosition )
+			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
+
+			.def( "setRotate", &Allocator2D::setRotate )
+			;
+
 		//Identity в bases? в некоторых местах без этого падало
-		pybind::interface_<Node, pybind::bases<Identity>>("Node", false)
+	/*	pybind::interface_<Node, pybind::bases<Identity, Allocator2D>>("Node", false)
 			.def( "activate", &Node::activate )
 			.def( "deactivate", &Node::deactivate )
 			.def( "isActivate", &Node::isActivate )
@@ -589,22 +604,7 @@ namespace Menge
 			.def( "updatable", &Node::updatable )
 			.def( "update", &Node::update )
 			.def( "setListener", &Node::setListener )
-			;
-
-		pybind::interface_<Allocator2D>("Allocator2D", false)
-			.def( "getLocalPosition", &Allocator2D::getLocalPosition )
-			.def( "getLocalDirection", &Allocator2D::getLocalDirection )
-
-			.def( "getWorldPosition", &Allocator2D::getWorldPosition )
-			.def( "getWorldDirection", &Allocator2D::getWorldDirection )
-
-			.def( "setLocalPosition", &Allocator2D::setLocalPosition )
-			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
-
-			//.def( "setWorldPosition", &Allocator2D::setWorldPosition )
-			//.def( "setWorldDirection", &Allocator2D::setWorldDirection )
-			.def( "setRotate", &Allocator2D::setRotate )
-			;
+			;*/
 
 		/*pybind::interface_<Skeleton>("Skeleton", false)
 			.def( "attachEntityToBone", &Skeleton::attachEntityToBone )
@@ -633,17 +633,49 @@ namespace Menge
 			.def( "zoom", &FFCamera3D::zoom )
 			;*/
 
-		pybind::interface_<NodeRenderable>("NodeRenderable", false)
+	/*	pybind::interface_<NodeRenderable>("NodeRenderable", false)
 			.def( "hide", &NodeRenderable::hide )
-			;
+			;*/
 
-		pybind::proxy_<SceneNode2D, pybind::bases<Node, Allocator2D, NodeRenderable>>("SceneNode2D", false)
-				.def( "getScreenPosition", &SceneNode2D::getScreenPosition )
-				.def( "getParent", &SceneNode2D::getParent )
-				//.def( "setListener", &SceneNode2D::setListener )
-				.def( "isHide", &SceneNode2D::isHide )
-				.def( "alphaTo", &SceneNode2D::alphaTo )
-				.def( "setAlpha", &SceneNode2D::setAlpha )
+	/*	pybind::proxy_<Node, pybind::bases<Node, Allocator2D, NodeRenderable>>("Node", false)
+				.def( "getScreenPosition", &Node::getScreenPosition )
+				.def( "getParent", &Node::getParent )
+				//.def( "setListener", &Node::setListener )
+				.def( "isHide", &Node::isHide )
+				.def( "alphaTo", &Node::alphaTo )
+				.def( "setAlpha", &Node::setAlpha )
+			;*/
+
+		pybind::interface_<Node, pybind::bases<Identity,Allocator2D> >("Node", false)
+			.def( "activate", &Node::activate )
+			.def( "deactivate", &Node::deactivate )
+			.def( "isActivate", &Node::isActivate )
+			.def( "compile", &Node::compile )
+			.def( "release", &Node::release )
+			.def( "destroy", &Node::destroy )
+			.def( "isCompile", &Node::isCompile )
+			.def( "enable", &Node::enable )
+			.def( "disable", &Node::disable )
+			.def( "isEnable", &Node::isEnable )
+			.def( "setUpdatable", &Node::setUpdatable )
+			.def( "isUpdatable", &Node::isUpdatable )
+			.def( "setName", &Node::setName )
+			.def( "getName", &Node::getName )
+			.def( "addChildren", &Node::addChildren )
+			.def( "removeChildren", &Node::removeChildren )
+			.def( "getChildren", &Node::getChildren )
+			.def( "updatable", &Node::updatable )
+			.def( "update", &Node::update )
+			.def( "getParent", &Node::getParent )
+			.def( "setListener", &Node::setListener )
+			.def( "hide", &Node::hide )
+			.def( "isHide", &Node::isHide )
+			.def( "getWorldPosition", &Node::getWorldPosition )
+			.def( "getWorldDirection", &Node::getWorldDirection )
+			//.def( "alphaTo", &Node::alphaTo )
+			//.def( "setAlpha", &Node::setAlpha )
+			.def( "getScreenPosition", &Node::getScreenPosition )
+			.def( "getParent", &Node::getParent )
 			;
 
 
@@ -713,7 +745,7 @@ namespace Menge
 
 				;*/
 
-		pybind::proxy_<SceneNode3D, pybind::bases<Node> >("SceneNode3D", false)
+	/*	pybind::proxy_<SceneNode3D, pybind::bases<Node> >("SceneNode3D", false)
 					.def( "yaw", &SceneNode3D::yaw )
 					.def( "pitch", &SceneNode3D::pitch )
 					.def( "getYaw", &SceneNode3D::getYaw )
@@ -738,9 +770,9 @@ namespace Menge
 				//	.def( "getDirection", &Camera3D_::getDirection )
 					;
 		}
-
+*/
 		{
-			pybind::proxy_<Emitter, pybind::bases<SceneNode2D>>("Emitter", false)
+			pybind::proxy_<Emitter, pybind::bases<Node>>("Emitter", false)
 				.def( "play", &Emitter::play )
 				.def( "stop", &Emitter::stop )
 				.def( "pause", &Emitter::pause )
@@ -749,7 +781,7 @@ namespace Menge
 				.def( "setLeftBorder", &Emitter::setLeftBorder )
 				;
 
-			pybind::proxy_<SoundEmitter, pybind::bases<SceneNode2D>>("SoundEmitter", false)
+			pybind::proxy_<SoundEmitter, pybind::bases<Node>>("SoundEmitter", false)
 				.def( "play", &SoundEmitter::play )
 				.def( "pause", &SoundEmitter::pause )
 				.def( "stop", &SoundEmitter::stop )
@@ -761,7 +793,7 @@ namespace Menge
 				.def( "setSoundResource", &SoundEmitter::setSoundResource )
 				;
 
-			pybind::proxy_<TextField, pybind::bases<SceneNode2D>>("TextField", false)
+			pybind::proxy_<TextField, pybind::bases<Node>>("TextField", false)
 				.def( "setText", &TextField::setText )
 				.def( "setHeight", &TextField::setHeight )
 				.def( "getText", &TextField::getText )
@@ -769,8 +801,8 @@ namespace Menge
 				.def( "setColor", &TextField::setColor )
 				.def( "getColor", &TextField::getColor )
 				.def( "colorTo", &TextField::colorTo )
-				//.def( "alphaTo", &TextField::alphaTo )
-				//.def( "setAlpha", &TextField::setAlpha )
+				.def( "alphaTo", &TextField::alphaTo )
+				.def( "setAlpha", &TextField::setAlpha )
 				.def( "setOutlineColor", &TextField::setOutlineColor )
 				.def( "getOutlineColor", &TextField::getOutlineColor )
 				.def( "getLength", &TextField::getLength )
@@ -783,19 +815,19 @@ namespace Menge
 				.def( "getCenterAlign", &TextField::getCenterAlign )
 				;
 
-			pybind::proxy_<Arrow, pybind::bases<SceneNode2D>>("Arrow", false)
+			pybind::proxy_<Arrow, pybind::bases<Node>>("Arrow", false)
 				.def( "setOffsetClick", &Arrow::setOffsetClick )
 				.def( "getOffsetClick", &Arrow::getOffsetClick )
 				.def( "addHotSpot", &Arrow::addHotSpot )
 				.def( "getCurrentHotSpot", &Arrow::getCurrentHotSpot )
 				;
 
-			pybind::proxy_<Point, pybind::bases<SceneNode2D>>("Point", false)
+			pybind::proxy_<Point, pybind::bases<Node>>("Point", false)
 				.def( "testHotSpot", &Point::testHotSpot )
 				;
 
 
-			pybind::proxy_<Scene, pybind::bases<Node, NodeRenderable> >("Scene", false)
+			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "getNode", &Scene::getNode )
 				.def( "getLayerSize", &Scene::getLayerSize )
@@ -803,7 +835,8 @@ namespace Menge
 				.def( "setRenderTarget", &Scene::setRenderTarget )
 				;
 
-			pybind::proxy_<HotSpot, pybind::bases<SceneNode2D>>("HotSpot", false)
+
+			pybind::proxy_<HotSpot, pybind::bases<Node>>("HotSpot", false)
 				.def( "enableGlobalMouseEvent", &HotSpot::enableGlobalMouseEvent )
 				.def( "enableGlobalKeyEvent", &HotSpot::enableGlobalKeyEvent )				
 				.def( "addPoint", &HotSpot::addPoint )
@@ -811,7 +844,7 @@ namespace Menge
 				.def( "pick", &HotSpot::pick )
 				;
 
-			pybind::proxy_<Sprite, pybind::bases<SceneNode2D>>("Sprite", false)
+			pybind::proxy_<Sprite, pybind::bases<Node>>("Sprite", false)
 				.def( "setImageIndex", &Sprite::setImageIndex )
 				.def( "getImageIndex", &Sprite::getImageIndex )
 				.def( "setImageResource", &Sprite::setImageResource )
@@ -822,9 +855,9 @@ namespace Menge
 				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
 				.def( "setColor", &Sprite::setColor )
 				.def( "getColor", &Sprite::getColor )
-				//.def( "setAlpha", &Sprite::setAlpha )
+				.def( "setAlpha", &Sprite::setAlpha )
 				.def( "colorTo", &Sprite::colorTo )
-				//.def( "alphaTo", &Sprite::alphaTo )
+				.def( "alphaTo", &Sprite::alphaTo )
 				.def( "flip", &Sprite::flip )
 				//.def( "setListener", &Sprite::setListener )
 				.def( "getCenterAlign", &Sprite::getCenterAlign )
@@ -842,7 +875,7 @@ namespace Menge
 					;
 			}
 
-			pybind::proxy_<RigidBody2D, pybind::bases<SceneNode2D>>("RigidBody2D", false)
+			pybind::proxy_<RigidBody2D, pybind::bases<Node>>("RigidBody2D", false)
 				//.def( "setListener", &RigidBody2D::setListener )
 				.def( "getListener", &RigidBody2D::getListener )
 				.def( "applyForce", &RigidBody2D::applyForce )

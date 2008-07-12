@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "SceneNode2D.h"
+#	include "Node.h"
 #	include "Math/vec4.h"
 
 namespace Menge
@@ -18,7 +18,7 @@ namespace Menge
 	*/
 
 	class Arrow
-		: public SceneNode2D
+		: public Node
 	{
 		OBJECT_DECLARE(Arrow)
 
@@ -41,10 +41,6 @@ namespace Menge
 		void onMouseMove( int _dx, int _dy );
 		void onMouseLeave();
 		void onMouseEnter();
-
-	protected:
-		bool _renderBegin() override;
-		void _renderEnd() override;
 
 	protected:
 		void _update( float _timing ) override;

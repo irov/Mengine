@@ -3,12 +3,12 @@
 #	include "math\polygon.h"
 #	include "ShadowCaster2D.h"
 
-#	include "SceneNode2D.h"
+#	include "Node.h"
 
 namespace Menge
 {
 	class Light2D
-		: public SceneNode2D
+		: public Node
 	{
 		OBJECT_DECLARE(Light2D)
 
@@ -17,12 +17,10 @@ namespace Menge
 		Light2D();
 
 	public:
-		virtual bool isVisible( const Viewport & _viewPort );
-
 		void loader( XmlElement * _xml ) override;
 
 	protected:
-		void _render( bool _enableDebug ) override;
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 		bool _activate() override;
 		void _deactivate() override;

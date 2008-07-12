@@ -358,11 +358,11 @@ namespace Menge
 //		OBJECT_FACTORY( FFCamera3D );
 //		OBJECT_FACTORY( RigidBody3D );
 		OBJECT_FACTORY( Layer2D );
-		OBJECT_FACTORY( Layer3D );
+	//	OBJECT_FACTORY( Layer3D );
 		OBJECT_FACTORY( LayerScene );
-		OBJECT_FACTORY( RenderMesh );
-		OBJECT_FACTORY( Camera3D );
-		OBJECT_FACTORY( SceneNode3D );
+	//	OBJECT_FACTORY( RenderMesh );
+	//	OBJECT_FACTORY( Camera3D );
+	//	OBJECT_FACTORY( SceneNode3D );
 
 
 		RESOURCE_FACTORY( ResourceAnimation );
@@ -664,7 +664,7 @@ namespace Menge
 		{
 			sprintf( m_debugText, "FPS:%.2f\n", m_FPS );
 			m_debugTextField->setText( m_debugText );
-			m_debugTextField->render( false );
+//			m_debugTextField->render( false );
 		}
 
 		m_renderEngine->endScene();

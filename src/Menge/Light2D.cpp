@@ -19,14 +19,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Light2D::isVisible( const Viewport & _viewPort )
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Light2D::loader( XmlElement * _xml )
 	{
-		SceneNode2D::loader(_xml);
+		Node::loader(_xml);
 
 		XML_SWITCH_NODE(_xml)
 		{
@@ -35,13 +30,13 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Light2D::_render( bool _enableDebug )
+	void Light2D::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Light2D::_activate()
 	{
-		if( SceneNode2D::_activate() == false )
+		if( Node::_activate() == false )
 		{
 			return false;
 		}
@@ -53,12 +48,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Light2D::_deactivate()
 	{
-		SceneNode2D::_deactivate();
+		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Light2D::_compile()
 	{
-		if( SceneNode2D::_compile() == false )
+		if( Node::_compile() == false )
 		{
 			return false;
 		}
@@ -68,12 +63,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Light2D::_release()
 	{
-		SceneNode2D::_release();
+		Node::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Light2D::_update( float _timing )
 	{
-		SceneNode2D::_update(_timing);
+		Node::_update(_timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Light2D::setShadowLength(float _length)

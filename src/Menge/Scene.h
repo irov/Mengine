@@ -15,9 +15,8 @@ namespace Menge
 	class Camera2D;
 
 	class Scene
-		: public virtual Node
-		, public NodeRenderable
-		, public NodeChildren<Layer>
+		: public Node
+		//, public NodeChildren<Layer>
 	{
 	public:
 		Scene();
@@ -59,7 +58,10 @@ namespace Menge
 
 		//void _render() override;
 
-		void _addChildren( Layer * _layer ) override;
+		void _addChildren( Node * _layer ) override;
+
+	protected:
+		Layer * getLayer_( const std::string & _name );
 
 	public:
 		void setOffsetPosition( const mt::vec2f& _offset );

@@ -47,23 +47,10 @@ namespace     Menge
 	TextField::~TextField()
 	{
 	}
-	///////////////////////////////////////////////////////////////////////////
-	bool TextField::isVisible( const Viewport & _viewPort )
-	{
-		const mt::mat3f & wm = getWorldMatrix();
-
-		mt::box2f     bbox;
-
-		mt::set_box_from_oriented_extent( bbox, m_alignOffset, m_length, wm );
-
-		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
-
-		return result;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::_activate()
 	{
-		if( SceneNode2D::_activate() == false )
+		if( Node::_activate() == false )
 		{
 			return false;
 		}
@@ -75,12 +62,12 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_deactivate()
 	{
-		SceneNode2D::_deactivate();
+		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::_compile()
 	{
-		if( SceneNode2D::_compile() == false )
+		if( Node::_compile() == false )
 		{
 			return false;
 		}
@@ -137,7 +124,7 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_release()
 	{
-		SceneNode2D::_release();
+		Node::_release();
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resource );
@@ -148,7 +135,7 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::loader( XmlElement * _xml )
 	{
-		SceneNode2D::loader(_xml);
+		Node::loader(_xml);
 
 		XML_SWITCH_NODE(_xml)
 		{
@@ -238,7 +225,7 @@ namespace     Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_render( bool _enableDebug )
+	void TextField::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 		const RenderImageInterface * renderImage = m_resource->getImage();
 

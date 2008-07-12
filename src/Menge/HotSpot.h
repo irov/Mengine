@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "SceneNode2D.h"
+#	include "Node.h"
 
 #	include "InputHandler.h"
 #	include "MousePickerTrap.h"
@@ -16,7 +16,7 @@ extern "C"
 namespace Menge
 {
 	class HotSpot
-		: public SceneNode2D
+		: public Node
 		, public GlobalMouseHandler
 		, public GlobalKeyHandler
 		, public MousePickerTrap
@@ -60,7 +60,7 @@ namespace Menge
 
 	protected:
 		void _update( float _timing ) override;
-		void _render( bool _enableDebug ) override;
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 		void _setListener() override;
 

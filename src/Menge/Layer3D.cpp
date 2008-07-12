@@ -15,7 +15,7 @@
 #	include "LogEngine.h"
 #	include "Game.h"
 
-#	include "NodeForeach.h"
+//#	include "NodeForeach.h"
 
 //#	include "Camera3d.h"
 //#	include "RigidBody3d.h"
@@ -28,7 +28,7 @@
 
 namespace	Menge
 {
-	//////////////////////////////////////////////////////////////////////////
+/*	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT(Layer3D);
 	//////////////////////////////////////////////////////////////////////////
 	Layer3D::Layer3D()
@@ -44,10 +44,7 @@ namespace	Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*void Layer3D::update( float _timing )
-	{
-		NodeCore::update( _timing );
-	}*/
+
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer3D::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
@@ -64,11 +61,7 @@ namespace	Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*SceneNode3D * Layer3D::getNode(const std::string & _name )
-	{
-		SceneNode3D * node = getChildrenT<SceneNode3D>( _name, true );
-		return node;
-	}*/
+
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::loader( XmlElement * _xml )
 	{
@@ -110,10 +103,7 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*void Layer3D::_addChildren( SceneNode3D * _node )
-	{
-		_node->attachToRootNode();
-	}*/
+
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::loaderControllers_( XmlElement * _xml )
 	{
@@ -121,51 +111,18 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			/*XML_CASE_NODE("Controller")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-				}
-
-				CapsuleController * capsule = new CapsuleController();
-
-				capsule->setName( name );
-				capsule->setType( "CapsuleController" );
-
-				addController( capsule );
-
-				XML_PARSE_ELEMENT( capsule, &CapsuleController::loader );
-			}*/
+			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::addController( CapsuleController * _capsule )
 	{
-		/*const std::string & name = _capsule->getName();
-
-		TMapControllers::iterator it_find = m_mapControllers.find( name );
-
-		if( it_find == m_mapControllers.end() )
-		{
-			m_mapControllers.insert( std::make_pair( name, _capsule ) );
-		}*/
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CapsuleController * Layer3D::getController( const std::string & _name )
 	{
-		/*TMapControllers::const_iterator it_find = m_mapControllers.find( _name );
 
-		if( it_find == m_mapControllers.end() )
-		{
-			return NULL;
-		}
-
-		CapsuleController * cap = it_find->second;
-
-		cap->activate();
-
-		return cap;*/
 		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -189,5 +146,6 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()->beginLayer3D();
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////
+*/
 }

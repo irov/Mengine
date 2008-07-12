@@ -10,6 +10,9 @@
 #	include "LogEngine.h"
 #	include "XmlEngine.h"
 
+#	include "Player.h"
+#	include "Camera2D.h"
+
 #	include "pybind/pybind.hpp"
 
 #	include "Config/Config.h"
@@ -652,23 +655,28 @@ namespace Menge
 		return m_layer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Node::getScreenPosition( const Viewport & _viewport )
+	mt::vec2f Node::getScreenPosition()
 	{
 		const mt::vec2f & pos = getWorldPosition();
 
 		mt::vec2f screen_pos;
 
+		Camera2D * camera = Holder<Player>::hostage()
+			->getRenderCamera2D();
+
+		const Viewport & viewport = camera->getViewport();
+
 		if( m_layer )
 		{
 			const mt::vec2f & factor = m_layer->getParallaxFactor();
-			Viewport viewport = _viewport;
-			viewport.parallax( factor );
+			Viewport viewportParallax = viewport;
+			viewportParallax.parallax( factor );
 
-			screen_pos = pos - viewport.begin;
+			screen_pos = pos - viewportParallax.begin;
 		}
 		else
 		{
-			screen_pos = pos - _viewport.begin;
+			screen_pos = pos - viewport.begin;
 		}
 
 		return screen_pos;

@@ -66,7 +66,7 @@ namespace Menge
 		const mt::vec2f & getWorldDirection();
 
 
-		mt::vec2f getScreenPosition( const Viewport & _viewport );
+		mt::vec2f getScreenPosition();
 
 	public:
 		void setParent( Node * _node );

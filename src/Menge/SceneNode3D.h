@@ -29,8 +29,8 @@ namespace Menge
 		void yawTime( float _degrees, float _time );
 		void pitchTime( float _degrees, float _time );
 
-		virtual const mt::mat4f & getWorldMatrix() override;
-		void changePivot() override;
+		virtual const mt::mat4f & getWorldMatrix3D() override;
+		void changePivot3D() override;
 
 		virtual void loader( XmlElement * _xml ) override;
 

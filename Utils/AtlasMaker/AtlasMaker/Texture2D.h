@@ -27,13 +27,12 @@ public:
 	int	getWidth() const;
 	int	getHeight() const;
 	int	getBPP() const;
-
-	bool isAlphaChannel() const;
-
 	int getNonAlphaWidth()  const;
 	int getNonAlphaHeight() const;
 	int getOffsetX() const;
 	int getOffsetY() const;
+
+	bool isAlphaChannel() const;
 
 	FIBITMAP * getTexture() const;
 

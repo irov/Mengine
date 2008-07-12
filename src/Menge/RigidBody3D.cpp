@@ -86,7 +86,7 @@ namespace	Menge
 
 		m_physInterface = Holder<PhysicEngine>::hostage()->createRigidBody( m_density, m_active, geometry );
 
-		const mt::vec3f & position = getWorldPosition();
+		const mt::vec3f & position = getWorldPosition3D();
 		m_physInterface->setPosition(position.x, position.y, position.z);
 
 		const mt::quatf & orient = getWorldOrient();

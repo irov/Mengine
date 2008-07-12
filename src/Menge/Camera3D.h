@@ -23,7 +23,7 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 	protected:
-		void _updateMatrix( Allocator3D * _parent ) override;
+		void _updateMatrix3D( Allocator3D * _parent ) override;
 		bool _renderBegin() override;
 		bool _activate() override;
 

@@ -37,7 +37,7 @@ namespace Menge
 	{
 
 		Holder<RenderEngine>::hostage()
-			->setWorldMatrix( getLocalMatrix() );
+			->setWorldMatrix( getLocalMatrix3D() );
 
 		Holder<RenderEngine>::hostage()
 			->renderMesh( m_resourceMesh->getVertexData(),

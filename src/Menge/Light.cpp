@@ -179,7 +179,7 @@ namespace	Menge
 		return m_lightInterface->setCastsShadows(_enabled);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Light::setDirection( float _x, float _y, float _z )
+	void Light::setDirection3D( float _x, float _y, float _z )
 	{
 		return m_lightInterface->setDirection(_x,_y,_z);
 	}

@@ -12,40 +12,40 @@ namespace Menge
 		Allocator3D();
 
 	public:
-		virtual const mt::vec3f & getWorldPosition();
-		virtual const mt::vec3f & getWorldDirection();
-		virtual const mt::vec3f & getWorldStrafe();
-		virtual const mt::mat4f & getWorldMatrix();
+		virtual const mt::vec3f & getWorldPosition3D();
+		virtual const mt::vec3f & getWorldDirection3D();
+		virtual const mt::vec3f & getWorldStrafe3D();
+		virtual const mt::mat4f & getWorldMatrix3D();
 
-		const mt::vec3f & getLocalPosition()const;
-		mt::vec3f & getLocalPosition();
+		const mt::vec3f & getLocalPosition3D()const;
+		mt::vec3f & getLocalPosition3D();
 
-		const mt::vec3f & getLocalDirection()const;
-		mt::vec3f & getLocalDirection();
+		const mt::vec3f & getLocalDirection3D()const;
+		mt::vec3f & getLocalDirection3D();
 
-		const mt::vec3f & getLocalStrafe()const;
-		mt::vec3f & getLocalStrafe();
+		const mt::vec3f & getLocalStrafe3D()const;
+		mt::vec3f & getLocalStrafe3D();
 
-		const mt::mat4f & getLocalMatrix()const;
-		mt::mat4f & getLocalMatrix();
+		const mt::mat4f & getLocalMatrix3D()const;
+		mt::mat4f & getLocalMatrix3D();
 
-		void setLocalPosition( const mt::vec3f &position );
-		void setDirection( const mt::vec3f &direction );
+		void setLocalPosition3D( const mt::vec3f &position );
+		void setDirection3D( const mt::vec3f &direction );
 		
-		void translate( const mt::vec3f &delta );
+		void translate3D( const mt::vec3f &delta );
 
 	public:
 		void loader( XmlElement * _xml );
 
 	public:
-		void updateMatrix( Allocator3D * _parent );
+		void updateMatrix3D( Allocator3D * _parent );
 
-		virtual void changePivot();
-		bool isChangePivot()const;
+		virtual void changePivot3D();
+		bool isChangePivot3D()const;
 
 	protected:
-		virtual void _changePivot();
-		virtual void _updateMatrix( Allocator3D * _parent );
+		virtual void _changePivot3D();
+		virtual void _updateMatrix3D( Allocator3D * _parent );
 
 	protected:
 		mt::mat4f m_localMatrix;

@@ -17,17 +17,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::lookAt(const mt::vec3f& _targetPoint)
 	{
-		setDirection( _targetPoint - m_localMatrix.v3_3 );
+		setDirection3D( _targetPoint - m_localMatrix.v3_3 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Camera3D::getViewMatrix()
 	{	
-		updateMatrix( m_parent );
+		updateMatrix3D( m_parent );
 
 		return m_viewMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::_updateMatrix( Allocator3D * _parent )
+	void Camera3D::_updateMatrix3D( Allocator3D * _parent )
 	{
 		//const mt::mat4f & wm = getLocalMatrix();
 

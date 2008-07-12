@@ -81,7 +81,7 @@ namespace	Menge
 				m_controller->move( translation.x, translation.y, translation.z );
 
 				const double * fpos = m_controller->getFilteredPosition();
-				this->setLocalPosition( mt::vec3f( fpos[0], fpos[1] - 0.8f, fpos[2] ) );
+				this->setLocalPosition3D( mt::vec3f( fpos[0], fpos[1] - 0.8f, fpos[2] ) );
 
 				//printf("filt pos = %f; %f; %f\n",fpos[0],fpos[1],fpos[2]);
 			}
@@ -159,7 +159,7 @@ namespace	Menge
 
 		if( m_physicController )
 		{
-			m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( getWorldPosition() + m_physCapsuleCenter, m_physCapsuleRadius, m_physCapsuleHeight );
+			m_controller = Holder<PhysicEngine>::hostage()->createCapsuleController( getWorldPosition3D() + m_physCapsuleCenter, m_physCapsuleRadius, m_physCapsuleHeight );
 		}
 
 		this->callMethod("onCompile", "()" );

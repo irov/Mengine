@@ -41,7 +41,7 @@ namespace Menge
 
 		if(m_actor)
 		{
-			const mt::vec3f & pos = m_actor->getWorldPosition();
+			const mt::vec3f & pos = m_actor->getWorldPosition3D();
 			float R = m_scaleBoundingR * m_actor->getBoundingRadius();
 			float pd = 0;
 			mt::vec3f contact(0,0,0);
@@ -112,7 +112,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FFCamera3D::zoom( float _dist )
 	{
-		const mt::vec3f & pos = m_actor->getWorldPosition();
+		const mt::vec3f & pos = m_actor->getWorldPosition3D();
 		float R = m_scaleBoundingR * m_actor->getBoundingRadius();
 		float pd = 0;
 		mt::vec3f contact(0,0,0);

@@ -14,21 +14,21 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f & SceneNode3D::getWorldMatrix()
+	const mt::mat4f & SceneNode3D::getWorldMatrix3D()
 	{
 		if( m_parent == 0 )
 		{
-			return getLocalMatrix();
+			return getLocalMatrix3D();
 		}
 
-		updateMatrix( m_parent );
+		updateMatrix3D( m_parent );
 
-		return Allocator3D::getWorldMatrix();
+		return Allocator3D::getWorldMatrix3D();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SceneNode3D::changePivot()
+	void SceneNode3D::changePivot3D()
 	{
-		Allocator3D::changePivot();
+		Allocator3D::changePivot3D();
 
 		for( TListChildren::iterator
 			it = m_listChildren.begin(),
@@ -36,7 +36,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->changePivot();
+			(*it)->changePivot3D();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -52,18 +52,18 @@ namespace Menge
 	{
 		mt::rotate_axis_m4( m_localMatrix, m_fixedUp, _degrees);
 
-		changePivot();
+		changePivot3D();
 
 		m_yaw += _degrees;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::pitch( float _degrees )
 	{
-		const mt::vec3f & axis = getLocalStrafe();
+		const mt::vec3f & axis = getLocalStrafe3D();
 
 		mt::rotate_axis_m4( m_localMatrix, axis, _degrees);
 
-		changePivot();
+		changePivot3D();
 
 		m_pitch += _degrees;
 	}

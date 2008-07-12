@@ -1,5 +1,4 @@
 #	include "Texture2D.h"
-#	include "AtlasTexture.h"
 #	include "FreeImageWrapper.h"
 //////////////////////////////////////////////////////////////////////////
 Texture2D::Texture2D()
@@ -85,7 +84,7 @@ bool Texture2D::loadTexture( const std::string & _filename )
 
 	m_texture = FreeImage_Load(FIF_PNG,m_filename.c_str());
 
-	if(m_texture == NULL)
+	if( m_texture == NULL )
 	{
 		return false;
 	}
@@ -104,7 +103,7 @@ void Texture2D::_sliceAlpha()
 
 	bool result = FreeImageWrapper::FindAlphaBoundingBox(m_texture, bbox);
 
-	if(result == false)
+	if( result == false )
 	{
 		return;
 	}

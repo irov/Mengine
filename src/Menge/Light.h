@@ -42,7 +42,7 @@ namespace Menge
 		void	setVisible( bool _enabled );
 		void	setCastsShadows( bool _enabled );
 
-		void	setDirection( float _x, float _y, float _z );
+		void	setDirection3D( float _x, float _y, float _z );
 
 	public:
 		void	loader( XmlElement * _xml );

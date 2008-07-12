@@ -181,7 +181,10 @@ namespace Menge
 	void SoundEmitter::stop()
 	{
 		//printf("stopping %s\n", m_resourcename.c_str());
-		m_interface->stop();	
+		if( m_interface )
+		{
+			m_interface->stop();	
+		}
 		//Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
 		return ;
 	}

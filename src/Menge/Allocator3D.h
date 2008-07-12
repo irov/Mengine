@@ -38,7 +38,7 @@ namespace Menge
 		void loader( XmlElement * _xml );
 
 	public:
-		void updateMatrix3D( Allocator3D * _parent );
+		void updateMatrix3D(  const mt::mat4f & parentMatrix /*Allocator3D * _parent*/ );
 
 		virtual void changePivot3D();
 		bool isChangePivot3D()const;
@@ -48,11 +48,11 @@ namespace Menge
 		virtual void _updateMatrix3D( Allocator3D * _parent );
 
 	protected:
-		mt::mat4f m_localMatrix;
-		mt::mat4f m_worldMatrix;
+		mt::mat4f m_localMatrix3D;
+		mt::mat4f m_worldMatrix3D;
 
 		mt::vec3f m_fixedUp;
 
-		bool m_changePivot;
+		bool m_changePivot3D;
 	};
 }

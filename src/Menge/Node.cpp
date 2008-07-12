@@ -28,11 +28,35 @@ namespace Menge
 		, m_updatable(true)
 		, m_parent(0)
 		, m_hide(false)
-//		, m_visibility(false)
-//		, m_changeVisibility(true)
+		, m_visibility(false)
+		, m_changeVisibility(true)
 		, m_listener(0)
 		, m_layer(0)
 	{}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::checkVisibility( const Viewport & _viewport )
+	{
+		if( m_changeVisibility )
+		{
+			m_visibility = _checkVisibility( _viewport );
+		}
+
+		return m_visibility;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::changeVisibility()
+	{
+		m_changeVisibility = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::_checkVisibility( const Viewport & _viewport )
+	{
+		const mt::box2f & bbox = getWorldBoundingBox();
+
+		bool result = _viewport.testRectangle( bbox.vb, bbox.ve );
+
+		return result;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::destroy()
 	{

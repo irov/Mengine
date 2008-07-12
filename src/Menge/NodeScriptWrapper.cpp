@@ -30,7 +30,7 @@
 #	include "SoundEmitter.h"
 #	include "Emitter.h"
 #	include "Point.h"
-//#	include "Camera3d.h"
+#	include "Camera3d.h"
 //#	include "RigidBody3D.h"
 //#	include "CapsuleController.h"
 #	include "Skeleton.h"
@@ -57,7 +57,7 @@
 
 #	include "Identity.h"
 
-//#	include "Layer3D.h"
+#	include "Layer3D.h"
 
 //#	include "FFCamera.h"
 #	include "SceneNode3D.h"
@@ -163,8 +163,9 @@ namespace Menge
 		
 		static void setCamera2DDirection( float x, float y )
 		{
-		/*	Scene * scene = getCurrentScene();
-
+			assert(!"NOT IMPLEMENTED");
+			Scene * scene = getCurrentScene();
+/*
 			struct ForeachRender
 				: public NodeForeach
 			{
@@ -485,12 +486,12 @@ namespace Menge
 		//SCRIPT_CLASS_WRAPPING( FFCamera3D );
 		//SCRIPT_CLASS_WRAPPING( DiscreteEntity );
 		//SCRIPT_CLASS_WRAPPING( RigidBody3D );
-		//SCRIPT_CLASS_WRAPPING( Layer3D );
+		SCRIPT_CLASS_WRAPPING( Layer3D );
 		SCRIPT_CLASS_WRAPPING( RigidBody2D );
 		//SCRIPT_CLASS_WRAPPING( CapsuleController );
-//		SCRIPT_CLASS_WRAPPING( SceneNode3D );
-//		SCRIPT_CLASS_WRAPPING( Camera3D );
-//		SCRIPT_CLASS_WRAPPING( RenderMesh );
+		SCRIPT_CLASS_WRAPPING( SceneNode3D );
+		SCRIPT_CLASS_WRAPPING( Camera3D );
+		SCRIPT_CLASS_WRAPPING( RenderMesh );
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -582,43 +583,20 @@ namespace Menge
 			.def( "setRotate", &Allocator2D::setRotate )
 			;
 
-		//Identity в bases? в некоторых местах без этого падало
-	/*	pybind::interface_<Node, pybind::bases<Identity, Allocator2D>>("Node", false)
-			.def( "activate", &Node::activate )
-			.def( "deactivate", &Node::deactivate )
-			.def( "isActivate", &Node::isActivate )
-			.def( "compile", &Node::compile )
-			.def( "release", &Node::release )
-			.def( "destroy", &Node::destroy )
-			.def( "isCompile", &Node::isCompile )
-			.def( "enable", &Node::enable )
-			.def( "disable", &Node::disable )
-			.def( "isEnable", &Node::isEnable )
-			.def( "setUpdatable", &Node::setUpdatable )
-			.def( "isUpdatable", &Node::isUpdatable )
-			.def( "setName", &Node::setName )
-			.def( "getName", &Node::getName )
-			.def( "addChildren", &Node::addChildren )
-			.def( "removeChildren", &Node::removeChildren )
-			.def( "getChildren", &Node::getChildren )
-			.def( "updatable", &Node::updatable )
-			.def( "update", &Node::update )
-			.def( "setListener", &Node::setListener )
-			;*/
 
 		/*pybind::interface_<Skeleton>("Skeleton", false)
 			.def( "attachEntityToBone", &Skeleton::attachEntityToBone )
 			;*/
 
-		/*pybind::class_<Camera3D>("Camera3D")
+		pybind::class_<Camera3D>("Camera3D")
 			.def( pybind::init<>() )
-			.def( "setPosition", &Camera3D::setPosition )
+			//.def( "setPosition", &Camera3D::setPosition )
 			.def( "lookAt", &Camera3D::lookAt )
 			//.def( "yaw", &Camera3D::yaw )
 			.def( "pitch", &Camera3D::pitch )
-			.def( "roll", &Camera3D::roll )
-			.def( "getDirection", &Camera3D::getDirection )
-			;*/
+			//.def( "roll", &Camera3D::roll )
+			//.def( "getDirection", &Camera3D::getDirection )
+			;
 
 		
 		/*pybind::class_<FFCamera3D>("FFCamera3D")
@@ -700,16 +678,9 @@ namespace Menge
 				.def( "setListener", &SceneNode3D::setListener )
 
 				//.def( "getCamera", &SceneNode3D::getCamera )
-			;
+			;*/
 
-		{*/
-			/*pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
-				//.def( "addCamera", &Layer3D::addCamera )
-				//.def( "getCamera", &Layer3D::getCamera )	
-				.def( "addController", &Layer3D::addController )
-				.def( "getController", &Layer3D::getController )		
-				.def( "getNode", &Layer3D::getNode )
-				;*/
+		{
 
 			/*pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)
 				.def( "applyForce", &RigidBody3D::applyForce )
@@ -745,7 +716,7 @@ namespace Menge
 
 				;*/
 
-	/*	pybind::proxy_<SceneNode3D, pybind::bases<Node> >("SceneNode3D", false)
+		pybind::proxy_<SceneNode3D, pybind::bases<Node> >("SceneNode3D", false)
 					.def( "yaw", &SceneNode3D::yaw )
 					.def( "pitch", &SceneNode3D::pitch )
 					.def( "getYaw", &SceneNode3D::getYaw )
@@ -754,6 +725,15 @@ namespace Menge
 					.def( "pitchTime", &SceneNode3D::pitchTime )
 					.def( "setListener", &SceneNode3D::setListener )
 			;
+
+		pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
+			//.def( "addCamera", &Layer3D::addCamera )
+			//.def( "getCamera", &Layer3D::getCamera )	
+			.def( "addController", &Layer3D::addController )
+			.def( "getController", &Layer3D::getController )		
+			//.def( "getNode", &Layer3D::getNode )
+			;
+
 		{
 
 				pybind::proxy_< RenderMesh, pybind::bases<SceneNode3D> >("RenderMesh", false)
@@ -762,15 +742,15 @@ namespace Menge
 					;
 
 				pybind::proxy_<Camera3D, pybind::bases<SceneNode3D> >("Camera3D", false)
-				//	.def( "setPosition", &Camera3D_::setPosition )
-				//	.def( "lookAt", &Camera3D_::lookAt )
-				//	.def( "yaw", &Camera3D::yaw )
-				//	.def( "pitch", &Camera3D::pitch )
-				//	.def( "roll", &Camera3D::roll )
-				//	.def( "getDirection", &Camera3D_::getDirection )
+				//	.def( "setPosition", &Camera3D::setPosition )
+					.def( "lookAt", &Camera3D::lookAt )
+					.def( "yaw", &Camera3D::yaw )
+					.def( "pitch", &Camera3D::pitch )
+					//.def( "roll", &Camera3D::roll )
+				//	.def( "getDirection", &Camera3D::getDirection )
 					;
 		}
-*/
+
 		{
 			pybind::proxy_<Emitter, pybind::bases<Node>>("Emitter", false)
 				.def( "play", &Emitter::play )
@@ -952,5 +932,6 @@ namespace Menge
 
 		pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );
 		pybind::def( "isInViewport", &ScriptMethod::s_isInViewport );
+	}
 	}
 }

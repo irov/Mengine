@@ -36,6 +36,17 @@ namespace Menge
 		virtual ~Node(){};
 
 	public:
+		virtual bool checkVisibility( const Viewport & _viewport );
+		void changeVisibility();
+
+	protected:
+		virtual bool _checkVisibility( const Viewport & _viewport );
+
+	protected:
+		bool m_visibility;
+		bool m_changeVisibility;
+
+	public:
 		void setLayer( Layer2D * _layer );
 		Layer2D * getLayer() const;
 	public:

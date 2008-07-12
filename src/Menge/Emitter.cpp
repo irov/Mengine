@@ -34,7 +34,27 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Emitter::~Emitter()
 	{}	
+	///////////////////////////////////////////////////////////////////////////
+	bool Emitter::_checkVisibility( const Viewport & _viewPort )
+	{
+		int left;
+		int top; 
+		int right;
+		int bottom;
 
+		m_interface->getBoundingBox( left, top, right, bottom );
+
+		const mt::mat3f & wm = getWorldMatrix();
+
+		mt::box2f bbox;	//сделать box2i
+
+		mt::mul_v2_m3( bbox.min, mt::vec2f( float(left), float(top) ), wm );
+		mt::mul_v2_m3( bbox.max, mt::vec2f( float(right), float(bottom) ), wm );
+
+		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
+
+		return result;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Emitter::_activate()
 	{

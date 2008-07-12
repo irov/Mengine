@@ -1069,11 +1069,35 @@
 			Name="Scene"
 			>
 			<File
+				RelativePath=".\Allocator2D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Allocator2D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Allocator3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Allocator3D.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Scene.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\Scene.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SceneNode3D.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SceneNode3D.h"
 				>
 			</File>
 			<Filter
@@ -1089,34 +1113,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="SceneNode2D"
-				>
-				<Filter
-					Name="Allocator2D"
-					>
-					<File
-						RelativePath=".\Allocator2D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Allocator2D.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Renderable2D"
-					>
-					<File
-						RelativePath=".\Renderable2D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Renderable2D.h"
-						>
-					</File>
-				</Filter>
-			</Filter>
-			<Filter
 				Name="Layer"
 				>
 				<File
@@ -1127,42 +1123,6 @@
 					RelativePath=".\Layer.h"
 					>
 				</File>
-			</Filter>
-			<Filter
-				Name="SceneNode3D"
-				>
-				<File
-					RelativePath=".\SceneNode3D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SceneNode3D.h"
-					>
-				</File>
-				<Filter
-					Name="Allocator3D"
-					>
-					<File
-						RelativePath=".\Allocator3D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Allocator3D.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Renderable3D"
-					>
-					<File
-						RelativePath=".\Renderable3D.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\Renderable3D.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Layer2D"
@@ -1394,30 +1354,6 @@
 			</File>
 			<File
 				RelativePath=".\CapsuleController.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FFCamera.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\FFCamera.h"
 				>
 			</File>
 			<File

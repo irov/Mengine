@@ -47,6 +47,19 @@ namespace     Menge
 	TextField::~TextField()
 	{
 	}
+	///////////////////////////////////////////////////////////////////////////
+	bool TextField::_checkVisibility( const Viewport & _viewPort )
+	{
+		const mt::mat3f & wm = getWorldMatrix();
+
+		mt::box2f bbox;
+
+		mt::set_box_from_oriented_extent( bbox, m_alignOffset, m_length, wm );
+
+		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
+
+		return result;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::_activate()
 	{

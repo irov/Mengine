@@ -7,7 +7,7 @@
 
 namespace	Menge
 {
-/*	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT( Camera3D );
 	//////////////////////////////////////////////////////////////////////////
 	Camera3D::Camera3D()
@@ -17,7 +17,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::lookAt(const mt::vec3f& _targetPoint)
 	{
-		setDirection3D( _targetPoint - m_localMatrix.v3_3 );
+		setDirection3D( _targetPoint - m_localMatrix3D.v3_3 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Camera3D::getViewMatrix()
@@ -29,13 +29,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::_updateMatrix3D( Allocator3D * _parent )
 	{
-		mt::inv_m4( m_viewMatrix, m_worldMatrix );
+		mt::inv_m4( m_viewMatrix, m_worldMatrix3D );
 
 		m_viewMatrix[0][0] = -m_viewMatrix[0][0];
 		m_viewMatrix[1][0] = -m_viewMatrix[1][0];
 		m_viewMatrix[2][0] = -m_viewMatrix[2][0];
 		m_viewMatrix[3][0] = -m_viewMatrix[3][0];
-		recalc( m_worldMatrix );
+		recalc( m_worldMatrix3D );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec3f Camera3D::getDirectionFromMouse( float _xm, float _ym )
@@ -51,7 +51,7 @@ namespace	Menge
 		
 		mt::vec3f out;
 
-		mt::mul_v3_m4( out, v, m_worldMatrix );
+		mt::mul_v3_m4( out, v, m_worldMatrix3D );
 
 		return -out;
 	}
@@ -82,5 +82,4 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	*/
 }

@@ -120,6 +120,7 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 	protected:
+		bool _checkVisibility( const Viewport & _viewPort ) override;
 		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 		
 		bool _activate() override;

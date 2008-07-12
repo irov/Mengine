@@ -28,7 +28,7 @@
 
 namespace	Menge
 {
-/*	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT(Layer3D);
 	//////////////////////////////////////////////////////////////////////////
 	Layer3D::Layer3D()
@@ -66,7 +66,7 @@ namespace	Menge
 	void Layer3D::loader( XmlElement * _xml )
 	{
 		Node::loader(_xml);
-		Layer::loader(_xml);
+	//	Layer::loader(_xml);
 
 		std::string name;
 
@@ -142,10 +142,9 @@ namespace	Menge
 	bool Layer3D::_renderBegin()
 	{
 		//Holder<RenderEngine>::hostage()->setRenderViewport( m_viewport );
-		Layer::_renderBegin();
+//		Layer::_renderBegin();
 		Holder<RenderEngine>::hostage()->beginLayer3D();
 		return true;
 	}
 	/////////////////////////////////////////////////////////////////////////
-*/
 }

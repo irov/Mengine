@@ -75,10 +75,10 @@ namespace	Menge
 		const Viewport & viewport = camera->getViewport();
 
 		const mt::vec2f & dirA = this->getLocalDirection();
-		const mt::vec2f & posA = this->getScreenPosition( viewport );
+		const mt::vec2f & posA = this->getScreenPosition(  );
 
 		const mt::vec2f & dirB = _hotspot->getLocalDirection();
-		const mt::vec2f & posB = _hotspot->getScreenPosition( viewport );
+		const mt::vec2f & posB = _hotspot->getScreenPosition(  );
 
 		bool is_intersect = mt::intersect_poly_poly( 
 			m_polygon, _hotspot->m_polygon, 
@@ -248,7 +248,7 @@ namespace	Menge
 		const Viewport & viewport = camera->getViewport();
 
 		const mt::vec2f & direction = this->getLocalDirection();
-		const mt::vec2f & position = this->getScreenPosition( viewport );
+		const mt::vec2f & position = this->getScreenPosition(  );
 
 		bool result = mt::is_point_inside_polygon(m_polygon, _p, position, direction);
 

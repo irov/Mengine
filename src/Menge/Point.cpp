@@ -35,10 +35,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Point::testHotSpot( HotSpot * _hotspot )
 	{
-	//	const mt::vec2f& pos = this->getScreenPosition();
-	//	bool result = _hotspot->testPoint( pos );
-	//	return result;
-		return false;
+		const mt::vec2f& pos = this->getScreenPosition();
+		bool result = _hotspot->testPoint( pos );
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Point::_render( const Viewport & _viewport, bool _enableDebug )

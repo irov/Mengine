@@ -4,15 +4,13 @@
 
 namespace Menge
 {
-/*	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT( SceneNode3D );
 	//////////////////////////////////////////////////////////////////////////
 	SceneNode3D::SceneNode3D()
 		: m_yaw( 0.0f )
 		, m_pitch( 0.0f )
-	{
-
-	}
+	{}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & SceneNode3D::getWorldMatrix3D()
 	{
@@ -21,7 +19,11 @@ namespace Menge
 			return getLocalMatrix3D();
 		}
 
-		updateMatrix3D( m_parent );
+		SceneNode3D * sceneNode = dynamic_cast<SceneNode3D*>(m_parent);
+
+		const mt::mat4f & wm = sceneNode->getWorldMatrix3D();
+
+		updateMatrix3D( wm );
 
 		return Allocator3D::getWorldMatrix3D();
 	}
@@ -30,27 +32,27 @@ namespace Menge
 	{
 		Allocator3D::changePivot3D();
 
-		for( TListChildren::iterator
-			it = m_listChildren.begin(),
-			it_end = m_listChildren.end();
+		for( TContainerChildrens::iterator
+			it = m_childrens.begin(),
+			it_end = m_childrens.end();
 		it != it_end;
 		++it)
 		{
-			(*it)->changePivot3D();
+			SceneNode3D * sceneNode = dynamic_cast<SceneNode3D*>(*it);
+
+			sceneNode->changePivot3D();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::loader( XmlElement * _xml )
 	{
-		Allocator3D::loader( _xml );
-		Renderable3D::loader( _xml );
-
 		Node::loader( _xml );
+		Allocator3D::loader( _xml );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::yaw( float _degrees )
 	{
-		mt::rotate_axis_m4( m_localMatrix, m_fixedUp, _degrees);
+		mt::rotate_axis_m4( m_localMatrix3D, m_fixedUp, _degrees);
 
 		changePivot3D();
 
@@ -61,7 +63,7 @@ namespace Menge
 	{
 		const mt::vec3f & axis = getLocalStrafe3D();
 
-		mt::rotate_axis_m4( m_localMatrix, axis, _degrees);
+		mt::rotate_axis_m4( m_localMatrix3D, axis, _degrees);
 
 		changePivot3D();
 
@@ -116,5 +118,4 @@ namespace Menge
 		registerEvent( "PITCHTIME_END", "onPitchTimeEnd", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	*/
 }

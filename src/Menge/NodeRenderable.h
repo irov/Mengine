@@ -4,7 +4,7 @@
 
 namespace Menge
 {
-/*	class NodeRenderable
+	/*class NodeRenderable
 		: public virtual Node
 	{
 	public:

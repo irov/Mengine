@@ -93,6 +93,7 @@ namespace Menge
 		{
 			ImageFrame frame = loadImageFrame( it->fileName );
 
+
 			if( frame.image == NULL )
 			{
 				return false;

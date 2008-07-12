@@ -10,9 +10,9 @@ namespace Menge
 	class Entity3d;
 	class CapsuleController;
 
-/*	class Layer3D
-		: public Layer
-		, public SceneNode3D
+	class Layer3D
+		//: public Layer
+		: public SceneNode3D
 	{
 		OBJECT_DECLARE(Layer3D);
 
@@ -45,7 +45,7 @@ namespace Menge
 
 		//void _addChildren( SceneNode3D * _node ) override;
 
-		bool _renderBegin() override;
+		bool _renderBegin();
 
 	private:
 
@@ -64,5 +64,5 @@ namespace Menge
 		//void render( bool _enableDebug ){ NodeRenderable::render( _enableDebug ); }
 		bool isRenderable(){ return true; }
 		Viewport m_viewport;
-	};*/
+	};
 }

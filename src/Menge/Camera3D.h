@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-/*	class Camera3D
+	class Camera3D
 		: public SceneNode3D
 		, public Frustum
 	{
@@ -24,11 +24,13 @@ namespace Menge
 
 	protected:
 		void _updateMatrix3D( Allocator3D * _parent ) override;
-		bool _renderBegin() override;
+		
+		bool _renderBegin();
+
 		bool _activate() override;
 
 
 		mt::mat4f m_viewMatrix;	
 		mt::vec3f m_at;
-	};*/
+	};
 }

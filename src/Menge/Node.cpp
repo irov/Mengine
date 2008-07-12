@@ -654,18 +654,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Node::getScreenPosition( const Viewport & _viewport )
 	{
-		if( m_layer == 0 )
-		{
-			return mt::vec2f(0.f,0.f);
-		}
-
-		const mt::vec2f & factor = m_layer->getParallaxFactor();
-		Viewport viewport = _viewport;
-		viewport.parallax( factor );
-
 		const mt::vec2f & pos = getWorldPosition();
 
-		mt::vec2f screen_pos = pos - viewport.begin;
+		mt::vec2f screen_pos;
+
+		if( m_layer )
+		{
+			const mt::vec2f & factor = m_layer->getParallaxFactor();
+			Viewport viewport = _viewport;
+			viewport.parallax( factor );
+
+			screen_pos = pos - viewport.begin;
+		}
+		else
+		{
+			screen_pos = pos - _viewport.begin;
+		}
 
 		return screen_pos;
 	}

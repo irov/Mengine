@@ -1,6 +1,6 @@
 #	include "NodeSinglethon.h"
 
-#	include "NodeForeach.h"
+//#	include "NodeForeach.h"
 
 #	include "ScriptEngine.h"
 

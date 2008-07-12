@@ -1091,14 +1091,6 @@
 			<Filter
 				Name="SceneNode2D"
 				>
-				<File
-					RelativePath=".\SceneNode2D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\SceneNode2D.h"
-					>
-				</File>
 				<Filter
 					Name="Allocator2D"
 					>
@@ -1248,18 +1240,6 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="Children"
-					>
-					<File
-						RelativePath=".\NodeChildren.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\NodeChildren.h"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="Factory"
 					>
 					<File
@@ -1268,30 +1248,6 @@
 					</File>
 					<File
 						RelativePath=".\NodeFactory.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Singlethon"
-					>
-					<File
-						RelativePath=".\NodeSinglethon.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\NodeSinglethon.h"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Renderable"
-					>
-					<File
-						RelativePath=".\NodeRenderable.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\NodeRenderable.h"
 						>
 					</File>
 				</Filter>

@@ -167,6 +167,7 @@ bool OISInputSystem::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonI
 	if( m_handler )
 	{
 		m_handler->handleMouseButtonEvent( id, true );
+		m_handler->handleMouseButtonEventEnd( id, true );
 	}
 
 	return true;
@@ -177,6 +178,7 @@ bool OISInputSystem::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButton
 	if( m_handler )
 	{
 		m_handler->handleMouseButtonEvent( id, false );
+		m_handler->handleMouseButtonEventEnd( id, false );
 	}
 
 	return true;

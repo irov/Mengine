@@ -317,14 +317,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
 	{
-		for( TContainerChildrens::reverse_iterator 
+	/*	for( TContainerChildrens::reverse_iterator 
 			it = m_childrens.rbegin(),
 			it_end = m_childrens.rend();
 		it != it_end;
 		++it)
 		{
-//			(*it)->handleMouseButtonEventEnd( _button, _isDown );
+			(*it)->handleMouseButtonEventEnd( _button, _isDown );
 		}
+	*/
 
 		bool handle = false;
 		if( updatable() )
@@ -333,5 +334,4 @@ namespace	Menge
 		}
 		return handle;
 	}
-	//////////////////////////////////////////////////////////////////////////
 }

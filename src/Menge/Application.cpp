@@ -47,6 +47,7 @@
 #	include "TileMap.h"
 #	include "Track.h"
 #	include "Video.h"
+#	include "Layer2dLoop.h"
 //#	include "Actor.h"
 //#	include "Camera3D.h"
 #	include "CapsuleController.h"
@@ -358,6 +359,7 @@ namespace Menge
 //		OBJECT_FACTORY( FFCamera3D );
 //		OBJECT_FACTORY( RigidBody3D );
 		OBJECT_FACTORY( Layer2D );
+		OBJECT_FACTORY( Layer2DLoop );
 		OBJECT_FACTORY( Layer3D );
 		OBJECT_FACTORY( LayerScene );
 		OBJECT_FACTORY( RenderMesh );
@@ -541,11 +543,6 @@ namespace Menge
 		//Holder<RenderEngine>::hostage()->frameStarted();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*const std::string& Application::getResourcePath() const
-	{
-		return m_resourcePath;
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	void Application::setParticlesEnabled( bool _enabled )
 	{
 		m_particles = _enabled;
@@ -579,6 +576,7 @@ namespace Menge
 	{
 		static float volume = 1.0f;
 		static float avolume = 1.0f;
+
 		if( !_focus )
 		{
 			volume = Holder<SoundEngine>::hostage()->getCommonVolume();

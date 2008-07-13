@@ -19,7 +19,7 @@ namespace Menge
 		m_interface->logMessage( _message.c_str(), _maskDebug, _endl, _timeStamp );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LogSystemInterface* LogEngine::getInterface()
+	LogSystemInterface * LogEngine::getInterface()
 	{
 		return m_interface;
 	}
@@ -39,10 +39,8 @@ namespace Menge
 		}
 
 		va_list argList;
-		//Initialize variable argument list
+		
 		va_start(argList, _message);
-
-		//Write the error to the log file
 
 		char str[1024];
 

@@ -83,13 +83,6 @@ namespace Menge
 
 				XML_PARSE_ELEMENT( resource, &ResourceReference::loader );
 			}		
-
-			//XML_CHECK_NODE("Extend")
-			//{
-			//	XML_DEF_ATTRIBUTES_NODE( File );
-
-			//	loadResource( File );
-			//}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -130,6 +123,7 @@ namespace Menge
 		ResourceReference * resource = it_find->second;
 
 		unsigned int inc = resource->incrementReference();
+
 		// resource has been loaded
 		if( inc == 1 && ( !m_listeners.empty() || !m_scriptListeners.empty() ) )
 		{

@@ -609,6 +609,18 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="TilePolygon"
+				>
+				<File
+					RelativePath=".\TilePolygon.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\TilePolygon.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"
@@ -1136,6 +1148,14 @@
 					RelativePath=".\Layer2D.h"
 					>
 				</File>
+				<File
+					RelativePath=".\Layer2DLoop.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Layer2DLoop.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="LayerScene"
@@ -1438,14 +1458,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\TilePolygon.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\TilePolygon.h"
-			>
-		</File>
 		<File
 			RelativePath=".\Utils.cpp"
 			>

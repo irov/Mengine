@@ -145,7 +145,5 @@ namespace Menge
 		PhysicEngine * m_physicEngine;
 		PhysicEngine2D * m_physicEngine2D;
 		XmlEngine*	m_xmlEngine;
-
-
 	};
 }

@@ -288,10 +288,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( const Viewport & _viewport, bool _enableDebug )
 	{
-		//updateVisibility_();
-
-		//updateFlip_();
-
 		if( m_resource == NULL )
 		{
 			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
@@ -359,7 +355,7 @@ namespace	Menge
 	{
 		if( m_resource == NULL )
 		{
-			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
+			MENGE_LOG( "Sprite %s: Can't get image size, because resource is NULL '%s'"
 				, getName().c_str()
 				, m_resourcename.c_str() 
 				);

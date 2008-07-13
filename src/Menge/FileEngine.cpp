@@ -34,7 +34,7 @@ namespace Menge
 		return m_interface->existFile( _filename.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileEngine::openFile( const std::string& _filename )
+	DataStreamInterface * FileEngine::openFile( const std::string& _filename )
 	{
 		return m_interface->openFile( _filename.c_str() );
 	}
@@ -91,7 +91,7 @@ namespace Menge
 		return m_interface->initAppDataPath( _game );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& FileEngine::getAppDataPath()
+	const String & FileEngine::getAppDataPath()
 	{
 		return m_interface->getAppDataPath();
 	}

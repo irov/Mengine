@@ -36,12 +36,15 @@ namespace	Menge
 			mt::vec2f pos = getWorldPosition();
 			mt::vec2f tpos = m_target->getWorldPosition();
 			mt::vec2f dir = tpos - pos;
+
 			float len = dir.length();
+
 			if( len < 0.01f ) return;
 			dir /= len;
 
 			float force = m_followingForce *  len ;
 			float way = force * _timing * 0.001f;
+
 			if( way > len )
 			{
 				pos = tpos;
@@ -67,6 +70,7 @@ namespace	Menge
 			{
 				pos.y = m_boundRightLower.y;
 			}
+
 			setLocalPosition( pos );
 		}
 	}

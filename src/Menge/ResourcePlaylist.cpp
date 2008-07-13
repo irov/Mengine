@@ -93,7 +93,7 @@ namespace Menge
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( m_filename, this, &ResourcePlaylist::loaderTracks_ ) == false )
 		{
-			MENGE_LOG("Warning: resource playlist not find file '%s'\n"
+			MENGE_LOG("Warning: resource playlist not found file '%s'\n"
 				, m_filename.c_str() 
 				);
 

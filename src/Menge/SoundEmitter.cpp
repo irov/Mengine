@@ -71,7 +71,6 @@ namespace Menge
 			return false;
 		}
 
-
 		m_resource = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceSound>( m_resourcename );

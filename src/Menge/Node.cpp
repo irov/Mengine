@@ -34,30 +34,6 @@ namespace Menge
 		, m_layer(0)
 	{}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::checkVisibility( const Viewport & _viewport )
-	{
-		if( m_changeVisibility )
-		{
-			m_visibility = _checkVisibility( _viewport );
-		}
-
-		return m_visibility;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::changeVisibility()
-	{
-		m_changeVisibility = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Node::_checkVisibility( const Viewport & _viewport )
-	{
-		const mt::box2f & bbox = getWorldBoundingBox();
-
-		bool result = _viewport.testRectangle( bbox.vb, bbox.ve );
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Node::destroy()
 	{
 		for( TContainerChildrens::iterator
@@ -116,7 +92,7 @@ namespace Menge
 		{
 			if( compile() == false )
 			{
-				MENGE_LOG("Error: activate Node '%s' is failed, becouse compiled is failed\n"
+				MENGE_LOG("Error: activation of Node '%s' is failed, because compilation is failed\n"
 					, m_name.c_str() 
 					);
 
@@ -143,7 +119,6 @@ namespace Menge
 		if( m_active )
 		{
 			m_active = false;
-
 			_deactivate();
 		}		
 	}
@@ -182,7 +157,7 @@ namespace Menge
 	{
 		if( isChildren( _node ) )
 		{
-			MENGE_LOG("Node '%s' type '%s' addChildren failed '%s' type '%s' is already exsist"
+			MENGE_LOG("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist"
 				, this->getName().c_str()
 				, this->getType().c_str()
 				, _node->getName().c_str()
@@ -268,7 +243,7 @@ namespace Menge
 	{
 		m_updatable = _updatable;
 
-		//// !!!! Temporary hack
+		//// !!!! ¿’“”Õ√, ¿À¿–Ã!! ¬–Œ“ÃÕ≈ÕŒ√», Ù‡Í ÏÓÈ ÃŒ— 
 		for( TContainerChildrens::iterator
 			it = m_childrens.begin(),
 			it_end = m_childrens.end();
@@ -465,30 +440,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-/*	bool Node::checkVisibility( const Viewport & _viewport )
-	{
-		if( m_changeVisibility )
-		{
-			m_visibility = _checkVisibility( _viewport );
-		}
-
-		return m_visibility;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::changeVisibility()
-	{
-		m_changeVisibility = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Node::_checkVisibility( const Viewport & _viewport )
-	{
-		const mt::box2f & bbox = getWorldBoundingBox();
-
-		bool result = _viewport.testRectangle( bbox.vb, bbox.ve );
-
-		return result;
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	void Node::hide( bool _value )
 	{
 		m_hide = _value;
@@ -553,6 +504,30 @@ namespace Menge
 	void Node::_render( const Viewport & _viewport, bool )
 	{
 		// Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::checkVisibility( const Viewport & _viewport )
+	{
+		if( m_changeVisibility )
+		{
+			m_visibility = _checkVisibility( _viewport );
+		}
+
+		return m_visibility;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::changeVisibility()
+	{
+		m_changeVisibility = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::_checkVisibility( const Viewport & _viewport )
+	{
+		const mt::box2f & bbox = getWorldBoundingBox();
+
+		bool result = _viewport.testRectangle( bbox.vb, bbox.ve );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Node::_embedded()

@@ -395,13 +395,13 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			done &= (*it)->compile();
+			/*done &=*/ (*it)->compile();
 		}
 
-		if( done == false )
-		{
-			return false;
-		}
+		//if( done == false )
+		//{
+		//	return false;
+		//}
 
 		bool result = Resource::compile();
 
@@ -437,6 +437,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::recompile()
 	{
+		//if( isCompile() == false )
+		//{
+		//	return true;
+		//}
+
 		bool status = isActivate();
 
 		release();

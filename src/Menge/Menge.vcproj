@@ -118,14 +118,15 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="3"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
+				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Source&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB;MENGE_EXPORT;FREEIMAGE_LIB;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB;MENGE_EXPORT;FREEIMAGE_LIB"
 				StringPooling="true"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"

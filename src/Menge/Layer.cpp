@@ -66,11 +66,6 @@ namespace Menge
 		m_renderTarget = _cameraName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Layer::setRenderArea( const mt::vec4f& _renderArea )
 	{
 		m_renderArea = _renderArea;

@@ -87,7 +87,7 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_resourcename != "" )
+		if( m_resourcename.empty() == false )
 		{
 			m_resource = 
 				Holder<ResourceManager>::hostage()
@@ -302,7 +302,7 @@ namespace	Menge
 
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
-		mt::mat3f wm = getWorldMatrix();
+		const mt::mat3f & wm = getWorldMatrix();
 	
 		Holder<RenderEngine>::hostage()->renderImage(
 			wm,
@@ -363,9 +363,14 @@ namespace	Menge
 				, getName().c_str()
 				, m_resourcename.c_str() 
 				);
+
+			return mt::vec2f(0.f,0.f);
 		}
 
-		return m_resource->getSize( m_currentImageIndex );
+		const mt::vec2f & size = 
+			m_resource->getSize( m_currentImageIndex );
+
+		return size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::getCenterAlign()

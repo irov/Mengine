@@ -329,7 +329,14 @@ namespace Menge
 		{
 			RenderImageInterface* img = const_cast<RenderImageInterface*>( Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( _resource )->getImage( _frame ) );
 			Image wImage;
-			wImage.loadDynamicImage( img->lock(), img->getWidth(), img->getHeight(), 1, img->getPixelFormat() );
+
+			unsigned char * buffer = img->lock();
+			float width = img->getWidth();
+			float height = img->getHeight();
+			PixelFormat pixelFormat = img->getPixelFormat();
+
+
+			wImage.loadDynamicImage( buffer, (std::size_t)width, (std::size_t)height, 1, pixelFormat );
 			wImage.save( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _filename );
 			img->unlock();
 			//const_cast<RenderImageInterface*>(img)->writeToFile( _filename.c_str() );
@@ -456,13 +463,13 @@ namespace Menge
 			Holder<Player>::hostage()->getRenderCamera2D()->setBounds( _leftUpper, _rightLower );
 		}
 
-		static void s_setCursorPosition( int _x, int _y )
+		static void s_setCursorPosition( float _x, float _y )
 		{
 			Arrow* arrow = Holder<Player>::hostage()->getArrow();
 			arrow->setLocalPosition( mt::vec2f( _x, _y ) + arrow->getOffsetClick() );
 		}
 
-		static bool s_isInViewport( const mt::vec2f _pos )
+		static bool s_isInViewport( const mt::vec2f & _pos )
 		{
 			return Holder<RenderEngine>::hostage()->getRenderViewport().testPoint( _pos );
 		}

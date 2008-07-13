@@ -127,7 +127,9 @@ namespace Menge
 		bool updatable();
 
 	public:
+		virtual bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown );
 
+	public:
 		virtual void update( float _timing );
 		virtual void loader( XmlElement * xml );
 

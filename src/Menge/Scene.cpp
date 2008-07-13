@@ -9,6 +9,9 @@
 #	include "PhysicEngine2D.h"
 
 #	include "Layer2D.h"
+#	include "Player.h"
+#	include "Camera2D.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -51,12 +54,14 @@ namespace	Menge
 	Node * Scene::getNode(const std::string & _name )
 	{
 		Node * node = getChildren( _name, true );
+
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Scene::getLayerSize( const std::string & _name )
 	{
 		Layer * layer = getLayer_( _name );
+
 		if( layer )
 		{
 			return layer->getSize();
@@ -68,6 +73,7 @@ namespace	Menge
 	void Scene::layerAppend( const std::string & _layer, Node * _node )
 	{
 		Layer * layer = getLayer_( _layer );
+
 		if( layer )
 		{
 			layer->addChildren( _node );
@@ -95,9 +101,9 @@ namespace	Menge
 
 		bool handle = false;
 
-		if( updatable() )
+		if( handle == false )
 		{
-			if( handle == false )
+			if( updatable() )
 			{
 				handle = askEvent( handle, "KEY", "(IIb)", _key, _char, _isDown );
 			}
@@ -129,10 +135,10 @@ namespace	Menge
 		}
 
 		bool handle = false;
-
-		if( updatable() )
+		
+		if( handle == false )
 		{
-			if( handle == false )
+			if( updatable() )
 			{
 				handle = askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
 			}
@@ -209,12 +215,14 @@ namespace	Menge
 
 		callMethod( "onActivate", "() " );
 
-		return Node::_activate();
+		bool result = Node::_activate();
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()
 	{
-		callMethod( "onDeactivate", "() ");
+		callMethod( "onDeactivate", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_release()
@@ -312,26 +320,74 @@ namespace	Menge
 		{
 			Holder<PhysicEngine2D>::hostage()->createScene( mt::vec2f( m_physWorldBox2D.x, m_physWorldBox2D.y ),mt::vec2f( m_physWorldBox2D.z, m_physWorldBox2D.w ), m_gravity2D );
 		}
-		return Node::compile();
+
+		if( m_mainLayer )
+		{
+			mt::vec2f mainSize = m_mainLayer->getSize();
+
+			Camera2D * camera2D = Holder<Player>::hostage()
+				->getRenderCamera2D();
+
+			const Viewport & viewport = camera2D->getViewport();
+
+			mt::vec2f viewport_size = viewport.end - viewport.begin;
+
+			mainSize -= viewport_size;
+
+			if( fabsf( mainSize.x * mainSize.y) > 0.0001f )
+			{
+				for( TContainerChildrens::reverse_iterator 
+					it = m_childrens.rbegin(),
+					it_end = m_childrens.rend();
+				it != it_end;
+				++it)
+				{
+					if( Layer2D * layer2D = dynamic_cast<Layer2D*>( *it ) )
+					{
+						mt::vec2f layerSize = layer2D->getSize();
+
+						layerSize -= viewport_size;
+
+						mt::vec2f parallaxFactor( layerSize.x / mainSize.x, layerSize.y / mainSize.y );
+
+						layer2D->setParallaxFactor( parallaxFactor );
+					}
+				}
+			}
+		}
+
+		bool result = Node::compile();
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEventEnd( unsigned int _button, bool _isDown )
 	{
-		for( TContainerChildrens::reverse_iterator 
-			it = m_childrens.rbegin(),
-			it_end = m_childrens.rend();
-		it != it_end;
-		++it)
-		{
-			(*it)->handleMouseButtonEventEnd( _button, _isDown );
-		}
-	
-
 		bool handle = false;
+
 		if( updatable() )
 		{
-			askEvent( handle, "MOUSE_BUTTON_END", "(Ib)", _button, _isDown );
+			if( handle == false )
+			{
+				askEvent( handle, "MOUSE_BUTTON_END", "(Ib)", _button, _isDown );
+			}
 		}
+
+		if( handle == false )
+		{
+			for( TContainerChildrens::reverse_iterator 
+				it = m_childrens.rbegin(),
+				it_end = m_childrens.rend();
+			it != it_end;
+			++it)
+			{
+				if( handle = (*it)->handleMouseButtonEventEnd( _button, _isDown ) )
+				{
+					break;
+				}
+			}
+		}
+
 		return handle;
 	}
 }

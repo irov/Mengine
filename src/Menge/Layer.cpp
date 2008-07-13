@@ -3,6 +3,8 @@
 #	include "XmlEngine.h"
 #	include "RenderEngine.h"
 
+#	include "Scene.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -17,6 +19,8 @@ namespace Menge
 	void Layer::setMain( bool _main )
 	{
 		m_main = _main;
+
+		m_scene->setMainLayer( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::isMain() const
@@ -50,7 +54,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Main", "Value", m_main );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Main", "Value", &Layer::setMain );
 			XML_CASE_ATTRIBUTE_NODE( "Size", "Value", m_size );
 			XML_CASE_ATTRIBUTE_NODE( "RenderArea", "Value", m_renderArea );
 		}

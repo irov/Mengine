@@ -66,7 +66,7 @@ namespace	Menge
 
 		result = m_currentHotSpot->activate();
 
-		return true;
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::loader( XmlElement * _xml )

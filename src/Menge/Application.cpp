@@ -735,7 +735,7 @@ namespace Menge
 		return m_currentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::notifyWindowModeChanged( float _width, float _height, bool _fullscreen )
+	void Application::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
 		m_interface->notifyWindowModeChanged( _width, _height, _fullscreen );
 	}

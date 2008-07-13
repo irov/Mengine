@@ -156,6 +156,6 @@ namespace Menge
 
 		_result = pybind::convert::to_bool( result );
 
-		return true;
+		return _result;
 	}
 }

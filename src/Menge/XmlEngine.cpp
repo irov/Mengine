@@ -175,6 +175,13 @@ namespace XmlParserCast
 		return res == 4;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool attribute_value_cast( Menge::ColourValue & _var, const char * _value )
+	{
+		int res = sscanf( _value, "%f;%f;%f;%f", &_var.r, &_var.g, &_var.b, &_var.a );
+
+		return res == 4;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool attribute_value_cast( mt::mat3f & _var, const char * _value )
 	{
 		mt::ident_m3( _var );

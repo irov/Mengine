@@ -25,6 +25,34 @@ void releaseInterfaceSystem( RenderSystemInterface* _ptrInterface )
 	delete static_cast<HGERenderSystem*>(_ptrInterface);
 }
 //////////////////////////////////////////////////////////////////////////
+hgeBlendState s_blendMengeToHGE( EBlendFactor _blend )
+{
+	switch( _blend )
+	{
+	case BF_ONE:
+		return BLEND_ONE;
+	case BF_ZERO:
+		return BLEND_ZERO;
+	case BF_DEST_COLOUR:
+		return BLEND_DESTCOLOR;
+	case BF_SOURCE_COLOUR:
+		return BLEND_SRCCOLOR;
+	case BF_ONE_MINUS_DEST_COLOUR:
+		return BLEND_INVDESTCOLOR;
+	case BF_ONE_MINUS_SOURCE_COLOUR:
+		return BLEND_INVSRCCOLOR;
+	case BF_DEST_ALPHA:
+		return BLEND_DESTALPHA;
+	case BF_SOURCE_ALPHA:
+		return BLEND_SRCALPHA;
+	case BF_ONE_MINUS_DEST_ALPHA:
+		return BLEND_INVDESTALPHA;
+	case BF_ONE_MINUS_SOURCE_ALPHA:
+		return BLEND_INVSRCALPHA;
+	}
+	return BLEND_ZERO;
+}
+//////////////////////////////////////////////////////////////////////////
 HGERenderSystem::HGERenderSystem()
 : m_hge( NULL )
 , m_layer( 1.0f )
@@ -227,8 +255,8 @@ void HGERenderSystem::renderImage(const float * _transform,
 								  const float * _uv, 
 								  unsigned int _color,  
 								  const RenderImageInterface * _image, 
-								  EBlendFactor _src, 
-								  EBlendFactor _dst )
+								  EBlendFactor _srcBlend, 
+								  EBlendFactor _dstBlend )
 {
 	hgeQuad quad;
 
@@ -260,10 +288,10 @@ void HGERenderSystem::renderImage(const float * _transform,
 
 	quad.blend = BLEND_DEFAULT;
 
-	if( _dst == BF_ONE )
+	/*if( _dst == BF_ONE )
 	{
 		quad.blend ^= BLEND_ALPHABLEND;
-	}
+	}*/
 
 	quad.v[0].tx = _uv[0];
 	quad.v[0].ty = _uv[1];
@@ -299,6 +327,7 @@ void HGERenderSystem::renderImage(const float * _transform,
 	}
 
 	m_hge->Gfx_RenderQuad( &quad );
+	m_hge->Gfx_SetBlendState( s_blendMengeToHGE( _srcBlend ), s_blendMengeToHGE( _dstBlend ) );
 
 	/*if( tex )
 	{

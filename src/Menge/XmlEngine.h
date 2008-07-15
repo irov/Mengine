@@ -6,6 +6,7 @@
 #	include "Math/mat4.h"
 #	include "Math/quat.h"
 #	include "FileEngine.h"
+#	include "ColourValue.h"
 
 class XmlExpatParser;
 
@@ -74,6 +75,7 @@ namespace XmlParserCast
 	bool attribute_value_cast( mt::vec2f & _var, const char * _value );
 	bool attribute_value_cast( mt::vec3f & _var, const char * _value );
 	bool attribute_value_cast( mt::vec4f & _var, const char * _value );
+	bool attribute_value_cast( Menge::ColourValue & _var, const char * _value );
 	bool attribute_value_cast( mt::quatf & _var, const char * _value );
 	bool attribute_value_cast( mt::mat3f & _var, const char * _value );
 	bool attribute_value_cast( mt::mat4f & _var, const char * _value );

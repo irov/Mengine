@@ -529,13 +529,21 @@ namespace Menge
 			.def( pybind::init<float,float,float,float>() )
 			;
 
-		pybind::class_<Color>("Color")
+		/*pybind::class_<Color>("Color")
 			.def( pybind::init<float,float,float,float>() )
 			.def( "set", &Color::set )
 			.def( "getA", &Color::getA )
 			.def( "getR", &Color::getR )
 			.def( "getG", &Color::getG )
 			.def( "getB", &Color::getB )
+			;*/
+
+		pybind::class_<ColourValue>("Color")
+			.def( pybind::init<float, float, float, float>() )
+			.def( "getA", &ColourValue::getA )
+			.def( "getR", &ColourValue::getR )
+			.def( "getG", &ColourValue::getG )
+			.def( "getB", &ColourValue::getB )
 			;
 
 		pybind::class_<PhysicJoint2DInterface>("Joint2D")

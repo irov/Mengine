@@ -32,9 +32,9 @@ namespace     Menge
 		, m_centerAlign( false )
 		, m_rightAlign( false )
 		, m_alignOffset( 0.f, 0.f )
-		, m_changingColorTime( 0.0f )
-		, m_changingColor( false )
-		, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
+		//, m_changingColorTime( 0.0f )
+		//, m_changingColor( false )
+		//, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
 		//, m_outlineImage( 0 )
 		, m_maxWidth( 2048.f )
 		, m_charOffset( 0.0f )
@@ -167,7 +167,7 @@ namespace     Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::renderPass_( const Color & _color, const RenderImageInterface * _renderImage, mt::vec4f _uv, float k, float h )
+	void TextField::renderPass_( const ColourValue & _color, const RenderImageInterface * _renderImage, mt::vec4f _uv, float k, float h )
 	{
 		float spaceWidth = m_resource->getCharRatio(' ') * m_height;
 
@@ -226,7 +226,7 @@ namespace     Menge
 					offset + size,
 					offset + mt::vec2f( 0.0f, size.y ),
 					uv,
-					_color.get(),
+					_color.getAsARGB(),
 					_renderImage
 					);
 
@@ -268,7 +268,7 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_update( float _timing )
 	{
-		if( m_changingColor )
+		/*if( m_changingColor )
 		{
 			if( m_changingColorTime < _timing )
 			{
@@ -284,10 +284,18 @@ namespace     Menge
 				m_outlineColor = m_newOutlineColor * d + m_outlineColor * ( 1.0f - d );
 				m_changingColorTime -= _timing;
 			}
+		}*/
+		if( m_colorTo.isStarted() )
+		{
+			m_outlineColorTo.update( _timing, &m_outlineColor );
+			if( m_colorTo.update( _timing, &m_color ) )
+			{
+				callEvent( "COLOR_END", "(O)", this->getEmbedding() );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setOutlineColor( const Color& _color )
+	void TextField::setOutlineColor( const ColourValue& _color )
 	{
 		m_outlineColor = _color;
 	}
@@ -297,20 +305,26 @@ namespace     Menge
 		m_maxWidth = _len;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Color& TextField::getOutlineColor() const
+	const ColourValue& TextField::getOutlineColor() const
 	{
 		return m_outlineColor;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setText( const std::string& _text )
 	{
+		if( m_resource == 0 )
+		{
+			MENGE_LOG( "Warning: TextField without resource ('%s')",
+				m_resourcename.c_str() );
+			return;
+		}
 		m_text = _text;
 		createFormattedMessage_( m_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::colorTo( const Color& _color, float _time )
+	void TextField::colorTo( const ColourValue& _color, float _time )
 	{
-		m_newColor = _color;
+		/*m_newColor = _color;
 		m_changingColorTime = _time;
 
 		if( m_changingColor )
@@ -318,12 +332,18 @@ namespace     Menge
 			callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
 		}
 
-		m_changingColor = true;
+		m_changingColor = true;*/
+		if( m_colorTo.isStarted() )
+		{
+			callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
+		}
+
+		m_colorTo.start( m_color, _color, _time, length_color );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::alphaTo( float _alpha, float _time )
 	{
-		m_newColor = m_color;
+		/*m_newColor = m_color;
 		m_newColor.a = _alpha;
 		m_newOutlineColor = m_outlineColor;
 		m_newOutlineColor.a = _alpha;
@@ -334,10 +354,24 @@ namespace     Menge
 			callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
 		}
 
-		m_changingColor = true;
+		m_changingColor = true;*/
+		ColourValue newColor = m_color;
+		newColor.a = _alpha;
+		
+		if( m_colorTo.isStarted() )
+		{
+			callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
+			m_colorTo.stop();
+		}
+		m_colorTo.start( m_color, newColor, _time, length_color );
+
+		newColor = m_outlineColor;
+		newColor.a = _alpha;
+
+		m_outlineColorTo.start( m_outlineColor, newColor, _time, length_color );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setColor( const Color& _color )
+	void TextField::setColor( const ColourValue& _color )
 	{
 		m_color = _color;
 	}
@@ -348,7 +382,7 @@ namespace     Menge
 		m_outlineColor.a = _alpha;	// outline too
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Color& TextField::getColor() const
+	const ColourValue& TextField::getColor() const
 	{
 		return m_color;
 	}

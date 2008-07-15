@@ -68,7 +68,10 @@ bool OISInputSystem::captureMouse( float _x, float _y, float _maxX, float _maxY 
 //////////////////////////////////////////////////////////////////////////
 void OISInputSystem::releaseMouse()
 {
-	m_mouseReleasing = true;
+	if( m_mouse != 0 )
+	{
+		m_mouseReleasing = true;
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void OISInputSystem::update()

@@ -269,6 +269,30 @@ namespace Menge
 		//@param brightness Brightness level, [0,1]
 		void setHSB( float _hue, float _saturation, float _brightness );
 
+		float getA() const
+		{
+			return a;
+		}
+
+		float getR() const
+		{
+			return r;
+		}
+
+		float getG() const
+		{
+			return g;
+		}
+
+		float getB() const
+		{
+			return b;
+		}
 	};
+
+	static float length_color( const ColourValue& _rColor )
+	{
+		return 1.0f;
+	}
 
 } // namespace

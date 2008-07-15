@@ -99,6 +99,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::render( const Viewport & _viewport )
 	{
+		Layer::_render( _viewport, false );
+
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
 

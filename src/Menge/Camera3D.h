@@ -25,7 +25,7 @@ namespace Menge
 	protected:
 		void _updateMatrix3D( Allocator3D * _parent ) override;
 		
-		bool _renderBegin();
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 		bool _activate() override;
 

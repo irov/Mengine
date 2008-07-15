@@ -32,5 +32,6 @@ namespace Menge
 		TVectorPickerTrap m_listPickerTrap;
 
 		MousePickerTrap * m_lastPickerTrap;
+		//TVectorPickerTrap m_lastTraps;
 	};
 }

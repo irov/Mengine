@@ -40,11 +40,14 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 	protected:
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+
+	protected:
 		bool m_main;
 		mt::vec2f m_size;		
 
 		mt::vec4f m_renderArea;
-		String m_renderTarget;
+		//String m_renderTarget;
 
 		Scene * m_scene;
 	};

@@ -98,6 +98,22 @@ typedef void * HTARGET;
 #define BLEND_DEFAULT		(BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_NOZWRITE)
 #define BLEND_DEFAULT_Z		(BLEND_COLORMUL | BLEND_ALPHABLEND | BLEND_ZWRITE)
 
+enum hgeBlendState
+{
+	BLEND_ZERO               = 1,
+	BLEND_ONE                = 2,
+	BLEND_SRCCOLOR           = 3,
+	BLEND_INVSRCCOLOR        = 4,
+	BLEND_SRCALPHA           = 5,
+	BLEND_INVSRCALPHA        = 6,
+	BLEND_DESTALPHA          = 7,
+	BLEND_INVDESTALPHA       = 8,
+	BLEND_DESTCOLOR          = 9,
+	BLEND_INVDESTCOLOR       = 10,
+	BLEND_SRCALPHASAT        = 11,
+	BLEND_BOTHSRCALPHA       = 12,
+	BLEND_BOTHINVSRCALPHA    = 13
+};
 
 /*
 ** HGE System state constants
@@ -416,6 +432,7 @@ public:
 	virtual void		CALL	Gfx_SetTextureMatrix( const float* _texMat ) = 0;
 	virtual void		CALL	Gfx_Prepare2D() = 0;
 	virtual void		CALL	Gfx_Prepare3D() = 0;
+	virtual void		CALL	Gfx_SetBlendState( hgeBlendState _srcBlend, hgeBlendState _dstBlend ) = 0;
 
 	virtual HTARGET		CALL	Target_Create(int width, int height, bool zbuffer) = 0;
 	virtual void		CALL	Target_Free(HTARGET target) = 0;

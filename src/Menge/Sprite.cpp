@@ -32,11 +32,11 @@ namespace	Menge
 	, m_uv( 0.0f, 0.0f, 1.0f, 1.0f )
 	, m_offset( 0.0f, 0.0f )
 	, m_size( 0.0f, 0.0f )
-	, m_changingColorTime( 0.0f )
-	, m_changingColor( false )
+	//, m_changingColorTime( 0.0f )
+	//, m_changingColor( false )
 	, m_flipX( false )
 	, m_flipY( false )
-	, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
+	//, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
 	, m_blendSrc( BF_SOURCE_ALPHA )
 	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
 	{ }
@@ -188,8 +188,8 @@ namespace	Menge
 
 			if(isAlpha == false)
 			{
-			//	m_blendSrc = BF_ONE; // не хочет так работать
-			//	m_blendDest = BF_ZERO;
+				m_blendSrc = BF_ONE; // не хочет так работать
+				m_blendDest = BF_ZERO;
 			}
 		}
 	}
@@ -258,15 +258,14 @@ namespace	Menge
 		updateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::colorTo( const Color & _color, float _time )
+	void Sprite::colorTo( const ColourValue & _color, float _time )
 	{
-		m_newColor = _color;
-		m_changingColorTime = _time;
-		if( m_changingColor )
+		if( m_colorTo.isStarted() )
 		{
 			this->callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
+			m_colorTo.stop();
 		}
-		m_changingColor = true;
+		m_colorTo.start( m_color, _color, _time, length_color );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setAlpha( float _alpha )
@@ -276,14 +275,14 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::alphaTo( float _alpha, float _time )
 	{
-		m_newColor = m_color;
-		m_newColor.a = _alpha;
-		m_changingColorTime = _time;
-		if( m_changingColor )
+		if( m_colorTo.isStarted() )
 		{
 			this->callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
+			m_colorTo.stop();
 		}
-		m_changingColor = true;
+		ColourValue newColor = m_color;
+		newColor.a = _alpha;
+		m_colorTo.start( m_color, newColor, _time, length_color );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( const Viewport & _viewport, bool _enableDebug )
@@ -307,26 +306,26 @@ namespace	Menge
 			m_offset + m_size,
 			m_offset + mt::vec2f( 0.0f, m_size.y ),
 			m_uv,
-			m_color.get(),
+			m_color.getAsARGB(),
 			renderImage,
 			m_blendSrc,
 			m_blendDest 
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setColor( const Color & _color )
+	void Sprite::setColor( const ColourValue & _color )
 	{
 		m_color = _color;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Color & Sprite::getColor() const
+	const ColourValue & Sprite::getColor() const
 	{
 		return m_color;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_update( float _timing )
 	{
-		if( m_changingColor )
+		/*if( m_changingColor )
 		{
 			if( m_changingColorTime < _timing )
 			{
@@ -342,6 +341,13 @@ namespace	Menge
 				m_changingColorTime -= _timing;
 			}
 
+		}*/
+		if( m_colorTo.isStarted() )
+		{
+			if( m_colorTo.update( _timing, &m_color ) == true )
+			{
+				this->callEvent( "COLOR_END", "(O)", this->getEmbedding() );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

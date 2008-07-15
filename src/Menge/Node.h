@@ -102,6 +102,9 @@ namespace Menge
 		void deactivate();
 		bool isActivate() const;
 
+		////
+		virtual void setScale( const mt::vec2f& _scale ) {}
+
 	protected:
 		virtual bool _activate();
 		virtual void _deactivate();

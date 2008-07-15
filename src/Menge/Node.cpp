@@ -291,9 +291,9 @@ namespace Menge
 			it = m_childrens.begin(),
 			it_end = m_childrens.end();
 		it != it_end;
-		++it)
+		/*++it*/)
 		{
-			(*it)->update( _timing );
+			(*it++)->update( _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

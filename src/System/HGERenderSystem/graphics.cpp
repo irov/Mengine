@@ -340,12 +340,12 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
 {
 	if(VertArray)
 	{
-		if(CurPrimType!=HGEPRIM_QUADS || nPrim>=VERTEX_BUFFER_SIZE/HGEPRIM_QUADS || CurTexture!=quad->tex || CurBlendMode!=quad->blend)
+		if(CurPrimType!=HGEPRIM_QUADS || nPrim>=VERTEX_BUFFER_SIZE/HGEPRIM_QUADS || CurTexture!=quad->tex || m_blendChanged )
 		{
 			_render_batch();
 
 			CurPrimType=HGEPRIM_QUADS;
-			if(CurBlendMode != quad->blend) _SetBlendMode(quad->blend);
+			//if(CurBlendMode != quad->blend) _SetBlendMode(quad->blend);
 			if(quad->tex != CurTexture)
 			{
 				pD3DDevice->SetTexture( 0, (LPDIRECT3DTEXTURE8)quad->tex );
@@ -736,6 +736,7 @@ void HGE_Impl::_render_batch( bool bEndScene )
 			}
 
 			nPrim=0;
+			m_blendChanged = false;
 		}
 
 		if( bEndScene )
@@ -1358,6 +1359,7 @@ void HGE_Impl::Gfx_Prepare2D()
 	pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE,   TRUE );
 	pD3DDevice->SetRenderState( D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA );
 	pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+	//Gfx_SetBlendState( BLEND_SRCALPHA, BLEND_INVSRCALPHA );
 
 	pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
 	pD3DDevice->SetRenderState( D3DRS_ALPHAREF,        0x01 );
@@ -1445,4 +1447,20 @@ void HGE_Impl::Gfx_SetTextureMatrix( const float* _texMat )
 	std::copy( _texMat, _texMat + 16, &(matTexture._11) );
 	pD3DDevice->SetTextureStageState( 0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
 	pD3DDevice->SetTransform( D3DTS_TEXTURE0, &matTexture );
+}
+
+void HGE_Impl::Gfx_SetBlendState( hgeBlendState _srcBlend, hgeBlendState _dstBlend )
+{
+	if( m_currSrcBlend != _srcBlend )
+	{
+		pD3DDevice->SetRenderState( D3DRS_SRCBLEND, static_cast<D3DBLEND>( _srcBlend ) );
+		m_currSrcBlend = _srcBlend;
+		m_blendChanged = true;
+	}
+	if( m_currDstBlend != _dstBlend )
+	{
+		pD3DDevice->SetRenderState( D3DRS_DESTBLEND, static_cast<D3DBLEND>( _dstBlend ) );
+		m_currDstBlend = _dstBlend;
+		m_blendChanged = true;
+	}
 }

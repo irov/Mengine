@@ -402,7 +402,7 @@ namespace Menge
 
 		//Временная запись
 		//добавил Вова
-		//m_sound = false;
+		m_sound = false;
 
 		idx = _args.find( "-particles" );
 		if( idx != String::npos )
@@ -654,7 +654,7 @@ namespace Menge
 
 		Holder<Game>::hostage()->render( m_debugRender );
 
-		Holder<LightSystem>::hostage()->update();
+		//Holder<LightSystem>::hostage()->update();
 
 		//MENGE_LOG("GameRender: %.2f\n", m_interface->getDeltaTime() );
 		
@@ -763,10 +763,12 @@ namespace Menge
 			if( !_fullscreen )
 			{
 				m_inputEngine->setMouseBounded( false );
+				m_interface->setHandleMouse( true );
 			}
 			else
 			{
 				m_inputEngine->setMouseBounded( true );
+				m_interface->setHandleMouse( false );
 			}
 		}
 		Holder<RenderEngine>::hostage()->

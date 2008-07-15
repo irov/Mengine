@@ -2,7 +2,8 @@
 
 #	include "../Interface/RenderSystemInterface.h"
 #	include "Node.h"
-#	include "Color.h"
+#	include "ColourValue.h"
+#	include "ValueInterpolator.h"
 
 #	include "math/mat3.h"
 #	include "math/vec4.h"
@@ -97,7 +98,7 @@ namespace Menge
 		\param _color - результирующий цвет
 		\param _time - время, в течении которого будет изменятся цвет
 		*/
-		virtual void colorTo( const Color & _color, float _time );
+		virtual void colorTo( const ColourValue & _color, float _time );
 
 		void setAlpha( float _alpha );
 		void alphaTo( float _alpha, float _time );
@@ -105,14 +106,14 @@ namespace Menge
 		/*!
 		\param _color значение цвета
 		*/
-		void setColor( const Color & _color );
+		void setColor( const ColourValue & _color );
 
 		//! Возвращает цвет спрайта.
 		/*!
 		\return цвет
 		*/
 
-		const Color & getColor() const;
+		const ColourValue & getColor() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -148,9 +149,9 @@ namespace Menge
 		bool m_centerAlign;
 		bool m_flipX;
 		bool m_flipY;
-		bool m_changingColor;
+		//bool m_changingColor;
 
-		float m_changingColorTime;
+		//float m_changingColorTime;
 
 		mt::vec2f m_scale;
 		mt::vec2f m_alignOffset;
@@ -161,8 +162,9 @@ namespace Menge
 		mt::vec4f m_uv;
 
 
-		Color m_color;
-		Color m_newColor;
+		ColourValue m_color;
+		ValueInterpolator<ColourValue> m_colorTo;
+		//Color m_newColor;
 
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;

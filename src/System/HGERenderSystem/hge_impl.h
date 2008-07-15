@@ -193,6 +193,7 @@ public:
 	virtual void		CALL	Gfx_SetTextureMatrix( const float* _texMat );
 	virtual void		CALL	Gfx_Prepare2D();
 	virtual void		CALL	Gfx_Prepare3D();
+	virtual void		CALL	Gfx_SetBlendState( hgeBlendState _srcBlend, hgeBlendState _dstBlend );
 
 	virtual HTARGET		CALL	Target_Create(int width, int height, bool zbuffer);
 	virtual void		CALL	Target_Free(HTARGET target);
@@ -362,6 +363,8 @@ public:
 	typedef std::vector<D3DDISPLAYMODE> TDispModes;
 	TDispModes m_displayModes;
 	std::vector<int>	m_resList;
+	hgeBlendState m_currSrcBlend, m_currDstBlend;
+	bool m_blendChanged;
 	//int m_viewportX, m_viewportY, m_viewportWidth, m_viewportHeight;
 
 private:

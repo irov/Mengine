@@ -7,6 +7,7 @@
 #	include "ScriptEngine.h"
 #	include "XmlEngine.h"
 #	include "PhysicEngine2D.h"
+#	include "RenderEngine.h"
 
 #	include "Layer2D.h"
 #	include "Player.h"
@@ -22,6 +23,7 @@ namespace	Menge
 	, m_gravity2D( 0.0f, 0.0f )
 	, m_physWorldBox2D( 0.0f, 0.0f, 0.0f, 0.0f )
 	, m_physWorld2D( false )
+	, m_renderTarget( "defaultCamera" )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -287,14 +289,14 @@ namespace	Menge
 	{
 		m_offsetPosition = _offset;
 
-	/*	for( TListChildren::iterator
-			it = m_listChildren.begin(),
-			it_end = m_listChildren.end();
+		for( TContainerChildrens::iterator
+			it = m_childrens.begin(),
+			it_end = m_childrens.end();
 		it != it_end;
 		++it)
 		{
 			static_cast<Layer*>(*it)->setOffsetPosition( m_offsetPosition );
-		}*/
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	/*void Scene::_render()
@@ -304,6 +306,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setRenderTarget( const std::string& _cameraName )
 	{
+		m_renderTarget = _cameraName;
 /*		for( TListChildren::iterator
 			it = m_listChildren.begin(),
 			it_end = m_listChildren.end();
@@ -390,4 +393,34 @@ namespace	Menge
 
 		return handle;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	/*void Scene::_render( const Viewport & _viewport, bool _enableDebug )
+	{
+	Holder<RenderEngine>::hostage()
+			->setRenderTarget( m_renderTarget );
+	}*/
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::render( const Viewport & _viewport )
+	{
+		if( isRenderable() == false )
+		{
+			return;
+		}
+
+		renderSelf( _viewport );
+
+
+		for( TContainerChildrens::iterator
+			it = m_childrens.begin(),
+			it_end = m_childrens.end();
+		it != it_end;
+		++it)
+		{
+			Holder<RenderEngine>::hostage()
+				->setRenderTarget( m_renderTarget );
+
+			(*it)->render( _viewport );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

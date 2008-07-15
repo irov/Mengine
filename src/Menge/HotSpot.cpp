@@ -88,7 +88,8 @@ namespace	Menge
 		{
 			int u=0;
 			u++;
-				//printf("%f;%f  and %f;%f \n", wmA.v2.v2.x, wmA.v2.v2.y, wmB.v2.v2.x, wmB.v2.v2.y);
+			//printf( "testing: %.4f, %.4f, %.4f, %.4f\n", posB.x, posB.y, posA.x, posA.y );
+			//printf("%f;%f  and %f;%f \n", wmA.v2.v2.x, wmA.v2.v2.y, wmB.v2.v2.x, wmB.v2.v2.y);
 		}
 
 		return is_intersect;

@@ -79,6 +79,15 @@ namespace	Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Color& Color::operator= ( const Color& _color )
+	{
+		r = _color.r;
+		g = _color.g;
+		b = _color.b;
+		a = _color.a;
+		return *this;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	float Color::getA()	 const
 	{
 		return m[3];

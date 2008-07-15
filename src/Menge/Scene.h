@@ -62,8 +62,10 @@ namespace Menge
 
 	protected:
 		Layer * getLayer_( const std::string & _name );
+		//void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 	public:
+		virtual void render( const Viewport & _viewport ) override;
 		void setOffsetPosition( const mt::vec2f& _offset );
 		void setRenderTarget( const std::string& _cameraName );
 
@@ -77,5 +79,7 @@ namespace Menge
 		bool m_physWorld2D;
 		mt::vec2f m_gravity2D;
 		mt::vec4f m_physWorldBox2D;
+
+		String m_renderTarget;
 	};
 }

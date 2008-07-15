@@ -3,8 +3,11 @@
 #	include "Config/Typedef.h"
 
 # include "Node.h"
-# include "Color.h"
+# include "ColourValue.h"
 # include <vector>
+
+#	include "ValueInterpolator.h"
+#	include "Math/vec4.h"
 
 class RenderImageInterface;
 
@@ -64,13 +67,13 @@ namespace Menge
 		/*!
 		\param _color значение цвета
 		*/
-		void setColor( const Color& _color );
+		void setColor( const ColourValue& _color );
 
 		//! Возвращает цвет глифов.
 		/*!
 		\return цвет глифов
 		*/
-		const Color& getColor() const;
+		const ColourValue& getColor() const;
 
 		//! Возвращает высоту глифов.
 		/*!
@@ -89,7 +92,7 @@ namespace Menge
 		\param _color - результирующий цвет
 		\param _time - время, в течении которого будет изменятся цвет
 		*/
-		void colorTo( const Color& _color, float _time );
+		void colorTo( const ColourValue& _color, float _time );
 		void setAlpha( float _alpha );
 		void alphaTo( float _alpha, float _time );
 
@@ -97,13 +100,13 @@ namespace Menge
 		/*!
 		\param _color значение цвета
 		*/
-		void setOutlineColor( const Color& _color );
+		void setOutlineColor( const ColourValue& _color );
 
 		//! Возвращает цвет обводки глифов.
 		/*!
 		\return цвет обводки глифов
 		*/
-		const Color& getOutlineColor() const;
+		const ColourValue& getOutlineColor() const;
 
 		const mt::vec2f& getLength() const;
 
@@ -139,13 +142,16 @@ namespace Menge
 		ResourceFont * m_resource;
 		std::string m_resourcename;
 
-		float m_changingColorTime;
-		bool m_changingColor;
-		Color m_newColor;
-		Color m_newOutlineColor;
+		//float m_changingColorTime;
+		//bool m_changingColor;
+		//Color m_newColor;
+		//Color m_newOutlineColor;
 
-		Color m_color;
-		Color m_outlineColor;
+		ColourValue m_color;
+		ColourValue m_outlineColor;
+		ValueInterpolator<ColourValue> m_colorTo;
+		ValueInterpolator<ColourValue> m_outlineColorTo;
+
 		float  m_height;
 		std::string m_text;
 		mt::vec2f m_length;
@@ -174,7 +180,7 @@ namespace Menge
 
 		std::list<Line>  m_lines;
 
-		void renderPass_( const Color & _color, const RenderImageInterface * _renderImage, mt::vec4f _uv = mt::vec4f::zero_v4, float k = 0, float h = 0 );
+		void renderPass_( const ColourValue & _color, const RenderImageInterface * _renderImage, mt::vec4f _uv = mt::vec4f::zero_v4, float k = 0, float h = 0 );
 		void createFormattedMessage_( const std::string& _text );
 		float getWordWidth_( const std::string & _text ) const;
 		void splitLine(const std::string& str);

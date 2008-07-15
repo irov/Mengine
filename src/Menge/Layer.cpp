@@ -13,7 +13,7 @@ namespace Menge
 		, m_size(0.f, 0.f)
 		, m_scene(0)
 		, m_renderArea( 0.0f, 0.0f, 0.0f, 0.0f )
-		, m_renderTarget( "defaultCamera" )
+		//, m_renderTarget( "defaultCamera" )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::setMain( bool _main )
@@ -67,7 +67,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::setRenderTarget( const std::string& _cameraName )
 	{
-		m_renderTarget = _cameraName;
+		//m_renderTarget = _cameraName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::setRenderArea( const mt::vec4f& _renderArea )
@@ -79,4 +79,14 @@ namespace Menge
 	{
 		return m_renderArea;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer::_render( const Viewport & _viewport, bool _enableDebug )
+	{
+		//Holder<RenderEngine>::hostage()
+		//	->setRenderTarget( m_renderTarget );
+
+		Holder<RenderEngine>::hostage()
+			->setRenderArea( m_renderArea );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

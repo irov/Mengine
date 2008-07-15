@@ -46,6 +46,8 @@ namespace mt
 		MATH_INLINE vec4f(const vec4f& _v);
 		MATH_INLINE explicit vec4f(const vec3f& _v);
 		MATH_INLINE vec4f(const vec3f& _v, float _w);
+		MATH_INLINE vec4f& operator=(const vec4f& _rhs);
+
 
 		MATH_INLINE float&		operator [](int i);
 		MATH_INLINE const float operator [](int i)const;
@@ -68,6 +70,8 @@ namespace mt
 	MATH_INLINE vec4f operator/(const vec4f& _rhs, const float _val);
 	MATH_INLINE vec4f operator-(vec4f _rhs);
 	
+	MATH_INLINE float length_v4( vec4f _rhs );
+
 	MATH_INLINE bool cmp_v4_v4(const vec4f& _a, const vec4f& _b, float eps = 0.00001f);
 
 	MATH_INLINE void add_v4_v4(vec4f& _out, const vec4f& _a, const vec4f& _b);

@@ -35,6 +35,15 @@ namespace mt
 		,w(_w)
 	{}
 
+	MATH_INLINE vec4f& vec4f::operator=(const vec4f& _rhs)
+	{
+		x = _rhs.x;
+		y = _rhs.y;
+		z = _rhs.z;
+		w = _rhs.w;
+		return *this;
+	}
+
 	MATH_INLINE float& vec4f::operator[](int i)
 	{
 		assert(i < 4);
@@ -227,4 +236,10 @@ namespace mt
 		homogenize_v4(out, _rhs);
 		return	out;
 	}
+
+	MATH_INLINE float length_v4( vec4f _rhs )
+	{
+		return _rhs.length();
+	}
+
 }

@@ -45,7 +45,8 @@ namespace Menge
 
 		//void _addChildren( SceneNode3D * _node ) override;
 
-		bool _renderBegin();
+		//bool _renderBegin();
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 	private:
 

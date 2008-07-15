@@ -15,9 +15,9 @@ namespace	Menge
 	: m_moveTo(false)
 	, m_moveTime(0)
 
-	, m_rotate(false)
-	, m_targetDir(0,0)
-	, m_rotateTime(0)
+	//, m_rotate(false)
+	//, m_targetDir(0,0)
+	//, m_rotateTime(0)
 
 	, m_scale( 1.0f, 1.0f )
 	, m_velocity( 0.0f, 0.0f )
@@ -26,10 +26,6 @@ namespace	Menge
 	, m_nSpeed( 0.0f, 0.0f )
 	, m_acTime( 0.0f )
 	, m_accelerateTo( false )
-
-	//, m_scaleTo( false )
-	//, m_scalePoint( 1.0f, 1.0f )
-	//, m_scaleTime( 0.0f )
 
 	, m_physicController( false )
 	, m_stabilityAngle( 0.0f )
@@ -83,27 +79,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::scaleTo( float _time, const mt::vec2f& _scale )
 	{
-		/*const mt::vec2f & scl = getScale();
-		float length = mt::length_v2_v2( scl, _scale );
-		if( length > 0.00001f )
-		{
-		m_scalePoint = _scale;
-			m_scaleTo = true;
-			m_scaleTime = _time;
-		}
-		else
-		{
-			if( m_scaleTo )
-			{
-				scaleStop();
-			}
-
-			setScale( _scale );
-
-			m_scaleTo = false;
-
-			this->callEvent("SCALE_END", "()" );
-		}*/
 		const mt::vec2f & scl = getScale();
 		if( m_scaleTo.start( scl, _scale, _time, mt::length_v2 ) == false )
 		{
@@ -125,7 +100,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::rotateStop()
 	{
-		m_rotate = false;
+		m_rotateTo.stop();
 
 		this->callEvent("ROTATE_STOP", "()" );
 	}
@@ -139,7 +114,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::rotateTo( float _time, const mt::vec2f & _point )
 	{
-		const mt::vec2f & _pos = getLocalPosition();
+		/*const mt::vec2f & _pos = getLocalPosition();
 		//float length = mt::length_v2_v2( _pos, _point );
 		m_targetDir = mt::norm_v2( _point - _pos );
 		const mt::vec2f& dir = getLocalDirection();
@@ -174,7 +149,27 @@ namespace	Menge
 			m_rotate = false;
 
 			this->callEvent("ROTATE_END", "()" );
+		}*/
+		const mt::vec2f& dir = getLocalDirection();
+		const mt::vec2f& pos = getLocalPosition();
+		mt::vec2f newDir = _point - pos;
+		float cos_alpha = newDir.x / newDir.length();
+		float sin_alpha = newDir.y / newDir.length();
+		float alpha = ::acosf( dir.x );
+		if( dir.y > 0.0f ) alpha = -alpha;
+		float newAlpha = ::acosf( cos_alpha );
+		if( sin_alpha > 0.0f ) newAlpha = -newAlpha;
+
+		if( m_rotateTo.start( alpha, newAlpha, _time, ::fabsf ) == false )
+		{
+			if( m_rotateTo.isStarted() )
+			{
+				rotateStop();
+			}
+			setRotate( newAlpha );
+			this->callEvent("ROTATE_END", "()" );
 		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::accelerateTo( float _speed, const mt::vec2f& _point, bool _changeDirection )
@@ -247,8 +242,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::setScale( const mt::vec2f& _scale )
 	{
-/*		TListChildren::iterator it = m_listChildren.begin();
-		for(; it != m_listChildren.end(); it++)
+		TContainerChildrens::iterator it = m_childrens.begin();
+		for(; it != m_childrens.end(); it++)
 		{
 			mt::vec2f pos = (*it)->getLocalPosition();
 			pos.x = pos.x / m_scale.x * _scale.x;
@@ -256,7 +251,7 @@ namespace	Menge
 			(*it)->setLocalPosition( pos );
 			(*it)->setScale( _scale );
 		}
-		m_scale = _scale;*/
+		m_scale = _scale;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Entity::getScale() const
@@ -285,7 +280,7 @@ namespace	Menge
 				setPosition( pos.x, pos.y );
 			}
 
-			if( m_rotate )
+			/*if( m_rotate )
 			{
 				if( m_rotateTime <= _timing  )
 				{
@@ -310,33 +305,18 @@ namespace	Menge
 
 					setDirection( curr_dir );
 				}
+			}*/
+			if( m_rotateTo.isStarted() )
+			{
+				float angle;
+				m_rotateTo.update( _timing, &angle );
+				setAngle( angle );
+				if( m_rotateTo.isStarted() == false )
+				{
+					this->callEvent("ROTATE_END", "()" );
+				}
 			}
 
-			/*if( m_scaleTo )
-			{
-				if( m_scaleTime <= _timing  )
-				{
-					setScale( m_scalePoint );
-
-					m_scaleTo = false;
-
-					this->callEvent("SCALE_END", "()" );
-				}
-				else
-				{
-
-					m_scaleTime -= _timing;
-
-					float t = _timing / m_scaleTime;
-
-					const mt::vec2f & scl = getScale();
-
-					//mt::vec2f curr_dir = mt::slerp_v2_v2( dir, m_targetDir, t );
-					mt::vec2f curr_scl = m_scalePoint * t + scl * ( 1.0f - t );
-					//printf( "Scale %.4f %.4f\n", curr_scl.x, curr_scl.y );
-					setScale( curr_scl );
-				}
-			}*/
 			if( m_scaleTo.isStarted() )
 			{
 				mt::vec2f scale;
@@ -349,7 +329,7 @@ namespace	Menge
 			}
 
 			RigidBody2D::_update( _timing );
-			//m_interface->set
+
 			this->callEvent("UPDATE", "(f)", _timing );
 			return;
 		}
@@ -388,7 +368,7 @@ namespace	Menge
 			}
 		}
 
-		if( m_rotate )
+		/*if( m_rotate )
 		{
 			if( m_rotateTime <= _timing  )
 			{
@@ -413,32 +393,18 @@ namespace	Menge
 
 				setLocalDirection( curr_dir );
 			}
+		}*/
+		if( m_rotateTo.isStarted() )
+		{
+			float angle;
+			m_rotateTo.update( _timing, &angle );
+			setRotate( angle );
+			if( m_rotateTo.isStarted() == false )
+			{
+				this->callEvent("ROTATE_END", "()" );
+			}
 		}
 
-		/*if( m_scaleTo )
-		{
-			if( m_scaleTime <= _timing  )
-			{
-				setScale( m_scalePoint );
-
-				m_scaleTo = false;
-
-				this->callEvent("SCALE_END", "()" );
-			}
-			else
-			{
-				m_scaleTime -= _timing;
-
-				float t = _timing / m_scaleTime;
-
-				const mt::vec2f & scl = getScale();
-
-				//mt::vec2f curr_dir = mt::slerp_v2_v2( dir, m_targetDir, t );
-				mt::vec2f curr_scl = m_scalePoint * t + scl * ( 1.0f - t );
-
-				setScale( curr_scl );
-			}
-		}*/
 		if( m_scaleTo.isStarted() )
 		{
 			mt::vec2f scale;

@@ -507,6 +507,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
+#	ifndef MENGE_MASTER_RELEASE
+		if( _key == 88 && _isDown ) // F12
+		{
+			m_debugRender = !m_debugRender;
+		}
+#	endif
 		return Holder<Game>::hostage()->handleKeyEvent( _key, _char, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////

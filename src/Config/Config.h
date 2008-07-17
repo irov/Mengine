@@ -50,3 +50,6 @@
 #else
 #   define FORCEINLINE __inline
 #endif
+
+//	exclude all dev stuff
+//#	define MENGE_MASTER_RELEASE

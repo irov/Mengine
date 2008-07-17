@@ -494,7 +494,7 @@ HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
 
 HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, DWORD size, bool bMipmap)
 {
-	void *data;
+	void *data = 0;
 	DWORD _size;
 	D3DFORMAT fmt1, fmt2;
 	LPDIRECT3DTEXTURE8 pTex;

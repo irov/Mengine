@@ -10,6 +10,8 @@ namespace Menge
 	class InputHandler;
 	class HotSpot;
 
+	typedef std::vector<MousePickerTrap *> TVectorPickerTrap;
+
 	class MousePickerSystem
 	{
 	public:
@@ -21,17 +23,16 @@ namespace Menge
 		void reset();
 
 		void regTrap( MousePickerTrap * _trap, const Viewport & _viewport );
-		MousePickerTrap * pickTrap( HotSpot * _hotspot );
+		TVectorPickerTrap pickTrap( HotSpot * _hotspot );
 
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
 		bool handleMouseButtonEvent( unsigned int _button, bool _isDown );
 		bool handleMouseMove( float _x, float _y, int _whell );
 
 	private:
-		typedef std::vector<MousePickerTrap *> TVectorPickerTrap;
 		TVectorPickerTrap m_listPickerTrap;
 
-		MousePickerTrap * m_lastPickerTrap;
-		//TVectorPickerTrap m_lastTraps;
+		//TVectorPickerTrap m_lastPickerTrap;
+		TVectorPickerTrap m_lastTraps;
 	};
 }

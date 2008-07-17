@@ -15,7 +15,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerSystem::MousePickerSystem()
-		: m_lastPickerTrap(0)
+		//: m_lastPickerTrap(0)
 	{
 		m_listPickerTrap.reserve( VECTOR_CAPACITY );
 	}
@@ -26,25 +26,63 @@ namespace Menge
 
 		HotSpot * hotSpot = arrow->getCurrentHotSpot();
 
-		MousePickerTrap * picker = MousePickerSystem::pickTrap( hotSpot );
+		TVectorPickerTrap pickTraps = MousePickerSystem::pickTrap( hotSpot );
 
-		if( m_lastPickerTrap != picker )
+
+		for( TVectorPickerTrap::iterator
+			it = m_lastTraps.begin(),
+			it_end = m_lastTraps.end();
+		it != it_end;
+		++it)
 		{
-			if( m_lastPickerTrap )
-			{
-				if( m_lastPickerTrap->_pickerActive() )
-				{
-					m_lastPickerTrap->onLeave();
-				}
-			}
+			MousePickerTrap * lastTrap = *it;
 
-			if( picker )
+			TVectorPickerTrap::iterator it_find = std::find( pickTraps.begin(), pickTraps.end(), lastTrap );
+
+			if( it_find == pickTraps.end() )
 			{
-				picker->onEnter();
+				if( lastTrap->_pickerActive() )
+				{
+					lastTrap->onLeave();
+				}
 			}
 		}
 
-		m_lastPickerTrap = picker;
+		for( TVectorPickerTrap::iterator
+			it = pickTraps.begin(),
+			it_end = pickTraps.end();
+		it != it_end;
+		++it)
+		{
+			MousePickerTrap * nowTrap = *it;
+
+			TVectorPickerTrap::iterator it_find = std::find( m_lastTraps.begin(), m_lastTraps.end(), nowTrap );
+
+			if( it_find == m_lastTraps.end() )
+			{
+				nowTrap->onEnter();
+			}
+		}
+
+		m_lastTraps.assign( pickTraps.begin(), pickTraps.end() );
+
+		//if( m_listPickerTrap != picker )
+		//{
+		//	if( m_lastPickerTrap )
+		//	{
+		//		if( m_lastPickerTrap->_pickerActive() )
+		//		{
+		//			m_lastPickerTrap->onLeave();
+		//		}
+		//	}
+
+		//	if( picker )
+		//	{
+		//		picker->onEnter();
+		//	}
+		//}
+
+		//m_lastPickerTrap = picker;
 		/*Arrow * arrow = Holder<Player>::hostage()->getArrow();
 
 		HotSpot * hotspot = arrow->getCurrentHotSpot();
@@ -111,7 +149,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::reset()
 	{
-		m_lastPickerTrap = NULL;
+		m_lastTraps.clear();
+		//m_lastPickerTrap = NULL;
 		//m_lastTraps.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -120,8 +159,10 @@ namespace Menge
 		m_listPickerTrap.push_back( _trap );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MousePickerTrap * MousePickerSystem::pickTrap( HotSpot * _hotspot ) 
+	TVectorPickerTrap MousePickerSystem::pickTrap( HotSpot * _hotspot ) 
 	{
+		TVectorPickerTrap pickTraps;
+
 		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
@@ -132,11 +173,11 @@ namespace Menge
 
 			if( trap->_pickerActive() == true && trap->pick( _hotspot ) == true )
 			{
-				return trap;
+				pickTraps.push_back( trap );
 			}
 		}
 
-		return 0;
+		return pickTraps;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )

@@ -667,6 +667,7 @@ namespace Menge
 			.def( "getWorldDirection", &Node::getWorldDirection )
 			.def( "alphaTo", &Node::alphaTo )
 			.def( "setAlpha", &Node::setAlpha )
+			.def( "colorToStop", &Node::colorToStop )
 			.def( "getScreenPosition", &Node::getScreenPosition )
 			.def( "getParent", &Node::getParent )
 			;

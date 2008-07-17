@@ -338,7 +338,11 @@ namespace     Menge
 			callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
 		}
 
-		m_colorTo.start( m_color, _color, _time, length_color );
+		if( m_colorTo.start( m_color, _color, _time, length_color ) == false )
+		{
+			m_color = _color;
+			callEvent( "COLOR_END", "(O)", this->getEmbedding() );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::alphaTo( float _alpha, float _time )
@@ -363,12 +367,19 @@ namespace     Menge
 			callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
 			m_colorTo.stop();
 		}
-		m_colorTo.start( m_color, newColor, _time, length_color );
+		if( m_colorTo.start( m_color, newColor, _time, length_color ) == false )
+		{
+			m_color = newColor;
+			callEvent( "COLOR_END", "(O)", this->getEmbedding() );
+		}
 
 		newColor = m_outlineColor;
 		newColor.a = _alpha;
 
-		m_outlineColorTo.start( m_outlineColor, newColor, _time, length_color );
+		if( m_outlineColorTo.start( m_outlineColor, newColor, _time, length_color ) == false )
+		{
+			m_outlineColor = newColor;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setColor( const ColourValue& _color )
@@ -489,6 +500,13 @@ namespace     Menge
 	bool TextField::getCenterAlign()
 	{
 		return m_centerAlign;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::colorToStop()
+	{
+		m_colorTo.stop();
+		m_outlineColorTo.stop();
+		callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

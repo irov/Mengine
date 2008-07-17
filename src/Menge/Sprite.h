@@ -100,8 +100,9 @@ namespace Menge
 		*/
 		virtual void colorTo( const ColourValue & _color, float _time );
 
-		void setAlpha( float _alpha );
-		void alphaTo( float _alpha, float _time );
+		void setAlpha( float _alpha ) override;
+		void alphaTo( float _alpha, float _time ) override;
+		void colorToStop() override;
 		//! Установка цвета спрайта.
 		/*!
 		\param _color значение цвета
@@ -135,8 +136,8 @@ namespace Menge
 		void updateVisibility_();
 		void updateFlip_();
 		void updateAlphaBlend_();
-			private:
-				void updateSprite_();
+	private:
+		void updateSprite_();
 
 	protected:
 

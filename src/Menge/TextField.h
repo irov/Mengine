@@ -93,8 +93,9 @@ namespace Menge
 		\param _time - время, в течении которого будет изменятся цвет
 		*/
 		void colorTo( const ColourValue& _color, float _time );
-		void setAlpha( float _alpha );
-		void alphaTo( float _alpha, float _time );
+		void setAlpha( float _alpha ) override;
+		void alphaTo( float _alpha, float _time ) override;
+		void colorToStop() override;
 
 		//! Установка обводки цвета глифов.
 		/*!

@@ -267,7 +267,11 @@ namespace	Menge
 			this->callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
 			m_colorTo.stop();
 		}
-		m_colorTo.start( m_color, _color, _time, length_color );
+		if( m_colorTo.start( m_color, _color, _time, length_color ) == false )
+		{
+			m_color = _color;
+			callEvent( "COLOR_END", "(O)", this->getEmbedding() );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setAlpha( float _alpha )
@@ -284,7 +288,11 @@ namespace	Menge
 		}
 		ColourValue newColor = m_color;
 		newColor.a = _alpha;
-		m_colorTo.start( m_color, newColor, _time, length_color );
+		if( m_colorTo.start( m_color, newColor, _time, length_color ) == false )
+		{
+			m_color	 = newColor;
+			callEvent( "COLOR_END", "(O)", this->getEmbedding() );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( const Viewport & _viewport, bool _enableDebug )
@@ -380,6 +388,12 @@ namespace	Menge
 	bool Sprite::getCenterAlign()
 	{
 		return m_centerAlign;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::colorToStop()
+	{
+		m_colorTo.stop();
+		callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

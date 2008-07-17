@@ -122,6 +122,15 @@ namespace Menge
 				(*it)->alphaTo( _alpha, _time );
 			}
 		}
+		virtual void colorToStop()
+		{
+			for( TContainerChildrens::iterator it = m_childrens.begin(), it_end = m_childrens.end();
+				it != it_end;
+				it++ )
+			{
+				(*it)->colorToStop();
+			}
+		}
 
 	protected:
 		virtual bool _activate();

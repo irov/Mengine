@@ -58,11 +58,11 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	class VisitorRenderLayer2D
-		: public VisitorAdapter<VisitorRenderLayer2D>
+	class VisitorRenderLayer2DLoop
+		: public VisitorAdapter<VisitorRenderLayer2DLoop>
 	{
 	public:
-		VisitorRenderLayer2D( const Viewport & _viewport, const mt::vec2f & _size, bool _enableDebug )
+		VisitorRenderLayer2DLoop( const Viewport & _viewport, const mt::vec2f & _size, bool _enableDebug )
 			: m_viewport(_viewport)
 			, m_size(_size)
 			, m_enableDebug( _enableDebug )
@@ -76,18 +76,18 @@ namespace	Menge
 			{
 				const mt::box2f & sprite_bbox = _node->getWorldBoundingBox();
 
-				if( m_viewport.end.x < sprite_bbox.vb.x ) 
+				//if( m_viewport.end.x < sprite_bbox.vb.x ) 
 				{
 					if( sprite_bbox.ve.x < m_size.x )
 					{
-						return;
+				//		return;
 					}
 
 					float segment_x = sprite_bbox.ve.x - m_size.x;
 
 					if( segment_x < m_viewport.begin.x )
 					{
-						return;
+				//		return;
 					}
 
 					Viewport viewport = m_viewport;
@@ -95,18 +95,18 @@ namespace	Menge
 					viewport.end += mt::vec2f( m_size.x, 0.f );
 					_node->renderSelf( viewport, m_enableDebug );
 				}
-				else if( m_viewport.begin.x > sprite_bbox.ve.x ) 
+				//else if( m_viewport.begin.x > sprite_bbox.ve.x ) 
 				{
 					if( m_viewport.end.x < m_size.x )
 					{
-						return;
+				//		return;
 					}
 
 					float segment_x = m_viewport.end.x - m_size.x;
 
 					if( segment_x < sprite_bbox.vb.x )
 					{
-						return;
+				//		return;
 					}
 
 					Viewport viewport = m_viewport;
@@ -116,9 +116,10 @@ namespace	Menge
 				}
 
 				_node->renderSelf( m_viewport, m_enableDebug );
+
+				_node->visitChildren( this );
 			}
 
-			_node->visitChildren( this );
 		}
 
 		void procces( Layer * _layer )
@@ -143,12 +144,21 @@ namespace	Menge
 
 		viewport.begin = _viewport.begin;
 
+		if( viewport.begin.y < 0.0f )
+		{
+			viewport.begin.y = 0.0f;
+		}
+		else if( viewport.begin.y + viewport_size.y > m_size.y )
+		{
+			viewport.begin.y = m_size.y - viewport_size.y;
+		}
+
 		viewport.begin.x *= m_factorParallax.x;
 		viewport.begin.y *= m_factorParallax.y;
 
 		viewport.end = viewport.begin + viewport_size;
 
-		VisitorRenderLayer2D visitorRender( viewport, m_size, _enableDebug );
+		VisitorRenderLayer2DLoop visitorRender( viewport, m_size, _enableDebug );
 
 		visitChildren( &visitorRender );
 

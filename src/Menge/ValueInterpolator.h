@@ -16,7 +16,11 @@ namespace Menge
 		template<class ABS>
 		bool start( const T& _value1, const T& _value2, float _time, ABS _abs )
 		{
-			if( _time < 0.00001f || _abs( _value2 - _value1 ) < 0.00001f ) return false;
+			m_started = false;
+			if( _time < 0.00001f || _abs( _value2 - _value1 ) < 0.00001f ) 
+			{
+				return false;
+			}
 			m_started = true;
 			m_value1 = _value1;
 			m_value2 = _value2;

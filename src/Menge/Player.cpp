@@ -364,7 +364,7 @@ namespace Menge
 			const Viewport & viewport = 
 				m_renderCamera2D->getViewport();
 
-			m_scene->render( viewport );
+			m_scene->render( viewport, _enableDebug );
 		}
 
 		if( m_arrow )
@@ -379,7 +379,7 @@ namespace Menge
 			//Holder<RenderEngine>::hostage()
 			//	->setRenderViewport( viewport );
 
-			m_arrow->render( viewport );
+			m_arrow->render( viewport, _enableDebug );
 
 			Holder<RenderEngine>::hostage()
 				->endLayer2D();

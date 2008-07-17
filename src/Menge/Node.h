@@ -61,8 +61,8 @@ namespace Menge
 		virtual void _render( const Viewport & _viewport, bool _enableDebug );
 
 	public:
-		virtual void render( const Viewport & _viewport );
-		void renderSelf( const Viewport & _viewport );
+		virtual void render( const Viewport & _viewport, bool _enableDebug );
+		void renderSelf( const Viewport & _viewport, bool _enableDebug );
 		bool isRenderable() const;
 
 	public:
@@ -104,13 +104,31 @@ namespace Menge
 
 		////
 		virtual void setScale( const mt::vec2f& _scale ) {}
+		virtual void setAlpha( float _alpha ) 
+		{
+			for( TContainerChildrens::iterator it = m_childrens.begin(), it_end = m_childrens.end();
+				it != it_end;
+				it++ )
+			{
+				(*it)->setAlpha( _alpha );
+			}
+		}
+		virtual void alphaTo( float _alpha, float _time ) 
+		{
+			for( TContainerChildrens::iterator it = m_childrens.begin(), it_end = m_childrens.end();
+				it != it_end;
+				it++ )
+			{
+				(*it)->alphaTo( _alpha, _time );
+			}
+		}
 
 	protected:
 		virtual bool _activate();
 		virtual void _deactivate();
 
 	public:
-		void hide( bool _value );
+		virtual void hide( bool _value );
 		bool isHide() const;
 
 	public:

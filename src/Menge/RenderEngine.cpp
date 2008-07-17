@@ -47,48 +47,7 @@ namespace Menge
 															_FSAAType, _FSAAQuality );
 
 
-		m_renderArea.x = 0.0f;
-		m_renderArea.y = 0.0f;
-		m_renderArea.z = _width;
-		m_renderArea.w = _height;
-
-		float contentAspect = m_contentResolution.x / m_contentResolution.y;
-		float dw = m_contentResolution.x / _width;
-		float dh = m_contentResolution.y / _height;
-		float aspect = static_cast<float>( _width ) / _height;
-
-		if( dw > 1.0f )
-		{
-			dw = 1.0f;
-			dh = _width / contentAspect / _height;
-		}
-
-		if( dh > 1.0f )
-		{
-			dh = 1.0f;
-			dw = _height * contentAspect / _width;
-		}
-
-		float areaWidth = dw * _width;
-		float areaHeight = dh * _height;
-
-		m_renderArea.x = ( _width - areaWidth ) * 0.5f;
-		m_renderArea.y = ( _height - areaHeight ) * 0.5f;
-		m_renderArea.z = m_renderArea.x + areaWidth;
-		m_renderArea.w = m_renderArea.y + areaHeight;
-
-		m_rendFactPix = m_renderArea.y;
-
-		if( m_renderArea.y > 0.0f )
-		{
-			m_renderFactor = m_renderArea.x / aspect / m_renderArea.y;
-
-		}
-		else
-		{
-			m_renderFactor = 0.0f;
-		}
-		setRenderFactor( m_renderFactor );
+		recalcRenderArea_( _width, _height );
 	
 		return m_windowCreated;
 	}
@@ -326,9 +285,16 @@ namespace Menge
 		m_fullscreen = _fullscreen;
 		float width = Holder<Game>::hostage()->getWidth();
 		float height = Holder<Game>::hostage()->getHeight();
+		if( m_fullscreen )
+		{
+			width = Holder<Application>::hostage()->getDesktopResolution().x;
+			height = Holder<Application>::hostage()->getDesktopResolution().y;
+		}
 		m_interface->setFullscreenMode( width, height, _fullscreen );
 
 		Holder<Application>::hostage()->notifyWindowModeChanged( width, height, m_fullscreen );
+
+		recalcRenderArea_( width, height );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CameraInterface * RenderEngine::createCamera( const std::string& _name )
@@ -602,6 +568,52 @@ namespace Menge
 	const mt::mat3f& RenderEngine::getRenderTransform() const
 	{
 		return m_renderTransform;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::recalcRenderArea_( int _width, int _height )
+	{
+		m_renderArea.x = 0.0f;
+		m_renderArea.y = 0.0f;
+		m_renderArea.z = _width;
+		m_renderArea.w = _height;
+
+		float contentAspect = m_contentResolution.x / m_contentResolution.y;
+		float dw = m_contentResolution.x / _width;
+		float dh = m_contentResolution.y / _height;
+		float aspect = static_cast<float>( _width ) / _height;
+
+		if( dw > 1.0f )
+		{
+			dw = 1.0f;
+			dh = _width / contentAspect / _height;
+		}
+
+		if( dh > 1.0f )
+		{
+			dh = 1.0f;
+			dw = _height * contentAspect / _width;
+		}
+
+		float areaWidth = dw * _width;
+		float areaHeight = dh * _height;
+
+		m_renderArea.x = ( _width - areaWidth ) * 0.5f;
+		m_renderArea.y = ( _height - areaHeight ) * 0.5f;
+		m_renderArea.z = m_renderArea.x + areaWidth;
+		m_renderArea.w = m_renderArea.y + areaHeight;
+
+		m_rendFactPix = m_renderArea.y;
+
+		if( m_renderArea.y > 0.0f )
+		{
+			m_renderFactor = m_renderArea.x / aspect / m_renderArea.y;
+
+		}
+		else
+		{
+			m_renderFactor = 0.0f;
+		}
+		setRenderFactor( m_renderFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

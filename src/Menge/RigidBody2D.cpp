@@ -45,6 +45,7 @@ namespace Menge
 	, m_isSensor( false )
 	, m_linearVelocity( false )
 	, m_countGravity( true )
+	, m_unsetLinearVelocity( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -428,6 +429,11 @@ namespace Menge
 			}
 			const float* pos = m_interface->getPosition();
 			m_interface->applyForce( force.x, force.y, pos[0], pos[1] );
+			if( m_unsetLinearVelocity )
+			{
+				m_linearVelocity = false;
+				m_unsetLinearVelocity = false;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -495,4 +501,13 @@ namespace Menge
 			}
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::unsetLinearVelocity()
+	{
+		if( m_linearVelocity )
+		{
+			m_unsetLinearVelocity = true;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

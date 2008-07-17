@@ -72,8 +72,9 @@ namespace	Menge
 		: public VisitorAdapter<VisitorRenderLayer2D>
 	{
 	public:
-		VisitorRenderLayer2D( const Viewport & _viewport )
+		VisitorRenderLayer2D( const Viewport & _viewport, bool _enableDebug )
 			: m_viewport(_viewport)
+			, m_enableDebug( _enableDebug )
 		{
 		}
 
@@ -82,7 +83,7 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
-				_node->renderSelf( m_viewport );
+				_node->renderSelf( m_viewport, m_enableDebug );
 			}
 
 			_node->visitChildren( this );
@@ -90,16 +91,17 @@ namespace	Menge
 
 		void procces( Layer * _layer )
 		{
-			_layer->render( m_viewport );
+			_layer->render( m_viewport, m_enableDebug );
 		}
 
 	protected:
 		Viewport m_viewport;
+		bool m_enableDebug;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::render( const Viewport & _viewport )
+	void Layer2D::render( const Viewport & _viewport, bool _enableDebug )
 	{
-		Layer::_render( _viewport, false );
+		Layer::_render( _viewport, _enableDebug );
 
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
@@ -115,7 +117,7 @@ namespace	Menge
 
 		viewport.end = viewport.begin + viewport_size;
 
-		VisitorRenderLayer2D visitorRender( viewport );
+		VisitorRenderLayer2D visitorRender( viewport, _enableDebug );
 
 		visitChildren( &visitorRender );
 

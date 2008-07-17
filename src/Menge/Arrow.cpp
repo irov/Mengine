@@ -138,14 +138,20 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::onMouseLeave()
 	{
-		Node/*Renderable*/::hide( true );
+		Node::hide( true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::onMouseEnter()
 	{
 		if( !m_hided )
 		{
-			Node/*Renderable*/::hide( false );
+			Node::hide( false );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::hide( bool _value )
+	{
+		Node::hide( _value );
+		m_hided = _value;
 	}
 }

@@ -54,6 +54,8 @@ public:
 class SoundSystemInterface
 {
 public:
+	virtual bool initialize() = 0;
+
 	virtual void setListenerOrient( float * _position, float * _front, float * top) = 0;
 	virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener ) = 0;
 

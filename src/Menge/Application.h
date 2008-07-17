@@ -107,6 +107,7 @@ namespace Menge
 		void setMouseBounded( bool _bounded );
 
 		void setFullscreenMode( bool _fullscreen );
+		const mt::vec2f& getDesktopResolution() const;
 
 	private:
 		ApplicationInterface* m_interface;
@@ -145,5 +146,7 @@ namespace Menge
 		PhysicEngine * m_physicEngine;
 		PhysicEngine2D * m_physicEngine2D;
 		XmlEngine*	m_xmlEngine;
+
+		mt::vec2f m_desktopResolution;
 	};
 }

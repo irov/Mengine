@@ -34,6 +34,8 @@ namespace Menge
 		
 		void translate3D( const mt::vec3f &delta );
 
+		void scale( const mt::vec3f& _scale );
+
 	public:
 		void loader( XmlElement * _xml );
 

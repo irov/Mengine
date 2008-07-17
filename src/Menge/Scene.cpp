@@ -400,14 +400,14 @@ namespace	Menge
 			->setRenderTarget( m_renderTarget );
 	}*/
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::render( const Viewport & _viewport )
+	void Scene::render( const Viewport & _viewport, bool _enableDebug )
 	{
 		if( isRenderable() == false )
 		{
 			return;
 		}
 
-		renderSelf( _viewport );
+		renderSelf( _viewport, _enableDebug );
 
 
 		for( TContainerChildrens::iterator
@@ -419,7 +419,7 @@ namespace	Menge
 			Holder<RenderEngine>::hostage()
 				->setRenderTarget( m_renderTarget );
 
-			(*it)->render( _viewport );
+			(*it)->render( _viewport, _enableDebug );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

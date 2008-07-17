@@ -340,12 +340,20 @@ void CALL HGE_Impl::Gfx_RenderQuad(const hgeQuad *quad)
 {
 	if(VertArray)
 	{
-		if(CurPrimType!=HGEPRIM_QUADS || nPrim>=VERTEX_BUFFER_SIZE/HGEPRIM_QUADS || CurTexture!=quad->tex || m_blendChanged )
+		if( CurPrimType!=HGEPRIM_QUADS 
+			|| nPrim>=VERTEX_BUFFER_SIZE/HGEPRIM_QUADS 
+			|| CurTexture!=quad->tex 
+			|| m_currSrcBlend != quad->srcBlend 
+			|| m_currDstBlend != quad->dstBlend )
 		{
 			_render_batch();
 
 			CurPrimType=HGEPRIM_QUADS;
 			//if(CurBlendMode != quad->blend) _SetBlendMode(quad->blend);
+			if( m_currSrcBlend != quad->srcBlend || m_currDstBlend != quad->dstBlend )
+			{
+				Gfx_SetBlendState( quad->srcBlend, quad->dstBlend );
+			}
 			if(quad->tex != CurTexture)
 			{
 				pD3DDevice->SetTexture( 0, (LPDIRECT3DTEXTURE8)quad->tex );
@@ -736,7 +744,6 @@ void HGE_Impl::_render_batch( bool bEndScene )
 			}
 
 			nPrim=0;
-			m_blendChanged = false;
 		}
 
 		if( bEndScene )
@@ -1316,6 +1323,10 @@ void HGE_Impl::Gfx_ChangeMode( int _width, int _height, int _bpp, bool _fullscre
 	d3dpp->BackBufferWidth = _width;
 	d3dpp->BackBufferHeight = _height;
 
+	nScreenWidth = _width;
+	nScreenHeight = _height;
+	nScreenBPP = _bpp;
+
 	_GfxRestore();
 }
 
@@ -1455,12 +1466,10 @@ void HGE_Impl::Gfx_SetBlendState( hgeBlendState _srcBlend, hgeBlendState _dstBle
 	{
 		pD3DDevice->SetRenderState( D3DRS_SRCBLEND, static_cast<D3DBLEND>( _srcBlend ) );
 		m_currSrcBlend = _srcBlend;
-		m_blendChanged = true;
 	}
 	if( m_currDstBlend != _dstBlend )
 	{
 		pD3DDevice->SetRenderState( D3DRS_DESTBLEND, static_cast<D3DBLEND>( _dstBlend ) );
 		m_currDstBlend = _dstBlend;
-		m_blendChanged = true;
 	}
 }

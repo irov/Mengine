@@ -48,7 +48,8 @@ public:
 	virtual WINDOW_HANDLE createWindow( const char* _name, float _width, float _height, bool _fullscreen ) = 0;
 	virtual void run() = 0;
 	virtual void stop() = 0;
-	virtual float getMonitorAspectRatio() = 0;
+	//virtual float getMonitorAspectRatio() = 0;
+	virtual void getDesktopResolution( int* _width, int* _heigth ) = 0;
 	virtual void minimizeWindow() = 0;
 	virtual void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 	virtual float getDeltaTime() = 0;

@@ -249,7 +249,9 @@ struct hgeQuad
 {
 	hgeVertex		v[4];
 	HTEXTURE		tex;
-	int				blend;
+	//int				blend;
+	hgeBlendState   srcBlend;
+	hgeBlendState	dstBlend;
 };
 
 

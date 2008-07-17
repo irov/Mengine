@@ -150,5 +150,7 @@ namespace Menge
 		int m_windowWidth;
 		int m_windowHeight;
 		String m_currentRenderTarget;
+
+		void recalcRenderArea_( int _width, int _height );
 	};
 }

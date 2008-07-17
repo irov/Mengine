@@ -162,4 +162,12 @@ namespace Menge
 			}
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Allocator3D::scale( const mt::vec3f& _scale )
+	{
+		m_localMatrix3D[0][0] *= _scale.x;
+		m_localMatrix3D[1][1] *= _scale.y;
+		m_localMatrix3D[2][2] *= _scale.z;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -220,11 +220,11 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::flip( bool _x, bool _y )
 	{
-	/*	TListChildren::iterator it = m_listChildren.begin();
+		/*TListChildren::iterator it = m_listChildren.begin();
 		for(; it != m_listChildren.end(); it++)
 		{
 			mt::vec2f pos = (*it)->getLocalPosition();
-			mt::vec2f dir = (*it)->getLocalDirection();
+			//mt::vec2f dir = (*it)->getLocalDirection();
 			if( _x )
 			{
 				pos.x = - pos.x;
@@ -236,8 +236,16 @@ namespace	Menge
 				(*it)->flip( false );
 			}
 			(*it)->setLocalPosition( pos );
+		}*/
+		if( _x )
+		{
+			setScale( mt::vec2f( -m_scale.x, m_scale.y ) );
 		}
-		*/
+		if( _y )
+		{
+			setScale( mt::vec2f( m_scale.x, -m_scale.y ) );
+		}
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::setScale( const mt::vec2f& _scale )
@@ -310,7 +318,7 @@ namespace	Menge
 			{
 				float angle;
 				m_rotateTo.update( _timing, &angle );
-				setAngle( angle );
+				setAngle( -angle ); 	// "-" - wff?
 				if( m_rotateTo.isStarted() == false )
 				{
 					this->callEvent("ROTATE_END", "()" );

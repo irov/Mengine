@@ -62,9 +62,10 @@ namespace	Menge
 		: public VisitorAdapter<VisitorRenderLayer2D>
 	{
 	public:
-		VisitorRenderLayer2D( const Viewport & _viewport, const mt::vec2f & _size )
+		VisitorRenderLayer2D( const Viewport & _viewport, const mt::vec2f & _size, bool _enableDebug )
 			: m_viewport(_viewport)
 			, m_size(_size)
+			, m_enableDebug( _enableDebug )
 		{
 		}
 
@@ -92,7 +93,7 @@ namespace	Menge
 					Viewport viewport = m_viewport;
 					viewport.begin += mt::vec2f( m_size.x, 0.f );
 					viewport.end += mt::vec2f( m_size.x, 0.f );
-					_node->renderSelf( viewport );
+					_node->renderSelf( viewport, m_enableDebug );
 				}
 				else if( m_viewport.begin.x > sprite_bbox.ve.x ) 
 				{
@@ -111,10 +112,10 @@ namespace	Menge
 					Viewport viewport = m_viewport;
 					viewport.begin += mt::vec2f( -m_size.x, 0.f );
 					viewport.end += mt::vec2f( -m_size.x, 0.f );
-					_node->renderSelf( viewport );
+					_node->renderSelf( viewport, m_enableDebug );
 				}
 
-				_node->renderSelf( m_viewport );
+				_node->renderSelf( m_viewport, m_enableDebug );
 			}
 
 			_node->visitChildren( this );
@@ -122,15 +123,16 @@ namespace	Menge
 
 		void procces( Layer * _layer )
 		{
-			_layer->render( m_viewport );
+			_layer->render( m_viewport, m_enableDebug );
 		}
 
 	protected:
 		Viewport m_viewport;
+		bool m_enableDebug;
 		mt::vec2f m_size;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DLoop::render( const Viewport & _viewport )
+	void Layer2DLoop::render( const Viewport & _viewport, bool _enableDebug )
 	{
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
@@ -146,7 +148,7 @@ namespace	Menge
 
 		viewport.end = viewport.begin + viewport_size;
 
-		VisitorRenderLayer2D visitorRender( viewport, m_size );
+		VisitorRenderLayer2D visitorRender( viewport, m_size, _enableDebug );
 
 		visitChildren( &visitorRender );
 

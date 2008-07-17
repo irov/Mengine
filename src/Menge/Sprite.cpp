@@ -142,6 +142,7 @@ namespace	Menge
 		{
 			m_flipY = !m_flipY;
 		}
+		updateSprite_();
 	}
 	///////////////////////////////////////////////////////////////////////////
 	void Sprite::setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY )
@@ -194,9 +195,10 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateSprite_()
 	{
+		if( m_resource == 0 ) return;
+
 		m_size = m_resource->getSize( m_currentImageIndex );
 
 		m_size.x *= m_scale.x;

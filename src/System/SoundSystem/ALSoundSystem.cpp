@@ -102,6 +102,8 @@ bool ALSoundSystem::initialize()
 //////////////////////////////////////////////////////////////////////////
 void    ALSoundSystem::setListenerOrient( float * _position, float * _front, float * _top)
 {
+	if( m_initialized == false ) return;
+
 	memcpy( m_listenerPosition, _position, sizeof(float)*3 );
 	memcpy( m_listenerOrientation, _front, sizeof(float)*3 );
 	memcpy( m_listenerOrientation+3, _top, sizeof(float)*3 );
@@ -112,6 +114,7 @@ void    ALSoundSystem::setListenerOrient( float * _position, float * _front, flo
 //////////////////////////////////////////////////////////////////////////
 SoundSourceInterface*   ALSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener )
 {
+	if( m_initialized == false ) return 0;
 	//ALSoundSource* source = new ALSoundSource(this);
 	ALSoundSource* source = NULL;
 	for(unsigned int i = 0; i < m_sources.size(); i++)
@@ -137,6 +140,8 @@ SoundSourceInterface*   ALSoundSystem::createSoundSource( bool _isHeadMode, Soun
 //////////////////////////////////////////////////////////////////////////
 SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _filename, bool _isStream )
 {
+	if( m_initialized == false ) return 0;
+
 	ALSoundBuffer* buffer = NULL;
 
 	if(_isStream)
@@ -177,6 +182,8 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 //////////////////////////////////////////////////////////////////////////
 SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem )
 {
+	if( m_initialized == false ) return 0;
+
 	ALSoundBuffer* buffer = new ALSoundBuffer();
 	/*ALsizei size,freq;
 	ALenum format;
@@ -216,6 +223,8 @@ void    ALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::update( float _timing )
 {
+
+	if( m_initialized == false ) return;
 
 	for( std::size_t i = 0; i < m_addingSources.size(); i++ )
 	{
@@ -291,12 +300,16 @@ void ALSoundSystem::setBlowCallback( SoundSulkCallbackInterface * _callback )
 //////////////////////////////////////////////////////////////////////////
 void	ALSoundSystem::setSoundVelocity(float _velocity)
 {
+	if( m_initialized == false ) return;
+
 	m_soundVelocity = _velocity;
 	alDopplerVelocity(m_soundVelocity);
 }
 //////////////////////////////////////////////////////////////////////////
 void	ALSoundSystem::setDopplerFactor(float _factor)
 {
+	if( m_initialized == false ) return;
+
 	m_dopplerFactor = _factor;
 	alDopplerFactor(m_dopplerFactor);
 }

@@ -665,8 +665,8 @@ namespace Menge
 			.def( "isHide", &Node::isHide )
 			.def( "getWorldPosition", &Node::getWorldPosition )
 			.def( "getWorldDirection", &Node::getWorldDirection )
-			//.def( "alphaTo", &Node::alphaTo )
-			//.def( "setAlpha", &Node::setAlpha )
+			.def( "alphaTo", &Node::alphaTo )
+			.def( "setAlpha", &Node::setAlpha )
 			.def( "getScreenPosition", &Node::getScreenPosition )
 			.def( "getParent", &Node::getParent )
 			;
@@ -731,7 +731,11 @@ namespace Menge
 
 				;*/
 
-		pybind::proxy_<SceneNode3D, pybind::bases<Node> >("SceneNode3D", false)
+		pybind::interface_<Allocator3D>("Allocator3D", false)
+				.def( "scale", &Allocator3D::scale )
+				;
+
+		pybind::proxy_<SceneNode3D, pybind::bases<Node, Allocator3D> >("SceneNode3D", false)
 					.def( "yaw", &SceneNode3D::yaw )
 					.def( "pitch", &SceneNode3D::pitch )
 					.def( "getYaw", &SceneNode3D::getYaw )
@@ -802,7 +806,6 @@ namespace Menge
 				.def( "getOutlineColor", &TextField::getOutlineColor )
 				.def( "getLength", &TextField::getLength )
 				.def( "setMaxLen", &TextField::setMaxLen )
-				//.def( "setListener", &TextField::setListener )
 				.def( "getLineOffset", &TextField::getLineOffset )
 				.def( "setLineOffset", &TextField::setLineOffset )
 				.def( "setResource", &TextField::setResource )
@@ -854,7 +857,6 @@ namespace Menge
 				.def( "colorTo", &Sprite::colorTo )
 				.def( "alphaTo", &Sprite::alphaTo )
 				.def( "flip", &Sprite::flip )
-				//.def( "setListener", &Sprite::setListener )
 				.def( "getCenterAlign", &Sprite::getCenterAlign )
 				;
 			{
@@ -871,7 +873,6 @@ namespace Menge
 			}
 
 			pybind::proxy_<RigidBody2D, pybind::bases<Node>>("RigidBody2D", false)
-				//.def( "setListener", &RigidBody2D::setListener )
 				.def( "getListener", &RigidBody2D::getListener )
 				.def( "applyForce", &RigidBody2D::applyForce )
 				.def( "applyImpulse", &RigidBody2D::applyImpulse )
@@ -885,6 +886,7 @@ namespace Menge
 				.def( "getMass", &RigidBody2D::getMass )
 				.def( "getLinearVelocity", &RigidBody2D::getLinearVelocity )
 				.def( "setLinearVelocity", &RigidBody2D::setLinearVelocity )
+				.def( "unsetLinearVelocity", &RigidBody2D::unsetLinearVelocity )
 			;
 
 			

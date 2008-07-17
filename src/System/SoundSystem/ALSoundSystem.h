@@ -35,9 +35,11 @@ public:
 	ALSoundSystem();
 	virtual ~ALSoundSystem();
 
-	bool initialize();
-
+	
 public:
+
+	bool initialize() override;
+
 	void setListenerOrient( float * _position, float * _front, float * top) override;
 	SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener ) override;
 

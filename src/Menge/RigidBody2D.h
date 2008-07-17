@@ -63,6 +63,7 @@ namespace Menge
 		float getMass() const;
 		mt::vec2f getLinearVelocity() const;
 		void setLinearVelocity( float _x, float _y, bool _countGravity );
+		void unsetLinearVelocity();
 		void wakeUp();
 
 		PhysicBody2DInterface* getInterface();
@@ -111,6 +112,7 @@ namespace Menge
 		bool m_constantForce;
 		bool m_directionForce;
 		bool m_linearVelocity;
+		bool m_unsetLinearVelocity;
 		mt::vec2f m_force;
 		mt::vec2f m_forcePoint;
 		mt::vec2f m_velocity;

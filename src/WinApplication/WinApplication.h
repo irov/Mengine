@@ -31,9 +31,11 @@ public:
 	void run() override;
 	void stop()	override;
 	WINDOW_HANDLE createWindow( const char* _name, float _width, float _height, bool _fullscreen ) override;
-	float getMonitorAspectRatio() override;
+	//float getMonitorAspectRatio() override;
+	void getDesktopResolution( int* _width, int* _heigth ) override;
 	void minimizeWindow() override;
-	void setPrimaryMonitorAspect( float _aspect );
+	//void setPrimaryMonitorAspect( float _aspect );
+	void setDesktopResolution( int _width, int _height );
 	void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 	float getDeltaTime() override;
 	//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
@@ -63,6 +65,8 @@ private:
 	bool	m_fullscreen;
 	bool m_handleMouse;
 
-	float m_primaryMonitorAspect;
+	int m_desktopWidht;
+	int m_desktopHeight;
+	//float m_primaryMonitorAspect;
 
 };

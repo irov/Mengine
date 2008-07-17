@@ -6,6 +6,7 @@
 #	include "MousePickerTrap.h"
 
 #	include "Math/polygon.h"
+#	include "Node.h"
 
 extern "C" 
 { 

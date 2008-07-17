@@ -286,7 +286,7 @@ void HGERenderSystem::renderImage(const float * _transform,
 		quad.v[i].y = ::floorf( quad.v[i].y + 0.5f );
 	}
 
-	quad.blend = BLEND_DEFAULT;
+	//quad.blend = BLEND_DEFAULT;
 
 	/*if( _dst == BF_ONE )
 	{
@@ -326,8 +326,11 @@ void HGERenderSystem::renderImage(const float * _transform,
 		quad.tex = 0;
 	}
 
+	quad.srcBlend = s_blendMengeToHGE( _srcBlend );
+	quad.dstBlend = s_blendMengeToHGE( _dstBlend );
+
 	m_hge->Gfx_RenderQuad( &quad );
-	m_hge->Gfx_SetBlendState( s_blendMengeToHGE( _srcBlend ), s_blendMengeToHGE( _dstBlend ) );
+	//m_hge->Gfx_SetBlendState( s_blendMengeToHGE( _srcBlend ), s_blendMengeToHGE( _dstBlend ) );
 
 	/*if( tex )
 	{

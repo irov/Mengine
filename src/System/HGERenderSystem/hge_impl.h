@@ -364,7 +364,6 @@ public:
 	TDispModes m_displayModes;
 	std::vector<int>	m_resList;
 	hgeBlendState m_currSrcBlend, m_currDstBlend;
-	bool m_blendChanged;
 	//int m_viewportX, m_viewportY, m_viewportWidth, m_viewportHeight;
 
 private:

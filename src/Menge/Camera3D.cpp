@@ -22,7 +22,16 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Camera3D::getViewMatrix()
 	{	
-		//updateMatrix3D( m_parent );
+		if( m_parent == 0 )
+		{
+			return m_viewMatrix;
+		}
+
+		SceneNode3D * sceneNode = dynamic_cast<SceneNode3D*>(m_parent);
+
+		const mt::mat4f & wm = sceneNode->getWorldMatrix3D();
+
+		updateMatrix3D( wm );
 
 		return m_viewMatrix;
 	}

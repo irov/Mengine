@@ -26,6 +26,8 @@ namespace Menge
 		SoundEngine( SoundSystemInterface * _interface );
 		~SoundEngine();
 	
+		bool initialize();
+
 		void setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top );
 
 		SoundSourceInterface *	createSoundSource(

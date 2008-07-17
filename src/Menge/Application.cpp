@@ -227,6 +227,11 @@ namespace Menge
 			m_physicEngine->init(mt::vec3f(0.f,-1.f,0.f));
 		}
 
+		int width, height;
+		m_interface->getDesktopResolution( &width, &height );
+		m_desktopResolution.x = width;
+		m_desktopResolution.y = height;
+
 		Game* game = Holder<Game>::hostage();
 
 		m_renderEngine->initialize( "" );
@@ -240,7 +245,7 @@ namespace Menge
 		{
 			//m_currentResolution = m_renderEngine->getBestDisplayResolution( game->getWidth(), game->getHeight(), m_interface->getMonitorAspectRatio() );
 			m_currentResolution = m_renderEngine->getBestDisplayResolution( 
-				m_currentResolution.x, m_currentResolution.y, m_interface->getMonitorAspectRatio() );
+				m_currentResolution.x, m_currentResolution.y, m_desktopResolution.x / m_desktopResolution.y );
 		}
 
 		WINDOW_HANDLE winHandle = m_interface->createWindow( game->getTitle().c_str(), m_currentResolution.x, m_currentResolution.y, game->getFullscreen() );
@@ -394,6 +399,8 @@ namespace Menge
 			return false;
 		}
 
+		m_sound = m_soundEngine->initialize();
+
 		String::size_type idx = _args.find( "-sound" );
 		if( idx != String::npos )
 		{
@@ -402,7 +409,7 @@ namespace Menge
 
 		//Временная запись
 		//добавил Вова
-		m_sound = false;
+		//m_sound = false;
 
 		idx = _args.find( "-particles" );
 		if( idx != String::npos )
@@ -773,6 +780,11 @@ namespace Menge
 		}
 		Holder<RenderEngine>::hostage()->
 			setFullscreenMode( _fullscreen );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& Application::getDesktopResolution() const
+	{
+		return m_desktopResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

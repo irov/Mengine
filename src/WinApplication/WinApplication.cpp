@@ -82,7 +82,9 @@ WinApplication::WinApplication()
 , m_hWnd(0)
 , m_cursorInArea(false)
 , m_active(false)
-, m_primaryMonitorAspect(4.f/3.f)
+//, m_primaryMonitorAspect(4.f/3.f)
+, m_desktopWidht( 800 )
+, m_desktopHeight( 600 )
 , m_winWidth( 800 )
 , m_winHeight( 600 )
 , m_fullscreen( false )
@@ -116,17 +118,24 @@ static BOOL CALLBACK s_monitorEnumProc( HMONITOR _hMonitor, HDC _hdc, LPRECT, LP
 	{
 		int width = info.rcMonitor.right - info.rcMonitor.left;
 		int height = info.rcMonitor.bottom - info.rcMonitor.top;
-		float primaryMonitorAspect = static_cast<float>( width ) / static_cast<float> ( height );
-		app->setPrimaryMonitorAspect( primaryMonitorAspect );
+		//float primaryMonitorAspect = static_cast<float>( width ) / static_cast<float> ( height );
+		//app->setPrimaryMonitorAspect( primaryMonitorAspect );
+		app->setDesktopResolution( width, height );
 		
 		return FALSE;
 	}
 	return TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
-void WinApplication::setPrimaryMonitorAspect( float _aspect )
+/*void WinApplication::setPrimaryMonitorAspect( float _aspect )
 {
 	m_primaryMonitorAspect = _aspect;
+}*/
+//////////////////////////////////////////////////////////////////////////
+void WinApplication::setDesktopResolution( int _width, int _height )
+{
+	m_desktopWidht = _width;
+	m_desktopHeight = _height;
 }
 //////////////////////////////////////////////////////////////////////////
 bool WinApplication::init( const char* _name, ApplicationListenerInterface* _listener )
@@ -460,9 +469,15 @@ LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, L
 	return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 }
 //////////////////////////////////////////////////////////////////////////
-float WinApplication::getMonitorAspectRatio()
+/*float WinApplication::getMonitorAspectRatio()
 {
 	return m_primaryMonitorAspect;	
+}*/
+//////////////////////////////////////////////////////////////////////////
+void WinApplication::getDesktopResolution( int* _width, int* _heigth )
+{
+	*_width = m_desktopWidht;
+	*_heigth = m_desktopHeight;
 }
 //////////////////////////////////////////////////////////////////////////
 void WinApplication::minimizeWindow()

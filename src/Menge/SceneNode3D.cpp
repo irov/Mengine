@@ -21,9 +21,12 @@ namespace Menge
 
 		SceneNode3D * sceneNode = dynamic_cast<SceneNode3D*>(m_parent);
 
-		const mt::mat4f & wm = sceneNode->getWorldMatrix3D();
+		if( sceneNode )
+		{
+			const mt::mat4f & wm = sceneNode->getWorldMatrix3D();
 
-		updateMatrix3D( wm );
+			updateMatrix3D( wm );
+		}
 
 		return Allocator3D::getWorldMatrix3D();
 	}
@@ -63,7 +66,8 @@ namespace Menge
 	{
 		const mt::vec3f & axis = getLocalStrafe3D();
 
-		mt::rotate_axis_m4( m_localMatrix3D, axis, _degrees);
+		mt::vec3f saxis = mt::norm_safe_v3( axis );
+		mt::rotate_axis_m4( m_localMatrix3D, saxis, _degrees);
 
 		changePivot3D();
 

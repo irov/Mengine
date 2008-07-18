@@ -103,10 +103,15 @@ void AstralaxParticleSystem::lockEmitter( EmitterInterface * _emitter, int _type
 	Magic_LockParticlesType( id, _typeParticle );
 
 	Magic_GetEmitterPosition( id, &m_currentX, &m_currentY );
+
 	bool pos =  Magic_GetEmitterPositionMode( id );
 
 	int texCount = Magic_GetTextureCount();
-	if( texCount > MAX_TEXTURES ) texCount = MAX_TEXTURES;
+
+	if( texCount > MAX_TEXTURES ) 
+	{
+		texCount = MAX_TEXTURES;
+	}
 
 	for ( int i=0; i < texCount; i++ )
 	{
@@ -158,7 +163,7 @@ RenderParticle * AstralaxParticleSystem::nextParticle()
 //////////////////////////////////////////////////////////////////////////
 const char * AstralaxParticleSystem::getTextureName() const
 {
-	return /*((m_texture.length == 0) || (m_texture.data == 0)) ? 0 : */m_texture[0].file;
+	return m_texture[0].file;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxParticleSystem::unlockEmitter( EmitterInterface * _emitter ) 

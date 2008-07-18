@@ -40,7 +40,6 @@ void AstralaxEmitter::play()
 {
 	if ( Magic_IsRestart( m_id ) ) 
 	{ 
-
 		Magic_Restart( m_id );
 	}
 
@@ -48,14 +47,7 @@ void AstralaxEmitter::play()
 	{
 		Magic_SetDiagramFactor( m_id, i, MAGIC_DIAGRAM_NUMBER, m_factor[i] );
 	}
-	//m_factor = Magic_GetDiagramFactor( m_id, 0, MAGIC_DIAGRAM_NUMBER );
-	//Magic_SetPosition( m_id, 0 );
 
-	/*if( m_leftBorder > 0 )
-	{
-		_leftVisibleInterval( m_leftBorder );
-	}
-*/
 	m_start = true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -121,48 +113,6 @@ int	AstralaxEmitter::getNumTypes() const
 HM_EMITTER AstralaxEmitter::getId() const
 {
 	return m_id;
-}
-//////////////////////////////////////////////////////////////////////////
-void AstralaxEmitter::_leftVisibleInterval( double _left )
-{
-	//double left_interval = Magic_GetInterval1( m_id );
-
-	//Magic_SetUpdateTemp( m_id, 0.5f );
-
-	double duration = Magic_GetDuration( m_id );
-
-	if( _left >= duration )
-	{
-		return;
-	}
-
-	double position = Magic_GetPosition( m_id );
-
-	if( _left > 0)
-	{
-		while( position < _left )
-		{
-			position = Magic_GetPosition( m_id );
-
-			double rate = Magic_GetUpdateTime( m_id );
-
-			float temp = Magic_GetUpdateTemp( m_id );
-
-			if (position + rate * temp > _left)
-			{
-				rate = ( _left - position ) / temp;
-			}
-
-			Magic_Update( m_id, rate );
-		}
-
-		HM_DIMENSION to;
-
-		if ( Magic_CopyDimensionTo( m_id, &to ) == MAGIC_SUCCESS )
-		{
-			Magic_SetDimensionID( m_id, to );
-		}
-	}
 }
 //////////////////////////////////////////////////////////////////////////
 bool	AstralaxEmitter::isIntensive() const

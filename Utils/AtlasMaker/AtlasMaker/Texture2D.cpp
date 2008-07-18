@@ -92,6 +92,9 @@ bool Texture2D::loadTexture( const std::string & _filename )
 	m_withAlphaWidth = FreeImage_GetWidth(m_texture);
 	m_withAlphaHeight = FreeImage_GetHeight(m_texture);
 
+	m_nonAlphaWidth = m_withAlphaWidth;
+	m_nonAlphaHeight = m_withAlphaHeight;
+
 	_sliceAlpha();
 
 	return true;

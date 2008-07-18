@@ -3,6 +3,7 @@
 #	include "Texture2D.h"
 #	include "RectangleAreaPacker.h"
 #	include <map>
+#	include <list>
 
 struct TextureAtlasDesc
 {

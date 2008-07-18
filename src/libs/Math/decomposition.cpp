@@ -856,7 +856,7 @@ namespace mt
 		}
 	}
 
-	static const int maxPolys = 10;
+	static const int maxPolys = 50;
 
 /*	int decompose_concave(std::vector<mt::vec2f> & points, std::vector<mt::convexpoly2> & results)
 	{

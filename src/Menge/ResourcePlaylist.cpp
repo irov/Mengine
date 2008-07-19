@@ -8,6 +8,7 @@
 
 #	include "LogEngine.h"
 
+#	include "Utils.h"
 
 namespace Menge
 {
@@ -17,6 +18,7 @@ namespace Menge
 	ResourcePlaylist::ResourcePlaylist( const ResourceFactoryParam & _params )
 		: ResourceReference( _params )
 		, m_loop( true )
+		, m_shuffle( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -53,6 +55,7 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Loop", "Value", m_loop );
+			XML_CASE_ATTRIBUTE_NODE( "Shuffle", "Value", m_shuffle );
 
 			XML_CASE_NODE("Tracks")
 			{
@@ -107,8 +110,7 @@ namespace Menge
 	{
 		if( _track >= m_tracks.size() || _track < 0 )
 		{
-			static std::string empty;
-			return empty;
+			return emptyString();
 		}
 
 		return m_tracks[ _track ];
@@ -122,6 +124,11 @@ namespace Menge
 	bool ResourcePlaylist::getLoop() const
 	{
 		return m_loop;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourcePlaylist::getShuffle() const
+	{
+		return m_shuffle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePlaylist::_release()

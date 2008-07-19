@@ -39,30 +39,32 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::play( const std::string & _playlist )
+	void Amplifier::play( const std::string & _playlistResource )
 	{
 		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
+
 		if( !enabled )
 		{
 			return;
 		}
-		TMapPlayList::iterator it = m_mapPlayLists.find( _playlist );
+
+		TMapPlayList::iterator it = m_mapPlayLists.find( _playlistResource );
 
 		if ( it == m_mapPlayLists.end() )
 		{			
 			ResourcePlaylist * playlistResource = 
 				Holder<ResourceManager>::hostage()
-					->getResourceT<ResourcePlaylist>( _playlist );
+					->getResourceT<ResourcePlaylist>( _playlistResource );
 
 			if( playlistResource == NULL )
 			{
-				MENGE_LOG("Amplifier: no found playlist with name %s \n", _playlist.c_str() );
+				MENGE_LOG("Amplifier: no found playlist with name %s \n", _playlistResource.c_str() );
 				return;
 			}
 
 			Playlist * playlist = new Playlist( playlistResource );
 
-			it = m_mapPlayLists.insert( std::make_pair( _playlist, playlist ) ).first;
+			it = m_mapPlayLists.insert( std::make_pair( _playlistResource, playlist ) ).first;
 		}
 
 		m_currentPlayList = it->second;
@@ -73,13 +75,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::shuffle( const std::string & _playlist )
 	{
-		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
-
-		if( !enabled )
-		{
-			return;
-		}
-
 		TMapPlayList::iterator it = m_mapPlayLists.find( _playlist );
 
 		if ( it == m_mapPlayLists.end() )

@@ -34,6 +34,13 @@ namespace Menge
 		
 		setLooped( is_looped );
 
+		bool is_shuffled = m_playlistResource->getShuffle();
+
+		if(is_shuffled == true)
+		{
+			shuffle();
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

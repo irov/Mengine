@@ -32,7 +32,13 @@ namespace	Menge
 			/*!
 			\param _playlist имя ресурса.
 			*/
-			void	play( const std::string & _playlist );
+			void	play( const std::string & _playlistResource );
+
+			//! Shuffle плейлиста.
+			/*!
+			\param _playlist имя плейлиста.
+			*/
+			void	shuffle( const std::string & _playlist );
 
 			//! Остановка музыки.
 			/*!
@@ -51,9 +57,6 @@ namespace	Menge
 			\return величина громкости
 			*/
 			float	getVolume() const;
-
-			//
-			void	shuffle( const std::string & _playlist );
 
 		private:
 			float m_volume;

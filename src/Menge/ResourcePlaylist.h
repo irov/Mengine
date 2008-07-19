@@ -54,6 +54,8 @@ namespace Menge
 		*/
 		bool getLoop() const;
 
+		bool getShuffle() const;
+
 		void setFilePath( const std::string & _path );
 
 	public:
@@ -67,6 +69,7 @@ namespace Menge
 
 	private:
 		bool	  m_loop;
+		bool	  m_shuffle;
 		TVecTrack m_tracks;
 
 		std::string m_filename;

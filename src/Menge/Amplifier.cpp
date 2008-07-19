@@ -71,6 +71,27 @@ namespace Menge
 		_play();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::shuffle( const std::string & _playlist )
+	{
+		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
+
+		if( !enabled )
+		{
+			return;
+		}
+
+		TMapPlayList::iterator it = m_mapPlayLists.find( _playlist );
+
+		if ( it == m_mapPlayLists.end() )
+		{			
+			MENGE_LOG("Amplifier: no found playlist with name %s \n", _playlist.c_str() );
+			return;
+		}
+
+		m_currentPlayList = it->second;
+		m_currentPlayList->shuffle();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::stop()
 	{
 		if( m_music )

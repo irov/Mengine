@@ -52,6 +52,9 @@ namespace	Menge
 			*/
 			float	getVolume() const;
 
+			//
+			void	shuffle( const std::string & _playlist );
+
 		private:
 			float m_volume;
 

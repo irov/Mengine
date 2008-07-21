@@ -6,6 +6,8 @@
 
 #	include "Utils.h"
 
+#	include <ctime>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -84,6 +86,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::shuffle()
 	{
+		srand( (unsigned)std::time( NULL ) );
+
 		for( TVecTrack::size_type 
 			it = 0,
 			it_end = m_tracks.size(); 

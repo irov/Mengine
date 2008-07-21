@@ -21,7 +21,7 @@ namespace Editor
 
                 if (u >= 1.0)
                         return pt2;
-                    else if (u <= 0.0)
+                else if (u <= 0.0)
                         return pt1;
 
                 float x = pt2.X * u + pt1.X * (1.0f - u);

@@ -71,7 +71,13 @@ namespace Editor
             foreach (Point point in points)
             {
                 writer.WriteStartElement("Point");
-                value = point.X.ToString() + ";" + point.Y.ToString();
+
+                Point pnt = new Point();
+
+                pnt.X = point.X - Position.X;
+                pnt.Y =  point.Y - Position.Y;
+
+                value = pnt.X + ";" + pnt.Y;
                 writer.WriteAttributeString("Value", value);
                 writer.WriteEndElement();
             }
@@ -79,9 +85,35 @@ namespace Editor
             writer.WriteEndElement();
         }
 
-        void Node.load(ref XmlTextReader reader)
+        void Node.load(ref ResourceManager resourceManager, XmlNodeList ChildNodes)
         {
+            foreach (XmlNode values in ChildNodes)
+            {
+                String Value = values.Attributes.Item(0).Value;
 
+                if (values.Name == "Transformation")
+                {
+                    String[] coords = Value.Split(';');
+                    Position.X = Convert.ToInt32(coords[4]);
+                    Position.Y = Convert.ToInt32(coords[5]);
+                    continue;
+                }
+
+                if (values.Name == "Point")
+                {
+                    String[] coords = Value.Split(';');
+                    AddPoint(new Point(Convert.ToInt32(coords[0]), Convert.ToInt32(coords[1])));
+                    continue;
+                }
+            }
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                Point pnt = points[i];
+                pnt.X += Position.X;
+                pnt.Y += Position.Y;
+                points[i] = pnt;
+            }
         }
 
         void Node.setPosition(int x, int y)

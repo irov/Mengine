@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.sceneGroupBox = new System.Windows.Forms.GroupBox();
+            this.button7 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.scrollableCheckBox = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -71,6 +72,7 @@
             // 
             // sceneGroupBox
             // 
+            this.sceneGroupBox.Controls.Add(this.button7);
             this.sceneGroupBox.Controls.Add(this.checkBox1);
             this.sceneGroupBox.Controls.Add(this.scrollableCheckBox);
             this.sceneGroupBox.Controls.Add(this.label2);
@@ -101,6 +103,18 @@
             this.sceneGroupBox.TabIndex = 1;
             this.sceneGroupBox.TabStop = false;
             this.sceneGroupBox.Text = "Scene properties";
+            // 
+            // button7
+            // 
+            this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button7.Location = new System.Drawing.Point(138, 321);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(75, 24);
+            this.button7.TabIndex = 23;
+            this.button7.Text = "add tilepoly";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Visible = false;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // checkBox1
             // 
@@ -175,9 +189,9 @@
             // button5
             // 
             this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button5.Location = new System.Drawing.Point(138, 283);
+            this.button5.Location = new System.Drawing.Point(138, 350);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.Size = new System.Drawing.Size(75, 24);
             this.button5.TabIndex = 15;
             this.button5.Text = "remove";
             this.button5.UseVisualStyleBackColor = true;
@@ -307,9 +321,9 @@
             // button3
             // 
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Location = new System.Drawing.Point(138, 224);
+            this.button3.Location = new System.Drawing.Point(138, 262);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 24);
+            this.button3.Size = new System.Drawing.Size(75, 25);
             this.button3.TabIndex = 5;
             this.button3.Text = "add sprite";
             this.button3.UseVisualStyleBackColor = true;
@@ -318,9 +332,9 @@
             // button2
             // 
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button2.Location = new System.Drawing.Point(138, 254);
+            this.button2.Location = new System.Drawing.Point(138, 292);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(75, 24);
             this.button2.TabIndex = 4;
             this.button2.Text = "add hotspot";
             this.button2.UseVisualStyleBackColor = true;
@@ -490,6 +504,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox scrollableCheckBox;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button7;
     }
 }
 

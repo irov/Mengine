@@ -58,9 +58,34 @@ namespace Editor
             return m_isCenterAlign;
         }
 
-        void Node.load(ref XmlTextReader reader)
+        void Node.load(ref ResourceManager resourceManager, XmlNodeList ChildNodes)
         {
+            foreach (XmlNode values in ChildNodes)
+            {
+                String Value = values.Attributes.Item(0).Value;
 
+                if (values.Name == "ImageMap")
+                {
+                    ResourceImageDefault resource = resourceManager.GetResource(Value);
+                    setResource(ref resource);
+                    continue;
+                }
+
+                if (values.Name == "Transformation")
+                {
+                    String[] coords = Value.Split(';');
+                    Position.X = Convert.ToInt32(coords[4]);
+                    Position.Y = Convert.ToInt32(coords[5]);
+                    continue;
+                }
+
+                if (values.Name == "CenterAlign")
+                {
+                    bool isCenterAligned = Convert.ToBoolean(Convert.ToInt32(Value));
+                    setCenterAlign(isCenterAligned);
+                    continue;
+                }
+            }
         }
 
         void Node.setPosition(int x, int y)

@@ -17,6 +17,5 @@ namespace Editor
         public static Pen ImageSelectedSprite = new Pen(Color.Green, 1);
         public static Pen PolygonSelected = new Pen(Color.Yellow, 1);
         public static int ImageNullSize = 128;
-        public static Matrix IdentMatrix = new Matrix();
     }
 }

@@ -55,6 +55,7 @@
     <Compile Include="Object2D\Node.cs" />
     <Compile Include="Object2D\Scene.cs" />
     <Compile Include="Object2D\Sprite.cs" />
+    <Compile Include="Object2D\TilePolygon.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">

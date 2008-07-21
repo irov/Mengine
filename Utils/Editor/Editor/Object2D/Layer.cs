@@ -102,34 +102,7 @@ namespace Editor
                     if (Type == "Sprite")
                     {
                         Sprite sprite = new Sprite(Name);
-
-                        foreach (XmlNode values in node.ChildNodes)
-                        {
-                            String Value = values.Attributes.Item(0).Value;
-
-                            if (values.Name == "ImageMap")
-                            {
-                                ResourceImageDefault resource = resourceManager.GetResource(Value);
-                                sprite.setResource(ref resource);
-                                continue;
-                            }
-
-                            if (values.Name == "Transformation")
-                            {
-                                String[] coords = Value.Split(';');
-                                Node nd = sprite;
-                                nd.setPosition(Convert.ToInt32(coords[4]), Convert.ToInt32(coords[5]));
-                                continue;
-                            }
-
-                            if (values.Name == "CenterAlign")
-                            {
-                                bool isCenterAligned = Convert.ToBoolean(Convert.ToInt32(Value));
-                                sprite.setCenterAlign(isCenterAligned);
-                                continue;
-                            }
-                        }
-
+                        ((Node)sprite).load(ref resourceManager, node.ChildNodes);
                         AddNode(sprite);
                         continue;
                     }
@@ -137,27 +110,7 @@ namespace Editor
                     if (Type == "HotSpot")
                     {
                         HotSpot hotspot = new HotSpot(Name, true);
-
-                        foreach (XmlNode values in node.ChildNodes)
-                        {
-                            String Value = values.Attributes.Item(0).Value;
-
-                            if (values.Name == "Transformation")
-                            {
-                                String[] coords = Value.Split(';');
-                                Node nd = hotspot;
-                                nd.setPosition(Convert.ToInt32(coords[4]), Convert.ToInt32(coords[5]));
-                                continue;
-                            }
-
-                            if (values.Name == "Point")
-                            {
-                                String[] coords = Value.Split(';');
-                                hotspot.AddPoint(new Point(Convert.ToInt32(coords[0]), Convert.ToInt32(coords[1])));
-                                continue;
-                            }
-                        }
-
+                        ((Node)hotspot).load(ref resourceManager, node.ChildNodes);
                         AddNode(hotspot);
                         continue;
                     }
@@ -274,6 +227,5 @@ namespace Editor
         private Point Position = new Point(0, 0);
         private String LayerName = "";
         private Point Size = new Point(0,0);
-        //<Size Value = "1024;768"/>
     }
 }

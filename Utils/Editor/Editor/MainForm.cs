@@ -25,7 +25,6 @@ namespace Editor
         Graphics graph = null;
         private BufferedGraphics bufferedGraphics = null;
 
-
         Scene scene = new Scene();
 
         private void sceneTreeView_KeyDown(object sender, KeyEventArgs e)
@@ -86,6 +85,16 @@ namespace Editor
 
                 scene.AddLayer(newItem);
             }
+            else
+            {
+                sceneTreeView.Nodes.Insert(0, "MainLayer");
+                sceneTreeView.Select();
+
+                Layer layer = scene.AddLayer("MainLayer");
+                layer.SetMain(true);
+
+                displayLayer("MainLayer");
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -99,7 +108,7 @@ namespace Editor
                 layer.SetMain(true);
             }
 
-            updateListBox("MainLayer");
+            displayLayer("MainLayer");
 
             bufferedGraphics = BufferedGraphicsManager.Current.Allocate(
                 pictureBox1.CreateGraphics(),
@@ -113,11 +122,11 @@ namespace Editor
         {
             if (e.Node != null)
             {
-                updateListBox(e.Node.Text);
+                displayLayer(e.Node.Text);
             }
         }
 
-        public void updateListBox(String layerName)
+        public void displayLayer(String layerName)
         {
             Layer layer = scene.GetLayer(layerName);
 
@@ -134,15 +143,17 @@ namespace Editor
                 scrollableCheckBox.Checked = layer.IsScroll();
                            
                 nodesTreeView.Nodes.Clear();
+
                 foreach (Node node in layer.Nodes)
                 {
                     String name = node.getName();
                     nodesTreeView.Nodes.Add(name);
                 }
 
-                //nodesTreeView.Select();
                 if (nodesTreeView.Nodes.Count != 0)
+                {
                     nodesTreeView.SelectedNode = nodesTreeView.Nodes[0];
+                }
 
                 currentLayer = layer;
 
@@ -154,10 +165,7 @@ namespace Editor
                     spritePosXTextBox.Text = selectedNode.getPosX().ToString();
                     spritePosYTextBox.Text = selectedNode.getPosY().ToString();
                     nodeNameTextBox.Text = selectedNode.getName();
-
-
                     checkBox1.Checked = selectedNode.isAligned();
-
                 }                
             }
         }
@@ -185,7 +193,7 @@ namespace Editor
             Point point = new Point(panel1.HorizontalScroll.Value + panel1.Width / 2, panel1.VerticalScroll.Value + panel1.Height / 2);
             layer.AddSprite(SpriteName, null, point.X, point.Y);
 
-            updateListBox(layerName);
+            displayLayer(layerName);
             nodesTreeView.SelectedNode = nodesTreeView.Nodes[nodesTreeView.Nodes.Count-1]; 
         }
 
@@ -198,7 +206,7 @@ namespace Editor
         private void sceneTreeView_KeyUp(object sender, KeyEventArgs e)
         {
             if(sceneTreeView.SelectedNode!=null)
-            updateListBox(sceneTreeView.SelectedNode.Text);
+            displayLayer(sceneTreeView.SelectedNode.Text);
         }
 
         private void loadResourceToolStripMenuItem_Click(object sender, EventArgs e)
@@ -271,11 +279,6 @@ namespace Editor
                     }
 
                     HotSpot hotspot = (HotSpot)selectedNode;
-                    /*
-                    if (hotspot == null)
-                    {
-                        return;
-                    }*/
 
                     if (Control.ModifierKeys == Keys.Control)
                     {
@@ -434,7 +437,7 @@ namespace Editor
             Point point = new Point(panel1.HorizontalScroll.Value + panel1.Width / 2, panel1.VerticalScroll.Value + panel1.Height / 2);
             layer.AddHotSpot(HotspotName, point.X, point.Y);
 
-            updateListBox(layerName);
+            displayLayer(layerName);
 
             nodesTreeView.SelectedNode = nodesTreeView.Nodes[nodesTreeView.Nodes.Count - 1];
             scene.Draw(graph,bufferedGraphics);
@@ -443,7 +446,6 @@ namespace Editor
         private void saveSceneToolStripMenuItem_Click(object sender, EventArgs e)
         {
             scene.Save();
-            
             scene.Draw(graph,bufferedGraphics);
         }
 
@@ -698,7 +700,7 @@ namespace Editor
 
             if (sceneTreeView.Nodes.Count > 0)
             {
-                updateListBox(sceneTreeView.SelectedNode.Text);
+                displayLayer(sceneTreeView.SelectedNode.Text);
             }
 
             scene.Draw(graph,bufferedGraphics);
@@ -778,11 +780,15 @@ namespace Editor
                 Sprite sprite = (Sprite)selectedNode;
                 if (sprite != null)
                 {
-                    
                     sprite.setCenterAlign(checkBox1.Checked);
                 }
                 scene.Draw(graph,bufferedGraphics);
             }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

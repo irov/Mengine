@@ -14,7 +14,7 @@ namespace Editor
         String getName();
         void setName(String name);
         void save(ref XmlTextWriter writer);
-        void load(ref XmlTextReader reader);
+        void load(ref ResourceManager resourceManager, XmlNodeList ChildNodes);
         void setPosition(int x, int y);
         void setPosX(int x);
         void setPosY(int y);

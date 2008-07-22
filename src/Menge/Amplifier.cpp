@@ -67,6 +67,7 @@ namespace Menge
 			it = m_mapPlayLists.insert( std::make_pair( _playlistResource, playlist ) ).first;
 		}
 
+		m_currentPlaylistName = _playlistResource;
 		m_currentPlayList = it->second;
 		m_currentPlayList->first();
 
@@ -161,6 +162,11 @@ namespace Menge
 		Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_buffer );
 		m_music = NULL;
 		m_buffer = NULL;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& Amplifier::getPlaying() const
+	{
+		return m_currentPlaylistName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

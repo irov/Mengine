@@ -1428,7 +1428,10 @@ void HGE_Impl::Gfx_Prepare3D()
 	pD3DDevice->SetIndices( pIB3D, 0 );
 	pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CW );
 
-	//pD3DDevice->SetRenderState( D3DRS_CLIPPING, TRUE );
+	pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+	pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_ONE );
+	pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ZERO );
+	pD3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, FALSE );
 
 	m_layer3D = true;
 }

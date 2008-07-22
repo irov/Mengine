@@ -96,7 +96,7 @@ bool HGERenderSystem::createRenderWindow( int _width, int _height, int _bits, bo
 	m_hge->System_SetState( HGE_WINDOWED, !_fullscreen );
 	m_hge->System_SetState( HGE_HWND, (HWND)_winHandle );
 	m_hge->System_SetState( HGE_ZBUFFER, true );
-	m_hge->System_SetState( HGE_FPS, HGEFPS_VSYNC );
+	//m_hge->System_SetState( HGE_FPS, HGEFPS_VSYNC );
 	//m_hge->System_SetState( HGE_TEXTUREFILTER, false );
 	m_currentRenderTarget = "defaultCamera";
 

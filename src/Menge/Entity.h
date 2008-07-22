@@ -25,8 +25,8 @@ namespace Menge
 		void rotateStop();
 		void flip( bool _x, bool _y );
 		
-		void setScale( const mt::vec2f& _scale );
-		const mt::vec2f& getScale() const;
+		//void setScale( const mt::vec2f& _scale );
+		//const mt::vec2f& getScale() const;
 
 		void setVelocity( const mt::vec2f& _velocity );
 		const mt::vec2f& getVelocity() const;

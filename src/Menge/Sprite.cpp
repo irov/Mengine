@@ -257,6 +257,7 @@ namespace	Menge
 			std::swap( m_uv.y, m_uv.w );
 		}
 
+		setLocalBoundingBox( mt::box2f( m_offset, m_offset + m_size ) );
 		updateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////

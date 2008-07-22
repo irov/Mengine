@@ -28,34 +28,7 @@ namespace	Menge
 	OBJECT_IMPLEMENT(Layer2DLoop);
 	//////////////////////////////////////////////////////////////////////////
 	Layer2DLoop::Layer2DLoop()
-		: m_factorParallax(1.f,1.f)
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2DLoop::setOffsetPosition( const mt::vec2f & _offset )
-	{
-		setLocalPosition( _offset );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2DLoop::loader( XmlElement * _xml )
-	{
-		Layer::loader(_xml);
-
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Parallax", "Factor", &Layer2D::setParallaxFactor );
-		//	XML_CASE_ATTRIBUTE_NODE_METHOD( "Scrollable", "Value", &Layer2D::setScrollable );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Layer2DLoop::_activate()
-	{
-		if( m_scene == 0 )
-		{
-			return false;
-		}
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	class VisitorRenderLayer2DLoop
@@ -144,19 +117,14 @@ namespace	Menge
 
 		viewport.begin = _viewport.begin;
 
-		if( viewport.begin.y < 0.0f )
-		{
-			viewport.begin.y = 0.0f;
-		}
-		else if( viewport.begin.y + viewport_size.y > m_size.y )
-		{
-			viewport.begin.y = m_size.y - viewport_size.y;
-		}
-
 		viewport.begin.x *= m_factorParallax.x;
 		viewport.begin.y *= m_factorParallax.y;
 
 		viewport.end = viewport.begin + viewport_size;
+
+		float c = ::floorf( viewport.begin.x / m_size.x );
+		viewport.begin.x -= m_size.x * c;
+		viewport.end.x = viewport.begin.x + viewport_size.x;
 
 		VisitorRenderLayer2DLoop visitorRender( viewport, m_size, _enableDebug );
 
@@ -166,8 +134,52 @@ namespace	Menge
 			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DLoop::_addChildren( Node * _node )
+	class VisitorUpdateLayer2DLoop
+		: public VisitorAdapter<VisitorUpdateLayer2DLoop>
 	{
-		_node->setLayer( this );
+	public:
+		VisitorUpdateLayer2DLoop( float _timing, const mt::vec2f& _size )
+			: m_timing( _timing )
+			, m_size( _size )
+		{
+		}
+
+	public:
+		void procces( Node * _node )
+		{				
+			const mt::vec2f& pos = _node->getWorldPosition();
+			if( pos.x > m_size.x )
+			{
+				_node->translate( mt::vec2f( -m_size.x, 0.0f ));
+			}
+			else if( pos.x < 0 )
+			{
+				_node->translate( mt::vec2f( m_size.x, 0.0f ));
+			}
+			_node->update( m_timing );
+		}
+
+	protected:
+		float m_timing;
+		mt::vec2f m_size;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	void Layer2DLoop::update( float _timing )
+	{
+		if( isUpdatable() == false )
+		{
+			return;
+		}
+
+		if( m_updatable )	// !!!!
+		{
+			_update( _timing );
+		}
+
+		VisitorUpdateLayer2DLoop visitorUpdate( _timing, m_size );
+
+		visitChildren( &visitorUpdate );
+		
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -407,6 +407,19 @@ namespace	Menge
 			return;
 		}
 
+		const mt::vec2f& main_size = m_mainLayer->getSize();
+
+		Viewport viewport = _viewport;
+		mt::vec2f viewport_size = viewport.end - viewport.begin;
+		if( viewport.begin.y < 0.0f )
+		{
+			viewport.begin.y = 0.0f;
+		}
+		else if( viewport.begin.y + viewport_size.y > main_size.y )
+		{
+			viewport.begin.y = main_size.y - viewport_size.y;
+		}
+
 		renderSelf( _viewport, _enableDebug );
 
 

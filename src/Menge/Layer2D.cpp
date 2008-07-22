@@ -84,9 +84,10 @@ namespace	Menge
 			if( _node->isRenderable() == true )
 			{
 				_node->renderSelf( m_viewport, m_enableDebug );
+
+				_node->visitChildren( this );
 			}
 
-			_node->visitChildren( this );
 		}
 
 		void procces( Layer * _layer )

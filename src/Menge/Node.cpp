@@ -155,7 +155,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildren( Node * _node )
 	{
-		if( isChildren( _node ) )
+		if( isChildren( _node, false ) )
 		{
 			MENGE_LOG("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist"
 				, this->getName().c_str()
@@ -221,12 +221,25 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::isChildren( Node * _node ) const
+	bool Node::isChildren( Node * _node, bool _recursive ) const
 	{
 		TContainerChildrens::const_iterator it_find = 
 			std::find( m_childrens.begin(), m_childrens.end(), _node );
 
-		return it_find != m_childrens.end();
+		bool found = ( it_find != m_childrens.end() );
+		if( !found && _recursive )
+		{
+			for( TContainerChildrens::const_iterator it = m_childrens.begin(), it_end = m_childrens.end();
+				it != it_end;
+				it++ )
+			{
+				if( (*it)->isChildren( _node, _recursive ) == true )
+				{
+					return true;
+				}
+			}
+		}
+		return found;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_addChildren( Node * _node )

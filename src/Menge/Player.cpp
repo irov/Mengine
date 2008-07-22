@@ -311,8 +311,9 @@ namespace Menge
 					Holder<Game>::hostage()->destroyScene( m_scene->getName() );
 				}
 			}
-
 			m_scene = m_nextScene;
+
+
 			//m_scene->activate();
 			m_renderCamera2D->activate();
 			//Holder<ResourceManager>::hostage()->_dumpResources();

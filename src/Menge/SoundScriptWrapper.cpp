@@ -63,6 +63,10 @@ namespace	Menge
 			Holder<Amplifier>::hostage()->shuffle( _list );
 		}
 		//////////////////////////////////////////////////////////////////////////
+		static const String& s_musicGetPlaying()
+		{
+			return Holder<Amplifier>::hostage()->getPlaying();
+		}
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -80,5 +84,6 @@ namespace	Menge
 		pybind::def( "musicGetVolume", &ScriptSoundHelper::musicGetVolume );
 		pybind::def( "musicStop", &ScriptSoundHelper::musicStop );
 		pybind::def( "musicShuffle", &ScriptSoundHelper::musicShuffle );
+		pybind::def( "musicGetPlaying", &ScriptSoundHelper::s_musicGetPlaying );
 	}
 }

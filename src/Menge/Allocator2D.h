@@ -20,15 +20,15 @@ namespace Menge
 
 		const mt::vec2f & getLocalPosition() const;
 		const mt::vec2f & getLocalDirection() const;
-		const mt::mat3f & getLocalMatrix() const;
-
-		mt::vec2f & getLocalPositionModify();
-		mt::vec2f & getLocalDirectionModify();
-		mt::mat3f & getLocalMatrixModify();
+		const mt::mat3f & getLocalMatrix();
+		const mt::vec2f& getOrigin() const;
+		const mt::vec2f& getScale() const;
 
 		void setLocalMatrix( const mt::mat3f & _matrix );
 		void setLocalPosition( const mt::vec2f & _position );
 		void setLocalDirection( const mt::vec2f & _direction );
+		void setOrigin( const mt::vec2f& _origin );
+		void setScale( const mt::vec2f& _scale );
 
 		void setRotate( float _alpha );
 		
@@ -48,6 +48,12 @@ namespace Menge
 	protected:
 		mt::mat3f m_localMatrix;
 		mt::mat3f m_worldMatrix;
+
+		mt::vec2f m_origin;
+		mt::vec2f m_position;
+		mt::vec2f m_scale;
+		mt::vec2f m_direction;
+		void updateLocalMatrix_();
 
 		bool m_fixedRotation;
 		bool m_changePivot;

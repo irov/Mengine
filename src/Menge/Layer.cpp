@@ -9,9 +9,9 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Layer::Layer()
-		: m_main(false)
-		, m_size(0.f, 0.f)
-		, m_scene(0)
+		: m_main( false )
+		, m_size( 0.f, 0.f )
+		, m_scene( 0 )
 		, m_renderArea( 0.0f, 0.0f, 0.0f, 0.0f )
 		//, m_renderTarget( "defaultCamera" )
 	{}

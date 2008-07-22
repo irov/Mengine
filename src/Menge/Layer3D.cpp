@@ -139,17 +139,11 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*bool Layer3D::_renderBegin()
-	{
-		//Holder<RenderEngine>::hostage()->setRenderViewport( m_viewport );
-//		Layer::_renderBegin();
-		Holder<RenderEngine>::hostage()->beginLayer3D();
-		return true;
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::_render( const Viewport & _viewport, bool _enableDebug )
 	{
-		Holder<RenderEngine>::hostage()->beginLayer3D();
+		RenderEngine* engine = Holder<RenderEngine>::hostage();
+		engine->beginLayer3D();
+		//Holder<RenderEngine>::hostage()->beginLayer3D();
 	}
 	/////////////////////////////////////////////////////////////////////////
 }

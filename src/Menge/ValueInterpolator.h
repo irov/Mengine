@@ -43,6 +43,7 @@ namespace Menge
 				m_time = 0.0f;
 				m_timing = 0.0f;
 				*_out = m_value2;
+				m_delta = (*_out) - m_prev;
 				m_started = false;
 				return true;
 			}

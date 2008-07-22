@@ -617,8 +617,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onUpdate( float _timing )
 	{
-		//MENGE_LOG("WinApplication: %.2f\n", m_interface->getDeltaTime() );
-
 		if( m_debugInfo )
 		{
 			static int d = 0;
@@ -652,37 +650,27 @@ namespace Menge
 		{
 			m_physicEngine2D->update( _timing );
 		}
-		//MENGE_LOG("Physic2DUpdate: %.2f\n", m_interface->getDeltaTime() );
 
 		Holder<Game>::hostage()->update( _timing );
-		//MENGE_LOG("GameUpdate: %.2f\n", m_interface->getDeltaTime() );
 		m_inputEngine->update();
-		//MENGE_LOG("InputUpdate: %.2f\n", m_interface->getDeltaTime() );
 		Holder<MousePickerSystem>::hostage()->update();
-		//MENGE_LOG("MousePickerUpdate: %.2f\n", m_interface->getDeltaTime() );
 		m_soundEngine->update( _timing );
-		//MENGE_LOG("SoundUpdate: %.2f\n", m_interface->getDeltaTime() );
 
 		m_renderEngine->beginScene();
 
 		Holder<Game>::hostage()->render( m_debugRender );
 
 		//Holder<LightSystem>::hostage()->update();
-
-		//MENGE_LOG("GameRender: %.2f\n", m_interface->getDeltaTime() );
 		
-		if( m_debugInfo )
+		/*if( m_debugInfo )
 		{
+			Viewport vp( mt::vec2f( 0.0, 0.0f ), mt::vec2f( 1024.0f, 768.0f ) );
 			sprintf( m_debugText, "FPS:%.2f\n", m_FPS );
 			m_debugTextField->setText( m_debugText );
-//			m_debugTextField->render( false );
-		}
+			m_debugTextField->render( vp, false );
+		}*/
 
 		m_renderEngine->endScene();
-
-		m_renderEngine->render();
-		//MENGE_LOG("RenderTime: %.2f\n", m_interface->getDeltaTime() );
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()

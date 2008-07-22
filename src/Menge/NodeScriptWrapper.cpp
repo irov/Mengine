@@ -588,20 +588,19 @@ namespace Menge
 		pybind::interface_<Allocator2D>("Allocator2D", false)
 			.def( "getLocalPosition", &Allocator2D::getLocalPosition )
 			.def( "getLocalDirection", &Allocator2D::getLocalDirection )
+			.def( "getOrigin", &Allocator2D::getOrigin )
+			.def( "getScale", &Allocator2D::getScale )
 
 			.def( "getWorldPosition", &Allocator2D::getWorldPosition )
 			.def( "getWorldDirection", &Allocator2D::getWorldDirection )
 
 			.def( "setLocalPosition", &Allocator2D::setLocalPosition )
 			.def( "setLocalDirection", &Allocator2D::setLocalDirection )
-
+			.def( "setScale", &Allocator2D::setScale )
+			.def( "setOrigin", &Allocator2D::setOrigin )
 			.def( "setRotate", &Allocator2D::setRotate )
+			.def( "translate", &Allocator2D::translate )
 			;
-
-
-		/*pybind::interface_<Skeleton>("Skeleton", false)
-			.def( "attachEntityToBone", &Skeleton::attachEntityToBone )
-			;*/
 
 		pybind::class_<Camera3D>("Camera3D")
 			.def( pybind::init<>() )
@@ -657,6 +656,7 @@ namespace Menge
 			.def( "addChildren", &Node::addChildren )
 			.def( "removeChildren", &Node::removeChildren )
 			.def( "getChildren", &Node::getChildren )
+			.def( "isChildren", &Node::isChildren )
 			.def( "updatable", &Node::updatable )
 			.def( "update", &Node::update )
 			.def( "getParent", &Node::getParent )

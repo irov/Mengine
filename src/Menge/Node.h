@@ -85,7 +85,7 @@ namespace Menge
 		bool addChildren( Node * _node );
 		void removeChildren( Node * _node );
 		virtual Node * getChildren( const std::string & _name, bool _recursion );
-		bool isChildren( Node * _node ) const;
+		bool isChildren( Node * _node, bool _recursive ) const;
 		virtual void _addChildren( Node * _node );
 		virtual void _removeChildren( Node * _node );
 

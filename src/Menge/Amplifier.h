@@ -1,5 +1,7 @@
 #	 pragma once
 
+#	include "Config/Typedef.h"
+
 #	include "Interface/SoundSystemInterface.h"
 
 #	include <map>
@@ -58,6 +60,8 @@ namespace	Menge
 			*/
 			float	getVolume() const;
 
+			const String& getPlaying() const;
+
 		private:
 			float m_volume;
 
@@ -65,6 +69,7 @@ namespace	Menge
 
 			TMapPlayList	m_mapPlayLists;
 
+			String	m_currentPlaylistName;
 			Playlist *	m_currentPlayList;
 			
 			SoundSourceInterface * m_music;

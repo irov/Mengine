@@ -109,6 +109,7 @@ namespace Menge
 		void setFullscreenMode( bool _fullscreen );
 		const mt::vec2f& getDesktopResolution() const;
 
+		bool isDebugRender() const;
 	private:
 		ApplicationInterface* m_interface;
 

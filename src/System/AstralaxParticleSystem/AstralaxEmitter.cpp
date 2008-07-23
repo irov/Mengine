@@ -48,6 +48,7 @@ void AstralaxEmitter::play()
 		Magic_SetDiagramFactor( m_id, i, MAGIC_DIAGRAM_NUMBER, m_factor[i] );
 	}
 
+	m_total_rate = 0.0f;
 	m_start = true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -128,5 +129,10 @@ void AstralaxEmitter::setListener( ParticleEmitterListenerInterface* _listener )
 void AstralaxEmitter::setPosition(float _x, float _y)
 {
 	Magic_SetEmitterPosition( m_id, int(_x), int(_y) );
+}
+//////////////////////////////////////////////////////////////////////////
+void AstralaxEmitter::restart()
+{
+	Magic_Restart( m_id );
 }
 //////////////////////////////////////////////////////////////////////////

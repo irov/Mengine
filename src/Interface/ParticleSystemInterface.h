@@ -20,6 +20,7 @@ public:
 	virtual void play() = 0;
 	virtual void stop() = 0;
 	virtual void pause() = 0;
+	virtual void restart() = 0;
 	virtual void update( float _timing ) = 0;
 	virtual void setLooped( int _loop ) = 0;
 	virtual int getLooped() const = 0;

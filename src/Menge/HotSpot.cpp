@@ -74,15 +74,20 @@ namespace	Menge
 
 		const Viewport & viewport = camera->getViewport();
 
-		const mt::vec2f & dirA = this->getLocalDirection();
+		const mt::vec2f & dirA = this->getWorldDirection();
 		const mt::vec2f & posA = this->getScreenPosition(  );
 
-		const mt::vec2f & dirB = _hotspot->getLocalDirection();
+		const mt::vec2f & dirB = _hotspot->getWorldDirection();
 		const mt::vec2f & posB = _hotspot->getScreenPosition(  );
 
 		bool is_intersect = mt::intersect_poly_poly( 
 			m_polygon, _hotspot->m_polygon, 
 			dirA, posA, dirB, posB );
+		//const mt::mat3f& matA = this->getWorldMatrix();
+		//const mt::mat3f& matB = _hotspot->getWorldMatrix();
+		//bool is_intersect = mt::intersect_poly_poly( 
+		//	m_polygon, _hotspot->m_polygon, 
+		//	matA, matB );
 
 		if(is_intersect)
 		{
@@ -248,7 +253,7 @@ namespace	Menge
 
 		const Viewport & viewport = camera->getViewport();
 
-		const mt::vec2f & direction = this->getLocalDirection();
+		const mt::vec2f & direction = this->getWorldDirection();
 		const mt::vec2f & position = this->getScreenPosition(  );
 
 		bool result = mt::is_point_inside_polygon(m_polygon, _p, position, direction);
@@ -280,13 +285,15 @@ namespace	Menge
 				mt::vec2f beg = m_polygon[i];
 				mt::vec2f end = m_polygon[(i+1) % m_polygon.num_points()];
 
-				beg+=getWorldPosition();
-				end+=getWorldPosition();
-				//beg+=getScreenPosition();
-				//end+=getScreenPosition();
+				mt::vec2f pt1, pt2;
+				const mt::mat3f& wm = getWorldMatrix();
+				mt::mul_v2_m3( pt1, beg, wm );
+				mt::mul_v2_m3( pt2, end, wm );
+				//beg+=getWorldPosition();
+				//end+=getWorldPosition();
 
 
-				Holder<RenderEngine>::hostage()->renderLine(0xFFFF0000,beg,end);
+				Holder<RenderEngine>::hostage()->renderLine(0xFFFF0000,pt1,pt2);
 			}
 		}
 	}

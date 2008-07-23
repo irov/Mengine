@@ -83,7 +83,7 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
-				_node->renderSelf( m_viewport, m_enableDebug );
+				_node->_render( m_viewport, m_enableDebug );
 
 				_node->visitChildren( this );
 			}
@@ -117,6 +117,9 @@ namespace	Menge
 		viewport.begin.y *= m_factorParallax.y;
 
 		viewport.end = viewport.begin + viewport_size;
+
+		Holder<RenderEngine>::hostage()
+			->setRenderViewport( viewport );
 
 		VisitorRenderLayer2D visitorRender( viewport, _enableDebug );
 

@@ -485,7 +485,7 @@ namespace Menge
 			return;
 		}
 
-		renderSelf( _viewport, _enableDebug );
+		_render( _viewport, _enableDebug );
 
 		for( TContainerChildrens::iterator
 			it = m_childrens.begin(),
@@ -497,17 +497,17 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderSelf( const Viewport & _viewport, bool _enableDebug )
+/*	void Node::renderSelf( const Viewport & _viewport, bool _enableDebug )
 	{
-		Holder<RenderEngine>::hostage()
-			->setRenderViewport( _viewport );
+		//Holder<RenderEngine>::hostage()
+		//	->setRenderViewport( _viewport );
 
 		_render( _viewport, _enableDebug );
 
 #	ifdef MENGE_DEVELOPMENT
 		//_debugRender( _viewport );
 #	endif
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_render( const Viewport & _viewport, bool )
 	{
@@ -627,7 +627,7 @@ namespace Menge
 		return Allocator2D::updateWorldMatrix( wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Node::getWorldPosition()
+	mt::vec2f Node::getWorldPosition()
 	{
 		const mt::mat3f &wm = getWorldMatrix();
 

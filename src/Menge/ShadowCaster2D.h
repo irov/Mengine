@@ -17,8 +17,8 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 
-	protected:
 		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+	protected:
 
 		bool _activate() override;
 		void _deactivate() override;

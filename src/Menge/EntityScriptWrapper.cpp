@@ -157,6 +157,7 @@ namespace Menge
 			.def( "rotateTo", &Entity::rotateTo )
 			.def( "accelerateTo", &Entity::accelerateTo )
 			.def( "directTo", &Entity::directTo )
+			.def( "angleTo", &Entity::angleTo )
 			.def( "rotateStop", &Entity::rotateStop )
 			.def( "flip", &Entity::flip )
 			//.def( "setScale", &Entity::setScale )

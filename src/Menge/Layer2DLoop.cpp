@@ -63,10 +63,10 @@ namespace	Menge
 				//		return;
 					}
 
-					Viewport viewport = m_viewport;
-					viewport.begin += mt::vec2f( m_size.x, 0.f );
-					viewport.end += mt::vec2f( m_size.x, 0.f );
-					_node->renderSelf( viewport, m_enableDebug );
+					//Viewport viewport = m_viewport;
+					//viewport.begin += mt::vec2f( m_size.x, 0.f );
+					//viewport.end += mt::vec2f( m_size.x, 0.f );
+					_node->_render( m_viewport, m_enableDebug );
 				}
 				//else if( m_viewport.begin.x > sprite_bbox.ve.x ) 
 				{
@@ -85,10 +85,17 @@ namespace	Menge
 					Viewport viewport = m_viewport;
 					viewport.begin += mt::vec2f( -m_size.x, 0.f );
 					viewport.end += mt::vec2f( -m_size.x, 0.f );
-					_node->renderSelf( viewport, m_enableDebug );
+
+					Holder<RenderEngine>::hostage()
+						->setRenderViewport( viewport );
+
+					_node->_render( viewport, m_enableDebug );
+
+					Holder<RenderEngine>::hostage()
+						->setRenderViewport( m_viewport );
 				}
 
-				_node->renderSelf( m_viewport, m_enableDebug );
+				_node->_render( m_viewport, m_enableDebug );
 
 				_node->visitChildren( this );
 			}
@@ -125,6 +132,9 @@ namespace	Menge
 		float c = ::floorf( viewport.begin.x / m_size.x );
 		viewport.begin.x -= m_size.x * c;
 		viewport.end.x = viewport.begin.x + viewport_size.x;
+
+		Holder<RenderEngine>::hostage()
+			->setRenderViewport( viewport );
 
 		VisitorRenderLayer2DLoop visitorRender( viewport, m_size, _enableDebug );
 

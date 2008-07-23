@@ -531,10 +531,13 @@ namespace Menge
 			m_renderArea.z = m_renderArea.x + areaWidth;
 			m_renderArea.w = m_renderArea.y + areaHeight;
 
-			/*m_renderArea.x = ::floorf( m_renderArea.x + 0.5f );
+			m_renderArea.x = ::floorf( m_renderArea.x + 0.5f );
 			m_renderArea.y = ::floorf( m_renderArea.y + 0.5f );
 			m_renderArea.z = ::floorf( m_renderArea.z + 0.5f );
-			m_renderArea.w = ::floorf( m_renderArea.w + 0.5f );*/
+			m_renderArea.w = ::floorf( m_renderArea.w + 0.5f );
+
+			areaWidth = m_renderArea.z - m_renderArea.x;
+			areaHeight = m_renderArea.w - m_renderArea.y;
 		}
 
 		mt::ident_m3( m_renderTransform );

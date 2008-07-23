@@ -7,11 +7,14 @@ class Box2DPhysicJoint
 	: public PhysicJoint2DInterface
 {
 public:
-	Box2DPhysicJoint( b2World* _world, b2Joint* _joint );
+	Box2DPhysicJoint( b2World* _world, b2Joint* _joint, bool _isMouse );
 	virtual ~Box2DPhysicJoint();
 
 	void _setJoint( b2Joint* _joint );
+	bool isMouse() const;
+
 private:
 	b2World* m_world;
 	b2Joint* m_joint;
+	bool m_isMouse;
 };

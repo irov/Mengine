@@ -57,12 +57,10 @@ namespace Menge
 	protected:
 		Layer2D * m_layer;
 
-	protected:
-		virtual void _render( const Viewport & _viewport, bool _enableDebug );
-
 	public:
 		virtual void render( const Viewport & _viewport, bool _enableDebug );
-		void renderSelf( const Viewport & _viewport, bool _enableDebug );
+		virtual void _render( const Viewport & _viewport, bool _enableDebug );
+		//void renderSelf( const Viewport & _viewport, bool _enableDebug );
 		bool isRenderable() const;
 
 	public:
@@ -73,7 +71,7 @@ namespace Menge
 
 	public:
 		const mt::mat3f & getWorldMatrix();
-		const mt::vec2f & getWorldPosition();
+		mt::vec2f getWorldPosition();
 		const mt::vec2f & getWorldDirection();
 
 
@@ -103,7 +101,6 @@ namespace Menge
 		bool isActivate() const;
 
 		////
-		virtual void setScale( const mt::vec2f& _scale ) {}
 		virtual void setAlpha( float _alpha ) 
 		{
 			for( TContainerChildrens::iterator it = m_childrens.begin(), it_end = m_childrens.end();

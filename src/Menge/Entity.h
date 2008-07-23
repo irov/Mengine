@@ -21,6 +21,7 @@ namespace Menge
 		void rotateTo( float _time, const mt::vec2f & _point );
 		void accelerateTo( float _speed, const mt::vec2f& _point, bool _changeDirection );
 		void directTo( float _time, const mt::vec2f& _dir );
+		void angleTo( float _time, float _angle );
 		void moveStop();
 		void rotateStop();
 		void flip( bool _x, bool _y );
@@ -58,7 +59,7 @@ namespace Menge
 		mt::vec2f m_movePoint;
 		float m_moveTime;
 
-		mt::vec2f m_scale;
+		//mt::vec2f m_scale;
 		ValueInterpolator<mt::vec2f> m_scaleTo;
 
 		/*mt::vec2f m_targetDir;

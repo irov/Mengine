@@ -45,11 +45,16 @@ namespace	Menge
 		if( _enableDebug )
 		{
 			const mt::vec2f& pos = getWorldPosition();
-			mt::vec2f offs( 5.0f, 5.0f );
-			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos + mt::vec2f( -5.0f, -5.0f ), pos + mt::vec2f( 5.0f, -5.0f ) );
-			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos + mt::vec2f( 5.0f, -5.0f ), pos + mt::vec2f( 5.0f, 5.0f ) );
-			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos + mt::vec2f( -5.0f, -5.0f ), pos + mt::vec2f( -5.0f, 5.0f ) );
-			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos + mt::vec2f( -5.0f, 5.0f ), pos + mt::vec2f( 5.0f, 5.0f ) );
+			//mt::vec2f pos;
+			//mt::mul_v2_m3_r( pos, getWorldPosition(), getWorldMatrix() );
+			mt::vec2f pos1( pos + mt::vec2f( -5.0f, -5.0f ) );
+			mt::vec2f pos2( pos + mt::vec2f( 5.0f, -5.0f ) );
+			mt::vec2f pos3( pos + mt::vec2f( 5.0f, 5.0f ) );
+			mt::vec2f pos4( pos + mt::vec2f( -5.0f, 5.0f ) );
+			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos1, pos2 );
+			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos2, pos3 );
+			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos1, pos4 );
+			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos4, pos3 );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -72,7 +72,10 @@ public:
 
 	virtual PhysicJoint2DInterface* createDistanceJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _offsetBody2, bool _collideBodies ) = 0;
 	virtual PhysicJoint2DInterface* createHingeJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _limits, bool _collideBodies ) = 0;
+	virtual PhysicJoint2DInterface* createMouseJoint( PhysicBody2DInterface* _body, int _x, int _y  ) = 0;
 	virtual void destroyJoint( PhysicJoint2DInterface* ) = 0;
+
+	virtual void onMouseMove( int x, int y ) = 0;
 };
 
 bool initInterfaceSystem(PhysicSystem2DInterface** _ptrInterface);

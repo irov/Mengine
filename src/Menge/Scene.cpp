@@ -12,6 +12,7 @@
 #	include "Layer2D.h"
 #	include "Player.h"
 #	include "Camera2D.h"
+#	include "Application.h"
 
 namespace	Menge
 {
@@ -420,7 +421,7 @@ namespace	Menge
 			viewport.begin.y = main_size.y - viewport_size.y;
 		}
 
-		renderSelf( _viewport, _enableDebug );
+		_render( _viewport, _enableDebug );
 
 
 		for( TContainerChildrens::iterator
@@ -434,6 +435,17 @@ namespace	Menge
 
 			(*it)->render( _viewport, _enableDebug );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::renderSelf()
+	{
+		const Viewport & viewport = 
+			Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
+
+		bool debug = false;
+		debug = Holder<Application>::hostage()->isDebugRender();
+		
+		render( viewport, debug );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

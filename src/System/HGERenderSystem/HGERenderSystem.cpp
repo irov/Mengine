@@ -435,6 +435,10 @@ void HGERenderSystem::renderLine( unsigned int _color,
 void HGERenderSystem::beginScene()
 {
 	m_layer = 1.0f;
+	if( m_inRender )
+	{
+		m_hge->Gfx_EndScene();
+	}
 	if( !m_hge->Gfx_BeginScene() )
 	{
 		m_logSystem->logMessage("Error: D3D8 Failed to BeginScene");
@@ -601,6 +605,10 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name )
 		if( m_inRender )
 		{
 			m_hge->Gfx_EndScene( false );
+		}
+		else
+		{
+			m_inRender = true;
 		}
 		m_currentRenderTarget = _name;
 		m_hge->Gfx_BeginScene( it->second );

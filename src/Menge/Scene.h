@@ -65,6 +65,7 @@ namespace Menge
 		//void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 	public:
+		void renderSelf();
 		virtual void render( const Viewport & _viewport, bool _enableDebug ) override;
 		void setOffsetPosition( const mt::vec2f& _offset );
 		void setRenderTarget( const std::string& _cameraName );

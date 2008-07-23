@@ -16,6 +16,7 @@ public:
 	void	play() override;
 	void	stop() override;
 	void	pause() override;
+	void	restart() override;
 	void	update( float _timing ) override;
 	void	setLeftBorder( float _leftBorder ) override;
 

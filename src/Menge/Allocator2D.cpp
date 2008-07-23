@@ -32,12 +32,12 @@ namespace Menge
 		return m_changePivot;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Allocator2D::getWorldPosition()
+	/*const mt::vec2f & Allocator2D::getWorldPosition()
 	{
 		const mt::mat3f &wm = getWorldMatrix();
 
 		return wm.v2.v2;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Allocator2D::getWorldDirection()
 	{
@@ -150,6 +150,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE_MEMBER( "Scale", &Allocator2D::setScale );
 				}
 			}
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Scale", "Value", &Allocator2D::setScale ); // for backward compability
 
 			XML_CASE_ATTRIBUTE_NODE( "FixedRotation", "Value", m_fixedRotation );
 		}

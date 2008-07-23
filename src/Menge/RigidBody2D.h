@@ -106,6 +106,7 @@ namespace Menge
 
 		mt::polygon m_shape;
 
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 	protected:
 		PhysicBody2DInterface* m_interface;
 		//PyObject* m_scriptListener;
@@ -119,7 +120,6 @@ namespace Menge
 		bool m_countGravity;
 		//virtual void _onSetListener();
 
-		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 	};
 

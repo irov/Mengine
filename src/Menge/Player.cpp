@@ -18,6 +18,8 @@
 
 #	include "RenderEngine.h"
 
+#	include "PhysicEngine2D.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -200,6 +202,8 @@ namespace Menge
 	bool Player::handleMouseMove( float _x, float _y, int _whell )
 	{
 		m_arrow->onMouseMove( _x, _y );
+
+		Holder<PhysicEngine2D>::hostage()->onMouseMove( m_arrow->getLocalPosition().x, m_arrow->getLocalPosition().y );
 
 		bool handler = false;
 

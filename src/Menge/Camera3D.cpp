@@ -22,11 +22,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Camera3D::getViewMatrix()
 	{	
-		if( m_parent == 0 )
+		SceneNode3D * sceneNode = dynamic_cast<SceneNode3D*>(m_parent);
+		if( sceneNode == 0 )
 		{
+			mt::mat4f mat;
+			mt::ident_m4( mat );
+			updateMatrix3D( mat );
+
 			return m_viewMatrix;
 		}
-		SceneNode3D * sceneNode = dynamic_cast<SceneNode3D*>(m_parent);
 
 		const mt::mat4f & wm = sceneNode->getWorldMatrix3D();
 
@@ -35,7 +39,7 @@ namespace	Menge
 		return m_viewMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::_updateMatrix3D( Allocator3D * _parent )
+	void Camera3D::_updateMatrix3D()
 	{
 		mt::inv_m4( m_viewMatrix, m_worldMatrix3D );
 
@@ -86,6 +90,7 @@ namespace	Menge
 	{
 		lookAt( m_at );
 
+		getViewMatrix();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

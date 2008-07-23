@@ -78,4 +78,14 @@ namespace Menge
 		return m_gravity;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	PhysicJoint2DInterface* PhysicEngine2D::createMouseJoint( RigidBody2D* _body, int _x, int _y  )
+	{
+		return m_interface->createMouseJoint( _body->getInterface(), _x, _y );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PhysicEngine2D::onMouseMove( int x, int y )
+	{
+		m_interface->onMouseMove( x, y ); 
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

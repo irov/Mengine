@@ -29,8 +29,10 @@ public:
 
 	PhysicJoint2DInterface* createDistanceJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _offsetBody2, bool _collideBodies ) override;
 	PhysicJoint2DInterface* createHingeJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _limits, bool _collideBodies ) override;
+	PhysicJoint2DInterface* createMouseJoint( PhysicBody2DInterface* _body, int _x, int _y  ) override;
 	void destroyJoint( PhysicJoint2DInterface* _joint );
 
+	void onMouseMove( int x, int y ) override;
 
 	void Add(b2ContactPoint* point) override;
 	void Persist(b2ContactPoint* point) override;
@@ -49,4 +51,5 @@ private:
 	 TBodyVector m_deletingBodies;
 
 	void _createJoint( b2JointDef* _jointDef, Box2DPhysicJoint* _joint );
+	b2MouseJoint* m_mouseJoint;
 };

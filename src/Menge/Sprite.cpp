@@ -27,7 +27,7 @@ namespace	Menge
 	, m_currentImageIndex( 0 )
 	, m_centerAlign( false )
 	, m_alignOffset( 0.f, 0.f )
-	, m_scale( 1.0f, 1.0f )
+	//, m_scale( 1.0f, 1.0f )
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
 	, m_uv( 0.0f, 0.0f, 1.0f, 1.0f )
 	, m_offset( 0.0f, 0.0f )
@@ -53,7 +53,7 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourcename );
 			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_currentImageIndex );
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
-			XML_CASE_ATTRIBUTE_NODE( "Scale", "Value", m_scale );
+			//XML_CASE_ATTRIBUTE_NODE( "Scale", "Value", m_scale );
 			XML_CASE_ATTRIBUTE_NODE( "Blend", "Source", ((int&)m_blendSrc) );
 			XML_CASE_ATTRIBUTE_NODE( "Blend", "Dest", ((int&)m_blendDest) );
 			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
@@ -117,7 +117,7 @@ namespace	Menge
 		m_resource = 0;
 	}
 	///////////////////////////////////////////////////////////////////////////
-	void Sprite::setScale( const mt::vec2f& _scale )
+/*	void Sprite::setScale( const mt::vec2f& _scale )
 	{
 		m_scale = _scale;
 
@@ -130,7 +130,7 @@ namespace	Menge
 	const mt::vec2f& Sprite::getScale() const
 	{
 		return m_scale;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::flip( bool _x )
 	{
@@ -170,6 +170,7 @@ namespace	Menge
 			m_resourcename = _name;
 
 			recompile();
+			updateSprite_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -201,8 +202,8 @@ namespace	Menge
 
 		m_size = m_resource->getSize( m_currentImageIndex );
 
-		m_size.x *= m_scale.x;
-		m_size.y *= m_scale.y;
+		//m_size.x *= m_scale.x;
+		//m_size.y *= m_scale.y;
 
 		m_size.x *= ( 1.0f - m_percent.x );
 		m_size.x *= ( 1.0f - m_percent.z );
@@ -214,8 +215,8 @@ namespace	Menge
 		{
 			mt::vec2f size = m_resource->getMaxSize( 0 );
 
-			size.x *= m_scale.x;
-			size.y *= m_scale.y;
+			//size.x *= m_scale.x;
+			//size.y *= m_scale.y;
 
 			m_alignOffset = size * -0.5f;
 		}
@@ -234,8 +235,8 @@ namespace	Menge
 			offset.y = maxSize.y - ( size.y + offset.y );
 		}
 
-		offset.x *= m_scale.x;
-		offset.y *= m_scale.y;
+		//offset.x *= m_scale.x;
+		//offset.y *= m_scale.y;
 
 		m_offset = offset + m_alignOffset;
 
@@ -395,6 +396,15 @@ namespace	Menge
 	{
 		m_colorTo.stop();
 		callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	unsigned int Sprite::getImageCount() const
+	{
+		if( m_resource != 0 )
+		{
+			return m_resource->getCount();
+		}
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

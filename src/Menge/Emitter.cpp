@@ -312,4 +312,13 @@ namespace	Menge
 		registerEvent("EMITTER_END", "onEmitterEnd", m_listener );
 		registerEvent("EMITTER_STOP", "onEmitterStop", m_listener );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Emitter::restart()
+	{
+		if( isActivate() == true )
+		{
+			m_interface->restart();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

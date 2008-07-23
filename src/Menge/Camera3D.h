@@ -22,10 +22,10 @@ namespace Menge
 
 		void loader( XmlElement * _xml ) override;
 
-	protected:
-		void _updateMatrix3D( Allocator3D * _parent ) override;
-		
 		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+	protected:
+		void _updateMatrix3D() override;
+		
 
 		bool _activate() override;
 

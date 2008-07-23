@@ -141,6 +141,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::_render( const Viewport & _viewport, bool _enableDebug )
 	{
+		Layer::_render( _viewport, _enableDebug );
 		RenderEngine* engine = Holder<RenderEngine>::hostage();
 		engine->beginLayer3D();
 		//Holder<RenderEngine>::hostage()->beginLayer3D();

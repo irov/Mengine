@@ -14,12 +14,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & SceneNode3D::getWorldMatrix3D()
 	{
-		if( m_parent == 0 )
+		SceneNode3D * sceneNode = dynamic_cast<SceneNode3D*>(m_parent);
+		if( sceneNode == 0 )
 		{
 			return getLocalMatrix3D();
 		}
 
-		SceneNode3D * sceneNode = dynamic_cast<SceneNode3D*>(m_parent);
 
 		if( sceneNode )
 		{

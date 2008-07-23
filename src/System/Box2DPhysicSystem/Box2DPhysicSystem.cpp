@@ -27,6 +27,7 @@ void releaseInterfaceSystem( PhysicSystem2DInterface *_system )
 //////////////////////////////////////////////////////////////////////////
 Box2DPhysicSystem::Box2DPhysicSystem()
 : m_world( 0 )
+, m_mouseJoint( 0 )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -50,6 +51,7 @@ void Box2DPhysicSystem::createWorld( const float* _upperLeft, const float* _lowe
 
 	m_world = new b2World( worldAABB, gravity, _doSleep );
 	m_world->SetContactListener( this );
+
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::destroyWorld()
@@ -166,7 +168,7 @@ PhysicJoint2DInterface* Box2DPhysicSystem::createDistanceJoint( PhysicBody2DInte
 
 	jointDef->Initialize( body1, body2, anchor1, anchor2 );
 
-	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL );
+	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL, false );
 
 	//if( m_world->m_lock )
 	//{
@@ -201,7 +203,7 @@ PhysicJoint2DInterface* Box2DPhysicSystem::createHingeJoint( PhysicBody2DInterfa
 	}
 	jointDef->Initialize( body1, body2, anchor1 );
 	
-	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL );
+	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL, false );
 	//if( m_world->m_lock )
 	//{
 	//	m_jointDefList.push_back( std::make_pair( static_cast<b2JointDef*>( jointDef ), joint ) );
@@ -218,6 +220,10 @@ PhysicJoint2DInterface* Box2DPhysicSystem::createHingeJoint( PhysicBody2DInterfa
 void Box2DPhysicSystem::destroyJoint( PhysicJoint2DInterface* _joint )
 {
 	Box2DPhysicJoint* joint = static_cast<Box2DPhysicJoint*>( _joint );
+	if( joint->isMouse() )
+	{
+		m_mouseJoint = NULL;
+	}
 	delete joint;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -246,5 +252,36 @@ void Box2DPhysicSystem::Remove( b2ContactPoint* point )
 void Box2DPhysicSystem::_createJoint( b2JointDef* _jointDef, Box2DPhysicJoint* _joint )
 {
 	b2Joint* joint = m_world->CreateJoint( _jointDef );
+	if( _joint->isMouse() )
+	{
+		m_mouseJoint = static_cast<b2MouseJoint*>( joint );
+	}
 	_joint->_setJoint( joint );
 }
+//////////////////////////////////////////////////////////////////////////
+PhysicJoint2DInterface* Box2DPhysicSystem::createMouseJoint( PhysicBody2DInterface* _body, int _x, int _y )
+{
+	b2MouseJointDef* jointDef = new b2MouseJointDef();
+	b2Body* body = static_cast<Box2DPhysicBody*>( _body )->getBody();
+	jointDef->collideConnected = false;
+	jointDef->body1 = m_world->GetGroundBody();
+	jointDef->body2 = body;
+	jointDef->maxForce = 1000.0f * body->GetMass();
+	jointDef->target = b2Vec2( _x * physicsScaler, _y * physicsScaler );
+
+	Box2DPhysicJoint* joint = new Box2DPhysicJoint( m_world, NULL, true );
+
+	_createJoint( jointDef, joint );
+	delete jointDef;
+
+	return static_cast<PhysicJoint2DInterface*>( joint );
+}
+//////////////////////////////////////////////////////////////////////////
+void Box2DPhysicSystem::onMouseMove( int x, int y )
+{
+	if( m_mouseJoint )
+	{
+		m_mouseJoint->SetTarget( b2Vec2( x * physicsScaler, y * physicsScaler) );
+	}
+}
+//////////////////////////////////////////////////////////////////////////

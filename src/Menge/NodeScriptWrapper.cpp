@@ -57,7 +57,7 @@
 
 #	include "Identity.h"
 
-#	include "Layer3D.h"
+//#	include "Layer3D.h"
 
 //#	include "FFCamera.h"
 #	include "SceneNode3D.h"
@@ -441,6 +441,11 @@ namespace Menge
 			return Holder<PhysicEngine2D>::hostage()->createHingeJoint( _body1, _body2, _offset1, _limits, _collideBodies );
 		}
 
+		static PhysicJoint2DInterface* s_createMouseJoint( RigidBody2D* _body, int _x, int _y )
+		{
+			return Holder<PhysicEngine2D>::hostage()->createMouseJoint( _body, _x, _y );
+		}
+
 		static void s_destroyJoint( PhysicJoint2DInterface* _joint )
 		{
 			return Holder<PhysicEngine2D>::hostage()->destroyJoint( _joint );
@@ -471,7 +476,7 @@ namespace Menge
 
 		static bool s_isInViewport( const mt::vec2f & _pos )
 		{
-			return Holder<RenderEngine>::hostage()->getRenderViewport().testPoint( _pos );
+			return Holder<Player>::hostage()->getRenderCamera2D()->getViewport().testPoint( _pos );
 		}
 	}
 
@@ -493,7 +498,7 @@ namespace Menge
 		//SCRIPT_CLASS_WRAPPING( FFCamera3D );
 		//SCRIPT_CLASS_WRAPPING( DiscreteEntity );
 		//SCRIPT_CLASS_WRAPPING( RigidBody3D );
-		SCRIPT_CLASS_WRAPPING( Layer3D );
+		//SCRIPT_CLASS_WRAPPING( Layer3D );
 		SCRIPT_CLASS_WRAPPING( RigidBody2D );
 		//SCRIPT_CLASS_WRAPPING( CapsuleController );
 		SCRIPT_CLASS_WRAPPING( SceneNode3D );
@@ -591,7 +596,7 @@ namespace Menge
 			.def( "getOrigin", &Allocator2D::getOrigin )
 			.def( "getScale", &Allocator2D::getScale )
 
-			.def( "getWorldPosition", &Allocator2D::getWorldPosition )
+			//.def( "getWorldPosition", &Allocator2D::getWorldPosition )
 			.def( "getWorldDirection", &Allocator2D::getWorldDirection )
 
 			.def( "setLocalPosition", &Allocator2D::setLocalPosition )
@@ -746,13 +751,13 @@ namespace Menge
 					.def( "setListener", &SceneNode3D::setListener )
 			;
 
-		pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
+		/*pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
 			//.def( "addCamera", &Layer3D::addCamera )
 			//.def( "getCamera", &Layer3D::getCamera )	
 			.def( "addController", &Layer3D::addController )
 			.def( "getController", &Layer3D::getController )		
 			//.def( "getNode", &Layer3D::getNode )
-			;
+			;*/
 
 		{
 
@@ -776,6 +781,7 @@ namespace Menge
 				.def( "play", &Emitter::play )
 				.def( "stop", &Emitter::stop )
 				.def( "pause", &Emitter::pause )
+				.def( "restart", &Emitter::restart )
 				.def( "setLooped", &Emitter::setLooped )
 				.def( "getLooped", &Emitter::getLooped )
 				.def( "setLeftBorder", &Emitter::setLeftBorder )
@@ -832,6 +838,7 @@ namespace Menge
 				.def( "getLayerSize", &Scene::getLayerSize )
 				.def( "setOffsetPosition", &Scene::setOffsetPosition )
 				.def( "setRenderTarget", &Scene::setRenderTarget )
+				.def( "renderSelf", &Scene::renderSelf )
 				;
 
 
@@ -846,11 +853,12 @@ namespace Menge
 			pybind::proxy_<Sprite, pybind::bases<Node>>("Sprite", false)
 				.def( "setImageIndex", &Sprite::setImageIndex )
 				.def( "getImageIndex", &Sprite::getImageIndex )
+				.def( "getImageCount", &Sprite::getImageCount )
 				.def( "setImageResource", &Sprite::setImageResource )
 				.def( "getImageResource", &Sprite::getImageResource )
 				.def( "getImageSize", &Sprite::getImageSize )
-				.def( "setScale", &Sprite::setScale )
-				.def( "getScale", &Sprite::getScale )
+				//.def( "setScale", &Sprite::setScale )
+				//.def( "getScale", &Sprite::getScale )
 				.def( "setPercentVisibility", &Sprite::setPercentVisibility )
 				.def( "setColor", &Sprite::setColor )
 				.def( "getColor", &Sprite::getColor )
@@ -946,6 +954,7 @@ namespace Menge
 
 		pybind::def( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
 		pybind::def( "createHingeJoint", &ScriptMethod::s_createHingeJoint );
+		pybind::def( "createMouseJoint", &ScriptMethod::s_createMouseJoint );
 		pybind::def( "destroyJoint", &ScriptMethod::s_destroyJoint );
 
 		pybind::def( "isKeyDown", &ScriptMethod::s_isKeyDown );

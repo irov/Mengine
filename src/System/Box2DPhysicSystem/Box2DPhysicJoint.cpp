@@ -1,9 +1,10 @@
 #	include "Box2DPhysicJoint.h"
 
 //////////////////////////////////////////////////////////////////////////
-Box2DPhysicJoint::Box2DPhysicJoint( b2World* _world, b2Joint* _joint )
+Box2DPhysicJoint::Box2DPhysicJoint( b2World* _world, b2Joint* _joint, bool _isMouse )
 : m_joint( _joint )
 , m_world( _world )
+, m_isMouse( _isMouse )
 {
 
 }
@@ -21,3 +22,9 @@ void Box2DPhysicJoint::_setJoint(b2Joint *_joint)
 {
 	m_joint = _joint;
 }
+//////////////////////////////////////////////////////////////////////////
+bool Box2DPhysicJoint::isMouse() const
+{
+	return m_isMouse;
+}
+//////////////////////////////////////////////////////////////////////////

@@ -11,8 +11,9 @@ namespace Menge
 	class CapsuleController;
 
 	class Layer3D
-		//: public Layer
-		: public SceneNode3D
+		: public Layer
+		, public Allocator3D
+		//: public SceneNode3D
 	{
 		OBJECT_DECLARE(Layer3D);
 
@@ -37,6 +38,7 @@ namespace Menge
 	//public:
 		//void update( float _timing ) override;
 	
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 	protected:
 
 		bool _activate() override;
@@ -46,7 +48,6 @@ namespace Menge
 		//void _addChildren( SceneNode3D * _node ) override;
 
 		//bool _renderBegin();
-		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 	private:
 

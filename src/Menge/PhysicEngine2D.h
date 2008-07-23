@@ -30,9 +30,12 @@ namespace Menge
 
 		PhysicJoint2DInterface*  createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies );
 		PhysicJoint2DInterface*  createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _limits, bool _collideBodies );
+		PhysicJoint2DInterface*  createMouseJoint( RigidBody2D* _body, int _x, int _y  );
 		void destroyJoint( PhysicJoint2DInterface* _joint );
 
 		void update( float _timing );
+
+		void onMouseMove( int x, int y );
 
 		const mt::vec2f& getGravity() const;
 

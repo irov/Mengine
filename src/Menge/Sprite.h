@@ -59,6 +59,8 @@ namespace Menge
 		*/
 		virtual void setImageResource( const std::string & _name );
 
+		unsigned int getImageCount() const;
+
 		virtual mt::vec2f getImageSize();
 		virtual bool getCenterAlign();
 
@@ -72,13 +74,13 @@ namespace Menge
 		/*!
 		\param _scale скейл.
 		*/
-		virtual void setScale( const mt::vec2f& _scale );
+		//virtual void setScale( const mt::vec2f& _scale );
 
 		//! Возвращает скейл.
 		/*!
 		\return скейл
 		*/
-		virtual const mt::vec2f& getScale() const;
+		//virtual const mt::vec2f& getScale() const;
 
 		//! Инвертирование спрайта по оси x, если _x = true, иначе по оси y.
 		/*!
@@ -119,8 +121,8 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 
-	protected:
 		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+	protected:
 
 		bool _activate() override;
 		void _deactivate() override;
@@ -154,7 +156,7 @@ namespace Menge
 
 		//float m_changingColorTime;
 
-		mt::vec2f m_scale;
+		//mt::vec2f m_scale;
 		mt::vec2f m_alignOffset;
 		mt::vec2f m_size;
 		mt::vec2f m_offset;

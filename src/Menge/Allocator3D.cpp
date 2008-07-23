@@ -136,12 +136,12 @@ namespace Menge
 			mt::mul_m4_m4(m_worldMatrix3D,m_localMatrix3D,parentMatrix);		
 		}
 
-		_updateMatrix3D( 0/*_parent*/ );
+		_updateMatrix3D();
 
 		m_changePivot3D = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator3D::_updateMatrix3D( Allocator3D * _parent )
+	void Allocator3D::_updateMatrix3D()
 	{
 		//Empty
 	}

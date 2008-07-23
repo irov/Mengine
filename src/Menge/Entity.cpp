@@ -15,7 +15,7 @@ namespace	Menge
 	: m_moveTo(false)
 	, m_moveTime(0)
 
-	, m_scale( 1.0f, 1.0f )
+	//, m_scale( 1.0f, 1.0f )
 	, m_velocity( 0.0f, 0.0f )
 	, m_acceleration( 0.0f, 0.0f )
 
@@ -385,7 +385,7 @@ namespace	Menge
 			}
 		}
 
-		//this->callEvent("UPDATE", "(f)", _timing );
+		this->callEvent("UPDATE", "(f)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
@@ -492,6 +492,24 @@ namespace	Menge
 	{
 		const mt::vec2f & _pos = getLocalPosition();
 		rotateTo( _time, _pos + _dir );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::angleTo( float _time, float _angle )
+	{
+		const mt::vec2f& dir = getLocalDirection();
+		const mt::vec2f& pos = getLocalPosition();
+		float alpha = ::acosf( dir.x );
+		if( dir.y < 0.0f ) alpha = -alpha;
+
+		if( m_rotateTo.start( alpha, alpha + _angle, _time, ::fabsf ) == false )
+		{
+			if( m_rotateTo.isStarted() )
+			{
+				rotateStop();
+			}
+			setRotate( alpha + _angle );
+			this->callEvent("ROTATE_END", "()" );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

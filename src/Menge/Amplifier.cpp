@@ -80,8 +80,19 @@ namespace Menge
 
 		if ( it == m_mapPlayLists.end() )
 		{			
-			MENGE_LOG("Amplifier: no found playlist with name %s \n", _playlist.c_str() );
-			return;
+			ResourcePlaylist * playlistResource = 
+				Holder<ResourceManager>::hostage()
+				->getResourceT<ResourcePlaylist>( _playlist );
+
+			if( playlistResource == NULL )
+			{
+				MENGE_LOG("Amplifier: no found playlist with name %s \n", _playlist.c_str() );
+				return;
+			}
+
+			Playlist * playlist = new Playlist( playlistResource );
+
+			it = m_mapPlayLists.insert( std::make_pair( _playlist, playlist ) ).first;
 		}
 
 		m_currentPlayList = it->second;

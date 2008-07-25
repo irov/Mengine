@@ -227,7 +227,14 @@ def copytonewfolder(src, DestGameDir):
     
     print "Done!"
     
+def f(f):
+    pass
+
 def main():
+
+    if callable(f):
+        print ""
+    pass
 
     master = Tk()
     master.withdraw()

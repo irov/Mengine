@@ -79,9 +79,9 @@ void ResourceParser::execute( const std::string & _input )
 		_loadTexturesFromResource(*it);
 	}
 
-	AtlasTextureContainer atlasTextureContainer( m_log, m_widthAtlas, m_heightAtlas );
+	AtlasContainerCompiler atlasContainerCompiler( m_log, m_widthAtlas, m_heightAtlas );
 
-	std::vector<std::string> output_atlasnames = atlasTextureContainer.compileAtlas(m_textures, m_outputName);
+	std::vector<std::string> output_atlasnames = atlasContainerCompiler.compileAtlas(m_textures, m_outputName);
 
 	for(VectorResources::iterator it = m_resources.begin(); it != m_resources.end(); ++it)
 	{

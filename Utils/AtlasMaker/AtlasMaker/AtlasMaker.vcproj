@@ -183,15 +183,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Atlas.cpp"
+				RelativePath=".\AtlasContainer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\AtlasContainerCompiler.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\AtlasTexture.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AtlasTextureContainer.cpp"
 				>
 			</File>
 			<File
@@ -225,19 +225,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\AreaPackingSolver.h"
+				RelativePath=".\AtlasContainer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Atlas.h"
+				RelativePath=".\AtlasContainerCompiler.h"
 				>
 			</File>
 			<File
 				RelativePath=".\AtlasTexture.h"
-				>
-			</File>
-			<File
-				RelativePath=".\AtlasTextureContainer.h"
 				>
 			</File>
 			<File

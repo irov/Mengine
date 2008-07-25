@@ -5,7 +5,7 @@
 
 #	include "Texture2D.h"
 #	include "AtlasTexture.h"
-#	include "AtlasTextureContainer.h"
+#	include "AtlasContainerCompiler.h"
 #	include "Utils.h"
 #	include <d3dx9.h>
 

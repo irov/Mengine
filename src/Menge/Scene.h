@@ -16,7 +16,6 @@ namespace Menge
 
 	class Scene
 		: public Node
-		//, public NodeChildren<Layer>
 	{
 	public:
 		Scene();
@@ -49,6 +48,9 @@ namespace Menge
 		bool handleMouseButtonEventEnd( unsigned int _button, bool _isDown );
 		bool handleMouseMove( float _x, float _y, int _whell ) override;
 
+		void onMouseLeave();
+		void onMouseEnter();
+
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
@@ -56,18 +58,14 @@ namespace Menge
 		void _update( float _timing ) override;
 		void _release() override;
 
-		//void _render() override;
-
 		void _addChildren( Node * _layer ) override;
 
 	protected:
 		Layer * getLayer_( const std::string & _name );
-		//void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
 	public:
 		void renderSelf();
 		virtual void render( const Viewport & _viewport, bool _enableDebug ) override;
-		void setOffsetPosition( const mt::vec2f& _offset );
 		void setRenderTarget( const std::string& _cameraName );
 
 	private:

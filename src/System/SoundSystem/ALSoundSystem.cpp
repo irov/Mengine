@@ -9,12 +9,8 @@
 
 #	include "SulkSystem.h"
 
-//#include <stdlib.h>
 #include <algorithm>
 
-//unsigned int DecodeOggVorbis(OggVorbis_File *psOggVorbisFile, char *pDecodeBuffer, unsigned int ulBufferSize, unsigned int ulChannels);
-//void Swap(short &s1, short &s2);
-//unsigned int GetSampleSize(ALenum format);
 //////////////////////////////////////////////////////////////////////////
 ALSoundSystem::ALSoundSystem()
 : m_device(0) 
@@ -28,14 +24,12 @@ ALSoundSystem::ALSoundSystem()
 //////////////////////////////////////////////////////////////////////////
 ALSoundSystem::~ALSoundSystem()
 {
-	//alDeleteSources(m_sourceNum, m_sources);
 	for( TSourceVector::size_type i = 0; i < m_sources.size(); i++ )
 	{
 		delete m_sources[i];
 	}
 	m_sources.clear();
 
-	//::alutExit();
 	alcMakeContextCurrent(NULL);
 	alcDestroyContext(m_context);
 	alcCloseDevice(m_device);
@@ -144,39 +138,29 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 
 	ALSoundBuffer* buffer = NULL;
 
-	if(_isStream)
+	if( _isStream )
 	{
-		ALSoundBufferStream * streambuffer = new ALSoundBufferStream( _filename );
-
-		if( streambuffer->initialize( _filename ) == false )
-		{
-			delete streambuffer;
-		}
-		else
-		{
-			buffer = streambuffer;
-		}
+		buffer = new ALSoundBufferStream();
 	}
 	else
 	{
 		buffer = new ALSoundBuffer();
+	}
 
-
-		if( !strcmp( _filename + (strlen(_filename) - 4), ".ogg" ) )
-		{
-			if( !buffer->loadOgg( _filename ) )
-			{
-				delete buffer;
-				buffer = NULL;
-			}
-		}
-		else
+	if( !strcmp( _filename + (strlen(_filename) - 4), ".ogg" ) )
+	{
+		if( !buffer->loadOgg( _filename ) )
 		{
 			delete buffer;
 			buffer = NULL;
 		}
-
 	}
+	else
+	{
+		delete buffer;
+		buffer = NULL;
+	}	
+	
 	return buffer;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -234,7 +218,7 @@ void ALSoundSystem::update( float _timing )
 
 	for(unsigned int i = 0; i < m_streams.size(); i++)
 	{
-		m_streams[i]->getUpdater()->update();
+		m_streams[i]->update();
 		/*if( !m_streams[i]->getUpdater()->update() )
 		{
 			m_streams[i]->stop();
@@ -352,17 +336,20 @@ void ALSoundSystem::removeStream( ALSoundBufferStream* _stream )
 		m_streams.erase(it);
 }
 //////////////////////////////////////////////////////////////////////////
-TALSourceName* ALSoundSystem::getFreeSourceName()
+TALSourceName* ALSoundSystem::getFreeSourceName( bool stereo )
 {
-	for(int i = 0; i < m_sourceNamesNum; i++)
+	int i = stereo ? 0 : (m_sourceNamesNum / 2);
+	int count = stereo ? (m_sourceNamesNum / 2) : m_sourceNamesNum;
+	for( ; i < count; i++)
 	{
 		if(!m_sourceNames[i].busy)
 		{
 			return &m_sourceNames[i];
 		}
 	}
+	i = stereo ? 0 : (m_sourceNamesNum / 2);
 
-	for(int i = 0; i < m_sourceNamesNum; i++)
+	for( ; i < count; i++)
 	{
 		int state;
 		alGetSourcei(m_sourceNames[i].name, AL_SOURCE_STATE, &state);

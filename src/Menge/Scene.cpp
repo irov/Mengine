@@ -1,9 +1,5 @@
 #	include "Scene.h"
 
-#	include "SceneManager.h"
-#	include "ResourceManager.h"
-#	include "MousePickerSystem.h"
-
 #	include "ScriptEngine.h"
 #	include "XmlEngine.h"
 #	include "PhysicEngine2D.h"
@@ -215,6 +211,8 @@ namespace	Menge
 		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent", this->getEmbedding() );
 		registerEvent( "MOUSE_MOVE", "onHandleMouseMove", this->getEmbedding() );
 		registerEvent( "MOUSE_BUTTON_END", "onHandleMouseButtonEventEnd", this->getEmbedding() );
+		registerEvent( "ON_LEAVE", "onMouseLeave", this->getEmbedding() );
+		registerEvent( "ON_ENTER", "onMouseEnter", this->getEmbedding() );
 
 		callMethod( "onActivate", "() " );
 
@@ -260,7 +258,6 @@ namespace	Menge
 		
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "OffsetPosition", "Value", m_offsetPosition );
 			XML_CASE_ATTRIBUTE_NODE( "Gravity2D", "Value", m_gravity2D );
 			XML_CASE_NODE( "PhysicWorld2DBox" )
 			{
@@ -281,41 +278,13 @@ namespace	Menge
 	{
 		if( Layer * layer = dynamic_cast<Layer*>(_node) )
 		{
-			layer->setOffsetPosition( m_offsetPosition );
 			layer->setScene( this );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::setOffsetPosition( const mt::vec2f& _offset )
-	{
-		m_offsetPosition = _offset;
-
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
-		it != it_end;
-		++it)
-		{
-			static_cast<Layer*>(*it)->setOffsetPosition( m_offsetPosition );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	/*void Scene::_render()
-	{
-
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::setRenderTarget( const std::string& _cameraName )
 	{
 		m_renderTarget = _cameraName;
-/*		for( TListChildren::iterator
-			it = m_listChildren.begin(),
-			it_end = m_listChildren.end();
-		it != it_end;
-		++it)
-		{
-			static_cast<Layer*>(*it)->setRenderTarget( _cameraName );
-		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::compile()
@@ -395,12 +364,6 @@ namespace	Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*void Scene::_render( const Viewport & _viewport, bool _enableDebug )
-	{
-	Holder<RenderEngine>::hostage()
-			->setRenderTarget( m_renderTarget );
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	void Scene::render( const Viewport & _viewport, bool _enableDebug )
 	{
 		if( isRenderable() == false )
@@ -446,6 +409,16 @@ namespace	Menge
 		debug = Holder<Application>::hostage()->isDebugRender();
 		
 		render( viewport, debug );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::onMouseLeave()
+	{
+		callEvent( "ON_LEAVE", "()" );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::onMouseEnter()
+	{
+		callEvent( "ON_ENTER", "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

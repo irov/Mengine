@@ -66,7 +66,7 @@ public:
 	void	setDistanceModel(EDistanceModel _model);
 	EDistanceModel getDistanceModel()						{ return m_distanceModel; }
 
-	TALSourceName* getFreeSourceName();
+	TALSourceName* getFreeSourceName( bool stereo );
 
 	void	addStream( ALSoundBufferStream* _stream );
 	void	removeStream( ALSoundBufferStream* _stream );

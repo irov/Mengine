@@ -321,4 +321,28 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Emitter::setResource( const String& _resourceName )
+	{
+		if( m_resourcename != _resourceName )
+		{
+			m_resourcename = _resourceName;
+			if( isCompile() )
+			{
+				recompile();
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Emitter::setEmitter( const String& _emitterName )
+	{
+		if( m_emitterName != _emitterName )
+		{
+			m_emitterName = _emitterName;
+			if( isCompile() )
+			{
+				recompile();
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

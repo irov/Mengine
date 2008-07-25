@@ -36,6 +36,8 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 		void onStopped() override;
+		void setResource( const String& _resourceName );
+		void setEmitter( const String& _emitterName );
 
 		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 	protected:

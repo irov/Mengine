@@ -394,11 +394,19 @@ namespace Menge
 	void Player::onMouseLeave()
 	{
 		m_arrow->onMouseLeave();
+		if( m_scene )
+		{
+			m_scene->onMouseLeave();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onMouseEnter()
 	{
 		m_arrow->onMouseEnter();
+		if( m_scene )
+		{
+			m_scene->onMouseEnter();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -202,6 +202,12 @@ namespace	Menge
 
 		m_size = m_resource->getSize( m_currentImageIndex );
 
+		// adjust texture visibility
+		m_percent.x = ::floorf( m_percent.x * m_size.x + 0.5f ) / m_size.x;
+		m_percent.y = ::floorf( m_percent.y * m_size.y + 0.5f ) / m_size.y;
+		m_percent.z = ::floorf( m_percent.z * m_size.x + 0.5f ) / m_size.x;
+		m_percent.w = ::floorf( m_percent.w * m_size.y + 0.5f ) / m_size.y;
+
 		//m_size.x *= m_scale.x;
 		//m_size.y *= m_scale.y;
 

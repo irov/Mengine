@@ -607,17 +607,6 @@ namespace Menge
 			.def( "translate", &Allocator2D::translate )
 			;
 
-		pybind::class_<Camera3D>("Camera3D")
-			.def( pybind::init<>() )
-			//.def( "setPosition", &Camera3D::setPosition )
-			.def( "lookAt", &Camera3D::lookAt )
-			//.def( "yaw", &Camera3D::yaw )
-			.def( "pitch", &Camera3D::pitch )
-			//.def( "roll", &Camera3D::roll )
-			//.def( "getDirection", &Camera3D::getDirection )
-			;
-
-		
 		/*pybind::class_<FFCamera3D>("FFCamera3D")
 			.def( pybind::init<>() )
 			.def( "update", &FFCamera3D::update )
@@ -674,7 +663,6 @@ namespace Menge
 			.def( "setAlpha", &Node::setAlpha )
 			.def( "colorToStop", &Node::colorToStop )
 			.def( "getScreenPosition", &Node::getScreenPosition )
-			.def( "getParent", &Node::getParent )
 			;
 
 
@@ -785,6 +773,8 @@ namespace Menge
 				.def( "setLooped", &Emitter::setLooped )
 				.def( "getLooped", &Emitter::getLooped )
 				.def( "setLeftBorder", &Emitter::setLeftBorder )
+				.def( "setResource", &Emitter::setResource )
+				.def( "setEmitter", &Emitter::setEmitter )
 				;
 
 			pybind::proxy_<SoundEmitter, pybind::bases<Node>>("SoundEmitter", false)
@@ -836,7 +826,7 @@ namespace Menge
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "getNode", &Scene::getNode )
 				.def( "getLayerSize", &Scene::getLayerSize )
-				.def( "setOffsetPosition", &Scene::setOffsetPosition )
+				//.def( "setOffsetPosition", &Scene::setOffsetPosition )
 				.def( "setRenderTarget", &Scene::setRenderTarget )
 				.def( "renderSelf", &Scene::renderSelf )
 				;

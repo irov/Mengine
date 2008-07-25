@@ -1,7 +1,7 @@
 #pragma once
 
-#include <fstream>
-#include "vorbis/vorbisfile.h"
+#	include <fstream>
+#	include "vorbis/vorbisfile.h"
 
 size_t s_readOgg ( void *_ptr, size_t _size, size_t _nmemb, void *_datasource );
 int    s_seekOgg ( void *_datasource, ogg_int64_t _offset, int _whence );

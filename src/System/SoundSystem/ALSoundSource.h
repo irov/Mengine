@@ -3,8 +3,8 @@
 
 #include "../../Interface/SoundSystemInterface.h"
 
-#define _WIN32_WINNT 0x0500 
-#include <windows.h>
+//#define _WIN32_WINNT 0x0500 
+//#include <windows.h>
 
 //class ALSoundSystem;
 #include "ALSoundSystem.h"
@@ -60,7 +60,6 @@ private:
 	float m_position[3];
 	float m_volume;
 	SoundNodeListenerInterface* m_listener;
-	HANDLE m_stopCallbackHandle;
 
 	void _updateParams();
 };

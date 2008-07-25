@@ -7,13 +7,13 @@
 
 #	define BUFFER_SIZE (4096)
 
+//////////////////////////////////////////////////////////////////////////
 ALSoundBuffer::ALSoundBuffer() 
 : m_alID( 0 )
 , m_lenghtMs( 0 )
 , m_isEmpty( true )
+, m_isStereo( false )
 {
-	//m_filename = _filename;
-	//alGenBuffers(1, &m_bufferName);
 }
 //////////////////////////////////////////////////////////////////////////
 ALSoundBuffer::~ALSoundBuffer()
@@ -90,42 +90,26 @@ bool ALSoundBuffer::loadOgg( const char* _filename )
 	m_lenghtMs = ov_time_total(&oggStream, -1) * 1000;
 	vorbis_info *vi = ov_info( &oggStream, -1 );
 
-	char *memory = new char[(unsigned int)pcmlength * 2 * vi->channels];
+	unsigned int memSize = (unsigned int)pcmlength * 2 * vi->channels;
+	char *memory = new char[memSize];
 
 	int eof = 0;
 	int current_section;
 
-	while ( !eof )
-	{
-		long ret = ov_read( &oggStream, pcmout, sizeof(pcmout), 0, 2, 1, &current_section );
-
-		if ( ret == 0 )
-		{
-			// EOF
-			eof = 1;
-		}
-		else
-			if ( ret < 0 )
-			{
-				// error in the stream.  Not a problem, just reporting it in
-				// case we (the app) cares.  In this case, we don't.
-			}
-			else
-			{
-				// we don't bother dealing with sample rate changes, etc, but
-				// you'll have to
-				memcpy( memory + seek, pcmout, ret );
-				seek += ret;
-			}
-	}
+	seek = decodeOggVorbis_( &oggStream, memory, memSize );
 
 	// ‘ормат данных в буфере OGG
 	ALenum format;
 
 	if ( vi->channels == 1 )
+	{
 		format = AL_FORMAT_MONO16;
+	}
 	else
+	{
 		format = AL_FORMAT_STEREO16;
+		m_isStereo = true;
+	}
 
 	// ”казатель на массив данных звука
 	ALvoid *data = memory;
@@ -138,6 +122,10 @@ bool ALSoundBuffer::loadOgg( const char* _filename )
 
 	alBufferData( m_alID, format, data, size, freq );
 
+	if( alGetError() != AL_NO_ERROR )
+	{
+		__asm{ int 3 };
+	}
 	// cleanup
 	ov_clear( &oggStream );
 	oggFile.close();
@@ -149,5 +137,41 @@ bool ALSoundBuffer::loadOgg( const char* _filename )
 	m_isEmpty = false;
 
 	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+bool ALSoundBuffer::isStreamed() const
+{
+	return false;
+}
+//////////////////////////////////////////////////////////////////////////
+ALuint ALSoundBuffer::getAlID() const
+{
+	return m_alID;
+}
+//////////////////////////////////////////////////////////////////////////
+unsigned int ALSoundBuffer::decodeOggVorbis_( OggVorbis_File* stream, char* _buffer, unsigned int bufferSize )
+{
+	int current_section;
+	long decodeSize;
+	//unsigned long samplesNum;
+	//short *samples;
+
+	unsigned long bytesDone = 0;
+	while (decodeSize = ov_read( stream, _buffer + bytesDone, bufferSize - bytesDone, 0, 2, 1, &current_section))
+	{
+		bytesDone += decodeSize;
+
+		if ( bytesDone >= bufferSize )
+		{
+			break;
+		}
+	}
+
+	return bytesDone;
+}
+//////////////////////////////////////////////////////////////////////////
+bool ALSoundBuffer::isStereo()
+{
+	return m_isStereo;
 }
 //////////////////////////////////////////////////////////////////////////

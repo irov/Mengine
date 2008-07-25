@@ -4,33 +4,21 @@
 #include "ALSoundSource.h"
 #include "ALSoundSystem.h"
 
-//////////////////////////////////////////////////////////////////////////
-void CALLBACK ListenStoppedCallback(void* _source, BOOL)
-{
-	ALSoundSource* source = static_cast<ALSoundSource*>(_source);
-	SoundNodeListenerInterface* listener = source->getListener();
-	if( source->isPlaying() && !source->isLooping() )
-	{
-		source->stop();
-	}
-	/*if(source->isPlaying() && listener)
-	{
-		listener->listenStopped();
-	}*/
-}
+//#	include <Windows.h>
 //////////////////////////////////////////////////////////////////////////
 ALSoundSource::ALSoundSource(ALSoundSystem* _soundSystem) 
-:m_soundBuffer( NULL )
-,m_listener( NULL )
-,m_sourceName( NULL )
-,m_soundSystem( _soundSystem )
-,m_busy( false )
-,m_playing( false )
-,m_looped( false )
-,m_volume( 1.0f )
-,m_stopCallbackHandle( NULL )
+: m_soundBuffer( NULL )
+, m_listener( NULL )
+, m_sourceName( NULL )
+, m_soundSystem( _soundSystem )
+, m_busy( false )
+, m_playing( false )
+, m_looped( false )
+, m_volume( 1.0f )
 {
-	ZeroMemory( m_position, sizeof( float ) * 3 );
+	m_position[0] = 0.0f;
+	m_position[1] = 0.0f;
+	m_position[2] = 0.0f;
 }
 //////////////////////////////////////////////////////////////////////////
 ALSoundSource::~ALSoundSource()
@@ -45,14 +33,13 @@ ALSoundSource::~ALSoundSource()
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSource::play()
 {
-	if( m_playing ) 
+	if( m_playing || !m_soundBuffer) 
 	{
-		//printf("already playing - returning\n");
 		return;
 	}
 
-	m_sourceName = m_soundSystem->getFreeSourceName();
-	if(!m_sourceName || !m_soundBuffer) 
+	m_sourceName = m_soundSystem->getFreeSourceName( m_soundBuffer->isStereo() );
+	if( !m_sourceName ) 
 	{
 		//printf("no free sourceName or soundBuffer - returning\n");
 		return;
@@ -60,25 +47,28 @@ void ALSoundSource::play()
 
 	m_sourceName->busy = true;
 
-	_updateParams();
+	//_updateParams();
+	if( alGetError() != AL_NO_ERROR )
+	{
+		__asm{ int 3 };
+	}
 
 	if( m_soundBuffer && m_soundBuffer->isStreamed() )
 	{
 		alSourcei( m_sourceName->name, AL_BUFFER, NULL );
 	    alSourcei( m_sourceName->name, AL_LOOPING, AL_FALSE ); //Streaming sources can't loop
 		static_cast<ALSoundBufferStream*>( m_soundBuffer )
-			->record( m_sourceName->name );
+			->start( m_sourceName->name );
 		m_soundSystem->addStream( static_cast<ALSoundBufferStream*>( m_soundBuffer ) );
 	}
 	else
 	{
-		//::Sleep( 100 );
-		//printf("playing %s\n", m_soundBuffer->getFilename().c_str() );
 		//alSourcei( m_sourceName->name, AL_BUFFER, NULL );
-		alSourcei( m_sourceName->name, AL_BUFFER, m_soundBuffer->getBufferName() );
-		if( alGetError() != AL_FALSE ) printf("ALERROR!\n");
+		alSourcei( m_sourceName->name, AL_BUFFER, m_soundBuffer->getAlID() );
+		if( alGetError() != AL_NO_ERROR ) printf("ALERROR!\n");
 		alSourcePlay( m_sourceName->name );
-		if( alGetError() != AL_FALSE ) printf("ALERROR!\n");
+		alSourcePlay( m_sourceName->name );
+		if( alGetError() != AL_NO_ERROR ) printf("ALERROR!\n");
 	}
 
 	if( !m_looped /*&& !m_soundBuffer->isStreamed()*/ )
@@ -87,7 +77,7 @@ void ALSoundSource::play()
 		int lengthMs = getLengthMs();
 		m_soundSystem->registerPlaying( this, lengthMs );
 	}
-	//CreateTimerQueueTimer( &m_stopCallbackHandle, NULL, (WAITORTIMERCALLBACK)ListenStoppedCallback, this, getLengthMs(), 0, WT_EXECUTEONLYONCE );
+
 	m_playing = true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -126,7 +116,6 @@ void ALSoundSource::stop()
 
 	m_sourceName->busy = false;
 	m_soundSystem->unregisterPlaying( this );
-	//DeleteTimerQueueTimer( NULL, m_stopCallbackHandle, NULL );
 
 	if( m_busy && m_listener )
 	{
@@ -209,8 +198,8 @@ void ALSoundSource::_updateParams()
 
 	if( m_soundBuffer && m_soundBuffer->isStreamed() )
 	{
-		static_cast<ALSoundBufferStream*>( m_soundBuffer )
-			->getUpdater()->setLooping( m_looped );
+		//static_cast<ALSoundBufferStream*>( m_soundBuffer )
+		//	->getUpdater()->setLooping( m_looped );
 	}
 	else
 	{

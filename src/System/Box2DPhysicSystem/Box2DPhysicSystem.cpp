@@ -241,6 +241,7 @@ void Box2DPhysicSystem::Add( b2ContactPoint* point )
 void Box2DPhysicSystem::Persist( b2ContactPoint* point )
 {
 	// Nothing to hold this time
+	m_contacts.push_back( *point );
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::Remove( b2ContactPoint* point )

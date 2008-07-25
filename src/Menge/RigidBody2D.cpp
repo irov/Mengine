@@ -448,8 +448,7 @@ namespace Menge
 			{
 				const mt::polygon & poly = *it;
 				const mt::mat3f& mtx = getLocalMatrix();
-				mt::vec2f pos = getLocalPosition();
-				//mt::mul_v2_m3_r( pos, pos, mtx );
+				//mt::vec2f pos = getLocalPosition();
 
 				for(int i = 0; i < poly.num_points(); i++)
 				{
@@ -457,10 +456,13 @@ namespace Menge
 					mt::vec2f beg = poly[i];
 					mt::vec2f end = poly[(i+1) % poly.num_points()];
 
-					beg += pos;
-					end += pos;
+					//beg += pos;
+					//end += pos;
+					mt::vec2f pt1, pt2;
+					mt::mul_v2_m3( pt1, beg, mtx );
+					mt::mul_v2_m3( pt2, end, mtx );
 
-					Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF,beg,end);
+					Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF,pt1,pt2);
 				}
 			}
 			for( TShapeBoxList::iterator itb = m_shapeBoxList.begin(),

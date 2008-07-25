@@ -122,10 +122,6 @@ bool ALSoundBuffer::loadOgg( const char* _filename )
 
 	alBufferData( m_alID, format, data, size, freq );
 
-	if( alGetError() != AL_NO_ERROR )
-	{
-		__asm{ int 3 };
-	}
 	// cleanup
 	ov_clear( &oggStream );
 	oggFile.close();

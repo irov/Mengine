@@ -38,7 +38,8 @@ void ALSoundSource::play()
 		return;
 	}
 
-	m_sourceName = m_soundSystem->getFreeSourceName( m_soundBuffer->isStereo() );
+	bool isStereo = m_soundBuffer->isStereo();
+	m_sourceName = m_soundSystem->getFreeSourceName( isStereo );
 	if( !m_sourceName ) 
 	{
 		//printf("no free sourceName or soundBuffer - returning\n");
@@ -47,12 +48,7 @@ void ALSoundSource::play()
 
 	m_sourceName->busy = true;
 
-	//_updateParams();
-	if( alGetError() != AL_NO_ERROR )
-	{
-		__asm{ int 3 };
-	}
-
+	_updateParams();
 	if( m_soundBuffer && m_soundBuffer->isStreamed() )
 	{
 		alSourcei( m_sourceName->name, AL_BUFFER, NULL );
@@ -65,10 +61,7 @@ void ALSoundSource::play()
 	{
 		//alSourcei( m_sourceName->name, AL_BUFFER, NULL );
 		alSourcei( m_sourceName->name, AL_BUFFER, m_soundBuffer->getAlID() );
-		if( alGetError() != AL_NO_ERROR ) printf("ALERROR!\n");
 		alSourcePlay( m_sourceName->name );
-		alSourcePlay( m_sourceName->name );
-		if( alGetError() != AL_NO_ERROR ) printf("ALERROR!\n");
 	}
 
 	if( !m_looped /*&& !m_soundBuffer->isStreamed()*/ )

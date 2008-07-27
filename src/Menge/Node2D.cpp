@@ -17,9 +17,9 @@ namespace Menge
 
 		this->updateBoundingBox();
 	
-		for( TContainerChildrens::iterator
-				it = m_childrens.begin(),
-				it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+				it = m_children.begin(),
+				it_end = m_children.end();
 				it != it_end;
 			++it)
 		{

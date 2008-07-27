@@ -27,16 +27,12 @@ namespace	Menge
 	, m_currentImageIndex( 0 )
 	, m_centerAlign( false )
 	, m_alignOffset( 0.f, 0.f )
-	//, m_scale( 1.0f, 1.0f )
 	, m_percent( 0.0f, 0.0f, 0.0f, 0.0f )
 	, m_uv( 0.0f, 0.0f, 1.0f, 1.0f )
 	, m_offset( 0.0f, 0.0f )
 	, m_size( 0.0f, 0.0f )
-	//, m_changingColorTime( 0.0f )
-	//, m_changingColor( false )
 	, m_flipX( false )
 	, m_flipY( false )
-	//, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
 	, m_blendSrc( BF_SOURCE_ALPHA )
 	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
 	{ }
@@ -50,7 +46,7 @@ namespace	Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
 			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_currentImageIndex );
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
 			//XML_CASE_ATTRIBUTE_NODE( "Scale", "Value", m_scale );
@@ -87,22 +83,27 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_resourcename.empty() == false )
+		if( m_resourceName.empty() == false )
 		{
 			m_resource = 
 				Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceImage>( m_resourcename );
+				->getResourceT<ResourceImage>( m_resourceName );
 
 			if( m_resource == 0 )
 			{
-				MENGE_LOG( "Image resource not getting '%s'", m_resourcename.c_str() );
+				MENGE_LOG( "Image resource not getting '%s'"
+					, m_resourceName.c_str() 
+					);
+
 				return false;
 			}
 		}
 		else
+		{
 			return false;
+		}
 
-		updateAlphaBlend_();
+		updateSprite_();
 
 		return true;
 	}
@@ -116,21 +117,6 @@ namespace	Menge
 
 		m_resource = 0;
 	}
-	///////////////////////////////////////////////////////////////////////////
-/*	void Sprite::setScale( const mt::vec2f& _scale )
-	{
-		m_scale = _scale;
-
-		if( m_active )
-		{
-			updateSprite_();
-		}
-	}
-	///////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Sprite::getScale() const
-	{
-		return m_scale;
-	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::flip( bool _x )
 	{
@@ -165,40 +151,35 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageResource( const std::string & _name )
 	{
-		if( m_resourcename != _name )
+		if( m_resourceName != _name )
 		{
-			m_resourcename = _name;
+			m_resourceName = _name;
 
 			recompile();
-			updateSprite_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string & Sprite::getImageResource() const
 	{
-		return m_resourcename;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::updateAlphaBlend_()
-	{
-		m_blendSrc = BF_SOURCE_ALPHA;
-		m_blendDest = BF_ONE_MINUS_SOURCE_ALPHA;
-
-		if(m_resource != NULL)
-		{
-			bool isAlpha = m_resource->isAlpha(m_currentImageIndex);
-
-			if(isAlpha == false)
-			{
-				m_blendSrc = BF_ONE; // не хочет так работать
-				m_blendDest = BF_ZERO;
-			}
-		}
+		return m_resourceName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateSprite_()
 	{
 		if( m_resource == 0 ) return;
+
+		bool isAlpha = m_resource->isAlpha(m_currentImageIndex);
+
+		if( isAlpha )
+		{
+			m_blendSrc = BF_SOURCE_ALPHA;
+			m_blendDest = BF_ONE_MINUS_SOURCE_ALPHA;
+		}
+		else
+		{
+			m_blendSrc = BF_ONE; // не хочет так работать
+			m_blendDest = BF_ZERO;
+		}
 
 		m_size = m_resource->getSize( m_currentImageIndex );
 
@@ -207,9 +188,6 @@ namespace	Menge
 		m_percent.y = ::floorf( m_percent.y * m_size.y + 0.5f ) / m_size.y;
 		m_percent.z = ::floorf( m_percent.z * m_size.x + 0.5f ) / m_size.x;
 		m_percent.w = ::floorf( m_percent.w * m_size.y + 0.5f ) / m_size.y;
-
-		//m_size.x *= m_scale.x;
-		//m_size.y *= m_scale.y;
 
 		m_size.x *= ( 1.0f - m_percent.x );
 		m_size.x *= ( 1.0f - m_percent.z );
@@ -220,9 +198,6 @@ namespace	Menge
 		if( m_centerAlign )
 		{
 			mt::vec2f size = m_resource->getMaxSize( 0 );
-
-			//size.x *= m_scale.x;
-			//size.y *= m_scale.y;
 
 			m_alignOffset = size * -0.5f;
 		}
@@ -240,9 +215,6 @@ namespace	Menge
 		{
 			offset.y = maxSize.y - ( size.y + offset.y );
 		}
-
-		//offset.x *= m_scale.x;
-		//offset.y *= m_scale.y;
 
 		m_offset = offset + m_alignOffset;
 
@@ -307,9 +279,9 @@ namespace	Menge
 	{
 		if( m_resource == NULL )
 		{
-			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
+			MENGE_SCRIPT_BREACK( "Sprite %s: Image resource not getting '%s'"
 				, getName().c_str()
-				, m_resourcename.c_str() 
+				, m_resourceName.c_str()
 				);
 		}
 
@@ -343,23 +315,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_update( float _timing )
 	{
-		/*if( m_changingColor )
-		{
-			if( m_changingColorTime < _timing )
-			{
-				m_color = m_newColor;
-				m_changingColor = false;
-				m_changingColorTime = 0.f;	
-				this->callEvent( "COLOR_END", "(O)", this->getEmbedding() );
-			}
-			else
-			{
-				float d = _timing / m_changingColorTime;
-				m_color = m_newColor * d + m_color * ( 1.0f - d );
-				m_changingColorTime -= _timing;
-			}
-
-		}*/
 		if( m_colorTo.isStarted() )
 		{
 			if( m_colorTo.update( _timing, &m_color ) == true )
@@ -379,11 +334,11 @@ namespace	Menge
 	{
 		if( m_resource == NULL )
 		{
-			MENGE_LOG( "Sprite %s: Can't get image size, because resource is NULL '%s'"
+			MENGE_SCRIPT_BREACK( "Sprite %s: Can't get image size, because resource is NULL '%s'"
 				, getName().c_str()
-				, m_resourcename.c_str() 
+				, m_resourceName.c_str() 
 				);
-
+			
 			return mt::vec2f(0.f,0.f);
 		}
 
@@ -406,11 +361,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int Sprite::getImageCount() const
 	{
-		if( m_resource != 0 )
+		if( m_resource == 0 )
 		{
-			return m_resource->getCount();
+			MENGE_SCRIPT_BREACK( "Sprite %s: Can't get image count, because resource is NULL '%s'"
+				, getName().c_str()
+				, m_resourceName.c_str() 
+				);
+
+			return 0;
 		}
-		return 0;
+
+		return m_resource->getCount();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

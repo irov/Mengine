@@ -21,22 +21,33 @@ namespace Menge
 		LogSystemInterface * m_interface;
 	};
 
+	enum ELoggerMask
+	{
+		ELoggerLog  = 0x00000000,
+		ELoggerBreak = 0x00000001,
+		ELoggerError = 0x00000002,
+		ELoggerDebug = 0x00000004
+	};
+
 	class LoggerOperator
 	{
 	public:
-		LoggerOperator( const char * _file, bool _maskDebug );
+		LoggerOperator( const char * _file, unsigned int _mask );
 
 	public:
 		void operator()( const char * _message, ... );
 
 	protected:
 		const char * m_file;
-		bool m_maskDebug;
+		unsigned int m_mask;
 	};
 }
 
 #	define MENGE_LOG\
-	Menge::LoggerOperator( __FILE__, false )
+	Menge::LoggerOperator( __FILE__, ELoggerLog )
 
 #	define MENGE_LOG_DEBUG\
-	Menge::LoggerOperator( __FILE__, true )
+	Menge::LoggerOperator( __FILE__, ELoggerLog | ELoggerDebug )
+
+#	define MENGE_SCRIPT_BREACK\
+	Menge::LoggerOperator( __FILE__, ELoggerLog | ELoggerBreak )

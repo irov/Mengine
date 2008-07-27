@@ -75,27 +75,14 @@ namespace	Menge
 		const Viewport & viewport = camera->getViewport();
 
 		const mt::vec2f & dirA = this->getWorldDirection();
-		const mt::vec2f & posA = this->getScreenPosition(  );
+		const mt::vec2f & posA = this->getScreenPosition();
 
 		const mt::vec2f & dirB = _hotspot->getWorldDirection();
-		const mt::vec2f & posB = _hotspot->getScreenPosition(  );
+		const mt::vec2f & posB = _hotspot->getScreenPosition();
 
 		bool is_intersect = mt::intersect_poly_poly( 
 			m_polygon, _hotspot->m_polygon, 
 			dirA, posA, dirB, posB );
-		//const mt::mat3f& matA = this->getWorldMatrix();
-		//const mt::mat3f& matB = _hotspot->getWorldMatrix();
-		//bool is_intersect = mt::intersect_poly_poly( 
-		//	m_polygon, _hotspot->m_polygon, 
-		//	matA, matB );
-
-		if(is_intersect)
-		{
-			int u=0;
-			u++;
-			//printf( "testing: %.4f, %.4f, %.4f, %.4f\n", posB.x, posB.y, posA.x, posA.y );
-			//printf("%f;%f  and %f;%f \n", wmA.v2.v2.x, wmA.v2.v2.y, wmB.v2.v2.x, wmB.v2.v2.y);
-		}
 
 		return is_intersect;
 	}
@@ -280,18 +267,17 @@ namespace	Menge
 	{
 		if( _enableDebug )
 		{
-			for(int i = 0; i < m_polygon.num_points(); i++)
+			mt::polygon::TVectorPoints::size_type pointCount = m_polygon.num_points();
+
+			for(int i = 0; i < pointCount; i++)
 			{
 				mt::vec2f beg = m_polygon[i];
-				mt::vec2f end = m_polygon[(i+1) % m_polygon.num_points()];
+				mt::vec2f end = m_polygon[(i+1) % pointCount];
 
 				mt::vec2f pt1, pt2;
 				const mt::mat3f& wm = getWorldMatrix();
 				mt::mul_v2_m3( pt1, beg, wm );
 				mt::mul_v2_m3( pt2, end, wm );
-				//beg+=getWorldPosition();
-				//end+=getWorldPosition();
-
 
 				Holder<RenderEngine>::hostage()->renderLine(0xFFFF0000,pt1,pt2);
 			}

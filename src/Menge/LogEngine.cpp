@@ -4,6 +4,8 @@
 #	include <sstream>
 #	include <stdarg.h>
 
+#	include "python.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -24,9 +26,9 @@ namespace Menge
 		return m_interface;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LoggerOperator::LoggerOperator( const char * _file, bool _maskDebug )
+	LoggerOperator::LoggerOperator( const char * _file, unsigned int _mask )
 		: m_file(_file)
-		, m_maskDebug(_maskDebug)
+		, m_mask(_mask)
 	{
 
 	}
@@ -52,7 +54,18 @@ namespace Menge
 
 		const std::string & message = strMessage.str();
 
-		Holder<LogEngine>::hostage()
-			->logMessage( message, m_maskDebug );
+		if( Py_IsInitialized() == 0 || !(m_mask & ELoggerBreak) )
+		{
+			Holder<LogEngine>::hostage()
+				->logMessage( message, m_mask & ELoggerDebug );
+		}
+		else
+		{
+			PyErr_Format(PyExc_SystemError,
+				"%s: %s"
+				, const_cast<char*>(m_file)
+				, message.c_str()				
+				);
+		}
 	}
 }

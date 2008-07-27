@@ -647,24 +647,6 @@ namespace Menge
 			xml_path += _name;
 			xml_path += "/Scene.xml";
 
-			//for( TMapDeclaration::iterator it = m_mapScenesDeclaration.begin(),
-			//		it_end = m_mapScenesDeclaration.end();
-			//		it != it_end;
-			//		it++ )
-			//{
-			//	if( std::find( it->second.begin(), it->second.end(), _name ) != it->second.end() )
-			//	{
-			//		xml_path = it->first;
-			//		xml_path += "/";
-			//		xml_path += _name;
-			//		xml_path += "/Scene.xml";
-			//	}
-			//}
-			/*std::string xml_path = m_pathScenes.front();
-			xml_path += "/";
-			xml_path += _name;
-			xml_path += "/Scene.xml";*/
-
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlFileM( xml_path, scene, &Scene::loader ) == false )
 			{
@@ -673,23 +655,6 @@ namespace Menge
 					, _name.c_str()
 					);
 			}
-			//TiXmlDocument * document = Holder<FileEngine>::hostage()
-			//	->loadXml( xml_path );
-
-			//XML_FOR_EACH_DOCUMENT( document )
-			//{
-			//	XML_CHECK_NODE("Scene")
-			//	{
-			//		scene->loader(XML_CURRENT_NODE);
-			//	}
-			//}
-			//XML_INVALID_PARSE()
-			//{
-			//	MENGE_LOG("Warrning: invalid loader xml '%s' for scene '%s'/n"
-			//		, xml_path.c_str()
-			//		, _name.c_str()
-			//		);
-			//}
 
 			m_mapScene.insert( std::make_pair( _name, scene ) );
 
@@ -818,6 +783,7 @@ namespace Menge
 		{
 			MENGE_LOG("Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
 		}
+
 		if( m_loadingAccounts == false )
 		{
 			newAccount->save();
@@ -828,8 +794,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::deleteAccount( const String& _accountName )
 	{
-		TAccountMap::iterator it = m_accounts.find( _accountName );
-		if( it != m_accounts.end() )
+		TAccountMap::iterator it_find = m_accounts.find( _accountName );
+
+		if( it_find != m_accounts.end() )
 		{
 			if( m_currentAccount && ( m_currentAccount->getName() == _accountName ) )
 			{
@@ -838,32 +805,37 @@ namespace Menge
 
 			Holder<FileEngine>::hostage()->
 				deleteFolder( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _accountName );
-			delete it->second;
-			m_accounts.erase( it );
+
+			delete it_find->second;
+
+			m_accounts.erase( it_find );
 		}
 		else
 		{
-			MENGE_LOG("Error: Can't delete account '%s'. There is no account with such name",
-				_accountName.c_str() );
+			MENGE_LOG("Error: Can't delete account '%s'. There is no account with such name"
+				, _accountName.c_str() 
+				);
 		}
+
 		saveAccountsInfo();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::selectAccount( const String& _accountName )
 	{
-		TAccountMap::iterator it = m_accounts.find( _accountName );
-		if( it != m_accounts.end() )
+		TAccountMap::iterator it_find = m_accounts.find( _accountName );
+
+		if( it_find != m_accounts.end() )
 		{
-			m_currentAccount = it->second;
-			it->second->load();
-			it->second->apply();
+			m_currentAccount = it_find->second;
+			m_currentAccount->load();
+			m_currentAccount->apply();
 		}
 		else
 		{
-			MENGE_LOG("Error: Can't select account '%s'. There is no account with such name",
-				_accountName.c_str() );
+			MENGE_LOG("Error: Can't select account '%s'. There is no account with such name"
+				, _accountName.c_str() 
+				);
 		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Account* Game::getCurrentAccount()
@@ -905,6 +877,7 @@ namespace Menge
 					);
 				return;
 			}
+
 			TStringVector accountNames;
 
 			for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
@@ -913,6 +886,7 @@ namespace Menge
 			{
 				accountNames.push_back( it->first );
 			}
+
 			m_accounts.clear();
 
 			for( TStringVector::iterator it = accountNames.begin(), it_end = accountNames.end();
@@ -933,8 +907,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::saveAccountsInfo()
 	{
-		OutStreamInterface* outStream = Holder<FileEngine>::hostage()->
-			openOutStream( "Accounts.ini", false );
+		OutStreamInterface* outStream = Holder<FileEngine>::hostage()
+			->openOutStream( "Accounts.ini", false );
 
 		outStream->write( "<Accounts>\n" );
 
@@ -964,15 +938,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::saveAccount( const String& _accountName )
 	{
-		TAccountMap::iterator it = m_accounts.find( _accountName );
-		if( it != m_accounts.end() )
+		TAccountMap::iterator it_find = m_accounts.find( _accountName );
+
+		if( it_find != m_accounts.end() )
 		{
-			it->second->save();
+			it_find->second->save();
 		}
 		else
 		{
-			MENGE_LOG("Warning: Account '%s' does not exist. Can't save",
-				_accountName.c_str() );
+			MENGE_LOG("Warning: Account '%s' does not exist. Can't save"
+				, _accountName.c_str()
+				);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

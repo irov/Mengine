@@ -36,9 +36,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::destroy()
 	{
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
@@ -62,9 +62,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visitChildren( Visitor * _visitor )
 	{
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
@@ -74,9 +74,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::activate()
 	{
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
@@ -107,9 +107,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::deactivate()
 	{
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
@@ -177,7 +177,7 @@ namespace Menge
 		_node->setParent( this );
 		_node->setLayer( m_layer );
 
-		m_childrens.push_back( _node );
+		m_children.push_back( _node );
 
 		_addChildren( _node );
 
@@ -186,20 +186,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeChildren( Node * _node )
 	{
-		TContainerChildrens::iterator it_find = 
-			std::find( m_childrens.begin(), m_childrens.end(), _node );
+		TContainerChildren::iterator it_find = 
+			std::find( m_children.begin(), m_children.end(), _node );
 
-		if( it_find != m_childrens.end() )
+		if( it_find != m_children.end() )
 		{
-			m_childrens.erase( it_find );
+			m_children.erase( it_find );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * Node::getChildren( const std::string & _name, bool _recursion )
 	{
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
@@ -223,13 +223,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::isChildren( Node * _node, bool _recursive ) const
 	{
-		TContainerChildrens::const_iterator it_find = 
-			std::find( m_childrens.begin(), m_childrens.end(), _node );
+		TContainerChildren::const_iterator it_find = 
+			std::find( m_children.begin(), m_children.end(), _node );
 
-		bool found = ( it_find != m_childrens.end() );
+		bool found = ( it_find != m_children.end() );
 		if( !found && _recursive )
 		{
-			for( TContainerChildrens::const_iterator it = m_childrens.begin(), it_end = m_childrens.end();
+			for( TContainerChildren::const_iterator it = m_children.begin(), it_end = m_children.end();
 				it != it_end;
 				it++ )
 			{
@@ -257,9 +257,9 @@ namespace Menge
 		m_updatable = _updatable;
 
 		//// !!!! ÀÕÒÓÍÃ, ÀËÀÐÌ!! ÂÐÎÒÌÍÅÍÎÃÈ, ôàê ìîé ÌÎÑÊ
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
@@ -300,9 +300,9 @@ namespace Menge
 			_update( _timing );
 		}
 
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		/*++it*/)
 		{
@@ -377,9 +377,9 @@ namespace Menge
 	{
 		bool done = true;
 
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
@@ -409,9 +409,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::release()
 	{
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
@@ -487,27 +487,15 @@ namespace Menge
 
 		_render( _viewport, _enableDebug );
 
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
 			(*it)->render( _viewport, _enableDebug );
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-/*	void Node::renderSelf( const Viewport & _viewport, bool _enableDebug )
-	{
-		//Holder<RenderEngine>::hostage()
-		//	->setRenderViewport( _viewport );
-
-		_render( _viewport, _enableDebug );
-
-#	ifdef MENGE_DEVELOPMENT
-		//_debugRender( _viewport );
-#	endif
-	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_render( const Viewport & _viewport, bool )
 	{
@@ -552,9 +540,9 @@ namespace Menge
 
 		this->updateBoundingBox();
 
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
@@ -571,7 +559,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::box2f & Node::getWorldBoundingBox()
 	{
-		if( m_childrens.empty() )
+		if( m_children.empty() )
 		{
 			return BoundingBox::getLocalBoundingBox();
 		}
@@ -583,9 +571,9 @@ namespace Menge
 
 		BoundingBox::clearWorldBoundingBox();
 
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
@@ -657,9 +645,9 @@ namespace Menge
 		m_layer = _layer;
 
 		// ïðîñòè ãîñïîäè
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{
@@ -697,5 +685,35 @@ namespace Menge
 		}
 
 		return screen_pos;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::setAlpha( float _alpha ) 
+	{
+		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
+			it != it_end;
+			it++ )
+		{
+			(*it)->setAlpha( _alpha );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::alphaTo( float _alpha, float _time ) 
+	{
+		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
+			it != it_end;
+			it++ )
+		{
+			(*it)->alphaTo( _alpha, _time );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::colorToStop()
+	{
+		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
+			it != it_end;
+			it++ )
+		{
+			(*it)->colorToStop();
+		}
 	}
 }

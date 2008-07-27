@@ -110,9 +110,9 @@ namespace	Menge
 
 		if( handle == false )
 		{
-			for( TContainerChildrens::reverse_iterator 
-				it = m_childrens.rbegin(),
-				it_end = m_childrens.rend();
+			for( TContainerChildren::reverse_iterator 
+				it = m_children.rbegin(),
+				it_end = m_children.rend();
 			it != it_end;
 			++it)
 			{
@@ -145,9 +145,9 @@ namespace	Menge
 
 		if( handle == false )
 		{
-			for( TContainerChildrens::reverse_iterator 
-				it = m_childrens.rbegin(),
-				it_end = m_childrens.rend();
+			for( TContainerChildren::reverse_iterator 
+				it = m_children.rbegin(),
+				it_end = m_children.rend();
 			it != it_end;
 			++it)
 			{
@@ -180,9 +180,9 @@ namespace	Menge
 
 		if( handle == false )
 		{
-			for( TContainerChildrens::reverse_iterator 
-				it = m_childrens.rbegin(),
-				it_end = m_childrens.rend();
+			for( TContainerChildren::reverse_iterator 
+				it = m_children.rbegin(),
+				it_end = m_children.rend();
 			it != it_end;
 			++it)
 			{
@@ -309,9 +309,9 @@ namespace	Menge
 
 			if( fabsf( mainSize.x * mainSize.y) > 0.0001f )
 			{
-				for( TContainerChildrens::reverse_iterator 
-					it = m_childrens.rbegin(),
-					it_end = m_childrens.rend();
+				for( TContainerChildren::reverse_iterator 
+					it = m_children.rbegin(),
+					it_end = m_children.rend();
 				it != it_end;
 				++it)
 				{
@@ -348,9 +348,9 @@ namespace	Menge
 
 		if( handle == false )
 		{
-			for( TContainerChildrens::reverse_iterator 
-				it = m_childrens.rbegin(),
-				it_end = m_childrens.rend();
+			for( TContainerChildren::reverse_iterator 
+				it = m_children.rbegin(),
+				it_end = m_children.rend();
 			it != it_end;
 			++it)
 			{
@@ -387,9 +387,9 @@ namespace	Menge
 		_render( _viewport, _enableDebug );
 
 
-		for( TContainerChildrens::iterator
-			it = m_childrens.begin(),
-			it_end = m_childrens.end();
+		for( TContainerChildren::iterator
+			it = m_children.begin(),
+			it_end = m_children.end();
 		it != it_end;
 		++it)
 		{

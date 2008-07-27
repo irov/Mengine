@@ -18,7 +18,7 @@ namespace Menge
 {	
 	class Visitor;
 	class Layer2D;
-	typedef std::list<class Node *> TContainerChildrens;
+	typedef std::list<class Node *> TContainerChildren;
 
 	class NodeForeach;
 
@@ -88,7 +88,7 @@ namespace Menge
 		virtual void _removeChildren( Node * _node );
 
 	protected:
-		TContainerChildrens m_childrens;
+		TContainerChildren m_children;
 
 		Node * m_parent;
 
@@ -101,33 +101,9 @@ namespace Menge
 		bool isActivate() const;
 
 		////
-		virtual void setAlpha( float _alpha ) 
-		{
-			for( TContainerChildrens::iterator it = m_childrens.begin(), it_end = m_childrens.end();
-				it != it_end;
-				it++ )
-			{
-				(*it)->setAlpha( _alpha );
-			}
-		}
-		virtual void alphaTo( float _alpha, float _time ) 
-		{
-			for( TContainerChildrens::iterator it = m_childrens.begin(), it_end = m_childrens.end();
-				it != it_end;
-				it++ )
-			{
-				(*it)->alphaTo( _alpha, _time );
-			}
-		}
-		virtual void colorToStop()
-		{
-			for( TContainerChildrens::iterator it = m_childrens.begin(), it_end = m_childrens.end();
-				it != it_end;
-				it++ )
-			{
-				(*it)->colorToStop();
-			}
-		}
+		virtual void setAlpha( float _alpha );
+		virtual void alphaTo( float _alpha, float _time );
+		virtual void colorToStop();
 
 	protected:
 		virtual bool _activate();

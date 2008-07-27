@@ -134,29 +134,18 @@ namespace Menge
 		void _setListener() override;
 
 	private:
-		void updateAlign_();
-		void updateVisibility_();
-		void updateFlip_();
-		void updateAlphaBlend_();
-	private:
 		void updateSprite_();
 
 	protected:
-
-
 		ResourceImage * m_resource;
-		std::string m_resourcename;
+		std::string m_resourceName;	
 
 		unsigned int m_currentImageIndex;
 
 		bool m_centerAlign;
 		bool m_flipX;
 		bool m_flipY;
-		//bool m_changingColor;
 
-		//float m_changingColorTime;
-
-		//mt::vec2f m_scale;
 		mt::vec2f m_alignOffset;
 		mt::vec2f m_size;
 		mt::vec2f m_offset;
@@ -167,11 +156,8 @@ namespace Menge
 
 		ColourValue m_color;
 		ValueInterpolator<ColourValue> m_colorTo;
-		//Color m_newColor;
 
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;
-		//PyObject * m_listener;
-		//virtual void _onSetListener();
 	};
 }

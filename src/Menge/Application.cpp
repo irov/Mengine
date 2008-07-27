@@ -179,7 +179,7 @@ namespace Menge
 		Holder<InputEngine>::keep( m_inputEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setRenderSystem( ::RenderSystemInterface * _interface )
+	void Application::setRenderSystem( RenderSystemInterface * _interface )
 	{
 		m_renderEngine = new RenderEngine( _interface );
 		Holder<RenderEngine>::keep( m_renderEngine );
@@ -248,9 +248,15 @@ namespace Menge
 				m_currentResolution.x, m_currentResolution.y, m_desktopResolution.x / m_desktopResolution.y );
 		}
 
-		WINDOW_HANDLE winHandle = m_interface->createWindow( game->getTitle().c_str(), m_currentResolution.x, m_currentResolution.y, game->getFullscreen() );
-		m_renderEngine->createRenderWindow( m_currentResolution.x, m_currentResolution.y, game->getBits(), game->getFullscreen(), winHandle,
-											game->getFSAAType(), game->getFSAAQuality() );
+		const std::string & title = game->getTitle();
+		bool isFullscreen = game->getFullscreen();
+		int bits = game->getBits();
+		int FSAAType = game->getFSAAType();
+		int FSAAQuality = game->getFSAAQuality();
+
+		WINDOW_HANDLE winHandle = m_interface->createWindow( title, m_currentResolution.x, m_currentResolution.y, isFullscreen );
+		m_renderEngine->createRenderWindow( m_currentResolution.x, m_currentResolution.y, bits, isFullscreen, winHandle,
+											FSAAType, FSAAQuality );
 
 
 		ResourceFactoryParam param;

@@ -22,7 +22,7 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 	public:
-		Node * getChildren( const std::string & _name, bool _recursion ) override;
+		Node * getChildren( const std::string & _name, bool _recursion ) const override;
 
 	public:
 		void render( const Viewport & _viewport, bool _enableDebug ) override;

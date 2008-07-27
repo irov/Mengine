@@ -9,7 +9,7 @@
 #	include "vorbis/vorbisfile.h"
 
 class ALSoundBuffer 
-	: public SoundBufferInterface
+	: public Menge::SoundBufferInterface
 {
 public:
 	ALSoundBuffer();
@@ -19,21 +19,21 @@ public:
 	ALuint getAlID()			const;
 	unsigned int  getLenghtMs()	const;
 
-	void addSource(SoundSourceInterface* _source);
-	void removeSource(SoundSourceInterface* _source);
+	void addSource( Menge::SoundSourceInterface* _source);
+	void removeSource( Menge::SoundSourceInterface* _source);
 
-	virtual bool loadOgg( const char* _filename );
-	const std::string& getFilename()	{ return m_filename; }
+	virtual bool loadOgg( const Menge::String & _filename );
+	const Menge::String & getFilename();
 
 	bool isStereo();
 
 protected:
 
-	typedef std::vector<SoundSourceInterface*>	TVectorSoundSourceInterface;
+	typedef std::vector<Menge::SoundSourceInterface*>	TVectorSoundSourceInterface;
 	TVectorSoundSourceInterface m_sources;
 	ALuint m_alID;
 	unsigned int m_lenghtMs;
-	std::string m_filename;
+	Menge::String m_filename;
 	bool m_isEmpty;
 	bool m_isStereo;
 

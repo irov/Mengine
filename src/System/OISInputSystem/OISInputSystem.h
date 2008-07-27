@@ -4,7 +4,7 @@
 #	include "OIS.h"
 
 class OISInputSystem
-	: public InputSystemInterface
+	: public Menge::InputSystemInterface
 	, public OIS::MouseListener
 	, public OIS::KeyListener
 {
@@ -13,7 +13,7 @@ public:
 	~OISInputSystem();
 
 public:
-	bool initialize( WINDOW_HANDLE _winHandle ) override;
+	bool initialize( Menge::WindowHandle _winHandle ) override;
 	bool captureMouse( float _x, float _y, float _maxX, float _maxY ) override;
 	void releaseMouse() override;
 
@@ -21,7 +21,7 @@ public:
 	void update() override;
 	void destroy() override;
 
-	void regHandle( InputSystemHandler * _handle ) override;
+	void regHandle( Menge::InputSystemHandler * _handle ) override;
 
 	//keyboard
 	bool isKeyDown( int _key ) override;
@@ -48,5 +48,5 @@ private:
 	OIS::Keyboard* m_keyboard;
 	bool m_mouseReleasing;
 
-	InputSystemHandler * m_handler;
+	Menge::InputSystemHandler * m_handler;
 };

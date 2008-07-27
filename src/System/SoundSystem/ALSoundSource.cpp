@@ -150,7 +150,7 @@ int ALSoundSource::getPosMs()
 	return pos;
 }
 //////////////////////////////////////////////////////////////////////////
-void ALSoundSource::setSoundBuffer( SoundBufferInterface* _soundBuffer )
+void ALSoundSource::setSoundBuffer( Menge::SoundBufferInterface* _soundBuffer )
 {
 	m_soundBuffer = static_cast<ALSoundBuffer*>( _soundBuffer );
 	if( m_soundBuffer )
@@ -217,7 +217,7 @@ bool ALSoundSource::isLooping() const
 	return m_looped;
 }
 //////////////////////////////////////////////////////////////////////////
-void ALSoundSource::setSoundNodeListener( SoundNodeListenerInterface* _listener )
+void ALSoundSource::setSoundNodeListener( Menge::SoundNodeListenerInterface* _listener )
 {
 	m_listener = _listener;
 }
@@ -242,7 +242,7 @@ void ALSoundSource::setUsed( bool _use )
 	m_busy = _use;
 }
 //////////////////////////////////////////////////////////////////////////
-SoundNodeListenerInterface* ALSoundSource::getListener()
+Menge::SoundNodeListenerInterface* ALSoundSource::getListener()
 {
 	return m_listener;
 }

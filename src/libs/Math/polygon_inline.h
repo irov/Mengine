@@ -7,30 +7,30 @@ namespace mt
 	MATH_INLINE polygon::polygon()
 	{}
 
-	MATH_INLINE polygon::polygon( TVectorPoints::size_type n)
+	MATH_INLINE polygon::polygon( std::size_t n)
 	{
-		points.resize(n);
+		m_points.resize(n);
 	}
 
 	MATH_INLINE polygon::polygon( const polygon & _rhs )
 	{
-		points = _rhs.points;
+		m_points = _rhs.m_points;
 	}
 
 	MATH_INLINE polygon & polygon::operator = ( const polygon & _rhs )
 	{
-		points = _rhs.points;
+		m_points = _rhs.m_points;
 		return	*this;
 	}
 
-	MATH_INLINE mt::vec2f polygon::support( const mt::vec2f & normal ) const
+	MATH_INLINE const mt::vec2f & polygon::support( const mt::vec2f & normal ) const
 	{
-		float max = dot_v2_v2( points[0], normal );
-		TVectorPoints::size_type index = 0;
+		float max = dot_v2_v2( m_points[0], normal );
+		std::size_t index = 0;
 
-		for( TVectorPoints::size_type it = 1, it_end = points.size(); it != it_end ; ++it )
+		for( std::size_t it = 1, it_end = m_points.size(); it != it_end ; ++it )
 		{
-			float dot = dot_v2_v2( points[it], normal );
+			float dot = dot_v2_v2( m_points[it], normal );
 			if( dot > max )
 			{
 				max = dot;
@@ -38,7 +38,7 @@ namespace mt
 			}
 		}
 
-		return points[index];
+		return m_points[index];
 	}
 
 	MATH_INLINE bool intersect_poly_poly( 
@@ -63,7 +63,7 @@ namespace mt
 
 		polygon polyA;
 
-		for( polygon::TVectorPoints::size_type it = 0, it_end = _a.num_points(); it != it_end ; ++it )
+		for( std::size_t it = 0, it_end = _a.num_points(); it != it_end ; ++it )
 		{
 			mt::vec2f point;
 			mt::mul_v2_m3( point, _a[ it ], worldMatrixA );
@@ -72,7 +72,7 @@ namespace mt
 
 		polygon polyB;
 
-		for( polygon::TVectorPoints::size_type it = 0, it_end = _b.num_points(); it != it_end ; ++it )
+		for( std::size_t it = 0, it_end = _b.num_points(); it != it_end ; ++it )
 		{
 			mt::vec2f point;
 			mt::mul_v2_m3( point, _b[ it ], worldMatrixB );
@@ -137,7 +137,7 @@ namespace mt
 
 		polygon polyA;
 
-		for ( polygon::TVectorPoints::size_type it = 0, it_end = _a.num_points(); it != it_end; ++it )
+		for ( std::size_t it = 0, it_end = _a.num_points(); it != it_end; ++it )
 		{
 			mt::vec2f point;
 			mt::mul_v2_m3( point, _a[ it ], worldMatrixA );
@@ -146,7 +146,7 @@ namespace mt
 
 		polygon polyB;
 
-		for ( polygon::TVectorPoints::size_type it = 0, it_end = _b.num_points(); it != it_end ; ++it )
+		for ( std::size_t it = 0, it_end = _b.num_points(); it != it_end ; ++it )
 		{
 			mt::vec2f point;
 			mt::mul_v2_m3( point, _b[ it ], worldMatrixB );
@@ -201,72 +201,72 @@ namespace mt
 
 	MATH_INLINE void polygon::clear_points()
 	{
-		points.clear();
+		m_points.clear();
 	}
 
 	MATH_INLINE void polygon::add_point(const vec2f& v)
 	{
-		points.push_back(v);
+		m_points.push_back(v);
 	}
 
 	MATH_INLINE void polygon::insert( TVectorPoints::size_type after, const vec2f & v )
 	{
-		TVectorPoints::size_type size = points.size();
+		TVectorPoints::size_type size = m_points.size();
 
 		if(after < size)
 		{
-			points.insert(points.begin() + after, v);
+			m_points.insert(m_points.begin() + after, v);
 		}
 		else
 		{
-			points.push_back(v);
+			m_points.push_back(v);
 		}
 	}
 
-	MATH_INLINE polygon::TVectorPoints::size_type polygon::num_points() const
+	MATH_INLINE std::size_t polygon::num_points() const
 	{
-		return points.size();
+		return m_points.size();
 	}
 
-	MATH_INLINE const vec2f& polygon::operator[]( TVectorPoints::size_type i) const
+	MATH_INLINE const vec2f& polygon::operator[]( std::size_t i) const
 	{
-		return points[i];
+		return m_points[i];
 	}
 
-	MATH_INLINE vec2f& polygon::operator[]( TVectorPoints::size_type i)
+	MATH_INLINE vec2f& polygon::operator[]( std::size_t i)
 	{
-		return points[i];
+		return m_points[i];
 	}
 
 	MATH_INLINE vec2f & polygon::front()
 	{
-		return points.front();
+		return m_points.front();
 	}
 
 	MATH_INLINE const vec2f & polygon::front() const
 	{
-		return points.front();
+		return m_points.front();
 	}
 
-	MATH_INLINE const std::vector<mt::vec2f> & polygon::get_points() const
+	MATH_INLINE const TVectorPoints & polygon::get_points() const
 	{
-		return points;
+		return m_points;
 	}
 
 	MATH_INLINE vec2f & polygon::back()
 	{
-		return points.back();
+		return m_points.back();
 	}
 	
 	MATH_INLINE const vec2f & polygon::back() const
 	{
-		return points.back();
+		return m_points.back();
 	}
 
 	MATH_INLINE bool cmp_poly_poly(const polygon& _a, const polygon& _b)
 	{
-		polygon::TVectorPoints::size_type size_a = _a.num_points();
-		polygon::TVectorPoints::size_type size_b = _b.num_points();
+		std::size_t size_a = _a.num_points();
+		std::size_t size_b = _b.num_points();
 		
 		if( size_a != size_b )
 		{
@@ -306,19 +306,19 @@ namespace mt
 		assert(is_convex_polygon(poly));
 #endif
 
-		polygon::TVectorPoints::size_type size = poly.num_points();
+		std::size_t size = poly.num_points();
 
 		if( size == 0 )
 		{
 			return false;
 		}
 
-		polygon::TVectorPoints::size_type L = 0;
-		polygon::TVectorPoints::size_type H = size;
+		std::size_t L = 0;
+		std::size_t H = size;
 
 		do
 		{
-			polygon::TVectorPoints::size_type M = (L + H) / 2;
+			std::size_t M = (L + H) / 2;
 
 			if (is_left_v2(poly[0], poly[M], p) > 0)
 			{
@@ -345,18 +345,18 @@ namespace mt
 	*/
 	MATH_INLINE bool is_point_inside_polygon(const polygon& poly, const vec2f& p)
 	{
-		polygon::TVectorPoints::size_type size = poly.num_points();
+		std::size_t size = poly.num_points();
 
 		if(size == 0)
 		{
 			return false;
 		}
 
-		polygon::TVectorPoints::size_type intersect_counter = 0;
+		std::size_t intersect_counter = 0;
 
 		vec2f prev = poly[size-1];
 		
-		for (polygon::TVectorPoints::size_type i = 0; i < size; ++i)
+		for (std::size_t i = 0; i < size; ++i)
 		{
 			if ((poly[i].y > p.y) ^ (prev.y > p.y))
 			{
@@ -373,19 +373,19 @@ namespace mt
 
 	MATH_INLINE bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::mat3f& wm )
 	{
-		polygon::TVectorPoints::size_type size = poly.num_points();
+		std::size_t size = poly.num_points();
 
 		if( size == 0 )
 		{
 			return false;
 		}
 
-		polygon::TVectorPoints::size_type intersect_counter = 0;
+		std::size_t intersect_counter = 0;
 
 		mt::vec2f prev;
 		mt::mul_v2_m3( prev, poly[ size - 1], wm );
 
-		for( polygon::TVectorPoints::size_type i = 0; i < size; ++i )
+		for( std::size_t i = 0; i < size; ++i )
 		{
 			mt::vec2f point;
 			mt::mul_v2_m3( point, poly[ i ], wm );
@@ -405,7 +405,7 @@ namespace mt
 
 	MATH_INLINE bool is_point_inside_polygon( const polygon& poly, const vec2f& _p, const mt::vec2f& _position, const mt::vec2f& _direction )
 	{
-		polygon::TVectorPoints::size_type size = poly.num_points();
+		std::size_t size = poly.num_points();
 
 		mt::mat3f wm;
 		wm.v0 = mt::vec3f(_direction,1);
@@ -417,12 +417,12 @@ namespace mt
 			return false;
 		}
 
-		polygon::TVectorPoints::size_type intersect_counter = 0;
+		std::size_t intersect_counter = 0;
 
 		mt::vec2f prev;
 		mt::mul_v2_m3( prev, poly[ size - 1], wm );
 
-		for ( polygon::TVectorPoints::size_type i = 0; i < size; ++i )
+		for ( std::size_t i = 0; i < size; ++i )
 		{
 			mt::vec2f point;
 			mt::mul_v2_m3( point, poly[ i ], wm );
@@ -445,7 +445,7 @@ namespace mt
 	*/
 	MATH_INLINE bool is_convex_polygon(const polygon& poly)
 	{
-		polygon::TVectorPoints::size_type size = poly.num_points();
+		std::size_t size = poly.num_points();
 
 		if (size < 3)
 		{
@@ -454,10 +454,10 @@ namespace mt
 
 		char flag = 0;
 
-		for (polygon::TVectorPoints::size_type i = 0; i < size; i++) 
+		for (std::size_t i = 0; i < size; i++) 
 		{
-			polygon::TVectorPoints::size_type j = (i + 1) % size;
-			polygon::TVectorPoints::size_type k = (i + 2) % size;
+			std::size_t j = (i + 1) % size;
+			std::size_t k = (i + 2) % size;
 
 			float value = pseudo_cross_v2(poly[j] - poly[i], poly[k] - poly[j]);
 
@@ -486,13 +486,13 @@ namespace mt
 	*/
 	MATH_INLINE float orient_polygon(const polygon& poly)
 	{
-		polygon::TVectorPoints::size_type rmin = 0;
+		std::size_t rmin = 0;
 		float xmin = poly[0].x;
 		float ymin = poly[0].y;
 
-		polygon::TVectorPoints::size_type size = poly.num_points();
+		std::size_t size = poly.num_points();
 
-		for (polygon::TVectorPoints::size_type i = 1; i < size; i++)
+		for (std::size_t i = 1; i < size; i++)
 		{
 			if (poly[i].y > ymin)	continue;
 
@@ -508,7 +508,7 @@ namespace mt
 		return	rmin == 0 ? is_left_v2(poly[size - 1], poly[0], poly[1]) : is_left_v2(poly[rmin - 1], poly[rmin], poly[rmin + 1]);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_INLINE bool make_countour_polygon( const std::vector<mt::vec2f> & _polygon, float _width, std::vector<mt::vec2f> & _contour )
+	MATH_INLINE bool make_countour_polygon( const TVectorPoints & _polygon, float _width, TVectorPoints & _contour )
 	{
 		// no holes!!
 
@@ -539,9 +539,9 @@ namespace mt
 		_contour.push_back(prev_start);
 		_contour.push_back(prev_end);
 			
-		for(std::vector<mt::vec2f>::size_type i = 1; i < _polygon.size();i++)
+		for(std::size_t i = 1; i < _polygon.size();i++)
 		{
-			std::vector<mt::vec2f>::size_type next_i = (i + 1) % _polygon.size();
+			std::size_t next_i = (i + 1) % _polygon.size();
 
 			edge = _polygon[next_i] - _polygon[i];
 
@@ -575,13 +575,13 @@ namespace mt
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_INLINE float polygon_area( const std::vector<mt::vec2f> & _contour )
+	MATH_INLINE float polygon_area( const TVectorPoints & _contour )
 	{  
-		std::vector<mt::vec2f>::size_type n = _contour.size(); 
+		TVectorPoints::size_type n = _contour.size(); 
 
 		float A = 0.0f;  
 		
-		for(std::vector<mt::vec2f>::size_type p = n-1, q = 0; q < n; p = q++)
+		for(TVectorPoints::size_type p = n-1, q = 0; q < n; p = q++)
 		{
 			A += _contour[p].x * _contour[q].y - _contour[q].x * _contour[p].y;
 		}

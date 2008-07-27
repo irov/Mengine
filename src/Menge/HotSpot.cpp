@@ -250,7 +250,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::setScale( const mt::vec2f& _scale )
 	{
-		for( mt::polygon::TVectorPoints::size_type 
+		for( std::size_t
 			it = 0,
 			it_end = m_polygon.num_points();
 		it != it_end; 
@@ -267,15 +267,15 @@ namespace	Menge
 	{
 		if( _enableDebug )
 		{
-			mt::polygon::TVectorPoints::size_type pointCount = m_polygon.num_points();
+			std::size_t pointCount = m_polygon.num_points();
 
-			for(int i = 0; i < pointCount; i++)
+			for( std::size_t i = 0; i < pointCount; i++ )
 			{
 				mt::vec2f beg = m_polygon[i];
 				mt::vec2f end = m_polygon[(i+1) % pointCount];
 
 				mt::vec2f pt1, pt2;
-				const mt::mat3f& wm = getWorldMatrix();
+				const mt::mat3f & wm = getWorldMatrix();
 				mt::mul_v2_m3( pt1, beg, wm );
 				mt::mul_v2_m3( pt2, end, wm );
 

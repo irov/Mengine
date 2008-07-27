@@ -28,7 +28,7 @@ namespace Menge
 		void addFrameUV( const mt::vec4f & _uv );
 
 	public:
-		unsigned int getCount() const override;
+		std::size_t getCount() const override;
 
 		const mt::vec2f & getMaxSize( unsigned int _frame ) const override;
 		const mt::vec2f & getSize( unsigned int _frame ) const override;

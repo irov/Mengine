@@ -6,7 +6,7 @@
 #	include "libs/Math/mat4.h"
 
 //////////////////////////////////////////////////////////////////////////
-bool initInterfaceSystem( RenderSystemInterface ** _ptrInterface )
+bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
 {
 	try
 	{
@@ -20,34 +20,34 @@ bool initInterfaceSystem( RenderSystemInterface ** _ptrInterface )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void releaseInterfaceSystem( RenderSystemInterface* _ptrInterface )
+void releaseInterfaceSystem( Menge::RenderSystemInterface* _ptrInterface )
 {
 	delete static_cast<HGERenderSystem*>(_ptrInterface);
 }
 //////////////////////////////////////////////////////////////////////////
-hgeBlendState s_blendMengeToHGE( EBlendFactor _blend )
+hgeBlendState s_blendMengeToHGE( Menge::EBlendFactor _blend )
 {
 	switch( _blend )
 	{
-	case BF_ONE:
+	case Menge::BF_ONE:
 		return BLEND_ONE;
-	case BF_ZERO:
+	case Menge::BF_ZERO:
 		return BLEND_ZERO;
-	case BF_DEST_COLOUR:
+	case Menge::BF_DEST_COLOUR:
 		return BLEND_DESTCOLOR;
-	case BF_SOURCE_COLOUR:
+	case Menge::BF_SOURCE_COLOUR:
 		return BLEND_SRCCOLOR;
-	case BF_ONE_MINUS_DEST_COLOUR:
+	case Menge::BF_ONE_MINUS_DEST_COLOUR:
 		return BLEND_INVDESTCOLOR;
-	case BF_ONE_MINUS_SOURCE_COLOUR:
+	case Menge::BF_ONE_MINUS_SOURCE_COLOUR:
 		return BLEND_INVSRCCOLOR;
-	case BF_DEST_ALPHA:
+	case Menge::BF_DEST_ALPHA:
 		return BLEND_DESTALPHA;
-	case BF_SOURCE_ALPHA:
+	case Menge::BF_SOURCE_ALPHA:
 		return BLEND_SRCALPHA;
-	case BF_ONE_MINUS_DEST_ALPHA:
+	case Menge::BF_ONE_MINUS_DEST_ALPHA:
 		return BLEND_INVDESTALPHA;
-	case BF_ONE_MINUS_SOURCE_ALPHA:
+	case Menge::BF_ONE_MINUS_SOURCE_ALPHA:
 		return BLEND_INVSRCALPHA;
 	}
 	return BLEND_ZERO;
@@ -88,7 +88,7 @@ bool HGERenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	return initialized;
 }
 //////////////////////////////////////////////////////////////////////////
-bool HGERenderSystem::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle, int _FSAAType, int _FSAAQuality )
+bool HGERenderSystem::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 {
 	m_hge->System_SetState( HGE_SCREENWIDTH, _width );
 	m_hge->System_SetState( HGE_SCREENHEIGHT, _height );
@@ -107,14 +107,14 @@ bool HGERenderSystem::createRenderWindow( int _width, int _height, int _bits, bo
 	return ret;
 }
 //////////////////////////////////////////////////////////////////////////
-unsigned int HGERenderSystem::getResolutionList( int ** _list )
+std::size_t HGERenderSystem::getResolutionList( int ** _list )
 {
 	static std::vector<int> list = m_hge->Gfx_GetModeList();
 	*_list = &(list[0]);
 	return list.size();
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::addResourceLocation( const char* _path )
+void HGERenderSystem::addResourceLocation( const Menge::String & _path )
 {
 
 }
@@ -124,7 +124,7 @@ void HGERenderSystem::initResources()
 
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::screenshot( RenderImageInterface* _image, const int* _rect /*= 0 */ )
+void HGERenderSystem::screenshot( Menge::RenderImageInterface* _image, const int* _rect /*= 0 */ )
 {
 	RECT rect;
 	if( _rect )
@@ -172,16 +172,16 @@ void HGERenderSystem::setWorldMatrix( const float * _world )
 	m_hge->Gfx_SetWorldMatrix( _world );
 }
 //////////////////////////////////////////////////////////////////////////
-RenderImageInterface * HGERenderSystem::createImage( const char* _name,
+Menge::RenderImageInterface * HGERenderSystem::createImage( const Menge::String & _name,
 													unsigned int _width, unsigned int _height )
 {
 	HGETexture* texture = new HGETexture( m_hge, _name, _width, _height );
-	m_textureMap.insert( std::make_pair( _name, static_cast<RenderImageInterface*>( texture ) ) );
+	m_textureMap.insert( std::make_pair( _name, static_cast<Menge::RenderImageInterface*>( texture ) ) );
 	texture->incRef();
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
-RenderImageInterface * HGERenderSystem::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height )
+Menge::RenderImageInterface * HGERenderSystem::createRenderTargetImage( const Menge::String & _name, unsigned int _width, unsigned int _height )
 {
 	HTARGET htgt = m_hge->Target_Create( _width, _height, true );
 	m_targetMap.insert( std::make_pair( _name, htgt ) );
@@ -189,16 +189,16 @@ RenderImageInterface * HGERenderSystem::createRenderTargetImage( const char* _na
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
-RenderImageInterface * HGERenderSystem::loadImage( const TextureDesc& _desc )
+Menge::RenderImageInterface * HGERenderSystem::loadImage( const Menge::TextureDesc& _desc )
 {
 	HGETexture* texture = new HGETexture( m_hge );
 	texture->load( _desc );
-	m_textureMap.insert( std::make_pair( _desc.name, static_cast<RenderImageInterface*>( texture ) ) );
+	m_textureMap.insert( std::make_pair( _desc.name, static_cast<Menge::RenderImageInterface*>( texture ) ) );
 	texture->incRef();
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::releaseImage( RenderImageInterface * _image )
+void HGERenderSystem::releaseImage( Menge::RenderImageInterface * _image )
 {
 	HGETexture* texture = static_cast<HGETexture*>( _image );
 	if( !_image )
@@ -226,7 +226,7 @@ void HGERenderSystem::releaseImage( RenderImageInterface * _image )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-RenderImageInterface* HGERenderSystem::getImage( const Menge::String& _desc ) const 
+Menge::RenderImageInterface* HGERenderSystem::getImage( const Menge::String& _desc ) const 
 {
 	TTextureMap::const_iterator it = m_textureMap.find( _desc );
 	if( it != m_textureMap.end() )
@@ -237,12 +237,12 @@ RenderImageInterface* HGERenderSystem::getImage( const Menge::String& _desc ) co
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-RenderVideoStreamInterface* HGERenderSystem::loadImageVideoStream( const char* _filename )
+Menge::RenderVideoStreamInterface* HGERenderSystem::loadImageVideoStream( const Menge::String & _filename )
 {
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::releaseImageVideoStream( RenderVideoStreamInterface* _image )
+void HGERenderSystem::releaseImageVideoStream( Menge::RenderVideoStreamInterface* _image )
 {
 
 }
@@ -254,9 +254,9 @@ void HGERenderSystem::renderImage(const float * _transform,
 								  const float * _d, 
 								  const float * _uv, 
 								  unsigned int _color,  
-								  const RenderImageInterface * _image, 
-								  EBlendFactor _srcBlend, 
-								  EBlendFactor _dstBlend )
+								  const Menge::RenderImageInterface * _image, 
+								  Menge::EBlendFactor _srcBlend, 
+								  Menge::EBlendFactor _dstBlend )
 {
 	hgeQuad quad;
 
@@ -348,9 +348,9 @@ void HGERenderSystem::renderTriple(const float * _transform,
 								  const float * _uv1,
 								  const float * _uv2,
 								  unsigned int _color,  
-								  const RenderImageInterface * _image, 
-								  EBlendFactor _src, 
-								  EBlendFactor _dst )
+								  const Menge::RenderImageInterface * _image, 
+								  Menge::EBlendFactor _src, 
+								  Menge::EBlendFactor _dst )
 {
 	hgeTriple triangle;
 
@@ -377,7 +377,7 @@ void HGERenderSystem::renderTriple(const float * _transform,
 
 	triangle.blend = BLEND_DEFAULT;
 
-	if( _dst == BF_ONE )
+	if( _dst == Menge::BF_ONE )
 	{
 		triangle.blend ^= BLEND_ALPHABLEND;
 	}
@@ -485,42 +485,42 @@ void HGERenderSystem::setFullscreenMode( float _width, float _height, bool _full
 	m_hge->Gfx_ChangeMode( _width, _height, 32, _fullscreen );
 }
 //////////////////////////////////////////////////////////////////////////
-CameraInterface * HGERenderSystem::createCamera( const char * _name )
+Menge::CameraInterface * HGERenderSystem::createCamera( const Menge::String & _name )
 {
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-EntityInterface * HGERenderSystem::createEntity( const char * _name, const char * _meshName )
+Menge::EntityInterface * HGERenderSystem::createEntity( const Menge::String & _name, const Menge::String & _meshName )
 {
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-LightInterface * HGERenderSystem::createLight( const char * _name )
+Menge::LightInterface * HGERenderSystem::createLight( const Menge::String & _name )
 {
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-SceneNodeInterface * HGERenderSystem::createSceneNode( const std::string & _name )
+Menge::SceneNodeInterface * HGERenderSystem::createSceneNode( const Menge::String & _name )
 {
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::releaseCamera( CameraInterface * _camera )
+void HGERenderSystem::releaseCamera( Menge::CameraInterface * _camera )
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::releaseEntity( EntityInterface * _entity )
+void HGERenderSystem::releaseEntity( Menge::EntityInterface * _entity )
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::releaseLight( LightInterface * _light )
+void HGERenderSystem::releaseLight( Menge::LightInterface * _light )
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::releaseSceneNode( SceneNodeInterface * _interface )
+void HGERenderSystem::releaseSceneNode( Menge::SceneNodeInterface * _interface )
 {
 
 }
@@ -530,12 +530,12 @@ void HGERenderSystem::setTextureFiltering( bool _filter )
 
 }
 //////////////////////////////////////////////////////////////////////////
-SceneNodeInterface * HGERenderSystem::getRootSceneNode() const 
+Menge::SceneNodeInterface * HGERenderSystem::getRootSceneNode() const 
 {
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::setEventListener( RenderSystemListener* _listener )
+void HGERenderSystem::setEventListener( Menge::RenderSystemListener* _listener )
 {
 
 }
@@ -554,9 +554,9 @@ void HGERenderSystem::onWindowClose()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::renderMesh( const TVertex* _vertices, std::size_t _verticesNum,
+void HGERenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _verticesNum,
 								 const Menge::uint16*	_indices, std::size_t _indicesNum,
-								 TMaterial* _material )
+								 Menge::TMaterial* _material )
 {
 	static std::vector<mengeVertex> vtx;
 	vtx.clear();

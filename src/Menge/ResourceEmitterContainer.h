@@ -4,12 +4,12 @@
 
 #	include <map>
 
-class EmitterContainerInterface;
-//class FileDataInterface;
-class RenderImageInterface;
-
 namespace Menge
 {
+	class EmitterContainerInterface;
+	//class FileDataInterface;
+	class RenderImageInterface;
+
 	//! ResourceEmitterContainer - ресурс-файл контейнера эмиттеров, который заполняется из формата *.ptc от Astralax. ptc содержит только имена текстур, поэтому необходимо задавать в какой директории они находятся.
 
     /*! xml - файл имеет следующую структуру:

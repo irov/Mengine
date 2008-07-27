@@ -13,18 +13,6 @@
 #include <d3d8types.h>
 #	include <cassert>
 
-void s_copySurfaceData( char* _dstData, int _dstPitch, const char* _srcData, int _srcPitch, RECT _srcRect )
-{
-	size_t width = _srcRect.right - _srcRect.left;
-	for( size_t y = _srcRect.top; y < _srcRect.bottom; y++ )
-	{
-		memcpy( _dstData, _srcData, width * 4 );
-		_dstData += _dstPitch;
-		_srcData += _srcPitch;
-	}
-	
-}
-
 D3DFORMAT s_toD3DFormat( int _format )
 {
 	switch( _format )

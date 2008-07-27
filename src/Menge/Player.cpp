@@ -88,11 +88,6 @@ namespace Menge
 		return m_arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Player::getPositionClick() const
-	{
-		return m_arrow->getWorldPosition();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Player::init()
 	{
 		Arrow * defaultArrow = 
@@ -203,7 +198,9 @@ namespace Menge
 	{
 		m_arrow->onMouseMove( _x, _y );
 
-		Holder<PhysicEngine2D>::hostage()->onMouseMove( m_arrow->getLocalPosition().x, m_arrow->getLocalPosition().y );
+		const mt::vec2f & arrowPos = m_arrow->getLocalPosition();
+
+		Holder<PhysicEngine2D>::hostage()->onMouseMove( arrowPos.x, arrowPos.y );
 
 		bool handler = false;
 

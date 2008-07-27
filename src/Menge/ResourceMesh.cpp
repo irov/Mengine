@@ -33,13 +33,15 @@ namespace Menge
 	const std::vector<TVertex>& ResourceMesh::getVertexData()
 	{
 		assert( 0 && "Object of this class must never exist" );
-		return std::vector<TVertex>();
+		static std::vector<TVertex> s_empty;
+		return s_empty;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::vector<uint16>& ResourceMesh::getIndexData()
 	{
 		assert( 0 && "Object of this class must never exist" );
-		return std::vector<uint16>();
+		static std::vector<uint16> s_empty;
+		return s_empty;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMesh::_compile()

@@ -215,9 +215,12 @@ namespace     Menge
 					uv.w = uv.y + h * s;
 				}
 
-				int width = static_cast<int>( m_resource->getCharRatio( *it ) * m_height );
+				//AGHTUNG - если нужно округлить делайте floorf : float - int - float не в рот ебически долго!!!
+				float width = floorf( m_resource->getCharRatio( *it ) * m_height );
 
 				mt::vec2f size( width, m_height );
+
+				ARGB argb = _color.getAsARGB();
 
 				Holder<RenderEngine>::hostage()->renderImage(
 					wm,
@@ -226,7 +229,7 @@ namespace     Menge
 					offset + size,
 					offset + mt::vec2f( 0.0f, size.y ),
 					uv,
-					_color.getAsARGB(),
+					argb,
 					_renderImage
 					);
 

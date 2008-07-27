@@ -28,7 +28,7 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].maxSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ResourceImageAtlas::getCount() const
+	std::size_t ResourceImageAtlas::getCount() const
 	{
 		return m_vectorImageFrames.size();
 	}

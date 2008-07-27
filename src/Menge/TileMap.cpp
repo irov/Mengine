@@ -62,7 +62,7 @@ namespace	Menge
 		const std::vector< mt::vec2f >& pos = m_resourceMap->_getPhysPos();
 		float width = m_resourceMap->_getPhysWidth();
 		collision->setName( "WorldPhysObject" );
-		for( int i = 0; i < pos.size(); i++ )
+		for( std::vector< mt::vec2f >::size_type i = 0; i < pos.size(); i++ )
 		{
 			collision->_addShapeBox( width, width, pos[i], 0.0f );
 		}
@@ -89,12 +89,10 @@ namespace	Menge
 		const mt::mat3f & wm = getWorldMatrix();
 		float tileSize = m_resourceMap->getTileSize();
 
-		int init_i = viewport.begin.x / tileSize;
-		int init_j = viewport.begin.y / tileSize;
-		if( init_i < 0 ) init_i = 0;
-		if( init_j < 0 ) init_j = 0;
-		int end_i = viewport.end.x / tileSize + 1;
-		int end_j = viewport.end.y / tileSize + 1;
+		unsigned int init_i = ( viewport.begin.x > 0.f ) ? viewport.begin.x / tileSize : 0.f;
+		unsigned int init_j = ( viewport.begin.y > 0.f ) ? viewport.begin.y / tileSize : 0.f;
+		unsigned int end_i = viewport.end.x / tileSize + 1;
+		unsigned int end_j = viewport.end.y / tileSize + 1;
 		if( end_i > m_width ) end_i = m_width;
 		if( end_j > m_height ) end_j = m_height;
 

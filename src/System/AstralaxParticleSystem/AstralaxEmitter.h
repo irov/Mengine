@@ -6,7 +6,8 @@
 
 #	include <vector>
 
-class AstralaxEmitter : public EmitterInterface
+class AstralaxEmitter 
+	: public Menge::EmitterInterface
 {
 public:
 	AstralaxEmitter( HM_EMITTER _id );
@@ -28,7 +29,7 @@ public:
 
 	bool	isIntensive() const override;
 
-	void	setListener( ParticleEmitterListenerInterface* _listener ) override;
+	void	setListener( Menge::ParticleEmitterListenerInterface* _listener ) override;
 	void	setPosition( float _x, float _y ) override;
 public:
 	HM_EMITTER	getId() const;
@@ -39,7 +40,7 @@ private:
 	HM_EMITTER	m_id;
 	bool		m_start;
 	bool		m_looped;
-	ParticleEmitterListenerInterface* m_listener;
+	Menge::ParticleEmitterListenerInterface* m_listener;
 
 	float m_factor[20];
 	int m_typesCount;

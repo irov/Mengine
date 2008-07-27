@@ -25,7 +25,7 @@ namespace Menge
 		return m_imageFrame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ResourceImageCell::getCount() const 
+	std::size_t ResourceImageCell::getCount() const 
 	{
 		return m_uvs.size();
 	}

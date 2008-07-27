@@ -14,7 +14,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const std::string & _filename )
+	EmitterContainerInterface * ParticleEngine::createEmitterContainerFromFile( const String & _filename )
 	{
 		FileBuffer fb = Holder<FileEngine>::hostage()->getFileBuffer( _filename );
 
@@ -35,7 +35,7 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EmitterInterface * ParticleEngine::createEmitterFromContainer( const char * _name, const EmitterContainerInterface * _container )
+	EmitterInterface * ParticleEngine::createEmitterFromContainer( const String & _name, const EmitterContainerInterface * _container )
 	{
 		return m_interface->createEmitterFromContainer( _name, _container );
 	}
@@ -50,11 +50,9 @@ namespace Menge
 		return m_interface->releaseEmitter( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string& ParticleEngine::getTextureName() const
+	String ParticleEngine::getTextureName() const
 	{
-		static std::string name;
-		name = m_interface->getTextureName() ? m_interface->getTextureName() : emptyString();
-		return name;
+		return m_interface->getTextureName();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderParticle * ParticleEngine::nextParticle()

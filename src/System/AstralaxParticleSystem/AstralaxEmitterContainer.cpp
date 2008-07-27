@@ -9,12 +9,12 @@ AstralaxEmitterContainer::~AstralaxEmitterContainer()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxEmitterContainer::addEmitterId( const char * _name,  HM_EMITTER _id )
+void AstralaxEmitterContainer::addEmitterId( const Menge::String & _name,  HM_EMITTER _id )
 {
 	m_emittersIds.insert( std::make_pair( _name, _id ) );
 }
 //////////////////////////////////////////////////////////////////////////
-HM_EMITTER AstralaxEmitterContainer::getEmitter( const char * _name ) const
+HM_EMITTER AstralaxEmitterContainer::getEmitter( const Menge::String & _name ) const
 {
 	std::map<std::string, HM_EMITTER>::const_iterator it = m_emittersIds.find( _name );
 

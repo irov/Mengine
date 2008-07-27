@@ -31,8 +31,6 @@ namespace Menge
 		void setArrow( Arrow * _arrow );
 		Arrow * getArrow();
 
-		const mt::vec2f & getPositionClick() const;
-
 	public:
 		void setRenderCamera2D( Camera2D * _camera);
 		Camera2D * getRenderCamera2D();

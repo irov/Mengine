@@ -24,7 +24,7 @@ namespace Menge
 		return m_sizes[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ResourceImageSet::getCount() const 
+	std::size_t ResourceImageSet::getCount() const 
 	{
 		return m_uvs.size();
 	}

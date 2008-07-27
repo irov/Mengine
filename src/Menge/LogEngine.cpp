@@ -54,10 +54,14 @@ namespace Menge
 
 		const std::string & message = strMessage.str();
 
-		if( Py_IsInitialized() == 0 || !(m_mask & ELoggerBreak) )
+		bool isBreak = ( m_mask & ELoggerBreak ) > 0;
+
+		if( Py_IsInitialized() == 0 || !isBreak )
 		{
+			bool isDebug = ( m_mask & ELoggerDebug ) > 0;
+
 			Holder<LogEngine>::hostage()
-				->logMessage( message, m_mask & ELoggerDebug );
+				->logMessage( message, isDebug );
 		}
 		else
 		{

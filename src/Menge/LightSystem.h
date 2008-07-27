@@ -24,7 +24,7 @@ namespace Menge
 
 		struct ShadowCasterCache
 		{
-			std::pair<int, int> m_chain;
+			std::pair<std::size_t, std::size_t> m_chain;
 			ShadowCaster2D * m_shadowCaster;
 		};
 
@@ -37,8 +37,8 @@ namespace Menge
 		TListLight m_lights;
 
 		bool isVisibleEdge(const Light2D & _light, const ShadowCaster2D & _caster, int i) const;
-		void drawUmbra(const Light2D & _light, const ShadowCaster2D & _caster, int first, int last);
-		void drawPenumbra(const Light2D & _light, const ShadowCaster2D & _caster, int first, int last);
+		void drawUmbra(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t first, std::size_t last);
+		void drawPenumbra(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t first, std::size_t last);
 		void makeShadow(const Light2D & _light, ShadowCasterCache & _cell);
 	};
 }

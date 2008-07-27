@@ -5,7 +5,7 @@
 #	include "Box2DPhysicSystem.h"	
 
 class Box2DPhysicBody
-	: public PhysicBody2DInterface
+	: public Menge::PhysicBody2DInterface
 	, public b2BodyListener
 {
 public:
@@ -38,7 +38,7 @@ public:
 	void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY ) override;
 	void applyTorque( float _torque ) override;
 
-	void setBodyListener( PhysicBody2DListener* _listener ) override;
+	void setBodyListener( Menge::PhysicBody2DListener* _listener ) override;
 	void setUserData( void* _data ) override;
 	void* getUserData() const override;
 
@@ -55,7 +55,7 @@ public:
 private:
 	b2World* m_world;
 	b2Body* m_body;
-	PhysicBody2DListener* m_listener;
+	Menge::PhysicBody2DListener* m_listener;
 	void* m_userData;
 	bool m_isStatic;
 

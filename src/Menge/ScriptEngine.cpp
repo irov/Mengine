@@ -192,7 +192,7 @@ namespace Menge
 		TMapEntitiesXML::iterator it_insert =
 			m_mapEntitiesXML.insert( std::make_pair( _type, TVectorChar() ) ).first;
 
-		unsigned int size = file->size();
+		std::size_t size = file->size();
 		TVectorChar & blob = it_insert->second;
 		
 		blob.resize( size );

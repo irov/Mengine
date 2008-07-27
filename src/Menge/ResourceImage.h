@@ -4,10 +4,10 @@
 
 #	include "Math/vec4.h"
 
-class RenderImageInterface;
-
 namespace Menge
 {
+	class RenderImageInterface;
+
 	//! ResourceImage - интерфейс для ресурсов, которые работают с избражениями.
 	/*! 
 	*
@@ -39,7 +39,7 @@ namespace Menge
 		\return количество изображений
 		*/
 
-		virtual unsigned int getCount() const = 0;
+		virtual std::size_t getCount() const = 0;
 
 		//! Возвращает максимальный размер frame изображения
 		/*!

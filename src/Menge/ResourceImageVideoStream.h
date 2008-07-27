@@ -2,10 +2,10 @@
 
 #	include "ResourceImage.h"
 
-class RenderVideoStreamInterface;
-
 namespace Menge
 {
+	class RenderVideoStreamInterface;
+
 	class ResourceImageVideoStream
 		: public ResourceImage
 	{

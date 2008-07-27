@@ -120,7 +120,7 @@ namespace Menge
 		{
 			m_active = false;
 			_deactivate();
-		}		
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::isActivate() const
@@ -195,9 +195,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Node::getChildren( const std::string & _name, bool _recursion )
+	Node * Node::getChildren( const std::string & _name, bool _recursion ) const
 	{
-		for( TContainerChildren::iterator
+		for( TContainerChildren::const_iterator
 			it = m_children.begin(),
 			it_end = m_children.end();
 		it != it_end;
@@ -368,7 +368,7 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::updatable()
+	bool Node::updatable() const
 	{
 		return m_updatable;
 	}
@@ -615,7 +615,7 @@ namespace Menge
 		return Allocator2D::updateWorldMatrix( wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Node::getWorldPosition()
+	const mt::vec2f & Node::getWorldPosition()
 	{
 		const mt::mat3f &wm = getWorldMatrix();
 

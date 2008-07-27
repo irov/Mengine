@@ -120,7 +120,8 @@ namespace	Menge
 			return false;
 		}
 
-		m_interface = Holder<ParticleEngine>::hostage()->createEmitterFromContainer( m_emitterName.c_str(), m_container );
+		m_interface = Holder<ParticleEngine>::hostage()
+			->createEmitterFromContainer( m_emitterName, m_container );
 
 		if( m_interface == 0 )
 		{

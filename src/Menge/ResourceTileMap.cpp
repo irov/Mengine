@@ -57,11 +57,11 @@ namespace Menge
 		m_width = 0;
 		m_height = 0;
 		DataStreamInterface* mapFile = Holder<FileEngine>::hostage()->openFile( m_tileMapFile );
-		std::string line1 = mapFile->getLine( true );
+		String line1 = mapFile->getLine( true );
 		m_width = line1.size() - 1;
-		std::string line2;
+		String line2;
 
-		for( int i = 0; i < line1.size(); i++ )
+		for( String::size_type i = 0; i < line1.size(); i++ )
 		{
 			if( line1[i] == '1' )
 			{

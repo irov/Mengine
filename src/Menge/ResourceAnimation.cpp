@@ -14,7 +14,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ResourceAnimation::getSequenceCount() const
+	std::size_t ResourceAnimation::getSequenceCount() const
 	{
 		return m_vectorSequence.size();
 	}

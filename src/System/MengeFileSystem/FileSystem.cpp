@@ -19,7 +19,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-bool initInterfaceSystem( FileSystemInterface **_system )
+bool initInterfaceSystem( Menge::FileSystemInterface **_system )
 {
 	try
 	{
@@ -33,7 +33,7 @@ bool initInterfaceSystem( FileSystemInterface **_system )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void releaseInterfaceSystem( FileSystemInterface *_system )
+void releaseInterfaceSystem( Menge::FileSystemInterface *_system )
 {
 	delete static_cast<Menge::FileSystem*>( _system );
 }
@@ -182,7 +182,8 @@ namespace Menge
 		fs.hwnd = NULL;
 
 		wchar_t lpszW[MAX_PATH];
-		MultiByteToWideChar(CP_ACP, 0, _path.c_str(), -1, lpszW, _path.size() );
+		String::size_type size = _path.size();
+		MultiByteToWideChar(CP_ACP, 0, _path.c_str(), -1, lpszW, size );
 		lpszW[_path.size()] = 0;
 		lpszW[_path.size()+1] = 0;
 
@@ -236,7 +237,8 @@ namespace Menge
 
 		/// patch for ansi names
 		char *ansistr = NULL;
-		size_t length = MultiByteToWideChar(CP_UTF8, 0, _game.c_str(), _game.length(), NULL, NULL );
+		String::size_type size = _game.size();
+		std::size_t length = MultiByteToWideChar(CP_UTF8, 0, _game.c_str(), size, NULL, NULL );
 		WCHAR *lpszW = NULL;
 
 		lpszW = new WCHAR[length+1];
@@ -287,7 +289,8 @@ namespace Menge
 	{
 		String fileName = m_appDataPath + "\\" + _filename;
 		wchar_t lpszW[MAX_PATH];
-		MultiByteToWideChar(CP_ACP, 0, fileName.c_str(), -1, lpszW, fileName.size() );
+		String::size_type size = fileName.size();
+		MultiByteToWideChar(CP_ACP, 0, fileName.c_str(), -1, lpszW, size );
 		lpszW[fileName.size()] = 0;
 
 		FileStreamOutStream* outStream = new FileStreamOutStream();

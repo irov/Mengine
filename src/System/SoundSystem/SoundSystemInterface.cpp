@@ -17,14 +17,14 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 
 #endif
 
-bool    initInterfaceSystem( SoundSystemInterface** _pSoundSystemInterface)
+bool initInterfaceSystem( Menge::SoundSystemInterface** _pSoundSystemInterface)
 {
-	*_pSoundSystemInterface = (SoundSystemInterface*) new ALSoundSystem();
+	*_pSoundSystemInterface = (Menge::SoundSystemInterface*) new ALSoundSystem();
 	//bool init = static_cast<ALSoundSystem*>( *_pSoundSystemInterface )->initialize();
 	return true;
 }
 
-void    releaseInterfaceSystem( SoundSystemInterface* _pSoundSystemInterface)
+void releaseInterfaceSystem( Menge::SoundSystemInterface* _pSoundSystemInterface)
 {
 	delete static_cast<ALSoundSystem*>(_pSoundSystemInterface);
 }

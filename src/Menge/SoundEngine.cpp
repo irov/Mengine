@@ -38,7 +38,7 @@ namespace Menge
 		return	sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface *	SoundEngine::createSoundBufferFromFile( const char* _filename, bool _isStream )
+	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const String & _filename, bool _isStream )
 	{
 		SoundBufferInterface * sample =
 			m_interface->createSoundBufferFromFile( _filename, _isStream );

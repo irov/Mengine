@@ -6,11 +6,11 @@
 #	include <vector>
 #	include <map>
 
-class RenderImageInterface;
-class DataStreamInterface;
-
 namespace Menge
 {
+	class RenderImageInterface;
+	class DataStreamInterface;
+
 	//! ResourceFont - ресурс-файл, который содержит изображение, список uv - координат и коэффициентов пропорциональности. 
 
     /*! xml - файл имеет следующую структуру:

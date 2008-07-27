@@ -48,7 +48,7 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 		RedirectIOToConsole();
 	}
 
-	ApplicationInterface * platform = 0;
+	Menge::ApplicationInterface * platform = 0;
 
 	if( initInterfaceSystem( &platform ) == false )
 	{
@@ -63,34 +63,34 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	initInterfaceSystem( &logSystem );
 	app.setLogSystem( logSystem );
 
-	FileSystemInterface * fileSystem;
+	Menge::FileSystemInterface * fileSystem;
 	initInterfaceSystem( &fileSystem );
 	fileSystem->loadPath(".");
 	app.setFileSystem( fileSystem );
 
-	InputSystemInterface * inputSystem;
+	Menge::InputSystemInterface * inputSystem;
 	initInterfaceSystem( &inputSystem );
 	app.setInputSystem( inputSystem );
 	
 
 #	if	MENGE_PARTICLES	== (1)
 
-	ParticleSystemInterface * particleSystem;
+	Menge::ParticleSystemInterface * particleSystem;
 	initInterfaceSystem( &particleSystem );
 	app.setParticleSystem( particleSystem );
 
 #	endif
 
-	PhysicSystem2DInterface * physicSystem2D;
+	Menge::PhysicSystem2DInterface * physicSystem2D;
 	initInterfaceSystem( &physicSystem2D );
 	app.setPhysicSystem2D( physicSystem2D );
 
-	RenderSystemInterface * renderSystem;
+	Menge::RenderSystemInterface * renderSystem;
 	initInterfaceSystem( &renderSystem );
 	app.setRenderSystem( renderSystem );
 
 
-	SoundSystemInterface * soundSystem;
+	Menge::SoundSystemInterface * soundSystem;
 	initInterfaceSystem( &soundSystem );
 	app.setSoundSystem( soundSystem );
 

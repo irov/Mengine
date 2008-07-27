@@ -112,8 +112,16 @@ namespace	Menge
 		return m_currentHotSpot;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::onMouseMove( int _dx, int _dy )
+	void Arrow::onMouseMove( float _dx, float _dy )
 	{
+		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 		const mt::vec2f& pos = getLocalPosition();
 		mt::vec2f nPos = mt::vec2f( pos.x + _dx, pos.y + _dy );
 		if( nPos.x < 0.0f )

@@ -29,7 +29,8 @@ class ALSoundSource;
 class ALSoundBufferStream;
 class SulkSystem;
 
-class ALSoundSystem : public SoundSystemInterface
+class ALSoundSystem 
+	: public Menge::SoundSystemInterface
 {
 public:
 	ALSoundSystem();
@@ -41,30 +42,30 @@ public:
 	bool initialize() override;
 
 	void setListenerOrient( float * _position, float * _front, float * top) override;
-	SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener ) override;
+	Menge::SoundSourceInterface * createSoundSource( bool _isHeadMode, Menge::SoundBufferInterface * _sample, Menge::SoundNodeListenerInterface * _listener ) override;
 
-	SoundBufferInterface * createSoundBufferFromFile( const char * _filename, bool _isStream ) override;
-	SoundBufferInterface * createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) override;
+	Menge::SoundBufferInterface * createSoundBufferFromFile( const Menge::String & _filename, bool _isStream ) override;
+	Menge::SoundBufferInterface * createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) override;
 
-	void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) override;
-	void releaseSoundNode( SoundSourceInterface * _sn ) override;
+	void releaseSoundBuffer( Menge::SoundBufferInterface * _soundBuffer ) override;
+	void releaseSoundNode( Menge::SoundSourceInterface * _sn ) override;
 
 	bool setBlow( bool _active ) override;
 	float getBlow() override;
 
 	void setEnoughBlow( float _enoughBlow ) override;
-	void setBlowCallback( SoundSulkCallbackInterface * _callback ) override;
+	void setBlowCallback( Menge::SoundSulkCallbackInterface * _callback ) override;
 
 	void update( float _timing ) override;
 
 
 public:
 	void	setSoundVelocity( float _velocity );
-	float	getSoundVelocity()								{ return m_soundVelocity; }
+	float	getSoundVelocity();
 	void	setDopplerFactor( float _factor );
-	float	getDopplerFactor()								{ return m_dopplerFactor; }
+	float	getDopplerFactor();
 	void	setDistanceModel(EDistanceModel _model);
-	EDistanceModel getDistanceModel()						{ return m_distanceModel; }
+	EDistanceModel getDistanceModel();
 
 	TALSourceName* getFreeSourceName( bool stereo );
 

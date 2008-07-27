@@ -36,7 +36,7 @@ namespace Menge
 		/*!
 		\return количество изображений
 		*/
-		virtual unsigned int getSequenceCount() const;
+		virtual std::size_t getSequenceCount() const;
 
 		//! Возвращает задержку для _sequence кадра
 		/*!

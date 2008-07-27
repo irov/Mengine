@@ -106,7 +106,7 @@ void    ALSoundSystem::setListenerOrient( float * _position, float * _front, flo
 	alListenerfv(AL_ORIENTATION, m_listenerOrientation);
 }
 //////////////////////////////////////////////////////////////////////////
-SoundSourceInterface*   ALSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener )
+Menge::SoundSourceInterface * ALSoundSystem::createSoundSource( bool _isHeadMode, Menge::SoundBufferInterface * _sample, Menge::SoundNodeListenerInterface * _listener )
 {
 	if( m_initialized == false ) return 0;
 	//ALSoundSource* source = new ALSoundSource(this);
@@ -132,11 +132,11 @@ SoundSourceInterface*   ALSoundSystem::createSoundSource( bool _isHeadMode, Soun
 	return source;
 }
 //////////////////////////////////////////////////////////////////////////
-SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _filename, bool _isStream )
+Menge::SoundBufferInterface * ALSoundSystem::createSoundBufferFromFile( const Menge::String & _filename, bool _isStream )
 {
 	if( m_initialized == false ) return 0;
 
-	ALSoundBuffer* buffer = NULL;
+	ALSoundBuffer * buffer = NULL;
 
 	if( _isStream )
 	{
@@ -147,7 +147,7 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 		buffer = new ALSoundBuffer();
 	}
 
-	if( !strcmp( _filename + (strlen(_filename) - 4), ".ogg" ) )
+	if( _filename.find_last_of(".ogg") != Menge::String::npos )
 	{
 		if( !buffer->loadOgg( _filename ) )
 		{
@@ -164,7 +164,7 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromFile( const char * _
 	return buffer;
 }
 //////////////////////////////////////////////////////////////////////////
-SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem )
+Menge::SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem )
 {
 	if( m_initialized == false ) return 0;
 
@@ -189,13 +189,13 @@ SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buff
 	return buffer;
 }
 //////////////////////////////////////////////////////////////////////////
-void    ALSoundSystem::releaseSoundBuffer( SoundBufferInterface * _soundBuffer )
+void ALSoundSystem::releaseSoundBuffer( Menge::SoundBufferInterface * _soundBuffer )
 {
 	//_soundBuffer->unload();
 	delete static_cast<ALSoundBuffer*>(_soundBuffer);
 }
 //////////////////////////////////////////////////////////////////////////
-void    ALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
+void ALSoundSystem::releaseSoundNode( Menge::SoundSourceInterface * _sn )
 {
 //	delete _sn;
 	if(_sn)
@@ -274,7 +274,7 @@ void ALSoundSystem::setEnoughBlow( float _enoughBlow )
 	}
 };
 //////////////////////////////////////////////////////////////////////////
-void ALSoundSystem::setBlowCallback( SoundSulkCallbackInterface * _callback )
+void ALSoundSystem::setBlowCallback( Menge::SoundSulkCallbackInterface * _callback )
 {
 	if( m_sulk )
 	{
@@ -282,7 +282,7 @@ void ALSoundSystem::setBlowCallback( SoundSulkCallbackInterface * _callback )
 	}
 };
 //////////////////////////////////////////////////////////////////////////
-void	ALSoundSystem::setSoundVelocity(float _velocity)
+void ALSoundSystem::setSoundVelocity(float _velocity)
 {
 	if( m_initialized == false ) return;
 
@@ -290,7 +290,12 @@ void	ALSoundSystem::setSoundVelocity(float _velocity)
 	alDopplerVelocity(m_soundVelocity);
 }
 //////////////////////////////////////////////////////////////////////////
-void	ALSoundSystem::setDopplerFactor(float _factor)
+float ALSoundSystem::getSoundVelocity()
+{ 
+	return m_soundVelocity; 
+}
+//////////////////////////////////////////////////////////////////////////
+void ALSoundSystem::setDopplerFactor( float _factor )
 {
 	if( m_initialized == false ) return;
 
@@ -298,9 +303,13 @@ void	ALSoundSystem::setDopplerFactor(float _factor)
 	alDopplerFactor(m_dopplerFactor);
 }
 //////////////////////////////////////////////////////////////////////////
-void	ALSoundSystem::setDistanceModel(EDistanceModel _model)
+float ALSoundSystem::getDopplerFactor()
+{ 
+	return m_dopplerFactor; 
+}
+//////////////////////////////////////////////////////////////////////////
+void ALSoundSystem::setDistanceModel(EDistanceModel _model)
 {
-
 	switch(_model) 
 	{
 	case(None):
@@ -324,6 +333,11 @@ void	ALSoundSystem::setDistanceModel(EDistanceModel _model)
 	m_distanceModel = _model;
 }
 //////////////////////////////////////////////////////////////////////////
+EDistanceModel ALSoundSystem::getDistanceModel()
+{ 
+	return m_distanceModel; 
+}
+//////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::addStream( ALSoundBufferStream *_stream )
 {
 	m_streams.push_back( _stream );
@@ -331,9 +345,12 @@ void ALSoundSystem::addStream( ALSoundBufferStream *_stream )
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::removeStream( ALSoundBufferStream* _stream )
 {
-	TVectorALSoundBufferStream::iterator it = std::find( m_streams.begin(), m_streams.end(), _stream );
-	if(it != m_streams.end())
-		m_streams.erase(it);
+	TVectorALSoundBufferStream::iterator it_find = std::find( m_streams.begin(), m_streams.end(), _stream );
+
+	if( it_find != m_streams.end() )
+	{
+		m_streams.erase( it_find );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 TALSourceName* ALSoundSystem::getFreeSourceName( bool stereo )

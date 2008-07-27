@@ -16,25 +16,25 @@
 
 namespace mt
 {
+	typedef std::vector<vec2f> TVectorPoints;
+
 	struct polygon
 	{
-		typedef std::vector<vec2f> TVectorPoints;
-
 		MATH_INLINE polygon();
-		MATH_INLINE polygon( TVectorPoints::size_type n );
+		MATH_INLINE polygon( std::size_t n );
 		MATH_INLINE polygon( const polygon & _rhs );
 
 		MATH_INLINE void clear_points();
 
 		MATH_INLINE void add_point(const vec2f& v);
-		MATH_INLINE void insert( TVectorPoints::size_type after, const vec2f & v );
+		MATH_INLINE void insert( std::size_t after, const vec2f & v );
 
-		MATH_INLINE TVectorPoints::size_type num_points() const;
+		MATH_INLINE std::size_t num_points() const;
 
 		MATH_INLINE polygon & operator = (const polygon& _rhs);
 
-		MATH_INLINE const vec2f & operator [] ( TVectorPoints::size_type i ) const;
-		MATH_INLINE vec2f & operator [] ( TVectorPoints::size_type i );
+		MATH_INLINE const vec2f & operator [] ( std::size_t i ) const;
+		MATH_INLINE vec2f & operator [] ( std::size_t i );
 
 		MATH_INLINE vec2f & front();
 		MATH_INLINE const vec2f & front()const;
@@ -42,13 +42,13 @@ namespace mt
 		MATH_INLINE vec2f & back();
 		MATH_INLINE const vec2f & back() const;
 
-		MATH_INLINE const std::vector<mt::vec2f> & get_points() const;
+		MATH_INLINE const TVectorPoints & get_points() const;
 
 		//	return extrem point in direction
-		MATH_INLINE mt::vec2f support( const mt::vec2f& normal )  const;
+		MATH_INLINE const mt::vec2f & support( const mt::vec2f& normal )  const;
 
 	private:		
-		TVectorPoints points;
+		TVectorPoints m_points;
 	};
 
 	MATH_INLINE bool cmp_poly_poly(const polygon& _a, const polygon& _b);
@@ -69,12 +69,12 @@ namespace mt
 		const mt::mat3f & worldMatrixA,
 		const mt::mat3f & worldMatrixB);
 
-	MATH_INLINE bool make_countour_polygon( const std::vector<mt::vec2f> & _polygon, float _width, std::vector<mt::vec2f> & _contour );
+	MATH_INLINE bool make_countour_polygon( const TVectorPoints & _polygon, float _width, TVectorPoints & _contour );
 
 	MATH_INLINE bool operator==(const polygon& _a, const polygon& _b);
 	MATH_INLINE bool operator!=(const polygon& _a, const polygon& _b);
-	MATH_INLINE float polygon_area( const std::vector<mt::vec2f> & _contour );
-	int decompose_concave(std::vector<mt::vec2f> & points, std::vector<mt::polygon> & results);
+	MATH_INLINE float polygon_area( const TVectorPoints & _contour );
+	int decompose_concave(TVectorPoints & points, std::vector<mt::polygon> & results);
 };
 
 #	if MATH_FORCE_INLINE == 1

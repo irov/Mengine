@@ -256,6 +256,7 @@ namespace Menge
 				//FIXME
 				RenderImageInterface * imageInterface
 					= Holder<RenderEngine>::hostage()->createImage( _name.c_str(), rect[2] - rect[0], rect[3] - rect[1] );
+
 				resourceImage->setRenderImage( imageInterface );
 
 				Holder<ResourceManager>::hostage()->registerResource( resourceImage );
@@ -331,12 +332,12 @@ namespace Menge
 			Image wImage;
 
 			unsigned char * buffer = img->lock();
-			float width = img->getWidth();
-			float height = img->getHeight();
+			std::size_t width = img->getWidth();
+			std::size_t height = img->getHeight();
 			PixelFormat pixelFormat = img->getPixelFormat();
 
 
-			wImage.loadDynamicImage( buffer, (std::size_t)width, (std::size_t)height, 1, pixelFormat );
+			wImage.loadDynamicImage( buffer, width, height, 1, pixelFormat );
 			wImage.save( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _filename );
 			img->unlock();
 			//const_cast<RenderImageInterface*>(img)->writeToFile( _filename.c_str() );

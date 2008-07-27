@@ -4,7 +4,7 @@
 #	include "AstralaxEmitterContainer.h"
 
 //////////////////////////////////////////////////////////////////////////
-bool initInterfaceSystem(ParticleSystemInterface** _ptrParticleSystem)
+bool initInterfaceSystem( Menge::ParticleSystemInterface** _ptrParticleSystem )
 {
 	try
 	{
@@ -19,7 +19,7 @@ bool initInterfaceSystem(ParticleSystemInterface** _ptrParticleSystem)
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void releaseInterfaceSystem(ParticleSystemInterface* _ptrParticleSystem)
+void releaseInterfaceSystem( Menge::ParticleSystemInterface* _ptrParticleSystem )
 {
 	delete static_cast<AstralaxParticleSystem*>(_ptrParticleSystem);
 }
@@ -33,7 +33,7 @@ AstralaxParticleSystem::~AstralaxParticleSystem()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-EmitterContainerInterface * AstralaxParticleSystem::createEmitterContainerFromMemory( void * _buffer )
+Menge::EmitterContainerInterface * AstralaxParticleSystem::createEmitterContainerFromMemory( void * _buffer )
 {
 	HM_FILE file;
 
@@ -75,9 +75,11 @@ EmitterContainerInterface * AstralaxParticleSystem::createEmitterContainerFromMe
 	return container;
 }
 //////////////////////////////////////////////////////////////////////////
-EmitterInterface * AstralaxParticleSystem::createEmitterFromContainer( const char * _name, const EmitterContainerInterface * _container )
+Menge::EmitterInterface * AstralaxParticleSystem::createEmitterFromContainer( const Menge::String & _name, const Menge::EmitterContainerInterface * _container )
 {
-	const AstralaxEmitterContainer * container = static_cast<const AstralaxEmitterContainer*>( _container );
+	const AstralaxEmitterContainer * container = 
+		static_cast<const AstralaxEmitterContainer*>( _container );
+
 	HM_EMITTER id = container->getEmitter( _name );
 
 	if( id == 0 )
@@ -90,12 +92,12 @@ EmitterInterface * AstralaxParticleSystem::createEmitterFromContainer( const cha
 	return emitter;
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxParticleSystem::releaseEmitter( EmitterInterface * _emitter )
+void AstralaxParticleSystem::releaseEmitter( Menge::EmitterInterface * _emitter )
 {
 	delete static_cast<AstralaxEmitter*>(_emitter);
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxParticleSystem::lockEmitter( EmitterInterface * _emitter, int _typeParticle )
+void AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, int _typeParticle )
 {
 	AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
 	HM_EMITTER id = emitter->getId();
@@ -119,9 +121,9 @@ void AstralaxParticleSystem::lockEmitter( EmitterInterface * _emitter, int _type
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-RenderParticle * AstralaxParticleSystem::nextParticle()
+Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
 {
-	static RenderParticle rp;
+	static Menge::RenderParticle rp;
 
 	MAGIC_PARTICLE * particle = Magic_GetNextParticle();
 
@@ -161,12 +163,12 @@ RenderParticle * AstralaxParticleSystem::nextParticle()
 	return &rp;
 }
 //////////////////////////////////////////////////////////////////////////
-const char * AstralaxParticleSystem::getTextureName() const
+Menge::String AstralaxParticleSystem::getTextureName() const
 {
 	return m_texture[0].file;
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxParticleSystem::unlockEmitter( EmitterInterface * _emitter ) 
+void AstralaxParticleSystem::unlockEmitter( Menge::EmitterInterface * _emitter ) 
 {
 	Magic_UnlockParticlesType();
 }

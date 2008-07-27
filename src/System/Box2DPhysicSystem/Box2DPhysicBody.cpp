@@ -45,8 +45,8 @@ void Box2DPhysicBody::addShapeConvex(unsigned int _pointsNum, const float* _conv
 
 	for( unsigned int i = 0; i != _pointsNum; ++i )
 	{
-		float point1 = _convex[ 2*i ] * physicsScaler;
-		float point2 = _convex[ 2*i + 1 ] * physicsScaler;
+		float point1 = _convex[ 2*i ] * Menge::physicsScaler;
+		float point2 = _convex[ 2*i + 1 ] * Menge::physicsScaler;
 
 		shape.vertices[i].Set( point1, point2 );
 	}
@@ -86,11 +86,11 @@ void Box2DPhysicBody::addShapeCircle(float _radius, const float* _localPos,
 									 unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
 {
 	b2CircleDef shape;
-	shape.radius = _radius * physicsScaler;
+	shape.radius = _radius * Menge::physicsScaler;
 	shape.density = _density;
 	shape.friction = _friction;
 	shape.restitution = _restitution;
-	shape.localPosition.Set( _localPos[0] * physicsScaler, _localPos[1] * physicsScaler );
+	shape.localPosition.Set( _localPos[0] * Menge::physicsScaler, _localPos[1] * Menge::physicsScaler );
 	shape.maskBits = _collisionMask;
 	shape.categoryBits = _categoryBits;
 	shape.groupIndex = _groupIndex;
@@ -106,9 +106,9 @@ void Box2DPhysicBody::addShapeBox(float _width, float _height, const float* _loc
 {
 	b2PolygonDef shape;
 	shape.SetAsBox(
-		_width * 0.5f * physicsScaler
-		, _height * 0.5f * physicsScaler
-		, b2Vec2( _localPos[0] * physicsScaler, _localPos[1] * physicsScaler )
+		_width * 0.5f * Menge::physicsScaler
+		, _height * 0.5f * Menge::physicsScaler
+		, b2Vec2( _localPos[0] * Menge::physicsScaler, _localPos[1] * Menge::physicsScaler )
 		, _angle );
 
 	shape.density = _density;
@@ -128,15 +128,15 @@ const float* Box2DPhysicBody::getPosition() const
 	static b2Vec2 pos(0.0f, 0.0f);
 	pos = m_body->GetPosition();
 
-	pos.x /= physicsScaler;
-	pos.y /= physicsScaler;
+	pos.x /= Menge::physicsScaler;
+	pos.y /= Menge::physicsScaler;
 
 	return &pos.x;
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::setPosition( float _x, float _y )
 {
-	b2Vec2 position( _x * physicsScaler, _y * physicsScaler );
+	b2Vec2 position( _x * Menge::physicsScaler, _y * Menge::physicsScaler );
 	float angle = m_body->GetAngle();
 	m_body->SetXForm( position, angle );
 }
@@ -163,7 +163,7 @@ void Box2DPhysicBody::setOrientation( float _angle )
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::setLinearVelocity( float _x, float _y )
 {
-	b2Vec2 velocity( _x * physicsScaler, _y * physicsScaler );
+	b2Vec2 velocity( _x * Menge::physicsScaler, _y * Menge::physicsScaler );
 	return m_body->SetLinearVelocity( velocity );
 }
 //////////////////////////////////////////////////////////////////////////
@@ -172,8 +172,8 @@ const float* Box2DPhysicBody::getLinearVelocity()
 	static b2Vec2 velocity(0.0f, 0.0f);
 	velocity = m_body->GetLinearVelocity();
 
-	velocity.x /= physicsScaler;
-	velocity.y /= physicsScaler;
+	velocity.x /= Menge::physicsScaler;
+	velocity.y /= Menge::physicsScaler;
 	
 	return &(velocity.x);
 }
@@ -190,8 +190,8 @@ float Box2DPhysicBody::getAngularVelocity()
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicBody::applyForce( float _forceX, float _forceY, float _pointX, float _pointY )
 {
-	b2Vec2 force( _forceX * physicsScaler, _forceY * physicsScaler );
-	b2Vec2 point( _pointX * physicsScaler, _pointY * physicsScaler );
+	b2Vec2 force( _forceX * Menge::physicsScaler, _forceY * Menge::physicsScaler );
+	b2Vec2 point( _pointX * Menge::physicsScaler, _pointY * Menge::physicsScaler );
 
 	m_body->ApplyForce( force, point );
 }
@@ -204,7 +204,7 @@ void Box2DPhysicBody::applyImpulse( float _impulseX, float _impulseY, float _poi
 	m_body->ApplyImpulse( impulse, point );
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicBody::setBodyListener( PhysicBody2DListener* _listener )
+void Box2DPhysicBody::setBodyListener( Menge::PhysicBody2DListener* _listener )
 {
 	m_listener = _listener;
 }
@@ -217,8 +217,8 @@ void Box2DPhysicBody::_collide( b2Body* _otherBody, b2ContactPoint* _contact )
 	
 	b2Vec2 contact_position = _contact->position;
 
-	contact_position.x /= physicsScaler;
-	contact_position.y /= physicsScaler;
+	contact_position.x /= Menge::physicsScaler;
+	contact_position.y /= Menge::physicsScaler;
 
 	m_listener->onCollide( _otherObj, contact_position.x, contact_position.y, _contact->normal.x, _contact->normal.y );
 

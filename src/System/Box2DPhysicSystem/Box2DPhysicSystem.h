@@ -9,7 +9,7 @@ class Box2DPhysicJoint;
 class Box2DPhysicBody;
 
 class Box2DPhysicSystem
-	: public PhysicSystem2DInterface
+	: public Menge::PhysicSystem2DInterface
 	, public b2ContactListener
 {
 public:
@@ -20,17 +20,17 @@ public:
 	void destroyWorld() override;
 	void update( float _timing, int _iterations ) override;
 
-	PhysicBody2DInterface* createDynamicBody( const float* _pos, float _angle, float _linearDamping, float _angularDamping,
+	Menge::PhysicBody2DInterface* createDynamicBody( const float* _pos, float _angle, float _linearDamping, float _angularDamping,
 												bool _allowSleep, bool _isBullet, bool _fixedRotation ) override;
-	PhysicBody2DInterface* createStaticBody( const float* _pos, float _angle ) override;
+	Menge::PhysicBody2DInterface* createStaticBody( const float* _pos, float _angle ) override;
 
 
-	void destroyBody( PhysicBody2DInterface* _body ) override;
+	void destroyBody( Menge::PhysicBody2DInterface* _body ) override;
 
-	PhysicJoint2DInterface* createDistanceJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _offsetBody2, bool _collideBodies ) override;
-	PhysicJoint2DInterface* createHingeJoint( PhysicBody2DInterface* _body1, PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _limits, bool _collideBodies ) override;
-	PhysicJoint2DInterface* createMouseJoint( PhysicBody2DInterface* _body, int _x, int _y  ) override;
-	void destroyJoint( PhysicJoint2DInterface* _joint );
+	Menge::PhysicJoint2DInterface* createDistanceJoint( Menge::PhysicBody2DInterface* _body1, Menge::PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _offsetBody2, bool _collideBodies ) override;
+	Menge::PhysicJoint2DInterface* createHingeJoint( Menge::PhysicBody2DInterface* _body1, Menge::PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _limits, bool _collideBodies ) override;
+	Menge::PhysicJoint2DInterface* createMouseJoint( Menge::PhysicBody2DInterface* _body, int _x, int _y  ) override;
+	void destroyJoint( Menge::PhysicJoint2DInterface* _joint );
 
 	void onMouseMove( int x, int y ) override;
 

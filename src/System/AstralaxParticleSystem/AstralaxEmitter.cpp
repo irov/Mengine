@@ -121,7 +121,7 @@ bool	AstralaxEmitter::isIntensive() const
 	return Magic_IsIntensive();
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxEmitter::setListener( ParticleEmitterListenerInterface* _listener )
+void AstralaxEmitter::setListener( Menge::ParticleEmitterListenerInterface* _listener )
 {
 	m_listener = _listener;
 }

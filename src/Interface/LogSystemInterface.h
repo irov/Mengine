@@ -4,7 +4,6 @@
 
 namespace Menge
 {
-
 	class LogSystemInterface
 	{
 	public:

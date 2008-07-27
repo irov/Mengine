@@ -50,7 +50,7 @@ namespace Menge
 		return dot < 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LightSystem::drawUmbra(const Light2D & _light, const ShadowCaster2D & _caster, int first, int last)
+	void LightSystem::drawUmbra(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t first, std::size_t last)
 	{
 		struct quad
 		{
@@ -59,11 +59,11 @@ namespace Menge
 
 		std::vector<quad> _shadow;
 
-		int size = _caster.size();
+		std::size_t size = _caster.size();
 
-		for(int i = first; i < last; i++)				
+		for(std::size_t i = first; i < last; i++)				
 		{
-			int next = (i + 1) % size;
+			std::size_t next = (i + 1) % size;
 
 			quad q;
 
@@ -77,7 +77,7 @@ namespace Menge
 
 		RenderEngine* reng = Holder<RenderEngine>::hostage();
 
-		for(int i = 0; i < _shadow.size(); i++)
+		for(std::size_t i = 0; i < _shadow.size(); i++)
 		{
 			quad q = _shadow[i];
 			reng->renderLine(0xFFFFFFFF, q.v[0], q.v[1] );
@@ -93,7 +93,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LightSystem::drawPenumbra(const Light2D & _light, const ShadowCaster2D & _caster, int first, int last)
+	void LightSystem::drawPenumbra(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t first, std::size_t last)
 	{
 		mt::vec2f v[3];
 
@@ -122,18 +122,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LightSystem::makeShadow(const Light2D & _light, ShadowCasterCache & _cell)
 	{
-		int shadow_chain_first = -1;
-		int shadow_chain_last = -1;
+		std::size_t shadow_chain_first = -1;
+		std::size_t shadow_chain_last = -1;
 
 		ShadowCaster2D & _caster = *_cell.m_shadowCaster;
 
-		int size = _caster.size();
+		std::size_t size = _caster.size();
 
-		std::pair<int,int> & chain = _cell.m_chain;
+		std::pair<std::size_t,std::size_t> & chain = _cell.m_chain;
 
-		for(int i = chain.first; i < chain.first + size; i++)
+		for(std::size_t i = chain.first; i < chain.first + size; i++)
 		{
-			int next = (i + 1) % size;
+			std::size_t next = (i + 1) % size;
 
 			bool visible = isVisibleEdge(_light, _caster,i % size);
 			bool not_visible = isVisibleEdge( _light, _caster, next ) == false;
@@ -146,9 +146,9 @@ namespace Menge
 			}
 		}
 
-		for(int i = chain.second; i < chain.second + size; i++)
+		for(std::size_t i = chain.second; i < chain.second + size; i++)
 		{
-			int next = (i + 1) % size;
+			std::size_t next = (i + 1) % size;
 
 			bool visible = isVisibleEdge(_light, _caster,i % size) == false;
 			bool not_visible = isVisibleEdge(_light, _caster, next );
@@ -163,7 +163,7 @@ namespace Menge
 
 		if((shadow_chain_first != -1) && (shadow_chain_last != -1))
 		{
-			int size = _caster.size();
+			std::size_t size = _caster.size();
 
 			if(shadow_chain_first > shadow_chain_last) 
 			{

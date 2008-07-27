@@ -86,6 +86,7 @@ namespace Menge
 		{
 			Holder<Game>::hostage()->destroyScene( m_subScene->getName() );
 		}
+
 		m_subScene = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -126,7 +127,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * LayerScene::getChildren( const std::string & _name, bool _recursion )
+	Node * LayerScene::getChildren( const std::string & _name, bool _recursion ) const
 	{
 		if( m_subScene )
 		{

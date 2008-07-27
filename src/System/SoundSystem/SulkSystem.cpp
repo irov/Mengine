@@ -119,7 +119,7 @@ void SulkSystem::update()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void SulkSystem::setCallback( SoundSulkCallbackInterface * _callback )
+void SulkSystem::setCallback( Menge::SoundSulkCallbackInterface * _callback )
 {
 	m_sulkcallback = _callback;
 }

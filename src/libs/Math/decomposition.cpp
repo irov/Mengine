@@ -905,7 +905,7 @@ namespace mt
 		return nPolys;
 	}*/
 
-	int decompose_concave(std::vector<mt::vec2f> & points, std::vector<mt::polygon> & results)
+	int decompose_concave( TVectorPoints & points, std::vector<mt::polygon> & results)
 	{
 		if(points.empty())
 		{

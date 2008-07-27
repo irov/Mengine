@@ -71,7 +71,7 @@ namespace Menge
 
 	public:
 		const mt::mat3f & getWorldMatrix();
-		mt::vec2f getWorldPosition();
+		const mt::vec2f & getWorldPosition();
 		const mt::vec2f & getWorldDirection();
 
 
@@ -82,7 +82,7 @@ namespace Menge
 		Node* getParent();
 		bool addChildren( Node * _node );
 		void removeChildren( Node * _node );
-		virtual Node * getChildren( const std::string & _name, bool _recursion );
+		virtual Node * getChildren( const std::string & _name, bool _recursion ) const;
 		bool isChildren( Node * _node, bool _recursive ) const;
 		virtual void _addChildren( Node * _node );
 		virtual void _removeChildren( Node * _node );
@@ -127,7 +127,7 @@ namespace Menge
 		bool isEnable() const;
 
 		void setUpdatable( bool _updatable );
-		bool updatable();
+		bool updatable() const;
 
 	public:
 		virtual void update( float _timing );

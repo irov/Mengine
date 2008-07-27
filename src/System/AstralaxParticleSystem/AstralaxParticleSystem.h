@@ -8,26 +8,25 @@
 
 #	define MAX_TEXTURES 20
 
-class AstralaxParticleSystem : public ParticleSystemInterface
+class AstralaxParticleSystem 
+	: public Menge::ParticleSystemInterface
 {
 public:
 	AstralaxParticleSystem();
 	~AstralaxParticleSystem();
+
 public:
-	EmitterContainerInterface * createEmitterContainerFromMemory( void * _buffer );
-	EmitterInterface * createEmitterFromContainer( const char * _name, const EmitterContainerInterface * _container );
+	Menge::EmitterContainerInterface * createEmitterContainerFromMemory( void * _buffer );
+	Menge::EmitterInterface * createEmitterFromContainer( const Menge::String & _name, const Menge::EmitterContainerInterface * _container );
 public:
-	void releaseEmitter( EmitterInterface * _emitter );
-	void lockEmitter( EmitterInterface * _emitter, int _typeParticle );
-	const char * getTextureName() const;
-	RenderParticle * nextParticle();
-	void unlockEmitter( EmitterInterface * _emitter );
+	void releaseEmitter( Menge::EmitterInterface * _emitter );
+	void lockEmitter( Menge::EmitterInterface * _emitter, int _typeParticle );
+	Menge::String getTextureName() const;
+	Menge::RenderParticle * nextParticle();
+	void unlockEmitter( Menge::EmitterInterface * _emitter );
 private:
 	MAGIC_TEXTURE m_texture[MAX_TEXTURES];
 	int m_currentX;
 	int m_currentY;
 
 };
-
-bool	initInterfaceSystem(ParticleSystemInterface** );
-void	releaseInterfaceSystem(ParticleSystemInterface* );

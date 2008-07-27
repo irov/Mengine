@@ -38,7 +38,7 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 		void loaderArrow_( XmlElement * _xml );
 
-		void onMouseMove( int _dx, int _dy );
+		void onMouseMove( float _dx, float _dy );
 		void onMouseLeave();
 		void onMouseEnter();
 

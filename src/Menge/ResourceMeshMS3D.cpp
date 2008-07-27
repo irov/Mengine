@@ -51,12 +51,12 @@ namespace Menge
 	bool ResourceMeshMS3D::_compile()
 	{
 		DataStreamInterface * file = Holder<FileEngine>::hostage()->openFile( m_params.category + m_filename );
-		const long fileSize = file->size();
+		std::size_t fileSize = file->size();
 
 		filePos = 0;
 
 		unsigned char * buffer = new unsigned char[fileSize];
-		int read = file->read(buffer, fileSize);
+		std::size_t read = file->read(buffer, fileSize);
 
 		if (read != fileSize)
 		{
@@ -86,7 +86,7 @@ namespace Menge
 		m_vertices.resize(numVertices);
 		//m_tvertices.resize(numVertices);
 
-		for (int i = 0; i < numVertices; i++)
+		for (unsigned short i = 0; i < numVertices; i++)
 		{
 			m_vertices[i].flags = *read_buffer<unsigned char>(buffer);
 			m_vertices[i].vertex[0] = *read_buffer<float>(buffer);
@@ -109,7 +109,7 @@ namespace Menge
 		m_triangles.resize(numTriangles);
 		
 		//m_indices.resize( numTriangles * 3 );
-		for (int i = 0; i < numTriangles; i++)
+		for (unsigned short i = 0; i < numTriangles; i++)
 		{
 
 			m_triangles[i].flags = *read_buffer<unsigned short>(buffer);
@@ -159,7 +159,7 @@ namespace Menge
 		unsigned short numGroups = *read_buffer<unsigned short>(buffer);
 		m_groups.resize(numGroups);
 
-		for (int i = 0; i < numGroups; i++)
+		for (unsigned short i = 0; i < numGroups; i++)
 		{
 			m_groups[i].flags = *read_buffer<unsigned char>(buffer);
 
@@ -185,7 +185,7 @@ namespace Menge
 		unsigned short numMaterials = *read_buffer<unsigned short>(buffer);
 		m_materials.resize(numMaterials);
 
-		for (int i = 0; i < numMaterials; i++)
+		for (unsigned short i = 0; i < numMaterials; i++)
 		{
 			buffer+=sizeof(char)*32;
 			filePos+=sizeof(char)*32;
@@ -242,7 +242,7 @@ namespace Menge
 		unsigned short numJoints = *read_buffer<unsigned short>(buffer);
 		m_joints.resize(numJoints);
 
-		for (int i = 0; i < numJoints; i++)
+		for (unsigned short i = 0; i < numJoints; i++)
 		{
 			m_joints[i].flags = *read_buffer<unsigned char>(buffer);
 
@@ -459,7 +459,7 @@ namespace Menge
 
 				int index = -1;
 
-				for( int iV = 0; iV < m_tvertices.size(); ++iV )
+				for( std::vector<TVertex>::size_type iV = 0; iV < m_tvertices.size(); ++iV )
 				{
 					TVertex v2 = m_tvertices[iV];
 

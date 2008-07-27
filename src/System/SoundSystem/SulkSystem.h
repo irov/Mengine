@@ -3,7 +3,10 @@
 #	include "AL/al.h"
 #	include "AL/alc.h"
 
-class SoundSulkCallbackInterface;
+namespace Menge
+{
+	class SoundSulkCallbackInterface;
+}
 
 class SulkSystem
 {
@@ -19,7 +22,7 @@ public:
 	float getEnoughBlow() const;
 
 public:
-	void setCallback( SoundSulkCallbackInterface * _callback );
+	void setCallback( Menge::SoundSulkCallbackInterface * _callback );
 
 	bool activate( bool _activate );
 	float getBlow() const;
@@ -35,7 +38,7 @@ protected:
 	float m_dispersion;
 	float m_average;
 
-	SoundSulkCallbackInterface * m_sulkcallback;
+	Menge::SoundSulkCallbackInterface * m_sulkcallback;
 
 	ALCcontext * m_pContext;
 	ALCdevice * m_pDevice;

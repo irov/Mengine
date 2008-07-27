@@ -58,7 +58,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_renderPass( const std::vector<mt::vec2f> & _triangles, unsigned int _color )
 	{
-		for(int i = 0; i < _triangles.size(); i+=3)
+		for(std::vector<mt::vec2f>::size_type i = 0; i < _triangles.size(); i+=3)
 		{
 			const mt::vec2f & a = _triangles[i+0];
 			const mt::vec2f & b = _triangles[i+1];
@@ -98,8 +98,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TilePolygon::_compile()
 	{
-		int size = m_poly.size();
-		int capacity = 5 * size;
+		std::vector<mt::vec2f>::size_type size = m_poly.size();
+		std::vector<mt::vec2f>::size_type capacity = 5 * size;
 
 		m_triangles.reserve(capacity);
 		m_penumbra_triangles.reserve(capacity);
@@ -142,9 +142,10 @@ namespace Menge
 			return false;
 		}
 
+		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!! int -> bool
 		result = mt::decompose_concave(contour,polys);
 	
-		for(int i = 0; i < polys.size(); i++)
+		for(std::vector<mt::vec2f>::size_type i = 0; i < polys.size(); i++)
 		{
 			m_shapeList.push_back(polys[i]);
 		}

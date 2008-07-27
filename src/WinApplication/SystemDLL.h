@@ -5,7 +5,7 @@
 #	include <string>
 
 class WinSystemDLL 
-	: public SystemDLLInterface
+	: public Menge::SystemDLLInterface
 {
 public:
 	WinSystemDLL( const std::string & _filename );

@@ -2,54 +2,58 @@
 
 #	include "Config/Typedef.h"
 
-class	DataStreamInterface
+namespace Menge
 {
-public:
-	virtual std::size_t read( void* _buf, std::size_t _count ) = 0;
-	virtual Menge::String getLine( bool _trimAfter = true ) = 0;
-	virtual std::size_t skipLine(  const Menge::String& _delim ) = 0;
-	virtual void seek( std::size_t _pos ) = 0;
-	virtual std::size_t tell() const = 0;
-	virtual bool eof() const = 0;
-	virtual std::size_t size() const = 0;
-	virtual void* getBuffer() = 0;
-	virtual bool isMemory() const = 0;
-	virtual void setFreeOnClose( bool _free ) = 0;
-};
 
-class OutStreamInterface
-{
-public:
-	virtual void write( const char* _data, int _count ) = 0;
-	virtual void write( const Menge::String& _str ) = 0;
-	virtual void write( int _num ) = 0;
-};
+	class	DataStreamInterface
+	{
+	public:
+		virtual std::size_t read( void* _buf, std::size_t _count ) = 0;
+		virtual String getLine( bool _trimAfter = true ) = 0;
+		virtual std::size_t skipLine(  const String& _delim ) = 0;
+		virtual void seek( std::size_t _pos ) = 0;
+		virtual std::size_t tell() const = 0;
+		virtual bool eof() const = 0;
+		virtual std::size_t size() const = 0;
+		virtual void* getBuffer() = 0;
+		virtual bool isMemory() const = 0;
+		virtual void setFreeOnClose( bool _free ) = 0;
+	};
 
-class	FileSystemInterface
-{
-public:
+	class OutStreamInterface
+	{
+	public:
+		virtual void write( const char* _data, int _count ) = 0;
+		virtual void write( const String& _str ) = 0;
+		virtual void write( int _num ) = 0;
+	};
 
-	virtual void loadPath( const Menge::String& _path ) = 0;
-	virtual void loadPak( const Menge::String& _pak ) = 0;
-	virtual void unloadPak( const Menge::String& _pak ) = 0;
+	class	FileSystemInterface
+	{
+	public:
 
-	virtual bool existFile( const Menge::String& _filename ) = 0;
-	virtual DataStreamInterface* openFile( const Menge::String& _filename ) = 0;
-	virtual DataStreamInterface* createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose ) = 0;
-	virtual void closeStream( DataStreamInterface* _stream ) = 0;
+		virtual void loadPath( const String& _path ) = 0;
+		virtual void loadPak( const String& _pak ) = 0;
+		virtual void unloadPak( const String& _pak ) = 0;
 
-	virtual OutStreamInterface* openOutStream( const Menge::String& _filename, bool _binary ) = 0;
-	virtual void closeOutStream( OutStreamInterface* _stream ) = 0;
+		virtual bool existFile( const String& _filename ) = 0;
+		virtual DataStreamInterface* openFile( const String& _filename ) = 0;
+		virtual DataStreamInterface* createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose ) = 0;
+		virtual void closeStream( DataStreamInterface* _stream ) = 0;
 
-	virtual const char * platformBundlePath() = 0;
+		virtual OutStreamInterface* openOutStream( const String& _filename, bool _binary ) = 0;
+		virtual void closeOutStream( OutStreamInterface* _stream ) = 0;
 
-	virtual bool createFolder(  const Menge::String& _path  ) = 0;
-	virtual bool deleteFolder(  const Menge::String& _path  ) = 0;
-	virtual bool changeDir(  const Menge::String& _path  ) = 0;
+		virtual const char * platformBundlePath() = 0;
 
-	virtual bool initAppDataPath( const Menge::String& _game ) = 0;
-	virtual const Menge::String& getAppDataPath() = 0;
-};
+		virtual bool createFolder(  const String& _path  ) = 0;
+		virtual bool deleteFolder(  const String& _path  ) = 0;
+		virtual bool changeDir(  const String& _path  ) = 0;
 
-bool initInterfaceSystem( FileSystemInterface**	_ptrFileSystem );
-void releaseInterfaceSystem( FileSystemInterface* _ptrFileSystem );
+		virtual bool initAppDataPath( const String& _game ) = 0;
+		virtual const Menge::String& getAppDataPath() = 0;
+	};
+}
+
+bool initInterfaceSystem( Menge::FileSystemInterface**	_ptrFileSystem );
+void releaseInterfaceSystem( Menge::FileSystemInterface* _ptrFileSystem );

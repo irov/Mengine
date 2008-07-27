@@ -11,10 +11,11 @@
 
 class ALSoundBuffer;
 
-class ALSoundSource : public SoundSourceInterface
+class ALSoundSource 
+	: public Menge::SoundSourceInterface
 {
 public:
-	ALSoundSource(ALSoundSystem* _soundSystem);
+	ALSoundSource( ALSoundSystem* _soundSystem );
 	~ALSoundSource();
 
 public:
@@ -39,15 +40,15 @@ public:
 	virtual int getLengthMs();
 	virtual int getPosMs();
 	
-	virtual void setSoundNodeListener(SoundNodeListenerInterface* _listener);
-	virtual void setSoundBuffer( SoundBufferInterface* _soundBuffer ) override;
+	virtual void setSoundNodeListener( Menge::SoundNodeListenerInterface* _listener );
+	virtual void setSoundBuffer( Menge::SoundBufferInterface* _soundBuffer ) override;
 
 public:
 	void setAmbient( bool _ambient );
 	bool isAmbient() const;
 	bool isBusy() const;
 	void setUsed( bool _use );
-	SoundNodeListenerInterface* getListener();
+	Menge::SoundNodeListenerInterface* getListener();
 
 private:
 	TALSourceName* m_sourceName;
@@ -59,7 +60,7 @@ private:
 	bool m_looped;
 	float m_position[3];
 	float m_volume;
-	SoundNodeListenerInterface* m_listener;
+	Menge::SoundNodeListenerInterface* m_listener;
 
 	void _updateParams();
 };

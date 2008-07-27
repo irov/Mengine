@@ -6,10 +6,10 @@
 
 #	include <vector>
 
-class	GeometryInterface;
-
 namespace Menge
 {
+	class	GeometryInterface;
+
 	class ResourcePhysicGeometry
 		: public ResourceReference
 	{

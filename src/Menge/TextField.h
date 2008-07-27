@@ -9,12 +9,12 @@
 #	include "ValueInterpolator.h"
 #	include "Math/vec4.h"
 
-class RenderImageInterface;
-
 namespace Menge
 {
 	class ResourceFont;
 	class ResourceImage;
+
+	class RenderImageInterface;
 
 	//! TextField - класс для отрисовки шрифта. 
 

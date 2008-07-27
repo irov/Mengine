@@ -54,7 +54,7 @@ HGETexture::~HGETexture()
 	unload();
 }
 //////////////////////////////////////////////////////////////////////////
-void HGETexture::load( const TextureDesc& _desc )
+void HGETexture::load( const Menge::TextureDesc& _desc )
 {
 	m_name = _desc.name;
 	m_hTexture = m_hge->Texture_Create( _desc.width, _desc.height );
@@ -91,14 +91,14 @@ std::size_t HGETexture::getHeight() const
 	return m_height;
 }
 //////////////////////////////////////////////////////////////////////////
-void HGETexture::writeToFile( const char* _filename )
+void HGETexture::writeToFile( const Menge::String & _filename )
 {
-	m_hge->Texture_WriteToFile( m_hTexture, _filename );
+	m_hge->Texture_WriteToFile( m_hTexture, _filename.c_str() );
 }
 //////////////////////////////////////////////////////////////////////////
-const char * HGETexture::getDescription() const 
+const Menge::String & HGETexture::getDescription() const 
 {
-	return m_name.c_str();
+	return m_name;
 }
 //////////////////////////////////////////////////////////////////////////
 HTEXTURE HGETexture::getHandle() const
@@ -117,8 +117,8 @@ unsigned char* HGETexture::lock()
 	unsigned char* lock = reinterpret_cast< unsigned char* >( m_hge->Texture_Lock( m_hTexture, &pitch, true, 0, 0, m_width, m_height ) );
 	m_lockBuffer = new unsigned char[m_height * pitch];
 	
-	int mPitch = Menge::PixelUtil::getNumElemBytes( m_pixelFormat ) * m_width;
-	for( int i = 0; i < m_height; i++ )
+	std::size_t mPitch = Menge::PixelUtil::getNumElemBytes( m_pixelFormat ) * m_width;
+	for( std::size_t i = 0; i < m_height; i++ )
 	{
 		std::copy( lock, lock + mPitch, m_lockBuffer );
 		//memcpy( _dstData, _srcData, width * 4 );

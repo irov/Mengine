@@ -5,69 +5,65 @@
 namespace Menge
 {
 	class LogSystemInterface;
-}
 
-typedef void* WINDOW_HANDLE;
-
-struct	TextureDesc
-{
-	const char * name;
-	unsigned int filter;
-
-	void * buffer;
-	unsigned int size;
-	std::size_t width;
-	std::size_t height;
-	int	pixelFormat;
-};
-
-enum EBlendFactor 
-{
-	BF_ONE,
-	BF_ZERO,
-	BF_DEST_COLOUR,
-	BF_SOURCE_COLOUR,
-	BF_ONE_MINUS_DEST_COLOUR,
-	BF_ONE_MINUS_SOURCE_COLOUR,
-	BF_DEST_ALPHA,
-	BF_SOURCE_ALPHA,
-	BF_ONE_MINUS_DEST_ALPHA,
-	BF_ONE_MINUS_SOURCE_ALPHA
-};
-
-typedef struct _tVertex
-{
-	float pos[3];
-	float n[3];
-	unsigned long col;
-	float uv[2];
-
-	_tVertex()
-		: col( 0xFFFFFFFF )
+	struct	TextureDesc
 	{
-		uv[0] = uv[1] = 0.0f;
-	}
+		String name;
+		unsigned int filter;
 
-	_tVertex( const _tVertex& _other )
+		void * buffer;
+		unsigned int size;
+		std::size_t width;
+		std::size_t height;
+		int	pixelFormat;
+	};
+
+	enum EBlendFactor 
 	{
-		//std::copy( (_tVertex*)&_other, &_other + sizeof( _tVertex ), &(*this) );
-		operator=( _other );
-	}
+		BF_ONE,
+		BF_ZERO,
+		BF_DEST_COLOUR,
+		BF_SOURCE_COLOUR,
+		BF_ONE_MINUS_DEST_COLOUR,
+		BF_ONE_MINUS_SOURCE_COLOUR,
+		BF_DEST_ALPHA,
+		BF_SOURCE_ALPHA,
+		BF_ONE_MINUS_DEST_ALPHA,
+		BF_ONE_MINUS_SOURCE_ALPHA
+	};
 
-	const _tVertex& operator=( const _tVertex& _other )
+	typedef struct _tVertex
 	{
-		pos[0] = _other.pos[0]; pos[1] = _other.pos[1]; pos[2] = _other.pos[2];
-		n[0] = _other.n[0]; n[1] = _other.n[1]; n[2] = _other.n[2];
-		col = _other.col;
-		uv[0] = _other.uv[0]; uv[1] = _other.uv[1];
-		return (*this);
-	}
+		float pos[3];
+		float n[3];
+		unsigned long col;
+		float uv[2];
 
-} TVertex;
+		_tVertex()
+			: col( 0xFFFFFFFF )
+		{
+			uv[0] = uv[1] = 0.0f;
+		}
 
-namespace Menge
-{
+		_tVertex( const _tVertex& _other )
+		{
+			//std::copy( (_tVertex*)&_other, &_other + sizeof( _tVertex ), &(*this) );
+			operator=( _other );
+		}
+
+		const _tVertex& operator=( const _tVertex& _other )
+		{
+			pos[0] = _other.pos[0]; pos[1] = _other.pos[1]; pos[2] = _other.pos[2];
+			n[0] = _other.n[0]; n[1] = _other.n[1]; n[2] = _other.n[2];
+			col = _other.col;
+			uv[0] = _other.uv[0]; uv[1] = _other.uv[1];
+			return (*this);
+		}
+
+	} TVertex;
+
 	// The pixel format used for images, textures, and render surfaces
+
 	enum PixelFormat
 	{
 		/// Unknown pixel format.
@@ -173,274 +169,274 @@ namespace Menge
 		// Number of pixel formats currently defined
 		PF_COUNT = 38
 	};
+
+	class RenderImageInterface
+	{
+	public:
+		virtual std::size_t getWidth() const = 0;
+		virtual std::size_t getHeight() const = 0;
+		virtual void writeToFile( const String & _filename ) = 0;
+		virtual const String & getDescription() const = 0;
+		virtual unsigned char* lock() = 0;
+		virtual void unlock() = 0;
+		virtual PixelFormat getPixelFormat() = 0;
+	};
+
+	typedef struct _tMaterial
+	{
+		RenderImageInterface* texture;
+		unsigned int color;
+		_tMaterial()
+			: texture( 0 )
+			, color( 0xFFFFFFFF )
+		{
+		}
+	}TMaterial;
+
+	class EntityInterface;
+
+	class SkeletonInterface
+	{
+	public:
+		virtual ~SkeletonInterface(){};
+	};
+
+	class EntityInterface
+	{
+	public:
+		virtual SkeletonInterface * getSkeleton() const = 0;
+		virtual void setCastsShadow( bool _castsShadow ) = 0;
+		virtual void setVisible( bool _visible ) = 0;
+		virtual void setMaterial( const String & _material ) = 0;
+		virtual void setSubEntityMaterial( const String & _subEntity, const String & _material ) = 0;
+		virtual void createRenderToTexture( const String & _cameraName, int _width, int _height  ) = 0;
+		virtual void getAABB( float * _min, float * _max ) const = 0;
+		virtual float getBoundingRadius() const = 0;
+
+		//////////////////////////////////////////////////////////////////////////
+		virtual void setAnimationEnabled( const String & _animName, bool _enabled ) = 0;
+		virtual bool getAnimationEnabled( const String & _animName ) = 0;
+		virtual void setAnimationTimePosition( const String & _animName, float _timePos ) = 0;
+		virtual float getAnimationTimePosition( const String & _animName ) = 0;
+		virtual void setAnimationLength( const String & _animName, float _length ) = 0;
+		virtual float getAnimationLength( const String & _animName ) = 0;
+		virtual void setAnimationWeight( const String & _animName, float _weight ) = 0;
+		virtual float getAnimationWeigth( const String & _animName ) = 0;
+		virtual void animationAddTime( const String & _animName, float _time ) = 0;
+		virtual bool animationHasEnded( const String & _animName ) = 0;
+		virtual void animationSetLooped( const String & _animName, bool _looped ) = 0;
+		virtual bool animationGetLooped( const String & _animName ) = 0;
+		//////////////////////////////////////////////////////////////////////////
+		virtual void attachEntity( const String & _bone, EntityInterface* _entity ) = 0;
+	};
+
+	enum LightType
+	{
+		LT_POINT,
+		LT_DIRECTIONAL,
+		LT_SPOT
+	};
+
+	class LightInterface
+	{
+	public:
+		virtual ~LightInterface(){};
+
+		virtual void setType( LightType _type ) = 0;
+		virtual LightType getType() const = 0;
+
+		virtual void setAttenuation( float _range, float _constant, float _linear, float _quadratic ) = 0;
+		virtual float getAttenuationRange() const = 0;
+		virtual float getAttenuationConstFactor() const = 0;
+		virtual float getAttenuationLinearFactor() const = 0;
+		virtual float getAttenuationQuadraticFactor() const = 0;
+
+		virtual void setSpotlightRange( float _innerAngle, float _outerAngle, float _falloff ) = 0;
+		virtual float getSpotlightInnerAngle() const = 0;
+		virtual float getSpotlightOuterAngle() const = 0;
+		virtual float getSpotlightFalloff() const = 0;
+
+		virtual void setDiffuseColour( float _r, float _g, float _b ) = 0;
+		virtual void setSpecularColour( float _r, float _g, float _b ) = 0;
+
+		virtual bool isVisible() const = 0;
+		virtual void setVisible( bool _enabled ) = 0;
+		virtual void setCastsShadows( bool _enabled ) = 0;
+
+		virtual void setDirection( float _x, float _y, float _z ) = 0;
+		virtual void setPosition( float _x, float _y, float _z ) = 0;
+	};
+
+	enum EFrustumPlanes
+	{
+		PLANE_NEAR   = 0,
+		PLANE_FAR    = 1,
+		PLANE_LEFT   = 2,
+		PLANE_RIGHT  = 3,
+		PLANE_TOP    = 4,
+		PLANE_BOTTOM = 5
+	};
+
+	class CameraInterface
+	{
+	public:
+		virtual void setOrient(float * _q) = 0;
+		virtual void rotate(float * _dir, float _angle) = 0;
+		virtual const float * getPosition() const = 0;
+		virtual const float * getDirection() const = 0;
+		virtual const float * getOrient() const = 0;
+		virtual void setPosition( float _x, float _y, float _z ) = 0;
+		virtual void setDirection( float _x, float _y, float _z ) = 0;
+		virtual void lookAt( float _x, float _y, float _z ) = 0;
+		virtual void setNearClipDistance( float _dist ) = 0;
+		virtual void setFarClipDistance( float _dist ) = 0;
+		virtual void setAspectRatio( float _aspect ) = 0;
+		virtual void yaw( float _angle ) = 0;
+		virtual void pitch( float _angle ) = 0;
+		virtual void roll( float _angle ) = 0;
+		virtual void getAABB( float * _min, float * _max ) const = 0;
+		virtual bool getSphereFrustumContact(int _numPlane, float x, float y, float z, float R, float & depth, float & px, float & py, float & pz) = 0;
+		virtual void translate( float * _v ) = 0;
+		virtual const float * getLocalOrient() = 0;
+	};
+
+	class	SceneNodeInterface
+	{
+	public:
+		virtual ~SceneNodeInterface(){};
+		virtual const float * getWorldOrient() = 0;
+		virtual const float * getWorldPosition() = 0;
+		virtual float * getLocalPosition() = 0;
+		virtual float * getLocalOrient() = 0;
+		virtual void setLocalPosition( const float * _position ) = 0;
+		virtual void setLocalOrient( const float * _orient ) = 0;
+		virtual void translate( const float * _pos ) = 0;
+		virtual void setScale( const float * _scale ) = 0;
+		virtual void setScale( float _scale ) = 0;
+		virtual void yaw( float _angle ) = 0;
+		virtual void pitch( float _angle ) = 0;
+		virtual void roll( float _angle ) = 0;
+		virtual void setFixedYawAxis( bool _fixed ) = 0;
+		virtual void attachEntity( EntityInterface * _entity ) = 0;
+		virtual void attachLight( LightInterface * _light ) = 0;
+		virtual void attachCamera( CameraInterface * _camera ) = 0;
+		virtual void addChild( SceneNodeInterface * _node ) = 0;
+		virtual SceneNodeInterface * createChildSceneNode( const char * _name ) = 0;
+	};
+
+	class RenderVideoStreamInterface : public RenderImageInterface
+	{
+	public:
+		virtual void play() = 0;
+		virtual void pause() = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	class RenderSystemListener
+	{
+	public:
+		virtual void onDeviceRestored() = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	class	RenderSystemInterface
+	{
+	public:
+
+		virtual bool initialize( LogSystemInterface* _logSystem ) = 0;
+		virtual bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
+			int _FSAAType, int _FSAAQuality ) = 0;
+		virtual std::size_t getResolutionList( int ** ) = 0;
+
+		virtual void addResourceLocation( const String & _path ) = 0;
+		virtual void initResources() = 0;
+
+		// Render frame into _image
+		// int rect[4] - rectangle represents desired frame area in pixels
+		virtual void screenshot( RenderImageInterface* _image, const int* rect = 0 ) = 0;
+		// Renders One Frame
+		virtual void render() = 0; 
+		// установка разрешения контента игры, входные данные: вектор2. 
+		virtual void setContentResolution( const float * _resolution ) = 0;
+		// входные данные: матрица 4 на 4
+		virtual	void setProjectionMatrix( const float * _projection ) = 0;
+		virtual	void setViewMatrix( const float * _view ) = 0;
+		virtual	void setWorldMatrix( const float * _world ) = 0;
+		// create empty render image
+		virtual RenderImageInterface * createImage( const String & _name, unsigned int _width, unsigned int _height ) = 0;
+		// create render target image
+		virtual RenderImageInterface * createRenderTargetImage( const String & _name, unsigned int _width, unsigned int _height ) = 0;
+		// загрузка изображения
+		virtual RenderImageInterface * loadImage( const TextureDesc& _desc ) = 0;
+		// удаления изображения
+		virtual void releaseImage( RenderImageInterface * _image ) = 0;
+		//
+		virtual RenderImageInterface * getImage( const String& _desc ) const = 0;
+		//
+		virtual RenderVideoStreamInterface* loadImageVideoStream( const String & _filename ) = 0;
+		//
+		virtual void releaseImageVideoStream( RenderVideoStreamInterface* _image ) = 0;
+		// отрисовка изображения
+
+		virtual void renderImage(		
+			const float * _transform, 
+			const float * _a,
+			const float * _b,
+			const float * _c,
+			const float * _d,
+			const float * _uv,
+			unsigned int _color, 
+			const RenderImageInterface * _image,
+			EBlendFactor _src,
+			EBlendFactor _dst) = 0;
+
+		virtual void renderTriple(const float * _transform,  
+			const float * _a, 
+			const float * _b, 
+			const float * _c, 
+			const float * _uv0, 
+			const float * _uv1,
+			const float * _uv2,
+			unsigned int _color,  
+			const RenderImageInterface * _image, 
+			EBlendFactor _src, 
+			EBlendFactor _dst ) = 0;
+
+		virtual void	renderMesh( const TVertex* _vertices, std::size_t _verticesNum,
+			const uint16* _indices, std::size_t _indicesNum,
+			TMaterial* _material ) = 0;
+
+		virtual void	renderLine( unsigned int _color, const float * _begin, const float * _end) = 0;
+
+		virtual void	beginScene() = 0;
+		virtual void	endScene() = 0;
+		virtual	void	beginLayer2D() = 0;
+		virtual	void	endLayer2D() = 0;
+		virtual	void	beginLayer3D() = 0;
+		virtual	void	endLayer3D() = 0;
+
+		virtual void	setRenderArea( const float* _renderArea ) = 0;
+
+		virtual void	setFullscreenMode( float _width, float _height, bool _fullscreen ) = 0;
+		virtual void	setRenderTarget( const String& _name ) = 0;
+
+		//new
+		virtual CameraInterface * createCamera( const String & _name ) = 0;
+		virtual EntityInterface * createEntity( const String & _name, const String & _meshName ) = 0;
+		virtual LightInterface * createLight( const String & _name ) = 0;
+		virtual SceneNodeInterface * createSceneNode( const String & _name ) = 0;
+
+		virtual void releaseCamera( CameraInterface * _camera ) = 0;
+		virtual void releaseEntity( EntityInterface * _entity ) = 0;
+		virtual void releaseLight( LightInterface * _light ) = 0;
+		virtual void releaseSceneNode( SceneNodeInterface * _interface ) = 0;
+
+		virtual void setTextureFiltering( bool _filter ) = 0;
+		virtual SceneNodeInterface * getRootSceneNode() const = 0;
+		virtual void setEventListener( RenderSystemListener* _listener ) = 0;
+		virtual void onWindowMovedOrResized() = 0;
+		virtual void onWindowActive( bool _active ) = 0;
+		virtual void onWindowClose() = 0;
+	};
 }
 
-class RenderImageInterface
-{
-public:
-	virtual std::size_t getWidth() const = 0;
-	virtual std::size_t getHeight() const = 0;
-	virtual void writeToFile( const char* _filename ) = 0;
-	virtual const char * getDescription() const = 0;
-	virtual unsigned char* lock() = 0;
-	virtual void unlock() = 0;
-	virtual Menge::PixelFormat getPixelFormat() = 0;
-};
-
-typedef struct _tMaterial
-{
-	RenderImageInterface* texture;
-	unsigned int color;
-	_tMaterial()
-		: texture( 0 )
-		, color( 0xFFFFFFFF )
-	{
-	}
-}TMaterial;
-
-class EntityInterface;
-
-class SkeletonInterface
-{
-public:
-	virtual ~SkeletonInterface(){};
-};
-
-class EntityInterface
-{
-public:
-	virtual SkeletonInterface * getSkeleton() const = 0;
-	virtual void setCastsShadow( bool _castsShadow ) = 0;
-	virtual void setVisible( bool _visible ) = 0;
-	virtual void setMaterial( const std::string & _material ) = 0;
-	virtual void setSubEntityMaterial( const std::string & _subEntity, const std::string & _material ) = 0;
-	virtual void createRenderToTexture( const char* _cameraName, int _width, int _height  ) = 0;
-	virtual void getAABB( float * _min, float * _max ) const = 0;
-	virtual float getBoundingRadius() const = 0;
-
-	//////////////////////////////////////////////////////////////////////////
-	virtual void setAnimationEnabled( const char* _animName, bool _enabled ) = 0;
-	virtual bool getAnimationEnabled( const char* _animName ) = 0;
-	virtual void setAnimationTimePosition( const char* _animName, float _timePos ) = 0;
-	virtual float getAnimationTimePosition( const char* _animName ) = 0;
-	virtual void setAnimationLength( const char* _animName, float _length ) = 0;
-	virtual float getAnimationLength( const char* _animName ) = 0;
-	virtual void setAnimationWeight( const char* _animName, float _weight ) = 0;
-	virtual float getAnimationWeigth( const char* _animName ) = 0;
-	virtual void animationAddTime( const char* _animName, float _time ) = 0;
-	virtual bool animationHasEnded( const char* _animName ) = 0;
-	virtual void animationSetLooped( const char* _animName, bool _looped ) = 0;
-	virtual bool animationGetLooped( const char* _animName ) = 0;
-	//////////////////////////////////////////////////////////////////////////
-	virtual void attachEntity( const char* _bone, EntityInterface* _entity ) = 0;
-};
-
-enum LightType
-{
-	LT_POINT,
-	LT_DIRECTIONAL,
-	LT_SPOT
-};
-
-class LightInterface
-{
-public:
-	virtual ~LightInterface(){};
-
-	virtual void setType( LightType _type ) = 0;
-	virtual LightType getType() const = 0;
-
-	virtual void setAttenuation( float _range, float _constant, float _linear, float _quadratic ) = 0;
-	virtual float getAttenuationRange() const = 0;
-	virtual float getAttenuationConstFactor() const = 0;
-	virtual float getAttenuationLinearFactor() const = 0;
-	virtual float getAttenuationQuadraticFactor() const = 0;
-
-	virtual void setSpotlightRange( float _innerAngle, float _outerAngle, float _falloff ) = 0;
-	virtual float getSpotlightInnerAngle() const = 0;
-	virtual float getSpotlightOuterAngle() const = 0;
-	virtual float getSpotlightFalloff() const = 0;
-
-	virtual void setDiffuseColour( float _r, float _g, float _b ) = 0;
-	virtual void setSpecularColour( float _r, float _g, float _b ) = 0;
-
-	virtual bool isVisible() const = 0;
-	virtual void setVisible( bool _enabled ) = 0;
-	virtual void setCastsShadows( bool _enabled ) = 0;
-
-	virtual void setDirection( float _x, float _y, float _z ) = 0;
-	virtual void setPosition( float _x, float _y, float _z ) = 0;
-};
-
-enum EFrustumPlanes
-{
-	PLANE_NEAR   = 0,
-	PLANE_FAR    = 1,
-	PLANE_LEFT   = 2,
-	PLANE_RIGHT  = 3,
-	PLANE_TOP    = 4,
-	PLANE_BOTTOM = 5
-};
-
-class CameraInterface
-{
-public:
-	virtual void setOrient(float * _q) = 0;
-	virtual void rotate(float * _dir, float _angle) = 0;
-	virtual const float * getPosition() const = 0;
-	virtual const float * getDirection() const = 0;
-	virtual const float * getOrient() const = 0;
-	virtual void setPosition( float _x, float _y, float _z ) = 0;
-	virtual void setDirection( float _x, float _y, float _z ) = 0;
-	virtual void lookAt( float _x, float _y, float _z ) = 0;
-	virtual void setNearClipDistance( float _dist ) = 0;
-	virtual void setFarClipDistance( float _dist ) = 0;
-	virtual void setAspectRatio( float _aspect ) = 0;
-	virtual void yaw( float _angle ) = 0;
-	virtual void pitch( float _angle ) = 0;
-	virtual void roll( float _angle ) = 0;
-	virtual void getAABB( float * _min, float * _max ) const = 0;
-	virtual bool getSphereFrustumContact(int _numPlane, float x, float y, float z, float R, float & depth, float & px, float & py, float & pz) = 0;
-	virtual void translate( float * _v ) = 0;
-	virtual const float * getLocalOrient() = 0;
-};
-
-class	SceneNodeInterface
-{
-public:
-	virtual ~SceneNodeInterface(){};
-	virtual const float * getWorldOrient() = 0;
-	virtual const float * getWorldPosition() = 0;
-	virtual float * getLocalPosition() = 0;
-	virtual float * getLocalOrient() = 0;
-	virtual void setLocalPosition( const float * _position ) = 0;
-	virtual void setLocalOrient( const float * _orient ) = 0;
-	virtual void translate( const float * _pos ) = 0;
-	virtual void setScale( const float * _scale ) = 0;
-	virtual void setScale( float _scale ) = 0;
-	virtual void yaw( float _angle ) = 0;
-	virtual void pitch( float _angle ) = 0;
-	virtual void roll( float _angle ) = 0;
-	virtual void setFixedYawAxis( bool _fixed ) = 0;
-	virtual void attachEntity( EntityInterface * _entity ) = 0;
-	virtual void attachLight( LightInterface * _light ) = 0;
-	virtual void attachCamera( CameraInterface * _camera ) = 0;
-	virtual void addChild( SceneNodeInterface * _node ) = 0;
-	virtual SceneNodeInterface * createChildSceneNode( const char * _name ) = 0;
-};
-
-class RenderVideoStreamInterface : public RenderImageInterface
-{
-public:
-	virtual void play() = 0;
-	virtual void pause() = 0;
-};
-//////////////////////////////////////////////////////////////////////////
-class RenderSystemListener
-{
-public:
-	virtual void onDeviceRestored() = 0;
-};
-//////////////////////////////////////////////////////////////////////////
-class	RenderSystemInterface
-{
-public:
-
-	virtual bool initialize( Menge::LogSystemInterface* _logSystem ) = 0;
-	virtual bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle,
-		int _FSAAType, int _FSAAQuality ) = 0;
-	virtual unsigned int getResolutionList( int ** ) = 0;
-
-	virtual void addResourceLocation( const char* _path ) = 0;
-	virtual void initResources() = 0;
-
-	// Render frame into _image
-	// int rect[4] - rectangle represents desired frame area in pixels
-	virtual void screenshot( RenderImageInterface* _image, const int* rect = 0 ) = 0;
-	// Renders One Frame
-	virtual void render() = 0; 
-	// установка разрешения контента игры, входные данные: вектор2. 
-	virtual void setContentResolution( const float * _resolution ) = 0;
-	// входные данные: матрица 4 на 4
-	virtual	void setProjectionMatrix( const float * _projection ) = 0;
-	virtual	void setViewMatrix( const float * _view ) = 0;
-	virtual	void setWorldMatrix( const float * _world ) = 0;
-	// create empty render image
-	virtual RenderImageInterface * createImage( const char* _name, unsigned int _width, unsigned int _height ) = 0;
-	// create render target image
-	virtual RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height ) = 0;
-	// загрузка изображения
-	virtual RenderImageInterface * loadImage( const TextureDesc& _desc ) = 0;
-	// удаления изображения
-	virtual void releaseImage( RenderImageInterface * _image ) = 0;
-	//
-	virtual RenderImageInterface * getImage( const Menge::String& _desc ) const = 0;
-	//
-	virtual RenderVideoStreamInterface* loadImageVideoStream( const char* _filename ) = 0;
-	//
-	virtual void releaseImageVideoStream( RenderVideoStreamInterface* _image ) = 0;
-	// отрисовка изображения
-
-	virtual void renderImage(		
-		const float * _transform, 
-		const float * _a,
-		const float * _b,
-		const float * _c,
-		const float * _d,
-		const float * _uv,
-		unsigned int _color, 
-		const RenderImageInterface * _image,
-		EBlendFactor _src,
-		EBlendFactor _dst) = 0;
-
-	virtual void renderTriple(const float * _transform,  
-								  const float * _a, 
-								  const float * _b, 
-								  const float * _c, 
-								  const float * _uv0, 
-								  const float * _uv1,
-								  const float * _uv2,
-								  unsigned int _color,  
-								  const RenderImageInterface * _image, 
-								  EBlendFactor _src, 
-								  EBlendFactor _dst ) = 0;
-
-	virtual void	renderMesh( const TVertex* _vertices, std::size_t _verticesNum,
-								const Menge::uint16* _indices, std::size_t _indicesNum,
-								TMaterial* _material ) = 0;
-
-	virtual void	renderLine( unsigned int _color, const float * _begin, const float * _end) = 0;
-
-	virtual void	beginScene() = 0;
-	virtual void	endScene() = 0;
-	virtual	void	beginLayer2D() = 0;
-	virtual	void	endLayer2D() = 0;
-	virtual	void	beginLayer3D() = 0;
-	virtual	void	endLayer3D() = 0;
-
-	virtual void	setRenderArea( const float* _renderArea ) = 0;
-
-	virtual void	setFullscreenMode( float _width, float _height, bool _fullscreen ) = 0;
-	virtual void	setRenderTarget( const Menge::String& _name ) = 0;
-
-	//new
-	virtual CameraInterface * createCamera( const char * _name ) = 0;
-	virtual EntityInterface * createEntity( const char * _name, const char * _meshName ) = 0;
-	virtual LightInterface * createLight( const char * _name ) = 0;
-	virtual SceneNodeInterface * createSceneNode( const std::string & _name ) = 0;
-
-	virtual void releaseCamera( CameraInterface * _camera ) = 0;
-	virtual void releaseEntity( EntityInterface * _entity ) = 0;
-	virtual void releaseLight( LightInterface * _light ) = 0;
-	virtual void releaseSceneNode( SceneNodeInterface * _interface ) = 0;
-
-	virtual void setTextureFiltering( bool _filter ) = 0;
-	virtual SceneNodeInterface * getRootSceneNode() const = 0;
-	virtual void setEventListener( RenderSystemListener* _listener ) = 0;
-	virtual void onWindowMovedOrResized() = 0;
-	virtual void onWindowActive( bool _active ) = 0;
-	virtual void onWindowClose() = 0;
-};
-
-bool initInterfaceSystem(::RenderSystemInterface** _ptrRenderSystem);
-void releaseInterfaceSystem(::RenderSystemInterface* _ptrRenderSystem);
+bool initInterfaceSystem(Menge::RenderSystemInterface** _ptrRenderSystem);
+void releaseInterfaceSystem(Menge::RenderSystemInterface* _ptrRenderSystem);

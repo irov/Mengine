@@ -3,12 +3,11 @@
 #	include "Holder.h"
 #	include "Math/vec2.h"
 
-class PhysicSystem2DInterface;
-class PhysicBody2DInterface;
-class PhysicJoint2DInterface;
-
 namespace Menge
 {
+	class PhysicSystem2DInterface;
+	class PhysicBody2DInterface;
+	class PhysicJoint2DInterface;
 
 	class RigidBody2D;
 

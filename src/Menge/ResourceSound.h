@@ -2,10 +2,10 @@
 
 #	include "ResourceReference.h"
 
-class SoundBufferInterface;
-
 namespace Menge
 {
+	class SoundBufferInterface;
+
 	//! ResourceSound - ресурс-файл, который содержит звуковые данные.
 
     /*! xml - файл имеет следующую структуру:

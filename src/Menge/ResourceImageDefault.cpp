@@ -19,7 +19,7 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].maxSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ResourceImageDefault::getCount() const
+	std::size_t ResourceImageDefault::getCount() const
 	{
 		return m_vectorImageFrames.size();
 	}

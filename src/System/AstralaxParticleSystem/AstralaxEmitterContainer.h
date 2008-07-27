@@ -8,15 +8,16 @@
 
 #	include <string>
 
-class AstralaxEmitterContainer : public EmitterContainerInterface
+class AstralaxEmitterContainer 
+	: public Menge::EmitterContainerInterface
 {
 public:
 	AstralaxEmitterContainer();
 	~AstralaxEmitterContainer();
 
 public:
-	void addEmitterId( const char * _name,  HM_EMITTER _id );
-	HM_EMITTER getEmitter( const char * _name )  const;
+	void addEmitterId( const Menge::String & _name,  HM_EMITTER _id );
+	HM_EMITTER getEmitter( const Menge::String & _name )  const;
 	
 private:
 	std::map<std::string, HM_EMITTER> m_emittersIds;

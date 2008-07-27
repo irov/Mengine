@@ -4,7 +4,7 @@
 #	include "Box2DPhysicSystem.h"
 
 class Box2DPhysicJoint
-	: public PhysicJoint2DInterface
+	: public Menge::PhysicJoint2DInterface
 {
 public:
 	Box2DPhysicJoint( b2World* _world, b2Joint* _joint, bool _isMouse );

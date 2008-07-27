@@ -19,7 +19,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	RenderEngine::RenderEngine( ::RenderSystemInterface * _interface )
+	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
 		: m_interface( _interface )
 		, m_renderViewport( mt::vec2f(0.f,0.f), mt::vec2f(1024.f,768.f) )
 		, m_renderCamera(0)
@@ -128,13 +128,13 @@ namespace Menge
 		return m_interface->setWorldMatrix( _world.m );
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::createImage( const char* _name, unsigned int _width, unsigned int _height )
+	RenderImageInterface * RenderEngine::createImage( const String & _name, unsigned int _width, unsigned int _height )
 	{
 		RenderImageInterface * image = m_interface->createImage( _name, _width, _height );
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height )
+	RenderImageInterface * RenderEngine::createRenderTargetImage( const String & _name, unsigned int _width, unsigned int _height )
 	{
 		RenderImageInterface * image = m_interface->createRenderTargetImage( _name, _width, _height );
 		return image;

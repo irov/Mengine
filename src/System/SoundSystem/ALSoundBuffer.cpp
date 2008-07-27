@@ -31,21 +31,23 @@ unsigned int ALSoundBuffer::getLenghtMs() const
 	return m_lenghtMs;
 }
 //////////////////////////////////////////////////////////////////////////
-void ALSoundBuffer::addSource(SoundSourceInterface *_source)
+void ALSoundBuffer::addSource( Menge::SoundSourceInterface *_source)
 {
 	m_sources.push_back(_source);
 }
 //////////////////////////////////////////////////////////////////////////
-void ALSoundBuffer::removeSource(SoundSourceInterface *_source)
+void ALSoundBuffer::removeSource( Menge::SoundSourceInterface *_source)
 {
-	TVectorSoundSourceInterface::iterator it = std::find(m_sources.begin(), m_sources.end(), _source);
-	if( it != m_sources.end() )
+	TVectorSoundSourceInterface::iterator it_find = 
+		std::find(m_sources.begin(), m_sources.end(), _source);
+
+	if( it_find != m_sources.end() )
 	{
-		m_sources.erase(it);
+		m_sources.erase(it_find);
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool ALSoundBuffer::loadOgg( const char* _filename )
+bool ALSoundBuffer::loadOgg( const Menge::String & _filename )
 {
 	if ( !m_isEmpty )
 	{
@@ -73,7 +75,7 @@ bool ALSoundBuffer::loadOgg( const char* _filename )
 	std::ifstream oggFile;
 
 	// Open Ogg file
-	oggFile.open( _filename, std::ios_base::in | std::ios_base::binary );
+	oggFile.open( _filename.c_str(), std::ios_base::in | std::ios_base::binary );
 
 	OggVorbis_File oggStream;
 
@@ -133,6 +135,11 @@ bool ALSoundBuffer::loadOgg( const char* _filename )
 	m_isEmpty = false;
 
 	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+const Menge::String & ALSoundBuffer::getFilename()
+{ 
+	return m_filename; 
 }
 //////////////////////////////////////////////////////////////////////////
 bool ALSoundBuffer::isStreamed() const

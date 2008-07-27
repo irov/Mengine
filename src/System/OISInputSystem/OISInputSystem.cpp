@@ -2,7 +2,7 @@
 #	include <sstream>
 
 //////////////////////////////////////////////////////////////////////////
-bool initInterfaceSystem(InputSystemInterface **_system)
+bool initInterfaceSystem( Menge::InputSystemInterface **_system )
 {
 	try
 	{
@@ -16,7 +16,7 @@ bool initInterfaceSystem(InputSystemInterface **_system)
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void releaseInterfaceSystem(InputSystemInterface *_system)
+void releaseInterfaceSystem( Menge::InputSystemInterface *_system )
 {
 	delete static_cast<OISInputSystem*>(_system);
 }
@@ -34,7 +34,7 @@ OISInputSystem::~OISInputSystem()
 	destroy();
 }
 //////////////////////////////////////////////////////////////////////////
-bool OISInputSystem::initialize( WINDOW_HANDLE _winHandle )
+bool OISInputSystem::initialize( Menge::WindowHandle _winHandle )
 {
 	std::ostringstream windowHndStr;
 	windowHndStr << (int)_winHandle;
@@ -110,7 +110,7 @@ void OISInputSystem::destroy()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void OISInputSystem::regHandle( InputSystemHandler * _handle )
+void OISInputSystem::regHandle( Menge::InputSystemHandler * _handle )
 {
 	m_handler = _handle;
 }

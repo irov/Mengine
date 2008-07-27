@@ -21,15 +21,15 @@ namespace Menge
 		: public RenderSystemListener
 	{
 	public:
-		RenderEngine( ::RenderSystemInterface * _interface );
+		RenderEngine( RenderSystemInterface * _interface );
 		
 	public:
 
 		bool initialize( const String& _driver );
-		bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle = 0,
+		bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WindowHandle _winHandle = 0,
 								int _FSAAType = 0, int _FSAAQuality = 0 );
 
-		void addResourceLocation( const std::string& _path );
+		void addResourceLocation( const String & _path );
 		void initResources();
 
 		void screenshot( RenderImageInterface* _renderTargetImage, const int* rect = NULL );
@@ -44,11 +44,11 @@ namespace Menge
 		void setRenderCamera( Camera3D * _camera );
 		Camera3D * getRenderCamera();
 
-		RenderImageInterface * createImage( const char* _name, unsigned int _width, unsigned int _height );
-		RenderImageInterface * createRenderTargetImage( const char* _name, unsigned int _width, unsigned int _height );
+		RenderImageInterface * createImage( const String & _name, unsigned int _width, unsigned int _height );
+		RenderImageInterface * createRenderTargetImage( const String & _name, unsigned int _width, unsigned int _height );
 		RenderImageInterface * loadImage( const TextureDesc & _desc );
-		RenderImageInterface * loadImage( const std::string & _filename, unsigned int _filter );
-		RenderVideoStreamInterface * loadImageVideoStream( const std::string& _filename );
+		RenderImageInterface * loadImage( const String & _filename, unsigned int _filter );
+		RenderVideoStreamInterface * loadImageVideoStream( const String& _filename );
 
 
 		void renderImage(		
@@ -106,10 +106,10 @@ namespace Menge
 		bool	getFullscreenMode();
 		void	setViewportDimensions( float _width, float _height, float _renderFactor = 0.0f );
 
-		CameraInterface * createCamera( const std::string& _name );
-		EntityInterface * createEntity( const std::string& _name, const std::string& _meshName );
-		LightInterface * createLight( const std::string& _name );
-		SceneNodeInterface * createSceneNode( const std::string & _name );
+		CameraInterface * createCamera( const String & _name );
+		EntityInterface * createEntity( const String & _name, const String & _meshName );
+		LightInterface * createLight( const String & _name );
+		SceneNodeInterface * createSceneNode( const String & _name );
 
 		void releaseCamera( CameraInterface * _camera );
 		void releaseEntity( EntityInterface * _entity );
@@ -129,12 +129,12 @@ namespace Menge
 		void onWindowClose();
 
 		void setRenderFactor( float _factor );
-		void setRenderTarget( const String& _target );
+		void setRenderTarget( const String & _target );
 		const mt::vec4f& getRenderArea() const;
 		const mt::mat3f& getRenderTransform() const;
 
 	protected:
-		::RenderSystemInterface * m_interface;
+		Menge::RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;
 		Camera3D * m_renderCamera;
 		bool m_windowCreated;

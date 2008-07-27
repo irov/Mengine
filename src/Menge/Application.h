@@ -6,15 +6,6 @@
 #	include <vector>
 #	include "math/vec2.h"
 
-class FileSystemInterface;
-class InputSystemInterface;
-class RenderSystemInterface;
-class SoundSystemInterface;
-class ParticleSystemInterface;
-class PhysicSystemInterface;
-class PhysicSystem2DInterface;
-
-
 class XmlElement;
 
 
@@ -22,6 +13,13 @@ class XmlElement;
 
 namespace Menge
 {
+	class FileSystemInterface;
+	class InputSystemInterface;
+	class RenderSystemInterface;
+	class SoundSystemInterface;
+	class ParticleSystemInterface;
+	class PhysicSystemInterface;
+	class PhysicSystem2DInterface;
 	class LogSystemInterface;
 
 	class LogEngine;
@@ -58,7 +56,7 @@ namespace Menge
 		void setLogSystem( LogSystemInterface * _interface );
 		void setFileSystem( FileSystemInterface * _interface );
 		void setInputSystem( InputSystemInterface * _interface );
-		void setRenderSystem( ::RenderSystemInterface * _interface );
+		void setRenderSystem( RenderSystemInterface * _interface );
 		void setSoundSystem( SoundSystemInterface * _interface );
 		void setParticleSystem( ParticleSystemInterface * _interface );
 		void setPhysicSystem( PhysicSystemInterface * _interface );

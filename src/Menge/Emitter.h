@@ -9,11 +9,10 @@
 
 #	include <vector>
 
-class EmitterInterface;
-
 namespace Menge
 {
 	class ResourceEmitterContainer;
+	class EmitterInterface;
 
 	class Emitter
 		: public Node
@@ -40,6 +39,7 @@ namespace Menge
 		void setEmitter( const String& _emitterName );
 
 		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+
 	protected:
 		bool _checkVisibility( const Viewport & _viewPort ) override;
 
@@ -55,9 +55,9 @@ namespace Menge
 
 	private:
 		ResourceEmitterContainer * m_resource;
-		std::string m_resourcename;
+		String m_resourcename;
 
-		std::string m_emitterName;
+		String m_emitterName;
 
 		EmitterInterface * m_interface;
 

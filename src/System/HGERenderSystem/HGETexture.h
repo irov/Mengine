@@ -7,7 +7,7 @@
 #	include "libs/Math/vec2.h"
 
 class HGETexture :
-	public RenderImageInterface
+	public Menge::RenderImageInterface
 {
 public:
 	HGETexture( HGE* _hge, bool _freeOnDelete = true );
@@ -15,12 +15,12 @@ public:
 	HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete = true );
 	~HGETexture();
 
-	void load( const TextureDesc& _desc );
+	void load( const Menge::TextureDesc& _desc );
 	void unload();
 	std::size_t getWidth() const override;
 	std::size_t getHeight() const override;
-	void writeToFile( const char* _filename ) override;
-	const char * getDescription() const override;
+	void writeToFile( const Menge::String & _filename ) override;
+	const Menge::String & getDescription() const override;
 	unsigned char* lock() override;
 	void unlock() override;
 	Menge::PixelFormat getPixelFormat();

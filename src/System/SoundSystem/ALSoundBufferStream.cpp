@@ -32,7 +32,7 @@ bool ALSoundBufferStream::isStreamed() const
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-bool ALSoundBufferStream::loadOgg( const char* _filename )
+bool ALSoundBufferStream::loadOgg( const Menge::String& _filename )
 {
 	if ( !m_isEmpty )
 	{
@@ -59,7 +59,7 @@ bool ALSoundBufferStream::loadOgg( const char* _filename )
 	vorbisCallbacks.close_func = s_closeOgg;
 
 	// Open Ogg file
-	m_stream.open( _filename, std::ios_base::in | std::ios_base::binary );
+	m_stream.open( _filename.c_str(), std::ios_base::in | std::ios_base::binary );
 
 	if ( ov_open_callbacks( &m_stream, &m_oggFile, NULL, 0, vorbisCallbacks ) < 0 )
 		return false;

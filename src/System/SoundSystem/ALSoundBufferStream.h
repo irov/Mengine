@@ -15,7 +15,7 @@ public:
 	virtual ~ALSoundBufferStream();
 
 	bool isStreamed() const;
-	bool loadOgg( const char* _filename );
+	bool loadOgg( const Menge::String& _filename );
 
 	void start( ALuint source );
 	bool update();

@@ -171,12 +171,24 @@ namespace Menge
 		int m_lineOffset;
 		//PyObject* m_listener;
 
+		struct CharData
+		{
+			String::value_type code;
+			mt::vec4f uv;
+			float ratio;
+		};
+
+		typedef std::vector<CharData> TCharsData;
+
 		struct Line
 		{
-			std::string text;
+			Line( ResourceFont * _resource, const String & _text, float _len );
+
+			TCharsData charsData;
+
+			String text;
+			
 			float  length;
-			Line( const std::string& _text, float _len )
-				: text(_text), length(_len){};
 		};
 
 		std::list<Line>  m_lines;

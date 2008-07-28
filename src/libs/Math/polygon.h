@@ -24,6 +24,7 @@ namespace mt
 		MATH_INLINE polygon( std::size_t n );
 		MATH_INLINE polygon( const polygon & _rhs );
 
+		MATH_INLINE void resize_points( std::size_t _size );
 		MATH_INLINE void clear_points();
 
 		MATH_INLINE void add_point(const vec2f& v);

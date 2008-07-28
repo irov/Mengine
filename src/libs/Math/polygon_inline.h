@@ -46,7 +46,10 @@ namespace mt
 		const mt::vec2f & _dirA, const mt::vec2f & _posA,
 		const mt::vec2f & _dirB, const mt::vec2f & _posB )
 	{	
-		if( _a.num_points() == 0 || _b.num_points() == 0 )
+		std::size_t a_num_point = _a.num_points();
+		std::size_t b_num_point = _b.num_points();
+
+		if( a_num_point == 0 || b_num_point == 0 )
 		{
 			return false;
 		}
@@ -61,22 +64,26 @@ namespace mt
 		worldMatrixB.v1 = mt::vec3f(mt::perp(_dirB),1);
 		worldMatrixB.v2 = mt::vec3f(_posB,1);
 
-		polygon polyA;
+		static polygon polyA;
+		
+		polyA.resize_points(a_num_point);
 
 		for( std::size_t it = 0, it_end = _a.num_points(); it != it_end ; ++it )
 		{
 			mt::vec2f point;
 			mt::mul_v2_m3( point, _a[ it ], worldMatrixA );
-			polyA.add_point(point);
+			polyA[it] = point;
 		}
 
-		polygon polyB;
+		static polygon polyB;
+		
+		polyB.resize_points(b_num_point);
 
 		for( std::size_t it = 0, it_end = _b.num_points(); it != it_end ; ++it )
 		{
 			mt::vec2f point;
 			mt::mul_v2_m3( point, _b[ it ], worldMatrixB );
-			polyB.add_point(point);
+			polyB[it] = point;
 		}
 
 		// GJK algo for intersection
@@ -130,27 +137,34 @@ namespace mt
 		const mt::mat3f & worldMatrixA,
 		const mt::mat3f & worldMatrixB)
 	{	
-		if( _a.num_points() == 0 || _b.num_points() == 0 )
+		std::size_t a_num_point = _a.num_points();
+		std::size_t b_num_point = _b.num_points();
+
+		if( a_num_point == 0 || b_num_point == 0 )
 		{
 			return false;
-		}
+		}		
 
-		polygon polyA;
+		static polygon polyA;
+		
+		polyA.resize_points(a_num_point);
 
-		for ( std::size_t it = 0, it_end = _a.num_points(); it != it_end; ++it )
+		for ( std::size_t it = 0, it_end = a_num_point; it != it_end; ++it )
 		{
 			mt::vec2f point;
 			mt::mul_v2_m3( point, _a[ it ], worldMatrixA );
-			polyA.add_point(point);
+			polyA[it] = point;
 		}
 
-		polygon polyB;
+		static polygon polyB;
+		
+		polyB.resize_points(b_num_point);
 
 		for ( std::size_t it = 0, it_end = _b.num_points(); it != it_end ; ++it )
 		{
 			mt::vec2f point;
 			mt::mul_v2_m3( point, _b[ it ], worldMatrixB );
-			polyB.add_point(point);
+			polyB[it] = point;
 		}
 
 		// GJK algo for intersection
@@ -197,6 +211,11 @@ namespace mt
 		}
 
 		return true;
+	}
+
+	MATH_INLINE void polygon::resize_points( std::size_t _size )
+	{
+		m_points.resize( _size );
 	}
 
 	MATH_INLINE void polygon::clear_points()

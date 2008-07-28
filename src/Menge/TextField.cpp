@@ -153,7 +153,7 @@ namespace     Menge
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Font", "Name", m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE( "Text", "Value", m_text );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Text", "Value", &TextField::setText );
 			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
 			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
@@ -175,35 +175,39 @@ namespace     Menge
 
 		mt::vec2f offset = mt::vec2f::zero_v2;
 
-		for( std::list<Line>::iterator it = m_lines.begin(); it != m_lines.end(); ++it)
+		for( std::list<Line>::iterator 
+			it_line = m_lines.begin(),
+			it_line_end = m_lines.end(); 
+		it_line != it_line_end; 
+		++it_line )
 		{
-			const std::string & _line = (*it).text;          
+			const TCharsData & charsData = it_line->charsData;
 
 			if( m_centerAlign )
 			{
-				m_alignOffset = mt::vec2f( -(*it).length * 0.5f, 0 );
+				m_alignOffset = mt::vec2f( -it_line->length * 0.5f, 0 );
 			}
 
 			if( m_rightAlign )
 			{
-				m_alignOffset = mt::vec2f( -(*it).length, 0 );
+				m_alignOffset = mt::vec2f( -it_line->length, 0 );
 			}
 
 			offset.x = m_alignOffset.x;
 
-			for( std::string::const_iterator
-				it = _line.begin(), 
-				it_end = _line.end();
-			it != it_end; 
-			++it )
+			for( TCharsData::const_iterator
+				it_char = charsData.begin(), 
+				it_char_end = charsData.end();
+			it_char != it_char_end; 
+			++it_char )
 			{
-				if ( *it == ' ' )
+				if ( it_char->code == ' ' )
 				{
 					offset.x += spaceWidth + m_charOffset;
 					continue;
 				}
 
-				mt::vec4f uv = m_resource->getUV( *it );
+				mt::vec4f uv = it_char->uv;
 
 				if((k != 0.f) && (h != 0.f))
 				{
@@ -216,7 +220,7 @@ namespace     Menge
 				}
 
 				//AGHTUNG - если нужно округлить делайте floorf : float - int - float не в рот ебически долго!!!
-				float width = floorf( m_resource->getCharRatio( *it ) * m_height );
+				float width = floorf( it_char->ratio * m_height );
 
 				mt::vec2f size( width, m_height );
 
@@ -321,7 +325,9 @@ namespace     Menge
 				m_resourcename.c_str() );
 			return;
 		}
+
 		m_text = _text;
+
 		createFormattedMessage_( m_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -450,7 +456,7 @@ namespace     Menge
 		for(std::vector<std::string>::iterator line = lines.begin(); line != lines.end(); line++ )
 		{
 			float len = getWordWidth_( *line );
-			m_lines.push_back( Line( *line, len ));
+			m_lines.push_back( Line( m_resource, *line, len ));
 			maxlen = (std::max)( maxlen, len );
 		}
 
@@ -512,4 +518,21 @@ namespace     Menge
 		callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	TextField::Line::Line( ResourceFont * _resource, const String & _text, float _len )
+	: text(_text)
+	, length(_len)
+	{
+		for( String::const_iterator
+			it = _text.begin(), 
+			it_end = _text.end();
+		it != it_end; 
+		++it )
+		{
+			CharData charData;
+			charData.code = *it;
+			charData.uv = _resource->getUV( *it );
+			charData.ratio = _resource->getCharRatio( *it );
+			charsData.push_back( charData );
+		}
+	};
 }

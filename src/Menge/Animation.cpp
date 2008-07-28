@@ -92,7 +92,11 @@ namespace	Menge
 			m_delay -= delay;
 			
 			unsigned int frameSize = m_resourceAnimation->getSequenceCount();
-			callEvent( "END_FRAME", "(OI)", this->getEmbedding(), m_currentFrame );
+
+			if( m_onEndFrameEvent == true )
+			{
+				callEvent( "END_FRAME", "(OI)", this->getEmbedding(), m_currentFrame );
+			}
 
 			if( ++m_currentFrame == frameSize )
 			{
@@ -101,7 +105,11 @@ namespace	Menge
 					m_playing = false;
 					--m_currentFrame;
 
-					callEvent( "END_ANIMATION", "(O)", this->getEmbedding() );
+					if( m_onEndAnimationEvent == true )
+					{
+						callEvent( "END_ANIMATION", "(O)", this->getEmbedding() );
+					}
+
 					break;
 				}
 				else

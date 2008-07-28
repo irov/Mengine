@@ -84,8 +84,8 @@ namespace	mt
 
 	MATH_INLINE void mul_v2_m3(vec2f& _out, const vec2f& _v, const mat3f& _m)
 	{
-		_out.x = _m[0][0] * _v.x + _m[1][0] * _v.y + _m[2][0];
-		_out.y = _m[0][1] * _v.x + _m[1][1] * _v.y + _m[2][1];
+		_out.x = _m.m[0] * _v.x + _m.m[3] * _v.y + _m.m[6];
+		_out.y = _m.m[1] * _v.x + _m.m[4] * _v.y + _m.m[7];
 	}
 
 	MATH_INLINE void mul_v2_m3_r(vec2f& _out, const vec2f& _v, const mat3f& _m)
@@ -97,15 +97,15 @@ namespace	mt
 	/*	Matrix/Matrix Mult  */
 	MATH_INLINE void mul_m3_m3(mat3f& _out, const mat3f& _a, const mat3f& _b)
 	{
-		_out.v0.x = _a[0][0] * _b[0][0] + _a[0][1] * _b[1][0] + _a[0][2] * _b[2][0]; 
-		_out.v0.y = _a[0][0] * _b[0][1] + _a[0][1] * _b[1][1] + _a[0][2] * _b[2][1];
-		_out.v0.z = _a[0][0] * _b[0][2] + _a[0][1] * _b[1][2] + _a[0][2] * _b[2][2];
-		_out.v1.x = _a[1][0] * _b[0][0] + _a[1][1] * _b[1][0] + _a[1][2] * _b[2][0];
-		_out.v1.y = _a[1][0] * _b[0][1] + _a[1][1] * _b[1][1] + _a[1][2] * _b[2][1];
-		_out.v1.z = _a[1][0] * _b[0][2] + _a[1][1] * _b[1][2] + _a[1][2] * _b[2][2];
-		_out.v2.x = _a[2][0] * _b[0][0] + _a[2][1] * _b[1][0] + _a[2][2] * _b[2][0];
-		_out.v2.y = _a[2][0] * _b[0][1] + _a[2][1] * _b[1][1] + _a[2][2] * _b[2][1];
-		_out.v2.z = _a[2][0] * _b[0][2] + _a[2][1] * _b[1][2] + _a[2][2] * _b[2][2];
+		_out.v0.x = _a.m[0] * _b.m[0] + _a.m[1] * _b.m[3] + _a.m[2] * _b.m[6]; 
+		_out.v0.y = _a.m[0] * _b.m[1] + _a.m[1] * _b.m[4] + _a.m[2] * _b.m[7];
+		_out.v0.z = _a.m[0] * _b.m[2] + _a.m[1] * _b.m[5] + _a.m[2] * _b.m[8];
+		_out.v1.x = _a.m[3] * _b.m[0] + _a.m[4] * _b.m[3] + _a.m[5] * _b.m[6];
+		_out.v1.y = _a.m[3] * _b.m[1] + _a.m[4] * _b.m[4] + _a.m[5] * _b.m[7];
+		_out.v1.z = _a.m[3] * _b.m[2] + _a.m[4] * _b.m[5] + _a.m[5] * _b.m[8];
+		_out.v2.x = _a.m[6] * _b.m[0] + _a.m[7] * _b.m[3] + _a.m[8] * _b.m[6];
+		_out.v2.y = _a.m[6] * _b.m[1] + _a.m[7] * _b.m[4] + _a.m[8] * _b.m[7];
+		_out.v2.z = _a.m[6] * _b.m[2] + _a.m[7] * _b.m[5] + _a.m[8] * _b.m[8];
 	}
 
 	MATH_INLINE mat3f operator* (const mat3f& _a, const mat3f& _b)

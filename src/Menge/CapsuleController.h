@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "NodeSinglethon.h"
+#	include "Node.h"
 #	include "math/quat.h"
 
 class ControllerInterface;
@@ -12,7 +12,7 @@ namespace Menge
 	class ResourceCapsuleController;
 
 	class CapsuleController
-		: public NodeSinglethon
+		: public Node
 	{
 		OBJECT_DECLARE( CapsuleController )
 

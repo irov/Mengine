@@ -20,8 +20,6 @@ namespace Menge
 	class Layer2D;
 	typedef std::list<class Node *> TContainerChildren;
 
-	class NodeForeach;
-
 	class Node
 		: public Identity
 		, public Resource

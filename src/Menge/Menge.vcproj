@@ -347,6 +347,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\InputHandler.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\InputHandler.h"
 					>
 				</File>
@@ -413,10 +417,6 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<File
-				RelativePath=".\InputHandler.cpp"
-				>
-			</File>
 			<Filter
 				Name="Sprite"
 				>
@@ -1318,6 +1318,18 @@
 				</File>
 				<File
 					RelativePath=".\Reference.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Visitor"
+				>
+				<File
+					RelativePath=".\Visitor.h"
+					>
+				</File>
+				<File
+					RelativePath=".\VisitorAdapter.h"
 					>
 				</File>
 			</Filter>

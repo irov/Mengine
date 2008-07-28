@@ -128,13 +128,13 @@ namespace Menge
 		return m_interface->setWorldMatrix( _world.m );
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::createImage( const String & _name, unsigned int _width, unsigned int _height )
+	RenderImageInterface * RenderEngine::createImage( const String& _name, unsigned int _width, unsigned int _height )
 	{
 		RenderImageInterface * image = m_interface->createImage( _name, _width, _height );
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::createRenderTargetImage( const String & _name, unsigned int _width, unsigned int _height )
+	RenderImageInterface * RenderEngine::createRenderTargetImage( const String& _name, unsigned int _width, unsigned int _height )
 	{
 		RenderImageInterface * image = m_interface->createRenderTargetImage( _name, _width, _height );
 		return image;

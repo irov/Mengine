@@ -84,8 +84,6 @@ bool ALSoundBuffer::loadOgg( const Menge::String & _filename )
 	if ( ov_open_callbacks( &oggFile, &oggStream, NULL, 0, vorbisCallbacks ) < 0 )
 		return false;
 
-	// take 4k out of the data segment, not the stack
-	char pcmout[BUFFER_SIZE];
 	int seek = 0;
 
 	ogg_int64_t pcmlength = ov_pcm_total( &oggStream, -1 );
@@ -96,7 +94,6 @@ bool ALSoundBuffer::loadOgg( const Menge::String & _filename )
 	char *memory = new char[memSize];
 
 	int eof = 0;
-	int current_section;
 
 	seek = decodeOggVorbis_( &oggStream, memory, memSize );
 

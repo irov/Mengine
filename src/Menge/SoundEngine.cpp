@@ -76,6 +76,7 @@ namespace Menge
 	void SoundEngine::registerSoundEmitter( SoundEmitter * _emitter )
 	{
 		//MENGE_LOG("Sound Registered! \n");
+		_emitter->setVolume( m_soundVolume );
 		m_soundEmitters.insert( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////

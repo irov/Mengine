@@ -9,6 +9,7 @@
 #	include "ScriptEngine.h"
 #	include "LogEngine.h"
 #	include "XmlEngine.h"
+#	include "Application.h"
 
 #	include "Player.h"
 #	include "Camera2D.h"
@@ -678,10 +679,17 @@ namespace Menge
 			viewportParallax.parallax( factor );
 
 			screen_pos = pos - viewportParallax.begin;
+
+			const mt::vec2f& screen = Holder<Application>::hostage()->getCurrentResolution();
+			if( screen_pos.x < 0.0f || screen_pos.x > screen.x )
+			{
+				screen_pos += mt::vec2f( m_layer->getSize().x, 0.0f );
+			}
+
 		}
 		else
 		{
-			screen_pos = pos - viewport.begin;
+			screen_pos = pos /*- viewport.begin*/;
 		}
 
 		return screen_pos;

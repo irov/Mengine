@@ -198,10 +198,6 @@ namespace Menge
 	{
 		m_arrow->onMouseMove( _x, _y );
 
-		const mt::vec2f & arrowPos = m_arrow->getLocalPosition();
-
-		Holder<PhysicEngine2D>::hostage()->onMouseMove( arrowPos.x, arrowPos.y );
-
 		bool handler = false;
 
 		if( handler == false )
@@ -323,6 +319,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update( float _timing )
 	{
+		const mt::vec2f & arrowPos = m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
+
+		Holder<PhysicEngine2D>::hostage()->onMouseMove( arrowPos.x, arrowPos.y );
+
 		updateChangeScene();
 
 		if( m_renderCamera2D )
@@ -372,14 +372,17 @@ namespace Menge
 		if( m_arrow )
 		{
 			Holder<RenderEngine>::hostage()
+				->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
+
+			Holder<RenderEngine>::hostage()
 				->beginLayer2D();
 
 			Viewport viewport;
 			viewport.begin = mt::vec2f( 0.f, 0.f );
 			viewport.end = mt::vec2f( 1024.f, 768.f );
 
-			//Holder<RenderEngine>::hostage()
-			//	->setRenderViewport( viewport );
+			Holder<RenderEngine>::hostage()
+				->setRenderViewport( viewport );
 
 			m_arrow->render( viewport, _enableDebug );
 

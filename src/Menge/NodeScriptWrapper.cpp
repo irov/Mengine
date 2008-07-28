@@ -160,6 +160,12 @@ namespace Menge
 			Holder<Player>::hostage()
 				->setCamera2DPosition( mt::vec2f(x, y) );
 		}
+
+		static const mt::vec2f& s_getCamera2DPosition()
+		{
+			return Holder<Player>::hostage()
+				->getRenderCamera2D()->getViewport().begin;
+		}
 		
 		static void setCamera2DDirection( float x, float y )
 		{
@@ -897,6 +903,7 @@ namespace Menge
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
 		pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
 		pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
+		pybind::def( "getCamera2DPosition", &ScriptMethod::s_getCamera2DPosition );
 		pybind::def( "setCamera2DDirection", &ScriptMethod::setCamera2DDirection );
 		pybind::def( "setCamera2DTarget", &ScriptMethod::s_setCamera2DTarget );
 		pybind::def( "enableCamera2DFollowing", &ScriptMethod::s_enableCamera2DTargetFollowing );

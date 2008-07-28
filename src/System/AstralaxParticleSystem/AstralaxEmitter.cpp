@@ -19,6 +19,9 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 		m_factor[i] = Magic_GetDiagramFactor( m_id, i, MAGIC_DIAGRAM_NUMBER );
 	}
 	m_id = duplicated_id;
+
+	// set randomize
+	Magic_SetRandomMode( m_id, true );
 }
 //////////////////////////////////////////////////////////////////////////
 AstralaxEmitter::~AstralaxEmitter()

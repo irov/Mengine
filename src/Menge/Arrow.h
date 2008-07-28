@@ -42,6 +42,7 @@ namespace Menge
 		void onMouseLeave();
 		void onMouseEnter();
 
+		mt::vec2f getScreenPosition() override;
 	protected:
 		void _update( float _timing ) override;
 		bool _activate() override;

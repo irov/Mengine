@@ -6,12 +6,13 @@
 #	include "RenderEngine.h"
 
 #	include "Math/box2.h"
+#	include "Utils.h"
 
 static const unsigned int ImageSize = 512;
 
 namespace Menge
 {
-	/*//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT( Layer2DPool );
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
@@ -36,9 +37,12 @@ namespace Menge
 				if( mt::is_intersect( bbox, it->rect ) )
 				{
 					renderEngine->setRenderTarget( it->image->getDescription() );
-					_node->translate( -bbox.min );
-					_node->_render( m_viewport, false );
-					_node->translate( bbox.min );
+					_node->translate( -it->rect.min );
+					_node->_render( Viewport( it->rect.min, it->rect.max ), false );
+					_node->translate( it->rect.min );
+					mt::mat3f ident;
+					mt::ident_m3( ident );
+					_node->updateWorldMatrix( ident );
 				}
 			}
 		}
@@ -83,12 +87,22 @@ namespace Menge
 	bool Layer2DPool::_compile()
 	{
 		int countX = m_size.x / ImageSize;
+		int d = static_cast<int>( m_size.x ) % ImageSize;
+		if( d != 0 )
+		{
+			countX += 1;
+		}
 		int countY = m_size.y / ImageSize;
+		d = static_cast<int>( m_size.y ) % ImageSize;
+		if( d != 0 )
+		{
+			countY += 1;
+		}
 		for( int i = 0; i < countX; i++ )
 		{
 			for( int j = 0; j < countY; j++ )
 			{
-				String name = String( "Layer2DLoop_" + m_name + "_image_" + String( ::itoa( i, NULL, 0 ) ) + String( ::itoa( j, NULL, 0 ) ) );
+				String name = String( "Layer2DLoop_" + m_name + "_image_" + toString( i ) + toString( j ) );
 				RenderImageInterface* image = Holder<RenderEngine>::hostage()->createRenderTargetImage( name,ImageSize, ImageSize );
 
 				ImageRect imageRect;
@@ -121,13 +135,18 @@ namespace Menge
 		mt::vec2f d( 0.0f, ImageSize );
 		mt::mat3f wm;
 		mt::ident_m3( wm );
-		for( TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
+		/*for( TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 			it != it_end;
 			it++ )
 		{
 			wm.v2.v2 = it->rect.min;
 			renderEngine->renderImage( wm, a, b, c, d, mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), 0xFFFFFFFF, it->image );
+		}*/
+		for( int i = 0; i < 4; i++ )
+		{
+			wm.v2.v2 = m_surfaces[i].rect.min;
+			renderEngine->renderImage( wm, a, b, c, d, mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), 0xFFFFFFFF, m_surfaces[i].image );
 		}
-	}*/
+	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

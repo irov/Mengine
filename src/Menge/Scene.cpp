@@ -307,7 +307,7 @@ namespace	Menge
 
 			mainSize -= viewport_size;
 
-			if( fabsf( mainSize.x * mainSize.y) > 0.0001f )
+			//if( fabsf( mainSize.x /* mainSize.y*/) > 0.0001f )
 			{
 				for( TContainerChildren::reverse_iterator 
 					it = m_children.rbegin(),
@@ -321,7 +321,10 @@ namespace	Menge
 
 						layerSize -= viewport_size;
 
-						mt::vec2f parallaxFactor( layerSize.x / mainSize.x, layerSize.y / mainSize.y );
+						float factorX = ( mainSize.x > 0.0001f ) ? ( layerSize.x / mainSize.x ) : 0.0f;
+						float factorY = ( mainSize.y > 0.0001f ) ? ( layerSize.y / mainSize.y ) : 0.0f;
+
+						mt::vec2f parallaxFactor( factorX, factorY );
 
 						layer2D->setParallaxFactor( parallaxFactor );
 					}

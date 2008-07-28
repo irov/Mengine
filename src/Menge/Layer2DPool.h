@@ -2,10 +2,10 @@
 
 #	include "Layer2D.h"
 
-class RenderImageInterface;
 
 namespace Menge
 {
+	class RenderImageInterface;
 	class Layer2DPool 
 		: public Layer2D
 	{

@@ -180,9 +180,11 @@ namespace	Menge
 
 		int count = m_interface->getNumTypes();
 
-		//const mt::mat3f & wm = getWorldMatrix();
+		//mt::mat3f wm = getWorldMatrix();
 		mt::mat3f wm;
 		mt::ident_m3( wm );
+		//wm.m[6] = 0.0f;
+		//wm.m[7] = 0.0f;
 
 		for ( int i = count - 1; i >= 0; i-- )
 		//for( int i = 0; i < count; i++ )

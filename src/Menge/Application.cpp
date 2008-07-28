@@ -48,6 +48,7 @@
 #	include "Track.h"
 #	include "Video.h"
 #	include "Layer2dLoop.h"
+#	include "Layer2dPool.h"
 //#	include "Actor.h"
 //#	include "Camera3D.h"
 #	include "CapsuleController.h"
@@ -371,6 +372,7 @@ namespace Menge
 //		OBJECT_FACTORY( RigidBody3D );
 		OBJECT_FACTORY( Layer2D );
 		OBJECT_FACTORY( Layer2DLoop );
+		OBJECT_FACTORY( Layer2DPool );
 		OBJECT_FACTORY( Layer3D );
 		OBJECT_FACTORY( LayerScene );
 		OBJECT_FACTORY( RenderMesh );

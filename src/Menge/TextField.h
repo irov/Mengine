@@ -192,6 +192,7 @@ namespace Menge
 		};
 
 		std::list<Line>  m_lines;
+		float m_spaceWidth;
 
 		void renderPass_( const ColourValue & _color, const RenderImageInterface * _renderImage, mt::vec4f _uv = mt::vec4f::zero_v4, float k = 0, float h = 0 );
 		void createFormattedMessage_( const std::string& _text );

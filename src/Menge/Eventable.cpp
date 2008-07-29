@@ -28,7 +28,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( const std::string & _name, const std::string & _method, PyObject * _module )
+	bool Eventable::registerEvent( const String & _name, const String & _method, PyObject * _module )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -58,7 +58,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( const std::string & _name, PyObject * _callback )
+	bool Eventable::registerEvent( const String & _name, PyObject * _callback )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -79,7 +79,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEvent( const std::string & _name )
+	PyObject * Eventable::getEvent( const String & _name )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -91,7 +91,7 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::callEvent( const std::string & _name, const char * _format, ... )
+	void Eventable::callEvent( const String & _name, const char * _format, ... )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find( _name );
 
@@ -122,7 +122,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::askEvent( bool & _result, const std::string & _name, const char * _format, ... )
+	bool Eventable::askEvent( bool & _result, const String & _name, const char * _format, ... )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find( _name );
 

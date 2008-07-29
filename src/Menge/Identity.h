@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include <string>
+#	include "Config/Typedef.h"
 
 namespace Menge
 {
@@ -11,28 +11,28 @@ namespace Menge
 		/*!
 		\param _name the first argument.
 		*/
-		void setName(const std::string & _name);
+		void setName(const String & _name);
 
 		//! Node pure virtual. get node name
 		/*!
 		\return name
 		*/
-		const std::string & getName() const;
+		const String & getName() const;
 
 		//! Node pure virtual. set node type
 		/*!
 		\param type the first argument.
 		*/
-		void setType( const std::string & _type );
+		void setType( const String & _type );
 
 		//! Node pure virtual. get node type
 		/*!
 		\return type
 		*/
-		const std::string & getType() const;
+		const String & getType() const;
 
 	protected:
-		std::string m_name;
-		std::string m_type;
+		String m_name;
+		String m_type;
 	};
 }

@@ -58,7 +58,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visit( Visitor * _visitor )
 	{
-		_visitor->procces_impl( this );
+		_visitor->visit_impl( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visitChildren( Visitor * _visitor )
@@ -69,7 +69,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			_visitor->procces_impl( *it );
+			_visitor->visit_impl( *it );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

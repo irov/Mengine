@@ -3,22 +3,22 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	void Identity::setName(const std::string & _name)
+	void Identity::setName(const String & _name)
 	{
 		m_name = _name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & Identity::getName()const
+	const String & Identity::getName()const
 	{	
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Identity::setType( const std::string & _type)
+	void Identity::setType( const String & _type)
 	{
 		m_type = _type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & Identity::getType() const
+	const String & Identity::getType() const
 	{
 		return m_type;
 	}

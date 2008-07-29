@@ -32,7 +32,7 @@ namespace Menge
 {
 #	undef VISITOR_PP_SEQ_PROC
 #	define VISITOR_PP_SEQ_PROC( TYPE )\
-	void procces_impl( class TYPE * _node ) override { static_cast<Adapter*>(this)->procces( _node ); }
+	void visit_impl( class TYPE * _node ) override { static_cast<Adapter*>(this)->visit( _node ); }
 
 	template<class Adapter>
 	class VisitorAdapter
@@ -44,7 +44,7 @@ namespace Menge
 
 #	undef VISITOR_PP_SEQ_PROC
 #	define VISITOR_PP_SEQ_PROC( TYPE )\
-	void procces_impl( class TYPE * _node ) override { static_cast<Adapter*>(this)->procces( _node ); _node->visitChildren( this ); }
+	void visit_impl( class TYPE * _node ) override { static_cast<Adapter*>(this)->visit( _node ); _node->visitChildren( this ); }
 
 	template<class Adapter>
 	class VisitorNodePostAdapter
@@ -56,7 +56,7 @@ namespace Menge
 
 #	undef VISITOR_PP_SEQ_PROC
 #	define VISITOR_PP_SEQ_PROC( TYPE )\
-	void procces_impl( class TYPE * _node ) override { _node->visitChildren( this ); static_cast<Adapter*>(this)->procces( _node ); }
+	void visit_impl( class TYPE * _node ) override { _node->visitChildren( this ); static_cast<Adapter*>(this)->visit( _node ); }
 
 	template<class Adapter>
 	class VisitorNodePreAdapter

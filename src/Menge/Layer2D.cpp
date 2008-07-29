@@ -79,7 +79,7 @@ namespace	Menge
 		}
 
 	public:
-		void procces( Node * _node )
+		void visit( Node * _node )
 		{				
 			if( _node->isRenderable() == true )
 			{
@@ -90,7 +90,7 @@ namespace	Menge
 
 		}
 
-		void procces( Layer * _layer )
+		void visit( Layer * _layer )
 		{
 			_layer->render( m_viewport, m_enableDebug );
 		}

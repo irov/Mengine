@@ -5,6 +5,9 @@
 
 #	include "pybind/pybind.hpp"
 
+#	include "Config/Typedef.h"
+
+
 namespace Menge
 {
 	class Eventable
@@ -14,17 +17,17 @@ namespace Menge
 		~Eventable();
 
 	public:
-		bool registerEvent( const std::string & _name, const std::string & _method, PyObject * _module );
-		bool registerEvent( const std::string & _name, PyObject * _callback );
-		PyObject * getEvent( const std::string & _name );
+		bool registerEvent( const String & _name, const String & _method, PyObject * _module );
+		bool registerEvent( const String & _name, PyObject * _callback );
+		PyObject * getEvent( const String & _name );
 
-		void callEvent( const std::string & _name, const char * _format, ... );
-		bool askEvent( bool & result, const std::string & _name, const char * _format, ... );
+		void callEvent( const String & _name, const char * _format, ... );
+		bool askEvent( bool & result, const String & _name, const char * _format, ... );
 
 		void removeAllEvent();
 
 	private:
-		typedef std::map<std::string, PyObject *> TMapEvent;
+		typedef std::map<String, PyObject *> TMapEvent;
 		TMapEvent m_mapEvent;
 	};
 }

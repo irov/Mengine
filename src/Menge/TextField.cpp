@@ -132,6 +132,8 @@ namespace     Menge
 			m_lineOffset = m_height;
 		}
 
+		m_spaceWidth = m_resource->getCharRatio(' ') * m_height;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -169,8 +171,6 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::renderPass_( const ColourValue & _color, const RenderImageInterface * _renderImage, mt::vec4f _uv, float k, float h )
 	{
-		float spaceWidth = m_resource->getCharRatio(' ') * m_height;
-
 		const mt::mat3f & wm = getWorldMatrix();
 
 		mt::vec2f offset = mt::vec2f::zero_v2;
@@ -203,7 +203,7 @@ namespace     Menge
 			{
 				if ( it_char->code == ' ' )
 				{
-					offset.x += spaceWidth + m_charOffset;
+					offset.x += m_spaceWidth + m_charOffset;
 					continue;
 				}
 

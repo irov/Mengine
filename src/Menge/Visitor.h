@@ -32,7 +32,7 @@
 
 #	undef VISITOR_PP_SEQ_PROC
 #	define VISITOR_PP_SEQ_PROC( TYPE )\
-	virtual void procces_impl( class TYPE * _node ) = 0;
+	virtual void visit_impl( class TYPE * _node ) = 0;
 
 namespace Menge
 {

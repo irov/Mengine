@@ -26,7 +26,7 @@ namespace Menge
 		{
 		}
 	public:
-		void procces( Node* _node )
+		void visit( Node* _node )
 		{
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 			const mt::box2f& bbox = _node->getWorldBoundingBox();

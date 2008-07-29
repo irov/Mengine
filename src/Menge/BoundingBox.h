@@ -16,6 +16,7 @@ namespace Menge
 		const mt::box2f & getWorldBoundingBox() const;		
 
 		bool isChangeBoundingBox() const;
+		void changeBoundingBox();
 
 		void mergeBoundingBox( const mt::box2f & _bbox );
 		void clearWorldBoundingBox();

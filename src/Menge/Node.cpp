@@ -555,13 +555,19 @@ namespace Menge
 	{
 		Allocator2D::_changePivot();
 
-		m_changeBoundingBox = true;
+		BoundingBox::changeBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::box2f & Node::getWorldBoundingBox()
 	{
+		if( isChangeBoundingBox() == true )
+		{
+			_updateBoundingBox( m_localBoundingBox );
+		}
+
 		if( m_children.empty() )
 		{
+			m_changeBoundingBox = false;
 			return BoundingBox::getLocalBoundingBox();
 		}
 
@@ -570,7 +576,7 @@ namespace Menge
 			return BoundingBox::getWorldBoundingBox();
 		}
 
-		BoundingBox::clearWorldBoundingBox();
+		m_worldBoundingBox = m_localBoundingBox;
 
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
@@ -582,6 +588,8 @@ namespace Menge
 
 			BoundingBox::mergeBoundingBox( bbox );
 		}
+
+		m_changeBoundingBox = false;
 
 		return BoundingBox::getWorldBoundingBox();
 	}

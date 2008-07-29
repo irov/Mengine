@@ -59,10 +59,11 @@ namespace Menge
 
 		virtual void setScale( const mt::vec2f& _scale );
 
-		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+		
 	protected:
 		void _update( float _timing ) override;
-
+		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+		void _updateBoundingBox( mt::box2f & _localBoundingBox ) override;
 		void _setListener() override;
 
 	protected:

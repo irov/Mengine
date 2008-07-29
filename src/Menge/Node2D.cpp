@@ -30,8 +30,6 @@ namespace Menge
 	void Node2D::_changePivot()
 	{
 		Allocator2D::_changePivot();
-
-		m_changeBoundingBox = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Node2D::getScreenPosition()

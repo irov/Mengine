@@ -88,6 +88,13 @@ namespace	mt
 		_out.y = _m.m[1] * _v.x + _m.m[4] * _v.y + _m.m[7];
 	}
 
+	MATH_INLINE vec2f operator * (const vec2f& _v, const mat3f& _m)
+	{
+		vec2f out;
+		mul_v2_m3( out,_v,_m);
+		return out;
+	}
+
 	MATH_INLINE void mul_v2_m3_r(vec2f& _out, const vec2f& _v, const mat3f& _m)
 	{
 		_out.x = _m[0][0] * _v.x + _m[1][0] * _v.y;

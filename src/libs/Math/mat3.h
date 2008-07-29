@@ -41,6 +41,7 @@ namespace mt
 	MATH_INLINE bool operator!=(const mat3f& _a, const mat3f& _b);
 	MATH_INLINE vec3f operator*(const mat3f& _m, const vec3f& _v);
 	MATH_INLINE vec3f operator*(const vec3f& _v, const mat3f& _m);
+	MATH_INLINE vec2f operator*(const vec2f& _v, const mat3f& _m);
 	MATH_INLINE mat3f operator*(const mat3f& _a, const mat3f& _b);
 	MATH_INLINE mat3f operator+(const mat3f& _a, const mat3f& _b);
 	MATH_INLINE mat3f operator-(const mat3f& _a, const mat3f& _b);

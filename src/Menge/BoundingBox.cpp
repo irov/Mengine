@@ -29,6 +29,11 @@ namespace Menge
 		return m_changeBoundingBox;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BoundingBox::changeBoundingBox()
+	{
+		m_changeBoundingBox = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void BoundingBox::mergeBoundingBox( const mt::box2f & _bbox )
 	{
 		mt::merge_box( m_worldBoundingBox, _bbox );

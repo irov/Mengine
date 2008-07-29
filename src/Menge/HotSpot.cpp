@@ -55,6 +55,8 @@ namespace	Menge
 	void HotSpot::addPoint( const mt::vec2f & _p )
 	{
 		m_polygon.add_point( mt::vec2f( _p.x * m_scale.x, _p.y * m_scale.y ) );
+
+		BoundingBox::changeBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
@@ -65,6 +67,14 @@ namespace	Menge
 	bool HotSpot::pick( HotSpot * _hotspot )
 	{
 		if( _hotspot == this )
+		{
+			return false;
+		}
+
+		const mt::box2f & myBB = this->getWorldBoundingBox();
+		const mt::box2f & otherBB = _hotspot->getWorldBoundingBox();
+
+		if( mt::is_intersect( myBB, otherBB ) == false )
 		{
 			return false;
 		}
@@ -261,6 +271,30 @@ namespace	Menge
 		}
 
 		m_scale = _scale;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_updateBoundingBox( mt::box2f & _localBoundingBox )
+	{
+		std::size_t numPoints = m_polygon.num_points();
+
+		if( numPoints == 0 )
+		{
+			mt::reset( _localBoundingBox, 0.f,0.f );
+			return;
+		}
+
+		const mt::mat3f & wm = this->getWorldMatrix();
+
+		mt::reset( _localBoundingBox, m_polygon[0] * wm );
+
+		for( std::size_t
+			it = 1,
+			it_end = m_polygon.num_points();
+		it != it_end; 
+		++it )
+		{
+			mt::add_internal_point( _localBoundingBox, m_polygon[it] * wm );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_render( const Viewport & _viewport, bool _enableDebug )

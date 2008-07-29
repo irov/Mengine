@@ -297,6 +297,8 @@ namespace Menge
 
 		Holder<FileEngine>::hostage()->closeStream( res.first );
 
+		delete res.second;
+
 		return *this;
 
 	}
@@ -363,7 +365,7 @@ namespace Menge
 		// Just use internal buffer of returned memory stream
 		m_buffer = static_cast<unsigned char*>( res.first->getBuffer() );
 		// Make sure stream does not delete
-		res.first->setFreeOnClose(false);
+		res.first->setFreeOnClose( true );
 
 		return *this;
 	}

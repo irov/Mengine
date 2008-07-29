@@ -297,7 +297,7 @@ namespace     Menge
 			m_outlineColorTo.update( _timing, &m_outlineColor );
 			if( m_colorTo.update( _timing, &m_color ) )
 			{
-				callEvent( "COLOR_END", "(O)", this->getEmbedding() );
+				callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
 			}
 		}
 	}
@@ -344,13 +344,13 @@ namespace     Menge
 		m_changingColor = true;*/
 		if( m_colorTo.isStarted() )
 		{
-			callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
+			callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 		}
 
 		if( m_colorTo.start( m_color, _color, _time, length_color ) == false )
 		{
 			m_color = _color;
-			callEvent( "COLOR_END", "(O)", this->getEmbedding() );
+			callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -373,13 +373,13 @@ namespace     Menge
 		
 		if( m_colorTo.isStarted() )
 		{
-			callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
+			callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 			m_colorTo.stop();
 		}
 		if( m_colorTo.start( m_color, newColor, _time, length_color ) == false )
 		{
 			m_color = newColor;
-			callEvent( "COLOR_END", "(O)", this->getEmbedding() );
+			callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
 		}
 
 		newColor = m_outlineColor;
@@ -468,8 +468,8 @@ namespace     Menge
 	{
 		Node::_setListener();
 
-		registerEvent("COLOR_END", "onColorEnd", m_listener );
-		registerEvent("COLOR_STOP", "onColorStop", m_listener );
+		registerEvent( EVENT_COLOR_END, "onColorEnd", m_listener );
+		registerEvent( EVENT_COLOR_STOP, "onColorStop", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int TextField::getLineOffset() const
@@ -515,12 +515,12 @@ namespace     Menge
 	{
 		m_colorTo.stop();
 		m_outlineColorTo.stop();
-		callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
+		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TextField::Line::Line( ResourceFont * _resource, const String & _text, float _len )
-	: text(_text)
-	, length(_len)
+		: text(_text)
+		, length(_len)
 	{
 		for( String::const_iterator
 			it = _text.begin(), 

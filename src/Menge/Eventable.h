@@ -7,6 +7,7 @@
 
 #	include "Config/Typedef.h"
 
+#	include "EventEnum.h"
 
 namespace Menge
 {
@@ -17,17 +18,17 @@ namespace Menge
 		~Eventable();
 
 	public:
-		bool registerEvent( const String & _name, const String & _method, PyObject * _module );
-		bool registerEvent( const String & _name, PyObject * _callback );
-		PyObject * getEvent( const String & _name );
+		bool registerEvent( EEventName _name, const String & _method, PyObject * _module );
+		bool registerEvent( EEventName _name, PyObject * _callback );
+		PyObject * getEvent( EEventName _name );
 
-		void callEvent( const String & _name, const char * _format, ... );
-		bool askEvent( bool & result, const String & _name, const char * _format, ... );
+		void callEvent( EEventName _name, const char * _format, ... );
+		bool askEvent( bool & result, EEventName _name, const char * _format, ... );
 
 		void removeAllEvent();
 
 	private:
-		typedef std::map<String, PyObject *> TMapEvent;
+		typedef std::map<EEventName, PyObject *> TMapEvent;
 		TMapEvent m_mapEvent;
 	};
 }

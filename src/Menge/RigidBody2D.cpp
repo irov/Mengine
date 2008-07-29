@@ -60,11 +60,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::onCollide( PhysicBody2DInterface * _otherObj, float _worldX, float _worldY, float _normalX, float _normalY )
 	{
-		if( getEvent( "ON_COLLIDE" ) )
-		{
-			RigidBody2D * other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
-			callEvent( "ON_COLLIDE", "(OOffff)", this->getEmbedding(), other->getEmbedding(), _worldX, _worldY, _normalX, _normalY );
-		}
+		RigidBody2D * other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
+		callEvent( EVENT_COLLIDE, "(OOffff)", this->getEmbedding(), other->getEmbedding(), _worldX, _worldY, _normalX, _normalY );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::loader( XmlElement * _xml )
@@ -285,7 +282,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject* RigidBody2D::getListener()
 	{
-		return getEvent( "ON_COLLIDE" );
+		return getEvent( EVENT_COLLIDE );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::applyForce( float _forceX, float _forceY, float _pointX, float _pointY )
@@ -392,7 +389,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_setListener()
 	{
-		registerEvent("ON_COLLIDE", "onCollide", m_listener );
+		registerEvent( EVENT_COLLIDE, "onCollide", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::onApplyForceAndTorque()

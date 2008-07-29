@@ -151,13 +151,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenPaused( bool _pause )
 	{
-		callEvent( "PAUSE_PLAYING", "(O)", this->getEmbedding() );
+		callEvent( EVENT_SOUND_PAUSE, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenStopped()
 	{
 		//Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
-		callEvent( "STOP_PLAYING", "(O)", this->getEmbedding() );
+		callEvent( EVENT_SOUND_STOP, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::play()
@@ -231,8 +231,8 @@ namespace Menge
 	{
 		Node::_setListener();
 
-		registerEvent( "STOP_PLAYING", "onStopped", m_listener );
-		registerEvent( "PAUSE_PLAYING", "onPaused", m_listener );
+		registerEvent( EVENT_SOUND_STOP, "onStopped", m_listener );
+		registerEvent( EVENT_SOUND_PAUSE, "onPaused", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

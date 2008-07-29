@@ -71,7 +71,7 @@ namespace	Menge
 
 			m_moveTo = false;
 
-			this->callEvent("MOVE_END", "()" );
+			this->callEvent( EVENT_MOVE_END, "()" );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ namespace	Menge
 				scaleStop();
 			}
 			setScale( _scale );
-			this->callEvent("SCALE_END", "()" );
+			this->callEvent( EVENT_SCALE_END, "()" );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,21 +93,21 @@ namespace	Menge
 	{
 		m_moveTo = false;
 
-		this->callEvent("MOVE_STOP", "()" );
+		this->callEvent( EVENT_MOVE_STOP, "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::rotateStop()
 	{
 		m_rotateTo.stop();
 
-		this->callEvent("ROTATE_STOP", "()" );
+		this->callEvent( EVENT_ROTATE_STOP, "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::scaleStop()
 	{
 		m_scaleTo.stop();
 
-		this->callEvent("SCALE_STOP", "()" );
+		this->callEvent( EVENT_SCALE_STOP, "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::rotateTo( float _time, const mt::vec2f & _point )
@@ -129,7 +129,7 @@ namespace	Menge
 				rotateStop();
 			}
 			setRotate( newAlpha );
-			this->callEvent("ROTATE_END", "()" );
+			this->callEvent( EVENT_ROTATE_END, "()" );
 		}
 
 	}
@@ -152,7 +152,7 @@ namespace	Menge
 		if( v < 0.0001f )
 		{
 			moveStop();
-			this->callEvent("MOVE_END", "()" );
+			this->callEvent( EVENT_MOVE_END, "()" );
 			return;
 		}
 		//float len = ( _point - pos ).length();
@@ -283,7 +283,7 @@ namespace	Menge
 				setAngle( angle ); 	// "-" - wff?
 				if( m_rotateTo.isStarted() == false )
 				{
-					this->callEvent("ROTATE_END", "()" );
+					this->callEvent( EVENT_ROTATE_END, "()" );
 				}
 			}
 
@@ -294,7 +294,7 @@ namespace	Menge
 				setScale( scale );
 				if( m_scaleTo.isStarted() == false )
 				{
-					this->callEvent("SCALE_END", "()" );
+					this->callEvent( EVENT_SCALE_END, "()" );
 				}
 			}
 
@@ -317,7 +317,7 @@ namespace	Menge
 				m_acceleration.y = 0.0f;
 				m_accelerateTo = false;
 
-				this->callEvent("MOVE_END", "()" );
+				this->callEvent( EVENT_MOVE_END, "()" );
 			}
 			else
 			{
@@ -372,7 +372,7 @@ namespace	Menge
 			setRotate( angle );
 			if( m_rotateTo.isStarted() == false )
 			{
-				this->callEvent("ROTATE_END", "()" );
+				this->callEvent( EVENT_ROTATE_END, "()" );
 			}
 		}
 
@@ -383,13 +383,13 @@ namespace	Menge
 			setScale( scale );
 			if( m_scaleTo.isStarted() == false )
 			{
-				this->callEvent("SCALE_END", "()" );
+				this->callEvent( EVENT_SCALE_END, "()" );
 			}
 		}
 
 		if( m_onUpdateEvent )
 		{
-			this->callEvent("UPDATE", "(f)", _timing );
+			this->callEvent( EVENT_UPDATE, "(f)", _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -397,20 +397,20 @@ namespace	Menge
 	{
 		bool result = RigidBody2D::_activate();
 
-		this->registerEvent("MOVE_END", "onMoveEnd", this->getEmbedding() );
-		this->registerEvent("MOVE_STOP", "onMoveStop", this->getEmbedding() );
+		this->registerEvent( EVENT_MOVE_END, "onMoveEnd", this->getEmbedding() );
+		this->registerEvent( EVENT_MOVE_STOP, "onMoveStop", this->getEmbedding() );
 		
-		this->registerEvent("ROTATE_END", "onRotateEnd", this->getEmbedding() );
-		this->registerEvent("ROTATE_STOP", "onRotateStop", this->getEmbedding() );
+		this->registerEvent( EVENT_ROTATE_END, "onRotateEnd", this->getEmbedding() );
+		this->registerEvent( EVENT_ROTATE_STOP, "onRotateStop", this->getEmbedding() );
 
-		this->registerEvent("SCALE_END", "onScaleEnd", this->getEmbedding() );
-		this->registerEvent("SCALE_STOP", "onScaleStop", this->getEmbedding() );
+		this->registerEvent( EVENT_SCALE_END, "onScaleEnd", this->getEmbedding() );
+		this->registerEvent( EVENT_SCALE_STOP, "onScaleStop", this->getEmbedding() );
 
-		m_onUpdateEvent = this->registerEvent("UPDATE", "onUpdate", this->getEmbedding() );
+		m_onUpdateEvent = this->registerEvent( EVENT_UPDATE, "onUpdate", this->getEmbedding() );
 
-		this->registerEvent("COLLIDE", "onCollide", this->getEmbedding() );
+		this->registerEvent( EVENT_COLLIDE, "onCollide", this->getEmbedding() );
 
-		this->callMethod("onActivate", "()" );
+		this->callMethod( "onActivate", "()" );
 
 
 		//m_oldPos = getLocalPosition();
@@ -483,7 +483,7 @@ namespace	Menge
 	void Entity::onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY )
 	{
 		RigidBody2D * other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
-		this->callEvent( "COLLIDE", "(OOffff)", RigidBody2D::getEmbedding(), other->getEmbedding(), _worldX, _worldY, _normalX, _normalY );
+		this->callEvent( EVENT_COLLIDE, "(OOffff)", RigidBody2D::getEmbedding(), other->getEmbedding(), _worldX, _worldY, _normalX, _normalY );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::enableStabilization( bool _enable, float _stabilityAngle, float _stabilityForce )
@@ -513,7 +513,7 @@ namespace	Menge
 				rotateStop();
 			}
 			setRotate( alpha + _angle );
-			this->callEvent("ROTATE_END", "()" );
+			this->callEvent( EVENT_ROTATE_END, "()" );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

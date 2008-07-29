@@ -28,7 +28,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( const String & _name, const String & _method, PyObject * _module )
+	bool Eventable::registerEvent( EEventName _name, const String & _method, PyObject * _module )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -58,7 +58,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( const String & _name, PyObject * _callback )
+	bool Eventable::registerEvent( EEventName _name, PyObject * _callback )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -79,7 +79,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEvent( const String & _name )
+	PyObject * Eventable::getEvent( EEventName _name )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 
@@ -91,7 +91,7 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::callEvent( const String & _name, const char * _format, ... )
+	void Eventable::callEvent( EEventName _name, const char * _format, ... )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find( _name );
 
@@ -116,13 +116,13 @@ namespace Menge
 
 		if( pybind::convert::is_none( result ) == false )
 		{
-			MENGE_LOG("Warning: Event '%s' don't have return any value\n"
-				, _name.c_str() 
+			MENGE_LOG("Warning: Event '%d' don't have return any value\n"
+				, _name
 				);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::askEvent( bool & _result, const String & _name, const char * _format, ... )
+	bool Eventable::askEvent( bool & _result, EEventName _name, const char * _format, ... )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find( _name );
 
@@ -147,8 +147,8 @@ namespace Menge
 
 		if( pybind::convert::is_none( result ) == true )
 		{
-			MENGE_LOG("Error: Event '%s' must have return [True/False] value\n"
-				, _name.c_str() 
+			MENGE_LOG("Error: Event '%d' must have return [True/False] value\n"
+				, _name
 				);
 
 			return false;

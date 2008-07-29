@@ -91,7 +91,7 @@ namespace Menge
 		{
 			if( m_yawTime.update( _timing, &v ) )
 			{
-				this->callEvent( "YAWTIME_END", "(O)", this->getEmbedding() );
+				this->callEvent( EVENT_YAWTIME_END, "(O)", this->getEmbedding() );
 			}
 			yaw( m_yawTime.getDelta() );
 		}
@@ -100,7 +100,7 @@ namespace Menge
 		{
 			if( m_pitchTime.update( _timing, &v ) )
 			{
-				this->callEvent( "PITCHTIME_END", "(O)", this->getEmbedding() );
+				this->callEvent( EVENT_PITCHTIME_END, "(O)", this->getEmbedding() );
 			}
 			pitch( m_pitchTime.getDelta() );
 		}
@@ -118,8 +118,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::_setListener()
 	{
-		registerEvent( "YAWTIME_END", "onYawTimeEnd", m_listener );
-		registerEvent( "PITCHTIME_END", "onPitchTimeEnd", m_listener );
+		registerEvent( EVENT_YAWTIME_END, "onYawTimeEnd", m_listener );
+		registerEvent( EVENT_PITCHTIME_END, "onPitchTimeEnd", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

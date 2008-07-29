@@ -97,7 +97,7 @@ namespace	Menge
 
 			if( m_onEndFrameEvent == true )
 			{
-				callEvent( "END_FRAME", "(OI)", this->getEmbedding(), m_currentFrame );
+				callEvent( EVENT_FRAME_END, "(OI)", this->getEmbedding(), m_currentFrame );
 			}
 
 			if( ++m_currentFrame == frameSize )
@@ -109,7 +109,7 @@ namespace	Menge
 
 					if( m_onEndAnimationEvent == true )
 					{
-						callEvent( "END_ANIMATION", "(O)", this->getEmbedding() );
+						callEvent( EVENT_ANIMATION_END, "(O)", this->getEmbedding() );
 					}
 
 					break;
@@ -200,7 +200,7 @@ namespace	Menge
 			
 			if( m_onEndAnimationEvent == true )
 			{
-				callEvent( "END_ANIMATION", "(O)", this->getEmbedding() );
+				callEvent( EVENT_ANIMATION_END, "(O)", this->getEmbedding() );
 			}
 		}
 
@@ -246,8 +246,8 @@ namespace	Menge
 	{
 		Sprite::_setListener();
 
-		m_onEndAnimationEvent = registerEvent("END_ANIMATION", "onAnimationEnd", m_listener );
-		m_onEndFrameEvent = registerEvent("END_FRAME", "onFrameEnd", m_listener );
+		m_onEndAnimationEvent = registerEvent( EVENT_ANIMATION_END, "onAnimationEnd", m_listener );
+		m_onEndFrameEvent = registerEvent( EVENT_FRAME_END, "onFrameEnd", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

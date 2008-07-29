@@ -244,13 +244,13 @@ namespace	Menge
 	{
 		if( m_colorTo.isStarted() )
 		{
-			this->callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
+			this->callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 			m_colorTo.stop();
 		}
 		if( m_colorTo.start( m_color, _color, _time, length_color ) == false )
 		{
 			m_color = _color;
-			callEvent( "COLOR_END", "(O)", this->getEmbedding() );
+			callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -263,7 +263,7 @@ namespace	Menge
 	{
 		if( m_colorTo.isStarted() )
 		{
-			this->callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
+			this->callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 			m_colorTo.stop();
 		}
 		ColourValue newColor = m_color;
@@ -271,7 +271,7 @@ namespace	Menge
 		if( m_colorTo.start( m_color, newColor, _time, length_color ) == false )
 		{
 			m_color	 = newColor;
-			callEvent( "COLOR_END", "(O)", this->getEmbedding() );
+			callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -319,15 +319,15 @@ namespace	Menge
 		{
 			if( m_colorTo.update( _timing, &m_color ) == true )
 			{
-				this->callEvent( "COLOR_END", "(O)", this->getEmbedding() );
+				this->callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_setListener()
 	{
-		this->registerEvent("COLOR_END", "onColorEnd", m_listener );
-		this->registerEvent("COLOR_STOP", "onColorStop", m_listener );
+		this->registerEvent( EVENT_COLOR_END, "onColorEnd", m_listener );
+		this->registerEvent( EVENT_COLOR_STOP, "onColorStop", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Sprite::getImageSize()
@@ -356,7 +356,7 @@ namespace	Menge
 	void Sprite::colorToStop()
 	{
 		m_colorTo.stop();
-		callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
+		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int Sprite::getImageCount() const

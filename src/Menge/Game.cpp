@@ -304,7 +304,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "KEY", "(IIb)", _key, _char, _isDown );
+			askEvent( handle, EVENT_KEY, "(IIb)", _key, _char, _isDown );
 		}
 
 		if( !handle )
@@ -326,7 +326,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
+			askEvent( handle, EVENT_MOUSE_BUTTON, "(Ib)", _button, _isDown );
 		}
 
 		if( !handle )
@@ -343,7 +343,7 @@ namespace Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "MOUSE_MOVE", "(ffi)", _x, _y, _whell );
+			askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell );
 		}
 		
 		if( !handle )
@@ -500,9 +500,9 @@ namespace Menge
 
 		loadAccounts();
 
-		registerEvent( "KEY", "onHandleKeyEvent", m_pyPersonality );
-		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent", m_pyPersonality );
-		registerEvent( "MOUSE_MOVE", "onHandleMouseMove", m_pyPersonality );
+		registerEvent( EVENT_KEY, "onHandleKeyEvent", m_pyPersonality );
+		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", m_pyPersonality );
+		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", m_pyPersonality );
 
 		m_player->init();
 

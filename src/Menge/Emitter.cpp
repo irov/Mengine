@@ -267,7 +267,7 @@ namespace	Menge
 
 		if( m_onEmitterStopEvent == true )
 		{
-			this->callEvent( "EMITTER_STOP", "(O)", this->getEmbedding() );
+			this->callEvent( EVENT_EMITTER_STOP, "(O)", this->getEmbedding() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -317,7 +317,7 @@ namespace	Menge
 	{
 		if( m_onEmitterEndEvent == true )
 		{
-			this->callEvent( "EMITTER_END", "(O)", this->getEmbedding() );
+			this->callEvent( EVENT_EMITTER_END, "(O)", this->getEmbedding() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -325,8 +325,8 @@ namespace	Menge
 	{
 		Node::_setListener();
 
-		m_onEmitterEndEvent = registerEvent("EMITTER_END", "onEmitterEnd", m_listener );
-		m_onEmitterStopEvent = registerEvent("EMITTER_STOP", "onEmitterStop", m_listener );
+		m_onEmitterEndEvent = registerEvent( EVENT_EMITTER_END, "onEmitterEnd", m_listener );
+		m_onEmitterStopEvent = registerEvent( EVENT_EMITTER_STOP, "onEmitterStop", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::restart()

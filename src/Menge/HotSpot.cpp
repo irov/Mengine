@@ -44,12 +44,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()
 	{
-		callEvent( "LEAVE", "(O)", this->getEmbedding() );
+		callEvent( EVENT_LEAVE, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onEnter()
 	{
-		callEvent( "ENTER", "(O)", this->getEmbedding() );
+		callEvent( EVENT_ENTER, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
@@ -119,7 +119,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "KEY", "(OIIb)", this->getEmbedding(), _key, _char, _isDown );
+			askEvent( handle, EVENT_KEY, "(OIIb)", this->getEmbedding(), _key, _char, _isDown );
 		}
 
 		return handle;
@@ -131,7 +131,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "MOUSE_BUTTON", "(OIb)", this->getEmbedding(), _button, _isDown );
+			askEvent( handle, EVENT_MOUSE_BUTTON, "(OIb)", this->getEmbedding(), _button, _isDown );
 		}
 
 		return handle;
@@ -143,7 +143,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "MOUSE_MOVE", "(Offi)", this->getEmbedding(), _x, _y, _whell );
+			askEvent( handle, EVENT_MOUSE_MOVE, "(Offi)", this->getEmbedding(), _x, _y, _whell );
 		}
 
 		return handle;
@@ -155,7 +155,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "GLOBAL_MOUSE_BUTTON", "(OIb)", this->getEmbedding(), _button, _isDown );
+			askEvent( handle, EVENT_GLOBAL_MOUSE_BUTTON, "(OIb)", this->getEmbedding(), _button, _isDown );
 		}
 
 		return handle;
@@ -167,7 +167,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "GLOBAL_MOUSE_MOVE", "(Offi)", this->getEmbedding(), _x, _y, _whell );
+			askEvent( handle, EVENT_GLOBAL_MOUSE_MOVE, "(Offi)", this->getEmbedding(), _x, _y, _whell );
 		}
 
 		return handle;
@@ -179,7 +179,7 @@ namespace	Menge
 
 		if( !handle )
 		{
-			askEvent( handle, "GLOBAL_KEY", "(OIIb)", this->getEmbedding(), _key, _char, _isDown );
+			askEvent( handle, EVENT_GLOBAL_KEY, "(OIIb)", this->getEmbedding(), _key, _char, _isDown );
 		}
 
 		return handle;
@@ -221,16 +221,16 @@ namespace	Menge
 	{
 		Node::_setListener();
 
-		registerEvent( "KEY", "onHandleKeyEvent", m_listener );
-		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent", m_listener );
-		registerEvent( "MOUSE_MOVE", "onHandleMouseMove", m_listener );
+		registerEvent( EVENT_KEY, "onHandleKeyEvent", m_listener );
+		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", m_listener );
+		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", m_listener );
 
-		registerEvent( "GLOBAL_MOUSE_BUTTON", "onGlobalHandleMouseButtonEvent", m_listener );
-		registerEvent( "GLOBAL_MOUSE_MOVE", "onGlobalHandleMouseMove", m_listener );
-		registerEvent( "GLOBAL_KEY", "onGlobalHandleKeyEvent", m_listener );
+		registerEvent( EVENT_GLOBAL_MOUSE_BUTTON, "onGlobalHandleMouseButtonEvent", m_listener );
+		registerEvent( EVENT_GLOBAL_MOUSE_MOVE, "onGlobalHandleMouseMove", m_listener );
+		registerEvent( EVENT_GLOBAL_KEY, "onGlobalHandleKeyEvent", m_listener );
 		
-		m_onLeaveEvent = registerEvent( "LEAVE", "onLeave", m_listener );
-		m_onEnterEvent = registerEvent( "ENTER", "onEnter", m_listener );	
+		m_onLeaveEvent = registerEvent( EVENT_LEAVE, "onLeave", m_listener );
+		m_onEnterEvent = registerEvent( EVENT_ENTER, "onEnter", m_listener );	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_update( float _timing )

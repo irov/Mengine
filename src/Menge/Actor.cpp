@@ -109,7 +109,7 @@ namespace	Menge
 
 		_updateAnimation(_timing);
 
-		this->callEvent("UPDATE", "(f)", _timing );
+		this->callEvent(EVENT_UPDATE, "(f)", _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Actor::_activate() 

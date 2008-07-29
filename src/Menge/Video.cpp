@@ -34,7 +34,7 @@ namespace	Menge
 	{
 		Sprite::_setListener();
 
-		registerEvent("END_VIDEO", "onVideoEnd", m_listener );
+		registerEvent( EVENT_VIDEO_END, "onVideoEnd", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::setAnimationResource( const std::string & _resource )
@@ -115,7 +115,7 @@ namespace	Menge
 		if( m_playing == true )
 		{
 			m_playing = false;
-			callEvent( "END_VIDEO ", "(O)", this->getEmbedding() );
+			callEvent( EVENT_VIDEO_END, "(O)", this->getEmbedding() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

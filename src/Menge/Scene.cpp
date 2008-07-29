@@ -105,7 +105,7 @@ namespace	Menge
 		{
 			if( updatable() )
 			{
-				handle = askEvent( handle, "KEY", "(IIb)", _key, _char, _isDown );
+				handle = askEvent( handle, EVENT_KEY, "(IIb)", _key, _char, _isDown );
 			}
 		}
 
@@ -140,7 +140,7 @@ namespace	Menge
 		{
 			if( updatable() )
 			{
-				handle = askEvent( handle, "MOUSE_BUTTON", "(Ib)", _button, _isDown );
+				handle = askEvent( handle, EVENT_MOUSE_BUTTON, "(Ib)", _button, _isDown );
 			}
 		}
 
@@ -175,7 +175,7 @@ namespace	Menge
 		{
 			if( handle == false )
 			{
-				handle = askEvent( handle, "MOUSE_MOVE", "(ffi)", _x, _y, _whell );
+				handle = askEvent( handle, EVENT_MOUSE_MOVE, "(ffi)", _x, _y, _whell );
 			}
 		}
 
@@ -206,14 +206,14 @@ namespace	Menge
 			return false;
 		}
 
-		m_onUpdateEvent = registerEvent( "UPDATE", "onUpdate", this->getEmbedding() );
+		m_onUpdateEvent = registerEvent( EVENT_UPDATE, "onUpdate", this->getEmbedding() );
 
-		registerEvent( "KEY", "onHandleKeyEvent", this->getEmbedding() );
-		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent", this->getEmbedding() );
-		registerEvent( "MOUSE_MOVE", "onHandleMouseMove", this->getEmbedding() );
-		registerEvent( "MOUSE_BUTTON_END", "onHandleMouseButtonEventEnd", this->getEmbedding() );
-		registerEvent( "ON_LEAVE", "onMouseLeave", this->getEmbedding() );
-		registerEvent( "ON_ENTER", "onMouseEnter", this->getEmbedding() );
+		registerEvent( EVENT_KEY, "onHandleKeyEvent", this->getEmbedding() );
+		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", this->getEmbedding() );
+		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", this->getEmbedding() );
+		registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", this->getEmbedding() );
+		registerEvent( EVENT_LEAVE, "onMouseLeave", this->getEmbedding() );
+		registerEvent( EVENT_ENTER, "onMouseEnter", this->getEmbedding() );
 
 		callMethod( "onActivate", "() " );
 
@@ -239,7 +239,7 @@ namespace	Menge
 	{
 		if( m_onUpdateEvent )
 		{
-			callEvent( "UPDATE", "(f)", _timing );
+			callEvent( EVENT_UPDATE, "(f)", _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -349,7 +349,7 @@ namespace	Menge
 		{
 			if( handle == false )
 			{
-				askEvent( handle, "MOUSE_BUTTON_END", "(Ib)", _button, _isDown );
+				askEvent( handle, EVENT_MOUSE_BUTTON_END, "(Ib)", _button, _isDown );
 			}
 		}
 
@@ -420,12 +420,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseLeave()
 	{
-		callEvent( "ON_LEAVE", "()" );
+		callEvent( EVENT_LEAVE, "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseEnter()
 	{
-		callEvent( "ON_ENTER", "()" );
+		callEvent( EVENT_ENTER, "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Scene::getRenderTarget() const

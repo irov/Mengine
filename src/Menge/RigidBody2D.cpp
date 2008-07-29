@@ -451,11 +451,13 @@ namespace Menge
 				const mt::mat3f& mtx = getLocalMatrix();
 				//mt::vec2f pos = getLocalPosition();
 
-				for(int i = 0; i < poly.num_points(); i++)
+				std::size_t numPoints = poly.num_points();
+
+				for(std::size_t i = 0; i != numPoints; i++)
 				{
 					
 					mt::vec2f beg = poly[i];
-					mt::vec2f end = poly[(i+1) % poly.num_points()];
+					mt::vec2f end = poly[(i+1) % numPoints];
 
 					//beg += pos;
 					//end += pos;

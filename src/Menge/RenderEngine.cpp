@@ -143,13 +143,13 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderVideoStreamInterface* RenderEngine::loadImageVideoStream( const std::string& _filename )
+	RenderVideoStreamInterface* RenderEngine::loadImageVideoStream( const String & _filename )
 	{
 		RenderVideoStreamInterface * image = m_interface->loadImageVideoStream( _filename.c_str() );
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::loadImage( const std::string & _filename, unsigned int _filter )
+	RenderImageInterface * RenderEngine::loadImage( const String & _filename, unsigned int _filter )
 	{
 		RenderImageInterface * image = m_interface->getImage(_filename.c_str());
 
@@ -170,7 +170,10 @@ namespace Menge
 
 			if( textureDesc.buffer == 0 )
 			{
-				MENGE_LOG( "Error: Image from file '%s' not loader\n", _filename.c_str() );
+				MENGE_LOG( "Error: Image from file '%s' not loader\n"
+					, _filename.c_str() 
+					);
+
 				return 0;
 			}	
 
@@ -178,7 +181,10 @@ namespace Menge
 
 			if( image == 0 )
 			{
-				MENGE_LOG( "Error: Image from file '%s' not loader\n", _filename.c_str() );
+				MENGE_LOG( "Error: Image from file '%s' not loader\n"
+					, _filename.c_str() 
+					);
+
 				return 0;
 			}	
 		}

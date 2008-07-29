@@ -15,6 +15,7 @@ namespace Menge
 	{
 	public:
 		ResourceReference( const ResourceFactoryParam & _params );
+		virtual ~ResourceReference();
 
 	public:
 		void setName( const std::string & _name );

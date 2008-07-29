@@ -25,8 +25,6 @@ namespace Menge
 		, m_renderCamera(0)
 		, m_windowCreated( false )
 		, m_renderFactor( 1.0f )
-		//, m_viewportWidth(1024.f)
-		//, m_viewportHeight(768.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -41,8 +39,7 @@ namespace Menge
 											int _FSAAType, int _FSAAQuality )
 	{
 		m_fullscreen = _fullscreen;
-		m_windowWidth = _width;
-		m_windowHeight = _height;
+
 		m_windowCreated = m_interface->createRenderWindow( _width, _height, _bits, _fullscreen, _winHandle,
 															_FSAAType, _FSAAQuality );
 
@@ -440,16 +437,6 @@ namespace Menge
 		m_interface->setTextureFiltering( _filter );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addResourceLocation( const std::string& _path )
-	{
-		m_interface->addResourceLocation( _path.c_str() );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::initResources()
-	{
-		m_interface->initResources();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginScene()
 	{
 		m_interface->beginScene();
@@ -616,6 +603,9 @@ namespace Menge
 		{
 			m_renderFactor = 0.0f;
 		}
+
+		m_windowWidth = _width;
+		m_windowHeight = _height;
 		setRenderFactor( m_renderFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////

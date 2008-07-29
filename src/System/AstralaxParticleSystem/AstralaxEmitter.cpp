@@ -9,6 +9,7 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 	, m_total_rate( 0.0f )
 	, m_looped( false )
 	, m_listener( NULL )
+	, m_angle( 0.0f )
 {
 	HM_EMITTER duplicated_id;
 	Magic_DuplicateEmitter( m_id, &duplicated_id );
@@ -137,5 +138,17 @@ void AstralaxEmitter::setPosition(float _x, float _y)
 void AstralaxEmitter::restart()
 {
 	Magic_Restart( m_id );
+}
+//////////////////////////////////////////////////////////////////////////
+void AstralaxEmitter::setAngle( float _radians )
+{
+	m_angle = _radians * 180.0f / MAGIC_PI;
+
+	Magic_SetDiagramAddition( m_id, MAGIC_DIAGRAM_DIRECTION, -1, m_angle );
+	int k_par = Magic_GetParticlesTypeCount( m_id );
+	for( int j = 0; j < k_par; j++ )
+	{
+		Magic_SetDiagramAddition( m_id, MAGIC_DIAGRAM_DIRECTION, j, m_angle );
+	}
 }
 //////////////////////////////////////////////////////////////////////////

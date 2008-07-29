@@ -80,6 +80,26 @@ namespace Menge
 
 				m_vectorImageDescs.push_back( desc );
 			}
+			XML_CASE_NODE("Files")
+			{
+				ImageDesc desc;
+				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
+				desc.offset = mt::vec2f(0.f,0.f);
+				desc.maxSize = mt::vec2f(-1.f,-1.f);
+				desc.size = mt::vec2f(-1.f,-1.f);
+				desc.isAlpha = true; //
+
+				std::string fileName; 
+				int count;
+				int start_index;
+
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Path", fileName );
+				}
+
+			}
+
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

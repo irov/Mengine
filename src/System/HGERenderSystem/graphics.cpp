@@ -1130,7 +1130,11 @@ bool HGE_Impl::_GfxRestore()
 		pVB3D->Release();
 	}
 
-	pD3DDevice->Reset(d3dpp);
+	HRESULT hr = pD3DDevice->Reset(d3dpp);
+	if( FAILED( hr ) )
+	{
+		return false;
+	}
 
 	if(!_init_lost()) return false;
 
@@ -1315,7 +1319,10 @@ void HGE_Impl::Gfx_ChangeMode( int _width, int _height, int _bpp, bool _fullscre
 	nScreenHeight = _height;
 	nScreenBPP = _bpp;
 
-	_GfxRestore();
+	if( !_GfxRestore() )
+	{
+		System_Log( "Error: Graphics change mode failed\n" );
+	}
 }
 
 const std::vector<int>& HGE_Impl::Gfx_GetModeList()
@@ -1397,7 +1404,7 @@ void HGE_Impl::Gfx_Prepare2D()
 
 	D3DXMatrixIdentity( &matView );
 	D3DXMatrixIdentity( &matWorld );
-	_SetProjectionMatrix( nScreenWidth, nScreenHeight );
+	/*_SetProjectionMatrix( nScreenWidth, nScreenHeight );*/
 	pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj );
 	pD3DDevice->SetTransform( D3DTS_VIEW, &matView );
 	pD3DDevice->SetTransform( D3DTS_WORLD, &matWorld );

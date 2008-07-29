@@ -195,7 +195,7 @@ namespace	Menge
 
 			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
 
-			RenderImageInterface * image = m_images[i];
+			RenderImageInterface * image = m_images[count - 1 - i];
 
 			if(m_interface->isIntensive())
 			{
@@ -306,6 +306,10 @@ namespace	Menge
 		Node::_update( _timing );
 		const mt::vec2f& pos = getWorldPosition();
 		m_interface->setPosition( pos.x, pos.y );
+		const mt::vec2f& dir = getWorldDirection();
+		float rads = ::acosf( dir.x );
+		if( dir.y > 0.0f ) rads = -rads;
+		m_interface->setAngle( rads );
 		m_interface->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////

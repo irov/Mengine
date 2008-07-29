@@ -655,6 +655,7 @@ namespace Menge
 			.def( "setName", &Node::setName )
 			.def( "getName", &Node::getName )
 			.def( "addChildren", &Node::addChildren )
+			.def( "addChildrenFront", &Node::addChildrenFront )
 			.def( "removeChildren", &Node::removeChildren )
 			.def( "getChildren", &Node::getChildren )
 			.def( "isChildren", &Node::isChildren )

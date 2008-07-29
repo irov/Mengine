@@ -53,7 +53,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_destroy()
 	{
-		//Empty
+		// Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visit( Visitor * _visitor )
@@ -179,6 +179,37 @@ namespace Menge
 		_node->setLayer( m_layer );
 
 		m_children.push_back( _node );
+
+		_addChildren( _node );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Node::addChildrenFront( Node* _node )
+	{
+		if( isChildren( _node, false ) )
+		{
+			MENGE_LOG("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist"
+				, this->getName().c_str()
+				, this->getType().c_str()
+				, _node->getName().c_str()
+				, _node->getType().c_str()
+				);
+
+			return false;
+		}
+
+		Node * parent = _node->getParent();
+
+		if( parent )
+		{
+			parent->removeChildren( _node );
+		}
+
+		_node->setParent( this );
+		_node->setLayer( m_layer );
+
+		m_children.push_front( _node );
 
 		_addChildren( _node );
 
@@ -732,4 +763,5 @@ namespace Menge
 			(*it)->colorToStop();
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

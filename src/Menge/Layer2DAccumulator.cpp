@@ -1,9 +1,10 @@
-#	include "Layer2DPool.h"
+#	include "Layer2DAccumulator.h"
 
 #	include "ObjectImplement.h"
 #	include "VisitorAdapter.h"
 
 #	include "RenderEngine.h"
+#	include "Scene.h"
 
 #	include "Math/box2.h"
 #	include "Utils.h"
@@ -13,14 +14,14 @@ static const unsigned int ImageSize = 512;
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OBJECT_IMPLEMENT( Layer2DPool );
+	OBJECT_IMPLEMENT( Layer2DAccumulator );
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	class VisitorRenderLayer2DPool
 		: public VisitorAdapter<VisitorRenderLayer2DPool>
 	{
 	public:
-		VisitorRenderLayer2DPool( const Viewport & _viewport, const Layer2DPool::TRenderImageVector& _images )
+		VisitorRenderLayer2DPool( const Viewport & _viewport, const Layer2DAccumulator::TRenderImageVector& _images )
 			: m_viewport( _viewport )
 			, m_surfaces( _images )
 		{
@@ -30,7 +31,7 @@ namespace Menge
 		{
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 			const mt::box2f& bbox = _node->getWorldBoundingBox();
-			for( Layer2DPool::TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
+			for( Layer2DAccumulator::TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 				it != it_end;
 				it++ )
 			{
@@ -40,18 +41,15 @@ namespace Menge
 					_node->translate( -it->rect.min );
 					_node->_render( Viewport( it->rect.min, it->rect.max ), false );
 					_node->translate( it->rect.min );
-					mt::mat3f ident;
-					mt::ident_m3( ident );
-					_node->updateWorldMatrix( ident );
 				}
 			}
 		}
 	protected:
 		Viewport m_viewport;
-		Layer2DPool::TRenderImageVector m_surfaces;
+		Layer2DAccumulator::TRenderImageVector m_surfaces;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DPool::render( const Viewport & _viewport, bool _enableDebug )
+	void Layer2DAccumulator::render( const Viewport & _viewport, bool _enableDebug )
 	{
 
 		Holder<RenderEngine>::hostage()
@@ -75,29 +73,29 @@ namespace Menge
 
 		visitChildren( &visitorRender );
 
+		const String& renderTarget = m_scene->getRenderTarget();
+		Holder<RenderEngine>::hostage()
+			->setRenderTarget( renderTarget );
 		Layer::_render( viewport, _enableDebug );
 		_render( viewport, _enableDebug );
 
+		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
+			it != it_end;
+			it++ )
+		{
+			(*it)->release();
+			(*it)->destroy();
+		}
 		m_children.clear();
 
 		Holder<RenderEngine>::hostage()
 			->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer2DPool::_compile()
+	bool Layer2DAccumulator::_compile()
 	{
-		int countX = m_size.x / ImageSize;
-		int d = static_cast<int>( m_size.x ) % ImageSize;
-		if( d != 0 )
-		{
-			countX += 1;
-		}
-		int countY = m_size.y / ImageSize;
-		d = static_cast<int>( m_size.y ) % ImageSize;
-		if( d != 0 )
-		{
-			countY += 1;
-		}
+		int countX = ::ceilf( m_size.x / ImageSize );
+		int countY = ::ceilf( m_size.y / ImageSize );
 		for( int i = 0; i < countX; i++ )
 		{
 			for( int j = 0; j < countY; j++ )
@@ -115,7 +113,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DPool::_release()
+	void Layer2DAccumulator::_release()
 	{
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 		for( TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
@@ -126,7 +124,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DPool::_render( const Viewport & _viewport, bool _enableDebug )
+	void Layer2DAccumulator::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 		mt::vec2f a( 0.0f, 0.0f );
@@ -135,17 +133,12 @@ namespace Menge
 		mt::vec2f d( 0.0f, ImageSize );
 		mt::mat3f wm;
 		mt::ident_m3( wm );
-		/*for( TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
+		for( TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 			it != it_end;
 			it++ )
 		{
 			wm.v2.v2 = it->rect.min;
 			renderEngine->renderImage( wm, a, b, c, d, mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), 0xFFFFFFFF, it->image );
-		}*/
-		for( int i = 0; i < 4; i++ )
-		{
-			wm.v2.v2 = m_surfaces[i].rect.min;
-			renderEngine->renderImage( wm, a, b, c, d, mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), 0xFFFFFFFF, m_surfaces[i].image );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

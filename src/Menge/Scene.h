@@ -67,7 +67,7 @@ namespace Menge
 		void renderSelf();
 		virtual void render( const Viewport & _viewport, bool _enableDebug ) override;
 		void setRenderTarget( const std::string& _cameraName );
-
+		const String& getRenderTarget() const;
 	private:
 
 		bool m_isSubScene;

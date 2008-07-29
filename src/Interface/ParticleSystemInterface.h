@@ -34,6 +34,7 @@ namespace Menge
 		virtual bool isIntensive() const = 0;
 		virtual void setListener( ParticleEmitterListenerInterface* _listener ) = 0;
 		virtual void setPosition( float _x, float _y ) = 0;
+		virtual void setAngle( float _radians ) = 0;
 	};
 
 	class EmitterContainerInterface

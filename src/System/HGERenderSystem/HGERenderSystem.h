@@ -7,6 +7,8 @@
 
 #	include <map>
 
+class HGETexture;
+
 class HGERenderSystem 
 	: public Menge::RenderSystemInterface
 {
@@ -18,8 +20,6 @@ public:
 	bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle,
 		int _FSAAType, int _FSAAQuality ) override;
 	std::size_t getResolutionList( int ** ) override;
-	void addResourceLocation( const Menge::String & _path ) override;
-	void initResources() override;
 	void screenshot( Menge::RenderImageInterface* _image, const int* rect = 0 ) override;
 	void render() override; 
 	void setContentResolution( const float * _resolution ) override;
@@ -102,7 +102,7 @@ private:
 	bool m_inRender;
 	Menge::String m_currentRenderTarget;
 
-	typedef std::map< Menge::String, HTARGET > TTargetMap;
+	typedef std::map< Menge::String, std::pair<HTARGET, HGETexture*> > TTargetMap;
 	TTargetMap m_targetMap;
 
 	typedef std::map< Menge::String, Menge::RenderImageInterface* > TTextureMap;
@@ -113,4 +113,5 @@ private:
 
 	float m_renderX;
 	float m_renderY;
+
 };

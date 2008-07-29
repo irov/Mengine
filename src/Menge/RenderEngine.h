@@ -29,9 +29,6 @@ namespace Menge
 		bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WindowHandle _winHandle = 0,
 								int _FSAAType = 0, int _FSAAQuality = 0 );
 
-		void addResourceLocation( const String & _path );
-		void initResources();
-
 		void screenshot( RenderImageInterface* _renderTargetImage, const int* rect = NULL );
 		void render();
 

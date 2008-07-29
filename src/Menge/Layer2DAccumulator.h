@@ -6,10 +6,10 @@
 namespace Menge
 {
 	class RenderImageInterface;
-	class Layer2DPool 
+	class Layer2DAccumulator 
 		: public Layer2D
 	{
-		OBJECT_DECLARE( Layer2DPool );
+		OBJECT_DECLARE( Layer2DAccumulator );
 	public:
 		void render( const Viewport & _viewport, bool _enableDebug ) override;
 		void _render( const Viewport & _viewport, bool _enableDebug ) override;

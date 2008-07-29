@@ -346,9 +346,6 @@ namespace Menge
 			int _FSAAType, int _FSAAQuality ) = 0;
 		virtual std::size_t getResolutionList( int ** ) = 0;
 
-		virtual void addResourceLocation( const String & _path ) = 0;
-		virtual void initResources() = 0;
-
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
 		virtual void screenshot( RenderImageInterface* _image, const int* rect = 0 ) = 0;

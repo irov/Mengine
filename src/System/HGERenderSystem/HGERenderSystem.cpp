@@ -97,11 +97,12 @@ bool HGERenderSystem::createRenderWindow( int _width, int _height, int _bits, bo
 	m_hge->System_SetState( HGE_HWND, (HWND)_winHandle );
 	m_hge->System_SetState( HGE_ZBUFFER, true );
 	//m_hge->System_SetState( HGE_FPS, HGEFPS_VSYNC );
-	//m_hge->System_SetState( HGE_TEXTUREFILTER, false );
+	//m_hge->System_SetState( HGE_TEXTUREFILTER, false );]
 	m_currentRenderTarget = "defaultCamera";
 
 	HTARGET * voidTarget = 0;
-	m_targetMap.insert( std::make_pair( m_currentRenderTarget, voidTarget ) );
+	HGETexture* voidTexture = 0;
+	m_targetMap.insert( std::make_pair( m_currentRenderTarget, std::make_pair( voidTarget, voidTexture ) ) );
 	bool ret = false;
 	ret = m_hge->Gfx_CreateRenderWindow();
 	return ret;
@@ -112,16 +113,6 @@ std::size_t HGERenderSystem::getResolutionList( int ** _list )
 	static std::vector<int> list = m_hge->Gfx_GetModeList();
 	*_list = &(list[0]);
 	return list.size();
-}
-//////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::addResourceLocation( const Menge::String & _path )
-{
-
-}
-//////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::initResources()
-{
-
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::screenshot( Menge::RenderImageInterface* _image, const int* _rect /*= 0 */ )
@@ -184,8 +175,8 @@ Menge::RenderImageInterface * HGERenderSystem::createImage( const Menge::String 
 Menge::RenderImageInterface * HGERenderSystem::createRenderTargetImage( const Menge::String & _name, unsigned int _width, unsigned int _height )
 {
 	HTARGET htgt = m_hge->Target_Create( _width, _height, true );
-	m_targetMap.insert( std::make_pair( _name, htgt ) );
 	HGETexture* texture = new HGETexture( m_hge, m_hge->Target_GetTexture( htgt ), _name, _width, _height );
+	m_targetMap.insert( std::make_pair( _name, std::make_pair( htgt, texture ) ) );
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -208,7 +199,7 @@ void HGERenderSystem::releaseImage( Menge::RenderImageInterface * _image )
 	TTargetMap::iterator it = m_targetMap.find( texture->getDescription() );
 	if( it != m_targetMap.end() )
 	{
-		m_hge->Target_Free( it->second );
+		m_hge->Target_Free( it->second.first );
 		m_targetMap.erase( it );
 		delete texture;
 	}
@@ -482,7 +473,21 @@ void HGERenderSystem::endLayer3D()
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::setFullscreenMode( float _width, float _height, bool _fullscreen )
 {
+	// todo: backup render targets content
+
 	m_hge->Gfx_ChangeMode( _width, _height, 32, _fullscreen );
+
+	// restoring render targets
+	for( TTargetMap::iterator it = m_targetMap.begin(), it_end = m_targetMap.end();
+		it != it_end;
+		it++ )
+	{
+		if( it->second.second != 0 )
+		{
+			HTEXTURE htex = m_hge->Target_GetTexture( it->second.first );
+			it->second.second->restore( htex );
+		}
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::CameraInterface * HGERenderSystem::createCamera( const Menge::String & _name )
@@ -611,7 +616,7 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name )
 			m_inRender = true;
 		}
 		m_currentRenderTarget = _name;
-		m_hge->Gfx_BeginScene( it->second );
+		m_hge->Gfx_BeginScene( it->second.first );
 		m_hge->Gfx_Clear( m_clearColor );
 
 	}

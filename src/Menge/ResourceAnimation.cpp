@@ -57,6 +57,23 @@ namespace Menge
 				}
 				m_vectorSequence.push_back( sq );
 			}
+			XML_CASE_NODE( "SequenceArray" )
+			{
+				int count = 0;
+				float delay;
+				XML_FOR_EACH_ATTRIBUTES()
+				{					
+					XML_CASE_ATTRIBUTE( "Count", count );
+					XML_CASE_ATTRIBUTE( "Delay", delay );
+				}
+				for( int i = 0; i < count; i++ )
+				{
+					Sequence sq;
+					sq.delay = delay;
+					sq.index = m_vectorSequence.size();
+					m_vectorSequence.push_back( sq );
+				}
+			}
 		}
 	}
 

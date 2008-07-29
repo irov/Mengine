@@ -17,6 +17,7 @@ public:
 
 	void load( const Menge::TextureDesc& _desc );
 	void unload();
+	void restore( HTEXTURE _htex );
 	std::size_t getWidth() const override;
 	std::size_t getHeight() const override;
 	void writeToFile( const Menge::String & _filename ) override;

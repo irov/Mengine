@@ -106,6 +106,7 @@ namespace Menge
 		float m_delay;
 
 		bool m_autoStart;
+		bool m_randomStart;
 		bool m_playing;
 		bool m_looping;
 		unsigned int m_currentFrame;

@@ -9,6 +9,7 @@
 #	include "XmlEngine.h"
 #	include "LogEngine.h"
 
+#	include "Math/rand.h"
 namespace	Menge
 {
 	OBJECT_IMPLEMENT(Animation)
@@ -17,10 +18,10 @@ namespace	Menge
 	: m_resourceAnimation(0)
 	, m_playing(false)
 	, m_autoStart(false)
+	, m_randomStart( false )
 	, m_looping(false)
 	, m_delay(0)
 	, m_currentFrame(0)
-	//, m_listener(0)
 	, m_onEndFrameEvent(false)
 	, m_onEndAnimationEvent(false)
 	, m_animationFactor(1.f)
@@ -35,6 +36,7 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "Animation", "Name", m_resourceAnimationName );
 			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looping );
 			XML_CASE_ATTRIBUTE_NODE( "AutoStart", "Value", m_autoStart );			
+			XML_CASE_ATTRIBUTE_NODE( "RandomStart", "Value", m_randomStart );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -224,8 +226,17 @@ namespace	Menge
 	void Animation::play_()
 	{
 		m_playing = true;
-		m_delay = 0;
-		m_currentFrame = 0;
+		
+		if( m_randomStart )
+		{
+			m_currentFrame = mt::even_rand( 0.0f, m_resourceAnimation->getSequenceCount() );
+			m_delay = mt::even_rand( 0.0f, m_resourceAnimation->getSequenceDelay( m_currentFrame ) ) ;
+		}
+		else
+		{
+			m_currentFrame = 0;
+			m_delay = 0.0f;
+		}
 
 		unsigned int currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );

@@ -47,8 +47,8 @@
 #	include "TileMap.h"
 #	include "Track.h"
 #	include "Video.h"
-#	include "Layer2dLoop.h"
-#	include "Layer2dPool.h"
+#	include "Layer2DLoop.h"
+#	include "Layer2DAccumulator.h"
 //#	include "Actor.h"
 //#	include "Camera3D.h"
 #	include "CapsuleController.h"
@@ -372,7 +372,7 @@ namespace Menge
 //		OBJECT_FACTORY( RigidBody3D );
 		OBJECT_FACTORY( Layer2D );
 		OBJECT_FACTORY( Layer2DLoop );
-		OBJECT_FACTORY( Layer2DPool );
+		OBJECT_FACTORY( Layer2DAccumulator );
 		OBJECT_FACTORY( Layer3D );
 		OBJECT_FACTORY( LayerScene );
 		OBJECT_FACTORY( RenderMesh );
@@ -722,6 +722,8 @@ namespace Menge
 		MENGE_DELETE( m_logEngine );
 		
 		Holder<ScriptEngine>::destroy();
+
+		MengeCodec::shutdown();
 
 		FreeImageCodec::shutdown();
 

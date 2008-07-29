@@ -31,6 +31,7 @@ public:
 
 	void	setListener( Menge::ParticleEmitterListenerInterface* _listener ) override;
 	void	setPosition( float _x, float _y ) override;
+	void	setAngle( float _radians ) override;
 public:
 	HM_EMITTER	getId() const;
 
@@ -41,6 +42,7 @@ private:
 	bool		m_start;
 	bool		m_looped;
 	Menge::ParticleEmitterListenerInterface* m_listener;
+	float		m_angle;
 
 	float m_factor[20];
 	int m_typesCount;

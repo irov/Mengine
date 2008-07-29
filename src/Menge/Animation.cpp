@@ -195,7 +195,11 @@ namespace	Menge
 		if( m_playing == true )
 		{
 			m_playing = false;
-			callEvent( "END_ANIMATION", "(O)", this->getEmbedding() );
+			
+			if( m_onEndAnimationEvent == true )
+			{
+				callEvent( "END_ANIMATION", "(O)", this->getEmbedding() );
+			}
 		}
 
 		unsigned int currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);

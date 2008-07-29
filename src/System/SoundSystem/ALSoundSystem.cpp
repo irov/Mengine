@@ -111,12 +111,15 @@ Menge::SoundSourceInterface * ALSoundSystem::createSoundSource( bool _isHeadMode
 	if( m_initialized == false ) return 0;
 	//ALSoundSource* source = new ALSoundSource(this);
 	ALSoundSource* source = NULL;
+
 	for(unsigned int i = 0; i < m_sources.size(); i++)
+	{
 		if(!m_sources[i]->isBusy())
 		{
 			source = m_sources[i];
 			break;
 		}
+	}
 
 	if(!source)
 	{

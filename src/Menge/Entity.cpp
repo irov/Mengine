@@ -27,6 +27,8 @@ namespace	Menge
 	, m_stabilityAngle( 0.0f )
 	, m_stabilization( false )
 	, m_stabilityForce( 1.0f )
+
+	, m_onUpdateEvent( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -385,7 +387,10 @@ namespace	Menge
 			}
 		}
 
-		this->callEvent("UPDATE", "(f)", _timing );
+		if( m_onUpdateEvent )
+		{
+			this->callEvent("UPDATE", "(f)", _timing );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
@@ -401,7 +406,7 @@ namespace	Menge
 		this->registerEvent("SCALE_END", "onScaleEnd", this->getEmbedding() );
 		this->registerEvent("SCALE_STOP", "onScaleStop", this->getEmbedding() );
 
-		this->registerEvent("UPDATE", "onUpdate", this->getEmbedding() );
+		m_onUpdateEvent = this->registerEvent("UPDATE", "onUpdate", this->getEmbedding() );
 
 		this->registerEvent("COLLIDE", "onCollide", this->getEmbedding() );
 

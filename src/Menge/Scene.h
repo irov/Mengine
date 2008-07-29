@@ -80,5 +80,7 @@ namespace Menge
 		mt::vec4f m_physWorldBox2D;
 
 		String m_renderTarget;
+
+		bool m_onUpdateEvent;
 	};
 }

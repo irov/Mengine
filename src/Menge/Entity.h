@@ -75,5 +75,8 @@ namespace Menge
 		float m_stabilityAngle;
 		float m_stabilityForce;
 		bool m_stabilization;
+
+
+		bool m_onUpdateEvent;
 	};
 }

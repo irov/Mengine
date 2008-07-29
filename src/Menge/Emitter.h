@@ -70,5 +70,8 @@ namespace Menge
 
 		bool m_autoPlay;
 		bool m_looped;
+
+		bool m_onEmitterEndEvent;
+		bool m_onEmitterStopEvent;
 	};
 }

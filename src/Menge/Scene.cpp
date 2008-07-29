@@ -21,6 +21,7 @@ namespace	Menge
 	, m_physWorldBox2D( 0.0f, 0.0f, 0.0f, 0.0f )
 	, m_physWorld2D( false )
 	, m_renderTarget( "defaultCamera" )
+	, m_onUpdateEvent(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -205,7 +206,7 @@ namespace	Menge
 			return false;
 		}
 
-		registerEvent( "UPDATE", "onUpdate", this->getEmbedding() );
+		m_onUpdateEvent = registerEvent( "UPDATE", "onUpdate", this->getEmbedding() );
 
 		registerEvent( "KEY", "onHandleKeyEvent", this->getEmbedding() );
 		registerEvent( "MOUSE_BUTTON", "onHandleMouseButtonEvent", this->getEmbedding() );
@@ -236,7 +237,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
 	{
-		callEvent( "UPDATE", "(f)", _timing );
+		if( m_onUpdateEvent )
+		{
+			callEvent( "UPDATE", "(f)", _timing );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::loader( XmlElement *_xml )

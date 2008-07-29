@@ -30,6 +30,8 @@ namespace	Menge
 		, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
 		, m_autoPlay( false )
 		, m_looped( false )
+		, m_onEmitterEndEvent( false )
+		, m_onEmitterStopEvent( false )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Emitter::~Emitter()
@@ -262,7 +264,11 @@ namespace	Menge
 		}
 
 		m_interface->stop();
-		this->callEvent( "EMITTER_STOP", "(O)", this->getEmbedding() );
+
+		if( m_onEmitterStopEvent == true )
+		{
+			this->callEvent( "EMITTER_STOP", "(O)", this->getEmbedding() );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::setLooped( int _loop )
@@ -305,15 +311,18 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::onStopped()
 	{
-		this->callEvent( "EMITTER_END", "(O)", this->getEmbedding() );
+		if( m_onEmitterEndEvent == true )
+		{
+			this->callEvent( "EMITTER_END", "(O)", this->getEmbedding() );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_setListener()
 	{
 		Node::_setListener();
 
-		registerEvent("EMITTER_END", "onEmitterEnd", m_listener );
-		registerEvent("EMITTER_STOP", "onEmitterStop", m_listener );
+		m_onEmitterEndEvent = registerEvent("EMITTER_END", "onEmitterEnd", m_listener );
+		m_onEmitterStopEvent = registerEvent("EMITTER_STOP", "onEmitterStop", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::restart()

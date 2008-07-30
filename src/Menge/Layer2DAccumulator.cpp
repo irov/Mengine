@@ -30,7 +30,10 @@ namespace Menge
 		void visit( Node* _node )
 		{
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-			const mt::box2f& bbox = _node->getWorldBoundingBox();
+			const mt::box2f& nbbox = _node->getLocalBoundingBox();
+			const mt::mat3f& wm = _node->getWorldMatrix();
+			mt::box2f bbox;
+			mt::set_box_from_oriented_extent( bbox, mt::vec2f( 0.0f, 0.0f ), nbbox.max - nbbox.min, wm );
 			for( Layer2DAccumulator::TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 				it != it_end;
 				it++ )
@@ -100,7 +103,7 @@ namespace Menge
 		{
 			for( int j = 0; j < countY; j++ )
 			{
-				String name = String( "Layer2DLoop_" + m_name + "_image_" + toString( i ) + toString( j ) );
+				String name = String( "Layer2DAccumulator_" + m_name + "_image_" + toString( i ) + toString( j ) );
 				RenderImageInterface* image = Holder<RenderEngine>::hostage()->createRenderTargetImage( name,ImageSize, ImageSize );
 
 				ImageRect imageRect;

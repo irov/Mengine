@@ -10,7 +10,7 @@ namespace mt
 	/* Равномерное распределение с a != b */
 	MATH_INLINE float even_rand( float a, float b )
 	{
-		assert( b == a );
+		assert( b != a );
 		float alpha = (float)rand() / RAND_MAX;
 		return a + alpha * ( b - a );
 	}

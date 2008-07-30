@@ -238,8 +238,7 @@ void HGERenderSystem::releaseImageVideoStream( Menge::RenderVideoStreamInterface
 
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::renderImage(const float * _transform,  
-								  const float * _a, 
+void HGERenderSystem::renderImage(const float * _a, 
 								  const float * _b, 
 								  const float * _c, 
 								  const float * _d, 
@@ -251,23 +250,23 @@ void HGERenderSystem::renderImage(const float * _transform,
 {
 	hgeQuad quad;
 
-	quad.v[0].x = _transform[0] * _a[0] + _transform[3] * _a[1] + _transform[6];
-	quad.v[0].y = _transform[1] * _a[0] + _transform[4] * _a[1] + _transform[7];
+	quad.v[0].x = _a[0];
+	quad.v[0].y = _a[1];
 	quad.v[0].z = m_layer;
 	quad.v[0].col = _color;
 
-	quad.v[1].x = _transform[0] * _b[0] + _transform[3] * _b[1] + _transform[6];
-	quad.v[1].y = _transform[1] * _b[0] + _transform[4] * _b[1] + _transform[7];
+	quad.v[1].x = _b[0];
+	quad.v[1].y = _b[1];
 	quad.v[1].z = m_layer;
 	quad.v[1].col = _color;
 
-	quad.v[2].x = _transform[0] * _c[0] + _transform[3] * _c[1] + _transform[6];
-	quad.v[2].y = _transform[1] * _c[0] + _transform[4] * _c[1] + _transform[7];
+	quad.v[2].x = _c[0];
+	quad.v[2].y = _c[1];
 	quad.v[2].z = m_layer;
 	quad.v[2].col = _color;
 
-	quad.v[3].x = _transform[0] * _d[0] + _transform[3] * _d[1] + _transform[6];
-	quad.v[3].y = _transform[1] * _d[0] + _transform[4] * _d[1] + _transform[7];
+	quad.v[3].x = _d[0];
+	quad.v[3].y = _d[1];
 	quad.v[3].z = m_layer;
 	quad.v[3].col = _color;
 

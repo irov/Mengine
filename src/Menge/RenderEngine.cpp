@@ -211,12 +211,25 @@ namespace Menge
 		{
 			mt::mul_m3_m3( tr, transform, m_renderTransform );
 		}
+
+		mt::vec2f a( _transform.m[0] * _a[0] + _transform.m[3] * _a[1] + _transform.m[6],
+			_transform.m[1] * _a[0] + _transform.m[4] * _a[1] + _transform.m[7] );
+		
+		mt::vec2f b( _transform.m[0] * _b[0] + _transform.m[3] * _b[1] + _transform.m[6],
+			_transform.m[1] * _b[0] + _transform.m[4] * _b[1] + _transform.m[7] );
+
+		mt::vec2f c( _transform.m[0] * _c[0] + _transform.m[3] * _c[1] + _transform.m[6],
+			_transform.m[1] * _c[0] + _transform.m[4] * _c[1] + _transform.m[7] );
+
+		mt::vec2f d( _transform.m[0] * _d[0] + _transform.m[3] * _d[1] + _transform.m[6],
+			_transform.m[1] * _d[0] + _transform.m[4] * _d[1] + _transform.m[7] );
+
+
 		m_interface->renderImage(
-			tr.m,
-			_a.m,
-			_b.m,
-			_c.m,
-			_d.m,
+			a.m,
+			b.m,
+			c.m,
+			d.m,
 			_uv.m,
 			_color,
 			_image,

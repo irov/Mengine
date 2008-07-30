@@ -374,7 +374,6 @@ namespace Menge
 		// отрисовка изображения
 
 		virtual void renderImage(		
-			const float * _transform, 
 			const float * _a,
 			const float * _b,
 			const float * _c,

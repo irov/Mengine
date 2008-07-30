@@ -31,14 +31,14 @@ namespace Menge
 		{
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 			const mt::box2f& nbbox = _node->getLocalBoundingBox();
-			const mt::mat3f& wm = _node->getWorldMatrix();
+			/*const mt::mat3f& wm = _node->getWorldMatrix();
 			mt::box2f bbox;
-			mt::set_box_from_oriented_extent( bbox, mt::vec2f( 0.0f, 0.0f ), nbbox.max - nbbox.min, wm );
+			mt::set_box_from_oriented_extent( bbox, mt::vec2f( 0.0f, 0.0f ), nbbox.max - nbbox.min, wm );*/
 			for( Layer2DAccumulator::TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 				it != it_end;
 				it++ )
 			{
-				if( mt::is_intersect( bbox, it->rect ) )
+				if( mt::is_intersect( nbbox, it->rect ) )
 				{
 					renderEngine->setRenderTarget( it->image->getDescription() );
 					_node->translate( -it->rect.min );

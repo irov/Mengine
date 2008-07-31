@@ -16,14 +16,15 @@ Box2DPhysicBody::~Box2DPhysicBody()
 //////////////////////////////////////////////////////////////////////////
 bool Box2DPhysicBody::initialize( const b2BodyDef& _bodyDef )
 {
-	if( m_isStatic )
+	/*if( m_isStatic )
 	{
 		m_body = m_world->CreateStaticBody( &_bodyDef );
 	}
 	else
 	{
 		m_body = m_world->CreateDynamicBody( &_bodyDef );
-	}
+	}*/
+	m_body = m_world->CreateBody( &_bodyDef );
 
 	if( m_body == 0 )
 	{
@@ -71,9 +72,9 @@ void Box2DPhysicBody::addShapeConvex(unsigned int _pointsNum, const float* _conv
 	shape.density = _density;
 	shape.friction = _friction;
 	shape.restitution = _restitution;
-	shape.maskBits = _collisionMask;
-	shape.categoryBits = _categoryBits;
-	shape.groupIndex = _groupIndex;
+	shape.filter.maskBits = _collisionMask;
+	shape.filter.categoryBits = _categoryBits;
+	shape.filter.groupIndex = _groupIndex;
 	shape.isSensor = _isSensor;
 
 	m_body->CreateShape( &shape );
@@ -91,9 +92,9 @@ void Box2DPhysicBody::addShapeCircle(float _radius, const float* _localPos,
 	shape.friction = _friction;
 	shape.restitution = _restitution;
 	shape.localPosition.Set( _localPos[0] * Menge::physicsScaler, _localPos[1] * Menge::physicsScaler );
-	shape.maskBits = _collisionMask;
-	shape.categoryBits = _categoryBits;
-	shape.groupIndex = _groupIndex;
+	shape.filter.maskBits = _collisionMask;
+	shape.filter.categoryBits = _categoryBits;
+	shape.filter.groupIndex = _groupIndex;
 	shape.isSensor = _isSensor;
 
 	m_body->CreateShape( &shape );
@@ -114,9 +115,9 @@ void Box2DPhysicBody::addShapeBox(float _width, float _height, const float* _loc
 	shape.density = _density;
 	shape.friction = _friction;
 	shape.restitution = _restitution;
-	shape.maskBits = _collisionMask;
-	shape.categoryBits = _categoryBits;
-	shape.groupIndex = _groupIndex;
+	shape.filter.maskBits = _collisionMask;
+	shape.filter.categoryBits = _categoryBits;
+	shape.filter.groupIndex = _groupIndex;
 	shape.isSensor = _isSensor;
 
 	m_body->CreateShape( &shape );

@@ -189,6 +189,8 @@ namespace	Menge
 		m_percent.z = ::floorf( m_percent.z * m_size.x + 0.5f ) / m_size.x;
 		m_percent.w = ::floorf( m_percent.w * m_size.y + 0.5f ) / m_size.y;
 
+		mt::vec2f  visOffset( m_size.x * m_percent.x, m_size.y * m_percent.y );
+
 		m_size.x *= ( 1.0f - m_percent.x );
 		m_size.x *= ( 1.0f - m_percent.z );
 
@@ -216,7 +218,7 @@ namespace	Menge
 			offset.y = maxSize.y - ( size.y + offset.y );
 		}
 
-		m_offset = offset + m_alignOffset;
+		m_offset = offset + m_alignOffset + visOffset;
 
 		m_uv = m_resource->getUV( m_currentImageIndex );
 
@@ -315,6 +317,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_update( float _timing )
 	{
+		Node::_update( _timing );
 		if( m_colorTo.isStarted() )
 		{
 			if( m_colorTo.update( _timing, &m_color ) == true )

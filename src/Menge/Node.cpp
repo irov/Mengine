@@ -397,7 +397,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_update( float _timing )
 	{
-		//Empty
+		if( m_moveTo.isStarted() )
+		{
+			mt::vec2f pos;
+			bool end = m_moveTo.update( _timing, &pos );
+			setLocalPosition( pos );
+			if( end == true )
+			{
+				callEvent( EVENT_MOVE_END, "(O)", getEmbedding() );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::updatable() const
@@ -677,7 +686,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_setListener()
 	{
-		//Empty
+		registerEvent( EVENT_MOVE_STOP, "onMoveStop", m_listener );
+		registerEvent( EVENT_MOVE_END, "onMoveEnd", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setLayer( Layer2D * _layer )
@@ -720,7 +730,7 @@ namespace Menge
 			screen_pos = pos - viewportParallax.begin;
 
 			const mt::vec2f& screen = Holder<Application>::hostage()->getCurrentResolution();
-			if( screen_pos.x < 0.0f || screen_pos.x > screen.x )
+			if( m_layer->isLooped() && ( screen_pos.x < 0.0f || screen_pos.x > screen.x ) )
 			{
 				screen_pos += mt::vec2f( m_layer->getSize().x, 0.0f );
 			}
@@ -762,6 +772,22 @@ namespace Menge
 		{
 			(*it)->colorToStop();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::moveTo( float _time, const mt::vec2f& _point )
+	{
+		const mt::vec2f& pos = getWorldPosition();
+		if( m_moveTo.start( pos, _point, _time, mt::length_v2 ) == false )
+		{
+			setLocalPosition( _point );
+			callEvent( EVENT_MOVE_END, "(O)", getEmbedding() );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::moveToStop()
+	{
+		m_moveTo.stop();
+		callEvent( EVENT_MOVE_STOP, "(O)", getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -9,7 +9,8 @@
 #	include "RenderEngine.h"
 #	include "RigidBody2D.h"
 #	include "SceneManager.h"
-
+#	include "Player.h"
+#	include "Camera2D.h"
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -84,7 +85,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TileMap::_render( const Viewport & _viewport, bool _enableDebug )
 	{
-		const Viewport& viewport = Holder<RenderEngine>::hostage()->getRenderViewport();
+		//const Viewport& viewport = Holder<RenderEngine>::hostage()->getRenderViewport();
+		const Viewport& viewport = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
 
 		const mt::mat3f & wm = getWorldMatrix();
 		float tileSize = m_resourceMap->getTileSize();

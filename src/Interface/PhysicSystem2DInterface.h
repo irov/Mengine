@@ -63,7 +63,7 @@ namespace Menge
 	public:
 		virtual void createWorld( const float* _upperLeft, const float* _lowerRight, const float* _gravity, bool _doSleep ) = 0;
 		virtual void destroyWorld() = 0;
-		virtual void update( float _timing, int _iterations ) = 0;
+		virtual void update( float _timing, int _velocityIterations, int _positionIterations ) = 0;
 
 		virtual PhysicBody2DInterface* createDynamicBody( const float* _pos, float _angle, float _linearDamping, float _angularDamping,
 			bool _allowSleep, bool _isBullet, bool _fixedRotation ) = 0;

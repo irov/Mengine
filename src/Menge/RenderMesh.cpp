@@ -36,6 +36,9 @@ namespace Menge
 	void RenderMesh::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 
+		mt::mat4f wm = Holder<RenderEngine>::hostage()
+			->getWorldMatrix();
+
 		Holder<RenderEngine>::hostage()
 			->setWorldMatrix( getLocalMatrix3D() );
 
@@ -44,6 +47,9 @@ namespace Menge
 			m_resourceMesh->getIndexData(), 
 			&m_material 
 			);
+
+		Holder<RenderEngine>::hostage()
+			->setWorldMatrix( wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMesh::_compile()

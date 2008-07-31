@@ -46,6 +46,7 @@ namespace Menge
 	, m_linearVelocity( false )
 	, m_countGravity( true )
 	, m_unsetLinearVelocity( false )
+	, m_frozen( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -202,15 +203,20 @@ namespace Menge
 	{
 		if( !(m_interface->isFrozen() || m_interface->isStatic() || m_interface->isSleeping()) )
 		{
+			//const float phase = Holder<PhysicEngine2D>::hostage()->getPhase();
+
 			const float * pos = m_interface->getPosition();
-			setLocalPosition( mt::vec2f( pos[0], pos[1] ) );
+			//const mt::vec2f& prevPos = getLocalPosition();
+			mt::vec2f currPos( pos[0], pos[1] );
+			//currPos = currPos * phase + prevPos * ( 1.0f - phase );
+			setLocalPosition( /*mt::vec2f( pos[0], pos[1] )*/ currPos );
 
 			const float * orient = m_interface->getOrientation();
 			setLocalDirection( mt::vec2f( orient[0], orient[1] ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RigidBody2D::_activate()
+	/*bool RigidBody2D::_activate()
 	{
 		if( m_interface == 0 ) // maybe just deactivated, try to compile
 		{
@@ -218,13 +224,13 @@ namespace Menge
 		}
 
 		return true;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_deactivate()
+	/*void RigidBody2D::_deactivate()
 	{
 		Holder<PhysicEngine2D>::hostage()->destroyPhysicBody( m_interface );
 		m_interface = 0;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	bool RigidBody2D::_compile()
 	{
@@ -278,6 +284,7 @@ namespace Menge
 	void RigidBody2D::_release()
 	{
 		Holder<PhysicEngine2D>::hostage()->destroyPhysicBody( m_interface );
+		m_interface = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject* RigidBody2D::getListener()
@@ -510,6 +517,24 @@ namespace Menge
 		{
 			m_unsetLinearVelocity = true;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::freeze( bool _freeze )
+	{
+		if( m_frozen == _freeze )
+		{
+			return;
+		}
+		m_frozen = _freeze;
+		if( m_frozen )	// completly remove from simulation
+		{
+			_release();
+		}
+		else
+		{
+			_compile();
+		}
+		m_updatable = !_freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

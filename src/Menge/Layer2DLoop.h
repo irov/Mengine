@@ -18,5 +18,6 @@ namespace Menge
 		void update( float _timing ) override;
 		void render( const Viewport & _viewport, bool _enableDebug ) override;
 
+		bool isLooped() { return true; }
 	};
 }

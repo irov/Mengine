@@ -98,8 +98,10 @@ namespace Menge
 		Camera2D * cmr = SceneManager::createNodeT<Camera2D>( "Camera2D" );
 
 		mt::vec2f vpSz( 1024, 768 );
-		cmr->setLocalPosition( mt::vec2f( 512, 384 ) );
 		cmr->setViewportSize( vpSz );
+		cmr->setLocalPosition( mt::vec2f( 512, 384 ) );
+		cmr->setScale( Holder<RenderEngine>::hostage()->getViewFactor() );
+		cmr->setViewOrigin( -Holder<RenderEngine>::hostage()->getViewOrigin() );
 
 		setRenderCamera2D( cmr );
 
@@ -384,10 +386,14 @@ namespace Menge
 			Holder<RenderEngine>::hostage()
 				->setRenderViewport( viewport );
 
+			mt::vec2f pos = m_renderCamera2D->getLocalPosition();
+			m_renderCamera2D->setLocalPosition( mt::vec2f( 512.0f, 384.0f ) );
 			m_arrow->render( viewport, _enableDebug );
 
 			Holder<RenderEngine>::hostage()
 				->endLayer2D();
+
+			m_renderCamera2D->setLocalPosition( pos );
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -38,7 +38,9 @@ namespace Menge
 	//public:
 		//void update( float _timing ) override;
 	
-		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+		//void _render( const Viewport & _viewport, bool _enableDebug ) override;
+		void render( const Viewport & _viewport, bool _enableDebug ) override;
+
 	protected:
 
 		bool _activate() override;

@@ -12,6 +12,7 @@ namespace Menge
 		, m_timeStep(1.f/60.f)
 		, m_iterating(10)
 		, m_gravity( 0.0f, 0.0f )
+		, m_phase( 0.0f )
 	{
 		//createScene( mt::vec2f( 0.0f, 0.0f ), mt::vec2f(2048.0f, 2048.0f), mt::vec2f(0.0f, 50.0f), true );
 	}
@@ -53,9 +54,11 @@ namespace Menge
 		m_timing += _timing * 0.001f;
 		while( m_timing >= m_timeStep )
 		{
-			m_interface->update( m_timeStep, m_iterating );
+			m_interface->update( m_timeStep, m_iterating, 8 );
 			m_timing -= m_timeStep;
 		}		
+
+		m_phase = m_timing / m_timeStep;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface* PhysicEngine2D::createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies )
@@ -86,6 +89,11 @@ namespace Menge
 	void PhysicEngine2D::onMouseMove( int x, int y )
 	{
 		m_interface->onMouseMove( x, y ); 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float PhysicEngine2D::getPhase() const
+	{
+		return m_phase;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

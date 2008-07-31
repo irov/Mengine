@@ -25,6 +25,7 @@
 #	include "Application.h"
 #	include "PhysicEngine.h"
 
+#	include "VisitorAdapter.h"
 
 namespace	Menge
 {
@@ -138,13 +139,50 @@ namespace	Menge
 			Holder<PhysicEngine>::hostage()->setDynamicFriction( m_dynamicFriction );		
 		}
 	}
+	/////////////////////////////////////////////////////////////////////////
+	class VisitorRenderLayer3D
+		: public VisitorAdapter<VisitorRenderLayer3D>
+	{
+	public:
+		VisitorRenderLayer3D( const Viewport & _viewport, bool _enableDebug )
+			: m_viewport(_viewport)
+			, m_enableDebug( _enableDebug )
+		{
+		}
+
+	public:
+		void visit( Node * _node )
+		{				
+			if( _node->isRenderable() == true )
+			{
+				_node->_render( m_viewport, m_enableDebug );
+
+				_node->visitChildren( this );
+			}
+
+		}
+
+		void visit( Layer * _layer )
+		{
+			_layer->render( m_viewport, m_enableDebug );
+		}
+
+	protected:
+		Viewport m_viewport;
+		bool m_enableDebug;
+	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::_render( const Viewport & _viewport, bool _enableDebug )
+	void Layer3D::render( const Viewport & _viewport, bool _enableDebug )
 	{
 		Layer::_render( _viewport, _enableDebug );
 		RenderEngine* engine = Holder<RenderEngine>::hostage();
 		engine->beginLayer3D();
-		//Holder<RenderEngine>::hostage()->beginLayer3D();
+		
+		VisitorRenderLayer3D visitorRender( _viewport, _enableDebug );
+
+		visitChildren( &visitorRender );
+
+		Holder<Player>::hostage()->getRenderCamera2D()->changePivot();
 	}
-	/////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 }

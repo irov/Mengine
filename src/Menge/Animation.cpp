@@ -229,7 +229,7 @@ namespace	Menge
 		
 		if( m_randomStart )
 		{
-			m_currentFrame = mt::even_rand( 0.0f, m_resourceAnimation->getSequenceCount() );
+			m_currentFrame = mt::even_rand( 0.0f, m_resourceAnimation->getSequenceCount() - 1.0f );
 			m_delay = mt::even_rand( 0.0f, m_resourceAnimation->getSequenceDelay( m_currentFrame ) ) ;
 		}
 		else

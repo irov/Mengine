@@ -412,7 +412,7 @@ namespace Menge
 		virtual void	setRenderArea( const float* _renderArea ) = 0;
 
 		virtual void	setFullscreenMode( float _width, float _height, bool _fullscreen ) = 0;
-		virtual void	setRenderTarget( const String& _name ) = 0;
+		virtual void	setRenderTarget( const String& _name, bool _clear ) = 0;
 
 		//new
 		virtual CameraInterface * createCamera( const String & _name ) = 0;

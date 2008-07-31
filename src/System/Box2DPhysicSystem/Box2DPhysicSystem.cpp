@@ -62,7 +62,7 @@ void Box2DPhysicSystem::destroyWorld()
 	m_deletingBodies.clear();
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicSystem::update( float _timing, int _iterations )
+void Box2DPhysicSystem::update( float _timing, int _velocityIterations, int _positionIterations )
 {
 	if( !m_world ) return;
 
@@ -102,7 +102,7 @@ void Box2DPhysicSystem::update( float _timing, int _iterations )
 	}
 	m_deletingBodies.clear();
 
-	m_world->Step( _timing, _iterations );
+	m_world->Step( _timing, _velocityIterations, _positionIterations );
 
 	//m_world->m_broadPhase->Validate();
 
@@ -227,7 +227,7 @@ void Box2DPhysicSystem::destroyJoint( Menge::PhysicJoint2DInterface* _joint )
 	delete joint;
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicSystem::Add( b2ContactPoint* point )
+void Box2DPhysicSystem::Add( const b2ContactPoint* point )
 {
 	m_contacts.push_back( *point );
 
@@ -238,13 +238,13 @@ void Box2DPhysicSystem::Add( b2ContactPoint* point )
 	static_cast<Box2DPhysicBody*>( body2->GetUserData() )->_collide( body1, point );*/
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicSystem::Persist( b2ContactPoint* point )
+void Box2DPhysicSystem::Persist( const b2ContactPoint* point )
 {
 	// Nothing to hold this time
 	m_contacts.push_back( *point );
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicSystem::Remove( b2ContactPoint* point )
+void Box2DPhysicSystem::Remove( const b2ContactPoint* point )
 {
 	// Nothing to hold this time
 	//m_contacts.erase( std::remove( m_contacts.begin(), m_contacts.end(), point ) );

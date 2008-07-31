@@ -46,13 +46,15 @@ namespace Menge
 
 		recalcRenderArea_( _width, _height );
 	
+		setRenderTarget( "defaultCamera" );
+
 		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::screenshot( RenderImageInterface* _image, const int* rect )
 	{
-		mt::vec2f offset;
-		mt::mul_v2_m3( offset, mt::vec2f( rect[0], rect[1] ), m_renderTransform );
+		mt::vec3f offset;
+		mt::mul_v3_m4( offset, mt::vec3f( rect[0], rect[1], 0.0f ), m_worldMatrix );
 		int w = rect[2] - rect[0];
 		int h = rect[3] - rect[1];
 		int shotrect[4];
@@ -122,8 +124,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void	RenderEngine::setWorldMatrix( const mt::mat4f& _world )
 	{
-		return m_interface->setWorldMatrix( _world.m );
+		m_worldMatrix = _world;
+		return m_interface->setWorldMatrix( m_worldMatrix.m );
 	}	
+	//////////////////////////////////////////////////////////////////////////
+	const mt::mat4f& RenderEngine::getWorldMatrix() const
+	{
+		return m_worldMatrix;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * RenderEngine::createImage( const String& _name, unsigned int _width, unsigned int _height )
 	{
@@ -205,12 +213,12 @@ namespace Menge
 			EBlendFactor _dst)
 	{
 		mt::mat3f transform = _transform;
-		transform.v2.v2 += -m_renderViewport.begin;
-		mt::mat3f tr = transform;
+		/*transform.v2.v2 += -m_renderViewport.begin;
 		if( m_currentRenderTarget == "defaultCamera" )
 		{
 			mt::mul_m3_m3( tr, transform, m_renderTransform );
-		}
+		}*/
+		mt::mat3f tr = transform;
 
 		mt::vec2f a( tr.m[0] * _a[0] + tr.m[3] * _a[1] + tr.m[6],
 			tr.m[1] * _a[0] + tr.m[4] * _a[1] + tr.m[7] );
@@ -276,12 +284,7 @@ namespace Menge
 		const mt::vec2f & _begin,
 		const mt::vec2f & _end)
 	{
-		mt::vec2f begin = _begin - m_renderViewport.begin;
-		mt::vec2f end = _end - m_renderViewport.begin;
-		mt::vec2f rb, re;
-		mt::mul_v2_m3( rb, begin, m_renderTransform );
-		mt::mul_v2_m3( re, end, m_renderTransform );
-		m_interface->renderLine( _color, rb.m, re.m );		
+		m_interface->renderLine( _color, _begin.m, _end.m );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )
@@ -547,25 +550,33 @@ namespace Menge
 		}
 
 		mt::ident_m3( m_renderTransform );
-		m_renderTransform[2][0] = m_renderArea.x;
+		/*m_renderTransform[2][0] = m_renderArea.x;
 		m_renderTransform[2][1] = m_renderArea.y;
 		m_renderTransform[0][0] = areaWidth / m_contentResolution.x;
-		m_renderTransform[1][1] = areaHeight / m_contentResolution.y;
-
-		mt::ident_m4( m_renderTransform4 );
-		//m_renderTransform4[3][0] = m_renderArea.x;
-		//m_renderTransform4[3][1] = m_renderArea.y;
-		m_renderTransform4[0][0] = areaWidth / m_windowWidth;
-		m_renderTransform4[1][1] = areaHeight / m_windowHeight;
+		m_renderTransform[1][1] = areaHeight / m_contentResolution.y;*/
+		m_viewFactor.x = areaWidth / m_contentResolution.x;
+		m_viewFactor.y = areaHeight / m_contentResolution.y;
+		m_viewOrigin.x = m_renderArea.x;
+		m_viewOrigin.y = m_renderArea.y;
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderTarget( const String& _target )
+	void RenderEngine::setRenderTarget( const String& _target, bool _clear )
 	{
 		if( m_currentRenderTarget != _target )
 		{
 			m_currentRenderTarget = _target;
-			m_interface->setRenderTarget( m_currentRenderTarget );
+			mt::mat4f wm;
+			mt::ident_m4( wm );
+			if( m_currentRenderTarget == "defaultCamera" )
+			{
+				wm.m[0] = m_viewFactor.x;
+				wm.m[5] = m_viewFactor.y;
+				wm.m[12] = m_viewOrigin.x;
+				wm.m[13] = m_viewOrigin.y;
+			}
+			setWorldMatrix( wm );
+			m_interface->setRenderTarget( m_currentRenderTarget, _clear );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -626,6 +637,16 @@ namespace Menge
 		m_windowWidth = _width;
 		m_windowHeight = _height;
 		setRenderFactor( m_renderFactor );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& RenderEngine::getViewFactor() const
+	{
+		return m_viewFactor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& RenderEngine::getViewOrigin() const
+	{
+		return m_viewOrigin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

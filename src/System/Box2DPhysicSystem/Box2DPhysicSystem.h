@@ -18,7 +18,7 @@ public:
 
 	void createWorld( const float* _upperLeft, const float* _lowerRight, const float* _gravity, bool _doSleep ) override;
 	void destroyWorld() override;
-	void update( float _timing, int _iterations ) override;
+	void update( float _timing, int _velocityIterations, int _positionIterations ) override;
 
 	Menge::PhysicBody2DInterface* createDynamicBody( const float* _pos, float _angle, float _linearDamping, float _angularDamping,
 												bool _allowSleep, bool _isBullet, bool _fixedRotation ) override;
@@ -34,9 +34,9 @@ public:
 
 	void onMouseMove( int x, int y ) override;
 
-	void Add(b2ContactPoint* point) override;
-	void Persist(b2ContactPoint* point) override;
-	void Remove(b2ContactPoint* point) override;
+	void Add( const b2ContactPoint* point ) override;
+	void Persist( const b2ContactPoint* point ) override;
+	void Remove( const b2ContactPoint* point ) override;
 
 private:
 	 b2World* m_world;

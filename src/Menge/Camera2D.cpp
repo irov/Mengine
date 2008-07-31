@@ -4,6 +4,8 @@
 
 #	include "XmlEngine.h"
 
+#	include "RenderEngine.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -14,10 +16,15 @@ namespace	Menge
 		, m_targetFollowing( false )
 		, m_boundLeftUpper( 512.0f, 368.0f )
 		, m_boundRightLower( 512.0f, 368.0f )
-	{}
+		, m_viewMatrixUpdated( false )
+		, m_viewOrigin( 0.0f, 0.0f )
+	{
+		mt::ident_m4( m_viewMatrix );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::~Camera2D()
-	{}
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::loader( XmlElement * _xml )
 	{
@@ -80,6 +87,8 @@ namespace	Menge
 		Allocator2D::_changePivot();
 
 		updateViewport();
+		updateViewMatrix_();
+		Holder<RenderEngine>::hostage()->setViewMatrix( m_viewMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::updateViewport()
@@ -118,6 +127,26 @@ namespace	Menge
 	{
 		m_boundLeftUpper = _leftUpper + m_viewportSize * 0.5f;
 		m_boundRightLower = _rightLower - m_viewportSize * 0.5f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::mat4f& Camera2D::getViewMatrix()
+	{
+		return m_viewMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::updateViewMatrix_()
+	{
+		mt::ident_m4( m_viewMatrix );
+		//m_viewMatrix.m[0] = m_scale.x;
+		//m_viewMatrix.m[5] = m_scale.y;
+		m_viewMatrix.m[12] = /*m_viewOrigin.x * m_scale.x +*/ m_viewport.begin.x; // magic formula >_<
+		m_viewMatrix.m[13] =/* m_viewOrigin.y * m_scale.y +*/ m_viewport.begin.y;
+		m_viewMatrix = mt::inv_m4( m_viewMatrix );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::setViewOrigin( const mt::vec2f& _origin )
+	{
+		m_viewOrigin = _origin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -73,7 +73,7 @@ public:
 	void	setRenderArea( const float* _renderArea ) override;
 
 	void	setFullscreenMode( float _width, float _height, bool _fullscreen ) override;
-	void	setRenderTarget( const Menge::String& _name ) override;
+	void	setRenderTarget( const Menge::String& _name, bool _clear ) override;
 
 	Menge::CameraInterface * createCamera( const Menge::String & _name ) override;
 	Menge::EntityInterface * createEntity( const Menge::String & _name, const Menge::String & _meshName ) override;
@@ -101,7 +101,14 @@ private:
 	bool m_inRender;
 	Menge::String m_currentRenderTarget;
 
-	typedef std::map< Menge::String, std::pair<HTARGET, HGETexture*> > TTargetMap;
+	struct RenderTargetInfo
+	{
+		HTARGET handle;
+		HGETexture* texture;
+		bool dirty;
+	};
+
+	typedef std::map<Menge::String, RenderTargetInfo> TTargetMap;
 	TTargetMap m_targetMap;
 
 	typedef std::map< Menge::String, Menge::RenderImageInterface* > TTextureMap;

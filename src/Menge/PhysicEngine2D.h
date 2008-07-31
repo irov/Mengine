@@ -38,11 +38,14 @@ namespace Menge
 
 		const mt::vec2f& getGravity() const;
 
+		float getPhase() const;
+
 	private:
 		PhysicSystem2DInterface* m_interface;
 		float m_timing;
 		float m_timeStep;
 		int m_iterating;
 		mt::vec2f m_gravity;
+		float m_phase;
 	};
 }	// namespace Menge

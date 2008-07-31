@@ -671,6 +671,8 @@ namespace Menge
 			.def( "setAlpha", &Node::setAlpha )
 			.def( "colorToStop", &Node::colorToStop )
 			.def( "getScreenPosition", &Node::getScreenPosition )
+			.def( "moveTo", &Node::moveTo )
+			.def( "moveToStop", &Node::moveToStop )
 			;
 
 
@@ -894,6 +896,7 @@ namespace Menge
 				.def( "getLinearVelocity", &RigidBody2D::getLinearVelocity )
 				.def( "setLinearVelocity", &RigidBody2D::setLinearVelocity )
 				.def( "unsetLinearVelocity", &RigidBody2D::unsetLinearVelocity )
+				.def( "freeze", &RigidBody2D::freeze )
 			;
 
 			

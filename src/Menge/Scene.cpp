@@ -237,6 +237,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
 	{
+		Node::_update( _timing );
 		if( m_onUpdateEvent )
 		{
 			callEvent( EVENT_UPDATE, "(f)", _timing );
@@ -380,7 +381,7 @@ namespace	Menge
 
 		const mt::vec2f& main_size = m_mainLayer->getSize();
 
-		Viewport viewport = _viewport;
+		/*Viewport viewport = _viewport;
 		mt::vec2f viewport_size = viewport.end - viewport.begin;
 		if( viewport.begin.y < 0.0f )
 		{
@@ -389,6 +390,18 @@ namespace	Menge
 		else if( viewport.begin.y + viewport_size.y > main_size.y )
 		{
 			viewport.begin.y = main_size.y - viewport_size.y;
+		}*/
+		mt::vec2f camPos = Holder<Player>::hostage()->getRenderCamera2D()->getLocalPosition();
+		Viewport vp = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
+		mt::vec2f vp_size = vp.end - vp.begin;
+		if( ( camPos.y - vp_size.y * 0.5f ) < 0.0f )
+		{
+			Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( mt::vec2f( camPos.x, vp_size.y * 0.5f ) );
+		}
+		else if( ( camPos.y + vp_size.y * 0.5f ) > main_size.y )
+		{
+			Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( mt::vec2f( camPos.x, main_size.y - vp_size.y * 0.5f ) );
+			//viewport.begin.y = main_size.y - viewport_size.y;
 		}
 
 		_render( _viewport, _enableDebug );
@@ -405,6 +418,8 @@ namespace	Menge
 
 			(*it)->render( _viewport, _enableDebug );
 		}
+
+		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::renderSelf()

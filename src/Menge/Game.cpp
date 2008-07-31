@@ -378,10 +378,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update( float _timing )
 	{
-		m_player->update( _timing );
-
 		Holder<ScheduleManager>::hostage()
 			->update( _timing );
+
+		m_player->update( _timing );
 
 		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, m_eventUpdate ) )

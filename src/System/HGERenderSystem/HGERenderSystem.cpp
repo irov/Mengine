@@ -102,7 +102,11 @@ bool HGERenderSystem::createRenderWindow( int _width, int _height, int _bits, bo
 
 	HTARGET * voidTarget = 0;
 	HGETexture* voidTexture = 0;
-	m_targetMap.insert( std::make_pair( m_currentRenderTarget, std::make_pair( voidTarget, voidTexture ) ) );
+	RenderTargetInfo rtgtInfo;
+	rtgtInfo.dirty = true;
+	rtgtInfo.handle = voidTarget;
+	rtgtInfo.texture = voidTexture;
+	m_targetMap.insert( std::make_pair( m_currentRenderTarget, rtgtInfo ) );
 	bool ret = false;
 	ret = m_hge->Gfx_CreateRenderWindow();
 	return ret;
@@ -176,7 +180,11 @@ Menge::RenderImageInterface * HGERenderSystem::createRenderTargetImage( const Me
 {
 	HTARGET htgt = m_hge->Target_Create( _width, _height, true );
 	HGETexture* texture = new HGETexture( m_hge, m_hge->Target_GetTexture( htgt ), _name, _width, _height );
-	m_targetMap.insert( std::make_pair( _name, std::make_pair( htgt, texture ) ) );
+	RenderTargetInfo rtgtInfo;
+	rtgtInfo.dirty = true;
+	rtgtInfo.handle = htgt;
+	rtgtInfo.texture = texture;
+	m_targetMap.insert( std::make_pair( _name, rtgtInfo ) );
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -199,7 +207,7 @@ void HGERenderSystem::releaseImage( Menge::RenderImageInterface * _image )
 	TTargetMap::iterator it = m_targetMap.find( texture->getDescription() );
 	if( it != m_targetMap.end() )
 	{
-		m_hge->Target_Free( it->second.first );
+		m_hge->Target_Free( it->second.handle );
 		m_targetMap.erase( it );
 		delete texture;
 	}
@@ -438,6 +446,15 @@ void HGERenderSystem::beginScene()
 
 	m_inRender = true;
 	m_currentRenderTarget = "defaultCamera";
+
+	// set render targets dirty to clear one time before rendering into one
+	for( TTargetMap::iterator it = m_targetMap.begin(), it_end = m_targetMap.end();
+		it != it_end;
+		it++ )
+	{
+		it->second.dirty = true;
+	}
+
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::endScene()
@@ -481,10 +498,10 @@ void HGERenderSystem::setFullscreenMode( float _width, float _height, bool _full
 		it != it_end;
 		it++ )
 	{
-		if( it->second.second != 0 )
+		if( it->second.texture != 0 )
 		{
-			HTEXTURE htex = m_hge->Target_GetTexture( it->second.first );
-			it->second.second->restore( htex );
+			HTEXTURE htex = m_hge->Target_GetTexture( it->second.handle );
+			it->second.texture->restore( htex );
 		}
 	}
 }
@@ -601,7 +618,7 @@ void HGERenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 	m_hge->Gfx_SetTextureMatrix( ident.m );
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::setRenderTarget( const Menge::String& _name )
+void HGERenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 {
 	TTargetMap::iterator it = m_targetMap.find( _name );
 	if( it != m_targetMap.end() )
@@ -615,8 +632,12 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name )
 			m_inRender = true;
 		}
 		m_currentRenderTarget = _name;
-		m_hge->Gfx_BeginScene( it->second.first );
-		m_hge->Gfx_Clear( m_clearColor );
+		m_hge->Gfx_BeginScene( it->second.handle );
+		if( it->second.dirty && _clear )
+		{
+			m_hge->Gfx_Clear( m_clearColor );
+			it->second.dirty = false;
+		}
 
 	}
 	else

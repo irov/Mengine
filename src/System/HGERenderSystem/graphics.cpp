@@ -1332,18 +1332,24 @@ const std::vector<int>& HGE_Impl::Gfx_GetModeList()
 
 void HGE_Impl::Gfx_SetProjectionMatrix( const float* _projMat )
 {
+	_render_batch( false );
+
 	std::copy( _projMat, _projMat + 16, &(matProj._11) );
 	pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj );
 }
 
 void HGE_Impl::Gfx_SetViewMatrix( const float* _viewMat )
 {
+	_render_batch( false );
+
 	std::copy( _viewMat, _viewMat + 16, &(matView._11) );
 	pD3DDevice->SetTransform( D3DTS_VIEW, &matView );
 }
 
 void HGE_Impl::Gfx_SetWorldMatrix( const float* _worldMat )
 {
+	_render_batch( false );
+
 	std::copy( _worldMat, _worldMat + 16, &(matWorld._11) );
 	pD3DDevice->SetTransform( D3DTS_WORLD, &matWorld );
 }
@@ -1407,7 +1413,7 @@ void HGE_Impl::Gfx_Prepare2D()
 	/*_SetProjectionMatrix( nScreenWidth, nScreenHeight );*/
 	pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj );
 	pD3DDevice->SetTransform( D3DTS_VIEW, &matView );
-	pD3DDevice->SetTransform( D3DTS_WORLD, &matWorld );
+	//pD3DDevice->SetTransform( D3DTS_WORLD, &matWorld );
 
 	m_layer3D = false;
 }

@@ -106,7 +106,7 @@ namespace	Menge
 
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
-
+/*
 		mt::vec2f viewport_size = _viewport.end - _viewport.begin;
 
 		Viewport viewport;
@@ -119,7 +119,18 @@ namespace	Menge
 		viewport.end = viewport.begin + viewport_size;
 
 		Holder<RenderEngine>::hostage()
-			->setRenderViewport( viewport );
+			->setRenderViewport( viewport );*/
+		mt::vec2f camPos = 
+			Holder<Player>::hostage()->getRenderCamera2D()->getLocalPosition();
+
+		Viewport viewport = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
+		mt::vec2f viewport_size = viewport.end - viewport.begin;
+		viewport.begin.x *= m_factorParallax.x;
+		viewport.begin.y *= m_factorParallax.y;
+
+		mt::vec2f plxCamPos = viewport.begin + viewport_size * 0.5f;
+
+		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( plxCamPos );
 
 		VisitorRenderLayer2D visitorRender( viewport, _enableDebug );
 
@@ -127,6 +138,8 @@ namespace	Menge
 
 		Holder<RenderEngine>::hostage()
 			->endLayer2D();
+
+		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::_addChildren( Node * _node )

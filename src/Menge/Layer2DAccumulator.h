@@ -11,6 +11,10 @@ namespace Menge
 	{
 		OBJECT_DECLARE( Layer2DAccumulator );
 	public:
+		Layer2DAccumulator();
+
+		void loader( XmlElement * _xml ) override;
+
 		void render( const Viewport & _viewport, bool _enableDebug ) override;
 		void _render( const Viewport & _viewport, bool _enableDebug ) override;
 
@@ -26,6 +30,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
+		int m_gridSize;
 		TRenderImageVector m_surfaces;
 	};
 }	// namespace Menge

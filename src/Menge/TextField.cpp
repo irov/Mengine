@@ -275,6 +275,7 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_update( float _timing )
 	{
+		Node::_update( _timing );
 		/*if( m_changingColor )
 		{
 			if( m_changingColorTime < _timing )

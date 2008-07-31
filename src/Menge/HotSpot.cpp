@@ -71,13 +71,13 @@ namespace	Menge
 			return false;
 		}
 
-		const mt::box2f & myBB = this->getWorldBoundingBox();
+		/*const mt::box2f & myBB = this->getWorldBoundingBox();
 		const mt::box2f & otherBB = _hotspot->getWorldBoundingBox();
 
 		if( mt::is_intersect( myBB, otherBB ) == false )
 		{
 			return false;
-		}
+		}*/
 
 		Camera2D * camera = Holder<Player>::hostage()
 			->getRenderCamera2D();
@@ -235,9 +235,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_update( float _timing )
 	{
-		const Viewport & viewport =
+		Node::_update( _timing );
+
+/*		const Viewport & viewport =
 			Holder<RenderEngine>::hostage()
 			->getRenderViewport();
+*/
+		const Viewport & viewport =
+			Holder<Player>::hostage()->getRenderCamera2D()
+			->getViewport();
 
 		Holder<MousePickerSystem>::hostage()
 			->regTrap( this, viewport );

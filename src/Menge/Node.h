@@ -12,6 +12,8 @@
 #	include "Allocator2D.h"
 #	include <list>
 
+#	include "ValueInterpolator.h"
+
 class XmlElement;
 
 namespace Menge
@@ -156,5 +158,12 @@ namespace Menge
 		const mt::box2f & getWorldBoundingBox();
 
 		void _changeBoundingBox() override;
+
+		void moveTo( float _time, const mt::vec2f& _point );
+		void moveToStop();
+
+	protected:
+		ValueInterpolator<mt::vec2f> m_moveTo;
+
 	};
 }

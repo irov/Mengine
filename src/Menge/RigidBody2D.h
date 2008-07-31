@@ -65,12 +65,13 @@ namespace Menge
 		void setLinearVelocity( float _x, float _y, bool _countGravity );
 		void unsetLinearVelocity();
 		void wakeUp();
+		void freeze( bool _freeze );
 
 		PhysicBody2DInterface* getInterface();
 
 	protected:
-		bool _activate() override;
-		void _deactivate() override;
+		//bool _activate() override;
+		//void _deactivate() override;
 		bool _compile() override;
 		void _release() override;
 		void _update( float _timing ) override;
@@ -118,6 +119,7 @@ namespace Menge
 		mt::vec2f m_forcePoint;
 		mt::vec2f m_velocity;
 		bool m_countGravity;
+		bool m_frozen;
 		//virtual void _onSetListener();
 
 

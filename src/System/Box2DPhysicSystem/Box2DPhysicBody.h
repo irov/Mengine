@@ -60,6 +60,6 @@ private:
 	bool m_isStatic;
 
 	//friend void Box2DPhysicSystem::Add( b2ContactPoint* _point );
-	friend void Box2DPhysicSystem::update( float , int );
+	friend void Box2DPhysicSystem::update( float , int, int );
 	void _collide( b2Body* _otherBody, b2ContactPoint* _contact );
 };

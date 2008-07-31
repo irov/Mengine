@@ -3,6 +3,8 @@
 #	include "Node.h"
 #	include "Viewport.h"
 
+#	include "Math/mat4.h"
+
 namespace Menge
 {
 	class Scene;
@@ -26,6 +28,8 @@ namespace Menge
 		void enableTargetFollowing( bool _enable, float _force );
 		void setBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower );
 		
+		const mt::mat4f& getViewMatrix();
+		void setViewOrigin( const mt::vec2f& _origin );
 	public:
 		void loader( XmlElement * _xml ) override;
 
@@ -47,5 +51,10 @@ namespace Menge
 		float m_followingForce;
 		mt::vec2f m_boundLeftUpper;
 		mt::vec2f m_boundRightLower;
+
+		bool m_viewMatrixUpdated;
+		mt::mat4f m_viewMatrix;
+		void updateViewMatrix_();
+		mt::vec2f m_viewOrigin;
 	};
 }

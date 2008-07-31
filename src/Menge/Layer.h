@@ -40,6 +40,10 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+
+		// temporary patch
+		virtual bool isLooped() { return false; }
+
 	protected:
 
 	protected:

@@ -90,6 +90,8 @@ namespace Menge
 		void	setViewMatrix( const mt::mat4f& _view );
 		void	setWorldMatrix( const mt::mat4f& _world );
 
+		const mt::mat4f& getWorldMatrix() const;
+
 		void	beginScene();
 		void	endScene();
 		void	beginLayer2D();
@@ -126,10 +128,12 @@ namespace Menge
 		void onWindowClose();
 
 		void setRenderFactor( float _factor );
-		void setRenderTarget( const String & _target );
+		void setRenderTarget( const String & _target, bool _clear = true );
 		const mt::vec4f& getRenderArea() const;
 		const mt::mat3f& getRenderTransform() const;
 
+		const mt::vec2f& getViewFactor() const;
+		const mt::vec2f& getViewOrigin() const;
 	protected:
 		Menge::RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;
@@ -142,12 +146,15 @@ namespace Menge
 		mt::vec2f m_contentResolution;
 		mt::vec4f m_renderArea;
 		mt::mat3f m_renderTransform;
-		mt::mat4f m_renderTransform4;
 		float m_rendFactPix;
 		int m_windowWidth;
 		int m_windowHeight;
 		String m_currentRenderTarget;
 
+		mt::mat4f m_worldMatrix;
+
+		mt::vec2f m_viewFactor;
+		mt::vec2f m_viewOrigin;
 		void recalcRenderArea_( int _width, int _height );
 	};
 }

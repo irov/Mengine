@@ -3,7 +3,9 @@
 #	include <map>
 #	include <string>
 
-#	include "expat-2.0.1/lib/expat.h"
+#	include "../../dependencies/expat/lib/expat.h"
+
+#	include "format.h"
 
 
 #ifdef XML_LARGE_SIZE
@@ -19,7 +21,7 @@
 FILE * xmlc_file = 0;
 FILE * xml_file = 0;
 
-std::map<std::string, short> dict;
+std::map<std::string, char> dict;
 std::map<std::string, std::pair<char,char> > attrType;
 
 //////////////////////////////////////////////////////////////////////////
@@ -76,22 +78,11 @@ static void XMLCALL cbEndElement( void *userData, const char *name )
 
 int main()
 {
-	dict["Node"] = 0;
-	dict["Name"] = 1;
-	dict["Type"] = 2;
-	dict["Resource"] = 3;
-	dict["Size"] = 4;
-	dict["Scale"] = 4;	
-	dict["Main"] = 5;
-	dict["ImageMap"] = 6;
-	dict["Transformation"] = 7;
-	dict["CenterAlign"] = 8;
-	dict["Point"] = 9;
 
-	attrType["File"] = std::make_pair( 0, 0 );
-	attrType["Value"] = std::make_pair( 1, 0 );
-	attrType["Name"] = std::make_pair( 2, 0 );
+	XmlcFormat xmlc;
 
+	xmlc.load( "format.xml" );
+	
 	xmlc_file = fopen( "test.xmlc", "wb" );
 	xml_file = fopen( "test.xml", "rb" );
 

@@ -1,0 +1,97 @@
+<Scene>
+	
+	<Node Name = "Back" Type = "Layer2D">
+		<Size Value = "1024;768"/>
+		<Main Value = "1"/>
+		
+		<Node Name = "BackUp" Type = "Sprite">
+			<ImageMap Name = "HUDBackgroundUp"/>
+		</Node>
+		
+		<Node Name = "BackDown" Type = "Sprite">
+			<ImageMap Name = "HUDBackgroundDown"/>
+			<Transformation Position = "0;576"/>
+		</Node>
+		
+	</Node>
+	
+	<Node Name = "MiddleTime" Type = "Layer2D">
+		<Size Value = "1024;768"/>
+		<RenderArea Value = "875;31;963;60"/>
+	</Node>
+	
+	<Node Name = "Middle" Type = "Layer2D">
+		<Size Value = "1024;768"/>
+		
+		<Node Name = "SandUp" Type = "Sprite">
+			<ImageMap Name = "HUDSandUp"/>
+			<Transformation Position = "966;9"/>
+		</Node>
+		
+		<Node Name = "SandMiddle" Type = "Animation">
+			<ImageMap Name = "HUDSandMiddle"/>
+			<Animation Name = "HUDSandMiddleAnimation"/>
+			<Looping Value = "1"/>
+			<AutoStart Value = "1"/>
+			<Transformation Position = "968;57"/>
+		</Node>
+		
+		<Node Name = "SandDown" Type = "Sprite">
+			<ImageMap Name = "HUDSandDown"/>
+			<Transformation Position = "927;71"/>
+		</Node>
+	</Node>
+	
+	<Node Name = "Front" Type = "Layer2D">
+		<Size Value = "1024;768"/>
+		
+		<Node Name = "HelpMessage" Type = "TextField">
+			<Font Name = "ArialMiddle"  />
+			<Color Value = "1;1;1;1"/>
+			<CenterAlign Value = "1"/>
+			<OutlineColor Value = "0;0;0;1"/>
+			<CharOffset Value = "-7"/>
+			<Transformation Value = "1;0;0;1;512;384"/>
+		</Node>
+		
+		<Node Name = "Timer" Type = "TextField">
+			<Font Name = "ArialMiddle"  />
+			<Color Value = "1;1;1;1"/>
+			<CenterAlign Value = "1"/>
+			<OutlineColor Value = "0;0;0;1"/>
+			<CharOffset Value = "-7"/>
+			<Transformation Value = "1;0;0;1;820;38"/>
+		</Node>
+		
+		<Node Name = "TaskCaption" Type = "TextField">
+			<Font Name = "Zapf"  />
+			<Color Value = "0.000;0.059;0.161;1.000"/>
+			<Outline Value = "0"/>
+			<CharOffset Value = "-5"/>
+			<Transformation Value = "1;0;0;1;354;0"/>
+		</Node>
+		
+		<Node Name = "Watches" Type = "Sprite">
+			<ImageMap Name = "HUDWatches"/>
+			<Transformation Position = "866;3"/>
+		</Node>
+		
+		<Node Name = "Compass" Type = "Sprite">
+			<ImageMap Name = "HUDCompassArrow"/>
+			<CenterAlign Value = "1"/>
+			<Transformation Position = "84;692"/>
+			<Transformation Direction = "0;-1"/>
+		</Node>
+		
+		<Node Name = "Hint" Type = "TextField">
+			<Font Name = "Zapf"/>
+			<Color Value = "0.000;0.059;0.161;1.000"/>
+			<Outline Value = "0"/>
+			<CharOffset Value = "-5"/>
+			<CenterAlign Value = "1"/>
+			<Transformation Value = "1;0;0;1;542;650"/>
+		</Node>
+		
+	</Node>
+	
+</Scene>

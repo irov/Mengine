@@ -177,15 +177,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\format.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\format.h"
-				>
-			</File>
-			<File
 				RelativePath=".\test.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\xmlCompile.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\xmlCompile.h"
 				>
 			</File>
 		</Filter>

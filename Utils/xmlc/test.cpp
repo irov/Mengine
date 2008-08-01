@@ -2,7 +2,7 @@
 
 #	include <string>
 
-#	include "format.h"
+#	include "XmlCompile.h"
 
 int main()
 {

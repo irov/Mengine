@@ -1,4 +1,4 @@
-#	include "format.h"
+#	include "XmlCompile.h"
 
 #	include "../../dependencies/expat/lib/expat.h"
 

@@ -1,0 +1,45 @@
+<Format>
+
+<Attribute>
+	<Name/>
+	<Type/>
+	<Value/>
+	<Position/>
+
+	<Direction/>
+</Attribute>
+
+
+<Define>
+	<Layer2D/>
+	<Sprite/>
+	<Animation/>
+	<TextField/>
+</Define>
+
+<Tag>
+	<Node Name = "String" Type = "Define"/>
+	<Size Value = "Float2"/>
+	<Main Value = "Bool"/>
+
+	<ImageMap Name = "String"/>
+	<Transformation Position = "Float2" Direction = "Float2" Value = "Mat3"/>
+	<RenderArea Value = "Float4"/>
+	<Animation Name = "String"/>
+	<Looping Value = "Bool"/>
+	<AutoStart Value = "Bool"/>
+	<Font Name = "String"/>
+	<Color Value = "Float4"/>
+	<CenterAlign Value = "Bool"/>
+	<OutlineColor Value = "Float4"/>
+	<Outline Value = "Bool"/>
+	<CharOffset Value = "Float"/>
+</Tag>
+
+</Format>
+
+
+
+
+
+

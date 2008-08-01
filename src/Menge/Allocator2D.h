@@ -34,6 +34,8 @@ namespace Menge
 		
 		void translate( const mt::vec2f & _delta );
 
+		float getAngle() const;
+
 	public:
 		void loader( XmlElement * _xml );
 

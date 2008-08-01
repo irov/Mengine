@@ -115,20 +115,31 @@ namespace	Menge
 		const mt::vec2f& dir = getLocalDirection();
 		const mt::vec2f& pos = getLocalPosition();
 		mt::vec2f newDir = _point - pos;
-		float cos_alpha = newDir.x / newDir.length();
-		float sin_alpha = newDir.y / newDir.length();
-		float alpha = ::acosf( dir.x );
-		if( dir.y < 0.0f ) alpha = -alpha;
-		float newAlpha = ::acosf( cos_alpha );
-		if( sin_alpha < 0.0f ) newAlpha = -newAlpha;
 
-		if( m_rotateTo.start( alpha, newAlpha, _time, ::fabsf ) == false )
+		if( newDir.length() < 0.0001f )
 		{
-			if( m_rotateTo.isStarted() )
-			{
-				rotateStop();
-			}
-			setRotate( newAlpha );
+			this->callEvent( EVENT_ROTATE_END, "()" );
+			return;
+		}
+		float cos_alpha = mt::dot_v2_v2( dir, newDir ) / newDir.length();
+		float sin_alpha = dir.x * newDir.y - dir.y * newDir.x;
+		if( cos_alpha > 1.0f )
+		{
+			cos_alpha = 1.0f;
+		}
+		else if( cos_alpha < -1.0f )
+		{
+			cos_alpha = -1.0f;
+		}
+		float alpha = ::acosf( cos_alpha );
+		if( sin_alpha < 0.0f )
+		{
+			alpha = -alpha;
+		}
+
+		if( m_rotateTo.start( 0.0f, alpha, _time, ::fabsf ) == false )
+		{
+			setRotate( getAngle() + alpha );
 			this->callEvent( EVENT_ROTATE_END, "()" );
 		}
 
@@ -250,37 +261,11 @@ namespace	Menge
 				setPosition( pos.x, pos.y );
 			}
 
-			/*if( m_rotate )
-			{
-				if( m_rotateTime <= _timing  )
-				{
-					//setLocalDirection( m_targetDir );
-					setDirection( m_targetDir );
-
-					m_rotate = false;
-
-					this->callEvent("ROTATE_END", "()" );
-				}
-				else
-				{
-					m_rotateTime -= _timing;
-
-					float t = _timing / m_rotateTime;
-
-					float angle = m_interface->getAngle();
-					mt::vec2f dir( cosf(angle), sinf(angle) );
-
-					mt::vec2f curr_dir = mt::slerp_v2_v2( dir, m_targetDir, t );
-					curr_dir = mt::norm_v2( curr_dir );
-
-					setDirection( curr_dir );
-				}
-			}*/
 			if( m_rotateTo.isStarted() )
 			{
 				float angle;
 				m_rotateTo.update( _timing, &angle );
-				setAngle( angle ); 	// "-" - wff?
+				setAngle( getAngle() + m_rotateTo.getDelta() );
 				if( m_rotateTo.isStarted() == false )
 				{
 					this->callEvent( EVENT_ROTATE_END, "()" );
@@ -325,51 +310,18 @@ namespace	Menge
 				
 				mt::vec2f way_offset = m_velocity * _timing;// + dir * m_acceleration * _timing * _timing * 0.5f;
 
-				//mt::vec2f dir = m_speed / m_speed.length();
 
 				m_velocity += m_acceleration * _timing;
 				
-				//mt::vec2f & pos = getLocalPositionModify();
-
-				//pos += way_offset;
 				translate( way_offset );
-				//pos = m_startPoint + way_offset;
-
-				//changePivot();
 			}
 		}
 
-		/*if( m_rotate )
-		{
-			if( m_rotateTime <= _timing  )
-			{
-				setLocalDirection( m_targetDir );
-
-				m_rotate = false;
-
-				this->callEvent("ROTATE_END", "()" );
-			}
-			else
-			{
-				m_rotateTime -= _timing;
-
-				float t = _timing / m_rotateTime;
-
-				const mt::vec2f & dir = getLocalDirection();
-
-				mt::vec2f curr_dir = mt::slerp_v2_v2( dir, m_targetDir, t );
-				//mt::vec2f curr_dir = m_targetDir * t + dir * ( 1.0f - t );
-				//curr_dir = mt::norm_v2( curr_dir );
-				//printf( "dir: %.4f %.4f\n", curr_dir.x, curr_dir.y );
-
-				setLocalDirection( curr_dir );
-			}
-		}*/
 		if( m_rotateTo.isStarted() )
 		{
 			float angle;
 			m_rotateTo.update( _timing, &angle );
-			setRotate( angle );
+			setRotate( getAngle() + m_rotateTo.getDelta() );
 			if( m_rotateTo.isStarted() == false )
 			{
 				this->callEvent( EVENT_ROTATE_END, "()" );

@@ -471,7 +471,7 @@ namespace Menge
 			path += ".resource";
 
 			Holder<ResourceManager>::hostage()
-				->loadResource( it->second.first, path );
+				->loadResource( it->second.first, path, it->first );
 		}
 
 

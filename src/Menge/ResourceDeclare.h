@@ -1,11 +1,14 @@
 #	pragma once
 
-#	include <string>
+#	include "Config/Typedef.h"
+
+//#	include <string>
 
 struct ResourceFactoryParam
 {
-	std::string name;
-	std::string category;
+	Menge::String name;
+	Menge::String category;
+	Menge::String group;
 };
 
 #	define RESOURCE_DECLARE(C)\

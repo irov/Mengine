@@ -163,16 +163,23 @@ namespace Menge
 		mt::vec2f b( m_gridSize, 0.0f );
 		mt::vec2f c( m_gridSize, m_gridSize );
 		mt::vec2f d( 0.0f, m_gridSize );
-		mt::mat3f wm;
-		mt::ident_m3( wm );
+		//mt::mat3f wm;
+		//mt::ident_m3( wm );
 		//int count = 0;
 		for( TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 			it != it_end;
 			it++ )
 		{
 			//if ( count == 1 ) break;
-			wm.v2.v2 = it->rect.min;
-			renderEngine->renderImage( wm, a, b, c, d, mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), 0xFFFFFFFF, it->image );
+			//wm.v2.v2 = it->rect.min;
+			mt::vec2f offset;
+			renderEngine->renderImage( a + offset,
+										b + offset,
+										c + offset,
+										d + offset,
+										mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ),
+										0xFFFFFFFF, it->image 
+										);
 			//count++;
 		}
 	}

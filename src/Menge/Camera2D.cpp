@@ -17,7 +17,7 @@ namespace	Menge
 		, m_boundLeftUpper( 512.0f, 368.0f )
 		, m_boundRightLower( 512.0f, 368.0f )
 		, m_viewMatrixUpdated( false )
-		, m_viewOrigin( 0.0f, 0.0f )
+		, m_parallax( 1.0f, 1.0f )
 	{
 		mt::ident_m4( m_viewMatrix );
 	}
@@ -87,8 +87,6 @@ namespace	Menge
 		Allocator2D::_changePivot();
 
 		updateViewport();
-		updateViewMatrix_();
-		Holder<RenderEngine>::hostage()->setViewMatrix( m_viewMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::updateViewport()
@@ -98,7 +96,14 @@ namespace	Menge
 		//m_viewport.begin = pos;
 		//m_viewport.end = pos + m_viewportSize;
 		m_viewport.begin = pos - m_viewportSize * .5;
-		m_viewport.end = pos + m_viewportSize * .5;
+		m_viewport.begin.x *= m_parallax.x;
+		m_viewport.begin.y *= m_parallax.y;
+		m_viewport.end = m_viewport.begin + m_viewportSize;
+		//m_viewport.end = pos + m_viewportSize * .5;
+
+
+		updateViewMatrix_();
+		Holder<RenderEngine>::hostage()->setViewMatrix( m_viewMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Viewport & Camera2D::getViewport() const
@@ -137,16 +142,20 @@ namespace	Menge
 	void Camera2D::updateViewMatrix_()
 	{
 		mt::ident_m4( m_viewMatrix );
-		//m_viewMatrix.m[0] = m_scale.x;
-		//m_viewMatrix.m[5] = m_scale.y;
-		m_viewMatrix.m[12] = /*m_viewOrigin.x * m_scale.x +*/ m_viewport.begin.x; // magic formula >_<
-		m_viewMatrix.m[13] =/* m_viewOrigin.y * m_scale.y +*/ m_viewport.begin.y;
+		m_viewMatrix.m[12] = m_viewport.begin.x;
+		m_viewMatrix.m[13] = m_viewport.begin.y;
 		m_viewMatrix = mt::inv_m4( m_viewMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setViewOrigin( const mt::vec2f& _origin )
+	void Camera2D::setParallax( const mt::vec2f& _parallax )
 	{
-		m_viewOrigin = _origin;
+		m_parallax = _parallax;
+		updateViewport();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& Camera2D::getParallax() const
+	{
+		return m_parallax;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

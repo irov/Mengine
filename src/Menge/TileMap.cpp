@@ -106,12 +106,16 @@ namespace	Menge
 
 				mt::vec2f offset( i * tileSize, j * tileSize );
 				mt::vec2f size( tileSize, tileSize );
+
+				mt::vec2f a,b,c,d;
+
+				mt::mul_v2_m3( a, offset, wm );
+				mt::mul_v2_m3( b, offset + mt::vec2f( size.x, 0.0f ), wm );
+				mt::mul_v2_m3( c, offset + size, wm );
+				mt::mul_v2_m3( d, offset + mt::vec2f( 0.0f, size.y ), wm );
+
 				Holder<RenderEngine>::hostage()->renderImage(
-					wm,
-					offset,
-					offset + mt::vec2f( size.x, 0.0f ),
-					offset + size,
-					offset + mt::vec2f( 0.0f, size.y ),
+					a, b, c, d,
 					tile.uv,
 					0xFFFFFFFF,
 					tile.image

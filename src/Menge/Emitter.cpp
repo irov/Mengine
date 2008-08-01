@@ -216,13 +216,13 @@ namespace	Menge
 				}
 				else
 				{
-					// terrible :(
+					mt::vec2f a, b, c, d;
+					mt::mul_v2_m3( a, mt::vec2f(p->x2, p->y2), wm );
+					mt::mul_v2_m3( b, mt::vec2f(p->x1, p->y1), wm );
+					mt::mul_v2_m3( c, mt::vec2f(p->x4, p->y4), wm );
+					mt::mul_v2_m3( d, mt::vec2f(p->x3, p->y3), wm );
 					Holder<RenderEngine>::hostage()->renderImage(
-						wm, 
-						mt::vec2f(p->x2, p->y2),
-						mt::vec2f(p->x1, p->y1),
-						mt::vec2f(p->x4, p->y4),
-						mt::vec2f(p->x3, p->y3),
+						a, b, c, d,
 						mt::vec4f(p->u0, p->v0, p->u1, p->v1),
 						p->color,
 						image,

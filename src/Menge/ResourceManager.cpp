@@ -34,10 +34,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::loadResource( const std::string & _category, const std::string & _file )
+	void ResourceManager::loadResource( const std::string & _category, const std::string & _file, const String& _group )
 	{
 		m_currentCategory = _category;
-
+		m_currentGroup = _group;
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{
@@ -91,6 +91,7 @@ namespace Menge
 		ResourceFactoryParam param;
 		param.name = _name;
 		param.category = m_currentCategory;
+		param.group = m_currentGroup;
 		return TFactoryResource::generate( _type, param );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -321,6 +322,51 @@ namespace Menge
 		}
 		fclose( file );
 	}
-	//////////////////////////////////////////////////////////////////////////
 #endif
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::directResourceFileCompile( const String& _resourceFile )
+	{
+		for( TMapResource::iterator it = m_mapResource.begin(), it_end = m_mapResource.end();
+			it != it_end;
+			it++ )
+		{
+			const ResourceFactoryParam& params = it->second->getFactoryParams();
+			if( params.group == _resourceFile )
+			{
+				getResource( params.name );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::directResourceFileRelease( const String& _resourceFile )
+	{
+		for( TMapResource::iterator it = m_mapResource.begin(), it_end = m_mapResource.end();
+			it != it_end;
+			it++ )
+		{
+			const ResourceFactoryParam& params = it->second->getFactoryParams();
+			if( params.group == _resourceFile )
+			{
+				ResourceReference* res = it->second;
+				res->decrementReference();
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::directResourceFileUnload( const String& _resourceFile )
+	{
+		for( TMapResource::iterator it = m_mapResource.begin(), it_end = m_mapResource.end();
+			it != it_end;
+			it++ )
+		{
+			const ResourceFactoryParam& params = it->second->getFactoryParams();
+			if( params.group == _resourceFile )
+			{
+				ResourceReference* res = it->second;
+				while( res->decrementReference() );
+			}
+		}
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -82,18 +82,20 @@ namespace	Menge
 				//		return;
 					}
 
-					Viewport viewport = m_viewport;
+					/*Viewport viewport = m_viewport;
 					viewport.begin += mt::vec2f( -m_size.x, 0.f );
 					viewport.end += mt::vec2f( -m_size.x, 0.f );
 					mt::vec2f vp_size = viewport.end - viewport.begin;
+*/
+					//Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( viewport.begin + vp_size * 0.5f );
+					Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
+					mt::vec2f oldPos = camera->getLocalPosition();
+					camera->setLocalPosition( oldPos + mt::vec2f( -m_size.x, 0.0f ) );
 
-					Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( viewport.begin + vp_size * 0.5f );
+					_node->_render( m_viewport, m_enableDebug );
 
-
-					_node->_render( viewport, m_enableDebug );
-
-					Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( m_viewport.begin + vp_size * 0.5f );
-
+					//Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( m_viewport.begin + vp_size * 0.5f );
+					camera->setLocalPosition( oldPos );
 				}
 
 				_node->visitChildren( this );
@@ -117,24 +119,9 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
 
-		/*mt::vec2f viewport_size = _viewport.end - _viewport.begin;
+		Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
 
-		Viewport viewport;
-
-		viewport.begin = _viewport.begin;
-
-		viewport.begin.x *= m_factorParallax.x;
-		viewport.begin.y *= m_factorParallax.y;
-
-		viewport.end = viewport.begin + viewport_size;
-
-		float c = ::floorf( viewport.begin.x / m_size.x );
-		viewport.begin.x -= m_size.x * c;
-		viewport.end.x = viewport.begin.x + viewport_size.x;
-
-		Holder<RenderEngine>::hostage()
-			->setRenderViewport( viewport );*/
-		mt::vec2f camPos = 
+		/*mt::vec2f camPos = 
 			Holder<Player>::hostage()->getRenderCamera2D()->getLocalPosition();
 
 		Viewport viewport = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
@@ -148,13 +135,23 @@ namespace	Menge
 		viewport.end.y = viewport.begin.y + viewport_size.y;
 
 		mt::vec2f plxCamPos = viewport.begin + viewport_size * 0.5f;
-		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( plxCamPos );
+		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( plxCamPos );*/
 
-		VisitorRenderLayer2DLoop visitorRender( viewport, m_size, _enableDebug );
+		mt::vec2f oldPlx = camera->getParallax();
+
+		mt::vec2f vp = camera->getViewport().begin;
+		mt::vec2f parallax;
+		parallax.x = m_factorParallax.x - ::floorf( vp.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.x;
+		parallax.y = m_factorParallax.y;
+
+		camera->setParallax( parallax );
+
+		VisitorRenderLayer2DLoop visitorRender( _viewport, m_size, _enableDebug );
 
 		visitChildren( &visitorRender );
 
-		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
+		//Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
+		camera->setParallax( oldPlx );
 
 		Holder<RenderEngine>::hostage()
 			->endLayer2D();

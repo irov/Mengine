@@ -243,6 +243,24 @@ namespace Menge
 				->directResourceUnload( _nameResource );
 		}
 
+		static void s_directResourceFileCompile( const String& _resourceFile )
+		{
+			Holder<ResourceManager>::hostage()
+				->directResourceFileCompile( _resourceFile );
+		}
+
+		static void s_directResourceFileRelease( const String& _resourceFile )
+		{
+			Holder<ResourceManager>::hostage()
+				->directResourceFileRelease( _resourceFile );
+		}
+
+		static void s_directResourceFileUnload( const String& _resourceFile )
+		{
+			Holder<ResourceManager>::hostage()
+				->directResourceFileUnload( _resourceFile );
+		}
+
 		static PyObject * createShot( const std::string& _name, mt::vec2f _min,  mt::vec2f _max )
 		{
 			int rect[4] = { (int)_min.x , (int)_min.y, (int)_max.x, (int)_max.y };
@@ -932,6 +950,9 @@ namespace Menge
 		pybind::def( "directResourceCompile", &ScriptMethod::directResourceCompile );
 		pybind::def( "directResourceRelease", &ScriptMethod::directResourceRelease );
 		pybind::def( "directResourceUnload", &ScriptMethod::directResourceUnload );
+		pybind::def( "directResourceFileCompile", &ScriptMethod::s_directResourceFileCompile );
+		pybind::def( "directResourceFileRelease", &ScriptMethod::s_directResourceFileRelease );
+		pybind::def( "directResourceFileUnload", &ScriptMethod::s_directResourceFileUnload );
 
 		pybind::def( "quitApplication", &ScriptMethod::quitApplication );
 		pybind::def( "createShot", &ScriptMethod::createShot );

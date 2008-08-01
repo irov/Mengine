@@ -137,15 +137,6 @@ void CALL HGE_Impl::Gfx_SetClipping( int x, int y, int w, int h )
 		System_Log("Error: D3D8 failed to SetViewport" );
 	}
 
-/*	float clip[4];
-	clip[0] = -1.0f;
-	clip[1] = 0.0f;
-	clip[2] = 0.0f;
-	clip[3] = x + w;
-
-	pD3DDevice->SetClipPlane( 0, clip );
-	pD3DDevice->SetRenderState( D3DRS_CLIPPLANEENABLE, D3DCLIPPLANE0 );*/
-
 	D3DXMATRIXA16 tmp;
 	D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
 	D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);

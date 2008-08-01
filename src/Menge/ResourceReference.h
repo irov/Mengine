@@ -21,6 +21,8 @@ namespace Menge
 		void setName( const std::string & _name );
 		const std::string & getName();
 
+		const ResourceFactoryParam& getFactoryParams() const;
+
 	public:
 		virtual void loader( XmlElement * _xml );
 

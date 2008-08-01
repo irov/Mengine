@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+
 #	include <map>
 #	include <string>
 #	include <list>
@@ -27,7 +29,7 @@ namespace Menge
 		~ResourceManager();
 
 	public:
-		void loadResource( const std::string & _category, const std::string & _file );
+		void loadResource( const std::string & _category, const std::string & _file, const String& _group );
 
 		ResourceReference * createResource( const std::string & _name, const std::string & _type );
 		ResourceReference * createResourceFromXml( const std::string& _xml );
@@ -47,6 +49,9 @@ namespace Menge
 		bool directResourceCompile( const std::string & _name );
 		void directResourceRelease( const std::string & _name );
 		void directResourceUnload( const std::string & _name );
+		void directResourceFileCompile( const String& _resourceFile );
+		void directResourceFileRelease( const String& _resourceFile );
+		void directResourceFileUnload( const String& _resourceFile );
 
 		void addListener( ResourceManagerListener* _listener );
 		void addListener( PyObject* _listener );
@@ -64,7 +69,8 @@ namespace Menge
 	private:
 		typedef std::map< std::string, ResourceReference * > TMapResource;
 
-		std::string m_currentCategory;		
+		String m_currentCategory;
+		String m_currentGroup;
 		TMapResource m_mapResource;
 
 		typedef std::list< ResourceManagerListener* > TListResourceManagerListener;

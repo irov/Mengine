@@ -290,13 +290,16 @@ namespace	Menge
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
 		const mt::mat3f & wm = getWorldMatrix();
+
+		mt::vec2f a,b,c,d;
+
+		mt::mul_v2_m3( a, m_offset, wm );
+		mt::mul_v2_m3( b, m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
+		mt::mul_v2_m3( c, m_offset + m_size, wm );
+		mt::mul_v2_m3( d, m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
 	
 		Holder<RenderEngine>::hostage()->renderImage(
-			wm,
-			m_offset,
-			m_offset + mt::vec2f( m_size.x, 0.0f ),
-			m_offset + m_size,
-			m_offset + mt::vec2f( 0.0f, m_size.y ),
+			a, b, c, d,
 			m_uv,
 			m_color.getAsARGB(),
 			renderImage,
@@ -329,6 +332,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_setListener()
 	{
+		Node::_setListener();
 		this->registerEvent( EVENT_COLOR_END, "onColorEnd", m_listener );
 		this->registerEvent( EVENT_COLOR_STOP, "onColorStop", m_listener );
 	}

@@ -21,10 +21,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
 		: m_interface( _interface )
-		, m_renderViewport( mt::vec2f(0.f,0.f), mt::vec2f(1024.f,768.f) )
-		, m_renderCamera(0)
+		, m_contentResolution( 1024.f,768.f )
 		, m_windowCreated( false )
 		, m_renderFactor( 1.0f )
+		, m_viewOrigin( 0.0f, 0.0f )
+		, m_viewFactor( 1.0f, 1.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -47,6 +48,8 @@ namespace Menge
 		recalcRenderArea_( _width, _height );
 	
 		setRenderTarget( "defaultCamera" );
+
+		//m_renderViewport.set( mt::vec2f::zero_v2, m_contentResolution );
 
 		return m_windowCreated;
 	}
@@ -72,19 +75,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setContentResolution( const mt::vec2f _resolution )
 	{
-		//m_interface->setContentResolution( _resolution.m );
 		m_contentResolution = _resolution;
+
+		//m_renderViewport.set( mt::vec2f::zero_v2, m_contentResolution );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderViewport( const Viewport & _viewport )
 	{
-
 		m_renderViewport = _viewport;
-		m_renderViewport.begin.x = ::floorf( m_renderViewport.begin.x + 0.5f );
-		m_renderViewport.begin.y = ::floorf( m_renderViewport.begin.y + 0.5f );
-		m_renderViewport.end.x = ::floorf( m_renderViewport.end.x + 0.5f );
-		m_renderViewport.end.y = ::floorf( m_renderViewport.end.y + 0.5f );
-
 	}
 	////////////////////////////////////////////////////////////////////////////
 	const Viewport & RenderEngine::getRenderViewport() const
@@ -92,7 +90,7 @@ namespace Menge
 		return m_renderViewport;
 	}
 	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderCamera( Camera3D * _camera )
+	/*void RenderEngine::setRenderCamera( Camera3D * _camera )
 	{
 		m_renderCamera = _camera;
 	}
@@ -100,7 +98,7 @@ namespace Menge
 	Camera3D * RenderEngine::getRenderCamera()
 	{
 		return m_renderCamera;
-	}
+	}*/
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer2D()
 	{
@@ -201,43 +199,21 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderImage(		
-			const mt::mat3f & _transform, 
-			const mt::vec2f & _a,
-			const mt::vec2f & _b,
-			const mt::vec2f & _c,
-			const mt::vec2f & _d,
+			const mt::vec2f& _a,
+			const mt::vec2f& _b,
+			const mt::vec2f& _c,
+			const mt::vec2f& _d,
 			const mt::vec4f & _uv,
 			unsigned int _color, 
 			const RenderImageInterface* _image,
 			EBlendFactor _src,
 			EBlendFactor _dst)
 	{
-		mt::mat3f transform = _transform;
-		/*transform.v2.v2 += -m_renderViewport.begin;
-		if( m_currentRenderTarget == "defaultCamera" )
-		{
-			mt::mul_m3_m3( tr, transform, m_renderTransform );
-		}*/
-		mt::mat3f tr = transform;
-
-		mt::vec2f a( tr.m[0] * _a[0] + tr.m[3] * _a[1] + tr.m[6],
-			tr.m[1] * _a[0] + tr.m[4] * _a[1] + tr.m[7] );
-		
-		mt::vec2f b( tr.m[0] * _b[0] + tr.m[3] * _b[1] + tr.m[6],
-			tr.m[1] * _b[0] + tr.m[4] * _b[1] + tr.m[7] );
-
-		mt::vec2f c( tr.m[0] * _c[0] + tr.m[3] * _c[1] + tr.m[6],
-			tr.m[1] * _c[0] + tr.m[4] * _c[1] + tr.m[7] );
-
-		mt::vec2f d( tr.m[0] * _d[0] + tr.m[3] * _d[1] + tr.m[6],
-			tr.m[1] * _d[0] + tr.m[4] * _d[1] + tr.m[7] );
-
-
 		m_interface->renderImage(
-			a.m,
-			b.m,
-			c.m,
-			d.m,
+			_a.m,
+			_b.m,
+			_c.m,
+			_d.m,
 			_uv.m,
 			_color,
 			_image,
@@ -258,15 +234,8 @@ namespace Menge
 			EBlendFactor _src,
 			EBlendFactor _dst)
 	{
-		mt::mat3f transform = _transform;
-		transform.v2.v2 += -m_renderViewport.begin;
-		mt::mat3f tr = transform;
-		if( m_currentRenderTarget == "defaultCamera" )
-		{
-			mt::mul_m3_m3( tr, transform, m_renderTransform );
-		}
 		m_interface->renderTriple(
-			tr.m,
+			_transform.m,
 			_a.m,
 			_b.m,
 			_c.m,
@@ -498,13 +467,13 @@ namespace Menge
 			{
 				renderArea = m_renderArea;
 			}
-			else
+			/*else
 			{
 				mt::box2f area;
 				mt::set_box_from_oriented_extent( area, _renderArea.v2_0, _renderArea.v2_1 - _renderArea.v2_0, m_renderTransform );
 				renderArea.v2_0 = area.min;
 				renderArea.v2_1 = area.max;
-			}
+			}*/
 		}
 		m_interface->setRenderArea( renderArea.m );
 	}
@@ -549,16 +518,10 @@ namespace Menge
 			areaHeight = m_renderArea.w - m_renderArea.y;
 		}
 
-		mt::ident_m3( m_renderTransform );
-		/*m_renderTransform[2][0] = m_renderArea.x;
-		m_renderTransform[2][1] = m_renderArea.y;
-		m_renderTransform[0][0] = areaWidth / m_contentResolution.x;
-		m_renderTransform[1][1] = areaHeight / m_contentResolution.y;*/
 		m_viewFactor.x = areaWidth / m_contentResolution.x;
 		m_viewFactor.y = areaHeight / m_contentResolution.y;
 		m_viewOrigin.x = m_renderArea.x;
 		m_viewOrigin.y = m_renderArea.y;
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTarget( const String& _target, bool _clear )
@@ -583,11 +546,6 @@ namespace Menge
 	const mt::vec4f& RenderEngine::getRenderArea() const
 	{
 		return m_renderArea;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat3f& RenderEngine::getRenderTransform() const
-	{
-		return m_renderTransform;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::recalcRenderArea_( int _width, int _height )

@@ -15,7 +15,7 @@
 namespace Menge
 {
 	class FileEngine;
-	class Camera3D;
+	//class Camera3D;
 
 	class RenderEngine
 		: public RenderSystemListener
@@ -38,8 +38,8 @@ namespace Menge
 		void setRenderViewport( const Viewport & _viewport );
 		const Viewport & getRenderViewport() const;
 
-		void setRenderCamera( Camera3D * _camera );
-		Camera3D * getRenderCamera();
+//		void setRenderCamera( Camera3D * _camera );
+//		Camera3D * getRenderCamera();
 
 		RenderImageInterface * createImage( const String & _name, unsigned int _width, unsigned int _height );
 		RenderImageInterface * createRenderTargetImage( const String & _name, unsigned int _width, unsigned int _height );
@@ -49,7 +49,6 @@ namespace Menge
 
 
 		void renderImage(		
-			const mt::mat3f & _transform, 
 			const mt::vec2f & _a,
 			const mt::vec2f & _b,
 			const mt::vec2f & _c,
@@ -130,14 +129,12 @@ namespace Menge
 		void setRenderFactor( float _factor );
 		void setRenderTarget( const String & _target, bool _clear = true );
 		const mt::vec4f& getRenderArea() const;
-		const mt::mat3f& getRenderTransform() const;
 
 		const mt::vec2f& getViewFactor() const;
 		const mt::vec2f& getViewOrigin() const;
 	protected:
 		Menge::RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;
-		Camera3D * m_renderCamera;
 		bool m_windowCreated;
 		bool m_fullscreen;
 		float m_viewportWidth;
@@ -145,7 +142,6 @@ namespace Menge
 		float m_renderFactor;
 		mt::vec2f m_contentResolution;
 		mt::vec4f m_renderArea;
-		mt::mat3f m_renderTransform;
 		float m_rendFactPix;
 		int m_windowWidth;
 		int m_windowHeight;

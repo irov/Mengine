@@ -100,21 +100,8 @@ namespace Menge
 		mt::vec2f vpSz( 1024, 768 );
 		cmr->setViewportSize( vpSz );
 		cmr->setLocalPosition( mt::vec2f( 512, 384 ) );
-		cmr->setScale( Holder<RenderEngine>::hostage()->getViewFactor() );
-		cmr->setViewOrigin( -Holder<RenderEngine>::hostage()->getViewOrigin() );
 
 		setRenderCamera2D( cmr );
-
-	/*	Camera3D * cmr3d = SceneManager::createNodeT<Camera3D>( "Camera3D" );
-		
-		cmr3d->setAspect( 1.3f );
-		cmr3d->setFar( 1000.0f );
-		cmr3d->setNear( 0.5f );
-		cmr3d->setPosition( mt::vec3f(100,100,0) );
-		cmr3d->lookAt( mt::vec3f(0,0,0) );
-
-		setRenderCamera3D( cmr3d );
-		*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )

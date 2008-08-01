@@ -3,6 +3,8 @@
 #	include <string>
 #	include <map>
 
+#	include <stdio.h>
+
 class XmlCompile
 {
 public:
@@ -10,7 +12,13 @@ public:
 
 	void compile( const std::string & _in, const std::string & _out );
 
-public:
+protected:
+	static void cbBeginElementFormat( void *userData, const char *name, const char **attr );
+	static void cbEndElementFormat( void *userData, const char *name );
+
+	static void cbBeginElementCompile( void *userData, const char *name, const char **attr );
+	static void cbEndElementCompile( void *userData, const char *name );
+
 	void beginElementFormat( const char *name, const char **attr );
 	void endElementFormat( const char *name );
 

@@ -26,7 +26,7 @@ enum
 };
 
 //////////////////////////////////////////////////////////////////////////
-static void XMLCALL cbBeginElementFormat( void *userData, const char *name, const char **attr )
+void XmlCompile::cbBeginElementFormat( void *userData, const char *name, const char **attr )
 {
 	XmlCompile * format = static_cast<XmlCompile*>(userData);
 
@@ -34,7 +34,7 @@ static void XMLCALL cbBeginElementFormat( void *userData, const char *name, cons
 }
 
 //////////////////////////////////////////////////////////////////////////
-static void XMLCALL cbEndElementFormat( void *userData, const char *name )
+void XmlCompile::cbEndElementFormat( void *userData, const char *name )
 {
 	XmlCompile * format = static_cast<XmlCompile*>(userData);
 
@@ -152,7 +152,7 @@ void XmlCompile::load( const std::string & _fileFormat )
 
 	XML_SetUserData( parser, this );
 
-	XML_SetElementHandler( parser, &cbBeginElementFormat, &cbEndElementFormat );
+	XML_SetElementHandler( parser, &XmlCompile::cbBeginElementFormat, &XmlCompile::cbEndElementFormat );
 
 	m_parserLevel = 0;
 	m_parserState = 0;
@@ -179,7 +179,7 @@ void XmlCompile::load( const std::string & _fileFormat )
 }
 
 //////////////////////////////////////////////////////////////////////////
-static void XMLCALL cbBeginElementCompile( void *userData, const char *name, const char **attr )
+void XmlCompile::cbBeginElementCompile( void *userData, const char *name, const char **attr )
 {
 	XmlCompile * format = static_cast<XmlCompile*>(userData);
 
@@ -187,7 +187,7 @@ static void XMLCALL cbBeginElementCompile( void *userData, const char *name, con
 }
 
 //////////////////////////////////////////////////////////////////////////
-static void XMLCALL cbEndElementCompile( void *userData, const char *name )
+void XmlCompile::cbEndElementCompile( void *userData, const char *name )
 {
 	XmlCompile * format = static_cast<XmlCompile*>(userData);
 
@@ -339,31 +339,31 @@ void XmlCompile::compile( const std::string & _in, const std::string & _out )
 	fseek( m_inputFile, 0, SEEK_END );
 	long size = ftell( m_inputFile );
 
-	XML_Parser m_parser = XML_ParserCreate(NULL);
+	XML_Parser parser = XML_ParserCreate(NULL);
 
-	void * body = XML_GetBuffer( m_parser, size );
+	void * body = XML_GetBuffer( parser, size );
 
 	fseek( m_inputFile, 0, SEEK_SET );
 	fread( body, 1, size, m_inputFile );
 
-	XML_SetUserData( m_parser, this );
+	XML_SetUserData( parser, this );
 
-	XML_SetElementHandler( m_parser, &cbBeginElementCompile, &cbEndElementCompile );
+	XML_SetElementHandler( parser, &XmlCompile::cbBeginElementCompile, &XmlCompile::cbEndElementCompile );
 
 	bool done = true;
 
-	XML_Status status = XML_ParseBuffer( m_parser, size, XML_TRUE );
+	XML_Status status = XML_ParseBuffer( parser, size, XML_TRUE );
 
 	if( status == XML_STATUS_ERROR )
 	{
 		fprintf(stderr,
 			"%s at line %" XML_FMT_INT_MOD "u\n",
-			XML_ErrorString(XML_GetErrorCode(m_parser)),
-			XML_GetCurrentLineNumber(m_parser)
+			XML_ErrorString(XML_GetErrorCode(parser)),
+			XML_GetCurrentLineNumber(parser)
 			);
 	}
 
-	XML_ParserReset( m_parser, NULL );
+	XML_ParserReset( parser, NULL );
 
 	fclose( m_outputFile );
 	fclose( m_inputFile );

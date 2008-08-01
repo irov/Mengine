@@ -15,11 +15,16 @@
 	<Sprite/>
 	<Animation/>
 	<TextField/>
+	<HotSpot/>
+	<Point/>
 </Define>
 
 <Tag>
+	<Scene/>
 	<Node Name = "String" Type = "Define"/>
-	<Size Value = "Float2"/>
+	<Size Value = "Float2"/>
+	<Scale Value = "Float2"/>
+	<Point Value = "Float2"/>
 	<Main Value = "Bool"/>
 
 	<ImageMap Name = "String"/>

@@ -1,97 +1,294 @@
-<Scene>
-	
-	<Node Name = "Back" Type = "Layer2D">
-		<Size Value = "1024;768"/>
+<Scene>	
+	<Node Name = "LayerAims" Type = "Layer2D">
 		<Main Value = "1"/>
-		
-		<Node Name = "BackUp" Type = "Sprite">
-			<ImageMap Name = "HUDBackgroundUp"/>
-		</Node>
-		
-		<Node Name = "BackDown" Type = "Sprite">
-			<ImageMap Name = "HUDBackgroundDown"/>
-			<Transformation Position = "0;576"/>
-		</Node>
-		
-	</Node>
-	
-	<Node Name = "MiddleTime" Type = "Layer2D">
 		<Size Value = "1024;768"/>
-		<RenderArea Value = "875;31;963;60"/>
-	</Node>
-	
-	<Node Name = "Middle" Type = "Layer2D">
-		<Size Value = "1024;768"/>
-		
-		<Node Name = "SandUp" Type = "Sprite">
-			<ImageMap Name = "HUDSandUp"/>
-			<Transformation Position = "966;9"/>
+
+		<Node Name = "Background" Type = "Sprite">
+			<ImageMap Name = "SniperBackground"/>
+			<Scale Value = "-1;1"/>
+			<Transformation Value = "1;0;0;1;1024;0"/>
+		</Node>
+
+		<Node Name = "PrizeGame" Type = "Sprite">
+			<ImageMap Name = "SniperPrizeGame"/>
+			<Scale Value = "-1;1"/>
+			<Transformation Value = "1;0;0;1;765;624"/>
+		</Node>
+
+		<Node Name = "GameOver" Type = "Sprite">
+			<ImageMap Name = "SniperGameOver"/>
+			<Scale Value = "-1;1"/>
+			<Transformation Value = "1;0;0;1;393;623"/>
+		</Node>
+
+		<Node Name = "Fire" Type = "Sprite">
+			<ImageMap Name = "SniperFire"/>
+			<Scale Value = "-1;1"/>
+			<Transformation Value = "1;0;0;1;942;625"/>
 		</Node>
 		
-		<Node Name = "SandMiddle" Type = "Animation">
-			<ImageMap Name = "HUDSandMiddle"/>
-			<Animation Name = "HUDSandMiddleAnimation"/>
-			<Looping Value = "1"/>
-			<AutoStart Value = "1"/>
-			<Transformation Position = "968;57"/>
-		</Node>
-		
-		<Node Name = "SandDown" Type = "Sprite">
-			<ImageMap Name = "HUDSandDown"/>
-			<Transformation Position = "927;71"/>
-		</Node>
-	</Node>
-	
-	<Node Name = "Front" Type = "Layer2D">
-		<Size Value = "1024;768"/>
-		
-		<Node Name = "HelpMessage" Type = "TextField">
-			<Font Name = "ArialMiddle"  />
-			<Color Value = "1;1;1;1"/>
+		<Node Name = "Aim1" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
 			<CenterAlign Value = "1"/>
-			<OutlineColor Value = "0;0;0;1"/>
-			<CharOffset Value = "-7"/>
-			<Transformation Value = "1;0;0;1;512;384"/>
 		</Node>
-		
-		<Node Name = "Timer" Type = "TextField">
-			<Font Name = "ArialMiddle"  />
-			<Color Value = "1;1;1;1"/>
+
+		<Node Name="HotSpot1" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim2" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
 			<CenterAlign Value = "1"/>
-			<OutlineColor Value = "0;0;0;1"/>
-			<CharOffset Value = "-7"/>
-			<Transformation Value = "1;0;0;1;820;38"/>
 		</Node>
-		
-		<Node Name = "TaskCaption" Type = "TextField">
-			<Font Name = "Zapf"  />
-			<Color Value = "0.000;0.059;0.161;1.000"/>
-			<Outline Value = "0"/>
-			<CharOffset Value = "-5"/>
-			<Transformation Value = "1;0;0;1;354;0"/>
+
+		<Node Name="HotSpot2" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
 		</Node>
-		
-		<Node Name = "Watches" Type = "Sprite">
-			<ImageMap Name = "HUDWatches"/>
-			<Transformation Position = "866;3"/>
-		</Node>
-		
-		<Node Name = "Compass" Type = "Sprite">
-			<ImageMap Name = "HUDCompassArrow"/>
+
+		<Node Name = "Aim3" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
 			<CenterAlign Value = "1"/>
-			<Transformation Position = "84;692"/>
-			<Transformation Direction = "0;-1"/>
 		</Node>
-		
-		<Node Name = "Hint" Type = "TextField">
-			<Font Name = "Zapf"/>
-			<Color Value = "0.000;0.059;0.161;1.000"/>
-			<Outline Value = "0"/>
-			<CharOffset Value = "-5"/>
+
+		<Node Name="HotSpot3" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim4" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
 			<CenterAlign Value = "1"/>
-			<Transformation Value = "1;0;0;1;542;650"/>
 		</Node>
-		
+
+		<Node Name="HotSpot4" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim5" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot5" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim6" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot6" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim7" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot7" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim8" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot8" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim9" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot9" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim10" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot10" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim11" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot11" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim12" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot12" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim13" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot13" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim14" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot14" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim15" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot15" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim16" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot16" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim17" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot17" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim18" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot18" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim19" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot19" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "Aim20" Type = "Sprite">
+			<ImageMap Name = "SniperAim"/>
+			<CenterAlign Value = "1"/>
+		</Node>
+
+		<Node Name="HotSpot20" Type="HotSpot">
+			<Point Value="41;40" />
+			<Point Value="59;40" />
+			<Point Value="59;59" />
+			<Point Value="41;59" />
+<!--			<Transformation Position = "-50; -50"/> -->
+		</Node>
+
+		<Node Name = "AimPoint" Type = "Point"/>
+
 	</Node>
 	
 </Scene>

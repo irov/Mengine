@@ -53,7 +53,7 @@ namespace Menge
 				return;
 			}
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-			mt::box2f nbbox = _node->getLocalBoundingBox();
+			const mt::box2f & nbbox = _node->getBoundingBox();
 			const mt::mat3f& wm = _node->getWorldMatrix();
 			mt::box2f bbox;
 			mt::set_box_from_oriented_extent( bbox, mt::vec2f( 0.0f, 0.0f ), nbbox.max - nbbox.min, wm );
@@ -64,7 +64,7 @@ namespace Menge
 			{
 				if( mt::is_intersect( bbox, it->rect ) )
 				{
-					Viewport vp = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
+					const Viewport & vp = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
 					mt::vec2f vp_size = vp.end - vp.begin;
 
 					renderEngine->setRenderTarget( it->image->getDescription(), false );
@@ -159,10 +159,16 @@ namespace Menge
 	void Layer2DAccumulator::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-		mt::vec2f a( 0.0f, 0.0f );
-		mt::vec2f b( m_gridSize, 0.0f );
-		mt::vec2f c( m_gridSize, m_gridSize );
-		mt::vec2f d( 0.0f, m_gridSize );
+	
+		mt::vec2f renderVertex[4] =
+		{
+			mt::vec2f( 0.0f, 0.0f ),
+			mt::vec2f( m_gridSize, 0.0f ),
+			mt::vec2f( m_gridSize, m_gridSize ),
+			mt::vec2f( 0.0f, m_gridSize )
+		};
+
+
 		//mt::mat3f wm;
 		//mt::ident_m3( wm );
 		//int count = 0;
@@ -172,11 +178,8 @@ namespace Menge
 		{
 			//if ( count == 1 ) break;
 			//wm.v2.v2 = it->rect.min;
-			mt::vec2f offset;
-			renderEngine->renderImage( a + offset,
-										b + offset,
-										c + offset,
-										d + offset,
+			//mt::vec2f offset;
+			renderEngine->renderImage( renderVertex,
 										mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ),
 										0xFFFFFFFF, it->image 
 										);

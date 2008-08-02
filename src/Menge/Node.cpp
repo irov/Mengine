@@ -443,8 +443,6 @@ namespace Menge
 			return false;
 		}
 
-		updateBoundingBox();
-
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -560,7 +558,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_checkVisibility( const Viewport & _viewport )
 	{
-		const mt::box2f & bbox = getWorldBoundingBox();
+		const mt::box2f & bbox = getBoundingBox();
 
 		bool result = _viewport.testRectangle( bbox.vb, bbox.ve );
 
@@ -575,11 +573,9 @@ namespace Menge
 		return embedding;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::changePivot()
+	void Node::invalidateWorldMatrix()
 	{
-		Allocator2D::changePivot();
-
-		this->updateBoundingBox();
+		Allocator2D::invalidateWorldMatrix();
 
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
@@ -587,64 +583,15 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->changePivot();
+			(*it)->invalidateWorldMatrix();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_changePivot()
+	void Node::_invalidateWorldMatrix()
 	{
-		Allocator2D::_changePivot();
+		Allocator2D::_invalidateWorldMatrix();
 
-		BoundingBox::changeBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::box2f & Node::getWorldBoundingBox()
-	{
-		if( isChangeBoundingBox() == true )
-		{
-			_updateBoundingBox( m_localBoundingBox );
-		}
-
-		if( m_children.empty() )
-		{
-			m_changeBoundingBox = false;
-			return BoundingBox::getLocalBoundingBox();
-		}
-
-		if( isChangeBoundingBox() == false )
-		{
-			return BoundingBox::getWorldBoundingBox();
-		}
-
-		m_worldBoundingBox = m_localBoundingBox;
-
-		for( TContainerChildren::iterator
-			it = m_children.begin(),
-			it_end = m_children.end();
-		it != it_end;
-		++it)
-		{
-			const mt::box2f & bbox = (*it)->getWorldBoundingBox();
-
-			BoundingBox::mergeBoundingBox( bbox );
-		}
-
-		m_changeBoundingBox = false;
-
-		return BoundingBox::getWorldBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_changeBoundingBox() 
-	{
-		if( m_changeBoundingBox == false )
-		{
-			m_changeBoundingBox = true;
-
-			if( Node * parent = this->getParent() )
-			{
-				parent->_changeBoundingBox();
-			}
-		}
+		BoundingBox::invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & Node::getWorldMatrix()
@@ -654,7 +601,7 @@ namespace Menge
 			return Allocator2D::getLocalMatrix();
 		}
 
-		if( isChangePivot() == false )
+		if( isInvalidateWorldMatrix() == false )
 		{
 			return Allocator2D::getWorldMatrix();
 		}

@@ -35,10 +35,7 @@ public:
 	void releaseImageVideoStream( Menge::RenderVideoStreamInterface* _image ) override;
 
 	void renderImage(		
-		const float * _a,
-		const float * _b,
-		const float * _c,
-		const float * _d,
+		const float * _renderVertex,
 		const float * _uv,
 		unsigned int _color, 
 		const Menge::RenderImageInterface * _image,

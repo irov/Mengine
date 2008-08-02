@@ -10,27 +10,17 @@ namespace Menge
 		BoundingBox();
 
 	public:
-		const mt::box2f & getLocalBoundingBox() const;
-		void setLocalBoundingBox( const mt::box2f & _box );
+		const mt::box2f & getBoundingBox();
 
-		const mt::box2f & getWorldBoundingBox() const;		
-
-		bool isChangeBoundingBox() const;
-		void changeBoundingBox();
-
-		void mergeBoundingBox( const mt::box2f & _bbox );
-		void clearWorldBoundingBox();
-		void commitWorldBoundingBox();
-
-		void updateBoundingBox();
+		bool isInvalidateBoundingBox() const;
+		void invalidateBoundingBox();
 
 	protected:
-		virtual void _updateBoundingBox( mt::box2f & _localBoundingBox );
-		virtual void _changeBoundingBox();
+		virtual void _updateBoundingBox( mt::box2f & _boundingBox );
+		virtual void _invalidateBoundingBox();
 
 	protected:
-		mt::box2f m_localBoundingBox;
-		mt::box2f m_worldBoundingBox;
-		bool m_changeBoundingBox;
+		mt::box2f m_boundingBox;
+		bool m_invalidateBoundingBox;
 	};
 }

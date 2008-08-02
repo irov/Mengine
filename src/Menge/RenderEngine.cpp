@@ -199,10 +199,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderImage(		
-			const mt::vec2f& _a,
-			const mt::vec2f& _b,
-			const mt::vec2f& _c,
-			const mt::vec2f& _d,
+			const mt::vec2f * _renderVertex,
 			const mt::vec4f & _uv,
 			unsigned int _color, 
 			const RenderImageInterface* _image,
@@ -210,10 +207,7 @@ namespace Menge
 			EBlendFactor _dst)
 	{
 		m_interface->renderImage(
-			_a.m,
-			_b.m,
-			_c.m,
-			_d.m,
+			_renderVertex->m,
 			_uv.m,
 			_color,
 			_image,

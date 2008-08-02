@@ -4,61 +4,39 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	BoundingBox::BoundingBox()
+		: m_invalidateBoundingBox(true)
 	{
-		mt::reset( m_localBoundingBox, 0.f, 0.f );
-		mt::reset( m_worldBoundingBox, 0.f, 0.f );
+		mt::reset( m_boundingBox, 0.f, 0.f );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::box2f & BoundingBox::getLocalBoundingBox() const
+	const mt::box2f & BoundingBox::getBoundingBox()
 	{
-		return m_localBoundingBox;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BoundingBox::setLocalBoundingBox( const mt::box2f & _box )
-	{
-		m_localBoundingBox = _box;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::box2f & BoundingBox::getWorldBoundingBox() const
-	{
-		return m_worldBoundingBox;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool BoundingBox::isChangeBoundingBox() const
-	{
-		return m_changeBoundingBox;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BoundingBox::changeBoundingBox()
-	{
-		m_changeBoundingBox = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BoundingBox::mergeBoundingBox( const mt::box2f & _bbox )
-	{
-		mt::merge_box( m_worldBoundingBox, _bbox );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BoundingBox::_changeBoundingBox() 
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BoundingBox::clearWorldBoundingBox()
-	{
-		_updateBoundingBox( m_localBoundingBox );
+		if( isInvalidateBoundingBox() == true )
+		{
+			_updateBoundingBox( m_boundingBox );
 
-		m_worldBoundingBox = m_localBoundingBox;
-		m_changeBoundingBox = false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BoundingBox::updateBoundingBox()
-	{
-		//_updateBoundingBox( m_localBoundingBox );
+			m_invalidateBoundingBox = false;
+		}
 
-		_changeBoundingBox();
+		return m_boundingBox;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BoundingBox::_updateBoundingBox( mt::box2f & _localBoundingBox )
+	bool BoundingBox::isInvalidateBoundingBox() const
+	{
+		return m_invalidateBoundingBox;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BoundingBox::invalidateBoundingBox()
+	{
+		m_invalidateBoundingBox = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BoundingBox::_invalidateBoundingBox() 
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BoundingBox::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
 		//Empty
 	}

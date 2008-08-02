@@ -49,10 +49,7 @@ namespace Menge
 
 
 		void renderImage(		
-			const mt::vec2f & _a,
-			const mt::vec2f & _b,
-			const mt::vec2f & _c,
-			const mt::vec2f & _d,
+			const mt::vec2f * _renderVertex,
 			const mt::vec4f & _uv,
 			unsigned int _color, 
 			const RenderImageInterface* _image,

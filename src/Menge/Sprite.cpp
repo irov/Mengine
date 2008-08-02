@@ -35,6 +35,7 @@ namespace	Menge
 	, m_flipY( false )
 	, m_blendSrc( BF_SOURCE_ALPHA )
 	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
+	, m_invalidateRenderVertex(true)
 	{ }
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -238,8 +239,8 @@ namespace	Menge
 			std::swap( m_uv.y, m_uv.w );
 		}
 
-		setLocalBoundingBox( mt::box2f( m_offset, m_offset + m_size ) );
-		updateBoundingBox();
+		invalidateBoundingBox();
+		invalidateRenderVertex();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::colorTo( const ColourValue & _color, float _time )
@@ -277,34 +278,54 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f * Sprite::getRenderVertex()
+	{
+		if( m_invalidateRenderVertex == true )
+		{
+			const mt::mat3f & wm = getWorldMatrix();
+
+			mt::mul_v2_m3( m_renderVertex[0], m_offset, wm );
+			mt::mul_v2_m3( m_renderVertex[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
+			mt::mul_v2_m3( m_renderVertex[2], m_offset + m_size, wm );
+			mt::mul_v2_m3( m_renderVertex[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
+		}
+
+		return m_renderVertex;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::invalidateRenderVertex()
+	{
+		m_invalidateRenderVertex = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Sprite::isInvalidateRenderVertex() const
+	{
+		return m_invalidateRenderVertex;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( const Viewport & _viewport, bool _enableDebug )
 	{
 		if( m_resource == NULL )
 		{
-			MENGE_SCRIPT_BREACK( "Sprite %s: Image resource not getting '%s'"
+			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
 				, getName().c_str()
 				, m_resourceName.c_str()
 				);
+
+			return;
 		}
 
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
-		const mt::mat3f & wm = getWorldMatrix();
+		const mt::vec2f * renderVertex = getRenderVertex();
 
-		mt::vec2f a,b,c,d;
-
-		mt::mul_v2_m3( a, m_offset, wm );
-		mt::mul_v2_m3( b, m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
-		mt::mul_v2_m3( c, m_offset + m_size, wm );
-		mt::mul_v2_m3( d, m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
-	
 		Holder<RenderEngine>::hostage()->renderImage(
-			a, b, c, d,
+			renderVertex,
 			m_uv,
 			m_color.getAsARGB(),
 			renderImage,
 			m_blendSrc,
-			m_blendDest 
+			m_blendDest
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -330,11 +351,22 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Sprite::_invalidateWorldMatrix()
+	{
+		Node::_invalidateWorldMatrix();
+		invalidateRenderVertex();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_setListener()
 	{
 		Node::_setListener();
 		this->registerEvent( EVENT_COLOR_END, "onColorEnd", m_listener );
 		this->registerEvent( EVENT_COLOR_STOP, "onColorStop", m_listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )
+	{
+		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Sprite::getImageSize()

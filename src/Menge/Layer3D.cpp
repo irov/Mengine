@@ -182,7 +182,7 @@ namespace	Menge
 
 		visitChildren( &visitorRender );
 
-		Holder<Player>::hostage()->getRenderCamera2D()->changePivot();
+		Holder<Player>::hostage()->getRenderCamera2D()->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

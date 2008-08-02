@@ -246,10 +246,7 @@ void HGERenderSystem::releaseImageVideoStream( Menge::RenderVideoStreamInterface
 
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::renderImage(const float * _a, 
-								  const float * _b, 
-								  const float * _c, 
-								  const float * _d, 
+void HGERenderSystem::renderImage(const float * _renderVertex, 
 								  const float * _uv, 
 								  unsigned int _color,  
 								  const Menge::RenderImageInterface * _image, 
@@ -258,23 +255,23 @@ void HGERenderSystem::renderImage(const float * _a,
 {
 	hgeQuad quad;
 
-	quad.v[0].x = _a[0];
-	quad.v[0].y = _a[1];
+	quad.v[0].x = _renderVertex[0];
+	quad.v[0].y = _renderVertex[1];
 	quad.v[0].z = m_layer;
 	quad.v[0].col = _color;
 
-	quad.v[1].x = _b[0];
-	quad.v[1].y = _b[1];
+	quad.v[1].x = _renderVertex[2];
+	quad.v[1].y = _renderVertex[3];
 	quad.v[1].z = m_layer;
 	quad.v[1].col = _color;
 
-	quad.v[2].x = _c[0];
-	quad.v[2].y = _c[1];
+	quad.v[2].x = _renderVertex[4];
+	quad.v[2].y = _renderVertex[5];
 	quad.v[2].z = m_layer;
 	quad.v[2].col = _color;
 
-	quad.v[3].x = _d[0];
-	quad.v[3].y = _d[1];
+	quad.v[3].x = _renderVertex[6];
+	quad.v[3].y = _renderVertex[7];
 	quad.v[3].z = m_layer;
 	quad.v[3].col = _color;
 

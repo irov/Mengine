@@ -19,7 +19,7 @@ namespace Menge
 		~Camera2D();
 
 	public:
-		const Viewport & getViewport() const;
+		const Viewport & getViewport();
 
 	public:
 		void setViewportSize( const mt::vec2f & _size );
@@ -39,13 +39,21 @@ namespace Menge
 	protected:
 		bool _activate() override;
 		void _update( float _timing ) override;
-		void _changePivot() override;
+		void _invalidateWorldMatrix() override;
 
 	protected:
-		virtual void updateViewport();
+		void updateViewport();
+		void invalidateViewport();
+		bool isInvalidateViewport() const;
+
+	private:
+		void updateViewMatrix();
+		void invalidateViewMatrix();
+		bool isInvalidateViewMatrix() const;
 
 	protected:
 		Viewport m_viewport;
+		bool m_invalidateViewport;
 
 		mt::vec2f m_viewportSize;
 
@@ -55,9 +63,8 @@ namespace Menge
 		mt::vec2f m_boundLeftUpper;
 		mt::vec2f m_boundRightLower;
 
-		bool m_viewMatrixUpdated;
 		mt::mat4f m_viewMatrix;
-		void updateViewMatrix_();
+		bool m_invalidateViewMatrix;
 
 		mt::vec2f m_parallax;
 	};

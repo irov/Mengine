@@ -13,8 +13,8 @@ namespace Menge
 		virtual ~Node2D(){};
 
 	public:
-		void changePivot();
-		void _changePivot() override;
+		void invalidateWorldMatrix();
+		void _invalidateWorldMatrix() override;
 
 		const mt::mat3f & getWorldMatrix();
 		const mt::vec2f & getWorldPosition();

@@ -6,7 +6,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Allocator2D::Allocator2D()
-		: m_changePivot( true )
+		: m_invalidateWorldMatrix( true )
 		, m_fixedRotation( false )
 		, m_origin( 0.0f, 0.0f )
 		, m_position( 0.0f, 0.0f )
@@ -17,19 +17,19 @@ namespace Menge
 		mt::ident_m3( m_worldMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::changePivot()
+	void Allocator2D::invalidateWorldMatrix()
 	{
-		_changePivot();
+		_invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Allocator2D::_changePivot()
+	void Allocator2D::_invalidateWorldMatrix()
 	{
-		m_changePivot = true;
+		m_invalidateWorldMatrix = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Allocator2D::isChangePivot()const
+	bool Allocator2D::isInvalidateWorldMatrix()const
 	{
-		return m_changePivot;
+		return m_invalidateWorldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	/*const mt::vec2f & Allocator2D::getWorldPosition()
@@ -63,7 +63,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & Allocator2D::getLocalMatrix()
 	{
-		if( m_changePivot )
+		if( m_invalidateWorldMatrix )
 		{
 			updateLocalMatrix_();
 		}
@@ -75,20 +75,20 @@ namespace Menge
 	{
 		m_position = _matrix.v2.v2;
 
-		changePivot();
+		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::setLocalPosition( const mt::vec2f & _position )
 	{
 		m_position = _position;
-		changePivot();
+		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::setLocalDirection( const mt::vec2f & _direction )
 	{
 		m_direction = mt::norm_safe_v2( _direction );
 
-		changePivot();
+		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::setRotate( float _alpha )
@@ -99,14 +99,14 @@ namespace Menge
 		m_direction[0] = cos_alpha;
 		m_direction[1] = sin_alpha;
 
-		changePivot();
+		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::translate( const mt::vec2f & _delta )
 	{
 		m_position += _delta;
 
-		changePivot();
+		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & Allocator2D::updateWorldMatrix( const mt::mat3f & _parentMatrix )
@@ -125,7 +125,7 @@ namespace Menge
 
 		_updateMatrix( _parentMatrix );
 
-		m_changePivot = false;
+		m_invalidateWorldMatrix = false;
 
 		return m_worldMatrix;
 	}
@@ -179,13 +179,13 @@ namespace Menge
 	void Allocator2D::setOrigin( const mt::vec2f& _origin )
 	{
 		m_origin = _origin;
-		changePivot();
+		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::setScale( const mt::vec2f& _scale )
 	{
 		m_scale = _scale;
-		changePivot();
+		invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Allocator2D::getOrigin() const

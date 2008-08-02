@@ -11,25 +11,23 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node2D::changePivot()
+	void Node2D::invalidateWorldMatrix()
 	{
-		Allocator2D::changePivot();
+		Allocator2D::invalidateWorldMatrix();
 
-		this->updateBoundingBox();
-	
 		for( TContainerChildren::iterator
 				it = m_children.begin(),
 				it_end = m_children.end();
 				it != it_end;
 			++it)
 		{
-			static_cast<Node2D*>( (*it) )->changePivot();
+			static_cast<Node2D*>( (*it) )->invalidateWorldMatrix();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node2D::_changePivot()
+	void Node2D::_invalidateWorldMatrix()
 	{
-		Allocator2D::_changePivot();
+		Allocator2D::_invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Node2D::getScreenPosition()

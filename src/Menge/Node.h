@@ -49,10 +49,10 @@ namespace Menge
 	public:
 		void setLayer( Layer2D * _layer );
 		Layer2D * getLayer() const;
-	public:
-		void changePivot();
 
-		void _changePivot() override;
+	public:
+		void invalidateWorldMatrix();
+		void _invalidateWorldMatrix() override;
 
 	protected:
 		Layer2D * m_layer;
@@ -155,10 +155,6 @@ namespace Menge
 		virtual void _update( float _timing );
 
 	public:
-		const mt::box2f & getWorldBoundingBox();
-
-		void _changeBoundingBox() override;
-
 		void moveTo( float _time, const mt::vec2f& _point );
 		void moveToStop();
 

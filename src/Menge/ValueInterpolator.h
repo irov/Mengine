@@ -58,7 +58,10 @@ namespace Menge
 			return false;
 		}
 
-		bool isStarted() const	{ return m_started; }
+		bool isStarted() const	
+		{ 
+			return m_started; 
+		}
 
 		const T& getDelta() const
 		{

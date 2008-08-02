@@ -47,7 +47,7 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
-				const mt::box2f & sprite_bbox = _node->getWorldBoundingBox();
+				const mt::box2f & sprite_bbox = _node->getBoundingBox();
 
 				//if( m_viewport.end.x < sprite_bbox.vb.x ) 
 				{

@@ -40,11 +40,11 @@ namespace Menge
 		void loader( XmlElement * _xml );
 
 	public:
-		virtual void changePivot();
-		bool isChangePivot()const;
+		virtual void invalidateWorldMatrix();
+		bool isInvalidateWorldMatrix()const;
 
 	protected:
-		virtual void _changePivot();
+		virtual void _invalidateWorldMatrix();
 		virtual void _updateMatrix( const mt::mat3f & _parentMatrix );
 
 	protected:
@@ -58,6 +58,6 @@ namespace Menge
 		void updateLocalMatrix_();
 
 		bool m_fixedRotation;
-		bool m_changePivot;
+		bool m_invalidateWorldMatrix;
 	};
 }

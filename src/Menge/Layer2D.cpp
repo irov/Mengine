@@ -86,7 +86,6 @@ namespace	Menge
 
 				_node->visitChildren( this );
 			}
-
 		}
 
 		void visit( Layer * _layer )

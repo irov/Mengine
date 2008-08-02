@@ -55,7 +55,7 @@ void b2PulleyJointDef::Initialize(b2Body* b1, b2Body* b2,
 	b2Vec2 d2 = anchor2 - ga2;
 	length2 = d2.Length();
 	ratio = r;
-	b2Assert(ratio > FLOAT32_EPSILON);
+	b2Assert(ratio > B2_FLT_EPSILON);
 	float32 C = length1 + ratio * length2;
 	maxLength1 = C - ratio * b2_minPulleyLength;
 	maxLength2 = (C - b2_minPulleyLength) / ratio;
@@ -78,9 +78,9 @@ b2PulleyJoint::b2PulleyJoint(const b2PulleyJointDef* def)
 	m_maxLength1 = b2Min(def->maxLength1, m_constant - m_ratio * b2_minPulleyLength);
 	m_maxLength2 = b2Min(def->maxLength2, (m_constant - b2_minPulleyLength) / m_ratio);
 
-	m_force = 0.0f;
-	m_limitForce1 = 0.0f;
-	m_limitForce2 = 0.0f;
+	m_impulse = 0.0f;
+	m_limitImpulse1 = 0.0f;
+	m_limitImpulse2 = 0.0f;
 }
 
 void b2PulleyJoint::InitVelocityConstraints(const b2TimeStep& step)
@@ -126,34 +126,31 @@ void b2PulleyJoint::InitVelocityConstraints(const b2TimeStep& step)
 	if (C > 0.0f)
 	{
 		m_state = e_inactiveLimit;
-		m_force = 0.0f;
+		m_impulse = 0.0f;
 	}
 	else
 	{
 		m_state = e_atUpperLimit;
-		m_positionImpulse = 0.0f;
 	}
 
 	if (length1 < m_maxLength1)
 	{
 		m_limitState1 = e_inactiveLimit;
-		m_limitForce1 = 0.0f;
+		m_limitImpulse1 = 0.0f;
 	}
 	else
 	{
 		m_limitState1 = e_atUpperLimit;
-		m_limitPositionImpulse1 = 0.0f;
 	}
 
 	if (length2 < m_maxLength2)
 	{
 		m_limitState2 = e_inactiveLimit;
-		m_limitForce2 = 0.0f;
+		m_limitImpulse2 = 0.0f;
 	}
 	else
 	{
 		m_limitState2 = e_atUpperLimit;
-		m_limitPositionImpulse2 = 0.0f;
 	}
 
 	// Compute effective mass.
@@ -163,18 +160,23 @@ void b2PulleyJoint::InitVelocityConstraints(const b2TimeStep& step)
 	m_limitMass1 = b1->m_invMass + b1->m_invI * cr1u1 * cr1u1;
 	m_limitMass2 = b2->m_invMass + b2->m_invI * cr2u2 * cr2u2;
 	m_pulleyMass = m_limitMass1 + m_ratio * m_ratio * m_limitMass2;
-	b2Assert(m_limitMass1 > FLOAT32_EPSILON);
-	b2Assert(m_limitMass2 > FLOAT32_EPSILON);
-	b2Assert(m_pulleyMass > FLOAT32_EPSILON);
+	b2Assert(m_limitMass1 > B2_FLT_EPSILON);
+	b2Assert(m_limitMass2 > B2_FLT_EPSILON);
+	b2Assert(m_pulleyMass > B2_FLT_EPSILON);
 	m_limitMass1 = 1.0f / m_limitMass1;
 	m_limitMass2 = 1.0f / m_limitMass2;
 	m_pulleyMass = 1.0f / m_pulleyMass;
 
 	if (step.warmStarting)
 	{
+		// Scale impulses to support variable time steps.
+		m_impulse *= step.dtRatio;
+		m_limitImpulse1 *= step.dtRatio;
+		m_limitImpulse2 *= step.dtRatio;
+
 		// Warm starting.
-		b2Vec2 P1 = B2FORCE_SCALE(step.dt) * (-m_force - m_limitForce1) * m_u1;
-		b2Vec2 P2 = B2FORCE_SCALE(step.dt) * (-m_ratio * m_force - m_limitForce2) * m_u2;
+		b2Vec2 P1 = -(m_impulse + m_limitImpulse1) * m_u1;
+		b2Vec2 P2 = (-m_ratio * m_impulse - m_limitImpulse2) * m_u2;
 		b1->m_linearVelocity += b1->m_invMass * P1;
 		b1->m_angularVelocity += b1->m_invI * b2Cross(r1, P1);
 		b2->m_linearVelocity += b2->m_invMass * P2;
@@ -182,14 +184,16 @@ void b2PulleyJoint::InitVelocityConstraints(const b2TimeStep& step)
 	}
 	else
 	{
-		m_force = 0.0f;
-		m_limitForce1 = 0.0f;
-		m_limitForce2 = 0.0f;
+		m_impulse = 0.0f;
+		m_limitImpulse1 = 0.0f;
+		m_limitImpulse2 = 0.0f;
 	}
 }
 
 void b2PulleyJoint::SolveVelocityConstraints(const b2TimeStep& step)
 {
+	B2_NOT_USED(step);
+
 	b2Body* b1 = m_body1;
 	b2Body* b2 = m_body2;
 
@@ -202,13 +206,13 @@ void b2PulleyJoint::SolveVelocityConstraints(const b2TimeStep& step)
 		b2Vec2 v2 = b2->m_linearVelocity + b2Cross(b2->m_angularVelocity, r2);
 
 		float32 Cdot = -b2Dot(m_u1, v1) - m_ratio * b2Dot(m_u2, v2);
-		float32 force = -B2FORCE_INV_SCALE(step.inv_dt) * m_pulleyMass * Cdot;
-		float32 oldForce = m_force;
-		m_force = b2Max(0.0f, m_force + force);
-		force = m_force - oldForce;
+		float32 impulse = m_pulleyMass * (-Cdot);
+		float32 oldImpulse = m_impulse;
+		m_impulse = b2Max(0.0f, m_impulse + impulse);
+		impulse = m_impulse - oldImpulse;
 
-		b2Vec2 P1 = -B2FORCE_SCALE(step.dt) * force * m_u1;
-		b2Vec2 P2 = -B2FORCE_SCALE(step.dt) * m_ratio * force * m_u2;
+		b2Vec2 P1 = -impulse * m_u1;
+		b2Vec2 P2 = -m_ratio * impulse * m_u2;
 		b1->m_linearVelocity += b1->m_invMass * P1;
 		b1->m_angularVelocity += b1->m_invI * b2Cross(r1, P1);
 		b2->m_linearVelocity += b2->m_invMass * P2;
@@ -220,12 +224,12 @@ void b2PulleyJoint::SolveVelocityConstraints(const b2TimeStep& step)
 		b2Vec2 v1 = b1->m_linearVelocity + b2Cross(b1->m_angularVelocity, r1);
 
 		float32 Cdot = -b2Dot(m_u1, v1);
-		float32 force = -B2FORCE_INV_SCALE(step.inv_dt) * m_limitMass1 * Cdot;
-		float32 oldForce = m_limitForce1;
-		m_limitForce1 = b2Max(0.0f, m_limitForce1 + force);
-		force = m_limitForce1 - oldForce;
+		float32 impulse = -m_limitMass1 * Cdot;
+		float32 oldImpulse = m_limitImpulse1;
+		m_limitImpulse1 = b2Max(0.0f, m_limitImpulse1 + impulse);
+		impulse = m_limitImpulse1 - oldImpulse;
 
-		b2Vec2 P1 = -B2FORCE_SCALE(step.dt) * force * m_u1;
+		b2Vec2 P1 = -impulse * m_u1;
 		b1->m_linearVelocity += b1->m_invMass * P1;
 		b1->m_angularVelocity += b1->m_invI * b2Cross(r1, P1);
 	}
@@ -235,19 +239,21 @@ void b2PulleyJoint::SolveVelocityConstraints(const b2TimeStep& step)
 		b2Vec2 v2 = b2->m_linearVelocity + b2Cross(b2->m_angularVelocity, r2);
 
 		float32 Cdot = -b2Dot(m_u2, v2);
-		float32 force = -B2FORCE_INV_SCALE(step.inv_dt) * m_limitMass2 * Cdot;
-		float32 oldForce = m_limitForce2;
-		m_limitForce2 = b2Max(0.0f, m_limitForce2 + force);
-		force = m_limitForce2 - oldForce;
+		float32 impulse = -m_limitMass2 * Cdot;
+		float32 oldImpulse = m_limitImpulse2;
+		m_limitImpulse2 = b2Max(0.0f, m_limitImpulse2 + impulse);
+		impulse = m_limitImpulse2 - oldImpulse;
 
-		b2Vec2 P2 = -B2FORCE_SCALE(step.dt) * force * m_u2;
+		b2Vec2 P2 = -impulse * m_u2;
 		b2->m_linearVelocity += b2->m_invMass * P2;
 		b2->m_angularVelocity += b2->m_invI * b2Cross(r2, P2);
 	}
 }
 
-bool b2PulleyJoint::SolvePositionConstraints()
+bool b2PulleyJoint::SolvePositionConstraints(float32 baumgarte)
 {
+	B2_NOT_USED(baumgarte);
+
 	b2Body* b1 = m_body1;
 	b2Body* b2 = m_body2;
 
@@ -294,9 +300,6 @@ bool b2PulleyJoint::SolvePositionConstraints()
 
 		C = b2Clamp(C + b2_linearSlop, -b2_maxLinearCorrection, 0.0f);
 		float32 impulse = -m_pulleyMass * C;
-		float32 oldImpulse = m_positionImpulse;
-		m_positionImpulse = b2Max(0.0f, m_positionImpulse + impulse);
-		impulse = m_positionImpulse - oldImpulse;
 
 		b2Vec2 P1 = -impulse * m_u1;
 		b2Vec2 P2 = -m_ratio * impulse * m_u2;
@@ -331,9 +334,6 @@ bool b2PulleyJoint::SolvePositionConstraints()
 		linearError = b2Max(linearError, -C);
 		C = b2Clamp(C + b2_linearSlop, -b2_maxLinearCorrection, 0.0f);
 		float32 impulse = -m_limitMass1 * C;
-		float32 oldLimitPositionImpulse = m_limitPositionImpulse1;
-		m_limitPositionImpulse1 = b2Max(0.0f, m_limitPositionImpulse1 + impulse);
-		impulse = m_limitPositionImpulse1 - oldLimitPositionImpulse;
 
 		b2Vec2 P1 = -impulse * m_u1;
 		b1->m_sweep.c += b1->m_invMass * P1;
@@ -363,9 +363,6 @@ bool b2PulleyJoint::SolvePositionConstraints()
 		linearError = b2Max(linearError, -C);
 		C = b2Clamp(C + b2_linearSlop, -b2_maxLinearCorrection, 0.0f);
 		float32 impulse = -m_limitMass2 * C;
-		float32 oldLimitPositionImpulse = m_limitPositionImpulse2;
-		m_limitPositionImpulse2 = b2Max(0.0f, m_limitPositionImpulse2 + impulse);
-		impulse = m_limitPositionImpulse2 - oldLimitPositionImpulse;
 
 		b2Vec2 P2 = -impulse * m_u2;
 		b2->m_sweep.c += b2->m_invMass * P2;
@@ -387,14 +384,15 @@ b2Vec2 b2PulleyJoint::GetAnchor2() const
 	return m_body2->GetWorldPoint(m_localAnchor2);
 }
 
-b2Vec2 b2PulleyJoint::GetReactionForce() const
+b2Vec2 b2PulleyJoint::GetReactionForce(float32 inv_dt) const
 {
-	b2Vec2 F = B2FORCE_SCALE(m_force) * m_u2;
-	return F;
+	b2Vec2 P = m_impulse * m_u2;
+	return inv_dt * P;
 }
 
-float32 b2PulleyJoint::GetReactionTorque() const
+float32 b2PulleyJoint::GetReactionTorque(float32 inv_dt) const
 {
+	B2_NOT_USED(inv_dt);
 	return 0.0f;
 }
 

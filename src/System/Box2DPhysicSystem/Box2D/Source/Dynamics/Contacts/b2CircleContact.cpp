@@ -22,6 +22,7 @@
 #include "../../Common/b2BlockAllocator.h"
 
 #include <new>
+#include <cstring>
 
 b2Contact* b2CircleContact::Create(b2Shape* shape1, b2Shape* shape2, b2BlockAllocator* allocator)
 {
@@ -38,8 +39,8 @@ void b2CircleContact::Destroy(b2Contact* contact, b2BlockAllocator* allocator)
 b2CircleContact::b2CircleContact(b2Shape* s1, b2Shape* s2)
 : b2Contact(s1, s2)
 {
-	b2Assert(m_shape1->m_type == e_circleShape);
-	b2Assert(m_shape2->m_type == e_circleShape);
+	b2Assert(m_shape1->GetType() == e_circleShape);
+	b2Assert(m_shape2->GetType() == e_circleShape);
 	m_manifold.pointCount = 0;
 	m_manifold.points[0].normalImpulse = 0.0f;
 	m_manifold.points[0].tangentImpulse = 0.0f;
@@ -47,8 +48,8 @@ b2CircleContact::b2CircleContact(b2Shape* s1, b2Shape* s2)
 
 void b2CircleContact::Evaluate(b2ContactListener* listener)
 {
-	b2Body* b1 = m_shape1->m_body;
-	b2Body* b2 = m_shape2->m_body;
+	b2Body* b1 = m_shape1->GetBody();
+	b2Body* b2 = m_shape2->GetBody();
 
 	b2Manifold m0;
 	memcpy(&m0, &m_manifold, sizeof(b2Manifold));

@@ -89,8 +89,8 @@ public:
 	b2Vec2 GetAnchor1() const;
 	b2Vec2 GetAnchor2() const;
 
-	b2Vec2 GetReactionForce() const;
-	float32 GetReactionTorque() const;
+	b2Vec2 GetReactionForce(float32 inv_dt) const;
+	float32 GetReactionTorque(float32 inv_dt) const;
 
 	/// Get the current joint translation, usually in meters.
 	float32 GetJointTranslation() const;
@@ -137,7 +137,7 @@ public:
 
 	void InitVelocityConstraints(const b2TimeStep& step);
 	void SolveVelocityConstraints(const b2TimeStep& step);
-	bool SolvePositionConstraints();
+	bool SolvePositionConstraints(float32 baumgarte);
 
 	b2Vec2 m_localAnchor1;
 	b2Vec2 m_localAnchor2;
@@ -145,18 +145,15 @@ public:
 	b2Vec2 m_localYAxis1;
 	float32 m_refAngle;
 
-	b2Jacobian m_linearJacobian;
-	float32 m_linearMass;				// effective mass for point-to-line constraint.
-	float32 m_force;
-	
-	float32 m_angularMass;			// effective mass for angular constraint.
-	float32 m_torque;
+	b2Vec2 m_axis, m_perp;
+	float32 m_s1, m_s2;
+	float32 m_a1, m_a2;
 
-	b2Jacobian m_motorJacobian;
+	b2Mat33 m_K;
+	b2Vec3 m_impulse;
+
 	float32 m_motorMass;			// effective mass for motor/limit translational constraint.
-	float32 m_motorForce;
-	float32 m_limitForce;
-	float32 m_limitPositionImpulse;
+	float32 m_motorImpulse;
 
 	float32 m_lowerTranslation;
 	float32 m_upperTranslation;

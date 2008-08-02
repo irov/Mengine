@@ -36,7 +36,6 @@ struct b2ContactConstraintPoint
 	b2Vec2 r2;
 	float32 normalImpulse;
 	float32 tangentImpulse;
-	float32 positionImpulse;
 	float32 normalMass;
 	float32 tangentMass;
 	float32 equalizedMass;
@@ -48,6 +47,8 @@ struct b2ContactConstraint
 {
 	b2ContactConstraintPoint points[b2_maxManifoldPoints];
 	b2Vec2 normal;
+	b2Mat22 normalMass;
+	b2Mat22 K;
 	b2Manifold* manifold;
 	b2Body* body1;
 	b2Body* body2;

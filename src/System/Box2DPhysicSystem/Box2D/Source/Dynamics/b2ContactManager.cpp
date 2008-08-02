@@ -35,7 +35,7 @@ void* b2ContactManager::PairAdded(void* proxyUserData1, void* proxyUserData2)
 		return &m_nullContact;
 	}
 
-	if (shape1->m_body == shape2->m_body)
+	if (shape1->GetBody() == shape2->GetBody())
 	{
 		return &m_nullContact;
 	}

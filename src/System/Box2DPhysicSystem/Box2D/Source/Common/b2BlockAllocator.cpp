@@ -21,6 +21,8 @@
 #include <memory>
 #include <climits>
 
+#include <cstring>
+
 int32 b2BlockAllocator::s_blockSizes[b2_blockSizes] = 
 {
 	16,		// 0

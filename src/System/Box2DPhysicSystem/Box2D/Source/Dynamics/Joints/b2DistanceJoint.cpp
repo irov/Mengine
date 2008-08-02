@@ -58,13 +58,10 @@ b2DistanceJoint::b2DistanceJoint(const b2DistanceJointDef* def)
 	m_impulse = 0.0f;
 	m_gamma = 0.0f;
 	m_bias = 0.0f;
-	m_inv_dt = 0.0f;
 }
 
 void b2DistanceJoint::InitVelocityConstraints(const b2TimeStep& step)
 {
-	m_inv_dt = step.inv_dt;
-
 	b2Body* b1 = m_body1;
 	b2Body* b2 = m_body2;
 
@@ -87,7 +84,7 @@ void b2DistanceJoint::InitVelocityConstraints(const b2TimeStep& step)
 	float32 cr1u = b2Cross(r1, m_u);
 	float32 cr2u = b2Cross(r2, m_u);
 	float32 invMass = b1->m_invMass + b1->m_invI * cr1u * cr1u + b2->m_invMass + b2->m_invI * cr2u * cr2u;
-	b2Assert(invMass > FLOAT32_EPSILON);
+	b2Assert(invMass > B2_FLT_EPSILON);
 	m_mass = 1.0f / invMass;
 
 	if (m_frequencyHz > 0.0f)
@@ -112,7 +109,9 @@ void b2DistanceJoint::InitVelocityConstraints(const b2TimeStep& step)
 
 	if (step.warmStarting)
 	{
+		// Scale the impulse to support a variable time step.
 		m_impulse *= step.dtRatio;
+
 		b2Vec2 P = m_impulse * m_u;
 		b1->m_linearVelocity -= b1->m_invMass * P;
 		b1->m_angularVelocity -= b1->m_invI * b2Cross(r1, P);
@@ -150,10 +149,13 @@ void b2DistanceJoint::SolveVelocityConstraints(const b2TimeStep& step)
 	b2->m_angularVelocity += b2->m_invI * b2Cross(r2, P);
 }
 
-bool b2DistanceJoint::SolvePositionConstraints()
+bool b2DistanceJoint::SolvePositionConstraints(float32 baumgarte)
 {
+	B2_NOT_USED(baumgarte);
+
 	if (m_frequencyHz > 0.0f)
 	{
+		// There is no position correction for soft distance constraints.
 		return true;
 	}
 
@@ -194,13 +196,14 @@ b2Vec2 b2DistanceJoint::GetAnchor2() const
 	return m_body2->GetWorldPoint(m_localAnchor2);
 }
 
-b2Vec2 b2DistanceJoint::GetReactionForce() const
+b2Vec2 b2DistanceJoint::GetReactionForce(float32 inv_dt) const
 {
-	b2Vec2 F = (m_inv_dt * m_impulse) * m_u;
+	b2Vec2 F = (inv_dt * m_impulse) * m_u;
 	return F;
 }
 
-float32 b2DistanceJoint::GetReactionTorque() const
+float32 b2DistanceJoint::GetReactionTorque(float32 inv_dt) const
 {
+	B2_NOT_USED(inv_dt);
 	return 0.0f;
 }

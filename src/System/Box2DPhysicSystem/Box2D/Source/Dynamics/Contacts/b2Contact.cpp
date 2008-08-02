@@ -63,8 +63,8 @@ b2Contact* b2Contact::Create(b2Shape* shape1, b2Shape* shape2, b2BlockAllocator*
 		s_initialized = true;
 	}
 
-	b2ShapeType type1 = shape1->m_type;
-	b2ShapeType type2 = shape2->m_type;
+	b2ShapeType type1 = shape1->GetType();
+	b2ShapeType type2 = shape2->GetType();
 
 	b2Assert(e_unknownShape < type1 && type1 < e_shapeTypeCount);
 	b2Assert(e_unknownShape < type2 && type2 < e_shapeTypeCount);
@@ -127,8 +127,8 @@ b2Contact::b2Contact(b2Shape* s1, b2Shape* s2)
 
 	m_manifoldCount = 0;
 
-	m_friction = sqrtf(m_shape1->m_friction * m_shape2->m_friction);
-	m_restitution = b2Max(m_shape1->m_restitution, m_shape2->m_restitution);
+	m_friction = b2MixFriction(m_shape1->GetFriction(), m_shape2->GetFriction());
+	m_restitution = b2MixRestitution(m_shape1->GetRestitution(), m_shape2->GetRestitution());
 	m_prev = NULL;
 	m_next = NULL;
 

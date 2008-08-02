@@ -40,9 +40,9 @@ struct b2TimeStep
 	float32 dt;			// time step
 	float32 inv_dt;		// inverse time step (0 if dt == 0).
 	float32 dtRatio;	// dt * inv_dt0
-	int32 maxIterations;
+	int32 velocityIterations;
+	int32 positionIterations;
 	bool warmStarting;
-	bool positionCorrection;
 };
 
 /// The world class manages all physics entities, dynamic simulation,
@@ -78,15 +78,10 @@ public:
 	/// consume draw commands when you call Step().
 	void SetDebugDraw(b2DebugDraw* debugDraw);
 
-	/// Create a static rigid body given a definition. No reference to the definition
+	/// Create a rigid body given a definition. No reference to the definition
 	/// is retained.
 	/// @warning This function is locked during callbacks.
-	b2Body* CreateStaticBody(const b2BodyDef* def);
-
-	/// Create a dynamic rigid body given a definition. No reference to the definition
-	/// is retained.
-	/// @warning This function is locked during callbacks.
-	b2Body* CreateDynamicBody(const b2BodyDef* def);
+	b2Body* CreateBody(const b2BodyDef* def);
 
 	/// Destroy a rigid body given a definition. No reference to the definition
 	/// is retained. This function is locked during callbacks.
@@ -110,8 +105,9 @@ public:
 	/// Take a time step. This performs collision detection, integration,
 	/// and constraint solution.
 	/// @param timeStep the amount of time to simulate, this should not vary.
-	/// @param iterations the number of iterations to be used by the constraint solver.
-	void Step(float32 timeStep, int32 iterations);
+	/// @param velocityIterations for the velocity constraint solver.
+	/// @param positionIterations for the position constraint solver.
+	void Step(float32 timeStep, int32 velocityIterations, int32 positionIterations);
 
 	/// Query the world for all shapes that potentially overlap the
 	/// provided AABB. You provide a shape pointer buffer of specified
@@ -121,6 +117,9 @@ public:
 	/// @param maxCount the capacity of the shapes array.
 	/// @return the number of shapes found in aabb.
 	int32 Query(const b2AABB& aabb, b2Shape** shapes, int32 maxCount);
+	
+	/// Check if the AABB is within the broadphase limits.
+	bool InRange(const b2AABB& aabb) const;
 
 	/// Get the world body list. With the returned body, use b2Body::GetNext to get
 	/// the next body in the world list. A NULL body indicates the end of the list.
@@ -132,27 +131,39 @@ public:
 	/// @return the head of the world joint list.
 	b2Joint* GetJointList();
 
+	/// Re-filter a shape. This re-runs contact filtering on a shape.
+	void Refilter(b2Shape* shape);
+
+	/// Enable/disable warm starting. For testing.
 	void SetWarmStarting(bool flag) { m_warmStarting = flag; }
 
-	void SetPositionCorrection(bool flag) { m_positionCorrection = flag; }
-
+	/// Enable/disable continuous physics. For testing.
 	void SetContinuousPhysics(bool flag) { m_continuousPhysics = flag; }
 
+	/// Perform validation of internal data structures.
 	void Validate();
 
+	/// Get the number of broad-phase proxies.
 	int32 GetProxyCount() const;
 
+	/// Get the number of broad-phase pairs.
 	int32 GetPairCount() const;
 
+	/// Get the number of bodies.
 	int32 GetBodyCount() const;
 
+	/// Get the number joints.
 	int32 GetJointCount() const;
 
+	/// Get the number of contacts (each may have 0 or more contact points).
 	int32 GetContactCount() const;
 
+	/// Change the global gravity vector.
 	void SetGravity(const b2Vec2& gravity);
+	
+	/// Get the global gravity vector.
+	b2Vec2 GetGravity() const;
 
-	//--------------- Internals Below -------------------
 private:
 
 	friend class b2Body;
@@ -194,12 +205,9 @@ private:
 	b2ContactListener* m_contactListener;
 	b2DebugDraw* m_debugDraw;
 
+	// This is used to compute the time step ratio to
+	// support a variable time step.
 	float32 m_inv_dt0;
-
-	int32 m_positionIterationCount;
-
-	// This is for debugging the solver.
-	bool m_positionCorrection;
 
 	// This is for debugging the solver.
 	bool m_warmStarting;
@@ -241,6 +249,11 @@ inline int32 b2World::GetContactCount() const
 inline void b2World::SetGravity(const b2Vec2& gravity)
 {
 	m_gravity = gravity;
+}
+
+inline b2Vec2 b2World::GetGravity() const
+{
+	return m_gravity;
 }
 
 #endif

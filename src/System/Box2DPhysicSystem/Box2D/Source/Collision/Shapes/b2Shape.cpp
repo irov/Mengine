@@ -49,7 +49,7 @@ b2Shape* b2Shape::Create(const b2ShapeDef* def, b2BlockAllocator* allocator)
 
 void b2Shape::Destroy(b2Shape* s, b2BlockAllocator* allocator)
 {
-	switch (s->m_type)
+	switch (s->GetType())
 	{
 	case e_circleShape:
 		s->~b2Shape();
@@ -79,9 +79,7 @@ b2Shape::b2Shape(const b2ShapeDef* def)
 
 	m_proxyId = b2_nullProxy;
 
-	m_categoryBits = def->categoryBits;
-	m_maskBits = def->maskBits;
-	m_groupIndex = def->groupIndex;
+	m_filter = def->filter;
 
 	m_isSensor = def->isSensor;
 }
@@ -144,7 +142,7 @@ bool b2Shape::Synchronize(b2BroadPhase* broadPhase, const b2XForm& transform1, c
 	}
 }
 
-void b2Shape::ResetProxy(b2BroadPhase* broadPhase, const b2XForm& transform)
+void b2Shape::RefilterProxy(b2BroadPhase* broadPhase, const b2XForm& transform)
 {
 	if (m_proxyId == b2_nullProxy)
 	{	

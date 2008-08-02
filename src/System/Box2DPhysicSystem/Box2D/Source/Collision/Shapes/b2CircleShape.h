@@ -66,7 +66,9 @@ public:
 	/// Get the radius of this circle.
 	float32 GetRadius() const;
 
-	//--------------- Internals Below -------------------
+private:
+
+	friend class b2Shape;
 
 	b2CircleShape(const b2ShapeDef* def);
 

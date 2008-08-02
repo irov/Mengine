@@ -32,7 +32,6 @@ struct b2MouseJointDef : public b2JointDef
 		maxForce = 0.0f;
 		frequencyHz = 5.0f;
 		dampingRatio = 0.7f;
-		timeStep = 1.0f / 60.0f;
 	}
 
 	/// The initial world target point. This is assumed
@@ -49,9 +48,6 @@ struct b2MouseJointDef : public b2JointDef
 
 	/// The damping ratio. 0 = no damping, 1 = critical damping.
 	float32 dampingRatio;
-
-	/// The time step used in the simulation.
-	float32 timeStep;
 };
 
 /// A mouse joint is used to make a point on a body track a
@@ -69,10 +65,10 @@ public:
 	b2Vec2 GetAnchor2() const;
 
 	/// Implements b2Joint.
-	b2Vec2 GetReactionForce() const;
+	b2Vec2 GetReactionForce(float32 inv_dt) const;
 
 	/// Implements b2Joint.
-	float32 GetReactionTorque() const;
+	float32 GetReactionTorque(float32 inv_dt) const;
 
 	/// Use this to update the target point.
 	void SetTarget(const b2Vec2& target);
@@ -83,10 +79,7 @@ public:
 
 	void InitVelocityConstraints(const b2TimeStep& step);
 	void SolveVelocityConstraints(const b2TimeStep& step);
-	bool SolvePositionConstraints()
-	{
-		return true;
-	}
+	bool SolvePositionConstraints(float32 baumgarte) { B2_NOT_USED(baumgarte); return true; }
 
 	b2Vec2 m_localAnchor;
 	b2Vec2 m_target;
@@ -95,8 +88,10 @@ public:
 	b2Mat22 m_mass;		// effective mass for point-to-point constraint.
 	b2Vec2 m_C;				// position error
 	float32 m_maxForce;
-	float32 m_beta;			// bias factor
-	float32 m_gamma;		// softness
+	float32 m_frequencyHz;
+	float32 m_dampingRatio;
+	float32 m_beta;
+	float32 m_gamma;
 };
 
 #endif

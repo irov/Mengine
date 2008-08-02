@@ -34,7 +34,7 @@ static int32 ProcessTwo(b2Vec2* x1, b2Vec2* x2, b2Vec2* p1s, b2Vec2* p2s, b2Vec2
 	b2Vec2 d = points[0] - points[1];
 	float32 length = d.Normalize();
 	float32 lambda = b2Dot(r, d);
-	if (lambda <= 0.0f || length < FLOAT32_EPSILON)
+	if (lambda <= 0.0f || length < B2_FLT_EPSILON)
 	{
 		// The simplex is reduced to a point.
 		*x1 = p1s[1];
@@ -147,7 +147,7 @@ static int32 ProcessThree(b2Vec2* x1, b2Vec2* x2, b2Vec2* p1s, b2Vec2* p2s, b2Ve
 
 static bool InPoints(const b2Vec2& w, const b2Vec2* points, int32 pointCount)
 {
-	const float32 k_tolerance = 100.0f * FLOAT32_EPSILON;
+	const float32 k_tolerance = 100.0f * B2_FLT_EPSILON;
 	for (int32 i = 0; i < pointCount; ++i)
 	{
 		b2Vec2 d = b2Abs(w - points[i]);
@@ -230,16 +230,16 @@ float32 DistanceGeneric(b2Vec2* x1, b2Vec2* x2,
 			return 0.0f;
 		}
 
-		float32 maxSqr = -FLOAT32_MAX;
+		float32 maxSqr = -B2_FLT_MAX;
 		for (int32 i = 0; i < pointCount; ++i)
 		{
 			maxSqr = b2Max(maxSqr, b2Dot(points[i], points[i]));
 		}
 
 #ifdef TARGET_FLOAT32_IS_FIXED
-		if (pointCount == 3 || vSqr <= 5.0*FLOAT32_EPSILON * maxSqr)
+		if (pointCount == 3 || vSqr <= 5.0*B2_FLT_EPSILON * maxSqr)
 #else
-		if (pointCount == 3 || vSqr <= 100.0f * FLOAT32_EPSILON * maxSqr)
+		if (pointCount == 3 || vSqr <= 100.0f * B2_FLT_EPSILON * maxSqr)
 #endif
 		{
 			g_GJK_Iterations = iter;
@@ -258,13 +258,13 @@ static float32 DistanceCC(
 	const b2CircleShape* circle1, const b2XForm& xf1,
 	const b2CircleShape* circle2, const b2XForm& xf2)
 {
-	b2Vec2 p1 = b2Mul(xf1, circle1->m_localPosition);
-	b2Vec2 p2 = b2Mul(xf2, circle2->m_localPosition);
+	b2Vec2 p1 = b2Mul(xf1, circle1->GetLocalPosition());
+	b2Vec2 p2 = b2Mul(xf2, circle2->GetLocalPosition());
 
 	b2Vec2 d = p2 - p1;
 	float32 dSqr = b2Dot(d, d);
-	float32 r1 = circle1->m_radius - b2_toiSlop;
-	float32 r2 = circle2->m_radius - b2_toiSlop;
+	float32 r1 = circle1->GetRadius() - b2_toiSlop;
+	float32 r2 = circle2->GetRadius() - b2_toiSlop;
 	float32 r = r1 + r2;
 	if (dSqr > r * r)
 	{
@@ -274,7 +274,7 @@ static float32 DistanceCC(
 		*x2 = p2 - r2 * d;
 		return distance;
 	}
-	else if (dSqr > FLOAT32_EPSILON * FLOAT32_EPSILON)
+	else if (dSqr > B2_FLT_EPSILON * B2_FLT_EPSILON)
 	{
 		d.Normalize();
 		*x1 = p1 + r1 * d;
@@ -311,7 +311,7 @@ static float32 DistancePC(
 	const b2CircleShape* circle, const b2XForm& xf2)
 {
 	Point point;
-	point.p = b2Mul(xf2, circle->m_localPosition);
+	point.p = b2Mul(xf2, circle->GetLocalPosition());
 
 	float32 distance = DistanceGeneric(x1, x2, polygon, xf1, &point, b2XForm_identity);
 

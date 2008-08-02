@@ -92,18 +92,18 @@ public:
 
 	/// Called when a contact point is added. This includes the geometry
 	/// and the forces.
-	virtual void Add(b2ContactPoint* point) { B2_NOT_USED(point); }
+	virtual void Add(const b2ContactPoint* point) { B2_NOT_USED(point); }
 
 	/// Called when a contact point persists. This includes the geometry
 	/// and the forces.
-	virtual void Persist(b2ContactPoint* point) { B2_NOT_USED(point); }
+	virtual void Persist(const b2ContactPoint* point) { B2_NOT_USED(point); }
 
 	/// Called when a contact point is removed. This includes the last
 	/// computed geometry and forces.
-	virtual void Remove(b2ContactPoint* point) { B2_NOT_USED(point); }
+	virtual void Remove(const b2ContactPoint* point) { B2_NOT_USED(point); }
 
 	/// Called after a contact point is solved.
-	virtual void Result(b2ContactResult* result) { B2_NOT_USED(result); }
+	virtual void Result(const b2ContactResult* point) { B2_NOT_USED(point); }
 };
 
 /// Color for debug drawing. Each value has the range [0,1].

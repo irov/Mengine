@@ -21,10 +21,9 @@
 #include "Joints/b2Joint.h"
 #include "../Collision/Shapes/b2Shape.h"
 
-b2Body::b2Body(const b2BodyDef* bd, uint16 type, b2World* world)
+b2Body::b2Body(const b2BodyDef* bd, b2World* world)
 {
 	b2Assert(world->m_lock == false);
-	b2Assert(type < e_maxTypes);
 
 	m_flags = 0;
 
@@ -44,8 +43,6 @@ b2Body::b2Body(const b2BodyDef* bd, uint16 type, b2World* world)
 	{
 		m_flags |= e_sleepFlag;
 	}
-
-	m_type = type;
 
 	m_world = world;
 
@@ -73,23 +70,18 @@ b2Body::b2Body(const b2BodyDef* bd, uint16 type, b2World* world)
 
 	m_sleepTime = 0.0f;
 
-	m_mass = 0.0f;
 	m_invMass = 0.0f;
 	m_I = 0.0f;
 	m_invI = 0.0f;
 
-	if (m_type == e_dynamicType)
-	{
-		m_mass = bd->massData.mass;
-	}
+	m_mass = bd->massData.mass;
 
 	if (m_mass > 0.0f)
 	{
 		m_invMass = 1.0f / m_mass;
 	}
 
-	if ((m_flags & b2Body::e_fixedRotationFlag) == 0 &&
-		m_type == e_dynamicType)
+	if ((m_flags & b2Body::e_fixedRotationFlag) == 0)
 	{
 		m_I = bd->massData.I;
 	}
@@ -97,6 +89,15 @@ b2Body::b2Body(const b2BodyDef* bd, uint16 type, b2World* world)
 	if (m_I > 0.0f)
 	{
 		m_invI = 1.0f / m_I;
+	}
+
+	if (m_invMass == 0.0f && m_invI == 0.0f)
+	{
+		m_type = e_staticType;
+	}
+	else
+	{
+		m_type = e_dynamicType;
 	}
 
 	m_userData = bd->userData;
@@ -146,7 +147,7 @@ void b2Body::DestroyShape(b2Shape* s)
 		return;
 	}
 
-	b2Assert(s->m_body == this);
+	b2Assert(s->GetBody() == this);
 	s->DestroyProxy(m_world->m_broadPhase);
 
 	b2Assert(m_shapeCount > 0);
@@ -184,12 +185,6 @@ void b2Body::SetMass(const b2MassData* massData)
 		return;
 	}
 
-	if (m_type == e_staticType)
-	{
-		return;
-	}
-
-	m_mass = 0.0f;
 	m_invMass = 0.0f;
 	m_I = 0.0f;
 	m_invI = 0.0f;
@@ -220,6 +215,25 @@ void b2Body::SetMass(const b2MassData* massData)
 	{
 		s->UpdateSweepRadius(m_sweep.localCenter);
 	}
+
+	int16 oldType = m_type;
+	if (m_invMass == 0.0f && m_invI == 0.0f)
+	{
+		m_type = e_staticType;
+	}
+	else
+	{
+		m_type = e_dynamicType;
+	}
+
+	// If the body type changed, we need to refilter the broad-phase proxies.
+	if (oldType != m_type)
+	{
+		for (b2Shape* s = m_shapeList; s; s = s->m_next)
+		{
+			s->RefilterProxy(m_world->m_broadPhase, m_xf);
+		}
+	}
 }
 
 // TODO_ERIN adjust linear velocity and torque to account for movement of center.
@@ -227,11 +241,6 @@ void b2Body::SetMassFromShapes()
 {
 	b2Assert(m_world->m_lock == false);
 	if (m_world->m_lock == true)
-	{
-		return;
-	}
-
-	if (m_type == e_staticType)
 	{
 		return;
 	}
@@ -258,11 +267,6 @@ void b2Body::SetMassFromShapes()
 		m_invMass = 1.0f / m_mass;
 		center *= m_invMass;
 	}
-	else
-	{
-		m_invMass = 0.0f;
-		m_invI = 0.0f;
-	}
 
 	if (m_I > 0.0f && (m_flags & e_fixedRotationFlag) == 0)
 	{
@@ -285,6 +289,25 @@ void b2Body::SetMassFromShapes()
 	for (b2Shape* s = m_shapeList; s; s = s->m_next)
 	{
 		s->UpdateSweepRadius(m_sweep.localCenter);
+	}
+
+	int16 oldType = m_type;
+	if (m_invMass == 0.0f && m_invI == 0.0f)
+	{
+		m_type = e_staticType;
+	}
+	else
+	{
+		m_type = e_dynamicType;
+	}
+
+	// If the body type changed, we need to refilter the broad-phase proxies.
+	if (oldType != m_type)
+	{
+		for (b2Shape* s = m_shapeList; s; s = s->m_next)
+		{
+			s->RefilterProxy(m_world->m_broadPhase, m_xf);
+		}
 	}
 }
 

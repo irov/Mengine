@@ -93,8 +93,8 @@ public:
 	b2Vec2 GetAnchor1() const;
 	b2Vec2 GetAnchor2() const;
 
-	b2Vec2 GetReactionForce() const;
-	float32 GetReactionTorque() const;
+	b2Vec2 GetReactionForce(float32 inv_dt) const;
+	float32 GetReactionTorque(float32 inv_dt) const;
 
 	/// Get the current joint angle in radians.
 	float32 GetJointAngle() const;
@@ -141,16 +141,14 @@ public:
 	void InitVelocityConstraints(const b2TimeStep& step);
 	void SolveVelocityConstraints(const b2TimeStep& step);
 
-	bool SolvePositionConstraints();
+	bool SolvePositionConstraints(float32 baumgarte);
 
 	b2Vec2 m_localAnchor1;	// relative
 	b2Vec2 m_localAnchor2;
-	b2Vec2 m_pivotForce;
-	float32 m_motorForce;
-	float32 m_limitForce;
-	float32 m_limitPositionImpulse;
+	b2Vec3 m_impulse;
+	float32 m_motorImpulse;
 
-	b2Mat22 m_pivotMass;		// effective mass for point-to-point constraint.
+	b2Mat33 m_mass;		// effective mass for point-to-point constraint.
 	float32 m_motorMass;	// effective mass for motor/limit angular constraint.
 	
 	bool m_enableMotor;
@@ -162,6 +160,10 @@ public:
 	float32 m_lowerAngle;
 	float32 m_upperAngle;
 	b2LimitState m_limitState;
+	
+#ifdef B2_TOI_JOINTS
+	b2Vec2 m_lastWarmStartingPivotForce;
+#endif
 };
 
 inline float32 b2RevoluteJoint::GetMotorSpeed() const

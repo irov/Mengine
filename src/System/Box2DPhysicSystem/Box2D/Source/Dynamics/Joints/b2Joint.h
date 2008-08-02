@@ -120,16 +120,19 @@ public:
 	virtual b2Vec2 GetAnchor2() const = 0;
 
 	/// Get the reaction force on body2 at the joint anchor.
-	virtual b2Vec2 GetReactionForce() const = 0;
+	virtual b2Vec2 GetReactionForce(float32 inv_dt) const = 0;
 
 	/// Get the reaction torque on body2.
-	virtual float32 GetReactionTorque() const = 0;
+	virtual float32 GetReactionTorque(float32 inv_dt) const = 0;
 
 	/// Get the next joint the world joint list.
 	b2Joint* GetNext();
 
 	/// Get the user data pointer.
 	void* GetUserData();
+
+	/// Set the user data pointer.
+	void SetUserData(void* data);
 
 	//--------------- Internals Below -------------------
 protected:
@@ -147,8 +150,9 @@ protected:
 	virtual void SolveVelocityConstraints(const b2TimeStep& step) = 0;
 
 	// This returns true if the position errors are within tolerance.
-	virtual void InitPositionConstraints() {}
-	virtual bool SolvePositionConstraints() = 0;
+	virtual bool SolvePositionConstraints(float32 baumgarte) = 0;
+
+	void ComputeXForm(b2XForm* xf, const b2Vec2& center, const b2Vec2& localCenter, float32 angle) const;
 
 	b2JointType m_type;
 	b2Joint* m_prev;
@@ -158,12 +162,15 @@ protected:
 	b2Body* m_body1;
 	b2Body* m_body2;
 
-	float32 m_inv_dt;
-
 	bool m_islandFlag;
 	bool m_collideConnected;
 
 	void* m_userData;
+
+	// Cache here per time step to reduce cache misses.
+	b2Vec2 m_localCenter1, m_localCenter2;
+	float32 m_invMass1, m_invI1;
+	float32 m_invMass2, m_invI2;
 };
 
 inline void b2Jacobian::SetZero()
@@ -206,6 +213,17 @@ inline b2Joint* b2Joint::GetNext()
 inline void* b2Joint::GetUserData()
 {
 	return m_userData;
+}
+
+inline void b2Joint::SetUserData(void* data)
+{
+	m_userData = data;
+}
+
+inline void b2Joint::ComputeXForm(b2XForm* xf, const b2Vec2& center, const b2Vec2& localCenter, float32 angle) const
+{
+	xf->R.Set(angle);
+	xf->position = center - b2Mul(xf->R, localCenter);
 }
 
 #endif

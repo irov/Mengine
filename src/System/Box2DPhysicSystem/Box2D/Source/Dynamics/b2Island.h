@@ -20,14 +20,26 @@
 #define B2_ISLAND_H
 
 #include "../Common/b2Math.h"
+#include "b2Body.h"
 
 class b2Contact;
-class b2Body;
 class b2Joint;
 class b2StackAllocator;
 class b2ContactListener;
 struct b2ContactConstraint;
 struct b2TimeStep;
+
+struct b2Position
+{
+	b2Vec2 x;
+	float32 a;
+};
+
+struct b2Velocity
+{
+	b2Vec2 v;
+	float32 w;
+};
 
 class b2Island
 {
@@ -43,13 +55,14 @@ public:
 		m_jointCount = 0;
 	}
 
-	void Solve(const b2TimeStep& step, const b2Vec2& gravity, bool correctPositions, bool allowSleep);
+	void Solve(const b2TimeStep& step, const b2Vec2& gravity, bool allowSleep);
 
-	void SolveTOI(const b2TimeStep& subStep);
+	void SolveTOI(b2TimeStep& subStep);
 
 	void Add(b2Body* body)
 	{
 		b2Assert(m_bodyCount < m_bodyCapacity);
+		body->m_islandIndex = m_bodyCount;
 		m_bodies[m_bodyCount++] = body;
 	}
 
@@ -73,6 +86,9 @@ public:
 	b2Body** m_bodies;
 	b2Contact** m_contacts;
 	b2Joint** m_joints;
+
+	b2Position* m_positions;
+	b2Velocity* m_velocities;
 
 	int32 m_bodyCount;
 	int32 m_jointCount;

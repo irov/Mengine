@@ -71,7 +71,7 @@ bool b2CircleShape::TestSegment(const b2XForm& transform,
 	float32 sigma = c * c - rr * b;
 
 	// Check for negative discriminant and short segment.
-	if (sigma < 0.0f || rr < FLOAT32_EPSILON)
+	if (sigma < 0.0f || rr < B2_FLT_EPSILON)
 	{
 		return false;
 	}

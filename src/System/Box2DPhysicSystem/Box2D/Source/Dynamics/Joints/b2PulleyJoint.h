@@ -89,8 +89,8 @@ public:
 	b2Vec2 GetAnchor1() const;
 	b2Vec2 GetAnchor2() const;
 
-	b2Vec2 GetReactionForce() const;
-	float32 GetReactionTorque() const;
+	b2Vec2 GetReactionForce(float32 inv_dt) const;
+	float32 GetReactionTorque(float32 inv_dt) const;
 
 	/// Get the first ground anchor.
 	b2Vec2 GetGroundAnchor1() const;
@@ -113,7 +113,7 @@ public:
 
 	void InitVelocityConstraints(const b2TimeStep& step);
 	void SolveVelocityConstraints(const b2TimeStep& step);
-	bool SolvePositionConstraints();
+	bool SolvePositionConstraints(float32 baumgarte);
 
 	b2Body* m_ground;
 	b2Vec2 m_groundAnchor1;
@@ -136,14 +136,9 @@ public:
 	float32 m_limitMass2;
 
 	// Impulses for accumulation/warm starting.
-	float32 m_force;
-	float32 m_limitForce1;
-	float32 m_limitForce2;
-
-	// Position impulses for accumulation.
-	float32 m_positionImpulse;
-	float32 m_limitPositionImpulse1;
-	float32 m_limitPositionImpulse2;
+	float32 m_impulse;
+	float32 m_limitImpulse1;
+	float32 m_limitImpulse2;
 
 	b2LimitState m_state;
 	b2LimitState m_limitState1;

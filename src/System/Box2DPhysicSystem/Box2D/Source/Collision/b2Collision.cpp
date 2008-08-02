@@ -40,7 +40,7 @@ bool b2Segment::TestSegment(float32* lambda, b2Vec2* normal, const b2Segment& se
 	b2Vec2 d = p2 - p1;
 	b2Vec2 n = b2Cross(d, 1.0f);
 
-	const float32 k_slop = 100.0f * FLOAT32_EPSILON;
+	const float32 k_slop = 100.0f * B2_FLT_EPSILON;
 	float32 denom = -b2Dot(r, n);
 
 	// Cull back facing collision and ignore parallel segments.

@@ -93,15 +93,26 @@ public:
 	/// computations.
 	const b2Vec2* GetCoreVertices() const;
 
-	//--------------- Internals Below -------------------
-	
+	/// Get the edge normal vectors. There is one for each vertex.
+	const b2Vec2* GetNormals() const;
+
+	/// Get the first vertex and apply the supplied transform.
+	b2Vec2 GetFirstVertex(const b2XForm& xf) const;
+
+	/// Get the centroid and apply the supplied transform.
+	b2Vec2 Centroid(const b2XForm& xf) const;
+
+	/// Get the support point in the given world direction.
+	/// Use the supplied transform.
+	b2Vec2 Support(const b2XForm& xf, const b2Vec2& d) const;
+
+private:
+
+	friend class b2Shape;
+
 	b2PolygonShape(const b2ShapeDef* def);
 
 	void UpdateSweepRadius(const b2Vec2& center);
-
-	b2Vec2 GetFirstVertex(const b2XForm& xf) const;
-	b2Vec2 Centroid(const b2XForm& xf) const;
-	b2Vec2 Support(const b2XForm& xf, const b2Vec2& d) const;
 
 	// Local position of the polygon centroid.
 	b2Vec2 m_centroid;
@@ -142,6 +153,11 @@ inline const b2Vec2* b2PolygonShape::GetVertices() const
 inline const b2Vec2* b2PolygonShape::GetCoreVertices() const
 {
 	return m_coreVertices;
+}
+
+inline const b2Vec2* b2PolygonShape::GetNormals() const
+{
+	return m_normals;
 }
 
 #endif

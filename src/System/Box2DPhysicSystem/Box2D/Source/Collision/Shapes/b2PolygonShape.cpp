@@ -82,7 +82,7 @@ static b2Vec2 ComputeCentroid(const b2Vec2* vs, int32 count)
 	}
 
 	// Centroid
-	b2Assert(area > FLOAT32_EPSILON);
+	b2Assert(area > B2_FLT_EPSILON);
 	c *= 1.0f / area;
 	return c;
 }
@@ -98,17 +98,17 @@ static void ComputeOBB(b2OBB* obb, const b2Vec2* vs, int32 count)
 	}
 	p[count] = p[0];
 
-	float32 minArea = FLOAT32_MAX;
+	float32 minArea = B2_FLT_MAX;
 	
 	for (int32 i = 1; i <= count; ++i)
 	{
 		b2Vec2 root = p[i-1];
 		b2Vec2 ux = p[i] - root;
 		float32 length = ux.Normalize();
-		b2Assert(length > FLOAT32_EPSILON);
+		b2Assert(length > B2_FLT_EPSILON);
 		b2Vec2 uy(-ux.y, ux.x);
-		b2Vec2 lower(FLOAT32_MAX, FLOAT32_MAX);
-		b2Vec2 upper(-FLOAT32_MAX, -FLOAT32_MAX);
+		b2Vec2 lower(B2_FLT_MAX, B2_FLT_MAX);
+		b2Vec2 upper(-B2_FLT_MAX, -B2_FLT_MAX);
 
 		for (int32 j = 0; j < count; ++j)
 		{
@@ -132,7 +132,7 @@ static void ComputeOBB(b2OBB* obb, const b2Vec2* vs, int32 count)
 		}
 	}
 
-	b2Assert(minArea < FLOAT32_MAX);
+	b2Assert(minArea < B2_FLT_MAX);
 }
 
 b2PolygonShape::b2PolygonShape(const b2ShapeDef* def)
@@ -158,7 +158,7 @@ b2PolygonShape::b2PolygonShape(const b2ShapeDef* def)
 		int32 i1 = i;
 		int32 i2 = i + 1 < m_vertexCount ? i + 1 : 0;
 		b2Vec2 edge = m_vertices[i2] - m_vertices[i1];
-		b2Assert(edge.LengthSquared() > FLOAT32_EPSILON * FLOAT32_EPSILON);
+		b2Assert(edge.LengthSquared() > B2_FLT_EPSILON * B2_FLT_EPSILON);
 		m_normals[i] = b2Cross(edge, 1.0f);
 		m_normals[i].Normalize();
 	}
@@ -416,7 +416,7 @@ void b2PolygonShape::ComputeMass(b2MassData* massData) const
 	massData->mass = m_density * area;
 
 	// Center of mass
-	b2Assert(area > FLOAT32_EPSILON);
+	b2Assert(area > B2_FLT_EPSILON);
 	center *= 1.0f / area;
 	massData->center = center;
 

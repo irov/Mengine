@@ -29,7 +29,7 @@ float32 b2TimeOfImpact(const b2Shape* shape1, const b2Sweep& sweep1,
 	float32 r2 = shape2->GetSweepRadius();
 
 	b2Assert(sweep1.t0 == sweep2.t0);
-	b2Assert(1.0f - sweep1.t0 > FLOAT32_EPSILON);
+	b2Assert(1.0f - sweep1.t0 > B2_FLT_EPSILON);
 
 	float32 t0 = sweep1.t0;
 	b2Vec2 v1 = sweep1.c - sweep1.c0;
@@ -79,7 +79,7 @@ float32 b2TimeOfImpact(const b2Shape* shape1, const b2Sweep& sweep1,
 
 		// Compute upper bound on remaining movement.
 		float32 approachVelocityBound = b2Dot(normal, v1 - v2) + b2Abs(omega1) * r1 + b2Abs(omega2) * r2;
-		if (b2Abs(approachVelocityBound) < FLOAT32_EPSILON)
+		if (b2Abs(approachVelocityBound) < B2_FLT_EPSILON)
 		{
 			alpha = 1.0f;
 			break;
@@ -98,7 +98,7 @@ float32 b2TimeOfImpact(const b2Shape* shape1, const b2Sweep& sweep1,
 		}
 
 		// Ensure significant advancement.
-		if (newAlpha < (1.0f + 100.0f * FLOAT32_EPSILON) * alpha)
+		if (newAlpha < (1.0f + 100.0f * B2_FLT_EPSILON) * alpha)
 		{
 			break;
 		}

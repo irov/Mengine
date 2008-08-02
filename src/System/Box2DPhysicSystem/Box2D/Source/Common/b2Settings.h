@@ -19,15 +19,18 @@
 #ifndef B2_SETTINGS_H
 #define B2_SETTINGS_H
 
-#include <cassert>
+#include <assert.h>
+#include <math.h>
 
 #define B2_NOT_USED(x) x
 #define b2Assert(A) assert(A)
 
+// TODO_ERIN this is not working yet (Theo Jansen Walker is unstable).
+//#define B2_TOI_JOINTS
 
-				// need to include NDS jtypes.h instead of 
-				// usual typedefs because NDS jtypes defines
-				// them slightly differently, oh well.
+// need to include NDS jtypes.h instead of 
+// usual typedefs because NDS jtypes defines
+// them slightly differently, oh well.
 #ifdef TARGET_IS_NDS
 
 #include "jtypes.h"
@@ -48,18 +51,16 @@ typedef unsigned int uint32;
 #include "Fixed.h"
 
 typedef Fixed float32;
-#define	FLOAT32_MAX	FIXED_MAX
-#define	FLOAT32_MIN	FIXED_MIN
-#define	FLOAT32_EPSILON	FIXED_EPSILON
+#define	B2_FLT_MAX	FIXED_MAX
+#define	B2_FLT_EPSILON	FIXED_EPSILON
 #define	B2FORCE_SCALE(x)	((x)<<7)
 #define	B2FORCE_INV_SCALE(x)	((x)>>7)
 
 #else
 
 typedef float float32;
-#define	FLOAT32_MAX	FLT_MAX
-#define	FLOAT32_MIN	FLT_MIN
-#define	FLOAT32_EPSILON	FLT_EPSILON
+#define	B2_FLT_MAX	FLT_MAX
+#define	B2_FLT_EPSILON	FLT_EPSILON
 #define	B2FORCE_SCALE(x)	(x)
 #define	B2FORCE_INV_SCALE(x)	(x)
 
@@ -94,6 +95,9 @@ const float32 b2_toiSlop = 8.0f * b2_linearSlop;
 
 /// Maximum number of contacts to be handled to solve a TOI island.
 const int32 b2_maxTOIContactsPerIsland = 32;
+
+/// Maximum number of joints to be handled to solve a TOI island.
+const int32 b2_maxTOIJointsPerIsland = 32;
 
 /// A velocity threshold for elastic collisions. Any collision with a relative linear
 /// velocity below this threshold will be treated as inelastic.
@@ -162,5 +166,16 @@ struct b2Version
 /// Current version.
 extern b2Version b2_version;
 
+/// Friction mixing law. Feel free to customize this.
+inline float32 b2MixFriction(float32 friction1, float32 friction2)
+{
+	return sqrtf(friction1 * friction2);
+}
+
+/// Restitution mixing law. Feel free to customize this.
+inline float32 b2MixRestitution(float32 restitution1, float32 restitution2)
+{
+	return restitution1 > restitution2 ? restitution1 : restitution2;
+}
 
 #endif

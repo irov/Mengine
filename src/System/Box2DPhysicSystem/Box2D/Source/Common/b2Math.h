@@ -92,7 +92,6 @@ inline float32 b2Abs(float32 a)
 }
 
 /// A 2D column vector.
-
 struct b2Vec2
 {
 	/// Default constructor does nothing (for performance).
@@ -159,7 +158,7 @@ struct b2Vec2
 	float32 Normalize()
 	{
 		float32 length = Length();
-		if (length < FLOAT32_EPSILON)
+		if (length < B2_FLT_EPSILON)
 		{
 			return 0.0f;
 		} 
@@ -186,7 +185,7 @@ struct b2Vec2
 	float32 Normalize()
 	{
 		float32 length = Length();
-		if (length < FLOAT32_EPSILON)
+		if (length < B2_FLT_EPSILON)
 		{
 			return 0.0f;
 		}
@@ -205,6 +204,45 @@ struct b2Vec2
 	}
 
 	float32 x, y;
+};
+
+/// A 2D column vector with 3 elements.
+struct b2Vec3
+{
+	/// Default constructor does nothing (for performance).
+	b2Vec3() {}
+
+	/// Construct using coordinates.
+	b2Vec3(float32 x, float32 y, float32 z) : x(x), y(y), z(z) {}
+
+	/// Set this vector to all zeros.
+	void SetZero() { x = 0.0f; y = 0.0f; z = 0.0f; }
+
+	/// Set this vector to some specified coordinates.
+	void Set(float32 x_, float32 y_, float32 z_) { x = x_; y = y_; z = z_; }
+
+	/// Negate this vector.
+	b2Vec3 operator -() const { b2Vec3 v; v.Set(-x, -y, -z); return v; }
+
+	/// Add a vector to this vector.
+	void operator += (const b2Vec3& v)
+	{
+		x += v.x; y += v.y; z += v.z;
+	}
+
+	/// Subtract a vector from this vector.
+	void operator -= (const b2Vec3& v)
+	{
+		x -= v.x; y -= v.y; z -= v.z;
+	}
+
+	/// Multiply this vector by a scalar.
+	void operator *= (float32 s)
+	{
+		x *= s; y *= s; z *= s;
+	}
+
+	float32 x, y, z;
 };
 
 /// A 2-by-2 matrix. Stored in column-major order.
@@ -231,6 +269,7 @@ struct b2Mat22
 	/// an orthonormal rotation matrix.
 	explicit b2Mat22(float32 angle)
 	{
+		// TODO_ERIN compute sin+cos together.
 		float32 c = cosf(angle), s = sinf(angle);
 		col1.x = c; col2.x = -s;
 		col1.y = s; col2.y = c;
@@ -276,14 +315,14 @@ struct b2Mat22
 #ifdef TARGET_FLOAT32_IS_FIXED
 
 	/// Compute the inverse of this matrix, such that inv(A) * A = identity.
-	b2Mat22 Invert() const
+	b2Mat22 GetInverse() const
 	{
 		float32 a = col1.x, b = col2.x, c = col1.y, d = col2.y;
 		float32 det = a * d - b * c;
 		b2Mat22 B;
 		int n = 0;
 
-		if(b2Abs(det) <= (FLOAT32_EPSILON<<8))
+		if(b2Abs(det) <= (B2_FLT_EPSILON<<8))
 		{
 			n = 3;
 			a = a<<n; b = b<<n; 
@@ -315,7 +354,7 @@ struct b2Mat22
 		b2Vec2 x;
 
 		
-		if(b2Abs(det) <= (FLOAT32_EPSILON<<8))
+		if(b2Abs(det) <= (B2_FLT_EPSILON<<8))
 		{
 			n = 3;
 			a11 = col1.x<<n; a12 = col2.x<<n;
@@ -339,7 +378,7 @@ struct b2Mat22
 	}
 
 #else
-	b2Mat22 Invert() const
+	b2Mat22 GetInverse() const
 	{
 		float32 a = col1.x, b = col2.x, c = col1.y, d = col2.y;
 		b2Mat22 B;
@@ -367,6 +406,40 @@ struct b2Mat22
 #endif
 
 	b2Vec2 col1, col2;
+};
+
+/// A 3-by-3 matrix. Stored in column-major order.
+struct b2Mat33
+{
+	/// The default constructor does nothing (for performance).
+	b2Mat33() {}
+
+	/// Construct this matrix using columns.
+	b2Mat33(const b2Vec3& c1, const b2Vec3& c2, const b2Vec3& c3)
+	{
+		col1 = c1;
+		col2 = c2;
+		col3 = c3;
+	}
+
+	/// Set this matrix to all zeros.
+	void SetZero()
+	{
+		col1.SetZero();
+		col2.SetZero();
+		col3.SetZero();
+	}
+
+	/// Solve A * x = b, where b is a column vector. This is more efficient
+	/// than computing the inverse in one-shot cases.
+	b2Vec3 Solve33(const b2Vec3& b) const;
+
+	/// Solve A * x = b, where b is a column vector. This is more efficient
+	/// than computing the inverse in one-shot cases. Solve only the upper
+	/// 2-by-2 matrix equation.
+	b2Vec2 Solve22(const b2Vec2& b) const;
+
+	b2Vec3 col1, col2, col3;
 };
 
 /// A transform contains translation and rotation. It is used to represent
@@ -498,6 +571,40 @@ inline float32 b2DistanceSquared(const b2Vec2& a, const b2Vec2& b)
 	return b2Dot(c, c);
 }
 
+inline b2Vec3 operator * (float32 s, const b2Vec3& a)
+{
+	b2Vec3 v(s * a.x, s * a.y, s * a.z);
+	return v;
+}
+
+/// Add two vectors component-wise.
+inline b2Vec3 operator + (const b2Vec3& a, const b2Vec3& b)
+{
+	b2Vec3 v(a.x + b.x, a.y + b.y, a.z + b.z);
+	return v;
+}
+
+/// Subtract two vectors component-wise.
+inline b2Vec3 operator - (const b2Vec3& a, const b2Vec3& b)
+{
+	b2Vec3 v; v.Set(a.x - b.x, a.y - b.y, a.z - b.z);
+	return v;
+}
+
+
+
+/// Perform the dot product on two vectors.
+inline float32 b2Dot(const b2Vec3& a, const b2Vec3& b)
+{
+	return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+/// Perform the cross product on two vectors.
+inline b2Vec3 b2Cross(const b2Vec3& a, const b2Vec3& b)
+{
+	return b2Vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+}
+
 inline b2Mat22 operator + (const b2Mat22& A, const b2Mat22& B)
 {
 	b2Mat22 C;
@@ -521,6 +628,13 @@ inline b2Mat22 b2MulT(const b2Mat22& A, const b2Mat22& B)
 	b2Mat22 C;
 	C.Set(c1, c2);
 	return C;
+}
+
+/// Multiply a matrix times a vector.
+inline b2Vec3 b2Mul(const b2Mat33& A, const b2Vec3& v)
+{
+	b2Vec3 u = v.x * A.col1 + v.y * A.col2 + v.z * A.col3;
+	return u;
 }
 
 inline b2Vec2 b2Mul(const b2XForm& T, const b2Vec2& v)

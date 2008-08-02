@@ -63,8 +63,8 @@ public:
 	b2Vec2 GetAnchor1() const;
 	b2Vec2 GetAnchor2() const;
 
-	b2Vec2 GetReactionForce() const;
-	float32 GetReactionTorque() const;
+	b2Vec2 GetReactionForce(float32 inv_dt) const;
+	float32 GetReactionTorque(float32 inv_dt) const;
 
 	/// Get the gear ratio.
 	float32 GetRatio() const;
@@ -75,7 +75,7 @@ public:
 
 	void InitVelocityConstraints(const b2TimeStep& step);
 	void SolveVelocityConstraints(const b2TimeStep& step);
-	bool SolvePositionConstraints();
+	bool SolvePositionConstraints(float32 baumgarte);
 
 	b2Body* m_ground1;
 	b2Body* m_ground2;
@@ -103,7 +103,7 @@ public:
 	float32 m_mass;
 
 	// Impulse for accumulation/warm starting.
-	float32 m_force;
+	float32 m_impulse;
 };
 
 #endif

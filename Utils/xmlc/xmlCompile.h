@@ -5,12 +5,20 @@
 
 #	include <stdio.h>
 
+class XmlParser
+{
+public:
+	void beginTag( char _type );
+};
+
 class XmlCompile
 {
 public:
 	void load( const std::string & _fileFormat );
 
 	void compile( const std::string & _in, const std::string & _out );
+
+	void parse( )
 
 protected:
 	static void cbBeginElementFormat( void *userData, const char *name, const char **attr );

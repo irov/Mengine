@@ -8,7 +8,11 @@ int main()
 {
 	XmlCompile xmlc;
 
+	strcmp( "abcdddd", "blablo" );
+
 	xmlc.load( "format.xml" );
 
 	xmlc.compile( "test.xml", "test.xmlc" );
+
+	//xmlc.parse( "test.xmlc" );
 }

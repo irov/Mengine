@@ -295,10 +295,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ImageResampler.h"
-					>
-				</File>
-				<File
 					RelativePath=".\MengeCodec.cpp"
 					>
 				</File>

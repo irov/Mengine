@@ -1,7 +1,6 @@
 
 #	include "Image.h"
 #	include "ImageCodec.h"
-#	include "ImageResampler.h"
 #	include "LogEngine.h"
 
 namespace Menge 

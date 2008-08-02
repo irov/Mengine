@@ -31,7 +31,7 @@ bool Box2DPhysicBody::initialize( const b2BodyDef& _bodyDef )
 		return false;
 	}
 
-//	m_body->m_listener = this;
+	m_body->m_listener = this;
 
 	return true;
 }
@@ -264,11 +264,11 @@ void Box2DPhysicBody::applyTorque( float _torque )
 {
 	m_body->ApplyTorque( _torque );
 }
-//////////////////////////////////////////////////////////////////////////
-/*void Box2DPhysicBody::applyForceAndTorque()
+////////////////////////////////////////////////////////////////////////////
+void Box2DPhysicBody::applyForceAndTorque()
 {
 	if( m_listener )
 	{
 		m_listener->applyForceAndTorque();
 	}
-}*/
+}

@@ -530,18 +530,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="Point"
-				>
-				<File
-					RelativePath=".\Point.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Point.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="Video"
 				>
 				<File
@@ -626,6 +614,18 @@
 				</File>
 				<File
 					RelativePath=".\TilePolygon.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Point"
+				>
+				<File
+					RelativePath=".\Point.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Point.h"
 					>
 				</File>
 			</Filter>

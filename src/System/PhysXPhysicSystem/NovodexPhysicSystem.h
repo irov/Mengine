@@ -21,7 +21,7 @@ enum GameGroup
 
 #	define COLLIDABLE_MASK	(1<<GROUP_COLLIDABLE_NON_PUSHABLE) | (1<<GROUP_COLLIDABLE_PUSHABLE)
 
-class NovodexPhysicSystem: public PhysicSystemInterface
+class NovodexPhysicSystem: public Menge::PhysicSystemInterface
 {
 public:
 	NovodexPhysicSystem();
@@ -37,21 +37,21 @@ public:
 	float * getGravity() const override;
 public:
 
-	ControllerInterface * createCapsuleController( float * _startPos, float _initialRadius, float _initialHeight ) override;
-	void releaseCapsuleController( ControllerInterface * _capsule ) override;
+	Menge::ControllerInterface * createCapsuleController( float * _startPos, float _initialRadius, float _initialHeight ) override;
+	void releaseCapsuleController( Menge::ControllerInterface * _capsule ) override;
 
-	GeometryInterface * cookConvex( const float * _verts, int _vertexSize ) override;
-	GeometryInterface * cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) override;
-	GeometryInterface * cookConvex( const char * _filename ) override;
-	GeometryInterface * cookConcave( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) override;
-	GeometryInterface * cookConcave( const char * _filename ) override;
-	GeometryInterface * cookBox( float _width, float _height, float _depth ) override;
-	void removeGeometry( GeometryInterface * _geom ) override;
+	Menge::GeometryInterface * cookConvex( const float * _verts, int _vertexSize ) override;
+	Menge::GeometryInterface * cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) override;
+	Menge::GeometryInterface * cookConvex( const char * _filename ) override;
+	Menge::GeometryInterface * cookConcave( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) override;
+	Menge::GeometryInterface * cookConcave( const char * _filename ) override;
+	Menge::GeometryInterface * cookBox( float _width, float _height, float _depth ) override;
+	void removeGeometry( Menge::GeometryInterface * _geom ) override;
 public:
-	RigidBodyInterface * createRigidBody( float _density, bool _dynamic, const GeometryInterface * _geometry) override;
-	void	removeRigidBody( RigidBodyInterface * _rigidBody ) override;
+	Menge::RigidBodyInterface * createRigidBody( float _density, bool _dynamic, const Menge::GeometryInterface * _geometry) override;
+	void	removeRigidBody( Menge::RigidBodyInterface * _rigidBody ) override;
 public:
-	void	createJoint( RigidBodyInterface * body0, RigidBodyInterface * body1, float x, float y, float z ) override;
+	void	createJoint( Menge::RigidBodyInterface * body0, Menge::RigidBodyInterface * body1, float x, float y, float z ) override;
 private:
 	NxPhysicsSDK * m_physicsSDK;
 	NxScene		 * m_scene;

@@ -4,7 +4,7 @@
 
 #	include "NovodexBody.h"
 
-class	NovodexBallSocketJoint : public BallSocketJointInterface
+class	NovodexBallSocketJoint : public Menge::BallSocketJointInterface
 {
 public:
 	NovodexBallSocketJoint(NxScene * _scene)
@@ -20,8 +20,8 @@ public:
 	}
 
 	void init(
-		RigidBodyInterface * body0,
-		RigidBodyInterface * body1,
+		Menge::RigidBodyInterface * body0,
+		Menge::RigidBodyInterface * body1,
 		float x, float y, float z)
 	{
 		m_SJdesc = new NxSphericalJointDesc();

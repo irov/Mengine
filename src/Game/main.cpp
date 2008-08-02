@@ -1,6 +1,7 @@
 #	include "Interface/ApplicationInterface.h"
 
 #	include "Interface/LogSystemInterface.h"
+#	include "Interface/ProfilerSystemInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/InputSystemInterface.h"
 #	include "Interface/RenderSystemInterface.h"
@@ -62,6 +63,10 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	Menge::LogSystemInterface * logSystem;
 	initInterfaceSystem( &logSystem );
 	app.setLogSystem( logSystem );
+
+	Menge::ProfilerSystemInterface * profilerSystem;
+	initInterfaceSystem( &profilerSystem );
+	app.setProfilerSystem( profilerSystem );
 
 	Menge::FileSystemInterface * fileSystem;
 	initInterfaceSystem( &fileSystem );

@@ -407,6 +407,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Profiler"
+				>
+				<File
+					RelativePath=".\ProfilerEngine.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ProfilerEngine.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Object2D"

@@ -4,7 +4,7 @@
 
 #	include <NxCapsuleController.h>
 
-class	NovodexCapsuleController : public ControllerInterface
+class	NovodexCapsuleController : public Menge::ControllerInterface
 {
 public:
 	NovodexCapsuleController( NxCapsuleController * _controller );

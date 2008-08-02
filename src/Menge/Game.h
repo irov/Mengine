@@ -6,6 +6,7 @@
 #	include "Eventable.h"
 #	include "math/vec3.h"
 #	include "Account.h"
+#	include "TextField.h"
 
 #	include <list>
 #	include <map>
@@ -110,7 +111,7 @@ namespace Menge
 		Account* getCurrentAccount();
 
 		void saveAccountsInfo();
-
+//
 	protected:
 
 		Player* m_player;
@@ -168,5 +169,11 @@ namespace Menge
 		bool m_loadingAccounts;
 		String m_defaultAccountName;
 		Account* m_currentAccount;
+
+
+		/////
+		std::string m_debugResource;
+		char m_debugText[128];
+		float m_FPS;
 	};	
 }

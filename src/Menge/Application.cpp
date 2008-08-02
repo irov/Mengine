@@ -21,6 +21,7 @@
 #	include "Player.h"
 
 #	include "LogEngine.h"
+#	include "ProfilerEngine.h"
 
 #	include "XmlEngine.h"
 
@@ -138,9 +139,8 @@ namespace Menge
 		, m_resetTiming( false )
 		, m_maxTiming( 100.0f )
 		, m_debugInfo( false )
-		, m_debugTextField( NULL )
-		, m_FPS( 0.0f )
 		, m_logEngine( NULL )
+		, m_profilerEngine( NULL )
 		, m_fileEngine( NULL )
 		, m_renderEngine( NULL )
 		, m_soundEngine( NULL )
@@ -149,6 +149,7 @@ namespace Menge
 		, m_physicEngine( NULL )
 		, m_xmlEngine( NULL )
 		, m_mouseBounded( false )
+		, m_debugTextField( NULL )
 	{
 		//ASSERT( m_interface );
 
@@ -166,6 +167,12 @@ namespace Menge
 	{
 		m_logEngine = new LogEngine( _interface );
 		Holder<LogEngine>::keep( m_logEngine );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setProfilerSystem( ProfilerSystemInterface * _interface )
+	{
+		m_profilerEngine = new ProfilerEngine( _interface );
+		Holder<ProfilerEngine>::keep( m_profilerEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFileSystem( FileSystemInterface * _interface )
@@ -295,8 +302,8 @@ namespace Menge
 
 		if( m_debugInfo )	
 		{
-			m_debugTextField = Menge::SceneManager::createNodeFromXmlT<TextField>( m_debugResourcesPath + "DebugInfo.xml" );
-			m_debugTextField->compile();
+			m_debugTextField = SceneManager::createNodeT<TextField>("TextField");
+			m_debugTextField->setResource( "ArialMiddle" );
 			m_debugTextField->activate();
 		}
 
@@ -334,14 +341,6 @@ namespace Menge
 				}
 				m_resourcePaths.push_back( filename );
 			}
-	
-			XML_CASE_ATTRIBUTE_NODE( "DebugResources", "Path", m_debugResourcesPath );
-			//XML_CASE_ATTRIBUTE_NODE( "Resources", "File", m_resourcePath );
-
-			/*XML_CASE_NODE("Config")
-			{
-				XML_PARSE_ELEMENT( this, &Application::loaderConfig );
-			}*/
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -414,10 +413,6 @@ namespace Menge
 		{
 			m_sound = false;
 		}
-
-		//Временная запись
-		//добавил Вова
-		//m_sound = false;
 
 		idx = _args.find( "-particles" );
 		if( idx != String::npos )
@@ -509,6 +504,12 @@ namespace Menge
 	{
 		if( Holder<Game>::empty() == false )
 		{
+			if( m_debugTextField )
+			{
+				m_debugTextField->release();
+				delete m_debugTextField;
+			}
+
 			Holder<Game>::hostage()->release();
 		}
 	}
@@ -625,17 +626,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onUpdate( float _timing )
 	{
-		if( m_debugInfo )
-		{
-			static int d = 0;
-			d++;
-			if( !(d % 10) )
-			{
-				m_FPS = 1000.0f / _timing;
-				//printf("fps: %.2f\n", m_FPS );
-			}
-		}
-
 		if( _timing > m_maxTiming )
 		{
 			_timing = m_maxTiming;
@@ -651,8 +641,10 @@ namespace Menge
 
 		if( m_physicEngine )
 		{
-			m_physicEngine->update( 1.0f/30.0f );// for test physic!
+			m_physicEngine->update( 1.0f/30.0f );
 		}
+
+		Holder<ProfilerEngine>::hostage()->beginProfile("Menge");
 
 		if( m_physicEngine2D )
 		{
@@ -661,22 +653,17 @@ namespace Menge
 
 		Holder<Game>::hostage()->update( _timing );
 		m_inputEngine->update();
+
 		Holder<MousePickerSystem>::hostage()->update();
 		m_soundEngine->update( _timing );
 
 		m_renderEngine->beginScene();
-
 		Holder<Game>::hostage()->render( m_debugRender );
 
-		//Holder<LightSystem>::hostage()->update();
-		
-		/*if( m_debugInfo )
-		{
-			Viewport vp( mt::vec2f( 0.0, 0.0f ), mt::vec2f( 1024.0f, 768.0f ) );
-			sprintf( m_debugText, "FPS:%.2f\n", m_FPS );
-			m_debugTextField->setText( m_debugText );
-			m_debugTextField->render( vp, false );
-		}*/
+		// ????????????????????? или делать отдельную begin/end scene ?
+		Holder<ProfilerEngine>::hostage()->endProfile("Menge");
+
+		Holder<ProfilerEngine>::hostage()->displayStats(m_debugTextField);
 
 		m_renderEngine->endScene();
 	}
@@ -692,12 +679,6 @@ namespace Menge
 	{
 		delete m_handler;
 
-		if( m_debugTextField )
-		{
-			m_debugTextField->release();
-			delete m_debugTextField;
-		}
-
 		Holder<Game>::destroy();
 		Holder<ResourceManager>::destroy();
 
@@ -710,6 +691,7 @@ namespace Menge
 		Holder<SoundEngine>::empty();
 		Holder<XmlEngine>::empty();
 		Holder<LogEngine>::empty();
+		Holder<ProfilerEngine>::empty();
 
 		MENGE_DELETE( m_physicEngine );
 		MENGE_DELETE( m_physicEngine2D );

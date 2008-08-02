@@ -4,7 +4,7 @@
 
 #	include "Interface/PhysicSystemInterface.h"
 
-class NovodexBody : public RigidBodyInterface
+class NovodexBody : public Menge::RigidBodyInterface
 {
 public:
 	NovodexBody(NxActor * _actor);

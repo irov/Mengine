@@ -17,6 +17,7 @@
 #	include "ScheduleManager.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
+#	include "ProfilerEngine.h"
 
 #	include "XmlEngine.h"
 
@@ -40,6 +41,7 @@ namespace Menge
 		, m_FSAAQuality( 0 )
 		, m_currentAccount( 0 )
 		, m_loadingAccounts( false )
+		, m_FPS( 0.0f )
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
@@ -236,6 +238,14 @@ namespace Menge
 				}
 				m_pathScripts.push_back( std::make_pair( m_currentResourcePath, path ) );
 			}
+
+			XML_CASE_NODE("DebugResource")
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Path", m_debugResource );
+				}
+			}
 		}
 
 	}
@@ -378,10 +388,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update( float _timing )
 	{
-		Holder<ScheduleManager>::hostage()
-			->update( _timing );
+		Holder<ProfilerEngine>::hostage()->beginProfile("Game");
+
+		static int d = 0;
+		d++;
+		if( !(d % 10) )
+		{
+			m_FPS = 1000.0f / _timing;
+			//printf("fps: %.2f\n", m_FPS );
+		}
 
 		m_player->update( _timing );
+
+		Holder<ScheduleManager>::hostage()
+			->update( _timing );
 
 		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, m_eventUpdate ) )
@@ -389,11 +409,15 @@ namespace Menge
 			Holder<ScriptEngine>::hostage()
 				->callModuleFunction( m_pyPersonality, m_eventUpdate, "(f)", _timing );
 		}
+
+		Holder<ProfilerEngine>::hostage()->endProfile("Game");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render( bool _enableDebug )
 	{
+		Holder<ProfilerEngine>::hostage()->beginProfile("Render");
 		m_player->render( _enableDebug );
+		Holder<ProfilerEngine>::hostage()->endProfile("Render");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::string Game::getPathEntities( const std::string& _entity ) const
@@ -474,6 +498,7 @@ namespace Menge
 				->loadResource( it->second.first, path, it->first );
 		}
 
+		Holder<ResourceManager>::hostage()->loadResource( "DEBUG", m_debugResource, "DEBUG" );
 
 		for( TMapDeclaration::iterator
 			it = m_mapArrowsDeclaration.begin(),
@@ -553,7 +578,6 @@ namespace Menge
 		{
 			it->second->deactivate();
 		}		
-
 		//Holder<ResourceManager>::hostage()->removeListener( this );
 	}
 	//////////////////////////////////////////////////////////////////////////

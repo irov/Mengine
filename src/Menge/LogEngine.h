@@ -4,7 +4,11 @@
 
 #	include "Holder.h"
 
+#	include "TextField.h"
+
 #	include <string>
+
+#	include <map>
 
 namespace Menge
 {
@@ -16,6 +20,7 @@ namespace Menge
 	public:
 		void logMessage( const std::string & _message, bool _maskDebug, bool _endl = true, bool _timeStamp = true );
 		LogSystemInterface* getInterface();
+		void displayStats( TextField * _debugTextField );
 
 	protected:
 		LogSystemInterface * m_interface;

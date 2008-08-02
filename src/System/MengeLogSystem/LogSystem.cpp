@@ -3,6 +3,8 @@
 #	include <iostream>
 #	include <ctime>
 #	include <iomanip>
+#	include <algorithm>
+#	include <assert.h>
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::LogSystemInterface** _interface )
@@ -63,7 +65,7 @@ void MengeLogSystem::logMessage( const Menge::String& _message, bool _maskDebug,
 
 	std::time_t ctTime; 
 	std::time(&ctTime);
-	std::tm* sTime = std::localtime( &ctTime );
+	std::tm * sTime = std::localtime( &ctTime );
 	if( _timeStamp )
 	{
 		m_logStream << std::setw(2) << std::setfill('0') << sTime->tm_hour
@@ -76,6 +78,6 @@ void MengeLogSystem::logMessage( const Menge::String& _message, bool _maskDebug,
 		m_logStream << std::endl;
 	}
 
-	// Flush stcmdream to ensure it is written (incase of a crash, we need log to be up to date)
 	m_logStream.flush();
 }
+//////////////////////////////////////////////////////////////////////////

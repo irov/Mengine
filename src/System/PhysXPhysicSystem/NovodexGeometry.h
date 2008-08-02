@@ -2,7 +2,7 @@
 
 #	include <NxPhysics.h>
 
-class NovodexGeometry : public GeometryInterface
+class NovodexGeometry : public Menge::GeometryInterface
 {
 public:
 	NxShapeDesc * nxShape;

@@ -6,7 +6,7 @@
 #	include <stdio.h>
 #	include "Stream.h"
 //////////////////////////////////////////////////////////////////////////
-bool initInterfaceSystem( PhysicSystemInterface ** _ptrInterface )
+bool initInterfaceSystem( Menge::PhysicSystemInterface ** _ptrInterface )
 {
 	try
 	{
@@ -20,7 +20,7 @@ bool initInterfaceSystem( PhysicSystemInterface ** _ptrInterface )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void releaseInterfaceSystem( PhysicSystemInterface* _ptrInterface )
+void releaseInterfaceSystem( Menge::PhysicSystemInterface* _ptrInterface )
 {
 	delete static_cast<NovodexPhysicSystem*>(_ptrInterface);
 }
@@ -118,12 +118,12 @@ void NovodexPhysicSystem::update(float _timestep)
 
 }
 //////////////////////////////////////////////////////////////////////////
-void NovodexPhysicSystem::releaseCapsuleController( ControllerInterface * _capsule )
+void NovodexPhysicSystem::releaseCapsuleController( Menge::ControllerInterface * _capsule )
 {
 	delete static_cast<NovodexCapsuleController*>( _capsule );
 }
 //////////////////////////////////////////////////////////////////////////
-ControllerInterface * NovodexPhysicSystem::createCapsuleController( float * _startPos, float _initialRadius, float _initialHeight )
+Menge::ControllerInterface * NovodexPhysicSystem::createCapsuleController( float * _startPos, float _initialRadius, float _initialHeight )
 {
 	NxCapsuleControllerDesc desc;
 
@@ -142,11 +142,11 @@ ControllerInterface * NovodexPhysicSystem::createCapsuleController( float * _sta
 	desc.callback			= 0;
 
 	NxCapsuleController * contr = static_cast<NxCapsuleController*>(m_controllerManager.createController(m_scene, desc));
-	ControllerInterface * cap = new NovodexCapsuleController(contr);
+	Menge::ControllerInterface * cap = new NovodexCapsuleController(contr);
 	return cap;
 };
 //////////////////////////////////////////////////////////////////////////
-GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _vertexSize )
+Menge::GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _vertexSize )
 {
 	NxConvexMeshDesc m_convexMesh;
 	
@@ -172,7 +172,7 @@ GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _
 	return novodexGeometry;
 }
 //////////////////////////////////////////////////////////////////////////
-GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize )
+Menge::GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize )
 {
 	NxConvexMeshDesc m_convexMesh;
 
@@ -199,7 +199,7 @@ GeometryInterface * NovodexPhysicSystem::cookConvex( const float * _verts, int _
 	return novodexGeometry;
 }
 //////////////////////////////////////////////////////////////////////////
-GeometryInterface * NovodexPhysicSystem::cookConcave( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize )
+Menge::GeometryInterface * NovodexPhysicSystem::cookConcave( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize )
 {
 	NxTriangleMeshDesc triMeshDesc;
 
@@ -228,7 +228,7 @@ GeometryInterface * NovodexPhysicSystem::cookConcave( const float * _verts, int 
 	return novodexGeometry;
 }
 //////////////////////////////////////////////////////////////////////////
-GeometryInterface * NovodexPhysicSystem::cookConvex( const char * _filename )
+Menge::GeometryInterface * NovodexPhysicSystem::cookConvex( const char * _filename )
 {
 	NxConvexShapeDesc * nxTriShape = new NxConvexShapeDesc();
 
@@ -240,7 +240,7 @@ GeometryInterface * NovodexPhysicSystem::cookConvex( const char * _filename )
 	return novodexGeometry;
 }
 //////////////////////////////////////////////////////////////////////////
-GeometryInterface * NovodexPhysicSystem::cookConcave( const char * _filename )
+Menge::GeometryInterface * NovodexPhysicSystem::cookConcave( const char * _filename )
 {
 	NxTriangleMeshShapeDesc * nxTriShape = new NxTriangleMeshShapeDesc();
 
@@ -252,7 +252,7 @@ GeometryInterface * NovodexPhysicSystem::cookConcave( const char * _filename )
 	return novodexGeometry;
 }
 //////////////////////////////////////////////////////////////////////////
-GeometryInterface * NovodexPhysicSystem::cookBox( float _width, float _height, float _depth )
+Menge::GeometryInterface * NovodexPhysicSystem::cookBox( float _width, float _height, float _depth )
 {
 	NxBoxShapeDesc * nxBoxDesc = new NxBoxShapeDesc();
 	nxBoxDesc->dimensions = NxVec3( _width * 0.5f, _height * 0.5f, _depth * 0.5f );
@@ -262,7 +262,7 @@ GeometryInterface * NovodexPhysicSystem::cookBox( float _width, float _height, f
 	return novodexGeometry;
 }
 //////////////////////////////////////////////////////////////////////////
-RigidBodyInterface * NovodexPhysicSystem::createRigidBody( float _density, bool _dynamic, const GeometryInterface * _geometry)
+Menge::RigidBodyInterface * NovodexPhysicSystem::createRigidBody( float _density, bool _dynamic, const Menge::GeometryInterface * _geometry)
 {
 	NxActorDesc actorDesc;
 	NxBodyDesc	bodyDesc;
@@ -293,12 +293,12 @@ RigidBodyInterface * NovodexPhysicSystem::createRigidBody( float _density, bool 
 
 	NxActor * _actor = m_scene->createActor(actorDesc);
 	
-	RigidBodyInterface * rigidBody = new NovodexBody(_actor);
+	Menge::RigidBodyInterface * rigidBody = new NovodexBody(_actor);
 
 	return rigidBody;
 }
 //////////////////////////////////////////////////////////////////////////
-void	NovodexPhysicSystem::removeRigidBody( RigidBodyInterface * _rigidBody )
+void	NovodexPhysicSystem::removeRigidBody( Menge::RigidBodyInterface * _rigidBody )
 {
 	NovodexBody * novodexBody = static_cast<NovodexBody*>(_rigidBody);
 
@@ -312,14 +312,14 @@ void	NovodexPhysicSystem::removeRigidBody( RigidBodyInterface * _rigidBody )
 	delete novodexBody;
 }
 //////////////////////////////////////////////////////////////////////////
-void	NovodexPhysicSystem::createJoint(RigidBodyInterface * body0, RigidBodyInterface * body1, float x, float y, float z)
+void	NovodexPhysicSystem::createJoint(Menge::RigidBodyInterface * body0, Menge::RigidBodyInterface * body1, float x, float y, float z)
 {
-	BallSocketJointInterface * joint = new NovodexBallSocketJoint(m_scene);
+	Menge::BallSocketJointInterface * joint = new NovodexBallSocketJoint(m_scene);
 	joint->init(body0,body1,x,y,z);
 	joint->setLimits(3.14f,3.14f);
 }
 //////////////////////////////////////////////////////////////////////////
-void NovodexPhysicSystem::removeGeometry( GeometryInterface * _geom )
+void NovodexPhysicSystem::removeGeometry( Menge::GeometryInterface * _geom )
 {
 	delete _geom;
 }

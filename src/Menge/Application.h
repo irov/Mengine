@@ -21,8 +21,10 @@ namespace Menge
 	class PhysicSystemInterface;
 	class PhysicSystem2DInterface;
 	class LogSystemInterface;
+	class ProfilerSystemInterface;
 
 	class LogEngine;
+	class ProfilerEngine;
 	class FileEngine;
 	class InputEngine;
 	class RenderEngine;
@@ -54,6 +56,7 @@ namespace Menge
 		bool update( float _timing );
 
 		void setLogSystem( LogSystemInterface * _interface );
+		void setProfilerSystem( ProfilerSystemInterface * _interface );
 		void setFileSystem( FileSystemInterface * _interface );
 		void setInputSystem( InputSystemInterface * _interface );
 		void setRenderSystem( RenderSystemInterface * _interface );
@@ -109,6 +112,7 @@ namespace Menge
 
 		bool isDebugRender() const;
 	private:
+		TextField * m_debugTextField;
 		ApplicationInterface* m_interface;
 
 		std::string m_gameInfo;
@@ -131,12 +135,8 @@ namespace Menge
 		bool m_resetTiming;
 		float m_maxTiming;
 
-		std::string m_debugResourcesPath;
-		TextField* m_debugTextField;
-		char m_debugText[128];
-		float m_FPS;
-
 		LogEngine* m_logEngine;
+		ProfilerEngine* m_profilerEngine;
 		FileEngine* m_fileEngine;
 		InputEngine* m_inputEngine;
 		RenderEngine* m_renderEngine;

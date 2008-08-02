@@ -3,6 +3,7 @@
 #	include "Application.h"
 #	include "Player.h"
 #	include "Arrow.h"
+#	include "ProfilerEngine.h"
 
 namespace Menge
 {
@@ -26,7 +27,9 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	void InputEngine::update()
 	{
+		Holder<ProfilerEngine>::hostage()->beginProfile("InputEngine");
 		m_interface->update();
+		Holder<ProfilerEngine>::hostage()->endProfile("InputEngine");
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isKeyDown( int index )

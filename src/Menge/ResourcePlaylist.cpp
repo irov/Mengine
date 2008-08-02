@@ -43,15 +43,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePlaylist::loaderTracks_( XmlElement * _xml )
 	{
-		//<Tracks>
-		//	<Track File = "Game/Sounds/Music/gameplay2.ogg"/>
-		//	</Tracks>
-
-		//XML_SWITCH_NODE( _xml )
-		//{
-		//	XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
-		//}
-
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Loop", "Value", m_loop );

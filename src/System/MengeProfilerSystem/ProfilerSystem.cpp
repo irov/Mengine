@@ -265,13 +265,12 @@ void MengeProfileSystem::endProfile(const Menge::String& profileName) {
 	// we only process this profile if isn't disabled
 	DisabledProfileMap::iterator dIter;
 	dIter = mDisabledProfiles.find(profileName);
-	if ( dIter != mDisabledProfiles.end() ) {
-
+	if ( dIter != mDisabledProfiles.end() ) 
+	{
 		return;
-
 	}
 
-	// stack shouldnt be empty
+	// stack shouldn't be empty
 	assert (!mProfiles.empty());
 
 	// get the start of this profile
@@ -282,7 +281,7 @@ void MengeProfileSystem::endProfile(const Menge::String& profileName) {
 	// calculate the elapsed time of this profile
 	unsigned long timeElapsed = endTime - bProfile.currTime;
 
-	// update parent's accumalator if it isn't the root
+	// update parent's accumulator if it isn't the root
 	if (bProfile.parent != "") {
 
 		// find the parent

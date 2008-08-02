@@ -634,12 +634,12 @@ namespace Menge
 			m_physicEngine->update( 1.0f/30.0f );
 		}
 
-		Holder<ProfilerEngine>::hostage()->beginProfile("Menge");
-
 		if( m_physicEngine2D )
 		{
 			m_physicEngine2D->update( _timing );
 		}
+
+		Holder<ProfilerEngine>::hostage()->beginProfile("Menge");
 
 		Holder<Game>::hostage()->update( _timing );
 		m_inputEngine->update();
@@ -649,8 +649,9 @@ namespace Menge
 
 		m_renderEngine->beginScene();
 		Holder<Game>::hostage()->render( m_debugRender );
-
 		m_renderEngine->endScene();
+
+		Holder<ProfilerEngine>::hostage()->endProfile("Menge");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()

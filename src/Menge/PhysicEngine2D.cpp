@@ -2,6 +2,7 @@
 #	include "PhysicEngine2D.h"
 #	include "Interface/PhysicSystem2DInterface.h"
 #	include "RigidBody2D.h"
+#	include "ProfilerEngine.h"
 
 namespace Menge
 {

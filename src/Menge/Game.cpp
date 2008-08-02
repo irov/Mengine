@@ -389,8 +389,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::update( float _timing )
 	{
-		Holder<ProfilerEngine>::hostage()->beginProfile("Game");
-
 		static int d = 0;
 		d++;
 		if( !(d % 10) )
@@ -410,8 +408,6 @@ namespace Menge
 			Holder<ScriptEngine>::hostage()
 				->callModuleFunction( m_pyPersonality, m_eventUpdate, "(f)", _timing );
 		}
-
-		Holder<ProfilerEngine>::hostage()->endProfile("Game");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render( bool _enableDebug )
@@ -421,7 +417,6 @@ namespace Menge
 		Holder<ProfilerEngine>::hostage()->endProfile("Render");
 
 		Holder<ProfilerEngine>::hostage()->displayStats(m_debugTextField);
-		Holder<ProfilerEngine>::hostage()->endProfile("Menge");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::string Game::getPathEntities( const std::string& _entity ) const
@@ -533,7 +528,6 @@ namespace Menge
 		{
 			return false;
 		}
-
 
 		loadAccounts();
 

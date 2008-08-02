@@ -123,7 +123,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(ProjectDir)/../../Contrib;$(ProjectDir)/../../Include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_DEPRECATE;FREEGLUT_STATIC;_HAS_EXCEPTIONS=0"
-				ExceptionHandling="0"
+				ExceptionHandling="1"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
@@ -230,6 +230,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\Examples\TestBed\Tests\BreakableBody.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\Examples\TestBed\Tests\Bridge.h"
 				>
 			</File>
@@ -286,10 +290,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\Examples\TestBed\Tests\MotorsAndLimits.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\Examples\TestBed\Tests\PolyCollision.h"
 				>
 			</File>
@@ -298,11 +298,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\Examples\TestBed\Tests\Prismatic.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\Examples\TestBed\Tests\Pulleys.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\Examples\TestBed\Tests\Pyramid.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Examples\TestBed\Tests\Revolute.h"
 				>
 			</File>
 			<File
@@ -327,6 +335,14 @@
 			</File>
 			<File
 				RelativePath="..\..\Examples\TestBed\Tests\TimeOfImpact.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Examples\TestBed\Tests\TriangleMesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\Examples\TestBed\Tests\TriangleMesh.h"
 				>
 			</File>
 			<File

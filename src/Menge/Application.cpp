@@ -299,10 +299,6 @@ namespace Menge
 			return false;
 		}
 
-		if( m_debugInfo )	
-		{
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -512,6 +508,13 @@ namespace Menge
 			m_debugRender = !m_debugRender;
 		}
 #	endif
+
+		if( _key == 87 && _isDown ) 
+		{
+			bool enabled = Holder<ProfilerEngine>::hostage()->isEnabled();
+			Holder<ProfilerEngine>::hostage()->setEnabled(!enabled);
+		}
+
 		return Holder<Game>::hostage()->handleKeyEvent( _key, _char, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -639,10 +642,10 @@ namespace Menge
 			m_physicEngine2D->update( _timing );
 		}
 
-		Holder<ProfilerEngine>::hostage()->beginProfile("Menge");
-
 		Holder<Game>::hostage()->update( _timing );
 		m_inputEngine->update();
+
+		Holder<ProfilerEngine>::hostage()->beginProfile("Menge");
 
 		Holder<MousePickerSystem>::hostage()->update();
 		m_soundEngine->update( _timing );

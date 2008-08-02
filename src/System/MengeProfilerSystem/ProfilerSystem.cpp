@@ -35,11 +35,9 @@ MengeProfileSystem::MengeProfileSystem()
 	mCurrentFrame = 0;
 	mEnabled = mNewEnableState = false; 
 	mEnableStateChangePending = false;
-	mInitialized = false;
 	maxProfiles = 50;
 
 	mUpdateDisplayFrequency = 10;
-	setEnabled(true);
 }
 //-----------------------------------------------------------------------
 MengeProfileSystem::~MengeProfileSystem() {
@@ -57,17 +55,8 @@ MengeProfileSystem::~MengeProfileSystem() {
 //-----------------------------------------------------------------------
 void MengeProfileSystem::setEnabled(bool enabled) {
 
-	if (!mInitialized && enabled) 
-	{
-		mInitialized = true;
-		mEnabled = true;
-	}
-	else 
-	{
-		mEnableStateChangePending = true;
-		mNewEnableState = enabled;
-	}
-
+	mEnableStateChangePending = true;
+	mNewEnableState = enabled;
 }
 //-----------------------------------------------------------------------
 bool MengeProfileSystem::getEnabled() const {
@@ -133,9 +122,7 @@ void MengeProfileSystem::beginProfile(const Menge::String& profileName) {
 
 	// if the profiler is enabled
 	if (!mEnabled) {
-
 		return;
-
 	}
 
 	// empty string is reserved for the root
@@ -238,8 +225,8 @@ void MengeProfileSystem::beginProfile(const Menge::String& profileName) {
 
 }
 //-----------------------------------------------------------------------
-void MengeProfileSystem::endProfile(const Menge::String& profileName) {
-
+void MengeProfileSystem::endProfile(const Menge::String& profileName) 
+{
 	// if the profiler received a request to be enabled or disabled
 	// we reached the end of the frame so we can safely do this
 	if (mEnableStateChangePending)
@@ -254,15 +241,15 @@ void MengeProfileSystem::endProfile(const Menge::String& profileName) {
 
 	}
 
-	// get the end time of this profile
-	// we do this as close the beginning of this function as possible
-	// to get more accurate timing results
+	if(mProfiles.empty() == true) //ALARM
+	{
+		return;
+	}
+
 	unsigned long endTime = mTimer.getMicroseconds();
 
-	// empty string is reserved for designating an empty parent
 	assert ((profileName != "") && ("Profile name can't be an empty string"));
 
-	// we only process this profile if isn't disabled
 	DisabledProfileMap::iterator dIter;
 	dIter = mDisabledProfiles.find(profileName);
 	if ( dIter != mDisabledProfiles.end() ) 
@@ -270,18 +257,14 @@ void MengeProfileSystem::endProfile(const Menge::String& profileName) {
 		return;
 	}
 
-	// stack shouldn't be empty
 	assert (!mProfiles.empty());
 
-	// get the start of this profile
 	ProfileInstance bProfile;
 	bProfile = mProfiles.back();
 	mProfiles.pop_back();
 
-	// calculate the elapsed time of this profile
 	unsigned long timeElapsed = endTime - bProfile.currTime;
 
-	// update parent's accumulator if it isn't the root
 	if (bProfile.parent != "") {
 
 		// find the parent
@@ -293,15 +276,12 @@ void MengeProfileSystem::endProfile(const Menge::String& profileName) {
 
 		}
 
-		// the parent should be found 
 		assert(iter != mProfiles.end());
 
-		// add this profile's time to the parent's accumlator
 		(*iter).accum += timeElapsed;
 
 	}
 
-	// we find the profile in this frame
 	ProfileFrameList::iterator iter;
 	for (iter = mProfileFrame.begin(); iter != mProfileFrame.end(); ++iter) {
 
@@ -326,43 +306,34 @@ void MengeProfileSystem::processFrameStats() {
 	ProfileFrameList::iterator frameIter;
 	ProfileHistoryList::iterator historyIter;
 
-	// we set the number of times each profile was called per frame to 0
-	// because not all profiles are called every frame
 	for (historyIter = mProfileHistory.begin(); historyIter != mProfileHistory.end(); ++historyIter) {
 
 		(*historyIter).numCallsThisFrame = 0;
 
 	}
 
-	// iterate through each of the profiles processed during this frame
 	for (frameIter = mProfileFrame.begin(); frameIter != mProfileFrame.end(); ++frameIter) {
 
 		Menge::String s = (*frameIter).name;
 
-		// use our map to find the appropriate profile in the history
 		historyIter = (*mProfileHistoryMap.find(s)).second;
 
-		// extract the frame stats
 		unsigned long frameTime = (*frameIter).frameTime;
 		unsigned int calls = (*frameIter).calls;
 		unsigned int lvl = (*frameIter).hierarchicalLvl;
 
-		// calculate what percentage of frame time this profile took
 		double framePercentage = (double) frameTime / (double) mTotalFrameTime;
 
-		// update the profile stats
 		(*historyIter).currentTime = framePercentage;
 		(*historyIter).totalTime += framePercentage;
 		(*historyIter).totalCalls++;
 		(*historyIter).numCallsThisFrame = calls;
 		(*historyIter).hierarchicalLvl = lvl;
 
-		// if we find a new minimum for this profile, update it
 		if ((framePercentage) < ((*historyIter).minTime)) {
 			(*historyIter).minTime = framePercentage;
 		}
 
-		// if we find a new maximum for this profile, update it
 		if ((framePercentage) > ((*historyIter).maxTime)) {
 			(*historyIter).maxTime = framePercentage;
 		}
@@ -378,7 +349,6 @@ bool MengeProfileSystem::watchForMax(const Menge::String& profileName) {
 
 	mapIter = mProfileHistoryMap.find(profileName);
 
-	// if we don't find the profile, return false
 	if (mapIter == mProfileHistoryMap.end())
 		return false;
 
@@ -395,7 +365,6 @@ bool MengeProfileSystem::watchForMin(const Menge::String& profileName) {
 
 	mapIter = mProfileHistoryMap.find(profileName);
 
-	// if we don't find the profile, return false
 	if (mapIter == mProfileHistoryMap.end())
 		return false;
 
@@ -412,7 +381,6 @@ bool MengeProfileSystem::watchForLimit(const Menge::String& profileName, double 
 
 	mapIter = mProfileHistoryMap.find(profileName);
 
-	// if we don't find the profile, return false
 	if (mapIter == mProfileHistoryMap.end())
 		return false;
 
@@ -429,12 +397,9 @@ void MengeProfileSystem::reset() {
 
 	ProfileHistoryList::iterator iter;
 	for (iter = mProfileHistory.begin(); iter != mProfileHistory.end(); ++iter) {
-
 		(*iter).currentTime = (*iter).maxTime = (*iter).totalTime = 0;
 		(*iter).numCallsThisFrame = (*iter).totalCalls = 0;
-
 		(*iter).minTime = 1;
-
 	}
 
 }
@@ -455,7 +420,6 @@ void MengeProfileSystem::changeEnableState() {
 
 	if (mNewEnableState) 
 	{
-
 	}
 	else 
 	{

@@ -20,6 +20,8 @@ namespace Menge
 	public:
 		void beginProfile( const String & _name );
 		void endProfile( const String & _name );
+		void setEnabled( bool _enabled );
+		bool isEnabled() const;
 		void displayStats( TextField * _debugTextField );
 	protected:
 		ProfilerSystemInterface * m_interface;

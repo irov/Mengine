@@ -24,8 +24,23 @@ namespace Menge
 		m_interface->endProfile( _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ProfilerEngine::setEnabled( bool _enabled )
+	{
+		m_interface->setEnabled(_enabled);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ProfilerEngine::isEnabled() const
+	{
+		return m_interface->getEnabled();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ProfilerEngine::displayStats( TextField * _debugTextField )
 	{
+		if(isEnabled() == false || _debugTextField == NULL)
+		{
+			return;
+		}
+
 		ProfileHistoryList historyList = m_interface->getProfileHistoryList();
 
 		Viewport vp( mt::vec2f( 0.0, 0.0f ), mt::vec2f( 1024.0f, 768.0f ) );

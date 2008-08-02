@@ -500,8 +500,6 @@ namespace Menge
 
 		if(m_debugResourceFont.empty() == false)
 		{
-			Holder<ResourceManager>::hostage()->loadResource( "DEBUG", m_debugResourceFont, "DEBUG" );
-
 			m_debugTextField = SceneManager::createNodeT<TextField>("TextField");
 			m_debugTextField->setResource( m_debugResourceFont ); 
 			m_debugTextField->activate();
@@ -561,7 +559,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()
 	{
-		if( m_debugTextField )
+		if( m_debugTextField != NULL )
 		{
 			m_debugTextField->release();
 			delete m_debugTextField;

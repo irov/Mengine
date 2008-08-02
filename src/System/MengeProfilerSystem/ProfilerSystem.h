@@ -86,7 +86,6 @@ private:
 	ProfileHistoryMap mProfileHistoryMap;
 	DisabledProfileMap mDisabledProfiles;
 
-	bool mInitialized;
 	unsigned int maxProfiles;
 	unsigned int mUpdateDisplayFrequency;
 	unsigned int mCurrentFrame;

@@ -17,18 +17,20 @@ namespace Editor
         public void Draw(Graphics graph, BufferedGraphics bufferedGraphics)
         {
             graph.Clear(Color.CornflowerBlue);
-            foreach (Layer layer in Layers)
+
+            foreach (Node layer in Layers)
             {
-                layer.Draw(ref graph);
+                layer.draw(ref graph);
             }
+
             bufferedGraphics.Render();
         }
 
         public void FillTreeView(ref TreeView tree)
         {
-            foreach (Layer layer in Layers)
+            foreach (Node layer in Layers)
             {
-                tree.Nodes.Add(layer.GetName());
+                tree.Nodes.Add(layer.getName());
             }
         }
 
@@ -48,14 +50,14 @@ namespace Editor
 
         public Layer GetLayer(String layerName)
         {
-            Layer layer = Layers.Find(delegate(Layer desc) { return desc.GetName() == layerName; });
+            Layer layer = Layers.Find(delegate(Layer desc) { return ((Node)desc).getName() == layerName; });
             return layer;
         }
 
         public void SwapLayers(String prevNodeName, String nodeName)
         {
-            int left = Layers.FindIndex(delegate(Layer desc) { return desc.GetName() == prevNodeName; });
-            int right = Layers.FindIndex(delegate(Layer desc) { return desc.GetName() == nodeName; });
+            int left = Layers.FindIndex(delegate(Layer desc) { return ((Node)desc).getName() == prevNodeName; });
+            int right = Layers.FindIndex(delegate(Layer desc) { return ((Node)desc).getName() == nodeName; });
 
             object swap = Layers[left];
             Layers[left] = Layers[right];
@@ -85,7 +87,7 @@ namespace Editor
 
                foreach (Layer layer in Layers)
                {
-                   layer.SaveXML(ref writer);
+                   ((Node)layer).save(ref writer);
                }
 
                writer.WriteEndElement();
@@ -126,7 +128,7 @@ namespace Editor
                    if (Type == "Layer2D")
                    {
                        Layer layer = new Layer(Name);
-                       layer.LoadXML(ref resourceManager, nodeLayer.ChildNodes);
+                       ((Node)layer).load(ref resourceManager, nodeLayer.ChildNodes);
 
                        Layers.Add(layer);
                    }

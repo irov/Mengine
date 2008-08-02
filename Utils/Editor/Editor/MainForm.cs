@@ -542,7 +542,7 @@ namespace Editor
                     if (layer1 != null) return;
 
                     sceneTreeView.SelectedNode.Text = NeededName;
-                    layer.SetName(NeededName);
+                    ((Node)layer).setName(NeededName);
                     scene.Draw(graph,bufferedGraphics);
                 }
             }

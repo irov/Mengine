@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Editor
 {
-    class ResourceManager
+    public class ResourceManager
     {
         public void AddResource(ResourceImageDefault resource)
         {

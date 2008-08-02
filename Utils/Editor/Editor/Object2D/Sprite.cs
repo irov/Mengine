@@ -10,22 +10,49 @@ namespace Editor
 {
     class Sprite : Node
     {
-        Matrix Node.getTransform()
-        {
-            return M;
-        }
-
-        String Node.getName()
-        {
-            return Name;
-        }
-
-        void Node.setName(String name)
+        public Sprite(String name)
         {
             Name = name;
         }
 
-        void Node.save(ref XmlTextWriter writer)
+        Node m_parent;
+
+        public override Point getLocalPosition()
+        {
+            return m_localPosition;
+        }
+
+        public override Point getWorldPosition()
+	    {
+		    if( m_parent == null )
+		    {
+			    return ((Node)this).getLocalPosition();
+		    }
+
+            Point parentWorldPosition = m_parent.getWorldPosition();
+
+            Point worldPos = new Point(parentWorldPosition.X + m_localPosition.X,
+                parentWorldPosition.Y + m_localPosition.Y);
+
+            return worldPos;
+	    }
+
+        public override String getName()
+        {
+            return Name;
+        }
+
+        public override void setName(String name)
+        {
+            Name = name;
+        }
+
+        public override bool isAligned()
+        {
+            return m_isCenterAlign;
+        }
+
+        public override void save(ref XmlTextWriter writer)
         {
             writer.WriteStartElement("Node");
 
@@ -34,7 +61,7 @@ namespace Editor
             writer.WriteAttributeString("Type", "Sprite");
 
             writer.WriteStartElement("Transformation");
-            String value = "1;0;0;1;" + Position.X.ToString() + ";" + Position.Y.ToString();
+            String value = "1;0;0;1;" + m_localPosition.X.ToString() + ";" + m_localPosition.Y.ToString();
             writer.WriteAttributeString("Value", value);
             writer.WriteEndElement();
 
@@ -53,12 +80,7 @@ namespace Editor
             writer.WriteEndElement();
         }
 
-        bool Node.isAligned()
-        {
-            return m_isCenterAlign;
-        }
-
-        void Node.load(ref ResourceManager resourceManager, XmlNodeList ChildNodes)
+        public override void load(ref ResourceManager resourceManager, XmlNodeList ChildNodes)
         {
             foreach (XmlNode values in ChildNodes)
             {
@@ -74,8 +96,8 @@ namespace Editor
                 if (values.Name == "Transformation")
                 {
                     String[] coords = Value.Split(';');
-                    Position.X = Convert.ToInt32(coords[4]);
-                    Position.Y = Convert.ToInt32(coords[5]);
+                    m_localPosition.X = Convert.ToInt32(coords[4]);
+                    m_localPosition.Y = Convert.ToInt32(coords[5]);
                     continue;
                 }
 
@@ -88,18 +110,18 @@ namespace Editor
             }
         }
 
-        void Node.setPosition(int x, int y)
+        public override void setPosition(int x, int y)
         {
-            Position.X = x;
-            Position.Y = y;
+            m_localPosition.X = x;
+            m_localPosition.Y = y;
         }
 
-        void Node.draw(ref Graphics g)
+        public override void draw(ref Graphics g)
         {
             // если нет ресурса, просто рисуем квадрат.
             if (resource == null)
             {
-                g.DrawRectangle(DrawPen, m_alignOffset.X + Position.X, m_alignOffset.Y + Position.Y, DrawDebug.ImageNullSize, DrawDebug.ImageNullSize);
+                g.DrawRectangle(DrawPen, m_alignOffset.X + m_localPosition.X, m_alignOffset.Y + m_localPosition.Y, DrawDebug.ImageNullSize, DrawDebug.ImageNullSize);
                 return;
             }
 
@@ -107,55 +129,50 @@ namespace Editor
 
             g.DrawImage(
                     image,
-                    new Rectangle(Position.X+m_alignOffset.X, Position.Y + m_alignOffset.Y, image.Width, image.Height),
+                    new Rectangle(m_localPosition.X+m_alignOffset.X, m_localPosition.Y + m_alignOffset.Y, image.Width, image.Height),
                     new Rectangle(0, 0, image.Width, image.Height),
                     GraphicsUnit.Pixel);
 
-            g.DrawRectangle(DrawPen, m_alignOffset.X + Position.X, m_alignOffset.Y + Position.Y, image.Width, image.Height);
+            g.DrawRectangle(DrawPen, m_alignOffset.X + m_localPosition.X, m_alignOffset.Y + m_localPosition.Y, image.Width, image.Height);
         }
 
-        void Node.move(int offsetX, int offsetY)
+        public override void translate(int offsetX, int offsetY)
         {
-            Position.X += offsetX;
-            Position.Y += offsetY;
+            m_localPosition.X += offsetX;
+            m_localPosition.Y += offsetY;
         }
 
-        void Node.setPosX(int x)
+        public override void setPosX(int x)
         {
-            Position.X = x;
+            m_localPosition.X = x;
         }
 
-        void Node.setPosY(int y)
+        public override void setPosY(int y)
         {
-            Position.Y = y;
+            m_localPosition.Y = y;
         }
 
-        int Node.getPosX()
+        public override int getPosX()
         {
-            return Position.X;
+            return m_localPosition.X;
         }
 
-        int Node.getPosY()
+        public override int getPosY()
         {
-            return Position.Y;
+            return m_localPosition.Y;
         }
 
-        void Node.select()
+        public override void select()
         {
             DrawPen = DrawDebug.ImageSelectedSprite;
         }
 
-        void Node.deselect()
+        public override void deselect()
         {
             DrawPen = DrawDebug.ImageNullSprite;            
         }
 
-        public Sprite(String name)
-        {
-            Name = name;
-        }
-
-        bool Node.isHotSpot()
+        public override bool isHotSpot()
         {
             return false;
         }
@@ -199,9 +216,8 @@ namespace Editor
         }
 
         private ResourceImageDefault resource = null;
-        private Matrix M = new Matrix(1, 0, 0, 1, 0, 0);
         private String Name = "";
-        private Point Position = new Point(0, 0);
+        private Point m_localPosition = new Point(0, 0);
         private Point m_alignOffset = new Point(0, 0);
         private bool m_isCenterAlign = false;
         private int ImageIndex = 0;

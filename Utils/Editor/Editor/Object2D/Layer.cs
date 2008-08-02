@@ -13,7 +13,7 @@ using System.Xml;
 
 namespace Editor
 {
-    class Layer
+    class Layer : Node
     {
         public List<Node> Nodes = new List<Node>();
 
@@ -22,17 +22,27 @@ namespace Editor
             LayerName = _name;
         }
 
-        public void SwapNodes(String prevNodeName, String nodeName)
+        public override Point getLocalPosition()
         {
-            int left = Nodes.FindIndex(delegate(Node desc) { return desc.getName() == prevNodeName; });
-            int right = Nodes.FindIndex(delegate(Node desc) { return desc.getName() == nodeName; });
-
-            object swap = Nodes[left];
-            Nodes[left] = Nodes[right];
-            Nodes[right] = (Node)swap;
+            return m_localPosition;                        
         }
 
-        public void SaveXML(ref XmlTextWriter writer)
+        public override Point getWorldPosition()
+        {
+            return m_localPosition;
+        }
+
+        public override String getName()
+        {
+            return LayerName;
+        }
+
+        public override void setName(String name)
+        {
+            LayerName = name;
+        }
+
+        public override void save(ref XmlTextWriter writer)
         {
             writer.WriteStartElement("Node");
             writer.WriteAttributeString("Name", LayerName);
@@ -50,7 +60,7 @@ namespace Editor
             writer.WriteEndElement();
 
             writer.WriteStartElement("Size");
-            writer.WriteAttributeString("Value", Size.X.ToString() + ";"+Size.Y.ToString());
+            writer.WriteAttributeString("Value", Size.X.ToString() + ";" + Size.Y.ToString());
             writer.WriteEndElement();
 
             foreach (Node node in Nodes)
@@ -61,7 +71,7 @@ namespace Editor
             writer.WriteEndElement();
         }
 
-        public void LoadXML(ref ResourceManager resourceManager, XmlNodeList ChildNodes)
+        public override void load(ref ResourceManager resourceManager, XmlNodeList ChildNodes)
         {
             foreach (XmlNode node in ChildNodes)
             {
@@ -118,16 +128,81 @@ namespace Editor
             }
         }
 
+        public override void setPosition(int x, int y)
+        {
+            m_localPosition.X = x;
+            m_localPosition.Y = y;
+        }
+
+        public override void setPosX(int x)
+        {
+            m_localPosition.X = x;
+        }
+
+        public override void setPosY(int y)
+        {
+            m_localPosition.Y = y;
+        }
+
+        public override int getPosX()
+        {
+            return m_localPosition.X;
+        }
+
+        public override int getPosY()
+        {
+            return m_localPosition.Y;
+        }
+
+        public override void translate(int offsetX, int offsetY)
+        {
+            foreach (Node node in Nodes)
+            {
+                node.translate(offsetX, offsetY);
+            }
+        }
+
+        public override void draw(ref Graphics g)
+        {
+            foreach (Node node in Nodes)
+            {
+                node.draw(ref g);
+            }
+        }
+
+        public override void select()
+        {
+
+        }
+
+        public override void deselect()
+        {
+
+        }
+
+        public override bool isAligned()
+        {
+            return false;
+        }
+
+        public override bool isHotSpot()
+        {
+            return false;
+        }
+
+        public void SwapNodes(String prevNodeName, String nodeName)
+        {
+            int left = Nodes.FindIndex(delegate(Node desc) { return desc.getName() == prevNodeName; });
+            int right = Nodes.FindIndex(delegate(Node desc) { return desc.getName() == nodeName; });
+
+            object swap = Nodes[left];
+            Nodes[left] = Nodes[right];
+            Nodes[right] = (Node)swap;
+        }
 
         public void SetMain(bool _isMain)
         {
             isMain = _isMain;
-        }
-
-        public void SetPosition(int x, int y)
-        {
-            Position.X = x;
-            Position.Y = y;
         }
 
         public void SetSize(Point size)
@@ -152,7 +227,7 @@ namespace Editor
 
         public Point GetPosition()
         {
-            return Position;
+            return m_localPosition;
         }
 
         public bool GetMain()
@@ -168,16 +243,6 @@ namespace Editor
         public void SetScroll(bool scroll)
         {
             isScrollable = scroll;
-        }
-
-        public void SetName(String _name)
-        {
-            LayerName = _name;
-        }
-
-        public String GetName()
-        {
-            return LayerName;
         }
 
         public Node GetNode(String _name)
@@ -208,14 +273,6 @@ namespace Editor
             Nodes.Add(node);
         }
 
-        public void Draw(ref Graphics g)
-        {
-            foreach (Node node in Nodes)
-            {
-                node.draw(ref g);
-            }
-        }
-
         public void RemoveNode(String name)
         {
             Node item = Nodes.Find(delegate(Node desc) { return desc.getName() == name; });
@@ -224,8 +281,9 @@ namespace Editor
 
         private bool isMain = false;
         private bool isScrollable = false;
-        private Point Position = new Point(0, 0);
         private String LayerName = "";
         private Point Size = new Point(0,0);
+
+        private Point m_localPosition = new Point(0, 0);
     }
 }

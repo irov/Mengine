@@ -8,23 +8,45 @@ using System.Xml;
 
 namespace Editor
 {
-    interface Node
+    public abstract class Node
     {
-        Matrix getTransform();
-        String getName();
-        void setName(String name);
-        void save(ref XmlTextWriter writer);
-        void load(ref ResourceManager resourceManager, XmlNodeList ChildNodes);
-        void setPosition(int x, int y);
-        void setPosX(int x);
-        void setPosY(int y);
-        int  getPosX();
-        int  getPosY();
-        void move(int offsetX, int offsetY);
-        void draw(ref Graphics g);
-        void select();
-        void deselect();
-        bool isAligned();
-        bool isHotSpot();
+        public abstract String getName();
+        public abstract void setName(String name);
+        public abstract void save(ref XmlTextWriter writer);
+        public abstract void load(ref ResourceManager resourceManager, XmlNodeList ChildNodes);
+        public abstract void setPosition(int x, int y);
+        public abstract void setPosX(int x);
+        public abstract void setPosY(int y);
+        public abstract int getPosX();
+        public abstract int getPosY();
+        public abstract void translate(int offsetX, int offsetY);
+        public abstract void draw(ref Graphics g);
+        public abstract void select();
+        public abstract void deselect();
+        public abstract bool isAligned();
+        public abstract bool isHotSpot();
+
+        //
+        public abstract Point getLocalPosition();
+       // public abstract Point getWorldPosition();
+
+        public virtual Point getWorldPosition()
+        {
+            if (m_parent == null)
+            {
+                return ((Node)this).getLocalPosition();
+            }
+
+            Point parentWorldPosition = m_parent.getWorldPosition();
+
+            Point worldPos = new Point(parentWorldPosition.X + m_localPosition.X,
+                parentWorldPosition.Y + m_localPosition.Y);
+
+            return worldPos;
+        }
+
+        protected Node m_parent;
+
+        //List<Node> childrens;
     }
 }

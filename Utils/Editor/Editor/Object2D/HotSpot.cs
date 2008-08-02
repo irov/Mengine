@@ -19,6 +19,18 @@ namespace Editor
             points.Add(new Point(0, DrawDebug.ImageNullSize));
         }
 
+        Point m_localPosition;
+
+        public override Point getLocalPosition()
+        {
+            return m_localPosition;
+        }
+
+        public override Point getWorldPosition()
+        {
+            return m_localPosition;
+        }
+
         public HotSpot(String name, bool empty)
         {
             Name = name;
@@ -32,32 +44,27 @@ namespace Editor
             points.Add(new Point(0, DrawDebug.ImageNullSize));
         }
 
-        bool Node.isHotSpot()
+        public override bool isHotSpot()
         {
             return true;
         }
 
-        bool Node.isAligned()
+        public override bool isAligned()
         {
             return false;
         }
 
-        Matrix Node.getTransform()
-        {
-            return M;
-        }
-
-        String Node.getName()
+        public override String getName()
         {
             return Name;
         }
 
-        void Node.setName(String name)
+        public override void setName(String name)
         {
             Name = name;
         }
 
-        void Node.save(ref XmlTextWriter writer)
+        public override void save(ref XmlTextWriter writer)
         {
             writer.WriteStartElement("Node");
             writer.WriteAttributeString("Name", Name);
@@ -75,7 +82,7 @@ namespace Editor
                 Point pnt = new Point();
 
                 pnt.X = point.X - Position.X;
-                pnt.Y =  point.Y - Position.Y;
+                pnt.Y = point.Y - Position.Y;
 
                 value = pnt.X + ";" + pnt.Y;
                 writer.WriteAttributeString("Value", value);
@@ -85,7 +92,7 @@ namespace Editor
             writer.WriteEndElement();
         }
 
-        void Node.load(ref ResourceManager resourceManager, XmlNodeList ChildNodes)
+        public override void load(ref ResourceManager resourceManager, XmlNodeList ChildNodes)
         {
             foreach (XmlNode values in ChildNodes)
             {
@@ -116,7 +123,7 @@ namespace Editor
             }
         }
 
-        void Node.setPosition(int x, int y)
+        public override void setPosition(int x, int y)
         {
             Position.X = x;
             Position.Y = y;
@@ -130,7 +137,7 @@ namespace Editor
             }
         }
 
-        void Node.setPosX(int x)
+        public override void setPosX(int x)
         {
             for (int i = 0; i < points.Count; i++)
             {
@@ -144,7 +151,7 @@ namespace Editor
             Position.X = x;
         }
 
-        void Node.setPosY(int y)
+        public override void setPosY(int y)
         {
             for (int i = 0; i < points.Count; i++)
             {
@@ -158,7 +165,7 @@ namespace Editor
             Position.Y = y;
         }
 
-        void Node.draw(ref Graphics g)
+        public override void draw(ref Graphics g)
         {
             if(points.Count==1)
             {
@@ -176,7 +183,7 @@ namespace Editor
             }
         }
 
-        void Node.move(int offsetX, int offsetY)
+        public override void translate(int offsetX, int offsetY)
         {
             Position.X += offsetX;
             Position.Y += offsetY;
@@ -190,22 +197,22 @@ namespace Editor
             }
         }
 
-        int Node.getPosX()
+        public override int getPosX()
         {
             return Position.X;
         }
 
-        int Node.getPosY()
+        public override int getPosY()
         {
             return Position.Y;
         }
 
-        void Node.select()
+        public override void select()
         {
             DrawPen = DrawDebug.ImageSelectedSprite;
         }
 
-        void Node.deselect()
+        public override void deselect()
         {
             DrawPen = DrawDebug.PolygonSelected;
         }

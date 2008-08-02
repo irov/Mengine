@@ -6,7 +6,7 @@
 
 class Box2DPhysicBody
 	: public Menge::PhysicBody2DInterface
-	, public b2BodyListener
+//	, public b2BodyListener
 {
 public:
 	Box2DPhysicBody( b2World* _world, bool _static );
@@ -48,7 +48,7 @@ public:
 
 	void wakeUp() override;
 
-	void applyForceAndTorque() override;
+//	void applyForceAndTorque() override;
 
 	b2Body* getBody();
 

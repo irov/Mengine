@@ -27,7 +27,7 @@ namespace Editor
             int offsetY = y-Y;
 
             if(SelectedNode!=null)
-            SelectedNode.move(offsetX, offsetY);
+            SelectedNode.translate(offsetX, offsetY);
 
             X = x;
             Y = y;

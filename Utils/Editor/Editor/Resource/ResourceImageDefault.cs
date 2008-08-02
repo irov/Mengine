@@ -15,7 +15,7 @@ namespace Editor
         public String path;
     }
 
-    class ResourceImageDefault
+    public class ResourceImageDefault
     {
         public ResourceImageDefault(String name, String type)
         {

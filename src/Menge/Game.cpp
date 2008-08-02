@@ -244,7 +244,7 @@ namespace Menge
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", m_debugResource );
+					XML_CASE_ATTRIBUTE( "Path", m_debugResourceFont );
 				}
 			}
 		}
@@ -498,12 +498,12 @@ namespace Menge
 		}
 
 
-		if(m_debugResource.empty() == false)
+		if(m_debugResourceFont.empty() == false)
 		{
-			Holder<ResourceManager>::hostage()->loadResource( "DEBUG", m_debugResource, "DEBUG" );
+			Holder<ResourceManager>::hostage()->loadResource( "DEBUG", m_debugResourceFont, "DEBUG" );
 
 			m_debugTextField = SceneManager::createNodeT<TextField>("TextField");
-			m_debugTextField->setResource( "ArialMiddle" ); //ACHTUNG
+			m_debugTextField->setResource( m_debugResourceFont ); 
 			m_debugTextField->activate();
 		}
 

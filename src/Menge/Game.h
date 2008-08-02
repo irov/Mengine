@@ -173,7 +173,7 @@ namespace Menge
 
 
 		/////
-		std::string m_debugResource;
+		std::string m_debugResourceFont;
 		char m_debugText[128];
 		float m_FPS;
 	};	

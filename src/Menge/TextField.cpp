@@ -360,6 +360,7 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::alphaTo( float _alpha, float _time )
 	{
+		Node::alphaTo( _alpha, _time );
 		/*m_newColor = m_color;
 		m_newColor.a = _alpha;
 		m_newOutlineColor = m_outlineColor;

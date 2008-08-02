@@ -6,6 +6,8 @@
 
 #	include "python.h"
 
+#	include "RenderEngine.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -47,13 +49,21 @@ namespace Menge
 
 		_debugTextField->setLocalPosition(mt::vec2f::zero_v2);
 
+		static char m_debugText[128];
+
+		int dipCount = Holder<RenderEngine>::hostage()->getNumDIP();
+		sprintf( m_debugText, "DIP = %d\n", dipCount );
+
+		_debugTextField->setText( m_debugText );
+		_debugTextField->render( vp, false );
+
 		for(ProfileHistoryList::iterator it = historyList.begin();
 			it != historyList.end(); ++it)
 		{
 			ProfileHistory & h = (*it);
 
-			static char m_debugText[128];
-			sprintf( m_debugText, "%s = %.7f\n", h.name.c_str(), h.currentTime );
+			sprintf( m_debugText, "%s : ctime = %.7f; calls = %d\n", h.name.c_str(), h.currentTime, h.numCallsThisFrame );
+
 			_debugTextField->translate(mt::vec2f(0,25));
 			_debugTextField->setText( m_debugText );
 			_debugTextField->render( vp, false );

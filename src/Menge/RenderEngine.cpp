@@ -36,6 +36,11 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	int RenderEngine::getNumDIP() const
+	{
+		return m_interface->getNumDIP();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle /* = 0  */,
 											int _FSAAType, int _FSAAQuality )
 	{

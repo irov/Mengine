@@ -303,6 +303,7 @@ namespace Menge
 class HGE
 {
 public:
+	virtual int			CALL    GetNumDips() = 0;
 	virtual	void		CALL	Release() = 0;
 
 	virtual bool		CALL	System_Initiate( Menge::LogSystemInterface* _logSystem ) = 0;

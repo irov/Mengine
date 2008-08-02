@@ -171,6 +171,7 @@ void CALL HGE_Impl::Gfx_SetTransform(float x, float y, float dx, float dy, float
 
 bool CALL HGE_Impl::Gfx_BeginScene( HTARGET targ )
 {
+	NumDips = 0;
 	LPDIRECT3DSURFACE8 pSurf=0, pDepth=0;
 	D3DDISPLAYMODE Mode;
 	CRenderTargetList *target=(CRenderTargetList *)targ;
@@ -681,6 +682,11 @@ void CALL HGE_Impl::Texture_Unlock(HTEXTURE tex)
 
 //////// Implementation ////////
 
+int	CALL HGE_Impl::GetNumDips()
+{
+	return NumDips;
+}
+
 void HGE_Impl::_render_batch( bool bEndScene )
 {
 	HRESULT hr;
@@ -694,6 +700,7 @@ void HGE_Impl::_render_batch( bool bEndScene )
 			{
 				case HGEPRIM_QUADS:
 					hr = pD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, nPrim<<2, 0, nPrim<<1);
+					NumDips++;
 					if( FAILED( hr ) )
 					{
 						System_Log("ERROR!!!");

@@ -75,6 +75,11 @@ HGERenderSystem::~HGERenderSystem()
 	m_hge->Release();
 }
 //////////////////////////////////////////////////////////////////////////
+int HGERenderSystem::getNumDIP() const
+{
+	return m_hge->GetNumDips();
+}
+//////////////////////////////////////////////////////////////////////////
 bool HGERenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 {
 	m_logSystem = _logSystem;

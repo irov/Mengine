@@ -89,6 +89,8 @@ public:
 	void onWindowActive( bool _active ) override;
 	void onWindowClose() override;
 
+	int  getNumDIP() const override;
+
 private:
 	Menge::LogSystemInterface* m_logSystem;
 	mt::vec2f m_contentResolution;

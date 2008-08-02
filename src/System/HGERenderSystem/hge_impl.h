@@ -75,6 +75,7 @@ bool DFrame();
 class HGE_Impl : public HGE
 {
 public:
+	virtual int			CALL    GetNumDips();
 	virtual	void		CALL	Release();
 
 	virtual bool		CALL	System_Initiate( Menge::LogSystemInterface* _logSystem );
@@ -365,6 +366,7 @@ public:
 	std::vector<int>	m_resList;
 	hgeBlendState m_currSrcBlend, m_currDstBlend;
 	//int m_viewportX, m_viewportY, m_viewportWidth, m_viewportHeight;
+	int				    NumDips;
 
 private:
 	HGE_Impl();

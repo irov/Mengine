@@ -129,6 +129,7 @@ namespace Menge
 
 		const mt::vec2f& getViewFactor() const;
 		const mt::vec2f& getViewOrigin() const;
+		int getNumDIP() const;
 	protected:
 		Menge::RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;

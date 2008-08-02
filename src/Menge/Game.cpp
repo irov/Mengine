@@ -42,6 +42,7 @@ namespace Menge
 		, m_currentAccount( 0 )
 		, m_loadingAccounts( false )
 		, m_FPS( 0.0f )
+		, m_debugTextField( NULL )
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
@@ -418,6 +419,9 @@ namespace Menge
 		Holder<ProfilerEngine>::hostage()->beginProfile("Render");
 		m_player->render( _enableDebug );
 		Holder<ProfilerEngine>::hostage()->endProfile("Render");
+
+		Holder<ProfilerEngine>::hostage()->displayStats(m_debugTextField);
+		Holder<ProfilerEngine>::hostage()->endProfile("Menge");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::string Game::getPathEntities( const std::string& _entity ) const
@@ -498,7 +502,15 @@ namespace Menge
 				->loadResource( it->second.first, path, it->first );
 		}
 
-		Holder<ResourceManager>::hostage()->loadResource( "DEBUG", m_debugResource, "DEBUG" );
+
+		if(m_debugResource.empty() == false)
+		{
+			Holder<ResourceManager>::hostage()->loadResource( "DEBUG", m_debugResource, "DEBUG" );
+
+			m_debugTextField = SceneManager::createNodeT<TextField>("TextField");
+			m_debugTextField->setResource( "ArialMiddle" ); //ACHTUNG
+			m_debugTextField->activate();
+		}
 
 		for( TMapDeclaration::iterator
 			it = m_mapArrowsDeclaration.begin(),
@@ -555,6 +567,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()
 	{
+		if( m_debugTextField )
+		{
+			m_debugTextField->release();
+			delete m_debugTextField;
+		}
+
 		if( m_pyPersonality )
 		{
 			Holder<ScriptEngine>::hostage()

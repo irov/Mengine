@@ -114,6 +114,7 @@ namespace Menge
 //
 	protected:
 
+		TextField * m_debugTextField;
 		Player* m_player;
 		std::string m_title;
 		mt::vec2f	m_resourceResolution;

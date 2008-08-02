@@ -149,7 +149,6 @@ namespace Menge
 		, m_physicEngine( NULL )
 		, m_xmlEngine( NULL )
 		, m_mouseBounded( false )
-		, m_debugTextField( NULL )
 	{
 		//ASSERT( m_interface );
 
@@ -302,9 +301,6 @@ namespace Menge
 
 		if( m_debugInfo )	
 		{
-			m_debugTextField = SceneManager::createNodeT<TextField>("TextField");
-			m_debugTextField->setResource( "ArialMiddle" );
-			m_debugTextField->activate();
 		}
 
 		return true;
@@ -504,12 +500,6 @@ namespace Menge
 	{
 		if( Holder<Game>::empty() == false )
 		{
-			if( m_debugTextField )
-			{
-				m_debugTextField->release();
-				delete m_debugTextField;
-			}
-
 			Holder<Game>::hostage()->release();
 		}
 	}
@@ -659,11 +649,6 @@ namespace Menge
 
 		m_renderEngine->beginScene();
 		Holder<Game>::hostage()->render( m_debugRender );
-
-		// ????????????????????? или делать отдельную begin/end scene ?
-		Holder<ProfilerEngine>::hostage()->endProfile("Menge");
-
-		Holder<ProfilerEngine>::hostage()->displayStats(m_debugTextField);
 
 		m_renderEngine->endScene();
 	}

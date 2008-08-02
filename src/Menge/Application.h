@@ -112,7 +112,6 @@ namespace Menge
 
 		bool isDebugRender() const;
 	private:
-		TextField * m_debugTextField;
 		ApplicationInterface* m_interface;
 
 		std::string m_gameInfo;

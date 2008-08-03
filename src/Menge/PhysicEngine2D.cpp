@@ -64,12 +64,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface* PhysicEngine2D::createDistanceJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _offsetBody2, bool _collideBodies )
 	{
-		return m_interface->createDistanceJoint( _body1->getInterface(), _body2->getInterface(), _offsetBody1.m, _offsetBody2.m, _collideBodies );
+		PhysicBody2DInterface * rigidBody1 = _body1->getInterface();
+		PhysicBody2DInterface * rigidBody2 = _body2->getInterface();
+
+		return m_interface->createDistanceJoint( rigidBody1, rigidBody2, _offsetBody1.m, _offsetBody2.m, _collideBodies );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface* PhysicEngine2D::createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _limits, bool _collideBodies )
 	{
-		return m_interface->createHingeJoint( _body1->getInterface(), _body2->getInterface(), _offsetBody1.m, _limits.m, _collideBodies );
+		PhysicBody2DInterface * rigidBody1 = _body1->getInterface();
+		PhysicBody2DInterface * rigidBody2 = _body2->getInterface();
+
+		return m_interface->createHingeJoint( rigidBody1, rigidBody2, _offsetBody1.m, _limits.m, _collideBodies );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine2D::destroyJoint( PhysicJoint2DInterface* _joint )
@@ -84,7 +90,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface* PhysicEngine2D::createMouseJoint( RigidBody2D* _body, int _x, int _y  )
 	{
-		return m_interface->createMouseJoint( _body->getInterface(), _x, _y );
+		PhysicBody2DInterface * rigidBody = _body->getInterface();
+
+		return m_interface->createMouseJoint( rigidBody, _x, _y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine2D::onMouseMove( int x, int y )

@@ -156,13 +156,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderVideoStreamInterface* RenderEngine::loadImageVideoStream( const String & _filename )
 	{
-		RenderVideoStreamInterface * image = m_interface->loadImageVideoStream( _filename.c_str() );
+		RenderVideoStreamInterface * image = m_interface->loadImageVideoStream( _filename );
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * RenderEngine::loadImage( const String & _filename, unsigned int _filter )
 	{
-		RenderImageInterface * image = m_interface->getImage(_filename.c_str());
+		RenderImageInterface * image = m_interface->getImage( _filename );
 
 		if(image == 0)
 		{
@@ -286,17 +286,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	CameraInterface * RenderEngine::createCamera( const std::string& _name )
 	{
-		return m_interface->createCamera(_name.c_str());
+		return m_interface->createCamera( _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EntityInterface * RenderEngine::createEntity( const std::string& _name, const std::string& _meshName )
 	{
-		return m_interface->createEntity(_name.c_str(), _meshName.c_str());
+		return m_interface->createEntity( _name, _meshName );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LightInterface * RenderEngine::createLight( const std::string& _name )
 	{
-		return m_interface->createLight(_name.c_str());
+		return m_interface->createLight( _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseCamera( CameraInterface * _camera )

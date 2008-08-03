@@ -167,9 +167,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateSprite_()
 	{
-		if( m_resource == 0 ) return;
+		if( m_resource == 0 ) 
+		{
+			return;
+		}
 
-		bool isAlpha = m_resource->isAlpha(m_currentImageIndex);
+		bool isAlpha = m_resource->isAlpha( m_currentImageIndex );
 
 		if( isAlpha )
 		{
@@ -290,6 +293,8 @@ namespace	Menge
 			mt::mul_v2_m3( m_renderVertex[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
 			mt::mul_v2_m3( m_renderVertex[2], m_offset + m_size, wm );
 			mt::mul_v2_m3( m_renderVertex[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
+
+			m_invalidateRenderVertex = false;
 		}
 
 		return m_renderVertex;

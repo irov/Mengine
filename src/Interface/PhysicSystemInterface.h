@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+
 namespace Menge
 {
 	class RigidBodyInterface
@@ -69,14 +71,14 @@ namespace Menge
 
 		virtual float * getGravity() const = 0;
 	public:
-		virtual ControllerInterface * createCapsuleController( float * _startPos, float _initialRadius, float _initialHeight ) = 0;
+		virtual ControllerInterface * createCapsuleController( const float * _startPos, float _initialRadius, float _initialHeight ) = 0;
 		virtual void releaseCapsuleController( ControllerInterface * _capsule ) = 0;
 
 		virtual GeometryInterface * cookConvex( const float * _verts, int _vertexSize ) = 0;
 		virtual GeometryInterface * cookConvex( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) = 0;
-		virtual GeometryInterface * cookConvex( const char * _filename ) = 0;
+		virtual GeometryInterface * cookConvex( const String & _filename ) = 0;
 		virtual GeometryInterface * cookConcave( const float * _verts, int _vertexSize, const int * _indecies, int _indexSize ) = 0;
-		virtual GeometryInterface * cookConcave( const char * _filename ) = 0;
+		virtual GeometryInterface * cookConcave( const String & _filename ) = 0;
 		virtual GeometryInterface * cookBox( float _width, float _height, float _depth ) = 0;
 		virtual void removeGeometry( GeometryInterface * _geom ) = 0;
 	public:

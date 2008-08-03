@@ -379,6 +379,14 @@
 				Name="Xml"
 				>
 				<File
+					RelativePath=".\XmlCompile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\XmlCompile.h"
+					>
+				</File>
+				<File
 					RelativePath=".\XmlEngine.cpp"
 					>
 				</File>

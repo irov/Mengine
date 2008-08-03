@@ -39,7 +39,7 @@ namespace Menge
 	{
 		if(_enableDebug)
 		{
-			for(int i = 0; i < m_poly.num_points(); i++)
+			for( std::size_t i = 0; i < m_poly.num_points(); i++)
 			{
 				Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF, m_poly[i], m_poly[(i + 1) % m_poly.num_points() ] );
 			}

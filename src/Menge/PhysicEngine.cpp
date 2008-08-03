@@ -25,7 +25,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ControllerInterface * PhysicEngine::createCapsuleController( const mt::vec3f & _startPos, float _initialRadius, float _initialHeight )
 	{
-		return m_interface->createCapsuleController( (float*)_startPos.m, _initialRadius, _initialHeight );
+		return m_interface->createCapsuleController( _startPos.m, _initialRadius, _initialHeight );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	GeometryInterface * PhysicEngine::cookConvex( const float * _verts, int _vertexSize )
@@ -50,7 +50,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	GeometryInterface * PhysicEngine::cookConcave( const std::string& _filename )
 	{
-		return m_interface->cookConcave( _filename.c_str() );
+		return m_interface->cookConcave( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	GeometryInterface * PhysicEngine::cookBox( float _width, float _height, float _depth )

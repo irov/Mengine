@@ -16,27 +16,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::loadPath( const std::string& _path )
 	{
-		m_interface->loadPath( _path.c_str() );
+		m_interface->loadPath( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::loadPak( const std::string& _filename )
 	{
-		m_interface->loadPak( _filename.c_str() );
+		m_interface->loadPak( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::unloadPak( const std::string& _filename )
 	{
-		m_interface->unloadPak( _filename.c_str() );
+		m_interface->unloadPak( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::existFile( const std::string& _filename )
 	{
-		return m_interface->existFile( _filename.c_str() );
+		return m_interface->existFile( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DataStreamInterface * FileEngine::openFile( const std::string& _filename )
 	{
-		return m_interface->openFile( _filename.c_str() );
+		return m_interface->openFile( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::closeStream( DataStreamInterface* _stream )
@@ -68,17 +68,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::createFolder( const std::string& _path )
 	{
-		return m_interface->createFolder( _path.c_str() );
+		return m_interface->createFolder( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::deleteFolder( const std::string& _path )
 	{
-		return m_interface->deleteFolder( _path.c_str() );
+		return m_interface->deleteFolder( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::changeDir( const std::string& _dir )
 	{
-		return m_interface->changeDir( _dir.c_str() );
+		return m_interface->changeDir( _dir );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DataStreamInterface * FileEngine::createMemoryFile( void * _data, std::size_t _size, bool _freeOnClose )

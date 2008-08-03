@@ -18,7 +18,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::logMessage( const std::string & _message, bool _maskDebug, bool _endl, bool _timeStamp )
 	{
-		m_interface->logMessage( _message.c_str(), _maskDebug, _endl, _timeStamp );
+		m_interface->logMessage( _message, _maskDebug, _endl, _timeStamp );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::displayStats( TextField * _debugTextField )

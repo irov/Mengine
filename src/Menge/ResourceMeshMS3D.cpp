@@ -173,7 +173,7 @@ namespace Menge
 
 			if (numGroupTriangles > 0)
 			{
-				for(int j = 0; j <numGroupTriangles; j++)
+				for(unsigned short j = 0; j <numGroupTriangles; j++)
 				{
 					m_groups[i].triangleIndices[j] = *read_buffer<unsigned short>(buffer);
 				}

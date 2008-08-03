@@ -98,9 +98,9 @@ namespace	Menge
 		if( end_i > m_width ) end_i = m_width;
 		if( end_j > m_height ) end_j = m_height;
 
-		for( int i = init_i; i < end_i; i++ )
+		for( unsigned int i = init_i; i < end_i; i++ )
 		{
-			for( int j = init_j; j < end_j; j++ )
+			for( unsigned int j = init_j; j < end_j; j++ )
 			{
 				ImageBlock tile = m_resourceMap->getTile( i, j );
 

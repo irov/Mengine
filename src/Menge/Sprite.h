@@ -5,6 +5,8 @@
 #	include "ColourValue.h"
 #	include "ValueInterpolator.h"
 
+#	include "Color.h"
+
 #	include "math/mat3.h"
 #	include "math/vec4.h"
 
@@ -100,7 +102,7 @@ namespace Menge
 		\param _color - результирующий цвет
 		\param _time - время, в течении которого будет изменятся цвет
 		*/
-		virtual void colorTo( const ColourValue & _color, float _time );
+		virtual void colorTo( const Color & _color, float _time );
 
 		void setAlpha( float _alpha ) override;
 		void alphaTo( float _alpha, float _time ) override;
@@ -109,14 +111,14 @@ namespace Menge
 		/*!
 		\param _color значение цвета
 		*/
-		void setColor( const ColourValue & _color );
+		void setColor( const Color & _color );
 
 		//! Возвращает цвет спрайта.
 		/*!
 		\return цвет
 		*/
 
-		const ColourValue & getColor() const;
+		const Color & getColor() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -164,8 +166,8 @@ namespace Menge
 		mt::vec2f m_renderVertex[4];
 		bool m_invalidateRenderVertex;
 
-		ColourValue m_color;
-		ValueInterpolator<ColourValue> m_colorTo;
+		Color m_color;
+		ValueInterpolator<Color> m_colorTo;
 
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;

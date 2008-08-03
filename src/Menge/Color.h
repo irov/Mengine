@@ -4,26 +4,32 @@
 
 namespace	Menge
 {
-	class Color
-		: public mt::vec4f
+	struct Color
 	{
 	public:
-		Color();
-		Color( float _red, float _green, float _blue, float _alpha );
+		union
+		{
+			struct
+			{
+				unsigned char r;
+				unsigned char g;
+				unsigned char b;
+				unsigned char a;
+			};
 
-		void set( unsigned int _val );
-		unsigned int get() const;
-		float getA() const;
-		float getR() const;
-		float getG() const;
-		float getB() const;
+			unsigned char m[4];
 
-		float operator [] ( const unsigned int _i ) const;
-		float& operator [] ( const unsigned int _i );
+			unsigned int v;
+		};
 
-		Color operator * ( float _s ) const;
-		Color operator + ( const Color & _color ) const;
-		Color& operator= ( const Color& _color );
-		
+	public:
+		Color( unsigned char _r, unsigned char _g, unsigned char _b, unsigned char _a )
+			: r(_r)
+			, g(_g)
+			, b(_b)
+			, a(_a)
+		{
+
+		}
 	};
 }

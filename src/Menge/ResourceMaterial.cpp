@@ -14,6 +14,7 @@ namespace Menge
 	ResourceMaterial::ResourceMaterial( const ResourceFactoryParam & _params )
 		: ResourceReference( _params )
 		, m_resourceImage( 0 )
+		, m_color( 255, 255, 255, 255 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -47,7 +48,7 @@ namespace Menge
 			m_material.texture = const_cast<RenderImageInterface*>( m_resourceImage->getImage( 0 ) );
 		}
 
-		m_material.color = m_color.get();
+		m_material.color = m_color.v;
 
 		return true;
 	}

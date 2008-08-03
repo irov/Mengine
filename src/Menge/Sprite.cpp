@@ -23,7 +23,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
 	: m_resource( 0 )
-	, m_color( 1.0f, 1.0f, 1.0f, 1.0f )
+	, m_color( 255, 255, 255, 255 )
 	, m_currentImageIndex( 0 )
 	, m_centerAlign( false )
 	, m_alignOffset( 0.f, 0.f )
@@ -244,7 +244,7 @@ namespace	Menge
 		invalidateRenderVertex();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::colorTo( const ColourValue & _color, float _time )
+	void Sprite::colorTo( const Color & _color, float _time )
 	{
 		if( m_colorTo.isStarted() )
 		{
@@ -260,7 +260,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setAlpha( float _alpha )
 	{
-		m_color.a = _alpha;
+		m_color.a = (unsigned char)(_alpha * 255.f);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::alphaTo( float _alpha, float _time )
@@ -272,8 +272,8 @@ namespace	Menge
 			this->callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 			m_colorTo.stop();
 		}
-		ColourValue newColor = m_color;
-		newColor.a = _alpha;
+		Color newColor = m_color;
+		newColor.a = (unsigned char)(_alpha * 255.f);
 		if( m_colorTo.start( m_color, newColor, _time, length_color ) == false )
 		{
 			m_color	 = newColor;
@@ -327,19 +327,19 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()->renderImage(
 			renderVertex,
 			m_uv,
-			m_color.getAsARGB(),
+			m_color.v,
 			renderImage,
 			m_blendSrc,
 			m_blendDest
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setColor( const ColourValue & _color )
+	void Sprite::setColor( const Color & _color )
 	{
 		m_color = _color;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ColourValue & Sprite::getColor() const
+	const Color & Sprite::getColor() const
 	{
 		return m_color;
 	}

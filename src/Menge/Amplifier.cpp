@@ -20,7 +20,8 @@ namespace Menge
 	, m_buffer(0)
 	, m_currentPlayList(0)
 	, m_volume( 1.0f )
-	{}
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::~Amplifier()
 	{

@@ -17,10 +17,12 @@ namespace Menge
 		bool start( const T& _value1, const T& _value2, float _time, ABS _abs )
 		{
 			m_started = false;
+
 			if( _time < 0.00001f || _abs( _value2 - _value1 ) < 0.00001f ) 
 			{
 				return false;
 			}
+
 			m_started = true;
 			m_value1 = _value1;
 			m_value2 = _value2;
@@ -36,7 +38,7 @@ namespace Menge
 			m_started = false;
 		}
 
-		bool update( float _timing, T* _out )
+		bool update( float _timing, T * _out )
 		{
 			if( ( m_timing + _timing ) > m_time )
 			{
@@ -55,6 +57,7 @@ namespace Menge
 				m_prev = *_out;
 				return false;
 			}
+
 			return false;
 		}
 
@@ -67,6 +70,7 @@ namespace Menge
 		{
 			return m_delta;
 		}
+
 	protected:
 		T m_value1;
 		T m_value2;
@@ -77,5 +81,4 @@ namespace Menge
 		float m_invTime;
 		bool m_started;
 	};
-
-}	// namespace Menge
+}

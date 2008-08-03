@@ -364,7 +364,6 @@ namespace	Menge
 
 		this->callMethod( "onActivate", "()" );
 
-
 		//m_oldPos = getLocalPosition();
 
 		return result;

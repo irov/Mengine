@@ -32,16 +32,11 @@ namespace     Menge
 		, m_centerAlign( false )
 		, m_rightAlign( false )
 		, m_alignOffset( 0.f, 0.f )
-		//, m_changingColorTime( 0.0f )
-		//, m_changingColor( false )
-		//, m_newColor( 1.0f, 1.0f, 1.0f, 1.0f )
-		//, m_outlineImage( 0 )
 		, m_maxWidth( 2048.f )
 		, m_charOffset( 0.0f )
 		, m_lineOffset( 0 )
 		, m_outline( true )
 	{
-		//m_outlineFontName.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TextField::~TextField()
@@ -108,31 +103,16 @@ namespace     Menge
 
 			return false;
 		}
-
-		/*if( m_outlineFontName.empty() == false )
-		{
-			m_outlineImage = 
-				Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceImage>( m_outlineFontName );
-
-			if( m_outlineImage == 0 )
-			{
-				MENGE_LOG( "Error: Outline Image can't loaded '%s'", m_outlineFontName.c_str() );
-				return false;
-			}
-		}*/
-
+	
 		if( m_height == 0.0f )
 		{
 			m_height = m_resource->getInitSize();
 		}
 
-		if( !m_lineOffset )
+		if( m_lineOffset == 0 )
 		{
 			m_lineOffset = m_height;
 		}
-
-		m_spaceWidth = m_resource->getCharRatio(' ') * m_height;
 
 		return true;
 	}
@@ -144,8 +124,6 @@ namespace     Menge
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resource );
 
-		//Holder<ResourceManager>::hostage()
-		//	->releaseResource( m_outlineImage );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::loader( XmlElement * _xml )
@@ -161,7 +139,6 @@ namespace     Menge
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
 			XML_CASE_ATTRIBUTE_NODE( "RightAlign", "Value", m_rightAlign );
 			XML_CASE_ATTRIBUTE_NODE( "OutlineColor", "Value", m_outlineColor );
-			//XML_CASE_ATTRIBUTE_NODE( "OutlineImage", "Name", m_outlineFontName);
 			XML_CASE_ATTRIBUTE_NODE( "Outline", "Value", m_outline );
 			XML_CASE_ATTRIBUTE_NODE( "MaxWidth", "Value", m_maxWidth );
 			XML_CASE_ATTRIBUTE_NODE( "CharOffset", "Value", m_charOffset );
@@ -169,80 +146,43 @@ namespace     Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::renderPass_( const ColourValue & _color, const RenderImageInterface * _renderImage, mt::vec4f _uv, float k, float h )
+	void TextField::_invalidateWorldMatrix()
 	{
-		const mt::mat3f & wm = getWorldMatrix();
-
-		mt::vec2f offset = mt::vec2f::zero_v2;
-
-		for( std::list<Line>::iterator 
+		Node::_invalidateWorldMatrix();
+		
+		for( std::list<TextLine>::iterator 
 			it_line = m_lines.begin(),
 			it_line_end = m_lines.end(); 
 		it_line != it_line_end; 
 		++it_line )
 		{
-			const TCharsData & charsData = it_line->charsData;
+			it_line->invalidateRenderLine();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::renderPass_( const ColourValue & _color, const RenderImageInterface * _renderImage )
+	{
+		mt::vec2f offset = mt::vec2f::zero_v2;
 
+		for( std::list<TextLine>::iterator 
+			it_line = m_lines.begin(),
+			it_line_end = m_lines.end(); 
+		it_line != it_line_end; 
+		++it_line )
+		{
 			if( m_centerAlign )
 			{
-				m_alignOffset = mt::vec2f( -it_line->length * 0.5f, 0 );
+				m_alignOffset = mt::vec2f( -it_line->getLength() * 0.5f, 0 );
 			}
 
 			if( m_rightAlign )
 			{
-				m_alignOffset = mt::vec2f( -it_line->length, 0 );
+				m_alignOffset = mt::vec2f( -it_line->getLength(), 0 );
 			}
 
 			offset.x = m_alignOffset.x;
 
-			for( TCharsData::const_iterator
-				it_char = charsData.begin(), 
-				it_char_end = charsData.end();
-			it_char != it_char_end; 
-			++it_char )
-			{
-				if ( it_char->code == ' ' )
-				{
-					offset.x += m_spaceWidth + m_charOffset;
-					continue;
-				}
-
-				mt::vec4f uv = it_char->uv;
-
-				if((k != 0.f) && (h != 0.f))
-				{
-					float t = uv.z - uv.x;
-					float s = uv.w - uv.y;
-					uv.x = _uv.x + k * uv.x;
-					uv.y = _uv.y + h * uv.y;
-					uv.z = uv.x + k * t;
-					uv.w = uv.y + h * s;
-				}
-
-				//AGHTUNG - если нужно округлить делайте floorf : float - int - float не в рот ебически долго!!!
-				float width = floorf( it_char->ratio * m_height );
-
-				mt::vec2f size( width, m_height );
-
-				ARGB argb = _color.getAsARGB();
-
-				mt::vec2f renderVertex[4];
-
-				mt::mul_v2_m3( renderVertex[0], offset, wm );
-				mt::mul_v2_m3( renderVertex[1], offset + mt::vec2f( size.x, 0.0f ), wm );
-				mt::mul_v2_m3( renderVertex[2], offset + size, wm );
-				mt::mul_v2_m3( renderVertex[3], offset + mt::vec2f( 0.0f, size.y ), wm );
-
-				Holder<RenderEngine>::hostage()->renderImage(
-					renderVertex,
-					uv,
-					argb,
-					_renderImage
-					);
-
-
-				offset.x += width + m_charOffset;
-			}
+			it_line->renderLine(offset, _color, _renderImage );
 
 			offset.y += m_lineOffset;
 		}
@@ -250,28 +190,14 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( const Viewport & _viewport, bool _enableDebug )
 	{
-		const RenderImageInterface * renderImage = m_resource->getImage();
-
-		/*if( m_outlineImage != NULL )
-		{
-			const RenderImageInterface * outlineImage = m_outlineImage->getImage(0);
-
-			mt::vec4f uv = m_outlineImage->getUV(0);
-
-			int w = renderImage->getWidth();
-			int ow = outlineImage->getWidth();
-
-			float k = renderImage->getWidth() / outlineImage->getWidth();
-			float h = renderImage->getHeight() / outlineImage->getHeight();
-
-			renderPass_( m_outlineColor, outlineImage, uv, k, h );
-		}*/
 		const RenderImageInterface * outlineImage = m_resource->getOutlineImage();
+
 		if( m_outline && outlineImage )
 		{
-
 			renderPass_( m_outlineColor, outlineImage );
 		}
+
+		const RenderImageInterface * renderImage = m_resource->getImage();
 
 		renderPass_( m_color, renderImage );
 	}
@@ -279,23 +205,7 @@ namespace     Menge
 	void TextField::_update( float _timing )
 	{
 		Node::_update( _timing );
-		/*if( m_changingColor )
-		{
-			if( m_changingColorTime < _timing )
-			{
-				m_color = m_newColor;
-				m_outlineColor = m_newOutlineColor;
-				m_changingColor = false;
-				callEvent( "COLOR_END", "(O)", this->getEmbedding() );
-			}
-			else
-			{
-				float d = _timing / m_changingColorTime;
-				m_color = m_newColor * d + m_color * ( 1.0f - d );
-				m_outlineColor = m_newOutlineColor * d + m_outlineColor * ( 1.0f - d );
-				m_changingColorTime -= _timing;
-			}
-		}*/
+
 		if( m_colorTo.isStarted() )
 		{
 			m_outlineColorTo.update( _timing, &m_outlineColor );
@@ -304,6 +214,11 @@ namespace     Menge
 				callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float TextField::getCharOffset() const
+	{
+		return m_charOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setOutlineColor( const ColourValue& _color )
@@ -337,15 +252,6 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::colorTo( const ColourValue& _color, float _time )
 	{
-		/*m_newColor = _color;
-		m_changingColorTime = _time;
-
-		if( m_changingColor )
-		{
-			callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
-		}
-
-		m_changingColor = true;*/
 		if( m_colorTo.isStarted() )
 		{
 			callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
@@ -361,18 +267,7 @@ namespace     Menge
 	void TextField::alphaTo( float _alpha, float _time )
 	{
 		Node::alphaTo( _alpha, _time );
-		/*m_newColor = m_color;
-		m_newColor.a = _alpha;
-		m_newOutlineColor = m_outlineColor;
-		m_newOutlineColor.a = _alpha;
-		m_changingColorTime = _time;
-
-		if( m_changingColor )
-		{
-			callEvent( "COLOR_STOP", "(O)", this->getEmbedding() );
-		}
-
-		m_changingColor = true;*/
+		
 		ColourValue newColor = m_color;
 		newColor.a = _alpha;
 		
@@ -404,7 +299,7 @@ namespace     Menge
 	void TextField::setAlpha( float _alpha )
 	{
 		m_color.a = _alpha;
-		m_outlineColor.a = _alpha;	// outline too
+		m_outlineColor.a = _alpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue& TextField::getColor() const
@@ -432,22 +327,6 @@ namespace     Menge
 		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float TextField::getWordWidth_( const std::string & _text ) const
-	{
-		float width = 0.0f;
-
-		for( std::string::const_iterator 
-			it = _text.begin(),
-			it_end = _text.end(); 
-		it != it_end; 
-		++it )
-		{
-			width += static_cast<int>( m_resource->getCharRatio( *it ) * m_height ) + m_charOffset;
-		}
-
-		return width;	// don't count offset after last char
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void TextField::createFormattedMessage_( const std::string & _text )
 	{
 		m_lines.clear();
@@ -456,13 +335,17 @@ namespace     Menge
 
 		lines = split(_text,"\n");
 
-		float maxlen = 0.0f;
-
 		for(std::vector<std::string>::iterator line = lines.begin(); line != lines.end(); line++ )
 		{
-			float len = getWordWidth_( *line );
-			m_lines.push_back( Line( m_resource, *line, len ));
-			maxlen = (std::max)( maxlen, len );
+			m_lines.push_back( TextLine( *this, m_resource, *line ));
+		}
+
+		// USE std::max_element() !!!!! idiot.
+		float maxlen = 0.0f;
+
+		for(std::list<TextLine>::iterator line = m_lines.begin(); line != m_lines.end(); line++ )
+		{
+			maxlen = (std::max)( maxlen, line->getLength() );
 		}
 
 		m_length.x = maxlen;
@@ -523,21 +406,4 @@ namespace     Menge
 		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextField::Line::Line( ResourceFont * _resource, const String & _text, float _len )
-		: text(_text)
-		, length(_len)
-	{
-		for( String::const_iterator
-			it = _text.begin(), 
-			it_end = _text.end();
-		it != it_end; 
-		++it )
-		{
-			CharData charData;
-			charData.code = *it;
-			charData.uv = _resource->getUV( *it );
-			charData.ratio = _resource->getCharRatio( *it );
-			charsData.push_back( charData );
-		}
-	};
 }

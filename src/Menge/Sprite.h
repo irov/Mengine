@@ -164,7 +164,6 @@ namespace Menge
 		mt::vec2f m_renderVertex[4];
 		bool m_invalidateRenderVertex;
 
-
 		ColourValue m_color;
 		ValueInterpolator<ColourValue> m_colorTo;
 

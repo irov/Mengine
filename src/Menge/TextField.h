@@ -2,11 +2,13 @@
 
 #	include "Config/Typedef.h"
 
-# include "Node.h"
-# include "ColourValue.h"
-# include <vector>
+#	include "Node.h"
+#	include "ColourValue.h"
+#	include <vector>
 
 #	include "ValueInterpolator.h"
+#	include "TextLine.h"
+
 #	include "Math/vec4.h"
 
 namespace Menge
@@ -20,8 +22,8 @@ namespace Menge
 
 	/*! xml - файл имеет следующую структуру:
 	* <Node Name = "имя_ноды" Type = "TextField">
-	*      <Font Name = "имя_ресура_шрифта"/>
-	*     <Text Value = "отображаемый_текст"/>
+	*  <Font Name = "имя_ресура_шрифта"/>
+	*  <Text Value = "отображаемый_текст"/>
 	*  <Color Value = "цвет"/>
 	*  <Height Value = "высота глифа"/>
 	*  <CenterAlign Value = "1/0"/>
@@ -120,10 +122,12 @@ namespace Menge
 
 		bool getCenterAlign();
 
+		float getCharOffset() const;
+
 	public:
 		void loader( XmlElement * _xml ) override;
-
 		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+
 	protected:
 		bool _checkVisibility( const Viewport & _viewPort ) override;
 		
@@ -136,17 +140,11 @@ namespace Menge
 		void _update( float _timing ) override;
 
 		void _setListener() override;
-
-		//virtual void _onSetListener();
+		void _invalidateWorldMatrix() override;
 
 	private:
 		ResourceFont * m_resource;
 		std::string m_resourcename;
-
-		//float m_changingColorTime;
-		//bool m_changingColor;
-		//Color m_newColor;
-		//Color m_newOutlineColor;
 
 		ColourValue m_color;
 		ColourValue m_outlineColor;
@@ -164,39 +162,15 @@ namespace Menge
 
 		float m_maxWidth;
 		float m_charOffset;
-		//ResourceImage * m_outlineImage;
-		//std::string m_outlineFontName;
+	
 		bool m_outline;
 
 		int m_lineOffset;
-		//PyObject* m_listener;
 
-		struct CharData
-		{
-			String::value_type code;
-			mt::vec4f uv;
-			float ratio;
-		};
+		std::list<TextLine>  m_lines;
 
-		typedef std::vector<CharData> TCharsData;
-
-		struct Line
-		{
-			Line( ResourceFont * _resource, const String & _text, float _len );
-
-			TCharsData charsData;
-
-			String text;
-			
-			float  length;
-		};
-
-		std::list<Line>  m_lines;
-		float m_spaceWidth;
-
-		void renderPass_( const ColourValue & _color, const RenderImageInterface * _renderImage, mt::vec4f _uv = mt::vec4f::zero_v4, float k = 0, float h = 0 );
+		void renderPass_( const ColourValue & _color, const RenderImageInterface * _renderImage );
 		void createFormattedMessage_( const std::string& _text );
-		float getWordWidth_( const std::string & _text ) const;
 		void splitLine(const std::string& str);
 	};
 }

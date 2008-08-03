@@ -50,7 +50,6 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
 			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_currentImageIndex );
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
-			//XML_CASE_ATTRIBUTE_NODE( "Scale", "Value", m_scale );
 			XML_CASE_ATTRIBUTE_NODE( "Blend", "Source", ((int&)m_blendSrc) );
 			XML_CASE_ATTRIBUTE_NODE( "Blend", "Dest", ((int&)m_blendDest) );
 			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
@@ -84,26 +83,24 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_resourceName.empty() == false )
-		{
-			m_resource = 
-				Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceImage>( m_resourceName );
-
-			if( m_resource == 0 )
-			{
-				MENGE_LOG( "Image resource not getting '%s'"
-					, m_resourceName.c_str() 
-					);
-
-				return false;
-			}
-		}
-		else
+		if( m_resourceName.empty() )
 		{
 			return false;
 		}
 
+		m_resource = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceImage>( m_resourceName );
+
+		if( m_resource == 0 )
+		{
+			MENGE_LOG( "Image resource not getting '%s'"
+				, m_resourceName.c_str() 
+				);
+
+			return false;
+		}
+		
 		updateSprite_();
 
 		return true;
@@ -129,6 +126,7 @@ namespace	Menge
 		{
 			m_flipY = !m_flipY;
 		}
+
 		updateSprite_();
 	}
 	///////////////////////////////////////////////////////////////////////////

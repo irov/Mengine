@@ -38,7 +38,7 @@ namespace Menge
 		m_shadowCasters.push_back(cell);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LightSystem::isVisibleEdge(const Light2D & _light, const ShadowCaster2D & _caster, int i) const
+	bool LightSystem::isVisibleEdge(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t i) const
 	{
 		mt::vec2f edge = _caster.getEdge(i);
 		mt::vec2f normal = mt::perp(edge);
@@ -135,7 +135,7 @@ namespace Menge
 		{
 			std::size_t next = (i + 1) % size;
 
-			bool visible = isVisibleEdge(_light, _caster,i % size);
+			bool visible = isVisibleEdge(_light, _caster, i % size );
 			bool not_visible = isVisibleEdge( _light, _caster, next ) == false;
 
 			if(visible && not_visible)

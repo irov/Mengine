@@ -12,7 +12,7 @@ namespace Menge
 		unsigned int filter;
 
 		void * buffer;
-		unsigned int size;
+		std::size_t size;
 		std::size_t width;
 		std::size_t height;
 		int	pixelFormat;

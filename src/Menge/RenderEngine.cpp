@@ -337,7 +337,7 @@ namespace Menge
 	mt::vec2f RenderEngine::getBestDisplayResolution( int _defWidth, int _defHeigth, float _aspect )
 	{
 		int * rl;
-		unsigned int count = m_interface->getResolutionList( &rl );
+		std::size_t count = m_interface->getResolutionList( &rl );
 
 		float needWidth = _defHeigth * _aspect;
 

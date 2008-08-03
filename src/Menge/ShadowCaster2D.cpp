@@ -88,14 +88,14 @@ namespace Menge
 		m_poly.add_point(_vertex);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ShadowCaster2D::getVertex(int i) const
+	const mt::vec2f & ShadowCaster2D::getVertex( std::size_t i) const
 	{
 		return m_poly[i % m_poly.num_points()];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f ShadowCaster2D::getEdge(int i) const
+	mt::vec2f ShadowCaster2D::getEdge( std::size_t i) const
 	{
-		int next = (i + 1) % m_poly.num_points();
+		std::size_t next = (i + 1) % m_poly.num_points();
 		return m_poly[next] - m_poly[i];
 	}
 	//////////////////////////////////////////////////////////////////////////

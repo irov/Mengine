@@ -48,7 +48,7 @@ namespace Menge
 			m_material.texture = const_cast<RenderImageInterface*>( m_resourceImage->getImage( 0 ) );
 		}
 
-		m_material.color = m_color.v;
+		m_material.color = m_color.getAsARGB();
 
 		return true;
 	}

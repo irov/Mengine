@@ -93,7 +93,7 @@ namespace	Menge
 		{
 			m_delay -= delay;
 			
-			unsigned int frameSize = m_resourceAnimation->getSequenceCount();
+			std::size_t frameSize = m_resourceAnimation->getSequenceCount();
 
 			if( m_onEndFrameEvent == true )
 			{
@@ -123,7 +123,7 @@ namespace	Menge
 			delay *= m_animationFactor;
 		}
 
-		unsigned int currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
+		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
 
 	}
@@ -151,7 +151,7 @@ namespace	Menge
 					);
 			}
 
-			unsigned int currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
+			std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
 			setImageIndex( currentImageIndex );
 		}
 
@@ -204,7 +204,7 @@ namespace	Menge
 			}
 		}
 
-		unsigned int currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
+		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex(m_currentFrame);
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -238,7 +238,7 @@ namespace	Menge
 			m_delay = 0.0f;
 		}
 
-		unsigned int currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
+		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////

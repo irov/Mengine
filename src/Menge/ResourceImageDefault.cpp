@@ -90,8 +90,6 @@ namespace Menge
 				desc.isAlpha = true; //
 
 				std::string fileName; 
-				int count;
-				int start_index;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{

@@ -46,37 +46,37 @@ namespace Menge
 		\param _frame индекс изображения
 		\return максимальный размер
 		*/
-		virtual const mt::vec2f & getMaxSize( unsigned int _frame ) const = 0;
+		virtual const mt::vec2f & getMaxSize( std::size_t _frame ) const = 0;
 
 		//! Возвращает размер frame изображения
 		/*!
 		\param _frame индекс изображения
 		\return размер
 		*/
-		virtual const mt::vec2f & getSize( unsigned int _frame ) const = 0;
+		virtual const mt::vec2f & getSize( std::size_t _frame ) const = 0;
 
 		//! Возвращает смещение frame изображения
 		/*!
 		\param _frame индекс изображения
 		\return смещение
 		*/
-		virtual const mt::vec2f & getOffset( unsigned int _frame ) const = 0;
+		virtual const mt::vec2f & getOffset( std::size_t _frame ) const = 0;
 
 		//! Возвращает текстурные координаты frame изображения
 		/*!
 		\param _frame индекс изображения
 		\return текстурные координаты
 		*/
-		virtual const mt::vec4f & getUV( unsigned int _frame ) const = 0;		
+		virtual const mt::vec4f & getUV( std::size_t _frame ) const = 0;		
 
-		virtual bool isAlpha( unsigned int _frame ) const = 0;
+		virtual bool isAlpha( std::size_t _frame ) const = 0;
 
 		//! Возвращает frame изображение
 		/*!
 		\param _frame индекс изображения
 		\return изображение
 		*/
-		virtual const RenderImageInterface * getImage( unsigned int _frame ) const = 0;
+		virtual const RenderImageInterface * getImage( std::size_t _frame ) const = 0;
 
 	public:
 		void loader( XmlElement * _xml ) override;

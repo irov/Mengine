@@ -47,13 +47,13 @@ namespace Menge
 		/*!
 		\param _index индекс.
 		*/
-		virtual void setImageIndex( unsigned int _index );
+		virtual void setImageIndex( std::size_t _index );
 
 		//! Возвращает текущий индекс в списке изображений
 		/*!
 		\return индекс
 		*/
-		virtual unsigned int getImageIndex() const;
+		virtual std::size_t getImageIndex() const;
 
 		//! Установка ресурса.
 		/*!
@@ -61,7 +61,7 @@ namespace Menge
 		*/
 		virtual void setImageResource( const std::string & _name );
 
-		unsigned int getImageCount() const;
+		std::size_t getImageCount() const;
 
 		virtual mt::vec2f getImageSize();
 		virtual bool getCenterAlign();
@@ -102,7 +102,7 @@ namespace Menge
 		\param _color - результирующий цвет
 		\param _time - время, в течении которого будет изменятся цвет
 		*/
-		virtual void colorTo( const Color & _color, float _time );
+		virtual void colorTo( const ColourValue & _color, float _time );
 
 		void setAlpha( float _alpha ) override;
 		void alphaTo( float _alpha, float _time ) override;
@@ -111,14 +111,14 @@ namespace Menge
 		/*!
 		\param _color значение цвета
 		*/
-		void setColor( const Color & _color );
+		void setColor( const ColourValue & _color );
 
 		//! Возвращает цвет спрайта.
 		/*!
 		\return цвет
 		*/
 
-		const Color & getColor() const;
+		const ColourValue & getColor() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -150,7 +150,7 @@ namespace Menge
 		ResourceImage * m_resource;
 		std::string m_resourceName;	
 
-		unsigned int m_currentImageIndex;
+		std::size_t m_currentImageIndex;
 
 		bool m_centerAlign;
 		bool m_flipX;
@@ -166,8 +166,9 @@ namespace Menge
 		mt::vec2f m_renderVertex[4];
 		bool m_invalidateRenderVertex;
 
-		Color m_color;
-		ValueInterpolator<Color> m_colorTo;
+		ColourValue m_color;
+		unsigned int m_colorCache;
+		ValueInterpolator<ColourValue> m_colorTo;
 
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;

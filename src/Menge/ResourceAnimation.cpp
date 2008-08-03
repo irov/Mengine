@@ -19,12 +19,12 @@ namespace Menge
 		return m_vectorSequence.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceAnimation::getSequenceDelay( unsigned int _sequence ) const
+	float ResourceAnimation::getSequenceDelay( std::size_t _sequence ) const
 	{
 		return m_vectorSequence[ _sequence ].delay;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ResourceAnimation::getSequenceIndex( unsigned int _sequence ) const
+	std::size_t ResourceAnimation::getSequenceIndex( std::size_t _sequence ) const
 	{
 		return m_vectorSequence[ _sequence ].index;
 	}
@@ -59,14 +59,14 @@ namespace Menge
 			}
 			XML_CASE_NODE( "SequenceArray" )
 			{
-				int count = 0;
+				std::size_t count = 0;
 				float delay;
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
 					XML_CASE_ATTRIBUTE( "Count", count );
 					XML_CASE_ATTRIBUTE( "Delay", delay );
 				}
-				for( int i = 0; i < count; i++ )
+				for( std::size_t i = 0; i < count; i++ )
 				{
 					Sequence sq;
 					sq.delay = delay;

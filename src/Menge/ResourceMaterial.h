@@ -2,7 +2,7 @@
 
 #	include "Interface/RenderSystemInterface.h"
 #	include "ResourceReference.h"
-#	include "Color.h"
+#	include "ColourValue.h"
 
 namespace Menge
 {
@@ -31,7 +31,7 @@ namespace Menge
 		String m_textureName;
 		ResourceImage* m_resourceImage;
 		TMaterial m_material;
-		Color m_color;
+		ColourValue m_color;
 	};
 
 }	// namespace Menge

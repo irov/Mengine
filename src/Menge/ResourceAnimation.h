@@ -43,7 +43,7 @@ namespace Menge
 		\param _sequence индекс кадра
 		\return задержка
 		*/
-		virtual float getSequenceDelay( unsigned int _sequence ) const;
+		virtual float getSequenceDelay( std::size_t _sequence ) const;
 
 		
 		//! ¬озвращает индекс изображени€
@@ -51,7 +51,7 @@ namespace Menge
 		\param _sequence индекс кадра
 		\return индекс изображени€
 		*/
-		virtual unsigned int getSequenceIndex( unsigned int _sequence ) const;
+		virtual std::size_t getSequenceIndex( std::size_t _sequence ) const;
 
 	public:
 		void loader( XmlElement * _xml );
@@ -61,7 +61,7 @@ namespace Menge
 		struct Sequence
 		{
 			float delay;
-			unsigned int index;
+			std::size_t index;
 		};
 
 		typedef std::vector<Sequence> TVectorSequence;

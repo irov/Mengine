@@ -109,7 +109,7 @@ namespace Menge
 		bool m_randomStart;
 		bool m_playing;
 		bool m_looping;
-		unsigned int m_currentFrame;
+		std::size_t m_currentFrame;
 
 		float m_animationFactor;
 

@@ -30,8 +30,8 @@ namespace Menge
 
 	public:
 		void addVertex(const mt::vec2f & _vertex);
-		const mt::vec2f & getVertex(int i) const;
-		mt::vec2f getEdge(int i) const;
+		const mt::vec2f & getVertex( std::size_t i ) const;
+		mt::vec2f getEdge( std::size_t i ) const;
 		std::size_t size() const;
 	private:
 		mt::polygon m_poly;

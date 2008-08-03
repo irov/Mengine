@@ -99,22 +99,22 @@ namespace Menge
 			return _vec3f.z;
 		}
 
-		static float getA( const Color & _color )
+		static float getA( const ColourValue & _color )
 		{
 			return _color.a;
 		}
 
-		static float getR( const Color & _color )
+		static float getR( const ColourValue & _color )
 		{
 			return _color.r;
 		}
 
-		static float getG( const Color & _color )
+		static float getG( const ColourValue & _color )
 		{
 			return _color.g;
 		}
 
-		static float getB( const Color & _color )
+		static float getB( const ColourValue & _color )
 		{
 			return _color.b;
 		}

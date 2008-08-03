@@ -44,8 +44,19 @@ namespace Menge
 
 		ProfileHistoryList historyList = m_interface->getProfileHistoryList();
 
-		Viewport vp( mt::vec2f( 0.0, 0.0f ), mt::vec2f( 1024.0f, 768.0f ) );
+		Holder<RenderEngine>::hostage()
+			->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
+		Holder<RenderEngine>::hostage()
+			->beginLayer2D();
+
+		Viewport viewport;
+		viewport.begin = mt::vec2f( 0.f, 0.f );
+		viewport.end = mt::vec2f( 1024.f, 768.f );
+
+		Holder<RenderEngine>::hostage()
+			->setRenderViewport( viewport );
+	
 		_debugTextField->setLocalPosition(mt::vec2f::zero_v2);
 
 		static char m_debugText[128];
@@ -54,7 +65,7 @@ namespace Menge
 		sprintf( m_debugText, "DIP = %d\n", dipCount );
 
 		_debugTextField->setText( m_debugText );
-		_debugTextField->render( vp, false );
+		_debugTextField->render( viewport, false );
 
 		for(ProfileHistoryList::iterator it = historyList.begin();
 			it != historyList.end(); ++it)
@@ -65,7 +76,10 @@ namespace Menge
 
 			_debugTextField->translate(mt::vec2f(0,25));
 			_debugTextField->setText( m_debugText );
-			_debugTextField->render( vp, false );
+			_debugTextField->render( viewport, false );
 		}
+
+		Holder<RenderEngine>::hostage()
+			->endLayer2D();
 	}
 }

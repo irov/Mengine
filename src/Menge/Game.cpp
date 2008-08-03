@@ -414,9 +414,11 @@ namespace Menge
 	{
 		Holder<ProfilerEngine>::hostage()->beginProfile("Render");
 		m_player->render( _enableDebug );
-		Holder<ProfilerEngine>::hostage()->endProfile("Render");
+
 
 		Holder<ProfilerEngine>::hostage()->displayStats(m_debugTextField);
+
+		Holder<ProfilerEngine>::hostage()->endProfile("Render");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::string Game::getPathEntities( const std::string& _entity ) const

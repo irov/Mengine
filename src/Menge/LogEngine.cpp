@@ -21,24 +21,6 @@ namespace Menge
 		m_interface->logMessage( _message, _maskDebug, _endl, _timeStamp );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LogEngine::displayStats( TextField * _debugTextField )
-	{
-		Viewport vp( mt::vec2f( 0.0, 0.0f ), mt::vec2f( 1024.0f, 768.0f ) );
-
-	//	for(std::map<String, String>::iterator it = m_historyProfiles.begin();
-	//		it != m_historyProfiles.end(); ++it)
-		{
-		//	const std::string & name = it->second;	
-			/*ProfileHistory h = m_interface->getProfileHistory(name);
-			
-			char m_debugText[128];
-			sprintf( m_debugText, "FPS:%.2f\n", h.currentTime );
-
-			_debugTextField->setText( m_debugText );
-			_debugTextField->render( vp, false );*/
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	LogSystemInterface * LogEngine::getInterface()
 	{
 		return m_interface;

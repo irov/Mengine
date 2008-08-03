@@ -340,7 +340,7 @@ namespace     Menge
 			m_lines.push_back( TextLine( *this, m_resource, *line ));
 		}
 
-		// USE std::max_element() !!!!! idiot.
+		// USE std::max_element() !!!!
 		float maxlen = 0.0f;
 
 		for(std::list<TextLine>::iterator line = m_lines.begin(); line != m_lines.end(); line++ )
@@ -360,14 +360,14 @@ namespace     Menge
 		registerEvent( EVENT_COLOR_STOP, "onColorStop", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int TextField::getLineOffset() const
-	{
-		return m_lineOffset;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void TextField::setLineOffset( int _offset )
 	{
 		m_lineOffset = _offset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int TextField::getLineOffset() const
+	{
+		return m_lineOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setResource( const String& _resName )
@@ -384,14 +384,6 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setOutlineResource( const String& _outlineName )
 	{
-		/*if( m_outlineFontName != _outlineName )
-		{
-			m_outlineFontName = _outlineName;
-			if( isCompile() )
-			{
-				recompile();
-			}
-		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::getCenterAlign()

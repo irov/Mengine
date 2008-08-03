@@ -33,11 +33,11 @@ namespace Menge
 		return event_.id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::remove( unsigned int _id )
+	void ScheduleManager::remove( std::size_t _id )
 	{
 		struct FScheduleFind
 		{
-			FScheduleFind( unsigned int _id )
+			FScheduleFind( std::size_t _id )
 				: m_id(_id)
 			{
 			}
@@ -47,7 +47,7 @@ namespace Menge
 				return _event.id == m_id;
 			}
 
-			unsigned int m_id;
+			std::size_t m_id;
 		};
 			
 		TListSchedules::iterator it_find = 
@@ -198,7 +198,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ScheduleManager::timerSchedule( float _timing, PyObject* _func )
+	std::size_t ScheduleManager::timerSchedule( float _timing, PyObject* _func )
 	{
 		ScheduleEvent event;
 
@@ -215,11 +215,11 @@ namespace Menge
 		return event.id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::freeze( unsigned int _id, bool _freeze )
+	void ScheduleManager::freeze( std::size_t _id, bool _freeze )
 	{
 		struct FScheduleFind
 		{
-			FScheduleFind( unsigned int _id )
+			FScheduleFind( std::size_t _id )
 				: m_id(_id)
 			{
 			}
@@ -229,7 +229,7 @@ namespace Menge
 				return _event.id == m_id;
 			}
 
-			unsigned int m_id;
+			std::size_t m_id;
 		};
 
 		TListSchedules::iterator it_find = 

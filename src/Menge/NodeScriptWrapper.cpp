@@ -72,18 +72,18 @@ namespace Menge
 {
 	namespace ScriptMethod
 	{
-		static unsigned int schedule( float _timing, PyObject * _script )
+		static std::size_t schedule( float _timing, PyObject * _script )
 		{
 			return Holder<ScheduleManager>::hostage()
 				->schedule( _timing, _script );
 		}
 
-		static unsigned int s_scheduleTimer( float _timing, PyObject* _script )
+		static std::size_t s_scheduleTimer( float _timing, PyObject* _script )
 		{
 			return Holder<ScheduleManager>::hostage()->timerSchedule( _timing, _script );
 		}
 
-		static void scheduleRemove( unsigned int _id )
+		static void scheduleRemove( std::size_t _id )
 		{
 			Holder<ScheduleManager>::hostage()
 				->remove( _id );
@@ -107,7 +107,7 @@ namespace Menge
 				->setUpdatable( true );
 		}
 
-		static void s_scheduleFreeze( unsigned int _id, bool _freeze )
+		static void s_scheduleFreeze( std::size_t _id, bool _freeze )
 		{
 			Holder<ScheduleManager>::hostage()
 				->freeze( _id, _freeze );

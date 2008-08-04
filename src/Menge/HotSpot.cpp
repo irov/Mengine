@@ -56,7 +56,7 @@ namespace	Menge
 	{
 		m_polygon.add_point( mt::vec2f( _p.x * m_scale.x, _p.y * m_scale.y ) );
 
-		BoundingBox::invalidateBoundingBox();
+		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()

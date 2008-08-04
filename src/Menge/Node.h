@@ -118,6 +118,10 @@ namespace Menge
 		bool isUpdatable() const;
 
 	public:
+		const mt::box2f & getBoundingBox();
+		void invalidateBoundingBox();
+
+	public:
 		bool compile();
 		void release();
 		bool recompile();

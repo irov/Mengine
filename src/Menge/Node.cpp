@@ -608,7 +608,7 @@ namespace Menge
 	{
 		Allocator2D::_invalidateWorldMatrix();
 
-		BoundingBox::invalidateBoundingBox();
+		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & Node::getWorldMatrix()
@@ -754,4 +754,36 @@ namespace Menge
 		callEvent( EVENT_MOVE_STOP, "(O)", getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::box2f & Node::getBoundingBox()
+	{
+		if( m_invalidateBoundingBox == true )
+		{
+			_updateBoundingBox( m_boundingBox );
+
+			for( TContainerChildren::iterator
+				it = m_children.begin(),
+				it_end = m_children.end();
+			it != it_end;
+			++it )
+			{
+				const mt::box2f & childrenBoundingBox = (*it)->getBoundingBox();
+
+				mt::merge_box( m_boundingBox, childrenBoundingBox );
+			}
+
+			m_invalidateBoundingBox = false;
+		}
+
+		return m_boundingBox;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::invalidateBoundingBox()
+	{
+		m_invalidateBoundingBox = true;
+
+		if( m_parent )
+		{
+			m_parent->invalidateBoundingBox();
+		}
+	}
 }

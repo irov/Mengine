@@ -68,7 +68,7 @@ namespace Menge
 
 					renderEngine->setRenderTarget( it->image->getDescription(), false );
 					Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( it->rect.min + vp_size * 0.5f );
-					_node->_render( false );
+					_node->_render( 0 );
 					_node->visitChildren( this );
 				}
 			}
@@ -77,7 +77,7 @@ namespace Menge
 		Layer2DAccumulator::TRenderImageVector m_surfaces;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DAccumulator::render( bool _enableDebug )
+	void Layer2DAccumulator::render( unsigned int _debugMask )
 	{
 
 		Holder<RenderEngine>::hostage()
@@ -104,8 +104,8 @@ namespace Menge
 
 		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( plxCamPos );
 
-		Layer::_render( _enableDebug );
-		_render( _enableDebug );
+		Layer::_render( _debugMask );
+		_render( _debugMask );
 
 		m_children.clear();
 
@@ -154,14 +154,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DAccumulator::_render( bool _enableDebug )
+	void Layer2DAccumulator::_render( unsigned int _debugMask )
 	{
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 	
-
-
-		//mt::mat3f wm;
-		//mt::ident_m3( wm );
 		//int count = 0;
 		for( TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 			it != it_end;

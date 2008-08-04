@@ -80,7 +80,7 @@ namespace Menge
 		return m_renderArea;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer::_render( bool _enableDebug )
+	void Layer::_render( unsigned int _debugMask )
 	{
 		Holder<RenderEngine>::hostage()
 			->setRenderArea( m_renderArea );

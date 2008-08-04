@@ -134,7 +134,7 @@ namespace Menge
 		//, m_resourcePaths("")
 		, m_particles( true )
 		, m_sound( true )
-		, m_debugRender( false )
+		, m_debugMask( 0 )
 		, m_phycisTiming(0.f)
 		, m_resetTiming( false )
 		, m_maxTiming( 100.0f )
@@ -412,11 +412,11 @@ namespace Menge
 			m_particles = false;
 		}
 
-		idx = _args.find( "-debugRender" );
+		/*idx = _args.find( "-debugRender" );
 		if( idx != String::npos )
 		{
 			m_debugRender = true;
-		}
+		}*/
 
 		idx = _args.find( "-debuginfo" );
 		if( idx != String::npos )
@@ -505,15 +505,46 @@ namespace Menge
 #	ifndef MENGE_MASTER_RELEASE
 		if( _key == 88 && _isDown ) // F12
 		{
-			m_debugRender = !m_debugRender;
+			if( ( m_debugMask & MENGE_DEBUG_HOTSPOTS ) != 0 )
+			{
+				m_debugMask ^= MENGE_DEBUG_HOTSPOTS;
+			}
+			else
+			{
+				m_debugMask |= MENGE_DEBUG_HOTSPOTS;
+			}
 		}
-#	endif
 
-		if( _key == 87 && _isDown ) 
+		if( _key == 87 && _isDown ) // F11
 		{
 			bool enabled = Holder<ProfilerEngine>::hostage()->isEnabled();
 			Holder<ProfilerEngine>::hostage()->setEnabled(!enabled);
 		}
+
+		if( _key == 68 && _isDown ) // F10
+		{
+			if( ( m_debugMask & MENGE_DEBUG_NODES ) != 0 )
+			{
+				m_debugMask ^= MENGE_DEBUG_NODES;
+			}
+			else
+			{
+				m_debugMask |= MENGE_DEBUG_NODES;
+			}
+		}
+
+		if( _key == 67 && _isDown ) // F9
+		{
+			if( ( m_debugMask & MENGE_DEBUG_PHYSICS ) != 0 )
+			{
+				m_debugMask ^= MENGE_DEBUG_PHYSICS;
+			}
+			else
+			{
+				m_debugMask |= MENGE_DEBUG_PHYSICS;
+			}
+		}
+#	endif
 
 		return Holder<Game>::hostage()->handleKeyEvent( _key, _char, _isDown );
 	}
@@ -651,7 +682,7 @@ namespace Menge
 		m_soundEngine->update( _timing );
 
 		m_renderEngine->beginScene();
-		Holder<Game>::hostage()->render( m_debugRender );
+		Holder<Game>::hostage()->render( m_debugMask );
 		m_renderEngine->endScene();
 
 		Holder<ProfilerEngine>::hostage()->endProfile("Menge");
@@ -762,9 +793,9 @@ namespace Menge
 		return m_desktopResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::isDebugRender() const
+	unsigned int Application::getDebugMask() const
 	{
-		return m_debugRender;
+		return m_debugMask;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

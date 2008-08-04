@@ -443,9 +443,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_render( bool _enableDebug )
+	void RigidBody2D::_render( unsigned int _debugMask )
 	{
-		if( _enableDebug )
+#	ifndef MENGE_MASTER_RELEASE
+		if( _debugMask & MENGE_DEBUG_PHYSICS )
 		{
 			for( TShapeList::iterator it = m_shapeList.begin(),
 				it_end = m_shapeList.end();
@@ -510,6 +511,7 @@ namespace Menge
 
 			}
 		}
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::unsetLinearVelocity()

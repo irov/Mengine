@@ -517,14 +517,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( bool _enableDebug )
+	void Node::render( unsigned int _debugMask )
 	{
 		if( isRenderable() == false )
 		{
 			return;
 		}
 
-		_render( _enableDebug );
+		_render( _debugMask );
 
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
@@ -532,13 +532,24 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->render( _enableDebug );
+			(*it)->render( _debugMask );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_render( bool )
+	void Node::_render( unsigned int _debugMask )
 	{
-		// Empty
+#	ifndef MENGE_MASTER_RELEASE
+		if( _debugMask & MENGE_DEBUG_NODES )
+		{
+			const mt::box2f& bbox = getBoundingBox();
+			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+			mt::vec2f size = box_size( bbox );
+			renderEngine->renderLine( 0xFF00FF00, bbox.min, bbox.min + mt::vec2f( size.x, 0.0f ) );
+			renderEngine->renderLine( 0xFF00FF00, bbox.min, bbox.min + mt::vec2f( 0.0f, size.y ) );
+			renderEngine->renderLine( 0xFF00FF00, bbox.max, bbox.max - mt::vec2f( size.x, 0.0f ) );
+			renderEngine->renderLine( 0xFF00FF00, bbox.max, bbox.max - mt::vec2f( 0.0f, size.y ) );
+		}
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::checkVisibility( const Viewport & _viewport )

@@ -110,7 +110,7 @@ namespace Menge
 		void setFullscreenMode( bool _fullscreen );
 		const mt::vec2f& getDesktopResolution() const;
 
-		bool isDebugRender() const;
+		unsigned int getDebugMask() const;
 	private:
 		ApplicationInterface* m_interface;
 
@@ -125,7 +125,7 @@ namespace Menge
 
 		bool m_particles;
 		bool m_sound;
-		bool m_debugRender;
+		unsigned int m_debugMask;
 		bool m_debugInfo;
 		bool m_usePhysic;
 		bool m_mouseBounded;

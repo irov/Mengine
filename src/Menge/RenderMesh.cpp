@@ -33,7 +33,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh::_render( bool _enableDebug )
+	void RenderMesh::_render( unsigned int _debugMask )
 	{
 
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();

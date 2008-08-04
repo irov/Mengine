@@ -65,7 +65,7 @@ namespace Menge
 
 	public:
 		void renderSelf();
-		virtual void render( bool _enableDebug ) override;
+		virtual void render( unsigned int _debugMask ) override;
 		void setRenderTarget( const std::string& _cameraName );
 		const String& getRenderTarget() const;
 	private:

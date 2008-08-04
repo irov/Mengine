@@ -25,9 +25,10 @@ namespace	Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_render( bool _enableDebug )
+	void Point::_render( unsigned int _debugMask )
 	{
-		if( _enableDebug )
+#	ifndef MENGE_MASTER_RELEASE
+		if( _debugMask & MENGE_DEBUG_HOTSPOTS )
 		{
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 			const mt::vec2f& pos = getWorldPosition();
@@ -42,6 +43,7 @@ namespace	Menge
 			renderEngine->renderLine( 0xFF0000FF, pos1, pos4 );
 			renderEngine->renderLine( 0xFF0000FF, pos4, pos3 );
 		}
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

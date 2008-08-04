@@ -303,9 +303,11 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_render( bool _enableDebug )
+	void HotSpot::_render( unsigned int _debugMask )
 	{
-		if( _enableDebug )
+#	ifndef MENGE_MASTER_RELEASE
+
+		if( _debugMask & MENGE_DEBUG_HOTSPOTS )
 		{
 			std::size_t pointCount = m_polygon.num_points();
 
@@ -323,6 +325,7 @@ namespace	Menge
 				Holder<RenderEngine>::hostage()->renderLine(0xFFFF0000,pt1,pt2);
 			}
 		}
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

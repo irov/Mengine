@@ -108,4 +108,9 @@ namespace mt
 		return (_a.ve.y > _b.vb.y && _a.vb.y < _b.ve.y &&
 				_a.ve.x > _b.vb.x && _a.vb.x < _b.ve.x);
 	}
+
+	MATH_INLINE vec2f box_size( const box2f& _box )
+	{
+		return _box.max - _box.min;
+	}
 }

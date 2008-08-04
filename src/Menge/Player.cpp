@@ -348,14 +348,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::render( bool _enableDebug )
+	void Player::render( unsigned int _debugMask )
 	{
 		if( m_scene )
 		{
 			const Viewport & viewport = 
 				m_renderCamera2D->getViewport();
 
-			m_scene->render( _enableDebug );
+			m_scene->render( _debugMask );
 		}
 
 		if( m_arrow )
@@ -368,7 +368,7 @@ namespace Menge
 
 			mt::vec2f pos = m_renderCamera2D->getLocalPosition();
 			m_renderCamera2D->setLocalPosition( mt::vec2f( 512.0f, 384.0f ) );
-			m_arrow->render( _enableDebug );
+			m_arrow->render( _debugMask );
 
 			Holder<RenderEngine>::hostage()
 				->endLayer2D();

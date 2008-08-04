@@ -22,7 +22,7 @@ namespace Menge
 
 		void loader( XmlElement * _xml ) override;
 
-		void _render( bool _enableDebug ) override;
+		void _render( unsigned int _debugMask ) override;
 	protected:
 		void _updateMatrix3D() override;
 		

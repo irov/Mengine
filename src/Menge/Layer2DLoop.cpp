@@ -35,9 +35,9 @@ namespace	Menge
 		: public VisitorAdapter<VisitorRenderLayer2DLoop>
 	{
 	public:
-		VisitorRenderLayer2DLoop( const mt::vec2f & _size, bool _enableDebug )
+		VisitorRenderLayer2DLoop( const mt::vec2f & _size, unsigned int _debugMask )
 			: m_size(_size)
-			, m_enableDebug( _enableDebug )
+			, m_debugMask( _debugMask )
 		{
 		}
 
@@ -65,7 +65,7 @@ namespace	Menge
 					//Viewport viewport = m_viewport;
 					//viewport.begin += mt::vec2f( m_size.x, 0.f );
 					//viewport.end += mt::vec2f( m_size.x, 0.f );
-					_node->_render( m_enableDebug );
+					_node->_render( m_debugMask );
 				}
 				//else if( m_viewport.begin.x > sprite_bbox.ve.x ) 
 				{
@@ -91,7 +91,7 @@ namespace	Menge
 					mt::vec2f oldPos = camera->getLocalPosition();
 					camera->setLocalPosition( oldPos + mt::vec2f( -m_size.x, 0.0f ) );
 
-					_node->_render( m_enableDebug );
+					_node->_render( m_debugMask );
 
 					//Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( m_viewport.begin + vp_size * 0.5f );
 					camera->setLocalPosition( oldPos );
@@ -104,15 +104,15 @@ namespace	Menge
 
 		void visit( Layer * _layer )
 		{
-			_layer->render( m_enableDebug );
+			_layer->render( m_debugMask );
 		}
 
 	protected:
-		bool m_enableDebug;
+		bool m_debugMask;
 		mt::vec2f m_size;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DLoop::render( bool _enableDebug )
+	void Layer2DLoop::render( unsigned int _debugMask )
 	{
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
@@ -144,7 +144,7 @@ namespace	Menge
 
 		camera->setParallax( parallax );
 
-		VisitorRenderLayer2DLoop visitorRender( m_size, _enableDebug );
+		VisitorRenderLayer2DLoop visitorRender( m_size, _debugMask );
 
 		visitChildren( &visitorRender );
 

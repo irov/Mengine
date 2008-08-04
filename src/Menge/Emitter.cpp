@@ -170,7 +170,7 @@ namespace	Menge
 		m_resource = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Emitter::_render( bool _enableDebug )
+	void Emitter::_render( unsigned int _debugMask )
 	{
 		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
 		if( !enabled )

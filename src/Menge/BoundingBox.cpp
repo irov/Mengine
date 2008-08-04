@@ -11,7 +11,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::box2f & BoundingBox::getBoundingBox()
 	{
-		if( isInvalidateBoundingBox() == true )
+		if( m_invalidateBoundingBox == true )
 		{
 			_updateBoundingBox( m_boundingBox );
 

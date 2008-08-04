@@ -410,10 +410,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::render( bool _enableDebug )
+	void Game::render( unsigned int _debugMask )
 	{
 		Holder<ProfilerEngine>::hostage()->beginProfile("Render");
-		m_player->render( _enableDebug );
+		m_player->render( _debugMask );
 
 
 		Holder<ProfilerEngine>::hostage()->displayStats(m_debugTextField);

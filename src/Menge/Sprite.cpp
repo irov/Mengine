@@ -308,8 +308,10 @@ namespace	Menge
 		return m_invalidateVertices;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_render( bool _enableDebug )
+	void Sprite::_render( unsigned int _debugMask )
 	{
+		Node::_render( _debugMask );
+
 		if( m_resource == NULL )
 		{
 			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
@@ -372,17 +374,13 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		const mt::vec2f * renderVertex = getVertices();
+		const mt::vec2f * vertices = getVertices();
 
-		mt::reset( _boundingBox, renderVertex[0] );
+		mt::reset( _boundingBox, vertices[0] );
 
-		for( std::size_t
-			it = 1,
-			it_end = 4;
-		it != it_end; 
-		++it )
+		for( int i = 0; i < 4; i++ )
 		{
-			mt::add_internal_point( _boundingBox, renderVertex[it] );
+			mt::add_internal_point( _boundingBox, vertices[i] );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -19,7 +19,7 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 
-		void _render( bool _enableDebug ) override;
+		void _render( unsigned int _debugMask ) override;
 	protected:
 
 		bool _activate() override;

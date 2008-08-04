@@ -53,3 +53,8 @@
 
 //	exclude all dev stuff
 //#	define MENGE_MASTER_RELEASE
+
+#	define MENGE_DEBUG_HOTSPOTS		0x01
+#	define MENGE_DEBUG_PHYSICS		0x02
+#	define MENGE_DEBUG_NODES		0x04
+#	define MENGE_DEBUG_SHADOWS		0x08

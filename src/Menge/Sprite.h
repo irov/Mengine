@@ -134,7 +134,7 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _timing ) override;
-		void _render( bool _enableDebug ) override;
+		void _render( unsigned int _debugMask ) override;
 
 		void _invalidateWorldMatrix() override;
 		void _setListener() override;

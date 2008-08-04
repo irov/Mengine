@@ -16,7 +16,7 @@ namespace Menge
 		Layer2DLoop();
 
 		void update( float _timing ) override;
-		void render( bool _enableDebug ) override;
+		void render( unsigned int _debugMask ) override;
 
 		bool isLooped() { return true; }
 	};

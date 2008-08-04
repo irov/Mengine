@@ -107,7 +107,7 @@ namespace Menge
 
 		mt::polygon m_shape;
 
-		void _render( bool _enableDebug ) override;
+		void _render( unsigned int _debugMask ) override;
 	protected:
 		PhysicBody2DInterface* m_interface;
 		//PyObject* m_scriptListener;

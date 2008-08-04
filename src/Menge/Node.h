@@ -58,8 +58,8 @@ namespace Menge
 		Layer2D * m_layer;
 
 	public:
-		virtual void render( bool _enableDebug );
-		virtual void _render( bool _enableDebug );
+		virtual void render( unsigned int _debugMask );
+		virtual void _render( unsigned int _debugMask );
 		//void renderSelf( const Viewport & _viewport, bool _enableDebug );
 		bool isRenderable() const;
 

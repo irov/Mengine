@@ -83,7 +83,7 @@ namespace	Menge
 		m_resourceMap = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TileMap::_render( bool _enableDebug )
+	void TileMap::_render( unsigned int _debugMask )
 	{
 		const Viewport& viewport = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
 

@@ -50,7 +50,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::_render( bool _enableDebug )
+	void TilePolygon::_render( unsigned int _debugMask )
 	{
 		_renderPass( m_penumbra_triangles, 0xFFAAFFBB );
 		_renderPass( m_triangles, 0xFFCFFFFF );

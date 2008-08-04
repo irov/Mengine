@@ -19,6 +19,6 @@ namespace Menge
 
 	public:
 
-		void _render( bool _enableDebug ) override;
+		void _render( unsigned int _debugMask ) override;
 	};
 }

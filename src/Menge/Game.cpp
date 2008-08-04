@@ -438,27 +438,24 @@ namespace Menge
 	{
 		ScriptEngine::TListModulePath m_listModulePath;
 
-		//m_listModulePath.push_back( m_pathScripts );
 		for( TListDeclaration::iterator it = m_pathScripts.begin(),
 				it_end = m_pathScripts.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( it->first + it->second );
 		}
-		//m_listModulePath.push_back( m_pathEntities );
+		
 		for( TListDeclaration::iterator it = m_pathEntities.begin(),
 			it_end = m_pathEntities.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( it->first + it->second );
 		}
 
-		//m_listModulePath.push_back( m_pathScenes );
 		for( TListDeclaration::iterator it = m_pathScenes.begin(),
 			it_end = m_pathScenes.end(); it != it_end; it++ )
 		{
 			m_listModulePath.push_back( it->first + it->second );
 		}
 
-		//m_listModulePath.push_back( m_pathArrows );	
 		for( TListDeclaration::iterator it = m_pathArrows.begin(),
 			it_end = m_pathArrows.end(); it != it_end; it++ )
 		{
@@ -498,7 +495,6 @@ namespace Menge
 			Holder<ResourceManager>::hostage()
 				->loadResource( it->second.first, path, it->first );
 		}
-
 
 		if(m_debugResourceFont.empty() == false)
 		{
@@ -554,8 +550,6 @@ namespace Menge
 			return false;
 		}
 
-		//Holder<ResourceManager>::hostage()->addListener( this );
-
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -590,7 +584,6 @@ namespace Menge
 		{
 			it->second->deactivate();
 		}		
-		//Holder<ResourceManager>::hostage()->removeListener( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::removeArrow( const std::string & _name )

@@ -18,6 +18,8 @@
 
 #     include "Utils.h"
 
+#	  include <algorithm>
+
 namespace     Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -41,19 +43,6 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextField::~TextField()
 	{
-	}
-	///////////////////////////////////////////////////////////////////////////
-	bool TextField::_checkVisibility( const Viewport & _viewPort )
-	{
-		const mt::mat3f & wm = getWorldMatrix();
-
-		mt::box2f bbox;
-
-		mt::set_box_from_oriented_extent( bbox, m_alignOffset, m_length, wm );
-
-		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
-
-		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::_activate()
@@ -86,7 +75,7 @@ namespace     Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG("Warning: font '%s' have don't find resource '%s'\n"
+			MENGE_LOG("Warning: font '%s' can't find resource '%s'\n"
 				, m_name.c_str()
 				, m_resourcename.c_str() 
 				);
@@ -96,7 +85,7 @@ namespace     Menge
 
 		if( m_resource->isCompile() == false )
 		{
-			MENGE_LOG("Warning: font '%s' have don't compile resource '%s'\n"
+			MENGE_LOG("Warning: font '%s' can't compile resource '%s'\n"
 				, m_name.c_str()
 				, m_resourcename.c_str() 
 				);
@@ -124,6 +113,20 @@ namespace     Menge
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resource );
 
+		m_resource = 0;
+	}
+	///////////////////////////////////////////////////////////////////////////
+	bool TextField::_checkVisibility( const Viewport & _viewPort )
+	{
+		const mt::mat3f & wm = getWorldMatrix();
+
+		mt::box2f bbox;
+
+		mt::set_box_from_oriented_extent( bbox, m_alignOffset, m_length, wm );
+
+		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::loader( XmlElement * _xml )
@@ -276,6 +279,7 @@ namespace     Menge
 			callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 			m_colorTo.stop();
 		}
+
 		if( m_colorTo.start( m_color, newColor, _time, length_color ) == false )
 		{
 			m_color = newColor;
@@ -340,7 +344,6 @@ namespace     Menge
 			m_lines.push_back( TextLine( *this, m_resource, *line ));
 		}
 
-		// USE std::max_element() !!!!
 		float maxlen = 0.0f;
 
 		for(std::list<TextLine>::iterator line = m_lines.begin(); line != m_lines.end(); line++ )

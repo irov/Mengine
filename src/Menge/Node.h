@@ -60,7 +60,6 @@ namespace Menge
 	public:
 		virtual void render( unsigned int _debugMask );
 		virtual void _render( unsigned int _debugMask );
-		//void renderSelf( const Viewport & _viewport, bool _enableDebug );
 		bool isRenderable() const;
 
 	public:
@@ -164,6 +163,5 @@ namespace Menge
 
 	protected:
 		ValueInterpolator<mt::vec2f> m_moveTo;
-
 	};
 }

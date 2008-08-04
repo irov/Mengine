@@ -93,9 +93,6 @@
 
 #	include <FreeImage.h>
 
-
-#	define MENGE_DELETE(x) if(x) { delete (x); (x) = NULL; }
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -131,7 +128,6 @@ namespace Menge
 	Application::Application( ApplicationInterface* _interface )
 		: m_interface( _interface )
 		, m_commandLine("")
-		//, m_resourcePaths("")
 		, m_particles( true )
 		, m_sound( true )
 		, m_debugMask( 0 )
@@ -150,16 +146,12 @@ namespace Menge
 		, m_xmlEngine( NULL )
 		, m_mouseBounded( false )
 	{
-		//ASSERT( m_interface );
-
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Application::~Application()
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setLogSystem( LogSystemInterface * _interface )
@@ -226,12 +218,11 @@ namespace Menge
 	{
 		MENGE_LOG("create game file [%s] ...\n", m_gameInfo.c_str() );
 
-
 		MENGE_LOG("init game ...\n");
 
 		if( m_physicEngine )
 		{
-			m_physicEngine->init(mt::vec3f(0.f,-1.f,0.f));
+			m_physicEngine->init( mt::vec3f(0.f, -1.f, 0.f) );
 		}
 
 		int width, height;
@@ -239,20 +230,22 @@ namespace Menge
 		m_desktopResolution.x = width;
 		m_desktopResolution.y = height;
 
-		Game* game = Holder<Game>::hostage();
+		Game * game = Holder<Game>::hostage();
 
-		m_renderEngine->initialize( "" );
+		m_renderEngine->initialize("");
 
 		m_currentResolution = game->getResourceResolution();
 		m_renderEngine->setContentResolution( m_currentResolution );
 
 		m_currentResolution.x = game->getWidth();
 		m_currentResolution.y = game->getHeight();
+
 		if( game->getFullscreen() )
 		{
-			//m_currentResolution = m_renderEngine->getBestDisplayResolution( game->getWidth(), game->getHeight(), m_interface->getMonitorAspectRatio() );
+			float aspect = m_desktopResolution.x / m_desktopResolution.y;
+
 			m_currentResolution = m_renderEngine->getBestDisplayResolution( 
-				m_currentResolution.x, m_currentResolution.y, m_desktopResolution.x / m_desktopResolution.y );
+				m_currentResolution.x, m_currentResolution.y, aspect );
 		}
 
 		const std::string & title = game->getTitle();
@@ -270,7 +263,7 @@ namespace Menge
 		param.name = "WhitePixel";
 		param.category = "";
 
-		ResourceImageDynamic* image = new ResourceImageDynamic( param );
+		ResourceImageDynamic * image = new ResourceImageDynamic( param );
 		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
 		image->incrementReference();
 		Holder<ResourceManager>::hostage()->registerResource( image );
@@ -287,12 +280,6 @@ namespace Menge
 		{
 			m_inputEngine->setMouseBounded( true );
 		}
-
-		/*if( game->isContentResolutionFixed() )
-		{
-			mt::vec2f res = game->getResourceResolution();
-			m_renderEngine->setViewportDimensions( res.x, res.y, 0.8f );
-		}*/
 
 		if( game->init() == false )
 		{
@@ -454,7 +441,6 @@ namespace Menge
 			return false;
 		}
 
-		//prepareResources();
 		for( TStringVector::iterator it = m_resourcePaths.begin(), 
 				it_end = m_resourcePaths.end(); it != it_end; it++ )
 		{
@@ -462,6 +448,7 @@ namespace Menge
 		}
 		
 		const std::string& physicSystemName = game->getPhysicSystemName();
+
 		if( physicSystemName != "None" )
 		{
 			SystemDLLInterface* dll = m_interface->loadSystemDLL( physicSystemName.c_str() );
@@ -580,7 +567,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
 	{
-		//m_quit = true; 
 		m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -692,7 +678,6 @@ namespace Menge
 	{
 		m_renderEngine->onWindowClose();
 		quit();
-		//m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onDestroy()
@@ -702,38 +687,20 @@ namespace Menge
 		Holder<Game>::destroy();
 		Holder<ResourceManager>::destroy();
 
-		Holder<PhysicEngine>::empty();
-		Holder<PhysicEngine2D>::empty();
-		Holder<ParticleEngine>::empty();
-		Holder<RenderEngine>::empty();
-		Holder<FileEngine>::empty();
-		Holder<InputEngine>::empty();
-		Holder<SoundEngine>::empty();
-		Holder<XmlEngine>::empty();
-		Holder<LogEngine>::empty();
-		Holder<ProfilerEngine>::empty();
-
-		MENGE_DELETE( m_physicEngine );
-		MENGE_DELETE( m_physicEngine2D );
-		MENGE_DELETE( m_particleEngine );
-		MENGE_DELETE( m_renderEngine );
-		MENGE_DELETE( m_fileEngine );
-		MENGE_DELETE( m_inputEngine );
-		MENGE_DELETE( m_soundEngine );
-		MENGE_DELETE( m_xmlEngine );
-		MENGE_DELETE( m_logEngine );
-		
+		Holder<PhysicEngine>::destroy();
+		Holder<PhysicEngine2D>::destroy();
+		Holder<ParticleEngine>::destroy();
+		Holder<RenderEngine>::destroy();
+		Holder<FileEngine>::destroy();
+		Holder<InputEngine>::destroy();
+		Holder<SoundEngine>::destroy();
+		Holder<XmlEngine>::destroy();
+		Holder<LogEngine>::destroy();
+		Holder<ProfilerEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
 
 		MengeCodec::shutdown();
-
 		FreeImageCodec::shutdown();
-
-		if( m_physicEngine != 0 )
-		{
-			//??
-			//m_interface->unloadSystemDLL(m_physicEngine->);
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onWindowMovedOrResized()
@@ -784,8 +751,8 @@ namespace Menge
 				m_interface->setHandleMouse( false );
 			}
 		}
-		Holder<RenderEngine>::hostage()->
-			setFullscreenMode( _fullscreen );
+
+		Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Application::getDesktopResolution() const

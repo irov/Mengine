@@ -8,7 +8,6 @@ class AtlasTexture;
 
 class Texture2D
 {
-
 public:
 
 	Texture2D();

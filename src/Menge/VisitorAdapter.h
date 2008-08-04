@@ -17,16 +17,7 @@
 #	include "TileMap.h"
 #	include "Camera2D.h"
 #	include "Entity.h"
-//#	include "Layer3D.h"
-//#	include "SceneNode3D.h"
 #	include "LayerScene.h"
-//#	include "NodeCore.h"
-//#	include "Actor.h"
-//#	include "Camera3D.h"
-//#	include "CapsuleController.h"
-//#	include "DiscreteEntity.h"
-//#	include "FFCamera.h"
-//#	include "RigidBody3D.h"
 
 namespace Menge
 {

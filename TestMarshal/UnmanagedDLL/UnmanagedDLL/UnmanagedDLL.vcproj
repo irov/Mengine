@@ -60,10 +60,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkIncremental="2"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"

@@ -186,7 +186,6 @@ namespace Menge
 			if( m_outline == 0 )
 			{
 				MENGE_LOG( "Error: Image can't loaded '%s'", m_fullname.c_str() );
-				//return false;
 			}
 		}
 

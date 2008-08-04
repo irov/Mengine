@@ -34,16 +34,14 @@ namespace Menge
 				const RenderImageInterface * _renderImage);
 
 			void invalidateRenderLine();
-			bool isInvalidateRenderVertex() const;
 
 			float getLength() const;
 
 		private:
 			TextField & m_textField;
-			bool m_invalidateRenderVertex;
+			bool m_invalidateRenderLine;
 			float m_offset;
 			float  m_length;
 			TCharsData charsData;
 	};
-
 };

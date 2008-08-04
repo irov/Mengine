@@ -8,8 +8,6 @@
 
 #	include "Camera2D.h"
 
-//#	include "Camera3D.h"
-
 #	include "Arrow.h"
 
 #	include "LogEngine.h"
@@ -59,6 +57,7 @@ namespace Menge
 		{
 			m_restartScene = true;
 		}
+
 		m_switchScene = true;
 		m_destroyOldScene = _destroyOld;
 	}

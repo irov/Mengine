@@ -272,8 +272,10 @@ namespace	Menge
 			this->callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 			m_colorTo.stop();
 		}
+
 		ColourValue newColor = m_color;
 		newColor.setA( _alpha );
+
 		if( m_colorTo.start( m_color, newColor, _time, length_color ) == false )
 		{
 			m_color	 = newColor;
@@ -349,6 +351,7 @@ namespace	Menge
 	void Sprite::_update( float _timing )
 	{
 		Node::_update( _timing );
+
 		if( m_colorTo.isStarted() )
 		{
 			if( m_colorTo.update( _timing, &m_color ) == true )

@@ -182,25 +182,6 @@ int compare_height(const Texture2D* s1, const Texture2D * s2)
 	return false;
 }
 
- /*   if (s1->getHeight()*s1->getWidth() > s2->getHeight()*s2->getWidth())
-	{
-        return true;
-	}
-    else if (   (s1->getHeight() > s2->getHeight())
-             && (s1->getHeight()*s1->getWidth() == s2->getHeight()*s2->getWidth()))
-	{
-        return true;
-	}
-    else if (   (s1->getWidth()  > s2->getWidth())
-             && (s1->getHeight()*s1->getWidth() == s2->getHeight()*s2->getWidth()))
-	{
-        return true;
-	}
-	else
-	{
-		return false;
-	}*/
-
 void ResourceParser::_loadTexturesFromResource(const std::string & _filename)
 {
 	fprintf(m_log, "Process: Parsing %s \n",_filename.c_str());

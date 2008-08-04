@@ -129,15 +129,14 @@ namespace Menge
 		void _render( unsigned int _debugMask ) override;
 
 	protected:
-		bool _checkVisibility( const Viewport & _viewPort ) override;
-		
+	
 		bool _activate() override;
 		void _deactivate() override;
-
 		bool _compile() override;
 		void _release() override;
-
 		void _update( float _timing ) override;
+
+		bool _checkVisibility( const Viewport & _viewPort ) override;
 
 		void _setListener() override;
 		void _invalidateWorldMatrix() override;

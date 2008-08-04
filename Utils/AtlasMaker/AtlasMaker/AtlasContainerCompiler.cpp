@@ -40,18 +40,16 @@ const std::vector<std::string> & AtlasContainerCompiler::compileAtlas(std::map<s
 		AtlasContainer * atlasContainer
 			= new AtlasContainer(m_log, bpp, m_width, m_height);
 
-		atlasContainer->insertTextures(fmIter->second);
+		atlasContainer->insertTextures( fmIter->second );
 
-		m_atlasContainers.push_back(atlasContainer);
+		m_atlasContainers.push_back( atlasContainer );
 	}
 
 	static std::vector<std::string>	output_names;
 	output_names.clear();
 
 	for(std::vector<AtlasContainer*>::iterator it = m_atlasContainers.begin();
-		it != m_atlasContainers.end();
-		it++
-		)
+		it != m_atlasContainers.end();	it++ )
 	{
 		AtlasContainer * atlasContainer = *it;
 		

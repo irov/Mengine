@@ -8,7 +8,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextLine::TextLine( TextField & _textField, const ResourceFont * _resource, const String & _text )
 	: m_length(0)
-	, m_invalidateRenderVertex(true)
+	, m_invalidateRenderLine(true)
 	, m_offset(0)
 	, m_textField(_textField)
 	{
@@ -37,12 +37,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::invalidateRenderLine()
 	{
-		m_invalidateRenderVertex = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextLine::isInvalidateRenderVertex() const
-	{
-		return m_invalidateRenderVertex;
+		m_invalidateRenderLine = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::renderLine(	mt::vec2f & offset,
@@ -50,7 +45,7 @@ namespace Menge
 								const RenderImageInterface * _renderImage
 								)
 	{
-		if( isInvalidateRenderVertex() == false )
+		if( m_invalidateRenderLine == false )
 		{
 			for( TCharsData::const_iterator
 				it_char = charsData.begin(), 
@@ -104,6 +99,6 @@ namespace Menge
 		
 		m_offset = offset.x;
 
-		m_invalidateRenderVertex = false;
+		m_invalidateRenderLine = false;
 	}
 }

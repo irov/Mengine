@@ -42,8 +42,6 @@
 
 #	include "TilePolygon.h"
 
-
-#	include "Color.h"
 #	include "C4AI.h"
 #	include "ReversiAI.h"
 #	include "CornersAI.h"

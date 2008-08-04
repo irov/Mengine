@@ -5,8 +5,6 @@
 #	include "ColourValue.h"
 #	include "ValueInterpolator.h"
 
-#	include "Color.h"
-
 #	include "math/mat3.h"
 #	include "math/vec4.h"
 

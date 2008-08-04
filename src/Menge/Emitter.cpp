@@ -177,23 +177,17 @@ namespace	Menge
 		{
 			return;
 		}
+		ParticleEngine* particleEngine = Holder<ParticleEngine>::hostage();
 
-		//Node::_render( _enableDebug );
+		Node::_render( _debugMask );
 
 		int count = m_interface->getNumTypes();
 
-		//mt::mat3f wm = getWorldMatrix();
-		mt::mat3f wm;
-		mt::ident_m3( wm );
-		//wm.m[6] = 0.0f;
-		//wm.m[7] = 0.0f;
-
 		for ( int i = count - 1; i >= 0; i-- )
-		//for( int i = 0; i < count; i++ )
 		{
 			bool nextParticleType = false;
 
-			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
+			particleEngine->lockEmitter( m_interface, i );
 
 			RenderImageInterface * image = m_images[count - 1 - i];
 
@@ -208,7 +202,7 @@ namespace	Menge
 
 			while ( nextParticleType == false )
 			{
-				RenderParticle * p = Holder<ParticleEngine>::hostage()->nextParticle();
+				RenderParticle * p = particleEngine->nextParticle();
 
 				if( p == NULL )
 				{
@@ -216,12 +210,13 @@ namespace	Menge
 				}
 				else
 				{
-					mt::vec2f vertices[4];
-
-					mt::mul_v2_m3( vertices[0], mt::vec2f(p->x2, p->y2), wm );
-					mt::mul_v2_m3( vertices[1], mt::vec2f(p->x1, p->y1), wm );
-					mt::mul_v2_m3( vertices[2], mt::vec2f(p->x4, p->y4), wm );
-					mt::mul_v2_m3( vertices[3], mt::vec2f(p->x3, p->y3), wm );
+					mt::vec2f vertices[4] =
+					{
+						mt::vec2f(p->x2, p->y2),
+						mt::vec2f(p->x1, p->y1),
+						mt::vec2f(p->x4, p->y4),
+						mt::vec2f(p->x3, p->y3)
+					};
 
 					Holder<RenderEngine>::hostage()->renderImage(
 						vertices,
@@ -234,7 +229,7 @@ namespace	Menge
 					}
 			}
 
-			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
+			particleEngine->unlockEmitter( m_interface );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -360,6 +355,42 @@ namespace	Menge
 			{
 				recompile();
 			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Emitter::_updateBoundingBox( mt::box2f & _boundingBox )
+	{
+		bool reset = false;
+		int count = m_interface->getNumTypes();
+
+		for ( int i = count - 1; i >= 0; i-- )
+		{
+			bool nextParticleType = false;
+
+			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
+
+			while ( nextParticleType == false )
+			{
+				RenderParticle * p = Holder<ParticleEngine>::hostage()->nextParticle();
+
+				if( p == NULL )
+				{
+					nextParticleType = true;
+				}
+				else
+				{
+					if( reset == false )
+					{
+						mt::reset( _boundingBox, mt::vec2f(p->x2, p->y2) );
+						reset = true;
+					}
+					mt::add_internal_point( _boundingBox, mt::vec2f(p->x2, p->y2) );
+					mt::add_internal_point( _boundingBox, mt::vec2f(p->x1, p->y1) );
+					mt::add_internal_point( _boundingBox, mt::vec2f(p->x4, p->y4) );
+					mt::add_internal_point( _boundingBox, mt::vec2f(p->x3, p->y3) );
+				}
+			}
+			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

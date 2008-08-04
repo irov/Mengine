@@ -381,25 +381,14 @@ namespace	Menge
 
 		const mt::vec2f& main_size = m_mainLayer->getSize();
 
-		/*Viewport viewport = _viewport;
-		mt::vec2f viewport_size = viewport.end - viewport.begin;
-		if( viewport.begin.y < 0.0f )
-		{
-			viewport.begin.y = 0.0f;
-		}
-		else if( viewport.begin.y + viewport_size.y > main_size.y )
-		{
-			viewport.begin.y = main_size.y - viewport_size.y;
-		}*/
-
 		Camera2D * camera2D = Holder<Player>::hostage()->getRenderCamera2D();
 
 		mt::vec2f camPos = camera2D->getLocalPosition();
 		const Viewport & vp = camera2D->getViewport();
 
-		const mt::mat4f & viewMatrix = camera2D->getViewMatrix();
+		/*const mt::mat4f & viewMatrix = camera2D->getViewMatrix();
 
-		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrix );
+		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrix );*/
 
 		mt::vec2f vp_size = vp.end - vp.begin;
 		if( ( camPos.y - vp_size.y * 0.5f ) < 0.0f )

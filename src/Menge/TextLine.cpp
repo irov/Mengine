@@ -46,7 +46,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::renderLine(	mt::vec2f & offset,
-								const ColourValue & _color, 
+								ColourValue& _color, 
 								const RenderImageInterface * _renderImage
 								)
 	{

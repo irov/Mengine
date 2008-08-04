@@ -352,9 +352,6 @@ namespace Menge
 	{
 		if( m_scene )
 		{
-			const Viewport & viewport = 
-				m_renderCamera2D->getViewport();
-
 			m_scene->render( _debugMask );
 		}
 

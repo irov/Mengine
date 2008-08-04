@@ -30,7 +30,7 @@ namespace Menge
 
 			void renderLine(
 				mt::vec2f & offset,
-				const ColourValue & _color, 
+				ColourValue& _color, 
 				const RenderImageInterface * _renderImage);
 
 			void invalidateRenderLine();

@@ -201,7 +201,7 @@ namespace	Menge
 
 		if( m_centerAlign )
 		{
-			mt::vec2f size = m_resource->getMaxSize( 0 );
+			mt::vec2f size = m_resource->getMaxSize( m_currentImageIndex );
 
 			m_alignOffset = size * -0.5f;
 		}
@@ -260,7 +260,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setAlpha( float _alpha )
 	{
-		m_color.a = _alpha;
+		m_color.setA( _alpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::alphaTo( float _alpha, float _time )
@@ -273,7 +273,7 @@ namespace	Menge
 			m_colorTo.stop();
 		}
 		ColourValue newColor = m_color;
-		newColor.a = _alpha;
+		newColor.setA( _alpha );
 		if( m_colorTo.start( m_color, newColor, _time, length_color ) == false )
 		{
 			m_color	 = newColor;
@@ -325,11 +325,11 @@ namespace	Menge
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
 		const mt::vec2f* vertices = getVertices();
-
+		unsigned int color = m_color.getAsARGB();
 		Holder<RenderEngine>::hostage()->renderImage(
 			vertices,
 			m_uv,
-			m_color.getAsARGB(),
+			color,
 			renderImage,
 			m_blendSrc,
 			m_blendDest

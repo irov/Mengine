@@ -44,35 +44,40 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG
-	BGRA ColourValue::getAsBGRA() const
+	BGRA ColourValue::getAsBGRA()
 #else
-	ARGB ColourValue::getAsARGB() const
+	ARGB ColourValue::getAsARGB()
 #endif
 	{
+		if( m_invalidateARGB == false )
+		{
+			return m_argb;
+		}
+
 		uint8 val8;
-		uint32 val32 = 0;
+		m_argb = 0;
 
 		// Convert to 32bit pattern
 		// (ARGB = 8888)
 
 		// Alpha
 		val8 = static_cast<uint8>(a * 255);
-		val32 = val8 << 24;
+		m_argb = val8 << 24;
 
 		// Red
 		val8 = static_cast<uint8>(r * 255);
-		val32 += val8 << 16;
+		m_argb += val8 << 16;
 
 		// Green
 		val8 = static_cast<uint8>(g * 255);
-		val32 += val8 << 8;
+		m_argb += val8 << 8;
 
 		// Blue
 		val8 = static_cast<uint8>(b * 255);
-		val32 += val8;
+		m_argb += val8;
 
-
-		return val32;
+		m_invalidateARGB = false;
+		return m_argb;
 	}
 	//////////////////////////////////////////////////////////////////////////
 #if MENGE_ENDIAN == MENGE_ENDIAN_BIG
@@ -332,8 +337,52 @@ namespace Menge
 			break;
 		}
 
-
+		m_invalidateARGB = true;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
+	float ColourValue::getA() const
+	{
+		return a;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ColourValue::getR() const
+	{
+		return r;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ColourValue::getG() const
+	{
+		return g;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ColourValue::getB() const
+	{
+		return b;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ColourValue::setA( const float _a )
+	{
+		a = _a;
+		m_invalidateARGB = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ColourValue::setR( const float _r )
+	{
+		r = _r;
+		m_invalidateARGB = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ColourValue::setG( const float _g )
+	{
+		g = _g;
+		m_invalidateARGB = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ColourValue::setB( const float _b )
+	{
+		b = _b;
+		m_invalidateARGB = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }
 

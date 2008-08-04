@@ -52,6 +52,7 @@ namespace Menge
 		void _update( float _timing ) override;
 
 		void _setListener() override;
+		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
 	private:
 		ResourceEmitterContainer * m_resource;

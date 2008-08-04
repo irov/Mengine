@@ -100,22 +100,22 @@ namespace Menge
 
 		static float getA( const ColourValue & _color )
 		{
-			return _color.a;
+			return _color.getA();
 		}
 
 		static float getR( const ColourValue & _color )
 		{
-			return _color.r;
+			return _color.getR();
 		}
 
 		static float getG( const ColourValue & _color )
 		{
-			return _color.g;
+			return _color.getG();
 		}
 
 		static float getB( const ColourValue & _color )
 		{
-			return _color.b;
+			return _color.getB();
 		}
 
 		static String s_getTimeString()

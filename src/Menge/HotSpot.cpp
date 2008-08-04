@@ -306,7 +306,6 @@ namespace	Menge
 	void HotSpot::_render( unsigned int _debugMask )
 	{
 #	ifndef MENGE_MASTER_RELEASE
-
 		if( _debugMask & MENGE_DEBUG_HOTSPOTS )
 		{
 			std::size_t pointCount = m_polygon.num_points();

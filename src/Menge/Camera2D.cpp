@@ -88,9 +88,7 @@ namespace	Menge
 		Allocator2D::_invalidateWorldMatrix();
 
 		invalidateViewport();
-		getViewport();
-		getViewMatrix();
-		Holder<RenderEngine>::hostage()->setViewMatrix( m_viewMatrix );
+		applyView();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::updateViewport()
@@ -120,7 +118,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	const Viewport & Camera2D::getViewport()
 	{
-		//if( isInvalidateViewport() == true )
+		if( isInvalidateViewport() == true )
 		{
 			updateViewport();
 			m_invalidateViewport = false;
@@ -166,7 +164,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f& Camera2D::getViewMatrix()
 	{
-		//if( isInvalidateViewMatrix() == true )
+		if( isInvalidateViewMatrix() == true )
 		{
 			updateViewMatrix();
 			m_invalidateViewMatrix = false;
@@ -189,12 +187,19 @@ namespace	Menge
 	{
 		m_parallax = _parallax;
 		invalidateViewport();
-		_invalidateWorldMatrix();
+		applyView();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Camera2D::getParallax() const
 	{
 		return m_parallax;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::applyView()
+	{
+		getViewport();
+		const mt::mat4f& viewMatrix = getViewMatrix();
+		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

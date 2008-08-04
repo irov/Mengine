@@ -169,7 +169,7 @@ namespace Menge
 
 		std::list<TextLine>  m_lines;
 
-		void renderPass_( const ColourValue & _color, const RenderImageInterface * _renderImage );
+		void renderPass_( ColourValue& _color, const RenderImageInterface * _renderImage );
 		void createFormattedMessage_( const std::string& _text );
 		void splitLine(const std::string& str);
 	};

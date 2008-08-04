@@ -36,6 +36,8 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 
+		void applyView();
+
 	protected:
 		bool _activate() override;
 		void _update( float _timing ) override;

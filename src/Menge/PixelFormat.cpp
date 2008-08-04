@@ -699,10 +699,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	// Pixel packing/unpacking utilities
 	//////////////////////////////////////////////////////////////////////////
-	void PixelUtil::packColour( const ColourValue& _colour, const PixelFormat _pf,  void* _dest )
+	/*void PixelUtil::packColour( const ColourValue& _colour, const PixelFormat _pf,  void* _dest )
 	{
-		packColour( _colour.r, _colour.g, _colour.b, _colour.a, _pf, _dest);
-	}
+		packColour( _colour.getR(), _colour.getG(), _colour.getB(), _colour.getA(), _pf, _dest);
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void PixelUtil::packColour( const uint8 _r, const uint8 _g, const uint8 _b, const uint8 _a, const PixelFormat _pf,  void* _dest )
 	{
@@ -802,10 +802,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PixelUtil::unpackColour( ColourValue* _colour, PixelFormat _pf,  const void* _src )
+	/*void PixelUtil::unpackColour( ColourValue* _colour, PixelFormat _pf,  const void* _src )
 	{
 		unpackColour(&_colour->r, &_colour->g, &_colour->b, &_colour->a, _pf, _src );
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void PixelUtil::unpackColour( uint8 *_r, uint8 *_g, uint8 *_b, uint8 *_a, PixelFormat _pf,  const void* _src )
 	{

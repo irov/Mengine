@@ -53,15 +53,11 @@ namespace Menge
 			}
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 			const mt::box2f & nbbox = _node->getBoundingBox();
-			const mt::mat3f& wm = _node->getWorldMatrix();
-			mt::box2f bbox;
-			mt::set_box_from_oriented_extent( bbox, mt::vec2f( 0.0f, 0.0f ), nbbox.max - nbbox.min, wm );
-			Viewport vp;
 			for( Layer2DAccumulator::TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 				it != it_end;
 				it++ )
 			{
-				if( mt::is_intersect( bbox, it->rect ) )
+				if( mt::is_intersect( nbbox, it->rect ) )
 				{
 					const Viewport & vp = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
 					mt::vec2f vp_size = vp.end - vp.begin;

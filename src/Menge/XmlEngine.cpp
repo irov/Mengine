@@ -177,7 +177,13 @@ namespace XmlParserCast
 	//////////////////////////////////////////////////////////////////////////
 	bool attribute_value_cast( Menge::ColourValue & _var, const char * _value )
 	{
-		int res = sscanf( _value, "%f;%f;%f;%f", &_var.r, &_var.g, &_var.b, &_var.a );
+		float a, r, g, b;
+		int res = sscanf( _value, "%f;%f;%f;%f", &r, &g, &b, &a );
+
+		_var.setA( a );
+		_var.setR( r );
+		_var.setG( g );
+		_var.setB( b );
 
 		return res == 4;
 	}

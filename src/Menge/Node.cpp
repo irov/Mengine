@@ -524,6 +524,11 @@ namespace Menge
 			return;
 		}
 
+		if( checkVisibility() == false )
+		{
+			return;
+		}
+
 		_render( _debugMask );
 
 		for( TContainerChildren::iterator
@@ -552,11 +557,12 @@ namespace Menge
 #	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::checkVisibility( const Viewport & _viewport )
+	bool Node::checkVisibility()
 	{
 		if( m_changeVisibility )
 		{
-			m_visibility = _checkVisibility( _viewport );
+			const Viewport& viewport = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
+			m_visibility = _checkVisibility( viewport );
 		}
 
 		return m_visibility;

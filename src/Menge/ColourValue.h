@@ -38,19 +38,18 @@ namespace Menge
 			, g( _green )
 			, b( _blue )
 			, a( _alpha )
+			, m_invalidateARGB( true )
 		{ 
 		}
 
 		bool operator==(const ColourValue& _rhs) const;
 		bool operator!=(const ColourValue& _rhs) const;
 
-		float r,g,b,a;
-
 		// Retrieves colour as RGBA.
 		RGBA getAsRGBA() const;
 
 		// Retrieves colour as ARGB.
-		ARGB getAsARGB() const;
+		ARGB getAsARGB();
 
 		// Retrieves colour as BGRA.
 		BGRA getAsBGRA() const;
@@ -92,6 +91,8 @@ namespace Menge
 				a = 0;
 			else if (a > 1)
 				a = 1;
+
+			m_invalidateARGB = true;
 		}
 
 		//As saturate, except that this colour value is unaffected and
@@ -111,25 +112,11 @@ namespace Menge
 			return *(&r+_i);
 		}
 
-		/// Array accessor operator
-		inline float& operator [] ( const size_t _i )
-		{
-			assert( _i < 4 );
-
-			return *(&r+_i);
-		}
-
-		/// Pointer accessor for direct copying
-		inline float* ptr()
-		{
-			return &r;
-		}
 		/// Pointer accessor for direct copying
 		inline const float* ptr() const
 		{
 			return &r;
 		}
-
 
 		// arithmetic operations
 		inline ColourValue operator + ( const ColourValue& _rkVector ) const
@@ -227,6 +214,7 @@ namespace Menge
 			b += _rkVector.b;
 			a += _rkVector.a;
 
+			m_invalidateARGB = true;
 			return *this;
 		}
 
@@ -237,6 +225,7 @@ namespace Menge
 			b -= _rkVector.b;
 			a -= _rkVector.a;
 
+			m_invalidateARGB = true;
 			return *this;
 		}
 
@@ -246,6 +235,8 @@ namespace Menge
 			g *= _fScalar;
 			b *= _fScalar;
 			a *= _fScalar;
+
+			m_invalidateARGB = true;
 			return *this;
 		}
 
@@ -260,6 +251,7 @@ namespace Menge
 			b *= fInv;
 			a *= fInv;
 
+			m_invalidateARGB = true;
 			return *this;
 		}
 
@@ -269,25 +261,20 @@ namespace Menge
 		//@param brightness Brightness level, [0,1]
 		void setHSB( float _hue, float _saturation, float _brightness );
 
-		float getA() const
-		{
-			return a;
-		}
+		float getA() const;
+		float getR() const;
+		float getG() const;
+		float getB() const;
 
-		float getR() const
-		{
-			return r;
-		}
+		void setA( const float _a );
+		void setR( const float _r );
+		void setG( const float _g );
+		void setB( const float _b );
 
-		float getG() const
-		{
-			return g;
-		}
-
-		float getB() const
-		{
-			return b;
-		}
+	protected:
+		float r,g,b,a;
+		ARGB m_argb;
+		bool m_invalidateARGB;
 	};
 
 	static float length_color( const ColourValue& _rColor )

@@ -160,7 +160,7 @@ namespace     Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::renderPass_( const ColourValue & _color, const RenderImageInterface * _renderImage )
+	void TextField::renderPass_( ColourValue& _color, const RenderImageInterface * _renderImage )
 	{
 		mt::vec2f offset = mt::vec2f::zero_v2;
 
@@ -269,7 +269,7 @@ namespace     Menge
 		Node::alphaTo( _alpha, _time );
 		
 		ColourValue newColor = m_color;
-		newColor.a = _alpha;
+		newColor.setA( _alpha );
 		
 		if( m_colorTo.isStarted() )
 		{
@@ -283,7 +283,7 @@ namespace     Menge
 		}
 
 		newColor = m_outlineColor;
-		newColor.a = _alpha;
+		newColor.setA( _alpha );
 
 		if( m_outlineColorTo.start( m_outlineColor, newColor, _time, length_color ) == false )
 		{
@@ -298,8 +298,8 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setAlpha( float _alpha )
 	{
-		m_color.a = _alpha;
-		m_outlineColor.a = _alpha;
+		m_color.setA( _alpha );
+		m_outlineColor.setA( _alpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue& TextField::getColor() const

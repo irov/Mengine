@@ -36,7 +36,7 @@ namespace Menge
 		virtual ~Node(){};
 
 	public:
-		virtual bool checkVisibility( const Viewport & _viewport );
+		virtual bool checkVisibility();
 		void changeVisibility();
 
 	protected:

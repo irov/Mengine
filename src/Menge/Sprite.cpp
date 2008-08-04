@@ -359,6 +359,7 @@ namespace	Menge
 	void Sprite::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
+		invalidateBoundingBox();
 		invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -371,7 +372,18 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
-		
+		const mt::vec2f * renderVertex = getVertices();
+
+		mt::reset( _boundingBox, renderVertex[0] );
+
+		for( std::size_t
+			it = 1,
+			it_end = 4;
+		it != it_end; 
+		++it )
+		{
+			mt::add_internal_point( _boundingBox, renderVertex[it] );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Sprite::getImageSize()

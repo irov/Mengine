@@ -279,19 +279,19 @@ namespace	Menge
 		m_scale = _scale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_updateBoundingBox( mt::box2f & _localBoundingBox )
+	void HotSpot::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
 		std::size_t numPoints = m_polygon.num_points();
 
 		if( numPoints == 0 )
 		{
-			mt::reset( _localBoundingBox, 0.f,0.f );
+			mt::reset( _boundingBox, 0.f,0.f );
 			return;
 		}
 
 		const mt::mat3f & wm = this->getWorldMatrix();
 
-		mt::reset( _localBoundingBox, m_polygon[0] * wm );
+		mt::reset( _boundingBox, m_polygon[0] * wm );
 
 		for( std::size_t
 			it = 1,
@@ -299,7 +299,7 @@ namespace	Menge
 		it != it_end; 
 		++it )
 		{
-			mt::add_internal_point( _localBoundingBox, m_polygon[it] * wm );
+			mt::add_internal_point( _boundingBox, m_polygon[it] * wm );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

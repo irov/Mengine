@@ -165,7 +165,6 @@ namespace Menge
 		bool m_invalidateVertices;
 
 		ColourValue m_color;
-		unsigned int m_colorCache;
 		ValueInterpolator<ColourValue> m_colorTo;
 
 		EBlendFactor m_blendSrc;

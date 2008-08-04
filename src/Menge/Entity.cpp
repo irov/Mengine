@@ -193,23 +193,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::flip( bool _x, bool _y )
 	{
-		/*TListChildren::iterator it = m_listChildren.begin();
-		for(; it != m_listChildren.end(); it++)
-		{
-			mt::vec2f pos = (*it)->getLocalPosition();
-			//mt::vec2f dir = (*it)->getLocalDirection();
-			if( _x )
-			{
-				pos.x = - pos.x;
-				(*it)->flip( true );
-			}
-			if( _y )
-			{
-				pos.y = - pos.y;
-				(*it)->flip( false );
-			}
-			(*it)->setLocalPosition( pos );
-		}*/
 		if( _x )
 		{
 			setScale( mt::vec2f( -m_scale.x, m_scale.y ) );
@@ -218,27 +201,7 @@ namespace	Menge
 		{
 			setScale( mt::vec2f( m_scale.x, -m_scale.y ) );
 		}
-		
 	}
-	//////////////////////////////////////////////////////////////////////////
-	/*void Entity::setScale( const mt::vec2f& _scale )
-	{
-		TContainerChildrens::iterator it = m_childrens.begin();
-		for(; it != m_childrens.end(); it++)
-		{
-			mt::vec2f pos = (*it)->getLocalPosition();
-			pos.x = pos.x / m_scale.x * _scale.x;
-			pos.y = pos.y / m_scale.y * _scale.y;
-			(*it)->setLocalPosition( pos );
-			(*it)->setScale( _scale );
-		}
-		m_scale = _scale;
-	}*/
-	//////////////////////////////////////////////////////////////////////////
-	/*const mt::vec2f& Entity::getScale() const
-	{
-		return m_scale;
-	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_update( float _timing )
 	{

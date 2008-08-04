@@ -355,7 +355,7 @@ namespace Menge
 			const Viewport & viewport = 
 				m_renderCamera2D->getViewport();
 
-			m_scene->render( viewport, _enableDebug );
+			m_scene->render( _enableDebug );
 		}
 
 		if( m_arrow )
@@ -366,16 +366,9 @@ namespace Menge
 			Holder<RenderEngine>::hostage()
 				->beginLayer2D();
 
-			Viewport viewport;
-			viewport.begin = mt::vec2f( 0.f, 0.f );
-			viewport.end = mt::vec2f( 1024.f, 768.f );
-
-			Holder<RenderEngine>::hostage()
-				->setRenderViewport( viewport );
-
 			mt::vec2f pos = m_renderCamera2D->getLocalPosition();
 			m_renderCamera2D->setLocalPosition( mt::vec2f( 512.0f, 384.0f ) );
-			m_arrow->render( viewport, _enableDebug );
+			m_arrow->render( _enableDebug );
 
 			Holder<RenderEngine>::hostage()
 				->endLayer2D();

@@ -25,10 +25,11 @@ namespace	Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_render( const Viewport & _viewport, bool _enableDebug )
+	void Point::_render( bool _enableDebug )
 	{
 		if( _enableDebug )
 		{
+			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 			const mt::vec2f& pos = getWorldPosition();
 			//mt::vec2f pos;
 			//mt::mul_v2_m3_r( pos, getWorldPosition(), getWorldMatrix() );
@@ -36,10 +37,10 @@ namespace	Menge
 			mt::vec2f pos2( pos + mt::vec2f( 5.0f, -5.0f ) );
 			mt::vec2f pos3( pos + mt::vec2f( 5.0f, 5.0f ) );
 			mt::vec2f pos4( pos + mt::vec2f( -5.0f, 5.0f ) );
-			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos1, pos2 );
-			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos2, pos3 );
-			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos1, pos4 );
-			Holder<RenderEngine>::hostage()->renderLine( 0xFF0000FF, pos4, pos3 );
+			renderEngine->renderLine( 0xFF0000FF, pos1, pos2 );
+			renderEngine->renderLine( 0xFF0000FF, pos2, pos3 );
+			renderEngine->renderLine( 0xFF0000FF, pos1, pos4 );
+			renderEngine->renderLine( 0xFF0000FF, pos4, pos3 );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

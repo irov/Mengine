@@ -372,7 +372,7 @@ namespace	Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::render( const Viewport & _viewport, bool _enableDebug )
+	void Scene::render( bool _enableDebug )
 	{
 		if( isRenderable() == false )
 		{
@@ -412,7 +412,7 @@ namespace	Menge
 			//viewport.begin.y = main_size.y - viewport_size.y;
 		}
 
-		_render( _viewport, _enableDebug );
+		_render( _enableDebug );
 
 
 		for( TContainerChildren::iterator
@@ -424,7 +424,7 @@ namespace	Menge
 			Holder<RenderEngine>::hostage()
 				->setRenderTarget( m_renderTarget );
 
-			(*it)->render( _viewport, _enableDebug );
+			(*it)->render( _enableDebug );
 		}
 
 		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
@@ -432,13 +432,10 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::renderSelf()
 	{
-		const Viewport & viewport = 
-			Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
-
 		bool debug = false;
 		debug = Holder<Application>::hostage()->isDebugRender();
 		
-		render( viewport, debug );
+		render( debug );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseLeave()

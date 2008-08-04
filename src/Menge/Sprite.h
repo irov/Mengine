@@ -122,9 +122,9 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 	public:
-		const mt::vec2f * getRenderVertex();
-		void invalidateRenderVertex();
-		bool isInvalidateRenderVertex() const;
+		const mt::vec2f * getVertices();
+		void invalidateVertices();
+		bool isInvalidateVertices() const;
 
 	protected:
 		bool _activate() override;
@@ -134,7 +134,7 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _timing ) override;
-		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+		void _render( bool _enableDebug ) override;
 
 		void _invalidateWorldMatrix() override;
 		void _setListener() override;
@@ -161,8 +161,8 @@ namespace Menge
 		mt::vec4f m_percent;
 		mt::vec4f m_uv;
 
-		mt::vec2f m_renderVertex[4];
-		bool m_invalidateRenderVertex;
+		mt::vec2f m_vertices[4];
+		bool m_invalidateVertices;
 
 		ColourValue m_color;
 		unsigned int m_colorCache;

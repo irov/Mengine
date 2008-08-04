@@ -38,7 +38,7 @@ namespace Menge
 		void setResource( const String& _resourceName );
 		void setEmitter( const String& _emitterName );
 
-		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+		void _render( bool _enableDebug ) override;
 
 	protected:
 		bool _checkVisibility( const Viewport & _viewPort ) override;

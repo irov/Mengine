@@ -18,7 +18,7 @@ namespace Menge
 		virtual ~RenderMesh();
 
 		void loader( XmlElement * _xml ) override;
-		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+		void _render( bool _enableDebug ) override;
 
 		void createRenderTarget( const String& _name, std::size_t _width, std::size_t _height );
 		void setMaterial( const String& _materialName );

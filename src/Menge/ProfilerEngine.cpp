@@ -50,12 +50,12 @@ namespace Menge
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
 
-		Viewport viewport;
-		viewport.begin = mt::vec2f( 0.f, 0.f );
-		viewport.end = mt::vec2f( 1024.f, 768.f );
+		//Viewport viewport;
+		//viewport.begin = mt::vec2f( 0.f, 0.f );
+		//viewport.end = mt::vec2f( 1024.f, 768.f );
 
-		Holder<RenderEngine>::hostage()
-			->setRenderViewport( viewport );
+		//Holder<RenderEngine>::hostage()
+		//	->setRenderViewport( viewport );
 	
 		_debugTextField->setLocalPosition(mt::vec2f::zero_v2);
 
@@ -65,7 +65,7 @@ namespace Menge
 		sprintf( m_debugText, "DIP = %d\n", dipCount );
 
 		_debugTextField->setText( m_debugText );
-		_debugTextField->render( viewport, false );
+		_debugTextField->render( false );
 
 		for(ProfileHistoryList::iterator it = historyList.begin();
 			it != historyList.end(); ++it)
@@ -76,7 +76,7 @@ namespace Menge
 
 			_debugTextField->translate(mt::vec2f(0,25));
 			_debugTextField->setText( m_debugText );
-			_debugTextField->render( viewport, false );
+			_debugTextField->render( false );
 		}
 
 		Holder<RenderEngine>::hostage()

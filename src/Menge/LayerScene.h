@@ -25,7 +25,7 @@ namespace Menge
 		Node * getChildren( const std::string & _name, bool _recursion ) const override;
 
 	public:
-		void render( const Viewport & _viewport, bool _enableDebug ) override;
+		void render( bool _enableDebug ) override;
 
 	public:
 		void update( float _timing ) override;

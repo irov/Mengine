@@ -62,7 +62,7 @@ namespace Menge
 		
 	protected:
 		void _update( float _timing ) override;
-		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+		void _render( bool _enableDebug ) override;
 		void _updateBoundingBox( mt::box2f & _localBoundingBox ) override;
 		void _setListener() override;
 

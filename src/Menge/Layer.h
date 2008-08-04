@@ -39,7 +39,7 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 
-		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+		void _render( bool _enableDebug ) override;
 
 		// temporary patch
 		virtual bool isLooped() { return false; }

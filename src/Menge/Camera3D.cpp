@@ -80,7 +80,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::_render( const Viewport & _viewport, bool _enableDebug )
+	void Camera3D::_render( bool _enableDebug )
 	{		
 		Holder<RenderEngine>::hostage()->setViewMatrix( getViewMatrix() );
 		Holder<RenderEngine>::hostage()->setProjectionMatrix( getProjectionMatrix() );

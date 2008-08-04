@@ -26,7 +26,7 @@ namespace Menge
 
 	public:
 		void loader( XmlElement * _xml ) override;
-		void render( const Viewport & _viewport, bool _enableDebug ) override;
+		void render( bool _enableDebug ) override;
 
 	protected:
 		void _addChildren( Node * _node ) override;

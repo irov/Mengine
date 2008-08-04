@@ -83,9 +83,8 @@ namespace	Menge
 		m_resourceMap = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TileMap::_render( const Viewport & _viewport, bool _enableDebug )
+	void TileMap::_render( bool _enableDebug )
 	{
-		//const Viewport& viewport = Holder<RenderEngine>::hostage()->getRenderViewport();
 		const Viewport& viewport = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
 
 		const mt::mat3f & wm = getWorldMatrix();

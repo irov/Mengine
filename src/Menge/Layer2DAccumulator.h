@@ -15,8 +15,8 @@ namespace Menge
 
 		void loader( XmlElement * _xml ) override;
 
-		void render( const Viewport & _viewport, bool _enableDebug ) override;
-		void _render( const Viewport & _viewport, bool _enableDebug ) override;
+		void render( bool _enableDebug ) override;
+		void _render( bool _enableDebug ) override;
 
 	public:
 		struct ImageRect 

@@ -35,9 +35,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ShadowCaster2D::_render( const Viewport & _viewport, bool _enableDebug )
+	void ShadowCaster2D::_render( bool _enableDebug )
 	{
-		if(_enableDebug)
+		if( _enableDebug )
 		{
 			for( std::size_t i = 0; i < m_poly.num_points(); i++)
 			{

@@ -80,11 +80,8 @@ namespace Menge
 		return m_renderArea;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer::_render( const Viewport & _viewport, bool _enableDebug )
+	void Layer::_render( bool _enableDebug )
 	{
-		//Holder<RenderEngine>::hostage()
-		//	->setRenderTarget( m_renderTarget );
-
 		Holder<RenderEngine>::hostage()
 			->setRenderArea( m_renderArea );
 	}

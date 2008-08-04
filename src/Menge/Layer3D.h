@@ -39,7 +39,7 @@ namespace Menge
 		//void update( float _timing ) override;
 	
 		//void _render( const Viewport & _viewport, bool _enableDebug ) override;
-		void render( const Viewport & _viewport, bool _enableDebug ) override;
+		void render( bool _enableDebug ) override;
 
 	protected:
 

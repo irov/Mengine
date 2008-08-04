@@ -517,14 +517,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( const Viewport & _viewport, bool _enableDebug )
+	void Node::render( bool _enableDebug )
 	{
 		if( isRenderable() == false )
 		{
 			return;
 		}
 
-		_render( _viewport, _enableDebug );
+		_render( _enableDebug );
 
 		for( TContainerChildren::iterator
 			it = m_children.begin(),
@@ -532,11 +532,11 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			(*it)->render( _viewport, _enableDebug );
+			(*it)->render( _enableDebug );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_render( const Viewport & _viewport, bool )
+	void Node::_render( bool )
 	{
 		// Empty
 	}

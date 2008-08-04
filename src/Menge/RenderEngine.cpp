@@ -85,7 +85,7 @@ namespace Menge
 		//m_renderViewport.set( mt::vec2f::zero_v2, m_contentResolution );
 	}
 	////////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderViewport( const Viewport & _viewport )
+	/*void RenderEngine::setRenderViewport( const Viewport & _viewport )
 	{
 		m_renderViewport = _viewport;
 	}
@@ -93,7 +93,7 @@ namespace Menge
 	const Viewport & RenderEngine::getRenderViewport() const
 	{
 		return m_renderViewport;
-	}
+	}*/
 	////////////////////////////////////////////////////////////////////////////
 	/*void RenderEngine::setRenderCamera( Camera3D * _camera )
 	{
@@ -204,7 +204,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderImage(		
-			const mt::vec2f * _renderVertex,
+			const mt::vec2f * _vertices,
 			const mt::vec4f & _uv,
 			unsigned int _color, 
 			const RenderImageInterface* _image,
@@ -212,7 +212,7 @@ namespace Menge
 			EBlendFactor _dst)
 	{
 		m_interface->renderImage(
-			_renderVertex->m,
+			_vertices->m,
 			_uv.m,
 			_color,
 			_image,

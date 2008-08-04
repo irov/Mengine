@@ -33,23 +33,20 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh::_render( const Viewport & _viewport, bool _enableDebug )
+	void RenderMesh::_render( bool _enableDebug )
 	{
 
-		mt::mat4f wm = Holder<RenderEngine>::hostage()
-			->getWorldMatrix();
+		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+		mt::mat4f wm = renderEngine->getWorldMatrix();
 
-		Holder<RenderEngine>::hostage()
-			->setWorldMatrix( getLocalMatrix3D() );
+		renderEngine->setWorldMatrix( getLocalMatrix3D() );
 
-		Holder<RenderEngine>::hostage()
-			->renderMesh( m_resourceMesh->getVertexData(),
+		renderEngine->renderMesh( m_resourceMesh->getVertexData(),
 			m_resourceMesh->getIndexData(), 
 			&m_material 
 			);
 
-		Holder<RenderEngine>::hostage()
-			->setWorldMatrix( wm );
+		renderEngine->setWorldMatrix( wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMesh::_compile()

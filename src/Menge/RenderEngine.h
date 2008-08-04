@@ -35,11 +35,8 @@ namespace Menge
 		void setContentResolution( const mt::vec2f _resolution );
 		mt::vec2f getBestDisplayResolution( int _defWidth, int _defHeigth, float _aspect );
 
-		void setRenderViewport( const Viewport & _viewport );
-		const Viewport & getRenderViewport() const;
-
-//		void setRenderCamera( Camera3D * _camera );
-//		Camera3D * getRenderCamera();
+		//void setRenderViewport( const Viewport & _viewport );
+		//const Viewport & getRenderViewport() const;
 
 		RenderImageInterface * createImage( const String & _name, unsigned int _width, unsigned int _height );
 		RenderImageInterface * createRenderTargetImage( const String & _name, unsigned int _width, unsigned int _height );
@@ -49,7 +46,7 @@ namespace Menge
 
 
 		void renderImage(		
-			const mt::vec2f * _renderVertex,
+			const mt::vec2f * _vertices,
 			const mt::vec4f & _uv,
 			unsigned int _color, 
 			const RenderImageInterface* _image,

@@ -303,7 +303,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_render( const Viewport & _viewport, bool _enableDebug )
+	void HotSpot::_render( bool _enableDebug )
 	{
 		if( _enableDebug )
 		{

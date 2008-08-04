@@ -443,7 +443,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::_render( const Viewport & _viewport, bool _enableDebug )
+	void RigidBody2D::_render( bool _enableDebug )
 	{
 		if( _enableDebug )
 		{

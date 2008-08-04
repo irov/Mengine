@@ -170,7 +170,7 @@ namespace	Menge
 		m_resource = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Emitter::_render( const Viewport & _viewport, bool _enableDebug )
+	void Emitter::_render( bool _enableDebug )
 	{
 		bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
 		if( !enabled )
@@ -216,15 +216,15 @@ namespace	Menge
 				}
 				else
 				{
-					mt::vec2f renderVertex[4];
+					mt::vec2f vertices[4];
 
-					mt::mul_v2_m3( renderVertex[0], mt::vec2f(p->x2, p->y2), wm );
-					mt::mul_v2_m3( renderVertex[1], mt::vec2f(p->x1, p->y1), wm );
-					mt::mul_v2_m3( renderVertex[2], mt::vec2f(p->x4, p->y4), wm );
-					mt::mul_v2_m3( renderVertex[3], mt::vec2f(p->x3, p->y3), wm );
+					mt::mul_v2_m3( vertices[0], mt::vec2f(p->x2, p->y2), wm );
+					mt::mul_v2_m3( vertices[1], mt::vec2f(p->x1, p->y1), wm );
+					mt::mul_v2_m3( vertices[2], mt::vec2f(p->x4, p->y4), wm );
+					mt::mul_v2_m3( vertices[3], mt::vec2f(p->x3, p->y3), wm );
 
 					Holder<RenderEngine>::hostage()->renderImage(
-						renderVertex,
+						vertices,
 						mt::vec4f(p->u0, p->v0, p->u1, p->v1),
 						p->color,
 						image,

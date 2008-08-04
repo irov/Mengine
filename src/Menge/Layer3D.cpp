@@ -144,9 +144,8 @@ namespace	Menge
 		: public VisitorAdapter<VisitorRenderLayer3D>
 	{
 	public:
-		VisitorRenderLayer3D( const Viewport & _viewport, bool _enableDebug )
-			: m_viewport(_viewport)
-			, m_enableDebug( _enableDebug )
+		VisitorRenderLayer3D( bool _enableDebug )
+			: m_enableDebug( _enableDebug )
 		{
 		}
 
@@ -155,7 +154,7 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
-				_node->_render( m_viewport, m_enableDebug );
+				_node->_render( m_enableDebug );
 
 				_node->visitChildren( this );
 			}
@@ -164,21 +163,20 @@ namespace	Menge
 
 		void visit( Layer * _layer )
 		{
-			_layer->render( m_viewport, m_enableDebug );
+			_layer->render( m_enableDebug );
 		}
 
 	protected:
-		Viewport m_viewport;
 		bool m_enableDebug;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer3D::render( const Viewport & _viewport, bool _enableDebug )
+	void Layer3D::render( bool _enableDebug )
 	{
-		Layer::_render( _viewport, _enableDebug );
+		Layer::_render( _enableDebug );
 		RenderEngine* engine = Holder<RenderEngine>::hostage();
 		engine->beginLayer3D();
 		
-		VisitorRenderLayer3D visitorRender( _viewport, _enableDebug );
+		VisitorRenderLayer3D visitorRender( _enableDebug );
 
 		visitChildren( &visitorRender );
 

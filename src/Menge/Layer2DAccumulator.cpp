@@ -40,9 +40,8 @@ namespace Menge
 		: public VisitorAdapter<VisitorRenderLayer2DPool>
 	{
 	public:
-		VisitorRenderLayer2DPool( const Viewport & _viewport, const Layer2DAccumulator::TRenderImageVector& _images )
-			: m_viewport( _viewport )
-			, m_surfaces( _images )
+		VisitorRenderLayer2DPool( const Layer2DAccumulator::TRenderImageVector& _images )
+			: m_surfaces( _images )
 		{
 		}
 	public:
@@ -69,17 +68,16 @@ namespace Menge
 
 					renderEngine->setRenderTarget( it->image->getDescription(), false );
 					Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( it->rect.min + vp_size * 0.5f );
-					_node->_render( vp, false );
+					_node->_render( false );
 					_node->visitChildren( this );
 				}
 			}
 		}
 	protected:
-		Viewport m_viewport;
 		Layer2DAccumulator::TRenderImageVector m_surfaces;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DAccumulator::render( const Viewport & _viewport, bool _enableDebug )
+	void Layer2DAccumulator::render( bool _enableDebug )
 	{
 
 		Holder<RenderEngine>::hostage()
@@ -90,7 +88,7 @@ namespace Menge
 
 		Viewport viewport = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
 		
-		VisitorRenderLayer2DPool visitorRender( _viewport, m_surfaces );
+		VisitorRenderLayer2DPool visitorRender( m_surfaces );
 
 		visitChildren( &visitorRender );
 
@@ -106,8 +104,8 @@ namespace Menge
 
 		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( plxCamPos );
 
-		Layer::_render( viewport, _enableDebug );
-		_render( viewport, _enableDebug );
+		Layer::_render( _enableDebug );
+		_render( _enableDebug );
 
 		m_children.clear();
 
@@ -156,17 +154,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DAccumulator::_render( const Viewport & _viewport, bool _enableDebug )
+	void Layer2DAccumulator::_render( bool _enableDebug )
 	{
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 	
-		mt::vec2f renderVertex[4] =
-		{
-			mt::vec2f( 0.0f, 0.0f ),
-			mt::vec2f( m_gridSize, 0.0f ),
-			mt::vec2f( m_gridSize, m_gridSize ),
-			mt::vec2f( 0.0f, m_gridSize )
-		};
 
 
 		//mt::mat3f wm;
@@ -177,9 +168,16 @@ namespace Menge
 			it++ )
 		{
 			//if ( count == 1 ) break;
-			//wm.v2.v2 = it->rect.min;
-			//mt::vec2f offset;
-			renderEngine->renderImage( renderVertex,
+			mt::vec2f offset = it->rect.min; 
+
+			mt::vec2f vertices[4] =
+			{
+				mt::vec2f( 0.0f, 0.0f ) + offset,
+				mt::vec2f( m_gridSize, 0.0f ) + offset,
+				mt::vec2f( m_gridSize, m_gridSize ) + offset,
+				mt::vec2f( 0.0f, m_gridSize ) + offset
+			};
+			renderEngine->renderImage( vertices,
 										mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ),
 										0xFFFFFFFF, it->image 
 										);

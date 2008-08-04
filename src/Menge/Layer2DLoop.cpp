@@ -35,9 +35,8 @@ namespace	Menge
 		: public VisitorAdapter<VisitorRenderLayer2DLoop>
 	{
 	public:
-		VisitorRenderLayer2DLoop( const Viewport & _viewport, const mt::vec2f & _size, bool _enableDebug )
-			: m_viewport(_viewport)
-			, m_size(_size)
+		VisitorRenderLayer2DLoop( const mt::vec2f & _size, bool _enableDebug )
+			: m_size(_size)
 			, m_enableDebug( _enableDebug )
 		{
 		}
@@ -58,7 +57,7 @@ namespace	Menge
 
 					float segment_x = sprite_bbox.ve.x - m_size.x;
 
-					if( segment_x < m_viewport.begin.x )
+				//	if( segment_x < m_viewport.begin.x )
 					{
 				//		return;
 					}
@@ -66,18 +65,18 @@ namespace	Menge
 					//Viewport viewport = m_viewport;
 					//viewport.begin += mt::vec2f( m_size.x, 0.f );
 					//viewport.end += mt::vec2f( m_size.x, 0.f );
-					_node->_render( m_viewport, m_enableDebug );
+					_node->_render( m_enableDebug );
 				}
 				//else if( m_viewport.begin.x > sprite_bbox.ve.x ) 
 				{
-					if( m_viewport.end.x < m_size.x )
+				//	if( m_viewport.end.x < m_size.x )
 					{
 				//		return;
 					}
 
-					float segment_x = m_viewport.end.x - m_size.x;
+				//	float segment_x = m_viewport.end.x - m_size.x;
 
-					if( segment_x < sprite_bbox.vb.x )
+				//	if( segment_x < sprite_bbox.vb.x )
 					{
 				//		return;
 					}
@@ -92,7 +91,7 @@ namespace	Menge
 					mt::vec2f oldPos = camera->getLocalPosition();
 					camera->setLocalPosition( oldPos + mt::vec2f( -m_size.x, 0.0f ) );
 
-					_node->_render( m_viewport, m_enableDebug );
+					_node->_render( m_enableDebug );
 
 					//Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( m_viewport.begin + vp_size * 0.5f );
 					camera->setLocalPosition( oldPos );
@@ -105,16 +104,15 @@ namespace	Menge
 
 		void visit( Layer * _layer )
 		{
-			_layer->render( m_viewport, m_enableDebug );
+			_layer->render( m_enableDebug );
 		}
 
 	protected:
-		Viewport m_viewport;
 		bool m_enableDebug;
 		mt::vec2f m_size;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DLoop::render( const Viewport & _viewport, bool _enableDebug )
+	void Layer2DLoop::render( bool _enableDebug )
 	{
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
@@ -146,7 +144,7 @@ namespace	Menge
 
 		camera->setParallax( parallax );
 
-		VisitorRenderLayer2DLoop visitorRender( _viewport, m_size, _enableDebug );
+		VisitorRenderLayer2DLoop visitorRender( m_size, _enableDebug );
 
 		visitChildren( &visitorRender );
 

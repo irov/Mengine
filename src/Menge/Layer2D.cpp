@@ -71,9 +71,8 @@ namespace	Menge
 		: public VisitorAdapter<VisitorRenderLayer2D>
 	{
 	public:
-		VisitorRenderLayer2D( const Viewport & _viewport, bool _enableDebug )
-			: m_viewport(_viewport)
-			, m_enableDebug( _enableDebug )
+		VisitorRenderLayer2D( bool _enableDebug )
+			: m_enableDebug( _enableDebug )
 		{
 		}
 
@@ -82,7 +81,7 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
-				_node->_render( m_viewport, m_enableDebug );
+				_node->_render( m_enableDebug );
 
 				_node->visitChildren( this );
 			}
@@ -90,17 +89,16 @@ namespace	Menge
 
 		void visit( Layer * _layer )
 		{
-			_layer->render( m_viewport, m_enableDebug );
+			_layer->render( m_enableDebug );
 		}
 
 	protected:
-		Viewport m_viewport;
 		bool m_enableDebug;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::render( const Viewport & _viewport, bool _enableDebug )
+	void Layer2D::render( bool _enableDebug )
 	{
-		Layer::_render( _viewport, _enableDebug );
+		Layer::_render( _enableDebug );
 
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
@@ -109,7 +107,7 @@ namespace	Menge
 		mt::vec2f oldPlx = camera->getParallax();
 		camera->setParallax( m_factorParallax );
 
-		VisitorRenderLayer2D visitorRender( _viewport, _enableDebug );
+		VisitorRenderLayer2D visitorRender( _enableDebug );
 
 		visitChildren( &visitorRender );
 

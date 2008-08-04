@@ -188,7 +188,7 @@ namespace     Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_render( const Viewport & _viewport, bool _enableDebug )
+	void TextField::_render( bool _enableDebug )
 	{
 		const RenderImageInterface * outlineImage = m_resource->getOutlineImage();
 

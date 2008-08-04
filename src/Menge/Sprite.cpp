@@ -35,7 +35,7 @@ namespace	Menge
 	, m_flipY( false )
 	, m_blendSrc( BF_SOURCE_ALPHA )
 	, m_blendDest( BF_ONE_MINUS_SOURCE_ALPHA )
-	, m_invalidateRenderVertex(true)
+	, m_invalidateVertices( true )
 	{ }
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::~Sprite()
@@ -241,7 +241,7 @@ namespace	Menge
 		}
 
 		invalidateBoundingBox();
-		invalidateRenderVertex();
+		invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::colorTo( const ColourValue & _color, float _time )
@@ -281,34 +281,34 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f * Sprite::getRenderVertex()
+	const mt::vec2f * Sprite::getVertices()
 	{
-		if( m_invalidateRenderVertex == true )
+		if( m_invalidateVertices == true )
 		{
 			const mt::mat3f & wm = getWorldMatrix();
 
-			mt::mul_v2_m3( m_renderVertex[0], m_offset, wm );
-			mt::mul_v2_m3( m_renderVertex[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
-			mt::mul_v2_m3( m_renderVertex[2], m_offset + m_size, wm );
-			mt::mul_v2_m3( m_renderVertex[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
+			mt::mul_v2_m3( m_vertices[0], m_offset, wm );
+			mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
+			mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
+			mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
 
-			m_invalidateRenderVertex = false;
+			m_invalidateVertices = false;
 		}
 
-		return m_renderVertex;
+		return m_vertices;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::invalidateRenderVertex()
+	void Sprite::invalidateVertices()
 	{
-		m_invalidateRenderVertex = true;
+		m_invalidateVertices = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Sprite::isInvalidateRenderVertex() const
+	bool Sprite::isInvalidateVertices() const
 	{
-		return m_invalidateRenderVertex;
+		return m_invalidateVertices;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_render( const Viewport & _viewport, bool _enableDebug )
+	void Sprite::_render( bool _enableDebug )
 	{
 		if( m_resource == NULL )
 		{
@@ -322,10 +322,10 @@ namespace	Menge
 
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
-		const mt::vec2f * renderVertex = getRenderVertex();
+		const mt::vec2f* vertices = getVertices();
 
 		Holder<RenderEngine>::hostage()->renderImage(
-			renderVertex,
+			vertices,
 			m_uv,
 			m_color.getAsARGB(),
 			renderImage,
@@ -359,7 +359,7 @@ namespace	Menge
 	void Sprite::_invalidateWorldMatrix()
 	{
 		Node::_invalidateWorldMatrix();
-		invalidateRenderVertex();
+		invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_setListener()

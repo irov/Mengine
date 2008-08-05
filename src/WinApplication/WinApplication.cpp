@@ -327,13 +327,15 @@ namespace Menge
 
 		m_name.assign( ansistr );
 
+		free( ansistr );
+
 		m_mutex = ::CreateMutexA( NULL, FALSE, _name.c_str() );
 		DWORD error = ::GetLastError();
 
 		if( error == ERROR_ALREADY_EXISTS )
 		{
-			std::string message = std::string("Another instance of ") + std::string( ansistr ) + std::string(" is already running");
-			::MessageBoxA( NULL, message.c_str(), ansistr, MB_ICONWARNING );
+			std::string message = std::string("Another instance of ") + m_name + std::string(" is already running");
+			::MessageBoxA( NULL, message.c_str(), m_name.c_str(), MB_ICONWARNING );
 			return false;
 		}
 
@@ -366,7 +368,7 @@ namespace Menge
 		CREATESTRUCT createStruct;
 		createStruct.lpCreateParams = (LPVOID)666;
 
-		m_hWnd = ::CreateWindow("MengeWnd", ansistr, dwStyle,
+		m_hWnd = ::CreateWindow("MengeWnd", m_name.c_str(), dwStyle,
 			left, top, width, height, NULL, 0, hInstance, (LPVOID)this);
 
 		::GetWindowInfo( m_hWnd, &m_wndInfo);

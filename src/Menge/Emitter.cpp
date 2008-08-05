@@ -308,6 +308,7 @@ namespace	Menge
 		if( dir.y > 0.0f ) rads = -rads;
 		m_interface->setAngle( rads );
 		m_interface->update( _timing );
+		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::onStopped()

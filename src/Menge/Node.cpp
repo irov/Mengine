@@ -766,6 +766,10 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
+				if( (*it)->isRenderable() == false )
+				{
+					continue;
+				}
 				const mt::box2f & childrenBoundingBox = (*it)->getBoundingBox();
 
 				mt::merge_box( m_boundingBox, childrenBoundingBox );
@@ -786,4 +790,10 @@ namespace Menge
 			m_parent->invalidateBoundingBox();
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_updateBoundingBox( mt::box2f& _boundingBox )
+	{
+		mt::reset( _boundingBox, getWorldPosition() );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

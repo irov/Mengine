@@ -156,6 +156,7 @@ namespace Menge
 		bool m_updatable;
 
 		virtual void _update( float _timing );
+		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;
 
 	public:
 		void moveTo( float _time, const mt::vec2f& _point );

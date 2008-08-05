@@ -105,6 +105,7 @@ bool HGERenderSystem::createRenderWindow( int _width, int _height, int _bits, bo
 	m_hge->System_SetState( HGE_WINDOWED, !_fullscreen );
 	m_hge->System_SetState( HGE_HWND, (HWND)_winHandle );
 	m_hge->System_SetState( HGE_ZBUFFER, true );
+	m_hge->Gfx_SetListener( this );
 	//m_hge->System_SetState( HGE_FPS, HGEFPS_VSYNC );
 	//m_hge->System_SetState( HGE_TEXTUREFILTER, false );]
 	m_currentRenderTarget = "defaultCamera";
@@ -498,18 +499,6 @@ void HGERenderSystem::setFullscreenMode( float _width, float _height, bool _full
 	// todo: backup render targets content
 
 	m_hge->Gfx_ChangeMode( _width, _height, 32, _fullscreen );
-
-	// restoring render targets
-	for( TTargetMap::iterator it = m_targetMap.begin(), it_end = m_targetMap.end();
-		it != it_end;
-		it++ )
-	{
-		if( it->second.texture != 0 )
-		{
-			HTEXTURE htex = m_hge->Target_GetTexture( it->second.handle );
-			it->second.texture->restore( htex );
-		}
-	}
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::CameraInterface * HGERenderSystem::createCamera( const Menge::String & _name )
@@ -659,5 +648,20 @@ void HGERenderSystem::setRenderArea( const float* _renderArea )
 	int h = _renderArea[3] - _renderArea[1];
 
 	m_hge->Gfx_SetClipping( _renderArea[0], _renderArea[1], w, h );
+}
+//////////////////////////////////////////////////////////////////////////
+void HGERenderSystem::onRestoreDevice()
+{
+	// restoring render targets
+	for( TTargetMap::iterator it = m_targetMap.begin(), it_end = m_targetMap.end();
+		it != it_end;
+		it++ )
+	{
+		if( it->second.texture != 0 )
+		{
+			HTEXTURE htex = m_hge->Target_GetTexture( it->second.handle );
+			it->second.texture->restore( htex );
+		}
+	}
 }
 //////////////////////////////////////////////////////////////////////////

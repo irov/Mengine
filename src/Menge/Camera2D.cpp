@@ -19,6 +19,7 @@ namespace	Menge
 		, m_invalidateViewMatrix( true )
 		, m_invalidateViewport( true )
 		, m_parallax( 1.0f, 1.0f )
+		, m_offset( 0.0f, 0.0f )
 	{
 		mt::ident_m4( m_viewMatrix );
 	}
@@ -98,8 +99,8 @@ namespace	Menge
 		//m_viewport.begin = pos;
 		//m_viewport.end = pos + m_viewportSize;
 		m_viewport.begin = pos - m_viewportSize * .5;
-		m_viewport.begin.x *= m_parallax.x;
-		m_viewport.begin.y *= m_parallax.y;
+		m_viewport.begin.x = m_viewport.begin.x * m_parallax.x + m_offset.x;
+		m_viewport.begin.y = m_viewport.begin.y * m_parallax.y + m_offset.y;
 		m_viewport.end = m_viewport.begin + m_viewportSize;
 		//m_viewport.end = pos + m_viewportSize * .5;
 
@@ -200,6 +201,18 @@ namespace	Menge
 		getViewport();
 		const mt::mat4f& viewMatrix = getViewMatrix();
 		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrix );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::setOffset( const mt::vec2f& _offset )
+	{
+		m_offset = _offset;
+		invalidateViewport();
+		applyView();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& Camera2D::getOffset() const
+	{
+		return m_offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

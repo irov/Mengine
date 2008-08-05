@@ -68,6 +68,8 @@ namespace Menge
 		virtual void render( unsigned int _debugMask ) override;
 		void setRenderTarget( const std::string& _cameraName );
 		const String& getRenderTarget() const;
+		void blockInput( bool _block );
+		bool getBlockInput() const;
 	private:
 
 		bool m_isSubScene;
@@ -82,5 +84,6 @@ namespace Menge
 		String m_renderTarget;
 
 		bool m_onUpdateEvent;
+		bool m_blockInput;
 	};
 }

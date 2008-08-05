@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="ManagedFramework"
 	ProjectGUID="{B25C8F0A-16A1-415E-98F4-9B1D890A7302}"
 	RootNamespace="ExampleMCppBridge"
@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="E:\Menge\Editor\Editor\bin\Debug\"
+			OutputDirectory="$(SolutionDir)Editor\Editor\bin\Debug\"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
@@ -60,7 +60,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="Framework.lib"
-				AdditionalLibraryDirectories="E:\Menge\Editor\Editor\bin\Debug\"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)Editor\Editor\bin\Debug\&quot;"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				TargetMachine="1"

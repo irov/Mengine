@@ -11,6 +11,7 @@ class HGETexture;
 
 class HGERenderSystem 
 	: public Menge::RenderSystemInterface
+	, public Gfx_Listener
 {
 public:
 	HGERenderSystem();
@@ -90,6 +91,8 @@ public:
 	void onWindowClose() override;
 
 	int  getNumDIP() const override;
+
+	void onRestoreDevice() override;
 
 private:
 	Menge::LogSystemInterface* m_logSystem;

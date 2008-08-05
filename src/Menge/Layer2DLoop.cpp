@@ -48,54 +48,19 @@ namespace	Menge
 			{
 				const mt::box2f & sprite_bbox = _node->getBoundingBox();
 
-				//if( m_viewport.end.x < sprite_bbox.vb.x ) 
+				if( _node->checkVisibility() == true )
 				{
-					if( sprite_bbox.ve.x < m_size.x )
-					{
-				//		return;
-					}
-
-					float segment_x = sprite_bbox.ve.x - m_size.x;
-
-				//	if( segment_x < m_viewport.begin.x )
-					{
-				//		return;
-					}
-
-					//Viewport viewport = m_viewport;
-					//viewport.begin += mt::vec2f( m_size.x, 0.f );
-					//viewport.end += mt::vec2f( m_size.x, 0.f );
 					_node->_render( m_debugMask );
 				}
-				//else if( m_viewport.begin.x > sprite_bbox.ve.x ) 
+
+				Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
+				mt::vec2f oldOffs = camera->getOffset();
+				camera->setOffset( oldOffs + mt::vec2f( -m_size.x, 0.0f ) );
+				if( _node->checkVisibility() == true )
 				{
-				//	if( m_viewport.end.x < m_size.x )
-					{
-				//		return;
-					}
-
-				//	float segment_x = m_viewport.end.x - m_size.x;
-
-				//	if( segment_x < sprite_bbox.vb.x )
-					{
-				//		return;
-					}
-
-					/*Viewport viewport = m_viewport;
-					viewport.begin += mt::vec2f( -m_size.x, 0.f );
-					viewport.end += mt::vec2f( -m_size.x, 0.f );
-					mt::vec2f vp_size = viewport.end - viewport.begin;
-*/
-					//Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( viewport.begin + vp_size * 0.5f );
-					Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
-					mt::vec2f oldPos = camera->getLocalPosition();
-					camera->setLocalPosition( oldPos + mt::vec2f( -m_size.x, 0.0f ) );
-
 					_node->_render( m_debugMask );
-
-					//Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( m_viewport.begin + vp_size * 0.5f );
-					camera->setLocalPosition( oldPos );
 				}
+				camera->setOffset( oldOffs );
 
 				_node->visitChildren( this );
 			}
@@ -108,7 +73,7 @@ namespace	Menge
 		}
 
 	protected:
-		bool m_debugMask;
+		unsigned int m_debugMask;
 		mt::vec2f m_size;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -118,22 +83,6 @@ namespace	Menge
 			->beginLayer2D();
 
 		Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
-
-		/*mt::vec2f camPos = 
-			Holder<Player>::hostage()->getRenderCamera2D()->getLocalPosition();
-
-		Viewport viewport = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
-		mt::vec2f viewport_size = viewport.end - viewport.begin;
-		viewport.begin.x *= m_factorParallax.x;
-		viewport.begin.y *= m_factorParallax.y;
-
-		float c = ::floorf( viewport.begin.x / m_size.x );
-		viewport.begin.x -= m_size.x * c;
-		viewport.end.x = viewport.begin.x + viewport_size.x;
-		viewport.end.y = viewport.begin.y + viewport_size.y;
-
-		mt::vec2f plxCamPos = viewport.begin + viewport_size * 0.5f;
-		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( plxCamPos );*/
 
 		mt::vec2f oldPlx = camera->getParallax();
 
@@ -148,7 +97,6 @@ namespace	Menge
 
 		visitChildren( &visitorRender );
 
-		//Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( camPos );
 		camera->setParallax( oldPlx );
 
 		Holder<RenderEngine>::hostage()

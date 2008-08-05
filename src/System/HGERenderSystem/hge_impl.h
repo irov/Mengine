@@ -195,6 +195,7 @@ public:
 	virtual void		CALL	Gfx_Prepare2D();
 	virtual void		CALL	Gfx_Prepare3D();
 	virtual void		CALL	Gfx_SetBlendState( hgeBlendState _srcBlend, hgeBlendState _dstBlend );
+	virtual void		CALL	Gfx_SetListener( Gfx_Listener* _listener );
 
 	virtual HTARGET		CALL	Target_Create(int width, int height, bool zbuffer);
 	virtual void		CALL	Target_Free(HTARGET target);
@@ -367,6 +368,7 @@ public:
 	hgeBlendState m_currSrcBlend, m_currDstBlend;
 	//int m_viewportX, m_viewportY, m_viewportWidth, m_viewportHeight;
 	int				    NumDips;
+	Gfx_Listener*		m_gfxListener;
 
 private:
 	HGE_Impl();

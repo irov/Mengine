@@ -213,6 +213,13 @@ void ALSoundSystem::update( float _timing )
 
 	if( m_initialized == false ) return;
 
+	for( TSourceVector::iterator it = m_deletingSources.begin(), 
+		it_end = m_deletingSources.end(); it != it_end; it++ )
+	{
+		m_playingSources.erase( (*it) );
+	}
+	m_deletingSources.clear();
+
 	for( std::size_t i = 0; i < m_addingSources.size(); i++ )
 	{
 		m_playingSources[ m_addingSources[i].first ] = m_addingSources[i].second;
@@ -241,12 +248,6 @@ void ALSoundSystem::update( float _timing )
 		}
 	}
 
-	for( TSourceVector::iterator it = m_deletingSources.begin(), 
-		it_end = m_deletingSources.end(); it != it_end; it++ )
-	{
-		m_playingSources.erase( (*it) );
-	}
-	m_deletingSources.clear();
 }
 //////////////////////////////////////////////////////////////////////////
 bool ALSoundSystem::setBlow( bool _active )

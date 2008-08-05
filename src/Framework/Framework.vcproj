@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="Framework"
 	ProjectGUID="{8649995C-39F7-4C7D-9E26-815E489FE4FD}"
 	RootNamespace="Framework"
@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="E:\Menge\Editor\Editor\bin\Debug\"
+			OutputDirectory="$(SolutionDir)Editor\Editor\bin\Debug\"
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"

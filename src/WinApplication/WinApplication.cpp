@@ -319,7 +319,7 @@ namespace Menge
 		}
 
 		/// patch for ansi names
-	/*	char *ansistr = NULL;
+		char *ansistr = NULL;
 		int length = MultiByteToWideChar(CP_UTF8, 0, _name.c_str(), _name.size(), NULL, NULL );
 		WCHAR *lpszW = NULL;
 
@@ -339,9 +339,9 @@ namespace Menge
 		////
 		m_name.assign( ansistr );
 		
-		free( ansistr );*/
+		free( ansistr );
 
-		m_mutex = ::CreateMutexA( NULL, FALSE, _name.c_str() );
+		m_mutex = ::CreateMutexA( NULL, FALSE, m_name.c_str() );
 		DWORD error = ::GetLastError();
 
 		if( error == ERROR_ALREADY_EXISTS )
@@ -380,12 +380,7 @@ namespace Menge
 		//CREATESTRUCT createStruct;
 		//createStruct.lpCreateParams = (LPVOID)666;
 
-//<<<<<<< .mine
-
-//		m_hWnd = ::CreateWindow("MengeWnd", ansistr, dwStyle,
-//=======
 		m_hWnd = ::CreateWindow("MengeWnd", m_name.c_str(), dwStyle,
-//>>>>>>> .r1450
 			left, top, width, height, NULL, 0, hInstance, (LPVOID)this);
 	
 		::GetWindowInfo( m_hWnd, &m_wndInfo);

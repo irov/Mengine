@@ -22,6 +22,7 @@ namespace	Menge
 	, m_physWorld2D( false )
 	, m_renderTarget( "defaultCamera" )
 	, m_onUpdateEvent(false)
+	, m_blockInput( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -94,7 +95,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
-		if( isActivate() == false )
+		if( isActivate() == false || m_blockInput == true )
 		{
 			return false;
 		}
@@ -129,7 +130,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseButtonEvent( unsigned int _button, bool _isDown )
 	{
-		if( isActivate() == false )
+		if( isActivate() == false || m_blockInput == true )
 		{
 			return false;
 		}
@@ -164,7 +165,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleMouseMove( float _x, float _y, int _whell )
 	{
-		if( isActivate() == false )
+		if( isActivate() == false || m_blockInput == true)
 		{
 			return false;
 		}
@@ -346,6 +347,11 @@ namespace	Menge
 	{
 		bool handle = false;
 
+		if(  m_blockInput == true )
+		{
+			return false;
+		}
+
 		if( updatable() )
 		{
 			if( handle == false )
@@ -440,6 +446,16 @@ namespace	Menge
 	const String& Scene::getRenderTarget() const
 	{
 		return m_renderTarget;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::blockInput( bool _block )
+	{
+		m_blockInput = _block;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Scene::getBlockInput() const
+	{
+		return m_blockInput;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -1,5 +1,6 @@
 #	include "Framework.h"
 
+#	include <fstream>
 
 Framework::Framework()
 : platform(0)
@@ -20,15 +21,19 @@ Framework::~Framework()
 void Framework::createWindow(HWND hwnd)
 {
 	initInterfaceSystem( &platform );
-	//Menge::Application app( platform );
+	Menge::Application app( platform );
 
 	Menge::RenderSystemInterface * renderSystem;
 	initInterfaceSystem( &renderSystem );
 	
 	m_renderEngine =  new Menge::RenderEngine( renderSystem );
 
-	//Menge::Holder<Menge::RenderEngine>::keep( m_renderEngine );
+	Menge::Holder<Menge::RenderEngine>::keep( m_renderEngine );
 
+	std::ofstream file;
+	file.open( "Hello.txt" );
+	file << "Hello";
+	file.close();
 /*
 	platform->createWindow( hwnd );*/
 	

@@ -32,6 +32,8 @@ namespace Menge
 
 		void setParallax( const mt::vec2f& _parallax );
 		const mt::vec2f& getParallax() const;
+		void setOffset( const mt::vec2f& _offset );
+		const mt::vec2f& getOffset() const;
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -69,5 +71,6 @@ namespace Menge
 		bool m_invalidateViewMatrix;
 
 		mt::vec2f m_parallax;
+		mt::vec2f m_offset;
 	};
 }

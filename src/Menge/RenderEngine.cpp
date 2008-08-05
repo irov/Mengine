@@ -521,6 +521,15 @@ namespace Menge
 		m_viewFactor.y = areaHeight / m_contentResolution.y;
 		m_viewOrigin.x = m_renderArea.x;
 		m_viewOrigin.y = m_renderArea.y;
+
+		mt::mat4f wm;
+		mt::ident_m4( wm );
+		wm.m[0] = m_viewFactor.x;
+		wm.m[5] = m_viewFactor.y;
+		wm.m[12] = m_viewOrigin.x;
+		wm.m[13] = m_viewOrigin.y;
+		setWorldMatrix( wm );
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTarget( const String& _target, bool _clear )

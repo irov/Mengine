@@ -855,6 +855,7 @@ namespace Menge
 				//.def( "setOffsetPosition", &Scene::setOffsetPosition )
 				.def( "setRenderTarget", &Scene::setRenderTarget )
 				.def( "renderSelf", &Scene::renderSelf )
+				.def( "blockInput", &Scene::blockInput )
 				;
 
 

@@ -782,7 +782,7 @@ bool HGE_Impl::_GfxInit()
 	D3DDISPLAYMODE Mode;
 	D3DFORMAT Format=D3DFMT_UNKNOWN;
 	UINT nModes, i;
-	
+	m_gfxListener = 0;
 // Init D3D
 							
 	pD3D=Direct3DCreate8( D3D_SDK_VERSION ); // D3D_SDK_VERSION
@@ -854,7 +854,9 @@ bool HGE_Impl::_GfxInit()
 	d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 	d3dppFS.Flags			 = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
-	//m_viewportX = m_viewportY = m_viewportWidth = m_viewportHeight = 0;
+	D3DXMatrixIdentity( &matView );
+	D3DXMatrixIdentity( &matWorld );
+
 	return true;
 }
 
@@ -1136,7 +1138,8 @@ bool HGE_Impl::_GfxRestore()
 
 	if(!_init_lost()) return false;
 
-	if(procGfxRestoreFunc) return procGfxRestoreFunc();
+	//if(procGfxRestoreFunc) return procGfxRestoreFunc();
+	if( m_gfxListener ) m_gfxListener->onRestoreDevice();
 
 	return true;
 }
@@ -1270,6 +1273,7 @@ bool HGE_Impl::_init_lost()
 
 	pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
 	pD3DDevice->SetTransform(D3DTS_PROJECTION, &matProj);*/
+
 	if( m_layer3D )
 	{
 		Gfx_Prepare3D();
@@ -1406,12 +1410,12 @@ void HGE_Impl::Gfx_Prepare2D()
 	CurBlendMode = BLEND_DEFAULT;
 	CurTexture = NULL;
 
-	D3DXMatrixIdentity( &matView );
-	D3DXMatrixIdentity( &matWorld );
+	//D3DXMatrixIdentity( &matView );
+	//D3DXMatrixIdentity( &matWorld );
 	/*_SetProjectionMatrix( nScreenWidth, nScreenHeight );*/
 	pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj );
 	pD3DDevice->SetTransform( D3DTS_VIEW, &matView );
-	//pD3DDevice->SetTransform( D3DTS_WORLD, &matWorld );
+	pD3DDevice->SetTransform( D3DTS_WORLD, &matWorld );
 
 	m_layer3D = false;
 }
@@ -1474,4 +1478,9 @@ void HGE_Impl::Gfx_SetBlendState( hgeBlendState _srcBlend, hgeBlendState _dstBle
 		pD3DDevice->SetRenderState( D3DRS_DESTBLEND, static_cast<D3DBLEND>( _dstBlend ) );
 		m_currDstBlend = _dstBlend;
 	}
+}
+
+void HGE_Impl::Gfx_SetListener( Gfx_Listener* _listener )
+{
+	m_gfxListener = _listener;
 }

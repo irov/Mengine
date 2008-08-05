@@ -39,7 +39,7 @@ namespace Menge
 		void updateChangeScene();
 
 	public:
-		void init();
+		void init( const mt::vec2f& _contentResolution );
 		void update( float _timing );
 		void render( unsigned int _debugMask );
 

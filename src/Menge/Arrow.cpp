@@ -19,6 +19,7 @@ namespace	Menge
 		: m_offsetClick(0,0)
 		, m_currentHotSpot(0)
 		, m_hided(false)
+		, m_window( 1024.0f, 768.0f )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::setOffsetClick( const mt::vec2f & _offsetClick )
@@ -114,31 +115,23 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::onMouseMove( float _dx, float _dy )
 	{
-		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 		const mt::vec2f& pos = getLocalPosition();
 		mt::vec2f nPos = mt::vec2f( pos.x + _dx, pos.y + _dy );
 		if( nPos.x < 0.0f )
 		{
 			nPos.x = 0.0f;
 		}
-		else if( nPos.x > 1024.0f )
+		else if( nPos.x > m_window.x )
 		{
-			nPos.x = 1024.0f;
+			nPos.x = m_window.x;
 		}
 		if( nPos.y < 0.0f )
 		{
 			nPos.y = 0.0f;
 		}
-		else if( nPos.y > 768.0f )
+		else if( nPos.y > m_window.y )
 		{
-			nPos.y = 768.0f;
+			nPos.y = m_window.y;
 		}
 		setLocalPosition( nPos );
 	}
@@ -166,6 +159,11 @@ namespace	Menge
 	mt::vec2f Arrow::getScreenPosition()
 	{
 		return getLocalPosition();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::setWindow( const mt::vec2f& _window )
+	{
+		m_window = _window;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

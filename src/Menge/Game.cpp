@@ -531,7 +531,7 @@ namespace Menge
 		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", m_pyPersonality );
 		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", m_pyPersonality );
 
-		m_player->init();
+		m_player->init( m_resourceResolution );
 
 		bool result = false;
 

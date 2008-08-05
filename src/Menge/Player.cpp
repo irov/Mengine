@@ -87,18 +87,19 @@ namespace Menge
 		return m_arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::init()
+	void Player::init( const mt::vec2f& _contentResolution )
 	{
 		Arrow * defaultArrow = 
 			Holder<Game>::hostage()->getDefaultArrow();
 
+		defaultArrow->setWindow( _contentResolution );
 		setArrow( defaultArrow );
 
 		Camera2D * cmr = SceneManager::createNodeT<Camera2D>( "Camera2D" );
 
-		mt::vec2f vpSz( 1024, 768 );
-		cmr->setViewportSize( vpSz );
-		cmr->setLocalPosition( mt::vec2f( 512, 384 ) );
+		//mt::vec2f vpSz( 1024, 768 );
+		cmr->setViewportSize( _contentResolution );
+		cmr->setLocalPosition( _contentResolution * 0.5f );
 
 		setRenderCamera2D( cmr );
 	}

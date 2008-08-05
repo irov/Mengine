@@ -34,6 +34,8 @@ namespace Menge
 		void addHotSpot( HotSpot * _hotspot );
 		HotSpot * getCurrentHotSpot() const;
 
+		void setWindow( const mt::vec2f& _window );
+
 	public:
 		void loader( XmlElement * _xml ) override;
 		void loaderArrow_( XmlElement * _xml );
@@ -50,7 +52,7 @@ namespace Menge
 
 	protected:
 		mt::vec2f m_offsetClick;
-		mt::vec4f m_window;
+		mt::vec2f m_window;
 		HotSpot * m_currentHotSpot;
 		bool m_hided;
 	};

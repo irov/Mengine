@@ -56,6 +56,7 @@ namespace Menge
 		virtual void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 		virtual float getDeltaTime() = 0;
 		virtual void setHandleMouse( bool _handle ) = 0;
+		virtual void showMessageBox( const String& _message, const String& _header, unsigned int _style ) = 0;
 
 		virtual SystemDLLInterface* loadSystemDLL( const String & _dll ) = 0;
 		virtual void unloadSystemDLL( SystemDLLInterface * _dllInterface ) = 0;

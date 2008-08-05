@@ -1,4 +1,5 @@
 #	include "LogEngine.h"
+#	include "Application.h"
 
 #	include <stdio.h>
 #	include <sstream>
@@ -70,6 +71,11 @@ namespace Menge
 				, const_cast<char*>(m_file)
 				, message.c_str()				
 				);
+		}
+
+		if( ( m_mask & ELoggerMessageBox ) > 0 )
+		{
+			Holder<Application>::hostage()->showMessageBox( message, "Mengine Critical Error", 0 );
 		}
 	}
 }

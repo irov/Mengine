@@ -421,6 +421,8 @@ namespace Menge
 			MENGE_LOG("parse application xml failed '%s'\n"
 				, _applicationFile.c_str()
 				);
+			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
+			return false;
 		}
 
 		// prepare file system
@@ -438,6 +440,7 @@ namespace Menge
 		if( m_xmlEngine->parseXmlFileM( m_gameInfo, game, &Game::loader ) == false )
 		{
 			MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
+			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
 			return false;
 		}
 
@@ -763,6 +766,11 @@ namespace Menge
 	unsigned int Application::getDebugMask() const
 	{
 		return m_debugMask;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::showMessageBox( const String& _message, const String& _header, unsigned int _style )
+	{
+		m_interface->showMessageBox( _message, _header, _style );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

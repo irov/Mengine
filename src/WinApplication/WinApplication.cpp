@@ -570,4 +570,9 @@ namespace Menge
 		m_handleMouse = _handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::showMessageBox( const String& _message, const String& _header, unsigned int _style )
+	{
+		::MessageBox( m_hWnd, _message.c_str(), _header.c_str(), MB_ICONERROR | MB_OK );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -47,6 +47,7 @@ namespace Menge
 		SystemDLLInterface* loadSystemDLL( const String & _dll ) override;
 		void unloadSystemDLL( SystemDLLInterface* _interface ) override;
 		void setHandleMouse( bool _handle ) override;
+		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
 
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );

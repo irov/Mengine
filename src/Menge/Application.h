@@ -111,6 +111,9 @@ namespace Menge
 		const mt::vec2f& getDesktopResolution() const;
 
 		unsigned int getDebugMask() const;
+
+		void showMessageBox( const String& _message, const String& _header, unsigned int _style );
+
 	private:
 		ApplicationInterface* m_interface;
 

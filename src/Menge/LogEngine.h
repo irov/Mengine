@@ -30,7 +30,8 @@ namespace Menge
 		ELoggerLog  = 0x00000000,
 		ELoggerBreak = 0x00000001,
 		ELoggerError = 0x00000002,
-		ELoggerDebug = 0x00000004
+		ELoggerDebug = 0x00000004,
+		ELoggerMessageBox = 0x00000008
 	};
 
 	class LoggerOperator
@@ -55,3 +56,6 @@ namespace Menge
 
 #	define MENGE_SCRIPT_BREACK\
 	Menge::LoggerOperator( __FILE__, ELoggerLog | ELoggerBreak )
+
+#	define MENGE_LOG_CRITICAL\
+	Menge::LoggerOperator( __FILE__, ELoggerLog | ELoggerMessageBox )

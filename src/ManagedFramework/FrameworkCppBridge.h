@@ -2,7 +2,7 @@
 
 using namespace System;
 
-// Forward declariation
+// Forward declaration
 class Framework;
 
 public ref class ManagedFramework

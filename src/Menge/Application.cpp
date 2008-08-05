@@ -130,7 +130,7 @@ namespace Menge
 		, m_commandLine("")
 		, m_particles( true )
 		, m_sound( true )
-		, m_debugMask( MENGE_DEBUG_NODES )
+		, m_debugMask( 0 )
 		, m_phycisTiming(0.f)
 		, m_resetTiming( false )
 		, m_maxTiming( 100.0f )

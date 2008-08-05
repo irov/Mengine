@@ -38,14 +38,7 @@ ManagedFramework::~ManagedFramework()
 void ManagedFramework::createWindow(IntPtr hWnd)
 {
 	//IntPtr pString = Marshal::StringToHGlobalAnsi(_title);
-	try
-	{
-		HWND hwnd = (HWND)hWnd.ToPointer();
+	HWND hwnd = (HWND)hWnd.ToPointer();
 		//char * pchString = static_cast<char *>(pString.ToPointer());
-		this->m_pUnmanagedTestClass->createWindow(hwnd);		
-	}
-	finally
-	{
-		//Marshal::FreeHGlobal(pString);
-	}
+	this->m_pUnmanagedTestClass->createWindow(hwnd);		
 }

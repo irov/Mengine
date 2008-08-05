@@ -114,7 +114,7 @@ namespace Menge
 		void frameEnded();
 
 		void setTextureFiltering( bool _filter );
-		void onDeviceRestored() override;
+		void onDeviceRestored();
 
 		void onWindowMovedOrResized();
 		void onWindowActive( bool _active );

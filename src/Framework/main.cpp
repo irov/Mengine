@@ -1,37 +1,14 @@
-#	include "Interface/ApplicationInterface.h"
-
-#	include "Interface/LogSystemInterface.h"
-#	include "Interface/ProfilerSystemInterface.h"
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/InputSystemInterface.h"
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/SoundSystemInterface.h"
-#	include "Interface/ParticleSystemInterface.h"
-#	include "Interface/PhysicSystemInterface.h"
-#	include "Interface/PhysicSystem2DInterface.h"
-
-#	include "..\Menge\Application.h"
-
-#	define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
-#	include <windows.h>
-
 #	include "Framework.h"
 
-#	define _WIN32_WINNT 0x0500
-
-Menge::ApplicationInterface * platform = 0;
 
 Framework::Framework()
+: platform(0)
 {
-	if(initInterfaceSystem( &platform ) == false)
-	{
-		printf("ERROR!\n");
-	}
 }
 
 Framework::~Framework()
 {
-	releaseInterfaceSystem( platform );
+	//releaseInterfaceSystem( platform );
 }
 
 /*long Framework::createWindow(char * _title, int _width, int _height, bool _isfullscreen)
@@ -42,7 +19,19 @@ Framework::~Framework()
 
 void Framework::createWindow(HWND hwnd)
 {
-	Menge::Application app( platform );
+	initInterfaceSystem( &platform );
+	//Menge::Application app( platform );
+
+	Menge::RenderSystemInterface * renderSystem;
+	initInterfaceSystem( &renderSystem );
+	
+	m_renderEngine =  new Menge::RenderEngine( renderSystem );
+
+	//Menge::Holder<Menge::RenderEngine>::keep( m_renderEngine );
+
+/*
+	platform->createWindow( hwnd );*/
+	
 
 /*	Menge::LogSystemInterface * logSystem;
 	initInterfaceSystem( &logSystem );
@@ -65,14 +54,12 @@ void Framework::createWindow(HWND hwnd)
 	initInterfaceSystem( &soundSystem );
 	app.setSoundSystem( soundSystem );
 */
-
-	Menge::RenderSystemInterface * renderSystem;
+	
+	/*Menge::RenderSystemInterface * renderSystem;
 	initInterfaceSystem( &renderSystem );
-	app.setRenderSystem( renderSystem );
+	app.setRenderSystem( renderSystem );*/
 
-	platform->createWindow( hwnd );
-
-	//m_renderEngine->createRenderWindow( 640, 480, 32, false, hwnd,
+	///m_renderEngine->createRenderWindow( 640, 480, 32, false, hwnd,
 	//	0, 0 );
 
 	//printf("1!\n");

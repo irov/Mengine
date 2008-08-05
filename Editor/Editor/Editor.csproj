@@ -28,10 +28,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ManagedFramework, Version=1.0.3139.22028, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\src\ManagedFramework\Debug\ManagedFramework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -80,9 +76,9 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy ..\..\..\bin_d\Framework.dll Framework.dll
-copy ..\..\..\bin_d\Framework.pdb Framework.pdb
-copy E:\Menge\src\ManagedFramework\Debug\ManagedFramework.dll ManagedFramework.dll
-copy E:\Menge\src\ManagedFramework\Debug\ManagedFramework.pdb ManagedFramework.pdb</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

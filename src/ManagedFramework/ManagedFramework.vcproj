@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="E:\Menge\Editor\Editor\bin\Debug\"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\Framework\"
+				AdditionalIncludeDirectories="..\Framework\;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)src\libs&quot;;&quot;$(ProjectDir)\..&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -59,8 +59,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\bin_d\framework.lib $(NOINHERIT)"
-				LinkIncremental="2"
+				AdditionalDependencies="Framework.lib"
+				AdditionalLibraryDirectories="E:\Menge\Editor\Editor\bin\Debug\"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
 				TargetMachine="1"

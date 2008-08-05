@@ -81,16 +81,16 @@ namespace Menge
 		const mt::vec2f& getCurrentResolution() const;
 
 	public:
-		void onUpdate( float _timing ) override;
-		void onFocus( bool _focus ) override;
-		void onActive( bool _active ) override;
-		void onClose() override;
-		void onDestroy() override;
-		void onWindowMovedOrResized() override;
-		void onMouseLeave() override;
-		void onMouseEnter() override;
-		bool onMouseButtonEvent( int _button, bool _isDown ) override;
-		bool onMouseMove( float _x, float _y, int _whell ) override;
+		void onUpdate( float _timing );
+		void onFocus( bool _focus );
+		void onActive( bool _active );
+		void onClose();
+		void onDestroy();
+		void onWindowMovedOrResized();
+		void onMouseLeave();
+		void onMouseEnter();
+		bool onMouseButtonEvent( int _button, bool _isDown );
+		bool onMouseMove( float _x, float _y, int _whell );
 		bool onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
 
 		void frameStarted();

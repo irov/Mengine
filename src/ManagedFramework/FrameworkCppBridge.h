@@ -1,5 +1,4 @@
-#ifndef __TestClassDLLBridge_h__
-#define __TestClassDLLBridge_h__
+# pragma once
 
 using namespace System;
 
@@ -17,6 +16,3 @@ public:
 private:
 	Framework * m_pUnmanagedTestClass;
 };
-
-
-#endif	// __TestClassDLLBridge_h__

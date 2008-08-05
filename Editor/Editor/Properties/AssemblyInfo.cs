@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ExampleTestAppWithCSWrapper")]
+[assembly: AssemblyTitle("Editor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("EMC")]
-[assembly: AssemblyProduct("ExampleTestAppWithCSWrapper")]
-[assembly: AssemblyCopyright("Copyright © EMC 2007")]
+[assembly: AssemblyCompany("Blizzard")]
+[assembly: AssemblyProduct("Editor")]
+[assembly: AssemblyCopyright("Copyright © Blizzard 2008")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1d2bf8dd-6c16-44c4-8cbb-a6bc36066ef5")]
+[assembly: Guid("0d85cd82-598e-4351-bbe5-5b05de4ce539")]
 
 // Version information for an assembly consists of the following four values:
 //

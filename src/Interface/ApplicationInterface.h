@@ -47,7 +47,8 @@ namespace Menge
 	{
 	public:
 		virtual bool init( const String & _name, ApplicationListenerInterface* _listener ) = 0;
-		virtual WINDOW_HANDLE createWindow( const String & _name, float _width, float _height, bool _fullscreen ) = 0;
+		virtual void createWindow(WindowHandle _handle) = 0;
+		virtual WINDOW_HANDLE createWindow( Menge::String _title, float _width, float _height, bool _fullscreen ) = 0;
 		virtual void run() = 0;
 		virtual void stop() = 0;
 		virtual void getDesktopResolution( int* _width, int* _heigth ) = 0;

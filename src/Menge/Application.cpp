@@ -254,7 +254,7 @@ namespace Menge
 		int FSAAType = game->getFSAAType();
 		int FSAAQuality = game->getFSAAQuality();
 
-		WINDOW_HANDLE winHandle = m_interface->createWindow( title, m_currentResolution.x, m_currentResolution.y, isFullscreen );
+		WINDOW_HANDLE winHandle = m_interface->createWindow( (char*)title.c_str(), m_currentResolution.x, m_currentResolution.y, isFullscreen );
 		m_renderEngine->createRenderWindow( m_currentResolution.x, m_currentResolution.y, bits, isFullscreen, winHandle,
 											FSAAType, FSAAQuality );
 

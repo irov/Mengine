@@ -268,7 +268,13 @@ namespace Menge
 		return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowHandle WinApplication::createWindow( const String & _name, float _width, float _height, bool _fullscreen )
+	void WinApplication::createWindow(WindowHandle _handle)
+	{
+		::GetWindowInfo( m_hWnd, &m_wndInfo);
+		//return static_cast<WINDOW_HANDLE>( m_hWnd ); 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	WindowHandle WinApplication::createWindow( Menge::String _name, float _width, float _height, bool _fullscreen )
 	{
 		DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
 		RECT rc;
@@ -307,7 +313,7 @@ namespace Menge
 		}
 
 		/// patch for ansi names
-		char *ansistr = NULL;
+	/*	char *ansistr = NULL;
 		int length = MultiByteToWideChar(CP_UTF8, 0, _name.c_str(), _name.size(), NULL, NULL );
 		WCHAR *lpszW = NULL;
 
@@ -320,14 +326,14 @@ namespace Menge
 		//Conversion to ANSI (CP_ACP)
 		WideCharToMultiByte(CP_ACP, 0, lpszW, -1, ansistr, length, NULL, NULL);
 
+		
 		ansistr[length] = 0;
 
 		delete[] lpszW;
 		////
-
 		m_name.assign( ansistr );
-
-		free( ansistr );
+		
+		free( ansistr );*/
 
 		m_mutex = ::CreateMutexA( NULL, FALSE, _name.c_str() );
 		DWORD error = ::GetLastError();
@@ -365,12 +371,17 @@ namespace Menge
 		// Create our main window
 		// Pass pointer to self
 
-		CREATESTRUCT createStruct;
-		createStruct.lpCreateParams = (LPVOID)666;
+		//CREATESTRUCT createStruct;
+		//createStruct.lpCreateParams = (LPVOID)666;
 
+//<<<<<<< .mine
+
+//		m_hWnd = ::CreateWindow("MengeWnd", ansistr, dwStyle,
+//=======
 		m_hWnd = ::CreateWindow("MengeWnd", m_name.c_str(), dwStyle,
+//>>>>>>> .r1450
 			left, top, width, height, NULL, 0, hInstance, (LPVOID)this);
-
+	
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
 		return static_cast<WINDOW_HANDLE>( m_hWnd ); 
 	}

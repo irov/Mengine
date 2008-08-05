@@ -79,7 +79,7 @@ namespace	Menge
 	public:
 		void visit( Node * _node )
 		{				
-			if( _node->isRenderable() == true /*&& _node->checkVisibility() == true*/ )
+			if( _node->isRenderable() == true && _node->checkVisibility() == true )
 			{
 				_node->_render( m_debugMask );
 

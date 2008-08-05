@@ -2,7 +2,7 @@
 
 //#	include "ApplicationInterface.h"
 
-#	include "../Interface/LogSystemInterface.h"
+#	include "Interface/LogSystemInterface.h"
 #	include "Interface/ProfilerSystemInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/InputSystemInterface.h"

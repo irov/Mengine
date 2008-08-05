@@ -3,7 +3,7 @@
 #	include <STDIO.H>									
 #	include "FrameworkCppBridge.h"
 
-#	include "Framework.h"
+#	include "Framework/Framework.h"
 
 
 using namespace System::Runtime::InteropServices;	

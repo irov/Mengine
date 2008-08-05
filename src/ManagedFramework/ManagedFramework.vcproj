@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="ManagedFramework"
 	ProjectGUID="{B25C8F0A-16A1-415E-98F4-9B1D890A7302}"
 	RootNamespace="ExampleMCppBridge"
@@ -97,7 +97,7 @@
 			ConfigurationType="2"
 			CharacterSet="1"
 			ManagedExtensions="1"
-			WholeProgramOptimization="1"
+			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -116,7 +116,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\ExampleUnmanagedDLL"
+				WholeProgramOptimization="false"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)src\libs&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -134,7 +135,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\ExampleUnmanagedDLL\Release\ExampleUnmanagedDLL.lib $(NOINHERIT)"
+				AdditionalDependencies="$(NOINHERIT)"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				TargetMachine="1"

@@ -5,5 +5,5 @@
 	<Game File = "Game/Game.xml" />
 	<Resource File = "Game/Resource.xml" />
 	<Resource File = "Framework/Resource.xml" />
-
+	<Test/>
 </Application>

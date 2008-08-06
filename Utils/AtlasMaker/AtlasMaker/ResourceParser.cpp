@@ -1,4 +1,5 @@
 #	include "ResourceParser.h"
+#	include <algorithm>
 
 ResourceParser::ResourceParser()
 	: m_log(0)
@@ -72,8 +73,9 @@ void ResourceParser::execute( const std::string & _input )
 
 	fprintf(m_log, "Open input file: %s \n", _input.c_str());
 
+	// грузим из xml список resource файлов.
 	_loadResourceLocations(_input);
-
+	// загружаем текстуры из resource файлов.
 	for(VectorResources::iterator it = m_resources.begin(); it != m_resources.end(); ++it)
 	{
 		_loadTexturesFromResource(*it);
@@ -184,6 +186,9 @@ int compare_height(const Texture2D* s1, const Texture2D * s2)
 
 void ResourceParser::_loadTexturesFromResource(const std::string & _filename)
 {
+	static std::vector<std::string>	values(100);
+	values.clear();
+
 	fprintf(m_log, "Process: Parsing %s \n",_filename.c_str());
 
 	m_inputName = _filename;
@@ -194,31 +199,13 @@ void ResourceParser::_loadTexturesFromResource(const std::string & _filename)
 
 	pugi::xml_node data_block = doc.child("DataBlock");
 
-	static std::vector<std::string>	values(100);
-	values.clear();
-
 	for (pugi::xml_node resource = data_block.child("Resource"); resource; resource = resource.next_sibling("Resource"))
 	{
 		if(_isResourceAllowed(resource.attribute("Type").value()))
 		{
 			for (pugi::xml_node file = resource.child("File"); file; file = file.next_sibling("File"))
 			{
-				//std::string fullname = getTextureLocation(file.attribute("Path").value());
 				values.push_back(file.attribute("Path").value());
-
-			/*	if( getTexture(fullname) != NULL ) continue; 
-				
-				Texture2D * texture = new Texture2D();
-
-				if (texture->loadTexture(fullname) == false)
-				{
-					printf("Warning: Texture %s not found \n", texture->getFilename().c_str());
-					delete texture;
-				}
-				else
-				{
-					m_textures.insert( std::make_pair( texture->getFilename(), texture) );
-				}*/
 			}
 		}
 	}
@@ -231,7 +218,7 @@ void ResourceParser::_loadTexturesFromResource(const std::string & _filename)
 
 	std::vector<Texture2D *> textures;
 
-	for (int i = 0; i < values.size(); ++i)
+	for (std::vector<Texture2D *>::size_type i = 0; i < values.size(); ++i)
 	{
 		std::string val = getTextureLocation(values[i]);
 		Texture2D * tex = new Texture2D();
@@ -246,17 +233,18 @@ void ResourceParser::_loadTexturesFromResource(const std::string & _filename)
 			textures.push_back(tex);
 		}
 	}
-	//sort by area.
-	std::sort(textures.begin(),textures.end(),compare_area);
-	//sort by height.
-	std::sort(textures.begin(),textures.end(),compare_height);
 
-	for (int i = 0; i < textures.size(); ++i)
+	//sort by area.
+	std::sort(textures.begin(), textures.end(), compare_area);
+	//sort by height.
+	std::sort(textures.begin(), textures.end(), compare_height);
+
+	for (std::vector<Texture2D *>::size_type i = 0; i < textures.size(); ++i)
 	{
 		Texture2D & texture = *textures[i];
 
 		m_textures.insert(
-			std::make_pair(texture.getFilename(),&texture)
+			std::make_pair(texture.getFilename(), &texture)
 			);
 	}
 

@@ -12,7 +12,7 @@ unsigned char * FreeImageWrapper::GrabMemory(
 		return 0;
 	}
 
-	unsigned char * data;
+	unsigned char * data = 0;
 
 	result = FreeImage_AcquireMemory( memory, &data, &size );
 
@@ -21,7 +21,7 @@ unsigned char * FreeImageWrapper::GrabMemory(
 		return 0;
 	}
 	
-	unsigned char * ourData = new BYTE[size];
+	unsigned char * ourData = new unsigned char[size];
 
 	memcpy( ourData, data, size );
 	

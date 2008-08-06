@@ -30,6 +30,7 @@ public:
 	int getNonAlphaHeight() const;
 	int getOffsetX() const;
 	int getOffsetY() const;
+	int getBorder() const;
 
 	bool isAlphaChannel() const;
 
@@ -46,6 +47,10 @@ private:
 	int m_withAlphaWidth;
 	int m_withAlphaHeight;
 
+	int m_bpp;
+
+	int m_border;
+
 	FIBITMAP * m_texture;
 
 	AtlasTexture * m_atlas;
@@ -53,4 +58,5 @@ private:
 	std::string m_filename;
 
 	void	_sliceAlpha();
+	void	_makeBorder(int _border);
 };

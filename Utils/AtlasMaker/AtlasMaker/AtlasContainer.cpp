@@ -11,6 +11,7 @@ AtlasContainer::~AtlasContainer()
 {
 	m_atlasTextures.clear();
 }
+//////////////////////////////////////////////////////////////////////////
 int AtlasContainer::getBPP() const
 {
 	return m_bpp;
@@ -94,6 +95,6 @@ const std::vector<std::string> & AtlasContainer::getAtlasesNames() const
 //////////////////////////////////////////////////////////////////////////
 bool AtlasContainer::_isFitting(const AtlasTexture & _atlas, const Texture2D & _texture)
 {
-	return ( _texture.getWidth() <= _atlas.getWidth() ) && ( _texture.getHeight() <= _atlas.getHeight() );
+	return ( _texture.getWidth() + _texture.getBorder() <= _atlas.getWidth() ) && ( _texture.getHeight() + _texture.getBorder() <= _atlas.getHeight() );
 }
 //////////////////////////////////////////////////////////////////////////

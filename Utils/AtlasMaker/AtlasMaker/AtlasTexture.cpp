@@ -47,8 +47,8 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 	int X = 0;
 	int Y = 0;
 
-	int Width = _texture.getWidth();
-	int Height = _texture.getHeight();
+	int Width = _texture.getWidth() + _texture.getBorder();
+	int Height = _texture.getHeight() + _texture.getBorder();
 
 	bool result = m_areaPacker.insert(Width,Height,X,Y);
 

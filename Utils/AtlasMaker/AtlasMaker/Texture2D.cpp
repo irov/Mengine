@@ -11,6 +11,8 @@ Texture2D::Texture2D()
 	, m_nonAlphaHeight(0)
 	, m_withAlphaWidth(0)
 	, m_withAlphaHeight(0)
+	, m_bpp(0)
+	, m_border(0)
 {}
 //////////////////////////////////////////////////////////////////////////
 Texture2D::~Texture2D()
@@ -70,12 +72,17 @@ int Texture2D::getOffsetY() const
 //////////////////////////////////////////////////////////////////////////
 int Texture2D::getBPP() const
 {
-	return FreeImage_GetBPP(m_texture);
+	return m_bpp;
+}
+//////////////////////////////////////////////////////////////////////////
+int Texture2D::getBorder() const
+{
+	return m_border;
 }
 //////////////////////////////////////////////////////////////////////////
 bool Texture2D::isAlphaChannel() const
 {
-	return FreeImage_GetBPP(m_texture) == 32;
+	return m_bpp == 32;
 }
 //////////////////////////////////////////////////////////////////////////
 bool Texture2D::loadTexture( const std::string & _filename )
@@ -89,6 +96,8 @@ bool Texture2D::loadTexture( const std::string & _filename )
 		return false;
 	}
 
+	m_bpp = FreeImage_GetBPP(m_texture);
+
 	m_withAlphaWidth = FreeImage_GetWidth(m_texture);
 	m_withAlphaHeight = FreeImage_GetHeight(m_texture);
 
@@ -97,7 +106,44 @@ bool Texture2D::loadTexture( const std::string & _filename )
 
 	_sliceAlpha();
 
+	_makeBorder(1);
+
 	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void Texture2D::_makeBorder(int _border)
+{
+	if(_border == 0)
+	{
+		return;
+	}
+
+	m_border = _border;
+
+	FIBITMAP * borderTexture 
+		= FreeImageWrapper::AllocateImage( 
+			m_nonAlphaWidth + 2 * _border,
+			m_nonAlphaHeight + 2 * _border, m_bpp );
+
+	if(borderTexture == NULL)
+	{
+		return;
+	}
+
+	FreeImageWrapper::FillChannel( borderTexture, FI_RGBA_ALPHA, 0 );
+
+	bool result = FreeImage_Paste(borderTexture, m_texture, _border, _border, 256);
+
+	if(result == false)
+	{
+		assert(!"ERROR!!!");
+	}
+
+	FreeImage_Unload(m_texture);
+
+	m_texture = borderTexture;
+
+	//FreeImage_Save(FIF_PNG,m_texture,"1.png");
 }
 //////////////////////////////////////////////////////////////////////////
 void Texture2D::_sliceAlpha()

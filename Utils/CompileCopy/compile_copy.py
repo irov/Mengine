@@ -25,8 +25,8 @@ good_files = []
 #file to copy
 copy_files = []
 
-atlas_width = 2048
-atlas_height = 2048
+atlas_width = 1024
+atlas_height = 1024
 
 # jpg quality, in percent
 jpg_quality = 95

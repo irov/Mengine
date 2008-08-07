@@ -386,6 +386,26 @@
 					RelativePath=".\XmlEngine.h"
 					>
 				</File>
+				<File
+					RelativePath=".\XmlEnum.h"
+					>
+				</File>
+				<File
+					RelativePath=".\XmlFormat.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\XmlFormat.h"
+					>
+				</File>
+				<File
+					RelativePath=".\XmlTag.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\XmlTag.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Physic"

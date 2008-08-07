@@ -8,6 +8,8 @@
 #	include "FileEngine.h"
 #	include "ColourValue.h"
 
+#	include "XmlFormat.h"
+
 class XmlExpatParser;
 
 namespace Menge
@@ -18,6 +20,9 @@ namespace Menge
 	public:
 		XmlEngine();
 		~XmlEngine();
+
+	public:
+		void initialize();
 
 	public:
 		bool parseXmlFile( const std::string & _file, XmlElementListener * _listener );
@@ -67,6 +72,8 @@ namespace Menge
 
 	protected:
 		XmlExpatParser * m_parser;
+
+		XmlFormat m_format;
 	};
 }
 

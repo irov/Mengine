@@ -14,6 +14,41 @@ namespace Menge
 		XmlParser::deleteParser( m_parser );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void XmlEngine::initialize()
+	{
+		m_format.define( DEF_Animation, "Animation" );
+		m_format.define( DEF_Layer2D, "Layer2D" );
+		m_format.define( DEF_Sprite, "Sprite" );
+		m_format.define( DEF_TextField, "TextField" );
+		m_format.define( DEF_HotSpot, "HotSpot" );
+		m_format.define( DEF_Point, "Point" );
+
+		m_format.attribute( ATTR_Name, "Name" );
+		m_format.attribute( ATTR_Type, "Type" );
+		m_format.attribute( ATTR_Value, "Value" );
+		m_format.attribute( ATTR_Position, "Position" );
+		m_format.attribute( ATTR_Direction, "Direction" );
+
+		m_format.tag( TAG_Scene, "Scene" );
+		m_format.tag( TAG_Node, "Node" )( ATTR_Name, TYPE_String )( ATTR_Type, TYPE_Define );
+		m_format.tag( TAG_Size, "Size" )( ATTR_Value, TYPE_Float2 );
+		m_format.tag( TAG_Scale, "Scale" )( ATTR_Value, TYPE_Float2 );
+		m_format.tag( TAG_Point, "Point" )( ATTR_Value, TYPE_Float2 );
+		m_format.tag( TAG_Main, "Main" )( ATTR_Value, TYPE_Bool );
+		m_format.tag( TAG_ImageMap, "ImageMap" )( ATTR_Name, TYPE_String );
+		m_format.tag( TAG_Transformation, "Transformation" )( ATTR_Position, TYPE_Float2 )( ATTR_Direction, TYPE_Float2 )( ATTR_Value, TYPE_Mat3 );
+		m_format.tag( TAG_RenderArea, "RenderArea" )( ATTR_Value, TYPE_Float4 );
+		m_format.tag( TAG_Animation, "Animation" )( ATTR_Name, TYPE_String );
+		m_format.tag( TAG_Looping, "Looping" )( ATTR_Value, TYPE_Bool );
+		m_format.tag( TAG_AutoStart, "AutoStart" )( ATTR_Value, TYPE_Bool );
+		m_format.tag( TAG_Font, "Font" )( ATTR_Name, TYPE_String );
+		m_format.tag( TAG_Color, "Color" )( ATTR_Value, TYPE_Float4 );
+		m_format.tag( TAG_CenterAlign, "CenterAlign" )( ATTR_Value, TYPE_Bool );
+		m_format.tag( TAG_OutlineColor, "OutlineColor" )( ATTR_Value, TYPE_Float4 );
+		m_format.tag( TAG_Outline, "Outline" )( ATTR_Value, TYPE_Bool );
+		m_format.tag( TAG_CharOffset, "CharOffset" )( ATTR_Value, TYPE_Float );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool XmlEngine::parseXmlFile( const std::string & _file, XmlElementListener * _listener )
 	{
 		if( Holder<FileEngine>::hostage()

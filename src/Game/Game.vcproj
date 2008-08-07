@@ -75,11 +75,12 @@
 				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Dist\&quot;"
-				GenerateManifest="false"
+				GenerateManifest="true"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="libci.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				EntryPointSymbol=""
 				TargetMachine="1"
 			/>
 			<Tool
@@ -88,6 +89,7 @@
 			<Tool
 				Name="VCManifestTool"
 				EmbedManifest="true"
+				UseFAT32Workaround="true"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

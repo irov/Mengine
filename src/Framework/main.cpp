@@ -20,20 +20,22 @@ Framework::~Framework()
 
 void Framework::createWindow(HWND hwnd)
 {
+	std::ofstream file;
+	file.open( "Hello.txt" );
+	file << "Hello";
+	file.close();
+
 	initInterfaceSystem( &platform );
 	Menge::Application app( platform );
-
+/*
 	Menge::RenderSystemInterface * renderSystem;
 	initInterfaceSystem( &renderSystem );
 	
 	m_renderEngine =  new Menge::RenderEngine( renderSystem );
 
 	Menge::Holder<Menge::RenderEngine>::keep( m_renderEngine );
+*/
 
-	std::ofstream file;
-	file.open( "Hello.txt" );
-	file << "Hello";
-	file.close();
 /*
 	platform->createWindow( hwnd );*/
 	

@@ -65,6 +65,7 @@
 				AdditionalDependencies="pybind_d.lib python25_d.lib FreeImaged.lib"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Dist\&quot;"
 				IgnoreDefaultLibraryNames="libci.lib"
+				GenerateDebugInformation="true"
 			/>
 			<Tool
 				Name="VCALinkTool"

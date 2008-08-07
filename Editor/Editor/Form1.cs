@@ -17,8 +17,6 @@ namespace Editor
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            ManagedFramework framework = new ManagedFramework();
-            framework.createWindow(this.Handle);
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)

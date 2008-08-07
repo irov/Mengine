@@ -28,7 +28,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ManagedFramework, Version=1.0.3141.26679, Culture=neutral, processorArchitecture=x86" />
+    <Reference Include="ManagedFramework, Version=1.0.3141.37561, Culture=neutral, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />

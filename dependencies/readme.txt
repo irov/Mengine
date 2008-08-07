@@ -2,8 +2,8 @@
 NOW:
 
 python 
-[2.5.1]
-http://www.python.org/ftp/python/2.5.1/Python-2.5.1.tar.bz2
+[2.5.2]
+http://www.python.org/ftp/python/2.5.2/Python-2.5.2.tar.bz2
 
 pybind
 [head]
@@ -13,7 +13,7 @@ https://pybind.svn.sourceforge.net/svnroot/pybind
 [2.0.1] -
 
 OIS
-[1.0]
+[1.2]
 http://sourceforge.net/projects/wgois
 
 OpenAL
@@ -28,21 +28,9 @@ vorbis
 [1.2.0]
 http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz
 
-TheoraVideo
-[TheoraVideo]
-cvs -z3 -d :pserver:anonymous@cvs.ogre3d.org:/cvsroot/ogre co ogreaddons/videoplugin
-
 Box2D
 [Box2D]
 https://box2d.svn.sourceforge.net/svnroot/box2d
-
-libPNG
-[1.2.29]
-http://libpng.sourceforge.net/
-
-zlib
-[1.2.3]
-http://www.zlib.net/
 
 --------------------------------------------------------------------------------
 TODO:

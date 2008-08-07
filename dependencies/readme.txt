@@ -36,6 +36,10 @@ Box2D
 [Box2D]
 https://box2d.svn.sourceforge.net/svnroot/box2d
 
+libPNG
+[1.2.29]
+http://libpng.sourceforge.net/
+
 --------------------------------------------------------------------------------
 TODO:
 

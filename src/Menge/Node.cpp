@@ -708,6 +708,16 @@ namespace Menge
 		return screen_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Node::colorTo( const ColourValue & _color, float _time )
+	{
+		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
+			it != it_end;
+			it++ )
+		{
+			(*it)->colorTo( _color, _time );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::setAlpha( float _alpha ) 
 	{
 		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();

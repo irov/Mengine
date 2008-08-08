@@ -3,6 +3,8 @@
 #	include "ImageCodec.h"
 #	include "LogEngine.h"
 
+#	include "ImageCodecPNG.h"
+
 namespace Menge 
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -265,6 +267,9 @@ namespace Menge
 		{
 			return *this;
 		}
+
+		//ImageCodecPNG pngCodec;
+		//std::size_t bytes = pngCodec.getDecodedDataSize( encoded, 0 );
 
 		Codec::DecodeResult res = codec->decode( encoded );
 	

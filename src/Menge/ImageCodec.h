@@ -38,19 +38,7 @@ namespace Menge
 			unsigned int flags;
 
 			PixelFormat format;
-
-		public:
-			std::string dataType() const
-			{
-				return "ImageData";
-			}
 		};
-
-	public:
-		std::string getDataType() const
-		{
-			return "ImageData";
-		}
 	};
 
 } // namespace Menge

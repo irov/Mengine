@@ -334,10 +334,6 @@
 			RelativePath=".\main.cpp"
 			>
 		</File>
-		<File
-			RelativePath=".\resource1.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -124,4 +124,15 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TileMap::_updateBoundingBox( mt::box2f & _boundingBox )
+	{
+		Node::_updateBoundingBox( _boundingBox );
+		const mt::mat3f & wm = getWorldMatrix();
+		float width = m_resourceMap->getWidth() * m_resourceMap->getTileSize();
+		float height = m_resourceMap->getHeight() * m_resourceMap->getTileSize();
+		mt::vec2f lowerRight;
+		mt::mul_v2_m3( lowerRight, mt::vec2f( width, height ), wm );
+		mt::add_internal_point( _boundingBox, lowerRight );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namescape Menge

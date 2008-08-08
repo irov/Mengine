@@ -66,7 +66,6 @@ namespace Menge
 	private:
 
 		float m_soundVolume;
-
 		float m_commonVolume;
 
 		typedef std::set<SoundEmitter*> TSetSoundEmitters;

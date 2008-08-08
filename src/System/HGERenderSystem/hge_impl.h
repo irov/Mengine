@@ -370,6 +370,12 @@ public:
 	int				    NumDips;
 	Gfx_Listener*		m_gfxListener;
 
+	void syncCPU_();
+	unsigned int		m_frames;
+	IDirect3DSurface8*	m_syncTargets[2];
+	IDirect3DTexture8*	m_syncTempTex;
+	IDirect3DSurface8*	m_syncTemp;
+
 private:
 	HGE_Impl();
 };

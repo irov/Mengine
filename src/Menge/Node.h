@@ -10,6 +10,7 @@
 #	include "ObjectDeclare.h"
 #	include "Viewport.h"
 #	include "Allocator2D.h"
+#	include "ColourValue.h"
 #	include <list>
 
 #	include "ValueInterpolator.h"
@@ -101,6 +102,7 @@ namespace Menge
 		bool isActivate() const;
 
 		////
+		virtual void colorTo( const ColourValue& _color, float _time );
 		virtual void setAlpha( float _alpha );
 		virtual void alphaTo( float _alpha, float _time );
 		virtual void colorToStop();

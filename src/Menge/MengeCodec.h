@@ -31,5 +31,9 @@ namespace Menge
 		static void startup(void);
 		/// Static method to shutdown and unregister the DDS codec
 		static void shutdown(void);
+
+		bool getDataInfo( DataStreamInterface* _inputData, CodecData* _codecData ) const { return false; }
+		bool decode( DataStreamInterface* _input, unsigned char* _buffer, unsigned int _options ) const { return false; }
+
     };
 }

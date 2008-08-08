@@ -181,4 +181,24 @@ namespace Menge
 		return m_currentPlaylistName;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::update( float _timing )
+	{
+		if( m_fade.isStarted() )
+		{
+			float volume;
+			m_fade.update( _timing, &volume );
+			setVolume( volume );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::fadeIn( float _time )
+	{
+		m_fade.start( 0.0f, m_volume, _time, ::fabsf );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::fadeOut( float _time )
+	{
+		m_fade.start( m_volume, 0.0f, _time, ::fabsf );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

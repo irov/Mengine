@@ -4,6 +4,8 @@
 #	include "LogEngine.h"
 #	include "ProfilerEngine.h"
 
+#	include <algorithm>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

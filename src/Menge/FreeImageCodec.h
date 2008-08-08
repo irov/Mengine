@@ -32,6 +32,9 @@ namespace Menge
 		/// Static method to shutdown FreeImage and unregister the FreeImage codecs
 		static void shutdown();
 
+		bool getDataInfo( DataStreamInterface* _inputData, CodecData* _codecData ) const { return false; }
+		bool decode( DataStreamInterface* _input, unsigned char* _buffer, unsigned int _options ) const { return false; }
+
 	private:
 		String m_type;
 		unsigned int m_freeImageType;

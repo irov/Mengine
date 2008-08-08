@@ -216,11 +216,14 @@ namespace	Menge
 		registerEvent( EVENT_LEAVE, "onMouseLeave", this->getEmbedding() );
 		registerEvent( EVENT_ENTER, "onMouseEnter", this->getEmbedding() );
 
+		// scene must be already active on onActivate event
+		m_active = Node::_activate();
+
 		callMethod( "onActivate", "() " );
 
-		bool result = Node::_activate();
+		//bool result = Node::_activate();
 
-		return result;
+		return m_active;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()

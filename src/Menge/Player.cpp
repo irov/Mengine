@@ -287,6 +287,7 @@ namespace Menge
 			m_nextScene->compile();
 			m_nextScene->activate();
 
+
 			if( m_scene )
 			{
 				m_scene->deactivate();
@@ -299,7 +300,7 @@ namespace Menge
 			}
 			m_scene = m_nextScene;
 
-
+			//m_scene->compile();
 			//m_scene->activate();
 			m_renderCamera2D->activate();
 			//Holder<ResourceManager>::hostage()->_dumpResources();

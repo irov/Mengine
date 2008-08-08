@@ -3,7 +3,7 @@
 #	include "Config/Typedef.h"
 
 #	include "Interface/SoundSystemInterface.h"
-
+#	include "ValueInterpolator.h"
 #	include <map>
 
 namespace	Menge
@@ -62,6 +62,11 @@ namespace	Menge
 
 			const String& getPlaying() const;
 
+			void fadeIn( float _time );
+			void fadeOut( float _time );
+
+			void update( float _timing );
+
 		private:
 			float m_volume;
 
@@ -79,5 +84,7 @@ namespace	Menge
 			void	listenStopped();
 			void	_release();	
 			void	_play();
+
+			ValueInterpolator<float> m_fade;
 	};
 }

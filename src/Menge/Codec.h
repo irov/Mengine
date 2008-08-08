@@ -27,13 +27,7 @@ namespace Menge
 		{
 		public:
 			virtual ~CodecData() {};
-
-			// Returns the type of the data.
-			virtual String dataType() const { return "CodecData"; };
 		};
-		//typedef SharedPtr<CodecData> CodecDataPtr;
-
-		//typedef ConstMapIterator<TCodecMap> TCodecMapIterator;
 
 	public:
 		virtual ~Codec();
@@ -49,12 +43,6 @@ namespace Menge
 		{
 			ms_mapCodecs.erase(pCodec->getType());
 		}
-
-		// Gets the iterator for the registered codecs.
-		/*static CodecIterator getCodecIterator(void)
-		{
-			return CodecIterator(ms_mapCodecs.begin(), ms_mapCodecs.end());
-		}*/
 
 		// Gets the file extension list for the registered codecs.
 		static TStringVector getExtensions();
@@ -82,10 +70,9 @@ namespace Menge
 		//Has a variable number of arguments, which depend on the codec type.
 		virtual DecodeResult decode( DataStreamInterface* _input ) const = 0;
 
+		virtual bool getDataInfo( DataStreamInterface* _inputData, CodecData* _codecData ) const = 0;
+		virtual bool decode( DataStreamInterface* _input, unsigned char* _buffer, unsigned int _options ) const = 0;
 		// Returns the type of the codec as a String
 		virtual String getType() const = 0;
-
-		// Returns the type of the data that supported by this codec as a String
-		virtual String getDataType() const = 0;
 	};
 } // namespace Menge

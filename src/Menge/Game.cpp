@@ -396,6 +396,7 @@ namespace Menge
 			m_FPS = 1000.0f / _timing;
 			//printf("fps: %.2f\n", m_FPS );
 		}
+		Holder<Amplifier>::hostage()->update( _timing );
 
 		m_player->update( _timing );
 

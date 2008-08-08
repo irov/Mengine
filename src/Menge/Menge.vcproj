@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="Menge"
 	ProjectGUID="{61566E24-14DC-456C-A864-772C5064FDBA}"
 	RootNamespace="RvEngine"
@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Source&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Source&quot;;&quot;$(SolutionDir)dependencies\libPNG&quot;;&quot;$(SolutionDir)dependencies\zlib&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB;FREEIMAGE_LIB;Py_NO_ENABLE_SHARED"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -125,7 +125,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Source&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Source&quot;;&quot;$(SolutionDir)dependencies\libPNG&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB;FREEIMAGE_LIB;Py_NO_ENABLE_SHARED"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -251,14 +251,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Codec.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Codec.h"
-					>
-				</File>
-				<File
 					RelativePath=".\ColourValue.cpp"
 					>
 				</File>
@@ -267,31 +259,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\FreeImageCodec.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\FreeImageCodec.h"
-					>
-				</File>
-				<File
 					RelativePath=".\Image.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\Image.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ImageCodec.h"
-					>
-				</File>
-				<File
-					RelativePath=".\MengeCodec.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\MengeCodec.h"
 					>
 				</File>
 				<File
@@ -1519,6 +1491,46 @@
 			</File>
 			<File
 				RelativePath=".\Skeleton.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Codec"
+			>
+			<File
+				RelativePath=".\Codec.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Codec.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FreeImageCodec.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FreeImageCodec.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ImageCodec.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ImageCodecPNG.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ImageCodecPNG.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MengeCodec.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MengeCodec.h"
 				>
 			</File>
 		</Filter>

@@ -258,6 +258,12 @@ bool CALL HGE_Impl::Gfx_BeginScene( HTARGET targ )
 
 void CALL HGE_Impl::Gfx_EndScene( bool _swapBuffers )
 {
+	// sync GPU with CPU
+	if( _swapBuffers )
+	{
+		syncCPU_();
+	}
+
 	_render_batch(true);
 	pD3DDevice->EndScene();
 	if(!pCurTarget && _swapBuffers ) 
@@ -267,6 +273,7 @@ void CALL HGE_Impl::Gfx_EndScene( bool _swapBuffers )
 		{
 			System_Log("Error: D3D8 failed to swap buffers" );
 		}
+		m_frames++;
 	}
 }
 
@@ -783,6 +790,7 @@ bool HGE_Impl::_GfxInit()
 	D3DFORMAT Format=D3DFMT_UNKNOWN;
 	UINT nModes, i;
 	m_gfxListener = 0;
+	m_frames = 0;
 // Init D3D
 							
 	pD3D=Direct3DCreate8( D3D_SDK_VERSION ); // D3D_SDK_VERSION
@@ -1017,6 +1025,12 @@ void HGE_Impl::_Resize(int width, int height)
 
 void HGE_Impl::_GfxDone()
 {
+
+	m_syncTargets[0]->Release();
+	m_syncTargets[1]->Release();
+	m_syncTemp->Release();
+	m_syncTempTex->Release();
+
 	CRenderTargetList *target=pTargets, *next_target;
 	
 	while(textures)	Texture_Free(textures->tex);
@@ -1092,6 +1106,10 @@ bool HGE_Impl::_GfxRestore()
 
 	//if(!pD3DDevice) return false;
 	//if(pD3DDevice->TestCooperativeLevel() == D3DERR_DEVICELOST) return;
+	m_syncTargets[0]->Release();
+	m_syncTargets[1]->Release();
+	m_syncTemp->Release();
+	m_syncTempTex->Release();
 
 	if(pScreenSurf) pScreenSurf->Release();
 	if(pScreenDepth) pScreenDepth->Release();
@@ -1167,6 +1185,16 @@ bool HGE_Impl::_init_lost()
 												  D3DFMT_D16, D3DMULTISAMPLE_NONE, &target->pDepth);
 		target=target->next;
 	}
+
+	// sync surfaces
+	D3DFORMAT fmt = D3DFMT_X8R8G8B8;
+	UINT w = 2;
+	UINT d = 1;
+	D3DXCheckTextureRequirements( pD3DDevice, &w, &w, &d, D3DUSAGE_RENDERTARGET, &fmt, D3DPOOL_DEFAULT );
+	pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, TRUE, &(m_syncTargets[0]) );
+	pD3DDevice->CreateRenderTarget( w, w, fmt, D3DMULTISAMPLE_NONE, TRUE, &(m_syncTargets[1]) );
+	D3DXCreateTexture( pD3DDevice, w, w, d, 0, fmt, D3DPOOL_SYSTEMMEM, &m_syncTempTex );
+	m_syncTempTex->GetSurfaceLevel( 0, &m_syncTemp );
 
 // Create Vertex buffer
 	
@@ -1483,4 +1511,61 @@ void HGE_Impl::Gfx_SetBlendState( hgeBlendState _srcBlend, hgeBlendState _dstBle
 void HGE_Impl::Gfx_SetListener( Gfx_Listener* _listener )
 {
 	m_gfxListener = _listener;
+}
+
+void HGE_Impl::syncCPU_()
+{
+	pD3DDevice->SetRenderTarget( m_syncTargets[m_frames % 2], 0 );
+	//m_syncTargets[m_frames % 2]->Release();
+	_SetProjectionMatrix( 2, 2 );
+	pD3DDevice->SetTransform(D3DTS_PROJECTION, &matProj);
+	D3DXMatrixIdentity(&matView);
+	pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
+
+	hgeQuad quad;
+	quad.srcBlend = BLEND_SRCALPHA;
+	quad.dstBlend = BLEND_INVSRCALPHA;
+	quad.tex = 0;
+	quad.v[0].col = 0;
+	quad.v[0].x = 0;
+	quad.v[0].y = 0;
+	quad.v[0].z = 0;
+	quad.v[1].col = 0;
+	quad.v[1].x = 2;
+	quad.v[1].y = 0;
+	quad.v[1].z = 0;
+	quad.v[2].col = 0;
+	quad.v[2].x = 2;
+	quad.v[2].y = 2;
+	quad.v[2].z = 0;
+	quad.v[3].col = 0;
+	quad.v[3].x = 0;
+	quad.v[3].y = 2;
+	quad.v[3].z = 0;
+	Gfx_RenderQuad( &quad );
+	_render_batch( false );
+
+	if( pCurTarget )
+	{
+		LPDIRECT3DSURFACE8 surf;
+		pCurTarget->pTex->GetSurfaceLevel( 0, &surf );
+		pD3DDevice->SetRenderTarget( surf, pCurTarget->pDepth );
+		surf->Release();
+		_SetProjectionMatrix( pCurTarget->width, pCurTarget->height );
+	}
+	else
+	{
+		pD3DDevice->SetRenderTarget( pScreenSurf, pScreenDepth );
+		_SetProjectionMatrix( nScreenWidth, nScreenHeight );
+	}
+
+	pD3DDevice->SetTransform(D3DTS_PROJECTION, &matProj);
+	D3DXMatrixIdentity(&matView);
+	pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
+	
+	LPDIRECT3DSURFACE8 temp;
+	HRESULT hr = D3DXLoadSurfaceFromSurface( m_syncTemp, NULL, NULL, m_syncTargets[(m_frames + 1) % 2], NULL, NULL, D3DX_DEFAULT, 0 );
+	D3DLOCKED_RECT rect;
+	hr = m_syncTemp->LockRect( &rect, NULL, D3DLOCK_READONLY );
+	m_syncTemp->UnlockRect();
 }

@@ -26,6 +26,7 @@ namespace Menge
 		void _release() override;
 
 		//void _update( float _timing ) override;
+		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
 	private:
 		std::string m_resourcename;

@@ -360,7 +360,7 @@ namespace Menge
 		0, 
 		0, 
 		hInstance,
-		LoadIcon(hInstance, MAKEINTRESOURCE(IDI_BUTTONS)), LoadCursor(NULL, IDC_ARROW),
+		LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MENGE)), LoadCursor(NULL, IDC_ARROW),
 		(HBRUSH)GetStockObject(BLACK_BRUSH), 0, "MengeWnd" 
 		};
 		/*ZeroMemory( &wc, sizeof(WNDCLASSEX) );

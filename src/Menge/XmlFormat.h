@@ -10,6 +10,9 @@ namespace Menge
 	class XmlFormat
 	{
 	public:
+		XmlFormat();
+
+	public:
 		XmlTag & tag( XMLTag _tag, const std::string & _name );
 
 		void define( XMLDefine _def, const std::string & _name );

@@ -6,7 +6,7 @@ namespace Menge
 	XmlTag::XmlTag()
 		: m_tag(TAG_BEGIN)
 	{
-
+		m_tagAttributes.resize( ATTR_LAST );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XmlTag::setup( XMLTag _tag, const std::string & _name )
@@ -17,11 +17,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	XmlTag & XmlTag::operator () ( XMLAttribute _attr, XMLType _type )
 	{
-		if( _attr >= m_tagAttributes.size() )
-		{
-			m_tagAttributes.resize( _attr );
-		}
-
 		TTagAttribute & attr = m_tagAttributes[ _attr ];
 
 		attr.first = _attr;

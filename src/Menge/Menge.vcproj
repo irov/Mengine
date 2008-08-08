@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="Menge"
 	ProjectGUID="{61566E24-14DC-456C-A864-772C5064FDBA}"
 	RootNamespace="RvEngine"
@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Source&quot;;&quot;$(SolutionDir)dependencies\libPNG&quot;;&quot;$(SolutionDir)dependencies\zlib&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB;FREEIMAGE_LIB;Py_NO_ENABLE_SHARED"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB;_CRT_SECURE_NO_WARNINGS;FREEIMAGE_LIB;Py_NO_ENABLE_SHARED"
 				StringPooling="false"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -53,7 +53,7 @@
 				UsePrecompiledHeader="0"
 				GenerateXMLDocumentationFiles="false"
 				BrowseInformation="0"
-				WarningLevel="2"
+				WarningLevel="3"
 				WarnAsError="false"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"

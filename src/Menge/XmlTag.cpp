@@ -5,12 +5,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	XmlTag::XmlTag()
 		: m_tag(TAG_BEGIN)
-		, m_name(0)
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void XmlTag::setup( XMLTag _tag, const char * _name )
+	void XmlTag::setup( XMLTag _tag, const std::string & _name )
 	{
 		m_tag = _tag;
 		m_name = _name;

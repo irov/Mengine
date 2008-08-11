@@ -254,28 +254,59 @@ namespace Menge
 		}
 
 		Codec* codec = Codec::getCodec( strExt );
-		//assert( codec && String( "Image::load -> Unable to load image file '" 
-		//							+ _strFileName + "' - invalid extension.").c_str() );
+
 		if( !codec )
 		{
 			MENGE_LOG( "Warning: Image codec for extension %s was not found", strExt.c_str() );
 		}
 
-		DataStreamInterface* encoded = Holder<FileEngine>::hostage()->openFile( _strFileName );
+		DataStreamInterface* codeStream = Holder<FileEngine>::hostage()->openFile( _strFileName );
 
-		if( !encoded )
+		if( !codeStream )
 		{
 			return *this;
 		}
 
+		ImageCodec::ImageData data;
+
 		//ImageCodecPNG pngCodec;
-		//std::size_t bytes = pngCodec.getDecodedDataSize( encoded, 0 );
+		bool res = codec->getDataInfo( codeStream, static_cast<Codec::CodecData*>( &data ) );
+		if( res == false )
+		{
+			MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _strFileName.c_str() );
+			Holder<FileEngine>::hostage()->closeStream( codeStream );
+			return *this;
+		}
 
-		Codec::DecodeResult res = codec->decode( encoded );
+		codeStream->seek( 0 );
+
+		m_buffer = new unsigned char[data.size];
+
+		res = codec->decode( codeStream, m_buffer, 0 );
+		if( res == false )
+		{
+			MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _strFileName.c_str() );
+			Holder<FileEngine>::hostage()->closeStream( codeStream );
+			delete[] m_buffer;
+			m_buffer = 0;
+			return *this;
+		}
+
+		m_width = data.width;
+		m_height = data.height;
+		m_depth = data.depth;
+		m_size = data.size;
+		m_format = data.format;
+		m_numMipmaps = data.num_mipmaps;
+		m_pixelSize = static_cast<unsigned char>( PixelUtil::getNumElemBytes( m_format ) );
+		m_flags = data.flags;
+
+
+		//Codec::DecodeResult res = codec->decode( encoded );
 	
-		Holder<FileEngine>::hostage()->closeStream( encoded );
+		Holder<FileEngine>::hostage()->closeStream( codeStream );
 
-		if( res.second == 0 )
+		/*if( res.second == 0 )
 		{
 			MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _strFileName.c_str() );
 			return *this;
@@ -301,7 +332,7 @@ namespace Menge
 
 		Holder<FileEngine>::hostage()->closeStream( res.first );
 
-		delete res.second;
+		delete res.second;*/
 
 		return *this;
 

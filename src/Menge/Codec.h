@@ -44,6 +44,8 @@ namespace Menge
 			ms_mapCodecs.erase(pCodec->getType());
 		}
 
+		static void initialize();
+		static void cleanup();
 		// Gets the file extension list for the registered codecs.
 		static TStringVector getExtensions();
 

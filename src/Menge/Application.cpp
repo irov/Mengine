@@ -85,13 +85,15 @@
 #	include "ResourceMeshMS3D.h"
 #	include "ResourceMaterial.h"
 
-#	include "FreeImageCodec.h"
+//#	include "FreeImageCodec.h"
+//#	include "ImageCodecPNG.h"
 
-#	include "MengeCodec.h"
-#	include "image.h"
+//#	include "MengeCodec.h"
+#	include "Codec.h"
+//#	include "image.h"
 
 
-#	include <FreeImage.h>
+//#	include <FreeImage.h>
 
 namespace Menge
 {
@@ -460,9 +462,10 @@ namespace Menge
 
 		m_inputEngine->regHandle( m_handler );
 
-		FreeImageCodec::startup();
+		//FreeImageCodec::startup();
 
-		MengeCodec::startup();
+		//MengeCodec::startup();
+		Codec::initialize();
 
 		Holder<ResourceManager>::keep( new ResourceManager );
 
@@ -702,8 +705,9 @@ namespace Menge
 		Holder<ProfilerEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
 
-		MengeCodec::shutdown();
-		FreeImageCodec::shutdown();
+		Codec::cleanup();
+		//MengeCodec::shutdown();
+		//FreeImageCodec::shutdown();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onWindowMovedOrResized()

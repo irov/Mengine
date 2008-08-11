@@ -1,6 +1,5 @@
 #	include "MengeCodec.h"
 #	include "Codec.h"
-#	include "FreeImage.h"
 #	include "FileEngine.h"
 
 namespace Menge
@@ -29,7 +28,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Codec::DecodeResult MengeCodec::decode(DataStreamInterface* _input) const
 	{
-		unsigned long is_alpha = 0;
+	/*	unsigned long is_alpha = 0;
 		_input->read(&is_alpha,sizeof(unsigned long));
 
 		unsigned long jpg_size = 0;
@@ -215,6 +214,8 @@ namespace Menge
 		DecodeResult ret;
 		ret.first = output;
 		ret.second = static_cast<CodecData*>( imgData );
+		return ret;*/
+		DecodeResult ret;
 		return ret;
 	}
 	//////////////////////////////////////////////////////////////////////////    

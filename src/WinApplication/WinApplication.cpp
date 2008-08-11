@@ -59,11 +59,6 @@ bool initInterfaceSystem( Menge::ApplicationInterface** _ptrInterface )
 	try
 	{
 		*_ptrInterface = new Menge::WinApplication();
-	
-		std::ostringstream str;
-		str << ((int)_ptrInterface);
-		
-		//::MessageBoxA( NULL, str.str().c_str(), "name", MB_ICONWARNING );
 	}
 	catch (...)
 	{

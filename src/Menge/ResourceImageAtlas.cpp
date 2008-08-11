@@ -4,8 +4,6 @@
 
 #	include "XmlEngine.h"
 
-#	include <FreeImage.h>
-
 #	include <sstream>
 
 #	include "PixelFormat.h"

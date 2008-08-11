@@ -18,8 +18,6 @@
 
 #	include "Game.h"
 
-#	include "Player.h"
-
 #	include "LogEngine.h"
 #	include "ProfilerEngine.h"
 
@@ -79,14 +77,7 @@
 #	include "ResourceMeshMS3D.h"
 #	include "ResourceMaterial.h"
 
-//#	include "FreeImageCodec.h"
-//#	include "ImageCodecPNG.h"
-
-//#	include "MengeCodec.h"
 #	include "Codec.h"
-//#	include "image.h"
-
-//#	include <FreeImage.h>
 
 namespace Menge
 {
@@ -140,6 +131,7 @@ namespace Menge
 		, m_physicEngine( NULL )
 		, m_xmlEngine( NULL )
 		, m_mouseBounded( false )
+		, m_game(NULL)
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -203,81 +195,66 @@ namespace Menge
 		Holder<PhysicEngine>::keep( m_physicEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::loadPak( const std::string & _pak )
+	void Application::initPredefinedResources()
 	{
-		MENGE_LOG("load pack [%s]...\n", _pak.c_str() );
-		m_fileEngine->loadPak( _pak );
+		ResourceFactoryParam param;
+		param.name = "WhitePixel";
+		param.category = "";
+
+		ResourceImageDynamic * image = new ResourceImageDynamic( param );
+		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
+		image->incrementReference();
+
+		Holder<ResourceManager>::hostage()->registerResource( image );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	/*bool Application::initRenderSettings()
-	{
-		m_interface->getDesktopResolution( &width, &height );
-
-		m_desktopResolution.x = width;
-		m_desktopResolution.y = height;
-
-		Game * game = Holder<Game>::hostage();
-
-		m_currentResolution = game->getResourceResolution();
-
-		m_renderEngine->initialize();
-		m_renderEngine->setContentResolution( m_currentResolution );
-
-		m_currentResolution.x = game->getWidth();
-		m_currentResolution.y = game->getHeight();
-
-		if( game->getFullscreen() )
-		{
-			float aspect = m_desktopResolution.x / m_desktopResolution.y;
-
-			m_currentResolution = m_renderEngine->getBestDisplayResolution( 
-				m_currentResolution.x, m_currentResolution.y, aspect );
-		}
-	}*/
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createGame(WINDOW_HANDLE _handle)
 	{
-		MENGE_LOG("create game file [%s] ...\n", m_gameInfo.c_str() );
-		MENGE_LOG("init game ...\n");
+		m_game = new Game();
+		Holder<Game>::keep( m_game );
 
-		if( m_physicEngine )
+		MENGE_LOG("create game file [%s] ...\n", m_gameInfo.c_str() );
+
+		if( m_xmlEngine->parseXmlFileM( m_gameInfo, m_game, &Game::loader ) == false )
 		{
-			m_physicEngine->init( mt::vec3f(0.f, -1.f, 0.f) );
+			MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
+			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
+			return false;
 		}
 
-		int width;
-		int height;
+		for( TStringVector::iterator it = m_resourcePaths.begin(), 
+			it_end = m_resourcePaths.end(); it != it_end; it++ )
+		{
+			m_game->readResourceFile( *it );
+		}
 
-		m_interface->getDesktopResolution( &width, &height );
+		const String& title = m_game->getTitle();
 
-		m_desktopResolution.x = width;
-		m_desktopResolution.y = height;
+		if( !m_fileEngine->initAppDataPath( "Menge\\" + title ) )
+		{
+			MENGE_LOG( "Warning: Can't initialize user's data path" );
+		}
 
-		Game * game = Holder<Game>::hostage();
-
-		m_currentResolution = game->getResourceResolution();
+		m_currentResolution = m_game->getResourceResolution();
 
 		m_renderEngine->initialize();
 		m_renderEngine->setContentResolution( m_currentResolution );
 
-		if( game->getFullscreen() )
+		m_currentResolution.x = m_game->getWidth();
+		m_currentResolution.y = m_game->getHeight();
+
+		if( m_game->getFullscreen() )
 		{
 			float aspect = m_desktopResolution.x / m_desktopResolution.y;
 
 			m_currentResolution = m_renderEngine->getBestDisplayResolution( 
 				m_currentResolution.x, m_currentResolution.y, aspect );
 		}
-		else
-		{
-			m_currentResolution.x = game->getWidth();
-			m_currentResolution.y = game->getHeight();
-		}
 
-		const std::string & title = game->getTitle();
-		bool isFullscreen = game->getFullscreen();
-		int bits = game->getBits();
-		int FSAAType = game->getFSAAType();
-		int FSAAQuality = game->getFSAAQuality();
+		bool isFullscreen = m_game->getFullscreen();
+		int bits = m_game->getBits();
+		int FSAAType = m_game->getFSAAType();
+		int FSAAQuality = m_game->getFSAAQuality();
 
 		WINDOW_HANDLE winHandle = _handle;
 		
@@ -290,31 +267,21 @@ namespace Menge
 		m_renderEngine->createRenderWindow( m_currentResolution.x, m_currentResolution.y, bits, isFullscreen, winHandle,
 											FSAAType, FSAAQuality );
 
-		m_renderEngine->setTextureFiltering( game->getTextureFiltering() );
+		bool isTextureFiltering = m_game->getTextureFiltering();
 
-		ResourceFactoryParam param;
-		param.name = "WhitePixel";
-		param.category = "";
-
-		ResourceImageDynamic * image = new ResourceImageDynamic( param );
-		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
-		image->incrementReference();
-
-		Holder<ResourceManager>::hostage()->registerResource( image );
+		m_renderEngine->setTextureFiltering( isTextureFiltering );
 
 		m_inputEngine->initialize( winHandle );
 
-		if( game->getFullscreen() )
+		if( m_game->getFullscreen() )
 		{
 			setMouseBounded( true );
-		}
-
-		if( game->getFullscreen() )
-		{
 			m_inputEngine->setMouseBounded( true );
 		}
 
-		if( game->init() == false )
+		initPredefinedResources();
+
+		if( m_game->init() == false )
 		{
 			return false;
 		}
@@ -337,11 +304,6 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Paks")
-			{
-				// 
-			}
-
 			XML_CASE_ATTRIBUTE_NODE( "Game", "File", m_gameInfo );
 
 			XML_CASE_NODE( "Resource" )
@@ -353,6 +315,27 @@ namespace Menge
 				}
 				m_resourcePaths.push_back( filename );
 			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::parseArguments(const std::string & _arguments)
+	{
+		String::size_type idx = _arguments.find( "-sound" );
+		if( idx != String::npos )
+		{
+			m_sound = false;
+		}
+
+		idx = _arguments.find( "-particles" );
+		if( idx != String::npos )
+		{
+			m_particles = false;
+		}
+
+		idx = _arguments.find( "-debuginfo" );
+		if( idx != String::npos )
+		{
+			m_debugInfo = true;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -384,7 +367,6 @@ namespace Menge
 		OBJECT_FACTORY( Camera3D );
 		OBJECT_FACTORY( SceneNode3D );
 
-
 		RESOURCE_FACTORY( ResourceAnimation );
 		RESOURCE_FACTORY( ResourceCapsuleController );
 		RESOURCE_FACTORY( ResourceEmitterContainer );
@@ -412,37 +394,21 @@ namespace Menge
 			return false;
 		}
 
+		int width;
+		int height;
+
+		m_interface->getDesktopResolution( &width, &height );
+
+		m_desktopResolution.x = width;
+		m_desktopResolution.y = height;
+
 		m_sound = m_soundEngine->initialize();
 
-		String::size_type idx = _args.find( "-sound" );
-		if( idx != String::npos )
-		{
-			m_sound = false;
-		}
+		parseArguments(_args);
 
-		idx = _args.find( "-particles" );
-		if( idx != String::npos )
-		{
-			m_particles = false;
-		}
-
-		/*idx = _args.find( "-debugRender" );
-		if( idx != String::npos )
-		{
-			m_debugRender = true;
-		}*/
-
-		idx = _args.find( "-debuginfo" );
-		if( idx != String::npos )
-		{
-			m_debugInfo = true;
-		}
-
-		// Initializing XML-engine
-		m_xmlEngine = new XmlEngine;
+		m_xmlEngine = new XmlEngine();
 		Holder<XmlEngine>::keep( m_xmlEngine );
 
-		// Reading resources
 		if( m_xmlEngine->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
 		{
 			MENGE_LOG("parse application xml failed '%s'\n"
@@ -452,55 +418,19 @@ namespace Menge
 			return false;
 		}
 
-		// prepare file system
 		m_fileEngine->changeDir( "../" );
 
-		// prepare resources
-		Holder<ScriptEngine>::keep( new ScriptEngine );
-		ScriptEngine * scriptEngine = Holder<ScriptEngine>::hostage();
+		ScriptEngine * scriptEngine = new ScriptEngine();
+		Holder<ScriptEngine>::keep( scriptEngine );
+		
 		MENGE_LOG("init scriptEngine ...\n");
 		scriptEngine->init();
 
-		Game* game = new Game;
-		Holder<Game>::keep( game );
-
-		if( m_xmlEngine->parseXmlFileM( m_gameInfo, game, &Game::loader ) == false )
-		{
-			MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
-			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
-			return false;
-		}
-
-		for( TStringVector::iterator it = m_resourcePaths.begin(), 
-				it_end = m_resourcePaths.end(); it != it_end; it++ )
-		{
-			game->readResourceFile( *it );
-		}
-		
-		const std::string& physicSystemName = game->getPhysicSystemName();
-
-		if( physicSystemName != "None" )
-		{
-			SystemDLLInterface* dll = m_interface->loadSystemDLL( physicSystemName.c_str() );
-			setPhysicSystem( dll->getInterface<PhysicSystemInterface>() );
-		}
-
 		m_inputEngine->regHandle( m_handler );
 
-		//FreeImageCodec::startup();
-
-		//MengeCodec::startup();
 		Codec::initialize();
 
-		Holder<ResourceManager>::keep( new ResourceManager );
-
-		const String& title = game->getTitle();
-		if( !m_fileEngine->initAppDataPath( "Menge\\" + title ) )
-		{
-			MENGE_LOG( "Warning: Can't initialize user's data path" );
-		}
-
-		//game->loadAccounts();
+		Holder<ResourceManager>::keep( new ResourceManager() );
 
 		return true;
 	}
@@ -559,12 +489,12 @@ namespace Menge
 		}
 #	endif
 
-		return Holder<Game>::hostage()->handleKeyEvent( _key, _char, _isDown );
+		return m_game->handleKeyEvent( _key, _char, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseButtonEvent( int _button, bool _isDown )
 	{
-		return Holder<Game>::hostage()->handleMouseButtonEvent( _button, _isDown );
+		return m_game->handleMouseButtonEvent( _button, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseMove( float _x, float _y, int _whell )
@@ -578,17 +508,17 @@ namespace Menge
 			oldy = inpEng->getMouseY();
 			inpEng->setMousePos( _x, _y );
 		}
-		return Holder<Game>::hostage()->handleMouseMove( _x - oldx, _y - oldy, _whell );
+		return m_game->handleMouseMove( _x - oldx, _y - oldy, _whell );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onMouseLeave()
 	{
-		Holder<Game>::hostage()->handleMouseLeave();
+		m_game->handleMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onMouseEnter()
 	{
-		Holder<Game>::hostage()->handleMouseEnter();
+		m_game->handleMouseEnter();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
@@ -690,7 +620,7 @@ namespace Menge
 			m_physicEngine2D->update( _timing );
 		}
 
-		Holder<Game>::hostage()->update( _timing );
+		m_game->update( _timing );
 		m_inputEngine->update();
 
 		Holder<ProfilerEngine>::hostage()->beginProfile("Menge");
@@ -699,7 +629,7 @@ namespace Menge
 		m_soundEngine->update( _timing );
 
 		m_renderEngine->beginScene();
-		Holder<Game>::hostage()->render( m_debugMask );
+		m_game->render( m_debugMask );
 		m_renderEngine->endScene();
 
 		Holder<ProfilerEngine>::hostage()->endProfile("Menge");
@@ -731,8 +661,6 @@ namespace Menge
 		Holder<ScriptEngine>::destroy();
 
 		Codec::cleanup();
-		//MengeCodec::shutdown();
-		//FreeImageCodec::shutdown();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onWindowMovedOrResized()

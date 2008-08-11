@@ -59,6 +59,7 @@ namespace Menge
 		{
 			delete it->second;
 		}
+
 		m_accounts.clear();
 
 		for( TMapScene::iterator 
@@ -122,9 +123,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "TextureFiltering", "Value", m_textureFiltering );
 			XML_CASE_ATTRIBUTE_NODE( "FSAAType", "Value", m_FSAAType );
 			XML_CASE_ATTRIBUTE_NODE( "FSAAQuality", "Value", m_FSAAQuality );
-			//changed
 			XML_CASE_ATTRIBUTE_NODE( "DefaultArrow", "Value", m_defaultArrowName );
-			//changed
 			XML_CASE_ATTRIBUTE_NODE( "PersonalityModule", "Value", m_personality );
 			XML_CASE_ATTRIBUTE_NODE( "InitFunction", "Value", m_eventInit );
 			XML_CASE_ATTRIBUTE_NODE( "UpdateFunction", "Value", m_eventUpdate );
@@ -183,7 +182,6 @@ namespace Menge
 				m_pathArrows.push_back( std::make_pair( m_currentResourcePath, path ) );
 
 				XML_PARSE_ELEMENT( this, &Game::loaderArrows_ );
-
 			}
 			
 			XML_CASE_NODE("Entities")
@@ -430,7 +428,6 @@ namespace Menge
 			m_listModulePath.push_back( it->first + it->second );
 		}
 
-
 		Holder<ScriptEngine>::hostage()
 			->setModulePath( m_listModulePath );
 
@@ -462,13 +459,6 @@ namespace Menge
 
 			Holder<ResourceManager>::hostage()
 				->loadResource( it->second.first, path, it->first );
-		}
-
-		if(m_debugResourceFont.empty() == false)
-		{
-			m_debugTextField = SceneManager::createNodeT<TextField>("TextField");
-			m_debugTextField->setResource( m_debugResourceFont ); 
-			m_debugTextField->activate();
 		}
 
 		for( TMapDeclaration::iterator
@@ -516,6 +506,13 @@ namespace Menge
 		if( result == false )
 		{
 			return false;
+		}
+
+		if(m_debugResourceFont.empty() == false)
+		{
+			m_debugTextField = SceneManager::createNodeT<TextField>("TextField");
+			m_debugTextField->setResource( m_debugResourceFont ); 
+			m_debugTextField->activate();
 		}
 
 		return result;

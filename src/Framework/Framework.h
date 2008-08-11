@@ -26,6 +26,11 @@ public:
 	Framework();
 	~Framework();
 public:
+	//void addResource();
+
+	void setCurrentScene();
+
+
 	void createWindow(HWND hwnd);
 	void step();
 private: 

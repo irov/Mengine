@@ -65,8 +65,6 @@ namespace Menge
 		void setPhysicSystem( PhysicSystemInterface * _interface );
 		void setPhysicSystem2D( PhysicSystem2DInterface * _interface );
 
-		void loadPak( const std::string & _pak );
-
 		bool createGame(WINDOW_HANDLE _handle);
 
 		void step();
@@ -116,6 +114,7 @@ namespace Menge
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style );
 
 	private:
+		Game * m_game;
 		ApplicationInterface* m_interface;
 
 		std::string m_gameInfo;
@@ -150,5 +149,8 @@ namespace Menge
 		XmlEngine*	m_xmlEngine;
 
 		mt::vec2f m_desktopResolution;
+
+		void parseArguments(const std::string & _arguments);
+		void initPredefinedResources();
 	};
 }

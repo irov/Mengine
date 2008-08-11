@@ -1,0 +1,8 @@
+<Scene>
+
+	<Node Name = "Sample" Type = "Layer2D">
+		<Size Value = "1024;768"/>
+		<Main Value = "1"/>
+	</Node>
+	
+</Scene>

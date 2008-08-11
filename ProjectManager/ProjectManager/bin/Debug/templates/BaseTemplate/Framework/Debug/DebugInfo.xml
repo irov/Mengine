@@ -1,0 +1,7 @@
+<Node Name = "DebugInfo" Type = "TextField">
+	<Font Name = "Breeze"/>
+	<Color Value = "0.97;0.0;0.0"/>
+	<Height Value = "50"/>
+	<Text Value = "123"/>
+	<Transformation Value = "1;0;0;1;0;0"/>
+</Node>

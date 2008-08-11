@@ -113,15 +113,11 @@ namespace Menge
 		
 		static float getMouseX()
 		{
-			//return Holder<InputEngine>::hostage()
-			//	->getMouseX();
 			return Holder<Player>::hostage()->getArrow()->getLocalPosition().x;
 		}
 
 		static float getMouseY()
 		{
-			//return Holder<InputEngine>::hostage()
-			//	->getMouseY();
 			return Holder<Player>::hostage()->getArrow()->getLocalPosition().y;
 		}
 

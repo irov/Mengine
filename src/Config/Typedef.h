@@ -18,6 +18,7 @@ namespace Menge
 typedef _StringBase String;
 
 typedef void* WindowHandle;
+
 //
 
 #	if MENGE_COMPILER == MENGE_COMPILER_MSVC

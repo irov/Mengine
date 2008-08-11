@@ -165,18 +165,14 @@ namespace Menge
 
 		m_name.assign( _name );
 
-		//initInterfaceSystem( &m_fileSystem );
-
-		//m_fileSystem->loadPath(".");
-
 		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::step()
+	void WinApplication::step( float _timing )
 	{
-		m_listener->onUpdate( 1000 );
+		m_listener->onUpdate( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::run()
@@ -388,7 +384,7 @@ namespace Menge
 		
 
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
-		return static_cast<WINDOW_HANDLE>( m_hWnd ); 
+		return static_cast<WindowHandle>( m_hWnd ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )

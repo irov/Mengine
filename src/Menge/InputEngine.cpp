@@ -20,7 +20,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputEngine::initialize( WINDOW_HANDLE _winHandle )
+	bool InputEngine::initialize( WindowHandle _winHandle )
 	{
 		return m_interface->initialize( _winHandle );
 	}

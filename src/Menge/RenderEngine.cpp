@@ -43,7 +43,7 @@ namespace Menge
 		return m_interface->getNumDIP();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WINDOW_HANDLE _winHandle /* = 0  */,
+	bool RenderEngine::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
 											int _FSAAType, int _FSAAQuality )
 	{
 		m_fullscreen = _fullscreen;

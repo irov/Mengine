@@ -11,7 +11,7 @@ public:
 	ManagedFramework();
 	virtual ~ManagedFramework();
 	void createWindow(IntPtr hWnd);
-	void step();
+	void step(float _timing);
 	//void createWindow(String ^ _title, int _width, int _height, bool _isfullscreen);
 
 private:

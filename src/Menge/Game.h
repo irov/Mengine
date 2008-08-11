@@ -47,8 +47,6 @@ namespace Menge
 
 	public:
 		std::string getPathEntities( const std::string& _entity ) const;
-//		const std::string & getPathScenes() const;
-//		const std::string & getPathArrows() const;
 
 	public:
 		Arrow * getArrow( const std::string & _name );
@@ -109,7 +107,7 @@ namespace Menge
 		Account* getCurrentAccount();
 
 		void saveAccountsInfo();
-//
+
 	protected:
 
 		TextField * m_debugTextField;

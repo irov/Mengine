@@ -197,9 +197,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::initPredefinedResources()
 	{
-		ResourceFactoryParam param;
-		param.name = "WhitePixel";
-		param.category = "";
+		ResourceFactoryParam param = {"WhitePixel"};
 
 		ResourceImageDynamic * image = new ResourceImageDynamic( param );
 		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
@@ -208,12 +206,12 @@ namespace Menge
 		Holder<ResourceManager>::hostage()->registerResource( image );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createGame(WINDOW_HANDLE _handle)
+	bool Application::createGame(WindowHandle _handle)
 	{
 		m_game = new Game();
 		Holder<Game>::keep( m_game );
 
-		MENGE_LOG("create game file [%s] ...\n", m_gameInfo.c_str() );
+		MENGE_LOG("Create game file [%s] ...\n", m_gameInfo.c_str() );
 
 		if( m_xmlEngine->parseXmlFileM( m_gameInfo, m_game, &Game::loader ) == false )
 		{
@@ -228,22 +226,26 @@ namespace Menge
 			m_game->readResourceFile( *it );
 		}
 
-		const String& title = m_game->getTitle();
+		const String & title = m_game->getTitle();
 
 		if( !m_fileEngine->initAppDataPath( "Menge\\" + title ) )
 		{
 			MENGE_LOG( "Warning: Can't initialize user's data path" );
 		}
 
-		m_currentResolution = m_game->getResourceResolution();
+		mt::vec2f resourceResolution = m_game->getResourceResolution();
 
 		m_renderEngine->initialize();
-		m_renderEngine->setContentResolution( m_currentResolution );
+		m_renderEngine->setContentResolution( resourceResolution );
 
+		bool isFullscreen = m_game->getFullscreen();
+		int bits = m_game->getBits();
+		int FSAAType = m_game->getFSAAType();
+		int FSAAQuality = m_game->getFSAAQuality();
 		m_currentResolution.x = m_game->getWidth();
 		m_currentResolution.y = m_game->getHeight();
 
-		if( m_game->getFullscreen() )
+		if( isFullscreen )
 		{
 			float aspect = m_desktopResolution.x / m_desktopResolution.y;
 
@@ -251,12 +253,7 @@ namespace Menge
 				m_currentResolution.x, m_currentResolution.y, aspect );
 		}
 
-		bool isFullscreen = m_game->getFullscreen();
-		int bits = m_game->getBits();
-		int FSAAType = m_game->getFSAAType();
-		int FSAAQuality = m_game->getFSAAQuality();
-
-		WINDOW_HANDLE winHandle = _handle;
+		WindowHandle winHandle = _handle;
 		
 		if(_handle == NULL)
 		{
@@ -499,14 +496,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseMove( float _x, float _y, int _whell )
 	{
-		InputEngine* inpEng = Holder<InputEngine>::hostage();
+		InputEngine * inputEngine = Holder<InputEngine>::hostage();
+
 		float oldx = 0.f;
 		float oldy = 0.f;
-		if( !inpEng->getMouseBounded() )
+
+		if( !inputEngine->getMouseBounded() )
 		{ 
-			oldx = inpEng->getMouseX();
-			oldy = inpEng->getMouseY();
-			inpEng->setMousePos( _x, _y );
+			oldx = inputEngine->getMouseX();
+			oldy = inputEngine->getMouseY();
+			inputEngine->setMousePos( _x, _y );
 		}
 		return m_game->handleMouseMove( _x - oldx, _y - oldy, _whell );
 	}
@@ -585,9 +584,9 @@ namespace Menge
 		m_interface->minimizeWindow();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::step()
+	void Application::step( float _timing )
 	{
-		m_interface->step();
+		m_interface->step( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::run()

@@ -32,7 +32,7 @@ public:
 
 
 	void createWindow(HWND hwnd);
-	void step();
+	void step(float _timing);
 private: 
 	Menge::Application * app;
 	Menge::ApplicationInterface * platform;

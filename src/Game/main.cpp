@@ -57,7 +57,6 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 		return 0;
 	}
 
-	bool result = false;
 	Menge::Application app( platform );
 
 	Menge::LogSystemInterface * logSystem;
@@ -70,21 +69,19 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 
 	Menge::FileSystemInterface * fileSystem;
 	initInterfaceSystem( &fileSystem );
-	fileSystem->loadPath(".");
 	app.setFileSystem( fileSystem );
+
+	fileSystem->loadPath(".");
 
 	Menge::InputSystemInterface * inputSystem;
 	initInterfaceSystem( &inputSystem );
 	app.setInputSystem( inputSystem );
 	
-
-//#	if	MENGE_PARTICLES	== (1)
-
+#	if	MENGE_PARTICLES	== (1)
 	Menge::ParticleSystemInterface * particleSystem;
 	initInterfaceSystem( &particleSystem );
 	app.setParticleSystem( particleSystem );
-
-//#	endif
+#	endif
 
 	Menge::PhysicSystem2DInterface * physicSystem2D;
 	initInterfaceSystem( &physicSystem2D );
@@ -94,22 +91,13 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	initInterfaceSystem( &renderSystem );
 	app.setRenderSystem( renderSystem );
 
-
 	Menge::SoundSystemInterface * soundSystem;
 	initInterfaceSystem( &soundSystem );
 	app.setSoundSystem( soundSystem );
 
-	/*PhysicSystemInterface * physicSystem3D;
-	initInterfaceSystem( &physicSystem3D );
-	app.setPhysicSystem( physicSystem3D );*/
-	
-	//Menge::Application app( platform );
-
-	result = app.initialize( config_file, lpCmdLine );
+	bool result = app.initialize( config_file, lpCmdLine );
 
 	result = app.createGame(0);
-
-	//result = app->init( config_file, lpCmdLine );
 
 	if( result == true )
 	{

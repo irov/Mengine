@@ -38,11 +38,6 @@ namespace Menge
 	class InputHandler;
 	class TextField;
 
-	//! Application - .
-	/*! 
-	* 
-	*/
-
 	class MENGE_API Application
 		: public ApplicationListenerInterface
 	{
@@ -65,9 +60,9 @@ namespace Menge
 		void setPhysicSystem( PhysicSystemInterface * _interface );
 		void setPhysicSystem2D( PhysicSystem2DInterface * _interface );
 
-		bool createGame(WINDOW_HANDLE _handle);
+		bool createGame(WindowHandle _handle);
 
-		void step();
+		void step( float _timing );
 		void run();
 		void quit();
 

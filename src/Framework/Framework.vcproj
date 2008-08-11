@@ -62,8 +62,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="pybind_d.lib python25_d.lib FreeImaged.lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Dist\&quot;"
+				AdditionalDependencies="pybind_d.lib python25_d.lib libpngd.lib zlibd.lib"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\libPNG\lib_debug\&quot;;&quot;$(SolutionDir)dependencies\zlib\lib_debug\&quot;"
 				IgnoreDefaultLibraryNames="libci.lib"
 				GenerateDebugInformation="true"
 			/>

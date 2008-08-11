@@ -43,7 +43,7 @@ void ManagedFramework::createWindow(IntPtr hWnd)
 	this->m_pUnmanagedTestClass->createWindow(handle);		
 }
 
-void ManagedFramework::step()
+void ManagedFramework::step(float _timing)
 {
-	this->m_pUnmanagedTestClass->step();		
+	this->m_pUnmanagedTestClass->step(1000);		
 }

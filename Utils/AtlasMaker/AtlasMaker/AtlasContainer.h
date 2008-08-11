@@ -25,6 +25,4 @@ private:
 	int m_width;
 	int m_height;
 	FILE * m_log;
-
-	bool _isFitting(const AtlasTexture & _atlas, const Texture2D & _texture);
 };

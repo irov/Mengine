@@ -27,7 +27,10 @@ public:
 	~Framework();
 public:
 	void createWindow(HWND hwnd);
+	void step();
 private: 
+	Menge::Application * app;
 	Menge::ApplicationInterface * platform;
 	Menge::RenderEngine* m_renderEngine;
+	//Menge::LogEngine* m_logEngine;
 };

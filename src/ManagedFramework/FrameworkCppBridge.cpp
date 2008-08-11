@@ -38,7 +38,12 @@ ManagedFramework::~ManagedFramework()
 void ManagedFramework::createWindow(IntPtr hWnd)
 {
 	//IntPtr pString = Marshal::StringToHGlobalAnsi(_title);
-	HWND hwnd = (HWND)hWnd.ToPointer();
+	HWND handle = static_cast<HWND> (hWnd.ToPointer());
 		//char * pchString = static_cast<char *>(pString.ToPointer());
-	this->m_pUnmanagedTestClass->createWindow(hwnd);		
+	this->m_pUnmanagedTestClass->createWindow(handle);		
+}
+
+void ManagedFramework::step()
+{
+	this->m_pUnmanagedTestClass->step();		
 }

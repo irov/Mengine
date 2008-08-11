@@ -16,11 +16,14 @@ public:
 public:
 
 	bool	loadTexture(const std::string & _filename);
-	const	std::string & getFilename() const;
 
 public:
-	void setAtlas(AtlasTexture * _atlas);
+	void	setAtlas(AtlasTexture * _atlas);
 	AtlasTexture * getAtlas() const;
+	//void	_makeBorder(int _border);
+
+	void	makeRigthBorder(int _border);
+	void	makeBottomBorder(int _border);
 
 public:
 	int	getWidth() const;
@@ -33,10 +36,14 @@ public:
 	int getBorder() const;
 
 	bool isAlphaChannel() const;
+	const	std::string & getFilename() const;
 
 	FIBITMAP * getTexture() const;
 
 private:
+
+	int m_bottomBorder;
+	int m_rigthBorder;
 
 	int m_offsetX;
 	int m_offsetY;
@@ -58,5 +65,4 @@ private:
 	std::string m_filename;
 
 	void	_sliceAlpha();
-	void	_makeBorder(int _border);
 };

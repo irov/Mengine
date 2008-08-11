@@ -78,13 +78,13 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	app.setInputSystem( inputSystem );
 	
 
-#	if	MENGE_PARTICLES	== (1)
+//#	if	MENGE_PARTICLES	== (1)
 
 	Menge::ParticleSystemInterface * particleSystem;
 	initInterfaceSystem( &particleSystem );
 	app.setParticleSystem( particleSystem );
 
-#	endif
+//#	endif
 
 	Menge::PhysicSystem2DInterface * physicSystem2D;
 	initInterfaceSystem( &physicSystem2D );
@@ -106,6 +106,9 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	//Menge::Application app( platform );
 
 	result = app.initialize( config_file, lpCmdLine );
+
+	result = app.createGame(0);
+
 	//result = app->init( config_file, lpCmdLine );
 
 	if( result == true )

@@ -29,16 +29,6 @@ void AtlasContainer::insertTextures(const std::vector<Texture2D*> & _textures)
 		{
 			AtlasTexture & Atlas = *it;
 
-			if( _isFitting(Atlas, texture) == false )
-			{
-				fprintf(m_log, "Warning: Atlas [%d;%d] smaller than texture %s [%d;%d] \n", 
-					Atlas.getWidth(), Atlas.getHeight(), 
-					texture.getFilename().c_str(), 
-					texture.getWidth(), texture.getHeight() );
-
-				break;
-			}
-
 			bool result = Atlas.insertTexture(texture);
 
 			if(result == true)
@@ -91,10 +81,5 @@ void AtlasContainer::saveToFile( const std::string & _outputFilename )
 const std::vector<std::string> & AtlasContainer::getAtlasesNames() const
 {
 	return m_atlasesNames;
-}
-//////////////////////////////////////////////////////////////////////////
-bool AtlasContainer::_isFitting(const AtlasTexture & _atlas, const Texture2D & _texture)
-{
-	return ( _texture.getWidth() + _texture.getBorder() <= _atlas.getWidth() ) && ( _texture.getHeight() + _texture.getBorder() <= _atlas.getHeight() );
 }
 //////////////////////////////////////////////////////////////////////////

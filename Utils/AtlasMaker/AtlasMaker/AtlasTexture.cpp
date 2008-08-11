@@ -4,10 +4,10 @@
 //////////////////////////////////////////////////////////////////////////
 AtlasTexture::AtlasTexture(FILE * _log, int _width, int _height, int _bpp)
 : m_atlasTexture(0)
+, m_log(_log)
 , m_packWidth(_width)
 , m_packHeight(_height)
 , m_bpp(_bpp)
-, m_log(_log)
 {
 	m_areaPacker.reset(m_packWidth, m_packHeight);
 }
@@ -47,8 +47,37 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 	int X = 0;
 	int Y = 0;
 
-	int Width = _texture.getWidth() + _texture.getBorder();
-	int Height = _texture.getHeight() + _texture.getBorder();
+	int Width = 0;
+	int Height = 0;
+
+	Width = _texture.getNonAlphaWidth();
+	Height = _texture.getNonAlphaHeight();
+
+	if(_texture.getNonAlphaWidth() == getWidth())
+	{
+	}
+	else if(_texture.getNonAlphaWidth() < getWidth())
+	{
+		_texture.makeRigthBorder(1);
+		Width++;
+	}
+	else
+	{
+		return false;
+	}
+	
+	if(_texture.getNonAlphaHeight() == getHeight())
+	{
+	}
+	else if(_texture.getNonAlphaHeight() < getHeight())
+	{
+		_texture.makeBottomBorder(1);
+		Height++;
+	}
+	else
+	{
+		return false;
+	}
 
 	bool result = m_areaPacker.insert(Width,Height,X,Y);
 

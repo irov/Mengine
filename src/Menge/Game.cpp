@@ -46,12 +46,13 @@ namespace Menge
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
-		Holder<Amplifier>::keep( new Amplifier );
+		Holder<Amplifier>::keep( new Amplifier() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
 		release();
+
 		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
 			it != it_end;
 			it++ )
@@ -88,8 +89,7 @@ namespace Menge
 		}
 
 		Holder<Amplifier>::destroy();
-		Holder<Player>::empty();
-		delete m_player; m_player = NULL;
+		Holder<Player>::destroy();
 		Holder<ScheduleManager>::destroy();
 		Holder<MousePickerSystem>::destroy();
 		Holder<LightSystem>::destroy();
@@ -110,11 +110,10 @@ namespace Menge
 	{	
 		XML_SWITCH_NODE( _xml )
 		{
-
 			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_resourceResolution );
-			XML_CASE_ATTRIBUTE_NODE( "Title", "Name", m_title );
+			XML_CASE_ATTRIBUTE_NODE( "Title", "Value", m_title );
 			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
-			XML_CASE_ATTRIBUTE_NODE( "PhysicSystem", "Name", m_physicSystemName );
+			XML_CASE_ATTRIBUTE_NODE( "PhysicSystem", "Value", m_physicSystemName );
 			XML_CASE_ATTRIBUTE_NODE( "Width", "Value", m_width );					
 			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );
 			XML_CASE_ATTRIBUTE_NODE( "Bits", "Value", m_bits );
@@ -123,22 +122,13 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "TextureFiltering", "Value", m_textureFiltering );
 			XML_CASE_ATTRIBUTE_NODE( "FSAAType", "Value", m_FSAAType );
 			XML_CASE_ATTRIBUTE_NODE( "FSAAQuality", "Value", m_FSAAQuality );
-
-			XML_CASE_NODE("Default")
-			{
-				XML_PARSE_ELEMENT( this, &Game::loaderDefault_ );
-			}
-
-			XML_CASE_NODE("Personality")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Module", m_personality );
-				}
-
-				XML_PARSE_ELEMENT( this, &Game::loaderPersonality_ );
-			}
-
+			//changed
+			XML_CASE_ATTRIBUTE_NODE( "DefaultArrow", "Value", m_defaultArrowName );
+			//changed
+			XML_CASE_ATTRIBUTE_NODE( "PersonalityModule", "Value", m_personality );
+			XML_CASE_ATTRIBUTE_NODE( "InitFunction", "Value", m_eventInit );
+			XML_CASE_ATTRIBUTE_NODE( "UpdateFunction", "Value", m_eventUpdate );
+			XML_CASE_ATTRIBUTE_NODE( "FinilizeFunction", "Value", m_eventFini );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -248,14 +238,12 @@ namespace Menge
 				}
 			}
 		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::loaderScenes_( XmlElement * _xml )
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			//m_listScenesDeclaration.push_back( XML_TITLE_NODE );
 			const TPairDeclaration & pair = m_pathScenes.back();
 			m_mapScenesDeclaration[ XML_TITLE_NODE ] = pair;
 		}
@@ -265,7 +253,6 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			//m_listArrowsDeclaration.push_back( XML_TITLE_NODE );
 			TPairDeclaration & pair = m_pathArrows.back();
 			m_mapArrowsDeclaration[ XML_TITLE_NODE ] = pair;
 		}
@@ -275,7 +262,6 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			//m_listEntitiesDeclaration.push_back( XML_TITLE_NODE );
 			TPairDeclaration & pair = m_pathEntities.back();
 			m_mapEntitiesDeclaration[ XML_TITLE_NODE ] = pair;
 		}
@@ -285,27 +271,8 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			//m_listResourceDeclaration.push_back( XML_TITLE_NODE );
 			TPairDeclaration & pair = m_pathResource.back();
 			m_mapResourceDeclaration[ XML_TITLE_NODE ] = pair;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loaderDefault_( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE( "Arrow", "Name", m_defaultArrowName );
-		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loaderPersonality_( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE( "Init", "Function", m_eventInit );
-			XML_CASE_ATTRIBUTE_NODE( "Update", "Function", m_eventUpdate );
-			XML_CASE_ATTRIBUTE_NODE( "Fini", "Function", m_eventFini );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

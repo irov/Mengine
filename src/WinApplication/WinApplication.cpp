@@ -179,6 +179,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::step()
+	{
+		m_listener->onUpdate( 1000 );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::run()
 	{
 		MSG  msg;
@@ -280,7 +285,7 @@ namespace Menge
 		//return static_cast<WINDOW_HANDLE>( m_hWnd ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowHandle WinApplication::createWindow( Menge::String _name, float _width, float _height, bool _fullscreen )
+	WindowHandle WinApplication::createWindow( const Menge::String & _name, float _width, float _height, bool _fullscreen )
 	{
 		DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
 		RECT rc;
@@ -380,9 +385,13 @@ namespace Menge
 		//CREATESTRUCT createStruct;
 		//createStruct.lpCreateParams = (LPVOID)666;
 
+		//::MessageBox( 0, "hhh", "kl", MB_ICONERROR | MB_OK );
+
 		m_hWnd = ::CreateWindow("MengeWnd", m_name.c_str(), dwStyle,
 			left, top, width, height, NULL, 0, hInstance, (LPVOID)this);
 	
+		
+
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
 		return static_cast<WINDOW_HANDLE>( m_hWnd ); 
 	}

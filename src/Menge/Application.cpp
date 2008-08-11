@@ -50,16 +50,10 @@
 #	include "Video.h"
 #	include "Layer2DLoop.h"
 #	include "Layer2DAccumulator.h"
-//#	include "Actor.h"
-//#	include "Camera3D.h"
 #	include "CapsuleController.h"
-//#	include "DiscreteEntity.h"
-//#	include "FFCamera.h"
-//#	include "RigidBody3D.h"
 #	include "Layer2D.h"
 #	include "Layer3D.h"
 #	include "LayerScene.h"
-//#	include "SceneNode3D.h"
 #	include "RenderMesh.h"
 #	include "Camera3D.h"
 
@@ -91,7 +85,6 @@
 //#	include "MengeCodec.h"
 #	include "Codec.h"
 //#	include "image.h"
-
 
 //#	include <FreeImage.h>
 
@@ -216,27 +209,18 @@ namespace Menge
 		m_fileEngine->loadPak( _pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createGame()
+	/*bool Application::initRenderSettings()
 	{
-		MENGE_LOG("create game file [%s] ...\n", m_gameInfo.c_str() );
-
-		MENGE_LOG("init game ...\n");
-
-		if( m_physicEngine )
-		{
-			m_physicEngine->init( mt::vec3f(0.f, -1.f, 0.f) );
-		}
-
-		int width, height;
 		m_interface->getDesktopResolution( &width, &height );
+
 		m_desktopResolution.x = width;
 		m_desktopResolution.y = height;
 
 		Game * game = Holder<Game>::hostage();
 
-		m_renderEngine->initialize("");
-
 		m_currentResolution = game->getResourceResolution();
+
+		m_renderEngine->initialize();
 		m_renderEngine->setContentResolution( m_currentResolution );
 
 		m_currentResolution.x = game->getWidth();
@@ -249,17 +233,66 @@ namespace Menge
 			m_currentResolution = m_renderEngine->getBestDisplayResolution( 
 				m_currentResolution.x, m_currentResolution.y, aspect );
 		}
+	}*/
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::createGame(WINDOW_HANDLE _handle)
+	{
+		MENGE_LOG("create game file [%s] ...\n", m_gameInfo.c_str() );
+		MENGE_LOG("init game ...\n");
+
+		if( m_physicEngine )
+		{
+			m_physicEngine->init( mt::vec3f(0.f, -1.f, 0.f) );
+		}
+
+		int width;
+		int height;
+
+		m_interface->getDesktopResolution( &width, &height );
+
+		m_desktopResolution.x = width;
+		m_desktopResolution.y = height;
+
+		Game * game = Holder<Game>::hostage();
+
+		m_currentResolution = game->getResourceResolution();
+
+		m_renderEngine->initialize();
+		m_renderEngine->setContentResolution( m_currentResolution );
+
+		if( game->getFullscreen() )
+		{
+			float aspect = m_desktopResolution.x / m_desktopResolution.y;
+
+			m_currentResolution = m_renderEngine->getBestDisplayResolution( 
+				m_currentResolution.x, m_currentResolution.y, aspect );
+		}
+		else
+		{
+			m_currentResolution.x = game->getWidth();
+			m_currentResolution.y = game->getHeight();
+		}
 
 		const std::string & title = game->getTitle();
 		bool isFullscreen = game->getFullscreen();
+		width = game->getWidth();
+		height = game->getHeight();
 		int bits = game->getBits();
 		int FSAAType = game->getFSAAType();
 		int FSAAQuality = game->getFSAAQuality();
 
-		WINDOW_HANDLE winHandle = m_interface->createWindow( (char*)title.c_str(), m_currentResolution.x, m_currentResolution.y, isFullscreen );
+		WINDOW_HANDLE winHandle = _handle;
+		
+		if(_handle == NULL)
+		{
+			winHandle = m_interface->createWindow( 
+				title, m_currentResolution.x, m_currentResolution.y, isFullscreen );
+		}
+
 		m_renderEngine->createRenderWindow( m_currentResolution.x, m_currentResolution.y, bits, isFullscreen, winHandle,
 											FSAAType, FSAAQuality );
 
+		m_renderEngine->setTextureFiltering( game->getTextureFiltering() );
 
 		ResourceFactoryParam param;
 		param.name = "WhitePixel";
@@ -268,15 +301,15 @@ namespace Menge
 		ResourceImageDynamic * image = new ResourceImageDynamic( param );
 		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
 		image->incrementReference();
+
 		Holder<ResourceManager>::hostage()->registerResource( image );
 
 		m_inputEngine->initialize( winHandle );
+
 		if( game->getFullscreen() )
 		{
 			setMouseBounded( true );
 		}
-
-		m_renderEngine->setTextureFiltering( game->getTextureFiltering() );
 
 		if( game->getFullscreen() )
 		{
@@ -327,7 +360,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const std::string & _applicationFile, const std::string& _args )
 	{
-
 		OBJECT_FACTORY( Camera2D );
 		OBJECT_FACTORY( Entity );
 		OBJECT_FACTORY( Animation );
@@ -345,11 +377,6 @@ namespace Menge
 		OBJECT_FACTORY( TileMap );
 		OBJECT_FACTORY( Track );
 		OBJECT_FACTORY( Video );
-//		OBJECT_FACTORY( Actor );
-//		OBJECT_FACTORY( CapsuleController );
-//		OBJECT_FACTORY( DiscreteEntity );
-//		OBJECT_FACTORY( FFCamera3D );
-//		OBJECT_FACTORY( RigidBody3D );
 		OBJECT_FACTORY( Layer2D );
 		OBJECT_FACTORY( Layer2DLoop );
 		OBJECT_FACTORY( Layer2DAccumulator );
@@ -476,11 +503,6 @@ namespace Menge
 		}
 
 		//game->loadAccounts();
-
-		if( createGame() == false )
-		{
-			return false;
-		}
 
 		return true;
 	}
@@ -633,6 +655,11 @@ namespace Menge
 	void Application::minimizeWindow()
 	{
 		m_interface->minimizeWindow();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::step()
+	{
+		m_interface->step();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::run()

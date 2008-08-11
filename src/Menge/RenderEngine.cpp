@@ -29,10 +29,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::initialize( const String& _driver )
+	bool RenderEngine::initialize()
 	{
-		bool result = m_interface->initialize( Holder<LogEngine>::hostage()->getInterface() );
-		m_interface->setEventListener( this );
+		LogSystemInterface * system = Holder<LogEngine>::hostage()->getInterface();
+
+		bool result = m_interface->initialize( system );
+		//m_interface->setEventListener( this );
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////

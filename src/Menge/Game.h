@@ -68,8 +68,6 @@ namespace Menge
 		void loaderArrows_( XmlElement * _xml );
 		void loaderEntities_( XmlElement * _xml );
 		void loaderResources_( XmlElement * _xml );
-		void loaderDefault_( XmlElement * _xml );
-		void loaderPersonality_( XmlElement * _xml );
 
 		void readResourceFile( const std::string& _file );
 		void loaderResourceFile( XmlElement * _xml );

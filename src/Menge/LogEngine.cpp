@@ -66,11 +66,11 @@ namespace Menge
 		}
 		else
 		{
-			PyErr_Format(PyExc_SystemError,
+		/*	PyErr_Format(PyExc_SystemError,
 				"%s: %s"
 				, const_cast<char*>(m_file)
 				, message.c_str()				
-				);
+				);*/
 		}
 
 		if( ( m_mask & ELoggerMessageBox ) > 0 )

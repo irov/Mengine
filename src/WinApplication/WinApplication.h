@@ -30,12 +30,13 @@ namespace Menge
 
 	public:
 		bool init( const std::string & _name, ApplicationListenerInterface* _listener ) override;
+		void step() override;
 		void run() override;
 		void stop()	override;
 
 		void createWindow(WindowHandle _handle);
 
-		WindowHandle createWindow( Menge::String _title, float _width, float _height, bool _fullscreen ) override;
+		WindowHandle createWindow( const Menge::String & _name, float _width, float _height, bool _fullscreen ) override;
 		//float getMonitorAspectRatio() override;
 		void getDesktopResolution( int* _width, int* _heigth ) override;
 		void minimizeWindow() override;

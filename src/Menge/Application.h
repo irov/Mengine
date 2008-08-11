@@ -67,8 +67,9 @@ namespace Menge
 
 		void loadPak( const std::string & _pak );
 
-		bool createGame();
+		bool createGame(WINDOW_HANDLE _handle);
 
+		void step();
 		void run();
 		void quit();
 

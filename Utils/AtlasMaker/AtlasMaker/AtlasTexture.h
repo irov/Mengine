@@ -30,7 +30,7 @@ struct TextureAtlasDesc
 class AtlasTexture
 {
 public:
-	AtlasTexture( FILE * _log, int _width, int _height, int _bpp );
+	AtlasTexture(FILE * _log, int _width, int _height, int _bpp);
 	~AtlasTexture();
 
 public:
@@ -39,6 +39,7 @@ public:
 	int getHeight() const;
 	bool isAlphaChannel() const;
 	const std::string & getFilename() const;
+
 public:
 	const TextureAtlasDesc & getTextureDesc(const std::string & _filename);
 	bool insertTexture( Texture2D & _texture );
@@ -53,6 +54,7 @@ private:
 
 	RectangleAreaPacker m_areaPacker;
 	std::string m_filename;
+
 	FIBITMAP * m_atlasTexture;
 	int m_packWidth;
 	int m_packHeight;

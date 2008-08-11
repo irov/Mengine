@@ -170,13 +170,13 @@ void ResourceParser::_loadResourceLocations( const std::string & _input )
 
 int compare_area(const Texture2D* s1, const Texture2D * s2)
 {
-	return s1->getHeight() * s1->getWidth() < s2->getHeight() * s2->getWidth();
+	return s1->getNonAlphaHeight() * s1->getNonAlphaWidth() < s2->getNonAlphaHeight() * s2->getNonAlphaWidth();
 }
 
 int compare_height(const Texture2D* s1, const Texture2D * s2)
 {
-	if (   (s1->getHeight() > s2->getHeight())
-             && (s1->getHeight()*s1->getWidth() == s2->getHeight()*s2->getWidth()))
+	if (   (s1->getNonAlphaHeight() > s2->getNonAlphaHeight())
+             && (s1->getNonAlphaHeight()*s1->getNonAlphaWidth() == s2->getNonAlphaHeight()*s2->getNonAlphaWidth()))
 	{
         return true;
 	}

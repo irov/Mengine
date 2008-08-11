@@ -13,6 +13,8 @@ Texture2D::Texture2D()
 	, m_withAlphaHeight(0)
 	, m_bpp(0)
 	, m_border(0)
+	, m_rigthBorder(0)
+	, m_bottomBorder(0)
 {}
 //////////////////////////////////////////////////////////////////////////
 Texture2D::~Texture2D()
@@ -89,7 +91,7 @@ bool Texture2D::loadTexture( const std::string & _filename )
 {
 	m_filename = _filename;
 
-	m_texture = FreeImage_Load(FIF_PNG,m_filename.c_str());
+	m_texture = FreeImage_Load( FIF_PNG, m_filename.c_str() );
 
 	if( m_texture == NULL )
 	{
@@ -106,33 +108,36 @@ bool Texture2D::loadTexture( const std::string & _filename )
 
 	_sliceAlpha();
 
-	_makeBorder(1);
+	//_makeBorder(1);
 
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void Texture2D::_makeBorder(int _border)
+void Texture2D::makeRigthBorder(int _border)
 {
 	if(_border == 0)
 	{
 		return;
 	}
 
-	m_border = _border;
+	m_rigthBorder = _border;
+
+	int x = FreeImage_GetWidth(m_texture);
+	int y = FreeImage_GetHeight(m_texture);
 
 	FIBITMAP * borderTexture 
 		= FreeImageWrapper::AllocateImage( 
-			m_nonAlphaWidth + 2 * _border,
-			m_nonAlphaHeight + 2 * _border, m_bpp );
+			x + _border,
+			y, m_bpp );
 
 	if(borderTexture == NULL)
 	{
 		return;
 	}
 
-	FreeImageWrapper::FillChannel( borderTexture, FI_RGBA_ALPHA, 0 );
+	FreeImageWrapper::FillChannel(borderTexture, FI_RGBA_ALPHA, 0 );
 
-	bool result = FreeImage_Paste(borderTexture, m_texture, _border, _border, 256);
+	bool result = FreeImage_Paste(borderTexture, m_texture, 0, 0, 256);
 
 	if(result == false)
 	{
@@ -146,11 +151,47 @@ void Texture2D::_makeBorder(int _border)
 	//FreeImage_Save(FIF_PNG,m_texture,"1.png");
 }
 //////////////////////////////////////////////////////////////////////////
+void Texture2D::makeBottomBorder(int _border)
+{
+	if(_border == 0)
+	{
+		return;
+	}
+
+	m_bottomBorder = _border;
+
+	int x = FreeImage_GetWidth(m_texture);
+	int y = FreeImage_GetHeight(m_texture);
+
+	FIBITMAP * borderTexture 
+		= FreeImageWrapper::AllocateImage( 
+		x,
+		y + _border, m_bpp );
+
+	if(borderTexture == NULL)
+	{
+		return;
+	}
+
+	FreeImageWrapper::FillChannel(borderTexture, FI_RGBA_ALPHA, 0 );
+
+	bool result = FreeImage_Paste(borderTexture, m_texture, 0, 0, 256);
+
+	if(result == false)
+	{
+		assert(!"ERROR!!!");
+	}
+
+	FreeImage_Unload(m_texture);
+
+	m_texture = borderTexture;
+}
+//////////////////////////////////////////////////////////////////////////
 void Texture2D::_sliceAlpha()
 {
 	RECT bbox;
 
-	bool result = FreeImageWrapper::FindAlphaBoundingBox(m_texture, bbox);
+	bool result = FreeImageWrapper::FindAlphaBoundingBox( m_texture, bbox );
 
 	if( result == false )
 	{
@@ -163,6 +204,6 @@ void Texture2D::_sliceAlpha()
 	m_nonAlphaWidth = bbox.right - bbox.left;
 	m_nonAlphaHeight = bbox.bottom - bbox.top;
 
-	FreeImageWrapper::CropImage(m_texture, bbox);
+	FreeImageWrapper::CropImage( m_texture, bbox );
 }
 //////////////////////////////////////////////////////////////////////////

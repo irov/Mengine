@@ -25,7 +25,7 @@ namespace Menge
 		
 	public:
 
-		bool initialize( const String& _driver );
+		bool initialize();
 		bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WindowHandle _winHandle = 0,
 								int _FSAAType = 0, int _FSAAQuality = 0 );
 
@@ -34,9 +34,6 @@ namespace Menge
 
 		void setContentResolution( const mt::vec2f _resolution );
 		mt::vec2f getBestDisplayResolution( int _defWidth, int _defHeigth, float _aspect );
-
-		//void setRenderViewport( const Viewport & _viewport );
-		//const Viewport & getRenderViewport() const;
 
 		RenderImageInterface * createImage( const String & _name, unsigned int _width, unsigned int _height );
 		RenderImageInterface * createRenderTargetImage( const String & _name, unsigned int _width, unsigned int _height );

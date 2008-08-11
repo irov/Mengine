@@ -275,8 +275,6 @@ namespace Menge
 
 		const std::string & title = game->getTitle();
 		bool isFullscreen = game->getFullscreen();
-		width = game->getWidth();
-		height = game->getHeight();
 		int bits = game->getBits();
 		int FSAAType = game->getFSAAType();
 		int FSAAQuality = game->getFSAAQuality();

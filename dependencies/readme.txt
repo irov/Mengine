@@ -9,7 +9,7 @@ pybind
 [head]
 https://pybind.svn.sourceforge.net/svnroot/pybind
 
-[expatl
+[expat]
 [2.0.1] -
 
 OIS
@@ -35,6 +35,7 @@ https://box2d.svn.sourceforge.net/svnroot/box2d
 libPNG
 [1.2.29]
 http://libpng.sourceforge.net/
+http://dfn.dl.sourceforge.net/sourceforge/libpng/lpng1229.zip
 
 libJPEG
 [6b]
@@ -43,6 +44,7 @@ ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
 zlib
 [1.2.3]
 http://www.zlib.net/
+http://www.zlib.net/zlib-1.2.3.tar.gz
 
 --------------------------------------------------------------------------------
 TODO:

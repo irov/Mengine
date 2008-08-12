@@ -38,7 +38,7 @@ namespace Menge
 
 		//_compile();
 	}
-	long filePos = 0;
+	std::size_t filePos = 0;
 	//////////////////////////////////////////////////////////////////////////
 	template<class T> T * read_buffer(unsigned char *& buffer,int count = 1)
 	{
@@ -457,7 +457,7 @@ namespace Menge
 				v.pos[1] = m_vertices[m_triangles[i].vertexIndices[j]].vertex[1];
 				v.pos[2] = m_vertices[m_triangles[i].vertexIndices[j]].vertex[2];
 
-				int index = -1;
+				uint16 index = -1;
 
 				for( std::vector<TVertex>::size_type iV = 0; iV < m_tvertices.size(); ++iV )
 				{
@@ -468,14 +468,14 @@ namespace Menge
 						v.uv[0] == v2.uv[0] && v.uv[1] == v2.uv[1]
 					)
 					{
-						index = (int)iV;
+						index = (uint16)iV;
 						break;
 					}
 				}
 
 				if(index == -1)
 				{
-					index = m_tvertices.size();
+					index = (uint16)m_tvertices.size();
 					m_tvertices.push_back(v);
 				}
 				m_indices.push_back(index);

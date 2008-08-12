@@ -59,6 +59,11 @@ bool initInterfaceSystem( Menge::ApplicationInterface** _ptrInterface )
 	try
 	{
 		*_ptrInterface = new Menge::WinApplication();
+	
+		//std::ostringstream str;
+		//str << ((int)_ptrInterface);
+		
+		//::MessageBoxA( NULL, str.str().c_str(), "name", MB_ICONWARNING );
 	}
 	catch (...)
 	{
@@ -503,7 +508,7 @@ namespace Menge
 		::ShowWindow( m_hWnd, SW_MINIMIZE );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
+	void WinApplication::notifyWindowModeChanged( float _width, float _height, bool _fullscreen )
 	{
 		m_winWidth = _width;
 		m_winHeight = _height;
@@ -517,7 +522,7 @@ namespace Menge
 			// When switching back to windowed mode, need to reset window size 
 			// after device has been restored
 			RECT rc;
-			SetRect(&rc, 0, 0, _width, _height);
+			SetRect(&rc, 0, 0, (LONG)_width, (LONG)_height);
 			//AdjustWindowRect(&rc, GetWindowLong(m_hWnd, GWL_STYLE), false);
 			AdjustWindowRect(&rc, dwStyle, false);
 			int winWidth = rc.right - rc.left;
@@ -536,7 +541,7 @@ namespace Menge
 		{
 			dwStyle |= WS_POPUP;
 			SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
-			SetWindowPos( m_hWnd, NULL, 0, 0, _width, _height, SWP_NOACTIVATE );
+			SetWindowPos( m_hWnd, NULL, 0, 0, (LONG)_width, (LONG)_height, SWP_NOACTIVATE );
 		}
 		::ShowWindow( m_hWnd, SW_NORMAL );
 		//::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);

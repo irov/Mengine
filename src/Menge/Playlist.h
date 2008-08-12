@@ -83,14 +83,14 @@ namespace	Menge
 		/*!
 		
 		*/
-		int	 numTracks() const;
+		std::size_t	numTracks() const;
 
 		//! Возвращает трек.
 		/*!
 
 
 		*/
-		const std::string & getTrackByIndex(int _index);
+		const std::string & getTrackByIndex( std::size_t _index );
 
 		void setTrack(const std::string & _name);
 		void setLooped1( bool _loop );

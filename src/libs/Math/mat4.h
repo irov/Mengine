@@ -64,6 +64,7 @@ namespace mt
 
 	MATH_INLINE void mul_m4_v3(vec3f& _out, const mat4f& _m,const vec3f& _v);
 	MATH_INLINE void mul_v3_m4(vec3f& _out, const vec3f& _v,const mat4f& _m);
+	MATH_INLINE void mul_v2_m4(vec2f& _out, const vec2f& _v,const mat4f& _m);
 	
 	MATH_INLINE void mul_m4_v4(vec4f& _out, const mat4f& _m,const vec4f& _v);
 	MATH_INLINE void mul_v4_m4(vec4f& _out, const vec4f& _v, const mat4f& _m);

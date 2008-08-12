@@ -103,7 +103,7 @@ namespace Menge
 
 		TMapGlyph::const_iterator it = m_glyphs.find('A');
 		mt::vec4f rect = it->second.rect;
-		m_initSize = static_cast<int>( ( rect[3] - rect[1] ) * m_image->getHeight() );
+		m_initSize = ::floorf( ( rect[3] - rect[1] ) * m_image->getHeight() );
 
 		Holder<FileEngine>::hostage()->closeStream( stream );
 
@@ -221,7 +221,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int ResourceFont::getInitSize()
+	float ResourceFont::getInitSize()
 	{
 		return m_initSize;
 	}

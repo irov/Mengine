@@ -803,7 +803,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
-		mt::reset( _boundingBox, getWorldPosition() );
+		const mt::vec2f & wp = this->getWorldPosition();
+
+		mt::reset( _boundingBox, wp );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

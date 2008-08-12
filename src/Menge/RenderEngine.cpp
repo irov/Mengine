@@ -21,7 +21,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
 		: m_interface( _interface )
-		, m_contentResolution( 1024.f,768.f )
+		, m_contentResolution( 1024.f, 768.f )
+		, m_windowResolution( 1024.f, 768.f )
 		, m_windowCreated( false )
 		, m_renderFactor( 1.0f )
 		, m_viewOrigin( 0.0f, 0.0f )
@@ -43,16 +44,16 @@ namespace Menge
 		return m_interface->getNumDIP();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
+	bool RenderEngine::createRenderWindow( const mt::vec2f & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
 											int _FSAAType, int _FSAAQuality )
 	{
 		m_fullscreen = _fullscreen;
 
-		m_windowCreated = m_interface->createRenderWindow( _width, _height, _bits, _fullscreen, _winHandle,
+		m_windowCreated = m_interface->createRenderWindow( (int)_resolution.x, (int)_resolution.y, _bits, _fullscreen, _winHandle,
 															_FSAAType, _FSAAQuality );
 
 
-		recalcRenderArea_( _width, _height );
+		recalcRenderArea_( _resolution );
 	
 		setRenderTarget( "defaultCamera" );
 
@@ -61,18 +62,17 @@ namespace Menge
 		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::screenshot( RenderImageInterface* _image, const int* rect )
+	void RenderEngine::screenshot( RenderImageInterface* _image, const mt::vec4f & _rect )
 	{
-		mt::vec3f offset;
-		mt::mul_v3_m4( offset, mt::vec3f( rect[0], rect[1], 0.0f ), m_worldMatrix );
-		int w = rect[2] - rect[0];
-		int h = rect[3] - rect[1];
-		int shotrect[4];
-		shotrect[0] = offset.x;
-		shotrect[1] = offset.y;
-		shotrect[2] = offset.x + w;
-		shotrect[3] = offset.y + h;
-		m_interface->screenshot( _image, &(shotrect[0]) );
+		mt::vec2f offset;
+		mt::mul_v2_m4( offset, _rect.v2_0, m_worldMatrix );
+		
+		mt::vec2f wh = _rect.v2_1 - _rect.v2_0;
+		mt::vec4f shotrect;
+		shotrect.v2_0 = offset;
+		shotrect.v2_1 = offset + wh;
+
+		m_interface->screenshot( _image, shotrect.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render()
@@ -138,15 +138,15 @@ namespace Menge
 		return m_worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::createImage( const String& _name, unsigned int _width, unsigned int _height )
+	RenderImageInterface * RenderEngine::createImage( const String& _name, float _width, float _height )
 	{
 		RenderImageInterface * image = m_interface->createImage( _name, _width, _height );
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::createRenderTargetImage( const String& _name, unsigned int _width, unsigned int _height )
+	RenderImageInterface * RenderEngine::createRenderTargetImage( const String& _name, const mt::vec2f & _resolution )
 	{
-		RenderImageInterface * image = m_interface->createRenderTargetImage( _name, _width, _height );
+		RenderImageInterface * image = m_interface->createRenderTargetImage( _name, _resolution.x, _resolution.y );
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -175,8 +175,8 @@ namespace Menge
 			TextureDesc	textureDesc;
 			textureDesc.buffer = cimage.getData();
 			textureDesc.size = cimage.getSize();
-			textureDesc.width = cimage.getWidth();
-			textureDesc.height = cimage.getHeight();
+			textureDesc.width = (float)cimage.getWidth();
+			textureDesc.height = (float)cimage.getHeight();
 			textureDesc.pixelFormat = cimage.getFormat();
 			textureDesc.name = _filename.c_str();
 			textureDesc.filter = _filter;
@@ -269,21 +269,22 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setFullscreenMode( bool _fullscreen )
 	{
-		if( m_fullscreen == _fullscreen ) return;
+		if( m_fullscreen == _fullscreen )
+		{
+			return;
+		}
 
 		m_fullscreen = _fullscreen;
-		float width = Holder<Game>::hostage()->getWidth();
-		float height = Holder<Game>::hostage()->getHeight();
-		if( m_fullscreen )
-		{
-			width = Holder<Application>::hostage()->getDesktopResolution().x;
-			height = Holder<Application>::hostage()->getDesktopResolution().y;
-		}
-		m_interface->setFullscreenMode( width, height, _fullscreen );
 
-		Holder<Application>::hostage()->notifyWindowModeChanged( width, height, m_fullscreen );
+		const mt::vec2f & resolution = ( m_fullscreen == true )
+			? Holder<Application>::hostage()->getDesktopResolution() 
+			: Holder<Game>::hostage()->getResolution();
+			
+		m_interface->setFullscreenMode( resolution.x, resolution.y, m_fullscreen );
 
-		recalcRenderArea_( width, height );
+		Holder<Application>::hostage()->notifyWindowModeChanged( resolution.x, resolution.y, m_fullscreen );
+
+		recalcRenderArea_( resolution );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CameraInterface * RenderEngine::createCamera( const std::string& _name )
@@ -336,34 +337,38 @@ namespace Menge
 		return m_interface->releaseSceneNode( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f RenderEngine::getBestDisplayResolution( int _defWidth, int _defHeigth, float _aspect )
+	mt::vec2f RenderEngine::getBestDisplayResolution( const mt::vec2f & _resolution, float _aspect )
 	{
-		int * rl;
-		std::size_t count = m_interface->getResolutionList( &rl );
+		const std::vector<int> & resolutionList = m_interface->getResolutionList();
 
-		float needWidth = _defHeigth * _aspect;
-
-		int bestWidth = _defWidth;
-		int bestHeight = _defHeigth;
+		float needWidth = _resolution.y * _aspect;
 
 		typedef std::vector<int> TResolutionVector;
 		typedef std::map< int, TResolutionVector > TResolutionMap;
+
 		TResolutionMap resMap;
-		for( unsigned int i = 0; i < count / 2; i++ )
+
+		std::size_t count = resolutionList.size() / 2;
+
+		for( std::size_t i = 0; i < count; i++ )
 		{
-			if( fabsf( ( static_cast<float>( rl[2*i] ) / rl[2*i+1] ) - _aspect ) < 0.01f )
+			if( fabsf( ( static_cast<float>( resolutionList[2*i] ) / resolutionList[2*i+1] ) - _aspect ) < 0.01f )
 			{
-				resMap[ rl[2*i + 1] ].push_back( rl[2*i] );
+				resMap[ resolutionList[2*i + 1] ].push_back( resolutionList[2*i] );
 			}
 		}
+
 		bool done = false;
+
+		mt::vec2f bestResolution;
+
 		for( TResolutionMap::iterator 
 			it = resMap.begin(),
 			it_end = resMap.end();
 		it != it_end; 
 		++it )
 		{
-			if( it->first < _defHeigth ) 
+			if( it->first < static_cast<int>(_resolution.y) ) 
 			{
 				continue;
 			}
@@ -374,17 +379,18 @@ namespace Menge
 			i != i_end; 
 			++i)
 			{
-				if( it->second[i] >= needWidth )
+				if( it->second[i] >= static_cast<int>(needWidth) )
 				{
-					bestWidth = it->second[i];
-					bestHeight = it->first;
+					bestResolution.x = static_cast<const float>(it->second[i]);
+					bestResolution.y = static_cast<const float>(it->first);
 					done = true;
 					break;
 				}
 			}
 			if( done ) break;
 		}
-		return mt::vec2f( bestWidth, bestHeight );
+
+		return bestResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::getFullscreenMode()
@@ -403,9 +409,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onDeviceRestored()
 	{
-		float width = Holder<Game>::hostage()->getWidth();
-		float height = Holder<Game>::hostage()->getHeight();
-		Holder<Application>::hostage()->notifyWindowModeChanged( width, height, m_fullscreen );
+		const mt::vec2f & resolution = Holder<Game>::hostage()
+			->getResolution();
+
+		Holder<Application>::hostage()
+			->notifyWindowModeChanged( resolution.x, resolution.y, m_fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onWindowActive( bool _active )
@@ -500,13 +508,13 @@ namespace Menge
 		{
 			areaHeight += m_renderFactor * m_rendFactPix * 2;
 			areaWidth = areaHeight * m_contentResolution.x / m_contentResolution.y;
-			if( areaWidth > m_windowWidth )
+			if( areaWidth > m_windowResolution.x )
 			{
-				areaWidth = m_windowWidth;
+				areaWidth = m_windowResolution.x;
 			}
 
-			m_renderArea.x = ( m_windowWidth - areaWidth ) * 0.5f;
-			m_renderArea.y = ( m_windowHeight - areaHeight ) * 0.5f;
+			m_renderArea.x = ( m_windowResolution.x - areaWidth ) * 0.5f;
+			m_renderArea.y = ( m_windowResolution.y - areaHeight ) * 0.5f;
 			m_renderArea.z = m_renderArea.x + areaWidth;
 			m_renderArea.w = m_renderArea.y + areaHeight;
 
@@ -558,35 +566,38 @@ namespace Menge
 		return m_renderArea;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::recalcRenderArea_( int _width, int _height )
+	void RenderEngine::recalcRenderArea_( const mt::vec2f & resolution )
 	{
 		m_renderArea.x = 0.0f;
 		m_renderArea.y = 0.0f;
-		m_renderArea.z = _width;
-		m_renderArea.w = _height;
+		m_renderArea.z = resolution.x;
+		m_renderArea.w = resolution.y;
+
+		float one_div_width = 1.f / resolution.x;
+		float one_div_height = 1.f / resolution.y;
 
 		float contentAspect = m_contentResolution.x / m_contentResolution.y;
-		float dw = m_contentResolution.x / _width;
-		float dh = m_contentResolution.y / _height;
-		float aspect = static_cast<float>( _width ) / _height;
+		float dw = m_contentResolution.x * one_div_width;
+		float dh = m_contentResolution.y * one_div_height;
+		float aspect = resolution.x * one_div_height;
 
 		if( dw > 1.0f )
 		{
 			dw = 1.0f;
-			dh = _width / contentAspect / _height;
+			dh = resolution.x / contentAspect * one_div_height;
 		}
 
 		if( dh > 1.0f )
 		{
 			dh = 1.0f;
-			dw = _height * contentAspect / _width;
+			dw = resolution.y * contentAspect * one_div_width;
 		}
 
-		float areaWidth = dw * _width;
-		float areaHeight = dh * _height;
+		float areaWidth = dw * resolution.x;
+		float areaHeight = dh * resolution.y;
 
-		m_renderArea.x = ( _width - areaWidth ) * 0.5f;
-		m_renderArea.y = ( _height - areaHeight ) * 0.5f;
+		m_renderArea.x = ( resolution.x - areaWidth ) * 0.5f;
+		m_renderArea.y = ( resolution.y - areaHeight ) * 0.5f;
 		m_renderArea.z = m_renderArea.x + areaWidth;
 		m_renderArea.w = m_renderArea.y + areaHeight;
 
@@ -595,15 +606,14 @@ namespace Menge
 		if( m_renderArea.y > 0.0f )
 		{
 			m_renderFactor = m_renderArea.x / aspect / m_renderArea.y;
-
 		}
 		else
 		{
 			m_renderFactor = 0.0f;
 		}
 
-		m_windowWidth = _width;
-		m_windowHeight = _height;
+		m_windowResolution = resolution;
+
 		setRenderFactor( m_renderFactor );
 	}
 	//////////////////////////////////////////////////////////////////////////

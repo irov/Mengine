@@ -30,7 +30,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-		int m_gridSize;
+		float m_gridSize;
 		TRenderImageVector m_surfaces;
 	};
 }	// namespace Menge

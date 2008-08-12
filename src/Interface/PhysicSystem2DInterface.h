@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+
 namespace Menge
 {
 	const float physicsScaler = 0.01f; 
@@ -17,12 +19,21 @@ namespace Menge
 	{
 	public:
 
-		virtual void addShapeConvex( unsigned int _pointsNum, const float* _convex,
-			float _density, float _friction, float _restitution, bool _isSensor,
-			unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) = 0;
+		virtual void addShapeConvex( 
+			std::size_t _pointsNum, 
+			const float* _convex,
+			float _density,
+			float _friction, 
+			float _restitution, 
+			bool _isSensor,
+			unsigned short _collisionMask, 
+			unsigned short _categoryBits, 
+			unsigned short _groupIndex ) = 0;
+
 		virtual void addShapeCircle( float _radius, const float* _localPos,
 			float _density, float _friction, float _restitution, bool _isSensor,
 			unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) = 0;
+
 		virtual void addShapeBox( float _width, float _height, const float* _localPos, float _angle,
 			float _density, float _friction, float _restitution, bool _isSensor,
 			unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) = 0;
@@ -77,7 +88,7 @@ namespace Menge
 		virtual PhysicJoint2DInterface* createMouseJoint( PhysicBody2DInterface* _body, int _x, int _y  ) = 0;
 		virtual void destroyJoint( PhysicJoint2DInterface* ) = 0;
 
-		virtual void onMouseMove( int x, int y ) = 0;
+		virtual void onMouseMove( float x, float y ) = 0;
 	};
 }
 

@@ -122,17 +122,17 @@ namespace Menge
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ImageBlock ResourceTileMap::getTile( int _x, int _y )
+	ImageBlock ResourceTileMap::getTile( std::size_t _x, std::size_t _y )
 	{
 		return m_tileSet->getImageBlock( m_tileMap[ _y ][ _x ] );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ResourceTileMap::getWidth() const
+	std::size_t ResourceTileMap::getWidth() const
 	{
 		return m_width;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ResourceTileMap::getHeight() const
+	std::size_t ResourceTileMap::getHeight() const
 	{
 		return m_height;
 	}

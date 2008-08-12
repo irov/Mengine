@@ -27,16 +27,16 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextField::TextField()
 		: m_resource( 0 )
-		, m_length( 0.0f, 0.0f )
-		, m_color( 1.0f, 1.0f, 1.0f, 1.0f )
-		, m_outlineColor( 1.0f, 1.0f, 1.0f, 1.0f )
-		, m_height( 0.0f )
+		, m_length( 0.f, 0.f )
+		, m_color( 1.f, 1.f, 1.f, 1.f )
+		, m_outlineColor( 1.f, 1.f, 1.f, 1.f )
+		, m_height( 0.f )
 		, m_centerAlign( false )
 		, m_rightAlign( false )
 		, m_alignOffset( 0.f, 0.f )
 		, m_maxWidth( 2048.f )
-		, m_charOffset( 0.0f )
-		, m_lineOffset( 0 )
+		, m_charOffset( 0.f )
+		, m_lineOffset( 0.f )
 		, m_outline( true )
 	{
 	}
@@ -98,7 +98,7 @@ namespace     Menge
 			m_height = m_resource->getInitSize();
 		}
 
-		if( m_lineOffset == 0 )
+		if( m_lineOffset == 0.f )
 		{
 			m_lineOffset = m_height;
 		}
@@ -363,12 +363,12 @@ namespace     Menge
 		registerEvent( EVENT_COLOR_STOP, "onColorStop", m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setLineOffset( int _offset )
+	void TextField::setLineOffset( float _offset )
 	{
 		m_lineOffset = _offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int TextField::getLineOffset() const
+	float TextField::getLineOffset() const
 	{
 		return m_lineOffset;
 	}

@@ -130,14 +130,14 @@ namespace Menge
 		m_track = m_tracks.end() - 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int	 Playlist::numTracks() const
+	std::size_t	 Playlist::numTracks() const
 	{
 		return m_tracks.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & Playlist::getTrackByIndex(int _index)
+	const std::string & Playlist::getTrackByIndex( std::size_t _index)
 	{
-		if( _index < 0 || _index >= m_tracks.size() )
+		if( _index >= m_tracks.size() )
 		{
 			return emptyString();
 		}

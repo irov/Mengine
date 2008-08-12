@@ -255,9 +255,21 @@ namespace Menge
 				it != it_end;
 				it++ )
 		{
-			std::size_t numPoint = (*it).num_points();
-			m_interface->addShapeConvex( numPoint, &(((*it)[0]).x), m_density, m_friction, m_restitution, m_isSensor,
-											m_collisionMask, m_categoryBits, m_groupIndex );
+			std::size_t numPoint = it->num_points();
+
+			const mt::TVectorPoints & vectorPoints = it->get_points();
+
+			m_interface->addShapeConvex( 
+				numPoint, 
+				vectorPoints.front().m, 
+				m_density, 
+				m_friction, 
+				m_restitution, 
+				m_isSensor,
+				m_collisionMask, 
+				m_categoryBits, 
+				m_groupIndex );
+
 		}
 
 		for( TShapeCircleList::iterator it = m_shapeCircleList.begin(),

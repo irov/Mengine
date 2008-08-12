@@ -31,7 +31,7 @@ namespace Menge
 	private:
 		std::string m_resourcename;
 		ResourceTileMap* m_resourceMap;
-		unsigned int m_width;
-		unsigned int m_height;
+		std::size_t m_width;
+		std::size_t m_height;
 	};
 }	// namespace Menge

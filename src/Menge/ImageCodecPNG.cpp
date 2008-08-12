@@ -639,7 +639,7 @@ namespace Menge
 
 			// read in the bitmap bits via the pointer table
 		//png_read_image( png_ptr, &_buffer );
-		for( int i = 0; i <height; i++ )
+		for( png_uint_32 i = 0; i <height; i++ )
 		{
 			png_read_row( png_ptr, _buffer, png_bytep_NULL );
 			_buffer += width * pixel_depth / 8;

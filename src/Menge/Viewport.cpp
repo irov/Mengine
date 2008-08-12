@@ -25,8 +25,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Viewport::testRectangle( const mt::vec2f & _min, const mt::vec2f & _max ) const
 	{
-		if ( _max.x < begin.x || _min.x > end.x ) return false;
-		if ( _max.y < begin.y || _min.y > end.y ) return false;
+		if ( _max.x <= begin.x || _min.x > end.x ) return false;
+		if ( _max.y <= begin.y || _min.y > end.y ) return false;
 
 		return true;
 	}

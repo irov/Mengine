@@ -90,16 +90,24 @@ namespace	Menge
 		const mt::mat3f & wm = getWorldMatrix();
 		float tileSize = m_resourceMap->getTileSize();
 
-		unsigned int init_i = ( viewport.begin.x > 0.f ) ? viewport.begin.x / tileSize : 0.f;
-		unsigned int init_j = ( viewport.begin.y > 0.f ) ? viewport.begin.y / tileSize : 0.f;
-		unsigned int end_i = viewport.end.x / tileSize + 1;
-		unsigned int end_j = viewport.end.y / tileSize + 1;
-		if( end_i > m_width ) end_i = m_width;
-		if( end_j > m_height ) end_j = m_height;
-
-		for( unsigned int i = init_i; i < end_i; i++ )
+		std::size_t init_i = std::size_t( ( viewport.begin.x > 0.f ) ? viewport.begin.x / tileSize : 0.f );
+		std::size_t init_j = std::size_t( ( viewport.begin.y > 0.f ) ? viewport.begin.y / tileSize : 0.f );
+		std::size_t end_i = std::size_t( viewport.end.x / tileSize + 1 );
+		std::size_t end_j = std::size_t( viewport.end.y / tileSize + 1 );
+		
+		if( end_i > m_width ) 
 		{
-			for( unsigned int j = init_j; j < end_j; j++ )
+			end_i = m_width;
+		}
+
+		if( end_j > m_height ) 
+		{
+			end_j = m_height;
+		}
+
+		for( std::size_t i = init_i; i < end_i; i++ )
+		{
+			for( std::size_t j = init_j; j < end_j; j++ )
 			{
 				ImageBlock tile = m_resourceMap->getTile( i, j );
 

@@ -361,6 +361,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
+		if( isActivate() == false )
+		{
+			Node::_updateBoundingBox( _boundingBox );
+			return;
+		}
+
 		bool reset = false;
 		int count = m_interface->getNumTypes();
 

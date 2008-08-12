@@ -113,8 +113,8 @@ namespace Menge
 
 		const mt::vec2f& getLength() const;
 
-		int getLineOffset() const;
-		void setLineOffset( int _offset );
+		void setLineOffset( float _offset );
+		float getLineOffset() const;
 
 		void setResource( const String& _resName );
 
@@ -164,7 +164,7 @@ namespace Menge
 	
 		bool m_outline;
 
-		int m_lineOffset;
+		float m_lineOffset;
 
 		std::list<TextLine>  m_lines;
 

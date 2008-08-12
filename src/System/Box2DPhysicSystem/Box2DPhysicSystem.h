@@ -32,7 +32,7 @@ public:
 	Menge::PhysicJoint2DInterface* createMouseJoint( Menge::PhysicBody2DInterface* _body, int _x, int _y  ) override;
 	void destroyJoint( Menge::PhysicJoint2DInterface* _joint );
 
-	void onMouseMove( int x, int y ) override;
+	void onMouseMove( float x, float y ) override;
 
 	void Add( const b2ContactPoint* point ) override;
 	void Persist( const b2ContactPoint* point ) override;

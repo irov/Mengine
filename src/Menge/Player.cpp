@@ -311,7 +311,7 @@ namespace Menge
 	{
 		const mt::vec2f & arrowPos = m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
 
-		Holder<PhysicEngine2D>::hostage()->onMouseMove( arrowPos.x, arrowPos.y );
+		Holder<PhysicEngine2D>::hostage()->onMouseMove( arrowPos );
 
 		updateChangeScene();
 

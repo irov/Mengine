@@ -66,7 +66,8 @@ namespace Menge
 	void ResourceImageDynamic::setRenderImage( RenderImageInterface * _image )
 	{
 		m_frame.image = _image;
-		m_frame.size = mt::vec2f( _image->getWidth(), _image->getHeight() );
+		m_frame.size.x = _image->getWidth();
+		m_frame.size.y = _image->getHeight();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDynamic::_compile()

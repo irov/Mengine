@@ -26,17 +26,17 @@ namespace Menge
 	public:
 
 		bool initialize();
-		bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WindowHandle _winHandle = 0,
-								int _FSAAType = 0, int _FSAAQuality = 0 );
+		bool createRenderWindow( const mt::vec2f & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
+								int _FSAAType , int _FSAAQuality );
 
-		void screenshot( RenderImageInterface* _renderTargetImage, const int* rect = NULL );
+		void screenshot( RenderImageInterface* _renderTargetImage, const mt::vec4f & _rect );
 		void render();
 
 		void setContentResolution( const mt::vec2f _resolution );
-		mt::vec2f getBestDisplayResolution( int _defWidth, int _defHeigth, float _aspect );
+		mt::vec2f getBestDisplayResolution( const mt::vec2f & _resolution, float _aspect );
 
-		RenderImageInterface * createImage( const String & _name, unsigned int _width, unsigned int _height );
-		RenderImageInterface * createRenderTargetImage( const String & _name, unsigned int _width, unsigned int _height );
+		RenderImageInterface * createImage( const String & _name, float _width, float _height );
+		RenderImageInterface * createRenderTargetImage( const String & _name, const mt::vec2f & _resolution );
 		RenderImageInterface * loadImage( const TextureDesc & _desc );
 		RenderImageInterface * loadImage( const String & _filename, unsigned int _filter );
 		RenderVideoStreamInterface * loadImageVideoStream( const String& _filename );
@@ -93,7 +93,7 @@ namespace Menge
 
 		void	setFullscreenMode( bool _fullscreen );
 		bool	getFullscreenMode();
-		void	setViewportDimensions( float _width, float _height, float _renderFactor = 0.0f );
+		void	setViewportDimensions( const mt::vec2f & _resolution, float _renderFactor = 0.0f );
 
 		CameraInterface * createCamera( const String & _name );
 		EntityInterface * createEntity( const String & _name, const String & _meshName );
@@ -136,14 +136,13 @@ namespace Menge
 		mt::vec2f m_contentResolution;
 		mt::vec4f m_renderArea;
 		float m_rendFactPix;
-		int m_windowWidth;
-		int m_windowHeight;
+		mt::vec2f m_windowResolution;
 		String m_currentRenderTarget;
 
 		mt::mat4f m_worldMatrix;
 
 		mt::vec2f m_viewFactor;
 		mt::vec2f m_viewOrigin;
-		void recalcRenderArea_( int _width, int _height );
+		void recalcRenderArea_( const mt::vec2f & resolution );
 	};
 }

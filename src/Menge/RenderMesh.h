@@ -20,7 +20,7 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 		void _render( unsigned int _debugMask ) override;
 
-		void createRenderTarget( const String& _name, std::size_t _width, std::size_t _height );
+		void createRenderTarget( const String& _name, const mt::vec2f & _resolution );
 		void setMaterial( const String& _materialName );
 
 	protected:

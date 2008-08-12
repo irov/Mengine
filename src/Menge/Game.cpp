@@ -32,8 +32,7 @@ namespace Menge
 		, m_title("Game")
 		, m_fixedContentResolution( false )
 		, m_physicSystemName("None")
-		, m_width( 1024 )
-		, m_height( 768 )
+		, m_resolution( 1024.f, 768.f )
 		, m_fullScreen( true )
 		, m_vsync( false )
 		, m_textureFiltering( true )
@@ -115,8 +114,8 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "Title", "Value", m_title );
 			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
 			XML_CASE_ATTRIBUTE_NODE( "PhysicSystem", "Value", m_physicSystemName );
-			XML_CASE_ATTRIBUTE_NODE( "Width", "Value", m_width );					
-			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );
+			XML_CASE_ATTRIBUTE_NODE( "Width", "Value", m_resolution.x );					
+			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_resolution.y );
 			XML_CASE_ATTRIBUTE_NODE( "Bits", "Value", m_bits );
 			XML_CASE_ATTRIBUTE_NODE( "Fullscreen", "Value", m_fullScreen );
 			XML_CASE_ATTRIBUTE_NODE( "VSync", "Value", m_vsync );
@@ -704,14 +703,9 @@ namespace Menge
 		return m_fixedContentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Game::getWidth() const
+	const mt::vec2f & Game::getResolution() const
 	{
-		return m_width;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Game::getHeight() const
-	{
-		return m_height;
+		return m_resolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int Game::getBits() const

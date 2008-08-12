@@ -1563,7 +1563,6 @@ void HGE_Impl::syncCPU_()
 	D3DXMatrixIdentity(&matView);
 	pD3DDevice->SetTransform(D3DTS_VIEW, &matView);
 	
-	LPDIRECT3DSURFACE8 temp;
 	HRESULT hr = D3DXLoadSurfaceFromSurface( m_syncTemp, NULL, NULL, m_syncTargets[(m_frames + 1) % 2], NULL, NULL, D3DX_DEFAULT, 0 );
 	D3DLOCKED_RECT rect;
 	hr = m_syncTemp->LockRect( &rect, NULL, D3DLOCK_READONLY );

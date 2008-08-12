@@ -88,8 +88,7 @@ namespace Menge
 		const mt::vec2f & getResourceResolution() const;
 		const std::string& getTitle() const;
 		bool isContentResolutionFixed() const;
-		float getWidth() const;
-		float getHeight() const;
+		const mt::vec2f & getResolution() const;
 		int getBits() const;
 		bool getFullscreen() const;
 		bool getVSync() const;
@@ -149,8 +148,8 @@ namespace Menge
 		TListDeclaration m_pathScenes;
 		TListDeclaration m_pathArrows;
 
-		float m_width;
-		float m_height;
+		mt::vec2f m_resolution;
+
 		int m_bits;
 		bool m_fullScreen;
 		bool m_vsync;

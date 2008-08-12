@@ -43,6 +43,7 @@ namespace mt
 
 		MATH_INLINE vec4f();
 		MATH_INLINE vec4f(float _x, float _y, float _z, float _w);
+		MATH_INLINE vec4f(const vec2f& _v0, const vec2f& _v1);
 		MATH_INLINE vec4f(const vec4f& _v);
 		MATH_INLINE explicit vec4f(const vec3f& _v);
 		MATH_INLINE vec4f(const vec3f& _v, float _w);

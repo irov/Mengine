@@ -97,7 +97,7 @@ namespace Menge
 		bool getSoundEnabled()	const;
 
 		void minimizeWindow();
-		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen );
+		void notifyWindowModeChanged( float _width, float _height, bool _fullscreen );
 
 		void setMouseBounded( bool _bounded );
 

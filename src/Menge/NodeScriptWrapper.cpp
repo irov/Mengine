@@ -257,7 +257,7 @@ namespace Menge
 
 		static PyObject * createShot( const std::string& _name, mt::vec2f _min,  mt::vec2f _max )
 		{
-			int rect[4] = { (int)_min.x , (int)_min.y, (int)_max.x, (int)_max.y };
+			mt::vec4f rect( _min, _max );
 
 			ResourceImageDynamic * resourceImage 
 				= Holder<ResourceManager>::hostage()->getResourceT<ResourceImageDynamic>( _name );
@@ -273,7 +273,7 @@ namespace Menge
 				resourceImage = new ResourceImageDynamic( param );
 				//FIXME
 				RenderImageInterface * imageInterface
-					= Holder<RenderEngine>::hostage()->createImage( _name.c_str(), rect[2] - rect[0], rect[3] - rect[1] );
+					= Holder<RenderEngine>::hostage()->createImage( _name, rect[2] - rect[0], rect[3] - rect[1] );
 
 				resourceImage->setRenderImage( imageInterface );
 
@@ -350,12 +350,12 @@ namespace Menge
 			Image wImage;
 
 			unsigned char * buffer = img->lock();
-			std::size_t width = img->getWidth();
-			std::size_t height = img->getHeight();
+			float width = img->getWidth();
+			float height = img->getHeight();
 			PixelFormat pixelFormat = img->getPixelFormat();
 
 
-			wImage.loadDynamicImage( buffer, width, height, 1, pixelFormat );
+			wImage.loadDynamicImage( buffer, (std::size_t)width, (std::size_t)height, 1, pixelFormat );
 			wImage.save( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _filename );
 			img->unlock();
 			//const_cast<RenderImageInterface*>(img)->writeToFile( _filename.c_str() );

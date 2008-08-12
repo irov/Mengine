@@ -71,6 +71,13 @@ namespace	Menge
 			return false;
 		}
 
+		Camera2D * camera = Holder<Player>::hostage()
+			->getRenderCamera2D();
+
+		const Viewport & viewport = camera->getViewport();
+
+		//const mt::vec2f & factor = m_layer->getParallaxFactor();
+
 		/*const mt::box2f & myBB = this->getWorldBoundingBox();
 		const mt::box2f & otherBB = _hotspot->getWorldBoundingBox();
 
@@ -79,10 +86,7 @@ namespace	Menge
 			return false;
 		}*/
 
-		Camera2D * camera = Holder<Player>::hostage()
-			->getRenderCamera2D();
 
-		const Viewport & viewport = camera->getViewport();
 
 		const mt::vec2f & dirA = this->getWorldDirection();
 		const mt::vec2f & posA = this->getScreenPosition();

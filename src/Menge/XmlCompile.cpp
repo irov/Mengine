@@ -255,7 +255,7 @@ void XmlCompile::beginElementCompile( const char * _name, const char ** _attr )
 			{
 				std::size_t sizeValue = strlen( _attr[i + 1] );
 
-				char chSizeValue = ( sizeValue < 255 ) ? sizeValue : 255;
+				char chSizeValue = ( sizeValue < 255 ) ? char(sizeValue) : 255;
 
 				fwrite( &chSizeValue, sizeof( chSizeValue ), 1, m_outputFile );
 

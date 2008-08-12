@@ -95,9 +95,9 @@ namespace Menge
 		return m_interface->createMouseJoint( rigidBody, _x, _y );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PhysicEngine2D::onMouseMove( int x, int y )
+	void PhysicEngine2D::onMouseMove( const mt::vec2f & _delta )
 	{
-		m_interface->onMouseMove( x, y ); 
+		m_interface->onMouseMove( _delta.x, _delta.y ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float PhysicEngine2D::getPhase() const

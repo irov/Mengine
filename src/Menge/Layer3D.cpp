@@ -167,7 +167,7 @@ namespace	Menge
 		}
 
 	protected:
-		bool m_debugMask;
+		unsigned int m_debugMask;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::render( unsigned int _debugMask )

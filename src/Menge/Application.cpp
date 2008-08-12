@@ -239,29 +239,33 @@ namespace Menge
 		m_renderEngine->setContentResolution( resourceResolution );
 
 		bool isFullscreen = m_game->getFullscreen();
-		int bits = m_game->getBits();
-		int FSAAType = m_game->getFSAAType();
-		int FSAAQuality = m_game->getFSAAQuality();
-		m_currentResolution.x = m_game->getWidth();
-		m_currentResolution.y = m_game->getHeight();
 
-		if( isFullscreen )
+		if( isFullscreen == true )
 		{
 			float aspect = m_desktopResolution.x / m_desktopResolution.y;
 
-			m_currentResolution = m_renderEngine->getBestDisplayResolution( 
-				m_currentResolution.x, m_currentResolution.y, aspect );
+			m_currentResolution = m_renderEngine
+				->getBestDisplayResolution( m_currentResolution, aspect );
+		}
+		else
+		{
+			m_currentResolution = m_game->getResolution();
 		}
 
 		WindowHandle winHandle = _handle;
-		
+
+	
 		if(_handle == NULL)
 		{
 			winHandle = m_interface->createWindow( 
 				title, m_currentResolution.x, m_currentResolution.y, isFullscreen );
 		}
 
-		m_renderEngine->createRenderWindow( m_currentResolution.x, m_currentResolution.y, bits, isFullscreen, winHandle,
+		int bits = m_game->getBits();
+		int FSAAType = m_game->getFSAAType();
+		int FSAAQuality = m_game->getFSAAQuality();
+
+		m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, winHandle,
 											FSAAType, FSAAQuality );
 
 		bool isTextureFiltering = m_game->getTextureFiltering();
@@ -270,7 +274,7 @@ namespace Menge
 
 		m_inputEngine->initialize( winHandle );
 
-		if( m_game->getFullscreen() )
+		if( isFullscreen == true )
 		{
 			setMouseBounded( true );
 			m_inputEngine->setMouseBounded( true );
@@ -396,8 +400,8 @@ namespace Menge
 
 		m_interface->getDesktopResolution( &width, &height );
 
-		m_desktopResolution.x = width;
-		m_desktopResolution.y = height;
+		m_desktopResolution.x = (float)width;
+		m_desktopResolution.y = (float)height;
 
 		m_sound = m_soundEngine->initialize();
 
@@ -672,7 +676,7 @@ namespace Menge
 		return m_currentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
+	void Application::notifyWindowModeChanged( float _width, float _height, bool _fullscreen )
 	{
 		m_interface->notifyWindowModeChanged( _width, _height, _fullscreen );
 	}

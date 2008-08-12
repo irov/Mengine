@@ -12,7 +12,9 @@
 #	include "Math/box2.h"
 #	include "Utils.h"
 
-#	define DEFAULT_GRID_SIZE 512
+#	include <sstream>
+
+#	define DEFAULT_GRID_SIZE 512.f
 
 namespace Menge
 {
@@ -114,20 +116,32 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2DAccumulator::_compile()
 	{
-		int countX = ::ceilf( m_size.x / m_gridSize );
-		int countY = ::ceilf( m_size.y / m_gridSize );
+		std::size_t countX = (std::size_t)::ceilf( m_size.x / m_gridSize );
+		std::size_t countY = (std::size_t)::ceilf( m_size.y / m_gridSize );
+
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 
-		for( int i = 0; i < countX; i++ )
+		String layer2DAccumulatorName = "Layer2DAccumulator_" + m_name + "_image_";
+
+		for( std::size_t i = 0; i < countX; i++ )
 		{
-			for( int j = 0; j < countY; j++ )
+			for( std::size_t j = 0; j < countY; j++ )
 			{
-				String name = String( "Layer2DAccumulator_" + m_name + "_image_" + toString( i ) + toString( j ) );
-				RenderImageInterface* image = Holder<RenderEngine>::hostage()->createRenderTargetImage( name, m_gridSize, m_gridSize );
+				std::stringstream accumulatorStreamName;
+				accumulatorStreamName << layer2DAccumulatorName;
+				accumulatorStreamName << i;
+				accumulatorStreamName << "_";
+				accumulatorStreamName << j;
+
+				String name = accumulatorStreamName.str();
+
+				mt::vec2f renderTargetResolution( m_gridSize, m_gridSize );
+				
+				RenderImageInterface* image = Holder<RenderEngine>::hostage()->createRenderTargetImage( name, renderTargetResolution );
 
 				ImageRect imageRect;
 				imageRect.image = image;
-				imageRect.rect = mt::box2f( mt::vec2f( i * m_gridSize, j * m_gridSize ), mt::vec2f( (i+1) * m_gridSize, (j+1) * m_gridSize ) );
+				imageRect.rect = mt::box2f( mt::vec2f( float(i) * m_gridSize, float(j) * m_gridSize ), mt::vec2f( float(i+1) * m_gridSize, float(j+1) * m_gridSize ) );
 				
 				m_surfaces.push_back( imageRect );
 

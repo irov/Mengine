@@ -11,9 +11,8 @@ bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
 	try
 	{
 		*_ptrInterface = new HGERenderSystem();
-		std::ostringstream str;
-		str << ((int)_ptrInterface);
-
+		//std::ostringstream str;
+		//str << ((int)_ptrInterface);
 		//::MessageBoxA( NULL, str.str().c_str(), "name", MB_ICONWARNING );
 	}
 	catch (...)
@@ -122,22 +121,21 @@ bool HGERenderSystem::createRenderWindow( int _width, int _height, int _bits, bo
 	return ret;
 }
 //////////////////////////////////////////////////////////////////////////
-std::size_t HGERenderSystem::getResolutionList( int ** _list )
+const std::vector<int> & HGERenderSystem::getResolutionList()
 {
-	static std::vector<int> list = m_hge->Gfx_GetModeList();
-	*_list = &(list[0]);
-	return list.size();
+	const std::vector<int> & list = m_hge->Gfx_GetModeList();
+	return list;
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::screenshot( Menge::RenderImageInterface* _image, const int* _rect /*= 0 */ )
+void HGERenderSystem::screenshot( Menge::RenderImageInterface* _image, const float * _rect /*= 0 */ )
 {
 	RECT rect;
 	if( _rect )
 	{
-		rect.left = _rect[0];
-		rect.top = _rect[1];
-		rect.right = _rect[2];
-		rect.bottom = _rect[3];
+		rect.left = (LONG)_rect[0];
+		rect.top = (LONG)_rect[1];
+		rect.right = (LONG)_rect[2];
+		rect.bottom = (LONG)_rect[3];
 	}
 	else
 	{
@@ -178,7 +176,7 @@ void HGERenderSystem::setWorldMatrix( const float * _world )
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * HGERenderSystem::createImage( const Menge::String & _name,
-													unsigned int _width, unsigned int _height )
+													float _width, float _height )
 {
 	HGETexture* texture = new HGETexture( m_hge, _name, _width, _height );
 	m_textureMap.insert( std::make_pair( _name, static_cast<Menge::RenderImageInterface*>( texture ) ) );
@@ -186,9 +184,9 @@ Menge::RenderImageInterface * HGERenderSystem::createImage( const Menge::String 
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::RenderImageInterface * HGERenderSystem::createRenderTargetImage( const Menge::String & _name, unsigned int _width, unsigned int _height )
+Menge::RenderImageInterface * HGERenderSystem::createRenderTargetImage( const Menge::String & _name, float _width, float _height )
 {
-	HTARGET htgt = m_hge->Target_Create( _width, _height, true );
+	HTARGET htgt = m_hge->Target_Create( (int)_width, (int)_height, true );
 	HGETexture* texture = new HGETexture( m_hge, m_hge->Target_GetTexture( htgt ), _name, _width, _height );
 	RenderTargetInfo rtgtInfo;
 	rtgtInfo.dirty = true;
@@ -498,7 +496,7 @@ void HGERenderSystem::setFullscreenMode( float _width, float _height, bool _full
 {
 	// todo: backup render targets content
 
-	m_hge->Gfx_ChangeMode( _width, _height, 32, _fullscreen );
+	m_hge->Gfx_ChangeMode( (int)_width, (int)_height, 32, _fullscreen );
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::CameraInterface * HGERenderSystem::createCamera( const Menge::String & _name )
@@ -644,10 +642,10 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::setRenderArea( const float* _renderArea )
 {
-	int w = _renderArea[2] - _renderArea[0];
-	int h = _renderArea[3] - _renderArea[1];
+	float w = _renderArea[2] - _renderArea[0];
+	float h = _renderArea[3] - _renderArea[1];
 
-	m_hge->Gfx_SetClipping( _renderArea[0], _renderArea[1], w, h );
+	m_hge->Gfx_SetClipping( (int)_renderArea[0], (int)_renderArea[1], (int)w, (int)h );
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::onRestoreDevice()

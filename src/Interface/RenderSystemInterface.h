@@ -9,12 +9,15 @@ namespace Menge
 	struct	TextureDesc
 	{
 		String name;
+
 		unsigned int filter;
 
 		void * buffer;
 		std::size_t size;
-		std::size_t width;
-		std::size_t height;
+
+		float width;
+		float height;
+
 		int	pixelFormat;
 	};
 
@@ -173,8 +176,8 @@ namespace Menge
 	class RenderImageInterface
 	{
 	public:
-		virtual std::size_t getWidth() const = 0;
-		virtual std::size_t getHeight() const = 0;
+		virtual float getWidth() const = 0;
+		virtual float getHeight() const = 0;
 		virtual void writeToFile( const String & _filename ) = 0;
 		virtual const String & getDescription() const = 0;
 		virtual unsigned char* lock() = 0;
@@ -344,11 +347,11 @@ namespace Menge
 		virtual bool initialize( LogSystemInterface* _logSystem ) = 0;
 		virtual bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			int _FSAAType, int _FSAAQuality ) = 0;
-		virtual std::size_t getResolutionList( int ** ) = 0;
+		virtual const std::vector<int> & getResolutionList() = 0;
 
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
-		virtual void screenshot( RenderImageInterface* _image, const int* rect = 0 ) = 0;
+		virtual void screenshot( RenderImageInterface* _image, const float * _rect ) = 0;
 		// Renders One Frame
 		virtual void render() = 0; 
 		// установка разрешения контента игры, входные данные: вектор2. 
@@ -358,9 +361,9 @@ namespace Menge
 		virtual	void setViewMatrix( const float * _view ) = 0;
 		virtual	void setWorldMatrix( const float * _world ) = 0;
 		// create empty render image
-		virtual RenderImageInterface * createImage( const String & _name, unsigned int _width, unsigned int _height ) = 0;
+		virtual RenderImageInterface * createImage( const String & _name, float _width, float _height ) = 0;
 		// create render target image
-		virtual RenderImageInterface * createRenderTargetImage( const String & _name, unsigned int _width, unsigned int _height ) = 0;
+		virtual RenderImageInterface * createRenderTargetImage( const String & _name, float _width, float _height ) = 0;
 		// загрузка изображения
 		virtual RenderImageInterface * loadImage( const TextureDesc& _desc ) = 0;
 		// удаления изображения

@@ -14,6 +14,11 @@ namespace mt
 		,w(_w)
 	{}
 
+	MATH_INLINE vec4f::vec4f(const vec2f& _v0, const vec2f& _v1)
+		:v2_0(_v0)
+		,v2_1(_v1)
+	{}
+
 	MATH_INLINE vec4f::vec4f(const vec4f& _v)
 		:x(_v.x)
 		,y(_v.y)

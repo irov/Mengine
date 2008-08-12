@@ -37,7 +37,7 @@ OISInputSystem::~OISInputSystem()
 bool OISInputSystem::initialize( Menge::WindowHandle _winHandle )
 {
 	std::ostringstream windowHndStr;
-	windowHndStr << (int)_winHandle;
+	windowHndStr << (std::size_t)_winHandle;
 	OIS::ParamList pl;
 	pl.insert( std::make_pair(	"WINDOW", windowHndStr.str() ) );
 

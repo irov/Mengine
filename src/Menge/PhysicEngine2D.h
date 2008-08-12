@@ -34,7 +34,7 @@ namespace Menge
 
 		void update( float _timing );
 
-		void onMouseMove( int x, int y );
+		void onMouseMove( const mt::vec2f & _delta );
 
 		const mt::vec2f& getGravity() const;
 

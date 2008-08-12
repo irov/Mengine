@@ -39,7 +39,9 @@ namespace Menge
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 		mt::mat4f wm = renderEngine->getWorldMatrix();
 
-		renderEngine->setWorldMatrix( getLocalMatrix3D() );
+		const mt::mat4f & lm = this->getLocalMatrix3D();
+
+		renderEngine->setWorldMatrix( lm );
 
 		renderEngine->renderMesh( m_resourceMesh->getVertexData(),
 			m_resourceMesh->getIndexData(), 
@@ -96,10 +98,10 @@ namespace Menge
 		m_resourceMesh = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMesh::createRenderTarget( const String& _name, std::size_t _width, std::size_t _height )
+	void RenderMesh::createRenderTarget( const String& _name, const mt::vec2f & _resolution )
 	{
 		m_renderTarget = Holder<RenderEngine>::hostage()
-			->createRenderTargetImage( _name.c_str(), _width, _height );
+			->createRenderTargetImage( _name, _resolution );
 
 		m_material.texture = m_renderTarget;
 	}

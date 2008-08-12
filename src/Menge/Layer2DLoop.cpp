@@ -46,25 +46,57 @@ namespace	Menge
 		{				
 			if( _node->isRenderable() == true )
 			{
-				const mt::box2f & sprite_bbox = _node->getBoundingBox();
-
-				if( _node->checkVisibility() == true )
-				{
-					_node->_render( m_debugMask );
-				}
-
+				//const mt::box2f & sprite_bbox = _node->getBoundingBox();
 				Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
-				mt::vec2f oldOffs = camera->getOffset();
-				camera->setOffset( oldOffs + mt::vec2f( -m_size.x, 0.0f ) );
+
+				const mt::mat4f & viewMatrixFirst = camera->getViewMatrix();
+
+				Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixFirst );
+
 				if( _node->checkVisibility() == true )
 				{
 					_node->_render( m_debugMask );
 				}
-				camera->setOffset( oldOffs );
 
-				_node->visitChildren( this );
+				// left render
+				{
+
+					mt::vec2f oldOffs = camera->getOffset();
+
+					camera->setOffset( oldOffs + mt::vec2f( -m_size.x, 0.0f ) );
+
+					const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
+
+					Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
+
+					if( _node->checkVisibility() == true )
+					{
+						_node->_render( m_debugMask );
+					}
+
+					camera->setOffset( oldOffs );
+				}
+
+				// right render
+				{
+					mt::vec2f oldOffs = camera->getOffset();
+
+					camera->setOffset( oldOffs + mt::vec2f( m_size.x, 0.0f ) );
+
+
+					const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
+
+					Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
+
+					if( _node->checkVisibility() == true )
+					{
+						_node->_render( m_debugMask );
+					}
+
+					camera->setOffset( oldOffs );
+				}
 			}
-
+			_node->visitChildren( this );
 		}
 
 		void visit( Layer * _layer )
@@ -116,15 +148,17 @@ namespace	Menge
 	public:
 		void visit( Node * _node )
 		{				
-			const mt::vec2f& pos = _node->getWorldPosition();
-			if( pos.x > m_size.x )
+			const mt::box2f & bbox = _node->getBoundingBox();
+
+			if( bbox.vb.x >= m_size.x )
 			{
 				_node->translate( mt::vec2f( -m_size.x, 0.0f ));
 			}
-			else if( pos.x < 0 )
+			else if( bbox.ve.x < 0.f )
 			{
 				_node->translate( mt::vec2f( m_size.x, 0.0f ));
 			}
+
 			_node->update( m_timing );
 		}
 
@@ -148,7 +182,7 @@ namespace	Menge
 		VisitorUpdateLayer2DLoop visitorUpdate( _timing, m_size );
 
 		visitChildren( &visitorUpdate );
-		
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

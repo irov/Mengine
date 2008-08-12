@@ -311,7 +311,7 @@ Menge::PhysicJoint2DInterface* Box2DPhysicSystem::createMouseJoint( Menge::Physi
 	return static_cast<Menge::PhysicJoint2DInterface*>( joint );
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicSystem::onMouseMove( int x, int y )
+void Box2DPhysicSystem::onMouseMove( float x, float y )
 {
 	if( m_mouseJoint )
 	{

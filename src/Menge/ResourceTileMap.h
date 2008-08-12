@@ -24,9 +24,9 @@ namespace Menge
 	public:
 		ResourceTileMap( const ResourceFactoryParam & _params );
 
-		unsigned int getWidth() const;
-		unsigned int getHeight() const;
-		ImageBlock getTile( int _x, int _y );
+		std::size_t getWidth() const;
+		std::size_t getHeight() const;
+		ImageBlock getTile( std::size_t _x, std::size_t _y );
 		float getTileSize();
 		//const std::string& getPhysXml() const;
 
@@ -45,8 +45,8 @@ namespace Menge
 
 		std::vector< std::vector< int > > m_tileMap;
 		//int m_tileMap[MAX_TILEMAP_WIDTH][MAX_TILEMAP_HEIGHT];
-		unsigned int m_width;
-		unsigned int m_height;
+		std::size_t m_width;
+		std::size_t m_height;
 
 		std::string m_tileMapFile;
 		std::string m_tileSetName;

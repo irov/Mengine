@@ -11,11 +11,13 @@ HGETexture::HGETexture( HGE* _hge, bool _freeOnDelete )
 , m_ref( 0 )
 , m_uvMask( 1.0f, 1.0f )
 , m_pixelFormat( Menge::PF_A8R8G8B8 )
+, m_width(0.f)
+, m_height(0.f)
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete )
+HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, float _width, float _height, bool _freeOnDelete )
 : m_hge( _hge )
 , m_hTexture( _htex )
 , m_name( _name )
@@ -32,7 +34,7 @@ HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, s
 	m_uvMask.y = static_cast<float>( m_height ) / hh;
 }
 //////////////////////////////////////////////////////////////////////////
-HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete )
+HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, float _width, float _height, bool _freeOnDelete )
 : m_hge( _hge )
 , m_name( _name )
 , m_width( _width )
@@ -42,11 +44,11 @@ HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _widt
 , m_uvMask( 1.0f, 1.0f )
 , m_pixelFormat( Menge::PF_A8R8G8B8 )
 {
-	m_hTexture = m_hge->Texture_Create( _width, _height );
+	m_hTexture = m_hge->Texture_Create( (int)_width, (int)_height );
 	int hw = m_hge->Texture_GetWidth( m_hTexture );
 	int hh = m_hge->Texture_GetHeight( m_hTexture );
-	m_uvMask.x = static_cast<float>( m_width ) / hw;
-	m_uvMask.y = static_cast<float>( m_height ) / hh;
+	m_uvMask.x = m_width / hw;
+	m_uvMask.y = m_height / hh;
 }
 //////////////////////////////////////////////////////////////////////////
 HGETexture::~HGETexture()
@@ -54,22 +56,23 @@ HGETexture::~HGETexture()
 	unload();
 }
 //////////////////////////////////////////////////////////////////////////
-void HGETexture::load( const Menge::TextureDesc& _desc )
+void HGETexture::load( const Menge::TextureDesc & _desc )
 {
 	m_name = _desc.name;
-	m_hTexture = m_hge->Texture_Create( _desc.width, _desc.height );
+	m_hTexture = m_hge->Texture_Create( (int)_desc.width, (int)_desc.height );
 	int hw = m_hge->Texture_GetWidth( m_hTexture );
 	int hh = m_hge->Texture_GetHeight( m_hTexture );
+
 	m_hge->Texture_LoadRawData( m_hTexture, static_cast<char*>( _desc.buffer ), 
-		_desc.size / _desc.height, _desc.width, _desc.height, _desc.pixelFormat );
+		(int)_desc.size / (int)_desc.height, (int)_desc.width, (int)_desc.height, _desc.pixelFormat );
 
 	m_width = _desc.width;
 	m_height = _desc.height;
 
 	m_pixelFormat = static_cast<Menge::PixelFormat>( _desc.pixelFormat );
 
-	m_uvMask.x = static_cast<float>( m_width ) / hw;
-	m_uvMask.y = static_cast<float>( m_height ) / hh;
+	m_uvMask.x = m_width / hw;
+	m_uvMask.y = m_height / hh;
 }
 //////////////////////////////////////////////////////////////////////////
 void HGETexture::unload()
@@ -81,12 +84,12 @@ void HGETexture::unload()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-std::size_t HGETexture::getWidth() const 
+float HGETexture::getWidth() const 
 {
 	return m_width;
 }
 //////////////////////////////////////////////////////////////////////////
-std::size_t HGETexture::getHeight() const 
+float HGETexture::getHeight() const 
 {
 	return m_height;
 }
@@ -114,10 +117,10 @@ const mt::vec2f& HGETexture::getUVMask() const
 unsigned char* HGETexture::lock()
 {
 	int pitch;
-	unsigned char* lock = reinterpret_cast< unsigned char* >( m_hge->Texture_Lock( m_hTexture, &pitch, true, 0, 0, m_width, m_height ) );
-	m_lockBuffer = new unsigned char[m_height * pitch];
+	unsigned char* lock = reinterpret_cast< unsigned char* >( m_hge->Texture_Lock( m_hTexture, &pitch, true, 0, 0, (int)m_width, (int)m_height ) );
+	m_lockBuffer = new unsigned char[ int(m_height) * pitch];
 	
-	std::size_t mPitch = Menge::PixelUtil::getNumElemBytes( m_pixelFormat ) * m_width;
+	std::size_t mPitch = Menge::PixelUtil::getNumElemBytes( m_pixelFormat ) * int(m_width);
 	for( std::size_t i = 0; i < m_height; i++ )
 	{
 		std::copy( lock, lock + mPitch, m_lockBuffer );
@@ -126,7 +129,7 @@ unsigned char* HGETexture::lock()
 		lock += pitch;
 	}
 
-	m_lockBuffer -= mPitch * m_height;
+	m_lockBuffer -= mPitch * (int)m_height;
 
 	return m_lockBuffer;
 }

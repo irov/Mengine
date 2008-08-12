@@ -21,7 +21,7 @@ namespace Menge
 {	
 	class Visitor;
 	class Layer2D;
-	typedef std::list<class Node *> TContainerChildren;
+	
 
 	class Node
 		: public Identity
@@ -89,6 +89,7 @@ namespace Menge
 		virtual void _removeChildren( Node * _node );
 
 	protected:
+		typedef std::list<Node *> TContainerChildren;
 		TContainerChildren m_children;
 
 		Node * m_parent;

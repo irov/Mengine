@@ -23,9 +23,9 @@ namespace mt
 		return ((aCROSSbp >= 0.0f) && (bCROSScp >= 0.0f) && (cCROSSap >= 0.0f));
 	}
 	
-	static bool snip(const std::vector<mt::vec2f> &contour,std::size_t u,std::size_t v,std::size_t w,std::size_t n,int *V)
+	static bool snip(const std::vector<mt::vec2f> &contour,std::size_t u,std::size_t v,std::size_t w,std::size_t n,std::size_t *V)
 	{
-		int p;
+		std::size_t p;
 		float Ax, Ay, Bx, By, Cx, Cy, Px, Py;  
 		
 		Ax = contour[V[u]].x;
@@ -57,13 +57,13 @@ namespace mt
 		std::vector<mt::vec2f>::size_type n = contour.size();
 		if ( n < 3 ) return false;
 		
-		int *V = new int[n];  /* we want a counter-clockwise polygon in V */ 
+		std::size_t *V = new std::size_t[n];  /* we want a counter-clockwise polygon in V */ 
 
 		if ( 0.0f < polygon_area(contour) )
-		for (int v=0; v<n; v++)
+		for (std::size_t v=0; v<n; v++)
 			V[v] = v;
 		else
-		for(int v=0; v<n; v++) 
+		for(std::size_t v=0; v<n; v++) 
 			V[v] = (n-1)-v;  
 		
 		std::vector<mt::vec2f>::size_type nv = n;  /*  remove nv-2 Vertices, creating 1 triangle every time */
@@ -89,7 +89,7 @@ namespace mt
 
 			if ( snip(contour,u,v,w,nv,V) )
 			{
-				int a,b,c;  
+				std::size_t a,b,c;  
 				/* true names of the vertices */
 				a = V[u];
 				b = V[v]; 

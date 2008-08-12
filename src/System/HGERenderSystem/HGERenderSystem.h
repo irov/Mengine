@@ -20,15 +20,15 @@ public:
 	bool initialize( Menge::LogSystemInterface* _logSystem ) override;
 	bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle,
 		int _FSAAType, int _FSAAQuality ) override;
-	std::size_t getResolutionList( int ** ) override;
-	void screenshot( Menge::RenderImageInterface* _image, const int* rect = 0 ) override;
+	const std::vector<int> & getResolutionList() override;
+	void screenshot( Menge::RenderImageInterface* _image, const float * rect = 0 ) override;
 	void render() override; 
 	void setContentResolution( const float * _resolution ) override;
 	void setProjectionMatrix( const float * _projection ) override;
 	void setViewMatrix( const float * _view ) override;
 	void setWorldMatrix( const float * _world ) override;
-	Menge::RenderImageInterface * createImage( const Menge::String & _name, unsigned int _width, unsigned int _height ) override;
-	Menge::RenderImageInterface * createRenderTargetImage( const Menge::String & _name, unsigned int _width, unsigned int _height ) override;
+	Menge::RenderImageInterface * createImage( const Menge::String & _name, float _width, float _height ) override;
+	Menge::RenderImageInterface * createRenderTargetImage( const Menge::String & _name, float _width, float _height ) override;
 	Menge::RenderImageInterface * loadImage( const Menge::TextureDesc& _desc ) override;
 	void releaseImage( Menge::RenderImageInterface * _image ) override;
 	Menge::RenderImageInterface* getImage( const Menge::String& _desc ) const override;

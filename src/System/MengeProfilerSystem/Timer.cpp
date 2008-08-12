@@ -35,7 +35,7 @@ void Timer::reset()
 	HANDLE thread = GetCurrentThread();
 
 	// Set affinity to the first core
-	DWORD oldMask = SetThreadAffinityMask(thread, mTimerMask);
+	DWORD_PTR oldMask = SetThreadAffinityMask(thread, mTimerMask);
 
 	// Get the constant frequency
 	QueryPerformanceFrequency(&mFrequency);
@@ -59,7 +59,7 @@ unsigned long Timer::getMilliseconds()
 	HANDLE thread = GetCurrentThread();
 
 	// Set affinity to the first core
-	DWORD oldMask = SetThreadAffinityMask(thread, mTimerMask);
+	DWORD_PTR oldMask = SetThreadAffinityMask(thread, mTimerMask);
 
 	// Query the timer
 	QueryPerformanceCounter(&curTime);
@@ -101,7 +101,7 @@ unsigned long Timer::getMicroseconds()
 	HANDLE thread = GetCurrentThread();
 
 	// Set affinity to the first core
-	DWORD oldMask = SetThreadAffinityMask(thread, mTimerMask);
+	DWORD_PTR oldMask = SetThreadAffinityMask(thread, mTimerMask);
 
 	// Query the timer
 	QueryPerformanceCounter(&curTime);

@@ -41,8 +41,8 @@ namespace mt
 	{
 		if ( external_box.max.x > box.max.x ) box.max.x = external_box.max.x;
 		if ( external_box.max.y > box.max.y ) box.max.y = external_box.max.y;
-		if ( external_box.max.x < box.min.x ) box.min.x = external_box.max.x;
-		if ( external_box.max.y < box.min.y ) box.min.y = external_box.max.y;
+		if ( external_box.min.x < box.min.x ) box.min.x = external_box.min.x;
+		if ( external_box.min.y < box.min.y ) box.min.y = external_box.min.y;
 	}
 
 	MATH_INLINE bool exist_box( const box2f & box, const box2f & external_box )

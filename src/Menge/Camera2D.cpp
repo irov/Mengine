@@ -103,13 +103,12 @@ namespace	Menge
 		m_viewport.begin.y = m_viewport.begin.y * m_parallax.y + m_offset.y;
 		m_viewport.end = m_viewport.begin + m_viewportSize;
 		//m_viewport.end = pos + m_viewportSize * .5;
-
-		invalidateViewMatrix();	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::invalidateViewport()
 	{
 		m_invalidateViewport = true;
+		invalidateViewMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera2D::isInvalidateViewport() const
@@ -198,16 +197,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::applyView()
 	{
-		getViewport();
-		const mt::mat4f& viewMatrix = getViewMatrix();
-		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrix );
+		//getViewport();
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::setOffset( const mt::vec2f& _offset )
 	{
 		m_offset = _offset;
 		invalidateViewport();
-		applyView();
+		//applyView();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Camera2D::getOffset() const

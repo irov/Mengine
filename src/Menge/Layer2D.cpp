@@ -104,8 +104,14 @@ namespace	Menge
 			->beginLayer2D();
 
 		Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
+
 		mt::vec2f oldPlx = camera->getParallax();
+
 		camera->setParallax( m_factorParallax );
+
+		const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
+
+		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
 
 		VisitorRenderLayer2D visitorRender( _debugMask );
 

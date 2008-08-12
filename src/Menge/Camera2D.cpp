@@ -89,7 +89,6 @@ namespace	Menge
 		Allocator2D::_invalidateWorldMatrix();
 
 		invalidateViewport();
-		applyView();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::updateViewport()
@@ -187,7 +186,6 @@ namespace	Menge
 	{
 		m_parallax = _parallax;
 		invalidateViewport();
-		applyView();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Camera2D::getParallax() const
@@ -195,17 +193,10 @@ namespace	Menge
 		return m_parallax;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::applyView()
-	{
-		//getViewport();
-
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::setOffset( const mt::vec2f& _offset )
 	{
 		m_offset = _offset;
 		invalidateViewport();
-		//applyView();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& Camera2D::getOffset() const

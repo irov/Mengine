@@ -58,12 +58,19 @@ namespace	Menge
 					_node->_render( m_debugMask );
 				}
 
-				// left render
-				{
+				const mt::box2f & bbox = _node->getBoundingBox();
 
+				const Viewport & viewport = camera->getViewport();
+
+				mt::vec2f leftBouncing( -m_size.x, 0.0f );
+				mt::vec2f rightBouncing( m_size.x, 0.0f );
+
+				if( viewport.testRectangle( bbox.vb - leftBouncing, bbox.ve - leftBouncing ) == true )
+					// left render
+				{
 					mt::vec2f oldOffs = camera->getOffset();
 
-					camera->setOffset( oldOffs + mt::vec2f( -m_size.x, 0.0f ) );
+					camera->setOffset( oldOffs + leftBouncing );
 
 					const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
 
@@ -76,13 +83,12 @@ namespace	Menge
 
 					camera->setOffset( oldOffs );
 				}
-
-				// right render
+				else if( viewport.testRectangle( bbox.vb - rightBouncing, bbox.ve - rightBouncing ) == true )
+					// right render
 				{
 					mt::vec2f oldOffs = camera->getOffset();
 
-					camera->setOffset( oldOffs + mt::vec2f( m_size.x, 0.0f ) );
-
+					camera->setOffset( oldOffs + rightBouncing );
 
 					const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
 
@@ -124,6 +130,10 @@ namespace	Menge
 		parallax.y = m_factorParallax.y;
 
 		camera->setParallax( parallax );
+
+		const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
+
+		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
 
 		VisitorRenderLayer2DLoop visitorRender( m_size, _debugMask );
 

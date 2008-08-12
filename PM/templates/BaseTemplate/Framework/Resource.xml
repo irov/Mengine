@@ -1,0 +1,18 @@
+<Resources>
+
+	<Entities Path = "Entities">
+		<Button/>
+		<Button2/>
+		<SplitButton/>
+		<Slider/>
+		<RadioButton/>
+		<RadioButton2/>
+		<Text/>
+		<Node/>
+		<Node2/>
+		<TextButton/>
+	</Entities>
+
+	<Scripts Path = "Scripts" />
+
+</Resources>	

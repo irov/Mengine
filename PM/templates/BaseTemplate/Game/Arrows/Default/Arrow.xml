@@ -1,0 +1,6 @@
+<Arrow>
+	<Node Type = "Sprite" >
+		<ImageMap Name = "default" />
+		<Transformation Value = "1;0;0;1;-5;-11"/>		
+	</Node>
+</Arrow>

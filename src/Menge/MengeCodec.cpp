@@ -1,5 +1,6 @@
 #	include "MengeCodec.h"
 #	include "Codec.h"
+//#	include "FreeImage.h"
 #	include "FileEngine.h"
 
 namespace Menge

@@ -3,14 +3,15 @@
 //////////////////////////////////////////////////////////////////////////
 Box2DPhysicBody::Box2DPhysicBody( b2World* _world, bool _static )
 : m_world( _world )
-, m_listener( NULL )
-, m_body( NULL )
+, m_listener( 0 )
+, m_body( 0 )
 , m_isStatic( _static )
 {
 }
 //////////////////////////////////////////////////////////////////////////
 Box2DPhysicBody::~Box2DPhysicBody()
 {
+	m_listener = 0;
 	m_world->DestroyBody( m_body );
 }
 //////////////////////////////////////////////////////////////////////////
@@ -215,11 +216,16 @@ void Box2DPhysicBody::_collide( b2Body* _otherBody, b2ContactPoint* _contact )
 	if( !m_listener ) return;
 
 	Box2DPhysicBody* _otherObj = static_cast<Box2DPhysicBody*> ( _otherBody->GetUserData() );
+	if( _otherObj->getUserData() == 0 )
+	{
+		return;
+	}
 	
 	b2Vec2 contact_position = _contact->position;
 
 	contact_position.x /= Menge::physicsScaler;
 	contact_position.y /= Menge::physicsScaler;
+
 
 	m_listener->onCollide( _otherObj, contact_position.x, contact_position.y, _contact->normal.x, _contact->normal.y );
 

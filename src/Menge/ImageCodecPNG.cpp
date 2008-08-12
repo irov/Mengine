@@ -403,8 +403,8 @@ namespace Menge
 		png_structp png_ptr = 0;
 		png_infop info_ptr = 0;
 		png_uint_32 width, height;
-		png_colorp png_palette;
-		int color_type, palette_entries;
+		//png_colorp png_palette;
+		int color_type/*, palette_entries*/;
 		int bit_depth, pixel_depth;		// pixel_depth = bit_depth * channels
 		ImageData* codecData = static_cast<ImageData*>( _codecData );
 
@@ -510,8 +510,8 @@ namespace Menge
 		png_structp png_ptr = 0;
 		png_infop info_ptr = 0;
 		png_uint_32 width, height;
-		png_colorp png_palette;
-		int color_type, palette_entries;
+		//png_colorp png_palette;
+		int color_type/*, palette_entries*/;
 		int bit_depth, pixel_depth;		// pixel_depth = bit_depth * channels
 
 		if( _inputData == 0 )

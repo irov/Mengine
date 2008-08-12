@@ -461,4 +461,18 @@ namespace	Menge
 		return m_blockInput;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Scene::layerRemove( Node* _node )
+	{
+		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
+			it != it_end;
+			it++ )
+		{
+			if( (*it)->isChildren( _node, false ) )
+			{
+				(*it)->removeChildren( _node );
+				break;
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

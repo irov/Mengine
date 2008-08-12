@@ -85,12 +85,14 @@ void Box2DPhysicSystem::update( float _timing, int _velocityIterations, int _pos
 		b2Body* body1 = it->shape1->GetBody();
 		b2Body* body2 = it->shape2->GetBody();
 
+		Box2DPhysicBody* mBody1 = static_cast<Box2DPhysicBody*>( body1->GetUserData() );
+		Box2DPhysicBody* mBody2 = static_cast<Box2DPhysicBody*>( body2->GetUserData() );
 		/*if( !body1 || !body2 )
 		{
 			continue;
 		}*/
-		static_cast<Box2DPhysicBody*>( body1->GetUserData() )->_collide( body2, &(*it) );
-		static_cast<Box2DPhysicBody*>( body2->GetUserData() )->_collide( body1, &(*it) );
+		mBody1->_collide( body2, &(*it) );
+		mBody2->_collide( body1, &(*it) );
 	}
 	m_contacts.clear();
 
@@ -147,7 +149,10 @@ Menge::PhysicBody2DInterface* Box2DPhysicSystem::createStaticBody( const float* 
 void Box2DPhysicSystem::destroyBody( Menge::PhysicBody2DInterface* _body )
 {
 	//delete static_cast<Box2DPhysicBody*>( _body );
-	m_deletingBodies.push_back( static_cast<Box2DPhysicBody*>( _body ) );
+	Box2DPhysicBody* body = static_cast<Box2DPhysicBody*>( _body );
+	body->setUserData( 0 );
+	body->setBodyListener( 0 );
+	m_deletingBodies.push_back( body );
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::PhysicJoint2DInterface* Box2DPhysicSystem::createDistanceJoint( Menge::PhysicBody2DInterface* _body1, Menge::PhysicBody2DInterface* _body2, const float* _offsetBody1, const float* _offsetBody2, bool _collideBodies )
@@ -247,7 +252,35 @@ void Box2DPhysicSystem::Persist( const b2ContactPoint* point )
 void Box2DPhysicSystem::Remove( const b2ContactPoint* point )
 {
 	// Nothing to hold this time
-	//m_contacts.erase( std::remove( m_contacts.begin(), m_contacts.end(), point ) );
+	//m_contacts.erase( std::remove( m_contacts.begin(), m_contacts.end(), *point ) );
+	/*class RemoveIfPred
+	{
+		const b2ContactPoint* m_point;
+	public:
+		RemoveIfPred( const b2ContactPoint* _point )
+			: m_point( _point )
+		{
+		}
+		bool operator()( const b2ContactPoint& _point )
+		{
+			if( m_point->id.key == _point.id.key )
+			{
+				return true;
+			}
+			return false;
+		}
+	};
+	TContactPointList::iterator it_remove = std::remove_if( m_contacts.begin(), m_contacts.end(), RemoveIfPred(point) );
+	if( it_remove != m_contacts.end() )
+	{
+		m_contacts.erase( it_remove );
+	}*/
+	/*for( TContactPointList::iterator it = m_contacts.begin(), it_end = m_contacts.end();
+		it != it_end;
+		it++ )
+	{
+		if( point->id == it->id )
+	}*/
 }
 //////////////////////////////////////////////////////////////////////////
 void Box2DPhysicSystem::_createJoint( b2JointDef* _jointDef, Box2DPhysicJoint* _joint )

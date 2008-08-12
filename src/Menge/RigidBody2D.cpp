@@ -41,7 +41,7 @@ namespace Menge
 	, m_collisionMask( 0xFFFF )
 	, m_categoryBits( 1 )
 	, m_groupIndex( 0 )
-	, m_listenerProxy( NULL )
+	, m_listenerProxy( 0 )
 	, m_isSensor( false )
 	, m_linearVelocity( false )
 	, m_countGravity( true )

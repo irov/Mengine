@@ -23,6 +23,7 @@ namespace Menge
 
 	public:
 		void layerAppend( const std::string & _layer, Node * _node );
+		void layerRemove( Node* _node );
 
 		void setMainLayer( Layer * _layer );
 		Layer * getMainLayer();

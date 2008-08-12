@@ -40,7 +40,17 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		static void musicPlayList( const std::string & _list )
 		{
-			Holder<Amplifier>::hostage()->play( _list );
+			Holder<Amplifier>::hostage()->playAllTracks( _list );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void musicPlayTrack( const std::string & _list, int _index, bool _isLooped )
+		{
+			Holder<Amplifier>::hostage()->playTrack(_list, _index, _isLooped);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static int musicGetNumTracks()
+		{
+			return Holder<Amplifier>::hostage()->getNumTracks();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicSetVolume( float _volume )
@@ -90,6 +100,8 @@ namespace	Menge
 		pybind::def( "commonGetVolume", &ScriptSoundHelper::commonGetVolume );
 
 		pybind::def( "musicPlayList", &ScriptSoundHelper::musicPlayList );
+		pybind::def( "musicPlayTrack", &ScriptSoundHelper::musicPlayTrack );
+		pybind::def( "musicGetNumTracks", &ScriptSoundHelper::musicGetNumTracks );
 		pybind::def( "musicSetVolume", &ScriptSoundHelper::musicSetVolume );
 		pybind::def( "musicGetVolume", &ScriptSoundHelper::musicGetVolume );
 		pybind::def( "musicStop", &ScriptSoundHelper::musicStop );

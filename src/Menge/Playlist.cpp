@@ -6,6 +6,8 @@
 
 #	include "Utils.h"
 
+#	include <algorithm>
+
 #	include <ctime>
 
 namespace Menge
@@ -13,6 +15,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::Playlist( ResourcePlaylist * _resource )
 		: m_loop( false )
+		, m_oneTrackPlayed( false )
+		, m_oneTrackLooped( false )
 		, m_playlistResource( _resource )
 	{
 		if( m_playlistResource ) 
@@ -51,9 +55,14 @@ namespace Menge
 		m_loop = _loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Playlist::setLooped1( bool _loop )
+	{
+		m_oneTrackLooped = _loop;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Playlist::getLooped() const
 	{
-		return m_loop;
+		return m_oneTrackPlayed ? m_oneTrackLooped : m_loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Playlist::isEnded() const
@@ -63,6 +72,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::next()
 	{
+		if (m_oneTrackPlayed)
+		{
+			return;
+		}
+
 		if ( ++m_track == m_tracks.end() && m_loop == true )
 		{
 			m_track = m_tracks.begin();
@@ -72,6 +86,7 @@ namespace Menge
 	void Playlist::first()
 	{
 		m_track = m_tracks.begin();
+		m_oneTrackPlayed = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const std::string &	Playlist::getTrack() const
@@ -113,6 +128,35 @@ namespace Menge
 	void Playlist::last()
 	{
 		m_track = m_tracks.end() - 1;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int	 Playlist::numTracks() const
+	{
+		return m_tracks.size();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const std::string & Playlist::getTrackByIndex(int _index)
+	{
+		if( _index < 0 || _index >= m_tracks.size() )
+		{
+			return emptyString();
+		}
+
+		return m_tracks[_index];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Playlist::setTrack(const std::string & _name)
+	{
+		std::vector<std::string>::iterator it = std::find(m_tracks.begin(), m_tracks.end(), _name);
+
+		if(it == m_tracks.end())
+		{
+			first();
+		}
+
+		m_oneTrackPlayed = true;
+
+		m_track = it;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

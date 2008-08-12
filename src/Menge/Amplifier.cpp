@@ -40,27 +40,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::play( const std::string & _playlistResource )
+	bool Amplifier::_loadPlayList(const std::string & _playlistResource)
 	{
-		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
-
-		if( !enabled )
-		{
-			return;
-		}
-
 		TMapPlayList::iterator it = m_mapPlayLists.find( _playlistResource );
 
 		if ( it == m_mapPlayLists.end() )
 		{			
 			ResourcePlaylist * playlistResource = 
 				Holder<ResourceManager>::hostage()
-					->getResourceT<ResourcePlaylist>( _playlistResource );
+				->getResourceT<ResourcePlaylist>( _playlistResource );
 
 			if( playlistResource == NULL )
 			{
-				MENGE_LOG("Amplifier: no found playlist with name %s \n", _playlistResource.c_str() );
-				return;
+				return false;
 			}
 
 			Playlist * playlist = new Playlist( playlistResource );
@@ -70,9 +62,68 @@ namespace Menge
 
 		m_currentPlaylistName = _playlistResource;
 		m_currentPlayList = it->second;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::playTrack( const std::string & _playlistResource, int _index, bool _looped )
+	{
+		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
+
+		if( !enabled )
+		{
+			return;
+		}
+
+		if(!_loadPlayList(_playlistResource))
+		{
+			MENGE_LOG("Amplifier: no found playlist with name %s \n", _playlistResource.c_str() );
+			return;
+		}
+
+		m_currentPlayList->setLooped1(_looped);
+
+		const std::string & name = m_currentPlayList->getTrackByIndex(_index);
+
+		m_currentPlayList->setTrack(name);
+
+		_prepareSound(name);
+
+		m_music->setVolume( m_volume );
+		m_music->play();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int Amplifier::getNumTracks() const
+	{
+		if(m_currentPlayList == NULL)
+		{
+			return 0;
+		}
+
+		return m_currentPlayList->numTracks(); 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::playAllTracks( const std::string & _playlistResource )
+	{
+		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
+
+		if( !enabled )
+		{
+			return;
+		}
+
+		if(!_loadPlayList(_playlistResource))
+		{
+			MENGE_LOG("Amplifier: no found playlist with name %s \n", _playlistResource.c_str() );
+			return;
+		}
+
 		m_currentPlayList->first();
 
-		_play();
+		_prepareSound(m_currentPlayList->getTrack());
+
+		m_music->setVolume( m_volume );
+		m_music->play();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::shuffle( const std::string & _playlist )
@@ -111,7 +162,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::listenStopped()
 	{
-		_play();	//	play next track in playlist
+		if(m_currentPlayList->getLooped())
+		{
+			m_currentPlayList->next();
+			const std::string & filename = m_currentPlayList->getTrack();
+			_prepareSound(filename);
+
+			m_music->setVolume( m_volume );
+			m_music->play();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::listenPaused( bool _pause )
@@ -134,18 +193,16 @@ namespace Menge
 		return m_volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::_play()
+	void Amplifier::_prepareSound(const std::string & _filename)
 	{
 		_release();
 
-		const std::string & filename = m_currentPlayList->getTrack();
-
-		m_buffer = Holder<SoundEngine>::hostage()->createSoundBufferFromFile( filename.c_str(), true );
+		m_buffer = Holder<SoundEngine>::hostage()->createSoundBufferFromFile( _filename.c_str(), true );
 
 		if( m_buffer == 0 )
 		{
 			MENGE_LOG("Warning: Amplifier can't load sample '%s'\n"
-				, filename.c_str() 
+				, _filename.c_str() 
 				);
 
 			return;			
@@ -156,16 +213,11 @@ namespace Menge
 		if( m_music == 0 )
 		{
 			MENGE_LOG("Warning: Amplifier '%s' can't create sound source\n"
-				, filename.c_str()
+				, _filename.c_str()
 				);
 
 			return;
 		}
-
-		m_music->setVolume( m_volume );
-		m_music->play();
-
-		m_currentPlayList->next();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::_release()

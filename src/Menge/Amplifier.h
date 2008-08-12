@@ -34,7 +34,7 @@ namespace	Menge
 			/*!
 			\param _playlist имя ресурса.
 			*/
-			void	play( const std::string & _playlistResource );
+			void	playAllTracks( const std::string & _playlistResource );
 
 			//! Shuffle плейлиста.
 			/*!
@@ -64,9 +64,13 @@ namespace	Menge
 
 			void fadeIn( float _time );
 			void fadeOut( float _time );
+			int getNumTracks() const;
 
 			void update( float _timing );
 
+			void playTrack( const std::string & _playlistResource, int _index, bool _looped );
+
+			
 		private:
 			float m_volume;
 
@@ -83,7 +87,8 @@ namespace	Menge
 			void	listenPaused( bool _pause );
 			void	listenStopped();
 			void	_release();	
-			void	_play();
+			void	_prepareSound(const std::string & _filename);
+			bool	_loadPlayList(const std::string & _playlistResource);
 
 			ValueInterpolator<float> m_fade;
 	};

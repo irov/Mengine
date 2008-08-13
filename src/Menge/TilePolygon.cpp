@@ -142,8 +142,7 @@ namespace Menge
 			return false;
 		}
 
-		//AGHTUNG!!!!!!!!!!!!!!!!!!!!!!!!!! int -> bool
-		result = mt::decompose_concave(contour,polys);
+		mt::decompose_concave(contour,polys);
 	
 		for(std::vector<mt::vec2f>::size_type i = 0; i < polys.size(); i++)
 		{

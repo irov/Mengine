@@ -1439,7 +1439,7 @@ void HGE_Impl::Gfx_Prepare2D()
 	CurTexture = NULL;
 
 	//D3DXMatrixIdentity( &matView );
-	//D3DXMatrixIdentity( &matWorld );
+	D3DXMatrixIdentity( &matWorld );
 	/*_SetProjectionMatrix( nScreenWidth, nScreenHeight );*/
 	pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj );
 	pD3DDevice->SetTransform( D3DTS_VIEW, &matView );
@@ -1515,6 +1515,7 @@ void HGE_Impl::Gfx_SetListener( Gfx_Listener* _listener )
 
 void HGE_Impl::syncCPU_()
 {
+	_render_batch( false );
 	pD3DDevice->SetRenderTarget( m_syncTargets[m_frames % 2], 0 );
 	//m_syncTargets[m_frames % 2]->Release();
 	_SetProjectionMatrix( 2, 2 );

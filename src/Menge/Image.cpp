@@ -371,7 +371,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Image& Image::load( DataStreamInterface* _stream, const std::string& _type )
 	{
-		if( m_buffer && m_autoDelete )
+	/*	if( m_buffer && m_autoDelete )
 		{
 			delete[] m_buffer;
 			m_buffer = NULL;
@@ -401,7 +401,7 @@ namespace Menge
 		m_buffer = static_cast<unsigned char*>( res.first->getBuffer() );
 		// Make sure stream does not delete
 		res.first->setFreeOnClose( true );
-
+*/
 		return *this;
 	}
 	//////////////////////////////////////////////////////////////////////////

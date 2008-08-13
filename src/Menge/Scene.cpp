@@ -475,4 +475,11 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f Scene::screenToLocal( const String& _layerName, const mt::vec2f& _point )
+	{
+		Layer * layer = getLayer_( _layerName );
+		Layer2D* layer2D = static_cast<Layer2D*>( layer );
+		return layer2D->screenToLocal( _point );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

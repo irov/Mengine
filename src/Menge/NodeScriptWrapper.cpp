@@ -392,9 +392,7 @@ namespace Menge
 		}
 		static mt::vec2f screenToLocal( const std::string& _layerName, const mt::vec2f& _point )
 		{
-			//Layer2D* layer = Holder<Player>::hostage()->getCurrentScene()->getChildrenT<Layer2D>( _layerName, false );
-			//return layer->screenToLocal( _point );
-			return mt::vec2f(0,0);
+			return Holder<Player>::hostage()->getCurrentScene()->screenToLocal( _layerName, _point );
 		}
 		static void minimizeWindow()
 		{

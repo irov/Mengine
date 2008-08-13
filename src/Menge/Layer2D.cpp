@@ -127,4 +127,14 @@ namespace	Menge
 	{
 		_node->setLayer( this );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f Layer2D::screenToLocal( const mt::vec2f& _point )
+	{
+		Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
+		Viewport vp = camera->getViewport();
+		vp.begin.x *= m_factorParallax.x;
+		vp.begin.y *= m_factorParallax.y;
+		return _point + vp.begin;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

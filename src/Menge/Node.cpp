@@ -577,7 +577,7 @@ namespace Menge
 	{
 		const mt::box2f & bbox = getBoundingBox();
 
-		bool result = _viewport.testRectangle( bbox.vb, bbox.ve );
+		bool result = _viewport.testBBox( bbox );
 
 		return result;
 	}

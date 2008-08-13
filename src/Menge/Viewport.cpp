@@ -31,6 +31,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Viewport::testBBox( const mt::box2f& _bbox ) const
+	{
+		return mt::is_intersect( mt::box2f( begin, end ), _bbox );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Viewport::parallax( const mt::vec2f & _factor )
 	{
 		begin.x *= _factor.x;

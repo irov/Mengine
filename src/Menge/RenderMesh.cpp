@@ -37,9 +37,8 @@ namespace Menge
 	{
 
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
-		mt::mat4f wm = renderEngine->getWorldMatrix();
 
-		const mt::mat4f & lm = this->getLocalMatrix3D();
+		const mt::mat4f & lm = this->getWorldMatrix3D();
 
 		renderEngine->setWorldMatrix( lm );
 
@@ -47,8 +46,6 @@ namespace Menge
 			m_resourceMesh->getIndexData(), 
 			&m_material 
 			);
-
-		renderEngine->setWorldMatrix( wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMesh::_compile()

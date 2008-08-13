@@ -2,7 +2,7 @@
 #	include "Codec.h"
 
 #	include "ImageCodecPNG.h"
-//#	include "ImageCodecJPEG.h"
+#	include "ImageCodecJPEG.h"
 
 #	include <cassert>
 #	include <algorithm>
@@ -56,7 +56,7 @@ namespace Menge
 	void Codec::initialize()
 	{
 		REGISTER_CODEC( ImageCodecPNG );
-		//REGISTER_CODEC( ImageCodecJPEG );
+		REGISTER_CODEC( ImageCodecJPEG );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Codec::cleanup()

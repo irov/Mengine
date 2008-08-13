@@ -80,8 +80,6 @@ namespace Menge
 		void	setViewMatrix( const mt::mat4f& _view );
 		void	setWorldMatrix( const mt::mat4f& _world );
 
-		const mt::mat4f& getWorldMatrix() const;
-
 		void	beginScene();
 		void	endScene();
 		void	beginLayer2D();
@@ -121,8 +119,6 @@ namespace Menge
 		void setRenderTarget( const String & _target, bool _clear = true );
 		const mt::vec4f& getRenderArea() const;
 
-		const mt::vec2f& getViewFactor() const;
-		const mt::vec2f& getViewOrigin() const;
 		int getNumDIP() const;
 
 	protected:
@@ -139,10 +135,8 @@ namespace Menge
 		mt::vec2f m_windowResolution;
 		String m_currentRenderTarget;
 
-		mt::mat4f m_worldMatrix;
-
-		mt::vec2f m_viewFactor;
-		mt::vec2f m_viewOrigin;
+		bool m_layer3D;
+		mt::mat4f m_viewTransform;
 		void recalcRenderArea_( const mt::vec2f & resolution );
 	};
 }

@@ -25,9 +25,9 @@ namespace Menge
 		, m_windowResolution( 1024.f, 768.f )
 		, m_windowCreated( false )
 		, m_renderFactor( 1.0f )
-		, m_viewOrigin( 0.0f, 0.0f )
-		, m_viewFactor( 1.0f, 1.0f )
+		, m_layer3D( false )
 	{
+		mt::ident_m4( m_viewTransform );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::initialize()
@@ -64,15 +64,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::screenshot( RenderImageInterface* _image, const mt::vec4f & _rect )
 	{
-		mt::vec2f offset;
-		mt::mul_v2_m4( offset, _rect.v2_0, m_worldMatrix );
-		
-		mt::vec2f wh = _rect.v2_1 - _rect.v2_0;
-		mt::vec4f shotrect;
-		shotrect.v2_0 = offset;
-		shotrect.v2_1 = offset + wh;
-
-		m_interface->screenshot( _image, shotrect.m );
+		m_interface->screenshot( _image, _rect.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render()
@@ -87,34 +79,21 @@ namespace Menge
 		//m_renderViewport.set( mt::vec2f::zero_v2, m_contentResolution );
 	}
 	////////////////////////////////////////////////////////////////////////////
-	/*void RenderEngine::setRenderViewport( const Viewport & _viewport )
-	{
-		m_renderViewport = _viewport;
-	}
-	////////////////////////////////////////////////////////////////////////////
-	const Viewport & RenderEngine::getRenderViewport() const
-	{
-		return m_renderViewport;
-	}*/
-	////////////////////////////////////////////////////////////////////////////
-	/*void RenderEngine::setRenderCamera( Camera3D * _camera )
-	{
-		m_renderCamera = _camera;
-	}
-	////////////////////////////////////////////////////////////////////////////
-	Camera3D * RenderEngine::getRenderCamera()
-	{
-		return m_renderCamera;
-	}*/
-	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer2D()
 	{
 		m_interface->beginLayer2D();
+		m_layer3D = false;
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endLayer2D()
 	{
 		m_interface->endLayer2D();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::beginLayer3D()
+	{
+		m_interface->beginLayer3D();
+		m_layer3D = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	RenderEngine::setProjectionMatrix( const mt::mat4f& _projection )
@@ -124,19 +103,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void	RenderEngine::setViewMatrix( const mt::mat4f& _view )
 	{
-		return m_interface->setViewMatrix( _view.m );
+		mt::mat4f view = _view;
+		if( m_currentRenderTarget == "defaultCamera" && m_layer3D == false )
+		{
+			mt::mul_m4_m4( view, _view, m_viewTransform );
+		}
+		return m_interface->setViewMatrix( view.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	RenderEngine::setWorldMatrix( const mt::mat4f& _world )
+	void RenderEngine::setWorldMatrix( const mt::mat4f& _world )
 	{
-		m_worldMatrix = _world;
-		return m_interface->setWorldMatrix( m_worldMatrix.m );
+		return m_interface->setWorldMatrix( _world.m );
 	}	
-	//////////////////////////////////////////////////////////////////////////
-	const mt::mat4f& RenderEngine::getWorldMatrix() const
-	{
-		return m_worldMatrix;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * RenderEngine::createImage( const String& _name, float _width, float _height )
 	{
@@ -461,11 +439,6 @@ namespace Menge
 								_material );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::beginLayer3D()
-	{
-		m_interface->beginLayer3D();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderArea( const mt::vec4f& _renderArea )
 	{
 		mt::vec4f renderArea = _renderArea;
@@ -527,19 +500,10 @@ namespace Menge
 			areaHeight = m_renderArea.w - m_renderArea.y;
 		}
 
-		m_viewFactor.x = areaWidth / m_contentResolution.x;
-		m_viewFactor.y = areaHeight / m_contentResolution.y;
-		m_viewOrigin.x = m_renderArea.x;
-		m_viewOrigin.y = m_renderArea.y;
-
-		mt::mat4f wm;
-		mt::ident_m4( wm );
-		wm.m[0] = m_viewFactor.x;
-		wm.m[5] = m_viewFactor.y;
-		wm.m[12] = m_viewOrigin.x;
-		wm.m[13] = m_viewOrigin.y;
-		setWorldMatrix( wm );
-
+		m_viewTransform.m[0] = areaWidth / m_contentResolution.x;
+		m_viewTransform.m[5] = areaHeight / m_contentResolution.y;
+		m_viewTransform.m[12] = m_renderArea.x;
+		m_viewTransform.m[13] = m_renderArea.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTarget( const String& _target, bool _clear )
@@ -547,16 +511,6 @@ namespace Menge
 		if( m_currentRenderTarget != _target )
 		{
 			m_currentRenderTarget = _target;
-			mt::mat4f wm;
-			mt::ident_m4( wm );
-			if( m_currentRenderTarget == "defaultCamera" )
-			{
-				wm.m[0] = m_viewFactor.x;
-				wm.m[5] = m_viewFactor.y;
-				wm.m[12] = m_viewOrigin.x;
-				wm.m[13] = m_viewOrigin.y;
-			}
-			setWorldMatrix( wm );
 			m_interface->setRenderTarget( m_currentRenderTarget, _clear );
 		}
 	}
@@ -615,16 +569,6 @@ namespace Menge
 		m_windowResolution = resolution;
 
 		setRenderFactor( m_renderFactor );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& RenderEngine::getViewFactor() const
-	{
-		return m_viewFactor;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& RenderEngine::getViewOrigin() const
-	{
-		return m_viewOrigin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

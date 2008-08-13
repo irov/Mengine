@@ -24,6 +24,7 @@ namespace Menge
 	public:
 		void layerAppend( const std::string & _layer, Node * _node );
 		void layerRemove( Node* _node );
+		mt::vec2f screenToLocal( const String& _layerName, const mt::vec2f& _point );
 
 		void setMainLayer( Layer * _layer );
 		Layer * getMainLayer();

@@ -20,6 +20,7 @@ namespace Menge
 	, m_buffer(0)
 	, m_currentPlayList(0)
 	, m_volume( 1.0f )
+	, m_volumeOverride( 1.0f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -238,18 +239,24 @@ namespace Menge
 		if( m_fade.isStarted() )
 		{
 			float volume;
-			m_fade.update( _timing, &volume );
+			bool end = m_fade.update( _timing, &volume );
 			setVolume( volume );
+			if( end == true )
+			{
+				setVolume( m_volumeOverride );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::fadeIn( float _time )
 	{
+		m_volumeOverride = m_volume;
 		m_fade.start( 0.0f, m_volume, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::fadeOut( float _time )
 	{
+		m_volumeOverride = m_volume;
 		m_fade.start( m_volume, 0.0f, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////

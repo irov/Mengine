@@ -457,7 +457,8 @@ namespace Menge
 				v.pos[1] = m_vertices[m_triangles[i].vertexIndices[j]].vertex[1];
 				v.pos[2] = m_vertices[m_triangles[i].vertexIndices[j]].vertex[2];
 
-				uint16 index = -1;
+				bool found = false;
+				uint16 index = 0;
 
 				for( std::vector<TVertex>::size_type iV = 0; iV < m_tvertices.size(); ++iV )
 				{
@@ -469,11 +470,12 @@ namespace Menge
 					)
 					{
 						index = (uint16)iV;
+						found = true;
 						break;
 					}
 				}
 
-				if(index == -1)
+				if( found == false )
 				{
 					index = (uint16)m_tvertices.size();
 					m_tvertices.push_back(v);

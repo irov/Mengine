@@ -366,6 +366,7 @@ namespace Menge
 
 			mt::vec2f pos = m_renderCamera2D->getLocalPosition();
 			m_renderCamera2D->setLocalPosition( mt::vec2f( 512.0f, 384.0f ) );
+			Holder<RenderEngine>::hostage()->setViewMatrix( m_renderCamera2D->getViewMatrix() );
 			m_arrow->render( _debugMask );
 
 			Holder<RenderEngine>::hostage()

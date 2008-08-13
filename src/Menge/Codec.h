@@ -63,15 +63,6 @@ namespace Menge
 		//@param pData Extra information to be passed to the codec (codec type specific)
 		virtual void codeToFile( DataStreamInterface* _input, const String& _outFileName, CodecData* _pData ) const = 0;
 
-		/// Result of a decoding; both a decoded data stream and CodecData metadata
-		typedef std::pair<DataStreamInterface*, CodecData*> DecodeResult;
-
-		//Codes the data from the input chunk into the output chunk.
-		//@param input Stream containing the encoded data
-		//@note
-		//Has a variable number of arguments, which depend on the codec type.
-		virtual DecodeResult decode( DataStreamInterface* _input ) const = 0;
-
 		virtual bool getDataInfo( DataStreamInterface* _inputData, CodecData* _codecData ) const = 0;
 		virtual bool decode( DataStreamInterface* _input, unsigned char* _buffer, unsigned int _options ) const = 0;
 		// Returns the type of the codec as a String

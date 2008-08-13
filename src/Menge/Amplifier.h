@@ -73,6 +73,7 @@ namespace	Menge
 			
 		private:
 			float m_volume;
+			float m_volumeOverride;
 
 			typedef	std::map< std::string, Playlist* >	TMapPlayList;
 

@@ -121,6 +121,8 @@ namespace Menge
 
 		int getNumDIP() const;
 
+		const mt::mat4f& getViewTransform() const;
+
 	protected:
 		Menge::RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;

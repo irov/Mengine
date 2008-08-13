@@ -136,7 +136,8 @@ namespace     Menge
 		XML_SWITCH_NODE(_xml)
 		{
 			XML_CASE_ATTRIBUTE_NODE( "Font", "Name", m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Text", "Value", &TextField::setText );
+			XML_CASE_ATTRIBUTE_NODE( "Text", "Value", m_text );
+			//XML_CASE_ATTRIBUTE_NODE_METHOD( "Text", "Value", &TextField::setText );
 			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
 			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );
 			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );

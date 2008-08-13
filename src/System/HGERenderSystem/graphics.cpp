@@ -1317,18 +1317,41 @@ bool HGE_Impl::_init_lost()
 void HGE_Impl::Gfx_Snapshot( HTEXTURE tex, RECT _rect )
 {
 	LPDIRECT3DSURFACE8 surf;
-	pD3DDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &surf );
+	HRESULT hr = pD3DDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &surf );
+	if( FAILED( hr ) )
+	{
+		System_Log("D3D Error: failed to GetBackBuffer");
+	}
 
 	IDirect3DTexture8* dtext = reinterpret_cast<IDirect3DTexture8*>( tex );
 	LPDIRECT3DSURFACE8 dsurf;
-	dtext->GetSurfaceLevel(0, &dsurf );
+	D3DSURFACE_DESC desc;
+	dtext->GetLevelDesc(0, &desc);
+	hr = dtext->GetSurfaceLevel(0, &dsurf );
+	if( FAILED( hr ) )
+	{
+		System_Log("D3D Error: failed to GetSurfaceLevel");
+	}
 
 	RECT dest_rect;
 	dest_rect.top = 0;
 	dest_rect.left = 0;
 	dest_rect.right = _rect.right - _rect.left;
 	dest_rect.bottom = _rect.bottom - _rect.top;
-	D3DXLoadSurfaceFromSurface( dsurf, NULL, &dest_rect, surf, NULL, &_rect, D3DX_DEFAULT, 0 );
+	if( dest_rect.right > desc.Width )
+	{
+		dest_rect.right = desc.Width;
+	}
+	if( dest_rect.bottom > desc.Height )
+	{
+		dest_rect.bottom = desc.Height;
+	}
+
+	hr = D3DXLoadSurfaceFromSurface( dsurf, NULL, &dest_rect, surf, NULL, &_rect, D3DX_DEFAULT, 0 );
+	if( FAILED( hr ) )
+	{
+		System_Log("D3D Error: failed to D3DXLoadSurfaceFromSurface");
+	}
 	surf->Release();
 }
 

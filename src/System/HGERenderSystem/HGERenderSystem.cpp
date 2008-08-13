@@ -178,7 +178,7 @@ void HGERenderSystem::setWorldMatrix( const float * _world )
 Menge::RenderImageInterface * HGERenderSystem::createImage( const Menge::String & _name,
 													float _width, float _height )
 {
-	HGETexture* texture = new HGETexture( m_hge, _name, _width, _height );
+	HGETexture* texture = new HGETexture( m_hge, _name, ::floorf( _width + 0.5f ), ::floorf( _height + 0.5f ) );
 	m_textureMap.insert( std::make_pair( _name, static_cast<Menge::RenderImageInterface*>( texture ) ) );
 	texture->incRef();
 	return texture;

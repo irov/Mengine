@@ -40,5 +40,6 @@ namespace Menge
 		ImageFrame m_frame;
 		mt::vec2f m_offset;
 		mt::vec4f m_uv;
+		bool m_cached;
 	};
 }

@@ -8,7 +8,7 @@
 #	include <algorithm>
 #	include <cctype>
 
-#	define REGISTER_CODEC( _class_ )	( Codec::registerCodec( new (_class_) ) )
+#	define REGISTER_CODEC( _type_, _class_ )	( Codec::registerCodec( (_type_), new (_class_) ) )
 
 namespace Menge
 {
@@ -16,18 +16,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Codec::~Codec() 
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	TStringVector Codec::getExtensions()
-	{
-		TStringVector result;
-		result.reserve(ms_mapCodecs.size());
-		TCodecMap::const_iterator i;
-		for (i = ms_mapCodecs.begin(); i != ms_mapCodecs.end(); ++i)
-		{
-			result.push_back(i->first);
-		}
-		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Codec * Codec::getCodec( const String& _extension )
@@ -55,8 +43,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Codec::initialize()
 	{
-		REGISTER_CODEC( ImageCodecPNG );
-		REGISTER_CODEC( ImageCodecJPEG );
+		REGISTER_CODEC( "png", ImageCodecPNG );
+		REGISTER_CODEC( "jpg", ImageCodecJPEG );
+		REGISTER_CODEC( "jpeg", ImageCodecJPEG );
+		REGISTER_CODEC( "jfif", ImageCodecJPEG );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Codec::cleanup()

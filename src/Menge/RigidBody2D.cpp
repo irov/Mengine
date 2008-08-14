@@ -552,4 +552,15 @@ namespace Menge
 		m_updatable = !_freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::setCollisionMask( int _mask )
+	{
+		m_collisionMask = (uint16)_mask;
+		updateFilterData_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::updateFilterData_()
+	{
+		m_interface->updateFilterData( m_categoryBits, m_collisionMask, m_groupIndex );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

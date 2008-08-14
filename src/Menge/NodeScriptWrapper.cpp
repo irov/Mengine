@@ -267,8 +267,8 @@ namespace Menge
 				ResourceFactoryParam param;
 				param.name = _name;
 
-				//TODO: Fix me. wtf i need to pass to category????
-				param.category = "";
+				param.category = Holder<FileEngine>::hostage()->getAppDataPath() + "\\" +
+									Holder<Game>::hostage()->getCurrentAccount()->getName() + "\\";
 
 				resourceImage = new ResourceImageDynamic( param );
 				//FIXME
@@ -327,8 +327,6 @@ namespace Menge
 		static void setFullscreenMode( bool _fullscreen )
 		{
 			Holder<Application>::hostage()->setFullscreenMode( _fullscreen );
-			//Holder<Application>::hostage()->setMouseBounded( _fullscreen );
-			//Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
 		}
 
 		static bool s_getFullscreenMode()
@@ -363,7 +361,7 @@ namespace Menge
 
 
 			wImage.loadDynamicImage( buffer, (std::size_t)width, (std::size_t)height, 1, pixelFormat );
-			wImage.save( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _filename );
+			wImage.save( _filename );
 			img->unlock();
 			//const_cast<RenderImageInterface*>(img)->writeToFile( _filename.c_str() );
 		}
@@ -916,6 +914,7 @@ namespace Menge
 				.def( "setLinearVelocity", &RigidBody2D::setLinearVelocity )
 				.def( "unsetLinearVelocity", &RigidBody2D::unsetLinearVelocity )
 				.def( "freeze", &RigidBody2D::freeze )
+				.def( "setCollisionMask", &RigidBody2D::setCollisionMask )
 			;
 
 			

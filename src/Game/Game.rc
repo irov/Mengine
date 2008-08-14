@@ -55,8 +55,6 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_MENGE               ICON                    "menge.ico"
-IDI_BUTTONS             ICON                    "Buttons.ico"
-IDI_PEPELAZ             ICON                    "Pepelaz.ico"
 #endif    // Russian resources
 /////////////////////////////////////////////////////////////////////////////
 

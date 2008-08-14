@@ -223,6 +223,7 @@ namespace Menge
 
 		if( it_find != m_children.end() )
 		{
+			(*it_find)->setParent( 0 );
 			m_children.erase( it_find );
 		}
 	}

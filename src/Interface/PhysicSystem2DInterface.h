@@ -62,6 +62,8 @@ namespace Menge
 		virtual bool isStatic() const = 0;
 
 		virtual void wakeUp() = 0;
+
+		virtual void updateFilterData( uint16 _categoryBits, uint16 _collisionMask, signed short _groupIndex ) = 0;
 	};
 
 	class PhysicJoint2DInterface

@@ -3,6 +3,7 @@
 #	include "ResourceImplement.h"
 
 #	include "RenderEngine.h"
+#	include "ResourceManager.h"
 
 namespace Menge
 {
@@ -12,6 +13,7 @@ namespace Menge
 		: ResourceImage( _params )
 		, m_offset( 0.0f, 0.0f )
 		, m_uv( 0.0f, 0.0f, 1.0f, 1.0f )
+		, m_cached( false )
 	{
 		m_frame.image = NULL;
 		m_frame.size = mt::vec2f::zero_v2;
@@ -72,12 +74,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDynamic::_compile()
 	{	
+		if( m_cached )
+		{
+			loadImageFrame( m_params.category + "cache\\" + m_params.name + ".png" );
+		}
+		m_cached = false;
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDynamic::_release()
 	{
-		releaseImageFrame( m_frame );
+		if( m_frame.image != 0 )
+		{
+			m_frame.image->writeToFile( m_params.category + "cache\\" + m_params.name + ".png" );
+			m_cached = true;
+			releaseImageFrame( m_frame );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDynamic::setSize( const mt::vec2f& _size )

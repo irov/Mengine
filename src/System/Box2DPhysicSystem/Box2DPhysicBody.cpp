@@ -278,3 +278,19 @@ void Box2DPhysicBody::applyForceAndTorque()
 		m_listener->applyForceAndTorque();
 	}
 }
+//////////////////////////////////////////////////////////////////////////
+void Box2DPhysicBody::updateFilterData( Menge::uint16 _categoryBits, Menge::uint16 _collisionMask, signed short _groupIndex )
+{
+	b2FilterData fData;
+	fData.categoryBits = _categoryBits;
+	fData.maskBits = _collisionMask;
+	fData.groupIndex = _groupIndex;
+	b2Shape* shape = m_body->GetShapeList();
+	while( shape != 0 )
+	{
+		shape->SetFilterData( fData );
+		m_world->Refilter( shape );
+		shape = shape->GetNext();
+	}
+}
+//////////////////////////////////////////////////////////////////////////

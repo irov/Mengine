@@ -102,13 +102,25 @@ namespace Menge
 			return;
 		}
 
-		const std::string & name = _resource->getName();
+		const String& name = _resource->getName();
 
 		TMapResource::iterator it_find = m_mapResource.find( name );
 
 		if( it_find == m_mapResource.end() )
 		{
 			m_mapResource.insert( std::make_pair( name, _resource ) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::unregisterResource( ResourceReference* _resource )
+	{
+		const String& name = _resource->getName();
+
+		TMapResource::iterator it_find = m_mapResource.find( name );
+
+		if( it_find != m_mapResource.end() )
+		{
+			m_mapResource.erase( it_find );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

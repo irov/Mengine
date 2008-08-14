@@ -35,12 +35,16 @@ namespace Menge
 		ResourceReference * createResourceFromXml( const std::string& _xml );
 
 		void registerResource( ResourceReference * _resource );
+		void unregisterResource( ResourceReference* _resource );
 		ResourceReference * getResource( const std::string & _name );
 
 		template<class T>
 		T * getResourceT( const std::string & _name )
 		{
-			return static_cast< T * >( getResource( _name ) );
+			//return static_cast< T * >( getResource( _name ) );
+			T* r = dynamic_cast<T*>( getResource( _name ) );
+			//assert( r && "bla" );
+			return r;
 		}
 
 		void releaseResource( ResourceReference * _resource );

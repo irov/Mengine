@@ -23,23 +23,97 @@ namespace Menge
 		stream->read( _data, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ImageCodecPNG::ImageCodecPNG()
+	static void	s_writeProc( png_structp png_ptr, unsigned char *data, png_size_t size )
 	{
+		OutStreamInterface* outStream = static_cast<OutStreamInterface*>( png_get_io_ptr( png_ptr ) );
+		outStream->write( (char*)data, size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String ImageCodecPNG::getType() const
+	static void	s_flushProc( png_structp png_ptr ) 
 	{
-		return "png";
+			// empty flush implementation
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* ImageCodecPNG::code( DataStreamInterface* input, CodecData* _data ) const
+	bool ImageCodecPNG::code( OutStreamInterface* _outStream, unsigned char* _buffer, CodecData* _data ) const
 	{
-		return NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageCodecPNG::codeToFile( DataStreamInterface* _input, const String& _outFileName, CodecData* _pData ) const
-	{
+		ImageCodec::ImageData* imageData = static_cast<ImageCodec::ImageData*>( _data );
+		png_structp png_ptr;
+		png_infop info_ptr;
+		png_uint_32 width = imageData->width;
+		png_uint_32 height = imageData->height;
+		int bit_depth = 8;
+		int color_type;
+		int pitch = width * PixelUtil::getNumElemBytes( imageData->format );
+		int pixel_depth = 8;
+		unsigned char* buffer = _buffer;
 
+
+		png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, (png_voidp)0, s_errorHandler, s_errorHandler );
+
+		if( png_ptr == 0 )  
+		{
+			MENGE_LOG( "PNG codec error: Can't create write structure" );
+			return false;
+		}
+
+		// allocate/initialize the image information data.
+		info_ptr = png_create_info_struct( png_ptr );
+
+		if( info_ptr == 0 )  
+		{
+			MENGE_LOG( "PNG codec error: Can't create info structure" );
+			png_destroy_write_struct( &png_ptr, (png_infopp)0 );
+			return false;
+		}
+
+		// Set error handling.  REQUIRED if you aren't supplying your own
+		// error handling functions in the png_create_write_struct() call.
+		if( setjmp( png_jmpbuf( png_ptr ) ) )  
+		{
+			// if we get here, we had a problem reading the file
+			png_destroy_write_struct( &png_ptr, &info_ptr );
+			return false;
+		}
+
+		// init the IO
+		png_set_write_fn( png_ptr, _outStream, s_writeProc, s_flushProc );
+
+		if( imageData->format == PF_R8G8B8 || imageData->format == PF_X8R8G8B8 )
+		{
+			color_type = PNG_COLOR_TYPE_RGB;
+		}
+		else if( imageData->format == PF_A8R8G8B8 )
+		{
+			color_type = PNG_COLOR_TYPE_RGB_ALPHA;
+		}
+		else
+		{
+			MENGE_LOG( "PNG codec error: unsupported image format" );
+			png_destroy_write_struct( &png_ptr, &info_ptr );
+			return false;
+		}
+
+		png_set_IHDR( png_ptr, info_ptr, width, height, pixel_depth, color_type, PNG_INTERLACE_NONE,
+			PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE );
+
+		png_set_bgr( png_ptr );
+
+		// Write the file header information.
+		png_write_info(png_ptr, info_ptr);
+
+		// write out the image data
+		for( png_uint_32 k = 0; k < height; k++) 
+		{
+			png_write_row( png_ptr, buffer );
+			buffer += pitch;
+		}
+		// It is REQUIRED to call this to finish writing the rest of the file
+		// Bug with png_flush
+		png_write_end( png_ptr, info_ptr );
+
+		png_destroy_write_struct( &png_ptr, &info_ptr );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageCodecPNG::getDataInfo( DataStreamInterface* _inputData, Codec::CodecData* _codecData ) const
@@ -47,8 +121,7 @@ namespace Menge
 		png_structp png_ptr = 0;
 		png_infop info_ptr = 0;
 		png_uint_32 width, height;
-		//png_colorp png_palette;
-		int color_type/*, palette_entries*/;
+		int color_type;
 		int bit_depth, pixel_depth;		// pixel_depth = bit_depth * channels
 		ImageData* codecData = static_cast<ImageData*>( _codecData );
 
@@ -154,8 +227,7 @@ namespace Menge
 		png_structp png_ptr = 0;
 		png_infop info_ptr = 0;
 		png_uint_32 width, height;
-		//png_colorp png_palette;
-		int color_type/*, palette_entries*/;
+		int color_type;
 		int bit_depth, pixel_depth;		// pixel_depth = bit_depth * channels
 
 		if( _inputData == 0 )
@@ -265,19 +337,7 @@ namespace Menge
 					MENGE_LOG("PNG codec error: PNG format not supported" );
 					return false;
 		}
-/*
-		// unlike the example in the libpng documentation, we have *no* idea where
-		// this file may have come from--so if it doesn't have a file gamma, don't
-		// do any correction ("do no harm")
 
-		double gamma = 0;
-		double screen_gamma = 2.2;
-
-		if (png_get_gAMA(png_ptr, info_ptr, &gamma) && ( flags & PNG_IGNOREGAMMA ) != PNG_IGNOREGAMMA)
-		{
-			png_set_gamma(png_ptr, screen_gamma, gamma);
-		}
-*/
 		// all transformations have been registered; now update info_ptr data
 		png_read_update_info(png_ptr, info_ptr);
 
@@ -288,12 +348,6 @@ namespace Menge
 			png_read_row( png_ptr, _buffer, png_bytep_NULL );
 			_buffer += width * pixel_depth / 8;
 		}
-
-		// read the rest of the file, getting any additional chunks in info_ptr
-		//png_read_end( png_ptr, info_ptr );
-
-		// get possible metadata (it can be located both before and after the image data)
-		//ReadMetadata( png_ptr, info_ptr, dib );
 
 		if( png_ptr )
 		{

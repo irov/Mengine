@@ -48,6 +48,8 @@ public:
 
 	void wakeUp() override;
 
+	void updateFilterData( Menge::uint16 _categoryBits, Menge::uint16 _collisionMask, signed short _groupIndex ) override;
+
 	void applyForceAndTorque() override;
 
 	b2Body* getBody();

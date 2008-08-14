@@ -182,4 +182,23 @@ namespace Menge
 		m_poly.push_back(_vertex);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TilePolygon::_updateBoundingBox( mt::box2f& _boundingBox )
+	{
+		Node::_updateBoundingBox( _boundingBox );
+		for( std::vector<mt::vec2f>::iterator it = m_triangles.begin(), it_end = m_triangles.end();
+			it != it_end;
+			it++ )
+		{
+			mt::add_internal_point( _boundingBox, (*it) );
+		}
+
+		for( std::vector<mt::vec2f>::iterator it = m_penumbra_triangles.begin(), it_end = m_penumbra_triangles.end();
+			it != it_end;
+			it++ )
+		{
+			mt::add_internal_point( _boundingBox, (*it) );
+		}
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

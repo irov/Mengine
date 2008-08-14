@@ -361,12 +361,16 @@ namespace Menge
 		imgData->width = m_width;
 		imgData->depth = m_depth;
 		// Wrap in CodecDataPtr, this will delete
-		Codec::CodecData* codeDataPtr(imgData);
+		Codec::CodecData* codeDataPtr( imgData );
 		// Wrap memory, be sure not to delete when stream destroyed
-		DataStreamInterface* wrapper = Holder<FileEngine>::hostage()
-											->createMemoryFile( m_buffer, m_size, false );
+		//DataStreamInterface* wrapper = Holder<FileEngine>::hostage()
+		//									->createMemoryFile( m_buffer, m_size, false );
+		OutStreamInterface* outFile = Holder<FileEngine>::hostage()->openOutStream( _filename, true );
 
-		pCodec->codeToFile( wrapper, _filename, codeDataPtr );
+		//pCodec->codeToFile( wrapper, _filename, codeDataPtr );
+		pCodec->code( outFile, m_buffer, codeDataPtr );
+
+		Holder<FileEngine>::hostage()->closeOutStream( outFile );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Image& Image::load( DataStreamInterface* _stream, const std::string& _type )

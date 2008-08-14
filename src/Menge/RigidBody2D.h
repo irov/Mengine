@@ -66,6 +66,7 @@ namespace Menge
 		void unsetLinearVelocity();
 		void wakeUp();
 		void freeze( bool _freeze );
+		void setCollisionMask( int _mask );
 
 		PhysicBody2DInterface* getInterface();
 
@@ -121,7 +122,7 @@ namespace Menge
 		bool m_countGravity;
 		bool m_frozen;
 		//virtual void _onSetListener();
-
+		void updateFilterData_();
 
 	};
 

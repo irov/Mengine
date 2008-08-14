@@ -2,9 +2,9 @@
 // Microsoft Visual C++ generated include file.
 // Used by Game.rc
 //
-#define IDI_MENGE                       101
-#define IDI_BUTTONS                     102
-#define IDI_PEPELAZ                     103
+#define IDI_MENGE                       100
+//#define IDI_BUTTONS                     102
+//#define IDI_PEPELAZ                     103
 
 // Next default values for new objects
 // 

@@ -26,14 +26,14 @@ namespace Menge
 	public:
 
 		bool initialize();
-		bool createRenderWindow( const mt::vec2f & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
+		bool createRenderWindow( std::size_t _resolution[2], int _bits, bool _fullscreen, WindowHandle _winHandle,
 								int _FSAAType , int _FSAAQuality );
 
 		void screenshot( RenderImageInterface* _renderTargetImage, const mt::vec4f & _rect );
 		void render();
 
-		void setContentResolution( const mt::vec2f _resolution );
-		mt::vec2f getBestDisplayResolution( const mt::vec2f & _resolution, float _aspect );
+		void setContentResolution( const std::size_t  _resolution [2] );
+		void getBestDisplayResolution( std::size_t _bestResolution[2], const std::size_t  _resolution [2], float _aspect );
 
 		RenderImageInterface * createImage( const String & _name, float _width, float _height );
 		RenderImageInterface * createRenderTargetImage( const String & _name, const mt::vec2f & _resolution );
@@ -91,7 +91,7 @@ namespace Menge
 
 		void	setFullscreenMode( bool _fullscreen );
 		bool	getFullscreenMode();
-		void	setViewportDimensions( const mt::vec2f & _resolution, float _renderFactor = 0.0f );
+		void	setViewportDimensions( std::size_t _resolution[2], float _renderFactor = 0.0f );
 
 		CameraInterface * createCamera( const String & _name );
 		EntityInterface * createEntity( const String & _name, const String & _meshName );
@@ -131,14 +131,17 @@ namespace Menge
 		float m_viewportWidth;
 		float m_viewportHeight;
 		float m_renderFactor;
-		mt::vec2f m_contentResolution;
+		
+		std::size_t m_contentResolution[2];
+		std::size_t m_windowResolution[2];
+
 		mt::vec4f m_renderArea;
 		float m_rendFactPix;
-		mt::vec2f m_windowResolution;
+		
 		String m_currentRenderTarget;
 
 		bool m_layer3D;
 		mt::mat4f m_viewTransform;
-		void recalcRenderArea_( const mt::vec2f & resolution );
+		void recalcRenderArea_( const std::size_t resolution [2] );
 	};
 }

@@ -233,7 +233,7 @@ namespace Menge
 			MENGE_LOG( "Warning: Can't initialize user's data path" );
 		}
 
-		mt::vec2f resourceResolution = m_game->getResourceResolution();
+		const std::size_t * resourceResolution = m_game->getResourceResolution();
 
 		m_renderEngine->initialize();
 		m_renderEngine->setContentResolution( resourceResolution );
@@ -242,14 +242,22 @@ namespace Menge
 
 		if( isFullscreen == true )
 		{
-			float aspect = m_desktopResolution.x / m_desktopResolution.y;
+			float drx = float(m_desktopResolution[0]);
+			float dry = float(m_desktopResolution[1]);
+			float aspect = drx / dry;
 
-			m_currentResolution = m_renderEngine
-				->getBestDisplayResolution( m_currentResolution, aspect );
+			std::size_t currentResolution[2];
+
+			m_renderEngine->getBestDisplayResolution( currentResolution, m_currentResolution, aspect );
+
+			m_currentResolution[0] = currentResolution[0];
+			m_currentResolution[1] = currentResolution[1];
 		}
 		else
 		{
-			m_currentResolution = m_game->getResolution();
+			const std::size_t * currentResolution = m_game->getResolution();
+			m_currentResolution[0] = currentResolution[0];
+			m_currentResolution[1] = currentResolution[1];
 		}
 
 		WindowHandle winHandle = _handle;
@@ -258,7 +266,7 @@ namespace Menge
 		if(_handle == NULL)
 		{
 			winHandle = m_interface->createWindow( 
-				title, m_currentResolution.x, m_currentResolution.y, isFullscreen );
+				title, m_currentResolution[0], m_currentResolution[1], isFullscreen );
 		}
 
 		int bits = m_game->getBits();
@@ -395,13 +403,10 @@ namespace Menge
 			return false;
 		}
 
-		int width;
-		int height;
+		const std::size_t * desktopResolution = m_interface->getDesktopResolution();
 
-		m_interface->getDesktopResolution( &width, &height );
-
-		m_desktopResolution.x = (float)width;
-		m_desktopResolution.y = (float)height;
+		m_desktopResolution[0] = desktopResolution[0];
+		m_desktopResolution[1] = desktopResolution[1];
 
 		m_sound = m_soundEngine->initialize();
 
@@ -671,12 +676,12 @@ namespace Menge
 		m_renderEngine->onWindowMovedOrResized();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Application::getCurrentResolution() const
+	const std::size_t * Application::getCurrentResolution() const
 	{
 		return m_currentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::notifyWindowModeChanged( float _width, float _height, bool _fullscreen )
+	void Application::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
 		m_interface->notifyWindowModeChanged( _width, _height, _fullscreen );
 	}
@@ -718,7 +723,7 @@ namespace Menge
 		Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Application::getDesktopResolution() const
+	const std::size_t * Application::getDesktopResolution() const
 	{
 		return m_desktopResolution;
 	}

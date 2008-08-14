@@ -15,8 +15,8 @@ namespace Menge
 		void * buffer;
 		std::size_t size;
 
-		float width;
-		float height;
+		std::size_t width;
+		std::size_t height;
 
 		int	pixelFormat;
 	};
@@ -176,8 +176,8 @@ namespace Menge
 	class RenderImageInterface
 	{
 	public:
-		virtual float getWidth() const = 0;
-		virtual float getHeight() const = 0;
+		virtual std::size_t getWidth() const = 0;
+		virtual std::size_t getHeight() const = 0;
 		virtual void writeToFile( const String & _filename ) = 0;
 		virtual const String & getDescription() const = 0;
 		virtual unsigned char* lock() = 0;
@@ -212,7 +212,7 @@ namespace Menge
 		virtual void setVisible( bool _visible ) = 0;
 		virtual void setMaterial( const String & _material ) = 0;
 		virtual void setSubEntityMaterial( const String & _subEntity, const String & _material ) = 0;
-		virtual void createRenderToTexture( const String & _cameraName, int _width, int _height  ) = 0;
+		virtual void createRenderToTexture( const String & _cameraName, std::size_t _width, std::size_t _height  ) = 0;
 		virtual void getAABB( float * _min, float * _max ) const = 0;
 		virtual float getBoundingRadius() const = 0;
 
@@ -345,7 +345,7 @@ namespace Menge
 	public:
 
 		virtual bool initialize( LogSystemInterface* _logSystem ) = 0;
-		virtual bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
+		virtual bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, WindowHandle _winHandle,
 			int _FSAAType, int _FSAAQuality ) = 0;
 		virtual const std::vector<int> & getResolutionList() = 0;
 
@@ -411,7 +411,7 @@ namespace Menge
 
 		virtual void	setRenderArea( const float* _renderArea ) = 0;
 
-		virtual void	setFullscreenMode( float _width, float _height, bool _fullscreen ) = 0;
+		virtual void	setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 		virtual void	setRenderTarget( const String& _name, bool _clear ) = 0;
 
 		//new

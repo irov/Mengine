@@ -18,7 +18,7 @@ public:
 	~HGERenderSystem();
 
 	bool initialize( Menge::LogSystemInterface* _logSystem ) override;
-	bool createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle,
+	bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle,
 		int _FSAAType, int _FSAAQuality ) override;
 	const std::vector<int> & getResolutionList() override;
 	void screenshot( Menge::RenderImageInterface* _image, const float * rect = 0 ) override;
@@ -70,7 +70,7 @@ public:
 
 	void	setRenderArea( const float* _renderArea ) override;
 
-	void	setFullscreenMode( float _width, float _height, bool _fullscreen ) override;
+	void	setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 	void	setRenderTarget( const Menge::String& _name, bool _clear ) override;
 
 	Menge::CameraInterface * createCamera( const Menge::String & _name ) override;

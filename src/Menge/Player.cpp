@@ -87,21 +87,28 @@ namespace Menge
 		return m_arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::init( const mt::vec2f& _contentResolution )
+	void Player::init( const std::size_t _contentResolution [2] )
 	{
 		Arrow * defaultArrow = 
 			Holder<Game>::hostage()->getDefaultArrow();
 
 		defaultArrow->setWindow( _contentResolution );
-		setArrow( defaultArrow );
 
-		Camera2D * cmr = SceneManager::createNodeT<Camera2D>( "Camera2D" );
+		this->setArrow( defaultArrow );
+
+		Camera2D * camera = SceneManager::createNodeT<Camera2D>( "Camera2D" );
 
 		//mt::vec2f vpSz( 1024, 768 );
-		cmr->setViewportSize( _contentResolution );
-		cmr->setLocalPosition( _contentResolution * 0.5f );
 
-		setRenderCamera2D( cmr );
+		float crx = float( _contentResolution[0] );
+		float cry = float( _contentResolution[1] );
+
+		mt::vec2f crv( crx, cry );
+
+		camera->setViewportSize( crv );
+		camera->setLocalPosition( crv * 0.5f );
+
+		setRenderCamera2D( camera );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )

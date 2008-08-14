@@ -72,7 +72,7 @@ namespace Menge
 
 	public:
 		bool usePhysic() const;
-		const mt::vec2f& getCurrentResolution() const;
+		const std::size_t * getCurrentResolution() const;
 
 	public:
 		void onUpdate( float _timing );
@@ -97,12 +97,13 @@ namespace Menge
 		bool getSoundEnabled()	const;
 
 		void minimizeWindow();
-		void notifyWindowModeChanged( float _width, float _height, bool _fullscreen );
+		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen );
 
 		void setMouseBounded( bool _bounded );
 
 		void setFullscreenMode( bool _fullscreen );
-		const mt::vec2f& getDesktopResolution() const;
+
+		const std::size_t * getDesktopResolution() const;
 
 		unsigned int getDebugMask() const;
 
@@ -115,7 +116,9 @@ namespace Menge
 		std::string m_gameInfo;
 		InputHandler * m_handler;
 
-		mt::vec2f m_currentResolution;
+		std::size_t m_currentResolution[2];
+		std::size_t m_desktopResolution[2];
+
 		std::string m_commandLine;
 
 		typedef std::vector<std::string> TStringVector;
@@ -143,7 +146,7 @@ namespace Menge
 		PhysicEngine2D * m_physicEngine2D;
 		XmlEngine*	m_xmlEngine;
 
-		mt::vec2f m_desktopResolution;
+		
 
 		void parseArguments(const std::string & _arguments);
 		void initPredefinedResources();

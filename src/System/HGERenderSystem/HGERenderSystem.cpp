@@ -96,7 +96,7 @@ bool HGERenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	return initialized;
 }
 //////////////////////////////////////////////////////////////////////////
-bool HGERenderSystem::createRenderWindow( int _width, int _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
+bool HGERenderSystem::createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 {
 	m_hge->System_SetState( HGE_SCREENWIDTH, _width );
 	m_hge->System_SetState( HGE_SCREENHEIGHT, _height );
@@ -492,7 +492,7 @@ void HGERenderSystem::endLayer3D()
 
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::setFullscreenMode( float _width, float _height, bool _fullscreen )
+void HGERenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
 {
 	// todo: backup render targets content
 

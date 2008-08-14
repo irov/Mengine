@@ -90,8 +90,12 @@ namespace Menge
 
 		if( m_mouseBounded )
 		{
-			const mt::vec2f& res = Holder<Application>::hostage()->getCurrentResolution();
-			m_interface->captureMouse( m_mouseX, m_mouseY, res.x, res.y );
+			const std::size_t * resolution = Holder<Application>::hostage()->getCurrentResolution();
+
+			float rx = float( resolution[0] );
+			float ry = float( resolution[1] );
+
+			m_interface->captureMouse( m_mouseX, m_mouseY, rx, ry );
 		}
 		else
 		{

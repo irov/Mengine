@@ -21,8 +21,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine( RenderSystemInterface * _interface )
 		: m_interface( _interface )
-		, m_contentResolution( 1024.f, 768.f )
-		, m_windowResolution( 1024.f, 768.f )
 		, m_windowCreated( false )
 		, m_renderFactor( 1.0f )
 		, m_layer3D( false )
@@ -44,12 +42,12 @@ namespace Menge
 		return m_interface->getNumDIP();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( const mt::vec2f & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
+	bool RenderEngine::createRenderWindow( std::size_t _resolution[2], int _bits, bool _fullscreen, WindowHandle _winHandle,
 											int _FSAAType, int _FSAAQuality )
 	{
 		m_fullscreen = _fullscreen;
 
-		m_windowCreated = m_interface->createRenderWindow( (int)_resolution.x, (int)_resolution.y, _bits, _fullscreen, _winHandle,
+		m_windowCreated = m_interface->createRenderWindow( _resolution[0], _resolution[1], _bits, _fullscreen, _winHandle,
 															_FSAAType, _FSAAQuality );
 
 
@@ -72,9 +70,10 @@ namespace Menge
 		m_interface->render();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setContentResolution( const mt::vec2f _resolution )
+	void RenderEngine::setContentResolution( const std::size_t _resolution [2] )
 	{
-		m_contentResolution = _resolution;
+		m_contentResolution[0] = _resolution[0];
+		m_contentResolution[1] = _resolution[1];
 
 		//m_renderViewport.set( mt::vec2f::zero_v2, m_contentResolution );
 	}
@@ -153,8 +152,8 @@ namespace Menge
 			TextureDesc	textureDesc;
 			textureDesc.buffer = cimage.getData();
 			textureDesc.size = cimage.getSize();
-			textureDesc.width = (float)cimage.getWidth();
-			textureDesc.height = (float)cimage.getHeight();
+			textureDesc.width = cimage.getWidth();
+			textureDesc.height = cimage.getHeight();
 			textureDesc.pixelFormat = cimage.getFormat();
 			textureDesc.name = _filename.c_str();
 			textureDesc.filter = _filter;
@@ -254,13 +253,13 @@ namespace Menge
 
 		m_fullscreen = _fullscreen;
 
-		const mt::vec2f & resolution = ( m_fullscreen == true )
+		const std::size_t * resolution = ( m_fullscreen == true )
 			? Holder<Application>::hostage()->getDesktopResolution() 
 			: Holder<Game>::hostage()->getResolution();
 			
-		m_interface->setFullscreenMode( resolution.x, resolution.y, m_fullscreen );
+		m_interface->setFullscreenMode( resolution[0], resolution[1], m_fullscreen );
 
-		Holder<Application>::hostage()->notifyWindowModeChanged( resolution.x, resolution.y, m_fullscreen );
+		Holder<Application>::hostage()->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
 
 		recalcRenderArea_( resolution );
 	}
@@ -315,11 +314,14 @@ namespace Menge
 		return m_interface->releaseSceneNode( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f RenderEngine::getBestDisplayResolution( const mt::vec2f & _resolution, float _aspect )
+	void RenderEngine::getBestDisplayResolution( std::size_t _bestResolution[2], const std::size_t _resolution [2], float _aspect )
 	{
 		const std::vector<int> & resolutionList = m_interface->getResolutionList();
 
-		float needWidth = _resolution.y * _aspect;
+		float rx = float(_resolution[0]);
+		float ry = float(_resolution[1]);
+
+		float needWidth = ry * _aspect;
 
 		typedef std::vector<int> TResolutionVector;
 		typedef std::map< int, TResolutionVector > TResolutionMap;
@@ -338,7 +340,7 @@ namespace Menge
 
 		bool done = false;
 
-		mt::vec2f bestResolution;
+		std::size_t bestResolution[2] = {0,0};
 
 		for( TResolutionMap::iterator 
 			it = resMap.begin(),
@@ -346,7 +348,7 @@ namespace Menge
 		it != it_end; 
 		++it )
 		{
-			if( it->first < static_cast<int>(_resolution.y) ) 
+			if( it->first < static_cast<int>(_resolution[1]) ) 
 			{
 				continue;
 			}
@@ -359,16 +361,14 @@ namespace Menge
 			{
 				if( it->second[i] >= static_cast<int>(needWidth) )
 				{
-					bestResolution.x = static_cast<const float>(it->second[i]);
-					bestResolution.y = static_cast<const float>(it->first);
+					_bestResolution[0] = it->second[i];
+					_bestResolution[1] = it->first;
 					done = true;
 					break;
 				}
 			}
 			if( done ) break;
 		}
-
-		return bestResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::getFullscreenMode()
@@ -387,11 +387,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onDeviceRestored()
 	{
-		const mt::vec2f & resolution = Holder<Game>::hostage()
+		const std::size_t * resolution = Holder<Game>::hostage()
 			->getResolution();
 
 		Holder<Application>::hostage()
-			->notifyWindowModeChanged( resolution.x, resolution.y, m_fullscreen );
+			->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onWindowActive( bool _active )
@@ -477,17 +477,25 @@ namespace Menge
 		float areaWidth = m_renderArea.z - m_renderArea.x;
 		float areaHeight = m_renderArea.w - m_renderArea.y;
 		
+
+		float crx = float( m_contentResolution[0] );
+		float cry = float( m_contentResolution[1] );
+
+		float wrx = float( m_windowResolution[0] );
+		float wry = float( m_windowResolution[1] );
+
 		if( m_rendFactPix > 0.0f )
 		{
 			areaHeight += m_renderFactor * m_rendFactPix * 2;
-			areaWidth = areaHeight * m_contentResolution.x / m_contentResolution.y;
-			if( areaWidth > m_windowResolution.x )
+			areaWidth = areaHeight * crx / cry;
+
+			if( areaWidth > wrx )
 			{
-				areaWidth = m_windowResolution.x;
+				areaWidth = wrx;
 			}
 
-			m_renderArea.x = ( m_windowResolution.x - areaWidth ) * 0.5f;
-			m_renderArea.y = ( m_windowResolution.y - areaHeight ) * 0.5f;
+			m_renderArea.x = ( wrx - areaWidth ) * 0.5f;
+			m_renderArea.y = ( wry - areaHeight ) * 0.5f;
 			m_renderArea.z = m_renderArea.x + areaWidth;
 			m_renderArea.w = m_renderArea.y + areaHeight;
 
@@ -500,8 +508,8 @@ namespace Menge
 			areaHeight = m_renderArea.w - m_renderArea.y;
 		}
 
-		m_viewTransform.m[0] = areaWidth / m_contentResolution.x;
-		m_viewTransform.m[5] = areaHeight / m_contentResolution.y;
+		m_viewTransform.m[0] = areaWidth / crx;
+		m_viewTransform.m[5] = areaHeight / cry;
 		m_viewTransform.m[12] = m_renderArea.x;
 		m_viewTransform.m[13] = m_renderArea.y;
 	}
@@ -520,38 +528,45 @@ namespace Menge
 		return m_renderArea;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::recalcRenderArea_( const mt::vec2f & resolution )
+	void RenderEngine::recalcRenderArea_( const std::size_t resolution [2] )
 	{
+
+		float rx = float( resolution[0]);
+		float ry = float( resolution[1]);
+
 		m_renderArea.x = 0.0f;
 		m_renderArea.y = 0.0f;
-		m_renderArea.z = resolution.x;
-		m_renderArea.w = resolution.y;
+		m_renderArea.z = rx;
+		m_renderArea.w = ry;
 
-		float one_div_width = 1.f / resolution.x;
-		float one_div_height = 1.f / resolution.y;
+		float one_div_width = 1.f / rx;
+		float one_div_height = 1.f / ry;
 
-		float contentAspect = m_contentResolution.x / m_contentResolution.y;
-		float dw = m_contentResolution.x * one_div_width;
-		float dh = m_contentResolution.y * one_div_height;
-		float aspect = resolution.x * one_div_height;
+		float crx = float( m_contentResolution[0] );
+		float cry = float( m_contentResolution[1] );
+
+		float contentAspect = crx / cry;
+		float dw = crx * one_div_width;
+		float dh = cry * one_div_height;
+		float aspect = rx * one_div_height;
 
 		if( dw > 1.0f )
 		{
 			dw = 1.0f;
-			dh = resolution.x / contentAspect * one_div_height;
+			dh = rx / contentAspect * one_div_height;
 		}
 
 		if( dh > 1.0f )
 		{
 			dh = 1.0f;
-			dw = resolution.y * contentAspect * one_div_width;
+			dw = ry * contentAspect * one_div_width;
 		}
 
-		float areaWidth = dw * resolution.x;
-		float areaHeight = dh * resolution.y;
+		float areaWidth = dw * rx;
+		float areaHeight = dh * ry;
 
-		m_renderArea.x = ( resolution.x - areaWidth ) * 0.5f;
-		m_renderArea.y = ( resolution.y - areaHeight ) * 0.5f;
+		m_renderArea.x = ( rx - areaWidth ) * 0.5f;
+		m_renderArea.y = ( ry - areaHeight ) * 0.5f;
 		m_renderArea.z = m_renderArea.x + areaWidth;
 		m_renderArea.w = m_renderArea.y + areaHeight;
 
@@ -566,7 +581,8 @@ namespace Menge
 			m_renderFactor = 0.0f;
 		}
 
-		m_windowResolution = resolution;
+		m_windowResolution[0] = resolution[0];
+		m_windowResolution[1] = resolution[1];
 
 		setRenderFactor( m_renderFactor );
 	}

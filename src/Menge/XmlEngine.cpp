@@ -182,6 +182,13 @@ namespace Menge
 namespace XmlParserCast
 {
 	//////////////////////////////////////////////////////////////////////////
+	bool attribute_value_cast( std::size_t _var[2], const char * _value )
+	{
+		int res = sscanf( _value, "%d;%d", &_var[0], &_var[1] );
+
+		return res == 2;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool attribute_value_cast( mt::vec2f & _var, const char * _value )
 	{
 		int res = sscanf( _value, "%f;%f", &_var.x, &_var.y );

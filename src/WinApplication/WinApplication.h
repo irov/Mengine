@@ -36,13 +36,13 @@ namespace Menge
 
 		void createWindow(WindowHandle _handle);
 
-		WindowHandle createWindow( const Menge::String & _name, float _width, float _height, bool _fullscreen ) override;
+		WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 		//float getMonitorAspectRatio() override;
-		void getDesktopResolution( int* _width, int* _heigth ) override;
+		const std::size_t * getDesktopResolution() const override;
 		void minimizeWindow() override;
 		//void setPrimaryMonitorAspect( float _aspect );
-		void setDesktopResolution( int _width, int _height );
-		void notifyWindowModeChanged( float _width, float _height, bool _fullscreen ) override;
+		void setDesktopResolution( std::size_t _width, std::size_t _height );
+		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 		float getDeltaTime() override;
 		//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
 		SystemDLLInterface* loadSystemDLL( const String & _dll ) override;
@@ -67,13 +67,14 @@ namespace Menge
 		HANDLE m_mutex;	// for multiple instance tracking
 		bool m_focus;
 		String m_name;
-		float m_winWidth;
-		float m_winHeight;
-		bool	m_fullscreen;
+
+		std::size_t m_windowResolution[2];
+		std::size_t m_desktopResolution[2];
+
+		bool m_fullscreen;
 		bool m_handleMouse;
 
-		int m_desktopWidht;
-		int m_desktopHeight;
+		
 		//float m_primaryMonitorAspect;
 	};
 }

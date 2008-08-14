@@ -92,10 +92,6 @@ namespace Menge
 		, m_cursorInArea(false)
 		, m_active(false)
 		//, m_primaryMonitorAspect(4.f/3.f)
-		, m_desktopWidht( 800 )
-		, m_desktopHeight( 600 )
-		, m_winWidth( 800 )
-		, m_winHeight( 600 )
 		, m_fullscreen( false )
 		, m_handleMouse( true )
 	{}
@@ -141,10 +137,10 @@ namespace Menge
 	m_primaryMonitorAspect = _aspect;
 	}*/
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::setDesktopResolution( int _width, int _height )
+	void WinApplication::setDesktopResolution( std::size_t _width, std::size_t _height )
 	{
-		m_desktopWidht = _width;
-		m_desktopHeight = _height;
+		m_desktopResolution[0] = _width;
+		m_desktopResolution[1] = _height;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::init( const String & _name, ApplicationListenerInterface* _listener )
@@ -281,13 +277,13 @@ namespace Menge
 		//return static_cast<WINDOW_HANDLE>( m_hWnd ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowHandle WinApplication::createWindow( const Menge::String & _name, float _width, float _height, bool _fullscreen )
+	WindowHandle WinApplication::createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
 		DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
 		RECT rc;
 
-		m_winWidth = _width;
-		m_winHeight = _height;
+		m_windowResolution[0] = _width;
+		m_windowResolution[1] = _height;
 
 		if (!_fullscreen)
 		{
@@ -299,7 +295,7 @@ namespace Menge
 		}
 		// Calculate window dimensions required
 		// to get the requested client area
-		SetRect(&rc, 0, 0, (int)m_winWidth, (int)m_winHeight);
+		SetRect(&rc, 0, 0, (int)m_windowResolution[0], (int)m_windowResolution[1]);
 		AdjustWindowRect(&rc, dwStyle, false);
 		LONG width = rc.right - rc.left;
 		LONG height = rc.bottom - rc.top;
@@ -497,10 +493,9 @@ namespace Menge
 	return m_primaryMonitorAspect;	
 	}*/
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::getDesktopResolution( int* _width, int* _heigth )
+	const std::size_t * WinApplication::getDesktopResolution() const
 	{
-		*_width = m_desktopWidht;
-		*_heigth = m_desktopHeight;
+		return m_desktopResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::minimizeWindow()
@@ -508,10 +503,11 @@ namespace Menge
 		::ShowWindow( m_hWnd, SW_MINIMIZE );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyWindowModeChanged( float _width, float _height, bool _fullscreen )
+	void WinApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
-		m_winWidth = _width;
-		m_winHeight = _height;
+		m_windowResolution[0] = _width;
+		m_windowResolution[1] = _height;
+
 		m_fullscreen = _fullscreen;
 
 		DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;

@@ -11,13 +11,13 @@ HGETexture::HGETexture( HGE* _hge, bool _freeOnDelete )
 , m_ref( 0 )
 , m_uvMask( 1.0f, 1.0f )
 , m_pixelFormat( Menge::PF_A8R8G8B8 )
-, m_width(0.f)
-, m_height(0.f)
+, m_width(0)
+, m_height(0)
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, float _width, float _height, bool _freeOnDelete )
+HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete )
 : m_hge( _hge )
 , m_hTexture( _htex )
 , m_name( _name )
@@ -30,11 +30,12 @@ HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, f
 {
 	int hw = m_hge->Texture_GetWidth( m_hTexture );
 	int hh = m_hge->Texture_GetHeight( m_hTexture );
-	m_uvMask.x = static_cast<float>( m_width ) / hw;
-	m_uvMask.y = static_cast<float>( m_height ) / hh;
+
+	m_uvMask.x = float(m_width) / hw;
+	m_uvMask.y = float(m_height) / hh;
 }
 //////////////////////////////////////////////////////////////////////////
-HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, float _width, float _height, bool _freeOnDelete )
+HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete )
 : m_hge( _hge )
 , m_name( _name )
 , m_width( _width )
@@ -45,10 +46,12 @@ HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, float _width, flo
 , m_pixelFormat( Menge::PF_A8R8G8B8 )
 {
 	m_hTexture = m_hge->Texture_Create( (int)_width, (int)_height );
+
 	int hw = m_hge->Texture_GetWidth( m_hTexture );
 	int hh = m_hge->Texture_GetHeight( m_hTexture );
-	m_uvMask.x = m_width / hw;
-	m_uvMask.y = m_height / hh;
+
+	m_uvMask.x = float(m_width) / hw;
+	m_uvMask.y = float(m_height) / hh;
 }
 //////////////////////////////////////////////////////////////////////////
 HGETexture::~HGETexture()
@@ -71,8 +74,8 @@ void HGETexture::load( const Menge::TextureDesc & _desc )
 
 	m_pixelFormat = static_cast<Menge::PixelFormat>( _desc.pixelFormat );
 
-	m_uvMask.x = m_width / hw;
-	m_uvMask.y = m_height / hh;
+	m_uvMask.x = float(m_width) / hw;
+	m_uvMask.y = float(m_height) / hh;
 }
 //////////////////////////////////////////////////////////////////////////
 void HGETexture::unload()
@@ -84,12 +87,12 @@ void HGETexture::unload()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-float HGETexture::getWidth() const 
+std::size_t HGETexture::getWidth() const 
 {
 	return m_width;
 }
 //////////////////////////////////////////////////////////////////////////
-float HGETexture::getHeight() const 
+std::size_t HGETexture::getHeight() const 
 {
 	return m_height;
 }
@@ -118,10 +121,10 @@ unsigned char* HGETexture::lock()
 {
 	int pitch;
 	unsigned char* lock = reinterpret_cast< unsigned char* >( m_hge->Texture_Lock( m_hTexture, &pitch, true, 0, 0, (int)m_width, (int)m_height ) );
-	m_lockBuffer = new unsigned char[ int(m_height) * pitch];
+	m_lockBuffer = new unsigned char[ m_height * pitch];
 	
-	std::size_t mPitch = Menge::PixelUtil::getNumElemBytes( m_pixelFormat ) * int(m_width);
-	for( std::size_t i = 0; i < m_height; i++ )
+	std::size_t mPitch = Menge::PixelUtil::getNumElemBytes( m_pixelFormat ) * m_width;
+	for( std::size_t i = 0; i != m_height; i++ )
 	{
 		std::copy( lock, lock + mPitch, m_lockBuffer );
 		//memcpy( _dstData, _srcData, width * 4 );
@@ -129,7 +132,7 @@ unsigned char* HGETexture::lock()
 		lock += pitch;
 	}
 
-	m_lockBuffer -= mPitch * (int)m_height;
+	m_lockBuffer -= mPitch * m_height;
 
 	return m_lockBuffer;
 }

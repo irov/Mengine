@@ -45,13 +45,13 @@ namespace Menge
 	public:
 		virtual bool init( const String & _name, ApplicationListenerInterface* _listener ) = 0;
 		virtual void createWindow(WindowHandle _handle) = 0;
-		virtual WindowHandle createWindow( const Menge::String & _name, float _width, float _height, bool _fullscreen ) = 0;
+		virtual WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 		virtual void step( float _timing ) = 0;
 		virtual void run() = 0;
 		virtual void stop() = 0;
-		virtual void getDesktopResolution( int* _width, int* _heigth ) = 0;
+		virtual const std::size_t * getDesktopResolution() const = 0;
 		virtual void minimizeWindow() = 0;
-		virtual void notifyWindowModeChanged( float _width, float _height, bool _fullscreen ) = 0;
+		virtual void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 		virtual float getDeltaTime() = 0;
 		virtual void setHandleMouse( bool _handle ) = 0;
 		virtual void showMessageBox( const String& _message, const String& _header, unsigned int _style ) = 0;

@@ -85,10 +85,14 @@ namespace Menge
 		void onResourceUnLoaded() override;
 		
 	public:
-		const mt::vec2f & getResourceResolution() const;
-		const std::string& getTitle() const;
+		const std::size_t * getResolution() const;
+		const std::size_t * getResourceResolution() const;
 		bool isContentResolutionFixed() const;
-		const mt::vec2f & getResolution() const;
+
+		const std::string& getTitle() const;
+
+		
+		
 		int getBits() const;
 		bool getFullscreen() const;
 		bool getVSync() const;
@@ -112,7 +116,10 @@ namespace Menge
 		TextField * m_debugTextField;
 		Player* m_player;
 		std::string m_title;
-		mt::vec2f	m_resourceResolution;
+
+		std::size_t	m_resourceResolution[2];
+		std::size_t m_resolution[2];
+
 		bool m_fixedContentResolution;
 
 		std::string m_defaultArrowName;
@@ -147,8 +154,6 @@ namespace Menge
 		TListDeclaration m_pathEntities;
 		TListDeclaration m_pathScenes;
 		TListDeclaration m_pathArrows;
-
-		mt::vec2f m_resolution;
 
 		int m_bits;
 		bool m_fullScreen;

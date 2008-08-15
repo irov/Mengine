@@ -12,9 +12,6 @@ Texture2D::Texture2D()
 	, m_withAlphaWidth(0)
 	, m_withAlphaHeight(0)
 	, m_bpp(0)
-	, m_border(0)
-	, m_rigthBorder(0)
-	, m_bottomBorder(0)
 {}
 //////////////////////////////////////////////////////////////////////////
 Texture2D::~Texture2D()
@@ -77,11 +74,6 @@ int Texture2D::getBPP() const
 	return m_bpp;
 }
 //////////////////////////////////////////////////////////////////////////
-int Texture2D::getBorder() const
-{
-	return m_border;
-}
-//////////////////////////////////////////////////////////////////////////
 bool Texture2D::isAlphaChannel() const
 {
 	return m_bpp == 32;
@@ -111,80 +103,6 @@ bool Texture2D::loadTexture( const std::string & _filename )
 	//_makeBorder(1);
 
 	return true;
-}
-//////////////////////////////////////////////////////////////////////////
-void Texture2D::makeRigthBorder(int _border)
-{
-	if(_border == 0)
-	{
-		return;
-	}
-
-	m_rigthBorder = _border;
-
-	int x = FreeImage_GetWidth(m_texture);
-	int y = FreeImage_GetHeight(m_texture);
-
-	FIBITMAP * borderTexture 
-		= FreeImageWrapper::AllocateImage( 
-			x + _border,
-			y, m_bpp );
-
-	if(borderTexture == NULL)
-	{
-		return;
-	}
-
-	FreeImageWrapper::FillChannel(borderTexture, FI_RGBA_ALPHA, 0 );
-
-	bool result = FreeImage_Paste(borderTexture, m_texture, 0, 0, 256);
-
-	if(result == false)
-	{
-		assert(!"ERROR!!!");
-	}
-
-	FreeImage_Unload(m_texture);
-
-	m_texture = borderTexture;
-
-	//FreeImage_Save(FIF_PNG,m_texture,"1.png");
-}
-//////////////////////////////////////////////////////////////////////////
-void Texture2D::makeBottomBorder(int _border)
-{
-	if(_border == 0)
-	{
-		return;
-	}
-
-	m_bottomBorder = _border;
-
-	int x = FreeImage_GetWidth(m_texture);
-	int y = FreeImage_GetHeight(m_texture);
-
-	FIBITMAP * borderTexture 
-		= FreeImageWrapper::AllocateImage( 
-		x,
-		y + _border, m_bpp );
-
-	if(borderTexture == NULL)
-	{
-		return;
-	}
-
-	FreeImageWrapper::FillChannel(borderTexture, FI_RGBA_ALPHA, 0 );
-
-	bool result = FreeImage_Paste(borderTexture, m_texture, 0, 0, 256);
-
-	if(result == false)
-	{
-		assert(!"ERROR!!!");
-	}
-
-	FreeImage_Unload(m_texture);
-
-	m_texture = borderTexture;
 }
 //////////////////////////////////////////////////////////////////////////
 void Texture2D::_sliceAlpha()

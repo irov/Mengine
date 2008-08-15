@@ -58,7 +58,6 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 	}
 	else if(_texture.getNonAlphaWidth() < getWidth())
 	{
-		//_texture.makeRigthBorder(1);
 		Width++;
 	}
 	else
@@ -71,7 +70,6 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 	}
 	else if(_texture.getNonAlphaHeight() < getHeight())
 	{
-		//_texture.makeBottomBorder(1);
 		Height++;
 	}
 	else
@@ -111,7 +109,8 @@ const TextureAtlasDesc & AtlasTexture::getTextureDesc(const std::string & _filen
 
 	if(it == m_insertedTextures.end())
 	{
-		assert(!"ERRROROROOROR1!!");
+		fprintf(m_log, "Error: %s getTextureDesc failed\n", _filename.c_str());
+		//assert(!"ERRROROROOROR1!!");
 	}
 
 	return it->second;
@@ -149,7 +148,8 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 
 		if(result == false)
 		{
-			assert(!"ERROR!!!");
+			fprintf(m_log, "Error: Atlas %s FreeImage_Paste failed\n", _name.c_str());
+			//assert(!"ERROR!!!");
 		}
 
 		desc.u = X / float(correctedWidth);

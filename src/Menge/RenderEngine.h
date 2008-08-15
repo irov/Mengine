@@ -143,5 +143,14 @@ namespace Menge
 		bool m_layer3D;
 		mt::mat4f m_viewTransform;
 		void recalcRenderArea_( const std::size_t resolution [2] );
+	private:
+		struct Line
+		{
+			unsigned int color;
+			mt::vec2f begin;
+			mt::vec2f end;
+		};
+
+		std::list<Line> lines;
 	};
 }

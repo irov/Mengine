@@ -30,7 +30,6 @@ namespace Menge
 
 	public:
 		bool init( const std::string & _name, ApplicationListenerInterface* _listener ) override;
-		void step( float _timing ) override;
 		void run() override;
 		void stop()	override;
 

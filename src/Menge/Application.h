@@ -60,9 +60,10 @@ namespace Menge
 		void setPhysicSystem( PhysicSystemInterface * _interface );
 		void setPhysicSystem2D( PhysicSystem2DInterface * _interface );
 
-		bool createGame(WindowHandle _handle);
+		bool loadGame();
+		bool createRenderWindow(WindowHandle _handle);
+		void initGame(bool _loadPersonality);
 
-		void step( float _timing );
 		void run();
 		void quit();
 

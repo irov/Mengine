@@ -76,6 +76,8 @@
 #	include "ResourceTileSet.h"
 #	include "ResourceMeshMS3D.h"
 #	include "ResourceMaterial.h"
+#	include "Player.h"
+#	include "Scene.h"
 
 #	include "Codec.h"
 
@@ -206,7 +208,7 @@ namespace Menge
 		Holder<ResourceManager>::hostage()->registerResource( image );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createGame(WindowHandle _handle)
+	bool Application::loadGame()
 	{
 		m_game = new Game();
 		Holder<Game>::keep( m_game );
@@ -226,6 +228,11 @@ namespace Menge
 			m_game->readResourceFile( *it );
 		}
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::createRenderWindow(WindowHandle _handle)
+	{
 		const String & title = m_game->getTitle();
 
 		if( !m_fileEngine->initAppDataPath( "Menge\\" + title ) )
@@ -290,12 +297,17 @@ namespace Menge
 
 		initPredefinedResources();
 
-		if( m_game->init() == false )
-		{
-			return false;
-		}
-
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::initGame(bool _loadPersonality)
+	{
+		bool result = m_game->init();
+
+		if(_loadPersonality)
+		{
+			result = m_game->loadPersonality();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loader( XmlElement * _xml )
@@ -591,11 +603,6 @@ namespace Menge
 	void Application::minimizeWindow()
 	{
 		m_interface->minimizeWindow();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::step( float _timing )
-	{
-		m_interface->step( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::run()

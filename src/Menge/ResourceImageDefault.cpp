@@ -4,6 +4,8 @@
 
 #	include "XmlEngine.h"
 
+#	include "ProfilerEngine.h"
+
 namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageDefault )

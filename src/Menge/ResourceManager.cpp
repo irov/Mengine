@@ -11,6 +11,7 @@
 
 #	include "LogEngine.h"
 #	include "ScriptEngine.h"
+#	include "ProfilerEngine.h"
 
 #	include "NodeFactory.h"
 
@@ -162,6 +163,11 @@ namespace Menge
 			return 0;
 		}
 
+		if(inc > 0)
+		{
+			Holder<ProfilerEngine>::hostage()->addResourceToProfile(_name);
+		}
+
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -197,8 +203,9 @@ namespace Menge
 						Holder<ScriptEngine>::hostage()
 						->callFunction( it->second, "()", it->first );
 				}*/
-
 			}
+
+			Holder<ProfilerEngine>::hostage()->removeResourceToProfile(name);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

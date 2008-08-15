@@ -358,6 +358,7 @@ namespace Menge
 			m_FPS = 1000.0f / _timing;
 			//printf("fps: %.2f\n", m_FPS );
 		}
+
 		Holder<Amplifier>::hostage()->update( _timing );
 
 		m_player->update( _timing );
@@ -378,7 +379,6 @@ namespace Menge
 		Holder<ProfilerEngine>::hostage()->beginProfile("Render");
 		m_player->render( _debugMask );
 
-
 		Holder<ProfilerEngine>::hostage()->displayStats(m_debugTextField);
 
 		Holder<ProfilerEngine>::hostage()->endProfile("Render");
@@ -395,6 +395,40 @@ namespace Menge
 		}
 
 		return it_find->second.first + it_find->second.second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::loadPersonality()
+	{
+		m_pyPersonality = Holder<ScriptEngine>::hostage()
+			->importModule( m_personality );
+
+		registerEvent( EVENT_KEY, "onHandleKeyEvent", m_pyPersonality );
+		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", m_pyPersonality );
+		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", m_pyPersonality );
+
+		bool result = false;
+
+		if( Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
+		{
+			PyObject * pyResult = Holder<ScriptEngine>::hostage()
+				->callModuleFunction( m_pyPersonality, m_eventInit );
+
+			result = Holder<ScriptEngine>::hostage()
+				->parseBool( pyResult );
+		}
+
+		if( result == false )
+		{
+			return false;
+		}
+
+		if( m_pyPersonality == 0 )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
@@ -472,38 +506,9 @@ namespace Menge
 
 		m_defaultArrow = getArrow( m_defaultArrowName );
 
-		m_pyPersonality = Holder<ScriptEngine>::hostage()
-			->importModule( m_personality );
-
-		if( m_pyPersonality == 0 )
-		{
-			return false;
-		}
-
-		loadAccounts();
-
-		registerEvent( EVENT_KEY, "onHandleKeyEvent", m_pyPersonality );
-		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", m_pyPersonality );
-		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", m_pyPersonality );
-
 		m_player->init( m_resourceResolution );
 
-		bool result = false;
-
-		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
-		{
-			PyObject * pyResult = Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, m_eventInit );
-
-			result = Holder<ScriptEngine>::hostage()
-				->parseBool( pyResult );
-		}
-
-		if( result == false )
-		{
-			return false;
-		}
+		loadAccounts();
 
 		if(m_debugResourceFont.empty() == false)
 		{
@@ -512,7 +517,7 @@ namespace Menge
 			m_debugTextField->activate();
 		}
 
-		return result;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()

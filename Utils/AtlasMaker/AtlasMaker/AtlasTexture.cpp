@@ -58,7 +58,7 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 	}
 	else if(_texture.getNonAlphaWidth() < getWidth())
 	{
-		_texture.makeRigthBorder(1);
+		//_texture.makeRigthBorder(1);
 		Width++;
 	}
 	else
@@ -71,7 +71,7 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 	}
 	else if(_texture.getNonAlphaHeight() < getHeight())
 	{
-		_texture.makeBottomBorder(1);
+		//_texture.makeBottomBorder(1);
 		Height++;
 	}
 	else
@@ -160,7 +160,7 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 	}
 
 	//uncomment for test
-	//FreeImage_Save(FIF_PNG,m_atlasTexture,(_name+".png").c_str());
+	//FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
 
 	FIBITMAP * rgb = FreeImage_ConvertTo24Bits(m_atlasTexture);
 
@@ -187,12 +187,13 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 
 		fwrite(&size,sizeof(unsigned long),1,f);
 		fwrite(ourData,sizeof(BYTE),size,f);
-		fclose(f);
-
+		
 		delete[] ourData;
 
 		FreeImage_Unload(alpha);
 	}
+
+	fclose(f);
 }
 //////////////////////////////////////////////////////////////////////////
 bool AtlasTexture::_allocateAtlasTexture(int _width, int _height)

@@ -43,6 +43,7 @@ namespace Menge
 
 	public:
 		bool init();
+		bool loadPersonality();
 		void release();
 
 	public:

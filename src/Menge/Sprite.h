@@ -70,18 +70,6 @@ namespace Menge
 		*/
 		virtual const std::string & getImageResource() const;
 
-		//! Установка скейла по осям.
-		/*!
-		\param _scale скейл.
-		*/
-		//virtual void setScale( const mt::vec2f& _scale );
-
-		//! Возвращает скейл.
-		/*!
-		\return скейл
-		*/
-		//virtual const mt::vec2f& getScale() const;
-
 		//! Инвертирование спрайта по оси x, если _x = true, иначе по оси y.
 		/*!
 		\param _x ось.

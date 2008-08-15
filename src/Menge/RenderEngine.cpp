@@ -231,8 +231,18 @@ namespace Menge
 		const mt::vec2f & _begin,
 		const mt::vec2f & _end)
 	{
-		m_interface->renderLine( _color, _begin.m, _end.m );		
+		Line line = {_color, _begin, _end};
+		lines.push_back(line);
+		//m_interface->renderLine( _color, _begin.m, _end.m );		
 	}
+	//////////////////////////////////////////////////////////////////////////
+/*	void RenderEngine::renderLine(	
+		unsigned int _color,
+		const mt::vec2f & _begin,
+		const mt::vec2f & _end)
+	{
+		m_interface->renderLine( _color, _begin.m, _end.m );		
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )
 	{
@@ -427,7 +437,13 @@ namespace Menge
 
 		//Holder<Player>::hostage()->getArrow()->render( false );
 
+		for each(Line line in lines)
+		{
+			m_interface->renderLine( line.color, line.begin.m, line.end.m );
+		}
+
 		m_interface->endScene();
+		lines.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderMesh( const std::vector<TVertex>& _vertexData, 

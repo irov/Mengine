@@ -25,6 +25,7 @@
 #	include "Config\Config.h"
 #	include "..\Menge\Application.h"
 
+
 #	if	MENGE_PARTICLES	== (1)
 #		ifdef _DEBUG
 #			pragma comment( lib, "AstralaxParticleSystem_d.lib" )
@@ -97,7 +98,9 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 
 	bool result = app.initialize( config_file, lpCmdLine );
 
-	result = app.createGame(0);
+	result = app.loadGame();
+	result = app.createRenderWindow(0);
+	app.initGame(true);
 
 	if( result == true )
 	{

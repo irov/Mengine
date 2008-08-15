@@ -42,9 +42,14 @@ def getIconPathFromGameXML(src, directory):
     
     iconresource = app_tag.getElementsByTagName("Game")
     
+    if(iconresource==[]):
+        return []
+    
     Path = iconresource[0].getAttribute("File")
     
     dom.unlink()
+    
+    GamePath = os.path.dirname(Path)
     
     FullPath = os.path.join(directory,Path)
     
@@ -54,13 +59,13 @@ def getIconPathFromGameXML(src, directory):
     iconresource = app_tag.getElementsByTagName("Icon")
     
     if(iconresource==[]):
-        return ""
+        return []
     
     Path = iconresource[0].getAttribute("Value")
     
     dom.unlink()
     
-    return Path
+    return [Path,GamePath]
 
 def getFileResourcesFromAppXML(src):
     dom = xml.dom.minidom.parse(src)
@@ -237,8 +242,12 @@ def copytonewfolder(src, DestGameDir):
     
     SourceGameDir = getGameDirectory(src)
     
-    IconPath = getIconPathFromGameXML(src, SourceGameDir)
-    if(IconPath != ""):
+    Paths = getIconPathFromGameXML(src, SourceGameDir)
+    
+    if(Paths != []):
+        IconPath = Paths[0]
+        GamePath = Paths[1]
+    
         IconName = os.path.basename(IconPath)
         bad_files.append(IconName.lower())
 
@@ -256,10 +265,10 @@ def copytonewfolder(src, DestGameDir):
         
     copytree(os.path.join(SourceGameDir,"Bin"),os.path.join(DestGameDir,"Bin"))
 
-    if(IconPath != ""):
+    if(Paths != []):
         SrcGameExe = os.path.normpath(os.path.join(SourceGameDir,"Bin/Game.exe"))
         DstGameExe = os.path.normpath(os.path.join(DestGameDir,"Bin/Game.exe"))
-        IconPath = os.path.normpath(os.path.join(SourceGameDir,IconPath))
+        IconPath = os.path.normpath(os.path.join(os.path.join(SourceGameDir,GamePath),IconPath))
     
         os.chdir("../upx")
         
@@ -289,9 +298,19 @@ def copytonewfolder(src, DestGameDir):
             
         subprocess.call(exe)
     
-    # reshacker -addoverwrite elma.exe, game1.exe, menge.ico, icongroup,100,
-    
-    
+    l = []
+        
+    def make_list(arg, dirn, arg1):
+        l.append(dirn)
+     
+    os.path.walk(DestGameDir, make_list, None)
+    l.reverse()
+
+    for dirn in l:
+        try:
+            os.rmdir(dirn)
+        except:
+            pass
     
     print "Done!"
     

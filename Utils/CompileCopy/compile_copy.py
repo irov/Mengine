@@ -36,15 +36,29 @@ allowed_type = ['ResourceImageDefault'] #,'ResourceImageSet','ResourceImageCell'
 def getGameDirectory(src):
     return os.path.dirname(os.path.dirname(src))
 
-def getIconPathFromAppXML(src):
+def getIconPathFromGameXML(src, directory):
     dom = xml.dom.minidom.parse(src)
     app_tag = dom.getElementsByTagName("Application")[0]
+    
+    iconresource = app_tag.getElementsByTagName("Game")
+    
+    Path = iconresource[0].getAttribute("File")
+    
+    dom.unlink()
+    
+    FullPath = os.path.join(directory,Path)
+    
+    dom = xml.dom.minidom.parse(FullPath)
+    app_tag = dom.getElementsByTagName("Game")[0]
+    
     iconresource = app_tag.getElementsByTagName("Icon")
     
     if(iconresource==[]):
         return ""
     
     Path = iconresource[0].getAttribute("Value")
+    
+    dom.unlink()
     
     return Path
 
@@ -223,7 +237,7 @@ def copytonewfolder(src, DestGameDir):
     
     SourceGameDir = getGameDirectory(src)
     
-    IconPath = getIconPathFromAppXML(src)
+    IconPath = getIconPathFromGameXML(src, SourceGameDir)
     if(IconPath != ""):
         IconName = os.path.basename(IconPath)
         bad_files.append(IconName.lower())

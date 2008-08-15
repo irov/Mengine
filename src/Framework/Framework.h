@@ -1,5 +1,7 @@
 #	pragma once
 
+using namespace System;
+
 //#	include "ApplicationInterface.h"
 
 #	include "Interface/LogSystemInterface.h"
@@ -26,7 +28,7 @@ namespace Menge
 	class Sprite;
 }
 
-class EXAMPLEUNMANAGEDDLL_API MengeSprite
+public class ref MengeSprite
 {
 public:
 
@@ -49,7 +51,7 @@ private:
 	Menge::Sprite * m_sprite;
 };
 
-class EXAMPLEUNMANAGEDDLL_API Framework
+public class ref Framework
 {
 public:
 	Framework();

@@ -200,7 +200,7 @@ void Framework::createWindow(HWND _hwnd)
 	result = app->createRenderWindow(_hwnd);
 	app->initGame(false);
 }
-
+/*
 BOOL APIENTRY DllMain(
 					  HMODULE,
 					  DWORD ul_reason_for_call,
@@ -216,4 +216,4 @@ BOOL APIENTRY DllMain(
 	}
 
 	return TRUE;
-}
+}*/

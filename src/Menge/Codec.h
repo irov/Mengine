@@ -7,22 +7,13 @@
 
 namespace Menge 
 {
-	//Abstract class that defines a 'codec'.
-	//@remarks
-	//A codec class works like a two-way filter for data - data entered on
-	//one end (the decode end) gets processed and transformed into easily
-	//usable data while data passed the other way around codes it back.
-	//@par
-	//The codec concept is a pretty generic one - you can easily understand
-	//how it can be used for images, sounds, archives, even compressed data.
 	class Codec
 	{
 	protected:
 		typedef std::map< String, Codec* > TCodecMap; 
-		// A map that contains all the registered codecs.
 		static TCodecMap ms_mapCodecs;
-
 	public:
+
 		class CodecData 
 		{
 		public:
@@ -32,7 +23,6 @@ namespace Menge
 	public:
 		virtual ~Codec();
 
-		// Registers a new codec in the database.
 		static void registerCodec( const String& _type, Codec *_codec )
 		{
 			ms_mapCodecs[_type] = _codec;

@@ -11,16 +11,12 @@ namespace Menge
 		DF_COUNT_ALPHA = 0x00000001,
 		DF_READ_ALPHA_ONLY = 0x00000002
 	};
-	//Codec specialized in images.
-	//@remarks
-	//The users implementing subclasses of ImageCodec are required to return
-	//a valid pointer to a ImageData class from the decode(...) function.
+	
 	class ImageCodec : public Codec
 	{
 	public:
 		virtual ~ImageCodec();
-		//Codec return class for images. Has imformation about the size and the
-		//pixel format of the image.
+	
 		class ImageData : public Codec::CodecData
 		{
 		public:

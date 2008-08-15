@@ -23,7 +23,6 @@ namespace Menge
 	{
 		String lwrcase = _extension;
 		
-		//StringUtil::toLowerCase( lwrcase );
 		std::transform(
 			lwrcase.begin(),
 			lwrcase.end(),
@@ -31,8 +30,7 @@ namespace Menge
 			std::tolower);
 
 		TCodecMap::const_iterator i = ms_mapCodecs.find( lwrcase );
-		//assert( ( i != ms_mapCodecs.end() ) &&
-		//	String( "Codec::getCodec -> Cannot find codec for extension " + _extension ).c_str() );
+		
 		if( i == ms_mapCodecs.end() )
 		{
 			return NULL;
@@ -59,6 +57,7 @@ namespace Menge
 		{
 			delete it->second;
 		}
+
 		ms_mapCodecs.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////

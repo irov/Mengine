@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="windows-1251"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="Framework"
-	ProjectGUID="{8649995C-39F7-4C7D-9E26-815E489FE4FD}"
-	RootNamespace="Framework"
-	Keyword="Win32Proj"
+	Name="ExampleMCppBridge"
+	ProjectGUID="{B25C8F0A-16A1-415E-98F4-9B1D890A7302}"
+	RootNamespace="ExampleMCppBridge"
+	Keyword="ManagedCProj"
 	>
 	<Platforms>
 		<Platform
@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)Utils\Editor\Editor\bin\Debug\"
-			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)Bin_d"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			ManagedExtensions="1"
@@ -41,14 +41,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)src\libs&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;"
-				PreprocessorDefinitions="override=&quot;&quot;;WIN32;_DEBUG;_WINDOWS;_USRDLL"
-				MinimalRebuild="false"
-				BasicRuntimeChecks="0"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)src\libs&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				WarningLevel="4"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -63,10 +60,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="pybind_d.lib python25_d.lib libpngd.lib zlibd.lib libjpegd.lib"
+				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\libPNG\lib_debug\&quot;;&quot;$(SolutionDir)dependencies\zlib\lib_debug\&quot;;&quot;$(SolutionDir)dependencies\libJPEG\debug\&quot;"
-				IgnoreDefaultLibraryNames="libci.lib"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -99,6 +98,7 @@
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
+			ManagedExtensions="1"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -118,14 +118,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)src\libs&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;EXAMPLEUNMANAGEDDLL_EXPORTS"
-				RuntimeLibrary="0"
+				AdditionalIncludeDirectories="..\ExampleUnmanagedDLL"
+				PreprocessorDefinitions="WIN32;NDEBUG"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="0"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -138,15 +136,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="pybind.lib python25.lib FreeImage.lib"
+				AdditionalDependencies="..\ExampleUnmanagedDLL\Release\ExampleUnmanagedDLL.lib $(NOINHERIT)"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Release&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Dist\&quot;"
-				IgnoreDefaultLibraryNames="libci.lib"
-				GenerateDebugInformation="false"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				LinkTimeCodeGeneration="0"
+				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -176,6 +168,18 @@
 		</Configuration>
 	</Configurations>
 	<References>
+		<AssemblyReference
+			RelativePath="System.dll"
+			AssemblyName="System, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
+		/>
+		<AssemblyReference
+			RelativePath="System.Data.dll"
+			AssemblyName="System.Data, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=x86"
+		/>
+		<AssemblyReference
+			RelativePath="System.XML.dll"
+			AssemblyName="System.Xml, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
+		/>
 	</References>
 	<Files>
 		<Filter
@@ -188,7 +192,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\main.cpp"
+				RelativePath=".\ManagedFramework.cpp"
 				>
 			</File>
 		</Filter>
@@ -198,7 +202,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\Framework.h"
+				RelativePath=".\ManagedFramework.h"
 				>
 			</File>
 		</Filter>

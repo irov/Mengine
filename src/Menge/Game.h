@@ -92,8 +92,6 @@ namespace Menge
 
 		const std::string& getTitle() const;
 
-		
-		
 		int getBits() const;
 		bool getFullscreen() const;
 		bool getVSync() const;
@@ -108,7 +106,7 @@ namespace Menge
 		void saveAccount( const String& _accountName );
 		void saveAccounts();
 
-		Account* getCurrentAccount();
+		Account * getCurrentAccount();
 
 		void saveAccountsInfo();
 

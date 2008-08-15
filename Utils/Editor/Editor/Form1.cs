@@ -43,22 +43,45 @@ namespace Editor
             System.IO.Directory.SetCurrentDirectory("D:\\NewProject\\Bin");
             
             Initialise(new Size(1024, 768), "Example");
+
+            framework.initMenge();
             framework.createWindow(this.Handle);
+
+            framework.setCurrentScene("SampleScene");
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {         
         }
 
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            //framework.step();
-          //  this.Invalidate();
-        }
-
         private void timer1_Tick(object sender, EventArgs e)
         {
-            framework.step(1000);
+            framework.renderLine(100000, 100, 100, 2000, 5000);
+            framework.onUpdate(1000);
+        }
+
+        private ManagedSprite sprite = null;
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            sprite = framework.createSprite("SpriteExample", 100, 100);
+            //sprite.setImageResource("default");
+            bool result = sprite.activate();
+         //   if(!result)
+         //   {
+
+          //  }
+
+            framework.layerAppend("Sample", sprite);
+           // framework.
+
+            //framework.addNode();
+           // framework.renderLine(100, 100, 100, 200, 500);
+        }
+
+        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        {
+            sprite.setPos(e.X, e.Y);
         }
     }
 }

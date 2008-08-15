@@ -17,7 +17,7 @@ from xml.dom import *
 #skipped extensions
 bad_ext = ['.py']  
 #skipped files
-bad_files = ['thumbs.db','Thumbs.db']
+bad_files = ['thumbs.db','thumbs.db']
 #skipped folders
 bad_dirs = ['thumbnails','.svn']
 #files with bad extension, but needed. Example - log file
@@ -35,6 +35,18 @@ allowed_type = ['ResourceImageDefault'] #,'ResourceImageSet','ResourceImageCell'
 
 def getGameDirectory(src):
     return os.path.dirname(os.path.dirname(src))
+
+def getIconPathFromAppXML(src):
+    dom = xml.dom.minidom.parse(src)
+    app_tag = dom.getElementsByTagName("Application")[0]
+    iconresource = app_tag.getElementsByTagName("Icon")
+    
+    if(iconresource==[]):
+        return ""
+    
+    Path = iconresource[0].getAttribute("Value")
+    
+    return Path
 
 def getFileResourcesFromAppXML(src):
     dom = xml.dom.minidom.parse(src)
@@ -90,7 +102,7 @@ def copytree(src, dst):
 
     for name in names:
         
-        if (name in bad_dirs) or (name in bad_files):
+        if (name in bad_dirs) or (name.lower() in bad_files):
             continue
         
         ext = os.path.splitext(name)[1]
@@ -210,6 +222,11 @@ def copytonewfolder(src, DestGameDir):
         return
     
     SourceGameDir = getGameDirectory(src)
+    
+    IconPath = getIconPathFromAppXML(src)
+    if(IconPath != ""):
+        IconName = os.path.basename(IconPath)
+        bad_files.append(IconName.lower())
 
     os.mkdir(DestGameDir)
     
@@ -224,17 +241,47 @@ def copytonewfolder(src, DestGameDir):
         copyfiles()
         
     copytree(os.path.join(SourceGameDir,"Bin"),os.path.join(DestGameDir,"Bin"))
+
+    if(IconPath != ""):
+        SrcGameExe = os.path.normpath(os.path.join(SourceGameDir,"Bin/Game.exe"))
+        DstGameExe = os.path.normpath(os.path.join(DestGameDir,"Bin/Game.exe"))
+        IconPath = os.path.normpath(os.path.join(SourceGameDir,IconPath))
+    
+        os.chdir("../upx")
+        
+        exe = 'upx.exe -d %(dstgame)s' % \
+        {
+            'dstgame' : DstGameExe, \
+        }
+            
+        subprocess.call(exe)
+        
+        os.chdir("../reshacker")
+        
+        exe = 'reshacker.exe -addoverwrite %(destgame)s,%(destgame)s,%(iconpath)s,icongroup,100,' % \
+                {'srcgame' : SrcGameExe, \
+                 'destgame' : DstGameExe, \
+                 'iconpath' : IconPath, \
+                }
+        
+        subprocess.call(exe)
+        
+        os.chdir("../upx")
+    
+        exe = 'upx.exe -9 %(dstgame)s' % \
+        {
+            'dstgame' : DstGameExe, \
+        }
+            
+        subprocess.call(exe)
+    
+    # reshacker -addoverwrite elma.exe, game1.exe, menge.ico, icongroup,100,
+    
+    
     
     print "Done!"
     
-def f(f):
-    pass
-
 def main():
-
-    if callable(f):
-        print ""
-    pass
 
     master = Tk()
     master.withdraw()

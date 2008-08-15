@@ -282,7 +282,7 @@ namespace Menge
 
 		m_buffer = new unsigned char[data.size];
 
-		res = codec->decode( codeStream, m_buffer, 0 );
+		res = codec->decode( codeStream, m_buffer, data.flags );
 		if( res == false )
 		{
 			MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _strFileName.c_str() );

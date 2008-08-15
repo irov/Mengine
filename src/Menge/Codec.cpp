@@ -3,6 +3,7 @@
 
 #	include "ImageCodecPNG.h"
 #	include "ImageCodecJPEG.h"
+#	include "ImageCodecMNE.h"
 
 #	include <cassert>
 #	include <algorithm>
@@ -47,6 +48,7 @@ namespace Menge
 		REGISTER_CODEC( "jpg", ImageCodecJPEG );
 		REGISTER_CODEC( "jpeg", ImageCodecJPEG );
 		REGISTER_CODEC( "jfif", ImageCodecJPEG );
+		REGISTER_CODEC( "mne", ImageCodecMNE );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Codec::cleanup()

@@ -358,11 +358,20 @@ namespace Menge
 		imageData->width = cinfo.image_width;
 		imageData->height = cinfo.image_height;
 		imageData->format = PF_UNKNOWN;
-		if( cinfo.num_components == 3 )
+		int numComponents = cinfo.num_components;
+		if( numComponents == 3 )
 		{
-			imageData->format = PF_R8G8B8;
+			if( ( imageData->flags & DF_COUNT_ALPHA ) != 0 )
+			{
+				imageData->format = PF_A8R8G8B8;
+				numComponents = 4;
+			}
+			else
+			{
+				imageData->format = PF_R8G8B8;
+			}
 		}
-		imageData->size = imageData->width * imageData->height * cinfo.num_components;
+		imageData->size = imageData->width * imageData->height * numComponents;
 		
 		jpeg_destroy_decompress( &cinfo );
 
@@ -371,6 +380,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageCodecJPEG::decode( DataStreamInterface* _input, unsigned char* _buffer, unsigned int _options ) const
 	{
+		unsigned char* readBuffer = _buffer;
 		// set up the jpeglib structures
 		struct jpeg_decompress_struct cinfo;
 		struct tagErrorManager mErrMgr;
@@ -397,16 +407,41 @@ namespace Menge
 		// step 3: read handle parameters with jpeg_read_header()
 		jpeg_read_header( &cinfo, TRUE );
 
+		int numComponents = cinfo.num_components;
+
+		if( ( numComponents == 3 ) && (( _options & DF_COUNT_ALPHA ) != 0) )
+		{
+			numComponents = 4;
+		}
+
 		jpeg_start_decompress(&cinfo);
 
-		int row_stride = cinfo.output_width * cinfo.output_components;
+		int row_stride = cinfo.output_width * numComponents;
 
-		while( cinfo.output_scanline < cinfo.output_height ) 
+		if( numComponents < 4 )
 		{
-			jpeg_read_scanlines( &cinfo, &_buffer, 1 );
-			/* Assume put_scanline_someplace wants a pointer and sample count. */
-			_buffer += row_stride;
-			//put_scanline_someplace(_buffer[0], row_stride);
+			while( cinfo.output_scanline < cinfo.output_height ) 
+			{
+				jpeg_read_scanlines( &cinfo, &readBuffer, 1 );
+				/* Assume put_scanline_someplace wants a pointer and sample count. */
+				readBuffer += row_stride;
+				//put_scanline_someplace(_buffer[0], row_stride);
+			}
+		}
+		else
+		{
+			std::size_t bufferSize = cinfo.output_width * cinfo.num_components;
+			unsigned char* rowBuffer = new unsigned char[bufferSize];
+			while( cinfo.output_scanline < cinfo.output_height )
+			{
+				jpeg_read_scanlines( &cinfo, &rowBuffer, 1 );
+				for( int i = 0, j = 0; i < bufferSize; i += cinfo.num_components, j += numComponents )
+				{
+					std::copy( &(rowBuffer[i]), &(rowBuffer[i+cinfo.num_components]), &(readBuffer[j]) );
+				}
+				readBuffer += row_stride;
+			}
+			delete[] rowBuffer;
 		}
 
 		jpeg_finish_decompress(&cinfo);

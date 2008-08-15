@@ -229,6 +229,7 @@ namespace Menge
 		png_uint_32 width, height;
 		int color_type;
 		int bit_depth, pixel_depth;		// pixel_depth = bit_depth * channels
+		unsigned char* readBuffer = _buffer;
 
 		if( _inputData == 0 )
 		{
@@ -341,12 +342,28 @@ namespace Menge
 		// all transformations have been registered; now update info_ptr data
 		png_read_update_info(png_ptr, info_ptr);
 
-			// read in the bitmap bits via the pointer table
-		//png_read_image( png_ptr, &_buffer );
-		for( png_uint_32 i = 0; i <height; i++ )
+		int row_stride = width * pixel_depth / 8;
+		if( _options == 0 )
 		{
-			png_read_row( png_ptr, _buffer, png_bytep_NULL );
-			_buffer += width * pixel_depth / 8;
+			for( png_uint_32 i = 0; i <height; i++ )
+			{
+				png_read_row( png_ptr, readBuffer, png_bytep_NULL );
+				readBuffer += row_stride;
+			}
+		}
+		else if( _options == DF_READ_ALPHA_ONLY )
+		{
+			unsigned char* rowBuffer = new unsigned char[row_stride];
+			for( png_uint_32 i = 0; i <height; i++ )
+			{
+				png_read_row( png_ptr, rowBuffer, png_bytep_NULL );
+				for( int i = 0; i < row_stride; i++ )
+				{
+					readBuffer[i*4 + 3] = rowBuffer[i];
+				}
+				readBuffer += row_stride * 4;
+			}
+			delete[] rowBuffer;
 		}
 
 		if( png_ptr )

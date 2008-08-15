@@ -4,7 +4,7 @@
 
 namespace Menge
 {	
-	class MengeCodec 
+	class ImageCodecMNE 
 		: public ImageCodec
     {
 	public:

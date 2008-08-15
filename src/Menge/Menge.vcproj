@@ -1518,35 +1518,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ImageCodecMNE.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ImageCodecMNE.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ImageCodecPNG.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\ImageCodecPNG.h"
-				>
-			</File>
-			<File
-				RelativePath=".\MengeCodec.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\MengeCodec.h"
 				>
 			</File>
 		</Filter>

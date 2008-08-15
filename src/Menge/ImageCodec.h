@@ -5,6 +5,12 @@
 
 namespace Menge 
 {
+	enum DecodeFlag
+	{
+		DF_NONE = 0x00000000,
+		DF_COUNT_ALPHA = 0x00000001,
+		DF_READ_ALPHA_ONLY = 0x00000002
+	};
 	//Codec specialized in images.
 	//@remarks
 	//The users implementing subclasses of ImageCodec are required to return

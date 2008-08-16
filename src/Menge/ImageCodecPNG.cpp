@@ -34,6 +34,17 @@ namespace Menge
 			// empty flush implementation
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ImageCodecPNG::ImageCodecPNG(const String & _type)
+		: m_type(_type)
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ImageCodecPNG::~ImageCodecPNG()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ImageCodecPNG::code( OutStreamInterface* _outStream, unsigned char* _buffer, CodecData* _data ) const
 	{
 		ImageCodec::ImageData* imageData = static_cast<ImageCodec::ImageData*>( _data );
@@ -372,6 +383,11 @@ namespace Menge
 			png_destroy_read_struct( &png_ptr, &info_ptr, (png_infopp)0 );
 		}
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & ImageCodecPNG::getType() const
+	{
+		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

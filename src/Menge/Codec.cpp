@@ -9,11 +9,10 @@
 #	include <algorithm>
 #	include <cctype>
 
-#	define REGISTER_CODEC( _type_, _class_ )	( Codec::registerCodec( (_type_), new (_class_) ) )
-
 namespace Menge
 {
-	std::map< String, Codec* > Codec::ms_mapCodecs;
+	//////////////////////////////////////////////////////////////////////////
+	Codec::TCodecMap Codec::ms_mapCodecs;
 	//////////////////////////////////////////////////////////////////////////
 	Codec::~Codec() 
 	{
@@ -37,16 +36,35 @@ namespace Menge
 		}
 
 		return i->second;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Codec::registerCodec( Codec * _codec )
+	{
+		const String & codecType = _codec->getType();
 
+		TCodecMap::iterator it = ms_mapCodecs.find(codecType);
+
+		if(it != ms_mapCodecs.end())
+		{
+			return;
+		}
+
+		ms_mapCodecs.insert(std::make_pair(codecType, _codec));
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Codec::unregisterCodec( Codec * _codec )
+	{
+		const String & codecType = _codec->getType();
+		ms_mapCodecs.erase(codecType);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Codec::initialize()
 	{
-		REGISTER_CODEC( "png", ImageCodecPNG );
-		REGISTER_CODEC( "jpg", ImageCodecJPEG );
-		REGISTER_CODEC( "jpeg", ImageCodecJPEG );
-		REGISTER_CODEC( "jfif", ImageCodecJPEG );
-		REGISTER_CODEC( "mne", ImageCodecMNE );
+		registerCodec(new ImageCodecPNG("png"));
+		registerCodec(new ImageCodecJPEG("jpg"));
+		registerCodec(new ImageCodecJPEG("jpeg"));
+		registerCodec(new ImageCodecJPEG("jfif"));
+		registerCodec(new ImageCodecMNE("mne"));
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Codec::cleanup()

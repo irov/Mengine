@@ -269,7 +269,6 @@ namespace Menge
 
 		WindowHandle winHandle = _handle;
 
-	
 		if(_handle == NULL)
 		{
 			winHandle = m_interface->createWindow( 

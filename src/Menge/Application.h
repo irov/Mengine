@@ -127,27 +127,26 @@ namespace Menge
 
 		bool m_particles;
 		bool m_sound;
-		unsigned int m_debugMask;
 		bool m_debugInfo;
 		bool m_usePhysic;
 		bool m_mouseBounded;
 
-		float m_phycisTiming;
+		unsigned int m_debugMask;
+
 		bool m_resetTiming;
+		float m_phycisTiming;
 		float m_maxTiming;
 
-		LogEngine* m_logEngine;
-		ProfilerEngine* m_profilerEngine;
-		FileEngine* m_fileEngine;
-		InputEngine* m_inputEngine;
-		RenderEngine* m_renderEngine;
-		SoundEngine* m_soundEngine;
-		ParticleEngine* m_particleEngine;
+		LogEngine * m_logEngine;
+		ProfilerEngine * m_profilerEngine;
+		FileEngine * m_fileEngine;
+		InputEngine * m_inputEngine;
+		RenderEngine * m_renderEngine;
+		SoundEngine * m_soundEngine;
+		ParticleEngine * m_particleEngine;
 		PhysicEngine * m_physicEngine;
 		PhysicEngine2D * m_physicEngine2D;
-		XmlEngine*	m_xmlEngine;
-
-		
+		XmlEngine *	m_xmlEngine;
 
 		void parseArguments(const std::string & _arguments);
 		void initPredefinedResources();

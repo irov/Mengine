@@ -402,11 +402,14 @@ namespace Menge
 		m_pyPersonality = Holder<ScriptEngine>::hostage()
 			->importModule( m_personality );
 
+		if( m_pyPersonality == 0 )
+		{
+			return false;
+		}
+
 		registerEvent( EVENT_KEY, "onHandleKeyEvent", m_pyPersonality );
 		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", m_pyPersonality );
 		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", m_pyPersonality );
-
-		bool result = false;
 
 		if( Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
@@ -414,18 +417,13 @@ namespace Menge
 			PyObject * pyResult = Holder<ScriptEngine>::hostage()
 				->callModuleFunction( m_pyPersonality, m_eventInit );
 
-			result = Holder<ScriptEngine>::hostage()
+			bool result = Holder<ScriptEngine>::hostage()
 				->parseBool( pyResult );
-		}
 
-		if( result == false )
-		{
-			return false;
-		}
-
-		if( m_pyPersonality == 0 )
-		{
-			return false;
+			if( result == false )
+			{
+				return false;
+			}
 		}
 
 		return true;
@@ -433,6 +431,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
+		Holder<ScheduleManager>::keep( new ScheduleManager );
+		Holder<MousePickerSystem>::keep( new MousePickerSystem );
+		Holder<LightSystem>::keep( new LightSystem );
+
 		ScriptEngine::TListModulePath m_listModulePath;
 
 		for( TListDeclaration::iterator it = m_pathScripts.begin(),
@@ -461,10 +463,6 @@ namespace Menge
 
 		Holder<ScriptEngine>::hostage()
 			->setModulePath( m_listModulePath );
-
-		Holder<ScheduleManager>::keep( new ScheduleManager );
-		Holder<MousePickerSystem>::keep( new MousePickerSystem );
-		Holder<LightSystem>::keep( new LightSystem );
 
 		for( TMapDeclaration::iterator
 			it = m_mapEntitiesDeclaration.begin(),

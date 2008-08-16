@@ -323,6 +323,17 @@ namespace Menge
 			dest->m_stream = _stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ImageCodecJPEG::ImageCodecJPEG(const String & _type)
+		: m_type(_type)
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ImageCodecJPEG::~ImageCodecJPEG()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ImageCodecJPEG::getDataInfo( DataStreamInterface* _inputData, CodecData* _codecData ) const
 	{
 		ImageCodec::ImageData* imageData = static_cast<ImageCodec::ImageData*>( _codecData );
@@ -454,6 +465,11 @@ namespace Menge
 	bool ImageCodecJPEG::code( OutStreamInterface* _input, unsigned char* _buffer, CodecData* _data ) const
 	{
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & ImageCodecJPEG::getType() const
+	{
+		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

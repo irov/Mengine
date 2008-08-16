@@ -323,25 +323,6 @@ namespace Menge
 			ref->decrementReference();
 		}
 	}
-#ifdef _DEBUG
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::_dumpResources()
-	{
-		FILE* file = fopen( "ResourceDump.log", "a" );
-		fprintf( file, "Dumping resources...\n");
-		for( TMapResource::iterator it = m_mapResource.begin()
-			, it_end = m_mapResource.end()
-			; it != it_end
-			; it++ )
-		{
-			if( it->second->countReference() )
-			{
-				fprintf( file, "--> %s : %d\n", it->first.c_str(), it->second->countReference() );
-			}
-		}
-		fclose( file );
-	}
-#endif
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::directResourceFileCompile( const String& _resourceFile )
 	{
@@ -385,7 +366,25 @@ namespace Menge
 				while( res->decrementReference() );
 			}
 		}
-
 	}
+	//////////////////////////////////////////////////////////////////////////
+#ifdef _DEBUG
+	void ResourceManager::_dumpResources()
+	{
+		FILE* file = fopen( "ResourceDump.log", "a" );
+		fprintf( file, "Dumping resources...\n");
+		for( TMapResource::iterator it = m_mapResource.begin()
+			, it_end = m_mapResource.end()
+			; it != it_end
+			; it++ )
+		{
+			if( it->second->countReference() )
+			{
+				fprintf( file, "--> %s : %d\n", it->first.c_str(), it->second->countReference() );
+			}
+		}
+		fclose( file );
+	}
+#endif
 	//////////////////////////////////////////////////////////////////////////
 }

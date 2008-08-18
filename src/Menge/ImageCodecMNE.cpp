@@ -4,7 +4,6 @@
 #	include "ImageCodecPNG.h"
 
 #	include "LogEngine.h"
-#	include "CodecManager.h"
 
 namespace Menge
 {
@@ -12,10 +11,12 @@ namespace Menge
 	ImageCodecMNE::ImageCodecMNE(const String & _type)
 		: m_type(_type)
 	{
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageCodecMNE::~ImageCodecMNE()
 	{
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageCodecMNE::code( OutStreamInterface* _outStream, unsigned char* _buffer, CodecData* _data ) const
@@ -38,7 +39,7 @@ namespace Menge
 			imageData->flags |= DF_COUNT_ALPHA;
 		}
 
-		Codec * codecJPEG = Holder<CodecManager>::hostage()->getCodec( "jpg" );
+		Codec* codecJPEG = Codec::getCodec( "jpg" );
 		bool res = codecJPEG->getDataInfo( _inputData, imageData );
 		if( res == false )
 		{
@@ -57,7 +58,7 @@ namespace Menge
 		unsigned long jpg_size = 0;
 		_input->read(&jpg_size,sizeof(unsigned long));
 
-		Codec* codecJPEG = Holder<CodecManager>::hostage()->getCodec( "jpg" );
+		Codec* codecJPEG = Codec::getCodec( "jpg" );
 		bool res = codecJPEG->decode( _input, _buffer, _options );
 		if( res == false )
 		{
@@ -68,7 +69,7 @@ namespace Menge
 		if( is_alpha != 0 )
 		{
 			_input->seek( jpg_size+3*sizeof(unsigned long) );
-			Codec* codecPNG = Holder<CodecManager>::hostage()->getCodec( "png" );
+			Codec* codecPNG = Codec::getCodec( "png" );
 			res = codecPNG->decode( _input, _buffer, DF_READ_ALPHA_ONLY );
 			if( res == false )
 			{

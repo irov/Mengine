@@ -10,7 +10,6 @@
 
 #	include "Account.h"
 #	include "Game.h"
-#	include "AccountManager.h"
 #	include "Application.h"
 #	include "FileEngine.h"
 
@@ -133,62 +132,62 @@ namespace Menge
 
 		static void s_addSetting( const String& _setting, const String& _defaultValue, PyObject* _applyFunc )
 		{
-			Account* currentAccount = Holder<AccountManager>::hostage()->getCurrentAccount();
+			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
 			currentAccount->addSetting( _setting, _defaultValue, _applyFunc );
 		}
 
 		static void s_changeSetting( const String& _setting, const String& _value )
 		{
-			Account* currentAccount = Holder<AccountManager>::hostage()->getCurrentAccount();
+			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
 			currentAccount->changeSetting( _setting, _value );
 		}
 
 		static const String& s_getSetting( const String& _setting )
 		{
-			Account* currentAccount = Holder<AccountManager>::hostage()->getCurrentAccount();
+			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
 			return currentAccount->getSetting( _setting );
 		}
 
 		static void s_createAccount( const String& _accountName )
 		{
-			Holder<AccountManager>::hostage()->createAccount( _accountName );
+			Holder<Game>::hostage()->createAccount( _accountName );
 		}
 
 		static void s_selectAccount( const String& _accountName )
 		{
-			Holder<AccountManager>::hostage()->selectAccount( _accountName );
+			Holder<Game>::hostage()->selectAccount( _accountName );
 		}
 
 		static void s_saveAccount( const String& _accountName )
 		{
-			Holder<AccountManager>::hostage()->saveAccount( _accountName );
+			Holder<Game>::hostage()->saveAccount( _accountName );
 		}
 	
 		static void s_saveAccounts()
 		{
-			Holder<AccountManager>::hostage()->saveAccounts();
+			Holder<Game>::hostage()->saveAccounts();
 		}
 
 		static void s_saveAccountsInfo()
 		{
-			Holder<AccountManager>::hostage()->saveAccountsInfo();
+			Holder<Game>::hostage()->saveAccountsInfo();
 		}
 
 		static void s_deleteAccount( const String& _accountName )
 		{
-			Holder<AccountManager>::hostage()->deleteAccount( _accountName );
+			Holder<Game>::hostage()->deleteAccount( _accountName );
 		}
 
 		static const String& s_getCurrentAccountName()
 		{
-			Account* currentAccount = Holder<AccountManager>::hostage()->getCurrentAccount();
+			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
 			return currentAccount->getName();
 		}
 
 		static String s_getDataPath()
 		{
 			String path = Holder<FileEngine>::hostage()->getAppDataPath();
-			Account* currentAccount = Holder<AccountManager>::hostage()->getCurrentAccount();
+			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
 			return path + "\\" + currentAccount->getName();
 		}
 

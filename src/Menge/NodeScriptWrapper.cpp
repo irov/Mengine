@@ -64,7 +64,6 @@
 
 #	include "XmlEngine.h"
 #	include "Image.h"
-#	include "AccountManager.h"
 
 
 namespace Menge
@@ -268,8 +267,13 @@ namespace Menge
 				ResourceFactoryParam param;
 				param.name = _name;
 
-				param.category = Holder<FileEngine>::hostage()->getAppDataPath() + "\\" +
-									Holder<AccountManager>::hostage()->getCurrentAccount()->getName() + "\\";
+				param.category = Holder<FileEngine>::hostage()->getAppDataPath() + "\\";
+				String group;
+				Account* acc = Holder<Game>::hostage()->getCurrentAccount();
+				if( acc != 0 )
+				{
+					param.group = acc->getName() + "\\";
+				}
 
 				resourceImage = new ResourceImageDynamic( param );
 				//FIXME
@@ -356,12 +360,12 @@ namespace Menge
 			Image wImage;
 
 			unsigned char * buffer = img->lock();
-			float width = (float)img->getWidth();
-			float height = (float)img->getHeight();
+			std::size_t width = img->getWidth();
+			std::size_t height = img->getHeight();
 			PixelFormat pixelFormat = img->getPixelFormat();
 
 
-			wImage.loadDynamicImage( buffer, (std::size_t)width, (std::size_t)height, 1, pixelFormat );
+			wImage.loadDynamicImage( buffer, width, height, 1, pixelFormat );
 			wImage.save( _filename );
 			img->unlock();
 			//const_cast<RenderImageInterface*>(img)->writeToFile( _filename.c_str() );

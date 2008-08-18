@@ -49,6 +49,7 @@ public:
 	bool isBusy() const;
 	void setUsed( bool _use );
 	Menge::SoundNodeListenerInterface* getListener();
+	void unbind();
 
 private:
 	TALSourceName* m_sourceName;

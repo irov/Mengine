@@ -3,7 +3,7 @@
 #	include "ResourceImplement.h"
 
 #	include "RenderEngine.h"
-#	include "ResourceManager.h"
+#	include "Image.h"
 
 namespace Menge
 {
@@ -17,6 +17,15 @@ namespace Menge
 	{
 		m_frame.image = NULL;
 		m_frame.size = mt::vec2f::zero_v2;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImageDynamic::~ResourceImageDynamic()
+	{
+		if( m_cached == true )
+		{
+			String cashName = m_params.category + m_params.group + "cache_" + m_params.name + ".png";
+			Holder<FileEngine>::hostage()->deleteFile( cashName );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageDynamic::getMaxSize( unsigned int _frame ) const
@@ -76,7 +85,8 @@ namespace Menge
 	{	
 		if( m_cached )
 		{
-			loadImageFrame( m_params.category + "cache\\" + m_params.name + ".png" );
+			String cashName = m_params.category + m_params.group + "cache_" + m_params.name + ".png";
+			m_frame = loadImageFrame( cashName );
 		}
 		m_cached = false;
 		return true;
@@ -86,7 +96,18 @@ namespace Menge
 	{
 		if( m_frame.image != 0 )
 		{
-			m_frame.image->writeToFile( m_params.category + "cache\\" + m_params.name + ".png" );
+			Image wImage;
+
+			unsigned char * buffer = m_frame.image->lock();
+			std::size_t width = m_frame.image->getWidth();
+			std::size_t height = m_frame.image->getHeight();
+			PixelFormat pixelFormat = m_frame.image->getPixelFormat();
+
+			wImage.loadDynamicImage( buffer, width, height, 1, pixelFormat );
+			String cashName = m_params.group + "cache_" + m_params.name + ".png";
+			wImage.save( cashName );
+			m_frame.image->unlock();
+
 			m_cached = true;
 			releaseImageFrame( m_frame );
 		}

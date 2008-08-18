@@ -52,10 +52,8 @@ namespace Menge
 		Holder<LogEngine>::hostage()->logMessage( _msg, false, false, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::initialize()
+	void ScriptEngine::init()
 	{
-		MENGE_LOG("init scriptEngine ...\n");
-
 		pybind::initialize();
 
 		PyObject * main = initModule("__main__");

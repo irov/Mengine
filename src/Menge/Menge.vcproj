@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="Menge"
 	ProjectGUID="{61566E24-14DC-456C-A864-772C5064FDBA}"
 	RootNamespace="RvEngine"
@@ -545,14 +545,6 @@
 				Name="RigidBody2D"
 				>
 				<File
-					RelativePath=".\Joint2D.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Joint2D.h"
-					>
-				</File>
-				<File
 					RelativePath=".\RigidBody2D.cpp"
 					>
 				</File>
@@ -629,138 +621,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="Object3D"
-				>
-				<File
-					RelativePath=".\Actor.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\Actor.h"
-					>
-				</File>
-				<File
-					RelativePath=".\CapsuleController.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\CapsuleController.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Light.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\Light.h"
-					>
-				</File>
-				<File
-					RelativePath=".\RenderMesh.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\RenderMesh.h"
-					>
-				</File>
-				<File
-					RelativePath=".\RigidBody3D.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\RigidBody3D.h"
-					>
-				</File>
-				<File
-					RelativePath=".\Skeleton.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath=".\Skeleton.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"
@@ -771,14 +631,6 @@
 			</File>
 			<File
 				RelativePath=".\Account.h"
-				>
-			</File>
-			<File
-				RelativePath=".\AccountManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\AccountManager.h"
 				>
 			</File>
 			<File
@@ -1503,6 +1355,138 @@
 			</File>
 		</Filter>
 		<Filter
+			Name="Object3D"
+			>
+			<File
+				RelativePath=".\Actor.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Actor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CapsuleController.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CapsuleController.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Light.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Light.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RenderMesh.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RenderMesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RigidBody3D.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\RigidBody3D.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Skeleton.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Skeleton.h"
+				>
+			</File>
+		</Filter>
+		<Filter
 			Name="Codec"
 			>
 			<File
@@ -1511,14 +1495,6 @@
 			</File>
 			<File
 				RelativePath=".\Codec.h"
-				>
-			</File>
-			<File
-				RelativePath=".\CodecManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CodecManager.h"
 				>
 			</File>
 			<File

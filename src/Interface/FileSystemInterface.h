@@ -37,6 +37,7 @@ namespace Menge
 		virtual void unloadPak( const String& _pak ) = 0;
 
 		virtual bool existFile( const String& _filename ) = 0;
+		virtual bool deleteFile( const String& _filename ) = 0;
 		virtual DataStreamInterface* openFile( const String& _filename ) = 0;
 		virtual DataStreamInterface* createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose ) = 0;
 		virtual void closeStream( DataStreamInterface* _stream ) = 0;

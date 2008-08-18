@@ -61,6 +61,7 @@ void ALSoundSource::play()
 	{
 		//alSourcei( m_sourceName->name, AL_BUFFER, NULL );
 		alSourcei( m_sourceName->name, AL_BUFFER, m_soundBuffer->getAlID() );
+		//printf( "SoundSource::play\n" );
 		alSourcePlay( m_sourceName->name );
 	}
 
@@ -86,7 +87,6 @@ void ALSoundSource::pause()
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSource::stop()
 {
-	//printf("stopping\n");
 	if( !m_playing ) return;
 	m_playing = false;
 
@@ -103,6 +103,7 @@ void ALSoundSource::stop()
 	}
 	else
 	{
+		//printf("stopping\n");
 		alSourceStop( m_sourceName->name );
 		alSourcei( m_sourceName->name, AL_BUFFER, NULL );
 	}
@@ -245,5 +246,14 @@ void ALSoundSource::setUsed( bool _use )
 Menge::SoundNodeListenerInterface* ALSoundSource::getListener()
 {
 	return m_listener;
+}
+//////////////////////////////////////////////////////////////////////////
+void ALSoundSource::unbind()
+{
+	if( m_sourceName != 0 )
+	{
+		m_sourceName->busy = false;
+		m_soundSystem->unregisterPlaying( this );
+	}
 }
 //////////////////////////////////////////////////////////////////////////

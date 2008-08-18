@@ -13,6 +13,7 @@ namespace Menge
 
 	public:
 		ResourceImageDynamic( const ResourceFactoryParam & _params );
+		~ResourceImageDynamic();
 
 	public:
 		virtual unsigned int getCount() const override;

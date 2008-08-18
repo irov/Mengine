@@ -33,7 +33,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::_update( float _timing )
 	{
-		Node::_update( _timing );
+		/*Node::_update( _timing );
 
 		InputEngine * inputEng = Holder<InputEngine>::hostage();
 
@@ -41,7 +41,7 @@ namespace	Menge
 		float my = inputEng->getMouseY();
 
 		mt::vec2f pos( mx, my );
-		setLocalPosition( pos + m_offsetClick );
+		setLocalPosition( pos + m_offsetClick );*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Arrow::_activate()

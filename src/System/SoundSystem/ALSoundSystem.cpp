@@ -244,7 +244,7 @@ void ALSoundSystem::update( float _timing )
 		it->second -= _timing;
 		if( it->second <= 0 )
 		{
-			it->first->stop();
+			it->first->unbind();
 		}
 	}
 

@@ -5,8 +5,6 @@
 
 #	include "ImageCodecPNG.h"
 
-#	include "CodecManager.h"
-
 namespace Menge 
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -255,11 +253,13 @@ namespace Menge
 			strExt += _strFileName[++pos];
 		}
 
-		Codec* codec = Holder<CodecManager>::hostage()->getCodec(strExt);
+		Codec* codec = Codec::getCodec( strExt );
 
 		if( !codec )
 		{
 			MENGE_LOG( "Warning: Image codec for extension %s was not found", strExt.c_str() );
+			MENGE_LOG_CRITICAL( "Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын", _strFileName.c_str() );
+			return *this;
 		}
 
 		DataStreamInterface* codeStream = Holder<FileEngine>::hostage()->openFile( _strFileName );
@@ -277,6 +277,11 @@ namespace Menge
 		{
 			MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _strFileName.c_str() );
 			Holder<FileEngine>::hostage()->closeStream( codeStream );
+			return *this;
+		}
+		if( data.format == PF_UNKNOWN )
+		{
+			MENGE_LOG_CRITICAL( "Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын", _strFileName.c_str() );
 			return *this;
 		}
 
@@ -352,7 +357,7 @@ namespace Menge
 		while( pos != _filename.length() - 1 )
 			strExt += _filename[++pos];
 
-		Codec * pCodec = Holder<CodecManager>::hostage()->getCodec(strExt);
+		Codec * pCodec = Codec::getCodec( strExt );
 		assert( pCodec && String(
 			"Image::save -> Unable to save image file '" + _filename + "' - invalid extension.").c_str()
 			);

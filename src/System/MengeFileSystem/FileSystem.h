@@ -23,6 +23,7 @@ namespace Menge
 		DataStreamInterface* createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose ) override;
 		void closeStream( DataStreamInterface * _fd ) override;
 		bool existFile( const String& _filename  ) override;
+		bool deleteFile( const String& _filename ) override;
 
 		OutStreamInterface* openOutStream( const Menge::String& _filename, bool _binary ) override;
 		void closeOutStream( OutStreamInterface* _stream ) override;

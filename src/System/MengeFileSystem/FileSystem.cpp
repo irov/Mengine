@@ -307,4 +307,30 @@ namespace Menge
 		delete static_cast<FileStreamOutStream*>( _stream );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool FileSystem::deleteFile( const String& _filename )
+	{
+#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
+		SHFILEOPSTRUCTW fs;
+		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTW));
+		fs.hwnd = NULL;
+
+		wchar_t lpszW[MAX_PATH];
+		String::size_type size = _filename.size();
+		MultiByteToWideChar(CP_ACP, 0, _filename.c_str(), -1, lpszW, size );
+		lpszW[_filename.size()] = 0;
+		lpszW[_filename.size()+1] = 0;
+
+		fs.pFrom = lpszW;
+		fs.wFunc = FO_DELETE;
+		fs.hwnd = NULL;
+		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
+		if( ::SHFileOperationW( &fs ) != 0 )
+		{
+			return false;
+		}
+		return true;
+#else
+#endif
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

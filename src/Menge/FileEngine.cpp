@@ -34,6 +34,11 @@ namespace Menge
 		return m_interface->existFile( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool FileEngine::deleteFile( const String& _filename )
+	{
+		return m_interface->deleteFile( _filename );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	DataStreamInterface * FileEngine::openFile( const std::string& _filename )
 	{
 		return m_interface->openFile( _filename );

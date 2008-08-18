@@ -42,7 +42,7 @@ namespace Menge
 		void render( unsigned int _debugMask = 0 );
 
 	public:
-		bool initialize();
+		bool init();
 		bool loadPersonality();
 		void release();
 
@@ -72,6 +72,9 @@ namespace Menge
 		void loaderResourceFile( XmlElement * _xml );
 		void loaderResourceFile_( XmlElement * _xml );
 
+		void loadAccounts();
+		void loaderAccounts_( XmlElement* _xml );
+		
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
 		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
@@ -97,9 +100,20 @@ namespace Menge
 		int getFSAAType() const;
 		int getFSAAQuality() const;
 
+		void createAccount( const String& _accountName );
+		void deleteAccount( const String& _accountName );
+		void selectAccount( const String& _accountName );
+		void saveAccount( const String& _accountName );
+		void saveAccounts();
+
+		Account * getCurrentAccount();
+
+		void saveAccountsInfo();
+
 	protected:
 
-		Player * m_player;
+		TextField * m_debugTextField;
+		Player* m_player;
 		std::string m_title;
 
 		std::size_t	m_resourceResolution[2];
@@ -127,7 +141,6 @@ namespace Menge
 		typedef std::pair<std::string, std::string> TPairDeclaration;
 		typedef std::list< TPairDeclaration > TListDeclaration;
 		typedef std::map<std::string, TPairDeclaration > TMapDeclaration;
-
 		TMapDeclaration m_mapEntitiesDeclaration;
 		TMapDeclaration m_mapArrowsDeclaration;
 		TMapDeclaration m_mapScenesDeclaration;
@@ -149,8 +162,16 @@ namespace Menge
 		int m_FSAAQuality;
 		std::string m_physicSystemName;
 
+		TStringVector m_loadedAccounts;
+		typedef std::map<String, Account*> TAccountMap;
+		TAccountMap m_accounts;
+
+		bool m_loadingAccounts;
+		String m_defaultAccountName;
+		Account* m_currentAccount;
+
+
 		/////
-		TextField * m_debugTextField;
 		std::string m_debugResourceFont;
 		char m_debugText[128];
 		float m_FPS;

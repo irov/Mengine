@@ -169,8 +169,11 @@ namespace Menge
 			const std::string & filename = m_currentPlayList->getTrack();
 			_prepareSound(filename);
 
-			m_music->setVolume( m_volume );
-			m_music->play();
+			if( m_music != 0 )
+			{
+				m_music->setVolume( m_volume );
+				m_music->play();
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -35,7 +35,7 @@ namespace Menge
 		typedef std::list< std::string > TListModulePath;
 
 	public:
-		void initialize();
+		void init();
 
 		bool compileString( const std::string & _string, const std::string & _file );
 

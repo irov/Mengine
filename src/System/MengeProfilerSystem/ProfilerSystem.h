@@ -25,11 +25,18 @@ public:
 	void setUpdateDisplayFrequency(unsigned int freq) override;
 	unsigned int getUpdateDisplayFrequency() const override;
 	const Menge::ProfileHistoryList & getProfileHistoryList() const override;
+	const Menge::ProfileResourceVec & getProfileResourceList() const override;
 
 	bool watchForMax(const Menge::String& profileName);
 	bool watchForMin(const Menge::String& profileName);
 	bool watchForLimit(const Menge::String& profileName, double limit, bool greaterThan = true);
 	
+	void addResourceToProfile(const Menge::String & _name) override;
+	void removeResourceToProfile(const Menge::String & _name) override;
+
+	int getTotalReleased() const;
+	int getTotalCompiled() const;
+	const Menge::String & getCurrentCompiled() const;
 private:
 	void changeEnableState();
 
@@ -93,4 +100,15 @@ private:
 	bool mEnabled;
 	bool mEnableStateChangePending;
 	bool mNewEnableState;
+
+private:
+	std::string m_currentCompiledResource;
+
+	int m_totalCompiled;
+	int m_totalReleased;
+
+	typedef std::map<std::string, Menge::ResourceStat*> ProfileResourceMap;
+
+	Menge::ProfileResourceVec m_profileResourceVec;
+	ProfileResourceMap m_profileResourceMap;
 };

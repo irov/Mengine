@@ -1,10 +1,10 @@
-
 #	include "HGERenderSystem.h"
-//#	include "HGE.h"
 #	include "HGETexture.h"
+#	include "HGERenderFont.h"
 #	include "Interface/LogSystemInterface.h"
 #	include "libs/Math/mat4.h"
 #	include <sstream>
+
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
 {
@@ -69,12 +69,14 @@ HGERenderSystem::HGERenderSystem()
 #endif
 , m_renderX( 1.0f )
 , m_renderY( 1.0f )
+, m_systemFont(0)
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
 HGERenderSystem::~HGERenderSystem()
 {
+	delete m_systemFont;
 	m_hge->Release();
 }
 //////////////////////////////////////////////////////////////////////////
@@ -93,6 +95,7 @@ bool HGERenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	{
 		initialized =  m_hge->System_Initiate( m_logSystem );
 	}
+
 	return initialized;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -118,6 +121,9 @@ bool HGERenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	m_targetMap.insert( std::make_pair( m_currentRenderTarget, rtgtInfo ) );
 	bool ret = false;
 	ret = m_hge->Gfx_CreateRenderWindow();
+
+	m_systemFont = new HGERenderFont("Arial",m_hge);
+
 	return ret;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -478,6 +484,11 @@ void HGERenderSystem::beginLayer2D()
 void HGERenderSystem::endLayer2D()
 {
 	m_layer -= 0.001f;
+}
+//////////////////////////////////////////////////////////////////////////
+void HGERenderSystem::renderText(const Menge::String & _text, const float * _pos, unsigned long _color)
+{
+	m_systemFont->renderText(_pos[0],_pos[1],_color,_text);
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::beginLayer3D()

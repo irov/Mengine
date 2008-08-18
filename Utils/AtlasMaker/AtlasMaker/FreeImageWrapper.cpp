@@ -58,7 +58,7 @@ FIBITMAP * FreeImageWrapper::AllocateImage(int width, int height, int bpp)
 
 	FIBITMAP * convertedImage = 0;
 
-	if(bpp == 32)
+	if((bpp == 32) || (bpp == 64))
 	{
 		convertedImage = FreeImage_ConvertTo32Bits(image);
 	}

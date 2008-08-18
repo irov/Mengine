@@ -16,7 +16,15 @@ namespace Menge
 		unsigned int	hierarchicalLvl;
 	};
 
+	struct ResourceStat
+	{
+		std::string name;
+		int numCompiled;
+		int numReleased;
+	};
+
 	typedef std::list<ProfileHistory> ProfileHistoryList;
+	typedef std::vector<ResourceStat*> ProfileResourceVec;
 
 	class ProfilerSystemInterface
 	{
@@ -31,6 +39,12 @@ namespace Menge
 		virtual void setUpdateDisplayFrequency(unsigned int freq) = 0;
 		virtual unsigned int getUpdateDisplayFrequency() const = 0;
 		virtual const ProfileHistoryList & getProfileHistoryList() const = 0;
+		virtual void addResourceToProfile(const Menge::String & _name) = 0;
+		virtual void removeResourceToProfile(const Menge::String & _name) = 0;
+		virtual const ProfileResourceVec & getProfileResourceList() const = 0;
+		virtual int getTotalReleased() const = 0;
+		virtual int getTotalCompiled() const = 0;
+		virtual const Menge::String & getCurrentCompiled() const = 0;
 	};
 }
 

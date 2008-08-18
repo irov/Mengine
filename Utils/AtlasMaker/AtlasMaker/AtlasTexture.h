@@ -47,7 +47,7 @@ public:
 
 private:
 
-	bool _allocateAtlasTexture(int _width, int _height);
+//	bool _allocateAtlasTexture(int _width, int _height);
 
 	typedef std::map<std::string, TextureAtlasDesc> MapTextureInfo;
 	MapTextureInfo m_insertedTextures;

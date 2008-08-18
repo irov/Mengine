@@ -1,6 +1,8 @@
 #	include "AtlasTexture.h"
 #	include "Utils.h"
 #	include "FreeImageWrapper.h"
+#	include <functional>
+#	include <stdio.h>
 //////////////////////////////////////////////////////////////////////////
 AtlasTexture::AtlasTexture(FILE * _log, int _width, int _height, int _bpp)
 : m_atlasTexture(0)
@@ -14,7 +16,7 @@ AtlasTexture::AtlasTexture(FILE * _log, int _width, int _height, int _bpp)
 //////////////////////////////////////////////////////////////////////////
 AtlasTexture::~AtlasTexture()
 {
-	FreeImage_Unload(m_atlasTexture);
+	m_atlasTexture = NULL;
 }
 //////////////////////////////////////////////////////////////////////////
 int AtlasTexture::getWidth() const
@@ -115,24 +117,129 @@ const TextureAtlasDesc & AtlasTexture::getTextureDesc(const std::string & _filen
 
 	return it->second;
 }
+class TextureAtlasCache
+{
+public:
+
+	TextureAtlasCache()
+	{
+
+	}
+
+	TextureAtlasCache(int width, int height,int bpp)
+	{
+		int bpps[] = {8,24,32};
+		for(int k = 0; k < sizeof(bpps)/sizeof(int); k++)
+		{
+			for(int i = 1; i <= width; i <<= 1)
+			{
+				for(int j = 1; j <= height; j <<= 1)
+				{
+					FIBITMAP * m_atlasTexture = FreeImageWrapper::AllocateImage( i, j, bpps[k] );
+
+					if(m_atlasTexture == NULL)
+					{
+						break;
+					}
+
+					//FreeImageWrapper::FillChannel( m_atlasTexture, FI_RGBA_ALPHA, 0 );
+
+					//Desc desc(i,j,bpps[k]);
+					static char Text[128];
+					sprintf(Text,"%d %d %d",i,j,bpps[k]);
+					std::string id = Text;
+					CacheAtlases.insert(std::make_pair(id, m_atlasTexture));
+				}
+			}
+		}
+	}
+
+	FIBITMAP* find(int width, int height,int bpp)
+	{
+		static char Text[128];
+		sprintf(Text, "%d %d %d",width,height,bpp);
+		std::string id = Text;
+
+		std::map<std::string, FIBITMAP*>::iterator it = CacheAtlases.find(id);
+
+		if(it == CacheAtlases.end())
+		{
+			FIBITMAP * m_atlasTexture = FreeImageWrapper::AllocateImage( width, height, bpp );
+
+			if(m_atlasTexture == NULL)
+			{
+				return NULL;
+			}
+
+			static char Text[128];
+			sprintf(Text,"%d %d %d",width, height, bpp);
+			std::string id = Text;
+			CacheAtlases.insert(std::make_pair(id, m_atlasTexture));
+			return m_atlasTexture;
+		}
+
+		return it->second;
+	}
+
+	/*	struct Desc
+	{
+	int width;
+	int height;
+	int bpp;
+
+	Desc(int i, int j, int k)
+	: width(i)
+	, height(j)
+	, bpp(k)
+	{
+	}
+	};
+
+	struct less_desc
+	: public std::binary_function<Desc, Desc, bool>
+	{
+	bool operator()(const Desc& desc1, const Desc& desc2) const
+	{	
+	return (desc1.width < desc2.width) && (desc1.height < desc2.height) && (desc1.bpp < desc2.bpp);
+	}
+	};
+	*/
+	std::map<std::string, FIBITMAP*> CacheAtlases;
+};
 //////////////////////////////////////////////////////////////////////////
 void	AtlasTexture::writeToDisc( const std::string & _name )
 {
 	m_filename = _name;
-
+	
 	int correctedWidth = m_areaPacker.getMaxWidth();
 	int correctedHeight = m_areaPacker.getMaxHeight();
+
+	fprintf(m_log, "Process: Atlas %s non corrected size[%d;%d] writing to disc\n", m_filename.c_str(), correctedWidth, correctedHeight);
 
 	correctedWidth = FreeImageWrapper::getPow2Size(correctedWidth);
 	correctedHeight = FreeImageWrapper::getPow2Size(correctedHeight);
 
-	bool result = _allocateAtlasTexture(correctedWidth, correctedHeight);
+	fprintf(m_log, "Atlas %s [%d;%d] writing to disc\n", m_filename.c_str(), correctedWidth, correctedHeight);
 
-	if(result == false)
+	static TextureAtlasCache atlasCache;//(2048,2048,32);
+
+	//сделать КЕШ атласов.
+	//bool result = _allocateAtlasTexture(correctedWidth, correctedHeight);
+
+	m_packWidth = correctedWidth;
+	m_packHeight = correctedHeight;
+
+	m_atlasTexture = atlasCache.find(m_packWidth,m_packHeight,m_bpp);
+
+	//m_atlasTexture = FreeImageWrapper::AllocateImage( m_packWidth, m_packHeight, m_bpp );
+
+	if(m_atlasTexture == NULL)
 	{
 		fprintf(m_log, "Error: Creating Atlas texture failed! Size = [%d;%d] \n", correctedWidth, correctedHeight);
 		return;
 	}
+
+	FreeImageWrapper::FillChannel( m_atlasTexture, FI_RGBA_ALPHA, 0 );
 
 	for(MapTextureInfo::iterator it = m_insertedTextures.begin(); 
 		it != m_insertedTextures.end(); ++it)
@@ -159,6 +266,7 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 		desc.z = (Y + desc.sizeY) / float(correctedHeight);
 	}
 
+	printf("%s \n",m_filename.c_str() );
 	//uncomment for test
 	//FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
 
@@ -196,7 +304,7 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 	fclose(f);
 }
 //////////////////////////////////////////////////////////////////////////
-bool AtlasTexture::_allocateAtlasTexture(int _width, int _height)
+/*bool AtlasTexture::_allocateAtlasTexture(int _width, int _height)
 {
 	m_packWidth = _width;
 	m_packHeight = _height;
@@ -211,5 +319,5 @@ bool AtlasTexture::_allocateAtlasTexture(int _width, int _height)
 	FreeImageWrapper::FillChannel( m_atlasTexture, FI_RGBA_ALPHA, 0 );
 
 	return true;
-}
+}*/
 //////////////////////////////////////////////////////////////////////////

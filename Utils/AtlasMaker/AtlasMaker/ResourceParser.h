@@ -34,6 +34,11 @@ public:
 	void addResourceCallback(const std::string & _from, ResourceType _resourceType);
 	std::string getTextureLocation( const std::string & _name );
 
+	FILE * getLog()
+	{
+		return m_log;
+	}
+
 private:
 
 	void	_loadResourceLocations( const std::string & _input );

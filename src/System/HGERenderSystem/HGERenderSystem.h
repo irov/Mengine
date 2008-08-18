@@ -8,6 +8,7 @@
 #	include <map>
 
 class HGETexture;
+class HGERenderFont;
 
 class HGERenderSystem 
 	: public Menge::RenderSystemInterface
@@ -94,7 +95,10 @@ public:
 
 	void onRestoreDevice() override;
 
+	void renderText(const Menge::String & _text, const float * _pos, unsigned long _color) override;
+
 private:
+	HGERenderFont * m_systemFont;
 	Menge::LogSystemInterface* m_logSystem;
 	mt::vec2f m_contentResolution;
 	HGE* m_hge;
@@ -121,5 +125,4 @@ private:
 
 	float m_renderX;
 	float m_renderY;
-
 };

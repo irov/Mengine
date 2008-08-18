@@ -89,6 +89,11 @@ namespace Menge
 		m_interface->endLayer2D();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::renderText(const Menge::String & _text, const mt::vec2f & _pos, unsigned long _color)
+	{
+		m_interface->renderText(_text,_pos.m,_color);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer3D()
 	{
 		m_interface->beginLayer3D();
@@ -231,9 +236,9 @@ namespace Menge
 		const mt::vec2f & _begin,
 		const mt::vec2f & _end)
 	{
-		Line line = {_color, _begin, _end};
-		lines.push_back(line);
-		//m_interface->renderLine( _color, _begin.m, _end.m );		
+		//Line line = {_color, _begin, _end};
+		//lines.push_back(line);
+		m_interface->renderLine( _color, _begin.m, _end.m );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 /*	void RenderEngine::renderLine(	
@@ -437,10 +442,10 @@ namespace Menge
 
 		//Holder<Player>::hostage()->getArrow()->render( false );
 
-		for each(Line line in lines)
+		/*for each(Line line in lines)
 		{
 			m_interface->renderLine( line.color, line.begin.m, line.end.m );
-		}
+		}*/
 
 		m_interface->endScene();
 		lines.clear();

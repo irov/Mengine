@@ -39,7 +39,6 @@ namespace Menge
 		, m_currentAccount( 0 )
 		, m_loadingAccounts( false )
 		, m_FPS( 0.0f )
-		, m_debugTextField( NULL )
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
@@ -224,14 +223,6 @@ namespace Menge
 				}
 				m_pathScripts.push_back( std::make_pair( m_currentResourcePath, path ) );
 			}
-
-			XML_CASE_NODE("DebugResource")
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", m_debugResourceFont );
-				}
-			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -356,7 +347,6 @@ namespace Menge
 		if( !(d % 10) )
 		{
 			m_FPS = 1000.0f / _timing;
-			//printf("fps: %.2f\n", m_FPS );
 		}
 
 		Holder<Amplifier>::hostage()->update( _timing );
@@ -378,8 +368,14 @@ namespace Menge
 	{
 		Holder<ProfilerEngine>::hostage()->beginProfile("Render");
 		m_player->render( _debugMask );
+		Holder<ProfilerEngine>::hostage()->displayStats();
 
-		Holder<ProfilerEngine>::hostage()->displayStats(m_debugTextField);
+		if(Holder<ProfilerEngine>::hostage()->isEnabled())
+		{
+			static char m_debugText[128];
+			sprintf( m_debugText, "FPS=%f", m_FPS );
+			Holder<RenderEngine>::hostage()->renderText(m_debugText,mt::vec2f::zero_v2,0xFFFFFFFF);
+		}
 
 		Holder<ProfilerEngine>::hostage()->endProfile("Render");
 	}
@@ -508,24 +504,11 @@ namespace Menge
 
 		m_player->init( m_resourceResolution );
 
-		if(m_debugResourceFont.empty() == false)
-		{
-			m_debugTextField = SceneManager::createNodeT<TextField>("TextField");
-			m_debugTextField->setResource( m_debugResourceFont ); 
-			m_debugTextField->activate();
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()
 	{
-		if( m_debugTextField != NULL )
-		{
-			m_debugTextField->release();
-			delete m_debugTextField;
-		}
-
 		if( m_pyPersonality )
 		{
 			Holder<ScriptEngine>::hostage()

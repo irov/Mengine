@@ -431,7 +431,10 @@ namespace Menge
 		virtual void onWindowMovedOrResized() = 0;
 		virtual void onWindowActive( bool _active ) = 0;
 		virtual void onWindowClose() = 0;
+
 		virtual int  getNumDIP() const = 0;
+		virtual void renderText(const String & _text, const float * _pos, unsigned long _color) = 0;
+
 	};
 }
 

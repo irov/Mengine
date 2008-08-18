@@ -17,9 +17,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ProfilerEngine::ProfilerEngine( ProfilerSystemInterface * _interface )
 		: m_interface( _interface )
-		, m_totalCompiled(0)
-		, m_totalReleased(0)
-		, m_currentCompiledResource("")
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void ProfilerEngine::beginProfile( const String & _name )
@@ -44,52 +41,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ProfilerEngine::addResourceToProfile(const std::string & _name)
 	{
-		ProfileResourceMap::iterator it = m_profileResourceMap.find(_name);
-
-		if (it == m_profileResourceMap.end()) 
-		{
-			Stat stat = {_name,1,0};
-			ProfileResourceList::iterator it_stat;
-			it_stat = m_profileResourceList.insert(m_profileResourceList.end(), stat);
-			it = m_profileResourceMap.insert(std::make_pair(_name,&*it_stat)).first;
-		}
-		else
-		{
-			Stat & stat = *it->second;
-			stat.numCompiled++;
-			m_profileResourceList.sort();
-		}
-
-		m_totalCompiled++;
-
-		m_currentCompiledResource = _name;
+		return m_interface->addResourceToProfile(_name);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ProfilerEngine::removeResourceToProfile(const std::string & _name)
 	{
-		ProfileResourceMap::iterator it = m_profileResourceMap.find(_name);
-
-		if (it == m_profileResourceMap.end()) 
-		{
-			MENGE_LOG("ERROR, RELEASED without being compiled [%s] ...\n", _name.c_str() );
-		}
-		else
-		{
-			Stat & stat = *it->second;
-			stat.numReleased++;
-		}
-
-		m_totalReleased++;
+		return m_interface->removeResourceToProfile(_name);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ProfilerEngine::displayStats( TextField * _debugTextField )
+	void ProfilerEngine::displayStats()
 	{
-		if(isEnabled() == false || _debugTextField == NULL)
+		if(isEnabled() == false)
 		{
 			return;
 		}
 
-		ProfileHistoryList historyList = m_interface->getProfileHistoryList();
+		const ProfileHistoryList & historyList = m_interface->getProfileHistoryList();
 
 		Holder<RenderEngine>::hostage()
 			->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
@@ -97,37 +64,39 @@ namespace Menge
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
 
-		_debugTextField->setLocalPosition(mt::vec2f::zero_v2);
-
 		static char m_debugText[128];
 
 		int dipCount = Holder<RenderEngine>::hostage()->getNumDIP();
 		sprintf( m_debugText, "DIP = %d\n", dipCount );
 
-		_debugTextField->setText( m_debugText );
-		_debugTextField->render( false );
+		mt::vec2f pos(0,20);
+		Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFFFFFFFF);
 
-		for(ProfileHistoryList::iterator it = historyList.begin();
+		for(ProfileHistoryList::const_iterator it = historyList.begin();
 			it != historyList.end(); ++it)
 		{
-			ProfileHistory & h = (*it);
+			const ProfileHistory & h = (*it);
 
-			sprintf( m_debugText, "%s : ctime = %.7f; calls = %d\n", h.name.c_str(), h.currentTime, h.numCallsThisFrame );
+			sprintf( m_debugText, "%s : ctime = %.5f; calls = %d; min time = %.5f; max time = %.5f\n", h.name.c_str(), h.currentTime, h.numCallsThisFrame, h.minTime, h.maxTime );
 
-			_debugTextField->translate(mt::vec2f(0,25));
-			_debugTextField->setText( m_debugText );
-			_debugTextField->render( false );
+			pos.y+=20;
+			Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFFFFFFFF);
 		}
 
-		sprintf( m_debugText, "COMPILED = %s; COMPILED = %d / RELEASED = %d \n",m_currentCompiledResource.c_str(), m_totalCompiled, m_totalReleased );
+		int totalReleased = m_interface->getTotalReleased();
+		int totalCompiled = m_interface->getTotalCompiled();
+		const String & currentCompiledResource = m_interface->getCurrentCompiled();
 
-		_debugTextField->translate(mt::vec2f(0,25));
-		_debugTextField->setText( m_debugText );
-		_debugTextField->render( false );
+		sprintf( m_debugText, "COMPILED = %s; COMPILED = %d / RELEASED = %d \n",currentCompiledResource.c_str(), totalCompiled, totalReleased );
 
+		pos.y+=20;
+		Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFFFFFFFF);
+		
 		int numDisplayedResource = 0;
 
-		for(ProfileResourceList::iterator it = m_profileResourceList.begin();
+		const ProfileResourceVec & m_profileResourceList = m_interface->getProfileResourceList();
+
+		for(ProfileResourceVec::const_iterator it = m_profileResourceList.begin();
 			it != m_profileResourceList.end(); ++it)
 		{
 
@@ -136,13 +105,12 @@ namespace Menge
 				return;
 			}
 
-			Stat stat = *it;
+			const ResourceStat * stat = *it;
 
-			sprintf( m_debugText, "%s: compiled = %d / released = %d \n", stat.name.c_str(), stat.numCompiled, stat.numReleased );
-		
-			_debugTextField->translate(mt::vec2f(0,25));
-			_debugTextField->setText( m_debugText );
-			_debugTextField->render( false );
+			sprintf( m_debugText, "%s: compiled = %d / released = %d \n", stat->name.c_str(), stat->numCompiled, stat->numReleased );
+
+			pos.y+=20;
+			Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFFFFFFFF);
 		}
 
 		Holder<RenderEngine>::hostage()

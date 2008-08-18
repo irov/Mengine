@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)lib"
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
-			CharacterSet="1"
+			CharacterSet="2"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -172,6 +172,14 @@
 		</File>
 		<File
 			RelativePath=".\hge_impl.h"
+			>
+		</File>
+		<File
+			RelativePath=".\HGERenderFont.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\HGERenderFont.h"
 			>
 		</File>
 		<File

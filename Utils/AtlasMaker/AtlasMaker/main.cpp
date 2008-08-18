@@ -2,7 +2,7 @@
 
 void ConvertImageDefaultToAtlas(ResourceParser * resourceParser, pugi::xml_node & resource)
 {
-	resource.attribute("Type").set_value("ResourceImageAtlas");
+	bool result = true;
 
 	for (pugi::xml_node file = resource.child("File"); 
 		file; file = file.next_sibling("File"))
@@ -13,69 +13,78 @@ void ConvertImageDefaultToAtlas(ResourceParser * resourceParser, pugi::xml_node 
 
 		if(texture != NULL)
 		{
-			if(texture->getAtlas() != NULL)
+			AtlasTexture * atlas = texture->getAtlas();
+
+			if(atlas == NULL)
+			{
+			//	result = false;
+			}
+
+			if(atlas != NULL)
 			{
 				std::string filename = texture->getAtlas()->getFilename();
 				file.attribute("Path").set_value(filename.c_str());
-			}
 
-			const TextureAtlasDesc & desc = texture->getAtlas()->getTextureDesc(value);
+			//fprintf(resourceParser->getLog(), "Process: value = %s \n", value.c_str());
+			
+				const TextureAtlasDesc & desc = atlas->getTextureDesc(value);
 
-			pugi::xml_attribute uv = file.append_attribute("UV");
+				pugi::xml_attribute uv = file.append_attribute("UV");
 
-			std::string uv_value;
+				std::string uv_value;
 
-			//Texture2D::TextureDesc desc = texture->getDesc();
+				//Texture2D::TextureDesc desc = texture->getDesc();
 
-			uv_value+=Utility::convert_number_to_string(desc.u);
-			uv_value+=";";
-			uv_value+=Utility::convert_number_to_string(desc.v);
-			uv_value+=";";
-			uv_value+=Utility::convert_number_to_string(desc.w);
-			uv_value+=";";
-			uv_value+=Utility::convert_number_to_string(desc.z);
+				uv_value+=Utility::convert_number_to_string(desc.u);
+				uv_value+=";";
+				uv_value+=Utility::convert_number_to_string(desc.v);
+				uv_value+=";";
+				uv_value+=Utility::convert_number_to_string(desc.w);
+				uv_value+=";";
+				uv_value+=Utility::convert_number_to_string(desc.z);
 
-			uv.set_value(uv_value.c_str());
+				uv.set_value(uv_value.c_str());
 
-			pugi::xml_attribute offset = file.append_attribute("Offset");
+				pugi::xml_attribute offset = file.append_attribute("Offset");
 
-			std::string offset_value;
+				std::string offset_value;
 
-			offset_value+=Utility::convert_number_to_string(desc.offsetX);
-			offset_value+=";";
-			offset_value+=Utility::convert_number_to_string(desc.offsetY);
+				offset_value+=Utility::convert_number_to_string(desc.offsetX);
+				offset_value+=";";
+				offset_value+=Utility::convert_number_to_string(desc.offsetY);
 
-			offset.set_value(offset_value.c_str());
+				offset.set_value(offset_value.c_str());
 
-			pugi::xml_attribute maxSize = file.append_attribute("MaxSize");
+				pugi::xml_attribute maxSize = file.append_attribute("MaxSize");
 
-			std::string maxSize_value;
+				std::string maxSize_value;
 
-			maxSize_value+=Utility::convert_number_to_string(desc.maxSizeX);
-			maxSize_value+=";";
-			maxSize_value+=Utility::convert_number_to_string(desc.maxSizeY);
+				maxSize_value+=Utility::convert_number_to_string(desc.maxSizeX);
+				maxSize_value+=";";
+				maxSize_value+=Utility::convert_number_to_string(desc.maxSizeY);
 
-			maxSize.set_value(maxSize_value.c_str());
+				maxSize.set_value(maxSize_value.c_str());
 
-			pugi::xml_attribute size = file.append_attribute("Size");
+				pugi::xml_attribute size = file.append_attribute("Size");
 
-			std::string size_value;
+				std::string size_value;
 
-			size_value+=Utility::convert_number_to_string(desc.sizeX);
-			size_value+=";";
-			size_value+=Utility::convert_number_to_string(desc.sizeY);
+				size_value+=Utility::convert_number_to_string(desc.sizeX);
+				size_value+=";";
+				size_value+=Utility::convert_number_to_string(desc.sizeY);
 
-			size.set_value(size_value.c_str());
+				size.set_value(size_value.c_str());
 
-			pugi::xml_attribute alpha = file.append_attribute("Alpha");
+				pugi::xml_attribute alpha = file.append_attribute("Alpha");
 
-			if(texture->isAlphaChannel())
-			{
-				alpha.set_value("1");
-			}
-			else
-			{
-				alpha.set_value("0");
+				if(texture->isAlphaChannel())
+				{
+					alpha.set_value("1");
+				}
+				else
+				{
+					alpha.set_value("0");
+				}
 			}
 		}
 		else
@@ -83,6 +92,12 @@ void ConvertImageDefaultToAtlas(ResourceParser * resourceParser, pugi::xml_node 
 			printf("Warning: Texture %s not found for attribute Path \n", value.c_str());
 		}
 	}
+
+	if(result == true)
+	{
+		resource.attribute("Type").set_value("ResourceImageAtlas");
+	}
+
 }
 
 int main( int argc, char **argv )

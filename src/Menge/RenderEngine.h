@@ -123,6 +123,8 @@ namespace Menge
 
 		const mt::mat4f& getViewTransform() const;
 
+		void renderText(const Menge::String & _text, const mt::vec2f & _pos, unsigned long _color);
+
 	protected:
 		Menge::RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;

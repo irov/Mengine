@@ -28,6 +28,9 @@ void releaseInterfaceSystem( Menge::ProfilerSystemInterface* _interface )
 }
 //////////////////////////////////////////////////////////////////////////
 MengeProfileSystem::MengeProfileSystem() 
+: m_totalCompiled(0)
+, m_totalReleased(0)
+, m_currentCompiledResource("")
 {
 	mTimer.reset();
 	mTotalFrameTime = 0;
@@ -38,6 +41,8 @@ MengeProfileSystem::MengeProfileSystem()
 	maxProfiles = 50;
 
 	mUpdateDisplayFrequency = 10;
+
+	m_profileResourceVec.reserve(1000);
 }
 //-----------------------------------------------------------------------
 MengeProfileSystem::~MengeProfileSystem() {
@@ -51,18 +56,112 @@ MengeProfileSystem::~MengeProfileSystem() {
 	mProfileHistoryMap.clear();
 	mProfileHistory.clear();
 	mDisabledProfiles.clear();
+
+	for(Menge::ProfileResourceVec::iterator it = m_profileResourceVec.begin();
+		it != m_profileResourceVec.end();
+		it++)
+	{
+		delete *it;
+	}
+
+	m_profileResourceVec.clear();
+	m_profileResourceMap.clear();
+}
+//////////////////////////////////////////////////////////////////////////
+void MengeProfileSystem::addResourceToProfile(const Menge::String & _name)
+{
+	ProfileResourceMap::iterator it = m_profileResourceMap.find(_name);
+
+	if (it == m_profileResourceMap.end()) 
+	{
+		Menge::ResourceStat * stat = new Menge::ResourceStat();
+		stat->name = _name;
+		stat->numCompiled = 1;
+		stat->numReleased = 0;
+		
+		m_profileResourceVec.push_back(stat);
+		it = m_profileResourceMap.insert(std::make_pair(_name,stat)).first;
+	}
+	else
+	{
+		Menge::ResourceStat * stat = it->second;
+		stat->numCompiled++;
+
+		struct SortStats
+		{
+			bool operator()(const Menge::ResourceStat * lhs, const Menge::ResourceStat * rhs)
+			{
+				if(lhs == rhs)
+				{
+					return false;
+				}
+
+				if (lhs->numCompiled >= rhs->numCompiled)
+					return true;
+
+				else if (rhs->numCompiled >= lhs->numCompiled)
+					return false;
+
+				return false;
+			}
+		};
+
+		std::sort(m_profileResourceVec.begin(),m_profileResourceVec.end(),SortStats());
+	}
+
+	m_totalCompiled++;
+
+	m_currentCompiledResource = _name;
+}
+//////////////////////////////////////////////////////////////////////////
+int MengeProfileSystem::getTotalReleased() const
+{
+	return m_totalReleased;
+}
+//////////////////////////////////////////////////////////////////////////
+int MengeProfileSystem::getTotalCompiled() const
+{
+	return m_totalCompiled;
+}
+//////////////////////////////////////////////////////////////////////////
+const Menge::String & MengeProfileSystem::getCurrentCompiled() const
+{
+	return m_currentCompiledResource;
+}
+//////////////////////////////////////////////////////////////////////////
+const Menge::ProfileResourceVec & MengeProfileSystem::getProfileResourceList() const
+{
+	return m_profileResourceVec;
+}
+//////////////////////////////////////////////////////////////////////////
+void MengeProfileSystem::removeResourceToProfile(const Menge::String & _name)
+{
+	if(mEnabled == false)
+	{
+		return;
+	}
+
+	ProfileResourceMap::iterator it = m_profileResourceMap.find(_name);
+
+	if (it == m_profileResourceMap.end()) 
+	{
+		return;
+	};
+
+	Menge::ResourceStat & stat = *it->second;
+	stat.numReleased++;
+	m_totalReleased++;
 }
 //-----------------------------------------------------------------------
-void MengeProfileSystem::setEnabled(bool enabled) {
-
+void MengeProfileSystem::setEnabled(bool enabled)
+{
 	mEnableStateChangePending = true;
 	mNewEnableState = enabled;
 }
 //-----------------------------------------------------------------------
-bool MengeProfileSystem::getEnabled() const {
-
+bool MengeProfileSystem::getEnabled() const
+{
 	return mEnabled;
-
 }
 //-----------------------------------------------------------------------
 void MengeProfileSystem::disableProfile(const Menge::String& profileName) 

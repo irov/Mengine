@@ -629,18 +629,24 @@ namespace Menge
 			m_physicEngine->update( 1.0f/30.0f );
 		}
 
-		if( m_physicEngine2D )
-		{
-			m_physicEngine2D->update( _timing );
-		}
-
-		m_game->update( _timing );
-		m_inputEngine->update();
-
 		Holder<ProfilerEngine>::hostage()->beginProfile("Menge");
 
+		if( m_physicEngine2D )
+		{
+			Holder<ProfilerEngine>::hostage()->beginProfile("Physic");
+			m_physicEngine2D->update( _timing );
+			Holder<ProfilerEngine>::hostage()->endProfile("Physic");
+		}
+
+		Holder<ProfilerEngine>::hostage()->beginProfile("Game Update");
+		m_game->update( _timing );
+		m_inputEngine->update();
 		Holder<MousePickerSystem>::hostage()->update();
+		Holder<ProfilerEngine>::hostage()->endProfile("Game Update");
+
+		Holder<ProfilerEngine>::hostage()->beginProfile("Sound Update");
 		m_soundEngine->update( _timing );
+		Holder<ProfilerEngine>::hostage()->endProfile("Sound Update");
 
 		m_renderEngine->beginScene();
 		m_game->render( m_debugMask );

@@ -32,6 +32,7 @@ namespace	Menge
 		, m_looped( false )
 		, m_onEmitterEndEvent( false )
 		, m_onEmitterStopEvent( false )
+		, m_startPosition( 0.0f )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Emitter::~Emitter()
@@ -94,7 +95,8 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "Emitter", "Name", m_emitterName );
 			XML_CASE_ATTRIBUTE_NODE( "AutoPlay", "Value", m_autoPlay );
 			XML_CASE_ATTRIBUTE_NODE( "Looped", "Value", m_looped );
-		}
+			XML_CASE_ATTRIBUTE_NODE( "StartPosition", "Value", m_startPosition );
+	}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Emitter::_compile()
@@ -241,6 +243,7 @@ namespace	Menge
 		}
 
 		m_interface->play();
+		_update( m_startPosition );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::pause()

@@ -65,29 +65,10 @@ namespace Menge
 			return false;
 		}
 
-		std::size_t size = file->size();
-
-		XmlExpatParser * parser = m_parser;
-		bool new_parser = false;
-
-		if( XmlParser::parseStatus( m_parser ) == true )
-		{
-			parser = XmlParser::newParser();
-			new_parser = true;
-		}
-
-		void * buffer = XmlParser::makeBuffer( parser, size );
-		file->read( buffer, size );
+		bool result = parseXmlFile( file, _listener );
 
 		Holder<FileEngine>::hostage()
 			->closeStream( file );
-		
-		bool result = XmlParser::parseBuffer( parser, size, _listener );
-
-		if( new_parser )
-		{
-			XmlParser::deleteParser( parser );
-		}
 
 		return result;
 	}

@@ -74,5 +74,6 @@ namespace Menge
 
 		bool m_onEmitterEndEvent;
 		bool m_onEmitterStopEvent;
+		float m_startPosition;
 	};
 }

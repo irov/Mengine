@@ -83,7 +83,7 @@ namespace Menge
 			std::string name = m_tileSetFile + tilestr + ".png";
 			RenderImageInterface* image = Holder<RenderEngine>::hostage()->loadImage( name, 0 );
 
-			m_tileSize = image->getWidth();
+			m_tileSize = (float)image->getWidth();
 			m_tileSet[ tileCode ] = image;
 		}
 

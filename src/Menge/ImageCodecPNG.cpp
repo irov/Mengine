@@ -50,8 +50,8 @@ namespace Menge
 		ImageCodec::ImageData* imageData = static_cast<ImageCodec::ImageData*>( _data );
 		png_structp png_ptr;
 		png_infop info_ptr;
-		png_uint_32 width = imageData->width;
-		png_uint_32 height = imageData->height;
+		png_uint_32 width = (png_uint_32)imageData->width;
+		png_uint_32 height = (png_uint_32)imageData->height;
 		int bit_depth = 8;
 		int color_type;
 		int pitch = width * PixelUtil::getNumElemBytes( imageData->format );

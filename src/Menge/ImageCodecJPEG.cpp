@@ -446,7 +446,7 @@ namespace Menge
 			while( cinfo.output_scanline < cinfo.output_height )
 			{
 				jpeg_read_scanlines( &cinfo, &rowBuffer, 1 );
-				for( int i = 0, j = 0; i < bufferSize; i += cinfo.num_components, j += numComponents )
+				for( std::size_t i = 0, j = 0; i < bufferSize; i += cinfo.num_components, j += numComponents )
 				{
 					std::copy( &(rowBuffer[i]), &(rowBuffer[i+cinfo.num_components]), &(readBuffer[j]) );
 				}

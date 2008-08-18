@@ -50,8 +50,8 @@ namespace Menge
 			return false;
 		}
 
-		m_size.x = m_interface->getWidth();
-		m_size.y = m_interface->getHeight();
+		m_size.x = (float)m_interface->getWidth();
+		m_size.y = (float)m_interface->getHeight();
 
 		return true;	
 	}

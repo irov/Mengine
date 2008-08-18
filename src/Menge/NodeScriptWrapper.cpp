@@ -355,8 +355,8 @@ namespace Menge
 			Image wImage;
 
 			unsigned char * buffer = img->lock();
-			float width = img->getWidth();
-			float height = img->getHeight();
+			float width = (float)img->getWidth();
+			float height = (float)img->getHeight();
 			PixelFormat pixelFormat = img->getPixelFormat();
 
 

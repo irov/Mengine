@@ -17,8 +17,8 @@ namespace Menge
 	{
 		if( begin.x > _point.x ) return false;
 		if( begin.y > _point.y ) return false;
-		if( end.x < _point.x ) return false;
-		if( end.y < _point.y ) return false;
+		if( end.x <= _point.x ) return false;
+		if( end.y <= _point.y ) return false;
 
 		return true;
 	}

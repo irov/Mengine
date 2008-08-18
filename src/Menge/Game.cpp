@@ -18,6 +18,7 @@
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
 #	include "ProfilerEngine.h"
+#	include "AccountManager.h"
 
 #	include "XmlEngine.h"
 
@@ -36,28 +37,17 @@ namespace Menge
 		, m_textureFiltering( true )
 		, m_FSAAType( 0 )
 		, m_FSAAQuality( 0 )
-		, m_currentAccount( 0 )
-		, m_loadingAccounts( false )
 		, m_FPS( 0.0f )
 		, m_debugTextField( NULL )
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
-		Holder<Amplifier>::keep( new Amplifier() );
+		Holder<Amplifier>::keep( new Amplifier );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
 		release();
-
-		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
-			it != it_end;
-			it++ )
-		{
-			delete it->second;
-		}
-
-		m_accounts.clear();
 
 		for( TMapScene::iterator 
 			it = m_mapScene.begin(),
@@ -86,6 +76,10 @@ namespace Menge
 			arrow->destroy();
 		}
 
+		AccountManager * accountManager = Holder<AccountManager>::hostage();
+		accountManager->finalize();
+
+		Holder<AccountManager>::destroy();
 		Holder<Amplifier>::destroy();
 		Holder<Player>::destroy();
 		Holder<ScheduleManager>::destroy();
@@ -429,7 +423,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::init()
+	bool Game::initialize()
 	{
 		Holder<ScheduleManager>::keep( new ScheduleManager );
 		Holder<MousePickerSystem>::keep( new MousePickerSystem );
@@ -504,9 +498,13 @@ namespace Menge
 
 		m_defaultArrow = getArrow( m_defaultArrowName );
 
-		m_player->init( m_resourceResolution );
+		m_player->initialize( m_resourceResolution );
 
-		loadAccounts();
+		AccountManager * accountManager = new AccountManager();
+		Holder<AccountManager>::keep(accountManager);
+		accountManager->initialize(m_pyPersonality);
+
+		accountManager->loadAccounts();
 
 		if(m_debugResourceFont.empty() == false)
 		{
@@ -742,213 +740,6 @@ namespace Menge
 	int Game::getFSAAQuality() const
 	{
 		return m_FSAAQuality;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::createAccount( const String& _accountName )
-	{
-		TAccountMap::iterator it = m_accounts.find( _accountName );
-		if( it != m_accounts.end() )
-		{
-			MENGE_LOG("Warning: Account with name '%s' already exist. Account not created",
-				_accountName.c_str() );
-			return;
-		}
-
-		Holder<FileEngine>::hostage()->
-			createFolder( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _accountName );
-
-		Account* newAccount = new Account( _accountName );
-		m_accounts.insert( std::make_pair( _accountName, newAccount ) );
-
-		m_currentAccount = newAccount;
-
-		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, "onCreateAccount" ) )
-		{
-			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, "onCreateAccount", "(s)", _accountName.c_str() );
-		}
-		else
-		{
-			MENGE_LOG("Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
-		}
-
-		if( m_loadingAccounts == false )
-		{
-			newAccount->save();
-			saveAccountsInfo();
-		}
-		//m_currentAccount->apply();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::deleteAccount( const String& _accountName )
-	{
-		TAccountMap::iterator it_find = m_accounts.find( _accountName );
-
-		if( it_find != m_accounts.end() )
-		{
-			if( m_currentAccount && ( m_currentAccount->getName() == _accountName ) )
-			{
-				m_currentAccount = 0;
-			}
-
-			Holder<FileEngine>::hostage()->
-				deleteFolder( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _accountName );
-
-			delete it_find->second;
-
-			m_accounts.erase( it_find );
-		}
-		else
-		{
-			MENGE_LOG("Error: Can't delete account '%s'. There is no account with such name"
-				, _accountName.c_str() 
-				);
-		}
-
-		saveAccountsInfo();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::selectAccount( const String& _accountName )
-	{
-		TAccountMap::iterator it_find = m_accounts.find( _accountName );
-
-		if( it_find != m_accounts.end() )
-		{
-			m_currentAccount = it_find->second;
-			m_currentAccount->load();
-			m_currentAccount->apply();
-		}
-		else
-		{
-			MENGE_LOG("Error: Can't select account '%s'. There is no account with such name"
-				, _accountName.c_str() 
-				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Account* Game::getCurrentAccount()
-	{
-		return m_currentAccount;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loaderAccounts_( XmlElement* _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			String accountName;
-
-			XML_CASE_NODE( "Account" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Name", accountName );
-				}
-				m_accounts.insert( std::make_pair( accountName, static_cast<Account*>(0) ) );
-			}
-			XML_CASE_ATTRIBUTE_NODE( "DefaultAccount", "Name", m_defaultAccountName );
-		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::loadAccounts()
-	{
-		m_loadingAccounts = true;
-
-		String file = Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + "Accounts.ini";
-		
-		if( Holder<FileEngine>::hostage()->existFile( file ) )
-		{
-			if( Holder<XmlEngine>::hostage()
-				->parseXmlFileM( file, this, &Game::loaderAccounts_ ) == false )
-			{
-				MENGE_LOG("Parsing Accounts xml failed '%s'\n"
-					, file.c_str()
-					);
-				return;
-			}
-
-			TStringVector accountNames;
-
-			for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
-				it != it_end;
-				it++ )
-			{
-				accountNames.push_back( it->first );
-			}
-
-			m_accounts.clear();
-
-			for( TStringVector::iterator it = accountNames.begin(), it_end = accountNames.end();
-				it != it_end;
-				it++ )
-			{
-				createAccount( (*it) );
-			}
-
-			if( m_defaultAccountName != "" )
-			{
-				selectAccount( m_defaultAccountName );
-			}
-		}
-
-		m_loadingAccounts = false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::saveAccountsInfo()
-	{
-		OutStreamInterface* outStream = Holder<FileEngine>::hostage()
-			->openOutStream( "Accounts.ini", false );
-
-		outStream->write( "<Accounts>\n" );
-
-		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
-			it != it_end;
-			it++ )
-		{
-			outStream->write( "\t<Account Name = \"" + it->first + "\"/>\n" );
-		}
-
-		if( m_currentAccount != 0 )
-		{
-			outStream->write( "\t<DefaultAccount Name = \"" + m_currentAccount->getName() + "\"/>\n" );
-		}
-
-		outStream->write( "</Accounts>" );
-
-		Holder<FileEngine>::hostage()->closeOutStream( outStream );
-
-		/*for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
-			it != it_end;
-			it++ )
-		{
-			it->second->save();
-		}*/
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::saveAccount( const String& _accountName )
-	{
-		TAccountMap::iterator it_find = m_accounts.find( _accountName );
-
-		if( it_find != m_accounts.end() )
-		{
-			it_find->second->save();
-		}
-		else
-		{
-			MENGE_LOG("Warning: Account '%s' does not exist. Can't save"
-				, _accountName.c_str()
-				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::saveAccounts()
-	{
-		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
-		it != it_end;
-		it++ )
-		{
-			it->second->save();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

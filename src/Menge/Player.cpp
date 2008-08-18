@@ -87,7 +87,7 @@ namespace Menge
 		return m_arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::init( const std::size_t _contentResolution [2] )
+	void Player::initialize( const std::size_t _contentResolution [2] )
 	{
 		Arrow * defaultArrow = 
 			Holder<Game>::hostage()->getDefaultArrow();

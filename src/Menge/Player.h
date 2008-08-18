@@ -39,7 +39,7 @@ namespace Menge
 		void updateChangeScene();
 
 	public:
-		void init( const std::size_t _contentResolution [2] );
+		void initialize( const std::size_t _contentResolution [2] );
 		void update( float _timing );
 		void render( unsigned int _debugMask );
 

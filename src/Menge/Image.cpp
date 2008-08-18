@@ -5,6 +5,8 @@
 
 #	include "ImageCodecPNG.h"
 
+#	include "CodecManager.h"
+
 namespace Menge 
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -253,7 +255,7 @@ namespace Menge
 			strExt += _strFileName[++pos];
 		}
 
-		Codec* codec = Codec::getCodec( strExt );
+		Codec* codec = Holder<CodecManager>::hostage()->getCodec(strExt);
 
 		if( !codec )
 		{
@@ -350,7 +352,7 @@ namespace Menge
 		while( pos != _filename.length() - 1 )
 			strExt += _filename[++pos];
 
-		Codec * pCodec = Codec::getCodec( strExt );
+		Codec * pCodec = Holder<CodecManager>::hostage()->getCodec(strExt);
 		assert( pCodec && String(
 			"Image::save -> Unable to save image file '" + _filename + "' - invalid extension.").c_str()
 			);

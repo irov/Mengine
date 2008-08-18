@@ -15,6 +15,7 @@
 #	include "MousePickerSystem.h"
 #	include "LightSystem.h"
 #	include "ResourceManager.h"
+#	include "CodecManager.h"
 
 #	include "Game.h"
 
@@ -301,7 +302,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::initGame(bool _loadPersonality)
 	{
-		bool result = m_game->init();
+		bool result = m_game->initialize();
 
 		if(_loadPersonality)
 		{
@@ -439,15 +440,15 @@ namespace Menge
 
 		ScriptEngine * scriptEngine = new ScriptEngine();
 		Holder<ScriptEngine>::keep( scriptEngine );
-		
-		MENGE_LOG("init scriptEngine ...\n");
-		scriptEngine->init();
+		scriptEngine->initialize();
+
+		CodecManager * codecManager = new CodecManager();
+		Holder<CodecManager>::keep( codecManager );
+		codecManager->initialize();
+
+		Holder<ResourceManager>::keep( new ResourceManager );
 
 		m_inputEngine->regHandle( m_handler );
-
-		Codec::initialize();
-
-		Holder<ResourceManager>::keep( new ResourceManager() );
 
 		return true;
 	}
@@ -674,7 +675,10 @@ namespace Menge
 		Holder<ProfilerEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
 
-		Codec::cleanup();
+		CodecManager * codec = Holder<CodecManager>::hostage();
+		codec->cleanup();
+
+		Holder<CodecManager>::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onWindowMovedOrResized()

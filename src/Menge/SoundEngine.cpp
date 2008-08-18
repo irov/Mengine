@@ -139,12 +139,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::initialize()
 	{
-		bool init = false;
 		if( m_interface != 0 )
 		{
-			init = m_interface->initialize();
+			return m_interface->initialize();
 		}
-		return init;
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

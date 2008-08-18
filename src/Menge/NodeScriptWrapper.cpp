@@ -64,6 +64,7 @@
 
 #	include "XmlEngine.h"
 #	include "Image.h"
+#	include "AccountManager.h"
 
 
 namespace Menge
@@ -268,7 +269,7 @@ namespace Menge
 				param.name = _name;
 
 				param.category = Holder<FileEngine>::hostage()->getAppDataPath() + "\\" +
-									Holder<Game>::hostage()->getCurrentAccount()->getName() + "\\";
+									Holder<AccountManager>::hostage()->getCurrentAccount()->getName() + "\\";
 
 				resourceImage = new ResourceImageDynamic( param );
 				//FIXME

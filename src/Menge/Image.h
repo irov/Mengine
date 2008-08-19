@@ -30,41 +30,6 @@ namespace Menge
 		// Assignment operator - copies all the data from the target image.
 		Image & operator = ( const Image & _img );
 
-		//Flips (mirrors) the image around the Y-axis. 
-		//@remarks
-		//An example of an original and flipped image:
-		//<pre>                
-		//originalimg
-		//00000000000
-		//00000000000
-		//00000000000
-		//00000000000
-		//00000000000
-		//------------> flip axis
-		//00000000000
-		//00000000000
-		//00000000000
-		//00000000000
-		//00000000000
-		//originalimg
-		//</pre>
-		Image & flipAroundY();
-
-		//Flips (mirrors) the image around the X-axis.
-		//@remarks
-		//An example of an original and flipped image:
-		//<pre>
-		//flip axis
-		//|
-		//originalimg|gmilanigiro
-		//00000000000|00000000000
-		//00000000000|00000000000
-		//00000000000|00000000000
-		//00000000000|00000000000
-		//00000000000|00000000000
-		//</pre>
-		Image & flipAroundX();
-
 		//Stores a pointer to raw data in memory. The pixel format has to be specified.
 		//@remarks
 		//This method loads an image into memory held in the object. The 
@@ -150,51 +115,6 @@ namespace Menge
 			return loadDynamicImage( _data, _width, _height, 1, _format );
 		}
 
-		//Loads raw data from a stream. See the function
-		//loadDynamicImage for a description of the parameters.
-		//@remarks 
-		//The size of the buffer must be numFaces*PixelUtil::getMemorySize(width, height, depth, format)
-		//@note
-		//Whilst typically your image is likely to be a simple 2D image,
-		//you can define complex images including cube maps
-		//and images including custom mip levels. The layout of the 
-		//internal memory should be:
-		//<ul><li>face 0, mip 0 (top), width x height (x depth)</li>
-		//<li>face 0, mip 1, width/2 x height/2 (x depth/2)</li>
-		//<li>face 0, mip 2, width/4 x height/4 (x depth/4)</li>
-		//<li>.. remaining mips for face 0 .. </li>
-		//<li>face 1, mip 0 (top), width x height (x depth)</li
-		//<li>.. and so on. </li>
-		//</ul>
-		//Of course, you will never have multiple faces (cube map) and
-		//depth too.
-		Image & loadRawData( DataStreamInterface* _stream, std::size_t _width, std::size_t _height, std::size_t _depth,
-			PixelFormat _format, std::size_t _numFaces = 1, std::size_t _numMipMaps = 0 );
-		
-		//Loads raw data from a stream. The pixel format has to be specified. 
-		//@remarks This function is deprecated; one should really use the
-		//Image::loadRawData(stream, width, height, depth, format, ...) to be compatible
-		//with future Ogre versions.
-		//@note
-		//Whilst typically your image is likely to be a simple 2D image,
-		//you can define complex images including cube maps
-		//and images including custom mip levels. The layout of the 
-		//internal memory should be:
-		//<ul><li>face 0, mip 0 (top), width x height</li>
-		//<li>face 0, mip 1, width/2 x height/2 </li>
-		//<li>face 0, mip 2, width/4 x height/4 </li>
-		//<li>.. remaining mips for face 0 .. </li>
-		//<li>face 1, mip 0 (top), width x height (x depth)</li
-		//<li>.. and so on. </li>
-		//</ul>
-		//Of course, you will never have multiple faces (cube map) and
-		//depth too.
-		Image& loadRawData( DataStreamInterface* _stream, std::size_t _width, std::size_t _height, 
-			PixelFormat _format )
-		{
-			return loadRawData( _stream, _width, _height, 1, _format );
-		}
-
 		//Loads an image file.
 		//@remarks
 		//This method loads an image into memory. Any format for which 
@@ -209,7 +129,7 @@ namespace Menge
 		//@note
 		//The memory associated with this buffer is destroyed with the
 		//Image object.
-		Image & load( const std::string& _strFileName );
+		Image & load( const String& _strFileName );
 
 		//Loads an image file from a stream.
 		//@remarks
@@ -232,7 +152,7 @@ namespace Menge
 		Image& load( DataStreamInterface* _stream, const std::string& _type );
 
 		// Save the image as a file.
-		void save( const std::string& _filename );
+		void save( const String& _filename );
 
 		//Returns a pointer to the internal image buffer.
 		//@remarks
@@ -305,17 +225,6 @@ namespace Menge
 			FILTER_TRIANGLE,
 			FILTER_BICUBIC
 		};
-
-		//Scale a 1D, 2D or 3D image volume. 
-		//@param 	src			PixelBox containing the source pointer, dimensions and format
-		//@param 	dst			PixelBox containing the destination pointer, dimensions and format
-		//@param 	filter		Which filter to use
-		//@remarks 	This function can do pixel format conversion in the process.
-		//@note	dst and src can point to the same PixelBox object without any problem
-		//static void scale( const PixelBox& _src, const PixelBox& _dst, Filter _filter = FILTER_BILINEAR );
-
-		/** Resize a 2D image, applying the appropriate filter. */
-		//void resize( unsigned short _width, unsigned short _height, Filter _filter = FILTER_BILINEAR );
 
 		// Static function to calculate size in bytes from the number of mipmaps, faces and the dimensions
 		static std::size_t calculateSize( std::size_t _mipmaps, std::size_t _faces, std::size_t _width, std::size_t _height, std::size_t _depth, PixelFormat _format );

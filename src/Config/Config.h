@@ -9,7 +9,7 @@
 
 
 // Save MiniDump on unhandled exception	//
-#	define SAVE_DUMP	(1)
+#	define SAVE_DUMP	(0)
 
 // Build-in particle system
 #	define MENGE_PARTICLES	(1)

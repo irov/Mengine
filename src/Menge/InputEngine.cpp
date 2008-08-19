@@ -86,9 +86,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::setMouseBounded( bool _bounded )
 	{
-		m_mouseBounded = _bounded;
+		if( m_mouseBounded == _bounded )
+		{
+			return;
+		}
 
-		if( m_mouseBounded )
+		if( _bounded )
 		{
 			const std::size_t * resolution = Holder<Application>::hostage()->getCurrentResolution();
 
@@ -105,6 +108,7 @@ namespace Menge
 			Holder<Player>::hostage()->getArrow()->setLocalPosition( mt::vec2f(m_mouseX, m_mouseY) );
 		}
 
+		m_mouseBounded = _bounded;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::getMouseBounded() const

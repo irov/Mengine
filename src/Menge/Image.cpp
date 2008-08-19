@@ -73,117 +73,6 @@ namespace Menge
 		return *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Image& Image::flipAroundY()
-	{
-		assert( m_buffer &&
-				"Image::flipAroundY -> Can not flip an unitialized texture" );
-
-		m_numMipmaps = 0; // Image operations lose precomputed mipmaps
-
-		unsigned char	*pTempBuffer1 = NULL;
-		unsigned short	*pTempBuffer2 = NULL;
-		unsigned char	*pTempBuffer3 = NULL;
-		unsigned int	*pTempBuffer4 = NULL;
-
-		unsigned char	*src1 = m_buffer, *dst1 = NULL;
-		unsigned short	*src2 = (unsigned short *)m_buffer, *dst2 = NULL;
-		unsigned char	*src3 = m_buffer, *dst3 = NULL;
-		unsigned int	*src4 = (unsigned int *)m_buffer, *dst4 = NULL;
-
-		unsigned short y;
-		switch (m_pixelSize)
-		{
-		case 1:
-			pTempBuffer1 = new unsigned char[m_width * m_height];
-			for (y = 0; y < m_height; y++)
-			{
-				dst1 = (pTempBuffer1 + ((y * m_width) + m_width - 1));
-				for (unsigned short x = 0; x < m_width; x++)
-					memcpy(dst1--, src1++, sizeof(unsigned char));
-			}
-
-			memcpy(m_buffer, pTempBuffer1, m_width * m_height * sizeof(unsigned char));
-			delete [] pTempBuffer1;
-			break;
-
-		case 2:
-			pTempBuffer2 = new unsigned short[m_width * m_height];
-			for (y = 0; y < m_height; y++)
-			{
-				dst2 = (pTempBuffer2 + ((y * m_width) + m_width - 1));
-				for (unsigned short x = 0; x < m_width; x++)
-					memcpy(dst2--, src2++, sizeof(unsigned short));
-			}
-
-			memcpy(m_buffer, pTempBuffer2, m_width * m_height * sizeof(unsigned short));
-			delete [] pTempBuffer2;
-			break;
-
-		case 3:
-			pTempBuffer3 = new unsigned char[m_width * m_height * 3];
-			for (y = 0; y < m_height; y++)
-			{
-				std::size_t offset = ((y * m_width) + (m_width - 1)) * 3;
-				dst3 = pTempBuffer3;
-				dst3 += offset;
-				for (std::size_t x = 0; x < m_width; x++)
-				{
-					memcpy(dst3, src3, sizeof(unsigned char) * 3);
-					dst3 -= 3; src3 += 3;
-				}
-			}
-
-			memcpy(m_buffer, pTempBuffer3, m_width * m_height * sizeof(unsigned char) * 3);
-			delete [] pTempBuffer3;
-			break;
-
-		case 4:
-			pTempBuffer4 = new unsigned int[m_width * m_height];
-			for (y = 0; y < m_height; y++)
-			{
-				dst4 = (pTempBuffer4 + ((y * m_width) + m_width - 1));
-				for (unsigned short x = 0; x < m_width; x++)
-					memcpy(dst4--, src4++, sizeof(unsigned int));
-			}
-
-			memcpy(m_buffer, pTempBuffer4, m_width * m_height * sizeof(unsigned int));
-			delete [] pTempBuffer4;
-			break;
-
-		default:
-			assert( 0 && "Image::flipAroundY -> Unknown pixel depth" );
-			break;
-		}
-
-		return *this;
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Image & Image::flipAroundX()
-	{
-		assert( m_buffer &&
-				"Image::flipAroundX -> Can not flip an unitialized texture" );
-
-		m_numMipmaps = 0; // Image operations lose precomputed mipmaps
-
-		std::size_t rowSpan = m_width * m_pixelSize;
-
-		unsigned char *pTempBuffer = new unsigned char[ rowSpan * m_height ];
-		unsigned char *ptr1 = m_buffer, *ptr2 = pTempBuffer + ( ( m_height - 1 ) * rowSpan );
-
-		for( unsigned short i = 0; i < m_height; i++ )
-		{
-			memcpy( ptr2, ptr1, rowSpan );
-			ptr1 += rowSpan; ptr2 -= rowSpan;
-		}
-
-		memcpy( m_buffer, pTempBuffer, rowSpan * m_height );
-
-		delete [] pTempBuffer;
-
-		return *this;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	Image& Image::loadDynamicImage( unsigned char* _data, std::size_t _width, std::size_t _height, 
 		std::size_t _depth,	PixelFormat _format, bool _autoDelete, std::size_t _numFaces, std::size_t _numMipMaps )
 	{
@@ -220,21 +109,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Image& Image::loadRawData(	DataStreamInterface* _stream, std::size_t _width, std::size_t _height, std::size_t _depth,
-		PixelFormat _format, std::size_t _numFaces, std::size_t _numMipMaps )
-	{
-		std::size_t size = calculateSize( _numMipMaps, _numFaces, _width, _height, _depth, _format );
-		assert( ( size == _stream->size() ) && 
-				"Image::loadRawData -> Stream size does not match calculated image size" );
-
-		unsigned char *buffer = new unsigned char[ size ];
-		_stream->read( buffer, size );
-
-		return loadDynamicImage( buffer, _width, _height, _depth, _format, true, _numFaces, _numMipMaps );
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Image& Image::load( const std::string& _strFileName )
+	Image& Image::load( const String& _strFileName )
 	{
 		if( m_buffer && m_autoDelete )
 		{
@@ -271,7 +146,6 @@ namespace Menge
 
 		ImageCodec::ImageData data;
 
-		//ImageCodecPNG pngCodec;
 		bool res = codec->getDataInfo( codeStream, static_cast<Codec::CodecData*>( &data ) );
 		if( res == false )
 		{
@@ -307,45 +181,14 @@ namespace Menge
 		m_numMipmaps = data.num_mipmaps;
 		m_pixelSize = static_cast<unsigned char>( PixelUtil::getNumElemBytes( m_format ) );
 		m_flags = data.flags;
-
-
-		//Codec::DecodeResult res = codec->decode( encoded );
 	
 		Holder<FileEngine>::hostage()->closeStream( codeStream );
-
-		/*if( res.second == 0 )
-		{
-			MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _strFileName.c_str() );
-			return *this;
-		}
-
-		ImageCodec::ImageData* data = 
-			static_cast<ImageCodec::ImageData*>( res.second );
-
-		// Get the format and compute the pixel size
-		m_width = data->width;
-		m_height = data->height;
-		m_depth = data->depth;
-		m_size = data->size;
-		m_format = data->format;
-		m_numMipmaps = data->num_mipmaps;
-		m_pixelSize = static_cast<unsigned char>( PixelUtil::getNumElemBytes( m_format ) );
-		m_flags = data->flags;
-
-		// re-use the decoded buffer
-		m_buffer = static_cast<unsigned char*>( res.first->getBuffer() );
-		// ensure we don't delete when stream is closed
-		res.first->setFreeOnClose( false );
-
-		Holder<FileEngine>::hostage()->closeStream( res.first );
-
-		delete res.second;*/
 
 		return *this;
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Image::save( const std::string& _filename )
+	void Image::save( const String& _filename )
 	{
 		assert( m_buffer && "Image::save -> No image data loaded" );
 
@@ -537,134 +380,6 @@ namespace Menge
 			_buffer[2] = (unsigned char)b;
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	/*void Image::resize( unsigned short _width, unsigned short _height, Filter _filter )
-	{
-		// resizing dynamic images is not supported
-		assert( m_autoDelete );
-		assert( m_depth == 1 );
-
-		// reassign buffer to temp image, make sure auto-delete is true
-		Image temp;
-		temp.loadDynamicImage( m_buffer, m_width, m_height, 1, m_format, true );
-		// do not delete[] m_buffer!  temp will destroy it
-
-		// set new dimensions, allocate new buffer
-		m_width = _width;
-		m_height = _height;
-		m_size = PixelUtil::getMemorySize( m_width, m_height, 1, m_format );
-		m_buffer = new unsigned char[m_size];
-		m_numMipmaps = 0; // Loses precomputed mipmaps
-
-		// scale the image from temp into our resized buffer
-		Image::scale( temp.getPixelBox(), getPixelBox(), _filter );
-	}*/
-	//////////////////////////////////////////////////////////////////////////
-	/*void Image::scale( const PixelBox& _src, const PixelBox& _scaled, Filter _filter ) 
-	{
-		assert( PixelUtil::isAccessible( _src.format ) );
-		assert( PixelUtil::isAccessible( _scaled.format ) );
-		DataStreamInterface* buf = NULL;
-		PixelBox temp;
-		switch( _filter ) 
-		{
-		default:
-		case FILTER_NEAREST:
-			if( _src.format == _scaled.format ) 
-			{
-				// No intermediate buffer needed
-				temp = _scaled;
-			}
-			else
-			{
-				// Allocate temporary buffer of destination size in source format 
-				temp = PixelBox( _scaled.getWidth(), _scaled.getHeight(), _scaled.getDepth(), _src.format );
-				buf = new MemoryDataStream( temp.getConsecutiveSize() ) );
-				temp.data = buf->getPtr();
-			}
-			// super-optimized: no conversion
-			switch (PixelUtil::getNumElemBytes( _src.format )) 
-			{
-			case 1: NearestResampler<1>::scale( _src, temp ); break;
-			case 2: NearestResampler<2>::scale( _src, temp ); break;
-			case 3: NearestResampler<3>::scale( _src, temp ); break;
-			case 4: NearestResampler<4>::scale( _src, temp ); break;
-			case 6: NearestResampler<6>::scale( _src, temp ); break;
-			case 8: NearestResampler<8>::scale( _src, temp ); break;
-			case 12: NearestResampler<12>::scale( _src, temp ); break;
-			case 16: NearestResampler<16>::scale( _src, temp ); break;
-			default:
-				// never reached
-				assert( false );
-			}
-			if( temp.data != _scaled.data )
-			{
-				// Blit temp buffer
-				PixelUtil::bulkPixelConversion( temp, _scaled );
-			}
-			break;
-
-		case FILTER_LINEAR:
-		case FILTER_BILINEAR:
-			switch ( _src.format ) 
-			{
-			case PF_L8: case PF_A8: case PF_BYTE_LA:
-			case PF_R8G8B8: case PF_B8G8R8:
-			case PF_R8G8B8A8: case PF_B8G8R8A8:
-			case PF_A8B8G8R8: case PF_A8R8G8B8:
-			case PF_X8B8G8R8: case PF_X8R8G8B8:
-				if( _src.format == _scaled.format ) 
-				{
-					// No intermediate buffer needed
-					temp = _scaled;
-				}
-				else
-				{
-					// Allocate temp buffer of destination size in source format 
-					temp = PixelBox( _scaled.getWidth(), _scaled.getHeight(), _scaled.getDepth(), _src.format );
-					buf.bind( new MemoryDataStream( temp.getConsecutiveSize() ) );
-					temp.data = buf->getPtr();
-				}
-				// super-optimized: byte-oriented math, no conversion
-				switch ( PixelUtil::getNumElemBytes( _src.format ) ) 
-				{
-				case 1: LinearResampler_Byte<1>::scale( _src, temp ); break;
-				case 2: LinearResampler_Byte<2>::scale( _src, temp ); break;
-				case 3: LinearResampler_Byte<3>::scale( _src, temp ); break;
-				case 4: LinearResampler_Byte<4>::scale( _src, temp ); break;
-				default:
-					// never reached
-					assert( false );
-				}
-				if( temp.data != _scaled.data )
-				{
-					// Blit temp buffer
-					PixelUtil::bulkPixelConversion( temp, _scaled );
-				}
-				break;
-			case PF_FLOAT32_RGB:
-			case PF_FLOAT32_RGBA:
-				if (_scaled.format == PF_FLOAT32_RGB || _scaled.format == PF_FLOAT32_RGBA)
-				{
-					// float32 to float32, avoid unpack/repack overhead
-					LinearResampler_Float32::scale( _src, _scaled );
-					break;
-				}
-				// else, fall through
-			default:
-				// non-optimized: floating-point math, performs conversion but always works
-				LinearResampler::scale( _src, _scaled );
-			}
-			break;
-		}
-	}*/
-	//////////////////////////////////////////////////////////////////////////    
-	/*ColourValue Image::getColourAt( int _x, int _y, int _z ) 
-	{
-		ColourValue rval;
-		PixelUtil::unpackColour( &rval, m_format, &m_buffer[m_pixelSize * ( _z * m_width * m_height + m_width * _y + _x )] );
-		return rval;
-	}*/
 	//////////////////////////////////////////////////////////////////////////    
 	PixelBox Image::getPixelBox( std::size_t _face, std::size_t _mipmap ) const
 	{

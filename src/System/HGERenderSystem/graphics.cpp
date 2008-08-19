@@ -1178,11 +1178,15 @@ bool HGE_Impl::_init_lost()
 	while(target)
 	{
 		if(target->pTex)
+		{
 			D3DXCreateTexture(pD3DDevice, target->width, target->height, 1, D3DUSAGE_RENDERTARGET,
 							  d3dpp->BackBufferFormat, D3DPOOL_DEFAULT, &target->pTex);
+		}
 		if(target->pDepth)
+		{
 			pD3DDevice->CreateDepthStencilSurface(target->width, target->height,
 												  D3DFMT_D16, D3DMULTISAMPLE_NONE, &target->pDepth);
+		}
 		target=target->next;
 	}
 

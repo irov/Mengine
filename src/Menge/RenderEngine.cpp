@@ -16,6 +16,8 @@
 #	include "Arrow.h"
 #	include "Math/box2.h"
 
+#	include "ImageCodec.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -54,7 +56,7 @@ namespace Menge
 		recalcRenderArea_( _resolution );
 	
 		setRenderTarget( "defaultCamera" );
-
+		endScene();
 		//m_renderViewport.set( mt::vec2f::zero_v2, m_contentResolution );
 
 		return m_windowCreated;
@@ -144,14 +146,14 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::loadImage( const String & _filename, unsigned int _filter )
+	RenderImageInterface * RenderEngine::loadImage( const String& _filename, unsigned int _filter )
 	{
 		RenderImageInterface * image = m_interface->getImage( _filename );
 
 		if(image == 0)
 		{
 
-			Image cimage;
+			/*Image cimage;
 			cimage.load( _filename );
 
 			TextureDesc	textureDesc;
@@ -181,7 +183,83 @@ namespace Menge
 					);
 
 				return 0;
-			}	
+			}	*/
+			String strExt;
+
+			std::size_t pos = _filename.find_last_of(".");
+
+			while( pos != _filename.length() - 1 )
+			{
+				strExt += _filename[++pos];
+			}
+
+			Codec* codec = Codec::getCodec( strExt );
+
+			if( codec == 0 )
+			{
+				MENGE_LOG( "Warning: Image codec for extension %s was not found", strExt.c_str() );
+				MENGE_LOG_CRITICAL( "Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын", _filename.c_str() );
+				return 0;
+			}
+
+			DataStreamInterface* stream = Holder<FileEngine>::hostage()->openFile( _filename );
+
+			if( stream == 0 )
+			{
+				MENGE_LOG( "Error: Can't open image file '%s'", _filename.c_str() );
+				return 0;
+			}
+
+			ImageCodec::ImageData data;
+			TextureDesc	textureDesc;
+
+			bool res = codec->getDataInfo( stream, static_cast<Codec::CodecData*>( &data ) );
+			if( res == false )
+			{
+				MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _filename.c_str() );
+				Holder<FileEngine>::hostage()->closeStream( stream );
+				return 0;
+			}
+			if( data.format == PF_UNKNOWN )
+			{
+				MENGE_LOG_CRITICAL( "Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын", _filename.c_str() );
+				Holder<FileEngine>::hostage()->closeStream( stream );
+				return 0;
+			}
+
+			stream->seek( 0 );
+
+			textureDesc.buffer = new unsigned char[data.size];
+
+			res = codec->decode( stream, (unsigned char*)textureDesc.buffer, data.flags );
+			if( res == false )
+			{
+				MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _filename.c_str() );
+				Holder<FileEngine>::hostage()->closeStream( stream );
+				delete[] textureDesc.buffer;
+				textureDesc.buffer = 0;
+				return 0;
+			}
+
+			textureDesc.width = data.width;
+			textureDesc.height = data.height;
+			textureDesc.size = data.size;
+			textureDesc.pixelFormat = data.format;
+			textureDesc.name = _filename.c_str();
+			textureDesc.filter = _filter;
+
+			Holder<FileEngine>::hostage()->closeStream( stream );
+
+			image = loadImage( textureDesc );
+
+			delete[] textureDesc.buffer;
+			if( image == 0 )
+			{
+				MENGE_LOG( "Error: Render System failed to load image '%s'"
+					, _filename.c_str() );
+				return 0;
+			}
+
 		}
 
 		return image;

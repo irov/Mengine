@@ -15,7 +15,7 @@ public:
 	virtual ~ALSoundBufferStream();
 
 	bool isStreamed() const;
-	bool loadOgg( const Menge::String& _filename );
+	bool loadOgg( Menge::DataStreamInterface* _stream );
 
 	void start( ALuint source );
 	bool update();
@@ -34,7 +34,7 @@ protected:
 	ALuint m_source;
 
 	char* m_buffer;
-	std::ifstream m_stream;
+	Menge::DataStreamInterface* m_stream;
 	OggVorbis_File m_oggFile;	// The file structure
 	unsigned int m_bufferSize;	// Size of the buffer in bytes
 	bool m_looping;				// Are we looping or not?

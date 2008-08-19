@@ -3,6 +3,7 @@
 #	include "SoundEmitter.h"
 #	include "LogEngine.h"
 #	include "ProfilerEngine.h"
+#	include "FileEngine.h"
 
 #	include <algorithm>
 
@@ -43,8 +44,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const String & _filename, bool _isStream )
 	{
-		SoundBufferInterface * sample =
-			m_interface->createSoundBufferFromFile( _filename, _isStream );
+		FileEngine* fileEngine = Holder<FileEngine>::hostage();
+		DataStreamInterface* stream = fileEngine->openFile( _filename );
+
+		SoundBufferInterface* sample = 
+			m_interface->createSoundBuffer( stream, _isStream );
+
+		if( _isStream  == true )
+		{
+			m_bufferStreams.insert( std::make_pair( sample, stream ) );
+		}
+		else
+		{
+			fileEngine->closeStream( stream );
+		}
 
 		return sample;
 	}
@@ -59,7 +72,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::releaseSoundBuffer( SoundBufferInterface* _soundBuffer )
 	{
-		m_interface->releaseSoundBuffer(_soundBuffer);
+		TMapBufferStreams::iterator it_find = m_bufferStreams.find( _soundBuffer );
+		DataStreamInterface* stream = 0;
+		if( it_find != m_bufferStreams.end() )
+		{
+			stream = it_find->second;
+		}
+		m_interface->releaseSoundBuffer( _soundBuffer );
+		if( stream != 0 )
+		{
+			Holder<FileEngine>::hostage()->closeStream( stream );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::releaseSoundSource( SoundSourceInterface* _soundSource )

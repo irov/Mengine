@@ -44,7 +44,7 @@ public:
 	void setListenerOrient( float * _position, float * _front, float * top) override;
 	Menge::SoundSourceInterface * createSoundSource( bool _isHeadMode, Menge::SoundBufferInterface * _sample, Menge::SoundNodeListenerInterface * _listener ) override;
 
-	Menge::SoundBufferInterface * createSoundBufferFromFile( const Menge::String & _filename, bool _isStream ) override;
+	Menge::SoundBufferInterface* createSoundBuffer( Menge::DataStreamInterface* _stream, bool _isStream ) override;
 	Menge::SoundBufferInterface * createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) override;
 
 	void releaseSoundBuffer( Menge::SoundBufferInterface * _soundBuffer ) override;

@@ -5,6 +5,7 @@
 namespace Menge
 {
 	class SoundSourceInterface;
+	class DataStreamInterface;
 
 	class	SoundNodeListenerInterface
 	{
@@ -63,7 +64,7 @@ namespace Menge
 		virtual void setListenerOrient( float * _position, float * _front, float * top) = 0;
 		virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener ) = 0;
 
-		virtual SoundBufferInterface * createSoundBufferFromFile( const String & _filename, bool _isStream ) = 0;
+		virtual SoundBufferInterface* createSoundBuffer( DataStreamInterface* _stream, bool _isStream ) = 0;
 		virtual SoundBufferInterface * createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) = 0;
 
 		virtual void releaseSoundBuffer( SoundBufferInterface * _soundBuffer ) = 0;

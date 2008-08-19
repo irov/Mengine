@@ -19,11 +19,6 @@ ALSoundBufferStream::~ALSoundBufferStream()
 		alDeleteBuffers(1, &m_alID);
 		alDeleteBuffers(1, &m_alID2);
 		ov_clear( &m_oggFile );
-
-		if( m_stream.is_open() )
-		{
-			m_stream.close();
-		}
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -32,7 +27,7 @@ bool ALSoundBufferStream::isStreamed() const
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-bool ALSoundBufferStream::loadOgg( const Menge::String& _filename )
+bool ALSoundBufferStream::loadOgg( Menge::DataStreamInterface* _stream )
 {
 	if ( !m_isEmpty )
 	{
@@ -53,15 +48,13 @@ bool ALSoundBufferStream::loadOgg( const Menge::String& _filename )
 	ov_callbacks vorbisCallbacks;
 
 	// Fill vorbisCallbacks struct
-	vorbisCallbacks.read_func  = s_readOgg;
-	vorbisCallbacks.seek_func  = s_seekOgg;
-	vorbisCallbacks.tell_func  = s_tellOgg;
-	vorbisCallbacks.close_func = s_closeOgg;
+	vorbisCallbacks.read_func  = s_readOgg_;
+	vorbisCallbacks.seek_func  = s_seekOgg_;
+	vorbisCallbacks.tell_func  = s_tellOgg_;
+	vorbisCallbacks.close_func = s_closeOgg_;
 
-	// Open Ogg file
-	m_stream.open( _filename.c_str(), std::ios_base::in | std::ios_base::binary );
-
-	if ( ov_open_callbacks( &m_stream, &m_oggFile, NULL, 0, vorbisCallbacks ) < 0 )
+	m_stream = _stream;
+	if ( ov_open_callbacks( m_stream, &m_oggFile, NULL, 0, vorbisCallbacks ) < 0 )
 		return false;
 
 	vorbis_info *ogginfo = ov_info(&m_oggFile, -1);

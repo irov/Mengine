@@ -26,10 +26,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::~Amplifier()
 	{
-		if(m_music)
+		_release();
+		/*if(m_music)
 		{
 			m_music->setSoundNodeListener(NULL);
-		}
+		}*/
 
 		for( TMapPlayList::iterator 
 			it = m_mapPlayLists.begin(),

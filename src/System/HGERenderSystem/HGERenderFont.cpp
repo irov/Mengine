@@ -4,7 +4,7 @@
 #	include <stdio.h>
 #	include <math.h>
 //////////////////////////////////////////////////////////////////////////
-HGERenderFont::HGERenderFont(const std::string & _name, HGE * _hge)
+HGERenderFont::HGERenderFont( const Menge::String& _name, HGE * _hge)
 	: m_hge(_hge)
 	, m_height(0.0f)
 	, m_texture(0)
@@ -52,7 +52,7 @@ bool HGERenderFont::_placeSymbols(int _width, int _height, int leftRange,  int r
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-HTEXTURE HGERenderFont::_fontGenerate(const std::string & _name, int _size, bool _bold, bool _italic, bool _antialias, int _leftRange, int _rigthRange )
+HTEXTURE HGERenderFont::_fontGenerate( const Menge::String& _name, int _size, bool _bold, bool _italic, bool _antialias, int _leftRange, int _rigthRange )
 {
 	HBITMAP		hBM;
 	BITMAPINFO	bmi;
@@ -185,7 +185,7 @@ HTEXTURE HGERenderFont::_fontGenerate(const std::string & _name, int _size, bool
 	return m_texture;
 }
 
-void HGERenderFont::renderText(float _x, float _y, unsigned long _color, const std::string & _text)
+void HGERenderFont::renderText(float _x, float _y, unsigned long _color, const Menge::String& _text)
 {
 	float	fx = _x;
 

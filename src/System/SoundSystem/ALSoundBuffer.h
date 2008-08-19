@@ -22,7 +22,7 @@ public:
 	void addSource( Menge::SoundSourceInterface* _source);
 	void removeSource( Menge::SoundSourceInterface* _source);
 
-	virtual bool loadOgg( const Menge::String& _filename );
+	virtual bool loadOgg( Menge::DataStreamInterface* _stream );
 	const Menge::String & getFilename();
 
 	bool isStereo();

@@ -1,11 +1,9 @@
 
-//#include "AL/ALut.h"
-//#include "Vorbis/Vorbisfile.h"
 
-#include "ALSoundBuffer.h"
-#include "ALSoundBufferStream.h"
-#include "ALSoundSource.h"
-#include "ALSoundSystem.h"
+#	include "ALSoundBuffer.h"
+#	include "ALSoundBufferStream.h"
+#	include "ALSoundSource.h"
+#	include "ALSoundSystem.h"
 
 #	include "SulkSystem.h"
 
@@ -135,38 +133,6 @@ Menge::SoundSourceInterface * ALSoundSystem::createSoundSource( bool _isHeadMode
 	return source;
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::SoundBufferInterface * ALSoundSystem::createSoundBufferFromFile( const Menge::String & _filename, bool _isStream )
-{
-	if( m_initialized == false ) return 0;
-
-	ALSoundBuffer * buffer = NULL;
-
-	if( _isStream )
-	{
-		buffer = new ALSoundBufferStream();
-	}
-	else
-	{
-		buffer = new ALSoundBuffer();
-	}
-
-	if( _filename.find_last_of(".ogg") != Menge::String::npos )
-	{
-		if( !buffer->loadOgg( _filename ) )
-		{
-			delete buffer;
-			buffer = NULL;
-		}
-	}
-	else
-	{
-		delete buffer;
-		buffer = NULL;
-	}	
-	
-	return buffer;
-}
-//////////////////////////////////////////////////////////////////////////
 Menge::SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem )
 {
 	if( m_initialized == false ) return 0;
@@ -189,6 +155,30 @@ Menge::SoundBufferInterface *  ALSoundSystem::createSoundBufferFromMemory( void 
 		buffer->setLenghtMs(size * 1000 / (freq * GetSampleSize(format)));
 		alBufferData( buffer->getBufferName(), format, data, size, freq );
 	} */
+	return buffer;
+}
+//////////////////////////////////////////////////////////////////////////
+Menge::SoundBufferInterface* ALSoundSystem::createSoundBuffer( Menge::DataStreamInterface* _stream, bool _isStream )
+{
+	if( m_initialized == false ) return 0;
+
+	ALSoundBuffer * buffer = NULL;
+
+	if( _isStream )
+	{
+		buffer = new ALSoundBufferStream();
+	}
+	else
+	{
+		buffer = new ALSoundBuffer();
+	}
+
+	if( !buffer->loadOgg( _stream ) )
+	{
+		delete buffer;
+		buffer = 0;
+	}
+
 	return buffer;
 }
 //////////////////////////////////////////////////////////////////////////

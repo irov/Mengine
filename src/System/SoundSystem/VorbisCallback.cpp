@@ -1,5 +1,6 @@
 
-#include "VorbisCallback.h"
+#	include "VorbisCallback.h"
+#	include "Interface\FileSystemInterface.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 size_t s_readOgg( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
@@ -40,8 +41,44 @@ int s_closeOgg( void *_datasource )
 {
 	return 0;
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+size_t s_readOgg_( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
+{
+	Menge::DataStreamInterface* stream = static_cast<Menge::DataStreamInterface*>( _datasource );
+	std::size_t count = stream->read( _ptr, _size * _nmemb );
+	return count;
+}
+//////////////////////////////////////////////////////////////////////////
+int s_seekOgg_( void *_datasource, ogg_int64_t _offset, int _whence )
+{
+	Menge::DataStreamInterface* stream = static_cast<Menge::DataStreamInterface*>( _datasource );
+	std::size_t pos = _offset;
+	switch( _whence )
+	{
+	case SEEK_SET: 
+		break;
+	case SEEK_CUR:
+		pos += stream->tell();
+		break;
+	case SEEK_END:
+		pos += stream->size();
+		break;
+	}
+	stream->seek( pos );
+	return 0;
+}
+//////////////////////////////////////////////////////////////////////////
+long s_tellOgg_( void *_datasource )
+{
+	Menge::DataStreamInterface* stream = static_cast<Menge::DataStreamInterface*>( _datasource );
+	return stream->tell();
+}
+//////////////////////////////////////////////////////////////////////////
+int s_closeOgg_( void *_datasource )
+{
+	return 0;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 // new 28.04
 /*size_t ReadOgg2( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
 {

@@ -6,7 +6,8 @@
 #	include "Interface/SoundSystemInterface.h"
 
 #	include	<set>
-#	include	<string>
+//#	include	<string>
+#	include <map>
 
 namespace Menge
 {
@@ -70,5 +71,8 @@ namespace Menge
 
 		typedef std::set<SoundEmitter*> TSetSoundEmitters;
 		TSetSoundEmitters	m_soundEmitters;
+
+		typedef std::map< SoundBufferInterface*, DataStreamInterface* > TMapBufferStreams;
+		TMapBufferStreams m_bufferStreams;
 	};
 };

@@ -47,7 +47,7 @@ void ALSoundBuffer::removeSource( Menge::SoundSourceInterface *_source)
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool ALSoundBuffer::loadOgg( const Menge::String & _filename )
+bool ALSoundBuffer::loadOgg( Menge::DataStreamInterface* _stream )
 {
 	if ( !m_isEmpty )
 	{
@@ -67,21 +67,16 @@ bool ALSoundBuffer::loadOgg( const Menge::String & _filename )
 	ov_callbacks vorbisCallbacks;
 
 	// Fill vorbisCallbacks struct
-	vorbisCallbacks.read_func  = s_readOgg;
-	vorbisCallbacks.seek_func  = s_seekOgg;
-	vorbisCallbacks.tell_func  = s_tellOgg;
-	vorbisCallbacks.close_func = s_closeOgg;
-
-	std::ifstream oggFile;
-
-	// Open Ogg file
-	oggFile.open( _filename.c_str(), std::ios_base::in | std::ios_base::binary );
+	vorbisCallbacks.read_func  = s_readOgg_;
+	vorbisCallbacks.seek_func  = s_seekOgg_;
+	vorbisCallbacks.tell_func  = s_tellOgg_;
+	vorbisCallbacks.close_func = s_closeOgg_;
 
 	OggVorbis_File oggStream;
 
 	// Open the file from memory.  We need to pass it a pointer to our data (in this case our SOggFile structure),
 	// a pointer to our ogg stream (which the vorbis libs will fill up for us), and our callbacks
-	if ( ov_open_callbacks( &oggFile, &oggStream, NULL, 0, vorbisCallbacks ) < 0 )
+	if ( ov_open_callbacks( _stream, &oggStream, NULL, 0, vorbisCallbacks ) < 0 )
 		return false;
 
 	int seek = 0;
@@ -123,11 +118,8 @@ bool ALSoundBuffer::loadOgg( const Menge::String & _filename )
 
 	// cleanup
 	ov_clear( &oggStream );
-	oggFile.close();
 
 	delete[] memory;
-
-	m_filename = _filename;
 
 	m_isEmpty = false;
 

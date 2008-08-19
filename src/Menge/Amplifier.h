@@ -68,14 +68,14 @@ namespace	Menge
 
 			void update( float _timing );
 
-			void playTrack( const std::string & _playlistResource, int _index, bool _looped );
+			void playTrack( const String& _playlistResource, int _index, bool _looped );
 
 			
 		private:
 			float m_volume;
 			float m_volumeOverride;
 
-			typedef	std::map< std::string, Playlist* >	TMapPlayList;
+			typedef	std::map< String, Playlist* >	TMapPlayList;
 
 			TMapPlayList	m_mapPlayLists;
 
@@ -88,8 +88,8 @@ namespace	Menge
 			void	listenPaused( bool _pause );
 			void	listenStopped();
 			void	_release();	
-			void	_prepareSound(const std::string & _filename);
-			bool	_loadPlayList(const std::string & _playlistResource);
+			void	_prepareSound( const String& _filename );
+			bool	_loadPlayList( const String& _playlistResource );
 
 			ValueInterpolator<float> m_fade;
 	};

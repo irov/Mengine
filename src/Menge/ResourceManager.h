@@ -36,10 +36,10 @@ namespace Menge
 
 		void registerResource( ResourceReference * _resource );
 		void unregisterResource( ResourceReference* _resource );
-		ResourceReference * getResource( const std::string & _name );
+		ResourceReference * getResource( const String& _name );
 
 		template<class T>
-		T * getResourceT( const std::string & _name )
+		T * getResourceT( const String& _name )
 		{
 			//return static_cast< T * >( getResource( _name ) );
 			T* r = dynamic_cast<T*>( getResource( _name ) );

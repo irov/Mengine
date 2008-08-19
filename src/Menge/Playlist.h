@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+
 #	include <vector>
 
 namespace	Menge
@@ -71,7 +73,7 @@ namespace	Menge
 		/*!
 		\return имя текущего трека
 		*/
-		const std::string &	getTrack() const;
+		const String& getTrack() const;
 
 		//! Установка плейлист ресурса. 
 		/*!
@@ -90,7 +92,7 @@ namespace	Menge
 
 
 		*/
-		const std::string & getTrackByIndex( std::size_t _index );
+		const String& getTrackByIndex( std::size_t _index );
 
 		void setTrack(const std::string & _name);
 		void setLooped1( bool _loop );

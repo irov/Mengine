@@ -9,7 +9,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	typedef std::map< std::string, ScriptClassWrapper * > TMapClassWrapper;
+	typedef std::map< String, ScriptClassWrapper * > TMapClassWrapper;
 	//////////////////////////////////////////////////////////////////////////
 	static TMapClassWrapper & getMapWrapper()
 	{
@@ -17,7 +17,7 @@ namespace Menge
 		return m;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptClassWrapperFactory::regWrapping( const std::string & _type, ScriptClassWrapper * _wrapper )
+	void ScriptClassWrapperFactory::regWrapping( const String& _type, ScriptClassWrapper * _wrapper )
 	{
 		TMapClassWrapper & mapWrapper = getMapWrapper();
 
@@ -29,7 +29,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptClassWrapperFactory::wrap( const std::string & _type, Node * _node )
+	PyObject * ScriptClassWrapperFactory::wrap( const String& _type, Node * _node )
 	{
 		TMapClassWrapper & mapWrapper = getMapWrapper();
 

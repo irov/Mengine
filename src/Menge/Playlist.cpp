@@ -89,7 +89,7 @@ namespace Menge
 		m_oneTrackPlayed = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string &	Playlist::getTrack() const
+	const String& Playlist::getTrack() const
 	{
 		if( m_track == m_tracks.end() )
 		{

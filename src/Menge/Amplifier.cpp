@@ -42,7 +42,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::_loadPlayList(const std::string & _playlistResource)
+	bool Amplifier::_loadPlayList( const String& _playlistResource)
 	{
 		TMapPlayList::iterator it = m_mapPlayLists.find( _playlistResource );
 
@@ -68,7 +68,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::playTrack( const std::string & _playlistResource, int _index, bool _looped )
+	void Amplifier::playTrack( const String& _playlistResource, int _index, bool _looped )
 	{
 		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
 
@@ -85,7 +85,7 @@ namespace Menge
 
 		m_currentPlayList->setLooped1(_looped);
 
-		const std::string & name = m_currentPlayList->getTrackByIndex(_index);
+		const String& name = m_currentPlayList->getTrackByIndex(_index);
 
 		m_currentPlayList->setTrack(name);
 
@@ -198,7 +198,7 @@ namespace Menge
 		return m_volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::_prepareSound(const std::string & _filename)
+	void Amplifier::_prepareSound( const String& _filename )
 	{
 		_release();
 

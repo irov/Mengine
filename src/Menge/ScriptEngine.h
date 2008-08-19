@@ -42,17 +42,17 @@ namespace Menge
 		bool doFile( const std::string & _file );
 		bool doString( const std::string & _string );
 
-		PyObject * initModule( const std::string & _file );
-		PyObject * importModule( const std::string & _file );
+		PyObject * initModule( const String& _file );
+		PyObject * importModule( const String& _file );
 
 		void setCurrentModule( PyObject * _module );
 		
 		void setModulePath( const TListModulePath & _listPath );
 
-		bool isEntityType( const std::string & _type );		
-		PyObject * getEntityModule( const std::string & _type );
-		bool registerEntityType( const std::string & _type );
-		TVectorChar * getEntityXML( const std::string & _type );
+		bool isEntityType( const String& _type );		
+		PyObject * getEntityModule( const String& _type );
+		bool registerEntityType( const String& _type );
+		TVectorChar * getEntityXML( const String& _type );
 
 		static PyObject * wrap( Node * _node );
 		static PyObject * proxy( PyObject * _module, const std::string & _name, void * _impl );
@@ -64,14 +64,14 @@ namespace Menge
 	public:
 		PyObject * genEvent( const std::string &_name );
 
-		Entity * createEntity( const std::string & _type );
-		Arrow * createArrow( const std::string & _type );
-		Scene * createScene( const std::string & _type );
+		Entity * createEntity( const String& _type );
+		Arrow * createArrow( const String& _type );
+		Scene * createScene( const String& _type );
 		
-		bool hasModuleFunction( PyObject * _module, const std::string & _name );
-		PyObject * getModuleFunction( PyObject * _module, const std::string & _name );
-		PyObject * callModuleFunction( const std::string & _module, const std::string & _name, const char * _params = "()", ... );
-		PyObject * callModuleFunction( PyObject * _module, const std::string & _name, const char * _params = "()", ... );
+		bool hasModuleFunction( PyObject * _module, const String& _name );
+		PyObject * getModuleFunction( PyObject * _module, const String& _name );
+		PyObject * callModuleFunction( const String& _module, const String& _name, const char * _params = "()", ... );
+		PyObject * callModuleFunction( PyObject * _module, const String& _name, const char * _params = "()", ... );
 
 		PyObject * callFunction( PyObject * _object, const char * _params, va_list );
 
@@ -94,13 +94,13 @@ namespace Menge
 
 		ScriptLogger m_loger;
 
-		typedef std::map<std::string, PyObject *> TMapEntitiesType;
+		typedef std::map<String, PyObject *> TMapEntitiesType;
 		TMapEntitiesType m_mapEntitiesType;
 
-		typedef std::map<std::string, TVectorChar > TMapEntitiesXML;
+		typedef std::map<String, TVectorChar > TMapEntitiesXML;
 		TMapEntitiesXML m_mapEntitiesXML;
 
-		typedef std::map<std::string, PyObject *> TMapModule;
+		typedef std::map<String, PyObject *> TMapModule;
 		TMapModule m_mapModule;
 	};
 }

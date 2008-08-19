@@ -77,6 +77,7 @@ namespace Menge
 		if( it_find != m_bufferStreams.end() )
 		{
 			stream = it_find->second;
+			m_bufferStreams.erase( it_find );
 		}
 		m_interface->releaseSoundBuffer( _soundBuffer );
 		if( stream != 0 )

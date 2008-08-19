@@ -1,6 +1,5 @@
 #	include "LogSystem.h"
 
-#	include <iostream>
 #	include <ctime>
 #	include <iomanip>
 #	include <algorithm>
@@ -55,11 +54,13 @@ void MengeLogSystem::logMessage( const Menge::String& _message, bool _maskDebug,
 
 	if ( !_maskDebug )
 	{
-		std::cerr << _message;
+		//std::cerr << _message;
+		StdErr << _message;
 
 		if( _endl )
 		{
-			std::cerr << std::endl;
+			//std::cerr << std::endl;
+			StdErr << std::endl;
 		}
 	}
 
@@ -68,9 +69,9 @@ void MengeLogSystem::logMessage( const Menge::String& _message, bool _maskDebug,
 	std::tm * sTime = std::localtime( &ctTime );
 	if( _timeStamp )
 	{
-		m_logStream << std::setw(2) << std::setfill('0') << sTime->tm_hour
-			<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_min
-			<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_sec << ":";
+		m_logStream << std::setw(2) << std::setfill(MENGE_TEXT('0')) << sTime->tm_hour
+			<< MENGE_TEXT(":") << std::setw(2) << std::setfill(MENGE_TEXT('0')) << sTime->tm_min
+			<< MENGE_TEXT(":") << std::setw(2) << std::setfill(MENGE_TEXT('0')) << sTime->tm_sec << MENGE_TEXT(":");
 	}
 	m_logStream	<< _message;
 	if( _endl )

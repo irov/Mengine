@@ -43,7 +43,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::FileSystem()
 	{
-		m_fileManager = new FileManager("");
+		m_fileManager = new FileManager(MENGE_TEXT(""));
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::~FileSystem()
@@ -256,9 +256,9 @@ namespace Menge
 		////
 
 		HRESULT hr;
-		TCHAR szPath[MAX_PATH];
+		TChar szPath[MAX_PATH];
 
-		hr = SHGetFolderPathAndSubDir(NULL,					//hWnd	
+		hr = SHGetFolderPathAndSubDirA(NULL,					//hWnd	
 			CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
 			NULL,										//hToken
 			SHGFP_TYPE_CURRENT,							//dwFlags
@@ -287,7 +287,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OutStreamInterface* FileSystem::openOutStream( const Menge::String& _filename, bool _binary )
 	{
-		String fileName = m_appDataPath + "\\" + _filename;
+		String fileName = m_appDataPath + MENGE_TEXT("\\") + _filename;
 		wchar_t lpszW[MAX_PATH];
 		String::size_type size = fileName.size();
 		MultiByteToWideChar(CP_ACP, 0, fileName.c_str(), -1, lpszW, size );

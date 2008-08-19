@@ -102,12 +102,12 @@ private:
 	bool mNewEnableState;
 
 private:
-	std::string m_currentCompiledResource;
+	Menge::String m_currentCompiledResource;
 
 	int m_totalCompiled;
 	int m_totalReleased;
 
-	typedef std::map<std::string, Menge::ResourceStat*> ProfileResourceMap;
+	typedef std::map<Menge::String, Menge::ResourceStat*> ProfileResourceMap;
 
 	Menge::ProfileResourceVec m_profileResourceVec;
 	ProfileResourceMap m_profileResourceMap;

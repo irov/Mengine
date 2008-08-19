@@ -28,9 +28,9 @@ namespace Menge
 	Game::Game()
 		: m_defaultArrow(0)
 		, m_pyPersonality(0)
-		, m_title("Game")
+		, m_title( MENGE_TEXT("Game") )
 		, m_fixedContentResolution( false )
-		, m_physicSystemName("None")
+		, m_physicSystemName( MENGE_TEXT("None") )
 		, m_fullScreen( true )
 		, m_vsync( false )
 		, m_textureFiltering( true )
@@ -321,10 +321,10 @@ namespace Menge
 	void Game::handleMouseLeave()
 	{
 		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, "onMouseLeave" ) )
+			->hasModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseLeave" ) ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, "onMouseLeave" );
+				->callModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseLeave" ) );
 		}
 		m_player->onMouseLeave();
 	}
@@ -332,10 +332,10 @@ namespace Menge
 	void Game::handleMouseEnter()
 	{
 		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, "onMouseEnter" ) )
+			->hasModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseEnter" ) ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, "onMouseEnter" );
+				->callModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseEnter" ) );
 		}
 		m_player->onMouseEnter();
 	}
@@ -366,7 +366,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render( unsigned int _debugMask )
 	{
-		Holder<ProfilerEngine>::hostage()->beginProfile("Render");
+		Holder<ProfilerEngine>::hostage()->beginProfile( MENGE_TEXT("Render") );
 		m_player->render( _debugMask );
 		Holder<ProfilerEngine>::hostage()->displayStats();
 
@@ -374,13 +374,13 @@ namespace Menge
 		{
 			static char m_debugText[128];
 			sprintf( m_debugText, "FPS=%f", m_FPS );
-			Holder<RenderEngine>::hostage()->renderText(m_debugText,mt::vec2f::zero_v2,0xFFFFFFFF);
+			Holder<RenderEngine>::hostage()->renderText( m_debugText,mt::vec2f::zero_v2,0xFFFFFFFF);
 		}
 
-		Holder<ProfilerEngine>::hostage()->endProfile("Render");
+		Holder<ProfilerEngine>::hostage()->endProfile( MENGE_TEXT("Render") );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::string Game::getPathEntities( const std::string& _entity ) const
+	String Game::getPathEntities( const String& _entity ) const
 	{
 		TMapDeclaration::const_iterator it_find = m_mapEntitiesDeclaration.find( _entity );
 
@@ -837,7 +837,7 @@ namespace Menge
 	{
 		m_loadingAccounts = true;
 
-		String file = Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + "Accounts.ini";
+		String file = Holder<FileEngine>::hostage()->getAppDataPath() + MENGE_TEXT("\\") + MENGE_TEXT("Accounts.ini");
 		
 		if( Holder<FileEngine>::hostage()->existFile( file ) )
 		{
@@ -868,7 +868,7 @@ namespace Menge
 				createAccount( (*it) );
 			}
 
-			if( m_defaultAccountName != "" )
+			if( m_defaultAccountName != MENGE_TEXT("") )
 			{
 				selectAccount( m_defaultAccountName );
 			}
@@ -880,23 +880,23 @@ namespace Menge
 	void Game::saveAccountsInfo()
 	{
 		OutStreamInterface* outStream = Holder<FileEngine>::hostage()
-			->openOutStream( "Accounts.ini", false );
+			->openOutStream( MENGE_TEXT("Accounts.ini"), false );
 
-		outStream->write( "<Accounts>\n" );
+		outStream->write( MENGE_TEXT("<Accounts>\n") );
 
 		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
 			it != it_end;
 			it++ )
 		{
-			outStream->write( "\t<Account Name = \"" + it->first + "\"/>\n" );
+			outStream->write( MENGE_TEXT("\t<Account Name = \"") + it->first + MENGE_TEXT("\"/>\n") );
 		}
 
 		if( m_currentAccount != 0 )
 		{
-			outStream->write( "\t<DefaultAccount Name = \"" + m_currentAccount->getName() + "\"/>\n" );
+			outStream->write( MENGE_TEXT("\t<DefaultAccount Name = \"") + m_currentAccount->getName() + MENGE_TEXT("\"/>\n") );
 		}
 
-		outStream->write( "</Accounts>" );
+		outStream->write( MENGE_TEXT("</Accounts>") );
 
 		Holder<FileEngine>::hostage()->closeOutStream( outStream );
 

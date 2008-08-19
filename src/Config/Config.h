@@ -27,6 +27,7 @@
 
 #	define MENGE_ENDIAN		MENGE_ENDIAN_LITTLE
 
+#	define MENGE_WCHAR_T_STRINGS (0)
 
 // Static Library
 #	define MENGE_STATIC_LIB

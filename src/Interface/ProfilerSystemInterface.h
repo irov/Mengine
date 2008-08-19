@@ -18,7 +18,7 @@ namespace Menge
 
 	struct ResourceStat
 	{
-		std::string name;
+		String name;
 		int numCompiled;
 		int numReleased;
 	};

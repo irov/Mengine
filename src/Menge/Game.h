@@ -47,7 +47,7 @@ namespace Menge
 		void release();
 
 	public:
-		std::string getPathEntities( const std::string& _entity ) const;
+		String getPathEntities( const String& _entity ) const;
 
 	public:
 		Arrow * getArrow( const std::string & _name );
@@ -114,33 +114,33 @@ namespace Menge
 
 		TextField * m_debugTextField;
 		Player* m_player;
-		std::string m_title;
+		String m_title;
 
 		std::size_t	m_resourceResolution[2];
 		std::size_t m_resolution[2];
 
 		bool m_fixedContentResolution;
 
-		std::string m_defaultArrowName;
+		String m_defaultArrowName;
 
-		std::string m_personality;
+		String m_personality;
 
-		std::string m_eventInit;
-		std::string m_eventUpdate;
-		std::string m_eventFini;
+		String m_eventInit;
+		String m_eventUpdate;
+		String m_eventFini;
 
 		PyObject * m_pyPersonality;
 		Arrow * m_defaultArrow;
 
-		typedef std::map<std::string, Arrow*> TMapArrow;
+		typedef std::map<String, Arrow*> TMapArrow;
 		TMapArrow m_mapArrow;
 
-		typedef std::map<std::string, Scene*> TMapScene;
+		typedef std::map<String, Scene*> TMapScene;
 		TMapScene m_mapScene;
 
-		typedef std::pair<std::string, std::string> TPairDeclaration;
+		typedef std::pair<String, String> TPairDeclaration;
 		typedef std::list< TPairDeclaration > TListDeclaration;
-		typedef std::map<std::string, TPairDeclaration > TMapDeclaration;
+		typedef std::map<String, TPairDeclaration > TMapDeclaration;
 		TMapDeclaration m_mapEntitiesDeclaration;
 		TMapDeclaration m_mapArrowsDeclaration;
 		TMapDeclaration m_mapScenesDeclaration;
@@ -160,7 +160,7 @@ namespace Menge
 		bool m_textureFiltering;
 		int	m_FSAAType;
 		int m_FSAAQuality;
-		std::string m_physicSystemName;
+		String m_physicSystemName;
 
 		TStringVector m_loadedAccounts;
 		typedef std::map<String, Account*> TAccountMap;
@@ -172,7 +172,7 @@ namespace Menge
 
 
 		/////
-		std::string m_debugResourceFont;
+		String m_debugResourceFont;
 		char m_debugText[128];
 		float m_FPS;
 	};	

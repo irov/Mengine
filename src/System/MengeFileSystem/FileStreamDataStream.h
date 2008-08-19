@@ -18,7 +18,7 @@ namespace Menge
 
 	public:
 		std::size_t read( void* _buf, std::size_t _count ) override;
-		std::size_t readLine( char* _buf, std::size_t _maxCount, const String& _delim = "\n") override;
+		std::size_t readLine( char* _buf, std::size_t _maxCount, const String& _delim = MENGE_TEXT("\n") ) override;
 
 		void skip( long _count ) override;
 		void seek( std::size_t _pos ) override;

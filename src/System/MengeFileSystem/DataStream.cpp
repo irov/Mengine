@@ -51,7 +51,7 @@ namespace Menge
 			if ( p != 0 )
 			{
 				// Trim off trailing CR if this was a CR/LF entry
-				if ( retString.length() && retString[retString.length()-1] == '\r' )
+				if ( retString.length() && retString[retString.length()-1] == MENGE_TEXT('\r') )
 				{
 					retString.erase( retString.length() - 1, 1 );
 				}
@@ -63,7 +63,7 @@ namespace Menge
 
 		if ( _trimAfter )
 		{
-			static const String delims = " \t\r";
+			static const String delims = MENGE_TEXT(" \t\r");
 			retString.erase( retString.find_last_not_of( delims ) + 1 ); // trim right
 			retString.erase( 0, retString.find_first_not_of( delims ) ); // trim left
 		}

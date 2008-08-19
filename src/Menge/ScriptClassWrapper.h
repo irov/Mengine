@@ -1,6 +1,7 @@
 #	pragma once
 
-#	include <string>
+#	include "Config/Typedef.h"
+//#	include <string>
 
 extern "C" 
 { 
@@ -21,7 +22,7 @@ namespace Menge
 	class ScriptClassWrapperFactory
 	{
 	public:
-		static void regWrapping( const std::string & _type, ScriptClassWrapper * _wrapper );
-		static PyObject * wrap( const std::string & _type, Node * _node );
+		static void regWrapping( const String& _type, ScriptClassWrapper * _wrapper );
+		static PyObject * wrap( const String& _type, Node * _node );
 	};
 }

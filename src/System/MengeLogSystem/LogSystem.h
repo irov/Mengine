@@ -16,7 +16,7 @@ public:
 	
 private:
 
-	std::ofstream m_logStream;
+	Menge::StdOfstream m_logStream;
 
 	bool m_error;
 };

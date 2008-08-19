@@ -209,7 +209,7 @@ namespace Menge
 		// directory change requires locking due to saved returns
 		TStringVector* ret( new TStringVector() );
 
-		findFiles("*", _recursive, _dirs, ret, 0);
+		findFiles( MENGE_TEXT("*"), _recursive, _dirs, ret, 0);
 
 		return ret;
 	}
@@ -218,7 +218,7 @@ namespace Menge
 	{
 		TFileInfoVector* ret( new TFileInfoVector() );
 
-		findFiles( "*", _recursive, _dirs, 0, ret );
+		findFiles( MENGE_TEXT("*"), _recursive, _dirs, 0, ret );
 
 		return ret;
 	}

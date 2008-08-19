@@ -5,14 +5,31 @@
 #	include <string>
 #	include <vector>
 #	include <list>
+#	include <iostream>
 
 namespace Menge
 {
 
 #	if MENGE_WCHAR_T_STRINGS
+		typedef wchar_t TChar;
 		typedef std::wstring _StringBase;
+		#define StdErr (std::wcerr)
+		typedef std::wofstream StdOfstream;
+
+		#	if MENGE_COMPILER == MENGE_COMPILER_MSVC
+			#	define MENGE_TEXT(quote)	L##quote
+		#	endif
+
 #	else
+		typedef char TChar;
 		typedef std::string _StringBase;
+		#define StdErr (std::cerr)
+		typedef std::ofstream StdOfstream;
+
+		#	if MENGE_COMPILER == MENGE_COMPILER_MSVC
+			#	define MENGE_TEXT(quote)	quote
+		#	endif
+
 #	endif
 
 typedef _StringBase String;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="MengeLogSystem"
 	ProjectGUID="{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}"
 	RootNamespace="OgreLogSystem"
@@ -21,7 +21,7 @@
 			IntermediateDirectory="$(SolutionDir)You_can_delete_me\$(ProjectName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			ATLMinimizesCRunTimeLibraryUsage="true"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"

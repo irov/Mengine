@@ -125,7 +125,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::getResource( const std::string & _name )
+	ResourceReference * ResourceManager::getResource( const String& _name )
 	{
 		TMapResource::iterator it_find = m_mapResource.find( _name );
 

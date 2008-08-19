@@ -66,7 +66,7 @@ namespace Menge
 
 		// Deal with both Unix & Windows LFs
 		bool trimCR = false;
-		if ( _delim.at(0) == '\n' ) 
+		if ( _delim.at(0) == MENGE_TEXT('\n') ) 
 		{
 			trimCR = true;
 		}
@@ -110,10 +110,10 @@ namespace Menge
 		}
 
 		// trim off CR if we found CR/LF
-		if ( trimCR && _buf[ret-1] == '\r' )
+		if ( trimCR && _buf[ret-1] == MENGE_TEXT('\r') )
 		{
 			--ret;
-			_buf[ret] = '\0';
+			_buf[ret] = MENGE_TEXT('\0');
 		}
 		return ret;
 	}

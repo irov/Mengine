@@ -10,7 +10,8 @@ pybind
 https://pybind.svn.sourceforge.net/svnroot/pybind
 
 [expat]
-[2.0.1] -
+[2.0.1]
+http://dfn.dl.sourceforge.net/sourceforge/expat/expat-2.0.1.tar.gz
 
 OIS
 [1.2]

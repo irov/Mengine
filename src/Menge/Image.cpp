@@ -109,86 +109,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Image& Image::load( const String& _strFileName )
-	{
-		if( m_buffer && m_autoDelete )
-		{
-			delete[] m_buffer;
-			m_buffer = NULL;
-		}
-
-		String strExt;
-
-		std::size_t pos = _strFileName.find_last_of(".");
-		assert( pos != std::string::npos && String( "Image::load -> Unable to load image file '" 
-													+ _strFileName + "' - invalid extension.").c_str() );
-
-		while( pos != _strFileName.length() - 1 )
-		{
-			strExt += _strFileName[++pos];
-		}
-
-		Codec* codec = Codec::getCodec( strExt );
-
-		if( !codec )
-		{
-			MENGE_LOG( "Warning: Image codec for extension %s was not found", strExt.c_str() );
-			MENGE_LOG_CRITICAL( "Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын", _strFileName.c_str() );
-			return *this;
-		}
-
-		DataStreamInterface* codeStream = Holder<FileEngine>::hostage()->openFile( _strFileName );
-
-		if( !codeStream )
-		{
-			return *this;
-		}
-
-		ImageCodec::ImageData data;
-
-		bool res = codec->getDataInfo( codeStream, static_cast<Codec::CodecData*>( &data ) );
-		if( res == false )
-		{
-			MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _strFileName.c_str() );
-			Holder<FileEngine>::hostage()->closeStream( codeStream );
-			return *this;
-		}
-		if( data.format == PF_UNKNOWN )
-		{
-			MENGE_LOG_CRITICAL( "Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын", _strFileName.c_str() );
-			return *this;
-		}
-
-		codeStream->seek( 0 );
-
-		m_buffer = new unsigned char[data.size];
-
-		res = codec->decode( codeStream, m_buffer, data.flags );
-		if( res == false )
-		{
-			MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _strFileName.c_str() );
-			Holder<FileEngine>::hostage()->closeStream( codeStream );
-			delete[] m_buffer;
-			m_buffer = 0;
-			return *this;
-		}
-
-		m_width = data.width;
-		m_height = data.height;
-		m_depth = data.depth;
-		m_size = data.size;
-		m_format = data.format;
-		m_numMipmaps = data.num_mipmaps;
-		m_pixelSize = static_cast<unsigned char>( PixelUtil::getNumElemBytes( m_format ) );
-		m_flags = data.flags;
-	
-		Holder<FileEngine>::hostage()->closeStream( codeStream );
-
-		return *this;
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Image::save( const String& _filename )
+	/*void Image::save( const String& _filename )
 	{
 		assert( m_buffer && "Image::save -> No image data loaded" );
 
@@ -221,43 +142,7 @@ namespace Menge
 		pCodec->code( outFile, m_buffer, codeDataPtr );
 
 		Holder<FileEngine>::hostage()->closeOutStream( outFile );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Image& Image::load( DataStreamInterface* _stream, const std::string& _type )
-	{
-	/*	if( m_buffer && m_autoDelete )
-		{
-			delete[] m_buffer;
-			m_buffer = NULL;
-		}
-
-		std::string strType = _type;
-
-		Codec * codec = Codec::getCodec( strType );
-		assert( codec && 
-			"Image::load -> Unable to load image - invalid extension." );
-
-		Codec::DecodeResult res = codec->decode( _stream );
-
-		ImageCodec::ImageData* pData = 	static_cast<ImageCodec::ImageData*>( res.second );
-
-		m_width = pData->width;
-		m_height = pData->height;
-		m_depth = pData->depth;
-		m_size = pData->size;
-		m_numMipmaps = pData->num_mipmaps;
-		m_flags = pData->flags;
-
-		// Get the format and compute the pixel size
-		m_format = pData->format;
-		m_pixelSize = static_cast<unsigned char>(PixelUtil::getNumElemBytes( m_format ));
-		// Just use internal buffer of returned memory stream
-		m_buffer = static_cast<unsigned char*>( res.first->getBuffer() );
-		// Make sure stream does not delete
-		res.first->setFreeOnClose( true );
-*/
-		return *this;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	unsigned char* Image::getData()
 	{

@@ -40,6 +40,7 @@ namespace Menge
 		RenderImageInterface * loadImage( const TextureDesc & _desc );
 		RenderImageInterface * loadImage( const String & _filename, unsigned int _filter );
 		RenderVideoStreamInterface * loadImageVideoStream( const String& _filename );
+		bool saveImage( RenderImageInterface* _image, const String& _filename );
 
 
 		void renderImage(		

@@ -11,7 +11,6 @@
 #	include "Application.h"
 #	include "Game.h"
 
-#	include "Image.h"
 #	include "Player.h"
 #	include "Arrow.h"
 #	include "Math/box2.h"
@@ -55,8 +54,9 @@ namespace Menge
 
 		recalcRenderArea_( _resolution );
 	
-		setRenderTarget( "defaultCamera" );
-		endScene();
+		//setRenderTarget( "defaultCamera" );
+		//endScene();
+		m_currentRenderTarget = "defaultCamera";
 		//m_renderViewport.set( mt::vec2f::zero_v2, m_contentResolution );
 
 		return m_windowCreated;
@@ -146,44 +146,67 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::saveImage( RenderImageInterface* _image, const String& _filename )
+	{
+		std::string strExt;
+		std::size_t pos = _filename.find_last_of(".");
+		if( pos == std::string::npos ) 
+		{
+			MENGE_LOG( "RenderEngine::saveImage : extension not specified (%s)", _filename.c_str() );
+			return false;
+		}
+
+		while( pos != _filename.length() - 1 )
+		{
+			strExt += _filename[++pos];
+		}
+
+		Codec * pCodec = Codec::getCodec( strExt );
+
+		if( pCodec == 0 )
+		{
+			MENGE_LOG( "RenderEngine::saveImage : invalid extension (%s), codec not found", strExt.c_str() );
+			return false;
+		}
+
+		ImageCodec::ImageData imgData;
+		imgData.format = _image->getPixelFormat();
+		imgData.height = _image->getHeight();
+		imgData.width = _image->getWidth();
+		imgData.depth = 1;
+		imgData.num_mipmaps = 0;
+		imgData.flags = 0;
+		imgData.size = 0;	// we don't need this
+		unsigned char* buffer = _image->lock();
+
+		OutStreamInterface* outFile = Holder<FileEngine>::hostage()->openOutStream( _filename, true );
+		if( outFile == 0 )
+		{
+			MENGE_LOG( "RenderEngine::saveImage : failed to open file for output '%s'", _filename.c_str() );
+			_image->unlock();
+			return false;
+		}
+
+		bool res = pCodec->code( outFile, buffer, static_cast<Codec::CodecData*>( &imgData ) );
+
+		if( res == false )
+		{
+			MENGE_LOG( "RenderEngine::saveImage : Error while coding image data" );
+		}
+
+		_image->unlock();
+
+		Holder<FileEngine>::hostage()->closeOutStream( outFile );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * RenderEngine::loadImage( const String& _filename, unsigned int _filter )
 	{
 		RenderImageInterface * image = m_interface->getImage( _filename );
 
 		if(image == 0)
 		{
-
-			/*Image cimage;
-			cimage.load( _filename );
-
-			TextureDesc	textureDesc;
-			textureDesc.buffer = cimage.getData();
-			textureDesc.size = cimage.getSize();
-			textureDesc.width = cimage.getWidth();
-			textureDesc.height = cimage.getHeight();
-			textureDesc.pixelFormat = cimage.getFormat();
-			textureDesc.name = _filename.c_str();
-			textureDesc.filter = _filter;
-
-			if( textureDesc.buffer == 0 )
-			{
-				MENGE_LOG( "Error: Image from file '%s' not loader\n"
-					, _filename.c_str() 
-					);
-
-				return 0;
-			}	
-
-			image = loadImage( textureDesc );
-
-			if( image == 0 )
-			{
-				MENGE_LOG( "Error: Image from file '%s' not loader\n"
-					, _filename.c_str() 
-					);
-
-				return 0;
-			}	*/
 			String strExt;
 
 			std::size_t pos = _filename.find_last_of(".");
@@ -318,14 +341,6 @@ namespace Menge
 		//lines.push_back(line);
 		m_interface->renderLine( _color, _begin.m, _end.m );		
 	}
-	//////////////////////////////////////////////////////////////////////////
-/*	void RenderEngine::renderLine(	
-		unsigned int _color,
-		const mt::vec2f & _begin,
-		const mt::vec2f & _end)
-	{
-		m_interface->renderLine( _color, _begin.m, _end.m );		
-	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )
 	{

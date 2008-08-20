@@ -3,7 +3,7 @@
 #	include "ResourceImplement.h"
 
 #	include "RenderEngine.h"
-#	include "Image.h"
+#	include "FileEngine.h"
 
 namespace Menge
 {
@@ -96,17 +96,8 @@ namespace Menge
 	{
 		if( m_frame.image != 0 )
 		{
-			Image wImage;
-
-			unsigned char * buffer = m_frame.image->lock();
-			std::size_t width = m_frame.image->getWidth();
-			std::size_t height = m_frame.image->getHeight();
-			PixelFormat pixelFormat = m_frame.image->getPixelFormat();
-
-			wImage.loadDynamicImage( buffer, width, height, 1, pixelFormat );
 			String cashName = m_params.group + "cache_" + m_params.name + ".png";
-			wImage.save( cashName );
-			m_frame.image->unlock();
+			Holder<RenderEngine>::hostage()->saveImage( m_frame.image, cashName );
 
 			m_cached = true;
 			releaseImageFrame( m_frame );

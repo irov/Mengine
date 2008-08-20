@@ -63,7 +63,6 @@
 #	include "RenderMesh.h"
 
 #	include "XmlEngine.h"
-#	include "Image.h"
 
 
 namespace Menge
@@ -357,18 +356,7 @@ namespace Menge
 		static void writeImageToFile( const std::string& _resource, int _frame, const std::string& _filename )
 		{
 			RenderImageInterface* img = const_cast<RenderImageInterface*>( Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( _resource )->getImage( _frame ) );
-			Image wImage;
-
-			unsigned char * buffer = img->lock();
-			std::size_t width = img->getWidth();
-			std::size_t height = img->getHeight();
-			PixelFormat pixelFormat = img->getPixelFormat();
-
-
-			wImage.loadDynamicImage( buffer, width, height, 1, pixelFormat );
-			wImage.save( _filename );
-			img->unlock();
-			//const_cast<RenderImageInterface*>(img)->writeToFile( _filename.c_str() );
+			Holder<RenderEngine>::hostage()->saveImage( img, _filename );
 		}
 		static void setSoundEnabled( bool _enabled )
 		{

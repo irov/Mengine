@@ -115,44 +115,8 @@ namespace Menge
 			return loadDynamicImage( _data, _width, _height, 1, _format );
 		}
 
-		//Loads an image file.
-		//@remarks
-		//This method loads an image into memory. Any format for which 
-		//and associated ImageCodec is registered can be loaded. 
-		//This can include complex formats like DDS with embedded custom 
-		//mipmaps, cube faces and volume textures.
-		//The type can be determined by calling getFormat().             
-		//@param
-		//strFileName Name of a file file to load.
-		//@param
-		//groupName Name of the resource group to search for the image
-		//@note
-		//The memory associated with this buffer is destroyed with the
-		//Image object.
-		Image & load( const String& _strFileName );
-
-		//Loads an image file from a stream.
-		//@remarks
-		//This method works in the same way as the filename-based load 
-		//method except it loads the image from a DataStream object. 
-		//This DataStream is expected to contain the 
-		//encoded data as it would be held in a file. 
-		//Any format for which and associated ImageCodec is registered 
-		//can be loaded. 
-		//This can include complex formats like DDS with embedded custom 
-		//mipmaps, cube faces and volume textures.
-		//The type can be determined by calling getFormat().             
-		//@param
-		//stream The source data.
-		//@param
-		//type The type of the image. Used to decide what decompression
-		//codec to use.
-		//@see
-		//Image::load( const String& strFileName )
-		Image& load( DataStreamInterface* _stream, const std::string& _type );
-
 		// Save the image as a file.
-		void save( const String& _filename );
+		//void save( const String& _filename );
 
 		//Returns a pointer to the internal image buffer.
 		//@remarks

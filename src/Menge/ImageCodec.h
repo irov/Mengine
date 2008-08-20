@@ -15,7 +15,9 @@ namespace Menge
 	class ImageCodec : public Codec
 	{
 	public:
-		virtual ~ImageCodec();
+		virtual ~ImageCodec()
+		{
+		}
 	
 		class ImageData : public Codec::CodecData
 		{

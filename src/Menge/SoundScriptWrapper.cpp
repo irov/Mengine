@@ -48,7 +48,7 @@ namespace	Menge
 			Holder<Amplifier>::hostage()->playTrack(_list, _index, _isLooped);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static int musicGetNumTracks()
+		static std::size_t musicGetNumTracks()
 		{
 			return Holder<Amplifier>::hostage()->getNumTracks();
 		}

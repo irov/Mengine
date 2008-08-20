@@ -57,10 +57,16 @@ bool HGERenderFont::_placeSymbols(int _width, int _height, int leftRange,  int r
 //////////////////////////////////////////////////////////////////////////
 HTEXTURE HGERenderFont::_fontGenerate( const Menge::String& _name, int _size, bool _bold, bool _italic, bool _antialias, int _leftRange, int _rigthRange )
 {
-	HFONT hFont = CreateFont(-_size, 0, 0, 0, (_bold) ? FW_BOLD : FW_NORMAL,
+	char sPath[MAX_PATH];
+	OLECHAR sUniPath[MAX_PATH + 1];
+
+	MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, _name.c_str(), -1, sUniPath,
+		MAX_PATH);
+
+	HFONT hFont = CreateFontW(-_size, 0, 0, 0, (_bold) ? FW_BOLD : FW_NORMAL,
 		_italic, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
 		(_antialias) ? ANTIALIASED_QUALITY : NONANTIALIASED_QUALITY,
-		DEFAULT_PITCH | FF_DONTCARE, _name.c_str());
+		DEFAULT_PITCH | FF_DONTCARE, sUniPath);
 
 	if(!hFont)
 	{
@@ -145,10 +151,17 @@ HTEXTURE HGERenderFont::_fontGenerate( const Menge::String& _name, int _size, bo
 
 	SelectObject(hBMDC, hBM);
 
+	const size_t newsize = 100;
+	size_t origsize = 1;
+	size_t convertedChars = 0;
+	wchar_t wcstring[newsize];
+
 	for (int j = _leftRange; j <= _rigthRange; j++ )
 	{
 		char c = (char)j;
-		TextOut(hBMDC, m_letters[j].x-m_letters[j].a, m_letters[j].y, &c, 1);
+		mbstowcs( wcstring, &c, newsize);
+	//	wcscat_s(wcstring, L" (wchar_t *)");
+		TextOut(hBMDC, m_letters[j].x-m_letters[j].a, m_letters[j].y, wcstring, 1);
 	}
 
 	GdiFlush();

@@ -38,10 +38,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Viewport::parallax( const mt::vec2f & _factor )
 	{
+		mt::vec2f size = end - begin;
 		begin.x *= _factor.x;
-		end.x *= _factor.x;
 		begin.y *= _factor.y;
-		end.y *= _factor.y;
+		end.x = begin.x + size.x;
+		end.y = begin.y + size.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

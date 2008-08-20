@@ -64,7 +64,7 @@ namespace	Menge
 
 			void fadeIn( float _time );
 			void fadeOut( float _time );
-			int getNumTracks() const;
+			std::size_t getNumTracks() const;
 
 			void update( float _timing );
 

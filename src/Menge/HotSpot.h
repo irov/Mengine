@@ -28,6 +28,9 @@ namespace Menge
 		HotSpot();
 		~HotSpot();
 
+	public:
+		const mt::polygon & getPolygon() const;
+
 	protected:
 		bool _pickerActive() override;
 

@@ -95,7 +95,7 @@ namespace Menge
 		m_music->play();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int Amplifier::getNumTracks() const
+	std::size_t Amplifier::getNumTracks() const
 	{
 		if(m_currentPlayList == NULL)
 		{

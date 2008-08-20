@@ -19,7 +19,7 @@ namespace Menge
 		void setParallaxFactor( const mt::vec2f & _factor );
 		const mt::vec2f & getParallaxFactor() const;
 
-		Viewport getParallaxViewport( const Viewport & _viewport );
+		bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const override;
 
 	public:
 		void setOffsetPosition( const mt::vec2f & _offset ) override;

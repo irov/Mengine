@@ -698,9 +698,10 @@ namespace Menge
 
 			float crx = float( currentResolution[0] );
 
-			if( m_layer->isLooped() && ( screen_pos.x < 0.0f || screen_pos.x > crx ) )
+			if( m_layer->isLooped() && ( screen_pos.x < 0.0f || screen_pos.x >= crx ) )
 			{
-				screen_pos += mt::vec2f( m_layer->getSize().x, 0.0f );
+				const mt::vec2f & layerSize = m_layer->getSize();
+				screen_pos += mt::vec2f( layerSize.x, 0.0f );
 			}
 		}
 

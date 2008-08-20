@@ -15,9 +15,12 @@ namespace Menge
 	public:
 		Layer2DLoop();
 
+	public:
 		void update( float _timing ) override;
 		void render( unsigned int _debugMask ) override;
 
-		bool isLooped() { return true; }
+		bool isLooped() const override;
+
+		bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const override;
 	};
 }

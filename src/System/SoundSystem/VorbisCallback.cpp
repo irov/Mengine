@@ -52,7 +52,7 @@ size_t s_readOgg_( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
 int s_seekOgg_( void *_datasource, ogg_int64_t _offset, int _whence )
 {
 	Menge::DataStreamInterface* stream = static_cast<Menge::DataStreamInterface*>( _datasource );
-	std::size_t pos = _offset;
+	ogg_int64_t pos = _offset;
 	switch( _whence )
 	{
 	case SEEK_SET: 

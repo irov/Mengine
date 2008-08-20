@@ -4,6 +4,7 @@
 #	include "RenderEngine.h"
 
 #	include "Scene.h"
+#	include "HotSpot.h"
 
 namespace Menge
 {
@@ -13,7 +14,6 @@ namespace Menge
 		, m_size( 0.f, 0.f )
 		, m_scene( 0 )
 		, m_renderArea( 0.0f, 0.0f, 0.0f, 0.0f )
-		//, m_renderTarget( "defaultCamera" )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::setMain( bool _main )
@@ -86,4 +86,42 @@ namespace Menge
 			->setRenderArea( m_renderArea );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Layer::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
+	{
+		mt::box2f convertBox = _screenspaceBox;
+		convertBox.vb += _viewport.begin;
+		convertBox.ve += _viewport.begin;
+
+		bool result = mt::is_intersect( _layerspaceBox, convertBox );
+		
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer::testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const
+	{
+		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
+		const mt::vec2f & posA = _layerspaceHotspot->getWorldPosition();
+
+		const mt::vec2f & dirB = _screenspaceHotspot->getWorldDirection();
+		const mt::vec2f & posB = _screenspaceHotspot->getScreenPosition();
+
+		const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
+		const mt::polygon & screenspacePolygon = _screenspaceHotspot->getPolygon();
+
+		bool is_intersect = mt::intersect_poly_poly( 
+			layerspacePolygon, 
+			screenspacePolygon,
+			dirA, 
+			posA, 
+			dirB, 
+			posB 
+			);
+
+		return is_intersect;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer::isLooped() const
+	{ 
+		return false; 
+	}
 }

@@ -11,6 +11,7 @@
 namespace Menge
 {
 	class Scene;
+	class HotSpot;
 
 	class Layer
 		: public Node
@@ -31,6 +32,9 @@ namespace Menge
 		void setRenderArea( const mt::vec4f& _renderArea );
 		const mt::vec4f& getRenderArea() const;
 
+		virtual bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const;
+		virtual bool testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const;
+
 	public:
 		virtual void setOffsetPosition( const mt::vec2f & _offset );
 		virtual void setRenderTarget( const std::string& _cameraName );
@@ -42,9 +46,7 @@ namespace Menge
 		void _render( unsigned int _debugMask ) override;
 
 		// temporary patch
-		virtual bool isLooped() { return false; }
-
-	protected:
+		virtual bool isLooped() const;
 
 	protected:
 		bool m_main;

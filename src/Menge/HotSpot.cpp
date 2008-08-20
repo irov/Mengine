@@ -11,7 +11,9 @@
 #	include "Player.h"
 
 #	include "Camera2D.h"
-#	include "Sprite.h"
+//#	include "Sprite.h"
+
+#	include "Layer2D.h"
 
 namespace	Menge
 {
@@ -35,6 +37,11 @@ namespace	Menge
 		Holder<Player>::hostage()
 			->unregGlobalKeyEventable( this );
 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::polygon & HotSpot::getPolygon() const
+	{
+		return m_polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_pickerActive()
@@ -76,29 +83,22 @@ namespace	Menge
 
 		const Viewport & viewport = camera->getViewport();
 
-		//const mt::vec2f & factor = m_layer->getParallaxFactor();
+		const mt::box2f & myBB = this->getBoundingBox();
+		const mt::box2f & otherBB = _hotspot->getBoundingBox();
 
-		/*const mt::box2f & myBB = this->getWorldBoundingBox();
-		const mt::box2f & otherBB = _hotspot->getWorldBoundingBox();
+		Layer2D * layer = this->getLayer();
 
-		if( mt::is_intersect( myBB, otherBB ) == false )
+		if( layer->testBoundingBox( viewport, myBB, otherBB ) == false )
 		{
 			return false;
-		}*/
+		}
 
+		if( layer->testHotspot( viewport, this, _hotspot ) == false )
+		{
+			return false;
+		}
 
-
-		const mt::vec2f & dirA = this->getWorldDirection();
-		const mt::vec2f & posA = this->getScreenPosition();
-
-		const mt::vec2f & dirB = _hotspot->getWorldDirection();
-		const mt::vec2f & posB = _hotspot->getScreenPosition();
-
-		bool is_intersect = mt::intersect_poly_poly( 
-			m_polygon, _hotspot->m_polygon, 
-			dirA, posA, dirB, posB );
-
-		return is_intersect;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::loader( XmlElement * _xml)

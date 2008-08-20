@@ -28,7 +28,7 @@ namespace	Menge
 	OBJECT_IMPLEMENT(Layer2D);
 	//////////////////////////////////////////////////////////////////////////
 	Layer2D::Layer2D()
-		: m_factorParallax(0.f,0.f)
+		: m_factorParallax(1.f,1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -135,6 +135,16 @@ namespace	Menge
 		vp.begin.x *= m_factorParallax.x;
 		vp.begin.y *= m_factorParallax.y;
 		return _point + vp.begin;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer2D::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
+	{
+		Viewport convertView = _viewport;
+		convertView.parallax( m_factorParallax );
+
+		bool result = Layer::testBoundingBox( convertView, _layerspaceBox, _screenspaceBox );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

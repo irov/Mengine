@@ -144,11 +144,11 @@ namespace Menge
 	{
 			menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
 
-			size_t datacount = OUTPUT_BUF_SIZE - dest->pub.free_in_buffer;
+			std::size_t datacount = OUTPUT_BUF_SIZE - dest->pub.free_in_buffer;
 
 			// write any data remaining in the buffer
 
-			if (datacount > 0) 
+			if( datacount > 0 ) 
 			{
 				dest->m_stream->write( (char*)dest->buffer, datacount );
 			}

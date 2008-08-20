@@ -124,7 +124,9 @@ namespace	Menge
 
 		mt::vec2f oldPlx = camera->getParallax();
 
-		mt::vec2f vp = camera->getViewport().begin;
+		const Viewport & cameraViewport = camera->getViewport();
+
+		const mt::vec2f & vp = cameraViewport.begin;
 		mt::vec2f parallax;
 		parallax.x = m_factorParallax.x - ::floorf( vp.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.x;
 		parallax.y = m_factorParallax.y;
@@ -195,4 +197,45 @@ namespace	Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Layer2DLoop::isLooped() const
+	{ 
+		return true; 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer2DLoop::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
+	{
+		bool result = Layer2D::testBoundingBox( _viewport, _layerspaceBox, _screenspaceBox );
+
+		if( result == true )
+		{
+			return true;
+		}
+
+		if( _layerspaceBox.ve.x > _viewport.end.x )
+		{
+			Viewport leftViewport = _viewport;
+			leftViewport.parallax( m_factorParallax );
+
+			leftViewport.begin.x += m_size.x;
+			leftViewport.end.x += m_size.x;
+			result = Layer::testBoundingBox( leftViewport, _layerspaceBox, _screenspaceBox );
+		}
+
+		if( result == true )
+		{
+			return true;
+		}
+
+		if( _layerspaceBox.vb.x < _viewport.begin.x )
+		{
+			Viewport rightViewport = _viewport;
+			rightViewport.parallax( m_factorParallax );
+
+			rightViewport.begin.x -= m_size.x;
+			rightViewport.end.x -= m_size.x;
+			result = Layer::testBoundingBox( rightViewport, _layerspaceBox, _screenspaceBox );
+		}
+
+		return result;
+	}
 }

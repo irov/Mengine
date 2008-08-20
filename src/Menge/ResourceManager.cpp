@@ -163,11 +163,6 @@ namespace Menge
 			return 0;
 		}
 
-		if(inc > 0)
-		{
-			Holder<ProfilerEngine>::hostage()->addResourceToProfile(_name);
-		}
-
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////

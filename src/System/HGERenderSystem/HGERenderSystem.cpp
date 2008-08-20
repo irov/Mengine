@@ -122,7 +122,8 @@ bool HGERenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	bool ret = false;
 	ret = m_hge->Gfx_CreateRenderWindow();
 
-	m_systemFont = new HGERenderFont("Arial",m_hge);
+	m_systemFont = new HGERenderFont(m_hge);
+	m_systemFont->fontGenerate("Verdana",16,false,true,false);
 
 	return ret;
 }

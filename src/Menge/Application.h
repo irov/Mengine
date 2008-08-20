@@ -48,8 +48,7 @@ namespace Menge
 	public:
 		bool initialize( const std::string & _applicationFile, const std::string& _args );
 		void finalize();
-		bool update( float _timing );
-
+	
 		void setLogSystem( LogSystemInterface * _interface );
 		void setProfilerSystem( ProfilerSystemInterface * _interface );
 		void setFileSystem( FileSystemInterface * _interface );

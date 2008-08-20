@@ -26,6 +26,9 @@ namespace	Menge
 	, m_onLeaveEvent( false )
 	, m_onEnterEvent( false )
 	, m_scale( 1.0f, 1.0f )
+#	ifndef MENGE_MASTER_RELEASE
+	, m_debugColor(0xFFFF0000)
+#	endif
 	{
 		this->setHandler( this );
 	}
@@ -52,11 +55,20 @@ namespace	Menge
 	void HotSpot::onLeave()
 	{
 		callEvent( EVENT_LEAVE, "(O)", this->getEmbedding() );
+
+#	ifndef MENGE_MASTER_RELEASE
+		m_debugColor = 0xFFFF0000;
+#	endif
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onEnter()
 	{
 		callEvent( EVENT_ENTER, "(O)", this->getEmbedding() );
+
+#	ifndef MENGE_MASTER_RELEASE
+		m_debugColor = 0xFFAAFFAA;
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::addPoint( const mt::vec2f & _p )
@@ -241,10 +253,6 @@ namespace	Menge
 	{
 		Node::_update( _timing );
 
-/*		const Viewport & viewport =
-			Holder<RenderEngine>::hostage()
-			->getRenderViewport();
-*/
 		const Viewport & viewport =
 			Holder<Player>::hostage()->getRenderCamera2D()
 			->getViewport();
@@ -325,7 +333,7 @@ namespace	Menge
 				mt::mul_v2_m3( pt1, beg, wm );
 				mt::mul_v2_m3( pt2, end, wm );
 
-				Holder<RenderEngine>::hostage()->renderLine(0xFFFF0000,pt1,pt2);
+				Holder<RenderEngine>::hostage()->renderLine(m_debugColor,pt1,pt2);
 			}
 		}
 #	endif

@@ -63,8 +63,6 @@ namespace Menge
 
 			offset.x += m_offset;
 
-			//printf("HERE i'm\n");
-
 			return;
 		}
 
@@ -91,8 +89,6 @@ namespace Menge
 				_color.getAsARGB(),
 				_renderImage
 				);
-
-			//printf("FUCK!, I'm TRANSFORMED AGAIN\n");
 
 			offset.x += width + m_textField.getCharOffset();
 		}

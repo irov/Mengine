@@ -1,4 +1,5 @@
 #	include "ResourceReference.h"
+#	include "ProfilerEngine.h"
 
 namespace Menge
 {
@@ -30,6 +31,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceReference::_incrementZero()
 	{
+		const String & name = this->getName();
+		Holder<ProfilerEngine>::hostage()->addResourceToProfile(name);
+
 		return compile();
 	}
 	//////////////////////////////////////////////////////////////////////////

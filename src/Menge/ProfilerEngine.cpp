@@ -90,7 +90,7 @@ namespace Menge
 		sprintf( m_debugText, "COMPILED = %s; COMPILED = %d / RELEASED = %d \n",currentCompiledResource.c_str(), totalCompiled, totalReleased );
 
 		pos.y+=20;
-		Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFFFFFFFF);
+		Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFF00FFFF);
 		
 		int numDisplayedResource = 0;
 

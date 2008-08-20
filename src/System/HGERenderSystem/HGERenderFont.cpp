@@ -4,13 +4,11 @@
 #	include <stdio.h>
 #	include <math.h>
 //////////////////////////////////////////////////////////////////////////
-HGERenderFont::HGERenderFont( const Menge::String& _name, HGE * _hge)
+HGERenderFont::HGERenderFont(HGE * _hge)
 	: m_hge(_hge)
 	, m_height(0.0f)
 	, m_texture(0)
-{
-	_fontGenerate(_name,20,true,false,false,32,126);
-}
+{}
 //////////////////////////////////////////////////////////////////////////
 HGERenderFont::~HGERenderFont()
 {
@@ -18,6 +16,11 @@ HGERenderFont::~HGERenderFont()
 	{
 		m_hge->Texture_Free(m_texture);
 	}
+}
+//////////////////////////////////////////////////////////////////////////
+void HGERenderFont::fontGenerate( const Menge::String& _name, int _size, bool _bold, bool _italic, bool _antialias)
+{
+	m_texture = _fontGenerate(_name,_size,_bold,_italic,_antialias,0,255);
 }
 //////////////////////////////////////////////////////////////////////////
 bool HGERenderFont::_placeSymbols(int _width, int _height, int leftRange,  int rigthRange)
@@ -54,11 +57,6 @@ bool HGERenderFont::_placeSymbols(int _width, int _height, int leftRange,  int r
 //////////////////////////////////////////////////////////////////////////
 HTEXTURE HGERenderFont::_fontGenerate( const Menge::String& _name, int _size, bool _bold, bool _italic, bool _antialias, int _leftRange, int _rigthRange )
 {
-	HBITMAP		hBM;
-	BITMAPINFO	bmi;
-	ABCFLOAT	abc;
-	TEXTMETRIC	tTextMetrics;
-
 	HFONT hFont = CreateFont(-_size, 0, 0, 0, (_bold) ? FW_BOLD : FW_NORMAL,
 		_italic, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
 		(_antialias) ? ANTIALIASED_QUALITY : NONANTIALIASED_QUALITY,
@@ -77,30 +75,24 @@ HTEXTURE HGERenderFont::_fontGenerate( const Menge::String& _name, int _size, bo
 	SetTextAlign(hBMDC, TA_TOP);
 	SelectObject(hBMDC, hFont);
 
+	TEXTMETRIC	tTextMetrics;
 	GetTextMetrics(hBMDC, &tTextMetrics);
 
-	for (int j = 0; j < 256; j++ )
-	{
-
-		m_letters[j].x = 0;
-		m_letters[j].y = 0;
-		m_letters[j].a = 0;
-		m_letters[j].c = 0;
-		m_letters[j].w = 0;
-		m_letters[j].h = 0;
-	}
+	ABCFLOAT	abc;
 
 	for (int j = _leftRange; j <= _rigthRange; j++ )
 	{
 		GetCharABCWidthsFloat(hBMDC, j, j, &abc);
-		m_letters[j].a = int(abc.abcfA)-1;
-		m_letters[j].c = int(abc.abcfC)-1;
-		m_letters[j].w = int(abc.abcfB)+2;
+
+		m_letters[j].a = abc.abcfA - 1;
+		m_letters[j].c = abc.abcfC - 1;
+
+		m_letters[j].w = abc.abcfB + 2;
 		m_letters[j].h = tTextMetrics.tmHeight;
 
 		if(m_letters[j].h > m_height)
 		{
-			m_height=m_letters[j].h;
+			m_height = m_letters[j].h;
 		}
 	}
 
@@ -131,6 +123,7 @@ HTEXTURE HGERenderFont::_fontGenerate( const Menge::String& _name, int _size, bo
 		}
 	}
 
+	BITMAPINFO	bmi;
 	memset(&bmi, 0, sizeof(BITMAPINFO));
 	bmi.bmiHeader.biWidth = nWidth;
 	bmi.bmiHeader.biHeight = -nHeight;
@@ -141,7 +134,7 @@ HTEXTURE HGERenderFont::_fontGenerate( const Menge::String& _name, int _size, bo
 
 	DWORD	* pPixels = 0;
 
-	hBM = CreateDIBSection(hBMDC, &bmi, DIB_RGB_COLORS, (void**)&pPixels, 0, 0);
+	HBITMAP hBM = CreateDIBSection(hBMDC, &bmi, DIB_RGB_COLORS, (void**)&pPixels, 0, 0);
 
 	if(!hBM)
 	{
@@ -160,11 +153,11 @@ HTEXTURE HGERenderFont::_fontGenerate( const Menge::String& _name, int _size, bo
 
 	GdiFlush();
 
-	m_texture = m_hge->Texture_Create(nWidth, nHeight);
+	HTEXTURE texture = m_hge->Texture_Create(nWidth, nHeight);
 
 	int pitch = 0;
 
-	DWORD * pTexData = m_hge->Texture_Lock(m_texture, &pitch);
+	DWORD * pTexData = m_hge->Texture_Lock(texture, &pitch);
 
 	for (int i = 0; i<nHeight; i++)
 	{
@@ -176,18 +169,29 @@ HTEXTURE HGERenderFont::_fontGenerate( const Menge::String& _name, int _size, bo
 		}
 	}
 
-	m_hge->Texture_Unlock(m_texture);
+	m_hge->Texture_Unlock(texture);
+
+	float width = m_hge->Texture_GetWidth(texture);
+	float height = m_hge->Texture_GetHeight(texture);
+
+	for (int j = _leftRange; j <= _rigthRange; j++ )
+	{
+		m_letters[j].u0 = m_letters[j].x / width;
+		m_letters[j].v0 = m_letters[j].y / height;
+		m_letters[j].u1 = (m_letters[j].x + m_letters[j].w) / width;
+		m_letters[j].v1 = (m_letters[j].y + m_letters[j].h) / height;
+	}
 
 	DeleteObject(hBM);
 	DeleteObject(hFont);
 	DeleteDC(hBMDC);
 
-	return m_texture;
+	return texture;
 }
 
 void HGERenderFont::renderText(float _x, float _y, unsigned long _color, const Menge::String& _text)
 {
-	float	fx = _x;
+	float	widthOffset = _x;
 
 	for(std::string::const_iterator it = _text.begin(); it != _text.end(); it++)
 	{
@@ -196,59 +200,62 @@ void HGERenderFont::renderText(float _x, float _y, unsigned long _color, const M
 		if(letter == '\n')
 		{
 			_y += m_height;
-			fx = _x;
-		}
-		else
+			widthOffset = _x;
+			continue;
+		};
+
+		//FIX ME
+		int i = (unsigned char)letter;
+
+		widthOffset += m_letters[i].a;
+
+		hgeQuad quad;
+
+		quad.v[0].x =  widthOffset; 
+		quad.v[0].y = _y;
+		quad.v[0].z = 0;
+
+		quad.v[1].x = m_letters[i].w + widthOffset;
+		quad.v[1].y =  _y;
+		quad.v[1].z = 0;
+
+		quad.v[2].x = m_letters[i].w + widthOffset;
+		quad.v[2].y = m_letters[i].h + _y;
+		quad.v[2].z = 0;
+
+		quad.v[3].x = widthOffset; 
+		quad.v[3].y = m_letters[i].h + _y;
+		quad.v[3].z = 0;
+
+		quad.v[0].col = _color;
+		quad.v[1].col = _color;
+		quad.v[2].col = _color;
+		quad.v[3].col = _color;
+
+		for( int k = 0; k < 4; k++ )
 		{
-			int i = (unsigned char)letter;
-
-			fx += m_letters[i].a;
-
-			float tx1 = 0;
-			float ty1 = 0;
-			float tx2 = m_letters[i].w;
-			float ty2 = m_letters[i].h;
-
-			hgeQuad quad;
-
-			quad.v[0].x = tx1 + fx; quad.v[0].y = ty1 + _y;
-			quad.v[1].x = tx2 + fx; quad.v[1].y = ty1 + _y;
-			quad.v[2].x = tx2 + fx; quad.v[2].y = ty2 + _y;
-			quad.v[3].x = tx1 + fx; quad.v[3].y = ty2 + _y;
-
-			quad.v[0].z = 1; quad.v[0].col = _color;
-			quad.v[1].z = 1; quad.v[1].col = _color;
-			quad.v[2].z = 1; quad.v[2].col = _color;
-			quad.v[3].z = 1; quad.v[3].col = _color;
-
-			for( int k = 0; k < 4; k++ )
-			{
-				quad.v[k].x = ::floorf( quad.v[k].x + 0.5f );
-				quad.v[k].y = ::floorf( quad.v[k].y + 0.5f );
-			}
-
-			float width = m_hge->Texture_GetWidth(m_texture);
-			float height = m_hge->Texture_GetHeight(m_texture);
-
-			quad.v[0].tx = m_letters[i].x/width;
-			quad.v[0].ty = m_letters[i].y/height;
-
-			quad.v[1].tx = (m_letters[i].x+m_letters[i].w)/width;
-			quad.v[1].ty = m_letters[i].y/height;
-
-			quad.v[2].tx = (m_letters[i].x+m_letters[i].w)/width;
-			quad.v[2].ty = (m_letters[i].y+m_letters[i].h)/height;
-
-			quad.v[3].tx = m_letters[i].x/width; 
-			quad.v[3].ty = (m_letters[i].y+m_letters[i].h)/height;
-			quad.tex = m_texture;
-
-			quad.srcBlend = BLEND_SRCALPHA;
-			quad.dstBlend = BLEND_INVDESTALPHA;
-
-			m_hge->Gfx_RenderQuad( &quad );
-
-			fx += (m_letters[i].w+m_letters[i].c);
+			quad.v[k].x = ::floorf( quad.v[k].x + 0.5f );
+			quad.v[k].y = ::floorf( quad.v[k].y + 0.5f );
 		}
+
+		quad.v[0].tx = m_letters[i].u0;
+		quad.v[0].ty = m_letters[i].v0;
+
+		quad.v[1].tx = m_letters[i].u1;
+		quad.v[1].ty = m_letters[i].v0;
+
+		quad.v[2].tx = m_letters[i].u1;
+		quad.v[2].ty = m_letters[i].v1;
+
+		quad.v[3].tx = m_letters[i].u0; 
+		quad.v[3].ty = m_letters[i].v1;
+
+		quad.tex = m_texture;
+		quad.srcBlend = BLEND_SRCALPHA;
+		quad.dstBlend = BLEND_INVDESTALPHA;
+
+		m_hge->Gfx_RenderQuad( &quad );
+
+		widthOffset += (m_letters[i].w+m_letters[i].c);
 	}
 }

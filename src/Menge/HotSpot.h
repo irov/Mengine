@@ -79,5 +79,9 @@ namespace Menge
 
 		bool m_onLeaveEvent;
 		bool m_onEnterEvent;
+
+#	ifndef MENGE_MASTER_RELEASE
+		unsigned long m_debugColor;
+#	endif
 	};
 }

@@ -368,6 +368,7 @@ namespace Menge
 	{
 		Holder<ProfilerEngine>::hostage()->beginProfile( MENGE_TEXT("Render") );
 		m_player->render( _debugMask );
+
 		Holder<ProfilerEngine>::hostage()->displayStats();
 
 		if(Holder<ProfilerEngine>::hostage()->isEnabled())
@@ -627,7 +628,7 @@ namespace Menge
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlFileM( xml_path, scene, &Scene::loader ) == false )
 			{
-				MENGE_LOG("Warrning: invalid loader xml '%s' for scene '%s'"
+				MENGE_LOG("Warning: invalid loader xml '%s' for scene '%s'"
 					, xml_path.c_str()
 					, _name.c_str()
 					);

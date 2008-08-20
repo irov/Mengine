@@ -6,23 +6,33 @@
 class HGERenderFont
 {
 public:
-	HGERenderFont(const Menge::String& _name, HGE * _hge);
+	HGERenderFont(HGE * _hge);
 	~HGERenderFont();
 
+	void fontGenerate( const Menge::String& _name, int _size, bool _bold, bool _italic, bool _antialias);
 	void renderText( float _x, float _y, unsigned long _color, const Menge::String& _text);
 
 private:
 	HGE * m_hge;
 	float m_height;
-	HTEXTURE	m_texture;
+	HTEXTURE m_texture;
 
-	struct CHAR_DESC
+	struct CharDesc
 	{
-		int x, y, w, h;
-		int a, c;
+		float x;
+		float y;
+		float w;
+		float h;
+		float a;
+		float c;
+		float u0;
+		float v0;
+		float u1;
+		float v1;
 	};
 
-	CHAR_DESC	m_letters[256];
+	//FIX ME:
+	CharDesc	m_letters[256];
 	
 	HTEXTURE _fontGenerate( const Menge::String& _name, int _size, bool _bold, bool _italic, bool _antialias, int _leftRange, int _rigthRange);
 	bool _placeSymbols( int _width, int _height, int leftRange,  int rigthRange );

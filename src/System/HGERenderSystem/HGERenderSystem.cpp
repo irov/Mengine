@@ -119,13 +119,18 @@ bool HGERenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	rtgtInfo.handle = voidTarget;
 	rtgtInfo.texture = voidTexture;
 	m_targetMap.insert( std::make_pair( m_currentRenderTarget, rtgtInfo ) );
-	bool ret = false;
-	ret = m_hge->Gfx_CreateRenderWindow();
+	
+	bool ret = m_hge->Gfx_CreateRenderWindow();
+
+	if( ret == false )
+	{
+		return false;
+	}
 
 	m_systemFont = new HGERenderFont(m_hge);
 	m_systemFont->fontGenerate( MENGE_TEXT("Verdana"), 16, false, true, false );
 
-	return ret;
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 const std::vector<int> & HGERenderSystem::getResolutionList()

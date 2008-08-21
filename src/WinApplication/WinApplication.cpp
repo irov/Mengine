@@ -139,8 +139,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setDesktopResolution( std::size_t _width, std::size_t _height )
 	{
-		m_desktopResolution[0] = _width;
-		m_desktopResolution[1] = _height;
+		m_desktopWidth = _width;
+		m_desktopHeight = _height;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::init( const String & _name, ApplicationListenerInterface* _listener )
@@ -277,8 +277,8 @@ namespace Menge
 		DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
 		RECT rc;
 
-		m_windowResolution[0] = _width;
-		m_windowResolution[1] = _height;
+		m_windowWidth = _width;
+		m_windowHeight = _height;
 
 		if (!_fullscreen)
 		{
@@ -290,7 +290,7 @@ namespace Menge
 		}
 		// Calculate window dimensions required
 		// to get the requested client area
-		SetRect(&rc, 0, 0, (int)m_windowResolution[0], (int)m_windowResolution[1]);
+		SetRect(&rc, 0, 0, (int)m_windowWidth, (int)m_windowHeight);
 		AdjustWindowRect(&rc, dwStyle, false);
 		LONG width = rc.right - rc.left;
 		LONG height = rc.bottom - rc.top;
@@ -487,9 +487,14 @@ namespace Menge
 	return m_primaryMonitorAspect;	
 	}*/
 	//////////////////////////////////////////////////////////////////////////
-	const std::size_t * WinApplication::getDesktopResolution() const
+	std::size_t WinApplication::getDesktopWidth() const
 	{
-		return m_desktopResolution;
+		return m_desktopWidth;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t WinApplication::getDesktopHeight() const
+	{
+		return m_desktopHeight;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::minimizeWindow()
@@ -499,8 +504,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
-		m_windowResolution[0] = _width;
-		m_windowResolution[1] = _height;
+		m_windowWidth = _width;
+		m_windowHeight = _height;
 
 		m_fullscreen = _fullscreen;
 

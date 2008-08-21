@@ -80,7 +80,7 @@ namespace Menge
 			return false;				 
 		}
 
-		std::size_t size = _file->size();
+		std::streamsize size = _file->size();
 
 		XmlExpatParser * parser = m_parser;
 		bool new_parser = false;
@@ -163,14 +163,7 @@ namespace Menge
 namespace XmlParserCast
 {
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( std::size_t _var, const char * _value )
-	{
-		int res = sscanf( _value, "%d", &_var );
-
-		return res == 1;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( std::size_t _var[2], const Menge::TChar * _value )
+	bool attribute_value_cast( Menge::Resolution & _var, const Menge::TChar * _value )
 	{
 		int res = sscanf( _value, "%d;%d", &_var[0], &_var[1] );
 

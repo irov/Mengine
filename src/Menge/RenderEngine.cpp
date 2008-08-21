@@ -43,7 +43,7 @@ namespace Menge
 		return m_interface->getNumDIP();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( std::size_t _resolution[2], int _bits, bool _fullscreen, WindowHandle _winHandle,
+	bool RenderEngine::createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
 											int _FSAAType, int _FSAAQuality )
 	{
 		m_fullscreen = _fullscreen;
@@ -72,12 +72,9 @@ namespace Menge
 		m_interface->render();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setContentResolution( const std::size_t _resolution [2] )
+	void RenderEngine::setContentResolution( const Resolution & _resolution )
 	{
-		m_contentResolution[0] = _resolution[0];
-		m_contentResolution[1] = _resolution[1];
-
-		//m_renderViewport.set( mt::vec2f::zero_v2, m_contentResolution );
+		m_contentResolution = _resolution;
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer2D()
@@ -370,7 +367,7 @@ namespace Menge
 
 		m_fullscreen = _fullscreen;
 
-		const std::size_t * resolution = ( m_fullscreen == true )
+		const Resolution & resolution = ( m_fullscreen == true )
 			? Holder<Application>::hostage()->getDesktopResolution() 
 			: Holder<Game>::hostage()->getResolution();
 			
@@ -431,7 +428,7 @@ namespace Menge
 		return m_interface->releaseSceneNode( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::getBestDisplayResolution( std::size_t _bestResolution[2], const std::size_t _resolution [2], float _aspect )
+	Resolution RenderEngine::getBestDisplayResolution( const Resolution & _resolution, float _aspect )
 	{
 		const std::vector<int> & resolutionList = m_interface->getResolutionList();
 
@@ -457,7 +454,7 @@ namespace Menge
 
 		bool done = false;
 
-		std::size_t bestResolution[2] = {0,0};
+		Resolution bestResolution;
 
 		for( TResolutionMap::iterator 
 			it = resMap.begin(),
@@ -478,14 +475,16 @@ namespace Menge
 			{
 				if( it->second[i] >= static_cast<int>(needWidth) )
 				{
-					_bestResolution[0] = it->second[i];
-					_bestResolution[1] = it->first;
+					bestResolution.setWidth( it->second[i] );
+					bestResolution.setHeight( it->first );
 					done = true;
 					break;
 				}
 			}
 			if( done ) break;
 		}
+
+		return bestResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::getFullscreenMode()
@@ -504,7 +503,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onDeviceRestored()
 	{
-		const std::size_t * resolution = Holder<Game>::hostage()
+		const Resolution & resolution = Holder<Game>::hostage()
 			->getResolution();
 
 		Holder<Application>::hostage()
@@ -651,11 +650,11 @@ namespace Menge
 		return m_renderArea;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::recalcRenderArea_( const std::size_t resolution [2] )
+	void RenderEngine::recalcRenderArea_( const Resolution & _resolution )
 	{
 
-		float rx = float( resolution[0]);
-		float ry = float( resolution[1]);
+		float rx = float( _resolution.getWidth());
+		float ry = float( _resolution.getHeight());
 
 		m_renderArea.x = 0.0f;
 		m_renderArea.y = 0.0f;
@@ -665,8 +664,8 @@ namespace Menge
 		float one_div_width = 1.f / rx;
 		float one_div_height = 1.f / ry;
 
-		float crx = float( m_contentResolution[0] );
-		float cry = float( m_contentResolution[1] );
+		float crx = float( m_contentResolution.getWidth() );
+		float cry = float( m_contentResolution.getHeight() );
 
 		float contentAspect = crx / cry;
 		float dw = crx * one_div_width;
@@ -704,8 +703,7 @@ namespace Menge
 			m_renderFactor = 0.0f;
 		}
 
-		m_windowResolution[0] = resolution[0];
-		m_windowResolution[1] = resolution[1];
+		m_windowResolution = _resolution;
 
 		setRenderFactor( m_renderFactor );
 	}

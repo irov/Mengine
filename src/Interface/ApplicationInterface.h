@@ -48,7 +48,8 @@ namespace Menge
 		virtual WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 		virtual void run() = 0;
 		virtual void stop() = 0;
-		virtual const std::size_t * getDesktopResolution() const = 0;
+		virtual std::size_t getDesktopWidth() const = 0;
+		virtual std::size_t getDesktopHeight() const = 0;
 		virtual void minimizeWindow() = 0;
 		virtual void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 		virtual float getDeltaTime() = 0;

@@ -19,8 +19,8 @@ public:
 	~XmlExpatParser();
 
 public:
-	void * makeBuffer( unsigned int _size );
-	bool parseXML( unsigned int _size, XmlElementListener * _listener );	
+	void * makeBuffer( std::size_t _size );
+	bool parseXML( std::size_t _size, XmlElementListener * _listener );	
 	bool parseStatus();
 
 public:

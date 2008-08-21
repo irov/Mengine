@@ -1,6 +1,8 @@
 #	pragma once
 
 #	include "Node.h"
+#	include "Resolution.h"
+
 #	include "Math/vec4.h"
 
 namespace Menge
@@ -34,7 +36,7 @@ namespace Menge
 		void addHotSpot( HotSpot * _hotspot );
 		HotSpot * getCurrentHotSpot() const;
 
-		void setWindow( const std::size_t _window[2] );
+		void setWindow( const Resolution & _window );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -52,7 +54,7 @@ namespace Menge
 
 	protected:
 		mt::vec2f m_offsetClick;
-		std::size_t m_resolution[2];
+		Resolution m_resolution;
 		HotSpot * m_currentHotSpot;
 		bool m_hided;
 	};

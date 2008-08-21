@@ -233,7 +233,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createRenderWindow(WindowHandle _handle)
+	bool Application::createRenderWindow( WindowHandle _handle )
 	{
 		const String & title = m_game->getTitle();
 
@@ -242,12 +242,14 @@ namespace Menge
 			MENGE_LOG( MENGE_TEXT("Warning: Can't initialize user's data path") );
 		}
 
-		const std::size_t * resourceResolution = m_game->getResourceResolution();
+		const Resolution & resourceResolution = m_game->getResourceResolution();
 
 		m_renderEngine->initialize();
 		m_renderEngine->setContentResolution( resourceResolution );
 
 		bool isFullscreen = m_game->getFullscreen();
+
+		Resolution bestResolution;
 
 		if( isFullscreen == true )
 		{
@@ -255,33 +257,26 @@ namespace Menge
 			float dry = float(m_desktopResolution[1]);
 			float aspect = drx / dry;
 
-			std::size_t currentResolution[2];
-
-			m_renderEngine->getBestDisplayResolution( currentResolution, m_currentResolution, aspect );
-
-			m_currentResolution[0] = currentResolution[0];
-			m_currentResolution[1] = currentResolution[1];
+			bestResolution = m_renderEngine->getBestDisplayResolution( m_currentResolution, aspect );
 		}
 		else
 		{
-			const std::size_t * currentResolution = m_game->getResolution();
-			m_currentResolution[0] = currentResolution[0];
-			m_currentResolution[1] = currentResolution[1];
+			bestResolution = m_game->getResolution();
 		}
 
 		WindowHandle winHandle = _handle;
 
-		if(_handle == NULL)
+		if( _handle == NULL )
 		{
 			winHandle = m_interface->createWindow( 
-				title, m_currentResolution[0], m_currentResolution[1], isFullscreen );
+				title, bestResolution.getWidth(), bestResolution.getHeight(), isFullscreen );
 		}
 
 		int bits = m_game->getBits();
 		int FSAAType = m_game->getFSAAType();
 		int FSAAQuality = m_game->getFSAAQuality();
 
-		m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, winHandle,
+		m_renderEngine->createRenderWindow( bestResolution, bits, isFullscreen, winHandle,
 											FSAAType, FSAAQuality );
 
 		bool isTextureFiltering = m_game->getTextureFiltering();
@@ -416,10 +411,8 @@ namespace Menge
 			return false;
 		}
 
-		const std::size_t * desktopResolution = m_interface->getDesktopResolution();
-
-		m_desktopResolution[0] = desktopResolution[0];
-		m_desktopResolution[1] = desktopResolution[1];
+		m_desktopResolution[0] = m_interface->getDesktopWidth();
+		m_desktopResolution[1] = m_interface->getDesktopHeight();
 
 		m_sound = m_soundEngine->initialize();
 
@@ -690,7 +683,7 @@ namespace Menge
 		m_renderEngine->onWindowMovedOrResized();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::size_t * Application::getCurrentResolution() const
+	const Resolution & Application::getCurrentResolution() const
 	{
 		return m_currentResolution;
 	}
@@ -737,7 +730,7 @@ namespace Menge
 		Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::size_t * Application::getDesktopResolution() const
+	const Resolution & Application::getDesktopResolution() const
 	{
 		return m_desktopResolution;
 	}

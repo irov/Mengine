@@ -12,7 +12,7 @@ namespace Menge
 	struct FileBuffer
 	{
 		void * buffer;
-		std::size_t size;
+		std::streamsize size;
 	};
 
 	typedef std::vector<char> TVectorChar;
@@ -32,7 +32,7 @@ namespace Menge
 		bool createFolder( const String& _path );
 		bool deleteFolder( const String& _path );
 		DataStreamInterface * openFile( const String& _filename );
-		DataStreamInterface * createMemoryFile( void * _data, std::size_t _size, bool _freeOnClose );
+		DataStreamInterface * createMemoryFile( void * _data, std::streamsize _size, bool _freeOnClose );
 
 		FileBuffer getFileBuffer( const String& _filename );
 

@@ -86,7 +86,7 @@ namespace Menge
 		return m_interface->changeDir( _dir );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface * FileEngine::createMemoryFile( void * _data, std::size_t _size, bool _freeOnClose )
+	DataStreamInterface * FileEngine::createMemoryFile( void * _data, std::streamsize _size, bool _freeOnClose )
 	{
 		return m_interface->createMemoryFile( _data, _size, _freeOnClose );
 	}

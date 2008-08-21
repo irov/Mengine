@@ -7,8 +7,11 @@
 #	include "Math/quat.h"
 #	include "FileEngine.h"
 #	include "ColourValue.h"
+#	include "Resolution.h"
 
 #	include "XmlFormat.h"
+
+#	include	"Config/Typedef.h"
 
 class XmlExpatParser;
 
@@ -79,8 +82,7 @@ namespace Menge
 
 namespace XmlParserCast
 {
-	bool attribute_value_cast( std::size_t _var, const Menge::TChar * _value );
-	bool attribute_value_cast( std::size_t _var[2], const Menge::TChar * _value );
+	bool attribute_value_cast( Menge::Resolution & _var, const Menge::TChar * _value );
 	bool attribute_value_cast( mt::vec2f & _var, const Menge::TChar * _value );
 	bool attribute_value_cast( mt::vec3f & _var, const Menge::TChar * _value );
 	bool attribute_value_cast( mt::vec4f & _var, const Menge::TChar * _value );

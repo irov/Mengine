@@ -694,7 +694,7 @@ namespace Menge
 
 			screen_pos -= viewportParallax.begin;
 
-			const std::size_t * currentResolution = Holder<Application>::hostage()->getCurrentResolution();
+			const Resolution & currentResolution = Holder<Application>::hostage()->getCurrentResolution();
 
 			float crx = float( currentResolution[0] );
 

@@ -88,7 +88,7 @@ namespace Menge
 		return m_arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::init( const std::size_t _contentResolution [2] )
+	void Player::init( const Resolution & _contentResolution )
 	{
 		Arrow * defaultArrow = 
 			Holder<Game>::hostage()->getDefaultArrow();
@@ -101,8 +101,8 @@ namespace Menge
 
 		//mt::vec2f vpSz( 1024, 768 );
 
-		float crx = float( _contentResolution[0] );
-		float cry = float( _contentResolution[1] );
+		float crx = float( _contentResolution.getWidth() );
+		float cry = float( _contentResolution.getHeight() );
 
 		mt::vec2f crv( crx, cry );
 

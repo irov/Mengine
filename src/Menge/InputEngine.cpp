@@ -93,7 +93,7 @@ namespace Menge
 
 		if( _bounded )
 		{
-			const std::size_t * resolution = Holder<Application>::hostage()->getCurrentResolution();
+			const Resolution & resolution = Holder<Application>::hostage()->getCurrentResolution();
 
 			float rx = float( resolution[0] );
 			float ry = float( resolution[1] );

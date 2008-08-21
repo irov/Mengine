@@ -8,6 +8,8 @@
 #	include "Account.h"
 #	include "TextField.h"
 
+#	include "Resolution.h"
+
 #	include <list>
 #	include <map>
 
@@ -82,8 +84,8 @@ namespace Menge
 		void handleMouseEnter();
 	
 	public:
-		const std::size_t * getResolution() const;
-		const std::size_t * getResourceResolution() const;
+		const Resolution & getResolution() const;
+		const Resolution & getResourceResolution() const;
 		bool isContentResolutionFixed() const;
 
 		const String& getTitle() const;
@@ -112,8 +114,8 @@ namespace Menge
 		Player* m_player;
 		String m_title;
 
-		std::size_t	m_resourceResolution[2];
-		std::size_t m_resolution[2];
+		Resolution m_resourceResolution;
+		Resolution m_resolution;
 
 		bool m_fixedContentResolution;
 

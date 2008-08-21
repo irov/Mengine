@@ -653,7 +653,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::size_t * Game::getResourceResolution() const
+	const Resolution & Game::getResourceResolution() const
 	{
 		return m_resourceResolution;
 	}
@@ -668,7 +668,7 @@ namespace Menge
 		return m_fixedContentResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::size_t * Game::getResolution() const
+	const Resolution & Game::getResolution() const
 	{
 		return m_resolution;
 	}

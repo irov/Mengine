@@ -4,6 +4,8 @@
 
 #	include "InputHandler.h"
 
+#	include "Resolution.h"
+
 #	include "Math/vec3.h"
 #	include <string>
 #	include <set>
@@ -39,7 +41,7 @@ namespace Menge
 		void updateChangeScene();
 
 	public:
-		void init( const std::size_t _contentResolution [2] );
+		void init( const Resolution & _contentResolution );
 		void update( float _timing );
 		void render( unsigned int _debugMask );
 

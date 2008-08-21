@@ -6,10 +6,11 @@
 #	include <vector>
 #	include "math/vec2.h"
 
+#	include "Resolution.h"
+
+#	include "Interface\ApplicationInterface.h"
+
 class XmlElement;
-
-
-#include "Interface\ApplicationInterface.h"
 
 namespace Menge
 {
@@ -72,7 +73,9 @@ namespace Menge
 
 	public:
 		bool usePhysic() const;
-		const std::size_t * getCurrentResolution() const;
+
+		const Resolution & getCurrentResolution() const;
+		const Resolution & getDesktopResolution() const;
 
 	public:
 		void onUpdate( float _timing );
@@ -103,7 +106,7 @@ namespace Menge
 
 		void setFullscreenMode( bool _fullscreen );
 
-		const std::size_t * getDesktopResolution() const;
+		
 
 		unsigned int getDebugMask() const;
 
@@ -119,8 +122,8 @@ namespace Menge
 		String m_gameInfo;
 		InputHandler * m_handler;
 
-		std::size_t m_currentResolution[2];
-		std::size_t m_desktopResolution[2];
+		Resolution m_currentResolution;
+		Resolution m_desktopResolution;
 
 		String m_commandLine;
 

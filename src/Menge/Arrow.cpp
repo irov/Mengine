@@ -166,10 +166,9 @@ namespace	Menge
 		return getLocalPosition();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::setWindow( const std::size_t _window[2] )
+	void Arrow::setWindow( const Resolution & _window )
 	{
-		m_resolution[0] = _window[0];
-		m_resolution[1] = _window[1];
+		m_resolution = _window;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

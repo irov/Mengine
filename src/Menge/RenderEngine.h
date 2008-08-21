@@ -4,6 +4,8 @@
 
 #	include "Viewport.h"
 
+#	include "Resolution.h"
+
 #	include "Holder.h"
 
 #	include "math/mat4.h"
@@ -26,14 +28,14 @@ namespace Menge
 	public:
 
 		bool initialize();
-		bool createRenderWindow( std::size_t _resolution[2], int _bits, bool _fullscreen, WindowHandle _winHandle,
+		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
 								int _FSAAType , int _FSAAQuality );
 
 		void screenshot( RenderImageInterface* _renderTargetImage, const mt::vec4f & _rect );
 		void render();
 
-		void setContentResolution( const std::size_t  _resolution [2] );
-		void getBestDisplayResolution( std::size_t _bestResolution[2], const std::size_t  _resolution [2], float _aspect );
+		void setContentResolution( const Resolution & _resolution );
+		Resolution getBestDisplayResolution( const Resolution & _resolution, float _aspect );
 
 		RenderImageInterface * createImage( const String & _name, float _width, float _height );
 		RenderImageInterface * createRenderTargetImage( const String & _name, const mt::vec2f & _resolution );
@@ -92,7 +94,7 @@ namespace Menge
 
 		void	setFullscreenMode( bool _fullscreen );
 		bool	getFullscreenMode();
-		void	setViewportDimensions( std::size_t _resolution[2], float _renderFactor = 0.0f );
+		void	setViewportDimensions( const Resolution & _resolution, float _renderFactor = 0.0f );
 
 		CameraInterface * createCamera( const String & _name );
 		EntityInterface * createEntity( const String & _name, const String & _meshName );
@@ -135,8 +137,8 @@ namespace Menge
 		float m_viewportHeight;
 		float m_renderFactor;
 		
-		std::size_t m_contentResolution[2];
-		std::size_t m_windowResolution[2];
+		Resolution m_contentResolution;
+		Resolution m_windowResolution;
 
 		mt::vec4f m_renderArea;
 		float m_rendFactPix;
@@ -145,7 +147,9 @@ namespace Menge
 
 		bool m_layer3D;
 		mt::mat4f m_viewTransform;
-		void recalcRenderArea_( const std::size_t resolution [2] );
+
+		void recalcRenderArea_( const Resolution & resolution );
+
 	private:
 		struct Line
 		{

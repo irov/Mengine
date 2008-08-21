@@ -64,7 +64,7 @@
 				Name="VCLibrarianTool"
 				AdditionalDependencies="box2d_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="Box2D\Library"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Library&quot;;Box2D\Library"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -140,7 +140,7 @@
 				Name="VCLibrarianTool"
 				AdditionalDependencies="box2d.lib"
 				OutputFile="$(OutDir)\$(ProjectName).lib"
-				AdditionalLibraryDirectories="Box2D\Library"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Library&quot;;Box2D\Library"
 			/>
 			<Tool
 				Name="VCALinkTool"

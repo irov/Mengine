@@ -38,7 +38,7 @@ namespace Menge
 
 		//_compile();
 	}
-	std::size_t filePos = 0;
+	std::streampos filePos = 0;
 	//////////////////////////////////////////////////////////////////////////
 	template<class T> T * read_buffer(unsigned char *& buffer,int count = 1)
 	{
@@ -51,12 +51,12 @@ namespace Menge
 	bool ResourceMeshMS3D::_compile()
 	{
 		DataStreamInterface * file = Holder<FileEngine>::hostage()->openFile( m_params.category + m_filename );
-		std::size_t fileSize = file->size();
+		std::streamsize fileSize = file->size();
 
 		filePos = 0;
 
 		unsigned char * buffer = new unsigned char[fileSize];
-		std::size_t read = file->read(buffer, fileSize);
+		std::streamsize read = file->read(buffer, fileSize);
 
 		if (read != fileSize)
 		{
@@ -300,7 +300,7 @@ namespace Menge
 			if (subVersion == 1)
 			{
 				int numComments = 0;
-				size_t commentSize = 0;
+				std::streamsize commentSize = 0;
 
 				numComments = *read_buffer<int>(buffer);
 

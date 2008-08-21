@@ -8,14 +8,14 @@ namespace Menge
 		: public DataStream
 	{
 	public:
-		MemoryDataStream( void * _pMem, std::size_t _size, bool _freeOnClose = false );
-		MemoryDataStream( const String & _name, void* _pMem, std::size_t _size, bool _freeOnClose = false);
+		MemoryDataStream( void * _pMem, std::streamsize _size, bool _freeOnClose = false );
+		MemoryDataStream( const String & _name, void* _pMem, std::streamsize _size, bool _freeOnClose = false);
 		MemoryDataStream( DataStream & _sourceStream, bool _freeOnClose = true);
 		MemoryDataStream( DataStream * _sourceStream, bool _freeOnClose = true );
 		MemoryDataStream( const String& _name, DataStream& _sourceStream, bool _freeOnClose = true );
 		MemoryDataStream( const String& _name, DataStream* _sourceStream, bool _freeOnClose = true);
-		MemoryDataStream( std::size_t _size, bool _freeOnClose = true );
-		MemoryDataStream( const String& _name, std::size_t _size, bool _freeOnClose = true);
+		MemoryDataStream( std::streamsize _size, bool _freeOnClose = true );
+		MemoryDataStream( const String& _name, std::streamsize _size, bool _freeOnClose = true);
 
 		~MemoryDataStream();
 
@@ -24,12 +24,12 @@ namespace Menge
 		unsigned char* getCurrentPtr();
 
 	public:
-		std::size_t read( void* _buf, std::size_t _count ) override;
-		std::size_t readLine( char* _buf, std::size_t _maxCount, const String& _delim = MENGE_TEXT("\n") ) override;
-		std::size_t skipLine( const String& _delim = MENGE_TEXT("\n") ) override;
-		void skip( long _count ) override;
-		void seek( std::size_t _pos ) override;
-		std::size_t tell() const override;
+		std::streamsize read( void* _buf, std::streamsize _count ) override;
+		std::streamsize readLine( char* _buf, std::streamsize _maxCount, const String& _delim = MENGE_TEXT("\n") ) override;
+		std::streamsize skipLine( const String& _delim = MENGE_TEXT("\n") ) override;
+		void skip( std::streampos _count ) override;
+		void seek( std::streamoff _pos ) override;
+		std::streampos tell() const override;
 		bool eof() const override;
 		void close() override;
 		void setFreeOnClose( bool _free ) override;

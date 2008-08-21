@@ -33,7 +33,7 @@ namespace Menge
 		m_stream->seekg( 0, std::ios_base::beg );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileStreamDataStream::FileStreamDataStream( const String& _name,	std::ifstream* _s, std::size_t _size, bool _freeOnClose )
+	FileStreamDataStream::FileStreamDataStream( const String& _name,	std::ifstream* _s, std::streamsize _size, bool _freeOnClose )
 		: DataStream( _name )
 		, m_stream( _s )
 		, m_freeOnClose( _freeOnClose )
@@ -48,13 +48,13 @@ namespace Menge
 		close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t FileStreamDataStream::read( void* _buf, std::size_t _count )
+	std::streamsize FileStreamDataStream::read( void* _buf, std::streamsize _count )
 	{
-		m_stream->read( static_cast<char*>(_buf), static_cast<std::streamsize>(_count) );
+		m_stream->read( static_cast<char*>(_buf), _count );
 		return m_stream->gcount();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t FileStreamDataStream::readLine( char* _buf, std::size_t _maxCount, const String& _delim )
+	std::streamsize FileStreamDataStream::readLine( char* _buf, std::streamsize _maxCount, const String& _delim )
 	{
 		assert( !_delim.empty() &&  "FileStreamDataStream::readLine -> No delimiter provided" );
 
@@ -71,8 +71,8 @@ namespace Menge
 			trimCR = true;
 		}
 		// _maxCount + 1 since count excludes terminator in getline
-		m_stream->getline( _buf, static_cast<std::streamsize>( _maxCount + 1 ), _delim.at( 0 ) );
-		std::size_t ret = m_stream->gcount();
+		m_stream->getline( _buf, _maxCount + 1, _delim.at( 0 ) );
+		std::streamsize ret = m_stream->gcount();
 		// three options
 		// 1) we had an eof before we read a whole line
 		// 2) we ran out of buffer space
@@ -118,7 +118,7 @@ namespace Menge
 		return ret;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileStreamDataStream::skip( long _count )
+	void FileStreamDataStream::skip( std::streampos _count )
 	{
 #if defined(STLPORT)
 		// Workaround for STLport issues: After reached eof of file stream,
@@ -134,16 +134,16 @@ namespace Menge
 		}
 #endif 		
 		m_stream->clear(); //Clear fail status in case eof was set
-		m_stream->seekg( static_cast<std::ifstream::pos_type>( _count ), std::ios::cur );
+		m_stream->seekg( _count, std::ios::cur );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileStreamDataStream::seek( std::size_t _pos )
+	void FileStreamDataStream::seek( std::streamoff _pos )
 	{
 		m_stream->clear(); //Clear fail status in case eof was set
-		m_stream->seekg( static_cast<std::streamoff>(_pos), std::ios::beg );
+		m_stream->seekg( _pos, std::ios::beg );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t FileStreamDataStream::tell() const
+	std::streampos FileStreamDataStream::tell() const
 	{
 		m_stream->clear(); //Clear fail status in case eof was set
 		return m_stream->tellg();

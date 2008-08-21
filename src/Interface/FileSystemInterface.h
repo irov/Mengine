@@ -2,19 +2,21 @@
 
 #	include "Config/Typedef.h"
 
+#	include <iosfwd>
+
 namespace Menge
 {
 
 	class	DataStreamInterface
 	{
 	public:
-		virtual std::size_t read( void* _buf, std::size_t _count ) = 0;
+		virtual std::streamsize read( void* _buf, std::streamsize _count ) = 0;
 		virtual String getLine( bool _trimAfter = true ) = 0;
-		virtual std::size_t skipLine(  const String& _delim ) = 0;
-		virtual void seek( std::size_t _pos ) = 0;
-		virtual std::size_t tell() const = 0;
+		virtual std::streamsize skipLine(  const String& _delim ) = 0;
+		virtual void seek( std::streamoff _pos ) = 0;
+		virtual std::streampos tell() const = 0;
 		virtual bool eof() const = 0;
-		virtual std::size_t size() const = 0;
+		virtual std::streamsize size() const = 0;
 		virtual void* getBuffer() = 0;
 		virtual bool isMemory() const = 0;
 		virtual void setFreeOnClose( bool _free ) = 0;
@@ -23,9 +25,9 @@ namespace Menge
 	class OutStreamInterface
 	{
 	public:
-		virtual void write( const char* _data, int _count ) = 0;
+		virtual void write( const char* _data, std::streamsize _count ) = 0;
 		virtual void write( const String& _str ) = 0;
-		virtual void write( int _num ) = 0;
+		virtual void write( std::streamsize _num ) = 0;
 	};
 
 	class	FileSystemInterface
@@ -39,7 +41,7 @@ namespace Menge
 		virtual bool existFile( const String& _filename ) = 0;
 		virtual bool deleteFile( const String& _filename ) = 0;
 		virtual DataStreamInterface* openFile( const String& _filename ) = 0;
-		virtual DataStreamInterface* createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose ) = 0;
+		virtual DataStreamInterface* createMemoryFile( void* _data, std::streamsize _size, bool _freeOnClose ) = 0;
 		virtual void closeStream( DataStreamInterface* _stream ) = 0;
 
 		virtual OutStreamInterface* openOutStream( const String& _filename, bool _binary ) = 0;

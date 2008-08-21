@@ -33,7 +33,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileStreamOutStream::write( const char* _data, int _count )
+	void FileStreamOutStream::write( const char* _data, std::streamsize _count )
 	{
 		m_fstream.write( _data, _count );
 	}
@@ -43,7 +43,7 @@ namespace Menge
 		m_fstream << _str;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileStreamOutStream::write( int _num )
+	void FileStreamOutStream::write( std::streamsize _num )
 	{
 		m_fstream << _num;
 	}

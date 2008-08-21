@@ -1,9 +1,9 @@
 #	include "DataStream.h"
 
-#	define MENGE_STREAM_TEMP_SIZE 128
-
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	const std::streamsize stream_temp_size = 128;
 	//////////////////////////////////////////////////////////////////////////
 	DataStream::DataStream()
 		: m_size( 0 ) 
@@ -29,11 +29,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	String DataStream::getLine( bool _trimAfter )
 	{
-		char tmpBuf[MENGE_STREAM_TEMP_SIZE];
+		char tmpBuf[stream_temp_size];
 		String retString;
 		std::size_t readCount;
 		// Keep looping while not hitting delimiter
-		while ( ( readCount = read( tmpBuf, MENGE_STREAM_TEMP_SIZE - 1 ) ) != 0 )
+		while ( ( readCount = read( tmpBuf, stream_temp_size - 1 ) ) != 0 )
 		{
 			// Terminate string
 			tmpBuf[readCount] = '\0';
@@ -71,31 +71,32 @@ namespace Menge
 		return retString;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t DataStream::readLine( char* _buf, std::size_t _maxCount, const String& _delim )
+	std::streamsize DataStream::readLine( char* _buf, std::streamsize _maxCount, const String& _delim )
 	{
 		// Deal with both Unix & Windows LFs
 		bool trimCR = false;
+
 		if ( _delim.find_first_of('\n') != String::npos )
 		{
 			trimCR = true;
 		}
 
-		char tmpBuf[MENGE_STREAM_TEMP_SIZE];
-		std::size_t chunkSize = (std::min)( _maxCount, (std::size_t)MENGE_STREAM_TEMP_SIZE - 1 );
-		std::size_t totalCount = 0;
-		std::size_t readCount; 
+		char tmpBuf[stream_temp_size];
+		std::streamsize chunkSize = (std::min)( _maxCount, stream_temp_size - 1 );
+		std::streamsize totalCount = 0;
+		std::streamsize readCount;
 		while ( chunkSize && ( readCount = read( tmpBuf, chunkSize ) ) )
 		{
 			// Terminate
 			tmpBuf[readCount] = '\0';
 
 			// Find first delimiter
-			std::size_t pos = strcspn( tmpBuf, _delim.c_str() );
+			std::streamsize pos = (std::streamsize)strcspn( tmpBuf, _delim.c_str() );
 
 			if( pos < readCount )
 			{
 				// Found terminator, reposition backwards
-				skip( (long)( pos + 1 - readCount ) );
+				skip( pos + 1 - readCount );
 			}
 
 			// Are we genuinely copying?
@@ -103,12 +104,13 @@ namespace Menge
 			{
 				memcpy( _buf + totalCount, tmpBuf, pos );
 			}
+
 			totalCount += pos;
 
 			if( pos < readCount )
 			{
 				// Trim off trailing CR if this was a CR/LF entry
-				if ( trimCR && totalCount && _buf[totalCount-1] == '\r')
+				if ( trimCR && totalCount && _buf[ totalCount - 1 ] == '\r')
 				{
 					--totalCount;
 				}
@@ -118,7 +120,7 @@ namespace Menge
 			}
 
 			// Adjust chunkSize for next time
-			chunkSize = (std::min)( _maxCount - totalCount, (std::size_t)MENGE_STREAM_TEMP_SIZE - 1 );
+			chunkSize = (std::min)( _maxCount - totalCount, stream_temp_size - 1 );
 		}
 
 		// Terminate
@@ -127,24 +129,24 @@ namespace Menge
 		return totalCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t DataStream::skipLine( const String& _delim )
+	std::streamsize DataStream::skipLine( const String& _delim )
 	{
-		char tmpBuf[MENGE_STREAM_TEMP_SIZE];
-		std::size_t total = 0;
-		std::size_t readCount;
+		char tmpBuf[stream_temp_size];
+		std::streamsize total = 0;
+		std::streamsize readCount;
 		// Keep looping while not hitting delimiter
-		while ( ( readCount = read( tmpBuf, MENGE_STREAM_TEMP_SIZE - 1 ) ) != 0 )
+		while ( ( readCount = read( tmpBuf, stream_temp_size - 1 ) ) != 0 )
 		{
 			// Terminate string
 			tmpBuf[readCount] = '\0';
 
 			// Find first delimiter
-			std::size_t pos = strcspn( tmpBuf, _delim.c_str() );
+			std::streamsize pos = (std::streamsize)strcspn( tmpBuf, _delim.c_str() );
 
 			if( pos < readCount )
 			{
 				// Found terminator, reposition backwards
-				skip( (long)( pos + 1 - readCount ) );
+				skip( pos + 1 - readCount );
 
 				total += pos + 1;
 
@@ -172,7 +174,7 @@ namespace Menge
 		return str;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t DataStream::size() const
+	std::streamsize DataStream::size() const
 	{
 		return m_size;
 	}

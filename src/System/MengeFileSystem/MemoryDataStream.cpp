@@ -5,7 +5,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MemoryDataStream::MemoryDataStream( void* _pMem, std::size_t _size, bool _freeOnClose )
+	MemoryDataStream::MemoryDataStream( void* _pMem, std::streamsize _size, bool _freeOnClose )
 		: DataStream()
 	{
 		m_data = m_pos = static_cast<unsigned char*>(_pMem);
@@ -14,7 +14,7 @@ namespace Menge
 		m_freeOnClose = _freeOnClose;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryDataStream::MemoryDataStream( const Menge::String& _name, void* _pMem, std::size_t _size, bool _freeOnClose)
+	MemoryDataStream::MemoryDataStream( const Menge::String& _name, void* _pMem, std::streamsize _size, bool _freeOnClose)
 		: DataStream( _name )
 	{
 		m_data = m_pos = static_cast<unsigned char*>(_pMem);
@@ -67,7 +67,7 @@ namespace Menge
 		m_freeOnClose = _freeOnClose;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryDataStream::MemoryDataStream( std::size_t _size, bool _freeOnClose )
+	MemoryDataStream::MemoryDataStream( std::streamsize _size, bool _freeOnClose )
 		: DataStream()
 	{
 		m_size = _size;
@@ -77,7 +77,7 @@ namespace Menge
 		m_end = m_data + m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryDataStream::MemoryDataStream( const Menge::String& _name, std::size_t _size, bool _freeOnClose)
+	MemoryDataStream::MemoryDataStream( const Menge::String& _name, std::streamsize _size, bool _freeOnClose)
 		: DataStream( _name )
 	{
 		m_size = _size;
@@ -102,21 +102,27 @@ namespace Menge
 		close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t MemoryDataStream::read( void* _buf, std::size_t _count )
+	std::streamsize MemoryDataStream::read( void* _buf, std::streamsize _count )
 	{
-		std::size_t cnt = _count;
+		std::streamsize cnt = _count;
 		// Read over end of memory?
 		if ( m_pos + cnt > m_end )
-			cnt = m_end - m_pos;
+		{
+			std::streamsize
+			cnt = std::distance( m_end, m_pos );
+		}
+
 		if ( cnt == 0 )
+		{
 			return 0;
+		}
 
 		memcpy( _buf, m_pos, cnt );
 		m_pos += cnt;
 		return cnt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t MemoryDataStream::readLine(char* _buf, std::size_t _maxCount, const Menge::String& _delim)
+	std::streamsize MemoryDataStream::readLine(char* _buf, std::streamsize _maxCount, const Menge::String& _delim)
 	{
 		// Deal with both Unix & Windows LFs
 		bool trimCR = false;
@@ -125,7 +131,7 @@ namespace Menge
 			trimCR = true;
 		}
 
-		std::size_t pos = 0;
+		std::streamsize pos = 0;
 
 		// Make sure pos can never go past the end of the data 
 		while ( pos < _maxCount && m_pos < m_end )
@@ -153,9 +159,9 @@ namespace Menge
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t MemoryDataStream::skipLine( const Menge::String& _delim )
+	std::streamsize MemoryDataStream::skipLine( const Menge::String& _delim )
 	{
-		std::size_t pos = 0;
+		std::streamsize pos = 0;
 
 		// Make sure pos can never go past the end of the data 
 		while ( m_pos < m_end )
@@ -171,21 +177,21 @@ namespace Menge
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryDataStream::skip( long _count )
+	void MemoryDataStream::skip( std::streampos _count )
 	{
-		std::size_t newpos = (std::size_t)( ( m_pos - m_data ) + _count );
-		assert( m_data + newpos <= m_end );        
+		std::streampos newpos = ( m_pos - m_data ) + _count;
+		assert( m_data + newpos <= m_end );
 
 		m_pos = m_data + newpos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryDataStream::seek( std::size_t _pos )
+	void MemoryDataStream::seek( std::streamoff _pos )
 	{
 		assert( m_data + _pos <= m_end );
 		m_pos = m_data + _pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t MemoryDataStream::tell() const
+	std::streampos MemoryDataStream::tell() const
 	{
 		//m_data is start, m_pos is current location
 		return m_pos - m_data;

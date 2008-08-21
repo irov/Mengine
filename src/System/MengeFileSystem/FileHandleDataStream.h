@@ -13,10 +13,10 @@ namespace Menge
 		~FileHandleDataStream();
 
 	public:
-		std::size_t read( void* _buf, std::size_t _count ) override;
-		void skip( long _count ) override;
-		void seek( std::size_t _pos ) override;
-		std::size_t tell() const override;
+		std::streamsize read( void* _buf, std::streamsize _count ) override;
+		void skip( std::streampos _count ) override;
+		void seek( std::streamoff _pos ) override;
+		std::streampos tell() const override;
 		bool eof() const override;
 		void close() override;
 		void* getBuffer() override;

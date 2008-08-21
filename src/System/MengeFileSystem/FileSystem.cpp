@@ -95,7 +95,7 @@ namespace Menge
 		return fileData;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileSystem::createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose )
+	DataStreamInterface* FileSystem::createMemoryFile( void* _data, std::streamsize _size, bool _freeOnClose )
 	{
 		return static_cast<DataStreamInterface*>( new MemoryDataStream( _data, _size, _freeOnClose ) );
 	}
@@ -238,7 +238,7 @@ namespace Menge
 		/// patch for ansi names
 		char *ansistr = NULL;
 		String::size_type size = _game.size();
-		std::size_t length = MultiByteToWideChar(CP_UTF8, 0, _game.c_str(), size, NULL, NULL );
+		int length = MultiByteToWideChar(CP_UTF8, 0, _game.c_str(), size, NULL, NULL );
 		WCHAR *lpszW = NULL;
 
 		lpszW = new WCHAR[length+1];

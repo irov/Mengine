@@ -12,9 +12,9 @@ namespace Menge
 		~FileStreamOutStream();
 
 		bool open( const wchar_t* _filename, bool _binary );
-		void write( const char* _data, int _count ) override;
+		void write( const char * _data, std::streamsize _count ) override;
 		void write( const Menge::String& _str ) override;
-		void write( int _num ) override;
+		void write( std::streamsize _num ) override;
 
 	protected:
 		std::ofstream m_fstream;

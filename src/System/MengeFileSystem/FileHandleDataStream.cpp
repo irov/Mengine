@@ -30,22 +30,22 @@ namespace Menge
 		close();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t FileHandleDataStream::read( void* _buf, std::size_t _count )
+	std::streamsize FileHandleDataStream::read( void* _buf, std::streamsize _count )
 	{
 		return fread( _buf, 1, _count, m_fileHandle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileHandleDataStream::skip( long _count )
+	void FileHandleDataStream::skip( std::streampos _count )
 	{
 		fseek( m_fileHandle, _count, SEEK_CUR);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileHandleDataStream::seek( std::size_t _pos )
+	void FileHandleDataStream::seek( std::streamoff _pos )
 	{
-		fseek(m_fileHandle, static_cast<long>(_pos), SEEK_SET);
+		fseek(m_fileHandle, _pos, SEEK_SET);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::size_t FileHandleDataStream::tell() const
+	std::streampos FileHandleDataStream::tell() const
 	{
 		return ftell( m_fileHandle );
 	}

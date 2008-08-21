@@ -14,13 +14,12 @@ namespace Menge
 		~FileSystem();
 
 	public:
-
 		void loadPath( const String& _path ) override;
 		void loadPak( const String& _pak ) override;
 		void unloadPak( const String& _pak ) override;
 
 		DataStreamInterface* openFile( const String& _filename ) override;
-		DataStreamInterface* createMemoryFile( void* _data, std::size_t _size, bool _freeOnClose ) override;
+		DataStreamInterface* createMemoryFile( void* _data, std::streamsize _size, bool _freeOnClose ) override;
 		void closeStream( DataStreamInterface * _fd ) override;
 		bool existFile( const String& _filename  ) override;
 		bool deleteFile( const String& _filename ) override;

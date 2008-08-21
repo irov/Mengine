@@ -12,17 +12,17 @@ namespace Menge
 	public:
 		FileStreamDataStream( std::ifstream* _s, bool _freeOnClose = true );
 		FileStreamDataStream( const String& _name, std::ifstream* _s, bool _freeOnClose = true );
-		FileStreamDataStream( const String& _name, std::ifstream* _s, std::size_t _size, bool _freeOnClose = true );
+		FileStreamDataStream( const String& _name, std::ifstream* _s, std::streamsize _size, bool _freeOnClose = true );
 
 		~FileStreamDataStream();
 
 	public:
-		std::size_t read( void* _buf, std::size_t _count ) override;
-		std::size_t readLine( char* _buf, std::size_t _maxCount, const String& _delim = MENGE_TEXT("\n") ) override;
+		std::streamsize read( void* _buf, std::streamsize _count ) override;
+		std::streamsize readLine( char* _buf, std::streamsize _maxCount, const String& _delim = MENGE_TEXT("\n") ) override;
 
-		void skip( long _count ) override;
-		void seek( std::size_t _pos ) override;
-		std::size_t tell() const override;
+		void skip( std::streampos _count ) override;
+		void seek( std::streamoff _pos ) override;
+		std::streampos tell() const override;
 		bool eof() const override;
 		void close() override;
 		void* getBuffer() override;

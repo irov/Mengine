@@ -14,22 +14,22 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::loadPath( const std::string& _path )
+	void FileEngine::loadPath( const String& _path )
 	{
 		m_interface->loadPath( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::loadPak( const std::string& _filename )
+	void FileEngine::loadPak( const String& _filename )
 	{
 		m_interface->loadPak( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::unloadPak( const std::string& _filename )
+	void FileEngine::unloadPak( const String& _filename )
 	{
 		m_interface->unloadPak( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::existFile( const std::string& _filename )
+	bool FileEngine::existFile( const String& _filename )
 	{
 		return m_interface->existFile( _filename );
 	}
@@ -39,7 +39,7 @@ namespace Menge
 		return m_interface->deleteFile( _filename );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface * FileEngine::openFile( const std::string& _filename )
+	DataStreamInterface * FileEngine::openFile( const String& _filename )
 	{
 		return m_interface->openFile( _filename );
 	}
@@ -49,7 +49,7 @@ namespace Menge
 		m_interface->closeStream( _stream );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileBuffer FileEngine::getFileBuffer( const std::string& _filename )
+	FileBuffer FileEngine::getFileBuffer( const String& _filename )
 	{
 		DataStreamInterface * file = openFile( _filename );
 
@@ -71,17 +71,17 @@ namespace Menge
 		return fileBuffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::createFolder( const std::string& _path )
+	bool FileEngine::createFolder( const String& _path )
 	{
 		return m_interface->createFolder( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::deleteFolder( const std::string& _path )
+	bool FileEngine::deleteFolder( const String& _path )
 	{
 		return m_interface->deleteFolder( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::changeDir( const std::string& _dir )
+	bool FileEngine::changeDir( const String& _dir )
 	{
 		return m_interface->changeDir( _dir );
 	}
@@ -91,7 +91,7 @@ namespace Menge
 		return m_interface->createMemoryFile( _data, _size, _freeOnClose );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::initAppDataPath( const Menge::String& _game )
+	bool FileEngine::initAppDataPath( const String& _game )
 	{
 		return m_interface->initAppDataPath( _game );
 	}

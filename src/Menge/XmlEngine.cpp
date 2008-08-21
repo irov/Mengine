@@ -49,7 +49,7 @@ namespace Menge
 		m_format.tag( TAG_CharOffset, "CharOffset" )( ATTR_Value, TYPE_Float );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlEngine::parseXmlFile( const std::string & _file, XmlElementListener * _listener )
+	bool XmlEngine::parseXmlFile( const String& _file, XmlElementListener * _listener )
 	{
 		if( Holder<FileEngine>::hostage()
 			->existFile( _file ) == false )
@@ -105,7 +105,7 @@ namespace Menge
 		return result;
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlEngine::parseXmlString( const std::string & _buffer, XmlElementListener * _listener )
+	bool XmlEngine::parseXmlString( const String& _buffer, XmlElementListener * _listener )
 	{
 		std::string::size_type size = _buffer.size();
 
@@ -163,7 +163,14 @@ namespace Menge
 namespace XmlParserCast
 {
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( std::size_t _var[2], const char * _value )
+	bool attribute_value_cast( std::size_t _var, const char * _value )
+	{
+		int res = sscanf( _value, "%d", &_var );
+
+		return res == 1;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool attribute_value_cast( std::size_t _var[2], const Menge::TChar * _value )
 	{
 		int res = sscanf( _value, "%d;%d", &_var[0], &_var[1] );
 

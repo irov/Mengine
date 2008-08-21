@@ -6,6 +6,7 @@
 ** System layer API
 */
 
+#	include "Config/Typedef.h"
 
 #ifndef HGE_H
 #define HGE_H
@@ -314,8 +315,8 @@ public:
 	virtual bool		CALL	System_Initiate( Menge::LogSystemInterface* _logSystem ) = 0;
 	virtual void		CALL	System_Shutdown() = 0;
 	//virtual bool		CALL	System_Start() = 0;
-	virtual char*		CALL	System_GetErrorMessage() = 0;
-	virtual	void		CALL	System_Log(const char *format, ...) = 0;
+	virtual Menge::TChar*		CALL	System_GetErrorMessage() = 0;
+	virtual	void		CALL	System_Log(const Menge::TChar *format, ...) = 0;
 	virtual bool		CALL	System_Launch(const char *url) = 0;
 	virtual void		CALL	System_Snapshot(const char *filename=0) = 0;
 

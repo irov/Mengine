@@ -89,7 +89,7 @@ namespace Menge
 		\param _buff буффер данных с изображением
 		\return изображение
 		*/
-		ImageFrame loadImageFrame( const std::string & _filename );
+		ImageFrame loadImageFrame( const String& _filename );
 		void releaseImageFrame( const ImageFrame & _frame );
 
 	protected:

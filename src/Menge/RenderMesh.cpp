@@ -55,7 +55,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_resourceName != "" )
+		if( m_resourceName != MENGE_TEXT("") )
 		{
 			m_resourceMesh = 
 				Holder<ResourceManager>::hostage()
@@ -63,7 +63,8 @@ namespace Menge
 
 			if( m_resourceMesh == 0 )
 			{
-				MENGE_LOG( "Error: Can't find mesh resource '%s'", m_resourceName.c_str() );
+				MENGE_LOG( MENGE_TEXT("Error: Can't find mesh resource '%s'")
+					,m_resourceName.c_str() );
 				return false;
 			}
 		}
@@ -115,7 +116,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh::compileMaterial_()
 	{
-		if( m_materialName != "" )
+		if( m_materialName != MENGE_TEXT("") )
 		{
 			m_resourceMaterial = 
 				Holder<ResourceManager>::hostage()
@@ -123,9 +124,9 @@ namespace Menge
 
 			if( m_resourceMaterial == 0 )
 			{
-				MENGE_LOG( "Warning: Can't find material '%s. RenderMesh '%s' will be proceeded whitout material",
-					m_materialName.c_str(),
-					m_resourceName.c_str()
+				MENGE_LOG( MENGE_TEXT("Warning: Can't find material '%s. RenderMesh '%s' will be proceeded whitout material")
+					,m_materialName.c_str()
+					,m_resourceName.c_str()
 					);
 			}
 			else

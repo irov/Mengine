@@ -1,6 +1,7 @@
 #	pragma once
 
-#	include <string>
+#	include "Config/Typedef.h"
+//#	include <string>
 
 class XmlElement;
 
@@ -10,25 +11,25 @@ namespace Menge
 
 	struct SceneManager
 	{
-		static Node * createNode( const std::string &_type );
+		static Node * createNode( const String& _type );
 		
 		template<class T>
-		static T* createNodeT( const std::string &_type )
+		static T* createNodeT( const String& _type )
 		{
-			return dynamic_cast<T*>(createNode( _type ));
+			return dynamic_cast<T*>( createNode( _type ) );
 		}
 
-		static Node * createNodeFromXml( const std::string &_file);
-		static Node * createNodeFromXmlData( const std::string & _xml_data );
+		static Node * createNodeFromXml( const String& _file );
+		static Node * createNodeFromXmlData( const String& _xml_data );
 
 		static void loaderNode_( XmlElement * _xml );
 
 		template<class T>
-		static T * createNodeFromXmlT( const std::string &_file)
+		static T * createNodeFromXmlT( const String& _file)
 		{
 			return dynamic_cast<T*>(createNodeFromXml(_file));
 		}
-		static bool loadNode(Node *_node, const std::string &_xml);
+		static bool loadNode(Node *_node, const String& _xml );
 
 	public:
 		static bool nodeLoader( XmlElement * _element );

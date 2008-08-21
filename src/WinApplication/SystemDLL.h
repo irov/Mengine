@@ -2,17 +2,17 @@
 
 #	include "Interface/ApplicationInterface.h"
 
-#	include <string>
+//#	include <string>
 
 class WinSystemDLL 
 	: public Menge::SystemDLLInterface
 {
 public:
-	WinSystemDLL( const std::string & _filename );
+	WinSystemDLL( const Menge::String& _filename );
 	virtual ~WinSystemDLL();
 
 protected:
-	std::string m_filename;
+	Menge::String m_filename;
 	void * m_hInstance;
 
 };

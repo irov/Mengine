@@ -24,7 +24,7 @@ namespace Menge
 		void _release() override;
 
 	private:
-		std::string m_filename;
+		String m_filename;
 		GeometryInterface * m_interface;
 	};
 }

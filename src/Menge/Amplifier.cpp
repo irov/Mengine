@@ -79,7 +79,8 @@ namespace Menge
 
 		if(!_loadPlayList(_playlistResource))
 		{
-			MENGE_LOG("Amplifier: no found playlist with name %s \n", _playlistResource.c_str() );
+			MENGE_LOG( MENGE_TEXT("Amplifier: no found playlist with name %s \n")
+				,_playlistResource.c_str() );
 			return;
 		}
 
@@ -105,7 +106,7 @@ namespace Menge
 		return m_currentPlayList->numTracks(); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::playAllTracks( const std::string & _playlistResource )
+	void Amplifier::playAllTracks( const String& _playlistResource )
 	{
 		bool enabled = Holder<Application>::hostage()->getSoundEnabled();
 
@@ -116,7 +117,8 @@ namespace Menge
 
 		if(!_loadPlayList(_playlistResource))
 		{
-			MENGE_LOG("Amplifier: no found playlist with name %s \n", _playlistResource.c_str() );
+			MENGE_LOG( MENGE_TEXT("Amplifier: no found playlist with name %s \n")
+				, _playlistResource.c_str() );
 			return;
 		}
 
@@ -128,7 +130,7 @@ namespace Menge
 		m_music->play();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::shuffle( const std::string & _playlist )
+	void Amplifier::shuffle( const String& _playlist )
 	{
 		TMapPlayList::iterator it = m_mapPlayLists.find( _playlist );
 
@@ -140,7 +142,8 @@ namespace Menge
 
 			if( playlistResource == NULL )
 			{
-				MENGE_LOG("Amplifier: no found playlist with name %s \n", _playlist.c_str() );
+				MENGE_LOG( MENGE_TEXT("Amplifier: no found playlist with name %s \n")
+					, _playlist.c_str() );
 				return;
 			}
 
@@ -167,7 +170,7 @@ namespace Menge
 		if(m_currentPlayList->getLooped())
 		{
 			m_currentPlayList->next();
-			const std::string & filename = m_currentPlayList->getTrack();
+			const String& filename = m_currentPlayList->getTrack();
 			_prepareSound(filename);
 
 			if( m_music != 0 )
@@ -206,7 +209,7 @@ namespace Menge
 
 		if( m_buffer == 0 )
 		{
-			MENGE_LOG("Warning: Amplifier can't load sample '%s'\n"
+			MENGE_LOG( MENGE_TEXT("Warning: Amplifier can't load sample '%s'\n")
 				, _filename.c_str() 
 				);
 
@@ -217,7 +220,7 @@ namespace Menge
 
 		if( m_music == 0 )
 		{
-			MENGE_LOG("Warning: Amplifier '%s' can't create sound source\n"
+			MENGE_LOG( MENGE_TEXT("Warning: Amplifier '%s' can't create sound source\n")
 				, _filename.c_str()
 				);
 

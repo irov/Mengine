@@ -57,7 +57,7 @@ namespace Menge
 		/*!
 		\param _text значение текста
 		*/
-		void setText( const std::string & _text );
+		void setText( const String& _text );
 
 		//! Установка высоты глифов.
 		/*!
@@ -87,7 +87,7 @@ namespace Menge
 		/*!
 		\return текст
 		*/
-		const std::string & getText() const;
+		const String& getText() const;
 
 		//! Установка времени _time, в течении которого будет изменятся цвет текста к цвету _color.
 		/*!
@@ -143,7 +143,7 @@ namespace Menge
 
 	private:
 		ResourceFont * m_resource;
-		std::string m_resourcename;
+		String m_resourcename;
 
 		ColourValue m_color;
 		ColourValue m_outlineColor;
@@ -151,7 +151,7 @@ namespace Menge
 		ValueInterpolator<ColourValue> m_outlineColorTo;
 
 		float  m_height;
-		std::string m_text;
+		String m_text;
 		mt::vec2f m_length;
 
 		bool m_centerAlign;
@@ -169,7 +169,7 @@ namespace Menge
 		std::list<TextLine>  m_lines;
 
 		void renderPass_( ColourValue& _color, const RenderImageInterface * _renderImage );
-		void createFormattedMessage_( const std::string& _text );
+		void createFormattedMessage_( const String& _text );
 		void splitLine(const std::string& str);
 	};
 }

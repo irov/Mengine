@@ -20,7 +20,7 @@ namespace	Menge
 	, m_gravity2D( 0.0f, 0.0f )
 	, m_physWorldBox2D( 0.0f, 0.0f, 0.0f, 0.0f )
 	, m_physWorld2D( false )
-	, m_renderTarget( "defaultCamera" )
+	, m_renderTarget( MENGE_TEXT("defaultCamera") )
 	, m_onUpdateEvent(false)
 	, m_blockInput( false )
 	{
@@ -37,7 +37,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setParentScene( Scene * _scene )
 	{
-		callMethod( "onSubScene", "(O)", _scene->getEmbedding() );
+		callMethod( MENGE_TEXT("onSubScene"), MENGE_TEXT("(O)"), _scene->getEmbedding() );
 
 		m_isSubScene = true;
 	}
@@ -52,14 +52,14 @@ namespace	Menge
 		return m_mainLayer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Scene::getNode(const std::string & _name )
+	Node * Scene::getNode(const String& _name )
 	{
 		Node * node = getChildren( _name, true );
 
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Scene::getLayerSize( const std::string & _name )
+	const mt::vec2f & Scene::getLayerSize( const String& _name )
 	{
 		Layer * layer = getLayer_( _name );
 
@@ -71,7 +71,7 @@ namespace	Menge
 		return mt::vec2f::zero_v2;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::layerAppend( const std::string & _layer, Node * _node )
+	void Scene::layerAppend( const String& _layer, Node * _node )
 	{
 		Layer * layer = getLayer_( _layer );
 
@@ -81,7 +81,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Layer * Scene::getLayer_( const std::string & _name )
+	Layer * Scene::getLayer_( const String& _name )
 	{
 		Node * children = getChildren( _name, false );
 
@@ -200,26 +200,26 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Scene::_activate()
 	{
-		const std::string & name = this->getName();
+		const String& name = this->getName();
 		
 		if( name.empty() )
 		{
 			return false;
 		}
 
-		m_onUpdateEvent = registerEvent( EVENT_UPDATE, "onUpdate", this->getEmbedding() );
+		m_onUpdateEvent = registerEvent( EVENT_UPDATE, MENGE_TEXT("onUpdate"), this->getEmbedding() );
 
-		registerEvent( EVENT_KEY, "onHandleKeyEvent", this->getEmbedding() );
-		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", this->getEmbedding() );
-		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", this->getEmbedding() );
-		registerEvent( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", this->getEmbedding() );
-		registerEvent( EVENT_LEAVE, "onMouseLeave", this->getEmbedding() );
-		registerEvent( EVENT_ENTER, "onMouseEnter", this->getEmbedding() );
+		registerEvent( EVENT_KEY, MENGE_TEXT("onHandleKeyEvent"), this->getEmbedding() );
+		registerEvent( EVENT_MOUSE_BUTTON, MENGE_TEXT("onHandleMouseButtonEvent"), this->getEmbedding() );
+		registerEvent( EVENT_MOUSE_MOVE, MENGE_TEXT("onHandleMouseMove"), this->getEmbedding() );
+		registerEvent( EVENT_MOUSE_BUTTON_END, MENGE_TEXT("onHandleMouseButtonEventEnd"), this->getEmbedding() );
+		registerEvent( EVENT_LEAVE, MENGE_TEXT("onMouseLeave"), this->getEmbedding() );
+		registerEvent( EVENT_ENTER, MENGE_TEXT("onMouseEnter"), this->getEmbedding() );
 
 		// scene must be already active on onActivate event
 		m_active = Node::_activate();
 
-		callMethod( "onActivate", "() " );
+		callMethod( MENGE_TEXT("onActivate"), MENGE_TEXT("()") );
 
 		//bool result = Node::_activate();
 
@@ -228,7 +228,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()
 	{
-		callMethod( "onDeactivate", "()" );
+		callMethod( MENGE_TEXT("onDeactivate"), MENGE_TEXT("()") );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_release()
@@ -252,7 +252,7 @@ namespace	Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Scene")
+			XML_CASE_NODE( MENGE_TEXT("Scene") )
 			{
 				XML_PARSE_ELEMENT( this, &Scene::loaderScene_ );
 			}
@@ -267,19 +267,19 @@ namespace	Menge
 		
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Gravity2D", "Value", m_gravity2D );
-			XML_CASE_NODE( "PhysicWorld2DBox" )
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Gravity2D"), MENGE_TEXT("Value"), m_gravity2D );
+			XML_CASE_NODE( MENGE_TEXT("PhysicWorld2DBox") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Value", m_physWorldBox2D );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), m_physWorldBox2D );
 				}
 				m_physWorld2D = true;
 			}
 		}
 		XML_END_NODE()
 		{
-			callMethod( "onLoader", "()" );
+			callMethod( MENGE_TEXT("onLoader"), MENGE_TEXT("()") );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -291,7 +291,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::setRenderTarget( const std::string& _cameraName )
+	void Scene::setRenderTarget( const String& _cameraName )
 	{
 		m_renderTarget = _cameraName;
 	}

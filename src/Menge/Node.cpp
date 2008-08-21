@@ -93,9 +93,9 @@ namespace Menge
 		{
 			if( compile() == false )
 			{
-				MENGE_LOG("Error: activation of Node '%s' is failed, because compilation is failed\n"
+				/*MENGE_LOG( MENGE_TEXT("Error: activation of Node '%s' is failed, because compilation is failed\n")
 					, m_name.c_str() 
-					);
+					);*/
 
 				return false;
 			}
@@ -158,7 +158,7 @@ namespace Menge
 	{
 		if( isChildren( _node, false ) )
 		{
-			MENGE_LOG("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist"
+			MENGE_LOG( MENGE_TEXT("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist")
 				, this->getName().c_str()
 				, this->getType().c_str()
 				, _node->getName().c_str()
@@ -189,7 +189,7 @@ namespace Menge
 	{
 		if( isChildren( _node, false ) )
 		{
-			MENGE_LOG("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist"
+			MENGE_LOG( MENGE_TEXT("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist")
 				, this->getName().c_str()
 				, this->getType().c_str()
 				, _node->getName().c_str()
@@ -228,7 +228,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Node::getChildren( const std::string & _name, bool _recursion ) const
+	Node * Node::getChildren( const String& _name, bool _recursion ) const
 	{
 		for( TContainerChildren::const_iterator
 			it = m_children.begin(),
@@ -353,8 +353,8 @@ namespace Menge
 
 			XML_CASE_NODE("Node")
 			{
-				std::string name;
-				std::string type;
+				String name;
+				String type;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
@@ -437,9 +437,9 @@ namespace Menge
 
 		if( result == false )
 		{
-			MENGE_LOG("Error: compiled Node '%s' is failed\n"
+			/*MENGE_LOG( MENGE_TEXT("Error: compiled Node '%s' is failed\n")
 				, getName().c_str() 
-				);
+				);*/
 
 			return false;
 		}
@@ -651,8 +651,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_setListener()
 	{
-		registerEvent( EVENT_MOVE_STOP, "onMoveStop", m_listener );
-		registerEvent( EVENT_MOVE_END, "onMoveEnd", m_listener );
+		registerEvent( EVENT_MOVE_STOP, MENGE_TEXT("onMoveStop"), m_listener );
+		registerEvent( EVENT_MOVE_END, MENGE_TEXT("onMoveEnd"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setLayer( Layer2D * _layer )

@@ -24,7 +24,7 @@ namespace Menge
 		ResourcePhysicGeometry::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "ConcaveGeometryFile", "Name", m_filename );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ConcaveGeometryFile"), MENGE_TEXT("Name"), m_filename );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG("Warning: resource '%s' can't load concave geometry file '%s'\n"
+			MENGE_LOG( MENGE_TEXT("Warning: resource '%s' can't load concave geometry file '%s'\n")
 				, getName().c_str()
 				, m_filename.c_str()
 				);

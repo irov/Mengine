@@ -16,7 +16,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-static void XMLCALL cbBeginElement( void *userData, const char *name, const char **atts )
+static void XMLCALL cbBeginElement( void *userData, const Menge::TChar *name, const Menge::TChar **atts )
 {
 	XmlExpatParser * parser = static_cast<XmlExpatParser*>( userData );
 	XmlElementListener * parser_listener = parser->topListener();
@@ -28,7 +28,7 @@ static void XMLCALL cbBeginElement( void *userData, const char *name, const char
 	incref_listener->incref();
 }
 //////////////////////////////////////////////////////////////////////////
-static void XMLCALL cbEndElement( void *userData, const char *name )
+static void XMLCALL cbEndElement( void *userData, const Menge::TChar *name )
 {
 	XmlExpatParser * parser = static_cast<XmlExpatParser*>( userData );
 	XmlElementListener * parser_listener = parser->topListener();
@@ -134,7 +134,7 @@ void XmlExpatParser::setValueListener( XmlElementValueListener * _listener )
 	XML_SetCharacterDataHandler( m_parser, cbCharacterDataHandler );
 }
 //////////////////////////////////////////////////////////////////////////
-void XmlExpatParser::callValueListener( const char * _value, int _len )
+void XmlExpatParser::callValueListener( const Menge::TChar * _value, int _len )
 {
 	if( m_valueListener == 0 )
 	{
@@ -142,19 +142,19 @@ void XmlExpatParser::callValueListener( const char * _value, int _len )
 	}
 
 	int begin_trim = -1;
-	char ch = 0;
+	Menge::TChar ch = 0;
 	do
 	{
 		ch = _value[ ++begin_trim ];
-	}while( ch == ' ' || ch == '\t' && begin_trim < _len );
+	}while( ch == MENGE_TEXT(' ') || ch == MENGE_TEXT('\t') && begin_trim < _len );
 
 	int end_trim = _len;
 	do
 	{
 		ch = _value[ --end_trim ];
-	}while( ch == ' ' || ch == '\t' && begin_trim < end_trim );
+	}while( ch == MENGE_TEXT(' ') || ch == MENGE_TEXT('\t') && begin_trim < end_trim );
 
-	std::string str_value( _value + begin_trim, end_trim - begin_trim + 1 );
+	Menge::String str_value( _value + begin_trim, end_trim - begin_trim + 1 );
 
 	m_valueListener->call( str_value.c_str() );
 	XML_SetCharacterDataHandler( m_parser, 0 );

@@ -25,8 +25,8 @@ namespace Menge
 		void setEnabled( bool _enabled );
 		bool isEnabled() const;
 		void displayStats();
-		void addResourceToProfile(const std::string & _name);
-		void removeResourceToProfile(const std::string & _name);
+		void addResourceToProfile( const String& _name );
+		void removeResourceToProfile( const String& _name );
 	protected:
 		ProfilerSystemInterface * m_interface;
 	};

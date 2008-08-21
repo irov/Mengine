@@ -25,8 +25,8 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looping );
-			XML_CASE_ATTRIBUTE_NODE( "AutoStart", "Value", m_autoStart );			
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Looping"), MENGE_TEXT("Value"), m_looping );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("AutoStart"), MENGE_TEXT("Value"), m_autoStart );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

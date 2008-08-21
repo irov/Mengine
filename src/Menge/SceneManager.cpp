@@ -15,7 +15,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Node* SceneManager::createNode( const std::string & _type )
+	Node* SceneManager::createNode( const String& _type )
 	{
 		FactoryGenStruct gs;
 		gs.type = _type;
@@ -37,7 +37,7 @@ namespace Menge
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SceneManager::loadNode(Node *_node, const std::string &_xml)
+	bool SceneManager::loadNode( Node *_node, const String& _xml )
 	{
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _xml, _node, &Node::loader ) == false )
@@ -76,14 +76,14 @@ namespace Menge
 		{
 			XML_SWITCH_NODE( _xml )
 			{			
-				XML_CASE_NODE("Node")
+				XML_CASE_NODE( MENGE_TEXT("Node") )
 				{
-					std::string name;
-					std::string type;
+					String name;
+					String type;
 					XML_FOR_EACH_ATTRIBUTES()
 					{
-						XML_CASE_ATTRIBUTE( "Name", name );
-						XML_CASE_ATTRIBUTE( "Type", type );
+						XML_CASE_ATTRIBUTE( MENGE_TEXT("Name"), name );
+						XML_CASE_ATTRIBUTE( MENGE_TEXT("Type"), type );
 					}
 
 					*m_externalNode = SceneManager::createNode( type );
@@ -99,7 +99,7 @@ namespace Menge
 		Node ** m_externalNode;	
 	};
 	//////////////////////////////////////////////////////////////////////////
-	Node * SceneManager::createNodeFromXml( const std::string & _xml )
+	Node * SceneManager::createNodeFromXml( const String& _xml )
 	{
 		Node * node = 0;
 
@@ -108,20 +108,22 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlFile( _xml, nodeLoader ) == false )
 		{
-			MENGE_LOG("Invalid parse external node `%s`\n", _xml.c_str() );
+			MENGE_LOG( MENGE_TEXT("Invalid parse external node `%s`\n")
+				,_xml.c_str() );
 
 			return 0;
 		}
 
 		if( node == 0 )
 		{
-			MENGE_LOG("This xml file `%s` have invalid external node format\n", _xml.c_str() );
+			MENGE_LOG( MENGE_TEXT("This xml file `%s` have invalid external node format\n")
+				,_xml.c_str() );
 		}
 
 		return node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * SceneManager::createNodeFromXmlData( const std::string & _xml_data )
+	Node * SceneManager::createNodeFromXmlData( const String& _xml_data )
 	{
 		Node * node = 0;
 
@@ -130,14 +132,15 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlString( _xml_data, nodeLoader ) == false )
 		{
-			MENGE_LOG("Invalid parse external xml data `%s`\n", _xml_data.c_str() );
+			MENGE_LOG( MENGE_TEXT("Invalid parse external xml data `%s`\n")
+				,_xml_data.c_str() );
 
 			return 0;
 		}
 
 		if( node == 0 )
 		{
-			MENGE_LOG("This xml have invalid external node format\n" );
+			MENGE_LOG( MENGE_TEXT("This xml have invalid external node format\n") );
 		}
 
 		return node;

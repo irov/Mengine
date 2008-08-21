@@ -94,13 +94,13 @@ namespace	Menge
 		*/
 		const String& getTrackByIndex( std::size_t _index );
 
-		void setTrack(const std::string & _name);
+		void setTrack( const String& _name);
 		void setLooped1( bool _loop );
 
 	private:
 		ResourcePlaylist * m_playlistResource;
 
-		typedef	std::vector<std::string> TVecTrack;
+		typedef	std::vector<String> TVecTrack;
 
 		TVecTrack m_tracks;
 		TVecTrack::iterator	m_track;

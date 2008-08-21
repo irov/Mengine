@@ -32,7 +32,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Playlist::setPlaylistResource( ResourcePlaylist * _resource )
 	{
-		const std::vector<std::string> & tracks = m_playlistResource->getTracks();
+		const std::vector<String>& tracks = m_playlistResource->getTracks();
 
 		std::copy( tracks.begin(), tracks.end(), std::back_inserter( m_tracks ) );
 
@@ -135,7 +135,7 @@ namespace Menge
 		return m_tracks.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & Playlist::getTrackByIndex( std::size_t _index)
+	const String& Playlist::getTrackByIndex( std::size_t _index )
 	{
 		if( _index >= m_tracks.size() )
 		{
@@ -145,9 +145,9 @@ namespace Menge
 		return m_tracks[_index];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Playlist::setTrack(const std::string & _name)
+	void Playlist::setTrack( const String& _name )
 	{
-		std::vector<std::string>::iterator it = std::find(m_tracks.begin(), m_tracks.end(), _name);
+		std::vector<String>::iterator it = std::find(m_tracks.begin(), m_tracks.end(), _name);
 
 		if(it == m_tracks.end())
 		{

@@ -35,7 +35,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "Sequences" )
+			XML_CASE_NODE( MENGE_TEXT("Sequences") )
 			{
 				XML_PARSE_ELEMENT( this, &ResourceAnimation::loaderSequences_ );
 			}
@@ -46,25 +46,25 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "Sequence" )
+			XML_CASE_NODE( MENGE_TEXT("Sequence") )
 			{
 				Sequence sq;
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Index", sq.index );
-					XML_CASE_ATTRIBUTE( "Delay", sq.delay );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Index"), sq.index );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Delay"), sq.delay );
 					//if(abs(sq.delay) > 10000) continue;
 				}
 				m_vectorSequence.push_back( sq );
 			}
-			XML_CASE_NODE( "SequenceArray" )
+			XML_CASE_NODE( MENGE_TEXT("SequenceArray") )
 			{
 				std::size_t count = 0;
 				float delay;
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Count", count );
-					XML_CASE_ATTRIBUTE( "Delay", delay );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Count"), count );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Delay"), delay );
 				}
 				for( std::size_t i = 0; i < count; i++ )
 				{

@@ -4,7 +4,7 @@
 #	include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
-XmlElement::XmlElement( XmlExpatParser * _expat, const char * _title, const char ** _attrebutes )
+XmlElement::XmlElement( XmlExpatParser * _expat, const Menge::TChar * _title, const Menge::TChar ** _attrebutes )
 : m_expat(_expat)
 , m_title(_title)
 , m_attrebutes(_attrebutes)
@@ -12,19 +12,19 @@ XmlElement::XmlElement( XmlExpatParser * _expat, const char * _title, const char
 {		
 }
 //////////////////////////////////////////////////////////////////////////
-const char * XmlElement::getTitle() const
+const Menge::TChar * XmlElement::getTitle() const
 {
 	return m_title;
 }
 //////////////////////////////////////////////////////////////////////////
-bool XmlElement::compareTitle( const char * _title )
+bool XmlElement::compareTitle( const Menge::TChar * _title )
 {
-	return strcmp( m_title, _title ) == 0;
+	return STDSTRCMP( m_title, _title ) == 0;
 }
 //////////////////////////////////////////////////////////////////////////
-bool XmlElement::compareAttributeKey( const char * _name )
+bool XmlElement::compareAttributeKey( const Menge::TChar * _name )
 {
-	return strcmp( m_attrebutes[ m_attrIterator ], _name ) == 0;
+	return STDSTRCMP( m_attrebutes[ m_attrIterator ], _name ) == 0;
 }
 //////////////////////////////////////////////////////////////////////////
 void XmlElement::pushListener( XmlElementListener * _listener )
@@ -52,7 +52,7 @@ void XmlElement::nextAttributes()
 	m_attrIterator += 2;
 }
 //////////////////////////////////////////////////////////////////////////
-const char * XmlElement::getAttributeValue()
+const Menge::TChar * XmlElement::getAttributeValue()
 {
 	return m_attrebutes[ m_attrIterator + 1 ];
 }

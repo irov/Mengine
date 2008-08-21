@@ -46,7 +46,7 @@ namespace Menge
 		~Application();
 
 	public:
-		bool initialize( const std::string & _applicationFile, const std::string& _args );
+		bool initialize( const String& _applicationFile, const String& _args );
 		void finalize();
 	
 		void setLogSystem( LogSystemInterface * _interface );
@@ -116,15 +116,15 @@ namespace Menge
 		Game * m_game;
 		ApplicationInterface* m_interface;
 
-		std::string m_gameInfo;
+		String m_gameInfo;
 		InputHandler * m_handler;
 
 		std::size_t m_currentResolution[2];
 		std::size_t m_desktopResolution[2];
 
-		std::string m_commandLine;
+		String m_commandLine;
 
-		typedef std::vector<std::string> TStringVector;
+		typedef std::vector<String> TStringVector;
 		TStringVector m_resourcePaths;
 
 		bool m_particles;
@@ -150,7 +150,7 @@ namespace Menge
 		PhysicEngine2D * m_physicEngine2D;
 		XmlEngine *	m_xmlEngine;
 
-		void parseArguments(const std::string & _arguments);
+		void parseArguments(const String& _arguments);
 		void initPredefinedResources();
 	};
 }

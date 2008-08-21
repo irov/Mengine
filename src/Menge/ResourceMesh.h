@@ -21,7 +21,7 @@ namespace Menge
 
 	public:
 
-		const std::string & getMeshName() const;
+		const String& getMeshName() const;
 		//const std::string & getSkeletonName() const;
 		//const std::string & getMaterialName() const;
 		virtual const std::vector<TVertex>& getVertexData();
@@ -33,7 +33,7 @@ namespace Menge
 
 	protected:
 
-		std::string m_filename;
+		String m_filename;
 		String m_meshName;
 		//std::string m_skeletonName;
 		//std::string m_materialName;

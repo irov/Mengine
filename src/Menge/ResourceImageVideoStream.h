@@ -26,7 +26,7 @@ namespace Menge
 		RenderImageInterface * getImage( unsigned int _frame );
 		RenderVideoStreamInterface* getStream();
 
-		void setFilePath( const std::string & _path );
+		void setFilePath( const String& _path );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -37,7 +37,7 @@ namespace Menge
 
 	protected:
 		RenderVideoStreamInterface* m_interface;
-		std::string m_filename;
+		String m_filename;
 		mt::vec2f m_offset;
 		mt::vec4f m_uv;
 		mt::vec2f m_size;

@@ -312,23 +312,23 @@ namespace	Menge
 	{
 		bool result = RigidBody2D::_activate();
 
-		this->registerEvent( EVENT_MOVE_END, "onMoveEnd", this->getEmbedding() );
-		this->registerEvent( EVENT_MOVE_STOP, "onMoveStop", this->getEmbedding() );
+		this->registerEvent( EVENT_MOVE_END, MENGE_TEXT("onMoveEnd"), this->getEmbedding() );
+		this->registerEvent( EVENT_MOVE_STOP, MENGE_TEXT("onMoveStop"), this->getEmbedding() );
 		
-		this->registerEvent( EVENT_ROTATE_END, "onRotateEnd", this->getEmbedding() );
-		this->registerEvent( EVENT_ROTATE_STOP, "onRotateStop", this->getEmbedding() );
+		this->registerEvent( EVENT_ROTATE_END, MENGE_TEXT("onRotateEnd"), this->getEmbedding() );
+		this->registerEvent( EVENT_ROTATE_STOP, MENGE_TEXT("onRotateStop"), this->getEmbedding() );
 
-		this->registerEvent( EVENT_SCALE_END, "onScaleEnd", this->getEmbedding() );
-		this->registerEvent( EVENT_SCALE_STOP, "onScaleStop", this->getEmbedding() );
+		this->registerEvent( EVENT_SCALE_END, MENGE_TEXT("onScaleEnd"), this->getEmbedding() );
+		this->registerEvent( EVENT_SCALE_STOP, MENGE_TEXT("onScaleStop"), this->getEmbedding() );
 
 		if( m_onUpdateEvent == false )
 		{
-			m_onUpdateEvent = this->registerEvent( EVENT_UPDATE, "onUpdate", this->getEmbedding() );
+			m_onUpdateEvent = this->registerEvent( EVENT_UPDATE, MENGE_TEXT("onUpdate"), this->getEmbedding() );
 		}
 
-		this->registerEvent( EVENT_COLLIDE, "onCollide", this->getEmbedding() );
+		this->registerEvent( EVENT_COLLIDE, MENGE_TEXT("onCollide"), this->getEmbedding() );
 
-		this->callMethod( "onActivate", "()" );
+		this->callMethod( MENGE_TEXT("onActivate"), MENGE_TEXT("()") );
 
 		//m_oldPos = getLocalPosition();
 
@@ -339,7 +339,7 @@ namespace	Menge
 	{
 		RigidBody2D::_deactivate();
 
-		this->callMethod("onDeactivate", "()" );
+		this->callMethod( MENGE_TEXT("onDeactivate"), MENGE_TEXT("()") );
 
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -347,7 +347,7 @@ namespace	Menge
 	{
 		bool result = Node::_compile();
 
-		this->callMethod("onCompile", "()" );
+		this->callMethod( MENGE_TEXT("onCompile"), MENGE_TEXT("()") );
 
 		if( m_physicController )
 		{
@@ -366,7 +366,7 @@ namespace	Menge
 			RigidBody2D::_release();
 		}
 
-		this->callMethod("onRelease", "()" );
+		this->callMethod( MENGE_TEXT("onRelease"), MENGE_TEXT("()") );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::setVelocity( const mt::vec2f & _velocity )
@@ -390,7 +390,7 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "PhysicBody" )
+			XML_CASE_NODE( MENGE_TEXT("PhysicBody") )
 			{
 				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderPhysics );
 				m_physicController = true;

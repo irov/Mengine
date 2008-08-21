@@ -346,7 +346,7 @@ namespace Menge
 					break;
 
 				default:
-					MENGE_LOG("PNG codec error: PNG format not supported" );
+					MENGE_LOG( MENGE_TEXT("PNG codec error: PNG format not supported") );
 					return false;
 		}
 

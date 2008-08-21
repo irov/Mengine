@@ -115,7 +115,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application( ApplicationInterface* _interface )
 		: m_interface( _interface )
-		, m_commandLine("")
+		, m_commandLine( MENGE_TEXT("") )
 		, m_particles( true )
 		, m_sound( true )
 		, m_debugMask( 0 )
@@ -199,7 +199,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::initPredefinedResources()
 	{
-		ResourceFactoryParam param = {"WhitePixel"};
+		ResourceFactoryParam param = { MENGE_TEXT("WhitePixel") };
 
 		ResourceImageDynamic * image = new ResourceImageDynamic( param );
 		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
@@ -213,12 +213,14 @@ namespace Menge
 		m_game = new Game();
 		Holder<Game>::keep( m_game );
 
-		MENGE_LOG("Create game file [%s] ...\n", m_gameInfo.c_str() );
+		MENGE_LOG( MENGE_TEXT("Create game file [%s] ...\n")
+			,m_gameInfo.c_str() );
 
 		if( m_xmlEngine->parseXmlFileM( m_gameInfo, m_game, &Game::loader ) == false )
 		{
-			MENGE_LOG("Invalid game file [%s] ...\n", m_gameInfo.c_str() );
-			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
+			MENGE_LOG( MENGE_TEXT("Invalid game file [%s] ...\n")
+				,m_gameInfo.c_str() );
+			MENGE_LOG_CRITICAL( MENGE_TEXT("Application files missing or corrupt") );
 			return false;
 		}
 
@@ -235,9 +237,9 @@ namespace Menge
 	{
 		const String & title = m_game->getTitle();
 
-		if( !m_fileEngine->initAppDataPath( "Menge\\" + title ) )
+		if( !m_fileEngine->initAppDataPath( MENGE_TEXT("Menge\\") + title ) )
 		{
-			MENGE_LOG( "Warning: Can't initialize user's data path" );
+			MENGE_LOG( MENGE_TEXT("Warning: Can't initialize user's data path") );
 		}
 
 		const std::size_t * resourceResolution = m_game->getResourceResolution();
@@ -313,7 +315,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Application")
+			XML_CASE_NODE( MENGE_TEXT("Application") )
 			{				
 				XML_PARSE_ELEMENT( this, &Application::loaderApplication );
 			}
@@ -324,42 +326,42 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Game", "File", m_gameInfo );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Game"), MENGE_TEXT("File"), m_gameInfo );
 
-			XML_CASE_NODE( "Resource" )
+			XML_CASE_NODE( MENGE_TEXT("Resource") )
 			{
-				std::string filename;
+				String filename;
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "File", filename );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("File"), filename );
 				}
 				m_resourcePaths.push_back( filename );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::parseArguments(const std::string & _arguments)
+	void Application::parseArguments( const String& _arguments )
 	{
-		String::size_type idx = _arguments.find( "-sound" );
+		String::size_type idx = _arguments.find( MENGE_TEXT("-sound") );
 		if( idx != String::npos )
 		{
 			m_sound = false;
 		}
 
-		idx = _arguments.find( "-particles" );
+		idx = _arguments.find( MENGE_TEXT("-particles") );
 		if( idx != String::npos )
 		{
 			m_particles = false;
 		}
 
-		idx = _arguments.find( "-debuginfo" );
+		idx = _arguments.find( MENGE_TEXT("-debuginfo") );
 		if( idx != String::npos )
 		{
 			m_debugInfo = true;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initialize( const std::string & _applicationFile, const std::string& _args )
+	bool Application::initialize( const String& _applicationFile, const String& _args )
 	{
 		OBJECT_FACTORY( Camera2D );
 		OBJECT_FACTORY( Entity );
@@ -428,19 +430,19 @@ namespace Menge
 
 		if( m_xmlEngine->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
 		{
-			MENGE_LOG("parse application xml failed '%s'\n"
+			MENGE_LOG( MENGE_TEXT("parse application xml failed '%s'\n")
 				, _applicationFile.c_str()
 				);
-			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
+			MENGE_LOG_CRITICAL( MENGE_TEXT("Application files missing or corrupt") );
 			return false;
 		}
 
-		m_fileEngine->changeDir( "../" );
+		m_fileEngine->changeDir( MENGE_TEXT("../") );
 
 		ScriptEngine * scriptEngine = new ScriptEngine();
 		Holder<ScriptEngine>::keep( scriptEngine );
 		
-		MENGE_LOG("init scriptEngine ...\n");
+		MENGE_LOG( MENGE_TEXT("init scriptEngine ...\n") );
 		scriptEngine->init();
 
 		m_inputEngine->regHandle( m_handler );
@@ -629,30 +631,30 @@ namespace Menge
 			m_physicEngine->update( 1.0f/30.0f );
 		}
 
-		Holder<ProfilerEngine>::hostage()->beginProfile("Menge");
+		Holder<ProfilerEngine>::hostage()->beginProfile( MENGE_TEXT("Menge") );
 
 		if( m_physicEngine2D )
 		{
-			Holder<ProfilerEngine>::hostage()->beginProfile("Physic");
+			Holder<ProfilerEngine>::hostage()->beginProfile( MENGE_TEXT("Physic") );
 			m_physicEngine2D->update( _timing );
-			Holder<ProfilerEngine>::hostage()->endProfile("Physic");
+			Holder<ProfilerEngine>::hostage()->endProfile( MENGE_TEXT("Physic") );
 		}
 
-		Holder<ProfilerEngine>::hostage()->beginProfile("Game Update");
+		Holder<ProfilerEngine>::hostage()->beginProfile( MENGE_TEXT("Game Update") );
 		m_game->update( _timing );
 		m_inputEngine->update();
 		Holder<MousePickerSystem>::hostage()->update();
-		Holder<ProfilerEngine>::hostage()->endProfile("Game Update");
+		Holder<ProfilerEngine>::hostage()->endProfile( MENGE_TEXT("Game Update") );
 
-		Holder<ProfilerEngine>::hostage()->beginProfile("Sound Update");
+		Holder<ProfilerEngine>::hostage()->beginProfile( MENGE_TEXT("Sound Update") );
 		m_soundEngine->update( _timing );
-		Holder<ProfilerEngine>::hostage()->endProfile("Sound Update");
+		Holder<ProfilerEngine>::hostage()->endProfile( MENGE_TEXT("Sound Update") );
 
 		m_renderEngine->beginScene();
 		m_game->render( m_debugMask );
 		m_renderEngine->endScene();
 
-		Holder<ProfilerEngine>::hostage()->endProfile("Menge");
+		Holder<ProfilerEngine>::hostage()->endProfile( MENGE_TEXT("Menge") );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()

@@ -38,12 +38,12 @@ namespace	Menge
 			return Holder<SoundEngine>::hostage()->getCommonVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void musicPlayList( const std::string & _list )
+		static void musicPlayList( const String& _list )
 		{
 			Holder<Amplifier>::hostage()->playAllTracks( _list );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void musicPlayTrack( const std::string & _list, int _index, bool _isLooped )
+		static void musicPlayTrack( const String& _list, int _index, bool _isLooped )
 		{
 			Holder<Amplifier>::hostage()->playTrack(_list, _index, _isLooped);
 		}
@@ -68,7 +68,7 @@ namespace	Menge
 			Holder<Amplifier>::hostage()->stop();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void musicShuffle( const std::string & _list )
+		static void musicShuffle( const String& _list )
 		{
 			Holder<Amplifier>::hostage()->shuffle( _list );
 		}

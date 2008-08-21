@@ -1,10 +1,11 @@
 #	pragma once
 
-#	include <string>
+//#	include <string>
+#	include "Config/Typedef.h"
 
 struct FactoryGenStruct
 {
-	std::string type;
+	Menge::String type;
 };
 
 #	define OBJECT_DECLARE(C)\

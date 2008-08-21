@@ -22,21 +22,21 @@ namespace Menge
 		~Scene();
 
 	public:
-		void layerAppend( const std::string & _layer, Node * _node );
+		void layerAppend( const String& _layer, Node * _node );
 		void layerRemove( Node* _node );
 		mt::vec2f screenToLocal( const String& _layerName, const mt::vec2f& _point );
 
 		void setMainLayer( Layer * _layer );
 		Layer * getMainLayer();
 
-		Node * getNode( const std::string & _name );
+		Node * getNode( const String& _name );
 
 	public:
 		void setParentScene( Scene * _scene );
 		bool isSubScene() const;
 
 	public:
-		const mt::vec2f & getLayerSize( const std::string & _name );
+		const mt::vec2f & getLayerSize( const String& _name );
 
 	public:
 		void loader( XmlElement *_xml) override;
@@ -63,12 +63,12 @@ namespace Menge
 		void _addChildren( Node * _layer ) override;
 
 	protected:
-		Layer * getLayer_( const std::string & _name );
+		Layer * getLayer_( const String& _name );
 
 	public:
 		void renderSelf();
 		virtual void render( unsigned int _debugMask ) override;
-		void setRenderTarget( const std::string& _cameraName );
+		void setRenderTarget( const String& _cameraName );
 		const String& getRenderTarget() const;
 		void blockInput( bool _block );
 		bool getBlockInput() const;

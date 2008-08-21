@@ -39,14 +39,14 @@ namespace Menge
 		return m_interface->getEnabled();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ProfilerEngine::addResourceToProfile(const std::string & _name)
+	void ProfilerEngine::addResourceToProfile( const String& _name )
 	{
-		return m_interface->addResourceToProfile(_name);
+		return m_interface->addResourceToProfile( _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ProfilerEngine::removeResourceToProfile(const std::string & _name)
+	void ProfilerEngine::removeResourceToProfile( const String& _name )
 	{
-		return m_interface->removeResourceToProfile(_name);
+		return m_interface->removeResourceToProfile( _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ProfilerEngine::displayStats()
@@ -64,20 +64,20 @@ namespace Menge
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
 
-		static char m_debugText[128];
+		static TChar m_debugText[128];
 
 		int dipCount = Holder<RenderEngine>::hostage()->getNumDIP();
-		sprintf( m_debugText, "DIP = %d\n", dipCount );
+		STDSPRINTF( m_debugText, MENGE_TEXT("DIP = %d\n"), dipCount );
 
 		mt::vec2f pos(0,20);
-		Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFFFFFFFF);
+		Holder<RenderEngine>::hostage()->renderText( m_debugText, pos, 0xFFFFFFFF );
 
 		for(ProfileHistoryList::const_iterator it = historyList.begin();
 			it != historyList.end(); ++it)
 		{
 			const ProfileHistory & h = (*it);
 
-			sprintf( m_debugText, "%s : ctime = %.5f; calls = %d; min time = %.5f; max time = %.5f\n", h.name.c_str(), h.currentTime, h.numCallsThisFrame, h.minTime, h.maxTime );
+			STDSPRINTF( m_debugText, MENGE_TEXT("%s : ctime = %.5f; calls = %d; min time = %.5f; max time = %.5f\n"), h.name.c_str(), h.currentTime, h.numCallsThisFrame, h.minTime, h.maxTime );
 
 			pos.y+=20;
 			Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFFFFFFFF);
@@ -87,7 +87,7 @@ namespace Menge
 		int totalCompiled = m_interface->getTotalCompiled();
 		const String & currentCompiledResource = m_interface->getCurrentCompiled();
 
-		sprintf( m_debugText, "COMPILED = %s; COMPILED = %d / RELEASED = %d \n",currentCompiledResource.c_str(), totalCompiled, totalReleased );
+		STDSPRINTF( m_debugText, MENGE_TEXT("COMPILED = %s; COMPILED = %d / RELEASED = %d \n"),currentCompiledResource.c_str(), totalCompiled, totalReleased );
 
 		pos.y+=20;
 		Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFF00FFFF);
@@ -107,7 +107,7 @@ namespace Menge
 
 			const ResourceStat * stat = *it;
 
-			sprintf( m_debugText, "%s: compiled = %d / released = %d \n", stat->name.c_str(), stat->numCompiled, stat->numReleased );
+			STDSPRINTF( m_debugText, MENGE_TEXT("%s: compiled = %d / released = %d \n"), stat->name.c_str(), stat->numCompiled, stat->numReleased );
 
 			pos.y+=20;
 			Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFFFFFFFF);

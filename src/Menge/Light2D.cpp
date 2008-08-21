@@ -25,8 +25,8 @@ namespace Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "PenumbraRadius", "Value", m_shadowPenumbraR );
-			XML_CASE_ATTRIBUTE_NODE( "ShadowLength", "Value", m_shadowLength );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("PenumbraRadius"), MENGE_TEXT("Value"), m_shadowPenumbraR );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ShadowLength"), MENGE_TEXT("Value"), m_shadowLength );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

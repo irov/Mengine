@@ -11,14 +11,14 @@
 #	include <string>
 
 #	define OBJECT_FACTORY( Type )\
-	TFactoryNode::registration( #Type , &Type::genObject )
+	TFactoryNode::registration( MENGE_TEXT(#Type) , &Type::genObject )
 
 #	define RESOURCE_FACTORY( Type )\
-	TFactoryResource::registration( #Type , &Type::genObject )
+	TFactoryResource::registration( MENGE_TEXT(#Type) , &Type::genObject )
 
 
 namespace Menge
 {
-	typedef Factory<std::string, Node *, FactoryGenStruct> TFactoryNode;
-	typedef Factory<std::string, ResourceReference *, ResourceFactoryParam> TFactoryResource;
+	typedef Factory<String, Node *, FactoryGenStruct> TFactoryNode;
+	typedef Factory<String, ResourceReference *, ResourceFactoryParam> TFactoryResource;
 }

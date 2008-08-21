@@ -55,7 +55,7 @@ namespace Menge
 	private:
 		struct ImageDesc
 		{
-			std::string fileName;
+			String fileName;
 			mt::vec4f uv;
 			mt::vec2f offset;
 			mt::vec2f maxSize;

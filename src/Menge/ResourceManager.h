@@ -3,7 +3,7 @@
 #	include "Config/Typedef.h"
 
 #	include <map>
-#	include <string>
+//#	include <string>
 #	include <list>
 
 #	include "Holder.h"
@@ -18,7 +18,7 @@ namespace Menge
 	class ResourceManagerListener
 	{
 	public:
-		virtual void onResourceLoaded( const std::string& _name ) = 0;
+		virtual void onResourceLoaded( const String& _name ) = 0;
 		virtual void onResourceUnLoaded() = 0;
 	};
 
@@ -29,10 +29,10 @@ namespace Menge
 		~ResourceManager();
 
 	public:
-		void loadResource( const std::string & _category, const std::string & _file, const String& _group );
+		void loadResource( const String& _category, const String& _file, const String& _group );
 
-		ResourceReference * createResource( const std::string & _name, const std::string & _type );
-		ResourceReference * createResourceFromXml( const std::string& _xml );
+		ResourceReference * createResource( const String& _name, const String& _type );
+		ResourceReference * createResourceFromXml( const String& _xml );
 
 		void registerResource( ResourceReference * _resource );
 		void unregisterResource( ResourceReference* _resource );
@@ -50,9 +50,9 @@ namespace Menge
 		void releaseResource( ResourceReference * _resource );
 
 	public:
-		bool directResourceCompile( const std::string & _name );
-		void directResourceRelease( const std::string & _name );
-		void directResourceUnload( const std::string & _name );
+		bool directResourceCompile( const String& _name );
+		void directResourceRelease( const String& _name );
+		void directResourceUnload( const String& _name );
 		void directResourceFileCompile( const String& _resourceFile );
 		void directResourceFileRelease( const String& _resourceFile );
 		void directResourceFileUnload( const String& _resourceFile );
@@ -71,7 +71,7 @@ namespace Menge
 	protected:
 
 	private:
-		typedef std::map< std::string, ResourceReference * > TMapResource;
+		typedef std::map< String, ResourceReference * > TMapResource;
 
 		String m_currentCategory;
 		String m_currentGroup;

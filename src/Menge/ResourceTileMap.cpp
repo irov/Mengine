@@ -18,7 +18,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceTileMap::setTileMapPath( const std::string & _path )
+	void ResourceTileMap::setTileMapPath( const String& _path )
 	{
 		m_tileMapFile = m_params.category + _path;
 	}
@@ -28,8 +28,8 @@ namespace Menge
 		ResourceReference::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "TileMap", "File", &ResourceTileMap::setTileMapPath );
-			XML_CASE_ATTRIBUTE_NODE( "ResourceTileSet", "Name", m_tileSetName );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("TileMap"), MENGE_TEXT("File"), &ResourceTileMap::setTileMapPath );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ResourceTileSet"), MENGE_TEXT("Name"), m_tileSetName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -45,7 +45,8 @@ namespace Menge
 
 		if( m_tileSet == NULL )
 		{
-			MENGE_LOG( "ResourceTileMap::_compile -> compiling resource %s failed", m_tileSetName.c_str() );
+			MENGE_LOG( MENGE_TEXT("ResourceTileMap::_compile -> compiling resource %s failed")
+				,m_tileSetName.c_str() );
 			return false;
 		}
 
@@ -76,7 +77,8 @@ namespace Menge
 			line2 = mapFile->getLine( true );
 			if( m_width != line2.size() - 1 )
 			{
-				MENGE_LOG( "ResourceTileMap::_compile -> Invalid TileMap format in %s", m_tileMapFile.c_str() );
+				MENGE_LOG( MENGE_TEXT("ResourceTileMap::_compile -> Invalid TileMap format in %s")
+					,m_tileMapFile.c_str() );
 				return false;
 			}
 

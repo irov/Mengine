@@ -47,7 +47,7 @@ namespace Menge
 		return m_embedding;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::callMethod( const std::string & _method, const char * _format, ... )
+	void Scriptable::callMethod( const String& _method, const TChar * _format, ... )
 	{
 		PyObject * _embedding = getEmbedding();
 
@@ -73,7 +73,7 @@ namespace Menge
 
 			if( pybind::convert::is_none( result ) == false )
 			{
-				MENGE_LOG("Warning: Method '%s' don't have return any value\n"
+				MENGE_LOG( MENGE_TEXT("Warning: Method '%s' don't have return any value\n")
 					, _method.c_str() 
 					);
 			}

@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+
 class XmlExpatParser;
 class XmlElementListener;
 class XmlElementValueListener;
@@ -7,14 +9,14 @@ class XmlElementValueListener;
 class XmlElement
 {
 public:
-	XmlElement( XmlExpatParser * _manager, const char * _title, const char ** _attrebutes );
+	XmlElement( XmlExpatParser * _manager, const Menge::TChar * _title, const Menge::TChar ** _attrebutes );
 
 public:
-	const char * getTitle() const;
+	const Menge::TChar * getTitle() const;
 
 public:
-	bool compareTitle( const char * _title );
-	bool compareAttributeKey( const char * _title );
+	bool compareTitle( const Menge::TChar * _title );
+	bool compareAttributeKey( const Menge::TChar * _title );
 
 	void pushListener( XmlElementListener * _listener );
 	void setValueListener( XmlElementValueListener * _listener );
@@ -24,12 +26,12 @@ public:
 	bool validAttributes();
 	void nextAttributes();
 
-	const char * getAttributeValue();
+	const Menge::TChar * getAttributeValue();
 
 protected:
 	XmlExpatParser * m_expat;
 
-	const char * m_title;
-	const char ** m_attrebutes;
+	const Menge::TChar * m_title;
+	const Menge::TChar ** m_attrebutes;
 	unsigned int m_attrIterator;
 };

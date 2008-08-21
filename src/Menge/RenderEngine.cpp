@@ -56,7 +56,7 @@ namespace Menge
 	
 		//setRenderTarget( "defaultCamera" );
 		//endScene();
-		m_currentRenderTarget = "defaultCamera";
+		m_currentRenderTarget = MENGE_TEXT("defaultCamera");
 		//m_renderViewport.set( mt::vec2f::zero_v2, m_contentResolution );
 
 		return m_windowCreated;
@@ -110,7 +110,7 @@ namespace Menge
 	void	RenderEngine::setViewMatrix( const mt::mat4f& _view )
 	{
 		mt::mat4f view = _view;
-		if( m_currentRenderTarget == "defaultCamera" && m_layer3D == false )
+		if( m_currentRenderTarget == MENGE_TEXT("defaultCamera") && m_layer3D == false )
 		{
 			mt::mul_m4_m4( view, _view, m_viewTransform );
 		}
@@ -148,11 +148,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( RenderImageInterface* _image, const String& _filename )
 	{
-		std::string strExt;
-		std::size_t pos = _filename.find_last_of(".");
+		String strExt;
+		std::size_t pos = _filename.find_last_of( MENGE_TEXT(".") );
 		if( pos == std::string::npos ) 
 		{
-			MENGE_LOG( "RenderEngine::saveImage : extension not specified (%s)", _filename.c_str() );
+			MENGE_LOG( MENGE_TEXT("RenderEngine::saveImage : extension not specified (%s)"),
+				_filename.c_str() );
 			return false;
 		}
 
@@ -165,7 +166,8 @@ namespace Menge
 
 		if( pCodec == 0 )
 		{
-			MENGE_LOG( "RenderEngine::saveImage : invalid extension (%s), codec not found", strExt.c_str() );
+			MENGE_LOG( MENGE_TEXT("RenderEngine::saveImage : invalid extension (%s), codec not found"),
+				strExt.c_str() );
 			return false;
 		}
 
@@ -182,7 +184,8 @@ namespace Menge
 		OutStreamInterface* outFile = Holder<FileEngine>::hostage()->openOutStream( _filename, true );
 		if( outFile == 0 )
 		{
-			MENGE_LOG( "RenderEngine::saveImage : failed to open file for output '%s'", _filename.c_str() );
+			MENGE_LOG( MENGE_TEXT("RenderEngine::saveImage : failed to open file for output '%s'"),
+				_filename.c_str() );
 			_image->unlock();
 			return false;
 		}
@@ -191,7 +194,7 @@ namespace Menge
 
 		if( res == false )
 		{
-			MENGE_LOG( "RenderEngine::saveImage : Error while coding image data" );
+			MENGE_LOG( MENGE_TEXT("RenderEngine::saveImage : Error while coding image data") );
 		}
 
 		_image->unlock();
@@ -209,7 +212,7 @@ namespace Menge
 		{
 			String strExt;
 
-			std::size_t pos = _filename.find_last_of(".");
+			std::size_t pos = _filename.find_last_of( MENGE_TEXT(".") );
 
 			while( pos != _filename.length() - 1 )
 			{
@@ -220,8 +223,10 @@ namespace Menge
 
 			if( codec == 0 )
 			{
-				MENGE_LOG( "Warning: Image codec for extension %s was not found", strExt.c_str() );
-				MENGE_LOG_CRITICAL( "Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын", _filename.c_str() );
+				MENGE_LOG( MENGE_TEXT("Warning: Image codec for extension %s was not found"),
+					strExt.c_str() );
+				MENGE_LOG_CRITICAL( MENGE_TEXT("Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын"),
+					_filename.c_str() );
 				return 0;
 			}
 
@@ -229,7 +234,8 @@ namespace Menge
 
 			if( stream == 0 )
 			{
-				MENGE_LOG( "Error: Can't open image file '%s'", _filename.c_str() );
+				MENGE_LOG( MENGE_TEXT("Error: Can't open image file '%s'"),
+					_filename.c_str() );
 				return 0;
 			}
 
@@ -239,13 +245,15 @@ namespace Menge
 			bool res = codec->getDataInfo( stream, static_cast<Codec::CodecData*>( &data ) );
 			if( res == false )
 			{
-				MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _filename.c_str() );
+				MENGE_LOG( MENGE_TEXT("Warning: Error while decoding image '%s'. Image not loaded"),
+					_filename.c_str() );
 				Holder<FileEngine>::hostage()->closeStream( stream );
 				return 0;
 			}
 			if( data.format == PF_UNKNOWN )
 			{
-				MENGE_LOG_CRITICAL( "Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын", _filename.c_str() );
+				MENGE_LOG_CRITICAL( MENGE_TEXT("Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын"),
+					_filename.c_str() );
 				Holder<FileEngine>::hostage()->closeStream( stream );
 				return 0;
 			}
@@ -257,7 +265,8 @@ namespace Menge
 			res = codec->decode( stream, (unsigned char*)textureDesc.buffer, data.flags );
 			if( res == false )
 			{
-				MENGE_LOG( "Warning: Error while decoding image '%s'. Image not loaded", _filename.c_str() );
+				MENGE_LOG( MENGE_TEXT("Warning: Error while decoding image '%s'. Image not loaded"),
+					_filename.c_str() );
 				Holder<FileEngine>::hostage()->closeStream( stream );
 				delete[] textureDesc.buffer;
 				textureDesc.buffer = 0;
@@ -278,7 +287,7 @@ namespace Menge
 			delete[] textureDesc.buffer;
 			if( image == 0 )
 			{
-				MENGE_LOG( "Error: Render System failed to load image '%s'"
+				MENGE_LOG( MENGE_TEXT("Error: Render System failed to load image '%s'")
 					, _filename.c_str() );
 				return 0;
 			}
@@ -372,17 +381,17 @@ namespace Menge
 		recalcRenderArea_( resolution );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CameraInterface * RenderEngine::createCamera( const std::string& _name )
+	CameraInterface * RenderEngine::createCamera( const String& _name )
 	{
 		return m_interface->createCamera( _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	EntityInterface * RenderEngine::createEntity( const std::string& _name, const std::string& _meshName )
+	EntityInterface * RenderEngine::createEntity( const String& _name, const String& _meshName )
 	{
 		return m_interface->createEntity( _name, _meshName );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LightInterface * RenderEngine::createLight( const std::string& _name )
+	LightInterface * RenderEngine::createLight( const String& _name )
 	{
 		return m_interface->createLight( _name );
 	}
@@ -412,7 +421,7 @@ namespace Menge
 		m_interface->render();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SceneNodeInterface * RenderEngine::createSceneNode( const std::string & _name )
+	SceneNodeInterface * RenderEngine::createSceneNode( const String& _name )
 	{
 		return m_interface->createSceneNode( _name );
 	}
@@ -556,7 +565,7 @@ namespace Menge
 	void RenderEngine::setRenderArea( const mt::vec4f& _renderArea )
 	{
 		mt::vec4f renderArea = _renderArea;
-		if( m_currentRenderTarget == "defaultCamera" )
+		if( m_currentRenderTarget == MENGE_TEXT("defaultCamera") )
 		{
 			mt::vec2f size = _renderArea.v2_1 - _renderArea.v2_0;
 			if( size == mt::vec2f::zero_v2 )
@@ -579,12 +588,12 @@ namespace Menge
 		m_renderFactor = _factor;
 		if( m_renderFactor < 0.0f )
 		{
-			MENGE_LOG("Warning: RenderFactor Value < 0. Setting to 0");
+			MENGE_LOG( MENGE_TEXT("Warning: RenderFactor Value < 0. Setting to 0") );
 			m_renderFactor = 0.0f;
 		}
 		else if( m_renderFactor > 1.0f )
 		{
-			MENGE_LOG("Warning: RenderFactor Value > 1. Setting to 1");
+			MENGE_LOG( MENGE_TEXT("Warning: RenderFactor Value > 1. Setting to 1") );
 			m_renderFactor = 1.0f;
 		}
 

@@ -86,7 +86,7 @@ namespace Menge
 		, m_frameTime( 0.f )
 		, m_mutex(0)
 		, m_focus( true )
-		, m_name("Mengine")
+		, m_name( MENGE_TEXT("Mengine") )
 		, m_listener(0)
 		, m_hWnd(0)
 		, m_cursorInArea(false)
@@ -333,13 +333,13 @@ namespace Menge
 		
 		free( ansistr );
 
-		m_mutex = ::CreateMutexA( NULL, FALSE, m_name.c_str() );
+		m_mutex = ::CreateMutex( NULL, FALSE, m_name.c_str() );
 		DWORD error = ::GetLastError();
 
 		if( error == ERROR_ALREADY_EXISTS )
 		{
-			std::string message = std::string("Another instance of ") + m_name + std::string(" is already running");
-			::MessageBoxA( NULL, message.c_str(), m_name.c_str(), MB_ICONWARNING );
+			Menge::String message = Menge::String( MENGE_TEXT("Another instance of ") ) + m_name + Menge::String( MENGE_TEXT(" is already running") );
+			::MessageBox( NULL, message.c_str(), m_name.c_str(), MB_ICONWARNING );
 			return false;
 		}
 
@@ -353,7 +353,7 @@ namespace Menge
 		0, 
 		hInstance,
 		LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MENGE)), LoadCursor(NULL, IDC_ARROW),
-		(HBRUSH)GetStockObject(BLACK_BRUSH), 0, "MengeWnd" 
+		(HBRUSH)GetStockObject(BLACK_BRUSH), 0, MENGE_TEXT("MengeWnd")
 		};
 		/*ZeroMemory( &wc, sizeof(WNDCLASSEX) );
 		wc.cbSize = sizeof(WNDCLASSEX);
@@ -374,9 +374,8 @@ namespace Menge
 
 		//::MessageBox( 0, "hhh", "kl", MB_ICONERROR | MB_OK );
 
-		m_hWnd = ::CreateWindow("MengeWnd", m_name.c_str(), dwStyle,
+		m_hWnd = ::CreateWindow( MENGE_TEXT("MengeWnd"), m_name.c_str(), dwStyle,
 			left, top, width, height, NULL, 0, hInstance, (LPVOID)this);
-	
 		
 
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
@@ -541,7 +540,7 @@ namespace Menge
 		//m_listener->onWindowMovedOrResized();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SystemDLLInterface* WinApplication::loadSystemDLL( const String & _dll )
+	SystemDLLInterface* WinApplication::loadSystemDLL( const String& _dll )
 	{
 		return new WinSystemDLL( _dll );
 	}

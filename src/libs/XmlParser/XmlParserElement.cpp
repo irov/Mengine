@@ -5,12 +5,12 @@
 namespace XmlParserElement
 {
 	//////////////////////////////////////////////////////////////////////////
-	bool element_compare_title( XmlElement * _element, const char * _title )
+	bool element_compare_title( XmlElement * _element, const Menge::TChar * _title )
 	{
 		return (_element)?_element->compareTitle( _title ):false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const char * element_get_title( XmlElement * _element )
+	const Menge::TChar * element_get_title( XmlElement * _element )
 	{
 		return (_element)?_element->getTitle():0;
 	}
@@ -30,12 +30,12 @@ namespace XmlParserElement
 		_element->nextAttributes();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool element_compare_attribute_key( XmlElement * _element, const char * _key )
+	bool element_compare_attribute_key( XmlElement * _element, const Menge::TChar * _key )
 	{
 		return _element->compareAttributeKey( _key );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const char * element_get_attribute_value( XmlElement * _element )
+	const Menge::TChar * element_get_attribute_value( XmlElement * _element )
 	{
 		return _element->getAttributeValue();
 	}

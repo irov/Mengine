@@ -38,25 +38,26 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Vertex")
+			XML_CASE_NODE( MENGE_TEXT("Vertex") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER( "Value", &TilePolygon::_addVertex );
+					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Value"), &TilePolygon::_addVertex );
 				}
 			}
 
-			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ImageMap"), MENGE_TEXT("Name"), m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Penumbra"), MENGE_TEXT("Name"), m_penumbraName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_render( unsigned int _debugMask )
 	{
-		_renderPass( m_penumbra_triangles, 0xFFAAFFBB );
-		_renderPass( m_triangles, 0xFFCFFFFF );
+		_renderPass( m_penumbra_triangles, m_resource->getImage(0) );
+		_renderPass( m_triangles, m_imagePenumbra->getImage(0) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::_renderPass( const std::vector<mt::vec2f> & _triangles, unsigned int _color )
+	void TilePolygon::_renderPass( const std::vector<mt::vec2f> & _triangles, const RenderImageInterface* _image )
 	{
 		for(std::vector<mt::vec2f>::size_type i = 0; i < _triangles.size(); i+=3)
 		{
@@ -64,10 +65,10 @@ namespace Menge
 			const mt::vec2f & b = _triangles[i+1];
 			const mt::vec2f & c = _triangles[i+2];
 
-			const RenderImageInterface * image = m_resource->getImage(0);
+			//const RenderImageInterface * image = m_resource->getImage(0);
 
-			float w = image->getWidth();
-			float h = image->getHeight();
+			float w = _image->getWidth();
+			float h = _image->getHeight();
 
 			mt::vec2f uv0(a.x / w, a.y / h);
 			mt::vec2f uv1(b.x / w, b.y / h);
@@ -77,7 +78,7 @@ namespace Menge
 
 			Holder<RenderEngine>::hostage()->renderTriple(wm, a, b, c,
 				uv0, uv1, uv2,
-				_color, image);
+				0xFFFFFFFF, _image );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -108,7 +109,7 @@ namespace Menge
 
 		if(result == false)
 		{
-			MENGE_LOG( "Error: can't triangulate polygon \n" );
+			MENGE_LOG( MENGE_TEXT("Error: can't triangulate polygon \n") );
 			return false;
 		}
 
@@ -120,7 +121,7 @@ namespace Menge
 
 		if(result == false)
 		{
-			MENGE_LOG( "Error: can't create contour \n" );
+			MENGE_LOG( MENGE_TEXT("Error: can't create contour \n") );
 			return false;
 		}
 
@@ -128,7 +129,7 @@ namespace Menge
 
 		if(result == false)
 		{
-			MENGE_LOG( "Error: can't triangulate outline polygon \n" );
+			MENGE_LOG( MENGE_TEXT("Error: can't triangulate outline polygon \n") );
 			return false;
 		}
 
@@ -138,8 +139,20 @@ namespace Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG( "Image resource not getting '%s'", m_resourcename.c_str() );
+			MENGE_LOG( MENGE_TEXT("Image resource not getting '%s'")
+				,m_resourcename.c_str() );
 			return false;
+		}
+
+		if( m_penumbraName != MENGE_TEXT("") )
+		{
+			m_imagePenumbra = 
+				Holder<ResourceManager>::hostage()
+				->getResourceT<ResourceImage>( m_penumbraName );
+		}
+		else
+		{
+			m_imagePenumbra = m_resource;
 		}
 
 		mt::decompose_concave(contour,polys);
@@ -151,7 +164,7 @@ namespace Menge
 
 		if(result == false)
 		{
-			MENGE_LOG( "Error: can't divide into polygons \n" );
+			MENGE_LOG( MENGE_TEXT("Error: can't divide into polygons \n") );
 			return false;
 		}
 

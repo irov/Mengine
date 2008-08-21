@@ -35,14 +35,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::loadResource( const std::string & _category, const std::string & _file, const String& _group )
+	void ResourceManager::loadResource( const String& _category, const String& _file, const String& _group )
 	{
 		m_currentCategory = _category;
 		m_currentGroup = _group;
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{
-			MENGE_LOG("Error: Invalid parse resource '%s' \n", _file.c_str() );
+			MENGE_LOG( MENGE_TEXT("Error: Invalid parse resource '%s' \n")
+				,_file.c_str() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -50,7 +51,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("DataBlock")
+			XML_CASE_NODE( MENGE_TEXT("DataBlock") )
 			{
 				XML_PARSE_ELEMENT( this, &ResourceManager::loaderResource );
 			}
@@ -61,22 +62,23 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Resource")
+			XML_CASE_NODE( MENGE_TEXT("Resource") )
 			{
-				std::string name;
-				std::string type;
+				String name;
+				String type;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE("Name", name );
-					XML_CASE_ATTRIBUTE("Type", type );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Name"), name );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Type"), type );
 				}
 
 				ResourceReference * resource = createResource( name, type );
 
 				if( resource == 0 )
 				{
-					MENGE_LOG( "Don't register resource type '%s'\n", type.c_str() );
+					MENGE_LOG( MENGE_TEXT("Don't register resource type '%s'\n")
+						,type.c_str() );
 					continue;
 				}
 
@@ -87,7 +89,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::createResource( const std::string & _name, const std::string & _type )
+	ResourceReference * ResourceManager::createResource( const String& _name, const String& _type )
 	{
 		ResourceFactoryParam param;
 		param.name = _name;
@@ -173,7 +175,7 @@ namespace Menge
 			return;
 		}
 
-		const std::string & name = _resource->getName();
+		const String& name = _resource->getName();
 
 		TMapResource::iterator it_find = m_mapResource.find( name );
 
@@ -204,14 +206,14 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::directResourceCompile( const std::string & _name )
+	bool ResourceManager::directResourceCompile( const String& _name )
 	{
 		ResourceReference * resource = getResource( _name );
 		
 		return resource != 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceRelease( const std::string & _name )
+	void ResourceManager::directResourceRelease( const String& _name )
 	{
 		TMapResource::iterator it_find = m_mapResource.find( _name );
 
@@ -232,13 +234,13 @@ namespace Menge
 	void ResourceManager::addListener( PyObject* _listener )
 	{
 		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( _listener, "onHandleResourceLoaded" ) == false )
+			->hasModuleFunction( _listener, MENGE_TEXT("onHandleResourceLoaded") ) == false )
 		{
 			return;
 		}
 
 		PyObject * event = Holder<ScriptEngine>::hostage()
-			->getModuleFunction( _listener, "onHandleResourceLoaded" );
+			->getModuleFunction( _listener, MENGE_TEXT("onHandleResourceLoaded") );
 
 		if( event == 0 )
 		{
@@ -281,7 +283,7 @@ namespace Menge
 		ResourceManager* m_resourceManager;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference* ResourceManager::createResourceFromXml( const std::string& _xml )
+	ResourceReference* ResourceManager::createResourceFromXml( const String& _xml )
 	{
 		ResourceReference* resource = 0;
 
@@ -290,20 +292,22 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlString( _xml, resourceLoader ) == false )
 		{
-			MENGE_LOG("Invalid parse external node `%s`\n", _xml.c_str() );
+			MENGE_LOG( MENGE_TEXT("Invalid parse external node `%s`\n")
+				,_xml.c_str() );
 
 			return 0;
 		}
 
 		if( resource == 0 )
 		{
-			MENGE_LOG("This xml file `%s` have invalid external node format\n", _xml.c_str() );
+			MENGE_LOG( MENGE_TEXT("This xml file `%s` have invalid external node format\n")
+				,_xml.c_str() );
 		}
 
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceUnload( const std::string & _name )
+	void ResourceManager::directResourceUnload( const String& _name )
 	{
 		TMapResource::iterator it_find = m_mapResource.find( _name );
 

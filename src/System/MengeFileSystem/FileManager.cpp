@@ -45,7 +45,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_isReservedDir( const String& _fn )
 	{
-		return ( _fn [0] == '.' && ( _fn [1] == 0 || ( _fn [1] == '.' && _fn [2] == 0 ) ) );
+		return ( _fn [0] == MENGE_TEXT('.') && ( _fn [1] == 0 || ( _fn [1] == MENGE_TEXT('.') && _fn [2] == 0 ) ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_isAbsolutePath( const String& _path )
@@ -56,10 +56,10 @@ namespace Menge
 			return true;
 		}
 #endif
-		return _path[0] == '/' || _path[0] == '\\';
+		return _path[0] == MENGE_TEXT('/') || _path[0] == MENGE_TEXT('\\');
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static std::string s_concatenatePath( const String& _base, const String& _name )
+	static String s_concatenatePath( const String& _base, const String& _name )
 	{
 		if ( _base.empty() || s_isAbsolutePath( _name.c_str() ) )
 		{
@@ -67,7 +67,7 @@ namespace Menge
 		}
 		else
 		{
-			return _base + '/' + _name;
+			return _base + MENGE_TEXT('/') + _name;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -77,8 +77,8 @@ namespace Menge
 		struct _finddata_t tagData;
 
 		// pattern can contain a directory name, separate it from mask
-		std::size_t pos1 = _pattern.rfind ('/');
-		std::size_t pos2 = _pattern.rfind ('\\');
+		std::size_t pos1 = _pattern.rfind( MENGE_TEXT('/') );
+		std::size_t pos2 = _pattern.rfind( MENGE_TEXT('\\') );
 		if ( pos1 == _pattern.npos || ( ( pos2 != _pattern.npos ) && ( pos1 < pos2 ) ) )
 		{
 			pos1 = pos2;

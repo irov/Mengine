@@ -123,10 +123,10 @@ namespace Menge
 			std::time_t ctTime; 
 			std::time(&ctTime);
 			std::tm* sTime = std::localtime( &ctTime );
-			std::ostringstream str;
-			str << std::setw(2) << std::setfill('0') << sTime->tm_hour
-				<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_min
-				<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_sec;
+			Stringstream str;
+			str << std::setw(2) << std::setfill(MENGE_TEXT('0')) << sTime->tm_hour
+				<< MENGE_TEXT(":") << std::setw(2) << std::setfill(MENGE_TEXT('0')) << sTime->tm_min
+				<< MENGE_TEXT(":") << std::setw(2) << std::setfill(MENGE_TEXT('0')) << sTime->tm_sec;
 			return str.str();
 		}
 
@@ -188,7 +188,7 @@ namespace Menge
 		{
 			String path = Holder<FileEngine>::hostage()->getAppDataPath();
 			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
-			return path + "\\" + currentAccount->getName();
+			return path + MENGE_TEXT("\\") + currentAccount->getName();
 		}
 
 		static void s_setParticlesEnabled( bool _enable )

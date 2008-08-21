@@ -75,37 +75,37 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "Shape" )
+			XML_CASE_NODE( MENGE_TEXT("Shape") )
 			{
 				mt::polygon n;
 				m_shapeList.push_back( n );
 				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderShape );
 			}
-			XML_CASE_NODE( "ShapeCircle" )
+			XML_CASE_NODE( MENGE_TEXT("ShapeCircle") )
 			{
 				std::pair< float, mt::vec2f > n;
 				m_shapeCircleList.push_back( n );
 				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderShapeCircle );
 			}
-			XML_CASE_NODE( "ShapeBox" )
+			XML_CASE_NODE( MENGE_TEXT("ShapeBox") )
 			{
 				std::pair< std::pair< float, float >, std::pair< mt::vec2f, float > > n;
 				m_shapeBoxList.push_back( n );
 				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderShapeBox );
 			}
 
-			XML_CASE_ATTRIBUTE_NODE("Density", "Value", m_density );
-			XML_CASE_ATTRIBUTE_NODE("Friction", "Value", m_friction );
-			XML_CASE_ATTRIBUTE_NODE("Restitution", "Value", m_restitution );
-			XML_CASE_ATTRIBUTE_NODE("CollisionMask", "Value", m_collisionMask );
-			XML_CASE_ATTRIBUTE_NODE("CategoryBits", "Value", m_categoryBits );
-			XML_CASE_ATTRIBUTE_NODE("GroupIndex", "Value", m_groupIndex );
-			XML_CASE_ATTRIBUTE_NODE("LinearDamping", "Value", m_linearDamping );
-			XML_CASE_ATTRIBUTE_NODE("AngularDamping", "Value", m_angularDamping );
-			XML_CASE_ATTRIBUTE_NODE("AllowSleep", "Value", m_allowSleep );
-			XML_CASE_ATTRIBUTE_NODE("IsBullet", "Value", m_isBullet );
-			XML_CASE_ATTRIBUTE_NODE("FixedRotation", "Value", m_fixedRotation );
-			XML_CASE_ATTRIBUTE_NODE("IsSensor", "Value", m_isSensor );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Density"), MENGE_TEXT("Value"), m_density );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Friction"), MENGE_TEXT("Value"), m_friction );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Restitution"), MENGE_TEXT("Value"), m_restitution );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("CollisionMask"), MENGE_TEXT("Value"), m_collisionMask );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("CategoryBits"), MENGE_TEXT("Value"), m_categoryBits );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("GroupIndex"), MENGE_TEXT("Value"), m_groupIndex );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("LinearDamping"), MENGE_TEXT("Value"), m_linearDamping );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("AngularDamping"), MENGE_TEXT("Value"), m_angularDamping );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("AllowSleep"), MENGE_TEXT("Value"), m_allowSleep );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("IsBullet"), MENGE_TEXT("Value"), m_isBullet );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("FixedRotation"), MENGE_TEXT("Value"), m_fixedRotation );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("IsSensor"), MENGE_TEXT("Value"), m_isSensor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -114,11 +114,11 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			mt::vec2f point;
-			XML_CASE_NODE( "Point" )
+			XML_CASE_NODE( MENGE_TEXT("Point") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Value", point );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), point );
 				}
 				m_shapeList.back().add_point( point );
 			}
@@ -132,20 +132,20 @@ namespace Menge
 			float radius;
 			mt::vec2f pos;
 
-			XML_CASE_NODE( "Radius" )
+			XML_CASE_NODE( MENGE_TEXT("Radius") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Value", radius );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), radius );
 				}
 				m_shapeCircleList.back().first = radius;
 			}
 
-			XML_CASE_NODE( "Position" )
+			XML_CASE_NODE( MENGE_TEXT("Position") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Value", pos );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), pos );
 				}
 				m_shapeCircleList.back().second = pos;
 			}
@@ -161,38 +161,38 @@ namespace Menge
 			float angle;
 			mt::vec2f pos;
 
-			XML_CASE_NODE( "Width" )
+			XML_CASE_NODE( MENGE_TEXT("Width") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Value", width );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), width );
 				}
 				m_shapeBoxList.back().first.first = width;
 			}
 
-			XML_CASE_NODE( "Height" )
+			XML_CASE_NODE( MENGE_TEXT("Height") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Value", height );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), height );
 				}
 				m_shapeBoxList.back().first.second = height;
 			}
 
-			XML_CASE_NODE( "Position" )
+			XML_CASE_NODE( MENGE_TEXT("Position") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Value", pos );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), pos );
 				}
 				m_shapeBoxList.back().second.first = pos;
 			}
 
-			XML_CASE_NODE( "Angle" )
+			XML_CASE_NODE( MENGE_TEXT("Angle") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( "Value", angle );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), angle );
 				}
 				m_shapeBoxList.back().second.second = angle;
 			}

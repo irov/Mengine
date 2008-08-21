@@ -1,6 +1,7 @@
 #	pragma once
 
-#	include <string>
+//#	include <string>
+#	include "Config/Typedef.h"
 
 extern "C" 
 { 
@@ -24,7 +25,7 @@ namespace Menge
 		virtual PyObject * _embedded() = 0;
 
 	public:
-		void callMethod( const std::string & _method, const char * _format, ... );
+		void callMethod( const String& _method, const TChar * _format, ... );
 
 	protected:
 		PyObject * m_embedding;

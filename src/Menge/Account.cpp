@@ -31,7 +31,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG( "Warning: Setting %s already exist",
+			MENGE_LOG( MENGE_TEXT("Warning: Setting %s already exist"),
 				_setting.c_str() );
 		}
 	}
@@ -46,7 +46,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG( "Error: setting '%s' does not exist. Can't change",
+			MENGE_LOG( MENGE_TEXT("Error: setting '%s' does not exist. Can't change"),
 				_setting.c_str() );
 		}
 	}
@@ -60,7 +60,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG( "Error: setting '%s' does not exist. Can't get",
+			MENGE_LOG( MENGE_TEXT("Error: setting '%s' does not exist. Can't get"),
 				_setting.c_str() );
 		}
 		return Utils::emptyString();
@@ -69,11 +69,11 @@ namespace Menge
 	void Account::load()
 	{
 		FileEngine* fileEngine = Holder<FileEngine>::hostage();
-		String fileName = fileEngine->getAppDataPath() + "\\" + m_name + "\\" + "settings.ini";
+		String fileName = fileEngine->getAppDataPath() + MENGE_TEXT("\\") + m_name + MENGE_TEXT("\\settings.ini");
 		DataStreamInterface* file = fileEngine->openFile( fileName );
 		if( file == 0 )
 		{
-			MENGE_LOG("Error: Failed to load account '%s' settings. Can't open file",
+			MENGE_LOG( MENGE_TEXT("Error: Failed to load account '%s' settings. Can't open file"),
 				m_name.c_str() );
 			return;
 		}
@@ -81,7 +81,7 @@ namespace Menge
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( file, this, &Account::loader_ ) == false )
 		{
-			MENGE_LOG("Parsing Account settings xml failed '%s'",
+			MENGE_LOG( MENGE_TEXT("Parsing Account settings xml failed '%s'"),
 				fileName.c_str() );
 		}
 
@@ -91,23 +91,23 @@ namespace Menge
 	void Account::save()
 	{
 		FileEngine* fileEngine = Holder<FileEngine>::hostage();
-		String fileName = m_name + "\\" + "settings.ini";
+		String fileName = m_name + MENGE_TEXT("\\settings.ini");
 		OutStreamInterface* file = fileEngine->openOutStream( fileName, false );
 		if( file == 0 )
 		{
-			MENGE_LOG( "Error: can't open file for writing. Account '%s' settings not saved",
+			MENGE_LOG( MENGE_TEXT("Error: can't open file for writing. Account '%s' settings not saved"),
 				m_name.c_str() );
 		}
-		file->write( "<Settings>\n" );
+		file->write( MENGE_TEXT("<Settings>\n") );
 
 		for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
 			it != it_end;
 			it++ )
 		{
-			file->write( "\t<" + it->first + " Value = \"" + it->second.first + "\"/>\n" );
+			file->write( MENGE_TEXT("\t<") + it->first + MENGE_TEXT(" Value = \"") + it->second.first + MENGE_TEXT("\"/>\n") );
 		}
 
-		file->write( "</Settings>" );
+		file->write( MENGE_TEXT("</Settings>") );
 
 		fileEngine->closeOutStream( file );
 	}
@@ -120,7 +120,7 @@ namespace Menge
 				it != it_end;
 				it++ )
 			{
-				XML_CASE_ATTRIBUTE_NODE( it->first.c_str(), "Value", it->second.first );
+				XML_CASE_ATTRIBUTE_NODE( it->first.c_str(), MENGE_TEXT("Value"), it->second.first );
 			}
 		}
 	}

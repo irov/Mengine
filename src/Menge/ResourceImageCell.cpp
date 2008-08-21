@@ -61,7 +61,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("File")
+			XML_CASE_NODE( MENGE_TEXT("File") )
 			{
 				ImageDesc desc;
 				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
@@ -70,28 +70,28 @@ namespace Menge
 				desc.size = mt::vec2f(0.f,0.f);
 				desc.isAlpha = true;
 
-				std::string fileName; 
+				String fileName; 
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", fileName );
-					XML_CASE_ATTRIBUTE( "UV", desc.uv );
-					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
-					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
-					XML_CASE_ATTRIBUTE( "Size", desc.size );
-					XML_CASE_ATTRIBUTE( "Alpha", desc.isAlpha );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Path"), fileName );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("UV"), desc.uv );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Offset"), desc.offset );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("MaxSize"), desc.maxSize );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Size"), desc.size );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Alpha"), desc.isAlpha );
 				}
 
 				desc.fileName = m_params.category + fileName;
 
 				m_imageDesc = desc;
 			}
-			XML_CASE_NODE( "Cell" )
+			XML_CASE_NODE( MENGE_TEXT("Cell") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "X", m_numX );
-					XML_CASE_ATTRIBUTE( "Y", m_numY );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("X"), m_numX );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Y"), m_numY );
 				}
 			}
 		}

@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+
 namespace XmlParserCheckMethod
 {
 	template<class F>
@@ -22,7 +24,7 @@ namespace XmlParserCheckMethod
 	};
 
 	template<class C, class F>
-	static void check_member( C _self, F _method, const char * _value )
+	static void check_member( C _self, F _method, const Menge::TChar * _value )
 	{
 		typedef typename check_method_param0<F>::type type;
 

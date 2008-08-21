@@ -72,7 +72,7 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	initInterfaceSystem( &fileSystem );
 	app.setFileSystem( fileSystem );
 
-	fileSystem->loadPath(".");
+	fileSystem->loadPath( MENGE_TEXT(".") );
 
 	Menge::InputSystemInterface * inputSystem;
 	initInterfaceSystem( &inputSystem );

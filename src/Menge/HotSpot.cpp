@@ -119,11 +119,11 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Point")
+			XML_CASE_NODE( MENGE_TEXT("Point") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER( "Value", &HotSpot::addPoint );
+					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Value"), &HotSpot::addPoint );
 				}
 			}
 		}

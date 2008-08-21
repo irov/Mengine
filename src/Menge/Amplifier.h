@@ -34,13 +34,13 @@ namespace	Menge
 			/*!
 			\param _playlist имя ресурса.
 			*/
-			void	playAllTracks( const std::string & _playlistResource );
+			void	playAllTracks( const String& _playlistResource );
 
 			//! Shuffle плейлиста.
 			/*!
 			\param _playlist имя плейлиста.
 			*/
-			void	shuffle( const std::string & _playlist );
+			void	shuffle( const String& _playlist );
 
 			//! Остановка музыки.
 			/*!

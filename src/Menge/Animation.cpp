@@ -78,7 +78,7 @@ namespace	Menge
 
 		if( m_resourceAnimation == NULL )
 		{
-			MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
+			MENGE_LOG( MENGE_TEXT("Sprite %s: Image resource not getting '%s'")
 				, getName().c_str()
 				, m_resourceAnimationName.c_str() 
 				);
@@ -145,7 +145,7 @@ namespace	Menge
 
 			if( m_resourceAnimation == NULL )
 			{
-				MENGE_LOG( "Sprite %s: Image resource not getting '%s'"
+				MENGE_LOG( MENGE_TEXT("Sprite %s: Image resource not getting '%s'")
 					, getName().c_str()
 					, m_resourceAnimationName.c_str() 
 					);
@@ -249,8 +249,8 @@ namespace	Menge
 	{
 		Sprite::_setListener();
 
-		m_onEndAnimationEvent = registerEvent( EVENT_ANIMATION_END, "onAnimationEnd", m_listener );
-		m_onEndFrameEvent = registerEvent( EVENT_FRAME_END, "onFrameEnd", m_listener );
+		m_onEndAnimationEvent = registerEvent( EVENT_ANIMATION_END, MENGE_TEXT("onAnimationEnd"), m_listener );
+		m_onEndFrameEvent = registerEvent( EVENT_FRAME_END, MENGE_TEXT("onFrameEnd"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -15,12 +15,21 @@ typedef wchar_t TCharW;
 typedef char	TCharA;
 typedef std::wstring StringW;
 typedef std::string StringA;
+typedef std::wstringstream StringstreamW;
+typedef std::stringstream StringstreamA;
 
 #	if MENGE_WCHAR_T_STRINGS
 		typedef TCharW TChar;
 		typedef StringW String;
+		typedef StringstreamW Stringstream;
 		#define StdErr (std::wcerr)
 		#define StdStrchr (std::wcschr)
+		#define STDVSPRINTF (vswprintf_s)
+		#define STDSPRINTF (swprintf_s)
+		#define STDSSCANF (swscanf_s)
+		#define STDSTRCPY (wcscpy)
+		#define STDSTRCMP (wcscmp)
+		#define STDITOS (_itow)
 		typedef std::wofstream StdOfstream;
 
 		#	if MENGE_COMPILER == MENGE_COMPILER_MSVC
@@ -30,10 +39,16 @@ typedef std::string StringA;
 #	else
 		typedef TCharA TChar;
 		typedef StringA String;
+		typedef StringstreamA Stringstream;
 		#define StdErr (std::cerr)
 		typedef std::ofstream StdOfstream;
 		#define StdStrchr (std::strchr)
-
+		#define STDVSPRINTF (vsprintf_s)
+		#define STDSPRINTF (sprintf_s)
+		#define STDSSCANF (sscanf_s)
+		#define STDSTRCPY (strcpy)
+		#define STDSTRCMP (strcmp)
+		#define STDITOS (_itoa)
 		#	if MENGE_COMPILER == MENGE_COMPILER_MSVC
 			#	define MENGE_TEXT(quote)	quote
 		#	endif

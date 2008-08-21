@@ -23,8 +23,8 @@ namespace Menge
 		ResourceReference::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
-			XML_CASE_ATTRIBUTE_NODE( "Mesh", "Name", m_meshName );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("File"), MENGE_TEXT("Path"), m_filename );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Mesh"), MENGE_TEXT("Name"), m_meshName );
 			//XML_CASE_ATTRIBUTE_NODE( "Skeleton", "Name", m_skeletonName );
 			//XML_CASE_ATTRIBUTE_NODE( "Material", "Name", m_materialName );
 		}
@@ -53,7 +53,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & ResourceMesh::getMeshName() const
+	const String& ResourceMesh::getMeshName() const
 	{
 		return m_meshName;
 	}

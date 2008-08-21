@@ -25,11 +25,11 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Vertex")
+			XML_CASE_NODE( MENGE_TEXT("Vertex") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER( "Value", &ShadowCaster2D::addVertex );
+					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Value"), &ShadowCaster2D::addVertex );
 				}
 			}
 		}

@@ -18,8 +18,8 @@ namespace Menge
 		virtual ~ResourceReference();
 
 	public:
-		void setName( const std::string & _name );
-		const std::string & getName();
+		void setName( const String& _name );
+		const String& getName();
 
 		const ResourceFactoryParam& getFactoryParams() const;
 

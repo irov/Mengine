@@ -29,7 +29,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceTileSet::setFilePath( const std::string & _path )
+	void ResourceTileSet::setFilePath( const String& _path )
 	{
 		m_tileSetFile = m_params.category + _path;
 	}
@@ -39,8 +39,8 @@ namespace Menge
 		ResourceReference::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "TileSet", "File", &ResourceTileSet::setFilePath );
-			XML_CASE_ATTRIBUTE_NODE( "Tiles", "Value", m_tiles );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("TileSet"), MENGE_TEXT("File"), &ResourceTileSet::setFilePath );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Tiles"), MENGE_TEXT("Value"), m_tiles );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -78,9 +78,9 @@ namespace Menge
 		for( unsigned int tile = 0; tile < tilesNum; tile++ )
 		{
 			unsigned int tileCode = s_tileNumToCode( tile, m_tiles );
-			char buffer[10];
-			std::string tilestr( _itoa(tileCode, buffer, 10) );
-			std::string name = m_tileSetFile + tilestr + ".png";
+			TChar buffer[10];
+			String tilestr( STDITOS(tileCode, buffer, 10) );
+			String name = m_tileSetFile + tilestr + MENGE_TEXT(".png");
 			RenderImageInterface* image = Holder<RenderEngine>::hostage()->loadImage( name, 0 );
 
 			m_tileSize = (float)image->getWidth();

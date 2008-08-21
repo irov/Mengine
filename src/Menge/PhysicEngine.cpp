@@ -38,7 +38,7 @@ namespace Menge
 		return m_interface->cookConvex( _verts, _vertexSize, _indecies, _indexSize );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	GeometryInterface * PhysicEngine::cookConvex( const std::string& _filename )
+	GeometryInterface * PhysicEngine::cookConvex( const String& _filename )
 	{
 		return m_interface->cookConvex( _filename.c_str() );
 	}
@@ -48,7 +48,7 @@ namespace Menge
 		return m_interface->cookConcave( _verts, _vertexSize, _indecies, _indexSize );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	GeometryInterface * PhysicEngine::cookConcave( const std::string& _filename )
+	GeometryInterface * PhysicEngine::cookConcave( const String& _filename )
 	{
 		return m_interface->cookConcave( _filename );
 	}

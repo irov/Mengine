@@ -15,7 +15,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ImageFrame ResourceImage::loadImageFrame( const std::string & _fileName )
+	ResourceImage::ImageFrame ResourceImage::loadImageFrame( const String& _fileName )
 	{
 		RenderImageInterface * image = 
 			Holder<RenderEngine>::hostage()
@@ -25,7 +25,7 @@ namespace Menge
 
 		if( image == 0 )
 		{
-			MENGE_LOG("Warning: resource '%s' can't load image file '%s'\n"
+			MENGE_LOG( MENGE_TEXT("Warning: resource '%s' can't load image file '%s'\n")
 				, getName().c_str()
 				, _fileName.c_str()
 				);
@@ -57,7 +57,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Filter", "Value", m_filter );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Filter"), MENGE_TEXT("Value"), m_filter );
 		}
 	}
 }

@@ -57,7 +57,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		String toString( int x )
 		{
-			std::ostringstream str;
+			Stringstream str;
 			str << x;
 			return str.str();
 		}

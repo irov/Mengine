@@ -5,13 +5,13 @@
 #	include <assert.h>
 
 //////////////////////////////////////////////////////////////////////////
-WinSystemDLL::WinSystemDLL(const std::string &_filename )
+WinSystemDLL::WinSystemDLL(const Menge::String& _filename )
 : m_filename( _filename )
 {
 #ifdef _DEBUG
-	m_hInstance = LoadLibraryA( std::string( _filename + "_d" ).c_str() );
+	m_hInstance = LoadLibrary( Menge::String( _filename + MENGE_TEXT("_d") ).c_str() );
 #else
-	m_hInstance = LoadLibraryA( _filename.c_str() );
+	m_hInstance = LoadLibrary( _filename.c_str() );
 #endif
 
 	if( m_hInstance )

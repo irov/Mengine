@@ -60,11 +60,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Codec::initialize()
 	{
-		registerCodec(new ImageCodecPNG("png"));
-		registerCodec(new ImageCodecJPEG("jpg"));
-		registerCodec(new ImageCodecJPEG("jpeg"));
-		registerCodec(new ImageCodecJPEG("jfif"));
-		registerCodec(new ImageCodecMNE("mne"));
+		registerCodec(new ImageCodecPNG( MENGE_TEXT("png") ));
+		registerCodec(new ImageCodecJPEG( MENGE_TEXT("jpg") ));
+		registerCodec(new ImageCodecJPEG( MENGE_TEXT("jpeg") ));
+		registerCodec(new ImageCodecJPEG( MENGE_TEXT("jfif") ));
+		registerCodec(new ImageCodecMNE( MENGE_TEXT("mne") ));
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Codec::cleanup()

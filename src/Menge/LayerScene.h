@@ -22,7 +22,7 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 
 	public:
-		Node * getChildren( const std::string & _name, bool _recursion ) const override;
+		Node * getChildren( const String& _name, bool _recursion ) const override;
 
 	public:
 		void render( unsigned int _debugMask ) override;
@@ -39,7 +39,7 @@ namespace Menge
 		void _release() override;
 
 	public:
-		std::string m_sceneName;
+		String m_sceneName;
 		Scene * m_subScene;
 	};
 }

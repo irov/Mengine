@@ -39,11 +39,11 @@ namespace Menge
 			imageData->flags |= DF_COUNT_ALPHA;
 		}
 
-		Codec* codecJPEG = Codec::getCodec( "jpg" );
+		Codec* codecJPEG = Codec::getCodec( MENGE_TEXT("jpg") );
 		bool res = codecJPEG->getDataInfo( _inputData, imageData );
 		if( res == false )
 		{
-			MENGE_LOG( "MNE codec error: can't get file info" );
+			MENGE_LOG( MENGE_TEXT("MNE codec error: can't get file info") );
 			return false;
 		}
 
@@ -58,11 +58,11 @@ namespace Menge
 		unsigned long jpg_size = 0;
 		_input->read(&jpg_size,sizeof(unsigned long));
 
-		Codec* codecJPEG = Codec::getCodec( "jpg" );
+		Codec* codecJPEG = Codec::getCodec( MENGE_TEXT("jpg") );
 		bool res = codecJPEG->decode( _input, _buffer, _options );
 		if( res == false )
 		{
-			MENGE_LOG( "MNE codec error: can't decode JPEG info" );
+			MENGE_LOG( MENGE_TEXT("MNE codec error: can't decode JPEG info") );
 			return false;
 		}
 
@@ -73,7 +73,7 @@ namespace Menge
 			res = codecPNG->decode( _input, _buffer, DF_READ_ALPHA_ONLY );
 			if( res == false )
 			{
-				MENGE_LOG( "MNE codec error: can't decode PNG info" );
+				MENGE_LOG( MENGE_TEXT("MNE codec error: can't decode PNG info") );
 				return false;
 			}
 		}

@@ -20,7 +20,7 @@
 #	include "ProfilerEngine.h"
 
 #	include "XmlEngine.h"
-
+#	include "Utils.h"
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -96,7 +96,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "Game" )
+			XML_CASE_NODE( MENGE_TEXT("Game") )
 			{
 				XML_PARSE_ELEMENT( this, &Game::loaderGame_ );
 			}
@@ -107,34 +107,35 @@ namespace Menge
 	{	
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_resourceResolution );
-			XML_CASE_ATTRIBUTE_NODE( "Title", "Value", m_title );
-			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
-			XML_CASE_ATTRIBUTE_NODE( "PhysicSystem", "Value", m_physicSystemName );
-			XML_CASE_ATTRIBUTE_NODE( "Width", "Value", m_resolution[0] );					
-			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_resolution[1] );
-			XML_CASE_ATTRIBUTE_NODE( "Bits", "Value", m_bits );
-			XML_CASE_ATTRIBUTE_NODE( "Fullscreen", "Value", m_fullScreen );
-			XML_CASE_ATTRIBUTE_NODE( "VSync", "Value", m_vsync );
-			XML_CASE_ATTRIBUTE_NODE( "TextureFiltering", "Value", m_textureFiltering );
-			XML_CASE_ATTRIBUTE_NODE( "FSAAType", "Value", m_FSAAType );
-			XML_CASE_ATTRIBUTE_NODE( "FSAAQuality", "Value", m_FSAAQuality );
-			XML_CASE_ATTRIBUTE_NODE( "DefaultArrow", "Value", m_defaultArrowName );
-			XML_CASE_ATTRIBUTE_NODE( "PersonalityModule", "Value", m_personality );
-			XML_CASE_ATTRIBUTE_NODE( "InitFunction", "Value", m_eventInit );
-			XML_CASE_ATTRIBUTE_NODE( "UpdateFunction", "Value", m_eventUpdate );
-			XML_CASE_ATTRIBUTE_NODE( "FinilizeFunction", "Value", m_eventFini );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ResourceResolution"), MENGE_TEXT("Value"), m_resourceResolution );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Title"), MENGE_TEXT("Value"), m_title );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("FixedContentResolution"), MENGE_TEXT("Value"), m_fixedContentResolution );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("PhysicSystem"), MENGE_TEXT("Value"), m_physicSystemName );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Width"), MENGE_TEXT("Value"), m_resolution[0] );					
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Height"), MENGE_TEXT("Value"), m_resolution[1] );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Bits"), MENGE_TEXT("Value"), m_bits );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Fullscreen"), MENGE_TEXT("Value"), m_fullScreen );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("VSync"), MENGE_TEXT("Value"), m_vsync );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("TextureFiltering"), MENGE_TEXT("Value"), m_textureFiltering );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("FSAAType"), MENGE_TEXT("Value"), m_FSAAType );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("FSAAQuality"), MENGE_TEXT("Value"), m_FSAAQuality );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("DefaultArrow"), MENGE_TEXT("Value"), m_defaultArrowName );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("PersonalityModule"), MENGE_TEXT("Value"), m_personality );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("InitFunction"), MENGE_TEXT("Value"), m_eventInit );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("UpdateFunction"), MENGE_TEXT("Value"), m_eventUpdate );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("FinilizeFunction"), MENGE_TEXT("Value"), m_eventFini );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::readResourceFile( const std::string& _file )
+	void Game::readResourceFile( const String& _file )
 	{
-		m_currentResourcePath = _file.substr( 0, _file.find_last_of('/') + 1 );
+		m_currentResourcePath = _file.substr( 0, _file.find_last_of( MENGE_TEXT('/') ) + 1 );
 
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &Game::loaderResourceFile ) == false )
 		{
-			MENGE_LOG("Invalid resource file [%s] ...\n", _file.c_str() );
+			MENGE_LOG( MENGE_TEXT("Invalid resource file [%s] ...\n")
+				, _file.c_str() );
 			//return false;
 		}
 	}
@@ -143,7 +144,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "Resources" )
+			XML_CASE_NODE( MENGE_TEXT("Resources") )
 			{
 				XML_PARSE_ELEMENT( this, &Game::loaderResourceFile_ );
 			}
@@ -155,12 +156,12 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 
-			XML_CASE_NODE("Scenes")
+			XML_CASE_NODE( MENGE_TEXT("Scenes") )
 			{
-				std::string path;
+				String path;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", path );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Path"), path );
 				}
 				
 				m_pathScenes.push_back( std::make_pair( m_currentResourcePath, path ) );
@@ -168,58 +169,58 @@ namespace Menge
 				XML_PARSE_ELEMENT( this, &Game::loaderScenes_ );
 			}
 
-			XML_CASE_NODE("Arrows")
+			XML_CASE_NODE( MENGE_TEXT("Arrows") )
 			{
-				std::string path;
+				String path;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", path );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Path"), path );
 				}
 				m_pathArrows.push_back( std::make_pair( m_currentResourcePath, path ) );
 
 				XML_PARSE_ELEMENT( this, &Game::loaderArrows_ );
 			}
 			
-			XML_CASE_NODE("Entities")
+			XML_CASE_NODE( MENGE_TEXT("Entities") )
 			{
-				std::string path;
+				String path;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", path );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Path"), path );
 				}
 				m_pathEntities.push_back( std::make_pair( m_currentResourcePath, path ) );
 
 				XML_PARSE_ELEMENT( this, &Game::loaderEntities_ );
 			}
 
-			XML_CASE_NODE("Resource")
+			XML_CASE_NODE( MENGE_TEXT("Resource") )
 			{
-				std::string path;
+				String path;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", path );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Path"), path );
 				}
 				m_pathResource.push_back( std::make_pair( m_currentResourcePath, path ) );
 
 				XML_PARSE_ELEMENT( this, &Game::loaderResources_ );
 			}
 
-			XML_CASE_NODE("ResourceLocation")
+			XML_CASE_NODE( MENGE_TEXT("ResourceLocation") )
 			{
-				std::string path;
+				String path;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", path );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Path"), path );
 					m_listResourceLocation.push_back( std::make_pair( m_currentResourcePath, path ) );
 				}
 			}
 
-			XML_CASE_NODE("Scripts")
+			XML_CASE_NODE( MENGE_TEXT("Scripts") )
 			{
-				std::string path;
+				String path;
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Path", path );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Path"), path );
 				}
 				m_pathScripts.push_back( std::make_pair( m_currentResourcePath, path ) );
 			}
@@ -373,8 +374,8 @@ namespace Menge
 
 		if(Holder<ProfilerEngine>::hostage()->isEnabled())
 		{
-			static char m_debugText[128];
-			sprintf( m_debugText, "FPS=%f", m_FPS );
+			static TChar m_debugText[128];
+			STDSPRINTF( m_debugText, MENGE_TEXT("FPS=%f"), m_FPS );
 			Holder<RenderEngine>::hostage()->renderText( m_debugText,mt::vec2f::zero_v2,0xFFFFFFFF);
 		}
 
@@ -387,8 +388,7 @@ namespace Menge
 
 		if( it_find == m_mapEntitiesDeclaration.end() )
 		{
-			static std::string empty;
-			return empty;
+			return Utils::emptyString();
 		}
 
 		return it_find->second.first + it_find->second.second;
@@ -404,9 +404,9 @@ namespace Menge
 			return false;
 		}
 
-		registerEvent( EVENT_KEY, "onHandleKeyEvent", m_pyPersonality );
-		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", m_pyPersonality );
-		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", m_pyPersonality );
+		registerEvent( EVENT_KEY, MENGE_TEXT("onHandleKeyEvent"), m_pyPersonality );
+		registerEvent( EVENT_MOUSE_BUTTON, MENGE_TEXT("onHandleMouseButtonEvent"), m_pyPersonality );
+		registerEvent( EVENT_MOUSE_MOVE, MENGE_TEXT("onHandleMouseMove"), m_pyPersonality );
 
 		if( Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
@@ -479,11 +479,11 @@ namespace Menge
 				it != it_end;
 				it++ )
 		{
-			std::string path = it->second.first;
+			String path = it->second.first;
 			path += it->second.second;
-			path += '/';
+			path += MENGE_TEXT('/');
 			path += it->first;
-			path += ".resource";
+			path += MENGE_TEXT(".resource");
 
 			Holder<ResourceManager>::hostage()
 				->loadResource( it->second.first, path, it->first );
@@ -495,7 +495,7 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			std::string path = it->second.first;
+			String path = it->second.first;
 			path += it->second.second;
 
 			loadArrow( it->first, path );
@@ -535,7 +535,7 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::removeArrow( const std::string & _name )
+	void Game::removeArrow( const String& _name )
 	{
 		m_mapArrow.erase( _name );
 	}
@@ -545,7 +545,7 @@ namespace Menge
 		return m_defaultArrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Arrow * Game::getArrow( const std::string & _name )
+	Arrow * Game::getArrow( const String& _name )
 	{
 		TMapArrow::iterator it_find = m_mapArrow.find( _name );
 
@@ -557,27 +557,27 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadArrow( const std::string & _name, const std::string & _path )
+	bool Game::loadArrow( const String& _name, const String& _path )
 	{
-		std::string arrowModule = _name;
-		arrowModule += ".Arrow";
+		String arrowModule = _name;
+		arrowModule += MENGE_TEXT(".Arrow");
 
 		Arrow * arrow = Holder<ScriptEngine>::hostage()
 			->createArrow( arrowModule );
 
 		if( arrow == 0 )
 		{
-			MENGE_LOG("Can't create arrow [%s]\n"
+			MENGE_LOG( MENGE_TEXT("Can't create arrow [%s]\n")
 				, _name.c_str() 
 				);
 
 			return false;
 		}
 
-		std::string xml_path = _path;
-		xml_path += "/";
+		String xml_path = _path;
+		xml_path += MENGE_TEXT("/");
 		xml_path += _name;
-		xml_path += "/Arrow.xml";
+		xml_path += MENGE_TEXT("/Arrow.xml");
 
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( xml_path, arrow, &Arrow::loader ) == false )
@@ -592,21 +592,21 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Scene * Game::getScene(const std::string & _name )
+	Scene * Game::getScene( const String& _name )
 	{
 		TMapScene::iterator it_find = m_mapScene.find( _name );
 
 		if( it_find == m_mapScene.end() )
 		{
-			std::string sceneModule = _name;
-			sceneModule += ".Scene";
+			String sceneModule = _name;
+			sceneModule += MENGE_TEXT(".Scene");
 
 			Scene * scene = Holder<ScriptEngine>::hostage()
 				->createScene( sceneModule );
 
 			if( scene == 0 )
 			{
-				MENGE_LOG("Can't create scene [%s]\n"
+				MENGE_LOG( MENGE_TEXT("Can't create scene [%s]\n")
 					, _name.c_str() 
 					);
 
@@ -615,20 +615,20 @@ namespace Menge
 
 			scene->setName( _name );
 			
-			std::string xml_path;
+			String xml_path;
 
 			const TPairDeclaration & pair = m_mapScenesDeclaration[ _name ];
 
 			xml_path = pair.first;
 			xml_path += pair.second;
-			xml_path += "/";
+			xml_path += MENGE_TEXT("/");
 			xml_path += _name;
-			xml_path += "/Scene.xml";
+			xml_path += MENGE_TEXT("/Scene.xml");
 
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlFileM( xml_path, scene, &Scene::loader ) == false )
 			{
-				MENGE_LOG("Warning: invalid loader xml '%s' for scene '%s'"
+				MENGE_LOG( MENGE_TEXT("Warning: invalid loader xml '%s' for scene '%s'")
 					, xml_path.c_str()
 					, _name.c_str()
 					);
@@ -642,7 +642,7 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::destroyScene( const std::string & _name  )
+	void Game::destroyScene( const String& _name  )
 	{
 		TMapScene::iterator it_find = m_mapScene.find( _name );
 
@@ -658,27 +658,7 @@ namespace Menge
 		return m_resourceResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::onResourceLoaded( const std::string& _name )
-	{
-		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, "onHandleResourceLoaded" ) )
-		{
-			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, "onHandleResourceLoaded" );
-		}	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::onResourceUnLoaded()
-	{
-		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, "onHandleResourceUnLoaded" ) )
-		{
-			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, "onHandleResourceUnLoaded" );
-		}	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const std::string& Game::getTitle() const
+	const String& Game::getTitle() const
 	{
 		return m_title;
 	}
@@ -733,13 +713,13 @@ namespace Menge
 		TAccountMap::iterator it = m_accounts.find( _accountName );
 		if( it != m_accounts.end() )
 		{
-			MENGE_LOG("Warning: Account with name '%s' already exist. Account not created",
+			MENGE_LOG( MENGE_TEXT("Warning: Account with name '%s' already exist. Account not created"),
 				_accountName.c_str() );
 			return;
 		}
 
 		Holder<FileEngine>::hostage()->
-			createFolder( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _accountName );
+			createFolder( Holder<FileEngine>::hostage()->getAppDataPath() + MENGE_TEXT("\\") + _accountName );
 
 		Account* newAccount = new Account( _accountName );
 		m_accounts.insert( std::make_pair( _accountName, newAccount ) );
@@ -747,14 +727,14 @@ namespace Menge
 		m_currentAccount = newAccount;
 
 		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, "onCreateAccount" ) )
+			->hasModuleFunction( m_pyPersonality, MENGE_TEXT("onCreateAccount") ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, "onCreateAccount", "(s)", _accountName.c_str() );
+				->callModuleFunction( m_pyPersonality, MENGE_TEXT("onCreateAccount"), MENGE_TEXT("(s)"), _accountName.c_str() );
 		}
 		else
 		{
-			MENGE_LOG("Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts" );
+			MENGE_LOG( MENGE_TEXT("Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts") );
 		}
 
 		if( m_loadingAccounts == false )
@@ -777,7 +757,7 @@ namespace Menge
 			}
 
 			Holder<FileEngine>::hostage()->
-				deleteFolder( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _accountName );
+				deleteFolder( Holder<FileEngine>::hostage()->getAppDataPath() + MENGE_TEXT("\\") + _accountName );
 
 			delete it_find->second;
 
@@ -785,7 +765,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG("Error: Can't delete account '%s'. There is no account with such name"
+			MENGE_LOG( MENGE_TEXT("Error: Can't delete account '%s'. There is no account with such name")
 				, _accountName.c_str() 
 				);
 		}
@@ -805,7 +785,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG("Error: Can't select account '%s'. There is no account with such name"
+			MENGE_LOG( MENGE_TEXT("Error: Can't select account '%s'. There is no account with such name")
 				, _accountName.c_str() 
 				);
 		}
@@ -822,15 +802,15 @@ namespace Menge
 		{
 			String accountName;
 
-			XML_CASE_NODE( "Account" )
+			XML_CASE_NODE( MENGE_TEXT("Account") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Name", accountName );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Name"), accountName );
 				}
 				m_accounts.insert( std::make_pair( accountName, static_cast<Account*>(0) ) );
 			}
-			XML_CASE_ATTRIBUTE_NODE( "DefaultAccount", "Name", m_defaultAccountName );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("DefaultAccount"), MENGE_TEXT("Name"), m_defaultAccountName );
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -838,14 +818,14 @@ namespace Menge
 	{
 		m_loadingAccounts = true;
 
-		String file = Holder<FileEngine>::hostage()->getAppDataPath() + MENGE_TEXT("\\") + MENGE_TEXT("Accounts.ini");
+		String file = Holder<FileEngine>::hostage()->getAppDataPath() + MENGE_TEXT("\\Accounts.ini");
 		
 		if( Holder<FileEngine>::hostage()->existFile( file ) )
 		{
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlFileM( file, this, &Game::loaderAccounts_ ) == false )
 			{
-				MENGE_LOG("Parsing Accounts xml failed '%s'\n"
+				MENGE_LOG( MENGE_TEXT("Parsing Accounts xml failed '%s'\n")
 					, file.c_str()
 					);
 				return;
@@ -919,7 +899,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG("Warning: Account '%s' does not exist. Can't save"
+			MENGE_LOG( MENGE_TEXT("Warning: Account '%s' does not exist. Can't save")
 				, _accountName.c_str()
 				);
 		}

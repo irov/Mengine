@@ -18,7 +18,7 @@ namespace Menge
 		ResourceReference::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Filename", "Name", m_filename );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Filename"), MENGE_TEXT("Name"), m_filename );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

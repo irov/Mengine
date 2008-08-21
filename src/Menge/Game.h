@@ -31,7 +31,6 @@ namespace Menge
 	class Game
 		: public InputHandler
 		, public Eventable
-		, public ResourceManagerListener
 	{
 	public:
 		Game();
@@ -68,7 +67,7 @@ namespace Menge
 		void loaderEntities_( XmlElement * _xml );
 		void loaderResources_( XmlElement * _xml );
 
-		void readResourceFile( const std::string& _file );
+		void readResourceFile( const String& _file );
 		void loaderResourceFile( XmlElement * _xml );
 		void loaderResourceFile_( XmlElement * _xml );
 
@@ -81,16 +80,13 @@ namespace Menge
 		bool handleMouseMove( float _x, float _y, int _whell ) override;
 		void handleMouseLeave();
 		void handleMouseEnter();
-
-		void onResourceLoaded( const std::string& _name ) override;
-		void onResourceUnLoaded() override;
-		
+	
 	public:
 		const std::size_t * getResolution() const;
 		const std::size_t * getResourceResolution() const;
 		bool isContentResolutionFixed() const;
 
-		const std::string& getTitle() const;
+		const String& getTitle() const;
 
 		int getBits() const;
 		bool getFullscreen() const;
@@ -147,7 +143,7 @@ namespace Menge
 		TMapDeclaration m_mapResourceDeclaration;
 		TListDeclaration m_listResourceLocation;
 		
-		std::string m_currentResourcePath;
+		String m_currentResourcePath;
 		TListDeclaration m_pathResource;
 		TListDeclaration m_pathScripts;
 		TListDeclaration m_pathEntities;

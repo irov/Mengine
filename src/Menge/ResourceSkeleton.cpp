@@ -24,11 +24,11 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Bones")
+			XML_CASE_NODE( MENGE_TEXT("Bones") )
 			{
 				XML_PARSE_ELEMENT( this, &ResourceSkeleton::loaderBone_ );
 			}
-			XML_CASE_NODE("Animations")
+			XML_CASE_NODE( MENGE_TEXT("Animations") )
 			{
 				XML_PARSE_ELEMENT( this, &ResourceSkeleton::loaderAnimation_ );
 			}
@@ -68,7 +68,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Bone", "Name", &ResourceSkeleton::addBoneName );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("Bone"), MENGE_TEXT("Name"), &ResourceSkeleton::addBoneName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Animation", "Name", &ResourceSkeleton::addAnimationName );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("Animation"), MENGE_TEXT("Name"), &ResourceSkeleton::addAnimationName );
 		}		
 	}
 }

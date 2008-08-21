@@ -126,9 +126,10 @@ namespace Menge
 				->isKeyDown( _key );
 		}
 
-		static void setCurrentScene( const std::string & _name, bool _destroyOld = false )
+		static void setCurrentScene( const String& _name, bool _destroyOld = false )
 		{
-			MENGE_LOG("set current scene '%s'\n", _name.c_str() );
+			MENGE_LOG( MENGE_TEXT("set current scene '%s'\n")
+				,_name.c_str() );
 			Holder<Player>::hostage()
 					->setCurrentScene( _name, _destroyOld );
 		}
@@ -216,7 +217,7 @@ namespace Menge
 			Holder<Application>::hostage()->quit();
 		}
 
-		static bool directResourceCompile( const std::string & _nameResource )
+		static bool directResourceCompile( const String& _nameResource )
 		{
 			bool result = Holder<ResourceManager>::hostage()
 				->directResourceCompile( _nameResource );
@@ -224,13 +225,13 @@ namespace Menge
 			return result;
 		}
 
-		static void directResourceRelease( const std::string & _nameResource )
+		static void directResourceRelease( const String& _nameResource )
 		{
 			Holder<ResourceManager>::hostage()
 				->directResourceRelease( _nameResource );
 		}
 
-		static void directResourceUnload( const std::string & _nameResource )
+		static void directResourceUnload( const String& _nameResource )
 		{
 			Holder<ResourceManager>::hostage()
 				->directResourceUnload( _nameResource );
@@ -254,7 +255,7 @@ namespace Menge
 				->directResourceFileUnload( _resourceFile );
 		}
 
-		static PyObject * createShot( const std::string& _name, mt::vec2f _min,  mt::vec2f _max )
+		static PyObject * createShot( const String& _name, mt::vec2f _min,  mt::vec2f _max )
 		{
 			mt::vec4f rect( _min, _max );
 
@@ -266,12 +267,12 @@ namespace Menge
 				ResourceFactoryParam param;
 				param.name = _name;
 
-				param.category = Holder<FileEngine>::hostage()->getAppDataPath() + "\\";
+				param.category = Holder<FileEngine>::hostage()->getAppDataPath() + MENGE_TEXT("\\");
 				String group;
 				Account* acc = Holder<Game>::hostage()->getCurrentAccount();
 				if( acc != 0 )
 				{
-					param.group = acc->getName() + "\\";
+					param.group = acc->getName() + MENGE_TEXT("\\");
 				}
 
 				resourceImage = new ResourceImageDynamic( param );
@@ -306,7 +307,7 @@ namespace Menge
 
 			//image->writeToFile( "bl.bmp" );
 
-			Sprite * nodeSprite = SceneManager::createNodeT<Sprite>("Sprite");
+			Sprite * nodeSprite = SceneManager::createNodeT<Sprite>( MENGE_TEXT("Sprite") );
 
 			nodeSprite->setImageResource( _name );
 
@@ -353,7 +354,7 @@ namespace Menge
 			Holder<RenderEngine>::hostage()->endScene();
 			Holder<RenderEngine>::hostage()->render();
 		}
-		static void writeImageToFile( const std::string& _resource, int _frame, const std::string& _filename )
+		static void writeImageToFile( const String& _resource, int _frame, const String& _filename )
 		{
 			RenderImageInterface* img = const_cast<RenderImageInterface*>( Holder<ResourceManager>::hostage()->getResourceT<ResourceImage>( _resource )->getImage( _frame ) );
 			Holder<RenderEngine>::hostage()->saveImage( img, _filename );
@@ -366,7 +367,7 @@ namespace Menge
 		{
 			Holder<Application>::hostage()->setParticlesEnabled( _enabled );
 		}
-		static void createResourceFromXml( const std::string& _xml )
+		static void createResourceFromXml( const String& _xml )
 		{
 			Holder<ResourceManager>::hostage()->createResourceFromXml( _xml );
 		}
@@ -375,20 +376,20 @@ namespace Menge
 		{
 			ResourceImageDefault* resImage = 
 				static_cast<ResourceImageDefault*>
-				( Holder<ResourceManager>::hostage()->createResource( _resourceName, "ResourceImageDefault" ) );
+				( Holder<ResourceManager>::hostage()->createResource( _resourceName, MENGE_TEXT("ResourceImageDefault") ) );
 			resImage->addImagePath( _filename );
 			Holder<ResourceManager>::hostage()->registerResource( resImage );
 		}
 
-		static bool createFolder( const std::string& _path )
+		static bool createFolder( const String& _path )
 		{
 			return Holder<FileEngine>::hostage()->createFolder( _path );
 		}
-		static bool deleteFolder( const std::string& _path )
+		static bool deleteFolder( const String& _path )
 		{
 			return Holder<FileEngine>::hostage()->deleteFolder( _path );
 		}
-		static mt::vec2f screenToLocal( const std::string& _layerName, const mt::vec2f& _point )
+		static mt::vec2f screenToLocal( const String& _layerName, const mt::vec2f& _point )
 		{
 			return Holder<Player>::hostage()->getCurrentScene()->screenToLocal( _layerName, _point );
 		}

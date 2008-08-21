@@ -127,7 +127,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * LayerScene::getChildren( const std::string & _name, bool _recursion ) const
+	Node * LayerScene::getChildren( const String& _name, bool _recursion ) const
 	{
 		if( m_subScene )
 		{

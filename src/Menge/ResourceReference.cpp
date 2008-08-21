@@ -14,12 +14,12 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceReference::setName( const std::string & _name )
+	void ResourceReference::setName( const String& _name )
 	{
 		m_params.name = _name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & ResourceReference::getName()
+	const String& ResourceReference::getName()
 	{
 		return m_params.name;
 	}

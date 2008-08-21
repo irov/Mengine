@@ -1,5 +1,11 @@
 #	pragma once
 
+#	include "Config/Typedef.h"
+
+#	if MENGE_WCHAR_T_STRINGS
+#	define XML_UNICODE_WCHAR_T
+#	endif
+
 #	include "expat.h"
 #	include <list>
 
@@ -24,7 +30,7 @@ public:
 	void clearListener();
 
 	void setValueListener( XmlElementValueListener * _listener );
-	void callValueListener( const char * _value, int _len );
+	void callValueListener( const Menge::TChar * _value, int _len );
 
 protected:
 	typedef std::list<XmlElementListener *> TListStackListener;

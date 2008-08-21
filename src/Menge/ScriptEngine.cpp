@@ -46,7 +46,7 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptLogger::write( const std::string & _msg )
+	void ScriptLogger::write( const String& _msg )
 	{
 		//MENGE_LOG( _msg.c_str() );
 		Holder<LogEngine>::hostage()->logMessage( _msg, false, false, false );
@@ -94,7 +94,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::setModulePath( const TListModulePath & _listModulePath )
 	{
-		std::string path_packet;
+		String path_packet;
 		for( TListModulePath::const_iterator
 			it = _listModulePath.begin(),
 			it_end = _listModulePath.end();
@@ -102,7 +102,7 @@ namespace Menge
 		++it)
 		{
 			path_packet += (*it);
-			path_packet += ';';
+			path_packet += MENGE_TEXT(';');
 		}
 
 		pybind::set_syspath( path_packet.c_str() );
@@ -146,13 +146,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::registerEntityType( const String& _type )
 	{
-		MENGE_LOG( "register entity type %s ...", _type.c_str() );
+		MENGE_LOG( MENGE_TEXT("register entity type %s ...")
+			,_type.c_str() );
 
 		PyObject * module = importModule( _type );
 
 		if( module == 0 )
 		{
-			MENGE_LOG( "failed" );
+			MENGE_LOG( MENGE_TEXT("failed") );
 			return false;
 		}
 
@@ -162,13 +163,13 @@ namespace Menge
 
 			if( pybind::check_type( result ) == false )
 			{
-				MENGE_LOG( "failed" );
+				MENGE_LOG( MENGE_TEXT("failed") );
 				return false;
 			}
 
 			pybind::decref( result );
 
-			MENGE_LOG( "successful" );
+			MENGE_LOG( MENGE_TEXT("successful") );
 		}
 		catch (...)
 		{
@@ -218,7 +219,7 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::doString( const std::string & _string )
+	bool ScriptEngine::doString( const String& _string )
 	{
 		try
 		{
@@ -233,16 +234,16 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::compileString( const std::string & _string, const std::string & _file )
+	bool ScriptEngine::compileString( const String& _string, const String& _file )
 	{
 		pybind::compile_string( _string.c_str(), _file.c_str() );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::doFile( const std::string & _file )
+	bool ScriptEngine::doFile( const String& _file )
 	{
-		std::cout << "running file " << _file << "..." << std::endl;
+		MENGE_LOG( MENGE_TEXT("running file %s ..."), _file.c_str() );
 
 		try
 		{
@@ -259,8 +260,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::initModule( const String& _name )
 	{
-		MENGE_LOG( "init module %s ...", 
-			_name.c_str() 
+		MENGE_LOG( MENGE_TEXT("init module %s ...")
+			,_name.c_str() 
 			);
 
 		try
@@ -279,7 +280,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::importModule( const String& _file )
 	{
-		MENGE_LOG( "import module %s ...", _file.c_str() );
+		MENGE_LOG( MENGE_TEXT("import module %s ...")
+			,_file.c_str() );
 
 		TMapModule::iterator it_find = m_mapModule.find( _file );
 

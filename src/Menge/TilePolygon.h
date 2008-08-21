@@ -7,6 +7,7 @@
 namespace Menge
 {
 	class ResourceImage;
+	class RenderImageInterface;
 
 	class TilePolygon
 		: public RigidBody2D
@@ -34,6 +35,7 @@ namespace Menge
 
 	private:
 		String m_resourcename;
+		String m_penumbraName;
 		
 		std::vector<mt::vec2f> m_poly;
 		std::vector<mt::polygon> polys;
@@ -41,8 +43,9 @@ namespace Menge
 		std::vector<mt::vec2f> m_penumbra_triangles;
 		
 		ResourceImage * m_resource;
+		ResourceImage * m_imagePenumbra;
 
-		void _renderPass( const std::vector<mt::vec2f> & _triangles, unsigned int _color );
-		void _addVertex( const mt::vec2f & _vertex);
+		void _renderPass( const std::vector<mt::vec2f> & _triangles, const RenderImageInterface* _image );
+		void _addVertex( const mt::vec2f & _vertex );
 	};
 };

@@ -32,7 +32,7 @@ namespace Menge
 		ImageBlock getImageBlock( int tile );
 		float getTileSize();
 
-		void setFilePath( const std::string & _path );
+		void setFilePath( const String& _path );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -42,7 +42,7 @@ namespace Menge
 		void _release() override;
 
 	private:
-		std::string m_tileSetFile;
+		String m_tileSetFile;
 		unsigned int m_tiles;
 		//RenderImageInterface* m_image;
 		//typedef std::map< int, mt::vec4f > TTileSet;

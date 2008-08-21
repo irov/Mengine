@@ -30,7 +30,7 @@ namespace Menge
 		float getTileSize();
 		//const std::string& getPhysXml() const;
 
-		void setTileMapPath( const std::string & _path );
+		void setTileMapPath( const String& _path );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -48,8 +48,8 @@ namespace Menge
 		std::size_t m_width;
 		std::size_t m_height;
 
-		std::string m_tileMapFile;
-		std::string m_tileSetName;
+		String m_tileMapFile;
+		String m_tileSetName;
 		ResourceTileSet* m_tileSet;
 		float m_physWidth;
 		std::vector< mt::vec2f > m_physPos;

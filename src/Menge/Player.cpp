@@ -49,7 +49,8 @@ namespace Menge
 
 		if( m_nextScene == 0 )
 		{
-			MENGE_LOG("ERROR: Scene [%s] not have in Game\n", _name.c_str() );
+			MENGE_LOG( MENGE_TEXT("ERROR: Scene [%s] not have in Game\n")
+				,_name.c_str() );
 			return;
 		}
 
@@ -96,7 +97,7 @@ namespace Menge
 
 		this->setArrow( defaultArrow );
 
-		Camera2D * camera = SceneManager::createNodeT<Camera2D>( "Camera2D" );
+		Camera2D * camera = SceneManager::createNodeT<Camera2D>( MENGE_TEXT("Camera2D") );
 
 		//mt::vec2f vpSz( 1024, 768 );
 

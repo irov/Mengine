@@ -389,7 +389,7 @@ namespace Menge {
 		static void getBitMasks( PixelFormat _format, unsigned int _rgba[4] );
 
 		// Gets the name of an image format
-		static std::string getFormatName( PixelFormat _srcformat );
+		static String getFormatName( PixelFormat _srcformat );
 
 		//Returns wether the format can be packed or unpacked with the packColour()
 		//and unpackColour() functions. This is generally not true for compressed and
@@ -414,7 +414,7 @@ namespace Menge {
 		//otherwise, all supported format are valid.
 		//@param  caseSensitive   Should be set true if string match should use case sensitivity.
 		//@returns                The format match the format name, or PF_UNKNOWN if is invalid name.
-		static PixelFormat getFormatFromName( const std::string& _name, bool _accessibleOnly = false, bool _caseSensitive = false );
+		static PixelFormat getFormatFromName( const String& _name, bool _accessibleOnly = false, bool _caseSensitive = false );
 
 		//Gets the BNF expression of the pixel-formats.
 		//@note                   The string returned by this function is intented to use as a BNF expression
@@ -422,7 +422,7 @@ namespace Menge {
 		//@param  accessibleOnly  If true, only accessible pixel format will take into account, otherwise all
 		//pixel formats list in PixelFormat enumeration will being returned.
 		//@returns                A string contains the BNF expression.
-		static std::string getBNFExpressionOfPixelFormats( bool _accessibleOnly = false );
+		static String getBNFExpressionOfPixelFormats( bool _accessibleOnly = false );
 
 		//Returns the similar format but acoording with given bit depths.
 		//@param fmt      The original foamt.

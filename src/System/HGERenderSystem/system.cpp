@@ -82,19 +82,19 @@ bool CALL HGE_Impl::System_Initiate( Menge::LogSystemInterface* _logSystem )
 	m_logSystem = _logSystem;
 	// Log system info
 
-	System_Log("HGE Started..\n");
+	System_Log( MENGE_TEXT("HGE Started..\n") );
 
-	System_Log("HGE version: %X.%X", HGE_VERSION>>8, HGE_VERSION & 0xFF);
+	System_Log( MENGE_TEXT("HGE version: %X.%X"), HGE_VERSION>>8, HGE_VERSION & 0xFF);
 	GetLocalTime(&tm);
-	System_Log("Date: %02d.%02d.%d, %02d:%02d:%02d\n", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond);
+	System_Log( MENGE_TEXT("Date: %02d.%02d.%d, %02d:%02d:%02d\n"), tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond);
 
 	//System_Log("Application: %s",szWinTitle);
 	os_ver.dwOSVersionInfoSize=sizeof(os_ver);
 	GetVersionEx(&os_ver);
-	System_Log("OS: Windows %ld.%ld.%ld",os_ver.dwMajorVersion,os_ver.dwMinorVersion,os_ver.dwBuildNumber);
+	System_Log( MENGE_TEXT("OS: Windows %ld.%ld.%ld"),os_ver.dwMajorVersion,os_ver.dwMinorVersion,os_ver.dwBuildNumber);
 
 	GlobalMemoryStatus(&mem_st);
-	System_Log("Memory: %ldK total, %ldK free\n",mem_st.dwTotalPhys/1024L,mem_st.dwAvailPhys/1024L);
+	System_Log( MENGE_TEXT("Memory: %ldK total, %ldK free\n"),mem_st.dwTotalPhys/1024L,mem_st.dwAvailPhys/1024L);
 
 
 	// Register window class
@@ -176,7 +176,7 @@ bool CALL HGE_Impl::System_Initiate( Menge::LogSystemInterface* _logSystem )
 	}
 	//if(!_SoundInit()) { System_Shutdown(); return false; }
 
-	System_Log("Init done.\n");
+	System_Log( MENGE_TEXT("Init done.\n") );
 
 	fTime = 0.0f;
 	//t0 = t0fps = timeGetTime();
@@ -216,7 +216,7 @@ bool CALL HGE_Impl::System_Initiate( Menge::LogSystemInterface* _logSystem )
 
 void CALL HGE_Impl::System_Shutdown()
 {
-	System_Log("\nFinishing..");
+	System_Log( MENGE_TEXT("\nFinishing..") );
 
 	//timeEndPeriod(1);
 	if( hSearch )
@@ -240,7 +240,7 @@ void CALL HGE_Impl::System_Shutdown()
 
 	//if(hInstance) UnregisterClass(WINDOW_CLASS_NAME, hInstance);
 
-	System_Log("The End.");
+	System_Log( MENGE_TEXT("The End.") );
 }
 
 
@@ -607,12 +607,12 @@ const char* CALL HGE_Impl::System_GetStateString(hgeStringState state) {
 	return NULL;
 }
 
-char* CALL HGE_Impl::System_GetErrorMessage()
+Menge::TChar* CALL HGE_Impl::System_GetErrorMessage()
 {
 	return szError;
 }
 
-void CALL HGE_Impl::System_Log(const char *szFormat, ...)
+void CALL HGE_Impl::System_Log( const Menge::TChar *szFormat, ...)
 {
 	//FILE *hf = NULL;
 	va_list ap;
@@ -621,10 +621,10 @@ void CALL HGE_Impl::System_Log(const char *szFormat, ...)
 
 	//hf = fopen(szLogFile, "a");
 	//if(!hf) return;
-	char str[1024];
+	Menge::TChar str[1024];
 
 	va_start(ap, szFormat);
-	vsprintf_s(str, szFormat, ap);
+	STDVSPRINTF(str, szFormat, ap);
 	va_end(ap);
 
 	//fprintf(hf, "\n");
@@ -747,10 +747,10 @@ HGE_Impl::HGE_Impl()
 	//szAppPath[i+1]=0;
 }
 
-void HGE_Impl::_PostError(char *error)
+void HGE_Impl::_PostError( Menge::TChar *error )
 {
-	System_Log(error);
-	strcpy(szError,error);
+	System_Log( error );
+	STDSTRCPY( szError, error );
 }
 
 void HGE_Impl::_FocusChange(bool bAct)

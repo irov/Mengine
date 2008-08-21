@@ -23,7 +23,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceFont::setFontPath( const std::string & _path )
+	void ResourceFont::setFontPath( const String& _path )
 	{
 		m_filename = m_params.category + _path;
 	}
@@ -34,7 +34,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("File"), MENGE_TEXT("Path"), &ResourceFont::setFontPath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -83,7 +83,7 @@ namespace Menge
 
 		if( stream == 0 )
 		{
-			MENGE_LOG("Warning: resource font not find fond file '%s'\n"
+			MENGE_LOG( MENGE_TEXT("Warning: resource font not find fond file '%s'\n")
 				, m_filename.c_str() 
 				);
 
@@ -122,7 +122,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceFont::getCharRatio( char _id ) const
+	float ResourceFont::getCharRatio( TChar _id ) const
 	{
 		TMapGlyph::const_iterator it = m_glyphs.find(_id);
 
@@ -134,11 +134,11 @@ namespace Menge
 		return it->second.ratio;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::string ResourceFont::getFontDir( const std::string & _fontName )
+	String ResourceFont::getFontDir( const String& _fontName )
 	{
-		std::string::size_type index = _fontName.find_last_of("/");
+		String::size_type index = _fontName.find_last_of( MENGE_TEXT("/") );
 
-		std::string fontDir = _fontName;
+		String fontDir = _fontName;
 
 		if( index != std::string::npos )
 		{
@@ -148,24 +148,25 @@ namespace Menge
 		return fontDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceFont::parseAttribute( const std::string & name, const std::string & params )
+	bool ResourceFont::parseAttribute( const String& name, const String& params )
 	{
-		if ( name == "glyph" )
+		if ( name == MENGE_TEXT("glyph") )
 		{
 			char r;
 			float u1, v1, u2, v2;
 
-			int err = sscanf_s( params.c_str(), "%c %f %f %f %f", &r, 1, &u1, &v1, &u2, &v2 );
+			int err = STDSSCANF( params.c_str(), MENGE_TEXT("%c %f %f %f %f"), &r, 1, &u1, &v1, &u2, &v2 );
 
 			if (err == 0)
 			{
-				MENGE_LOG( "Error: in parsing params: '%s'", params.c_str() );
+				MENGE_LOG( MENGE_TEXT("Error: in parsing params: '%s'")
+					,params.c_str() );
 				return false;
 			}
 
 			setGlyph( r, u1, v1, u2, v2 );
 		}
-		else if ( name == "source" )
+		else if ( name == MENGE_TEXT("source") )
 		{
 			m_fullname = m_fontDir + params;
 
@@ -173,11 +174,12 @@ namespace Menge
 
 			if( m_image == 0 )
 			{
-				MENGE_LOG( "Error: Image can't loaded '%s'", m_fullname.c_str() );
+				MENGE_LOG( MENGE_TEXT("Error: Image can't loaded '%s'")
+					,m_fullname.c_str() );
 				return false;
 			}
 		}
-		else if ( name == "outline" )
+		else if ( name == MENGE_TEXT("outline") )
 		{
 			m_fullname = m_fontDir + params;
 
@@ -185,7 +187,8 @@ namespace Menge
 
 			if( m_outline == 0 )
 			{
-				MENGE_LOG( "Error: Image can't loaded '%s'", m_fullname.c_str() );
+				MENGE_LOG( MENGE_TEXT("Error: Image can't loaded '%s'")
+					,m_fullname.c_str() );
 			}
 		}
 
@@ -194,21 +197,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::parseFontdef( DataStreamInterface * _stream )
 	{
-		std::string line = _stream->getLine( true );
-		_stream->skipLine("{");
+		String line = _stream->getLine( true );
+		_stream->skipLine( MENGE_TEXT("{") );
 		
 		while( !_stream->eof() )
         {
             line = _stream->getLine( true );
 
-			if( line.length() == 0 || line.substr( 0, 2 ) == "//" )
+			if( line.length() == 0 || line.substr( 0, 2 ) == MENGE_TEXT("//") )
             {
                 continue;
             }
 
-			std::string::size_type start = line.find_first_of( "\t\n " );
-			std::string name = line.substr( 0, start );
-			std::string value = line.substr( start + 1, line.size() );
+			String::size_type start = line.find_first_of( MENGE_TEXT("\t\n ") );
+			String name = line.substr( 0, start );
+			String value = line.substr( start + 1, line.size() );
 		
 			bool result = parseAttribute( name, value );
 

@@ -44,7 +44,7 @@ namespace Menge
 		\param _id индекс глифа
 		\return коэффициент пропорциональности глифа
 		*/
-		float getCharRatio( char _id ) const;
+		float getCharRatio( TChar _id ) const;
 
 		//! Возвращает изображение для шрифта.
 		/*!
@@ -58,7 +58,7 @@ namespace Menge
 		*/
 		const RenderImageInterface * getOutlineImage() const;
 
-		void setFontPath( const std::string & _path );
+		void setFontPath( const String& _path );
 
 		float getInitSize();
 
@@ -72,10 +72,10 @@ namespace Menge
 	private:
 
 		void setGlyph( unsigned int _id, float _u1, float _v1, float _u2, float _v2 );
-		std::string getFontDir( const std::string & _fontName );
+		String getFontDir( const String& _fontName );
 
 		bool parseFontdef( DataStreamInterface * _stream );
-		bool parseAttribute( const std::string & name, const std::string & params );
+		bool parseAttribute( const String& name, const String& params );
 
 	private:
 
@@ -95,9 +95,9 @@ namespace Menge
 
 		TMapGlyph	m_glyphs;
 
-		std::string m_filename;
-		std::string m_fontDir;
-		std::string m_fullname;
+		String m_filename;
+		String m_fontDir;
+		String m_fullname;
 
 		float m_whsRatio;
 		float m_initSize;

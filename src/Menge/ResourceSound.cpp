@@ -21,7 +21,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::setFilePath( const std::string & _path )
+	void ResourceSound::setFilePath( const String& _path )
 	{
 		m_filename = m_params.category + _path;
 	}
@@ -32,8 +32,8 @@ namespace Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceSound::setFilePath );
-			XML_CASE_ATTRIBUTE_NODE("IsStreamable","Value",m_isStreamable);
+			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("File"), MENGE_TEXT("Path"), &ResourceSound::setFilePath );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("IsStreamable"), MENGE_TEXT("Value"),m_isStreamable);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG("resource sound [%s] can't load sound '%s'\n"
+			MENGE_LOG( MENGE_TEXT("resource sound [%s] can't load sound '%s'\n")
 				, getName().c_str() 
 				, m_filename.c_str()
 				);

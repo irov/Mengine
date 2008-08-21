@@ -21,7 +21,7 @@ namespace Menge
 	namespace ScriptMethod
 	{
 		PyObject * createEntity(
-			std::string _type, 
+			String _type, 
 			const mt::vec2f & _pos, 
 			const mt::vec2f & _dir )
 		{
@@ -30,12 +30,12 @@ namespace Menge
 
 			if( module == 0 )
 			{
-				MENGE_LOG("Cant't create entity [%s] (not module)\n"
+				MENGE_LOG( MENGE_TEXT("Cant't create entity [%s] (not module)\n")
 					, _type.c_str() 
 					);
 			}
 
-			PyObject * result = pybind::call_method( module, _type.c_str(), "()" );
+			PyObject * result = pybind::call_method( module, _type.c_str(), MENGE_TEXT("()") );
 
 			if( result == 0 )
 			{
@@ -46,7 +46,7 @@ namespace Menge
 
 			if( entity == 0 )
 			{
-				MENGE_LOG("Can't create entity [%s]\n"
+				MENGE_LOG( MENGE_TEXT("Can't create entity [%s]\n")
 					, _type.c_str() 
 					);
 
@@ -54,15 +54,15 @@ namespace Menge
 			}
 			
 			entity->setName( _type );
-			entity->setType("Entity");
+			entity->setType( MENGE_TEXT("Entity") );
 			entity->setEmbedding( result );
 
-			std::string xml_path = Holder<Game>::hostage()
+			String xml_path = Holder<Game>::hostage()
 				->getPathEntities( _type );
 			
-			xml_path += '/';
+			xml_path += MENGE_TEXT('/');
 			xml_path += _type;
-			xml_path += ".xml";
+			xml_path += MENGE_TEXT(".xml");
 
 			TVectorChar * entityXml = 
 				Holder<ScriptEngine>::hostage()
@@ -75,7 +75,7 @@ namespace Menge
 				{
 					//entity->registerEvent( "LOADER", "onLoader" );
 					//entity->callEvent("LOADER", "()");
-					entity->callMethod("onLoader", "()");
+					entity->callMethod( MENGE_TEXT("onLoader"), MENGE_TEXT("()") );
 				}
 			}
 
@@ -85,19 +85,19 @@ namespace Menge
 			return result;
 		}
 
-		static PyObject * createEntityFromXml( const std::string& _type, const std::string & _xml, const mt::vec2f & _pos, const mt::vec2f & _dir )
+		static PyObject * createEntityFromXml( const String& _type, const String& _xml, const mt::vec2f & _pos, const mt::vec2f & _dir )
 		{
 			PyObject * module = Holder<ScriptEngine>::hostage()
 				->getEntityModule( _type );
 
 			if( module == 0 )
 			{
-				MENGE_LOG("Cant't create entity [%s] (not module)\n"
+				MENGE_LOG( MENGE_TEXT("Cant't create entity [%s] (not module)\n")
 					, _type.c_str() 
 					);
 			}
 
-			PyObject * result = pybind::call_method( module, _type.c_str(), "()" );
+			PyObject * result = pybind::call_method( module, _type.c_str(), MENGE_TEXT("()") );
 
 			if( result == 0 )
 			{
@@ -108,7 +108,7 @@ namespace Menge
 
 			if( entity == 0 )
 			{
-				MENGE_LOG("Can't create entity [%s]\n"
+				MENGE_LOG( MENGE_TEXT("Can't create entity [%s]\n")
 					, _type.c_str() 
 					);
 
@@ -116,22 +116,22 @@ namespace Menge
 			}
 
 			entity->setName( _type );
-			entity->setType("Entity");
+			entity->setType( MENGE_TEXT("Entity") );
 			entity->setEmbedding( result );
 
-			std::string xml_path = Holder<Game>::hostage()
+			String xml_path = Holder<Game>::hostage()
 				->getPathEntities( _type );
 
-			xml_path += '/';
+			xml_path += MENGE_TEXT('/');
 			xml_path += _type;
-			xml_path += ".xml";
+			xml_path += MENGE_TEXT(".xml");
 
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlBufferM( _xml, entity, &Entity::loader ) )
 			{
 				//entity->registerEvent( "LOADER", "onLoader" );
 				//entity->callEvent("LOADER", "()");
-				entity->callMethod( "onLoader", "()");
+				entity->callMethod( MENGE_TEXT("onLoader"), MENGE_TEXT("()") );
 			}
 
 			entity->setLocalPosition( _pos );

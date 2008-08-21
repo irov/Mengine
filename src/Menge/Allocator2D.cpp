@@ -139,21 +139,21 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Transformation")
+			XML_CASE_NODE( MENGE_TEXT("Transformation") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER( "Value", &Allocator2D::setLocalMatrix );
-					XML_CASE_ATTRIBUTE_MEMBER( "Position", &Allocator2D::setLocalPosition );
-					XML_CASE_ATTRIBUTE_MEMBER( "Direction", &Allocator2D::setLocalDirection );
-					XML_CASE_ATTRIBUTE_MEMBER( "Rotate", &Allocator2D::setRotate );
-					XML_CASE_ATTRIBUTE_MEMBER( "Origin", &Allocator2D::setOrigin );
-					XML_CASE_ATTRIBUTE_MEMBER( "Scale", &Allocator2D::setScale );
+					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Value"), &Allocator2D::setLocalMatrix );
+					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Position"), &Allocator2D::setLocalPosition );
+					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Direction"), &Allocator2D::setLocalDirection );
+					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Rotate"), &Allocator2D::setRotate );
+					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Origin"), &Allocator2D::setOrigin );
+					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Scale"), &Allocator2D::setScale );
 				}
 			}
-			XML_CASE_ATTRIBUTE_NODE_METHOD( "Scale", "Value", &Allocator2D::setScale ); // for backward compability
+			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("Scale"), MENGE_TEXT("Value"), &Allocator2D::setScale ); // for backward compability
 
-			XML_CASE_ATTRIBUTE_NODE( "FixedRotation", "Value", m_fixedRotation );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("FixedRotation"), MENGE_TEXT("Value"), m_fixedRotation );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

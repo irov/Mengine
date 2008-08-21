@@ -23,7 +23,7 @@ namespace Menge
 	class ScriptLogger
 	{
 	public:
-		void write( const std::string & _msg );
+		void write( const String& _msg );
 	};
 
 	class ScriptEngine
@@ -32,15 +32,15 @@ namespace Menge
 		ScriptEngine();
 		~ScriptEngine();
 
-		typedef std::list< std::string > TListModulePath;
+		typedef std::list< String > TListModulePath;
 
 	public:
 		void init();
 
-		bool compileString( const std::string & _string, const std::string & _file );
+		bool compileString( const String& _string, const String& _file );
 
-		bool doFile( const std::string & _file );
-		bool doString( const std::string & _string );
+		bool doFile( const String& _file );
+		bool doString( const String& _string );
 
 		PyObject * initModule( const String& _file );
 		PyObject * importModule( const String& _file );

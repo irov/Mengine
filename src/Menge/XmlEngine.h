@@ -25,9 +25,9 @@ namespace Menge
 		void initialize();
 
 	public:
-		bool parseXmlFile( const std::string & _file, XmlElementListener * _listener );
+		bool parseXmlFile( const String& _file, XmlElementListener * _listener );
 		bool parseXmlFile( DataStreamInterface* _file, XmlElementListener * _listener );
-		bool parseXmlString( const std::string & _string, XmlElementListener * _listener );
+		bool parseXmlString( const String& _string, XmlElementListener * _listener );
 		bool parseXmlBuffer( const TVectorChar & _buffer, XmlElementListener * _listener );
 
 		template<class C, class F>
@@ -39,7 +39,7 @@ namespace Menge
 		}
 
 		template<class C, class F>
-		bool parseXmlBufferM( const std::string & _buffer, C * _self, F _method )
+		bool parseXmlBufferM( const String& _buffer, C * _self, F _method )
 		{
 			XmlElementListener * listener = new XmlElementListenerMethod<C,F>(_self, _method );
 			bool result = parseXmlString( _buffer, listener );
@@ -48,7 +48,7 @@ namespace Menge
 		
 
 		template<class C, class F>
-		bool parseXmlFileM( const std::string & _file, C * _self, F _method )
+		bool parseXmlFileM( const String& _file, C * _self, F _method )
 		{
 			XmlElementListener * listener = new XmlElementListenerMethod<C,F>(_self, _method );
 			bool result = parseXmlFile( _file, listener );
@@ -64,7 +64,7 @@ namespace Menge
 		}
 
 		template<class F>
-		bool parseXmlFileF( const std::string & _file, F f )
+		bool parseXmlFileF( const String& _file, F f )
 		{
 			XmlElementListener * listener = new XmlElementListenerFunction<F>(f);
 			return parseXmlFile( _file, listener );
@@ -79,12 +79,13 @@ namespace Menge
 
 namespace XmlParserCast
 {
-	bool attribute_value_cast( std::size_t _var[2], const char * _value );
-	bool attribute_value_cast( mt::vec2f & _var, const char * _value );
-	bool attribute_value_cast( mt::vec3f & _var, const char * _value );
-	bool attribute_value_cast( mt::vec4f & _var, const char * _value );
-	bool attribute_value_cast( Menge::ColourValue & _var, const char * _value );
-	bool attribute_value_cast( mt::quatf & _var, const char * _value );
-	bool attribute_value_cast( mt::mat3f & _var, const char * _value );
-	bool attribute_value_cast( mt::mat4f & _var, const char * _value );
+	bool attribute_value_cast( std::size_t _var, const Menge::TChar * _value );
+	bool attribute_value_cast( std::size_t _var[2], const Menge::TChar * _value );
+	bool attribute_value_cast( mt::vec2f & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( mt::vec3f & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( mt::vec4f & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( Menge::ColourValue & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( mt::quatf & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( mt::mat3f & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( mt::mat4f & _var, const Menge::TChar * _value );
 }

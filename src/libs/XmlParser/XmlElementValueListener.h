@@ -10,7 +10,7 @@ public:
 	virtual ~XmlElementValueListener(){};
 
 public:
-	virtual void call( const char * _value ) = 0;
+	virtual void call( const Menge::TChar * _value ) = 0;
 };
 
 template<class C, class M>
@@ -25,7 +25,7 @@ public:
 	}
 
 public:
-	void call( const char * _value ) override
+	void call( const Menge::TChar * _value ) override
 	{
 		XmlParserCheckMethod::check_member( m_self, m_method, _value );
 	}

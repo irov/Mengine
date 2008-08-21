@@ -116,7 +116,7 @@ namespace Menge
 
 		if( pybind::convert::is_none( result ) == false )
 		{
-			MENGE_LOG("Warning: Event '%d' don't have return any value\n"
+			MENGE_LOG( MENGE_TEXT("Warning: Event '%d' don't have return any value\n")
 				, _name
 				);
 		}
@@ -147,7 +147,7 @@ namespace Menge
 
 		if( pybind::convert::is_none( result ) == true )
 		{
-			MENGE_LOG("Error: Event '%d' must have return [True/False] value\n"
+			MENGE_LOG( MENGE_TEXT("Error: Event '%d' must have return [True/False] value\n")
 				, _name
 				);
 

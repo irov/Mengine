@@ -8,7 +8,7 @@
 
 namespace Menge
 {
-	typedef	std::vector<std::string> TVecTrack;
+	typedef	std::vector<String> TVecTrack;
 
 	//! ResourcePlaylist - xml - файл, который хранит список имен треков и признак зациклинности. Имя трека это имя файла.
 

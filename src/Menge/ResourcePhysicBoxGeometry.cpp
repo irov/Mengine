@@ -27,9 +27,9 @@ namespace Menge
 		ResourcePhysicGeometry::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Width", "Value", m_width );
-			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );
-			XML_CASE_ATTRIBUTE_NODE( "Depth", "Value", m_depth );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Width"), MENGE_TEXT("Value"), m_width );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Height"), MENGE_TEXT("Value"), m_height );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Depth"), MENGE_TEXT("Value"), m_depth );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -39,7 +39,7 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG("Warning: resource '%s' can't cook box geometry\n"
+			MENGE_LOG( MENGE_TEXT("Warning: resource '%s' can't cook box geometry\n")
 				, getName().c_str()
 			);
 

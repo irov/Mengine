@@ -121,16 +121,15 @@ namespace Menge
 
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 
-		String layer2DAccumulatorName = "Layer2DAccumulator_" + m_name + "_image_";
+		String layer2DAccumulatorName = MENGE_TEXT("Layer2DAccumulator_") + m_name + MENGE_TEXT("_image_");
 
 		for( std::size_t i = 0; i < countX; i++ )
 		{
 			for( std::size_t j = 0; j < countY; j++ )
 			{
-				std::stringstream accumulatorStreamName;
+				Stringstream accumulatorStreamName;
 				accumulatorStreamName << layer2DAccumulatorName;
 				accumulatorStreamName << i;
-				accumulatorStreamName << "_";
 				accumulatorStreamName << j;
 
 				String name = accumulatorStreamName.str();

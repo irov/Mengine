@@ -26,7 +26,7 @@ namespace Menge
 	OBJECT_IMPLEMENT(TilePolygon);
 	//////////////////////////////////////////////////////////////////////////
 	TilePolygon::TilePolygon()
-		: m_resourcename("")
+		: m_resourcename( MENGE_TEXT("") )
 		, m_resource(0)
 	{
 	}

@@ -6,14 +6,21 @@
 #	include <vector>
 #	include <list>
 #	include <iostream>
+//#	include <string.h>
 
 namespace Menge
 {
 
+typedef wchar_t TCharW;
+typedef char	TCharA;
+typedef std::wstring StringW;
+typedef std::string StringA;
+
 #	if MENGE_WCHAR_T_STRINGS
-		typedef wchar_t TChar;
-		typedef std::wstring _StringBase;
+		typedef TCharW TChar;
+		typedef StringW String;
 		#define StdErr (std::wcerr)
+		#define StdStrchr (std::wcschr)
 		typedef std::wofstream StdOfstream;
 
 		#	if MENGE_COMPILER == MENGE_COMPILER_MSVC
@@ -21,10 +28,11 @@ namespace Menge
 		#	endif
 
 #	else
-		typedef char TChar;
-		typedef std::string _StringBase;
+		typedef TCharA TChar;
+		typedef StringA String;
 		#define StdErr (std::cerr)
 		typedef std::ofstream StdOfstream;
+		#define StdStrchr (std::strchr)
 
 		#	if MENGE_COMPILER == MENGE_COMPILER_MSVC
 			#	define MENGE_TEXT(quote)	quote
@@ -32,7 +40,7 @@ namespace Menge
 
 #	endif
 
-typedef _StringBase String;
+//typedef _StringBase String;
 
 typedef void* WindowHandle;
 

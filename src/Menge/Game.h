@@ -50,15 +50,15 @@ namespace Menge
 		String getPathEntities( const String& _entity ) const;
 
 	public:
-		Arrow * getArrow( const std::string & _name );
-		bool loadArrow( const std::string & _name, const std::string & _path );
-		void removeArrow( const std::string & _name );
+		Arrow * getArrow( const String& _name );
+		bool loadArrow( const String& _name, const String& _path );
+		void removeArrow( const String& _name );
 
 		Arrow * getDefaultArrow();
 
 	public:
-		Scene * getScene(const std::string & _name );
-		void destroyScene( const std::string & _name );
+		Scene * getScene( const String& _name );
+		void destroyScene( const String& _name );
 
 	public:
 		void loader( XmlElement * _xml );

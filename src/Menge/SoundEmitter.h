@@ -38,7 +38,7 @@ namespace Menge
 
 			//void setSoundListener( PyObject * _listener );
 
-			void setSoundResource( const std::string & _name );
+			void setSoundResource( const String& _name );
 
 			void	listenPaused( bool _pause );
 			void	listenStopped();
@@ -58,7 +58,7 @@ namespace Menge
 
 			float m_volume;
 			ResourceSound * m_resource;
-			std::string m_resourcename;
+			String m_resourcename;
 			
 			SoundSourceInterface * m_interface;
 

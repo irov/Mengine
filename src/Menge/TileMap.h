@@ -29,7 +29,7 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
 	private:
-		std::string m_resourcename;
+		String m_resourcename;
 		ResourceTileMap* m_resourceMap;
 		std::size_t m_width;
 		std::size_t m_height;

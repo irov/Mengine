@@ -49,6 +49,9 @@ namespace Menge
 		void setHandleMouse( bool _handle ) override;
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
 
+		StringA WToA( const StringW& _stringw ) const;
+		StringW AToW( const StringA& _stringa ) const;
+
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 

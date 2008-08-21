@@ -46,7 +46,7 @@ namespace Menge
 		\param _track индекс трека
 		\return имя трека
 		*/
-		const std::string & getTrack( unsigned int _track ) const;
+		const String& getTrack( unsigned int _track ) const;
 
 		//! Возвращает флаг зацикливания
 		/*!
@@ -56,7 +56,7 @@ namespace Menge
 
 		bool getShuffle() const;
 
-		void setFilePath( const std::string & _path );
+		void setFilePath( const String& _path );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -72,6 +72,6 @@ namespace Menge
 		bool	  m_shuffle;
 		TVecTrack m_tracks;
 
-		std::string m_filename;
+		String m_filename;
 	};
 }

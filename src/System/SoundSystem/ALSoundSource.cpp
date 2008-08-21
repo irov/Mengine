@@ -250,6 +250,7 @@ Menge::SoundNodeListenerInterface* ALSoundSource::getListener()
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSource::unbind()
 {
+	m_playing = false;
 	if( m_sourceName != 0 )
 	{
 		m_sourceName->busy = false;

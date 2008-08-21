@@ -22,7 +22,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePlaylist::setFilePath( const std::string & _path )
+	void ResourcePlaylist::setFilePath( const String& _path )
 	{
 		m_filename = m_params.category + _path;
 	}
@@ -97,11 +97,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & ResourcePlaylist::getTrack( unsigned int _track ) const
+	const String& ResourcePlaylist::getTrack( unsigned int _track ) const
 	{
 		if( _track >= m_tracks.size() || _track < 0 )
 		{
-			return emptyString();
+			return Utils::emptyString();
 		}
 
 		return m_tracks[ _track ];

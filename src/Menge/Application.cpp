@@ -750,4 +750,14 @@ namespace Menge
 		m_interface->showMessageBox( _message, _header, _style );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	StringA Application::WToA( const StringW& _stringw ) const
+	{
+		return m_interface->WToA( _stringw );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	StringW Application::AToW( const StringA& _stringa ) const
+	{
+		return m_interface->AToW( _stringa );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

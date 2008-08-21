@@ -110,7 +110,7 @@ bool HGERenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	m_hge->Gfx_SetListener( this );
 	//m_hge->System_SetState( HGE_FPS, HGEFPS_VSYNC );
 	//m_hge->System_SetState( HGE_TEXTUREFILTER, false );]
-	m_currentRenderTarget = "defaultCamera";
+	m_currentRenderTarget = MENGE_TEXT("defaultCamera");
 
 	HTARGET * voidTarget = 0;
 	HGETexture* voidTexture = 0;
@@ -451,13 +451,13 @@ void HGERenderSystem::beginScene()
 	}
 	if( !m_hge->Gfx_BeginScene() )
 	{
-		m_logSystem->logMessage("Error: D3D8 Failed to BeginScene");
+		m_logSystem->logMessage( MENGE_TEXT("Error: D3D8 Failed to BeginScene") );
 	}
 	m_hge->Gfx_SetClipping();
 	m_hge->Gfx_Clear( m_clearColor );
 
 	m_inRender = true;
-	m_currentRenderTarget = "defaultCamera";
+	m_currentRenderTarget = MENGE_TEXT("defaultCamera");
 
 	// set render targets dirty to clear one time before rendering into one
 	for( TTargetMap::iterator it = m_targetMap.begin(), it_end = m_targetMap.end();
@@ -647,7 +647,7 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 	}
 	else
 	{
-		m_logSystem->logMessage( "Warning: Invalid Render Target name ", false, false, true );
+		m_logSystem->logMessage( MENGE_TEXT("Warning: Invalid Render Target name "), false, false, true );
 		m_logSystem->logMessage( _name, false, true, false );
 	}
 }

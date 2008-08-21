@@ -57,6 +57,9 @@ namespace Menge
 
 		virtual SystemDLLInterface* loadSystemDLL( const String & _dll ) = 0;
 		virtual void unloadSystemDLL( SystemDLLInterface * _dllInterface ) = 0;
+
+		virtual StringA WToA( const StringW& _stringw ) const = 0;
+		virtual StringW AToW( const StringA& _stringa ) const = 0;
 	};
 }
 

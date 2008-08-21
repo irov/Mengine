@@ -148,7 +148,7 @@ namespace	Menge
 		return m_currentImageIndex;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setImageResource( const std::string & _name )
+	void Sprite::setImageResource( const String& _name )
 	{
 		if( m_resourceName != _name )
 		{
@@ -158,7 +158,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const std::string & Sprite::getImageResource() const
+	const String& Sprite::getImageResource() const
 	{
 		return m_resourceName;
 	}
@@ -371,8 +371,8 @@ namespace	Menge
 	void Sprite::_setListener()
 	{
 		Node::_setListener();
-		this->registerEvent( EVENT_COLOR_END, "onColorEnd", m_listener );
-		this->registerEvent( EVENT_COLOR_STOP, "onColorStop", m_listener );
+		this->registerEvent( EVENT_COLOR_END, MENGE_TEXT("onColorEnd"), m_listener );
+		this->registerEvent( EVENT_COLOR_STOP, MENGE_TEXT("onColorStop"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )

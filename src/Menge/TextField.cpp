@@ -338,7 +338,7 @@ namespace     Menge
 
 		std::vector<std::string> lines;
 
-		lines = split(_text,"\n");
+		lines = Utils::split(_text,"\n");
 
 		for(std::vector<std::string>::iterator line = lines.begin(); line != lines.end(); line++ )
 		{

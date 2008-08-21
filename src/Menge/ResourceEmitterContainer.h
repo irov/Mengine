@@ -34,8 +34,8 @@ namespace Menge
 	public:
 		void loader( XmlElement * _xml ) override;
 		
-		void setFilePath( const std::string & _path );
-		void setFolderPath( const std::string & _path );
+		void setFilePath( const String& _path );
+		void setFolderPath( const String& _path );
 
 	public:
 
@@ -50,19 +50,19 @@ namespace Menge
 		\param _name имя текстуры
 		\return изображение
 		*/
-		RenderImageInterface * getRenderImage( const std::string & _name );
+		RenderImageInterface * getRenderImage( const String& _name );
 
 	protected:
 		bool _compile() override;
 		void _release() override;
 
 	private:
-		std::string m_filename;
-		std::string m_folder;
+		String m_filename;
+		String m_folder;
 
 		EmitterContainerInterface * m_container;
 
-		typedef std::map<std::string, RenderImageInterface * > TMapImageEmitters;
+		typedef std::map<String, RenderImageInterface * > TMapImageEmitters;
 		TMapImageEmitters	m_mapImageEmitters;
 	};
 }

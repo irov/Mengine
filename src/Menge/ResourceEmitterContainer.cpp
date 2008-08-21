@@ -21,12 +21,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::setFilePath( const std::string & _path )
+	void ResourceEmitterContainer::setFilePath( const String& _path )
 	{
 		m_filename = m_params.category + _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::setFolderPath( const std::string & _path )
+	void ResourceEmitterContainer::setFolderPath( const String& _path )
 	{
 		m_folder = m_params.category + _path;
 	}
@@ -69,9 +69,9 @@ namespace Menge
 		m_mapImageEmitters.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * ResourceEmitterContainer::getRenderImage( const std::string & _name )
+	RenderImageInterface * ResourceEmitterContainer::getRenderImage( const String& _name )
 	{
-		std::string fullname = m_folder + _name;
+		String fullname = m_folder + _name;
 
 		TMapImageEmitters::iterator it = m_mapImageEmitters.find( fullname );
 

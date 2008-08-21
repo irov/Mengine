@@ -206,7 +206,7 @@ void HGERenderFont::renderText(float _x, float _y, unsigned long _color, const M
 {
 	float	widthOffset = _x;
 
-	for(std::string::const_iterator it = _text.begin(); it != _text.end(); it++)
+	for( Menge::String::const_iterator it = _text.begin(); it != _text.end(); it++)
 	{
 		char letter = *it;
 

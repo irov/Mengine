@@ -66,7 +66,7 @@ namespace Menge
 		/*!
 		\param _resource имя ресурса.
 		*/
-		void setAnimationResource( const std::string & _resource );
+		void setAnimationResource( const String& _resource );
 
 		//! Значение на которое умножается каждая задержка анимации.
 		/*!
@@ -101,7 +101,7 @@ namespace Menge
 
 	protected:
 		ResourceAnimation * m_resourceAnimation;
-		std::string m_resourceAnimationName;
+		String m_resourceAnimationName;
 	
 		float m_delay;
 

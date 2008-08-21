@@ -33,14 +33,14 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Animation", "Name", m_resourceAnimationName );
-			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looping );
-			XML_CASE_ATTRIBUTE_NODE( "AutoStart", "Value", m_autoStart );			
-			XML_CASE_ATTRIBUTE_NODE( "RandomStart", "Value", m_randomStart );			
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Animation"), MENGE_TEXT("Name"), m_resourceAnimationName );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Looping"), MENGE_TEXT("Value"), m_looping );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("AutoStart"), MENGE_TEXT("Value"), m_autoStart );			
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("RandomStart"), MENGE_TEXT("Value"), m_randomStart );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setAnimationResource( const std::string & _resource )
+	void Animation::setAnimationResource( const String& _resource )
 	{
 		if( m_resourceAnimationName == _resource ) return;
 		m_resourceAnimationName = _resource;

@@ -29,21 +29,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	String DataStream::getLine( bool _trimAfter )
 	{
-		char tmpBuf[stream_temp_size];
+		TChar tmpBuf[stream_temp_size];
 		String retString;
 		std::size_t readCount;
 		// Keep looping while not hitting delimiter
-		while ( ( readCount = read( tmpBuf, stream_temp_size - 1 ) ) != 0 )
+		while ( ( readCount = read( tmpBuf, ( stream_temp_size - 1 ) * sizeof(TChar) ) ) != 0 )
 		{
+			std::size_t term = readCount / sizeof(TChar);
 			// Terminate string
-			tmpBuf[readCount] = '\0';
+			tmpBuf[term] = MENGE_TEXT('\0');
 
-			char* p = strchr( tmpBuf, '\n' );
+			TChar* p = StdStrchr( tmpBuf, MENGE_TEXT('\n') );
 			if ( p != 0 )
 			{
 				// Reposition backwards
 				skip( (long)( p + 1 - tmpBuf - readCount ) );
-				*p = '\0';
+				*p = MENGE_TEXT('\0');
 			}
 
 			retString += tmpBuf;

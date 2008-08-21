@@ -97,11 +97,6 @@ std::size_t HGETexture::getHeight() const
 	return m_height;
 }
 //////////////////////////////////////////////////////////////////////////
-void HGETexture::writeToFile( const Menge::String & _filename )
-{
-	m_hge->Texture_WriteToFile( m_hTexture, _filename.c_str() );
-}
-//////////////////////////////////////////////////////////////////////////
 const Menge::String & HGETexture::getDescription() const 
 {
 	return m_name;

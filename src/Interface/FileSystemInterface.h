@@ -27,7 +27,7 @@ namespace Menge
 	public:
 		virtual void write( const char* _data, std::streamsize _count ) = 0;
 		virtual void write( const String& _str ) = 0;
-		virtual void write( std::streamsize _num ) = 0;
+		virtual void write( int _num ) = 0;
 	};
 
 	class	FileSystemInterface

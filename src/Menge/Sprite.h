@@ -57,7 +57,7 @@ namespace Menge
 		/*!
 		\param _name имя ресурса.
 		*/
-		virtual void setImageResource( const std::string & _name );
+		virtual void setImageResource( const String& _name );
 
 		std::size_t getImageCount() const;
 
@@ -68,7 +68,7 @@ namespace Menge
 		/*!
 		\return имя ресурса
 		*/
-		virtual const std::string & getImageResource() const;
+		virtual const String& getImageResource() const;
 
 		//! Инвертирование спрайта по оси x, если _x = true, иначе по оси y.
 		/*!
@@ -134,7 +134,7 @@ namespace Menge
 
 	protected:
 		ResourceImage * m_resource;
-		std::string m_resourceName;	
+		String m_resourceName;	
 
 		std::size_t m_currentImageIndex;
 

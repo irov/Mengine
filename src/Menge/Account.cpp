@@ -63,7 +63,7 @@ namespace Menge
 			MENGE_LOG( "Error: setting '%s' does not exist. Can't get",
 				_setting.c_str() );
 		}
-		return emptyString();
+		return Utils::emptyString();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::load()

@@ -409,7 +409,7 @@ namespace Menge
 	void RigidBody2D::_setListener()
 	{
 		Node::_setListener();
-		registerEvent( EVENT_COLLIDE, "onCollide", m_listener );
+		registerEvent( EVENT_COLLIDE, MENGE_TEXT("onCollide"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::onApplyForceAndTorque()
@@ -466,7 +466,7 @@ namespace Menge
 			it++ )
 			{
 				const mt::polygon & poly = *it;
-				const mt::mat3f& mtx = getLocalMatrix();
+				const mt::mat3f& mtx = getWorldMatrix();
 				//mt::vec2f pos = getLocalPosition();
 
 				std::size_t numPoints = poly.num_points();

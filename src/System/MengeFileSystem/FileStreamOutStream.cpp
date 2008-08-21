@@ -43,7 +43,7 @@ namespace Menge
 		m_fstream << _str;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileStreamOutStream::write( std::streamsize _num )
+	void FileStreamOutStream::write( int _num )
 	{
 		m_fstream << _num;
 	}

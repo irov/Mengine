@@ -1359,12 +1359,6 @@ void HGE_Impl::Gfx_Snapshot( HTEXTURE tex, RECT _rect )
 	surf->Release();
 }
 
-void HGE_Impl::Texture_WriteToFile( HTEXTURE _hTex, const char* _filename )
-{
-	IDirect3DTexture8* tex = reinterpret_cast<IDirect3DTexture8*>( _hTex );
-	D3DXSaveTextureToFileA( (LPCSTR)_filename, D3DXIFF_BMP, tex, NULL );
-}
-
 void HGE_Impl::Gfx_ChangeMode( int _width, int _height, int _bpp, bool _fullscreen )
 {
 	bWindowed = !_fullscreen;

@@ -4,7 +4,7 @@
 #	define OBJECT_IMPLEMENT_GENERATOR( Class )\
 	Node * Class::genObject(const FactoryGenStruct & _struct){\
 	Node * node = new Class;\
-	node->setType( #Class );\
+	node->setType( MENGE_TEXT(#Class) );\
 	return node;\
 	}
 #	else

@@ -321,7 +321,10 @@ namespace	Menge
 		this->registerEvent( EVENT_SCALE_END, "onScaleEnd", this->getEmbedding() );
 		this->registerEvent( EVENT_SCALE_STOP, "onScaleStop", this->getEmbedding() );
 
-		m_onUpdateEvent = this->registerEvent( EVENT_UPDATE, "onUpdate", this->getEmbedding() );
+		if( m_onUpdateEvent == false )
+		{
+			m_onUpdateEvent = this->registerEvent( EVENT_UPDATE, "onUpdate", this->getEmbedding() );
+		}
 
 		this->registerEvent( EVENT_COLLIDE, "onCollide", this->getEmbedding() );
 
@@ -337,6 +340,7 @@ namespace	Menge
 		RigidBody2D::_deactivate();
 
 		this->callMethod("onDeactivate", "()" );
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()

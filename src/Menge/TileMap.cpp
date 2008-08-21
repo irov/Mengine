@@ -18,7 +18,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	TileMap::TileMap()
 		: m_resourceMap( NULL )
-		, m_resourcename("")
+		, m_resourcename( MENGE_TEXT("") )
 		, m_width( 0 )
 		, m_height( 0 )
 	{
@@ -62,7 +62,7 @@ namespace	Menge
 		RigidBody2D* collision = SceneManager::createNodeT<RigidBody2D>( "RigidBody2D" ) ;
 		const std::vector< mt::vec2f >& pos = m_resourceMap->_getPhysPos();
 		float width = m_resourceMap->_getPhysWidth();
-		collision->setName( "WorldPhysObject" );
+		collision->setName( MENGE_TEXT("WorldPhysObject") );
 		for( std::vector< mt::vec2f >::size_type i = 0; i < pos.size(); i++ )
 		{
 			collision->_addShapeBox( width, width, pos[i], 0.0f );

@@ -571,4 +571,24 @@ namespace Menge
 		::MessageBox( m_hWnd, _message.c_str(), _header.c_str(), MB_ICONERROR | MB_OK );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	StringA WinApplication::WToA( const StringW& _stringw ) const
+	{
+		std::size_t size =  _stringw.size() + 1;
+		TCharA* stra = new TCharA[size];
+		WideCharToMultiByte( CP_ACP, 0, _stringw.c_str(), -1, stra, size, NULL, NULL );
+		StringA out( stra );
+		delete[] stra;
+		return out;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	StringW WinApplication::AToW( const StringA& _stringa ) const
+	{
+		std::size_t size =  _stringa.size() + 1;
+		TCharW* strw = new TCharW[size];
+		MultiByteToWideChar( CP_ACP, 0, _stringa.c_str(), -1, strw, size );
+		StringW out( strw );
+		delete[] strw;
+		return out;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

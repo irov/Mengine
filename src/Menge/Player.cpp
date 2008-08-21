@@ -42,7 +42,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setCurrentScene( const std::string & _name, bool _destroyOld )
+	void Player::setCurrentScene( const String& _name, bool _destroyOld )
 	{
 		m_nextScene = Holder<Game>::hostage()
 			->getScene( _name );
@@ -270,7 +270,7 @@ namespace Menge
 	{
 		if( m_restartScene )		// just restart scene
 		{
-			std::string name = m_scene->getName();
+			String name = m_scene->getName();
 			m_scene->deactivate();
 			m_scene->release();
 			if( m_destroyOldScene )

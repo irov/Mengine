@@ -141,7 +141,7 @@ namespace	Menge
 		{
 			Holder<ParticleEngine>::hostage()->lockEmitter( m_interface, i );
 
-			std::string textureName = Holder<ParticleEngine>::hostage()->getTextureName();
+			String textureName = Holder<ParticleEngine>::hostage()->getTextureName();
 
 			RenderImageInterface * image = m_resource->getRenderImage( textureName );
 
@@ -326,8 +326,8 @@ namespace	Menge
 	{
 		Node::_setListener();
 
-		m_onEmitterEndEvent = registerEvent( EVENT_EMITTER_END, "onEmitterEnd", m_listener );
-		m_onEmitterStopEvent = registerEvent( EVENT_EMITTER_STOP, "onEmitterStop", m_listener );
+		m_onEmitterEndEvent = registerEvent( EVENT_EMITTER_END, MENGE_TEXT("onEmitterEnd"), m_listener );
+		m_onEmitterStopEvent = registerEvent( EVENT_EMITTER_STOP, MENGE_TEXT("onEmitterStop"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Emitter::restart()

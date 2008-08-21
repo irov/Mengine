@@ -119,7 +119,7 @@ namespace Menge
 		Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setSoundResource( const std::string & _name )
+	void SoundEmitter::setSoundResource( const String& _name )
 	{
 		m_resourcename = _name;
 
@@ -169,6 +169,7 @@ namespace Menge
 
 		//Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
 		//printf("playing %s looped = %d\n", m_resourcename.c_str(), m_looped );
+		//MENGE_LOG("playing %s", m_resourcename.c_str());
 		return m_interface->play();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -179,7 +180,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::stop()
 	{
-		//printf("stopping %s\n", m_resourcename.c_str());
+		//MENGE_LOG("stopping %s", m_resourcename.c_str());
 		if( m_interface )
 		{
 			m_interface->stop();	
@@ -231,8 +232,8 @@ namespace Menge
 	{
 		Node::_setListener();
 
-		registerEvent( EVENT_SOUND_STOP, "onStopped", m_listener );
-		registerEvent( EVENT_SOUND_PAUSE, "onPaused", m_listener );
+		registerEvent( EVENT_SOUND_STOP, MENGE_TEXT("onStopped"), m_listener );
+		registerEvent( EVENT_SOUND_PAUSE, MENGE_TEXT("onPaused"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

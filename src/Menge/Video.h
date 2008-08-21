@@ -55,7 +55,7 @@ namespace Menge
 		/*!
 		\param _resource имя ресурса.
 		*/
-		void setAnimationResource( const std::string & _resource );
+		void setAnimationResource( const String& _resource );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -75,7 +75,7 @@ namespace Menge
 
 	protected:
 		ResourceImageVideoStream* m_resourceVideo;
-		std::string m_resourceVideoName;
+		String m_resourceVideoName;
 
 		bool m_autoStart;
 		bool m_playing;

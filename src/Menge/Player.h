@@ -25,7 +25,7 @@ namespace Menge
 		~Player();
 
 	public:
-		void setCurrentScene( const std::string & _scene, bool _destroyOld = false );
+		void setCurrentScene( const String& _scene, bool _destroyOld = false );
 		Scene * getCurrentScene();
 
 		void setArrow( Arrow * _arrow );

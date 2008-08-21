@@ -237,16 +237,16 @@ namespace	Menge
 	{
 		Node::_setListener();
 
-		registerEvent( EVENT_KEY, "onHandleKeyEvent", m_listener );
-		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", m_listener );
-		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", m_listener );
+		registerEvent( EVENT_KEY, MENGE_TEXT("onHandleKeyEvent"), m_listener );
+		registerEvent( EVENT_MOUSE_BUTTON, MENGE_TEXT("onHandleMouseButtonEvent"), m_listener );
+		registerEvent( EVENT_MOUSE_MOVE, MENGE_TEXT("onHandleMouseMove"), m_listener );
 
-		registerEvent( EVENT_GLOBAL_MOUSE_BUTTON, "onGlobalHandleMouseButtonEvent", m_listener );
-		registerEvent( EVENT_GLOBAL_MOUSE_MOVE, "onGlobalHandleMouseMove", m_listener );
-		registerEvent( EVENT_GLOBAL_KEY, "onGlobalHandleKeyEvent", m_listener );
+		registerEvent( EVENT_GLOBAL_MOUSE_BUTTON, MENGE_TEXT("onGlobalHandleMouseButtonEvent"), m_listener );
+		registerEvent( EVENT_GLOBAL_MOUSE_MOVE, MENGE_TEXT("onGlobalHandleMouseMove"), m_listener );
+		registerEvent( EVENT_GLOBAL_KEY, MENGE_TEXT("onGlobalHandleKeyEvent"), m_listener );
 		
-		m_onLeaveEvent = registerEvent( EVENT_LEAVE, "onLeave", m_listener );
-		m_onEnterEvent = registerEvent( EVENT_ENTER, "onEnter", m_listener );	
+		m_onLeaveEvent = registerEvent( EVENT_LEAVE, MENGE_TEXT("onLeave"), m_listener );
+		m_onEnterEvent = registerEvent( EVENT_ENTER, MENGE_TEXT("onEnter"), m_listener );	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_update( float _timing )

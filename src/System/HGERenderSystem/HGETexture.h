@@ -20,7 +20,6 @@ public:
 	void restore( HTEXTURE _htex );
 	std::size_t getWidth() const override;
 	std::size_t getHeight() const override;
-	void writeToFile( const Menge::String & _filename ) override;
 	const Menge::String & getDescription() const override;
 	unsigned char* lock() override;
 	void unlock() override;

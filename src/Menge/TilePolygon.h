@@ -33,7 +33,7 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
 	private:
-		std::string m_resourcename;
+		String m_resourcename;
 		
 		std::vector<mt::vec2f> m_poly;
 		std::vector<mt::polygon> polys;

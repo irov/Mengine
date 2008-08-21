@@ -109,6 +109,9 @@ namespace Menge
 
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style );
 
+		StringA WToA( const StringW& _stringw ) const;
+		StringW AToW( const StringA& _stringa ) const;
+
 	private:
 		Game * m_game;
 		ApplicationInterface* m_interface;

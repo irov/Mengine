@@ -93,7 +93,7 @@ namespace Menge
 	{
 		if( m_track == m_tracks.end() )
 		{
-			return emptyString();
+			return Utils::emptyString();
 		}
 
 		return	*m_track;
@@ -139,7 +139,7 @@ namespace Menge
 	{
 		if( _index >= m_tracks.size() )
 		{
-			return emptyString();
+			return Utils::emptyString();
 		}
 
 		return m_tracks[_index];

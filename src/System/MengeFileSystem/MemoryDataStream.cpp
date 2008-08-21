@@ -108,8 +108,7 @@ namespace Menge
 		// Read over end of memory?
 		if ( m_pos + cnt > m_end )
 		{
-			std::streamsize
-			cnt = std::distance( m_end, m_pos );
+			cnt = m_end - m_pos;
 		}
 
 		if ( cnt == 0 )

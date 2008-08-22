@@ -47,7 +47,7 @@ namespace Menge
 		~Application();
 
 	public:
-		bool initialize( const String& _applicationFile, const String& _args );
+		bool initialize( const String& _applicationFile, const char* _args );
 		void finalize();
 	
 		void setLogSystem( LogSystemInterface * _interface );
@@ -125,7 +125,7 @@ namespace Menge
 		Resolution m_currentResolution;
 		Resolution m_desktopResolution;
 
-		String m_commandLine;
+		StringA m_commandLine;
 
 		typedef std::vector<String> TStringVector;
 		TStringVector m_resourcePaths;
@@ -153,7 +153,7 @@ namespace Menge
 		PhysicEngine2D * m_physicEngine2D;
 		XmlEngine *	m_xmlEngine;
 
-		void parseArguments(const String& _arguments);
+		void parseArguments(const StringA& _arguments);
 		void initPredefinedResources();
 	};
 }

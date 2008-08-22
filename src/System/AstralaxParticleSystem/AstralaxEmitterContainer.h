@@ -6,8 +6,6 @@
 
 #	include <map>
 
-#	include <string>
-
 class AstralaxEmitterContainer 
 	: public Menge::EmitterContainerInterface
 {
@@ -20,5 +18,5 @@ public:
 	HM_EMITTER getEmitter( const Menge::String & _name )  const;
 	
 private:
-	std::map<std::string, HM_EMITTER> m_emittersIds;
+	std::map<Menge::String, HM_EMITTER> m_emittersIds;
 };

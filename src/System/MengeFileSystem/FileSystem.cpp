@@ -162,7 +162,12 @@ namespace Menge
 		{
 		return true;
 		}*/
-		if( !_mkdir( _path.c_str() ) )
+#if MENGE_WCHAR_T_STRINGS
+		int res = _wmkdir( _path.c_str() );
+#else
+		int res = _mkdir( _path.c_str() );
+#endif
+		if( !res )
 		{
 			return true;
 		}
@@ -177,10 +182,10 @@ namespace Menge
 	bool FileSystem::deleteFolder( const String& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
-		SHFILEOPSTRUCTW fs;
-		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTW));
+		SHFILEOPSTRUCT fs;
+		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCT));
 		fs.hwnd = NULL;
-
+#if MENGE_WCHAR_T_STRINGS != 1
 		wchar_t lpszW[MAX_PATH];
 		String::size_type size = _path.size();
 		MultiByteToWideChar(CP_ACP, 0, _path.c_str(), -1, lpszW, size );
@@ -188,10 +193,13 @@ namespace Menge
 		lpszW[_path.size()+1] = 0;
 
 		fs.pFrom = lpszW;
+#else
+		fs.pFrom = _path.c_str();
+#endif
 		fs.wFunc = FO_DELETE;
 		fs.hwnd = NULL;
 		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
-		if( ::SHFileOperationW( &fs ) != 0 )
+		if( ::SHFileOperation( &fs ) != 0 )
 		{
 			return false;
 		}
@@ -222,7 +230,12 @@ namespace Menge
 	bool FileSystem::changeDir( const String& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
-		if( !_chdir( _path.c_str() ) )
+#if MENGE_WCHAR_T_STRINGS
+		int res = _wchdir( _path.c_str() );
+#else
+		int res = _chdir( _path.c_str() );
+#endif
+		if( !res )
 		{
 			return true;
 		}
@@ -235,6 +248,7 @@ namespace Menge
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 
+#if MENGE_WCHAR_T_STRINGS != 1
 		/// patch for ansi names
 		char *ansistr = NULL;
 		String::size_type size = _game.size();
@@ -265,6 +279,18 @@ namespace Menge
 			ansistr,								//pszSubDir
 			szPath);									//pszPath
 
+		free( ansistr );
+#else
+		HRESULT hr;
+		TChar szPath[MAX_PATH];
+
+		hr = SHGetFolderPathAndSubDir( NULL,					//hWnd	
+			CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
+			NULL,										//hToken
+			SHGFP_TYPE_CURRENT,							//dwFlags
+			_game.c_str(),								//pszSubDir
+			szPath);									//pszPath
+#endif
 		if( SUCCEEDED( hr ) )
 		{
 			m_appDataPath = String( szPath );
@@ -273,7 +299,6 @@ namespace Menge
 		{
 			return false;
 		}
-		free( ansistr );
 		return true;
 #else
 		return false;
@@ -288,11 +313,15 @@ namespace Menge
 	OutStreamInterface* FileSystem::openOutStream( const Menge::String& _filename, bool _binary )
 	{
 		String fileName = m_appDataPath + MENGE_TEXT("\\") + _filename;
+
+#if MENGE_WCHAR_T_STRINGS != 1
 		wchar_t lpszW[MAX_PATH];
 		String::size_type size = fileName.size();
 		MultiByteToWideChar(CP_ACP, 0, fileName.c_str(), -1, lpszW, size );
 		lpszW[fileName.size()] = 0;
-
+#else
+		const wchar_t* lpszW = _filename.c_str();
+#endif
 		FileStreamOutStream* outStream = new FileStreamOutStream();
 		if( !outStream->open( lpszW, _binary ) )
 		{
@@ -310,21 +339,25 @@ namespace Menge
 	bool FileSystem::deleteFile( const String& _filename )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
-		SHFILEOPSTRUCTW fs;
+		SHFILEOPSTRUCT fs;
 		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTW));
 		fs.hwnd = NULL;
 
+#if MENGE_WCHAR_T_STRINGS != 1
 		wchar_t lpszW[MAX_PATH];
 		String::size_type size = _filename.size();
 		MultiByteToWideChar(CP_ACP, 0, _filename.c_str(), -1, lpszW, size );
 		lpszW[_filename.size()] = 0;
 		lpszW[_filename.size()+1] = 0;
+#else
+		const wchar_t* lpszW = _filename.c_str();
+#endif
 
 		fs.pFrom = lpszW;
 		fs.wFunc = FO_DELETE;
 		fs.hwnd = NULL;
 		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
-		if( ::SHFileOperationW( &fs ) != 0 )
+		if( ::SHFileOperation( &fs ) != 0 )
 		{
 			return false;
 		}

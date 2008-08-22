@@ -25,7 +25,6 @@ namespace Menge
 
 	public:
 		std::streamsize read( void* _buf, std::streamsize _count ) override;
-		std::streamsize readLine( char* _buf, std::streamsize _maxCount, const String& _delim = MENGE_TEXT("\n") ) override;
 		std::streamsize skipLine( const String& _delim = MENGE_TEXT("\n") ) override;
 		void skip( std::streampos _count ) override;
 		void seek( std::streamoff _pos ) override;

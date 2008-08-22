@@ -4,8 +4,8 @@
 
 #	include "Config/Config.h"
 
-#	include <sys/types.h>
 #	include <sys/stat.h>
+#	include <sys/types.h>
 #	include <assert.h>
 #	include <fstream>
 
@@ -71,115 +71,25 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileManager::findFiles( const String& _pattern, bool _recursive, bool _dirs, TStringVector* _simpleList, TFileInfoVector* _detailList )
-	{
-		long lHandle, res;
-		struct _finddata_t tagData;
-
-		// pattern can contain a directory name, separate it from mask
-		std::size_t pos1 = _pattern.rfind( MENGE_TEXT('/') );
-		std::size_t pos2 = _pattern.rfind( MENGE_TEXT('\\') );
-		if ( pos1 == _pattern.npos || ( ( pos2 != _pattern.npos ) && ( pos1 < pos2 ) ) )
-		{
-			pos1 = pos2;
-		}
-		String directory;
-		if ( pos1 != _pattern.npos )
-		{
-			directory = _pattern.substr (0, pos1 + 1);
-		}
-
-		String full_pattern = s_concatenatePath( m_initPath, _pattern );
-
-		lHandle = static_cast<long>( _findfirst( full_pattern.c_str(), &tagData ) );
-		res = 0;
-		while ( lHandle != -1 && res != -1 )
-		{
-			if ( ( _dirs == ( ( tagData.attrib & _A_SUBDIR ) != 0 ) ) &&
-				( !_dirs || !s_isReservedDir( tagData.name ) ) )
-			{
-				if( _simpleList )
-				{
-					_simpleList->push_back( directory + tagData.name );
-				}
-				else if( _detailList )
-				{
-					FileInfo fi;
-					fi.filename = directory + tagData.name;
-					fi.basename = tagData.name;
-					fi.path = directory;
-					fi.compressedSize = tagData.size;
-					fi.uncompressedSize = tagData.size;
-					_detailList->push_back(fi);
-				}
-			}
-			res = _findnext( lHandle, &tagData );
-		}
-		// Close if we found any files
-		if( lHandle != -1 )
-		{
-			_findclose( lHandle );
-		}
-
-		// Now find directories
-		if( _recursive )
-		{
-			String base_dir = m_initPath;
-			if ( !directory.empty() )
-			{
-				base_dir = s_concatenatePath( m_initPath, directory );
-				// Remove the last '/'
-				base_dir.erase( base_dir.length() - 1);
-			}
-			base_dir.append("/*");
-
-			// Remove directory name from pattern
-			String mask("/");
-			if( pos1 != _pattern.npos )
-			{
-				mask.append( _pattern.substr( pos1 + 1 ) );
-			}
-			else
-			{
-				mask.append( _pattern );
-			}
-
-			lHandle = static_cast<long>( _findfirst( base_dir.c_str(), &tagData ) );
-			res = 0;
-			while (lHandle != -1 && res != -1)
-			{
-				if ((tagData.attrib & _A_SUBDIR) &&
-					!s_isReservedDir( tagData.name ) )
-				{
-					// recurse
-					base_dir = directory;
-					base_dir.append( tagData.name ).append( mask );
-					findFiles( base_dir, _recursive, _dirs, _simpleList, _detailList );
-				}
-				res = _findnext( lHandle, &tagData );
-			}
-			// Close if we found any files
-			if( lHandle != -1 )
-			{
-				_findclose( lHandle );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	FileManager::~FileManager()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DataStream* FileManager::open( const String& _filename ) const
 	{
-		std::string full_path = s_concatenatePath( m_initPath, _filename );
+		String full_path = s_concatenatePath( m_initPath, _filename );
 
 		// Use filesystem to determine size 
 		// (quicker than streaming to the end and back)
-		struct stat tagStat;
-		int ret = stat( full_path.c_str(), &tagStat );
+		struct _stat tagStat;
+#if MENGE_WCHAR_T_STRINGS
+		int ret = _wstat( full_path.c_str(), &tagStat );
+#else
+		int ret = _stat( full_path.c_str(), &tagStat );
+#endif
 		assert( ret == 0 && "Problem getting file size" );
 
+#if MENGE_WCHAR_T_STRINGS != 1
 		wchar_t lpszW[MAX_PATH];
 		MultiByteToWideChar(CP_ACP, 0, full_path.c_str(), -1, lpszW, full_path.size() );
 		lpszW[full_path.size()] = 0;
@@ -187,14 +97,16 @@ namespace Menge
 		// Always open in binary mode
 		std::ifstream *origStream = new std::ifstream();
 		origStream->open( lpszW, std::ios::in | std::ios::binary );
+#else
+		// Always open in binary mode
+		std::ifstream *origStream = new std::ifstream();
+		origStream->open( full_path.c_str(), std::ios::in | std::ios::binary );
+#endif
 
 		// Should check ensure open succeeded, in case fail for some reason.
 		if ( origStream->fail() )
 		{
 			delete origStream;
-			/*OGRE_EXCEPT(Exception::ERR_FILE_NOT_FOUND,
-			"Cannot open file: " + filename,
-			"FileSystemArchive::open");*/
 		}
 
 		/// Construct return stream, tell it to delete on destroy
@@ -204,49 +116,16 @@ namespace Menge
 		return static_cast<DataStream*>(stream);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TStringVector* FileManager::list( bool _recursive, bool _dirs )
-	{
-		// directory change requires locking due to saved returns
-		TStringVector* ret( new TStringVector() );
-
-		findFiles( MENGE_TEXT("*"), _recursive, _dirs, ret, 0);
-
-		return ret;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	TFileInfoVector* FileManager::listFileInfo( bool _recursive, bool _dirs )
-	{
-		TFileInfoVector* ret( new TFileInfoVector() );
-
-		findFiles( MENGE_TEXT("*"), _recursive, _dirs, 0, ret );
-
-		return ret;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	TStringVector* FileManager::find( const String& _pattern, bool _recursive, bool _dirs )
-	{
-		TStringVector* ret( new TStringVector() );
-
-		findFiles( _pattern, _recursive, _dirs, ret, 0 );
-
-		return ret;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	TFileInfoVector* FileManager::findFileInfo( const String& _pattern, bool _recursive, bool _dirs )
-	{
-		TFileInfoVector* ret( new TFileInfoVector() );
-
-		findFiles( _pattern, _recursive, _dirs, 0, ret );
-
-		return ret;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool FileManager::exists( const String& _filename )
 	{
-		std::string full_path = s_concatenatePath( m_initPath, _filename );
+		String full_path = s_concatenatePath( m_initPath, _filename );
 
-		struct stat tagStat;
-		bool ret = ( stat( full_path.c_str(), &tagStat ) == 0 );
+		struct _stat tagStat;
+#if MENGE_WCHAR_T_STRINGS
+		bool ret = ( _wstat( full_path.c_str(), &tagStat ) == 0 );
+#else
+		bool ret = ( _stat( full_path.c_str(), &tagStat ) == 0 );
+#endif
 
 		return ret;
 	}

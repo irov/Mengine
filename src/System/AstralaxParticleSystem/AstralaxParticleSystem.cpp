@@ -3,6 +3,7 @@
 #	include "AstralaxParticleSystem.h"
 #	include "AstralaxEmitterContainer.h"
 
+#	include "Menge/Utils.h"
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::ParticleSystemInterface** _ptrParticleSystem )
 {
@@ -62,7 +63,11 @@ Menge::EmitterContainerInterface * AstralaxParticleSystem::createEmitterContaine
 					}
 
 					Magic_SetEmitterPositionMode( id, false );
+#if MENGE_WCHAR_T_STRINGS
+					container->addEmitterId( Menge::Utils::AToW( name ), id );
+#else
 					container->addEmitterId( name, id );
+#endif
 				}
 			}
 
@@ -165,7 +170,11 @@ Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
 //////////////////////////////////////////////////////////////////////////
 Menge::String AstralaxParticleSystem::getTextureName() const
 {
+#if MENGE_WCHAR_T_STRINGS
+	return Menge::Utils::AToW( m_texture[0].file );
+#else
 	return m_texture[0].file;
+#endif
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxParticleSystem::unlockEmitter( Menge::EmitterInterface * _emitter ) 

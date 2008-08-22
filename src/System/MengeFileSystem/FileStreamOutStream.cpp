@@ -1,6 +1,8 @@
 
 #	include "FileStreamOutStream.h"
 
+#	include "Menge/Utils.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -40,7 +42,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileStreamOutStream::write( const Menge::String& _str )
 	{
+#if MENGE_WCHAR_T_STRINGS
+		m_fstream << Utils::WToA( _str );
+#else
 		m_fstream << _str;
+#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileStreamOutStream::write( int _num )

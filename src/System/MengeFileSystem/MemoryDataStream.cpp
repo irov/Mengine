@@ -121,43 +121,6 @@ namespace Menge
 		return cnt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::streamsize MemoryDataStream::readLine(char* _buf, std::streamsize _maxCount, const Menge::String& _delim)
-	{
-		// Deal with both Unix & Windows LFs
-		bool trimCR = false;
-		if ( _delim.find_first_of('\n') != Menge::String::npos )
-		{
-			trimCR = true;
-		}
-
-		std::streamsize pos = 0;
-
-		// Make sure pos can never go past the end of the data 
-		while ( pos < _maxCount && m_pos < m_end )
-		{
-			if ( _delim.find(*m_pos) != Menge::String::npos )
-			{
-				// Trim off trailing CR if this was a CR/LF entry
-				if (trimCR && pos && _buf[pos-1] == '\r')
-				{
-					// terminate 1 character early
-					--pos;
-				}
-
-				// Found terminator, skip and break out
-				++m_pos;
-				break;
-			}
-
-			_buf[pos++] = *m_pos++;
-		}
-
-		// terminate
-		_buf[pos] = '\0';
-
-		return pos;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	std::streamsize MemoryDataStream::skipLine( const Menge::String& _delim )
 	{
 		std::streamsize pos = 0;

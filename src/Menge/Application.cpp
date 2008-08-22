@@ -115,7 +115,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application( ApplicationInterface* _interface )
 		: m_interface( _interface )
-		, m_commandLine( MENGE_TEXT("") )
+		, m_commandLine( "" )
 		, m_particles( true )
 		, m_sound( true )
 		, m_debugMask( 0 )
@@ -335,28 +335,28 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::parseArguments( const String& _arguments )
+	void Application::parseArguments( const StringA& _arguments )
 	{
-		String::size_type idx = _arguments.find( MENGE_TEXT("-sound") );
-		if( idx != String::npos )
+		StringA::size_type idx = _arguments.find( "-sound" );
+		if( idx != StringA::npos )
 		{
 			m_sound = false;
 		}
 
-		idx = _arguments.find( MENGE_TEXT("-particles") );
-		if( idx != String::npos )
+		idx = _arguments.find( "-particles" );
+		if( idx != StringA::npos )
 		{
 			m_particles = false;
 		}
 
-		idx = _arguments.find( MENGE_TEXT("-debuginfo") );
-		if( idx != String::npos )
+		idx = _arguments.find( "-debuginfo" );
+		if( idx != StringA::npos )
 		{
 			m_debugInfo = true;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initialize( const String& _applicationFile, const String& _args )
+	bool Application::initialize( const String& _applicationFile, const char* _args )
 	{
 		OBJECT_FACTORY( Camera2D );
 		OBJECT_FACTORY( Entity );

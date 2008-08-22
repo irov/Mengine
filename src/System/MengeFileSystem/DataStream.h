@@ -18,7 +18,6 @@ namespace Menge
 
 		template<typename T> DataStream& operator>>( T& _val );
 
-		virtual std::streamsize readLine( char* _buf, std::streamsize _maxCount, const String& _delim = MENGE_TEXT("\n") );
 		virtual String getLine( bool _trimAfter = true );
 		virtual String getAsString( void );
 		virtual std::streamsize skipLine( const String& _delim = MENGE_TEXT("\n") );

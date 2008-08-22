@@ -72,64 +72,6 @@ namespace Menge
 		return retString;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::streamsize DataStream::readLine( char* _buf, std::streamsize _maxCount, const String& _delim )
-	{
-		// Deal with both Unix & Windows LFs
-		bool trimCR = false;
-
-		if ( _delim.find_first_of('\n') != String::npos )
-		{
-			trimCR = true;
-		}
-
-		char tmpBuf[stream_temp_size];
-		std::streamsize chunkSize = (std::min)( _maxCount, stream_temp_size - 1 );
-		std::streamsize totalCount = 0;
-		std::streamsize readCount;
-		while ( chunkSize && ( readCount = read( tmpBuf, chunkSize ) ) )
-		{
-			// Terminate
-			tmpBuf[readCount] = '\0';
-
-			// Find first delimiter
-			std::streamsize pos = (std::streamsize)strcspn( tmpBuf, _delim.c_str() );
-
-			if( pos < readCount )
-			{
-				// Found terminator, reposition backwards
-				skip( pos + 1 - readCount );
-			}
-
-			// Are we genuinely copying?
-			if( _buf )
-			{
-				memcpy( _buf + totalCount, tmpBuf, pos );
-			}
-
-			totalCount += pos;
-
-			if( pos < readCount )
-			{
-				// Trim off trailing CR if this was a CR/LF entry
-				if ( trimCR && totalCount && _buf[ totalCount - 1 ] == '\r')
-				{
-					--totalCount;
-				}
-
-				// Found terminator, break out
-				break;
-			}
-
-			// Adjust chunkSize for next time
-			chunkSize = (std::min)( _maxCount - totalCount, stream_temp_size - 1 );
-		}
-
-		// Terminate
-		_buf[totalCount] = '\0';
-
-		return totalCount;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	std::streamsize DataStream::skipLine( const String& _delim )
 	{
 		char tmpBuf[stream_temp_size];
@@ -164,13 +106,13 @@ namespace Menge
 	String DataStream::getAsString()
 	{
 		// Read the entire buffer
-		char* pBuf = new char[m_size+1];
+		TChar* pBuf = new TChar[(m_size+1)/sizeof(TChar)];
 		// Ensure read from begin of stream
 		seek(0);
 		read( pBuf, m_size );
-		pBuf[m_size] = '\0';
+		pBuf[m_size/sizeof(TChar)] = MENGE_TEXT('\0');
 		String str;
-		str.insert( 0, pBuf, m_size );
+		str.insert( 0, pBuf, m_size/sizeof(TChar) );
 		delete [] pBuf;
 		return str;
 	}

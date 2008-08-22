@@ -34,18 +34,31 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
 	private:
+		typedef	std::pair< mt::TVectorPoints, mt::vec2f > TOutQuad;
+
 		String m_resourcename;
-		String m_penumbraName;
+		String m_penumbraUpName;
+		String m_penumbraDownName;
+		String m_penumbraLeftName;
+		String m_penumbraRightName;
 		
-		std::vector<mt::vec2f> m_poly;
+		mt::TVectorPoints m_poly;
 		std::vector<mt::polygon> polys;
-		std::vector<mt::vec2f> m_triangles;
-		std::vector<mt::vec2f> m_penumbra_triangles;
+		mt::TVectorPoints m_triangles;
+		//std::vector<mt::vec2f> m_penumbra_triangles;
+		std::vector<TOutQuad> m_edgesUp;
+		std::vector<TOutQuad> m_edgesDown;
+		std::vector<TOutQuad> m_edgesLeft;
+		std::vector<TOutQuad> m_edgesRight;
 		
 		ResourceImage * m_resource;
-		ResourceImage * m_imagePenumbra;
+		ResourceImage * m_imagePenumbraUp;
+		ResourceImage * m_imagePenumbraDown;
+		ResourceImage * m_imagePenumbraLeft;
+		ResourceImage * m_imagePenumbraRight;
 
-		void _renderPass( const std::vector<mt::vec2f> & _triangles, const RenderImageInterface* _image );
 		void _addVertex( const mt::vec2f & _vertex );
+		void compileEdges_( float _width, float _height, float _minAngle, float _maxAngle, std::vector<TOutQuad>& _edges );
+		void renderEdges_( const std::vector<TOutQuad>& _edges, const RenderImageInterface* _image );
 	};
 };

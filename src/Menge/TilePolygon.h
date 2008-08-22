@@ -15,8 +15,10 @@ namespace Menge
 		OBJECT_DECLARE(TilePolygon)
 
 	public:
-	
 		TilePolygon();
+
+	public:
+		void addVertex( const mt::vec2f & _vertex );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -56,8 +58,7 @@ namespace Menge
 		ResourceImage * m_imagePenumbraDown;
 		ResourceImage * m_imagePenumbraLeft;
 		ResourceImage * m_imagePenumbraRight;
-
-		void _addVertex( const mt::vec2f & _vertex );
+		
 		void compileEdges_( float _width, float _height, float _minAngle, float _maxAngle, std::vector<TOutQuad>& _edges );
 		void renderEdges_( const std::vector<TOutQuad>& _edges, const RenderImageInterface* _image );
 	};

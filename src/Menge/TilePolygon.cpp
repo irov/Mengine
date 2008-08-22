@@ -46,7 +46,7 @@ namespace Menge
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Value"), &TilePolygon::_addVertex );
+					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Value"), &TilePolygon::addVertex );
 				}
 			}
 
@@ -249,7 +249,7 @@ namespace Menge
 		RigidBody2D::_update(_timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::_addVertex(const mt::vec2f & _vertex)
+	void TilePolygon::addVertex(const mt::vec2f & _vertex)
 	{
 		m_poly.push_back(_vertex);
 	}

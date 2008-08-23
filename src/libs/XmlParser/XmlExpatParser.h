@@ -2,7 +2,7 @@
 
 #	include "Config/Typedef.h"
 
-#	if MENGE_WCHAR_T_STRINGS
+#	ifdef MENGE_UNICODE
 #	define XML_UNICODE_WCHAR_T
 #	endif
 

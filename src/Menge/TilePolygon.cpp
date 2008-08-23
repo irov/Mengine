@@ -100,6 +100,38 @@ namespace Menge
 			renderEdges_( m_edgesRight, m_imagePenumbraRight->getImage( 0 ) );
 		}
 
+#	ifndef MENGE_MASTER_RELEASE
+		if( _debugMask & MENGE_DEBUG_PHYSICS )
+		{
+			for( TShapeList::iterator it = m_shapeList.begin(),
+				it_end = m_shapeList.end();
+				it != it_end;
+			it++ )
+			{
+				const mt::polygon & poly = *it;
+				const mt::mat3f& mtx = getWorldMatrix();
+				//mt::vec2f pos = getLocalPosition();
+
+				std::size_t numPoints = poly.num_points();
+
+				for(std::size_t i = 0; i != numPoints; i++)
+				{
+
+					mt::vec2f beg = poly[i];
+					mt::vec2f end = poly[(i+1) % numPoints];
+
+					//beg += pos;
+					//end += pos;
+					mt::vec2f pt1, pt2;
+					mt::mul_v2_m3( pt1, beg, mtx );
+					mt::mul_v2_m3( pt2, end, mtx );
+
+					Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF,pt1,pt2);
+				}
+			}
+		}
+#	endif
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TilePolygon::_activate()

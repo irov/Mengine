@@ -35,7 +35,7 @@ namespace Menge
 					);
 			}
 
-			PyObject * result = pybind::call_method( module, _type.c_str(), MENGE_TEXT("()") );
+			PyObject * result = pybind::call_method( module, _type.c_str(), "()" );
 
 			if( result == 0 )
 			{
@@ -75,7 +75,7 @@ namespace Menge
 				{
 					//entity->registerEvent( "LOADER", "onLoader" );
 					//entity->callEvent("LOADER", "()");
-					entity->callMethod( MENGE_TEXT("onLoader"), MENGE_TEXT("()") );
+					entity->callMethod( MENGE_TEXT("onLoader"), "()" );
 				}
 			}
 
@@ -97,7 +97,7 @@ namespace Menge
 					);
 			}
 
-			PyObject * result = pybind::call_method( module, _type.c_str(), MENGE_TEXT("()") );
+			PyObject * result = pybind::call_method( module, _type.c_str(), "()" );
 
 			if( result == 0 )
 			{
@@ -131,7 +131,7 @@ namespace Menge
 			{
 				//entity->registerEvent( "LOADER", "onLoader" );
 				//entity->callEvent("LOADER", "()");
-				entity->callMethod( MENGE_TEXT("onLoader"), MENGE_TEXT("()") );
+				entity->callMethod( MENGE_TEXT("onLoader"), "()" );
 			}
 
 			entity->setLocalPosition( _pos );

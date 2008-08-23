@@ -24,7 +24,7 @@ namespace Menge
 		ResourcePhysicGeometry::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "ConvexGeometryFile", "Name", m_filename );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ConvexGeometryFile"), MENGE_TEXT("Name"), m_filename );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -74,7 +74,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	std::streamsize DataStream::skipLine( const String& _delim )
 	{
-		char tmpBuf[stream_temp_size];
+		TChar tmpBuf[stream_temp_size];
 		std::streamsize total = 0;
 		std::streamsize readCount;
 		// Keep looping while not hitting delimiter
@@ -84,7 +84,8 @@ namespace Menge
 			tmpBuf[readCount] = '\0';
 
 			// Find first delimiter
-			std::streamsize pos = (std::streamsize)strcspn( tmpBuf, _delim.c_str() );
+
+			std::streamsize pos = (std::streamsize)wcscspn( tmpBuf, _delim.c_str() );
 
 			if( pos < readCount )
 			{

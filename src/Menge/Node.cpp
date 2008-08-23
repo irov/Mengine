@@ -349,17 +349,17 @@ namespace Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE("Enable", "Value", m_enable );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Enable"), MENGE_TEXT("Value"), m_enable );
 
-			XML_CASE_NODE("Node")
+			XML_CASE_NODE( MENGE_TEXT("Node") )
 			{
 				String name;
 				String type;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "Name", name );
-					XML_CASE_ATTRIBUTE( "Type", type );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Name"), name );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Type"), type );
 				}
 
 				Node * node = SceneManager::createNode( type );
@@ -375,11 +375,11 @@ namespace Menge
 				XML_PARSE_ELEMENT( node, &Node::loader );
 			}
 
-			XML_CASE_NODE("Hide")
+			XML_CASE_NODE( MENGE_TEXT("Hide") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE("Value", m_hide);
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), m_hide);
 				}
 			}
 		}

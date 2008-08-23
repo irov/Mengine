@@ -55,7 +55,7 @@ namespace Menge
 		TVectorChar * getEntityXML( const String& _type );
 
 		static PyObject * wrap( Node * _node );
-		static PyObject * proxy( PyObject * _module, const std::string & _name, void * _impl );
+		static PyObject * proxy( PyObject * _module, const String & _name, void * _impl );
 
 		static void incref( PyObject * _object );
 		static void decref( PyObject * _object );
@@ -70,25 +70,21 @@ namespace Menge
 		
 		bool hasModuleFunction( PyObject * _module, const String& _name );
 		PyObject * getModuleFunction( PyObject * _module, const String& _name );
-		PyObject * callModuleFunction( const String& _module, const String& _name, const char * _params = "()", ... );
-		PyObject * callModuleFunction( PyObject * _module, const String& _name, const char * _params = "()", ... );
+		PyObject * callModuleFunction( const String& _module, const String& _name, const char * _params, ... );
+		PyObject * callModuleFunction( PyObject * _module, const String& _name, const char * _params, ... );
 
 		PyObject * callFunction( PyObject * _object, const char * _params, va_list );
 
-		PyObject * callFunction( PyObject * _object, const char * _params = "()", ...  );
-		PyObject * callFunction( const std::string & _name, const char * _params = "()", ...  );
+		PyObject * callFunction( PyObject * _object, const char * _params, ...  );
+		PyObject * callFunction( const String & _name, const char * _params, ...  );
 
-		bool hasMethod( Node * _entity, const std::string & _name );
-		PyObject * callMethod( Node * _entity, const std::string & _name, const char * _params = "()", ...  );
+		bool hasMethod( Node * _entity, const String & _name );
+		PyObject * callMethod( Node * _entity, const String & _name, const char * _params, ...  );
 
 		bool parseBool( PyObject * _result );
 		
 		static void handleException();
 	
-	private:
-		void doBuffer( const char * _buffer, unsigned int _size );
-		
-
 	private:
 		PyObject * m_global;
 

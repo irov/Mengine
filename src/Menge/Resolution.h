@@ -18,20 +18,13 @@ namespace Menge
 		std::size_t getHeight() const;
 
 	public:
-		std::size_t & operator [] ( int i )
-		{
-			return m_size[ i ];
-		}
-
-		std::size_t operator [] ( int i ) const
-		{
-			return m_size[ i ];
-		}
+		std::size_t & operator [] ( int i );
+		std::size_t operator [] ( int i ) const;
 
 	protected:
 		union
 		{
-			struct  
+			struct
 			{
 				std::size_t m_width;
 				std::size_t m_height;
@@ -39,5 +32,6 @@ namespace Menge
 
 			std::size_t m_size[2];
 		};
+		
 	};
 }

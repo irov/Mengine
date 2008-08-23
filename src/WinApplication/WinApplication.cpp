@@ -310,8 +310,11 @@ namespace Menge
 			top = 0;
 		}
 
+#ifdef MENGE_UNICODE
+		m_name = _name;
+#else		
 		/// patch for ansi names
-		char *ansistr = NULL;
+		TChar *ansistr = NULL;
 		int length = MultiByteToWideChar(CP_UTF8, 0, _name.c_str(), _name.size(), NULL, NULL );
 		WCHAR *lpszW = NULL;
 
@@ -332,6 +335,7 @@ namespace Menge
 		m_name.assign( ansistr );
 		
 		free( ansistr );
+#endif
 
 		m_mutex = ::CreateMutex( NULL, FALSE, m_name.c_str() );
 		DWORD error = ::GetLastError();

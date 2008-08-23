@@ -28,8 +28,8 @@ namespace Menge
 		SceneNode3D::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourceName );
-			XML_CASE_ATTRIBUTE_NODE( "Material", "Name", m_materialName );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Resource"), MENGE_TEXT("Name"), m_resourceName );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Material"), MENGE_TEXT("Name"), m_materialName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

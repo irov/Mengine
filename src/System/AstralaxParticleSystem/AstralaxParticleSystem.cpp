@@ -63,7 +63,7 @@ Menge::EmitterContainerInterface * AstralaxParticleSystem::createEmitterContaine
 					}
 
 					Magic_SetEmitterPositionMode( id, false );
-#if MENGE_WCHAR_T_STRINGS
+#ifdef MENGE_UNICODE
 					container->addEmitterId( Menge::Utils::AToW( name ), id );
 #else
 					container->addEmitterId( name, id );
@@ -170,7 +170,7 @@ Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
 //////////////////////////////////////////////////////////////////////////
 Menge::String AstralaxParticleSystem::getTextureName() const
 {
-#if MENGE_WCHAR_T_STRINGS
+#ifdef MENGE_UNICODE
 	return Menge::Utils::AToW( m_texture[0].file );
 #else
 	return m_texture[0].file;

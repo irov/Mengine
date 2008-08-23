@@ -7,12 +7,14 @@ namespace Menge
 		: m_width(0)
 		, m_height(0)
 	{
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Resolution::Resolution( std::size_t _width, std::size_t _height )
 		: m_width(_width)
 		, m_height(_height)
 	{
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Resolution::setWidth( std::size_t _width )
@@ -33,5 +35,15 @@ namespace Menge
 	std::size_t Resolution::getHeight() const
 	{
 		return m_height;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t & Resolution::operator [] ( int i )
+	{
+		return m_size[i];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t Resolution::operator [] ( int i ) const
+	{
+		return m_size[i];
 	}
 }

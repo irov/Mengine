@@ -57,13 +57,13 @@ bool HGERenderFont::_placeSymbols(int _width, int _height, int leftRange,  int r
 //////////////////////////////////////////////////////////////////////////
 HTEXTURE HGERenderFont::_fontGenerate( const Menge::String& _name, int _size, bool _bold, bool _italic, bool _antialias, int _leftRange, int _rigthRange )
 {
-	char sPath[MAX_PATH];
+	//char sPath[MAX_PATH];
 	//OLECHAR sUniPath[MAX_PATH + 1];
 
 	//MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, _name.c_str(), -1, sUniPath,
 	//	MAX_PATH);
 
-	HFONT hFont = CreateFont(-_size, 0, 0, 0, (_bold) ? FW_BOLD : FW_NORMAL,
+	HFONT hFont = CreateFontW(-_size, 0, 0, 0, (_bold) ? FW_BOLD : FW_NORMAL,
 		_italic, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
 		(_antialias) ? ANTIALIASED_QUALITY : NONANTIALIASED_QUALITY,
 		DEFAULT_PITCH | FF_DONTCARE, _name.c_str());
@@ -208,9 +208,9 @@ void HGERenderFont::renderText(float _x, float _y, unsigned long _color, const M
 
 	for( Menge::String::const_iterator it = _text.begin(); it != _text.end(); it++)
 	{
-		char letter = *it;
+		Menge::TChar letter = *it;
 
-		if(letter == '\n')
+		if( letter == '\n' )
 		{
 			_y += m_height;
 			widthOffset = _x;

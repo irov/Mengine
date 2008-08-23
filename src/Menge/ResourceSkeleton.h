@@ -6,8 +6,8 @@
 
 namespace Menge
 {
-	typedef std::vector<std::string> TBoneNames;
-	typedef std::vector<std::string> TAnimationNames;
+	typedef std::vector<String> TBoneNames;
+	typedef std::vector<String> TAnimationNames;
 	
 	class ResourceSkeleton
 		: public ResourceReference
@@ -33,8 +33,8 @@ namespace Menge
 
 		TAnimationNames m_animationNames;
 
-		void addBoneName( const std::string & _bone );
-		void addAnimationName( const std::string & _animation );
+		void addBoneName( const String & _bone );
+		void addAnimationName( const String & _animation );
 
 		void loaderBone_( XmlElement * _xml );
 		void loaderAnimation_( XmlElement * _xml );

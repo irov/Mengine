@@ -18,6 +18,6 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		std::string m_filename;
+		String m_filename;
 	};
 }	// namespace Menge

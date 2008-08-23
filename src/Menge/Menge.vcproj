@@ -98,7 +98,7 @@
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfATL="0"
 			ATLMinimizesCRunTimeLibraryUsage="true"
-			CharacterSet="2"
+			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>
 			<Tool

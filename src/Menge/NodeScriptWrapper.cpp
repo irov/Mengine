@@ -192,7 +192,11 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const char * xml_data = pybind::convert::to_string( _params );
+#	ifdef MENGE_UNICODE
+			const TChar * xml_data = pybind::convert::to_unicode( _params );
+#	else
+			const TChar * xml_data = pybind::convert::to_string( _params );
+#	endif
 
 			Node * node = SceneManager::createNodeFromXmlData( xml_data );
 

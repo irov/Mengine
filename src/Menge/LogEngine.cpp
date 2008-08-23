@@ -34,7 +34,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerOperator::operator ()( const char* _message, ... )
+	void LoggerOperator::operator ()( const TChar * _message, ... )
 	{
 		if( Holder<LogEngine>::empty() )
 		{
@@ -45,9 +45,13 @@ namespace Menge
 
 		va_start(argList, _message);
 
-		TCharA str[1024];
+		TChar str[1024];
 
-		vsprintf_s( str, _message, argList );
+#	ifdef MENGE_UNICODE
+		vswprintf( str, 1024, _message, argList );
+#	else
+		vsprintf( str, _message, argList );
+#	endif
 
 		va_end(argList);
 
@@ -75,49 +79,6 @@ namespace Menge
 		{
 			Holder<Application>::hostage()->showMessageBox( message, MENGE_TEXT("Mengine Critical Error"), 0 );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void LoggerOperator::operator()( const wchar_t* _message, ... )
-	{
-		/*if( Holder<LogEngine>::empty() )
-		{
-			return;
-		}
-
-		va_list argList;
-
-		va_start(argList, _message);
-
-		TCharW str[1024];
-
-		vswprintf_s( str, _message, argList );
-
-		va_end(argList);
-
-		const StringW& message( str );
-
-		bool isBreak = ( m_mask & ELoggerBreak ) > 0;
-
-		if( Py_IsInitialized() == 0 || !isBreak )
-		{
-			bool isDebug = ( m_mask & ELoggerDebug ) > 0;
-
-			Holder<LogEngine>::hostage()
-				->logMessage( message, isDebug );
-		}
-		else
-		{
-			//	PyErr_Format(PyExc_SystemError,
-			//"%s: %s"
-			//, const_cast<char*>(m_file)
-			//, message.c_str()				
-			//);
-		}
-
-		if( ( m_mask & ELoggerMessageBox ) > 0 )
-		{
-			Holder<Application>::hostage()->showMessageBox( message, MENGE_TEXT("Mengine Critical Error"), 0 );
-		}	*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

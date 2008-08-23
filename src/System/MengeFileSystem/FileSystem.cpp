@@ -162,7 +162,7 @@ namespace Menge
 		{
 		return true;
 		}*/
-#if MENGE_WCHAR_T_STRINGS
+#ifdef MENGE_UNICODE
 		int res = _wmkdir( _path.c_str() );
 #else
 		int res = _mkdir( _path.c_str() );
@@ -185,7 +185,10 @@ namespace Menge
 		SHFILEOPSTRUCT fs;
 		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCT));
 		fs.hwnd = NULL;
-#if MENGE_WCHAR_T_STRINGS != 1
+
+#ifdef MENGE_UNICODE
+		fs.pFrom = _path.c_str();
+#else
 		wchar_t lpszW[MAX_PATH];
 		String::size_type size = _path.size();
 		MultiByteToWideChar(CP_ACP, 0, _path.c_str(), -1, lpszW, size );
@@ -193,9 +196,8 @@ namespace Menge
 		lpszW[_path.size()+1] = 0;
 
 		fs.pFrom = lpszW;
-#else
-		fs.pFrom = _path.c_str();
 #endif
+
 		fs.wFunc = FO_DELETE;
 		fs.hwnd = NULL;
 		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
@@ -230,11 +232,13 @@ namespace Menge
 	bool FileSystem::changeDir( const String& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
-#if MENGE_WCHAR_T_STRINGS
+
+#ifdef MENGE_UNICODE
 		int res = _wchdir( _path.c_str() );
 #else
 		int res = _chdir( _path.c_str() );
 #endif
+
 		if( !res )
 		{
 			return true;
@@ -248,7 +252,17 @@ namespace Menge
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 
-#if MENGE_WCHAR_T_STRINGS != 1
+#ifdef MENGE_UNICODE
+		HRESULT hr;
+		TChar szPath[MAX_PATH];
+
+		hr = SHGetFolderPathAndSubDir( NULL,					//hWnd	
+			CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
+			NULL,										//hToken
+			SHGFP_TYPE_CURRENT,							//dwFlags
+			_game.c_str(),								//pszSubDir
+			szPath);									//pszPath
+#else
 		/// patch for ansi names
 		char *ansistr = NULL;
 		String::size_type size = _game.size();
@@ -280,17 +294,8 @@ namespace Menge
 			szPath);									//pszPath
 
 		free( ansistr );
-#else
-		HRESULT hr;
-		TChar szPath[MAX_PATH];
-
-		hr = SHGetFolderPathAndSubDir( NULL,					//hWnd	
-			CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
-			NULL,										//hToken
-			SHGFP_TYPE_CURRENT,							//dwFlags
-			_game.c_str(),								//pszSubDir
-			szPath);									//pszPath
 #endif
+
 		if( SUCCEEDED( hr ) )
 		{
 			m_appDataPath = String( szPath );
@@ -314,14 +319,15 @@ namespace Menge
 	{
 		String fileName = m_appDataPath + MENGE_TEXT("\\") + _filename;
 
-#if MENGE_WCHAR_T_STRINGS != 1
+#ifdef MENGE_UNICODE
+		const wchar_t* lpszW = _filename.c_str();
+#else
 		wchar_t lpszW[MAX_PATH];
 		String::size_type size = fileName.size();
 		MultiByteToWideChar(CP_ACP, 0, fileName.c_str(), -1, lpszW, size );
 		lpszW[fileName.size()] = 0;
-#else
-		const wchar_t* lpszW = _filename.c_str();
 #endif
+
 		FileStreamOutStream* outStream = new FileStreamOutStream();
 		if( !outStream->open( lpszW, _binary ) )
 		{
@@ -343,14 +349,14 @@ namespace Menge
 		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTW));
 		fs.hwnd = NULL;
 
-#if MENGE_WCHAR_T_STRINGS != 1
+#ifdef MENGE_UNICODE
+		const wchar_t* lpszW = _filename.c_str();
+#else
 		wchar_t lpszW[MAX_PATH];
 		String::size_type size = _filename.size();
 		MultiByteToWideChar(CP_ACP, 0, _filename.c_str(), -1, lpszW, size );
 		lpszW[_filename.size()] = 0;
 		lpszW[_filename.size()+1] = 0;
-#else
-		const wchar_t* lpszW = _filename.c_str();
 #endif
 
 		fs.pFrom = lpszW;

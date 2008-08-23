@@ -150,12 +150,12 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE("Transformation")
+			XML_CASE_NODE( MENGE_TEXT("Transformation") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					//XML_CASE_ATTRIBUTE("Value", m_localMatrix);
-					XML_CASE_ATTRIBUTE_MEMBER( "Position", &Allocator3D::setLocalPosition3D );
+					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Position"), &Allocator3D::setLocalPosition3D );
 				}
 
 				changePivot3D();

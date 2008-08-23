@@ -33,7 +33,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE("GridSize", "Value", m_gridSize );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("GridSize"), MENGE_TEXT("Value"), m_gridSize );
 		}
 
 	}

@@ -162,46 +162,47 @@ namespace Menge
 
 namespace XmlParserCast
 {
+
 	//////////////////////////////////////////////////////////////////////////
 	bool attribute_value_cast( Menge::Resolution & _var, const Menge::TChar * _value )
 	{
-		int res = sscanf( _value, "%d;%d", &_var[0], &_var[1] );
+		int res = STDSSCANF( _value, MENGE_TEXT("%d;%d"), &_var[0], &_var[1] );
 
 		return res == 2;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( mt::vec2f & _var, const char * _value )
+	bool attribute_value_cast( mt::vec2f & _var, const Menge::TChar * _value )
 	{
-		int res = sscanf( _value, "%f;%f", &_var.x, &_var.y );
+		int res = STDSSCANF( _value, MENGE_TEXT("%f;%f"), &_var.x, &_var.y );
 
 		return res == 2;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( mt::vec3f & _var, const char * _value )
+	bool attribute_value_cast( mt::vec3f & _var, const Menge::TChar * _value )
 	{
-		int res = sscanf( _value, "%f;%f;%f", &_var.x, &_var.y, &_var.z );
+		int res = STDSSCANF( _value, MENGE_TEXT("%f;%f;%f"), &_var.x, &_var.y, &_var.z );
 
 		return res == 3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( mt::quatf & _var, const char * _value )
+	bool attribute_value_cast( mt::quatf & _var, const Menge::TChar * _value )
 	{
-		int res = sscanf( _value, "%f;%f;%f;%f", &_var.x, &_var.y, &_var.z, &_var.w );
+		int res = STDSSCANF( _value, MENGE_TEXT("%f;%f;%f;%f"), &_var.x, &_var.y, &_var.z, &_var.w );
 
 		return res == 4;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( mt::vec4f & _var, const char * _value )
+	bool attribute_value_cast( mt::vec4f & _var, const Menge::TChar * _value )
 	{
-		int res = sscanf( _value, "%f;%f;%f;%f", &_var.x, &_var.y, &_var.z, &_var.w );
+		int res = STDSSCANF( _value, MENGE_TEXT("%f;%f;%f;%f"), &_var.x, &_var.y, &_var.z, &_var.w );
 
 		return res == 4;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( Menge::ColourValue & _var, const char * _value )
+	bool attribute_value_cast( Menge::ColourValue & _var, const Menge::TChar * _value )
 	{
 		float a, r, g, b;
-		int res = sscanf( _value, "%f;%f;%f;%f", &r, &g, &b, &a );
+		int res = STDSSCANF( _value, MENGE_TEXT("%f;%f;%f;%f"), &r, &g, &b, &a );
 
 		_var.setA( a );
 		_var.setR( r );
@@ -211,12 +212,12 @@ namespace XmlParserCast
 		return res == 4;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( mt::mat3f & _var, const char * _value )
+	bool attribute_value_cast( mt::mat3f & _var, const Menge::TChar * _value )
 	{
 		mt::ident_m3( _var );
 
-		int res = sscanf( _value, 
-			"%f;%f;%f;%f;%f;%f;"
+		int res = STDSSCANF( _value
+			, MENGE_TEXT("%f;%f;%f;%f;%f;%f;")
 			, &_var.v0.x, &_var.v0.y 
 			, &_var.v1.x, &_var.v1.y 
 			, &_var.v2.x, &_var.v2.y
@@ -225,12 +226,12 @@ namespace XmlParserCast
 		return res == 6;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool attribute_value_cast( mt::mat4f & _var, const char * _value )
+	bool attribute_value_cast( mt::mat4f & _var, const Menge::TChar * _value )
 	{
 		mt::ident_m4( _var );
 
-		int res = sscanf( _value, 
-			"%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;"
+		int res = STDSSCANF( _value
+			, MENGE_TEXT("%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;")
 			, &_var.v0.x, &_var.v0.y, &_var.v0.z
 			, &_var.v1.x, &_var.v1.y, &_var.v1.z
 			, &_var.v2.x, &_var.v2.y, &_var.v2.z

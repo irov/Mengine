@@ -205,20 +205,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::doBuffer( const char * _buffer, unsigned int _size )
-	{		
-		try
-		{
-			std::string source( _buffer, _size );
-			PyObject * result = pybind::exec( source.c_str(), m_global, m_global );
-			std::cout << "success!" << std::endl;
-		}
-		catch (...)
-		{
-			ScriptEngine::handleException();
-		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::doString( const String& _string )
 	{
 		try
@@ -421,7 +407,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::callModuleFunction( PyObject * _module, const String& _name, const char * _params, ...  )
+	PyObject * ScriptEngine::callModuleFunction( PyObject * _module, const String & _name, const char * _params, ...  )
 	{
 		va_list valist;
 		va_start(valist, _params);
@@ -452,7 +438,7 @@ namespace Menge
 		return result;
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::callFunction( const std::string & _name, const char * _params, ...  )
+	PyObject * ScriptEngine::callFunction( const String & _name, const char * _params, ...  )
 	{
 		try
 		{
@@ -473,7 +459,7 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::hasMethod( Node * _node, const std::string & _name )
+	bool ScriptEngine::hasMethod( Node * _node, const String & _name )
 	{
 		PyObject * script = _node->getEmbedding();
 
@@ -487,7 +473,7 @@ namespace Menge
 		return res == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::callMethod( Node * _node, const std::string & _name, const char * _params, ...  )
+	PyObject * ScriptEngine::callMethod( Node * _node, const String & _name, const char * _params, ...  )
 	{
 		PyObject * script = _node->getEmbedding();
 
@@ -520,7 +506,7 @@ namespace Menge
 		return pybind::extract<bool>( _result );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::proxy( PyObject * _module, const std::string & _name, void * _impl )
+	PyObject * ScriptEngine::proxy( PyObject * _module, const String & _name, void * _impl )
 	{
 		PyObject * result = pybind::call_method( _module, _name.c_str(), "()" );
 		if( result == 0 )

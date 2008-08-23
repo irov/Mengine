@@ -37,7 +37,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setParentScene( Scene * _scene )
 	{
-		callMethod( MENGE_TEXT("onSubScene"), MENGE_TEXT("(O)"), _scene->getEmbedding() );
+		callMethod( MENGE_TEXT("onSubScene"), "(O)", _scene->getEmbedding() );
 
 		m_isSubScene = true;
 	}
@@ -219,7 +219,7 @@ namespace	Menge
 		// scene must be already active on onActivate event
 		m_active = Node::_activate();
 
-		callMethod( MENGE_TEXT("onActivate"), MENGE_TEXT("()") );
+		callMethod( MENGE_TEXT("onActivate"), "()" );
 
 		//bool result = Node::_activate();
 
@@ -228,7 +228,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()
 	{
-		callMethod( MENGE_TEXT("onDeactivate"), MENGE_TEXT("()") );
+		callMethod( MENGE_TEXT("onDeactivate"), "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_release()
@@ -279,7 +279,7 @@ namespace	Menge
 		}
 		XML_END_NODE()
 		{
-			callMethod( MENGE_TEXT("onLoader"), MENGE_TEXT("()") );
+			callMethod( MENGE_TEXT("onLoader"), "()" );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

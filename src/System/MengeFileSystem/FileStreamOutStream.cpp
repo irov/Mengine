@@ -42,7 +42,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileStreamOutStream::write( const Menge::String& _str )
 	{
-#if MENGE_WCHAR_T_STRINGS
+#ifdef MENGE_UNICODE
 		m_fstream << Utils::WToA( _str );
 #else
 		m_fstream << _str;

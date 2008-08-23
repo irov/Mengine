@@ -82,25 +82,25 @@ namespace Menge
 		// Use filesystem to determine size 
 		// (quicker than streaming to the end and back)
 		struct _stat tagStat;
-#if MENGE_WCHAR_T_STRINGS
+#ifdef MENGE_UNICODE
 		int ret = _wstat( full_path.c_str(), &tagStat );
 #else
 		int ret = _stat( full_path.c_str(), &tagStat );
 #endif
 		assert( ret == 0 && "Problem getting file size" );
 
-#if MENGE_WCHAR_T_STRINGS != 1
+		std::ifstream *origStream = new std::ifstream();
+
+#ifdef MENGE_UNICODE
+		// Always open in binary mode
+		origStream->open( full_path.c_str(), std::ios::in | std::ios::binary );
+#else
 		wchar_t lpszW[MAX_PATH];
 		MultiByteToWideChar(CP_ACP, 0, full_path.c_str(), -1, lpszW, full_path.size() );
 		lpszW[full_path.size()] = 0;
 
 		// Always open in binary mode
-		std::ifstream *origStream = new std::ifstream();
 		origStream->open( lpszW, std::ios::in | std::ios::binary );
-#else
-		// Always open in binary mode
-		std::ifstream *origStream = new std::ifstream();
-		origStream->open( full_path.c_str(), std::ios::in | std::ios::binary );
 #endif
 
 		// Should check ensure open succeeded, in case fail for some reason.
@@ -121,7 +121,7 @@ namespace Menge
 		String full_path = s_concatenatePath( m_initPath, _filename );
 
 		struct _stat tagStat;
-#if MENGE_WCHAR_T_STRINGS
+#ifdef MENGE_UNICODE
 		bool ret = ( _wstat( full_path.c_str(), &tagStat ) == 0 );
 #else
 		bool ret = ( _stat( full_path.c_str(), &tagStat ) == 0 );

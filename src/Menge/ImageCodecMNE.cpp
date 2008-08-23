@@ -69,7 +69,7 @@ namespace Menge
 		if( is_alpha != 0 )
 		{
 			_input->seek( jpg_size+3*sizeof(unsigned long) );
-			Codec* codecPNG = Codec::getCodec( "png" );
+			Codec* codecPNG = Codec::getCodec( MENGE_TEXT("png") );
 			res = codecPNG->decode( _input, _buffer, DF_READ_ALPHA_ONLY );
 			if( res == false )
 			{

@@ -322,10 +322,10 @@ namespace Menge
 	void Game::handleMouseLeave()
 	{
 		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseLeave" ) ) )
+			->hasModuleFunction( m_pyPersonality, MENGE_TEXT("onMouseLeave") ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseLeave" ) );
+				->callModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseLeave" ), "()" );
 		}
 		m_player->onMouseLeave();
 	}
@@ -336,7 +336,7 @@ namespace Menge
 			->hasModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseEnter" ) ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseEnter" ) );
+				->callModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseEnter" ), "()" );
 		}
 		m_player->onMouseEnter();
 	}
@@ -412,7 +412,7 @@ namespace Menge
 			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
 		{
 			PyObject * pyResult = Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, m_eventInit );
+				->callModuleFunction( m_pyPersonality, m_eventInit, "()" );
 
 			bool result = Holder<ScriptEngine>::hostage()
 				->parseBool( pyResult );
@@ -513,7 +513,7 @@ namespace Menge
 		if( m_pyPersonality )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, m_eventFini );
+				->callModuleFunction( m_pyPersonality, m_eventFini, "()" );
 		}
 
 		for( TMapArrow::iterator
@@ -730,7 +730,7 @@ namespace Menge
 			->hasModuleFunction( m_pyPersonality, MENGE_TEXT("onCreateAccount") ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, MENGE_TEXT("onCreateAccount"), MENGE_TEXT("(s)"), _accountName.c_str() );
+				->callModuleFunction( m_pyPersonality, MENGE_TEXT("onCreateAccount"), "(s)", _accountName.c_str() );
 		}
 		else
 		{

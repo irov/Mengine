@@ -40,9 +40,7 @@ namespace Menge
 		LoggerOperator( const char * _file, unsigned int _mask );
 
 	public:
-		//void operator()( const TChar* _message, ... );
-		void operator()( const char* _message, ... );
-		void operator()( const wchar_t* _message, ... );
+		void operator()( const TChar* _message, ... );
 
 	protected:
 		//print_( const TChar* _message );
@@ -50,6 +48,7 @@ namespace Menge
 		unsigned int m_mask;
 	};
 }
+
 
 #	define MENGE_LOG\
 	Menge::LoggerOperator( __FILE__, ELoggerLog )

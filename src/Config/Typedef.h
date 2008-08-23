@@ -10,68 +10,71 @@
 
 namespace Menge
 {
+	typedef wchar_t TCharW;
+	typedef char	TCharA;
+	typedef std::wstring StringW;
+	typedef std::string StringA;
+	typedef std::wstringstream StringstreamW;
+	typedef std::stringstream StringstreamA;
 
-typedef wchar_t TCharW;
-typedef char	TCharA;
-typedef std::wstring StringW;
-typedef std::string StringA;
-typedef std::wstringstream StringstreamW;
-typedef std::stringstream StringstreamA;
 
-#	if MENGE_WCHAR_T_STRINGS
-		typedef TCharW TChar;
-		typedef StringW String;
-		typedef StringstreamW Stringstream;
-		#define StdErr (std::wcerr)
-		#define StdStrchr (std::wcschr)
-		#define STDVSPRINTF (vswprintf_s)
-		#define STDSPRINTF (swprintf_s)
-		#define STDSSCANF (swscanf_s)
-		#define STDSTRCPY (wcscpy)
-		#define STDSTRCMP (wcscmp)
-		#define STDITOS (_itow)
-		typedef std::wofstream StdOfstream;
+#ifdef MENGE_UNICODE
+	typedef TCharW TChar;
+	typedef StringW String;
+	typedef StringstreamW Stringstream;
+	typedef std::wofstream StdOfstream;
 
-		#	if MENGE_COMPILER == MENGE_COMPILER_MSVC
-			#	define MENGE_TEXT(quote)	L##quote
-		#	endif
-
-#	else
-		typedef TCharA TChar;
-		typedef StringA String;
-		typedef StringstreamA Stringstream;
-		#define StdErr (std::cerr)
-		typedef std::ofstream StdOfstream;
-		#define StdStrchr (std::strchr)
-		#define STDVSPRINTF (vsprintf_s)
-		#define STDSPRINTF (sprintf_s)
-		#define STDSSCANF (sscanf_s)
-		#define STDSTRCPY (strcpy)
-		#define STDSTRCMP (strcmp)
-		#define STDITOS (_itoa)
-		#	if MENGE_COMPILER == MENGE_COMPILER_MSVC
-			#	define MENGE_TEXT(quote)	quote
-		#	endif
-
-#	endif
-
-//typedef _StringBase String;
-
-typedef void* WindowHandle;
-
-//
+#	define StdErr (std::wcerr)
+#	define StdStrchr (std::wcschr)
+#	define STDVSPRINTF (vswprintf_s)
+#	define STDSPRINTF (swprintf_s)
+#	define STDSSCANF (swscanf_s)
+#	define STDSTRCPY (wcscpy)
+#	define STDSTRCMP (wcscmp)
+#	define STDITOS (_itow)
 
 #	if MENGE_COMPILER == MENGE_COMPILER_MSVC
-		typedef unsigned __int64 uint64;
-		typedef unsigned __int32 uint32;
-		typedef unsigned __int16 uint16;
-		typedef unsigned __int8 uint8;
-#	else
-		typedef unsigned long long uint64;
-		typedef unsigned int uint32;
-		typedef unsigned short uint16;
-		typedef unsigned char uint8;
+#		define MENGE_TEXT(quote)	L##quote
 #	endif
+
+#	else
+	typedef TCharA TChar;
+	typedef StringA String;
+	typedef StringstreamA Stringstream;
+	typedef std::ofstream StdOfstream;
+
+#	define StdErr (std::cerr)
+#	define StdStrchr (std::strchr)
+#	define STDVSPRINTF (vsprintf_s)
+#	define STDSPRINTF (sprintf_s)
+#	define STDSSCANF (sscanf_s)
+#	define STDSTRCPY (strcpy)
+#	define STDSTRCMP (strcmp)
+#	define STDITOS (_itoa)
+
+#	if MENGE_COMPILER == MENGE_COMPILER_MSVC
+#		define MENGE_TEXT(quote)	quote
+#	endif
+
+#endif
+
+	//typedef _StringBase String;
+
+	typedef void* WindowHandle;
+
+	//
+
+#if MENGE_COMPILER == MENGE_COMPILER_MSVC
+	typedef unsigned __int64 uint64;
+	typedef unsigned __int32 uint32;
+	typedef unsigned __int16 uint16;
+	typedef unsigned __int8 uint8;
+#else
+	typedef unsigned long long uint64;
+	typedef unsigned int uint32;
+	typedef unsigned short uint16;
+	typedef unsigned char uint8;
+#endif
 
 }
 typedef std::vector<Menge::String> TStringVector;

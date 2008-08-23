@@ -381,7 +381,7 @@ namespace	Menge
 
 		mt::reset( _boundingBox, vertices[0] );
 
-		for( int i = 0; i < 4; i++ )
+		for( int i = 1; i != 4; ++i )
 		{
 			mt::add_internal_point( _boundingBox, vertices[i] );
 		}

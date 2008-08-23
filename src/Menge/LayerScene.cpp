@@ -60,7 +60,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( "Scene", "Name", m_sceneName );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Scene"), MENGE_TEXT("Name"), m_sceneName );
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////

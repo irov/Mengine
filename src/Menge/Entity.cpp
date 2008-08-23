@@ -328,7 +328,7 @@ namespace	Menge
 
 		this->registerEvent( EVENT_COLLIDE, MENGE_TEXT("onCollide"), this->getEmbedding() );
 
-		this->callMethod( MENGE_TEXT("onActivate"), MENGE_TEXT("()") );
+		this->callMethod( MENGE_TEXT("onActivate"), "()" );
 
 		//m_oldPos = getLocalPosition();
 
@@ -339,7 +339,7 @@ namespace	Menge
 	{
 		RigidBody2D::_deactivate();
 
-		this->callMethod( MENGE_TEXT("onDeactivate"), MENGE_TEXT("()") );
+		this->callMethod( MENGE_TEXT("onDeactivate"), "()" );
 
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -347,7 +347,7 @@ namespace	Menge
 	{
 		bool result = Node::_compile();
 
-		this->callMethod( MENGE_TEXT("onCompile"), MENGE_TEXT("()") );
+		this->callMethod( MENGE_TEXT("onCompile"), "()" );
 
 		if( m_physicController )
 		{
@@ -366,7 +366,7 @@ namespace	Menge
 			RigidBody2D::_release();
 		}
 
-		this->callMethod( MENGE_TEXT("onRelease"), MENGE_TEXT("()") );
+		this->callMethod( MENGE_TEXT("onRelease"), "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::setVelocity( const mt::vec2f & _velocity )

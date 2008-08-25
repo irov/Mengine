@@ -18,7 +18,7 @@ namespace Menge
 		~Eventable();
 
 	public:
-		bool registerEvent( EEventName _name, const String & _method, PyObject * _module );
+		bool registerEvent( EEventName _name, const StringA & _method, PyObject * _module );
 		bool registerEvent( EEventName _name, PyObject * _callback );
 		PyObject * getEvent( EEventName _name );
 

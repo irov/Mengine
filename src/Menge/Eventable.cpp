@@ -28,7 +28,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( EEventName _name, const String & _method, PyObject * _module )
+	bool Eventable::registerEvent( EEventName _name, const StringA & _method, PyObject * _module )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_name);
 

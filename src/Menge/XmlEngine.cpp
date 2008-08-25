@@ -132,7 +132,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlEngine::parseXmlBuffer( const TVectorChar & _buffer, XmlElementListener * _listener )
+	bool XmlEngine::parseXmlBuffer( const Blobject & _buffer, XmlElementListener * _listener )
 	{
 		std::string::size_type size = _buffer.size();
 

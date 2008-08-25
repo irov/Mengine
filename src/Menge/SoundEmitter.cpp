@@ -232,8 +232,8 @@ namespace Menge
 	{
 		Node::_setListener();
 
-		registerEvent( EVENT_SOUND_STOP, MENGE_TEXT("onStopped"), m_listener );
-		registerEvent( EVENT_SOUND_PAUSE, MENGE_TEXT("onPaused"), m_listener );
+		registerEvent( EVENT_SOUND_STOP, ("onStopped"), m_listener );
+		registerEvent( EVENT_SOUND_PAUSE, ("onPaused"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

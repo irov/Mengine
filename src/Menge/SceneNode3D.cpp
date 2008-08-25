@@ -118,8 +118,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneNode3D::_setListener()
 	{
-		registerEvent( EVENT_YAWTIME_END, MENGE_TEXT("onYawTimeEnd"), m_listener );
-		registerEvent( EVENT_PITCHTIME_END, MENGE_TEXT("onPitchTimeEnd"), m_listener );
+		registerEvent( EVENT_YAWTIME_END, ("onYawTimeEnd"), m_listener );
+		registerEvent( EVENT_PITCHTIME_END, ("onPitchTimeEnd"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -249,8 +249,8 @@ namespace	Menge
 	{
 		Sprite::_setListener();
 
-		m_onEndAnimationEvent = registerEvent( EVENT_ANIMATION_END, MENGE_TEXT("onAnimationEnd"), m_listener );
-		m_onEndFrameEvent = registerEvent( EVENT_FRAME_END, MENGE_TEXT("onFrameEnd"), m_listener );
+		m_onEndAnimationEvent = registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), m_listener );
+		m_onEndFrameEvent = registerEvent( EVENT_FRAME_END, ("onFrameEnd"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

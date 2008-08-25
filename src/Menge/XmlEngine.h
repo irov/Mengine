@@ -31,10 +31,10 @@ namespace Menge
 		bool parseXmlFile( const String& _file, XmlElementListener * _listener );
 		bool parseXmlFile( DataStreamInterface* _file, XmlElementListener * _listener );
 		bool parseXmlString( const String& _string, XmlElementListener * _listener );
-		bool parseXmlBuffer( const TVectorChar & _buffer, XmlElementListener * _listener );
+		bool parseXmlBuffer( const Blobject & _buffer, XmlElementListener * _listener );
 
 		template<class C, class F>
-		bool parseXmlBufferM( const TVectorChar & _buffer, C * _self, F _method )
+		bool parseXmlBufferM( const Blobject & _buffer, C * _self, F _method )
 		{
 			XmlElementListener * listener = new XmlElementListenerMethod<C,F>(_self, _method );
 			bool result = parseXmlBuffer( _buffer, listener );

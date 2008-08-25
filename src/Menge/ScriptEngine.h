@@ -37,11 +37,6 @@ namespace Menge
 	public:
 		void init();
 
-		bool compileString( const String& _string, const String& _file );
-
-		bool doFile( const String& _file );
-		bool doString( const String& _string );
-
 		PyObject * initModule( const String& _file );
 		PyObject * importModule( const String& _file );
 
@@ -52,39 +47,42 @@ namespace Menge
 		bool isEntityType( const String& _type );		
 		PyObject * getEntityModule( const String& _type );
 		bool registerEntityType( const String& _type );
-		TVectorChar * getEntityXML( const String& _type );
+		Blobject * getEntityXML( const String& _type );
 
 		static PyObject * wrap( Node * _node );
-		static PyObject * proxy( PyObject * _module, const String & _name, void * _impl );
+		static PyObject * proxy( PyObject * _module, const StringA & _name, void * _impl );
 
 		static void incref( PyObject * _object );
 		static void decref( PyObject * _object );
 		static unsigned int refCount( PyObject * _obj );
 
 	public:
-		PyObject * genEvent( const std::string &_name );
+		PyObject * genEvent( const StringA &_name );
 
 		Entity * createEntity( const String& _type );
+		Entity * createEntityWithXml( const String& _type, const String& _xml );
 		Arrow * createArrow( const String& _type );
 		Scene * createScene( const String& _type );
 		
-		bool hasModuleFunction( PyObject * _module, const String& _name );
-		PyObject * getModuleFunction( PyObject * _module, const String& _name );
-		PyObject * callModuleFunction( const String& _module, const String& _name, const char * _params, ... );
-		PyObject * callModuleFunction( PyObject * _module, const String& _name, const char * _params, ... );
+		bool hasModuleFunction( PyObject * _module, const StringA& _name );
+		PyObject * getModuleFunction( PyObject * _module, const StringA& _name );
+		PyObject * callModuleFunction( const String& _module, const StringA& _name, const char * _params, ... );
+		PyObject * callModuleFunction( PyObject * _module, const StringA& _name, const char * _params, ... );
 
 		PyObject * callFunction( PyObject * _object, const char * _params, va_list );
 
 		PyObject * callFunction( PyObject * _object, const char * _params, ...  );
-		PyObject * callFunction( const String & _name, const char * _params, ...  );
 
-		bool hasMethod( Node * _entity, const String & _name );
-		PyObject * callMethod( Node * _entity, const String & _name, const char * _params, ...  );
+		bool hasMethod( Node * _entity, const StringA & _name );
+		PyObject * callMethod( Node * _entity, const StringA & _name, const char * _params, ...  );
 
 		bool parseBool( PyObject * _result );
 		
 		static void handleException();
 	
+	private:
+		Entity * createEntity_( const String& _type );
+
 	private:
 		PyObject * m_global;
 
@@ -93,7 +91,7 @@ namespace Menge
 		typedef std::map<String, PyObject *> TMapEntitiesType;
 		TMapEntitiesType m_mapEntitiesType;
 
-		typedef std::map<String, TVectorChar > TMapEntitiesXML;
+		typedef std::map<String, Blobject > TMapEntitiesXML;
 		TMapEntitiesXML m_mapEntitiesXML;
 
 		typedef std::map<String, PyObject *> TMapModule;

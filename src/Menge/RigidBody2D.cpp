@@ -409,7 +409,7 @@ namespace Menge
 	void RigidBody2D::_setListener()
 	{
 		Node::_setListener();
-		registerEvent( EVENT_COLLIDE, MENGE_TEXT("onCollide"), m_listener );
+		registerEvent( EVENT_COLLIDE, ("onCollide"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::onApplyForceAndTorque()

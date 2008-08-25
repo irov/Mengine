@@ -327,7 +327,9 @@ namespace	Menge
 		const RenderImageInterface * renderImage = m_resource->getImage( m_currentImageIndex );
 
 		const mt::vec2f* vertices = getVertices();
+
 		unsigned int color = m_color.getAsARGB();
+
 		Holder<RenderEngine>::hostage()->renderImage(
 			vertices,
 			m_uv,
@@ -371,8 +373,8 @@ namespace	Menge
 	void Sprite::_setListener()
 	{
 		Node::_setListener();
-		this->registerEvent( EVENT_COLOR_END, MENGE_TEXT("onColorEnd"), m_listener );
-		this->registerEvent( EVENT_COLOR_STOP, MENGE_TEXT("onColorStop"), m_listener );
+		this->registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
+		this->registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )

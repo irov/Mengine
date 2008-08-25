@@ -42,6 +42,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileStreamOutStream::write( const Menge::String& _str )
 	{
+		//Fixme?? maybe Unicode write??
 #ifdef MENGE_UNICODE
 		m_fstream << Utils::WToA( _str );
 #else

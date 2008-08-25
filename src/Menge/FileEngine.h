@@ -15,7 +15,7 @@ namespace Menge
 		std::streamsize size;
 	};
 
-	typedef std::vector<char> TVectorChar;
+	typedef std::vector<char> Blobject;
 
 	class FileEngine
 	{
@@ -49,8 +49,6 @@ namespace Menge
 	protected:
 		FileSystemInterface * m_interface;
 
-		typedef std::vector<char> TFileCache;
-
-		TFileCache m_fileCache;
+		Blobject m_fileCache;
 	};
 }

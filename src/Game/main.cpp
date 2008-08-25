@@ -34,6 +34,33 @@
 #		endif
 #	endif
 
+class PlatformHolder
+{
+public:
+	PlatformHolder()
+		: m_platform(0)
+	{
+
+	}
+
+	~PlatformHolder()
+	{
+		releaseInterfaceSystem( m_platform );
+	}
+
+	Menge::ApplicationInterface * initialize()
+	{
+		if( initInterfaceSystem( &m_platform ) == false )
+		{
+			printf("invalid init system application \n" );
+		}
+
+		return m_platform;
+	}
+
+protected:
+	Menge::ApplicationInterface * m_platform;
+};
 
 void RedirectIOToConsole();
 int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in_opt LPSTR lpCmdLine, __in int nShowCmd )
@@ -50,75 +77,34 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 		RedirectIOToConsole();
 	}
 
-	Menge::ApplicationInterface * platform = 0;
+	PlatformHolder platform;
 
-	if( initInterfaceSystem( &platform ) == false )
+	Menge::ApplicationInterface * platformInterface = platform.initialize();
+
+	Menge::Application app( platformInterface );
+
+	if( app.initialize( config_file, lpCmdLine ) == false )
 	{
-		printf("invalid init system application \n" );
 		return 0;
 	}
 
-	Menge::Application app( platform );
-
-	Menge::LogSystemInterface * logSystem;
-	initInterfaceSystem( &logSystem );
-	app.setLogSystem( logSystem );
-
-	Menge::ProfilerSystemInterface * profilerSystem;
-	initInterfaceSystem( &profilerSystem );
-	app.setProfilerSystem( profilerSystem );
-
-	Menge::FileSystemInterface * fileSystem;
-	initInterfaceSystem( &fileSystem );
-	app.setFileSystem( fileSystem );
-
-	fileSystem->loadPath( MENGE_TEXT(".") );
-
-	Menge::InputSystemInterface * inputSystem;
-	initInterfaceSystem( &inputSystem );
-	app.setInputSystem( inputSystem );
-	
-#	if	MENGE_PARTICLES	== (1)
-	Menge::ParticleSystemInterface * particleSystem;
-	initInterfaceSystem( &particleSystem );
-	app.setParticleSystem( particleSystem );
-#	endif
-
-	Menge::PhysicSystem2DInterface * physicSystem2D;
-	initInterfaceSystem( &physicSystem2D );
-	app.setPhysicSystem2D( physicSystem2D );
-
-	Menge::RenderSystemInterface * renderSystem;
-	initInterfaceSystem( &renderSystem );
-	app.setRenderSystem( renderSystem );
-
-	Menge::SoundSystemInterface * soundSystem;
-	initInterfaceSystem( &soundSystem );
-	app.setSoundSystem( soundSystem );
-
-	bool result = app.initialize( config_file, lpCmdLine );
-
-	result = app.loadGame();
-	result = app.createRenderWindow(0);
-	app.initGame(true);
-
-	if( result == true )
+	if( app.loadGame() == false )
 	{
-		app.run();
+		return 0;
 	}
 
-	releaseInterfaceSystem( platform );
+	if( app.createRenderWindow(0) == false )
+	{
+		return 0;
+	}
 
-	releaseInterfaceSystem( soundSystem );
-	releaseInterfaceSystem( renderSystem );
-	releaseInterfaceSystem( physicSystem2D );
-#	if	MENGE_PARTICLES	== (1)
-	releaseInterfaceSystem( particleSystem );
-#	endif
-	releaseInterfaceSystem( inputSystem );
-	releaseInterfaceSystem( fileSystem );
-	releaseInterfaceSystem( logSystem );
-	
+	if( app.initGame(true) == false )
+	{
+		return 0;
+	}
+
+	app.run();
+
 	if( strstr(lpCmdLine, "-console") )
 	{
 		FreeConsole();

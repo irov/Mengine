@@ -62,7 +62,7 @@ namespace Menge
 
 		bool loadGame();
 		bool createRenderWindow(WindowHandle _handle);
-		void initGame(bool _loadPersonality);
+		bool initGame(bool _loadPersonality);
 
 		void run();
 		void quit();
@@ -152,6 +152,15 @@ namespace Menge
 		PhysicEngine * m_physicEngine;
 		PhysicEngine2D * m_physicEngine2D;
 		XmlEngine *	m_xmlEngine;
+
+		LogSystemInterface * m_logSystem;
+		ProfilerSystemInterface * m_profilerSystem;
+		FileSystemInterface * m_fileSystem;
+		InputSystemInterface * m_inputSystem;
+		ParticleSystemInterface * m_particleSystem;
+		PhysicSystem2DInterface * m_physicSystem2D;
+		RenderSystemInterface * m_renderSystem;
+		SoundSystemInterface * m_soundSystem;
 
 		void parseArguments(const StringA& _arguments);
 		void initPredefinedResources();

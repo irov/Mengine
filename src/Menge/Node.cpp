@@ -651,8 +651,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_setListener()
 	{
-		registerEvent( EVENT_MOVE_STOP, MENGE_TEXT("onMoveStop"), m_listener );
-		registerEvent( EVENT_MOVE_END, MENGE_TEXT("onMoveEnd"), m_listener );
+		registerEvent( EVENT_MOVE_STOP, ("onMoveStop"), m_listener );
+		registerEvent( EVENT_MOVE_END, ("onMoveEnd"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setLayer( Layer2D * _layer )

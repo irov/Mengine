@@ -15,7 +15,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_errorHandler( png_structp _png_ptr, const char * _error ) 
 	{
-		MENGE_LOG( Utils::AToW( _error ).c_str() );
+		String error = Utils::AToW( _error );
+		MENGE_LOG( error.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_readProc( png_structp _png_ptr, unsigned char* _data, png_size_t _size )

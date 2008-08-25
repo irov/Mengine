@@ -37,7 +37,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::setParentScene( Scene * _scene )
 	{
-		callMethod( MENGE_TEXT("onSubScene"), "(O)", _scene->getEmbedding() );
+		callMethod( ("onSubScene"), "(O)", _scene->getEmbedding() );
 
 		m_isSubScene = true;
 	}
@@ -207,19 +207,19 @@ namespace	Menge
 			return false;
 		}
 
-		m_onUpdateEvent = registerEvent( EVENT_UPDATE, MENGE_TEXT("onUpdate"), this->getEmbedding() );
+		m_onUpdateEvent = registerEvent( EVENT_UPDATE, ("onUpdate"), this->getEmbedding() );
 
-		registerEvent( EVENT_KEY, MENGE_TEXT("onHandleKeyEvent"), this->getEmbedding() );
-		registerEvent( EVENT_MOUSE_BUTTON, MENGE_TEXT("onHandleMouseButtonEvent"), this->getEmbedding() );
-		registerEvent( EVENT_MOUSE_MOVE, MENGE_TEXT("onHandleMouseMove"), this->getEmbedding() );
-		registerEvent( EVENT_MOUSE_BUTTON_END, MENGE_TEXT("onHandleMouseButtonEventEnd"), this->getEmbedding() );
-		registerEvent( EVENT_LEAVE, MENGE_TEXT("onMouseLeave"), this->getEmbedding() );
-		registerEvent( EVENT_ENTER, MENGE_TEXT("onMouseEnter"), this->getEmbedding() );
+		registerEvent( EVENT_KEY, ("onHandleKeyEvent"), this->getEmbedding() );
+		registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), this->getEmbedding() );
+		registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), this->getEmbedding() );
+		registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), this->getEmbedding() );
+		registerEvent( EVENT_LEAVE, ("onMouseLeave"), this->getEmbedding() );
+		registerEvent( EVENT_ENTER, ("onMouseEnter"), this->getEmbedding() );
 
 		// scene must be already active on onActivate event
 		m_active = Node::_activate();
 
-		callMethod( MENGE_TEXT("onActivate"), "()" );
+		callMethod( ("onActivate"), "()" );
 
 		//bool result = Node::_activate();
 
@@ -228,7 +228,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_deactivate()
 	{
-		callMethod( MENGE_TEXT("onDeactivate"), "()" );
+		callMethod( ("onDeactivate"), "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_release()
@@ -279,7 +279,7 @@ namespace	Menge
 		}
 		XML_END_NODE()
 		{
-			callMethod( MENGE_TEXT("onLoader"), "()" );
+			callMethod( ("onLoader"), "()" );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

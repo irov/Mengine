@@ -5,12 +5,15 @@
 #	include "ScriptModuleDeclaration.h"
 #	include "ScriptClassWrapper.h"
 
+#	include "XmlEngine.h"
 #	include "LogEngine.h"
 
 #	include "Entity.h"
 #	include "Scene.h"
 #	include "Arrow.h"
 #	include "Game.h"
+#	include "Utils.h"
+
 
 #	include "pybind/pybind.hpp"
 
@@ -95,6 +98,7 @@ namespace Menge
 	void ScriptEngine::setModulePath( const TListModulePath & _listModulePath )
 	{
 		String path_packet;
+
 		for( TListModulePath::const_iterator
 			it = _listModulePath.begin(),
 			it_end = _listModulePath.end();
@@ -105,7 +109,14 @@ namespace Menge
 			path_packet += MENGE_TEXT(';');
 		}
 
-		pybind::set_syspath( path_packet.c_str() );
+		StringA path_packet_A;
+#	ifdef MENGE_UNICODE
+		path_packet_A = Utils::WToA( path_packet );
+#	else if
+		path_packet_A = path_packet;
+#	endif
+
+		pybind::set_syspath( path_packet_A.c_str() );
 
 		pybind::check_error();
 	}
@@ -131,7 +142,7 @@ namespace Menge
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TVectorChar * ScriptEngine::getEntityXML( const String& _type )
+	Blobject * ScriptEngine::getEntityXML( const String& _type )
 	{
 		TMapEntitiesXML::iterator it_find = 
 			m_mapEntitiesXML.find( _type );
@@ -157,9 +168,16 @@ namespace Menge
 			return false;
 		}
 
+		StringA char_type_A;
+#	ifdef MENGE_UNICODE
+		char_type_A = Utils::WToA( _type );
+#	else if
+		char_type_A = _type;
+#	endif
+
 		try
 		{
-			PyObject * result = pybind::get_attr( module, _type.c_str() );
+			PyObject * result = pybind::get_attr( module, char_type_A.c_str() );
 
 			if( pybind::check_type( result ) == false )
 			{
@@ -191,10 +209,10 @@ namespace Menge
 			->openFile( xml_path );
 		 
 		TMapEntitiesXML::iterator it_insert =
-			m_mapEntitiesXML.insert( std::make_pair( _type, TVectorChar() ) ).first;
+			m_mapEntitiesXML.insert( std::make_pair( _type, Blobject() ) ).first;
 
 		std::streamsize size = file->size();
-		TVectorChar & blob = it_insert->second;
+		Blobject & blob = it_insert->second;
 		
 		blob.resize( size );
 		file->read( &blob[0], size );
@@ -205,54 +223,23 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::doString( const String& _string )
-	{
-		try
-		{
-			PyObject * result = pybind::exec( _string.c_str(), m_global, m_global );
-			std::cout << "success!" << std::endl;
-		}
-		catch (...)
-		{
-			ScriptEngine::handleException();
-		}	
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::compileString( const String& _string, const String& _file )
-	{
-		pybind::compile_string( _string.c_str(), _file.c_str() );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::doFile( const String& _file )
-	{
-		MENGE_LOG( MENGE_TEXT("running file %s ..."), _file.c_str() );
-
-		try
-		{
-			//boost::python::import( _file.c_str() );
-			pybind::exec_file( _file.c_str(), m_global, m_global );
-		}
-		catch (...) 
-		{
-			ScriptEngine::handleException();
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::initModule( const String& _name )
 	{
 		MENGE_LOG( MENGE_TEXT("init module %s ...")
 			,_name.c_str() 
 			);
 
+		StringA char_name_A;
+#	ifdef MENGE_UNICODE
+		char_name_A = Utils::WToA( _name );
+#	else if
+		char_name_A = _name;
+#	endif
+
+
 		try
 		{
-			PyObject * module = pybind::module_init( _name.c_str() );
+			PyObject * module = pybind::module_init( char_name_A.c_str() );
 			return module;
 		}
 		catch (...)
@@ -271,6 +258,13 @@ namespace Menge
 
 		TMapModule::iterator it_find = m_mapModule.find( _file );
 
+		StringA char_file_A;
+#	ifdef MENGE_UNICODE
+		char_file_A = Utils::WToA( _file );
+#	else if
+		char_file_A = _file;
+#	endif
+
 		if( it_find != m_mapModule.end() )
 		{
 			return it_find->second;
@@ -278,7 +272,7 @@ namespace Menge
 
 		try
 		{
-			PyObject * module = pybind::module_import( _file.c_str() );
+			PyObject * module = pybind::module_import( char_file_A.c_str() );
 
 			if( module == 0 )
 			{				
@@ -302,30 +296,92 @@ namespace Menge
 		pybind::set_currentmodule( _module );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntity( const String& _type )
+	Entity * ScriptEngine::createEntity_( const String& _type )
 	{
-		//try
-		//{
-		PyObject * module = getEntityModule( _type );
-		PyObject * result = pybind::call_method( module, _type.c_str(), "()" );
+		PyObject * module = this->getEntityModule( _type );
+
+		if( module == 0 )
+		{
+			MENGE_LOG( MENGE_TEXT("Can't create entity [%s] (not module)\n")
+				, _type.c_str() 
+				);
+		}
+
+		StringA char_type_A;
+#	ifdef MENGE_UNICODE
+		char_type_A = Utils::WToA( _type );
+#	else if
+		char_type_A = _type;
+#	endif
+
+		PyObject * result = pybind::call_method( module, char_type_A.c_str(), "()" );
 
 		if( result == 0 )
 		{
+			MENGE_LOG( MENGE_TEXT("Can't create entity [%s] (invalid constructor)\n")
+				, _type.c_str() 
+				);
+
 			return 0;
 		}
 
-		Entity * en = pybind::extract<Entity*>( result );
+		Entity * entity = pybind::extract<Entity*>( result );
 
-		//pybind::decref( result );
-		//this->incref( en );
-		return en;
-		//}
-		//catch (...) 
-		//{
-			//ScriptEngine::handleException();
-		//}
+		if( entity == 0 )
+		{
+			MENGE_LOG( MENGE_TEXT("Can't create entity [%s] (invalid cast)\n")
+				, _type.c_str() 
+				);
 
-		//return 0;
+			return 0;
+		}
+
+		entity->setName( _type );
+		entity->setType( MENGE_TEXT("Entity") );
+		entity->setEmbedding( result );
+
+		return entity;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Entity * ScriptEngine::createEntity( const String& _type )
+	{
+		Entity * entity = createEntity_( _type );
+
+		Blobject * entityXml = 
+			this->getEntityXML( _type );
+
+		if( entityXml )
+		{
+			if( Holder<XmlEngine>::hostage()
+				->parseXmlBufferM( *entityXml, entity, &Entity::loader ) )
+			{
+				//entity->registerEvent( "LOADER", "onLoader" );
+				//entity->callEvent("LOADER", "()");
+				entity->callMethod( ("onLoader"), "()" );
+			}
+		}
+
+		return entity;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Entity * ScriptEngine::createEntityWithXml( const String& _type, const String& _xml )
+	{
+		Entity * entity = createEntity_( _type );
+
+		String xml_path = Holder<Game>::hostage()
+			->getPathEntities( _type );
+
+		xml_path += MENGE_TEXT('/');
+		xml_path += _type;
+		xml_path += MENGE_TEXT(".xml");
+
+		if( Holder<XmlEngine>::hostage()
+			->parseXmlBufferM( _xml, entity, &Entity::loader ) )
+		{
+			entity->callMethod( ("onLoader"), "()" );
+		}
+
+		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////		
 	Arrow * ScriptEngine::createArrow( const String& _type )
@@ -378,17 +434,17 @@ namespace Menge
 		return scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::hasModuleFunction( PyObject * _module, const String& _name )
+	bool ScriptEngine::hasModuleFunction( PyObject * _module, const StringA& _name )
 	{
 		return pybind::has_attr( _module, _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::getModuleFunction( PyObject * _module, const String& _name )
+	PyObject * ScriptEngine::getModuleFunction( PyObject * _module, const StringA & _name )
 	{
 		return pybind::get_attr( _module, _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::callModuleFunction( const String& _module, const String& _name, const char * _params, ... )
+	PyObject * ScriptEngine::callModuleFunction( const String& _module, const StringA & _name, const char * _params, ... )
 	{
 		TMapModule::iterator it_find = m_mapModule.find( _module );
 
@@ -407,7 +463,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::callModuleFunction( PyObject * _module, const String & _name, const char * _params, ...  )
+	PyObject * ScriptEngine::callModuleFunction( PyObject * _module, const StringA & _name, const char * _params, ...  )
 	{
 		va_list valist;
 		va_start(valist, _params);
@@ -438,28 +494,7 @@ namespace Menge
 		return result;
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::callFunction( const String & _name, const char * _params, ...  )
-	{
-		try
-		{
-			va_list valist;
-			va_start(valist, _params);
-
-			PyObject * result = pybind::call_method_va( m_global, _name.c_str(), _params, valist );
-
-			va_end( valist ); 
-
-			return result;
-		}
-		catch (...)
-		{
-			ScriptEngine::handleException();
-		}
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::hasMethod( Node * _node, const String & _name )
+	bool ScriptEngine::hasMethod( Node * _node, const StringA & _name )
 	{
 		PyObject * script = _node->getEmbedding();
 
@@ -473,7 +508,7 @@ namespace Menge
 		return res == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::callMethod( Node * _node, const String & _name, const char * _params, ...  )
+	PyObject * ScriptEngine::callMethod( Node * _node, const StringA & _name, const char * _params, ...  )
 	{
 		PyObject * script = _node->getEmbedding();
 
@@ -506,7 +541,7 @@ namespace Menge
 		return pybind::extract<bool>( _result );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::proxy( PyObject * _module, const String & _name, void * _impl )
+	PyObject * ScriptEngine::proxy( PyObject * _module, const StringA & _name, void * _impl )
 	{
 		PyObject * result = pybind::call_method( _module, _name.c_str(), "()" );
 		if( result == 0 )

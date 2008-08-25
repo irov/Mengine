@@ -234,13 +234,13 @@ namespace Menge
 	void ResourceManager::addListener( PyObject* _listener )
 	{
 		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( _listener, MENGE_TEXT("onHandleResourceLoaded") ) == false )
+			->hasModuleFunction( _listener, ("onHandleResourceLoaded") ) == false )
 		{
 			return;
 		}
 
 		PyObject * event = Holder<ScriptEngine>::hostage()
-			->getModuleFunction( _listener, MENGE_TEXT("onHandleResourceLoaded") );
+			->getModuleFunction( _listener, ("onHandleResourceLoaded") );
 
 		if( event == 0 )
 		{

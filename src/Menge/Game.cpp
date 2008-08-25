@@ -322,10 +322,10 @@ namespace Menge
 	void Game::handleMouseLeave()
 	{
 		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, MENGE_TEXT("onMouseLeave") ) )
+			->hasModuleFunction( m_pyPersonality, "onMouseLeave" ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseLeave" ), "()" );
+				->callModuleFunction( m_pyPersonality, "onMouseLeave", "()" );
 		}
 		m_player->onMouseLeave();
 	}
@@ -333,10 +333,10 @@ namespace Menge
 	void Game::handleMouseEnter()
 	{
 		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseEnter" ) ) )
+			->hasModuleFunction( m_pyPersonality,  "onMouseEnter" ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, MENGE_TEXT( "onMouseEnter" ), "()" );
+				->callModuleFunction( m_pyPersonality,  "onMouseEnter", "()" );
 		}
 		m_player->onMouseEnter();
 	}
@@ -357,11 +357,19 @@ namespace Menge
 		Holder<ScheduleManager>::hostage()
 			->update( _timing );
 
+		StringA eventUpdate;
+#	ifdef MENGE_UNICODE
+		eventUpdate = Utils::WToA( m_eventUpdate );
+#	else if
+		eventUpdate = m_eventUpdate;
+#	endif
+
+
 		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, m_eventUpdate ) )
+			->hasModuleFunction( m_pyPersonality, eventUpdate ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, m_eventUpdate, "(f)", _timing );
+				->callModuleFunction( m_pyPersonality, eventUpdate, "(f)", _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -404,15 +412,22 @@ namespace Menge
 			return false;
 		}
 
-		registerEvent( EVENT_KEY, MENGE_TEXT("onHandleKeyEvent"), m_pyPersonality );
-		registerEvent( EVENT_MOUSE_BUTTON, MENGE_TEXT("onHandleMouseButtonEvent"), m_pyPersonality );
-		registerEvent( EVENT_MOUSE_MOVE, MENGE_TEXT("onHandleMouseMove"), m_pyPersonality );
+		registerEvent( EVENT_KEY, "onHandleKeyEvent", m_pyPersonality );
+		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", m_pyPersonality );
+		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", m_pyPersonality );
+
+		StringA eventInit;
+#	ifdef MENGE_UNICODE
+		eventInit = Utils::WToA( m_eventInit );
+#	else if
+		eventInit = m_eventInit;
+#	endif
 
 		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
+			->hasModuleFunction( m_pyPersonality, eventInit ) )
 		{
 			PyObject * pyResult = Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, m_eventInit, "()" );
+				->callModuleFunction( m_pyPersonality, eventInit, "()" );
 
 			bool result = Holder<ScriptEngine>::hostage()
 				->parseBool( pyResult );
@@ -503,7 +518,10 @@ namespace Menge
 
 		m_defaultArrow = getArrow( m_defaultArrowName );
 
-		m_player->init( m_resourceResolution );
+		if( m_player->init( m_resourceResolution ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -512,8 +530,15 @@ namespace Menge
 	{
 		if( m_pyPersonality )
 		{
+			StringA eventFini;
+#	ifdef MENGE_UNICODE
+			eventFini = Utils::WToA( m_eventFini );
+#	else if
+			eventFini = m_eventFini;
+#	endif
+
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, m_eventFini, "()" );
+				->callModuleFunction( m_pyPersonality, eventFini, "()" );
 		}
 
 		for( TMapArrow::iterator
@@ -727,10 +752,10 @@ namespace Menge
 		m_currentAccount = newAccount;
 
 		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, MENGE_TEXT("onCreateAccount") ) )
+			->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, MENGE_TEXT("onCreateAccount"), "(s)", _accountName.c_str() );
+				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", _accountName.c_str() );
 		}
 		else
 		{

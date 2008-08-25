@@ -9,7 +9,8 @@ WinSystemDLL::WinSystemDLL(const Menge::String& _filename )
 : m_filename( _filename )
 {
 #ifdef _DEBUG
-	m_hInstance = LoadLibrary( Menge::String( _filename + MENGE_TEXT("_d") ).c_str() );
+	Menge::String filename_d( _filename + MENGE_TEXT("_d") );
+	m_hInstance = LoadLibrary( filename_d.c_str() );
 #else
 	m_hInstance = LoadLibrary( _filename.c_str() );
 #endif

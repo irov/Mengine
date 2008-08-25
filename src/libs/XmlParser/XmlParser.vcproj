@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="libexpatMT.lib"
+				AdditionalDependencies="libexpatwMT.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\expat\win32\bin\debug&quot;"
 			/>

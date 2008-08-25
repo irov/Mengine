@@ -296,14 +296,16 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::initGame(bool _loadPersonality)
+	bool Application::initGame(bool _loadPersonality)
 	{
 		bool result = m_game->init();
 
-		if(_loadPersonality)
+		if( _loadPersonality )
 		{
 			result = m_game->loadPersonality();
 		}
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::loader( XmlElement * _xml )
@@ -357,7 +359,35 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const String& _applicationFile, const char* _args )
-	{
+	{		
+		initInterfaceSystem( &m_logSystem );
+		this->setLogSystem( m_logSystem );
+
+		initInterfaceSystem( &m_profilerSystem );
+		this->setProfilerSystem( m_profilerSystem );
+
+		initInterfaceSystem( &m_fileSystem );
+		this->setFileSystem( m_fileSystem );
+
+		m_fileSystem->loadPath( MENGE_TEXT(".") );
+
+		initInterfaceSystem( &m_inputSystem );
+		this->setInputSystem( m_inputSystem );
+
+#	if	MENGE_PARTICLES	== (1)
+		initInterfaceSystem( &m_particleSystem );
+		this->setParticleSystem( m_particleSystem );
+#	endif
+		
+		initInterfaceSystem( &m_physicSystem2D );
+		this->setPhysicSystem2D( m_physicSystem2D );
+		
+		initInterfaceSystem( &m_renderSystem );
+		this->setRenderSystem( m_renderSystem );
+		
+		initInterfaceSystem( &m_soundSystem );
+		this->setSoundSystem( m_soundSystem );
+
 		OBJECT_FACTORY( Camera2D );
 		OBJECT_FACTORY( Entity );
 		OBJECT_FACTORY( Animation );
@@ -453,6 +483,16 @@ namespace Menge
 		{
 			Holder<Game>::hostage()->release();
 		}
+
+		releaseInterfaceSystem( m_soundSystem );
+		releaseInterfaceSystem( m_renderSystem );
+		releaseInterfaceSystem( m_physicSystem2D );
+#	if	MENGE_PARTICLES	== (1)
+		releaseInterfaceSystem( m_particleSystem );
+#	endif
+		releaseInterfaceSystem( m_inputSystem );
+		releaseInterfaceSystem( m_fileSystem );
+		releaseInterfaceSystem( m_logSystem );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )

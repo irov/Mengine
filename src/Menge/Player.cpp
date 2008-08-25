@@ -88,17 +88,26 @@ namespace Menge
 		return m_arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::init( const Resolution & _contentResolution )
+	bool Player::init( const Resolution & _contentResolution )
 	{
-		Arrow * defaultArrow = 
+		Arrow * arrow = 
 			Holder<Game>::hostage()->getDefaultArrow();
 
-		defaultArrow->setWindow( _contentResolution );
+		if( arrow == 0 )
+		{
+			return false;
+		}
 
-		this->setArrow( defaultArrow );
+		arrow->setWindow( _contentResolution );
+
+		this->setArrow( arrow );
 
 		Camera2D * camera = SceneManager::createNodeT<Camera2D>( MENGE_TEXT("Camera2D") );
 
+		if( camera == 0 )
+		{
+			return false;
+		}
 		//mt::vec2f vpSz( 1024, 768 );
 
 		float crx = float( _contentResolution.getWidth() );
@@ -110,6 +119,8 @@ namespace Menge
 		camera->setLocalPosition( crv * 0.5f );
 
 		setRenderCamera2D( camera );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )

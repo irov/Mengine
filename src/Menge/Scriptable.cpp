@@ -47,7 +47,7 @@ namespace Menge
 		return m_embedding;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scriptable::callMethod( const String& _method, const char * _format, ... )
+	void Scriptable::callMethod( const StringA& _method, const char * _format, ... )
 	{
 		PyObject * _embedding = getEmbedding();
 

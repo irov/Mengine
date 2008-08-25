@@ -34,7 +34,7 @@ namespace	Menge
 	{
 		Sprite::_setListener();
 
-		registerEvent( EVENT_VIDEO_END, MENGE_TEXT("onVideoEnd"), m_listener );
+		registerEvent( EVENT_VIDEO_END, ("onVideoEnd"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::setAnimationResource( const String& _resource )

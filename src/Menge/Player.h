@@ -41,7 +41,7 @@ namespace Menge
 		void updateChangeScene();
 
 	public:
-		void init( const Resolution & _contentResolution );
+		bool init( const Resolution & _contentResolution );
 		void update( float _timing );
 		void render( unsigned int _debugMask );
 

@@ -35,7 +35,7 @@ namespace Menge
 		// Keep looping while not hitting delimiter
 		while ( ( readCount = read( tmpBuf, ( stream_temp_size - 1 ) * sizeof(TChar) ) ) != 0 )
 		{
-			std::size_t term = readCount / sizeof(TChar);
+			std::size_t term = readCount / sizeof(char);
 			// Terminate string
 			tmpBuf[term] = MENGE_TEXT('\0');
 

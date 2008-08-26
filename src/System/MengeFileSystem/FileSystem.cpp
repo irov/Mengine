@@ -71,10 +71,10 @@ namespace Menge
 	{
 		DataStream* fileData = 0;
 
-		printf("MengeFileSystem: opening file %s\n", _filename.c_str() );
+		wprintf( L"MengeFileSystem: opening file %s\n", _filename.c_str() );
 		if( m_fileManager->exists( _filename ) == false )
 		{
-			printf( "MengeFileSystem::openFile: %s is not exists\n", _filename.c_str() );
+			wprintf( L"MengeFileSystem::openFile: %s is not exists\n", _filename.c_str() );
 			return 0;
 		}
 

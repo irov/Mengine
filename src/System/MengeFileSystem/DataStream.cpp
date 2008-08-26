@@ -35,7 +35,7 @@ namespace Menge
 		// Keep looping while not hitting delimiter
 		while ( ( readCount = read( tmpBuf, ( stream_temp_size - 1 ) * sizeof(TChar) ) ) != 0 )
 		{
-			std::size_t term = readCount / sizeof(char);
+			std::size_t term = readCount / sizeof(TChar);
 			// Terminate string
 			tmpBuf[term] = MENGE_TEXT('\0');
 
@@ -43,7 +43,7 @@ namespace Menge
 			if ( p != 0 )
 			{
 				// Reposition backwards
-				skip( (long)( p + 1 - tmpBuf - readCount ) );
+				skip( (long)( ( p + 1 - tmpBuf ) * sizeof(TChar) - readCount ) );
 				*p = MENGE_TEXT('\0');
 			}
 
@@ -78,21 +78,22 @@ namespace Menge
 		std::streamsize total = 0;
 		std::streamsize readCount;
 		// Keep looping while not hitting delimiter
-		while ( ( readCount = read( tmpBuf, stream_temp_size - 1 ) ) != 0 )
+		while ( ( readCount = read( tmpBuf, ( stream_temp_size - 1 ) * sizeof(TChar) ) ) != 0 )
 		{
 			// Terminate string
-			tmpBuf[readCount] = '\0';
+			std::size_t term = readCount / sizeof(TChar);
+			tmpBuf[term] = MENGE_TEXT('\0');
 
 			// Find first delimiter
 
 			std::streamsize pos = (std::streamsize)wcscspn( tmpBuf, _delim.c_str() );
 
-			if( pos < readCount )
+			if( pos < term )
 			{
 				// Found terminator, reposition backwards
-				skip( pos + 1 - readCount );
+				skip( ( pos + 1 - term ) * sizeof(TChar) );
 
-				total += pos + 1;
+				total += ( pos + 1 ) * sizeof(TChar);
 
 				// break out
 				break;

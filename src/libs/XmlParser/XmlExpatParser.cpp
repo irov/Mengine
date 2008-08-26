@@ -12,7 +12,7 @@
 #define XML_FMT_INT_MOD "ll"
 #endif
 #else
-#define XML_FMT_INT_MOD "l"
+#define XML_FMT_INT_MOD L"l"
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -74,8 +74,8 @@ bool XmlExpatParser::parseXML( std::size_t _size, XmlElementListener * _listener
 
 	if( status == XML_STATUS_ERROR )
 	{
-		fprintf(stderr,
-			"%s at line %" XML_FMT_INT_MOD "u\n",
+		fwprintf(stderr,
+			L"%s at line %" XML_FMT_INT_MOD L"u\n",
 			XML_ErrorString(XML_GetErrorCode(m_parser)),
 			XML_GetCurrentLineNumber(m_parser)
 			);

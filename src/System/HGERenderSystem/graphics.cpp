@@ -6,12 +6,15 @@
 ** Core functions implementation: graphics
 */
 
+#	include "Config/Typedef.h"
 
 #include "hge_impl.h"
 #include <d3d8.h>
 #include <d3dx8.h>
 #include <d3d8types.h>
 #	include <cassert>
+
+#	include "Menge/Utils.h"
 
 D3DFORMAT s_toD3DFormat( int _format )
 {
@@ -803,8 +806,8 @@ bool HGE_Impl::_GfxInit()
 // Get adapter info
 
 	pD3D->GetAdapterIdentifier(D3DADAPTER_DEFAULT, D3DENUM_NO_WHQL_LEVEL, &AdID);
-	System_Log( MENGE_TEXT("D3D Driver: %s"),AdID.Driver);
-	System_Log( MENGE_TEXT("Description: %s"),AdID.Description);
+	System_Log( MENGE_TEXT("D3D Driver: %s"), Menge::Utils::AToW(AdID.Driver).c_str() );
+	System_Log( MENGE_TEXT("Description: %s"), Menge::Utils::AToW(AdID.Description).c_str() );
 	System_Log( MENGE_TEXT("Version: %d.%d.%d.%d"),
 			HIWORD(AdID.DriverVersion.HighPart),
 			LOWORD(AdID.DriverVersion.HighPart),
@@ -870,7 +873,14 @@ bool HGE_Impl::_GfxInit()
 
 bool HGE_Impl::Gfx_CreateRenderWindow()
 {
-	static const char *szFormats[]={"UNKNOWN", "R5G6B5", "X1R5G5B5", "A1R5G5B5", "X8R8G8B8", "A8R8G8B8"};
+	static const Menge::TChar *szFormats[]={ 
+		MENGE_TEXT("UNKNOWN")
+		,MENGE_TEXT("R5G6B5")
+		,MENGE_TEXT("X1R5G5B5")
+		,MENGE_TEXT("A1R5G5B5")
+		,MENGE_TEXT("X8R8G8B8")
+		,MENGE_TEXT("A8R8G8B8")
+	};
 
 	d3dppW.BackBufferWidth  = nScreenWidth;
 	d3dppW.BackBufferHeight = nScreenHeight;

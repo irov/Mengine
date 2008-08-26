@@ -1,5 +1,6 @@
 #	include "XmlEngine.h"
 //#	include "FileEngine.h"
+#	include "Utils.h"
 
 namespace Menge
 {
@@ -120,7 +121,10 @@ namespace Menge
 
 		void * buffer = XmlParser::makeBuffer( parser, size );
 
-		memcpy( buffer, _buffer.c_str(), size );
+		//memcpy( buffer, _buffer.c_str(), size );
+		StringA str = Utils::WToA( _buffer );
+		const char* chBuf = str.c_str();
+		std::copy( chBuf, chBuf + size, (char*)buffer );
 
 		bool result = XmlParser::parseBuffer( parser, size, _listener );
 

@@ -152,7 +152,7 @@ namespace Menge
 	{
 		if ( name == MENGE_TEXT("glyph") )
 		{
-			char r;
+			TChar r;
 			float u1, v1, u2, v2;
 
 			int err = STDSSCANF( params.c_str(), MENGE_TEXT("%c %f %f %f %f"), &r, 1, &u1, &v1, &u2, &v2 );
@@ -197,6 +197,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::parseFontdef( DataStreamInterface * _stream )
 	{
+		char buf[2];
+		_stream->read( buf,2 );
 		String line = _stream->getLine( true );
 		_stream->skipLine( MENGE_TEXT("{") );
 		

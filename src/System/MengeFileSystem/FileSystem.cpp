@@ -320,7 +320,7 @@ namespace Menge
 		String fileName = m_appDataPath + MENGE_TEXT("\\") + _filename;
 
 #ifdef MENGE_UNICODE
-		const wchar_t* lpszW = _filename.c_str();
+		const wchar_t* lpszW = fileName.c_str();
 #else
 		wchar_t lpszW[MAX_PATH];
 		String::size_type size = fileName.size();

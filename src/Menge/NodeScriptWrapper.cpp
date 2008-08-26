@@ -64,6 +64,7 @@
 
 #	include "XmlEngine.h"
 
+#	include "Utils.h"
 
 namespace Menge
 {
@@ -193,7 +194,8 @@ namespace Menge
 			}
 
 #	ifdef MENGE_UNICODE
-			const TChar * xml_data = pybind::convert::to_unicode( _params );
+			//const TChar * xml_data = pybind::convert::to_unicode( _params );
+			String xml_data = Utils::AToW( pybind::convert::to_string( _params ) );
 #	else
 			const TChar * xml_data = pybind::convert::to_string( _params );
 #	endif

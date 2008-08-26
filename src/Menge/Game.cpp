@@ -755,7 +755,7 @@ namespace Menge
 			->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", _accountName.c_str() );
+				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(O)", pybind::ptr( _accountName ) );
 		}
 		else
 		{

@@ -131,7 +131,7 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
-			pybind::call( it->second.second, "(ss)", it->first.c_str(), it->second.first.c_str() );
+			pybind::call( it->second.second, "(OO)", pybind::ptr( it->first ), pybind::ptr( it->second.first ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

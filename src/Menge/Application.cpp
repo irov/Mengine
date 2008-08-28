@@ -646,6 +646,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onUpdate( float _timing )
 	{
+		ProfilerEngine* profiler = Holder<ProfilerEngine>::hostage();
 		if( _timing > m_maxTiming )
 		{
 			_timing = m_maxTiming;
@@ -664,30 +665,30 @@ namespace Menge
 			m_physicEngine->update( 1.0f/30.0f );
 		}
 
-		Holder<ProfilerEngine>::hostage()->beginProfile( MENGE_TEXT("Menge") );
+		profiler->beginProfile( MENGE_TEXT("Menge") );
 
 		if( m_physicEngine2D )
 		{
-			Holder<ProfilerEngine>::hostage()->beginProfile( MENGE_TEXT("Physic") );
+			profiler->beginProfile( MENGE_TEXT("Physic") );
 			m_physicEngine2D->update( _timing );
-			Holder<ProfilerEngine>::hostage()->endProfile( MENGE_TEXT("Physic") );
+			profiler->endProfile( MENGE_TEXT("Physic") );
 		}
 
-		Holder<ProfilerEngine>::hostage()->beginProfile( MENGE_TEXT("Game Update") );
-		m_game->update( _timing );
+		profiler->beginProfile( MENGE_TEXT("Game Update") );
 		m_inputEngine->update();
-		Holder<MousePickerSystem>::hostage()->update();
-		Holder<ProfilerEngine>::hostage()->endProfile( MENGE_TEXT("Game Update") );
+		m_game->update( _timing );
 
-		Holder<ProfilerEngine>::hostage()->beginProfile( MENGE_TEXT("Sound Update") );
+		profiler->endProfile( MENGE_TEXT("Game Update") );
+
+		profiler->beginProfile( MENGE_TEXT("Sound Update") );
 		m_soundEngine->update( _timing );
-		Holder<ProfilerEngine>::hostage()->endProfile( MENGE_TEXT("Sound Update") );
+		profiler->endProfile( MENGE_TEXT("Sound Update") );
 
 		m_renderEngine->beginScene();
 		m_game->render( m_debugMask );
 		m_renderEngine->endScene();
 
-		Holder<ProfilerEngine>::hostage()->endProfile( MENGE_TEXT("Menge") );
+		profiler->endProfile( MENGE_TEXT("Menge") );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()

@@ -7,7 +7,7 @@
 #	include "Arrow.h"
 #	include "Amplifier.h"
 
-#	include "MousePickerSystem.h"
+//#	include "MousePickerSystem.h"
 #	include "LightSystem.h"
 
 #	include "ScriptEngine.h"
@@ -88,7 +88,7 @@ namespace Menge
 		Holder<Amplifier>::destroy();
 		Holder<Player>::destroy();
 		Holder<ScheduleManager>::destroy();
-		Holder<MousePickerSystem>::destroy();
+		//Holder<MousePickerSystem>::destroy();
 		Holder<LightSystem>::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -446,7 +446,7 @@ namespace Menge
 	bool Game::init()
 	{
 		Holder<ScheduleManager>::keep( new ScheduleManager );
-		Holder<MousePickerSystem>::keep( new MousePickerSystem );
+		//Holder<MousePickerSystem>::keep( new MousePickerSystem );
 		Holder<LightSystem>::keep( new LightSystem );
 
 		ScriptEngine::TListModulePath m_listModulePath;

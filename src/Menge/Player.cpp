@@ -15,7 +15,6 @@
 #	include "MousePickerSystem.h"
 
 #	include "RenderEngine.h"
-
 #	include "PhysicEngine2D.h"
 
 namespace Menge
@@ -31,6 +30,7 @@ namespace Menge
 	, m_destroyOldScene( false )
 	, m_restartScene( false )
 	, m_arrowHided( false )
+	, m_mousePickerSystem( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -39,6 +39,13 @@ namespace Menge
 		if( m_renderCamera2D )
 		{
 			delete m_renderCamera2D;
+		}
+
+		if( m_mousePickerSystem )
+		{
+			Holder<MousePickerSystem>::empty();
+			delete m_mousePickerSystem;
+			m_mousePickerSystem = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -120,6 +127,8 @@ namespace Menge
 
 		setRenderCamera2D( camera );
 
+		m_mousePickerSystem = new MousePickerSystem();
+		Holder<MousePickerSystem>::keep( m_mousePickerSystem );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -153,8 +162,8 @@ namespace Menge
 
 		if( handler == false )
 		{
-			handler = Holder<MousePickerSystem>::hostage()
-				->handleKeyEvent( _key, _char, _isDown );
+			HotSpot* picker = m_arrow->getCurrentHotSpot();
+			handler = m_mousePickerSystem->handleKeyEvent( picker, _key, _char, _isDown );
 		}
 
 		return handler;
@@ -190,8 +199,8 @@ namespace Menge
 
 		if( handler == false )
 		{
-			handler = Holder<MousePickerSystem>::hostage()
-				->handleMouseButtonEvent( _button, _isDown );
+			HotSpot* picker = m_arrow->getCurrentHotSpot();
+			handler = m_mousePickerSystem->handleMouseButtonEvent( picker, _button, _isDown );
 		}
 
 		if( m_scene )
@@ -235,8 +244,8 @@ namespace Menge
 
 		if( handler == false )
 		{
-			handler = Holder<MousePickerSystem>::hostage()
-				->handleMouseMove( _x, _y, _whell );
+			HotSpot* picker = m_arrow->getCurrentHotSpot();
+			handler = m_mousePickerSystem->handleMouseMove( picker, _x, _y, _whell );
 		}
 
 		return handler;
@@ -287,7 +296,7 @@ namespace Menge
 			m_scene->release();
 			if( m_destroyOldScene )
 			{
-				Holder<MousePickerSystem>::hostage()->reset();
+				m_mousePickerSystem->reset();
 				Holder<Game>::hostage()->destroyScene( m_scene->getName() );
 			}
 			m_scene = Holder<Game>::hostage()->getScene( name );
@@ -313,7 +322,7 @@ namespace Menge
 				m_scene->release();
 				if( m_destroyOldScene )
 				{
-					Holder<MousePickerSystem>::hostage()->reset();
+					m_mousePickerSystem->reset();
 					Holder<Game>::hostage()->destroyScene( m_scene->getName() );
 				}
 			}
@@ -348,6 +357,9 @@ namespace Menge
 		{
 			m_arrow->update( _timing );
 		}
+
+		HotSpot* picker = m_arrow->getCurrentHotSpot();
+		m_mousePickerSystem->update( picker );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setRenderCamera2D( Camera2D * _camera)

@@ -19,13 +19,13 @@ namespace Menge
 		m_listPickerTrap.reserve( VECTOR_CAPACITY );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::update()
+	void MousePickerSystem::update( HotSpot* _picker )
 	{
-		Arrow * arrow = Holder<Player>::hostage()->getArrow();
+		//Arrow * arrow = Holder<Player>::hostage()->getArrow();
 
-		HotSpot * hotSpot = arrow->getCurrentHotSpot();
+		//HotSpot * hotSpot = arrow->getCurrentHotSpot();
 
-		TVectorPickerTrap pickTraps = MousePickerSystem::pickTrap( hotSpot );
+		TVectorPickerTrap pickTraps = MousePickerSystem::pickTrap( _picker );
 
 
 		for( TVectorPickerTrap::iterator
@@ -76,7 +76,7 @@ namespace Menge
 		m_lastTraps.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::regTrap( MousePickerTrap * _trap, const Viewport & _viewport )
+	void MousePickerSystem::regTrap( MousePickerTrap * _trap )
 	{
 		m_listPickerTrap.push_back( _trap );
 	}
@@ -102,12 +102,8 @@ namespace Menge
 		return pickTraps;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
+	bool MousePickerSystem::handleKeyEvent( HotSpot* _picker, unsigned int _key, unsigned int _char, bool _isDown )
 	{
-		Arrow * arrow = Holder<Player>::hostage()->getArrow();
-
-		HotSpot * hotspot = arrow->getCurrentHotSpot();
-
 		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
@@ -115,7 +111,7 @@ namespace Menge
 		++it)
 		{
 			MousePickerTrap * trap = *it;
-			if( trap->_pickerActive() == true &&  trap->pick( hotspot ) == true )
+			if( trap->_pickerActive() == true &&  trap->pick( _picker ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -129,12 +125,8 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseButtonEvent( unsigned int _button, bool _isDown )
+	bool MousePickerSystem::handleMouseButtonEvent( HotSpot* _picker, unsigned int _button, bool _isDown )
 	{
-		Arrow * arrow = Holder<Player>::hostage()->getArrow();
-
-		HotSpot * hotspot = arrow->getCurrentHotSpot();
-
 		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
@@ -142,7 +134,7 @@ namespace Menge
 		++it)
 		{
 			MousePickerTrap * trap = *it;
-			if( trap->_pickerActive() == true &&  trap->pick( hotspot ) == true )
+			if( trap->_pickerActive() == true &&  trap->pick( _picker ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -156,12 +148,8 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseMove( float _x, float _y, int _whell )
+	bool MousePickerSystem::handleMouseMove( HotSpot* _picker, float _x, float _y, int _whell )
 	{
-		Arrow * arrow = Holder<Player>::hostage()->getArrow();
-
-		HotSpot * hotspot = arrow->getCurrentHotSpot();
-
 		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
@@ -169,7 +157,7 @@ namespace Menge
 		++it)
 		{
 			MousePickerTrap * trap = *it;
-			if( trap->_pickerActive() == true && trap->pick( hotspot ) == true )
+			if( trap->_pickerActive() == true && trap->pick( _picker ) == true )
 			{
 				InputHandler * handler = trap->handler();
 

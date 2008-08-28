@@ -18,16 +18,16 @@ namespace Menge
 		MousePickerSystem();
 
 	public:
-		void update();
+		void update( HotSpot* _picker );
 		void clear();
 		void reset();
 
-		void regTrap( MousePickerTrap * _trap, const Viewport & _viewport );
+		void regTrap( MousePickerTrap * _trap );
 		TVectorPickerTrap pickTrap( HotSpot * _hotspot );
 
-		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
-		bool handleMouseButtonEvent( unsigned int _button, bool _isDown );
-		bool handleMouseMove( float _x, float _y, int _whell );
+		bool handleKeyEvent( HotSpot* _picker, unsigned int _key, unsigned int _char, bool _isDown );
+		bool handleMouseButtonEvent( HotSpot* _picker, unsigned int _button, bool _isDown );
+		bool handleMouseMove( HotSpot* _picker, float _x, float _y, int _whell );
 
 	private:
 		TVectorPickerTrap m_listPickerTrap;

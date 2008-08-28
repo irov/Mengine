@@ -253,12 +253,8 @@ namespace	Menge
 	{
 		Node::_update( _timing );
 
-		const Viewport & viewport =
-			Holder<Player>::hostage()->getRenderCamera2D()
-			->getViewport();
-
 		Holder<MousePickerSystem>::hostage()
-			->regTrap( this, viewport );
+			->regTrap( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )

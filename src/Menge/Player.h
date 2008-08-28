@@ -7,7 +7,6 @@
 #	include "Resolution.h"
 
 #	include "Math/vec3.h"
-#	include <string>
 #	include <set>
 
 namespace Menge
@@ -18,6 +17,7 @@ namespace Menge
 
 	class Camera2D;
 	class Camera3D;
+	class MousePickerSystem;
 
 	class Player
 		: public InputHandler
@@ -64,6 +64,7 @@ namespace Menge
 		Arrow * m_arrow;
 		
 		Camera2D * m_renderCamera2D;
+		MousePickerSystem* m_mousePickerSystem;
 		
 		bool m_arrowHided;
 		bool m_switchScene;

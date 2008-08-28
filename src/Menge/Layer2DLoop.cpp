@@ -204,17 +204,26 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer2DLoop::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
 	{
-		bool result = Layer2D::testBoundingBox( _viewport, _layerspaceBox, _screenspaceBox );
+		mt::vec2f parallax;
+		parallax.x = m_factorParallax.x - ::floorf( _viewport.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / _viewport.begin.x;
+		parallax.y = m_factorParallax.y;
+
+		Viewport convertView = _viewport;
+		convertView.parallax( parallax );
+
+		bool result = Layer::testBoundingBox( convertView, _layerspaceBox, _screenspaceBox );
+
+		//bool result = Layer2D::testBoundingBox( _viewport, _layerspaceBox, _screenspaceBox );
 
 		if( result == true )
 		{
 			return true;
 		}
 
-		if( _layerspaceBox.ve.x > _viewport.end.x )
+		if( _layerspaceBox.ve.x > convertView.end.x )
 		{
-			Viewport leftViewport = _viewport;
-			leftViewport.parallax( m_factorParallax );
+			Viewport leftViewport = convertView;
+			//leftViewport.parallax( m_factorParallax );
 
 			leftViewport.begin.x += m_size.x;
 			leftViewport.end.x += m_size.x;
@@ -226,10 +235,10 @@ namespace	Menge
 			return true;
 		}
 
-		if( _layerspaceBox.vb.x < _viewport.begin.x )
+		if( _layerspaceBox.vb.x < convertView.begin.x )
 		{
-			Viewport rightViewport = _viewport;
-			rightViewport.parallax( m_factorParallax );
+			Viewport rightViewport = convertView;
+			//rightViewport.parallax( m_factorParallax );
 
 			rightViewport.begin.x -= m_size.x;
 			rightViewport.end.x -= m_size.x;

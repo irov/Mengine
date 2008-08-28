@@ -100,10 +100,10 @@ namespace Menge
 	bool Layer::testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const
 	{
 		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
-		const mt::vec2f & posA = _layerspaceHotspot->getWorldPosition();
+		const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
 
 		const mt::vec2f & dirB = _screenspaceHotspot->getWorldDirection();
-		const mt::vec2f & posB = _screenspaceHotspot->getScreenPosition();
+		const mt::vec2f & posB = _screenspaceHotspot->getWorldPosition();
 
 		const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
 		const mt::polygon & screenspacePolygon = _screenspaceHotspot->getPolygon();

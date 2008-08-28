@@ -249,19 +249,17 @@ namespace Menge
 
 		bool isFullscreen = m_game->getFullscreen();
 
-		Resolution bestResolution;
-
 		if( isFullscreen == true )
 		{
 			float drx = float(m_desktopResolution[0]);
 			float dry = float(m_desktopResolution[1]);
 			float aspect = drx / dry;
 
-			bestResolution = m_renderEngine->getBestDisplayResolution( m_currentResolution, aspect );
+			m_currentResolution = m_renderEngine->getBestDisplayResolution( m_currentResolution, aspect );
 		}
 		else
 		{
-			bestResolution = m_game->getResolution();
+			m_currentResolution = m_game->getResolution();
 		}
 
 		WindowHandle winHandle = _handle;
@@ -269,14 +267,14 @@ namespace Menge
 		if( _handle == NULL )
 		{
 			winHandle = m_interface->createWindow( 
-				title, bestResolution.getWidth(), bestResolution.getHeight(), isFullscreen );
+				title, m_currentResolution.getWidth(), m_currentResolution.getHeight(), isFullscreen );
 		}
 
 		int bits = m_game->getBits();
 		int FSAAType = m_game->getFSAAType();
 		int FSAAQuality = m_game->getFSAAQuality();
 
-		m_renderEngine->createRenderWindow( bestResolution, bits, isFullscreen, winHandle,
+		m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, winHandle,
 											FSAAType, FSAAQuality );
 
 		bool isTextureFiltering = m_game->getTextureFiltering();

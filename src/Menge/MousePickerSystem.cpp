@@ -21,10 +21,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update( HotSpot* _picker )
 	{
-		//Arrow * arrow = Holder<Player>::hostage()->getArrow();
-
-		//HotSpot * hotSpot = arrow->getCurrentHotSpot();
-
 		TVectorPickerTrap pickTraps = MousePickerSystem::pickTrap( _picker );
 
 

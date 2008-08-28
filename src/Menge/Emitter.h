@@ -67,8 +67,6 @@ namespace Menge
 		EBlendFactor m_blendSrc;
 		EBlendFactor m_blendDest;
 
-		//virtual void _onSetListener();
-
 		bool m_autoPlay;
 		bool m_looped;
 

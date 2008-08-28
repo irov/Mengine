@@ -1,7 +1,5 @@
 #	include "TilePolygon.h"
 
-#	include "Light2D.h"
-
 #	include "ObjectImplement.h"
 
 #	include "XmlEngine.h"
@@ -12,13 +10,16 @@
 
 #	include "math/triangulation.h"
 
-#	include "ResourceManager.h"
-
-#	include "ResourceImage.h"
-
 #	include "LogEngine.h"
 
 #	include "math/convexpoly2.h"
+
+#	include "math/angle.h"
+
+//	resource section
+#	include "ResourceManager.h"
+#	include "ResourceImage.h"
+#	include "ResourceTilePolygon.h"
 
 namespace Menge
 {
@@ -27,17 +28,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TilePolygon::TilePolygon()
 		: m_resourcename( MENGE_TEXT("") )
+		, m_tileResource( MENGE_TEXT("") )
+		, m_juncName( MENGE_TEXT("") )
 		, m_resource(0)
-		, m_imagePenumbraUp( 0 )
-		, m_imagePenumbraDown( 0 )
-		, m_imagePenumbraLeft( 0 )
-		, m_imagePenumbraRight( 0 )
+		, m_tilePolygonResource( 0 )
+		, m_resourceJunc(0)
+		, m_image(0)
+		, m_imageJunc(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::loader( XmlElement * _xml )
 	{
-		//RigidBody2D::loader(_xml);
 		Node::loader(_xml);
 
 		XML_SWITCH_NODE( _xml )
@@ -50,88 +52,69 @@ namespace Menge
 				}
 			}
 
+			XML_CASE_NODE( MENGE_TEXT("Tile") )
+			{
+				float minAngle;
+				float maxAngle;
+				String imageName;
+
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("MinAngle"), minAngle );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("MaxAngle"), maxAngle );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Image"), imageName );
+				}
+				m_tiles.push_back(Tile(minAngle,maxAngle,imageName));
+			}
+
+			XML_CASE_NODE( MENGE_TEXT("TileJunc") )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Image"), m_juncName );
+				}
+			}
+
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ImageMap"), MENGE_TEXT("Name"), m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("PenumbraUp"), MENGE_TEXT("Name"), m_penumbraUpName );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("PenumbraDown"), MENGE_TEXT("Name"), m_penumbraDownName );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("PenumbraLeft"), MENGE_TEXT("Name"), m_penumbraLeftName );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("PenumbraRight"), MENGE_TEXT("Name"), m_penumbraRightName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_render( unsigned int _debugMask )
 	{
 		Node::_render( _debugMask );
+
+		const mt::mat3f & wm = getWorldMatrix();
+
 		for(std::vector<mt::vec2f>::size_type i = 0; i < m_triangles.size(); i+=3)
 		{
-			const mt::vec2f & a = m_triangles[i+0];
-			const mt::vec2f & b = m_triangles[i+1];
-			const mt::vec2f & c = m_triangles[i+2];
+			const mt::vec2f & v0 = m_triangles[i+0];
+			const mt::vec2f & v1 = m_triangles[i+1];
+			const mt::vec2f & v2 = m_triangles[i+2];
 
-			const RenderImageInterface * image = m_resource->getImage(0);
+			const mt::vec2f & uv0 = m_uvs[i+0];
+			const mt::vec2f & uv1 = m_uvs[i+1];
+			const mt::vec2f & uv2 = m_uvs[i+2];
 
-			float w = image->getWidth();
-			float h = image->getHeight();
-
-			mt::vec2f uv0(a.x / w, a.y / h);
-			mt::vec2f uv1(b.x / w, b.y / h);
-			mt::vec2f uv2(c.x / w, c.y / h);
-
-			const mt::mat3f & wm = getWorldMatrix();
-
-			Holder<RenderEngine>::hostage()->renderTriple(wm, a, b, c,
+			Holder<RenderEngine>::hostage()->renderTriple(wm, v0, v1, v2,
 				uv0, uv1, uv2,
-				0xFFFFFFFF, image );
+				0xFFFFFFFF, m_image );
 		}
 
-		if( m_imagePenumbraUp != 0 )
+		for(std::list<Tile>::iterator it = m_tiles.begin(); it != m_tiles.end(); it++)
 		{
-			renderEdges_( m_edgesUp, m_imagePenumbraUp->getImage( 0 ) );
-		}
-		if( m_imagePenumbraDown != 0 )
-		{
-			renderEdges_( m_edgesDown, m_imagePenumbraDown->getImage( 0 ) );
-		}
-		if( m_imagePenumbraLeft != 0 )
-		{
-			renderEdges_( m_edgesLeft, m_imagePenumbraLeft->getImage( 0 ) );
-		}
-		if( m_imagePenumbraRight != 0 )
-		{
-			renderEdges_( m_edgesRight, m_imagePenumbraRight->getImage( 0 ) );
+			it->renderTile(wm,m_imageJunc);
 		}
 
 #	ifndef MENGE_MASTER_RELEASE
-		if( _debugMask & MENGE_DEBUG_PHYSICS )
+		if( _debugMask & MENGE_DEBUG_TILEPOLYGON )
 		{
-			for( TShapeList::iterator it = m_shapeList.begin(),
-				it_end = m_shapeList.end();
-				it != it_end;
-			it++ )
+			int i = 0;
+			for(std::list<Tile>::iterator it = m_tiles.begin(); it != m_tiles.end(); it++,i++)
 			{
-				const mt::polygon & poly = *it;
-				const mt::mat3f& mtx = getWorldMatrix();
-				//mt::vec2f pos = getLocalPosition();
-
-				std::size_t numPoints = poly.num_points();
-
-				for(std::size_t i = 0; i != numPoints; i++)
-				{
-
-					mt::vec2f beg = poly[i];
-					mt::vec2f end = poly[(i+1) % numPoints];
-
-					//beg += pos;
-					//end += pos;
-					mt::vec2f pt1, pt2;
-					mt::mul_v2_m3( pt1, beg, mtx );
-					mt::mul_v2_m3( pt2, end, mtx );
-
-					Holder<RenderEngine>::hostage()->renderLine(0xFFFFFFFF,pt1,pt2);
-				}
+				it->renderDebug(wm, 0xFF00FF00 +  ((i+1)*105));
 			}
 		}
-#	endif
-
+# endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TilePolygon::_activate()
@@ -162,50 +145,36 @@ namespace Menge
 			return false;
 		}
 
-		if( m_penumbraUpName != MENGE_TEXT("") )
+		m_resourceJunc = 
+			Holder<ResourceManager>::hostage()
+			->getResourceT<ResourceImage>( m_juncName );
+
+		if( m_resourceJunc == 0 )
 		{
-			m_imagePenumbraUp = 
-				Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceImage>( m_penumbraUpName );
-			float width = m_imagePenumbraUp->getImage( 0 )->getWidth();
-			float height = m_imagePenumbraUp->getImage( 0 )->getHeight();
-			compileEdges_( width, height, -0.261f, 0.261f, m_edgesUp );
-		}
-		if( m_penumbraDownName != MENGE_TEXT("") )
-		{
-			m_imagePenumbraDown =
-				Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceImage>( m_penumbraDownName );
-			float width = m_imagePenumbraDown->getImage( 0 )->getWidth();
-			float height = m_imagePenumbraUp->getImage( 0 )->getHeight();
-			compileEdges_( width, height, 2.88f, 3.40f, m_edgesDown );
-		}
-		if( m_penumbraLeftName != MENGE_TEXT("") )
-		{
-			m_imagePenumbraLeft =
-				Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceImage>( m_penumbraLeftName );
-			float width = m_imagePenumbraLeft->getImage( 0 )->getWidth();
-			float height = m_imagePenumbraUp->getImage( 0 )->getHeight();
-			compileEdges_( width, height, 1.309f, 1.833f, m_edgesLeft );
+			MENGE_LOG( MENGE_TEXT("Image resource not getting '%s'")
+				,m_juncName.c_str() );
+			return false;
 		}
 
-		if( m_penumbraRightName != MENGE_TEXT("") )
-		{
-			m_imagePenumbraRight =
-				Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceImage>( m_penumbraRightName );
-			float width = m_imagePenumbraRight->getImage( 0 )->getWidth();
-			float height = m_imagePenumbraUp->getImage( 0 )->getHeight();
-			compileEdges_( width, height, -1.833f, -1.309f, m_edgesRight );
-		}
+		m_imageJunc = m_resourceJunc->getImage(0);
 
-		std::vector<mt::vec2f>::size_type size = m_poly.size();
-		std::vector<mt::vec2f>::size_type capacity = 5 * size;
+		std::vector<mt::vec2f>::size_type capacity = 5 * m_poly.size();
 
 		m_triangles.reserve(capacity);
+		m_uvs.reserve(capacity);
 		
 		bool result = mt::triangulate_polygon(m_poly,m_triangles);
+
+		m_image = m_resource->getImage(0);
+
+		float inv_width = 1.f / m_image->getWidth();
+		float inv_height = 1.f / m_image->getHeight();
+
+		for(mt::TVectorPoints::size_type i = 0; i < m_triangles.size(); i++)
+		{
+			mt::vec2f uv(m_triangles[i].x * inv_width, m_triangles[i].y * inv_height);
+			m_uvs.push_back(uv);
+		}
 
 		if(result == false)
 		{
@@ -213,38 +182,24 @@ namespace Menge
 			return false;
 		}
 
-		std::vector<mt::vec2f> contour;
-
-		contour.reserve(capacity);
+		result = mt::decompose_concave(m_poly,m_shapeList) > 0;
 	
-		if(result == false)
-		{
-			MENGE_LOG( MENGE_TEXT("Error: can't create contour \n") );
-			return false;
-		}
-
-		if(result == false)
-		{
-			MENGE_LOG( MENGE_TEXT("Error: can't triangulate outline polygon \n") );
-			return false;
-		}
-
-		mt::decompose_concave(m_poly,polys);
-	
-		for(std::vector<mt::vec2f>::size_type i = 0; i < polys.size(); i++)
-		{
-			m_shapeList.push_back(polys[i]);
-		}
-
 		if(result == false)
 		{
 			MENGE_LOG( MENGE_TEXT("Error: can't divide into polygons \n") );
 			return false;
 		}
 
-		if( RigidBody2D::_compile() == false )
+		if(RigidBody2D::_compile() == false)
 		{
 			return false;
+		}
+
+		mt::vec2f juncSize = mt::vec2f(m_imageJunc->getWidth(),m_imageJunc->getHeight());
+
+		for(std::list<Tile>::iterator it = m_tiles.begin(); it != m_tiles.end(); it++)
+		{
+			it->create(m_poly,juncSize);
 		}
 
 		return true;
@@ -255,25 +210,12 @@ namespace Menge
 		RigidBody2D::_release();
 
 		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
-		if( m_imagePenumbraUp )
-		{
-			Holder<ResourceManager>::hostage()->releaseResource( m_imagePenumbraUp );
-		}
-		if( m_imagePenumbraDown )
-		{
-			Holder<ResourceManager>::hostage()->releaseResource( m_imagePenumbraDown );
-		}
-		if( m_imagePenumbraLeft )
-		{
-			Holder<ResourceManager>::hostage()->releaseResource( m_imagePenumbraLeft );
-		}
-		if( m_imagePenumbraRight )
-		{
-			Holder<ResourceManager>::hostage()->releaseResource( m_imagePenumbraRight );
-		}
-
+		Holder<ResourceManager>::hostage()->releaseResource( m_resourceJunc );
 
 		m_resource = NULL;
+		m_resourceJunc = NULL;
+
+		m_tiles.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_update( float _timing )
@@ -281,111 +223,24 @@ namespace Menge
 		RigidBody2D::_update(_timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::addVertex(const mt::vec2f & _vertex)
-	{
-		m_poly.push_back(_vertex);
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
 		Node::_updateBoundingBox( _boundingBox );
-		for( mt::TVectorPoints::iterator it = m_triangles.begin(), it_end = m_triangles.end();
-			it != it_end;
-			it++ )
+
+		for(mt::TVectorPoints::size_type i = 0; i < m_triangles.size(); i++)
 		{
-			mt::add_internal_point( _boundingBox, (*it) );
+			mt::add_internal_point( _boundingBox, m_triangles[i] );
 		}
 
-		for( std::vector<TOutQuad>::iterator it = m_edgesUp.begin(), it_end = m_edgesUp.end();
-			it != it_end;
-			it ++ )
+		for(std::list<Tile>::iterator it = m_tiles.begin(); it != m_tiles.end(); it++)
 		{
-			mt::merge_box( _boundingBox, mt::box2f( it->first[0], it->first[2] ) );
+			it->updateBoundingBox(_boundingBox);
 		}
-
-		for( std::vector<TOutQuad>::iterator it = m_edgesDown.begin(), it_end = m_edgesDown.end();
-			it != it_end;
-			it ++ )
-		{
-			mt::merge_box( _boundingBox, mt::box2f( it->first[0], it->first[2] ) );
-		}
-
-		/*for( std::vector<mt::vec2f>::iterator it = m_penumbra_triangles.begin(), it_end = m_penumbra_triangles.end();
-			it != it_end;
-			it++ )
-		{
-			mt::add_internal_point( _boundingBox, (*it) );
-		}*/
-
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::compileEdges_( float _width, float _height, float _minAngle, float _maxAngle, std::vector<TOutQuad>& _edges )
+	void TilePolygon::addVertex(const mt::vec2f & _vertex)
 	{
-		mt::TVectorPoints::size_type pointsNum = m_poly.size();
-
-		// temporary add first point to end
-		m_poly.push_back( m_poly[0] );
-		mt::TVectorPoints edge;
-		for( mt::TVectorPoints::size_type i = 0; i < pointsNum; i++ )
-		{
-			mt::vec2f vec = ( m_poly[i+1] - m_poly[i] );
-			float len = vec.length();
-			if( len < 0.00001f )
-			{
-				return;
-			}
-			float cos = vec.x / len;
-			float angle = ::acosf( cos );
-			if( (angle < 0.0f) && (_minAngle > 0.0f) )
-			{
-				angle += mt::m_pi * 2.0f;
-			}
-			if( (angle > _minAngle) && (angle < _maxAngle) )
-			{
-				mt::vec2f normal = mt::perp( vec ) / len;
-				edge.push_back( mt::vec2f( m_poly[i].x, m_poly[i].y ) - normal * _height * 0.5f );
-				edge.push_back( mt::vec2f( m_poly[i+1].x, m_poly[i+1].y ) - normal * _height * 0.5f );
-				edge.push_back( mt::vec2f( m_poly[i+1].x, m_poly[i+1].y ) + normal * _height * 0.5f );
-				edge.push_back( mt::vec2f( m_poly[i].x, m_poly[i].y ) + normal * _height * 0.5f );
-				mt::vec2f tex( mt::length_v2_v2( edge[0], edge[1] ) / _width,
-					mt::length_v2_v2( edge[1], edge[2] ) / _height );
-
-				_edges.push_back( std::make_pair( edge, tex ) );
-				edge.clear();
-			}
-		}
-
-		// remove last point
-		m_poly.pop_back();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::renderEdges_( const std::vector<TOutQuad>& _edges, const RenderImageInterface* _image )
-	{
-		for( std::vector<TOutQuad>::size_type j = 0; j < _edges.size(); j++ )
-		{
-			mt::TVectorPoints edge = _edges[j].first;
-			const mt::vec2f & a = edge[0];
-			const mt::vec2f & b = edge[1];
-			const mt::vec2f & c = edge[2];
-			const mt::vec2f & d = edge[3];
-
-			float sx = _edges[j].second.x;
-			float sy = _edges[j].second.y;
-			mt::vec2f uva( 0.0f, 0.0f );
-			mt::vec2f uvb( sx, 0.0f );
-			mt::vec2f uvc( sx, sy );
-			mt::vec2f uvd( 0.0f, sy );
-
-			const mt::mat3f & wm = getWorldMatrix();
-
-			Holder<RenderEngine>::hostage()->renderTriple(wm, a, b, d,
-				uva, uvb, uvd,
-				0xFFFFFFFF, _image );
-
-			Holder<RenderEngine>::hostage()->renderTriple(wm, b, c, d,
-				uvb, uvc, uvd,
-				0xFFFFFFFF, _image );
-		}
+		m_poly.push_back(_vertex);
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

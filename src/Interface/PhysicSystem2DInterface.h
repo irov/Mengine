@@ -67,9 +67,7 @@ namespace Menge
 	};
 
 	class PhysicJoint2DInterface
-	{
-
-	};
+	{};
 
 	class PhysicSystem2DInterface
 	{

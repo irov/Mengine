@@ -565,8 +565,6 @@ namespace mt
 			edge = _polygon[next_i] - _polygon[i];
 
 			normal = mt::perp(edge);
-
-			// how to kill normalize ?
 			normal = mt::norm_safe_v2(normal);
 
 			start = _polygon[i] - normal * _width;

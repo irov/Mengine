@@ -115,8 +115,5 @@ namespace Menge
 
 		bool m_onEndFrameEvent;
 		bool m_onEndAnimationEvent;
-
-		//virtual void _onSetListener();
-		//PyObject * m_listener;
 	};
 }

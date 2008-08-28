@@ -9,7 +9,6 @@ class PhysicBody2DInterface;
 
 namespace Menge
 {
-	//class PyObject;
 	class RigidBody2D;
 
 	class BodyListenerProxy
@@ -24,12 +23,11 @@ namespace Menge
 		void applyForceAndTorque() override;
 
 	private:
-		RigidBody2D* m_body;
+		RigidBody2D * m_body;
 	};
 
 	class RigidBody2D
 		: public Node
-		//, public PhysicBody2DCollisionListener
 	{
 		OBJECT_DECLARE( RigidBody2D )
 
@@ -37,19 +35,20 @@ namespace Menge
 		RigidBody2D();
 		virtual ~RigidBody2D();
 
-		virtual void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY );
+		virtual void onCollide( PhysicBody2DInterface * _otherObj, float _worldX, float _worldY, float _normalX, float _normalY );
 
 	public:
 		virtual void loader( XmlElement * _xml ) override;
 
 		void _loaderPhysics( XmlElement * _xml );
 		void _addShapeBox( float _width, float _heigth, const mt::vec2f& _pos, float _angle );
+		void _addShapeConvex( const mt::TVectorPoints & _points, bool _isSensor );
 
 		void _addShapePolygon( std::vector<mt::vec2f> & _points );
 
 	// scripted
 	public:
-		PyObject* getListener();
+		PyObject * getListener();
 
 		void onApplyForceAndTorque();
 		void applyForce( float _forceX, float _forceY, float _pointX, float _pointY );
@@ -97,6 +96,17 @@ namespace Menge
 		unsigned int m_categoryBits;
 		int m_groupIndex;
 		
+		class ConvexShape
+		{
+			//std::vector<mt::vec2f> points;
+			std::vector<mt::vec2f> points;
+			bool isSensor;
+		};
+
+		typedef std::vector<mt::polygon> TConvexShapeList;
+		TConvexShapeList m_convexShapeList;
+
+
 		typedef std::vector<mt::polygon> TShapeList;
 		TShapeList m_shapeList;
 		
@@ -109,9 +119,9 @@ namespace Menge
 		mt::polygon m_shape;
 
 		void _render( unsigned int _debugMask ) override;
+
 	protected:
 		PhysicBody2DInterface* m_interface;
-		//PyObject* m_scriptListener;
 		bool m_constantForce;
 		bool m_directionForce;
 		bool m_linearVelocity;
@@ -121,9 +131,6 @@ namespace Menge
 		mt::vec2f m_velocity;
 		bool m_countGravity;
 		bool m_frozen;
-		//virtual void _onSetListener();
-		void updateFilterData_();
-
+		void _updateFilterData();
 	};
-
-}	// namespace Menge
+}

@@ -168,7 +168,7 @@ namespace Menge
 
 		std::list<TextLine>  m_lines;
 
-		void renderPass_( ColourValue& _color, const RenderImageInterface * _renderImage );
+		void _renderPass( ColourValue& _color, const RenderImageInterface * _renderImage );
 		void createFormattedMessage_( const String& _text );
 		void splitLine(const std::string& str);
 	};

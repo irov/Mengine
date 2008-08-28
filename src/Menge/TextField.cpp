@@ -137,7 +137,6 @@ namespace     Menge
 		{
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Font"), MENGE_TEXT("Name"), m_resourcename );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Text"), MENGE_TEXT("Value"), m_text );
-			//XML_CASE_ATTRIBUTE_NODE_METHOD( "Text", "Value", &TextField::setText );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Color"), MENGE_TEXT("Value"), m_color );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Height"), MENGE_TEXT("Value"), m_height );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("CenterAlign"), MENGE_TEXT("Value"), m_centerAlign );
@@ -164,9 +163,11 @@ namespace     Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::renderPass_( ColourValue& _color, const RenderImageInterface * _renderImage )
+	void TextField::_renderPass( ColourValue& _color, const RenderImageInterface * _renderImage )
 	{
 		mt::vec2f offset = mt::vec2f::zero_v2;
+
+		const mt::mat3f & _wm = this->getWorldMatrix();
 
 		for( std::list<TextLine>::iterator 
 			it_line = m_lines.begin(),
@@ -186,7 +187,7 @@ namespace     Menge
 
 			offset.x = m_alignOffset.x;
 
-			it_line->renderLine(offset, _color, _renderImage );
+			it_line->renderLine(offset, _color, _renderImage);
 
 			offset.y += m_lineOffset;
 		}
@@ -198,12 +199,12 @@ namespace     Menge
 
 		if( m_outline && outlineImage )
 		{
-			renderPass_( m_outlineColor, outlineImage );
+			_renderPass( m_outlineColor, outlineImage );
 		}
 
 		const RenderImageInterface * renderImage = m_resource->getImage();
 
-		renderPass_( m_color, renderImage );
+		_renderPass( m_color, renderImage );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_update( float _timing )
@@ -340,9 +341,9 @@ namespace     Menge
 
 		lines = Utils::split( _text, MENGE_TEXT("\n") );
 
-		for( TStringVector::iterator line = lines.begin(); line != lines.end(); line++ )
+		for(TStringVector::iterator line = lines.begin(); line != lines.end(); line++)
 		{
-			m_lines.push_back( TextLine( *this, m_resource, *line ));
+			m_lines.push_back(TextLine(*this, m_resource,*line));
 		}
 
 		float maxlen = 0.0f;

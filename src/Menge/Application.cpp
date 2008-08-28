@@ -59,6 +59,7 @@
 #	include "ResourceCapsuleController.h"
 #	include "ResourceEmitterContainer.h"
 #	include "ResourceFont.h"
+#	include "ResourceTilePolygon.h"
 #	include "ResourceImageAtlas.h"
 #	include "ResourceImageCell.h"
 #	include "ResourceImageDefault.h"
@@ -417,6 +418,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceEmitterContainer );
 		RESOURCE_FACTORY( ResourceFont );
 		RESOURCE_FACTORY( ResourceImageAtlas );
+		RESOURCE_FACTORY( ResourceTilePolygon );
 		RESOURCE_FACTORY( ResourceImageCell );
 		RESOURCE_FACTORY( ResourceImageDefault );
 		RESOURCE_FACTORY( ResourceImageDynamic );
@@ -537,6 +539,19 @@ namespace Menge
 				m_debugMask |= MENGE_DEBUG_PHYSICS;
 			}
 		}
+
+		if( _key == 66 && _isDown ) // F8
+		{
+			if( ( m_debugMask & MENGE_DEBUG_TILEPOLYGON ) != 0 )
+			{
+				m_debugMask ^= MENGE_DEBUG_TILEPOLYGON;
+			}
+			else
+			{
+				m_debugMask |= MENGE_DEBUG_TILEPOLYGON;
+			}
+		}
+
 #	endif
 
 		return m_game->handleKeyEvent( _key, _char, _isDown );

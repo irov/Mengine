@@ -20,7 +20,6 @@ namespace Menge
 	{
 		m_body->onApplyForceAndTorque();
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT( RigidBody2D )
 	//////////////////////////////////////////////////////////////////////////
@@ -77,9 +76,15 @@ namespace Menge
 		{
 			XML_CASE_NODE( MENGE_TEXT("Shape") )
 			{
+			/*	XML_FOR_EACH_ATTRIBUTES()
+				{					
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("IsSensor"), filename );
+				}*/
+
 				mt::polygon n;
 				m_shapeList.push_back( n );
 				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderShape );
+
 			}
 			XML_CASE_NODE( MENGE_TEXT("ShapeCircle") )
 			{
@@ -406,6 +411,20 @@ namespace Menge
 		m_shapeBoxList.push_back( std::make_pair( std::make_pair( _width, _heigth ), std::make_pair( _pos, _angle ) ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::_addShapeConvex( const mt::TVectorPoints & _points, bool _isSensor )
+	{
+		m_interface->addShapeConvex( 
+		_points.size(), 
+		_points.front().m, 
+		m_density, 
+		m_friction, 
+		m_restitution, 
+		_isSensor,
+		m_collisionMask, 
+		m_categoryBits, 
+		m_groupIndex );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_setListener()
 	{
 		Node::_setListener();
@@ -541,6 +560,7 @@ namespace Menge
 			return;
 		}
 		m_frozen = _freeze;
+
 		if( m_frozen )	// completly remove from simulation
 		{
 			_release();
@@ -549,18 +569,19 @@ namespace Menge
 		{
 			_compile();
 		}
+
 		m_updatable = !_freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::setCollisionMask( int _mask )
 	{
 		m_collisionMask = (uint16)_mask;
-		updateFilterData_();
+		_updateFilterData();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RigidBody2D::updateFilterData_()
+	void RigidBody2D::_updateFilterData()
 	{
 		m_interface->updateFilterData( m_categoryBits, m_collisionMask, m_groupIndex );
 	}
 	//////////////////////////////////////////////////////////////////////////
-}	// namespace Menge
+}

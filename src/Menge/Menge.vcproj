@@ -593,6 +593,14 @@
 				Name="TilePolygon"
 				>
 				<File
+					RelativePath=".\Tile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Tile.h"
+					>
+				</File>
+				<File
 					RelativePath=".\TilePolygon.cpp"
 					>
 				</File>
@@ -982,6 +990,18 @@
 				</File>
 				<File
 					RelativePath=".\ResourceMaterial.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="TilePolygon"
+				>
+				<File
+					RelativePath=".\ResourceTilePolygon.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceTilePolygon.h"
 					>
 				</File>
 			</Filter>

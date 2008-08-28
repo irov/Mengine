@@ -80,6 +80,5 @@ namespace Menge
 		bool m_autoStart;
 		bool m_playing;
 		bool m_looping;
-		//virtual void _onSetListener();
 	};
 }

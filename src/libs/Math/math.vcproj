@@ -415,6 +415,22 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="angle"
+			>
+			<File
+				RelativePath=".\angle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\angle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\angle_inline.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\config.h"
 			>

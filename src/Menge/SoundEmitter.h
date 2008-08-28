@@ -52,9 +52,6 @@ namespace Menge
 			void _setListener() override;
 
 		private:
-			//PyObject * m_listener;
-			//virtual void _onSetListener();
-
 
 			float m_volume;
 			ResourceSound * m_resource;

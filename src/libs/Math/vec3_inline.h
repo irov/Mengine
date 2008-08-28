@@ -322,7 +322,7 @@ namespace mt
 
 		if ( (n.x >= 0) && (n.y <= 0) )
 		{
-			result = m_2_pi - asinf(-n.y);
+			result = m_half_pi - asinf(-n.y);
 		}
 
 		if ( (n.x <= 0) && (n.y >= 0) )
@@ -330,6 +330,6 @@ namespace mt
 			result = m_pi - asinf(n.y);
 		}
 
-		return m_2_pi - result;
+		return m_half_pi - result;
 	}
 }

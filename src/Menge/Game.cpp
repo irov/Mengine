@@ -610,7 +610,7 @@ namespace Menge
 
 		}
 
-		arrow->activate();
+		//arrow->activate();
 
 		m_mapArrow.insert( std::make_pair( _name, arrow ) );
 

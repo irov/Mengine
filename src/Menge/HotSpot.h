@@ -62,9 +62,10 @@ namespace Menge
 
 		virtual void setScale( const mt::vec2f& _scale );
 
-		
+		bool isPicked() const override;
 	protected:
-		void _update( float _timing ) override;
+		bool _activate() override;
+		void _deactivate() override;
 		void _render( unsigned int _debugMask ) override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _setListener() override;
@@ -79,6 +80,8 @@ namespace Menge
 
 		bool m_onLeaveEvent;
 		bool m_onEnterEvent;
+
+		bool m_picked;
 
 #	ifndef MENGE_MASTER_RELEASE
 		unsigned long m_debugColor;

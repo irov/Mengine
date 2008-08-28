@@ -18,6 +18,7 @@ namespace Menge
 
 	public:
 		virtual bool pick( HotSpot * _hotspot ) = 0;
+		virtual bool isPicked() const = 0;
 		virtual void onLeave() = 0;
 		virtual void onEnter() = 0;
 

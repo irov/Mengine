@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="XmlParser"
 	ProjectGUID="{73E25478-3097-462B-913C-2B5EFC8ADD62}"
 	RootNamespace="XmlParser"
@@ -141,7 +141,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="libexpatMT.lib"
+				AdditionalDependencies="libexpatwMT.lib"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\expat\win32\bin\release&quot;"
 			/>
 			<Tool

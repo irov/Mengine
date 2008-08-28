@@ -659,6 +659,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onUpdate( float _timing )
 	{
+		m_inputEngine->update();
+
 		ProfilerEngine* profiler = Holder<ProfilerEngine>::hostage();
 		if( _timing > m_maxTiming )
 		{
@@ -671,7 +673,7 @@ namespace Menge
 			m_resetTiming = false;
 		}
 
-		Holder<MousePickerSystem>::hostage()->clear();
+		//Holder<MousePickerSystem>::hostage()->clear();
 
 		if( m_physicEngine )
 		{
@@ -688,7 +690,6 @@ namespace Menge
 		}
 
 		profiler->beginProfile( MENGE_TEXT("Game Update") );
-		m_inputEngine->update();
 		m_game->update( _timing );
 
 		profiler->endProfile( MENGE_TEXT("Game Update") );

@@ -107,7 +107,6 @@ namespace Menge
 
 		arrow->setWindow( _contentResolution );
 
-		this->setArrow( arrow );
 
 		Camera2D * camera = SceneManager::createNodeT<Camera2D>( MENGE_TEXT("Camera2D") );
 
@@ -129,6 +128,8 @@ namespace Menge
 
 		m_mousePickerSystem = new MousePickerSystem();
 		Holder<MousePickerSystem>::keep( m_mousePickerSystem );
+
+		setArrow( arrow );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -337,6 +338,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::update( float _timing )
 	{
+		HotSpot* picker = m_arrow->getCurrentHotSpot();
+		m_mousePickerSystem->update( picker );
+
 		const mt::vec2f & arrowPos = m_arrow->getLocalPosition() + m_renderCamera2D->getViewport().begin;
 
 		Holder<PhysicEngine2D>::hostage()->onMouseMove( arrowPos );
@@ -358,8 +362,7 @@ namespace Menge
 			m_arrow->update( _timing );
 		}
 
-		HotSpot* picker = m_arrow->getCurrentHotSpot();
-		m_mousePickerSystem->update( picker );
+		//m_mousePickerSystem->clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setRenderCamera2D( Camera2D * _camera)

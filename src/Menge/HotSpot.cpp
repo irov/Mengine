@@ -12,7 +12,7 @@
 
 #	include "Camera2D.h"
 //#	include "Sprite.h"
-
+#	include "Scene.h"
 #	include "Layer2D.h"
 
 namespace	Menge
@@ -29,6 +29,7 @@ namespace	Menge
 #	ifndef MENGE_MASTER_RELEASE
 	, m_debugColor(0xFFFF0000)
 #	endif
+	, m_picked( false )
 	{
 		this->setHandler( this );
 	}
@@ -49,11 +50,21 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::_pickerActive()
 	{
-		return this->isActivate();
+		bool input = true;
+		if( m_layer != 0 )
+		{
+			Scene* scene = m_layer->getScene();
+			if( scene != 0 )
+			{
+				input = !scene->getBlockInput();
+			}
+		}
+		return this->isActivate() && input;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()
 	{
+		m_picked = false;
 		callEvent( EVENT_LEAVE, "(O)", this->getEmbedding() );
 
 #	ifndef MENGE_MASTER_RELEASE
@@ -64,6 +75,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onEnter()
 	{
+		m_picked = true;
 		callEvent( EVENT_ENTER, "(O)", this->getEmbedding() );
 
 #	ifndef MENGE_MASTER_RELEASE
@@ -249,12 +261,23 @@ namespace	Menge
 		m_onEnterEvent = registerEvent( EVENT_ENTER, ("onEnter"), m_listener );	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_update( float _timing )
+	bool HotSpot::_activate()
 	{
-		Node::_update( _timing );
-
+		bool res = Node::_activate();
+		if( res == true )
+		{
+			m_picked = false;
+			Holder<MousePickerSystem>::hostage()
+				->regTrap( this );
+		}
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_deactivate()
+	{
+		m_picked = false;
 		Holder<MousePickerSystem>::hostage()
-			->regTrap( this );
+			->unregTrap( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPoint( const mt::vec2f & _p )
@@ -333,6 +356,11 @@ namespace	Menge
 			}
 		}
 #	endif
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::isPicked() const
+	{
+		return m_picked;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

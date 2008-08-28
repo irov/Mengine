@@ -21,6 +21,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update( HotSpot* _picker )
 	{
+		for( TVectorRegEvent::iterator it = m_registration.begin(), it_end = m_registration.end();
+			it != it_end;
+			it++ )
+		{
+			if( it->reg )
+			{
+				addTrap_( it->trap );
+			}
+			else
+			{
+				delTrap_( it->trap );
+			}
+		}
+		m_registration.clear();
+
+
 		TVectorPickerTrap pickTraps = MousePickerSystem::pickTrap( _picker );
 
 
@@ -74,7 +90,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::regTrap( MousePickerTrap * _trap )
 	{
-		m_listPickerTrap.push_back( _trap );
+		//m_listPickerTrap.push_back( _trap );
+		//m_registrating.push_back( _trap );
+		m_registration.push_back( TRegEvent( _trap, true ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TVectorPickerTrap MousePickerSystem::pickTrap( HotSpot * _hotspot ) 
@@ -107,7 +125,8 @@ namespace Menge
 		++it)
 		{
 			MousePickerTrap * trap = *it;
-			if( trap->_pickerActive() == true &&  trap->pick( _picker ) == true )
+			//if( trap->_pickerActive() == true &&  trap->pick( _picker ) == true )
+			if( ( trap->isPicked() && trap->_pickerActive() ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -130,7 +149,8 @@ namespace Menge
 		++it)
 		{
 			MousePickerTrap * trap = *it;
-			if( trap->_pickerActive() == true &&  trap->pick( _picker ) == true )
+			//if( trap->_pickerActive() == true &&  trap->pick( _picker ) == true )
+			if( ( trap->isPicked() && trap->_pickerActive() ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -153,7 +173,8 @@ namespace Menge
 		++it)
 		{
 			MousePickerTrap * trap = *it;
-			if( trap->_pickerActive() == true && trap->pick( _picker ) == true )
+			//if( trap->_pickerActive() == true && trap->pick( _picker ) == true )
+			if( ( trap->isPicked() && trap->_pickerActive() ) == true )
 			{
 				InputHandler * handler = trap->handler();
 
@@ -165,6 +186,25 @@ namespace Menge
 		}
 		
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::unregTrap( MousePickerTrap* _trap )
+	{
+		m_registration.push_back( TRegEvent( _trap, false ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::addTrap_( MousePickerTrap* _trap )
+	{
+		m_listPickerTrap.push_back( _trap );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::delTrap_( MousePickerTrap* _trap )
+	{
+		TVectorPickerTrap::iterator it_find = std::find( m_listPickerTrap.begin(), m_listPickerTrap.end(), _trap );
+		if( it_find != m_listPickerTrap.end() )
+		{
+			m_listPickerTrap.erase( it_find );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

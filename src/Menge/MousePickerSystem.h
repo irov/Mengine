@@ -23,6 +23,7 @@ namespace Menge
 		void reset();
 
 		void regTrap( MousePickerTrap * _trap );
+		void unregTrap( MousePickerTrap* _trap );
 		TVectorPickerTrap pickTrap( HotSpot * _hotspot );
 
 		bool handleKeyEvent( HotSpot* _picker, unsigned int _key, unsigned int _char, bool _isDown );
@@ -34,5 +35,20 @@ namespace Menge
 
 		//TVectorPickerTrap m_lastPickerTrap;
 		TVectorPickerTrap m_lastTraps;
+		
+		struct TRegEvent
+		{
+			MousePickerTrap* trap;
+			bool reg;
+			TRegEvent( MousePickerTrap* _trap, bool _reg )
+				: trap( _trap )
+				, reg( _reg )
+			{
+			}
+		};
+		typedef std::vector<TRegEvent> TVectorRegEvent;
+		TVectorRegEvent m_registration;
+		void addTrap_( MousePickerTrap* _trap );
+		void delTrap_( MousePickerTrap* _trap );
 	};
 }

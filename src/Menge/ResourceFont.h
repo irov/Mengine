@@ -57,9 +57,6 @@ namespace Menge
 		\return изображение
 		*/
 		const RenderImageInterface * getOutlineImage() const;
-
-		void setFontPath( const String& _path );
-
 		float getInitSize();
 
 	public:
@@ -71,6 +68,7 @@ namespace Menge
 
 	private:
 
+		void setFontPath( const String& _path );
 		void setGlyph( unsigned int _id, float _u1, float _v1, float _u2, float _v2 );
 		String getFontDir( const String& _fontName );
 

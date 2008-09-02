@@ -21,20 +21,20 @@
 #	include "ResourceImage.h"
 #	include "ResourceTilePolygon.h"
 
+#	include "SceneManager.h"
+#	include "Interface/RenderSystemInterface.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT(TilePolygon);
 	//////////////////////////////////////////////////////////////////////////
 	TilePolygon::TilePolygon()
-		: m_resourcename( MENGE_TEXT("") )
-		, m_tileResource( MENGE_TEXT("") )
-		, m_juncName( MENGE_TEXT("") )
-		, m_resource(0)
-		, m_tilePolygonResource( 0 )
-		, m_resourceJunc(0)
-		, m_image(0)
-		, m_imageJunc(0)
+	: m_tileResource(MENGE_TEXT(""))
+	, m_tilePolygonResource(0)
+	, m_rigidBodySensor(0)
+	, m_triangles(0)
+	, m_uvs(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -44,77 +44,14 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( MENGE_TEXT("Vertex") )
+			XML_CASE_NODE( MENGE_TEXT("Resource") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Value"), &TilePolygon::addVertex );
+					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), m_tileResource );
 				}
 			}
-
-			XML_CASE_NODE( MENGE_TEXT("Tile") )
-			{
-				float minAngle;
-				float maxAngle;
-				String imageName;
-
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("MinAngle"), minAngle );
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("MaxAngle"), maxAngle );
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Image"), imageName );
-				}
-				m_tiles.push_back(Tile(minAngle,maxAngle,imageName));
-			}
-
-			XML_CASE_NODE( MENGE_TEXT("TileJunc") )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Image"), m_juncName );
-				}
-			}
-
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ImageMap"), MENGE_TEXT("Name"), m_resourcename );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::_render( unsigned int _debugMask )
-	{
-		Node::_render( _debugMask );
-
-		const mt::mat3f & wm = getWorldMatrix();
-
-		for(std::vector<mt::vec2f>::size_type i = 0; i < m_triangles.size(); i+=3)
-		{
-			const mt::vec2f & v0 = m_triangles[i+0];
-			const mt::vec2f & v1 = m_triangles[i+1];
-			const mt::vec2f & v2 = m_triangles[i+2];
-
-			const mt::vec2f & uv0 = m_uvs[i+0];
-			const mt::vec2f & uv1 = m_uvs[i+1];
-			const mt::vec2f & uv2 = m_uvs[i+2];
-
-			Holder<RenderEngine>::hostage()->renderTriple(wm, v0, v1, v2,
-				uv0, uv1, uv2,
-				0xFFFFFFFF, m_image );
-		}
-
-		for(std::list<Tile>::iterator it = m_tiles.begin(); it != m_tiles.end(); it++)
-		{
-			it->renderTile(wm,m_imageJunc);
-		}
-
-#	ifndef MENGE_MASTER_RELEASE
-		if( _debugMask & MENGE_DEBUG_TILEPOLYGON )
-		{
-			int i = 0;
-			for(std::list<Tile>::iterator it = m_tiles.begin(); it != m_tiles.end(); it++,i++)
-			{
-				it->renderDebug(wm, 0xFF00FF00 +  ((i+1)*105));
-			}
-		}
-# endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TilePolygon::_activate()
@@ -134,72 +71,40 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TilePolygon::_compile()
 	{
-		m_resource = 
+		m_rigidBodySensor = SceneManager::createNodeT<RigidBody2D>(MENGE_TEXT("RigidBody2D"));
+		m_rigidBodySensor->compile();
+
+		m_tilePolygonResource = 
 			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImage>( m_resourcename );
+			->getResourceT<ResourceTilePolygon>( m_tileResource );
 
-		if( m_resource == 0 )
-		{
-			MENGE_LOG( MENGE_TEXT("Image resource not getting '%s'")
-				,m_resourcename.c_str() );
-			return false;
-		}
+		m_triangles = m_tilePolygonResource->getTriangles();
+		m_uvs = m_tilePolygonResource->getTextureCoords();
 
-		m_resourceJunc = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImage>( m_juncName );
-
-		if( m_resourceJunc == 0 )
-		{
-			MENGE_LOG( MENGE_TEXT("Image resource not getting '%s'")
-				,m_juncName.c_str() );
-			return false;
-		}
-
-		m_imageJunc = m_resourceJunc->getImage(0);
-
-		std::vector<mt::vec2f>::size_type capacity = 5 * m_poly.size();
-
-		m_triangles.reserve(capacity);
-		m_uvs.reserve(capacity);
-		
-		bool result = mt::triangulate_polygon(m_poly,m_triangles);
-
-		m_image = m_resource->getImage(0);
-
-		float inv_width = 1.f / m_image->getWidth();
-		float inv_height = 1.f / m_image->getHeight();
-
-		for(mt::TVectorPoints::size_type i = 0; i < m_triangles.size(); i++)
-		{
-			mt::vec2f uv(m_triangles[i].x * inv_width, m_triangles[i].y * inv_height);
-			m_uvs.push_back(uv);
-		}
-
-		if(result == false)
-		{
-			MENGE_LOG( MENGE_TEXT("Error: can't triangulate polygon \n") );
-			return false;
-		}
-
-		result = mt::decompose_concave(m_poly,m_shapeList) > 0;
-	
-		if(result == false)
-		{
-			MENGE_LOG( MENGE_TEXT("Error: can't divide into polygons \n") );
-			return false;
-		}
+		m_shapeList = *m_tilePolygonResource->getShapeList();
 
 		if(RigidBody2D::_compile() == false)
 		{
 			return false;
 		}
 
-		mt::vec2f juncSize = mt::vec2f(m_imageJunc->getWidth(),m_imageJunc->getHeight());
+		size_t count = m_tilePolygonResource->getTileCount();
 
-		for(std::list<Tile>::iterator it = m_tiles.begin(); it != m_tiles.end(); it++)
+		for(size_t i = 0; i < count; i++)
 		{
-			it->create(m_poly,juncSize);
+			const TListQuad * tileGeoms = m_tilePolygonResource->getTileGeometry(i);
+			const TListQuad * tileJunks = m_tilePolygonResource->getTileJunks(i);
+
+			m_tileGeometry.push_back(tileGeoms);
+			m_junkGeometry.push_back(tileJunks);
+
+			if(m_tilePolygonResource->getMinAngle(i) == 0)
+			{
+				for( std::vector<Quad>::size_type j = 0; j < (*tileGeoms).size(); j++ )
+				{
+					m_rigidBodySensor->_addShapeConvex((*tileGeoms)[j].v,true);
+				}
+			}
 		}
 
 		return true;
@@ -207,15 +112,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_release()
 	{
+		if(m_rigidBodySensor)
+		{
+			m_rigidBodySensor->release();
+			m_rigidBodySensor = NULL;
+		}
+
 		RigidBody2D::_release();
-
-		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
-		Holder<ResourceManager>::hostage()->releaseResource( m_resourceJunc );
-
-		m_resource = NULL;
-		m_resourceJunc = NULL;
-
-		m_tiles.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_update( float _timing )
@@ -227,20 +130,134 @@ namespace Menge
 	{
 		Node::_updateBoundingBox( _boundingBox );
 
-		for(mt::TVectorPoints::size_type i = 0; i < m_triangles.size(); i++)
+		if(m_triangles == NULL) return;
+
+		for(mt::TVectorPoints::size_type i = 0; i < m_triangles->size(); i++)
 		{
-			mt::add_internal_point( _boundingBox, m_triangles[i] );
+			mt::add_internal_point( _boundingBox, (*m_triangles)[i] );
 		}
 
-		for(std::list<Tile>::iterator it = m_tiles.begin(); it != m_tiles.end(); it++)
+		for(size_t i = 0; i < m_tileGeometry.size(); i++)
 		{
-			it->updateBoundingBox(_boundingBox);
+			updateTileBoundingBox(_boundingBox, *m_tileGeometry[i]);
+		}
+
+		for(size_t i = 0; i < m_junkGeometry.size(); i++)
+		{
+			updateTileBoundingBox(_boundingBox, *m_junkGeometry[i]);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TilePolygon::addVertex(const mt::vec2f & _vertex)
+	void TilePolygon::updateTileBoundingBox(mt::box2f& _boundingBox, const std::vector<Quad>& quads)
 	{
-		m_poly.push_back(_vertex);
+		for( std::vector<Quad>::size_type j = 0; j < quads.size(); j++ )
+		{
+			mt::add_internal_point(_boundingBox, quads[j].v[0]);
+			mt::add_internal_point(_boundingBox, quads[j].v[1]);
+			mt::add_internal_point(_boundingBox, quads[j].v[2]);
+			mt::add_internal_point(_boundingBox, quads[j].v[3]);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TilePolygon::_render( unsigned int _debugMask )
+	{
+		Node::_render( _debugMask );
+
+		const mt::mat3f & wm = getWorldMatrix();
+
+		const mt::TVectorPoints & triangles = *m_triangles;
+		const mt::TVectorPoints & uvs = *m_uvs;
+
+		for(std::vector<mt::vec2f>::size_type i = 0; i < triangles.size(); i+=3)
+		{
+			const mt::vec2f & v0 = triangles[i+0];
+			const mt::vec2f & v1 = triangles[i+1];
+			const mt::vec2f & v2 = triangles[i+2];
+
+			const mt::vec2f & uv0 = uvs[i+0];
+			const mt::vec2f & uv1 = uvs[i+1];
+			const mt::vec2f & uv2 = uvs[i+2];
+
+			const RenderImageInterface * image = m_tilePolygonResource->getImage();
+
+			Holder<RenderEngine>::hostage()->renderTriple(wm, v0, v1, v2,
+				uv0, uv1, uv2,
+				0xFFFFFFFF, image );
+		}
+
+		// да да, дубликат, пофикшу, когда разберемся как стык рандомно выбирать.
+		for(size_t i = 0; i < m_tileGeometry.size(); i++)
+		{
+			const std::vector<Quad>& quads = *m_tileGeometry[i];
+
+			const RenderImageInterface * m_image = m_tilePolygonResource->getTileImage(i);
+
+			for( std::vector<Quad>::size_type j = 0; j < quads.size(); j++ )
+			{
+				const mt::vec2f & a = quads[j].v[0];
+				const mt::vec2f & b = quads[j].v[1];
+				const mt::vec2f & c = quads[j].v[2];
+				const mt::vec2f & d = quads[j].v[3];
+
+				float sx = quads[j].s;
+				float sy = quads[j].t;
+
+				mt::vec2f uva( 0.0f, 0.0f );
+				mt::vec2f uvb( sx, 0.0f );
+				mt::vec2f uvc( sx, sy );
+				mt::vec2f uvd( 0.0f, sy );
+
+				Holder<RenderEngine>::hostage()->renderTriple(wm, a, b, d,
+					uva, uvb, uvd,
+					0xFFFFFFFF, m_image );
+
+				Holder<RenderEngine>::hostage()->renderTriple(wm, b, c, d,
+					uvb, uvc, uvd,
+					0xFFFFFFFF, m_image );
+			}
+		}
+
+		for(size_t i = 0; i < m_junkGeometry.size(); i++)
+		{
+			const std::vector<Quad>& quads = *m_junkGeometry[i];
+
+			const RenderImageInterface * m_image = m_tilePolygonResource->getPlugImage();
+
+			for( std::vector<Quad>::size_type j = 0; j < quads.size(); j++ )
+			{
+				const mt::vec2f & a = quads[j].v[0];
+				const mt::vec2f & b = quads[j].v[1];
+				const mt::vec2f & c = quads[j].v[2];
+				const mt::vec2f & d = quads[j].v[3];
+
+				float sx = quads[j].s;
+				float sy = quads[j].t;
+
+				mt::vec2f uva( 0.0f, 0.0f );
+				mt::vec2f uvb( sx, 0.0f );
+				mt::vec2f uvc( sx, sy );
+				mt::vec2f uvd( 0.0f, sy );
+
+				Holder<RenderEngine>::hostage()->renderTriple(wm, a, b, d,
+					uva, uvb, uvd,
+					0xFFFFFFFF, m_image );
+
+				Holder<RenderEngine>::hostage()->renderTriple(wm, b, c, d,
+					uvb, uvc, uvd,
+					0xFFFFFFFF, m_image );
+			}
+		}
+
+#	ifndef MENGE_MASTER_RELEASE
+		/*	if( _debugMask & MENGE_DEBUG_TILEPOLYGON )
+		{
+		int i = 0;
+		for(std::list<Tile>::iterator it = m_tiles.begin(); it != m_tiles.end(); it++,i++)
+		{
+		it->renderDebug(wm, 0xFF00FF00 +  ((i+1)*105));
+		}
+		}*/
+# endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

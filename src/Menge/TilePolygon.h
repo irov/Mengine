@@ -2,7 +2,7 @@
 #	include "math\vec2.h"
 #	include "math\polygon.h"
 #	include "RigidBody2D.h"
-#	include "Tile.h"
+#	include "ResourceTilePolygon.h"
 
 namespace Menge
 {
@@ -17,9 +17,6 @@ namespace Menge
 
 	public:
 		TilePolygon();
-
-	public:
-		void addVertex( const mt::vec2f & _vertex );
 
 	public:
 		void loader( XmlElement * _xml ) override;
@@ -39,23 +36,17 @@ namespace Menge
 
 	private:
 
-		std::list<Tile> m_tiles;
+		void updateTileBoundingBox(mt::box2f& _boundingBox, const std::vector<Quad>& quads);
+
+		std::vector<const std::vector<Quad>*> m_tileGeometry;
+		std::vector<const std::vector<Quad>*> m_junkGeometry;
 
 		ResourceTilePolygon * m_tilePolygonResource;
-		const RenderImageInterface * m_image;
-		const RenderImageInterface * m_imageJunc;
-
-
-		String m_resourcename;
-		String m_juncName;
-
 		String m_tileResource;
 
-		mt::TVectorPoints m_poly;
-		mt::TVectorPoints m_triangles;
-		mt::TVectorPoints m_uvs;
+		const mt::TVectorPoints * m_triangles;
+		const mt::TVectorPoints * m_uvs;
 
-		ResourceImage * m_resource;
-		ResourceImage * m_resourceJunc;
+		RigidBody2D * m_rigidBodySensor;
 	};
 };

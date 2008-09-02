@@ -593,14 +593,6 @@
 				Name="TilePolygon"
 				>
 				<File
-					RelativePath=".\Tile.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Tile.h"
-					>
-				</File>
-				<File
 					RelativePath=".\TilePolygon.cpp"
 					>
 				</File>

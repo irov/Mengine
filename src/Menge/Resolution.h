@@ -17,6 +17,8 @@ namespace Menge
 		void setHeight( std::size_t _height );
 		std::size_t getHeight() const;
 
+		float getRatio() const;
+
 	public:
 		std::size_t & operator [] ( int i );
 		std::size_t operator [] ( int i ) const;

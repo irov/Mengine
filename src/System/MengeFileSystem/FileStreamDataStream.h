@@ -10,10 +10,7 @@ namespace Menge
 		: public DataStream
 	{
 	public:
-		FileStreamDataStream( std::ifstream* _s, bool _freeOnClose = true );
-		FileStreamDataStream( const String& _name, std::ifstream* _s, bool _freeOnClose = true );
-		FileStreamDataStream( const String& _name, std::ifstream* _s, std::streamsize _size, bool _freeOnClose = true );
-
+		FileStreamDataStream( std::ifstream* _s, std::streamsize _size, bool _freeOnClose = true );
 		~FileStreamDataStream();
 
 	public:

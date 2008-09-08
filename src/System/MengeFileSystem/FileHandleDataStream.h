@@ -9,7 +9,6 @@ namespace Menge
 	{
 	public:
 		FileHandleDataStream( FILE* _handle );
-		FileHandleDataStream( const String& _name, FILE* _handle);
 		~FileHandleDataStream();
 
 	public:

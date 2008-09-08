@@ -9,14 +9,6 @@ namespace Menge
 	{
 	public:
 		MemoryDataStream( void * _pMem, std::streamsize _size, bool _freeOnClose = false );
-		MemoryDataStream( const String & _name, void* _pMem, std::streamsize _size, bool _freeOnClose = false);
-		MemoryDataStream( DataStream & _sourceStream, bool _freeOnClose = true);
-		MemoryDataStream( DataStream * _sourceStream, bool _freeOnClose = true );
-		MemoryDataStream( const String& _name, DataStream& _sourceStream, bool _freeOnClose = true );
-		MemoryDataStream( const String& _name, DataStream* _sourceStream, bool _freeOnClose = true);
-		MemoryDataStream( std::streamsize _size, bool _freeOnClose = true );
-		MemoryDataStream( const String& _name, std::streamsize _size, bool _freeOnClose = true);
-
 		~MemoryDataStream();
 
 	public:

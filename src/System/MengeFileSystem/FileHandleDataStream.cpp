@@ -15,16 +15,6 @@ namespace Menge
 		fseek( m_fileHandle, 0, SEEK_SET );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	FileHandleDataStream::FileHandleDataStream( const Menge::String& _name, FILE* _handle )
-		: DataStream( _name )
-		, m_fileHandle( _handle )
-	{
-		// Determine size
-		fseek( m_fileHandle, 0, SEEK_END );
-		m_size = ftell( m_fileHandle );
-		fseek( m_fileHandle, 0, SEEK_SET );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	FileHandleDataStream::~FileHandleDataStream()
 	{
 		close();

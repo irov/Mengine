@@ -9,10 +9,8 @@ namespace Menge
 	{
 	public:
 		DataStream();
-		DataStream( const String& _name );
 		virtual ~DataStream() {}
 
-		const String& getName() const;
 		std::streamsize size() const;
 
 
@@ -33,7 +31,6 @@ namespace Menge
 		virtual void setFreeOnClose( bool _free ) = 0;
 
 	protected:
-		String m_name;		
 		std::streamsize m_size;
 	};
 }

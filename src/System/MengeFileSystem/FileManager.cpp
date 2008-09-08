@@ -111,7 +111,7 @@ namespace Menge
 
 		/// Construct return stream, tell it to delete on destroy
 		FileStreamDataStream* stream = 
-			new FileStreamDataStream( _filename, origStream, tagStat.st_size, true );
+			new FileStreamDataStream( origStream, tagStat.st_size, true );
 
 		return static_cast<DataStream*>(stream);
 	}

@@ -6,35 +6,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	FileStreamDataStream::FileStreamDataStream( std::ifstream* _s, bool _freeOnClose )
+	FileStreamDataStream::FileStreamDataStream( std::ifstream* _s, std::streamsize _size, bool _freeOnClose )
 		: DataStream()
-		, m_stream( _s )
-		, m_freeOnClose( _freeOnClose )
-		, m_freeBuffer( true )
-		, m_buffer( NULL )
-	{
-		// calculate the size
-		m_stream->seekg( 0, std::ios_base::end );
-		m_size = m_stream->tellg();
-		m_stream->seekg( 0, std::ios_base::beg );
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	FileStreamDataStream::FileStreamDataStream( const String& _name, std::ifstream* _s, bool _freeOnClose )
-		: DataStream( _name )
-		, m_stream( _s )
-		, m_freeOnClose( _freeOnClose )
-		, m_freeBuffer( true )
-		, m_buffer( NULL )
-	{
-		// calculate the size
-		m_stream->seekg( 0, std::ios_base::end );
-		m_size = m_stream->tellg();
-		m_stream->seekg( 0, std::ios_base::beg );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	FileStreamDataStream::FileStreamDataStream( const String& _name,	std::ifstream* _s, std::streamsize _size, bool _freeOnClose )
-		: DataStream( _name )
 		, m_stream( _s )
 		, m_freeOnClose( _freeOnClose )
 		, m_freeBuffer( true )

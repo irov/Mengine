@@ -10,17 +10,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStream::DataStream( const String& _name )
-		: m_name( _name )
-		, m_size( 0 ) 
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const String& DataStream::getName() const
-	{
-		return m_name;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	template <typename T> DataStream& DataStream::operator >>( T& _val )
 	{
 		read(static_cast<void*>(&_val), sizeof(T));

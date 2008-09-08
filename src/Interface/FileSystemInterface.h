@@ -11,6 +11,7 @@ namespace Menge
 	class	DataStreamInterface
 	{
 	public:
+		virtual ~DataStreamInterface() {}
 		virtual std::streamsize read( void* _buf, std::streamsize _count ) = 0;
 		virtual String getLine( bool _trimAfter = true ) = 0;
 		virtual std::streamsize skipLine(  const String& _delim ) = 0;

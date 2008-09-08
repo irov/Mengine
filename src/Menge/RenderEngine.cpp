@@ -17,6 +17,8 @@
 
 #	include "ImageCodec.h"
 
+#	include "Utils.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -159,7 +161,9 @@ namespace Menge
 			strExt += _filename[++pos];
 		}
 
-		Codec * pCodec = Codec::getCodec( strExt );
+		StringA strExtA = Utils::WToA( strExt );
+
+		Codec * pCodec = CodecManager::getCodec( strExtA );
 
 		if( pCodec == 0 )
 		{
@@ -216,7 +220,8 @@ namespace Menge
 				strExt += _filename[++pos];
 			}
 
-			Codec* codec = Codec::getCodec( strExt );
+			StringA strExtA = Utils::WToA( strExt );
+			Codec* codec = CodecManager::getCodec( strExtA );
 
 			if( codec == 0 )
 			{

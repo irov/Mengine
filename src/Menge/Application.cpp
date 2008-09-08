@@ -479,7 +479,7 @@ namespace Menge
 
 		m_inputEngine->regHandle( m_handler );
 
-		Codec::initialize();
+		CodecManager::initialize();
 
 		Holder<ResourceManager>::keep( new ResourceManager() );
 
@@ -740,7 +740,7 @@ namespace Menge
 		Holder<ProfilerEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
 
-		Codec::cleanup();
+		CodecManager::cleanup();
 
 		finalize();
 	}

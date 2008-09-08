@@ -12,15 +12,15 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Codec::TCodecMap Codec::ms_mapCodecs;
-	//////////////////////////////////////////////////////////////////////////
 	Codec::~Codec() 
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Codec * Codec::getCodec( const String& _extension )
+	CodecManager::TCodecMap CodecManager::ms_mapCodecs;
+	//////////////////////////////////////////////////////////////////////////
+	Codec* CodecManager::getCodec( const StringA& _type )
 	{
-		String lwrcase = _extension;
+		StringA lwrcase = _type;
 		
 		std::transform(
 			lwrcase.begin(),
@@ -32,13 +32,13 @@ namespace Menge
 		
 		if( i == ms_mapCodecs.end() )
 		{
-			return NULL;
+			return 0;
 		}
 
 		return i->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Codec::registerCodec( const String& _type, Codec* _codec )
+	void CodecManager::registerCodec( const StringA& _type, Codec* _codec )
 	{
 		TCodecMap::iterator it = ms_mapCodecs.find( _type );
 
@@ -50,21 +50,21 @@ namespace Menge
 		ms_mapCodecs.insert(std::make_pair(_type, _codec));
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Codec::unregisterCodec( const String& _type )
+	void CodecManager::unregisterCodec( const StringA& _type )
 	{
 		ms_mapCodecs.erase( _type );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Codec::initialize()
+	void CodecManager::initialize()
 	{
-		registerCodec( MENGE_TEXT("png"), new ImageCodecPNG() );
-		registerCodec( MENGE_TEXT("jpg"), new ImageCodecJPEG() );
-		registerCodec( MENGE_TEXT("jpeg"), new ImageCodecJPEG() );
-		registerCodec( MENGE_TEXT("jfif"), new ImageCodecJPEG() );
-		registerCodec( MENGE_TEXT("mne"), new ImageCodecMNE() );
+		registerCodec( "png", new ImageCodecPNG() );
+		registerCodec( "jpg", new ImageCodecJPEG() );
+		registerCodec( "jpeg", new ImageCodecJPEG() );
+		registerCodec( "jfif", new ImageCodecJPEG() );
+		registerCodec( "mne", new ImageCodecMNE() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Codec::cleanup()
+	void CodecManager::cleanup()
 	{
 		for( TCodecMap::iterator it = ms_mapCodecs.begin(), it_end = ms_mapCodecs.end();
 			it != it_end;

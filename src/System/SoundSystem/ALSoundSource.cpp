@@ -65,7 +65,7 @@ void ALSoundSource::play()
 		alSourcePlay( m_sourceName->name );
 	}
 
-	if( !m_looped /*&& !m_soundBuffer->isStreamed()*/ )
+	//if( !m_looped /*&& !m_soundBuffer->isStreamed()*/ )
 	{
 		//printf("register playing %d ms\n", getLengthMs());
 		int lengthMs = getLengthMs();
@@ -108,13 +108,14 @@ void ALSoundSource::stop()
 		alSourcei( m_sourceName->name, AL_BUFFER, NULL );
 	}
 
-	m_sourceName->busy = false;
+	unbind();
+	/*m_sourceName->busy = false;
 	m_soundSystem->unregisterPlaying( this );
 
 	if( m_busy && m_listener )
 	{
 		m_listener->listenStopped();
-	}
+	}*/
 }
 //////////////////////////////////////////////////////////////////////////
 bool ALSoundSource::isPlaying() const
@@ -256,5 +257,14 @@ void ALSoundSource::unbind()
 		m_sourceName->busy = false;
 		m_soundSystem->unregisterPlaying( this );
 	}
+	if( m_busy && m_listener )
+	{
+		m_listener->listenStopped();
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void ALSoundSource::onStreamEnd_()
+{
+
 }
 //////////////////////////////////////////////////////////////////////////

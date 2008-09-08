@@ -151,7 +151,7 @@ namespace Menge
 		ValueInterpolator<ColourValue> m_outlineColorTo;
 
 		float  m_height;
-		String m_text;
+		Text m_text;
 		mt::vec2f m_length;
 
 		bool m_centerAlign;

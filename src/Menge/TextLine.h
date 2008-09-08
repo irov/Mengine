@@ -13,7 +13,7 @@ namespace Menge
 
 	struct CharData
 	{
-		String::value_type code;
+		Text::value_type code;
 		mt::vec2f renderVertex[4];
 		mt::vec4f uv;
 		float ratio;
@@ -24,7 +24,7 @@ namespace Menge
 	class TextLine
 	{
 		public:
-			TextLine( TextField & _textField, const ResourceFont * _resource, const String & _text );
+			TextLine( TextField & _textField, const ResourceFont * _resource, const Text & _text );
 
 		public:
 

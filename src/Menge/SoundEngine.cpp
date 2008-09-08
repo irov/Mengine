@@ -20,6 +20,7 @@ namespace Menge
 	, m_sulkcallback(0)
 	, m_soundVolume( 1.0f )
 	, m_commonVolume( 1.0f )
+	, m_initialized( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -44,6 +45,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const String & _filename, bool _isStream )
 	{
+		if( m_initialized == false )
+		{
+			return 0;
+		}
 		FileEngine* fileEngine = Holder<FileEngine>::hostage();
 		DataStreamInterface* stream = fileEngine->openFile( _filename );
 
@@ -163,12 +168,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::initialize()
 	{
-		bool init = false;
 		if( m_interface != 0 )
 		{
-			init = m_interface->initialize();
+			m_initialized = m_interface->initialize();
 		}
-		return init;
+		return m_initialized;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

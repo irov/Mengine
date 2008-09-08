@@ -20,10 +20,8 @@ public:
 	void destroyWorld() override;
 	void update( float _timing, int _velocityIterations, int _positionIterations ) override;
 
-	Menge::PhysicBody2DInterface* createDynamicBody( const float* _pos, float _angle, float _linearDamping, float _angularDamping,
+	Menge::PhysicBody2DInterface* createBody( const float* _pos, float _angle, float _linearDamping, float _angularDamping,
 												bool _allowSleep, bool _isBullet, bool _fixedRotation ) override;
-	Menge::PhysicBody2DInterface* createStaticBody( const float* _pos, float _angle ) override;
-
 
 	void destroyBody( Menge::PhysicBody2DInterface* _body ) override;
 

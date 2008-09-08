@@ -25,17 +25,17 @@ namespace Menge
 	class FileManager
 	{
 	public:
-		FileManager( const Menge::String& _initPath );
+		FileManager( const Menge::Text& _initPath );
 		~FileManager();
 
 	public:
-		void setInitPath( const Menge::String& _path );
+		void setInitPath( const Menge::Text& _path );
 		bool isCaseSensitive() const;
 
-		DataStream* open( const Menge::String& _filename ) const;
-		bool exists( const Menge::String& _filename );
+		DataStream* open( const Menge::Text& _filename ) const;
+		bool exists( const Menge::Text& _filename );
 
 	protected:
-		Menge::String m_initPath;
+		Menge::Text m_initPath;
 	};
 }

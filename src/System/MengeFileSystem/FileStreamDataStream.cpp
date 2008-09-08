@@ -117,11 +117,6 @@ namespace Menge
 		return m_buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileStreamDataStream::isMemory() const
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void FileStreamDataStream::setFreeOnClose( bool _free )
 	{
 		m_freeBuffer = _free;

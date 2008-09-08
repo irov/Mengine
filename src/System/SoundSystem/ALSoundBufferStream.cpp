@@ -9,6 +9,7 @@ ALSoundBufferStream::ALSoundBufferStream()
 : ALSoundBuffer()
 , m_alID2( 0 )
 , m_source( 0 )
+, m_buffer( 0 )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -29,6 +30,8 @@ bool ALSoundBufferStream::isStreamed() const
 //////////////////////////////////////////////////////////////////////////
 bool ALSoundBufferStream::loadOgg( Menge::DataStreamInterface* _stream )
 {
+	alGetError();	// clear errors
+
 	if ( !m_isEmpty )
 	{
 		return false;
@@ -143,8 +146,6 @@ bool ALSoundBufferStream::update()
 			alSourcePlay( m_source );
 		}
 	}
-
-
 	return ( bytesWritten != 0 );
 }
 //////////////////////////////////////////////////////////////////////////
@@ -186,7 +187,7 @@ void ALSoundBufferStream::stop()
 	if ( m_buffer )
 	{
 		delete m_buffer;
-		m_buffer = NULL;
+		m_buffer = 0;
 	}
 
 	m_updating = false;

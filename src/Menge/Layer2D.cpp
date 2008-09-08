@@ -147,4 +147,12 @@ namespace	Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f Layer2D::calcScreenPosition( const Viewport& _viewport, Node* _node ) const
+	{
+		Viewport vp = _viewport;
+		vp.parallax( m_factorParallax );
+		mt::vec2f screenPos = _node->getWorldPosition() - vp.begin;
+		return screenPos;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

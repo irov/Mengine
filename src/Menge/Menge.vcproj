@@ -52,7 +52,7 @@
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
 				GenerateXMLDocumentationFiles="false"
-				BrowseInformation="0"
+				BrowseInformation="1"
 				WarningLevel="3"
 				WarnAsError="false"
 				Detect64BitPortabilityProblems="true"
@@ -1535,6 +1535,14 @@
 			</File>
 			<File
 				RelativePath=".\ImageCodecPNG.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StreamCodec.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StreamCodecTheora.h"
 				>
 			</File>
 		</Filter>

@@ -20,7 +20,7 @@ namespace Menge
 		{
 		}
 		void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) override;
-		void applyForceAndTorque() override;
+		void onUpdate() override;
 
 	private:
 		RigidBody2D * m_body;
@@ -50,6 +50,7 @@ namespace Menge
 	public:
 		PyObject * getListener();
 
+		void onUpdate();
 		void onApplyForceAndTorque();
 		void applyForce( float _forceX, float _forceY, float _pointX, float _pointY );
 		void applyImpulse( float _impulseX, float _impulseY, float _pointX, float _pointY );

@@ -120,8 +120,26 @@ namespace Menge
 		return is_intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer::isLooped() const
-	{ 
-		return false; 
+	bool Layer::testHotspot( const Viewport& _viewport, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const
+	{
+		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
+		const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
+
+		const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
+
+		bool is_intersect = mt::is_point_inside_polygon( 
+			layerspacePolygon, 
+			_point,
+			posA, 
+			dirA
+			);
+
+		return is_intersect;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f Layer::calcScreenPosition( const Viewport& _viewport, Node* _node ) const
+	{
+		return _node->getWorldPosition() - _viewport.begin;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

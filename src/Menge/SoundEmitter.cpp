@@ -77,10 +77,10 @@ namespace Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: sound emitter '%s' can't get resource '%s'")
+			/*MENGE_LOG( MENGE_TEXT("Warning: sound emitter '%s' can't get resource '%s'")
 				, m_name.c_str()
 				, m_resourcename.c_str()
-				);
+				);*/
 
 			return false;
 		}
@@ -215,12 +215,15 @@ namespace Menge
 	void SoundEmitter::setLooped( bool _loop )
 	{
 		m_looped = _loop;
-		return m_interface->setLooped( m_looped );
+		if( m_interface )
+		{
+			m_interface->setLooped( m_looped );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::isLooping()
 	{
-		return m_interface->isLooping();
+		return m_looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int SoundEmitter::getLengthMs()

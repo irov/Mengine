@@ -678,7 +678,6 @@ namespace Menge
 	mt::vec2f Node::getScreenPosition()
 	{
 		const mt::vec2f & pos = getWorldPosition();
-
 		mt::vec2f screen_pos = pos;
 
 		Camera2D * camera = Holder<Player>::hostage()
@@ -688,28 +687,7 @@ namespace Menge
 
 		if( m_layer )
 		{
-			const mt::vec2f & factor = m_layer->getParallaxFactor();
-			Viewport viewportParallax = viewport;
-			viewportParallax.parallax( factor );
-
-			screen_pos -= viewportParallax.begin;
-
-			const Resolution & currentResolution = Holder<Application>::hostage()->getCurrentResolution();
-
-			float crx = float( currentResolution[0] );
-
-			if( m_layer->isLooped() )
-			{
-				const mt::vec2f & layerSize = m_layer->getSize();
-				if( screen_pos.x < 0.0f )
-				{
-					screen_pos += mt::vec2f( layerSize.x, 0.0f );
-				}
-				else if( screen_pos.x >= crx )
-				{
-					screen_pos -= mt::vec2f( layerSize.x, 0.0f );
-				}
-			}
+			screen_pos = m_layer->calcScreenPosition( viewport, this );
 		}
 
 		return screen_pos;

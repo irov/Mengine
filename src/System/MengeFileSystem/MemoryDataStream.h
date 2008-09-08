@@ -20,10 +20,6 @@ namespace Menge
 		~MemoryDataStream();
 
 	public:
-		unsigned char* getPtr();
-		unsigned char* getCurrentPtr();
-
-	public:
 		std::streamsize read( void* _buf, std::streamsize _count ) override;
 		std::streamsize skipLine( const String& _delim = MENGE_TEXT("\n") ) override;
 		void skip( std::streampos _count ) override;
@@ -33,8 +29,6 @@ namespace Menge
 		void close() override;
 		void setFreeOnClose( bool _free ) override;
 		void* getBuffer() override;
-
-		bool isMemory() const override;
 
 	protected:
 		unsigned char* m_data;

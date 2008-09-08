@@ -3,6 +3,7 @@
 #	include "ObjectImplement.h"
 
 #	include "XmlEngine.h"
+#	include "Application.h"
 
 #	include "Scene.h"
 
@@ -128,7 +129,14 @@ namespace	Menge
 
 		const mt::vec2f & vp = cameraViewport.begin;
 		mt::vec2f parallax;
-		parallax.x = m_factorParallax.x - ::floorf( vp.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.x;
+		if( ::fabsf( vp.x ) > 0.0001f )
+		{
+			parallax.x = m_factorParallax.x - ::floorf( vp.x * m_factorParallax.x / m_size.x ) * m_size.x / vp.x;
+		}
+		else
+		{
+			parallax.x = m_factorParallax.x;
+		}
 		parallax.y = m_factorParallax.y;
 
 		camera->setParallax( parallax );
@@ -160,13 +168,14 @@ namespace	Menge
 	public:
 		void visit( Node * _node )
 		{				
-			const mt::box2f & bbox = _node->getBoundingBox();
+			//const mt::box2f & bbox = _node->getBoundingBox();
+			const mt::vec2f& pos = _node->getLocalPosition();
 
-			if( bbox.vb.x >= m_size.x )
+			if( pos.x >= m_size.x )
 			{
 				_node->translate( mt::vec2f( -m_size.x, 0.0f ));
 			}
-			else if( bbox.ve.x < 0.f )
+			else if( pos.x < 0.f )
 			{
 				_node->translate( mt::vec2f( m_size.x, 0.0f ));
 			}
@@ -197,15 +206,17 @@ namespace	Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Layer2DLoop::isLooped() const
-	{ 
-		return true; 
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Layer2DLoop::testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const
 	{
 		mt::vec2f parallax;
-		parallax.x = m_factorParallax.x - ::floorf( _viewport.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / _viewport.begin.x;
+		if( ::fabsf( _viewport.begin.x ) > 0.0001f )
+		{
+			parallax.x = m_factorParallax.x - ::floorf( _viewport.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / _viewport.begin.x;
+		}
+		else
+		{
+			parallax.x = m_factorParallax.x;
+		}
 		parallax.y = m_factorParallax.y;
 
 		Viewport convertView = _viewport;
@@ -247,4 +258,166 @@ namespace	Menge
 
 		return result;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer2DLoop::testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const 
+	{
+		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
+		//const mt::vec2f & posA = _layerspaceHotspot->getScreenPosition();
+		//mt::vec2f posA = Layer2D::calcScreenPosition( _layerspaceHotspot );
+		Viewport vp = _viewport;
+		mt::vec2f parallax;
+		if( ::fabsf( _viewport.begin.x ) > 0.0001f )
+		{
+			parallax.x = m_factorParallax.x - ::floorf( _viewport.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / _viewport.begin.x;
+		}
+		else
+		{
+			parallax.x = m_factorParallax.x;
+		}
+		parallax.y = m_factorParallax.y;
+		vp.parallax( parallax );
+
+		mt::vec2f posA = _layerspaceHotspot->getWorldPosition() - vp.begin;
+
+		const mt::vec2f & dirB = _screenspaceHotspot->getWorldDirection();
+		const mt::vec2f & posB = _screenspaceHotspot->getWorldPosition();
+
+		const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
+		const mt::polygon & screenspacePolygon = _screenspaceHotspot->getPolygon();
+
+		bool is_intersect = mt::intersect_poly_poly( 
+			layerspacePolygon, 
+			screenspacePolygon,
+			dirA, 
+			posA, 
+			dirB, 
+			posB 
+			);
+
+		if( is_intersect == true )
+		{
+			return true;
+		}
+
+		posA.x -= m_size.x;
+
+		is_intersect = mt::intersect_poly_poly( 
+			layerspacePolygon, 
+			screenspacePolygon,
+			dirA, 
+			posA, 
+			dirB, 
+			posB 
+			);
+
+		if( is_intersect == true )
+		{
+			return true;
+		}
+
+		posA.x += m_size.x * 2.0f;
+
+		is_intersect = mt::intersect_poly_poly( 
+			layerspacePolygon, 
+			screenspacePolygon,
+			dirA, 
+			posA, 
+			dirB, 
+			posB 
+			);
+
+		return is_intersect;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Layer2DLoop::testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, const mt::vec2f& _point ) const 
+	{
+		const mt::vec2f & dirA = _layerspaceHotspot->getWorldDirection();
+
+		Viewport vp = _viewport;
+		mt::vec2f parallax;
+		if( ::fabsf( _viewport.begin.x ) > 0.0001f )
+		{
+			parallax.x = m_factorParallax.x - ::floorf( _viewport.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / _viewport.begin.x;
+		}
+		else
+		{
+			parallax.x = m_factorParallax.x;
+		}
+		parallax.y = m_factorParallax.y;
+		vp.parallax( parallax );
+
+		mt::vec2f posA = _layerspaceHotspot->getWorldPosition() - vp.begin;
+
+		const mt::polygon & layerspacePolygon = _layerspaceHotspot->getPolygon();
+
+		bool result = mt::is_point_inside_polygon( 
+			layerspacePolygon, 
+			_point,
+			posA,
+			dirA 
+			);
+
+		if( result == true )
+		{
+			return true;
+		}
+
+		posA.x -= m_size.x;
+
+		result = mt::is_point_inside_polygon( 
+			layerspacePolygon, 
+			_point,
+			posA, 
+			dirA
+			);
+
+		if( result == true )
+		{
+			return true;
+		}
+
+		posA.x += m_size.x * 2.0f;
+
+		result = mt::is_point_inside_polygon( 
+			layerspacePolygon, 
+			_point,
+			posA, 
+			dirA
+			);
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f Layer2DLoop::calcScreenPosition( const Viewport& _viewport, Node* _node ) const
+	{
+		Viewport vp = _viewport;
+		mt::vec2f parallax;
+		if( ::fabsf( _viewport.begin.x ) > 0.0001f )
+		{
+			parallax.x = m_factorParallax.x - ::floorf( _viewport.begin.x * m_factorParallax.x / m_size.x ) * m_size.x / _viewport.begin.x;
+		}
+		else
+		{
+			parallax.x = m_factorParallax.x;
+		}
+		parallax.y = m_factorParallax.y;
+		vp.parallax( parallax );
+
+		mt::vec2f screenPos = _node->getWorldPosition() - vp.begin;
+		//mt::vec2f screenPos = Layer2D::calcScreenPosition( _node );
+		const Resolution & currentResolution = Holder<Application>::hostage()->getCurrentResolution();
+
+		float crx = float( currentResolution[0] );
+
+		if( screenPos.x < 0.0f )
+		{
+			screenPos += mt::vec2f( m_size.x, 0.0f );
+		}
+		else if( screenPos.x >= crx )
+		{
+			screenPos -= mt::vec2f( m_size.x, 0.0f );
+		}
+		return screenPos;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

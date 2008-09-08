@@ -4,10 +4,13 @@
 
 namespace Menge
 {
+	class OutStreamInterface;
+
 	class LogSystemInterface
 	{
 	public:
-		virtual void startLog( const String& _filename ) = 0;
+		virtual bool initialize( OutStreamInterface* _logStream ) = 0;
+		virtual void enableConsole( bool _console ) = 0;
 		virtual void logMessage( const String& _message, bool _maskDebug = false, bool _endl = true, bool _timeStamp = true ) = 0;
 	};
 }

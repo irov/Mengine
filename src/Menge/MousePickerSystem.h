@@ -48,6 +48,7 @@ namespace Menge
 		};
 		typedef std::vector<TRegEvent> TVectorRegEvent;
 		TVectorRegEvent m_registration;
+		void execReg_();
 		void addTrap_( MousePickerTrap* _trap );
 		void delTrap_( MousePickerTrap* _trap );
 	};

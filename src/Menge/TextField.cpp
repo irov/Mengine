@@ -241,7 +241,7 @@ namespace     Menge
 		return m_outlineColor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setText( const String& _text )
+	void TextField::setText( const Text& _text )
 	{
 		if( m_resource == 0 )
 		{
@@ -333,7 +333,7 @@ namespace     Menge
 		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::createFormattedMessage_( const String& _text )
+	void TextField::createFormattedMessage_( const Text& _text )
 	{
 		m_lines.clear();
 

@@ -24,12 +24,12 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	FileManager::FileManager( const String& _initPath )
+	FileManager::FileManager( const Text& _initPath )
 		: m_initPath( _initPath )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileManager::setInitPath( const String& _path )
+	void FileManager::setInitPath( const Text& _path )
 	{
 		m_initPath = _path;
 	}
@@ -43,15 +43,15 @@ namespace Menge
 #endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_isReservedDir( const String& _fn )
+	static bool s_isReservedDir( const Text& _fn )
 	{
 		return ( _fn [0] == MENGE_TEXT('.') && ( _fn [1] == 0 || ( _fn [1] == MENGE_TEXT('.') && _fn [2] == 0 ) ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_isAbsolutePath( const String& _path )
+	static bool s_isAbsolutePath( const Text& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
-		if ( ::isalpha( unsigned char( _path[0] ) ) && _path[1] == ':' )
+		if ( /*::isalpha( unsigned char( _path[0] ) ) && */_path[1] == MENGE_TEXT(':') )
 		{
 			return true;
 		}
@@ -59,7 +59,7 @@ namespace Menge
 		return _path[0] == MENGE_TEXT('/') || _path[0] == MENGE_TEXT('\\');
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static String s_concatenatePath( const String& _base, const String& _name )
+	static String s_concatenatePath( const Text& _base, const Text& _name )
 	{
 		if ( _base.empty() || s_isAbsolutePath( _name.c_str() ) )
 		{
@@ -75,9 +75,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStream* FileManager::open( const String& _filename ) const
+	DataStream* FileManager::open( const Text& _filename ) const
 	{
-		String full_path = s_concatenatePath( m_initPath, _filename );
+		Text full_path = s_concatenatePath( m_initPath, _filename );
 
 		// Use filesystem to determine size 
 		// (quicker than streaming to the end and back)
@@ -116,7 +116,7 @@ namespace Menge
 		return static_cast<DataStream*>(stream);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileManager::exists( const String& _filename )
+	bool FileManager::exists( const Text& _filename )
 	{
 		String full_path = s_concatenatePath( m_initPath, _filename );
 

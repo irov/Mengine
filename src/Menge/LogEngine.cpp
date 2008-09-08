@@ -13,8 +13,8 @@ namespace Menge
 	LogEngine::LogEngine( LogSystemInterface * _interface )
 		: m_interface( _interface )
 	{
-		m_interface->startLog( MENGE_TEXT("Menge.log") );
-		m_interface->logMessage( MENGE_TEXT("\n>>>> LOGGING STARTED\n\n >> Starting Mengine...\n\n"), false, true, true );
+		//m_interface->startLog( MENGE_TEXT("Menge.log") );
+		//m_interface->logMessage( MENGE_TEXT("\n>>>> LOGGING STARTED\n\n >> Starting Mengine...\n\n"), false, true, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::logMessage( const String& _message, bool _maskDebug, bool _endl, bool _timeStamp )

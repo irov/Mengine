@@ -34,19 +34,19 @@ namespace Menge
 
 		virtual bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const;
 		virtual bool testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const;
+		virtual bool testHotspot( const Viewport& _viewport, HotSpot* _layerspaceHotspot, const mt::vec2f& _point ) const;
 
 	public:
 		virtual void setOffsetPosition( const mt::vec2f & _offset );
 		virtual void setRenderTarget( const std::string& _cameraName );
 		
 
+		virtual mt::vec2f calcScreenPosition( const Viewport& _viewport, Node* _node ) const;
+
 	public:
 		void loader( XmlElement * _xml ) override;
 
 		void _render( unsigned int _debugMask ) override;
-
-		// temporary patch
-		virtual bool isLooped() const;
 
 	protected:
 		bool m_main;

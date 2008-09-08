@@ -21,21 +21,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update( HotSpot* _picker )
 	{
-		for( TVectorRegEvent::iterator it = m_registration.begin(), it_end = m_registration.end();
-			it != it_end;
-			it++ )
+		if( m_registration.empty() == false )
 		{
-			if( it->reg )
-			{
-				addTrap_( it->trap );
-			}
-			else
-			{
-				delTrap_( it->trap );
-			}
+			execReg_();
 		}
-		m_registration.clear();
-
 
 		TVectorPickerTrap pickTraps = MousePickerSystem::pickTrap( _picker );
 
@@ -52,7 +41,7 @@ namespace Menge
 
 			if( it_find == pickTraps.end() )
 			{
-				if( lastTrap->_pickerActive() )
+				//if( lastTrap->_pickerActive() )
 				{
 					lastTrap->onLeave();
 				}
@@ -118,6 +107,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleKeyEvent( HotSpot* _picker, unsigned int _key, unsigned int _char, bool _isDown )
 	{
+		if( m_registration.empty() == false )
+		{
+			execReg_();
+		}
+
 		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
@@ -142,6 +136,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseButtonEvent( HotSpot* _picker, unsigned int _button, bool _isDown )
 	{
+		if( m_registration.empty() == false )
+		{
+			execReg_();
+		}
+
 		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
@@ -166,6 +165,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::handleMouseMove( HotSpot* _picker, float _x, float _y, int _whell )
 	{
+		if( m_registration.empty() == false )
+		{
+			execReg_();
+		}
+
 		for( TVectorPickerTrap::iterator
 			it = m_listPickerTrap.begin(),
 			it_end = m_listPickerTrap.end();
@@ -205,6 +209,24 @@ namespace Menge
 		{
 			m_listPickerTrap.erase( it_find );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::execReg_()
+	{
+		for( TVectorRegEvent::iterator it = m_registration.begin(), it_end = m_registration.end();
+			it != it_end;
+			it++ )
+		{
+			if( it->reg )
+			{
+				addTrap_( it->trap );
+			}
+			else
+			{
+				delTrap_( it->trap );
+			}
+		}
+		m_registration.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

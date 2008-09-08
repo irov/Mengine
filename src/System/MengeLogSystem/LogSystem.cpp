@@ -4,7 +4,7 @@
 #	include <iomanip>
 #	include <algorithm>
 #	include <assert.h>
-
+#	include <locale.h>
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::LogSystemInterface** _interface )
 {
@@ -28,6 +28,7 @@ void releaseInterfaceSystem( Menge::LogSystemInterface* _interface )
 //////////////////////////////////////////////////////////////////////////
 MengeLogSystem::MengeLogSystem()
 : m_error( false )
+, m_console( false )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -39,20 +40,24 @@ MengeLogSystem::~MengeLogSystem()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void MengeLogSystem::startLog( const Menge::String& _filename )
+bool MengeLogSystem::initialize( Menge::OutStreamInterface* _logStream )
 {
-	m_logStream.open( _filename.c_str() );
+	Menge::String filename( MENGE_TEXT("Menge.log") );
+	std::locale loc("");
+	m_logStream.imbue( loc );
+	m_logStream.open( filename.c_str() );
 	if( m_logStream.fail() )
 	{
 		m_error = true;
 	}
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 void MengeLogSystem::logMessage( const Menge::String& _message, bool _maskDebug, bool _endl, bool _timeStamp )
 {
 	if( m_error ) return;
 
-	if ( !_maskDebug )
+	if ( !_maskDebug && m_console )
 	{
 		//std::cerr << _message;
 		StdErr << _message;
@@ -80,5 +85,10 @@ void MengeLogSystem::logMessage( const Menge::String& _message, bool _maskDebug,
 	}
 
 	m_logStream.flush();
+}
+//////////////////////////////////////////////////////////////////////////
+void MengeLogSystem::enableConsole( bool _console )
+{
+	m_console = _console;
 }
 //////////////////////////////////////////////////////////////////////////

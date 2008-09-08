@@ -38,33 +38,30 @@ namespace Menge
 		return i->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Codec::registerCodec( Codec * _codec )
+	void Codec::registerCodec( const String& _type, Codec* _codec )
 	{
-		const String & codecType = _codec->getType();
-
-		TCodecMap::iterator it = ms_mapCodecs.find(codecType);
+		TCodecMap::iterator it = ms_mapCodecs.find( _type );
 
 		if(it != ms_mapCodecs.end())
 		{
 			return;
 		}
 
-		ms_mapCodecs.insert(std::make_pair(codecType, _codec));
+		ms_mapCodecs.insert(std::make_pair(_type, _codec));
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Codec::unregisterCodec( Codec * _codec )
+	void Codec::unregisterCodec( const String& _type )
 	{
-		const String & codecType = _codec->getType();
-		ms_mapCodecs.erase(codecType);
+		ms_mapCodecs.erase( _type );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Codec::initialize()
 	{
-		registerCodec(new ImageCodecPNG( MENGE_TEXT("png") ));
-		registerCodec(new ImageCodecJPEG( MENGE_TEXT("jpg") ));
-		registerCodec(new ImageCodecJPEG( MENGE_TEXT("jpeg") ));
-		registerCodec(new ImageCodecJPEG( MENGE_TEXT("jfif") ));
-		registerCodec(new ImageCodecMNE( MENGE_TEXT("mne") ));
+		registerCodec( MENGE_TEXT("png"), new ImageCodecPNG() );
+		registerCodec( MENGE_TEXT("jpg"), new ImageCodecJPEG() );
+		registerCodec( MENGE_TEXT("jpeg"), new ImageCodecJPEG() );
+		registerCodec( MENGE_TEXT("jfif"), new ImageCodecJPEG() );
+		registerCodec( MENGE_TEXT("mne"), new ImageCodecMNE() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Codec::cleanup()

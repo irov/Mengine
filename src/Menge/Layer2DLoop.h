@@ -19,8 +19,10 @@ namespace Menge
 		void update( float _timing ) override;
 		void render( unsigned int _debugMask ) override;
 
-		bool isLooped() const override;
-
 		bool testBoundingBox( const Viewport & _viewport, const mt::box2f & _layerspaceBox, const mt::box2f & _screenspaceBox ) const override;
+		bool testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, HotSpot * _screenspaceHotspot ) const override;
+		bool testHotspot( const Viewport & _viewport, HotSpot * _layerspaceHotspot, const mt::vec2f& _point ) const override;
+
+		mt::vec2f calcScreenPosition( const Viewport& _viewport, Node* _node ) const override;
 	};
 }

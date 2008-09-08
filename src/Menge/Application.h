@@ -135,6 +135,7 @@ namespace Menge
 		bool m_debugInfo;
 		bool m_usePhysic;
 		bool m_mouseBounded;
+		bool m_hasConsole;
 
 		unsigned int m_debugMask;
 

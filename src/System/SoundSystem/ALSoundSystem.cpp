@@ -22,17 +22,20 @@ ALSoundSystem::ALSoundSystem()
 //////////////////////////////////////////////////////////////////////////
 ALSoundSystem::~ALSoundSystem()
 {
-	for( TSourceVector::size_type i = 0; i < m_sources.size(); i++ )
+	if( m_initialized )
 	{
-		delete m_sources[i];
+		for( TSourceVector::size_type i = 0; i < m_sources.size(); i++ )
+		{
+			delete m_sources[i];
+		}
+		m_sources.clear();
+
+		alcMakeContextCurrent(NULL);
+		alcDestroyContext(m_context);
+		alcCloseDevice(m_device);
+
+		delete m_sulk;
 	}
-	m_sources.clear();
-
-	alcMakeContextCurrent(NULL);
-	alcDestroyContext(m_context);
-	alcCloseDevice(m_device);
-
-	delete m_sulk;
 }
 //////////////////////////////////////////////////////////////////////////
 bool ALSoundSystem::initialize()
@@ -219,10 +222,6 @@ void ALSoundSystem::update( float _timing )
 	for(unsigned int i = 0; i < m_streams.size(); i++)
 	{
 		m_streams[i]->update();
-		/*if( !m_streams[i]->getUpdater()->update() )
-		{
-			m_streams[i]->stop();
-		}*/
 	}
 
 	m_sulk->update();

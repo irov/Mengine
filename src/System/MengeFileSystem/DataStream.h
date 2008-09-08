@@ -30,7 +30,6 @@ namespace Menge
 
 		virtual void close( void ) = 0;
 		virtual void* getBuffer() = 0;
-		virtual bool isMemory() const = 0;
 		virtual void setFreeOnClose( bool _free ) = 0;
 
 	protected:

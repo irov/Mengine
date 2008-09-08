@@ -50,6 +50,7 @@ public:
 	void setUsed( bool _use );
 	Menge::SoundNodeListenerInterface* getListener();
 	void unbind();
+	void onStreamEnd_();
 
 private:
 	TALSourceName* m_sourceName;

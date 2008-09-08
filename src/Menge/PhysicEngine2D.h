@@ -1,7 +1,10 @@
  #	pragma once
 
+#	include "Config/Typedef.h"
 #	include "Holder.h"
 #	include "Math/vec2.h"
+
+#	include <vector>
 
 namespace Menge
 {
@@ -21,9 +24,8 @@ namespace Menge
 		void destroyScene();
 
 			
-		PhysicBody2DInterface* createDynamicBody( const mt::vec2f& _pos, float _angle, float _linearDamping, float _angularDamping,
+		PhysicBody2DInterface* createBody( const mt::vec2f& _pos, float _angle, float _linearDamping, float _angularDamping,
 													bool _allowSleep, bool _isBullet, bool _fixedRotation );
-		PhysicBody2DInterface* createStaticBody( const mt::vec2f& _pos, float _angle );
 
 		void destroyPhysicBody( PhysicBody2DInterface* _bodyInterface );
 
@@ -47,5 +49,9 @@ namespace Menge
 		int m_iterating;
 		mt::vec2f m_gravity;
 		float m_phase;
+		bool m_inProcess;
+
+		typedef std::vector<PhysicBody2DInterface*> TVectorBodies;
+		TVectorBodies m_bodies;
 	};
 }	// namespace Menge

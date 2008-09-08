@@ -55,17 +55,18 @@ namespace Menge
 			}
 			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 			const mt::box2f & nbbox = _node->getBoundingBox();
+			Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
 			for( Layer2DAccumulator::TRenderImageVector::iterator it = m_surfaces.begin(), it_end = m_surfaces.end();
 				it != it_end;
 				it++ )
 			{
 				if( mt::is_intersect( nbbox, it->rect ) )
 				{
-					const Viewport & vp = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
+					const Viewport & vp = camera->getViewport();
 					mt::vec2f vp_size = vp.end - vp.begin;
-
+					camera->setLocalPosition( it->rect.min + vp_size * 0.5f );
+					renderEngine->setViewMatrix( camera->getViewMatrix() );
 					renderEngine->setRenderTarget( it->image->getDescription(), false );
-					Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( it->rect.min + vp_size * 0.5f );
 					_node->_render( 0 );
 					_node->visitChildren( this );
 				}
@@ -81,10 +82,10 @@ namespace Menge
 		Holder<RenderEngine>::hostage()
 			->beginLayer2D();
 
-		mt::vec2f camPos = 
-			Holder<Player>::hostage()->getRenderCamera2D()->getLocalPosition();
+		Camera2D* camera = Holder<Player>::hostage()->getRenderCamera2D();
+		mt::vec2f camPos = camera->getLocalPosition();
 
-		Viewport viewport = Holder<Player>::hostage()->getRenderCamera2D()->getViewport();
+		Viewport viewport = camera->getViewport();
 		
 		VisitorRenderLayer2DPool visitorRender( m_surfaces );
 
@@ -100,7 +101,11 @@ namespace Menge
 
 		mt::vec2f plxCamPos = viewport.begin + viewport_size * 0.5f;
 
-		Holder<Player>::hostage()->getRenderCamera2D()->setLocalPosition( plxCamPos );
+		camera->setLocalPosition( plxCamPos );
+
+		const mt::mat4f & viewMatrixSecond = camera->getViewMatrix();
+		Holder<RenderEngine>::hostage()->setViewMatrix( viewMatrixSecond );
+
 
 		Layer::_render( _debugMask );
 		_render( _debugMask );

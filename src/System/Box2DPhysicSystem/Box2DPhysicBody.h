@@ -6,10 +6,9 @@
 
 class Box2DPhysicBody
 	: public Menge::PhysicBody2DInterface
-	, public b2BodyListener
 {
 public:
-	Box2DPhysicBody( b2World* _world, bool _static );
+	Box2DPhysicBody( b2World* _world );
 	virtual ~Box2DPhysicBody();
 	bool initialize( const b2BodyDef& _bodyDef );
 
@@ -50,7 +49,7 @@ public:
 
 	void updateFilterData( Menge::uint16 _categoryBits, Menge::uint16 _collisionMask, signed short _groupIndex ) override;
 
-	void applyForceAndTorque() override;
+	void update() override;
 
 	b2Body* getBody();
 
@@ -59,7 +58,6 @@ private:
 	b2Body* m_body;
 	Menge::PhysicBody2DListener* m_listener;
 	void* m_userData;
-	bool m_isStatic;
 
 	//friend void Box2DPhysicSystem::Add( b2ContactPoint* _point );
 	friend void Box2DPhysicSystem::update( float , int, int );

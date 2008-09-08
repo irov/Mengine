@@ -98,6 +98,7 @@ namespace	Menge
 		}
 
 		bool result = this->addChildren( _hotspot );
+		_hotspot->activate();
 
 		if( result == false )
 		{

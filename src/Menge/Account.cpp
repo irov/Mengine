@@ -41,7 +41,7 @@ namespace Menge
 		TSettingsMap::iterator it = m_settings.find( _setting );
 		if( it != m_settings.end() )
 		{
-			pybind::call( it->second.second, "" );
+			pybind::call( it->second.second, "OO", pybind::ptr( _setting ), pybind::ptr( _value ) );
 			it->second.first = _value;
 		}
 		else

@@ -1,11 +1,10 @@
 #	include "Box2DPhysicBody.h"
 
 //////////////////////////////////////////////////////////////////////////
-Box2DPhysicBody::Box2DPhysicBody( b2World* _world, bool _static )
+Box2DPhysicBody::Box2DPhysicBody( b2World* _world )
 : m_world( _world )
 , m_listener( 0 )
 , m_body( 0 )
-, m_isStatic( _static )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -17,22 +16,12 @@ Box2DPhysicBody::~Box2DPhysicBody()
 //////////////////////////////////////////////////////////////////////////
 bool Box2DPhysicBody::initialize( const b2BodyDef& _bodyDef )
 {
-	/*if( m_isStatic )
-	{
-		m_body = m_world->CreateStaticBody( &_bodyDef );
-	}
-	else
-	{
-		m_body = m_world->CreateDynamicBody( &_bodyDef );
-	}*/
 	m_body = m_world->CreateBody( &_bodyDef );
 
 	if( m_body == 0 )
 	{
 		return false;
 	}
-
-	m_body->m_listener = this;
 
 	return true;
 }
@@ -271,11 +260,11 @@ void Box2DPhysicBody::applyTorque( float _torque )
 	m_body->ApplyTorque( _torque );
 }
 ////////////////////////////////////////////////////////////////////////////
-void Box2DPhysicBody::applyForceAndTorque()
+void Box2DPhysicBody::update()
 {
 	if( m_listener )
 	{
-		m_listener->applyForceAndTorque();
+		m_listener->onUpdate();
 	}
 }
 //////////////////////////////////////////////////////////////////////////

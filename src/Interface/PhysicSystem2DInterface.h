@@ -12,7 +12,7 @@ namespace Menge
 	{
 	public:
 		virtual void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY ) = 0;
-		virtual void applyForceAndTorque() = 0;
+		virtual void onUpdate() = 0;
 	};
 
 	class PhysicBody2DInterface
@@ -64,6 +64,7 @@ namespace Menge
 		virtual void wakeUp() = 0;
 
 		virtual void updateFilterData( uint16 _categoryBits, uint16 _collisionMask, signed short _groupIndex ) = 0;
+		virtual void update() = 0;
 	};
 
 	class PhysicJoint2DInterface
@@ -76,10 +77,8 @@ namespace Menge
 		virtual void destroyWorld() = 0;
 		virtual void update( float _timing, int _velocityIterations, int _positionIterations ) = 0;
 
-		virtual PhysicBody2DInterface* createDynamicBody( const float* _pos, float _angle, float _linearDamping, float _angularDamping,
+		virtual PhysicBody2DInterface* createBody( const float* _pos, float _angle, float _linearDamping, float _angularDamping,
 			bool _allowSleep, bool _isBullet, bool _fixedRotation ) = 0;
-
-		virtual PhysicBody2DInterface* createStaticBody( const float* _pos, float _angle ) = 0;
 
 		virtual void destroyBody( PhysicBody2DInterface* _body ) = 0;
 

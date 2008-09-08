@@ -6,6 +6,7 @@
 
 namespace Menge
 {
+	class LogSystemInterface;
 
 	class	DataStreamInterface
 	{
@@ -18,7 +19,6 @@ namespace Menge
 		virtual bool eof() const = 0;
 		virtual std::streamsize size() const = 0;
 		virtual void* getBuffer() = 0;
-		virtual bool isMemory() const = 0;
 		virtual void setFreeOnClose( bool _free ) = 0;
 	};
 
@@ -28,11 +28,13 @@ namespace Menge
 		virtual void write( const char* _data, std::streamsize _count ) = 0;
 		virtual void write( const String& _str ) = 0;
 		virtual void write( int _num ) = 0;
+		virtual void flush() = 0;
 	};
 
 	class	FileSystemInterface
 	{
 	public:
+		virtual bool inititalize( LogSystemInterface* _logSystemInterface ) = 0;
 
 		virtual void loadPath( const String& _path ) = 0;
 		virtual void loadPak( const String& _pak ) = 0;
@@ -40,7 +42,7 @@ namespace Menge
 
 		virtual bool existFile( const String& _filename ) = 0;
 		virtual bool deleteFile( const String& _filename ) = 0;
-		virtual DataStreamInterface* openFile( const String& _filename ) = 0;
+		virtual DataStreamInterface* openFile( const Text& _filename ) = 0;
 		virtual DataStreamInterface* createMemoryFile( void* _data, std::streamsize _size, bool _freeOnClose ) = 0;
 		virtual void closeStream( DataStreamInterface* _stream ) = 0;
 

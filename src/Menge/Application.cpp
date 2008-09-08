@@ -124,17 +124,18 @@ namespace Menge
 		, m_resetTiming( false )
 		, m_maxTiming( 100.0f )
 		, m_debugInfo( false )
-		, m_logEngine( NULL )
-		, m_profilerEngine( NULL )
-		, m_fileEngine( NULL )
-		, m_renderEngine( NULL )
-		, m_soundEngine( NULL )
-		, m_particleEngine( NULL )
-		, m_physicEngine2D( NULL )
-		, m_physicEngine( NULL )
-		, m_xmlEngine( NULL )
+		, m_logEngine( 0 )
+		, m_profilerEngine( 0 )
+		, m_fileEngine( 0 )
+		, m_renderEngine( 0 )
+		, m_soundEngine( 0 )
+		, m_particleEngine( 0 )
+		, m_physicEngine2D( 0 )
+		, m_physicEngine( 0 )
+		, m_xmlEngine( 0 )
 		, m_mouseBounded( false )
-		, m_game(NULL)
+		, m_game( 0 )
+		, m_hasConsole( 0 )
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -352,17 +353,27 @@ namespace Menge
 		{
 			m_debugInfo = true;
 		}
+
+		idx = _arguments.find( "-console" );
+		if( idx != StringA::npos )
+		{
+			m_hasConsole = true;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const String& _applicationFile, const char* _args )
-	{		
+	{
+		parseArguments( _args );
+
 		initInterfaceSystem( &m_logSystem );
 		this->setLogSystem( m_logSystem );
+		m_logSystem->enableConsole( m_hasConsole );
 
 		initInterfaceSystem( &m_profilerSystem );
 		this->setProfilerSystem( m_profilerSystem );
 
 		initInterfaceSystem( &m_fileSystem );
+		m_fileSystem->inititalize( m_logSystem );
 		this->setFileSystem( m_fileSystem );
 
 		m_fileSystem->loadPath( MENGE_TEXT(".") );
@@ -441,9 +452,10 @@ namespace Menge
 		m_desktopResolution[0] = m_interface->getDesktopWidth();
 		m_desktopResolution[1] = m_interface->getDesktopHeight();
 
-		m_sound = m_soundEngine->initialize();
-
-		parseArguments(_args);
+		if( m_sound == true )
+		{
+			m_sound = m_soundEngine->initialize();
+		}
 
 		m_xmlEngine = new XmlEngine();
 		Holder<XmlEngine>::keep( m_xmlEngine );
@@ -490,6 +502,7 @@ namespace Menge
 		releaseInterfaceSystem( m_inputSystem );
 		releaseInterfaceSystem( m_fileSystem );
 		releaseInterfaceSystem( m_logSystem );
+		releaseInterfaceSystem( m_profilerSystem );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
@@ -728,6 +741,8 @@ namespace Menge
 		Holder<ScriptEngine>::destroy();
 
 		Codec::cleanup();
+
+		finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onWindowMovedOrResized()

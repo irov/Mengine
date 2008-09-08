@@ -25,6 +25,8 @@ namespace Menge
 		void setOffsetPosition( const mt::vec2f & _offset ) override;
 		mt::vec2f screenToLocal( const mt::vec2f& _point );
 
+		virtual mt::vec2f calcScreenPosition( const Viewport& _viewport, Node* _node ) const override;
+
 	public:
 		void loader( XmlElement * _xml ) override;
 		void render( unsigned int _debugMask ) override;

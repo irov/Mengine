@@ -16,6 +16,7 @@ namespace Menge
 	typedef std::string StringA;
 	typedef std::wstringstream StringstreamW;
 	typedef std::stringstream StringstreamA;
+	typedef std::wstring Text;
 
 
 #ifdef MENGE_UNICODE

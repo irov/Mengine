@@ -167,7 +167,6 @@ namespace Menge
 		m_name.assign( _name );
 
 		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -430,17 +429,22 @@ namespace Menge
 
 			break;
 		case WM_MOVE:
-
-			::GetWindowInfo( m_hWnd, &m_wndInfo);
-			m_listener->onWindowMovedOrResized();
+			if( m_hWnd != 0 )
+			{
+				::GetWindowInfo( m_hWnd, &m_wndInfo);
+				m_listener->onWindowMovedOrResized();
+			}
 			break;
 		case WM_DISPLAYCHANGE:
 			m_listener->onWindowMovedOrResized();
 
 			break;
 		case WM_SIZE:
-			::GetWindowInfo( m_hWnd, &m_wndInfo);
-			m_listener->onWindowMovedOrResized();
+			if( m_hWnd != 0)
+			{
+				::GetWindowInfo( m_hWnd, &m_wndInfo);
+				m_listener->onWindowMovedOrResized();
+			}
 			break;
 		case WM_GETMINMAXINFO:
 			// Prevent the window from going smaller than some minimu size

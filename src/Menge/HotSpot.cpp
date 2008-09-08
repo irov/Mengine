@@ -112,6 +112,10 @@ namespace	Menge
 
 		Layer2D * layer = this->getLayer();
 
+		if( layer == 0 )
+		{
+			return false;
+		}
 		if( layer->testBoundingBox( viewport, myBB, otherBB ) == false )
 		{
 			return false;
@@ -287,12 +291,30 @@ namespace	Menge
 
 		const Viewport & viewport = camera->getViewport();
 
-		const mt::vec2f & direction = this->getWorldDirection();
-		const mt::vec2f & position = this->getScreenPosition(  );
+		//const mt::vec2f & direction = this->getWorldDirection();
+		//const mt::vec2f & position = this->getScreenPosition(;
+		const mt::box2f& myBBox = getBoundingBox();
 
-		bool result = mt::is_point_inside_polygon(m_polygon, _p, position, direction);
+		if( m_layer != 0 )
+		{
+			if( m_layer->testBoundingBox( viewport, myBBox, mt::box2f( _p, _p ) ) == false )
+			{
+				return false;
+			}
+			if( m_layer->testHotspot( viewport, this, _p ) == false )
+			{
+				return false;
+			}
+		}
+		else
+		{
+			const mt::mat3f& wm = getWorldMatrix();
+			bool result = mt::is_point_inside_polygon( m_polygon, _p, wm );
+			return result;
+		}
 
-		return result;
+		//bool result = mt::is_point_inside_polygon(m_polygon, _p, position, direction);
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::setScale( const mt::vec2f& _scale )
@@ -337,6 +359,7 @@ namespace	Menge
 	void HotSpot::_render( unsigned int _debugMask )
 	{
 #	ifndef MENGE_MASTER_RELEASE
+		Node::_render( _debugMask );
 		if( _debugMask & MENGE_DEBUG_HOTSPOTS )
 		{
 			std::size_t pointCount = m_polygon.num_points();

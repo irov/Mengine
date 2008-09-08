@@ -16,9 +16,9 @@ namespace Menge
 		m_body->onCollide( _otherObj, _worldX, _worldY, _normalX, _normalY );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BodyListenerProxy::applyForceAndTorque()
+	void BodyListenerProxy::onUpdate()
 	{
-		m_body->onApplyForceAndTorque();
+		m_body->onUpdate();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OBJECT_IMPLEMENT( RigidBody2D )
@@ -208,13 +208,13 @@ namespace Menge
 	{
 		if( !(m_interface->isFrozen() || m_interface->isStatic() || m_interface->isSleeping()) )
 		{
-			//const float phase = Holder<PhysicEngine2D>::hostage()->getPhase();
+			const float phase = Holder<PhysicEngine2D>::hostage()->getPhase();
 
 			const float * pos = m_interface->getPosition();
-			//const mt::vec2f& prevPos = getLocalPosition();
+			const mt::vec2f& prevPos = getLocalPosition();
 			mt::vec2f currPos( pos[0], pos[1] );
-			//currPos = currPos * phase + prevPos * ( 1.0f - phase );
-			setLocalPosition( /*mt::vec2f( pos[0], pos[1] )*/ currPos );
+			currPos = currPos * phase + prevPos * ( 1.0f - phase );
+			setLocalPosition( currPos );
 
 			const float * orient = m_interface->getOrientation();
 			setLocalDirection( mt::vec2f( orient[0], orient[1] ) );
@@ -241,15 +241,8 @@ namespace Menge
 	{
 		const mt::vec2f & position = getWorldPosition();
 
-		if( m_density == 0.0f )
-		{
-			m_interface = Holder<PhysicEngine2D>::hostage()->createStaticBody( position, 0.0f );
-		}
-		else
-		{
-			m_interface = Holder<PhysicEngine2D>::hostage()->createDynamicBody( position, 0.0f, m_linearDamping, m_angularDamping, m_allowSleep,
+		m_interface = Holder<PhysicEngine2D>::hostage()->createBody( position, 0.0f, m_linearDamping, m_angularDamping, m_allowSleep,
 																			m_isBullet, m_fixedRotation );
-		}
 
 		m_listenerProxy = new BodyListenerProxy( this );
 		m_interface->setBodyListener( m_listenerProxy );
@@ -582,6 +575,18 @@ namespace Menge
 	void RigidBody2D::_updateFilterData()
 	{
 		m_interface->updateFilterData( m_categoryBits, m_collisionMask, m_groupIndex );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::onUpdate()
+	{
+		onApplyForceAndTorque();
+
+		const float * pos = m_interface->getPosition();
+		mt::vec2f currPos( pos[0], pos[1] );
+		setLocalPosition( currPos );
+
+		const float * orient = m_interface->getOrientation();
+		setLocalDirection( mt::vec2f( orient[0], orient[1] ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

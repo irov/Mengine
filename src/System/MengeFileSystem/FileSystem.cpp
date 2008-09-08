@@ -1,3 +1,4 @@
+#	include "Interface/LogSystemInterface.h"
 
 #	include "FileSystem.h"
 #	include "FileManager.h"
@@ -18,6 +19,7 @@
 #	include <ShellAPI.h>
 #endif
 
+#	include <locale.h>
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::FileSystemInterface **_system )
 {
@@ -42,36 +44,44 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::FileSystem()
+		: m_logSystem( 0 )
+		, m_logStream( 0 )
 	{
 		m_fileManager = new FileManager(MENGE_TEXT(""));
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::~FileSystem()
 	{
+		if( m_logStream != 0 )
+		{
+			closeOutStream( m_logStream );
+			m_logStream = 0;
+		}
 		delete m_fileManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::loadPath( const String& _path )
+	void FileSystem::loadPath( const Text& _path )
 	{
 		//m_arch = Ogre::ArchiveManager::getSingleton().load( _path, "FileSystem" );
 		m_fileManager->setInitPath( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::loadPak( const String& _pak )
+	void FileSystem::loadPak( const Text& _pak )
 	{
 		//Ogre::ArchiveManager::getSingleton().load( _pak, "Zip" );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::unloadPak( const String& _pak )
+	void FileSystem::unloadPak( const Text& _pak )
 	{
 		//Ogre::ArchiveManager::getSingleton().unload( _pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileSystem::openFile( const String& _filename )
+	DataStreamInterface* FileSystem::openFile( const Text& _filename )
 	{
 		DataStream* fileData = 0;
 
-		wprintf( L"MengeFileSystem: opening file %s\n", _filename.c_str() );
+		m_logSystem->logMessage( String( MENGE_TEXT("Opening file: ") ) + _filename );
+		//wprintf( L"MengeFileSystem: opening file %s\n", _filename.c_str() );
 		if( m_fileManager->exists( _filename ) == false )
 		{
 			wprintf( L"MengeFileSystem::openFile: %s is not exists\n", _filename.c_str() );
@@ -102,17 +112,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::closeStream( DataStreamInterface* _stream )
 	{
-		if( _stream->isMemory() )
-		{
-			delete static_cast<MemoryDataStream*>(_stream);
-		}
-		else
-		{
-			delete static_cast<FileStreamDataStream*>(_stream);
-		}
+		delete _stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::existFile( const String& _filename )
+	bool FileSystem::existFile( const Text& _filename )
 	{
 		return m_fileManager->exists( _filename );
 	}
@@ -141,7 +144,7 @@ namespace Menge
 #endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::createFolder( const String& _path )
+	bool FileSystem::createFolder( const Text& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
 #
@@ -179,7 +182,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::deleteFolder( const String& _path )
+	bool FileSystem::deleteFolder( const Text& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 		SHFILEOPSTRUCT fs;
@@ -229,7 +232,7 @@ namespace Menge
 		return false;*/
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::changeDir( const String& _path )
+	bool FileSystem::changeDir( const Text& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
 
@@ -248,7 +251,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::initAppDataPath( const String& _game )
+	bool FileSystem::initAppDataPath( const Text& _game )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 
@@ -315,9 +318,9 @@ namespace Menge
 		return m_appDataPath;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutStreamInterface* FileSystem::openOutStream( const Menge::String& _filename, bool _binary )
+	OutStreamInterface* FileSystem::openOutStream( const Menge::Text& _filename, bool _binary )
 	{
-		String fileName = m_appDataPath + MENGE_TEXT("\\") + _filename;
+		Text fileName = m_appDataPath + MENGE_TEXT("\\") + _filename;
 
 #ifdef MENGE_UNICODE
 		const wchar_t* lpszW = fileName.c_str();
@@ -342,7 +345,7 @@ namespace Menge
 		delete static_cast<FileStreamOutStream*>( _stream );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::deleteFile( const String& _filename )
+	bool FileSystem::deleteFile( const Text& _filename )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 		SHFILEOPSTRUCT fs;
@@ -370,6 +373,16 @@ namespace Menge
 		return true;
 #else
 #endif
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileSystem::inititalize( LogSystemInterface* _logSystemInterface )
+	{
+		//_configthreadlocale( _ENABLE_PER_THREAD_LOCALE );
+		::_wsetlocale( LC_CTYPE, MENGE_TEXT("") ); // default (OS) locale
+		m_logSystem = _logSystemInterface;
+		//m_logStream = openOutStream( MENGE_TEXT("Menge.log"), false );
+		m_logSystem->initialize( m_logStream );
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

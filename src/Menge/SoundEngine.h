@@ -74,5 +74,7 @@ namespace Menge
 
 		typedef std::map< SoundBufferInterface*, DataStreamInterface* > TMapBufferStreams;
 		TMapBufferStreams m_bufferStreams;
+
+		bool m_initialized;
 	};
 };

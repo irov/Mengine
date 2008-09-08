@@ -133,6 +133,7 @@ namespace Menge
 
 		if( it_find == m_mapResource.end() )
 		{
+			MENGE_LOG( MENGE_TEXT( "Warning: resource named \"%s\" does not exist" ), _name.c_str() );
 			return 0;
 		}
 
@@ -156,7 +157,7 @@ namespace Menge
 			{
 				PyObject * result = 
 					Holder<ScriptEngine>::hostage()
-					->callFunction( it->second, "(s)", _name.c_str() );
+					->callFunction( it->second, "(O)", pybind::ptr( _name ) );
 			}
 
 		}

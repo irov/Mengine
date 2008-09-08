@@ -14,30 +14,34 @@ namespace Menge
 		~FileSystem();
 
 	public:
-		void loadPath( const String& _path ) override;
-		void loadPak( const String& _pak ) override;
-		void unloadPak( const String& _pak ) override;
+		bool inititalize( LogSystemInterface* _logSystemInterface ) override;
 
-		DataStreamInterface* openFile( const String& _filename ) override;
+		void loadPath( const Text& _path ) override;
+		void loadPak( const Text& _pak ) override;
+		void unloadPak( const Text& _pak ) override;
+
+		DataStreamInterface* openFile( const Text& _filename ) override;
 		DataStreamInterface* createMemoryFile( void* _data, std::streamsize _size, bool _freeOnClose ) override;
 		void closeStream( DataStreamInterface * _fd ) override;
-		bool existFile( const String& _filename  ) override;
-		bool deleteFile( const String& _filename ) override;
+		bool existFile( const Text& _filename  ) override;
+		bool deleteFile( const Text& _filename ) override;
 
-		OutStreamInterface* openOutStream( const Menge::String& _filename, bool _binary ) override;
+		OutStreamInterface* openOutStream( const Menge::Text& _filename, bool _binary ) override;
 		void closeOutStream( OutStreamInterface* _stream ) override;
 
 		const char * platformBundlePath() override;
 
-		bool createFolder( const String& _path ) override;
-		bool deleteFolder( const String& _path ) override;
-		bool changeDir( const String& _path ) override;
+		bool createFolder( const Text& _path ) override;
+		bool deleteFolder( const Text& _path ) override;
+		bool changeDir( const Text& _path ) override;
 
-		bool initAppDataPath( const String& _game ) override;
+		bool initAppDataPath( const Text& _game ) override;
 		const Menge::String& getAppDataPath() override;
 
 	private:
 		FileManager* m_fileManager;
-		String m_appDataPath;
+		Text m_appDataPath;
+		LogSystemInterface* m_logSystem;
+		OutStreamInterface* m_logStream;
 	};
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="Box2DPhysicSystem"
 	ProjectGUID="{17127636-4C7D-42C4-AA40-79DAEE145E8B}"
 	RootNamespace="My2DBoxPhysicSystem"
@@ -65,7 +65,7 @@
 				Name="VCLibrarianTool"
 				AdditionalDependencies="box2d_d.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Library&quot;;Box2D\Library"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Box2D\Library&quot;;Box2D\Library"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -141,7 +141,7 @@
 				Name="VCLibrarianTool"
 				AdditionalDependencies="box2d.lib"
 				OutputFile="$(OutDir)\$(ProjectName).lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Library&quot;;Box2D\Library"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\Box2D\Library&quot;;Box2D\Library"
 			/>
 			<Tool
 				Name="VCALinkTool"

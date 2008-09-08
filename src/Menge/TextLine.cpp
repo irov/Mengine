@@ -6,13 +6,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	TextLine::TextLine( TextField & _textField, const ResourceFont * _resource, const String & _text )
+	TextLine::TextLine( TextField & _textField, const ResourceFont * _resource, const Text & _text )
 	: m_length(0)
 	, m_invalidateRenderLine(true)
 	, m_offset(0)
 	, m_textField(_textField)
 	{
-		for( String::const_iterator
+		for( Text::const_iterator
 			it = _text.begin(), 
 			it_end = _text.end();
 		it != it_end; 

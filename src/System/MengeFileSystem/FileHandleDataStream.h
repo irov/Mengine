@@ -20,7 +20,6 @@ namespace Menge
 		bool eof() const override;
 		void close() override;
 		void* getBuffer() override;
-		bool isMemory() const override;
 		void setFreeOnClose( bool _free ) override;
 
 	protected:

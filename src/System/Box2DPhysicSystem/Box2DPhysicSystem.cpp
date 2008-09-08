@@ -111,7 +111,7 @@ void Box2DPhysicSystem::update( float _timing, int _velocityIterations, int _pos
 
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::PhysicBody2DInterface* Box2DPhysicSystem::createDynamicBody( const float* _pos, float _angle, float _linearDamping, float _angularDamping,
+Menge::PhysicBody2DInterface* Box2DPhysicSystem::createBody( const float* _pos, float _angle, float _linearDamping, float _angularDamping,
 														   bool _allowSleep, bool _isBullet, bool _fixedRotation )
 {
 	b2BodyDef bodyDef;
@@ -125,22 +125,9 @@ Menge::PhysicBody2DInterface* Box2DPhysicSystem::createDynamicBody( const float*
 	bodyDef.isBullet = _isBullet;
 	bodyDef.fixedRotation = _fixedRotation;
 	
-	Box2DPhysicBody* body = new Box2DPhysicBody( m_world, false );
+	Box2DPhysicBody* body = new Box2DPhysicBody( m_world );
 	bodyDef.userData = body;
 
-	body->initialize( bodyDef );
-
-	return static_cast<Menge::PhysicBody2DInterface*>( body );
-}
-//////////////////////////////////////////////////////////////////////////
-Menge::PhysicBody2DInterface* Box2DPhysicSystem::createStaticBody( const float* _pos, float _angle )
-{
-	b2BodyDef bodyDef;
-	bodyDef.position.Set( _pos[0] * Menge::physicsScaler, _pos[1] * Menge::physicsScaler );
-	bodyDef.angle = _angle;
-
-	Box2DPhysicBody* body = new Box2DPhysicBody( m_world, true );
-	bodyDef.userData = body;
 	body->initialize( bodyDef );
 
 	return static_cast<Menge::PhysicBody2DInterface*>( body );
@@ -149,6 +136,7 @@ Menge::PhysicBody2DInterface* Box2DPhysicSystem::createStaticBody( const float* 
 void Box2DPhysicSystem::destroyBody( Menge::PhysicBody2DInterface* _body )
 {
 	//delete static_cast<Box2DPhysicBody*>( _body );
+	if( _body == 0 ) return;
 	Box2DPhysicBody* body = static_cast<Box2DPhysicBody*>( _body );
 	body->setUserData( 0 );
 	body->setBodyListener( 0 );

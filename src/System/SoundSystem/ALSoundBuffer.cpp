@@ -49,6 +49,8 @@ void ALSoundBuffer::removeSource( Menge::SoundSourceInterface *_source)
 //////////////////////////////////////////////////////////////////////////
 bool ALSoundBuffer::loadOgg( Menge::DataStreamInterface* _stream )
 {
+	alGetError();	// clear errors
+
 	if ( !m_isEmpty )
 	{
 		return false;
@@ -57,7 +59,6 @@ bool ALSoundBuffer::loadOgg( Menge::DataStreamInterface* _stream )
 	alGenBuffers( 1, &m_alID );
 
 	int error;
-
 	if ( (error = alGetError()) != AL_NO_ERROR )
 	{
 		return false;
@@ -77,7 +78,9 @@ bool ALSoundBuffer::loadOgg( Menge::DataStreamInterface* _stream )
 	// Open the file from memory.  We need to pass it a pointer to our data (in this case our SOggFile structure),
 	// a pointer to our ogg stream (which the vorbis libs will fill up for us), and our callbacks
 	if ( ov_open_callbacks( _stream, &oggStream, NULL, 0, vorbisCallbacks ) < 0 )
+	{
 		return false;
+	}
 
 	int seek = 0;
 

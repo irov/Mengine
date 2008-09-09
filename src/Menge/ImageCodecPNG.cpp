@@ -126,7 +126,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageCodecPNG::getDataInfo( DataStreamInterface* _inputData, Codec::CodecData* _codecData ) const
+	bool ImageCodecPNG::getDataInfo( DataStreamInterface* _inputData, CodecInterface::CodecData* _codecData ) const
 	{
 		png_structp png_ptr = 0;
 		png_infop info_ptr = 0;
@@ -382,6 +382,73 @@ namespace Menge
 			png_destroy_read_struct( &png_ptr, &info_ptr, (png_infopp)0 );
 		}
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageCodecPNG::start( DataStreamInterface* _inputData, CodecData* _codecData )
+	{
+		// streaming not implemented
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::streamsize ImageCodecPNG::read( void* _buf, std::streamsize _count )
+	{
+		// streaming not implemented
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String ImageCodecPNG::getLine( bool _trimAfter )
+	{
+		// streaming not implemented
+		return Utils::emptyString();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::streamsize ImageCodecPNG::skipLine(  const String& _delim )
+	{
+		// streaming not implemented
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageCodecPNG::seek( std::streamoff _pos )
+	{
+		// streaming not implemented
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::streampos ImageCodecPNG::tell() const
+	{
+		// streaming not implemented
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageCodecPNG::eof() const
+	{
+		// streaming not implemented
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::streamsize ImageCodecPNG::size() const
+	{
+		// streaming not implemented
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void* ImageCodecPNG::getBuffer()
+	{
+		// streaming not implemented
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageCodecPNG::setFreeOnClose( bool _free )
+	{
+		// streaming not implemented
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int ImageCodecPNG::sync( float _timing )
+	{
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageCodecPNG::finish()
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -33,8 +33,6 @@ public:
 	Menge::RenderImageInterface * loadImage( const Menge::TextureDesc& _desc ) override;
 	void releaseImage( Menge::RenderImageInterface * _image ) override;
 	Menge::RenderImageInterface* getImage( const Menge::String& _desc ) const override;
-	Menge::RenderVideoStreamInterface* loadImageVideoStream( const Menge::String & _filename ) override;
-	void releaseImageVideoStream( Menge::RenderVideoStreamInterface* _image ) override;
 
 	void renderImage(		
 		const float * _renderVertex,

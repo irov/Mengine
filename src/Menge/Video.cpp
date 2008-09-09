@@ -4,9 +4,10 @@
 
 #	include "ResourceManager.h"
 
-#	include "ResourceImageVideoStream.h"
+#	include "ResourceVideo.h"
 
 #	include "XmlEngine.h"
+#	include "RenderEngine.h"
 
 namespace	Menge
 {
@@ -25,6 +26,7 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ResourceName"), MENGE_TEXT("Value"), m_resourceVideoName );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Looping"), MENGE_TEXT("Value"), m_looping );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("AutoStart"), MENGE_TEXT("Value"), m_autoStart );			
 		}
@@ -62,6 +64,8 @@ namespace	Menge
 			return; 
 		}
 
+		m_timing += _timing;
+		m_resourceVideo->sync( m_timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_activate()
@@ -86,18 +90,22 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_compile()
 	{
-		if( Sprite::_compile() == false )
+		/*if( Sprite::_compile() == false )
 		{
 			return false;
-		}
+		}*/
 
 		m_resourceVideo = Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImageVideoStream>( m_resourceVideoName );
+			->getResourceT<ResourceVideo>( m_resourceVideoName );
 
 		if( m_resourceVideo == 0 )
 		{
 			return false;
 		}
+
+		const mt::vec2f& frameSize = m_resourceVideo->getFrameSize();
+		m_renderImage = Holder<RenderEngine>::hostage()
+			->createImage( m_resourceVideoName, frameSize.x, frameSize.y );
 
 		return true;
 	}
@@ -108,6 +116,9 @@ namespace	Menge
 
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_resourceVideo );
+
+		Holder<RenderEngine>::hostage()
+			->releaseImage( m_renderImage );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::stop()
@@ -122,10 +133,6 @@ namespace	Menge
 	void Video::pause()
 	{
 		m_playing = false;
-		if( m_resourceVideo )
-		{
-			m_resourceVideo->getStream()->pause();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::play()
@@ -141,10 +148,10 @@ namespace	Menge
 	void Video::play_()
 	{
 		m_playing = true;
-		if( m_resourceVideo )
-		{
-			m_resourceVideo->getStream()->play();
-		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Video::_render( unsigned int _debugMask )
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

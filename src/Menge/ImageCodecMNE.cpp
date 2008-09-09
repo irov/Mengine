@@ -1,9 +1,8 @@
 #	include "ImageCodecMNE.h"
 
-//#	include "ImageCodecJPEG.h"
-//#	include "ImageCodecPNG.h"
-
+#	include "Codec.h"
 #	include "LogEngine.h"
+#	include "Utils.h"
 
 namespace Menge
 {
@@ -36,7 +35,7 @@ namespace Menge
 			imageData->flags |= DF_COUNT_ALPHA;
 		}
 
-		Codec* codecJPEG = CodecManager::getCodec( "jpg" );
+		CodecInterface* codecJPEG = CodecManager::getCodec( "jpg" );
 		bool res = codecJPEG->getDataInfo( _inputData, imageData );
 		if( res == false )
 		{
@@ -55,7 +54,7 @@ namespace Menge
 		unsigned long jpg_size = 0;
 		_input->read(&jpg_size,sizeof(unsigned long));
 
-		Codec* codecJPEG = CodecManager::getCodec( "jpg" );
+		CodecInterface* codecJPEG = CodecManager::getCodec( "jpg" );
 		bool res = codecJPEG->decode( _input, _buffer, _options );
 		if( res == false )
 		{
@@ -66,7 +65,7 @@ namespace Menge
 		if( is_alpha != 0 )
 		{
 			_input->seek( jpg_size+3*sizeof(unsigned long) );
-			Codec* codecPNG = CodecManager::getCodec( "png" );
+			CodecInterface* codecPNG = CodecManager::getCodec( "png" );
 			res = codecPNG->decode( _input, _buffer, DF_READ_ALPHA_ONLY );
 			if( res == false )
 			{
@@ -76,6 +75,73 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageCodecMNE::start( DataStreamInterface* _inputData, CodecData* _codecData )
+	{
+		// streaming not implemented
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::streamsize ImageCodecMNE::read( void* _buf, std::streamsize _count )
+	{
+		// streaming not implemented
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String ImageCodecMNE::getLine( bool _trimAfter )
+	{
+		// streaming not implemented
+		return Utils::emptyString();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::streamsize ImageCodecMNE::skipLine(  const String& _delim )
+	{
+		// streaming not implemented
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageCodecMNE::seek( std::streamoff _pos )
+	{
+		// streaming not implemented
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::streampos ImageCodecMNE::tell() const
+	{
+		// streaming not implemented
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageCodecMNE::eof() const
+	{
+		// streaming not implemented
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::streamsize ImageCodecMNE::size() const
+	{
+		// streaming not implemented
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void* ImageCodecMNE::getBuffer()
+	{
+		// streaming not implemented
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageCodecMNE::setFreeOnClose( bool _free )
+	{
+		// streaming not implemented
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int ImageCodecMNE::sync( float _timing )
+	{
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageCodecMNE::finish()
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 };

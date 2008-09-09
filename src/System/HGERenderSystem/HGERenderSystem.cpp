@@ -256,16 +256,6 @@ Menge::RenderImageInterface* HGERenderSystem::getImage( const Menge::String& _de
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::RenderVideoStreamInterface* HGERenderSystem::loadImageVideoStream( const Menge::String & _filename )
-{
-	return NULL;
-}
-//////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::releaseImageVideoStream( Menge::RenderVideoStreamInterface* _image )
-{
-
-}
-//////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::renderImage(const float * _renderVertex, 
 								  const float * _uv, 
 								  unsigned int _color,  

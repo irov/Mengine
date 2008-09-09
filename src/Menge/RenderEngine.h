@@ -41,7 +41,6 @@ namespace Menge
 		RenderImageInterface * createRenderTargetImage( const String & _name, const mt::vec2f & _resolution );
 		RenderImageInterface * loadImage( const TextureDesc & _desc );
 		RenderImageInterface * loadImage( const String & _filename, unsigned int _filter );
-		RenderVideoStreamInterface * loadImageVideoStream( const String& _filename );
 		bool saveImage( RenderImageInterface* _image, const String& _filename );
 
 
@@ -77,7 +76,6 @@ namespace Menge
 			const mt::vec2f & _end);
 
 		void	releaseImage( RenderImageInterface * _image );
-		void	releaseImageVideoStream( RenderVideoStreamInterface* _image );
 
 		void	setProjectionMatrix( const mt::mat4f& _projection );
 		void	setViewMatrix( const mt::mat4f& _view );

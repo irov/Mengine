@@ -2,16 +2,19 @@
 
 #	include "ImageCodec.h"
 
+#	include "ogg/ogg.h"
+#	include "theora/theora.h"
+
 namespace Menge
 {
-	class ImageCodecJPEG
+	class ImageCodecTheora
 		: public ImageCodec
 	{
 	public:
-		ImageCodecJPEG();
-		~ImageCodecJPEG();
-	public:
-		bool code( OutStreamInterface* _input, unsigned char* _buffer, CodecData* _data ) const override;
+		ImageCodecTheora();
+		~ImageCodecTheora();
+
+		bool code( OutStreamInterface* _outStream, unsigned char* _buffer, CodecData* _data ) const override;
 		bool getDataInfo( DataStreamInterface* _inputData, CodecData* _codecData ) const override;
 		bool decode( DataStreamInterface* _input, unsigned char* _buffer, unsigned int _options ) const override;
 
@@ -29,5 +32,23 @@ namespace Menge
 		void* getBuffer() override;
 		void setFreeOnClose( bool _free ) override;
 
+	protected:
+		DataStreamInterface* m_stream;
+
+		ogg_stream_state m_oggStreamState;
+		ogg_sync_state	m_oggSyncState;
+		ogg_page m_oggPage;
+		ogg_packet m_oggPacket;
+
+		theora_comment m_theoraComment;
+		theora_info m_theoraInfo;
+		theora_state m_theoraState;
+
+		yuv_buffer m_yuvBuffer;
+
+		unsigned int m_currentFrame;
+
+		void clear_();
+		std::streamsize buffer_data_();
 	};
 }	// namespace Menge

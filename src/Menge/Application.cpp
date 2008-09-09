@@ -65,7 +65,7 @@
 #	include "ResourceImageDefault.h"
 #	include "ResourceImageDynamic.h"
 #	include "ResourceImageSet.h"
-#	include "ResourceImageVideoStream.h"
+#	include "ResourceVideo.h"
 #	include "ResourceMesh.h"
 #	include "ResourceSkeleton.h"
 #	include "ResourcePhysicBoxGeometry.h"
@@ -431,7 +431,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceImageDefault );
 		RESOURCE_FACTORY( ResourceImageDynamic );
 		RESOURCE_FACTORY( ResourceImageSet );
-		RESOURCE_FACTORY( ResourceImageVideoStream );
+		RESOURCE_FACTORY( ResourceVideo );
 		RESOURCE_FACTORY( ResourceMesh );
 		RESOURCE_FACTORY( ResourceSkeleton );
 		RESOURCE_FACTORY( ResourcePhysicBoxGeometry );

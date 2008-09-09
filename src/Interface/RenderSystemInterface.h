@@ -179,7 +179,7 @@ namespace Menge
 		virtual std::size_t getWidth() const = 0;
 		virtual std::size_t getHeight() const = 0;
 		virtual const String & getDescription() const = 0;
-		virtual unsigned char* lock() = 0;
+		virtual unsigned char* lock( int* _pitch ) = 0;
 		virtual void unlock() = 0;
 		virtual PixelFormat getPixelFormat() = 0;
 	};
@@ -326,12 +326,6 @@ namespace Menge
 		virtual SceneNodeInterface * createChildSceneNode( const char * _name ) = 0;
 	};
 
-	class RenderVideoStreamInterface : public RenderImageInterface
-	{
-	public:
-		virtual void play() = 0;
-		virtual void pause() = 0;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderSystemListener
 	{
@@ -370,9 +364,6 @@ namespace Menge
 		//
 		virtual RenderImageInterface * getImage( const String& _desc ) const = 0;
 		//
-		virtual RenderVideoStreamInterface* loadImageVideoStream( const String & _filename ) = 0;
-		//
-		virtual void releaseImageVideoStream( RenderVideoStreamInterface* _image ) = 0;
 		// отрисовка изображения
 
 		virtual void renderImage(		

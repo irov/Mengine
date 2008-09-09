@@ -16,6 +16,7 @@
 #	include "Math/box2.h"
 
 #	include "ImageCodec.h"
+#	include "Codec.h"
 
 #	include "Utils.h"
 
@@ -139,12 +140,6 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderVideoStreamInterface* RenderEngine::loadImageVideoStream( const String & _filename )
-	{
-		RenderVideoStreamInterface * image = m_interface->loadImageVideoStream( _filename );
-		return image;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( RenderImageInterface* _image, const String& _filename )
 	{
 		String strExt;
@@ -163,7 +158,7 @@ namespace Menge
 
 		StringA strExtA = Utils::WToA( strExt );
 
-		Codec * pCodec = CodecManager::getCodec( strExtA );
+		CodecInterface * pCodec = CodecManager::getCodec( strExtA );
 
 		if( pCodec == 0 )
 		{
@@ -180,25 +175,40 @@ namespace Menge
 		imgData.num_mipmaps = 0;
 		imgData.flags = 0;
 		imgData.size = 0;	// we don't need this
-		unsigned char* buffer = _image->lock();
+		int pitch = 0;
+		unsigned char* buffer = _image->lock( &pitch );
+
+		unsigned char* lockBuffer = new unsigned char[ imgData.height * pitch ];
+
+		std::size_t mPitch = Menge::PixelUtil::getNumElemBytes( imgData.format ) * imgData.width;
+		for( std::size_t i = 0; i != imgData.height; i++ )
+		{
+			std::copy( buffer, buffer + mPitch, lockBuffer );
+			//memcpy( _dstData, _srcData, width * 4 );
+			lockBuffer += mPitch;
+			buffer += pitch;
+		}
+		_image->unlock();
+
+		lockBuffer -= mPitch * imgData.height;
 
 		OutStreamInterface* outFile = Holder<FileEngine>::hostage()->openOutStream( _filename, true );
 		if( outFile == 0 )
 		{
 			MENGE_LOG( MENGE_TEXT("RenderEngine::saveImage : failed to open file for output '%s'"),
 				_filename.c_str() );
-			_image->unlock();
+			delete[] lockBuffer;
 			return false;
 		}
 
-		bool res = pCodec->code( outFile, buffer, static_cast<Codec::CodecData*>( &imgData ) );
+		bool res = pCodec->code( outFile, lockBuffer, static_cast<CodecInterface::CodecData*>( &imgData ) );
 
+		delete[] lockBuffer;
 		if( res == false )
 		{
 			MENGE_LOG( MENGE_TEXT("RenderEngine::saveImage : Error while coding image data") );
 		}
 
-		_image->unlock();
 
 		Holder<FileEngine>::hostage()->closeOutStream( outFile );
 
@@ -221,7 +231,7 @@ namespace Menge
 			}
 
 			StringA strExtA = Utils::WToA( strExt );
-			Codec* codec = CodecManager::getCodec( strExtA );
+			CodecInterface* codec = CodecManager::getCodec( strExtA );
 
 			if( codec == 0 )
 			{
@@ -244,7 +254,7 @@ namespace Menge
 			ImageCodec::ImageData data;
 			TextureDesc	textureDesc;
 
-			bool res = codec->getDataInfo( stream, static_cast<Codec::CodecData*>( &data ) );
+			bool res = codec->getDataInfo( stream, static_cast<CodecInterface::CodecData*>( &data ) );
 			if( res == false )
 			{
 				MENGE_LOG( MENGE_TEXT("Warning: Error while decoding image '%s'. Image not loaded"),
@@ -356,11 +366,6 @@ namespace Menge
 	void RenderEngine::releaseImage( RenderImageInterface * _image )
 	{
 		m_interface->releaseImage( _image );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseImageVideoStream( RenderVideoStreamInterface* _image )
-	{
-		m_interface->releaseImageVideoStream( _image );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setFullscreenMode( bool _fullscreen )

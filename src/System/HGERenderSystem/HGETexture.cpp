@@ -112,29 +112,14 @@ const mt::vec2f& HGETexture::getUVMask() const
 	return m_uvMask;
 }
 //////////////////////////////////////////////////////////////////////////
-unsigned char* HGETexture::lock()
+unsigned char* HGETexture::lock( int* _pitch )
 {
-	int pitch;
-	unsigned char* lock = reinterpret_cast< unsigned char* >( m_hge->Texture_Lock( m_hTexture, &pitch, true, 0, 0, (int)m_width, (int)m_height ) );
-	m_lockBuffer = new unsigned char[ m_height * pitch];
-	
-	std::size_t mPitch = Menge::PixelUtil::getNumElemBytes( m_pixelFormat ) * m_width;
-	for( std::size_t i = 0; i != m_height; i++ )
-	{
-		std::copy( lock, lock + mPitch, m_lockBuffer );
-		//memcpy( _dstData, _srcData, width * 4 );
-		m_lockBuffer += mPitch;
-		lock += pitch;
-	}
-
-	m_lockBuffer -= mPitch * m_height;
-
-	return m_lockBuffer;
+	unsigned char* lockBlock = reinterpret_cast< unsigned char* >( m_hge->Texture_Lock( m_hTexture, _pitch, true, 0, 0, (int)m_width, (int)m_height ) );
+	return lockBlock;
 }
 //////////////////////////////////////////////////////////////////////////
 void HGETexture::unlock()
 {
-	delete[] m_lockBuffer;
 	m_hge->Texture_Unlock( m_hTexture );
 }
 //////////////////////////////////////////////////////////////////////////

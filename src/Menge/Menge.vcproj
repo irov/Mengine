@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\libPNG&quot;;&quot;$(SolutionDir)dependencies\zlib&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\libPNG&quot;;&quot;$(SolutionDir)dependencies\zlib&quot;;&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\theora\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB;_CRT_SECURE_NO_WARNINGS;Py_NO_ENABLE_SHARED"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -800,14 +800,6 @@
 					RelativePath=".\ResourceImageSet.h"
 					>
 				</File>
-				<File
-					RelativePath=".\ResourceImageVideoStream.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImageVideoStream.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Animation"
@@ -994,6 +986,18 @@
 				</File>
 				<File
 					RelativePath=".\ResourceTilePolygon.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Video"
+				>
+				<File
+					RelativePath=".\ResourceVideo.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceVideo.h"
 					>
 				</File>
 			</Filter>
@@ -1510,6 +1514,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CodecTheora.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CodecTheora.h"
+				>
+			</File>
+			<File
 				RelativePath=".\ImageCodec.h"
 				>
 			</File>
@@ -1535,14 +1547,6 @@
 			</File>
 			<File
 				RelativePath=".\ImageCodecPNG.h"
-				>
-			</File>
-			<File
-				RelativePath=".\StreamCodec.h"
-				>
-			</File>
-			<File
-				RelativePath=".\StreamCodecTheora.h"
 				>
 			</File>
 		</Filter>

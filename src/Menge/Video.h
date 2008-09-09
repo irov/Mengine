@@ -4,7 +4,7 @@
 
 namespace Menge
 {
-	class ResourceImageVideoStream;
+	class ResourceVideo;
 
 	/*! xml - файл имеет следующую структуру:
 	*	<Node Name = "имя_ноды" Type = "Video">
@@ -62,6 +62,7 @@ namespace Menge
 
 	protected:
 		void _update( float _timing ) override;
+		void _render( unsigned int _debugMask ) override;
 
 		bool _activate() override;
 		void _deactivate() override;
@@ -74,11 +75,13 @@ namespace Menge
 		void play_();
 
 	protected:
-		ResourceImageVideoStream* m_resourceVideo;
+		ResourceVideo* m_resourceVideo;
 		String m_resourceVideoName;
+		RenderImageInterface* m_renderImage;
 
 		bool m_autoStart;
 		bool m_playing;
 		bool m_looping;
+		float m_timing;
 	};
 }

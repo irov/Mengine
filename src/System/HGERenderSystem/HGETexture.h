@@ -21,7 +21,7 @@ public:
 	std::size_t getWidth() const override;
 	std::size_t getHeight() const override;
 	const Menge::String & getDescription() const override;
-	unsigned char* lock() override;
+	unsigned char* lock( int* _pitch ) override;
 	void unlock() override;
 	Menge::PixelFormat getPixelFormat();
 
@@ -41,5 +41,4 @@ private:
 	int m_ref;
 	mt::vec2f m_uvMask;
 	Menge::PixelFormat m_pixelFormat;
-	unsigned char* m_lockBuffer;
 };

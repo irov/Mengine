@@ -4,6 +4,7 @@
 #	include "ImageCodecPNG.h"
 #	include "ImageCodecJPEG.h"
 #	include "ImageCodecMNE.h"
+#	include "CodecTheora.h"
 
 #	include <cassert>
 #	include <algorithm>
@@ -12,13 +13,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Codec::~Codec() 
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
 	CodecManager::TCodecMap CodecManager::ms_mapCodecs;
 	//////////////////////////////////////////////////////////////////////////
-	Codec* CodecManager::getCodec( const StringA& _type )
+	CodecInterface* CodecManager::getCodec( const StringA& _type )
 	{
 		StringA lwrcase = _type;
 		
@@ -38,7 +35,7 @@ namespace Menge
 		return i->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CodecManager::registerCodec( const StringA& _type, Codec* _codec )
+	void CodecManager::registerCodec( const StringA& _type, CodecInterface* _codec )
 	{
 		TCodecMap::iterator it = ms_mapCodecs.find( _type );
 
@@ -62,6 +59,7 @@ namespace Menge
 		registerCodec( "jpeg", new ImageCodecJPEG() );
 		registerCodec( "jfif", new ImageCodecJPEG() );
 		registerCodec( "mne", new ImageCodecMNE() );
+		registerCodec( "theora", new ImageCodecTheora() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CodecManager::cleanup()

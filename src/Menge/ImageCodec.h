@@ -1,6 +1,7 @@
 #	pragma once
 
-#include "Codec.h"
+//#include "Codec.h"
+#	include "Interface/CodecInterface.h"
 #include "PixelFormat.h"
 
 namespace Menge 
@@ -12,14 +13,16 @@ namespace Menge
 		DF_READ_ALPHA_ONLY = 0x00000002
 	};
 	
-	class ImageCodec : public Codec
+	class ImageCodec 
+		: public CodecInterface
 	{
 	public:
 		virtual ~ImageCodec()
 		{
 		}
 	
-		class ImageData : public Codec::CodecData
+		class ImageData 
+			: public CodecInterface::CodecData
 		{
 		public:
 			ImageData()

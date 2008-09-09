@@ -3,12 +3,37 @@
 #	include "LogEngine.h"
 
 #	define OGG_BUFFER_SIZE 8192
+
+//Defines
+#define MAX( a, b ) ((a > b) ? a : b)
+#define MIN( a, b ) ((a < b) ? a : b)
+
+//int rgb_color_test, unsigned char rgb_char_buffer - can never be negative
+//#define CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
+//	if( rgb_color_test > 255 )							  \
+//		rgb_char_buffer = 255;							  \
+//	else if( rgb_color_test >= 0 )						  \
+//		rgb_char_buffer = rgb_color_test;				  \
+//	else												  \
+//		rgb_char_buffer = 0
+
+#define CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
+	rgb_char_buffer = MAX( MIN(rgb_color_test, 255), 0 )
+
 namespace Menge
 {
+	unsigned int ImageCodecTheora::ms_YTable[ 256 ];
+	unsigned int ImageCodecTheora::ms_BUTable[ 256 ];
+	unsigned int ImageCodecTheora::ms_GUTable[ 256 ];
+	unsigned int ImageCodecTheora::ms_GVTable[ 256 ];
+	unsigned int ImageCodecTheora::ms_RVTable[ 256 ];
+
 	//////////////////////////////////////////////////////////////////////////
 	ImageCodecTheora::ImageCodecTheora()
 		: m_stream( 0 )
+		, m_lastReadBytes( 0 )
 	{
+		createCoefTables_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageCodecTheora::~ImageCodecTheora()
@@ -236,60 +261,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	int ImageCodecTheora::sync( float _timing )
 	{
+		int ret = 0;
 		float frame_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos ) * 1000.0f;
 		if( frame_time < _timing )
 		{
-			return -1;
+			ret = -1;
 		}
 		else if( frame_time > _timing )
 		{
-			return 1;
+			ret = 1;
 		}
-		return 0;
+		while( frame_time < _timing )
+		{
+			readFrame_();
+			frame_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos ) * 1000.0f;	
+		}
+		return ret;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::streamsize ImageCodecTheora::read( void* _buf, std::streamsize _count )
 	{
-		int ret = 0;
-		// theora processing...
-		while( ogg_stream_packetout( &m_oggStreamState, &m_oggPacket ) <= 0 )
-		{
-			// не хватает данных в логическом потоке theora
-			// надо надергать данных из физического потока и затолкать их в логический поток
-
-			// читаем данные из файла
-			int ret = buffer_data_();
-			if( ret == 0 )
-			{
-				// файл кончился, необходимо выполнить закрывающие действия
-				// и выйти из приложения
-				//TheoraClose();
-
-				//LOG_NUMBER(LOG_NOTE, "frames: ", current_frame);
-				//FINISHED=true;
-				return ret;
-			}
-
-			while( ogg_sync_pageout(&m_oggSyncState, &m_oggPage ) > 0 )
-				// декодируем данные из буфера в страницы (ogg_page)
-				// пока они не кончатся в буфере
-			{
-				// пихаем эти страницы в соотв. логические потоки
-				ogg_stream_pagein( &m_oggStreamState, &m_oggPage );
-			}
-
-		}
-
-		// удачно декодировали. в пакете содержится декодированная ogg-информация
-		// (то бишь закодированная theora-информация)
-
-		// загружаем пакет в декодер theora
-		if( theora_decode_packetin(&m_theoraState,&m_oggPacket) == OC_BADPACKET)
-		{
-			// ошибка декодирования
-			MENGE_LOG( MENGE_TEXT("error during theora_decode_packetin...") );
-		}
-
 		// все данные получены, готовим кадр
 
 		// декодируем страничку в YUV-виде в спец. структуру yuv_buffer
@@ -299,7 +290,10 @@ namespace Menge
 			MENGE_LOG( MENGE_TEXT("error during theora_decode_YUVout...") );
 		}
 
-		return ret;
+		unsigned char* frame = static_cast<unsigned char*>( _buf );
+		decodeBuffer_( frame );
+
+		return m_lastReadBytes;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	String ImageCodecTheora::getLine( bool _trimAfter )
@@ -323,7 +317,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageCodecTheora::eof() const
 	{
-		return false;
+		return m_stream->eof();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::streamsize ImageCodecTheora::size() const
@@ -358,6 +352,186 @@ namespace Menge
 	void ImageCodecTheora::finish()
 	{
 		clear_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageCodecTheora::decodeBuffer_( unsigned char* _buffer )
+	{
+		//Convert 4:2:0 YUV YCrCb to an RGB24 Bitmap
+		//convenient pointers
+		unsigned char *dstBitmap = _buffer;
+		unsigned char *dstBitmapOffset = _buffer + ( 4 * m_theoraInfo.width );
+
+		unsigned char *ySrc = (unsigned char*)m_yuvBuffer.y,
+			*uSrc = (unsigned char*)m_yuvBuffer.u,
+			*vSrc = (unsigned char*)m_yuvBuffer.v,
+			*ySrc2 = ySrc + m_yuvBuffer.y_stride;
+
+		//Calculate buffer offsets
+		unsigned int dstOff = m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
+		int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
+
+
+		//Check if upside down, if so, reverse buffers and offsets
+		/*if ( yuv->y_height < 0 )
+		{
+			yuv->y_height = -yuv->y_height;
+			ySrc		 += (yuv->y_height - 1) * yuv->y_stride;
+
+			uSrc += ((yuv->y_height / 2) - 1) * yuv->uv_stride;
+			vSrc += ((yuv->y_height / 2) - 1) * yuv->uv_stride;
+
+			ySrc2 = ySrc - yuv->y_stride;
+			yOff  = -yuv->y_width - ( yuv->y_stride * 2 );
+
+			yuv->uv_stride = -yuv->uv_stride;
+		}*/
+
+		//Cut width and height in half (uv field is only half y field)
+		m_yuvBuffer.y_height = m_yuvBuffer.y_height >> 1;
+		m_yuvBuffer.y_width = m_yuvBuffer.y_width >> 1;
+
+		//Convientient temp vars
+		signed int r, g, b, u, v, bU, gUV, rV, rgbY;
+		int x;
+
+		//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
+		for (int y = m_yuvBuffer.y_height; y > 0; --y)
+		{
+			for (x = 0; x < m_yuvBuffer.y_width; ++x) 
+			{
+				//Get uv pointers for row
+				u = uSrc[x]; 
+				v = vSrc[x];
+
+				//get corresponding lookup values
+				rgbY= ms_YTable[*ySrc];				
+				rV  = ms_RVTable[v];
+				gUV = ms_GUTable[u] + ms_GVTable[v];
+				bU  = ms_BUTable[u];
+				++ySrc;
+
+				//scale down - brings are values back into the 8 bits of a byte
+				r = (rgbY + rV ) >> 13;
+				g = (rgbY - gUV) >> 13;
+				b = (rgbY + bU ) >> 13;
+
+				//Clip to RGB values (255 0)
+				CLIP_RGB_COLOR( r, dstBitmap[2] );
+				CLIP_RGB_COLOR( g, dstBitmap[1] );
+				CLIP_RGB_COLOR( b, dstBitmap[0] );
+				dstBitmap[3] = 255;
+
+				//And repeat for other pixels (note, y is unique for each
+				//pixel, while uv are not)
+				rgbY = ms_YTable[*ySrc];
+				r = (rgbY + rV)  >> 13;
+				g = (rgbY - gUV) >> 13;
+				b = (rgbY + bU)  >> 13;
+				CLIP_RGB_COLOR( r, dstBitmap[4+2] );
+				CLIP_RGB_COLOR( g, dstBitmap[4+1] );
+				CLIP_RGB_COLOR( b, dstBitmap[4] );
+				dstBitmap[4+3] = 255;
+				++ySrc;
+
+				rgbY = ms_YTable[*ySrc2];
+				r = (rgbY + rV)  >> 13;
+				g = (rgbY - gUV) >> 13;
+				b = (rgbY + bU)  >> 13;
+				CLIP_RGB_COLOR( r, dstBitmapOffset[2] );
+				CLIP_RGB_COLOR( g, dstBitmapOffset[1] );
+				CLIP_RGB_COLOR( b, dstBitmapOffset[0] );
+				dstBitmapOffset[3] = 255;
+				++ySrc2;
+
+				rgbY = ms_YTable[*ySrc2];
+				r = (rgbY + rV)  >> 13;
+				g = (rgbY - gUV) >> 13;
+				b = (rgbY + bU)  >> 13;
+				CLIP_RGB_COLOR( r, dstBitmapOffset[4+2] );
+				CLIP_RGB_COLOR( g, dstBitmapOffset[4+1] );
+				CLIP_RGB_COLOR( b, dstBitmapOffset[4] );
+				dstBitmapOffset[4+3] = 255;
+				++ySrc2;
+
+				//Advance inner loop offsets
+				dstBitmap += 4 << 1;
+				dstBitmapOffset += 4 << 1;
+			} // end for x
+
+			//Advance destination pointers by offsets
+			dstBitmap		+= dstOff;
+			dstBitmapOffset += dstOff;
+			ySrc			+= yOff;
+			ySrc2			+= yOff;
+			uSrc			+= m_yuvBuffer.uv_stride;
+			vSrc			+= m_yuvBuffer.uv_stride;
+		} //end for y
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int ImageCodecTheora::readFrame_()
+	{
+		m_lastReadBytes = 0;
+		// theora processing...
+		while( ogg_stream_packetout( &m_oggStreamState, &m_oggPacket ) <= 0 )
+		{
+			// не хватает данных в логическом потоке theora
+			// надо надергать данных из физического потока и затолкать их в логический поток
+
+			// читаем данные из файла
+			m_lastReadBytes += buffer_data_();
+			if( m_lastReadBytes == 0 )
+			{
+				// файл кончился, необходимо выполнить закрывающие действия
+				// и выйти из приложения
+				//TheoraClose();
+
+				//LOG_NUMBER(LOG_NOTE, "frames: ", current_frame);
+				//FINISHED=true;
+				return 0;
+			}
+
+			while( ogg_sync_pageout(&m_oggSyncState, &m_oggPage ) > 0 )
+				// декодируем данные из буфера в страницы (ogg_page)
+				// пока они не кончатся в буфере
+			{
+				// пихаем эти страницы в соотв. логические потоки
+				ogg_stream_pagein( &m_oggStreamState, &m_oggPage );
+			}
+
+		}
+
+		// удачно декодировали. в пакете содержится декодированная ogg-информация
+		// (то бишь закодированная theora-информация)
+
+		// загружаем пакет в декодер theora
+		if( theora_decode_packetin(&m_theoraState,&m_oggPacket) == OC_BADPACKET)
+		{
+			// ошибка декодирования
+			MENGE_LOG( MENGE_TEXT("error during theora_decode_packetin...") );
+		}
+		return m_lastReadBytes;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageCodecTheora::createCoefTables_()
+	{
+		//used to bring the table into the high side (scale up) so we
+		//can maintain high precision and not use floats (FIXED POINT)
+		int scale = 1L << 13,
+			temp;
+
+		for ( unsigned int i = 0; i < 256; i++ )
+		{
+			temp = i - 128;
+
+			ms_YTable[i]  = (unsigned int)((1.164 * scale + 0.5) * (i - 16));	//Calc Y component
+
+			ms_RVTable[i] = (unsigned int)((1.596 * scale + 0.5) * temp);		//Calc R component
+
+			ms_GUTable[i] = (unsigned int)((0.391 * scale + 0.5) * temp);		//Calc G u & v components
+			ms_GVTable[i] = (unsigned int)((0.813 * scale + 0.5) * temp);
+
+			ms_BUTable[i] = (unsigned int)((2.018 * scale + 0.5) * temp);		//Calc B component
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

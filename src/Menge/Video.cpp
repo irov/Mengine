@@ -5,9 +5,11 @@
 #	include "ResourceManager.h"
 
 #	include "ResourceVideo.h"
+#	include "ResourceSound.h"
 
 #	include "XmlEngine.h"
 #	include "RenderEngine.h"
+#	include "SoundEngine.h"
 
 namespace	Menge
 {
@@ -18,6 +20,8 @@ namespace	Menge
 		, m_playing(false)
 		, m_autoStart(false)
 		, m_looping(false)
+		, m_needUpdate( false )
+		, m_timing( 0.0f )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::loader( XmlElement * _xml )
@@ -27,6 +31,7 @@ namespace	Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ResourceName"), MENGE_TEXT("Value"), m_resourceVideoName );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ResourceSound"), MENGE_TEXT("Value"), m_resourceSoundName );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Looping"), MENGE_TEXT("Value"), m_looping );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("AutoStart"), MENGE_TEXT("Value"), m_autoStart );			
 		}
@@ -65,7 +70,12 @@ namespace	Menge
 		}
 
 		m_timing += _timing;
-		m_resourceVideo->sync( m_timing );
+		m_needUpdate = m_resourceVideo->sync( m_timing );
+
+		if( m_resourceVideo->eof() == true )
+		{
+			stop();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_activate()
@@ -103,9 +113,22 @@ namespace	Menge
 			return false;
 		}
 
-		const mt::vec2f& frameSize = m_resourceVideo->getFrameSize();
+		m_size = m_resourceVideo->getFrameSize();
 		m_renderImage = Holder<RenderEngine>::hostage()
-			->createImage( m_resourceVideoName, frameSize.x, frameSize.y );
+			->createImage( m_resourceVideoName, m_size.x, m_size.y );
+
+		if( m_resourceSoundName.empty() == false )
+		{
+			m_resourceSound = Holder<ResourceManager>::hostage()
+				->getResourceT<ResourceSound>( m_resourceSoundName );
+
+			SoundBufferInterface * soundBuffer = m_resourceSound->get();
+
+			m_soundSource = Holder<SoundEngine>::hostage()
+				->createSoundSource( true, soundBuffer, 0/*this*/ );
+
+			//Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
+		}
 
 		return true;
 	}
@@ -119,6 +142,12 @@ namespace	Menge
 
 		Holder<RenderEngine>::hostage()
 			->releaseImage( m_renderImage );
+
+		if( m_resourceSound )
+		{
+			Holder<ResourceManager>::hostage()
+				->releaseResource( m_resourceSound );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::stop()
@@ -148,10 +177,32 @@ namespace	Menge
 	void Video::play_()
 	{
 		m_playing = true;
+		m_soundSource->play();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_render( unsigned int _debugMask )
 	{
+		Node::_render( _debugMask );
+		if( m_needUpdate )
+		{
+			int pitch = 0;
+			unsigned char* lockRect = m_renderImage->lock( &pitch, false );
+			m_resourceVideo->getRGBData( lockRect );
+			m_renderImage->unlock();
+			m_needUpdate = false;
+		}
+
+		const mt::vec2f* vertices = getVertices();
+		unsigned int color = m_color.getAsARGB();
+
+		Holder<RenderEngine>::hostage()->renderImage(
+			vertices,
+			m_uv,
+			color,
+			m_renderImage,
+			m_blendSrc,
+			m_blendDest
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

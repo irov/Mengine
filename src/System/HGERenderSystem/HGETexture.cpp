@@ -112,9 +112,9 @@ const mt::vec2f& HGETexture::getUVMask() const
 	return m_uvMask;
 }
 //////////////////////////////////////////////////////////////////////////
-unsigned char* HGETexture::lock( int* _pitch )
+unsigned char* HGETexture::lock( int* _pitch, bool _readOnly )
 {
-	unsigned char* lockBlock = reinterpret_cast< unsigned char* >( m_hge->Texture_Lock( m_hTexture, _pitch, true, 0, 0, (int)m_width, (int)m_height ) );
+	unsigned char* lockBlock = reinterpret_cast< unsigned char* >( m_hge->Texture_Lock( m_hTexture, _pitch, _readOnly, 0, 0, (int)m_width, (int)m_height ) );
 	return lockBlock;
 }
 //////////////////////////////////////////////////////////////////////////

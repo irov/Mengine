@@ -15,7 +15,6 @@ namespace Menge
 	ResourceVideo::ResourceVideo( const ResourceFactoryParam & _params )
 		: ResourceReference( _params )
 		, m_stream( 0 )
-		, m_buffer( 0 )
 		, m_bufferSize( 0 )
 		, m_frameSize( 0.0f, 0.0f )
 	{
@@ -41,7 +40,12 @@ namespace Menge
 		{
 			return false;
 		}
-		DataStreamInterface* stream = Holder<FileEngine>::hostage()->openFile( m_filepath );
+		DataStreamInterface* stream = Holder<FileEngine>::hostage()->openFile( m_params.category + m_filepath );
+		if( stream == 0 )
+		{
+			MENGE_LOG( MENGE_TEXT("Resource Video: file not found") );
+			return false;
+		}
 		m_stream = CodecManager::getCodec( "theora" );
 		ImageCodec::ImageData imageData;
 		bool res = m_stream->start( stream, static_cast<CodecInterface::CodecData*>( &imageData ) );
@@ -54,6 +58,7 @@ namespace Menge
 		m_frameSize.x = imageData.width;
 		m_frameSize.y = imageData.height;
 
+		m_bufferSize =  m_frameSize.x * m_frameSize.y * 4;
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -66,22 +71,28 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceVideo::sync( float _timing )
+	bool ResourceVideo::sync( float _timing )
 	{
-		while( m_stream->sync( _timing ) < 0 )	// if we are not up to date read frame
+		if( m_stream->sync( _timing ) < 0 )	// if we are not up to date read frame
 		{
-			m_stream->read( m_buffer, m_bufferSize );
+			return true;
 		}
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned char* ResourceVideo::getRGBData()
+	void ResourceVideo::getRGBData( unsigned char* _buffer )
 	{
-		return m_buffer;
+		m_stream->read( _buffer, m_bufferSize );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& ResourceVideo::getFrameSize()
 	{
 		return m_frameSize;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceVideo::eof()
+	{
+		return m_stream->eof();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

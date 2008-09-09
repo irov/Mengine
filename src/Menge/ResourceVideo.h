@@ -16,9 +16,10 @@ namespace Menge
 		ResourceVideo( const ResourceFactoryParam & _params );
 		~ResourceVideo();
 
-		void sync( float _timing );
-		unsigned char* getRGBData();
+		bool sync( float _timing );
+		void getRGBData( unsigned char* _buffer );
 		const mt::vec2f& getFrameSize();
+		bool eof();
 
 		void loader( XmlElement * _xml ) override;
 	protected:
@@ -27,7 +28,6 @@ namespace Menge
 
 		String m_filepath;
 		CodecInterface* m_stream;
-		unsigned char* m_buffer;
 		std::streamsize m_bufferSize;
 		mt::vec2f m_frameSize;
 	};

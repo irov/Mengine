@@ -5,6 +5,8 @@
 namespace Menge
 {
 	class ResourceVideo;
+	class ResourceSound;
+	class SoundSourceInterface;
 
 	/*! xml - файл имеет следующую структуру:
 	*	<Node Name = "имя_ноды" Type = "Video">
@@ -76,12 +78,18 @@ namespace Menge
 
 	protected:
 		ResourceVideo* m_resourceVideo;
+		ResourceSound* m_resourceSound;
+
 		String m_resourceVideoName;
+		String m_resourceSoundName;
+
 		RenderImageInterface* m_renderImage;
+		SoundSourceInterface* m_soundSource;
 
 		bool m_autoStart;
 		bool m_playing;
 		bool m_looping;
 		float m_timing;
+		bool m_needUpdate;
 	};
 }

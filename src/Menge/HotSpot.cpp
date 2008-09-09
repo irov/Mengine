@@ -59,7 +59,8 @@ namespace	Menge
 				input = !scene->getBlockInput();
 			}
 		}
-		return this->isActivate() && input;
+		bool upd = getUpdatable();
+		return upd && input;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onLeave()

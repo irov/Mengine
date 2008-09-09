@@ -179,7 +179,7 @@ namespace Menge
 		virtual std::size_t getWidth() const = 0;
 		virtual std::size_t getHeight() const = 0;
 		virtual const String & getDescription() const = 0;
-		virtual unsigned char* lock( int* _pitch ) = 0;
+		virtual unsigned char* lock( int* _pitch, bool _readOnly = true ) = 0;
 		virtual void unlock() = 0;
 		virtual PixelFormat getPixelFormat() = 0;
 	};

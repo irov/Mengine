@@ -50,5 +50,18 @@ namespace Menge
 
 		void clear_();
 		std::streamsize buffer_data_();
+		void decodeBuffer_( unsigned char* _buffer );
+		int readFrame_();
+		int m_lastReadBytes;
+
+		//Lookup tables for ColorSpace conversions
+		static void createCoefTables_();
+
+		static unsigned int ms_YTable[ 256 ];
+		static unsigned int ms_BUTable[ 256 ];
+		static unsigned int ms_GUTable[ 256 ];
+		static unsigned int ms_GVTable[ 256 ];
+		static unsigned int ms_RVTable[ 256 ];
+
 	};
 }	// namespace Menge

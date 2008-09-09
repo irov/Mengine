@@ -125,7 +125,7 @@
 				OmitFramePointers="true"
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Source&quot;;&quot;$(SolutionDir)dependencies\libPNG&quot;;&quot;$(SolutionDir)dependencies\zlib&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\FreeImage\Source&quot;;&quot;$(SolutionDir)dependencies\libPNG&quot;;&quot;$(SolutionDir)dependencies\zlib&quot;;&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\theora\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB;FREEIMAGE_LIB;Py_NO_ENABLE_SHARED"
 				StringPooling="true"
 				MinimalRebuild="false"

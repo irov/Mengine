@@ -136,6 +136,8 @@ namespace Menge
 		void setUpdatable( bool _updatable );
 		bool updatable() const;
 
+		bool getUpdatable();
+
 	public:
 		virtual void update( float _timing );
 		virtual void loader( XmlElement * xml );

@@ -793,4 +793,17 @@ namespace Menge
 		mt::reset( _boundingBox, wp );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Node::getUpdatable()
+	{
+		if( isUpdatable() == false )
+		{
+			return false;
+		}
+		if( m_parent )
+		{
+			return m_parent->getUpdatable();
+		}
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

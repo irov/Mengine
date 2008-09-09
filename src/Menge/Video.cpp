@@ -30,8 +30,8 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ResourceName"), MENGE_TEXT("Value"), m_resourceVideoName );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ResourceSound"), MENGE_TEXT("Value"), m_resourceSoundName );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ResourceVideo"), MENGE_TEXT("Name"), m_resourceVideoName );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ResourceSound"), MENGE_TEXT("Name"), m_resourceSoundName );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Looping"), MENGE_TEXT("Value"), m_looping );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("AutoStart"), MENGE_TEXT("Value"), m_autoStart );			
 		}
@@ -145,8 +145,15 @@ namespace	Menge
 
 		if( m_resourceSound )
 		{
+
+			Holder<SoundEngine>::hostage()
+				->releaseSoundSource( m_soundSource );
+
 			Holder<ResourceManager>::hostage()
 				->releaseResource( m_resourceSound );
+
+			m_soundSource = 0;
+			m_resourceSound = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -155,6 +162,12 @@ namespace	Menge
 		if( m_playing == true )
 		{
 			m_playing = false;
+			m_resourceVideo->seek( 0.0f );
+			m_timing = 0.0f;
+			if( m_soundSource )
+			{
+				m_soundSource->stop();
+			}
 			callEvent( EVENT_VIDEO_END, "(O)", this->getEmbedding() );
 		}
 	}

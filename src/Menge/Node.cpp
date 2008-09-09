@@ -795,7 +795,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::getUpdatable()
 	{
-		if( isUpdatable() == false )
+		if( ( isUpdatable() && m_updatable ) == false )
 		{
 			return false;
 		}

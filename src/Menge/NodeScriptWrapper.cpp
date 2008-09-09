@@ -45,6 +45,7 @@
 #	include "C4AI.h"
 #	include "ReversiAI.h"
 #	include "CornersAI.h"
+#	include "Video.h"
 
 //#	include "DiscreteEntity.h"
 
@@ -517,6 +518,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( Emitter );
 		SCRIPT_CLASS_WRAPPING( Point );
 		SCRIPT_CLASS_WRAPPING( TilePolygon );
+		SCRIPT_CLASS_WRAPPING( Video );
 		//SCRIPT_CLASS_WRAPPING( FFCamera3D );
 		//SCRIPT_CLASS_WRAPPING( DiscreteEntity );
 		//SCRIPT_CLASS_WRAPPING( RigidBody3D );
@@ -920,6 +922,12 @@ namespace Menge
 			
 			pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D>>("TilePolygon", false)
 			;
+
+			pybind::proxy_<Video, pybind::bases<Sprite>>("Video", false)
+				.def( "play", &Video::play )
+				.def( "stop", &Video::stop )
+				.def( "pause", &Video::pause )
+				;
 		}		
 
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );

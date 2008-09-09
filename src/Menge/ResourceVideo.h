@@ -7,6 +7,7 @@
 namespace Menge
 {
 	class CodecInterface;
+	class DataStreamInterface;
 
 	class ResourceVideo
 		: public ResourceReference
@@ -20,6 +21,7 @@ namespace Menge
 		void getRGBData( unsigned char* _buffer );
 		const mt::vec2f& getFrameSize();
 		bool eof();
+		void seek( float _timing );
 
 		void loader( XmlElement * _xml ) override;
 	protected:
@@ -27,6 +29,7 @@ namespace Menge
 		void _release() override;
 
 		String m_filepath;
+		DataStreamInterface* m_filestream;
 		CodecInterface* m_stream;
 		std::streamsize m_bufferSize;
 		mt::vec2f m_frameSize;

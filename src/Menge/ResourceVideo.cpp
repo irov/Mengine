@@ -14,6 +14,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceVideo::ResourceVideo( const ResourceFactoryParam & _params )
 		: ResourceReference( _params )
+		, m_filestream( 0 )
 		, m_stream( 0 )
 		, m_bufferSize( 0 )
 		, m_frameSize( 0.0f, 0.0f )
@@ -40,15 +41,15 @@ namespace Menge
 		{
 			return false;
 		}
-		DataStreamInterface* stream = Holder<FileEngine>::hostage()->openFile( m_params.category + m_filepath );
-		if( stream == 0 )
+		m_filestream = Holder<FileEngine>::hostage()->openFile( m_params.category + m_filepath );
+		if( m_filestream == 0 )
 		{
 			MENGE_LOG( MENGE_TEXT("Resource Video: file not found") );
 			return false;
 		}
 		m_stream = CodecManager::getCodec( "theora" );
 		ImageCodec::ImageData imageData;
-		bool res = m_stream->start( stream, static_cast<CodecInterface::CodecData*>( &imageData ) );
+		bool res = m_stream->start( m_filestream, static_cast<CodecInterface::CodecData*>( &imageData ) );
 		if( res == false )
 		{
 			MENGE_LOG( MENGE_TEXT("Error: failed to compile theora video") );
@@ -68,6 +69,12 @@ namespace Menge
 		{
 			m_stream->finish();
 			m_stream = 0;
+		}
+		if( m_filestream != 0 )
+		{
+			Holder<FileEngine>::hostage()
+				->closeStream( m_filestream );
+			m_filestream = 0;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,6 +100,18 @@ namespace Menge
 	bool ResourceVideo::eof()
 	{
 		return m_stream->eof();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceVideo::seek( float _timing )
+	{
+		//m_stream->seek( _timing );
+		if( _timing == 0.0f )
+		{
+			//m_stream->finish();
+			//m_stream->start( m_filestream, 
+			_release();
+			_compile();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -423,6 +423,8 @@ namespace Menge
 		eventInit = m_eventInit;
 #	endif
 
+		loadAccounts();
+
 		if( Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, eventInit ) )
 		{
@@ -438,7 +440,6 @@ namespace Menge
 			}
 		}
 
-		loadAccounts();
 
 		return true;
 	}

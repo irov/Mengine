@@ -47,6 +47,10 @@ zlib
 http://www.zlib.net/
 http://www.zlib.net/zlib-1.2.3.tar.gz
 
+theora
+[1.0beta3]
+http://svn.xiph.org/trunk/theora
+
 --------------------------------------------------------------------------------
 TODO:
 

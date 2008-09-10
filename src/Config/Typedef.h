@@ -32,7 +32,9 @@ namespace Menge
 #	define STDSSCANF (swscanf_s)
 #	define STDSTRCPY (wcscpy)
 #	define STDSTRCMP (wcscmp)
+#	define STDSTRLEN (wcslen)
 #	define STDITOS (_itow)
+
 
 #	if MENGE_COMPILER == MENGE_COMPILER_MSVC
 #		define MENGE_TEXT(quote)	L##quote
@@ -51,6 +53,7 @@ namespace Menge
 #	define STDSSCANF (sscanf_s)
 #	define STDSTRCPY (strcpy)
 #	define STDSTRCMP (strcmp)
+#	define STDSTRLEN (strlen)
 #	define STDITOS (_itoa)
 
 #	if MENGE_COMPILER == MENGE_COMPILER_MSVC

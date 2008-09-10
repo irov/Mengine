@@ -70,7 +70,7 @@ namespace Menge
 		while ( ( readCount = read( tmpBuf, ( stream_temp_size - 1 ) * sizeof(TChar) ) ) != 0 )
 		{
 			// Terminate string
-			std::size_t term = readCount / sizeof(TChar);
+			std::streamsize term = readCount / sizeof(TChar);
 			tmpBuf[term] = MENGE_TEXT('\0');
 
 			// Find first delimiter

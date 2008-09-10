@@ -26,7 +26,7 @@ namespace Menge
 	class OutStreamInterface
 	{
 	public:
-		virtual void write( const char* _data, std::streamsize _count ) = 0;
+		virtual void write( const void* _data, std::streamsize _count ) = 0;
 		virtual void write( const String& _str ) = 0;
 		virtual void write( int _num ) = 0;
 		virtual void flush() = 0;

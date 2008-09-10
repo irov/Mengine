@@ -478,6 +478,8 @@ namespace Menge
 		m_xmlEngine = new XmlEngine();
 		Holder<XmlEngine>::keep( m_xmlEngine );
 
+		m_xmlEngine->initialize();
+
 		if( m_xmlEngine->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
 		{
 			MENGE_LOG( MENGE_TEXT("parse application xml failed '%s'\n")
@@ -699,6 +701,7 @@ namespace Menge
 		{
 			_timing = 0.0f;
 			m_resetTiming = false;
+			return;
 		}
 
 		//Holder<MousePickerSystem>::hostage()->clear();

@@ -103,23 +103,10 @@ namespace Menge
 		va_list valist;
 		va_start(valist, _format);
 
-		PyObject * result = 
-			Holder<ScriptEngine>::hostage()
+		Holder<ScriptEngine>::hostage()
 			->callFunction( it_find->second, _format, valist );
 
 		va_end( valist ); 
-
-		if( result == 0 )
-		{
-			return;
-		}
-
-		if( pybind::convert::is_none( result ) == false )
-		{
-			MENGE_LOG( MENGE_TEXT("Warning: Event '%d' don't have return any value\n")
-				, _name
-				);
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::askEvent( bool & _result, EEventName _name, const char * _format, ... )
@@ -136,7 +123,7 @@ namespace Menge
 
 		PyObject * result = 
 			Holder<ScriptEngine>::hostage()
-			->callFunction( it_find->second, _format, valist );
+			->askFunction( it_find->second, _format, valist );
 
 		va_end( valist );
 

@@ -66,15 +66,20 @@ namespace Menge
 		
 		bool hasModuleFunction( PyObject * _module, const StringA& _name );
 		PyObject * getModuleFunction( PyObject * _module, const StringA& _name );
-		PyObject * callModuleFunction( const String& _module, const StringA& _name, const char * _params, ... );
-		PyObject * callModuleFunction( PyObject * _module, const StringA& _name, const char * _params, ... );
+		void callModuleFunction( const String& _module, const StringA& _name, const char * _params, ... );
 
-		PyObject * callFunction( PyObject * _object, const char * _params, va_list );
+		void callModuleFunction( PyObject * _module, const StringA& _name, const char * _params, ... );
+		PyObject * askModuleFunction( PyObject * _module, const StringA& _name, const char * _params, ... );
 
-		PyObject * callFunction( PyObject * _object, const char * _params, ...  );
+		void callFunction( PyObject * _object, const char * _params, va_list );
+		PyObject * askFunction( PyObject * _object, const char * _params, va_list );
+
+		void callFunction( PyObject * _object, const char * _params, ...  );
 
 		bool hasMethod( Node * _entity, const StringA & _name );
-		PyObject * callMethod( Node * _entity, const StringA & _name, const char * _params, ...  );
+		void callMethod( Node * _entity, const StringA & _name, const char * _params, ...  );
+
+
 
 		bool parseBool( PyObject * _result );
 		

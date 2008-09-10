@@ -60,23 +60,10 @@ namespace Menge
 			va_list valist;
 			va_start(valist, _format);
 
-			PyObject * result = 
-				Holder<ScriptEngine>::hostage()
+			Holder<ScriptEngine>::hostage()
 				->callFunction( function, _format, valist );
 
 			va_end( valist );
-
-			if( result == 0 )
-			{
-				return;
-			}
-
-			if( pybind::convert::is_none( result ) == false )
-			{
-				MENGE_LOG( MENGE_TEXT("Warning: Method '%s' don't have return any value\n")
-					, _method.c_str() 
-					);
-			}
 		}
 		else
 		{

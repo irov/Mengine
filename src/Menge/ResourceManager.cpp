@@ -155,8 +155,7 @@ namespace Menge
 				it != m_scriptListeners.end();
 				it++)
 			{
-				PyObject * result = 
-					Holder<ScriptEngine>::hostage()
+				Holder<ScriptEngine>::hostage()
 					->callFunction( it->second, "(O)", pybind::ptr( _name ) );
 			}
 

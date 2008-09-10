@@ -1,5 +1,7 @@
 #	include "XmlEngine.h"
-//#	include "FileEngine.h"
+
+#	include "XmlTag.h"
+
 #	include "Utils.h"
 
 namespace Menge
@@ -17,37 +19,58 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void XmlEngine::initialize()
 	{
-		m_format.define( DEF_Animation, "Animation" );
-		m_format.define( DEF_Layer2D, "Layer2D" );
-		m_format.define( DEF_Sprite, "Sprite" );
-		m_format.define( DEF_TextField, "TextField" );
-		m_format.define( DEF_HotSpot, "HotSpot" );
-		m_format.define( DEF_Point, "Point" );
+		//m_compiler.define( DEF_Animation, MENGE_TEXT("Animation") );
+		//m_compiler.define( DEF_Layer2D, MENGE_TEXT("Layer2D") );
+		//m_compiler.define( DEF_Sprite, MENGE_TEXT("Sprite") );
+		//m_compiler.define( DEF_TextField, MENGE_TEXT("TextField") );
+		//m_compiler.define( DEF_HotSpot, MENGE_TEXT("HotSpot") );
+		//m_compiler.define( DEF_Point, MENGE_TEXT("Point") );
 
-		m_format.attribute( ATTR_Name, "Name" );
-		m_format.attribute( ATTR_Type, "Type" );
-		m_format.attribute( ATTR_Value, "Value" );
-		m_format.attribute( ATTR_Position, "Position" );
-		m_format.attribute( ATTR_Direction, "Direction" );
+		//m_compiler.attribute( ATTR_Name, MENGE_TEXT("Name") );
+		//m_compiler.attribute( ATTR_Type, MENGE_TEXT("Type") );
+		//m_compiler.attribute( ATTR_Value, MENGE_TEXT("Value") );
+		//m_compiler.attribute( ATTR_Position, MENGE_TEXT("Position") );
+		//m_compiler.attribute( ATTR_Direction, MENGE_TEXT("Direction") );
 
-		m_format.tag( TAG_Scene, "Scene" );
-		m_format.tag( TAG_Node, "Node" )( ATTR_Name, TYPE_String )( ATTR_Type, TYPE_Define );
-		m_format.tag( TAG_Size, "Size" )( ATTR_Value, TYPE_Float2 );
-		m_format.tag( TAG_Scale, "Scale" )( ATTR_Value, TYPE_Float2 );
-		m_format.tag( TAG_Point, "Point" )( ATTR_Value, TYPE_Float2 );
-		m_format.tag( TAG_Main, "Main" )( ATTR_Value, TYPE_Bool );
-		m_format.tag( TAG_ImageMap, "ImageMap" )( ATTR_Name, TYPE_String );
-		m_format.tag( TAG_Transformation, "Transformation" )( ATTR_Position, TYPE_Float2 )( ATTR_Direction, TYPE_Float2 )( ATTR_Value, TYPE_Mat3 );
-		m_format.tag( TAG_RenderArea, "RenderArea" )( ATTR_Value, TYPE_Float4 );
-		m_format.tag( TAG_Animation, "Animation" )( ATTR_Name, TYPE_String );
-		m_format.tag( TAG_Looping, "Looping" )( ATTR_Value, TYPE_Bool );
-		m_format.tag( TAG_AutoStart, "AutoStart" )( ATTR_Value, TYPE_Bool );
-		m_format.tag( TAG_Font, "Font" )( ATTR_Name, TYPE_String );
-		m_format.tag( TAG_Color, "Color" )( ATTR_Value, TYPE_Float4 );
-		m_format.tag( TAG_CenterAlign, "CenterAlign" )( ATTR_Value, TYPE_Bool );
-		m_format.tag( TAG_OutlineColor, "OutlineColor" )( ATTR_Value, TYPE_Float4 );
-		m_format.tag( TAG_Outline, "Outline" )( ATTR_Value, TYPE_Bool );
-		m_format.tag( TAG_CharOffset, "CharOffset" )( ATTR_Value, TYPE_Float );
+		//XmlTag * tagScene = m_compiler.tag( TAG_Scene, MENGE_TEXT("Scene") );
+
+		//XmlTag * tagNode = m_compiler.tag( TAG_Node, MENGE_TEXT("Node"), tagScene )->attribute( ATTR_Name, TYPE_String )->attribute( ATTR_Type, TYPE_Define );
+		//{
+		//	m_compiler.tag( TAG_Size, MENGE_TEXT("Size"), tagNode )->attribute( ATTR_Value, TYPE_Float2 );
+		//	m_compiler.tag( TAG_Scale, MENGE_TEXT("Scale"), tagNode )->attribute( ATTR_Value, TYPE_Float2 );
+		//	m_compiler.tag( TAG_Point, MENGE_TEXT("Point"), tagNode )->attribute( ATTR_Value, TYPE_Float2 );
+		//	m_compiler.tag( TAG_Main, MENGE_TEXT("Main"), tagNode )->attribute( ATTR_Value, TYPE_Bool );
+		//	m_compiler.tag( TAG_ImageMap, MENGE_TEXT("ImageMap"), tagNode )->attribute( ATTR_Name, TYPE_String );
+		//	m_compiler.tag( TAG_Transformation, MENGE_TEXT("Transformation"), tagNode )->attribute( ATTR_Position, TYPE_Float2 )->attribute( ATTR_Direction, TYPE_Float2 )->attribute( ATTR_Value, TYPE_Mat3 );
+		//	m_compiler.tag( TAG_RenderArea, MENGE_TEXT("RenderArea"), tagNode )->attribute( ATTR_Value, TYPE_Float4 );
+		//	m_compiler.tag( TAG_Animation, MENGE_TEXT("Animation"), tagNode )->attribute( ATTR_Name, TYPE_String );
+		//	m_compiler.tag( TAG_Looping, MENGE_TEXT("Looping"), tagNode )->attribute( ATTR_Value, TYPE_Bool );
+		//	m_compiler.tag( TAG_AutoStart, MENGE_TEXT("AutoStart"), tagNode )->attribute( ATTR_Value, TYPE_Bool );
+		//	m_compiler.tag( TAG_Font, MENGE_TEXT("Font"), tagNode )->attribute( ATTR_Name, TYPE_String );
+		//	m_compiler.tag( TAG_Color, MENGE_TEXT("Color"), tagNode )->attribute( ATTR_Value, TYPE_Float4 );
+		//	m_compiler.tag( TAG_CenterAlign, MENGE_TEXT("CenterAlign"), tagNode )->attribute( ATTR_Value, TYPE_Bool );
+		//	m_compiler.tag( TAG_OutlineColor, MENGE_TEXT("OutlineColor"), tagNode )->attribute( ATTR_Value, TYPE_Float4 );
+		//	m_compiler.tag( TAG_Outline, MENGE_TEXT("Outline"), tagNode )->attribute( ATTR_Value, TYPE_Bool );
+		//	m_compiler.tag( TAG_CharOffset, MENGE_TEXT("CharOffset"), tagNode )->attribute( ATTR_Value, TYPE_Float );
+		//}
+
+		//XmlTag * tagDataBlock = m_compiler.tag( TAG_DataBlock, MENGE_TEXT("DataBlock"), tagNode )->attribute( ATTR_Name, TYPE_String )->attribute( ATTR_Type, TYPE_Define );
+		//{
+		//	m_compiler.tag( TAG_File, MENGE_TEXT("File"), tagDataBlock )->attribute( ATTR_Path, TYPE_String );
+
+		//	XmlTag * tagSequences = m_compiler.tag( TAG_Sequences, MENGE_TEXT("Sequences"), tagDataBlock );
+		//	{
+		//		m_compiler.tag( TAG_SequenceArray, MENGE_TEXT("SequenceArray"), tagSequences );
+		//	}
+		//}
+
+		//XmlTag * tagResources = m_compiler.tag( TAG_Resources, MENGE_TEXT("Resources"), tagNode );
+		//{
+		//	XmlTag * tagResourceScenes = m_compiler.tag( TAG_Scenes, MENGE_TEXT("Scenes"), tagResources );
+		//	{
+		//		m_compiler.tag( TAG_VALUE, MENGE_TEXT(""), tagResourceScenes );
+		//	}			
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool XmlEngine::parseXmlFile( const String& _file, XmlElementListener * _listener )
@@ -57,6 +80,13 @@ namespace Menge
 		{
 			return false;
 		}
+
+		//String::size_type it_last = _file.find_last_of( '.' );
+
+		//String file_compile = _file.substr( 0, it_last );
+		//file_compile += MENGE_TEXT(".xmlc");
+
+		//m_compiler.compile( _file, file_compile );
 
 		DataStreamInterface * file = Holder<FileEngine>::hostage()
 			->openFile( _file );

@@ -3,25 +3,58 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	XmlTag::XmlTag()
-		: m_tag(TAG_BEGIN)
+	XmlTag::XmlTag( XMLTag _tag, const String & _name, XmlTag * _parent )
+		: m_tag(_tag)
+		, m_name(_name)
+		, m_parent(_parent)
 	{
-		m_tagAttributes.resize( ATTR_LAST );
+		TagAttribute attrInvalid;
+
+		attrInvalid.attrId = ATTR_BEGIN;
+		attrInvalid.attrType = TYPE_BEGIN;
+		attrInvalid.valid = false;
+
+		m_tagAttributes.resize( ATTR_LAST, attrInvalid );
+
+		m_tags.resize( TAG_LAST, 0 );
+
+		if( _parent )
+		{
+			_parent->tagChild_( this );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void XmlTag::setup( XMLTag _tag, const std::string & _name )
+	XMLTag XmlTag::getId() const
 	{
-		m_tag = _tag;
-		m_name = _name;
+		return m_tag;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	XmlTag & XmlTag::operator () ( XMLAttribute _attr, XMLType _type )
+	const TagAttribute &  XmlTag::getAttribute( XMLAttribute _attr ) const
 	{
-		TTagAttribute & attr = m_tagAttributes[ _attr ];
+		const TagAttribute & attr = m_tagAttributes[ _attr ];
 
-		attr.first = _attr;
-		attr.second = _type;
+		return attr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void XmlTag::tagChild_( XmlTag * _child )
+	{
+		XMLTag tagId = _child->getId();
+		m_tags[ tagId ] = _child;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	XmlTag * XmlTag::attribute( XMLAttribute _attr, XMLType _type )
+	{
+		TagAttribute & attr = m_tagAttributes[ _attr ];
 
-		return *this;
+		attr.attrId = _attr;
+		attr.attrType = _type;
+		attr.valid = true;
+
+		return this;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	XmlTag * XmlTag::getTag( XMLTag _tagId ) const
+	{
+		return m_tags[ _tagId ];
 	}
 }

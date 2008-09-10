@@ -9,7 +9,7 @@
 #	include "ColourValue.h"
 #	include "Resolution.h"
 
-#	include "XmlFormat.h"
+#	include "XmlCompile.h"
 
 #	include	"Config/Typedef.h"
 
@@ -76,7 +76,7 @@ namespace Menge
 	protected:
 		XmlExpatParser * m_parser;
 
-		XmlFormat m_format;
+		XmlCompile m_compiler;
 	};
 }
 

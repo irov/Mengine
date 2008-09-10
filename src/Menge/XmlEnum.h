@@ -22,6 +22,7 @@ namespace Menge
 		ATTR_Value,
 		ATTR_Position,
 		ATTR_Direction,
+		ATTR_Path,
 		ATTR_LAST
 	};
 
@@ -42,7 +43,10 @@ namespace Menge
 	enum XMLTag
 	{
 		TAG_BEGIN,
+		TAG_VALUE,
+
 		TAG_Scene,
+
 		TAG_Node,
 		TAG_Size,
 		TAG_Scale,
@@ -60,6 +64,16 @@ namespace Menge
 		TAG_OutlineColor,
 		TAG_Outline,
 		TAG_CharOffset,
+
+		TAG_DataBlock,
+		TAG_File,
+		TAG_Sequences,
+		TAG_SequenceArray,
+
+		TAG_Resources,
+
+		TAG_Scenes,
+
 		TAG_LAST
 	};
 }

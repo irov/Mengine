@@ -314,7 +314,7 @@ namespace Menge
 		char_type_A = _type;
 #	endif
 
-		PyObject * result = pybind::call_method( module, char_type_A.c_str(), "()" );
+		PyObject * result = pybind::ask_method( module, char_type_A.c_str(), "()" );
 
 		if( result == 0 )
 		{
@@ -394,7 +394,7 @@ namespace Menge
 			return 0;
 		}
 
-		PyObject * result = pybind::call_method( module, "Arrow", "()" );
+		PyObject * result = pybind::ask_method( module, "Arrow", "()" );
 
 		if( result == 0 )
 		{
@@ -419,7 +419,7 @@ namespace Menge
 			return 0;
 		}
 
-		PyObject * result = pybind::call_method( module, "Scene", "()" );
+		PyObject * result = pybind::ask_method( module, "Scene", "()" );
 
 		if( result == 0 )
 		{
@@ -444,54 +444,64 @@ namespace Menge
 		return pybind::get_attr( _module, _name.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::callModuleFunction( const String& _module, const StringA & _name, const char * _params, ... )
+	void ScriptEngine::callModuleFunction( const String& _module, const StringA & _name, const char * _params, ... )
 	{
 		TMapModule::iterator it_find = m_mapModule.find( _module );
 
 		if( it_find == m_mapModule.end() )
 		{
-			return 0;
+			return;
 		}
 
 		va_list valist;
 		va_start(valist, _params);
 
-		PyObject * result = pybind::call_method_va( it_find->second, _name.c_str(), _params, valist );
+		pybind::call_method_va( it_find->second, _name.c_str(), _params, valist );
 
 		va_end( valist ); 
-
-		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::callModuleFunction( PyObject * _module, const StringA & _name, const char * _params, ...  )
+	void ScriptEngine::callModuleFunction( PyObject * _module, const StringA & _name, const char * _params, ...  )
 	{
 		va_list valist;
 		va_start(valist, _params);
 
-		PyObject * result = pybind::call_method_va( _module, _name.c_str(), _params, valist );
+		pybind::call_method_va( _module, _name.c_str(), _params, valist );
 
 		va_end( valist ); 
-
-		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::callFunction( PyObject * _object, const char * _params, va_list _valist )
-	{
-		PyObject * result = pybind::call_va( _object, _params, _valist );
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::callFunction( PyObject * _object, const char * _params, ...  )
+	PyObject * ScriptEngine::askModuleFunction( PyObject * _module, const StringA& _name, const char * _params, ... )
 	{
 		va_list valist;
 		va_start(valist, _params);
 
-		PyObject * result = pybind::call_va( _object, _params, valist );
+		PyObject * result = pybind::ask_method_va( _module, _name.c_str(), _params, valist );
 
-		va_end( valist ); 
+		va_end( valist );
 
 		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::callFunction( PyObject * _object, const char * _params, va_list _valist )
+	{
+		pybind::call_va( _object, _params, _valist );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::askFunction( PyObject * _object, const char * _params, va_list _valist )
+	{
+		PyObject * result = pybind::ask_va( _object, _params, _valist );
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::callFunction( PyObject * _object, const char * _params, ...  )
+	{
+		va_list valist;
+		va_start(valist, _params);
+
+		pybind::call_va( _object, _params, valist );
+
+		va_end( valist ); 
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::hasMethod( Node * _node, const StringA & _name )
@@ -508,13 +518,13 @@ namespace Menge
 		return res == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::callMethod( Node * _node, const StringA & _name, const char * _params, ...  )
+	void ScriptEngine::callMethod( Node * _node, const StringA & _name, const char * _params, ...  )
 	{
 		PyObject * script = _node->getEmbedding();
 
 		if( script == 0 )
 		{
-			return false;
+			return;
 		}
 
 		try
@@ -522,18 +532,14 @@ namespace Menge
 			va_list valist;
 			va_start(valist, _params);
 
-			PyObject * result = pybind::call_method_va( script, _name.c_str(), _params, valist );
+			pybind::call_method_va( script, _name.c_str(), _params, valist );
 
 			va_end( valist ); 
-
-			return result;
 		}
 		catch (...)
 		{
 			ScriptEngine::handleException();
 		}
-
-		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::parseBool( PyObject * _result )
@@ -543,12 +549,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::proxy( PyObject * _module, const StringA & _name, void * _impl )
 	{
-		PyObject * result = pybind::call_method( _module, _name.c_str(), "()" );
+		PyObject * result = pybind::ask_method( _module, _name.c_str(), "()" );
+
 		if( result == 0 )
 		{
 			pybind::check_error();
+			return 0;
 		}
+
 		pybind::class_core::wrap_holder( result, _impl );
+
 		return result;
 	}	
 	//////////////////////////////////////////////////////////////////////////|

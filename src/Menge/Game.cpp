@@ -429,7 +429,7 @@ namespace Menge
 			->hasModuleFunction( m_pyPersonality, eventInit ) )
 		{
 			PyObject * pyResult = Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, eventInit, "()" );
+				->askModuleFunction( m_pyPersonality, eventInit, "()" );
 
 			bool result = Holder<ScriptEngine>::hostage()
 				->parseBool( pyResult );

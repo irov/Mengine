@@ -50,7 +50,7 @@ namespace Menge
 
 		void clear_();
 		std::streamsize buffer_data_();
-		void decodeBuffer_( unsigned char* _buffer );
+		void decodeBuffer_( unsigned char* _buffer, int _pitch );
 		int readFrame_();
 		int m_lastReadBytes;
 

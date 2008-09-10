@@ -31,7 +31,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("FilePath"), MENGE_TEXT("Value"), m_filepath );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("File"), MENGE_TEXT("Path"), m_filepath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -87,9 +87,9 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceVideo::getRGBData( unsigned char* _buffer )
+	void ResourceVideo::getRGBData( unsigned char* _buffer, int _pitch )
 	{
-		m_stream->read( _buffer, m_bufferSize );
+		m_stream->read( _buffer, _pitch );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& ResourceVideo::getFrameSize()

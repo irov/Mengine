@@ -291,7 +291,7 @@ namespace Menge
 		}
 
 		unsigned char* frame = static_cast<unsigned char*>( _buf );
-		decodeBuffer_( frame );
+		decodeBuffer_( frame, _count );
 
 		return m_lastReadBytes;
 	}
@@ -354,12 +354,12 @@ namespace Menge
 		clear_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageCodecTheora::decodeBuffer_( unsigned char* _buffer )
+	void ImageCodecTheora::decodeBuffer_( unsigned char* _buffer, int _pitch )
 	{
 		//Convert 4:2:0 YUV YCrCb to an RGB24 Bitmap
 		//convenient pointers
 		unsigned char *dstBitmap = _buffer;
-		unsigned char *dstBitmapOffset = _buffer + ( 4 * m_theoraInfo.width );
+		unsigned char *dstBitmapOffset = _buffer + _pitch;
 
 		unsigned char *ySrc = (unsigned char*)m_yuvBuffer.y,
 			*uSrc = (unsigned char*)m_yuvBuffer.u,
@@ -367,7 +367,7 @@ namespace Menge
 			*ySrc2 = ySrc + m_yuvBuffer.y_stride;
 
 		//Calculate buffer offsets
-		unsigned int dstOff = m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
+		unsigned int dstOff = _pitch;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
 		int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
 
 

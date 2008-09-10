@@ -52,7 +52,7 @@
 				ObjectFile="$(IntDir)\"
 				ProgramDataBaseFileName="$(IntDir)\vc80.pdb"
 				XMLDocumentationFileName="$(IntDir)\"
-				BrowseInformation="0"
+				BrowseInformation="1"
 				BrowseInformationFile="$(IntDir)\"
 				WarningLevel="3"
 				WarnAsError="true"
@@ -205,7 +205,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(SolutionDir)Utils\upx\upx.exe -9 $(SolutionDir)Bin\Game.exe"
+				CommandLine="$(SolutionDir)Utils\upx\upx.exe -9 $(SolutionDir)Bin\Game.exe&#x0D;&#x0A;copy $(SolutionDir)Bin\Game.exe $(SolutionDir)Bin_mirohost\Game.exe&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration

@@ -246,7 +246,13 @@ namespace Menge
 
 		const Resolution & resourceResolution = m_game->getResourceResolution();
 
-		m_renderEngine->initialize();
+		bool res = m_renderEngine->initialize();
+		if( res == false )
+		{
+			MENGE_LOG_CRITICAL( MENGE_TEXT("Failed to initialize Render System") );
+			return false;
+		}
+
 		m_renderEngine->setContentResolution( resourceResolution );
 
 		bool isFullscreen = m_game->getFullscreen();
@@ -254,7 +260,7 @@ namespace Menge
 		if( isFullscreen == true )
 		{
 			float aspect = m_desktopResolution.getRatio();
-			m_currentResolution = m_renderEngine->getBestDisplayResolution( m_currentResolution, aspect );
+			m_currentResolution = m_renderEngine->getBestDisplayResolution( m_desktopResolution, aspect );
 		}
 		else
 		{
@@ -273,8 +279,13 @@ namespace Menge
 		int FSAAType = m_game->getFSAAType();
 		int FSAAQuality = m_game->getFSAAQuality();
 
-		m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, winHandle,
+		res = m_renderEngine->createRenderWindow( m_currentResolution, bits, isFullscreen, winHandle,
 											FSAAType, FSAAQuality );
+		if( res == false )
+		{
+			MENGE_LOG_CRITICAL( MENGE_TEXT("Failed to create render window") );
+			return false;
+		}
 
 		bool isTextureFiltering = m_game->getTextureFiltering();
 
@@ -452,10 +463,17 @@ namespace Menge
 		m_desktopResolution[0] = m_interface->getDesktopWidth();
 		m_desktopResolution[1] = m_interface->getDesktopHeight();
 
-		if( m_sound == true )
+		bool res = m_soundEngine->initialize();
+		if( m_sound == false )
 		{
-			m_sound = m_soundEngine->initialize();
+			m_soundEngine->mute( true );
 		}
+		if( res == false )
+		{
+			m_sound = false;
+		}
+
+		//MENGE_LOG_CRITICAL( MENGE_TEXT("BEGIN") );
 
 		m_xmlEngine = new XmlEngine();
 		Holder<XmlEngine>::keep( m_xmlEngine );

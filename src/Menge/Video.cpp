@@ -17,6 +17,8 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		Video::Video()
 		: m_resourceVideo(0)
+		, m_resourceSound( 0 )
+		, m_soundSource( 0 )
 		, m_playing(false)
 		, m_autoStart(false)
 		, m_looping(false)
@@ -122,10 +124,13 @@ namespace	Menge
 			m_resourceSound = Holder<ResourceManager>::hostage()
 				->getResourceT<ResourceSound>( m_resourceSoundName );
 
-			SoundBufferInterface * soundBuffer = m_resourceSound->get();
+			if( m_resourceSound )
+			{
+				SoundBufferInterface * soundBuffer = m_resourceSound->get();
 
-			m_soundSource = Holder<SoundEngine>::hostage()
-				->createSoundSource( true, soundBuffer, 0/*this*/ );
+				m_soundSource = Holder<SoundEngine>::hostage()
+					->createSoundSource( true, soundBuffer, 0/*this*/ );
+			}
 
 			//Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
 		}
@@ -190,7 +195,10 @@ namespace	Menge
 	void Video::play_()
 	{
 		m_playing = true;
-		m_soundSource->play();
+		if( m_soundSource )
+		{
+			m_soundSource->play();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_render( unsigned int _debugMask )
@@ -200,7 +208,7 @@ namespace	Menge
 		{
 			int pitch = 0;
 			unsigned char* lockRect = m_renderImage->lock( &pitch, false );
-			m_resourceVideo->getRGBData( lockRect );
+			m_resourceVideo->getRGBData( lockRect, pitch );
 			m_renderImage->unlock();
 			m_needUpdate = false;
 		}

@@ -794,6 +794,13 @@ bool HGE_Impl::_GfxInit()
 	UINT nModes, i;
 	m_gfxListener = 0;
 	m_frames = 0;
+
+	m_syncTargets[0] = 0;
+	m_syncTargets[1] = 0;
+	m_syncTemp = 0;
+	m_syncTempTex = 0;
+	pIB3D = 0;
+	pVB3D = 0;
 // Init D3D
 							
 	pD3D=Direct3DCreate8( D3D_SDK_VERSION ); // D3D_SDK_VERSION
@@ -939,13 +946,12 @@ bool HGE_Impl::Gfx_CreateRenderWindow()
 			hr = pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
 				D3DCREATE_SOFTWARE_VERTEXPROCESSING,
 				d3dpp, &pD3DDevice );
-
 		}
 	}
 
 	if( FAILED ( hr ) )
 	{
-		_PostError( MENGE_TEXT("Can't create D3D device") );
+		System_Log( MENGE_TEXT("Can't create D3D device (hr:%d, hwnd:%d)"), hr, hwnd );
 		return false;
 	}
 	/*if( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
@@ -1036,10 +1042,26 @@ void HGE_Impl::_Resize(int width, int height)
 void HGE_Impl::_GfxDone()
 {
 
-	m_syncTargets[0]->Release();
-	m_syncTargets[1]->Release();
-	m_syncTemp->Release();
-	m_syncTempTex->Release();
+	if( m_syncTargets[0] )
+	{
+		m_syncTargets[0]->Release();
+		m_syncTargets[0] = 0;
+	}
+	if( m_syncTargets[1] )
+	{
+		m_syncTargets[1]->Release();
+		m_syncTargets[1] = 0;
+	}
+	if( m_syncTemp )
+	{
+		m_syncTemp->Release();
+		m_syncTemp = 0;
+	}
+	if( m_syncTempTex )
+	{
+		m_syncTempTex->Release();
+		m_syncTempTex = 0;
+	}
 
 	CRenderTargetList *target=pTargets, *next_target;
 	
@@ -1116,11 +1138,26 @@ bool HGE_Impl::_GfxRestore()
 
 	//if(!pD3DDevice) return false;
 	//if(pD3DDevice->TestCooperativeLevel() == D3DERR_DEVICELOST) return;
-	m_syncTargets[0]->Release();
-	m_syncTargets[1]->Release();
-	m_syncTemp->Release();
-	m_syncTempTex->Release();
-
+	if( m_syncTargets[0] )
+	{
+		m_syncTargets[0]->Release();
+		m_syncTargets[0] = 0;
+	}
+	if( m_syncTargets[1] )
+	{
+		m_syncTargets[1]->Release();
+		m_syncTargets[1] = 0;
+	}
+	if( m_syncTemp )
+	{
+		m_syncTemp->Release();
+		m_syncTemp = 0;
+	}
+	if( m_syncTempTex )
+	{
+		m_syncTempTex->Release();
+		m_syncTempTex = 0;
+	}
 	if(pScreenSurf) pScreenSurf->Release();
 	if(pScreenDepth) pScreenDepth->Release();
 

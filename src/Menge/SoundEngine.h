@@ -56,6 +56,8 @@ namespace Menge
 
 		void update( float _timing );
 
+		void mute( bool _mute );
+
 	public:
 		void registerSoundEmitter( SoundEmitter * _emitter );
 		void unregisterSoundEmitter( SoundEmitter * _emitter );
@@ -76,5 +78,6 @@ namespace Menge
 		TMapBufferStreams m_bufferStreams;
 
 		bool m_initialized;
+		bool m_muted;
 	};
 };

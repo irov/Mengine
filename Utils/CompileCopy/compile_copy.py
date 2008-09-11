@@ -25,8 +25,8 @@ good_files = []
 #file to copy
 copy_files = []
 
-atlas_width = 1024
-atlas_height = 1024
+atlas_width = 2048
+atlas_height = 2048
 
 # jpg quality, in percent
 jpg_quality = 95
@@ -36,7 +36,22 @@ allowed_type = ['ResourceImageDefault'] #,'ResourceImageSet','ResourceImageCell'
 def getGameDirectory(src):
     return os.path.dirname(os.path.dirname(src))
 
-def getIconPathFromGameXML(src, directory):
+def getIconPathFromGameXML(src,IconType):
+    dom = xml.dom.minidom.parse(src)
+    app_tag = dom.getElementsByTagName("Game")[0]
+    
+    iconresource = app_tag.getElementsByTagName(IconType)
+    
+    if(iconresource==[]):
+        return []
+    
+    Path = iconresource[0].getAttribute("Value")
+    
+    dom.unlink()
+    
+    return Path
+
+def getGamePathFromAppXML(src):
     dom = xml.dom.minidom.parse(src)
     app_tag = dom.getElementsByTagName("Application")[0]
     
@@ -49,23 +64,7 @@ def getIconPathFromGameXML(src, directory):
     
     dom.unlink()
     
-    GamePath = os.path.dirname(Path)
-    
-    FullPath = os.path.join(directory,Path)
-    
-    dom = xml.dom.minidom.parse(FullPath)
-    app_tag = dom.getElementsByTagName("Game")[0]
-    
-    iconresource = app_tag.getElementsByTagName("Icon")
-    
-    if(iconresource==[]):
-        return []
-    
-    Path = iconresource[0].getAttribute("Value")
-    
-    dom.unlink()
-    
-    return [Path,GamePath]
+    return Path
 
 def getFileResourcesFromAppXML(src):
     dom = xml.dom.minidom.parse(src)
@@ -242,15 +241,32 @@ def copytonewfolder(src, DestGameDir):
     
     SourceGameDir = getGameDirectory(src)
     
-    Paths = getIconPathFromGameXML(src, SourceGameDir)
+    FullPath = getGamePathFromAppXML(src)
+    GamePath = os.path.dirname(FullPath)
+
+    FullGamePath = os.path.join(SourceGameDir,FullPath)
+    FullGameDir = os.path.join(SourceGameDir,GamePath)
     
-    if(Paths != []):
-        IconPath = Paths[0]
-        GamePath = Paths[1]
-    
+    IconPath = getIconPathFromGameXML(FullGamePath,"Icon")
+    if(IconPath != []): 
         IconName = os.path.basename(IconPath)
         bad_files.append(IconName.lower())
-
+        
+    IconSmallPath = getIconPathFromGameXML(FullGamePath,"IconSmall")
+    if(IconSmallPath != []): 
+        IconName = os.path.basename(IconSmallPath)
+        bad_files.append(IconName.lower())
+        
+    Icon48Path = getIconPathFromGameXML(FullGamePath,"Icon48")
+    if(Icon48Path != []): 
+        IconName = os.path.basename(Icon48Path)
+        bad_files.append(IconName.lower())
+        
+    Icon64Path = getIconPathFromGameXML(FullGamePath,"Icon64")
+    if(Icon64Path != []): 
+        IconName = os.path.basename(Icon64Path)
+        bad_files.append(IconName.lower())
+        
     os.mkdir(DestGameDir)
     
     for file in FileResources:
@@ -265,22 +281,20 @@ def copytonewfolder(src, DestGameDir):
         
     copytree(os.path.join(SourceGameDir,"Bin"),os.path.join(DestGameDir,"Bin"))
 
-    if(Paths != []):
-        SrcGameExe = os.path.normpath(os.path.join(SourceGameDir,"Bin/Game.exe"))
-        DstGameExe = os.path.normpath(os.path.join(DestGameDir,"Bin/Game.exe"))
-        IconPath = os.path.normpath(os.path.join(os.path.join(SourceGameDir,GamePath),IconPath))
-    
-        os.chdir("../upx")
+    SrcGameExe = os.path.normpath(os.path.join(SourceGameDir,"Bin/Game.exe"))
+    DstGameExe = os.path.normpath(os.path.join(DestGameDir,"Bin/Game.exe"))
         
-        exe = 'upx.exe -d %(dstgame)s' % \
-        {
-            'dstgame' : DstGameExe, \
-        }
+    os.chdir("../upx")
+        
+    exe = 'upx.exe -d %(dstgame)s' % { 'dstgame' : DstGameExe }
             
-        subprocess.call(exe)
+    subprocess.call(exe)
+    
+    os.chdir("../reshacker")
         
-        os.chdir("../reshacker")
-        
+    if(IconPath != []):
+        IconPath = os.path.normpath(os.path.join(FullGameDir,IconPath))
+            
         exe = 'reshacker.exe -addoverwrite %(destgame)s,%(destgame)s,%(iconpath)s,icongroup,100,' % \
                 {'srcgame' : SrcGameExe, \
                  'destgame' : DstGameExe, \
@@ -288,15 +302,46 @@ def copytonewfolder(src, DestGameDir):
                 }
         
         subprocess.call(exe)
+
         
-        os.chdir("../upx")
-    
-        exe = 'upx.exe -9 %(dstgame)s' % \
-        {
-            'dstgame' : DstGameExe, \
-        }
+    if(IconSmallPath!=[]):
+        IconSmallPath = os.path.normpath(os.path.join(FullGameDir,IconSmallPath))
+                        
+        exe = 'reshacker.exe -addoverwrite %(destgame)s,%(destgame)s,%(iconpath)s,icongroup,101,' % \
+                {'srcgame' : SrcGameExe, \
+                'destgame' : DstGameExe, \
+                'iconpath' : IconSmallPath, \
+                }
             
         subprocess.call(exe)
+
+    if(Icon48Path!=[]):
+        Icon48Path = os.path.normpath(os.path.join(FullGameDir,Icon48Path))
+                        
+        exe = 'reshacker.exe -addoverwrite %(destgame)s,%(destgame)s,%(iconpath)s,icongroup,102,' % \
+                {'srcgame' : SrcGameExe, \
+                'destgame' : DstGameExe, \
+                'iconpath' : Icon48Path, \
+                }
+            
+        subprocess.call(exe)
+    
+    if(Icon64Path!=[]):
+        Icon64Path = os.path.normpath(os.path.join(FullGameDir,Icon64Path))
+                        
+        exe = 'reshacker.exe -addoverwrite %(destgame)s,%(destgame)s,%(iconpath)s,icongroup,103,' % \
+                {'srcgame' : SrcGameExe, \
+                'destgame' : DstGameExe, \
+                'iconpath' : Icon64Path, \
+                }
+            
+        subprocess.call(exe)
+            
+    os.chdir("../upx")
+    
+    exe = 'upx.exe -9 %(dstgame)s' % {'dstgame' : DstGameExe}
+            
+    subprocess.call(exe)
     
     l = []
         

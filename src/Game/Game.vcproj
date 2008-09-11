@@ -338,10 +338,6 @@
 			RelativePath=".\main.cpp"
 			>
 		</File>
-		<File
-			RelativePath=".\menge.ico"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

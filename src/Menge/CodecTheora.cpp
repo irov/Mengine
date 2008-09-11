@@ -367,24 +367,24 @@ namespace Menge
 			*ySrc2 = ySrc + m_yuvBuffer.y_stride;
 
 		//Calculate buffer offsets
-		unsigned int dstOff = _pitch;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
+		unsigned int dstOff = _pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
 		int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
 
 
 		//Check if upside down, if so, reverse buffers and offsets
-		/*if ( yuv->y_height < 0 )
+		if ( m_yuvBuffer.y_height < 0 )
 		{
-			yuv->y_height = -yuv->y_height;
-			ySrc		 += (yuv->y_height - 1) * yuv->y_stride;
+			m_yuvBuffer.y_height = -m_yuvBuffer.y_height;
+			ySrc		 += (m_yuvBuffer.y_height - 1) * m_yuvBuffer.y_stride;
 
-			uSrc += ((yuv->y_height / 2) - 1) * yuv->uv_stride;
-			vSrc += ((yuv->y_height / 2) - 1) * yuv->uv_stride;
+			uSrc += ((m_yuvBuffer.y_height / 2) - 1) * m_yuvBuffer.uv_stride;
+			vSrc += ((m_yuvBuffer.y_height / 2) - 1) * m_yuvBuffer.uv_stride;
 
-			ySrc2 = ySrc - yuv->y_stride;
-			yOff  = -yuv->y_width - ( yuv->y_stride * 2 );
+			ySrc2 = ySrc - m_yuvBuffer.y_stride;
+			yOff  = -m_yuvBuffer.y_width - ( m_yuvBuffer.y_stride * 2 );
 
-			yuv->uv_stride = -yuv->uv_stride;
-		}*/
+			m_yuvBuffer.uv_stride = -m_yuvBuffer.uv_stride;
+		}
 
 		//Cut width and height in half (uv field is only half y field)
 		m_yuvBuffer.y_height = m_yuvBuffer.y_height >> 1;

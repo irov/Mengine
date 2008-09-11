@@ -349,7 +349,7 @@ namespace Menge
 		HINSTANCE hInstance = ::GetModuleHandle( NULL );
 		// Register the window class
 		// NB allow 4 bytes of window data for D3D9RenderWindow pointer
-		WNDCLASS wc = 
+		/*WNDCLASS wc = 
 		{ 0,
 		s_wndProc,
 		0, 
@@ -357,17 +357,18 @@ namespace Menge
 		hInstance,
 		LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MENGE)), LoadCursor(NULL, IDC_ARROW),
 		(HBRUSH)GetStockObject(BLACK_BRUSH), 0, MENGE_TEXT("MengeWnd")
-		};
-		/*ZeroMemory( &wc, sizeof(WNDCLASSEX) );
+		};*/
+		WNDCLASSEX wc;
+		ZeroMemory( &wc, sizeof(WNDCLASSEX) );
 		wc.cbSize = sizeof(WNDCLASSEX);
 		wc.lpfnWndProc = s_wndProc;
 		wc.hInstance = hInstance;
-		wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_BUTTONS));
-		wc.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_BUTTONS));
-		wc.lpszClassName = (LPCSTR)"MengeWnd";
+		wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MENGE));
+		wc.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MENGE_SMALL));
+		wc.lpszClassName = (LPCWSTR)MENGE_TEXT("MengeWnd");
 		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);*/
-		::RegisterClass(&wc);
+		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+		::RegisterClassEx(&wc);
 
 		// Create our main window
 		// Pass pointer to self

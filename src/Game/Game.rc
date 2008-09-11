@@ -55,6 +55,9 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_MENGE               ICON                    "menge.ico"
+IDI_MENGE_SMALL         ICON                    "menge_small.ico"
+IDI_MENGE_48            ICON                    "menge_48.ico"
+IDI_MENGE_64            ICON                    "menge_64.ico"
 #endif    // Russian resources
 /////////////////////////////////////////////////////////////////////////////
 

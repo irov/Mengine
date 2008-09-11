@@ -75,7 +75,7 @@
 				OutputFile="$(OutDir)\$(ProjectName)_d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\libPNG\lib_debug\&quot;;&quot;$(SolutionDir)dependencies\zlib\lib_debug\&quot;;&quot;$(SolutionDir)dependencies\libJPEG\debug\&quot;;&quot;$(SolutionDir)dependencies\theora\lib\&quot;"
-				GenerateManifest="true"
+				GenerateManifest="false"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="libci.lib"
 				GenerateDebugInformation="true"
@@ -318,12 +318,28 @@
 				>
 			</File>
 			<File
+				RelativePath=".\menge_48.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\menge_64.ico"
+				>
+			</File>
+			<File
+				RelativePath=".\menge_small.ico"
+				>
+			</File>
+			<File
 				RelativePath=".\resource.h"
 				>
 			</File>
 		</Filter>
 		<File
 			RelativePath=".\main.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\menge.ico"
 			>
 		</File>
 	</Files>

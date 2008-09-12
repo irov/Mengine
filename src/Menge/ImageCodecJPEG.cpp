@@ -90,7 +90,7 @@ namespace Menge
 		(*_cinfo->err->format_message)(_cinfo, buffer);
 		// send it to user's message proc
 		//FreeImage_OutputMessageProc(s_format_id, buffer);
-		MENGE_LOG( Utils::AToW( buffer ).c_str() );
+		MENGE_LOG_ERROR( Utils::AToW( buffer ).c_str() );
 	}
 
 	// ----------------------------------------------------------

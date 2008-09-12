@@ -39,7 +39,7 @@ namespace Menge
 		bool res = codecJPEG->getDataInfo( _inputData, imageData );
 		if( res == false )
 		{
-			MENGE_LOG( MENGE_TEXT("MNE codec error: can't get file info") );
+			MENGE_LOG_ERROR( MENGE_TEXT("MNE codec error: can't get file info") );
 			return false;
 		}
 
@@ -58,7 +58,7 @@ namespace Menge
 		bool res = codecJPEG->decode( _input, _buffer, _options );
 		if( res == false )
 		{
-			MENGE_LOG( MENGE_TEXT("MNE codec error: can't decode JPEG info") );
+			MENGE_LOG_ERROR( MENGE_TEXT("MNE codec error: can't decode JPEG info") );
 			return false;
 		}
 
@@ -69,7 +69,7 @@ namespace Menge
 			res = codecPNG->decode( _input, _buffer, DF_READ_ALPHA_ONLY );
 			if( res == false )
 			{
-				MENGE_LOG( MENGE_TEXT("MNE codec error: can't decode PNG info") );
+				MENGE_LOG_ERROR( MENGE_TEXT("MNE codec error: can't decode PNG info") );
 				return false;
 			}
 		}

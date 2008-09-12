@@ -134,7 +134,7 @@ namespace Menge
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &Game::loaderResourceFile ) == false )
 		{
-			MENGE_LOG( MENGE_TEXT("Invalid resource file [%s] ...\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Invalid resource file [%s] ...\n")
 				, _file.c_str() );
 			//return false;
 		}
@@ -593,7 +593,7 @@ namespace Menge
 
 		if( arrow == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Can't create arrow [%s]\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Can't create arrow [%s]\n")
 				, _name.c_str() 
 				);
 
@@ -632,7 +632,7 @@ namespace Menge
 
 			if( scene == 0 )
 			{
-				MENGE_LOG( MENGE_TEXT("Can't create scene [%s]\n")
+				MENGE_LOG_ERROR( MENGE_TEXT("Can't create scene [%s]\n")
 					, _name.c_str() 
 					);
 
@@ -654,7 +654,7 @@ namespace Menge
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlFileM( xml_path, scene, &Scene::loader ) == false )
 			{
-				MENGE_LOG( MENGE_TEXT("Warning: invalid loader xml '%s' for scene '%s'")
+				MENGE_LOG_ERROR( MENGE_TEXT("Warning: invalid loader xml '%s' for scene '%s'")
 					, xml_path.c_str()
 					, _name.c_str()
 					);
@@ -739,7 +739,7 @@ namespace Menge
 		TAccountMap::iterator it = m_accounts.find( _accountName );
 		if( it != m_accounts.end() )
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: Account with name '%s' already exist. Account not created"),
+			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Account with name '%s' already exist. Account not created"),
 				_accountName.c_str() );
 			return;
 		}
@@ -760,7 +760,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts") );
+			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Personality module has no method 'onCreateAccount'. Ambigous using accounts") );
 		}
 
 		if( m_loadingAccounts == false )
@@ -791,7 +791,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG( MENGE_TEXT("Error: Can't delete account '%s'. There is no account with such name")
+			MENGE_LOG_ERROR( MENGE_TEXT("Error: Can't delete account '%s'. There is no account with such name")
 				, _accountName.c_str() 
 				);
 		}
@@ -811,7 +811,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG( MENGE_TEXT("Error: Can't select account '%s'. There is no account with such name")
+			MENGE_LOG_ERROR( MENGE_TEXT("Error: Can't select account '%s'. There is no account with such name")
 				, _accountName.c_str() 
 				);
 		}
@@ -851,7 +851,7 @@ namespace Menge
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlFileM( file, this, &Game::loaderAccounts_ ) == false )
 			{
-				MENGE_LOG( MENGE_TEXT("Parsing Accounts xml failed '%s'\n")
+				MENGE_LOG_ERROR( MENGE_TEXT("Parsing Accounts xml failed '%s'\n")
 					, file.c_str()
 					);
 				return;
@@ -925,7 +925,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: Account '%s' does not exist. Can't save")
+			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Account '%s' does not exist. Can't save")
 				, _accountName.c_str()
 				);
 		}

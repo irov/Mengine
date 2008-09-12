@@ -144,7 +144,7 @@ namespace	Menge
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG( "Error: Actor can't open resource file '%s'\n", m_resourcename.c_str() );
+			MENGE_LOG_ERROR( "Error: Actor can't open resource file '%s'\n", m_resourcename.c_str() );
 			return false;
 		}
 

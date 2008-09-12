@@ -29,6 +29,7 @@ void releaseInterfaceSystem( Menge::LogSystemInterface* _interface )
 MengeLogSystem::MengeLogSystem()
 : m_error( false )
 , m_console( false )
+, m_verboseLevel( 0 )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -53,11 +54,14 @@ bool MengeLogSystem::initialize( Menge::OutStreamInterface* _logStream )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void MengeLogSystem::logMessage( const Menge::String& _message, bool _maskDebug, bool _endl, bool _timeStamp )
+void MengeLogSystem::logMessage( const Menge::String& _message, int _messageLevel, bool _endl, bool _timeStamp )
 {
-	if( m_error ) return;
+	if( _messageLevel > m_verboseLevel )
+	{
+		return;
+	}
 
-	if ( !_maskDebug && m_console )
+	if ( m_console )
 	{
 		//std::cerr << _message;
 		StdErr << _message;
@@ -68,6 +72,8 @@ void MengeLogSystem::logMessage( const Menge::String& _message, bool _maskDebug,
 			StdErr << std::endl;
 		}
 	}
+
+	if( m_error ) return;
 
 	std::time_t ctTime; 
 	std::time(&ctTime);
@@ -90,5 +96,10 @@ void MengeLogSystem::logMessage( const Menge::String& _message, bool _maskDebug,
 void MengeLogSystem::enableConsole( bool _console )
 {
 	m_console = _console;
+}
+//////////////////////////////////////////////////////////////////////////
+void MengeLogSystem::setVerboseLevel( int _level )
+{
+	m_verboseLevel = _level;
 }
 //////////////////////////////////////////////////////////////////////////

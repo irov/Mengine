@@ -17,6 +17,7 @@ public:
 
 public:
 	Menge::EmitterContainerInterface * createEmitterContainerFromMemory( void * _buffer );
+	void releaseEmitterContainer( Menge::EmitterContainerInterface* _containerInterface ) override;
 	Menge::EmitterInterface * createEmitterFromContainer( const Menge::String & _name, const Menge::EmitterContainerInterface * _container );
 public:
 	void releaseEmitter( Menge::EmitterInterface * _emitter );

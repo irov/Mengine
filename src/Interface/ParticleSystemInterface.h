@@ -39,12 +39,15 @@ namespace Menge
 
 	class EmitterContainerInterface
 	{
+	public:
+		virtual ~EmitterContainerInterface() {};
 	};
 
 	class ParticleSystemInterface
 	{
 	public:
 		virtual EmitterContainerInterface * createEmitterContainerFromMemory( void * _buffer ) = 0;
+		virtual void releaseEmitterContainer( EmitterContainerInterface* _containerInterface ) = 0;
 		virtual EmitterInterface * createEmitterFromContainer( const String & _name, const EmitterContainerInterface * _container ) = 0;
 		virtual void releaseEmitter( EmitterInterface * _emitter ) = 0;
 		virtual void lockEmitter( EmitterInterface * _emitter, int _typeParticle ) = 0;

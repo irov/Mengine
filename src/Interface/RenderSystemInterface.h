@@ -393,7 +393,7 @@ namespace Menge
 		virtual void	renderLine( unsigned int _color, const float * _begin, const float * _end) = 0;
 
 		virtual void	beginScene() = 0;
-		virtual void	endScene() = 0;
+		virtual void	endScene( bool _swapBuffers ) = 0;
 		virtual	void	beginLayer2D() = 0;
 		virtual	void	endLayer2D() = 0;
 		virtual	void	beginLayer3D() = 0;

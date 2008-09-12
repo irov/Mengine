@@ -16,6 +16,8 @@ namespace Menge
 
 	class SoundBufferInterface
 	{
+	public:
+		virtual ~SoundBufferInterface() {}
 	};
 
 	class SoundSourceInterface

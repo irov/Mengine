@@ -188,7 +188,8 @@ Menge::SoundBufferInterface* ALSoundSystem::createSoundBuffer( Menge::DataStream
 void ALSoundSystem::releaseSoundBuffer( Menge::SoundBufferInterface * _soundBuffer )
 {
 	//_soundBuffer->unload();
-	delete static_cast<ALSoundBuffer*>(_soundBuffer);
+	//delete static_cast<ALSoundBuffer*>(_soundBuffer);
+	delete _soundBuffer;
 }
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::releaseSoundNode( Menge::SoundSourceInterface * _sn )

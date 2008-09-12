@@ -100,6 +100,7 @@ bool ALSoundBufferStream::loadOgg( Menge::DataStreamInterface* _stream )
 		m_isStereo = true;
 	}
 
+	m_isEmpty = false;
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////

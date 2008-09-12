@@ -294,7 +294,7 @@ namespace Menge
 
 		if(	tagId == TAG_BEGIN )
 		{
-			MENGE_LOG( MENGE_TEXT("XmlCompile invalid compile - tag id '%s'")
+			MENGE_LOG_ERROR( MENGE_TEXT("XmlCompile invalid compile - tag id '%s'")
 				, _tagName
 				);
 
@@ -307,7 +307,7 @@ namespace Menge
 
 		if( tag == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("XmlCompile invalid compile - tag '%s'")
+			MENGE_LOG_ERROR( MENGE_TEXT("XmlCompile invalid compile - tag '%s'")
 				, _tagName
 				);
 
@@ -336,7 +336,7 @@ namespace Menge
 
 			if( tagAttr.valid == false )
 			{
-				MENGE_LOG( MENGE_TEXT("XmlCompile invalid compile - attr '%s'")
+				MENGE_LOG_ERROR( MENGE_TEXT("XmlCompile invalid compile - attr '%s'")
 					, attributeName
 					);
 
@@ -402,7 +402,7 @@ namespace Menge
 
 					if( defId == DEF_BEGIN )
 					{
-						MENGE_LOG( MENGE_TEXT("Invalid compile [tag attribute define %s not id]\n")
+						MENGE_LOG_ERROR( MENGE_TEXT("Invalid compile [tag attribute define %s not id]\n")
 							, attrValue
 						);
 						return;

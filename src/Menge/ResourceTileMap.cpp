@@ -45,7 +45,7 @@ namespace Menge
 
 		if( m_tileSet == NULL )
 		{
-			MENGE_LOG( MENGE_TEXT("ResourceTileMap::_compile -> compiling resource %s failed")
+			MENGE_LOG_ERROR( MENGE_TEXT("ResourceTileMap::_compile -> compiling resource %s failed")
 				,m_tileSetName.c_str() );
 			return false;
 		}
@@ -77,7 +77,7 @@ namespace Menge
 			line2 = mapFile->getLine( true );
 			if( m_width != line2.size() - 1 )
 			{
-				MENGE_LOG( MENGE_TEXT("ResourceTileMap::_compile -> Invalid TileMap format in %s")
+				MENGE_LOG_ERROR( MENGE_TEXT("ResourceTileMap::_compile -> Invalid TileMap format in %s")
 					,m_tileMapFile.c_str() );
 				return false;
 			}

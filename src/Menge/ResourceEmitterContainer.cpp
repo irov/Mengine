@@ -48,7 +48,7 @@ namespace Menge
 
 		if( m_container == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Error: Image can't create container file '%s'")
+			MENGE_LOG_ERROR( MENGE_TEXT("Error: Image can't create container file '%s'")
 				,m_filename.c_str() );
 			return false;
 		}
@@ -68,6 +68,12 @@ namespace Menge
 				->releaseImage( it->second );
 		}
 		m_mapImageEmitters.clear();
+		if( m_container != 0 )
+		{
+			Holder<ParticleEngine>::hostage()
+				->releaseEmitterContainer( m_container );
+			m_container = 0;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * ResourceEmitterContainer::getRenderImage( const String& _name )

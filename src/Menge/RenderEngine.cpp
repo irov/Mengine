@@ -146,7 +146,7 @@ namespace Menge
 		std::size_t pos = _filename.find_last_of( MENGE_TEXT(".") );
 		if( pos == std::string::npos ) 
 		{
-			MENGE_LOG( MENGE_TEXT("RenderEngine::saveImage : extension not specified (%s)"),
+			MENGE_LOG_ERROR( MENGE_TEXT("RenderEngine::saveImage : extension not specified (%s)"),
 				_filename.c_str() );
 			return false;
 		}
@@ -162,7 +162,7 @@ namespace Menge
 
 		if( pCodec == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("RenderEngine::saveImage : invalid extension (%s), codec not found"),
+			MENGE_LOG_ERROR( MENGE_TEXT("RenderEngine::saveImage : invalid extension (%s), codec not found"),
 				strExt.c_str() );
 			return false;
 		}
@@ -195,7 +195,7 @@ namespace Menge
 		OutStreamInterface* outFile = Holder<FileEngine>::hostage()->openOutStream( _filename, true );
 		if( outFile == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("RenderEngine::saveImage : failed to open file for output '%s'"),
+			MENGE_LOG_ERROR( MENGE_TEXT("RenderEngine::saveImage : failed to open file for output '%s'"),
 				_filename.c_str() );
 			delete[] lockBuffer;
 			return false;
@@ -206,7 +206,7 @@ namespace Menge
 		delete[] lockBuffer;
 		if( res == false )
 		{
-			MENGE_LOG( MENGE_TEXT("RenderEngine::saveImage : Error while coding image data") );
+			MENGE_LOG_ERROR( MENGE_TEXT("RenderEngine::saveImage : Error while coding image data") );
 		}
 
 
@@ -235,7 +235,7 @@ namespace Menge
 
 			if( codec == 0 )
 			{
-				MENGE_LOG( MENGE_TEXT("Warning: Image codec for extension %s was not found"),
+				MENGE_LOG_ERROR( MENGE_TEXT("Warning: Image codec for extension %s was not found"),
 					strExt.c_str() );
 				MENGE_LOG_CRITICAL( MENGE_TEXT("Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын"),
 					_filename.c_str() );
@@ -246,7 +246,7 @@ namespace Menge
 
 			if( stream == 0 )
 			{
-				MENGE_LOG( MENGE_TEXT("Error: Can't open image file '%s'"),
+				MENGE_LOG_ERROR( MENGE_TEXT("Error: Can't open image file '%s'"),
 					_filename.c_str() );
 				return 0;
 			}
@@ -257,7 +257,7 @@ namespace Menge
 			bool res = codec->getDataInfo( stream, static_cast<CodecInterface::CodecData*>( &data ) );
 			if( res == false )
 			{
-				MENGE_LOG( MENGE_TEXT("Warning: Error while decoding image '%s'. Image not loaded"),
+				MENGE_LOG_ERROR( MENGE_TEXT("Warning: Error while decoding image '%s'. Image not loaded"),
 					_filename.c_str() );
 				Holder<FileEngine>::hostage()->closeStream( stream );
 				return 0;
@@ -277,7 +277,7 @@ namespace Menge
 			res = codec->decode( stream, (unsigned char*)textureDesc.buffer, data.flags );
 			if( res == false )
 			{
-				MENGE_LOG( MENGE_TEXT("Warning: Error while decoding image '%s'. Image not loaded"),
+				MENGE_LOG_ERROR( MENGE_TEXT("Warning: Error while decoding image '%s'. Image not loaded"),
 					_filename.c_str() );
 				Holder<FileEngine>::hostage()->closeStream( stream );
 				delete[] textureDesc.buffer;
@@ -299,7 +299,7 @@ namespace Menge
 			delete[] textureDesc.buffer;
 			if( image == 0 )
 			{
-				MENGE_LOG( MENGE_TEXT("Error: Render System failed to load image '%s'")
+				MENGE_LOG_ERROR( MENGE_TEXT("Error: Render System failed to load image '%s'")
 					, _filename.c_str() );
 				return 0;
 			}
@@ -547,7 +547,7 @@ namespace Menge
 		m_interface->setRenderArea( m_renderArea.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::endScene()
+	void RenderEngine::endScene( bool _swapBuffers )
 	{
 		//m_interface->beginLayer2D();
 
@@ -558,7 +558,7 @@ namespace Menge
 			m_interface->renderLine( line.color, line.begin.m, line.end.m );
 		}*/
 
-		m_interface->endScene();
+		m_interface->endScene( _swapBuffers );
 		lines.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////

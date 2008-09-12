@@ -32,7 +32,7 @@ namespace Menge
 		if( Holder<XmlEngine>::hostage()->
 			parseXmlFileM( m_params.category + m_filename, this, &ResourceMaterial::loaderMaterial_ ) == false )
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: Parse material xml failed '%s'. Can't compile material")
+			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Parse material xml failed '%s'. Can't compile material")
 				, m_filename.c_str()
 				);
 		}

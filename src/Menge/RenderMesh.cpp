@@ -63,7 +63,7 @@ namespace Menge
 
 			if( m_resourceMesh == 0 )
 			{
-				MENGE_LOG( MENGE_TEXT("Error: Can't find mesh resource '%s'")
+				MENGE_LOG_ERROR( MENGE_TEXT("Error: Can't find mesh resource '%s'")
 					,m_resourceName.c_str() );
 				return false;
 			}
@@ -124,7 +124,7 @@ namespace Menge
 
 			if( m_resourceMaterial == 0 )
 			{
-				MENGE_LOG( MENGE_TEXT("Warning: Can't find material '%s. RenderMesh '%s' will be proceeded whitout material")
+				MENGE_LOG_ERROR( MENGE_TEXT("Warning: Can't find material '%s. RenderMesh '%s' will be proceeded whitout material")
 					,m_materialName.c_str()
 					,m_resourceName.c_str()
 					);

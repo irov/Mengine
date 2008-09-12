@@ -82,7 +82,7 @@ namespace Menge
 		void	setWorldMatrix( const mt::mat4f& _world );
 
 		void	beginScene();
-		void	endScene();
+		void	endScene( bool _swapBuffers = true );
 		void	beginLayer2D();
 		void	endLayer2D();
 		void	beginLayer3D();

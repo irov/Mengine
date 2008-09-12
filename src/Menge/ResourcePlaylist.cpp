@@ -72,7 +72,7 @@ namespace Menge
 
 				if( Holder<FileEngine>::hostage()->existFile( filepath ) == false )
 				{
-					MENGE_LOG( MENGE_TEXT("ResourcePlaylist : %s not exist. \n")
+					MENGE_LOG_ERROR( MENGE_TEXT("ResourcePlaylist : %s not exist. \n")
 						, filepath.c_str() );
 				}
 				else
@@ -88,7 +88,7 @@ namespace Menge
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( m_filename, this, &ResourcePlaylist::loaderTracks_ ) == false )
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: resource playlist not found file '%s'\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Warning: resource playlist not found file '%s'\n")
 				, m_filename.c_str() 
 				);
 

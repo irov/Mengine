@@ -310,7 +310,7 @@ namespace Menge
 			mt::mul_v4_m4( max, mt::vec4f( _max.x, _max.y, 0.0f, 1.0f ), vt );
 			Holder<RenderEngine>::hostage()->screenshot( image, mt::vec4f( min.x, min.y, max.x, max.y) );
 
-			Holder<RenderEngine>::hostage()->endScene();
+			Holder<RenderEngine>::hostage()->endScene( false );
 
 			//image->writeToFile( "bl.bmp" );
 

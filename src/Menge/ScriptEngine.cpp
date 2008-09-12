@@ -52,7 +52,7 @@ namespace Menge
 	void ScriptLogger::write( const String& _msg )
 	{
 		//MENGE_LOG( _msg.c_str() );
-		Holder<LogEngine>::hostage()->logMessage( _msg, false, false, false );
+		Holder<LogEngine>::hostage()->logMessage( _msg, 0, false, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::init()
@@ -302,7 +302,7 @@ namespace Menge
 
 		if( module == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Can't create entity [%s] (not module)\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Can't create entity [%s] (not module)\n")
 				, _type.c_str() 
 				);
 		}
@@ -318,7 +318,7 @@ namespace Menge
 
 		if( result == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Can't create entity [%s] (invalid constructor)\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Can't create entity [%s] (invalid constructor)\n")
 				, _type.c_str() 
 				);
 
@@ -329,7 +329,7 @@ namespace Menge
 
 		if( entity == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Can't create entity [%s] (invalid cast)\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Can't create entity [%s] (invalid cast)\n")
 				, _type.c_str() 
 				);
 

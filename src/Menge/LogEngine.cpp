@@ -17,9 +17,9 @@ namespace Menge
 		//m_interface->logMessage( MENGE_TEXT("\n>>>> LOGGING STARTED\n\n >> Starting Mengine...\n\n"), false, true, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LogEngine::logMessage( const String& _message, bool _maskDebug, bool _endl, bool _timeStamp )
+	void LogEngine::logMessage( const String& _message, int _messageLevel, bool _endl, bool _timeStamp )
 	{
-		m_interface->logMessage( _message, _maskDebug, _endl, _timeStamp );
+		m_interface->logMessage( _message, _messageLevel, _endl, _timeStamp );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LogSystemInterface * LogEngine::getInterface()
@@ -27,9 +27,15 @@ namespace Menge
 		return m_interface;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	LoggerOperator::LoggerOperator( const char * _file, unsigned int _mask )
-		: m_file(_file)
-		, m_mask(_mask)
+	void LogEngine::setVerboseLevel( int _level )
+	{
+		m_interface->setVerboseLevel( _level );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LoggerOperator::LoggerOperator( const char * _file, int _level, unsigned int _options )
+		: m_file( _file )
+		, m_level( _level )
+		, m_options( _options )
 	{
 
 	}
@@ -57,28 +63,33 @@ namespace Menge
 
 		const String& message( str );
 
-		bool isBreak = ( m_mask & ELoggerBreak ) > 0;
+		//bool isBreak = ( m_mask & ELoggerBreak ) > 0;
 
-		if( Py_IsInitialized() == 0 || !isBreak )
+		//if( Py_IsInitialized() == 0 || !isBreak )
+		//{
+		//	bool isDebug = ( m_mask & ELoggerDebug ) > 0;
+
+		//	Holder<LogEngine>::hostage()
+		//		->logMessage( message, 1 );
+		//}
+		//else
+		//{
+		//	/*	PyErr_Format(PyExc_SystemError,
+		//	"%s: %s"
+		//	, const_cast<char*>(m_file)
+		//	, message.c_str()				
+		//	);*/
+		//}
+		Holder<LogEngine>::hostage()
+			->logMessage( message, m_level );
+
+		if( ( m_options & LO_MESSAGE_BOX ) != 0 )
 		{
-			bool isDebug = ( m_mask & ELoggerDebug ) > 0;
-
 			Holder<LogEngine>::hostage()
-				->logMessage( message, isDebug );
-		}
-		else
-		{
-			/*	PyErr_Format(PyExc_SystemError,
-			"%s: %s"
-			, const_cast<char*>(m_file)
-			, message.c_str()				
-			);*/
-		}
-
-		if( ( m_mask & ELoggerMessageBox ) > 0 )
-		{
+				->logMessage( message, m_level );
 			Holder<Application>::hostage()->showMessageBox( message, MENGE_TEXT("Mengine Critical Error"), 0 );
 		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

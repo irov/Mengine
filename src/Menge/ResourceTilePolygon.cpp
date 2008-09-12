@@ -150,7 +150,7 @@ namespace Menge
 
 		if(m_resource == 0)
 		{
-			MENGE_LOG( MENGE_TEXT("Image resource not getting '%s'")
+			MENGE_LOG_ERROR( MENGE_TEXT("Image resource not getting '%s'")
 				,m_resourcename.c_str() );
 			return false;
 		}
@@ -161,7 +161,7 @@ namespace Menge
 
 		if(m_resourceJunc == 0)
 		{
-			MENGE_LOG( MENGE_TEXT("Image resource not getting '%s'")
+			MENGE_LOG_ERROR( MENGE_TEXT("Image resource not getting '%s'")
 				,m_juncName.c_str() );
 			return false;
 		}
@@ -178,7 +178,7 @@ namespace Menge
 
 		if(result == false)
 		{
-			MENGE_LOG( MENGE_TEXT("Error: can't triangulate polygon \n") );
+			MENGE_LOG_ERROR( MENGE_TEXT("Error: can't triangulate polygon \n") );
 			return false;
 		}
 
@@ -197,7 +197,7 @@ namespace Menge
 
 		if(result == false)
 		{
-			MENGE_LOG( MENGE_TEXT("Error: can't divide into polygons \n") );
+			MENGE_LOG_ERROR( MENGE_TEXT("Error: can't divide into polygons \n") );
 			return false;
 		}
 

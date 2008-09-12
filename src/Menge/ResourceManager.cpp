@@ -42,7 +42,7 @@ namespace Menge
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{
-			MENGE_LOG( MENGE_TEXT("Error: Invalid parse resource '%s' \n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Error: Invalid parse resource '%s' \n")
 				,_file.c_str() );
 		}
 	}
@@ -77,14 +77,17 @@ namespace Menge
 
 				if( resource == 0 )
 				{
-					MENGE_LOG( MENGE_TEXT("Don't register resource type '%s'\n")
+					MENGE_LOG_ERROR( MENGE_TEXT("Don't register resource type '%s'\n")
 						,type.c_str() );
 					continue;
 				}
 
-				registerResource( resource );
+				bool registered = registerResource( resource );
 
-				XML_PARSE_ELEMENT( resource, &ResourceReference::loader );
+				if( registered == true )
+				{
+					XML_PARSE_ELEMENT( resource, &ResourceReference::loader );
+				}
 			}		
 		}
 	}
@@ -98,11 +101,11 @@ namespace Menge
 		return TFactoryResource::generate( _type, param );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::registerResource( ResourceReference * _resource )
+	bool ResourceManager::registerResource( ResourceReference * _resource )
 	{
 		if( _resource == 0 )
 		{
-			return;
+			return false;
 		}
 
 		const String& name = _resource->getName();
@@ -113,6 +116,16 @@ namespace Menge
 		{
 			m_mapResource.insert( std::make_pair( name, _resource ) );
 		}
+		else
+		{
+			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Duplicate resource name \"%s\" in group \"%s\"")
+				, name.c_str()
+				, _resource->getFactoryParams().group.c_str() );
+			MENGE_LOG_ERROR( MENGE_TEXT("Duplicate entry will be deleted now") );
+			delete _resource;
+			return false;
+		}
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::unregisterResource( ResourceReference* _resource )
@@ -292,7 +305,7 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlString( _xml, resourceLoader ) == false )
 		{
-			MENGE_LOG( MENGE_TEXT("Invalid parse external node `%s`\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Invalid parse external node `%s`\n")
 				,_xml.c_str() );
 
 			return 0;
@@ -300,7 +313,7 @@ namespace Menge
 
 		if( resource == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("This xml file `%s` have invalid external node format\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("This xml file `%s` have invalid external node format\n")
 				,_xml.c_str() );
 		}
 

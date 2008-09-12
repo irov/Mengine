@@ -108,7 +108,7 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlFile( _xml, nodeLoader ) == false )
 		{
-			MENGE_LOG( MENGE_TEXT("Invalid parse external node `%s`\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Invalid parse external node `%s`\n")
 				,_xml.c_str() );
 
 			return 0;
@@ -116,7 +116,7 @@ namespace Menge
 
 		if( node == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("This xml file `%s` have invalid external node format\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("This xml file `%s` have invalid external node format\n")
 				,_xml.c_str() );
 		}
 
@@ -132,7 +132,7 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlString( _xml_data, nodeLoader ) == false )
 		{
-			MENGE_LOG( MENGE_TEXT("Invalid parse external xml data `%s`\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Invalid parse external xml data `%s`\n")
 				,_xml_data.c_str() );
 
 			return 0;
@@ -140,7 +140,7 @@ namespace Menge
 
 		if( node == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("This xml have invalid external node format\n") );
+			MENGE_LOG_ERROR( MENGE_TEXT("This xml have invalid external node format\n") );
 		}
 
 		return node;

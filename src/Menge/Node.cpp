@@ -158,7 +158,7 @@ namespace Menge
 	{
 		if( isChildren( _node, false ) )
 		{
-			MENGE_LOG( MENGE_TEXT("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist")
+			MENGE_LOG_ERROR( MENGE_TEXT("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist")
 				, this->getName().c_str()
 				, this->getType().c_str()
 				, _node->getName().c_str()
@@ -189,7 +189,7 @@ namespace Menge
 	{
 		if( isChildren( _node, false ) )
 		{
-			MENGE_LOG( MENGE_TEXT("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist")
+			MENGE_LOG_ERROR( MENGE_TEXT("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist")
 				, this->getName().c_str()
 				, this->getType().c_str()
 				, _node->getName().c_str()

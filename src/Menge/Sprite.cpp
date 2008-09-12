@@ -94,7 +94,7 @@ namespace	Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Image resource not getting '%s'")
+			MENGE_LOG_ERROR( MENGE_TEXT("Image resource not getting '%s'")
 				, m_resourceName.c_str() 
 				);
 
@@ -316,7 +316,7 @@ namespace	Menge
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG( MENGE_TEXT("Sprite %s: Image resource not getting '%s'")
+			MENGE_LOG_ERROR( MENGE_TEXT("Sprite %s: Image resource not getting '%s'")
 				, getName().c_str()
 				, m_resourceName.c_str()
 				);

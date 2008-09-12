@@ -52,7 +52,7 @@ namespace	Menge
 
 		if( m_resourceMap == NULL )
 		{
-			MENGE_LOG( MENGE_TEXT("TileMap::_compile -> compiling resource %s failed")
+			MENGE_LOG_ERROR( MENGE_TEXT("TileMap::_compile -> compiling resource %s failed")
 				,m_resourcename.c_str() );
 			return false;
 		}

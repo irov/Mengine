@@ -25,7 +25,7 @@ namespace Menge
 
 		if( image == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: resource '%s' can't load image file '%s'\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Warning: resource '%s' can't load image file '%s'\n")
 				, getName().c_str()
 				, _fileName.c_str()
 				);

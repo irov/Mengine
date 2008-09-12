@@ -39,7 +39,7 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: resource '%s' can't cook box geometry\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Warning: resource '%s' can't cook box geometry\n")
 				, getName().c_str()
 			);
 

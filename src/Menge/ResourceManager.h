@@ -34,7 +34,7 @@ namespace Menge
 		ResourceReference * createResource( const String& _name, const String& _type );
 		ResourceReference * createResourceFromXml( const String& _xml );
 
-		void registerResource( ResourceReference * _resource );
+		bool registerResource( ResourceReference * _resource );
 		void unregisterResource( ResourceReference* _resource );
 		ResourceReference * getResource( const String& _name );
 

@@ -1,12 +1,20 @@
 #	include "AstralaxEmitterContainer.h"
 #	include "AstralaxEmitter.h"
 //////////////////////////////////////////////////////////////////////////
-AstralaxEmitterContainer::AstralaxEmitterContainer()
+AstralaxEmitterContainer::AstralaxEmitterContainer( HM_FILE _hFile )
+: m_hfile( _hFile )
 {
 };
 //////////////////////////////////////////////////////////////////////////
 AstralaxEmitterContainer::~AstralaxEmitterContainer()
 {
+	/*for( TMapEmitters::iterator it = m_emittersIds.begin(), it_end = m_emittersIds.end();
+		it != it_end;
+		it++ )
+	{
+		Magic_UnloadEmitter( it->second );
+	}*/
+	Magic_CloseFile( m_hfile );
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitterContainer::addEmitterId( const Menge::String & _name,  HM_EMITTER _id )

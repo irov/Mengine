@@ -10,7 +10,7 @@ class AstralaxEmitterContainer
 	: public Menge::EmitterContainerInterface
 {
 public:
-	AstralaxEmitterContainer();
+	AstralaxEmitterContainer( HM_FILE _hFile );
 	~AstralaxEmitterContainer();
 
 public:
@@ -18,5 +18,7 @@ public:
 	HM_EMITTER getEmitter( const Menge::String & _name )  const;
 	
 private:
-	std::map<Menge::String, HM_EMITTER> m_emittersIds;
+	typedef std::map<Menge::String, HM_EMITTER> TMapEmitters;
+	TMapEmitters m_emittersIds;
+	HM_FILE m_hfile;
 };

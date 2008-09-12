@@ -58,7 +58,7 @@ Menge::EmitterContainerInterface * AstralaxParticleSystem::createEmitterContaine
 				{
 					if( init == false )
 					{
-						container = new AstralaxEmitterContainer();
+						container = new AstralaxEmitterContainer( file );
 						init = true;
 					}
 
@@ -180,5 +180,10 @@ Menge::String AstralaxParticleSystem::getTextureName() const
 void AstralaxParticleSystem::unlockEmitter( Menge::EmitterInterface * _emitter ) 
 {
 	Magic_UnlockParticlesType();
+}
+//////////////////////////////////////////////////////////////////////////
+void AstralaxParticleSystem::releaseEmitterContainer( Menge::EmitterContainerInterface* _containerInterface )
+{
+	delete _containerInterface;
 }
 //////////////////////////////////////////////////////////////////////////

@@ -31,7 +31,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: Setting %s already exist"),
+			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Setting %s already exist"),
 				_setting.c_str() );
 		}
 	}
@@ -46,7 +46,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG( MENGE_TEXT("Error: setting '%s' does not exist. Can't change"),
+			MENGE_LOG_ERROR( MENGE_TEXT("Error: setting '%s' does not exist. Can't change"),
 				_setting.c_str() );
 		}
 	}
@@ -60,7 +60,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG( MENGE_TEXT("Error: setting '%s' does not exist. Can't get"),
+			MENGE_LOG_ERROR( MENGE_TEXT("Error: setting '%s' does not exist. Can't get"),
 				_setting.c_str() );
 		}
 		return Utils::emptyString();
@@ -73,7 +73,7 @@ namespace Menge
 		DataStreamInterface* file = fileEngine->openFile( fileName );
 		if( file == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Error: Failed to load account '%s' settings. Can't open file"),
+			MENGE_LOG_ERROR( MENGE_TEXT("Error: Failed to load account '%s' settings. Can't open file"),
 				m_name.c_str() );
 			return;
 		}
@@ -81,7 +81,7 @@ namespace Menge
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( file, this, &Account::loader_ ) == false )
 		{
-			MENGE_LOG( MENGE_TEXT("Parsing Account settings xml failed '%s'"),
+			MENGE_LOG_ERROR( MENGE_TEXT("Parsing Account settings xml failed '%s'"),
 				fileName.c_str() );
 		}
 
@@ -95,7 +95,7 @@ namespace Menge
 		OutStreamInterface* file = fileEngine->openOutStream( fileName, false );
 		if( file == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Error: can't open file for writing. Account '%s' settings not saved"),
+			MENGE_LOG_ERROR( MENGE_TEXT("Error: can't open file for writing. Account '%s' settings not saved"),
 				m_name.c_str() );
 		}
 		file->write( MENGE_TEXT("<Settings>\n") );

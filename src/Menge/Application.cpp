@@ -136,6 +136,7 @@ namespace Menge
 		, m_mouseBounded( false )
 		, m_game( 0 )
 		, m_hasConsole( 0 )
+		, m_verbose( false )
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -220,7 +221,7 @@ namespace Menge
 
 		if( m_xmlEngine->parseXmlFileM( m_gameInfo, m_game, &Game::loader ) == false )
 		{
-			MENGE_LOG( MENGE_TEXT("Invalid game file [%s] ...\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("Invalid game file [%s] ...\n")
 				,m_gameInfo.c_str() );
 			MENGE_LOG_CRITICAL( MENGE_TEXT("Application files missing or corrupt") );
 			return false;
@@ -241,7 +242,7 @@ namespace Menge
 
 		if( !m_fileEngine->initAppDataPath( MENGE_TEXT("Menge\\") + title ) )
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: Can't initialize user's data path") );
+			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Can't initialize user's data path") );
 		}
 
 		const Resolution & resourceResolution = m_game->getResourceResolution();
@@ -295,8 +296,9 @@ namespace Menge
 
 		if( isFullscreen == true )
 		{
-			setMouseBounded( true );
+			//setMouseBounded( true );
 			m_inputEngine->setMouseBounded( true );
+			m_interface->setHandleMouse( false );
 		}
 
 		initPredefinedResources();
@@ -370,6 +372,12 @@ namespace Menge
 		{
 			m_hasConsole = true;
 		}
+
+		idx = _arguments.find( "-verbose" );
+		if( idx != StringA::npos )
+		{
+			m_verbose = true;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const String& _applicationFile, const char* _args )
@@ -386,6 +394,11 @@ namespace Menge
 		initInterfaceSystem( &m_fileSystem );
 		m_fileSystem->inititalize( m_logSystem );
 		this->setFileSystem( m_fileSystem );
+
+		if( m_verbose )
+		{
+			m_logSystem->setVerboseLevel( 3 );
+		}
 
 		m_fileSystem->loadPath( MENGE_TEXT(".") );
 
@@ -482,7 +495,7 @@ namespace Menge
 
 		if( m_xmlEngine->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
 		{
-			MENGE_LOG( MENGE_TEXT("parse application xml failed '%s'\n")
+			MENGE_LOG_ERROR( MENGE_TEXT("parse application xml failed '%s'\n")
 				, _applicationFile.c_str()
 				);
 			MENGE_LOG_CRITICAL( MENGE_TEXT("Application files missing or corrupt") );
@@ -807,6 +820,7 @@ namespace Menge
 			{
 				m_inputEngine->setMouseBounded( false );
 				m_interface->setHandleMouse( true );
+				m_game->handleMouseEnter();	
 			}
 			else
 			{

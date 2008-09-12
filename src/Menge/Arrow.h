@@ -51,6 +51,7 @@ namespace Menge
 		void _update( float _timing ) override;
 		bool _activate() override;
 		bool _compile() override;
+		void _release() override;
 
 	protected:
 		mt::vec2f m_offsetClick;

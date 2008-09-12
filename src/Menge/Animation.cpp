@@ -78,7 +78,7 @@ namespace	Menge
 
 		if( m_resourceAnimation == NULL )
 		{
-			MENGE_LOG( MENGE_TEXT("Sprite %s: Image resource not getting '%s'")
+			MENGE_LOG_ERROR( MENGE_TEXT("Sprite %s: Image resource not getting '%s'")
 				, getName().c_str()
 				, m_resourceAnimationName.c_str() 
 				);
@@ -145,7 +145,7 @@ namespace	Menge
 
 			if( m_resourceAnimation == NULL )
 			{
-				MENGE_LOG( MENGE_TEXT("Sprite %s: Image resource not getting '%s'")
+				MENGE_LOG_ERROR( MENGE_TEXT("Sprite %s: Image resource not getting '%s'")
 					, getName().c_str()
 					, m_resourceAnimationName.c_str() 
 					);

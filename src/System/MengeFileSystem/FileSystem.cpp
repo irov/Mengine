@@ -1,7 +1,6 @@
 #	include "Interface/LogSystemInterface.h"
 
 #	include "FileSystem.h"
-#	include "FileManager.h"
 
 #	include "DataStream.h"
 #	include "MemoryDataStream.h"
@@ -43,11 +42,33 @@ void releaseInterfaceSystem( Menge::FileSystemInterface *_system )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_isAbsolutePath( const Text& _path )
+	{
+#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
+		if ( /*::isalpha( unsigned char( _path[0] ) ) && */_path[1] == MENGE_TEXT(':') )
+		{
+			return true;
+		}
+#endif
+		return _path[0] == MENGE_TEXT('/') || _path[0] == MENGE_TEXT('\\');
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static String s_concatenatePath( const Text& _base, const Text& _name )
+	{
+		if ( _base.empty() || s_isAbsolutePath( _name.c_str() ) )
+		{
+			return _name;
+		}
+		else
+		{
+			return _base + MENGE_TEXT('/') + _name;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	FileSystem::FileSystem()
 		: m_logSystem( 0 )
 		, m_logStream( 0 )
 	{
-		m_fileManager = new FileManager(MENGE_TEXT(""));
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::~FileSystem()
@@ -57,13 +78,13 @@ namespace Menge
 			closeOutStream( m_logStream );
 			m_logStream = 0;
 		}
-		delete m_fileManager;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::loadPath( const Text& _path )
 	{
 		//m_arch = Ogre::ArchiveManager::getSingleton().load( _path, "FileSystem" );
-		m_fileManager->setInitPath( _path );
+		//m_fileManager->setInitPath( _path );
+		m_initPath = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::loadPak( const Text& _pak )
@@ -80,21 +101,58 @@ namespace Menge
 	{
 		DataStream* fileData = 0;
 
-		m_logSystem->logMessage( String( MENGE_TEXT("Opening file: ") ) + _filename );
+		m_logSystem->logMessage( String( MENGE_TEXT("Opening file: ") ) + _filename, 1 );
 		//wprintf( L"MengeFileSystem: opening file %s\n", _filename.c_str() );
-		if( m_fileManager->exists( _filename ) == false )
+		if( existFile( _filename ) == false )
 		{
-			wprintf( L"MengeFileSystem::openFile: %s is not exists\n", _filename.c_str() );
+			m_logSystem->logMessage( String( MENGE_TEXT( "Warning: ") ) + _filename + String( MENGE_TEXT("does not exists") ), 0 );
 			return 0;
 		}
 
 		try
 		{
-			fileData = m_fileManager->open( _filename );
+			//fileData = m_fileManager->open( _filename );
+			Text full_path = s_concatenatePath( m_initPath, _filename );
+
+			// Use filesystem to determine size 
+			// (quicker than streaming to the end and back)
+			struct _stat tagStat;
+#ifdef MENGE_UNICODE
+			int ret = _wstat( full_path.c_str(), &tagStat );
+#else
+			int ret = _stat( full_path.c_str(), &tagStat );
+#endif
+			//assert( ret == 0 && "Problem getting file size" );
+
+			std::ifstream *origStream = new std::ifstream();
+
+#ifdef MENGE_UNICODE
+			// Always open in binary mode
+			origStream->open( full_path.c_str(), std::ios::in | std::ios::binary );
+#else
+			wchar_t lpszW[MAX_PATH];
+			MultiByteToWideChar(CP_ACP, 0, full_path.c_str(), -1, lpszW, full_path.size() );
+			lpszW[full_path.size()] = 0;
+
+			// Always open in binary mode
+			origStream->open( lpszW, std::ios::in | std::ios::binary );
+#endif
+
+			// Should check ensure open succeeded, in case fail for some reason.
+			if ( origStream->fail() )
+			{
+				delete origStream;
+			}
+
+			/// Construct return stream, tell it to delete on destroy
+			FileStreamDataStream* stream = 
+				new FileStreamDataStream( origStream, tagStat.st_size, true );
+
+			fileData = static_cast<DataStream*>(stream);
 
 			if( !fileData )
 			{
-				printf( "MengeFileSystem::openFile: %s data is null\n", _filename.c_str() );
+				m_logSystem->logMessage( String( MENGE_TEXT("Error: unrecognized error while opening file ") ) + _filename, 0 );
 				return fileData;
 			}
 		}
@@ -117,7 +175,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::existFile( const Text& _filename )
 	{
-		return m_fileManager->exists( _filename );
+		String full_path = s_concatenatePath( m_initPath, _filename );
+
+		struct _stat tagStat;
+#ifdef MENGE_UNICODE
+		bool ret = ( _wstat( full_path.c_str(), &tagStat ) == 0 );
+#else
+		bool ret = ( _stat( full_path.c_str(), &tagStat ) == 0 );
+#endif
+		return ret;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const char * FileSystem::platformBundlePath()

@@ -4,8 +4,6 @@
 
 namespace Menge
 {
-	class FileManager;
-
 	class FileSystem
 		: public FileSystemInterface
 	{
@@ -39,9 +37,9 @@ namespace Menge
 		const Menge::String& getAppDataPath() override;
 
 	private:
-		FileManager* m_fileManager;
 		Text m_appDataPath;
 		LogSystemInterface* m_logSystem;
 		OutStreamInterface* m_logStream;
+		Text m_initPath;
 	};
 }

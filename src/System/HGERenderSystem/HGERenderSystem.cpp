@@ -464,9 +464,9 @@ void HGERenderSystem::beginScene()
 
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::endScene()
+void HGERenderSystem::endScene( bool _swapBuffers )
 {
-	m_hge->Gfx_EndScene();
+	m_hge->Gfx_EndScene( _swapBuffers );
 	m_inRender = false;
 }
 //////////////////////////////////////////////////////////////////////////

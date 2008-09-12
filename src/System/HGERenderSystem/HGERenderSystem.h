@@ -61,7 +61,7 @@ public:
 	void	renderLine( unsigned int _color, const float * _begin, const float * _end ) override;
 
 	void	beginScene() override;
-	void	endScene()	override;
+	void	endScene( bool _swapBuffers )	override;
 	void	beginLayer2D() override;
 	void	endLayer2D() override;
 	void	beginLayer3D() override;

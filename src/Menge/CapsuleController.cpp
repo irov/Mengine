@@ -76,7 +76,7 @@ namespace	Menge
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG( "Error: Emitter can't open resource file '%s'\n", m_resourcename.c_str() );
+			MENGE_LOG_ERROR( "Error: Emitter can't open resource file '%s'\n", m_resourcename.c_str() );
 			return false;
 		}
 

@@ -73,7 +73,7 @@ namespace Menge
 			if( buffer_data_() == 0 )
 			{
 				// кончился файл, на данном этапе это ошибка
-				MENGE_LOG( MENGE_TEXT("Theora Codec Error: bad file") );
+				MENGE_LOG_ERROR( MENGE_TEXT("Theora Codec Error: bad file") );
 				clear_();
 				return false;
 			}
@@ -115,7 +115,7 @@ namespace Menge
 				// идентификатором потока, как и у текущей странички
 				if( ogg_stream_init( &oggStreamStateTest, ogg_page_serialno(&m_oggPage) ) != 0 )
 				{
-					MENGE_LOG( MENGE_TEXT("TheoraCodec Error: error during ogg_stream_init") );
+					MENGE_LOG_ERROR( MENGE_TEXT("TheoraCodec Error: error during ogg_stream_init") );
 					clear_();
 					return false;
 				}
@@ -123,14 +123,14 @@ namespace Menge
 				// добавляем страницу в тестовый поток
 				if( ogg_stream_pagein( &oggStreamStateTest, &m_oggPage) != 0 )
 				{
-					MENGE_LOG( MENGE_TEXT("TheoraCodec Error: error during ogg_stream_pagein") );
+					MENGE_LOG_ERROR( MENGE_TEXT("TheoraCodec Error: error during ogg_stream_pagein") );
 					clear_();
 					return false;
 				}
 				// декодируем данные из этого тестового потока в пакет
 				if( ogg_stream_packetout( &oggStreamStateTest, &m_oggPacket ) == -1 )
 				{
-					MENGE_LOG( MENGE_TEXT("TheoraCodec Error: error during ogg_stream_packetout") );
+					MENGE_LOG_ERROR( MENGE_TEXT("TheoraCodec Error: error during ogg_stream_packetout") );
 					clear_();
 					return false;
 				}
@@ -179,7 +179,7 @@ namespace Menge
 			if( result < 0 )
 			{
 				// ошибка декодирования, поврежденный поток
-				MENGE_LOG( MENGE_TEXT("TheoraCodec Error: error during ogg_stream_packetout") );
+				MENGE_LOG_ERROR( MENGE_TEXT("TheoraCodec Error: error during ogg_stream_packetout") );
 				clear_();
 				return false;
 			}
@@ -192,7 +192,7 @@ namespace Menge
 				if( result2 < 0 )
 				{
 					// ошибка декодирования, поврежденный поток
-					MENGE_LOG( MENGE_TEXT("TheoraCodec Error: error during theora_decode_header (corrupt stream)") );
+					MENGE_LOG_ERROR( MENGE_TEXT("TheoraCodec Error: error during theora_decode_header (corrupt stream)") );
 					clear_();
 					return false;
 				}
@@ -219,7 +219,7 @@ namespace Menge
 				if( ret == 0 )
 				{
 					// опять файл кончился!
-					MENGE_LOG( MENGE_TEXT( "TheoraCodec Error: eof searched. terminate...") );
+					MENGE_LOG_ERROR( MENGE_TEXT( "TheoraCodec Error: eof searched. terminate...") );
 					clear_();
 					return false;
 				}
@@ -287,7 +287,7 @@ namespace Menge
 		if( theora_decode_YUVout(&m_theoraState, &m_yuvBuffer) != 0 )
 		{
 			// ошибка декодирования
-			MENGE_LOG( MENGE_TEXT("error during theora_decode_YUVout...") );
+			MENGE_LOG_ERROR( MENGE_TEXT("error during theora_decode_YUVout...") );
 		}
 
 		unsigned char* frame = static_cast<unsigned char*>( _buf );
@@ -507,7 +507,7 @@ namespace Menge
 		if( theora_decode_packetin(&m_theoraState,&m_oggPacket) == OC_BADPACKET)
 		{
 			// ошибка декодирования
-			MENGE_LOG( MENGE_TEXT("error during theora_decode_packetin...") );
+			MENGE_LOG_ERROR( MENGE_TEXT("error during theora_decode_packetin...") );
 		}
 		return m_lastReadBytes;
 	}

@@ -76,6 +76,7 @@
 #	include "ResourceTileMap.h"
 #	include "ResourceTileSet.h"
 #	include "ResourceMeshMS3D.h"
+#	include "ResourceMeshNoise.h"
 #	include "ResourceMaterial.h"
 #	include "Player.h"
 #	include "Scene.h"
@@ -466,8 +467,9 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceTileMap );
 		RESOURCE_FACTORY( ResourceTileSet );
 		RESOURCE_FACTORY( ResourceMeshMS3D );
+		RESOURCE_FACTORY( ResourceMeshNoise );
 		RESOURCE_FACTORY( ResourceMaterial );
-		
+	
 		if( !m_interface->init( _applicationFile.c_str(), this ) )
 		{
 			return false;

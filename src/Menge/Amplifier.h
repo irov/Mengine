@@ -62,8 +62,7 @@ namespace	Menge
 
 			const String& getPlaying() const;
 
-			void fadeIn( float _time );
-			void fadeOut( float _time );
+			void volumeTo( float _time, float _value );
 			std::size_t getNumTracks() const;
 
 			void update( float _timing );
@@ -91,6 +90,6 @@ namespace	Menge
 			void	_prepareSound( const String& _filename );
 			bool	_loadPlayList( const String& _playlistResource );
 
-			ValueInterpolator<float> m_fade;
+			ValueInterpolator<float> m_volumeTo;
 	};
 }

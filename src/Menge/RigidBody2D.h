@@ -133,5 +133,6 @@ namespace Menge
 		bool m_countGravity;
 		bool m_frozen;
 		void _updateFilterData();
+		void compileShapes_();
 	};
 }

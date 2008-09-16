@@ -26,6 +26,7 @@ namespace Menge
 		//const std::string & getMaterialName() const;
 		virtual const std::vector<TVertex>& getVertexData();
 		virtual const std::vector<uint16>& getIndexData();
+		virtual void addTiming( float _timing ) {};
 
 	protected:
 		bool _compile() override;

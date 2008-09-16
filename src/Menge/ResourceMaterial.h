@@ -3,6 +3,7 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "ResourceReference.h"
 #	include "ColourValue.h"
+#	include "Math/mat4.h"
 
 namespace Menge
 {
@@ -32,6 +33,7 @@ namespace Menge
 		ResourceImage* m_resourceImage;
 		TMaterial m_material;
 		ColourValue m_color;
+		mt::mat4f m_textureMatrix;
 	};
 
 }	// namespace Menge

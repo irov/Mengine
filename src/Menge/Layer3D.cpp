@@ -66,8 +66,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer3D::loader( XmlElement * _xml )
 	{
-		Node::loader(_xml);
-	//	Layer::loader(_xml);
+	//	Node::loader(_xml);
+		Layer::loader(_xml);
 
 		std::string name;
 

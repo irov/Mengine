@@ -196,6 +196,11 @@ namespace Menge
 			Holder<Application>::hostage()->setParticlesEnabled( _enable );
 		}
 
+		static PyObject* s_unicode( const StringA& _string )
+		{
+			return pybind::ptr( Holder<Application>::hostage()->AToW( _string ) );
+		}
+
 	};
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
@@ -240,5 +245,7 @@ namespace Menge
 		pybind::def( "getCurrentAccountName", &ScriptHelper::s_getCurrentAccountName );
 
 		pybind::def( "setParticlesEnabled", &ScriptHelper::s_setParticlesEnabled );
+
+		pybind::def( "unicode", &ScriptHelper::s_unicode );
 	}
 }

@@ -16,6 +16,7 @@ namespace Menge
 		, m_resourceImage( 0 )
 		, m_color( 1.0f, 1.0f, 1.0f, 1.0f )
 	{
+		mt::ident_m4( m_textureMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMaterial::loader( XmlElement * _xml )
@@ -45,6 +46,7 @@ namespace Menge
 				Holder<ResourceManager>::hostage()->
 				getResource( m_textureName ) 
 				);
+			//m_textureMatrix.m[12] = -m_resourceImage->getUV
 			m_material.texture = const_cast<RenderImageInterface*>( m_resourceImage->getImage( 0 ) );
 		}
 

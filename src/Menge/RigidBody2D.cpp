@@ -248,6 +248,8 @@ namespace Menge
 		m_interface->setBodyListener( m_listenerProxy );
 		m_interface->setUserData( this );
 
+		compileShapes_();
+
 		for( TShapeList::iterator it = m_shapeList.begin(),
 				it_end = m_shapeList.end();
 				it != it_end;
@@ -511,14 +513,14 @@ namespace Menge
 				RenderEngine* reng = Holder<RenderEngine>::hostage();
 
 				pos += getWorldPosition();
-				const mt::mat3f& mtx = getWorldMatrix();
+				mt::mat3f mtx = getWorldMatrix();
 
 				mt::vec2f temp[4] = 
 				{
-					mt::vec2f( -width/2.0f, -height/2.0f ),
-					mt::vec2f( width/2.0f, -height/2.0f ),
-					mt::vec2f( width/2.0f, height/2.0f ),
-					mt::vec2f( -width/2.0f, height/2.0f )
+					mt::vec2f( -width * 0.5f, -height * 0.5f ),
+					mt::vec2f( width * 0.5f, -height * 0.5f ),
+					mt::vec2f( width * 0.5f, height * 0.5f ),
+					mt::vec2f( -width * 0.5f, height * 0.5f )
 				};
 
 				mt::vec2f pts[4];
@@ -587,6 +589,31 @@ namespace Menge
 
 		const float * orient = m_interface->getOrientation();
 		setLocalDirection( mt::vec2f( orient[0], orient[1] ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::compileShapes_()
+	{
+		/*for( int i = 0; i < m_shapeList.size(); )
+		{
+			if( m_shapeList[i].num_points() == 4 )
+			{
+				const mt::TVectorPoints& pts = m_shapeList[i].get_points();
+				if( pts[0].x == pts[3].x &&
+					pts[0].y == pts[1].y &&
+					pts[1].x == pts[2].x &&
+					pts[2].y == pts[3].y )
+				{
+					float w = pts[1].x - pts[0].x;
+					float h = pts[2].y - pts[1].y;
+					mt::vec2f c( w * 0.5f, h * 0.5f );
+					//mt::vec2f c( 0.0f, 0.0f );
+					m_shapeBoxList.push_back( std::make_pair( std::make_pair( w, h ), std::make_pair( c, 0.0f ) ) );
+					m_shapeList.erase( std::remove( m_shapeList.begin(), m_shapeList.end(), m_shapeList[i] ) );
+					continue;
+				}
+			}
+			i++;
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

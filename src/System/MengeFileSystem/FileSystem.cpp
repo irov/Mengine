@@ -256,7 +256,10 @@ namespace Menge
 		fs.hwnd = NULL;
 
 #ifdef MENGE_UNICODE
-		fs.pFrom = _path.c_str();
+		wchar_t path[MAX_PATH];
+		wcscpy( path, _path.c_str() );
+		path[ _path.size() + 1 ] = 0;
+		fs.pFrom = path;
 #else
 		wchar_t lpszW[MAX_PATH];
 		String::size_type size = _path.size();
@@ -272,30 +275,30 @@ namespace Menge
 		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
 		if( ::SHFileOperation( &fs ) != 0 )
 		{
+			/*TCHAR szBuf[80]; 
+			LPVOID lpMsgBuf;
+			DWORD dw = GetLastError(); 
+
+			FormatMessage(
+				FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+				FORMAT_MESSAGE_FROM_SYSTEM,
+				NULL,
+				dw,
+				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+				(LPTSTR) &lpMsgBuf,
+				0, NULL );
+
+			//sprintf_s(szBuf, "failed with error %d: %s", dw, lpMsgBuf); 
+
+			//MessageBox(NULL, szBuf, "Error", MB_OK); 
+
+			LocalFree(lpMsgBuf);*/
 			return false;
 		}
 		return true;
 #else
+		return false;
 #endif
-		/*TCHAR szBuf[80]; 
-		LPVOID lpMsgBuf;
-		DWORD dw = GetLastError(); 
-
-		FormatMessage(
-			FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-			FORMAT_MESSAGE_FROM_SYSTEM,
-			NULL,
-			dw,
-			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-			(LPTSTR) &lpMsgBuf,
-			0, NULL );
-
-		sprintf_s(szBuf, "failed with error %d: %s", dw, lpMsgBuf); 
-
-		MessageBox(NULL, szBuf, "Error", MB_OK); 
-
-		LocalFree(lpMsgBuf);
-		return false;*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::changeDir( const Text& _path )

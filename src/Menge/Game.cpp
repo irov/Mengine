@@ -747,6 +747,10 @@ namespace Menge
 		Holder<FileEngine>::hostage()->
 			createFolder( Holder<FileEngine>::hostage()->getAppDataPath() + MENGE_TEXT("\\") + _accountName );
 
+		if( m_loadingAccounts == false )
+		{
+			m_accountNames.push_back( _accountName );
+		}
 		Account* newAccount = new Account( _accountName );
 		m_accounts.insert( std::make_pair( _accountName, newAccount ) );
 
@@ -788,6 +792,7 @@ namespace Menge
 			delete it_find->second;
 
 			m_accounts.erase( it_find );
+			m_accountNames.erase( std::remove( m_accountNames.begin(), m_accountNames.end(), _accountName ) );
 		}
 		else
 		{
@@ -834,7 +839,8 @@ namespace Menge
 				{
 					XML_CASE_ATTRIBUTE( MENGE_TEXT("Name"), accountName );
 				}
-				m_accounts.insert( std::make_pair( accountName, static_cast<Account*>(0) ) );
+				//m_accounts.insert( std::make_pair( accountName, static_cast<Account*>(0) ) );
+				m_accountNames.push_back( accountName );
 			}
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("DefaultAccount"), MENGE_TEXT("Name"), m_defaultAccountName );
 		}		
@@ -857,7 +863,7 @@ namespace Menge
 				return;
 			}
 
-			TStringVector accountNames;
+			/*TStringVector accountNames;
 
 			for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
 				it != it_end;
@@ -866,9 +872,9 @@ namespace Menge
 				accountNames.push_back( it->first );
 			}
 
-			m_accounts.clear();
+			m_accounts.clear();*/
 
-			for( TStringVector::iterator it = accountNames.begin(), it_end = accountNames.end();
+			for( TStringVector::iterator it = m_accountNames.begin(), it_end = m_accountNames.end();
 				it != it_end;
 				it++ )
 			{
@@ -891,11 +897,11 @@ namespace Menge
 
 		outStream->write( MENGE_TEXT("<Accounts>\n") );
 
-		for( TAccountMap::iterator it = m_accounts.begin(), it_end = m_accounts.end();
+		for( TStringVector::iterator it = m_accountNames.begin(), it_end = m_accountNames.end();
 			it != it_end;
 			it++ )
 		{
-			outStream->write( MENGE_TEXT("\t<Account Name = \"") + it->first + MENGE_TEXT("\"/>\n") );
+			outStream->write( MENGE_TEXT("\t<Account Name = \"") + (*it) + MENGE_TEXT("\"/>\n") );
 		}
 
 		if( m_currentAccount != 0 )

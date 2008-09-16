@@ -188,8 +188,10 @@ namespace Menge
 	{
 		RenderImageInterface* texture;
 		unsigned int color;
+		float* texMatrix;
 		_tMaterial()
 			: texture( 0 )
+			, texMatrix( 0 )
 			, color( 0xFFFFFFFF )
 		{
 		}

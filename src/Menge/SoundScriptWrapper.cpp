@@ -78,15 +78,11 @@ namespace	Menge
 			return Holder<Amplifier>::hostage()->getPlaying();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void s_musicFadeIn( float _time )
+		static void s_musicVolumeTo( float _time, float _volume )
 		{
-			Holder<Amplifier>::hostage()->fadeIn( _time );
+			Holder<Amplifier>::hostage()->volumeTo( _time, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void s_musicFadeOut( float _time )
-		{
-			Holder<Amplifier>::hostage()->fadeOut( _time );
-		}
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -107,7 +103,6 @@ namespace	Menge
 		pybind::def( "musicStop", &ScriptSoundHelper::musicStop );
 		pybind::def( "musicShuffle", &ScriptSoundHelper::musicShuffle );
 		pybind::def( "musicGetPlaying", &ScriptSoundHelper::s_musicGetPlaying );
-		pybind::def( "musicFadeIn", &ScriptSoundHelper::s_musicFadeIn );
-		pybind::def( "musicFadeOut", &ScriptSoundHelper::s_musicFadeOut );
+		pybind::def( "musicVolumeTo", &ScriptSoundHelper::s_musicVolumeTo );
 	}
 }

@@ -243,10 +243,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::update( float _timing )
 	{
-		if( m_fade.isStarted() )
+		if( m_volumeTo.isStarted() )
 		{
 			float volume;
-			bool end = m_fade.update( _timing, &volume );
+			bool end = m_volumeTo.update( _timing, &volume );
 			setVolume( volume );
 			/*if( end == true )
 			{
@@ -255,16 +255,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::fadeIn( float _time )
+	void Amplifier::volumeTo( float _time, float _volume )
 	{
 		//m_volumeOverride = m_volume;
-		m_fade.start( m_volume, 0.0f, _time, ::fabsf );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::fadeOut( float _time )
-	{
-		//m_volumeOverride = m_volume;
-		m_fade.start( 0.0f, m_volume, _time, ::fabsf );
+		m_volumeTo.start( m_volume, _volume, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -160,7 +160,7 @@ namespace Menge
 		int m_FSAAQuality;
 		String m_physicSystemName;
 
-		TStringVector m_loadedAccounts;
+		TStringVector m_accountNames;
 		typedef std::map<String, Account*> TAccountMap;
 		TAccountMap m_accounts;
 

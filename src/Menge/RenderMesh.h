@@ -26,6 +26,7 @@ namespace Menge
 	protected:
 		bool _compile() override;
 		void _release() override;
+		void _update( float _timing ) override;
 
 		void compileMaterial_();
 		void releaseMaterial_();

@@ -343,7 +343,35 @@ namespace     Menge
 
 		for(TStringVector::iterator line = lines.begin(); line != lines.end(); line++)
 		{
-			m_lines.push_back(TextLine(*this, m_resource,*line));
+			TextLine textLine( *this, m_resource, *line );
+			if( textLine.getLength() > m_maxWidth )
+			{
+				TStringVector words = Utils::split( *line, MENGE_TEXT(" ") );
+			
+				Text newLine = words.front();
+				words.erase( words.begin() );
+				while( words.empty() == false )
+				{
+					TextLine tl( *this, m_resource, Text( newLine + Text( MENGE_TEXT(" ") ) + ( *words.begin() ) ) );
+					if( tl.getLength() > m_maxWidth )
+					{
+						m_lines.push_back( TextLine( *this, m_resource, newLine ) );
+						newLine.clear();
+						newLine = words.front();
+						words.erase( words.begin() );
+					}
+					else
+					{
+						newLine += Text( MENGE_TEXT(" ") ) + ( *words.begin() );
+						words.erase( words.begin() );
+					}
+				}
+				m_lines.push_back( TextLine( *this, m_resource, newLine ) );
+			}
+			else
+			{
+				m_lines.push_back( textLine );
+			}
 		}
 
 		float maxlen = 0.0f;

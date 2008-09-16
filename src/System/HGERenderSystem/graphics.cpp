@@ -802,6 +802,7 @@ bool HGE_Impl::_GfxInit()
 	m_syncTempTex = 0;
 	pIB3D = 0;
 	pVB3D = 0;
+	CurTexture = 0;
 // Init D3D
 							
 	pD3D=Direct3DCreate8( D3D_SDK_VERSION ); // D3D_SDK_VERSION
@@ -1505,11 +1506,11 @@ void HGE_Impl::Gfx_Prepare2D()
 	nPrim=0;
 	CurPrimType=HGEPRIM_QUADS;
 	CurBlendMode = BLEND_DEFAULT;
-	CurTexture = NULL;
+	//CurTexture = NULL;
 
 	//D3DXMatrixIdentity( &matView );
 	D3DXMatrixIdentity( &matWorld );
-	/*_SetProjectionMatrix( nScreenWidth, nScreenHeight );*/
+	_SetProjectionMatrix( nScreenWidth, nScreenHeight );
 	pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj );
 	pD3DDevice->SetTransform( D3DTS_VIEW, &matView );
 	pD3DDevice->SetTransform( D3DTS_WORLD, &matWorld );
@@ -1540,20 +1541,22 @@ void HGE_Impl::Gfx_RenderMesh( const mengeVertex* _vertices, size_t _verticesNum
 							   const unsigned short* _indices, size_t _indicesNum,
 							   HTEXTURE _htex )
 {
+	HRESULT hr;
 	BYTE* vertexData = 0;
 	const BYTE* dstData = reinterpret_cast<const BYTE*>( &(_vertices[0]) );
-	pVB3D->Lock( 0, 0, &vertexData, 0 );
+	hr = pVB3D->Lock( 0, 0, &vertexData, 0 );
 	std::copy( _vertices, _vertices + _verticesNum, (mengeVertex *)vertexData );
-	pVB3D->Unlock();
+	hr = pVB3D->Unlock();
 
 	//const BYTE* dstIData = reinterpret_cast<const BYTE*>( &(_indices[0]) );
-	pIB3D->Lock( 0, 0, &vertexData, 0 );
+	hr = pIB3D->Lock( 0, 0, &vertexData, 0 );
 	std::copy( _indices, _indices + _indicesNum, (unsigned short *)vertexData );
-	pIB3D->Unlock();
+	hr = pIB3D->Unlock();
 
-	pD3DDevice->SetTexture( 0, reinterpret_cast<IDirect3DTexture8*>( _htex ) );
+	hr = pD3DDevice->SetTexture( 0, reinterpret_cast<IDirect3DTexture8*>( _htex ) );
+	CurTexture = _htex;
 
-	pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, _verticesNum, 0, _indicesNum / 3 );
+	hr = pD3DDevice->DrawIndexedPrimitive( D3DPT_TRIANGLELIST, 0, _verticesNum, 0, _indicesNum / 3 );
 }
 
 void HGE_Impl::Gfx_SetTextureMatrix( const float* _texMat )

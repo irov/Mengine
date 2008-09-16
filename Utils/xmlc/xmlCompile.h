@@ -18,7 +18,7 @@ public:
 
 	void compile( const std::string & _in, const std::string & _out );
 
-	void parse( )
+	void parse( );
 
 protected:
 	static void cbBeginElementFormat( void *userData, const char *name, const char **attr );

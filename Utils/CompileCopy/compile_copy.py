@@ -25,8 +25,8 @@ good_files = []
 #file to copy
 copy_files = []
 
-atlas_width = 2048
-atlas_height = 2048
+atlas_width = 1024
+atlas_height = 1024
 
 # jpg quality, in percent
 jpg_quality = 95
@@ -215,6 +215,11 @@ def atlas(src,destdir):
         
         for resource in resources:
             type = resource.getAttribute("Type")
+            
+            val = resource.getAttribute("Restricted")
+            
+            if(val == "1"):
+                continue
                                         
             if(type in allowed_type):
                 files = resource.getElementsByTagName("File")

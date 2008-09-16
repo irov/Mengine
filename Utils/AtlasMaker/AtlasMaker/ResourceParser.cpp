@@ -201,6 +201,11 @@ void ResourceParser::_loadTexturesFromResource(const std::string & _filename)
 
 	for (pugi::xml_node resource = data_block.child("Resource"); resource; resource = resource.next_sibling("Resource"))
 	{
+		pugi::xml_attribute atr = resource.attribute("Restricted");
+		
+		if(atr.as_bool() == true)
+			continue;
+
 		if(_isResourceAllowed(resource.attribute("Type").value()))
 		{
 			for (pugi::xml_node file = resource.child("File"); file; file = file.next_sibling("File"))

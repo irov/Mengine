@@ -126,34 +126,6 @@ public:
 
 	}
 
-	TextureAtlasCache(int width, int height,int bpp)
-	{
-		int bpps[] = {8,24,32};
-		for(int k = 0; k < sizeof(bpps)/sizeof(int); k++)
-		{
-			for(int i = 1; i <= width; i <<= 1)
-			{
-				for(int j = 1; j <= height; j <<= 1)
-				{
-					FIBITMAP * m_atlasTexture = FreeImageWrapper::AllocateImage( i, j, bpps[k] );
-
-					if(m_atlasTexture == NULL)
-					{
-						break;
-					}
-
-					//FreeImageWrapper::FillChannel( m_atlasTexture, FI_RGBA_ALPHA, 0 );
-
-					//Desc desc(i,j,bpps[k]);
-					static char Text[128];
-					sprintf(Text,"%d %d %d",i,j,bpps[k]);
-					std::string id = Text;
-					CacheAtlases.insert(std::make_pair(id, m_atlasTexture));
-				}
-			}
-		}
-	}
-
 	FIBITMAP* find(int width, int height,int bpp)
 	{
 		static char Text[128];
@@ -181,29 +153,6 @@ public:
 		return it->second;
 	}
 
-	/*	struct Desc
-	{
-	int width;
-	int height;
-	int bpp;
-
-	Desc(int i, int j, int k)
-	: width(i)
-	, height(j)
-	, bpp(k)
-	{
-	}
-	};
-
-	struct less_desc
-	: public std::binary_function<Desc, Desc, bool>
-	{
-	bool operator()(const Desc& desc1, const Desc& desc2) const
-	{	
-	return (desc1.width < desc2.width) && (desc1.height < desc2.height) && (desc1.bpp < desc2.bpp);
-	}
-	};
-	*/
 	std::map<std::string, FIBITMAP*> CacheAtlases;
 };
 //////////////////////////////////////////////////////////////////////////
@@ -223,15 +172,10 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 
 	static TextureAtlasCache atlasCache;//(2048,2048,32);
 
-	//сделать КЕШ атласов.
-	//bool result = _allocateAtlasTexture(correctedWidth, correctedHeight);
-
 	m_packWidth = correctedWidth;
 	m_packHeight = correctedHeight;
 
 	m_atlasTexture = atlasCache.find(m_packWidth,m_packHeight,m_bpp);
-
-	//m_atlasTexture = FreeImageWrapper::AllocateImage( m_packWidth, m_packHeight, m_bpp );
 
 	if(m_atlasTexture == NULL)
 	{
@@ -259,6 +203,21 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 			//assert(!"ERROR!!!");
 		}
 
+		int w = FreeImage_GetWidth(texture->getTexture());
+		int h = FreeImage_GetHeight(texture->getTexture());
+
+		if((X == 0) || (Y == 0) || ((FreeImage_GetWidth(m_atlasTexture) - X) == w)
+			|| ((FreeImage_GetHeight(m_atlasTexture) - Y) == w)
+			)
+		{
+
+		}
+		else
+		{
+			FreeImageWrapper::CorrectQuantinaze(m_atlasTexture,X,Y,w,h);
+		//	FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
+		}
+
 		desc.u = X / float(correctedWidth);
 		desc.v = Y / float(correctedHeight);
 
@@ -268,7 +227,8 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 
 	printf("%s \n",m_filename.c_str() );
 	//uncomment for test
-	//FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
+
+	FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
 
 	FIBITMAP * rgb = FreeImage_ConvertTo24Bits(m_atlasTexture);
 

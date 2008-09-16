@@ -2,6 +2,11 @@
 
 void ConvertImageDefaultToAtlas(ResourceParser * resourceParser, pugi::xml_node & resource)
 {
+	pugi::xml_attribute atr = resource.attribute("Restricted");
+
+	if(atr.as_bool() == true)
+		return;
+
 	bool result = true;
 
 	for (pugi::xml_node file = resource.child("File"); 

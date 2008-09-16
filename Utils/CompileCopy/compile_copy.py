@@ -215,7 +215,7 @@ def atlas(src,destdir):
         
         for resource in resources:
             type = resource.getAttribute("Type")
-            
+                                        
             if(type in allowed_type):
                 files = resource.getElementsByTagName("File")
                 if(files != []):

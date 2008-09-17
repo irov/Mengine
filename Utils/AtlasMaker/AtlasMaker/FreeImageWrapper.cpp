@@ -164,11 +164,10 @@ void FreeImageWrapper::CorrectQuantinaze(FIBITMAP * _image, int _x, int _y, int 
 		neighboor_bits+= bytespp;
 	}
 
-
 	cy = FreeImage_GetHeight(_image) - _y;
 
-	original_bits = FreeImage_GetScanLine(_image, cy+1);
-	neighboor_bits = FreeImage_GetScanLine(_image, cy);
+	original_bits = FreeImage_GetScanLine(_image, cy);
+	neighboor_bits = FreeImage_GetScanLine(_image, cy-1);
 
 	neighboor_bits = neighboor_bits + _x*bytespp;
 	original_bits = original_bits + _x*bytespp;

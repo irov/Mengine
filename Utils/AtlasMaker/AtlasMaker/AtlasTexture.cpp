@@ -237,8 +237,8 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 		desc.u = (X + desc.isW)/ float(correctedWidth);
 		desc.v = (Y + desc.isH) / float(correctedHeight);
 
-		desc.w = (X + desc.sizeX + desc.isW) / float(correctedWidth);
-		desc.z = (Y + desc.sizeY + desc.isH) / float(correctedHeight);
+		desc.w = (X + desc.sizeX - desc.isW) / float(correctedWidth);
+		desc.z = (Y + desc.sizeY - desc.isH) / float(correctedHeight);
 	}
 
 	printf("%s \n",m_filename.c_str() );

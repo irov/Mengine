@@ -150,7 +150,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( MENGE_TEXT("Transformation") )
+			XML_CASE_NODE( MENGE_TEXT("Transformation3D") )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{

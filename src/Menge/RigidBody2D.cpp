@@ -213,7 +213,7 @@ namespace Menge
 			const float * pos = m_interface->getPosition();
 			const mt::vec2f& prevPos = getLocalPosition();
 			mt::vec2f currPos( pos[0], pos[1] );
-			currPos = currPos * phase + prevPos * ( 1.0f - phase );
+			//currPos = currPos * phase + prevPos * ( 1.0f - phase );
 			setLocalPosition( currPos );
 
 			const float * orient = m_interface->getOrientation();

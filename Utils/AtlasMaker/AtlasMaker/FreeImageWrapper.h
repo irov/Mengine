@@ -18,7 +18,7 @@ public:
 	// find alpha bounding box around non alpha region
 	static bool FindAlphaBoundingBox(FIBITMAP * _texture, RECT & _bbox);
 
-	static void CorrectQuantinaze(FIBITMAP * _image, int _x, int _y, int _width, int _height);
+	static void CorrectQuantinaze(int corner, FIBITMAP * _image, int _x, int _y, int _width, int _height);
 
 	static int getPow2Size(int _size);
 };

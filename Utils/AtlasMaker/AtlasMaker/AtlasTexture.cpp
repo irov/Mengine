@@ -57,6 +57,19 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 
 	int isW = 0;
 
+	/*if(_texture.getNonAlphaWidth() == getWidth())
+	{
+		isW = 0;
+	}
+
+	if(_texture.getNonAlphaWidth() < getWidth())
+	{
+		Width++;
+		Width++;
+		isW = 1;
+	}*/
+
+
 	if(_texture.getNonAlphaWidth() == getWidth())
 	{
 	}
@@ -219,20 +232,61 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 			//assert(!"ERROR!!!");
 		}
 
-		int w = FreeImage_GetWidth(texture->getTexture());
-		int h = FreeImage_GetHeight(texture->getTexture());
+		int w = texture->getNonAlphaWidth();
+		int h = texture->getNonAlphaHeight();
 
-		if((X == 0) || (Y == 0) || ((FreeImage_GetWidth(m_atlasTexture) - X) == w)
-			|| ((FreeImage_GetHeight(m_atlasTexture) - Y) == w)
+	/*	if((X == 0) || (Y == 0) || ((FreeImage_GetWidth(m_atlasTexture) - X) == w)
+			|| ((FreeImage_GetHeight(m_atlasTexture) - Y) == y)
 			)
 		{
 
 		}
 		else
 		{
-			FreeImageWrapper::CorrectQuantinaze(m_atlasTexture,X,Y,w,h);
-		//	FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
+		}*/
+
+
+		if((FreeImage_GetWidth(m_atlasTexture) - X) == w)
+		{
+
 		}
+		else
+		{
+			//справа
+			FreeImageWrapper::CorrectQuantinaze(0,m_atlasTexture,X,Y,w,h);
+		}
+
+		if((FreeImage_GetHeight(m_atlasTexture) - Y) == h)
+		{
+
+		}
+		else
+		{
+			//вниз
+			FreeImageWrapper::CorrectQuantinaze(2,m_atlasTexture,X,Y,w,h);
+		}
+
+		if(X == 0)
+		{
+
+		}
+		else
+		{
+			//слева
+			FreeImageWrapper::CorrectQuantinaze(1,m_atlasTexture,X,Y,w,h);
+		}
+
+		if(Y == 0)
+		{
+
+		}
+		else
+		{
+			//слева
+			FreeImageWrapper::CorrectQuantinaze(3,m_atlasTexture,X,Y,w,h);
+		}
+
+
 
 		desc.u = (X + desc.isW)/ float(correctedWidth);
 		desc.v = (Y + desc.isH) / float(correctedHeight);
@@ -244,7 +298,7 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 	printf("%s \n",m_filename.c_str() );
 	//uncomment for test
 
-	//FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
+	FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
 
 	FIBITMAP * rgb = FreeImage_ConvertTo24Bits(m_atlasTexture);
 

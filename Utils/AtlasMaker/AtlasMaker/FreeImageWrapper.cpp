@@ -101,86 +101,115 @@ void FreeImageWrapper::FillChannel( FIBITMAP * _image, int _channel, unsigned ch
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void FreeImageWrapper::CorrectQuantinaze(FIBITMAP * _image, int _x, int _y, int _width, int _height)
+void FreeImageWrapper::CorrectQuantinaze(int corner, FIBITMAP * _image, int _x, int _y, int _width, int _height)
 {
 	int bytespp = FreeImage_GetLine(_image) / FreeImage_GetWidth(_image); 
 
 	//int w = _width - 2;
-
 	int cy = FreeImage_GetHeight(_image) - _y;
-	for(int y = cy-_height; y < cy; y++)
+
+	if(corner==0)
 	{
-		BYTE * original_bits = FreeImage_GetScanLine(_image, y);
-		BYTE * neighboor_bits = original_bits + (_x+_width-1)*bytespp;
+		for(int y = cy-_height; y < cy; y++)
+		{
+			BYTE * original_bits = FreeImage_GetScanLine(_image, y);
+			BYTE * neighboor_bits = original_bits + (_x+_width-1)*bytespp;
 
-		original_bits+= (_x+_width)*bytespp;
+			original_bits+= (_x+_width)*bytespp;
 
-		original_bits[FI_RGBA_RED] = neighboor_bits[FI_RGBA_RED]; 
-		original_bits[FI_RGBA_GREEN] = neighboor_bits[FI_RGBA_GREEN]; 
-		original_bits[FI_RGBA_BLUE] = neighboor_bits[FI_RGBA_BLUE]; 
-		original_bits[FI_RGBA_ALPHA] = neighboor_bits[FI_RGBA_ALPHA];
-	}
-
-	for(int y = cy-_height; y < cy; y++)
-	{
-		BYTE * original_bits = FreeImage_GetScanLine(_image, y);
-		BYTE * neighboor_bits = original_bits + (_x)*bytespp;
-
-		original_bits+= (_x-1)*bytespp;
-
-		original_bits[FI_RGBA_RED] = neighboor_bits[FI_RGBA_RED]; 
-		original_bits[FI_RGBA_GREEN] = neighboor_bits[FI_RGBA_GREEN]; 
-		original_bits[FI_RGBA_BLUE] = neighboor_bits[FI_RGBA_BLUE]; 
-		original_bits[FI_RGBA_ALPHA] = neighboor_bits[FI_RGBA_ALPHA];
-
-	/*	original_bits[FI_RGBA_RED] = 0xFFAADD00; 
-		original_bits[FI_RGBA_GREEN] = 0x00AADDFF; 
-		original_bits[FI_RGBA_BLUE] = 0x00AADD00; 
-		original_bits[FI_RGBA_ALPHA] = 0xFFFFFFFF;*/
-/*
-		neighboor_bits[FI_RGBA_RED] = 0x00AADD00; 
-		neighboor_bits[FI_RGBA_GREEN] = 0x00AADDFF; 
-		neighboor_bits[FI_RGBA_BLUE] = 0xFFAADD00; 
-		neighboor_bits[FI_RGBA_ALPHA] = 0xFFFFFFFF;
-		*/
-	}
-
-	cy = FreeImage_GetHeight(_image) - _y - _height;
+			original_bits[FI_RGBA_RED] = neighboor_bits[FI_RGBA_RED]; 
+			original_bits[FI_RGBA_GREEN] = neighboor_bits[FI_RGBA_GREEN]; 
+			original_bits[FI_RGBA_BLUE] = neighboor_bits[FI_RGBA_BLUE]; 
+			original_bits[FI_RGBA_ALPHA] = neighboor_bits[FI_RGBA_ALPHA];
 	
-	BYTE * original_bits = FreeImage_GetScanLine(_image, cy-1);
-	BYTE * neighboor_bits = FreeImage_GetScanLine(_image, cy);
+		/*	original_bits[FI_RGBA_RED] = 0xFFAADD00; 
+			original_bits[FI_RGBA_GREEN] = 0x00AADDFF; 
+			original_bits[FI_RGBA_BLUE] = 0x00AADD00; 
+			original_bits[FI_RGBA_ALPHA] = 0xFFFFFFFF;
+			
+			neighboor_bits[FI_RGBA_RED] = 0x00AADDFF; 
+			neighboor_bits[FI_RGBA_GREEN] = 0x00AADDFF; 
+			neighboor_bits[FI_RGBA_BLUE] = 0xFFAADD00; 
+			neighboor_bits[FI_RGBA_ALPHA] = 0xFFFFFFFF;*/
+			
+		}
+	}
 
-	neighboor_bits = neighboor_bits + _x*bytespp;
-	original_bits = original_bits + _x*bytespp;
-
-	for(int x = 0; x < _width; x++) 
+	if(corner==1)
 	{
-		original_bits[FI_RGBA_RED] = neighboor_bits[FI_RGBA_RED]; 
-		original_bits[FI_RGBA_GREEN] = neighboor_bits[FI_RGBA_GREEN]; 
-		original_bits[FI_RGBA_BLUE] = neighboor_bits[FI_RGBA_BLUE]; 
-		original_bits[FI_RGBA_ALPHA] = neighboor_bits[FI_RGBA_ALPHA];
+		for(int y = cy-_height; y < cy; y++)
+		{
+			BYTE * original_bits = FreeImage_GetScanLine(_image, y);
+			BYTE * neighboor_bits = original_bits + (_x)*bytespp;
 
-		original_bits+= bytespp;
-		neighboor_bits+= bytespp;
+			original_bits+= (_x-1)*bytespp;
+
+			original_bits[FI_RGBA_RED] = neighboor_bits[FI_RGBA_RED]; 
+			original_bits[FI_RGBA_GREEN] = neighboor_bits[FI_RGBA_GREEN]; 
+			original_bits[FI_RGBA_BLUE] = neighboor_bits[FI_RGBA_BLUE]; 
+			original_bits[FI_RGBA_ALPHA] = neighboor_bits[FI_RGBA_ALPHA];
+
+		/*	original_bits[FI_RGBA_RED] = 0xFFAADD00; 
+			original_bits[FI_RGBA_GREEN] = 0x00AADDFF; 
+			original_bits[FI_RGBA_BLUE] = 0x00AADD00; 
+			original_bits[FI_RGBA_ALPHA] = 0xFFFFFFFF;*/
+
+		}
+	}
+
+	if(corner==2)
+	{
+		cy = FreeImage_GetHeight(_image) - _y - _height;
+		
+		BYTE * original_bits = FreeImage_GetScanLine(_image, cy-1);
+		BYTE * neighboor_bits = FreeImage_GetScanLine(_image, cy);
+
+		neighboor_bits = neighboor_bits + _x*bytespp;
+		original_bits = original_bits + _x*bytespp;
+
+		for(int x = 0; x < _width; x++) 
+		{
+			original_bits[FI_RGBA_RED] = neighboor_bits[FI_RGBA_RED]; 
+			original_bits[FI_RGBA_GREEN] = neighboor_bits[FI_RGBA_GREEN]; 
+			original_bits[FI_RGBA_BLUE] = neighboor_bits[FI_RGBA_BLUE]; 
+			original_bits[FI_RGBA_ALPHA] = neighboor_bits[FI_RGBA_ALPHA];
+
+		/*	original_bits[FI_RGBA_RED] = 0xFFAADD00; 
+			original_bits[FI_RGBA_GREEN] = 0x00AADDFF; 
+			original_bits[FI_RGBA_BLUE] = 0x00AADD00; 
+			original_bits[FI_RGBA_ALPHA] = 0xFFFFFFFF;*/
+
+
+			original_bits+= bytespp;
+			neighboor_bits+= bytespp;
+		}
 	}
 
 	cy = FreeImage_GetHeight(_image) - _y;
 
-	original_bits = FreeImage_GetScanLine(_image, cy);
-	neighboor_bits = FreeImage_GetScanLine(_image, cy-1);
-
-	neighboor_bits = neighboor_bits + _x*bytespp;
-	original_bits = original_bits + _x*bytespp;
-
-	for(int x = 0; x < _width; x++) 
+	if(corner==3)
 	{
-		original_bits[FI_RGBA_RED] = neighboor_bits[FI_RGBA_RED]; 
-		original_bits[FI_RGBA_GREEN] = neighboor_bits[FI_RGBA_GREEN]; 
-		original_bits[FI_RGBA_BLUE] = neighboor_bits[FI_RGBA_BLUE]; 
-		original_bits[FI_RGBA_ALPHA] = neighboor_bits[FI_RGBA_ALPHA];
+		BYTE * original_bits = FreeImage_GetScanLine(_image, cy);
+		BYTE * neighboor_bits = FreeImage_GetScanLine(_image, cy-1);
 
-		original_bits+= bytespp;
-		neighboor_bits+= bytespp;
+		neighboor_bits = neighboor_bits + _x*bytespp;
+		original_bits = original_bits + _x*bytespp;
+
+		for(int x = 0; x < _width; x++) 
+		{
+			original_bits[FI_RGBA_RED] = neighboor_bits[FI_RGBA_RED]; 
+			original_bits[FI_RGBA_GREEN] = neighboor_bits[FI_RGBA_GREEN]; 
+			original_bits[FI_RGBA_BLUE] = neighboor_bits[FI_RGBA_BLUE]; 
+			original_bits[FI_RGBA_ALPHA] = neighboor_bits[FI_RGBA_ALPHA];
+
+		/*	original_bits[FI_RGBA_RED] = 0xFFAADD00; 
+			original_bits[FI_RGBA_GREEN] = 0x00AADDFF; 
+			original_bits[FI_RGBA_BLUE] = 0x00AADD00; 
+			original_bits[FI_RGBA_ALPHA] = 0xFFFFFFFF;*/
+
+			original_bits+= bytespp;
+			neighboor_bits+= bytespp;
+		}
 	}
 }
 //////////////////////////////////////////////////////////////////////////

@@ -1510,7 +1510,7 @@ void HGE_Impl::Gfx_Prepare2D()
 
 	//D3DXMatrixIdentity( &matView );
 	D3DXMatrixIdentity( &matWorld );
-	_SetProjectionMatrix( nScreenWidth, nScreenHeight );
+	//_SetProjectionMatrix( nScreenWidth, nScreenHeight );
 	pD3DDevice->SetTransform( D3DTS_PROJECTION, &matProj );
 	pD3DDevice->SetTransform( D3DTS_VIEW, &matView );
 	pD3DDevice->SetTransform( D3DTS_WORLD, &matWorld );

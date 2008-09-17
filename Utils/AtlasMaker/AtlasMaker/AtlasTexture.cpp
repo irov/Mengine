@@ -244,7 +244,7 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 	printf("%s \n",m_filename.c_str() );
 	//uncomment for test
 
-	FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
+	//FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
 
 	FIBITMAP * rgb = FreeImage_ConvertTo24Bits(m_atlasTexture);
 

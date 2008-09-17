@@ -119,8 +119,6 @@ void FreeImageWrapper::CorrectQuantinaze(FIBITMAP * _image, int _x, int _y, int 
 		original_bits[FI_RGBA_GREEN] = neighboor_bits[FI_RGBA_GREEN]; 
 		original_bits[FI_RGBA_BLUE] = neighboor_bits[FI_RGBA_BLUE]; 
 		original_bits[FI_RGBA_ALPHA] = neighboor_bits[FI_RGBA_ALPHA];
-
-	//	original_bits[FI_RGBA_RED] = 0x00AADD00; 
 	}
 
 	for(int y = cy-_height; y < cy; y++)
@@ -134,6 +132,17 @@ void FreeImageWrapper::CorrectQuantinaze(FIBITMAP * _image, int _x, int _y, int 
 		original_bits[FI_RGBA_GREEN] = neighboor_bits[FI_RGBA_GREEN]; 
 		original_bits[FI_RGBA_BLUE] = neighboor_bits[FI_RGBA_BLUE]; 
 		original_bits[FI_RGBA_ALPHA] = neighboor_bits[FI_RGBA_ALPHA];
+
+	/*	original_bits[FI_RGBA_RED] = 0xFFAADD00; 
+		original_bits[FI_RGBA_GREEN] = 0x00AADDFF; 
+		original_bits[FI_RGBA_BLUE] = 0x00AADD00; 
+		original_bits[FI_RGBA_ALPHA] = 0xFFFFFFFF;*/
+/*
+		neighboor_bits[FI_RGBA_RED] = 0x00AADD00; 
+		neighboor_bits[FI_RGBA_GREEN] = 0x00AADDFF; 
+		neighboor_bits[FI_RGBA_BLUE] = 0xFFAADD00; 
+		neighboor_bits[FI_RGBA_ALPHA] = 0xFFFFFFFF;
+		*/
 	}
 
 	cy = FreeImage_GetHeight(_image) - _y - _height;

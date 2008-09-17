@@ -55,6 +55,8 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 	Width = _texture.getNonAlphaWidth();
 	Height = _texture.getNonAlphaHeight();
 
+	int isW = 0;
+
 	if(_texture.getNonAlphaWidth() == getWidth())
 	{
 	}
@@ -62,12 +64,15 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 	{
 		Width++;
 		Width++;
+		isW = 1;
 	}
 	else
 	{
 		return false;
 	}
 	
+	int isH = 0;
+
 	if(_texture.getNonAlphaHeight() == getHeight())
 	{
 	}
@@ -75,6 +80,7 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 	{
 		Height++;
 		Height++;
+		isH = 1;
 	}
 	else
 	{
@@ -90,8 +96,13 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 		TextureAtlasDesc desc;
 
 		desc.texture = &_texture;
+
 		desc.X = X;
 		desc.Y = Y;
+
+		desc.isW = isW;
+		desc.isH = isH;
+		
 		desc.offsetX = _texture.getOffsetX();
 		desc.offsetY = _texture.getOffsetY();
 		desc.sizeX = _texture.getNonAlphaWidth();
@@ -223,17 +234,17 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 		//	FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
 		}
 
-		desc.u = X / float(correctedWidth);
-		desc.v = Y / float(correctedHeight);
+		desc.u = (X + desc.isW)/ float(correctedWidth);
+		desc.v = (Y + desc.isH) / float(correctedHeight);
 
-		desc.w = (X + desc.sizeX) / float(correctedWidth);
-		desc.z = (Y + desc.sizeY) / float(correctedHeight);
+		desc.w = (X + desc.sizeX + desc.isW) / float(correctedWidth);
+		desc.z = (Y + desc.sizeY + desc.isH) / float(correctedHeight);
 	}
 
 	printf("%s \n",m_filename.c_str() );
 	//uncomment for test
 
-	//FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
+	FreeImage_Save(FIF_PNG,m_atlasTexture,(m_filename+".png").c_str());
 
 	FIBITMAP * rgb = FreeImage_ConvertTo24Bits(m_atlasTexture);
 

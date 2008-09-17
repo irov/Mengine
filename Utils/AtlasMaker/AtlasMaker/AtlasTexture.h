@@ -9,6 +9,9 @@ struct TextureAtlasDesc
 {
 	Texture2D * texture;
 
+	int isW;
+	int isH;
+
 	int X;
 	int Y;
 

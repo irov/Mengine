@@ -578,6 +578,28 @@ void CALL HGE_Impl::Texture_LoadRawData( HTEXTURE _hTex, const char* data, int _
 		System_Log( MENGE_TEXT("HR = %d"), hr );
 		return;
 	}
+	D3DSURFACE_DESC TDesc;
+	if(FAILED(surf->GetDesc(&TDesc))) return;
+	if( _width != TDesc.Width || _height != TDesc.Height )
+	{
+		D3DLOCKED_RECT lrect;
+		hr = surf->LockRect( &lrect, NULL, 0 );
+		if( TDesc.Width > _width )
+		{
+			unsigned char* tData = (unsigned char*)(lrect.pBits);
+			for( int i = 0; i < _height; i++ )
+			{
+				std::copy( &(tData[_width*4-4]), &(tData[_width*4]), &(tData[_width*4]) );
+				tData += lrect.Pitch;
+			}
+		}
+		if( TDesc.Height > _height )
+		{
+			unsigned char* tData = (unsigned char*)(lrect.pBits);
+			std::copy( &(tData[(_height-1)*lrect.Pitch]), &(tData[_height*lrect.Pitch]), &(tData[_height*lrect.Pitch]) );
+		}
+		surf->UnlockRect();
+	}
 }
 
 void CALL HGE_Impl::Texture_Free(HTEXTURE tex)

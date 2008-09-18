@@ -263,6 +263,16 @@ void HGERenderSystem::renderImage(const float * _renderVertex,
 								  Menge::EBlendFactor _srcBlend, 
 								  Menge::EBlendFactor _dstBlend )
 {
+	/*std::size_t iw = 1;
+	std::size_t ih = 1;
+	if( _image )
+	{
+		iw = _image->getWidth();
+		ih = _image->getHeight();
+	}
+	const float texOffs[2] = { 0.1f / iw, 0.1f / ih };
+	float uv[4] = { _uv[0] + texOffs[0], _uv[1] + texOffs[1], _uv[2] - texOffs[0], _uv[3] - texOffs[1] };*/
+
 	hgeQuad quad;
 
 	quad.v[0].x = _renderVertex[0];

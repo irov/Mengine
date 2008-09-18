@@ -76,6 +76,8 @@ namespace Menge
 		void loadAccounts();
 		void loaderAccounts_( XmlElement* _xml );
 		
+		void registerResources();
+
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
 		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;

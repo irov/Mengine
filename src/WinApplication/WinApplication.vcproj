@@ -124,6 +124,7 @@
 				FloatingPointModel="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
+				AssemblerOutput="2"
 				BrowseInformation="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"

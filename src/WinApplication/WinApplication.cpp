@@ -6,18 +6,18 @@
 
 #	include "Game/resource.h"
 
-#if	SAVE_DUMP == 1
-#include <dbghelp.h>
-#include <shellapi.h>
-#include <shlobj.h>
+//#if	SAVE_DUMP == 1
+//#include <dbghelp.h>
+//#include <shellapi.h>
+//#include <shlobj.h>
 #include <strsafe.h>
 
-#pragma  comment( lib, "dbghelp.lib")
+//#pragma  comment( lib, "dbghelp.lib")
 
 //////////////////////////////////////////////////////////////////////////
-static LONG WINAPI s_generateDump(EXCEPTION_POINTERS* pExceptionPointers)
+static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
-	BOOL bMiniDumpSuccessful;
+	/*BOOL bMiniDumpSuccessful;
 	WCHAR szPath[MAX_PATH]; 
 	WCHAR szFileName[MAX_PATH]; 
 	WCHAR* szAppName = L"Mengine_Dump";
@@ -48,10 +48,59 @@ static LONG WINAPI s_generateDump(EXCEPTION_POINTERS* pExceptionPointers)
 	bMiniDumpSuccessful = MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), 
 		hDumpFile, MiniDumpWithDataSegs, &ExpParam, NULL, NULL);
 
-	return EXCEPTION_EXECUTE_HANDLER;
+	return EXCEPTION_EXECUTE_HANDLER;*/
 
+	EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
+	CONTEXT* pContext = pExceptionPointers->ContextRecord;
+
+	HANDLE hFile = ::CreateFile( MENGE_TEXT( "Bin\\Menge.log" ), GENERIC_READ|GENERIC_WRITE, 
+		FILE_SHARE_WRITE|FILE_SHARE_READ, 0, OPEN_ALWAYS, 0, 0 );
+
+	if( hFile != INVALID_HANDLE_VALUE )
+	{
+		DWORD wr;
+		char wBuffer[4096];
+		::SetFilePointer( hFile, 0, 0, FILE_END );
+		strcpy( wBuffer, "\n=============Unhandled Exception Caugth=============\n" );
+		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
+		strcpy( wBuffer, "\nCrash Info:\n" );
+		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		StringCchPrintfA( wBuffer, 4096, "Exception Code: 0x%x\n", pRecord->ExceptionCode );
+		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		StringCchPrintfA( wBuffer, 4096, "Flags: 0x%x\n", pRecord->ExceptionFlags );
+		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		StringCchPrintfA( wBuffer, 4096, "Address: 0x%x\n\n", pRecord->ExceptionAddress );
+		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		if( ( pContext->ContextFlags & CONTEXT_INTEGER ) != 0 )
+		{
+			StringCchPrintfA( wBuffer, 4096, "Edi: 0x%x\t Esi: 0x%x\n", pContext->Edi, pContext->Esi );
+			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+			StringCchPrintfA( wBuffer, 4096, "Ebx: 0x%x\t Edx: 0x%x\n", pContext->Ebx, pContext->Edx );
+			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+			StringCchPrintfA( wBuffer, 4096, "Ecx: 0x%x\t Eax: 0x%x\n\n", pContext->Ecx, pContext->Eax );
+			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		}
+		if( ( pContext->ContextFlags & CONTEXT_CONTROL ) != 0 )
+		{
+			StringCchPrintfA( wBuffer, 4096, "Ebp: 0x%x\t Eip: 0x%x\n", pContext->Ebp, pContext->Eip );
+			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+			StringCchPrintfA( wBuffer, 4096, "SegCs: 0x%x\t EFlags: 0x%x\n", pContext->SegCs, pContext->EFlags );
+			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+			StringCchPrintfA( wBuffer, 4096, "Esp: 0x%x\t SegSs: 0x%x\n", pContext->Esp, pContext->SegSs );
+			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
+		}
+		/*switch (pRecord->ExceptionCode) 
+		{
+			case EXCEPTION_ACCESS_VIOLATION:
+			case EXCEPTION_IN_PAGE_ERROR:
+			case EXCEPTION_INT_DIVIDE_BY_ZERO:
+			case EXCEPTION_STACK_OVERFLOW:
+		}*/
+		
+		::CloseHandle( hFile );
+	}
+	return EXCEPTION_EXECUTE_HANDLER;
 }
-#endif
 #	include <sstream>
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::ApplicationInterface** _ptrInterface )
@@ -145,10 +194,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::init( const String & _name, ApplicationListenerInterface* _listener )
 	{
-
-#if SAVE_DUMP == 1
-		::SetUnhandledExceptionFilter( &s_generateDump );
-#endif
+		
+//#if SAVE_DUMP == 1
+		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
+		::SetUnhandledExceptionFilter( &s_exceptionHandler );
+//#endif
 
 		if( !_listener )
 		{

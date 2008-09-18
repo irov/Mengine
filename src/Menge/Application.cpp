@@ -29,6 +29,7 @@
 #	include "Camera2D.h"
 
 #	include "NodeFactory.h"
+#	include "ScheduleManager.h"
 
 #	include "Entity.h"
 #	include "Animation.h"
@@ -212,10 +213,11 @@ namespace Menge
 		Holder<ResourceManager>::hostage()->registerResource( image );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::loadGame()
+	bool Application::loadGame( bool _loadPersonality )
 	{
 		m_game = new Game();
 		Holder<Game>::keep( m_game );
+		Holder<ScheduleManager>::keep( new ScheduleManager );
 
 		MENGE_LOG( MENGE_TEXT("Create game file [%s] ...\n")
 			,m_gameInfo.c_str() );
@@ -228,10 +230,26 @@ namespace Menge
 			return false;
 		}
 
+		const String & title = m_game->getTitle();
+		bool fullscreen = m_game->getFullscreen();
+		m_renderEngine->setFullscreenMode( fullscreen );
+
+		if( !m_fileEngine->initAppDataPath( MENGE_TEXT("Menge\\") + title ) )
+		{
+			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Can't initialize user's data path") );
+		}
+
 		for( TStringVector::iterator it = m_resourcePaths.begin(), 
 			it_end = m_resourcePaths.end(); it != it_end; it++ )
 		{
 			m_game->readResourceFile( *it );
+		}
+
+		m_game->registerResources();
+
+		if( _loadPersonality )
+		{
+			bool persolality = m_game->loadPersonality();
 		}
 
 		return true;
@@ -241,11 +259,11 @@ namespace Menge
 	{
 		const String & title = m_game->getTitle();
 
-		if( !m_fileEngine->initAppDataPath( MENGE_TEXT("Menge\\") + title ) )
+/*		if( !m_fileEngine->initAppDataPath( MENGE_TEXT("Menge\\") + title ) )
 		{
 			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Can't initialize user's data path") );
 		}
-
+*/
 		const Resolution & resourceResolution = m_game->getResourceResolution();
 
 		bool res = m_renderEngine->initialize();
@@ -257,7 +275,7 @@ namespace Menge
 
 		m_renderEngine->setContentResolution( resourceResolution );
 
-		bool isFullscreen = m_game->getFullscreen();
+		bool isFullscreen = m_renderEngine->getFullscreenMode();
 
 		if( isFullscreen == true )
 		{
@@ -307,14 +325,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initGame(bool _loadPersonality)
+	bool Application::initGame()
 	{
 		bool result = m_game->init();
-
-		if( _loadPersonality )
-		{
-			result = m_game->loadPersonality();
-		}
 
 		return result;
 	}
@@ -381,7 +394,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initialize( const String& _applicationFile, const char* _args )
+	bool Application::initialize( const String& _applicationFile, const char* _args, bool _loadPersonality )
 	{
 		parseArguments( _args );
 
@@ -512,17 +525,21 @@ namespace Menge
 		MENGE_LOG( MENGE_TEXT("init scriptEngine ...\n") );
 		scriptEngine->init();
 
+		//strcpy( 0, "asdf" );
+
 		m_inputEngine->regHandle( m_handler );
 
 		CodecManager::initialize();
 
 		Holder<ResourceManager>::keep( new ResourceManager() );
 
+		loadGame( _loadPersonality );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{
+		Holder<ScheduleManager>::destroy();
 		if( Holder<Game>::empty() == false )
 		{
 			Holder<Game>::hostage()->release();
@@ -816,7 +833,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFullscreenMode( bool _fullscreen )
 	{
-		if( !m_mouseBounded )
+		if( !m_mouseBounded && m_renderEngine->isWindowCreated() )
 		{
 			if( !_fullscreen )
 			{
@@ -831,7 +848,7 @@ namespace Menge
 			}
 		}
 
-		Holder<RenderEngine>::hostage()->setFullscreenMode( _fullscreen );
+		m_renderEngine->setFullscreenMode( _fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution & Application::getDesktopResolution() const

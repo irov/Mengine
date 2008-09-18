@@ -380,10 +380,13 @@ namespace Menge
 		const Resolution & resolution = ( m_fullscreen == true )
 			? Holder<Application>::hostage()->getDesktopResolution() 
 			: Holder<Game>::hostage()->getResolution();
-			
-		m_interface->setFullscreenMode( resolution[0], resolution[1], m_fullscreen );
 
-		Holder<Application>::hostage()->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
+		if( m_windowCreated )
+		{
+			m_interface->setFullscreenMode( resolution[0], resolution[1], m_fullscreen );
+
+			Holder<Application>::hostage()->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
+		}
 
 		recalcRenderArea_( resolution );
 	}
@@ -721,6 +724,11 @@ namespace Menge
 	const mt::mat4f& RenderEngine::getViewTransform() const
 	{
 		return m_viewTransform;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::isWindowCreated() const
+	{
+		return m_windowCreated;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

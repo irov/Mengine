@@ -87,7 +87,7 @@ namespace Menge
 
 		Holder<Amplifier>::destroy();
 		Holder<Player>::destroy();
-		Holder<ScheduleManager>::destroy();
+		//Holder<ScheduleManager>::destroy();
 		//Holder<MousePickerSystem>::destroy();
 		Holder<LightSystem>::destroy();
 	}
@@ -416,79 +416,15 @@ namespace Menge
 		registerEvent( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", m_pyPersonality );
 		registerEvent( EVENT_MOUSE_MOVE, "onHandleMouseMove", m_pyPersonality );
 
-		StringA eventInit;
-#	ifdef MENGE_UNICODE
-		eventInit = Utils::WToA( m_eventInit );
-#	else if
-		eventInit = m_eventInit;
-#	endif
-
 		loadAccounts();
-
-		if( Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, eventInit ) )
-		{
-			PyObject * pyResult = Holder<ScriptEngine>::hostage()
-				->askModuleFunction( m_pyPersonality, eventInit, "()" );
-
-			bool result = Holder<ScriptEngine>::hostage()
-				->parseBool( pyResult );
-
-			if( result == false )
-			{
-				return false;
-			}
-		}
-
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
-		Holder<ScheduleManager>::keep( new ScheduleManager );
 		//Holder<MousePickerSystem>::keep( new MousePickerSystem );
 		Holder<LightSystem>::keep( new LightSystem );
-
-		ScriptEngine::TListModulePath m_listModulePath;
-
-		for( TListDeclaration::iterator it = m_pathScripts.begin(),
-				it_end = m_pathScripts.end(); it != it_end; it++ )
-		{
-			m_listModulePath.push_back( it->first + it->second );
-		}
-		
-		for( TListDeclaration::iterator it = m_pathEntities.begin(),
-			it_end = m_pathEntities.end(); it != it_end; it++ )
-		{
-			m_listModulePath.push_back( it->first + it->second );
-		}
-
-		for( TListDeclaration::iterator it = m_pathScenes.begin(),
-			it_end = m_pathScenes.end(); it != it_end; it++ )
-		{
-			m_listModulePath.push_back( it->first + it->second );
-		}
-
-		for( TListDeclaration::iterator it = m_pathArrows.begin(),
-			it_end = m_pathArrows.end(); it != it_end; it++ )
-		{
-			m_listModulePath.push_back( it->first + it->second );
-		}
-
-		Holder<ScriptEngine>::hostage()
-			->setModulePath( m_listModulePath );
-
-		for( TMapDeclaration::iterator
-			it = m_mapEntitiesDeclaration.begin(),
-			it_end = m_mapEntitiesDeclaration.end();
-		it != it_end;
-		it++ )
-		{
-			Holder<ScriptEngine>::hostage()
-				->registerEntityType( it->first );
-		}
-
 		for( TMapDeclaration::iterator
 				it = m_mapResourceDeclaration.begin(),
 				it_end = m_mapResourceDeclaration.end();
@@ -522,6 +458,29 @@ namespace Menge
 		if( m_player->init( m_resourceResolution ) == false )
 		{
 			return false;
+		}
+
+		StringA eventInit;
+#	ifdef MENGE_UNICODE
+		eventInit = Utils::WToA( m_eventInit );
+#	else if
+		eventInit = m_eventInit;
+#	endif
+
+		if( m_pyPersonality&& 
+			Holder<ScriptEngine>::hostage()
+			->hasModuleFunction( m_pyPersonality, eventInit ) )
+		{
+			PyObject * pyResult = Holder<ScriptEngine>::hostage()
+				->askModuleFunction( m_pyPersonality, eventInit, "()" );
+
+			bool result = Holder<ScriptEngine>::hostage()
+				->parseBool( pyResult );
+
+			if( result == false )
+			{
+				return false;
+			}
 		}
 
 		return true;
@@ -945,6 +904,49 @@ namespace Menge
 		{
 			it->second->save();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::registerResources()
+	{
+		ScriptEngine::TListModulePath m_listModulePath;
+
+		for( TListDeclaration::iterator it = m_pathScripts.begin(),
+			it_end = m_pathScripts.end(); it != it_end; it++ )
+		{
+			m_listModulePath.push_back( it->first + it->second );
+		}
+
+		for( TListDeclaration::iterator it = m_pathEntities.begin(),
+			it_end = m_pathEntities.end(); it != it_end; it++ )
+		{
+			m_listModulePath.push_back( it->first + it->second );
+		}
+
+		for( TListDeclaration::iterator it = m_pathScenes.begin(),
+			it_end = m_pathScenes.end(); it != it_end; it++ )
+		{
+			m_listModulePath.push_back( it->first + it->second );
+		}
+
+		for( TListDeclaration::iterator it = m_pathArrows.begin(),
+			it_end = m_pathArrows.end(); it != it_end; it++ )
+		{
+			m_listModulePath.push_back( it->first + it->second );
+		}
+
+		Holder<ScriptEngine>::hostage()
+			->setModulePath( m_listModulePath );
+
+		for( TMapDeclaration::iterator
+			it = m_mapEntitiesDeclaration.begin(),
+			it_end = m_mapEntitiesDeclaration.end();
+		it != it_end;
+		it++ )
+		{
+			Holder<ScriptEngine>::hostage()
+				->registerEntityType( it->first );
+		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -126,6 +126,8 @@ namespace Menge
 
 		void renderText(const Menge::String & _text, const mt::vec2f & _pos, unsigned long _color);
 
+		bool isWindowCreated() const;
+
 	protected:
 		Menge::RenderSystemInterface * m_interface;
 		Viewport m_renderViewport;

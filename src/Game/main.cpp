@@ -83,12 +83,7 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 
 	Menge::Application app( platformInterface );
 
-	if( app.initialize( config_file, lpCmdLine ) == false )
-	{
-		return 0;
-	}
-
-	if( app.loadGame() == false )
+	if( app.initialize( config_file, lpCmdLine, true ) == false )
 	{
 		return 0;
 	}
@@ -98,7 +93,7 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 		return 0;
 	}
 
-	if( app.initGame(true) == false )
+	if( app.initGame() == false )
 	{
 		return 0;
 	}

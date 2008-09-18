@@ -47,7 +47,7 @@ namespace Menge
 		~Application();
 
 	public:
-		bool initialize( const String& _applicationFile, const char* _args );
+		bool initialize( const String& _applicationFile, const char* _args, bool _loadPersonality );
 		void finalize();
 	
 		void setLogSystem( LogSystemInterface * _interface );
@@ -60,9 +60,9 @@ namespace Menge
 		void setPhysicSystem( PhysicSystemInterface * _interface );
 		void setPhysicSystem2D( PhysicSystem2DInterface * _interface );
 
-		bool loadGame();
+		bool loadGame( bool _loadPersonality );
 		bool createRenderWindow(WindowHandle _handle);
-		bool initGame(bool _loadPersonality);
+		bool initGame();
 
 		void run();
 		void quit();

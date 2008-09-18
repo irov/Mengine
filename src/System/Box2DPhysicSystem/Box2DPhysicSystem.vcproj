@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="Box2DPhysicSystem"
 	ProjectGUID="{17127636-4C7D-42C4-AA40-79DAEE145E8B}"
 	RootNamespace="My2DBoxPhysicSystem"
@@ -124,6 +124,7 @@
 				FloatingPointModel="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
+				AssemblerOutput="2"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="0"

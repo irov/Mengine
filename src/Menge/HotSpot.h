@@ -63,6 +63,7 @@ namespace Menge
 		virtual void setScale( const mt::vec2f& _scale );
 
 		bool isPicked() const override;
+
 	protected:
 		bool _activate() override;
 		void _deactivate() override;

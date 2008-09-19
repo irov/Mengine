@@ -59,7 +59,7 @@ namespace	Menge
 				input = !scene->getBlockInput();
 			}
 		}
-		bool upd = getUpdatable() || m_updatable;
+		bool upd = getUpdatable() && m_updatable;
 		return upd && input;
 	}
 	//////////////////////////////////////////////////////////////////////////

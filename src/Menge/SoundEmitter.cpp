@@ -169,7 +169,7 @@ namespace Menge
 
 		//Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
 		//printf("playing %s looped = %d\n", m_resourcename.c_str(), m_looped );
-		//MENGE_LOG("playing %s", m_resourcename.c_str());
+		//MENGE_LOG( MENGE_TEXT("playing %s"), m_resourcename.c_str());
 		return m_interface->play();
 	}
 	//////////////////////////////////////////////////////////////////////////

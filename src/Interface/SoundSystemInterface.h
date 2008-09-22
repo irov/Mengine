@@ -6,6 +6,7 @@ namespace Menge
 {
 	class SoundSourceInterface;
 	class DataStreamInterface;
+	class LogSystemInterface;
 
 	class	SoundNodeListenerInterface
 	{
@@ -61,7 +62,7 @@ namespace Menge
 	class SoundSystemInterface
 	{
 	public:
-		virtual bool initialize() = 0;
+		virtual bool initialize( LogSystemInterface* _logSystem ) = 0;
 
 		virtual void setListenerOrient( float * _position, float * _front, float * top) = 0;
 		virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener ) = 0;

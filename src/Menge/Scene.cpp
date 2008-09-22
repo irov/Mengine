@@ -313,6 +313,7 @@ namespace	Menge
 			const Viewport & viewport = camera2D->getViewport();
 
 			mt::vec2f viewport_size = viewport.end - viewport.begin;
+			//assert( viewport_size.x >= 1024.0f );
 
 			mainSize -= viewport_size;
 
@@ -330,8 +331,8 @@ namespace	Menge
 
 						layerSize -= viewport_size;
 
-						float factorX = ( mainSize.x > 0.0001f ) ? ( layerSize.x / mainSize.x ) : 0.0f;
-						float factorY = ( mainSize.y > 0.0001f ) ? ( layerSize.y / mainSize.y ) : 0.0f;
+						float factorX = ( mainSize.x > 0.001f ) ? ( layerSize.x / mainSize.x ) : 0.0f;
+						float factorY = ( mainSize.y > 0.001f ) ? ( layerSize.y / mainSize.y ) : 0.0f;
 
 						mt::vec2f parallaxFactor( factorX, factorY );
 

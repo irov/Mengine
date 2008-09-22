@@ -50,8 +50,8 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ImageMap"), MENGE_TEXT("Name"), m_resourceName );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ImageIndex"), MENGE_TEXT("Value"), m_currentImageIndex );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("CenterAlign"), MENGE_TEXT("Value"), m_centerAlign );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Blend"), MENGE_TEXT("Source"), ((int&)m_blendSrc) );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Blend"), MENGE_TEXT("Dest"), ((int&)m_blendDest) );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("BlendSource"), MENGE_TEXT("Value"), ((int&)m_blendSrc) );
+			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("BlendDest"), MENGE_TEXT("Value"), ((int&)m_blendDest) );
 			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Color"), MENGE_TEXT("Value"), m_color );
 		}
 	}
@@ -169,10 +169,15 @@ namespace	Menge
 		{
 			return;
 		}
+		if( m_resourceName == MENGE_TEXT("CursorFlashlight") )
+		{
+			int a;
+			a = 0;
+		}
 
 		bool isAlpha = m_resource->isAlpha( m_currentImageIndex );
 
-		if( isAlpha )
+		/*if( isAlpha )
 		{
 			m_blendSrc = BF_SOURCE_ALPHA;
 			m_blendDest = BF_ONE_MINUS_SOURCE_ALPHA;
@@ -180,6 +185,13 @@ namespace	Menge
 		else
 		{
 			m_blendSrc = BF_ONE; // не хочет так работать
+			m_blendDest = BF_ZERO;
+		}*/
+		if( m_blendSrc == BF_SOURCE_ALPHA &&
+			m_blendDest == BF_ONE_MINUS_SOURCE_ALPHA &&
+			!isAlpha )
+		{
+			m_blendSrc = BF_ONE;
 			m_blendDest = BF_ZERO;
 		}
 

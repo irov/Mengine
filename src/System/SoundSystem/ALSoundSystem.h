@@ -35,11 +35,9 @@ class ALSoundSystem
 public:
 	ALSoundSystem();
 	virtual ~ALSoundSystem();
-
 	
 public:
-
-	bool initialize() override;
+	bool initialize( Menge::LogSystemInterface* _logSystem ) override;
 
 	void setListenerOrient( float * _position, float * _front, float * top) override;
 	Menge::SoundSourceInterface * createSoundSource( bool _isHeadMode, Menge::SoundBufferInterface * _sample, Menge::SoundNodeListenerInterface * _listener ) override;
@@ -58,7 +56,6 @@ public:
 
 	void update( float _timing ) override;
 
-
 public:
 	void	setSoundVelocity( float _velocity );
 	float	getSoundVelocity();
@@ -67,27 +64,28 @@ public:
 	void	setDistanceModel(EDistanceModel _model);
 	EDistanceModel getDistanceModel();
 
-	TALSourceName* getFreeSourceName( bool stereo );
 
-	void	addStream( ALSoundBufferStream* _stream );
-	void	removeStream( ALSoundBufferStream* _stream );
-	void registerPlaying( ALSoundSource* _source, float _timeMs );
-	void unregisterPlaying( ALSoundSource* _source );
+	ALuint registerPlaying( ALSoundSource* _source, bool _stereo );
+	void unregisterPlaying( ALSoundSource* _source, ALuint _alSource );
+	void deletedSource( ALSoundSource* _source );
+
+	void logMessage( const Menge::String& _message, int _level );
 
 private:
-	TALSourceName m_sourceNames[MAX_SOURCENAMES_NUM];
-	int m_sourceNamesNum;
+	Menge::uint16 m_alSourcesNum;
+	typedef std::map< ALuint, bool > TALSourceMap;
+	TALSourceMap m_alSourcesStereo;
+	TALSourceMap m_alSourcesMono;
+
+	typedef std::map< ALSoundSource*, bool > TSourceMap;
+	TSourceMap m_sources;
+
 	typedef std::vector<ALSoundSource*> TSourceVector;
-	TSourceVector	m_sources;
+	TSourceVector	m_playingSources;
+
+	//typedef std::vector< std::pair<ALSoundSource*, ALuint> > TStoppingSourceVector;
+	TSourceVector m_stoppingSources;
 	
-	typedef std::vector<ALSoundBufferStream*> TVectorALSoundBufferStream;
-	TVectorALSoundBufferStream m_streams;
-
-	typedef std::map<ALSoundSource*, float> TSourcesMap;
-	TSourcesMap m_playingSources;
-	TSourceVector m_deletingSources;
-	std::vector< std::pair< ALSoundSource*, float> > m_addingSources;
-
 	bool m_initialized;
 	float m_soundVelocity;
 	float m_dopplerFactor;
@@ -98,4 +96,28 @@ private:
 	ALCcontext_struct* m_context;
 
 	SulkSystem * m_sulk;
+
+	Menge::LogSystemInterface* m_logSystem;
+
+	/*struct TRegEvent
+	{
+		ALSoundSource* source;
+		bool reg;
+		ALuint alSource;
+		TRegEvent( ALSoundSource* _source, bool _reg, ALuint _alSource )
+			: source( _source )
+			, reg( _reg )
+			, alSource( _alSource )
+		{
+		}
+	};
+	typedef std::vector<TRegEvent> TVectorRegEvent;
+	TVectorRegEvent m_regSources;
+
+	void execReg_();
+	void addSource_( ALSoundSource* _source );
+	void delSource_( ALSoundSource* _source, ALuint _alSource );*/
+	ALuint getFreeSourceName_( bool stereo );
+	void freeSource_( ALuint _source );
+
 };

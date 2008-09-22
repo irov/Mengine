@@ -21,16 +21,21 @@ namespace Menge
 	, m_currentPlayList(0)
 	, m_volume( 1.0f )
 	, m_volumeOverride( 1.0f )
+	, m_playing( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::~Amplifier()
 	{
-		_release();
-		/*if(m_music)
+		//_release();
+		if(m_music)
 		{
-			m_music->setSoundNodeListener(NULL);
-		}*/
+			m_music->setSoundNodeListener( 0 );
+			Holder<SoundEngine>::hostage()->releaseSoundSource( m_music );
+			Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_buffer );
+			m_music = 0;
+			m_buffer = 0;
+		}
 
 		for( TMapPlayList::iterator 
 			it = m_mapPlayLists.begin(),
@@ -94,6 +99,7 @@ namespace Menge
 
 		m_music->setVolume( m_volume );
 		m_music->play();
+		m_playing = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t Amplifier::getNumTracks() const
@@ -128,6 +134,7 @@ namespace Menge
 
 		m_music->setVolume( m_volume );
 		m_music->play();
+		m_playing = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::shuffle( const String& _playlist )
@@ -158,6 +165,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::stop()
 	{
+		m_playing = false;
 		if( m_music )
 		{
 			m_music->stop();
@@ -167,6 +175,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::listenStopped()
 	{
+		if( m_playing == false ) return;
 		if(m_currentPlayList->getLooped())
 		{
 			m_currentPlayList->next();
@@ -203,7 +212,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::_prepareSound( const String& _filename )
 	{
-		_release();
+		stop();
+		//_release();
 
 		m_buffer = Holder<SoundEngine>::hostage()->createSoundBufferFromFile( _filename.c_str(), true );
 

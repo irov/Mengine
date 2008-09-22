@@ -182,9 +182,6 @@ void ALSoundBufferStream::start( ALuint source )
 //////////////////////////////////////////////////////////////////////////
 void ALSoundBufferStream::stop()
 {
-	alSourceStop( m_source );
-	alSourcei( m_source, AL_BUFFER, 0 );
-
 	ov_raw_seek( &m_oggFile, 0 );
 
 	if ( m_buffer )

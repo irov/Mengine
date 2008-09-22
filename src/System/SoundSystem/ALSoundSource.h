@@ -46,17 +46,14 @@ public:
 public:
 	void setAmbient( bool _ambient );
 	bool isAmbient() const;
-	bool isBusy() const;
-	void setUsed( bool _use );
 	Menge::SoundNodeListenerInterface* getListener();
-	void unbind();
-	void onStreamEnd_();
+	bool update( float _timing );
+	void _onStop();
 
 private:
-	TALSourceName* m_sourceName;
+	ALuint m_alSource;
 	ALSoundBuffer* m_soundBuffer;
 	ALSoundSystem* m_soundSystem;
-	bool m_busy;
 	bool m_ambient;
 	bool m_playing;
 	bool m_looped;
@@ -65,4 +62,5 @@ private:
 	Menge::SoundNodeListenerInterface* m_listener;
 
 	void _updateParams();
+	float m_counter;
 };

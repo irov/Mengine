@@ -6,15 +6,15 @@
 
 //#	include <Windows.h>
 //////////////////////////////////////////////////////////////////////////
-ALSoundSource::ALSoundSource(ALSoundSystem* _soundSystem) 
-: m_soundBuffer( NULL )
-, m_listener( NULL )
-, m_sourceName( NULL )
+ALSoundSource::ALSoundSource( ALSoundSystem* _soundSystem ) 
+: m_soundBuffer( 0 )
+, m_listener( 0 )
+, m_alSource( 0 )
 , m_soundSystem( _soundSystem )
-, m_busy( false )
 , m_playing( false )
 , m_looped( false )
 , m_volume( 1.0f )
+, m_counter( 0.0f )
 {
 	m_position[0] = 0.0f;
 	m_position[1] = 0.0f;
@@ -28,7 +28,9 @@ ALSoundSource::~ALSoundSource()
 		stop();
 	}
 	if( m_soundBuffer )
+	{
 		m_soundBuffer->removeSource( this );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSource::play()
@@ -38,46 +40,37 @@ void ALSoundSource::play()
 		return;
 	}
 
+	m_playing = true;
 	bool isStereo = m_soundBuffer->isStereo();
-	m_sourceName = m_soundSystem->getFreeSourceName( isStereo );
-	if( !m_sourceName ) 
+
+	m_alSource = m_soundSystem->registerPlaying( this, isStereo );
+	if( m_alSource == 0 ) 
 	{
-		//printf("no free sourceName or soundBuffer - returning\n");
+		m_soundSystem->logMessage( MENGE_TEXT("Warning: Out of hardware sound sources"), 0 );
 		return;
 	}
 
-	m_sourceName->busy = true;
-
 	_updateParams();
-	if( m_soundBuffer && m_soundBuffer->isStreamed() )
+
+	if( m_soundBuffer->isStreamed() )
 	{
-		alSourcei( m_sourceName->name, AL_BUFFER, NULL );
-	    alSourcei( m_sourceName->name, AL_LOOPING, AL_FALSE ); //Streaming sources can't loop
+		alSourcei( m_alSource, AL_BUFFER, NULL );
+	    alSourcei( m_alSource, AL_LOOPING, AL_FALSE ); //Streaming sources can't loop
 		static_cast<ALSoundBufferStream*>( m_soundBuffer )
-			->start( m_sourceName->name );
-		m_soundSystem->addStream( static_cast<ALSoundBufferStream*>( m_soundBuffer ) );
+			->start( m_alSource );
 	}
 	else
 	{
-		//alSourcei( m_sourceName->name, AL_BUFFER, NULL );
-		alSourcei( m_sourceName->name, AL_BUFFER, m_soundBuffer->getAlID() );
-		//printf( "SoundSource::play\n" );
-		alSourcePlay( m_sourceName->name );
+		alSourcei( m_alSource, AL_BUFFER, m_soundBuffer->getAlID() );
+		alSourcePlay( m_alSource );
 	}
-
-	if( !m_looped && !m_soundBuffer->isStreamed() )
-	{
-		//printf("register playing %d ms\n", getLengthMs());
-		int lengthMs = getLengthMs();
-		m_soundSystem->registerPlaying( this, lengthMs );
-	}
-
-	m_playing = true;
 }
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSource::pause()
 {
-	alSourcePause( m_sourceName->name );
+	alSourcePause( m_alSource );
+
+	//m_soundSystem->unregisterPlaying( this, m_alSource );
 
 	if( m_listener )
 	{
@@ -90,32 +83,24 @@ void ALSoundSource::stop()
 	if( !m_playing ) return;
 	m_playing = false;
 
-	if( !m_sourceName )
+	if( m_alSource != 0 )
 	{
-		return;
+		alSourceStop( m_alSource );
+		alSourcei( m_alSource, AL_BUFFER, NULL );
 	}
 
 	if( m_soundBuffer && m_soundBuffer->isStreamed() )
 	{
-		static_cast<ALSoundBufferStream*>( m_soundBuffer )
-			->stop();
-		m_soundSystem->removeStream( static_cast<ALSoundBufferStream*>( m_soundBuffer ) );
-	}
-	else
-	{
-		//printf("stopping\n");
-		alSourceStop( m_sourceName->name );
-		alSourcei( m_sourceName->name, AL_BUFFER, NULL );
+		static_cast<ALSoundBufferStream*>( m_soundBuffer )->stop();
 	}
 
-	unbind();
-	/*m_sourceName->busy = false;
-	m_soundSystem->unregisterPlaying( this );
-
-	if( m_busy && m_listener )
+	m_soundSystem->unregisterPlaying( this, m_alSource );
+	m_alSource = 0;
+	m_counter = getLengthMs();
+	if( m_listener )
 	{
 		m_listener->listenStopped();
-	}*/
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 bool ALSoundSource::isPlaying() const
@@ -146,9 +131,12 @@ int ALSoundSource::getLengthMs()
 //////////////////////////////////////////////////////////////////////////
 int ALSoundSource::getPosMs()
 {
-	ALint pos;
-	alGetSourcei( m_sourceName->name, AL_SEC_OFFSET, &pos );
+	ALint pos = 0;
 
+	if( m_alSource == 0 )
+	{
+		alGetSourcei( m_alSource, AL_SEC_OFFSET, &pos );
+	}
 	return pos;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -159,16 +147,17 @@ void ALSoundSource::setSoundBuffer( Menge::SoundBufferInterface* _soundBuffer )
 	{
 		m_soundBuffer->removeSource( this );
 		m_soundBuffer->addSource( this );
+		m_counter = m_soundBuffer->getLenghtMs();
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void ALSoundSource::setVolume(float _volume)
+void ALSoundSource::setVolume( float _volume )
 {
 	m_volume = _volume;
 
-	if( m_sourceName && m_playing )
+	if( m_alSource && m_playing )
 	{
-		alSourcef( m_sourceName->name, AL_GAIN, m_volume );
+		alSourcef( m_alSource, AL_GAIN, m_volume );
 	}
 }
 //////////////////////////////////////////////////////////////////////////
@@ -181,28 +170,23 @@ void ALSoundSource::_updateParams()
 {
 	if(m_ambient)
 	{
-		alSourcei( m_sourceName->name, AL_SOURCE_RELATIVE, AL_TRUE );
-		alSourcef( m_sourceName->name, AL_ROLLOFF_FACTOR, 0.0f );
-		alSource3f( m_sourceName->name, AL_DIRECTION, 0.0f, 0.0f, 0.0f );
+		alSourcei( m_alSource, AL_SOURCE_RELATIVE, AL_TRUE );
+		alSourcef( m_alSource, AL_ROLLOFF_FACTOR, 0.0f );
+		alSource3f( m_alSource, AL_DIRECTION, 0.0f, 0.0f, 0.0f );
 	} 
 	else 
 	{
-		alSourcei( m_sourceName->name, AL_SOURCE_RELATIVE, AL_FALSE );
-		alSourcef( m_sourceName->name, AL_ROLLOFF_FACTOR, 1.0f );
+		alSourcei( m_alSource, AL_SOURCE_RELATIVE, AL_FALSE );
+		alSourcef( m_alSource, AL_ROLLOFF_FACTOR, 1.0f );
 	}
 
-	if( m_soundBuffer && m_soundBuffer->isStreamed() )
+	if( m_soundBuffer && m_soundBuffer->isStreamed() == false )
 	{
-		//static_cast<ALSoundBufferStream*>( m_soundBuffer )
-		//	->getUpdater()->setLooping( m_looped );
-	}
-	else
-	{
-		alSourcei( m_sourceName->name, AL_LOOPING, m_looped ? AL_TRUE : AL_FALSE );
+		alSourcei( m_alSource, AL_LOOPING, m_looped ? AL_TRUE : AL_FALSE );	
 	}
 
-	alSourcefv( m_sourceName->name, AL_POSITION, m_position );
-	alSourcef( m_sourceName->name, AL_GAIN, m_volume );
+	alSourcefv( m_alSource, AL_POSITION, m_position );
+	alSourcef( m_alSource, AL_GAIN, m_volume );
 }
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSource::setLooped( bool _loop )
@@ -234,37 +218,53 @@ bool ALSoundSource::isAmbient() const
 	return m_ambient;
 }
 //////////////////////////////////////////////////////////////////////////
-bool ALSoundSource::isBusy() const
-{
-	return m_busy;
-}
-//////////////////////////////////////////////////////////////////////////
-void ALSoundSource::setUsed( bool _use )
-{
-	m_busy = _use;
-}
-//////////////////////////////////////////////////////////////////////////
 Menge::SoundNodeListenerInterface* ALSoundSource::getListener()
 {
 	return m_listener;
 }
 //////////////////////////////////////////////////////////////////////////
-void ALSoundSource::unbind()
+bool ALSoundSource::update( float _timing )
 {
-	m_playing = false;
-	if( m_sourceName != 0 )
+	//if( m_playing == false ) return;
+
+	if( m_soundBuffer->isStreamed() )
 	{
-		m_sourceName->busy = false;
-		m_soundSystem->unregisterPlaying( this );
+		((ALSoundBufferStream*)m_soundBuffer)->update();
 	}
-	if( m_busy && m_listener )
+	if( m_looped == false || m_soundBuffer->isStreamed() )
+	{
+		m_counter -= _timing;
+		if( m_counter <= 0.0f )
+		{
+			return false;
+			//m_soundSystem->unregisterPlaying( this, m_alSource );
+			//stop();
+		}
+	}
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void ALSoundSource::_onStop()
+{
+	if( !m_playing ) return;
+	m_playing = false;
+
+	if( m_alSource != 0 )
+	{
+		alSourceStop( m_alSource );
+		alSourcei( m_alSource, AL_BUFFER, NULL );
+	}
+
+	if( m_soundBuffer && m_soundBuffer->isStreamed() )
+	{
+		static_cast<ALSoundBufferStream*>( m_soundBuffer )->stop();
+	}
+
+	m_alSource = 0;
+	m_counter = getLengthMs();
+	if( m_listener )
 	{
 		m_listener->listenStopped();
 	}
-}
-//////////////////////////////////////////////////////////////////////////
-void ALSoundSource::onStreamEnd_()
-{
-
 }
 //////////////////////////////////////////////////////////////////////////

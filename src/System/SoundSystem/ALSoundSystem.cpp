@@ -1,5 +1,4 @@
 
-
 #	include "ALSoundBuffer.h"
 #	include "ALSoundBufferStream.h"
 #	include "ALSoundSource.h"
@@ -9,14 +8,17 @@
 
 #include <algorithm>
 
+#	include "Interface/LogSystemInterface.h"
+#	define LOG( quote, level ) if( m_logSystem ) { m_logSystem->logMessage( quote, level ); }
+
 //////////////////////////////////////////////////////////////////////////
 ALSoundSystem::ALSoundSystem()
 : m_device(0) 
 , m_soundVelocity(343.0f)
 , m_dopplerFactor(1.0f)
 , m_distanceModel(None)
-, m_sourceNamesNum(0)
 , m_initialized( false )
+, m_alSourcesNum( 0 )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -24,11 +26,27 @@ ALSoundSystem::~ALSoundSystem()
 {
 	if( m_initialized )
 	{
-		for( TSourceVector::size_type i = 0; i < m_sources.size(); i++ )
+		for( TSourceMap::iterator it = m_sources.begin(), it_end = m_sources.end();
+			it != it_end;
+			it++ )
 		{
-			delete m_sources[i];
+			delete it->first;
 		}
 		m_sources.clear();
+
+		for( TALSourceMap::iterator it = m_alSourcesStereo.begin(), it_end = m_alSourcesStereo.end();
+			it != it_end;
+			it++ )
+		{
+			alDeleteSources( 1, &(it->first) );
+		}
+
+		for( TALSourceMap::iterator it = m_alSourcesMono.begin(), it_end = m_alSourcesMono.end();
+			it != it_end;
+			it++ )
+		{
+			alDeleteSources( 1, &(it->first) );
+		}
 
 		alcMakeContextCurrent(NULL);
 		alcDestroyContext(m_context);
@@ -38,18 +56,22 @@ ALSoundSystem::~ALSoundSystem()
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool ALSoundSystem::initialize()
+bool ALSoundSystem::initialize( Menge::LogSystemInterface* _logSystem )
 {
 	if( m_initialized )
 	{
 		return false;
 	}
 
+	m_logSystem = _logSystem;
+	LOG( MENGE_TEXT("Initializing OpenAL sound system..."), 1 );
+
 	//char *initString = 0L;//"DirectSound", "DirectSound3D", ;
 	m_device = alcOpenDevice( NULL );
 
 	if( !m_device )
 	{
+		LOG( MENGE_TEXT("Warning: OpenAL failed to open device. Sound will be disabled"), 0 );
 		return false;
 	}
 
@@ -61,6 +83,7 @@ bool ALSoundSystem::initialize()
 			alcDestroyContext( m_context );
 		}
 		alcCloseDevice( m_device );
+		LOG( MENGE_TEXT("Warning: OpenAL failed to create context. Sound will be disabled"), 0 );
 		return false;
 	} 
 
@@ -70,19 +93,23 @@ bool ALSoundSystem::initialize()
 	m_soundVelocity = 343.0f;
 	m_dopplerFactor = 1.0f;
 	m_distanceModel = None;
-	m_sourceNamesNum = 0;
 
-	for(;m_sourceNamesNum < MAX_SOURCENAMES_NUM; m_sourceNamesNum++)
+	for( int i = 0; i < MAX_SOURCENAMES_NUM; i++ )
 	{
 		ALuint sourceName;
 		alGenSources(1, &sourceName);	
 		if(alGetError())
 			break;
-		m_sourceNames[m_sourceNamesNum].busy = false;
-		m_sourceNames[m_sourceNamesNum].name = sourceName;
+		if( i % 2 == 0 )
+		{
+			m_alSourcesStereo.insert( std::make_pair( sourceName, false ) );
+		}
+		else
+		{
+			m_alSourcesMono.insert( std::make_pair( sourceName, false ) );
+		}
 	}
-	m_sources.reserve(MAX_SOUND_SOURCES);
-	m_deletingSources.reserve(MAX_SOUND_SOURCES);
+	m_alSourcesNum = m_alSourcesMono.size() + m_alSourcesStereo.size();
 
 	// Environment settings 
 	alSpeedOfSound(m_soundVelocity);
@@ -92,6 +119,7 @@ bool ALSoundSystem::initialize()
 	m_sulk = new SulkSystem();
 
 	m_initialized = true;
+	LOG( MENGE_TEXT("OpenAL sound system initialized successfully"), 1 );
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -110,28 +138,30 @@ void    ALSoundSystem::setListenerOrient( float * _position, float * _front, flo
 Menge::SoundSourceInterface * ALSoundSystem::createSoundSource( bool _isHeadMode, Menge::SoundBufferInterface * _sample, Menge::SoundNodeListenerInterface * _listener )
 {
 	if( m_initialized == false ) return 0;
-	//ALSoundSource* source = new ALSoundSource(this);
-	ALSoundSource* source = NULL;
+	
+	ALSoundSource* source = 0;
 
-	for(unsigned int i = 0; i < m_sources.size(); i++)
+	for( TSourceMap::iterator it = m_sources.begin(), it_end = m_sources.end();
+		it != it_end;
+		it++ )
 	{
-		if(!m_sources[i]->isBusy())
+		if( it->second == false )
 		{
-			source = m_sources[i];
+			source = it->first;
+			it->second = true;
 			break;
 		}
 	}
 
-	if(!source)
+	if( !source )
 	{
 		source = new ALSoundSource(this);
-		m_sources.push_back(source);
+		m_sources.insert( std::make_pair( source, true ) );
 	}
 
 	source->setSoundBuffer( static_cast<ALSoundBuffer*>(_sample) );
 	source->setAmbient( _isHeadMode );
 	source->setSoundNodeListener( _listener );
-	source->setUsed( true );
 
 	return source;
 }
@@ -197,44 +227,35 @@ void ALSoundSystem::releaseSoundNode( Menge::SoundSourceInterface * _sn )
 //	delete _sn;
 	if(_sn)
 	{
-		static_cast<ALSoundSource*>(_sn)->setUsed(false);
-		static_cast<ALSoundSource*>(_sn)->stop();
+		/*static_cast<ALSoundSource*>(_sn)->setUsed(false);
+		static_cast<ALSoundSource*>(_sn)->stop();*/
+		ALSoundSource* source = static_cast<ALSoundSource*>( _sn );
+		source->stop();
+		m_sources[ source ] = false;
 	}
 }
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::update( float _timing )
 {
-
 	if( m_initialized == false ) return;
 
-	for( TSourceVector::iterator it = m_deletingSources.begin(), 
-		it_end = m_deletingSources.end(); it != it_end; it++ )
+	//execReg_();
+	for( TSourceVector::iterator it = m_stoppingSources.begin(), it_end = m_stoppingSources.end();
+		it != it_end;
+		it++ )
 	{
-		m_playingSources.erase( (*it) );
+		(*it)->stop();
 	}
-	m_deletingSources.clear();
-
-	for( std::size_t i = 0; i < m_addingSources.size(); i++ )
-	{
-		m_playingSources[ m_addingSources[i].first ] = m_addingSources[i].second;
-	}
-	m_addingSources.clear();
-
-	for(unsigned int i = 0; i < m_streams.size(); i++)
-	{
-		m_streams[i]->update();
-	}
+	m_stoppingSources.clear();
 
 	m_sulk->update();
 
-
-	for( TSourcesMap::iterator it = m_playingSources.begin(),
+	for( TSourceVector::iterator it = m_playingSources.begin(),
 			it_end = m_playingSources.end(); it != it_end; it++ )
 	{
-		it->second -= _timing;
-		if( it->second <= 0 )
+		if( (*it)->update( _timing ) == false )
 		{
-			it->first->unbind();
+			m_stoppingSources.push_back( (*it ) );
 		}
 	}
 
@@ -332,55 +353,100 @@ EDistanceModel ALSoundSystem::getDistanceModel()
 	return m_distanceModel; 
 }
 //////////////////////////////////////////////////////////////////////////
-void ALSoundSystem::addStream( ALSoundBufferStream *_stream )
+ALuint ALSoundSystem::registerPlaying( ALSoundSource* _source, bool stereo )
 {
-	m_streams.push_back( _stream );
+	ALuint alSource = getFreeSourceName_( stereo );
+	//m_regSources.push_back( TRegEvent( _source, true, alSource ) );
+	m_playingSources.push_back( _source );
+	return alSource;
 }
 //////////////////////////////////////////////////////////////////////////
-void ALSoundSystem::removeStream( ALSoundBufferStream* _stream )
+void ALSoundSystem::unregisterPlaying( ALSoundSource* _source, ALuint _alSource )
 {
-	TVectorALSoundBufferStream::iterator it_find = std::find( m_streams.begin(), m_streams.end(), _stream );
-
-	if( it_find != m_streams.end() )
+	//m_regSources.push_back( TRegEvent( _source, false, _alSource ) );
+	TSourceVector::iterator it_find = std::find( m_playingSources.begin(), m_playingSources.end(), _source );
+	if( it_find != m_playingSources.end() )
 	{
-		m_streams.erase( it_find );
+		m_playingSources.erase( it_find );
+		//_source->_onStop();
+		freeSource_( _alSource );
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-TALSourceName* ALSoundSystem::getFreeSourceName( bool stereo )
+void ALSoundSystem::logMessage( const Menge::String& _message, int _level )
 {
-	int i = stereo ? 0 : (m_sourceNamesNum / 2);
-	int count = stereo ? (m_sourceNamesNum / 2) : m_sourceNamesNum;
-	for( ; i < count; i++)
+	LOG( _message, _level );
+}
+//////////////////////////////////////////////////////////////////////////
+/*void ALSoundSystem::execReg_()
+{
+	for( TVectorRegEvent::size_type i = 0; i < m_regSources.size(); i++ )
 	{
-		if(!m_sourceNames[i].busy)
+		if( m_regSources[i].reg )
 		{
-			return &m_sourceNames[i];
+			addSource_( m_regSources[i].source );
+		}
+		else
+		{
+			delSource_( m_regSources[i].source, m_regSources[i].alSource );
 		}
 	}
-	i = stereo ? 0 : (m_sourceNamesNum / 2);
+	m_regSources.clear();
+}
+//////////////////////////////////////////////////////////////////////////
+void ALSoundSystem::addSource_( ALSoundSource* _source )
+{
+	m_playingSources.push_back( _source );
+}
+//////////////////////////////////////////////////////////////////////////
+void ALSoundSystem::delSource_( ALSoundSource* _source, ALuint _alSource )
+{
+	TSourceVector::iterator it_find = std::find( m_playingSources.begin(), m_playingSources.end(), _source );
+	if( it_find != m_playingSources.end() )
+	{
+		m_playingSources.erase( it_find );
+		_source->_onStop();
+		freeSource_( _alSource );
+	}
+}*/
+//////////////////////////////////////////////////////////////////////////
+ALuint ALSoundSystem::getFreeSourceName_( bool stereo )
+{
+	TALSourceMap* sources;
+	if( stereo )
+	{
+		sources = &m_alSourcesStereo;
+	}
+	else
+	{
+		sources = &m_alSourcesMono;
+	}
 
-	for( ; i < count; i++)
+	for( TALSourceMap::iterator it = sources->begin(), it_end = sources->end();
+		it != it_end; it++ )
 	{
-		int state;
-		alGetSourcei(m_sourceNames[i].name, AL_SOURCE_STATE, &state);
-		if(state != AL_PLAYING)
+		if( it->second == false )
 		{
-			return &m_sourceNames[i];
+			it->second = true;
+			return it->first;
 		}
 	}
-	
+
 	return 0;
 }
 //////////////////////////////////////////////////////////////////////////
-void ALSoundSystem::registerPlaying( ALSoundSource* _source, float _timeMs )
+void ALSoundSystem::freeSource_( ALuint _source )
 {
-	//m_playingSources[_source] = _timeMs;
-	m_addingSources.push_back( std::make_pair( _source, _timeMs ) );
-}
-//////////////////////////////////////////////////////////////////////////
-void ALSoundSystem::unregisterPlaying( ALSoundSource* _source )
-{
-	m_deletingSources.push_back( _source );
+	if( _source == 0 ) return;
+
+	TALSourceMap::iterator it_find = m_alSourcesStereo.find( _source );
+	if( it_find != m_alSourcesStereo.end() )
+	{
+		it_find->second = false;
+	}
+	else
+	{
+		m_alSourcesMono[_source] = false;
+	}
 }
 //////////////////////////////////////////////////////////////////////////

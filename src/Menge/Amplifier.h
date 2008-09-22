@@ -91,5 +91,6 @@ namespace	Menge
 			bool	_loadPlayList( const String& _playlistResource );
 
 			ValueInterpolator<float> m_volumeTo;
+			bool m_playing;
 	};
 }

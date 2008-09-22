@@ -108,14 +108,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::registerSoundEmitter( SoundEmitter * _emitter )
 	{
-		//MENGE_LOG("Sound Registered! \n");
+		//MENGE_LOG( MENGE_TEXT("Sound Registered!") );
 		_emitter->setVolume( m_soundVolume );
 		m_soundEmitters.insert( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::unregisterSoundEmitter( SoundEmitter * _emitter )
 	{
-		//MENGE_LOG("Sound UnRegistered! \n");
+		//MENGE_LOG( MENGE_TEXT("Sound UnRegistered!") );
 		m_soundEmitters.erase( _emitter );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -175,7 +175,7 @@ namespace Menge
 	{
 		if( m_interface != 0 )
 		{
-			m_initialized = m_interface->initialize();
+			m_initialized = m_interface->initialize( Holder<LogEngine>::hostage()->getInterface() );
 		}
 		return m_initialized;
 	}

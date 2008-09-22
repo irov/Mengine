@@ -30,6 +30,7 @@ atlas_height = 2048
 
 # jpg quality, in percent
 jpg_quality = 95
+alpha_min = 0 # alpha <= alpha_min
 
 allowed_type = ['ResourceImageDefault'] #,'ResourceImageSet','ResourceImageCell']
 
@@ -196,11 +197,12 @@ def atlas(src,destdir):
     
     gamedir = os.path.dirname(src)
     
-    exe = 'AtlasMaker.exe input.xml %(width)i %(height)i %(gamedir)s %(jpgquality)i' % \
+    exe = 'AtlasMaker.exe input.xml %(width)i %(height)i %(gamedir)s %(jpgquality)i %(alphamin)i' % \
             {'width' : atlas_width, \
              'height' : atlas_height, \
              'gamedir' : gamedir, \
-             'jpgquality' : jpg_quality \
+             'jpgquality' : jpg_quality, \
+             'alphamin' : alpha_min, \
             }
         
     subprocess.call(exe)

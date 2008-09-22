@@ -49,11 +49,8 @@ bool	AtlasTexture::insertTexture(Texture2D & _texture)
 	int X = 0;
 	int Y = 0;
 
-	int Width = 0;
-	int Height = 0;
-
-	Width = _texture.getNonAlphaWidth();
-	Height = _texture.getNonAlphaHeight();
+	int Width = _texture.getNonAlphaWidth();
+	int Height = _texture.getNonAlphaHeight();
 
 	int isW = 0;
 
@@ -214,6 +211,11 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 	FreeImageWrapper::FillChannel( m_atlasTexture, FI_RGBA_RED, 0 );
 	FreeImageWrapper::FillChannel( m_atlasTexture, FI_RGBA_ALPHA, 0 );
 
+	if(m_bpp == 32)
+	{
+		FreeImageWrapper::MakeAverage(m_atlasTexture);
+	}
+
 	for(MapTextureInfo::iterator it = m_insertedTextures.begin(); 
 		it != m_insertedTextures.end(); ++it)
 	{
@@ -245,6 +247,10 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 		{
 		}*/
 
+		int offsetX = 0;
+		int offsetY = 0;
+		int offsetW = 0;
+		int offsetH = 0;
 
 		if((FreeImage_GetWidth(m_atlasTexture) - X) == w)
 		{
@@ -252,6 +258,7 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 		}
 		else
 		{
+			offsetW = -1;
 			//справа
 			FreeImageWrapper::CorrectQuantinaze(0,m_atlasTexture,X,Y,w,h);
 		}
@@ -262,6 +269,7 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 		}
 		else
 		{
+			offsetH = -1;
 			//вниз
 			FreeImageWrapper::CorrectQuantinaze(2,m_atlasTexture,X,Y,w,h);
 		}
@@ -272,6 +280,7 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 		}
 		else
 		{
+			offsetX = 0;
 			//слева
 			FreeImageWrapper::CorrectQuantinaze(1,m_atlasTexture,X,Y,w,h);
 		}
@@ -282,17 +291,25 @@ void	AtlasTexture::writeToDisc( const std::string & _name )
 		}
 		else
 		{
+			offsetY = 0;
 			//слева
 			FreeImageWrapper::CorrectQuantinaze(3,m_atlasTexture,X,Y,w,h);
 		}
 
+		desc.u = (X + offsetX) / float(correctedWidth);
+		desc.v = (Y + offsetY) / float(correctedHeight);
+
+		desc.w = (X + desc.sizeX + offsetW + 1) / float(correctedWidth);
+		desc.z = (Y + desc.sizeY + offsetH + 1) / float(correctedHeight);
 
 
-		desc.u = (X + desc.isW)/ float(correctedWidth);
-		desc.v = (Y + desc.isH) / float(correctedHeight);
+		/*
+		desc.u = (X - desc.isW)/ float(correctedWidth);
+		desc.v = (Y - desc.isH) / float(correctedHeight);
 
 		desc.w = (X + desc.sizeX - desc.isW) / float(correctedWidth);
 		desc.z = (Y + desc.sizeY - desc.isH) / float(correctedHeight);
+		*/
 	}
 
 	printf("%s \n",m_filename.c_str() );

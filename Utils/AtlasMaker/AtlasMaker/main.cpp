@@ -116,7 +116,8 @@ int main( int argc, char **argv )
 	int width = atoi(argv[2]);
 	int height = atoi(argv[3]);
 	std::string gamedir = argv[4];
-	Utility::JPEGQuality = atoi(argv[5]); 
+	Utility::JPEGQuality = atoi(argv[5]);
+	Utility::AlphaMin = atoi(argv[6]);
 
 	ResourceParser resourceParser;
 

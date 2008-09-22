@@ -5,6 +5,8 @@
 
 int Utility::JPEGQuality = 95;
 
+int Utility::AlphaMin = 0;
+
 const char* Utility::convert_number_to_string(double value)
 {
 	static char buf[100];

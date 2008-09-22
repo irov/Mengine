@@ -7,5 +7,6 @@ class Utility
 {
 	public:
 		static int JPEGQuality;
+		static int AlphaMin;
 		static const char* convert_number_to_string(double value);
 };

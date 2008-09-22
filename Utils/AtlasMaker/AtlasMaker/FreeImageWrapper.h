@@ -20,5 +20,7 @@ public:
 
 	static void CorrectQuantinaze(int corner, FIBITMAP * _image, int _x, int _y, int _width, int _height);
 
+	static void MakeAverage( FIBITMAP * _image );
+
 	static int getPow2Size(int _size);
 };

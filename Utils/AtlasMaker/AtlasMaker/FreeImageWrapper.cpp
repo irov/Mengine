@@ -1,4 +1,5 @@
 #	include "FreeImageWrapper.h"
+#	include "Utils.h"
 //////////////////////////////////////////////////////////////////////////
 unsigned char * FreeImageWrapper::GrabMemory(
 	FIBITMAP * bitmap, FREE_IMAGE_FORMAT type, unsigned long & size, int flags)
@@ -97,6 +98,93 @@ void FreeImageWrapper::FillChannel( FIBITMAP * _image, int _channel, unsigned ch
 		{
 			bits[_channel] = _color; 
 			bits += bytespp; 
+		} 
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void FreeImageWrapper::MakeAverage( FIBITMAP * _image )
+{
+	if(FreeImage_GetBPP(_image) != 32)
+	{
+		return;
+	}
+
+	int bytespp = FreeImage_GetLine(_image) / FreeImage_GetWidth(_image); 
+
+	for(int y = 1; y < FreeImage_GetHeight(_image) -1; y++)
+	{ 
+		BYTE * bits = FreeImage_GetScanLine(_image, y); 
+		BYTE * left_bits = bits - bytespp;
+		BYTE * right_bits = bits + bytespp;
+
+
+		BYTE * up_bits = FreeImage_GetScanLine(_image, y-1); //up
+		BYTE * down_bits = FreeImage_GetScanLine(_image, y+1); //down
+		
+		for(int x = 1; x < FreeImage_GetWidth(_image) - 1; x++) 
+		{
+			if(bits[FI_RGBA_ALPHA] <= Utility::AlphaMin)
+			{
+				unsigned char _colorR = 0;
+				unsigned char _colorG = 0;
+				unsigned char _colorB = 0;
+
+				int count = 0;
+
+				if(up_bits[FI_RGBA_ALPHA] != 0)
+				{
+					_colorR+=up_bits[FI_RGBA_RED];
+					_colorG+=up_bits[FI_RGBA_GREEN];
+					_colorB+=up_bits[FI_RGBA_BLUE];
+					count++;
+				}
+
+				if(down_bits[FI_RGBA_ALPHA] != 0)
+				{
+					_colorR+=down_bits[FI_RGBA_RED];
+					_colorG+=down_bits[FI_RGBA_GREEN];
+					_colorB+=down_bits[FI_RGBA_BLUE];
+					count++;
+				}
+
+				if(left_bits[FI_RGBA_ALPHA] != 0)
+				{
+					_colorR+=left_bits[FI_RGBA_RED];
+					_colorG+=left_bits[FI_RGBA_GREEN];
+					_colorB+=left_bits[FI_RGBA_BLUE];
+					count++;
+				}
+
+				if(right_bits[FI_RGBA_ALPHA] != 0)
+				{
+					_colorR+=right_bits[FI_RGBA_RED];
+					_colorG+=right_bits[FI_RGBA_GREEN];
+					_colorB+=right_bits[FI_RGBA_BLUE];
+					count++;
+				}
+
+				if(count)
+				{
+					_colorR = _colorR/count;
+					_colorG = _colorG/count;
+					_colorB = _colorB/count;
+					bits[FI_RGBA_RED] = _colorR;
+					bits[FI_RGBA_GREEN] = _colorG;
+					bits[FI_RGBA_BLUE] = _colorB;
+				}
+			}
+
+		/*	bits[FI_RGBA_RED] = _color; 
+			bits[FI_RGBA_GREEN] = _color; 
+			bits[FI_RGBA_BLUE] = _color; 
+			bits[FI_RGBA_ALPHA] = _color;
+			*/
+			bits += bytespp; 
+
+			up_bits += bytespp;
+			down_bits += bytespp;
+			left_bits += bytespp;
+			right_bits += bytespp;
 		} 
 	}
 }

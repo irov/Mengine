@@ -721,17 +721,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onUpdate( float _timing )
 	{
+		ProfilerEngine* profiler = Holder<ProfilerEngine>::hostage();
+
 		m_inputEngine->update();
 
-		ProfilerEngine* profiler = Holder<ProfilerEngine>::hostage();
+		float timing = _timing;
+
 		if( _timing > m_maxTiming )
 		{
-			_timing = m_maxTiming;
+			timing = m_maxTiming;
 		}
 
 		if( m_resetTiming )
 		{
-			_timing = 0.0f;
+			timing = 0.0f;
 			m_resetTiming = false;
 			return;
 		}
@@ -748,12 +751,12 @@ namespace Menge
 		if( m_physicEngine2D )
 		{
 			profiler->beginProfile( MENGE_TEXT("Physic") );
-			m_physicEngine2D->update( _timing );
+			m_physicEngine2D->update( timing );
 			profiler->endProfile( MENGE_TEXT("Physic") );
 		}
 
 		profiler->beginProfile( MENGE_TEXT("Game Update") );
-		m_game->update( _timing );
+		m_game->update( timing );
 
 		profiler->endProfile( MENGE_TEXT("Game Update") );
 

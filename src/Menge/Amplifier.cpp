@@ -186,6 +186,7 @@ namespace Menge
 			{
 				m_music->setVolume( m_volume );
 				m_music->play();
+				m_playing = true;
 			}
 		}
 	}

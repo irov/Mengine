@@ -70,7 +70,7 @@ void ALSoundSource::pause()
 {
 	alSourcePause( m_alSource );
 
-	//m_soundSystem->unregisterPlaying( this, m_alSource );
+	m_soundSystem->unregisterPlaying( this, m_alSource );
 
 	if( m_listener )
 	{

@@ -4,7 +4,6 @@
 #include "ALSoundSource.h"
 #include "ALSoundSystem.h"
 
-//#	include <Windows.h>
 //////////////////////////////////////////////////////////////////////////
 ALSoundSource::ALSoundSource( ALSoundSystem* _soundSystem ) 
 : m_soundBuffer( 0 )

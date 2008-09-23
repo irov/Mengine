@@ -259,6 +259,9 @@ void ALSoundSystem::update( float _timing )
 		}
 	}
 
+	m_playingSources.insert( m_playingSources.end(), m_addingSources.begin(), m_addingSources.end() );
+	m_addingSources.clear();
+
 }
 //////////////////////////////////////////////////////////////////////////
 bool ALSoundSystem::setBlow( bool _active )
@@ -356,19 +359,24 @@ EDistanceModel ALSoundSystem::getDistanceModel()
 ALuint ALSoundSystem::registerPlaying( ALSoundSource* _source, bool stereo )
 {
 	ALuint alSource = getFreeSourceName_( stereo );
-	//m_regSources.push_back( TRegEvent( _source, true, alSource ) );
-	m_playingSources.push_back( _source );
+	//m_playingSources.push_back( _source );
+	m_addingSources.push_back( _source );
 	return alSource;
 }
 //////////////////////////////////////////////////////////////////////////
 void ALSoundSystem::unregisterPlaying( ALSoundSource* _source, ALuint _alSource )
 {
-	//m_regSources.push_back( TRegEvent( _source, false, _alSource ) );
 	TSourceVector::iterator it_find = std::find( m_playingSources.begin(), m_playingSources.end(), _source );
 	if( it_find != m_playingSources.end() )
 	{
 		m_playingSources.erase( it_find );
-		//_source->_onStop();
+		freeSource_( _alSource );
+		return;
+	}
+	it_find = std::find( m_addingSources.begin(), m_addingSources.end(), _source );
+	if( it_find != m_addingSources.end() )
+	{
+		m_addingSources.erase( it_find );
 		freeSource_( _alSource );
 	}
 }
@@ -377,38 +385,6 @@ void ALSoundSystem::logMessage( const Menge::String& _message, int _level )
 {
 	LOG( _message, _level );
 }
-//////////////////////////////////////////////////////////////////////////
-/*void ALSoundSystem::execReg_()
-{
-	for( TVectorRegEvent::size_type i = 0; i < m_regSources.size(); i++ )
-	{
-		if( m_regSources[i].reg )
-		{
-			addSource_( m_regSources[i].source );
-		}
-		else
-		{
-			delSource_( m_regSources[i].source, m_regSources[i].alSource );
-		}
-	}
-	m_regSources.clear();
-}
-//////////////////////////////////////////////////////////////////////////
-void ALSoundSystem::addSource_( ALSoundSource* _source )
-{
-	m_playingSources.push_back( _source );
-}
-//////////////////////////////////////////////////////////////////////////
-void ALSoundSystem::delSource_( ALSoundSource* _source, ALuint _alSource )
-{
-	TSourceVector::iterator it_find = std::find( m_playingSources.begin(), m_playingSources.end(), _source );
-	if( it_find != m_playingSources.end() )
-	{
-		m_playingSources.erase( it_find );
-		_source->_onStop();
-		freeSource_( _alSource );
-	}
-}*/
 //////////////////////////////////////////////////////////////////////////
 ALuint ALSoundSystem::getFreeSourceName_( bool stereo )
 {

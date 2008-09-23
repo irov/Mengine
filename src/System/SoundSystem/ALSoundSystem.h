@@ -81,10 +81,9 @@ private:
 	TSourceMap m_sources;
 
 	typedef std::vector<ALSoundSource*> TSourceVector;
-	TSourceVector	m_playingSources;
-
-	//typedef std::vector< std::pair<ALSoundSource*, ALuint> > TStoppingSourceVector;
+	TSourceVector m_playingSources;
 	TSourceVector m_stoppingSources;
+	TSourceVector m_addingSources;
 	
 	bool m_initialized;
 	float m_soundVelocity;
@@ -98,25 +97,6 @@ private:
 	SulkSystem * m_sulk;
 
 	Menge::LogSystemInterface* m_logSystem;
-
-	/*struct TRegEvent
-	{
-		ALSoundSource* source;
-		bool reg;
-		ALuint alSource;
-		TRegEvent( ALSoundSource* _source, bool _reg, ALuint _alSource )
-			: source( _source )
-			, reg( _reg )
-			, alSource( _alSource )
-		{
-		}
-	};
-	typedef std::vector<TRegEvent> TVectorRegEvent;
-	TVectorRegEvent m_regSources;
-
-	void execReg_();
-	void addSource_( ALSoundSource* _source );
-	void delSource_( ALSoundSource* _source, ALuint _alSource );*/
 	ALuint getFreeSourceName_( bool stereo );
 	void freeSource_( ALuint _source );
 

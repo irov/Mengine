@@ -7,10 +7,6 @@
 
 #	define	RENDER_SYSTEM	RS_D3D9
 
-
-// Save MiniDump on unhandled exception	//
-#	define SAVE_DUMP	(0)
-
 // Build-in particle system
 #	define MENGE_PARTICLES	(1)
 
@@ -31,7 +27,7 @@
 #	define MENGE_STATIC_LIB
 
 // Unicode
-#	define MENGE_UNICODE
+//#	define MENGE_UNICODE
 
 // Compiler
 #	define MENGE_COMPILER_MSVC	(1)

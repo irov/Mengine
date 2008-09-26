@@ -4,6 +4,8 @@
 #	include "Interface/LogSystemInterface.h"
 #	include "libs/Math/mat4.h"
 #	include <sstream>
+#	include "Menge/LogEngine.h"
+#	include "Menge/Utils.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
@@ -110,7 +112,7 @@ bool HGERenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	m_hge->Gfx_SetListener( this );
 	//m_hge->System_SetState( HGE_FPS, HGEFPS_VSYNC );
 	//m_hge->System_SetState( HGE_TEXTUREFILTER, false );]
-	m_currentRenderTarget = MENGE_TEXT("defaultCamera");
+	m_currentRenderTarget = "defaultCamera";
 
 	HTARGET * voidTarget = 0;
 	HGETexture* voidTexture = 0;
@@ -128,7 +130,7 @@ bool HGERenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	}
 
 	m_systemFont = new HGERenderFont(m_hge);
-	m_systemFont->fontGenerate( MENGE_TEXT("Verdana"), 16, false, true, false );
+	m_systemFont->fontGenerate( "Verdana", 16, false, true, false );
 
 	return true;
 }
@@ -456,13 +458,13 @@ void HGERenderSystem::beginScene()
 	}
 	if( !m_hge->Gfx_BeginScene() )
 	{
-		m_logSystem->logMessage( MENGE_TEXT("Error: D3D8 Failed to BeginScene") );
+		m_logSystem->logMessage( "Error: D3D8 Failed to BeginScene" );
 	}
 	m_hge->Gfx_SetClipping();
 	m_hge->Gfx_Clear( m_clearColor );
 
 	m_inRender = true;
-	m_currentRenderTarget = MENGE_TEXT("defaultCamera");
+	m_currentRenderTarget = "defaultCamera";
 
 	// set render targets dirty to clear one time before rendering into one
 	for( TTargetMap::iterator it = m_targetMap.begin(), it_end = m_targetMap.end();
@@ -652,8 +654,7 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 	}
 	else
 	{
-		m_logSystem->logMessage( MENGE_TEXT("Warning: Invalid Render Target name "), false, false, true );
-		m_logSystem->logMessage( _name, false, true, false );
+		MENGE_LOG_WARNING << "Warning: Invalid Render Target name " << _name;
 	}
 }
 //////////////////////////////////////////////////////////////////////////

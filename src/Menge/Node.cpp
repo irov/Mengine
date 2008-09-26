@@ -19,7 +19,7 @@
 #	include "Config/Config.h"
 
 #	include <algorithm>
-
+#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -158,13 +158,11 @@ namespace Menge
 	{
 		if( isChildren( _node, false ) )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist")
-				, this->getName().c_str()
-				, this->getType().c_str()
-				, _node->getName().c_str()
-				, _node->getType().c_str()
-				);
-
+			MENGE_LOG_ERROR << "Node \"" << this->getName() 
+				<< "\" type \"" << this->getType()
+				<< "\" addChildren failed \"" << _node->getName()
+				<< "\" because type \"" << _node->getType()
+				<< "\" is already exist";
 			return false;
 		}
 
@@ -189,13 +187,11 @@ namespace Menge
 	{
 		if( isChildren( _node, false ) )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Node '%s' type '%s' addChildren failed '%s', because type '%s' is already exist")
-				, this->getName().c_str()
-				, this->getType().c_str()
-				, _node->getName().c_str()
-				, _node->getType().c_str()
-				);
-
+			MENGE_LOG_ERROR << "Node \"" << this->getName()
+				<< "\" type \"" << this->getType()
+				<< "\" addChildren failed \"" << _node->getName()
+				<< "\" because type \"" << _node->getType()
+				<< "\" is already exist";
 			return false;
 		}
 
@@ -349,17 +345,17 @@ namespace Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Enable"), MENGE_TEXT("Value"), m_enable );
+			XML_CASE_ATTRIBUTE_NODE( "Enable", "Value", m_enable );
 
-			XML_CASE_NODE( MENGE_TEXT("Node") )
+			XML_CASE_NODE( "Node" )
 			{
 				String name;
 				String type;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Name"), name );
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Type"), type );
+					XML_CASE_ATTRIBUTE( "Name", name );
+					XML_CASE_ATTRIBUTE( "Type", type );
 				}
 
 				Node * node = SceneManager::createNode( type );
@@ -375,11 +371,11 @@ namespace Menge
 				XML_PARSE_ELEMENT( node, &Node::loader );
 			}
 
-			XML_CASE_NODE( MENGE_TEXT("Hide") )
+			XML_CASE_NODE( "Hide" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), m_hide);
+					XML_CASE_ATTRIBUTE( "Value", m_hide);
 				}
 			}
 		}

@@ -91,8 +91,8 @@ public:
 	virtual HWND		CALL	System_GetStateHwnd  (hgeHwndState  );
 	virtual int			CALL	System_GetStateInt   (hgeIntState   );
 	virtual const char*	CALL	System_GetStateString(hgeStringState);
-	virtual Menge::TChar*		CALL	System_GetErrorMessage();
-	virtual	void		CALL	System_Log( const Menge::TChar *format, ... );
+	virtual Menge::TCharA*		CALL	System_GetErrorMessage();
+	virtual	void		CALL	System_Log( const Menge::TCharA *format, ... );
 	virtual bool		CALL	System_Launch(const char *url);
 	virtual void		CALL	System_Snapshot(const char *filename=0);
 
@@ -214,14 +214,14 @@ public:
 
 	static HGE_Impl*	_Interface_Get();
 	void				_FocusChange(bool bAct);
-	void				_PostError( Menge::TChar *error );
+	void				_PostError( Menge::TCharA *error );
 
 
 	HINSTANCE			hInstance;
 	HWND				hwnd;
 
 	bool				bActive;
-	Menge::TChar		szError[256];
+	Menge::TCharA		szError[256];
 	char				szAppPath[_MAX_PATH];
 	char				szIniString[256];
 

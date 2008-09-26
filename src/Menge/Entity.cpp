@@ -390,7 +390,7 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( MENGE_TEXT("PhysicBody") )
+			XML_CASE_NODE( "PhysicBody" )
 			{
 				XML_PARSE_ELEMENT( this, &RigidBody2D::_loaderPhysics );
 				m_physicController = true;

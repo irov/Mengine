@@ -61,7 +61,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( MENGE_TEXT("File") )
+			XML_CASE_NODE( "File" )
 			{
 				ImageDesc desc;
 				desc.uv = mt::vec4f(0.f,0.f,1.f,1.f);
@@ -72,21 +72,21 @@ namespace Menge
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Path"), fileName );
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("UV"), desc.uv );
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Offset"), desc.offset );
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("MaxSize"), desc.maxSize );
+					XML_CASE_ATTRIBUTE( "Path", fileName );
+					XML_CASE_ATTRIBUTE( "UV", desc.uv );
+					XML_CASE_ATTRIBUTE( "Offset", desc.offset );
+					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
 				}
 
 				desc.fileName = m_params.category + fileName;
 
 				m_imageDesc = desc;
 			}
-			XML_CASE_NODE( MENGE_TEXT("Frame") )
+			XML_CASE_NODE( "Frame" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("UV"), &ResourceImageSet::addFrameUV );
+					XML_CASE_ATTRIBUTE_MEMBER( "UV", &ResourceImageSet::addFrameUV );
 				}
 			}
 		}

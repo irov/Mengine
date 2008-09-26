@@ -20,9 +20,8 @@ namespace Menge
 		void finish() override;
 
 		std::streamsize read( void* _buf, std::streamsize _count ) override;
-		String getLine( bool _trimAfter = true ) override;
-		std::streamsize skipLine(  const String& _delim ) override;
 		void seek( std::streamoff _pos ) override;
+		void skip( std::streampos _count ) override;
 		std::streampos tell() const override;
 		bool eof() const override;
 		std::streamsize size() const override;

@@ -14,6 +14,7 @@
 #	include "ProfilerEngine.h"
 
 #	include "NodeFactory.h"
+#	include "Utils.h"
 
 namespace Menge
 {
@@ -42,8 +43,7 @@ namespace Menge
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Error: Invalid parse resource '%s' \n")
-				,_file.c_str() );
+			MENGE_LOG_ERROR << "Invalid parse resource " << _file;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( MENGE_TEXT("DataBlock") )
+			XML_CASE_NODE( "DataBlock" )
 			{
 				XML_PARSE_ELEMENT( this, &ResourceManager::loaderResource );
 			}
@@ -62,23 +62,22 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( MENGE_TEXT("Resource") )
+			XML_CASE_NODE( "Resource" )
 			{
 				String name;
 				String type;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Name"), name );
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Type"), type );
+					XML_CASE_ATTRIBUTE( "Name", name );
+					XML_CASE_ATTRIBUTE( "Type", type );
 				}
 
 				ResourceReference * resource = createResource( name, type );
 
 				if( resource == 0 )
 				{
-					MENGE_LOG_ERROR( MENGE_TEXT("Don't register resource type '%s'\n")
-						,type.c_str() );
+					MENGE_LOG_ERROR << "Don't register resource type " << type;
 					continue;
 				}
 
@@ -118,10 +117,8 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Duplicate resource name \"%s\" in group \"%s\"")
-				, name.c_str()
-				, _resource->getFactoryParams().group.c_str() );
-			MENGE_LOG_ERROR( MENGE_TEXT("Duplicate entry will be deleted now") );
+			MENGE_LOG_ERROR << "Warning: Duplicate resource name \"" << name <<"\" in group \"" << _resource->getFactoryParams().group << "\"";
+			MENGE_LOG_ERROR << "Duplicate entry will be deleted now";
 			delete _resource;
 			return false;
 		}
@@ -146,7 +143,7 @@ namespace Menge
 
 		if( it_find == m_mapResource.end() )
 		{
-			MENGE_LOG( MENGE_TEXT( "Warning: resource named \"%s\" does not exist" ), _name.c_str() );
+			MENGE_LOG << "Warning: resource named \"" << _name << "\" does not exist";
 			return 0;
 		}
 
@@ -169,7 +166,7 @@ namespace Menge
 				it++)
 			{
 				Holder<ScriptEngine>::hostage()
-					->callFunction( it->second, "(O)", pybind::ptr( _name ) );
+					->callFunction( it->second, "(s)", _name.c_str() );
 			}
 
 		}
@@ -305,16 +302,13 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlString( _xml, resourceLoader ) == false )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Invalid parse external node `%s`\n")
-				,_xml.c_str() );
-
+			MENGE_LOG_ERROR << "Invalid parse external node \"" << _xml << "\"";
 			return 0;
 		}
 
 		if( resource == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("This xml file `%s` have invalid external node format\n")
-				,_xml.c_str() );
+			MENGE_LOG_ERROR << "This xml file \"" << _xml << "\" has invalid external node format";
 		}
 
 		return resource;

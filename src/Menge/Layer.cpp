@@ -54,9 +54,9 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("Main"), MENGE_TEXT("Value"), &Layer::setMain );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Size"), MENGE_TEXT("Value"), m_size );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("RenderArea"), MENGE_TEXT("Value"), m_renderArea );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Main", "Value", &Layer::setMain );
+			XML_CASE_ATTRIBUTE_NODE( "Size", "Value", m_size );
+			XML_CASE_ATTRIBUTE_NODE( "RenderArea", "Value", m_renderArea );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

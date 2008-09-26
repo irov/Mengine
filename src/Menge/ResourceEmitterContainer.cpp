@@ -9,7 +9,7 @@
 #	include "ParticleEngine.h"
 
 #	include "LogEngine.h"
-
+#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -37,8 +37,8 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("File"), MENGE_TEXT("Path"), &ResourceEmitterContainer::setFilePath );
-			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("Folder"), MENGE_TEXT("Path"), &ResourceEmitterContainer::setFolderPath );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceEmitterContainer::setFilePath );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Folder", "Path", &ResourceEmitterContainer::setFolderPath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -48,8 +48,7 @@ namespace Menge
 
 		if( m_container == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Error: Image can't create container file '%s'")
-				,m_filename.c_str() );
+			MENGE_LOG_ERROR << "Image can't create container file " << m_filename;
 			return false;
 		}
 

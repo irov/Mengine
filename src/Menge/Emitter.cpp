@@ -17,6 +17,7 @@
 #	include "ResourceManager.h"
 
 #	include "math/box2.h"
+#	include "Utils.h"
 
 namespace	Menge
 {
@@ -38,27 +39,6 @@ namespace	Menge
 	Emitter::~Emitter()
 	{}	
 	///////////////////////////////////////////////////////////////////////////
-	bool Emitter::_checkVisibility( const Viewport & _viewPort )
-	{
-		int left;
-		int top; 
-		int right;
-		int bottom;
-
-		m_interface->getBoundingBox( left, top, right, bottom );
-
-		const mt::mat3f & wm = getWorldMatrix();
-
-		mt::box2f bbox;	//сделать box2i
-
-		mt::mul_v2_m3( bbox.min, mt::vec2f( float(left), float(top) ), wm );
-		mt::mul_v2_m3( bbox.max, mt::vec2f( float(right), float(bottom) ), wm );
-
-		bool result = _viewPort.testRectangle( bbox.min, bbox.max );
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Emitter::_activate()
 	{
 		//bool enabled = Holder<Application>::hostage()->getParticlesEnabled();
@@ -91,12 +71,12 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Resource"), MENGE_TEXT("Name"), m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Emitter"), MENGE_TEXT("Name"), m_emitterName );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("AutoPlay"), MENGE_TEXT("Value"), m_autoPlay );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Looped"), MENGE_TEXT("Value"), m_looped );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("StartPosition"), MENGE_TEXT("Value"), m_startPosition );
-	}
+			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( "Emitter", "Name", m_emitterName );
+			XML_CASE_ATTRIBUTE_NODE( "AutoPlay", "Value", m_autoPlay );
+			XML_CASE_ATTRIBUTE_NODE( "Looped", "Value", m_looped );
+			XML_CASE_ATTRIBUTE_NODE( "StartPosition", "Value", m_startPosition );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Emitter::_compile()
@@ -112,8 +92,7 @@ namespace	Menge
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Error: Emitter can't open resource file '%s'")
-				,m_resourcename.c_str() );
+			MENGE_LOG_ERROR << "Emitter can't open resource file " << m_resourcename;
 			return false;
 		}
 
@@ -121,8 +100,7 @@ namespace	Menge
 
 		if( m_container == NULL )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Error: Emitter can't open container file '%s'")
-				,m_resourcename.c_str() );
+			MENGE_LOG_ERROR << "Emitter can't open container file " << m_resourcename;
 			return false;
 		}
 
@@ -131,8 +109,7 @@ namespace	Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Error: Emitter can't create emitter source '%s'")
-				,m_resourcename.c_str() );
+			MENGE_LOG_ERROR << "Emitter can't create emitter source " << m_resourcename;
 			return false;
 		}
 
@@ -150,8 +127,7 @@ namespace	Menge
 
 			if( image == 0 )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("Error: Image can't loaded '%s'")
-					,textureName.c_str() );
+				MENGE_LOG_ERROR << "Image can't loaded " << textureName;
 				return false;
 			}
 

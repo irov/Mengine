@@ -37,7 +37,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("File"), MENGE_TEXT("Path"), &ResourcePlaylist::setFilePath );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourcePlaylist::setFilePath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -45,10 +45,10 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Loop"), MENGE_TEXT("Value"), m_loop );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Shuffle"), MENGE_TEXT("Value"), m_shuffle );
+			XML_CASE_ATTRIBUTE_NODE( "Loop", "Value", m_loop );
+			XML_CASE_ATTRIBUTE_NODE( "Shuffle", "Value", m_shuffle );
 
-			XML_CASE_NODE( MENGE_TEXT("Tracks") )
+			XML_CASE_NODE( "Tracks" )
 			{
 				XML_PARSE_ELEMENT( this, &ResourcePlaylist::loaderTrack_ );
 			}
@@ -59,21 +59,20 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( MENGE_TEXT("Track") )
+			XML_CASE_NODE( "Track" )
 			{
 				String filename;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("File"), filename );
+					XML_CASE_ATTRIBUTE( "File", filename );
 				}
 
 				String filepath = m_params.category + filename;
 
 				if( Holder<FileEngine>::hostage()->existFile( filepath ) == false )
 				{
-					MENGE_LOG_ERROR( MENGE_TEXT("ResourcePlaylist : %s not exist. \n")
-						, filepath.c_str() );
+					MENGE_LOG_ERROR << "ResourcePlaylist : \"" << filepath << "\" not exist";
 				}
 				else
 				{
@@ -88,10 +87,7 @@ namespace Menge
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( m_filename, this, &ResourcePlaylist::loaderTracks_ ) == false )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: resource playlist not found file '%s'\n")
-				, m_filename.c_str() 
-				);
-
+			MENGE_LOG_ERROR << "Warning: resource playlist not found file " << m_filename;
 			return false;
 		}
 

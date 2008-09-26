@@ -30,7 +30,7 @@ namespace Menge
 	OBJECT_IMPLEMENT(TilePolygon);
 	//////////////////////////////////////////////////////////////////////////
 	TilePolygon::TilePolygon()
-	: m_tileResource(MENGE_TEXT(""))
+	: m_tileResource("")
 	, m_tilePolygonResource(0)
 	, m_rigidBodySensor(0)
 	, m_triangles(0)
@@ -44,11 +44,11 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( MENGE_TEXT("Resource") )
+			XML_CASE_NODE( "Resource" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), m_tileResource );
+					XML_CASE_ATTRIBUTE( "Value", m_tileResource );
 				}
 			}
 		}
@@ -71,7 +71,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TilePolygon::_compile()
 	{
-		m_rigidBodySensor = SceneManager::createNodeT<RigidBody2D>(MENGE_TEXT("RigidBody2D"));
+		m_rigidBodySensor = SceneManager::createNodeT<RigidBody2D>("RigidBody2D");
 		m_rigidBodySensor->compile();
 
 		m_tilePolygonResource = 

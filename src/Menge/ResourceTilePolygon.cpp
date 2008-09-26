@@ -15,7 +15,7 @@
 #	include "ResourceManager.h"
 
 #	include "math/angle.h"
-
+#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -30,15 +30,15 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( MENGE_TEXT("Vertex") )
+			XML_CASE_NODE( "Vertex" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE_MEMBER( MENGE_TEXT("Value"), &ResourceTilePolygon::addVertex );
+					XML_CASE_ATTRIBUTE_MEMBER( "Value", &ResourceTilePolygon::addVertex );
 				}
 			}
 
-			XML_CASE_NODE( MENGE_TEXT("Tile") )
+			XML_CASE_NODE( "Tile" )
 			{
 				float minAngle;
 				float maxAngle;
@@ -46,23 +46,23 @@ namespace Menge
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("MinAngle"), minAngle );
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("MaxAngle"), maxAngle );
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Image"), imageName );
+					XML_CASE_ATTRIBUTE( "MinAngle", minAngle );
+					XML_CASE_ATTRIBUTE( "MaxAngle", maxAngle );
+					XML_CASE_ATTRIBUTE( "Image", imageName );
 				}
 
 				m_tiles.push_back(Tile(minAngle,maxAngle,imageName));
 			}
 
-			XML_CASE_NODE( MENGE_TEXT("TileJunc") )
+			XML_CASE_NODE( "TileJunc" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Image"), m_juncName );
+					XML_CASE_ATTRIBUTE( "Image", m_juncName );
 				}
 			}
 
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ImageMap"), MENGE_TEXT("Name"), m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourcename );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -150,8 +150,7 @@ namespace Menge
 
 		if(m_resource == 0)
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Image resource not getting '%s'")
-				,m_resourcename.c_str() );
+			MENGE_LOG_ERROR << "Image resource not getting " << m_resourcename;
 			return false;
 		}
 
@@ -161,8 +160,7 @@ namespace Menge
 
 		if(m_resourceJunc == 0)
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Image resource not getting '%s'")
-				,m_juncName.c_str() );
+			MENGE_LOG_ERROR << "Image resource not getting " << m_juncName;
 			return false;
 		}
 
@@ -178,7 +176,7 @@ namespace Menge
 
 		if(result == false)
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Error: can't triangulate polygon \n") );
+			MENGE_LOG_ERROR << "can't triangulate polygon";
 			return false;
 		}
 
@@ -197,7 +195,7 @@ namespace Menge
 
 		if(result == false)
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Error: can't divide into polygons \n") );
+			MENGE_LOG_ERROR << "can't divide into polygons";
 			return false;
 		}
 

@@ -62,8 +62,8 @@ namespace Menge
 		void destroyScene( const String& _name );
 
 	public:
-		void loader( XmlElement * _xml );
-		void loaderGame_( XmlElement * _xml );
+		bool loader( const String& _iniFile );
+		//void loaderGame_( XmlElement * _xml );
 		void loaderScenes_( XmlElement * _xml );
 		void loaderArrows_( XmlElement * _xml );
 		void loaderEntities_( XmlElement * _xml );
@@ -74,8 +74,6 @@ namespace Menge
 		void loaderResourceFile_( XmlElement * _xml );
 
 		void loadAccounts();
-		void loaderAccounts_( XmlElement* _xml );
-		
 		void registerResources();
 
 	public:
@@ -175,5 +173,7 @@ namespace Menge
 		String m_debugResourceFont;
 		char m_debugText[128];
 		float m_FPS;
+
+		bool loaderAccounts_( const String& _iniFile );
 	};	
 }

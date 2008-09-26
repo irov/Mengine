@@ -15,6 +15,7 @@
 #	include "LogEngine.h"
 
 #	include "math/box2.h"
+#	include "Utils.h"
 
 namespace	Menge
 {
@@ -47,12 +48,12 @@ namespace	Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ImageMap"), MENGE_TEXT("Name"), m_resourceName );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ImageIndex"), MENGE_TEXT("Value"), m_currentImageIndex );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("CenterAlign"), MENGE_TEXT("Value"), m_centerAlign );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("BlendSource"), MENGE_TEXT("Value"), ((int&)m_blendSrc) );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("BlendDest"), MENGE_TEXT("Value"), ((int&)m_blendDest) );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Color"), MENGE_TEXT("Value"), m_color );
+			XML_CASE_ATTRIBUTE_NODE( "ImageMap", "Name", m_resourceName );
+			XML_CASE_ATTRIBUTE_NODE( "ImageIndex", "Value", m_currentImageIndex );
+			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
+			XML_CASE_ATTRIBUTE_NODE( "BlendSource", "Value", ((int&)m_blendSrc) );
+			XML_CASE_ATTRIBUTE_NODE( "BlendDest", "Value", ((int&)m_blendDest) );
+			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -94,10 +95,7 @@ namespace	Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Image resource not getting '%s'")
-				, m_resourceName.c_str() 
-				);
-
+			MENGE_LOG_ERROR << "Image resource not found " << m_resourceName;
 			return false;
 		}
 		
@@ -168,11 +166,6 @@ namespace	Menge
 		if( m_resource == 0 ) 
 		{
 			return;
-		}
-		if( m_resourceName == MENGE_TEXT("CursorFlashlight") )
-		{
-			int a;
-			a = 0;
 		}
 
 		bool isAlpha = m_resource->isAlpha( m_currentImageIndex );
@@ -328,11 +321,7 @@ namespace	Menge
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Sprite %s: Image resource not getting '%s'")
-				, getName().c_str()
-				, m_resourceName.c_str()
-				);
-
+			MENGE_LOG_ERROR << "Sprite " << getName() <<": Image resource not found " << m_resourceName;
 			return;
 		}
 
@@ -405,7 +394,7 @@ namespace	Menge
 	{
 		if( m_resource == NULL )
 		{
-			MENGE_SCRIPT_BREACK( MENGE_TEXT("Sprite %s: Can't get image size, because resource is NULL '%s'")
+			MENGE_SCRIPT_BREACK( "Sprite %s: Can't get image size, because resource is NULL '%s'"
 				, getName().c_str()
 				, m_resourceName.c_str() 
 				);
@@ -434,7 +423,7 @@ namespace	Menge
 	{
 		if( m_resource == 0 )
 		{
-			MENGE_SCRIPT_BREACK( MENGE_TEXT("Sprite %s: Can't get image count, because resource is NULL '%s'")
+			MENGE_SCRIPT_BREACK( "Sprite %s: Can't get image count, because resource is NULL '%s'"
 				, getName().c_str()
 				, m_resourceName.c_str() 
 				);

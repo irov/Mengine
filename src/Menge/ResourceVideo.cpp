@@ -31,20 +31,20 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("File"), MENGE_TEXT("Path"), m_filepath );
+			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filepath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::_compile()
 	{
-		if( m_filepath == MENGE_TEXT("") )
+		if( m_filepath == "" )
 		{
 			return false;
 		}
 		m_filestream = Holder<FileEngine>::hostage()->openFile( m_params.category + m_filepath );
 		if( m_filestream == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Resource Video: file not found") );
+			MENGE_LOG_ERROR << "ResourceVideo: file not found";
 			return false;
 		}
 		m_stream = CodecManager::getCodec( "theora" );
@@ -52,7 +52,7 @@ namespace Menge
 		bool res = m_stream->start( m_filestream, static_cast<CodecInterface::CodecData*>( &imageData ) );
 		if( res == false )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Error: failed to compile theora video") );
+			MENGE_LOG_ERROR << "failed to compile theora video";
 			return false;
 		}
 

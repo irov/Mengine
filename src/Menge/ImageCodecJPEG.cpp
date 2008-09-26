@@ -90,7 +90,7 @@ namespace Menge
 		(*_cinfo->err->format_message)(_cinfo, buffer);
 		// send it to user's message proc
 		//FreeImage_OutputMessageProc(s_format_id, buffer);
-		MENGE_LOG_ERROR( Utils::AToW( buffer ).c_str() );
+		MENGE_LOG_ERROR << buffer;
 	}
 
 	// ----------------------------------------------------------
@@ -478,21 +478,13 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String ImageCodecJPEG::getLine( bool _trimAfter )
-	{
-		// streaming not implemented
-		return Utils::emptyString();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::streamsize ImageCodecJPEG::skipLine( const String& _delim )
-	{
-		// streaming not implemented
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ImageCodecJPEG::seek( std::streamoff _pos )
 	{
 		// streaming not implemented
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageCodecJPEG::skip( std::streampos _count )
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	std::streampos ImageCodecJPEG::tell() const

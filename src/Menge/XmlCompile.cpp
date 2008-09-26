@@ -12,6 +12,7 @@
 #	include "XmlTag.h"
 
 #	include "LogEngine.h"
+#	include "Utils.h"
 
 #ifdef XML_LARGE_SIZE
 #if defined(XML_USE_MSC_EXTENSIONS) && _MSC_VER < 1400
@@ -29,7 +30,7 @@ namespace Menge
 		: m_inFile(0)
 		, m_outFile(0)
 	{
-		m_root = new XmlTag( TAG_BEGIN, MENGE_TEXT("Root"), 0 );
+		m_root = new XmlTag( TAG_BEGIN, "Root", 0 );
 
 		m_tagsLevel.push_back( m_root );
 	}
@@ -294,10 +295,7 @@ namespace Menge
 
 		if(	tagId == TAG_BEGIN )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("XmlCompile invalid compile - tag id '%s'")
-				, _tagName
-				);
-
+			MENGE_LOG_ERROR << "XmlCompile invalid compile - tag id " << _tagName;
 			return;
 		}
 
@@ -307,10 +305,7 @@ namespace Menge
 
 		if( tag == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("XmlCompile invalid compile - tag '%s'")
-				, _tagName
-				);
-
+			MENGE_LOG_ERROR << "XmlCompile invalid compile - tag " << _tagName;
 			return;
 		}
 
@@ -336,10 +331,7 @@ namespace Menge
 
 			if( tagAttr.valid == false )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("XmlCompile invalid compile - attr '%s'")
-					, attributeName
-					);
-
+				MENGE_LOG_ERROR << "XmlCompile invalid compile - attr " << attributeName;
 				return;
 			}
 
@@ -360,7 +352,7 @@ namespace Menge
 			case TYPE_Bool:
 				{
 					char value_char;
-					STDSSCANF( attrValue, MENGE_TEXT("%c"), &value_char );
+					std::sscanf( attrValue, "%c", &value_char );
 
 					bool v = (value_char != 0);
 					m_outFile->write( &v, sizeof( v ) );
@@ -368,32 +360,32 @@ namespace Menge
 			case TYPE_Int:
 				{
 					int v;
-					STDSSCANF( attrValue, MENGE_TEXT("%d"), &v );
+					std::sscanf( attrValue, "%d", &v );
 					m_outFile->write( &v, sizeof( v ) );
 				}break;
 			case TYPE_Float:
 				{
 					float v;
-					STDSSCANF( attrValue, MENGE_TEXT("%f"), &v );
+					std::sscanf( attrValue, "%f", &v );
 					m_outFile->write( &v, sizeof( v ) );
 				}break;
 			case TYPE_Float2:
 				{
 					float v[2];
-					STDSSCANF( attrValue, MENGE_TEXT("%f %f"), &v[0], &v[1]);
+					std::sscanf( attrValue, "%f %f", &v[0], &v[1]);
 					m_outFile->write( &v, sizeof( v ) );
 				}break;
 
 			case TYPE_Float4:
 				{
 					float v[4];
-					STDSSCANF( attrValue, MENGE_TEXT("%f %f %f %f"), &v[0], &v[1], &v[2], &v[3] );
+					std::sscanf( attrValue, "%f %f %f %f", &v[0], &v[1], &v[2], &v[3] );
 					m_outFile->write( &v, sizeof( v ) );
 				}break;
 			case TYPE_Mat3:
 				{
 					float v[6];
-					STDSSCANF( attrValue, MENGE_TEXT("%f %f %f %f %f %f"), &v[0], &v[1], &v[2], &v[3], &v[4], &v[5] );
+					std::sscanf( attrValue, "%f %f %f %f %f %f", &v[0], &v[1], &v[2], &v[3], &v[4], &v[5] );
 					m_outFile->write( &v, sizeof( v ) );
 				}break;
 			case TYPE_Define:
@@ -402,9 +394,7 @@ namespace Menge
 
 					if( defId == DEF_BEGIN )
 					{
-						MENGE_LOG_ERROR( MENGE_TEXT("Invalid compile [tag attribute define %s not id]\n")
-							, attrValue
-						);
+						MENGE_LOG_ERROR << "Invalid compile [tag attribute define " << attrValue << " not id]\n";
 						return;
 					}
 

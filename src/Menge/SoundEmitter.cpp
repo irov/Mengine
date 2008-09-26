@@ -13,6 +13,7 @@
 #	include "LogEngine.h"
 
 #	include "SoundEngine.h"
+#	include "Utils.h"
 
 namespace Menge
 {
@@ -58,9 +59,9 @@ namespace Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Resource"), MENGE_TEXT("Name"), m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("HeadMode"), MENGE_TEXT("Value"), m_isHeadMode );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Looping"), MENGE_TEXT("Value"), m_looped );
+			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( "HeadMode", "Value", m_isHeadMode );
+			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looped );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -96,10 +97,7 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: sound emitter '%s' can't compiled")
-				, m_name.c_str()
-				);
-
+			MENGE_LOG_ERROR << "Warning: sound emitter " << m_name << "not compiled";
 			return false;
 		}
 
@@ -130,11 +128,7 @@ namespace Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: sound emitter '%s' can't get resource '%s'")
-				, m_name.c_str()
-				, m_resourcename.c_str()
-				);
-
+			MENGE_LOG_ERROR << "Warning: sound emitter " << m_name << " can't get resource " << m_resourcename;
 			return;
 		}
 		m_interface->setSoundBuffer( m_resource->get() );

@@ -6,7 +6,7 @@
 #	include "ResourceManager.h"
 #	include "LogEngine.h"
 #	include "ResourceMaterial.h"
-
+#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -28,8 +28,8 @@ namespace Menge
 		SceneNode3D::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Resource"), MENGE_TEXT("Name"), m_resourceName );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Material"), MENGE_TEXT("Name"), m_materialName );
+			XML_CASE_ATTRIBUTE_NODE( "Resource", "Name", m_resourceName );
+			XML_CASE_ATTRIBUTE_NODE( "Material", "Name", m_materialName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -55,7 +55,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_resourceName != MENGE_TEXT("") )
+		if( m_resourceName != "" )
 		{
 			m_resourceMesh = 
 				Holder<ResourceManager>::hostage()
@@ -63,8 +63,7 @@ namespace Menge
 
 			if( m_resourceMesh == 0 )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("Error: Can't find mesh resource '%s'")
-					,m_resourceName.c_str() );
+				MENGE_LOG_ERROR << "Error: Can't find mesh resource " << m_resourceName;
 				return false;
 			}
 		}
@@ -116,7 +115,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMesh::compileMaterial_()
 	{
-		if( m_materialName != MENGE_TEXT("") )
+		if( m_materialName != "" )
 		{
 			m_resourceMaterial = 
 				Holder<ResourceManager>::hostage()
@@ -124,10 +123,8 @@ namespace Menge
 
 			if( m_resourceMaterial == 0 )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("Warning: Can't find material '%s. RenderMesh '%s' will be proceeded whitout material")
-					,m_materialName.c_str()
-					,m_resourceName.c_str()
-					);
+				MENGE_LOG_ERROR << "Warning: Can't find material \"" << m_materialName
+					<< "\". RenderMesh \"" << m_resourceName << "\" will be proceeded whitout material";
 			}
 			else
 			{

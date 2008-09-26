@@ -70,7 +70,7 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	UNREFERENCED_PARAMETER( hPrevInstance );
 	UNREFERENCED_PARAMETER( nShowCmd );
 
-	const Menge::TChar * config_file = MENGE_TEXT("application.xml");
+	const Menge::TCharA * config_file = "application.xml";
 
 	if( strstr(lpCmdLine, "-console") )
 	{

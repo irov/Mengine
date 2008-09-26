@@ -32,8 +32,8 @@ namespace Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("File"), MENGE_TEXT("Path"), &ResourceSound::setFilePath );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("IsStreamable"), MENGE_TEXT("Value"),m_isStreamable);
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceSound::setFilePath );
+			XML_CASE_ATTRIBUTE_NODE( "IsStreamable", "Value",m_isStreamable);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -33,7 +33,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("GridSize"), MENGE_TEXT("Value"), m_gridSize );
+			XML_CASE_ATTRIBUTE_NODE( "GridSize", "Value", m_gridSize );
 		}
 
 	}
@@ -126,7 +126,7 @@ namespace Menge
 
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 
-		String layer2DAccumulatorName = MENGE_TEXT("Layer2DAccumulator_") + m_name + MENGE_TEXT("_image_");
+		String layer2DAccumulatorName = "Layer2DAccumulator_" + m_name + "_image_";
 
 		for( std::size_t i = 0; i < countX; i++ )
 		{

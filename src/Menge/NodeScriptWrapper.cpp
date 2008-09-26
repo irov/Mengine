@@ -130,8 +130,7 @@ namespace Menge
 
 		static void setCurrentScene( const String& _name, bool _destroyOld = false )
 		{
-			MENGE_LOG( MENGE_TEXT("set current scene '%s'\n")
-				,_name.c_str() );
+			MENGE_LOG << "set current scene " << _name;
 			Holder<Player>::hostage()
 					->setCurrentScene( _name, _destroyOld );
 		}
@@ -274,12 +273,12 @@ namespace Menge
 				ResourceFactoryParam param;
 				param.name = _name;
 
-				param.category = Holder<FileEngine>::hostage()->getAppDataPath() + MENGE_TEXT("\\");
+				param.category = Holder<FileEngine>::hostage()->getAppDataPath() + "\\";
 				String group;
 				Account* acc = Holder<Game>::hostage()->getCurrentAccount();
 				if( acc != 0 )
 				{
-					param.group = acc->getName() + MENGE_TEXT("\\");
+					param.group = acc->getName() + "\\";
 				}
 
 				resourceImage = new ResourceImageDynamic( param );
@@ -314,7 +313,7 @@ namespace Menge
 
 			//image->writeToFile( "bl.bmp" );
 
-			Sprite * nodeSprite = SceneManager::createNodeT<Sprite>( MENGE_TEXT("Sprite") );
+			Sprite * nodeSprite = SceneManager::createNodeT<Sprite>( "Sprite" );
 
 			nodeSprite->setImageResource( _name );
 
@@ -383,7 +382,7 @@ namespace Menge
 		{
 			ResourceImageDefault* resImage = 
 				static_cast<ResourceImageDefault*>
-				( Holder<ResourceManager>::hostage()->createResource( _resourceName, MENGE_TEXT("ResourceImageDefault") ) );
+				( Holder<ResourceManager>::hostage()->createResource( _resourceName, "ResourceImageDefault" ) );
 			resImage->addImagePath( _filename );
 			Holder<ResourceManager>::hostage()->registerResource( resImage );
 		}
@@ -684,6 +683,7 @@ namespace Menge
 			.def( "isHide", &Node::isHide )
 			.def( "getWorldPosition", &Node::getWorldPosition )
 			.def( "getWorldDirection", &Node::getWorldDirection )
+			.def( "colorTo", &Node::colorTo )
 			.def( "alphaTo", &Node::alphaTo )
 			.def( "setAlpha", &Node::setAlpha )
 			.def( "colorToStop", &Node::colorToStop )

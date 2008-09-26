@@ -83,6 +83,7 @@
 #	include "Scene.h"
 
 #	include "Codec.h"
+#	include "Utils.h"
 
 namespace Menge
 {
@@ -204,7 +205,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::initPredefinedResources()
 	{
-		ResourceFactoryParam param = { MENGE_TEXT("WhitePixel") };
+		ResourceFactoryParam param = { "WhitePixel" };
 
 		ResourceImageDynamic * image = new ResourceImageDynamic( param );
 		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
@@ -219,24 +220,28 @@ namespace Menge
 		Holder<Game>::keep( m_game );
 		Holder<ScheduleManager>::keep( new ScheduleManager );
 
-		MENGE_LOG( MENGE_TEXT("Create game file [%s] ...\n")
-			,m_gameInfo.c_str() );
+		MENGE_LOG << "Create game file " << m_gameInfo;
 
-		if( m_xmlEngine->parseXmlFileM( m_gameInfo, m_game, &Game::loader ) == false )
+		if( m_game->loader( m_gameInfo ) == false )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Invalid game file [%s] ...\n")
-				,m_gameInfo.c_str() );
-			MENGE_LOG_CRITICAL( MENGE_TEXT("Application files missing or corrupt") );
+			MENGE_LOG_ERROR << "Invalid game file " << m_gameInfo;
+			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
 			return false;
 		}
+		/*if( m_xmlEngine->parseXmlFileM( m_gameInfo, m_game, &Game::loader ) == false )
+		{
+			MENGE_LOG_ERROR << "Invalid game file " << m_gameInfo;
+			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
+			return false;
+		}*/
 
 		const String & title = m_game->getTitle();
 		bool fullscreen = m_game->getFullscreen();
 		m_renderEngine->setFullscreenMode( fullscreen );
 
-		if( !m_fileEngine->initAppDataPath( MENGE_TEXT("Menge\\") + title ) )
+		if( !m_fileEngine->initAppDataPath( "Menge\\" + title ) )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Can't initialize user's data path") );
+			MENGE_LOG_ERROR << "Warning: Can't initialize user's data path";
 		}
 
 		for( TStringVector::iterator it = m_resourcePaths.begin(), 
@@ -269,7 +274,7 @@ namespace Menge
 		bool res = m_renderEngine->initialize();
 		if( res == false )
 		{
-			MENGE_LOG_CRITICAL( MENGE_TEXT("Failed to initialize Render System") );
+			MENGE_LOG_CRITICAL( "Failed to initialize Render System" );
 			return false;
 		}
 
@@ -303,7 +308,7 @@ namespace Menge
 											FSAAType, FSAAQuality );
 		if( res == false )
 		{
-			MENGE_LOG_CRITICAL( MENGE_TEXT("Failed to create render window") );
+			MENGE_LOG_CRITICAL( "Failed to create render window" );
 			return false;
 		}
 
@@ -336,7 +341,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( MENGE_TEXT("Application") )
+			XML_CASE_NODE( "Application" )
 			{				
 				XML_PARSE_ELEMENT( this, &Application::loaderApplication );
 			}
@@ -347,14 +352,14 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Game"), MENGE_TEXT("File"), m_gameInfo );
+			XML_CASE_ATTRIBUTE_NODE( "Game", "File", m_gameInfo );
 
-			XML_CASE_NODE( MENGE_TEXT("Resource") )
+			XML_CASE_NODE( "Resource" )
 			{
 				String filename;
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("File"), filename );
+					XML_CASE_ATTRIBUTE( "File", filename );
 				}
 				m_resourcePaths.push_back( filename );
 			}
@@ -396,11 +401,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const String& _applicationFile, const char* _args, bool _loadPersonality )
 	{
+		String loc = ::setlocale( LC_CTYPE, "" ); // default (OS) locale
+		//_locale_t loc1 = _get_current_locale();
+
 		parseArguments( _args );
 
 		initInterfaceSystem( &m_logSystem );
 		this->setLogSystem( m_logSystem );
-		m_logSystem->enableConsole( m_hasConsole );
+		m_logEngine->enableConsole( m_hasConsole );
 
 		initInterfaceSystem( &m_profilerSystem );
 		this->setProfilerSystem( m_profilerSystem );
@@ -411,10 +419,10 @@ namespace Menge
 
 		if( m_verbose )
 		{
-			m_logSystem->setVerboseLevel( 3 );
+			m_logEngine->setVerboseLevel( 3 );
 		}
 
-		m_fileSystem->loadPath( MENGE_TEXT(".") );
+		m_fileSystem->loadPath( "." );
 
 		initInterfaceSystem( &m_inputSystem );
 		this->setInputSystem( m_inputSystem );
@@ -510,19 +518,17 @@ namespace Menge
 
 		if( m_xmlEngine->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("parse application xml failed '%s'\n")
-				, _applicationFile.c_str()
-				);
-			MENGE_LOG_CRITICAL( MENGE_TEXT("Application files missing or corrupt") );
+			MENGE_LOG_ERROR << "parse application xml failed " << _applicationFile;
+			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
 			return false;
 		}
 
-		m_fileEngine->changeDir( MENGE_TEXT("../") );
+		m_fileEngine->changeDir( "../" );
 
 		ScriptEngine * scriptEngine = new ScriptEngine();
 		Holder<ScriptEngine>::keep( scriptEngine );
 		
-		MENGE_LOG( MENGE_TEXT("init scriptEngine ...\n") );
+		MENGE_LOG << "init scriptEngine...";
 		scriptEngine->init();
 
 		//strcpy( 0, "asdf" );
@@ -732,13 +738,16 @@ namespace Menge
 			timing = m_maxTiming;
 		}
 
-		if( m_resetTiming )
+		/*if( m_resetTiming )
 		{
+			_timing = 0.0f;
 			timing = 0.0f;
 			m_resetTiming = false;
-			return;
-		}
+			MENGE_LOG << "Reset Timing";
+			//return;
+		}*/
 
+		//MENGE_LOG << "onUpdate timing: " << timing;
 		//Holder<MousePickerSystem>::hostage()->clear();
 
 		if( m_physicEngine )
@@ -746,29 +755,29 @@ namespace Menge
 			m_physicEngine->update( 1.0f/30.0f );
 		}
 
-		profiler->beginProfile( MENGE_TEXT("Menge") );
+		profiler->beginProfile( "Menge" );
 
 		if( m_physicEngine2D )
 		{
-			profiler->beginProfile( MENGE_TEXT("Physic") );
+			profiler->beginProfile( "Physic" );
 			m_physicEngine2D->update( timing );
-			profiler->endProfile( MENGE_TEXT("Physic") );
+			profiler->endProfile( "Physic" );
 		}
 
-		profiler->beginProfile( MENGE_TEXT("Game Update") );
+		profiler->beginProfile( "Game Update" );
 		m_game->update( timing );
 
-		profiler->endProfile( MENGE_TEXT("Game Update") );
+		profiler->endProfile( "Game Update" );
 
-		profiler->beginProfile( MENGE_TEXT("Sound Update") );
+		profiler->beginProfile( "Sound Update" );
 		m_soundEngine->update( _timing );
-		profiler->endProfile( MENGE_TEXT("Sound Update") );
+		profiler->endProfile( "Sound Update" );
 
 		m_renderEngine->beginScene();
 		m_game->render( m_debugMask );
 		m_renderEngine->endScene();
 
-		profiler->endProfile( MENGE_TEXT("Menge") );
+		profiler->endProfile( "Menge" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()
@@ -867,16 +876,6 @@ namespace Menge
 	void Application::showMessageBox( const String& _message, const String& _header, unsigned int _style )
 	{
 		m_interface->showMessageBox( _message, _header, _style );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	StringA Application::WToA( const StringW& _stringw ) const
-	{
-		return m_interface->WToA( _stringw );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	StringW Application::AToW( const StringA& _stringa ) const
-	{
-		return m_interface->AToW( _stringa );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

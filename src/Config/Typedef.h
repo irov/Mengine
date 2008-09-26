@@ -57,7 +57,7 @@ namespace Menge
 #	define STDITOS (_itoa)
 
 #	if MENGE_COMPILER == MENGE_COMPILER_MSVC
-#		define MENGE_TEXT(quote)	quote
+#		define MENGE_TEXT(quote)	L##quote
 #	endif
 
 #endif

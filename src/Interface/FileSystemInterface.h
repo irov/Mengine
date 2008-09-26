@@ -13,9 +13,10 @@ namespace Menge
 	public:
 		virtual ~DataStreamInterface() {}
 		virtual std::streamsize read( void* _buf, std::streamsize _count ) = 0;
-		virtual String getLine( bool _trimAfter = true ) = 0;
-		virtual std::streamsize skipLine(  const String& _delim ) = 0;
+		//virtual String getLine( bool _trimAfter = true ) = 0;
+		//virtual std::streamsize skipLine(  const String& _delim ) = 0;
 		virtual void seek( std::streamoff _pos ) = 0;
+		virtual void skip( std::streampos _count ) = 0;
 		virtual std::streampos tell() const = 0;
 		virtual bool eof() const = 0;
 		virtual std::streamsize size() const = 0;
@@ -43,7 +44,7 @@ namespace Menge
 
 		virtual bool existFile( const String& _filename ) = 0;
 		virtual bool deleteFile( const String& _filename ) = 0;
-		virtual DataStreamInterface* openFile( const Text& _filename ) = 0;
+		virtual DataStreamInterface* openFile( const String& _filename ) = 0;
 		virtual DataStreamInterface* createMemoryFile( void* _data, std::streamsize _size, bool _freeOnClose ) = 0;
 		virtual void closeStream( DataStreamInterface* _stream ) = 0;
 
@@ -57,7 +58,7 @@ namespace Menge
 		virtual bool changeDir(  const String& _path  ) = 0;
 
 		virtual bool initAppDataPath( const String& _game ) = 0;
-		virtual const Menge::String& getAppDataPath() = 0;
+		virtual const String& getAppDataPath() = 0;
 	};
 }
 

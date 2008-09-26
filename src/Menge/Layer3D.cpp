@@ -73,12 +73,12 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Gravity"), MENGE_TEXT("Value"), m_g );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Restitution"), MENGE_TEXT("Value"), m_restitution );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("StaticFriction"), MENGE_TEXT("Value"), m_staticFriction );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("DynamicFriction"), MENGE_TEXT("Value"), m_dynamicFriction );
+			XML_CASE_ATTRIBUTE_NODE( "Gravity", "Value", m_g );
+			XML_CASE_ATTRIBUTE_NODE( "Restitution", "Value", m_restitution );
+			XML_CASE_ATTRIBUTE_NODE( "StaticFriction", "Value", m_staticFriction );
+			XML_CASE_ATTRIBUTE_NODE( "DynamicFriction", "Value", m_dynamicFriction );
 		
-			XML_CASE_NODE( MENGE_TEXT("Controllers") )
+			XML_CASE_NODE( "Controllers" )
 			{
 				XML_PARSE_ELEMENT( this, &Layer3D::loaderControllers_ );
 			}

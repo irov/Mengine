@@ -55,7 +55,7 @@ namespace	Menge
 	{
 		m_currentHotSpot = new HotSpot();
 		m_currentHotSpot->addPoint( -m_offsetClick );
-		m_currentHotSpot->setName( MENGE_TEXT("MainHotSpotArrow") );
+		m_currentHotSpot->setName( "MainHotSpotArrow" );
 
 		bool result = this->addChildren( m_currentHotSpot );
 
@@ -73,7 +73,7 @@ namespace	Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( MENGE_TEXT("Arrow") )
+			XML_CASE_NODE( "Arrow" )
 			{
 				XML_PARSE_ELEMENT( this, &Arrow::loaderArrow_ );
 			}
@@ -86,7 +86,7 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ClickOffset"), MENGE_TEXT("Value"), m_offsetClick );
+			XML_CASE_ATTRIBUTE_NODE( "ClickOffset", "Value", m_offsetClick );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

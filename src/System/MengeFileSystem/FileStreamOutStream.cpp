@@ -33,7 +33,7 @@ namespace Menge
 			return false;
 		}
 
-		if( _binary == false )
+/*		if( _binary == false )
 		{
 #if MENGE_ENDIAN == MENGE_ENDIAN_LITTLE
 			uint16 bom = 0xFEFF;	// UTF-16LE
@@ -41,7 +41,7 @@ namespace Menge
 			uint16 bom = 0xFFFE;	// UTF-16BE
 #endif
 			m_fstream.write( (const char*)&bom, 2 );
-		}
+		}*/
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

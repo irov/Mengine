@@ -3,6 +3,7 @@
 #	include <stdlib.h>
 #	include <stdio.h>
 #	include <math.h>
+#	include "Menge/Utils.h"
 //////////////////////////////////////////////////////////////////////////
 HGERenderFont::HGERenderFont(HGE * _hge)
 	: m_hge(_hge)
@@ -63,10 +64,10 @@ HTEXTURE HGERenderFont::_fontGenerate( const Menge::String& _name, int _size, bo
 	//MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, _name.c_str(), -1, sUniPath,
 	//	MAX_PATH);
 
-	HFONT hFont = CreateFontW(-_size, 0, 0, 0, (_bold) ? FW_BOLD : FW_NORMAL,
+	HFONT hFont = CreateFont(-_size, 0, 0, 0, (_bold) ? FW_BOLD : FW_NORMAL,
 		_italic, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
 		(_antialias) ? ANTIALIASED_QUALITY : NONANTIALIASED_QUALITY,
-		DEFAULT_PITCH | FF_DONTCARE, _name.c_str());
+		DEFAULT_PITCH | FF_DONTCARE, Menge::Utils::AToW( _name ).c_str());
 
 	if(!hFont)
 	{

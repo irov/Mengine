@@ -96,7 +96,7 @@ namespace Menge
 		return m_interface->initAppDataPath( _game );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & FileEngine::getAppDataPath()
+	const String& FileEngine::getAppDataPath()
 	{
 		return m_interface->getAppDataPath();
 	}

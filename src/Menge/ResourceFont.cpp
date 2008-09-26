@@ -9,7 +9,7 @@
 #	include "FileEngine.h"
 
 #	include "LogEngine.h"
-
+#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("File"), MENGE_TEXT("Path"), &ResourceFont::setFontPath );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "File", "Path", &ResourceFont::setFontPath );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -83,10 +83,7 @@ namespace Menge
 
 		if( stream == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: resource font not find fond file '%s'\n")
-				, m_filename.c_str() 
-				);
-
+			MENGE_LOG_ERROR << "Warning: resource font not find fond file " << m_filename;
 			return false;
 		}
 
@@ -136,7 +133,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	String ResourceFont::getFontDir( const String& _fontName )
 	{
-		String::size_type index = _fontName.find_last_of( MENGE_TEXT("/") );
+		String::size_type index = _fontName.find_last_of( "/" );
 
 		String fontDir = _fontName;
 
@@ -150,23 +147,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::parseAttribute( const String& name, const String& params )
 	{
-		if ( name == MENGE_TEXT("glyph") )
+		if ( name == "glyph" )
 		{
 			TChar r;
 			float u1, v1, u2, v2;
 
-			int err = STDSSCANF( params.c_str(), MENGE_TEXT("%c %f %f %f %f"), &r, 1, &u1, &v1, &u2, &v2 );
+			int err = std::sscanf( params.c_str(), "%c %f %f %f %f", &r, &u1, &v1, &u2, &v2 );
 
 			if (err == 0)
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("Error: in parsing params: '%s'")
-					,params.c_str() );
+				MENGE_LOG_ERROR << "in parsing params: " << params;
 				return false;
 			}
 
 			setGlyph( r, u1, v1, u2, v2 );
 		}
-		else if ( name == MENGE_TEXT("source") )
+		else if ( name == "source" )
 		{
 			m_fullname = m_fontDir + params;
 
@@ -174,12 +170,11 @@ namespace Menge
 
 			if( m_image == 0 )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("Error: Image can't loaded '%s'")
-					,m_fullname.c_str() );
+				MENGE_LOG_ERROR << "Image can't loaded " << m_fullname;
 				return false;
 			}
 		}
-		else if ( name == MENGE_TEXT("outline") )
+		else if ( name == "outline" )
 		{
 			m_fullname = m_fontDir + params;
 
@@ -187,8 +182,7 @@ namespace Menge
 
 			if( m_outline == 0 )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("Error: Image can't loaded '%s'")
-					,m_fullname.c_str() );
+				MENGE_LOG_ERROR << "Image can't loaded " << m_fullname;
 			}
 		}
 
@@ -197,21 +191,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceFont::parseFontdef( DataStreamInterface * _stream )
 	{
-		char buf[2];
-		_stream->read( buf,2 );
-		String line = _stream->getLine( true );
-		_stream->skipLine( MENGE_TEXT("{") );
+		String line = Utils::getLine( _stream );
+		Utils::skipLine( _stream,  "{" );
 		
 		while( !_stream->eof() )
         {
-            line = _stream->getLine( true );
+			line = Utils::getLine( _stream );
 
-			if( line.length() == 0 || line.substr( 0, 2 ) == MENGE_TEXT("//") )
+			if( line.length() == 0 || line.substr( 0, 2 ) == "//" )
             {
                 continue;
             }
 
-			String::size_type start = line.find_first_of( MENGE_TEXT("\t\n ") );
+			String::size_type start = line.find_first_of( "\t\n " );
 			String name = line.substr( 0, start );
 			String value = line.substr( start + 1, line.size() );
 		

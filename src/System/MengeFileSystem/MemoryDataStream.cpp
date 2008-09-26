@@ -38,24 +38,6 @@ namespace Menge
 		return cnt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::streamsize MemoryDataStream::skipLine( const Menge::String& _delim )
-	{
-		std::streamsize pos = 0;
-
-		// Make sure pos can never go past the end of the data 
-		while ( m_pos < m_end )
-		{
-			++pos;
-			if ( _delim.find(*m_pos++) != Menge::String::npos )
-			{
-				// Found terminator, break out
-				break;
-			}
-		}
-
-		return pos;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void MemoryDataStream::skip( std::streampos _count )
 	{
 		std::streampos newpos = ( m_pos - m_data ) + _count;

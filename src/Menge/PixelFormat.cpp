@@ -32,7 +32,7 @@ namespace Menge
 	// Pixel format database 
 	//////////////////////////////////////////////////////////////////////////
 	PixelFormatDescription _pixelFormats[PF_COUNT] = {
-		{MENGE_TEXT("PF_UNKNOWN"),
+		{"PF_UNKNOWN",
 		/* Bytes per element */
 		0,
 		/* Flags */
@@ -45,7 +45,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_L8"),
+		{"PF_L8",
 		1,
 		PFF_LUMINANCE | PFF_NATIVEENDIAN,
 		PCT_BYTE, 1,
@@ -53,7 +53,7 @@ namespace Menge
 		0xFF, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_L16"),
+		{"PF_L16",
 		2,
 		PFF_LUMINANCE | PFF_NATIVEENDIAN,
 		PCT_SHORT, 1,
@@ -61,7 +61,7 @@ namespace Menge
 		0xFFFF, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_A8"),
+		{"PF_A8",
 		1,
 		PFF_HASALPHA | PFF_NATIVEENDIAN,
 		PCT_BYTE, 1,
@@ -69,7 +69,7 @@ namespace Menge
 		0, 0, 0, 0xFF, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_A4L4"),
+		{"PF_A4L4",
 		1,
 		PFF_HASALPHA | PFF_LUMINANCE | PFF_NATIVEENDIAN,
 		PCT_BYTE, 2,
@@ -77,7 +77,7 @@ namespace Menge
 		0x0F, 0, 0, 0xF0, 0, 0, 0, 4
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_BYTE_LA"),
+		{"PF_BYTE_LA",
 		2,
 		PFF_HASALPHA | PFF_LUMINANCE,
 		PCT_BYTE, 2,
@@ -85,7 +85,7 @@ namespace Menge
 		0,0,0,0,0,0,0,0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_R5G6B5"),
+		{"PF_R5G6B5",
 		2,
 		PFF_NATIVEENDIAN,
 		PCT_BYTE, 3,
@@ -94,7 +94,7 @@ namespace Menge
 		11, 5, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_B5G6R5"),
+		{"PF_B5G6R5",
 		2,
 		PFF_NATIVEENDIAN,
 		PCT_BYTE, 3,
@@ -103,7 +103,7 @@ namespace Menge
 		0, 5, 11, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_A4R4G4B4"),
+		{"PF_A4R4G4B4",
 		2,
 		PFF_HASALPHA | PFF_NATIVEENDIAN,
 		PCT_BYTE, 4,
@@ -112,7 +112,7 @@ namespace Menge
 		8, 4, 0, 12
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_A1R5G5B5"),
+		{"PF_A1R5G5B5",
 		2,
 		PFF_HASALPHA | PFF_NATIVEENDIAN,
 		PCT_BYTE, 4,
@@ -121,7 +121,7 @@ namespace Menge
 		10, 5, 0, 15,
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_R8G8B8"),
+		{"PF_R8G8B8",
 		3,  // 24 bit integer -- special
 		PFF_NATIVEENDIAN,
 		PCT_BYTE, 3,
@@ -130,7 +130,7 @@ namespace Menge
 		16, 8, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_B8G8R8"),
+		{"PF_B8G8R8",
 		3,  // 24 bit integer -- special
 		PFF_NATIVEENDIAN,
 		PCT_BYTE, 3,
@@ -139,7 +139,7 @@ namespace Menge
 		0, 8, 16, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_A8R8G8B8"),
+		{"PF_A8R8G8B8",
 		4,
 		PFF_HASALPHA | PFF_NATIVEENDIAN,
 		PCT_BYTE, 4,
@@ -148,7 +148,7 @@ namespace Menge
 		16, 8, 0, 24
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_A8B8G8R8"),
+		{"PF_A8B8G8R8",
 		4,
 		PFF_HASALPHA | PFF_NATIVEENDIAN,
 		PCT_BYTE, 4,
@@ -157,7 +157,7 @@ namespace Menge
 		0, 8, 16, 24,
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_B8G8R8A8"),
+		{"PF_B8G8R8A8",
 		4,
 		PFF_HASALPHA | PFF_NATIVEENDIAN,
 		PCT_BYTE, 4,
@@ -166,7 +166,7 @@ namespace Menge
 		8, 16, 24, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_A2R10G10B10"),
+		{"PF_A2R10G10B10",
 		4,
 		PFF_HASALPHA | PFF_NATIVEENDIAN,
 		PCT_BYTE, 4,
@@ -175,7 +175,7 @@ namespace Menge
 		20, 10, 0, 30
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_A2B10G10R10"),
+		{"PF_A2B10G10R10",
 		4,
 		PFF_HASALPHA | PFF_NATIVEENDIAN,
 		PCT_BYTE, 4,
@@ -184,7 +184,7 @@ namespace Menge
 		0, 10, 20, 30
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_DXT1"),
+		{"PF_DXT1",
 		0,
 		PFF_COMPRESSED | PFF_HASALPHA,
 		PCT_BYTE, 3, // No alpha
@@ -192,7 +192,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_DXT2"),
+		{"PF_DXT2",
 		0,
 		PFF_COMPRESSED | PFF_HASALPHA,
 		PCT_BYTE, 4,
@@ -200,7 +200,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_DXT3"),
+		{"PF_DXT3",
 		0,
 		PFF_COMPRESSED | PFF_HASALPHA,
 		PCT_BYTE, 4,
@@ -208,7 +208,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_DXT4"),
+		{"PF_DXT4",
 		0,
 		PFF_COMPRESSED | PFF_HASALPHA,
 		PCT_BYTE, 4,
@@ -216,7 +216,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_DXT5"),
+		{"PF_DXT5",
 		0,
 		PFF_COMPRESSED | PFF_HASALPHA,
 		PCT_BYTE, 4,
@@ -224,7 +224,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_FLOAT16_RGB"),
+		{"PF_FLOAT16_RGB",
 		6,
 		PFF_FLOAT,
 		PCT_FLOAT16, 3,
@@ -232,7 +232,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_FLOAT16_RGBA"),
+		{"PF_FLOAT16_RGBA",
 		8,
 		PFF_FLOAT,
 		PCT_FLOAT16, 4,
@@ -240,7 +240,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_FLOAT32_RGB"),
+		{"PF_FLOAT32_RGB",
 		12,
 		PFF_FLOAT,
 		PCT_FLOAT32, 3,
@@ -248,7 +248,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_FLOAT32_RGBA"),
+		{"PF_FLOAT32_RGBA",
 		16,
 		PFF_FLOAT,
 		PCT_FLOAT32, 4,
@@ -256,7 +256,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_X8R8G8B8"),
+		{"PF_X8R8G8B8",
 		4,
 		PFF_NATIVEENDIAN,
 		PCT_BYTE, 3,
@@ -265,7 +265,7 @@ namespace Menge
 		16, 8, 0, 24
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_X8B8G8R8"),
+		{"PF_X8B8G8R8",
 		4,
 		PFF_NATIVEENDIAN,
 		PCT_BYTE, 3,
@@ -274,7 +274,7 @@ namespace Menge
 		0, 8, 16, 24
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_R8G8B8A8"),
+		{"PF_R8G8B8A8",
 		4,
 		PFF_HASALPHA | PFF_NATIVEENDIAN,
 		PCT_BYTE, 4,
@@ -283,7 +283,7 @@ namespace Menge
 		24, 16, 8, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_DEPTH"),
+		{"PF_DEPTH",
 		4,
 		PFF_DEPTH,
 		PCT_FLOAT32, 1, // ?
@@ -291,7 +291,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_SHORT_RGBA"),
+		{"PF_SHORT_RGBA",
 		8,
 		PFF_HASALPHA,
 		PCT_SHORT, 4,
@@ -299,7 +299,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_R3G3B2"),
+		{"PF_R3G3B2",
 		1,
 		PFF_NATIVEENDIAN,
 		PCT_BYTE, 3,
@@ -308,7 +308,7 @@ namespace Menge
 		5, 2, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_FLOAT16_R"),
+		{"PF_FLOAT16_R",
 		2,
 		PFF_FLOAT,
 		PCT_FLOAT16, 1,
@@ -316,7 +316,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_FLOAT32_R"),
+		{"PF_FLOAT32_R",
 		4,
 		PFF_FLOAT,
 		PCT_FLOAT32, 1,
@@ -324,7 +324,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_SHORT_GR"),
+		{"PF_SHORT_GR",
 		4,
 		PFF_NATIVEENDIAN,
 		PCT_SHORT, 2,
@@ -333,7 +333,7 @@ namespace Menge
 		0, 16, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_FLOAT16_GR"),
+		{"PF_FLOAT16_GR",
 		4,
 		PFF_FLOAT,
 		PCT_FLOAT16, 2,
@@ -341,7 +341,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_FLOAT32_GR"),
+		{"PF_FLOAT32_GR",
 		8,
 		PFF_FLOAT,
 		PCT_FLOAT32, 2,
@@ -349,7 +349,7 @@ namespace Menge
 		0, 0, 0, 0, 0, 0, 0, 0
 		},
 		//////////////////////////////////////////////////////////////////////////
-		{MENGE_TEXT("PF_SHORT_RGB"),
+		{"PF_SHORT_RGB",
 		6,
 		0,
 		PCT_SHORT, 3,
@@ -586,8 +586,8 @@ namespace Menge
 		for (FormatNameMap::reverse_iterator j = formatNames.rbegin(); j != formatNames.rend(); ++j)
 		{
 			if (!result.empty())
-				result += MENGE_TEXT(" | ");
-			result += MENGE_TEXT("'") + j->second + MENGE_TEXT("'");
+				result += " | ";
+			result += "'" + j->second + "'";
 		}
 
 		return result;
@@ -796,7 +796,7 @@ namespace Menge
 				break;
 			default:
 				// Not yet supported
-				assert( 0 && String( MENGE_TEXT("PixelUtil::packColour -> pack to ")+getFormatName(_pf)+MENGE_TEXT(" not implemented") ).c_str() );
+				assert( 0 && String( "PixelUtil::packColour -> pack to "+getFormatName(_pf)+" not implemented" ).c_str() );
 				break;
 			}
 		}
@@ -933,7 +933,7 @@ namespace Menge
 				break;
 			default:
 				// Not yet supported
-				assert( 0 && String( MENGE_TEXT("PixelUtil::unpackColour -> unpack from ")+getFormatName(_pf)+MENGE_TEXT(" not implemented") ).c_str() );
+				assert( 0 && String( "PixelUtil::unpackColour -> unpack from "+getFormatName(_pf)+" not implemented" ).c_str() );
 				break;
 			}
 		}

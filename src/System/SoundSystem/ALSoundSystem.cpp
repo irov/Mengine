@@ -8,8 +8,7 @@
 
 #include <algorithm>
 
-#	include "Interface/LogSystemInterface.h"
-#	define LOG( quote, level ) if( m_logSystem ) { m_logSystem->logMessage( quote, level ); }
+#	include "Menge/LogEngine.h"
 
 //////////////////////////////////////////////////////////////////////////
 ALSoundSystem::ALSoundSystem()
@@ -64,14 +63,14 @@ bool ALSoundSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	}
 
 	m_logSystem = _logSystem;
-	LOG( MENGE_TEXT("Initializing OpenAL sound system..."), 1 );
+	MENGE_LOG << "Initializing OpenAL sound system...";
 
 	//char *initString = 0L;//"DirectSound", "DirectSound3D", ;
 	m_device = alcOpenDevice( NULL );
 
 	if( !m_device )
 	{
-		LOG( MENGE_TEXT("Warning: OpenAL failed to open device. Sound will be disabled"), 0 );
+		MENGE_LOG_WARNING << "OpenAL failed to open device. Sound will be disabled";
 		return false;
 	}
 
@@ -83,7 +82,7 @@ bool ALSoundSystem::initialize( Menge::LogSystemInterface* _logSystem )
 			alcDestroyContext( m_context );
 		}
 		alcCloseDevice( m_device );
-		LOG( MENGE_TEXT("Warning: OpenAL failed to create context. Sound will be disabled"), 0 );
+		MENGE_LOG_WARNING << "OpenAL failed to create context. Sound will be disabled";
 		return false;
 	} 
 
@@ -119,7 +118,7 @@ bool ALSoundSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	m_sulk = new SulkSystem();
 
 	m_initialized = true;
-	LOG( MENGE_TEXT("OpenAL sound system initialized successfully"), 1 );
+	MENGE_LOG << "OpenAL sound system initialized successfully";
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -239,6 +238,7 @@ void ALSoundSystem::update( float _timing )
 {
 	if( m_initialized == false ) return;
 
+	//MENGE_LOG << "SoundSystem timing: " << _timing;
 	//execReg_();
 	for( TSourceVector::iterator it = m_stoppingSources.begin(), it_end = m_stoppingSources.end();
 		it != it_end;
@@ -379,11 +379,6 @@ void ALSoundSystem::unregisterPlaying( ALSoundSource* _source, ALuint _alSource 
 		m_addingSources.erase( it_find );
 		freeSource_( _alSource );
 	}
-}
-//////////////////////////////////////////////////////////////////////////
-void ALSoundSystem::logMessage( const Menge::String& _message, int _level )
-{
-	LOG( _message, _level );
 }
 //////////////////////////////////////////////////////////////////////////
 ALuint ALSoundSystem::getFreeSourceName_( bool stereo )

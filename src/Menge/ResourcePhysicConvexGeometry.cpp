@@ -7,7 +7,7 @@
 #	include "LogEngine.h"
 
 #	include "XmlEngine.h"
-
+#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ namespace Menge
 		ResourcePhysicGeometry::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ConvexGeometryFile"), MENGE_TEXT("Name"), m_filename );
+			XML_CASE_ATTRIBUTE_NODE( "ConvexGeometryFile", "Name", m_filename );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -34,11 +34,7 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: resource '%s' can't load convex geometry file '%s'\n")
-				, getName().c_str()
-				, m_filename.c_str()
-				);
-
+			MENGE_LOG_ERROR << "Warning: resource \"" << getName() << "\" can't load convex geometry file " << m_filename;
 			return false;
 		}
 

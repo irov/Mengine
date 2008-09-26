@@ -6,50 +6,13 @@
 
 #	include "Game/resource.h"
 
-//#if	SAVE_DUMP == 1
-//#include <dbghelp.h>
-//#include <shellapi.h>
-//#include <shlobj.h>
 #include <strsafe.h>
 
-//#pragma  comment( lib, "dbghelp.lib")
+#	include "Menge/Utils.h"
 
 //////////////////////////////////////////////////////////////////////////
 static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
-	/*BOOL bMiniDumpSuccessful;
-	WCHAR szPath[MAX_PATH]; 
-	WCHAR szFileName[MAX_PATH]; 
-	WCHAR* szAppName = L"Mengine_Dump";
-	WCHAR* szVersion = L"v1.0";
-	DWORD dwBufferSize = MAX_PATH;
-	HANDLE hDumpFile;
-	SYSTEMTIME stLocalTime;
-	MINIDUMP_EXCEPTION_INFORMATION ExpParam;
-
-	GetLocalTime( &stLocalTime );
-	GetTempPathW( dwBufferSize, szPath );
-
-	StringCchPrintfW( szFileName, MAX_PATH, L"%s%s", szPath, szAppName );
-	CreateDirectoryW( szFileName, NULL );
-
-	StringCchPrintfW( szFileName, MAX_PATH, L"%s%s\\%s-%04d%02d%02d-%02d%02d%02d-%ld-%ld.dmp", 
-		szPath, szAppName, szVersion, 
-		stLocalTime.wYear, stLocalTime.wMonth, stLocalTime.wDay, 
-		stLocalTime.wHour, stLocalTime.wMinute, stLocalTime.wSecond, 
-		GetCurrentProcessId(), GetCurrentThreadId());
-	hDumpFile = CreateFileW(szFileName, GENERIC_READ|GENERIC_WRITE, 
-		FILE_SHARE_WRITE|FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
-
-	ExpParam.ThreadId = GetCurrentThreadId();
-	ExpParam.ExceptionPointers = pExceptionPointers;
-	ExpParam.ClientPointers = TRUE;
-
-	bMiniDumpSuccessful = MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), 
-		hDumpFile, MiniDumpWithDataSegs, &ExpParam, NULL, NULL);
-
-	return EXCEPTION_EXECUTE_HANDLER;*/
-
 	EXCEPTION_RECORD* pRecord = pExceptionPointers->ExceptionRecord;
 	CONTEXT* pContext = pExceptionPointers->ContextRecord;
 
@@ -135,7 +98,7 @@ namespace Menge
 		, m_frameTime( 0.f )
 		, m_mutex(0)
 		, m_focus( true )
-		, m_name( MENGE_TEXT("Mengine") )
+		, m_name( "Mengine" )
 		, m_listener(0)
 		, m_hWnd(0)
 		, m_cursorInArea(false)
@@ -195,10 +158,8 @@ namespace Menge
 	bool WinApplication::init( const String & _name, ApplicationListenerInterface* _listener )
 	{
 		
-//#if SAVE_DUMP == 1
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
-//#endif
 
 		if( !_listener )
 		{
@@ -223,7 +184,6 @@ namespace Menge
 	void WinApplication::run()
 	{
 		MSG  msg;
-		//static bool resetTime = false;
 		POINT pos;
 		LARGE_INTEGER time;
 		::QueryPerformanceCounter(&m_lastTime);
@@ -245,7 +205,6 @@ namespace Menge
 				TranslateMessage( &msg );
 				DispatchMessage( &msg );
 			}
-			//m_running = m_renderWindow->isClosed() == false;
 
 			if( m_active )
 			{
@@ -253,28 +212,26 @@ namespace Menge
 				{
 					m_focus = true;
 					m_listener->onFocus( true );
-					//resetTime = true;
 				}
 				m_listener->onUpdate( m_frameTime );
+
 				::QueryPerformanceCounter(&time);
 				m_frameTime = static_cast<float>( time.QuadPart - m_lastTime.QuadPart ) / m_timerFrequency.QuadPart * 1000.0f;
-				/*if( m_frameTime > MAX_UPDATE_TIMING )
-				{
-				m_frameTime = MAX_UPDATE_TIMING;
-				}*/
 				m_lastTime = time;
 
-				/*if ( resetTime )
-				{
-				m_frameTime = 0.0f;
-				resetTime = false;
-				}
-				printf("timing %.2f\n", m_frameTime );*/
 			}
 			else if( !m_active && m_focus )
 			{
 				m_focus = false;
 				m_listener->onFocus( false );
+
+				::QueryPerformanceCounter(&time);
+				m_frameTime = static_cast<float>( time.QuadPart - m_lastTime.QuadPart ) / m_timerFrequency.QuadPart * 1000.0f;
+				m_lastTime = time;
+			}
+			else
+			{
+				::QueryPerformanceCounter(&m_lastTime);
 			}
 
 			::Sleep(1);
@@ -359,40 +316,17 @@ namespace Menge
 			top = 0;
 		}
 
-#ifdef MENGE_UNICODE
 		m_name = _name;
-#else		
-		/// patch for ansi names
-		TChar *ansistr = NULL;
-		int length = MultiByteToWideChar(CP_UTF8, 0, _name.c_str(), _name.size(), NULL, NULL );
-		WCHAR *lpszW = NULL;
 
-		lpszW = new WCHAR[length+1];
-		ansistr = ( char * ) calloc ( sizeof(char), length+5 );
-
-		//this step intended only to use WideCharToMultiByte
-		MultiByteToWideChar(CP_UTF8, 0, _name.c_str(), -1, lpszW, length );
-
-		//Conversion to ANSI (CP_ACP)
-		WideCharToMultiByte(CP_ACP, 0, lpszW, -1, ansistr, length, NULL, NULL);
-
-		
-		ansistr[length] = 0;
-
-		delete[] lpszW;
-		////
-		m_name.assign( ansistr );
-		
-		free( ansistr );
-#endif
-
-		m_mutex = ::CreateMutex( NULL, FALSE, m_name.c_str() );
+		StringW nameW = Utils::AToW( m_name );
+		m_mutex = ::CreateMutex( NULL, FALSE, nameW.c_str() );
 		DWORD error = ::GetLastError();
 
 		if( error == ERROR_ALREADY_EXISTS )
 		{
-			Menge::String message = Menge::String( MENGE_TEXT("Another instance of ") ) + m_name + Menge::String( MENGE_TEXT(" is already running") );
-			::MessageBox( NULL, message.c_str(), m_name.c_str(), MB_ICONWARNING );
+			Menge::String message = Menge::String( "Another instance of " ) + m_name + Menge::String( " is already running" );
+			StringW messageW = Utils::AToW( message );
+			::MessageBox( NULL, messageW.c_str(), nameW.c_str(), MB_ICONWARNING );
 			return false;
 		}
 
@@ -415,7 +349,7 @@ namespace Menge
 		wc.hInstance = hInstance;
 		wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MENGE));
 		wc.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MENGE_SMALL));
-		wc.lpszClassName = (LPCWSTR)MENGE_TEXT("MengeWnd");
+		wc.lpszClassName = (LPCWSTR)L"MengeWnd";
 		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 		::RegisterClassEx(&wc);
@@ -428,7 +362,7 @@ namespace Menge
 
 		//::MessageBox( 0, "hhh", "kl", MB_ICONERROR | MB_OK );
 
-		m_hWnd = ::CreateWindow( MENGE_TEXT("MengeWnd"), m_name.c_str(), dwStyle,
+		m_hWnd = ::CreateWindow( L"MengeWnd", nameW.c_str(), dwStyle,
 			left, top, width, height, NULL, 0, hInstance, (LPVOID)this);
 		
 
@@ -631,27 +565,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::showMessageBox( const String& _message, const String& _header, unsigned int _style )
 	{
-		::MessageBox( m_hWnd, _message.c_str(), _header.c_str(), MB_ICONERROR | MB_OK );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	StringA WinApplication::WToA( const StringW& _stringw ) const
-	{
-		std::size_t size =  _stringw.size() + 1;
-		TCharA* stra = new TCharA[size];
-		WideCharToMultiByte( CP_ACP, 0, _stringw.c_str(), -1, stra, size, NULL, NULL );
-		StringA out( stra );
-		delete[] stra;
-		return out;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	StringW WinApplication::AToW( const StringA& _stringa ) const
-	{
-		std::size_t size =  _stringa.size() + 1;
-		TCharW* strw = new TCharW[size];
-		MultiByteToWideChar( CP_ACP, 0, _stringa.c_str(), -1, strw, size );
-		StringW out( strw );
-		delete[] strw;
-		return out;
+		StringW message_w = Utils::AToW( _message );
+		StringW header_w = Utils::AToW( _header );
+		::MessageBox( m_hWnd, message_w.c_str(), header_w.c_str(), MB_ICONERROR | MB_OK );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

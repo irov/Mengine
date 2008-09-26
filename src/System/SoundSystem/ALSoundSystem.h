@@ -69,8 +69,6 @@ public:
 	void unregisterPlaying( ALSoundSource* _source, ALuint _alSource );
 	void deletedSource( ALSoundSource* _source );
 
-	void logMessage( const Menge::String& _message, int _level );
-
 private:
 	Menge::uint16 m_alSourcesNum;
 	typedef std::map< ALuint, bool > TALSourceMap;

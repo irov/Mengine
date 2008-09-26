@@ -1,25 +1,30 @@
 #	include "LogEngine.h"
 #	include "Application.h"
 
-#	include <stdio.h>
-#	include <sstream>
+#	include <ctime>
+#	include <cstdio>
 #	include <stdarg.h>
 
 #	include "python.h"
+#	include "Utils.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	LogEngine::LogEngine( LogSystemInterface * _interface )
 		: m_interface( _interface )
+		, m_verboseLevel( LM_ERROR )
+		, m_console( false )
 	{
-		//m_interface->startLog( MENGE_TEXT("Menge.log") );
-		//m_interface->logMessage( MENGE_TEXT("\n>>>> LOGGING STARTED\n\n >> Starting Mengine...\n\n"), false, true, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LogEngine::logMessage( const String& _message, int _messageLevel, bool _endl, bool _timeStamp )
+	void LogEngine::logMessage( const StringA& _message )
 	{
-		m_interface->logMessage( _message, _messageLevel, _endl, _timeStamp );
+		if( m_console == true )
+		{
+			std::cerr << _message;
+		}
+		m_interface->logMessage( _message );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LogSystemInterface * LogEngine::getInterface()
@@ -29,7 +34,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::setVerboseLevel( int _level )
 	{
-		m_interface->setVerboseLevel( _level );
+		m_verboseLevel = _level;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int LogEngine::getVerboseLevel() const
+	{
+		return m_verboseLevel;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LogEngine::enableConsole( bool _enable )
+	{
+		m_console = _enable;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LoggerOperator::LoggerOperator( const char * _file, int _level, unsigned int _options )
@@ -40,7 +55,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerOperator::operator ()( const TChar * _message, ... )
+	void LoggerOperator::operator ()( const char* _message, ... )
 	{
 		if( Holder<LogEngine>::empty() )
 		{
@@ -51,17 +66,13 @@ namespace Menge
 
 		va_start(argList, _message);
 
-		TChar str[1024];
+		char str[1024];
 
-#	ifdef MENGE_UNICODE
-		vswprintf( str, 1024, _message, argList );
-#	else
 		vsprintf( str, _message, argList );
-#	endif
 
 		va_end(argList);
 
-		const String& message( str );
+		const StringA& message( str );
 
 		//bool isBreak = ( m_mask & ELoggerBreak ) > 0;
 
@@ -81,15 +92,41 @@ namespace Menge
 		//	);*/
 		//}
 		Holder<LogEngine>::hostage()
-			->logMessage( message, m_level );
+			->logMessage( message );
 
 		if( ( m_options & LO_MESSAGE_BOX ) != 0 )
 		{
 			Holder<LogEngine>::hostage()
-				->logMessage( message, m_level );
-			Holder<Application>::hostage()->showMessageBox( message, MENGE_TEXT("Mengine Critical Error"), 0 );
+				->logMessage( message );
+			Holder<Application>::hostage()->showMessageBox( message, "Mengine Critical Error", 0 );
 		}
 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Log::Log()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Log::~Log()
+	{
+		os << std::endl;
+		Holder<LogEngine>::hostage()->logMessage( os.str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::ostringstream& Log::get( EMessageLevel level /* = LM_LOG */ )
+	{
+		os << Log::time() << ": ";
+		return os;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	StringA Log::time()
+	{
+		std::time_t ctTime;
+		std::time( &ctTime );
+		std::tm* sTime = std::localtime( &ctTime );
+		char result[9] = {0};
+		sprintf_s( result, 9, "%02d:%02d:%02d", sTime->tm_hour, sTime->tm_min, sTime->tm_sec );
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

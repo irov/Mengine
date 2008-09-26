@@ -11,6 +11,7 @@
 #	include "LogEngine.h"
 
 #	include "ResourceManager.h"
+#	include "Utils.h"
 
 namespace Menge
 {
@@ -84,8 +85,7 @@ namespace Menge
 
 		if(!_loadPlayList(_playlistResource))
 		{
-			MENGE_LOG( MENGE_TEXT("Amplifier: no found playlist with name %s \n")
-				,_playlistResource.c_str() );
+			MENGE_LOG << "Amplifier: no found playlist with name " << _playlistResource;
 			return;
 		}
 
@@ -123,8 +123,7 @@ namespace Menge
 
 		if(!_loadPlayList(_playlistResource))
 		{
-			MENGE_LOG( MENGE_TEXT("Amplifier: no found playlist with name %s \n")
-				, _playlistResource.c_str() );
+			MENGE_LOG << "Amplifier: no found playlist with name " << _playlistResource;
 			return;
 		}
 
@@ -133,6 +132,7 @@ namespace Menge
 		_prepareSound(m_currentPlayList->getTrack());
 
 		m_music->setVolume( m_volume );
+		MENGE_LOG << "Start playing music";
 		m_music->play();
 		m_playing = true;
 	}
@@ -149,8 +149,7 @@ namespace Menge
 
 			if( playlistResource == NULL )
 			{
-				MENGE_LOG( MENGE_TEXT("Amplifier: no found playlist with name %s \n")
-					, _playlist.c_str() );
+				MENGE_LOG << "Amplifier: no found playlist with name " << _playlist;
 				return;
 			}
 
@@ -220,10 +219,7 @@ namespace Menge
 
 		if( m_buffer == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: Amplifier can't load sample '%s'\n")
-				, _filename.c_str() 
-				);
-
+			MENGE_LOG << "Warning: Amplifier can't load sample " << _filename;
 			return;			
 		}
 
@@ -231,10 +227,7 @@ namespace Menge
 
 		if( m_music == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: Amplifier '%s' can't create sound source\n")
-				, _filename.c_str()
-				);
-
+			MENGE_LOG << "Warning: Amplifier \"" << _filename << "\" can't create sound source";
 			return;
 		}
 	}

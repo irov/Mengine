@@ -140,6 +140,7 @@ namespace Menge
 
 		void _setListener() override;
 		void _invalidateWorldMatrix() override;
+		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
 	private:
 		ResourceFont * m_resource;
@@ -151,7 +152,7 @@ namespace Menge
 		ValueInterpolator<ColourValue> m_outlineColorTo;
 
 		float  m_height;
-		Text m_text;
+		String m_text;
 		mt::vec2f m_length;
 
 		bool m_centerAlign;

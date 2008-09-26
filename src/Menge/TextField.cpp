@@ -75,21 +75,13 @@ namespace     Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: font '%s' can't find resource '%s'\n")
-				, m_name.c_str()
-				, m_resourcename.c_str() 
-				);
-
+			MENGE_LOG_ERROR << "Warning: font " << m_name << "can't find resource " << m_resourcename;
 			return false;
 		}
 
 		if( m_resource->isCompile() == false )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: font '%s' can't compile resource '%s'\n")
-				, m_name.c_str()
-				, m_resourcename.c_str() 
-				);
-
+			MENGE_LOG_ERROR << "Warning: font " << m_name << " can't compile resource " << m_resourcename;
 			return false;
 		}
 	
@@ -135,17 +127,17 @@ namespace     Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Font"), MENGE_TEXT("Name"), m_resourcename );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Text"), MENGE_TEXT("Value"), m_text );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Color"), MENGE_TEXT("Value"), m_color );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Height"), MENGE_TEXT("Value"), m_height );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("CenterAlign"), MENGE_TEXT("Value"), m_centerAlign );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("RightAlign"), MENGE_TEXT("Value"), m_rightAlign );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("OutlineColor"), MENGE_TEXT("Value"), m_outlineColor );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Outline"), MENGE_TEXT("Value"), m_outline );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("MaxWidth"), MENGE_TEXT("Value"), m_maxWidth );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("CharOffset"), MENGE_TEXT("Value"), m_charOffset );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("LineOffset"), MENGE_TEXT("Value"), m_lineOffset );
+			XML_CASE_ATTRIBUTE_NODE( "Font", "Name", m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( "Text", "Value", m_text );
+			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
+			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );
+			XML_CASE_ATTRIBUTE_NODE( "CenterAlign", "Value", m_centerAlign );
+			XML_CASE_ATTRIBUTE_NODE( "RightAlign", "Value", m_rightAlign );
+			XML_CASE_ATTRIBUTE_NODE( "OutlineColor", "Value", m_outlineColor );
+			XML_CASE_ATTRIBUTE_NODE( "Outline", "Value", m_outline );
+			XML_CASE_ATTRIBUTE_NODE( "MaxWidth", "Value", m_maxWidth );
+			XML_CASE_ATTRIBUTE_NODE( "CharOffset", "Value", m_charOffset );
+			XML_CASE_ATTRIBUTE_NODE( "LineOffset", "Value", m_lineOffset );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -195,6 +187,7 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_render( unsigned int _debugMask )
 	{
+		Node::_render( _debugMask );
 		const RenderImageInterface * outlineImage = m_resource->getOutlineImage();
 
 		if( m_outline && outlineImage )
@@ -241,12 +234,11 @@ namespace     Menge
 		return m_outlineColor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setText( const Text& _text )
+	void TextField::setText( const String& _text )
 	{
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: TextField without resource ('%s')")
-				,m_resourcename.c_str() );
+			MENGE_LOG_ERROR << "Warning: TextField without resource " << m_resourcename;
 			return;
 		}
 
@@ -333,26 +325,26 @@ namespace     Menge
 		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::createFormattedMessage_( const Text& _text )
+	void TextField::createFormattedMessage_( const String& _text )
 	{
 		m_lines.clear();
 
 		TStringVector lines;
 
-		lines = Utils::split( _text, MENGE_TEXT("\n") );
+		lines = Utils::split( _text, "\n" );
 
 		for(TStringVector::iterator line = lines.begin(); line != lines.end(); line++)
 		{
 			TextLine textLine( *this, m_resource, *line );
 			if( textLine.getLength() > m_maxWidth )
 			{
-				TStringVector words = Utils::split( *line, MENGE_TEXT(" ") );
+				TStringVector words = Utils::split( *line, " " );
 			
-				Text newLine = words.front();
+				String newLine = words.front();
 				words.erase( words.begin() );
 				while( words.empty() == false )
 				{
-					TextLine tl( *this, m_resource, Text( newLine + Text( MENGE_TEXT(" ") ) + ( *words.begin() ) ) );
+					TextLine tl( *this, m_resource, String( newLine + String( " " ) + ( *words.begin() ) ) );
 					if( tl.getLength() > m_maxWidth )
 					{
 						m_lines.push_back( TextLine( *this, m_resource, newLine ) );
@@ -362,7 +354,7 @@ namespace     Menge
 					}
 					else
 					{
-						newLine += Text( MENGE_TEXT(" ") ) + ( *words.begin() );
+						newLine += String( " " ) + ( *words.begin() );
 						words.erase( words.begin() );
 					}
 				}
@@ -383,6 +375,8 @@ namespace     Menge
 
 		m_length.x = maxlen;
 		m_length.y = m_height * m_lines.size();
+
+		invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_setListener()
@@ -429,6 +423,35 @@ namespace     Menge
 		m_colorTo.stop();
 		m_outlineColorTo.stop();
 		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::_updateBoundingBox( mt::box2f & _boundingBox )
+	{
+		Node::_updateBoundingBox( _boundingBox );
+
+		mt::vec2f offset = mt::vec2f::zero_v2;
+		for( std::list<TextLine>::iterator 
+			it_line = m_lines.begin(),
+			it_line_end = m_lines.end(); 
+		it_line != it_line_end; 
+		++it_line )
+		{
+			if( m_centerAlign )
+			{
+				m_alignOffset = mt::vec2f( -it_line->getLength() * 0.5f, 0 );
+			}
+
+			if( m_rightAlign )
+			{
+				m_alignOffset = mt::vec2f( -it_line->getLength(), 0 );
+			}
+
+			offset.x = m_alignOffset.x;
+
+			it_line->updateBoundingBox( _boundingBox, offset );
+
+			offset.y += m_lineOffset;
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

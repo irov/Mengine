@@ -16,6 +16,7 @@
 #	include <ctime>
 #	include <sstream>
 #	include <iomanip>
+#	include "Menge/Utils.h"
 
 namespace Menge
 {
@@ -124,9 +125,9 @@ namespace Menge
 			std::time(&ctTime);
 			std::tm* sTime = std::localtime( &ctTime );
 			Stringstream str;
-			str << std::setw(2) << std::setfill(MENGE_TEXT('0')) << sTime->tm_hour
-				<< MENGE_TEXT(":") << std::setw(2) << std::setfill(MENGE_TEXT('0')) << sTime->tm_min
-				<< MENGE_TEXT(":") << std::setw(2) << std::setfill(MENGE_TEXT('0')) << sTime->tm_sec;
+			str << std::setw(2) << std::setfill('0') << sTime->tm_hour
+				<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_min
+				<< ":" << std::setw(2) << std::setfill('0') << sTime->tm_sec;
 			return str.str();
 		}
 
@@ -188,7 +189,7 @@ namespace Menge
 		{
 			String path = Holder<FileEngine>::hostage()->getAppDataPath();
 			Account* currentAccount = Holder<Game>::hostage()->getCurrentAccount();
-			return path + MENGE_TEXT("\\") + currentAccount->getName();
+			return path + "\\" + currentAccount->getName();
 		}
 
 		static void s_setParticlesEnabled( bool _enable )
@@ -198,7 +199,7 @@ namespace Menge
 
 		static PyObject* s_unicode( const StringA& _string )
 		{
-			return pybind::ptr( Holder<Application>::hostage()->AToW( _string ) );
+			return pybind::ptr( Utils::AToW( _string ) );
 		}
 
 	};

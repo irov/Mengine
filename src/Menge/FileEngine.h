@@ -43,7 +43,7 @@ namespace Menge
 
 		bool changeDir( const String& _dir );
 
-		bool initAppDataPath( const Menge::String& _game );
+		bool initAppDataPath( const String& _game );
 		const String& getAppDataPath();
 
 	protected:

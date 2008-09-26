@@ -41,8 +41,6 @@ namespace Menge
 		void _render( unsigned int _debugMask ) override;
 
 	protected:
-		bool _checkVisibility( const Viewport & _viewPort ) override;
-
 		bool _activate() override;
 		void _deactivate() override;
 

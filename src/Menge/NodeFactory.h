@@ -11,10 +11,10 @@
 #	include <string>
 
 #	define OBJECT_FACTORY( Type )\
-	TFactoryNode::registration( MENGE_TEXT(#Type) , &Type::genObject )
+	TFactoryNode::registration( #Type , &Type::genObject )
 
 #	define RESOURCE_FACTORY( Type )\
-	TFactoryResource::registration( MENGE_TEXT(#Type) , &Type::genObject )
+	TFactoryResource::registration( #Type , &Type::genObject )
 
 
 namespace Menge

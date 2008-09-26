@@ -18,7 +18,9 @@
 #	include <ShellAPI.h>
 #endif
 
-#	include <locale.h>
+//#	include <locale.h>
+#	include "Menge/LogEngine.h"
+#	include "Menge/Utils.h"
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::FileSystemInterface **_system )
 {
@@ -42,18 +44,18 @@ void releaseInterfaceSystem( Menge::FileSystemInterface *_system )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_isAbsolutePath( const Text& _path )
+	static bool s_isAbsolutePath( const String& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
-		if ( /*::isalpha( unsigned char( _path[0] ) ) && */_path[1] == MENGE_TEXT(':') )
+		if ( /*::isalpha( unsigned char( _path[0] ) ) && */_path[1] == ':' )
 		{
 			return true;
 		}
 #endif
-		return _path[0] == MENGE_TEXT('/') || _path[0] == MENGE_TEXT('\\');
+		return _path[0] == '/' || _path[0] == '\\';
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static String s_concatenatePath( const Text& _base, const Text& _name )
+	static String s_concatenatePath( const String& _base, const String& _name )
 	{
 		if ( _base.empty() || s_isAbsolutePath( _name.c_str() ) )
 		{
@@ -61,7 +63,7 @@ namespace Menge
 		}
 		else
 		{
-			return _base + MENGE_TEXT('/') + _name;
+			return _base + '/' + _name;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -80,63 +82,52 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::loadPath( const Text& _path )
+	void FileSystem::loadPath( const String& _path )
 	{
 		//m_arch = Ogre::ArchiveManager::getSingleton().load( _path, "FileSystem" );
 		//m_fileManager->setInitPath( _path );
 		m_initPath = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::loadPak( const Text& _pak )
+	void FileSystem::loadPak( const String& _pak )
 	{
 		//Ogre::ArchiveManager::getSingleton().load( _pak, "Zip" );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileSystem::unloadPak( const Text& _pak )
+	void FileSystem::unloadPak( const String& _pak )
 	{
 		//Ogre::ArchiveManager::getSingleton().unload( _pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataStreamInterface* FileSystem::openFile( const Text& _filename )
+	DataStreamInterface* FileSystem::openFile( const String& _filename )
 	{
 		DataStream* fileData = 0;
 
-		m_logSystem->logMessage( String( MENGE_TEXT("Opening file: ") ) + _filename, 1 );
-		//wprintf( L"MengeFileSystem: opening file %s\n", _filename.c_str() );
+		//m_logSystem->logMessage( StringA( "Opening file: " ) + Utils::WToA(_filename), 1 );
+		MENGE_LOG << "Opening file: " << _filename;
+		
 		if( existFile( _filename ) == false )
 		{
-			m_logSystem->logMessage( String( MENGE_TEXT( "Warning: ") ) + _filename + String( MENGE_TEXT("does not exists") ), 0 );
+			//m_logSystem->logMessage( StringA( "Warning: " ) + Utils::WToA(_filename) + StringA( "does not exists" ), 0 );
+			MENGE_LOG_WARNING << _filename << "does not exist";
 			return 0;
 		}
 
 		try
 		{
 			//fileData = m_fileManager->open( _filename );
-			Text full_path = s_concatenatePath( m_initPath, _filename );
-
+			String full_path = s_concatenatePath( m_initPath, _filename );
+			StringW full_path_w = Utils::AToW( full_path );
 			// Use filesystem to determine size 
 			// (quicker than streaming to the end and back)
 			struct _stat tagStat;
-#ifdef MENGE_UNICODE
-			int ret = _wstat( full_path.c_str(), &tagStat );
-#else
-			int ret = _stat( full_path.c_str(), &tagStat );
-#endif
-			//assert( ret == 0 && "Problem getting file size" );
+
+			int ret = _wstat( full_path_w.c_str(), &tagStat );
 
 			std::ifstream *origStream = new std::ifstream();
 
-#ifdef MENGE_UNICODE
 			// Always open in binary mode
-			origStream->open( full_path.c_str(), std::ios::in | std::ios::binary );
-#else
-			wchar_t lpszW[MAX_PATH];
-			MultiByteToWideChar(CP_ACP, 0, full_path.c_str(), -1, lpszW, full_path.size() );
-			lpszW[full_path.size()] = 0;
-
-			// Always open in binary mode
-			origStream->open( lpszW, std::ios::in | std::ios::binary );
-#endif
+			origStream->open( full_path_w.c_str(), std::ios::in | std::ios::binary );
 
 			// Should check ensure open succeeded, in case fail for some reason.
 			if ( origStream->fail() )
@@ -152,7 +143,8 @@ namespace Menge
 
 			if( !fileData )
 			{
-				m_logSystem->logMessage( String( MENGE_TEXT("Error: unrecognized error while opening file ") ) + _filename, 0 );
+				//m_logSystem->logMessage( StringA( "Error: unrecognized error while opening file " ) + Utils::WToA(_filename), 0 );
+				MENGE_LOG_ERROR << "unrecognized error while opening file" << _filename;
 				return fileData;
 			}
 		}
@@ -173,16 +165,13 @@ namespace Menge
 		delete _stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::existFile( const Text& _filename )
+	bool FileSystem::existFile( const String& _filename )
 	{
 		String full_path = s_concatenatePath( m_initPath, _filename );
+		StringW full_path_w = Utils::AToW( full_path );
 
 		struct _stat tagStat;
-#ifdef MENGE_UNICODE
-		bool ret = ( _wstat( full_path.c_str(), &tagStat ) == 0 );
-#else
-		bool ret = ( _stat( full_path.c_str(), &tagStat ) == 0 );
-#endif
+		bool ret = ( _wstat( full_path_w.c_str(), &tagStat ) == 0 );
 		return ret;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -210,7 +199,7 @@ namespace Menge
 #endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::createFolder( const Text& _path )
+	bool FileSystem::createFolder( const String& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
 #
@@ -231,11 +220,12 @@ namespace Menge
 		{
 		return true;
 		}*/
-#ifdef MENGE_UNICODE
-		int res = _wmkdir( _path.c_str() );
-#else
+//#ifdef MENGE_UNICODE
+		StringW path_w = Utils::AToW( _path );
+		int res = _wmkdir( path_w.c_str() );
+/*#else
 		int res = _mkdir( _path.c_str() );
-#endif
+#endif*/
 		if( !res )
 		{
 			return true;
@@ -248,27 +238,20 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::deleteFolder( const Text& _path )
+	bool FileSystem::deleteFolder( const String& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
+
+		StringW path_w = Utils::AToW( _path );
+
 		SHFILEOPSTRUCT fs;
 		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCT));
 		fs.hwnd = NULL;
 
-#ifdef MENGE_UNICODE
-		wchar_t path[MAX_PATH];
-		wcscpy( path, _path.c_str() );
+		Menge::TCharW path[MAX_PATH];
+		wcscpy( path, path_w.c_str() );
 		path[ _path.size() + 1 ] = 0;
 		fs.pFrom = path;
-#else
-		wchar_t lpszW[MAX_PATH];
-		String::size_type size = _path.size();
-		MultiByteToWideChar(CP_ACP, 0, _path.c_str(), -1, lpszW, size );
-		lpszW[_path.size()] = 0;
-		lpszW[_path.size()+1] = 0;
-
-		fs.pFrom = lpszW;
-#endif
 
 		fs.wFunc = FO_DELETE;
 		fs.hwnd = NULL;
@@ -301,15 +284,13 @@ namespace Menge
 #endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::changeDir( const Text& _path )
+	bool FileSystem::changeDir( const String& _path )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
 
-#ifdef MENGE_UNICODE
-		int res = _wchdir( _path.c_str() );
-#else
-		int res = _chdir( _path.c_str() );
-#endif
+		StringW path_w = Utils::AToW( _path );
+
+		int res = _wchdir( path_w.c_str() );
 
 		if( !res )
 		{
@@ -320,57 +301,25 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::initAppDataPath( const Text& _game )
+	bool FileSystem::initAppDataPath( const String& _game )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 
-#ifdef MENGE_UNICODE
+		StringW game_w = Utils::AToW( _game );
+
 		HRESULT hr;
-		TChar szPath[MAX_PATH];
+		TCharW szPath[MAX_PATH];
 
 		hr = SHGetFolderPathAndSubDir( NULL,					//hWnd	
 			CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
 			NULL,										//hToken
 			SHGFP_TYPE_CURRENT,							//dwFlags
-			_game.c_str(),								//pszSubDir
+			game_w.c_str(),								//pszSubDir
 			szPath);									//pszPath
-#else
-		/// patch for ansi names
-		char *ansistr = NULL;
-		String::size_type size = _game.size();
-		int length = MultiByteToWideChar(CP_UTF8, 0, _game.c_str(), size, NULL, NULL );
-		WCHAR *lpszW = NULL;
-
-		lpszW = new WCHAR[length+1];
-		ansistr = ( char * ) calloc ( sizeof(char), length+5 );
-
-		//this step intended only to use WideCharToMultiByte
-		MultiByteToWideChar(CP_UTF8, 0, _game.c_str(), -1, lpszW, length );
-
-		//Conversion to ANSI (CP_ACP)
-		WideCharToMultiByte(CP_ACP, 0, lpszW, -1, ansistr, length, NULL, NULL);
-
-		ansistr[length] = 0;
-
-		delete[] lpszW;
-		////
-
-		HRESULT hr;
-		TChar szPath[MAX_PATH];
-
-		hr = SHGetFolderPathAndSubDirA(NULL,					//hWnd	
-			CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
-			NULL,										//hToken
-			SHGFP_TYPE_CURRENT,							//dwFlags
-			ansistr,								//pszSubDir
-			szPath);									//pszPath
-
-		free( ansistr );
-#endif
 
 		if( SUCCEEDED( hr ) )
 		{
-			m_appDataPath = String( szPath );
+			m_appDataPath = Utils::WToA( szPath );
 		}
 		else
 		{
@@ -382,26 +331,18 @@ namespace Menge
 #endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Menge::String& FileSystem::getAppDataPath()
+	const String& FileSystem::getAppDataPath()
 	{
 		return m_appDataPath;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutStreamInterface* FileSystem::openOutStream( const Menge::Text& _filename, bool _binary )
+	OutStreamInterface* FileSystem::openOutStream( const String& _filename, bool _binary )
 	{
-		Text fileName = m_appDataPath + MENGE_TEXT("\\") + _filename;
-
-#ifdef MENGE_UNICODE
-		const wchar_t* lpszW = fileName.c_str();
-#else
-		wchar_t lpszW[MAX_PATH];
-		String::size_type size = fileName.size();
-		MultiByteToWideChar(CP_ACP, 0, fileName.c_str(), -1, lpszW, size );
-		lpszW[fileName.size()] = 0;
-#endif
+		String fileName = m_appDataPath + "\\" + _filename;
+		StringW filename_w = Utils::AToW( fileName );
 
 		FileStreamOutStream* outStream = new FileStreamOutStream();
-		if( !outStream->open( lpszW, _binary ) )
+		if( !outStream->open( filename_w.c_str(), _binary ) )
 		{
 			delete outStream;
 			return NULL;
@@ -414,22 +355,15 @@ namespace Menge
 		delete static_cast<FileStreamOutStream*>( _stream );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::deleteFile( const Text& _filename )
+	bool FileSystem::deleteFile( const String& _filename )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 		SHFILEOPSTRUCT fs;
 		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTW));
 		fs.hwnd = NULL;
 
-#ifdef MENGE_UNICODE
-		const wchar_t* lpszW = _filename.c_str();
-#else
-		wchar_t lpszW[MAX_PATH];
-		String::size_type size = _filename.size();
-		MultiByteToWideChar(CP_ACP, 0, _filename.c_str(), -1, lpszW, size );
-		lpszW[_filename.size()] = 0;
-		lpszW[_filename.size()+1] = 0;
-#endif
+		StringW filename_w = Utils::AToW( _filename );
+		const Menge::TCharW* lpszW = filename_w.c_str();
 
 		fs.pFrom = lpszW;
 		fs.wFunc = FO_DELETE;
@@ -446,8 +380,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::inititalize( LogSystemInterface* _logSystemInterface )
 	{
-		//_configthreadlocale( _ENABLE_PER_THREAD_LOCALE );
-		::_wsetlocale( LC_CTYPE, MENGE_TEXT("") ); // default (OS) locale
 		m_logSystem = _logSystemInterface;
 		//m_logStream = openOutStream( MENGE_TEXT("Menge.log"), false );
 		m_logSystem->initialize( m_logStream );

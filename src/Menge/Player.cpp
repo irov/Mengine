@@ -16,6 +16,7 @@
 
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
+#	include "Utils.h"
 
 namespace Menge
 {
@@ -56,8 +57,7 @@ namespace Menge
 
 		if( m_nextScene == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("ERROR: Scene [%s] not have in Game\n")
-				,_name.c_str() );
+			MENGE_LOG_ERROR << "Scene " << _name << " not have in Game";
 			return;
 		}
 
@@ -108,7 +108,7 @@ namespace Menge
 		arrow->setWindow( _contentResolution );
 
 
-		Camera2D * camera = SceneManager::createNodeT<Camera2D>( MENGE_TEXT("Camera2D") );
+		Camera2D * camera = SceneManager::createNodeT<Camera2D>( "Camera2D" );
 
 		if( camera == 0 )
 		{
@@ -392,20 +392,17 @@ namespace Menge
 
 		if( m_arrow )
 		{
-			Holder<RenderEngine>::hostage()
-				->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
+			RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+			renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
 
-			Holder<RenderEngine>::hostage()
-				->beginLayer2D();
-
+			renderEngine->beginLayer2D();
+			renderEngine->setRenderTarget( "defaultCamera" );
 			mt::vec2f pos = m_renderCamera2D->getLocalPosition();
 			m_renderCamera2D->setLocalPosition( mt::vec2f( 512.0f, 384.0f ) );
-			Holder<RenderEngine>::hostage()->setViewMatrix( m_renderCamera2D->getViewMatrix() );
+			renderEngine->setViewMatrix( m_renderCamera2D->getViewMatrix() );
 			m_arrow->render( _debugMask );
 
-			Holder<RenderEngine>::hostage()
-				->endLayer2D();
-
+			renderEngine->endLayer2D();
 			m_renderCamera2D->setLocalPosition( pos );
 		}	
 	}

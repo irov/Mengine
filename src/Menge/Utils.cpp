@@ -1,13 +1,15 @@
 
 #	include "Config/Typedef.h"
-#	include "Application.h"
-#	include "Holder.h"
+#	include "Utils.h"
 #	include <sstream>
+#	include "Interface/FileSystemInterface.h"
 
 namespace Menge
 {
 	namespace Utils
 	{
+		//////////////////////////////////////////////////////////////////////////
+		const std::streamsize stream_temp_size = 128;
 		//////////////////////////////////////////////////////////////////////////
 		const String& emptyString()
 		{
@@ -55,6 +57,19 @@ namespace Menge
 			return ret;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		void trim( String& str, bool left/* = true*/, bool right/* = true */)
+		{
+			static const String delims = " \t\r";
+			if(right)
+			{
+				str.erase(str.find_last_not_of(delims)+1); // trim right
+			}
+			if(left)
+			{
+				str.erase(0, str.find_first_not_of(delims)); // trim left
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////
 		String toString( int x )
 		{
 			Stringstream str;
@@ -64,12 +79,102 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		StringA WToA( const StringW& _stringw )
 		{
-			return Holder<Application>::hostage()->WToA( _stringw );
+			//return Holder<Application>::hostage()->WToA( _stringw );
+			std::size_t converted = 0;
+			std::size_t size = _stringw.size() + 1;
+			TCharA* stra = new TCharA[size];
+			wcstombs_s( &converted, stra, size, _stringw.c_str(), _TRUNCATE );
+			StringA out( stra );
+			delete[] stra;
+			return out;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		Menge::StringW AToW( const StringA& _stringa )
+		StringW AToW( const StringA& _stringa )
 		{
-			return Holder<Application>::hostage()->AToW( _stringa );
+			//return Holder<Application>::hostage()->AToW( _stringa );
+			std::size_t converted = 0;
+			std::size_t size = _stringa.size() + 1;
+			TCharW* strw = new TCharW[size];
+			mbstowcs_s( &converted, strw, size, _stringa.c_str(), _TRUNCATE );
+			StringW out( strw );
+			delete[] strw;
+			return out;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		String getLine( DataStreamInterface* _stream, bool _trimAfter /*= true */ )
+		{
+			TChar tmpBuf[stream_temp_size];
+			String retString;
+			std::size_t readCount;
+			// Keep looping while not hitting delimiter
+			while ( ( readCount = _stream->read( tmpBuf, ( stream_temp_size - 1 ) * sizeof(TChar) ) ) != 0 )
+			{
+				std::size_t term = readCount / sizeof(TChar);
+				// Terminate string
+				tmpBuf[term] = '\0';
+
+				TChar* p = StdStrchr( tmpBuf, '\n' );
+				if ( p != 0 )
+				{
+					// Reposition backwards
+					_stream->skip( (long)( ( p + 1 - tmpBuf ) * sizeof(TChar) - readCount ) );
+					*p = MENGE_TEXT('\0');
+				}
+
+				retString += tmpBuf;
+
+				if ( p != 0 )
+				{
+					// Trim off trailing CR if this was a CR/LF entry
+					if ( retString.length() && retString[retString.length()-1] == '\r' )
+					{
+						retString.erase( retString.length() - 1, 1 );
+					}
+
+					// Found terminator, break out
+					break;
+				}
+			}
+
+			if( _trimAfter )
+			{
+				trim( retString );
+			}
+
+			return retString;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		std::streamsize skipLine( DataStreamInterface* _stream, const String& _delim /*= "\n" */ )
+		{
+			TChar tmpBuf[stream_temp_size];
+			std::streamsize total = 0;
+			std::streamsize readCount;
+			// Keep looping while not hitting delimiter
+			while ( ( readCount = _stream->read( tmpBuf, ( stream_temp_size - 1 ) * sizeof(TChar) ) ) != 0 )
+			{
+				// Terminate string
+				std::streamsize term = readCount / sizeof(TChar);
+				tmpBuf[term] = '\0';
+
+				// Find first delimiter
+
+				std::streamsize pos = (std::streamsize)strcspn( tmpBuf, _delim.c_str() );
+
+				if( pos < term )
+				{
+					// Found terminator, reposition backwards
+					_stream->skip( ( pos + 1 - term ) * sizeof(TChar) );
+
+					total += ( pos + 1 ) * sizeof(TChar);
+
+					// break out
+					break;
+				}
+
+				total += readCount;
+			}
+
+			return total;
 		}
 		//////////////////////////////////////////////////////////////////////////
 	}

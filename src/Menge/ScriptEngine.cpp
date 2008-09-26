@@ -52,17 +52,17 @@ namespace Menge
 	void ScriptLogger::write( const String& _msg )
 	{
 		//MENGE_LOG( _msg.c_str() );
-		Holder<LogEngine>::hostage()->logMessage( _msg, 0, false, false );
+		Holder<LogEngine>::hostage()->logMessage( _msg );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::init()
 	{
 		pybind::initialize();
 
-		PyObject * main = initModule( MENGE_TEXT("__main__") );
+		PyObject * main = initModule( "__main__" );
 		m_global = pybind::module_dict( main );
 
-		PyObject * py_menge = initModule( MENGE_TEXT("Menge") );
+		PyObject * py_menge = initModule( "Menge" );
 
 		pybind::set_currentmodule( py_menge );
 
@@ -157,14 +157,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::registerEntityType( const String& _type )
 	{
-		MENGE_LOG( MENGE_TEXT("register entity type %s ...")
-			,_type.c_str() );
+		MENGE_LOG << "register entity type " << _type;
 
 		PyObject * module = importModule( _type );
 
 		if( module == 0 )
 		{
-			MENGE_LOG( MENGE_TEXT("failed") );
+			MENGE_LOG << "failed";
 			return false;
 		}
 
@@ -181,13 +180,13 @@ namespace Menge
 
 			if( pybind::check_type( result ) == false )
 			{
-				MENGE_LOG( MENGE_TEXT("failed") );
+				MENGE_LOG << "failed";
 				return false;
 			}
 
 			pybind::decref( result );
 
-			MENGE_LOG( MENGE_TEXT("successful") );
+			MENGE_LOG << "successful";
 		}
 		catch (...)
 		{
@@ -200,14 +199,19 @@ namespace Menge
 		String xml_path = Holder<Game>::hostage()
 			->getPathEntities( _type );
 
-		xml_path += MENGE_TEXT('/');
+		xml_path += '/';
 		xml_path += _type;
-		xml_path += MENGE_TEXT(".xml");
+		xml_path += ".xml";
 
 		DataStreamInterface * file = 
 			Holder<FileEngine>::hostage()
 			->openFile( xml_path );
 		 
+		if( file == 0 )
+		{
+			return false;
+		}
+
 		TMapEntitiesXML::iterator it_insert =
 			m_mapEntitiesXML.insert( std::make_pair( _type, Blobject() ) ).first;
 
@@ -225,9 +229,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::initModule( const String& _name )
 	{
-		MENGE_LOG( MENGE_TEXT("init module %s ...")
-			,_name.c_str() 
-			);
+		MENGE_LOG << "init module " << _name;
 
 		StringA char_name_A;
 #	ifdef MENGE_UNICODE
@@ -253,8 +255,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::importModule( const String& _file )
 	{
-		MENGE_LOG( MENGE_TEXT("import module %s ...")
-			,_file.c_str() );
+		MENGE_LOG << "import module " << _file;
 
 		TMapModule::iterator it_find = m_mapModule.find( _file );
 
@@ -302,9 +303,7 @@ namespace Menge
 
 		if( module == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Can't create entity [%s] (not module)\n")
-				, _type.c_str() 
-				);
+			MENGE_LOG_ERROR << "Can't create entity " << _type;
 		}
 
 		StringA char_type_A;
@@ -318,10 +317,7 @@ namespace Menge
 
 		if( result == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Can't create entity [%s] (invalid constructor)\n")
-				, _type.c_str() 
-				);
-
+			MENGE_LOG_ERROR << "Can't create entity " << _type << "(invalid constructor)";
 			return 0;
 		}
 
@@ -329,15 +325,12 @@ namespace Menge
 
 		if( entity == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Can't create entity [%s] (invalid cast)\n")
-				, _type.c_str() 
-				);
-
+			MENGE_LOG_ERROR << "Can't create entity " << _type << "(invalid cast)";
 			return 0;
 		}
 
 		entity->setName( _type );
-		entity->setType( MENGE_TEXT("Entity") );
+		entity->setType( "Entity" );
 		entity->setEmbedding( result );
 
 		return entity;
@@ -371,9 +364,9 @@ namespace Menge
 		String xml_path = Holder<Game>::hostage()
 			->getPathEntities( _type );
 
-		xml_path += MENGE_TEXT('/');
+		xml_path += '/';
 		xml_path += _type;
-		xml_path += MENGE_TEXT(".xml");
+		xml_path += ".xml";
 
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlBufferM( _xml, entity, &Entity::loader ) )
@@ -403,7 +396,7 @@ namespace Menge
 
 		Arrow * arrow = pybind::extract<Arrow*>( result );
 
-		arrow->setType( MENGE_TEXT("Arrow") );
+		arrow->setType( "Arrow" );
 		arrow->setEmbedding( result );
 
 		return arrow;
@@ -429,7 +422,7 @@ namespace Menge
 		Scene * scene = pybind::extract<Scene*>( result );
 
 		scene->setEmbedding( result );
-		scene->setType( MENGE_TEXT("Scene") );
+		scene->setType( "Scene" );
 
 		return scene;
 	}

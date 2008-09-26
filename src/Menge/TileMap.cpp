@@ -11,6 +11,7 @@
 #	include "SceneManager.h"
 #	include "Player.h"
 #	include "Camera2D.h"
+#	include "Utils.h"
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -18,7 +19,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	TileMap::TileMap()
 		: m_resourceMap( NULL )
-		, m_resourcename( MENGE_TEXT("") )
+		, m_resourcename( "" )
 		, m_width( 0 )
 		, m_height( 0 )
 	{
@@ -35,7 +36,7 @@ namespace	Menge
 
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("TileMap"), MENGE_TEXT("Name"), m_resourcename );
+			XML_CASE_ATTRIBUTE_NODE( "TileMap", "Name", m_resourcename );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -52,18 +53,17 @@ namespace	Menge
 
 		if( m_resourceMap == NULL )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("TileMap::_compile -> compiling resource %s failed")
-				,m_resourcename.c_str() );
+			MENGE_LOG_ERROR << "TileMap::_compile -> compiling resource " << m_resourcename << " failed";
 			return false;
 		}
 
 		m_width = m_resourceMap->getWidth();
 		m_height = m_resourceMap->getHeight();
 
-		RigidBody2D* collision = SceneManager::createNodeT<RigidBody2D>( MENGE_TEXT("RigidBody2D") ) ;
+		RigidBody2D* collision = SceneManager::createNodeT<RigidBody2D>( "RigidBody2D" ) ;
 		const std::vector< mt::vec2f >& pos = m_resourceMap->_getPhysPos();
 		float width = m_resourceMap->_getPhysWidth();
-		collision->setName( MENGE_TEXT("WorldPhysObject") );
+		collision->setName( "WorldPhysObject" );
 		for( std::vector< mt::vec2f >::size_type i = 0; i < pos.size(); i++ )
 		{
 			collision->_addShapeBox( width, width, pos[i], 0.0f );

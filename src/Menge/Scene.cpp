@@ -20,7 +20,7 @@ namespace	Menge
 	, m_gravity2D( 0.0f, 0.0f )
 	, m_physWorldBox2D( 0.0f, 0.0f, 0.0f, 0.0f )
 	, m_physWorld2D( false )
-	, m_renderTarget( MENGE_TEXT("defaultCamera") )
+	, m_renderTarget( "defaultCamera" )
 	, m_onUpdateEvent(false)
 	, m_blockInput( false )
 	{
@@ -252,7 +252,7 @@ namespace	Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( MENGE_TEXT("Scene") )
+			XML_CASE_NODE( "Scene" )
 			{
 				XML_PARSE_ELEMENT( this, &Scene::loaderScene_ );
 			}
@@ -267,12 +267,12 @@ namespace	Menge
 		
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Gravity2D"), MENGE_TEXT("Value"), m_gravity2D );
-			XML_CASE_NODE( MENGE_TEXT("PhysicWorld2DBox") )
+			XML_CASE_ATTRIBUTE_NODE( "Gravity2D", "Value", m_gravity2D );
+			XML_CASE_NODE( "PhysicWorld2DBox" )
 			{
 				XML_FOR_EACH_ATTRIBUTES()
 				{					
-					XML_CASE_ATTRIBUTE( MENGE_TEXT("Value"), m_physWorldBox2D );
+					XML_CASE_ATTRIBUTE( "Value", m_physWorldBox2D );
 				}
 				m_physWorld2D = true;
 			}

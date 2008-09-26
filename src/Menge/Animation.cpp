@@ -10,6 +10,7 @@
 #	include "LogEngine.h"
 
 #	include "Math/rand.h"
+#	include "Utils.h"
 namespace	Menge
 {
 	OBJECT_IMPLEMENT(Animation)
@@ -33,10 +34,10 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Animation"), MENGE_TEXT("Name"), m_resourceAnimationName );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Looping"), MENGE_TEXT("Value"), m_looping );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("AutoStart"), MENGE_TEXT("Value"), m_autoStart );			
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("RandomStart"), MENGE_TEXT("Value"), m_randomStart );			
+			XML_CASE_ATTRIBUTE_NODE( "Animation", "Name", m_resourceAnimationName );
+			XML_CASE_ATTRIBUTE_NODE( "Looping", "Value", m_looping );
+			XML_CASE_ATTRIBUTE_NODE( "AutoStart", "Value", m_autoStart );			
+			XML_CASE_ATTRIBUTE_NODE( "RandomStart", "Value", m_randomStart );			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -78,10 +79,7 @@ namespace	Menge
 
 		if( m_resourceAnimation == NULL )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Sprite %s: Image resource not getting '%s'")
-				, getName().c_str()
-				, m_resourceAnimationName.c_str() 
-				);
+			MENGE_LOG_ERROR << "Sprite " << getName() << ": Image resource not getting " << m_resourceAnimationName;
 		}
 
 		m_delay += _timing;
@@ -145,10 +143,7 @@ namespace	Menge
 
 			if( m_resourceAnimation == NULL )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("Sprite %s: Image resource not getting '%s'")
-					, getName().c_str()
-					, m_resourceAnimationName.c_str() 
-					);
+				MENGE_LOG_ERROR << "Sprite " << getName() << ": Image resource not getting " << m_resourceAnimationName;
 			}
 
 			std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );

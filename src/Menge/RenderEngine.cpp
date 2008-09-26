@@ -59,7 +59,7 @@ namespace Menge
 	
 		//setRenderTarget( "defaultCamera" );
 		//endScene();
-		m_currentRenderTarget = MENGE_TEXT("defaultCamera");
+		m_currentRenderTarget = "defaultCamera";
 		//m_renderViewport.set( mt::vec2f::zero_v2, m_contentResolution );
 
 		return m_windowCreated;
@@ -110,7 +110,7 @@ namespace Menge
 	void	RenderEngine::setViewMatrix( const mt::mat4f& _view )
 	{
 		mt::mat4f view = _view;
-		if( m_currentRenderTarget == MENGE_TEXT("defaultCamera") && m_layer3D == false )
+		if( m_currentRenderTarget == "defaultCamera" && m_layer3D == false )
 		{
 			mt::mul_m4_m4( view, _view, m_viewTransform );
 		}
@@ -143,11 +143,10 @@ namespace Menge
 	bool RenderEngine::saveImage( RenderImageInterface* _image, const String& _filename )
 	{
 		String strExt;
-		std::size_t pos = _filename.find_last_of( MENGE_TEXT(".") );
+		std::size_t pos = _filename.find_last_of( "." );
 		if( pos == std::string::npos ) 
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("RenderEngine::saveImage : extension not specified (%s)"),
-				_filename.c_str() );
+			MENGE_LOG_ERROR << "RenderEngine::saveImage : extension not specified " << _filename;
 			return false;
 		}
 
@@ -156,14 +155,11 @@ namespace Menge
 			strExt += _filename[++pos];
 		}
 
-		StringA strExtA = Utils::WToA( strExt );
-
-		CodecInterface * pCodec = CodecManager::getCodec( strExtA );
+		CodecInterface * pCodec = CodecManager::getCodec( strExt );
 
 		if( pCodec == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("RenderEngine::saveImage : invalid extension (%s), codec not found"),
-				strExt.c_str() );
+			MENGE_LOG_ERROR << "RenderEngine::saveImage : invalid extension " << strExt << " codec not found";
 			return false;
 		}
 
@@ -195,8 +191,7 @@ namespace Menge
 		OutStreamInterface* outFile = Holder<FileEngine>::hostage()->openOutStream( _filename, true );
 		if( outFile == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("RenderEngine::saveImage : failed to open file for output '%s'"),
-				_filename.c_str() );
+			MENGE_LOG_ERROR << "RenderEngine::saveImage : failed to open file for output " << _filename;
 			delete[] lockBuffer;
 			return false;
 		}
@@ -206,7 +201,7 @@ namespace Menge
 		delete[] lockBuffer;
 		if( res == false )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("RenderEngine::saveImage : Error while coding image data") );
+			MENGE_LOG_ERROR << "RenderEngine::saveImage : Error while coding image data";
 		}
 
 
@@ -223,21 +218,20 @@ namespace Menge
 		{
 			String strExt;
 
-			std::size_t pos = _filename.find_last_of( MENGE_TEXT(".") );
+			std::size_t pos = _filename.find_last_of( "." );
 
 			while( pos != _filename.length() - 1 )
 			{
 				strExt += _filename[++pos];
 			}
 
-			StringA strExtA = Utils::WToA( strExt );
-			CodecInterface* codec = CodecManager::getCodec( strExtA );
+			CodecInterface* codec = CodecManager::getCodec( strExt );
 
 			if( codec == 0 )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("Warning: Image codec for extension %s was not found"),
-					strExt.c_str() );
-				MENGE_LOG_CRITICAL( MENGE_TEXT("Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын"),
+				MENGE_LOG_ERROR << "Warning: Image codec for extension " << strExt << "was not found";
+					
+				MENGE_LOG_CRITICAL( "Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын",
 					_filename.c_str() );
 				return 0;
 			}
@@ -246,8 +240,8 @@ namespace Menge
 
 			if( stream == 0 )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("Error: Can't open image file '%s'"),
-					_filename.c_str() );
+				MENGE_LOG_ERROR << "Can't open image file " << _filename;
+				//MENGE_LOG_CRITICAL( "Can't open image file \"%s\"", Utils::WToA(_filename).c_str() );
 				return 0;
 			}
 
@@ -257,14 +251,13 @@ namespace Menge
 			bool res = codec->getDataInfo( stream, static_cast<CodecInterface::CodecData*>( &data ) );
 			if( res == false )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("Warning: Error while decoding image '%s'. Image not loaded"),
-					_filename.c_str() );
+				MENGE_LOG_ERROR << "Error while decoding image " << _filename << "Image not loaded";
 				Holder<FileEngine>::hostage()->closeStream( stream );
 				return 0;
 			}
 			if( data.format == PF_UNKNOWN )
 			{
-				MENGE_LOG_CRITICAL( MENGE_TEXT("Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын"),
+				MENGE_LOG_CRITICAL( "Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын",
 					_filename.c_str() );
 				Holder<FileEngine>::hostage()->closeStream( stream );
 				return 0;
@@ -277,8 +270,7 @@ namespace Menge
 			res = codec->decode( stream, (unsigned char*)textureDesc.buffer, data.flags );
 			if( res == false )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("Warning: Error while decoding image '%s'. Image not loaded"),
-					_filename.c_str() );
+				MENGE_LOG_ERROR << "Warning: Error while decoding image " << _filename << "Image not loaded";
 				Holder<FileEngine>::hostage()->closeStream( stream );
 				delete[] textureDesc.buffer;
 				textureDesc.buffer = 0;
@@ -299,8 +291,7 @@ namespace Menge
 			delete[] textureDesc.buffer;
 			if( image == 0 )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("Error: Render System failed to load image '%s'")
-					, _filename.c_str() );
+				MENGE_LOG_ERROR << "Render System failed to load image " << _filename;
 				return 0;
 			}
 
@@ -577,7 +568,7 @@ namespace Menge
 	void RenderEngine::setRenderArea( const mt::vec4f& _renderArea )
 	{
 		mt::vec4f renderArea = _renderArea;
-		if( m_currentRenderTarget == MENGE_TEXT("defaultCamera") )
+		if( m_currentRenderTarget == "defaultCamera" )
 		{
 			mt::vec2f size = _renderArea.v2_1 - _renderArea.v2_0;
 			if( size == mt::vec2f::zero_v2 )
@@ -600,12 +591,12 @@ namespace Menge
 		m_renderFactor = _factor;
 		if( m_renderFactor < 0.0f )
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: RenderFactor Value < 0. Setting to 0") );
+			MENGE_LOG << "Warning: RenderFactor Value < 0. Setting to 0";
 			m_renderFactor = 0.0f;
 		}
 		else if( m_renderFactor > 1.0f )
 		{
-			MENGE_LOG( MENGE_TEXT("Warning: RenderFactor Value > 1. Setting to 1") );
+			MENGE_LOG << "Warning: RenderFactor Value > 1. Setting to 1";
 			m_renderFactor = 1.0f;
 		}
 

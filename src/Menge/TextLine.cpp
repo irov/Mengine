@@ -2,17 +2,16 @@
 #	include "ResourceFont.h"
 #   include "RenderEngine.h"
 #	include "TextField.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	TextLine::TextLine( TextField & _textField, const ResourceFont * _resource, const Text & _text )
+	TextLine::TextLine( TextField & _textField, const ResourceFont * _resource, const String& _text )
 	: m_length(0)
 	, m_invalidateRenderLine(true)
 	, m_offset(0)
 	, m_textField(_textField)
 	{
-		for( Text::const_iterator
+		for( String::const_iterator
 			it = _text.begin(), 
 			it_end = _text.end();
 		it != it_end; 
@@ -45,28 +44,29 @@ namespace Menge
 								const RenderImageInterface * _renderImage
 								)
 	{
-		if( m_invalidateRenderLine == false )
+		if( m_invalidateRenderLine == true )
 		{
-			for( TCharsData::const_iterator
-				it_char = charsData.begin(), 
-				it_char_end = charsData.end();
-			it_char != it_char_end; 
-			++it_char )
-			{
-				Holder<RenderEngine>::hostage()->renderImage(
-					it_char->renderVertex,
-					it_char->uv,
-					_color.getAsARGB(),
-					_renderImage
-					);
-			}
-
-			offset.x += m_offset;
-
-			return;
+			updateRenderLine_( offset );
+		}
+		for( TCharsData::const_iterator
+			it_char = charsData.begin(), 
+			it_char_end = charsData.end();
+		it_char != it_char_end; 
+		++it_char )
+		{
+			Holder<RenderEngine>::hostage()->renderImage(
+				it_char->renderVertex,
+				it_char->uv,
+				_color.getAsARGB(),
+				_renderImage
+				);
 		}
 
-		const mt::mat3f & _wm = m_textField.getWorldMatrix();
+		offset.x += m_offset;
+
+		return;
+
+		/*const mt::mat3f & _wm = m_textField.getWorldMatrix();
 
 		for( TCharsData::iterator
 			it_char = charsData.begin(), 
@@ -95,6 +95,46 @@ namespace Menge
 		
 		m_offset = offset.x;
 
+		m_invalidateRenderLine = false;*/
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextLine::updateBoundingBox( mt::box2f& _boundingBox, mt::vec2f& _offset )
+	{
+		if( charsData.empty() ) return;
+		if( m_invalidateRenderLine == true )
+		{
+			updateRenderLine_( _offset );
+		}
+		mt::vec2f vb = charsData.front().renderVertex[0];
+		mt::vec2f ve = charsData.back().renderVertex[2];
+		mt::merge_box( _boundingBox, mt::box2f( vb, ve ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextLine::updateRenderLine_( mt::vec2f& _offset )
+	{
+		const mt::mat3f & _wm = m_textField.getWorldMatrix();
+
+		for( TCharsData::iterator
+			it_char = charsData.begin(), 
+			it_char_end = charsData.end();
+		it_char != it_char_end; 
+		++it_char )
+		{
+			float width = floorf( it_char->ratio * m_textField.getHeight() );
+
+			mt::vec2f size( width, m_textField.getHeight() );
+
+			mt::mul_v2_m3( it_char->renderVertex[0], _offset, _wm );
+			mt::mul_v2_m3( it_char->renderVertex[1], _offset + mt::vec2f( size.x, 0.0f ), _wm );
+			mt::mul_v2_m3( it_char->renderVertex[2], _offset + size, _wm );
+			mt::mul_v2_m3( it_char->renderVertex[3], _offset + mt::vec2f( 0.0f, size.y ), _wm );
+
+			_offset.x += width + m_textField.getCharOffset();
+		}
+
+		m_offset = _offset.x;
+
 		m_invalidateRenderLine = false;
 	}
+	//////////////////////////////////////////////////////////////////////////
 }

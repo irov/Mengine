@@ -1,14 +1,12 @@
 #	pragma once
 
 #	include "Interface/LogSystemInterface.h"
-
 #	include "Holder.h"
-
-#	include "TextField.h"
 
 #	include <string>
 
 #	include <map>
+#	include <sstream>
 
 namespace Menge
 {
@@ -18,19 +16,24 @@ namespace Menge
 		LogEngine( LogSystemInterface * _interface );
 
 	public:
-		void logMessage( const String& _message, int _messageLevel, bool _endl = true, bool _timeStamp = true );
+		void logMessage( const StringA& _message );
 		void setVerboseLevel( int _level );
+		int getVerboseLevel() const;
+		void enableConsole( bool _enable );
 		LogSystemInterface* getInterface();
 		
 	protected:
 		LogSystemInterface * m_interface;
+		int m_verboseLevel;
+		bool m_console;
 	};
 
 	enum EMessageLevel
 	{
 		LM_ERROR = 0,
-		LM_LOG = 1,
-		LM_INFO = 2
+		LM_WARNING = 1,
+		LM_LOG = 2,
+		LM_INFO = 3
 	};
 
 	enum ELogOption
@@ -47,7 +50,7 @@ namespace Menge
 		LoggerOperator( const char * _file, int _level, unsigned int _options );
 
 	public:
-		void operator()( const TChar* _message, ... );
+		void operator()( const char* _message, ... );
 
 	protected:
 		//print_( const TChar* _message );
@@ -55,13 +58,32 @@ namespace Menge
 		int m_level;
 		unsigned int m_options;
 	};
+
+	class Log
+	{
+	public:
+		Log();
+		virtual ~Log();
+		std::ostringstream& get(EMessageLevel level = LM_LOG);
+		StringA time();
+	protected:
+		std::ostringstream os;
+	private:
+		Log(const Log&);
+		Log& operator =(const Log&);
+	};
 }
 
 #	define MENGE_LOG_ERROR\
-	Menge::LoggerOperator( __FILE__, LM_ERROR, LO_TEXT )
+	Menge::Log().get( Menge::LM_ERROR )
+
+#	define MENGE_LOG_WARNING\
+	if( Menge::LM_WARNING > Menge::Holder<Menge::LogEngine>::hostage()->getVerboseLevel() ) ;\
+	else Menge::Log().get( Menge::LM_WARNING )
 
 #	define MENGE_LOG\
-	Menge::LoggerOperator( __FILE__, LM_LOG, LO_TEXT )
+	if( Menge::LM_LOG > Menge::Holder<Menge::LogEngine>::hostage()->getVerboseLevel() ) ;\
+	else Menge::Log().get( Menge::LM_LOG )
 
 //#	define MENGE_LOG_DEBUG\
 //	Menge::LoggerOperator( __FILE__, ELoggerLog | ELoggerDebug )

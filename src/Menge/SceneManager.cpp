@@ -11,7 +11,7 @@
 #	include "Entity.h"
 
 #	include "LogEngine.h"
-
+#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -76,14 +76,14 @@ namespace Menge
 		{
 			XML_SWITCH_NODE( _xml )
 			{			
-				XML_CASE_NODE( MENGE_TEXT("Node") )
+				XML_CASE_NODE( "Node" )
 				{
 					String name;
 					String type;
 					XML_FOR_EACH_ATTRIBUTES()
 					{
-						XML_CASE_ATTRIBUTE( MENGE_TEXT("Name"), name );
-						XML_CASE_ATTRIBUTE( MENGE_TEXT("Type"), type );
+						XML_CASE_ATTRIBUTE( "Name", name );
+						XML_CASE_ATTRIBUTE( "Type", type );
 					}
 
 					*m_externalNode = SceneManager::createNode( type );
@@ -108,16 +108,14 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlFile( _xml, nodeLoader ) == false )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Invalid parse external node `%s`\n")
-				,_xml.c_str() );
+			MENGE_LOG_ERROR << "Invalid parse external node " << _xml;
 
 			return 0;
 		}
 
 		if( node == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("This xml file `%s` have invalid external node format\n")
-				,_xml.c_str() );
+			MENGE_LOG_ERROR << "This xml file \"" << _xml << "\" has invalid external node format";
 		}
 
 		return node;
@@ -132,15 +130,13 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlString( _xml_data, nodeLoader ) == false )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Invalid parse external xml data `%s`\n")
-				,_xml_data.c_str() );
-
+			MENGE_LOG_ERROR << "Invalid parse external xml data " << _xml_data;
 			return 0;
 		}
 
 		if( node == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("This xml have invalid external node format\n") );
+			MENGE_LOG_ERROR << "This xml have invalid external node format";
 		}
 
 		return node;

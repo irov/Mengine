@@ -9,7 +9,7 @@ static class ScriptClassWrapper##Class\
 public:\
 	ScriptClassWrapper##Class()\
 {\
-	ScriptClassWrapperFactory::regWrapping( MENGE_TEXT(#Class), this );\
+	ScriptClassWrapperFactory::regWrapping( #Class, this );\
 };\
 public:\
 	PyObject * wrap( Node * _node ) override\

@@ -2,9 +2,9 @@
 
 #	include "Config/Typedef.h"
 
-#	ifdef MENGE_UNICODE
-#	define XML_UNICODE_WCHAR_T
-#	endif
+//#	ifdef MENGE_UNICODE
+//#	define XML_UNICODE_WCHAR_T
+//#	endif
 
 #	include "expat.h"
 #	include <list>
@@ -39,4 +39,6 @@ protected:
 	XmlElementValueListener * m_valueListener;
 
 	XML_Parser m_parser;
+
+	static int s_unknownEncodingHandler( void *encodingHandlerData,	const XML_Char *name, XML_Encoding *info);
 };

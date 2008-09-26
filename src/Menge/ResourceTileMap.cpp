@@ -5,7 +5,7 @@
 #	include "XmlEngine.h"
 #	include "LogEngine.h"
 #	include "ResourceManager.h"
-
+#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -28,8 +28,8 @@ namespace Menge
 		ResourceReference::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("TileMap"), MENGE_TEXT("File"), &ResourceTileMap::setTileMapPath );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("ResourceTileSet"), MENGE_TEXT("Name"), m_tileSetName );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "TileMap", "File", &ResourceTileMap::setTileMapPath );
+			XML_CASE_ATTRIBUTE_NODE( "ResourceTileSet", "Name", m_tileSetName );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -45,8 +45,7 @@ namespace Menge
 
 		if( m_tileSet == NULL )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("ResourceTileMap::_compile -> compiling resource %s failed")
-				,m_tileSetName.c_str() );
+			MENGE_LOG_ERROR << "ResourceTileMap::_compile -> compiling resource failed " << m_tileSetName;
 			return false;
 		}
 
@@ -58,7 +57,7 @@ namespace Menge
 		m_width = 0;
 		m_height = 0;
 		DataStreamInterface* mapFile = Holder<FileEngine>::hostage()->openFile( m_tileMapFile );
-		String line1 = mapFile->getLine( true );
+		String line1 = Utils::getLine( mapFile );
 		m_width = line1.size() - 1;
 		String line2;
 
@@ -74,11 +73,10 @@ namespace Menge
 		}
 		while( !mapFile->eof() )
 		{		
-			line2 = mapFile->getLine( true );
+			line2 = Utils::getLine( mapFile );
 			if( m_width != line2.size() - 1 )
 			{
-				MENGE_LOG_ERROR( MENGE_TEXT("ResourceTileMap::_compile -> Invalid TileMap format in %s")
-					,m_tileMapFile.c_str() );
+				MENGE_LOG_ERROR << "ResourceTileMap::_compile -> Invalid TileMap format in " << m_tileMapFile;
 				return false;
 			}
 

@@ -137,7 +137,7 @@ void CALL HGE_Impl::Gfx_SetClipping( int x, int y, int w, int h )
 	HRESULT hr = pD3DDevice->SetViewport(&vp);
 	if( FAILED( hr ) )
 	{
-		System_Log( MENGE_TEXT("Error: D3D8 failed to SetViewport") );
+		System_Log( "Error: D3D8 failed to SetViewport" );
 	}
 
 	D3DXMATRIXA16 tmp;
@@ -190,7 +190,7 @@ bool CALL HGE_Impl::Gfx_BeginScene( HTARGET targ )
 		{
 			if(FAILED(pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode)) || Mode.Format==D3DFMT_UNKNOWN) 
 			{
-				_PostError( MENGE_TEXT("Can't determine desktop video mode") );
+				_PostError( "Can't determine desktop video mode" );
 				return false;
 			}
 
@@ -210,7 +210,7 @@ bool CALL HGE_Impl::Gfx_BeginScene( HTARGET targ )
     
 	if(VertArray)
 	{
-		_PostError( MENGE_TEXT("Gfx_BeginScene: Scene is already being rendered") );
+		_PostError( "Gfx_BeginScene: Scene is already being rendered" );
 		return false;
 	}
 	
@@ -229,7 +229,7 @@ bool CALL HGE_Impl::Gfx_BeginScene( HTARGET targ )
 		if(FAILED(pD3DDevice->SetRenderTarget(pSurf, pDepth)))
 		{
 			if(target) pSurf->Release();
-			_PostError( MENGE_TEXT("Gfx_BeginScene: Can't set render target") );
+			_PostError( "Gfx_BeginScene: Can't set render target" );
 			return false;
 		}
 		if(target)
@@ -274,7 +274,7 @@ void CALL HGE_Impl::Gfx_EndScene( bool _swapBuffers )
 		HRESULT hr = pD3DDevice->Present( NULL, NULL, NULL, NULL );
 		if( FAILED( hr ) )
 		{
-			System_Log( MENGE_TEXT("Error: D3D8 failed to swap buffers") );
+			System_Log( "Error: D3D8 failed to swap buffers" );
 		}
 		m_frames++;
 	}
@@ -396,8 +396,8 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
 		fmt, D3DPOOL_DEFAULT, &pTarget->pTex);
 	if( FAILED( hr ) )
 	{
-		_PostError( MENGE_TEXT("Can't create render target texture") );
-		System_Log( MENGE_TEXT(" HR = %d"), hr );
+		_PostError( "Can't create render target texture" );
+		System_Log( " HR = %d", hr );
 		delete pTarget;
 		return 0;
 	}
@@ -413,7 +413,7 @@ HTARGET CALL HGE_Impl::Target_Create(int width, int height, bool zbuffer)
 		if( FAILED( hr ) )
 		{   
 			pTarget->pTex->Release();
-			_PostError( MENGE_TEXT("Can't create render target depth buffer") );
+			_PostError( "Can't create render target depth buffer" );
 			delete pTarget;
 			return 0;
 		}
@@ -476,7 +476,7 @@ HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
 										D3DPOOL_MANAGED,	// Memory pool
 										&pTex ) ) )
 	{	
-		_PostError( MENGE_TEXT("Can't create texture") );
+		_PostError( "Can't create texture" );
 		return NULL;
 	}
 
@@ -545,7 +545,7 @@ HTEXTURE CALL HGE_Impl::Texture_Load(const char *filename, DWORD size, bool bMip
 										&pTex ) ) )
 
 	{	
-		_PostError( MENGE_TEXT("Can't create texture") );
+		_PostError( "Can't create texture" );
 		//if(!size) Resource_Free(data);
 		return NULL;
 	}
@@ -574,8 +574,8 @@ void CALL HGE_Impl::Texture_LoadRawData( HTEXTURE _hTex, const char* data, int _
 	HRESULT hr = D3DXLoadSurfaceFromMemory( surf, NULL, &rect, data, fmt, _pitch, NULL, &rect, D3DX_DEFAULT, 0 );
 	if( FAILED( hr ) )
 	{
-		_PostError( MENGE_TEXT("Error: Failed to load texture data") );
-		System_Log( MENGE_TEXT("HR = %d"), hr );
+		_PostError( "Error: Failed to load texture data" );
+		System_Log( "HR = %d", hr );
 		return;
 	}
 	D3DSURFACE_DESC TDesc;
@@ -698,7 +698,7 @@ DWORD * CALL HGE_Impl::Texture_Lock(HTEXTURE tex, int* _pitch, bool bReadOnly, i
 
 	if(FAILED(pTex->LockRect(0, &TRect, prec, flags)))
 	{
-		_PostError( MENGE_TEXT("Can't lock texture") );
+		_PostError( "Can't lock texture" );
 		return 0;
 	}
 
@@ -736,7 +736,7 @@ void HGE_Impl::_render_batch( bool bEndScene )
 					NumDips++;
 					if( FAILED( hr ) )
 					{
-						System_Log( MENGE_TEXT("ERROR!!!") );
+						System_Log( "ERROR!!!" );
 					}
 					break;
 
@@ -830,16 +830,16 @@ bool HGE_Impl::_GfxInit()
 	pD3D=Direct3DCreate8( D3D_SDK_VERSION ); // D3D_SDK_VERSION
 	if( pD3D == NULL )
 	{
-		_PostError( MENGE_TEXT("Can't create D3D interface") );
+		_PostError( "Can't create D3D interface" );
 		return false;
 	}
 
 // Get adapter info
 
 	pD3D->GetAdapterIdentifier(D3DADAPTER_DEFAULT, D3DENUM_NO_WHQL_LEVEL, &AdID);
-	System_Log( MENGE_TEXT("D3D Driver: %s"), Menge::Utils::AToW(AdID.Driver).c_str() );
-	System_Log( MENGE_TEXT("Description: %s"), Menge::Utils::AToW(AdID.Description).c_str() );
-	System_Log( MENGE_TEXT("Version: %d.%d.%d.%d"),
+	System_Log( "D3D Driver: %s", AdID.Driver );
+	System_Log( "Description: %s", AdID.Description );
+	System_Log( "Version: %d.%d.%d.%d",
 			HIWORD(AdID.DriverVersion.HighPart),
 			LOWORD(AdID.DriverVersion.HighPart),
 			HIWORD(AdID.DriverVersion.LowPart),
@@ -849,7 +849,7 @@ bool HGE_Impl::_GfxInit()
 	
 	if(FAILED(pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &Mode)) || Mode.Format==D3DFMT_UNKNOWN) 
 	{
-		_PostError( MENGE_TEXT("Can't determine desktop video mode") );
+		_PostError( "Can't determine desktop video mode" );
 		if(bWindowed) return false;
 	}
 	
@@ -883,7 +883,7 @@ bool HGE_Impl::_GfxInit()
 
 	if(Format == D3DFMT_UNKNOWN)
 	{
-		_PostError( MENGE_TEXT("Can't find appropriate full screen video mode") );
+		_PostError( "Can't find appropriate full screen video mode" );
 		if(!bWindowed) return false;
 	}
 
@@ -904,13 +904,13 @@ bool HGE_Impl::_GfxInit()
 
 bool HGE_Impl::Gfx_CreateRenderWindow()
 {
-	static const Menge::TChar *szFormats[]={ 
-		MENGE_TEXT("UNKNOWN")
-		,MENGE_TEXT("R5G6B5")
-		,MENGE_TEXT("X1R5G5B5")
-		,MENGE_TEXT("A1R5G5B5")
-		,MENGE_TEXT("X8R8G8B8")
-		,MENGE_TEXT("A8R8G8B8")
+	static const char *szFormats[]={ 
+		"UNKNOWN"
+		,"R5G6B5"
+		,"X1R5G5B5"
+		,"A1R5G5B5"
+		,"X8R8G8B8"
+		,"A8R8G8B8"
 	};
 
 	d3dppW.BackBufferWidth  = nScreenWidth;
@@ -975,7 +975,7 @@ bool HGE_Impl::Gfx_CreateRenderWindow()
 
 	if( FAILED ( hr ) )
 	{
-		System_Log( MENGE_TEXT("Can't create D3D device (hr:%d, hwnd:%d)"), hr, hwnd );
+		System_Log( "Can't create D3D device (hr:%d, hwnd:%d)", hr, hwnd );
 		return false;
 	}
 	/*if( FAILED( pD3D->CreateDevice( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
@@ -988,7 +988,7 @@ bool HGE_Impl::Gfx_CreateRenderWindow()
 
 	//_AdjustWindow();
 
-	System_Log( MENGE_TEXT("Mode: %d x %d x %s\n"),nScreenWidth,nScreenHeight,szFormats[_format_id(d3dpp->BackBufferFormat)]);
+	System_Log( "Mode: %d x %d x %s\n",nScreenWidth,nScreenHeight,szFormats[_format_id(d3dpp->BackBufferFormat)]);
 
 	// Create vertex batch buffer
 
@@ -1278,7 +1278,7 @@ bool HGE_Impl::_init_lost()
 											  D3DFVF_HGEVERTEX,
                                               D3DPOOL_DEFAULT, &pVB )))
 	{
-		_PostError( MENGE_TEXT("Can't create D3D vertex buffer") );
+		_PostError( "Can't create D3D vertex buffer" );
 		return false;
 	}
 
@@ -1287,7 +1287,7 @@ bool HGE_Impl::_init_lost()
 		D3DFVF_MENGEVERTEX,
 		D3DPOOL_DEFAULT, &pVB3D )))
 	{
-		_PostError( MENGE_TEXT("Can't create Menge D3D vertex buffer") );
+		_PostError( "Can't create Menge D3D vertex buffer" );
 		return false;
 	}
 
@@ -1301,14 +1301,14 @@ bool HGE_Impl::_init_lost()
 											  D3DFMT_INDEX16,
                                               D3DPOOL_DEFAULT, &pIB ) ) )
 	{
-		_PostError( MENGE_TEXT("Can't create D3D index buffer") );
+		_PostError( "Can't create D3D index buffer" );
 		return false;
 	}
 
 	WORD *pIndices, n=0;
 	if( FAILED( pIB->Lock( 0, 0, (BYTE**)&pIndices, 0 ) ) )
 	{
-		_PostError( MENGE_TEXT("Can't lock D3D index buffer") );
+		_PostError( "Can't lock D3D index buffer" );
 		return false;
 	}
 
@@ -1330,7 +1330,7 @@ bool HGE_Impl::_init_lost()
 		D3DFMT_INDEX16,
 		D3DPOOL_DEFAULT, &pIB3D ) ) )
 	{
-		_PostError( MENGE_TEXT("Can't create Menge D3D index buffer") );
+		_PostError( "Can't create Menge D3D index buffer" );
 		return false;
 	}
 
@@ -1395,7 +1395,7 @@ void HGE_Impl::Gfx_Snapshot( HTEXTURE tex, RECT _rect )
 	HRESULT hr = pD3DDevice->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &surf );
 	if( FAILED( hr ) )
 	{
-		System_Log( MENGE_TEXT("D3D Error: failed to GetBackBuffer") );
+		System_Log( "D3D Error: failed to GetBackBuffer" );
 	}
 
 	IDirect3DTexture8* dtext = reinterpret_cast<IDirect3DTexture8*>( tex );
@@ -1405,7 +1405,7 @@ void HGE_Impl::Gfx_Snapshot( HTEXTURE tex, RECT _rect )
 	hr = dtext->GetSurfaceLevel(0, &dsurf );
 	if( FAILED( hr ) )
 	{
-		System_Log( MENGE_TEXT("D3D Error: failed to GetSurfaceLevel") );
+		System_Log( "D3D Error: failed to GetSurfaceLevel" );
 	}
 
 	RECT dest_rect;
@@ -1425,7 +1425,7 @@ void HGE_Impl::Gfx_Snapshot( HTEXTURE tex, RECT _rect )
 	hr = D3DXLoadSurfaceFromSurface( dsurf, NULL, &dest_rect, surf, NULL, &_rect, D3DX_DEFAULT, 0 );
 	if( FAILED( hr ) )
 	{
-		System_Log( MENGE_TEXT("D3D Error: failed to D3DXLoadSurfaceFromSurface") );
+		System_Log( "D3D Error: failed to D3DXLoadSurfaceFromSurface" );
 	}
 	surf->Release();
 }
@@ -1443,7 +1443,7 @@ void HGE_Impl::Gfx_ChangeMode( int _width, int _height, int _bpp, bool _fullscre
 
 	if( !_GfxRestore() )
 	{
-		System_Log( MENGE_TEXT("Error: Graphics change mode failed\n") );
+		System_Log( "Error: Graphics change mode failed\n" );
 	}
 }
 

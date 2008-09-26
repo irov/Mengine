@@ -39,8 +39,8 @@ namespace Menge
 		ResourceReference::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("TileSet"), MENGE_TEXT("File"), &ResourceTileSet::setFilePath );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Tiles"), MENGE_TEXT("Value"), m_tiles );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "TileSet", "File", &ResourceTileSet::setFilePath );
+			XML_CASE_ATTRIBUTE_NODE( "Tiles", "Value", m_tiles );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ namespace Menge
 			unsigned int tileCode = s_tileNumToCode( tile, m_tiles );
 			TChar buffer[10];
 			String tilestr( STDITOS(tileCode, buffer, 10) );
-			String name = m_tileSetFile + tilestr + MENGE_TEXT(".png");
+			String name = m_tileSetFile + tilestr + ".png";
 			RenderImageInterface* image = Holder<RenderEngine>::hostage()->loadImage( name, 0 );
 
 			m_tileSize = (float)image->getWidth();

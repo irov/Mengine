@@ -25,8 +25,8 @@ namespace Menge
 		ResourceReference::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Radius"), MENGE_TEXT("Value"), m_radius );					
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Height"), MENGE_TEXT("Value"), m_height );					
+			XML_CASE_ATTRIBUTE_NODE( "Radius", "Value", m_radius );					
+			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_height );					
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

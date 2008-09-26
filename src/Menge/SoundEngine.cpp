@@ -159,9 +159,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::update( float _timing )
 	{
-		Holder<ProfilerEngine>::hostage()->beginProfile( MENGE_TEXT("SoundEngine") );
+		Holder<ProfilerEngine>::hostage()->beginProfile( "SoundEngine" );
 		m_interface->update( _timing );
-		Holder<ProfilerEngine>::hostage()->endProfile( MENGE_TEXT("SoundEngine") );
+		Holder<ProfilerEngine>::hostage()->endProfile( "SoundEngine" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setSulkCallback( SoundSulkCallback * _sulkcallback )

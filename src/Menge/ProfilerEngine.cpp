@@ -67,7 +67,7 @@ namespace Menge
 		static TChar m_debugText[128];
 
 		int dipCount = Holder<RenderEngine>::hostage()->getNumDIP();
-		STDSPRINTF( m_debugText, MENGE_TEXT("DIP = %d\n"), dipCount );
+		std::sprintf( m_debugText, "DIP = %d\n", dipCount );
 
 		mt::vec2f pos(0,20);
 		Holder<RenderEngine>::hostage()->renderText( m_debugText, pos, 0xFFFFFFFF );
@@ -77,7 +77,7 @@ namespace Menge
 		{
 			const ProfileHistory & h = (*it);
 
-			STDSPRINTF( m_debugText, MENGE_TEXT("%s : ctime = %.5f; calls = %d; min time = %.5f; max time = %.5f\n"), h.name.c_str(), h.currentTime, h.numCallsThisFrame, h.minTime, h.maxTime );
+			std::sprintf( m_debugText, "%s : ctime = %.5f; calls = %d; min time = %.5f; max time = %.5f\n", h.name.c_str(), h.currentTime, h.numCallsThisFrame, h.minTime, h.maxTime );
 
 			pos.y+=20;
 			Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFFFFFFFF);
@@ -87,7 +87,7 @@ namespace Menge
 		int totalCompiled = m_interface->getTotalCompiled();
 		const String & currentCompiledResource = m_interface->getCurrentCompiled();
 
-		STDSPRINTF( m_debugText, MENGE_TEXT("COMPILED = %s; COMPILED = %d / RELEASED = %d \n"),currentCompiledResource.c_str(), totalCompiled, totalReleased );
+		std::sprintf( m_debugText, "COMPILED = %s; COMPILED = %d / RELEASED = %d \n",currentCompiledResource.c_str(), totalCompiled, totalReleased );
 
 		pos.y+=20;
 		Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFF00FFFF);
@@ -107,7 +107,7 @@ namespace Menge
 
 			const ResourceStat * stat = *it;
 
-			STDSPRINTF( m_debugText, MENGE_TEXT("%s: compiled = %d / released = %d \n"), stat->name.c_str(), stat->numCompiled, stat->numReleased );
+			std::sprintf( m_debugText, "%s: compiled = %d / released = %d \n", stat->name.c_str(), stat->numCompiled, stat->numReleased );
 
 			pos.y+=20;
 			Holder<RenderEngine>::hostage()->renderText(m_debugText, pos, 0xFFFFFFFF);

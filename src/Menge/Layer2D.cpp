@@ -53,7 +53,7 @@ namespace	Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE_METHOD( MENGE_TEXT("Parallax"), MENGE_TEXT("Factor"), &Layer2D::setParallaxFactor );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Parallax", "Factor", &Layer2D::setParallaxFactor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

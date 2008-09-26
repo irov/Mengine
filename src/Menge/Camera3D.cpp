@@ -73,10 +73,10 @@ namespace	Menge
 		SceneNode3D::loader( _xml );
 		XML_SWITCH_NODE(_xml)
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Aspect"), MENGE_TEXT("Value"), m_aspect );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Near"), MENGE_TEXT("Value"), m_near);
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Far"), MENGE_TEXT("Value"), m_far);
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("At"), MENGE_TEXT("Value"), m_at );
+			XML_CASE_ATTRIBUTE_NODE( "Aspect", "Value", m_aspect );
+			XML_CASE_ATTRIBUTE_NODE( "Near", "Value", m_near);
+			XML_CASE_ATTRIBUTE_NODE( "Far", "Value", m_far);
+			XML_CASE_ATTRIBUTE_NODE( "At", "Value", m_at );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

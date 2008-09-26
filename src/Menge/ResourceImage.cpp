@@ -5,6 +5,7 @@
 #	include "RenderEngine.h"
 
 #	include "LogEngine.h"
+#	include "Utils.h"
 
 namespace Menge
 {
@@ -25,11 +26,7 @@ namespace Menge
 
 		if( image == 0 )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: resource '%s' can't load image file '%s'\n")
-				, getName().c_str()
-				, _fileName.c_str()
-				);
-
+			MENGE_LOG_ERROR << "Warning: resource \"" << getName() << "\" can't load image file \"" << _fileName << "\"";
 			imageFrame.image = 0;
 
 			return imageFrame;
@@ -57,7 +54,30 @@ namespace Menge
 
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Filter"), MENGE_TEXT("Value"), m_filter );
+			XML_CASE_ATTRIBUTE_NODE( "Filter", "Value", m_filter );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImage::ImageFrame ResourceImage::createImageFrame( const String& _name, const mt::vec2f& _size )
+	{
+		RenderImageInterface * image = 
+			Holder<RenderEngine>::hostage()
+			->createImage( _name, _size.x, _size.y );
+
+		ImageFrame imageFrame;
+
+		if( image == 0 )
+		{
+			MENGE_LOG_ERROR << "Warning: resource \"" << getName() << "\" can't create image file \"" << _name << "\"";
+			imageFrame.image = 0;
+
+			return imageFrame;
+		}
+
+		imageFrame.size = _size;
+		imageFrame.image = image;
+
+		return imageFrame;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

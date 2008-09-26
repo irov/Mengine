@@ -5,7 +5,7 @@
 #	include "LogEngine.h"
 #	include "ResourceManager.h"
 #	include "ResourceImage.h"
-
+#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ namespace Menge
 		ResourceReference::loader( _xml );
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("File"), MENGE_TEXT("Path"), m_filename );
+			XML_CASE_ATTRIBUTE_NODE( "File", "Path", m_filename );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -33,14 +33,12 @@ namespace Menge
 		if( Holder<XmlEngine>::hostage()->
 			parseXmlFileM( m_params.category + m_filename, this, &ResourceMaterial::loaderMaterial_ ) == false )
 		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Parse material xml failed '%s'. Can't compile material")
-				, m_filename.c_str()
-				);
+			MENGE_LOG_ERROR << "Warning: Parse material xml failed \"" << m_filename << "\". Can't compile material";
 		}
 
 		m_material = TMaterial();
 
-		if( m_textureName != MENGE_TEXT("") )
+		if( m_textureName != "" )
 		{
 			m_resourceImage = static_cast<ResourceImage*>( 
 				Holder<ResourceManager>::hostage()->
@@ -79,8 +77,8 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Texture"), MENGE_TEXT("Name"), m_textureName );
-			XML_CASE_ATTRIBUTE_NODE( MENGE_TEXT("Color"), MENGE_TEXT("Value"), m_color );
+			XML_CASE_ATTRIBUTE_NODE( "Texture", "Name", m_textureName );
+			XML_CASE_ATTRIBUTE_NODE( "Color", "Value", m_color );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

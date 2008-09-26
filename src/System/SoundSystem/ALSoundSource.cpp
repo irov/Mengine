@@ -4,6 +4,8 @@
 #include "ALSoundSource.h"
 #include "ALSoundSystem.h"
 
+#	include "Menge/LogEngine.h"
+
 //////////////////////////////////////////////////////////////////////////
 ALSoundSource::ALSoundSource( ALSoundSystem* _soundSystem ) 
 : m_soundBuffer( 0 )
@@ -45,7 +47,7 @@ void ALSoundSource::play()
 	m_alSource = m_soundSystem->registerPlaying( this, isStereo );
 	if( m_alSource == 0 ) 
 	{
-		m_soundSystem->logMessage( MENGE_TEXT("Warning: Out of hardware sound sources"), 0 );
+		MENGE_LOG_WARNING << "Warning: Out of hardware sound sources";
 		return;
 	}
 

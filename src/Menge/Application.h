@@ -105,15 +105,9 @@ namespace Menge
 		void setMouseBounded( bool _bounded );
 
 		void setFullscreenMode( bool _fullscreen );
-
-		
-
 		unsigned int getDebugMask() const;
 
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style );
-
-		StringA WToA( const StringW& _stringw ) const;
-		StringW AToW( const StringA& _stringa ) const;
 
 	private:
 		Game * m_game;

@@ -30,7 +30,7 @@ void releaseInterfaceSystem( Menge::ProfilerSystemInterface* _interface )
 MengeProfileSystem::MengeProfileSystem() 
 : m_totalCompiled(0)
 , m_totalReleased(0)
-, m_currentCompiledResource(MENGE_TEXT(""))
+, m_currentCompiledResource("")
 {
 	mTimer.reset();
 	mTotalFrameTime = 0;
@@ -225,7 +225,7 @@ void MengeProfileSystem::beginProfile(const Menge::String& profileName) {
 	}
 
 	// empty string is reserved for the root
-	assert ((profileName != MENGE_TEXT("")) && ("Profile name can't be an empty string"));
+	assert ((profileName != "") && ("Profile name can't be an empty string"));
 
 	ProfileStack::iterator iter;
 	for (iter = mProfiles.begin(); iter != mProfiles.end(); ++iter) {
@@ -256,7 +256,7 @@ void MengeProfileSystem::beginProfile(const Menge::String& profileName) {
 	// this is the root, it has no parent
 	if (mProfiles.empty()) {
 
-		p.parent = MENGE_TEXT("");
+		p.parent = "";
 
 	}
 	// otherwise peek at the stack and use the top as the parent
@@ -347,7 +347,7 @@ void MengeProfileSystem::endProfile(const Menge::String& profileName)
 
 	unsigned long endTime = mTimer.getMicroseconds();
 
-	assert ((profileName != MENGE_TEXT("")) && ("Profile name can't be an empty string"));
+	assert ((profileName != "") && ("Profile name can't be an empty string"));
 
 	DisabledProfileMap::iterator dIter;
 	dIter = mDisabledProfiles.find(profileName);
@@ -364,7 +364,7 @@ void MengeProfileSystem::endProfile(const Menge::String& profileName)
 
 	unsigned long timeElapsed = endTime - bProfile.currTime;
 
-	if (bProfile.parent != MENGE_TEXT("") ) 
+	if (bProfile.parent != "" ) 
 	{
 
 		// find the parent

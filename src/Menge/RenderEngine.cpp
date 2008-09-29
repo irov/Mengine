@@ -412,24 +412,9 @@ namespace Menge
 		return m_interface->releaseLight( _light );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SceneNodeInterface * RenderEngine::getRootSceneNode() const
-	{
-		return m_interface->getRootSceneNode();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::frameStarted()
 	{
 		m_interface->render();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SceneNodeInterface * RenderEngine::createSceneNode( const String& _name )
-	{
-		return m_interface->createSceneNode( _name );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseSceneNode( SceneNodeInterface * _interface )
-	{
-		return m_interface->releaseSceneNode( _interface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Resolution RenderEngine::getBestDisplayResolution( const Resolution & _resolution, float _aspect )
@@ -514,13 +499,13 @@ namespace Menge
 			->notifyWindowModeChanged( resolution[0], resolution[1], m_fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::onWindowActive( bool _active )
+	/*void RenderEngine::onWindowActive( bool _active )
 	{
 		if( m_windowCreated )
 		{
 			m_interface->onWindowActive( _active );
 		}
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onWindowClose()
 	{

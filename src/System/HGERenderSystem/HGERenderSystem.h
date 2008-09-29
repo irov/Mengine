@@ -75,18 +75,13 @@ public:
 	Menge::CameraInterface * createCamera( const Menge::String & _name ) override;
 	Menge::EntityInterface * createEntity( const Menge::String & _name, const Menge::String & _meshName ) override;
 	Menge::LightInterface * createLight( const Menge::String & _name ) override;
-	Menge::SceneNodeInterface * createSceneNode( const Menge::String & _name ) override;
 
 	void releaseCamera( Menge::CameraInterface * _camera ) override;
 	void releaseEntity( Menge::EntityInterface * _entity ) override;
 	void releaseLight( Menge::LightInterface * _light ) override;
-	void releaseSceneNode( Menge::SceneNodeInterface * _interface ) override;
 
 	void setTextureFiltering( bool _filter ) override;
-	Menge::SceneNodeInterface * getRootSceneNode() const override;
-	void setEventListener( Menge::RenderSystemListener* _listener ) override;
 	void onWindowMovedOrResized() override;
-	void onWindowActive( bool _active ) override;
 	void onWindowClose() override;
 
 	int  getNumDIP() const override;

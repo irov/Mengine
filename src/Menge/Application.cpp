@@ -140,6 +140,7 @@ namespace Menge
 		, m_game( 0 )
 		, m_hasConsole( 0 )
 		, m_verbose( false )
+		, m_focus( true )
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -228,12 +229,6 @@ namespace Menge
 			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
 			return false;
 		}
-		/*if( m_xmlEngine->parseXmlFileM( m_gameInfo, m_game, &Game::loader ) == false )
-		{
-			MENGE_LOG_ERROR << "Invalid game file " << m_gameInfo;
-			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
-			return false;
-		}*/
 
 		const String & title = m_game->getTitle();
 		bool fullscreen = m_game->getFullscreen();
@@ -402,7 +397,6 @@ namespace Menge
 	bool Application::initialize( const String& _applicationFile, const char* _args, bool _loadPersonality )
 	{
 		String loc = ::setlocale( LC_CTYPE, "" ); // default (OS) locale
-		//_locale_t loc1 = _get_current_locale();
 
 		parseArguments( _args );
 
@@ -661,11 +655,6 @@ namespace Menge
 		m_interface->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::frameStarted()
-	{
-		//Holder<RenderEngine>::hostage()->frameStarted();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Application::setParticlesEnabled( bool _enabled )
 	{
 		m_particles = _enabled;
@@ -713,6 +702,7 @@ namespace Menge
 			m_soundEngine->setCommonVolume( volume );
 			Holder<Amplifier>::hostage()->setVolume( avolume );
 		}
+		m_focus = _focus;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::minimizeWindow()
@@ -727,6 +717,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onUpdate( float _timing )
 	{
+		if( !m_focus ) return;
+
 		ProfilerEngine* profiler = Holder<ProfilerEngine>::hostage();
 
 		m_inputEngine->update();
@@ -737,18 +729,6 @@ namespace Menge
 		{
 			timing = m_maxTiming;
 		}
-
-		/*if( m_resetTiming )
-		{
-			_timing = 0.0f;
-			timing = 0.0f;
-			m_resetTiming = false;
-			MENGE_LOG << "Reset Timing";
-			//return;
-		}*/
-
-		//MENGE_LOG << "onUpdate timing: " << timing;
-		//Holder<MousePickerSystem>::hostage()->clear();
 
 		if( m_physicEngine )
 		{
@@ -825,11 +805,6 @@ namespace Menge
 		m_interface->notifyWindowModeChanged( _width, _height, _fullscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onActive( bool _active )
-	{
-		m_renderEngine->onWindowActive( _active );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Application::setMouseBounded( bool _bounded )
 	{
 		if( m_mouseBounded != _bounded )
@@ -876,6 +851,16 @@ namespace Menge
 	void Application::showMessageBox( const String& _message, const String& _header, unsigned int _style )
 	{
 		m_interface->showMessageBox( _message, _header, _style );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::onPaint()
+	{
+		if( !m_focus && m_renderEngine && m_game )
+		{
+			m_renderEngine->beginScene();
+			m_game->render( m_debugMask );
+			m_renderEngine->endScene();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -9,7 +9,6 @@ namespace Menge
 	public:
 		virtual void onUpdate( float _timing ) = 0;
 		virtual void onFocus( bool _focus ) = 0;
-		virtual void onActive( bool _active ) = 0;
 		virtual void onWindowMovedOrResized() = 0;
 		virtual void onClose() = 0;
 		virtual void onDestroy() = 0;
@@ -17,6 +16,7 @@ namespace Menge
 		virtual void onMouseEnter() = 0;
 		virtual bool onMouseButtonEvent( int _button, bool _isDown ) = 0;
 		virtual bool onMouseMove( float _x, float _y, int _wheel ) = 0;
+		virtual void onPaint() = 0;
 	};
 
 	class SystemDLLInterface

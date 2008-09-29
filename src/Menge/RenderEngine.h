@@ -97,14 +97,10 @@ namespace Menge
 		CameraInterface * createCamera( const String & _name );
 		EntityInterface * createEntity( const String & _name, const String & _meshName );
 		LightInterface * createLight( const String & _name );
-		SceneNodeInterface * createSceneNode( const String & _name );
 
 		void releaseCamera( CameraInterface * _camera );
 		void releaseEntity( EntityInterface * _entity );
 		void releaseLight( LightInterface * _light );
-		void releaseSceneNode( SceneNodeInterface * _interface );
-
-		SceneNodeInterface * getRootSceneNode() const;
 
 		void frameStarted();
 		void frameEnded();

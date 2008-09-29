@@ -102,7 +102,7 @@ namespace Menge
 		, m_listener(0)
 		, m_hWnd(0)
 		, m_cursorInArea(false)
-		, m_active(false)
+		//, m_active(false)
 		//, m_primaryMonitorAspect(4.f/3.f)
 		, m_fullscreen( false )
 		, m_handleMouse( true )
@@ -206,35 +206,20 @@ namespace Menge
 				DispatchMessage( &msg );
 			}
 
-			if( m_active )
+			::QueryPerformanceCounter(&time);
+			m_frameTime = static_cast<float>( time.QuadPart - m_lastTime.QuadPart ) / m_timerFrequency.QuadPart * 1000.0f;
+			m_lastTime = time;
+
+			m_listener->onUpdate( m_frameTime );
+
+			if( m_focus == false )
 			{
-				if( !m_focus )
-				{
-					m_focus = true;
-					m_listener->onFocus( true );
-				}
-				m_listener->onUpdate( m_frameTime );
-
-				::QueryPerformanceCounter(&time);
-				m_frameTime = static_cast<float>( time.QuadPart - m_lastTime.QuadPart ) / m_timerFrequency.QuadPart * 1000.0f;
-				m_lastTime = time;
-
-			}
-			else if( !m_active && m_focus )
-			{
-				m_focus = false;
-				m_listener->onFocus( false );
-
-				::QueryPerformanceCounter(&time);
-				m_frameTime = static_cast<float>( time.QuadPart - m_lastTime.QuadPart ) / m_timerFrequency.QuadPart * 1000.0f;
-				m_lastTime = time;
+				::Sleep( 100 );
 			}
 			else
 			{
-				::QueryPerformanceCounter(&m_lastTime);
+				::Sleep(1);
 			}
-
-			::Sleep(1);
 		}
 
 		// Clean up
@@ -332,16 +317,6 @@ namespace Menge
 
 		HINSTANCE hInstance = ::GetModuleHandle( NULL );
 		// Register the window class
-		// NB allow 4 bytes of window data for D3D9RenderWindow pointer
-		/*WNDCLASS wc = 
-		{ 0,
-		s_wndProc,
-		0, 
-		0, 
-		hInstance,
-		LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MENGE)), LoadCursor(NULL, IDC_ARROW),
-		(HBRUSH)GetStockObject(BLACK_BRUSH), 0, MENGE_TEXT("MengeWnd")
-		};*/
 		WNDCLASSEX wc;
 		ZeroMemory( &wc, sizeof(WNDCLASSEX) );
 		wc.cbSize = sizeof(WNDCLASSEX);
@@ -356,12 +331,6 @@ namespace Menge
 
 		// Create our main window
 		// Pass pointer to self
-
-		//CREATESTRUCT createStruct;
-		//createStruct.lpCreateParams = (LPVOID)666;
-
-		//::MessageBox( 0, "hhh", "kl", MB_ICONERROR | MB_OK );
-
 		m_hWnd = ::CreateWindow( L"MengeWnd", nameW.c_str(), dwStyle,
 			left, top, width, height, NULL, 0, hInstance, (LPVOID)this);
 		
@@ -377,10 +346,15 @@ namespace Menge
 		case WM_ACTIVATE:
 			{
 				//::GetWindowInfo( m_hWnd, &m_wndInfo);
-				m_active = (LOWORD(wParam) != WA_INACTIVE);
-				m_listener->onActive( m_active );
+				m_focus = (LOWORD(wParam) != WA_INACTIVE);
+				m_listener->onFocus( m_focus );
 				break;
 			}
+		case WM_PAINT:
+			{
+				m_listener->onPaint();
+			}
+			break;
 		case WM_SYSKEYDOWN:
 			switch( wParam )
 			{
@@ -437,8 +411,6 @@ namespace Menge
 			((MINMAXINFO*)lParam)->ptMinTrackSize.y = 100;
 			break;
 		case WM_CLOSE:
-
-
 			m_listener->onClose();
 			break;
 		case WM_MOUSEMOVE:

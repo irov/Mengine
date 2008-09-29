@@ -410,18 +410,13 @@ namespace Menge
 		virtual CameraInterface * createCamera( const String & _name ) = 0;
 		virtual EntityInterface * createEntity( const String & _name, const String & _meshName ) = 0;
 		virtual LightInterface * createLight( const String & _name ) = 0;
-		virtual SceneNodeInterface * createSceneNode( const String & _name ) = 0;
 
 		virtual void releaseCamera( CameraInterface * _camera ) = 0;
 		virtual void releaseEntity( EntityInterface * _entity ) = 0;
 		virtual void releaseLight( LightInterface * _light ) = 0;
-		virtual void releaseSceneNode( SceneNodeInterface * _interface ) = 0;
 
 		virtual void setTextureFiltering( bool _filter ) = 0;
-		virtual SceneNodeInterface * getRootSceneNode() const = 0;
-		virtual void setEventListener( RenderSystemListener* _listener ) = 0;
 		virtual void onWindowMovedOrResized() = 0;
-		virtual void onWindowActive( bool _active ) = 0;
 		virtual void onWindowClose() = 0;
 
 		virtual int  getNumDIP() const = 0;

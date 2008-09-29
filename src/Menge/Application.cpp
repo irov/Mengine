@@ -141,6 +141,7 @@ namespace Menge
 		, m_hasConsole( 0 )
 		, m_verbose( false )
 		, m_focus( true )
+		, m_update( true )
 	{
 		Holder<Application>::keep( this );
 		m_handler = new ApplicationInputHandlerProxy( this );
@@ -703,6 +704,10 @@ namespace Menge
 			Holder<Amplifier>::hostage()->setVolume( avolume );
 		}
 		m_focus = _focus;
+		/*if( m_focus == true )
+		{
+			m_update = true;
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::minimizeWindow()
@@ -717,7 +722,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onUpdate( float _timing )
 	{
-		if( !m_focus ) return;
+		if( !m_update && !m_focus ) return;
 
 		ProfilerEngine* profiler = Holder<ProfilerEngine>::hostage();
 
@@ -758,6 +763,14 @@ namespace Menge
 		m_renderEngine->endScene();
 
 		profiler->endProfile( "Menge" );
+		if( !m_focus && m_update )
+		{
+			m_update = false;
+		}
+		else if( m_focus && !m_update )
+		{
+			m_update = true;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()

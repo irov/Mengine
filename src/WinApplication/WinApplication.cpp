@@ -317,7 +317,7 @@ namespace Menge
 
 		HINSTANCE hInstance = ::GetModuleHandle( NULL );
 		// Register the window class
-		WNDCLASSEX wc;
+		/*WNDCLASSEX wc;
 		ZeroMemory( &wc, sizeof(WNDCLASSEX) );
 		wc.cbSize = sizeof(WNDCLASSEX);
 		wc.lpfnWndProc = s_wndProc;
@@ -327,7 +327,16 @@ namespace Menge
 		wc.lpszClassName = (LPCWSTR)L"MengeWnd";
 		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-		::RegisterClassEx(&wc);
+		::RegisterClassEx(&wc);*/
+		WNDCLASS wc;
+		ZeroMemory( &wc, sizeof(WNDCLASS) );
+		wc.lpfnWndProc = s_wndProc;
+		wc.hInstance = hInstance;
+		wc.hIcon = LoadIcon( hInstance, MAKEINTRESOURCE(IDI_MENGE) );
+		wc.hCursor = LoadCursor( NULL, IDC_ARROW );
+		wc.lpszClassName = (LPCWSTR)L"MengeWnd";
+		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+		::RegisterClass( &wc );
 
 		// Create our main window
 		// Pass pointer to self

@@ -3,9 +3,6 @@
 // Used by Game.rc
 //
 #define IDI_MENGE                       100
-#define IDI_MENGE_SMALL                 101
-#define IDI_MENGE_48					102
-#define IDI_MENGE_64					103
 
 // Next default values for new objects
 // 

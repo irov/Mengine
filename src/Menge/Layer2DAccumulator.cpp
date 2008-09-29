@@ -65,8 +65,8 @@ namespace Menge
 					const Viewport & vp = camera->getViewport();
 					mt::vec2f vp_size = vp.end - vp.begin;
 					camera->setLocalPosition( it->rect.min + vp_size * 0.5f );
-					renderEngine->setViewMatrix( camera->getViewMatrix() );
 					renderEngine->setRenderTarget( it->image->getDescription(), false );
+					renderEngine->setViewMatrix( camera->getViewMatrix() );
 					_node->_render( 0 );
 					_node->visitChildren( this );
 				}

@@ -320,18 +320,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\menge_48.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\menge_64.ico"
-				>
-			</File>
-			<File
-				RelativePath=".\menge_small.ico"
-				>
-			</File>
-			<File
 				RelativePath=".\resource.h"
 				>
 			</File>

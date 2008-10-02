@@ -1,13 +1,12 @@
-#	include "WinApplication.h"
-
-#	include "SystemDLL.h"
-
 #	include "Config/Config.h"
 
-#	include "Game/resource.h"
+#	include "WinApplication.h"
+#	include "SystemDLL.h"
+#	include "LoggerConsole.h"
 
-#include <strsafe.h>
+#	include <strsafe.h>
 
+#	include "resource.h"
 #	include "Menge/Utils.h"
 
 
@@ -29,28 +28,28 @@ static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
 		strcpy( wBuffer, "\nCrash Info:\n" );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		StringCchPrintfA( wBuffer, 4096, "Exception Code: 0x%x\n", pRecord->ExceptionCode );
+		StringCchPrintfA( wBuffer, 4096, "Exception Code: 0x%08x\n", pRecord->ExceptionCode );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		StringCchPrintfA( wBuffer, 4096, "Flags: 0x%x\n", pRecord->ExceptionFlags );
+		StringCchPrintfA( wBuffer, 4096, "Flags: 0x%08x\n", pRecord->ExceptionFlags );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		StringCchPrintfA( wBuffer, 4096, "Address: 0x%x\n\n", pRecord->ExceptionAddress );
+		StringCchPrintfA( wBuffer, 4096, "Address: 0x%08x\n\n", pRecord->ExceptionAddress );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 		if( ( pContext->ContextFlags & CONTEXT_INTEGER ) != 0 )
 		{
-			StringCchPrintfA( wBuffer, 4096, "Edi: 0x%x\t Esi: 0x%x\n", pContext->Edi, pContext->Esi );
+			StringCchPrintfA( wBuffer, 4096, "Edi: 0x%08x\t Esi: 0x%08x\n", pContext->Edi, pContext->Esi );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			StringCchPrintfA( wBuffer, 4096, "Ebx: 0x%x\t Edx: 0x%x\n", pContext->Ebx, pContext->Edx );
+			StringCchPrintfA( wBuffer, 4096, "Ebx: 0x%08x\t Edx: 0x%08x\n", pContext->Ebx, pContext->Edx );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			StringCchPrintfA( wBuffer, 4096, "Ecx: 0x%x\t Eax: 0x%x\n\n", pContext->Ecx, pContext->Eax );
+			StringCchPrintfA( wBuffer, 4096, "Ecx: 0x%08x\t Eax: 0x%08x\n\n", pContext->Ecx, pContext->Eax );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 		}
 		if( ( pContext->ContextFlags & CONTEXT_CONTROL ) != 0 )
 		{
-			StringCchPrintfA( wBuffer, 4096, "Ebp: 0x%x\t Eip: 0x%x\n", pContext->Ebp, pContext->Eip );
+			StringCchPrintfA( wBuffer, 4096, "Ebp: 0x%08x\t Eip: 0x%08x\n", pContext->Ebp, pContext->Eip );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			StringCchPrintfA( wBuffer, 4096, "SegCs: 0x%x\t EFlags: 0x%x\n", pContext->SegCs, pContext->EFlags );
+			StringCchPrintfA( wBuffer, 4096, "SegCs: 0x%08x\t EFlags: 0x%08x\n", pContext->SegCs, pContext->EFlags );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			StringCchPrintfA( wBuffer, 4096, "Esp: 0x%x\t SegSs: 0x%x\n", pContext->Esp, pContext->SegSs );
+			StringCchPrintfA( wBuffer, 4096, "Esp: 0x%08x\t SegSs: 0x%08x\n", pContext->Esp, pContext->SegSs );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 		}
 		/*switch (pRecord->ExceptionCode) 
@@ -91,23 +90,32 @@ void releaseInterfaceSystem( Menge::ApplicationInterface *_system )
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	WinApplication::WinApplication() 
+	WinApplication::WinApplication( HINSTANCE _hInstance, const StringA& _commandLine ) 
 		: m_running( true )
 		, m_frameTime( 0.f )
-		, m_mutex(0)
+		, m_mutex( 0 )
 		, m_focus( true )
 		, m_name( "Mengine" )
-		, m_listener(0)
+		, m_listener( NULL )
 		, m_hWnd(0)
-		, m_cursorInArea(false)
-		//, m_active(false)
-		//, m_primaryMonitorAspect(4.f/3.f)
+		, m_cursorInArea( false )
 		, m_fullscreen( false )
 		, m_handleMouse( true )
-	{}
+		, m_hInstance( _hInstance )
+		, m_loggerConsole( NULL )
+		, m_commandLine( _commandLine )
+	{
+	}
 	//////////////////////////////////////////////////////////////////////////
 	WinApplication::~WinApplication()
 	{
+		if( m_logSystem != NULL && m_loggerConsole != NULL )
+		{
+			m_logSystem->unregisterLogger( m_loggerConsole );
+			delete m_loggerConsole;
+			m_loggerConsole = NULL;
+		}
+
 		if( m_listener )
 		{
 			m_listener->onDestroy();
@@ -133,8 +141,6 @@ namespace Menge
 		{
 			int width = info.rcMonitor.right - info.rcMonitor.left;
 			int height = info.rcMonitor.bottom - info.rcMonitor.top;
-			//float primaryMonitorAspect = static_cast<float>( width ) / static_cast<float> ( height );
-			//app->setPrimaryMonitorAspect( primaryMonitorAspect );
 			app->setDesktopResolution( width, height );
 
 			return FALSE;
@@ -142,20 +148,14 @@ namespace Menge
 		return TRUE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*void WinApplication::setPrimaryMonitorAspect( float _aspect )
-	{
-	m_primaryMonitorAspect = _aspect;
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setDesktopResolution( std::size_t _width, std::size_t _height )
 	{
 		m_desktopWidth = _width;
 		m_desktopHeight = _height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::init( ApplicationListenerInterface* _listener )
+	bool WinApplication::init( LogSystemInterface* _logSystem, ApplicationListenerInterface* _listener )
 	{
-		
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
 
@@ -165,6 +165,13 @@ namespace Menge
 		}
 
 		m_listener = _listener;
+		m_logSystem = _logSystem;
+
+		if( m_logSystem != NULL && m_commandLine.find( "-console" ) != StringA::npos )
+		{
+			m_loggerConsole = new LoggerConsole();
+			m_logSystem->registerLogger( m_loggerConsole );
+		}
 
 		if( !::QueryPerformanceFrequency( &m_timerFrequency ) )
 		{
@@ -311,13 +318,12 @@ namespace Menge
 			return false;
 		}
 
-		HINSTANCE hInstance = ::GetModuleHandle( NULL );
 		// Register the window class
 		WNDCLASS wc;
 		ZeroMemory( &wc, sizeof(WNDCLASS) );
 		wc.lpfnWndProc = s_wndProc;
-		wc.hInstance = hInstance;
-		wc.hIcon = LoadIcon( hInstance, MAKEINTRESOURCE(IDI_MENGE) );
+		wc.hInstance = m_hInstance;
+		wc.hIcon = LoadIcon( m_hInstance, MAKEINTRESOURCE(IDI_MENGE) );
 		wc.hCursor = LoadCursor( NULL, IDC_ARROW );
 		wc.lpszClassName = (LPCWSTR)L"MengeWnd";
 		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
@@ -326,7 +332,7 @@ namespace Menge
 		// Create our main window
 		// Pass pointer to self
 		m_hWnd = ::CreateWindow( L"MengeWnd", nameW.c_str(), dwStyle,
-			left, top, width, height, NULL, 0, hInstance, (LPVOID)this);
+			left, top, width, height, NULL, 0, m_hInstance, (LPVOID)this);
 		
 
 		::GetWindowInfo( m_hWnd, &m_wndInfo);
@@ -440,11 +446,6 @@ namespace Menge
 		}
 		return ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	/*float WinApplication::getMonitorAspectRatio()
-	{
-	return m_primaryMonitorAspect;	
-	}*/
 	//////////////////////////////////////////////////////////////////////////
 	std::size_t WinApplication::getDesktopWidth() const
 	{

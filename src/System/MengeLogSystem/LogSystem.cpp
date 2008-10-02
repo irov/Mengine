@@ -56,12 +56,12 @@ void MengeLogSystem::logMessage( const Menge::StringA& _message )
 	m_logStream	<< _message;
 
 	m_logStream.flush();
-	/*for( TVectorLoggers::iterator it = m_loggers.begin(), it_end = m_loggers.end();
+	for( TVectorLoggers::iterator it = m_loggers.begin(), it_end = m_loggers.end();
 		it != it_end;
 		it++ )
 	{
 		(*it)->outputMessage( _message );
-	}*/
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 bool MengeLogSystem::registerLogger( Menge::LoggerInterface* _logger )

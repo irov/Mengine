@@ -138,7 +138,6 @@ namespace Menge
 		, m_xmlEngine( 0 )
 		, m_mouseBounded( false )
 		, m_game( 0 )
-		, m_hasConsole( 0 )
 		, m_verbose( false )
 		, m_focus( true )
 		, m_update( true )
@@ -382,12 +381,6 @@ namespace Menge
 			m_debugInfo = true;
 		}
 
-		idx = _arguments.find( "-console" );
-		if( idx != StringA::npos )
-		{
-			m_hasConsole = true;
-		}
-
 		idx = _arguments.find( "-verbose" );
 		if( idx != StringA::npos )
 		{
@@ -403,7 +396,6 @@ namespace Menge
 
 		initInterfaceSystem( &m_logSystem );
 		this->setLogSystem( m_logSystem );
-		m_logEngine->enableConsole( m_hasConsole );
 
 		initInterfaceSystem( &m_profilerSystem );
 		this->setProfilerSystem( m_profilerSystem );
@@ -486,7 +478,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceMeshNoise );
 		RESOURCE_FACTORY( ResourceMaterial );
 	
-		if( !m_interface->init( this ) )
+		if( !m_interface->init( m_logSystem, this ) )
 		{
 			return false;
 		}

@@ -4,6 +4,8 @@
 
 namespace Menge
 {
+	class LogSystemInterface;
+
 	class ApplicationListenerInterface
 	{
 	public:
@@ -43,7 +45,7 @@ namespace Menge
 	class ApplicationInterface
 	{
 	public:
-		virtual bool init( ApplicationListenerInterface* _listener ) = 0;
+		virtual bool init( LogSystemInterface* _logSystem, ApplicationListenerInterface* _listener ) = 0;
 		virtual void createWindow(WindowHandle _handle) = 0;
 		virtual WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 		virtual void run() = 0;

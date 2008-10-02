@@ -20,10 +20,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::logMessage( const StringA& _message )
 	{
-		if( m_console == true )
-		{
-			std::cerr << _message;
-		}
 		m_interface->logMessage( _message );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,11 +36,6 @@ namespace Menge
 	int LogEngine::getVerboseLevel() const
 	{
 		return m_verboseLevel;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void LogEngine::enableConsole( bool _enable )
-	{
-		m_console = _enable;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LoggerOperator::LoggerOperator( const char * _file, int _level, unsigned int _options )

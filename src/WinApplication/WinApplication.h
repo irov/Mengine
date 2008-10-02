@@ -1,12 +1,12 @@
 #	pragma once
 
-#ifndef WINVER				// Allow use of features specific to Windows XP or later.
+/*#ifndef WINVER				// Allow use of features specific to Windows XP or later.
 #define WINVER 0x0501		// Change this to the appropriate value to target other versions of Windows.
 #endif
 
 #ifndef _WIN32_WINNT		// Allow use of features specific to Windows XP or later.                   
 #define _WIN32_WINNT 0x0501	// Change this to the appropriate value to target other versions of Windows.
-#endif						
+#endif*/
 
 #ifndef _WIN32_WINDOWS		// Allow use of features specific to Windows 98 or later.
 #define _WIN32_WINDOWS 0x0410 // Change this to the appropriate value to target Windows Me or later.
@@ -20,16 +20,17 @@
 namespace Menge
 {
 	class SystemDLL;
+	class LoggerConsole;
 
 	class WinApplication
 		: public ApplicationInterface
 	{
 	public:
-		WinApplication();
+		WinApplication( HINSTANCE _hInstance, const StringA& _commandLine );
 		~WinApplication();
 
 	public:
-		bool init( ApplicationListenerInterface* _listener ) override;
+		bool init( LogSystemInterface* _logSystem, ApplicationListenerInterface* _listener ) override;
 		void run() override;
 		void stop()	override;
 
@@ -56,6 +57,7 @@ namespace Menge
 
 	private:
 		ApplicationListenerInterface* m_listener;
+		LogSystemInterface* m_logSystem;
 		LARGE_INTEGER m_timerFrequency;
 		LARGE_INTEGER m_lastTime;
 		bool	m_running;
@@ -77,8 +79,8 @@ namespace Menge
 
 		bool m_fullscreen;
 		bool m_handleMouse;
-
-		
-		//float m_primaryMonitorAspect;
+		HINSTANCE m_hInstance;
+		LoggerConsole* m_loggerConsole;
+		StringA m_commandLine;
 	};
-}
+}	// namespace Menge

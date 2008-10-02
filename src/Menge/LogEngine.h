@@ -19,7 +19,6 @@ namespace Menge
 		void logMessage( const StringA& _message );
 		void setVerboseLevel( int _level );
 		int getVerboseLevel() const;
-		void enableConsole( bool _enable );
 		LogSystemInterface* getInterface();
 		
 	protected:

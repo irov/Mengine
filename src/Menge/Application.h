@@ -126,7 +126,6 @@ namespace Menge
 		bool m_debugInfo;
 		bool m_usePhysic;
 		bool m_mouseBounded;
-		bool m_hasConsole;
 		bool m_verbose;
 		bool m_focus;
 		bool m_update;

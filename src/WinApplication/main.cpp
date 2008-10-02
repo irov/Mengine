@@ -22,7 +22,7 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	UNREFERENCED_PARAMETER( hPrevInstance );
 	UNREFERENCED_PARAMETER( nShowCmd );
 
-	Menge::WinApplication winApplication;
+	Menge::WinApplication winApplication( hInstance, lpCmdLine );
 	const Menge::TCharA * config_file = "application.xml";
 
 	Menge::Application app( &winApplication );

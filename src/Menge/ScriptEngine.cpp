@@ -106,17 +106,10 @@ namespace Menge
 		++it)
 		{
 			path_packet += (*it);
-			path_packet += MENGE_TEXT(';');
+			path_packet += ';';
 		}
 
-		StringA path_packet_A;
-#	ifdef MENGE_UNICODE
-		path_packet_A = Utils::WToA( path_packet );
-#	else if
-		path_packet_A = path_packet;
-#	endif
-
-		pybind::set_syspath( path_packet_A.c_str() );
+		pybind::set_syspath( path_packet.c_str() );
 
 		pybind::check_error();
 	}
@@ -167,16 +160,9 @@ namespace Menge
 			return false;
 		}
 
-		StringA char_type_A;
-#	ifdef MENGE_UNICODE
-		char_type_A = Utils::WToA( _type );
-#	else if
-		char_type_A = _type;
-#	endif
-
 		try
 		{
-			PyObject * result = pybind::get_attr( module, char_type_A.c_str() );
+			PyObject * result = pybind::get_attr( module, _type.c_str() );
 
 			if( pybind::check_type( result ) == false )
 			{
@@ -231,17 +217,9 @@ namespace Menge
 	{
 		MENGE_LOG << "init module " << _name;
 
-		StringA char_name_A;
-#	ifdef MENGE_UNICODE
-		char_name_A = Utils::WToA( _name );
-#	else if
-		char_name_A = _name;
-#	endif
-
-
 		try
 		{
-			PyObject * module = pybind::module_init( char_name_A.c_str() );
+			PyObject * module = pybind::module_init( _name.c_str() );
 			return module;
 		}
 		catch (...)
@@ -259,13 +237,6 @@ namespace Menge
 
 		TMapModule::iterator it_find = m_mapModule.find( _file );
 
-		StringA char_file_A;
-#	ifdef MENGE_UNICODE
-		char_file_A = Utils::WToA( _file );
-#	else if
-		char_file_A = _file;
-#	endif
-
 		if( it_find != m_mapModule.end() )
 		{
 			return it_find->second;
@@ -273,7 +244,7 @@ namespace Menge
 
 		try
 		{
-			PyObject * module = pybind::module_import( char_file_A.c_str() );
+			PyObject * module = pybind::module_import( _file.c_str() );
 
 			if( module == 0 )
 			{				
@@ -306,14 +277,7 @@ namespace Menge
 			MENGE_LOG_ERROR << "Can't create entity " << _type;
 		}
 
-		StringA char_type_A;
-#	ifdef MENGE_UNICODE
-		char_type_A = Utils::WToA( _type );
-#	else if
-		char_type_A = _type;
-#	endif
-
-		PyObject * result = pybind::ask_method( module, char_type_A.c_str(), "()" );
+		PyObject * result = pybind::ask_method( module, _type.c_str(), "()" );
 
 		if( result == 0 )
 		{

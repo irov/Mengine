@@ -486,7 +486,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceMeshNoise );
 		RESOURCE_FACTORY( ResourceMaterial );
 	
-		if( !m_interface->init( _applicationFile.c_str(), this ) )
+		if( !m_interface->init( this ) )
 		{
 			return false;
 		}

@@ -10,6 +10,7 @@
 
 #	include "Menge/Utils.h"
 
+
 //////////////////////////////////////////////////////////////////////////
 static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
@@ -65,17 +66,13 @@ static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 #	include <sstream>
+
 //////////////////////////////////////////////////////////////////////////
-bool initInterfaceSystem( Menge::ApplicationInterface** _ptrInterface )
+/*bool initInterfaceSystem( Menge::ApplicationInterface **_system )
 {
 	try
 	{
-		*_ptrInterface = new Menge::WinApplication();
-	
-		//std::ostringstream str;
-		//str << ((int)_ptrInterface);
-		
-		//::MessageBoxA( NULL, str.str().c_str(), "name", MB_ICONWARNING );
+		*_system = new Menge::WinApplication();
 	}
 	catch (...)
 	{
@@ -85,10 +82,11 @@ bool initInterfaceSystem( Menge::ApplicationInterface** _ptrInterface )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void releaseInterfaceSystem( Menge::ApplicationInterface* _ptrInterface )
+void releaseInterfaceSystem( Menge::ApplicationInterface *_system )
 {
-	delete static_cast<Menge::WinApplication*>(_ptrInterface);
+	delete static_cast<Menge::WinApplication*>( _system );
 }
+*/
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -155,7 +153,7 @@ namespace Menge
 		m_desktopHeight = _height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::init( const String & _name, ApplicationListenerInterface* _listener )
+	bool WinApplication::init( ApplicationListenerInterface* _listener )
 	{
 		
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
@@ -174,8 +172,6 @@ namespace Menge
 		}
 
 		::QueryPerformanceCounter(&m_timer);
-
-		m_name.assign( _name );
 
 		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
 		return true;
@@ -317,17 +313,6 @@ namespace Menge
 
 		HINSTANCE hInstance = ::GetModuleHandle( NULL );
 		// Register the window class
-		/*WNDCLASSEX wc;
-		ZeroMemory( &wc, sizeof(WNDCLASSEX) );
-		wc.cbSize = sizeof(WNDCLASSEX);
-		wc.lpfnWndProc = s_wndProc;
-		wc.hInstance = hInstance;
-		wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MENGE));
-		wc.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MENGE_SMALL));
-		wc.lpszClassName = (LPCWSTR)L"MengeWnd";
-		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-		wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-		::RegisterClassEx(&wc);*/
 		WNDCLASS wc;
 		ZeroMemory( &wc, sizeof(WNDCLASS) );
 		wc.lpfnWndProc = s_wndProc;
@@ -551,4 +536,5 @@ namespace Menge
 		::MessageBox( m_hWnd, message_w.c_str(), header_w.c_str(), MB_ICONERROR | MB_OK );
 	}
 	//////////////////////////////////////////////////////////////////////////
-}
+}	// namespace Menge
+

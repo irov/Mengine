@@ -30,6 +30,9 @@ namespace Menge
 	public:
 		void update( float _timing ) override;
 
+		void onMouseLeave();
+		void onMouseEnter();
+
 	protected:
 		void _destroy() override;
 		bool _activate() override;

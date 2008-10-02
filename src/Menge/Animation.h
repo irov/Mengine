@@ -82,6 +82,10 @@ namespace Menge
 
 		float getAnimationFactor() const;
 
+		std::size_t getCurrentFrame() const;
+		std::size_t getFrameCount() const;
+		void setCurrentFrame( std::size_t _frame );
+
 	public:
 		void loader( XmlElement * _xml ) override;
 

@@ -75,7 +75,7 @@ namespace     Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR << "Warning: font " << m_name << "can't find resource " << m_resourcename;
+			MENGE_LOG_ERROR << "Warning: font " << m_name << " can't find resource " << m_resourcename;
 			return false;
 		}
 
@@ -171,10 +171,13 @@ namespace     Menge
 			{
 				m_alignOffset = mt::vec2f( -it_line->getLength() * 0.5f, 0 );
 			}
-
-			if( m_rightAlign )
+			else if( m_rightAlign )
 			{
 				m_alignOffset = mt::vec2f( -it_line->getLength(), 0 );
+			}
+			else
+			{
+				m_alignOffset = mt::vec2f( 0.0f, 0.0f );
 			}
 
 			offset.x = m_alignOffset.x;
@@ -452,6 +455,12 @@ namespace     Menge
 
 			offset.y += m_lineOffset;
 		}		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setCenterAlign( bool _centerAlign )
+	{
+		m_centerAlign = _centerAlign;
+		setText( m_text );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -403,7 +403,8 @@ namespace	Menge
 		}
 
 		const mt::vec2f & size = 
-			m_resource->getSize( m_currentImageIndex );
+			m_resource->getMaxSize( m_currentImageIndex );
+			//m_resource->getSize( m_currentImageIndex );
 
 		return size;
 	}
@@ -432,6 +433,12 @@ namespace	Menge
 		}
 
 		return m_resource->getCount();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setCenterAlign( bool _centerAlign )
+	{
+		m_centerAlign = _centerAlign;
+		updateSprite_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

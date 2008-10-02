@@ -79,7 +79,11 @@ HGERenderSystem::HGERenderSystem()
 HGERenderSystem::~HGERenderSystem()
 {
 	delete m_systemFont;
-	m_hge->Release();
+	if( m_hge != NULL )
+	{
+		m_hge->Release();
+		m_hge = NULL;
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 int HGERenderSystem::getNumDIP() const

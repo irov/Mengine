@@ -29,7 +29,7 @@ namespace Menge
 		~WinApplication();
 
 	public:
-		bool init( const String& _name, ApplicationListenerInterface* _listener ) override;
+		bool init( ApplicationListenerInterface* _listener ) override;
 		void run() override;
 		void stop()	override;
 

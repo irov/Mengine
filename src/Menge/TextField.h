@@ -121,6 +121,7 @@ namespace Menge
 		void setOutlineResource( const String& _outlineName );
 
 		bool getCenterAlign();
+		void setCenterAlign( bool _centerAlign );
 
 		float getCharOffset() const;
 

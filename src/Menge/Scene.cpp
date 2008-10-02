@@ -10,6 +10,8 @@
 #	include "Camera2D.h"
 #	include "Application.h"
 
+#	include "LayerScene.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -439,12 +441,40 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseLeave()
 	{
-		callEvent( EVENT_LEAVE, "()" );
+		bool result = true;
+		result = askEvent( result, EVENT_LEAVE, "()" );
+		if( result == false )
+		{
+			for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
+				it != it_end;
+				it++ )
+			{
+				LayerScene* layerScene = dynamic_cast<LayerScene*>( *it );
+				if( layerScene != 0 )
+				{
+					layerScene->onMouseLeave();
+				}
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onMouseEnter()
 	{
-		callEvent( EVENT_ENTER, "()" );
+		bool result = true;
+		result = askEvent( result, EVENT_ENTER, "()" );
+		if( result == false )
+		{
+			for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
+				it != it_end;
+				it++ )
+			{
+				LayerScene* layerScene = dynamic_cast<LayerScene*>( *it );
+				if( layerScene != 0 )
+				{
+					layerScene->onMouseEnter();
+				}
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& Scene::getRenderTarget() const

@@ -64,6 +64,7 @@ namespace Menge
 		virtual mt::vec2f getImageSize();
 		virtual bool getCenterAlign();
 
+		void setCenterAlign( bool _centerAlign );
 		//! Возвращает имя ресурса
 		/*!
 		\return имя ресурса

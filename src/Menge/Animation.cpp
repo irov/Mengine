@@ -173,6 +173,20 @@ namespace	Menge
 			return false;
 		}
 
+		if( m_randomStart )
+		{
+			std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
+			m_currentFrame = rand() % sequenceCount;
+
+			float sequenceDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
+			m_delay = mt::even_rand( 0.0f, sequenceDelay );
+		}
+		else
+		{
+			m_currentFrame = 0;
+			m_delay = 0.0f;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -221,20 +235,6 @@ namespace	Menge
 	void Animation::play_()
 	{
 		m_playing = true;
-		
-		if( m_randomStart )
-		{
-			std::size_t sequenceCount = m_resourceAnimation->getSequenceCount();
-			m_currentFrame = rand() % sequenceCount;
-
-			float sequenceDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
-			m_delay = mt::even_rand( 0.0f, sequenceDelay );
-		}
-		else
-		{
-			m_currentFrame = 0;
-			m_delay = 0.0f;
-		}
 
 		std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
 		setImageIndex( currentImageIndex );
@@ -246,6 +246,30 @@ namespace	Menge
 
 		m_onEndAnimationEvent = registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), m_listener );
 		m_onEndFrameEvent = registerEvent( EVENT_FRAME_END, ("onFrameEnd"), m_listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t Animation::getCurrentFrame() const
+	{
+		return m_currentFrame;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t Animation::getFrameCount() const
+	{
+		return m_resourceAnimation->getSequenceCount();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::setCurrentFrame( std::size_t _frame )
+	{
+		if( _frame < m_resourceAnimation->getSequenceCount() )
+		{
+			m_currentFrame = _frame;
+			std::size_t currentImageIndex = m_resourceAnimation->getSequenceIndex( m_currentFrame );
+			setImageIndex( currentImageIndex );
+		}
+		else
+		{
+			MENGE_LOG_ERROR << "Animation::setCurrentFrame index > FrameCount";
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

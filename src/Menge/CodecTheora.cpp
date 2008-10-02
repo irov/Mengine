@@ -472,7 +472,12 @@ namespace Menge
 			// надо надергать данных из физического потока и затолкать их в логический поток
 
 			// читаем данные из файла
-			m_lastReadBytes += buffer_data_();
+			std::streamsize bytes = buffer_data_();
+			if( bytes == 0 )
+			{
+				break;
+			}
+			m_lastReadBytes += bytes;
 			if( m_lastReadBytes == 0 )
 			{
 				// файл кончился, необходимо выполнить закрывающие действия

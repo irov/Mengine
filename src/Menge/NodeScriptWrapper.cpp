@@ -835,6 +835,7 @@ namespace Menge
 				.def( "setResource", &TextField::setResource )
 				.def( "setOutlineResource", &TextField::setOutlineResource )
 				.def( "getCenterAlign", &TextField::getCenterAlign )
+				.def( "setCenterAlign", &TextField::setCenterAlign )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<Node>>("Arrow", false)
@@ -886,6 +887,7 @@ namespace Menge
 				.def( "alphaTo", &Sprite::alphaTo )
 				.def( "flip", &Sprite::flip )
 				.def( "getCenterAlign", &Sprite::getCenterAlign )
+				.def( "setCenterAlign", &Sprite::setCenterAlign )
 				;
 			{
 				pybind::proxy_<Animation, pybind::bases<Sprite>>("Animation", false)
@@ -897,6 +899,9 @@ namespace Menge
 					.def( "setAnimationResource", &Animation::setAnimationResource )
 					.def( "setAnimationFactor", &Animation::setAnimationFactor )
 					.def( "getAnimationFactor", &Animation::getAnimationFactor )
+					.def( "getCurrentFrame", &Animation::getCurrentFrame )
+					.def( "getFrameCount", &Animation::getFrameCount )
+					.def( "setCurrentFrame", &Animation::setCurrentFrame )
 					;
 			}
 

@@ -26,7 +26,9 @@ namespace Menge
 
 		if( image == 0 )
 		{
-			MENGE_LOG_ERROR << "Warning: resource \"" << getName() << "\" can't load image file \"" << _fileName << "\"";
+			MENGE_LOG_ERROR( "Warning: resource \"%s\" can't load image file \"%s\""
+			, getName().c_str()
+			, _fileName.c_str() );
 			imageFrame.image = 0;
 
 			return imageFrame;
@@ -68,7 +70,9 @@ namespace Menge
 
 		if( image == 0 )
 		{
-			MENGE_LOG_ERROR << "Warning: resource \"" << getName() << "\" can't create image file \"" << _name << "\"";
+			MENGE_LOG_ERROR( "Warning: resource \"%s\" can't create image file \"%s\""
+			, getName().c_str()
+			, _name.c_str() );
 			imageFrame.image = 0;
 
 			return imageFrame;

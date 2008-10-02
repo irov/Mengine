@@ -75,13 +75,17 @@ namespace     Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR << "Warning: font " << m_name << " can't find resource " << m_resourcename;
+			MENGE_LOG_ERROR( "Warning: font \"%s\" can't find resource "
+			, m_name.c_str()
+			, m_resourcename.c_str() );
 			return false;
 		}
 
 		if( m_resource->isCompile() == false )
 		{
-			MENGE_LOG_ERROR << "Warning: font " << m_name << " can't compile resource " << m_resourcename;
+			MENGE_LOG_ERROR( "Warning: font \"%s\" can't compile resource "
+			, m_name.c_str()
+			, m_resourcename.c_str() );
 			return false;
 		}
 	
@@ -241,7 +245,8 @@ namespace     Menge
 	{
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR << "Warning: TextField without resource " << m_resourcename;
+			MENGE_LOG_ERROR( "Warning: TextField without resource \"%s\""
+				, m_resourcename.c_str() );
 			return;
 		}
 

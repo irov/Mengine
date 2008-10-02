@@ -92,7 +92,8 @@ namespace	Menge
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG_ERROR << "Emitter can't open resource file " << m_resourcename;
+			MENGE_LOG_ERROR( "Emitter can't open resource file \"%s\""
+				, m_resourcename.c_str() );
 			return false;
 		}
 
@@ -100,7 +101,8 @@ namespace	Menge
 
 		if( m_container == NULL )
 		{
-			MENGE_LOG_ERROR << "Emitter can't open container file " << m_resourcename;
+			MENGE_LOG_ERROR( "Emitter can't open container file \"%s\""
+				, m_resourcename.c_str() );
 			return false;
 		}
 
@@ -109,7 +111,8 @@ namespace	Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG_ERROR << "Emitter can't create emitter source " << m_resourcename;
+			MENGE_LOG_ERROR( "Emitter can't create emitter source \"%s\""
+				, m_resourcename.c_str() );
 			return false;
 		}
 
@@ -127,7 +130,8 @@ namespace	Menge
 
 			if( image == 0 )
 			{
-				MENGE_LOG_ERROR << "Image can't loaded " << textureName;
+				MENGE_LOG_ERROR( "Image can't loaded \"%s\""
+					, textureName.c_str() );
 				return false;
 			}
 

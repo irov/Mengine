@@ -1,5 +1,4 @@
 #	include "LogEngine.h"
-#	include "Application.h"
 
 #	include <ctime>
 #	include <cstdio>
@@ -13,12 +12,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	LogEngine::LogEngine( LogSystemInterface * _interface )
 		: m_interface( _interface )
-		, m_verboseLevel( LM_ERROR )
-		, m_console( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LogEngine::logMessage( const StringA& _message )
+	void LogEngine::logMessage( const StringA& _message, EMessageLevel _log /*= LM_LOG */ )
 	{
 		m_interface->logMessage( _message );
 	}
@@ -28,20 +25,14 @@ namespace Menge
 		return m_interface;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LogEngine::setVerboseLevel( int _level )
+	void LogEngine::setVerboseLevel( EMessageLevel _level )
 	{
-		m_verboseLevel = _level;
+		m_interface->setVerboseLevel( _level );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int LogEngine::getVerboseLevel() const
-	{
-		return m_verboseLevel;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	LoggerOperator::LoggerOperator( const char * _file, int _level, unsigned int _options )
+	LoggerOperator::LoggerOperator( const char * _file, EMessageLevel _level )
 		: m_file( _file )
 		, m_level( _level )
-		, m_options( _options )
 	{
 
 	}
@@ -63,7 +54,8 @@ namespace Menge
 
 		va_end(argList);
 
-		const StringA& message( str );
+		StringA message( str );
+		message += '\n';
 
 		//bool isBreak = ( m_mask & ELoggerBreak ) > 0;
 
@@ -76,36 +68,37 @@ namespace Menge
 		//}
 		//else
 		//{
-		//	/*	PyErr_Format(PyExc_SystemError,
+		//		PyErr_Format(PyExc_SystemError,
 		//	"%s: %s"
 		//	, const_cast<char*>(m_file)
 		//	, message.c_str()				
-		//	);*/
+		//	);
 		//}
 		Holder<LogEngine>::hostage()
-			->logMessage( message );
+			->logMessage( message, m_level );
 
-		if( ( m_options & LO_MESSAGE_BOX ) != 0 )
+		/*if( ( m_options & LO_MESSAGE_BOX ) != 0 )
 		{
 			Holder<LogEngine>::hostage()
 				->logMessage( message );
 			Holder<Application>::hostage()->showMessageBox( message, "Mengine Critical Error", 0 );
-		}
+		}*/
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Log::Log()
+	/*Log::Log()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Log::~Log()
 	{
 		os << std::endl;
-		Holder<LogEngine>::hostage()->logMessage( os.str() );
+		Holder<LogEngine>::hostage()->logMessage( os.str(), m_level );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::ostringstream& Log::get( EMessageLevel level /* = LM_LOG */ )
+	std::ostringstream& Log::get( EMessageLevel level  = LM_LOG )
 	{
+		m_level = level;
 		os << Log::time() << ": ";
 		return os;
 	}
@@ -118,6 +111,6 @@ namespace Menge
 		char result[9] = {0};
 		sprintf_s( result, 9, "%02d:%02d:%02d", sTime->tm_hour, sTime->tm_min, sTime->tm_sec );
 		return result;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 }

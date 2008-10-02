@@ -150,13 +150,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::registerEntityType( const String& _type )
 	{
-		MENGE_LOG << "register entity type " << _type;
+		MENGE_LOG("register entity type \"%s\""
+			, _type.c_str() );
 
 		PyObject * module = importModule( _type );
 
 		if( module == 0 )
 		{
-			MENGE_LOG << "failed";
+			MENGE_LOG("failed");
 			return false;
 		}
 
@@ -166,13 +167,13 @@ namespace Menge
 
 			if( pybind::check_type( result ) == false )
 			{
-				MENGE_LOG << "failed";
+				MENGE_LOG("failed");
 				return false;
 			}
 
 			pybind::decref( result );
 
-			MENGE_LOG << "successful";
+			MENGE_LOG("successful");
 		}
 		catch (...)
 		{
@@ -215,7 +216,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::initModule( const String& _name )
 	{
-		MENGE_LOG << "init module " << _name;
+		MENGE_LOG( "init module \"%s\""
+			, _name.c_str() );
 
 		try
 		{
@@ -233,7 +235,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::importModule( const String& _file )
 	{
-		MENGE_LOG << "import module " << _file;
+		MENGE_LOG( "import module \"%s\""
+			, _file.c_str() );
 
 		TMapModule::iterator it_find = m_mapModule.find( _file );
 
@@ -274,14 +277,16 @@ namespace Menge
 
 		if( module == 0 )
 		{
-			MENGE_LOG_ERROR << "Can't create entity " << _type;
+			MENGE_LOG_ERROR( "Can't create entity \"%s\""
+				, _type.c_str() );
 		}
 
 		PyObject * result = pybind::ask_method( module, _type.c_str(), "()" );
 
 		if( result == 0 )
 		{
-			MENGE_LOG_ERROR << "Can't create entity " << _type << "(invalid constructor)";
+			MENGE_LOG_ERROR( "Can't create entity \"%s\" (invalid constructor)"
+				, _type.c_str() );
 			return 0;
 		}
 
@@ -289,7 +294,8 @@ namespace Menge
 
 		if( entity == 0 )
 		{
-			MENGE_LOG_ERROR << "Can't create entity " << _type << "(invalid cast)";
+			MENGE_LOG_ERROR( "Can't create entity \"%s\" (invalid cast)"
+				, _type.c_str() );
 			return 0;
 		}
 
@@ -530,5 +536,5 @@ namespace Menge
 	{
 		pybind::exception_filter();
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 }

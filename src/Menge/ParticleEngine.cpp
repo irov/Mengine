@@ -20,7 +20,8 @@ namespace Menge
 
 		if( fb.buffer == 0 )
 		{
-			MENGE_LOG_ERROR << "ParticleEngine can't open file " << _filename;
+			MENGE_LOG_ERROR( "ParticleEngine can't open file \"%s\""
+				, _filename.c_str() );
 			return 0;
 		}
 
@@ -28,7 +29,8 @@ namespace Menge
 
 		if( container == 0 )
 		{
-			MENGE_LOG_ERROR << "ParticleEngine can't create emitter container " << _filename;
+			MENGE_LOG_ERROR( "ParticleEngine can't create emitter container \"%s\""
+				, _filename.c_str() );
 			return 0;
 		}
 

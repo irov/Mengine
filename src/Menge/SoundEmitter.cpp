@@ -97,7 +97,8 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG_ERROR << "Warning: sound emitter " << m_name << "not compiled";
+			MENGE_LOG_ERROR( "Warning: sound emitter \"%s\" not compiled"
+				, m_name.c_str() );
 			return false;
 		}
 
@@ -128,7 +129,9 @@ namespace Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR << "Warning: sound emitter " << m_name << " can't get resource " << m_resourcename;
+			MENGE_LOG_ERROR( "Warning: sound emitter \"%s\" can't get resource "
+			, m_name.c_str()
+			, m_resourcename.c_str() );
 			return;
 		}
 		m_interface->setSoundBuffer( m_resource->get() );

@@ -85,7 +85,8 @@ namespace Menge
 
 		if(!_loadPlayList(_playlistResource))
 		{
-			MENGE_LOG << "Amplifier: no found playlist with name " << _playlistResource;
+			MENGE_LOG( "Amplifier: no found playlist with name \"%s\""
+				, _playlistResource.c_str() );
 			return;
 		}
 
@@ -123,7 +124,8 @@ namespace Menge
 
 		if(!_loadPlayList(_playlistResource))
 		{
-			MENGE_LOG << "Amplifier: no found playlist with name " << _playlistResource;
+			MENGE_LOG( "Amplifier: no found playlist with name \"%s\""
+				, _playlistResource.c_str() );
 			return;
 		}
 
@@ -132,7 +134,6 @@ namespace Menge
 		_prepareSound(m_currentPlayList->getTrack());
 
 		m_music->setVolume( m_volume );
-		MENGE_LOG << "Start playing music";
 		m_music->play();
 		m_playing = true;
 	}
@@ -149,7 +150,8 @@ namespace Menge
 
 			if( playlistResource == NULL )
 			{
-				MENGE_LOG << "Amplifier: no found playlist with name " << _playlist;
+				MENGE_LOG( "Amplifier: no found playlist with name \"%s\""
+					, _playlist.c_str() );
 				return;
 			}
 
@@ -219,7 +221,8 @@ namespace Menge
 
 		if( m_buffer == 0 )
 		{
-			MENGE_LOG << "Warning: Amplifier can't load sample " << _filename;
+			MENGE_LOG( "Warning: Amplifier can't load sample \"%s\""
+				, _filename.c_str() );
 			return;			
 		}
 
@@ -227,7 +230,8 @@ namespace Menge
 
 		if( m_music == 0 )
 		{
-			MENGE_LOG << "Warning: Amplifier \"" << _filename << "\" can't create sound source";
+			MENGE_LOG( "Warning: Amplifier \"%s\" can't create sound source"
+				, _filename.c_str() );
 			return;
 		}
 	}

@@ -63,14 +63,14 @@ bool ALSoundSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	}
 
 	m_logSystem = _logSystem;
-	MENGE_LOG << "Initializing OpenAL sound system...";
+	MENGE_LOG( "Initializing OpenAL sound system..." );
 
 	//char *initString = 0L;//"DirectSound", "DirectSound3D", ;
 	m_device = alcOpenDevice( NULL );
 
 	if( !m_device )
 	{
-		MENGE_LOG_WARNING << "OpenAL failed to open device. Sound will be disabled";
+		MENGE_LOG_WARNING( "OpenAL failed to open device. Sound will be disabled" );
 		return false;
 	}
 
@@ -82,7 +82,7 @@ bool ALSoundSystem::initialize( Menge::LogSystemInterface* _logSystem )
 			alcDestroyContext( m_context );
 		}
 		alcCloseDevice( m_device );
-		MENGE_LOG_WARNING << "OpenAL failed to create context. Sound will be disabled";
+		MENGE_LOG_WARNING( "OpenAL failed to create context. Sound will be disabled" );
 		return false;
 	} 
 
@@ -118,7 +118,7 @@ bool ALSoundSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	m_sulk = new SulkSystem();
 
 	m_initialized = true;
-	MENGE_LOG << "OpenAL sound system initialized successfully";
+	MENGE_LOG( "OpenAL sound system initialized successfully" );
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////

@@ -196,7 +196,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(SolutionDir)Utils\upx\upx.exe -9 $(SolutionDir)Bin\Game.exe"
+				CommandLine="$(SolutionDir)Utils\upx\upx.exe -9 $(SolutionDir)Bin\Game.exe&#x0D;&#x0A;copy $(SolutionDir)Bin\Game.exe $(SolutionDir)Bin_mirohost\Game.exe"
 			/>
 		</Configuration>
 	</Configurations>

@@ -57,7 +57,8 @@ namespace Menge
 
 		if( m_nextScene == 0 )
 		{
-			MENGE_LOG_ERROR << "Scene " << _name << " not have in Game";
+			MENGE_LOG_ERROR( "Scene \"%s\" not have in Game"
+				, _name.c_str() );
 			return;
 		}
 

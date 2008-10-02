@@ -158,11 +158,11 @@ namespace Menge
 	{
 		if( isChildren( _node, false ) )
 		{
-			MENGE_LOG_ERROR << "Node \"" << this->getName() 
-				<< "\" type \"" << this->getType()
-				<< "\" addChildren failed \"" << _node->getName()
-				<< "\" because type \"" << _node->getType()
-				<< "\" is already exist";
+			MENGE_LOG_ERROR( "Node \"%s\" type \"%s\" addChildren failed \"%s\" because type \"%s\" is already exist"
+			, this->getName().c_str()
+			, this->getType().c_str()
+			, _node->getName().c_str()
+			, _node->getType().c_str() );
 			return false;
 		}
 
@@ -187,11 +187,11 @@ namespace Menge
 	{
 		if( isChildren( _node, false ) )
 		{
-			MENGE_LOG_ERROR << "Node \"" << this->getName()
-				<< "\" type \"" << this->getType()
-				<< "\" addChildren failed \"" << _node->getName()
-				<< "\" because type \"" << _node->getType()
-				<< "\" is already exist";
+			MENGE_LOG_ERROR( "Node \"%s\" type \"%s\" addChildren failed \"%s\" because type \"%s\" is already exist"
+			, this->getName().c_str()
+				, this->getType().c_str()
+				, _node->getName().c_str()
+				, _node->getType().c_str() );
 			return false;
 		}
 

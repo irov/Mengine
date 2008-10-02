@@ -83,7 +83,8 @@ namespace Menge
 
 		if( stream == 0 )
 		{
-			MENGE_LOG_ERROR << "Warning: resource font not find fond file " << m_filename;
+			MENGE_LOG_ERROR( "Warning: resource font not find fond file \"%s\""
+				, m_filename.c_str() );
 			return false;
 		}
 
@@ -156,7 +157,8 @@ namespace Menge
 
 			if (err == 0)
 			{
-				MENGE_LOG_ERROR << "in parsing params: " << params;
+				MENGE_LOG_ERROR( "in parsing params: \"%s\""
+					, params );
 				return false;
 			}
 
@@ -170,7 +172,8 @@ namespace Menge
 
 			if( m_image == 0 )
 			{
-				MENGE_LOG_ERROR << "Image can't loaded " << m_fullname;
+				MENGE_LOG_ERROR( "Image can't loaded \"%s\""
+					, m_fullname.c_str() );
 				return false;
 			}
 		}
@@ -182,7 +185,8 @@ namespace Menge
 
 			if( m_outline == 0 )
 			{
-				MENGE_LOG_ERROR << "Image can't loaded " << m_fullname;
+				MENGE_LOG_ERROR( "Image can't loaded \"%s\""
+					, m_fullname.c_str() );
 			}
 		}
 

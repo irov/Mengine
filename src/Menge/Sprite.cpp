@@ -95,7 +95,8 @@ namespace	Menge
 
 		if( m_resource == 0 )
 		{
-			MENGE_LOG_ERROR << "Image resource not found " << m_resourceName;
+			MENGE_LOG_ERROR( "Image resource not found \"%s\""
+				, m_resourceName.c_str() );
 			return false;
 		}
 		
@@ -321,7 +322,9 @@ namespace	Menge
 
 		if( m_resource == NULL )
 		{
-			MENGE_LOG_ERROR << "Sprite " << getName() <<": Image resource not found " << m_resourceName;
+			MENGE_LOG_ERROR( "Sprite \"%s\": Image resource not found \"%s\""
+				, getName().c_str()
+				, m_resourceName.c_str() );
 			return;
 		}
 
@@ -394,7 +397,7 @@ namespace	Menge
 	{
 		if( m_resource == NULL )
 		{
-			MENGE_SCRIPT_BREACK( "Sprite %s: Can't get image size, because resource is NULL '%s'"
+			MENGE_LOG_ERROR( "Sprite %s: Can't get image size, because resource is NULL '%s'"
 				, getName().c_str()
 				, m_resourceName.c_str() 
 				);
@@ -424,7 +427,7 @@ namespace	Menge
 	{
 		if( m_resource == 0 )
 		{
-			MENGE_SCRIPT_BREACK( "Sprite %s: Can't get image count, because resource is NULL '%s'"
+			MENGE_LOG_ERROR( "Sprite %s: Can't get image count, because resource is NULL '%s'"
 				, getName().c_str()
 				, m_resourceName.c_str() 
 				);

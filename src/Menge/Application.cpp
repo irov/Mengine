@@ -221,12 +221,14 @@ namespace Menge
 		Holder<Game>::keep( m_game );
 		Holder<ScheduleManager>::keep( new ScheduleManager );
 
-		MENGE_LOG << "Create game file " << m_gameInfo;
+		MENGE_LOG( "Create game file \"%s\""
+			, m_gameInfo.c_str() );
 
 		if( m_game->loader( m_gameInfo ) == false )
 		{
-			MENGE_LOG_ERROR << "Invalid game file " << m_gameInfo;
-			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
+			MENGE_LOG_ERROR( "Invalid game file \"%s\""
+				, m_gameInfo );
+			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
 			return false;
 		}
 
@@ -236,7 +238,7 @@ namespace Menge
 
 		if( !m_fileEngine->initAppDataPath( "Menge\\" + title ) )
 		{
-			MENGE_LOG_ERROR << "Warning: Can't initialize user's data path";
+			MENGE_LOG_ERROR( "Warning: Can't initialize user's data path" );
 		}
 
 		for( TStringVector::iterator it = m_resourcePaths.begin(), 
@@ -269,7 +271,7 @@ namespace Menge
 		bool res = m_renderEngine->initialize();
 		if( res == false )
 		{
-			MENGE_LOG_CRITICAL( "Failed to initialize Render System" );
+			showMessageBox( "Failed to initialize Render System", "Crititcal Error", 0 );
 			return false;
 		}
 
@@ -303,7 +305,7 @@ namespace Menge
 											FSAAType, FSAAQuality );
 		if( res == false )
 		{
-			MENGE_LOG_CRITICAL( "Failed to create render window" );
+			showMessageBox( "Failed to create render window", "Critical Error", 0 );
 			return false;
 		}
 
@@ -406,7 +408,7 @@ namespace Menge
 
 		if( m_verbose )
 		{
-			m_logEngine->setVerboseLevel( 3 );
+			m_logEngine->setVerboseLevel( LM_MAX );
 		}
 
 		m_fileSystem->loadPath( "." );
@@ -505,8 +507,9 @@ namespace Menge
 
 		if( m_xmlEngine->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
 		{
-			MENGE_LOG_ERROR << "parse application xml failed " << _applicationFile;
-			MENGE_LOG_CRITICAL( "Application files missing or corrupt" );
+			MENGE_LOG_ERROR( "parse application xml failed \"%s\""
+				, _applicationFile.c_str() );
+			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
 			return false;
 		}
 
@@ -515,7 +518,7 @@ namespace Menge
 		ScriptEngine * scriptEngine = new ScriptEngine();
 		Holder<ScriptEngine>::keep( scriptEngine );
 		
-		MENGE_LOG << "init scriptEngine...";
+		MENGE_LOG( "init scriptEngine..." );
 		scriptEngine->init();
 
 		//strcpy( 0, "asdf" );

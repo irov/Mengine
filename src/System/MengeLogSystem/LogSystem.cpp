@@ -24,19 +24,6 @@ void releaseInterfaceSystem( Menge::LogSystemInterface* _interface )
 }
 //////////////////////////////////////////////////////////////////////////
 MengeLogSystem::MengeLogSystem()
-: m_error( false )
-{
-}
-//////////////////////////////////////////////////////////////////////////
-MengeLogSystem::~MengeLogSystem()
-{
-	if( m_error == false )
-	{
-		m_logStream.close();
-	}
-}
-//////////////////////////////////////////////////////////////////////////
-bool MengeLogSystem::initialize( Menge::OutStreamInterface* _logStream )
 {
 	Menge::StringA filename( "Menge.log" );
 	std::locale loc("");
@@ -44,15 +31,25 @@ bool MengeLogSystem::initialize( Menge::OutStreamInterface* _logStream )
 	m_logStream.open( filename.c_str() );
 	if( m_logStream.fail() )
 	{
-		m_error = true;
 	}
-	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void MengeLogSystem::logMessage( const Menge::StringA& _message )
+MengeLogSystem::~MengeLogSystem()
 {
-	if( m_error ) return;
-
+	m_logStream.close();
+}
+//////////////////////////////////////////////////////////////////////////
+void MengeLogSystem::setVerboseLevel( Menge::EMessageLevel _level )
+{
+	m_verboseLevel = _level;
+}
+//////////////////////////////////////////////////////////////////////////
+void MengeLogSystem::logMessage( const Menge::StringA& _message, Menge::EMessageLevel _level /* = LM_LOG */ )
+{
+	if( m_verboseLevel < _level ) 
+	{
+		return;
+	}
 	m_logStream	<< _message;
 
 	m_logStream.flush();

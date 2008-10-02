@@ -44,7 +44,7 @@ namespace Menge
 		m_filestream = Holder<FileEngine>::hostage()->openFile( m_params.category + m_filepath );
 		if( m_filestream == 0 )
 		{
-			MENGE_LOG_ERROR << "ResourceVideo: file not found";
+			MENGE_LOG_ERROR( "ResourceVideo: file not found" );
 			return false;
 		}
 		m_stream = CodecManager::getCodec( "theora" );
@@ -52,7 +52,7 @@ namespace Menge
 		bool res = m_stream->start( m_filestream, static_cast<CodecInterface::CodecData*>( &imageData ) );
 		if( res == false )
 		{
-			MENGE_LOG_ERROR << "failed to compile theora video";
+			MENGE_LOG_ERROR( "failed to compile theora video" );
 			return false;
 		}
 

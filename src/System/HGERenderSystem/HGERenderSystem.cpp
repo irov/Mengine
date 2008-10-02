@@ -633,7 +633,8 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 	}
 	else
 	{
-		MENGE_LOG_WARNING << "Warning: Invalid Render Target name " << _name;
+		MENGE_LOG_WARNING( "Warning: Invalid Render Target name \"%s\""
+			, _name.c_str() );
 	}
 }
 //////////////////////////////////////////////////////////////////////////

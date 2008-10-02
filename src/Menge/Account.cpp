@@ -32,7 +32,8 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR << "Warning: Setting " << _setting << " already exist";
+			MENGE_LOG_ERROR( "Warning: Setting \"%s\" already exist"
+				, _setting.c_str() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -46,7 +47,8 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR << "setting " << _setting << " does not exist. Can't change";
+			MENGE_LOG_ERROR( "setting \"%s\" does not exist. Can't change"
+				, _setting.c_str() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -59,7 +61,8 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR << "setting " << _setting << " does not exist. Can't get";
+			MENGE_LOG_ERROR( "setting \"%s\" does not exist. Can't get"
+				, _setting.c_str() );
 		}
 		return Utils::emptyString();
 	}
@@ -80,22 +83,9 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR << "Parsing Account settings failed " << fileName;
+			MENGE_LOG_ERROR( "Parsing Account settings failed \"%s\""
+				, fileName.c_str() );
 		}
-		/*DataStreamInterface* file = fileEngine->openFile( fileName );
-		if( file == 0 )
-		{
-			MENGE_LOG_ERROR << "Failed to load account " << m_name << " settings. Can't open file";
-			return;
-		}
-
-		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( file, this, &Account::loader_ ) == false )
-		{
-			MENGE_LOG_ERROR << "Parsing Account settings xml failed " << fileName;
-		}
-
-		fileEngine->closeStream( file );*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Account::save()
@@ -105,7 +95,8 @@ namespace Menge
 		OutStreamInterface* file = fileEngine->openOutStream( fileName, false );
 		if( file == 0 )
 		{
-			MENGE_LOG_ERROR << "can't open file for writing. Account " << m_name << " settings not saved";
+			MENGE_LOG_ERROR( "can't open file for writing. Account \"%s\" settings not saved"
+				, m_name.c_str() );
 		}
 		file->write( "[SETTINGS]\n" );
 		for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
@@ -114,17 +105,6 @@ namespace Menge
 		{
 			file->write( it->first + "\t= " + it->second.first + "\n" );
 		}
-
-		/*file->write( "<Settings>\n" );
-
-		for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();
-			it != it_end;
-			it++ )
-		{
-			file->write( "\t<" + it->first + " Value = \"" + it->second.first + "\"/>\n" );
-		}
-
-		file->write( "</Settings>" );*/
 
 		fileEngine->closeOutStream( file );
 	}

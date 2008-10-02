@@ -104,12 +104,14 @@ namespace Menge
 		DataStream* fileData = 0;
 
 		//m_logSystem->logMessage( StringA( "Opening file: " ) + Utils::WToA(_filename), 1 );
-		MENGE_LOG << "Opening file: " << _filename;
+		MENGE_LOG( "Opening file: \"%s\""
+			, _filename.c_str() );
 		
 		if( existFile( _filename ) == false )
 		{
 			//m_logSystem->logMessage( StringA( "Warning: " ) + Utils::WToA(_filename) + StringA( "does not exists" ), 0 );
-			MENGE_LOG_WARNING << _filename << "does not exist";
+			MENGE_LOG_WARNING( "file \"%s\" does not exist"
+				, _filename.c_str() );
 			return 0;
 		}
 
@@ -144,7 +146,8 @@ namespace Menge
 			if( !fileData )
 			{
 				//m_logSystem->logMessage( StringA( "Error: unrecognized error while opening file " ) + Utils::WToA(_filename), 0 );
-				MENGE_LOG_ERROR << "unrecognized error while opening file" << _filename;
+				MENGE_LOG_ERROR( "unrecognized error while opening file \"%s\""
+					, _filename.c_str() );
 				return fileData;
 			}
 		}
@@ -381,8 +384,6 @@ namespace Menge
 	bool FileSystem::inititalize( LogSystemInterface* _logSystemInterface )
 	{
 		m_logSystem = _logSystemInterface;
-		//m_logStream = openOutStream( MENGE_TEXT("Menge.log"), false );
-		m_logSystem->initialize( m_logStream );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

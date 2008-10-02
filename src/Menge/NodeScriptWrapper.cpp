@@ -130,7 +130,8 @@ namespace Menge
 
 		static void setCurrentScene( const String& _name, bool _destroyOld = false )
 		{
-			MENGE_LOG << "set current scene " << _name;
+			MENGE_LOG( "set current scene \"%s\""
+				, _name.c_str() );
 			Holder<Player>::hostage()
 					->setCurrentScene( _name, _destroyOld );
 		}

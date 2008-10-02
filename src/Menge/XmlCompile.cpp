@@ -295,7 +295,8 @@ namespace Menge
 
 		if(	tagId == TAG_BEGIN )
 		{
-			MENGE_LOG_ERROR << "XmlCompile invalid compile - tag id " << _tagName;
+			MENGE_LOG_ERROR( "XmlCompile invalid compile - tag id \"%s\""
+				, _tagName );
 			return;
 		}
 
@@ -305,7 +306,8 @@ namespace Menge
 
 		if( tag == 0 )
 		{
-			MENGE_LOG_ERROR << "XmlCompile invalid compile - tag " << _tagName;
+			MENGE_LOG_ERROR( "XmlCompile invalid compile - tag \"%s\""
+				, _tagName );
 			return;
 		}
 
@@ -331,7 +333,8 @@ namespace Menge
 
 			if( tagAttr.valid == false )
 			{
-				MENGE_LOG_ERROR << "XmlCompile invalid compile - attr " << attributeName;
+				MENGE_LOG_ERROR( "XmlCompile invalid compile - attr \"%s\""
+					, attributeName );
 				return;
 			}
 
@@ -394,7 +397,8 @@ namespace Menge
 
 					if( defId == DEF_BEGIN )
 					{
-						MENGE_LOG_ERROR << "Invalid compile [tag attribute define " << attrValue << " not id]\n";
+						MENGE_LOG_ERROR( "Invalid compile [tag attribute define \"%s\" not id]\n"
+							, attrValue );
 						return;
 					}
 
@@ -454,8 +458,7 @@ namespace Menge
 
 		if( status == XML_STATUS_ERROR )
 		{
-			fprintf(stderr,
-				"%s at line %" XML_FMT_INT_MOD "u\n",
+			MENGE_LOG_ERROR("%s at line %" XML_FMT_INT_MOD "u\n",
 				XML_ErrorString(XML_GetErrorCode(parser)),
 				XML_GetCurrentLineNumber(parser)
 				);

@@ -134,7 +134,8 @@ namespace Menge
 
 		if( pybind::convert::is_none( result ) == true )
 		{
-			MENGE_LOG_ERROR << "Error: Event \"" << _name << "\" must have return [True/False] value";
+			MENGE_LOG_ERROR( "Error: Event \"%d\" must have return [True/False] value"
+				, _name );
 			return false;
 		}
 

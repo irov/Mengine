@@ -15,7 +15,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_errorHandler( png_structp _png_ptr, const char * _error ) 
 	{
-		MENGE_LOG_ERROR << _error;
+		MENGE_LOG_ERROR( _error );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_readProc( png_structp _png_ptr, unsigned char* _data, png_size_t _size )
@@ -61,7 +61,7 @@ namespace Menge
 
 		if( png_ptr == 0 )  
 		{
-			MENGE_LOG_ERROR << "PNG codec error: Can't create write structure";
+			MENGE_LOG_ERROR( "PNG codec error: Can't create write structure" );
 			return false;
 		}
 
@@ -70,7 +70,7 @@ namespace Menge
 
 		if( info_ptr == 0 )  
 		{
-			MENGE_LOG_ERROR << "PNG codec error: Can't create info structure";
+			MENGE_LOG_ERROR( "PNG codec error: Can't create info structure" );
 			png_destroy_write_struct( &png_ptr, (png_infopp)0 );
 			return false;
 		}
@@ -97,7 +97,7 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR << "PNG codec error: unsupported image format";
+			MENGE_LOG_ERROR( "PNG codec error: unsupported image format" );
 			png_destroy_write_struct( &png_ptr, &info_ptr );
 			return false;
 		}
@@ -136,7 +136,7 @@ namespace Menge
 
 		if( _inputData == 0 )
 		{
-			MENGE_LOG_ERROR << "PNG codec error: PNG codec can't decode stream";
+			MENGE_LOG_ERROR( "PNG codec error: PNG codec can't decode stream" );
 			return false;
 		}
 
@@ -146,7 +146,7 @@ namespace Menge
 
 		if (png_sig_cmp(png_check, (png_size_t)0, PNG_BYTES_TO_CHECK) != 0)
 		{
-			MENGE_LOG_ERROR << "PNG codec error: Bad or not PNG file";
+			MENGE_LOG_ERROR( "PNG codec error: Bad or not PNG file" );
 			return false;
 		}
 
@@ -158,7 +158,7 @@ namespace Menge
 
 		if( png_ptr == 0 )
 		{
-			MENGE_LOG_ERROR << "PNG codec error: Can't create read structure";
+			MENGE_LOG_ERROR( "PNG codec error: Can't create read structure" );
 			return false;
 		}
 
@@ -167,7 +167,7 @@ namespace Menge
 
 		if( info_ptr == 0 ) 
 		{
-			MENGE_LOG_ERROR << "PNG codec error: Can't create info structure";
+			MENGE_LOG_ERROR( "PNG codec error: Can't create info structure" );
 			png_destroy_read_struct( &png_ptr, (png_infopp)0, (png_infopp)0 );
 			return false;
 		}
@@ -242,7 +242,7 @@ namespace Menge
 
 		if( _inputData == 0 )
 		{
-			MENGE_LOG_ERROR << "PNG codec error: PNG codec can't decode stream";
+			MENGE_LOG_ERROR( "PNG codec error: PNG codec can't decode stream" );
 			return 0;
 		}
 
@@ -252,7 +252,7 @@ namespace Menge
 
 		if (png_sig_cmp(png_check, (png_size_t)0, PNG_BYTES_TO_CHECK) != 0)
 		{
-			MENGE_LOG_ERROR << "PNG codec error: Bad or not PNG file";
+			MENGE_LOG_ERROR( "PNG codec error: Bad or not PNG file" );
 			return 0;
 		}
 
@@ -264,7 +264,7 @@ namespace Menge
 
 		if( png_ptr == 0 )
 		{
-			MENGE_LOG_ERROR << "PNG codec error: Can't create read structure";
+			MENGE_LOG_ERROR( "PNG codec error: Can't create read structure" );
 			return 0;
 		}
 
@@ -273,7 +273,7 @@ namespace Menge
 
 		if( info_ptr == 0 ) 
 		{
-			MENGE_LOG_ERROR << "PNG codec error: Can't create info structure";
+			MENGE_LOG_ERROR( "PNG codec error: Can't create info structure" );
 			png_destroy_read_struct( &png_ptr, (png_infopp)0, (png_infopp)0 );
 			return 0;
 		}
@@ -344,7 +344,7 @@ namespace Menge
 					break;
 
 				default:
-					MENGE_LOG_ERROR << "PNG codec error: PNG format not supported";
+					MENGE_LOG_ERROR( "PNG codec error: PNG format not supported" );
 					return false;
 		}
 

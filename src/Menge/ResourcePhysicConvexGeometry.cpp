@@ -34,7 +34,9 @@ namespace Menge
 
 		if( m_interface == 0 )
 		{
-			MENGE_LOG_ERROR << "Warning: resource \"" << getName() << "\" can't load convex geometry file " << m_filename;
+			MENGE_LOG_ERROR( "Warning: resource \"%s\" can't load convex geometry file "
+			, getName().c_str()
+			, m_filename.c_str() );
 			return false;
 		}
 

@@ -43,7 +43,8 @@ namespace Menge
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{
-			MENGE_LOG_ERROR << "Invalid parse resource " << _file;
+			MENGE_LOG_ERROR( "Invalid parse resource \"%s\""
+				, _file.c_str() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -77,7 +78,8 @@ namespace Menge
 
 				if( resource == 0 )
 				{
-					MENGE_LOG_ERROR << "Don't register resource type " << type;
+					MENGE_LOG_ERROR( "Don't register resource type \"%s\""
+						, type.c_str() );
 					continue;
 				}
 
@@ -117,8 +119,10 @@ namespace Menge
 		}
 		else
 		{
-			MENGE_LOG_ERROR << "Warning: Duplicate resource name \"" << name <<"\" in group \"" << _resource->getFactoryParams().group << "\"";
-			MENGE_LOG_ERROR << "Duplicate entry will be deleted now";
+			MENGE_LOG_ERROR( "Warning: Duplicate resource name \"%s\" in group \"%s\""
+			, name.c_str()
+			, _resource->getFactoryParams().group.c_str() );
+			MENGE_LOG_ERROR( "Duplicate entry will be deleted now" );
 			delete _resource;
 			return false;
 		}
@@ -143,7 +147,8 @@ namespace Menge
 
 		if( it_find == m_mapResource.end() )
 		{
-			MENGE_LOG << "Warning: resource named \"" << _name << "\" does not exist";
+			MENGE_LOG( "Warning: resource named \"%s\" does not exist"
+				, _name.c_str() );
 			return 0;
 		}
 
@@ -302,13 +307,15 @@ namespace Menge
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlString( _xml, resourceLoader ) == false )
 		{
-			MENGE_LOG_ERROR << "Invalid parse external node \"" << _xml << "\"";
+			MENGE_LOG_ERROR( "Invalid parse external node \"%s\""
+				, _xml.c_str() );
 			return 0;
 		}
 
 		if( resource == 0 )
 		{
-			MENGE_LOG_ERROR << "This xml file \"" << _xml << "\" has invalid external node format";
+			MENGE_LOG_ERROR( "This xml file \"%s\" has invalid external node format"
+				, _xml.c_str() );
 		}
 
 		return resource;

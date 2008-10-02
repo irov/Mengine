@@ -443,10 +443,13 @@ namespace     Menge
 			{
 				m_alignOffset = mt::vec2f( -it_line->getLength() * 0.5f, 0 );
 			}
-
-			if( m_rightAlign )
+			else if( m_rightAlign )
 			{
 				m_alignOffset = mt::vec2f( -it_line->getLength(), 0 );
+			}
+			else
+			{
+				m_alignOffset = mt::vec2f( 0.0f, 0.0f );
 			}
 
 			offset.x = m_alignOffset.x;

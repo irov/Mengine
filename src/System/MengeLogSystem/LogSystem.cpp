@@ -1,5 +1,6 @@
 #	include "LogSystem.h"
 
+#	include "Interface/FileSystemInterface.h"
 #	include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
@@ -25,18 +26,10 @@ void releaseInterfaceSystem( Menge::LogSystemInterface* _interface )
 //////////////////////////////////////////////////////////////////////////
 MengeLogSystem::MengeLogSystem()
 {
-	Menge::StringA filename( "Menge.log" );
-	std::locale loc("");
-	m_logStream.imbue( loc );
-	m_logStream.open( filename.c_str() );
-	if( m_logStream.fail() )
-	{
-	}
 }
 //////////////////////////////////////////////////////////////////////////
 MengeLogSystem::~MengeLogSystem()
 {
-	m_logStream.close();
 }
 //////////////////////////////////////////////////////////////////////////
 void MengeLogSystem::setVerboseLevel( Menge::EMessageLevel _level )
@@ -50,18 +43,17 @@ void MengeLogSystem::logMessage( const Menge::StringA& _message, Menge::EMessage
 	{
 		return;
 	}
-	m_logStream	<< _message;
 
-	m_logStream.flush();
 	for( TVectorLoggers::iterator it = m_loggers.begin(), it_end = m_loggers.end();
 		it != it_end;
 		it++ )
 	{
-		(*it)->outputMessage( _message );
+		(*it)->write( _message );
+		(*it)->flush();
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-bool MengeLogSystem::registerLogger( Menge::LoggerInterface* _logger )
+bool MengeLogSystem::registerLogger( Menge::OutStreamInterface* _logger )
 {
 	TVectorLoggers::iterator it_find = std::find( m_loggers.begin(), m_loggers.end(), _logger );
 	if( it_find != m_loggers.end() )
@@ -72,7 +64,7 @@ bool MengeLogSystem::registerLogger( Menge::LoggerInterface* _logger )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void MengeLogSystem::unregisterLogger( Menge::LoggerInterface* _logger )
+void MengeLogSystem::unregisterLogger( Menge::OutStreamInterface* _logger )
 {
 	TVectorLoggers::iterator it_find = std::find( m_loggers.begin(), m_loggers.end(), _logger );
 	if( it_find != m_loggers.end() )

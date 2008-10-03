@@ -12,12 +12,12 @@ public:
 
 	void setVerboseLevel( Menge::EMessageLevel _level ) override;
 	void logMessage( const Menge::StringA& _message, Menge::EMessageLevel _level = Menge::LM_LOG ) override;
-	bool registerLogger( Menge::LoggerInterface* _logger ) override;
-	void unregisterLogger( Menge::LoggerInterface* _logger ) override;
+	bool registerLogger( Menge::OutStreamInterface* _logger ) override;
+	void unregisterLogger( Menge::OutStreamInterface* _logger ) override;
 	
 private:
 	std::ofstream m_logStream;
 	Menge::EMessageLevel m_verboseLevel;
-	typedef std::vector<Menge::LoggerInterface*> TVectorLoggers;
+	typedef std::vector<Menge::OutStreamInterface*> TVectorLoggers;
 	TVectorLoggers m_loggers;
 };

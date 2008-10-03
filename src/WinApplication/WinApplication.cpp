@@ -3,6 +3,7 @@
 #	include "WinApplication.h"
 #	include "SystemDLL.h"
 #	include "LoggerConsole.h"
+#	include "Interface/LogSystemInterface.h"
 
 #	include <strsafe.h>
 

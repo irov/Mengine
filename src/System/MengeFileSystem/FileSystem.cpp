@@ -75,10 +75,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::~FileSystem()
 	{
-		if( m_logStream != 0 )
+		if( m_logSystem != NULL && m_logStream != NULL )
 		{
+			m_logSystem->unregisterLogger( m_logStream );
 			closeOutStream( m_logStream );
-			m_logStream = 0;
+			m_logStream = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -341,8 +342,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OutStreamInterface* FileSystem::openOutStream( const String& _filename, bool _binary )
 	{
-		String fileName = m_appDataPath + "\\" + _filename;
-		StringW filename_w = Utils::AToW( fileName );
+		String filename;
+		if( m_appDataPath.empty() )
+		{
+			filename = _filename;
+		}
+		else
+		{
+			filename = m_appDataPath + "\\" + _filename;
+		}
+		StringW filename_w = Utils::AToW( filename );
 
 		FileStreamOutStream* outStream = new FileStreamOutStream();
 		if( !outStream->open( filename_w.c_str(), _binary ) )
@@ -384,6 +393,14 @@ namespace Menge
 	bool FileSystem::inititalize( LogSystemInterface* _logSystemInterface )
 	{
 		m_logSystem = _logSystemInterface;
+		if( m_logSystem != NULL )
+		{
+			m_logStream = openOutStream( "Menge.log", false );
+			if( m_logStream != NULL )
+			{
+				m_logSystem->registerLogger( m_logStream );
+			}
+		}
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

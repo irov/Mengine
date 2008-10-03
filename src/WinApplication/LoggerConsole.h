@@ -1,17 +1,20 @@
 #	pragma once
 
-#	include "Interface/LogSystemInterface.h"
+#	include "Interface/FileSystemInterface.h"
 
 namespace Menge
 {
 	class LoggerConsole
-		: public LoggerInterface
+		: public OutStreamInterface
 	{
 	public:
 		LoggerConsole();
 		virtual ~LoggerConsole();
 
-		void outputMessage( const StringA& _message ) override;
+		void write( const void* _data, std::streamsize _count ) override;
+		void write( const String& _str ) override;
+		void write( int _num ) override;
+		void flush() override;
 
 	protected:
 		bool m_createConsole;

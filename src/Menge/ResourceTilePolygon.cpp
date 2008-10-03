@@ -258,6 +258,7 @@ namespace Menge
 				quad.v[1] = _poly[next_i] - penumbra;
 				quad.v[2] = _poly[next_i] + penumbra;
 				quad.v[3] = _poly[i] + penumbra;
+				quad.angle = angle;
 
 				quad.s = edge.length() / _width;
 				quad.t = mt::length_v2_v2(quad.v[1], quad.v[2]) / _height;

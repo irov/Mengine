@@ -52,7 +52,7 @@ namespace Menge
 	void ScriptLogger::write( const String& _msg )
 	{
 		//MENGE_LOG( _msg.c_str() );
-		Holder<LogEngine>::hostage()->logMessage( _msg );
+		Holder<LogEngine>::hostage()->logMessage( _msg, LM_ERROR );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::init()

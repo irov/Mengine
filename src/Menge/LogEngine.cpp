@@ -17,7 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::logMessage( const StringA& _message, EMessageLevel _log /*= LM_LOG */ )
 	{
-		m_interface->logMessage( _message );
+		m_interface->logMessage( _message, _log );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LogSystemInterface * LogEngine::getInterface()

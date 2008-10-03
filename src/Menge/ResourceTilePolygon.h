@@ -19,6 +19,7 @@ namespace Menge
 	struct Quad //fix
 	{
 		mt::TVectorPoints v; //FIXME: !!
+		float angle;
 		float s;
 		float t;
 	};

@@ -408,7 +408,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_addShapeConvex( const mt::TVectorPoints & _points, bool _isSensor )
 	{
-		m_interface->addShapeConvex( 
+		/*m_interface->addShapeConvex( 
 		_points.size(), 
 		_points.front().m, 
 		m_density, 
@@ -417,7 +417,14 @@ namespace Menge
 		_isSensor,
 		m_collisionMask, 
 		m_categoryBits, 
-		m_groupIndex );
+		m_groupIndex );*/
+		mt::polygon poly;
+		for( mt::TVectorPoints::size_type i = 0; i < _points.size(); i++ )
+		{
+			poly.add_point( _points[i] );
+		}
+		m_shapeList.push_back( poly );
+		m_isSensor = _isSensor;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_setListener()
@@ -614,6 +621,20 @@ namespace Menge
 			}
 			i++;
 		}*/
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::_updateBoundingBox( mt::box2f & _boundingBox )
+	{
+		for( TShapeList::iterator it = m_shapeList.begin(),
+			it_end = m_shapeList.end();
+			it != it_end;
+		it++ )
+		{
+			for( int i = 0; i < (*it).num_points(); i++ )
+			{
+				mt::add_internal_point( _boundingBox, (*it)[i] );
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

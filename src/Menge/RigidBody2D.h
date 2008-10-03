@@ -120,6 +120,7 @@ namespace Menge
 		mt::polygon m_shape;
 
 		void _render( unsigned int _debugMask ) override;
+		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 
 	protected:
 		PhysicBody2DInterface* m_interface;

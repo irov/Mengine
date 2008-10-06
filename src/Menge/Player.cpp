@@ -17,6 +17,7 @@
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
 #	include "Utils.h"
+#	include "ScheduleManager.h"
 
 namespace Menge
 {
@@ -32,11 +33,18 @@ namespace Menge
 	, m_restartScene( false )
 	, m_arrowHided( false )
 	, m_mousePickerSystem( 0 )
+	, m_scheduleManager( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Player::~Player()
 	{
+		if( m_scheduleManager != NULL )
+		{
+			delete m_scheduleManager;
+			m_scheduleManager = NULL;
+		}
+
 		if( m_renderCamera2D )
 		{
 			delete m_renderCamera2D;
@@ -69,6 +77,8 @@ namespace Menge
 
 		m_switchScene = true;
 		m_destroyOldScene = _destroyOld;
+
+		scheduleRemoveAll();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Player::getCurrentScene()
@@ -131,6 +141,9 @@ namespace Menge
 		Holder<MousePickerSystem>::keep( m_mousePickerSystem );
 
 		setArrow( arrow );
+
+		m_scheduleManager = new ScheduleManager();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -363,6 +376,7 @@ namespace Menge
 			m_arrow->update( _timing );
 		}
 
+		m_scheduleManager->update( _timing );
 		//m_mousePickerSystem->clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -430,6 +444,44 @@ namespace Menge
 		{
 			m_scene->onMouseEnter();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t Player::schedule( float _timing, PyObject * _func )
+	{
+		if( ( m_restartScene || m_switchScene ) == true )
+		{
+			return 0;
+		}
+		return m_scheduleManager->schedule( _timing, _func );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t Player::timerSchedule( float _timing, PyObject* _func )
+	{
+		if( ( m_restartScene || m_switchScene ) == true )
+		{
+			return 0;
+		}
+		return m_scheduleManager->timerSchedule( _timing, _func );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::scheduleRemove( std::size_t _id )
+	{
+		m_scheduleManager->remove( _id );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::scheduleRemoveAll()
+	{
+		m_scheduleManager->removeAll();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::scheduleFreeze( std::size_t _id, bool _freeze )
+	{
+		m_scheduleManager->freeze( _id, _freeze );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::scheduleSetUpdatable( bool _updatable )
+	{
+		m_scheduleManager->setUpdatable( _updatable );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

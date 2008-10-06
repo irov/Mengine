@@ -6,7 +6,7 @@ namespace Menge
 {
 	class LogSystemInterface;
 
-	class ApplicationListenerInterface
+	/*class ApplicationListenerInterface
 	{
 	public:
 		virtual void onUpdate( float _timing ) = 0;
@@ -19,7 +19,7 @@ namespace Menge
 		virtual bool onMouseButtonEvent( int _button, bool _isDown ) = 0;
 		virtual bool onMouseMove( float _x, float _y, int _wheel ) = 0;
 		virtual void onPaint() = 0;
-	};
+	};*/
 
 	class SystemDLLInterface
 	{
@@ -45,7 +45,6 @@ namespace Menge
 	class ApplicationInterface
 	{
 	public:
-		virtual bool init( LogSystemInterface* _logSystem ) = 0;
 		virtual void createWindow(WindowHandle _handle) = 0;
 		virtual WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
 		virtual void run() = 0;

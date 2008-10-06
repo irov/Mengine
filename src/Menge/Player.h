@@ -9,6 +9,12 @@
 #	include "Math/vec3.h"
 #	include <set>
 
+extern "C" 
+{ 
+	struct _object; 
+	typedef _object PyObject;
+}
+
 namespace Menge
 {	
 	class Scene;
@@ -18,6 +24,7 @@ namespace Menge
 	class Camera2D;
 	class Camera3D;
 	class MousePickerSystem;
+	class ScheduleManager;
 
 	class Player
 		: public InputHandler
@@ -57,11 +64,19 @@ namespace Menge
 
 		void onMouseLeave();
 		void onMouseEnter();
-	
+
+		std::size_t schedule( float _timing, PyObject * _func );
+		std::size_t timerSchedule( float _timing, PyObject* _func );
+		void scheduleRemove( std::size_t _id );
+		void scheduleRemoveAll();
+		void scheduleFreeze( std::size_t _id, bool _freeze );
+		void scheduleSetUpdatable( bool _updatable );
+
 	private:
 		Avatar * m_avatar;
 		Scene * m_scene;
 		Arrow * m_arrow;
+		ScheduleManager* m_scheduleManager;
 		
 		Camera2D * m_renderCamera2D;
 		MousePickerSystem* m_mousePickerSystem;

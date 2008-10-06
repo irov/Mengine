@@ -57,6 +57,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::init()
 	{
+#	ifndef _DEBUG
+		++Py_OptimizeFlag;
+#	endif
+		++Py_NoSiteFlag;
 		pybind::initialize();
 
 		PyObject * main = initModule( "__main__" );

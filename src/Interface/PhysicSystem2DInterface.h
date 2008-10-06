@@ -44,6 +44,7 @@ namespace Menge
 		virtual float getAngle() = 0;
 		virtual void setOrientation( float _angle ) = 0;
 		virtual	float getMass() const = 0;
+		virtual float getInertia() const = 0;
 
 		virtual void setLinearVelocity( float _x, float _y ) = 0;
 		virtual const float* getLinearVelocity() = 0;

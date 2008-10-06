@@ -46,6 +46,10 @@ namespace Menge
 	, m_countGravity( true )
 	, m_unsetLinearVelocity( false )
 	, m_frozen( false )
+	, m_stabilityAngle( 0.0f )
+	, m_stabilization( false )
+	, m_stabilityForce( 1.0f )
+
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -474,6 +478,19 @@ namespace Menge
 				m_unsetLinearVelocity = false;
 			}
 		}
+		if( m_stabilization )
+		{
+			/*float dif = m_interface->getAngle() - m_stabilityAngle;
+			if( fabsf( dif ) > 0.1f )
+			{
+			m_interface->applyTorque( -dif * fabsf( dif ) * m_stabilityForce );
+			}*/
+			float f = ( m_stabilityAngle - m_interface->getAngle() ) * 10.0f;//  * 0.0005f;
+			float angvel = m_interface->getAngularVelocity();
+			float torque = ( f - m_interface->getAngularVelocity() ) * m_interface->getInertia() * 1.0f;
+			m_interface->applyTorque( torque );
+		}
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_render( unsigned int _debugMask )
@@ -637,4 +654,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void RigidBody2D::enableStabilization( bool _enable, float _stabilityAngle, float _stabilityForce )
+	{
+		m_stabilization = _enable;
+		m_stabilityAngle = _stabilityAngle;
+		m_stabilityForce = _stabilityForce;
+	}
+	//////////////////////////////////////////////////////////////////////////
+
 }

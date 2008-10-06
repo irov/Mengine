@@ -46,7 +46,5 @@ namespace Menge
 
 		const mt::TVectorPoints * m_triangles;
 		const mt::TVectorPoints * m_uvs;
-
-		RigidBody2D * m_rigidBodySensor;
 	};
 };

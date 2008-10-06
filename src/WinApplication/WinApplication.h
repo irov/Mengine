@@ -31,7 +31,6 @@ namespace Menge
 		~WinApplication();
 
 	public:
-		bool init( LogSystemInterface* _logSystem ) override;
 		void run() override;
 		void stop()	override;
 
@@ -57,7 +56,6 @@ namespace Menge
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
 	private:
-		//ApplicationListenerInterface* m_listener;
 		Application* m_menge;
 		LogSystemInterface* m_logSystem;
 		LARGE_INTEGER m_timerFrequency;
@@ -84,5 +82,7 @@ namespace Menge
 		HINSTANCE m_hInstance;
 		LoggerConsole* m_loggerConsole;
 		StringA m_commandLine;
+
+		void loop_();
 	};
 }	// namespace Menge

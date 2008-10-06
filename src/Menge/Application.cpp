@@ -29,7 +29,6 @@
 #	include "Camera2D.h"
 
 #	include "NodeFactory.h"
-#	include "ScheduleManager.h"
 
 #	include "Entity.h"
 #	include "Animation.h"
@@ -138,7 +137,6 @@ namespace Menge
 		, m_xmlEngine( 0 )
 		, m_mouseBounded( false )
 		, m_game( 0 )
-		, m_verbose( false )
 		, m_focus( true )
 		, m_update( true )
 	{
@@ -219,7 +217,6 @@ namespace Menge
 	{
 		m_game = new Game();
 		Holder<Game>::keep( m_game );
-		Holder<ScheduleManager>::keep( new ScheduleManager );
 
 		MENGE_LOG( "Create game file \"%s\""
 			, m_gameInfo.c_str() );
@@ -383,11 +380,13 @@ namespace Menge
 			m_debugInfo = true;
 		}
 
-		idx = _arguments.find( "-verbose" );
-		if( idx != StringA::npos )
-		{
-			m_verbose = true;
-		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	LogSystemInterface* Application::initializeLogSystem()
+	{
+		initInterfaceSystem( &m_logSystem );
+		this->setLogSystem( m_logSystem );
+		return m_logSystem;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const String& _applicationFile, const char* _args, bool _loadPersonality )
@@ -396,20 +395,12 @@ namespace Menge
 
 		parseArguments( _args );
 
-		initInterfaceSystem( &m_logSystem );
-		this->setLogSystem( m_logSystem );
-
 		initInterfaceSystem( &m_profilerSystem );
 		this->setProfilerSystem( m_profilerSystem );
 
 		initInterfaceSystem( &m_fileSystem );
 		m_fileSystem->inititalize( m_logSystem );
 		this->setFileSystem( m_fileSystem );
-
-		if( m_verbose )
-		{
-			m_logEngine->setVerboseLevel( LM_MAX );
-		}
 
 		m_fileSystem->loadPath( "." );
 
@@ -480,11 +471,6 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceMeshNoise );
 		RESOURCE_FACTORY( ResourceMaterial );
 	
-		if( !m_interface->init( m_logSystem ) )
-		{
-			return false;
-		}
-
 		m_desktopResolution[0] = m_interface->getDesktopWidth();
 		m_desktopResolution[1] = m_interface->getDesktopHeight();
 
@@ -535,7 +521,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{
-		Holder<ScheduleManager>::destroy();
 		if( Holder<Game>::empty() == false )
 		{
 			Holder<Game>::hostage()->release();

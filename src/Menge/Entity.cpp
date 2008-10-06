@@ -24,9 +24,6 @@ namespace	Menge
 	, m_accelerateTo( false )
 
 	, m_physicController( false )
-	, m_stabilityAngle( 0.0f )
-	, m_stabilization( false )
-	, m_stabilityForce( 1.0f )
 
 	, m_onUpdateEvent( false )
 	{
@@ -208,14 +205,6 @@ namespace	Menge
 
 		if( m_physicController )
 		{
-			if( m_stabilization )
-			{
-				float dif = m_interface->getAngle() - m_stabilityAngle;
-				if( fabsf( dif ) > 0.1f )
-				{
-					m_interface->applyTorque( -dif * fabsf( dif ) * m_stabilityForce );
-				}
-			}
 			if( m_velocity != mt::vec2f::zero_v2 )
 			{
 				const float* ppos = m_interface->getPosition();
@@ -402,13 +391,6 @@ namespace	Menge
 	{
 		RigidBody2D * other = static_cast<RigidBody2D*>( _otherObj->getUserData() );
 		this->callEvent( EVENT_COLLIDE, "(OOffff)", RigidBody2D::getEmbedding(), other->getEmbedding(), _worldX, _worldY, _normalX, _normalY );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::enableStabilization( bool _enable, float _stabilityAngle, float _stabilityForce )
-	{
-		m_stabilization = _enable;
-		m_stabilityAngle = _stabilityAngle;
-		m_stabilityForce = _stabilityForce;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::directTo( float _time, const mt::vec2f& _dir )

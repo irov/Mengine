@@ -39,8 +39,6 @@ namespace Menge
 		void loader( XmlElement * _xml );
 		void onCollide( PhysicBody2DInterface* _otherObj, float _worldX, float _worldY, float _normalX, float _normalY );
 
-		void enableStabilization( bool _enable, float _stabilityAngle, float _stabilityForce );
-
 	protected:
 		bool _activate() override;
 		void _deactivate() override;
@@ -72,9 +70,6 @@ namespace Menge
 		mt::vec2f m_nSpeed;
 
 		bool m_physicController;
-		float m_stabilityAngle;
-		float m_stabilityForce;
-		bool m_stabilization;
 
 
 		bool m_onUpdateEvent;

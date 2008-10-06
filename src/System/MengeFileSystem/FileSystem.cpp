@@ -18,9 +18,17 @@
 #	include <ShellAPI.h>
 #endif
 
-//#	include <locale.h>
-#	include "Menge/LogEngine.h"
 #	include "Menge/Utils.h"
+
+#	ifndef MENGE_MASTER_RELEASE
+#		define LOG( message )\
+	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_LOG );
+#	else
+#		define LOG( message )
+#	endif
+
+#	define LOG_ERROR( message )\
+	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_ERROR );
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::FileSystemInterface **_system )
 {
@@ -104,21 +112,16 @@ namespace Menge
 	{
 		DataStream* fileData = 0;
 
-		//m_logSystem->logMessage( StringA( "Opening file: " ) + Utils::WToA(_filename), 1 );
-		MENGE_LOG( "Opening file: \"%s\""
-			, _filename.c_str() );
+		LOG( "Opening file: \"" + _filename + "\"" );
 		
 		if( existFile( _filename ) == false )
 		{
-			//m_logSystem->logMessage( StringA( "Warning: " ) + Utils::WToA(_filename) + StringA( "does not exists" ), 0 );
-			MENGE_LOG_WARNING( "file \"%s\" does not exist"
-				, _filename.c_str() );
+			LOG_ERROR( "file \"" + _filename + "\" does not exist" );
 			return 0;
 		}
 
 		try
 		{
-			//fileData = m_fileManager->open( _filename );
 			String full_path = s_concatenatePath( m_initPath, _filename );
 			StringW full_path_w = Utils::AToW( full_path );
 			// Use filesystem to determine size 
@@ -146,9 +149,7 @@ namespace Menge
 
 			if( !fileData )
 			{
-				//m_logSystem->logMessage( StringA( "Error: unrecognized error while opening file " ) + Utils::WToA(_filename), 0 );
-				MENGE_LOG_ERROR( "unrecognized error while opening file \"%s\""
-					, _filename.c_str() );
+				LOG_ERROR( "unrecognized error while opening file \"" + _filename + "\"" );
 				return fileData;
 			}
 		}
@@ -399,6 +400,7 @@ namespace Menge
 			if( m_logStream != NULL )
 			{
 				m_logSystem->registerLogger( m_logStream );
+				LOG( "Starting log to Menge.log" );
 			}
 		}
 		return true;

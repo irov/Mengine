@@ -40,13 +40,15 @@ namespace Menge
 	class TextField;
 
 	class MENGE_API Application
-		: public ApplicationListenerInterface
+		//: public ApplicationListenerInterface
 	{
 	public:
 		Application( ApplicationInterface* _interface );
 		~Application();
 
 	public:
+		LogSystemInterface* initializeLogSystem();
+
 		bool initialize( const String& _applicationFile, const char* _args, bool _loadPersonality );
 		void finalize();
 	
@@ -88,7 +90,7 @@ namespace Menge
 		bool onMouseButtonEvent( int _button, bool _isDown );
 		bool onMouseMove( float _x, float _y, int _whell );
 		bool onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown );
-		void onPaint() override;
+		void onPaint();
 
 		void setParticlesEnabled( bool _enabled );
 		bool getParticlesEnabled() const;
@@ -126,7 +128,6 @@ namespace Menge
 		bool m_debugInfo;
 		bool m_usePhysic;
 		bool m_mouseBounded;
-		bool m_verbose;
 		bool m_focus;
 		bool m_update;
 

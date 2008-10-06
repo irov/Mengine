@@ -140,6 +140,9 @@ namespace Menge
 		}
 
 		m_imageResources.clear();
+		m_uvs.clear();
+		m_concaves.clear();
+		m_triangles.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceTilePolygon::_compile()
@@ -214,13 +217,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceTilePolygon::create(Tile & _tile, const mt::TVectorPoints & _poly, const mt::vec2f & _juncSize)
 	{
-		ResourceImage * m_imageResource =
+		ResourceImage * imageResource =
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceImage>( _tile.m_imagename );
 
-		m_imageResources.push_back(m_imageResource);
+		m_imageResources.push_back(imageResource);
 
-		 _tile.m_image = m_imageResource->getImage(0);
+		 _tile.m_image = imageResource->getImage(0);
 
 		float _width = _tile.m_image->getWidth();
 		float _height = _tile.m_image->getHeight();
@@ -238,6 +241,9 @@ namespace Menge
 		quad.v.resize(4);
 
 		int track_point = 0;
+
+		_tile.m_geometry.clear();
+		_tile.m_junks.clear();
 
 		for(mt::TVectorPoints::size_type i = 0; i < pointsNum; i++)
 		{

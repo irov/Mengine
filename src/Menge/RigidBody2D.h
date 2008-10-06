@@ -70,6 +70,8 @@ namespace Menge
 
 		PhysicBody2DInterface* getInterface();
 
+		void enableStabilization( bool _enable, float _stabilityAngle, float _stabilityForce );
+
 	protected:
 		//bool _activate() override;
 		//void _deactivate() override;
@@ -135,5 +137,10 @@ namespace Menge
 		bool m_frozen;
 		void _updateFilterData();
 		void compileShapes_();
+
+		float m_stabilityAngle;
+		float m_stabilityForce;
+		bool m_stabilization;
+
 	};
 }

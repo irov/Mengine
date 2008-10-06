@@ -73,43 +73,43 @@ namespace Menge
 	{
 		static std::size_t schedule( float _timing, PyObject * _script )
 		{
-			return Holder<ScheduleManager>::hostage()
+			return Holder<Player>::hostage()
 				->schedule( _timing, _script );
 		}
 
 		static std::size_t s_scheduleTimer( float _timing, PyObject* _script )
 		{
-			return Holder<ScheduleManager>::hostage()->timerSchedule( _timing, _script );
+			return Holder<Player>::hostage()->timerSchedule( _timing, _script );
 		}
 
 		static void scheduleRemove( std::size_t _id )
 		{
-			Holder<ScheduleManager>::hostage()
-				->remove( _id );
+			Holder<Player>::hostage()
+				->scheduleRemove( _id );
 		}
 
 		static void scheduleRemoveAll()
 		{
-			Holder<ScheduleManager>::hostage()
-				->removeAll();
+			Holder<Player>::hostage()
+				->scheduleRemoveAll();
 		}	
 
 		static void scheduleStopAll()
 		{
-			Holder<ScheduleManager>::hostage()
-				->setUpdatable( false );
+			Holder<Player>::hostage()
+				->scheduleSetUpdatable( false );
 		}
 
 		static void scheduleResumeAll()
 		{
-			Holder<ScheduleManager>::hostage()
-				->setUpdatable( true );
+			Holder<Player>::hostage()
+				->scheduleSetUpdatable( true );
 		}
 
 		static void s_scheduleFreeze( std::size_t _id, bool _freeze )
 		{
-			Holder<ScheduleManager>::hostage()
-				->freeze( _id, _freeze );
+			Holder<Player>::hostage()
+				->scheduleFreeze( _id, _freeze );
 		}
 		
 		static float getMouseX()
@@ -923,6 +923,8 @@ namespace Menge
 				.def( "unsetLinearVelocity", &RigidBody2D::unsetLinearVelocity )
 				.def( "freeze", &RigidBody2D::freeze )
 				.def( "setCollisionMask", &RigidBody2D::setCollisionMask )
+				.def( "enableStabilization", &RigidBody2D::enableStabilization )
+
 			;
 
 			

@@ -77,7 +77,6 @@ namespace Menge
 			.def( "setVelocity", &Entity::setVelocity )
 			.def( "getVelocity", &Entity::getVelocity )
 			.def( "getVelocitySpeed", &Entity::getVelocitySpeed )
-			.def( "enableStabilization", &Entity::enableStabilization )
 			;
 
 		pybind::def( "createEntity", &ScriptMethod::createEntity );

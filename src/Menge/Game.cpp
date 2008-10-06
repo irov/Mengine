@@ -14,7 +14,6 @@
 #	include "FileEngine.h"
 #	include "RenderEngine.h"
 #	include "ResourceManager.h"
-#	include "ScheduleManager.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
 #	include "ProfilerEngine.h"
@@ -88,7 +87,6 @@ namespace Menge
 
 		Holder<Amplifier>::destroy();
 		Holder<Player>::destroy();
-		//Holder<ScheduleManager>::destroy();
 		//Holder<MousePickerSystem>::destroy();
 		Holder<LightSystem>::destroy();
 	}
@@ -377,9 +375,6 @@ namespace Menge
 		Holder<Amplifier>::hostage()->update( _timing );
 
 		m_player->update( _timing );
-
-		Holder<ScheduleManager>::hostage()
-			->update( _timing );
 
 		StringA eventUpdate;
 #	ifdef MENGE_UNICODE

@@ -142,6 +142,11 @@ float Box2DPhysicBody::getMass() const
 	return m_body->GetMass();
 }
 //////////////////////////////////////////////////////////////////////////
+float Box2DPhysicBody::getInertia() const
+{
+	return m_body->GetInertia();
+}
+//////////////////////////////////////////////////////////////////////////
 float Box2DPhysicBody::getAngle()
 {
 	return m_body->GetAngle();

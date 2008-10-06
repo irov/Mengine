@@ -28,6 +28,7 @@ public:
 	float getAngle() override;
 	void setOrientation( float _angle ) override;
 	float getMass() const override;
+	float getInertia() const override;
 
 	void setLinearVelocity( float _x, float _y ) override;
 	const float* getLinearVelocity() override;

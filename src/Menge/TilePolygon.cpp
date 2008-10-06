@@ -32,7 +32,6 @@ namespace Menge
 	TilePolygon::TilePolygon()
 	: m_tileResource("")
 	, m_tilePolygonResource(0)
-	, m_rigidBodySensor(0)
 	, m_triangles(0)
 	, m_uvs(0)
 	{
@@ -60,7 +59,6 @@ namespace Menge
 		{
 			return false;
 		}
-		m_rigidBodySensor->activate();
 
 		return true;
 	}
@@ -72,9 +70,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TilePolygon::_compile()
 	{
-		m_rigidBodySensor = SceneManager::createNodeT<RigidBody2D>("RigidBody2D");
-		m_rigidBodySensor->setName( "TilePolygonSensor" );
-
 		m_tilePolygonResource = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceTilePolygon>( m_tileResource );
@@ -99,18 +94,7 @@ namespace Menge
 			m_tileGeometry.push_back(tileGeoms);
 			m_junkGeometry.push_back(tileJunks);
 
-			//if(m_tilePolygonResource->getMinAngle(i) == -15)
-			{
-				for( std::vector<Quad>::size_type j = 0; j < (*tileGeoms).size(); j++ )
-				{
-					if( ::fabsf( (*tileGeoms)[j].angle ) < 15.0f )
-					{
-						m_rigidBodySensor->_addShapeConvex((*tileGeoms)[j].v,true);
-					}
-				}
-			}
 		}
-		m_rigidBodySensor->compile();
 
 		return true;
 	}
@@ -120,14 +104,10 @@ namespace Menge
 		Holder<ResourceManager>::hostage()
 			->releaseResource( m_tilePolygonResource );
 
-		if(m_rigidBodySensor)
-		{
-			m_rigidBodySensor->release();
-			delete m_rigidBodySensor;
-			m_rigidBodySensor = NULL;
-		}
-
 		RigidBody2D::_release();
+
+		m_tileGeometry.clear();
+		m_junkGeometry.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_update( float _timing )
@@ -171,7 +151,6 @@ namespace Menge
 	void TilePolygon::_render( unsigned int _debugMask )
 	{
 		Node::_render( _debugMask );
-		m_rigidBodySensor->render( _debugMask );
 
 		const mt::mat3f & wm = getWorldMatrix();
 

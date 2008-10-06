@@ -12,6 +12,17 @@
 #	include "Menge/Utils.h"
 
 const Menge::TCharA * config_file = "application.xml";
+
+#	ifndef MENGE_MASTER_RELEASE
+#		define LOG( message )\
+		if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_LOG );
+#	else
+#		define LOG( message )
+#	endif
+
+#	define LOG_ERROR( message )\
+	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_ERROR );
+
 //////////////////////////////////////////////////////////////////////////
 static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
@@ -158,53 +169,68 @@ namespace Menge
 		m_desktopHeight = _height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::init( LogSystemInterface* _logSystem )
+	void WinApplication::run()
 	{
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
 
-		m_logSystem = _logSystem;
-
-		if( m_logSystem != NULL && m_commandLine.find( "-console" ) != StringA::npos )
-		{
-			m_loggerConsole = new LoggerConsole();
-			m_logSystem->registerLogger( m_loggerConsole );
-		}
-
 		if( !::QueryPerformanceFrequency( &m_timerFrequency ) )
 		{
-			return false;
+			return;
 		}
 
 		::QueryPerformanceCounter(&m_timer);
 
-		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::run()
-	{
 		m_menge = new Application( this );
 		if( m_menge == NULL )
 		{
 			return;
 		}
 
+		m_logSystem = m_menge->initializeLogSystem();
+
+		if( m_logSystem != NULL && m_commandLine.find( "-console" ) != StringA::npos )
+		{
+			m_loggerConsole = new LoggerConsole();
+			m_logSystem->registerLogger( m_loggerConsole );
+
+			LOG_ERROR( "LogSystem initialized successfully" );	// log message anyway
+		}
+
+		if( m_logSystem != NULL && m_commandLine.find( "-verbose" ) != StringA::npos )
+		{
+			m_logSystem->setVerboseLevel( LM_MAX );
+
+			LOG( "Verbose logging mode enabled" );
+		}
+
+
+		LOG( "Initializing Mengine..." );
 		if( m_menge->initialize( config_file, m_commandLine.c_str(), true ) == false )
 		{
 			return;
 		}
 
+		LOG( "Enumarating monitors..." );
+		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
+
+		LOG( "Creating Render Window..." );
 		if( m_menge->createRenderWindow( 0 ) == false )
 		{
 			return;
 		}
 
+		LOG( "Initializing Game data..." );
 		if( m_menge->initGame() == false )
 		{
 			return;
 		}
 
+		loop_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinApplication::loop_()
+	{
 		MSG  msg;
 		POINT pos;
 		LARGE_INTEGER time;

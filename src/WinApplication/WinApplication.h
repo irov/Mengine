@@ -15,12 +15,13 @@
 #	include "Interface/ApplicationInterface.h"
 
 #	include <Windows.h>
-#	include <string>
+//#	include <string>
 
 namespace Menge
 {
 	class SystemDLL;
 	class LoggerConsole;
+	class Application;
 
 	class WinApplication
 		: public ApplicationInterface
@@ -30,7 +31,7 @@ namespace Menge
 		~WinApplication();
 
 	public:
-		bool init( LogSystemInterface* _logSystem, ApplicationListenerInterface* _listener ) override;
+		bool init( LogSystemInterface* _logSystem ) override;
 		void run() override;
 		void stop()	override;
 
@@ -56,7 +57,8 @@ namespace Menge
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
 	private:
-		ApplicationListenerInterface* m_listener;
+		//ApplicationListenerInterface* m_listener;
+		Application* m_menge;
 		LogSystemInterface* m_logSystem;
 		LARGE_INTEGER m_timerFrequency;
 		LARGE_INTEGER m_lastTime;

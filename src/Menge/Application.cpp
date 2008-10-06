@@ -480,7 +480,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceMeshNoise );
 		RESOURCE_FACTORY( ResourceMaterial );
 	
-		if( !m_interface->init( m_logSystem, this ) )
+		if( !m_interface->init( m_logSystem ) )
 		{
 			return false;
 		}

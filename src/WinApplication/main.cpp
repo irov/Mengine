@@ -2,7 +2,6 @@
 #	include "Config/Config.h"
 
 #	include "WinApplication.h"
-#	include "Menge/Application.h"
 
 #	if	MENGE_PARTICLES	== (1)
 #		ifdef _DEBUG
@@ -23,26 +22,7 @@ int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance
 	UNREFERENCED_PARAMETER( nShowCmd );
 
 	Menge::WinApplication winApplication( hInstance, lpCmdLine );
-	const Menge::TCharA * config_file = "application.xml";
-
-	Menge::Application app( &winApplication );
-
-	if( app.initialize( config_file, lpCmdLine, true ) == false )
-	{
-		return 0;
-	}
-
-	if( app.createRenderWindow(0) == false )
-	{
-		return 0;
-	}
-
-	if( app.initGame() == false )
-	{
-		return 0;
-	}
-
-	app.run();
+	winApplication.run();
 
 	return 0;
 }

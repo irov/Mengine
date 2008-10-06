@@ -1,6 +1,7 @@
 #	include "Config/Config.h"
 
 #	include "WinApplication.h"
+#	include "Menge/Application.h"
 #	include "SystemDLL.h"
 #	include "LoggerConsole.h"
 #	include "Interface/LogSystemInterface.h"
@@ -10,7 +11,7 @@
 #	include "resource.h"
 #	include "Menge/Utils.h"
 
-
+const Menge::TCharA * config_file = "application.xml";
 //////////////////////////////////////////////////////////////////////////
 static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
@@ -97,7 +98,6 @@ namespace Menge
 		, m_mutex( 0 )
 		, m_focus( true )
 		, m_name( "Mengine" )
-		, m_listener( NULL )
 		, m_hWnd(0)
 		, m_cursorInArea( false )
 		, m_fullscreen( false )
@@ -105,6 +105,7 @@ namespace Menge
 		, m_hInstance( _hInstance )
 		, m_loggerConsole( NULL )
 		, m_commandLine( _commandLine )
+		, m_menge( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -117,9 +118,11 @@ namespace Menge
 			m_loggerConsole = NULL;
 		}
 
-		if( m_listener )
+		if( m_menge != NULL )
 		{
-			m_listener->onDestroy();
+			m_menge->onDestroy();
+			delete m_menge;
+			m_menge = NULL;
 		}
 
 		if( m_mutex )
@@ -155,17 +158,11 @@ namespace Menge
 		m_desktopHeight = _height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::init( LogSystemInterface* _logSystem, ApplicationListenerInterface* _listener )
+	bool WinApplication::init( LogSystemInterface* _logSystem )
 	{
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
 
-		if( !_listener )
-		{
-			return false;
-		}
-
-		m_listener = _listener;
 		m_logSystem = _logSystem;
 
 		if( m_logSystem != NULL && m_commandLine.find( "-console" ) != StringA::npos )
@@ -187,6 +184,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::run()
 	{
+		m_menge = new Application( this );
+		if( m_menge == NULL )
+		{
+			return;
+		}
+
+		if( m_menge->initialize( config_file, m_commandLine.c_str(), true ) == false )
+		{
+			return;
+		}
+
+		if( m_menge->createRenderWindow( 0 ) == false )
+		{
+			return;
+		}
+
+		if( m_menge->initGame() == false )
+		{
+			return;
+		}
+
 		MSG  msg;
 		POINT pos;
 		LARGE_INTEGER time;
@@ -201,7 +219,7 @@ namespace Menge
 				|| pos.y > m_wndInfo.rcClient.bottom ) )
 			{
 				::ShowCursor( TRUE );
-				m_listener->onMouseLeave();
+				m_menge->onMouseLeave();
 				m_cursorInArea = false;
 			}
 			while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
@@ -214,7 +232,7 @@ namespace Menge
 			m_frameTime = static_cast<float>( time.QuadPart - m_lastTime.QuadPart ) / m_timerFrequency.QuadPart * 1000.0f;
 			m_lastTime = time;
 
-			m_listener->onUpdate( m_frameTime );
+			m_menge->onUpdate( m_frameTime );
 
 			if( m_focus == false )
 			{
@@ -348,12 +366,12 @@ namespace Menge
 			{
 				//::GetWindowInfo( m_hWnd, &m_wndInfo);
 				m_focus = (LOWORD(wParam) != WA_INACTIVE);
-				m_listener->onFocus( m_focus );
+				m_menge->onFocus( m_focus );
 				break;
 			}
 		case WM_PAINT:
 			{
-				m_listener->onPaint();
+				m_menge->onPaint();
 			}
 			break;
 		case WM_SYSKEYDOWN:
@@ -392,18 +410,18 @@ namespace Menge
 			if( m_hWnd != 0 )
 			{
 				::GetWindowInfo( m_hWnd, &m_wndInfo);
-				m_listener->onWindowMovedOrResized();
+				m_menge->onWindowMovedOrResized();
 			}
 			break;
 		case WM_DISPLAYCHANGE:
-			m_listener->onWindowMovedOrResized();
+			m_menge->onWindowMovedOrResized();
 
 			break;
 		case WM_SIZE:
 			if( m_hWnd != 0)
 			{
 				::GetWindowInfo( m_hWnd, &m_wndInfo);
-				m_listener->onWindowMovedOrResized();
+				m_menge->onWindowMovedOrResized();
 			}
 			break;
 		case WM_GETMINMAXINFO:
@@ -412,7 +430,7 @@ namespace Menge
 			((MINMAXINFO*)lParam)->ptMinTrackSize.y = 100;
 			break;
 		case WM_CLOSE:
-			m_listener->onClose();
+			m_menge->onClose();
 			break;
 		case WM_MOUSEMOVE:
 			if( m_handleMouse )
@@ -421,28 +439,28 @@ namespace Menge
 				{
 					m_cursorInArea = true;
 					::ShowCursor( FALSE );
-					m_listener->onMouseEnter();
+					m_menge->onMouseEnter();
 				}
-				m_listener->onMouseMove( (float)(short)LOWORD(lParam), (float)(short)HIWORD(lParam), 0 );
+				m_menge->onMouseMove( (float)(short)LOWORD(lParam), (float)(short)HIWORD(lParam), 0 );
 			}
 			break;
 		case WM_LBUTTONDOWN:
-			m_listener->onMouseButtonEvent( 0, true );
+			m_menge->onMouseButtonEvent( 0, true );
 			break;
 		case WM_LBUTTONUP:
-			m_listener->onMouseButtonEvent( 0, false );
+			m_menge->onMouseButtonEvent( 0, false );
 			break;
 		case WM_RBUTTONDOWN:
-			m_listener->onMouseButtonEvent( 1, true );
+			m_menge->onMouseButtonEvent( 1, true );
 			break;
 		case WM_RBUTTONUP:
-			m_listener->onMouseButtonEvent( 1, false );
+			m_menge->onMouseButtonEvent( 1, false );
 			break;
 		case WM_MBUTTONDOWN:
-			m_listener->onMouseButtonEvent( 2, true );
+			m_menge->onMouseButtonEvent( 2, true );
 			break;
 		case WM_MBUTTONUP:
-			m_listener->onMouseButtonEvent( 2, false );
+			m_menge->onMouseButtonEvent( 2, false );
 			break;
 		}
 		return ::DefWindowProc( hWnd, uMsg, wParam, lParam );

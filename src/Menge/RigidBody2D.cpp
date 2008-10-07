@@ -495,6 +495,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_render( unsigned int _debugMask )
 	{
+		Node::_render( _debugMask );
 #	ifndef MENGE_MASTER_RELEASE
 		if( _debugMask & MENGE_DEBUG_PHYSICS )
 		{

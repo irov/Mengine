@@ -55,7 +55,6 @@ namespace Menge
 
 		virtual bool createFolder(  const String& _path  ) = 0;
 		virtual bool deleteFolder(  const String& _path  ) = 0;
-		virtual bool changeDir(  const String& _path  ) = 0;
 
 		virtual bool initAppDataPath( const String& _game ) = 0;
 		virtual const String& getAppDataPath() = 0;

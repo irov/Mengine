@@ -169,14 +169,14 @@ namespace Menge
 		m_desktopHeight = _height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::run()
+	bool WinApplication::start()
 	{
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
 
 		if( !::QueryPerformanceFrequency( &m_timerFrequency ) )
 		{
-			return;
+			return false;
 		}
 
 		::QueryPerformanceCounter(&m_timer);
@@ -184,7 +184,7 @@ namespace Menge
 		m_menge = new Application( this );
 		if( m_menge == NULL )
 		{
-			return;
+			return false;
 		}
 
 		m_logSystem = m_menge->initializeLogSystem();
@@ -208,7 +208,7 @@ namespace Menge
 		LOG( "Initializing Mengine..." );
 		if( m_menge->initialize( config_file, m_commandLine.c_str(), true ) == false )
 		{
-			return;
+			return false;
 		}
 
 		LOG( "Enumarating monitors..." );
@@ -217,19 +217,18 @@ namespace Menge
 		LOG( "Creating Render Window..." );
 		if( m_menge->createRenderWindow( 0 ) == false )
 		{
-			return;
+			return false;
 		}
 
 		LOG( "Initializing Game data..." );
 		if( m_menge->initGame() == false )
 		{
-			return;
+			return false;
 		}
-
-		loop_();
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::loop_()
+	void WinApplication::loop()
 	{
 		MSG  msg;
 		POINT pos;

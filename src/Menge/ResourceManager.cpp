@@ -33,6 +33,7 @@ namespace Menge
 		{
 			it->second->release();
 			delete it->second;
+			it->second = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -194,7 +195,7 @@ namespace Menge
 
 		TMapResource::iterator it_find = m_mapResource.find( name );
 
-		if( it_find != m_mapResource.end() )
+		if( it_find != m_mapResource.end() && it_find->second != NULL )
 		{
 			unsigned int inc = _resource->decrementReference();
 			// resource has been unloaded

@@ -41,8 +41,6 @@ namespace Menge
 		OutStreamInterface * openOutStream( const String& _filename, bool _binary );
 		void closeOutStream( OutStreamInterface * _outStream );
 
-		bool changeDir( const String& _dir );
-
 		bool initAppDataPath( const String& _game );
 		const String& getAppDataPath();
 

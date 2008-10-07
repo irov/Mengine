@@ -9,6 +9,7 @@
 
 //#	include "MousePickerSystem.h"
 #	include "LightSystem.h"
+#	include "ResourceImageDynamic.h"
 
 #	include "ScriptEngine.h"
 #	include "FileEngine.h"
@@ -39,6 +40,7 @@ namespace Menge
 		, m_currentAccount( 0 )
 		, m_loadingAccounts( false )
 		, m_FPS( 0.0f )
+		, m_resourceManager( NULL )
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
@@ -89,6 +91,13 @@ namespace Menge
 		Holder<Player>::destroy();
 		//Holder<MousePickerSystem>::destroy();
 		Holder<LightSystem>::destroy();
+
+		Holder<ResourceManager>::empty();
+		if( m_resourceManager != NULL )
+		{
+			delete m_resourceManager;
+			m_resourceManager = NULL;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	/*void Game::loader( XmlElement * _xml )
@@ -124,30 +133,6 @@ namespace Menge
 		m_fullScreen = config.getSettingBool( "Fullscreen", "GAME" );
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	/*void Game::loaderGame_(XmlElement *_xml)
-	{	
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_ATTRIBUTE_NODE( "ResourceResolution", "Value", m_resourceResolution );
-			XML_CASE_ATTRIBUTE_NODE( "Title", "Value", m_title );
-			XML_CASE_ATTRIBUTE_NODE( "FixedContentResolution", "Value", m_fixedContentResolution );
-			XML_CASE_ATTRIBUTE_NODE( "PhysicSystem", "Value", m_physicSystemName );
-			XML_CASE_ATTRIBUTE_NODE( "Width", "Value", m_resolution[0] );					
-			XML_CASE_ATTRIBUTE_NODE( "Height", "Value", m_resolution[1] );
-			XML_CASE_ATTRIBUTE_NODE( "Bits", "Value", m_bits );
-			XML_CASE_ATTRIBUTE_NODE( "Fullscreen", "Value", m_fullScreen );
-			XML_CASE_ATTRIBUTE_NODE( "VSync", "Value", m_vsync );
-			XML_CASE_ATTRIBUTE_NODE( "TextureFiltering", "Value", m_textureFiltering );
-			XML_CASE_ATTRIBUTE_NODE( "FSAAType", "Value", m_FSAAType );
-			XML_CASE_ATTRIBUTE_NODE( "FSAAQuality", "Value", m_FSAAQuality );
-			XML_CASE_ATTRIBUTE_NODE( "DefaultArrow", "Value", m_defaultArrowName );
-			XML_CASE_ATTRIBUTE_NODE( "PersonalityModule", "Value", m_personality );
-			XML_CASE_ATTRIBUTE_NODE( "InitFunction", "Value", m_eventInit );
-			XML_CASE_ATTRIBUTE_NODE( "UpdateFunction", "Value", m_eventUpdate );
-			XML_CASE_ATTRIBUTE_NODE( "FinilizeFunction", "Value", m_eventFini );
-		}
-	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Game::readResourceFile( const String& _file )
 	{
@@ -299,11 +284,6 @@ namespace Menge
 			handle = m_player->handleKeyEvent( _key, _char, _isDown );
 		}	
 
-		//RenderImageInterface* image = Holder<RenderEngine>::hostage()->createImage( "shot", 200, 200 );
-		//int rect[4] = { 10, 10, 210, 210 };
-		//Holder<RenderEngine>::hostage()->render(image, rect);
-		//image->writeToFile( "Shot.bmp" );
-
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -442,7 +422,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
-		//Holder<MousePickerSystem>::keep( new MousePickerSystem );
+		m_resourceManager = new ResourceManager();
+		if( m_resourceManager == NULL )
+		{
+			return false;
+		}
+		Holder<ResourceManager>::keep( m_resourceManager );
+		initPredefinedResources();
+
 		Holder<LightSystem>::keep( new LightSystem );
 		for( TMapDeclaration::iterator
 				it = m_mapResourceDeclaration.begin(),
@@ -456,8 +443,7 @@ namespace Menge
 			path += it->first;
 			path += ".resource";
 
-			Holder<ResourceManager>::hostage()
-				->loadResource( it->second.first, path, it->first );
+			m_resourceManager->loadResource( it->second.first, path, it->first );
 		}
 
 		for( TMapDeclaration::iterator
@@ -479,19 +465,12 @@ namespace Menge
 			return false;
 		}
 
-		StringA eventInit;
-#	ifdef MENGE_UNICODE
-		eventInit = Utils::WToA( m_eventInit );
-#	else if
-		eventInit = m_eventInit;
-#	endif
-
 		if( m_pyPersonality&& 
 			Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, eventInit ) )
+			->hasModuleFunction( m_pyPersonality, m_eventInit ) )
 		{
 			PyObject * pyResult = Holder<ScriptEngine>::hostage()
-				->askModuleFunction( m_pyPersonality, eventInit, "()" );
+				->askModuleFunction( m_pyPersonality, m_eventInit, "()" );
 
 			bool result = Holder<ScriptEngine>::hostage()
 				->parseBool( pyResult );
@@ -509,15 +488,8 @@ namespace Menge
 	{
 		if( m_pyPersonality )
 		{
-			StringA eventFini;
-#	ifdef MENGE_UNICODE
-			eventFini = Utils::WToA( m_eventFini );
-#	else if
-			eventFini = m_eventFini;
-#	endif
-
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, eventFini, "()" );
+				->callModuleFunction( m_pyPersonality, m_eventFini, "()" );
 		}
 
 		for( TMapArrow::iterator
@@ -897,32 +869,32 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::registerResources()
+	void Game::registerResources( const String& _baseDir )
 	{
 		ScriptEngine::TListModulePath m_listModulePath;
 
 		for( TListDeclaration::iterator it = m_pathScripts.begin(),
 			it_end = m_pathScripts.end(); it != it_end; it++ )
 		{
-			m_listModulePath.push_back( it->first + it->second );
+			m_listModulePath.push_back( _baseDir + it->first + it->second );
 		}
 
 		for( TListDeclaration::iterator it = m_pathEntities.begin(),
 			it_end = m_pathEntities.end(); it != it_end; it++ )
 		{
-			m_listModulePath.push_back( it->first + it->second );
+			m_listModulePath.push_back( _baseDir + it->first + it->second );
 		}
 
 		for( TListDeclaration::iterator it = m_pathScenes.begin(),
 			it_end = m_pathScenes.end(); it != it_end; it++ )
 		{
-			m_listModulePath.push_back( it->first + it->second );
+			m_listModulePath.push_back( _baseDir + it->first + it->second );
 		}
 
 		for( TListDeclaration::iterator it = m_pathArrows.begin(),
 			it_end = m_pathArrows.end(); it != it_end; it++ )
 		{
-			m_listModulePath.push_back( it->first + it->second );
+			m_listModulePath.push_back( _baseDir + it->first + it->second );
 		}
 
 		Holder<ScriptEngine>::hostage()
@@ -938,6 +910,17 @@ namespace Menge
 				->registerEntityType( it->first );
 		}
 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::initPredefinedResources()
+	{
+		ResourceFactoryParam param = { "WhitePixel" };
+
+		ResourceImageDynamic * image = new ResourceImageDynamic( param );
+		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
+		image->incrementReference();
+
+		m_resourceManager->registerResource( image );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

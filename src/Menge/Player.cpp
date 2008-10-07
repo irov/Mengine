@@ -306,6 +306,9 @@ namespace Menge
 	{
 		if( m_restartScene )		// just restart scene
 		{
+			m_restartScene = false;
+			m_switchScene = false;
+
 			String name = m_scene->getName();
 			m_scene->deactivate();
 			m_scene->release();
@@ -318,8 +321,6 @@ namespace Menge
 			m_scene->compile();
 			m_scene->activate();
 
-			m_restartScene = false;
-			m_switchScene = false;
 		}
 		else if( m_switchScene == true )
 		{

@@ -66,7 +66,6 @@ namespace Menge
 		bool createRenderWindow(WindowHandle _handle);
 		bool initGame();
 
-		void run();
 		void quit();
 
 	public:
@@ -159,5 +158,7 @@ namespace Menge
 
 		void parseArguments(const StringA& _arguments);
 		void initPredefinedResources();
+
+		String m_baseDir;
 	};
 }

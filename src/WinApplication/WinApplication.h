@@ -31,7 +31,8 @@ namespace Menge
 		~WinApplication();
 
 	public:
-		void run() override;
+		bool start();
+		void loop();
 		void stop()	override;
 
 		void createWindow(WindowHandle _handle);
@@ -83,6 +84,5 @@ namespace Menge
 		LoggerConsole* m_loggerConsole;
 		StringA m_commandLine;
 
-		void loop_();
 	};
 }	// namespace Menge

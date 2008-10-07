@@ -81,11 +81,6 @@ namespace Menge
 		return m_interface->deleteFolder( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::changeDir( const String& _dir )
-	{
-		return m_interface->changeDir( _dir );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	DataStreamInterface * FileEngine::createMemoryFile( void * _data, std::streamsize _size, bool _freeOnClose )
 	{
 		return m_interface->createMemoryFile( _data, _size, _freeOnClose );

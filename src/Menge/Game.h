@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "ResourceManager.h"
+//#	include "ResourceManager.h"
 
 #	include "InputHandler.h"
 #	include "Eventable.h"
@@ -23,6 +23,7 @@ class XmlElement;
 
 namespace Menge
 {
+	class ResourceManager;
 	class Player;
 
 	class Scene;
@@ -44,6 +45,8 @@ namespace Menge
 
 	public:
 		bool init();
+		void initPredefinedResources();
+
 		bool loadPersonality();
 		void release();
 
@@ -74,7 +77,7 @@ namespace Menge
 		void loaderResourceFile_( XmlElement * _xml );
 
 		void loadAccounts();
-		void registerResources();
+		void registerResources( const String& _baseDir );
 
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -175,5 +178,6 @@ namespace Menge
 		float m_FPS;
 
 		bool loaderAccounts_( const String& _iniFile );
+		ResourceManager* m_resourceManager;
 	};	
 }

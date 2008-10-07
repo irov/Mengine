@@ -14,7 +14,7 @@
 
 #	include "MousePickerSystem.h"
 #	include "LightSystem.h"
-#	include "ResourceManager.h"
+//#	include "ResourceManager.h"
 
 #	include "Game.h"
 
@@ -204,13 +204,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::initPredefinedResources()
 	{
-		ResourceFactoryParam param = { "WhitePixel" };
+		/*ResourceFactoryParam param = { "WhitePixel" };
 
 		ResourceImageDynamic * image = new ResourceImageDynamic( param );
 		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
 		image->incrementReference();
 
-		Holder<ResourceManager>::hostage()->registerResource( image );
+		Holder<ResourceManager>::hostage()->registerResource( image );*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::loadGame( bool _loadPersonality )
@@ -244,7 +244,7 @@ namespace Menge
 			m_game->readResourceFile( *it );
 		}
 
-		m_game->registerResources();
+		m_game->registerResources( m_baseDir );
 
 		if( _loadPersonality )
 		{
@@ -258,11 +258,6 @@ namespace Menge
 	{
 		const String & title = m_game->getTitle();
 
-/*		if( !m_fileEngine->initAppDataPath( MENGE_TEXT("Menge\\") + title ) )
-		{
-			MENGE_LOG_ERROR( MENGE_TEXT("Warning: Can't initialize user's data path") );
-		}
-*/
 		const Resolution & resourceResolution = m_game->getResourceResolution();
 
 		bool res = m_renderEngine->initialize();
@@ -319,7 +314,7 @@ namespace Menge
 			m_interface->setHandleMouse( false );
 		}
 
-		initPredefinedResources();
+		//initPredefinedResources();
 
 		return true;
 	}
@@ -346,6 +341,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
+			XML_CASE_ATTRIBUTE_NODE( "BaseDir", "Value", m_baseDir );
 			XML_CASE_ATTRIBUTE_NODE( "Game", "File", m_gameInfo );
 
 			XML_CASE_NODE( "Resource" )
@@ -395,32 +391,48 @@ namespace Menge
 
 		parseArguments( _args );
 
+		MENGE_LOG( "Initializing Profiler System..." );
 		initInterfaceSystem( &m_profilerSystem );
 		this->setProfilerSystem( m_profilerSystem );
 
+		MENGE_LOG( "Inititalizing File System..." );
 		initInterfaceSystem( &m_fileSystem );
 		m_fileSystem->inititalize( m_logSystem );
 		this->setFileSystem( m_fileSystem );
 
-		m_fileSystem->loadPath( "." );
-
+		MENGE_LOG( "Initializing Input System..." );
 		initInterfaceSystem( &m_inputSystem );
 		this->setInputSystem( m_inputSystem );
+		m_inputSystem->regHandle( m_handler );
 
 #	if	MENGE_PARTICLES	== (1)
+		MENGE_LOG( "Initializing Particle System..." );
 		initInterfaceSystem( &m_particleSystem );
 		this->setParticleSystem( m_particleSystem );
 #	endif
 		
+		MENGE_LOG( "Inititalizing Physics2D System..." );
 		initInterfaceSystem( &m_physicSystem2D );
 		this->setPhysicSystem2D( m_physicSystem2D );
 		
+		MENGE_LOG( "Initializing Render System..." );
 		initInterfaceSystem( &m_renderSystem );
 		this->setRenderSystem( m_renderSystem );
 		
+		MENGE_LOG( "Initializing Sound System..." );
 		initInterfaceSystem( &m_soundSystem );
 		this->setSoundSystem( m_soundSystem );
+		bool res = m_soundEngine->initialize();
+		if( m_sound == false )
+		{
+			m_soundEngine->mute( true );
+		}
+		if( res == false )
+		{
+			m_sound = false;
+		}
 
+		MENGE_LOG( "Creating Object Factory..." );
 		OBJECT_FACTORY( Camera2D );
 		OBJECT_FACTORY( Entity );
 		OBJECT_FACTORY( Animation );
@@ -447,6 +459,7 @@ namespace Menge
 		OBJECT_FACTORY( Camera3D );
 		OBJECT_FACTORY( SceneNode3D );
 
+		MENGE_LOG( "Creating Resource Factory..." );
 		RESOURCE_FACTORY( ResourceAnimation );
 		RESOURCE_FACTORY( ResourceCapsuleController );
 		RESOURCE_FACTORY( ResourceEmitterContainer );
@@ -474,21 +487,11 @@ namespace Menge
 		m_desktopResolution[0] = m_interface->getDesktopWidth();
 		m_desktopResolution[1] = m_interface->getDesktopHeight();
 
-		bool res = m_soundEngine->initialize();
-		if( m_sound == false )
-		{
-			m_soundEngine->mute( true );
-		}
-		if( res == false )
-		{
-			m_sound = false;
-		}
-
 		//MENGE_LOG_CRITICAL( MENGE_TEXT("BEGIN") );
 
+		MENGE_LOG( "Initializing Xml Engine..." );
 		m_xmlEngine = new XmlEngine();
 		Holder<XmlEngine>::keep( m_xmlEngine );
-
 		m_xmlEngine->initialize();
 
 		if( m_xmlEngine->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
@@ -499,21 +502,18 @@ namespace Menge
 			return false;
 		}
 
-		m_fileEngine->changeDir( "../" );
+		m_fileEngine->loadPath( m_baseDir );
 
+		MENGE_LOG( "Initializing Script Engine..." );
 		ScriptEngine * scriptEngine = new ScriptEngine();
 		Holder<ScriptEngine>::keep( scriptEngine );
-		
-		MENGE_LOG( "init scriptEngine..." );
 		scriptEngine->init();
 
 		//strcpy( 0, "asdf" );
-
-		m_inputEngine->regHandle( m_handler );
-
+		MENGE_LOG( "Inititalizing Codecs..." );
 		CodecManager::initialize();
 
-		Holder<ResourceManager>::keep( new ResourceManager() );
+		//Holder<ResourceManager>::keep( new ResourceManager() );
 
 		loadGame( _loadPersonality );
 		return true;
@@ -607,16 +607,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseMove( float _x, float _y, int _whell )
 	{
-		InputEngine * inputEngine = Holder<InputEngine>::hostage();
-
 		float oldx = 0.f;
 		float oldy = 0.f;
 
-		if( !inputEngine->getMouseBounded() )
+		if( !m_inputEngine->getMouseBounded() )
 		{ 
-			oldx = inputEngine->getMouseX();
-			oldy = inputEngine->getMouseY();
-			inputEngine->setMousePos( _x, _y );
+			oldx = m_inputEngine->getMouseX();
+			oldy = m_inputEngine->getMouseY();
+			m_inputEngine->setMousePos( _x, _y );
 		}
 		return m_game->handleMouseMove( _x - oldx, _y - oldy, _whell );
 	}
@@ -695,11 +693,6 @@ namespace Menge
 		m_interface->minimizeWindow();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::run()
-	{
-		m_interface->run();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Application::onUpdate( float _timing )
 	{
 		if( !m_update && !m_focus ) return;
@@ -764,7 +757,7 @@ namespace Menge
 		delete m_handler;
 
 		Holder<Game>::destroy();
-		Holder<ResourceManager>::destroy();
+		//Holder<ResourceManager>::destroy();
 
 		Holder<PhysicEngine>::destroy();
 		Holder<PhysicEngine2D>::destroy();

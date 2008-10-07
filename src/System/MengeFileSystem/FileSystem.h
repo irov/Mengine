@@ -31,7 +31,6 @@ namespace Menge
 
 		bool createFolder( const String& _path ) override;
 		bool deleteFolder( const String& _path ) override;
-		bool changeDir( const String& _path ) override;
 
 		bool initAppDataPath( const String& _game ) override;
 		const String& getAppDataPath() override;

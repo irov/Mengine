@@ -72,7 +72,7 @@ bool ALSoundSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	}
 
 	m_logSystem = _logSystem;
-	LOG( "Initializing OpenAL sound system..." );
+	LOG( "Starting OpenAL sound system..." );
 
 	//char *initString = 0L;//"DirectSound", "DirectSound3D", ;
 	m_device = alcOpenDevice( NULL );

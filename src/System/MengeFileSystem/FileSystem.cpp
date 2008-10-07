@@ -289,23 +289,6 @@ namespace Menge
 #endif
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::changeDir( const String& _path )
-	{
-#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
-
-		StringW path_w = Utils::AToW( _path );
-
-		int res = _wchdir( path_w.c_str() );
-
-		if( !res )
-		{
-			return true;
-		}
-#else
-#endif
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::initAppDataPath( const String& _game )
 	{
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS

@@ -697,8 +697,6 @@ namespace Menge
 	{
 		if( !m_update && !m_focus ) return;
 
-		ProfilerEngine* profiler = Holder<ProfilerEngine>::hostage();
-
 		m_inputEngine->update();
 
 		float timing = _timing;
@@ -713,29 +711,29 @@ namespace Menge
 			m_physicEngine->update( 1.0f/30.0f );
 		}
 
-		profiler->beginProfile( "Menge" );
+		m_profilerSystem->beginProfile( "Menge" );
 
 		if( m_physicEngine2D )
 		{
-			profiler->beginProfile( "Physic" );
+			m_profilerSystem->beginProfile( "Physic" );
 			m_physicEngine2D->update( timing );
-			profiler->endProfile( "Physic" );
+			m_profilerSystem->endProfile( "Physic" );
 		}
 
-		profiler->beginProfile( "Game Update" );
+		m_profilerSystem->beginProfile( "Game Update" );
 		m_game->update( timing );
 
-		profiler->endProfile( "Game Update" );
+		m_profilerSystem->endProfile( "Game Update" );
 
-		profiler->beginProfile( "Sound Update" );
+		m_profilerSystem->beginProfile( "Sound Update" );
 		m_soundEngine->update( _timing );
-		profiler->endProfile( "Sound Update" );
+		m_profilerSystem->endProfile( "Sound Update" );
 
 		m_renderEngine->beginScene();
 		m_game->render( m_debugMask );
 		m_renderEngine->endScene();
 
-		profiler->endProfile( "Menge" );
+		m_profilerSystem->endProfile( "Menge" );
 		if( !m_focus && m_update )
 		{
 			m_update = false;

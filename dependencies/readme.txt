@@ -1,6 +1,10 @@
 -------------------------------------------------------------------------------
 NOW:
 
+STLPort
+[5.1.6]
+http://sourceforge.net/project/showfiles.php?group_id=146814&package_id=162032&release_id=631341
+
 python 
 [2.5.2]
 http://www.python.org/ftp/python/2.5.2/Python-2.5.2.tar.bz2

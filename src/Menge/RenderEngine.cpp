@@ -18,8 +18,6 @@
 #	include "ImageCodec.h"
 #	include "Codec.h"
 
-#	include "Utils.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

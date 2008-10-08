@@ -7,6 +7,7 @@
 #	include "Interface/LogSystemInterface.h"
 
 #	include <strsafe.h>
+#	include <cstdio>
 
 #	include "resource.h"
 #	include "Menge/Utils.h"
@@ -35,9 +36,20 @@ static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 	if( hFile != INVALID_HANDLE_VALUE )
 	{
 		DWORD wr;
+		SYSTEMTIME tm;
+		GetLocalTime(&tm);
+
+		OSVERSIONINFO os_ver;
+		os_ver.dwOSVersionInfoSize = sizeof(os_ver);
+		GetVersionEx(&os_ver);
+
 		char wBuffer[4096];
 		::SetFilePointer( hFile, 0, 0, FILE_END );
 		strcpy( wBuffer, "\n=============Unhandled Exception Caugth=============\n" );
+		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
+		StringCchPrintfA( wBuffer, 4096, "Date: %02d.%02d.%d, %02d:%02d:%02d", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
+		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
+		StringCchPrintfA( wBuffer, 4096, "OS: Windows %ld.%ld.%ld", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
 		strcpy( wBuffer, "\nCrash Info:\n" );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
@@ -204,6 +216,26 @@ namespace Menge
 			LOG( "Verbose logging mode enabled" );
 		}
 
+		SYSTEMTIME tm;
+		GetLocalTime(&tm);
+		char strbuffer[1024];
+		std::sprintf( strbuffer, "Date: %02d.%02d.%d, %02d:%02d:%02d", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
+		LOG( strbuffer );
+
+		OSVERSIONINFO os_ver;
+		os_ver.dwOSVersionInfoSize = sizeof(os_ver);
+		GetVersionEx(&os_ver);
+		std::sprintf( strbuffer, "OS: Windows %ld.%ld.%ld", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
+		LOG( strbuffer );
+
+		MEMORYSTATUSEX mem_st;
+		GlobalMemoryStatusEx(&mem_st);
+		std::sprintf( strbuffer, "Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
+			, mem_st.ullTotalPhys/1024L
+			, mem_st.ullAvailPhys/1024L
+			, mem_st.ullTotalPageFile/1024L
+			, mem_st.ullAvailPageFile );
+		LOG( strbuffer );
 
 		LOG( "Initializing Mengine..." );
 		if( m_menge->initialize( config_file, m_commandLine.c_str(), true ) == false )

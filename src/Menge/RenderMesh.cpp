@@ -6,7 +6,6 @@
 #	include "ResourceManager.h"
 #	include "LogEngine.h"
 #	include "ResourceMaterial.h"
-#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

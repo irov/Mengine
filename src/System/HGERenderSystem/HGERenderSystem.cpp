@@ -5,7 +5,6 @@
 #	include "libs/Math/mat4.h"
 #	include <sstream>
 #	include "Menge/LogEngine.h"
-#	include "Menge/Utils.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )

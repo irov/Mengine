@@ -112,10 +112,7 @@ public:
 	static HGE_Impl*	_Interface_Get();
 	void				_PostError( Menge::TCharA *error );
 
-
 	HWND				hwnd;
-
-	bool				bActive;
 	Menge::TCharA		szError[256];
 
 	// System States
@@ -125,8 +122,6 @@ public:
 	bool				bWindowed;
 	bool				bZBuffer;
 	bool				bTextureFilter;
-	bool				bUseSound;
-	int					nSampleRate;
 	int					nHGEFPS;
 	HWND				hwndParent;
 
@@ -172,7 +167,6 @@ public:
 	bool				_GfxInit();
 	void				_GfxDone();
 	bool				_GfxRestore();
-	//void				_AdjustWindow();
 	void				_Resize(int width, int height);
 	bool				_init_lost();
 	void				_render_batch(bool bEndScene=false);
@@ -181,14 +175,6 @@ public:
 	void				_SetProjectionMatrix(int width, int height);
 	
 	bool				m_layer3D;
-
-	// Timer
-	float				fTime;
-	float				fDeltaTime;
-	DWORD				nFixedDelta;
-	int					nFPS;
-	DWORD				t0, t0fps, dt;
-	int					cfps;
 
 	typedef std::vector<D3DDISPLAYMODE> TDispModes;
 	TDispModes m_displayModes;

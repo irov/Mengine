@@ -133,7 +133,7 @@ namespace Menge
 			std::ifstream *origStream = new std::ifstream();
 
 			// Always open in binary mode
-			origStream->open( full_path_w.c_str(), std::ios::in | std::ios::binary );
+			origStream->open( full_path.c_str(), std::ios::in | std::ios::binary );
 
 			// Should check ensure open succeeded, in case fail for some reason.
 			if ( origStream->fail() )
@@ -335,10 +335,10 @@ namespace Menge
 		{
 			filename = m_appDataPath + "\\" + _filename;
 		}
-		StringW filename_w = Utils::AToW( filename );
+		//StringW filename_w = Utils::AToW( filename );
 
 		FileStreamOutStream* outStream = new FileStreamOutStream();
-		if( !outStream->open( filename_w.c_str(), _binary ) )
+		if( !outStream->open( filename.c_str(), _binary ) )
 		{
 			delete outStream;
 			return NULL;

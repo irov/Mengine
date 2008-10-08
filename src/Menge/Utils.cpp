@@ -77,6 +77,13 @@ namespace Menge
 			return str.str();
 		}
 		//////////////////////////////////////////////////////////////////////////
+		String toString( std::size_t _x )
+		{
+			Stringstream str;
+			str << _x;
+			return str.str();
+		}
+		//////////////////////////////////////////////////////////////////////////
 		StringA WToA( const StringW& _stringw )
 		{
 			//return Holder<Application>::hostage()->WToA( _stringw );

@@ -1,8 +1,6 @@
 
 #	include "ImageCodecJPEG.h"
 
-#	include "Utils.h"
-
 extern "C" 
 {
 	#	define XMD_H

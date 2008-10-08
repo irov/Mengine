@@ -2,7 +2,7 @@
 
 #	include "XmlTag.h"
 
-#	include "Utils.h"
+#	include <cstdio>
 
 namespace Menge
 {

@@ -7,7 +7,6 @@
 #	include "LogEngine.h"
 
 #	include "XmlEngine.h"
-#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

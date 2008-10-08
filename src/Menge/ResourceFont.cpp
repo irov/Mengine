@@ -10,6 +10,8 @@
 
 #	include "LogEngine.h"
 #	include "Utils.h"
+
+#	include <cstdio>
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

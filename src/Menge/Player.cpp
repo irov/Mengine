@@ -16,7 +16,6 @@
 
 #	include "RenderEngine.h"
 #	include "PhysicEngine2D.h"
-#	include "Utils.h"
 #	include "ScheduleManager.h"
 
 namespace Menge

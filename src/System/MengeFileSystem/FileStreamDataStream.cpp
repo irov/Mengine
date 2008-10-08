@@ -34,12 +34,12 @@ namespace Menge
 		// it's seems the stream was putted in intermediate state, and will be
 		// fail if try to repositioning relative to current position.
 		// Note: tellg() fail in this case too.
-		if (mpStream->eof())
+		if (m_stream->eof())
 		{
-			mpStream->clear();
+			m_stream->clear();
 			// Use seek relative to either begin or end to bring the stream
 			// back to normal state.
-			mpStream->seekg(0, std::ios::end);
+			m_stream->seekg(0, std::ios::end);
 		}
 #endif 		
 		m_stream->clear(); //Clear fail status in case eof was set

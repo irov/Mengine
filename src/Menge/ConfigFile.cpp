@@ -3,6 +3,8 @@
 #	include "FileEngine.h"
 #	include "Utils.h"
 
+#	include <cstdio>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -141,7 +143,7 @@ namespace Menge
 	{
 		unsigned int val = 0;
 		String setting = getSetting( _key, _section );
-		sscanf_s( setting.c_str(), "%u", &val );
+		std::sscanf( setting.c_str(), "%u", &val );
 		return ( val != 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -149,7 +151,7 @@ namespace Menge
 	{
 		int val = 0;
 		String setting = getSetting( _key, _section );
-		sscanf_s( setting.c_str(), "%d", &val );
+		std::sscanf( setting.c_str(), "%d", &val );
 		return val;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -157,7 +159,7 @@ namespace Menge
 	{
 		unsigned int val = 0;
 		String setting = getSetting( _key, _section );
-		sscanf_s( setting.c_str(), "%u", &val );
+		std::sscanf( setting.c_str(), "%u", &val );
 		return val;
 	}
 	//////////////////////////////////////////////////////////////////////////

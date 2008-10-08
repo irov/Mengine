@@ -356,19 +356,11 @@ namespace Menge
 
 		m_player->update( _timing );
 
-		StringA eventUpdate;
-#	ifdef MENGE_UNICODE
-		eventUpdate = Utils::WToA( m_eventUpdate );
-#	else if
-		eventUpdate = m_eventUpdate;
-#	endif
-
-
 		if( m_pyPersonality && Holder<ScriptEngine>::hostage()
-			->hasModuleFunction( m_pyPersonality, eventUpdate ) )
+			->hasModuleFunction( m_pyPersonality, m_eventUpdate ) )
 		{
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, eventUpdate, "(f)", _timing );
+				->callModuleFunction( m_pyPersonality, m_eventUpdate, "(f)", _timing );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -842,6 +834,9 @@ namespace Menge
 		{
 			outStream->write( "DefaultAccountName = " + m_currentAccount->getName() + "\n" );
 		}
+
+		Holder<FileEngine>::hostage()
+			->closeOutStream( outStream );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::saveAccount( const String& _accountName )

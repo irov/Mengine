@@ -12,8 +12,6 @@
 #	include "Scene.h"
 #	include "Arrow.h"
 #	include "Game.h"
-#	include "Utils.h"
-
 
 #	include "pybind/pybind.hpp"
 

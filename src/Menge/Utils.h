@@ -11,6 +11,7 @@ namespace Menge
 		TStringVector split( const String& _str, const String& _delims = "\t\n ", unsigned int _maxSplits = 0 );
 		void trim( String& str, bool left = true, bool right = true );
 		String toString( int x );
+		String toString( std::size_t _x );
 		StringA WToA( const StringW& _stringw );
 		StringW AToW( const StringA& _stringa );
 		String getLine( DataStreamInterface* _stream,  bool _trimAfter = true );

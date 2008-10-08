@@ -15,7 +15,6 @@
 #	include "ResourceManager.h"
 
 #	include "math/angle.h"
-#	include "Utils.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

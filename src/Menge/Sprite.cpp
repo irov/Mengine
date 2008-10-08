@@ -15,7 +15,6 @@
 #	include "LogEngine.h"
 
 #	include "math/box2.h"
-#	include "Utils.h"
 
 namespace	Menge
 {

@@ -1,8 +1,6 @@
 
 #	include "FileStreamOutStream.h"
 
-#	include "Menge/Utils.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -19,7 +17,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileStreamOutStream::open( const wchar_t* _filename, bool _binary )
+	bool FileStreamOutStream::open( const char* _filename, bool _binary )
 	{
 		std::ios_base::open_mode mode = std::ios_base::out;
 		//if( _binary )
@@ -33,15 +31,6 @@ namespace Menge
 			return false;
 		}
 
-/*		if( _binary == false )
-		{
-#if MENGE_ENDIAN == MENGE_ENDIAN_LITTLE
-			uint16 bom = 0xFEFF;	// UTF-16LE
-#else
-			uint16 bom = 0xFFFE;	// UTF-16BE
-#endif
-			m_fstream.write( (const char*)&bom, 2 );
-		}*/
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -52,12 +41,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileStreamOutStream::write( const Menge::String& _str )
 	{
-		//Fixme?? maybe Unicode write??
-/*#ifdef MENGE_UNICODE
-		m_fstream << Utils::WToA( _str );
-#else
-		m_fstream << _str;
-#endif*/
 		write( (const char*)_str.c_str(), _str.size() * sizeof(TChar) );
 	}
 	//////////////////////////////////////////////////////////////////////////

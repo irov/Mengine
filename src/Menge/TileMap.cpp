@@ -11,7 +11,6 @@
 #	include "SceneManager.h"
 #	include "Player.h"
 #	include "Camera2D.h"
-#	include "Utils.h"
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////

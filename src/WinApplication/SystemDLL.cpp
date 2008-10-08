@@ -39,7 +39,7 @@ WinSystemDLL::WinSystemDLL(const Menge::String& _filename )
 //////////////////////////////////////////////////////////////////////////
 WinSystemDLL::~WinSystemDLL()
 {
-	printf("free library - %s \n", m_filename.c_str() );
+	//printf("free library - %s \n", m_filename.c_str() );
 	if( FreeLibrary( (HMODULE) m_hInstance ) == 0 )
 	{
 		assert( !"FreeLibrary failure!" );

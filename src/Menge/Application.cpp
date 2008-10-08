@@ -82,7 +82,7 @@
 #	include "Scene.h"
 
 #	include "Codec.h"
-#	include "Utils.h"
+#	include <locale.h>
 
 namespace Menge
 {
@@ -224,7 +224,7 @@ namespace Menge
 		if( m_game->loader( m_gameInfo ) == false )
 		{
 			MENGE_LOG_ERROR( "Invalid game file \"%s\""
-				, m_gameInfo );
+				, m_gameInfo.c_str() );
 			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
 			return false;
 		}
@@ -256,6 +256,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createRenderWindow( WindowHandle _handle )
 	{
+		m_desktopResolution[0] = m_interface->getDesktopWidth();
+		m_desktopResolution[1] = m_interface->getDesktopHeight();
+
 		const String & title = m_game->getTitle();
 
 		const Resolution & resourceResolution = m_game->getResourceResolution();
@@ -387,7 +390,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const String& _applicationFile, const char* _args, bool _loadPersonality )
 	{
-		String loc = ::setlocale( LC_CTYPE, "" ); // default (OS) locale
+		String loc = setlocale( LC_CTYPE, "" ); // default (OS) locale
 
 		parseArguments( _args );
 

@@ -6,7 +6,6 @@
 ** Core system functions
 */
 
-
 #include "hge_impl.h"
 
 #	include "Interface/LogSystemInterface.h"
@@ -14,21 +13,8 @@
 #define LOWORDINT(n) ((int)((signed short)(LOWORD(n))))
 #define HIWORDINT(n) ((int)((signed short)(HIWORD(n))))
 
-
-//const char *WINDOW_CLASS_NAME = "HGE__WNDCLASS";
-
-//LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-
-
 int			nRef=0;
 HGE_Impl*	pHGE=0;
-
-
-
-/*BOOL APIENTRY DllMain(HANDLE, DWORD, LPVOID)
-{
-    return TRUE;
-}*/
 
 
 HGE* CALL hgeCreate( int ver )
@@ -64,7 +50,7 @@ void CALL HGE_Impl::Release()
 		{
 			pHGE->System_Shutdown();
 		}
-		//Resource_RemoveAllPacks();
+
 		delete pHGE;
 		pHGE = 0;
 	}
@@ -73,48 +59,20 @@ void CALL HGE_Impl::Release()
 
 bool CALL HGE_Impl::System_Initiate( Menge::LogSystemInterface* _logSystem )
 {
-	OSVERSIONINFO	os_ver;
-	SYSTEMTIME		tm;
-	MEMORYSTATUS	mem_st;
-
 	m_logSystem = _logSystem;
-	// Log system info
-
-	System_Log( "HGE Started..\n" );
-
-	System_Log( "HGE version: %X.%X", HGE_VERSION>>8, HGE_VERSION & 0xFF);
-	GetLocalTime(&tm);
-	System_Log( "Date: %02d.%02d.%d, %02d:%02d:%02d\n", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond);
-
-	//System_Log("Application: %s",szWinTitle);
-	os_ver.dwOSVersionInfoSize=sizeof(os_ver);
-	GetVersionEx(&os_ver);
-	System_Log( "OS: Windows %ld.%ld.%ld",os_ver.dwMajorVersion,os_ver.dwMinorVersion,os_ver.dwBuildNumber);
-
-	GlobalMemoryStatus(&mem_st);
-	System_Log( "Memory: %ldK total, %ldK free\n",mem_st.dwTotalPhys/1024L,mem_st.dwAvailPhys/1024L);
 
 	if(!_GfxInit()) 
 	{ 
 		System_Shutdown(); 
 		return false; 
 	}
-	System_Log( "Init done.\n" );
-
-	fTime = 0.0f;
-	dt = cfps = 0;
-	nFPS = 0;
 
 	return true;
 }
 
 void CALL HGE_Impl::System_Shutdown()
 {
-	System_Log( "\nFinishing.." );
-
 	_GfxDone();
-
-	System_Log( "The End." );
 }
 
 
@@ -306,7 +264,7 @@ void CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
 
 		case HGE_SCREENBPP:		if(!pD3DDevice) nScreenBPP=value; break;
 
-		case HGE_FPS:			if(VertArray) break;
+		/*case HGE_FPS:			if(VertArray) break;
 
 								if(pD3DDevice)
 								{
@@ -330,7 +288,7 @@ void CALL HGE_Impl::System_SetStateInt(hgeIntState state, int value)
 								nHGEFPS=value;
 								if(nHGEFPS>0) nFixedDelta=int(1000.0f/value);
 								else nFixedDelta=0;
-								break;
+								break;*/
 	}
 }
 
@@ -341,7 +299,6 @@ bool CALL HGE_Impl::System_GetStateBool(hgeBoolState state)
 		case HGE_WINDOWED:		return bWindowed;
 		case HGE_ZBUFFER:		return bZBuffer;
 		case HGE_TEXTUREFILTER:	return bTextureFilter;
-		case HGE_USESOUND:		return bUseSound;
 	}
 
 	return false;
@@ -365,7 +322,6 @@ int CALL HGE_Impl::System_GetStateInt(hgeIntState state)
 		case HGE_SCREENWIDTH:	return nScreenWidth;
 		case HGE_SCREENHEIGHT:	return nScreenHeight;
 		case HGE_SCREENBPP:		return nScreenBPP;
-		case HGE_SAMPLERATE:	return nSampleRate;
 		case HGE_FPS:			return nHGEFPS;
 	}
 
@@ -379,22 +335,15 @@ Menge::TCharA* CALL HGE_Impl::System_GetErrorMessage()
 
 void CALL HGE_Impl::System_Log( const Menge::TCharA *szFormat, ...)
 {
-	//FILE *hf = NULL;
 	va_list ap;
 	
-	//if(!szLogFile[0]) return;
-
-	//hf = fopen(szLogFile, "a");
-	//if(!hf) return;
 	Menge::TCharA str[1024];
 
 	va_start(ap, szFormat);
 	vsprintf(str, szFormat, ap);
 	va_end(ap);
 
-	//fprintf(hf, "\n");
 	m_logSystem->logMessage( str );
-	//fclose(hf);
 }
 
 void CALL HGE_Impl::System_Snapshot(const char *filename)
@@ -430,7 +379,6 @@ void CALL HGE_Impl::System_Snapshot(const char *filename)
 HGE_Impl::HGE_Impl()
 {
 	hwnd = 0;
-	bActive = false;
 	szError[0] = 0;
 
 	pD3D = 0;
@@ -444,11 +392,6 @@ HGE_Impl::HGE_Impl()
 	pIB = 0;
 	VertArray = 0;
 	textures = 0;
-
-	nHGEFPS=HGEFPS_UNLIMITED;
-	fTime=0.0f;
-	fDeltaTime=0.0f;
-	nFPS=0;
 	
 	nScreenWidth=800;
 	nScreenHeight=600;
@@ -456,9 +399,6 @@ HGE_Impl::HGE_Impl()
 	bWindowed=false;
 	bZBuffer=false;
 	bTextureFilter=true;
-	bUseSound=true;
-	nSampleRate=44100;
-	nFixedDelta=0;
 	hwndParent=0;
 }
 

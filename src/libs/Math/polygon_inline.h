@@ -300,7 +300,8 @@ namespace mt
 		return std::equal(
 			&_a.front(),
 			&_a.back(), 
-			stdext::checked_array_iterator<const vec2f *>(&_b.front(), size_b) 
+			//stdext::checked_array_iterator<const vec2f *>(&_b.front(), size_b) 
+			&_b.front()
 			);
 	}
 

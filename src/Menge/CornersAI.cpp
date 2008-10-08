@@ -462,16 +462,16 @@ int CornersAI::autoMove( int _level )
 	}
 
 	// x1-y1-x2-y2
-	for( int i = 0; i < 8; i++ )
+	/*for( int i = 0; i < 8; i++ )
 	{
 		for(int j = 0; j < 8; j++)
 		{
-			printf("%d ", m_board[j][i] );
+			std::printf("%d ", m_board[j][i] );
 		}
-		printf("\n");
-	}
+		std::printf("\n");
+	}*/
 
-	printf( "AI moves\nfrom: %d %d - to: %d %d\n", Result.moveFrom.x, Result.moveFrom.y, Result.moveTo.x, Result.moveTo.y );
+	//printf( "AI moves\nfrom: %d %d - to: %d %d\n", Result.moveFrom.x, Result.moveFrom.y, Result.moveTo.x, Result.moveTo.y );
 	return Result.moveFrom.x*1000 + Result.moveFrom.y*100 + Result.moveTo.x * 10 + Result.moveTo.y;
 }
 

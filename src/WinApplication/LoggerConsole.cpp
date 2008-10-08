@@ -5,6 +5,7 @@
 #	define _WIN32_WINNT 0x0500	// allow AttachConsole
 #	include <Windows.h>
 #	include <io.h>
+#	include <cstdio>
 
 namespace Menge
 {

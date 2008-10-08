@@ -11,7 +11,6 @@
 #	include "LogEngine.h"
 
 #	include "ResourceManager.h"
-#	include "Utils.h"
 
 namespace Menge
 {
@@ -133,8 +132,11 @@ namespace Menge
 
 		_prepareSound(m_currentPlayList->getTrack());
 
-		m_music->setVolume( m_volume );
-		m_music->play();
+		if( m_music )
+		{
+			m_music->setVolume( m_volume );
+			m_music->play();
+		}
 		m_playing = true;
 	}
 	//////////////////////////////////////////////////////////////////////////

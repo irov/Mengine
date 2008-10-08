@@ -10,7 +10,6 @@
 #	include "LogEngine.h"
 
 #	include "Math/rand.h"
-#	include "Utils.h"
 namespace	Menge
 {
 	OBJECT_IMPLEMENT(Animation)

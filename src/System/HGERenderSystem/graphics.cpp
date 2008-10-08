@@ -14,8 +14,6 @@
 #include <d3d8types.h>
 #	include <cassert>
 
-#	include "Menge/Utils.h"
-
 D3DFORMAT s_toD3DFormat( int _format )
 {
 	switch( _format )

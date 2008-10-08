@@ -10,7 +10,6 @@
 #	include "Camera2D.h"
 
 #	include "Math/box2.h"
-#	include "Utils.h"
 
 #	include <sstream>
 

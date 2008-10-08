@@ -12,7 +12,8 @@
 #	include "XmlTag.h"
 
 #	include "LogEngine.h"
-#	include "Utils.h"
+
+#	include <cstdio>
 
 #ifdef XML_LARGE_SIZE
 #if defined(XML_USE_MSC_EXTENSIONS) && _MSC_VER < 1400

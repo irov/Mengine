@@ -22,6 +22,7 @@ namespace Menge
 		void loader( XmlElement * _xml ) override;
 		void _loaderVertices( XmlElement * _xml );
 		void _render( unsigned int _debugMask ) override;
+		void addVertex( const mt::vec2f& _vertex );
 
 	protected:
 
@@ -41,10 +42,27 @@ namespace Menge
 		std::vector<const std::vector<Quad>*> m_tileGeometry;
 		std::vector<const std::vector<Quad>*> m_junkGeometry;
 
+		struct TQuad
+		{
+			mt::vec2f a,b,c,d;
+			float s,t;
+		};
+		typedef std::vector<TQuad> TVectorQuad;
+		typedef std::map< const RenderImageInterface*, TVectorQuad > TQuadMap;
+		TQuadMap m_edges;		// quads on edges with texture
+		TQuadMap m_edge_juncs;	// quads between edges with same texture
+		TVectorQuad m_juncs;	// quads between edges with different texture
+
 		ResourceTilePolygon * m_tilePolygonResource;
 		String m_tileResource;
 
-		const mt::TVectorPoints * m_triangles;
-		const mt::TVectorPoints * m_uvs;
+		mt::TVectorPoints m_triangles;
+		mt::TVectorPoints m_uvs;
+		mt::TVectorPoints m_poly;
+		const RenderImageInterface* m_image;
+		const RenderImageInterface* m_junc_image;
+
+		void proccessEdges_();
+		const ResourceTilePolygon::TileDecl* getNextTileDecl_( const ResourceTilePolygon::TTileDecls& _decls, int _i );
 	};
 };

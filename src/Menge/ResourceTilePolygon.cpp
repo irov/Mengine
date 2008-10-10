@@ -29,28 +29,22 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			XML_CASE_NODE( "Vertex" )
-			{
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE_MEMBER( "Value", &ResourceTilePolygon::addVertex );
-				}
-			}
-
 			XML_CASE_NODE( "Tile" )
 			{
-				float minAngle;
-				float maxAngle;
-				String imageName;
+				//float minAngle;
+				//float maxAngle;
+				//String imageName;
+				TileDecl tileDecl;
 
 				XML_FOR_EACH_ATTRIBUTES()
 				{
-					XML_CASE_ATTRIBUTE( "MinAngle", minAngle );
-					XML_CASE_ATTRIBUTE( "MaxAngle", maxAngle );
-					XML_CASE_ATTRIBUTE( "Image", imageName );
+					XML_CASE_ATTRIBUTE( "MinAngle", tileDecl.min_angle );
+					XML_CASE_ATTRIBUTE( "MaxAngle", tileDecl.max_angle );
+					XML_CASE_ATTRIBUTE( "Image", tileDecl.image_resource );
+					XML_CASE_ATTRIBUTE( "JuncImage", tileDecl.junc_image_resource );
 				}
 
-				m_tiles.push_back(Tile(minAngle,maxAngle,imageName));
+				m_tiles.push_back( tileDecl );
 			}
 
 			XML_CASE_NODE( "TileJunc" )
@@ -65,156 +59,89 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceTilePolygon::addVertex(const mt::vec2f & _vertex)
-	{
-		m_poly.push_back(_vertex);
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const RenderImageInterface * ResourceTilePolygon::getImage() const
 	{
 		return m_image;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceTilePolygon::getTileImage(unsigned int _tile) const
-	{
-		return m_tiles[_tile].m_image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::TVectorPoints * ResourceTilePolygon::getTriangles() const
-	{
-		return &m_triangles;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::TVectorPoints * ResourceTilePolygon::getTextureCoords() const
-	{
-		return &m_uvs;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourceTilePolygon::getMinAngle(unsigned int _tile) const
-	{
-		return m_tiles[_tile].m_minAngle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourceTilePolygon::getMaxAngle(unsigned int _tile) const
-	{
-		return m_tiles[_tile].m_maxAngle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TListQuad * ResourceTilePolygon::getTileGeometry(unsigned int _tile) const
-	{
-		return &m_tiles[_tile].m_geometry;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TListQuad * ResourceTilePolygon::getTileJunks(unsigned int _tile) const
-	{
-		return &m_tiles[_tile].m_junks;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TListConcavePolygon * ResourceTilePolygon::getShapeList() const
-	{
-		return &m_concaves;
-	}	
 	//////////////////////////////////////////////////////////////////////////
 	const RenderImageInterface * ResourceTilePolygon::getPlugImage() const
 	{
 		return m_imageJunc;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceTilePolygon::getTileCount() const
-	{
-		return m_tiles.size();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ResourceTilePolygon::_release()
 	{
-		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
-		m_resource = 0;
-
-		Holder<ResourceManager>::hostage()->releaseResource( m_resourceJunc );
-		m_resourceJunc = 0;
-
-		for(std::list<ResourceImage*>::iterator it = m_imageResources.begin(); it != m_imageResources.end(); it++)
+		for(std::vector<ResourceImage*>::iterator it = m_imageResources.begin(); it != m_imageResources.end(); it++)
 		{
 			Holder<ResourceManager>::hostage()->releaseResource(*it);
 		}
 
 		m_imageResources.clear();
-		m_uvs.clear();
-		m_concaves.clear();
-		m_triangles.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceTilePolygon::_compile()
 	{
-		m_resource = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImage>( m_resourcename );
+		ResourceManager* resourceManager = Holder<ResourceManager>::hostage();
 
-		if(m_resource == 0)
+		ResourceImage* resourceImage = 
+			resourceManager->getResourceT<ResourceImage>( m_resourcename );
+
+		if( resourceImage == 0 )
 		{
 			MENGE_LOG_ERROR( "Image resource not getting \"%s\""
 				, m_resourcename.c_str() );
 			return false;
 		}
 
-		m_resourceJunc = 
-			Holder<ResourceManager>::hostage()
-			->getResourceT<ResourceImage>( m_juncName );
+		m_image = resourceImage->getImage( 0 );
+		m_imageResources.push_back( resourceImage );
 
-		if(m_resourceJunc == 0)
+		resourceImage = 
+			resourceManager->getResourceT<ResourceImage>( m_juncName );
+
+		if( resourceImage == 0 )
 		{
 			MENGE_LOG_ERROR( "Image resource not getting \"%s\""
 				, m_juncName.c_str() );
 			return false;
 		}
 
-		m_imageJunc = m_resourceJunc->getImage(0);
+		m_imageJunc = resourceImage->getImage( 0 );
+		m_imageResources.push_back( resourceImage );
 
-		mt::TVectorPoints::size_type size = m_poly.size();
-		mt::TVectorPoints::size_type capacity = 5 * size;
-
-		m_triangles.reserve(capacity);
-		m_uvs.reserve(capacity);
-
-		bool result = mt::triangulate_polygon(m_poly,m_triangles);
-
-		if(result == false)
+		for( TTileDecls::size_type i = 0; i < m_tiles.size(); i++ )
 		{
-			MENGE_LOG_ERROR( "can't triangulate polygon" );
-			return false;
+			if( m_tiles[i].image_resource.empty() == false )
+			{
+				resourceImage = resourceManager->getResourceT<ResourceImage>( m_tiles[i].image_resource );
+				if( resourceImage != NULL )
+				{
+					m_tiles[i].image = resourceImage->getImage( 0 );
+					m_imageResources.push_back( resourceImage );
+				}
+			}
+			if( m_tiles[i].junc_image_resource.empty() == false )
+			{
+				resourceImage = resourceManager->getResourceT<ResourceImage>( m_tiles[i].junc_image_resource );
+				if( resourceImage != NULL )
+				{
+					m_tiles[i].junc_image = resourceImage->getImage( 0 );
+					m_imageResources.push_back( resourceImage );
+				}
+			}
 		}
-
-		m_image = m_resource->getImage(0);
-
-		float inv_width = 1.f / m_image->getWidth();
-		float inv_height = 1.f / m_image->getHeight();
-
-		for(mt::TVectorPoints::size_type i = 0; i < m_triangles.size(); i++)
-		{
-			mt::vec2f uv(m_triangles[i].x * inv_width, m_triangles[i].y * inv_height);
-			m_uvs.push_back(uv);
-		}
-
-		mt::decompose_concave(m_poly,m_concaves);
-
-		if(result == false)
-		{
-			MENGE_LOG_ERROR( "can't divide into polygons" );
-			return false;
-		}
-
-		mt::vec2f juncSize = mt::vec2f(m_imageJunc->getWidth(),m_imageJunc->getHeight());
+		/*mt::vec2f juncSize = mt::vec2f(m_imageJunc->getWidth(),m_imageJunc->getHeight());
 
 		// FIXXXXXXX
 		for(std::vector<Tile>::iterator it = m_tiles.begin(); it != m_tiles.end(); it++)
 		{
 			create(*it,m_poly,juncSize);
-		}
+		}*/
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceTilePolygon::create(Tile & _tile, const mt::TVectorPoints & _poly, const mt::vec2f & _juncSize)
+	/*void ResourceTilePolygon::create(Tile & _tile, const mt::TVectorPoints & _poly, const mt::vec2f & _juncSize)
 	{
 		ResourceImage * imageResource =
 			Holder<ResourceManager>::hostage()
@@ -300,6 +227,11 @@ namespace Menge
 				found_junction = false;
 			}
 		}
+	}*/
+	//////////////////////////////////////////////////////////////////////////
+	const ResourceTilePolygon::TTileDecls& ResourceTilePolygon::getTileDecls() const
+	{
+		return m_tiles;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

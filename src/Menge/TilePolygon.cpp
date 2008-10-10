@@ -301,7 +301,7 @@ namespace Menge
 			{
 				if( mt::angle_in_interval_deg( angle, tileDecls[j].min_angle, tileDecls[j].max_angle ) )
 				{
-					if( tileDecls[i].image_resource.empty() == false )
+					if( tileDecls[j].image_resource.empty() == false )
 					{
 						TQuad quad;
 						float width = tileDecls[j].image->getWidth();

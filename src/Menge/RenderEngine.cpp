@@ -531,7 +531,7 @@ namespace Menge
 		m_interface->setRenderArea( m_renderArea.m );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::endScene( bool _swapBuffers )
+	void RenderEngine::endScene()
 	{
 		//m_interface->beginLayer2D();
 
@@ -542,8 +542,13 @@ namespace Menge
 			m_interface->renderLine( line.color, line.begin.m, line.end.m );
 		}*/
 
-		m_interface->endScene( _swapBuffers );
+		m_interface->endScene();
 		lines.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::swapBuffers()
+	{
+		m_interface->swapBuffers();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderMesh( const std::vector<TVertex>& _vertexData, 

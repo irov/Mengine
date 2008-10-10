@@ -257,17 +257,18 @@ bool CALL HGE_Impl::Gfx_BeginScene( HTARGET targ )
 	return true;
 }
 
-void CALL HGE_Impl::Gfx_EndScene( bool _swapBuffers )
+void CALL HGE_Impl::Gfx_EndScene()
 {
-	// sync GPU with CPU
-	if( _swapBuffers )
-	{
-		syncCPU_();
-	}
-
 	_render_batch(true);
 	pD3DDevice->EndScene();
-	if(!pCurTarget && _swapBuffers ) 
+}
+
+void CALL HGE_Impl::Gfx_SwapBuffers()
+{
+	// sync GPU with CPU
+	syncCPU_();
+
+	if( !pCurTarget ) 
 	{
 		HRESULT hr = pD3DDevice->Present( NULL, NULL, NULL, NULL );
 		if( FAILED( hr ) )
@@ -1607,7 +1608,9 @@ void HGE_Impl::Gfx_SetListener( Gfx_Listener* _listener )
 
 void HGE_Impl::syncCPU_()
 {
-	_render_batch( false );
+	//_render_batch( false );
+	pD3DDevice->BeginScene();
+
 	pD3DDevice->SetRenderTarget( m_syncTargets[m_frames % 2], 0 );
 	//m_syncTargets[m_frames % 2]->Release();
 	_SetProjectionMatrix( 2, 2 );
@@ -1660,4 +1663,6 @@ void HGE_Impl::syncCPU_()
 	D3DLOCKED_RECT rect;
 	hr = m_syncTemp->LockRect( &rect, NULL, D3DLOCK_READONLY );
 	m_syncTemp->UnlockRect();
+
+	pD3DDevice->EndScene();
 }

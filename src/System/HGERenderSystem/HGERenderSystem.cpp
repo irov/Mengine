@@ -479,10 +479,15 @@ void HGERenderSystem::beginScene()
 
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::endScene( bool _swapBuffers )
+void HGERenderSystem::endScene()
 {
-	m_hge->Gfx_EndScene( _swapBuffers );
+	m_hge->Gfx_EndScene();
 	m_inRender = false;
+}
+//////////////////////////////////////////////////////////////////////////
+void HGERenderSystem::swapBuffers()
+{
+	m_hge->Gfx_SwapBuffers();
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::beginLayer2D()
@@ -615,7 +620,7 @@ void HGERenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 	{
 		if( m_inRender )
 		{
-			m_hge->Gfx_EndScene( false );
+			m_hge->Gfx_EndScene();
 		}
 		else
 		{

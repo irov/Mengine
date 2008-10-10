@@ -186,6 +186,7 @@ namespace Menge
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
 
+		::timeBeginPeriod( 1 );
 		if( !::QueryPerformanceFrequency( &m_timerFrequency ) )
 		{
 			return false;
@@ -307,6 +308,7 @@ namespace Menge
 			::DestroyWindow( m_hWnd );
 			m_hWnd = NULL;
 		}
+		::timeEndPeriod( 1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::stop()

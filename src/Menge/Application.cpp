@@ -325,7 +325,10 @@ namespace Menge
 	bool Application::initGame()
 	{
 		bool result = m_game->init();
-
+		if( result )
+		{
+			m_game->update( 0.0f );
+		}
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -700,6 +703,11 @@ namespace Menge
 	{
 		if( !m_update && !m_focus ) return;
 
+		m_renderEngine->beginScene();
+		m_game->render( m_debugMask );
+		m_renderEngine->endScene();
+		//m_renderEngine->swapBuffers();
+
 		m_inputEngine->update();
 
 		float timing = _timing;
@@ -732,9 +740,10 @@ namespace Menge
 		m_soundEngine->update( _timing );
 		m_profilerSystem->endProfile( "Sound Update" );
 
-		m_renderEngine->beginScene();
-		m_game->render( m_debugMask );
-		m_renderEngine->endScene();
+		//m_renderEngine->beginScene();
+		//m_game->render( m_debugMask );
+		//m_renderEngine->endScene();
+		m_renderEngine->swapBuffers();
 
 		m_profilerSystem->endProfile( "Menge" );
 		if( !m_focus && m_update )

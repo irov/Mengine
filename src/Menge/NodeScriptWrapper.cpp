@@ -303,7 +303,7 @@ namespace Menge
 			mt::mul_v4_m4( max, mt::vec4f( _max.x, _max.y, 0.0f, 1.0f ), vt );
 			Holder<RenderEngine>::hostage()->screenshot( image, mt::vec4f( min.x, min.y, max.x, max.y) );
 
-			Holder<RenderEngine>::hostage()->endScene( false );
+			Holder<RenderEngine>::hostage()->endScene();
 
 			//image->writeToFile( "bl.bmp" );
 
@@ -352,7 +352,7 @@ namespace Menge
 			Holder<RenderEngine>::hostage()->beginScene();
 			Holder<Game>::hostage()->render();
 			Holder<RenderEngine>::hostage()->endScene();
-			Holder<RenderEngine>::hostage()->render();
+			Holder<RenderEngine>::hostage()->swapBuffers();
 		}
 		static void writeImageToFile( const String& _resource, int _frame, const String& _filename )
 		{

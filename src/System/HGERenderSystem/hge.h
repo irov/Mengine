@@ -271,7 +271,8 @@ public:
 	virtual bool		CALL	Gfx_CreateRenderWindow() = 0;
 
 	virtual bool		CALL	Gfx_BeginScene(HTARGET target=0) = 0;
-	virtual void		CALL	Gfx_EndScene( bool _swapBuffers = true ) = 0;
+	virtual void		CALL	Gfx_EndScene() = 0;
+	virtual void		CALL	Gfx_SwapBuffers() = 0;
 	virtual void		CALL	Gfx_Clear(DWORD color) = 0;
 	virtual void		CALL	Gfx_RenderLine(float x1, float y1, float x2, float y2, DWORD color=0xFFFFFFFF, float z=0.5f) = 0;
 	virtual void		CALL	Gfx_RenderTriple(const hgeTriple *triple) = 0;

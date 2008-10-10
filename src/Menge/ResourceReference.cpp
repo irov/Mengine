@@ -32,7 +32,7 @@ namespace Menge
 	bool ResourceReference::_incrementZero()
 	{
 		const String & name = this->getName();
-		Holder<ProfilerEngine>::hostage()->addResourceToProfile(name);
+		//Holder<ProfilerEngine>::hostage()->addResourceToProfile(name);
 
 		return compile();
 	}

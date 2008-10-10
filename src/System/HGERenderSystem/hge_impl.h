@@ -69,7 +69,8 @@ public:
 	virtual bool		CALL	Gfx_CreateRenderWindow();
 
 	virtual bool		CALL	Gfx_BeginScene(HTARGET target=0);
-	virtual void		CALL	Gfx_EndScene( bool _swapBuffers = true );
+	virtual void		CALL	Gfx_EndScene();
+	virtual void		CALL	Gfx_SwapBuffers();
 	virtual void		CALL	Gfx_Clear(DWORD color);
 	virtual void		CALL	Gfx_RenderLine(float x1, float y1, float x2, float y2, DWORD color=0xFFFFFFFF, float z=0.5f);
 	virtual void		CALL	Gfx_RenderTriple(const hgeTriple *triple);

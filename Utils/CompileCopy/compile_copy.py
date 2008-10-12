@@ -5,11 +5,13 @@ import os.path
 import shutil
 import string
 import compileall
+import py_compile
 import re
 import xml.dom.minidom 
 import pprint
 import subprocess
 import struct
+import ConfigParser
 from Tkinter import *
 import tkFileDialog, tkMessageBox
 from xml.dom import *
@@ -38,17 +40,13 @@ def getGameDirectory(src):
     return os.path.dirname(os.path.dirname(src))
 
 def getIconPathFromGameXML(src,IconType):
-    dom = xml.dom.minidom.parse(src)
-    app_tag = dom.getElementsByTagName("Game")[0]
+    config = ConfigParser.ConfigParser()
+    config.read(src)
     
-    iconresource = app_tag.getElementsByTagName(IconType)
+    Path = []
     
-    if(iconresource==[]):
-        return []
-    
-    Path = iconresource[0].getAttribute("Value")
-    
-    dom.unlink()
+    if config.has_option("GAME",IconType):
+        Path = config.get("GAME", IconType)
     
     return Path
 
@@ -113,7 +111,7 @@ def copyfiles():
     del copy_files[:]
         
 def copytree(src, dst):
-    compileall.compile_dir(src, rx=re.compile('/[.]svn'), force=True)
+    #compileall.compile_dir(src, rx=re.compile('/[.]svn'), force=True)
     
     os.makedirs(dst)
     
@@ -126,6 +124,14 @@ def copytree(src, dst):
         
         ext = os.path.splitext(name)[1]
         
+        if(ext==".py"):
+            srcname = os.path.join(src, name)
+            srcname = os.path.normpath(srcname)
+            srcname = srcname.lower()
+            py_compile.compile(srcname,srcname+"o")
+            dstname = os.path.join(dst, name)
+            shutil.copy2(srcname+"o", dstname+"o")
+             
         if (ext in bad_ext) and not (name in good_files):
             continue
         
@@ -137,7 +143,7 @@ def copytree(src, dst):
             continue
                 
         dstname = os.path.join(dst, name)
-        
+           
         if os.path.isdir(srcname):
             copytree(srcname, dstname)
         else:
@@ -367,7 +373,6 @@ def copytonewfolder(src, DestGameDir):
     print "Done!"
     
 def main():
-
     master = Tk()
     master.withdraw()
         

@@ -289,23 +289,28 @@ namespace Menge
 		mt::TVectorPoints::size_type pointsNum = m_poly.size();
 		const ResourceTilePolygon::TTileDecls& tileDecls = m_tilePolygonResource->getTileDecls();
 
-		for( std::size_t i = 0; i < pointsNum; i++ )
+		for( mt::TVectorPoints::size_type i = 0; i < pointsNum; i++ )
 		{
-			int next_i = (i + 1) % pointsNum;
-			int next_next_i = (i + 2) % pointsNum;
+			mt::TVectorPoints::size_type next_i = (i + 1) % pointsNum;
+			mt::TVectorPoints::size_type next_next_i = (i + 2) % pointsNum;
 
 			mt::vec2f edge = m_poly[next_i] - m_poly[i];
 			mt::vec2f next_edge = m_poly[next_next_i] - m_poly[next_i];
 			float angle = mt::signed_angle(edge) * mt::m_rad2deg;
-			for( ResourceTilePolygon::TTileDecls::size_type j = 0; j < tileDecls.size(); j++ )
+
+			for( ResourceTilePolygon::TTileDecls::const_iterator 
+				it = tileDecls.begin(),
+				it_end = tileDecls.end();
+			it != it_end;
+			++it )
 			{
-				if( mt::angle_in_interval_deg( angle, tileDecls[j].min_angle, tileDecls[j].max_angle ) )
+				if( mt::angle_in_interval_deg( angle, it->min_angle, it->max_angle ) )
 				{
-					if( tileDecls[j].image_resource.empty() == false )
+					if( it->image_resource.empty() == false )
 					{
 						TQuad quad;
-						float width = tileDecls[j].image->getWidth();
-						float height = tileDecls[j].image->getHeight();
+						float width = it->image->getWidth();
+						float height = it->image->getHeight();
 						mt::vec2f half_height = mt::perp( edge ) / edge.length() * height * 0.5f; 
 						quad.a = m_poly[i] - half_height;
 						quad.b = m_poly[next_i] - half_height;
@@ -315,16 +320,16 @@ namespace Menge
 						quad.s = edge.length() / width;
 						quad.t = mt::length_v2_v2(quad.b, quad.c) / height;
 
-						m_edges[ tileDecls[j].image ].push_back( quad );
+						m_edges[ it->image ].push_back( quad );
 					}
 
 					const ResourceTilePolygon::TileDecl* nextDecl = getNextTileDecl_( tileDecls, next_i );
 
-					if( nextDecl == &( tileDecls[j] ) && tileDecls[j].junc_image_resource.empty() == false )
+					if( nextDecl == &( *it ) && it->junc_image_resource.empty() == false )
 					{
 						TQuad quad;
-						float width = tileDecls[j].junc_image->getWidth();
-						float height = tileDecls[j].junc_image->getHeight();
+						float width = it->junc_image->getWidth();
+						float height = it->junc_image->getHeight();
 						mt::vec2f normal = mt::perp( edge ) + mt::perp( next_edge );
 						mt::vec2f half_height = normal / normal.length() * height * 0.5f; 
 						mt::vec2f half_width = mt::perp( normal ) / normal.length() * width * 0.5f;
@@ -333,9 +338,9 @@ namespace Menge
 						quad.c = m_poly[next_i] + half_height + half_width;
 						quad.d = m_poly[next_i] + half_height - half_width;
 
-						m_edge_juncs[ tileDecls[j].junc_image ].push_back( quad );
+						m_edge_juncs[ it->junc_image ].push_back( quad );
 					}
-					else if( nextDecl != &( tileDecls[j] ) && m_junc_image != NULL )
+					else if( nextDecl != &( *it ) && m_junc_image != NULL )
 					{
 						TQuad quad;
 						float width = m_junc_image->getWidth();

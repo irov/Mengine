@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="MengeFileSystem"
+	Name="MengeWin32FileSystem"
 	ProjectGUID="{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}"
 	RootNamespace="OgreFileSystem"
 	Keyword="Win32Proj"

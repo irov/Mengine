@@ -55,6 +55,10 @@ theora
 [1.0beta3]
 http://svn.xiph.org/trunk/theora
 
+CMake
+[2.6]
+http://www.cmake.org/cmake/resources/software.html
+
 --------------------------------------------------------------------------------
 TODO:
 

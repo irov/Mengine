@@ -53,7 +53,6 @@ namespace Menge
 			EBlendFactor _dst = BF_ONE_MINUS_SOURCE_ALPHA);
 
 		void renderTriple(		
-			const mt::mat3f & _transform, 
 			const mt::vec2f & _a,
 			const mt::vec2f & _b,
 			const mt::vec2f & _c,

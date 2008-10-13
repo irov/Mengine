@@ -24,6 +24,8 @@ const Menge::TCharA * config_file = "application.xml";
 #	define LOG_ERROR( message )\
 	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_ERROR );
 
+bool running = true;
+HANDLE hEvent;
 //////////////////////////////////////////////////////////////////////////
 static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
@@ -261,8 +263,27 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	DWORD WINAPI ThreadProc(LPVOID lpParameter)
+	{
+		while (running)
+		{
+			Sleep(16);
+			SetEvent(hEvent);
+		}
+		SetEvent(hEvent);
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::loop()
 	{
+		DWORD       threadId;
+		HANDLE      hThread;
+
+		hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+		hThread = CreateThread(NULL, 0, ThreadProc, 0, 0, &threadId);
+		SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
+
+
 		MSG  msg;
 		POINT pos;
 		LARGE_INTEGER time;
@@ -298,7 +319,8 @@ namespace Menge
 			}
 			else
 			{
-				::Sleep(1);
+				//::Sleep(1);
+				WaitForSingleObject(hEvent, INFINITE);
 			}
 		}
 
@@ -314,6 +336,7 @@ namespace Menge
 	void WinApplication::stop()
 	{
 		m_running = false;
+		running = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static LRESULT CALLBACK s_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )

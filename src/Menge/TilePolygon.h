@@ -64,5 +64,14 @@ namespace Menge
 
 		void proccessEdges_();
 		const ResourceTilePolygon::TileDecl* getNextTileDecl_( const ResourceTilePolygon::TTileDecls& _decls, int _i );
+
+		// transformed
+		TQuadMap m_tr_edges;
+		TQuadMap m_tr_edge_juncs;
+		TVectorQuad m_tr_juncs;
+		mt::TVectorPoints m_tr_triangles;
+
+		void _invalidateWorldMatrix() override;
+		void updatePoints_();
 	};
 };

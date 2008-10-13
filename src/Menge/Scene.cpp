@@ -95,6 +95,15 @@ namespace	Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Scene::layerHide( const String& _layer, bool _value )
+	{
+		Layer* layer = getLayer_( _layer );
+		if( layer != NULL )
+		{
+			layer->hide( _value );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Scene::handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
 		if( isActivate() == false || m_blockInput == true )

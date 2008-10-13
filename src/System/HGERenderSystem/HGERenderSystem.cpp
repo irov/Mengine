@@ -360,8 +360,7 @@ void HGERenderSystem::renderImage(const float * _renderVertex,
 	}*/
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::renderTriple(const float * _transform,  
-								  const float * _a, 
+void HGERenderSystem::renderTriple(const float * _a, 
 								  const float * _b, 
 								  const float * _c, 
 								  const float * _uv0, 
@@ -374,18 +373,18 @@ void HGERenderSystem::renderTriple(const float * _transform,
 {
 	hgeTriple triangle;
 
-	triangle.v[0].x = _transform[0] * _a[0] + _transform[3] * _a[1] + _transform[6];
-	triangle.v[0].y = _transform[1] * _a[0] + _transform[4] * _a[1] + _transform[7];
+	triangle.v[0].x = _a[0];
+	triangle.v[0].y = _a[1];
 	triangle.v[0].z = m_layer;
 	triangle.v[0].col = _color;
 
-	triangle.v[1].x = _transform[0] * _b[0] + _transform[3] * _b[1] + _transform[6];
-	triangle.v[1].y = _transform[1] * _b[0] + _transform[4] * _b[1] + _transform[7];
+	triangle.v[1].x = _b[0];
+	triangle.v[1].y = _b[1];
 	triangle.v[1].z = m_layer;
 	triangle.v[1].col = _color;
 
-	triangle.v[2].x = _transform[0] * _c[0] + _transform[3] * _c[1] + _transform[6];
-	triangle.v[2].y = _transform[1] * _c[0] + _transform[4] * _c[1] + _transform[7];
+	triangle.v[2].x = _c[0];
+	triangle.v[2].y = _c[1];
 	triangle.v[2].z = m_layer;
 	triangle.v[2].col = _color;
 

@@ -76,8 +76,6 @@ namespace Menge
 
 		m_switchScene = true;
 		m_destroyOldScene = _destroyOld;
-
-		scheduleRemoveAll();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Player::getCurrentScene()
@@ -305,6 +303,9 @@ namespace Menge
 	{
 		if( m_restartScene )		// just restart scene
 		{
+			scheduleRemoveAll();
+			m_scheduleManager->update( 0.0f );
+
 			m_restartScene = false;
 			m_switchScene = false;
 
@@ -323,6 +324,8 @@ namespace Menge
 		}
 		else if( m_switchScene == true )
 		{
+			scheduleRemoveAll();
+
 			m_renderCamera2D->deactivate();
 
 			m_switchScene = false;

@@ -376,7 +376,7 @@ namespace Menge
 			EBlendFactor _src,
 			EBlendFactor _dst) = 0;
 
-		virtual void renderTriple(const float * _transform,  
+		virtual void renderTriple(  
 			const float * _a, 
 			const float * _b, 
 			const float * _c, 

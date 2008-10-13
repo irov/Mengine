@@ -323,7 +323,6 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderTriple(		
-			const mt::mat3f & _transform, 
 			const mt::vec2f & _a,
 			const mt::vec2f & _b,
 			const mt::vec2f & _c,
@@ -336,7 +335,6 @@ namespace Menge
 			EBlendFactor _dst)
 	{
 		m_interface->renderTriple(
-			_transform.m,
 			_a.m,
 			_b.m,
 			_c.m,

@@ -91,11 +91,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::update( float _timing )
 	{
-		/*if( !m_updatable )
-		{
-			return;
-		}*/
-
 		m_updating = true;
 
 		for( TListSchedules::iterator 

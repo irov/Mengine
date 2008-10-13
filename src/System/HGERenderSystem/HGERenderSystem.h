@@ -42,8 +42,7 @@ public:
 		Menge::EBlendFactor _src,
 		Menge::EBlendFactor _dst) override;
 
-	void renderTriple(const float * _transform,  
-								  const float * _a, 
+	void renderTriple(			  const float * _a, 
 								  const float * _b, 
 								  const float * _c, 
 								  const float * _uv0, 

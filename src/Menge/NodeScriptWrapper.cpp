@@ -847,6 +847,7 @@ namespace Menge
 			pybind::proxy_<Scene, pybind::bases<Node> >("Scene", false)
 				.def( "layerAppend", &Scene::layerAppend )
 				.def( "layerRemove", &Scene::layerRemove )
+				.def( "layerHide", &Scene::layerHide )
 				.def( "getNode", &Scene::getNode )
 				.def( "getLayerSize", &Scene::getLayerSize )
 				//.def( "setOffsetPosition", &Scene::setOffsetPosition )

@@ -181,6 +181,7 @@ namespace Menge
 		}
 
 		::QueryPerformanceCounter(&m_timer);
+		srand( m_timer.LowPart );
 
 		m_menge = new Application( this );
 		if( m_menge == NULL )
@@ -299,15 +300,7 @@ namespace Menge
 
 			m_menge->onUpdate( m_frameTime );
 
-			if( m_focus == false )
-			{
-				::Sleep( 100 );
-			}
-			else
-			{
-				//::Sleep(1);
-				WaitForSingleObject(m_hEvent, INFINITE);
-			}
+			WaitForSingleObject(m_hEvent, INFINITE);
 		}
 
 		// Clean up

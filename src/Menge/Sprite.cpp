@@ -209,6 +209,8 @@ namespace	Menge
 			mt::vec2f size = m_resource->getMaxSize( m_currentImageIndex );
 
 			m_alignOffset = size * -0.5f;
+			//m_alignOffset.x = ::floorf( m_alignOffset.x + 0.5f );
+			//m_alignOffset.y = ::floorf( m_alignOffset.y + 0.5f );
 		}
 
 		mt::vec2f offset = m_resource->getOffset( m_currentImageIndex );

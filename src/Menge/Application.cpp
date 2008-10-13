@@ -856,6 +856,7 @@ namespace Menge
 			m_renderEngine->beginScene();
 			m_game->render( m_debugMask );
 			m_renderEngine->endScene();
+			m_renderEngine->swapBuffers();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

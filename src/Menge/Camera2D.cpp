@@ -80,6 +80,9 @@ namespace	Menge
 				pos.y = m_boundRightLower.y;
 			}
 
+			pos.x = ::floorf( pos.x + 0.5f );
+			pos.y = ::floorf( pos.y + 0.5f );
+
 			setLocalPosition( pos );
 		}
 	}

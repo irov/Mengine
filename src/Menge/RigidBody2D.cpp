@@ -643,6 +643,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RigidBody2D::_updateBoundingBox( mt::box2f & _boundingBox )
 	{
+		Node::_updateBoundingBox( _boundingBox );
+
+		const mt::mat3f& wm = getWorldMatrix();
 		for( TShapeList::iterator it = m_shapeList.begin(),
 			it_end = m_shapeList.end();
 			it != it_end;
@@ -650,7 +653,9 @@ namespace Menge
 		{
 			for( int i = 0; i < (*it).num_points(); i++ )
 			{
-				mt::add_internal_point( _boundingBox, (*it)[i] );
+				mt::vec2f p;
+				mt::mul_v2_m3( p, (*it)[i], wm );
+				mt::add_internal_point( _boundingBox, p );
 			}
 		}
 	}

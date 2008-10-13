@@ -184,6 +184,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::setUpdatable( bool _upatable )
 	{
+
 		m_updatable = _upatable;
 		for( TListSchedules::iterator it = m_schedules.begin(), it_end = m_schedules.end();
 			it != it_end;

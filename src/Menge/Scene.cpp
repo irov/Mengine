@@ -431,6 +431,8 @@ namespace	Menge
 		it != it_end;
 		++it)
 		{
+			if( (*it)->isRenderable() == false ) continue;
+
 			Holder<RenderEngine>::hostage()
 				->setRenderTarget( m_renderTarget );
 

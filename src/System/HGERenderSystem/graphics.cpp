@@ -915,7 +915,7 @@ bool HGE_Impl::Gfx_CreateRenderWindow()
 	d3dppW.BackBufferWidth  = nScreenWidth;
 	d3dppW.BackBufferHeight = nScreenHeight;
 	d3dppW.hDeviceWindow    = hwnd;
-
+	//nHGEFPS = HGEFPS_VSYNC;
 	if(nHGEFPS==HGEFPS_VSYNC) d3dppW.SwapEffect = D3DSWAPEFFECT_COPY_VSYNC;
 	else					  d3dppW.SwapEffect = D3DSWAPEFFECT_COPY;
 

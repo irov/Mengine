@@ -13,9 +13,7 @@
 #endif
 
 #	include "Interface/ApplicationInterface.h"
-
 #	include <Windows.h>
-//#	include <string>
 
 namespace Menge
 {
@@ -38,12 +36,10 @@ namespace Menge
 		void createWindow(WindowHandle _handle);
 
 		WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen ) override;
-		//float getMonitorAspectRatio() override;
 		std::size_t getDesktopWidth() const override;
 		std::size_t getDesktopHeight() const override;
 
 		void minimizeWindow() override;
-		//void setPrimaryMonitorAspect( float _aspect );
 		void setDesktopResolution( std::size_t _width, std::size_t _height );
 		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 		float getDeltaTime() override;
@@ -55,6 +51,7 @@ namespace Menge
 
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+		DWORD threadFrameSignal();
 
 	private:
 		Application* m_menge;
@@ -71,6 +68,7 @@ namespace Menge
 		HANDLE m_mutex;	// for multiple instance tracking
 		bool m_focus;
 		String m_name;
+		HANDLE m_hEvent;
 
 		std::size_t m_windowWidth;
 		std::size_t m_windowHeight;
@@ -84,5 +82,6 @@ namespace Menge
 		LoggerConsole* m_loggerConsole;
 		StringA m_commandLine;
 
+		unsigned long m_frameTiming;
 	};
 }	// namespace Menge

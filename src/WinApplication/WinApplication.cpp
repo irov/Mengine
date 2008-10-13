@@ -24,8 +24,6 @@ const Menge::TCharA * config_file = "application.xml";
 #	define LOG_ERROR( message )\
 	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_ERROR );
 
-bool running = true;
-HANDLE hEvent;
 //////////////////////////////////////////////////////////////////////////
 static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
@@ -91,31 +89,17 @@ static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 	}
 	return EXCEPTION_EXECUTE_HANDLER;
 }
-#	include <sstream>
-
 //////////////////////////////////////////////////////////////////////////
-/*bool initInterfaceSystem( Menge::ApplicationInterface **_system )
+DWORD WINAPI s_threadFrameSignal(LPVOID lpParameter)
 {
-	try
-	{
-		*_system = new Menge::WinApplication();
-	}
-	catch (...)
-	{
-		return false;
-	}
-
-	return true;
+	Menge::WinApplication* winApp = reinterpret_cast<Menge::WinApplication*>( lpParameter );
+	return winApp->threadFrameSignal();
 }
-//////////////////////////////////////////////////////////////////////////
-void releaseInterfaceSystem( Menge::ApplicationInterface *_system )
-{
-	delete static_cast<Menge::WinApplication*>( _system );
-}
-*/
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+	static const unsigned long s_activeFrameTime = 16;
+	static const unsigned long s_inactiveFrameTime = 100;
 	//////////////////////////////////////////////////////////////////////////
 	WinApplication::WinApplication( HINSTANCE _hInstance, const StringA& _commandLine ) 
 		: m_running( true )
@@ -131,6 +115,8 @@ namespace Menge
 		, m_loggerConsole( NULL )
 		, m_commandLine( _commandLine )
 		, m_menge( NULL )
+		, m_hEvent( INVALID_HANDLE_VALUE )
+		, m_frameTiming( s_activeFrameTime )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -260,30 +246,30 @@ namespace Menge
 		{
 			return false;
 		}
+
+		DWORD       threadId;
+		HANDLE      hThread;
+
+		m_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+		hThread = CreateThread(NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &threadId);
+		SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DWORD WINAPI ThreadProc(LPVOID lpParameter)
+	DWORD WinApplication::threadFrameSignal()
 	{
-		while (running)
+		while( m_running )
 		{
-			Sleep(16);
-			SetEvent(hEvent);
+			Sleep( m_frameTiming );
+			SetEvent( m_hEvent );
 		}
-		SetEvent(hEvent);
+		SetEvent( m_hEvent );
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::loop()
 	{
-		DWORD       threadId;
-		HANDLE      hThread;
-
-		hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
-		hThread = CreateThread(NULL, 0, ThreadProc, 0, 0, &threadId);
-		SetThreadPriority(hThread, THREAD_PRIORITY_TIME_CRITICAL);
-
-
 		MSG  msg;
 		POINT pos;
 		LARGE_INTEGER time;
@@ -320,7 +306,7 @@ namespace Menge
 			else
 			{
 				//::Sleep(1);
-				WaitForSingleObject(hEvent, INFINITE);
+				WaitForSingleObject(m_hEvent, INFINITE);
 			}
 		}
 
@@ -336,7 +322,6 @@ namespace Menge
 	void WinApplication::stop()
 	{
 		m_running = false;
-		running = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static LRESULT CALLBACK s_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -448,6 +433,14 @@ namespace Menge
 			{
 				//::GetWindowInfo( m_hWnd, &m_wndInfo);
 				m_focus = (LOWORD(wParam) != WA_INACTIVE);
+				if( m_focus )
+				{
+					m_frameTiming = s_activeFrameTime;
+				}
+				else
+				{
+					m_frameTiming = s_inactiveFrameTime;
+				}
 				m_menge->onFocus( m_focus );
 				break;
 			}

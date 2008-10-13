@@ -103,12 +103,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{A5E5AB
 		src\Config\Typedef.h = src\Config\Typedef.h
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MengeFileSystem", "src\System\MengeFileSystem\FileSystem.vcproj", "{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MengeLogSystem", "src\System\MengeLogSystem\MengeLogSystem.vcproj", "{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
@@ -128,6 +122,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OISInputSystem", "src\Syste
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MengeProfilerSystem", "src\System\MengeProfilerSystem\MengeProfilerSystem.vcproj", "{13098B37-D6D0-4E94-ABB1-91E9BF053D6F}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MengeWin32FileSystem", "src\System\MengeWin32FileSystem\FileSystem.vcproj", "{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
@@ -192,12 +192,6 @@ Global
 		{17127636-4C7D-42C4-AA40-79DAEE145E8B}.Release|Win32.ActiveCfg = Release|Win32
 		{17127636-4C7D-42C4-AA40-79DAEE145E8B}.Release|Win32.Build.0 = Release|Win32
 		{17127636-4C7D-42C4-AA40-79DAEE145E8B}.Release|x64.ActiveCfg = Release|Win32
-		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}.Debug|Win32.ActiveCfg = Debug|Win32
-		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}.Debug|Win32.Build.0 = Debug|Win32
-		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}.Debug|x64.ActiveCfg = Debug|Win32
-		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}.Release|Win32.ActiveCfg = Release|Win32
-		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}.Release|Win32.Build.0 = Release|Win32
-		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}.Release|x64.ActiveCfg = Release|Win32
 		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}.Debug|Win32.ActiveCfg = Debug|Win32
 		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}.Debug|Win32.Build.0 = Debug|Win32
 		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}.Debug|x64.ActiveCfg = Debug|Win32
@@ -222,6 +216,12 @@ Global
 		{13098B37-D6D0-4E94-ABB1-91E9BF053D6F}.Release|Win32.ActiveCfg = Release|Win32
 		{13098B37-D6D0-4E94-ABB1-91E9BF053D6F}.Release|Win32.Build.0 = Release|Win32
 		{13098B37-D6D0-4E94-ABB1-91E9BF053D6F}.Release|x64.ActiveCfg = Release|Win32
+		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}.Debug|Win32.Build.0 = Debug|Win32
+		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}.Debug|x64.ActiveCfg = Debug|Win32
+		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}.Release|Win32.ActiveCfg = Release|Win32
+		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}.Release|Win32.Build.0 = Release|Win32
+		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -233,10 +233,10 @@ Global
 		{BD7118E1-FE5A-4A90-AA51-EEB8717E2485} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{8AF4E2F5-C021-40B7-A40C-59200252B28B} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{17127636-4C7D-42C4-AA40-79DAEE145E8B} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
-		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{C547930F-B96F-42EA-AF9F-C510C418D82C} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{F055D8C9-3510-4462-BB47-0CBB9224C643} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{13098B37-D6D0-4E94-ABB1-91E9BF053D6F} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
+		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 	EndGlobalSection
 EndGlobal

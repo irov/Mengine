@@ -8,15 +8,10 @@
 #	include "FileStreamOutStream.h"
 
 #	include "shlobj.h"
-
-//#	include <tchar.h>
-
 #	include <Config/Config.h>
 
-#if TARGET_PLATFORM == TP_WINDOWS
 #	include <direct.h>
 #	include <ShellAPI.h>
-#endif
 
 #	include "Menge/Utils.h"
 
@@ -54,12 +49,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_isAbsolutePath( const String& _path )
 	{
-#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 		if ( /*::isalpha( unsigned char( _path[0] ) ) && */_path[1] == ':' )
 		{
 			return true;
 		}
-#endif
 		return _path[0] == '/' || _path[0] == '\\';
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,8 +86,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::loadPath( const String& _path )
 	{
-		//m_arch = Ogre::ArchiveManager::getSingleton().load( _path, "FileSystem" );
-		//m_fileManager->setInitPath( _path );
 		m_initPath = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -206,8 +197,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::createFolder( const String& _path )
 	{
-#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS 
-#
 		/*size_t required_size = mbstowcs( NULL, _path, 0 ) + 1; 
 
 		std::vector<wchar_t> convpath( required_size );
@@ -225,28 +214,17 @@ namespace Menge
 		{
 		return true;
 		}*/
-//#ifdef MENGE_UNICODE
 		StringW path_w = Utils::AToW( _path );
 		int res = _wmkdir( path_w.c_str() );
-/*#else
-		int res = _mkdir( _path.c_str() );
-#endif*/
 		if( !res )
 		{
 			return true;
 		}
-
-#else
-		assert(!"Not released yet!");
-#endif
-
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::deleteFolder( const String& _path )
 	{
-#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
-
 		StringW path_w = Utils::AToW( _path );
 
 		SHFILEOPSTRUCT fs;
@@ -284,15 +262,10 @@ namespace Menge
 			return false;
 		}
 		return true;
-#else
-		return false;
-#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::initAppDataPath( const String& _game )
 	{
-#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
-
 		StringW game_w = Utils::AToW( _game );
 
 		HRESULT hr;
@@ -314,9 +287,6 @@ namespace Menge
 			return false;
 		}
 		return true;
-#else
-		return false;
-#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& FileSystem::getAppDataPath()
@@ -353,7 +323,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::deleteFile( const String& _filename )
 	{
-#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 		SHFILEOPSTRUCT fs;
 		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTW));
 		fs.hwnd = NULL;
@@ -370,8 +339,6 @@ namespace Menge
 			return false;
 		}
 		return true;
-#else
-#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::inititalize( LogSystemInterface* _logSystemInterface )

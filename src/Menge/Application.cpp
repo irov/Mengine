@@ -292,6 +292,11 @@ namespace Menge
 				title, m_currentResolution.getWidth(), m_currentResolution.getHeight(), isFullscreen );
 		}
 
+		/*if(winHandle == NULL)
+		{
+			return true;
+		}*/
+
 		int bits = m_game->getBits();
 		int FSAAType = m_game->getFSAAType();
 		int FSAAQuality = m_game->getFSAAQuality();
@@ -308,7 +313,7 @@ namespace Menge
 
 		m_renderEngine->setTextureFiltering( isTextureFiltering );
 
-		m_inputEngine->initialize( winHandle );
+		//m_inputEngine->initialize( winHandle );
 
 		if( isFullscreen == true )
 		{
@@ -708,7 +713,7 @@ namespace Menge
 		m_renderEngine->endScene();
 		//m_renderEngine->swapBuffers();
 
-		m_inputEngine->update();
+		//m_inputEngine->update();
 
 		float timing = _timing;
 

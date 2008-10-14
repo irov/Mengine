@@ -1,0 +1,3 @@
+LIBRARY	"SDLRenderSystem"
+EXPORTS initInterfaceSystem 	@1
+EXPORTS releaseInterfaceSystem 	@2

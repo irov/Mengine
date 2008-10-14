@@ -162,7 +162,6 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-
 			XML_CASE_NODE( "Scenes" )
 			{
 				String path;

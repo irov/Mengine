@@ -56,6 +56,8 @@ namespace Menge
 
 		m_logSystem = m_menge->initializeLogSystem();
 
+
+		// хз
 		setDesktopResolution(1024,768);
 
 		if( m_menge->initialize( config_file, m_commandLine.c_str(), true ) == false )
@@ -90,7 +92,9 @@ namespace Menge
 
 		while( m_running )
 		{
-/*			SDL_Event event;
+			//ВРЕМЕННО!!!!  это все должно обрабатываться в OIS. а зваться через setHandler...
+			SDL_Event event;
+
 
 			while(SDL_PollEvent(&event))
 			{
@@ -168,7 +172,7 @@ namespace Menge
 					break;
 				}
 			}
-*/
+
 			::QueryPerformanceCounter(&time);
 			m_frameTime = static_cast<float>( time.QuadPart - m_lastTime.QuadPart ) / m_timerFrequency.QuadPart * 1000.0f;
 			m_lastTime = time;

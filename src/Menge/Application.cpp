@@ -313,7 +313,7 @@ namespace Menge
 
 		m_renderEngine->setTextureFiltering( isTextureFiltering );
 
-		//m_inputEngine->initialize( winHandle );
+		m_inputEngine->initialize( winHandle );
 
 		if( isFullscreen == true )
 		{

@@ -7,12 +7,12 @@
 #	include <string>
 #	include <map>
 
-class SDLTexture : public Menge::RenderImageInterface
+class OGLTexture : public Menge::RenderImageInterface
 {
 public:
-	SDLTexture();
-	~SDLTexture();
-	SDLTexture(const Menge::String& _name, std::size_t _width, std::size_t _height );
+	OGLTexture();
+	~OGLTexture();
+	OGLTexture(const Menge::String& _name, std::size_t _width, std::size_t _height );
 public:
 	void load( const Menge::TextureDesc & _desc );
 	std::size_t getWidth() const override;

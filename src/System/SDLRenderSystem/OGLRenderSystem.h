@@ -4,7 +4,7 @@
 #	include "libs/Math/box2.h"
 
 #	include "SDL_opengl.h"
-#	include "SDLTexture.h"
+#	include "OGLTexture.h"
 
 #	include <SDL.h>
 
@@ -12,12 +12,12 @@
 
 #	include "SDLWindow.h"
 
-class SDLRenderSystem 
+class OGLRenderSystem 
 	: public Menge::RenderSystemInterface
 {
 public:
-	SDLRenderSystem();
-	~SDLRenderSystem();
+	OGLRenderSystem();
+	~OGLRenderSystem();
 
 	bool initialize( Menge::LogSystemInterface* _logSystem ) override;
 	bool createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle,
@@ -103,7 +103,7 @@ private:
 
 	struct RenderTargetInfo
 	{
-		SDLTexture* texture;
+		OGLTexture* texture;
 		bool dirty;
 	};
 

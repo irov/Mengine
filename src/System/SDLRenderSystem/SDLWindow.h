@@ -4,7 +4,7 @@
 #	include "libs/Math/box2.h"
 
 #	include "SDL_opengl.h"
-#	include "SDLTexture.h"
+#	include "OGLTexture.h"
 
 #	include <SDL.h>
 

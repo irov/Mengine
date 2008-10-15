@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="SDLRenderSystem"
+	Name="OGLRenderSystem"
 	ProjectGUID="{81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC}"
 	RootNamespace="OgreInputSystem"
 	Keyword="Win32Proj"
@@ -169,23 +169,23 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\SDLRenderSystem.cpp"
+			RelativePath=".\OGLRenderSystem.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\SDLRenderSystem.def"
+			RelativePath=".\OGLRenderSystem.def"
 			>
 		</File>
 		<File
-			RelativePath=".\SDLRenderSystem.h"
+			RelativePath=".\OGLRenderSystem.h"
 			>
 		</File>
 		<File
-			RelativePath=".\SDLTexture.cpp"
+			RelativePath=".\OGLTexture.cpp"
 			>
 		</File>
 		<File
-			RelativePath=".\SDLTexture.h"
+			RelativePath=".\OGLTexture.h"
 			>
 		</File>
 		<File

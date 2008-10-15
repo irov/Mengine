@@ -1,7 +1,7 @@
-#	include "SDLTexture.h"
+#	include "OGLTexture.h"
 #	include <assert.h>
 
-SDLTexture::SDLTexture()
+OGLTexture::OGLTexture()
 : m_texture(0)
 , m_width(0)
 , m_height(0)
@@ -9,7 +9,7 @@ SDLTexture::SDLTexture()
 , m_glPixelFormat(GL_BGRA_EXT)
 {}
 
-SDLTexture::SDLTexture(const Menge::String& _name, std::size_t _width, std::size_t _height )
+OGLTexture::OGLTexture(const Menge::String& _name, std::size_t _width, std::size_t _height )
 : m_name(_name)
 , m_width(_width)
 , m_height(_height)
@@ -19,17 +19,17 @@ SDLTexture::SDLTexture(const Menge::String& _name, std::size_t _width, std::size
 	//
 }
 
-SDLTexture::~SDLTexture()
+OGLTexture::~OGLTexture()
 {
 	glDeleteTextures( 1, &m_texture );
 }
 
-GLuint SDLTexture::getGLTexture() const
+GLuint OGLTexture::getGLTexture() const
 {
 	return m_texture;
 }
 
-void SDLTexture::load( const Menge::TextureDesc & _desc )
+void OGLTexture::load( const Menge::TextureDesc & _desc )
 {
 	int ncomponents = 4;
 
@@ -86,27 +86,27 @@ void SDLTexture::load( const Menge::TextureDesc & _desc )
 	m_buffer = static_cast<unsigned char*>(_desc.buffer);
 }
 
-std::size_t SDLTexture::getWidth() const
+std::size_t OGLTexture::getWidth() const
 {
 	return m_width;
 }
 
-std::size_t SDLTexture::getHeight() const
+std::size_t OGLTexture::getHeight() const
 {
 	return m_height;
 }
 
-const Menge::String & SDLTexture::getDescription() const
+const Menge::String & OGLTexture::getDescription() const
 {
 	return m_name;
 }
 
-unsigned char* SDLTexture::lock( int* _pitch, bool _readOnly )
+unsigned char* OGLTexture::lock( int* _pitch, bool _readOnly )
 {
 	return m_buffer;
 }
 
-void SDLTexture::unlock()
+void OGLTexture::unlock()
 {
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 	
@@ -117,7 +117,7 @@ void SDLTexture::unlock()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-Menge::PixelFormat SDLTexture::getPixelFormat() 
+Menge::PixelFormat OGLTexture::getPixelFormat() 
 {
 	return m_format;
 }

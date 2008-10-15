@@ -1,4 +1,4 @@
-#	include "SDLRenderSystem.h"
+#	include "OGLRenderSystem.h"
 #	include <SDL_syswm.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -6,7 +6,7 @@ bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
 {
 	try
 	{
-		*_ptrInterface = new SDLRenderSystem();
+		*_ptrInterface = new OGLRenderSystem();
 	}
 	catch (...)
 	{
@@ -18,33 +18,33 @@ bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
 //////////////////////////////////////////////////////////////////////////
 void releaseInterfaceSystem( Menge::RenderSystemInterface* _ptrInterface )
 {
-	delete static_cast<SDLRenderSystem*>(_ptrInterface);
+	delete static_cast<OGLRenderSystem*>(_ptrInterface);
 }
 //////////////////////////////////////////////////////////////////////////
-SDLRenderSystem::SDLRenderSystem()
+OGLRenderSystem::OGLRenderSystem()
 : m_inRender( false )
 , m_layer( 1.0f )
 {
 }
 //////////////////////////////////////////////////////////////////////////
-SDLRenderSystem::~SDLRenderSystem()
+OGLRenderSystem::~OGLRenderSystem()
 {
 	m_SDLWindow.destroy();
 
 	SDL_Quit();
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::swapBuffers()
+void OGLRenderSystem::swapBuffers()
 {
 	m_SDLWindow.swapBuffers(false);
 }
 //////////////////////////////////////////////////////////////////////////
-int SDLRenderSystem::getNumDIP() const
+int OGLRenderSystem::getNumDIP() const
 {
 	return 1;
 }
 //////////////////////////////////////////////////////////////////////////
-bool SDLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
+bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 {
 	bool initialized = true;
 
@@ -95,7 +95,7 @@ void glDisable2D( void )
 	glPopMatrix();   
 }  
 //////////////////////////////////////////////////////////////////////////
-bool SDLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
+bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 {
 	NameValuePairList values;
 	values.insert(std::make_pair("colourDepth","32"));
@@ -116,7 +116,7 @@ bool SDLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 }
 
 //////////////////////////////////////////////////////////////////////////
-const std::vector<int> & SDLRenderSystem::getResolutionList()
+const std::vector<int> & OGLRenderSystem::getResolutionList()
 {
 	static std::vector<int> list;
 	list.clear();
@@ -133,42 +133,42 @@ const std::vector<int> & SDLRenderSystem::getResolutionList()
 	return list;
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const float * _rect /*= 0 */ )
+void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const float * _rect /*= 0 */ )
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::render()
+void OGLRenderSystem::render()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::setContentResolution( const float * _resolution )
+void OGLRenderSystem::setContentResolution( const float * _resolution )
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::setProjectionMatrix( const float * _projection )
+void OGLRenderSystem::setProjectionMatrix( const float * _projection )
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::setViewMatrix( const float * _view )
+void OGLRenderSystem::setViewMatrix( const float * _view )
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::setWorldMatrix( const float * _world )
+void OGLRenderSystem::setWorldMatrix( const float * _world )
 {
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::RenderImageInterface * SDLRenderSystem::createImage( const Menge::String & _name,
+Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String & _name,
 														   float _width, float _height )
 {
-	SDLTexture * texture = new SDLTexture( _name, ::floorf( _width + 0.5f ), ::floorf( _height + 0.5f ) );
+	OGLTexture * texture = new OGLTexture( _name, ::floorf( _width + 0.5f ), ::floorf( _height + 0.5f ) );
 	m_textureMap.insert( std::make_pair( _name, static_cast<Menge::RenderImageInterface*>( texture ) ) );
 	texture->incRef();
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::RenderImageInterface * SDLRenderSystem::createRenderTargetImage( const Menge::String & _name, float _width, float _height )
+Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Menge::String & _name, float _width, float _height )
 {
-	SDLTexture* texture = new SDLTexture( _name, _width, _height );
+	OGLTexture* texture = new OGLTexture( _name, _width, _height );
 	RenderTargetInfo rtgtInfo;
 	rtgtInfo.dirty = true;
 	rtgtInfo.texture = texture;
@@ -177,9 +177,9 @@ Menge::RenderImageInterface * SDLRenderSystem::createRenderTargetImage( const Me
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::RenderImageInterface * SDLRenderSystem::loadImage( const Menge::TextureDesc& _desc )
+Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::TextureDesc& _desc )
 {
-	SDLTexture * sdl_texture = new SDLTexture();
+	OGLTexture * sdl_texture = new OGLTexture();
 	sdl_texture->load(_desc);
 	m_textureMap.insert( std::make_pair( _desc.name, static_cast<Menge::RenderImageInterface*>( sdl_texture ) ) );
 	sdl_texture->incRef();
@@ -187,9 +187,9 @@ Menge::RenderImageInterface * SDLRenderSystem::loadImage( const Menge::TextureDe
 	return sdl_texture;
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::releaseImage( Menge::RenderImageInterface * _image )
+void OGLRenderSystem::releaseImage( Menge::RenderImageInterface * _image )
 {
-	SDLTexture * texture = static_cast<SDLTexture*>( _image );
+	OGLTexture * texture = static_cast<OGLTexture*>( _image );
 
 	if( !_image )
 	{
@@ -208,25 +208,25 @@ void SDLRenderSystem::releaseImage( Menge::RenderImageInterface * _image )
 	
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::RenderImageInterface* SDLRenderSystem::getImage( const Menge::String& _desc ) const 
+Menge::RenderImageInterface* OGLRenderSystem::getImage( const Menge::String& _desc ) const 
 {
 	TTextureMap::const_iterator it = m_textureMap.find( _desc );
 	if( it != m_textureMap.end() )
 	{
-		static_cast<SDLTexture*>( it->second )->incRef();
+		static_cast<OGLTexture*>( it->second )->incRef();
 		return it->second;
 	}
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::renderImage(const float * _renderVertex, 
+void OGLRenderSystem::renderImage(const float * _renderVertex, 
 								  const float * _uv, 
 								  unsigned int _color,  
 								  const Menge::RenderImageInterface * _image, 
 								  Menge::EBlendFactor _srcBlend, 
 								  Menge::EBlendFactor _dstBlend )
 {
-	const SDLTexture * tex = static_cast<const SDLTexture*>( _image );
+	const OGLTexture * tex = static_cast<const OGLTexture*>( _image );
 
 	if(tex)
 	{
@@ -259,7 +259,7 @@ void SDLRenderSystem::renderImage(const float * _renderVertex,
 }
 
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::renderTriple(
+void OGLRenderSystem::renderTriple(
 								   const float * _a, 
 								   const float * _b, 
 								   const float * _c, 
@@ -271,7 +271,7 @@ void SDLRenderSystem::renderTriple(
 								   Menge::EBlendFactor _src, 
 								   Menge::EBlendFactor _dst )
 {
-	const SDLTexture * tex = static_cast<const SDLTexture*>( _image );
+	const OGLTexture * tex = static_cast<const OGLTexture*>( _image );
 
 	glBindTexture(GL_TEXTURE_2D, tex->getGLTexture());
 
@@ -288,15 +288,15 @@ void SDLRenderSystem::renderTriple(
 	glVertex2f(_a[0], _a[1]);
 
 	glTexCoord2f(_uv1[0],_uv1[1]);
-	glVertex2f(_b[2], _b[3]);
+	glVertex2f(_b[0], _b[1]);
 
 	glTexCoord2f(_uv2[0],_uv2[1]);
-	glVertex2f(_c[4], _c[5]);
+	glVertex2f(_c[0], _c[1]);
 
 	glEnd();
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::renderLine( unsigned int _color, 
+void OGLRenderSystem::renderLine( unsigned int _color, 
 								 const float * _begin, 
 								 const float * _end )
 {
@@ -317,7 +317,7 @@ void SDLRenderSystem::renderLine( unsigned int _color,
 	glEnable(GL_TEXTURE_2D);
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::beginScene()
+void OGLRenderSystem::beginScene()
 {
 	m_layer = 1.0f;
 
@@ -344,33 +344,33 @@ void SDLRenderSystem::beginScene()
 //	glLoadIdentity();
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::endScene()
+void OGLRenderSystem::endScene()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::beginLayer2D()
+void OGLRenderSystem::beginLayer2D()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::endLayer2D()
+void OGLRenderSystem::endLayer2D()
 {
 	m_layer -= 0.001f;
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::renderText(const Menge::String & _text, const float * _pos, unsigned long _color)
+void OGLRenderSystem::renderText(const Menge::String & _text, const float * _pos, unsigned long _color)
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::beginLayer3D()
+void OGLRenderSystem::beginLayer3D()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::endLayer3D()
+void OGLRenderSystem::endLayer3D()
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
+void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
 {
 	int flags = SDL_OPENGL | SDL_RESIZABLE;
 
@@ -382,57 +382,57 @@ void SDLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height
 	m_screen = SDL_SetVideoMode(_width, _height, m_screen->format->BitsPerPixel, flags);
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::CameraInterface * SDLRenderSystem::createCamera( const Menge::String & _name )
+Menge::CameraInterface * OGLRenderSystem::createCamera( const Menge::String & _name )
 {
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::EntityInterface * SDLRenderSystem::createEntity( const Menge::String & _name, const Menge::String & _meshName )
+Menge::EntityInterface * OGLRenderSystem::createEntity( const Menge::String & _name, const Menge::String & _meshName )
 {
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::LightInterface * SDLRenderSystem::createLight( const Menge::String & _name )
+Menge::LightInterface * OGLRenderSystem::createLight( const Menge::String & _name )
 {
 	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::releaseCamera( Menge::CameraInterface * _camera )
+void OGLRenderSystem::releaseCamera( Menge::CameraInterface * _camera )
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::releaseEntity( Menge::EntityInterface * _entity )
+void OGLRenderSystem::releaseEntity( Menge::EntityInterface * _entity )
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::releaseLight( Menge::LightInterface * _light )
+void OGLRenderSystem::releaseLight( Menge::LightInterface * _light )
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::setTextureFiltering( bool _filter )
+void OGLRenderSystem::setTextureFiltering( bool _filter )
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::onWindowMovedOrResized()
+void OGLRenderSystem::onWindowMovedOrResized()
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::onWindowClose()
+void OGLRenderSystem::onWindowClose()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _verticesNum,
+void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _verticesNum,
 								 const Menge::uint16*	_indices, std::size_t _indicesNum,
 								 Menge::TMaterial* _material )
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
+void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 {
 /*	TTargetMap::iterator it = m_targetMap.find( _name );
 	if( it != m_targetMap.end() )
@@ -492,7 +492,7 @@ void SDLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 	}
 }
 //////////////////////////////////////////////////////////////////////////
-void SDLRenderSystem::setRenderArea( const float* _renderArea )
+void OGLRenderSystem::setRenderArea( const float* _renderArea )
 {
 }
 //////////////////////////////////////////////////////////////////////////

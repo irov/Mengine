@@ -196,6 +196,14 @@
 			RelativePath=".\SDLVideoInfo.h"
 			>
 		</File>
+		<File
+			RelativePath=".\SDLWindow.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\SDLWindow.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

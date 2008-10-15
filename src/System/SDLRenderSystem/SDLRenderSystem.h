@@ -10,6 +10,8 @@
 
 #	include <map>
 
+#	include "SDLWindow.h"
+
 class SDLRenderSystem 
 	: public Menge::RenderSystemInterface
 {
@@ -90,6 +92,8 @@ public:
 	void renderText(const Menge::String & _text, const float * _pos, unsigned long _color) override;
 
 private:
+
+	SDLWindow m_SDLWindow;
 
 	bool m_inRender;
 

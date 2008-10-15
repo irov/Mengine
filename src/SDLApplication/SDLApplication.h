@@ -22,7 +22,6 @@
 namespace Menge
 {
 	class SystemDLL;
-	class LoggerConsole;
 	class Application;
 
 	class SDLApplication
@@ -81,7 +80,6 @@ namespace Menge
 
 		bool m_fullscreen;
 		bool m_handleMouse;
-		LoggerConsole* m_loggerConsole;
 		StringA m_commandLine;
 	};
 }	// namespace Menge

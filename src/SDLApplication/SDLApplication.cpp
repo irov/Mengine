@@ -3,7 +3,6 @@
 #	include "SDLApplication.h"
 #	include "Menge/Application.h"
 #	include "SystemDLL.h"
-#	include "LoggerConsole.h"
 #	include "Interface/LogSystemInterface.h"
 
 #	include <strsafe.h>
@@ -24,7 +23,6 @@ namespace Menge
 		, m_cursorInArea( false )
 		, m_fullscreen( false )
 		, m_handleMouse( true )
-		, m_loggerConsole( NULL )
 		, m_commandLine( _commandLine )
 		, m_menge( NULL )
 	{
@@ -32,13 +30,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SDLApplication::~SDLApplication()
 	{
-		if( m_logSystem != NULL && m_loggerConsole != NULL )
-		{
-			m_logSystem->unregisterLogger( m_loggerConsole );
-			delete m_loggerConsole;
-			m_loggerConsole = NULL;
-		}
-
 		if( m_menge != NULL )
 		{
 			m_menge->onDestroy();
@@ -64,12 +55,6 @@ namespace Menge
 
 
 		m_logSystem = m_menge->initializeLogSystem();
-
-		if( m_logSystem != NULL && m_commandLine.find( "-console" ) != StringA::npos )
-		{
-			m_loggerConsole = new LoggerConsole();
-			m_logSystem->registerLogger( m_loggerConsole );
-		}
 
 		setDesktopResolution(1024,768);
 

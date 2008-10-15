@@ -2,7 +2,7 @@
 
 //#include "Codec.h"
 #	include "Interface/CodecInterface.h"
-#include "PixelFormat.h"
+#	include "PixelFormat.h"
 
 namespace Menge 
 {

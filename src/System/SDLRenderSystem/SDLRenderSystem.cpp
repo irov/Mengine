@@ -29,17 +29,14 @@ SDLRenderSystem::SDLRenderSystem()
 //////////////////////////////////////////////////////////////////////////
 SDLRenderSystem::~SDLRenderSystem()
 {
-	if (m_screen)
-	{
-		SDL_FreeSurface(m_screen);
-	}
+	m_SDLWindow.destroy();
 
 	SDL_Quit();
 }
 //////////////////////////////////////////////////////////////////////////
 void SDLRenderSystem::swapBuffers()
 {
-	SDL_GL_SwapBuffers();
+	m_SDLWindow.swapBuffers(false);
 }
 //////////////////////////////////////////////////////////////////////////
 int SDLRenderSystem::getNumDIP() const
@@ -51,7 +48,7 @@ bool SDLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 {
 	bool initialized = true;
 
-	Uint32 sdlFlags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
+	Uint32 sdlFlags = SDL_INIT_VIDEO;
 
 	if(SDL_Init(sdlFlags) < 0)
 	{
@@ -61,98 +58,62 @@ bool SDLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	return initialized;
 }
 //////////////////////////////////////////////////////////////////////////
+void glEnable2D( void )   
+{   
+	GLint iViewport[4];   
+
+	// Get a copy of the viewport   
+	glGetIntegerv( GL_VIEWPORT, iViewport );   
+
+	// Save a copy of the projection matrix so that we can restore it   
+	// when it's time to do 3D rendering again.   
+	glMatrixMode( GL_PROJECTION );   
+	glPushMatrix();   
+	glLoadIdentity();   
+
+	// Set up the orthographic projection   
+	glOrtho( iViewport[0], iViewport[0]+iViewport[2],   
+		iViewport[1]+iViewport[3], iViewport[1], -1, 1 );   
+
+	glMatrixMode( GL_MODELVIEW );   
+	glPushMatrix();   
+	glLoadIdentity();   
+
+	// Make sure depth testing and lighting are disabled for 2D rendering until   
+	// we are finished rendering in 2D   
+	glPushAttrib( GL_DEPTH_BUFFER_BIT | GL_LIGHTING_BIT );   
+	glDisable( GL_DEPTH_TEST );   
+	glDisable( GL_LIGHTING );   
+}   
+//////////////////////////////////////////////////////////////////////////
+void glDisable2D( void )   
+{   
+	glPopAttrib();   
+	glMatrixMode( GL_PROJECTION );   
+	glPopMatrix();   
+	glMatrixMode( GL_MODELVIEW );   
+	glPopMatrix();   
+}  
+//////////////////////////////////////////////////////////////////////////
 bool SDLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 {
-	bool status = true;  
-	
-	if(_bits == -1)
-	{
-		_bits = SDL_GetVideoInfo()->vfmt->BitsPerPixel;  
-	}
+	NameValuePairList values;
+	values.insert(std::make_pair("colourDepth","32"));
+	// и как же передать тайтл? :)
+	m_SDLWindow.create("TEST",_width,_height,_fullscreen,&values);
 
-	int rgb_size[3];
-
-	if(_bits == 8)
-	{
-		rgb_size[0] = 3;
-		rgb_size[1] = 3;
-		rgb_size[2] = 2;
-	}
-	else if(_bits == 15 || _bits == 16)
-	{
-		rgb_size[0] = 5;
-		rgb_size[1] = 5;
-		rgb_size[2] = 5;
-	//	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 1);
-	} 
-	else
-	{
-		rgb_size[0] = 8;
-		rgb_size[1] = 8;
-		rgb_size[2] = 8;
-	//	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-	}
-
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, rgb_size[0]);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, rgb_size[1]);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, rgb_size[2]);
-
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, _bits);   
-
-	if(_FSAAQuality > 1) 
-	{
-		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS,1);
-		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,_FSAAQuality);
-	}
-
-	if (_bits == 32)
-	{
-		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-	}
-
-	int SDLflags = SDL_OPENGL;
-
-	if (_fullscreen)
-	{
-		SDLflags |= SDL_FULLSCREEN;
-	}
-
-	m_screen = SDL_SetVideoMode(_width, _height, _bits, SDLflags);
-
-	if (!_fullscreen)
-	{
-		SDL_WM_SetCaption("SDL TEST", 0);
-	}
-
-	if(!m_screen)
-	{
-		SDL_Quit();
-		return false;
-	}
-
-
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-
-	glOrtho(0, (GLfloat)m_screen->w, 0, (GLfloat)m_screen->h, -1, 1);
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-
+	glEnable2D();
+/*
 	glPushAttrib(GL_ENABLE_BIT);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);
-
+*/
+	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
 	return true;
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////
 const std::vector<int> & SDLRenderSystem::getResolutionList()
@@ -378,7 +339,7 @@ void SDLRenderSystem::beginScene()
 */
 	glClearColor(1,1,1,1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-	glLoadIdentity();
+//	glLoadIdentity();
 
 //	glLoadIdentity();
 }

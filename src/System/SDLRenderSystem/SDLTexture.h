@@ -1,3 +1,4 @@
+#	pragma once
 #	include "Interface/RenderSystemInterface.h"
 
 #	include <SDL.h>

@@ -214,22 +214,6 @@
 				RelativePath=".\resource.h"
 				>
 			</File>
-			<File
-				RelativePath=".\WinApplication.rc"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="LoggerConsole"
-			>
-			<File
-				RelativePath=".\LoggerConsole.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LoggerConsole.h"
-				>
-			</File>
 		</Filter>
 		<File
 			RelativePath=".\main.cpp"
@@ -245,6 +229,10 @@
 		</File>
 		<File
 			RelativePath=".\SDLApplication.h"
+			>
+		</File>
+		<File
+			RelativePath=".\SDLApplication.rc"
 			>
 		</File>
 		<File

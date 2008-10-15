@@ -67,6 +67,7 @@ namespace Menge
 
 		bool m_autoPlay;
 		bool m_looped;
+		bool m_emitterRelative;
 
 		bool m_onEmitterEndEvent;
 		bool m_onEmitterStopEvent;

@@ -34,13 +34,11 @@ namespace Menge
 
 		void _update( float _timing ) override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		void _invalidateWorldMatrix() override;
 
 	private:
 
 		void updateTileBoundingBox(mt::box2f& _boundingBox, const std::vector<Quad>& quads);
-
-		std::vector<const std::vector<Quad>*> m_tileGeometry;
-		std::vector<const std::vector<Quad>*> m_junkGeometry;
 
 		struct TQuad
 		{
@@ -61,9 +59,10 @@ namespace Menge
 		mt::TVectorPoints m_poly;
 		const RenderImageInterface* m_image;
 		const RenderImageInterface* m_junc_image;
+		const RenderImageInterface* m_edge_image;
 
 		void proccessEdges_();
-		const ResourceTilePolygon::TileDecl* getNextTileDecl_( const ResourceTilePolygon::TTileDecls& _decls, int _i );
+		const ResourceTilePolygon::TileDecl* getNextTileDecl_( const ResourceTilePolygon::TTileDecls& _decls, std::size_t _i );
 
 		// transformed
 		TQuadMap m_tr_edges;
@@ -71,7 +70,35 @@ namespace Menge
 		TVectorQuad m_tr_juncs;
 		mt::TVectorPoints m_tr_triangles;
 
-		void _invalidateWorldMatrix() override;
 		void updatePoints_();
+		void prepareTransformed_();
+		void prepareLayerEdges_();
+
+		typedef std::vector< std::pair< const RenderImageInterface*, const RenderImageInterface* > > TVectorEdgeImages;
+		TVectorEdgeImages m_edge_images;
+		String m_edge_layer;
+
+		class TilePolygonEdges
+			: public Node
+		{
+		public:
+			TilePolygonEdges();
+			virtual ~TilePolygonEdges();
+
+			void setImages( TVectorEdgeImages* _images );
+			void setQuads( TilePolygon::TQuadMap* _quads );
+			void setBBox( mt::box2f& _box );
+
+		protected:
+			void _render( unsigned int _debugMask ) override;
+			void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+
+		protected:
+			TVectorEdgeImages* m_images;
+			TilePolygon::TQuadMap* m_quads;
+			mt::box2f m_box;
+		};
+
+		TilePolygonEdges* m_layer_edges;
 	};
 };

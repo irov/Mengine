@@ -1,11 +1,10 @@
 #	pragma once
 
-#	include "ResourceReference.h"
-
 #	include "Config/Typedef.h"
 
+#	include "ResourceReference.h"
+
 #	include <vector>
-#	include <list>
 
 #	include "math\vec2.h"
 #	include "math\polygon.h"
@@ -48,8 +47,10 @@ namespace Menge
 			float max_angle;
 			String image_resource;
 			String junc_image_resource;
+			String image_back_resource;
 			const RenderImageInterface* image;
 			const RenderImageInterface* junc_image;
+			const RenderImageInterface* image_back;
 		};
 
 		typedef std::vector<TileDecl> TTileDecls;

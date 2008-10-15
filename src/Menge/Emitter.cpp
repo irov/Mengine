@@ -33,6 +33,7 @@ namespace	Menge
 		, m_onEmitterEndEvent( false )
 		, m_onEmitterStopEvent( false )
 		, m_startPosition( 0.0f )
+		, m_emitterRelative( false )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Emitter::~Emitter()
@@ -75,6 +76,7 @@ namespace	Menge
 			XML_CASE_ATTRIBUTE_NODE( "AutoPlay", "Value", m_autoPlay );
 			XML_CASE_ATTRIBUTE_NODE( "Looped", "Value", m_looped );
 			XML_CASE_ATTRIBUTE_NODE( "StartPosition", "Value", m_startPosition );
+			XML_CASE_ATTRIBUTE_NODE( "EmitterRelative", "Value", m_emitterRelative );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -203,6 +205,19 @@ namespace	Menge
 						mt::vec2f(p->x3, p->y3)
 					};
 
+					if( m_emitterRelative == true )
+					{
+						const mt::mat3f& wm = getWorldMatrix();
+						mt::vec2f origin, transformX, transformY;
+						mt::mul_v2_m3( origin, vertices[0], wm );
+						mt::mul_v2_m3_r( transformX, vertices[1] - vertices[0], wm );
+						mt::mul_v2_m3_r( transformY, vertices[3] - vertices[0], wm );
+						vertices[0] = origin;
+						vertices[1] = vertices[0] + transformX;
+						vertices[2] = vertices[1] + transformY;
+						vertices[3] = vertices[0] + transformY;
+					}
+
 					Holder<RenderEngine>::hostage()->renderImage(
 						vertices,
 						mt::vec4f(p->u0, p->v0, p->u1, p->v1),
@@ -287,12 +302,15 @@ namespace	Menge
 	void Emitter::_update( float _timing )
 	{
 		Node::_update( _timing );
-		const mt::vec2f& pos = getWorldPosition();
-		m_interface->setPosition( pos.x, pos.y );
-		const mt::vec2f& dir = getWorldDirection();
-		float rads = ::acosf( dir.x );
-		if( dir.y > 0.0f ) rads = -rads;
-		m_interface->setAngle( rads );
+		if( m_emitterRelative == false )
+		{
+			const mt::vec2f& pos = getWorldPosition();
+			m_interface->setPosition( pos.x, pos.y );
+			const mt::vec2f& dir = getWorldDirection();
+			float rads = ::acosf( dir.x );
+			if( dir.y > 0.0f ) rads = -rads;
+			m_interface->setAngle( rads );
+		}
 		m_interface->update( _timing );
 		invalidateBoundingBox();
 	}
@@ -377,10 +395,32 @@ namespace	Menge
 						mt::reset( _boundingBox, mt::vec2f(p->x2, p->y2) );
 						reset = true;
 					}
-					mt::add_internal_point( _boundingBox, mt::vec2f(p->x2, p->y2) );
-					mt::add_internal_point( _boundingBox, mt::vec2f(p->x1, p->y1) );
-					mt::add_internal_point( _boundingBox, mt::vec2f(p->x4, p->y4) );
-					mt::add_internal_point( _boundingBox, mt::vec2f(p->x3, p->y3) );
+
+					mt::vec2f vertices[4] =
+					{
+						mt::vec2f(p->x2, p->y2),
+						mt::vec2f(p->x1, p->y1),
+						mt::vec2f(p->x4, p->y4),
+						mt::vec2f(p->x3, p->y3)
+					};
+
+					if( m_emitterRelative == true )
+					{
+						const mt::mat3f& wm = getWorldMatrix();
+						mt::vec2f origin, transformX, transformY;
+						mt::mul_v2_m3( origin, vertices[0], wm );
+						mt::mul_v2_m3_r( transformX, vertices[1] - vertices[0], wm );
+						mt::mul_v2_m3_r( transformY, vertices[3] - vertices[0], wm );
+						vertices[0] = origin;
+						vertices[1] = vertices[0] + transformX;
+						vertices[2] = vertices[1] + transformY;
+						vertices[3] = vertices[0] + transformY;
+					}
+
+					mt::add_internal_point( _boundingBox, vertices[0] );
+					mt::add_internal_point( _boundingBox, vertices[1] );
+					mt::add_internal_point( _boundingBox, vertices[2] );
+					mt::add_internal_point( _boundingBox, vertices[3] );
 				}
 			}
 			Holder<ParticleEngine>::hostage()->unlockEmitter( m_interface );

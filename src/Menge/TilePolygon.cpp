@@ -15,6 +15,8 @@
 #	include "math/convexpoly2.h"
 
 #	include "math/angle.h"
+#	include "Scene.h"
+#	include "Layer2D.h"
 
 //	resource section
 #	include "ResourceManager.h"
@@ -32,6 +34,7 @@ namespace Menge
 	TilePolygon::TilePolygon()
 	: m_tileResource("")
 	, m_tilePolygonResource(0)
+	, m_layer_edges( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -57,6 +60,14 @@ namespace Menge
 				}
 			}
 
+			XML_CASE_NODE( "Edge" )
+			{
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Layer", m_edge_layer );
+				}
+			}
+
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -71,6 +82,10 @@ namespace Menge
 		{
 			return false;
 		}
+		if( m_layer_edges != NULL )
+		{
+			m_layer_edges->activate();
+		}
 
 		return true;
 	}
@@ -78,6 +93,10 @@ namespace Menge
 	void TilePolygon::_deactivate()
 	{
 		RigidBody2D::_deactivate();
+		if( m_layer_edges != NULL )
+		{
+			m_layer_edges->deactivate();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TilePolygon::_compile()
@@ -128,6 +147,7 @@ namespace Menge
 		const ResourceTilePolygon::TTileDecls& tileDecls = m_tilePolygonResource->getTileDecls();
 		for( ResourceTilePolygon::TTileDecls::size_type i = 0; i < tileDecls.size(); i++ )
 		{
+			m_edge_images.push_back( std::make_pair( tileDecls[i].image, tileDecls[i].image_back ) );
 			if( tileDecls[i].image != NULL )
 			{
 				m_edges.insert( std::make_pair( tileDecls[i].image, TVectorQuad() ) );
@@ -139,6 +159,12 @@ namespace Menge
 		}
 
 		proccessEdges_();
+		prepareLayerEdges_();
+		prepareTransformed_();
+
+
+		mt::box2f bbox;
+		_updateBoundingBox( bbox );
 
 		return true;
 	}
@@ -155,6 +181,13 @@ namespace Menge
 		m_juncs.clear();
 		m_edge_juncs.clear();
 		m_edges.clear();
+		m_edge_images.clear();
+
+		/*if( m_layer_edges != NULL )
+		{
+			delete m_layer_edges;
+			m_layer_edges = NULL;
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::_update( float _timing )
@@ -166,12 +199,11 @@ namespace Menge
 	{
 		Node::_updateBoundingBox( _boundingBox );
 
-		updatePoints_();
 		if( m_triangles.empty() ) return;
 
 		for(mt::TVectorPoints::size_type i = 0; i < m_triangles.size(); i++)
 		{
-			mt::add_internal_point( _boundingBox, m_triangles[i] );
+			mt::add_internal_point( _boundingBox, m_tr_triangles[i] );
 		}
 
 		/*for(size_t i = 0; i < m_tileGeometry.size(); i++)
@@ -183,6 +215,11 @@ namespace Menge
 		{
 			updateTileBoundingBox(_boundingBox, *m_junkGeometry[i]);
 		}*/
+		if( m_layer_edges != NULL )
+		{
+			m_layer_edges->setBBox( _boundingBox );
+			m_layer_edges->invalidateBoundingBox();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::updateTileBoundingBox(mt::box2f& _boundingBox, const std::vector<Quad>& quads)
@@ -306,8 +343,8 @@ namespace Menge
 					if( it->image_resource.empty() == false )
 					{
 						TQuad quad;
-						float width = it->image->getWidth();
-						float height = it->image->getHeight();
+						std::size_t width = it->image->getWidth();
+						std::size_t height = it->image->getHeight();
 						mt::vec2f half_height = mt::perp( edge ) / edge.length() * height * 0.5f; 
 						quad.a = m_poly[i] - half_height;
 						quad.b = m_poly[next_i] - half_height;
@@ -325,8 +362,8 @@ namespace Menge
 					if( nextDecl == &( *it ) && it->junc_image_resource.empty() == false )
 					{
 						TQuad quad;
-						float width = it->junc_image->getWidth();
-						float height = it->junc_image->getHeight();
+						std::size_t width = it->junc_image->getWidth();
+						std::size_t height = it->junc_image->getHeight();
 						mt::vec2f normal = mt::perp( edge ) + mt::perp( next_edge );
 						mt::vec2f half_height = normal / normal.length() * height * 0.5f; 
 						mt::vec2f half_width = mt::perp( normal ) / normal.length() * width * 0.5f;
@@ -340,8 +377,8 @@ namespace Menge
 					else if( nextDecl != &( *it ) && m_junc_image != NULL )
 					{
 						TQuad quad;
-						float width = m_junc_image->getWidth();
-						float height = m_junc_image->getHeight();
+						std::size_t width = m_junc_image->getWidth();
+						std::size_t height = m_junc_image->getHeight();
 						mt::vec2f normal = mt::perp( edge ) + mt::perp( next_edge );
 						mt::vec2f half_height = normal / normal.length() * height * 0.5f; 
 						mt::vec2f half_width = mt::perp( normal ) / normal.length() * width * 0.5f;
@@ -358,9 +395,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ResourceTilePolygon::TileDecl* TilePolygon::getNextTileDecl_( const ResourceTilePolygon::TTileDecls& _decls, int _i )
+	const ResourceTilePolygon::TileDecl* TilePolygon::getNextTileDecl_( const ResourceTilePolygon::TTileDecls& _decls, std::size_t _i )
 	{
-		int next_i = ( _i + 1 ) % m_poly.size();
+		std::size_t next_i = ( _i + 1 ) % m_poly.size();
 		mt::vec2f edge = m_poly[next_i] - m_poly[_i];
 		float angle = mt::signed_angle(edge) * mt::m_rad2deg;
 		for( ResourceTilePolygon::TTileDecls::const_iterator it = _decls.begin(), it_end = _decls.end();
@@ -377,20 +414,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TilePolygon::updatePoints_()
 	{
-		m_tr_edges.clear();
-		m_tr_edge_juncs.clear();
-		m_tr_juncs.clear();
-		m_tr_triangles.clear();
-
 		const mt::mat3f& wm = getWorldMatrix();
 		for( TQuadMap::iterator it = m_edges.begin(), it_end = m_edges.end();
 			it != it_end;
 			it++ )
 		{
-			m_tr_edges.insert( std::make_pair( it->first, TVectorQuad() ) );
-			for( TVectorQuad::iterator qit = it->second.begin(), qit_end = it->second.end();
+			TQuadMap::iterator find_it = m_tr_edges.find( it->first );
+			assert( find_it !=  m_tr_edges.end() );
+			for( TVectorQuad::iterator qit = it->second.begin(), qit_end = it->second.end(),
+				tr_qit = find_it->second.begin();
 				qit != qit_end;
-				qit++ )
+				qit++, tr_qit++ )
 			{
 				TQuad q;
 				mt::mul_v2_m3( q.a, (*qit).a, wm );
@@ -399,7 +433,7 @@ namespace Menge
 				mt::mul_v2_m3( q.d, (*qit).d, wm );
 				q.s = (*qit).s;
 				q.t = (*qit).t;
-				m_tr_edges[ it->first ].push_back( q );
+				(*tr_qit) = q;
 			}
 		}
 
@@ -407,10 +441,12 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
-			m_tr_edge_juncs.insert( std::make_pair( it->first, TVectorQuad() ) );
-			for( TVectorQuad::iterator qit = it->second.begin(), qit_end = it->second.end();
+			TQuadMap::iterator find_it = m_tr_edge_juncs.find( it->first );
+			assert( find_it !=  m_tr_edges.end() );
+			for( TVectorQuad::iterator qit = it->second.begin(), qit_end = it->second.end(),
+				tr_qit = find_it->second.begin();
 				qit != qit_end;
-				qit++ )
+				qit++, tr_qit++ )
 			{
 				TQuad q;
 				mt::mul_v2_m3( q.a, (*qit).a, wm );
@@ -419,13 +455,14 @@ namespace Menge
 				mt::mul_v2_m3( q.d, (*qit).d, wm );
 				q.s = (*qit).s;
 				q.t = (*qit).t;
-				m_tr_edge_juncs[ it->first ].push_back( q );
+				(*tr_qit) = q;
 			}
 		}
 
-		for( TVectorQuad::iterator qit = m_juncs.begin(), qit_end = m_juncs.end();
+		for( TVectorQuad::iterator qit = m_juncs.begin(), qit_end = m_juncs.end(),
+			tr_qit = m_tr_juncs.begin();
 			qit != qit_end;
-			qit++ )
+			qit++, tr_qit++ )
 		{
 			TQuad q;
 			mt::mul_v2_m3( q.a, (*qit).a, wm );
@@ -434,16 +471,17 @@ namespace Menge
 			mt::mul_v2_m3( q.d, (*qit).d, wm );
 			q.s = (*qit).s;
 			q.t = (*qit).t;
-			m_tr_juncs.push_back( q );
+			(*tr_qit) = q;
 		}
 
-		for( mt::TVectorPoints::iterator it = m_triangles.begin(), it_end = m_triangles.end();
+		for( mt::TVectorPoints::iterator it = m_triangles.begin(), it_end = m_triangles.end(),
+			tr_it = m_tr_triangles.begin();
 			it != it_end;
-			it++ )
+			it++, tr_it++ )
 		{
 			mt::vec2f v;
 			mt::mul_v2_m3( v, (*it), wm );
-			m_tr_triangles.push_back( v );
+			(*tr_it) = v;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -451,6 +489,128 @@ namespace Menge
 	{
 		Node::_invalidateWorldMatrix();
 		invalidateBoundingBox();
+		updatePoints_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TilePolygon::prepareTransformed_()
+	{
+		m_tr_edges.clear();
+		m_tr_edge_juncs.clear();
+		m_tr_juncs.clear();
+		m_tr_triangles.clear();
+
+		for( TQuadMap::iterator it = m_edges.begin(), it_end = m_edges.end();
+			it != it_end;
+			it++ )
+		{
+			TVectorQuad quads;
+			quads.resize( it->second.size() );
+			m_tr_edges.insert( std::make_pair( it->first, quads ) );
+		}
+
+		for( TQuadMap::iterator it = m_edge_juncs.begin(), it_end = m_edge_juncs.end();
+			it != it_end;
+			it++ )
+		{
+			TVectorQuad quads;
+			quads.resize( it->second.size() );
+			m_tr_edge_juncs.insert( std::make_pair( it->first, quads ) );
+		}
+
+		m_tr_juncs.resize( m_juncs.size() );
+		m_tr_triangles.resize( m_triangles.size() );
+
+		if( m_layer_edges != NULL )
+		{
+			m_layer_edges->setQuads( &m_tr_edges );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TilePolygon::prepareLayerEdges_()
+	{
+		if( m_edge_layer.empty() == true )
+		{
+			return;
+		}
+		Layer* layer = static_cast<Layer*>( m_layer->getScene()->getChildren( m_edge_layer, false ) );
+		if( layer == NULL )
+		{
+			MENGE_LOG_ERROR( "TilePolygon compile error: Layer \"%s\" does not exist"
+				, m_edge_layer.c_str() );
+			return;
+		}
+		
+		m_layer_edges = new TilePolygonEdges();
+
+		layer->addChildren( m_layer_edges );
+		m_layer_edges->setImages( &m_edge_images ); 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	TilePolygon::TilePolygonEdges::TilePolygonEdges()
+		: m_images( NULL )
+		, m_quads( NULL )
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	TilePolygon::TilePolygonEdges::~TilePolygonEdges()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TilePolygon::TilePolygonEdges::setImages( TilePolygon::TVectorEdgeImages* _images )
+	{
+		m_images = _images;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TilePolygon::TilePolygonEdges::setQuads( TilePolygon::TQuadMap* _quads )
+	{
+		m_quads = _quads;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TilePolygon::TilePolygonEdges::setBBox( mt::box2f& _box )
+	{
+		m_box = _box;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TilePolygon::TilePolygonEdges::_render( unsigned int _debugMask )
+	{
+		if( m_quads == NULL	|| m_images == NULL )
+		{
+			return;
+		}
+
+		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
+		for( TilePolygon::TVectorEdgeImages::iterator it = m_images->begin(), it_end = m_images->end();
+			it != it_end;
+			it++ )
+		{
+			TilePolygon::TQuadMap::iterator it_find = m_quads->find( it->first );
+			if( it_find == m_quads->end() || it->second == NULL )
+			{
+				continue;
+			}
+
+			for( TilePolygon::TVectorQuad::iterator qit = it_find->second.begin(),
+				qit_end = it_find->second.end();
+				qit != qit_end;
+			qit++ )
+			{
+				mt::vec2f uv0( 0.0f, 0.0f );
+				mt::vec2f uv1( (*qit).s, 0.0f );
+				mt::vec2f uv2( (*qit).s, (*qit).t );
+				mt::vec2f uv3( 0.0f, (*qit).t );
+
+				renderEngine->renderTriple( (*qit).a, (*qit).b, (*qit).d,
+					uv0, uv1, uv3, 0xFFFFFFFF, it->second );
+				renderEngine->renderTriple( (*qit).b, (*qit).c, (*qit).d,
+					uv1, uv2, uv3, 0xFFFFFFFF, it->second );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TilePolygon::TilePolygonEdges::_updateBoundingBox( mt::box2f & _boundingBox )
+	{
+		Node::_updateBoundingBox( _boundingBox );
+		mt::merge_box( _boundingBox, m_box );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -41,6 +41,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "MinAngle", tileDecl.min_angle );
 					XML_CASE_ATTRIBUTE( "MaxAngle", tileDecl.max_angle );
 					XML_CASE_ATTRIBUTE( "Image", tileDecl.image_resource );
+					XML_CASE_ATTRIBUTE( "ImageBack", tileDecl.image_back_resource );
 					XML_CASE_ATTRIBUTE( "JuncImage", tileDecl.junc_image_resource );
 				}
 
@@ -128,6 +129,19 @@ namespace Menge
 					m_tiles[i].junc_image = resourceImage->getImage( 0 );
 					m_imageResources.push_back( resourceImage );
 				}
+			}
+			if( m_tiles[i].image_back_resource.empty() == false )
+			{
+				resourceImage = resourceManager->getResourceT<ResourceImage>( m_tiles[i].image_back_resource );
+				if( resourceImage != NULL )
+				{
+					m_tiles[i].image_back = resourceImage->getImage( 0 );
+					m_imageResources.push_back( resourceImage );
+				}
+			}
+			else
+			{
+				m_tiles[i].image_back = NULL;
 			}
 		}
 		/*mt::vec2f juncSize = mt::vec2f(m_imageJunc->getWidth(),m_imageJunc->getHeight());

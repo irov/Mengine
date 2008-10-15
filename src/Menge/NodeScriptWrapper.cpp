@@ -46,6 +46,7 @@
 #	include "ReversiAI.h"
 #	include "CornersAI.h"
 #	include "Video.h"
+#	include "Window.h"
 
 //#	include "DiscreteEntity.h"
 
@@ -521,6 +522,7 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( SceneNode3D );
 		SCRIPT_CLASS_WRAPPING( Camera3D );
 		SCRIPT_CLASS_WRAPPING( RenderMesh );
+		SCRIPT_CLASS_WRAPPING( Window );
 	}
 
 	//REGISTER_SCRIPT_CLASS( Menge, Node, Base )
@@ -929,6 +931,10 @@ namespace Menge
 				.def( "play", &Video::play )
 				.def( "stop", &Video::stop )
 				.def( "pause", &Video::pause )
+				;
+
+			pybind::proxy_<Window, pybind::bases<Node>>("Window", false)
+				.def( "setClientSize", &Window::setClientSize )
 				;
 		}		
 

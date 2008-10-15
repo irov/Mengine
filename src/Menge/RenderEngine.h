@@ -11,14 +11,10 @@
 #	include "math/mat4.h"
 #	include "math/vec4.h"
 
-#	include <string>
 #	include <vector>
 
 namespace Menge
 {
-	class FileEngine;
-	//class Camera3D;
-
 	class RenderEngine
 		: public RenderSystemListener
 	{

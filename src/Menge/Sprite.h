@@ -38,7 +38,7 @@ namespace Menge
 		//! Деструктор.
 		/*!
 		*/
-		~Sprite();
+		virtual ~Sprite();
 
 	public:
 		//! Установка индекса в списке изображений.

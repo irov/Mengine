@@ -714,6 +714,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Window"
+				>
+				<File
+					RelativePath=".\Window.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Window.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Game"
@@ -1107,6 +1119,18 @@
 				</File>
 				<File
 					RelativePath=".\ResourceVideo.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Window"
+				>
+				<File
+					RelativePath=".\ResourceWindow.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\ResourceWindow.h"
 					>
 				</File>
 			</Filter>

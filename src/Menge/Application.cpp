@@ -54,6 +54,7 @@
 #	include "LayerScene.h"
 #	include "RenderMesh.h"
 #	include "Camera3D.h"
+#	include "Window.h"
 
 #	include "ResourceAnimation.h"
 #	include "ResourceCapsuleController.h"
@@ -78,6 +79,7 @@
 #	include "ResourceMeshMS3D.h"
 #	include "ResourceMeshNoise.h"
 #	include "ResourceMaterial.h"
+#	include "ResourceWindow.h"
 #	include "Player.h"
 #	include "Scene.h"
 
@@ -469,6 +471,7 @@ namespace Menge
 		OBJECT_FACTORY( RenderMesh );
 		OBJECT_FACTORY( Camera3D );
 		OBJECT_FACTORY( SceneNode3D );
+		OBJECT_FACTORY( Window );
 
 		MENGE_LOG( "Creating Resource Factory..." );
 		RESOURCE_FACTORY( ResourceAnimation );
@@ -494,6 +497,7 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceMeshMS3D );
 		RESOURCE_FACTORY( ResourceMeshNoise );
 		RESOURCE_FACTORY( ResourceMaterial );
+		RESOURCE_FACTORY( ResourceWindow );
 	
 		m_desktopResolution[0] = m_interface->getDesktopWidth();
 		m_desktopResolution[1] = m_interface->getDesktopHeight();
@@ -713,7 +717,7 @@ namespace Menge
 		m_renderEngine->endScene();
 		//m_renderEngine->swapBuffers();
 
-		//m_inputEngine->update();
+		m_inputEngine->update();
 
 		float timing = _timing;
 

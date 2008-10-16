@@ -50,6 +50,8 @@ namespace	Menge
 		if( m_autoPlay )
 		{
 			m_interface->play();
+			m_interface->update( m_startPosition );
+			//play();
 		}
 
 		if( m_looped )

@@ -316,7 +316,7 @@ namespace Menge
 		m_renderEngine->setTextureFiltering( isTextureFiltering );
 
 		m_inputEngine->initialize( winHandle );
-
+		
 		if( isFullscreen == true )
 		{
 			//setMouseBounded( true );
@@ -325,7 +325,6 @@ namespace Menge
 		}
 
 		//initPredefinedResources();
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

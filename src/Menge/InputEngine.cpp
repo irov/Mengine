@@ -13,6 +13,7 @@ namespace Menge
 		, m_mouseX(-1)
 		, m_mouseY(-1)
 		, m_mouseBounded( false )
+		, m_isActive(true)
 	{
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,12 +23,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::initialize( WindowHandle _winHandle )
 	{
-		return m_interface->initialize( _winHandle );
+		// хак для запуска SDL. если хэндл нулевой то OIS не инитить. 
+		m_isActive = _winHandle ? true : false;
+
+		bool result = true;
+		
+		if(m_isActive)
+		{
+			m_interface->initialize( _winHandle );
+		}
+
+		return result;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	void InputEngine::update()
 	{
-		m_interface->update();
+		if(m_isActive)
+		{
+			m_interface->update();	
+		}
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isKeyDown( int index )
@@ -86,6 +100,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::setMouseBounded( bool _bounded )
 	{
+		return;
 		if( m_mouseBounded == _bounded )
 		{
 			return;

@@ -11,27 +11,22 @@
 #		endif
 #	endif
 
+#	include <Windows.h>
 //////////////////////////////////////////////////////////////////////////
 //							Entry point									//
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in_opt LPSTR lpCmdLine, __in int nShowCmd )
-//int main(int argc, char *argv[])
 {
-	// keep compiler happy
 	UNREFERENCED_PARAMETER( hInstance );
 	UNREFERENCED_PARAMETER( hPrevInstance );
 	UNREFERENCED_PARAMETER( nShowCmd );
 
-//	Menge::SDLApplication winApplication(lpCmdLine);
-	//winApplication.run();
-
-
-	Menge::SDLApplication winApplication( lpCmdLine );
-	if( winApplication.start() == false )
+	Menge::SDLApplication app( lpCmdLine );
+	if( app.start() == false )
 	{
 		return 0;
 	}
-	winApplication.loop();
+	app.loop();
 
 	return 0;
 }

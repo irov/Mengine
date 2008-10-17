@@ -89,8 +89,10 @@ void glEnable2D( void )
 void glDisable2D( void )   
 {   
 	glPopAttrib();   
+
 	glMatrixMode( GL_PROJECTION );   
 	glPopMatrix();   
+
 	glMatrixMode( GL_MODELVIEW );   
 	glPopMatrix();   
 }  
@@ -112,6 +114,13 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	int flags = SDL_WasInit(0);
+	if( flags == 0 )
+	{
+
+	}
+
 	return true;
 }
 
@@ -132,6 +141,88 @@ const std::vector<int> & OGLRenderSystem::getResolutionList()
 
 	return list;
 }
+GLenum getGLOriginFormat(Menge::PixelFormat mFormat)
+{
+	using namespace Menge;
+	switch(mFormat)
+	{
+	case PF_A8:
+		return GL_ALPHA;
+	case PF_L8:
+		return GL_LUMINANCE;
+	case PF_L16:
+		return GL_LUMINANCE;
+	case PF_BYTE_LA:
+		return GL_LUMINANCE_ALPHA;
+	case PF_R3G3B2:
+		return GL_RGB;
+	case PF_A1R5G5B5:
+		return GL_BGRA;
+	case PF_R5G6B5:
+		return GL_RGB;
+	case PF_B5G6R5:
+		return GL_BGR;
+	case PF_A4R4G4B4:
+		return GL_BGRA;
+#if OGRE_ENDIAN == OGRE_ENDIAN_BIG
+		// Formats are in native endian, so R8G8B8 on little endian is
+		// BGR, on big endian it is RGB.
+	case PF_R8G8B8:
+		return GL_RGB;
+	case PF_B8G8R8:
+		return GL_BGR;
+#else
+	case PF_R8G8B8:
+		return GL_BGR;
+	case PF_B8G8R8:
+		return GL_RGB;
+#endif
+	case PF_X8R8G8B8:
+	case PF_A8R8G8B8:
+		return GL_BGRA;
+	case PF_X8B8G8R8:
+	case PF_A8B8G8R8:
+		return GL_RGBA;
+	case PF_B8G8R8A8:
+		return GL_BGRA;
+	case PF_R8G8B8A8:
+		return GL_RGBA;
+	case PF_A2R10G10B10:
+		return GL_BGRA;
+	case PF_A2B10G10R10:
+		return GL_RGBA;
+	case PF_FLOAT16_R:
+		return GL_LUMINANCE;
+	case PF_FLOAT16_GR:
+		return GL_LUMINANCE_ALPHA;
+	case PF_FLOAT16_RGB:
+		return GL_RGB;
+	case PF_FLOAT16_RGBA:
+		return GL_RGBA;
+	case PF_FLOAT32_R:
+		return GL_LUMINANCE;
+	case PF_FLOAT32_GR:
+		return GL_LUMINANCE_ALPHA;
+	case PF_FLOAT32_RGB:
+		return GL_RGB;
+	case PF_FLOAT32_RGBA:
+		return GL_RGBA;
+	case PF_SHORT_RGBA:
+		return GL_RGBA;
+	case PF_SHORT_RGB:
+		return GL_RGB;
+	case PF_SHORT_GR:
+		return GL_LUMINANCE_ALPHA;
+	case PF_DXT1:
+		return GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+	case PF_DXT3:
+		return GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+	case PF_DXT5:
+		return GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+	default:
+		return 0;
+	}
+} 
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const float * _rect /*= 0 */ )
 {
@@ -149,12 +240,29 @@ void OGLRenderSystem::setProjectionMatrix( const float * _projection )
 {
 }
 //////////////////////////////////////////////////////////////////////////
+void makeGLMatrix(GLfloat gl_matrix[16], const float * m)
+{
+	size_t x = 0;
+	for (size_t i = 0; i < 4; i++)
+	{
+		for (size_t j = 0; j < 4; j++)
+		{
+			gl_matrix[x++] = m[j+i*4];
+		}
+	}
+}
+//////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setViewMatrix( const float * _view )
 {
+	GLfloat mat[16];
+	makeGLMatrix( mat, _view );
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(mat);
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setWorldMatrix( const float * _world )
 {
+
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String & _name,
@@ -168,13 +276,13 @@ Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String 
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Menge::String & _name, float _width, float _height )
 {
+	assert(0);
 	OGLTexture* texture = new OGLTexture( _name, _width, _height );
 	RenderTargetInfo rtgtInfo;
 	rtgtInfo.dirty = true;
 	rtgtInfo.texture = texture;
 	m_targetMap.insert( std::make_pair( _name, rtgtInfo ) );
 	return texture;
-	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::TextureDesc& _desc )
@@ -434,6 +542,7 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 {
+	assert(0);
 /*	TTargetMap::iterator it = m_targetMap.find( _name );
 	if( it != m_targetMap.end() )
 	{

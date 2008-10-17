@@ -38,6 +38,8 @@ private:
 	std::size_t m_width;
 	std::size_t m_height;
 	Menge::PixelFormat m_format;
+
+	bool m_readOnly;
 	
 	Menge::String m_name;
 };

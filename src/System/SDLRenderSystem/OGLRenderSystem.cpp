@@ -58,35 +58,29 @@ bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	return initialized;
 }
 //////////////////////////////////////////////////////////////////////////
-void glEnable2D( void )   
+void glEnable2D()   
 {   
-	GLint iViewport[4];   
+	GLint viewport[4];   
 
-	// Get a copy of the viewport   
-	glGetIntegerv( GL_VIEWPORT, iViewport );   
+	glGetIntegerv( GL_VIEWPORT, viewport );   
 
-	// Save a copy of the projection matrix so that we can restore it   
-	// when it's time to do 3D rendering again.   
 	glMatrixMode( GL_PROJECTION );   
 	glPushMatrix();   
 	glLoadIdentity();   
 
-	// Set up the orthographic projection   
-	glOrtho( iViewport[0], iViewport[0]+iViewport[2],   
-		iViewport[1]+iViewport[3], iViewport[1], -1, 1 );   
-
+	glOrtho( viewport[0], viewport[0] + viewport[2],   
+		viewport[1] + viewport[3], viewport[1], -1, 1 );   
+ 
 	glMatrixMode( GL_MODELVIEW );   
 	glPushMatrix();   
 	glLoadIdentity();   
 
-	// Make sure depth testing and lighting are disabled for 2D rendering until   
-	// we are finished rendering in 2D   
 	glPushAttrib( GL_DEPTH_BUFFER_BIT | GL_LIGHTING_BIT );   
 	glDisable( GL_DEPTH_TEST );   
 	glDisable( GL_LIGHTING );   
 }   
 //////////////////////////////////////////////////////////////////////////
-void glDisable2D( void )   
+void glDisable2D()   
 {   
 	glPopAttrib();   
 
@@ -105,21 +99,10 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	m_SDLWindow.create("TEST",_width,_height,_fullscreen,&values);
 
 	glEnable2D();
-/*
-	glPushAttrib(GL_ENABLE_BIT);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-	glEnable(GL_TEXTURE_2D);
-*/
+
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-	int flags = SDL_WasInit(0);
-	if( flags == 0 )
-	{
-
-	}
 
 	return true;
 }
@@ -186,7 +169,7 @@ void OGLRenderSystem::setWorldMatrix( const float * _world )
 Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String & _name,
 														   float _width, float _height )
 {
-	OGLTexture * texture = new OGLTexture( _name, ::floorf( _width + 0.5f ), ::floorf( _height + 0.5f ) );
+	OGLTexture * texture = new OGLTexture(_name,_width, _height);
 	m_textureMap.insert( std::make_pair( _name, static_cast<Menge::RenderImageInterface*>( texture ) ) );
 	texture->incRef();
 	return texture;
@@ -205,12 +188,12 @@ Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Me
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::TextureDesc& _desc )
 {
-	OGLTexture * sdl_texture = new OGLTexture();
-	sdl_texture->load(_desc);
-	m_textureMap.insert( std::make_pair( _desc.name, static_cast<Menge::RenderImageInterface*>( sdl_texture ) ) );
-	sdl_texture->incRef();
+	OGLTexture * texture = new OGLTexture();
+	texture->load(_desc);
+	m_textureMap.insert( std::make_pair( _desc.name, texture ) );
+	texture->incRef();
 
-	return sdl_texture;
+	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::releaseImage( Menge::RenderImageInterface * _image )
@@ -346,27 +329,8 @@ void OGLRenderSystem::renderLine( unsigned int _color,
 void OGLRenderSystem::beginScene()
 {
 	m_layer = 1.0f;
-
-/*	bool zBuffer = false;
-
-	GLbitfield mask = 0;
-
-	glClearColor(1,1,1,1);
-
-	mask |= GL_COLOR_BUFFER_BIT;
-	
-	if (zBuffer)
-	{
-		glDepthMask(GL_TRUE);
-		mask |= GL_DEPTH_BUFFER_BIT;
-	}
-
-	glClear(mask);
-*/
 	glClearColor(1,1,1,1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-//	glLoadIdentity();
-
 //	glLoadIdentity();
 }
 //////////////////////////////////////////////////////////////////////////

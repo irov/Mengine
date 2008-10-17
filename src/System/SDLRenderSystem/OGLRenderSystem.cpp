@@ -127,6 +127,17 @@ const std::vector<int> & OGLRenderSystem::getResolutionList()
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const float * _rect /*= 0 */ )
 {
+/*	glReadBuffer(GL_BACK);
+
+	int pitch = 0;
+
+	unsigned char * buffer = _image->lock(&pitch,false);
+
+	glReadPixels((GLint)_rect[0], (GLint)_rect[1],
+		(GLsizei)_rect[2], (GLsizei)_rect[3],
+		GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+
+	_image->unlock();*/
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::render()
@@ -178,12 +189,13 @@ Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String 
 Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Menge::String & _name, float _width, float _height )
 {
 	assert(0);
-	OGLTexture* texture = new OGLTexture( _name, _width, _height );
+/*	OGLTexture* texture = new OGLTexture( _name, _width, _height );
 	RenderTargetInfo rtgtInfo;
 	rtgtInfo.dirty = true;
 	rtgtInfo.texture = texture;
 	m_targetMap.insert( std::make_pair( _name, rtgtInfo ) );
-	return texture;
+	return texture;*/
+	return 0;
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::TextureDesc& _desc )
@@ -451,7 +463,7 @@ void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 			, _name.c_str() );
 	}
 */
-	TTargetMap::iterator it = m_targetMap.find( _name );
+/*	TTargetMap::iterator it = m_targetMap.find( _name );
 	if( it != m_targetMap.end() )
 	{
 		if( m_inRender )
@@ -480,7 +492,7 @@ void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 		glViewport(0, 0, it->second.texture->getWidth(), it->second.texture->getHeight());
 
 		beginScene();
-	}
+	}*/
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setRenderArea( const float* _renderArea )

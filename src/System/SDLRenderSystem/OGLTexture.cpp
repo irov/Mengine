@@ -128,10 +128,9 @@ unsigned char* OGLTexture::lock( int* _pitch, bool _readOnly )
 
 void OGLTexture::unlock()
 {
-	glBindTexture(GL_TEXTURE_2D, m_texture);
-	
 	if(m_readOnly == false)
 	{
+		glBindTexture(GL_TEXTURE_2D, m_texture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width,m_height, 0, m_glInternalFormat,m_glPixelType,m_buffer);
 	}
 }

@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+#	include "XmlParserCast.h"
 
 namespace XmlParserCheckMethod
 {

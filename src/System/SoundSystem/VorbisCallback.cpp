@@ -1,6 +1,6 @@
 
 #	include "VorbisCallback.h"
-#	include "Interface\FileSystemInterface.h"
+#	include "Interface/FileSystemInterface.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 size_t s_readOgg( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )

@@ -8,7 +8,7 @@
 
 #	include "Resolution.h"
 
-#	include "Interface\ApplicationInterface.h"
+#	include "Interface/ApplicationInterface.h"
 
 class XmlElement;
 

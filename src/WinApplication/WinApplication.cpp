@@ -233,8 +233,25 @@ namespace Menge
 			return false;
 		}
 
+		const String& title = m_menge->getProjectTitle();
+
+		// try to create mutex to sure that we are not running already
+		StringW titleW = Utils::AToW( title );
+		StringW mutexName = StringW( MENGE_TEXT("MengeMutex_") ) + titleW;
+		m_mutex = ::CreateMutex( NULL, FALSE, mutexName.c_str() );
+		DWORD error = ::GetLastError();
+		// already running
+		if( error == ERROR_ALREADY_EXISTS )
+		{
+			StringW message = StringW( MENGE_TEXT("Another instance of ") ) + titleW + StringW( MENGE_TEXT(" is already running") );
+			::MessageBox( NULL, message.c_str(), titleW.c_str(), MB_ICONWARNING );
+			return false;
+		}
+
 		LOG( "Enumarating monitors..." );
 		EnumDisplayMonitors( NULL, NULL, &s_monitorEnumProc, (LPARAM)this );
+
+		m_menge->setDesktopResolution( Menge::Resolution( m_desktopWidth, m_desktopHeight ) );
 
 		LOG( "Creating Render Window..." );
 		if( m_menge->createRenderWindow( 0 ) == false )
@@ -384,18 +401,7 @@ namespace Menge
 		}
 
 		m_name = _name;
-
-		StringW nameW = Utils::AToW( m_name );
-		m_mutex = ::CreateMutex( NULL, FALSE, nameW.c_str() );
-		DWORD error = ::GetLastError();
-
-		if( error == ERROR_ALREADY_EXISTS )
-		{
-			Menge::String message = Menge::String( "Another instance of " ) + m_name + Menge::String( " is already running" );
-			StringW messageW = Utils::AToW( message );
-			::MessageBox( NULL, messageW.c_str(), nameW.c_str(), MB_ICONWARNING );
-			return false;
-		}
+		StringW nameW = Menge::Utils::AToW( m_name );
 
 		// Register the window class
 		WNDCLASS wc;

@@ -90,16 +90,21 @@ namespace Menge
 			rebuildWindow_();
 		}
 
-		renderEngine->renderTriple( m_quads[0].a, m_quads[0].b, m_quads[0].c, m_backUV[0], m_backUV[1], m_backUV[2],
-			0xFFFFFFFF, m_resource->getImage(0) );
-		renderEngine->renderTriple( m_quads[0].a, m_quads[0].c, m_quads[0].d, m_backUV[0], m_backUV[2], m_backUV[3],
-			0xFFFFFFFF, m_resource->getImage(0) );
+		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
+		{
+			renderEngine->renderTriple( m_quads[i].a, m_quads[i].b, m_quads[i].c
+				, mt::vec2f( 0.0f, 0.0f ), mt::vec2f( m_UVs[i].x, 0.0f ), mt::vec2f( m_UVs[i].x, m_UVs[i].y ),
+				0xFFFFFFFF, m_resource->getImage(i) );
+			renderEngine->renderTriple( m_quads[i].a, m_quads[i].c, m_quads[i].d
+				, mt::vec2f( 0.0f, 0.0f ), mt::vec2f( m_UVs[i].x, m_UVs[i].y ), mt::vec2f( 0.0f, m_UVs[i].y ),
+				0xFFFFFFFF, m_resource->getImage(i) );
+		}
 
-		for( int i = 1; i < MAX_WINDOW_ELEMENTS; i++ )
+		/*for( int i = 1; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
 			renderEngine->renderImage( &(m_quads[i].a), mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), 0xFFFFFFFF
 				, m_resource->getImage(i) );
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::rebuildWindow_()
@@ -161,13 +166,16 @@ namespace Menge
 		m_quads[0].c = m_quads[5].a;
 		m_quads[0].d = m_quads[7].b;
 
-		float s = m_clientSize.x / m_initialSizes[0].x;
-		float t = m_clientSize.y / m_initialSizes[0].y;
-		m_backUV[0] = mt::vec2f::zero_v2;
-		m_backUV[1] = mt::vec2f( s, 0.0f );
-		m_backUV[2] = mt::vec2f( s, t );
-		m_backUV[3] = mt::vec2f( 0.0f, t );
-
+		m_UVs[0] = mt::vec2f( m_clientSize.x / m_initialSizes[0].x, m_clientSize.y / m_initialSizes[0].y );
+		m_UVs[1] = mt::vec2f( 1.0f, 1.0f );
+		m_UVs[2] = mt::vec2f( m_clientSize.x / m_initialSizes[2].x, 1.0f );
+		m_UVs[3] = mt::vec2f( 1.0f, 1.0f );
+		m_UVs[4] = mt::vec2f( 1.0f, m_clientSize.y / m_initialSizes[4].y );
+		m_UVs[5] = mt::vec2f( 1.0f, 1.0f );
+		m_UVs[6] = mt::vec2f( m_clientSize.x / m_initialSizes[6].x, 1.0f );
+		m_UVs[7] = mt::vec2f( 1.0f, 1.0f );
+		m_UVs[8] = mt::vec2f( 1.0f, m_clientSize.y / m_initialSizes[8].x );
+		
 		m_invalidateQuads = false;
 	}
 	//////////////////////////////////////////////////////////////////////////

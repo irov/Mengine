@@ -39,7 +39,7 @@ namespace Menge
 
 		mt::vec2f m_initialSizes[MAX_WINDOW_ELEMENTS];
 		TQuad m_quads[MAX_WINDOW_ELEMENTS];
-		mt::vec2f m_backUV[4];
+		mt::vec2f m_UVs[MAX_WINDOW_ELEMENTS];
 
 		void rebuildWindow_();
 	};

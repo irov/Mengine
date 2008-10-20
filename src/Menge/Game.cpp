@@ -100,17 +100,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*void Game::loader( XmlElement * _xml )
-	{
-		XML_SWITCH_NODE( _xml )
-		{
-			XML_CASE_NODE( "Game" )
-			{
-				XML_PARSE_ELEMENT( this, &Game::loaderGame_ );
-			}
-		}
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	bool Game::loader( const String& _iniFile )
 	{
 		ConfigFile config;

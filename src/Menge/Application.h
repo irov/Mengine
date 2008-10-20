@@ -62,6 +62,7 @@ namespace Menge
 		void setPhysicSystem( PhysicSystemInterface * _interface );
 		void setPhysicSystem2D( PhysicSystem2DInterface * _interface );
 
+		void setDesktopResolution( const Resolution& _resolution );
 		bool loadGame( bool _loadPersonality );
 		bool createRenderWindow(WindowHandle _handle);
 		bool initGame();
@@ -107,6 +108,7 @@ namespace Menge
 
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style );
 
+		const String& getProjectTitle() const;
 	private:
 		Game * m_game;
 		ApplicationInterface* m_interface;

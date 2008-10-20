@@ -101,7 +101,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DataStreamInterface* FileSystem::openFile( const String& _filename )
 	{
-		DataStream* fileData = 0;
+		DataStreamInterface* fileData = 0;
 
 		LOG( "Opening file: \"" + _filename + "\"" );
 		
@@ -136,13 +136,13 @@ namespace Menge
 			FileStreamDataStream* stream = 
 				new FileStreamDataStream( origStream, tagStat.st_size, true );
 
-			fileData = static_cast<DataStream*>(stream);
+			fileData = static_cast<DataStreamInterface*>(stream);
 
-			if( !fileData )
+			/*if( !fileData )
 			{
 				LOG_ERROR( "unrecognized error while opening file \"" + _filename + "\"" );
 				return fileData;
-			}
+			}*/
 		}
 		catch ( ... )
 		{

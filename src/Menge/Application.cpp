@@ -258,9 +258,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createRenderWindow( WindowHandle _handle )
 	{
-		m_desktopResolution[0] = m_interface->getDesktopWidth();
-		m_desktopResolution[1] = m_interface->getDesktopHeight();
-
 		const String & title = m_game->getTitle();
 
 		const Resolution & resourceResolution = m_game->getResourceResolution();
@@ -748,9 +745,6 @@ namespace Menge
 		m_soundEngine->update( _timing );
 		m_profilerSystem->endProfile( "Sound Update" );
 
-		//m_renderEngine->beginScene();
-		//m_game->render( m_debugMask );
-		//m_renderEngine->endScene();
 		m_renderEngine->swapBuffers();
 
 		m_profilerSystem->endProfile( "Menge" );
@@ -775,7 +769,6 @@ namespace Menge
 		delete m_handler;
 
 		Holder<Game>::destroy();
-		//Holder<ResourceManager>::destroy();
 
 		Holder<PhysicEngine>::destroy();
 		Holder<PhysicEngine2D>::destroy();
@@ -866,6 +859,16 @@ namespace Menge
 			m_renderEngine->endScene();
 			m_renderEngine->swapBuffers();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String& Application::getProjectTitle() const
+	{
+		return m_game->getTitle();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setDesktopResolution( const Resolution& _resolution )
+	{
+		m_desktopResolution = _resolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

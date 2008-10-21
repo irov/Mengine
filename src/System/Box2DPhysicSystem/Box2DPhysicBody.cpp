@@ -26,7 +26,7 @@ bool Box2DPhysicBody::initialize( const b2BodyDef& _bodyDef )
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void Box2DPhysicBody::addShapeConvex(unsigned int _pointsNum, const float* _convex,
+void Box2DPhysicBody::addShapeConvex(std::size_t _pointsNum, const float* _convex,
 									 float _density, float _friction, float _restitution, bool _isSensor,
 									 unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
 {

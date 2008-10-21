@@ -1,13 +1,25 @@
 #	pragma once
 
 #	include "Holder.h"
-
-#	include "XmlParser/XmlParser.h"
 #	include "Math/mat4.h"
 #	include "Math/quat.h"
 #	include "FileEngine.h"
 #	include "ColourValue.h"
 #	include "Resolution.h"
+
+namespace XmlParserCast
+{
+	bool attribute_value_cast( Menge::Resolution & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( mt::vec2f & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( mt::vec3f & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( mt::vec4f & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( Menge::ColourValue & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( mt::quatf & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( mt::mat3f & _var, const Menge::TChar * _value );
+	bool attribute_value_cast( mt::mat4f & _var, const Menge::TChar * _value );
+}
+
+#	include "XmlParser/XmlParser.h"
 
 #	include "XmlCompile.h"
 
@@ -80,14 +92,3 @@ namespace Menge
 	};
 }
 
-namespace XmlParserCast
-{
-	bool attribute_value_cast( Menge::Resolution & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( mt::vec2f & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( mt::vec3f & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( mt::vec4f & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( Menge::ColourValue & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( mt::quatf & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( mt::mat3f & _var, const Menge::TChar * _value );
-	bool attribute_value_cast( mt::mat4f & _var, const Menge::TChar * _value );
-}

@@ -95,8 +95,8 @@ namespace Menge
 		float m_density;
 		float m_friction;
 		float m_restitution;
-		unsigned int m_collisionMask;
-		unsigned int m_categoryBits;
+		std::size_t m_collisionMask;
+		std::size_t m_categoryBits;
 		int m_groupIndex;
 		
 		class ConvexShape

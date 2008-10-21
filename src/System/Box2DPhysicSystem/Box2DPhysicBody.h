@@ -12,7 +12,7 @@ public:
 	virtual ~Box2DPhysicBody();
 	bool initialize( const b2BodyDef& _bodyDef );
 
-	void addShapeConvex( unsigned int _pointsNum, const float* _convex,
+	void addShapeConvex( std::size_t _pointsNum, const float* _convex,
 		float _density, float _friction, float _restitution, bool _isSensor,
 		unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex ) override;
 	void addShapeCircle( float _radius, const float* _localPos,

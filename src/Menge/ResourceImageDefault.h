@@ -29,13 +29,13 @@ namespace Menge
 	public:
 		std::size_t getCount() const override;
 
-		const mt::vec2f & getMaxSize( unsigned int _frame ) const override;
-		const mt::vec2f & getSize( unsigned int _frame ) const override;
-		const mt::vec2f & getOffset( unsigned int _frame ) const override;
-		const mt::vec4f & getUV( unsigned int _frame ) const override;		
-		bool isAlpha( unsigned int _frame ) const override;
+		const mt::vec2f & getMaxSize( std::size_t _frame ) const override;
+		const mt::vec2f & getSize( std::size_t _frame ) const override;
+		const mt::vec2f & getOffset( std::size_t _frame ) const override;
+		const mt::vec4f & getUV( std::size_t _frame ) const override;		
+		bool isAlpha( std::size_t _frame ) const override;
 
-		const RenderImageInterface * getImage( unsigned int _frame ) const override;
+		const RenderImageInterface * getImage( std::size_t _frame ) const override;
 		void addImagePath( const String& _imagePath );
 
 	public:
@@ -46,7 +46,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		unsigned int m_filter;
+		//unsigned int m_filter;
 
 		typedef std::vector<ImageFrame> TVectorImageFrame;
 		TVectorImageFrame m_vectorImageFrames;

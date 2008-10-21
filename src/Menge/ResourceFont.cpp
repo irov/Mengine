@@ -160,7 +160,7 @@ namespace Menge
 			if (err == 0)
 			{
 				MENGE_LOG_ERROR( "in parsing params: \"%s\""
-					, params );
+					, params.c_str() );
 				return false;
 			}
 

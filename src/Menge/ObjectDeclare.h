@@ -10,5 +10,5 @@ struct FactoryGenStruct
 
 #	define OBJECT_DECLARE(C)\
 	public:\
-	static Node * genObject(const FactoryGenStruct &);\
+	static Node * genObject(const FactoryGenStruct &);
 	//private:

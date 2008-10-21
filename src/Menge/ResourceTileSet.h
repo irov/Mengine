@@ -43,7 +43,7 @@ namespace Menge
 
 	private:
 		String m_tileSetFile;
-		unsigned int m_tiles;
+		std::size_t m_tiles;
 		//RenderImageInterface* m_image;
 		//typedef std::map< int, mt::vec4f > TTileSet;
 		typedef std::map< int, RenderImageInterface* > TTileSet;

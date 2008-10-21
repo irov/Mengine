@@ -16,15 +16,15 @@ namespace Menge
 		~ResourceImageDynamic();
 
 	public:
-		virtual unsigned int getCount() const override;
-		virtual const mt::vec2f & getMaxSize( unsigned int _frame ) const override;
-		virtual const mt::vec2f & getSize( unsigned int _frame ) const override;
-		virtual const mt::vec2f & getOffset( unsigned int _frame ) const override;
-		virtual const mt::vec4f & getUV( unsigned int _frame ) const override;		
-		virtual const RenderImageInterface * getImage( unsigned int _frame ) const override;
-		virtual bool isAlpha( unsigned int _frame ) const override;
+		virtual std::size_t getCount() const override;
+		virtual const mt::vec2f & getMaxSize( std::size_t _frame ) const override;
+		virtual const mt::vec2f & getSize( std::size_t _frame ) const override;
+		virtual const mt::vec2f & getOffset( std::size_t _frame ) const override;
+		virtual const mt::vec4f & getUV( std::size_t _frame ) const override;		
+		virtual const RenderImageInterface * getImage( std::size_t _frame ) const override;
+		virtual bool isAlpha( std::size_t _frame ) const override;
 
-		RenderImageInterface * getImage( unsigned int _frame );
+		RenderImageInterface * getImage( std::size_t _frame );
 		void setSize( const mt::vec2f& _size );
 
 	public:

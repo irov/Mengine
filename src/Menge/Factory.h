@@ -46,8 +46,8 @@ namespace Menge
 		}
 
 		static void registration(const TKey &_key, TGenFunc _func)
-		{				
-			TMapGenerator::iterator it_find = mapGenerator().find(_key);
+		{			
+			typename TMapGenerator::iterator it_find = mapGenerator().find(_key);
 
 			if( it_find == mapGenerator().end() )
 			{

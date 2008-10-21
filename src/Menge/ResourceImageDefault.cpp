@@ -11,11 +11,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDefault::ResourceImageDefault( const ResourceFactoryParam & _params )
 		: ResourceImage( _params )
-		, m_filter( 1 )
+		//, m_filter( 1 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getMaxSize( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageDefault::getMaxSize( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].maxSize;
 	}
@@ -25,27 +25,27 @@ namespace Menge
 		return m_vectorImageFrames.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getSize( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageDefault::getSize( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDefault::getOffset( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageDefault::getOffset( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageDefault::getUV( unsigned int _frame ) const
+	const mt::vec4f & ResourceImageDefault::getUV( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceImageDefault::getImage( unsigned int _frame ) const
+	const RenderImageInterface * ResourceImageDefault::getImage( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDefault::isAlpha( unsigned int _frame ) const
+	bool ResourceImageDefault::isAlpha( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].isAlpha;
 	}

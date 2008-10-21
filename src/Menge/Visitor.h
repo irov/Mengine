@@ -1,6 +1,7 @@
 #	pragma once
 
-#	define VISITOR_TYPES\
+
+/*#	define VISITOR_TYPES\
 	(Node)(Sprite)(Animation)\
 	(Layer2D)(Track)(Arrow)\
 	(HotSpot)(TextField)(SoundEmitter)\
@@ -32,7 +33,7 @@
 
 #	undef VISITOR_PP_SEQ_PROC
 #	define VISITOR_PP_SEQ_PROC( TYPE )\
-	virtual void visit_impl( class TYPE * _node ) = 0;
+	virtual void visit_impl( class TYPE * _node ) = 0;*/
 
 namespace Menge
 {
@@ -40,6 +41,22 @@ namespace Menge
 	class Visitor
 	{
 	public:
-		VISITOR_PP_SEQ_ENUM( VISITOR_TYPES )
+		//VISITOR_PP_SEQ_ENUM( VISITOR_TYPES )
+		  virtual void visit_impl( class Node * _node ) = 0;
+          virtual void visit_impl( class Sprite * _node ) = 0;
+          virtual void visit_impl( class Animation * _node ) = 0;
+          virtual void visit_impl( class Layer2D * _node ) = 0;
+          virtual void visit_impl( class Track * _node ) = 0;
+          virtual void visit_impl( class Arrow * _node ) = 0;
+          virtual void visit_impl( class HotSpot * _node ) = 0;
+          virtual void visit_impl( class TextField * _node ) = 0;
+          virtual void visit_impl( class SoundEmitter * _node ) = 0;
+          virtual void visit_impl( class Emitter * _node ) = 0;
+          virtual void visit_impl( class Point * _node ) = 0;
+          virtual void visit_impl( class RigidBody2D * _node ) = 0;
+          virtual void visit_impl( class TileMap * _node ) = 0;
+          virtual void visit_impl( class Camera2D * _node ) = 0;
+          virtual void visit_impl( class Entity * _node ) = 0;
+          virtual void visit_impl( class LayerScene * _node ) = 0;		
 	};
 }

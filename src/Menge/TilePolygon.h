@@ -1,6 +1,6 @@
 #	pragma once
-#	include "math\vec2.h"
-#	include "math\polygon.h"
+#	include "math/vec2.h"
+#	include "math/polygon.h"
 #	include "RigidBody2D.h"
 #	include "ResourceTilePolygon.h"
 

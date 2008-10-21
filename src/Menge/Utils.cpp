@@ -90,7 +90,8 @@ namespace Menge
 			std::size_t converted = 0;
 			std::size_t size = _stringw.size() + 1;
 			TCharA* stra = new TCharA[size];
-			wcstombs_s( &converted, stra, size, _stringw.c_str(), _TRUNCATE );
+			//wcstombs_s( &converted, stra, size, _stringw.c_str(), _TRUNCATE );
+			wcstombs( stra, _stringw.c_str(), size );
 			StringA out( stra );
 			delete[] stra;
 			return out;
@@ -102,7 +103,8 @@ namespace Menge
 			std::size_t converted = 0;
 			std::size_t size = _stringa.size() + 1;
 			TCharW* strw = new TCharW[size];
-			mbstowcs_s( &converted, strw, size, _stringa.c_str(), _TRUNCATE );
+			//mbstowcs_s( &converted, strw, size, _stringa.c_str(), _TRUNCATE );
+			mbstowcs( strw, _stringa.c_str(), size );
 			StringW out( strw );
 			delete[] strw;
 			return out;

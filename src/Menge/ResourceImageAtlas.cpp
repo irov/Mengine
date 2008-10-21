@@ -23,7 +23,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageAtlas::getMaxSize( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageAtlas::getMaxSize( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].maxSize;
 	}
@@ -33,27 +33,27 @@ namespace Menge
 		return m_vectorImageFrames.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageAtlas::getSize( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageAtlas::getSize( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageAtlas::getOffset( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageAtlas::getOffset( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageAtlas::getUV( unsigned int _frame ) const
+	const mt::vec4f & ResourceImageAtlas::getUV( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceImageAtlas::getImage( unsigned int _frame ) const
+	const RenderImageInterface * ResourceImageAtlas::getImage( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageAtlas::isAlpha( unsigned int _frame ) const
+	bool ResourceImageAtlas::isAlpha( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].isAlpha;
 	}

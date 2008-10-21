@@ -94,6 +94,6 @@ namespace Menge
 		void releaseImageFrame( const ImageFrame & _frame );
 
 	protected:
-		unsigned int m_filter;
+		std::size_t m_filter;
 	};
 }

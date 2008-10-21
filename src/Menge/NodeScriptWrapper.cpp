@@ -48,6 +48,8 @@
 #	include "Video.h"
 #	include "Window.h"
 
+#	include "Entity.h"
+
 //#	include "DiscreteEntity.h"
 
 #	include "SoundEngine.h"
@@ -788,7 +790,7 @@ namespace Menge
 		}
 
 		{
-			pybind::proxy_<Emitter, pybind::bases<Node>>("Emitter", false)
+			pybind::proxy_<Emitter, pybind::bases<Node> >("Emitter", false)
 				.def( "play", &Emitter::play )
 				.def( "stop", &Emitter::stop )
 				.def( "pause", &Emitter::pause )
@@ -800,7 +802,7 @@ namespace Menge
 				.def( "setEmitter", &Emitter::setEmitter )
 				;
 
-			pybind::proxy_<SoundEmitter, pybind::bases<Node>>("SoundEmitter", false)
+			pybind::proxy_<SoundEmitter, pybind::bases<Node> >("SoundEmitter", false)
 				.def( "play", &SoundEmitter::play )
 				.def( "pause", &SoundEmitter::pause )
 				.def( "stop", &SoundEmitter::stop )
@@ -812,7 +814,7 @@ namespace Menge
 				.def( "setSoundResource", &SoundEmitter::setSoundResource )
 				;
 
-			pybind::proxy_<TextField, pybind::bases<Node>>("TextField", false)
+			pybind::proxy_<TextField, pybind::bases<Node> >("TextField", false)
 				.def( "setText", &TextField::setText )
 				.def( "setHeight", &TextField::setHeight )
 				.def( "getText", &TextField::getText )
@@ -834,14 +836,14 @@ namespace Menge
 				.def( "setCenterAlign", &TextField::setCenterAlign )
 				;
 
-			pybind::proxy_<Arrow, pybind::bases<Node>>("Arrow", false)
+			pybind::proxy_<Arrow, pybind::bases<Node> >("Arrow", false)
 				.def( "setOffsetClick", &Arrow::setOffsetClick )
 				.def( "getOffsetClick", &Arrow::getOffsetClick )
 				.def( "addHotSpot", &Arrow::addHotSpot )
 				.def( "getCurrentHotSpot", &Arrow::getCurrentHotSpot )
 				;
 
-			pybind::proxy_<Point, pybind::bases<Node>>("Point", false)
+			pybind::proxy_<Point, pybind::bases<Node> >("Point", false)
 				.def( "testHotSpot", &Point::testHotSpot )
 				;
 
@@ -859,7 +861,7 @@ namespace Menge
 				;
 
 
-			pybind::proxy_<HotSpot, pybind::bases<Node>>("HotSpot", false)
+			pybind::proxy_<HotSpot, pybind::bases<Node> >("HotSpot", false)
 				.def( "enableGlobalMouseEvent", &HotSpot::enableGlobalMouseEvent )
 				.def( "enableGlobalKeyEvent", &HotSpot::enableGlobalKeyEvent )				
 				.def( "addPoint", &HotSpot::addPoint )
@@ -867,7 +869,7 @@ namespace Menge
 				.def( "pick", &HotSpot::pick )
 				;
 
-			pybind::proxy_<Sprite, pybind::bases<Node>>("Sprite", false)
+			pybind::proxy_<Sprite, pybind::bases<Node> >("Sprite", false)
 				.def( "setImageIndex", &Sprite::setImageIndex )
 				.def( "getImageIndex", &Sprite::getImageIndex )
 				.def( "getImageCount", &Sprite::getImageCount )
@@ -887,7 +889,7 @@ namespace Menge
 				.def( "setCenterAlign", &Sprite::setCenterAlign )
 				;
 			{
-				pybind::proxy_<Animation, pybind::bases<Sprite>>("Animation", false)
+				pybind::proxy_<Animation, pybind::bases<Sprite> >("Animation", false)
 					.def( "play", &Animation::play )
 					.def( "stop", &Animation::stop )
 					.def( "pause", &Animation::pause )
@@ -902,7 +904,7 @@ namespace Menge
 					;
 			}
 
-			pybind::proxy_<RigidBody2D, pybind::bases<Node>>("RigidBody2D", false)
+			pybind::proxy_<RigidBody2D, pybind::bases<Node> >("RigidBody2D", false)
 				.def( "getListener", &RigidBody2D::getListener )
 				.def( "applyForce", &RigidBody2D::applyForce )
 				.def( "applyImpulse", &RigidBody2D::applyImpulse )
@@ -924,16 +926,16 @@ namespace Menge
 			;
 
 			
-			pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D>>("TilePolygon", false)
+			pybind::proxy_<TilePolygon, pybind::bases<RigidBody2D> >("TilePolygon", false)
 			;
 
-			pybind::proxy_<Video, pybind::bases<Sprite>>("Video", false)
+			pybind::proxy_<Video, pybind::bases<Sprite> >("Video", false)
 				.def( "play", &Video::play )
 				.def( "stop", &Video::stop )
 				.def( "pause", &Video::pause )
 				;
 
-			pybind::proxy_<Window, pybind::bases<Node>>("Window", false)
+			pybind::proxy_<Window, pybind::bases<Node> >("Window", false)
 				.def( "setClientSize", &Window::setClientSize )
 				;
 		}		

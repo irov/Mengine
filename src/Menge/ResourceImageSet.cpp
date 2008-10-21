@@ -14,12 +14,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageSet::getMaxSize( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageSet::getMaxSize( std::size_t _frame ) const
 	{
 		return m_sizes[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageSet::getSize( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageSet::getSize( std::size_t _frame ) const
 	{
 		return m_sizes[ _frame ];
 	}
@@ -29,23 +29,23 @@ namespace Menge
 		return m_uvs.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageSet::getOffset( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageSet::getOffset( std::size_t _frame ) const
 	{
 		return m_imageFrame.offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageSet::getUV( unsigned int _frame ) const
+	const mt::vec4f & ResourceImageSet::getUV( std::size_t _frame ) const
 	{
 		return m_uvs[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageSet::isAlpha( unsigned int _frame ) const
+	bool ResourceImageSet::isAlpha( std::size_t _frame ) const
 	{
 		assert(!"ResourceImageSet::isAlpha not implemented");
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceImageSet::getImage( unsigned int _frame ) const
+	const RenderImageInterface * ResourceImageSet::getImage( std::size_t _frame ) const
 	{
 		return m_imageFrame.image;
 	}

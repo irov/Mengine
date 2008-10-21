@@ -6,6 +6,43 @@
 
 namespace Menge
 {
+	struct FScheduleFind
+	{
+		FScheduleFind( std::size_t _id )
+			: m_id(_id)
+		{
+		}
+
+		bool operator()( const ScheduleManager::ScheduleEvent & _event ) const
+		{
+			return _event.id == m_id;
+		}
+
+		std::size_t m_id;
+	};
+	
+	struct FScheduleDead
+	{
+		bool operator ()( const ScheduleManager::ScheduleEvent & _event ) const
+		{
+			if( _event.dead )
+			{
+				ScriptEngine::decref( _event.script );
+				return true;
+			}
+			
+			return false;
+		}
+	};	
+	
+	struct FScheduleUpdating
+	{
+		void operator ()( ScheduleManager::ScheduleEvent & _event ) const
+		{
+			_event.updating = false;
+		}
+	};
+	
 	//////////////////////////////////////////////////////////////////////////
 	ScheduleManager::ScheduleManager()
 		: m_schedulesID(0)
@@ -15,7 +52,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ScheduleManager::schedule( float _timing, PyObject * _func )
+	std::size_t ScheduleManager::schedule( float _timing, PyObject * _func )
 	{
 		ScheduleEvent event_;
 
@@ -35,20 +72,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::remove( std::size_t _id )
 	{
-		struct FScheduleFind
-		{
-			FScheduleFind( std::size_t _id )
-				: m_id(_id)
-			{
-			}
-
-			bool operator()( const ScheduleEvent & _event ) const
-			{
-				return _event.id == m_id;
-			}
-
-			std::size_t m_id;
-		};
 			
 		TListSchedules::iterator it_find = 
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
@@ -152,33 +175,10 @@ namespace Menge
 
 		m_updating = false;
 
-
-		struct FScheduleDead
-		{
-			bool operator ()( const ScheduleEvent & _event ) const
-			{
-				if( _event.dead )
-				{
-					ScriptEngine::decref( _event.script );
-					return true;
-				}
-				
-				return false;
-			}
-		};
-
 		TListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead());
 
 		m_schedules.erase( it_erase, m_schedules.end() );
 
-		struct FScheduleUpdating
-		{
-			void operator ()( ScheduleEvent & _event ) const
-			{
-				_event.updating = false;
-			}
-		};
-		
 		std::for_each( m_schedules.begin(), m_schedules.end(), FScheduleUpdating() );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -213,7 +213,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScheduleManager::freeze( std::size_t _id, bool _freeze )
 	{
-		struct FScheduleFind
+		/*struct FScheduleFind
 		{
 			FScheduleFind( std::size_t _id )
 				: m_id(_id)
@@ -226,7 +226,7 @@ namespace Menge
 			}
 
 			std::size_t m_id;
-		};
+		};*/
 
 		TListSchedules::iterator it_find = 
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );

@@ -142,7 +142,7 @@ namespace	Menge
 		updateSprite_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int Sprite::getImageIndex() const
+	std::size_t Sprite::getImageIndex() const
 	{
 		return m_currentImageIndex;
 	}
@@ -435,7 +435,7 @@ namespace	Menge
 		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int Sprite::getImageCount() const
+	std::size_t Sprite::getImageCount() const
 	{
 		if( m_resource == 0 )
 		{

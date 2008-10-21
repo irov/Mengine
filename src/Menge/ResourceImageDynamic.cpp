@@ -28,43 +28,43 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDynamic::getMaxSize( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageDynamic::getMaxSize( std::size_t _frame ) const
 	{
 		return m_frame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int ResourceImageDynamic::getCount() const
+	std::size_t ResourceImageDynamic::getCount() const
 	{
 		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDynamic::getSize( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageDynamic::getSize( std::size_t _frame ) const
 	{
 		return m_frame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageDynamic::getOffset( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageDynamic::getOffset( std::size_t _frame ) const
 	{
 		return m_offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageDynamic::getUV( unsigned int _frame ) const
+	const mt::vec4f & ResourceImageDynamic::getUV( std::size_t _frame ) const
 	{
 		return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceImageDynamic::getImage( unsigned int _frame ) const
+	const RenderImageInterface * ResourceImageDynamic::getImage( std::size_t _frame ) const
 	{
 		return m_frame.image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageDynamic::isAlpha( unsigned int _frame ) const
+	bool ResourceImageDynamic::isAlpha( std::size_t _frame ) const
 	{
 		//assert(!"ResourceImageDynamic::isAlpha not implemented");
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* ResourceImageDynamic::getImage( unsigned int _frame )
+	RenderImageInterface* ResourceImageDynamic::getImage( std::size_t _frame )
 	{
 		return m_frame.image;
 	}

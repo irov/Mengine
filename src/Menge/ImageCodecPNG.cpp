@@ -3,7 +3,7 @@
 
 #	include "ImageCodecPNG.h"
 
-#	include "png.h"
+#	include "libPNG/png.h"
 
 #	include "LogEngine.h"
 

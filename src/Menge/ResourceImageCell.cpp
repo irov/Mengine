@@ -20,7 +20,7 @@ namespace Menge
 		m_imageDesc.offset = mt::vec2f( 0.0f, 0.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCell::getMaxSize( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageCell::getMaxSize( std::size_t _frame ) const
 	{
 		return m_imageFrame.size;
 	}
@@ -30,27 +30,27 @@ namespace Menge
 		return m_uvs.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCell::getSize( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageCell::getSize( std::size_t _frame ) const
 	{
 		return m_imageFrame.size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceImageCell::getOffset( unsigned int _frame ) const
+	const mt::vec2f & ResourceImageCell::getOffset( std::size_t _frame ) const
 	{
 		return m_imageFrame.offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & ResourceImageCell::getUV( unsigned int _frame ) const
+	const mt::vec4f & ResourceImageCell::getUV( std::size_t _frame ) const
 	{
 		return m_uvs[ _frame ];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageCell::isAlpha( unsigned int _frame ) const
+	bool ResourceImageCell::isAlpha( std::size_t _frame ) const
 	{
 		return m_imageFrame.isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderImageInterface * ResourceImageCell::getImage( unsigned int _frame ) const
+	const RenderImageInterface * ResourceImageCell::getImage( std::size_t _frame ) const
 	{
 		return m_imageFrame.image;
 	}

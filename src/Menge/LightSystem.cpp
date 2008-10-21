@@ -6,6 +6,10 @@
 
 namespace Menge
 {
+	struct quad
+	{
+		mt::vec2f v[4];
+	};
 	//////////////////////////////////////////////////////////////////////////
 	LightSystem::LightSystem()
 	{
@@ -52,11 +56,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LightSystem::drawUmbra(const Light2D & _light, const ShadowCaster2D & _caster, std::size_t first, std::size_t last)
 	{
-		struct quad
-		{
-			mt::vec2f v[4];
-		};
-
 		std::vector<quad> _shadow;
 
 		std::size_t size = _caster.size();

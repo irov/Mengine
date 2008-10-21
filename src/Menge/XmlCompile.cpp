@@ -421,7 +421,7 @@ namespace Menge
 	{
 		std::size_t sizeValue = STDSTRLEN( _string );
 
-		char chSizeValue = ( sizeValue < 255 ) ? char(sizeValue) : 255;
+		unsigned char chSizeValue = ( sizeValue < 255 ) ? (unsigned char)sizeValue : 255;
 
 		m_outFile->write( &chSizeValue, sizeof( chSizeValue ) );
 

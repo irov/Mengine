@@ -12,6 +12,9 @@
 
 namespace Menge
 {
+	template <int (&F)(int)> 
+	unsigned char safe_ctype(unsigned char c) { return F(c); }
+
 	//////////////////////////////////////////////////////////////////////////
 	CodecManager::TCodecMap CodecManager::ms_mapCodecs;
 	//////////////////////////////////////////////////////////////////////////
@@ -23,7 +26,7 @@ namespace Menge
 			lwrcase.begin(),
 			lwrcase.end(),
 			lwrcase.begin(),
-			std::tolower);
+			safe_ctype<std::tolower>);
 
 		TCodecMap::const_iterator i = ms_mapCodecs.find( lwrcase );
 		

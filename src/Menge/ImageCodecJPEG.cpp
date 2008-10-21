@@ -7,9 +7,9 @@ extern "C"
 	#	undef FAR
 
 	#	include <setjmp.h>
-	#	include "LibJPEG/jinclude.h"
-	#	include "LibJPEG/jpeglib.h"
-	#	include "LibJPEG/jerror.h"
+	#	include "libJPEG/jinclude.h"
+	#	include "libJPEG/jpeglib.h"
+	#	include "libJPEG/jerror.h"
 }
 
 #	include "LogEngine.h"

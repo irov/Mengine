@@ -11,6 +11,7 @@
 #	include "LogEngine.h"
 
 #	include "ResourceManager.h"
+#	include <cmath>
 
 namespace Menge
 {

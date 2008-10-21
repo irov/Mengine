@@ -3,6 +3,7 @@
 #	include "XmlEngine.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
+#	include "Utils.h"
 
 static unsigned int s_tileNumToCode( unsigned int tile, unsigned int tileNum )
 {
@@ -77,9 +78,10 @@ namespace Menge
 	
 		for( unsigned int tile = 0; tile < tilesNum; tile++ )
 		{
-			unsigned int tileCode = s_tileNumToCode( tile, m_tiles );
+			std::size_t tileCode = s_tileNumToCode( tile, m_tiles );
 			TChar buffer[10];
-			String tilestr( STDITOS(tileCode, buffer, 10) );
+			//String tilestr( std::itoa(tileCode, buffer, 10) );
+			String tilestr = Utils::toString( tileCode );
 			String name = m_tileSetFile + tilestr + ".png";
 			RenderImageInterface* image = Holder<RenderEngine>::hostage()->loadImage( name, 0 );
 

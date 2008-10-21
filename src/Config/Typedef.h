@@ -56,9 +56,9 @@ namespace Menge
 #	define STDSTRLEN (strlen)
 #	define STDITOS (_itoa)
 
-#	if MENGE_COMPILER == MENGE_COMPILER_MSVC
+//#	if MENGE_COMPILER == MENGE_COMPILER_MSVC
 #		define MENGE_TEXT(quote)	L##quote
-#	endif
+//#	endif
 
 #endif
 

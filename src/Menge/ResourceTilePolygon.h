@@ -6,8 +6,8 @@
 
 #	include <vector>
 
-#	include "math\vec2.h"
-#	include "math\polygon.h"
+#	include "math/vec2.h"
+#	include "math/polygon.h"
 
 namespace Menge
 {

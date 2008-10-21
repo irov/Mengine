@@ -1,6 +1,6 @@
 #	pragma once
-#	include "math\vec2.h"
-#	include "math\polygon.h"
+#	include "math/vec2.h"
+#	include "math/polygon.h"
 #	include "ShadowCaster2D.h"
 
 #	include "Node.h"

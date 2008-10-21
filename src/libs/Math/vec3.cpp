@@ -2,7 +2,7 @@
 
 namespace	mt
 {
-	const vec3f vec3f::zero_v3(0, 0, 0);
+	//const vec3f vec3f::zero_v3(0, 0, 0);
 }
 
 #	if MATH_FORCE_INLINE == 0

@@ -2,7 +2,7 @@
 
 namespace	mt
 {
-	const vec2f vec2f::zero_v2(0, 0);
+	//const vec2f vec2f::zero_v2(0, 0);
 }
 
 #	if MATH_FORCE_INLINE == 0

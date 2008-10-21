@@ -11,7 +11,7 @@ namespace mt
 
 }
 
-#	define MATH_FORCE_INLINE 1
+#	define MATH_FORCE_INLINE 0
 
 #	if MATH_FORCE_INLINE == 1
 #	define MATH_INLINE inline

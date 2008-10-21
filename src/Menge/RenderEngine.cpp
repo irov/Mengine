@@ -563,7 +563,7 @@ namespace Menge
 		mt::vec4f renderArea = _renderArea;
 		if( m_currentRenderTarget == "defaultCamera" )
 		{
-			mt::vec2f size = _renderArea.v2_1 - _renderArea.v2_0;
+			mt::vec2f size = mt::vec2f( _renderArea.z, _renderArea.w ) - mt::vec2f( _renderArea.x, _renderArea.y );
 			if( size == mt::vec2f::zero_v2 )
 			{
 				renderArea = m_renderArea;

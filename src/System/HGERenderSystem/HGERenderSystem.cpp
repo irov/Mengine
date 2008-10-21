@@ -599,8 +599,8 @@ void HGERenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 		{
 			mt::mat4f mtex;
 			mt::ident_m4( mtex );
-			mtex[0][0] = tex->getUVMask().x;
-			mtex[1][1] = tex->getUVMask().y;
+			mtex.m[0] = tex->getUVMask().x;
+			mtex.m[5] = tex->getUVMask().y;
 			m_hge->Gfx_SetTextureMatrix( mtex.m );
 			htex = tex->getHandle();
 		}

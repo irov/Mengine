@@ -4,13 +4,13 @@ namespace mt
 	{}
 
 	MATH_INLINE box2f::box2f( const box2f & _box )
-		: vb( _box.vb )
-		, ve( _box.ve )
+		: min( _box.min )
+		, max( _box.max )
 	{}
 
-	MATH_INLINE box2f::box2f( const vec2f & _vb, const vec2f & _ve )
-		: vb( _vb )
-		, ve( _ve )
+	MATH_INLINE box2f::box2f( const vec2f & _min, const vec2f & _max )
+		: min( _min )
+		, max( _max )
 	{}
 
 	MATH_INLINE void reset( box2f & box, const vec2f &initValue)
@@ -59,14 +59,14 @@ namespace mt
 
 	MATH_INLINE void set_box_from_min_max( box2f & box, const vec2f &min, const vec2f &max)
 	{
-		box.vb = min;
-		box.ve = max;
+		box.min = min;
+		box.max = max;
 	}
 
 	MATH_INLINE void set_box_from_center_and_extent( box2f & box, const vec2f &center, const vec2f &extent)
 	{
-		box.vb = center - extent;
-		box.ve = center + extent;
+		box.min = center - extent;
+		box.max = center + extent;
 	}
 
 	MATH_INLINE void set_box_from_oriented_extent( box2f & box, const mt::vec2f & _offset, const mt::vec2f& _size, const mt::mat3f& _wm )
@@ -105,8 +105,8 @@ namespace mt
 
 	MATH_INLINE bool is_intersect( const box2f & _a, const box2f & _b )
 	{
-		return (_a.ve.y > _b.vb.y && _a.vb.y < _b.ve.y &&
-				_a.ve.x > _b.vb.x && _a.vb.x < _b.ve.x);
+		return (_a.max.y > _b.min.y && _a.min.y < _b.max.y &&
+				_a.max.x > _b.min.x && _a.min.x < _b.max.x);
 	}
 
 	MATH_INLINE vec2f box_size( const box2f& _box )

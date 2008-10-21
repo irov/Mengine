@@ -28,7 +28,7 @@ namespace mt
 			{
 				float r,g,b,a;
 			};	
-			struct
+		/*	struct
 			{
 				vec3f v3;
 				float w; 
@@ -37,7 +37,7 @@ namespace mt
 			{
 				vec2f v2_0;
 				vec2f v2_1; 
-			};
+			};*/
 			float m[4];
 		};
 

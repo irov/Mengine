@@ -11,11 +11,11 @@ namespace mt
 	public:
 		union
 		{
-			struct
+			/*struct
 			{
 				vec3f norm;
 				float dist;
-			};
+			};*/
 			struct
 			{
 				float x,y,z;

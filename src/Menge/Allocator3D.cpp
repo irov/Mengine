@@ -34,20 +34,32 @@ namespace Menge
 	{
 		const mt::mat4f &wm = getWorldMatrix3D();
 
-		return wm.v3.v3;
+		//!!!!!
+		static mt::vec3f v;
+		v = mt::vec3f( wm.m[12], wm.m[13], wm.m[14] );
+		return v;
+		//return wm.v3.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & Allocator3D::getWorldDirection3D()
 	{
 		const mt::mat4f &wm = getWorldMatrix3D();
 
-		return wm.v2.v3;
+		//!!!!!
+		static mt::vec3f v;
+		v = mt::vec3f( wm.m[8], wm.m[9], wm.m[10] );
+		return v;
+		//return wm.v2.v3;
 	}
 	const mt::vec3f & Allocator3D::getWorldStrafe3D()
 	{
 		const mt::mat4f &wm = getWorldMatrix3D();
 
-		return wm.v0.v3;
+		//!!!!!
+		static mt::vec3f v;
+		v = mt::vec3f( wm.m[0], wm.m[1], wm.m[2] );
+		return v;
+		//return wm.v0.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Allocator3D::getWorldMatrix3D()
@@ -57,66 +69,97 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & Allocator3D::getLocalPosition3D() const
 	{
-		return m_localMatrix3D.v3.v3;
+		//!!!!!
+		static mt::vec3f v;
+		v = mt::vec3f( m_localMatrix3D.m[12], m_localMatrix3D.m[13], m_localMatrix3D.m[14] );
+		return v;
+		//return m_localMatrix3D.v3.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f & Allocator3D::getLocalPosition3D()
+	/*mt::vec3f & Allocator3D::getLocalPosition3D()
 	{
-		return m_localMatrix3D.v3.v3;
-	}
+		//!!!!!
+		static mt::vec3f v;
+		v = mt::vec3f( m_localMatrix3D.m[12], m_localMatrix3D.m[13], m_localMatrix3D.m[14] );
+		return v;
+		//return m_localMatrix3D.v3.v3;
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & Allocator3D::getLocalDirection3D() const
 	{
-		return m_localMatrix3D.v2.v3;
+		//!!!!!
+		static mt::vec3f v;
+		v = mt::vec3f( m_localMatrix3D.m[8], m_localMatrix3D.m[9], m_localMatrix3D.m[10] );
+		return v;
+		//return m_localMatrix3D.v2.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f & Allocator3D::getLocalDirection3D()
+	/*mt::vec3f & Allocator3D::getLocalDirection3D()
 	{
 		return m_localMatrix3D.v2.v3;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & Allocator3D::getLocalStrafe3D() const
 	{
-		return m_localMatrix3D.v0.v3;
+		//!!!!!
+		static mt::vec3f v;
+		v = mt::vec3f( m_localMatrix3D.m[0], m_localMatrix3D.m[1], m_localMatrix3D.m[2] );
+		return v;
+		//return m_localMatrix3D.v0.v3;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f & Allocator3D::getLocalStrafe3D()
+	/*mt::vec3f & Allocator3D::getLocalStrafe3D()
 	{
 		return m_localMatrix3D.v0.v3;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Allocator3D::getLocalMatrix3D() const
 	{
 		return m_localMatrix3D;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::mat4f & Allocator3D::getLocalMatrix3D()
+	/*mt::mat4f & Allocator3D::getLocalMatrix3D()
 	{
 		return m_localMatrix3D;
-	}
+	}*/
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator3D::setLocalPosition3D( const mt::vec3f &position )
 	{
-		mt::vec3f & localPosition = getLocalPosition3D();
+		//mt::vec3f & localPosition = getLocalPosition3D();
 
-		localPosition = position;
+		//localPosition = position;
+		m_localMatrix3D.m[12] = position.x;
+		m_localMatrix3D.m[13] = position.y;
+		m_localMatrix3D.m[14] = position.z;
 
 		changePivot3D();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator3D::setDirection3D( const mt::vec3f &direction )
 	{
-		mt::norm_v3( m_localMatrix3D.v3_2, direction );
+		mt::vec3f dir;
+		mt::norm_v3( dir, direction );
+		m_localMatrix3D.m[8] = dir.x; m_localMatrix3D.m[9] = dir.y; m_localMatrix3D.m[10] = dir.z;
+
+		mt::vec3f vec1, vec2;
+		mt::cross_v3_v3_norm( vec1, m_fixedUp, dir );
+		mt::cross_v3_v3_norm( vec2, dir, vec1 );
+		m_localMatrix3D.m[0] = vec1.x; m_localMatrix3D.m[1] = vec1.y; m_localMatrix3D.m[2] = vec1.z;
+		m_localMatrix3D.m[4] = vec2.x; m_localMatrix3D.m[5] = vec2.y; m_localMatrix3D.m[6] = vec2.z;
+		/*mt::norm_v3( m_localMatrix3D.v3_2, direction );
 
 		mt::cross_v3_v3_norm( m_localMatrix3D.v3_0, m_fixedUp, m_localMatrix3D.v3_2 );
-		mt::cross_v3_v3_norm( m_localMatrix3D.v3_1, m_localMatrix3D.v3_2, m_localMatrix3D.v3_0 );
+		mt::cross_v3_v3_norm( m_localMatrix3D.v3_1, m_localMatrix3D.v3_2, m_localMatrix3D.v3_0 );*/
 
 		changePivot3D();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator3D::translate3D( const mt::vec3f &delta )
 	{
-		m_localMatrix3D.v3.v3 += delta;
+		//m_localMatrix3D.v3.v3 += delta;
+		m_localMatrix3D.m[12] += delta.x;
+		m_localMatrix3D.m[13] += delta.y;
+		m_localMatrix3D.m[14] += delta.z;
 
 		changePivot3D();
 	}
@@ -165,9 +208,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator3D::scale( const mt::vec3f& _scale )
 	{
-		m_localMatrix3D[0][0] *= _scale.x;
-		m_localMatrix3D[1][1] *= _scale.y;
-		m_localMatrix3D[2][2] *= _scale.z;
+		m_localMatrix3D.m[0] *= _scale.x;
+		m_localMatrix3D.m[5] *= _scale.y;
+		m_localMatrix3D.m[10] *= _scale.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

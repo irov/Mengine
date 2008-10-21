@@ -27,11 +27,11 @@ namespace mt
 			{
 				float u,v,t;
 			};
-			struct
+	/*		struct
 			{
 				vec2f	v2;
 				float	z;
-			};
+			};*/
 			float m[3];
 		};
 
@@ -56,6 +56,8 @@ namespace mt
 		MATH_INLINE vec3f& operator*=(const float _rhs);
 		MATH_INLINE float sqrlength() const;
 		MATH_INLINE float length() const;
+
+		MATH_INLINE const vec2f getVec2f() const;
 	};
 
 	MATH_INLINE bool operator==(const vec3f& _a, const vec3f& _b);

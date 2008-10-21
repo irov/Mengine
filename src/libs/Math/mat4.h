@@ -15,7 +15,7 @@ namespace mt
 	{	
 		union 
 		{
-			struct
+			/*struct
 			{
 				vec4f v[4];
 			};
@@ -30,19 +30,19 @@ namespace mt
 				vec3f v3_1;	float f_1;
 				vec3f v3_2;	float f_2;
 				vec3f v3_3;	float f_3;
-			};
+			};*/
 			float m[16];
 		};
 
 		MATH_INLINE mat4f();
 		MATH_INLINE mat4f(const mat4f& _rhs);
-		MATH_INLINE mat4f(const vec4f& _a0, const vec4f& _a1, const vec4f& _a2, const vec4f& _a3);
+		//MATH_INLINE mat4f(const vec4f& _a0, const vec4f& _a1, const vec4f& _a2, const vec4f& _a3);
 	
-		MATH_INLINE vec4f& operator[](int i);
-		MATH_INLINE const vec4f& operator[](int i)const;
+		//MATH_INLINE vec4f& operator[](int i);
+		//MATH_INLINE const vec4f& operator[](int i)const;
 
 		MATH_INLINE mat4f& operator=(const mat4f& _rhs);
-		MATH_INLINE mat4f& operator=(const mat3f& _rhs);
+		//MATH_INLINE mat4f& operator=(const mat3f& _rhs);
 	};
 
 	MATH_INLINE bool operator==(const mat4f& _a, const mat4f& _b);

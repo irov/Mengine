@@ -130,8 +130,9 @@ namespace	Menge
 	///////////////////////////////////////////////////////////////////////////
 	void Sprite::setPercentVisibility( const mt::vec2f & _percentX, const mt::vec2f & _percentY )
 	{
-		m_percent.v2_0 = _percentX;
-		m_percent.v2_1 = _percentY;
+		//m_percent.v2_0 = _percentX;
+		//m_percent.v2_1 = _percentY;
+		m_percent = mt::vec4f( _percentX, _percentY );
 		updateSprite_();
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -129,6 +129,11 @@ namespace mt
 		z = c;
 	}
 
+	MATH_INLINE const vec2f vec3f::getVec2f() const
+	{
+		return vec2f( x, y );
+	}
+
 	/*	Addition of vecs  */
 	MATH_INLINE void add_v3_v3(vec3f& _out,const vec3f& _a, const vec3f& _b)
 	{

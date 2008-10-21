@@ -17,7 +17,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::lookAt(const mt::vec3f& _targetPoint)
 	{
-		setDirection3D( _targetPoint - m_localMatrix3D.v3_3 );
+		setDirection3D( _targetPoint - mt::vec3f( m_localMatrix3D.m[12], m_localMatrix3D.m[13], m_localMatrix3D.m[14] ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Camera3D::getViewMatrix()
@@ -43,10 +43,14 @@ namespace	Menge
 	{
 		mt::inv_m4( m_viewMatrix, m_worldMatrix3D );
 
-		m_viewMatrix[0][0] = -m_viewMatrix[0][0];
-		m_viewMatrix[1][0] = -m_viewMatrix[1][0];
-		m_viewMatrix[2][0] = -m_viewMatrix[2][0];
-		m_viewMatrix[3][0] = -m_viewMatrix[3][0];
+		//m_viewMatrix[0][0] = -m_viewMatrix[0][0];
+		//m_viewMatrix[1][0] = -m_viewMatrix[1][0];
+		//m_viewMatrix[2][0] = -m_viewMatrix[2][0];
+		//m_viewMatrix[3][0] = -m_viewMatrix[3][0];
+		m_viewMatrix.m[0] = -m_viewMatrix.m[0];
+		m_viewMatrix.m[4] = -m_viewMatrix.m[4];
+		m_viewMatrix.m[8] = -m_viewMatrix.m[8];
+		m_viewMatrix.m[12] = -m_viewMatrix.m[12];
 		recalc( m_worldMatrix3D );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -56,8 +60,8 @@ namespace	Menge
 		const mt::mat4f &viewMatrix = getViewMatrix();
 		
 		mt::vec3f v(
-			( 1.f - 2.f * _xm ) / projMatrix[0][0],
-			-( 1.f - 2.f * _ym ) / projMatrix[1][1],
+			( 1.f - 2.f * _xm ) / projMatrix.m[0],
+			-( 1.f - 2.f * _ym ) / projMatrix.m[5],
 			1.f
 			);
 		

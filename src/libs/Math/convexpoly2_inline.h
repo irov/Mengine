@@ -14,9 +14,10 @@ namespace mt
 
 	MATH_INLINE void convexpoly2::set_transformation(const mt::vec2f& _dirA,const mt::vec2f& _posA)
 	{
-		worldMatrix.v0 = mt::vec3f(_dirA,1);
-		worldMatrix.v1 = mt::vec3f(mt::perp(_dirA),1);
-		worldMatrix.v2 = mt::vec3f(_posA,1);
+		//worldMatrix.v0 = mt::vec3f(_dirA,1);
+		//worldMatrix.v1 = mt::vec3f(mt::perp(_dirA),1);
+		//worldMatrix.v2 = mt::vec3f(_posA,1);
+		set_m3_from_axes( worldMatrix,  mt::vec3f(_dirA,1), mt::vec3f(mt::perp(_dirA),1), mt::vec3f(_posA,1) );
 	}
 
 	MATH_INLINE mt::vec2f convexpoly2::get_transformed_vertex(std::size_t i) const

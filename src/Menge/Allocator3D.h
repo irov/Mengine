@@ -18,16 +18,16 @@ namespace Menge
 		virtual const mt::mat4f & getWorldMatrix3D();
 
 		const mt::vec3f & getLocalPosition3D()const;
-		mt::vec3f & getLocalPosition3D();
+		//mt::vec3f & getLocalPosition3D();
 
 		const mt::vec3f & getLocalDirection3D()const;
-		mt::vec3f & getLocalDirection3D();
+		//mt::vec3f & getLocalDirection3D();
 
 		const mt::vec3f & getLocalStrafe3D()const;
-		mt::vec3f & getLocalStrafe3D();
+		//mt::vec3f & getLocalStrafe3D();
 
 		const mt::mat4f & getLocalMatrix3D()const;
-		mt::mat4f & getLocalMatrix3D();
+		//mt::mat4f & getLocalMatrix3D();
 
 		void setLocalPosition3D( const mt::vec3f &position );
 		void setDirection3D( const mt::vec3f &direction );

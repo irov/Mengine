@@ -252,9 +252,9 @@ namespace XmlParserCast
 
 		int res = std::sscanf( _value
 			, "%f;%f;%f;%f;%f;%f;"
-			, &_var.v0.x, &_var.v0.y 
-			, &_var.v1.x, &_var.v1.y 
-			, &_var.v2.x, &_var.v2.y
+			, &_var.m[0], &_var.m[1] 
+			, &_var.m[3], &_var.m[4] 
+			, &_var.m[6], &_var.m[7]
 			);
 
 		return res == 6;
@@ -264,12 +264,19 @@ namespace XmlParserCast
 	{
 		mt::ident_m4( _var );
 
+		//int res = std::sscanf( _value
+		//	, "%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;"
+		//	, &_var.v0.x, &_var.v0.y, &_var.v0.z
+		//	, &_var.v1.x, &_var.v1.y, &_var.v1.z
+		//	, &_var.v2.x, &_var.v2.y, &_var.v2.z
+		//	, &_var.v3.x, &_var.v3.y, &_var.v3.z
+		//	);
 		int res = std::sscanf( _value
 			, "%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;%f;"
-			, &_var.v0.x, &_var.v0.y, &_var.v0.z
-			, &_var.v1.x, &_var.v1.y, &_var.v1.z
-			, &_var.v2.x, &_var.v2.y, &_var.v2.z
-			, &_var.v3.x, &_var.v3.y, &_var.v3.z
+			, &_var.m[0], &_var.m[1], &_var.m[2]
+			, &_var.m[4], &_var.m[5], &_var.m[6]
+			, &_var.m[8], &_var.m[9], &_var.m[10]
+			, &_var.m[12], &_var.m[13], &_var.m[14]
 			);
 
 		return res == 12;

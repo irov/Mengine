@@ -628,14 +628,22 @@ namespace Menge
 	{
 		const mt::mat3f &wm = getWorldMatrix();
 
-		return wm.v2.v2;
+		//!!!!!
+		static mt::vec2f v;
+		v = mt::vec2f( wm.m[6], wm.m[7] );
+		return v;
+		//return wm.v2.v2;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Node::getWorldDirection()
 	{
 		const mt::mat3f &wm = getWorldMatrix();
 
-		return wm.v0.v2;
+		//!!!!!
+		static mt::vec2f v;
+		v = mt::vec2f( wm.m[0], wm.m[1] );
+		return v;
+		//return wm.v0.v2;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setListener( PyObject * _listener )

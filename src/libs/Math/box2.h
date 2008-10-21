@@ -8,12 +8,14 @@ namespace mt
 {
 	struct box2f
 	{
-		union
+		/*union
 		{
 			struct {vec2f vb,ve;};
 			struct {vec2f v[2];};
 			struct {vec2f min,max;};
-		};
+		};*/
+
+		vec2f min, max;
 
 		MATH_INLINE box2f();
 		MATH_INLINE box2f( const box2f & _box );

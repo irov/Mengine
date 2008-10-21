@@ -8,16 +8,17 @@ namespace mt
 {
 	struct box3f
 	{
-		union
+		/*union
 		{
 			struct {vec3f vb,ve;};
 			struct {vec3f v[2];};
 			struct {vec3f min, max;};
-		};
+		};*/
+		vec3f min, max;
 
 		MATH_INLINE box3f();
 		MATH_INLINE box3f(const box3f & _box);
-		MATH_INLINE box3f(const vec3f &_vb,const vec3f &_ve);
+		MATH_INLINE box3f(const vec3f &_min,const vec3f &_max);
 	};
 
 	MATH_INLINE void reset(box3f & box,const vec3f & initValue);

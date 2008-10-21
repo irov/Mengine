@@ -66,7 +66,7 @@ namespace	Menge
 				mt::vec2f leftBouncing( -m_size.x, 0.0f );
 				mt::vec2f rightBouncing( m_size.x, 0.0f );
 
-				if( viewport.testRectangle( bbox.vb - leftBouncing, bbox.ve - leftBouncing ) == true )
+				if( viewport.testRectangle( bbox.min - leftBouncing, bbox.max - leftBouncing ) == true )
 					// left render
 				{
 					mt::vec2f oldOffs = camera->getOffset();
@@ -84,7 +84,7 @@ namespace	Menge
 
 					camera->setOffset( oldOffs );
 				}
-				else if( viewport.testRectangle( bbox.vb - rightBouncing, bbox.ve - rightBouncing ) == true )
+				else if( viewport.testRectangle( bbox.min - rightBouncing, bbox.max - rightBouncing ) == true )
 					// right render
 				{
 					mt::vec2f oldOffs = camera->getOffset();
@@ -231,7 +231,7 @@ namespace	Menge
 			return true;
 		}
 
-		if( _layerspaceBox.ve.x > convertView.end.x )
+		if( _layerspaceBox.max.x > convertView.end.x )
 		{
 			Viewport leftViewport = convertView;
 			//leftViewport.parallax( m_factorParallax );
@@ -246,7 +246,7 @@ namespace	Menge
 			return true;
 		}
 
-		if( _layerspaceBox.vb.x < convertView.begin.x )
+		if( _layerspaceBox.min.x < convertView.begin.x )
 		{
 			Viewport rightViewport = convertView;
 			//rightViewport.parallax( m_factorParallax );

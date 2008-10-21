@@ -74,50 +74,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Frustum::recalcProjection()
 	{
-		/*if( m_recalcProjection )
-		{
-			// PERSPECTIVE transform
-			mt::make_projection_m4(
-				m_projectionMatrix,
-				m_fov,
-				m_aspect,
-				m_near,
-				m_far 
-				);
-
-			float thetaY = (m_fov / 2.0f) * 3.1415f / 180.f;
-			float tanThetaY = tanf(thetaY);
-			float tanThetaX = tanThetaY * m_aspect;
-
-			float vpTop = tanThetaY * m_near;
-			float vpRight = tanThetaX * m_near;
-			float vpBottom = -vpTop;
-			float vpLeft = -vpRight;
-
-			float fNSqr = m_near * m_near;
-			float fLSqr = vpRight * vpRight;
-			float fRSqr = fLSqr;
-			float fTSqr = vpTop * vpTop;
-			float fBSqr = fTSqr;
-
-			float fInvLength = 1.0f / sqrtf( fNSqr + fLSqr );
-			m_coeffL[0] = m_near * fInvLength;
-			m_coeffL[1] = -vpLeft * fInvLength;
-
-			fInvLength = 1.0f / sqrtf( fNSqr + fRSqr );
-			m_coeffR[0] = -m_near * fInvLength;
-			m_coeffR[1] = vpRight * fInvLength;
-
-			fInvLength = 1.0f / sqrtf( fNSqr + fBSqr );
-			m_coeffB[0] = m_near * fInvLength;
-			m_coeffB[1] = -vpBottom * fInvLength;
-
-			fInvLength = 1.0f / sqrtf( fNSqr + fTSqr );
-			m_coeffT[0] = -m_near * fInvLength;
-			m_coeffT[1] = vpTop * fInvLength;
-
-			m_recalcProjection = false;
-		}	*/
 		float thetaY = m_fov * 0.5f;
 		float tanThetaY = ::tanf( thetaY );
 		float tanThetaX = tanThetaY * m_aspect;
@@ -177,24 +133,40 @@ namespace Menge
 		// q = - (far + near) / (far - near)
 		// qn = - 2 * (far * near) / (far - near)
 		std::fill( m_projectionMatrix.m, m_projectionMatrix.m + 16, 0.0f );
-		m_projectionMatrix[0][0] = A;
-		m_projectionMatrix[2][0] = C;
-		m_projectionMatrix[1][1] = B;
-		m_projectionMatrix[2][1] = D;
-		m_projectionMatrix[2][2] = q;
-		m_projectionMatrix[3][2] = qn;
-		m_projectionMatrix[2][3] = -1;
+		//m_projectionMatrix[0][0] = A;
+		//m_projectionMatrix[2][0] = C;
+		//m_projectionMatrix[1][1] = B;
+		//m_projectionMatrix[2][1] = D;
+		//m_projectionMatrix[2][2] = q;
+		//m_projectionMatrix[3][2] = qn;
+		//m_projectionMatrix[2][3] = -1;
+		m_projectionMatrix.m[0] = A;
+		m_projectionMatrix.m[8] = C;
+		m_projectionMatrix.m[5] = B;
+		m_projectionMatrix.m[9] = D;
+		m_projectionMatrix.m[10] = q;
+		m_projectionMatrix.m[14] = qn;
+		m_projectionMatrix.m[11] = -1;
 
 		// Convert depth range from [-1,+1] to [0,1]
-		m_projectionMatrix[0][2] = (m_projectionMatrix[0][2] + m_projectionMatrix[0][3]) * 0.5f;
-		m_projectionMatrix[1][2] = (m_projectionMatrix[1][2] + m_projectionMatrix[1][3]) * 0.5f;
-		m_projectionMatrix[2][2] = (m_projectionMatrix[2][2] + m_projectionMatrix[2][3]) * 0.5f;
-		m_projectionMatrix[3][2] = (m_projectionMatrix[3][2] + m_projectionMatrix[3][3]) * 0.5f;
+		//m_projectionMatrix[0][2] = (m_projectionMatrix[0][2] + m_projectionMatrix[0][3]) * 0.5f;
+		//m_projectionMatrix[1][2] = (m_projectionMatrix[1][2] + m_projectionMatrix[1][3]) * 0.5f;
+		//m_projectionMatrix[2][2] = (m_projectionMatrix[2][2] + m_projectionMatrix[2][3]) * 0.5f;
+		//m_projectionMatrix[3][2] = (m_projectionMatrix[3][2] + m_projectionMatrix[3][3]) * 0.5f;
 
-		m_projectionMatrix[2][0] = -m_projectionMatrix[2][0];
-		m_projectionMatrix[2][1] = -m_projectionMatrix[2][1];
-		m_projectionMatrix[2][2] = -m_projectionMatrix[2][2];
-		m_projectionMatrix[2][3] = -m_projectionMatrix[2][3];
+		//m_projectionMatrix[2][0] = -m_projectionMatrix[2][0];
+		//m_projectionMatrix[2][1] = -m_projectionMatrix[2][1];
+		//m_projectionMatrix[2][2] = -m_projectionMatrix[2][2];
+		//m_projectionMatrix[2][3] = -m_projectionMatrix[2][3];
+		m_projectionMatrix.m[2] = (m_projectionMatrix.m[2] + m_projectionMatrix.m[3]) * 0.5f;
+		m_projectionMatrix.m[6] = (m_projectionMatrix.m[6] + m_projectionMatrix.m[7]) * 0.5f;
+		m_projectionMatrix.m[10] = (m_projectionMatrix.m[10] + m_projectionMatrix.m[11]) * 0.5f;
+		m_projectionMatrix.m[14] = (m_projectionMatrix.m[14] + m_projectionMatrix.m[15]) * 0.5f;
+
+		m_projectionMatrix.m[8] = -m_projectionMatrix.m[8];
+		m_projectionMatrix.m[9] = -m_projectionMatrix.m[9];
+		m_projectionMatrix.m[10] = -m_projectionMatrix.m[10];
+		m_projectionMatrix.m[11] = -m_projectionMatrix.m[11];
 
 	}
 
@@ -208,10 +180,14 @@ namespace Menge
 		//mt::vec3f up	(wm[0][1],wm[1][1],wm[2][1]);
 		//mt::vec3f dir	(wm[0][2],wm[1][2],wm[2][2]);
 
-		const mt::vec3f & left =	wm.v3_0;
-		const mt::vec3f & up =		wm.v3_1;
-		const mt::vec3f & dir =		wm.v3_2;
-		const mt::vec3f & pos =		wm.v3_3;
+		//const mt::vec3f & left =	wm.v3_0;
+		//const mt::vec3f & up =		wm.v3_1;
+		//const mt::vec3f & dir =		wm.v3_2;
+		//const mt::vec3f & pos =		wm.v3_3;
+		mt::vec3f left( wm.m[0], wm.m[1], wm.m[2] );
+		mt::vec3f up( wm.m[4], wm.m[5], wm.m[6] );
+		mt::vec3f dir( wm.m[8], wm.m[9], wm.m[10] );
+		mt::vec3f pos( wm.m[12], wm.m[13], wm.m[14] );
 	
 		float fDdE = - mt::dot_v3_v3( dir , pos );
 	
@@ -225,27 +201,41 @@ namespace Menge
 			FRUSTUM_PLANE_BOTTOM = 5
 		};
 
-		m_planes[FRUSTUM_PLANE_LEFT].norm = m_coeffL[0] * left - m_coeffL[1] * dir;
-		m_planes[FRUSTUM_PLANE_LEFT].d =	- mt::dot_v3_v3( pos , m_planes[FRUSTUM_PLANE_LEFT].norm );
+		//m_planes[FRUSTUM_PLANE_LEFT].norm = m_coeffL[0] * left - m_coeffL[1] * dir;
+		//m_planes[FRUSTUM_PLANE_LEFT].d =	- mt::dot_v3_v3( pos , m_planes[FRUSTUM_PLANE_LEFT].norm );
+		mt::vec3f norm = m_coeffL[0] * left - m_coeffL[1] * dir;
+		float d = - mt::dot_v3_v3( pos , norm );
+		m_planes[FRUSTUM_PLANE_LEFT] = mt::planef( norm, d );
 	
 		// right plane
-		m_planes[FRUSTUM_PLANE_RIGHT].norm = m_coeffR[0]*left - m_coeffR[1]*dir;
-		m_planes[FRUSTUM_PLANE_RIGHT].d = - mt::dot_v3_v3( pos, m_planes[FRUSTUM_PLANE_RIGHT].norm );
+		//m_planes[FRUSTUM_PLANE_RIGHT].norm = m_coeffR[0]*left - m_coeffR[1]*dir;
+		//m_planes[FRUSTUM_PLANE_RIGHT].d = - mt::dot_v3_v3( pos, m_planes[FRUSTUM_PLANE_RIGHT].norm );
+		norm = m_coeffR[0]*left - m_coeffR[1]*dir;
+		d = - mt::dot_v3_v3( pos, norm );
+		m_planes[FRUSTUM_PLANE_RIGHT] = mt::planef( norm, d );
 	
 		// bottom plane
-		m_planes[FRUSTUM_PLANE_BOTTOM].norm = m_coeffB[0]*up - m_coeffB[1]*dir;
-		m_planes[FRUSTUM_PLANE_BOTTOM].d = - mt::dot_v3_v3( pos, m_planes[FRUSTUM_PLANE_BOTTOM].norm );
+		//m_planes[FRUSTUM_PLANE_BOTTOM].norm = m_coeffB[0]*up - m_coeffB[1]*dir;
+		//m_planes[FRUSTUM_PLANE_BOTTOM].d = - mt::dot_v3_v3( pos, m_planes[FRUSTUM_PLANE_BOTTOM].norm );
+		norm = m_coeffB[0]*up - m_coeffB[1]*dir;
+		d = - mt::dot_v3_v3( pos, norm );
+		m_planes[FRUSTUM_PLANE_BOTTOM] = mt::planef( norm, d );
 	
 		// top plane
-		m_planes[FRUSTUM_PLANE_TOP].norm = m_coeffT[0]*up - m_coeffT[1]*dir;
-		m_planes[FRUSTUM_PLANE_TOP].d = - mt::dot_v3_v3( pos, m_planes[FRUSTUM_PLANE_TOP].norm );
+		//m_planes[FRUSTUM_PLANE_TOP].norm = m_coeffT[0]*up - m_coeffT[1]*dir;
+		//m_planes[FRUSTUM_PLANE_TOP].d = - mt::dot_v3_v3( pos, m_planes[FRUSTUM_PLANE_TOP].norm );
+		norm = m_coeffT[0]*up - m_coeffT[1]*dir;
+		d = - mt::dot_v3_v3( pos, norm );
+		m_planes[FRUSTUM_PLANE_TOP] = mt::planef( norm, d );
 	
 		// far plane
-		m_planes[FRUSTUM_PLANE_FAR].norm = dir;
-		m_planes[FRUSTUM_PLANE_FAR].d = fDdE + m_far;
+		//m_planes[FRUSTUM_PLANE_FAR].norm = dir;
+		//m_planes[FRUSTUM_PLANE_FAR].d = fDdE + m_far;
+		m_planes[FRUSTUM_PLANE_FAR] = mt::planef( dir, fDdE + m_far );
 	
 		// near plane
-		m_planes[FRUSTUM_PLANE_NEAR].norm = -dir;
-		m_planes[FRUSTUM_PLANE_NEAR].d = -(fDdE + m_near);
+		//m_planes[FRUSTUM_PLANE_NEAR].norm = -dir;
+		//m_planes[FRUSTUM_PLANE_NEAR].d = -(fDdE + m_near);
+		m_planes[FRUSTUM_PLANE_NEAR] = mt::planef( -dir,  -(fDdE + m_near) );
 	}
 }

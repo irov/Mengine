@@ -16,23 +16,23 @@ namespace mt
 	{
 		union 
 		{
-			struct
+			/*struct
 			{
 				vec3f v[3]; 
 			};
 			struct
 			{
 				vec3f v0, v1, v2; 
-			};
+			};*/
 			float m[9];
 		};
 
 		MATH_INLINE mat3f();
 		MATH_INLINE mat3f(const mat3f&	_rhs);
-		MATH_INLINE mat3f(const vec3f&	_v0, const vec3f&	_v1, const vec3f&	_v2);
+		//MATH_INLINE mat3f(const vec3f&	_v0, const vec3f&	_v1, const vec3f&	_v2);
 
-		MATH_INLINE vec3f& operator[](int i);
-		MATH_INLINE const vec3f& operator[](int i)const;
+		//MATH_INLINE vec3f& operator[](int i);
+		//MATH_INLINE const vec3f& operator[](int i)const;
 
 		MATH_INLINE mat3f& operator=(const mat3f& _rhs);
 	};

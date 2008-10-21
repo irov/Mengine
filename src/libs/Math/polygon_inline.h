@@ -55,14 +55,16 @@ namespace mt
 		}
 
 		mt::mat3f worldMatrixA;
-		worldMatrixA.v0 = mt::vec3f(_dirA,1);
-		worldMatrixA.v1 = mt::vec3f(mt::perp(_dirA),1);
-		worldMatrixA.v2 = mt::vec3f(_posA,1);
+		//worldMatrixA.v0 = mt::vec3f(_dirA,1);
+		//worldMatrixA.v1 = mt::vec3f(mt::perp(_dirA),1);
+		//worldMatrixA.v2 = mt::vec3f(_posA,1);
+		set_m3_from_axes( worldMatrixA, mt::vec3f(_dirA,1), mt::vec3f(mt::perp(_dirA),1), mt::vec3f(_posA,1) );
 
 		mt::mat3f worldMatrixB;
-		worldMatrixB.v0 = mt::vec3f(_dirB,1);
-		worldMatrixB.v1 = mt::vec3f(mt::perp(_dirB),1);
-		worldMatrixB.v2 = mt::vec3f(_posB,1);
+		//worldMatrixB.v0 = mt::vec3f(_dirB,1);
+		//worldMatrixB.v1 = mt::vec3f(mt::perp(_dirB),1);
+		//worldMatrixB.v2 = mt::vec3f(_posB,1);
+		set_m3_from_axes( worldMatrixB, mt::vec3f(_dirB,1), mt::vec3f(mt::perp(_dirB),1), mt::vec3f(_posB,1) );
 
 		static polygon polyA;
 		
@@ -96,8 +98,8 @@ namespace mt
 
 		mt::vec3f V(1,0,0);
 
-		mt::vec3f P(polyA.support( V.v2 ),0);
-		mt::vec3f Q(polyB.support( -V.v2 ),0);
+		mt::vec3f P(polyA.support( V.getVec2f() ),0);
+		mt::vec3f Q(polyB.support( -V.getVec2f() ),0);
 
 		mt::vec3f d = P - Q;
 
@@ -107,8 +109,8 @@ namespace mt
 
 		for( int i = 0; i < MaxIterations; i++ )
 		{
-			mt::vec3f P(polyA.support( V.v2 ),0);
-			mt::vec3f Q(polyB.support( -V.v2 ),0);
+			mt::vec3f P(polyA.support( V.getVec2f() ),0);
+			mt::vec3f Q(polyB.support( -V.getVec2f() ),0);
 
 			mt::vec3f W = P - Q;
 
@@ -177,8 +179,8 @@ namespace mt
 
 		mt::vec3f V(1,0,0);
 
-		mt::vec3f P(polyA.support( V.v2 ),0);
-		mt::vec3f Q(polyB.support( -V.v2 ),0);
+		mt::vec3f P(polyA.support( V.getVec2f() ),0);
+		mt::vec3f Q(polyB.support( -V.getVec2f() ),0);
 
 		mt::vec3f d = P - Q;
 
@@ -188,8 +190,8 @@ namespace mt
 
 		for( int i = 0; i < MaxIterations; i++ )
 		{
-			mt::vec3f P(polyA.support( V.v2 ),0);
-			mt::vec3f Q(polyB.support( -V.v2 ),0);
+			mt::vec3f P(polyA.support( V.getVec2f() ),0);
+			mt::vec3f Q(polyB.support( -V.getVec2f() ),0);
 
 			mt::vec3f W = P - Q;
 
@@ -428,9 +430,10 @@ namespace mt
 		std::size_t size = poly.num_points();
 
 		mt::mat3f wm;
-		wm.v0 = mt::vec3f(_direction,1);
-		wm.v1 = mt::vec3f(mt::perp(_direction),1);
-		wm.v2 = mt::vec3f(_position,1);
+		//wm.v0 = mt::vec3f(_direction,1);
+		//wm.v1 = mt::vec3f(mt::perp(_direction),1);
+		//wm.v2 = mt::vec3f(_position,1);
+		set_m3_from_axes( wm, mt::vec3f(_direction,1), mt::vec3f(mt::perp(_direction),1), mt::vec3f(_position,1) );
 
 		if( size == 0 )
 		{

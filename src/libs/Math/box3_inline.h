@@ -4,14 +4,14 @@ namespace mt
 	{}
 
 	MATH_INLINE box3f::box3f(const box3f & _box)
-		:	vb(_box.vb)
-		,	ve(_box.ve)
+		:	min(_box.min)
+		,	max(_box.max)
 	{}
 
 
-	MATH_INLINE box3f::box3f(const vec3f &_vb,const vec3f &_ve)
-		:	vb(_vb)
-		,	ve(_ve)
+	MATH_INLINE box3f::box3f(const vec3f &_min,const vec3f &_max)
+		:	min(_min)
+		,	max(_max)
 	{}
 
 	MATH_INLINE void reset(box3f &box,const vec3f &initValue)
@@ -42,19 +42,19 @@ namespace mt
 
 	MATH_INLINE void set_box_from_min_max(box3f &box, const vec3f &min, const vec3f &max)
 	{
-		box.vb = min;
-		box.ve = max;
+		box.min = min;
+		box.max = max;
 	}
 
 	MATH_INLINE void set_box_from_center_and_extent(box3f &box, const vec3f &center, const vec3f &extent)
 	{
-		box.vb = center - extent;
-		box.ve = center + extent;
+		box.min = center - extent;
+		box.max = center + extent;
 	}
 
 	MATH_INLINE void GetUVHVector(vec3f uvh[3],const box3f &box)
 	{
-		vec3f vDir = box.ve - box.vb;
+		vec3f vDir = box.max - box.min;
 		uvh[0] = vec3f(vDir.x,0,0);
 		uvh[1] = vec3f(0,vDir.y,0);
 		uvh[2] = vec3f(0,0,vDir.z);
@@ -65,20 +65,20 @@ namespace mt
 		vec3f uvh[3];
 		GetUVHVector(uvh,box);
 
-		point[0] = box.vb;
-		point[1] = box.vb + uvh[0];
-		point[2] = box.vb + uvh[0] + uvh[1];
-		point[3] = box.vb + uvh[1];
-		point[4] = box.vb + uvh[2];
-		point[5] = box.vb + uvh[0] + uvh[2];
-		point[6] = box.vb + uvh[0] + uvh[1] + uvh[2];
-		point[7] = box.vb + uvh[1] + uvh[2];
+		point[0] = box.min;
+		point[1] = box.min + uvh[0];
+		point[2] = box.min + uvh[0] + uvh[1];
+		point[3] = box.min + uvh[1];
+		point[4] = box.min + uvh[2];
+		point[5] = box.min + uvh[0] + uvh[2];
+		point[6] = box.min + uvh[0] + uvh[1] + uvh[2];
+		point[7] = box.min + uvh[1] + uvh[2];
 	}
 
 	MATH_INLINE bool is_intersect(const box3f & _a, const box3f & _b)
 	{
-		return (_a.ve.y > _b.vb.y && _a.vb.y < _b.ve.y &&
-				_a.ve.x > _b.vb.x && _a.vb.x < _b.ve.x &&
-				_a.ve.z > _b.vb.z && _a.vb.z < _b.ve.z);
+		return (_a.max.y > _b.min.y && _a.min.y < _b.max.y &&
+				_a.max.x > _b.min.x && _a.min.x < _b.max.x &&
+				_a.max.z > _b.min.z && _a.min.z < _b.max.z);
 	}
 }

@@ -2,15 +2,14 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "libs/Math/vec2.h"
 #	include "libs/Math/box2.h"
-
-#	include "SDL_opengl.h"
-#	include "OGLTexture.h"
-
+//#	include "glew.h"
 #	include <SDL.h>
 
 #	include <map>
 
 #	include "SDLWindow.h"
+
+class OGLTexture;
 
 class OGLRenderSystem 
 	: public Menge::RenderSystemInterface

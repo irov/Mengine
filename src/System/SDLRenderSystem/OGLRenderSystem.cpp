@@ -1,5 +1,6 @@
 #	include "OGLRenderSystem.h"
 #	include <SDL_syswm.h>
+#	include "OGLTexture.h"
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
@@ -76,8 +77,8 @@ void glEnable2D()
 	glLoadIdentity();   
 
 	glPushAttrib( GL_DEPTH_BUFFER_BIT | GL_LIGHTING_BIT );   
-	glDisable( GL_DEPTH_TEST );   
-	glDisable( GL_LIGHTING );   
+	glDisable( GL_DEPTH_TEST );  
+	glDisable( GL_LIGHTING );  
 }   
 //////////////////////////////////////////////////////////////////////////
 void glDisable2D()   
@@ -91,6 +92,35 @@ void glDisable2D()
 	glPopMatrix();   
 }  
 //////////////////////////////////////////////////////////////////////////
+GLint s_blendMengeToOGL(Menge::EBlendFactor _blend )
+{
+	switch(_blend)
+	{
+	case Menge::BF_ONE:
+		return GL_ONE;
+	case Menge::BF_ZERO:
+		return GL_ZERO;
+	case Menge::BF_DEST_COLOUR:
+		return GL_DST_COLOR;
+	case Menge::BF_SOURCE_COLOUR:
+		return GL_SRC_COLOR;
+	case Menge::BF_ONE_MINUS_DEST_COLOUR:
+		return GL_ONE_MINUS_DST_COLOR;
+	case Menge::BF_ONE_MINUS_SOURCE_COLOUR:
+		return GL_ONE_MINUS_SRC_COLOR;
+	case Menge::BF_DEST_ALPHA:
+		return GL_DST_ALPHA;
+	case Menge::BF_SOURCE_ALPHA:
+		return GL_SRC_ALPHA;
+	case Menge::BF_ONE_MINUS_DEST_ALPHA:
+		return GL_ONE_MINUS_DST_ALPHA;
+	case Menge::BF_ONE_MINUS_SOURCE_ALPHA:
+		return GL_ONE_MINUS_SRC_ALPHA;
+	};
+	
+	return GL_ONE;
+}
+//////////////////////////////////////////////////////////////////////////
 bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 {
 	NameValuePairList values;
@@ -98,11 +128,12 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	// и как же передать тайтл? :)
 	m_SDLWindow.create("TEST",_width,_height,_fullscreen,&values);
 
-	glEnable2D();
+	//glEnable2D();
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	//glDepthFunc(GL_LESS);
 
 	return true;
 }
@@ -127,17 +158,19 @@ const std::vector<int> & OGLRenderSystem::getResolutionList()
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const float * _rect /*= 0 */ )
 {
-/*	glReadBuffer(GL_BACK);
+	glReadBuffer(GL_FRONT);
 
 	int pitch = 0;
 
 	unsigned char * buffer = _image->lock(&pitch,false);
 
-	glReadPixels((GLint)_rect[0], (GLint)_rect[1],
-		(GLsizei)_rect[2], (GLsizei)_rect[3],
-		GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (GLsizei)_rect[2],
+		(GLsizei)_rect[3], 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
-	_image->unlock();*/
+	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLint)_rect[0], (GLint)_rect[1],
+		(GLsizei)_rect[2], (GLsizei)_rect[3]);
+
+	_image->unlock();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::render()
@@ -249,34 +282,35 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 {
 	const OGLTexture * tex = static_cast<const OGLTexture*>( _image );
 
-	if(tex)
-	{
+	GLint srcBlend = s_blendMengeToOGL( _srcBlend );
+	GLint dstBlend = s_blendMengeToOGL( _dstBlend );
 
-		glBindTexture(GL_TEXTURE_2D, tex->getGLTexture());
+	glBlendFunc(srcBlend,dstBlend);
 
-		int r = (_color>>16) & 0xff;
-		int g = (_color>>8) & 0xff;
-		int b = (_color) & 0xff;
-		int a = (_color>>24) & 0xff;
+	glBindTexture(GL_TEXTURE_2D, tex->getGLTexture());
 
-		glBegin(GL_QUADS);
-		
-		glColor4f(r/255.f,g/255.f,b/255.f,1.f);
+	int r = (_color>>16) & 0xff;
+	int g = (_color>>8) & 0xff;
+	int b = (_color) & 0xff;
+	int a = (_color>>24) & 0xff;
 
-		glTexCoord2f(_uv[0],_uv[1]);
-		glVertex3f(_renderVertex[0], _renderVertex[1], m_layer);
+	glBegin(GL_QUADS);
+	
+	glColor4f(r/255.f,g/255.f,b/255.f,1.f);
 
-		glTexCoord2f(_uv[2],_uv[1]);
-		glVertex3f(_renderVertex[2], _renderVertex[3], m_layer);
+	glTexCoord2f(_uv[0],_uv[1]);
+	glVertex2f(_renderVertex[0], _renderVertex[1]);
 
-		glTexCoord2f(_uv[2],_uv[3]);
-		glVertex3f(_renderVertex[4], _renderVertex[5], m_layer);
+	glTexCoord2f(_uv[2],_uv[1]);
+	glVertex2f(_renderVertex[2], _renderVertex[3]);
 
-		glTexCoord2f(_uv[0],_uv[3]);
-		glVertex3f(_renderVertex[6], _renderVertex[7], m_layer);
+	glTexCoord2f(_uv[2],_uv[3]);
+	glVertex2f(_renderVertex[4], _renderVertex[5]);
 
-		glEnd();
-	}
+	glTexCoord2f(_uv[0],_uv[3]);
+	glVertex2f(_renderVertex[6], _renderVertex[7]);
+
+	glEnd();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -289,10 +323,14 @@ void OGLRenderSystem::renderTriple(
 								   const float * _uv2,
 								   unsigned int _color,  
 								   const Menge::RenderImageInterface * _image, 
-								   Menge::EBlendFactor _src, 
-								   Menge::EBlendFactor _dst )
+								   Menge::EBlendFactor _srcBlend, 
+								   Menge::EBlendFactor _dstBlend )
 {
 	const OGLTexture * tex = static_cast<const OGLTexture*>( _image );
+
+	GLint srcBlend = s_blendMengeToOGL( _srcBlend );
+	GLint dstBlend = s_blendMengeToOGL( _dstBlend );
+	glBlendFunc(srcBlend,dstBlend);
 
 	glBindTexture(GL_TEXTURE_2D, tex->getGLTexture());
 
@@ -340,10 +378,9 @@ void OGLRenderSystem::renderLine( unsigned int _color,
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::beginScene()
 {
-	m_layer = 1.0f;
+	//m_layer = 1.0f;
 	glClearColor(1,1,1,1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-//	glLoadIdentity();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::endScene()
@@ -352,11 +389,14 @@ void OGLRenderSystem::endScene()
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::beginLayer2D()
 {
+	glEnable2D();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::endLayer2D()
 {
-	m_layer -= 0.001f;
+	glDisable2D();
+	//нах?
+	//m_layer -= 0.001f;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::renderText(const Menge::String & _text, const float * _pos, unsigned long _color)

@@ -194,6 +194,24 @@ namespace Menge
 
 		while( m_running )
 		{
+
+#if MENGE_PLATFORM == MENGE_PLATFORM_APPLE
+			EventRef event = NULL;
+			EventTargetRef targetWindow;
+			targetWindow = GetEventDispatcherTarget();
+
+			// If we are unable to get the target then we no longer care about events.
+			if( !targetWindow ) return;
+
+			// Grab the next event, process it if it is a window event
+			if( ReceiveNextEvent( 0, NULL, kEventDurationNoWait, true, &event ) == noErr )
+			{
+				// Dispatch the event
+				SendEventToEventTarget( event, targetWindow );
+				ReleaseEvent( event );
+			}
+#elif MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
+
 			//’¿ 
 			SDL_Event event;
 
@@ -273,7 +291,7 @@ namespace Menge
 					break;
 				}
 			}
-
+#endif
 			thisTime = SDL_GetTicks();
 			deltaTime = (float)(thisTime - lastTime);
 			lastTime = thisTime; 
@@ -335,6 +353,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SDLApplication::showMessageBox( const String& _message, const String& _header, unsigned int _style )
 	{
+		#if MENGE_PLATFORM == MENGE_PLATFORM_APPLE
+				Str255 msg;
+				c2pstrcpy(msg, _message.c_str());
+
+				Str255 header;
+				c2pstrcpy(header, _header.c_str());
+
+				StandardAlert(kAlertStopAlert, (ConstStr255Param)header, (ConstStr255Param)msg, NULL, NULL);
+		#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

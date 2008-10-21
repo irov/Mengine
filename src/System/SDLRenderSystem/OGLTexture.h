@@ -1,7 +1,7 @@
 #	pragma once
 #	include "Interface/RenderSystemInterface.h"
 
-#	include <SDL.h>
+#	define GL_GLEXT_PROTOTYPES 1
 #	include "SDL_opengl.h"
 
 #	include <string>
@@ -28,6 +28,7 @@ public:
 	GLuint getGLTexture() const;
 
 private:
+	GLuint m_bufferId;
 	GLint m_glInternalFormat;
 	GLenum m_glPixelFormat;
 	GLenum m_glPixelType;
@@ -39,7 +40,5 @@ private:
 	std::size_t m_height;
 	Menge::PixelFormat m_format;
 
-	bool m_readOnly;
-	
 	Menge::String m_name;
 };

@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="pybind_d.lib python25_d.lib libpngd.lib zlibd.lib libjpegd.lib libtheora_d.lib"
+				AdditionalDependencies="glew32.lib pybind_d.lib python25_d.lib libpngd.lib zlibd.lib libjpegd.lib libtheora_d.lib"
 				OutputFile="$(OutDir)\Game_d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)dependencies\libPNG\lib_debug\&quot;;&quot;$(SolutionDir)dependencies\zlib\lib_debug\&quot;;&quot;$(SolutionDir)dependencies\libJPEG\debug\&quot;;&quot;$(SolutionDir)dependencies\theora\lib\&quot;;&quot;$(SolutionDir)dependencies\SDL\lib&quot;"

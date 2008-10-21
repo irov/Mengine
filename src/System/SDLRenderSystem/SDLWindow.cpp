@@ -4,7 +4,7 @@
 #   include <windows.h>
 #   include <wingdi.h>
 #   include <GL/gl.h>
-#   define GL_GLEXT_PROTOTYPES
+//#   define GL_GLEXT_PROTOTYPES
 //#   include "glprocs.h"
 #   include <GL/glu.h>
 #elif MENGE_PLATFORM == MENGE_PLATFORM_APPLE
@@ -13,12 +13,12 @@
 #   include <OpenGL/glext.h>
 #   include <OpenGL/glu.h>
 #endif
-
+//////////////////////////////////////////////////////////////////////////
 SDLWindow::SDLWindow() :
 mScreen(NULL), mActive(false), mClosed(false)
 {
 }
-
+//////////////////////////////////////////////////////////////////////////
 SDLWindow::~SDLWindow()
 {
 	// according to http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fSetVideoMode
@@ -26,7 +26,7 @@ SDLWindow::~SDLWindow()
 	/*if (mScreen != NULL)
 	SDL_FreeSurface(mScreen);*/
 }
-
+//////////////////////////////////////////////////////////////////////////
 void SDLWindow::create(const Menge::String& name, unsigned int width, unsigned int height,
 					   bool fullScreen, const NameValuePairList *miscParams)
 {
@@ -104,7 +104,7 @@ void SDLWindow::create(const Menge::String& name, unsigned int width, unsigned i
 	glXGetVideoSyncSGI = (int (*)(unsigned int *))SDL_GL_GetProcAddress("glXGetVideoSyncSGI");
 	glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int *))SDL_GL_GetProcAddress("glXWaitVideoSyncSGI");
 }
-
+//////////////////////////////////////////////////////////////////////////
 void SDLWindow::destroy(void)
 {
 	// according to http://www.libsdl.org/cgi/docwiki.cgi/SDL_5fSetVideoMode
@@ -114,22 +114,22 @@ void SDLWindow::destroy(void)
 	mActive = false;
 	//Root::getSingleton().getRenderSystem()->detachRenderTarget( this->getName() );
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool SDLWindow::isActive() const
 {
 	return mActive;
 }
-
+//////////////////////////////////////////////////////////////////////////
 bool SDLWindow::isClosed() const
 {
 	return mClosed;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void SDLWindow::reposition(int left, int top)
 {
 	// XXX FIXME
 }
-
+//////////////////////////////////////////////////////////////////////////
 void SDLWindow::resize(unsigned int width, unsigned int height)
 {
 	SDL_Surface* screen;
@@ -152,7 +152,7 @@ void SDLWindow::resize(unsigned int width, unsigned int height)
 		(*it).second->_updateDimensions();
 	}*/
 }
-
+//////////////////////////////////////////////////////////////////////////
 void SDLWindow::swapBuffers(bool waitForVSync)
 {
 	if ( waitForVSync && glXGetVideoSyncSGI && glXWaitVideoSyncSGI )

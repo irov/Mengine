@@ -1,6 +1,7 @@
 #	include "OGLRenderSystem.h"
 #	include <SDL_syswm.h>
 #	include "OGLTexture.h"
+#	include <assert.h>
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
@@ -59,7 +60,7 @@ bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	return initialized;
 }
 //////////////////////////////////////////////////////////////////////////
-void glEnable2D()   
+void OGLRenderSystem::_glEnable2D()   
 {   
 	GLint viewport[4];   
 
@@ -81,7 +82,7 @@ void glEnable2D()
 	glDisable( GL_LIGHTING );  
 }   
 //////////////////////////////////////////////////////////////////////////
-void glDisable2D()   
+void OGLRenderSystem::_glDisable2D()   
 {   
 	glPopAttrib();   
 
@@ -91,6 +92,32 @@ void glDisable2D()
 	glMatrixMode( GL_MODELVIEW );   
 	glPopMatrix();   
 }  
+//////////////////////////////////////////////////////////////////////////
+void makeGLMatrix(GLfloat gl_matrix[16], const float * m)
+{
+	size_t x = 0;
+	for (size_t i = 0; i < 4; i++)
+	{
+		for (size_t j = 0; j < 4; j++)
+		{
+			gl_matrix[x++] = m[j+i*4];
+		}
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void OGLRenderSystem::_glEnable3D()
+{
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(m_glWorldViewMat);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(m_glProjMat);
+}
+//////////////////////////////////////////////////////////////////////////
+void OGLRenderSystem::_glDisable3D()
+{
+
+}
 //////////////////////////////////////////////////////////////////////////
 GLint s_blendMengeToOGL(Menge::EBlendFactor _blend )
 {
@@ -183,31 +210,19 @@ void OGLRenderSystem::setContentResolution( const float * _resolution )
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setProjectionMatrix( const float * _projection )
 {
-}
-//////////////////////////////////////////////////////////////////////////
-void makeGLMatrix(GLfloat gl_matrix[16], const float * m)
-{
-	size_t x = 0;
-	for (size_t i = 0; i < 4; i++)
-	{
-		for (size_t j = 0; j < 4; j++)
-		{
-			gl_matrix[x++] = m[j+i*4];
-		}
-	}
+	makeGLMatrix(m_glProjMat, _projection);
+	// flip z to compensate OpenGLs right-hand coordinate system
+	m_glProjMat[12]*= -1.0f;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setViewMatrix( const float * _view )
 {
-	GLfloat mat[16];
-	makeGLMatrix( mat, _view );
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(mat);
+	makeGLMatrix( m_glWorldViewMat, _view );
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setWorldMatrix( const float * _world )
 {
-
+	makeGLMatrix( m_glWorldViewMat, _world );
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String & _name,
@@ -389,12 +404,12 @@ void OGLRenderSystem::endScene()
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::beginLayer2D()
 {
-	glEnable2D();
+	_glEnable2D();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::endLayer2D()
 {
-	glDisable2D();
+	_glDisable2D();
 	//нах?
 	//m_layer -= 0.001f;
 }
@@ -405,11 +420,12 @@ void OGLRenderSystem::renderText(const Menge::String & _text, const float * _pos
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::beginLayer3D()
 {
+	_glEnable3D();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::endLayer3D()
 {
-
+	_glDisable3D();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
@@ -472,6 +488,30 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 								 const Menge::uint16*	_indices, std::size_t _indicesNum,
 								 Menge::TMaterial* _material )
 {
+//	extGlClientActiveTextureARB(GL_TEXTURE0_ARB);
+
+	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY );
+	glEnableClientState(GL_NORMAL_ARRAY );
+
+	// convert colors to gl color format.
+
+	const Menge::TVertex* p = _vertices;
+
+	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Menge::TVertex), &_vertices[0].col);
+	glNormalPointer(GL_FLOAT, sizeof(Menge::TVertex), &_vertices[0].n);
+	glTexCoordPointer(2, GL_FLOAT, sizeof(Menge::TVertex), &_vertices[0].uv);
+	glVertexPointer(3, GL_FLOAT, sizeof(Menge::TVertex),  &_vertices[0].pos);
+
+	glDrawElements(GL_TRIANGLES, _verticesNum, GL_UNSIGNED_SHORT, _indices);
+
+	glFlush();
+
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY );
+	glDisableClientState(GL_NORMAL_ARRAY );
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )

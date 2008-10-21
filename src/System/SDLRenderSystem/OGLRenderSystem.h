@@ -114,5 +114,11 @@ private:
 	SDL_Surface * m_screen;
 	SDL_Rect** m_videoModes;
 
-	void _setRenderStates2DMode(bool alpha, bool texture, bool alphaChannel);
+	GLfloat m_glProjMat[16];
+	GLfloat m_glWorldViewMat[16];
+
+	void _glEnable2D();
+	void _glDisable2D();
+	void _glEnable3D();
+	void _glDisable3D();
 };

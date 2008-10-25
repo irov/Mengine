@@ -352,8 +352,6 @@ namespace Menge
 		const mt::vec2f & _begin,
 		const mt::vec2f & _end)
 	{
-		//Line line = {_color, _begin, _end};
-		//lines.push_back(line);
 		m_interface->renderLine( _color, _begin.m, _end.m );		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -531,17 +529,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endScene()
 	{
-		//m_interface->beginLayer2D();
-
-		//Holder<Player>::hostage()->getArrow()->render( false );
-
-		/*for each(Line line in lines)
-		{
-			m_interface->renderLine( line.color, line.begin.m, line.end.m );
-		}*/
-
 		m_interface->endScene();
-		lines.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::swapBuffers()

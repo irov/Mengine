@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="SDL.lib glu32.lib opengl32.lib"
+				AdditionalDependencies="SDL.lib SDLmain.lib glu32.lib opengl32.lib glew32.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
 				AdditionalLibraryDirectories="$(SolutionDir)dependencies\SDL\lib"
 				IgnoreAllDefaultLibraries="false"
@@ -186,14 +186,6 @@
 		</File>
 		<File
 			RelativePath=".\OGLTexture.h"
-			>
-		</File>
-		<File
-			RelativePath=".\SDLVideoInfo.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\SDLVideoInfo.h"
 			>
 		</File>
 		<File

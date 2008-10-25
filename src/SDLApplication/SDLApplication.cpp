@@ -154,6 +154,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SDLApplication::start()
 	{
+		m_timer = new OSXTimer();
+
 		m_menge = new Application( this );
 
 		if( m_menge == NULL )
@@ -292,14 +294,21 @@ namespace Menge
 				}
 			}
 #endif
-			thisTime = SDL_GetTicks();
+		/*	thisTime = SDL_GetTicks();
 			deltaTime = (float)(thisTime - lastTime);
 			lastTime = thisTime; 
+*/
+			deltaTime = m_timer->getDeltaTime();
 
 			m_menge->onUpdate( deltaTime );
 			
 			//SDL_Delay(1);
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	TimerInterface * SDLApplication::getTimer() const
+	{
+		return m_timer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SDLApplication::stop()
@@ -338,12 +347,6 @@ namespace Menge
 	void SDLApplication::unloadSystemDLL( SystemDLLInterface* _interface )
 	{
 		delete static_cast<WinSystemDLL*>( _interface );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float SDLApplication::getDeltaTime()
-	{
-		assert(0);
-		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SDLApplication::setHandleMouse( bool _handle )

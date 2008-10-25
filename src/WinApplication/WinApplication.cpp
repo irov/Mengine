@@ -141,6 +141,16 @@ namespace Menge
 			::CloseHandle( m_mutex );
 			m_mutex = 0;
 		}
+
+		if( m_winTimer != NULL )
+		{
+			delete static_cast<WinTimer*>(m_winTimer);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	TimerInterface * WinApplication::getTimer() const
+	{
+		return m_winTimer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static BOOL CALLBACK s_monitorEnumProc( HMONITOR _hMonitor, HDC _hdc, LPRECT, LPARAM lParam )
@@ -171,14 +181,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::start()
 	{
+		m_winTimer = new WinTimer();
+
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
 
 		::timeBeginPeriod( 1 );
-		if( !::QueryPerformanceFrequency( &m_timerFrequency ) )
+	/*	if( !::QueryPerformanceFrequency( &m_timerFrequency ) )
 		{
 			return false;
-		}
+		}*/
 
 		::QueryPerformanceCounter(&m_timer);
 		srand( m_timer.LowPart );
@@ -291,6 +303,8 @@ namespace Menge
 		MSG  msg;
 		POINT pos;
 		LARGE_INTEGER time;
+
+		float m_lastTime1 = 0;
 		::QueryPerformanceCounter(&m_lastTime);
 		while( m_running )
 		{
@@ -311,10 +325,12 @@ namespace Menge
 				DispatchMessage( &msg );
 			}
 
-			::QueryPerformanceCounter(&time);
+		/*	::QueryPerformanceCounter(&time);
 			m_frameTime = static_cast<float>( time.QuadPart - m_lastTime.QuadPart ) / m_timerFrequency.QuadPart * 1000.0f;
 			m_lastTime = time;
+		*/
 
+			m_frameTime = m_winTimer->getDeltaTime();
 			m_menge->onUpdate( m_frameTime );
 
 			WaitForSingleObject(m_hEvent, INFINITE);
@@ -606,16 +622,6 @@ namespace Menge
 	void WinApplication::unloadSystemDLL( SystemDLLInterface* _interface )
 	{
 		delete static_cast<WinSystemDLL*>( _interface );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float WinApplication::getDeltaTime()
-	{
-		LARGE_INTEGER time;
-		::QueryPerformanceCounter( &time );
-		float deltaTime = static_cast<float>( time.QuadPart - m_timer.QuadPart )  / m_timerFrequency.QuadPart * 1000.0f;
-		m_timer = time;
-
-		return deltaTime;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::setHandleMouse( bool _handle )

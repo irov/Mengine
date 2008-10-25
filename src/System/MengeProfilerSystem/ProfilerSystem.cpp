@@ -1,5 +1,7 @@
 #	include "ProfilerSystem.h"
 
+#	include "Interface/ApplicationInterface.h"
+
 #	include <iostream>
 #	include <ctime>
 #	include <iomanip>
@@ -32,7 +34,7 @@ MengeProfileSystem::MengeProfileSystem()
 , m_totalReleased(0)
 , m_currentCompiledResource("")
 {
-	mTimer.reset();
+	//m_timer->reset();
 	mTotalFrameTime = 0;
 	mUpdateDisplayFrequency = 0;
 	mCurrentFrame = 0;
@@ -66,6 +68,11 @@ MengeProfileSystem::~MengeProfileSystem() {
 
 	m_profileResourceVec.clear();
 	m_profileResourceMap.clear();
+}
+//////////////////////////////////////////////////////////////////////////
+void MengeProfileSystem::setTimer(Menge::TimerInterface * _timer)
+{
+	m_timer = _timer;
 }
 //////////////////////////////////////////////////////////////////////////
 void MengeProfileSystem::addResourceToProfile(const Menge::String & _name)
@@ -318,7 +325,7 @@ void MengeProfileSystem::beginProfile(const Menge::String& profileName) {
 	// we do this at the very end of the function to get the most
 	// accurate timing results
 	p.name = profileName;
-	p.currTime = mTimer.getMicroseconds();
+	p.currTime = m_timer->getMicroseconds();
 	p.accum = 0;
 	mProfiles.push_back(p);
 
@@ -345,7 +352,7 @@ void MengeProfileSystem::endProfile(const Menge::String& profileName)
 		return;
 	}
 
-	unsigned long endTime = mTimer.getMicroseconds();
+	unsigned long endTime = m_timer->getMicroseconds();
 
 	assert ((profileName != "") && ("Profile name can't be an empty string"));
 

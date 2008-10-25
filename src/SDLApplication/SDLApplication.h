@@ -4,6 +4,9 @@
 
 #	include <SDL.h>
 #	include <map>
+
+#	include "OSXTimer.h"
+
 namespace Menge
 {
 	class SystemDLL;
@@ -29,13 +32,14 @@ namespace Menge
 		void minimizeWindow() override;
 		void setDesktopResolution( std::size_t _width, std::size_t _height );
 		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
-		float getDeltaTime() override;
 		SystemDLLInterface* loadSystemDLL( const String & _dll ) override;
 		void unloadSystemDLL( SystemDLLInterface* _interface ) override;
 		void setHandleMouse( bool _handle ) override;
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
 
+		TimerInterface * getTimer() const override;
 	private:
+		OSXTimer * m_timer;
 		Application* m_menge;
 		LogSystemInterface* m_logSystem;
 

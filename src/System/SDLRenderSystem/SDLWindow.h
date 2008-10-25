@@ -3,12 +3,24 @@
 #	include "libs/Math/vec2.h"
 #	include "libs/Math/box2.h"
 
-#	include "SDL_opengl.h"
-#	include "OGLTexture.h"
 
-#	include <SDL.h>
+#define NO_SDL_GLEXT
+//#define GLEW_STATIC
+#include "gl/glew.h"
+#include <SDL_opengl.h>
+
+//#include "windows.h"
+//#include "gl/gl.h"
+
+
+//#define GL_GLEXT_PROTOTYPES 1
+
+//#include "gl/glext.h"
+#	include <map>
 
 typedef std::map<Menge::String, Menge::String> NameValuePairList;
+
+#include <SDL.h>
 
 class SDLWindow
 {

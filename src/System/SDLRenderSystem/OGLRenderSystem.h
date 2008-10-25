@@ -3,11 +3,13 @@
 #	include "libs/Math/vec2.h"
 #	include "libs/Math/box2.h"
 //#	include "glew.h"
-#	include <SDL.h>
+//#	include <SDL.h>
+//#	include <GL/gl.h>
 
 #	include <map>
 
 #	include "SDLWindow.h"
+
 
 class OGLTexture;
 

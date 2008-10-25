@@ -220,6 +220,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\OSXTimer.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\OSXTimer.h"
+			>
+		</File>
+		<File
 			RelativePath=".\SDLApplication.cpp"
 			>
 		</File>

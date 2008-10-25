@@ -159,6 +159,9 @@ namespace Menge
 	void Application::setProfilerSystem( ProfilerSystemInterface * _interface )
 	{
 		m_profilerEngine = new ProfilerEngine( _interface );
+
+		TimerInterface * timer = m_interface->getTimer();
+		_interface->setTimer(timer);
 		Holder<ProfilerEngine>::keep( m_profilerEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////

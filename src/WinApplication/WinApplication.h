@@ -15,6 +15,8 @@
 #	include "Interface/ApplicationInterface.h"
 #	include <Windows.h>
 
+#	include "WinTimer.h"
+
 namespace Menge
 {
 	class SystemDLL;
@@ -42,18 +44,19 @@ namespace Menge
 		void minimizeWindow() override;
 		void setDesktopResolution( std::size_t _width, std::size_t _height );
 		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
-		float getDeltaTime() override;
-		//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
 		SystemDLLInterface* loadSystemDLL( const String & _dll ) override;
 		void unloadSystemDLL( SystemDLLInterface* _interface ) override;
 		void setHandleMouse( bool _handle ) override;
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
+		TimerInterface * getTimer() const override;
 
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 		DWORD threadFrameSignal();
 
 	private:
+		WinTimer * m_winTimer;
+
 		Application* m_menge;
 		LogSystemInterface* m_logSystem;
 		LARGE_INTEGER m_timerFrequency;

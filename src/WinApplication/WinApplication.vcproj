@@ -255,6 +255,14 @@
 			RelativePath=".\WinApplication.h"
 			>
 		</File>
+		<File
+			RelativePath=".\WinTimer.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\WinTimer.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

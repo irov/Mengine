@@ -141,15 +141,5 @@ namespace Menge
 		mt::mat4f m_viewTransform;
 
 		void recalcRenderArea_( const Resolution & resolution );
-
-	private:
-		struct Line
-		{
-			unsigned int color;
-			mt::vec2f begin;
-			mt::vec2f end;
-		};
-
-		std::list<Line> lines;
 	};
 }

@@ -1,8 +1,15 @@
 #	pragma once
 #	include "Interface/RenderSystemInterface.h"
 
-#	define GL_GLEXT_PROTOTYPES 1
-#	include "SDL_opengl.h"
+//#	include "SDL_opengl.h"
+
+#	include "OGLRenderSystem.h"
+
+//#include <GL/gl.h>
+//#include <GL/glext.h>
+//#include <GL/glut.h>
+//#include <stdio.h>
+
 
 #	include <string>
 #	include <map>

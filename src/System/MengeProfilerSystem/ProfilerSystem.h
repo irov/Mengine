@@ -11,9 +11,13 @@
 class MengeProfileSystem
 	: public Menge::ProfilerSystemInterface
 {
+private:
+	Menge::TimerInterface * m_timer;
 public:
 	MengeProfileSystem();
 	~MengeProfileSystem();
+
+	void setTimer(Menge::TimerInterface * _timer) override;
 
 	void beginProfile(const Menge::String& profileName) override;
 	void endProfile(const Menge::String& profileName) override;
@@ -42,7 +46,7 @@ private:
 
 	void processFrameStats();
 
-	Timer mTimer;
+	//Timer mTimer;
 	/// Represents an individual profile call
 	struct ProfileInstance {
 

@@ -42,6 +42,17 @@ namespace Menge
 
 	};
 
+	class TimerInterface
+	{
+	public:
+		virtual void reset() = 0;
+		virtual float getDeltaTime() const = 0;
+		virtual unsigned long getMilliseconds() = 0;
+		virtual unsigned long getMicroseconds() = 0;
+		virtual unsigned long getMillisecondsCPU() = 0;
+		virtual unsigned long getMicrosecondsCPU() = 0;
+	};
+
 	class ApplicationInterface
 	{
 	public:
@@ -51,12 +62,12 @@ namespace Menge
 		virtual std::size_t getDesktopHeight() const = 0;
 		virtual void minimizeWindow() = 0;
 		virtual void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
-		virtual float getDeltaTime() = 0;
 		virtual void setHandleMouse( bool _handle ) = 0;
 		virtual void showMessageBox( const String& _message, const String& _header, unsigned int _style ) = 0;
 
 		virtual SystemDLLInterface* loadSystemDLL( const String & _dll ) = 0;
 		virtual void unloadSystemDLL( SystemDLLInterface * _dllInterface ) = 0;
+		virtual TimerInterface * getTimer() const = 0;
 	};
 }
 

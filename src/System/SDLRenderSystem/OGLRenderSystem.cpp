@@ -155,7 +155,7 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	// и как же передать тайтл? :)
 	m_SDLWindow.create("TEST",_width,_height,_fullscreen,&values);
 
-	//glEnable2D();
+	_glEnable2D();
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
@@ -217,7 +217,9 @@ void OGLRenderSystem::setProjectionMatrix( const float * _projection )
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setViewMatrix( const float * _view )
 {
+	glMatrixMode( GL_MODELVIEW );
 	makeGLMatrix( m_glWorldViewMat, _view );
+	glLoadMatrixf(m_glWorldViewMat);
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setWorldMatrix( const float * _world )
@@ -393,7 +395,7 @@ void OGLRenderSystem::renderLine( unsigned int _color,
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::beginScene()
 {
-	//m_layer = 1.0f;
+	m_layer = 1.0f;
 	glClearColor(1,1,1,1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
@@ -404,14 +406,14 @@ void OGLRenderSystem::endScene()
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::beginLayer2D()
 {
-	_glEnable2D();
+	//_glEnable2D();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::endLayer2D()
 {
-	_glDisable2D();
+	//_glDisable2D();
 	//нах?
-	//m_layer -= 0.001f;
+	m_layer -= 0.001f;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::renderText(const Menge::String & _text, const float * _pos, unsigned long _color)
@@ -420,12 +422,12 @@ void OGLRenderSystem::renderText(const Menge::String & _text, const float * _pos
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::beginLayer3D()
 {
-	_glEnable3D();
+	//_glEnable3D();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::endLayer3D()
 {
-	_glDisable3D();
+	//_glDisable3D();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )

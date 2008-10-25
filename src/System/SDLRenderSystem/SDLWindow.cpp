@@ -1,17 +1,17 @@
 #include "SDLWindow.h"
 
 #if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
-#   include <windows.h>
-#   include <wingdi.h>
-#   include <GL/gl.h>
+//#   include <windows.h>
+//#   include <wingdi.h>
+//#   include <GL/gl.h>
 //#   define GL_GLEXT_PROTOTYPES
 //#   include "glprocs.h"
-#   include <GL/glu.h>
+//#   include <GL/glu.h>
 #elif MENGE_PLATFORM == MENGE_PLATFORM_APPLE
-#   include <OpenGL/gl.h>
+/*#   include <OpenGL/gl.h>
 #   define GL_EXT_texture_env_combine 1
 #   include <OpenGL/glext.h>
-#   include <OpenGL/glu.h>
+#   include <OpenGL/glu.h>*/
 #endif
 //////////////////////////////////////////////////////////////////////////
 SDLWindow::SDLWindow() :
@@ -103,6 +103,13 @@ void SDLWindow::create(const Menge::String& name, unsigned int width, unsigned i
 
 	glXGetVideoSyncSGI = (int (*)(unsigned int *))SDL_GL_GetProcAddress("glXGetVideoSyncSGI");
 	glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int *))SDL_GL_GetProcAddress("glXWaitVideoSyncSGI");
+
+	GLenum err = glewInit();
+
+	if (GLEW_OK != err)	
+	{
+
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void SDLWindow::destroy(void)

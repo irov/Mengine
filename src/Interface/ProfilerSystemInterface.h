@@ -26,9 +26,12 @@ namespace Menge
 	typedef std::list<ProfileHistory> ProfileHistoryList;
 	typedef std::vector<ResourceStat*> ProfileResourceVec;
 
+	class TimerInterface;
+
 	class ProfilerSystemInterface
 	{
 	public:
+		virtual void setTimer(TimerInterface * _timer) = 0;
 		virtual void reset() = 0;
 		virtual void beginProfile(const String& profileName) = 0;
 		virtual void endProfile(const String& profileName) = 0;

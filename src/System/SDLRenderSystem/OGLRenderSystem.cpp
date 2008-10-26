@@ -26,6 +26,7 @@ void releaseInterfaceSystem( Menge::RenderSystemInterface* _ptrInterface )
 OGLRenderSystem::OGLRenderSystem()
 : m_inRender( false )
 , m_layer( 1.0f )
+, m_layer3D( false )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -34,16 +35,8 @@ OGLRenderSystem::~OGLRenderSystem()
 	m_SDLWindow.destroy();
 
 	SDL_Quit();
-}
-//////////////////////////////////////////////////////////////////////////
-void OGLRenderSystem::swapBuffers()
-{
-	m_SDLWindow.swapBuffers(false);
-}
-//////////////////////////////////////////////////////////////////////////
-int OGLRenderSystem::getNumDIP() const
-{
-	return 1;
+
+	deleteBatching();
 }
 //////////////////////////////////////////////////////////////////////////
 bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
@@ -57,66 +50,42 @@ bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 		return false;
 	}
 
+	for (size_t i = 0; i < 16; i++)
+	{
+		m_worldMatrix[i] = 0;
+	}
+
+	m_worldMatrix[0] = m_worldMatrix[5] = m_worldMatrix[10] = m_worldMatrix[15] = 1;
+
+	for (size_t i = 0; i < 16; i++)
+	{
+		m_viewMatrix[i] = 0;
+	}
+
+	m_viewMatrix[0] = m_viewMatrix[5] = m_viewMatrix[10] = m_viewMatrix[15] = 1;
 	return initialized;
 }
 //////////////////////////////////////////////////////////////////////////
-void OGLRenderSystem::_glEnable2D()   
-{   
-	GLint viewport[4];   
-
-	glGetIntegerv( GL_VIEWPORT, viewport );   
-
-	glMatrixMode( GL_PROJECTION );   
-	glPushMatrix();   
-	glLoadIdentity();   
-
-	glOrtho( viewport[0], viewport[0] + viewport[2],   
-		viewport[1] + viewport[3], viewport[1], -1, 1 );   
- 
-	glMatrixMode( GL_MODELVIEW );   
-	glPushMatrix();   
-	glLoadIdentity();   
-
-	glPushAttrib( GL_DEPTH_BUFFER_BIT | GL_LIGHTING_BIT );   
-	glDisable( GL_DEPTH_TEST );  
-	glDisable( GL_LIGHTING );  
-}   
+void OGLRenderSystem::swapBuffers()
+{
+	m_SDLWindow.swapBuffers(false);
+}
 //////////////////////////////////////////////////////////////////////////
-void OGLRenderSystem::_glDisable2D()   
-{   
-	glPopAttrib();   
-
-	glMatrixMode( GL_PROJECTION );   
-	glPopMatrix();   
-
-	glMatrixMode( GL_MODELVIEW );   
-	glPopMatrix();   
-}  
+int OGLRenderSystem::getNumDIP() const
+{
+	return 1;
+}
 //////////////////////////////////////////////////////////////////////////
 void makeGLMatrix(GLfloat gl_matrix[16], const float * m)
 {
-	size_t x = 0;
+	size_t k = 0;
 	for (size_t i = 0; i < 4; i++)
 	{
 		for (size_t j = 0; j < 4; j++)
 		{
-			gl_matrix[x++] = m[j+i*4];
+			gl_matrix[k++] = m[j+i*4];
 		}
 	}
-}
-//////////////////////////////////////////////////////////////////////////
-void OGLRenderSystem::_glEnable3D()
-{
-	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(m_glWorldViewMat);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(m_glProjMat);
-}
-//////////////////////////////////////////////////////////////////////////
-void OGLRenderSystem::_glDisable3D()
-{
-
 }
 //////////////////////////////////////////////////////////////////////////
 GLint s_blendMengeToOGL(Menge::EBlendFactor _blend )
@@ -155,12 +124,7 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	// и как же передать тайтл? :)
 	m_SDLWindow.create("TEST",_width,_height,_fullscreen,&values);
 
-	_glEnable2D();
-
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_BLEND);
-
-	//glDepthFunc(GL_LESS);
+	initBatching();
 
 	return true;
 }
@@ -210,21 +174,74 @@ void OGLRenderSystem::setContentResolution( const float * _resolution )
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setProjectionMatrix( const float * _projection )
 {
-	makeGLMatrix(m_glProjMat, _projection);
-	// flip z to compensate OpenGLs right-hand coordinate system
-	m_glProjMat[12]*= -1.0f;
+	renderBatch();
+
+	for(int i = 0; i < 16;i++)
+	{
+		m_projMatrix[i] = _projection[i];
+	}
+	
+	makeGLMatrix(m_projMatrix, _projection);
+
+	//m_projMatrix[12]*=-1;
+
+	glMatrixMode(GL_PROJECTION);   
+	glLoadMatrixf(m_projMatrix);
+	glMatrixMode(GL_MODELVIEW);
+}
+//////////////////////////////////////////////////////////////////////////
+void multiplyMatrices(float * _out, float * _a, float * _b)
+{
+	_out[0] = _a[0] * _b[0] + _a[1] * _b[4]+ _a[2] * _b[8]+ _a[3] * _b[12];
+	_out[1] = _a[0] * _b[1] + _a[1] * _b[5]+ _a[2] * _b[9]+ _a[3] * _b[13];
+	_out[2] = _a[0] * _b[2] + _a[1] * _b[6]+ _a[2] * _b[10]+ _a[3] * _b[14];
+	_out[3] = _a[0] * _b[3] + _a[1] * _b[7]+ _a[2] * _b[11]+ _a[3] * _b[15];
+	_out[4] = _a[4] * _b[0] + _a[5] * _b[4]+ _a[6] * _b[8]+ _a[7] * _b[12];
+	_out[5] = _a[4] * _b[1] + _a[5] * _b[5]+ _a[6] * _b[9]+ _a[7] * _b[13];
+	_out[6] = _a[4] * _b[2] + _a[5] * _b[6]+ _a[6] * _b[10]+ _a[7] * _b[14];
+	_out[7] = _a[4] * _b[3] + _a[5] * _b[7]+ _a[6] * _b[11]+ _a[7] * _b[15];
+	_out[8] = _a[8] * _b[0] + _a[9] * _b[4]+ _a[10] * _b[8]+ _a[11] * _b[12];
+	_out[9] = _a[8] * _b[1] + _a[9] * _b[5]+ _a[10] * _b[9]+ _a[11] * _b[13];
+	_out[10] = _a[8] * _b[2] + _a[9] * _b[6]+ _a[10] * _b[10]+ _a[11] * _b[14];
+	_out[11] = _a[8] * _b[3] + _a[9] * _b[7]+ _a[10] * _b[11]+ _a[11] * _b[15];
+	_out[12] = _a[12] * _b[0] + _a[13] * _b[4]+ _a[14] * _b[8]+ _a[15] * _b[12];
+	_out[13] = _a[12] * _b[1] + _a[13] * _b[5]+ _a[14] * _b[9]+ _a[15] * _b[13];
+	_out[14] = _a[12] * _b[2] + _a[13] * _b[6]+ _a[14] * _b[10]+ _a[15] * _b[14];
+	_out[15] = _a[12] * _b[3] + _a[13] * _b[7]+ _a[14] * _b[11]+ _a[15] * _b[15];
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setViewMatrix( const float * _view )
 {
-	glMatrixMode( GL_MODELVIEW );
-	makeGLMatrix( m_glWorldViewMat, _view );
-	glLoadMatrixf(m_glWorldViewMat);
+	renderBatch();
+
+	for(int i = 0; i < 16;i++)
+	{
+		m_viewMatrix[i] = _view[i];
+	}
+
+	float WV[16];
+	multiplyMatrices(WV,m_worldMatrix,m_viewMatrix);
+	GLfloat mogl[16];
+	makeGLMatrix( mogl, WV );
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(mogl);
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setWorldMatrix( const float * _world )
 {
-	makeGLMatrix( m_glWorldViewMat, _world );
+	renderBatch();
+
+	for(int i = 0; i < 16;i++)
+	{
+		m_worldMatrix[i] = _world[i];
+	}
+
+	float WV[16];
+	multiplyMatrices(WV,m_worldMatrix,m_viewMatrix);
+	GLfloat mogl[16];
+	makeGLMatrix( mogl, WV );
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(mogl);
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String & _name,
@@ -238,13 +255,7 @@ Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String 
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Menge::String & _name, float _width, float _height )
 {
-	assert(0);
-/*	OGLTexture* texture = new OGLTexture( _name, _width, _height );
-	RenderTargetInfo rtgtInfo;
-	rtgtInfo.dirty = true;
-	rtgtInfo.texture = texture;
-	m_targetMap.insert( std::make_pair( _name, rtgtInfo ) );
-	return texture;*/
+	//assert(0);
 	return 0;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -299,35 +310,49 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 {
 	const OGLTexture * tex = static_cast<const OGLTexture*>( _image );
 
+	if(tex == NULL)
+	{
+		return;
+	}
+
 	GLint srcBlend = s_blendMengeToOGL( _srcBlend );
 	GLint dstBlend = s_blendMengeToOGL( _dstBlend );
 
-	glBlendFunc(srcBlend,dstBlend);
+	Menge::TVertex quad[4];
 
-	glBindTexture(GL_TEXTURE_2D, tex->getGLTexture());
+	quad[0].pos[0] = _renderVertex[0];
+	quad[0].pos[1] = _renderVertex[1];
+	quad[0].pos[2] = m_layer;
+	quad[0].col = _color;
 
-	int r = (_color>>16) & 0xff;
-	int g = (_color>>8) & 0xff;
-	int b = (_color) & 0xff;
-	int a = (_color>>24) & 0xff;
+	quad[1].pos[0] = _renderVertex[2];
+	quad[1].pos[1] = _renderVertex[3];
+	quad[1].pos[2] = m_layer;
+	quad[1].col = _color;
 
-	glBegin(GL_QUADS);
-	
-	glColor4f(r/255.f,g/255.f,b/255.f,1.f);
+	quad[2].pos[0] = _renderVertex[4];
+	quad[2].pos[1] = _renderVertex[5];
+	quad[2].pos[2] = m_layer;
+	quad[2].col = _color;
 
-	glTexCoord2f(_uv[0],_uv[1]);
-	glVertex2f(_renderVertex[0], _renderVertex[1]);
+	quad[3].pos[0] = _renderVertex[6];
+	quad[3].pos[1] = _renderVertex[7];
+	quad[3].pos[2] = m_layer;
+	quad[3].col = _color;
 
-	glTexCoord2f(_uv[2],_uv[1]);
-	glVertex2f(_renderVertex[2], _renderVertex[3]);
+	quad[0].uv[0] = _uv[0];
+	quad[0].uv[1] = _uv[1];
 
-	glTexCoord2f(_uv[2],_uv[3]);
-	glVertex2f(_renderVertex[4], _renderVertex[5]);
+	quad[1].uv[0] = _uv[2];
+	quad[1].uv[1] = _uv[1];
 
-	glTexCoord2f(_uv[0],_uv[3]);
-	glVertex2f(_renderVertex[6], _renderVertex[7]);
+	quad[2].uv[0] = _uv[2];
+	quad[2].uv[1] = _uv[3];
 
-	glEnd();
+	quad[3].uv[0] = _uv[0];
+	quad[3].uv[1] = _uv[3];
+
+	Gfx_RenderQuad(quad,tex->getGLTexture(),srcBlend,dstBlend);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -344,32 +369,40 @@ void OGLRenderSystem::renderTriple(
 								   Menge::EBlendFactor _dstBlend )
 {
 	const OGLTexture * tex = static_cast<const OGLTexture*>( _image );
-
+	if(tex == NULL)
+	{
+		return;
+	}
 	GLint srcBlend = s_blendMengeToOGL( _srcBlend );
 	GLint dstBlend = s_blendMengeToOGL( _dstBlend );
-	glBlendFunc(srcBlend,dstBlend);
 
-	glBindTexture(GL_TEXTURE_2D, tex->getGLTexture());
+	Menge::TVertex quad[3];
 
-	int r = (_color>>16) & 0xff;
-	int g = (_color>>8) & 0xff;
-	int b = (_color) & 0xff;
-	int a = (_color>>24) & 0xff;
+	quad[0].pos[0] = _a[0];
+	quad[0].pos[1] = _a[1];
+	quad[0].pos[2] = m_layer;
+	quad[0].col = _color;
 
-	glBegin(GL_TRIANGLES);
+	quad[1].pos[0] = _b[0];
+	quad[1].pos[1] = _b[1];
+	quad[1].pos[2] = m_layer;
+	quad[1].col = _color;
 
-	glColor4ub(r,g,b,a);
+	quad[2].pos[0] = _c[0];
+	quad[2].pos[1] = _c[1];
+	quad[2].pos[2] = m_layer;
+	quad[2].col = _color;
 
-	glTexCoord2f(_uv0[0],_uv0[1]);
-	glVertex2f(_a[0], _a[1]);
+	quad[0].uv[0] = _uv0[0];
+	quad[0].uv[1] = _uv0[1];
 
-	glTexCoord2f(_uv1[0],_uv1[1]);
-	glVertex2f(_b[0], _b[1]);
+	quad[1].uv[0] = _uv1[0];
+	quad[1].uv[1] = _uv1[1];
 
-	glTexCoord2f(_uv2[0],_uv2[1]);
-	glVertex2f(_c[0], _c[1]);
+	quad[2].uv[0] = _uv2[0];
+	quad[2].uv[1] = _uv2[1];
 
-	glEnd();
+	Gfx_RenderTriple(quad,tex->getGLTexture(),srcBlend,dstBlend);
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::renderLine( unsigned int _color, 
@@ -396,38 +429,51 @@ void OGLRenderSystem::renderLine( unsigned int _color,
 void OGLRenderSystem::beginScene()
 {
 	m_layer = 1.0f;
+
 	glClearColor(1,1,1,1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	n_prim = 0;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::endScene()
 {
+	renderBatch();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::beginLayer2D()
 {
-	//_glEnable2D();
+	if( m_layer3D == false ) 
+	{
+		return;	// already 2D
+	}
+	
+	_glEnable2D();
+	m_layer3D = false;
+	
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::endLayer2D()
 {
-	//_glDisable2D();
-	//нах?
 	m_layer -= 0.001f;
-}
-//////////////////////////////////////////////////////////////////////////
-void OGLRenderSystem::renderText(const Menge::String & _text, const float * _pos, unsigned long _color)
-{
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::beginLayer3D()
 {
-	//_glEnable3D();
+	if( m_layer3D ) 
+	{
+		return;	// already 3D
+	}
+
+	_glEnable3D();
+	m_layer3D = true;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::endLayer3D()
 {
-	//_glDisable3D();
+}
+//////////////////////////////////////////////////////////////////////////
+void OGLRenderSystem::renderText(const Menge::String & _text, const float * _pos, unsigned long _color)
+{
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
@@ -490,7 +536,16 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 								 const Menge::uint16*	_indices, std::size_t _indicesNum,
 								 Menge::TMaterial* _material )
 {
-//	extGlClientActiveTextureARB(GL_TEXTURE0_ARB);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	const OGLTexture * tex = static_cast<const OGLTexture*>( _material->texture );
+
+	if(tex == NULL)
+	{
+		return;
+	}
+
+	glBindTexture(GL_TEXTURE_2D, tex->getGLTexture());
 
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -499,16 +554,12 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 
 	// convert colors to gl color format.
 
-	const Menge::TVertex* p = _vertices;
-
 	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Menge::TVertex), &_vertices[0].col);
 	glNormalPointer(GL_FLOAT, sizeof(Menge::TVertex), &_vertices[0].n);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(Menge::TVertex), &_vertices[0].uv);
 	glVertexPointer(3, GL_FLOAT, sizeof(Menge::TVertex),  &_vertices[0].pos);
 
 	glDrawElements(GL_TRIANGLES, _verticesNum, GL_UNSIGNED_SHORT, _indices);
-
-	glFlush();
 
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -518,63 +569,7 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 {
-	assert(0);
-/*	TTargetMap::iterator it = m_targetMap.find( _name );
-	if( it != m_targetMap.end() )
-	{
-		if( m_inRender )
-		{
-			m_hge->Gfx_EndScene( false );
-		}
-		else
-		{
-			m_inRender = true;
-		}
-		m_currentRenderTarget = _name;
-		m_hge->Gfx_BeginScene( it->second.handle );
-		if( it->second.dirty && _clear )
-		{
-			m_hge->Gfx_Clear( m_clearColor );
-			it->second.dirty = false;
-		}
-
-	}
-	else
-	{
-		MENGE_LOG_WARNING( "Warning: Invalid Render Target name \"%s\""
-			, _name.c_str() );
-	}
-*/
-/*	TTargetMap::iterator it = m_targetMap.find( _name );
-	if( it != m_targetMap.end() )
-	{
-		if( m_inRender )
-		{
-			endScene();
-		}
-		else
-		{
-			m_inRender = true;
-		}
-
-		m_currentRenderTarget = _name;
-
-		if (it->second.texture!=0)
-		{
-			glBindTexture(GL_TEXTURE_2D, it->second.texture->getGLTexture());
-
-			// Copy Our ViewPort To The Texture
-			glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0,
-				it->second.texture->getWidth(),
-				it->second.texture->getHeight());
-
-			glViewport(0, 0, m_screen->w, m_screen->h);
-		}
-
-		glViewport(0, 0, it->second.texture->getWidth(), it->second.texture->getHeight());
-
-		beginScene();
-	}*/
+	//assert(0);
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setRenderArea( const float* _renderArea )

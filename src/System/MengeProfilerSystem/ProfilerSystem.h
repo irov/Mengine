@@ -6,8 +6,6 @@
 #	include <map>
 #	include <list>
 
-#	include "Timer.h"
-
 class MengeProfileSystem
 	: public Menge::ProfilerSystemInterface
 {

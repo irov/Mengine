@@ -138,6 +138,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SDLApplication::~SDLApplication()
 	{
+		delete m_timer;
+
 		if( m_menge != NULL )
 		{
 			m_menge->onDestroy();

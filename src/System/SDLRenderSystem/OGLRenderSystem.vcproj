@@ -169,6 +169,10 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\OGLBatching.cpp"
+			>
+		</File>
+		<File
 			RelativePath=".\OGLRenderSystem.cpp"
 			>
 		</File>

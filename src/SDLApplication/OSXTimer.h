@@ -11,6 +11,11 @@
 # include <direct.h>
 #endif
 
+#	include <windows.h>
+#	include <time.h>
+
+//#include <WinTime.h>
+
 namespace Menge
 {
 	class OSXTimer : public TimerInterface
@@ -26,7 +31,7 @@ namespace Menge
 		unsigned long getMicrosecondsCPU() override;
 	private:
 		struct timeval start;
-		struct timeval last;
+		mutable struct timeval last;
 		clock_t zeroClock;
 	};
 };

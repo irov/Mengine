@@ -115,12 +115,32 @@ private:
 	TTextureMap m_textureMap;
 	SDL_Surface * m_screen;
 	SDL_Rect** m_videoModes;
+	
 
-	GLfloat m_glProjMat[16];
-	GLfloat m_glWorldViewMat[16];
+	GLfloat m_projMatrix[16];
+	GLfloat m_worldMatrix[16];
+	GLfloat m_viewMatrix[16];
+
+	static const int VertexBufferSize = 10000;
+	static const int IndexBufferSize = VertexBufferSize * 6 / 4;
+
+	Menge::TVertex * VertArray;
+	Menge::uint16 * IndexArray;
+
+	int n_prim;
+	GLint m_curTexture;
+	int m_curPrimType;
+	int m_currSrcBlend;
+	int m_currDstBlend;
 
 	void _glEnable2D();
-	void _glDisable2D();
 	void _glEnable3D();
-	void _glDisable3D();
+
+	void initBatching();
+	void deleteBatching();
+	void Gfx_RenderQuad(const Menge::TVertex *quad, GLint tex, GLint srcBlend, GLint dstBlend);
+	void Gfx_RenderTriple(const Menge::TVertex *quad,GLint tex, GLint srcBlend, GLint dstBlend);
+	void renderBatch();
+
+	bool m_layer3D;
 };

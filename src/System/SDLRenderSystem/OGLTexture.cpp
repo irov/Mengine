@@ -24,27 +24,20 @@ OGLTexture::OGLTexture(const Menge::String& _name, std::size_t _width, std::size
 , m_format(Menge::PF_A8R8G8B8)
 , m_glPixelType(GL_UNSIGNED_BYTE)
 , m_buffer(0)
+, m_bufferId(0)
 {
-	glGenTextures(1, &m_texture);
+	//BUG
+/*	glGenTextures(1, &m_texture);
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 
-	//glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
-
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, m_glInternalFormat,m_glPixelType,m_buffer);
-//	glGenBuffers(1, &m_bufferId);
-
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, m_glInternalFormat,m_glPixelType,0);
 	glGenBuffers(1, &m_bufferId);
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferId);
 	glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, m_width*m_height*4, NULL, GL_STREAM_DRAW);
-	//glBindBuffer(GL_PIXEL_UNPACK_BUFFER_EXT, 0);
-
-	//glBufferData( GL_PIXEL_UNPACK_BUFFER_ARB, 0, NULL, GL_STREAM_DRAW );
-//	void* ioMem = glMapBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY );
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);*/
 }
 //////////////////////////////////////////////////////////////////////////
 OGLTexture::~OGLTexture()
@@ -98,8 +91,6 @@ void OGLTexture::load( const Menge::TextureDesc & _desc )
 
 	glGenTextures(1,&m_texture);
 
-	//glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
-
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,m_texture);
 
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -111,8 +102,11 @@ void OGLTexture::load( const Menge::TextureDesc & _desc )
 
 	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA8, _desc.width,_desc.height, 0, m_glInternalFormat,m_glPixelType,_desc.buffer);
 	GLenum error = glGetError();
-	if( error != GL_NO_ERROR ) printf( "Texture error\n" );
-	//glGenBuffers(1, &m_bufferId);
+
+	if( error != GL_NO_ERROR ) 
+	{
+		printf( "Texture error\n" );
+	}
 
 	m_name = _desc.name;
 	m_width = _desc.width;
@@ -137,7 +131,7 @@ const Menge::String & OGLTexture::getDescription() const
 //////////////////////////////////////////////////////////////////////////
 unsigned char* OGLTexture::lock( int* _pitch, bool _readOnly )
 {
-	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferId );
+/*	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferId );
 
 	if( _readOnly )
 	{
@@ -151,13 +145,16 @@ unsigned char* OGLTexture::lock( int* _pitch, bool _readOnly )
 	*_pitch = m_width * 4;
 
 	return static_cast<unsigned char*>(pixels);
+	*/
+	return NULL;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLTexture::unlock()
 {
-	glBindBufferARB( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferId );
+/*	glBindBufferARB( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferId );
 	glUnmapBufferARB( GL_PIXEL_UNPACK_BUFFER_ARB );
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width,m_height, 0, m_glInternalFormat,m_glPixelType,0);
+	*/
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::PixelFormat OGLTexture::getPixelFormat() 

@@ -6,7 +6,7 @@
 
 #define NO_SDL_GLEXT
 //#define GLEW_STATIC
-//#include "gl/glew.h"
+#include "gl/glew.h"
 #include <SDL_opengl.h>
 
 //#include "windows.h"

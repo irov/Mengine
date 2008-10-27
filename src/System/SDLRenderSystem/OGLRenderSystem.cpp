@@ -324,25 +324,33 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 	quad[0].pos[1] = _renderVertex[1];
 	quad[0].pos[2] = m_layer;
 	quad[0].col = _color;
-	quad[0].n[0] = 0.0f; quad[0].n[1] = 0.0f; quad[0].n[2] = 1.0f;
+	quad[0].n[0] = 0.0f; 
+	quad[0].n[1] = 0.0f; 
+	quad[0].n[2] = 1.0f;
 
 	quad[1].pos[0] = _renderVertex[2];
 	quad[1].pos[1] = _renderVertex[3];
 	quad[1].pos[2] = m_layer;
 	quad[1].col = _color;
-	quad[1].n[0] = 0.0f; quad[0].n[1] = 0.0f; quad[0].n[2] = 1.0f;
+	quad[1].n[0] = 0.0f; 
+	quad[1].n[1] = 0.0f; 
+	quad[1].n[2] = 1.0f;
 
 	quad[2].pos[0] = _renderVertex[4];
 	quad[2].pos[1] = _renderVertex[5];
 	quad[2].pos[2] = m_layer;
 	quad[2].col = _color;
-	quad[2].n[0] = 0.0f; quad[0].n[1] = 0.0f; quad[0].n[2] = 1.0f;
+	quad[2].n[0] = 0.0f;
+	quad[2].n[1] = 0.0f; 
+	quad[2].n[2] = 1.0f;
 
 	quad[3].pos[0] = _renderVertex[6];
 	quad[3].pos[1] = _renderVertex[7];
 	quad[3].pos[2] = m_layer;
 	quad[3].col = _color;
-	quad[3].n[0] = 0.0f; quad[0].n[1] = 0.0f; quad[0].n[2] = 1.0f;
+	quad[3].n[0] = 0.0f; 
+	quad[3].n[1] = 0.0f; 
+	quad[3].n[2] = 1.0f;
 
 	quad[0].uv[0] = _uv[0] * _image->getWidth();
 	quad[0].uv[1] = _uv[1] * _image->getHeight();
@@ -386,25 +394,34 @@ void OGLRenderSystem::renderTriple(
 	quad[0].pos[1] = _a[1];
 	quad[0].pos[2] = m_layer;
 	quad[0].col = _color;
+	quad[0].n[0] = 0.0f; 
+	quad[0].n[1] = 0.0f; 
+	quad[0].n[2] = 1.0f;
 
 	quad[1].pos[0] = _b[0];
 	quad[1].pos[1] = _b[1];
 	quad[1].pos[2] = m_layer;
 	quad[1].col = _color;
+	quad[1].n[0] = 0.0f; 
+	quad[1].n[1] = 0.0f;
+	quad[1].n[2] = 1.0f;
 
 	quad[2].pos[0] = _c[0];
 	quad[2].pos[1] = _c[1];
 	quad[2].pos[2] = m_layer;
 	quad[2].col = _color;
+	quad[2].n[0] = 0.0f;
+	quad[2].n[1] = 0.0f; 
+	quad[2].n[2] = 1.0f;
 
-	quad[0].uv[0] = _uv0[0];
-	quad[0].uv[1] = _uv0[1];
+	quad[0].uv[0] = _uv0[0] * _image->getWidth();
+	quad[0].uv[1] = _uv0[1] * _image->getHeight();
 
-	quad[1].uv[0] = _uv1[0];
-	quad[1].uv[1] = _uv1[1];
+	quad[1].uv[0] = _uv1[0] * _image->getWidth();
+	quad[1].uv[1] = _uv1[1] * _image->getHeight();
 
-	quad[2].uv[0] = _uv2[0];
-	quad[2].uv[1] = _uv2[1];
+	quad[2].uv[0] = _uv2[0] * _image->getWidth();
+	quad[2].uv[1] = _uv2[1] * _image->getHeight();
 
 	Gfx_RenderTriple(quad,tex->getGLTexture(),srcBlend,dstBlend);
 }

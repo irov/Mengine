@@ -205,7 +205,7 @@ void OGLRenderSystem::Gfx_RenderTriple(const Menge::TVertex *quad, GLint tex, GL
 
 		if( tex != m_curTexture )
 		{
-			glBindTexture(GL_TEXTURE_2D, tex);
+			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
 			m_curTexture = tex;
 		}
 	}

@@ -105,12 +105,12 @@ void SDLWindow::create(const Menge::String& name, unsigned int width, unsigned i
 	glXGetVideoSyncSGI = (int (*)(unsigned int *))SDL_GL_GetProcAddress("glXGetVideoSyncSGI");
 	glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int *))SDL_GL_GetProcAddress("glXWaitVideoSyncSGI");
 
-	/*GLenum err = glewInit();
+	GLenum err = glewInit();
 
 	if (GLEW_OK != err)	
 	{
 
-	}*/
+	}
 	printf( (const char*)glGetString( GL_VERSION ) );
 	printf( (const char*)glGetString( GL_EXTENSIONS ) );
 

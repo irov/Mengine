@@ -24,7 +24,7 @@ namespace Menge
 	bool InputEngine::initialize( WindowHandle _winHandle )
 	{
 		// хак для запуска SDL. если хэндл нулевой то OIS не инитить. 
-		m_isActive = _winHandle ? true : false;
+		//m_isActive = _winHandle ? true : false;
 
 		bool result = true;
 		

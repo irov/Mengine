@@ -35,8 +35,8 @@ OGLTexture::OGLTexture(const Menge::String& _name, std::size_t _width, std::size
 //	glGenBuffers(1, &m_bufferId);
 
 	glGenBuffers(1, &m_bufferId);
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_EXT, m_bufferId);
-	glBufferData(GL_PIXEL_UNPACK_BUFFER_EXT, m_width*m_height*4, NULL, GL_STREAM_DRAW);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferId);
+	glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, m_width*m_height*4, NULL, GL_STREAM_DRAW);
 	//glBindBuffer(GL_PIXEL_UNPACK_BUFFER_EXT, 0);
 
 	//glBufferData( GL_PIXEL_UNPACK_BUFFER_ARB, 0, NULL, GL_STREAM_DRAW );
@@ -98,18 +98,21 @@ void OGLTexture::load( const Menge::TextureDesc & _desc )
 
 	glGenTextures(1,&m_texture);
 
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_EXT, 0);
+	//glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 
-	glBindTexture(GL_TEXTURE_2D,m_texture);
+	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,m_texture);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_RECTANGLE_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, _desc.width,_desc.height, 0, m_glInternalFormat,m_glPixelType,_desc.buffer);
-
-	glGenBuffers(1, &m_bufferId);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, GL_RGBA8, _desc.width,_desc.height, 0, m_glInternalFormat,m_glPixelType,_desc.buffer);
+	GLenum error = glGetError();
+	if( error != GL_NO_ERROR ) printf( "Texture error\n" );
+	//glGenBuffers(1, &m_bufferId);
 
 	m_name = _desc.name;
 	m_width = _desc.width;
@@ -134,14 +137,14 @@ const Menge::String & OGLTexture::getDescription() const
 //////////////////////////////////////////////////////////////////////////
 unsigned char* OGLTexture::lock( int* _pitch, bool _readOnly )
 {
-	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_EXT, m_bufferId );
+	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferId );
 
 	if( _readOnly )
 	{
-		glBufferData( GL_PIXEL_UNPACK_BUFFER_EXT, 0, NULL, 0 );
+		glBufferData( GL_PIXEL_UNPACK_BUFFER_ARB, 0, NULL, 0 );
 	}
 
-	glBufferData(GL_PIXEL_UNPACK_BUFFER_EXT, m_width*m_height*4, NULL, GL_STREAM_DRAW);
+	glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, m_width*m_height*4, NULL, GL_STREAM_DRAW);
 
 	void * pixels = glMapBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY );
 
@@ -152,8 +155,8 @@ unsigned char* OGLTexture::lock( int* _pitch, bool _readOnly )
 //////////////////////////////////////////////////////////////////////////
 void OGLTexture::unlock()
 {
-	glBindBufferARB( GL_PIXEL_UNPACK_BUFFER_EXT, m_bufferId );
-	glUnmapBufferARB( GL_PIXEL_UNPACK_BUFFER_EXT );
+	glBindBufferARB( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferId );
+	glUnmapBufferARB( GL_PIXEL_UNPACK_BUFFER_ARB );
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width,m_height, 0, m_glInternalFormat,m_glPixelType,0);
 }
 //////////////////////////////////////////////////////////////////////////

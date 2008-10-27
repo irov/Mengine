@@ -324,33 +324,37 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 	quad[0].pos[1] = _renderVertex[1];
 	quad[0].pos[2] = m_layer;
 	quad[0].col = _color;
+	quad[0].n[0] = 0.0f; quad[0].n[1] = 0.0f; quad[0].n[2] = 1.0f;
 
 	quad[1].pos[0] = _renderVertex[2];
 	quad[1].pos[1] = _renderVertex[3];
 	quad[1].pos[2] = m_layer;
 	quad[1].col = _color;
+	quad[1].n[0] = 0.0f; quad[0].n[1] = 0.0f; quad[0].n[2] = 1.0f;
 
 	quad[2].pos[0] = _renderVertex[4];
 	quad[2].pos[1] = _renderVertex[5];
 	quad[2].pos[2] = m_layer;
 	quad[2].col = _color;
+	quad[2].n[0] = 0.0f; quad[0].n[1] = 0.0f; quad[0].n[2] = 1.0f;
 
 	quad[3].pos[0] = _renderVertex[6];
 	quad[3].pos[1] = _renderVertex[7];
 	quad[3].pos[2] = m_layer;
 	quad[3].col = _color;
+	quad[3].n[0] = 0.0f; quad[0].n[1] = 0.0f; quad[0].n[2] = 1.0f;
 
-	quad[0].uv[0] = _uv[0];
-	quad[0].uv[1] = _uv[1];
+	quad[0].uv[0] = _uv[0] * _image->getWidth();
+	quad[0].uv[1] = _uv[1] * _image->getHeight();
 
-	quad[1].uv[0] = _uv[2];
-	quad[1].uv[1] = _uv[1];
+	quad[1].uv[0] = _uv[2] * _image->getWidth();
+	quad[1].uv[1] = _uv[1] * _image->getHeight();
 
-	quad[2].uv[0] = _uv[2];
-	quad[2].uv[1] = _uv[3];
+	quad[2].uv[0] = _uv[2] * _image->getWidth();
+	quad[2].uv[1] = _uv[3] * _image->getHeight();
 
-	quad[3].uv[0] = _uv[0];
-	quad[3].uv[1] = _uv[3];
+	quad[3].uv[0] = _uv[0] * _image->getWidth();
+	quad[3].uv[1] = _uv[3] * _image->getHeight();
 
 	Gfx_RenderQuad(quad,tex->getGLTexture(),srcBlend,dstBlend);
 }
@@ -430,7 +434,7 @@ void OGLRenderSystem::beginScene()
 {
 	m_layer = 1.0f;
 
-	glClearColor(1,1,1,1.0f);
+	glClearColor(0.0f,0.0f,0.0f,1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	n_prim = 0;
 }

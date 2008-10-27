@@ -57,7 +57,7 @@ void OGLRenderSystem::_glEnable2D()
 	glDisable(GL_LIGHTING);  
 
 	glEnable(GL_BLEND);
-	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_RECTANGLE_ARB);
 	/*
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_ALPHA_TEST_REF,)
@@ -175,7 +175,7 @@ void OGLRenderSystem::Gfx_RenderQuad(const Menge::TVertex * quad, GLint tex, GLi
 
 		if( tex != m_curTexture )
 		{
-			glBindTexture(GL_TEXTURE_2D, tex);
+			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
 			m_curTexture = tex;
 		}
 	}

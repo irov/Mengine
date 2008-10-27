@@ -15,6 +15,7 @@
 namespace Menge
 {
 	class Application;
+	class OSXTimer;
 	
 	class MacOSApplication
 		: public ApplicationInterface
@@ -28,6 +29,7 @@ namespace Menge
 		void loop();
 		void stop() override;
 		
+		TimerInterface* getTimer() const;
 		WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 		std::size_t getDesktopWidth() const override;
 		std::size_t getDesktopHeight() const override;
@@ -46,6 +48,9 @@ namespace Menge
 		StringA m_commandLine;
 		Application* m_menge;
 		LogSystemInterface* m_logSystem;
+		bool m_running;
+		bool m_handleMouse;
+		OSXTimer* m_timer;
 	};
 }	// namespace Menge
 		

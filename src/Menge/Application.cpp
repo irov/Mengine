@@ -418,9 +418,9 @@ namespace Menge
 		m_inputSystem->regHandle( m_handler );
 
 #	if	MENGE_PARTICLES	== (1)
-		MENGE_LOG( "Initializing Particle System..." );
-		initInterfaceSystem( &m_particleSystem );
-		this->setParticleSystem( m_particleSystem );
+//		MENGE_LOG( "Initializing Particle System..." );
+//		initInterfaceSystem( &m_particleSystem );
+//		this->setParticleSystem( m_particleSystem );
 #	endif
 		
 		MENGE_LOG( "Inititalizing Physics2D System..." );
@@ -474,7 +474,7 @@ namespace Menge
 
 		MENGE_LOG( "Creating Resource Factory..." );
 		RESOURCE_FACTORY( ResourceAnimation );
-		RESOURCE_FACTORY( ResourceCapsuleController );
+		//RESOURCE_FACTORY( ResourceCapsuleController );
 		RESOURCE_FACTORY( ResourceEmitterContainer );
 		RESOURCE_FACTORY( ResourceFont );
 		RESOURCE_FACTORY( ResourceImageAtlas );
@@ -485,10 +485,10 @@ namespace Menge
 		RESOURCE_FACTORY( ResourceImageSet );
 		RESOURCE_FACTORY( ResourceVideo );
 		RESOURCE_FACTORY( ResourceMesh );
-		RESOURCE_FACTORY( ResourceSkeleton );
-		RESOURCE_FACTORY( ResourcePhysicBoxGeometry );
-		RESOURCE_FACTORY( ResourcePhysicConcaveGeometry );
-		RESOURCE_FACTORY( ResourcePhysicConvexGeometry );
+		//RESOURCE_FACTORY( ResourceSkeleton );
+		//RESOURCE_FACTORY( ResourcePhysicBoxGeometry );
+		//RESOURCE_FACTORY( ResourcePhysicConcaveGeometry );
+		//RESOURCE_FACTORY( ResourcePhysicConvexGeometry );
 		RESOURCE_FACTORY( ResourcePlaylist );
 		RESOURCE_FACTORY( ResourceSound );
 		RESOURCE_FACTORY( ResourceTileMap );
@@ -544,7 +544,7 @@ namespace Menge
 		releaseInterfaceSystem( m_renderSystem );
 		releaseInterfaceSystem( m_physicSystem2D );
 #	if	MENGE_PARTICLES	== (1)
-		releaseInterfaceSystem( m_particleSystem );
+//		releaseInterfaceSystem( m_particleSystem );
 #	endif
 		releaseInterfaceSystem( m_inputSystem );
 		releaseInterfaceSystem( m_fileSystem );

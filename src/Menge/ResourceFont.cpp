@@ -94,7 +94,7 @@ namespace Menge
 
 		bool result = parseFontdef( stream );
 
-		if( result == false )
+		if( result == false || m_image == NULL )
 		{
 			return false;
 		}

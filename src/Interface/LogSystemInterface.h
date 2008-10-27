@@ -19,7 +19,7 @@ namespace Menge
 	class LogSystemInterface
 	{
 	public:
-		virtual ~LogSystemInterface() {};
+		//virtual ~LogSystemInterface() {};
 
 		virtual void setVerboseLevel( EMessageLevel _level ) = 0;
 		virtual void logMessage( const StringA& _message, EMessageLevel _level = LM_LOG ) = 0;

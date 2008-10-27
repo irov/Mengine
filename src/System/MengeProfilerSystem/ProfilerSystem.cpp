@@ -77,7 +77,7 @@ void MengeProfileSystem::setTimer(Menge::TimerInterface * _timer)
 //////////////////////////////////////////////////////////////////////////
 void MengeProfileSystem::addResourceToProfile(const Menge::String & _name)
 {
-	ProfileResourceMap::iterator it = m_profileResourceMap.find(_name);
+	/*ProfileResourceMap::iterator it = m_profileResourceMap.find(_name);
 
 	if (it == m_profileResourceMap.end()) 
 	{
@@ -118,7 +118,7 @@ void MengeProfileSystem::addResourceToProfile(const Menge::String & _name)
 
 	m_totalCompiled++;
 
-	m_currentCompiledResource = _name;
+	m_currentCompiledResource = _name;*/
 }
 //////////////////////////////////////////////////////////////////////////
 int MengeProfileSystem::getTotalReleased() const

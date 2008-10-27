@@ -24,7 +24,7 @@ namespace Menge
 	class SoundSourceInterface
 	{
 	public:
-		virtual ~SoundSourceInterface(){};
+		//virtual ~SoundSourceInterface(){};
 
 	public:
 		virtual void play() = 0;

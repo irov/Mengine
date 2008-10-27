@@ -15,7 +15,7 @@
 
 
 #	include "pybind/pybind.hpp"
-
+//#	include "osdefs.h"
 
 #	include <iostream>
 
@@ -110,7 +110,7 @@ namespace Menge
 		++it)
 		{
 			path_packet += (*it);
-			path_packet += ';';
+			path_packet += DELIM;
 		}
 
 		pybind::set_syspath( path_packet.c_str() );

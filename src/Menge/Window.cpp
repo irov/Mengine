@@ -207,4 +207,17 @@ namespace Menge
 		invalidateQuads();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f Window::getClientSize() const
+	{
+		return m_clientSize;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec2f Window::getWindowSize() const
+	{
+		mt::vec2f windowSize = m_clientSize;
+		windowSize += m_initialSizes[1];
+		windowSize += m_initialSizes[5];
+		return windowSize;
+	}
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

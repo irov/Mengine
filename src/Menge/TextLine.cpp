@@ -27,6 +27,7 @@ namespace Menge
 
 			m_length += static_cast<int>( charData.ratio * m_textField.getHeight() ) + m_textField.getCharOffset();
 		}
+		m_length -= m_textField.getCharOffset();
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	float TextLine::getLength() const

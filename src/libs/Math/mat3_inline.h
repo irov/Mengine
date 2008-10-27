@@ -34,7 +34,7 @@ namespace	mt
 		/*v0 = _rhs.v0;
 		v1 = _rhs.v1;
 		v2 = _rhs.v2;*/
-		std::copy( _rhs.m, _rhs.m+16, &(m[0]) );
+		std::copy( _rhs.m, _rhs.m+9, &(m[0]) );
 		return *this;
 	}	
 

@@ -15,7 +15,7 @@ public:
 	HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete = true );
 	~HGETexture();
 
-	void load( const Menge::TextureDesc& _desc );
+	void load( const Menge::String& _name, std::size_t _width, std::size_t _height, const Menge::TextureDesc& _desc );
 	void unload();
 	void restore( HTEXTURE _htex );
 	std::size_t getWidth() const override;

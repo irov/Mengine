@@ -400,6 +400,7 @@ HGE_Impl::HGE_Impl()
 	bZBuffer=false;
 	bTextureFilter=true;
 	hwndParent=0;
+	m_supportNPOT = false;
 }
 
 void HGE_Impl::_PostError( Menge::TCharA *error )

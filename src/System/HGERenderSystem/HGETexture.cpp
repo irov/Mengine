@@ -59,7 +59,7 @@ HGETexture::~HGETexture()
 	unload();
 }
 //////////////////////////////////////////////////////////////////////////
-void HGETexture::load( const Menge::TextureDesc & _desc )
+void HGETexture::load( const Menge::String& _name, std::size_t _width, std::size_t _height, const Menge::TextureDesc& _desc )
 {
 	m_name = _desc.name;
 	m_hTexture = m_hge->Texture_Create( (int)_desc.width, (int)_desc.height );

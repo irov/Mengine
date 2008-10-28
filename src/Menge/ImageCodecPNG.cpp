@@ -351,15 +351,12 @@ namespace Menge
 		png_read_update_info(png_ptr, info_ptr);
 
 		int row_stride = width * pixel_depth / 8;
-		if( _options == 0 )
+		if( _options & DF_CUSTOM_PITCH > 0 )
 		{
-			for( png_uint_32 i = 0; i <height; i++ )
-			{
-				png_read_row( png_ptr, readBuffer, png_bytep_NULL );
-				readBuffer += row_stride;
-			}
+			row_stride = _options >> 16;
 		}
-		else if( _options == DF_READ_ALPHA_ONLY )
+		
+		if( _options & DF_READ_ALPHA_ONLY > 0 )
 		{
 			unsigned char* rowBuffer = new unsigned char[row_stride];
 			for( png_uint_32 i = 0; i <height; i++ )
@@ -372,6 +369,14 @@ namespace Menge
 				readBuffer += row_stride * 4;
 			}
 			delete[] rowBuffer;
+		}
+		else
+		{
+			for( png_uint_32 i = 0; i <height; i++ )
+			{
+				png_read_row( png_ptr, readBuffer, png_bytep_NULL );
+				readBuffer += row_stride;
+			}
 		}
 
 		if( png_ptr )
@@ -394,42 +399,10 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageCodecPNG::seek( std::streamoff _pos )
-	{
-		// streaming not implemented
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageCodecPNG::skip( std::streampos _count )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::streampos ImageCodecPNG::tell() const
-	{
-		// streaming not implemented
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ImageCodecPNG::eof() const
 	{
 		// streaming not implemented
 		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	std::streamsize ImageCodecPNG::size() const
-	{
-		// streaming not implemented
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void* ImageCodecPNG::getBuffer()
-	{
-		// streaming not implemented
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageCodecPNG::setFreeOnClose( bool _free )
-	{
-		// streaming not implemented
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int ImageCodecPNG::sync( float _timing )

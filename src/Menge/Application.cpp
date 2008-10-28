@@ -418,9 +418,9 @@ namespace Menge
 		m_inputSystem->regHandle( m_handler );
 
 #	if	MENGE_PARTICLES	== (1)
-//		MENGE_LOG( "Initializing Particle System..." );
-//		initInterfaceSystem( &m_particleSystem );
-//		this->setParticleSystem( m_particleSystem );
+		MENGE_LOG( "Initializing Particle System..." );
+		initInterfaceSystem( &m_particleSystem );
+		this->setParticleSystem( m_particleSystem );
 #	endif
 		
 		MENGE_LOG( "Inititalizing Physics2D System..." );
@@ -544,7 +544,7 @@ namespace Menge
 		releaseInterfaceSystem( m_renderSystem );
 		releaseInterfaceSystem( m_physicSystem2D );
 #	if	MENGE_PARTICLES	== (1)
-//		releaseInterfaceSystem( m_particleSystem );
+		releaseInterfaceSystem( m_particleSystem );
 #	endif
 		releaseInterfaceSystem( m_inputSystem );
 		releaseInterfaceSystem( m_fileSystem );

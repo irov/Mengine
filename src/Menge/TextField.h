@@ -124,6 +124,7 @@ namespace Menge
 		void setCenterAlign( bool _centerAlign );
 
 		float getCharOffset() const;
+		void setCharOffset( float _offset );
 
 	public:
 		void loader( XmlElement * _xml ) override;

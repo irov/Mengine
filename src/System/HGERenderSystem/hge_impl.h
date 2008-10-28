@@ -94,6 +94,7 @@ public:
 	virtual void		CALL	Gfx_Prepare3D();
 	virtual void		CALL	Gfx_SetBlendState( hgeBlendState _srcBlend, hgeBlendState _dstBlend );
 	virtual void		CALL	Gfx_SetListener( Gfx_Listener* _listener );
+	virtual bool		CALL	Gfx_SupportNPOT() const;
 
 	virtual HTARGET		CALL	Target_Create(int width, int height, bool zbuffer);
 	virtual void		CALL	Target_Free(HTARGET target);
@@ -190,6 +191,7 @@ public:
 	IDirect3DSurface8*	m_syncTargets[2];
 	IDirect3DTexture8*	m_syncTempTex;
 	IDirect3DSurface8*	m_syncTemp;
+	bool m_supportNPOT;
 
 private:
 	HGE_Impl();

@@ -1,21 +1,7 @@
 #	pragma once
 
-//	Target Render System //
-#	define RS_D3D7	(1)
-#	define RS_D3D9	(2)
-#	define RS_OGL	(3)
-
-#	define	RENDER_SYSTEM	RS_D3D9
-
 // Build-in particle system
 #	define MENGE_PARTICLES	(1)
-
-//	Target Platform
-#	define MENGE_PLATFORM_WINDOWS		(1)
-#	define MENGE_PLATFORM_APPLE			(2)
-#	define MENGE_PLATFORM_LINUX			(3)
-
-#	define MENGE_PLATFORM	MENGE_PLATFORM_WINDOWS
 
 //	Endian type
 #	define MENGE_ENDIAN_LITTLE	(1)

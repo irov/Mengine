@@ -8,7 +8,7 @@
 #	include "FileStreamOutStream.h"
 
 #	include "shlobj.h"
-#	include <Config/Config.h>
+#	include <Config/Platform.h>
 
 #	include <direct.h>
 #	include <ShellAPI.h>
@@ -173,7 +173,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const char * FileSystem::platformBundlePath()
 	{
-#if MENGE_PLATFORM == MENGE_PLATFORM_APPLE
+#if MENGE_PLATFORM_MACOSX
 #	include <CoreFoundation/CoreFoundation.h>
 		char path[1024];
 		CFBundleRef mainBundle = CFBundleGetMainBundle();    

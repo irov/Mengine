@@ -23,13 +23,13 @@ namespace Menge
 		void finish() override;
 
 		std::streamsize read( void* _buf, std::streamsize _count ) override;
-		void seek( std::streamoff _pos ) override;
+		bool eof() const override;
+/*		void seek( std::streamoff _pos ) override;
 		void skip( std::streampos _count ) override;
 		std::streampos tell() const override;
-		bool eof() const override;
 		std::streamsize size() const override;
 		void* getBuffer() override;
-		void setFreeOnClose( bool _free ) override;
+		void setFreeOnClose( bool _free ) override;*/
 
 	protected:
 		DataStreamInterface* m_stream;

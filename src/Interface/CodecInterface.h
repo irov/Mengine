@@ -7,7 +7,7 @@
 namespace Menge
 {
 	class CodecInterface
-		: public DataStreamInterface
+		//: public DataStreamInterface
 	{
 	public:
 		class CodecData 
@@ -26,6 +26,9 @@ namespace Menge
 		virtual bool start( DataStreamInterface* _inputData, CodecData* _codecData ) = 0;
 		virtual int sync( float _timing ) = 0;
 		virtual void finish() = 0;
+		virtual std::streamsize read( void* _buf, std::streamsize _count ) = 0;
+		virtual bool eof() const = 0;
+
 
 	};
 

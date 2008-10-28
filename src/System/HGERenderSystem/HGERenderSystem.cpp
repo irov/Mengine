@@ -213,10 +213,10 @@ Menge::RenderImageInterface * HGERenderSystem::createRenderTargetImage( const Me
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::RenderImageInterface * HGERenderSystem::loadImage( const Menge::TextureDesc& _desc )
+Menge::RenderImageInterface * HGERenderSystem::loadImage( const Menge::String& _name, std::size_t _width, std::size_t _height, const Menge::TextureDesc& _desc )
 {
 	HGETexture* texture = new HGETexture( m_hge );
-	texture->load( _desc );
+	texture->load( _name, _width, _height, _desc );
 	m_textureMap.insert( std::make_pair( _desc.name, static_cast<Menge::RenderImageInterface*>( texture ) ) );
 	texture->incRef();
 	return texture;
@@ -662,5 +662,10 @@ void HGERenderSystem::onRestoreDevice()
 			it->second.texture->restore( htex );
 		}
 	}
+}
+//////////////////////////////////////////////////////////////////////////
+bool HGERenderSystem::supportNPOT()
+{
+	return m_hge->Gfx_SupportNPOT();
 }
 //////////////////////////////////////////////////////////////////////////

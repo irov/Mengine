@@ -360,7 +360,7 @@ namespace Menge
 		// create render target image
 		virtual RenderImageInterface * createRenderTargetImage( const String & _name, float _width, float _height ) = 0;
 		// загрузка изображения
-		virtual RenderImageInterface * loadImage( const TextureDesc& _desc ) = 0;
+		virtual RenderImageInterface * loadImage( const String& _name, std::size_t _width, std::size_t _height, const TextureDesc& _desc ) = 0;
 		// удаления изображения
 		virtual void releaseImage( RenderImageInterface * _image ) = 0;
 		//
@@ -423,6 +423,7 @@ namespace Menge
 		virtual int  getNumDIP() const = 0;
 		virtual void renderText(const String & _text, const float * _pos, unsigned long _color) = 0;
 
+		virtual bool supportNPOT() = 0;
 	};
 }
 

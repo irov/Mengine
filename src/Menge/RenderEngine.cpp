@@ -132,12 +132,6 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface* RenderEngine::loadImage( const TextureDesc & _desc )
-	{
-		RenderImageInterface * image = m_interface->loadImage( _desc );
-		return image;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( RenderImageInterface* _image, const String& _filename )
 	{
 		String strExt;
@@ -268,6 +262,17 @@ namespace Menge
 
 			stream->seek( 0 );
 
+			std::size_t image_width = data.width;
+			std::size_t image_height = data.height;
+			if( ( data.width & ( data.width - 1 ) ) != 0
+				|| ( data.height & ( data.height - 1 ) ) != 0 )
+			{
+				bool npot = m_interface->supportNPOT();
+				if( npot == false )	// we're all gonna die
+				{
+
+				}
+			}
 			textureDesc.buffer = new unsigned char[data.size];
 
 			res = codec->decode( stream, (unsigned char*)textureDesc.buffer, data.flags );
@@ -290,7 +295,7 @@ namespace Menge
 
 			Holder<FileEngine>::hostage()->closeStream( stream );
 
-			image = loadImage( textureDesc );
+			image = m_interface->loadImage( _filename, image_width, image_height, textureDesc );
 
 			delete[] textureDesc.buffer;
 			if( image == 0 )

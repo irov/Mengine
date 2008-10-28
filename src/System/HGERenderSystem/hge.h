@@ -294,6 +294,7 @@ public:
 	virtual void		CALL	Gfx_Prepare3D() = 0;
 	virtual void		CALL	Gfx_SetBlendState( hgeBlendState _srcBlend, hgeBlendState _dstBlend ) = 0;
 	virtual void		CALL	Gfx_SetListener( Gfx_Listener* _listener ) = 0;
+	virtual bool		CALL	Gfx_SupportNPOT() const = 0;
 
 	virtual HTARGET		CALL	Target_Create(int width, int height, bool zbuffer) = 0;
 	virtual void		CALL	Target_Free(HTARGET target) = 0;

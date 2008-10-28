@@ -898,6 +898,12 @@ bool HGE_Impl::_GfxInit()
 	D3DXMatrixIdentity( &matView );
 	D3DXMatrixIdentity( &matWorld );
 
+	D3DCAPS8 caps;
+	pD3D->GetDeviceCaps( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, &caps );
+	if( ( caps.TextureCaps & D3DPTEXTURECAPS_POW2 ) == 0 )
+	{
+		m_supportNPOT = true;
+	}
 	return true;
 }
 
@@ -1665,4 +1671,9 @@ void HGE_Impl::syncCPU_()
 	m_syncTemp->UnlockRect();
 
 	pD3DDevice->EndScene();
+}
+
+bool HGE_Impl::Gfx_SupportNPOT() const
+{
+	return m_supportNPOT;
 }

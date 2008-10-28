@@ -3,8 +3,9 @@
 
 //#	include "SDL_opengl.h"
 
-#	include "OGLRenderSystem.h"
+//#	include "OGLRenderSystem.h"
 
+#	include "PBO.h"
 //#include <GL/gl.h>
 //#include <GL/glext.h>
 //#include <GL/glut.h>
@@ -17,9 +18,10 @@
 class OGLTexture : public Menge::RenderImageInterface
 {
 public:
-	OGLTexture();
+	OGLTexture(GLint _textureType);
+	OGLTexture(const Menge::String& _name, std::size_t _width, std::size_t _height, GLint _textureType );
+
 	~OGLTexture();
-	OGLTexture(const Menge::String& _name, std::size_t _width, std::size_t _height );
 public:
 	void load( const Menge::TextureDesc & _desc );
 	std::size_t getWidth() const override;
@@ -35,11 +37,14 @@ public:
 	GLuint getGLTexture() const;
 
 private:
-	GLuint m_bufferId;
+
+	CPBO	m_PBO;
+
+	GLint m_textureType;
+	//GLuint m_bufferId;
 	GLint m_glInternalFormat;
 	GLenum m_glPixelFormat;
 	GLenum m_glPixelType;
-	unsigned char * m_buffer;
 
 	GLuint m_texture;
 	int m_ref;

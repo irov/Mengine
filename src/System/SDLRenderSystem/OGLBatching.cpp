@@ -57,7 +57,7 @@ void OGLRenderSystem::_glEnable2D()
 	glDisable(GL_LIGHTING);  
 
 	glEnable(GL_BLEND);
-	glEnable(GL_TEXTURE_RECTANGLE_ARB);
+	glEnable(m_textureType);
 	/*
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_ALPHA_TEST_REF,)
@@ -69,7 +69,7 @@ void OGLRenderSystem::_glEnable3D()
 {
 	renderBatch();
 
-	glEnable(GL_TEXTURE_2D);
+	glEnable(m_textureType);
 	glEnable(GL_DEPTH_TEST);
 	//glFrontFace(GL_CW);
 	glDisable(GL_LIGHTING);  
@@ -90,7 +90,7 @@ void OGLRenderSystem::_glEnable3D()
 	/*glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(m_glProjMat);
 
-	glEnable(GL_TEXTURE_2D);
+	glEnable(m_textureType);
 	glEnable(GL_BLEND);
 
 	glEnable( GL_DEPTH_TEST );  
@@ -175,7 +175,7 @@ void OGLRenderSystem::Gfx_RenderQuad(const Menge::TVertex * quad, GLint tex, GLi
 
 		if( tex != m_curTexture )
 		{
-			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
+			glBindTexture(m_textureType, tex);
 			m_curTexture = tex;
 		}
 	}
@@ -205,7 +205,7 @@ void OGLRenderSystem::Gfx_RenderTriple(const Menge::TVertex *quad, GLint tex, GL
 
 		if( tex != m_curTexture )
 		{
-			glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
+			glBindTexture(m_textureType, tex);
 			m_curTexture = tex;
 		}
 	}

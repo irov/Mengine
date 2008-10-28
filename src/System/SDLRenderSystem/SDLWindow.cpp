@@ -1,5 +1,5 @@
 #include "SDLWindow.h"
-
+#   include <Config/Platform.h>
 
 /*#if MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
 //#   include <windows.h>
@@ -105,12 +105,14 @@ void SDLWindow::create(const Menge::String& name, unsigned int width, unsigned i
 	glXGetVideoSyncSGI = (int (*)(unsigned int *))SDL_GL_GetProcAddress("glXGetVideoSyncSGI");
 	glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int *))SDL_GL_GetProcAddress("glXWaitVideoSyncSGI");
 
-	GLenum err = glewInit();
+	#if MENGE_PLATFORM_WIN32
+		GLenum err = glewInit();
+		if (GLEW_OK != err)	
+		{
 
-	if (GLEW_OK != err)	
-	{
+		}
+	#endif
 
-	}
 	printf( (const char*)glGetString( GL_VERSION ) );
 	printf( (const char*)glGetString( GL_EXTENSIONS ) );
 

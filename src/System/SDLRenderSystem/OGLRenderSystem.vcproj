@@ -193,6 +193,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\PBO.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\PBO.h"
+			>
+		</File>
+		<File
 			RelativePath=".\SDLWindow.cpp"
 			>
 		</File>

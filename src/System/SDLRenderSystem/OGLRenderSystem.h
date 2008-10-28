@@ -32,7 +32,11 @@ public:
 	void setWorldMatrix( const float * _world ) override;
 	Menge::RenderImageInterface * createImage( const Menge::String & _name, float _width, float _height ) override;
 	Menge::RenderImageInterface * createRenderTargetImage( const Menge::String & _name, float _width, float _height ) override;
-	Menge::RenderImageInterface * loadImage( const Menge::TextureDesc& _desc ) override;
+
+	Menge::RenderImageInterface * loadImage( const Menge::String& _name, std::size_t _width, std::size_t _height, const Menge::TextureDesc& _desc ) override;
+
+	bool supportNPOT() override;
+
 	void releaseImage( Menge::RenderImageInterface * _image ) override;
 	Menge::RenderImageInterface* getImage( const Menge::String& _desc ) const override;
 
@@ -93,6 +97,9 @@ public:
 	void renderText(const Menge::String & _text, const float * _pos, unsigned long _color) override;
 
 private:
+
+	GLint m_textureType;
+	GLint _getTextureType();
 
 	SDLWindow m_SDLWindow;
 

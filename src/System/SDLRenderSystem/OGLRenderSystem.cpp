@@ -63,6 +63,13 @@ bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	}
 
 	m_viewMatrix[0] = m_viewMatrix[5] = m_viewMatrix[10] = m_viewMatrix[15] = 1;
+
+	m_textureType = GL_TEXTURE_2D;
+
+	#if MENGE_PLATFORM_MACOSX
+	m_textureType = GL_TEXTURE_RECTANGLE_ARB;
+	#endif
+
 	return initialized;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -149,17 +156,17 @@ const std::vector<int> & OGLRenderSystem::getResolutionList()
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const float * _rect /*= 0 */ )
 {
-	glReadBuffer(GL_FRONT);
-
 	int pitch = 0;
 
 	unsigned char * buffer = _image->lock(&pitch,false);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (GLsizei)_rect[2],
-		(GLsizei)_rect[3], 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glReadBuffer(GL_FRONT);
 
-	glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, (GLint)_rect[0], (GLint)_rect[1],
-		(GLsizei)_rect[2], (GLsizei)_rect[3]);
+    glReadPixels((GLint)_rect[0], (GLint)_rect[1],
+		(GLsizei)_rect[2], (GLsizei)_rect[3],
+                GL_BGRA,
+                GL_UNSIGNED_INT_8_8_8_8_REV,
+               buffer);
 
 	_image->unlock();
 }
@@ -244,10 +251,15 @@ void OGLRenderSystem::setWorldMatrix( const float * _world )
 	glLoadMatrixf(mogl);
 }
 //////////////////////////////////////////////////////////////////////////
+GLint OGLRenderSystem::_getTextureType()
+{
+	return m_textureType;
+}
+//////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String & _name,
 														   float _width, float _height )
 {
-	OGLTexture * texture = new OGLTexture(_name,_width, _height);
+	OGLTexture * texture = new OGLTexture(_name,_width, _height, _getTextureType());
 	m_textureMap.insert( std::make_pair( _name, static_cast<Menge::RenderImageInterface*>( texture ) ) );
 	texture->incRef();
 	return texture;
@@ -259,9 +271,14 @@ Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Me
 	return 0;
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::TextureDesc& _desc )
+bool OGLRenderSystem::supportNPOT()
 {
-	OGLTexture * texture = new OGLTexture();
+	return true; // ? or ??
+}
+//////////////////////////////////////////////////////////////////////////
+Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::String& _name, std::size_t _width, std::size_t _height, const Menge::TextureDesc& _desc )
+{
+	OGLTexture * texture = new OGLTexture(_getTextureType());
 	texture->load(_desc);
 	m_textureMap.insert( std::make_pair( _desc.name, texture ) );
 	texture->incRef();
@@ -352,17 +369,26 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 	quad[3].n[1] = 0.0f; 
 	quad[3].n[2] = 1.0f;
 
-	quad[0].uv[0] = _uv[0] * _image->getWidth();
-	quad[0].uv[1] = _uv[1] * _image->getHeight();
+	float s = 1.f;
+	float t = 1.f;
 
-	quad[1].uv[0] = _uv[2] * _image->getWidth();
-	quad[1].uv[1] = _uv[1] * _image->getHeight();
+	if(m_textureType == GL_TEXTURE_RECTANGLE_ARB)
+	{
+		s = _image->getWidth();
+		t = _image->getHeight();
+	}
 
-	quad[2].uv[0] = _uv[2] * _image->getWidth();
-	quad[2].uv[1] = _uv[3] * _image->getHeight();
+	quad[0].uv[0] = _uv[0] * s;
+	quad[0].uv[1] = _uv[1] * t;
 
-	quad[3].uv[0] = _uv[0] * _image->getWidth();
-	quad[3].uv[1] = _uv[3] * _image->getHeight();
+	quad[1].uv[0] = _uv[2] * s;
+	quad[1].uv[1] = _uv[1] * t;
+
+	quad[2].uv[0] = _uv[2] * s;
+	quad[2].uv[1] = _uv[3] * t;
+
+	quad[3].uv[0] = _uv[0] * s;
+	quad[3].uv[1] = _uv[3] * t;
 
 	Gfx_RenderQuad(quad,tex->getGLTexture(),srcBlend,dstBlend);
 }
@@ -414,14 +440,23 @@ void OGLRenderSystem::renderTriple(
 	quad[2].n[1] = 0.0f; 
 	quad[2].n[2] = 1.0f;
 
-	quad[0].uv[0] = _uv0[0] * _image->getWidth();
-	quad[0].uv[1] = _uv0[1] * _image->getHeight();
+	float s = 1.f;
+	float t = 1.f;
 
-	quad[1].uv[0] = _uv1[0] * _image->getWidth();
-	quad[1].uv[1] = _uv1[1] * _image->getHeight();
+	if(m_textureType == GL_TEXTURE_RECTANGLE_ARB)
+	{
+		s = _image->getWidth();
+		t = _image->getHeight();
+	}
 
-	quad[2].uv[0] = _uv2[0] * _image->getWidth();
-	quad[2].uv[1] = _uv2[1] * _image->getHeight();
+	quad[0].uv[0] = _uv0[0] * s;
+	quad[0].uv[1] = _uv0[1] * t;
+
+	quad[1].uv[0] = _uv1[0] * s;
+	quad[1].uv[1] = _uv1[1] * t;
+
+	quad[2].uv[0] = _uv2[0] * s;
+	quad[2].uv[1] = _uv2[1] * t;
 
 	Gfx_RenderTriple(quad,tex->getGLTexture(),srcBlend,dstBlend);
 }
@@ -435,7 +470,7 @@ void OGLRenderSystem::renderLine( unsigned int _color,
 	int b = (_color) & 0xff;
 	int a = (_color>>24) & 0xff;
 
-	glDisable(GL_TEXTURE_2D);
+	glDisable(m_textureType);
 
 	glBegin(GL_LINES);
 
@@ -444,7 +479,7 @@ void OGLRenderSystem::renderLine( unsigned int _color,
 	glVertex2f(_end[0],_end[1]);
 	glEnd();
 
-	glEnable(GL_TEXTURE_2D);
+	glEnable(m_textureType);
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::beginScene()
@@ -566,7 +601,7 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 		return;
 	}
 
-	glBindTexture(GL_TEXTURE_2D, tex->getGLTexture());
+	glBindTexture(m_textureType, tex->getGLTexture());
 
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);

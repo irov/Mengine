@@ -1,6 +1,6 @@
 #	include "OSXTimer.h"
-
-#ifdef MENGE_PLATFORM == MENGE_PLATFORM_WINDOWS
+#	include <Config/Platform.h>
+#if MENGE_PLATFORM_WIN32
 	static time_t gtc_base = 0;
 	static DWORD gtc_last = 0;
 	static time_t last_sec = 0;

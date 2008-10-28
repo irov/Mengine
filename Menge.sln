@@ -100,6 +100,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{A5E5AB
 	EndProjectSection
 	ProjectSection(SolutionItems) = preProject
 		src\Config\Config.h = src\Config\Config.h
+		src\Config\Platform.h = src\Config\Platform.h
 		src\Config\Typedef.h = src\Config\Typedef.h
 	EndProjectSection
 EndProject
@@ -156,6 +157,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OGLRenderSystem", "src\Syst
 	EndProjectSection
 EndProject
 Global
+	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
+		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
@@ -270,8 +274,5 @@ Global
 		{13098B37-D6D0-4E94-ABB1-91E9BF053D6F} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
-	EndGlobalSection
-	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
-		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
 	EndGlobalSection
 EndGlobal

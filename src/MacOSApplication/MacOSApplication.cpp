@@ -10,6 +10,7 @@
 
 #include "MacOSApplication.h"
 #include "OSXTimer.h"
+#include "LoggerConsole.h"
 #include "Menge/Application.h"
 
 #include "Interface/LogSystemInterface.h"
@@ -27,7 +28,7 @@ const Menge::TCharA * config_file = "application.xml";
 	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_ERROR );
 
 #include "SDL/include/SDL.h"
-#include "SDL/include/SDL_opengl.h"
+//#include "SDL/include/SDL_opengl.h"
 namespace Menge
 {
 	MacOSApplication::MacOSApplication( const StringA& _commandLine )
@@ -37,11 +38,21 @@ namespace Menge
 		, m_running( true )
 		, m_handleMouse( true )
 		, m_timer( NULL )
+		, m_loggerConsole( NULL )
+		, m_window( NULL )
+		, m_view( NULL )
+		, m_eventHandler( NULL )
 	{
 	}
 	
 	MacOSApplication::~MacOSApplication()
 	{
+		if( m_logSystem != NULL && m_loggerConsole != NULL )
+		{
+			m_logSystem->unregisterLogger( m_loggerConsole );
+			delete m_loggerConsole;
+			m_loggerConsole = NULL;
+		}
 
 		if( m_menge != NULL )
 		{
@@ -68,14 +79,65 @@ namespace Menge
 		
 		m_logSystem = m_menge->initializeLogSystem();
 		
-		m_logSystem->setVerboseLevel( Menge::LM_MAX );
+		if( m_logSystem != NULL && m_commandLine.find( "-console" ) != StringA::npos )
+		{
+			m_loggerConsole = new LoggerConsole();
+			m_logSystem->registerLogger( m_loggerConsole );
+
+			LOG_ERROR( "LogSystem initialized successfully" );	// log message anyway
+		}
+
+		if( m_logSystem != NULL && m_commandLine.find( "-verbose" ) != StringA::npos )
+		{
+			m_logSystem->setVerboseLevel( LM_MAX );
+
+			LOG( "Verbose logging mode enabled" );
+		}	
+		
 		LOG( "Initializing Mengine..." );
 		if( m_menge->initialize( config_file, m_commandLine.c_str(), true ) == false )
 		{
 			return false;
 		}
-	
-		if( m_menge->createRenderWindow( 0 ) == false )
+		
+		// TODO if fullscreen
+		// {
+		// }
+		// else
+					// create the window rect in global coords
+		const String& projectTitle = m_menge->getProjectTitle();
+		m_window = createWindow_( projectTitle, 1024, 768 );
+            
+		// Get our view
+        HIViewFindByID( HIViewGetRoot( m_window ), kHIViewWindowContentID, &m_view );
+			
+		// Set up our UPP for Window Events
+        EventTypeSpec eventSpecs[] = {
+                {kEventClassWindow, kEventWindowActivated},
+                {kEventClassWindow, kEventWindowDeactivated},
+                {kEventClassWindow, kEventWindowShown},
+                {kEventClassWindow, kEventWindowHidden},
+                {kEventClassWindow, kEventWindowDragCompleted},
+                {kEventClassWindow, kEventWindowBoundsChanged},
+                {kEventClassWindow, kEventWindowExpanded},
+                {kEventClassWindow, kEventWindowCollapsed},
+                {kEventClassWindow, kEventWindowClosed}
+            };
+            
+		EventHandlerUPP handlerUPP = NewEventHandlerUPP( MacOSApplication::s_windowHandler );
+            
+        // Install the standard event handler for the window
+        EventTargetRef target = GetWindowEventTarget(m_window);
+		InstallStandardEventHandler(target);
+            
+        // We also need to install the WindowEvent Handler, we pass along the window with our requests
+        InstallEventHandler( target, handlerUPP, 9, eventSpecs, (void*)this, &m_eventHandler );
+			
+		// Display and select our window
+		ShowWindow( m_window );
+		SelectWindow( m_window );
+			
+		if( m_menge->createRenderWindow( (WindowHandle)m_window ) == false )
 		{
 			return false;
 		}
@@ -84,7 +146,6 @@ namespace Menge
 		{
 			return false;
 		}
-	
 		
 		return true;
 	}
@@ -98,20 +159,12 @@ namespace Menge
 		while( m_running )
 		{
 			//’ј 
-			SDL_Event event;
+			/*SDL_Event event;
 
 			while(SDL_PollEvent(&event))
 			{
 				switch(event.type) 
 				{
-				//case SDL_KEYDOWN:
-				//	m_menge->onKeyEvent( _key_map[event.key.keysym.sym]/*event.key.keysym.sym*/, (char)event.key.keysym.unicode, true );
-				//	break;
-
-				//case SDL_KEYUP:
-				//	m_menge->onKeyEvent( _key_map[event.key.keysym.sym]/*event.key.keysym.sym*/, (char)event.key.keysym.unicode, false );
-				//	break;
-
 				case SDL_ACTIVEEVENT:
 
 					if(event.active.state & SDL_APPACTIVE)
@@ -184,7 +237,20 @@ namespace Menge
 				default:
 					break;
 				}
+			}*/
+			// OSX Message Pump
+			EventRef event = NULL;
+			EventTargetRef targetWindow;
+			targetWindow = GetEventDispatcherTarget();
+    
+			// Grab the next event, process it if it is a window event
+			if( targetWindow && ReceiveNextEvent( 0, NULL, kEventDurationNoWait, true, &event ) == noErr )
+			{
+				// Dispatch the event
+				SendEventToEventTarget( event, targetWindow );
+				ReleaseEvent( event );
 			}
+
 
 			thisTime = SDL_GetTicks();
 			deltaTime = (float)(thisTime - lastTime);
@@ -254,5 +320,74 @@ namespace Menge
 	
 	void MacOSApplication::showMessageBox( const String& _message, const String& _header, unsigned int _style )
 	{
+	}
+	
+	WindowRef MacOSApplication::createWindow_( const String& _title, int _width, int _height )
+	{
+		WindowRef winRef = NULL;
+		::Rect windowRect;
+		windowRect.left = 0;
+		windowRect.top = 0;
+		windowRect.right = _width;
+		windowRect.bottom = _height;
+			
+		// set the default attributes for the window
+		WindowAttributes windowAttrs = kWindowStandardDocumentAttributes
+			| kWindowStandardHandlerAttribute 
+			| kWindowInWindowMenuAttribute
+			| kWindowHideOnFullScreenAttribute;
+			
+		// Create the window
+		CreateNewWindow( kDocumentWindowClass, windowAttrs, &windowRect, &winRef );
+			
+		// Color the window background black
+		SetThemeWindowBackground(winRef, kThemeBrushBlack, true);
+			
+		// Set the title of our window
+		CFStringRef titleRef = CFStringCreateWithCString( kCFAllocatorDefault, _title.c_str(), CFStringGetSystemEncoding() );
+		SetWindowTitleWithCFString( winRef, titleRef );
+			
+		// Center our window on the screen
+		RepositionWindow( winRef, NULL, kWindowCenterOnMainScreen );
+            
+		return winRef;
+	}
+	
+	OSStatus MacOSApplication::s_windowHandler( EventHandlerCallRef nextHandler, EventRef event, void* wnd )
+	{
+		MacOSApplication* thisApp = (MacOSApplication*)wnd;
+		return thisApp->windowHandler( nextHandler, event );
+	}
+	
+	OSStatus MacOSApplication::windowHandler( EventHandlerCallRef nextHandler, EventRef event )
+	{
+		OSStatus status = noErr;
+
+		// We only get called if a window event happens
+		UInt32 eventKind = GetEventKind( event );
+		
+	    switch( eventKind )
+		{	
+	        case kEventWindowActivated:
+				m_menge->onFocus( true );
+				break;
+			case kEventWindowDeactivated:
+				m_menge->onFocus( false );
+				break;
+			case kEventWindowClosed:
+				m_menge->onClose();
+				break;
+			case kEventWindowShown:
+			case kEventWindowExpanded:
+	        case kEventWindowHidden:
+			case kEventWindowCollapsed:
+			case kEventWindowDragCompleted:
+			case kEventWindowBoundsChanged:
+				break;	
+			default:
+				status = eventNotHandledErr;
+				break;
+		}
+		return status;
 	}
 }	// namespace Menge

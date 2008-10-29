@@ -16,6 +16,7 @@ namespace Menge
 {
 	class Application;
 	class OSXTimer;
+	class LoggerConsole;
 	
 	class MacOSApplication
 		: public ApplicationInterface
@@ -44,6 +45,13 @@ namespace Menge
 		void setHandleMouse( bool _handle ) override;
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
 
+		OSStatus windowHandler( EventHandlerCallRef nextHandler, EventRef event );
+	public:
+		static OSStatus s_windowHandler( EventHandlerCallRef nextHandler, EventRef event, void* wnd );
+		
+	protected:
+		WindowRef createWindow_( const String& _title, int _width, int _height );
+		
 	protected:
 		StringA m_commandLine;
 		Application* m_menge;
@@ -51,6 +59,10 @@ namespace Menge
 		bool m_running;
 		bool m_handleMouse;
 		OSXTimer* m_timer;
+		LoggerConsole* m_loggerConsole;
+		WindowRef m_window;
+		HIViewRef m_view;
+		EventHandlerRef m_eventHandler;
 	};
 }	// namespace Menge
 		

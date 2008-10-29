@@ -97,6 +97,7 @@ namespace Menge
 		{
 			MENGE_LOG_ERROR( "can't open file for writing. Account \"%s\" settings not saved"
 				, m_name.c_str() );
+			return;
 		}
 		file->write( "[SETTINGS]\n" );
 		for( TSettingsMap::iterator it = m_settings.begin(), it_end = m_settings.end();

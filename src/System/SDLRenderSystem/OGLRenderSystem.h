@@ -1,15 +1,18 @@
 #	pragma once
+
+#	include "Config/Platform.h"
+
 #	include "Interface/RenderSystemInterface.h"
 #	include "libs/Math/vec2.h"
 #	include "libs/Math/box2.h"
-//#	include "glew.h"
-//#	include <SDL.h>
-//#	include <GL/gl.h>
 
 #	include <map>
 
-#	include "SDLWindow.h"
+//#	include "SDLWindow.h"
 
+#if MENGE_PLATFORM_MACOSX
+#	include <AGL/AGL.h>
+#endif
 
 class OGLTexture;
 
@@ -98,10 +101,14 @@ public:
 
 private:
 
+#if MENGE_PLATFORM_MACOSX
+	AGLContext m_aglContext;
+#endif
+
 	GLint m_textureType;
 	GLint _getTextureType();
 
-	SDLWindow m_SDLWindow;
+	//SDLWindow m_SDLWindow;
 
 	bool m_inRender;
 
@@ -120,8 +127,8 @@ private:
 
 	typedef std::map< Menge::String, Menge::RenderImageInterface* > TTextureMap;
 	TTextureMap m_textureMap;
-	SDL_Surface * m_screen;
-	SDL_Rect** m_videoModes;
+	//SDL_Surface * m_screen;
+	//SDL_Rect** m_videoModes;
 	
 
 	GLfloat m_projMatrix[16];

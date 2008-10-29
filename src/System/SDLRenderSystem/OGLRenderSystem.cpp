@@ -1,5 +1,4 @@
 #	include "OGLRenderSystem.h"
-#	include <SDL_syswm.h>
 #	include "OGLTexture.h"
 #	include <assert.h>
 
@@ -27,14 +26,17 @@ OGLRenderSystem::OGLRenderSystem()
 : m_inRender( false )
 , m_layer( 1.0f )
 , m_layer3D( false )
+#if MENGE_PLATFORM_MACOSX
+, m_aglContext( NULL )
+#endif
 {
 }
 //////////////////////////////////////////////////////////////////////////
 OGLRenderSystem::~OGLRenderSystem()
 {
-	m_SDLWindow.destroy();
+	//m_SDLWindow.destroy();
 
-	SDL_Quit();
+	//SDL_Quit();
 
 	deleteBatching();
 }
@@ -43,12 +45,35 @@ bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 {
 	bool initialized = true;
 
-	Uint32 sdlFlags = SDL_INIT_VIDEO;
+	//Uint32 sdlFlags = SDL_INIT_VIDEO;
 
-	if(SDL_Init(sdlFlags) < 0)
-	{
-		return false;
-	}
+	//if(SDL_Init(sdlFlags) < 0)
+	//{
+	//	return false;
+	//}
+
+#if MENGE_PLATFORM_MACOSX
+	int i = 0;
+	AGLPixelFormat pixelFormat;
+	GLint attribs[ 20 ];
+		
+	attribs[ i++ ] = AGL_NO_RECOVERY;
+	attribs[ i++ ] = GL_TRUE;
+	attribs[ i++ ] = AGL_ACCELERATED;
+	attribs[ i++ ] = GL_TRUE;
+	attribs[ i++ ] = AGL_RGBA;
+	attribs[ i++ ] = AGL_DOUBLEBUFFER;
+	attribs[ i++ ] = AGL_ALPHA_SIZE;
+	attribs[ i++ ] = 8;
+	attribs[ i++ ] = AGL_STENCIL_SIZE;
+	attribs[ i++ ] = 8;
+	attribs[ i++ ] = AGL_DEPTH_SIZE;
+	attribs[ i++ ] = 32;
+	
+	attribs[ i++ ] = AGL_NONE;
+	pixelFormat = aglChoosePixelFormat( NULL, 0, attribs );
+	m_aglContext = aglCreateContext(pixelFormat, NULL);
+#endif	
 
 	for (size_t i = 0; i < 16; i++)
 	{
@@ -75,7 +100,14 @@ bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::swapBuffers()
 {
-	m_SDLWindow.swapBuffers(false);
+
+#if MENGE_PLATFORM_MACOSX
+	if(m_aglContext != aglGetCurrentContext())
+		aglSetCurrentContext(m_aglContext);
+			
+	aglSwapBuffers(m_aglContext);
+#endif
+	
 }
 //////////////////////////////////////////////////////////////////////////
 int OGLRenderSystem::getNumDIP() const
@@ -126,11 +158,15 @@ GLint s_blendMengeToOGL(Menge::EBlendFactor _blend )
 //////////////////////////////////////////////////////////////////////////
 bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 {
-	NameValuePairList values;
-	values.insert(std::make_pair("colourDepth","32"));
+	//NameValuePairList values;
+	//values.insert(std::make_pair("colourDepth","32"));
 	// и как же передать тайтл? :)
-	m_SDLWindow.create("TEST",_width,_height,_fullscreen,&values);
-
+	//m_SDLWindow.create("TEST",_width,_height,_fullscreen,&values);
+#if MENGE_PLATFORM_MACOSX
+	aglSetDrawable(m_aglContext, GetWindowPort((WindowRef)_winHandle));
+	aglSetCurrentContext(m_aglContext);
+#endif
+	
 	initBatching();
 
 	return true;
@@ -142,14 +178,14 @@ const std::vector<int> & OGLRenderSystem::getResolutionList()
 	static std::vector<int> list;
 	list.clear();
 
-	const SDL_VideoInfo * vi = SDL_GetVideoInfo();
-	m_videoModes = SDL_ListModes(vi->vfmt, SDL_FULLSCREEN | SDL_OPENGL);
+	//const SDL_VideoInfo * vi = SDL_GetVideoInfo();
+	//m_videoModes = SDL_ListModes(vi->vfmt, SDL_FULLSCREEN | SDL_OPENGL);
 
-	for (size_t i = 0; m_videoModes[i]; ++i)
-	{
-		list.push_back( m_videoModes[i]->w );
-		list.push_back( m_videoModes[i]->h );
-	}
+	//for (size_t i = 0; m_videoModes[i]; ++i)
+	//{
+	//	list.push_back( m_videoModes[i]->w );
+	//	list.push_back( m_videoModes[i]->h );
+	//}
 
 	return list;
 }
@@ -534,14 +570,14 @@ void OGLRenderSystem::renderText(const Menge::String & _text, const float * _pos
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
 {
-	int flags = SDL_OPENGL | SDL_RESIZABLE;
+	//int flags = SDL_OPENGL | SDL_RESIZABLE;
 
-	if (_fullscreen)
-	{
-		flags |= SDL_FULLSCREEN;
-	}
+	//if (_fullscreen)
+	//{
+	//	flags |= SDL_FULLSCREEN;
+	//}
 
-	m_screen = SDL_SetVideoMode(_width, _height, m_screen->format->BitsPerPixel, flags);
+	//m_screen = SDL_SetVideoMode(_width, _height, m_screen->format->BitsPerPixel, flags);
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::CameraInterface * OGLRenderSystem::createCamera( const Menge::String & _name )

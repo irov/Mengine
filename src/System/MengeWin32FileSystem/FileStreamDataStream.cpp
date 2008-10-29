@@ -21,13 +21,18 @@ namespace Menge
 		close();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void FileStreamDataStream::release()
+	{
+		delete this;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	std::streamsize FileStreamDataStream::read( void* _buf, std::streamsize _count )
 	{
 		m_stream->read( static_cast<char*>(_buf), _count );
 		return m_stream->gcount();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileStreamDataStream::skip( std::streampos _count )
+	void FileStreamDataStream::skip( std::streamoff _count )
 	{
 #if defined(STLPORT)
 		// Workaround for STLport issues: After reached eof of file stream,

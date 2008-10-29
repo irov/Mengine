@@ -14,9 +14,11 @@ namespace Menge
 		~FileStreamDataStream();
 
 	public:
+		void release() override;
+
 		std::streamsize read( void* _buf, std::streamsize _count ) override;
 
-		void skip( std::streampos _count ) override;
+		void skip( std::streamoff _count ) override;
 		void seek( std::streamoff _pos ) override;
 		std::streampos tell() const override;
 		bool eof() const override;

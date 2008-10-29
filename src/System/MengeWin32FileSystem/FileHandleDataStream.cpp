@@ -26,7 +26,7 @@ namespace Menge
 		return std::fread( _buf, 1, _count, m_fileHandle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileHandleDataStream::skip( std::streampos _count )
+	void FileHandleDataStream::skip( std::streamoff _count )
 	{
 		std::fseek( m_fileHandle, _count, SEEK_CUR);
 	}

@@ -19,6 +19,11 @@ namespace Menge
 		close();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void MemoryDataStream::release()
+	{
+		delete this;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	std::streamsize MemoryDataStream::read( void* _buf, std::streamsize _count )
 	{
 		std::streamsize cnt = _count;
@@ -38,7 +43,7 @@ namespace Menge
 		return cnt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryDataStream::skip( std::streampos _count )
+	void MemoryDataStream::skip( std::streamoff _count )
 	{
 		std::streampos newpos = ( m_pos - m_data ) + _count;
 		assert( m_data + newpos <= m_end );

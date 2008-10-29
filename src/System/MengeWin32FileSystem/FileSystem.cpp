@@ -158,7 +158,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::closeStream( DataStreamInterface* _stream )
 	{
-		delete _stream;
+		_stream->release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::existFile( const String& _filename )
@@ -169,30 +169,6 @@ namespace Menge
 		struct _stat tagStat;
 		bool ret = ( _wstat( full_path_w.c_str(), &tagStat ) == 0 );
 		return ret;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const char * FileSystem::platformBundlePath()
-	{
-#if MENGE_PLATFORM_MACOSX
-#	include <CoreFoundation/CoreFoundation.h>
-		char path[1024];
-		CFBundleRef mainBundle = CFBundleGetMainBundle();    
-		assert(mainBundle);
-
-		CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);    
-		assert(mainBundleURL);
-
-		CFStringRef cfStringRef = CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);    
-		assert(cfStringRef);
-
-		CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
-		CFRelease(mainBundleURL);
-		CFRelease(cfStringRef);
-
-		return _path;
-#else
-		return "";
-#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::createFolder( const String& _path )

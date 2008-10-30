@@ -249,11 +249,11 @@ void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const flo
 
 	glReadBuffer(GL_FRONT);
 
-    /*glReadPixels((GLint)_rect[0], (GLint)_rect[1],
+    glReadPixels((GLint)_rect[0], (GLint)_rect[1],
 		(GLsizei)_rect[2], (GLsizei)_rect[3],
                 GL_BGRA,
                 GL_UNSIGNED_INT_8_8_8_8_REV,
-               buffer);*/
+               buffer);
 
 	_image->unlock();
 }
@@ -412,11 +412,15 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 								  Menge::EBlendFactor _srcBlend, 
 								  Menge::EBlendFactor _dstBlend )
 {
+	// swap color to ABGR
+	unsigned int b = ( _color & 0x000000FF ) << 16;
+	unsigned int r = ( _color & 0x00FF0000 ) >> 16;
+	_color = ( _color & 0xFF00FF00 ) + ( b | r );
 	const OGLTexture * tex = static_cast<const OGLTexture*>( _image );
-
-	if(tex == NULL)
+	GLint glTex = 0;
+	if( tex != NULL	)
 	{
-		return;
+		glTex = tex->getGLTexture();
 	}
 
 	GLint srcBlend = s_blendMengeToOGL( _srcBlend );
@@ -477,7 +481,7 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 	quad[3].uv[0] = _uv[0] * s;
 	quad[3].uv[1] = _uv[3] * t;
 
-	Gfx_RenderQuad(quad,tex->getGLTexture(),srcBlend,dstBlend);
+	Gfx_RenderQuad( quad, glTex, srcBlend, dstBlend );
 }
 
 //////////////////////////////////////////////////////////////////////////

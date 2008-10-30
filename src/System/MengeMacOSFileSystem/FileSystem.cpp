@@ -222,18 +222,26 @@ namespace Menge
 	bool FileSystem::initAppDataPath( const String& _game )
 	{
 		short  volume_ref_number;
-		long   directory_id;
-
+		long   directory_id, dirid;
+		FSRef  folderRef;
+		UInt8 path[256];
 		OSErr err = FindFolder( kUserDomain, kApplicationSupportFolderType, kDontCreateFolder, &volume_ref_number, &directory_id );
+		err = FSFindFolder( kUserDomain, kApplicationSupportFolderType, kDontCreateFolder, &folderRef );
+		FSRefMakePath( &folderRef, path, 256 );
 		if( err != 0 )
 		{
 			return false;
 		}
 		FSSpec* spec;
 		unsigned char dir[256];
-		strcpy( (char*)dir, "Menge" );
-		//dir[0] = strlen("Menge");
-		err = FSMakeFSSpec (volume_ref_number, directory_id, dir, spec);
+		//strcpy( (char*)dir+1, "~/Library/Application Support/Menge" );
+		//dir[0] = strlen( "~/Library/Application Support/Menge");
+		strcat( (char*)path, "/Menge/subdir/" );
+		//err = FSMakeFSSpec (volume_ref_number, directory_id, dir, spec);
+		//err = DirCreate( volume_ref_number, directory_id, dir, &dirid );
+		int res = mkdir( (const char*)path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH | S_IFDIR );
+		int er = errno;
+		
 		//m_appDataPath = "~/Library/Application Support/" + _game;
 		//createFolder( "~/Library/Application Support/Menge" );
 		return createFolder( m_appDataPath );

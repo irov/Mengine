@@ -41,7 +41,11 @@ namespace Menge
 		, m_loggerConsole( NULL )
 		, m_window( NULL )
 		, m_view( NULL )
-		, m_eventHandler( NULL )
+		, m_windowHandlerUPP( NULL )
+		, m_windowEventHandler( NULL )
+		, m_mouseHandlerUPP( NULL )
+		, m_mouseEventHandler( NULL )
+
 	{
 	}
 	
@@ -64,6 +68,23 @@ namespace Menge
 		{
 			delete m_timer;
 			m_timer = NULL;
+		}	
+		
+		if( m_mouseEventHandler != NULL )
+		{
+			RemoveEventHandler( m_mouseEventHandler );
+		}
+		if( m_mouseHandlerUPP != NULL )
+		{
+			DisposeEventHandlerUPP( m_mouseHandlerUPP );
+		}
+		if( m_windowEventHandler != NULL )
+		{
+			RemoveEventHandler( m_windowEventHandler );
+		}
+		if( m_windowHandlerUPP != NULL )
+		{
+			DisposeEventHandlerUPP( m_windowHandlerUPP );
 		}	
 	}
 	
@@ -121,18 +142,30 @@ namespace Menge
                 {kEventClassWindow, kEventWindowBoundsChanged},
                 {kEventClassWindow, kEventWindowExpanded},
                 {kEventClassWindow, kEventWindowCollapsed},
-                {kEventClassWindow, kEventWindowClosed}
+                {kEventClassWindow, kEventWindowClosed},
             };
-            
-		EventHandlerUPP handlerUPP = NewEventHandlerUPP( MacOSApplication::s_windowHandler );
+
+		EventTypeSpec mouseSpecs[] = {
+						{ kEventClassMouse, kEventMouseMoved },
+						{ kEventClassMouse, kEventMouseDown },
+						{ kEventClassMouse, kEventMouseUp },						
+						{ kEventClassMouse, kEventMouseDragged },	
+						{ kEventClassMouse, kEventMouseWheelMoved }					
+		};
+		
+		m_windowHandlerUPP = NewEventHandlerUPP( MacOSApplication::s_windowHandler );
             
         // Install the standard event handler for the window
         EventTargetRef target = GetWindowEventTarget(m_window);
 		InstallStandardEventHandler(target);
             
         // We also need to install the WindowEvent Handler, we pass along the window with our requests
-        InstallEventHandler( target, handlerUPP, 9, eventSpecs, (void*)this, &m_eventHandler );
-			
+        InstallEventHandler( target, m_windowHandlerUPP, 9, eventSpecs, (void*)this, &m_windowEventHandler );
+		
+		m_mouseHandlerUPP = NewEventHandlerUPP( MacOSApplication::s_mouseHandler );
+        InstallEventHandler( target, m_mouseHandlerUPP, 4, mouseSpecs, (void*)this, &m_mouseEventHandler );
+		//CGAssociateMouseAndMouseCursorPosition(false);
+		
 		// Display and select our window
 		ShowWindow( m_window );
 		SelectWindow( m_window );
@@ -320,6 +353,14 @@ namespace Menge
 	
 	void MacOSApplication::showMessageBox( const String& _message, const String& _header, unsigned int _style )
 	{
+		CFStringRef headerRef = CFStringCreateWithCString( kCFAllocatorDefault, _header.c_str(), CFStringGetSystemEncoding() );
+		CFStringRef messageRef = CFStringCreateWithCString( kCFAllocatorDefault, _message.c_str(), CFStringGetSystemEncoding() );
+		DialogRef msgBoxRef = NULL;
+		CreateStandardAlert( kAlertStopAlert, headerRef, messageRef, NULL, &msgBoxRef );
+		DialogItemIndex item = 0;
+		RunStandardAlert( msgBoxRef, NULL, &item );
+		CFRelease( headerRef );
+		CFRelease( messageRef );
 	}
 	
 	WindowRef MacOSApplication::createWindow_( const String& _title, int _width, int _height )
@@ -390,4 +431,120 @@ namespace Menge
 		}
 		return status;
 	}
+	
+	OSStatus MacOSApplication::s_mouseHandler( EventHandlerCallRef nextHandler, EventRef event, void* wnd )
+	{
+		MacOSApplication* thisApp = (MacOSApplication*)wnd;
+		return thisApp->mouseHandler( nextHandler, event );
+	}
+
+	OSStatus MacOSApplication::mouseHandler( EventHandlerCallRef nextHandler, EventRef event )
+	{
+		OSStatus status = noErr;
+
+		// We only get called if a window event happens
+		UInt32 eventKind = GetEventKind( event );
+		
+	    switch( eventKind )
+		{	
+			case kEventMouseDragged:
+			case kEventMouseMoved:
+				{
+					if( m_handleMouse == true )
+					{
+						HIPoint delta = {0.0f, 0.0f};
+						GetEventParameter(event, kEventParamWindowMouseLocation, typeHIPoint, NULL, sizeof(HIPoint), NULL, &delta);
+						m_menge->onMouseMove(delta.x,delta.y,0.0f);
+					}
+					status = CallNextEventHandler( nextHandler, event );					
+				}
+				break;
+			case kEventMouseDown:
+				{
+					if( m_handleMouse == true )
+					{				
+						EventMouseButton button = 0;
+						int mouseButton = 3;
+						UInt32 modifiers = 0;
+			
+						// Capture parameters
+						GetEventParameter(event, kEventParamMouseButton, typeMouseButton, NULL, sizeof(EventMouseButton), NULL, &button);
+						GetEventParameter(event, kEventParamKeyModifiers, typeUInt32, NULL, sizeof(UInt32), NULL, &modifiers);
+			
+						if((button == kEventMouseButtonTertiary) || ((button == kEventMouseButtonPrimary) && (modifiers & optionKey)))
+						{
+							mouseButton = 2;
+						}
+						else if((button == kEventMouseButtonSecondary) || ((button == kEventMouseButtonPrimary) && (modifiers & controlKey)))
+						{	
+							mouseButton = 1;
+						}
+						else if(button == kEventMouseButtonPrimary)
+						{
+							mouseButton = 0;
+						}
+						m_menge->onMouseButtonEvent( mouseButton, true );
+					}
+					status = CallNextEventHandler( nextHandler, event );
+				}
+				break;
+			case kEventMouseUp:
+				{
+					if( m_handleMouse == true )
+					{
+						EventMouseButton button = 0;
+						int mouseButton = 3;
+						UInt32 modifiers = 0;
+			
+						// Capture parameters
+						GetEventParameter(event, kEventParamMouseButton, typeMouseButton, NULL, sizeof(EventMouseButton), NULL, &button);
+						GetEventParameter(event, kEventParamKeyModifiers, typeUInt32, NULL, sizeof(UInt32), NULL, &modifiers);
+			
+						if((button == kEventMouseButtonTertiary) || ((button == kEventMouseButtonPrimary) && (modifiers & optionKey)))
+						{
+							mouseButton = 2;
+						}
+						else if((button == kEventMouseButtonSecondary) || ((button == kEventMouseButtonPrimary) && (modifiers & controlKey)))
+						{	
+							mouseButton = 1;
+						}
+						else if(button == kEventMouseButtonPrimary)
+						{
+							mouseButton = 0;
+						}
+						m_menge->onMouseButtonEvent( mouseButton, false );
+					}
+					status = CallNextEventHandler( nextHandler, event );
+				}
+				break;
+			case kEventMouseWheelMoved:
+				{
+					if( m_handleMouse == true )
+					{
+						SInt32 wheelDelta = 0;
+						EventMouseWheelAxis	wheelAxis = 0; 
+
+						// Capture parameters
+						GetEventParameter( event, kEventParamMouseWheelAxis, typeMouseWheelAxis, NULL, sizeof(EventMouseWheelAxis), NULL, &wheelAxis );
+						GetEventParameter( event, kEventParamMouseWheelDelta, typeSInt32, NULL, sizeof(SInt32), NULL, &wheelDelta );
+			
+						// If the Y axis of the wheel changed, then update the Z
+						// Does OIS care about the X wheel axis?
+						if( wheelAxis == kEventMouseWheelAxisY )
+						{
+							m_menge->onMouseMove( 0.0f, 0.0f, wheelDelta * 60 );
+						}
+					}
+					status = CallNextEventHandler( nextHandler, event );
+				}
+				break;
+	
+			default:
+				status = eventNotHandledErr;
+				break;		
+		}
+		
+		return status;
+	}
+	
 }	// namespace Menge

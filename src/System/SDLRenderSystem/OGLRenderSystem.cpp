@@ -464,11 +464,11 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 	float s = 1.f;
 	float t = 1.f;
 
-	/*if(m_textureType == GL_TEXTURE_RECTANGLE_ARB)
+	if(_image && m_textureType == GL_TEXTURE_RECTANGLE_ARB)
 	{
 		s = _image->getWidth();
 		t = _image->getHeight();
-	}*/
+	}
 
 	quad[0].uv[0] = _uv[0] * s;
 	quad[0].uv[1] = _uv[1] * t;

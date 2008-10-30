@@ -17,6 +17,7 @@
 				8BBAFE260EB87B0D00434A80 /* PBXTargetDependency */,
 				8BBAFE280EB87B1600434A80 /* PBXTargetDependency */,
 				8BBAFE2A0EB87B1B00434A80 /* PBXTargetDependency */,
+				8BDC9F5B0EBA00F0007D4D75 /* PBXTargetDependency */,
 				8BBAFE2C0EB87B1E00434A80 /* PBXTargetDependency */,
 				8BBAFE2E0EB87B2200434A80 /* PBXTargetDependency */,
 				8BBAFE300EB87B2500434A80 /* PBXTargetDependency */,
@@ -125,8 +126,6 @@
 		8B1A78AC0EACA3FF00E2DCBE /* OGLTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78A40EACA3FF00E2DCBE /* OGLTexture.h */; };
 		8B1A78AD0EACA3FF00E2DCBE /* SDLVideoInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A78A50EACA3FF00E2DCBE /* SDLVideoInfo.cpp */; };
 		8B1A78AE0EACA3FF00E2DCBE /* SDLVideoInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78A60EACA3FF00E2DCBE /* SDLVideoInfo.h */; };
-		8B1A78AF0EACA3FF00E2DCBE /* SDLWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A78A70EACA3FF00E2DCBE /* SDLWindow.cpp */; };
-		8B1A78B00EACA3FF00E2DCBE /* SDLWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78A80EACA3FF00E2DCBE /* SDLWindow.h */; };
 		8B77FD4A0EB1E83500F78BA7 /* libMengeProfilerSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B1A78210EACA07400E2DCBE /* libMengeProfilerSystem.a */; };
 		8B77FD620EB1ED6C00F78BA7 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B77FD610EB1ED6C00F78BA7 /* libSDL.a */; };
 		8B77FE270EB205D700F78BA7 /* libSDLRenderSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B1A78970EACA3D400E2DCBE /* libSDLRenderSystem.a */; };
@@ -411,6 +410,14 @@
 		8BCFB2980EB755C600E3ED17 /* PBO.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BCFB2960EB755C500E3ED17 /* PBO.h */; };
 		8BCFB2990EB755C600E3ED17 /* PBO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCFB2970EB755C600E3ED17 /* PBO.cpp */; };
 		8BCFB2B90EB7572500E3ED17 /* LoggerConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCFB2B80EB7572500E3ED17 /* LoggerConsole.cpp */; };
+		8BDC9F5C0EBA0109007D4D75 /* libAstralaxParticleSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BDC9F570EBA00B5007D4D75 /* libAstralaxParticleSystem.a */; };
+		8BDC9F6C0EBA0126007D4D75 /* AstralaxEmitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BDC9F640EBA0126007D4D75 /* AstralaxEmitter.cpp */; };
+		8BDC9F6D0EBA0126007D4D75 /* AstralaxEmitter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BDC9F650EBA0126007D4D75 /* AstralaxEmitter.h */; };
+		8BDC9F6E0EBA0126007D4D75 /* AstralaxEmitterContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BDC9F660EBA0126007D4D75 /* AstralaxEmitterContainer.cpp */; };
+		8BDC9F6F0EBA0126007D4D75 /* AstralaxEmitterContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BDC9F670EBA0126007D4D75 /* AstralaxEmitterContainer.h */; };
+		8BDC9F700EBA0126007D4D75 /* AstralaxParticleSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BDC9F680EBA0126007D4D75 /* AstralaxParticleSystem.cpp */; };
+		8BDC9F710EBA0126007D4D75 /* AstralaxParticleSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BDC9F6A0EBA0126007D4D75 /* AstralaxParticleSystem.h */; };
+		8BDC9FA50EBA04D5007D4D75 /* libmagic.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BDC9F9B0EBA02F8007D4D75 /* libmagic.dylib */; };
 		8BFFDCED0EB5D25D002A860B /* OSXTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BFFDCEB0EB5D25D002A860B /* OSXTimer.cpp */; };
 		8BFFDD750EB5DB29002A860B /* OGLBatching.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BFFDD740EB5DB29002A860B /* OGLBatching.cpp */; };
 /* End PBXBuildFile section */
@@ -420,78 +427,85 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8B1A728E0EAC92E300E2DCBE /* Math */;
+			remoteGlobalIDString = 8B1A728E0EAC92E300E2DCBE;
 			remoteInfo = Math;
 		};
 		8BBAFE250EB87B0D00434A80 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8B1A73C40EAC9DA200E2DCBE /* XmlParser */;
+			remoteGlobalIDString = 8B1A73C40EAC9DA200E2DCBE;
 			remoteInfo = XmlParser;
 		};
 		8BBAFE270EB87B1600434A80 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8BE693E10EA8D5CA00B18A92 /* Menge */;
+			remoteGlobalIDString = 8BE693E10EA8D5CA00B18A92;
 			remoteInfo = Menge;
 		};
 		8BBAFE290EB87B1A00434A80 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8B1A720A0EAC8A1A00E2DCBE /* Box2DPhysicSystem */;
+			remoteGlobalIDString = 8B1A720A0EAC8A1A00E2DCBE;
 			remoteInfo = Box2DPhysicSystem;
 		};
 		8BBAFE2B0EB87B1E00434A80 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8B1A78020EAC9F6100E2DCBE /* OISInputSystem */;
+			remoteGlobalIDString = 8B1A78020EAC9F6100E2DCBE;
 			remoteInfo = OISInputSystem;
 		};
 		8BBAFE2D0EB87B2200434A80 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8B1A78200EACA07400E2DCBE /* MengeProfilerSystem */;
+			remoteGlobalIDString = 8B1A78200EACA07400E2DCBE;
 			remoteInfo = MengeProfilerSystem;
 		};
 		8BBAFE2F0EB87B2500434A80 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8B1A783A0EACA12D00E2DCBE /* OALSoundSystem */;
+			remoteGlobalIDString = 8B1A783A0EACA12D00E2DCBE;
 			remoteInfo = OALSoundSystem;
 		};
 		8BBAFE310EB87B2900434A80 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8B1A787F0EACA2B300E2DCBE /* MengeLogSystem */;
+			remoteGlobalIDString = 8B1A787F0EACA2B300E2DCBE;
 			remoteInfo = MengeLogSystem;
 		};
 		8BBAFE330EB87B2D00434A80 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8B1A78960EACA3D400E2DCBE /* SDLRenderSystem */;
+			remoteGlobalIDString = 8B1A78960EACA3D400E2DCBE;
 			remoteInfo = SDLRenderSystem;
 		};
 		8BBAFE350EB87B3100434A80 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8BC94B290EAE1D1D0034D467 /* MengeMacOSFileSystem */;
+			remoteGlobalIDString = 8BC94B290EAE1D1D0034D467;
 			remoteInfo = MengeMacOSFileSystem;
 		};
 		8BBAFE370EB87B3400434A80 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8BBFDF000EAF1E3900102B4F /* MacOSApplication */;
+			remoteGlobalIDString = 8BBFDF000EAF1E3900102B4F;
 			remoteInfo = MacOSApplication;
+		};
+		8BDC9F5A0EBA00F0007D4D75 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8BDC9F560EBA00B5007D4D75 /* AstralaxParticleSystem */;
+			remoteInfo = AstralaxParticleSystem;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -660,6 +674,15 @@
 		8BCFB2B70EB7572400E3ED17 /* LoggerConsole.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = LoggerConsole.h; sourceTree = "<group>"; };
 		8BCFB2B80EB7572500E3ED17 /* LoggerConsole.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = LoggerConsole.cpp; sourceTree = "<group>"; };
 		8BCFB2CB0EB759C600E3ED17 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Platform.h; path = ../src/Config/Platform.h; sourceTree = SOURCE_ROOT; };
+		8BDC9F570EBA00B5007D4D75 /* libAstralaxParticleSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAstralaxParticleSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8BDC9F640EBA0126007D4D75 /* AstralaxEmitter.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = AstralaxEmitter.cpp; sourceTree = "<group>"; };
+		8BDC9F650EBA0126007D4D75 /* AstralaxEmitter.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = AstralaxEmitter.h; sourceTree = "<group>"; };
+		8BDC9F660EBA0126007D4D75 /* AstralaxEmitterContainer.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = AstralaxEmitterContainer.cpp; sourceTree = "<group>"; };
+		8BDC9F670EBA0126007D4D75 /* AstralaxEmitterContainer.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = AstralaxEmitterContainer.h; sourceTree = "<group>"; };
+		8BDC9F680EBA0126007D4D75 /* AstralaxParticleSystem.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = AstralaxParticleSystem.cpp; sourceTree = "<group>"; };
+		8BDC9F690EBA0126007D4D75 /* AstralaxParticleSystem.def */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = text; path = AstralaxParticleSystem.def; sourceTree = "<group>"; };
+		8BDC9F6A0EBA0126007D4D75 /* AstralaxParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = AstralaxParticleSystem.h; sourceTree = "<group>"; };
+		8BDC9F9B0EBA02F8007D4D75 /* libmagic.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmagic.dylib; path = ../dependencies/astralax/MagicMAC/Debug/libmagic.dylib; sourceTree = SOURCE_ROOT; };
 		8BE693E20EA8D5CA00B18A92 /* libMenge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMenge.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BE693EC0EA8D6C100B18A92 /* Account.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; name = Account.cpp; path = ../src/Menge/Account.cpp; sourceTree = SOURCE_ROOT; };
 		8BE693ED0EA8D6C100B18A92 /* Account.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Account.h; path = ../src/Menge/Account.h; sourceTree = SOURCE_ROOT; };
@@ -977,6 +1000,7 @@
 			files = (
 				8BC32E510EB0B6A700212960 /* libogg.a in Frameworks */,
 				8BC32E2F0EB0B58500212960 /* libz.a in Frameworks */,
+				8BDC9F5C0EBA0109007D4D75 /* libAstralaxParticleSystem.a in Frameworks */,
 				8BC32E2E0EB0B57100212960 /* libMengeMacOSFileSystem.a in Frameworks */,
 				8BC32E2D0EB0B56E00212960 /* libMengeLogSystem.a in Frameworks */,
 				8BC32E2C0EB0B56B00212960 /* libOALSoundSystem.a in Frameworks */,
@@ -986,10 +1010,18 @@
 				8B77FD4A0EB1E83500F78BA7 /* libMengeProfilerSystem.a in Frameworks */,
 				8B77FD620EB1ED6C00F78BA7 /* libSDL.a in Frameworks */,
 				8B77FE270EB205D700F78BA7 /* libSDLRenderSystem.a in Frameworks */,
+				8BDC9FA50EBA04D5007D4D75 /* libmagic.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		8BC94B280EAE1D1D0034D467 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8BDC9F550EBA00B5007D4D75 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1016,6 +1048,7 @@
 		8B1A720D0EAC8A7300E2DCBE /* System */ = {
 			isa = PBXGroup;
 			children = (
+				8BDC9F630EBA0126007D4D75 /* AstralaxParticleSystem */,
 				8BC94B2F0EAE1D460034D467 /* MengeMacOSFileSystem */,
 				8B1A789E0EACA3FF00E2DCBE /* SDLRenderSystem */,
 				8B1A78870EACA2E200E2DCBE /* MengeLogSystem */,
@@ -1267,6 +1300,7 @@
 				8BBFE1470EAF3F9800102B4F /* libpybind.a */,
 				8BBFDFE60EAF34CE00102B4F /* libexpat.a */,
 				8BBFDFFE0EAF367200102B4F /* libogg.a */,
+				8BDC9F9B0EBA02F8007D4D75 /* libmagic.dylib */,
 			);
 			name = Dependencies;
 			sourceTree = "<group>";
@@ -1290,6 +1324,21 @@
 			);
 			name = MengeMacOSFileSystem;
 			path = ../src/System/MengeMacOSFileSystem;
+			sourceTree = SOURCE_ROOT;
+		};
+		8BDC9F630EBA0126007D4D75 /* AstralaxParticleSystem */ = {
+			isa = PBXGroup;
+			children = (
+				8BDC9F640EBA0126007D4D75 /* AstralaxEmitter.cpp */,
+				8BDC9F650EBA0126007D4D75 /* AstralaxEmitter.h */,
+				8BDC9F660EBA0126007D4D75 /* AstralaxEmitterContainer.cpp */,
+				8BDC9F670EBA0126007D4D75 /* AstralaxEmitterContainer.h */,
+				8BDC9F680EBA0126007D4D75 /* AstralaxParticleSystem.cpp */,
+				8BDC9F690EBA0126007D4D75 /* AstralaxParticleSystem.def */,
+				8BDC9F6A0EBA0126007D4D75 /* AstralaxParticleSystem.h */,
+			);
+			name = AstralaxParticleSystem;
+			path = ../src/System/AstralaxParticleSystem;
 			sourceTree = SOURCE_ROOT;
 		};
 		8BE693D30EA8D5B400B18A92 = {
@@ -1316,6 +1365,7 @@
 				8B1A78970EACA3D400E2DCBE /* libSDLRenderSystem.a */,
 				8BC94B2A0EAE1D1D0034D467 /* libMengeMacOSFileSystem.a */,
 				8BBFDF010EAF1E3900102B4F /* MacOSApplication.app */,
+				8BDC9F570EBA00B5007D4D75 /* libAstralaxParticleSystem.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1694,7 +1744,6 @@
 				8B1A78AA0EACA3FF00E2DCBE /* OGLRenderSystem.h in Headers */,
 				8B1A78AC0EACA3FF00E2DCBE /* OGLTexture.h in Headers */,
 				8B1A78AE0EACA3FF00E2DCBE /* SDLVideoInfo.h in Headers */,
-				8B1A78B00EACA3FF00E2DCBE /* SDLWindow.h in Headers */,
 				8BCFB2980EB755C600E3ED17 /* PBO.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1709,6 +1758,16 @@
 				8BC94B480EAE1D460034D467 /* FileStreamOutStream.h in Headers */,
 				8BC94B4A0EAE1D460034D467 /* FileSystem.h in Headers */,
 				8BC94B4C0EAE1D460034D467 /* MemoryDataStream.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8BDC9F530EBA00B5007D4D75 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8BDC9F6D0EBA0126007D4D75 /* AstralaxEmitter.h in Headers */,
+				8BDC9F6F0EBA0126007D4D75 /* AstralaxEmitterContainer.h in Headers */,
+				8BDC9F710EBA0126007D4D75 /* AstralaxParticleSystem.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2020,6 +2079,23 @@
 			productReference = 8BC94B2A0EAE1D1D0034D467 /* libMengeMacOSFileSystem.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		8BDC9F560EBA00B5007D4D75 /* AstralaxParticleSystem */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8BDC9F600EBA0111007D4D75 /* Build configuration list for PBXNativeTarget "AstralaxParticleSystem" */;
+			buildPhases = (
+				8BDC9F530EBA00B5007D4D75 /* Headers */,
+				8BDC9F540EBA00B5007D4D75 /* Sources */,
+				8BDC9F550EBA00B5007D4D75 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AstralaxParticleSystem;
+			productName = AstralaxParticleSystem;
+			productReference = 8BDC9F570EBA00B5007D4D75 /* libAstralaxParticleSystem.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		8BE693E10EA8D5CA00B18A92 /* Menge */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8BE693E40EA8D5CA00B18A92 /* Build configuration list for PBXNativeTarget "Menge" */;
@@ -2060,6 +2136,7 @@
 				8B1A78960EACA3D400E2DCBE /* SDLRenderSystem */,
 				8BC94B290EAE1D1D0034D467 /* MengeMacOSFileSystem */,
 				8BBFDF000EAF1E3900102B4F /* MacOSApplication */,
+				8BDC9F560EBA00B5007D4D75 /* AstralaxParticleSystem */,
 			);
 		};
 /* End PBXProject section */
@@ -2165,7 +2242,6 @@
 			files = (
 				8B1A78AB0EACA3FF00E2DCBE /* OGLTexture.cpp in Sources */,
 				8B1A78AD0EACA3FF00E2DCBE /* SDLVideoInfo.cpp in Sources */,
-				8B1A78AF0EACA3FF00E2DCBE /* SDLWindow.cpp in Sources */,
 				8B77FE550EB20E2D00F78BA7 /* OGLRenderSystem.cpp in Sources */,
 				8BFFDD750EB5DB29002A860B /* OGLBatching.cpp in Sources */,
 				8BCFB2990EB755C600E3ED17 /* PBO.cpp in Sources */,
@@ -2193,6 +2269,16 @@
 				8BC94B470EAE1D460034D467 /* FileStreamOutStream.cpp in Sources */,
 				8BC94B490EAE1D460034D467 /* FileSystem.cpp in Sources */,
 				8BC94B4B0EAE1D460034D467 /* MemoryDataStream.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8BDC9F540EBA00B5007D4D75 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8BDC9F6C0EBA0126007D4D75 /* AstralaxEmitter.cpp in Sources */,
+				8BDC9F6E0EBA0126007D4D75 /* AstralaxEmitterContainer.cpp in Sources */,
+				8BDC9F700EBA0126007D4D75 /* AstralaxParticleSystem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2373,6 +2459,11 @@
 			isa = PBXTargetDependency;
 			target = 8BBFDF000EAF1E3900102B4F /* MacOSApplication */;
 			targetProxy = 8BBAFE370EB87B3400434A80 /* PBXContainerItemProxy */;
+		};
+		8BDC9F5B0EBA00F0007D4D75 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8BDC9F560EBA00B5007D4D75 /* AstralaxParticleSystem */;
+			targetProxy = 8BDC9F5A0EBA00F0007D4D75 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2857,6 +2948,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_13)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_16)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/OGG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_10 = "\"$(SRCROOT)/../dependencies/theora/macosx/build/Debug\"";
@@ -2865,6 +2957,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_13 = "\"$(SRCROOT)/../dependencies/zlib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_14 = "\"$(SRCROOT)/../dependencies/OGG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_15 = "\"$(SRCROOT)/../dependencies/SDL\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_16 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Debug\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/ois/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/Box2D/Library\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/libPNG\"";
@@ -2933,6 +3026,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_13)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_16)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/OGG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_10 = "\"$(SRCROOT)/../dependencies/theora/macosx/build/Debug\"";
@@ -2941,6 +3035,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_13 = "\"$(SRCROOT)/../dependencies/zlib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_14 = "\"$(SRCROOT)/../dependencies/OGG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_15 = "\"$(SRCROOT)/../dependencies/SDL\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_16 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Debug\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/ois/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/Box2D/Library\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/libPNG\"";
@@ -3021,6 +3116,62 @@
 				SHARED_PRECOMPS_DIR = "";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				USER_HEADER_SEARCH_PATHS = ../src/;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		8BDC9F610EBA0111007D4D75 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = "";
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Debug\"";
+				OTHER_LDFLAGS = "";
+				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_NAME = AstralaxParticleSystem;
+				SHARED_PRECOMPS_DIR = "";
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				USER_HEADER_SEARCH_PATHS = "../src ../dependencies/astralax";
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		8BDC9F620EBA0111007D4D75 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = "";
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Debug\"";
+				OTHER_LDFLAGS = "";
+				PREBINDING = NO;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PRODUCT_NAME = AstralaxParticleSystem;
+				SHARED_PRECOMPS_DIR = "";
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				USER_HEADER_SEARCH_PATHS = "../src ../dependencies/astralax";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -3241,6 +3392,15 @@
 			buildConfigurations = (
 				8BC94B2D0EAE1D390034D467 /* Debug */,
 				8BC94B2E0EAE1D390034D467 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8BDC9F600EBA0111007D4D75 /* Build configuration list for PBXNativeTarget "AstralaxParticleSystem" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8BDC9F610EBA0111007D4D75 /* Debug */,
+				8BDC9F620EBA0111007D4D75 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

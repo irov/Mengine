@@ -1,14 +1,7 @@
 #	pragma once
 
-#include "Config/Platform.h"
-
 // Build-in particle system
 #	define MENGE_PARTICLES	(1)
-
-#if MENGE_PLATFORM_MACOSX
-#undef MENGE_PARTICLES
-#define MENGE_PARTICLES (0)
-#endif
 
 //	Endian type
 #	define MENGE_ENDIAN_LITTLE	(1)

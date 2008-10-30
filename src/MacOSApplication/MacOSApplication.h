@@ -46,9 +46,12 @@ namespace Menge
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
 
 		OSStatus windowHandler( EventHandlerCallRef nextHandler, EventRef event );
+		OSStatus mouseHandler( EventHandlerCallRef nextHandler, EventRef event );
+
 	public:
 		static OSStatus s_windowHandler( EventHandlerCallRef nextHandler, EventRef event, void* wnd );
-		
+		static OSStatus s_mouseHandler( EventHandlerCallRef nextHandler, EventRef event, void* wnd );
+
 	protected:
 		WindowRef createWindow_( const String& _title, int _width, int _height );
 		
@@ -62,7 +65,11 @@ namespace Menge
 		LoggerConsole* m_loggerConsole;
 		WindowRef m_window;
 		HIViewRef m_view;
-		EventHandlerRef m_eventHandler;
+		EventHandlerUPP m_windowHandlerUPP;
+		EventHandlerRef m_windowEventHandler;
+		EventHandlerUPP m_mouseHandlerUPP;
+		EventHandlerRef m_mouseEventHandler;
+
 	};
 }	// namespace Menge
 		

@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Interface\ParticleSystemInterface.h"
+#	include "Interface/ParticleSystemInterface.h"
 
 #	include "magic.h"
 

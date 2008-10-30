@@ -6,6 +6,30 @@
 	objectVersion = 42;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		8BBAFE220EB87AF700434A80 /* BuildAll */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 8BBAFE3B0EB87B7D00434A80 /* Build configuration list for PBXAggregateTarget "BuildAll" */;
+			buildPhases = (
+			);
+			dependencies = (
+				8BBAFE240EB87B0900434A80 /* PBXTargetDependency */,
+				8BBAFE260EB87B0D00434A80 /* PBXTargetDependency */,
+				8BBAFE280EB87B1600434A80 /* PBXTargetDependency */,
+				8BBAFE2A0EB87B1B00434A80 /* PBXTargetDependency */,
+				8BBAFE2C0EB87B1E00434A80 /* PBXTargetDependency */,
+				8BBAFE2E0EB87B2200434A80 /* PBXTargetDependency */,
+				8BBAFE300EB87B2500434A80 /* PBXTargetDependency */,
+				8BBAFE320EB87B2900434A80 /* PBXTargetDependency */,
+				8BBAFE340EB87B2D00434A80 /* PBXTargetDependency */,
+				8BBAFE360EB87B3100434A80 /* PBXTargetDependency */,
+				8BBAFE380EB87B3400434A80 /* PBXTargetDependency */,
+			);
+			name = BuildAll;
+			productName = BuildAll;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		8B1A721A0EAC8ADB00E2DCBE /* Box2DPhysicBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A72140EAC8ADB00E2DCBE /* Box2DPhysicBody.cpp */; };
 		8B1A721B0EAC8ADB00E2DCBE /* Box2DPhysicBody.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A72150EAC8ADB00E2DCBE /* Box2DPhysicBody.h */; };
@@ -384,9 +408,92 @@
 		8BC94B4A0EAE1D460034D467 /* FileSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC94B3C0EAE1D460034D467 /* FileSystem.h */; };
 		8BC94B4B0EAE1D460034D467 /* MemoryDataStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC94B3D0EAE1D460034D467 /* MemoryDataStream.cpp */; };
 		8BC94B4C0EAE1D460034D467 /* MemoryDataStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC94B3E0EAE1D460034D467 /* MemoryDataStream.h */; };
+		8BCFB2980EB755C600E3ED17 /* PBO.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BCFB2960EB755C500E3ED17 /* PBO.h */; };
+		8BCFB2990EB755C600E3ED17 /* PBO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCFB2970EB755C600E3ED17 /* PBO.cpp */; };
+		8BCFB2B90EB7572500E3ED17 /* LoggerConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCFB2B80EB7572500E3ED17 /* LoggerConsole.cpp */; };
 		8BFFDCED0EB5D25D002A860B /* OSXTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BFFDCEB0EB5D25D002A860B /* OSXTimer.cpp */; };
 		8BFFDD750EB5DB29002A860B /* OGLBatching.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BFFDD740EB5DB29002A860B /* OGLBatching.cpp */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8BBAFE230EB87B0900434A80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A728E0EAC92E300E2DCBE /* Math */;
+			remoteInfo = Math;
+		};
+		8BBAFE250EB87B0D00434A80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A73C40EAC9DA200E2DCBE /* XmlParser */;
+			remoteInfo = XmlParser;
+		};
+		8BBAFE270EB87B1600434A80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8BE693E10EA8D5CA00B18A92 /* Menge */;
+			remoteInfo = Menge;
+		};
+		8BBAFE290EB87B1A00434A80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A720A0EAC8A1A00E2DCBE /* Box2DPhysicSystem */;
+			remoteInfo = Box2DPhysicSystem;
+		};
+		8BBAFE2B0EB87B1E00434A80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A78020EAC9F6100E2DCBE /* OISInputSystem */;
+			remoteInfo = OISInputSystem;
+		};
+		8BBAFE2D0EB87B2200434A80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A78200EACA07400E2DCBE /* MengeProfilerSystem */;
+			remoteInfo = MengeProfilerSystem;
+		};
+		8BBAFE2F0EB87B2500434A80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A783A0EACA12D00E2DCBE /* OALSoundSystem */;
+			remoteInfo = OALSoundSystem;
+		};
+		8BBAFE310EB87B2900434A80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A787F0EACA2B300E2DCBE /* MengeLogSystem */;
+			remoteInfo = MengeLogSystem;
+		};
+		8BBAFE330EB87B2D00434A80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A78960EACA3D400E2DCBE /* SDLRenderSystem */;
+			remoteInfo = SDLRenderSystem;
+		};
+		8BBAFE350EB87B3100434A80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8BC94B290EAE1D1D0034D467 /* MengeMacOSFileSystem */;
+			remoteInfo = MengeMacOSFileSystem;
+		};
+		8BBAFE370EB87B3400434A80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8BBFDF000EAF1E3900102B4F /* MacOSApplication */;
+			remoteInfo = MacOSApplication;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		8B1A720B0EAC8A1A00E2DCBE /* libBox2DPhysicSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBox2DPhysicSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -548,6 +655,11 @@
 		8BC94B3C0EAE1D460034D467 /* FileSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = FileSystem.h; sourceTree = "<group>"; };
 		8BC94B3D0EAE1D460034D467 /* MemoryDataStream.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryDataStream.cpp; sourceTree = "<group>"; };
 		8BC94B3E0EAE1D460034D467 /* MemoryDataStream.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = MemoryDataStream.h; sourceTree = "<group>"; };
+		8BCFB2960EB755C500E3ED17 /* PBO.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = PBO.h; sourceTree = "<group>"; };
+		8BCFB2970EB755C600E3ED17 /* PBO.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = PBO.cpp; sourceTree = "<group>"; };
+		8BCFB2B70EB7572400E3ED17 /* LoggerConsole.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = LoggerConsole.h; sourceTree = "<group>"; };
+		8BCFB2B80EB7572500E3ED17 /* LoggerConsole.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = LoggerConsole.cpp; sourceTree = "<group>"; };
+		8BCFB2CB0EB759C600E3ED17 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Platform.h; path = ../src/Config/Platform.h; sourceTree = SOURCE_ROOT; };
 		8BE693E20EA8D5CA00B18A92 /* libMenge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMenge.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BE693EC0EA8D6C100B18A92 /* Account.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; name = Account.cpp; path = ../src/Menge/Account.cpp; sourceTree = SOURCE_ROOT; };
 		8BE693ED0EA8D6C100B18A92 /* Account.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Account.h; path = ../src/Menge/Account.h; sourceTree = SOURCE_ROOT; };
@@ -931,6 +1043,7 @@
 		8B1A72280EAC8B3100E2DCBE /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				8BCFB2CB0EB759C600E3ED17 /* Platform.h */,
 				8B1A72290EAC8B4800E2DCBE /* Config.h */,
 				8B1A722A0EAC8B4800E2DCBE /* Typedef.h */,
 			);
@@ -1104,6 +1217,8 @@
 		8B1A789E0EACA3FF00E2DCBE /* SDLRenderSystem */ = {
 			isa = PBXGroup;
 			children = (
+				8BCFB2960EB755C500E3ED17 /* PBO.h */,
+				8BCFB2970EB755C600E3ED17 /* PBO.cpp */,
 				8BFFDD740EB5DB29002A860B /* OGLBatching.cpp */,
 				8B1A789F0EACA3FF00E2DCBE /* OGLRenderSystem.cpp */,
 				8B1A78A00EACA3FF00E2DCBE /* OGLRenderSystem.def */,
@@ -1124,6 +1239,8 @@
 			children = (
 				8BFFDCEB0EB5D25D002A860B /* OSXTimer.cpp */,
 				8BFFDCEC0EB5D25D002A860B /* OSXTimer.h */,
+				8BCFB2B70EB7572400E3ED17 /* LoggerConsole.h */,
+				8BCFB2B80EB7572500E3ED17 /* LoggerConsole.cpp */,
 				8BBFDF0A0EAF1F6600102B4F /* main.cpp */,
 				8BBFDF0C0EAF1FDA00102B4F /* MacOSApplication.h */,
 				8BBFDF0D0EAF1FDA00102B4F /* MacOSApplication.cpp */,
@@ -1578,6 +1695,7 @@
 				8B1A78AC0EACA3FF00E2DCBE /* OGLTexture.h in Headers */,
 				8B1A78AE0EACA3FF00E2DCBE /* SDLVideoInfo.h in Headers */,
 				8B1A78B00EACA3FF00E2DCBE /* SDLWindow.h in Headers */,
+				8BCFB2980EB755C600E3ED17 /* PBO.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1930,6 +2048,7 @@
 			productRefGroup = 8BE693E30EA8D5CA00B18A92 /* Products */;
 			projectDirPath = "";
 			targets = (
+				8BBAFE220EB87AF700434A80 /* BuildAll */,
 				8BE693E10EA8D5CA00B18A92 /* Menge */,
 				8B1A720A0EAC8A1A00E2DCBE /* Box2DPhysicSystem */,
 				8B1A728E0EAC92E300E2DCBE /* Math */,
@@ -2049,6 +2168,7 @@
 				8B1A78AF0EACA3FF00E2DCBE /* SDLWindow.cpp in Sources */,
 				8B77FE550EB20E2D00F78BA7 /* OGLRenderSystem.cpp in Sources */,
 				8BFFDD750EB5DB29002A860B /* OGLBatching.cpp in Sources */,
+				8BCFB2990EB755C600E3ED17 /* PBO.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2059,6 +2179,7 @@
 				8BBFDF0B0EAF1F6600102B4F /* main.cpp in Sources */,
 				8BBFDF0E0EAF1FDA00102B4F /* MacOSApplication.cpp in Sources */,
 				8BFFDCED0EB5D25D002A860B /* OSXTimer.cpp in Sources */,
+				8BCFB2B90EB7572500E3ED17 /* LoggerConsole.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2196,6 +2317,64 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8BBAFE240EB87B0900434A80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A728E0EAC92E300E2DCBE /* Math */;
+			targetProxy = 8BBAFE230EB87B0900434A80 /* PBXContainerItemProxy */;
+		};
+		8BBAFE260EB87B0D00434A80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A73C40EAC9DA200E2DCBE /* XmlParser */;
+			targetProxy = 8BBAFE250EB87B0D00434A80 /* PBXContainerItemProxy */;
+		};
+		8BBAFE280EB87B1600434A80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8BE693E10EA8D5CA00B18A92 /* Menge */;
+			targetProxy = 8BBAFE270EB87B1600434A80 /* PBXContainerItemProxy */;
+		};
+		8BBAFE2A0EB87B1B00434A80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A720A0EAC8A1A00E2DCBE /* Box2DPhysicSystem */;
+			targetProxy = 8BBAFE290EB87B1A00434A80 /* PBXContainerItemProxy */;
+		};
+		8BBAFE2C0EB87B1E00434A80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A78020EAC9F6100E2DCBE /* OISInputSystem */;
+			targetProxy = 8BBAFE2B0EB87B1E00434A80 /* PBXContainerItemProxy */;
+		};
+		8BBAFE2E0EB87B2200434A80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A78200EACA07400E2DCBE /* MengeProfilerSystem */;
+			targetProxy = 8BBAFE2D0EB87B2200434A80 /* PBXContainerItemProxy */;
+		};
+		8BBAFE300EB87B2500434A80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A783A0EACA12D00E2DCBE /* OALSoundSystem */;
+			targetProxy = 8BBAFE2F0EB87B2500434A80 /* PBXContainerItemProxy */;
+		};
+		8BBAFE320EB87B2900434A80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A787F0EACA2B300E2DCBE /* MengeLogSystem */;
+			targetProxy = 8BBAFE310EB87B2900434A80 /* PBXContainerItemProxy */;
+		};
+		8BBAFE340EB87B2D00434A80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A78960EACA3D400E2DCBE /* SDLRenderSystem */;
+			targetProxy = 8BBAFE330EB87B2D00434A80 /* PBXContainerItemProxy */;
+		};
+		8BBAFE360EB87B3100434A80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8BC94B290EAE1D1D0034D467 /* MengeMacOSFileSystem */;
+			targetProxy = 8BBAFE350EB87B3100434A80 /* PBXContainerItemProxy */;
+		};
+		8BBAFE380EB87B3400434A80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8BBFDF000EAF1E3900102B4F /* MacOSApplication */;
+			targetProxy = 8BBAFE370EB87B3400434A80 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		8B1A720F0EAC8A7300E2DCBE /* Debug */ = {
@@ -2624,6 +2803,28 @@
 			};
 			name = Release;
 		};
+		8BBAFE3C0EB87B7D00434A80 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = BuildAll;
+			};
+			name = Debug;
+		};
+		8BBAFE3D0EB87B7D00434A80 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				PRODUCT_NAME = BuildAll;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		8BBFDF050EAF1E3A00102B4F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3013,6 +3214,15 @@
 			buildConfigurations = (
 				8B1A789C0EACA3F500E2DCBE /* Debug */,
 				8B1A789D0EACA3F500E2DCBE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8BBAFE3B0EB87B7D00434A80 /* Build configuration list for PBXAggregateTarget "BuildAll" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8BBAFE3C0EB87B7D00434A80 /* Debug */,
+				8BBAFE3D0EB87B7D00434A80 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP2"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies\SDL\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;USE_OPENGL;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -65,10 +65,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="SDL.lib SDLmain.lib glu32.lib opengl32.lib glew32.lib"
+				AdditionalDependencies="opengl32.lib glew32sd.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\SDL\lib"
+				AdditionalLibraryDirectories="$(SolutionDir)dependencies/OpenGL"
 				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -203,6 +204,22 @@
 		<File
 			RelativePath=".\SDLWindow.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="true"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\SDLWindow.h"

@@ -1,6 +1,19 @@
 #	include "OGLRenderSystem.h"
+
+#	include "Interface/LogSystemInterface.h"
+
 #	include "OGLTexture.h"
 #	include <assert.h>
+
+#	ifndef MENGE_MASTER_RELEASE
+#		define LOG( message )\
+	if( m_logSystem ) m_logSystem->logMessage( message + Menge::StringA("\n"), Menge::LM_LOG );
+#	else
+#		define LOG( message )
+#	endif
+
+#	define LOG_ERROR( message )\
+	if( m_logSystem ) m_logSystem->logMessage( message + Menge::StringA("\n"), Menge::LM_ERROR );
 
 //////////////////////////////////////////////////////////////////////////
 bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
@@ -26,7 +39,10 @@ OGLRenderSystem::OGLRenderSystem()
 : m_inRender( false )
 , m_layer( 1.0f )
 , m_layer3D( false )
-#if MENGE_PLATFORM_MACOSX
+#if MENGE_PLATFORM_WIN32
+, m_hdc( 0 )
+, m_glrc( 0 )
+#elif MENGE_PLATFORM_MACOSX
 , m_aglContext( NULL )
 #endif
 {
@@ -34,46 +50,14 @@ OGLRenderSystem::OGLRenderSystem()
 //////////////////////////////////////////////////////////////////////////
 OGLRenderSystem::~OGLRenderSystem()
 {
-	//m_SDLWindow.destroy();
-
-	//SDL_Quit();
-
 	deleteBatching();
 }
 //////////////////////////////////////////////////////////////////////////
 bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 {
+	m_logSystem = _logSystem;
+	LOG( "Starting OpenGL Render System..." );
 	bool initialized = true;
-
-	//Uint32 sdlFlags = SDL_INIT_VIDEO;
-
-	//if(SDL_Init(sdlFlags) < 0)
-	//{
-	//	return false;
-	//}
-
-#if MENGE_PLATFORM_MACOSX
-	int i = 0;
-	AGLPixelFormat pixelFormat;
-	GLint attribs[ 20 ];
-		
-	attribs[ i++ ] = AGL_NO_RECOVERY;
-	attribs[ i++ ] = GL_TRUE;
-	attribs[ i++ ] = AGL_ACCELERATED;
-	attribs[ i++ ] = GL_TRUE;
-	attribs[ i++ ] = AGL_RGBA;
-	attribs[ i++ ] = AGL_DOUBLEBUFFER;
-	attribs[ i++ ] = AGL_ALPHA_SIZE;
-	attribs[ i++ ] = 8;
-	attribs[ i++ ] = AGL_STENCIL_SIZE;
-	attribs[ i++ ] = 8;
-	attribs[ i++ ] = AGL_DEPTH_SIZE;
-	attribs[ i++ ] = 32;
-	
-	attribs[ i++ ] = AGL_NONE;
-	pixelFormat = aglChoosePixelFormat( NULL, 0, attribs );
-	m_aglContext = aglCreateContext(pixelFormat, NULL);
-#endif	
 
 	for (size_t i = 0; i < 16; i++)
 	{
@@ -100,8 +84,9 @@ bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::swapBuffers()
 {
-
-#if MENGE_PLATFORM_MACOSX
+#if MENGE_PLATFORM_WIN32
+	SwapBuffers(m_hdc);
+#elif MENGE_PLATFORM_MACOSX
 	if(m_aglContext != aglGetCurrentContext())
 		aglSetCurrentContext(m_aglContext);
 			
@@ -158,14 +143,80 @@ GLint s_blendMengeToOGL(Menge::EBlendFactor _blend )
 //////////////////////////////////////////////////////////////////////////
 bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 {
-	//NameValuePairList values;
-	//values.insert(std::make_pair("colourDepth","32"));
-	// и как же передать тайтл? :)
-	//m_SDLWindow.create("TEST",_width,_height,_fullscreen,&values);
-#if MENGE_PLATFORM_MACOSX
+#if MENGE_PLATFORM_WIN32
+	m_hdc = GetDC((HWND)_winHandle);
+	PIXELFORMATDESCRIPTOR pfd;
+	memset(&pfd, 0, sizeof(pfd));
+	pfd.nSize = sizeof(pfd);
+	pfd.nVersion = 1;
+	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.cColorBits = (_bits > 16)? 24 : _bits;
+	pfd.cAlphaBits = (_bits > 16)? 8 : 0;
+	pfd.cDepthBits = 24;
+	pfd.cStencilBits = 8;
+
+	int format = 0;
+	format = ChoosePixelFormat(m_hdc, &pfd);
+	if( format == 0 )
+	{
+		LOG_ERROR( "OpenGL error: failed choose pixel format" );
+		return false;
+	}
+	BOOL res = SetPixelFormat(m_hdc, format, &pfd);
+	if( res == FALSE )
+	{
+		LOG_ERROR( "OpenGL error: failed set pixel format" );
+		return false;
+	}
+	m_glrc = wglCreateContext(m_hdc);
+	if( m_glrc == 0 )
+	{
+		LOG_ERROR( "OpenGL error: failed to create OpenGL context" );
+		return false;
+	}
+	wglMakeCurrent(m_hdc, m_glrc);
+
+	GLenum err = glewInit();
+	if (GLEW_OK != err)	
+	{
+
+	}
+
+#elif MENGE_PLATFORM_MACOSX
+	int i = 0;
+	AGLPixelFormat pixelFormat;
+	GLint attribs[ 20 ];
+
+	attribs[ i++ ] = AGL_NO_RECOVERY;
+	attribs[ i++ ] = GL_TRUE;
+	attribs[ i++ ] = AGL_ACCELERATED;
+	attribs[ i++ ] = GL_TRUE;
+	attribs[ i++ ] = AGL_RGBA;
+	attribs[ i++ ] = AGL_DOUBLEBUFFER;
+	attribs[ i++ ] = AGL_ALPHA_SIZE;
+	attribs[ i++ ] = 8;
+	attribs[ i++ ] = AGL_STENCIL_SIZE;
+	attribs[ i++ ] = 8;
+	attribs[ i++ ] = AGL_DEPTH_SIZE;
+	attribs[ i++ ] = _bits;
+
+	attribs[ i++ ] = AGL_NONE;
+	pixelFormat = aglChoosePixelFormat( NULL, 0, attribs );
+	m_aglContext = aglCreateContext(pixelFormat, NULL);
+
 	aglSetDrawable(m_aglContext, GetWindowPort((WindowRef)_winHandle));
 	aglSetCurrentContext(m_aglContext);
 #endif
+	const char* str = (const char*)glGetString( GL_VERSION );
+	LOG( "OpenGL Version: " + Menge::String( str ) );
+	str = (const char*)glGetString( GL_VENDOR );
+	LOG( "Vendor: " + Menge::String( str ) );
+	str = (const char*)glGetString( GL_RENDERER );
+	LOG( "Renderer: " + Menge::String( str ) );
+	str = (const char*)glGetString( GL_EXTENSIONS );
+	//LOG( "Extensions:" );
+	//LOG( Menge::String( str ) );
 	
 	initBatching();
 
@@ -198,11 +249,11 @@ void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const flo
 
 	glReadBuffer(GL_FRONT);
 
-    glReadPixels((GLint)_rect[0], (GLint)_rect[1],
+    /*glReadPixels((GLint)_rect[0], (GLint)_rect[1],
 		(GLsizei)_rect[2], (GLsizei)_rect[3],
                 GL_BGRA,
                 GL_UNSIGNED_INT_8_8_8_8_REV,
-               buffer);
+               buffer);*/
 
 	_image->unlock();
 }
@@ -408,11 +459,11 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 	float s = 1.f;
 	float t = 1.f;
 
-	if(m_textureType == GL_TEXTURE_RECTANGLE_ARB)
+	/*if(m_textureType == GL_TEXTURE_RECTANGLE_ARB)
 	{
 		s = _image->getWidth();
 		t = _image->getHeight();
-	}
+	}*/
 
 	quad[0].uv[0] = _uv[0] * s;
 	quad[0].uv[1] = _uv[1] * t;
@@ -479,11 +530,11 @@ void OGLRenderSystem::renderTriple(
 	float s = 1.f;
 	float t = 1.f;
 
-	if(m_textureType == GL_TEXTURE_RECTANGLE_ARB)
+	/*if(m_textureType == GL_TEXTURE_RECTANGLE_ARB)
 	{
 		s = _image->getWidth();
 		t = _image->getHeight();
-	}
+	}*/
 
 	quad[0].uv[0] = _uv0[0] * s;
 	quad[0].uv[1] = _uv0[1] * t;

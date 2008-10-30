@@ -7,7 +7,7 @@ OGLTexture::OGLTexture(GLint _textureType)
 , m_width(0)
 , m_height(0)
 , m_glInternalFormat(GL_RGBA)
-, m_glPixelFormat(GL_BGRA_EXT)
+, m_glPixelFormat(GL_BGRA)
 , m_ref(0)
 , m_format(Menge::PF_A8R8G8B8)
 , m_glPixelType(GL_UNSIGNED_BYTE)
@@ -31,7 +31,7 @@ OGLTexture::OGLTexture(const Menge::String& _name, std::size_t _width, std::size
 , m_width(_width)
 , m_height(_height)
 , m_glInternalFormat(GL_RGBA)
-, m_glPixelFormat(GL_BGRA_EXT)
+, m_glPixelFormat(GL_BGRA)
 , m_ref(0)
 , m_format(Menge::PF_A8R8G8B8)
 , m_glPixelType(GL_UNSIGNED_BYTE)
@@ -45,9 +45,8 @@ OGLTexture::OGLTexture(const Menge::String& _name, std::size_t _width, std::size
 	glGenTextures(1, &m_texture);
 	glBindTexture(m_textureType, m_texture);
 
-	//glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	//glTexParameteri(m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	//glTexParameteri(m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	glTexImage2D(m_textureType, 0, GL_RGBA8, m_width, m_height, 0, m_glInternalFormat,m_glPixelType,0);
 
@@ -73,7 +72,7 @@ void OGLTexture::load( const Menge::TextureDesc & _desc )
 	case Menge::PF_A1R5G5B5:
 		m_format = Menge::PF_A1R5G5B5;
 		m_glInternalFormat=GL_BGRA;
-		m_glPixelFormat=GL_BGRA_EXT;
+		m_glPixelFormat=GL_BGRA;
 		m_glPixelType=GL_UNSIGNED_SHORT_1_5_5_5_REV;
 		ncomponents = 3;
 		break;
@@ -94,7 +93,7 @@ void OGLTexture::load( const Menge::TextureDesc & _desc )
 	case Menge::PF_A8R8G8B8:
 		m_format = Menge::PF_A8R8G8B8;
 		m_glInternalFormat=GL_BGRA;
-		m_glPixelFormat=GL_BGRA_EXT;
+		m_glPixelFormat=GL_BGRA;
 		m_glPixelType=GL_UNSIGNED_BYTE;
 		ncomponents = 4;		
 		break;

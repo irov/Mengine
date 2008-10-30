@@ -8,10 +8,16 @@
 
 #	include <map>
 
-//#	include "SDLWindow.h"
-
 #if MENGE_PLATFORM_MACOSX
 #	include <AGL/AGL.h>
+#else if MENGE_PLATFORM_WIN32
+#	define GLEW_STATIC
+#	include "OpenGL/glew.h"
+#	define WIN32_LEAN_AND_MEAN
+#	include <Windows.h>
+#	include "OpenGL/GL.h"
+#	define GL_GLEXT_PROTOTYPES
+#	include "OpenGL/glext.h"
 #endif
 
 class OGLTexture;
@@ -100,20 +106,20 @@ public:
 	void renderText(const Menge::String & _text, const float * _pos, unsigned long _color) override;
 
 private:
+	Menge::LogSystemInterface* m_logSystem;
 
-#if MENGE_PLATFORM_MACOSX
+#if MENGE_PLATFORM_WIN32
+	HDC m_hdc;
+	HGLRC m_glrc;
+#elif MENGE_PLATFORM_MACOSX
 	AGLContext m_aglContext;
 #endif
 
 	GLint m_textureType;
 	GLint _getTextureType();
 
-	//SDLWindow m_SDLWindow;
-
 	bool m_inRender;
-
 	float m_layer;
-
 	Menge::String m_currentRenderTarget;
 
 	struct RenderTargetInfo
@@ -130,7 +136,6 @@ private:
 	//SDL_Surface * m_screen;
 	//SDL_Rect** m_videoModes;
 	
-
 	GLfloat m_projMatrix[16];
 	GLfloat m_worldMatrix[16];
 	GLfloat m_viewMatrix[16];

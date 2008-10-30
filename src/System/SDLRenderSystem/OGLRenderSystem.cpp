@@ -416,6 +416,7 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 	unsigned int b = ( _color & 0x000000FF ) << 16;
 	unsigned int r = ( _color & 0x00FF0000 ) >> 16;
 	_color = ( _color & 0xFF00FF00 ) + ( b | r );
+
 	const OGLTexture * tex = static_cast<const OGLTexture*>( _image );
 	GLint glTex = 0;
 	if( tex != NULL	)
@@ -497,11 +498,18 @@ void OGLRenderSystem::renderTriple(
 								   Menge::EBlendFactor _srcBlend, 
 								   Menge::EBlendFactor _dstBlend )
 {
+	// swap color to ABGR
+	unsigned int b = ( _color & 0x000000FF ) << 16;
+	unsigned int r = ( _color & 0x00FF0000 ) >> 16;
+	_color = ( _color & 0xFF00FF00 ) + ( b | r );
+
 	const OGLTexture * tex = static_cast<const OGLTexture*>( _image );
-	if(tex == NULL)
+	GLint glTex = 0;
+	if( tex != NULL	)
 	{
-		return;
+		glTex = tex->getGLTexture();
 	}
+
 	GLint srcBlend = s_blendMengeToOGL( _srcBlend );
 	GLint dstBlend = s_blendMengeToOGL( _dstBlend );
 
@@ -549,7 +557,7 @@ void OGLRenderSystem::renderTriple(
 	quad[2].uv[0] = _uv2[0] * s;
 	quad[2].uv[1] = _uv2[1] * t;
 
-	Gfx_RenderTriple(quad,tex->getGLTexture(),srcBlend,dstBlend);
+	Gfx_RenderTriple(quad,glTex,srcBlend,dstBlend);
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::renderLine( unsigned int _color, 

@@ -1,25 +1,25 @@
 #	include "OGLRenderSystem.h"
 
-class CPBO
+class PixelBufferObject
 {
 public:
-	CPBO();
-	~CPBO();
+	PixelBufferObject();
+	~PixelBufferObject();
 
 public:
-  	bool Init(int size);
-	bool Done();
+  	bool init(int _size);
+	bool done();
 	
-	unsigned char * Map(bool _discard);
-	bool Unmap();
+	unsigned char * map(bool _discard);
+	bool unmap();
 	
-	unsigned int GetMaxSize();
+	unsigned int getMaxSize();
 	
-	void Bind();
-	void UnBind();
+	void bind();
+	void unbind();
 
 private:
-	GLuint id;
-	unsigned char* data;
-	int maxsize;
+	GLuint m_id;
+	unsigned char * m_data;
+	int m_maxsize;
 };

@@ -1,71 +1,74 @@
 #	include "PBO.h"
 //////////////////////////////////////////////////////////////////////////
-CPBO::CPBO()
-: id(0)
-, data(NULL)
-, maxsize(0)
+PixelBufferObject::PixelBufferObject()
+: m_id(0)
+, m_data(NULL)
+, m_maxsize(0)
 {}
 //////////////////////////////////////////////////////////////////////////
-CPBO::~CPBO()
+PixelBufferObject::~PixelBufferObject()
 {
 
 }
 //////////////////////////////////////////////////////////////////////////
-bool CPBO::Init( int size )
+bool PixelBufferObject::init(int _size)
 {
-	glGenBuffers(1, &id);
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, id);
-	glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, size, NULL, GL_STATIC_DRAW);
-	maxsize = size;
+	glGenBuffers(1, &m_id);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, m_id);
+	glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, _size, NULL, GL_STATIC_DRAW);
+	m_maxsize = _size;
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void CPBO::Bind()
+void PixelBufferObject::bind()
 {
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, id);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, m_id);
 }
 //////////////////////////////////////////////////////////////////////////
-void CPBO::UnBind()
+void PixelBufferObject::unbind()
 {
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 }
 //////////////////////////////////////////////////////////////////////////
-bool CPBO::Done()
+bool PixelBufferObject::done()
 {
-	if (data != NULL)
+	if (m_data != NULL)
 	{
-		glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, id);
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, m_id);
 		glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER_ARB);
-		data = NULL;
+		m_data = NULL;
 	}
 
-	glDeleteBuffers(1, &id);
+	glDeleteBuffers(1, &m_id);
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-unsigned char * CPBO::Map(bool _discard)
+unsigned char * PixelBufferObject::map(bool _discard)
 {
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, id);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, m_id);
 
-	if(_discard)
+	if(!_discard)
 	{
-		glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, maxsize, NULL, GL_STREAM_DRAW);
+		glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, m_maxsize, NULL, GL_STREAM_DRAW);
 	}
 
-	data = static_cast<unsigned char*>(glMapBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY));
-	return data;
+	m_data = static_cast<unsigned char*>(glMapBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY));
+
+	return m_data;
 }
 //////////////////////////////////////////////////////////////////////////
-bool CPBO::Unmap()
+bool PixelBufferObject::unmap()
 {
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, id);
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, m_id);
+	// unmap the buffer from the CPU space so it can DMA
 	glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER_ARB);
-	data = NULL;
+	m_data = NULL;
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-unsigned int CPBO::GetMaxSize()
+unsigned int PixelBufferObject::getMaxSize()
 {
-	return maxsize;
+	return m_maxsize;
 }
 //////////////////////////////////////////////////////////////////////////

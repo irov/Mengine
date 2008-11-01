@@ -6,61 +6,12 @@ OGLTexture::OGLTexture(GLint _textureType)
 : m_texture(0)
 , m_width(0)
 , m_height(0)
-, m_glInternalFormat(GL_RGBA)
-, m_glPixelFormat(GL_BGRA)
+, m_glformat(GL_BGRA)
 , m_ref(0)
 , m_format(Menge::PF_A8R8G8B8)
-, m_glPixelType(GL_UNSIGNED_BYTE)
+, m_glpixelType(GL_UNSIGNED_BYTE)
 , m_textureType(_textureType)
 {
-	/*glGenBuffers(1, &m_bufferId);
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferId);
-	glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, m_width*m_height*4*sizeof(unsigned char), NULL, GL_STREAM_DRAW);
-	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0); // unbind 
-
-	glGenTextures(1, &m_texture);
-	glBindTexture(m_textureType, m_texture);
-
-	//glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);*/
-}
-//////////////////////////////////////////////////////////////////////////
-OGLTexture::OGLTexture(const Menge::String& _name, std::size_t _width, std::size_t _height, GLint _textureType)
-: m_name(_name)
-, m_width(_width)
-, m_height(_height)
-, m_glInternalFormat(GL_RGBA)
-, m_glPixelFormat(GL_BGRA)
-, m_ref(0)
-, m_format(Menge::PF_A8R8G8B8)
-, m_glPixelType(GL_UNSIGNED_BYTE)
-//, m_bufferId(0)
-, m_textureType(_textureType)
-{
-	int size = m_width*m_height*4*sizeof(unsigned char);
-	m_PBO.Init(size);
-	m_PBO.UnBind();
-
-	glGenTextures(1, &m_texture);
-	glBindTexture(m_textureType, m_texture);
-
-	//glTexParameteri(m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	//glTexParameteri(m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	glTexImage2D(m_textureType, 0, GL_RGBA8, m_width, m_height, 0, m_glInternalFormat,m_glPixelType,0);
-
-}
-//////////////////////////////////////////////////////////////////////////
-OGLTexture::~OGLTexture()
-{
-	m_PBO.Done();
-	glDeleteTextures( 1, &m_texture );
-}
-//////////////////////////////////////////////////////////////////////////
-GLuint OGLTexture::getGLTexture() const
-{
-	return m_texture;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLTexture::load( const Menge::TextureDesc & _desc )
@@ -70,31 +21,23 @@ void OGLTexture::load( const Menge::TextureDesc & _desc )
 	switch (_desc.pixelFormat)
 	{
 	case Menge::PF_A1R5G5B5:
-		m_format = Menge::PF_A1R5G5B5;
-		m_glInternalFormat=GL_BGRA;
-		m_glPixelFormat=GL_BGRA;
-		m_glPixelType=GL_UNSIGNED_SHORT_1_5_5_5_REV;
+		m_glformat = GL_BGRA;
+		m_glpixelType = GL_UNSIGNED_SHORT_1_5_5_5_REV;
 		ncomponents = 3;
 		break;
 	case Menge::PF_R5G6B5:
-		m_format = Menge::PF_R5G6B5;
-		m_glInternalFormat=GL_BGR;
-		m_glPixelFormat=GL_BGR;
-		m_glPixelType=GL_UNSIGNED_SHORT_5_6_5_REV;
+		m_glformat=GL_BGR;
+		m_glpixelType=GL_UNSIGNED_SHORT_5_6_5_REV;
 		ncomponents = 3;
 		break;
 	case Menge::PF_R8G8B8:
-		m_format = Menge::PF_R8G8B8;
-		m_glInternalFormat=GL_BGR;
-		m_glPixelFormat=GL_BGR;
-		m_glPixelType=GL_UNSIGNED_BYTE;
+		m_glformat=GL_BGR;
+		m_glpixelType=GL_UNSIGNED_BYTE;
 		ncomponents = 3;
 		break;
 	case Menge::PF_A8R8G8B8:
-		m_format = Menge::PF_A8R8G8B8;
-		m_glInternalFormat=GL_BGRA;
-		m_glPixelFormat=GL_BGRA;
-		m_glPixelType=GL_UNSIGNED_BYTE;
+		m_glformat=GL_BGRA;
+		m_glpixelType=GL_UNSIGNED_BYTE;
 		ncomponents = 4;		
 		break;
 	default:
@@ -102,22 +45,26 @@ void OGLTexture::load( const Menge::TextureDesc & _desc )
 		break;
 	}
 
-
-	int size = _desc.width * _desc.height * ncomponents * sizeof(unsigned char);
-	m_PBO.Init(size);
-	m_PBO.UnBind();
+	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
 	glGenTextures(1,&m_texture);
+	// bind the empty buffer
+	//glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+
 	glBindTexture(m_textureType,m_texture);
 
-	//glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	glTexParameteri(m_textureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-	glTexImage2D(m_textureType, 0, GL_RGBA8, _desc.width,_desc.height, 0, m_glInternalFormat,m_glPixelType,_desc.buffer);
+	glTexImage2D(m_textureType, 0, ncomponents, _desc.width, _desc.height, 0, m_glformat, m_glpixelType, _desc.buffer);
+
+	int size = _desc.width * _desc.height * ncomponents;
+
+	m_PBO.init(size);
+	m_PBO.unbind();
 
 	GLenum error = glGetError();
 
@@ -131,6 +78,48 @@ void OGLTexture::load( const Menge::TextureDesc & _desc )
 	m_height = _desc.height;
 }
 //////////////////////////////////////////////////////////////////////////
+OGLTexture::OGLTexture(const Menge::String& _name, std::size_t _width, std::size_t _height, GLint _textureType)
+: m_name(_name)
+, m_width(_width)
+, m_height(_height)
+, m_glformat(GL_BGRA)
+, m_ref(0)
+, m_format(Menge::PF_A8R8G8B8)
+, m_glpixelType(GL_UNSIGNED_BYTE)
+, m_textureType(_textureType)
+{
+	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+
+	//glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+
+	glGenTextures(1, &m_texture);
+	glBindTexture(m_textureType, m_texture);
+
+	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	glTexParameteri(m_textureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glTexImage2D(m_textureType, 0, 4, m_width, m_height, 0, m_glformat,m_glpixelType,0);
+
+	int size = m_width * m_height * 4;
+
+	m_PBO.init(size);
+	m_PBO.unbind();
+}
+//////////////////////////////////////////////////////////////////////////
+OGLTexture::~OGLTexture()
+{
+	m_PBO.done();
+	glDeleteTextures( 1, &m_texture );
+}
+//////////////////////////////////////////////////////////////////////////
+GLuint OGLTexture::getGLTexture() const
+{
+	return m_texture;
+}
+///////////////////////////////////////////////////////////////////////////
 std::size_t OGLTexture::getWidth() const
 {
 	return m_width;
@@ -146,46 +135,25 @@ const Menge::String & OGLTexture::getDescription() const
 	return m_name;
 }
 //////////////////////////////////////////////////////////////////////////
-unsigned char* OGLTexture::lock( int* _pitch, bool _readOnly )
+unsigned char * OGLTexture::lock( int* _pitch, bool _readOnly )
 {
-/*	glBindTexture(m_textureType,m_texture);
-
-	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferId );
-
-	if( _readOnly )
-	{
-		glBufferData( GL_PIXEL_UNPACK_BUFFER_ARB, 0, NULL, 0 );
-	}
-
-	glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, m_width*m_height*4*sizeof(unsigned char), NULL, GL_STREAM_DRAW);
-
-	void * pixels = glMapBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY );
-
 	*_pitch = m_width * 4;
 
-	return static_cast<unsigned char*>(pixels);*/
+	glBindTexture(GL_TEXTURE_2D, m_texture);
 
-//	return NULL;
-
-	*_pitch = m_width * 4;
-	return m_PBO.Map(!_readOnly);
+	return m_PBO.map(!_readOnly);
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLTexture::unlock()
 {
-	m_PBO.Unmap();
-	
+	// unmap the buffer from the CPU space so it can DMA
+	m_PBO.unmap();
+	// bind us to the right texture object
 	glBindTexture(m_textureType,m_texture);
-	glTexSubImage2D(m_textureType, 0, GL_RGBA8, m_width,m_height, 0, m_glInternalFormat,m_glPixelType,0);
-
-	m_PBO.UnBind();
-
-/*	glBindBufferARB( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferId );
-	glUnmapBufferARB( GL_PIXEL_UNPACK_BUFFER_ARB );
-
-	glBindTexture(m_textureType,m_texture);
-	glTexSubImage2D(m_textureType, 0, GL_RGBA8, m_width,m_height, 0, m_glInternalFormat,m_glPixelType,0);
-	glBindBufferARB( GL_PIXEL_UNPACK_BUFFER_ARB, 0 );*/
+	// kick off the DMA
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, m_glformat, m_glpixelType, NULL);
+	// unbind the PBO 
+	m_PBO.unbind();
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::PixelFormat OGLTexture::getPixelFormat() 

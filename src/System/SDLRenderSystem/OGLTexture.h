@@ -10,8 +10,6 @@ class OGLTexture : public Menge::RenderImageInterface
 {
 public:
 	OGLTexture(GLint _textureType);
-	OGLTexture(const Menge::String& _name, std::size_t _width, std::size_t _height, GLint _textureType );
-
 	~OGLTexture();
 
 public:
@@ -46,7 +44,5 @@ private:
 
 	Menge::String m_name;
 
-private:
-
-	void _constructTexture(const Menge::TextureDesc & _desc);
+	bool m_useFBO;
 };

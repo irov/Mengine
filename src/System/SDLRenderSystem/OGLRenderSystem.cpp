@@ -3,6 +3,7 @@
 #	include "Interface/LogSystemInterface.h"
 
 #	include "OGLTexture.h"
+#	include "OGLUtils.h"
 #	include <assert.h>
 
 #	ifndef MENGE_MASTER_RELEASE
@@ -59,19 +60,8 @@ bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	LOG( "Starting OpenGL Render System..." );
 	bool initialized = true;
 
-	for (size_t i = 0; i < 16; i++)
-	{
-		m_worldMatrix[i] = 0;
-	}
-
-	m_worldMatrix[0] = m_worldMatrix[5] = m_worldMatrix[10] = m_worldMatrix[15] = 1;
-
-	for (size_t i = 0; i < 16; i++)
-	{
-		m_viewMatrix[i] = 0;
-	}
-
-	m_viewMatrix[0] = m_viewMatrix[5] = m_viewMatrix[10] = m_viewMatrix[15] = 1;
+	OGLUtils::identity(m_worldMatrix);
+	OGLUtils::identity(m_viewMatrix);
 
 	m_textureType = GL_TEXTURE_2D;
 
@@ -98,47 +88,6 @@ void OGLRenderSystem::swapBuffers()
 int OGLRenderSystem::getNumDIP() const
 {
 	return 1;
-}
-//////////////////////////////////////////////////////////////////////////
-void makeGLMatrix(GLfloat gl_matrix[16], const float * m)
-{
-	size_t k = 0;
-	for (size_t i = 0; i < 4; i++)
-	{
-		for (size_t j = 0; j < 4; j++)
-		{
-			gl_matrix[k++] = m[j+i*4];
-		}
-	}
-}
-//////////////////////////////////////////////////////////////////////////
-GLint s_blendMengeToOGL(Menge::EBlendFactor _blend )
-{
-	switch(_blend)
-	{
-	case Menge::BF_ONE:
-		return GL_ONE;
-	case Menge::BF_ZERO:
-		return GL_ZERO;
-	case Menge::BF_DEST_COLOUR:
-		return GL_DST_COLOR;
-	case Menge::BF_SOURCE_COLOUR:
-		return GL_SRC_COLOR;
-	case Menge::BF_ONE_MINUS_DEST_COLOUR:
-		return GL_ONE_MINUS_DST_COLOR;
-	case Menge::BF_ONE_MINUS_SOURCE_COLOUR:
-		return GL_ONE_MINUS_SRC_COLOR;
-	case Menge::BF_DEST_ALPHA:
-		return GL_DST_ALPHA;
-	case Menge::BF_SOURCE_ALPHA:
-		return GL_SRC_ALPHA;
-	case Menge::BF_ONE_MINUS_DEST_ALPHA:
-		return GL_ONE_MINUS_DST_ALPHA;
-	case Menge::BF_ONE_MINUS_SOURCE_ALPHA:
-		return GL_ONE_MINUS_SRC_ALPHA;
-	};
-	
-	return GL_ONE;
 }
 //////////////////////////////////////////////////////////////////////////
 bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _height, int _bits, bool _fullscreen, Menge::WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
@@ -243,19 +192,6 @@ const std::vector<int> & OGLRenderSystem::getResolutionList()
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const float * _rect /*= 0 */ )
 {
-	int pitch = 0;
-
-	unsigned char * buffer = _image->lock(&pitch,false);
-
-	glReadBuffer(GL_FRONT);
-
-    glReadPixels((GLint)_rect[0], (GLint)_rect[1],
-		(GLsizei)_rect[2], (GLsizei)_rect[3],
-                GL_BGRA,
-                GL_UNSIGNED_INT_8_8_8_8_REV,
-               buffer);
-
-	_image->unlock();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::render()
@@ -275,33 +211,13 @@ void OGLRenderSystem::setProjectionMatrix( const float * _projection )
 		m_projMatrix[i] = _projection[i];
 	}
 	
-	makeGLMatrix(m_projMatrix, _projection);
+	OGLUtils::makeGLMatrix(m_projMatrix, _projection);
 
 	//m_projMatrix[12]*=-1;
 
 	glMatrixMode(GL_PROJECTION);   
 	glLoadMatrixf(m_projMatrix);
 	glMatrixMode(GL_MODELVIEW);
-}
-//////////////////////////////////////////////////////////////////////////
-void multiplyMatrices(float * _out, float * _a, float * _b)
-{
-	_out[0] = _a[0] * _b[0] + _a[1] * _b[4]+ _a[2] * _b[8]+ _a[3] * _b[12];
-	_out[1] = _a[0] * _b[1] + _a[1] * _b[5]+ _a[2] * _b[9]+ _a[3] * _b[13];
-	_out[2] = _a[0] * _b[2] + _a[1] * _b[6]+ _a[2] * _b[10]+ _a[3] * _b[14];
-	_out[3] = _a[0] * _b[3] + _a[1] * _b[7]+ _a[2] * _b[11]+ _a[3] * _b[15];
-	_out[4] = _a[4] * _b[0] + _a[5] * _b[4]+ _a[6] * _b[8]+ _a[7] * _b[12];
-	_out[5] = _a[4] * _b[1] + _a[5] * _b[5]+ _a[6] * _b[9]+ _a[7] * _b[13];
-	_out[6] = _a[4] * _b[2] + _a[5] * _b[6]+ _a[6] * _b[10]+ _a[7] * _b[14];
-	_out[7] = _a[4] * _b[3] + _a[5] * _b[7]+ _a[6] * _b[11]+ _a[7] * _b[15];
-	_out[8] = _a[8] * _b[0] + _a[9] * _b[4]+ _a[10] * _b[8]+ _a[11] * _b[12];
-	_out[9] = _a[8] * _b[1] + _a[9] * _b[5]+ _a[10] * _b[9]+ _a[11] * _b[13];
-	_out[10] = _a[8] * _b[2] + _a[9] * _b[6]+ _a[10] * _b[10]+ _a[11] * _b[14];
-	_out[11] = _a[8] * _b[3] + _a[9] * _b[7]+ _a[10] * _b[11]+ _a[11] * _b[15];
-	_out[12] = _a[12] * _b[0] + _a[13] * _b[4]+ _a[14] * _b[8]+ _a[15] * _b[12];
-	_out[13] = _a[12] * _b[1] + _a[13] * _b[5]+ _a[14] * _b[9]+ _a[15] * _b[13];
-	_out[14] = _a[12] * _b[2] + _a[13] * _b[6]+ _a[14] * _b[10]+ _a[15] * _b[14];
-	_out[15] = _a[12] * _b[3] + _a[13] * _b[7]+ _a[14] * _b[11]+ _a[15] * _b[15];
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setViewMatrix( const float * _view )
@@ -314,9 +230,9 @@ void OGLRenderSystem::setViewMatrix( const float * _view )
 	}
 
 	float WV[16];
-	multiplyMatrices(WV,m_worldMatrix,m_viewMatrix);
+	OGLUtils::multiplyMatrices(WV,m_worldMatrix,m_viewMatrix);
 	GLfloat mogl[16];
-	makeGLMatrix( mogl, WV );
+	OGLUtils::makeGLMatrix( mogl, WV );
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(mogl);
 }
@@ -331,9 +247,9 @@ void OGLRenderSystem::setWorldMatrix( const float * _world )
 	}
 
 	float WV[16];
-	multiplyMatrices(WV,m_worldMatrix,m_viewMatrix);
+	OGLUtils::multiplyMatrices(WV,m_worldMatrix,m_viewMatrix);
 	GLfloat mogl[16];
-	makeGLMatrix( mogl, WV );
+	OGLUtils::makeGLMatrix( mogl, WV );
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(mogl);
 }
@@ -346,9 +262,24 @@ GLint OGLRenderSystem::_getTextureType()
 Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String & _name,
 														   float _width, float _height )
 {
-	OGLTexture * texture = new OGLTexture(_name,_width, _height, _getTextureType());
-	m_textureMap.insert( std::make_pair( _name, static_cast<Menge::RenderImageInterface*>( texture ) ) );
+	OGLTexture * texture = new OGLTexture(_getTextureType());
+
+	Menge::TextureDesc _desc = {_name,0,0,0,_width,_height,Menge::PF_A8R8G8B8};
+
+	texture->load(_desc);
+	m_textureMap.insert( std::make_pair( _desc.name, texture ) );
 	texture->incRef();
+
+	return texture;
+}
+//////////////////////////////////////////////////////////////////////////
+Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::String& _name, std::size_t _width, std::size_t _height, const Menge::TextureDesc& _desc )
+{
+	OGLTexture * texture = new OGLTexture(_getTextureType());
+	texture->load(_desc);
+	m_textureMap.insert( std::make_pair( _desc.name, texture ) );
+	texture->incRef();
+
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -361,16 +292,6 @@ Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Me
 bool OGLRenderSystem::supportNPOT()
 {
 	return true; // ? or ??
-}
-//////////////////////////////////////////////////////////////////////////
-Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::String& _name, std::size_t _width, std::size_t _height, const Menge::TextureDesc& _desc )
-{
-	OGLTexture * texture = new OGLTexture(_getTextureType());
-	texture->load(_desc);
-	m_textureMap.insert( std::make_pair( _desc.name, texture ) );
-	texture->incRef();
-
-	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::releaseImage( Menge::RenderImageInterface * _image )
@@ -424,8 +345,8 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 		glTex = tex->getGLTexture();
 	}
 
-	GLint srcBlend = s_blendMengeToOGL( _srcBlend );
-	GLint dstBlend = s_blendMengeToOGL( _dstBlend );
+	GLint srcBlend = OGLUtils::s_blendMengeToOGL( _srcBlend );
+	GLint dstBlend = OGLUtils::s_blendMengeToOGL( _dstBlend );
 
 	Menge::TVertex quad[4];
 
@@ -510,8 +431,8 @@ void OGLRenderSystem::renderTriple(
 		glTex = tex->getGLTexture();
 	}
 
-	GLint srcBlend = s_blendMengeToOGL( _srcBlend );
-	GLint dstBlend = s_blendMengeToOGL( _dstBlend );
+	GLint srcBlend = OGLUtils::s_blendMengeToOGL( _srcBlend );
+	GLint dstBlend = OGLUtils::s_blendMengeToOGL( _dstBlend );
 
 	Menge::TVertex quad[3];
 

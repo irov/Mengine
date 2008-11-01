@@ -11,7 +11,14 @@ OGLTexture::OGLTexture(GLint _textureType)
 , m_format(Menge::PF_A8R8G8B8)
 , m_glpixelType(GL_UNSIGNED_BYTE)
 , m_textureType(_textureType)
+, m_useFBO(false)
 {
+}
+//////////////////////////////////////////////////////////////////////////
+OGLTexture::~OGLTexture()
+{
+	m_PBO.done();
+	glDeleteTextures( 1, &m_texture );
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLTexture::load( const Menge::TextureDesc & _desc )
@@ -76,43 +83,6 @@ void OGLTexture::load( const Menge::TextureDesc & _desc )
 	m_name = _desc.name;
 	m_width = _desc.width;
 	m_height = _desc.height;
-}
-//////////////////////////////////////////////////////////////////////////
-OGLTexture::OGLTexture(const Menge::String& _name, std::size_t _width, std::size_t _height, GLint _textureType)
-: m_name(_name)
-, m_width(_width)
-, m_height(_height)
-, m_glformat(GL_BGRA)
-, m_ref(0)
-, m_format(Menge::PF_A8R8G8B8)
-, m_glpixelType(GL_UNSIGNED_BYTE)
-, m_textureType(_textureType)
-{
-	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-
-	//glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
-
-	glGenTextures(1, &m_texture);
-	glBindTexture(m_textureType, m_texture);
-
-	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	glTexParameteri(m_textureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-	glTexImage2D(m_textureType, 0, 4, m_width, m_height, 0, m_glformat,m_glpixelType,0);
-
-	int size = m_width * m_height * 4;
-
-	m_PBO.init(size);
-	m_PBO.unbind();
-}
-//////////////////////////////////////////////////////////////////////////
-OGLTexture::~OGLTexture()
-{
-	m_PBO.done();
-	glDeleteTextures( 1, &m_texture );
 }
 //////////////////////////////////////////////////////////////////////////
 GLuint OGLTexture::getGLTexture() const

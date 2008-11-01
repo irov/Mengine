@@ -170,6 +170,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\FBO.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\FBO.h"
+			>
+		</File>
+		<File
 			RelativePath=".\OGLBatching.cpp"
 			>
 		</File>
@@ -191,6 +199,14 @@
 		</File>
 		<File
 			RelativePath=".\OGLTexture.h"
+			>
+		</File>
+		<File
+			RelativePath=".\OGLUtils.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\OGLUtils.h"
 			>
 		</File>
 		<File

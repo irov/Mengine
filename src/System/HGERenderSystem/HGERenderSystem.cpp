@@ -60,7 +60,6 @@ hgeBlendState s_blendMengeToHGE( Menge::EBlendFactor _blend )
 HGERenderSystem::HGERenderSystem()
 : m_hge( NULL )
 , m_layer( 1.0f )
-, m_contentResolution( 1024.0f, 768.0f )
 , m_inRender( false )
 , m_layer3D( false )
 #ifdef _DEBUG
@@ -173,8 +172,8 @@ void HGERenderSystem::render()
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::setContentResolution( const float * _resolution )
 {
-	m_contentResolution.x = _resolution[0];
-	m_contentResolution.y = _resolution[1];
+	m_contentResolution[0] = _resolution[0];
+	m_contentResolution[1] = _resolution[1];
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::setProjectionMatrix( const float * _projection )

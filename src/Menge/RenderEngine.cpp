@@ -76,6 +76,8 @@ namespace Menge
 	void RenderEngine::setContentResolution( const Resolution & _resolution )
 	{
 		m_contentResolution = _resolution;
+		std::size_t res[2];
+		m_interface->setContentResolution( res );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer2D()

@@ -350,7 +350,7 @@ namespace Menge
 		// Renders One Frame
 		virtual void render() = 0; 
 		// установка разрешения контента игры, входные данные: вектор2. 
-		virtual void setContentResolution( const float * _resolution ) = 0;
+		virtual void setContentResolution( const std::size_t * _resolution ) = 0;
 		// входные данные: матрица 4 на 4
 		virtual	void setProjectionMatrix( const float * _projection ) = 0;
 		virtual	void setViewMatrix( const float * _view ) = 0;

@@ -209,8 +209,8 @@ void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const flo
 	glReadBuffer( GL_BACK );
 	int x = 0;
 	int y = m_windowHeight;
-	std::size_t width =  1024; 
-	std::size_t height = 768; 
+	std::size_t width =  m_windowWidth; 
+	std::size_t height = m_windowHeight; 
 	if( _rect != NULL )
 	{
 		x = _rect[0];
@@ -298,8 +298,10 @@ void OGLRenderSystem::render()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-void OGLRenderSystem::setContentResolution( const float * _resolution )
+void OGLRenderSystem::setContentResolution( const std::size_t * _resolution )
 {
+	m_contentResolution[0] = _resolution[0];
+	m_contentResolution[1] = _resolution[1];
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setProjectionMatrix( const float * _projection )
@@ -679,8 +681,8 @@ void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height
 		ChangeDisplaySettings(NULL, 0);
 	}
 #endif
-	//m_frameBufferWidth = _width;
-	//m_frameBufferHeight = _height;
+	m_windowWidth = _width;
+	m_windowHeight = _height;
 	
 	glViewport( 0, 0, _width, _height );
 	//_glEnable2D();

@@ -24,7 +24,7 @@ public:
 	const std::vector<int> & getResolutionList() override;
 	void screenshot( Menge::RenderImageInterface* _image, const float * rect = 0 ) override;
 	void render() override; 
-	void setContentResolution( const float * _resolution ) override;
+	void setContentResolution( const std::size_t * _resolution ) override;
 	void setProjectionMatrix( const float * _projection ) override;
 	void setViewMatrix( const float * _view ) override;
 	void setWorldMatrix( const float * _world ) override;
@@ -95,7 +95,7 @@ public:
 private:
 	HGERenderFont * m_systemFont;
 	Menge::LogSystemInterface* m_logSystem;
-	mt::vec2f m_contentResolution;
+	std::size_t m_contentResolution[2];
 	HGE* m_hge;
 	float m_layer;
 	mt::box2f m_viewport;

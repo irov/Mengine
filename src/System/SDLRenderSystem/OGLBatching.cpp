@@ -177,6 +177,8 @@ void OGLRenderSystem::Gfx_RenderQuad(const Menge::TVertex * quad, GLint tex, GLi
 	{
 		renderBatch();
 
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 		m_curPrimType = GL_QUADS;
 
 		if( m_currSrcBlend != srcBlend || m_currDstBlend != dstBlend )
@@ -189,6 +191,7 @@ void OGLRenderSystem::Gfx_RenderQuad(const Menge::TVertex * quad, GLint tex, GLi
 		if( tex != m_curTexture )
 		{
 			glBindTexture(m_textureType, tex);
+			GLenum err = glGetError();
 			m_curTexture = tex;
 		}
 	}
@@ -207,6 +210,8 @@ void OGLRenderSystem::Gfx_RenderTriple(const Menge::TVertex *quad, GLint tex, GL
 	{
 		renderBatch();
 
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 		m_curPrimType=GL_TRIANGLES;
 
 		if( m_currSrcBlend != srcBlend || m_currDstBlend != dstBlend )
@@ -219,6 +224,7 @@ void OGLRenderSystem::Gfx_RenderTriple(const Menge::TVertex *quad, GLint tex, GL
 		if( tex != m_curTexture )
 		{
 			glBindTexture(m_textureType, tex);
+			GLenum err = glGetError();
 			m_curTexture = tex;
 		}
 	}

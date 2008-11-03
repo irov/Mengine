@@ -40,6 +40,8 @@ OGLRenderSystem::OGLRenderSystem()
 : m_inRender( false )
 , m_layer( 1.0f )
 , m_layer3D( false )
+, m_frameBufferWidth( 0 )
+, m_frameBufferHeight( 0 )
 #if MENGE_PLATFORM_WIN32
 , m_hdc( 0 )
 , m_glrc( 0 )
@@ -104,6 +106,9 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	pfd.cAlphaBits = (_bits > 16)? 8 : 0;
 	pfd.cDepthBits = 24;
 	pfd.cStencilBits = 8;
+
+	m_frameBufferWidth = _width;
+	m_frameBufferHeight = _height;
 
 	int format = 0;
 	format = ChoosePixelFormat(m_hdc, &pfd);
@@ -192,6 +197,53 @@ const std::vector<int> & OGLRenderSystem::getResolutionList()
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const float * _rect /*= 0 */ )
 {
+	int pitch = 0;
+	if( _image == NULL )
+	{
+		LOG_ERROR( "Warning: _image == NULL in OGLRenderSystem::screenshot" );
+		return;
+	}
+	unsigned char* imageData = _image->lock( &pitch, true );
+	glReadBuffer( GL_BACK );
+	int x = 0;
+	int y = m_frameBufferHeight;
+	std::size_t width =  m_frameBufferWidth; 
+	std::size_t height = m_frameBufferHeight; 
+	if( _rect != NULL )
+	{
+		x = _rect[0];
+		y -= _rect[3];
+		width = ::floorf( _rect[2] - _rect[0] + 0.5f );
+		height = ::floorf( _rect[3] - _rect[1] + 0.5f );
+	}
+	std::size_t iWidth = _image->getWidth();
+	std::size_t iHeight = _image->getHeight();
+	if( iWidth < width )
+	{
+		width = iWidth;
+	}
+	if( iHeight < height )
+	{
+		height = iHeight;
+	}
+	
+	glReadPixels( x, y, width, height, GL_BGRA, GL_UNSIGNED_BYTE, imageData );
+	//if( imageData != NULL )	// reverse by y
+	{
+		unsigned char* buffer = new unsigned char[pitch];
+		for( std::size_t i = 0; i < height/2; i++ )
+		{
+			std::copy( imageData + i * pitch, imageData + ( i + 1 ) * pitch, buffer );
+			std::copy( imageData + ( height - i - 1 ) * pitch, imageData + ( height - i ) * pitch, imageData + i * pitch );
+			std::copy( buffer, buffer + pitch, imageData + ( height - i - 1 ) * pitch );
+		}
+		delete[] buffer;
+	}
+	/*else
+	{
+		LOG_ERROR( "Error: OpenGL failed to read back buffer" );
+	}*/
+	_image->unlock();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::render()
@@ -264,7 +316,7 @@ Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String 
 {
 	OGLTexture * texture = new OGLTexture(_getTextureType());
 
-	Menge::TextureDesc _desc = {_name,0,0,0,_width,_height,Menge::PF_A8R8G8B8};
+	Menge::TextureDesc _desc = {_name,0,0,0,::floorf( _width + 0.5f ),::floorf( _height + 0.5f ),Menge::PF_A8R8G8B8};
 
 	texture->load(_desc);
 	m_textureMap.insert( std::make_pair( _desc.name, texture ) );

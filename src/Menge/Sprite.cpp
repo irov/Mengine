@@ -99,6 +99,7 @@ namespace	Menge
 			return false;
 		}
 		
+		m_currentImageIndex = 0;
 		updateSprite_();
 
 		return true;

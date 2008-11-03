@@ -63,8 +63,8 @@ void OGLTexture::load( const Menge::TextureDesc & _desc )
 	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-	glTexParameteri(m_textureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(m_textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 	glTexImage2D(m_textureType, 0, ncomponents, _desc.width, _desc.height, 0, m_glformat, m_glpixelType, _desc.buffer);
 

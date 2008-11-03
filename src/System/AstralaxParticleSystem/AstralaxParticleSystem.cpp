@@ -175,6 +175,6 @@ void AstralaxParticleSystem::unlockEmitter( Menge::EmitterInterface * _emitter )
 //////////////////////////////////////////////////////////////////////////
 void AstralaxParticleSystem::releaseEmitterContainer( Menge::EmitterContainerInterface* _containerInterface )
 {
-	delete _containerInterface;
+	delete static_cast<AstralaxEmitterContainer*>( _containerInterface );
 }
 //////////////////////////////////////////////////////////////////////////

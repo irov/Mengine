@@ -606,14 +606,29 @@ void OGLRenderSystem::renderText(const Menge::String & _text, const float * _pos
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen )
 {
-	//int flags = SDL_OPENGL | SDL_RESIZABLE;
+#if MENGE_PLATFORM_WIN32
+	if ( _fullscreen )
+	{
+		DEVMODE dm;
+		dm.dmSize = sizeof(DEVMODE);
+		dm.dmPelsWidth = _width;
+		dm.dmPelsHeight = _height;
+		dm.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
 
-	//if (_fullscreen)
-	//{
-	//	flags |= SDL_FULLSCREEN;
-	//}
-
-	//m_screen = SDL_SetVideoMode(_width, _height, m_screen->format->BitsPerPixel, flags);
+		if (ChangeDisplaySettings(&dm, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
+		{
+			LOG_ERROR( "Error: OpenGL failed to switch into fullscreen mode " );
+		}
+	}
+	else
+	{
+		ChangeDisplaySettings(NULL, 0);
+	}
+#endif
+	m_frameBufferWidth = _width;
+	m_frameBufferHeight = _height;
+	glViewport( 0, 0, _width, _height );
+	_glEnable2D();
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::CameraInterface * OGLRenderSystem::createCamera( const Menge::String & _name )

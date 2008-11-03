@@ -599,13 +599,12 @@ namespace Menge
 			SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
 			SetWindowPos(m_hWnd, HWND_NOTOPMOST, left, top, winWidth, winHeight,
 				SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOACTIVATE);
-
 		}
 		else
 		{
 			dwStyle |= WS_POPUP;
 			SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
-			SetWindowPos( m_hWnd, NULL, 0, 0, (LONG)_width, (LONG)_height, SWP_NOACTIVATE );
+			SetWindowPos( m_hWnd, HWND_TOPMOST, 0, 0, (LONG)_width, (LONG)_height, SWP_NOZORDER | SWP_NOACTIVATE  | SWP_FRAMECHANGED);
 		}
 		::ShowWindow( m_hWnd, SW_NORMAL );
 		//::SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);

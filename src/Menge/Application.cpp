@@ -278,8 +278,9 @@ namespace Menge
 
 		if( isFullscreen == true )
 		{
-			float aspect = m_desktopResolution.getRatio();
-			m_currentResolution = m_renderEngine->getBestDisplayResolution( m_desktopResolution, aspect );
+			//float aspect = m_desktopResolution.getRatio();
+			//m_currentResolution = m_renderEngine->getBestDisplayResolution( m_desktopResolution, aspect );
+			m_currentResolution = m_desktopResolution;
 		}
 		else
 		{

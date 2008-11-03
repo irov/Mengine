@@ -1,6 +1,6 @@
 #	pragma once
 #	include "Interface/ApplicationInterface.h"
-#	include "windows.h";
+#	include "windows.h"
 
 namespace Menge
 {

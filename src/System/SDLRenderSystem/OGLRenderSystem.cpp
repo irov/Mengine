@@ -1,3 +1,5 @@
+#	include "Config/Typedef.h"
+
 #	include "OGLRenderSystem.h"
 
 #	include "Interface/LogSystemInterface.h"
@@ -40,8 +42,6 @@ OGLRenderSystem::OGLRenderSystem()
 : m_inRender( false )
 , m_layer( 1.0f )
 , m_layer3D( false )
-, m_frameBufferWidth( 0 )
-, m_frameBufferHeight( 0 )
 #if MENGE_PLATFORM_WIN32
 , m_hdc( 0 )
 , m_glrc( 0 )
@@ -107,8 +107,11 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	pfd.cDepthBits = 24;
 	pfd.cStencilBits = 8;
 
-	m_frameBufferWidth = _width;
-	m_frameBufferHeight = _height;
+	m_windowWidth = _width;
+	m_windowHeight = _height;
+	m_viewport[0] = m_viewport[1] = 0;
+	m_viewport[2] = _width;
+	m_viewport[3] = _height;
 
 	int format = 0;
 	format = ChoosePixelFormat(m_hdc, &pfd);
@@ -136,7 +139,6 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	{
 
 	}
-
 #elif MENGE_PLATFORM_MACOSX
 	int i = 0;
 	AGLPixelFormat pixelFormat;
@@ -206,9 +208,9 @@ void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const flo
 	unsigned char* imageData = _image->lock( &pitch, true );
 	glReadBuffer( GL_BACK );
 	int x = 0;
-	int y = m_frameBufferHeight;
-	std::size_t width =  m_frameBufferWidth; 
-	std::size_t height = m_frameBufferHeight; 
+	int y = m_windowHeight;
+	std::size_t width =  1024; 
+	std::size_t height = 768; 
 	if( _rect != NULL )
 	{
 		x = _rect[0];
@@ -218,31 +220,77 @@ void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const flo
 	}
 	std::size_t iWidth = _image->getWidth();
 	std::size_t iHeight = _image->getHeight();
-	if( iWidth < width )
+
+	int bufDataPitch = width * 4;
+	unsigned char* bufferData = new unsigned char[width*height*4];
+	glReadPixels( x, y, width, height, GL_BGRA, GL_UNSIGNED_BYTE, bufferData );	// why is our buffer flipped by y????
+	if( iWidth == width && iHeight == height )
 	{
-		width = iWidth;
-	}
-	if( iHeight < height )
-	{
-		height = iHeight;
-	}
-	
-	glReadPixels( x, y, width, height, GL_BGRA, GL_UNSIGNED_BYTE, imageData );
-	//if( imageData != NULL )	// reverse by y
-	{
-		unsigned char* buffer = new unsigned char[pitch];
-		for( std::size_t i = 0; i < height/2; i++ )
+		unsigned char* buf = bufferData + pitch * ( height - 1 );
+		for( std::size_t i = 0; i < height; i++ )
 		{
-			std::copy( imageData + i * pitch, imageData + ( i + 1 ) * pitch, buffer );
-			std::copy( imageData + ( height - i - 1 ) * pitch, imageData + ( height - i ) * pitch, imageData + i * pitch );
-			std::copy( buffer, buffer + pitch, imageData + ( height - i - 1 ) * pitch );
+			std::copy( buf, buf + pitch, imageData );
+			imageData += pitch;
+			buf -= bufDataPitch; // flip by y
 		}
-		delete[] buffer;
 	}
-	/*else
+	else	// resample image
 	{
-		LOG_ERROR( "Error: OpenGL failed to read back buffer" );
-	}*/
+
+		// srcdata stays at beginning of slice, pdst is a moving pointer
+		unsigned char* srcdata = bufferData;
+		unsigned char* pdst = imageData + ( iHeight - 1 ) * pitch;	// flip by y
+
+		// sx_48,sy_48 represent current position in source
+		// using 16/48-bit fixed precision, incremented by steps
+		Menge::uint64 stepx = ((Menge::uint64)width << 48) / iWidth;
+		Menge::uint64 stepy = ((Menge::uint64)height << 48) / iHeight;
+
+		// bottom 28 bits of temp are 16/12 bit fixed precision, used to
+		// adjust a source coordinate backwards by half a pixel so that the
+		// integer bits represent the first sample (eg, sx1) and the
+		// fractional bits are the blend weight of the second sample
+		unsigned int temp;
+
+		Menge::uint64 sy_48 = (stepy >> 1) - 1;
+		for (size_t y = 0; y < iHeight; y++, sy_48 += stepy) 
+		{
+			temp = sy_48 >> 36;
+			temp = (temp > 0x800)? temp - 0x800: 0;
+			unsigned int syf = temp & 0xFFF;
+			size_t sy1 = temp >> 12;
+			size_t sy2 = (std::min)( sy1 + 1, height - 1 );
+			size_t syoff1 = sy1 * width;//bufDataPitch;
+			size_t syoff2 = sy2 * width;//bufDataPitch;
+
+			Menge::uint64 sx_48 = (stepx >> 1) - 1;
+			for (size_t x = 0; x < iWidth; x++, sx_48+=stepx) 
+			{
+				temp = sx_48 >> 36;
+				temp = (temp > 0x800)? temp - 0x800 : 0;
+				unsigned int sxf = temp & 0xFFF;
+				size_t sx1 = temp >> 12;
+				size_t sx2 = (std::min)(sx1+1, width-1);
+
+				unsigned int sxfsyf = sxf*syf;
+				for (unsigned int k = 0; k < 4; k++) 
+				{
+					unsigned int accum =
+						srcdata[(sx1 + syoff1)*4+k]*(0x1000000-(sxf<<12)-(syf<<12)+sxfsyf) +
+						srcdata[(sx2 + syoff1)*4+k]*((sxf<<12)-sxfsyf) +
+						srcdata[(sx1 + syoff2)*4+k]*((syf<<12)-sxfsyf) +
+						srcdata[(sx2 + syoff2)*4+k]*sxfsyf;
+					// accum is computed using 8/24-bit fixed-point math
+					// (maximum is 0xFF000000; rounding will not cause overflow)
+					*pdst++ = (accum + 0x800000) >> 24;
+				}
+			}
+			pdst -= pitch * 2;
+			//pdst += 4*dst.getRowSkip();
+		}
+
+	}
+	delete[] bufferData;
 	_image->unlock();
 }
 //////////////////////////////////////////////////////////////////////////
@@ -276,27 +324,25 @@ void OGLRenderSystem::setViewMatrix( const float * _view )
 {
 	renderBatch();
 
-	for(int i = 0; i < 16;i++)
-	{
-		m_viewMatrix[i] = _view[i];
-	}
+	std::copy( _view, _view + 16, m_viewMatrix );
 
-	float WV[16];
-	OGLUtils::multiplyMatrices(WV,m_worldMatrix,m_viewMatrix);
-	GLfloat mogl[16];
-	OGLUtils::makeGLMatrix( mogl, WV );
+	//float WV[16];
+	//OGLUtils::multiplyMatrices(WV,m_worldMatrix,m_viewMatrix);
+	//GLfloat mogl[16];
+	//OGLUtils::makeGLMatrix( mogl, WV );
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(mogl);
+	glLoadMatrixf(m_viewMatrix);
+	/*std::copy( _view, _view + 16, m_viewMatrix );
+	glMatrixMode( GL_MODELVIEW );
+	glLoadMatrixf( m_worldMatrix );
+	glMultMatrixf( m_viewMatrix );*/
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setWorldMatrix( const float * _world )
 {
 	renderBatch();
 
-	for(int i = 0; i < 16;i++)
-	{
-		m_worldMatrix[i] = _world[i];
-	}
+	std::copy( _world, _world + 16, m_worldMatrix );
 
 	float WV[16];
 	OGLUtils::multiplyMatrices(WV,m_worldMatrix,m_viewMatrix);
@@ -304,6 +350,10 @@ void OGLRenderSystem::setWorldMatrix( const float * _world )
 	OGLUtils::makeGLMatrix( mogl, WV );
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(mogl);
+	/*std::copy( _world, _world + 16, m_worldMatrix );
+	glMatrixMode( GL_MODELVIEW );
+	glLoadMatrixf( m_worldMatrix );
+	glMultMatrixf( m_viewMatrix );*/
 }
 //////////////////////////////////////////////////////////////////////////
 GLint OGLRenderSystem::_getTextureType()
@@ -515,11 +565,11 @@ void OGLRenderSystem::renderTriple(
 	float s = 1.f;
 	float t = 1.f;
 
-	/*if(m_textureType == GL_TEXTURE_RECTANGLE_ARB)
+	if( _image && m_textureType == GL_TEXTURE_RECTANGLE_ARB)
 	{
 		s = _image->getWidth();
 		t = _image->getHeight();
-	}*/
+	}
 
 	quad[0].uv[0] = _uv0[0] * s;
 	quad[0].uv[1] = _uv0[1] * t;
@@ -557,8 +607,12 @@ void OGLRenderSystem::renderLine( unsigned int _color,
 void OGLRenderSystem::beginScene()
 {
 	m_layer = 1.0f;
-
+	glViewport( 0, 0, m_windowWidth, m_windowHeight );
+#ifdef _DEBUG
+	glClearColor(0.0f, 0.0f,1.0f,1.0f);
+#else
 	glClearColor(0.0f,0.0f,0.0f,1.0f);
+#endif
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	n_prim = 0;
 }
@@ -625,10 +679,11 @@ void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height
 		ChangeDisplaySettings(NULL, 0);
 	}
 #endif
-	m_frameBufferWidth = _width;
-	m_frameBufferHeight = _height;
+	//m_frameBufferWidth = _width;
+	//m_frameBufferHeight = _height;
+	
 	glViewport( 0, 0, _width, _height );
-	_glEnable2D();
+	//_glEnable2D();
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::CameraInterface * OGLRenderSystem::createCamera( const Menge::String & _name )
@@ -717,5 +772,20 @@ void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setRenderArea( const float* _renderArea )
 {
+	for( int i = 0; i < 4; i++ )
+	{
+		m_viewport[i] = _renderArea[i];
+	}
+	if( ( m_viewport[0] | m_viewport[1] | m_viewport[2] | m_viewport[3] ) == 0 )
+	{
+		m_viewport[2] = m_windowWidth;
+		m_viewport[3] = m_windowHeight;
+	}
+
+	GLsizei w = m_viewport[2] - m_viewport[0];
+	GLsizei h = m_viewport[3] - m_viewport[1];
+
+	glViewport( m_viewport[0], m_viewport[1], w, h );
+	_glEnable2D();
 }
 //////////////////////////////////////////////////////////////////////////

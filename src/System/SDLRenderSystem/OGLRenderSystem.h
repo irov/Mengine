@@ -162,6 +162,8 @@ private:
 	void renderBatch();
 
 	bool m_layer3D;
-	std::size_t m_frameBufferWidth;
-	std::size_t m_frameBufferHeight;
+	std::size_t m_windowWidth;
+	std::size_t m_windowHeight;
+
+	GLint m_viewport[4];
 };

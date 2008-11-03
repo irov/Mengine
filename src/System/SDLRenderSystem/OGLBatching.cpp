@@ -38,7 +38,7 @@ void OGLRenderSystem::deleteBatching()
 void OGLRenderSystem::_glEnable2D()   
 {   
 	//в HGE эта часть всегда была в BeginScene.
-	GLint viewport[4];   
+	/*GLint viewport[4];   
 
 	glGetIntegerv( GL_VIEWPORT, viewport );   
 
@@ -57,12 +57,25 @@ void OGLRenderSystem::_glEnable2D()
 	glDisable(GL_LIGHTING);  
 
 	glEnable(GL_BLEND);
-	glEnable(m_textureType);
+	glEnable(m_textureType);*/
 	/*
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_ALPHA_TEST_REF,)
 	glAlphaFunc(GL_ALPHA_TEST_FUNC,GL_GREATER);
 	*/
+	glDisable( GL_DEPTH_TEST );
+	glDisable( GL_CULL_FACE );
+	glDisable( GL_LIGHTING );
+	glEnable( GL_BLEND );
+	glEnable( m_textureType );
+
+	std::fill( m_worldMatrix, m_worldMatrix + 16, 0 );
+	m_worldMatrix[0] = m_worldMatrix[5] = m_worldMatrix[10] = m_worldMatrix[15] = 1.0f;
+	setWorldMatrix( m_worldMatrix );
+	setViewMatrix( m_viewMatrix );
+	glMatrixMode( GL_PROJECTION );
+	glLoadIdentity();
+	glOrtho( m_viewport[0], /*m_viewport[0] +*/ m_viewport[2], /*m_viewport[1] +*/ m_viewport[3], m_viewport[1], -1, 1 );
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::_glEnable3D()

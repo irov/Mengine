@@ -1051,7 +1051,7 @@
 			children = (
 				8BDC9F630EBA0126007D4D75 /* AstralaxParticleSystem */,
 				8BC94B2F0EAE1D460034D467 /* MengeMacOSFileSystem */,
-				8B1A789E0EACA3FF00E2DCBE /* SDLRenderSystem */,
+				8B1A789E0EACA3FF00E2DCBE /* OGLRenderSystem */,
 				8B1A78870EACA2E200E2DCBE /* MengeLogSystem */,
 				8B1A78420EACA14E00E2DCBE /* SoundSystem */,
 				8B1A78280EACA0B400E2DCBE /* MengeProfilerSystem */,
@@ -1248,7 +1248,7 @@
 			path = ../src/System/MengeLogSystem;
 			sourceTree = SOURCE_ROOT;
 		};
-		8B1A789E0EACA3FF00E2DCBE /* SDLRenderSystem */ = {
+		8B1A789E0EACA3FF00E2DCBE /* OGLRenderSystem */ = {
 			isa = PBXGroup;
 			children = (
 				8BCAAC530EC0717500162128 /* OGLUtils.h */,
@@ -1265,7 +1265,7 @@
 				8B1A78A30EACA3FF00E2DCBE /* OGLTexture.cpp */,
 				8B1A78A40EACA3FF00E2DCBE /* OGLTexture.h */,
 			);
-			name = SDLRenderSystem;
+			name = OGLRenderSystem;
 			path = ../src/System/SDLRenderSystem;
 			sourceTree = SOURCE_ROOT;
 		};

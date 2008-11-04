@@ -159,12 +159,22 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	attribs[ i++ ] = 8;
 	attribs[ i++ ] = AGL_DEPTH_SIZE;
 	attribs[ i++ ] = _bits;
+	attribs[ i++ ] = AGL_FULLSCREEN;
+	attribs[ i++ ] = GL_TRUE;
 
 	attribs[ i++ ] = AGL_NONE;
 	pixelFormat = aglChoosePixelFormat( NULL, 0, attribs );
 	m_aglContext = aglCreateContext(pixelFormat, NULL);
 
-	aglSetDrawable(m_aglContext, GetWindowPort((WindowRef)_winHandle));
+	m_windowRef = (WindowRef)_winHandle;
+	if( _fullscreen )
+	{
+		aglSetFullScreen( m_aglContext, _width, _height, 0, 0 );
+	}
+	else
+	{
+		aglSetDrawable(m_aglContext, GetWindowPort(m_windowRef) );
+	}
 	aglSetCurrentContext(m_aglContext);
 #endif
 	const char* str = (const char*)glGetString( GL_VERSION );
@@ -732,6 +742,17 @@ void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height
 	else
 	{
 		ChangeDisplaySettings(NULL, 0);
+	}
+#elif MENGE_PLATFORM_MACOSX
+	if( _fullscreen )
+	{
+		aglSetDrawable( m_aglContext, NULL );
+		aglSetFullScreen( m_aglContext, _width, _height, 0, 0 );
+	}
+	else
+	{
+		aglSetDrawable( m_aglContext, NULL );
+		aglSetDrawable( m_aglContext, GetWindowPort( m_windowRef ) );
 	}
 #endif
 	m_windowWidth = _width;

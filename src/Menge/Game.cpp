@@ -670,7 +670,7 @@ namespace Menge
 		}
 
 		Holder<FileEngine>::hostage()->
-			createFolder( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _accountName );
+			createFolder( Holder<FileEngine>::hostage()->getAppDataPath() + "/" + _accountName );
 
 		if( m_loadingAccounts == false )
 		{
@@ -810,6 +810,11 @@ namespace Menge
 		OutStreamInterface* outStream = Holder<FileEngine>::hostage()
 			->openOutStream( "Accounts.ini", false );
 
+		if( outStream == NULL )
+		{
+			MENGE_LOG_ERROR( "Accounts info wouldn't be saved. Can't open file for writing" );
+			return;
+		}
 		outStream->write( "[ACCOUNTS]\n" );
 		for( TStringVector::iterator it = m_accountNames.begin(), it_end = m_accountNames.end();
 			it != it_end;

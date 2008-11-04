@@ -222,9 +222,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::createFolder( const String& _path )
 	{
-		String  fullPath = m_appDataPath + PATH_DELIM + _path;
+		//String  fullPath = m_appDataPath + PATH_DELIM + _path;
 		String subdir;
-		FSRef pathRef = s_findParentDirRef( fullPath, subdir );
+		FSRef pathRef = s_findParentDirRef( _path, subdir );
 		
 		TStringVector subdirs = Utils::split( subdir, "/" );
 		for( TStringVector::size_type i = 0; i < subdirs.size(); i++ )
@@ -232,10 +232,15 @@ namespace Menge
 			StringW _dirNameW = s_UniCharFromCString( subdirs[i] );
 			FSRef newDir;
 			OSErr err = FSCreateDirectoryUnicode( &pathRef, _dirNameW.size(), (const UniChar*)_dirNameW.c_str(), kFSCatInfoNone, NULL, &newDir, NULL, NULL );
-			if( err != 0 && err != dupFNErr )
+			if( err == dupFNErr )	// already exist
+			{
+				// get FSRef
+				FSMakeFSRefUnicode( &pathRef, _dirNameW.size(), (const UniChar*)_dirNameW.c_str(), kTextEncodingUnknown, &newDir );
+			}
+			else if( err != 0 )
 			{
 				return false;
-			}		
+			}
 			pathRef = newDir;
 		}
 
@@ -266,7 +271,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileSystem::initAppDataPath( const String& _game )
+	bool FileSystem::initAppDataPath( const String& _path )
 	{
 		FSRef  folderRef;
 		UInt8 path[MAXPATHLEN];
@@ -275,14 +280,27 @@ namespace Menge
 		{
 			return false;
 		}
+		TStringVector subdirs = Utils::split( _path, "/" );
+
 		FSRefMakePath( &folderRef, path, MAXPATHLEN );
-		StringW _dirNameW = s_UniCharFromCString( _game );
-		err = FSCreateDirectoryUnicode( &folderRef, _dirNameW.size(), (const UniChar*)_dirNameW.c_str(), kFSCatInfoNone, NULL, NULL, NULL, NULL );
-		if( err != 0 && err != dupFNErr )
+		
+		for( TStringVector::size_type i = 0; i < subdirs.size(); i++ )
 		{
-			return false;
+			FSRef newDir;
+			StringW _dirNameW = s_UniCharFromCString( subdirs[i] );
+			err = FSCreateDirectoryUnicode( &folderRef, _dirNameW.size(), (const UniChar*)_dirNameW.c_str(), kFSCatInfoNone, NULL, &newDir, NULL, NULL );
+			if( err == dupFNErr )	// already exist
+			{
+				// get FSRef
+				FSMakeFSRefUnicode( &folderRef, _dirNameW.size(), (const UniChar*)_dirNameW.c_str(), kTextEncodingUnknown, &newDir );
+			}
+			else if( err != 0 )
+			{
+				return false;
+			}
+			folderRef = newDir;
 		}
-		m_appDataPath = String( (const char*)path ) + PATH_DELIM + _game;
+		m_appDataPath = String( (const char*)path ) + PATH_DELIM + _path;
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

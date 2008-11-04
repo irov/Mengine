@@ -115,6 +115,7 @@ private:
 	HGLRC m_glrc;
 #elif MENGE_PLATFORM_MACOSX
 	AGLContext m_aglContext;
+	WindowRef m_windowRef;
 #endif
 
 	GLint m_textureType;

@@ -15,6 +15,25 @@ OGLTexture::OGLTexture(GLint _textureType)
 {
 }
 //////////////////////////////////////////////////////////////////////////
+OGLTexture::OGLTexture(GLint _textureType, GLuint _id, const Menge::String & name, int width, int height)
+: m_texture(_id)
+, m_glformat(GL_BGRA)
+, m_ref(0)
+, m_format(Menge::PF_A8R8G8B8)
+, m_glpixelType(GL_UNSIGNED_BYTE)
+, m_textureType(_textureType)
+, m_useFBO(false)
+{
+	int size = width * height * 4;
+
+	m_PBO.init(size);
+	m_PBO.unbind();
+
+	m_name = name;
+	m_width = width;
+	m_height = height;
+}
+//////////////////////////////////////////////////////////////////////////
 OGLTexture::~OGLTexture()
 {
 	m_PBO.done();

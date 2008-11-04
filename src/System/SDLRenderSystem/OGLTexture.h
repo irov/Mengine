@@ -10,6 +10,7 @@ class OGLTexture : public Menge::RenderImageInterface
 {
 public:
 	OGLTexture(GLint _textureType);
+	OGLTexture(GLint _textureType, GLuint _id, const Menge::String & name, int width, int height);
 	~OGLTexture();
 
 public:

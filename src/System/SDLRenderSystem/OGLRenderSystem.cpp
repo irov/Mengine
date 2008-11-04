@@ -6,6 +6,8 @@
 
 #	include "OGLTexture.h"
 #	include "OGLUtils.h"
+#	include "FBO.h"
+
 #	include <assert.h>
 
 #	ifndef MENGE_MASTER_RELEASE
@@ -39,8 +41,7 @@ void releaseInterfaceSystem( Menge::RenderSystemInterface* _ptrInterface )
 }
 //////////////////////////////////////////////////////////////////////////
 OGLRenderSystem::OGLRenderSystem()
-: m_inRender( false )
-, m_layer( 1.0f )
+: m_layer( 1.0f )
 , m_layer3D( false )
 #if MENGE_PLATFORM_WIN32
 , m_hdc( 0 )
@@ -389,8 +390,25 @@ Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::String& _
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Menge::String & _name, float _width, float _height )
 {
-	//assert(0);
-	return 0;
+	FrameBufferObject * fbo = new FrameBufferObject(_width,_height);
+
+	GLint tex = fbo->createColorTexture();
+
+	fbo->create();
+	fbo->bind();
+	fbo->attachColorTexture(GL_TEXTURE_2D,tex);
+	fbo->unbind();
+
+	OGLTexture * texture = new OGLTexture(_getTextureType(),tex,_name,_width,_height);
+
+	RenderTargetInfo rtgtInfo;
+	rtgtInfo.dirty = true;
+	rtgtInfo.handle = fbo;
+	rtgtInfo.texture = texture;
+
+	m_targetMap.insert( std::make_pair( _name, rtgtInfo ) );
+
+	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
 bool OGLRenderSystem::supportNPOT()
@@ -407,13 +425,23 @@ void OGLRenderSystem::releaseImage( Menge::RenderImageInterface * _image )
 		return;
 	}
 
-	TTextureMap::iterator itt = m_textureMap.find( texture->getDescription() );
-	if( itt != m_textureMap.end() )
+	TTargetMap::iterator it = m_targetMap.find( texture->getDescription() );
+	if( it != m_targetMap.end() )
 	{
-		if( texture->decRef() == 0 )
+		delete it->second.handle;
+		m_targetMap.erase( it );
+		delete texture;
+	}
+	else
+	{
+		TTextureMap::iterator itt = m_textureMap.find( texture->getDescription() );
+		if( itt != m_textureMap.end() )
 		{
-			m_textureMap.erase( itt );
-			delete texture;
+			if( texture->decRef() == 0 )
+			{
+				m_textureMap.erase( itt );
+				delete texture;
+			}
 		}
 	}
 	
@@ -769,7 +797,28 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 {
-	//assert(0);
+	TTargetMap::iterator it = m_targetMap.find( _name );
+
+	if( it != m_targetMap.end() )
+	{
+		m_currentRenderTarget = _name;
+
+		//TEST. сиреневый квад :)
+		TTargetMap::iterator it = m_targetMap.begin();
+		it->second.handle->bind();
+		glBegin(GL_QUADS);
+		glColor3f(0.5,0.1,0.6);
+        glTexCoord2f(0.0, 0.0);
+        glVertex2f(0.0, 0.0);
+        glTexCoord2f(1.0f, 0.0);
+        glVertex2f(512, 0.0);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex2f(512, 512);
+        glTexCoord2f(0.0, 1.0f);
+        glVertex2f(0.0, 512);
+        glEnd();
+		it->second.handle->unbind();
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setRenderArea( const float* _renderArea )
@@ -788,6 +837,7 @@ void OGLRenderSystem::setRenderArea( const float* _renderArea )
 	GLsizei h = m_viewport[3] - m_viewport[1];
 
 	glViewport( m_viewport[0], m_viewport[1], w, h );
+
 	_glEnable2D();
 }
 //////////////////////////////////////////////////////////////////////////

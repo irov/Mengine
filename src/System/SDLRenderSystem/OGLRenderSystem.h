@@ -22,6 +22,8 @@
 
 class OGLTexture;
 
+class FrameBufferObject;
+
 class OGLRenderSystem 
 	: public Menge::RenderSystemInterface
 {
@@ -118,18 +120,19 @@ private:
 	GLint m_textureType;
 	GLint _getTextureType();
 
-	bool m_inRender;
 	float m_layer;
 	Menge::String m_currentRenderTarget;
 
 	struct RenderTargetInfo
 	{
+		FrameBufferObject * handle;
 		OGLTexture* texture;
 		bool dirty;
 	};
 
 	typedef std::map<Menge::String, RenderTargetInfo> TTargetMap;
 	TTargetMap m_targetMap;
+
 
 	typedef std::map< Menge::String, Menge::RenderImageInterface* > TTextureMap;
 	TTextureMap m_textureMap;

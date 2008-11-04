@@ -43,6 +43,7 @@ void releaseInterfaceSystem( Menge::RenderSystemInterface* _ptrInterface )
 OGLRenderSystem::OGLRenderSystem()
 : m_layer( 1.0f )
 , m_layer3D( false )
+, m_currentRenderTarget( "defaultCamera" )
 #if MENGE_PLATFORM_WIN32
 , m_hdc( 0 )
 , m_glrc( 0 )
@@ -797,14 +798,25 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 {
+	renderBatch();
+
+	if( _name == "defaultCamera" && m_currentRenderTarget != "defaultCamera" )
+	{
+		TTargetMap::iterator it_cur = m_targetMap.find( m_currentRenderTarget );
+		if( it_cur != m_targetMap.end() )
+		{
+			it_cur->second.handle->unbind();
+		}
+	}
 	TTargetMap::iterator it = m_targetMap.find( _name );
 
 	if( it != m_targetMap.end() )
 	{
 		m_currentRenderTarget = _name;
 
+		it->second.handle->bind();
 		//TEST. сиреневый квад :)
-		TTargetMap::iterator it = m_targetMap.begin();
+		/*TTargetMap::iterator it = m_targetMap.begin();
 		it->second.handle->bind();
 		glBegin(GL_QUADS);
 		glColor3f(0.5,0.1,0.6);
@@ -817,7 +829,7 @@ void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
         glTexCoord2f(0.0, 1.0f);
         glVertex2f(0.0, 512);
         glEnd();
-		it->second.handle->unbind();
+		it->second.handle->unbind();*/
 	}
 }
 //////////////////////////////////////////////////////////////////////////

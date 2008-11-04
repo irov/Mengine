@@ -170,7 +170,7 @@ void HGERenderSystem::render()
 	//m_layer = 1.0f;
 }
 //////////////////////////////////////////////////////////////////////////
-void HGERenderSystem::setContentResolution( const float * _resolution )
+void HGERenderSystem::setContentResolution( const std::size_t * _resolution )
 {
 	m_contentResolution[0] = _resolution[0];
 	m_contentResolution[1] = _resolution[1];

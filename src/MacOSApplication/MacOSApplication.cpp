@@ -2,8 +2,8 @@
  *  MacOSApplication.cpp
  *  Mac
  *
- *  Created by Yuriy Levchenko on 22.10.08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Created by Berserk on 22.10.08.
+ *  Copyright 2008 __Menge__. All rights reserved.
  *
  */
 #include "Config/Config.h"
@@ -27,10 +27,9 @@ const Menge::TCharA * config_file = "application.xml";
 #	define LOG_ERROR( message )\
 	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_ERROR );
 
-#include "SDL/include/SDL.h"
-//#include "SDL/include/SDL_opengl.h"
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	MacOSApplication::MacOSApplication( const StringA& _commandLine )
 		: m_commandLine( _commandLine )
 		, m_menge( NULL )
@@ -48,7 +47,7 @@ namespace Menge
 
 	{
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	MacOSApplication::~MacOSApplication()
 	{
 		if( m_logSystem != NULL && m_loggerConsole != NULL )
@@ -87,7 +86,7 @@ namespace Menge
 			DisposeEventHandlerUPP( m_windowHandlerUPP );
 		}	
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	bool MacOSApplication::start()
 	{
 		m_timer = new OSXTimer();
@@ -121,6 +120,10 @@ namespace Menge
 			return false;
 		}
 		
+		m_desktopResolution[0] = CGDisplayPixelsWide( CGMainDisplayID() );
+		m_desktopResolution[1] = CGDisplayPixelsHigh( CGMainDisplayID() );
+		
+		m_menge->setDesktopResolution(	Resolution( m_desktopResolution[0], m_desktopResolution[1] ) );
 		// TODO if fullscreen
 		// {
 		// }
@@ -187,90 +190,10 @@ namespace Menge
 	{
 		float deltaTime = 0.0;
 		int thisTime = 0;
-		int lastTime = 0;
+		long lastTime = 0;
 
 		while( m_running )
 		{
-			//’ј 
-			/*SDL_Event event;
-
-			while(SDL_PollEvent(&event))
-			{
-				switch(event.type) 
-				{
-				case SDL_ACTIVEEVENT:
-
-					if(event.active.state & SDL_APPACTIVE)
-					{
-						m_menge->onFocus( false );
-					}
-
-					if(event.active.state & SDL_APPINPUTFOCUS)
-					{
-						m_menge->onFocus( true );
-					}
-					
-					break;
-
-				case SDL_VIDEORESIZE:
-					m_menge->onWindowMovedOrResized();
-					break;
-					
-				case SDL_QUIT:
-					m_menge->onClose();
-					break;
-
-				case SDL_MOUSEMOTION:
-					if( m_handleMouse == false )
-					{
-						break;
-					}
-					m_menge->onMouseMove( float(event.motion.x), float(event.motion.y), 0 );
-					break;
-
-				case SDL_MOUSEBUTTONDOWN:
-					if( m_handleMouse == false )
-					{
-						break;
-					}
-					if(event.button.button == SDL_BUTTON_LEFT)
-					{
-						m_menge->onMouseButtonEvent(0,true);					
-					}
-					else if(event.button.button == SDL_BUTTON_RIGHT)
-					{
-						m_menge->onMouseButtonEvent(1,true);										
-					}
-					else if(event.button.button == SDL_BUTTON_MIDDLE)
-					{
-						m_menge->onMouseButtonEvent(2,true);					
-					}
-
-					break;
-
-				case SDL_MOUSEBUTTONUP:
-					if( m_handleMouse == false )
-					{
-						break;
-					}					
-					if(event.button.button == SDL_BUTTON_LEFT)
-					{
-						m_menge->onMouseButtonEvent(0,false);					
-					}
-					else if(event.button.button == SDL_BUTTON_RIGHT)
-					{
-						m_menge->onMouseButtonEvent(1,false);										
-					}
-					else if(event.button.button == SDL_BUTTON_MIDDLE)
-					{
-						m_menge->onMouseButtonEvent(2,false);					
-					}
-					break;
-
-				default:
-					break;
-				}
-			}*/
 			// OSX Message Pump
 			EventRef event = NULL;
 			EventTargetRef targetWindow;
@@ -284,73 +207,67 @@ namespace Menge
 				ReleaseEvent( event );
 			}
 
-
-			thisTime = SDL_GetTicks();
+			thisTime = m_timer->getMilliseconds();
 			deltaTime = (float)(thisTime - lastTime);
 			lastTime = thisTime; 
 
 			m_menge->onUpdate( deltaTime );
 		}
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::stop()
 	{
 		m_running = false;
 	}
-	
 	//////////////////////////////////////////////////////////////////////////
 	TimerInterface * MacOSApplication::getTimer() const
 	{
 		return m_timer;
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	WindowHandle MacOSApplication::createWindow( const Menge::String& _name, std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
 		return 0;
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	std::size_t MacOSApplication::getDesktopWidth() const
 	{
-		return 0;
+		return m_desktopResolution[0];
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	std::size_t MacOSApplication::getDesktopHeight() const
 	{
-		return 0;
+		return m_desktopResolution[1];
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::minimizeWindow()
 	{
-	
+		CollapseWindow( m_window, true );
 	}
-	
-	void MacOSApplication::setDesktopResolution( std::size_t _width, std::size_t _height )
-	{
-	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen )
 	{
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	float MacOSApplication::getDeltaTime()
 	{
 		return 0.0f;
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	SystemDLLInterface* MacOSApplication::loadSystemDLL( const String& _dll )
 	{
 		return NULL;
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::unloadSystemDLL( SystemDLLInterface* _interface )
 	{
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::setHandleMouse( bool _handle )
 	{
 		m_handleMouse = _handle;
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::showMessageBox( const String& _message, const String& _header, unsigned int _style )
 	{
 		CFStringRef headerRef = CFStringCreateWithCString( kCFAllocatorDefault, _header.c_str(), CFStringGetSystemEncoding() );
@@ -362,7 +279,7 @@ namespace Menge
 		CFRelease( headerRef );
 		CFRelease( messageRef );
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	WindowRef MacOSApplication::createWindow_( const String& _title, int _width, int _height )
 	{
 		WindowRef winRef = NULL;
@@ -393,13 +310,13 @@ namespace Menge
             
 		return winRef;
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	OSStatus MacOSApplication::s_windowHandler( EventHandlerCallRef nextHandler, EventRef event, void* wnd )
 	{
 		MacOSApplication* thisApp = (MacOSApplication*)wnd;
 		return thisApp->windowHandler( nextHandler, event );
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	OSStatus MacOSApplication::windowHandler( EventHandlerCallRef nextHandler, EventRef event )
 	{
 		OSStatus status = noErr;
@@ -409,19 +326,19 @@ namespace Menge
 		
 	    switch( eventKind )
 		{	
+			case kEventWindowExpanded:
 	        case kEventWindowActivated:
 				m_menge->onFocus( true );
 				break;
 			case kEventWindowDeactivated:
+			case kEventWindowCollapsed:
 				m_menge->onFocus( false );
 				break;
 			case kEventWindowClosed:
 				m_menge->onClose();
 				break;
 			case kEventWindowShown:
-			case kEventWindowExpanded:
 	        case kEventWindowHidden:
-			case kEventWindowCollapsed:
 			case kEventWindowDragCompleted:
 			case kEventWindowBoundsChanged:
 				break;	
@@ -431,13 +348,13 @@ namespace Menge
 		}
 		return status;
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 	OSStatus MacOSApplication::s_mouseHandler( EventHandlerCallRef nextHandler, EventRef event, void* wnd )
 	{
 		MacOSApplication* thisApp = (MacOSApplication*)wnd;
 		return thisApp->mouseHandler( nextHandler, event );
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	OSStatus MacOSApplication::mouseHandler( EventHandlerCallRef nextHandler, EventRef event )
 	{
 		OSStatus status = noErr;
@@ -546,5 +463,5 @@ namespace Menge
 		
 		return status;
 	}
-	
+	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

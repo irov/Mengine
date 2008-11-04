@@ -171,4 +171,6 @@ private:
 	std::size_t m_contentResolution[2];
 
 	GLint m_viewport[4];
+	bool m_supportNPOT;
+	Menge::String m_ext;
 };

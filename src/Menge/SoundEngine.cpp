@@ -48,10 +48,14 @@ namespace Menge
 	{
 		if( m_initialized == false )
 		{
-			return 0;
+			return NULL;
 		}
 		FileEngine* fileEngine = Holder<FileEngine>::hostage();
 		DataStreamInterface* stream = fileEngine->openFile( _filename );
+		if( stream == NULL )
+		{
+			return NULL;
+		}
 
 		SoundBufferInterface* sample = 
 			m_interface->createSoundBuffer( stream, _isStream );

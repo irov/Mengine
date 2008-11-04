@@ -9,6 +9,7 @@
 
 #	include "Menge/Utils.h"
 
+#include <sys/param.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/errno.h>
@@ -67,6 +68,52 @@ namespace Menge
 		else
 		{
 			return _base + '/' + _name;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static StringW s_UniCharFromCString( const String& _cstring )
+	{
+		TextEncoding encoding = CreateTextEncoding( CFStringGetSystemEncoding(), kTextEncodingDefaultVariant, kTextEncodingDefaultFormat );
+		TextToUnicodeInfo info;
+		OSStatus status = CreateTextToUnicodeInfoByEncoding( encoding, &info );
+		UniChar conv[MAXPATHLEN];
+		ByteCount a, b;
+		status = ConvertFromTextToUnicode( info, _cstring.size(), _cstring.c_str(), 0, 0, 0, NULL, NULL, MAXPATHLEN, &a, &b, conv );
+    		return StringW( (const wchar_t*)conv, b/sizeof(UniChar) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static String s_CStringFromUniChar( const StringW& _uniChar )
+	{
+		TextEncoding encoding = CreateTextEncoding( CFStringGetSystemEncoding(), kTextEncodingDefaultVariant, kTextEncodingDefaultFormat );
+		UnicodeToTextInfo info;
+		OSStatus status = CreateUnicodeToTextInfoByEncoding( encoding, &info );
+		char conv[MAXPATHLEN];
+		ByteCount a, b;
+		status = ConvertFromUnicodeToText( info, _uniChar.size(), (const UniChar*)_uniChar.c_str(), 0, 0, 0, NULL, NULL, MAXPATHLEN, &a, &b, conv );
+		return String( conv, b );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static FSRef s_findParentDirRef( const String& _path, String& _rest )
+	{
+		FSRef ref;
+		Boolean isDir = true;
+		TStringVector paths = Utils::split( _path, "/" );
+		if( paths.empty() != true )
+		{
+			paths[0] = PATH_DELIM + paths[0];
+			for( TStringVector::size_type i = 1; i < paths.size(); i++ )
+			{
+				paths[i] = paths[i-1] + PATH_DELIM + paths[i];
+			}
+		}
+		for( TStringVector::size_type i = paths.size() - 1; i >= 0; i-- )
+		{
+			OSStatus status = FSPathMakeRef( (const UInt8*)paths[i].c_str(), &ref, &isDir );
+			if( status == 0 )
+			{
+				_rest = _path.substr( paths[i].size()+1, _path.size() );
+				return ref;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -175,24 +222,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::createFolder( const String& _path )
 	{
-		/*int res = mkdir( _path.c_str(), 0 );
-		if( res == 0 )
-		{
-			return true;
-		}
-		else
-		{
-			char str[10];
-			sprintf( str, "%d", errno );
-			LOG_ERROR( str );
-		}*/
-		//FSRef* appDataPathRef = NULL;
-		//Boolean isDir = true;
-		//OSStatus os_status = FSPathMakeRef( (const UInt8*)"~/Library/", appDataPathRef, &isDir );
-		/*OSErr error;
-		error = FSCreateDirectoryUnicode( */
+		String  fullPath = m_appDataPath + PATH_DELIM + _path;
+		String subdir;
+		FSRef pathRef = s_findParentDirRef( fullPath, subdir );
 		
-		return false;
+		TStringVector subdirs = Utils::split( subdir, "/" );
+		for( TStringVector::size_type i = 0; i < subdirs.size(); i++ )
+		{
+			StringW _dirNameW = s_UniCharFromCString( subdirs[i] );
+			FSRef newDir;
+			OSErr err = FSCreateDirectoryUnicode( &pathRef, _dirNameW.size(), (const UniChar*)_dirNameW.c_str(), kFSCatInfoNone, NULL, &newDir, NULL, NULL );
+			if( err != 0 && err != dupFNErr )
+			{
+				return false;
+			}		
+			pathRef = newDir;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::deleteFolder( const String& _path )
@@ -221,30 +268,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::initAppDataPath( const String& _game )
 	{
-		short  volume_ref_number;
-		long   directory_id, dirid;
 		FSRef  folderRef;
-		UInt8 path[256];
-		OSErr err = FindFolder( kUserDomain, kApplicationSupportFolderType, kDontCreateFolder, &volume_ref_number, &directory_id );
-		err = FSFindFolder( kUserDomain, kApplicationSupportFolderType, kDontCreateFolder, &folderRef );
-		FSRefMakePath( &folderRef, path, 256 );
+		UInt8 path[MAXPATHLEN];
+		OSErr err = FSFindFolder( kUserDomain, kApplicationSupportFolderType, kDontCreateFolder, &folderRef );
 		if( err != 0 )
 		{
 			return false;
 		}
-		FSSpec* spec;
-		unsigned char dir[256];
-		//strcpy( (char*)dir+1, "~/Library/Application Support/Menge" );
-		//dir[0] = strlen( "~/Library/Application Support/Menge");
-		strcat( (char*)path, "/Menge/subdir/" );
-		//err = FSMakeFSSpec (volume_ref_number, directory_id, dir, spec);
-		//err = DirCreate( volume_ref_number, directory_id, dir, &dirid );
-		int res = mkdir( (const char*)path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH | S_IFDIR );
-		int er = errno;
-		
-		//m_appDataPath = "~/Library/Application Support/" + _game;
-		//createFolder( "~/Library/Application Support/Menge" );
-		return createFolder( m_appDataPath );
+		FSRefMakePath( &folderRef, path, MAXPATHLEN );
+		StringW _dirNameW = s_UniCharFromCString( _game );
+		err = FSCreateDirectoryUnicode( &folderRef, _dirNameW.size(), (const UniChar*)_dirNameW.c_str(), kFSCatInfoNone, NULL, NULL, NULL, NULL );
+		if( err != 0 && err != dupFNErr )
+		{
+			return false;
+		}
+		m_appDataPath = String( (const char*)path ) + PATH_DELIM + _game;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const String& FileSystem::getAppDataPath()

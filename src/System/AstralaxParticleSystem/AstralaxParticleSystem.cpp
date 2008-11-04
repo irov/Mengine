@@ -1,4 +1,3 @@
-#	pragma once
 
 #	include "AstralaxParticleSystem.h"
 #	include "AstralaxEmitterContainer.h"

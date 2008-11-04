@@ -70,7 +70,7 @@ namespace Menge
 	void Account::load()
 	{
 		FileEngine* fileEngine = Holder<FileEngine>::hostage();
-		String fileName = fileEngine->getAppDataPath() + "\\" + m_name + "\\settings.ini";
+		String fileName = fileEngine->getAppDataPath() + "/" + m_name + "/settings.ini";
 		ConfigFile config;
 		if( config.load( fileName ) == true )
 		{
@@ -91,7 +91,7 @@ namespace Menge
 	void Account::save()
 	{
 		FileEngine* fileEngine = Holder<FileEngine>::hostage();
-		String fileName = m_name + "\\settings.ini";
+		String fileName = m_name + "/settings.ini";
 		OutStreamInterface* file = fileEngine->openOutStream( fileName, false );
 		if( file == 0 )
 		{

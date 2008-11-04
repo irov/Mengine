@@ -44,6 +44,7 @@ OGLRenderSystem::OGLRenderSystem()
 : m_layer( 1.0f )
 , m_layer3D( false )
 , m_currentRenderTarget( "defaultCamera" )
+, m_supportNPOT( false )
 #if MENGE_PLATFORM_WIN32
 , m_hdc( 0 )
 , m_glrc( 0 )
@@ -172,9 +173,32 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	LOG( "Vendor: " + Menge::String( str ) );
 	str = (const char*)glGetString( GL_RENDERER );
 	LOG( "Renderer: " + Menge::String( str ) );
-	str = (const char*)glGetString( GL_EXTENSIONS );
+	m_ext = (const char*)glGetString( GL_EXTENSIONS );
 	//LOG( "Extensions:" );
-	//LOG( Menge::String( str ) );
+	//LOG( m_ext );
+	// check for NPOT
+	Menge::String extSubStr = "texture_non_power_of_two";
+	Menge::String::size_type pos =  m_ext.find( extSubStr );
+	if( pos != Menge::String::npos && ( m_ext[pos+extSubStr.size()] == '\0' || m_ext[pos+extSubStr.size()] == ' ' ) )	// it seems to be supported
+	{
+		// try to create NPOT to be sure
+		GLuint npotTex;
+		GLint size = 65;
+		glGenTextures( 1, &npotTex );
+ 		glBindTexture( GL_TEXTURE_2D, npotTex );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0 );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexImage2D( GL_PROXY_TEXTURE_3D, 0, GL_RGBA8, size, size, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL );
+		GLint width = 0;
+		glGetTexLevelParameteriv( GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width );
+		if( width == size )
+		{
+			m_supportNPOT = true;
+		}
+	}
 	
 	initBatching();
 
@@ -414,7 +438,7 @@ Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Me
 //////////////////////////////////////////////////////////////////////////
 bool OGLRenderSystem::supportNPOT()
 {
-	return true; // ? or ??
+	return m_supportNPOT;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::releaseImage( Menge::RenderImageInterface * _image )

@@ -124,10 +124,7 @@
 		8B1A78AA0EACA3FF00E2DCBE /* OGLRenderSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78A10EACA3FF00E2DCBE /* OGLRenderSystem.h */; };
 		8B1A78AB0EACA3FF00E2DCBE /* OGLTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A78A30EACA3FF00E2DCBE /* OGLTexture.cpp */; };
 		8B1A78AC0EACA3FF00E2DCBE /* OGLTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78A40EACA3FF00E2DCBE /* OGLTexture.h */; };
-		8B1A78AD0EACA3FF00E2DCBE /* SDLVideoInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A78A50EACA3FF00E2DCBE /* SDLVideoInfo.cpp */; };
-		8B1A78AE0EACA3FF00E2DCBE /* SDLVideoInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78A60EACA3FF00E2DCBE /* SDLVideoInfo.h */; };
 		8B77FD4A0EB1E83500F78BA7 /* libMengeProfilerSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B1A78210EACA07400E2DCBE /* libMengeProfilerSystem.a */; };
-		8B77FD620EB1ED6C00F78BA7 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B77FD610EB1ED6C00F78BA7 /* libSDL.a */; };
 		8B77FE270EB205D700F78BA7 /* libSDLRenderSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B1A78970EACA3D400E2DCBE /* libSDLRenderSystem.a */; };
 		8B77FE550EB20E2D00F78BA7 /* OGLRenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A789F0EACA3FF00E2DCBE /* OGLRenderSystem.cpp */; };
 		8BBFDF0B0EAF1F6600102B4F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBFDF0A0EAF1F6600102B4F /* main.cpp */; };
@@ -407,6 +404,11 @@
 		8BC94B4A0EAE1D460034D467 /* FileSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC94B3C0EAE1D460034D467 /* FileSystem.h */; };
 		8BC94B4B0EAE1D460034D467 /* MemoryDataStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC94B3D0EAE1D460034D467 /* MemoryDataStream.cpp */; };
 		8BC94B4C0EAE1D460034D467 /* MemoryDataStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC94B3E0EAE1D460034D467 /* MemoryDataStream.h */; };
+		8BCAAC4E0EC0713400162128 /* FBO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCAAC4C0EC0713400162128 /* FBO.cpp */; };
+		8BCAAC4F0EC0713400162128 /* FBO.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BCAAC4D0EC0713400162128 /* FBO.h */; };
+		8BCAAC520EC0716600162128 /* OGLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCAAC510EC0716600162128 /* OGLUtils.cpp */; };
+		8BCAAC540EC0717500162128 /* OGLUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BCAAC530EC0717500162128 /* OGLUtils.h */; };
+		8BCAAC630EC0735200162128 /* PBO.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BCAAC620EC0735200162128 /* PBO.h */; };
 		8BCFB2980EB755C600E3ED17 /* PBO.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BCFB2960EB755C500E3ED17 /* PBO.h */; };
 		8BCFB2990EB755C600E3ED17 /* PBO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCFB2970EB755C600E3ED17 /* PBO.cpp */; };
 		8BCFB2B90EB7572500E3ED17 /* LoggerConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCFB2B80EB7572500E3ED17 /* LoggerConsole.cpp */; };
@@ -504,7 +506,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8BDC9F560EBA00B5007D4D75 /* AstralaxParticleSystem */;
+			remoteGlobalIDString = 8BDC9F560EBA00B5007D4D75;
 			remoteInfo = AstralaxParticleSystem;
 		};
 /* End PBXContainerItemProxy section */
@@ -631,11 +633,6 @@
 		8B1A78A10EACA3FF00E2DCBE /* OGLRenderSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLRenderSystem.h; sourceTree = "<group>"; };
 		8B1A78A30EACA3FF00E2DCBE /* OGLTexture.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLTexture.cpp; sourceTree = "<group>"; };
 		8B1A78A40EACA3FF00E2DCBE /* OGLTexture.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLTexture.h; sourceTree = "<group>"; };
-		8B1A78A50EACA3FF00E2DCBE /* SDLVideoInfo.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = SDLVideoInfo.cpp; sourceTree = "<group>"; };
-		8B1A78A60EACA3FF00E2DCBE /* SDLVideoInfo.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = SDLVideoInfo.h; sourceTree = "<group>"; };
-		8B1A78A70EACA3FF00E2DCBE /* SDLWindow.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = SDLWindow.cpp; sourceTree = "<group>"; };
-		8B1A78A80EACA3FF00E2DCBE /* SDLWindow.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = SDLWindow.h; sourceTree = "<group>"; };
-		8B77FD610EB1ED6C00F78BA7 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = ../dependencies/SDL/libSDL.a; sourceTree = SOURCE_ROOT; };
 		8BBFDF010EAF1E3900102B4F /* MacOSApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacOSApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BBFDF030EAF1E3900102B4F /* MacOSApplication-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "MacOSApplication-Info.plist"; sourceTree = "<group>"; };
 		8BBFDF0A0EAF1F6600102B4F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -669,6 +666,11 @@
 		8BC94B3C0EAE1D460034D467 /* FileSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = FileSystem.h; sourceTree = "<group>"; };
 		8BC94B3D0EAE1D460034D467 /* MemoryDataStream.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryDataStream.cpp; sourceTree = "<group>"; };
 		8BC94B3E0EAE1D460034D467 /* MemoryDataStream.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = MemoryDataStream.h; sourceTree = "<group>"; };
+		8BCAAC4C0EC0713400162128 /* FBO.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = FBO.cpp; sourceTree = "<group>"; };
+		8BCAAC4D0EC0713400162128 /* FBO.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = FBO.h; sourceTree = "<group>"; };
+		8BCAAC510EC0716600162128 /* OGLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLUtils.cpp; sourceTree = "<group>"; };
+		8BCAAC530EC0717500162128 /* OGLUtils.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLUtils.h; sourceTree = "<group>"; };
+		8BCAAC620EC0735200162128 /* PBO.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = PBO.h; sourceTree = "<group>"; };
 		8BCFB2960EB755C500E3ED17 /* PBO.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = PBO.h; sourceTree = "<group>"; };
 		8BCFB2970EB755C600E3ED17 /* PBO.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = PBO.cpp; sourceTree = "<group>"; };
 		8BCFB2B70EB7572400E3ED17 /* LoggerConsole.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = LoggerConsole.h; sourceTree = "<group>"; };
@@ -1008,7 +1010,6 @@
 				8BC32E260EB0B55200212960 /* libBox2DPhysicSystem.a in Frameworks */,
 				8BBFDF860EAF2EEE00102B4F /* libMenge.a in Frameworks */,
 				8B77FD4A0EB1E83500F78BA7 /* libMengeProfilerSystem.a in Frameworks */,
-				8B77FD620EB1ED6C00F78BA7 /* libSDL.a in Frameworks */,
 				8B77FE270EB205D700F78BA7 /* libSDLRenderSystem.a in Frameworks */,
 				8BDC9FA50EBA04D5007D4D75 /* libmagic.dylib in Frameworks */,
 			);
@@ -1250,18 +1251,19 @@
 		8B1A789E0EACA3FF00E2DCBE /* SDLRenderSystem */ = {
 			isa = PBXGroup;
 			children = (
+				8BCAAC530EC0717500162128 /* OGLUtils.h */,
+				8BCAAC510EC0716600162128 /* OGLUtils.cpp */,
+				8BCAAC4C0EC0713400162128 /* FBO.cpp */,
+				8BCAAC4D0EC0713400162128 /* FBO.h */,
 				8BCFB2960EB755C500E3ED17 /* PBO.h */,
 				8BCFB2970EB755C600E3ED17 /* PBO.cpp */,
+				8BCAAC620EC0735200162128 /* PBO.h */,
 				8BFFDD740EB5DB29002A860B /* OGLBatching.cpp */,
 				8B1A789F0EACA3FF00E2DCBE /* OGLRenderSystem.cpp */,
 				8B1A78A00EACA3FF00E2DCBE /* OGLRenderSystem.def */,
 				8B1A78A10EACA3FF00E2DCBE /* OGLRenderSystem.h */,
 				8B1A78A30EACA3FF00E2DCBE /* OGLTexture.cpp */,
 				8B1A78A40EACA3FF00E2DCBE /* OGLTexture.h */,
-				8B1A78A50EACA3FF00E2DCBE /* SDLVideoInfo.cpp */,
-				8B1A78A60EACA3FF00E2DCBE /* SDLVideoInfo.h */,
-				8B1A78A70EACA3FF00E2DCBE /* SDLWindow.cpp */,
-				8B1A78A80EACA3FF00E2DCBE /* SDLWindow.h */,
 			);
 			name = SDLRenderSystem;
 			path = ../src/System/SDLRenderSystem;
@@ -1288,7 +1290,6 @@
 				8BBFE3250EAF4FF500102B4F /* libOIS.a */,
 				8BBFE0B20EAF3D0E00102B4F /* libz.a */,
 				8BBFE3460EAF51B900102B4F /* libBox2D.a */,
-				8B77FD610EB1ED6C00F78BA7 /* libSDL.a */,
 				8BBFDFE10EAF32C700102B4F /* libopenal.a */,
 				8BBFE02E0EAF377000102B4F /* libpng.a */,
 				8BBFE1510EAF40F400102B4F /* libpython2.5.a */,
@@ -1743,8 +1744,10 @@
 			files = (
 				8B1A78AA0EACA3FF00E2DCBE /* OGLRenderSystem.h in Headers */,
 				8B1A78AC0EACA3FF00E2DCBE /* OGLTexture.h in Headers */,
-				8B1A78AE0EACA3FF00E2DCBE /* SDLVideoInfo.h in Headers */,
 				8BCFB2980EB755C600E3ED17 /* PBO.h in Headers */,
+				8BCAAC4F0EC0713400162128 /* FBO.h in Headers */,
+				8BCAAC540EC0717500162128 /* OGLUtils.h in Headers */,
+				8BCAAC630EC0735200162128 /* PBO.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2028,9 +2031,9 @@
 			productReference = 8B1A78800EACA2B300E2DCBE /* libMengeLogSystem.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		8B1A78960EACA3D400E2DCBE /* SDLRenderSystem */ = {
+		8B1A78960EACA3D400E2DCBE /* OGLRenderSystem */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8B1A789B0EACA3F500E2DCBE /* Build configuration list for PBXNativeTarget "SDLRenderSystem" */;
+			buildConfigurationList = 8B1A789B0EACA3F500E2DCBE /* Build configuration list for PBXNativeTarget "OGLRenderSystem" */;
 			buildPhases = (
 				8B1A78930EACA3D400E2DCBE /* Headers */,
 				8B1A78940EACA3D400E2DCBE /* Sources */,
@@ -2040,7 +2043,7 @@
 			);
 			dependencies = (
 			);
-			name = SDLRenderSystem;
+			name = OGLRenderSystem;
 			productName = SDLRenderSystem;
 			productReference = 8B1A78970EACA3D400E2DCBE /* libSDLRenderSystem.a */;
 			productType = "com.apple.product-type.library.static";
@@ -2133,7 +2136,7 @@
 				8B1A78200EACA07400E2DCBE /* MengeProfilerSystem */,
 				8B1A783A0EACA12D00E2DCBE /* OALSoundSystem */,
 				8B1A787F0EACA2B300E2DCBE /* MengeLogSystem */,
-				8B1A78960EACA3D400E2DCBE /* SDLRenderSystem */,
+				8B1A78960EACA3D400E2DCBE /* OGLRenderSystem */,
 				8BC94B290EAE1D1D0034D467 /* MengeMacOSFileSystem */,
 				8BBFDF000EAF1E3900102B4F /* MacOSApplication */,
 				8BDC9F560EBA00B5007D4D75 /* AstralaxParticleSystem */,
@@ -2241,10 +2244,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				8B1A78AB0EACA3FF00E2DCBE /* OGLTexture.cpp in Sources */,
-				8B1A78AD0EACA3FF00E2DCBE /* SDLVideoInfo.cpp in Sources */,
 				8B77FE550EB20E2D00F78BA7 /* OGLRenderSystem.cpp in Sources */,
 				8BFFDD750EB5DB29002A860B /* OGLBatching.cpp in Sources */,
 				8BCFB2990EB755C600E3ED17 /* PBO.cpp in Sources */,
+				8BCAAC4E0EC0713400162128 /* FBO.cpp in Sources */,
+				8BCAAC520EC0716600162128 /* OGLUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2447,7 +2451,7 @@
 		};
 		8BBAFE340EB87B2D00434A80 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8B1A78960EACA3D400E2DCBE /* SDLRenderSystem */;
+			target = 8B1A78960EACA3D400E2DCBE /* OGLRenderSystem */;
 			targetProxy = 8BBAFE330EB87B2D00434A80 /* PBXContainerItemProxy */;
 		};
 		8BBAFE360EB87B3100434A80 /* PBXTargetDependency */ = {
@@ -3360,7 +3364,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8B1A789B0EACA3F500E2DCBE /* Build configuration list for PBXNativeTarget "SDLRenderSystem" */ = {
+		8B1A789B0EACA3F500E2DCBE /* Build configuration list for PBXNativeTarget "OGLRenderSystem" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8B1A789C0EACA3F500E2DCBE /* Debug */,

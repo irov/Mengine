@@ -238,10 +238,11 @@ namespace Menge
 		bool fullscreen = m_game->getFullscreen();
 		m_renderEngine->setFullscreenMode( fullscreen );
 
-		if( !m_fileEngine->initAppDataPath( "Menge/" + title ) )
+		if( !m_fileEngine->initAppDataPath( "Menge" ) )
 		{
 			MENGE_LOG_ERROR( "Warning: Can't initialize user's data path" );
 		}
+		m_fileEngine->createFolder( title );
 
 		for( TStringVector::iterator it = m_resourcePaths.begin(), 
 			it_end = m_resourcePaths.end(); it != it_end; it++ )

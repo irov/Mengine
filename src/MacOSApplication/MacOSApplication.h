@@ -36,7 +36,6 @@ namespace Menge
 		std::size_t getDesktopHeight() const override;
 
 		void minimizeWindow() override;
-		void setDesktopResolution( std::size_t _width, std::size_t _height );
 		void notifyWindowModeChanged( std::size_t _width, std::size_t _height, bool _fullscreen ) override;
 		float getDeltaTime() override;
 		//void changeResolution( int _width, int _height, int _bits, bool _fullscreen );
@@ -69,7 +68,7 @@ namespace Menge
 		EventHandlerRef m_windowEventHandler;
 		EventHandlerUPP m_mouseHandlerUPP;
 		EventHandlerRef m_mouseEventHandler;
-
+		std::size_t m_desktopResolution[2];
 	};
 }	// namespace Menge
 		

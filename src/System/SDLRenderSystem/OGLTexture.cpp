@@ -128,7 +128,7 @@ unsigned char * OGLTexture::lock( int* _pitch, bool _readOnly )
 {
 	*_pitch = m_width * 4;
 
-	glBindTexture(GL_TEXTURE_2D, m_texture);
+	glBindTexture(m_textureType, m_texture);
 
 	return m_PBO.map(!_readOnly);
 }
@@ -140,7 +140,7 @@ void OGLTexture::unlock()
 	// bind us to the right texture object
 	glBindTexture(m_textureType,m_texture);
 	// kick off the DMA
-	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, m_glformat, m_glpixelType, NULL);
+	glTexSubImage2D(m_textureType, 0, 0, 0, m_width, m_height, m_glformat, m_glpixelType, NULL);
 	// unbind the PBO 
 	m_PBO.unbind();
 }

@@ -20,14 +20,16 @@ bool PixelBufferObject::init(int _size)
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void PixelBufferObject::bind()
+bool PixelBufferObject::bind()
 {
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, m_id);
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
-void PixelBufferObject::unbind()
+bool PixelBufferObject::unbind()
 {
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 bool PixelBufferObject::done()

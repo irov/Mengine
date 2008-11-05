@@ -24,45 +24,46 @@ public:
 	};
 
 public:
-	FrameBufferObject(int _width, int _height, int _flags = 0);
+	FrameBufferObject(GLint _textureType, int _width, int _height, int _flags = 0);
 	~FrameBufferObject();
-
-	static FrameBufferObject *	createDefaultFBO(int _width, int _height);
 
 public:
 	int	getWidth() const;
 	int	getHeight() const;
 	bool hasStencil() const;
 	bool hasDepth() const;
-	unsigned int getColorBuffer(int no = 0) const;
+	unsigned int getColorBuffer(int _no = 0) const;
 	unsigned int getDepthBuffer() const;
 
 	bool isOk() const;
 	bool create();
 	bool bind();
-	bool bindFace(int no);
+	bool bindFace(int _no);
 	bool unbind();
 	
-	bool attachColorTexture(GLenum target, unsigned texId, int no = 0);
-	bool attachDepthTexture(GLenum target, unsigned texId);
+	bool attachColorTexture(GLenum _target, unsigned int _texId, int _no = 0);
+	bool attachDepthTexture(GLenum _target, unsigned int _texId);
 	
-	bool detachColorTexture(GLenum target );
-	bool detachDepthTexture(GLenum target );
+	bool detachColorTexture(GLenum _target);
+	bool detachDepthTexture(GLenum _target);
 	
-	unsigned int createColorTexture(GLenum format = GL_RGBA, GLenum internalFormat = GL_RGBA8, 
-	                                     GLenum clamp = GL_REPEAT, int filter = filterLinear);
+	unsigned int createColorTexture(GLenum _format = GL_RGBA, GLenum _internalFormat = GL_RGBA8, 
+	                                     GLenum _clamp = GL_REPEAT, int _filter = filterLinear);
 										 
-	unsigned int createColorRectTexture(GLenum format = GL_RGBA, GLenum internalFormat = GL_RGBA8);
+	unsigned int createColorRectTexture(GLenum _format = GL_RGBA, GLenum _internalFormat = GL_RGBA8);
 	
-	unsigned int createCubemapTexture(GLenum format = GL_RGBA, GLenum internalFormat = GL_RGBA8, 
-	                                     GLenum clamp = GL_CLAMP_TO_EDGE, int filter = filterLinear);
+	unsigned int createCubemapTexture(GLenum _format = GL_RGBA, GLenum _internalFormat = GL_RGBA8, 
+	                                     GLenum _clamp = GL_CLAMP_TO_EDGE, int _filter = filterLinear);
 										 
-	void	buildMipmaps (GLenum target = GL_TEXTURE_2D) const;
+	void	buildMipmaps (GLenum _target) const;
 	
-	static	int		maxColorAttachemnts();
-	static	int		maxSize();
+	static	int maxColorAttachemnts();
+	static	int	maxSize();
+
+	GLenum  checkFramebufferStatus(bool _printMessage = true);
 
 private:
+	GLint   m_textureType;
 	int		flags;
 	int		width;
 	int		height;

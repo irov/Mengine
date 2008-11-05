@@ -16,8 +16,8 @@ public:
 	
 	unsigned int getMaxSize();
 	
-	void bind();
-	void unbind();
+	bool bind();
+	bool unbind();
 
 private:
 	GLuint m_id;

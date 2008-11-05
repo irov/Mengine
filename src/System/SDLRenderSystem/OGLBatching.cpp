@@ -1,4 +1,5 @@
 #	include "OGLRenderSystem.h"
+//#	include "VBO.h"
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::initBatching()
 {
@@ -25,13 +26,33 @@ void OGLRenderSystem::initBatching()
 		n += 4;
 	}
 
+	int mVertexCount = VertexBufferSize;
+
+	Menge::uint16 * mIndices = new Menge::uint16[IndexBufferSize];
+
+	int mIndexCount = IndexBufferSize;
+
+	n = 0;
+	c = 0;
+
+	for(int i = 0; i < IndexBufferSize/6; i++) 
+	{
+		mIndices[c++] = n;
+		mIndices[c++] = n + 1;
+		mIndices[c++] = n + 2;
+		mIndices[c++] = n + 2;
+		mIndices[c++] = n + 3;
+		mIndices[c++] = n;
+		n += 4;
+	}
+
 	_glEnable2D();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::deleteBatching()
 {
-	delete [] IndexArray;
-	delete [] VertArray;
+//	delete [] IndexArray;
+//	delete [] VertArray;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -120,6 +141,9 @@ void OGLRenderSystem::renderBatch()
 	switch(m_curPrimType)
 	{
 	case GL_QUADS:
+
+	//	buffer->renderIndexed();
+
 		glVertexPointer(3, GL_FLOAT, sizeof(Menge::TVertex),  &VertArray[0].pos);
 		glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -177,8 +201,8 @@ void OGLRenderSystem::Gfx_RenderQuad(const Menge::TVertex * quad, GLint tex, GLi
 	{
 		renderBatch();
 
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+		glTexParameteri( m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+		glTexParameteri( m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 		m_curPrimType = GL_QUADS;
 
 		if( m_currSrcBlend != srcBlend || m_currDstBlend != dstBlend )
@@ -210,8 +234,8 @@ void OGLRenderSystem::Gfx_RenderTriple(const Menge::TVertex *quad, GLint tex, GL
 	{
 		renderBatch();
 
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+		glTexParameteri( m_textureType, GL_TEXTURE_WRAP_S, GL_REPEAT );
+		glTexParameteri( m_textureType, GL_TEXTURE_WRAP_T, GL_REPEAT );
 		m_curPrimType=GL_TRIANGLES;
 
 		if( m_currSrcBlend != srcBlend || m_currDstBlend != dstBlend )

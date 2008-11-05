@@ -195,12 +195,12 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 		GLuint npotTex;
 		GLint size = 65;
 		glGenTextures( 1, &npotTex );
- 		glBindTexture( GL_TEXTURE_2D, npotTex );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0 );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+ 		glBindTexture( m_textureType, npotTex );
+		glTexParameteri( m_textureType, GL_TEXTURE_MAX_LEVEL, 0 );
+		glTexParameteri( m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri( m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri( m_textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri( m_textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexImage2D( GL_PROXY_TEXTURE_3D, 0, GL_RGBA8, size, size, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL );
 		GLint width = 0;
 		glGetTexLevelParameteriv( GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width );
@@ -349,7 +349,15 @@ void OGLRenderSystem::setProjectionMatrix( const float * _projection )
 		m_projMatrix[i] = _projection[i];
 	}
 	
-	OGLUtils::makeGLMatrix(m_projMatrix, _projection);
+	//OGLUtils::makeGLMatrix(m_projMatrix, _projection);
+
+	/*if(m_currentRenderTarget != "defaultCamera" )
+	{
+		m_projMatrix[1] = -m_projMatrix[1];
+		m_projMatrix[5] = -m_projMatrix[5];
+		m_projMatrix[9] = -m_projMatrix[9];
+		m_projMatrix[13] = -m_projMatrix[13];
+	}*/
 
 	//m_projMatrix[12]*=-1;
 
@@ -388,6 +396,7 @@ void OGLRenderSystem::setWorldMatrix( const float * _world )
 	OGLUtils::makeGLMatrix( mogl, WV );
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(mogl);
+	//glRotatef(-180,0,0,0);
 	/*std::copy( _world, _world + 16, m_worldMatrix );
 	glMatrixMode( GL_MODELVIEW );
 	glLoadMatrixf( m_worldMatrix );
@@ -425,13 +434,13 @@ Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::String& _
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Menge::String & _name, float _width, float _height )
 {
-	FrameBufferObject * fbo = new FrameBufferObject(_width,_height);
+	FrameBufferObject * fbo = new FrameBufferObject(_getTextureType(),_width,_height);
 
 	GLint tex = fbo->createColorTexture();
 
 	fbo->create();
 	fbo->bind();
-	fbo->attachColorTexture(GL_TEXTURE_2D,tex);
+	fbo->attachColorTexture(m_textureType,tex);
 	fbo->unbind();
 
 	OGLTexture * texture = new OGLTexture(_getTextureType(),tex,_name,_width,_height);
@@ -859,6 +868,7 @@ void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 			it_cur->second.handle->unbind();
 		}
 	}
+
 	TTargetMap::iterator it = m_targetMap.find( _name );
 
 	if( it != m_targetMap.end() )
@@ -890,6 +900,7 @@ void OGLRenderSystem::setRenderArea( const float* _renderArea )
 	{
 		m_viewport[i] = _renderArea[i];
 	}
+
 	if( ( m_viewport[0] | m_viewport[1] | m_viewport[2] | m_viewport[3] ) == 0 )
 	{
 		m_viewport[2] = m_windowWidth;

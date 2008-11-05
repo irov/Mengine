@@ -814,13 +814,16 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 
 	const OGLTexture * tex = static_cast<const OGLTexture*>( _material->texture );
 
-	if(tex == NULL)
+	if(tex != NULL)
 	{
-		return;
+		glBindTexture(m_textureType, tex->getGLTexture());		
+	}
+	else
+	{
+		glBindTexture(m_textureType, 0);		
 	}
 
-	glBindTexture(m_textureType, tex->getGLTexture());
-
+	glEnableClientState( GL_VERTEX_ARRAY );
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY );
@@ -828,13 +831,16 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 
 	// convert colors to gl color format.
 
+	glClientActiveTextureARB(GL_TEXTURE0);
+
 	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Menge::TVertex), &_vertices[0].col);
 	glNormalPointer(GL_FLOAT, sizeof(Menge::TVertex), &_vertices[0].n);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(Menge::TVertex), &_vertices[0].uv);
 	glVertexPointer(3, GL_FLOAT, sizeof(Menge::TVertex),  &_vertices[0].pos);
 
-	glDrawElements(GL_TRIANGLES, _verticesNum, GL_UNSIGNED_SHORT, _indices);
+	glDrawElements(GL_TRIANGLES, _indicesNum, GL_UNSIGNED_SHORT, _indices);
 
+	glDisableClientState( GL_VERTEX_ARRAY );
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY );

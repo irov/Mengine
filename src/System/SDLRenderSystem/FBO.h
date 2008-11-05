@@ -27,6 +27,8 @@ public:
 	FrameBufferObject(int _width, int _height, int _flags = 0);
 	~FrameBufferObject();
 
+	static FrameBufferObject *	createDefaultFBO(int _width, int _height);
+
 public:
 	int	getWidth() const;
 	int	getHeight() const;

@@ -20,17 +20,17 @@ FrameBufferObject::~FrameBufferObject()
 {
 	if (depthBuffer != 0)
 	{
-		glDeleteRenderbuffersEXT ( 1, &depthBuffer );
+		glDeleteRenderbuffersEXT(1,&depthBuffer);
 	}
 
 	if (stencilBuffer != 0)
 	{
-		glDeleteRenderbuffersEXT ( 1, &stencilBuffer );
+		glDeleteRenderbuffersEXT(1,&stencilBuffer);
 	}
 
 	if (frameBuffer != 0)
 	{
-		glDeleteFramebuffersEXT ( 1, &frameBuffer );
+		glDeleteFramebuffersEXT(1,&frameBuffer);
 	}
 }
 
@@ -44,27 +44,27 @@ int	FrameBufferObject::getHeight() const
 	return height;
 }
 
-bool	FrameBufferObject::hasStencil() const
+bool FrameBufferObject::hasStencil() const
 {
 	return stencilBuffer != 0;
 }
 
-bool	FrameBufferObject::hasDepth() const
+bool FrameBufferObject::hasDepth() const
 {
 	return depthBuffer != 0;
 }
 
-unsigned	FrameBufferObject::getColorBuffer(int no) const
+unsigned int FrameBufferObject::getColorBuffer(int _no) const
 {
-	return colorBuffer[no];
+	return colorBuffer[_no];
 }
 
-unsigned	FrameBufferObject::getDepthBuffer() const
+unsigned int FrameBufferObject::getDepthBuffer() const
 {
 	return depthBuffer;
 }
 
-bool	FrameBufferObject::create()
+bool FrameBufferObject::create()
 {
 	if ( width <= 0 || height <= 0 )
 	{
@@ -116,8 +116,8 @@ bool	FrameBufferObject::create()
 		                               GL_RENDERBUFFER_EXT, stencilBuffer);
 	}
 
-	GLenum status = glCheckFramebufferStatusEXT ( GL_FRAMEBUFFER_EXT );
-	glBindFramebufferEXT ( GL_FRAMEBUFFER_EXT, 0 );
+	GLenum status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
 	return status == GL_FRAMEBUFFER_COMPLETE_EXT;
 }
@@ -153,22 +153,22 @@ bool FrameBufferObject::bind()
 
 	glFlush ();
 								
-	glGetIntegerv        ( GL_VIEWPORT, saveViewport );
-	glBindFramebufferEXT ( GL_FRAMEBUFFER_EXT, frameBuffer );
-	glReadBuffer         ( GL_COLOR_ATTACHMENT0_EXT );
-	glDrawBuffer         ( GL_COLOR_ATTACHMENT0_EXT );
-	glViewport           ( 0, 0, getWidth (), getHeight () );
+	glGetIntegerv(GL_VIEWPORT, saveViewport);
+	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, frameBuffer);
+	glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+	glViewport(0, 0, getWidth (), getHeight ());
 
 	return true;
 }
 
-bool	FrameBufferObject::bindFace(int face)
+bool FrameBufferObject::bindFace(int _face)
 {
-	glFramebufferTexture2DEXT ( GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + face, colorBuffer [0], 0 );
-	return bind ();
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + _face,colorBuffer[0],0);
+	return bind();
 }
 
-bool	FrameBufferObject::unbind()
+bool FrameBufferObject::unbind()
 {
 	if ( frameBuffer == 0 )
 	{
@@ -182,7 +182,7 @@ bool	FrameBufferObject::unbind()
 	return true;
 }
 
-bool	FrameBufferObject::attachColorTexture(GLenum target, unsigned texId, int no)
+bool FrameBufferObject::attachColorTexture(GLenum target, unsigned texId, int no)
 {
 	if ( frameBuffer == 0 )
 	{
@@ -200,7 +200,7 @@ bool	FrameBufferObject::attachColorTexture(GLenum target, unsigned texId, int no
 	return true;
 }
 
-bool	FrameBufferObject::attachDepthTexture(GLenum target, unsigned texId)
+bool FrameBufferObject::attachDepthTexture(GLenum target, unsigned int texId)
 {
 	if ( frameBuffer == 0 )
 	{
@@ -212,7 +212,7 @@ bool	FrameBufferObject::attachDepthTexture(GLenum target, unsigned texId)
 	return true;
 }
 
-unsigned	FrameBufferObject::createColorTexture( GLenum format, GLenum internalFormat, GLenum clamp, int filter )
+unsigned int FrameBufferObject::createColorTexture(GLenum format, GLenum internalFormat, GLenum clamp, int filter )
 {
 	GLuint	tex;
 
@@ -246,9 +246,9 @@ unsigned	FrameBufferObject::createColorTexture( GLenum format, GLenum internalFo
     return tex;
 }
 
-unsigned	FrameBufferObject::createCubemapTexture(GLenum format, GLenum internalFormat, GLenum clamp, int filter)
+unsigned int FrameBufferObject::createCubemapTexture(GLenum format, GLenum internalFormat, GLenum clamp, int filter)
 {
-	if ( getWidth () != getHeight () )
+	if (getWidth() != getHeight ())
 	{
 		return 0;
 	}
@@ -264,38 +264,39 @@ unsigned	FrameBufferObject::createCubemapTexture(GLenum format, GLenum internalF
 	
     for ( int side = 0; side < 6; side++ )
 	{
-        glTexImage2D ( GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + side, 0, internalFormat,
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB + side, 0, internalFormat,
                        getWidth (), getWidth (), 0, format, GL_UNSIGNED_BYTE, NULL );
 	}
 	
-	if ( filter == filterNearest )
+	if (filter == filterNearest)
 	{
-		glTexParameteri ( GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-		glTexParameteri ( GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+		glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+		glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 	}
 	else
-	if ( filter == filterLinear )
+	if (filter == filterLinear)
 	{
-		glTexParameteri ( GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-		glTexParameteri ( GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+		glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 	}
 	else
-	if ( filter == filterMipmap )
+	if (filter == filterMipmap)
 	{
-		glTexParameteri ( GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-		glTexParameteri ( GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+		glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		glTexParameteri(GL_TEXTURE_CUBE_MAP_ARB, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
 	}
 	
     return tex;
 }
 
-unsigned	FrameBufferObject::createColorRectTexture(GLenum format, GLenum internalFormat)
+unsigned int FrameBufferObject::createColorRectTexture(GLenum format, GLenum internalFormat)
 {
 	GLuint	tex;
 
 	glGenTextures(1, &tex);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);                         // set 1-byte alignment
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);                        
     glBindTexture(GL_TEXTURE_RECTANGLE_ARB, tex);
+
     glTexImage2D(GL_TEXTURE_RECTANGLE_ARB, 0, internalFormat, getWidth (), getHeight (), 0,
                       format, GL_UNSIGNED_BYTE, NULL);
 
@@ -311,27 +312,23 @@ unsigned	FrameBufferObject::createColorRectTexture(GLenum format, GLenum interna
 int	FrameBufferObject::maxColorAttachemnts()
 {
     GLint n;
-
     glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS_EXT, &n);
-
 	return n;
 }
 
 int	FrameBufferObject::maxSize()
 {
     GLint sz;
-
     glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE_EXT, &sz);
-
 	return sz;
 }
 
-bool FrameBufferObject::detachColorTexture( GLenum target )
+bool FrameBufferObject::detachColorTexture(GLenum target)
 {
 	return attachColorTexture(target, 0);
 }
 
-bool FrameBufferObject::detachDepthTexture( GLenum target )
+bool FrameBufferObject::detachDepthTexture(GLenum target)
 {
 	return attachDepthTexture(target, 0);
 }

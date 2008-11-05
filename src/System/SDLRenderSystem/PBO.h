@@ -22,5 +22,5 @@ public:
 private:
 	GLuint m_id;
 	unsigned char * m_data;
-	int m_maxsize;
+	int m_maxSize;
 };

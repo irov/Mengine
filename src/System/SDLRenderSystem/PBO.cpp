@@ -3,7 +3,7 @@
 PixelBufferObject::PixelBufferObject()
 : m_id(0)
 , m_data(NULL)
-, m_maxsize(0)
+, m_maxSize(0)
 {}
 //////////////////////////////////////////////////////////////////////////
 PixelBufferObject::~PixelBufferObject()
@@ -16,7 +16,7 @@ bool PixelBufferObject::init(int _size)
 	glGenBuffers(1, &m_id);
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, m_id);
 	glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, _size, NULL, GL_STATIC_DRAW);
-	m_maxsize = _size;
+	m_maxSize = _size;
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -40,6 +40,7 @@ bool PixelBufferObject::done()
 	}
 
 	glDeleteBuffers(1, &m_id);
+
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -49,7 +50,7 @@ unsigned char * PixelBufferObject::map(bool _discard)
 
 	if(!_discard)
 	{
-		glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, m_maxsize, NULL, GL_STREAM_DRAW);
+		glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, m_maxSize, NULL, GL_STREAM_DRAW);
 	}
 
 	m_data = static_cast<unsigned char*>(glMapBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY));
@@ -63,12 +64,11 @@ bool PixelBufferObject::unmap()
 	// unmap the buffer from the CPU space so it can DMA
 	glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER_ARB);
 	m_data = NULL;
-
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
 unsigned int PixelBufferObject::getMaxSize()
 {
-	return m_maxsize;
+	return m_maxSize;
 }
 //////////////////////////////////////////////////////////////////////////

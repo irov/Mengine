@@ -252,6 +252,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_update( float _timing )
 	{
+		// update physics first
+		if( m_physWorld2D )
+		{
+			Holder<PhysicEngine2D>::hostage()->update( _timing );
+		}
+
 		Node::_update( _timing );
 		if( m_onUpdateEvent )
 		{

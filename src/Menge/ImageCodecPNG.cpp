@@ -351,12 +351,12 @@ namespace Menge
 		png_read_update_info(png_ptr, info_ptr);
 
 		int row_stride = width * pixel_depth / 8;
-		if( _options & DF_CUSTOM_PITCH > 0 )
+		if( (_options & DF_CUSTOM_PITCH) > 0 )
 		{
 			row_stride = _options >> 16;
 		}
 		
-		if( _options & DF_READ_ALPHA_ONLY > 0 )
+		if( (_options & DF_READ_ALPHA_ONLY) > 0 )
 		{
 			unsigned char* rowBuffer = new unsigned char[row_stride];
 			for( png_uint_32 i = 0; i <height; i++ )

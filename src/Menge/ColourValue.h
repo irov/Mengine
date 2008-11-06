@@ -42,6 +42,27 @@ namespace Menge
 		{ 
 		}
 
+		ColourValue( const ColourValue& _copy )
+			: r( _copy.r )
+			, g( _copy.g )
+			, b( _copy.b )
+			, a( _copy.a )
+			, m_invalidateARGB( _copy.m_invalidateARGB )
+			, m_argb( _copy.m_argb )
+		{
+		}
+
+		const ColourValue& operator=( const ColourValue& _other )
+		{
+			r = _other.r;
+			g = _other.g;
+			b = _other.b;
+			a = _other.a;
+			m_invalidateARGB = _other.m_invalidateARGB;
+			m_argb = _other.m_argb;
+			return *this;
+		}
+
 		bool operator==(const ColourValue& _rhs) const;
 		bool operator!=(const ColourValue& _rhs) const;
 

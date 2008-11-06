@@ -17,8 +17,10 @@ namespace Menge
 
 		void invalidateQuads();
 		void setClientSize( const mt::vec2f& _clientSize );
+		void setClientSizeInTiles( const mt::vec2f& _tiles );
 		const mt::vec2f getClientSize() const;
 		mt::vec2f getWindowSize() const;
+		const mt::vec2f& getTileSize( int _tile ) const;
 
 	protected:
 		bool _compile() override;

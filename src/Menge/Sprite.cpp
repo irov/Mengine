@@ -345,7 +345,9 @@ namespace	Menge
 
 		const mt::vec2f* vertices = getVertices();
 
-		unsigned int color = m_color.getAsARGB();
+		//unsigned int color = m_color.getAsARGB();
+		ColourValue colorv = getWorldColor() * m_color;
+		unsigned int color = colorv.getAsARGB();
 
 		Holder<RenderEngine>::hostage()->renderImage(
 			vertices,
@@ -390,8 +392,8 @@ namespace	Menge
 	void Sprite::_setListener()
 	{
 		Node::_setListener();
-		this->registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
-		this->registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
+		//this->registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
+		//this->registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )

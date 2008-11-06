@@ -726,19 +726,19 @@ namespace Menge
 			timing = m_maxTiming;
 		}
 
-		if( m_physicEngine )
+		/*if( m_physicEngine )
 		{
 			m_physicEngine->update( 1.0f/30.0f );
-		}
+		}*/
 
 		m_profilerSystem->beginProfile( "Menge" );
 
-		if( m_physicEngine2D )
+		/*if( m_physicEngine2D )
 		{
 			m_profilerSystem->beginProfile( "Physic" );
 			m_physicEngine2D->update( timing );
 			m_profilerSystem->endProfile( "Physic" );
-		}
+		}*/
 
 		m_profilerSystem->beginProfile( "Game Update" );
 		m_game->update( timing );

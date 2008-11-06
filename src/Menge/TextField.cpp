@@ -184,14 +184,18 @@ namespace     Menge
 		Node::_render( _debugMask );
 		const RenderImageInterface * outlineImage = m_resource->getOutlineImage();
 
+		ColourValue wColor = getWorldColor();
+		ColourValue oColor = wColor * m_outlineColor;
+		ColourValue tColor = wColor * m_color;
+
 		if( m_outline && outlineImage )
 		{
-			_renderPass( m_outlineColor, outlineImage );
+			_renderPass( oColor, outlineImage );
 		}
 
 		const RenderImageInterface * renderImage = m_resource->getImage();
 
-		_renderPass( m_color, renderImage );
+		_renderPass( tColor, renderImage );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_update( float _timing )
@@ -378,8 +382,8 @@ namespace     Menge
 	{
 		Node::_setListener();
 
-		registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
-		registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
+		//registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
+		//registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setLineOffset( float _offset )

@@ -103,6 +103,15 @@ namespace Menge
 		bool isActivate() const;
 
 		////
+		void setLocalColor( const ColourValue& _color );
+		void setLocalAlpha( float _alpha );
+		const ColourValue& getWorldColor();
+		const ColourValue& getLocalColor() const;
+		void invalidateColor();
+		void localColorTo( float _time, const ColourValue& _color );
+		void localAlphaTo( float _time, float _alpha );
+		void localColorToStop();
+
 		virtual void colorTo( const ColourValue& _color, float _time );
 		virtual void setAlpha( float _alpha );
 		virtual void alphaTo( float _alpha, float _time );
@@ -169,5 +178,9 @@ namespace Menge
 
 	protected:
 		ValueInterpolator<mt::vec2f> m_moveTo;
+		ColourValue m_colorLocal;
+		ColourValue m_colorWorld;
+		bool m_invalidateColor;
+		ValueInterpolator<ColourValue> m_colorLocalTo;
 	};
 }

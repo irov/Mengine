@@ -170,6 +170,8 @@ namespace	Menge
 
 		Node::_render( _debugMask );
 
+		ColourValue color = getWorldColor();
+
 		int count = m_interface->getNumTypes();
 
 		for ( int i = count - 1; i >= 0; i-- )
@@ -220,10 +222,14 @@ namespace	Menge
 						vertices[3] = vertices[0] + transformY;
 					}
 
+					ColourValue pColor;
+					pColor.setAsARGB( p->color );
+					ColourValue res = color * pColor;
+
 					Holder<RenderEngine>::hostage()->renderImage(
 						vertices,
 						mt::vec4f(p->u0, p->v0, p->u1, p->v1),
-						p->color,
+						res.getAsARGB(),
 						image,
 						m_blendSrc,
 						m_blendDest

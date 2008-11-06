@@ -214,7 +214,8 @@ namespace	Menge
 		}
 
 		const mt::vec2f* vertices = getVertices();
-		unsigned int color = m_color.getAsARGB();
+		ColourValue wColor = getWorldColor();
+		unsigned int color = wColor.getAsARGB();
 
 		Holder<RenderEngine>::hostage()->renderImage(
 			vertices,

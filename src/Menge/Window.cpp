@@ -16,6 +16,11 @@ namespace Menge
 		: m_clientSize( 100.0f, 100.0f )
 		, m_invalidateQuads( true )
 	{
+		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
+		{
+			m_initialSizes[i].x = 0.0f;
+			m_initialSizes[i].y = 0.0f;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Window::~Window()
@@ -29,7 +34,8 @@ namespace Menge
 		XML_SWITCH_NODE( _xml )
 		{
 			XML_CASE_ATTRIBUTE_NODE( "WindowResource", "Name", m_resourceName );
-			XML_CASE_ATTRIBUTE_NODE( "ClientSize", "Value", m_clientSize );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "ClientSize", "Value", &Window::setClientSize );
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "ClientSizeInTiles", "Value", &Window::setClientSizeInTiles );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -57,11 +63,6 @@ namespace Menge
 			{
 				m_initialSizes[i].x = image->getWidth();
 				m_initialSizes[i].y = image->getHeight();
-			}
-			else
-			{
-				m_initialSizes[i].x = 10.0f;
-				m_initialSizes[i].y = 10.0f;
 			}
 		}
 
@@ -214,10 +215,34 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Window::getWindowSize() const
 	{
+		if( isCompile() == false )
+		{
+			MENGE_LOG_ERROR( "Warning: invalid call \"Window::getWindowSize\". Node not compiled. ClientSize will be returned" );
+		}
 		mt::vec2f windowSize = m_clientSize;
 		windowSize += m_initialSizes[1];
 		windowSize += m_initialSizes[5];
 		return windowSize;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f& Window::getTileSize( int _tile ) const
+	{
+		if( _tile < 0 || _tile > MAX_WINDOW_ELEMENTS )
+		{
+			MENGE_LOG_ERROR( "Error: \"Window::getTileSize\" invalid tile argument \"%d\"", _tile );
+			return mt::vec2f::zero_v2;
+		}
+		return m_initialSizes[_tile];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Window::setClientSizeInTiles( const mt::vec2f& _tiles )
+	{
+		if( isCompile() == false )
+		{
+			MENGE_LOG_ERROR( "Warning: invalid call \"Window::getClientSizeInTiles\". Node not compiled." );
+		}
+		setClientSize( mt::vec2f( static_cast<int>( _tiles.x ) * m_initialSizes[0].x,
+									static_cast<int>( _tiles.y ) + m_initialSizes[0].y ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

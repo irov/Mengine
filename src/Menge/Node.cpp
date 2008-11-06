@@ -32,6 +32,9 @@ namespace Menge
 		, m_changeVisibility(true)
 		, m_listener(0)
 		, m_layer(0)
+		, m_colorLocal( 1.0f, 1.0f, 1.0f, 1.0f )
+		, m_colorWorld( 1.0f, 1.0f, 1.0f, 1.0f )
+		, m_invalidateColor( true )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::destroy()
@@ -377,6 +380,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Value", m_hide);
 				}
 			}
+			XML_CASE_ATTRIBUTE_NODE_METHOD( "Color", "Value", &Node::setLocalColor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -401,6 +405,16 @@ namespace Menge
 			if( end == true )
 			{
 				callEvent( EVENT_MOVE_END, "(O)", getEmbedding() );
+			}
+		}
+		if( m_colorLocalTo.isStarted() )
+		{
+			ColourValue newColor;
+			m_colorLocalTo.update( _timing, &newColor );
+			setLocalColor( newColor );
+			if( m_colorLocalTo.isStarted() == false )
+			{
+				this->callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
 			}
 		}
 	}
@@ -656,6 +670,8 @@ namespace Menge
 	{
 		registerEvent( EVENT_MOVE_STOP, ("onMoveStop"), m_listener );
 		registerEvent( EVENT_MOVE_END, ("onMoveEnd"), m_listener );
+		registerEvent( EVENT_COLOR_END, ("onColorEnd"), m_listener );
+		registerEvent( EVENT_COLOR_STOP, ("onColorStop"), m_listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setLayer( Layer2D * _layer )
@@ -807,6 +823,75 @@ namespace Menge
 			return m_parent->getUpdatable();
 		}
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::setLocalColor( const ColourValue& _color )
+	{
+		m_colorLocal = _color;
+		invalidateColor();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::invalidateColor()
+	{
+		m_invalidateColor = true;
+		for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end()
+			; it != it_end
+			; it++ )
+		{
+			(*it)->invalidateColor();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ColourValue& Node::getWorldColor()
+	{
+		if( m_invalidateColor == true )
+		{
+			m_colorWorld = m_colorLocal;
+			if( m_parent != NULL )
+			{
+				m_colorWorld = m_colorWorld * m_parent->getWorldColor();
+			}
+			m_invalidateColor = false;
+		}
+		return m_colorWorld;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ColourValue& Node::getLocalColor() const
+	{
+		return m_colorLocal;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::setLocalAlpha( float _alpha )
+	{
+		m_colorLocal.setA( _alpha );
+		setLocalColor( m_colorLocal );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::localColorTo( float _time, const ColourValue& _color )
+	{
+		if( m_colorLocalTo.isStarted() )
+		{
+			this->callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
+			m_colorLocalTo.stop();
+		}
+		if( m_colorLocalTo.start( m_colorLocal, _color, _time, length_color ) == false )
+		{
+			setLocalColor( _color );
+			callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::localAlphaTo( float _time, float _alpha )
+	{
+		ColourValue color = m_colorLocal;
+		color.setA( _alpha );
+		localColorTo( _time, color );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::localColorToStop()
+	{
+		m_colorLocalTo.stop();
+		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

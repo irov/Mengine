@@ -688,6 +688,13 @@ namespace Menge
 			.def( "getScreenPosition", &Node::getScreenPosition )
 			.def( "moveTo", &Node::moveTo )
 			.def( "moveToStop", &Node::moveToStop )
+			.def( "setLocalColor", &Node::setLocalColor )
+			.def( "setLocalAlpha", &Node::setLocalAlpha )
+			.def( "getWorldColor", &Node::getWorldColor )
+			.def( "getLocalColor", &Node::getLocalColor )
+			.def( "localColorTo", &Node::localColorTo )
+			.def( "localAlphaTo", &Node::localAlphaTo )
+			.def( "localColorToStop", &Node::localColorToStop )
 			;
 
 
@@ -834,6 +841,8 @@ namespace Menge
 				.def( "setOutlineResource", &TextField::setOutlineResource )
 				.def( "getCenterAlign", &TextField::getCenterAlign )
 				.def( "setCenterAlign", &TextField::setCenterAlign )
+				.def( "getCharOffset", &TextField::getCharOffset )
+				.def( "setCharOffset", &TextField::setCharOffset )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<Node> >("Arrow", false)
@@ -937,8 +946,10 @@ namespace Menge
 
 			pybind::proxy_<Window, pybind::bases<Node> >("Window", false)
 				.def( "setClientSize", &Window::setClientSize )
+				.def( "setClientSizeInTiles", &Window::setClientSizeInTiles )
 				.def( "getClientSize", &Window::getClientSize )
 				.def( "getWindowSize", &Window::getWindowSize )
+				.def( "getTileSize", &Window::getTileSize )
 				;
 		}		
 

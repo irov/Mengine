@@ -237,6 +237,8 @@ namespace Menge
 	{
 		Node::_render( _debugMask );
 
+		ColourValue color = getWorldColor();
+		unsigned int argb = color.getAsARGB();
 		// render poly
 		for(std::vector<mt::vec2f>::size_type i = 0; i < m_triangles.size(); i+=3)
 		{
@@ -252,7 +254,7 @@ namespace Menge
 
 			Holder<RenderEngine>::hostage()->renderTriple( v0, v1, v2,
 				uv0, uv1, uv2,
-				0xFFFFFFFF, image );
+				argb, image );
 		}
 
 		// render edges
@@ -272,10 +274,10 @@ namespace Menge
 				//mt::vec4f uv( 0.0f, 0.0f, (*qit).s, (*qit).t );
 				Holder<RenderEngine>::hostage()
 					->renderTriple( (*qit).a, (*qit).b, (*qit).d,
-					uv0, uv1, uv3, 0xFFFFFFFF, it->first );
+					uv0, uv1, uv3, argb, it->first );
 				Holder<RenderEngine>::hostage()
 					->renderTriple( (*qit).b, (*qit).c, (*qit).d,
-					uv1, uv2, uv3, 0xFFFFFFFF, it->first );
+					uv1, uv2, uv3, argb, it->first );
 
 			}
 		}
@@ -290,7 +292,7 @@ namespace Menge
 				qit++ )
 			{
 				Holder<RenderEngine>::hostage()
-					->renderImage( &((*qit).a), mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), 0xFFFFFFFF, it->first );
+					->renderImage( &((*qit).a), mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), argb, it->first );
 			}
 		}
 
@@ -302,7 +304,7 @@ namespace Menge
 				it++ )
 			{
 				Holder<RenderEngine>::hostage()
-					->renderImage( &((*it).a), mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), 0xFFFFFFFF, m_junc_image );
+					->renderImage( &((*it).a), mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), argb, m_junc_image );
 			}
 		}
 
@@ -578,6 +580,9 @@ namespace Menge
 			return;
 		}
 
+		ColourValue color = getWorldColor();
+		unsigned int argb = color.getAsARGB();
+
 		RenderEngine* renderEngine = Holder<RenderEngine>::hostage();
 		for( TilePolygon::TVectorEdgeImages::iterator it = m_images->begin(), it_end = m_images->end();
 			it != it_end;
@@ -600,9 +605,9 @@ namespace Menge
 				mt::vec2f uv3( 0.0f, (*qit).t );
 
 				renderEngine->renderTriple( (*qit).a, (*qit).b, (*qit).d,
-					uv0, uv1, uv3, 0xFFFFFFFF, it->second );
+					uv0, uv1, uv3, argb, it->second );
 				renderEngine->renderTriple( (*qit).b, (*qit).c, (*qit).d,
-					uv1, uv2, uv3, 0xFFFFFFFF, it->second );
+					uv1, uv2, uv3, argb, it->second );
 			}
 		}
 	}

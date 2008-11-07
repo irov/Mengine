@@ -75,7 +75,7 @@ bool FrameBufferObject::create()
 	glGenFramebuffersEXT ( 1, &frameBuffer );
 	glBindFramebufferEXT ( GL_FRAMEBUFFER_EXT, frameBuffer );
 
-	checkFramebufferStatus();
+	//checkFramebufferStatus();
 
 	int	depthFormat   = 0;
 	int stencilFormat = 0;

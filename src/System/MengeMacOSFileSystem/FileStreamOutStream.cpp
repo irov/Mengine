@@ -1,5 +1,10 @@
 
 #	include "FileStreamOutStream.h"
+#include <sys/errno.h>
+#include "FileSystem.h"
+#include <sys/param.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 namespace Menge
 {
@@ -30,7 +35,6 @@ namespace Menge
 		{
 			return false;
 		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -52,10 +52,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_isAbsolutePath( const String& _path )
 	{
-		if ( /*::isalpha( unsigned char( _path[0] ) ) && */_path[1] == ':' )
-		{
-			return true;
-		}
 		return _path[0] == '/' || _path[0] == '\\';
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -71,7 +67,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static StringW s_UniCharFromCString( const String& _cstring )
+	static String s_UniCharFromCString( const String& _cstring )
 	{
 		TextEncoding encoding = CreateTextEncoding( CFStringGetSystemEncoding(), kTextEncodingDefaultVariant, kTextEncodingDefaultFormat );
 		TextToUnicodeInfo info;
@@ -79,42 +75,117 @@ namespace Menge
 		UniChar conv[MAXPATHLEN];
 		ByteCount a, b;
 		status = ConvertFromTextToUnicode( info, _cstring.size(), _cstring.c_str(), 0, 0, 0, NULL, NULL, MAXPATHLEN, &a, &b, conv );
-    		return StringW( (const wchar_t*)conv, b/sizeof(UniChar) );
+		DisposeTextToUnicodeInfo( &info );
+		return String( (const char*)conv, b );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static String s_CStringFromUniChar( const StringW& _uniChar )
+	static String s_CStringFromUniChar( const String& _uniChar )
 	{
-		TextEncoding encoding = CreateTextEncoding( CFStringGetSystemEncoding(), kTextEncodingDefaultVariant, kTextEncodingDefaultFormat );
-		UnicodeToTextInfo info;
-		OSStatus status = CreateUnicodeToTextInfoByEncoding( encoding, &info );
-		char conv[MAXPATHLEN];
+		TextEncoding encoding = CreateTextEncoding( kTextEncodingUnicodeDefault, kTextEncodingDefaultVariant, kUnicodeUTF8Format );
+		TextToUnicodeInfo info;
+		OSStatus status = CreateTextToUnicodeInfoByEncoding( encoding, &info );
+		UniChar conv[MAXPATHLEN];
 		ByteCount a, b;
-		status = ConvertFromUnicodeToText( info, _uniChar.size(), (const UniChar*)_uniChar.c_str(), 0, 0, 0, NULL, NULL, MAXPATHLEN, &a, &b, conv );
-		return String( conv, b );
+		status = ConvertFromTextToUnicode( info, _uniChar.size(), _uniChar.c_str(), 0, 0, 0, NULL, NULL, MAXPATHLEN, &a, &b, conv );
+		DisposeTextToUnicodeInfo( &info );
+		return String( (const char*)conv, b );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	static FSRef s_findParentDirRef( const String& _path, String& _rest )
+	static String s_UTF8ToANSI( const String& _ansi )
 	{
+		OSStatus err = noErr;
+		TECObjectRef tec = 0;
+	    ByteCount bytesConsumed = 0;
+		ByteCount bytesProduced = 0;
+
+	    TextEncoding outputEncoding	= CreateTextEncoding( CFStringGetSystemEncoding(),
+                                        kTextEncodingDefaultVariant,
+                                        kTextEncodingDefaultFormat);
+
+		TextEncoding inputEncoding = CreateTextEncoding(kTextEncodingUnicodeDefault,
+                                        kTextEncodingDefaultVariant,
+                                        kUnicodeUTF8Format);
+
+		err = TECCreateConverter(&tec, inputEncoding, outputEncoding);
+
+		String out;
+		char buffer[MAXPATHLEN];
+		if (err == noErr)
+		{
+			err = TECConvertText(tec,
+                    (ConstTextPtr) _ansi.c_str(),
+                    _ansi.length(),				// inputBufferLength
+                    &bytesConsumed,				// actualInputLength
+                    (TextPtr) buffer,			// outputBuffer
+                    MAXPATHLEN,					// outputBufferLength
+                    &bytesProduced);			// actualOutputLength
+
+			TECDisposeConverter(tec);
+		}
+		out.assign( buffer, bytesProduced );
+		return out;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	FSRef FileSystem::s_findParentDirRef( const String& _path, String& _rest )
+	{
+		String fullPath = _path;
 		FSRef ref;
 		Boolean isDir = true;
-		TStringVector paths = Utils::split( _path, "/" );
-		if( paths.empty() != true )
+		TStringVector paths = Utils::split( fullPath, "/" );
+		// get root
+		FSPathMakeRef( (const UInt8*)"/", &ref, &isDir );
+		String full;
+		for( TStringVector::size_type i = 0; i < paths.size(); i++ )
 		{
-			paths[0] = PATH_DELIM + paths[0];
-			for( TStringVector::size_type i = 1; i < paths.size(); i++ )
+			FSRef newRef;
+			String name = s_UniCharFromCString( paths[i] );
+			OSErr err = FSMakeFSRefUnicode( &ref, name.size()/sizeof(UniChar), (const UniChar*)name.c_str(), kTextEncodingUnknown, &newRef );
+			if( err == 0 )	// ok
 			{
-				paths[i] = paths[i-1] + PATH_DELIM + paths[i];
+				full += PATH_DELIM + paths[i];
+				ref = newRef;
+			}
+			else // probably does not exist yet
+			{
+				_rest = _path.substr( full.length() + 1, _path.length() );
+				break;
 			}
 		}
-		for( TStringVector::size_type i = paths.size() - 1; i >= 0; i-- )
+		return ref;
+	}
+	static String s_ANSIToUTF8( const String& _ansi )
+	{
+		OSStatus err = noErr;
+		TECObjectRef tec = 0;
+	    ByteCount bytesConsumed = 0;
+		ByteCount bytesProduced = 0;
+
+	    TextEncoding inputEncoding	= CreateTextEncoding( CFStringGetSystemEncoding(),
+                                        kTextEncodingDefaultVariant,
+                                        kTextEncodingDefaultFormat);
+
+		TextEncoding outputEncoding = CreateTextEncoding(kTextEncodingUnicodeDefault,
+                                        kTextEncodingDefaultVariant,
+                                        kUnicodeUTF8Format);
+
+		err = TECCreateConverter(&tec, inputEncoding, outputEncoding);
+
+		String out;
+		char buffer[MAXPATHLEN];
+		if (err == noErr)
 		{
-			OSStatus status = FSPathMakeRef( (const UInt8*)paths[i].c_str(), &ref, &isDir );
-			if( status == 0 )
-			{
-				_rest = _path.substr( paths[i].size()+1, _path.size() );
-				return ref;
-			}
+			err = TECConvertText(tec,
+                    (ConstTextPtr) _ansi.c_str(),
+                    _ansi.length(),				// inputBufferLength
+                    &bytesConsumed,				// actualInputLength
+                    (TextPtr) buffer,			// outputBuffer
+                    MAXPATHLEN,					// outputBufferLength
+                    &bytesProduced);			// actualOutputLength
+
+			TECDisposeConverter(tec);
 		}
+		out.assign( buffer, bytesProduced );
+		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::FileSystem()
@@ -163,17 +234,17 @@ namespace Menge
 		try
 		{
 			String full_path = s_concatenatePath( m_initPath, _filename );
-			//StringW full_path_w = Utils::AToW( full_path );
+			String full_path_utf8 = s_ANSIToUTF8( full_path );
 			// Use filesystem to determine size 
 			// (quicker than streaming to the end and back)
 			struct stat tagStat;
 
-			int ret = stat( full_path.c_str(), &tagStat );
+			int ret = stat( full_path_utf8.c_str(), &tagStat );
 
 			std::ifstream *origStream = new std::ifstream();
 
 			// Always open in binary mode
-			origStream->open( full_path.c_str(), std::ios::in | std::ios::binary );
+			origStream->open( full_path_utf8.c_str(), std::ios::in | std::ios::binary );
 
 			// Should check ensure open succeeded, in case fail for some reason.
 			if ( origStream->fail() )
@@ -213,29 +284,32 @@ namespace Menge
 	bool FileSystem::existFile( const String& _filename )
 	{
 		String full_path = s_concatenatePath( m_initPath, _filename );
-		//StringW full_path_w = Utils::AToW( full_path );
+		String full_path_utf8 = s_ANSIToUTF8( full_path );
 
 		struct stat tagStat;
-		bool ret = ( stat( full_path.c_str(), &tagStat ) == 0 );
+		bool ret = ( stat( full_path_utf8.c_str(), &tagStat ) == 0 );
 		return ret;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::createFolder( const String& _path )
 	{
-		//String  fullPath = m_appDataPath + PATH_DELIM + _path;
 		String subdir;
-		FSRef pathRef = s_findParentDirRef( _path, subdir );
+		FSRef pathRef = FileSystem::s_findParentDirRef( _path, subdir );
 		
+		if( subdir.empty() == true )
+		{
+			return true;
+		}
 		TStringVector subdirs = Utils::split( subdir, "/" );
 		for( TStringVector::size_type i = 0; i < subdirs.size(); i++ )
 		{
-			StringW _dirNameW = s_UniCharFromCString( subdirs[i] );
+			String _dirName = s_UniCharFromCString( subdirs[i] );
 			FSRef newDir;
-			OSErr err = FSCreateDirectoryUnicode( &pathRef, _dirNameW.size(), (const UniChar*)_dirNameW.c_str(), kFSCatInfoNone, NULL, &newDir, NULL, NULL );
+			OSErr err = FSCreateDirectoryUnicode( &pathRef, _dirName.size()/sizeof(UniChar), (const UniChar*)_dirName.c_str(), kFSCatInfoNone, NULL, &newDir, NULL, NULL );
 			if( err == dupFNErr )	// already exist
 			{
 				// get FSRef
-				FSMakeFSRefUnicode( &pathRef, _dirNameW.size(), (const UniChar*)_dirNameW.c_str(), kTextEncodingUnknown, &newDir );
+				FSMakeFSRefUnicode( &pathRef, _dirName.size()/sizeof(UniChar), (const UniChar*)_dirName.c_str(), kTextEncodingUnknown, &newDir );
 			}
 			else if( err != 0 )
 			{
@@ -246,29 +320,63 @@ namespace Menge
 
 		return true;
 	}
+	static OSStatus s_deleteFolder( const FSRef* folderRef )
+	{
+		FSIterator iterator;
+		FSRef itemToDelete;
+		UInt16 nodeFlags;
+		ItemCount actualObjects = 0;
+		FSCatalogInfo catInfo;
+		
+		OSStatus err = FSOpenIterator( folderRef, kFSIterateFlat | kFSIterateDelete, &iterator );
+		if( err != noErr )
+		{
+			return err;
+		}
+		do 	// delete the contents of the directory
+		{
+			// get 1 item to delete
+			err = FSGetCatalogInfoBulk(	iterator, 1, &actualObjects, NULL, kFSCatInfoNodeFlags, &catInfo, &itemToDelete, NULL, NULL);
+			if ( (err == noErr) && (actualObjects == 1) )
+			{
+				// save node flags in local in case we have to recurse */
+				nodeFlags = catInfo.nodeFlags;
+
+				// is it a directory?
+				if ( (nodeFlags & kFSNodeIsDirectoryMask) != 0 )
+				{
+					err = s_deleteFolder( &itemToDelete );
+				}
+				if ( err == noErr)			// are we still OK to delete?
+				{
+					if ( (nodeFlags & kFSNodeLockedMask) != 0 )	// is item locked?
+					{		// then attempt to unlock it (ignore result since FSDeleteObject will set it correctly)
+						catInfo.nodeFlags = nodeFlags & ~kFSNodeLockedMask;
+						(void) FSSetCatalogInfo(&itemToDelete, kFSCatInfoNodeFlags, &catInfo);
+					}
+					// delete the item
+					err = FSDeleteObject(&itemToDelete);
+				}
+			}
+		} 
+		while ( err == noErr );
+		
+		FSCloseIterator(iterator);
+		err = FSDeleteObject(folderRef);
+		return err;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::deleteFolder( const String& _path )
-	{/*
-		StringW path_w = Utils::AToW( _path );
-
-		SHFILEOPSTRUCT fs;
-		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCT));
-		fs.hwnd = NULL;
-
-		Menge::TCharW path[MAX_PATH];
-		wcscpy( path, path_w.c_str() );
-		path[ _path.size() + 1 ] = 0;
-		fs.pFrom = path;
-
-		fs.wFunc = FO_DELETE;
-		fs.hwnd = NULL;
-		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
-		if( ::SHFileOperation( &fs ) != 0 )
+	{
+		String path = s_concatenatePath( m_initPath, _path );
+//		String upath = s_UniCharFromCString( path );
+		String subdir;
+		FSRef folderRef = s_findParentDirRef( path, subdir );
+		if( subdir.empty() == false ) // something wrong
 		{
-			
 			return false;
-		}*/
-		return true;
+		}
+		return ( s_deleteFolder( &folderRef ) == noErr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::initAppDataPath( const String& _path )
@@ -287,12 +395,12 @@ namespace Menge
 		for( TStringVector::size_type i = 0; i < subdirs.size(); i++ )
 		{
 			FSRef newDir;
-			StringW _dirNameW = s_UniCharFromCString( subdirs[i] );
-			err = FSCreateDirectoryUnicode( &folderRef, _dirNameW.size(), (const UniChar*)_dirNameW.c_str(), kFSCatInfoNone, NULL, &newDir, NULL, NULL );
+			String _dirName = s_UniCharFromCString( subdirs[i] );
+			err = FSCreateDirectoryUnicode( &folderRef, _dirName.size()/sizeof(UniChar), (const UniChar*)_dirName.c_str(), kFSCatInfoNone, NULL, &newDir, NULL, NULL );
 			if( err == dupFNErr )	// already exist
 			{
 				// get FSRef
-				FSMakeFSRefUnicode( &folderRef, _dirNameW.size(), (const UniChar*)_dirNameW.c_str(), kTextEncodingUnknown, &newDir );
+				FSMakeFSRefUnicode( &folderRef, _dirName.size()/sizeof(UniChar), (const UniChar*)_dirName.c_str(), kTextEncodingUnknown, &newDir );
 			}
 			else if( err != 0 )
 			{
@@ -321,7 +429,7 @@ namespace Menge
 			filename = m_appDataPath + PATH_DELIM + _filename;
 		}
 		//StringW filename_w = Utils::AToW( filename );
-
+		filename = s_ANSIToUTF8( filename );
 		FileStreamOutStream* outStream = new FileStreamOutStream();
 		if( !outStream->open( filename.c_str(), _binary ) )
 		{
@@ -338,21 +446,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::deleteFile( const String& _filename )
 	{
-		/*SHFILEOPSTRUCT fs;
-		ZeroMemory(&fs, sizeof(SHFILEOPSTRUCTW));
-		fs.hwnd = NULL;
-
-		StringW filename_w = Utils::AToW( _filename );
-		const Menge::TCharW* lpszW = filename_w.c_str();
-
-		fs.pFrom = lpszW;
-		fs.wFunc = FO_DELETE;
-		fs.hwnd = NULL;
-		fs.fFlags = FOF_NOCONFIRMATION | FOF_SILENT | FOF_NOERRORUI;
-		if( ::SHFileOperation( &fs ) != 0 )
+		String subdir;
+		String filename = s_concatenatePath( m_initPath, _filename );
+		FSRef ref = s_findParentDirRef( filename, subdir );
+		if( subdir.empty() == false ) // can't find FSRef - something wrong
 		{
 			return false;
-		}*/
+		}
+		OSStatus err = FSDeleteObject( &ref );
+		if( err != noErr )
+		{
+			return false;
+		}
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

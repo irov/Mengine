@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/FileSystemInterface.h"
+#include <CoreServices/CoreServices.h>
 
 namespace Menge
 {
@@ -33,6 +34,7 @@ namespace Menge
 		bool initAppDataPath( const String& _game ) override;
 		const String& getAppDataPath() override;
 
+		static FSRef s_findParentDirRef( const String& _path, String& _rest );
 	private:
 		String m_appDataPath;
 		LogSystemInterface* m_logSystem;

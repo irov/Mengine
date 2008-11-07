@@ -712,7 +712,7 @@ namespace Menge
 			}
 
 			Holder<FileEngine>::hostage()->
-				deleteFolder( Holder<FileEngine>::hostage()->getAppDataPath() + "\\" + _accountName );
+				deleteFolder( Holder<FileEngine>::hostage()->getAppDataPath() + "/" + _accountName );
 
 			delete it_find->second;
 

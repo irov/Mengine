@@ -89,6 +89,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MacOSApplication::start()
 	{
+		//char clocale[100];
+		//CFStringRef locale = CFLocaleGetIdentifier( CFLocaleCopyCurrent()/*CFLocaleGetSystem()*/ );
+		//CFIndex inx = CFStringGetLength( locale );
+		//bool err = CFStringGetFileSystemRepresentation( locale, clocale, 100 );
+		//CFStringRef locale = CFLocaleCreateCanonicalLocaleIdentifierFromString( kCFAllocatorDefault, CFSTR( "English" ) );
+		//bool err = CFStringGetFileSystemRepresentation( locale, clocale, 100 );
+		//const char* loc = setlocale( LC_CTYPE, "POSIX" );
+			
 		m_timer = new OSXTimer();
 
 		m_menge = new Application( this );

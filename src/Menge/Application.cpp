@@ -400,7 +400,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initialize( const String& _applicationFile, const char* _args, bool _loadPersonality )
 	{
-		String loc = setlocale( LC_CTYPE, "" ); // default (OS) locale
+		//String loc = setlocale( LC_CTYPE, NULL ); // default (OS) locale
 
 		parseArguments( _args );
 

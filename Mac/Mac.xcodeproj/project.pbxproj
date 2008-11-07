@@ -129,7 +129,6 @@
 		8B77FE550EB20E2D00F78BA7 /* OGLRenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A789F0EACA3FF00E2DCBE /* OGLRenderSystem.cpp */; };
 		8BBFDF0B0EAF1F6600102B4F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBFDF0A0EAF1F6600102B4F /* main.cpp */; };
 		8BBFDF0E0EAF1FDA00102B4F /* MacOSApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBFDF0D0EAF1FDA00102B4F /* MacOSApplication.cpp */; };
-		8BBFDF860EAF2EEE00102B4F /* libMenge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BE693E20EA8D5CA00B18A92 /* libMenge.a */; };
 		8BBFDFE20EAF32D700102B4F /* libopenal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFDFE10EAF32C700102B4F /* libopenal.a */; };
 		8BBFDFE70EAF34DA00102B4F /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFDFE60EAF34CE00102B4F /* libexpat.a */; };
 		8BBFE0A60EAF3CBB00102B4F /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE0A10EAF3CAD00102B4F /* libvorbis.a */; };
@@ -392,6 +391,7 @@
 		8BC32E330EB0B5AF00212960 /* libtheoradec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE08B0EAF3BAB00102B4F /* libtheoradec.a */; };
 		8BC32E340EB0B5AF00212960 /* libpybind.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE1470EAF3F9800102B4F /* libpybind.a */; };
 		8BC32E510EB0B6A700212960 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFDFFE0EAF367200102B4F /* libogg.a */; };
+		8BC8FADF0EC3317A00DAC26A /* libMenge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BE693E20EA8D5CA00B18A92 /* libMenge.a */; };
 		8BC94B3F0EAE1D460034D467 /* DataStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC94B300EAE1D460034D467 /* DataStream.cpp */; };
 		8BC94B400EAE1D460034D467 /* DataStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC94B310EAE1D460034D467 /* DataStream.h */; };
 		8BC94B410EAE1D460034D467 /* FileHandleDataStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC94B320EAE1D460034D467 /* FileHandleDataStream.cpp */; };
@@ -501,6 +501,83 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8BBFDF000EAF1E3900102B4F;
 			remoteInfo = MacOSApplication;
+		};
+		8BC8FADD0EC3316900DAC26A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8BE693E10EA8D5CA00B18A92;
+			remoteInfo = Menge;
+		};
+		8BC8FAE00EC3319800DAC26A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A720A0EAC8A1A00E2DCBE;
+			remoteInfo = Box2DPhysicSystem;
+		};
+		8BC8FAE20EC3319800DAC26A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A78020EAC9F6100E2DCBE;
+			remoteInfo = OISInputSystem;
+		};
+		8BC8FAE40EC3319800DAC26A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A78200EACA07400E2DCBE;
+			remoteInfo = MengeProfilerSystem;
+		};
+		8BC8FAE60EC3319800DAC26A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A783A0EACA12D00E2DCBE;
+			remoteInfo = OALSoundSystem;
+		};
+		8BC8FAE80EC3319800DAC26A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A787F0EACA2B300E2DCBE;
+			remoteInfo = MengeLogSystem;
+		};
+		8BC8FAEA0EC3319800DAC26A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A78960EACA3D400E2DCBE;
+			remoteInfo = OGLRenderSystem;
+		};
+		8BC8FAEC0EC3319800DAC26A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8BC94B290EAE1D1D0034D467;
+			remoteInfo = MengeMacOSFileSystem;
+		};
+		8BC8FAEE0EC3319800DAC26A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8BDC9F560EBA00B5007D4D75;
+			remoteInfo = AstralaxParticleSystem;
+		};
+		8BC8FAF00EC331B000DAC26A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A728E0EAC92E300E2DCBE;
+			remoteInfo = Math;
+		};
+		8BC8FAF20EC331B000DAC26A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8B1A73C40EAC9DA200E2DCBE;
+			remoteInfo = XmlParser;
 		};
 		8BDC9F5A0EBA00F0007D4D75 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -674,7 +751,7 @@
 		8BCFB2960EB755C500E3ED17 /* PBO.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = PBO.h; sourceTree = "<group>"; };
 		8BCFB2970EB755C600E3ED17 /* PBO.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = PBO.cpp; sourceTree = "<group>"; };
 		8BCFB2B70EB7572400E3ED17 /* LoggerConsole.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = LoggerConsole.h; sourceTree = "<group>"; };
-		8BCFB2B80EB7572500E3ED17 /* LoggerConsole.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = LoggerConsole.cpp; sourceTree = "<group>"; };
+		8BCFB2B80EB7572500E3ED17 /* LoggerConsole.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = "-2147483641"; path = LoggerConsole.cpp; sourceTree = "<group>"; };
 		8BCFB2CB0EB759C600E3ED17 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Platform.h; path = ../src/Config/Platform.h; sourceTree = SOURCE_ROOT; };
 		8BDC9F570EBA00B5007D4D75 /* libAstralaxParticleSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAstralaxParticleSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BDC9F640EBA0126007D4D75 /* AstralaxEmitter.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = AstralaxEmitter.cpp; sourceTree = "<group>"; };
@@ -1002,13 +1079,13 @@
 			files = (
 				8BC32E510EB0B6A700212960 /* libogg.a in Frameworks */,
 				8BC32E2F0EB0B58500212960 /* libz.a in Frameworks */,
+				8BC8FADF0EC3317A00DAC26A /* libMenge.a in Frameworks */,
 				8BDC9F5C0EBA0109007D4D75 /* libAstralaxParticleSystem.a in Frameworks */,
 				8BC32E2E0EB0B57100212960 /* libMengeMacOSFileSystem.a in Frameworks */,
 				8BC32E2D0EB0B56E00212960 /* libMengeLogSystem.a in Frameworks */,
 				8BC32E2C0EB0B56B00212960 /* libOALSoundSystem.a in Frameworks */,
 				8BC32E2B0EB0B56700212960 /* libOISInputSystem.a in Frameworks */,
 				8BC32E260EB0B55200212960 /* libBox2DPhysicSystem.a in Frameworks */,
-				8BBFDF860EAF2EEE00102B4F /* libMenge.a in Frameworks */,
 				8B77FD4A0EB1E83500F78BA7 /* libMengeProfilerSystem.a in Frameworks */,
 				8B77FE270EB205D700F78BA7 /* libSDLRenderSystem.a in Frameworks */,
 				8BDC9FA50EBA04D5007D4D75 /* libmagic.dylib in Frameworks */,
@@ -2059,6 +2136,15 @@
 			buildRules = (
 			);
 			dependencies = (
+				8BC8FADE0EC3316900DAC26A /* PBXTargetDependency */,
+				8BC8FAE10EC3319800DAC26A /* PBXTargetDependency */,
+				8BC8FAE30EC3319800DAC26A /* PBXTargetDependency */,
+				8BC8FAE50EC3319800DAC26A /* PBXTargetDependency */,
+				8BC8FAE70EC3319800DAC26A /* PBXTargetDependency */,
+				8BC8FAE90EC3319800DAC26A /* PBXTargetDependency */,
+				8BC8FAEB0EC3319800DAC26A /* PBXTargetDependency */,
+				8BC8FAED0EC3319800DAC26A /* PBXTargetDependency */,
+				8BC8FAEF0EC3319800DAC26A /* PBXTargetDependency */,
 			);
 			name = MacOSApplication;
 			productName = MacOSApplication;
@@ -2110,6 +2196,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				8BC8FAF10EC331B000DAC26A /* PBXTargetDependency */,
+				8BC8FAF30EC331B000DAC26A /* PBXTargetDependency */,
 			);
 			name = Menge;
 			productName = Menge;
@@ -2464,6 +2552,61 @@
 			target = 8BBFDF000EAF1E3900102B4F /* MacOSApplication */;
 			targetProxy = 8BBAFE370EB87B3400434A80 /* PBXContainerItemProxy */;
 		};
+		8BC8FADE0EC3316900DAC26A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8BE693E10EA8D5CA00B18A92 /* Menge */;
+			targetProxy = 8BC8FADD0EC3316900DAC26A /* PBXContainerItemProxy */;
+		};
+		8BC8FAE10EC3319800DAC26A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A720A0EAC8A1A00E2DCBE /* Box2DPhysicSystem */;
+			targetProxy = 8BC8FAE00EC3319800DAC26A /* PBXContainerItemProxy */;
+		};
+		8BC8FAE30EC3319800DAC26A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A78020EAC9F6100E2DCBE /* OISInputSystem */;
+			targetProxy = 8BC8FAE20EC3319800DAC26A /* PBXContainerItemProxy */;
+		};
+		8BC8FAE50EC3319800DAC26A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A78200EACA07400E2DCBE /* MengeProfilerSystem */;
+			targetProxy = 8BC8FAE40EC3319800DAC26A /* PBXContainerItemProxy */;
+		};
+		8BC8FAE70EC3319800DAC26A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A783A0EACA12D00E2DCBE /* OALSoundSystem */;
+			targetProxy = 8BC8FAE60EC3319800DAC26A /* PBXContainerItemProxy */;
+		};
+		8BC8FAE90EC3319800DAC26A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A787F0EACA2B300E2DCBE /* MengeLogSystem */;
+			targetProxy = 8BC8FAE80EC3319800DAC26A /* PBXContainerItemProxy */;
+		};
+		8BC8FAEB0EC3319800DAC26A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A78960EACA3D400E2DCBE /* OGLRenderSystem */;
+			targetProxy = 8BC8FAEA0EC3319800DAC26A /* PBXContainerItemProxy */;
+		};
+		8BC8FAED0EC3319800DAC26A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8BC94B290EAE1D1D0034D467 /* MengeMacOSFileSystem */;
+			targetProxy = 8BC8FAEC0EC3319800DAC26A /* PBXContainerItemProxy */;
+		};
+		8BC8FAEF0EC3319800DAC26A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8BDC9F560EBA00B5007D4D75 /* AstralaxParticleSystem */;
+			targetProxy = 8BC8FAEE0EC3319800DAC26A /* PBXContainerItemProxy */;
+		};
+		8BC8FAF10EC331B000DAC26A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A728E0EAC92E300E2DCBE /* Math */;
+			targetProxy = 8BC8FAF00EC331B000DAC26A /* PBXContainerItemProxy */;
+		};
+		8BC8FAF30EC331B000DAC26A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8B1A73C40EAC9DA200E2DCBE /* XmlParser */;
+			targetProxy = 8BC8FAF20EC331B000DAC26A /* PBXContainerItemProxy */;
+		};
 		8BDC9F5B0EBA00F0007D4D75 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8BDC9F560EBA00B5007D4D75 /* AstralaxParticleSystem */;
@@ -2485,10 +2628,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
-				HEADER_SEARCH_PATHS = (
-					../src,
-					../dependencies/Box2D/Include,
-				);
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2502,6 +2642,7 @@
 				PRODUCT_NAME = Box2DPhysicSystem;
 				SHARED_PRECOMPS_DIR = "";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				USER_HEADER_SEARCH_PATHS = "../src ../dependencies/Box2D/Include ";
 				ZERO_LINK = YES;
 			};
 			name = Debug;
@@ -2517,10 +2658,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
-				HEADER_SEARCH_PATHS = (
-					../src,
-					../dependencies/Box2D/Include,
-				);
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2534,6 +2672,7 @@
 				PRODUCT_NAME = Box2DPhysicSystem;
 				SHARED_PRECOMPS_DIR = "";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				USER_HEADER_SEARCH_PATHS = "../src ../dependencies/Box2D/Include ";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -2549,6 +2688,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -2569,6 +2709,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -2592,6 +2733,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2619,6 +2761,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2648,6 +2791,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = "";
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2677,6 +2821,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = "";
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2708,6 +2853,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = "";
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -2730,6 +2876,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = "";
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -2818,6 +2965,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -2840,6 +2988,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -2864,6 +3013,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = "";
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -2886,6 +3036,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = "";
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -2924,6 +3075,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				DYLIB_CURRENT_VERSION = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -2933,7 +3086,9 @@
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
 				GENERATE_MASTER_OBJECT_FILE = NO;
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "MacOSApplication-Info.plist";
+				INIT_ROUTINE = "$(inherited)";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2991,6 +3146,7 @@
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRELINK_LIBS = "";
 				PRODUCT_NAME = MacOSApplication;
+				SDKROOT = "";
 				SHARED_PRECOMPS_DIR = "";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				SYMROOT = build;
@@ -3004,6 +3160,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
+				DYLIB_CURRENT_VERSION = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
@@ -3011,7 +3169,9 @@
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
 				GENERATE_MASTER_OBJECT_FILE = NO;
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "MacOSApplication-Info.plist";
+				INIT_ROUTINE = "$(inherited)";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3069,6 +3229,7 @@
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRELINK_LIBS = "";
 				PRODUCT_NAME = MacOSApplication;
+				SDKROOT = "";
 				SHARED_PRECOMPS_DIR = "";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				SYMROOT = build;
@@ -3090,6 +3251,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -3112,6 +3274,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -3136,6 +3299,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = "";
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3163,6 +3327,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = "";
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3184,6 +3349,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_PREFIX_HEADER = "";
+				HEADER_SEARCH_PATHS = "";
+				SDKROOT = "";
+				SHARED_PRECOMPS_DIR = "";
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
 		};
@@ -3191,6 +3363,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_PREFIX_HEADER = "";
+				HEADER_SEARCH_PATHS = "";
+				SDKROOT = "";
+				SHARED_PRECOMPS_DIR = "";
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
+				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
 		};
@@ -3206,6 +3385,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3257,6 +3437,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",

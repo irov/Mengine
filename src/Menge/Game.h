@@ -156,6 +156,7 @@ namespace Menge
 		TListDeclaration m_pathEntities;
 		TListDeclaration m_pathScenes;
 		TListDeclaration m_pathArrows;
+		TListDeclaration m_pathText;
 
 		int m_bits;
 		bool m_fullScreen;

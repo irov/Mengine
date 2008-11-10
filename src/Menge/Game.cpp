@@ -230,6 +230,16 @@ namespace Menge
 				}
 				m_pathScripts.push_back( std::make_pair( m_currentResourcePath, path ) );
 			}
+
+			XML_CASE_NODE( "Text" )
+			{
+				String path;
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Path", path );
+				}
+				m_pathText.push_back( std::make_pair( m_currentResourcePath, path ) );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -415,8 +425,6 @@ namespace Menge
 	bool Game::init()
 	{
 		m_resourceManager = new ResourceManager();
-		m_textManager = new TextManager();
-		Holder<TextManager>::keep( m_textManager );
 
 		if( m_resourceManager == NULL )
 		{
@@ -879,6 +887,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::registerResources( const String& _baseDir )
 	{
+		m_textManager = new TextManager();
+		Holder<TextManager>::keep( m_textManager );
+
 		ScriptEngine::TListModulePath m_listModulePath;
 
 		for( TListDeclaration::iterator it = m_pathScripts.begin(),
@@ -916,6 +927,12 @@ namespace Menge
 		{
 			Holder<ScriptEngine>::hostage()
 				->registerEntityType( it->first );
+		}
+
+		for( TListDeclaration::iterator it = m_pathText.begin(),
+			it_end = m_pathText.end(); it != it_end; it++ )
+		{
+			m_textManager->loadResourceFile( it->first + it->second );
 		}
 
 	}

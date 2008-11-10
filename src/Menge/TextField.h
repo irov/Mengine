@@ -126,6 +126,8 @@ namespace Menge
 		float getCharOffset() const;
 		void setCharOffset( float _offset );
 
+		void setTextByKey( const String& _key );
+
 	public:
 		void loader( XmlElement * _xml ) override;
 		void _render( unsigned int _debugMask ) override;

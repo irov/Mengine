@@ -330,10 +330,6 @@ namespace Menge
 
 			m_switchScene = false;
 
-			m_nextScene->compile();
-			m_nextScene->activate();
-
-
 			if( m_scene )
 			{
 				m_scene->deactivate();
@@ -345,6 +341,8 @@ namespace Menge
 				}
 			}
 			m_scene = m_nextScene;
+			m_nextScene->compile();
+			m_nextScene->activate();
 
 			//m_scene->compile();
 			//m_scene->activate();
@@ -431,7 +429,7 @@ namespace Menge
 		{
 			m_arrow->onMouseLeave();
 		}
-		if( m_scene )
+		if( m_scene && m_scene->isActivate() )
 		{
 			m_scene->onMouseLeave();
 		}
@@ -443,7 +441,7 @@ namespace Menge
 		{
 			m_arrow->onMouseEnter();
 		}
-		if( m_scene )
+		if( m_scene && m_scene->isActivate() )
 		{
 			m_scene->onMouseEnter();
 		}
@@ -485,6 +483,14 @@ namespace Menge
 	void Player::scheduleSetUpdatable( bool _updatable )
 	{
 		m_scheduleManager->setUpdatable( _updatable );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::onFocus( bool _focus )
+	{
+		if( m_scene && m_scene->isActivate() )
+		{
+			m_scene->onFocus( _focus );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

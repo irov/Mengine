@@ -32,6 +32,7 @@ namespace Menge
 
 		void onMouseLeave();
 		void onMouseEnter();
+		void onFocus( bool _focus );
 
 	protected:
 		void _destroy() override;

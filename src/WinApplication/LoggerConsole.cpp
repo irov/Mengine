@@ -67,7 +67,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::write( const String& _str )
 	{
-		std::cerr << _str;
+		// utf8 to ansi
+		int wide_size = MultiByteToWideChar( CP_UTF8, 0, _str.c_str(), -1, NULL, 0 );
+		wchar_t* wide = new wchar_t[wide_size];
+		MultiByteToWideChar( CP_UTF8, 0, _str.c_str(), -1, wide, wide_size );
+		int anis_size = WideCharToMultiByte( CP_ACP, 0, wide, wide_size, NULL, 0, NULL, NULL );
+		char* ansi = new char[anis_size];
+		WideCharToMultiByte( CP_ACP, 0, wide, wide_size, ansi, anis_size, NULL, NULL );
+		String out( ansi );
+		delete[] wide;
+		delete[] ansi;
+
+		std::cerr << out;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoggerConsole::write( int _num )

@@ -555,6 +555,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
 	{
+		unsigned int chr = _char;
+		/*if( _char >= 128 )
+		{
+			String ansiChar( 1, (char)_char );
+			String utf8char = m_interface->ansiToUtf8( ansiChar );
+			chr = 0;
+			for( int i = utf8char.length()-1; i >= 0; i-- )
+			{
+				unsigned char c = utf8char[i];
+				unsigned int d = 0;
+				d = c << (i*8);
+				chr |= d;
+			}
+		}*/
+
 #	ifndef MENGE_MASTER_RELEASE
 		if( _key == 88 && _isDown ) // F12
 		{
@@ -612,7 +627,7 @@ namespace Menge
 
 #	endif
 
-		return m_game->handleKeyEvent( _key, _char, _isDown );
+		return m_game->handleKeyEvent( _key, chr, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onMouseButtonEvent( int _button, bool _isDown )
@@ -697,6 +712,10 @@ namespace Menge
 			Holder<Amplifier>::hostage()->setVolume( avolume );
 		}
 		m_focus = _focus;
+		if( m_game != NULL )
+		{
+			m_game->onFocus( m_focus );
+		}
 		/*if( m_focus == true )
 		{
 			m_update = true;
@@ -873,6 +892,16 @@ namespace Menge
 	void Application::setDesktopResolution( const Resolution& _resolution )
 	{
 		m_desktopResolution = _resolution;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Menge::String Application::ansiToUtf8( const String& _ansi )
+	{
+		return m_interface->ansiToUtf8( _ansi );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Menge::String Application::utf8ToAnsi( const String& _utf8 )
+	{
+		return m_interface->utf8ToAnsi( _utf8 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

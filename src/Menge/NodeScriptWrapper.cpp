@@ -843,6 +843,7 @@ namespace Menge
 				.def( "setCenterAlign", &TextField::setCenterAlign )
 				.def( "getCharOffset", &TextField::getCharOffset )
 				.def( "setCharOffset", &TextField::setCharOffset )
+				.def( "setTextByKey", &TextField::setTextByKey )
 				;
 
 			pybind::proxy_<Arrow, pybind::bases<Node> >("Arrow", false)

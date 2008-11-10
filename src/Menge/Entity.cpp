@@ -202,7 +202,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_update( float _timing )
 	{
-
+		Node::_update( _timing );
 		if( m_physicController )
 		{
 			if( m_velocity != mt::vec2f::zero_v2 )

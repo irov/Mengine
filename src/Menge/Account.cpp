@@ -5,6 +5,7 @@
 #	include "FileEngine.h"
 #	include "XmlEngine.h"
 #	include "ConfigFile.h"
+#	include "Application.h"
 
 namespace Menge
 {
@@ -129,7 +130,9 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
-			pybind::call( it->second.second, "(ss)", it->first.c_str(), it->second.first.c_str() );
+			String keyAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->first );
+			String valueAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->second.first );
+			pybind::call( it->second.second, "(ss)", keyAnsi.c_str(), valueAnsi.c_str() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

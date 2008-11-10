@@ -15,13 +15,33 @@ namespace Menge
 			it = _text.begin(), 
 			it_end = _text.end();
 		it != it_end; 
-		++it )
+		/*++it*/ )
 		{
 			CharData charData;
 
-			charData.code = *it;
-			charData.uv = _resource->getUV( *it );
-			charData.ratio = _resource->getCharRatio( *it );
+			unsigned char byte = (*it);
+			unsigned char mask = 0x80;
+			int i = 0;
+			charData.code = 0;
+			if( ( byte & mask ) == 0 )
+			{
+				charData.code = byte;
+				it++;
+			}
+			else
+			{
+				while( ( byte & (mask >> i) ) != 0 )
+				{
+					unsigned char glyphPart = (*it);
+					charData.code |= ( glyphPart << (i*8) );
+					it++;
+					i++;
+				}
+			}
+
+			//charData.code = *it;
+			charData.uv = _resource->getUV( charData.code );
+			charData.ratio = _resource->getCharRatio( charData.code );
 
 			charsData.push_back( charData );
 

@@ -55,6 +55,7 @@ namespace Menge
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
 		bool handleMouseButtonEvent( unsigned int _button, bool _isDown ) override;
 		bool handleMouseMove( float _x, float _y, int _whell ) override;
+		void onFocus( bool _focus );
 
 		void regGlobalMouseEventable( GlobalMouseHandler * _handler );
 		void unregGlobalMouseEventable( GlobalMouseHandler * _handler );

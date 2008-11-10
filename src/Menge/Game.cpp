@@ -6,6 +6,7 @@
 #	include "Player.h"
 #	include "Arrow.h"
 #	include "Amplifier.h"
+#	include "Application.h"
 
 //#	include "MousePickerSystem.h"
 #	include "LightSystem.h"
@@ -22,6 +23,8 @@
 #	include "XmlEngine.h"
 #	include "Utils.h"
 #	include "ConfigFile.h"
+#	include "TextManager.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -41,6 +44,7 @@ namespace Menge
 		, m_loadingAccounts( false )
 		, m_FPS( 0.0f )
 		, m_resourceManager( NULL )
+		, m_textManager( NULL )
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
@@ -97,6 +101,13 @@ namespace Menge
 		{
 			delete m_resourceManager;
 			m_resourceManager = NULL;
+		}
+
+		Holder<TextManager>::empty();
+		if( m_textManager != NULL )
+		{
+			delete m_textManager;
+			m_textManager = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -264,6 +275,7 @@ namespace Menge
 
 		if( !handle )
 		{
+			//PyObject * pychar = PyBuffer_FromMemory( &_char, sizeof(_char) );
 			askEvent( handle, EVENT_KEY, "(IIb)", _key, _char, _isDown );
 		}
 
@@ -403,6 +415,9 @@ namespace Menge
 	bool Game::init()
 	{
 		m_resourceManager = new ResourceManager();
+		m_textManager = new TextManager();
+		Holder<TextManager>::keep( m_textManager );
+
 		if( m_resourceManager == NULL )
 		{
 			return false;
@@ -586,10 +601,11 @@ namespace Menge
 			}
 
 			m_mapScene.insert( std::make_pair( _name, scene ) );
+			scene->incrementReference();
 
 			return scene;
 		}
-
+		it_find->second->incrementReference();
 		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -599,8 +615,11 @@ namespace Menge
 
 		if( it_find != m_mapScene.end() )
 		{
-			it_find->second->destroy();
-			m_mapScene.erase( it_find );
+			if( it_find->second->decrementReference() == 0 )
+			{
+				it_find->second->destroy();
+				m_mapScene.erase( it_find );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -684,8 +703,9 @@ namespace Menge
 		if( Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
 		{
+			String accountNameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _accountName );
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", _accountName.c_str() );
+				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", accountNameAnsi.c_str() );
 		}
 		else
 		{
@@ -909,6 +929,14 @@ namespace Menge
 		image->incrementReference();
 
 		m_resourceManager->registerResource( image );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::onFocus( bool _focus )
+	{
+		if( m_player != NULL )
+		{
+			m_player->onFocus( _focus );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

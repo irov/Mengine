@@ -152,10 +152,16 @@ namespace Menge
 	{
 		if ( name == "glyph" )
 		{
-			TChar r;
+			String::size_type pos = params.find( ' ', 1 );
+			const char* glyph = params.substr( 0, pos ).c_str();
+			uint32 uiGlyph = *((unsigned int*)(glyph));
+			uint32 clearBits[4] = { 0x000000FF, 0x0000FFFF, 0x00FFFFFF, 0xFFFFFFFF };
+			std::size_t len = strlen( glyph );
+			uiGlyph &= clearBits[len-1];
+			String params_ = params.substr( pos );
 			float u1, v1, u2, v2;
 
-			int err = std::sscanf( params.c_str(), "%c %f %f %f %f", &r, &u1, &v1, &u2, &v2 );
+			int err = std::sscanf( params_.c_str(), "%f %f %f %f", &u1, &v1, &u2, &v2 );
 
 			if (err == 0)
 			{
@@ -164,7 +170,7 @@ namespace Menge
 				return false;
 			}
 
-			setGlyph( r, u1, v1, u2, v2 );
+			setGlyph( uiGlyph, u1, v1, u2, v2 );
 		}
 		else if ( name == "source" )
 		{

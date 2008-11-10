@@ -8,6 +8,7 @@
 
 #	include <strsafe.h>
 #	include <cstdio>
+#	include <clocale>
 
 #	include "resource.h"
 #	include "Menge/Utils.h"
@@ -88,6 +89,16 @@ static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 		::CloseHandle( hFile );
 	}
 	return EXCEPTION_EXECUTE_HANDLER;
+}
+//////////////////////////////////////////////////////////////////////////
+static Menge::StringW s_UTF8ToWChar( const Menge::String& _utf8 )
+{
+	int size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, 0, 0 );
+	wchar_t* conv = new wchar_t[size];
+	MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, conv, size );
+	Menge::StringW out( conv );
+	delete[] conv;
+	return out;
 }
 //////////////////////////////////////////////////////////////////////////
 DWORD WINAPI s_threadFrameSignal(LPVOID lpParameter)
@@ -201,6 +212,8 @@ namespace Menge
 			return false;
 		}
 
+		setlocale( LC_CTYPE, "" );
+
 		m_logSystem = m_menge->initializeLogSystem();
 
 		if( m_logSystem != NULL && m_commandLine.find( "-console" ) != StringA::npos )
@@ -246,9 +259,8 @@ namespace Menge
 		}
 
 		const String& title = m_menge->getProjectTitle();
-
 		// try to create mutex to sure that we are not running already
-		StringW titleW = Utils::AToW( title );
+		StringW titleW = s_UTF8ToWChar( title );
 		StringW mutexName = StringW( MENGE_TEXT("MengeMutex_") ) + titleW;
 		m_mutex = ::CreateMutex( NULL, FALSE, mutexName.c_str() );
 		DWORD error = ::GetLastError();
@@ -417,7 +429,8 @@ namespace Menge
 		}
 
 		m_name = _name;
-		StringW nameW = Menge::Utils::AToW( m_name );
+		//StringW nameW = Menge::Utils::AToW( m_name );
+		StringW nameW = s_UTF8ToWChar( m_name );
 
 		// Register the window class
 		WNDCLASS wc;
@@ -630,9 +643,40 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::showMessageBox( const String& _message, const String& _header, unsigned int _style )
 	{
-		StringW message_w = Utils::AToW( _message );
-		StringW header_w = Utils::AToW( _header );
+		//StringW message_w = Utils::AToW( _message );
+		//StringW header_w = Utils::AToW( _header );
+		StringW message_w = s_UTF8ToWChar( _message );
+		StringW header_w = s_UTF8ToWChar( _header );
+
 		::MessageBox( m_hWnd, message_w.c_str(), header_w.c_str(), MB_ICONERROR | MB_OK );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Menge::String WinApplication::ansiToUtf8( const String& _ansi )
+	{
+		int wide_size = MultiByteToWideChar( CP_ACP, 0, _ansi.c_str(), -1, NULL, 0 );
+		wchar_t* wide = new wchar_t[wide_size];
+		MultiByteToWideChar( CP_ACP, 0, _ansi.c_str(), -1, wide, wide_size );
+		int utf8_size = WideCharToMultiByte( CP_UTF8, 0, wide, wide_size, NULL, 0, NULL, NULL );
+		char* utf8 = new char[utf8_size];
+		WideCharToMultiByte( CP_UTF8, 0, wide, wide_size, utf8, utf8_size, NULL, NULL );
+		String out( utf8 );
+		delete[] wide;
+		delete[] utf8;
+		return out;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Menge::String WinApplication::utf8ToAnsi( const String& _utf8 )
+	{
+		int wide_size = MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, NULL, 0 );
+		wchar_t* wide = new wchar_t[wide_size];
+		MultiByteToWideChar( CP_UTF8, 0, _utf8.c_str(), -1, wide, wide_size );
+		int anis_size = WideCharToMultiByte( CP_ACP, 0, wide, wide_size, NULL, 0, NULL, NULL );
+		char* ansi = new char[anis_size];
+		WideCharToMultiByte( CP_ACP, 0, wide, wide_size, ansi, anis_size, NULL, NULL );
+		String out( ansi );
+		delete[] wide;
+		delete[] ansi;
+		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -21,6 +21,10 @@ namespace Menge
 	{
 		FileEngine* fileEngine = Holder<FileEngine>::hostage();
 		DataStreamInterface* stream = fileEngine->openFile( _filename );
+		if( stream == NULL )
+		{
+			return false;
+		}
 		bool res = load( stream );
 		fileEngine->closeStream( stream );
 		return res;
@@ -41,6 +45,14 @@ namespace Menge
 
 		// Process the file line for line
 		String line, optName, optVal;
+
+		// check for UTF8 BOM
+		unsigned char bom[3];
+		_stream->read( &bom, 3 );
+		if( ( bom[0] == 0xEF && bom[1] == 0xBB && bom[2] == 0xBF ) == false )
+		{
+			_stream->seek( 0 );
+		}
 		while ( !_stream->eof() )
 		{
 			line = Utils::getLine( _stream );

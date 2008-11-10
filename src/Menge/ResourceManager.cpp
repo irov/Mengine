@@ -3,6 +3,7 @@
 #	include "ResourceImplement.h"
 
 #	include "XmlEngine.h"
+#	include "Application.h"
 
 #	include "ResourceReference.h"
 
@@ -170,8 +171,9 @@ namespace Menge
 				it != m_scriptListeners.end();
 				it++)
 			{
+				String nameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _name );
 				Holder<ScriptEngine>::hostage()
-					->callFunction( it->second, "(s)", _name.c_str() );
+					->callFunction( it->second, "(s)", nameAnsi.c_str() );
 			}
 
 		}

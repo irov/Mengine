@@ -68,6 +68,9 @@ namespace Menge
 		virtual SystemDLLInterface* loadSystemDLL( const String & _dll ) = 0;
 		virtual void unloadSystemDLL( SystemDLLInterface * _dllInterface ) = 0;
 		virtual TimerInterface * getTimer() const = 0;
+
+		virtual String ansiToUtf8( const String& _ansi ) = 0;
+		virtual String utf8ToAnsi( const String& _utf8 ) = 0;
 	};
 }
 

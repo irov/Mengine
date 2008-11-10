@@ -13,6 +13,7 @@
 #     include "ResourceImage.h"
 
 #     include "LogEngine.h"
+#	include "TextManager.h"
 
 #     include "math/box2.h"
 
@@ -466,6 +467,13 @@ namespace     Menge
 	{
 		m_charOffset = _offset;
 		setText( m_text );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::setTextByKey( const String& _key )
+	{
+		String text = Holder<TextManager>::hostage()
+			->getText( _key );
+		setText( text );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

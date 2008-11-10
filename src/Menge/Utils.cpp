@@ -3,6 +3,7 @@
 #	include "Utils.h"
 #	include <sstream>
 #	include "Interface/FileSystemInterface.h"
+#	include <clocale>
 
 namespace Menge
 {
@@ -99,6 +100,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		StringW AToW( const StringA& _stringa )
 		{
+			setlocale( LC_CTYPE, "" );
 			//return Holder<Application>::hostage()->AToW( _stringa );
 			std::size_t converted = 0;
 			std::size_t size = _stringa.size() + 1;

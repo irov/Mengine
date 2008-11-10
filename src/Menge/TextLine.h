@@ -14,7 +14,7 @@ namespace Menge
 
 	struct CharData
 	{
-		String::value_type code;
+		uint32 code;
 		mt::vec2f renderVertex[4];
 		mt::vec4f uv;
 		float ratio;

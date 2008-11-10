@@ -109,6 +109,10 @@ namespace Menge
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style );
 
 		const String& getProjectTitle() const;
+
+		String ansiToUtf8( const String& _ansi );
+		String utf8ToAnsi( const String& _utf8 );
+
 	private:
 		Game * m_game;
 		ApplicationInterface* m_interface;

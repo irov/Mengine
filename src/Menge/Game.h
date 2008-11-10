@@ -24,6 +24,7 @@ class XmlElement;
 namespace Menge
 {
 	class ResourceManager;
+	class TextManager;
 	class Player;
 
 	class Scene;
@@ -85,6 +86,7 @@ namespace Menge
 		bool handleMouseMove( float _x, float _y, int _whell ) override;
 		void handleMouseLeave();
 		void handleMouseEnter();
+		void onFocus( bool _focus );
 	
 	public:
 		const Resolution & getResolution() const;
@@ -179,5 +181,6 @@ namespace Menge
 
 		bool loaderAccounts_( const String& _iniFile );
 		ResourceManager* m_resourceManager;
+		TextManager* m_textManager;
 	};	
 }

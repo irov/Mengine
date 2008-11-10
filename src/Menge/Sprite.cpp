@@ -99,7 +99,6 @@ namespace	Menge
 			return false;
 		}
 		
-		m_currentImageIndex = 0;
 		updateSprite_();
 
 		return true;
@@ -150,6 +149,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::setImageResource( const String& _name )
 	{
+		m_currentImageIndex = 0;
+
 		if( m_resourceName != _name )
 		{
 			m_resourceName = _name;

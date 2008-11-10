@@ -49,6 +49,8 @@ namespace Menge
 		void setHandleMouse( bool _handle ) override;
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
 		TimerInterface * getTimer() const override;
+		String ansiToUtf8( const String& _ansi );
+		String utf8ToAnsi( const String& _utf8 );
 
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );

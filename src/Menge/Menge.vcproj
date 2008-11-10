@@ -1583,6 +1583,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="TextManager"
+			>
+			<File
+				RelativePath=".\TextManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TextManager.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\ConfigFile.cpp"
 			>

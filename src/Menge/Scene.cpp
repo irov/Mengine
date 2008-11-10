@@ -226,6 +226,7 @@ namespace	Menge
 		registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), this->getEmbedding() );
 		registerEvent( EVENT_LEAVE, ("onMouseLeave"), this->getEmbedding() );
 		registerEvent( EVENT_ENTER, ("onMouseEnter"), this->getEmbedding() );
+		registerEvent( EVENT_FOCUS, ("onFocus"), this->getEmbedding() );
 
 		// scene must be already active on onActivate event
 		m_active = Node::_activate();
@@ -528,6 +529,25 @@ namespace	Menge
 		Layer * layer = getLayer_( _layerName );
 		Layer2D* layer2D = static_cast<Layer2D*>( layer );
 		return layer2D->screenToLocal( _point );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::onFocus( bool _focus )
+	{
+		bool result = true;
+		result = askEvent( result, EVENT_FOCUS, "(b)", _focus );
+		if( result == false )
+		{
+			for( TContainerChildren::iterator it = m_children.begin(), it_end = m_children.end();
+				it != it_end;
+				it++ )
+			{
+				LayerScene* layerScene = dynamic_cast<LayerScene*>( *it );
+				if( layerScene != 0 )
+				{
+					layerScene->onFocus( _focus );
+				}
+			}
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

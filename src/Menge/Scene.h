@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Node.h"
+#	include "Reference.h"
 #	include "NodeChildren.h"
 
 #	include "Scriptable.h"
@@ -16,6 +17,7 @@ namespace Menge
 
 	class Scene
 		: public Node
+		, public Reference
 	{
 	public:
 		Scene();
@@ -53,6 +55,7 @@ namespace Menge
 
 		void onMouseLeave();
 		void onMouseEnter();
+		void onFocus( bool _focus );
 
 	protected:
 		bool _activate() override;

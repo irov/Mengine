@@ -91,21 +91,17 @@ namespace Menge
 			rebuildWindow_();
 		}
 
+		ColourValue color = getWorldColor();
+		unsigned int argb = color.getAsARGB();
 		for( int i = 0; i < MAX_WINDOW_ELEMENTS; i++ )
 		{
 			renderEngine->renderTriple( m_quads[i].a, m_quads[i].b, m_quads[i].c
 				, mt::vec2f( 0.0f, 0.0f ), mt::vec2f( m_UVs[i].x, 0.0f ), mt::vec2f( m_UVs[i].x, m_UVs[i].y ),
-				0xFFFFFFFF, m_resource->getImage(i) );
+				argb, m_resource->getImage(i) );
 			renderEngine->renderTriple( m_quads[i].a, m_quads[i].c, m_quads[i].d
 				, mt::vec2f( 0.0f, 0.0f ), mt::vec2f( m_UVs[i].x, m_UVs[i].y ), mt::vec2f( 0.0f, m_UVs[i].y ),
-				0xFFFFFFFF, m_resource->getImage(i) );
+				argb, m_resource->getImage(i) );
 		}
-
-		/*for( int i = 1; i < MAX_WINDOW_ELEMENTS; i++ )
-		{
-			renderEngine->renderImage( &(m_quads[i].a), mt::vec4f( 0.0f, 0.0f, 1.0f, 1.0f ), 0xFFFFFFFF
-				, m_resource->getImage(i) );
-		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::rebuildWindow_()

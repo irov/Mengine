@@ -49,6 +49,17 @@ void releaseInterfaceSystem( Menge::FileSystemInterface *_system )
 
 namespace Menge
 {
+	static String s_makeCorrectDelims( const String& _path )
+	{
+		String correct = _path;
+		String::size_type pos = correct.find( "\\" );
+		while( pos != String::npos )
+		{
+			correct[pos] = PATH_DELIM;
+			pos = correct.find( "\\" ); 
+		}
+		return correct;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_isAbsolutePath( const String& _path )
 	{
@@ -67,7 +78,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static String s_UniCharFromCString( const String& _cstring )
+	/*static String s_UniCharFromCString( const String& _cstring )
 	{
 		TextEncoding encoding = CreateTextEncoding( CFStringGetSystemEncoding(), kTextEncodingDefaultVariant, kTextEncodingDefaultFormat );
 		TextToUnicodeInfo info;
@@ -89,8 +100,8 @@ namespace Menge
 		status = ConvertFromTextToUnicode( info, _uniChar.size(), _uniChar.c_str(), 0, 0, 0, NULL, NULL, MAXPATHLEN, &a, &b, conv );
 		DisposeTextToUnicodeInfo( &info );
 		return String( (const char*)conv, b );
-	}
-	static String s_UTF8ToANSI( const String& _ansi )
+	}*/
+	static String s_utf8ToAnsi( const String& _utf8 )
 	{
 		OSStatus err = noErr;
 		TECObjectRef tec = 0;
@@ -101,30 +112,50 @@ namespace Menge
                                         kTextEncodingDefaultVariant,
                                         kTextEncodingDefaultFormat);
 
-		TextEncoding inputEncoding = CreateTextEncoding(kTextEncodingUnicodeDefault,
+		TextEncoding inputEncoding = CreateTextEncoding( kTextEncodingUnicodeDefault,
                                         kTextEncodingDefaultVariant,
                                         kUnicodeUTF8Format);
 
-		err = TECCreateConverter(&tec, inputEncoding, outputEncoding);
+		err = TECCreateConverter( &tec, inputEncoding, outputEncoding );
 
+		std::size_t bufLen = _utf8.length();
 		String out;
-		char buffer[MAXPATHLEN];
+		char* buffer = new char[bufLen];
 		if (err == noErr)
 		{
 			err = TECConvertText(tec,
-                    (ConstTextPtr) _ansi.c_str(),
-                    _ansi.length(),				// inputBufferLength
+                    (ConstTextPtr) _utf8.c_str(),
+                    _utf8.length(),				// inputBufferLength
                     &bytesConsumed,				// actualInputLength
                     (TextPtr) buffer,			// outputBuffer
-                    MAXPATHLEN,					// outputBufferLength
+                    bufLen,					// outputBufferLength
                     &bytesProduced);			// actualOutputLength
 
+			out.assign( buffer, bytesProduced );
+			
+			TECFlushText( tec, (TextPtr) buffer, bufLen, &bytesProduced );
+			if( bytesProduced > 0 )
+			{
+				out += String( buffer, bytesProduced );
+			}
 			TECDisposeConverter(tec);
 		}
-		out.assign( buffer, bytesProduced );
+		
+		delete[] buffer;
 		return out;
 	}
-
+	static String s_utf8ToUniChar( const String& _utf8 )
+	{
+		String ansi = s_utf8ToAnsi( _utf8 );
+		TextEncoding encoding = CreateTextEncoding( CFStringGetSystemEncoding(), kTextEncodingDefaultVariant, kTextEncodingDefaultFormat );
+		TextToUnicodeInfo info;
+		OSStatus status = CreateTextToUnicodeInfoByEncoding( encoding, &info );
+		UniChar conv[MAXPATHLEN];
+		ByteCount a, b;
+		status = ConvertFromTextToUnicode( info, ansi.size(), ansi.c_str(), 0, 0, 0, NULL, NULL, MAXPATHLEN, &a, &b, conv );
+		DisposeTextToUnicodeInfo( &info );
+		return String( (const char*)conv, b );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	FSRef FileSystem::s_findParentDirRef( const String& _path, String& _rest )
 	{
@@ -138,7 +169,8 @@ namespace Menge
 		for( TStringVector::size_type i = 0; i < paths.size(); i++ )
 		{
 			FSRef newRef;
-			String name = s_UniCharFromCString( paths[i] );
+			//String name = s_UniCharFromCString( paths[i] );
+			String name = s_utf8ToUniChar( paths[i] );
 			OSErr err = FSMakeFSRefUnicode( &ref, name.size()/sizeof(UniChar), (const UniChar*)name.c_str(), kTextEncodingUnknown, &newRef );
 			if( err == 0 )	// ok
 			{
@@ -152,40 +184,6 @@ namespace Menge
 			}
 		}
 		return ref;
-	}
-	static String s_ANSIToUTF8( const String& _ansi )
-	{
-		OSStatus err = noErr;
-		TECObjectRef tec = 0;
-	    ByteCount bytesConsumed = 0;
-		ByteCount bytesProduced = 0;
-
-	    TextEncoding inputEncoding	= CreateTextEncoding( CFStringGetSystemEncoding(),
-                                        kTextEncodingDefaultVariant,
-                                        kTextEncodingDefaultFormat);
-
-		TextEncoding outputEncoding = CreateTextEncoding(kTextEncodingUnicodeDefault,
-                                        kTextEncodingDefaultVariant,
-                                        kUnicodeUTF8Format);
-
-		err = TECCreateConverter(&tec, inputEncoding, outputEncoding);
-
-		String out;
-		char buffer[MAXPATHLEN];
-		if (err == noErr)
-		{
-			err = TECConvertText(tec,
-                    (ConstTextPtr) _ansi.c_str(),
-                    _ansi.length(),				// inputBufferLength
-                    &bytesConsumed,				// actualInputLength
-                    (TextPtr) buffer,			// outputBuffer
-                    MAXPATHLEN,					// outputBufferLength
-                    &bytesProduced);			// actualOutputLength
-
-			TECDisposeConverter(tec);
-		}
-		out.assign( buffer, bytesProduced );
-		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileSystem::FileSystem()
@@ -206,7 +204,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::loadPath( const String& _path )
 	{
-		m_initPath = _path;
+		m_initPath = s_makeCorrectDelims( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::loadPak( const String& _pak )
@@ -222,29 +220,30 @@ namespace Menge
 	DataStreamInterface* FileSystem::openFile( const String& _filename )
 	{
 		DataStreamInterface* fileData = 0;
+		String filename_correct = s_makeCorrectDelims( _filename );
 
-		LOG( "Opening file: \"" + _filename + "\"" );
+		LOG( "Opening file: \"" + filename_correct + "\"" );
 		
 		if( existFile( _filename ) == false )
 		{
-			LOG_ERROR( "file \"" + _filename + "\" does not exist" );
+			LOG_ERROR( "file \"" + filename_correct + "\" does not exist" );
 			return 0;
 		}
 
 		try
 		{
-			String full_path = s_concatenatePath( m_initPath, _filename );
-			String full_path_utf8 = s_ANSIToUTF8( full_path );
+			String full_path = s_concatenatePath( m_initPath, filename_correct );
+			//String full_path_utf8 = s_ANSIToUTF8( full_path );
 			// Use filesystem to determine size 
 			// (quicker than streaming to the end and back)
 			struct stat tagStat;
 
-			int ret = stat( full_path_utf8.c_str(), &tagStat );
+			int ret = stat( full_path.c_str(), &tagStat );
 
 			std::ifstream *origStream = new std::ifstream();
 
 			// Always open in binary mode
-			origStream->open( full_path_utf8.c_str(), std::ios::in | std::ios::binary );
+			origStream->open( full_path.c_str(), std::ios::in | std::ios::binary );
 
 			// Should check ensure open succeeded, in case fail for some reason.
 			if ( origStream->fail() )
@@ -283,18 +282,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::existFile( const String& _filename )
 	{
-		String full_path = s_concatenatePath( m_initPath, _filename );
-		String full_path_utf8 = s_ANSIToUTF8( full_path );
+		String filename_correct = s_makeCorrectDelims( _filename );
+		String full_path = s_concatenatePath( m_initPath, filename_correct );
 
 		struct stat tagStat;
-		bool ret = ( stat( full_path_utf8.c_str(), &tagStat ) == 0 );
+		bool ret = ( stat( full_path.c_str(), &tagStat ) == 0 );
 		return ret;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::createFolder( const String& _path )
 	{
+		String path_correct = s_makeCorrectDelims( _path );
 		String subdir;
-		FSRef pathRef = FileSystem::s_findParentDirRef( _path, subdir );
+		FSRef pathRef = FileSystem::s_findParentDirRef( path_correct, subdir );
 		
 		if( subdir.empty() == true )
 		{
@@ -303,7 +303,7 @@ namespace Menge
 		TStringVector subdirs = Utils::split( subdir, "/" );
 		for( TStringVector::size_type i = 0; i < subdirs.size(); i++ )
 		{
-			String _dirName = s_UniCharFromCString( subdirs[i] );
+			String _dirName = s_utf8ToUniChar( subdirs[i] );
 			FSRef newDir;
 			OSErr err = FSCreateDirectoryUnicode( &pathRef, _dirName.size()/sizeof(UniChar), (const UniChar*)_dirName.c_str(), kFSCatInfoNone, NULL, &newDir, NULL, NULL );
 			if( err == dupFNErr )	// already exist
@@ -368,8 +368,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::deleteFolder( const String& _path )
 	{
-		String path = s_concatenatePath( m_initPath, _path );
-//		String upath = s_UniCharFromCString( path );
+		String path_correct = s_makeCorrectDelims( _path );
+		String path = s_concatenatePath( m_initPath, path_correct );
+
 		String subdir;
 		FSRef folderRef = s_findParentDirRef( path, subdir );
 		if( subdir.empty() == false ) // something wrong
@@ -381,6 +382,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::initAppDataPath( const String& _path )
 	{
+		String path_correct = s_makeCorrectDelims( _path );
 		FSRef  folderRef;
 		UInt8 path[MAXPATHLEN];
 		OSErr err = FSFindFolder( kUserDomain, kApplicationSupportFolderType, kDontCreateFolder, &folderRef );
@@ -388,14 +390,14 @@ namespace Menge
 		{
 			return false;
 		}
-		TStringVector subdirs = Utils::split( _path, "/" );
+		TStringVector subdirs = Utils::split( path_correct, "/" );
 
 		FSRefMakePath( &folderRef, path, MAXPATHLEN );
 		
 		for( TStringVector::size_type i = 0; i < subdirs.size(); i++ )
 		{
 			FSRef newDir;
-			String _dirName = s_UniCharFromCString( subdirs[i] );
+			String _dirName = s_utf8ToUniChar( subdirs[i] );
 			err = FSCreateDirectoryUnicode( &folderRef, _dirName.size()/sizeof(UniChar), (const UniChar*)_dirName.c_str(), kFSCatInfoNone, NULL, &newDir, NULL, NULL );
 			if( err == dupFNErr )	// already exist
 			{
@@ -408,7 +410,7 @@ namespace Menge
 			}
 			folderRef = newDir;
 		}
-		m_appDataPath = String( (const char*)path ) + PATH_DELIM + _path;
+		m_appDataPath = String( (const char*)path ) + PATH_DELIM + path_correct;
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -419,17 +421,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OutStreamInterface* FileSystem::openOutStream( const String& _filename, bool _binary )
 	{
+		String filename_correct = s_makeCorrectDelims( _filename );
 		String filename;
 		if( m_appDataPath.empty() )
 		{
-			filename = _filename;
+			filename = filename_correct;
 		}
 		else
 		{
-			filename = m_appDataPath + PATH_DELIM + _filename;
+			filename = m_appDataPath + PATH_DELIM + filename_correct;
 		}
-		//StringW filename_w = Utils::AToW( filename );
-		filename = s_ANSIToUTF8( filename );
+
 		FileStreamOutStream* outStream = new FileStreamOutStream();
 		if( !outStream->open( filename.c_str(), _binary ) )
 		{
@@ -446,8 +448,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::deleteFile( const String& _filename )
 	{
+		String filename_correct = s_makeCorrectDelims( _filename );
 		String subdir;
-		String filename = s_concatenatePath( m_initPath, _filename );
+		String filename = s_concatenatePath( m_initPath, filename_correct );
 		FSRef ref = s_findParentDirRef( filename, subdir );
 		if( subdir.empty() == false ) // can't find FSRef - something wrong
 		{

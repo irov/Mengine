@@ -2,6 +2,7 @@
 #	include "ResourceFont.h"
 #   include "RenderEngine.h"
 #	include "TextField.h"
+#	include "LogEngine.h"
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -35,6 +36,11 @@ namespace Menge
 					unsigned char glyphPart = (*it);
 					charData.code |= ( glyphPart << (i*8) );
 					it++;
+					if( it == it_end )
+					{
+						MENGE_LOG_ERROR( "TextField::setText: Invalid Text Encoding (not utf-8)" );
+						break;
+					}
 					i++;
 				}
 			}

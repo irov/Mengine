@@ -43,6 +43,8 @@ namespace Menge
 		void unloadSystemDLL( SystemDLLInterface* _interface ) override;
 		void setHandleMouse( bool _handle ) override;
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style ) override;
+		String ansiToUtf8( const String& _ansi ) override;
+		String utf8ToAnsi( const String& _utf8 ) override;	
 
 		OSStatus windowHandler( EventHandlerCallRef nextHandler, EventRef event );
 		OSStatus mouseHandler( EventHandlerCallRef nextHandler, EventRef event );

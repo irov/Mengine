@@ -132,13 +132,11 @@ namespace Menge
 		m_desktopResolution[1] = CGDisplayPixelsHigh( CGMainDisplayID() );
 		
 		m_menge->setDesktopResolution(	Resolution( m_desktopResolution[0], m_desktopResolution[1] ) );
-		// TODO if fullscreen
-		// {
-		// }
-		// else
-					// create the window rect in global coords
+
+		// create the window rect in global coords
 		const String& projectTitle = m_menge->getProjectTitle();
-		m_window = createWindow_( projectTitle, 1024, 768 );
+		String ansiTitle = utf8ToAnsi( projectTitle );
+		m_window = createWindow_( ansiTitle, 1024, 768 );
             
 		// Get our view
         HIViewFindByID( HIViewGetRoot( m_window ), kHIViewWindowContentID, &m_view );
@@ -471,6 +469,94 @@ namespace Menge
 		}
 		
 		return status;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String MacOSApplication::ansiToUtf8( const String& _ansi )
+	{
+		OSStatus err = noErr;
+		TECObjectRef tec = 0;
+	    ByteCount bytesConsumed = 0;
+		ByteCount bytesProduced = 0;
+
+	    TextEncoding inputEncoding	= CreateTextEncoding( CFStringGetSystemEncoding(),
+                                        kTextEncodingDefaultVariant,
+                                        kTextEncodingDefaultFormat);
+
+		TextEncoding outputEncoding = CreateTextEncoding( kTextEncodingUnicodeDefault,
+                                        kTextEncodingDefaultVariant,
+                                        kUnicodeUTF8Format);
+
+		err = TECCreateConverter( &tec, inputEncoding, outputEncoding );
+
+		std::size_t bufLen = _ansi.length() * 4;
+		String out;
+		char* buffer = new char[bufLen];
+		if (err == noErr)
+		{
+			err = TECConvertText(tec,
+                    (ConstTextPtr) _ansi.c_str(),
+                    _ansi.length(),				// inputBufferLength
+                    &bytesConsumed,				// actualInputLength
+                    (TextPtr) buffer,			// outputBuffer
+                    bufLen,					// outputBufferLength
+                    &bytesProduced);			// actualOutputLength
+			
+			out.assign( buffer, bytesProduced );
+
+			TECFlushText( tec, (TextPtr) buffer, bufLen, &bytesProduced );
+			
+			if( bytesProduced > 0 )
+			{
+				out += String( buffer, bytesProduced );
+			}
+			TECDisposeConverter(tec);
+		}
+		delete[] buffer;
+		return out;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String MacOSApplication::utf8ToAnsi( const String& _utf8 )
+	{
+		OSStatus err = noErr;
+		TECObjectRef tec = 0;
+	    ByteCount bytesConsumed = 0;
+		ByteCount bytesProduced = 0;
+
+	    TextEncoding outputEncoding	= CreateTextEncoding( CFStringGetSystemEncoding(),
+                                        kTextEncodingDefaultVariant,
+                                        kTextEncodingDefaultFormat);
+
+		TextEncoding inputEncoding = CreateTextEncoding( kTextEncodingUnicodeDefault,
+                                        kTextEncodingDefaultVariant,
+                                        kUnicodeUTF8Format);
+
+		err = TECCreateConverter( &tec, inputEncoding, outputEncoding );
+
+		std::size_t bufLen = _utf8.length();
+		String out;
+		char* buffer = new char[bufLen];
+		if (err == noErr)
+		{
+			err = TECConvertText(tec,
+                    (ConstTextPtr) _utf8.c_str(),
+                    _utf8.length(),				// inputBufferLength
+                    &bytesConsumed,				// actualInputLength
+                    (TextPtr) buffer,			// outputBuffer
+                    bufLen,					// outputBufferLength
+                    &bytesProduced);			// actualOutputLength
+
+			out.assign( buffer, bytesProduced );
+			
+			TECFlushText( tec, (TextPtr) buffer, bufLen, &bytesProduced );
+			if( bytesProduced > 0 )
+			{
+				out += String( buffer, bytesProduced );
+			}
+			TECDisposeConverter(tec);
+		}
+		
+		delete[] buffer;
+		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

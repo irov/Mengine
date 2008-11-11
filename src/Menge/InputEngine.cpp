@@ -3,7 +3,6 @@
 #	include "Application.h"
 #	include "Player.h"
 #	include "Arrow.h"
-#	include "ProfilerEngine.h"
 
 namespace Menge
 {
@@ -13,7 +12,6 @@ namespace Menge
 		, m_mouseX(-1)
 		, m_mouseY(-1)
 		, m_mouseBounded( false )
-		, m_isActive(true)
 	{
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,25 +21,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::initialize( WindowHandle _winHandle )
 	{
-		// хак для запуска SDL. если хэндл нулевой то OIS не инитить. 
-		//m_isActive = _winHandle ? true : false;
-
 		bool result = true;
 		
-		if(m_isActive)
-		{
-			m_interface->initialize( _winHandle );
-		}
+		result = m_interface->initialize( _winHandle );
 
 		return result;
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	void InputEngine::update()
 	{
-		if(m_isActive)
-		{
-			m_interface->update();	
-		}
+		m_interface->update();	
 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isKeyDown( int index )

@@ -2,7 +2,6 @@
 #	include "PhysicEngine2D.h"
 #	include "Interface/PhysicSystem2DInterface.h"
 #	include "RigidBody2D.h"
-#	include "ProfilerEngine.h"
 
 #	define MAX_BODIES 512
 namespace Menge

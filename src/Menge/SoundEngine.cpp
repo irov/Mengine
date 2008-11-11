@@ -2,7 +2,6 @@
 
 #	include "SoundEmitter.h"
 #	include "LogEngine.h"
-#	include "ProfilerEngine.h"
 #	include "FileEngine.h"
 
 #	include <algorithm>
@@ -163,9 +162,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::update( float _timing )
 	{
-		Holder<ProfilerEngine>::hostage()->beginProfile( "SoundEngine" );
 		m_interface->update( _timing );
-		Holder<ProfilerEngine>::hostage()->endProfile( "SoundEngine" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setSulkCallback( SoundSulkCallback * _sulkcallback )

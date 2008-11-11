@@ -12,7 +12,6 @@
 
 #	include "LogEngine.h"
 #	include "ScriptEngine.h"
-#	include "ProfilerEngine.h"
 
 #	include "NodeFactory.h"
 
@@ -219,7 +218,7 @@ namespace Menge
 				}*/
 			}
 
-			Holder<ProfilerEngine>::hostage()->removeResourceToProfile(name);
+			//Holder<ProfilerEngine>::hostage()->removeResourceToProfile(name);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

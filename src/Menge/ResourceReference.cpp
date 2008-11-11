@@ -1,5 +1,4 @@
 #	include "ResourceReference.h"
-#	include "ProfilerEngine.h"
 
 namespace Menge
 {

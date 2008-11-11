@@ -19,7 +19,7 @@
 #	include "Game.h"
 
 #	include "LogEngine.h"
-#	include "ProfilerEngine.h"
+#	include "Profiler.h"
 
 #	include "XmlEngine.h"
 
@@ -129,7 +129,6 @@ namespace Menge
 		, m_maxTiming( 100.0f )
 		, m_debugInfo( false )
 		, m_logEngine( 0 )
-		, m_profilerEngine( 0 )
 		, m_fileEngine( 0 )
 		, m_renderEngine( 0 )
 		, m_soundEngine( 0 )
@@ -154,15 +153,6 @@ namespace Menge
 	{
 		m_logEngine = new LogEngine( _interface );
 		Holder<LogEngine>::keep( m_logEngine );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::setProfilerSystem( ProfilerSystemInterface * _interface )
-	{
-		m_profilerEngine = new ProfilerEngine( _interface );
-
-		TimerInterface * timer = m_interface->getTimer();
-		_interface->setTimer(timer);
-		Holder<ProfilerEngine>::keep( m_profilerEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setFileSystem( FileSystemInterface * _interface )
@@ -404,10 +394,6 @@ namespace Menge
 
 		parseArguments( _args );
 
-		MENGE_LOG( "Initializing Profiler System..." );
-		initInterfaceSystem( &m_profilerSystem );
-		this->setProfilerSystem( m_profilerSystem );
-
 		MENGE_LOG( "Inititalizing File System..." );
 		initInterfaceSystem( &m_fileSystem );
 		m_fileSystem->inititalize( m_logSystem );
@@ -444,6 +430,10 @@ namespace Menge
 		{
 			m_sound = false;
 		}
+
+		TimerInterface * timer = m_interface->getTimer();
+		Profiler::setTimer(timer);
+		Profiler::init();
 
 		MENGE_LOG( "Creating Object Factory..." );
 		OBJECT_FACTORY( Camera2D );
@@ -550,7 +540,7 @@ namespace Menge
 		releaseInterfaceSystem( m_inputSystem );
 		releaseInterfaceSystem( m_fileSystem );
 		releaseInterfaceSystem( m_logSystem );
-		releaseInterfaceSystem( m_profilerSystem );
+//		releaseInterfaceSystem( m_profilerSystem );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )
@@ -585,8 +575,8 @@ namespace Menge
 
 		if( _key == 87 && _isDown ) // F11
 		{
-			bool enabled = Holder<ProfilerEngine>::hostage()->isEnabled();
-			Holder<ProfilerEngine>::hostage()->setEnabled(!enabled);
+			bool enabled = Profiler::isEnabled();
+			Profiler::setEnabled(!enabled);
 		}
 
 		if( _key == 68 && _isDown ) // F10
@@ -729,10 +719,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onUpdate( float _timing )
 	{
-		if( !m_update && !m_focus ) return;
+		if( !m_update && !m_focus ) 
+		{
+			return;
+		}
+
+		Profiler::endProfilingCycle();
 
 		m_renderEngine->beginScene();
+
+		Profiler::beginBlock( "Render" );
 		m_game->render( m_debugMask );
+		Profiler::endBlock("Render");
+
+		Profiler::drawStats();// не правильно.
+
 		m_renderEngine->endScene();
 		//m_renderEngine->swapBuffers();
 
@@ -750,27 +751,26 @@ namespace Menge
 			m_physicEngine->update( 1.0f/30.0f );
 		}*/
 
-		m_profilerSystem->beginProfile( "Menge" );
+		Profiler::beginBlock("Menge");
 
 		/*if( m_physicEngine2D )
 		{
-			m_profilerSystem->beginProfile( "Physic" );
 			m_physicEngine2D->update( timing );
-			m_profilerSystem->endProfile( "Physic" );
 		}*/
 
-		m_profilerSystem->beginProfile( "Game Update" );
+		Profiler::beginBlock("Game Update");
 		m_game->update( timing );
 
-		m_profilerSystem->endProfile( "Game Update" );
-
-		m_profilerSystem->beginProfile( "Sound Update" );
+		Profiler::endBlock("Game Update");
+	
+		Profiler::beginBlock("Sound Update");
 		m_soundEngine->update( _timing );
-		m_profilerSystem->endProfile( "Sound Update" );
-
+		Profiler::endBlock("Sound Update");
+	
 		m_renderEngine->swapBuffers();
 
-		m_profilerSystem->endProfile( "Menge" );
+		Profiler::endBlock("Menge");
+		
 		if( !m_focus && m_update )
 		{
 			m_update = false;
@@ -791,6 +791,8 @@ namespace Menge
 	{
 		delete m_handler;
 
+		Profiler::destroy();
+
 		Holder<Game>::destroy();
 
 		Holder<PhysicEngine>::destroy();
@@ -802,7 +804,6 @@ namespace Menge
 		Holder<SoundEngine>::destroy();
 		Holder<XmlEngine>::destroy();
 		Holder<LogEngine>::destroy();
-		Holder<ProfilerEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
 
 		CodecManager::cleanup();

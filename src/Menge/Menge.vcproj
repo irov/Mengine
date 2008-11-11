@@ -492,18 +492,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="Profiler"
-				>
-				<File
-					RelativePath=".\ProfilerEngine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ProfilerEngine.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Object2D"
@@ -1601,6 +1589,14 @@
 		</File>
 		<File
 			RelativePath=".\ConfigFile.h"
+			>
+		</File>
+		<File
+			RelativePath=".\Profiler.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Profiler.h"
 			>
 		</File>
 		<File

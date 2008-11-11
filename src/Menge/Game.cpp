@@ -18,12 +18,12 @@
 #	include "ResourceManager.h"
 #	include "LogEngine.h"
 #	include "RenderEngine.h"
-#	include "ProfilerEngine.h"
 
 #	include "XmlEngine.h"
 #	include "Utils.h"
 #	include "ConfigFile.h"
 #	include "TextManager.h"
+#	include "Profiler.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -376,19 +376,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render( unsigned int _debugMask )
 	{
-		Holder<ProfilerEngine>::hostage()->beginProfile( "Render" );
 		m_player->render( _debugMask );
-
-		Holder<ProfilerEngine>::hostage()->displayStats();
-
-		if(Holder<ProfilerEngine>::hostage()->isEnabled())
-		{
-			static TChar m_debugText[128];
-			std::sprintf( m_debugText, "FPS=%f", m_FPS );
-			Holder<RenderEngine>::hostage()->renderText( m_debugText,mt::vec2f::zero_v2,0xFFFFFFFF);
-		}
-
-		Holder<ProfilerEngine>::hostage()->endProfile( "Render" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	String Game::getPathEntities( const String& _entity ) const

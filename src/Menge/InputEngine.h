@@ -43,6 +43,5 @@ namespace Menge
 		InputSystemInterface * m_interface;
 		InputHandler * m_handle;
 		bool m_mouseBounded;
-		bool m_isActive;
 	};
 }

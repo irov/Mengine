@@ -22,10 +22,8 @@ namespace Menge
 	class PhysicSystemInterface;
 	class PhysicSystem2DInterface;
 	class LogSystemInterface;
-	class ProfilerSystemInterface;
-
+	
 	class LogEngine;
-	class ProfilerEngine;
 	class FileEngine;
 	class InputEngine;
 	class RenderEngine;
@@ -53,7 +51,6 @@ namespace Menge
 		void finalize();
 	
 		void setLogSystem( LogSystemInterface * _interface );
-		void setProfilerSystem( ProfilerSystemInterface * _interface );
 		void setFileSystem( FileSystemInterface * _interface );
 		void setInputSystem( InputSystemInterface * _interface );
 		void setRenderSystem( RenderSystemInterface * _interface );
@@ -143,7 +140,6 @@ namespace Menge
 		float m_maxTiming;
 
 		LogEngine * m_logEngine;
-		ProfilerEngine * m_profilerEngine;
 		FileEngine * m_fileEngine;
 		InputEngine * m_inputEngine;
 		RenderEngine * m_renderEngine;
@@ -154,7 +150,6 @@ namespace Menge
 		XmlEngine *	m_xmlEngine;
 
 		LogSystemInterface * m_logSystem;
-		ProfilerSystemInterface * m_profilerSystem;
 		FileSystemInterface * m_fileSystem;
 		InputSystemInterface * m_inputSystem;
 		ParticleSystemInterface * m_particleSystem;

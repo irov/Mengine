@@ -33,7 +33,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Profiler::init()
 	{
-		m_enabled = true;
+		//m_enabled = true;
 		
 		m_clock->reset();
 

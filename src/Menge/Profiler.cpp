@@ -3,6 +3,68 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	unsigned long MemoryTextureProfiler::m_totalMemory = 0;
+	TTextureMemoryMap MemoryTextureProfiler::m_textures;
+	//////////////////////////////////////////////////////////////////////////
+	Menge::String MemoryTextureProfiler::createStatsString()
+	{
+		Menge::String s;
+
+	/*	for (TTextureMemoryMap::iterator it = m_textures.begin();
+			it != m_textures.end(); ++it)
+		{
+			if (it != m_textures.begin())
+			{
+				s += "\n";
+			}
+
+			char blockTime[64];
+			sprintf(blockTime, "%d", (*it).second);
+
+			s += (*it).first;
+			s += ": ";
+			s += blockTime;
+		}
+    */
+		char blockTime[64];
+		sprintf(blockTime, "%d", m_totalMemory);
+		s = "TMU = ";
+		s += blockTime;
+
+		return s;
+	}
+
+	void MemoryTextureProfiler::addMemTexture(const Menge::String & _name, unsigned long _size)
+	{
+		if(_size == 0)
+		{
+			return;
+		}
+
+		TTextureMemoryMap::iterator it = m_textures.find(_name);			
+
+		if(it != m_textures.end())
+		{
+			return;
+		}
+
+		m_totalMemory+=_size;
+		m_textures.insert(std::make_pair(_name,_size));
+	}
+
+	void MemoryTextureProfiler::removeMemTexture(const Menge::String & _name)
+	{
+		TTextureMemoryMap::iterator it = m_textures.find(_name);			
+
+		if(it == m_textures.end())
+		{
+			return;
+		}
+		m_totalMemory-=it->second;
+		m_textures.erase(it);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	TimerInterface * Profiler::m_clock = 0;
 	bool Profiler::m_enabled = false;
 	unsigned long int Profiler::m_currentCycleStartMicroseconds = 0;
@@ -301,12 +363,17 @@ namespace Menge
 			std::sprintf( m_debugText, "DIP = %d\n", dipCount );
 
 			mt::vec2f pos(0,20);
-			Holder<RenderEngine>::hostage()->renderText( m_debugText, pos, 0xFFFFFFFF );
+			Holder<RenderEngine>::hostage()->renderText( m_debugText, pos, 0xFFAACC00 );
 
 			pos.y +=20;
 			Menge::String str = Profiler::createStatsString(Profiler::BLOCK_CYCLE_PERCENT);
-			Holder<RenderEngine>::hostage()->renderText(str, pos, 0xFFFFFFFF);
+			Holder<RenderEngine>::hostage()->renderText(str, pos, 0xFFAACC00);
+
+			pos.x +=250;
+			str = MemoryTextureProfiler::createStatsString();
+			Holder<RenderEngine>::hostage()->renderText(str, pos, 0xFFAACC00);
 		
+	
 			Holder<RenderEngine>::hostage()
 				->endLayer2D();
 		}

@@ -434,6 +434,7 @@ namespace Menge
 		TimerInterface * timer = m_interface->getTimer();
 		Profiler::setTimer(timer);
 		Profiler::init();
+		Profiler::setEnabled(0);
 
 		MENGE_LOG( "Creating Object Factory..." );
 		OBJECT_FACTORY( Camera2D );
@@ -751,9 +752,7 @@ namespace Menge
 			m_physicEngine->update( 1.0f/30.0f );
 		}*/
 
-		Profiler::beginBlock("Menge");
-
-		/*if( m_physicEngine2D )
+     	/*if( m_physicEngine2D )
 		{
 			m_physicEngine2D->update( timing );
 		}*/
@@ -769,8 +768,6 @@ namespace Menge
 	
 		m_renderEngine->swapBuffers();
 
-		Profiler::endBlock("Menge");
-		
 		if( !m_focus && m_update )
 		{
 			m_update = false;

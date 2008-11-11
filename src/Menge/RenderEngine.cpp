@@ -17,6 +17,7 @@
 
 #	include "ImageCodec.h"
 #	include "Codec.h"
+#	include "Profiler.h"
 
 namespace Menge
 {
@@ -299,6 +300,8 @@ namespace Menge
 
 			image = m_interface->loadImage( _filename, image_width, image_height, textureDesc );
 
+			MemoryTextureProfiler::addMemTexture(_filename,data.size);
+
 			delete[] textureDesc.buffer;
 			if( image == 0 )
 			{
@@ -364,6 +367,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )
 	{
+		MemoryTextureProfiler::removeMemTexture(_image->getDescription());
 		m_interface->releaseImage( _image );
 	}
 	////////////////////////////////////////////////////////////////////////////

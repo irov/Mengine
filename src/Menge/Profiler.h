@@ -27,6 +27,19 @@ namespace Menge
 
 	typedef std::map<Menge::String, ProfileBlock*> TProfileBlockMap;
 
+	typedef std::map<Menge::String, unsigned long> TTextureMemoryMap;
+
+	class MemoryTextureProfiler
+	{
+	public:
+		static Menge::String createStatsString();
+		static void addMemTexture(const Menge::String & _name, unsigned long _size);
+		static void removeMemTexture(const Menge::String & _name);
+	private:
+		static TTextureMemoryMap m_textures;
+		static unsigned long m_totalMemory;
+	};
+
 	class Profiler
 	{
 	public:

@@ -118,9 +118,6 @@ private:
 	WindowRef m_windowRef;
 #endif
 
-	GLint m_textureType;
-	GLint _getTextureType();
-
 	float m_layer;
 	Menge::String m_currentRenderTarget;
 

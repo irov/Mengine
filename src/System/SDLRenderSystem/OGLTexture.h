@@ -9,15 +9,16 @@
 class OGLTexture : public Menge::RenderImageInterface
 {
 public:
-	OGLTexture(GLint _textureType);
-	OGLTexture(GLint _textureType, GLuint _id, const Menge::String & name, int width, int height);
+	OGLTexture();
+	OGLTexture( GLuint _id, const Menge::String & name, int width, int height );
 	~OGLTexture();
 
 public:
 	GLuint getGLTexture() const;
-	void load( const Menge::TextureDesc & _desc );
+	void load( std::size_t _width, std::size_t _heigth, const Menge::TextureDesc & _desc );
 	int incRef() { return ++m_ref; }
 	int decRef() { return --m_ref; }
+	const float* getUVMask() const;
 
 public:
 	std::size_t getWidth() const override;
@@ -34,10 +35,12 @@ private:
 	GLuint m_texture;
 	std::size_t m_width;
 	std::size_t m_height;
+	std::size_t m_image_width;
+	std::size_t m_image_height;
+	float m_uvMask[2];
 
 	GLint m_glformat;
 	GLenum m_glpixelType;
-	GLint m_textureType;
 
 	int m_ref;
 

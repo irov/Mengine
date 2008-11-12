@@ -2,7 +2,7 @@
 #	include <assert.h>
 
 //////////////////////////////////////////////////////////////////////////
-OGLTexture::OGLTexture(GLint _textureType)
+OGLTexture::OGLTexture()
 : m_texture(0)
 , m_width(0)
 , m_height(0)
@@ -10,18 +10,16 @@ OGLTexture::OGLTexture(GLint _textureType)
 , m_ref(0)
 , m_format(Menge::PF_A8R8G8B8)
 , m_glpixelType(GL_UNSIGNED_BYTE)
-, m_textureType(_textureType)
 , m_useFBO(false)
 {
 }
 //////////////////////////////////////////////////////////////////////////
-OGLTexture::OGLTexture(GLint _textureType, GLuint _id, const Menge::String & name, int width, int height)
+OGLTexture::OGLTexture( GLuint _id, const Menge::String & name, int width, int height )
 : m_texture(_id)
 , m_glformat(GL_BGRA)
 , m_ref(0)
 , m_format(Menge::PF_A8R8G8B8)
 , m_glpixelType(GL_UNSIGNED_BYTE)
-, m_textureType(_textureType)
 , m_useFBO(false)
 {
 	int size = width * height * 4;
@@ -30,8 +28,9 @@ OGLTexture::OGLTexture(GLint _textureType, GLuint _id, const Menge::String & nam
 	m_PBO.unbind();
 
 	m_name = name;
-	m_width = width;
-	m_height = height;
+	m_width = m_image_width = width;
+	m_height = m_image_height = height;
+	m_uvMask[0] = m_uvMask[1] = 1.0f;
 }
 //////////////////////////////////////////////////////////////////////////
 OGLTexture::~OGLTexture()
@@ -40,7 +39,7 @@ OGLTexture::~OGLTexture()
 	glDeleteTextures( 1, &m_texture );
 }
 //////////////////////////////////////////////////////////////////////////
-void OGLTexture::load( const Menge::TextureDesc & _desc )
+void OGLTexture::load( std::size_t _width, std::size_t _heigth, const Menge::TextureDesc & _desc )
 {
 	int ncomponents = 4;
 
@@ -77,19 +76,19 @@ void OGLTexture::load( const Menge::TextureDesc & _desc )
 	// bind the empty buffer
 	//glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 
-	glBindTexture(m_textureType,m_texture);
+	glBindTexture(GL_TEXTURE_2D,m_texture);
 
-	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
-	glTexParameteri(m_textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 
-	glTexImage2D(m_textureType, 0, ncomponents, _desc.width, _desc.height, 0, m_glformat, m_glpixelType, _desc.buffer);
+	glTexImage2D( GL_TEXTURE_2D, 0, ncomponents, _desc.width, _desc.height, 0, m_glformat, m_glpixelType, _desc.buffer );
 
 	int size = _desc.width * _desc.height * ncomponents;
 
-	m_PBO.init(size);
+	m_PBO.init( size );
 	m_PBO.unbind();
 
 	GLenum error = glGetError();
@@ -102,6 +101,10 @@ void OGLTexture::load( const Menge::TextureDesc & _desc )
 	m_name = _desc.name;
 	m_width = _desc.width;
 	m_height = _desc.height;
+	m_image_width = _width;
+	m_image_height = _heigth;
+	m_uvMask[0] = static_cast<float>( m_image_width ) / m_width;
+	m_uvMask[1] = static_cast<float>( m_image_height ) / m_height;
 }
 //////////////////////////////////////////////////////////////////////////
 GLuint OGLTexture::getGLTexture() const
@@ -111,12 +114,12 @@ GLuint OGLTexture::getGLTexture() const
 ///////////////////////////////////////////////////////////////////////////
 std::size_t OGLTexture::getWidth() const
 {
-	return m_width;
+	return m_image_width;
 }
 //////////////////////////////////////////////////////////////////////////
 std::size_t OGLTexture::getHeight() const
 {
-	return m_height;
+	return m_image_height;
 }
 //////////////////////////////////////////////////////////////////////////
 const Menge::String & OGLTexture::getDescription() const
@@ -128,7 +131,7 @@ unsigned char * OGLTexture::lock( int* _pitch, bool _readOnly )
 {
 	*_pitch = m_width * 4;
 
-	glBindTexture(m_textureType, m_texture);
+	glBindTexture( GL_TEXTURE_2D, m_texture );
 
 	return m_PBO.map(!_readOnly);
 }
@@ -138,9 +141,9 @@ void OGLTexture::unlock()
 	// unmap the buffer from the CPU space so it can DMA
 	m_PBO.unmap();
 	// bind us to the right texture object
-	glBindTexture(m_textureType,m_texture);
+	glBindTexture( GL_TEXTURE_2D, m_texture );
 	// kick off the DMA
-	glTexSubImage2D(m_textureType, 0, 0, 0, m_width, m_height, m_glformat, m_glpixelType, NULL);
+	glTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, m_width, m_height, m_glformat, m_glpixelType, NULL );
 	// unbind the PBO 
 	m_PBO.unbind();
 }
@@ -148,5 +151,10 @@ void OGLTexture::unlock()
 Menge::PixelFormat OGLTexture::getPixelFormat() 
 {
 	return m_format;
+}
+//////////////////////////////////////////////////////////////////////////
+const float* OGLTexture::getUVMask() const
+{
+	return m_uvMask;
 }
 //////////////////////////////////////////////////////////////////////////

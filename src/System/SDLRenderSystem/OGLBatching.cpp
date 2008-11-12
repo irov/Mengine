@@ -88,9 +88,9 @@ void OGLRenderSystem::_glEnable2D()
 	glDisable( GL_CULL_FACE );
 	glDisable( GL_LIGHTING );
 	glEnable( GL_BLEND );
-	glEnable( m_textureType );
+	glEnable( GL_TEXTURE_2D );
 
-	std::fill( m_worldMatrix, m_worldMatrix + 16, 0 );
+	std::fill( m_worldMatrix, m_worldMatrix + 16, 0.0f );
 	m_worldMatrix[0] = m_worldMatrix[5] = m_worldMatrix[10] = m_worldMatrix[15] = 1.0f;
 	setWorldMatrix( m_worldMatrix );
 	setViewMatrix( m_viewMatrix );
@@ -103,7 +103,7 @@ void OGLRenderSystem::_glEnable3D()
 {
 	renderBatch();
 
-	glEnable(m_textureType);
+	glEnable( GL_TEXTURE_2D );
 	glEnable(GL_DEPTH_TEST);
 	//glFrontFace(GL_CW);
 	glDisable(GL_LIGHTING);  
@@ -201,8 +201,8 @@ void OGLRenderSystem::Gfx_RenderQuad(const Menge::TVertex * quad, GLint tex, GLi
 	{
 		renderBatch();
 
-		glTexParameteri( m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-		glTexParameteri( m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 		m_curPrimType = GL_QUADS;
 
 		if( m_currSrcBlend != srcBlend || m_currDstBlend != dstBlend )
@@ -214,8 +214,7 @@ void OGLRenderSystem::Gfx_RenderQuad(const Menge::TVertex * quad, GLint tex, GLi
 
 		if( tex != m_curTexture )
 		{
-			glBindTexture(m_textureType, tex);
-			GLenum err = glGetError();
+			glBindTexture( GL_TEXTURE_2D, tex );
 			m_curTexture = tex;
 		}
 	}
@@ -234,8 +233,8 @@ void OGLRenderSystem::Gfx_RenderTriple(const Menge::TVertex *quad, GLint tex, GL
 	{
 		renderBatch();
 
-		glTexParameteri( m_textureType, GL_TEXTURE_WRAP_S, GL_REPEAT );
-		glTexParameteri( m_textureType, GL_TEXTURE_WRAP_T, GL_REPEAT );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 		m_curPrimType=GL_TRIANGLES;
 
 		if( m_currSrcBlend != srcBlend || m_currDstBlend != dstBlend )
@@ -247,8 +246,7 @@ void OGLRenderSystem::Gfx_RenderTriple(const Menge::TVertex *quad, GLint tex, GL
 
 		if( tex != m_curTexture )
 		{
-			glBindTexture(m_textureType, tex);
-			GLenum err = glGetError();
+			glBindTexture( GL_TEXTURE_2D, tex );
 			m_curTexture = tex;
 		}
 	}

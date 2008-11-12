@@ -666,5 +666,6 @@ void HGERenderSystem::onRestoreDevice()
 bool HGERenderSystem::supportNPOT()
 {
 	return m_hge->Gfx_SupportNPOT();
+	//return false;
 }
 //////////////////////////////////////////////////////////////////////////

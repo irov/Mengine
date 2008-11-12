@@ -1,8 +1,7 @@
 #include	"FBO.h"
 #include	<stdlib.h>
 
-FrameBufferObject::FrameBufferObject(GLint _textureType, int _width, int _height, int _flags)
-: m_textureType(_textureType)
+FrameBufferObject::FrameBufferObject( int _width, int _height, int _flags )
 {
 	width         = _width;
 	height        = _height;
@@ -185,20 +184,15 @@ bool FrameBufferObject::unbind()
 	return true;
 }
 
-bool FrameBufferObject::attachColorTexture(GLenum _target, unsigned texId, int no)
+bool FrameBufferObject::attachColorTexture( unsigned texId, int no)
 {
 	if (frameBuffer == 0)
 	{
 		return false;
 	}
 
-	if (_target != m_textureType && _target != GL_TEXTURE_RECTANGLE_ARB && (_target < GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB || _target > GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_ARB))
-	{
-		return false;
-	}
-
-	glBindTexture(_target, colorBuffer[no] = texId);
-	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + no, _target, texId, 0);
+	glBindTexture( GL_TEXTURE_2D, colorBuffer[no] = texId);
+	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT + no, GL_TEXTURE_2D, texId, 0);
 
 	checkFramebufferStatus();
 
@@ -222,31 +216,31 @@ unsigned int FrameBufferObject::createColorTexture(GLenum format, GLenum interna
 	GLuint	tex;
 
 	glGenTextures(1, &tex);
-    glBindTexture(m_textureType, tex);
+    glBindTexture( GL_TEXTURE_2D, tex);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);                         // set 1-byte alignment
-    glTexImage2D(m_textureType, 0, internalFormat, getWidth(), getHeight(), 0,
+    glTexImage2D( GL_TEXTURE_2D, 0, internalFormat, getWidth(), getHeight(), 0,
                       format, GL_UNSIGNED_BYTE, NULL);
 
 	if (filter == filterNearest)
 	{
-		glTexParameteri(m_textureType, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	}
 	else
 	if (filter == filterLinear)
 	{
-		glTexParameteri(m_textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	}
 	else
 	if (filter == filterMipmap )
 	{
-		glTexParameteri(m_textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(m_textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	}
 	
-    glTexParameteri(m_textureType, GL_TEXTURE_WRAP_S, clamp);
-    glTexParameteri(m_textureType, GL_TEXTURE_WRAP_T, clamp);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clamp);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clamp);
 
     return tex;
 }

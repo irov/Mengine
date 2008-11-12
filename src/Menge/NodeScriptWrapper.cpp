@@ -137,6 +137,14 @@ namespace Menge
 					->setCurrentScene( _name, _destroyOld );
 		}
 
+		static void s_setCurrentSceneCb( const String& _name, PyObject* _cb )
+		{
+			MENGE_LOG( "set current scene \"%s\""
+				, _name.c_str() );
+			Holder<Player>::hostage()
+				->setCurrentSceneCb( _name, _cb );
+		}
+
 		static Scene * getCurrentScene()
 		{
 			Scene * scene = Holder<Player>::hostage()
@@ -955,6 +963,7 @@ namespace Menge
 		}		
 
 		pybind::def( "setCurrentScene", &ScriptMethod::setCurrentScene );
+		pybind::def( "setCurrentSceneCb", &ScriptMethod::s_setCurrentSceneCb );
 		pybind::def( "getCurrentScene", &ScriptMethod::getCurrentScene );
 		pybind::def( "setCamera2DPosition", &ScriptMethod::setCamera2DPosition );
 		pybind::def( "getCamera2DPosition", &ScriptMethod::s_getCamera2DPosition );

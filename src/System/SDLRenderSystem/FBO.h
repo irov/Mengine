@@ -24,7 +24,7 @@ public:
 	};
 
 public:
-	FrameBufferObject(GLint _textureType, int _width, int _height, int _flags = 0);
+	FrameBufferObject( int _width, int _height, int _flags = 0 );
 	~FrameBufferObject();
 
 public:
@@ -41,7 +41,7 @@ public:
 	bool bindFace(int _no);
 	bool unbind();
 	
-	bool attachColorTexture(GLenum _target, unsigned int _texId, int _no = 0);
+	bool attachColorTexture( unsigned int _texId, int _no = 0);
 	bool attachDepthTexture(GLenum _target, unsigned int _texId);
 	
 	bool detachColorTexture(GLenum _target);
@@ -63,7 +63,6 @@ public:
 	GLenum  checkFramebufferStatus(bool _printMessage = true);
 
 private:
-	GLint   m_textureType;
 	int		flags;
 	int		width;
 	int		height;

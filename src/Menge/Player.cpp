@@ -33,6 +33,7 @@ namespace Menge
 	, m_arrowHided( false )
 	, m_mousePickerSystem( 0 )
 	, m_scheduleManager( NULL )
+	, m_setScenePyCb( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -59,17 +60,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setCurrentScene( const String& _name, bool _destroyOld )
 	{
-		m_nextScene = Holder<Game>::hostage()
-			->getScene( _name );
+		//m_nextScene = Holder<Game>::hostage()
+		//	->getScene( _name );
 
-		if( m_nextScene == 0 )
+		/*if( m_nextScene == 0 )
 		{
 			MENGE_LOG_ERROR( "Scene \"%s\" not have in Game"
 				, _name.c_str() );
 			return;
-		}
+		}*/
 
-		if( m_nextScene == m_scene )
+		//if( m_nextScene == m_scene )
+		m_nextSceneName = _name;
+		if( m_scene != NULL && m_nextSceneName == m_scene->getName() )
 		{
 			m_restartScene = true;
 		}
@@ -317,7 +320,13 @@ namespace Menge
 				m_mousePickerSystem->reset();
 				Holder<Game>::hostage()->destroyScene( m_scene->getName() );
 			}
+			m_nextScene = Holder<Game>::hostage()->getScene( m_nextSceneName );
 			m_scene = Holder<Game>::hostage()->getScene( name );
+			if( m_setScenePyCb != NULL )
+			{
+				pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbedding() );
+				m_setScenePyCb = NULL;
+			}
 			m_scene->compile();
 			m_scene->activate();
 
@@ -340,7 +349,13 @@ namespace Menge
 					Holder<Game>::hostage()->destroyScene( m_scene->getName() );
 				}
 			}
+			m_nextScene = Holder<Game>::hostage()->getScene( m_nextSceneName );
 			m_scene = m_nextScene;
+			if( m_setScenePyCb != NULL )
+			{
+				pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbedding() );
+				m_setScenePyCb = NULL;
+			}
 			m_nextScene->compile();
 			m_nextScene->activate();
 
@@ -491,6 +506,12 @@ namespace Menge
 		{
 			m_scene->onFocus( _focus );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::setCurrentSceneCb( const String& _scene, PyObject* _cb )
+	{
+		m_setScenePyCb = _cb;
+		setCurrentScene( _scene, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

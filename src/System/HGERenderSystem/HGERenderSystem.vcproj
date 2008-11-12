@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(SolutionDir)dependencies\DirectX\DX8\include&quot;;&quot;$(SolutionDir)src&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;D3D_DEBUG_INFO"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="d3d8.lib d3dx8dt.lib "
+				AdditionalDependencies="d3d8.lib d3dx8.lib "
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
 				AdditionalLibraryDirectories="$(SolutionDir)dependencies\DirectX\DX8\lib"
 				IgnoreDefaultLibraryNames=""

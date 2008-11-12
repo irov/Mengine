@@ -17,7 +17,7 @@ namespace Menge
 		};
 
 	public:
-		//virtual ~CodecInterface() {};
+		virtual ~CodecInterface() {};
 
 		virtual bool code( OutStreamInterface* _outStream, unsigned char* _buffer, CodecData* _data ) const = 0;
 		virtual bool getDataInfo( DataStreamInterface* _inputData, CodecData* _codecData ) const = 0;

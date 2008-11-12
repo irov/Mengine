@@ -18,6 +18,7 @@
 #	include "ImageCodec.h"
 #	include "Codec.h"
 #	include "Profiler.h"
+#	include "Bitwise.h"
 
 namespace Menge
 {
@@ -273,7 +274,11 @@ namespace Menge
 				bool npot = m_interface->supportNPOT();
 				if( npot == false )	// we're all gonna die
 				{
-
+					data.width = Bitwise::firstPO2From( data.width );
+					data.height = Bitwise::firstPO2From( data.height );
+					data.size = PixelUtil::getMemorySize( data.width, data.height, 1, data.format );
+					data.flags |= DF_CUSTOM_PITCH;
+					data.flags |= ( ( data.size / data.height ) << 16 );
 				}
 			}
 			textureDesc.buffer = new unsigned char[data.size];
@@ -287,6 +292,30 @@ namespace Menge
 				delete[] textureDesc.buffer;
 				textureDesc.buffer = 0;
 				return 0;
+			}
+
+			// copy pixels on the edge for better image quality
+			if( data.width > image_width )
+			{
+				unsigned char* image_data = (unsigned char*)textureDesc.buffer;
+				unsigned int pitch = data.size / data.height;
+				unsigned int pixel_size = pitch / data.width;
+				for( int i = 0; i < image_height; i++ )
+				{
+					std::copy( image_data + (image_width - 1) * pixel_size, 
+								image_data + image_width * pixel_size,
+								image_data + image_width * pixel_size );
+					image_data += pitch;
+				}
+			}
+			if( data.height > image_height )
+			{
+				unsigned char* image_data = (unsigned char*)textureDesc.buffer;
+				unsigned int pitch = data.size / data.height;
+				unsigned int pixel_size = pitch / data.width;
+				std::copy( image_data + (image_height - 1) * pitch,
+							image_data + image_height * pitch,
+							image_data + image_height * pitch );
 			}
 
 			textureDesc.width = data.width;

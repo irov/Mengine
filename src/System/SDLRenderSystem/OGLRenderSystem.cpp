@@ -68,12 +68,6 @@ bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 	OGLUtils::identity(m_worldMatrix);
 	OGLUtils::identity(m_viewMatrix);
 
-	m_textureType = GL_TEXTURE_2D;
-
-	#if MENGE_PLATFORM_MACOSX
-	m_textureType = GL_TEXTURE_RECTANGLE_ARB;
-	#endif
-
 	return initialized;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -195,13 +189,13 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 		GLuint npotTex;
 		GLint size = 65;
 		glGenTextures( 1, &npotTex );
- 		glBindTexture( m_textureType, npotTex );
-		glTexParameteri( m_textureType, GL_TEXTURE_MAX_LEVEL, 0 );
-		glTexParameteri( m_textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri( m_textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri( m_textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri( m_textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexImage2D( GL_PROXY_TEXTURE_3D, 0, GL_RGBA8, size, size, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL );
+ 		glBindTexture( GL_TEXTURE_2D, npotTex );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0 );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexImage2D( GL_PROXY_TEXTURE_2D, 0, GL_RGBA8, size, size, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL );
 		GLint width = 0;
 		glGetTexLevelParameteriv( GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width );
 		if( width == size )
@@ -403,19 +397,14 @@ void OGLRenderSystem::setWorldMatrix( const float * _world )
 	glMultMatrixf( m_viewMatrix );*/
 }
 //////////////////////////////////////////////////////////////////////////
-GLint OGLRenderSystem::_getTextureType()
-{
-	return m_textureType;
-}
-//////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String & _name,
 														   float _width, float _height )
 {
-	OGLTexture * texture = new OGLTexture(_getTextureType());
+	OGLTexture * texture = new OGLTexture();
 
 	Menge::TextureDesc _desc = {_name,0,0,0,::floorf( _width + 0.5f ),::floorf( _height + 0.5f ),Menge::PF_A8R8G8B8};
 
-	texture->load(_desc);
+	texture->load( _width, _height, _desc );
 	m_textureMap.insert( std::make_pair( _desc.name, texture ) );
 	texture->incRef();
 
@@ -424,8 +413,8 @@ Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String 
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::String& _name, std::size_t _width, std::size_t _height, const Menge::TextureDesc& _desc )
 {
-	OGLTexture * texture = new OGLTexture(_getTextureType());
-	texture->load(_desc);
+	OGLTexture * texture = new OGLTexture();
+	texture->load( _width, _height, _desc );
 	m_textureMap.insert( std::make_pair( _desc.name, texture ) );
 	texture->incRef();
 
@@ -434,16 +423,16 @@ Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::String& _
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Menge::String & _name, float _width, float _height )
 {
-	FrameBufferObject * fbo = new FrameBufferObject(_getTextureType(),_width,_height);
+	FrameBufferObject * fbo = new FrameBufferObject( _width, _height );
 
 	GLint tex = fbo->createColorTexture();
 
 	fbo->create();
 	fbo->bind();
-	fbo->attachColorTexture(m_textureType,tex);
+	fbo->attachColorTexture( tex );
 	fbo->unbind();
 
-	OGLTexture * texture = new OGLTexture(_getTextureType(),tex,_name,_width,_height);
+	OGLTexture * texture = new OGLTexture( tex, _name, _width, _height );
 
 	RenderTargetInfo rtgtInfo;
 	rtgtInfo.dirty = true;
@@ -516,9 +505,12 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 
 	const OGLTexture * tex = static_cast<const OGLTexture*>( _image );
 	GLint glTex = 0;
+	float uvMask[2] = { 1.0f, 1.0f };
 	if( tex != NULL	)
 	{
 		glTex = tex->getGLTexture();
+		uvMask[0] = tex->getUVMask()[0];
+		uvMask[1] = tex->getUVMask()[1];
 	}
 
 	GLint srcBlend = OGLUtils::s_blendMengeToOGL( _srcBlend );
@@ -558,26 +550,17 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 	quad[3].n[1] = 0.0f; 
 	quad[3].n[2] = 1.0f;
 
-	float s = 1.f;
-	float t = 1.f;
+	quad[0].uv[0] = _uv[0];
+	quad[0].uv[1] = _uv[1];
 
-	if(_image && m_textureType == GL_TEXTURE_RECTANGLE_ARB)
-	{
-		s = _image->getWidth();
-		t = _image->getHeight();
-	}
+	quad[1].uv[0] = _uv[2] * uvMask[0];
+	quad[1].uv[1] = _uv[1];
 
-	quad[0].uv[0] = _uv[0] * s;
-	quad[0].uv[1] = _uv[1] * t;
+	quad[2].uv[0] = _uv[2] * uvMask[0];
+	quad[2].uv[1] = _uv[3] * uvMask[1];
 
-	quad[1].uv[0] = _uv[2] * s;
-	quad[1].uv[1] = _uv[1] * t;
-
-	quad[2].uv[0] = _uv[2] * s;
-	quad[2].uv[1] = _uv[3] * t;
-
-	quad[3].uv[0] = _uv[0] * s;
-	quad[3].uv[1] = _uv[3] * t;
+	quad[3].uv[0] = _uv[0];
+	quad[3].uv[1] = _uv[3] * uvMask[1];
 
 	Gfx_RenderQuad( quad, glTex, srcBlend, dstBlend );
 }
@@ -636,23 +619,14 @@ void OGLRenderSystem::renderTriple(
 	quad[2].n[1] = 0.0f; 
 	quad[2].n[2] = 1.0f;
 
-	float s = 1.f;
-	float t = 1.f;
+	quad[0].uv[0] = _uv0[0];
+	quad[0].uv[1] = _uv0[1];
 
-	if( _image && m_textureType == GL_TEXTURE_RECTANGLE_ARB)
-	{
-		s = _image->getWidth();
-		t = _image->getHeight();
-	}
+	quad[1].uv[0] = _uv1[0];
+	quad[1].uv[1] = _uv1[1];
 
-	quad[0].uv[0] = _uv0[0] * s;
-	quad[0].uv[1] = _uv0[1] * t;
-
-	quad[1].uv[0] = _uv1[0] * s;
-	quad[1].uv[1] = _uv1[1] * t;
-
-	quad[2].uv[0] = _uv2[0] * s;
-	quad[2].uv[1] = _uv2[1] * t;
+	quad[2].uv[0] = _uv2[0];
+	quad[2].uv[1] = _uv2[1];
 
 	Gfx_RenderTriple(quad,glTex,srcBlend,dstBlend);
 }
@@ -666,7 +640,7 @@ void OGLRenderSystem::renderLine( unsigned int _color,
 	int b = (_color) & 0xff;
 	int a = (_color>>24) & 0xff;
 
-	glDisable(m_textureType);
+	glDisable(GL_TEXTURE_2D);
 
 	glBegin(GL_LINES);
 
@@ -675,7 +649,7 @@ void OGLRenderSystem::renderLine( unsigned int _color,
 	glVertex2f(_end[0],_end[1]);
 	glEnd();
 
-	glEnable(m_textureType);
+	glEnable(GL_TEXTURE_2D);
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::beginScene()
@@ -822,24 +796,13 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	const OGLTexture * tex = static_cast<const OGLTexture*>( _material->texture );
-	float s = 1.0f;
-	float t = 1.0f;
 	if(tex != NULL)
 	{
-		glBindTexture(m_textureType, tex->getGLTexture());		
-		s = tex->getWidth();
-		t = tex->getHeight();
+		glBindTexture(GL_TEXTURE_2D, tex->getGLTexture());		
 	}
 	else
 	{
-		glBindTexture(m_textureType, 0);		
-	}
-	Menge::TVertex* v = new Menge::TVertex[_verticesNum];
-	std::copy( _vertices, _vertices + _verticesNum, v );
-	for( int i = 0; i < _verticesNum; i++ )
-	{
-		v[i].uv[0] *= s;
-		v[i].uv[1] *= t;
+		glBindTexture(GL_TEXTURE_2D, 0);		
 	}
 
 	glEnableClientState( GL_VERTEX_ARRAY );
@@ -852,10 +815,10 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 
 	glClientActiveTextureARB(GL_TEXTURE0);
 
-	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Menge::TVertex), &v[0].col);
-	glNormalPointer(GL_FLOAT, sizeof(Menge::TVertex), &v[0].n);
-	glTexCoordPointer(2, GL_FLOAT, sizeof(Menge::TVertex), &v[0].uv);
-	glVertexPointer(3, GL_FLOAT, sizeof(Menge::TVertex),  &v[0].pos);
+	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Menge::TVertex), &_vertices[0].col);
+	glNormalPointer(GL_FLOAT, sizeof(Menge::TVertex), &_vertices[0].n);
+	glTexCoordPointer(2, GL_FLOAT, sizeof(Menge::TVertex), &_vertices[0].uv);
+	glVertexPointer(3, GL_FLOAT, sizeof(Menge::TVertex),  &_vertices[0].pos);
 
 	glDrawElements(GL_TRIANGLES, _indicesNum, GL_UNSIGNED_SHORT, _indices);
 
@@ -864,7 +827,6 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY );
 	glDisableClientState(GL_NORMAL_ARRAY );
-	delete[] v;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )

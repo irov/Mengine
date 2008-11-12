@@ -36,6 +36,7 @@ namespace Menge
 	public:
 		void setCurrentScene( const String& _scene, bool _destroyOld = false );
 		Scene * getCurrentScene();
+		void setCurrentSceneCb( const String& _scene, PyObject* _cb );
 
 		void setArrow( Arrow * _arrow );
 		Arrow * getArrow();
@@ -93,6 +94,9 @@ namespace Menge
 
 		typedef std::set<GlobalKeyHandler *> TSetGlobalKeyHandler;
 		TSetGlobalKeyHandler m_setGlobalKeyHandler;
+		
+		PyObject* m_setScenePyCb;
+		String m_nextSceneName;
 
 	};
 }

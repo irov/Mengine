@@ -63,19 +63,17 @@ void HGETexture::load( const Menge::String& _name, std::size_t _width, std::size
 {
 	m_name = _desc.name;
 	m_hTexture = m_hge->Texture_Create( (int)_desc.width, (int)_desc.height );
-	int hw = m_hge->Texture_GetWidth( m_hTexture );
-	int hh = m_hge->Texture_GetHeight( m_hTexture );
 
 	m_hge->Texture_LoadRawData( m_hTexture, static_cast<char*>( _desc.buffer ), 
 		(int)_desc.size / (int)_desc.height, (int)_desc.width, (int)_desc.height, _desc.pixelFormat );
 
-	m_width = _desc.width;
-	m_height = _desc.height;
+	m_width = _width;
+	m_height = _height;
 
 	m_pixelFormat = static_cast<Menge::PixelFormat>( _desc.pixelFormat );
 
-	m_uvMask.x = float(m_width) / hw;
-	m_uvMask.y = float(m_height) / hh;
+	m_uvMask.x = float(m_width) / _desc.width;
+	m_uvMask.y = float(m_height) / _desc.height;
 }
 //////////////////////////////////////////////////////////////////////////
 void HGETexture::unload()

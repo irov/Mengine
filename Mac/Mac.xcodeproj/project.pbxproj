@@ -123,6 +123,8 @@
 		8B1A78AC0EACA3FF00E2DCBE /* OGLTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78A40EACA3FF00E2DCBE /* OGLTexture.h */; };
 		8B77FE270EB205D700F78BA7 /* libSDLRenderSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B1A78970EACA3D400E2DCBE /* libSDLRenderSystem.a */; };
 		8B77FE550EB20E2D00F78BA7 /* OGLRenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A789F0EACA3FF00E2DCBE /* OGLRenderSystem.cpp */; };
+		8BBED56B0ECC4A3A0024508D /* OGLRenderTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BBED56A0ECC4A3A0024508D /* OGLRenderTexture.h */; };
+		8BBED57E0ECC4D310024508D /* OGLRenderTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBED57D0ECC4D310024508D /* OGLRenderTexture.cpp */; };
 		8BBFDF0B0EAF1F6600102B4F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBFDF0A0EAF1F6600102B4F /* main.cpp */; };
 		8BBFDF0E0EAF1FDA00102B4F /* MacOSApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBFDF0D0EAF1FDA00102B4F /* MacOSApplication.cpp */; };
 		8BBFDFE20EAF32D700102B4F /* libopenal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFDFE10EAF32C700102B4F /* libopenal.a */; };
@@ -693,6 +695,8 @@
 		8B1A78A10EACA3FF00E2DCBE /* OGLRenderSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLRenderSystem.h; sourceTree = "<group>"; };
 		8B1A78A30EACA3FF00E2DCBE /* OGLTexture.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLTexture.cpp; sourceTree = "<group>"; };
 		8B1A78A40EACA3FF00E2DCBE /* OGLTexture.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLTexture.h; sourceTree = "<group>"; };
+		8BBED56A0ECC4A3A0024508D /* OGLRenderTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGLRenderTexture.h; sourceTree = "<group>"; };
+		8BBED57D0ECC4D310024508D /* OGLRenderTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OGLRenderTexture.cpp; sourceTree = "<group>"; };
 		8BBFDF010EAF1E3900102B4F /* MacOSApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacOSApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BBFDF030EAF1E3900102B4F /* MacOSApplication-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "MacOSApplication-Info.plist"; sourceTree = "<group>"; };
 		8BBFDF0A0EAF1F6600102B4F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -1307,6 +1311,8 @@
 		8B1A789E0EACA3FF00E2DCBE /* OGLRenderSystem */ = {
 			isa = PBXGroup;
 			children = (
+				8BBED56A0ECC4A3A0024508D /* OGLRenderTexture.h */,
+				8BBED57D0ECC4D310024508D /* OGLRenderTexture.cpp */,
 				8BCAAC530EC0717500162128 /* OGLUtils.h */,
 				8BCAAC510EC0716600162128 /* OGLUtils.cpp */,
 				8BCAAC4C0EC0713400162128 /* FBO.cpp */,
@@ -1799,6 +1805,7 @@
 				8BCAAC4F0EC0713400162128 /* FBO.h in Headers */,
 				8BCAAC540EC0717500162128 /* OGLUtils.h in Headers */,
 				8BCAAC630EC0735200162128 /* PBO.h in Headers */,
+				8BBED56B0ECC4A3A0024508D /* OGLRenderTexture.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2285,6 +2292,7 @@
 				8BCFB2990EB755C600E3ED17 /* PBO.cpp in Sources */,
 				8BCAAC4E0EC0713400162128 /* FBO.cpp in Sources */,
 				8BCAAC520EC0716600162128 /* OGLUtils.cpp in Sources */,
+				8BBED57E0ECC4D310024508D /* OGLRenderTexture.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

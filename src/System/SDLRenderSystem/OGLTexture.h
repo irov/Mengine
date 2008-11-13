@@ -10,8 +10,7 @@ class OGLTexture : public Menge::RenderImageInterface
 {
 public:
 	OGLTexture();
-	OGLTexture( GLuint _id, const Menge::String & name, int width, int height );
-	~OGLTexture();
+	virtual ~OGLTexture();
 
 public:
 	GLuint getGLTexture() const;
@@ -24,29 +23,24 @@ public:
 	std::size_t getWidth() const override;
 	std::size_t getHeight() const  override;
 	const Menge::String & getDescription() const  override;
-	unsigned char * lock( int* _pitch, bool _readOnly = true )  override;
-	void unlock() override;
+	virtual unsigned char * lock( int* _pitch, bool _readOnly = true )  override;
+	virtual void unlock() override;
 	Menge::PixelFormat getPixelFormat() override;
 
-private:
-
-	PixelBufferObject	m_PBO;
-
+protected:
+	GLuint m_bufferID;
 	GLuint m_texture;
 	std::size_t m_width;
 	std::size_t m_height;
 	std::size_t m_image_width;
 	std::size_t m_image_height;
+	int m_pitch;
 	float m_uvMask[2];
 
 	GLint m_glformat;
 	GLenum m_glpixelType;
-
 	int m_ref;
 
 	Menge::PixelFormat m_format;
-
 	Menge::String m_name;
-
-	bool m_useFBO;
 };

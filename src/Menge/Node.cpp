@@ -71,7 +71,7 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			_visitor->visit_impl( *it );
+			(*it)->visit( _visitor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

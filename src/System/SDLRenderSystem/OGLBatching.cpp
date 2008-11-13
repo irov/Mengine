@@ -96,7 +96,14 @@ void OGLRenderSystem::_glEnable2D()
 	setViewMatrix( m_viewMatrix );
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
-	glOrtho( m_viewport[0], /*m_viewport[0] +*/ m_viewport[2], /*m_viewport[1] +*/ m_viewport[3], m_viewport[1], -1, 1 );
+	if( m_currentRenderTarget == "defaultCamera" )
+	{
+		glOrtho( m_viewport[0],  m_viewport[2], m_viewport[3], m_viewport[1], -1, 1 );
+	}
+	else
+	{
+		glOrtho( m_viewport[0],  m_viewport[2], m_viewport[1], m_viewport[3], -1, 1 );
+	}
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::_glEnable3D()

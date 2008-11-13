@@ -6,7 +6,8 @@
 
 #	include "OGLTexture.h"
 #	include "OGLUtils.h"
-#	include "FBO.h"
+//#	include "FBO.h"
+#	include "OGLRenderTexture.h"
 
 #	include <assert.h>
 
@@ -38,6 +39,18 @@ bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
 void releaseInterfaceSystem( Menge::RenderSystemInterface* _ptrInterface )
 {
 	delete static_cast<OGLRenderSystem*>(_ptrInterface);
+}
+
+static Menge::uint32 s_firstPO2From( Menge::uint32 n )
+{
+	--n;            
+	n |= n >> 16;
+	n |= n >> 8;
+	n |= n >> 4;
+	n |= n >> 2;
+	n |= n >> 1;
+	++n;
+	return n;
 }
 //////////////////////////////////////////////////////////////////////////
 OGLRenderSystem::OGLRenderSystem()
@@ -104,12 +117,6 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	pfd.cDepthBits = 24;
 	pfd.cStencilBits = 8;
 
-	m_windowWidth = _width;
-	m_windowHeight = _height;
-	m_viewport[0] = m_viewport[1] = 0;
-	m_viewport[2] = _width;
-	m_viewport[3] = _height;
-
 	int format = 0;
 	format = ChoosePixelFormat(m_hdc, &pfd);
 	if( format == 0 )
@@ -171,6 +178,12 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	}
 	aglSetCurrentContext(m_aglContext);
 #endif
+	m_windowWidth = _width;
+	m_windowHeight = _height;
+	m_viewport[0] = m_viewport[1] = 0;
+	m_viewport[2] = _width;
+	m_viewport[3] = _height;
+
 	const char* str = (const char*)glGetString( GL_VERSION );
 	LOG( "OpenGL Version: " + Menge::String( str ) );
 	str = (const char*)glGetString( GL_VENDOR );
@@ -205,6 +218,7 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	}
 	
 	initBatching();
+	glFrontFace( GL_CW );
 
 	return true;
 }
@@ -214,15 +228,6 @@ const std::vector<int> & OGLRenderSystem::getResolutionList()
 {
 	static std::vector<int> list;
 	list.clear();
-
-	//const SDL_VideoInfo * vi = SDL_GetVideoInfo();
-	//m_videoModes = SDL_ListModes(vi->vfmt, SDL_FULLSCREEN | SDL_OPENGL);
-
-	//for (size_t i = 0; m_videoModes[i]; ++i)
-	//{
-	//	list.push_back( m_videoModes[i]->w );
-	//	list.push_back( m_videoModes[i]->h );
-	//}
 
 	return list;
 }
@@ -235,7 +240,7 @@ void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const flo
 		LOG_ERROR( "Warning: _image == NULL in OGLRenderSystem::screenshot" );
 		return;
 	}
-	unsigned char* imageData = _image->lock( &pitch, true );
+	unsigned char* imageData = _image->lock( &pitch, false );
 	glReadBuffer( GL_BACK );
 	int x = 0;
 	int y = m_windowHeight;
@@ -256,10 +261,10 @@ void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const flo
 	glReadPixels( x, y, width, height, GL_BGRA, GL_UNSIGNED_BYTE, bufferData );	// why is our buffer flipped by y????
 	if( iWidth == width && iHeight == height )
 	{
-		unsigned char* buf = bufferData + pitch * ( height - 1 );
+		unsigned char* buf = bufferData + bufDataPitch * ( height - 1 );
 		for( std::size_t i = 0; i < height; i++ )
 		{
-			std::copy( buf, buf + pitch, imageData );
+			std::copy( buf, buf + bufDataPitch, imageData );
 			imageData += pitch;
 			buf -= bufDataPitch; // flip by y
 		}
@@ -402,9 +407,24 @@ Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String 
 {
 	OGLTexture * texture = new OGLTexture();
 
-	Menge::TextureDesc _desc = {_name,0,0,0,::floorf( _width + 0.5f ),::floorf( _height + 0.5f ),Menge::PF_A8R8G8B8};
+	std::size_t width = ::floorf( _width + 0.5f );
+	std::size_t height = ::floorf( _height + 0.5f );
+	std::size_t image_width = width;
+	std::size_t image_height = height;
+	if( ( width & ( width - 1 ) ) != 0
+		|| ( height & ( height - 1 ) ) != 0 )
+	{
+		bool npot = supportNPOT();
+		if( npot == false )	// we're all gonna die
+		{
+			width = s_firstPO2From( width );
+			height = s_firstPO2From( height );
+		}
+	}
 
-	texture->load( _width, _height, _desc );
+	Menge::TextureDesc _desc = {_name,0,0,width*height*4,width,height,Menge::PF_A8R8G8B8};
+
+	texture->load( image_width, image_height, _desc );
 	m_textureMap.insert( std::make_pair( _desc.name, texture ) );
 	texture->incRef();
 
@@ -423,20 +443,32 @@ Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::String& _
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Menge::String & _name, float _width, float _height )
 {
-	FrameBufferObject * fbo = new FrameBufferObject( _width, _height );
-
-	GLint tex = fbo->createColorTexture();
-
-	fbo->create();
-	fbo->bind();
-	fbo->attachColorTexture( tex );
-	fbo->unbind();
-
-	OGLTexture * texture = new OGLTexture( tex, _name, _width, _height );
+	OGLRenderTexture * texture = new OGLRenderTexture();
+	
+	std::size_t width = ::floorf( _width + 0.5f );
+	std::size_t height = ::floorf( _height + 0.5f );
+	std::size_t image_width = width;
+	std::size_t image_height = height;
+	if( ( width & ( width - 1 ) ) != 0
+		|| ( height & ( height - 1 ) ) != 0 )
+	{
+		bool npot = supportNPOT();
+		if( npot == false )	// we're all gonna die
+		{
+			width = s_firstPO2From( width );
+			height = s_firstPO2From( height );
+		}
+	}
+	
+	if( texture->create( _name, image_width, image_height, width, height ) == false )
+	{
+		LOG_ERROR( "Error while creating RenderTargetImage. RenderTargetImage not created" );
+		delete texture;
+		return NULL;
+	}
 
 	RenderTargetInfo rtgtInfo;
 	rtgtInfo.dirty = true;
-	rtgtInfo.handle = fbo;
 	rtgtInfo.texture = texture;
 
 	m_targetMap.insert( std::make_pair( _name, rtgtInfo ) );
@@ -461,7 +493,6 @@ void OGLRenderSystem::releaseImage( Menge::RenderImageInterface * _image )
 	TTargetMap::iterator it = m_targetMap.find( texture->getDescription() );
 	if( it != m_targetMap.end() )
 	{
-		delete it->second.handle;
 		m_targetMap.erase( it );
 		delete texture;
 	}
@@ -796,14 +827,23 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	const OGLTexture * tex = static_cast<const OGLTexture*>( _material->texture );
-	if(tex != NULL)
+	GLint glTex = 0;
+	float uvMask[2] = { 1.0f, 1.0f };
+	if( tex != NULL )
 	{
-		glBindTexture(GL_TEXTURE_2D, tex->getGLTexture());		
+		glTex = tex->getGLTexture();
+		uvMask[0] = tex->getUVMask()[0];
+		uvMask[1] = tex->getUVMask()[1];
 	}
-	else
-	{
-		glBindTexture(GL_TEXTURE_2D, 0);		
-	}
+	
+	glBindTexture( GL_TEXTURE_2D, glTex );
+	glMatrixMode( GL_TEXTURE );
+	GLfloat texMatrix[16];
+	std::fill( texMatrix, texMatrix + 16, 0.0f );
+	texMatrix[0] = uvMask[0];
+	texMatrix[5] = uvMask[1];
+	texMatrix[10] = texMatrix[15] = 1.0f;
+	glLoadMatrixf( texMatrix );
 
 	glEnableClientState( GL_VERTEX_ARRAY );
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -827,6 +867,8 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY );
 	glDisableClientState(GL_NORMAL_ARRAY );
+	
+	glLoadIdentity();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
@@ -835,11 +877,13 @@ void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 
 	if( _name == "defaultCamera" && m_currentRenderTarget != "defaultCamera" )
 	{
-		TTargetMap::iterator it_cur = m_targetMap.find( m_currentRenderTarget );
-		if( it_cur != m_targetMap.end() )
-		{
-			it_cur->second.handle->unbind();
-		}
+		// Back to window
+		glFlush();
+		glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 ); 
+		glDrawBuffer( GL_BACK );
+		glReadBuffer( GL_BACK );
+
+		m_currentRenderTarget = _name;
 	}
 
 	TTargetMap::iterator it = m_targetMap.find( _name );
@@ -847,23 +891,12 @@ void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 	if( it != m_targetMap.end() )
 	{
 		m_currentRenderTarget = _name;
+		glFlush();
+		if( it->second.texture->enable() == false )
+		{
+			LOG_ERROR( "Error switching render target" );
+		}
 
-		it->second.handle->bind();
-		//TEST. сиреневый квад :)
-		/*TTargetMap::iterator it = m_targetMap.begin();
-		it->second.handle->bind();
-		glBegin(GL_QUADS);
-		glColor3f(0.5,0.1,0.6);
-        glTexCoord2f(0.0, 0.0);
-        glVertex2f(0.0, 0.0);
-        glTexCoord2f(1.0f, 0.0);
-        glVertex2f(512, 0.0);
-        glTexCoord2f(1.0f, 1.0f);
-        glVertex2f(512, 512);
-        glTexCoord2f(0.0, 1.0f);
-        glVertex2f(0.0, 512);
-        glEnd();
-		it->second.handle->unbind();*/
 	}
 }
 //////////////////////////////////////////////////////////////////////////

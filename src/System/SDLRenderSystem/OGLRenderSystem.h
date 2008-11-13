@@ -21,8 +21,9 @@
 #endif
 
 class OGLTexture;
+class OGLRenderTexture;
 
-class FrameBufferObject;
+//class FrameBufferObject;
 
 class OGLRenderSystem 
 	: public Menge::RenderSystemInterface
@@ -123,8 +124,7 @@ private:
 
 	struct RenderTargetInfo
 	{
-		FrameBufferObject * handle;
-		OGLTexture* texture;
+		OGLRenderTexture* texture;
 		bool dirty;
 	};
 

@@ -142,13 +142,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDLApplication", "src\SDLAp
 		{61566E24-14DC-456C-A864-772C5064FDBA} = {61566E24-14DC-456C-A864-772C5064FDBA}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OGLRenderSystem", "src\System\SDLRenderSystem\OGLRenderSystem.vcproj", "{81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OGLRenderSystem", "src\System\OGLRenderSystem\OGLRenderSystem.vcproj", "{81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
 Global
+	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
+		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
@@ -256,8 +259,5 @@ Global
 		{F055D8C9-3510-4462-BB47-0CBB9224C643} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
-	EndGlobalSection
-	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
-		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
 	EndGlobalSection
 EndGlobal

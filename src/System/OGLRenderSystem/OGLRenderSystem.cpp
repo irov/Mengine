@@ -6,8 +6,8 @@
 
 #	include "OGLTexture.h"
 #	include "OGLUtils.h"
-//#	include "FBO.h"
 #	include "OGLRenderTexture.h"
+#	include "Menge/PixelFormat.h"
 
 #	include <assert.h>
 
@@ -86,6 +86,8 @@ bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::swapBuffers()
 {
+	renderBatch();
+	glFlush();
 #if MENGE_PLATFORM_WIN32
 	SwapBuffers(m_hdc);
 #elif MENGE_PLATFORM_MACOSX
@@ -256,9 +258,11 @@ void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const flo
 	std::size_t iWidth = _image->getWidth();
 	std::size_t iHeight = _image->getHeight();
 
-	int bufDataPitch = width * 4;
-	unsigned char* bufferData = new unsigned char[width*height*4];
-	glReadPixels( x, y, width, height, GL_BGRA, GL_UNSIGNED_BYTE, bufferData );	// why is our buffer flipped by y????
+	int bufDataPitch = width * 3;
+	unsigned char* bufferData = new unsigned char[bufDataPitch*height];
+	glPixelStorei( GL_PACK_ALIGNMENT, 1 );
+	glReadPixels( x, y, width, height, GL_BGR, GL_UNSIGNED_BYTE, bufferData );	// why is our buffer flipped by y????
+	glPixelStorei( GL_PACK_ALIGNMENT, 4 );
 	if( iWidth == width && iHeight == height )
 	{
 		unsigned char* buf = bufferData + bufDataPitch * ( height - 1 );
@@ -311,10 +315,10 @@ void OGLRenderSystem::screenshot( Menge::RenderImageInterface* _image, const flo
 				for (unsigned int k = 0; k < 4; k++) 
 				{
 					unsigned int accum =
-						srcdata[(sx1 + syoff1)*4+k]*(0x1000000-(sxf<<12)-(syf<<12)+sxfsyf) +
-						srcdata[(sx2 + syoff1)*4+k]*((sxf<<12)-sxfsyf) +
-						srcdata[(sx1 + syoff2)*4+k]*((syf<<12)-sxfsyf) +
-						srcdata[(sx2 + syoff2)*4+k]*sxfsyf;
+						srcdata[(sx1 + syoff1)*3+k]*(0x1000000-(sxf<<12)-(syf<<12)+sxfsyf) +
+						srcdata[(sx2 + syoff1)*3+k]*((sxf<<12)-sxfsyf) +
+						srcdata[(sx1 + syoff2)*3+k]*((syf<<12)-sxfsyf) +
+						srcdata[(sx2 + syoff2)*3+k]*sxfsyf;
 					// accum is computed using 8/24-bit fixed-point math
 					// (maximum is 0xFF000000; rounding will not cause overflow)
 					*pdst++ = (accum + 0x800000) >> 24;
@@ -403,26 +407,26 @@ void OGLRenderSystem::setWorldMatrix( const float * _world )
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createImage( const Menge::String & _name,
-														   float _width, float _height )
+														   std::size_t _width, std::size_t _height
+														   , Menge::PixelFormat _format )
 {
 	OGLTexture * texture = new OGLTexture();
 
-	std::size_t width = ::floorf( _width + 0.5f );
-	std::size_t height = ::floorf( _height + 0.5f );
-	std::size_t image_width = width;
-	std::size_t image_height = height;
-	if( ( width & ( width - 1 ) ) != 0
-		|| ( height & ( height - 1 ) ) != 0 )
+	std::size_t image_width = _width;
+	std::size_t image_height = _height;
+	if( ( _width & ( _width - 1 ) ) != 0
+		|| ( _height & ( _height - 1 ) ) != 0 )
 	{
 		bool npot = supportNPOT();
 		if( npot == false )	// we're all gonna die
 		{
-			width = s_firstPO2From( width );
-			height = s_firstPO2From( height );
+			_width = s_firstPO2From( _width );
+			_height = s_firstPO2From( _height );
 		}
 	}
 
-	Menge::TextureDesc _desc = {_name,0,0,width*height*4,width,height,Menge::PF_A8R8G8B8};
+	std::size_t memSize = Menge::PixelUtil::getMemorySize( _width, _height, 1, _format );
+	Menge::TextureDesc _desc = {_name,0,0,memSize,_width,_height,_format};
 
 	texture->load( image_width, image_height, _desc );
 	m_textureMap.insert( std::make_pair( _desc.name, texture ) );
@@ -441,26 +445,24 @@ Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::String& _
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Menge::String & _name, float _width, float _height )
+Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Menge::String & _name, std::size_t _width, std::size_t _height )
 {
 	OGLRenderTexture * texture = new OGLRenderTexture();
 	
-	std::size_t width = ::floorf( _width + 0.5f );
-	std::size_t height = ::floorf( _height + 0.5f );
-	std::size_t image_width = width;
-	std::size_t image_height = height;
-	if( ( width & ( width - 1 ) ) != 0
-		|| ( height & ( height - 1 ) ) != 0 )
+	std::size_t image_width = _width;
+	std::size_t image_height = _height;
+	if( ( _width & ( _width - 1 ) ) != 0
+		|| ( _height & ( _height - 1 ) ) != 0 )
 	{
 		bool npot = supportNPOT();
 		if( npot == false )	// we're all gonna die
 		{
-			width = s_firstPO2From( width );
-			height = s_firstPO2From( height );
+			_width = s_firstPO2From( _width );
+			_height = s_firstPO2From( _height );
 		}
 	}
 	
-	if( texture->create( _name, image_width, image_height, width, height ) == false )
+	if( texture->create( _name, image_width, image_height, _width, _height ) == false )
 	{
 		LOG_ERROR( "Error while creating RenderTargetImage. RenderTargetImage not created" );
 		delete texture;
@@ -478,7 +480,8 @@ Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Me
 //////////////////////////////////////////////////////////////////////////
 bool OGLRenderSystem::supportNPOT()
 {
-	return m_supportNPOT;
+	//return m_supportNPOT;
+	return false;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::releaseImage( Menge::RenderImageInterface * _image )

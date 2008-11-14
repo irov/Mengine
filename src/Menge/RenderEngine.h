@@ -33,7 +33,7 @@ namespace Menge
 		void setContentResolution( const Resolution & _resolution );
 		Resolution getBestDisplayResolution( const Resolution & _resolution, float _aspect );
 
-		RenderImageInterface * createImage( const String & _name, float _width, float _height );
+		RenderImageInterface * createImage( const String & _name, float _width, float _height, PixelFormat _format );
 		RenderImageInterface * createRenderTargetImage( const String & _name, const mt::vec2f & _resolution );
 		RenderImageInterface * loadImage( const String & _filename, unsigned int _filter );
 		bool saveImage( RenderImageInterface* _image, const String& _filename );

@@ -4,6 +4,7 @@
 #	include <stdio.h>
 #	include <math.h>
 #	include "Menge/Utils.h"
+#	include "Interface/RenderSystemInterface.h"
 //////////////////////////////////////////////////////////////////////////
 HGERenderFont::HGERenderFont(HGE * _hge)
 	: m_hge(_hge)
@@ -167,7 +168,7 @@ HTEXTURE HGERenderFont::_fontGenerate( const Menge::String& _name, int _size, bo
 
 	GdiFlush();
 
-	HTEXTURE texture = m_hge->Texture_Create(nWidth, nHeight);
+	HTEXTURE texture = m_hge->Texture_Create(nWidth, nHeight,Menge::PF_A8R8G8B8);
 
 	int pitch = 0;
 

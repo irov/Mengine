@@ -370,6 +370,21 @@ namespace Menge
 			}
 			delete[] rowBuffer;
 		}
+		else if( (pixel_depth / 8) == 3 && ( _options & DF_COUNT_ALPHA ) != 0 )
+		{
+			int rowBufferSize = width * (pixel_depth / 8);
+			unsigned char* rowBuffer = new unsigned char[rowBufferSize];
+			for( png_uint_32 i = 0; i < height; i++ )
+			{
+				png_read_row( png_ptr, rowBuffer, png_bytep_NULL );
+				for( std::size_t _i = 0, _j = 0; _i < rowBufferSize; _i += (pixel_depth / 8), _j += 4 )
+				{
+					std::copy( &(rowBuffer[_i]), &(rowBuffer[_i+(pixel_depth / 8)]), &(readBuffer[_j]) );
+				}
+				readBuffer += row_stride;
+			}
+			delete[] rowBuffer;
+		}
 		else
 		{
 			for( png_uint_32 i = 0; i <height; i++ )

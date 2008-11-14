@@ -124,15 +124,19 @@ namespace Menge
 		return m_interface->setWorldMatrix( _world.m );
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterface * RenderEngine::createImage( const String& _name, float _width, float _height )
+	RenderImageInterface * RenderEngine::createImage( const String& _name, float _width, float _height, PixelFormat _format )
 	{
-		RenderImageInterface * image = m_interface->createImage( _name, _width, _height );
+		RenderImageInterface * image = m_interface->createImage( _name, 
+			::floorf( _width + 0.5f ),
+			::floorf( _height + 0.5f ), _format );
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * RenderEngine::createRenderTargetImage( const String& _name, const mt::vec2f & _resolution )
 	{
-		RenderImageInterface * image = m_interface->createRenderTargetImage( _name, _resolution.x, _resolution.y );
+		RenderImageInterface * image = m_interface->createRenderTargetImage( _name,
+			::floorf( _resolution.x + 0.5f ),
+			::floorf( _resolution.y + 0.5f ) );
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -268,36 +272,38 @@ namespace Menge
 
 			std::size_t image_width = data.width;
 			std::size_t image_height = data.height;
-			if( ( data.width & ( data.width - 1 ) ) != 0
-				|| ( data.height & ( data.height - 1 ) ) != 0 )
-			{
-				bool npot = m_interface->supportNPOT();
-				if( npot == false )	// we're all gonna die
-				{
-					data.width = Bitwise::firstPO2From( data.width );
-					data.height = Bitwise::firstPO2From( data.height );
-					data.size = PixelUtil::getMemorySize( data.width, data.height, 1, data.format );
-					data.flags |= DF_CUSTOM_PITCH;
-					data.flags |= ( ( data.size / data.height ) << 16 );
-				}
-			}
-			textureDesc.buffer = new unsigned char[data.size];
 
-			res = codec->decode( stream, (unsigned char*)textureDesc.buffer, data.flags );
+			image = m_interface->createImage( _filename, image_width, image_height, data.format );
+			if( image == NULL )
+			{
+				MENGE_LOG_ERROR( "Error: RenderSystem couldn't create image" );
+				Holder<FileEngine>::hostage()->closeStream( stream );
+				return NULL;
+			}
+
+			int pitch = 0;
+			PixelFormat pf = image->getPixelFormat();
+			if( pf != data.format )
+			{
+				data.flags |= DF_COUNT_ALPHA;
+			}
+			unsigned char* textureBuffer = image->lock( &pitch, false );
+			data.flags |= DF_CUSTOM_PITCH;
+			data.flags |= ( pitch << 16 );
+
+			res = codec->decode( stream, textureBuffer, data.flags );
 			if( res == false )
 			{
 				MENGE_LOG_ERROR( "Warning: Error while decoding image \"%s\". Image not loaded"
 					, _filename.c_str() );
 				Holder<FileEngine>::hostage()->closeStream( stream );
-				delete[] textureDesc.buffer;
-				textureDesc.buffer = 0;
 				return 0;
 			}
 
 			// copy pixels on the edge for better image quality
 			if( data.width > image_width )
 			{
-				unsigned char* image_data = (unsigned char*)textureDesc.buffer;
+				unsigned char* image_data = textureBuffer;
 				unsigned int pitch = data.size / data.height;
 				unsigned int pixel_size = pitch / data.width;
 				for( int i = 0; i < image_height; i++ )
@@ -310,7 +316,7 @@ namespace Menge
 			}
 			if( data.height > image_height )
 			{
-				unsigned char* image_data = (unsigned char*)textureDesc.buffer;
+				unsigned char* image_data = textureBuffer;
 				unsigned int pitch = data.size / data.height;
 				unsigned int pixel_size = pitch / data.width;
 				std::copy( image_data + (image_height - 1) * pitch,
@@ -318,20 +324,12 @@ namespace Menge
 							image_data + image_height * pitch );
 			}
 
-			textureDesc.width = data.width;
-			textureDesc.height = data.height;
-			textureDesc.size = data.size;
-			textureDesc.pixelFormat = data.format;
-			textureDesc.name = _filename.c_str();
-			textureDesc.filter = _filter;
+			image->unlock();
 
 			Holder<FileEngine>::hostage()->closeStream( stream );
 
-			image = m_interface->loadImage( _filename, image_width, image_height, textureDesc );
-
 			MemoryTextureProfiler::addMemTexture(_filename,data.size);
 
-			delete[] textureDesc.buffer;
 			if( image == 0 )
 			{
 				MENGE_LOG_ERROR( "Render System failed to load image \"%s\""

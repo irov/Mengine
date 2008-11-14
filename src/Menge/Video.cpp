@@ -117,7 +117,7 @@ namespace	Menge
 
 		m_size = m_resourceVideo->getFrameSize();
 		m_renderImage = Holder<RenderEngine>::hostage()
-			->createImage( m_resourceVideoName, m_size.x, m_size.y );
+			->createImage( m_resourceVideoName, m_size.x, m_size.y, Menge::PF_A8R8G8B8 );
 
 		if( m_resourceSoundName.empty() == false )
 		{

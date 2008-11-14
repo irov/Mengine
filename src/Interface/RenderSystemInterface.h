@@ -356,9 +356,9 @@ namespace Menge
 		virtual	void setViewMatrix( const float * _view ) = 0;
 		virtual	void setWorldMatrix( const float * _world ) = 0;
 		// create empty render image
-		virtual RenderImageInterface * createImage( const String & _name, float _width, float _height ) = 0;
+		virtual RenderImageInterface * createImage( const String & _name, std::size_t _width, std::size_t _height, PixelFormat _format ) = 0;
 		// create render target image
-		virtual RenderImageInterface * createRenderTargetImage( const String & _name, float _width, float _height ) = 0;
+		virtual RenderImageInterface * createRenderTargetImage( const String & _name, std::size_t _width, std::size_t _height ) = 0;
 		// загрузка изображения
 		virtual RenderImageInterface * loadImage( const String& _name, std::size_t _width, std::size_t _height, const TextureDesc& _desc ) = 0;
 		// удаления изображения

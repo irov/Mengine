@@ -63,7 +63,7 @@ namespace Menge
 	{
 		RenderImageInterface * image = 
 			Holder<RenderEngine>::hostage()
-			->createImage( _name, _size.x, _size.y );
+			->createImage( _name, _size.x, _size.y, Menge::PF_A8R8G8B8 );
 
 		ImageFrame imageFrame;
 

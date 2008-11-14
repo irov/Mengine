@@ -35,7 +35,10 @@ HGETexture::HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, s
 	m_uvMask.y = float(m_height) / hh;
 }
 //////////////////////////////////////////////////////////////////////////
-HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete )
+HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, 
+					   std::size_t _width, std::size_t _height,
+					   std::size_t _data_widht, std::size_t _data_height,
+					   Menge::PixelFormat _format, bool _freeOnDelete )
 : m_hge( _hge )
 , m_name( _name )
 , m_width( _width )
@@ -43,15 +46,17 @@ HGETexture::HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _widt
 , m_freeOnDelete( _freeOnDelete )
 , m_ref( 0 )
 , m_uvMask( 1.0f, 1.0f )
-, m_pixelFormat( Menge::PF_A8R8G8B8 )
+, m_pixelFormat( _format )
 {
-	m_hTexture = m_hge->Texture_Create( (int)_width, (int)_height );
+	m_hTexture = m_hge->Texture_Create( (int)_data_widht, (int)_data_height, (int)_format );
 
-	int hw = m_hge->Texture_GetWidth( m_hTexture );
-	int hh = m_hge->Texture_GetHeight( m_hTexture );
+	//int hw = m_hge->Texture_GetWidth( m_hTexture );
+	//int hh = m_hge->Texture_GetHeight( m_hTexture );
 
-	m_uvMask.x = float(m_width) / hw;
-	m_uvMask.y = float(m_height) / hh;
+	//m_uvMask.x = float(m_width) / hw;
+	//m_uvMask.y = float(m_height) / hh;
+	m_uvMask.x = static_cast<float>( m_width ) / _data_widht;
+	m_uvMask.y = static_cast<float>( m_height ) / _data_height;
 }
 //////////////////////////////////////////////////////////////////////////
 HGETexture::~HGETexture()
@@ -62,7 +67,7 @@ HGETexture::~HGETexture()
 void HGETexture::load( const Menge::String& _name, std::size_t _width, std::size_t _height, const Menge::TextureDesc& _desc )
 {
 	m_name = _desc.name;
-	m_hTexture = m_hge->Texture_Create( (int)_desc.width, (int)_desc.height );
+	m_hTexture = m_hge->Texture_Create( (int)_desc.width, (int)_desc.height, _desc.pixelFormat );
 
 	m_hge->Texture_LoadRawData( m_hTexture, static_cast<char*>( _desc.buffer ), 
 		(int)_desc.size / (int)_desc.height, (int)_desc.width, (int)_desc.height, _desc.pixelFormat );

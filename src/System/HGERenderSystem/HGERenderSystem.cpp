@@ -12,9 +12,6 @@ bool initInterfaceSystem( Menge::RenderSystemInterface ** _ptrInterface )
 	try
 	{
 		*_ptrInterface = new HGERenderSystem();
-		//std::ostringstream str;
-		//str << ((int)_ptrInterface);
-		//::MessageBoxA( NULL, str.str().c_str(), "name", MB_ICONWARNING );
 	}
 	catch (...)
 	{
@@ -55,6 +52,18 @@ hgeBlendState s_blendMengeToHGE( Menge::EBlendFactor _blend )
 		return BLEND_INVSRCALPHA;
 	}
 	return BLEND_ZERO;
+}
+//////////////////////////////////////////////////////////////////////////
+Menge::uint32 s_firstPO2From( Menge::uint32 _n )
+{
+	--_n;            
+	_n |= _n >> 16;
+	_n |= _n >> 8;
+	_n |= _n >> 4;
+	_n |= _n >> 2;
+	_n |= _n >> 1;
+	++_n;
+	return _n;
 }
 //////////////////////////////////////////////////////////////////////////
 HGERenderSystem::HGERenderSystem()
@@ -192,18 +201,48 @@ void HGERenderSystem::setWorldMatrix( const float * _world )
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * HGERenderSystem::createImage( const Menge::String & _name,
-													float _width, float _height )
+													std::size_t _width, std::size_t _height, Menge::PixelFormat _format )
 {
-	HGETexture* texture = new HGETexture( m_hge, _name, ::floorf( _width + 0.5f ), ::floorf( _height + 0.5f ) );
+	if( _format == Menge::PF_R8G8B8 )
+	{
+		_format = Menge::PF_X8R8G8B8;
+	}
+	std::size_t image_width = _width;
+	std::size_t image_height = _height;
+	if( ( _width & ( _width - 1 ) ) != 0
+	|| ( _height & ( _height - 1 ) ) != 0 )
+	{
+		bool npot = supportNPOT();
+		if( npot == false )	// we're all gonna die
+		{
+			_width = s_firstPO2From( _width );
+			_height = s_firstPO2From( _height );
+		}
+	}
+
+	HGETexture* texture = new HGETexture( m_hge, _name, image_width, image_height, _width, _height, _format );
 	m_textureMap.insert( std::make_pair( _name, static_cast<Menge::RenderImageInterface*>( texture ) ) );
 	texture->incRef();
 	return texture;
 }
 //////////////////////////////////////////////////////////////////////////
-Menge::RenderImageInterface * HGERenderSystem::createRenderTargetImage( const Menge::String & _name, float _width, float _height )
+Menge::RenderImageInterface * HGERenderSystem::createRenderTargetImage( const Menge::String & _name, std::size_t _width, std::size_t _height )
 {
+	std::size_t image_width = _width;
+	std::size_t image_height = _height;
+	if( ( _width & ( _width - 1 ) ) != 0
+	|| ( _height & ( _height - 1 ) ) != 0 )
+	{
+		bool npot = supportNPOT();
+		if( npot == false )	// we're all gonna die
+		{
+			_width = s_firstPO2From( _width );
+			_height = s_firstPO2From( _height );
+		}
+	}
+
 	HTARGET htgt = m_hge->Target_Create( (int)_width, (int)_height, true );
-	HGETexture* texture = new HGETexture( m_hge, m_hge->Target_GetTexture( htgt ), _name, _width, _height );
+	HGETexture* texture = new HGETexture( m_hge, m_hge->Target_GetTexture( htgt ), _name, image_width, image_height );
 	RenderTargetInfo rtgtInfo;
 	rtgtInfo.dirty = true;
 	rtgtInfo.handle = htgt;

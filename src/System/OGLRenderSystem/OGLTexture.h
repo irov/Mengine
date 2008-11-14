@@ -1,10 +1,7 @@
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
-
-#	include "PBO.h"
-#	include <string>
-#	include <map>
+#	include "OGLRenderSystem.h"
 
 class OGLTexture : public Menge::RenderImageInterface
 {

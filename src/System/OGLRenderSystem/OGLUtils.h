@@ -1,5 +1,6 @@
 #	pragma once
-#	include "PBO.h"
+
+#	include "OGLRenderSystem.h"
 
 class OGLUtils
 {

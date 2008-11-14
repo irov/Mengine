@@ -57,6 +57,7 @@ void OGLTexture::load( std::size_t _width, std::size_t _heigth, const Menge::Tex
 		break;
 	}
 
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 	// generate PBO
 	glGenBuffers( 1, &m_bufferID );
 	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferID );
@@ -83,6 +84,9 @@ void OGLTexture::load( std::size_t _width, std::size_t _heigth, const Menge::Tex
 	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, 0 );
 	glBindTexture( GL_TEXTURE_2D, 0 );
 
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+
+	m_format = (Menge::PixelFormat)_desc.pixelFormat;
 	m_name = _desc.name;
 	m_width = _desc.width;
 	m_height = _desc.height;
@@ -115,6 +119,8 @@ const Menge::String & OGLTexture::getDescription() const
 //////////////////////////////////////////////////////////////////////////
 unsigned char * OGLTexture::lock( int* _pitch, bool _readOnly )
 {
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+
 	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferID );
 	glBindTexture( GL_TEXTURE_2D, m_texture );
 	
@@ -130,11 +136,14 @@ unsigned char * OGLTexture::lock( int* _pitch, bool _readOnly )
 	
 	*_pitch = m_pitch;
 
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+
 	return static_cast<unsigned char*>( data );
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLTexture::unlock()
 {
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferID );
 	glBindTexture( GL_TEXTURE_2D, m_texture );
 	
@@ -143,6 +152,7 @@ void OGLTexture::unlock()
 	
 	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, 0 );
 	glBindTexture( GL_TEXTURE_2D, 0 );
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::PixelFormat OGLTexture::getPixelFormat() 

@@ -464,20 +464,26 @@ HTEXTURE CALL HGE_Impl::Target_GetTexture(HTARGET target)
 	else return 0;
 }
 
-HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height)
+HTEXTURE CALL HGE_Impl::Texture_Create(int width, int height,int _format)
 {
 	LPDIRECT3DTEXTURE8 pTex;
-
+	D3DFORMAT fmt = s_toD3DFormat( _format );
 	if( FAILED( D3DXCreateTexture( pD3DDevice, width, height,
 										1,					// Mip levels
 										0,					// Usage
-										D3DFMT_A8R8G8B8,	// Format
+										fmt,				// Format
 										D3DPOOL_MANAGED,	// Memory pool
 										&pTex ) ) )
 	{	
 		_PostError( "Can't create texture" );
 		return NULL;
 	}
+
+	LPDIRECT3DSURFACE8 surf;
+	pTex->GetSurfaceLevel( 0, &surf );
+	D3DSURFACE_DESC TDesc;
+	surf->GetDesc(&TDesc);
+
 
 	CTextureList *texItem;
 	texItem=new CTextureList;

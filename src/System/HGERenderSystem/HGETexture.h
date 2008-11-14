@@ -12,7 +12,10 @@ class HGETexture
 public:
 	HGETexture( HGE* _hge, bool _freeOnDelete = true );
 	HGETexture( HGE* _hge, HTEXTURE _htex, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete = false );
-	HGETexture( HGE* _hge, const Menge::String& _name, std::size_t _width, std::size_t _height, bool _freeOnDelete = true );
+	HGETexture( HGE* _hge, const Menge::String& _name,
+		std::size_t _width, std::size_t _height,
+		std::size_t _data_width, std::size_t _data_height,
+		Menge::PixelFormat _format, bool _freeOnDelete = true );
 	~HGETexture();
 
 	void load( const Menge::String& _name, std::size_t _width, std::size_t _height, const Menge::TextureDesc& _desc );

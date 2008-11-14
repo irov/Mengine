@@ -300,7 +300,7 @@ public:
 	virtual void		CALL	Target_Free(HTARGET target) = 0;
 	virtual HTEXTURE	CALL	Target_GetTexture(HTARGET target) = 0;
 
-	virtual HTEXTURE	CALL	Texture_Create(int width, int height) = 0;
+	virtual HTEXTURE	CALL	Texture_Create(int width, int height, int _format) = 0;
 	virtual HTEXTURE	CALL	Texture_Load(const char *filename, DWORD size=0, bool bMipmap=false) = 0;
 	virtual void		CALL	Texture_LoadRawData( HTEXTURE _hTex, const char* data, int _pitch, int _width, int _height, int _format ) = 0;
 	virtual void		CALL	Texture_Free(HTEXTURE tex) = 0;

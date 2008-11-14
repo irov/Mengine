@@ -42,8 +42,8 @@ public:
 	void setProjectionMatrix( const float * _projection ) override;
 	void setViewMatrix( const float * _view ) override;
 	void setWorldMatrix( const float * _world ) override;
-	Menge::RenderImageInterface * createImage( const Menge::String & _name, float _width, float _height ) override;
-	Menge::RenderImageInterface * createRenderTargetImage( const Menge::String & _name, float _width, float _height ) override;
+	Menge::RenderImageInterface * createImage( const Menge::String & _name, std::size_t _width, std::size_t _height, Menge::PixelFormat _format ) override;
+	Menge::RenderImageInterface * createRenderTargetImage( const Menge::String & _name, std::size_t _width, std::size_t _height ) override;
 
 	Menge::RenderImageInterface * loadImage( const Menge::String& _name, std::size_t _width, std::size_t _height, const Menge::TextureDesc& _desc ) override;
 

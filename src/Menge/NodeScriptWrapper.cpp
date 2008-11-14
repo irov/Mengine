@@ -289,7 +289,7 @@ namespace Menge
 				resourceImage = new ResourceImageDynamic( param );
 				//FIXME
 				RenderImageInterface * imageInterface
-					= Holder<RenderEngine>::hostage()->createImage( _name, rect[2] - rect[0], rect[3] - rect[1] );
+					= Holder<RenderEngine>::hostage()->createImage( _name, rect[2] - rect[0], rect[3] - rect[1], PF_R8G8B8 );
 
 				resourceImage->setRenderImage( imageInterface );
 

@@ -10,7 +10,7 @@
 #	include "XmlEngine.h"
 #	include "RenderEngine.h"
 #	include "SoundEngine.h"
-
+#	include "LogEngine.h"
 namespace	Menge
 {
 	OBJECT_IMPLEMENT(Video)
@@ -112,6 +112,8 @@ namespace	Menge
 
 		if( m_resourceVideo == 0 )
 		{
+			MENGE_LOG_ERROR( "Warning: Video Resource not found \"%s\"",
+							m_resourceVideoName.c_str() );	
 			return false;
 		}
 

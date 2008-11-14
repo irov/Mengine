@@ -84,6 +84,8 @@ void OGLRenderSystem::_glEnable2D()
 	glAlphaFunc(GL_ALPHA_TEST_REF,)
 	glAlphaFunc(GL_ALPHA_TEST_FUNC,GL_GREATER);
 	*/
+	renderBatch();
+
 	glDisable( GL_DEPTH_TEST );
 	glDisable( GL_CULL_FACE );
 	glDisable( GL_LIGHTING );
@@ -150,6 +152,9 @@ void OGLRenderSystem::renderBatch()
 	case GL_QUADS:
 
 	//	buffer->renderIndexed();
+		glBindTexture( GL_TEXTURE_2D, m_curTexture );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 
 		glVertexPointer(3, GL_FLOAT, sizeof(Menge::TVertex),  &VertArray[0].pos);
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -173,6 +178,11 @@ void OGLRenderSystem::renderBatch()
 		break;
 
 	case GL_TRIANGLES:
+		glBindTexture( GL_TEXTURE_2D, m_curTexture );
+
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
 		glVertexPointer(3, GL_FLOAT, sizeof(Menge::TVertex),  &VertArray[0].pos);
 		glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -208,8 +218,6 @@ void OGLRenderSystem::Gfx_RenderQuad(const Menge::TVertex * quad, GLint tex, GLi
 	{
 		renderBatch();
 
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 		m_curPrimType = GL_QUADS;
 
 		if( m_currSrcBlend != srcBlend || m_currDstBlend != dstBlend )
@@ -219,11 +227,7 @@ void OGLRenderSystem::Gfx_RenderQuad(const Menge::TVertex * quad, GLint tex, GLi
 			glBlendFunc(srcBlend,dstBlend);
 		}
 
-		if( tex != m_curTexture )
-		{
-			glBindTexture( GL_TEXTURE_2D, tex );
-			m_curTexture = tex;
-		}
+		m_curTexture = tex;
 	}
 
 	memcpy( &VertArray[n_prim * 4], quad, sizeof(Menge::TVertex) * 4 );
@@ -240,8 +244,6 @@ void OGLRenderSystem::Gfx_RenderTriple(const Menge::TVertex *quad, GLint tex, GL
 	{
 		renderBatch();
 
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 		m_curPrimType=GL_TRIANGLES;
 
 		if( m_currSrcBlend != srcBlend || m_currDstBlend != dstBlend )
@@ -251,11 +253,7 @@ void OGLRenderSystem::Gfx_RenderTriple(const Menge::TVertex *quad, GLint tex, GL
 			glBlendFunc(srcBlend,dstBlend);
 		}
 
-		if( tex != m_curTexture )
-		{
-			glBindTexture( GL_TEXTURE_2D, tex );
-			m_curTexture = tex;
-		}
+		m_curTexture = tex;
 	}
 
 	memcpy(&VertArray[n_prim * 3], quad, sizeof(Menge::TVertex) * 3);

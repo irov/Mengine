@@ -86,8 +86,6 @@ bool OGLRenderSystem::initialize( Menge::LogSystemInterface* _logSystem )
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::swapBuffers()
 {
-	renderBatch();
-	glFlush();
 #if MENGE_PLATFORM_WIN32
 	SwapBuffers(m_hdc);
 #elif MENGE_PLATFORM_MACOSX
@@ -480,8 +478,8 @@ Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Me
 //////////////////////////////////////////////////////////////////////////
 bool OGLRenderSystem::supportNPOT()
 {
-	//return m_supportNPOT;
-	return false;
+	return m_supportNPOT;
+	//return false;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::releaseImage( Menge::RenderImageInterface * _image )
@@ -584,16 +582,16 @@ void OGLRenderSystem::renderImage(const float * _renderVertex,
 	quad[3].n[1] = 0.0f; 
 	quad[3].n[2] = 1.0f;
 
-	quad[0].uv[0] = _uv[0];
-	quad[0].uv[1] = _uv[1];
+	quad[0].uv[0] = _uv[0] * uvMask[0];
+	quad[0].uv[1] = _uv[1] * uvMask[1];
 
 	quad[1].uv[0] = _uv[2] * uvMask[0];
-	quad[1].uv[1] = _uv[1];
+	quad[1].uv[1] = _uv[1] * uvMask[1];
 
 	quad[2].uv[0] = _uv[2] * uvMask[0];
 	quad[2].uv[1] = _uv[3] * uvMask[1];
 
-	quad[3].uv[0] = _uv[0];
+	quad[3].uv[0] = _uv[0] * uvMask[0];
 	quad[3].uv[1] = _uv[3] * uvMask[1];
 
 	Gfx_RenderQuad( quad, glTex, srcBlend, dstBlend );
@@ -619,9 +617,12 @@ void OGLRenderSystem::renderTriple(
 
 	const OGLTexture * tex = static_cast<const OGLTexture*>( _image );
 	GLint glTex = 0;
+	float uvMask[2] = { 1.0f, 1.0f };
 	if( tex != NULL	)
 	{
 		glTex = tex->getGLTexture();
+		uvMask[0] = tex->getUVMask()[0];
+		uvMask[1] = tex->getUVMask()[1];
 	}
 
 	GLint srcBlend = OGLUtils::s_blendMengeToOGL( _srcBlend );
@@ -653,14 +654,14 @@ void OGLRenderSystem::renderTriple(
 	quad[2].n[1] = 0.0f; 
 	quad[2].n[2] = 1.0f;
 
-	quad[0].uv[0] = _uv0[0];
-	quad[0].uv[1] = _uv0[1];
+	quad[0].uv[0] = _uv0[0] * uvMask[0];
+	quad[0].uv[1] = _uv0[1] * uvMask[1];
 
-	quad[1].uv[0] = _uv1[0];
-	quad[1].uv[1] = _uv1[1];
+	quad[1].uv[0] = _uv1[0] * uvMask[0];
+	quad[1].uv[1] = _uv1[1] * uvMask[1];
 
-	quad[2].uv[0] = _uv2[0];
-	quad[2].uv[1] = _uv2[1];
+	quad[2].uv[0] = _uv2[0] * uvMask[0];
+	quad[2].uv[1] = _uv2[1] * uvMask[1];
 
 	Gfx_RenderTriple(quad,glTex,srcBlend,dstBlend);
 }
@@ -702,6 +703,7 @@ void OGLRenderSystem::beginScene()
 void OGLRenderSystem::endScene()
 {
 	renderBatch();
+	glFlush();
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::beginLayer2D()
@@ -776,7 +778,6 @@ void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height
 	m_windowHeight = _height;
 	
 	glViewport( 0, 0, _width, _height );
-	//_glEnable2D();
 }
 //////////////////////////////////////////////////////////////////////////
 Menge::CameraInterface * OGLRenderSystem::createCamera( const Menge::String & _name )
@@ -849,7 +850,8 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 	glLoadMatrixf( texMatrix );
 
 	glEnableClientState( GL_VERTEX_ARRAY );
-	glEnableClientState(GL_COLOR_ARRAY);
+	glColor4ubv( (GLubyte*)&(_material->color) );
+	//glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY );
 	glEnableClientState(GL_NORMAL_ARRAY );
@@ -858,7 +860,7 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 
 	glClientActiveTextureARB(GL_TEXTURE0);
 
-	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Menge::TVertex), &_vertices[0].col);
+	//glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Menge::TVertex), &_vertices[0].col);
 	glNormalPointer(GL_FLOAT, sizeof(Menge::TVertex), &_vertices[0].n);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(Menge::TVertex), &_vertices[0].uv);
 	glVertexPointer(3, GL_FLOAT, sizeof(Menge::TVertex),  &_vertices[0].pos);
@@ -866,7 +868,7 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 	glDrawElements(GL_TRIANGLES, _indicesNum, GL_UNSIGNED_SHORT, _indices);
 
 	glDisableClientState( GL_VERTEX_ARRAY );
-	glDisableClientState(GL_COLOR_ARRAY);
+	//glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY );
 	glDisableClientState(GL_NORMAL_ARRAY );
@@ -877,11 +879,11 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 {
 	renderBatch();
+	glFlush();
 
 	if( _name == "defaultCamera" && m_currentRenderTarget != "defaultCamera" )
 	{
 		// Back to window
-		glFlush();
 		glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 ); 
 		glDrawBuffer( GL_BACK );
 		glReadBuffer( GL_BACK );
@@ -894,10 +896,14 @@ void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 	if( it != m_targetMap.end() )
 	{
 		m_currentRenderTarget = _name;
-		glFlush();
 		if( it->second.texture->enable() == false )
 		{
 			LOG_ERROR( "Error switching render target" );
+		}
+		if( it->second.dirty && _clear )
+		{
+			glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
 	}
@@ -921,6 +927,16 @@ void OGLRenderSystem::setRenderArea( const float* _renderArea )
 
 	glViewport( m_viewport[0], m_viewport[1], w, h );
 
-	_glEnable2D();
+	//_glEnable2D();
+	glMatrixMode( GL_PROJECTION );
+	glLoadIdentity();
+	if( m_currentRenderTarget == "defaultCamera" )
+	{
+		glOrtho( m_viewport[0],  m_viewport[2], m_viewport[3], m_viewport[1], -1, 1 );
+	}
+	else
+	{
+		glOrtho( m_viewport[0],  m_viewport[2], m_viewport[1], m_viewport[3], -1, 1 );
+	}
 }
 //////////////////////////////////////////////////////////////////////////

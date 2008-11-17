@@ -755,6 +755,7 @@ namespace Menge
 	void Node::moveTo( float _time, const mt::vec2f& _point )
 	{
 		const mt::vec2f& pos = getWorldPosition();
+
 		if( m_moveTo.start( pos, _point, _time, mt::length_v2 ) == false )
 		{
 			setLocalPosition( _point );
@@ -762,10 +763,29 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Node::moveToCb( float _time, const mt::vec2f& _point, PyObject* _cb )
+	{
+		const mt::vec2f& pos = getWorldPosition();
+
+		if( m_moveTo.start( pos, _point, _time, mt::length_v2 ) == false )
+		{
+		   setLocalPosition( _point );
+		   callEvent( EVENT_MOVE_END, "(O)", getEmbedding() );
+		   pybind::call( _cb, "(O)", getEmbedding() );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::moveToStop()
 	{
 		m_moveTo.stop();
 		callEvent( EVENT_MOVE_STOP, "(O)", getEmbedding() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::moveToStopCb(PyObject* _cb)
+	{
+		m_moveTo.stop();
+		callEvent( EVENT_MOVE_STOP, "(O)", getEmbedding() );
+		pybind::call( _cb, "(O)", getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::box2f & Node::getBoundingBox()
@@ -881,6 +901,22 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Node::localColorToCb( float _time, const ColourValue& _color, PyObject* _cbStop, PyObject* _cbEnd)
+	{
+		if( m_colorLocalTo.isStarted() )
+		{
+			this->callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
+			pybind::call( _cbStop, "(O)", getEmbedding() );
+			m_colorLocalTo.stop();
+		}
+		if( m_colorLocalTo.start( m_colorLocal, _color, _time, length_color ) == false )
+		{
+			setLocalColor( _color );
+			callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
+			pybind::call( _cbEnd, "(O)", getEmbedding() );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::localAlphaTo( float _time, float _alpha )
 	{
 		ColourValue color = m_colorLocal;
@@ -892,6 +928,13 @@ namespace Menge
 	{
 		m_colorLocalTo.stop();
 		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::localColorToStopCb(PyObject* _cb)
+	{
+		m_colorLocalTo.stop();
+		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
+		pybind::call( _cb, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -158,7 +158,6 @@ namespace Menge
 		SoundSystemInterface * m_soundSystem;
 
 		void parseArguments(const StringA& _arguments);
-		void initPredefinedResources();
 
 		String m_baseDir;
 	};

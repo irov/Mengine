@@ -11,7 +11,6 @@
 #	include "Player.h"
 
 #	include "Camera2D.h"
-//#	include "Sprite.h"
 #	include "Scene.h"
 #	include "Layer2D.h"
 

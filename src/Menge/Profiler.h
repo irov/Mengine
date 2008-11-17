@@ -57,10 +57,11 @@ namespace Menge
 			BLOCK_CYCLE_SECONDS,
 			BLOCK_CYCLE_MILLISECONDS,
 			BLOCK_CYCLE_MICROSECONDS,
-			BLOCK_CYCLE_PERCENT
+			BLOCK_CYCLE_PERCENT,
+			BLOCK_FRAME_PERCENT
 		};
 
-		static void init();
+		static void init(TimerInterface * _clock);
 		static void destroy();
 
 		static void beginBlock( const Menge::String& _name );

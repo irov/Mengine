@@ -703,6 +703,11 @@ namespace Menge
 			.def( "localColorTo", &Node::localColorTo )
 			.def( "localAlphaTo", &Node::localAlphaTo )
 			.def( "localColorToStop", &Node::localColorToStop )
+
+			.def( "moveToCb", &Node::moveToCb )
+			.def( "moveToStopCb", &Node::moveToStopCb )
+			.def( "localColorToCb", &Node::localColorToCb )
+			.def( "localColorToStopCb", &Node::localColorToStopCb )
 			;
 
 

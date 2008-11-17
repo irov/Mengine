@@ -14,7 +14,6 @@
 
 #	include "MousePickerSystem.h"
 #	include "LightSystem.h"
-//#	include "ResourceManager.h"
 
 #	include "Game.h"
 
@@ -197,17 +196,6 @@ namespace Menge
 		Holder<PhysicEngine>::keep( m_physicEngine );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::initPredefinedResources()
-	{
-		/*ResourceFactoryParam param = { "WhitePixel" };
-
-		ResourceImageDynamic * image = new ResourceImageDynamic( param );
-		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
-		image->incrementReference();
-
-		Holder<ResourceManager>::hostage()->registerResource( image );*/
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Application::loadGame( bool _loadPersonality )
 	{
 		m_game = new Game();
@@ -220,7 +208,9 @@ namespace Menge
 		{
 			MENGE_LOG_ERROR( "Invalid game file \"%s\""
 				, m_gameInfo.c_str() );
+
 			showMessageBox( "Application files missing or corrupt", "Critical Error", 0 );
+
 			return false;
 		}
 
@@ -256,6 +246,7 @@ namespace Menge
 		const Resolution & resourceResolution = m_game->getResourceResolution();
 
 		bool res = m_renderEngine->initialize();
+
 		if( res == false )
 		{
 			showMessageBox( "Failed to initialize Render System", "Crititcal Error", 0 );
@@ -285,11 +276,6 @@ namespace Menge
 				title, m_currentResolution.getWidth(), m_currentResolution.getHeight(), isFullscreen );
 		}
 
-		/*if(winHandle == NULL)
-		{
-			return true;
-		}*/
-
 		int bits = m_game->getBits();
 		int FSAAType = m_game->getFSAAType();
 		int FSAAQuality = m_game->getFSAAQuality();
@@ -315,7 +301,6 @@ namespace Menge
 			m_interface->setHandleMouse( false );
 		}
 
-		//initPredefinedResources();
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -432,10 +417,8 @@ namespace Menge
 		}
 
 		TimerInterface * timer = m_interface->getTimer();
-		Profiler::setTimer(timer);
-		Profiler::init();
-		Profiler::setEnabled(0);
-
+		Profiler::init(timer);
+		
 		MENGE_LOG( "Creating Object Factory..." );
 		OBJECT_FACTORY( Camera2D );
 		OBJECT_FACTORY( Entity );
@@ -522,6 +505,7 @@ namespace Menge
 		//Holder<ResourceManager>::keep( new ResourceManager() );
 
 		loadGame( _loadPersonality );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -681,6 +665,7 @@ namespace Menge
 		{
 			return true;
 		}
+
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -727,6 +712,8 @@ namespace Menge
 
 		Profiler::endProfilingCycle();
 
+		Profiler::beginBlock( "Menge" );
+
 		m_renderEngine->beginScene();
 
 		Profiler::beginBlock( "Render" );
@@ -759,7 +746,6 @@ namespace Menge
 
 		Profiler::beginBlock("Game Update");
 		m_game->update( timing );
-
 		Profiler::endBlock("Game Update");
 	
 		Profiler::beginBlock("Sound Update");
@@ -776,6 +762,8 @@ namespace Menge
 		{
 			m_update = true;
 		}
+
+		Profiler::endBlock( "Menge" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onClose()

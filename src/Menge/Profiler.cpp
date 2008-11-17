@@ -93,9 +93,11 @@ namespace Menge
 		return m_enabled;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Profiler::init()
+	void Profiler::init(TimerInterface * _clock)
 	{
-		//m_enabled = true;
+		m_clock = _clock;
+
+		m_enabled = false;
 		
 		m_clock->reset();
 
@@ -251,6 +253,20 @@ namespace Menge
 				}
 				break;
 			}
+
+			case BLOCK_FRAME_PERCENT:
+			{
+			/*	if (0 == m_lastCycleDurationMicroseconds)
+				{
+					result = 0;
+				}
+				else
+				{
+					result = 100.0 * (double)block->lastCycleTotalMicroseconds / 
+						m_lastCycleDurationMicroseconds;
+				}
+				break;*/
+			}
 			default:
 				break;
 		}
@@ -275,6 +291,7 @@ namespace Menge
 
 			block->lastCycleTotalMicroseconds = 
 				block->currentCycleTotalMicroseconds;
+
 			block->currentCycleTotalMicroseconds = 0;
 		}
 
@@ -366,7 +383,7 @@ namespace Menge
 			Holder<RenderEngine>::hostage()->renderText( m_debugText, pos, 0xFFAACC00 );
 
 			pos.y +=20;
-			Menge::String str = Profiler::createStatsString(Profiler::BLOCK_CYCLE_PERCENT);
+			Menge::String str = Profiler::createStatsString(Profiler::BLOCK_FRAME_PERCENT);
 			Holder<RenderEngine>::hostage()->renderText(str, pos, 0xFFAACC00);
 
 			pos.x +=250;

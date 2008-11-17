@@ -108,9 +108,14 @@ namespace Menge
 		const ColourValue& getWorldColor();
 		const ColourValue& getLocalColor() const;
 		void invalidateColor();
+
 		void localColorTo( float _time, const ColourValue& _color );
+		void localColorToCb( float _time, const ColourValue& _color, PyObject* _cbStop, PyObject* _cbEnd);
+
 		void localAlphaTo( float _time, float _alpha );
+
 		void localColorToStop();
+		void localColorToStopCb(PyObject* _cb);
 
 		virtual void colorTo( const ColourValue& _color, float _time );
 		virtual void setAlpha( float _alpha );
@@ -174,7 +179,10 @@ namespace Menge
 
 	public:
 		void moveTo( float _time, const mt::vec2f& _point );
+		void moveToCb( float _time, const mt::vec2f& _point,PyObject* _cb );
+
 		void moveToStop();
+		void moveToStopCb(PyObject* _cb);
 
 	protected:
 		ValueInterpolator<mt::vec2f> m_moveTo;

@@ -11,7 +11,7 @@
 
 #	include "OGLTexture.h"
 
-class OGLRenderTextureFBO
+class OGLRenderTexture
 	: public OGLTexture
 {
 public:
@@ -25,8 +25,9 @@ public:
 	virtual void unlock() override;
 	
 protected:
-	GLuint m_framebufferID;
-	GLuint m_renderbufferID;
-	
+#ifdef MENGE_PLATFORM_MACOSX
+	AGLPbuffer* m_aglPbuffer;
+	AGLContext* m_aglContext;
+#endif
 };
 

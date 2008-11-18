@@ -7,17 +7,17 @@
  *
  */
 
-#include "OGLRenderTexture.h"
+#include "OGLRenderTextureFBO.h"
 #include <cassert>
 
-OGLRenderTexture::OGLRenderTexture()
+OGLRenderTextureFBO::OGLRenderTextureFBO()
 : OGLTexture()
 , m_framebufferID( 0 )
 , m_renderbufferID( 0 )
 {
 }
 
-OGLRenderTexture::~OGLRenderTexture()
+OGLRenderTextureFBO::~OGLRenderTextureFBO()
 {
 	if( m_framebufferID != 0 )
 	{
@@ -34,7 +34,7 @@ OGLRenderTexture::~OGLRenderTexture()
 	}
 }
 
-bool OGLRenderTexture::create( const Menge::String& _name, std::size_t _width, std::size_t _height, std::size_t _data_width, std::size_t _data_height )
+bool OGLRenderTextureFBO::create( const Menge::String& _name, std::size_t _width, std::size_t _height, std::size_t _data_width, std::size_t _data_height )
 {
 	// Создаём буфер кадра.
 	glGenFramebuffersEXT( 1, &m_framebufferID );
@@ -92,7 +92,7 @@ bool OGLRenderTexture::create( const Menge::String& _name, std::size_t _width, s
 	return true;
 }
 
-bool OGLRenderTexture::enable()
+bool OGLRenderTextureFBO::enable()
 {
 	if( m_framebufferID == 0 )
 	{
@@ -106,12 +106,12 @@ bool OGLRenderTexture::enable()
 	return true;
 }
 
-unsigned char * OGLRenderTexture::lock( int* _pitch, bool _readOnly )
+unsigned char * OGLRenderTextureFBO::lock( int* _pitch, bool _readOnly )
 {
 	assert(!"Not implemented");
 	return NULL;
 }
 
-void OGLRenderTexture::unlock()
+void OGLRenderTextureFBO::unlock()
 {
 }

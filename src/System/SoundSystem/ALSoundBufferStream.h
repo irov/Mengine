@@ -21,6 +21,9 @@ public:
 	bool update();
 	void stop();
 
+	int getPosMs();
+	void setPosMs( float _posMs );
+
 protected:
 
 	ALuint m_alID2;

@@ -47,6 +47,7 @@ namespace Menge
 	public:
 		virtual int	getLengthMs() = 0;
 		virtual int getPosMs() = 0;
+		virtual void setPosMs( float _posMs ) = 0;
 
 		virtual void setSoundNodeListener(SoundNodeListenerInterface * _listener) = 0;
 

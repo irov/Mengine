@@ -83,6 +83,16 @@ namespace	Menge
 			Holder<Amplifier>::hostage()->volumeTo( _time, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
+		static float s_musicGetPosMs()
+		{
+			return Holder<Amplifier>::hostage()->getPosMs();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void s_musicSetPosMs( float _posMs )
+		{
+			Holder<Amplifier>::hostage()->setPosMs( _posMs );
+		}
+		//////////////////////////////////////////////////////////////////////////
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -104,5 +114,7 @@ namespace	Menge
 		pybind::def( "musicShuffle", &ScriptSoundHelper::musicShuffle );
 		pybind::def( "musicGetPlaying", &ScriptSoundHelper::s_musicGetPlaying );
 		pybind::def( "musicVolumeTo", &ScriptSoundHelper::s_musicVolumeTo );
+		pybind::def( "musicGetPosMs", &ScriptSoundHelper::s_musicGetPosMs );
+		pybind::def( "musicSetPosMs", &ScriptSoundHelper::s_musicSetPosMs );
 	}
 }

@@ -39,6 +39,7 @@ public:
 public:
 	virtual int getLengthMs();
 	virtual int getPosMs();
+	virtual void setPosMs( float _posMs );
 	
 	virtual void setSoundNodeListener( Menge::SoundNodeListenerInterface* _listener );
 	virtual void setSoundBuffer( Menge::SoundBufferInterface* _soundBuffer ) override;

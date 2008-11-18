@@ -216,6 +216,12 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 			m_supportNPOT = true;
 		}
 	}
+	extSubStr = "pixel_buffer_object";
+	pos = m_ext.find( extSubStr );
+	if( pos != Menge::String::npos && ( m_ext[pos+extSubStr.size()] == '\0' || m_ext[pos+extSubStr.size()] == ' ' ) )	// it seems to be supported
+	{
+		LOG( "Supports PBO" );
+	}
 	
 	initBatching();
 	glFrontFace( GL_CW );
@@ -478,8 +484,8 @@ Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Me
 //////////////////////////////////////////////////////////////////////////
 bool OGLRenderSystem::supportNPOT()
 {
-	return m_supportNPOT;
-	//return false;
+	//return m_supportNPOT;
+	return false;
 }
 //////////////////////////////////////////////////////////////////////////
 void OGLRenderSystem::releaseImage( Menge::RenderImageInterface * _image )

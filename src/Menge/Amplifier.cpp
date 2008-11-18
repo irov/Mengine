@@ -272,4 +272,21 @@ namespace Menge
 		m_volumeTo.start( m_volume, _volume, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float Amplifier::getPosMs()
+	{
+		if( m_music == 0 )
+		{
+			return 0.0f;
+		}
+		return m_music->getPosMs();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::setPosMs( float _posMs )
+	{
+		if( m_music )
+		{
+			m_music->setPosMs( _posMs );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

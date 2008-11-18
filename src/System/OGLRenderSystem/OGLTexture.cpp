@@ -80,11 +80,19 @@ void OGLTexture::load( std::size_t _width, std::size_t _heigth, const Menge::Tex
 
 	// send pbo data to texture unit
 	glTexImage2D( GL_TEXTURE_2D, 0, internalFormat, _desc.width, _desc.height, 0, m_glformat, m_glpixelType, NULL );
+	/*printf( "Send format: %x\n", internalFormat );
+	GLint format;
+	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format );
+	printf( "Recieve format: %x\n", format );*/
 
 	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, 0 );
 	glBindTexture( GL_TEXTURE_2D, 0 );
 
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+	/*if( glGetError() != GL_NO_ERROR )
+	{
+		printf( "Problems creating texture\n" );
+	}*/
 
 	m_format = (Menge::PixelFormat)_desc.pixelFormat;
 	m_name = _desc.name;
@@ -120,6 +128,7 @@ const Menge::String & OGLTexture::getDescription() const
 unsigned char * OGLTexture::lock( int* _pitch, bool _readOnly )
 {
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+	glPixelStorei( GL_UNPACK_ROW_LENGTH, m_pitch );
 
 	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferID );
 	glBindTexture( GL_TEXTURE_2D, m_texture );
@@ -137,6 +146,7 @@ unsigned char * OGLTexture::lock( int* _pitch, bool _readOnly )
 	*_pitch = m_pitch;
 
 	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+	glPixelStorei( GL_UNPACK_ROW_LENGTH, 0 );
 
 	return static_cast<unsigned char*>( data );
 }

@@ -132,9 +132,16 @@ int ALSoundSource::getPosMs()
 {
 	ALint pos = 0;
 
-	if( m_alSource == 0 )
+	if( m_soundBuffer && !m_soundBuffer->isStreamed() )
 	{
-		alGetSourcei( m_alSource, AL_SEC_OFFSET, &pos );
+		if( m_alSource != 0 )
+		{
+			alGetSourcei( m_alSource, AL_SEC_OFFSET, &pos );
+		}
+	}
+	if( m_soundBuffer && m_soundBuffer->isStreamed() )
+	{
+		pos = m_soundBuffer->getPosMs();
 	}
 	return pos;
 }
@@ -264,6 +271,23 @@ void ALSoundSource::_onStop()
 	if( m_listener )
 	{
 		m_listener->listenStopped();
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+void ALSoundSource::setPosMs( float _posMs )
+{
+	ALint pos = _posMs;
+
+	if( m_soundBuffer && !m_soundBuffer->isStreamed() )
+	{
+		if( m_alSource != 0 )
+		{
+			alSourcei( m_alSource, AL_SEC_OFFSET, pos );
+		}
+	}
+	if( m_soundBuffer && m_soundBuffer->isStreamed() )
+	{
+		m_soundBuffer->setPosMs( _posMs );
 	}
 }
 //////////////////////////////////////////////////////////////////////////

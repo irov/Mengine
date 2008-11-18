@@ -69,7 +69,9 @@ namespace	Menge
 
 			void playTrack( const String& _playlistResource, int _index, bool _looped );
 
-			
+			float getPosMs();
+			void setPosMs( float _posMs );
+
 		private:
 			float m_volume;
 			float m_volumeOverride;

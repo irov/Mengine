@@ -27,6 +27,9 @@ public:
 
 	bool isStereo();
 
+	virtual int getPosMs();
+	virtual void setPosMs( float _posMs );
+
 protected:
 
 	typedef std::vector<Menge::SoundSourceInterface*>	TVectorSoundSourceInterface;

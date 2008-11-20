@@ -8,6 +8,11 @@
 #define MAX( a, b ) ((a > b) ? a : b)
 #define MIN( a, b ) ((a < b) ? a : b)
 
+#define COLOR_R 2
+#define COLOR_G 1
+#define COLOR_B 0
+#define COLOR_A 3
+
 //int rgb_color_test, unsigned char rgb_char_buffer - can never be negative
 //#define CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
 //	if( rgb_color_test > 255 )							  \
@@ -22,11 +27,11 @@
 
 namespace Menge
 {
-	unsigned int ImageCodecTheora::ms_YTable[ 256 ];
-	unsigned int ImageCodecTheora::ms_BUTable[ 256 ];
-	unsigned int ImageCodecTheora::ms_GUTable[ 256 ];
-	unsigned int ImageCodecTheora::ms_GVTable[ 256 ];
-	unsigned int ImageCodecTheora::ms_RVTable[ 256 ];
+	signed int ImageCodecTheora::ms_YTable[ 256 ];
+	signed int ImageCodecTheora::ms_BUTable[ 256 ];
+	signed int ImageCodecTheora::ms_GUTable[ 256 ];
+	signed int ImageCodecTheora::ms_GVTable[ 256 ];
+	signed int ImageCodecTheora::ms_RVTable[ 256 ];
 
 	//////////////////////////////////////////////////////////////////////////
 	ImageCodecTheora::ImageCodecTheora()
@@ -383,10 +388,10 @@ namespace Menge
 				b = (rgbY + bU ) >> 13;
 
 				//Clip to RGB values (255 0)
-				CLIP_RGB_COLOR( r, dstBitmap[2] );
-				CLIP_RGB_COLOR( g, dstBitmap[1] );
-				CLIP_RGB_COLOR( b, dstBitmap[0] );
-				dstBitmap[3] = 255;
+				CLIP_RGB_COLOR( r, dstBitmap[COLOR_R] );
+				CLIP_RGB_COLOR( g, dstBitmap[COLOR_G] );
+				CLIP_RGB_COLOR( b, dstBitmap[COLOR_B] );
+				dstBitmap[COLOR_A] = 255;
 
 				//And repeat for other pixels (note, y is unique for each
 				//pixel, while uv are not)
@@ -394,32 +399,37 @@ namespace Menge
 				r = (rgbY + rV)  >> 13;
 				g = (rgbY - gUV) >> 13;
 				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmap[4+2] );
-				CLIP_RGB_COLOR( g, dstBitmap[4+1] );
-				CLIP_RGB_COLOR( b, dstBitmap[4] );
-				dstBitmap[4+3] = 255;
+				CLIP_RGB_COLOR( r, dstBitmap[4+COLOR_R] );
+				CLIP_RGB_COLOR( g, dstBitmap[4+COLOR_G] );
+				CLIP_RGB_COLOR( b, dstBitmap[4+COLOR_B] );
+				dstBitmap[4+COLOR_A] = 255;
 				++ySrc;
 
 				rgbY = ms_YTable[*ySrc2];
 				r = (rgbY + rV)  >> 13;
 				g = (rgbY - gUV) >> 13;
 				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmapOffset[2] );
-				CLIP_RGB_COLOR( g, dstBitmapOffset[1] );
-				CLIP_RGB_COLOR( b, dstBitmapOffset[0] );
-				dstBitmapOffset[3] = 255;
+				CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_R] );
+				CLIP_RGB_COLOR( g, dstBitmapOffset[COLOR_G] );
+				CLIP_RGB_COLOR( b, dstBitmapOffset[COLOR_B] );
+				dstBitmapOffset[COLOR_A] = 255;
 				++ySrc2;
 
 				rgbY = ms_YTable[*ySrc2];
 				r = (rgbY + rV)  >> 13;
 				g = (rgbY - gUV) >> 13;
 				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmapOffset[4+2] );
-				CLIP_RGB_COLOR( g, dstBitmapOffset[4+1] );
-				CLIP_RGB_COLOR( b, dstBitmapOffset[4] );
-				dstBitmapOffset[4+3] = 255;
+				CLIP_RGB_COLOR( r, dstBitmapOffset[4+COLOR_R] );
+				CLIP_RGB_COLOR( g, dstBitmapOffset[4+COLOR_G] );
+				CLIP_RGB_COLOR( b, dstBitmapOffset[4+COLOR_B] );
+				dstBitmapOffset[4+COLOR_A] = 255;
 				++ySrc2;
-
+				
+				/*dstBitmap[COLOR_G] = 0;
+				dstBitmap[COLOR_G+4] = 0;
+				dstBitmapOffset[COLOR_G] = 0;
+				dstBitmapOffset[COLOR_G+4] = 0;*/
+	
 				//Advance inner loop offsets
 				dstBitmap += 4 << 1;
 				dstBitmapOffset += 4 << 1;
@@ -491,18 +501,18 @@ namespace Menge
 		int scale = 1L << 13,
 			temp;
 
-		for ( unsigned int i = 0; i < 256; i++ )
+		for ( signed int i = 0; i < 256; i++ )
 		{
 			temp = i - 128;
 
-			ms_YTable[i]  = (unsigned int)((1.164 * scale + 0.5) * (i - 16));	//Calc Y component
+			ms_YTable[i]  = (signed int)((1.164 * scale + 0.5) * (i - 16));	//Calc Y component
 
-			ms_RVTable[i] = (unsigned int)((1.596 * scale + 0.5) * temp);		//Calc R component
+			ms_RVTable[i] = (signed int)((1.596 * scale + 0.5) * temp);		//Calc R component
 
-			ms_GUTable[i] = (unsigned int)((0.391 * scale + 0.5) * temp);		//Calc G u & v components
-			ms_GVTable[i] = (unsigned int)((0.813 * scale + 0.5) * temp);
+			ms_GUTable[i] = (signed int)((0.391 * scale + 0.5) * temp);		//Calc G u & v components
+			ms_GVTable[i] = (signed int)((0.813 * scale + 0.5) * temp);
 
-			ms_BUTable[i] = (unsigned int)((2.018 * scale + 0.5) * temp);		//Calc B component
+			ms_BUTable[i] = (signed int)((2.018 * scale + 0.5) * temp);		//Calc B component
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

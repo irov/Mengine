@@ -62,7 +62,7 @@ void OGLTexture::load( std::size_t _width, std::size_t _heigth, const Menge::Tex
 	glGenBuffers( 1, &m_bufferID );
 	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferID );
 	// load data into pbo
-	glBufferData( GL_PIXEL_UNPACK_BUFFER_ARB, _desc.size, _desc.buffer, GL_STREAM_COPY );
+	glBufferData( GL_PIXEL_UNPACK_BUFFER_ARB, _desc.size, _desc.buffer, GL_STREAM_DRAW );
 	
 	// generate Texture
 	glGenTextures( 1, &m_texture );
@@ -79,16 +79,16 @@ void OGLTexture::load( std::size_t _width, std::size_t _heigth, const Menge::Tex
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 
 	// send pbo data to texture unit
-	glTexImage2D( GL_TEXTURE_2D, 0, internalFormat, _desc.width, _desc.height, 0, m_glformat, m_glpixelType, NULL );
+	glTexImage2D( GL_TEXTURE_2D, 0, internalFormat, _desc.width, _desc.height, 0, m_glformat, m_glpixelType, _desc.buffer );
 	/*printf( "Send format: %x\n", internalFormat );
 	GLint format;
 	glGetTexLevelParameteriv( GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format );
 	printf( "Recieve format: %x\n", format );*/
 
-	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, 0 );
+	//glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, 0 );
 	glBindTexture( GL_TEXTURE_2D, 0 );
 
-	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+	//glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
 	/*if( glGetError() != GL_NO_ERROR )
 	{
 		printf( "Problems creating texture\n" );

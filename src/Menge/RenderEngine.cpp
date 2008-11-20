@@ -290,6 +290,15 @@ namespace Menge
 			unsigned char* textureBuffer = image->lock( &pitch, false );
 			data.flags |= DF_CUSTOM_PITCH;
 			data.flags |= ( pitch << 16 );
+			/*data.width = Bitwise::firstPO2From( data.width );
+			data.height = Bitwise::firstPO2From( data.height );
+			int bits = 4;
+			if( data.format == PF_R8G8B8 ) bits = 3;
+			
+			unsigned char* textureBuffer = new unsigned char[data.width*data.height*bits];
+			int pitch = data.width*bits;
+			data.flags |= DF_CUSTOM_PITCH;
+			data.flags |= ( pitch << 16 );*/
 
 			res = codec->decode( stream, textureBuffer, data.flags );
 			if( res == false )
@@ -324,6 +333,9 @@ namespace Menge
 							image_data + image_height * pitch );
 			}
 
+			//TextureDesc desc = { _filename, 0, textureBuffer, data.width*data.height*bits, data.width, data.height, data.format };
+			//image = m_interface->loadImage( _filename, image_width, image_height, desc );
+			//delete[] textureBuffer;
 			image->unlock();
 
 			Holder<FileEngine>::hostage()->closeStream( stream );

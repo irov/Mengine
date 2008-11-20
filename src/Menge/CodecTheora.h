@@ -56,11 +56,11 @@ namespace Menge
 		//Lookup tables for ColorSpace conversions
 		static void createCoefTables_();
 
-		static unsigned int ms_YTable[ 256 ];
-		static unsigned int ms_BUTable[ 256 ];
-		static unsigned int ms_GUTable[ 256 ];
-		static unsigned int ms_GVTable[ 256 ];
-		static unsigned int ms_RVTable[ 256 ];
+		static signed int ms_YTable[ 256 ];
+		static signed int ms_BUTable[ 256 ];
+		static signed int ms_GUTable[ 256 ];
+		static signed int ms_GVTable[ 256 ];
+		static signed int ms_RVTable[ 256 ];
 
 	};
 }	// namespace Menge

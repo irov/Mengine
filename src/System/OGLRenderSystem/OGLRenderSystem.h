@@ -21,7 +21,7 @@
 #endif
 
 class OGLTexture;
-class OGLRenderTextureCopy;
+class OGLRenderTextureFBO;
 
 //class FrameBufferObject;
 
@@ -125,7 +125,7 @@ private:
 
 	struct RenderTargetInfo
 	{
-		OGLRenderTextureCopy* texture;
+		OGLRenderTextureFBO* texture;
 		bool dirty;
 	};
 

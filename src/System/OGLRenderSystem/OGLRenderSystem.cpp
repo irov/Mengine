@@ -7,7 +7,7 @@
 #	include "OGLTexture.h"
 #	include "OGLUtils.h"
 
-#	include "OGLRenderTextureCopy.h"
+#	include "OGLRenderTextureFBO.h"
 
 #	include "Menge/PixelFormat.h"
 
@@ -74,6 +74,12 @@ OGLRenderSystem::OGLRenderSystem()
 //////////////////////////////////////////////////////////////////////////
 OGLRenderSystem::~OGLRenderSystem()
 {
+#if MENGE_PLATFORM_MACOSX
+	if( m_aglContext != NULL )
+	{
+		aglDestroyContext( m_aglContext );
+	}
+#endif
 	deleteBatching();
 }
 //////////////////////////////////////////////////////////////////////////
@@ -178,11 +184,11 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	// the accelerated surface is not destroyed.  We use buffer naming and use a dummy context to hold accelerated surface in place.
 	// The following code points both contexts to the same buffer name (thus buffer) and then leaves the dummy context attached to the
 	// window.
-	m_aglDummyContext = aglCreateContext( pixelFormat, NULL );
-	GLint bufferName = 1;
-	aglSetInteger( m_aglDummyContext, AGL_BUFFER_NAME, &bufferName ); // set buffer name for this window context
+	//m_aglDummyContext = aglCreateContext( pixelFormat, NULL );
+	//GLint bufferName = 1;
+	//aglSetInteger( m_aglDummyContext, AGL_BUFFER_NAME, &bufferName ); // set buffer name for this window context
 	m_aglContext = aglCreateContext(pixelFormat, NULL);
-	aglSetInteger( m_aglContext, AGL_BUFFER_NAME, &bufferName); // set same buffer name to share hardware buffers
+	//aglSetInteger( m_aglContext, AGL_BUFFER_NAME, &bufferName); // set same buffer name to share hardware buffers
 
 	aglDestroyPixelFormat( pixelFormat );
 	
@@ -196,7 +202,7 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	{
 		return false;
 	}*/
-	aglSetDrawable( m_aglDummyContext, GetWindowPort(m_windowRef) );
+	//aglSetDrawable( m_aglDummyContext, GetWindowPort(m_windowRef) );
 	
 	if( m_fullscreen )
 	{
@@ -485,7 +491,7 @@ Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::String& _
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Menge::String & _name, std::size_t _width, std::size_t _height )
 {
-	OGLRenderTextureCopy * texture = new OGLRenderTextureCopy();
+	OGLRenderTextureFBO * texture = new OGLRenderTextureFBO();
 	
 	std::size_t image_width = _width;
 	std::size_t image_height = _height;
@@ -935,9 +941,9 @@ void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 	{
 	
 		// Back to window
-		//glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 ); 
-		//glDrawBuffer( GL_BACK );
-		//glReadBuffer( GL_BACK );
+		glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 ); 
+		glDrawBuffer( GL_BACK );
+		glReadBuffer( GL_BACK );
 		//aglSetDrawable( m_aglContext, NULL );
 		/*if( m_fullscreen )
 		{
@@ -979,8 +985,8 @@ void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 		}
 		if( it->second.dirty && _clear )
 		{
-			//glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
 	}
@@ -1007,13 +1013,13 @@ void OGLRenderSystem::setRenderArea( const float* _renderArea )
 	//_glEnable2D();
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
-	//if( m_currentRenderTarget == "defaultCamera" )
+	if( m_currentRenderTarget == "defaultCamera" )
 	{
 		glOrtho( m_viewport[0],  m_viewport[2], m_viewport[3], m_viewport[1], -1, 1 );
 	}
-	/*else
+	else
 	{
 		glOrtho( m_viewport[0],  m_viewport[2], m_viewport[1], m_viewport[3], -1, 1 );
-	}*/
+	}
 }
 //////////////////////////////////////////////////////////////////////////

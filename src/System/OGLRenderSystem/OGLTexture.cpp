@@ -62,7 +62,7 @@ void OGLTexture::load( std::size_t _width, std::size_t _heigth, const Menge::Tex
 	glGenBuffers( 1, &m_bufferID );
 	glBindBuffer( GL_PIXEL_UNPACK_BUFFER_ARB, m_bufferID );
 	// load data into pbo
-	glBufferData( GL_PIXEL_UNPACK_BUFFER_ARB, _desc.size, _desc.buffer, GL_STREAM_DRAW );
+	glBufferData( GL_PIXEL_UNPACK_BUFFER_ARB, _desc.size, _desc.buffer, GL_STREAM_COPY );
 	
 	// generate Texture
 	glGenTextures( 1, &m_texture );

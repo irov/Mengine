@@ -21,7 +21,7 @@
 #endif
 
 class OGLTexture;
-class OGLRenderTexture;
+class OGLRenderTextureCopy;
 
 //class FrameBufferObject;
 
@@ -116,6 +116,7 @@ private:
 	HGLRC m_glrc;
 #elif MENGE_PLATFORM_MACOSX
 	AGLContext m_aglContext;
+	AGLContext m_aglDummyContext;
 	WindowRef m_windowRef;
 #endif
 
@@ -124,7 +125,7 @@ private:
 
 	struct RenderTargetInfo
 	{
-		OGLRenderTexture* texture;
+		OGLRenderTextureCopy* texture;
 		bool dirty;
 	};
 
@@ -171,4 +172,8 @@ private:
 	GLint m_viewport[4];
 	bool m_supportNPOT;
 	Menge::String m_ext;
+	
+	bool m_fullscreen;
+	CGDirectDisplayID m_mainDisplayID;
+	CFDictionaryRef m_desktopDisplayMode;
 };

@@ -6,10 +6,13 @@
 
 #	include "OGLTexture.h"
 #	include "OGLUtils.h"
-#	include "OGLRenderTexture.h"
+
+#	include "OGLRenderTextureCopy.h"
+
 #	include "Menge/PixelFormat.h"
 
 #	include <assert.h>
+#	include <OpenGL/OpenGL.h>
 
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
@@ -58,11 +61,13 @@ OGLRenderSystem::OGLRenderSystem()
 , m_layer3D( false )
 , m_currentRenderTarget( "defaultCamera" )
 , m_supportNPOT( false )
+, m_fullscreen( false )
 #if MENGE_PLATFORM_WIN32
 , m_hdc( 0 )
 , m_glrc( 0 )
 #elif MENGE_PLATFORM_MACOSX
 , m_aglContext( NULL )
+, m_aglDummyContext( NULL )
 #endif
 {
 }
@@ -146,37 +151,66 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 #elif MENGE_PLATFORM_MACOSX
 	int i = 0;
 	AGLPixelFormat pixelFormat;
-	GLint attribs[ 20 ];
-
-	attribs[ i++ ] = AGL_NO_RECOVERY;
-	attribs[ i++ ] = GL_TRUE;
-	attribs[ i++ ] = AGL_ACCELERATED;
-	attribs[ i++ ] = GL_TRUE;
-	attribs[ i++ ] = AGL_RGBA;
-	attribs[ i++ ] = AGL_DOUBLEBUFFER;
-	attribs[ i++ ] = AGL_ALPHA_SIZE;
-	attribs[ i++ ] = 8;
-	attribs[ i++ ] = AGL_STENCIL_SIZE;
-	attribs[ i++ ] = 8;
-	attribs[ i++ ] = AGL_DEPTH_SIZE;
-	attribs[ i++ ] = _bits;
-	attribs[ i++ ] = AGL_FULLSCREEN;
-	attribs[ i++ ] = GL_TRUE;
-
-	attribs[ i++ ] = AGL_NONE;
-	pixelFormat = aglChoosePixelFormat( NULL, 0, attribs );
-	m_aglContext = aglCreateContext(pixelFormat, NULL);
-
-	m_windowRef = (WindowRef)_winHandle;
-	if( _fullscreen )
+	GLint attribs[] = { AGL_NO_RECOVERY, GL_TRUE, AGL_ACCELERATED, GL_TRUE, AGL_RGBA, AGL_DOUBLEBUFFER, AGL_ALPHA_SIZE, 8
+						,AGL_RED_SIZE, 8, AGL_STENCIL_SIZE, 8, AGL_DEPTH_SIZE, 24, AGL_FULLSCREEN, AGL_NONE };
+	
+	GDHandle gdhDisplay;
+	m_mainDisplayID = CGMainDisplayID();
+	m_desktopDisplayMode = CGDisplayCurrentMode( m_mainDisplayID );
+	
+	m_fullscreen = _fullscreen;
+	if( m_fullscreen )
 	{
-		aglSetFullScreen( m_aglContext, _width, _height, 0, 0 );
+		CFDictionaryRef refDisplayMode = 0;
+		refDisplayMode = CGDisplayBestModeForParameters( CGMainDisplayID(), _bits, _width, _height, NULL );
+		CGDisplaySwitchToMode( CGMainDisplayID(), refDisplayMode ); 
+	}
+	
+	if( DMGetGDeviceByDisplayID( (DisplayIDType)m_mainDisplayID, &gdhDisplay, false ) != noErr )
+	{
+		return false;
+	}
+	
+	
+	pixelFormat = aglChoosePixelFormat( &gdhDisplay, 1, attribs );
+
+	// Note: when using a single context with AGL one must ensure that there is always a context attached to a window to ensure
+	// the accelerated surface is not destroyed.  We use buffer naming and use a dummy context to hold accelerated surface in place.
+	// The following code points both contexts to the same buffer name (thus buffer) and then leaves the dummy context attached to the
+	// window.
+	m_aglDummyContext = aglCreateContext( pixelFormat, NULL );
+	GLint bufferName = 1;
+	aglSetInteger( m_aglDummyContext, AGL_BUFFER_NAME, &bufferName ); // set buffer name for this window context
+	m_aglContext = aglCreateContext(pixelFormat, NULL);
+	aglSetInteger( m_aglContext, AGL_BUFFER_NAME, &bufferName); // set same buffer name to share hardware buffers
+
+	aglDestroyPixelFormat( pixelFormat );
+	
+	m_windowRef = (WindowRef)_winHandle;
+	
+    GrafPtr portSave = NULL;
+    GetPort(&portSave);
+	SetPort((GrafPtr) GetWindowPort(m_windowRef));
+			
+	/*if( !aglSetDrawable( m_aglDummyContext, GetWindowPort(m_windowRef) ) ) // force creation of buffers for window
+	{
+		return false;
+	}*/
+	aglSetDrawable( m_aglDummyContext, GetWindowPort(m_windowRef) );
+	
+	if( m_fullscreen )
+	{
+		aglSetFullScreen( m_aglContext, 0, 0, 0, 0 );
 	}
 	else
 	{
 		aglSetDrawable(m_aglContext, GetWindowPort(m_windowRef) );
 	}
 	aglSetCurrentContext(m_aglContext);
+	GLint val = 1;
+	aglSetInteger( m_aglContext, AGL_STATE_VALIDATION, &val );
+	
+	SetPort(portSave);
 #endif
 	m_windowWidth = _width;
 	m_windowHeight = _height;
@@ -451,7 +485,7 @@ Menge::RenderImageInterface * OGLRenderSystem::loadImage( const Menge::String& _
 //////////////////////////////////////////////////////////////////////////
 Menge::RenderImageInterface * OGLRenderSystem::createRenderTargetImage( const Menge::String & _name, std::size_t _width, std::size_t _height )
 {
-	OGLRenderTexture * texture = new OGLRenderTexture();
+	OGLRenderTextureCopy * texture = new OGLRenderTextureCopy();
 	
 	std::size_t image_width = _width;
 	std::size_t image_height = _height;
@@ -782,6 +816,7 @@ void OGLRenderSystem::setFullscreenMode( std::size_t _width, std::size_t _height
 #endif
 	m_windowWidth = _width;
 	m_windowHeight = _height;
+	m_fullscreen = _fullscreen;
 	
 	glViewport( 0, 0, _width, _height );
 }
@@ -885,15 +920,51 @@ void OGLRenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 {
 	renderBatch();
-	glFlush();
+	//glFlush();
+
+	TTargetMap::iterator itp = m_targetMap.find( m_currentRenderTarget );
+
+	if( itp != m_targetMap.end() )
+	{
+		itp->second.texture->flush();
+		//aglSetCurrentContext( NULL );
+		//aglSetCurrentContext( m_aglContext );
+	}
 
 	if( _name == "defaultCamera" && m_currentRenderTarget != "defaultCamera" )
 	{
+	
 		// Back to window
-		glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 ); 
-		glDrawBuffer( GL_BACK );
-		glReadBuffer( GL_BACK );
+		//glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 ); 
+		//glDrawBuffer( GL_BACK );
+		//glReadBuffer( GL_BACK );
+		//aglSetDrawable( m_aglContext, NULL );
+		/*if( m_fullscreen )
+		{
+			CGLContextObj mCGLContext;
+			if( aglGetCGLContext( m_aglContext, (void**)&mCGLContext ) == GL_FALSE )
+			{
+				LOG_ERROR( "ERROR\n" );
+			}
+			if( CGLFlushDrawable(mCGLContext) != kCGLNoError )
+			{
+				LOG_ERROR( "ERROR\n");
+			}
+			CGLContextObj curCtx = CGLGetCurrentContext();
+			//if(curCtx != mCGLContext)
+			{
+				CGLSetCurrentContext(mCGLContext);
+				CGLClearDrawable(mCGLContext);
+				CGLSetFullScreen(mCGLContext);
+			}
 
+		//	aglSetFullScreen( m_aglContext, 0, 0, 0, 0 );
+		}
+		else
+		{
+			aglSetDrawable(m_aglContext, GetWindowPort(m_windowRef) );
+		}*/
+		//aglSetCurrentContext( m_aglContext );
 		m_currentRenderTarget = _name;
 	}
 
@@ -908,8 +979,8 @@ void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 		}
 		if( it->second.dirty && _clear )
 		{
-			glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			//glClearColor( 0.0f, 0.0f, 0.0f, 1.0f );
+			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
 	}
@@ -936,13 +1007,13 @@ void OGLRenderSystem::setRenderArea( const float* _renderArea )
 	//_glEnable2D();
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
-	if( m_currentRenderTarget == "defaultCamera" )
+	//if( m_currentRenderTarget == "defaultCamera" )
 	{
 		glOrtho( m_viewport[0],  m_viewport[2], m_viewport[3], m_viewport[1], -1, 1 );
 	}
-	else
+	/*else
 	{
 		glOrtho( m_viewport[0],  m_viewport[2], m_viewport[1], m_viewport[3], -1, 1 );
-	}
+	}*/
 }
 //////////////////////////////////////////////////////////////////////////

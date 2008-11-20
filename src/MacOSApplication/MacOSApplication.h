@@ -47,11 +47,11 @@ namespace Menge
 		String utf8ToAnsi( const String& _utf8 ) override;	
 
 		OSStatus windowHandler( EventHandlerCallRef nextHandler, EventRef event );
-		OSStatus mouseHandler( EventHandlerCallRef nextHandler, EventRef event );
+		OSStatus clientHandler( EventHandlerCallRef nextHandler, EventRef event );
 
 	public:
-		static OSStatus s_windowHandler( EventHandlerCallRef nextHandler, EventRef event, void* wnd );
-		static OSStatus s_mouseHandler( EventHandlerCallRef nextHandler, EventRef event, void* wnd );
+		static OSStatus s_windowHandler( EventHandlerCallRef nextHandler, EventRef event, void* params );
+		static OSStatus s_clientHandler( EventHandlerCallRef nextHandler, EventRef event, void* params );
 
 	protected:
 		WindowRef createWindow_( const String& _title, int _width, int _height );
@@ -68,8 +68,6 @@ namespace Menge
 		HIViewRef m_view;
 		EventHandlerUPP m_windowHandlerUPP;
 		EventHandlerRef m_windowEventHandler;
-		EventHandlerUPP m_mouseHandlerUPP;
-		EventHandlerRef m_mouseEventHandler;
 		std::size_t m_desktopResolution[2];
 	};
 }	// namespace Menge

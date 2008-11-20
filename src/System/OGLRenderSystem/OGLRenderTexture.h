@@ -24,10 +24,12 @@ public:
 	virtual unsigned char * lock( int* _pitch, bool _readOnly = true )  override;
 	virtual void unlock() override;
 	
+	void flush();
+	
 protected:
 #ifdef MENGE_PLATFORM_MACOSX
-	AGLPbuffer* m_aglPbuffer;
-	AGLContext* m_aglContext;
+	AGLPbuffer m_aglPbuffer;
+	AGLContext m_aglContext;
 #endif
 };
 

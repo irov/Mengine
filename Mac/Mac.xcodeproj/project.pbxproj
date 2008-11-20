@@ -118,13 +118,7 @@
 		8B1A785E0EACA14E00E2DCBE /* VorbisCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78510EACA14E00E2DCBE /* VorbisCallback.h */; };
 		8B1A788C0EACA2E200E2DCBE /* LogSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A78880EACA2E200E2DCBE /* LogSystem.cpp */; };
 		8B1A788D0EACA2E200E2DCBE /* LogSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A788A0EACA2E200E2DCBE /* LogSystem.h */; };
-		8B1A78AA0EACA3FF00E2DCBE /* OGLRenderSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78A10EACA3FF00E2DCBE /* OGLRenderSystem.h */; };
-		8B1A78AB0EACA3FF00E2DCBE /* OGLTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A78A30EACA3FF00E2DCBE /* OGLTexture.cpp */; };
-		8B1A78AC0EACA3FF00E2DCBE /* OGLTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78A40EACA3FF00E2DCBE /* OGLTexture.h */; };
 		8B77FE270EB205D700F78BA7 /* libSDLRenderSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B1A78970EACA3D400E2DCBE /* libSDLRenderSystem.a */; };
-		8B77FE550EB20E2D00F78BA7 /* OGLRenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A789F0EACA3FF00E2DCBE /* OGLRenderSystem.cpp */; };
-		8BBED56B0ECC4A3A0024508D /* OGLRenderTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BBED56A0ECC4A3A0024508D /* OGLRenderTexture.h */; };
-		8BBED57E0ECC4D310024508D /* OGLRenderTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBED57D0ECC4D310024508D /* OGLRenderTexture.cpp */; };
 		8BBFDF0B0EAF1F6600102B4F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBFDF0A0EAF1F6600102B4F /* main.cpp */; };
 		8BBFDF0E0EAF1FDA00102B4F /* MacOSApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBFDF0D0EAF1FDA00102B4F /* MacOSApplication.cpp */; };
 		8BBFDFE20EAF32D700102B4F /* libopenal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFDFE10EAF32C700102B4F /* libopenal.a */; };
@@ -387,10 +381,23 @@
 		8BC32E330EB0B5AF00212960 /* libtheoradec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE08B0EAF3BAB00102B4F /* libtheoradec.a */; };
 		8BC32E340EB0B5AF00212960 /* libpybind.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE1470EAF3F9800102B4F /* libpybind.a */; };
 		8BC32E510EB0B6A700212960 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFDFFE0EAF367200102B4F /* libogg.a */; };
+		8BC33FF80ED423C300E2895C /* OGLRenderTextureFBO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC33FF60ED423C200E2895C /* OGLRenderTextureFBO.cpp */; };
+		8BC33FF90ED423C300E2895C /* OGLRenderTextureFBO.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC33FF70ED423C300E2895C /* OGLRenderTextureFBO.h */; };
 		8BC3B64B0EC9CEAC007315B7 /* TextManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC3B64A0EC9CEAB007315B7 /* TextManager.cpp */; };
 		8BC3B64D0EC9CEBB007315B7 /* TextManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC3B64C0EC9CEBB007315B7 /* TextManager.h */; };
 		8BC3B64F0EC9CECC007315B7 /* Profiler.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC3B64E0EC9CECC007315B7 /* Profiler.h */; };
 		8BC3B6510EC9CEDA007315B7 /* Profiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC3B6500EC9CEDA007315B7 /* Profiler.cpp */; };
+		8BC5F4D00ECDF57A00F8FE60 /* OGLBatching.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC5F4C50ECDF57A00F8FE60 /* OGLBatching.cpp */; };
+		8BC5F4D10ECDF57A00F8FE60 /* OGLRenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC5F4C60ECDF57A00F8FE60 /* OGLRenderSystem.cpp */; };
+		8BC5F4D20ECDF57A00F8FE60 /* OGLRenderSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC5F4C80ECDF57A00F8FE60 /* OGLRenderSystem.h */; };
+		8BC5F4D30ECDF57A00F8FE60 /* OGLRenderTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC5F4CA0ECDF57A00F8FE60 /* OGLRenderTexture.cpp */; };
+		8BC5F4D40ECDF57A00F8FE60 /* OGLRenderTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC5F4CB0ECDF57A00F8FE60 /* OGLRenderTexture.h */; };
+		8BC5F4D50ECDF57A00F8FE60 /* OGLTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC5F4CC0ECDF57A00F8FE60 /* OGLTexture.cpp */; };
+		8BC5F4D60ECDF57A00F8FE60 /* OGLTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC5F4CD0ECDF57A00F8FE60 /* OGLTexture.h */; };
+		8BC5F4D70ECDF57A00F8FE60 /* OGLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC5F4CE0ECDF57A00F8FE60 /* OGLUtils.cpp */; };
+		8BC5F4D80ECDF57A00F8FE60 /* OGLUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC5F4CF0ECDF57A00F8FE60 /* OGLUtils.h */; };
+		8BC8D6360ED597AF00AC00BD /* OGLRenderTextureCopy.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC8D6340ED597AF00AC00BD /* OGLRenderTextureCopy.h */; };
+		8BC8D6370ED597AF00AC00BD /* OGLRenderTextureCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC8D6350ED597AF00AC00BD /* OGLRenderTextureCopy.cpp */; };
 		8BC8FADF0EC3317A00DAC26A /* libMenge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BE693E20EA8D5CA00B18A92 /* libMenge.a */; };
 		8BC94B3F0EAE1D460034D467 /* DataStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC94B300EAE1D460034D467 /* DataStream.cpp */; };
 		8BC94B400EAE1D460034D467 /* DataStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC94B310EAE1D460034D467 /* DataStream.h */; };
@@ -404,13 +411,6 @@
 		8BC94B4A0EAE1D460034D467 /* FileSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC94B3C0EAE1D460034D467 /* FileSystem.h */; };
 		8BC94B4B0EAE1D460034D467 /* MemoryDataStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC94B3D0EAE1D460034D467 /* MemoryDataStream.cpp */; };
 		8BC94B4C0EAE1D460034D467 /* MemoryDataStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC94B3E0EAE1D460034D467 /* MemoryDataStream.h */; };
-		8BCAAC4E0EC0713400162128 /* FBO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCAAC4C0EC0713400162128 /* FBO.cpp */; };
-		8BCAAC4F0EC0713400162128 /* FBO.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BCAAC4D0EC0713400162128 /* FBO.h */; };
-		8BCAAC520EC0716600162128 /* OGLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCAAC510EC0716600162128 /* OGLUtils.cpp */; };
-		8BCAAC540EC0717500162128 /* OGLUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BCAAC530EC0717500162128 /* OGLUtils.h */; };
-		8BCAAC630EC0735200162128 /* PBO.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BCAAC620EC0735200162128 /* PBO.h */; };
-		8BCFB2980EB755C600E3ED17 /* PBO.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BCFB2960EB755C500E3ED17 /* PBO.h */; };
-		8BCFB2990EB755C600E3ED17 /* PBO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCFB2970EB755C600E3ED17 /* PBO.cpp */; };
 		8BCFB2B90EB7572500E3ED17 /* LoggerConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCFB2B80EB7572500E3ED17 /* LoggerConsole.cpp */; };
 		8BDC9F5C0EBA0109007D4D75 /* libAstralaxParticleSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BDC9F570EBA00B5007D4D75 /* libAstralaxParticleSystem.a */; };
 		8BDC9F6C0EBA0126007D4D75 /* AstralaxEmitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BDC9F640EBA0126007D4D75 /* AstralaxEmitter.cpp */; };
@@ -421,7 +421,6 @@
 		8BDC9F710EBA0126007D4D75 /* AstralaxParticleSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BDC9F6A0EBA0126007D4D75 /* AstralaxParticleSystem.h */; };
 		8BDC9FA50EBA04D5007D4D75 /* libmagic.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BDC9F9B0EBA02F8007D4D75 /* libmagic.dylib */; };
 		8BFFDCED0EB5D25D002A860B /* OSXTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BFFDCEB0EB5D25D002A860B /* OSXTimer.cpp */; };
-		8BFFDD750EB5DB29002A860B /* OGLBatching.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BFFDD740EB5DB29002A860B /* OGLBatching.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -665,11 +664,6 @@
 		8B1A780C0EAC9FB200E2DCBE /* OISInputSystem.def */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = text; path = OISInputSystem.def; sourceTree = "<group>"; };
 		8B1A780D0EAC9FB200E2DCBE /* OISInputSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OISInputSystem.h; sourceTree = "<group>"; };
 		8B1A780F0EAC9FB200E2DCBE /* OISInputSystemInterface.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OISInputSystemInterface.h; sourceTree = "<group>"; };
-		8B1A782A0EACA0B400E2DCBE /* ProfilerSystem.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = ProfilerSystem.cpp; sourceTree = "<group>"; };
-		8B1A782B0EACA0B400E2DCBE /* ProfilerSystem.def */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = text; path = ProfilerSystem.def; sourceTree = "<group>"; };
-		8B1A782C0EACA0B400E2DCBE /* ProfilerSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = ProfilerSystem.h; sourceTree = "<group>"; };
-		8B1A782D0EACA0B400E2DCBE /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
-		8B1A782E0EACA0B400E2DCBE /* Timer.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
 		8B1A783B0EACA12D00E2DCBE /* libOALSoundSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libOALSoundSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B1A78430EACA14E00E2DCBE /* ALSoundBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = ALSoundBuffer.cpp; sourceTree = "<group>"; };
 		8B1A78440EACA14E00E2DCBE /* ALSoundBuffer.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = ALSoundBuffer.h; sourceTree = "<group>"; };
@@ -690,13 +684,6 @@
 		8B1A78890EACA2E200E2DCBE /* LogSystem.def */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = text; path = LogSystem.def; sourceTree = "<group>"; };
 		8B1A788A0EACA2E200E2DCBE /* LogSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = LogSystem.h; sourceTree = "<group>"; };
 		8B1A78970EACA3D400E2DCBE /* libSDLRenderSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDLRenderSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		8B1A789F0EACA3FF00E2DCBE /* OGLRenderSystem.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLRenderSystem.cpp; sourceTree = "<group>"; };
-		8B1A78A00EACA3FF00E2DCBE /* OGLRenderSystem.def */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = text; path = OGLRenderSystem.def; sourceTree = "<group>"; };
-		8B1A78A10EACA3FF00E2DCBE /* OGLRenderSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLRenderSystem.h; sourceTree = "<group>"; };
-		8B1A78A30EACA3FF00E2DCBE /* OGLTexture.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLTexture.cpp; sourceTree = "<group>"; };
-		8B1A78A40EACA3FF00E2DCBE /* OGLTexture.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLTexture.h; sourceTree = "<group>"; };
-		8BBED56A0ECC4A3A0024508D /* OGLRenderTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OGLRenderTexture.h; sourceTree = "<group>"; };
-		8BBED57D0ECC4D310024508D /* OGLRenderTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OGLRenderTexture.cpp; sourceTree = "<group>"; };
 		8BBFDF010EAF1E3900102B4F /* MacOSApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacOSApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BBFDF030EAF1E3900102B4F /* MacOSApplication-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "MacOSApplication-Info.plist"; sourceTree = "<group>"; };
 		8BBFDF0A0EAF1F6600102B4F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -716,10 +703,24 @@
 		8BBFE1510EAF40F400102B4F /* libpython2.5.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpython2.5.a; path = ../dependencies/Python/libpython2.5.a; sourceTree = SOURCE_ROOT; };
 		8BBFE3250EAF4FF500102B4F /* libOIS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOIS.a; path = "../dependencies/ois/Mac/XCode-2.2/build/Debug/libOIS.a"; sourceTree = SOURCE_ROOT; };
 		8BBFE3460EAF51B900102B4F /* libBox2D.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; name = libBox2D.a; path = ../dependencies/Box2D/Build/Xcode/build/Debug/libBox2D.a; sourceTree = SOURCE_ROOT; };
+		8BC33FF60ED423C200E2895C /* OGLRenderTextureFBO.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLRenderTextureFBO.cpp; sourceTree = "<group>"; };
+		8BC33FF70ED423C300E2895C /* OGLRenderTextureFBO.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLRenderTextureFBO.h; sourceTree = "<group>"; };
 		8BC3B64A0EC9CEAB007315B7 /* TextManager.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; name = TextManager.cpp; path = ../src/Menge/TextManager.cpp; sourceTree = SOURCE_ROOT; };
 		8BC3B64C0EC9CEBB007315B7 /* TextManager.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = TextManager.h; path = ../src/Menge/TextManager.h; sourceTree = SOURCE_ROOT; };
 		8BC3B64E0EC9CECC007315B7 /* Profiler.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Profiler.h; path = ../src/Menge/Profiler.h; sourceTree = SOURCE_ROOT; };
 		8BC3B6500EC9CEDA007315B7 /* Profiler.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; name = Profiler.cpp; path = ../src/Menge/Profiler.cpp; sourceTree = SOURCE_ROOT; };
+		8BC5F4C50ECDF57A00F8FE60 /* OGLBatching.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLBatching.cpp; sourceTree = "<group>"; };
+		8BC5F4C60ECDF57A00F8FE60 /* OGLRenderSystem.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLRenderSystem.cpp; sourceTree = "<group>"; };
+		8BC5F4C70ECDF57A00F8FE60 /* OGLRenderSystem.def */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = text; path = OGLRenderSystem.def; sourceTree = "<group>"; };
+		8BC5F4C80ECDF57A00F8FE60 /* OGLRenderSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLRenderSystem.h; sourceTree = "<group>"; };
+		8BC5F4CA0ECDF57A00F8FE60 /* OGLRenderTexture.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLRenderTexture.cpp; sourceTree = "<group>"; };
+		8BC5F4CB0ECDF57A00F8FE60 /* OGLRenderTexture.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLRenderTexture.h; sourceTree = "<group>"; };
+		8BC5F4CC0ECDF57A00F8FE60 /* OGLTexture.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLTexture.cpp; sourceTree = "<group>"; };
+		8BC5F4CD0ECDF57A00F8FE60 /* OGLTexture.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLTexture.h; sourceTree = "<group>"; };
+		8BC5F4CE0ECDF57A00F8FE60 /* OGLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLUtils.cpp; sourceTree = "<group>"; };
+		8BC5F4CF0ECDF57A00F8FE60 /* OGLUtils.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLUtils.h; sourceTree = "<group>"; };
+		8BC8D6340ED597AF00AC00BD /* OGLRenderTextureCopy.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLRenderTextureCopy.h; sourceTree = "<group>"; };
+		8BC8D6350ED597AF00AC00BD /* OGLRenderTextureCopy.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLRenderTextureCopy.cpp; sourceTree = "<group>"; };
 		8BC94B2A0EAE1D1D0034D467 /* libMengeMacOSFileSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMengeMacOSFileSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BC94B300EAE1D460034D467 /* DataStream.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = DataStream.cpp; sourceTree = "<group>"; };
 		8BC94B310EAE1D460034D467 /* DataStream.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = DataStream.h; sourceTree = "<group>"; };
@@ -734,13 +735,6 @@
 		8BC94B3C0EAE1D460034D467 /* FileSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = FileSystem.h; sourceTree = "<group>"; };
 		8BC94B3D0EAE1D460034D467 /* MemoryDataStream.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryDataStream.cpp; sourceTree = "<group>"; };
 		8BC94B3E0EAE1D460034D467 /* MemoryDataStream.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = MemoryDataStream.h; sourceTree = "<group>"; };
-		8BCAAC4C0EC0713400162128 /* FBO.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = FBO.cpp; sourceTree = "<group>"; };
-		8BCAAC4D0EC0713400162128 /* FBO.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = FBO.h; sourceTree = "<group>"; };
-		8BCAAC510EC0716600162128 /* OGLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLUtils.cpp; sourceTree = "<group>"; };
-		8BCAAC530EC0717500162128 /* OGLUtils.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLUtils.h; sourceTree = "<group>"; };
-		8BCAAC620EC0735200162128 /* PBO.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = PBO.h; sourceTree = "<group>"; };
-		8BCFB2960EB755C500E3ED17 /* PBO.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = PBO.h; sourceTree = "<group>"; };
-		8BCFB2970EB755C600E3ED17 /* PBO.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = PBO.cpp; sourceTree = "<group>"; };
 		8BCFB2B70EB7572400E3ED17 /* LoggerConsole.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = LoggerConsole.h; sourceTree = "<group>"; };
 		8BCFB2B80EB7572500E3ED17 /* LoggerConsole.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = "-2147483641"; path = LoggerConsole.cpp; sourceTree = "<group>"; };
 		8BCFB2CB0EB759C600E3ED17 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Platform.h; path = ../src/Config/Platform.h; sourceTree = SOURCE_ROOT; };
@@ -867,8 +861,6 @@
 		8BE6946F0EA8D6C100B18A92 /* Playlist.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Playlist.h; path = ../src/Menge/Playlist.h; sourceTree = SOURCE_ROOT; };
 		8BE694700EA8D6C100B18A92 /* Point.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; name = Point.cpp; path = ../src/Menge/Point.cpp; sourceTree = SOURCE_ROOT; };
 		8BE694710EA8D6C100B18A92 /* Point.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Point.h; path = ../src/Menge/Point.h; sourceTree = SOURCE_ROOT; };
-		8BE694720EA8D6C100B18A92 /* ProfilerEngine.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; name = ProfilerEngine.cpp; path = ../src/Menge/ProfilerEngine.cpp; sourceTree = SOURCE_ROOT; };
-		8BE694730EA8D6C100B18A92 /* ProfilerEngine.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = ProfilerEngine.h; path = ../src/Menge/ProfilerEngine.h; sourceTree = SOURCE_ROOT; };
 		8BE694740EA8D6C100B18A92 /* Reference.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; name = Reference.cpp; path = ../src/Menge/Reference.cpp; sourceTree = SOURCE_ROOT; };
 		8BE694750EA8D6C100B18A92 /* Reference.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Reference.h; path = ../src/Menge/Reference.h; sourceTree = SOURCE_ROOT; };
 		8BE694760EA8D6C100B18A92 /* RenderEngine.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; name = RenderEngine.cpp; path = ../src/Menge/RenderEngine.cpp; sourceTree = SOURCE_ROOT; };
@@ -997,7 +989,6 @@
 		8BE695050EA8D6C100B18A92 /* XmlTag.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = XmlTag.h; path = ../src/Menge/XmlTag.h; sourceTree = SOURCE_ROOT; };
 		8BFFDCEB0EB5D25D002A860B /* OSXTimer.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OSXTimer.cpp; sourceTree = "<group>"; };
 		8BFFDCEC0EB5D25D002A860B /* OSXTimer.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OSXTimer.h; sourceTree = "<group>"; };
-		8BFFDD740EB5DB29002A860B /* OGLBatching.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLBatching.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1109,12 +1100,11 @@
 		8B1A720D0EAC8A7300E2DCBE /* System */ = {
 			isa = PBXGroup;
 			children = (
+				8BC5F4C40ECDF57A00F8FE60 /* OGLRenderSystem */,
 				8BDC9F630EBA0126007D4D75 /* AstralaxParticleSystem */,
 				8BC94B2F0EAE1D460034D467 /* MengeMacOSFileSystem */,
-				8B1A789E0EACA3FF00E2DCBE /* OGLRenderSystem */,
 				8B1A78870EACA2E200E2DCBE /* MengeLogSystem */,
 				8B1A78420EACA14E00E2DCBE /* SoundSystem */,
-				8B1A78280EACA0B400E2DCBE /* MengeProfilerSystem */,
 				8B1A780A0EAC9FB200E2DCBE /* OISInputSystem */,
 				8B1A72130EAC8AA300E2DCBE /* Box2DPhysicSystem */,
 			);
@@ -1262,19 +1252,6 @@
 			path = ../src/System/OISInputSystem;
 			sourceTree = SOURCE_ROOT;
 		};
-		8B1A78280EACA0B400E2DCBE /* MengeProfilerSystem */ = {
-			isa = PBXGroup;
-			children = (
-				8B1A782A0EACA0B400E2DCBE /* ProfilerSystem.cpp */,
-				8B1A782B0EACA0B400E2DCBE /* ProfilerSystem.def */,
-				8B1A782C0EACA0B400E2DCBE /* ProfilerSystem.h */,
-				8B1A782D0EACA0B400E2DCBE /* Timer.cpp */,
-				8B1A782E0EACA0B400E2DCBE /* Timer.h */,
-			);
-			name = MengeProfilerSystem;
-			path = ../src/System/MengeProfilerSystem;
-			sourceTree = SOURCE_ROOT;
-		};
 		8B1A78420EACA14E00E2DCBE /* SoundSystem */ = {
 			isa = PBXGroup;
 			children = (
@@ -1306,29 +1283,6 @@
 			);
 			name = MengeLogSystem;
 			path = ../src/System/MengeLogSystem;
-			sourceTree = SOURCE_ROOT;
-		};
-		8B1A789E0EACA3FF00E2DCBE /* OGLRenderSystem */ = {
-			isa = PBXGroup;
-			children = (
-				8BBED56A0ECC4A3A0024508D /* OGLRenderTexture.h */,
-				8BBED57D0ECC4D310024508D /* OGLRenderTexture.cpp */,
-				8BCAAC530EC0717500162128 /* OGLUtils.h */,
-				8BCAAC510EC0716600162128 /* OGLUtils.cpp */,
-				8BCAAC4C0EC0713400162128 /* FBO.cpp */,
-				8BCAAC4D0EC0713400162128 /* FBO.h */,
-				8BCFB2960EB755C500E3ED17 /* PBO.h */,
-				8BCFB2970EB755C600E3ED17 /* PBO.cpp */,
-				8BCAAC620EC0735200162128 /* PBO.h */,
-				8BFFDD740EB5DB29002A860B /* OGLBatching.cpp */,
-				8B1A789F0EACA3FF00E2DCBE /* OGLRenderSystem.cpp */,
-				8B1A78A00EACA3FF00E2DCBE /* OGLRenderSystem.def */,
-				8B1A78A10EACA3FF00E2DCBE /* OGLRenderSystem.h */,
-				8B1A78A30EACA3FF00E2DCBE /* OGLTexture.cpp */,
-				8B1A78A40EACA3FF00E2DCBE /* OGLTexture.h */,
-			);
-			name = OGLRenderSystem;
-			path = ../src/System/SDLRenderSystem;
 			sourceTree = SOURCE_ROOT;
 		};
 		8BBFDF090EAF1F3C00102B4F /* MacOSApplication */ = {
@@ -1367,6 +1321,28 @@
 			);
 			name = Dependencies;
 			sourceTree = "<group>";
+		};
+		8BC5F4C40ECDF57A00F8FE60 /* OGLRenderSystem */ = {
+			isa = PBXGroup;
+			children = (
+				8BC8D6340ED597AF00AC00BD /* OGLRenderTextureCopy.h */,
+				8BC8D6350ED597AF00AC00BD /* OGLRenderTextureCopy.cpp */,
+				8BC33FF60ED423C200E2895C /* OGLRenderTextureFBO.cpp */,
+				8BC33FF70ED423C300E2895C /* OGLRenderTextureFBO.h */,
+				8BC5F4C50ECDF57A00F8FE60 /* OGLBatching.cpp */,
+				8BC5F4C60ECDF57A00F8FE60 /* OGLRenderSystem.cpp */,
+				8BC5F4C70ECDF57A00F8FE60 /* OGLRenderSystem.def */,
+				8BC5F4C80ECDF57A00F8FE60 /* OGLRenderSystem.h */,
+				8BC5F4CA0ECDF57A00F8FE60 /* OGLRenderTexture.cpp */,
+				8BC5F4CB0ECDF57A00F8FE60 /* OGLRenderTexture.h */,
+				8BC5F4CC0ECDF57A00F8FE60 /* OGLTexture.cpp */,
+				8BC5F4CD0ECDF57A00F8FE60 /* OGLTexture.h */,
+				8BC5F4CE0ECDF57A00F8FE60 /* OGLUtils.cpp */,
+				8BC5F4CF0ECDF57A00F8FE60 /* OGLUtils.h */,
+			);
+			name = OGLRenderSystem;
+			path = ../src/System/OGLRenderSystem;
+			sourceTree = SOURCE_ROOT;
 		};
 		8BC94B2F0EAE1D460034D467 /* MengeMacOSFileSystem */ = {
 			isa = PBXGroup;
@@ -1552,8 +1528,6 @@
 				8BE6946F0EA8D6C100B18A92 /* Playlist.h */,
 				8BE694700EA8D6C100B18A92 /* Point.cpp */,
 				8BE694710EA8D6C100B18A92 /* Point.h */,
-				8BE694720EA8D6C100B18A92 /* ProfilerEngine.cpp */,
-				8BE694730EA8D6C100B18A92 /* ProfilerEngine.h */,
 				8BE694740EA8D6C100B18A92 /* Reference.cpp */,
 				8BE694750EA8D6C100B18A92 /* Reference.h */,
 				8BE694760EA8D6C100B18A92 /* RenderEngine.cpp */,
@@ -1799,13 +1773,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B1A78AA0EACA3FF00E2DCBE /* OGLRenderSystem.h in Headers */,
-				8B1A78AC0EACA3FF00E2DCBE /* OGLTexture.h in Headers */,
-				8BCFB2980EB755C600E3ED17 /* PBO.h in Headers */,
-				8BCAAC4F0EC0713400162128 /* FBO.h in Headers */,
-				8BCAAC540EC0717500162128 /* OGLUtils.h in Headers */,
-				8BCAAC630EC0735200162128 /* PBO.h in Headers */,
-				8BBED56B0ECC4A3A0024508D /* OGLRenderTexture.h in Headers */,
+				8BC5F4D20ECDF57A00F8FE60 /* OGLRenderSystem.h in Headers */,
+				8BC5F4D40ECDF57A00F8FE60 /* OGLRenderTexture.h in Headers */,
+				8BC5F4D60ECDF57A00F8FE60 /* OGLTexture.h in Headers */,
+				8BC5F4D80ECDF57A00F8FE60 /* OGLUtils.h in Headers */,
+				8BC33FF90ED423C300E2895C /* OGLRenderTextureFBO.h in Headers */,
+				8BC8D6360ED597AF00AC00BD /* OGLRenderTextureCopy.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2286,13 +2259,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8B1A78AB0EACA3FF00E2DCBE /* OGLTexture.cpp in Sources */,
-				8B77FE550EB20E2D00F78BA7 /* OGLRenderSystem.cpp in Sources */,
-				8BFFDD750EB5DB29002A860B /* OGLBatching.cpp in Sources */,
-				8BCFB2990EB755C600E3ED17 /* PBO.cpp in Sources */,
-				8BCAAC4E0EC0713400162128 /* FBO.cpp in Sources */,
-				8BCAAC520EC0716600162128 /* OGLUtils.cpp in Sources */,
-				8BBED57E0ECC4D310024508D /* OGLRenderTexture.cpp in Sources */,
+				8BC5F4D00ECDF57A00F8FE60 /* OGLBatching.cpp in Sources */,
+				8BC5F4D10ECDF57A00F8FE60 /* OGLRenderSystem.cpp in Sources */,
+				8BC5F4D30ECDF57A00F8FE60 /* OGLRenderTexture.cpp in Sources */,
+				8BC5F4D50ECDF57A00F8FE60 /* OGLTexture.cpp in Sources */,
+				8BC5F4D70ECDF57A00F8FE60 /* OGLUtils.cpp in Sources */,
+				8BC33FF80ED423C300E2895C /* OGLRenderTextureFBO.cpp in Sources */,
+				8BC8D6370ED597AF00AC00BD /* OGLRenderTextureCopy.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

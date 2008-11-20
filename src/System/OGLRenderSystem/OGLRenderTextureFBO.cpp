@@ -1,5 +1,5 @@
 /*
- *  OGLRenderTexture.cpp
+ *  OGLRenderTextureFBO.cpp
  *  Mac
  *
  *  Created by Berserk on 13.11.08.
@@ -104,6 +104,13 @@ bool OGLRenderTextureFBO::enable()
 	glReadBuffer( GL_COLOR_ATTACHMENT0_EXT );
 	
 	return true;
+}
+
+void OGLRenderTextureFBO::flush()
+{
+	//glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, m_framebufferID );
+	//AGLContext context = aglGetCurrentContext();
+	//aglSwapBuffers( context );
 }
 
 unsigned char * OGLRenderTextureFBO::lock( int* _pitch, bool _readOnly )

@@ -1,5 +1,5 @@
 /*
- *  OGLRenderTexture.h
+ *  OGLRenderTextureFBO.h
  *  Mac
  *
  *  Created by Berserk on 13.11.08.
@@ -15,11 +15,13 @@ class OGLRenderTextureFBO
 	: public OGLTexture
 {
 public:
-	OGLRenderTexture();
-	~OGLRenderTexture();
+	OGLRenderTextureFBO();
+	~OGLRenderTextureFBO();
 	
 	bool create( const Menge::String& _name, std::size_t _width, std::size_t _height, std::size_t _data_width, std::size_t _data_height );
 	bool enable();
+	
+	void flush();
 	
 	virtual unsigned char * lock( int* _pitch, bool _readOnly = true )  override;
 	virtual void unlock() override;

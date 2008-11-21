@@ -118,16 +118,13 @@
 		8B1A785E0EACA14E00E2DCBE /* VorbisCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78510EACA14E00E2DCBE /* VorbisCallback.h */; };
 		8B1A788C0EACA2E200E2DCBE /* LogSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A78880EACA2E200E2DCBE /* LogSystem.cpp */; };
 		8B1A788D0EACA2E200E2DCBE /* LogSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A788A0EACA2E200E2DCBE /* LogSystem.h */; };
-		8B77FE270EB205D700F78BA7 /* libSDLRenderSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B1A78970EACA3D400E2DCBE /* libSDLRenderSystem.a */; };
+		8B77FE270EB205D700F78BA7 /* libOGLRenderSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B1A78970EACA3D400E2DCBE /* libOGLRenderSystem.a */; };
 		8BBFDF0B0EAF1F6600102B4F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBFDF0A0EAF1F6600102B4F /* main.cpp */; };
 		8BBFDF0E0EAF1FDA00102B4F /* MacOSApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBFDF0D0EAF1FDA00102B4F /* MacOSApplication.cpp */; };
-		8BBFDFE20EAF32D700102B4F /* libopenal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFDFE10EAF32C700102B4F /* libopenal.a */; };
 		8BBFDFE70EAF34DA00102B4F /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFDFE60EAF34CE00102B4F /* libexpat.a */; };
 		8BBFE0A60EAF3CBB00102B4F /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE0A10EAF3CAD00102B4F /* libvorbis.a */; };
 		8BBFE0A70EAF3CBB00102B4F /* libvorbisenc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE0A00EAF3CAD00102B4F /* libvorbisenc.a */; };
 		8BBFE0A80EAF3CBB00102B4F /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE0A20EAF3CAD00102B4F /* libvorbisfile.a */; };
-		8BBFE3270EAF4FF500102B4F /* libOIS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE3250EAF4FF500102B4F /* libOIS.a */; };
-		8BBFE3470EAF51B900102B4F /* libBox2D.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE3460EAF51B900102B4F /* libBox2D.a */; };
 		8BC32C8B0EB0A8A500212960 /* Application.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BE693FC0EA8D6C100B18A92 /* Application.h */; };
 		8BC32C8C0EB0A8A600212960 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BE693FB0EA8D6C100B18A92 /* Application.cpp */; };
 		8BC32D190EB0B32500212960 /* Account.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BE693EC0EA8D6C100B18A92 /* Account.cpp */; };
@@ -378,8 +375,6 @@
 		8BC32E300EB0B5AF00212960 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE02E0EAF377000102B4F /* libpng.a */; };
 		8BC32E310EB0B5AF00212960 /* libpython2.5.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE1510EAF40F400102B4F /* libpython2.5.a */; };
 		8BC32E320EB0B5AF00212960 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE0760EAF3B1C00102B4F /* libjpeg.a */; };
-		8BC32E330EB0B5AF00212960 /* libtheoradec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE08B0EAF3BAB00102B4F /* libtheoradec.a */; };
-		8BC32E340EB0B5AF00212960 /* libpybind.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE1470EAF3F9800102B4F /* libpybind.a */; };
 		8BC32E510EB0B6A700212960 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFDFFE0EAF367200102B4F /* libogg.a */; };
 		8BC33FF80ED423C300E2895C /* OGLRenderTextureFBO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC33FF60ED423C200E2895C /* OGLRenderTextureFBO.cpp */; };
 		8BC33FF90ED423C300E2895C /* OGLRenderTextureFBO.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC33FF70ED423C300E2895C /* OGLRenderTextureFBO.h */; };
@@ -387,6 +382,13 @@
 		8BC3B64D0EC9CEBB007315B7 /* TextManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC3B64C0EC9CEBB007315B7 /* TextManager.h */; };
 		8BC3B64F0EC9CECC007315B7 /* Profiler.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC3B64E0EC9CECC007315B7 /* Profiler.h */; };
 		8BC3B6510EC9CEDA007315B7 /* Profiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC3B6500EC9CEDA007315B7 /* Profiler.cpp */; };
+		8BC4523B0ED6FCFC008100E4 /* libtheoradec.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC4523A0ED6FCFC008100E4 /* libtheoradec.a */; };
+		8BC4525A0ED6FE07008100E4 /* libpybind.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC452590ED6FE07008100E4 /* libpybind.a */; };
+		8BC452920ED6FFB1008100E4 /* libBox2D.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC452910ED6FFB1008100E4 /* libBox2D.a */; };
+		8BC452B70ED700A6008100E4 /* libOIS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC452B60ED700A6008100E4 /* libOIS.a */; };
+		8BC452E10ED70259008100E4 /* libopenal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC452E00ED70259008100E4 /* libopenal.a */; };
+		8BC452E90ED70B89008100E4 /* libmagic.dylib in Resources */ = {isa = PBXBuildFile; fileRef = 8BC452E80ED70B89008100E4 /* libmagic.dylib */; };
+		8BC452ED0ED70DE8008100E4 /* libmagic.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC452E80ED70B89008100E4 /* libmagic.dylib */; };
 		8BC5F4D00ECDF57A00F8FE60 /* OGLBatching.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC5F4C50ECDF57A00F8FE60 /* OGLBatching.cpp */; };
 		8BC5F4D10ECDF57A00F8FE60 /* OGLRenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC5F4C60ECDF57A00F8FE60 /* OGLRenderSystem.cpp */; };
 		8BC5F4D20ECDF57A00F8FE60 /* OGLRenderSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC5F4C80ECDF57A00F8FE60 /* OGLRenderSystem.h */; };
@@ -419,7 +421,6 @@
 		8BDC9F6F0EBA0126007D4D75 /* AstralaxEmitterContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BDC9F670EBA0126007D4D75 /* AstralaxEmitterContainer.h */; };
 		8BDC9F700EBA0126007D4D75 /* AstralaxParticleSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BDC9F680EBA0126007D4D75 /* AstralaxParticleSystem.cpp */; };
 		8BDC9F710EBA0126007D4D75 /* AstralaxParticleSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BDC9F6A0EBA0126007D4D75 /* AstralaxParticleSystem.h */; };
-		8BDC9FA50EBA04D5007D4D75 /* libmagic.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BDC9F9B0EBA02F8007D4D75 /* libmagic.dylib */; };
 		8BFFDCED0EB5D25D002A860B /* OSXTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BFFDCEB0EB5D25D002A860B /* OSXTimer.cpp */; };
 /* End PBXBuildFile section */
 
@@ -683,7 +684,7 @@
 		8B1A78880EACA2E200E2DCBE /* LogSystem.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = LogSystem.cpp; sourceTree = "<group>"; };
 		8B1A78890EACA2E200E2DCBE /* LogSystem.def */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = text; path = LogSystem.def; sourceTree = "<group>"; };
 		8B1A788A0EACA2E200E2DCBE /* LogSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = LogSystem.h; sourceTree = "<group>"; };
-		8B1A78970EACA3D400E2DCBE /* libSDLRenderSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSDLRenderSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B1A78970EACA3D400E2DCBE /* libOGLRenderSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libOGLRenderSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BBFDF010EAF1E3900102B4F /* MacOSApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacOSApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BBFDF030EAF1E3900102B4F /* MacOSApplication-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "MacOSApplication-Info.plist"; sourceTree = "<group>"; };
 		8BBFDF0A0EAF1F6600102B4F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -709,6 +710,12 @@
 		8BC3B64C0EC9CEBB007315B7 /* TextManager.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = TextManager.h; path = ../src/Menge/TextManager.h; sourceTree = SOURCE_ROOT; };
 		8BC3B64E0EC9CECC007315B7 /* Profiler.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Profiler.h; path = ../src/Menge/Profiler.h; sourceTree = SOURCE_ROOT; };
 		8BC3B6500EC9CEDA007315B7 /* Profiler.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; name = Profiler.cpp; path = ../src/Menge/Profiler.cpp; sourceTree = SOURCE_ROOT; };
+		8BC4523A0ED6FCFC008100E4 /* libtheoradec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtheoradec.a; path = ../dependencies/theora/macosx/build/Release/libtheoradec.a; sourceTree = SOURCE_ROOT; };
+		8BC452590ED6FE07008100E4 /* libpybind.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpybind.a; path = ../dependencies/pybind/macosx/build/Release/libpybind.a; sourceTree = SOURCE_ROOT; };
+		8BC452910ED6FFB1008100E4 /* libBox2D.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBox2D.a; path = ../dependencies/Box2D/Build/Xcode/build/Release/libBox2D.a; sourceTree = SOURCE_ROOT; };
+		8BC452B60ED700A6008100E4 /* libOIS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOIS.a; path = "../dependencies/ois/Mac/XCode-2.2/build/Release/libOIS.a"; sourceTree = SOURCE_ROOT; };
+		8BC452E00ED70259008100E4 /* libopenal.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopenal.a; path = "../dependencies/OpenAL/OpenAL-MacOSX/build/Deployment/libopenal.a"; sourceTree = SOURCE_ROOT; };
+		8BC452E80ED70B89008100E4 /* libmagic.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmagic.dylib; path = ../dependencies/astralax/MagicMAC/Release/libmagic.dylib; sourceTree = SOURCE_ROOT; };
 		8BC5F4C50ECDF57A00F8FE60 /* OGLBatching.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLBatching.cpp; sourceTree = "<group>"; };
 		8BC5F4C60ECDF57A00F8FE60 /* OGLRenderSystem.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLRenderSystem.cpp; sourceTree = "<group>"; };
 		8BC5F4C70ECDF57A00F8FE60 /* OGLRenderSystem.def */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = text; path = OGLRenderSystem.def; sourceTree = "<group>"; };
@@ -996,7 +1003,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8BBFE3470EAF51B900102B4F /* libBox2D.a in Frameworks */,
+				8BC452920ED6FFB1008100E4 /* libBox2D.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1019,7 +1026,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8BBFE3270EAF4FF500102B4F /* libOIS.a in Frameworks */,
+				8BC452B70ED700A6008100E4 /* libOIS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1027,10 +1034,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8BBFDFE20EAF32D700102B4F /* libopenal.a in Frameworks */,
 				8BBFE0A60EAF3CBB00102B4F /* libvorbis.a in Frameworks */,
 				8BBFE0A70EAF3CBB00102B4F /* libvorbisenc.a in Frameworks */,
 				8BBFE0A80EAF3CBB00102B4F /* libvorbisfile.a in Frameworks */,
+				8BC452E10ED70259008100E4 /* libopenal.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1052,6 +1059,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8BC452ED0ED70DE8008100E4 /* libmagic.dylib in Frameworks */,
 				8BC32E510EB0B6A700212960 /* libogg.a in Frameworks */,
 				8BC32E2F0EB0B58500212960 /* libz.a in Frameworks */,
 				8BC8FADF0EC3317A00DAC26A /* libMenge.a in Frameworks */,
@@ -1061,8 +1069,7 @@
 				8BC32E2C0EB0B56B00212960 /* libOALSoundSystem.a in Frameworks */,
 				8BC32E2B0EB0B56700212960 /* libOISInputSystem.a in Frameworks */,
 				8BC32E260EB0B55200212960 /* libBox2DPhysicSystem.a in Frameworks */,
-				8B77FE270EB205D700F78BA7 /* libSDLRenderSystem.a in Frameworks */,
-				8BDC9FA50EBA04D5007D4D75 /* libmagic.dylib in Frameworks */,
+				8B77FE270EB205D700F78BA7 /* libOGLRenderSystem.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1087,10 +1094,10 @@
 				8BC32E300EB0B5AF00212960 /* libpng.a in Frameworks */,
 				8BC32E310EB0B5AF00212960 /* libpython2.5.a in Frameworks */,
 				8BC32E320EB0B5AF00212960 /* libjpeg.a in Frameworks */,
-				8BC32E330EB0B5AF00212960 /* libtheoradec.a in Frameworks */,
-				8BC32E340EB0B5AF00212960 /* libpybind.a in Frameworks */,
 				8BC32E2A0EB0B55E00212960 /* libXmlParser.a in Frameworks */,
 				8BC32E290EB0B55B00212960 /* libMath.a in Frameworks */,
+				8BC4523B0ED6FCFC008100E4 /* libtheoradec.a in Frameworks */,
+				8BC4525A0ED6FE07008100E4 /* libpybind.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1303,23 +1310,45 @@
 		8BBFDFDB0EAF329E00102B4F /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
-				8BBFE3250EAF4FF500102B4F /* libOIS.a */,
+				8BC452560ED6FDE0008100E4 /* Release */,
+				8BC452550ED6FDD7008100E4 /* Debug */,
 				8BBFE0B20EAF3D0E00102B4F /* libz.a */,
-				8BBFE3460EAF51B900102B4F /* libBox2D.a */,
-				8BBFDFE10EAF32C700102B4F /* libopenal.a */,
 				8BBFE02E0EAF377000102B4F /* libpng.a */,
 				8BBFE1510EAF40F400102B4F /* libpython2.5.a */,
 				8BBFE0760EAF3B1C00102B4F /* libjpeg.a */,
-				8BBFE08B0EAF3BAB00102B4F /* libtheoradec.a */,
 				8BBFE0A00EAF3CAD00102B4F /* libvorbisenc.a */,
 				8BBFE0A10EAF3CAD00102B4F /* libvorbis.a */,
 				8BBFE0A20EAF3CAD00102B4F /* libvorbisfile.a */,
-				8BBFE1470EAF3F9800102B4F /* libpybind.a */,
 				8BBFDFE60EAF34CE00102B4F /* libexpat.a */,
 				8BBFDFFE0EAF367200102B4F /* libogg.a */,
-				8BDC9F9B0EBA02F8007D4D75 /* libmagic.dylib */,
 			);
 			name = Dependencies;
+			sourceTree = "<group>";
+		};
+		8BC452550ED6FDD7008100E4 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				8BBFDFE10EAF32C700102B4F /* libopenal.a */,
+				8BDC9F9B0EBA02F8007D4D75 /* libmagic.dylib */,
+				8BBFE3250EAF4FF500102B4F /* libOIS.a */,
+				8BBFE08B0EAF3BAB00102B4F /* libtheoradec.a */,
+				8BBFE1470EAF3F9800102B4F /* libpybind.a */,
+				8BBFE3460EAF51B900102B4F /* libBox2D.a */,
+			);
+			name = Debug;
+			sourceTree = "<group>";
+		};
+		8BC452560ED6FDE0008100E4 /* Release */ = {
+			isa = PBXGroup;
+			children = (
+				8BC452E80ED70B89008100E4 /* libmagic.dylib */,
+				8BC452E00ED70259008100E4 /* libopenal.a */,
+				8BC452B60ED700A6008100E4 /* libOIS.a */,
+				8BC452910ED6FFB1008100E4 /* libBox2D.a */,
+				8BC452590ED6FE07008100E4 /* libpybind.a */,
+				8BC4523A0ED6FCFC008100E4 /* libtheoradec.a */,
+			);
+			name = Release;
 			sourceTree = "<group>";
 		};
 		8BC5F4C40ECDF57A00F8FE60 /* OGLRenderSystem */ = {
@@ -1400,7 +1429,7 @@
 				8B1A78030EAC9F6100E2DCBE /* libOISInputSystem.a */,
 				8B1A783B0EACA12D00E2DCBE /* libOALSoundSystem.a */,
 				8B1A78800EACA2B300E2DCBE /* libMengeLogSystem.a */,
-				8B1A78970EACA3D400E2DCBE /* libSDLRenderSystem.a */,
+				8B1A78970EACA3D400E2DCBE /* libOGLRenderSystem.a */,
 				8BC94B2A0EAE1D1D0034D467 /* libMengeMacOSFileSystem.a */,
 				8BBFDF010EAF1E3900102B4F /* MacOSApplication.app */,
 				8BDC9F570EBA00B5007D4D75 /* libAstralaxParticleSystem.a */,
@@ -2060,7 +2089,7 @@
 			);
 			name = OGLRenderSystem;
 			productName = SDLRenderSystem;
-			productReference = 8B1A78970EACA3D400E2DCBE /* libSDLRenderSystem.a */;
+			productReference = 8B1A78970EACA3D400E2DCBE /* libOGLRenderSystem.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		8BBFDF000EAF1E3900102B4F /* MacOSApplication */ = {
@@ -2173,6 +2202,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8BC452E90ED70B89008100E4 /* libmagic.dylib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2554,9 +2584,11 @@
 					"$(inherited)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/Box2D/Library\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/Box2D/Build/Xcode/build/Debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/Box2D/Build/Xcode/build/Release\"";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = Box2DPhysicSystem;
@@ -2575,18 +2607,21 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				GCC_UNROLL_LOOPS = YES;
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/Box2D/Library\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/Box2D/Build/Xcode/build/Debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/Box2D/Build/Xcode/build/Release\"";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = Box2DPhysicSystem;
@@ -2629,6 +2664,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_UNROLL_LOOPS = YES;
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = "";
@@ -2675,12 +2711,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
+				GCC_AUTO_VECTORIZATION = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				GCC_UNROLL_LOOPS = YES;
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
@@ -2717,9 +2755,11 @@
 					"$(inherited)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/ois/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/ois/Mac/XCode-2.2/build/Debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/ois/Mac/XCode-2.2/build/Release\"";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
@@ -2741,15 +2781,18 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = "";
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				GCC_UNROLL_LOOPS = YES;
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/ois/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/ois/Mac/XCode-2.2/build/Debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/ois/Mac/XCode-2.2/build/Release\"";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
@@ -2779,10 +2822,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/OpenAL/OpenAL-MacOSX/build/Development\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/vorbis\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/ois/Mac/XCode-2.2/build/Debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/OpenAL/OpenAL-MacOSX/build/Deployment\"";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
@@ -2810,10 +2855,12 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/OpenAL/OpenAL-MacOSX/build/Development\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/vorbis\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/ois/Mac/XCode-2.2/build/Debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/OpenAL/OpenAL-MacOSX/build/Deployment\"";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
@@ -2913,10 +2960,10 @@
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
-				PRODUCT_NAME = SDLRenderSystem;
+				PRODUCT_NAME = OGLRenderSystem;
 				SHARED_PRECOMPS_DIR = "";
 				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
-				USER_HEADER_SEARCH_PATHS = "../src ../dependencies/SDL/include";
+				USER_HEADER_SEARCH_PATHS = ../src;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -2980,6 +3027,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_15)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_17)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/OGG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_10 = "\"$(SRCROOT)/../dependencies/theora/macosx/build/Debug\"";
@@ -2989,6 +3037,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_14 = "\"$(SRCROOT)/../dependencies/OGG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_15 = "\"$(SRCROOT)/../dependencies/SDL\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_16 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_17 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Release\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/ois/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/Box2D/Library\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/libPNG\"";
@@ -3063,19 +3112,21 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_15)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_17)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/OGG\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_10 = "\"$(SRCROOT)/../dependencies/theora/macosx/build/Debug\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_11 = "\"$(SRCROOT)/../dependencies/pybind/macosx/build/Debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_10 = "";
+				LIBRARY_SEARCH_PATHS_QUOTED_11 = "";
 				LIBRARY_SEARCH_PATHS_QUOTED_12 = "\"$(SRCROOT)/../dependencies/Python\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_13 = "\"$(SRCROOT)/../dependencies/zlib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_14 = "\"$(SRCROOT)/../dependencies/OGG\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_15 = "\"$(SRCROOT)/../dependencies/SDL\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_16 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_15 = "";
+				LIBRARY_SEARCH_PATHS_QUOTED_16 = "";
+				LIBRARY_SEARCH_PATHS_QUOTED_17 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Release\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/ois/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/Box2D/Library\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/libPNG\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../dependencies/OpenAL/OpenAL-MacOSX/build/Development\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_5 = "";
 				LIBRARY_SEARCH_PATHS_QUOTED_6 = "\"$(SRCROOT)/../dependencies/expat\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_7 = "\"$(SRCROOT)/../dependencies/zlib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_8 = "\"$(SRCROOT)/../dependencies/libPNG\"";
@@ -3103,7 +3154,7 @@
 				PRODUCT_NAME = MacOSApplication;
 				SDKROOT = "";
 				SHARED_PRECOMPS_DIR = "";
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				SYMROOT = build;
 				USER_HEADER_SEARCH_PATHS = "../src/ ../src/libs/ ../dependencies";
 				WRAPPER_EXTENSION = app;
@@ -3146,6 +3197,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = "override=\"\"";
+				GCC_UNROLL_LOOPS = YES;
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/lib;
 				OTHER_LDFLAGS = "";
@@ -3274,12 +3326,16 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_11)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_12)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_15)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/libPNG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_10 = "\"$(SRCROOT)/../dependencies/pybind/macosx/build/Debug\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_11 = "\"$(SRCROOT)/../dependencies/OGG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_12 = "\"$(SRCROOT)/../dependencies/Python\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_13 = "\"$(SRCROOT)/../dependencies/expat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_14 = "\"$(SRCROOT)/../dependencies/theora/macosx/build/Release\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_15 = "\"$(SRCROOT)/../dependencies/pybind/macosx/build/Release\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/libJPEG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/theora/macosx/build/Debug\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/vorbis\"";
@@ -3326,12 +3382,16 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_11)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_12)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_15)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/libPNG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_10 = "\"$(SRCROOT)/../dependencies/pybind/macosx/build/Debug\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_11 = "\"$(SRCROOT)/../dependencies/OGG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_12 = "\"$(SRCROOT)/../dependencies/Python\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_13 = "\"$(SRCROOT)/../dependencies/expat\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_14 = "\"$(SRCROOT)/../dependencies/theora/macosx/build/Release\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_15 = "\"$(SRCROOT)/../dependencies/pybind/macosx/build/Release\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/libJPEG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/theora/macosx/build/Debug\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/vorbis\"";
@@ -3345,7 +3405,7 @@
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PRODUCT_NAME = Menge;
 				SHARED_PRECOMPS_DIR = "";
-				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = static;
 				USER_HEADER_SEARCH_PATHS = "../src/ ../src/libs/ ../dependencies/pybind/include ../dependencies/python ../dependencies/theora/include ../dependencies/ ../dependencies/python/include";
 				ZERO_LINK = NO;
 			};

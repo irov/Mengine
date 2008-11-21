@@ -942,8 +942,8 @@ void OGLRenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )
 	
 		// Back to window
 		glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 ); 
-		glDrawBuffer( GL_BACK );
-		glReadBuffer( GL_BACK );
+		//glDrawBuffer( GL_BACK );
+		//glReadBuffer( GL_BACK );
 		//aglSetDrawable( m_aglContext, NULL );
 		/*if( m_fullscreen )
 		{

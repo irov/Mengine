@@ -32,7 +32,13 @@ namespace Menge
 	class MemoryTextureProfiler
 	{
 	public:
-		static Menge::String createStatsString();
+		enum MemoryUsage
+		{
+			MEM_MB,
+			MEM_KB,
+		};
+
+		static Menge::String createStatsString(MemoryUsage _method);
 		static void addMemTexture(const Menge::String & _name, unsigned long _size);
 		static void removeMemTexture(const Menge::String & _name);
 	private:

@@ -7,30 +7,32 @@ namespace Menge
 	unsigned long MemoryTextureProfiler::m_totalMemory = 0;
 	TTextureMemoryMap MemoryTextureProfiler::m_textures;
 	//////////////////////////////////////////////////////////////////////////
-	Menge::String MemoryTextureProfiler::createStatsString()
+	Menge::String MemoryTextureProfiler::createStatsString(MemoryUsage _method)
 	{
-		Menge::String s;
+		Menge::String s = "";
+		Menge::String suffix = "";
 
-	/*	for (TTextureMemoryMap::iterator it = m_textures.begin();
-			it != m_textures.end(); ++it)
+		float value = m_totalMemory;
+
+		switch(_method)
 		{
-			if (it != m_textures.begin())
-			{
-				s += "\n";
-			}
-
-			char blockTime[64];
-			sprintf(blockTime, "%d", (*it).second);
-
-			s += (*it).first;
-			s += ": ";
-			s += blockTime;
+			case MEM_MB:
+				suffix = "MB";
+				value/=1048576.f;
+				break;
+			case MEM_KB:
+				suffix = "KB";
+				value/=1024.f;
+				break;
+			default:
+				break;
 		}
-    */
+
 		char blockTime[64];
-		sprintf(blockTime, "%fM", (float)m_totalMemory / 1048576.f);
+		sprintf(blockTime, "%f", value);
 		s = "TMU = ";
 		s += blockTime;
+		s += suffix;
 
 		return s;
 	}
@@ -306,8 +308,8 @@ namespace Menge
 			return "";
 		}
 
-		Menge::String s;
-		Menge::String suffix;
+		Menge::String s = "";
+		Menge::String suffix = "";
 
 		switch(method)
 		{
@@ -387,7 +389,7 @@ namespace Menge
 			Holder<RenderEngine>::hostage()->renderText(str, pos, 0xFFAACC00);
 
 			pos.x +=250;
-			str = MemoryTextureProfiler::createStatsString();
+			str = MemoryTextureProfiler::createStatsString(MemoryTextureProfiler::MemoryUsage::MEM_MB);
 			Holder<RenderEngine>::hostage()->renderText(str, pos, 0xFFAACC00);
 		
 	

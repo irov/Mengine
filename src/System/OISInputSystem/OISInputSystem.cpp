@@ -50,6 +50,7 @@ bool OISInputSystem::initialize( Menge::WindowHandle _winHandle )
 	//m_mouse->getMouseState().height = 768;
 	//m_mouse->setEventCallback( this );
 	m_keyboard->setEventCallback( this );
+	m_keyboard->setTextTranslation( OIS::Keyboard::Unicode );
 
 	return true;
 }

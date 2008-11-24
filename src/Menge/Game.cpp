@@ -699,9 +699,13 @@ namespace Menge
 		if( Holder<ScriptEngine>::hostage()
 			->hasModuleFunction( m_pyPersonality, ("onCreateAccount") ) )
 		{
-			String accountNameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _accountName );
+			PyObject* uName = PyUnicode_DecodeUTF8( _accountName.c_str(), _accountName.length(), NULL );
 			Holder<ScriptEngine>::hostage()
-				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", accountNameAnsi.c_str() );
+				->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(O)", uName );
+
+			//String accountNameAnsi = Holder<Application>::hostage()->utf8ToAnsi( _accountName );
+			//Holder<ScriptEngine>::hostage()
+			//	->callModuleFunction( m_pyPersonality, ("onCreateAccount"), "(s)", accountNameAnsi.c_str() );
 		}
 		else
 		{

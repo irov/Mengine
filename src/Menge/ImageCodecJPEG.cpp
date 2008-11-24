@@ -426,6 +426,11 @@ namespace Menge
 
 		int row_stride = cinfo.output_width * numComponents;
 
+		if( ( _options & DF_CUSTOM_PITCH ) != 0 )
+		{
+			row_stride = ( _options >> 16);
+		}
+
 		if( numComponents < 4 )
 		{
 			while( cinfo.output_scanline < cinfo.output_height ) 

@@ -43,7 +43,11 @@ namespace Menge
 		TSettingsMap::iterator it = m_settings.find( _setting );
 		if( it != m_settings.end() )
 		{
-			pybind::call( it->second.second, "ss", _setting.c_str(), _value.c_str() );
+			PyObject* uSetting = PyUnicode_DecodeUTF8( _setting.c_str(), _setting.length(), NULL );
+			PyObject* uValue = PyUnicode_DecodeUTF8( _value.c_str(), _value.length(), NULL );
+			pybind::call( it->second.second, "(OO)", uSetting, uValue );
+
+			//pybind::call( it->second.second, "(ss)", _setting.c_str(), _value.c_str() );
 			it->second.first = _value;
 		}
 		else
@@ -130,9 +134,14 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
-			String keyAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->first );
-			String valueAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->second.first );
-			pybind::call( it->second.second, "(ss)", keyAnsi.c_str(), valueAnsi.c_str() );
+			//const char* key = it->first.c_str();
+			//const char* value = it->second.first.c_str();
+			PyObject* uKey = PyUnicode_DecodeUTF8( it->first.c_str(), it->first.length(), NULL );
+			PyObject* uValue = PyUnicode_DecodeUTF8( it->second.first.c_str(), it->second.first.length(), NULL );
+			pybind::call( it->second.second, "(OO)", uKey, uValue );
+			//String keyAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->first );
+			//String valueAnsi = Holder<Application>::hostage()->utf8ToAnsi( it->second.first );
+			//pybind::call( it->second.second, "(ss)", keyAnsi.c_str(), valueAnsi.c_str() );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

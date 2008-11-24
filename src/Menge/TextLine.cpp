@@ -33,14 +33,14 @@ namespace Menge
 			{
 				while( ( byte & (mask >> i) ) != 0 )
 				{
-					unsigned char glyphPart = (*it);
-					charData.code |= ( glyphPart << (i*8) );
-					it++;
 					if( it == it_end )
 					{
 						MENGE_LOG_ERROR( "TextField::setText: Invalid Text Encoding (not utf-8)" );
 						break;
 					}
+					unsigned char glyphPart = (*it);
+					charData.code |= ( glyphPart << (i*8) );
+					it++;
 					i++;
 				}
 			}

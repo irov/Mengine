@@ -9,7 +9,7 @@ ALSoundBufferStream::ALSoundBufferStream()
 : ALSoundBuffer()
 , m_alID2( 0 )
 , m_source( 0 )
-, m_buffer( 0 )
+, m_buffer( NULL )
 {
 }
 //////////////////////////////////////////////////////////////////////////
@@ -108,6 +108,25 @@ bool ALSoundBufferStream::update()
 {
 	unsigned long bytesWritten = 0;
 
+	if( m_buffer == NULL ) // starting stream
+	{
+		m_buffer = new char[m_bufferSize];
+
+		bytesWritten = decodeOggVorbis_( &m_oggFile, m_buffer, m_bufferSize );
+		if ( bytesWritten )
+		{
+			alBufferData( m_alID, m_format, m_buffer, bytesWritten, m_frequency );
+			alSourceQueueBuffers( m_source, 1, &m_alID );
+		}
+
+		bytesWritten = decodeOggVorbis_( &m_oggFile, m_buffer, m_bufferSize );
+		if ( bytesWritten )
+		{
+			alBufferData( m_alID2, m_format, m_buffer, bytesWritten, m_frequency );
+			alSourceQueueBuffers( m_source, 1, &m_alID2 );
+		}
+	}
+
 	int processed = 0;
 
 	ALuint buffer;
@@ -157,7 +176,7 @@ void ALSoundBufferStream::start( ALuint source )
 	alSourcei( m_source, AL_BUFFER, NULL );
 
 	// Fill all the Buffers with decoded audio data from the OggVorbis file
-	m_buffer = new char[m_bufferSize];
+	/*m_buffer = new char[m_bufferSize];
 	unsigned long bytesWritten = 0;
 
 	bytesWritten = decodeOggVorbis_( &m_oggFile, m_buffer, m_bufferSize );
@@ -172,10 +191,10 @@ void ALSoundBufferStream::start( ALuint source )
 	{
 		alBufferData( m_alID2, m_format, m_buffer, bytesWritten, m_frequency );
 		alSourceQueueBuffers( m_source, 1, &m_alID2 );
-	}
+	}*/
 
 	// Start playing source
-	alSourcePlay( m_source );
+	//alSourcePlay( m_source );
 
 	m_updating = true;
 }
@@ -200,6 +219,6 @@ int ALSoundBufferStream::getPosMs()
 //////////////////////////////////////////////////////////////////////////
 void ALSoundBufferStream::setPosMs( float _posMs )
 {
-	ov_time_seek( &m_oggFile, _posMs * 1000.0 );
+	ov_time_seek( &m_oggFile, _posMs * 0.001 );
 }
 //////////////////////////////////////////////////////////////////////////

@@ -46,8 +46,6 @@ namespace Menge
 
 	public:
 		bool init();
-		void initPredefinedResources();
-
 		bool loadPersonality();
 		void release();
 
@@ -183,5 +181,9 @@ namespace Menge
 		bool loaderAccounts_( const String& _iniFile );
 		ResourceManager* m_resourceManager;
 		TextManager* m_textManager;
+
+	private:
+		void _initPredefinedResources();
+		void _removePredefinedResources();
 	};	
 }

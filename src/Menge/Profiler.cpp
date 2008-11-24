@@ -28,7 +28,7 @@ namespace Menge
 		}
     */
 		char blockTime[64];
-		sprintf(blockTime, "%d", m_totalMemory);
+		sprintf(blockTime, "%fM", (float)m_totalMemory / 1048576.f);
 		s = "TMU = ";
 		s += blockTime;
 

@@ -419,7 +419,8 @@ namespace Menge
 			return false;
 		}
 		Holder<ResourceManager>::keep( m_resourceManager );
-		initPredefinedResources();
+
+		_initPredefinedResources();
 
 		Holder<LightSystem>::keep( new LightSystem );
 		for( TMapDeclaration::iterator
@@ -477,6 +478,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::release()
 	{
+		_removePredefinedResources();
+
 		if( m_pyPersonality )
 		{
 			Holder<ScriptEngine>::hostage()
@@ -929,7 +932,15 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::initPredefinedResources()
+	void Game::onFocus( bool _focus )
+	{
+		if( m_player != NULL )
+		{
+			m_player->onFocus( _focus );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::_initPredefinedResources()
 	{
 		ResourceFactoryParam param = { "WhitePixel" };
 
@@ -940,12 +951,9 @@ namespace Menge
 		m_resourceManager->registerResource( image );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::onFocus( bool _focus )
+	void Game::_removePredefinedResources()
 	{
-		if( m_player != NULL )
-		{
-			m_player->onFocus( _focus );
-		}
+		m_resourceManager->directResourceRelease("WhitePixel");
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

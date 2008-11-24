@@ -24,6 +24,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceManager::~ResourceManager()
 	{
+		_dumpResources();
 		for( TMapResource::iterator
 			it = m_mapResource.begin(),
 			it_end = m_mapResource.end();

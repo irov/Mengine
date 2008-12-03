@@ -389,7 +389,7 @@ namespace Menge
 			Holder<RenderEngine>::hostage()->renderText(str, pos, 0xFFAACC00);
 
 			pos.x +=250;
-			str = MemoryTextureProfiler::createStatsString(MemoryTextureProfiler::MemoryUsage::MEM_MB);
+			str = MemoryTextureProfiler::createStatsString(MemoryTextureProfiler::MEM_MB);
 			Holder<RenderEngine>::hostage()->renderText(str, pos, 0xFFAACC00);
 		
 	

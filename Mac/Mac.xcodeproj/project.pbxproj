@@ -6,30 +6,6 @@
 	objectVersion = 42;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		8BBAFE220EB87AF700434A80 /* BuildAll */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 8BBAFE3B0EB87B7D00434A80 /* Build configuration list for PBXAggregateTarget "BuildAll" */;
-			buildPhases = (
-			);
-			dependencies = (
-				8BBAFE240EB87B0900434A80 /* PBXTargetDependency */,
-				8BBAFE260EB87B0D00434A80 /* PBXTargetDependency */,
-				8BBAFE280EB87B1600434A80 /* PBXTargetDependency */,
-				8BBAFE2A0EB87B1B00434A80 /* PBXTargetDependency */,
-				8BDC9F5B0EBA00F0007D4D75 /* PBXTargetDependency */,
-				8BBAFE2C0EB87B1E00434A80 /* PBXTargetDependency */,
-				8BBAFE300EB87B2500434A80 /* PBXTargetDependency */,
-				8BBAFE320EB87B2900434A80 /* PBXTargetDependency */,
-				8BBAFE340EB87B2D00434A80 /* PBXTargetDependency */,
-				8BBAFE360EB87B3100434A80 /* PBXTargetDependency */,
-				8BBAFE380EB87B3400434A80 /* PBXTargetDependency */,
-			);
-			name = BuildAll;
-			productName = BuildAll;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		8B1A721A0EAC8ADB00E2DCBE /* Box2DPhysicBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A72140EAC8ADB00E2DCBE /* Box2DPhysicBody.cpp */; };
 		8B1A721B0EAC8ADB00E2DCBE /* Box2DPhysicBody.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A72150EAC8ADB00E2DCBE /* Box2DPhysicBody.h */; };
@@ -111,20 +87,17 @@
 		8B1A78570EACA14E00E2DCBE /* ALSoundSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78480EACA14E00E2DCBE /* ALSoundSource.h */; };
 		8B1A78580EACA14E00E2DCBE /* ALSoundSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A78490EACA14E00E2DCBE /* ALSoundSystem.cpp */; };
 		8B1A78590EACA14E00E2DCBE /* ALSoundSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A784A0EACA14E00E2DCBE /* ALSoundSystem.h */; };
-		8B1A785A0EACA14E00E2DCBE /* SoundSystemInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A784C0EACA14E00E2DCBE /* SoundSystemInterface.cpp */; };
 		8B1A785B0EACA14E00E2DCBE /* SulkSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A784E0EACA14E00E2DCBE /* SulkSystem.cpp */; };
 		8B1A785C0EACA14E00E2DCBE /* SulkSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A784F0EACA14E00E2DCBE /* SulkSystem.h */; };
 		8B1A785D0EACA14E00E2DCBE /* VorbisCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A78500EACA14E00E2DCBE /* VorbisCallback.cpp */; };
 		8B1A785E0EACA14E00E2DCBE /* VorbisCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A78510EACA14E00E2DCBE /* VorbisCallback.h */; };
 		8B1A788C0EACA2E200E2DCBE /* LogSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A78880EACA2E200E2DCBE /* LogSystem.cpp */; };
 		8B1A788D0EACA2E200E2DCBE /* LogSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A788A0EACA2E200E2DCBE /* LogSystem.h */; };
+		8B60E82A0EE6EB4800E1AA4F /* SoundSystemInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B60E8290EE6EB4800E1AA4F /* SoundSystemInterface.cpp */; };
 		8B77FE270EB205D700F78BA7 /* libOGLRenderSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B1A78970EACA3D400E2DCBE /* libOGLRenderSystem.a */; };
 		8BBFDF0B0EAF1F6600102B4F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBFDF0A0EAF1F6600102B4F /* main.cpp */; };
 		8BBFDF0E0EAF1FDA00102B4F /* MacOSApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BBFDF0D0EAF1FDA00102B4F /* MacOSApplication.cpp */; };
 		8BBFDFE70EAF34DA00102B4F /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFDFE60EAF34CE00102B4F /* libexpat.a */; };
-		8BBFE0A60EAF3CBB00102B4F /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE0A10EAF3CAD00102B4F /* libvorbis.a */; };
-		8BBFE0A70EAF3CBB00102B4F /* libvorbisenc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE0A00EAF3CAD00102B4F /* libvorbisenc.a */; };
-		8BBFE0A80EAF3CBB00102B4F /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE0A20EAF3CAD00102B4F /* libvorbisfile.a */; };
 		8BC32C8B0EB0A8A500212960 /* Application.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BE693FC0EA8D6C100B18A92 /* Application.h */; };
 		8BC32C8C0EB0A8A600212960 /* Application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BE693FB0EA8D6C100B18A92 /* Application.cpp */; };
 		8BC32D190EB0B32500212960 /* Account.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BE693EC0EA8D6C100B18A92 /* Account.cpp */; };
@@ -375,7 +348,6 @@
 		8BC32E300EB0B5AF00212960 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE02E0EAF377000102B4F /* libpng.a */; };
 		8BC32E310EB0B5AF00212960 /* libpython2.5.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE1510EAF40F400102B4F /* libpython2.5.a */; };
 		8BC32E320EB0B5AF00212960 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFE0760EAF3B1C00102B4F /* libjpeg.a */; };
-		8BC32E510EB0B6A700212960 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BBFDFFE0EAF367200102B4F /* libogg.a */; };
 		8BC33FF80ED423C300E2895C /* OGLRenderTextureFBO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC33FF60ED423C200E2895C /* OGLRenderTextureFBO.cpp */; };
 		8BC33FF90ED423C300E2895C /* OGLRenderTextureFBO.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC33FF70ED423C300E2895C /* OGLRenderTextureFBO.h */; };
 		8BC3B64B0EC9CEAC007315B7 /* TextManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC3B64A0EC9CEAB007315B7 /* TextManager.cpp */; };
@@ -387,8 +359,6 @@
 		8BC452920ED6FFB1008100E4 /* libBox2D.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC452910ED6FFB1008100E4 /* libBox2D.a */; };
 		8BC452B70ED700A6008100E4 /* libOIS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC452B60ED700A6008100E4 /* libOIS.a */; };
 		8BC452E10ED70259008100E4 /* libopenal.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC452E00ED70259008100E4 /* libopenal.a */; };
-		8BC452E90ED70B89008100E4 /* libmagic.dylib in Resources */ = {isa = PBXBuildFile; fileRef = 8BC452E80ED70B89008100E4 /* libmagic.dylib */; };
-		8BC452ED0ED70DE8008100E4 /* libmagic.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC452E80ED70B89008100E4 /* libmagic.dylib */; };
 		8BC5F4D00ECDF57A00F8FE60 /* OGLBatching.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC5F4C50ECDF57A00F8FE60 /* OGLBatching.cpp */; };
 		8BC5F4D10ECDF57A00F8FE60 /* OGLRenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC5F4C60ECDF57A00F8FE60 /* OGLRenderSystem.cpp */; };
 		8BC5F4D20ECDF57A00F8FE60 /* OGLRenderSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC5F4C80ECDF57A00F8FE60 /* OGLRenderSystem.h */; };
@@ -413,7 +383,12 @@
 		8BC94B4A0EAE1D460034D467 /* FileSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC94B3C0EAE1D460034D467 /* FileSystem.h */; };
 		8BC94B4B0EAE1D460034D467 /* MemoryDataStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC94B3D0EAE1D460034D467 /* MemoryDataStream.cpp */; };
 		8BC94B4C0EAE1D460034D467 /* MemoryDataStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC94B3E0EAE1D460034D467 /* MemoryDataStream.h */; };
+		8BCD8B5E0EE033E100CAAC86 /* libvorbisenc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BCD8B5C0EE0339100CAAC86 /* libvorbisenc.a */; };
+		8BCD8B640EE033FE00CAAC86 /* libvorbisfile.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BCD8B5D0EE0339100CAAC86 /* libvorbisfile.a */; };
+		8BCD8B680EE0341800CAAC86 /* libvorbis.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BCD8B5B0EE0339100CAAC86 /* libvorbis.a */; };
+		8BCD8B990EE0357500CAAC86 /* libogg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BCD8B980EE0357500CAAC86 /* libogg.a */; };
 		8BCFB2B90EB7572500E3ED17 /* LoggerConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BCFB2B80EB7572500E3ED17 /* LoggerConsole.cpp */; };
+		8BD09A9E0EE5B32F00D7CE6C /* libmagic.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BD09A860EE42B1200D7CE6C /* libmagic.dylib */; };
 		8BDC9F5C0EBA0109007D4D75 /* libAstralaxParticleSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BDC9F570EBA00B5007D4D75 /* libAstralaxParticleSystem.a */; };
 		8BDC9F6C0EBA0126007D4D75 /* AstralaxEmitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BDC9F640EBA0126007D4D75 /* AstralaxEmitter.cpp */; };
 		8BDC9F6D0EBA0126007D4D75 /* AstralaxEmitter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BDC9F650EBA0126007D4D75 /* AstralaxEmitter.h */; };
@@ -425,76 +400,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		8BBAFE230EB87B0900434A80 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8B1A728E0EAC92E300E2DCBE;
-			remoteInfo = Math;
-		};
-		8BBAFE250EB87B0D00434A80 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8B1A73C40EAC9DA200E2DCBE;
-			remoteInfo = XmlParser;
-		};
-		8BBAFE270EB87B1600434A80 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8BE693E10EA8D5CA00B18A92;
-			remoteInfo = Menge;
-		};
-		8BBAFE290EB87B1A00434A80 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8B1A720A0EAC8A1A00E2DCBE;
-			remoteInfo = Box2DPhysicSystem;
-		};
-		8BBAFE2B0EB87B1E00434A80 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8B1A78020EAC9F6100E2DCBE;
-			remoteInfo = OISInputSystem;
-		};
-		8BBAFE2F0EB87B2500434A80 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8B1A783A0EACA12D00E2DCBE;
-			remoteInfo = OALSoundSystem;
-		};
-		8BBAFE310EB87B2900434A80 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8B1A787F0EACA2B300E2DCBE;
-			remoteInfo = MengeLogSystem;
-		};
-		8BBAFE330EB87B2D00434A80 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8B1A78960EACA3D400E2DCBE;
-			remoteInfo = SDLRenderSystem;
-		};
-		8BBAFE350EB87B3100434A80 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8BC94B290EAE1D1D0034D467;
-			remoteInfo = MengeMacOSFileSystem;
-		};
-		8BBAFE370EB87B3400434A80 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8BBFDF000EAF1E3900102B4F;
-			remoteInfo = MacOSApplication;
-		};
 		8BC8FADD0EC3316900DAC26A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
@@ -565,14 +470,19 @@
 			remoteGlobalIDString = 8B1A73C40EAC9DA200E2DCBE;
 			remoteInfo = XmlParser;
 		};
-		8BDC9F5A0EBA00F0007D4D75 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8BE693D50EA8D5B400B18A92 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8BDC9F560EBA00B5007D4D75;
-			remoteInfo = AstralaxParticleSystem;
-		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8BD098FD0EE4096C00D7CE6C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		8B1A720B0EAC8A1A00E2DCBE /* libBox2DPhysicSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBox2DPhysicSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -674,8 +584,6 @@
 		8B1A78480EACA14E00E2DCBE /* ALSoundSource.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = ALSoundSource.h; sourceTree = "<group>"; };
 		8B1A78490EACA14E00E2DCBE /* ALSoundSystem.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = ALSoundSystem.cpp; sourceTree = "<group>"; };
 		8B1A784A0EACA14E00E2DCBE /* ALSoundSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = ALSoundSystem.h; sourceTree = "<group>"; };
-		8B1A784C0EACA14E00E2DCBE /* SoundSystemInterface.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = SoundSystemInterface.cpp; sourceTree = "<group>"; };
-		8B1A784D0EACA14E00E2DCBE /* SoundSystemInterface.def */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = text; path = SoundSystemInterface.def; sourceTree = "<group>"; };
 		8B1A784E0EACA14E00E2DCBE /* SulkSystem.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = SulkSystem.cpp; sourceTree = "<group>"; };
 		8B1A784F0EACA14E00E2DCBE /* SulkSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = SulkSystem.h; sourceTree = "<group>"; };
 		8B1A78500EACA14E00E2DCBE /* VorbisCallback.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = VorbisCallback.cpp; sourceTree = "<group>"; };
@@ -685,6 +593,7 @@
 		8B1A78890EACA2E200E2DCBE /* LogSystem.def */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = text; path = LogSystem.def; sourceTree = "<group>"; };
 		8B1A788A0EACA2E200E2DCBE /* LogSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = LogSystem.h; sourceTree = "<group>"; };
 		8B1A78970EACA3D400E2DCBE /* libOGLRenderSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libOGLRenderSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B60E8290EE6EB4800E1AA4F /* SoundSystemInterface.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = SoundSystemInterface.cpp; sourceTree = "<group>"; };
 		8BBFDF010EAF1E3900102B4F /* MacOSApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacOSApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BBFDF030EAF1E3900102B4F /* MacOSApplication-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "MacOSApplication-Info.plist"; sourceTree = "<group>"; };
 		8BBFDF0A0EAF1F6600102B4F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -692,13 +601,9 @@
 		8BBFDF0D0EAF1FDA00102B4F /* MacOSApplication.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MacOSApplication.cpp; sourceTree = "<group>"; };
 		8BBFDFE10EAF32C700102B4F /* libopenal.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopenal.a; path = "../dependencies/OpenAL/OpenAL-MacOSX/build/Development/libopenal.a"; sourceTree = SOURCE_ROOT; };
 		8BBFDFE60EAF34CE00102B4F /* libexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libexpat.a; path = ../dependencies/expat/libexpat.a; sourceTree = SOURCE_ROOT; };
-		8BBFDFFE0EAF367200102B4F /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = ../dependencies/OGG/libogg.a; sourceTree = SOURCE_ROOT; };
 		8BBFE02E0EAF377000102B4F /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../dependencies/libPNG/libpng.a; sourceTree = SOURCE_ROOT; };
 		8BBFE0760EAF3B1C00102B4F /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjpeg.a; path = ../dependencies/libJPEG/libjpeg.a; sourceTree = SOURCE_ROOT; };
 		8BBFE08B0EAF3BAB00102B4F /* libtheoradec.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtheoradec.a; path = ../dependencies/theora/macosx/build/Debug/libtheoradec.a; sourceTree = SOURCE_ROOT; };
-		8BBFE0A00EAF3CAD00102B4F /* libvorbisenc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisenc.a; path = ../dependencies/vorbis/libvorbisenc.a; sourceTree = SOURCE_ROOT; };
-		8BBFE0A10EAF3CAD00102B4F /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = ../dependencies/vorbis/libvorbis.a; sourceTree = SOURCE_ROOT; };
-		8BBFE0A20EAF3CAD00102B4F /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = ../dependencies/vorbis/libvorbisfile.a; sourceTree = SOURCE_ROOT; };
 		8BBFE0B20EAF3D0E00102B4F /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = ../dependencies/zlib/libz.a; sourceTree = SOURCE_ROOT; };
 		8BBFE1470EAF3F9800102B4F /* libpybind.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpybind.a; path = ../dependencies/pybind/macosx/build/Debug/libpybind.a; sourceTree = SOURCE_ROOT; };
 		8BBFE1510EAF40F400102B4F /* libpython2.5.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpython2.5.a; path = ../dependencies/Python/libpython2.5.a; sourceTree = SOURCE_ROOT; };
@@ -715,7 +620,6 @@
 		8BC452910ED6FFB1008100E4 /* libBox2D.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBox2D.a; path = ../dependencies/Box2D/Build/Xcode/build/Release/libBox2D.a; sourceTree = SOURCE_ROOT; };
 		8BC452B60ED700A6008100E4 /* libOIS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOIS.a; path = "../dependencies/ois/Mac/XCode-2.2/build/Release/libOIS.a"; sourceTree = SOURCE_ROOT; };
 		8BC452E00ED70259008100E4 /* libopenal.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopenal.a; path = "../dependencies/OpenAL/OpenAL-MacOSX/build/Deployment/libopenal.a"; sourceTree = SOURCE_ROOT; };
-		8BC452E80ED70B89008100E4 /* libmagic.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmagic.dylib; path = ../dependencies/astralax/MagicMAC/Release/libmagic.dylib; sourceTree = SOURCE_ROOT; };
 		8BC5F4C50ECDF57A00F8FE60 /* OGLBatching.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLBatching.cpp; sourceTree = "<group>"; };
 		8BC5F4C60ECDF57A00F8FE60 /* OGLRenderSystem.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLRenderSystem.cpp; sourceTree = "<group>"; };
 		8BC5F4C70ECDF57A00F8FE60 /* OGLRenderSystem.def */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = text; path = OGLRenderSystem.def; sourceTree = "<group>"; };
@@ -742,9 +646,14 @@
 		8BC94B3C0EAE1D460034D467 /* FileSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = FileSystem.h; sourceTree = "<group>"; };
 		8BC94B3D0EAE1D460034D467 /* MemoryDataStream.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryDataStream.cpp; sourceTree = "<group>"; };
 		8BC94B3E0EAE1D460034D467 /* MemoryDataStream.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = MemoryDataStream.h; sourceTree = "<group>"; };
+		8BCD8B5B0EE0339100CAAC86 /* libvorbis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbis.a; path = ../dependencies/vorbis/macosx/build/Release/libvorbis.a; sourceTree = SOURCE_ROOT; };
+		8BCD8B5C0EE0339100CAAC86 /* libvorbisenc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisenc.a; path = ../dependencies/vorbis/macosx/build/Release/libvorbisenc.a; sourceTree = SOURCE_ROOT; };
+		8BCD8B5D0EE0339100CAAC86 /* libvorbisfile.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvorbisfile.a; path = ../dependencies/vorbis/macosx/build/Release/libvorbisfile.a; sourceTree = SOURCE_ROOT; };
+		8BCD8B980EE0357500CAAC86 /* libogg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libogg.a; path = ../dependencies/OGG/macosx/build/Deployment/libogg.a; sourceTree = SOURCE_ROOT; };
 		8BCFB2B70EB7572400E3ED17 /* LoggerConsole.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = LoggerConsole.h; sourceTree = "<group>"; };
 		8BCFB2B80EB7572500E3ED17 /* LoggerConsole.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = "-2147483641"; path = LoggerConsole.cpp; sourceTree = "<group>"; };
 		8BCFB2CB0EB759C600E3ED17 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Platform.h; path = ../src/Config/Platform.h; sourceTree = SOURCE_ROOT; };
+		8BD09A860EE42B1200D7CE6C /* libmagic.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmagic.dylib; path = ../dependencies/astralax/MAC/release/libmagic.dylib; sourceTree = SOURCE_ROOT; };
 		8BDC9F570EBA00B5007D4D75 /* libAstralaxParticleSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAstralaxParticleSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BDC9F640EBA0126007D4D75 /* AstralaxEmitter.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = AstralaxEmitter.cpp; sourceTree = "<group>"; };
 		8BDC9F650EBA0126007D4D75 /* AstralaxEmitter.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = AstralaxEmitter.h; sourceTree = "<group>"; };
@@ -753,7 +662,6 @@
 		8BDC9F680EBA0126007D4D75 /* AstralaxParticleSystem.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = AstralaxParticleSystem.cpp; sourceTree = "<group>"; };
 		8BDC9F690EBA0126007D4D75 /* AstralaxParticleSystem.def */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = text; path = AstralaxParticleSystem.def; sourceTree = "<group>"; };
 		8BDC9F6A0EBA0126007D4D75 /* AstralaxParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = AstralaxParticleSystem.h; sourceTree = "<group>"; };
-		8BDC9F9B0EBA02F8007D4D75 /* libmagic.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmagic.dylib; path = ../dependencies/astralax/MagicMAC/Debug/libmagic.dylib; sourceTree = SOURCE_ROOT; };
 		8BE693E20EA8D5CA00B18A92 /* libMenge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMenge.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BE693EC0EA8D6C100B18A92 /* Account.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; name = Account.cpp; path = ../src/Menge/Account.cpp; sourceTree = SOURCE_ROOT; };
 		8BE693ED0EA8D6C100B18A92 /* Account.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Account.h; path = ../src/Menge/Account.h; sourceTree = SOURCE_ROOT; };
@@ -1034,9 +942,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8BBFE0A60EAF3CBB00102B4F /* libvorbis.a in Frameworks */,
-				8BBFE0A70EAF3CBB00102B4F /* libvorbisenc.a in Frameworks */,
-				8BBFE0A80EAF3CBB00102B4F /* libvorbisfile.a in Frameworks */,
+				8BCD8B680EE0341800CAAC86 /* libvorbis.a in Frameworks */,
+				8BCD8B640EE033FE00CAAC86 /* libvorbisfile.a in Frameworks */,
+				8BCD8B5E0EE033E100CAAC86 /* libvorbisenc.a in Frameworks */,
 				8BC452E10ED70259008100E4 /* libopenal.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1059,8 +967,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8BC452ED0ED70DE8008100E4 /* libmagic.dylib in Frameworks */,
-				8BC32E510EB0B6A700212960 /* libogg.a in Frameworks */,
 				8BC32E2F0EB0B58500212960 /* libz.a in Frameworks */,
 				8BC8FADF0EC3317A00DAC26A /* libMenge.a in Frameworks */,
 				8BDC9F5C0EBA0109007D4D75 /* libAstralaxParticleSystem.a in Frameworks */,
@@ -1069,7 +975,9 @@
 				8BC32E2C0EB0B56B00212960 /* libOALSoundSystem.a in Frameworks */,
 				8BC32E2B0EB0B56700212960 /* libOISInputSystem.a in Frameworks */,
 				8BC32E260EB0B55200212960 /* libBox2DPhysicSystem.a in Frameworks */,
+				8BD09A9E0EE5B32F00D7CE6C /* libmagic.dylib in Frameworks */,
 				8B77FE270EB205D700F78BA7 /* libOGLRenderSystem.a in Frameworks */,
+				8BCD8B990EE0357500CAAC86 /* libogg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1270,8 +1178,7 @@
 				8B1A78480EACA14E00E2DCBE /* ALSoundSource.h */,
 				8B1A78490EACA14E00E2DCBE /* ALSoundSystem.cpp */,
 				8B1A784A0EACA14E00E2DCBE /* ALSoundSystem.h */,
-				8B1A784C0EACA14E00E2DCBE /* SoundSystemInterface.cpp */,
-				8B1A784D0EACA14E00E2DCBE /* SoundSystemInterface.def */,
+				8B60E8290EE6EB4800E1AA4F /* SoundSystemInterface.cpp */,
 				8B1A784E0EACA14E00E2DCBE /* SulkSystem.cpp */,
 				8B1A784F0EACA14E00E2DCBE /* SulkSystem.h */,
 				8B1A78500EACA14E00E2DCBE /* VorbisCallback.cpp */,
@@ -1316,11 +1223,7 @@
 				8BBFE02E0EAF377000102B4F /* libpng.a */,
 				8BBFE1510EAF40F400102B4F /* libpython2.5.a */,
 				8BBFE0760EAF3B1C00102B4F /* libjpeg.a */,
-				8BBFE0A00EAF3CAD00102B4F /* libvorbisenc.a */,
-				8BBFE0A10EAF3CAD00102B4F /* libvorbis.a */,
-				8BBFE0A20EAF3CAD00102B4F /* libvorbisfile.a */,
 				8BBFDFE60EAF34CE00102B4F /* libexpat.a */,
-				8BBFDFFE0EAF367200102B4F /* libogg.a */,
 			);
 			name = Dependencies;
 			sourceTree = "<group>";
@@ -1329,7 +1232,6 @@
 			isa = PBXGroup;
 			children = (
 				8BBFDFE10EAF32C700102B4F /* libopenal.a */,
-				8BDC9F9B0EBA02F8007D4D75 /* libmagic.dylib */,
 				8BBFE3250EAF4FF500102B4F /* libOIS.a */,
 				8BBFE08B0EAF3BAB00102B4F /* libtheoradec.a */,
 				8BBFE1470EAF3F9800102B4F /* libpybind.a */,
@@ -1341,12 +1243,16 @@
 		8BC452560ED6FDE0008100E4 /* Release */ = {
 			isa = PBXGroup;
 			children = (
-				8BC452E80ED70B89008100E4 /* libmagic.dylib */,
+				8BCD8B980EE0357500CAAC86 /* libogg.a */,
+				8BCD8B5B0EE0339100CAAC86 /* libvorbis.a */,
+				8BCD8B5C0EE0339100CAAC86 /* libvorbisenc.a */,
+				8BCD8B5D0EE0339100CAAC86 /* libvorbisfile.a */,
 				8BC452E00ED70259008100E4 /* libopenal.a */,
 				8BC452B60ED700A6008100E4 /* libOIS.a */,
 				8BC452910ED6FFB1008100E4 /* libBox2D.a */,
 				8BC452590ED6FE07008100E4 /* libpybind.a */,
 				8BC4523A0ED6FCFC008100E4 /* libtheoradec.a */,
+				8BD09A860EE42B1200D7CE6C /* libmagic.dylib */,
 			);
 			name = Release;
 			sourceTree = "<group>";
@@ -2099,6 +2005,7 @@
 				8BBFDEFD0EAF1E3900102B4F /* Resources */,
 				8BBFDEFE0EAF1E3900102B4F /* Sources */,
 				8BBFDEFF0EAF1E3900102B4F /* Frameworks */,
+				8BD098FD0EE4096C00D7CE6C /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -2181,7 +2088,6 @@
 			productRefGroup = 8BE693E30EA8D5CA00B18A92 /* Products */;
 			projectDirPath = "";
 			targets = (
-				8BBAFE220EB87AF700434A80 /* BuildAll */,
 				8BE693E10EA8D5CA00B18A92 /* Menge */,
 				8B1A720A0EAC8A1A00E2DCBE /* Box2DPhysicSystem */,
 				8B1A728E0EAC92E300E2DCBE /* Math */,
@@ -2202,7 +2108,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8BC452E90ED70B89008100E4 /* libmagic.dylib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2271,9 +2176,9 @@
 				8B1A78540EACA14E00E2DCBE /* ALSoundBufferStream.cpp in Sources */,
 				8B1A78560EACA14E00E2DCBE /* ALSoundSource.cpp in Sources */,
 				8B1A78580EACA14E00E2DCBE /* ALSoundSystem.cpp in Sources */,
-				8B1A785A0EACA14E00E2DCBE /* SoundSystemInterface.cpp in Sources */,
 				8B1A785B0EACA14E00E2DCBE /* SulkSystem.cpp in Sources */,
 				8B1A785D0EACA14E00E2DCBE /* VorbisCallback.cpp in Sources */,
+				8B60E82A0EE6EB4800E1AA4F /* SoundSystemInterface.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2457,56 +2362,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		8BBAFE240EB87B0900434A80 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8B1A728E0EAC92E300E2DCBE /* Math */;
-			targetProxy = 8BBAFE230EB87B0900434A80 /* PBXContainerItemProxy */;
-		};
-		8BBAFE260EB87B0D00434A80 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8B1A73C40EAC9DA200E2DCBE /* XmlParser */;
-			targetProxy = 8BBAFE250EB87B0D00434A80 /* PBXContainerItemProxy */;
-		};
-		8BBAFE280EB87B1600434A80 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8BE693E10EA8D5CA00B18A92 /* Menge */;
-			targetProxy = 8BBAFE270EB87B1600434A80 /* PBXContainerItemProxy */;
-		};
-		8BBAFE2A0EB87B1B00434A80 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8B1A720A0EAC8A1A00E2DCBE /* Box2DPhysicSystem */;
-			targetProxy = 8BBAFE290EB87B1A00434A80 /* PBXContainerItemProxy */;
-		};
-		8BBAFE2C0EB87B1E00434A80 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8B1A78020EAC9F6100E2DCBE /* OISInputSystem */;
-			targetProxy = 8BBAFE2B0EB87B1E00434A80 /* PBXContainerItemProxy */;
-		};
-		8BBAFE300EB87B2500434A80 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8B1A783A0EACA12D00E2DCBE /* OALSoundSystem */;
-			targetProxy = 8BBAFE2F0EB87B2500434A80 /* PBXContainerItemProxy */;
-		};
-		8BBAFE320EB87B2900434A80 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8B1A787F0EACA2B300E2DCBE /* MengeLogSystem */;
-			targetProxy = 8BBAFE310EB87B2900434A80 /* PBXContainerItemProxy */;
-		};
-		8BBAFE340EB87B2D00434A80 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8B1A78960EACA3D400E2DCBE /* OGLRenderSystem */;
-			targetProxy = 8BBAFE330EB87B2D00434A80 /* PBXContainerItemProxy */;
-		};
-		8BBAFE360EB87B3100434A80 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8BC94B290EAE1D1D0034D467 /* MengeMacOSFileSystem */;
-			targetProxy = 8BBAFE350EB87B3100434A80 /* PBXContainerItemProxy */;
-		};
-		8BBAFE380EB87B3400434A80 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8BBFDF000EAF1E3900102B4F /* MacOSApplication */;
-			targetProxy = 8BBAFE370EB87B3400434A80 /* PBXContainerItemProxy */;
-		};
 		8BC8FADE0EC3316900DAC26A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8BE693E10EA8D5CA00B18A92 /* Menge */;
@@ -2556,11 +2411,6 @@
 			isa = PBXTargetDependency;
 			target = 8B1A73C40EAC9DA200E2DCBE /* XmlParser */;
 			targetProxy = 8BC8FAF20EC331B000DAC26A /* PBXContainerItemProxy */;
-		};
-		8BDC9F5B0EBA00F0007D4D75 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8BDC9F560EBA00B5007D4D75 /* AstralaxParticleSystem */;
-			targetProxy = 8BDC9F5A0EBA00F0007D4D75 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2823,11 +2673,13 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_5)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/OpenAL/OpenAL-MacOSX/build/Development\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/vorbis\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/ois/Mac/XCode-2.2/build/Debug\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/OpenAL/OpenAL-MacOSX/build/Deployment\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../dependencies/vorbis/macosx/build/Release\"";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
@@ -2856,11 +2708,13 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_5)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/OpenAL/OpenAL-MacOSX/build/Development\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/vorbis\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/ois/Mac/XCode-2.2/build/Debug\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/OpenAL/OpenAL-MacOSX/build/Deployment\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../dependencies/vorbis/macosx/build/Release\"";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
@@ -2968,34 +2822,18 @@
 			};
 			name = Release;
 		};
-		8BBAFE3C0EB87B7D00434A80 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = BuildAll;
-			};
-			name = Debug;
-		};
-		8BBAFE3D0EB87B7D00434A80 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				PRODUCT_NAME = BuildAll;
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
 		8BBFDF050EAF1E3A00102B4F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DYLIB_CURRENT_VERSION = "$(inherited)";
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_2)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/build/Release/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/build/Release/Frameworks\"";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -3028,6 +2866,11 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_15)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_16)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_17)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_18)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_19)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_20)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_21)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_22)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/OGG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_10 = "\"$(SRCROOT)/../dependencies/theora/macosx/build/Debug\"";
@@ -3038,7 +2881,12 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_15 = "\"$(SRCROOT)/../dependencies/SDL\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_16 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Debug\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_17 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Release\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_18 = "\"$(SRCROOT)/../dependencies/astralax/magi2/Release\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_19 = "\"$(SRCROOT)/../dependencies/OGG/macosx/build/Deployment\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/ois/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_20 = "\"$(SRCROOT)/../dependencies/astralax/MAC/release\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_21 = "\"$(SRCROOT)/../dependencies/astralax/MAC/release\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_22 = "\"$(SRCROOT)/../dependencies/astralax/MAC/release\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/Box2D/Library\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/libPNG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../dependencies/OpenAL/OpenAL-MacOSX/build/Development\"";
@@ -3113,20 +2961,23 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_15)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_16)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_17)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_15)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/OGG\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_10 = "";
-				LIBRARY_SEARCH_PATHS_QUOTED_11 = "";
+				LIBRARY_SEARCH_PATHS_QUOTED_10 = "\"$(SRCROOT)/../dependencies/OGG/macosx/build/Deployment\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_11 = "\"$(SRCROOT)/../dependencies/astralax/MAC/release\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_12 = "\"$(SRCROOT)/../dependencies/Python\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_13 = "\"$(SRCROOT)/../dependencies/zlib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_14 = "\"$(SRCROOT)/../dependencies/OGG\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_15 = "";
-				LIBRARY_SEARCH_PATHS_QUOTED_16 = "";
-				LIBRARY_SEARCH_PATHS_QUOTED_17 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Release\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_15 = "\"$(SRCROOT)/../dependencies/astralax/MAC/release\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/ois/lib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/Box2D/Library\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/libPNG\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_5 = "";
+				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../dependencies/astralax/MAC/release\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_6 = "\"$(SRCROOT)/../dependencies/expat\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_7 = "\"$(SRCROOT)/../dependencies/zlib\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_8 = "\"$(SRCROOT)/../dependencies/libPNG\"";
@@ -3228,8 +3079,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/astralax/MAC/release\"";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
@@ -3256,8 +3109,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_2)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/astralax/MagicMAC/Debug\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "";
+				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/astralax/MAC/release\"";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
@@ -3473,15 +3328,6 @@
 			buildConfigurations = (
 				8B1A789C0EACA3F500E2DCBE /* Debug */,
 				8B1A789D0EACA3F500E2DCBE /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		8BBAFE3B0EB87B7D00434A80 /* Build configuration list for PBXAggregateTarget "BuildAll" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				8BBAFE3C0EB87B7D00434A80 /* Debug */,
-				8BBAFE3D0EB87B7D00434A80 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

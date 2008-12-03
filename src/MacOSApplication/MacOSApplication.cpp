@@ -144,7 +144,8 @@ namespace Menge
 		// create the window rect in global coords
 		const String& projectTitle = m_menge->getProjectTitle();
 		String ansiTitle = utf8ToAnsi( projectTitle );
-		m_window = createWindow_( ansiTitle, 1024, 768 );
+		bool hasWindowPanel = m_menge->getHasWindowPanel();
+		m_window = createWindow_( ansiTitle, 1024, 768, hasWindowPanel );
             
 		// Get our view
         HIViewFindByID( HIViewGetRoot( m_window ), kHIViewWindowContentID, &m_view );
@@ -301,7 +302,7 @@ namespace Menge
 		CFRelease( messageRef );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowRef MacOSApplication::createWindow_( const String& _title, int _width, int _height )
+	WindowRef MacOSApplication::createWindow_( const String& _title, int _width, int _height, bool _hasWindowPanel )
 	{
 		WindowRef winRef = NULL;
 		::Rect windowRect;
@@ -311,11 +312,17 @@ namespace Menge
 		windowRect.bottom = _height;
 			
 		// set the default attributes for the window
-		WindowAttributes windowAttrs = kWindowCloseBoxAttribute
+		WindowAttributes windowAttrs = kWindowHideOnFullScreenAttribute | kWindowStandardHandlerAttribute ;
+		if( _hasWindowPanel )
+		{
+			windowAttrs |= kWindowCloseBoxAttribute
 			| kWindowCollapseBoxAttribute
-			| kWindowStandardHandlerAttribute 
-			| kWindowInWindowMenuAttribute
-			| kWindowHideOnFullScreenAttribute;
+			| kWindowInWindowMenuAttribute;
+		}
+		else
+		{
+			windowAttrs |= kWindowNoTitleBarAttribute;
+		}
 			
 		// Create the window
 		CreateNewWindow( kDocumentWindowClass, windowAttrs, &windowRect, &winRef );

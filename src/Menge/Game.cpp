@@ -136,7 +136,10 @@ namespace Menge
 		m_bits = config.getSettingInt( "Bits", "GAME" );
 		m_fullScreen = config.getSettingBool( "Fullscreen", "GAME" );
 		m_resourcePaths = config.getMultiSetting( "ResourceFile", "GAME" );
-		m_hasWindowPanel = config.getSettingBool( "WindowPanel", "GAME" );
+		if( config.getSetting( "WindowPanel", "GAME" ).empty() == false )
+		{
+			m_hasWindowPanel = config.getSettingBool( "WindowPanel", "GAME" );
+		}
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

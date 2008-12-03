@@ -223,17 +223,20 @@ namespace Menge
 			MENGE_LOG_ERROR( "Warning: Can't initialize user's data path" );
 		}
 
-		for( TStringVector::iterator it = m_resourcePaths.begin(), 
+		/*for( TStringVector::iterator it = m_resourcePaths.begin(), 
 			it_end = m_resourcePaths.end(); it != it_end; it++ )
 		{
 			m_game->readResourceFile( *it );
-		}
+		}*/
 
 		m_game->registerResources( m_baseDir );
 
 		if( _loadPersonality )
 		{
-			bool persolality = m_game->loadPersonality();
+			if( m_game->loadPersonality() == false )
+			{
+				return false;
+			}
 		}
 
 		return true;
@@ -332,7 +335,7 @@ namespace Menge
 			XML_CASE_ATTRIBUTE_NODE( "BaseDir", "Value", m_baseDir );
 			XML_CASE_ATTRIBUTE_NODE( "Game", "File", m_gameInfo );
 
-			XML_CASE_NODE( "Resource" )
+			/*XML_CASE_NODE( "Resource" )
 			{
 				String filename;
 				XML_FOR_EACH_ATTRIBUTES()
@@ -340,7 +343,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "File", filename );
 				}
 				m_resourcePaths.push_back( filename );
-			}
+			}*/
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -671,6 +674,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::onFocus( bool _focus )
 	{
+		if( m_focus == _focus ) return;
+
 		static float volume = 1.0f;
 		static float avolume = 1.0f;
 
@@ -888,6 +893,11 @@ namespace Menge
 	Menge::String Application::utf8ToAnsi( const String& _utf8 )
 	{
 		return m_interface->utf8ToAnsi( _utf8 );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getHasWindowPanel() const
+	{
+		return m_game->getHasWindowPanel();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

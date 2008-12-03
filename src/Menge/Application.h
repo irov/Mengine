@@ -110,6 +110,8 @@ namespace Menge
 		String ansiToUtf8( const String& _ansi );
 		String utf8ToAnsi( const String& _utf8 );
 
+		bool getHasWindowPanel() const;
+
 	private:
 		Game * m_game;
 		ApplicationInterface* m_interface;
@@ -122,8 +124,8 @@ namespace Menge
 
 		StringA m_commandLine;
 
-		typedef std::vector<String> TStringVector;
-		TStringVector m_resourcePaths;
+		//typedef std::vector<String> TStringVector;
+		//TStringVector m_resourcePaths;
 
 		bool m_particles;
 		bool m_sound;

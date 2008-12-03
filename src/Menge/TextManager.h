@@ -4,6 +4,8 @@
 #	include "Holder.h"
 #	include <map>
 
+class XmlElement;
+
 namespace Menge
 {
 	class TextManager
@@ -14,9 +16,13 @@ namespace Menge
 
 		bool loadResourceFile( const String& _filename );
 		const String& getText( const String& _key );
+		void addText( const String& _key, const String& _value );
 
 	protected:
 		typedef std::map< String, String > TStringMap;
 		TStringMap m_textMap;
+
+	private:
+		void loaderResourceFile_( XmlElement* _xml );
 	};
 }	// namespace Menge

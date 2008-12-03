@@ -100,6 +100,7 @@ namespace Menge
 		bool getTextureFiltering() const;
 		int getFSAAType() const;
 		int getFSAAQuality() const;
+		bool getHasWindowPanel() const;
 
 		void createAccount( const String& _accountName );
 		void deleteAccount( const String& _accountName );
@@ -156,6 +157,8 @@ namespace Menge
 		TListDeclaration m_pathArrows;
 		TListDeclaration m_pathText;
 
+		TStringVector m_resourcePaths;
+
 		int m_bits;
 		bool m_fullScreen;
 		bool m_vsync;
@@ -163,6 +166,7 @@ namespace Menge
 		int	m_FSAAType;
 		int m_FSAAQuality;
 		String m_physicSystemName;
+		bool m_hasWindowPanel;
 
 		TStringVector m_accountNames;
 		typedef std::map<String, Account*> TAccountMap;

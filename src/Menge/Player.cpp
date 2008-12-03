@@ -358,14 +358,14 @@ namespace Menge
 				pybind::call( m_setScenePyCb, "(O)", m_scene->getEmbedding() );
 				m_setScenePyCb = NULL;
 			}
-			Holder<ResourceManager>::hostage()->_dumpResources();
+			//Holder<ResourceManager>::hostage()->_dumpResources();
 			m_nextScene->compile();
 			m_nextScene->activate();
 
 			//m_scene->compile();
 			//m_scene->activate();
 			m_renderCamera2D->activate();
-			Holder<ResourceManager>::hostage()->_dumpResources();
+			//Holder<ResourceManager>::hostage()->_dumpResources();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

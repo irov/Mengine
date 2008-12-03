@@ -45,6 +45,7 @@ namespace Menge
 		, m_FPS( 0.0f )
 		, m_resourceManager( NULL )
 		, m_textManager( NULL )
+		, m_hasWindowPanel( true )
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
@@ -113,6 +114,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loader( const String& _iniFile )
 	{
+		m_textManager = new TextManager();
+		Holder<TextManager>::keep( m_textManager );
+
 		ConfigFile config;
 		if( config.load( _iniFile ) == false )
 		{
@@ -131,6 +135,8 @@ namespace Menge
 		m_resolution[1] = config.getSettingUInt( "Height", "GAME" );
 		m_bits = config.getSettingInt( "Bits", "GAME" );
 		m_fullScreen = config.getSettingBool( "Fullscreen", "GAME" );
+		m_resourcePaths = config.getMultiSetting( "ResourceFile", "GAME" );
+		m_hasWindowPanel = config.getSettingBool( "WindowPanel", "GAME" );
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -882,8 +888,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::registerResources( const String& _baseDir )
 	{
-		m_textManager = new TextManager();
-		Holder<TextManager>::keep( m_textManager );
+		for( TStringVector::iterator it = m_resourcePaths.begin(), it_end = m_resourcePaths.end();
+			it != it_end;
+			it++ )
+		{
+			readResourceFile( (*it) );
+		}
 
 		ScriptEngine::TListModulePath m_listModulePath;
 
@@ -954,6 +964,11 @@ namespace Menge
 	void Game::_removePredefinedResources()
 	{
 		m_resourceManager->directResourceRelease("WhitePixel");
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::getHasWindowPanel() const
+	{
+		return m_hasWindowPanel;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

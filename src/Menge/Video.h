@@ -5,7 +5,8 @@
 namespace Menge
 {
 	class ResourceVideo;
-	class ResourceSound;
+	//class ResourceSound;
+	class SoundEmitter;
 	class SoundSourceInterface;
 
 	/*! xml - файл имеет следующую структуру:
@@ -78,13 +79,12 @@ namespace Menge
 
 	protected:
 		ResourceVideo* m_resourceVideo;
-		ResourceSound* m_resourceSound;
 
 		String m_resourceVideoName;
 		String m_resourceSoundName;
 
 		RenderImageInterface* m_renderImage;
-		SoundSourceInterface* m_soundSource;
+		SoundEmitter* m_soundEmitter;
 
 		bool m_autoStart;
 		bool m_playing;

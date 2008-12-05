@@ -44,9 +44,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& TextManager::getText( const String& _key )
+	const String& TextManager::getText( const String& _key ) const
 	{
-		TStringMap::iterator it_find = m_textMap.find( _key );
+		TStringMap::const_iterator it_find = m_textMap.find( _key );
 		if( it_find == m_textMap.end() )
 		{
 			MENGE_LOG_ERROR( "Error: TextManager can't find string associated with key - \"%s\""

@@ -5,7 +5,9 @@
 #	include "ResourceManager.h"
 
 #	include "ResourceVideo.h"
-#	include "ResourceSound.h"
+//#	include "ResourceSound.h"
+#	include "SoundEmitter.h"
+#	include "SceneManager.h"
 
 #	include "XmlEngine.h"
 #	include "RenderEngine.h"
@@ -16,9 +18,8 @@ namespace	Menge
 	OBJECT_IMPLEMENT(Video)
 		//////////////////////////////////////////////////////////////////////////
 		Video::Video()
-		: m_resourceVideo(0)
-		, m_resourceSound( 0 )
-		, m_soundSource( 0 )
+		: m_resourceVideo( NULL )
+		, m_soundEmitter( NULL )
 		, m_playing(false)
 		, m_autoStart(false)
 		, m_looping(false)
@@ -123,18 +124,14 @@ namespace	Menge
 
 		if( m_resourceSoundName.empty() == false )
 		{
-			m_resourceSound = Holder<ResourceManager>::hostage()
-				->getResourceT<ResourceSound>( m_resourceSoundName );
-
-			if( m_resourceSound )
+			m_soundEmitter = SceneManager::createNodeT<SoundEmitter>( "SoundEmitter" );
+			addChildren( m_soundEmitter );
+			m_soundEmitter->setSoundResource( m_resourceSoundName );
+			if( m_soundEmitter->compile() == false )
 			{
-				SoundBufferInterface * soundBuffer = m_resourceSound->get();
-
-				m_soundSource = Holder<SoundEngine>::hostage()
-					->createSoundSource( true, soundBuffer, 0/*this*/ );
+				MENGE_LOG_ERROR( "Warning: video failed to compile sound resource \"%s\""
+					, m_resourceSoundName.c_str() );
 			}
-
-			//Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
 		}
 
 		return true;
@@ -150,18 +147,6 @@ namespace	Menge
 		Holder<RenderEngine>::hostage()
 			->releaseImage( m_renderImage );
 
-		if( m_resourceSound )
-		{
-
-			Holder<SoundEngine>::hostage()
-				->releaseSoundSource( m_soundSource );
-
-			Holder<ResourceManager>::hostage()
-				->releaseResource( m_resourceSound );
-
-			m_soundSource = 0;
-			m_resourceSound = 0;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::stop()
@@ -171,9 +156,9 @@ namespace	Menge
 			m_playing = false;
 			m_resourceVideo->seek( 0.0f );
 			m_timing = 0.0f;
-			if( m_soundSource )
+			if( m_soundEmitter && m_soundEmitter->isCompile() )
 			{
-				m_soundSource->stop();
+				m_soundEmitter->stop();
 			}
 			callEvent( EVENT_VIDEO_END, "(O)", this->getEmbedding() );
 		}
@@ -197,9 +182,9 @@ namespace	Menge
 	void Video::play_()
 	{
 		m_playing = true;
-		if( m_soundSource )
+		if( m_soundEmitter && m_soundEmitter->isCompile() )
 		{
-			m_soundSource->play();
+			m_soundEmitter->play();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

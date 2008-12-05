@@ -67,6 +67,11 @@ namespace Menge
 
 				String fileName; 
 
+				String format;
+				int from = -1;
+				int to = -1;
+				int step = 1;
+
 				XML_FOR_EACH_ATTRIBUTES()
 				{
 					XML_CASE_ATTRIBUTE( "Path", fileName );
@@ -75,11 +80,40 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "MaxSize", desc.maxSize );
 					XML_CASE_ATTRIBUTE( "Size", desc.size );
 					XML_CASE_ATTRIBUTE( "Alpha", desc.isAlpha );
+
+					XML_CASE_ATTRIBUTE( "From", from );
+					XML_CASE_ATTRIBUTE( "To", to );
+					XML_CASE_ATTRIBUTE( "Step", step );
 				}
 
-				desc.fileName = m_params.category + fileName;
-
-				m_vectorImageDescs.push_back( desc );
+				if( from >= 0 && to >= 0 )
+				{
+					char* fname = new char[fileName.size() * 2];
+					if( step > 0 )
+					{
+						for( int i = from; i <= to; i += step )
+						{
+							sprintf( fname, fileName.c_str(), i );
+							desc.fileName = m_params.category + String( fname );
+							m_vectorImageDescs.push_back( desc );
+						}
+					}
+					else if( step < 0 )
+					{
+						for( int i = from; i >= to; i += step )
+						{
+							sprintf( fname, fileName.c_str(), i );
+							desc.fileName = m_params.category + String( fname );
+							m_vectorImageDescs.push_back( desc );
+						}
+					}
+					delete[] fname;
+				}
+				else
+				{
+					desc.fileName = m_params.category + fileName;
+					m_vectorImageDescs.push_back( desc );
+				}
 			}
 		}
 	}

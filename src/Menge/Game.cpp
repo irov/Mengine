@@ -638,6 +638,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const String& Game::getTitle() const
 	{
+		if( m_textManager != NULL )
+		{
+			const String& title = m_textManager->getText( m_title );
+			if( title.empty() == true )
+			{
+				static const String locTitle = m_title + " [Localize me, please!!!!!!]";
+				return locTitle;
+			}
+			return title;
+		}
 		return m_title;
 	}
 	//////////////////////////////////////////////////////////////////////////

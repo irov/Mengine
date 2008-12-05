@@ -133,7 +133,21 @@ namespace Menge
 			, m_resourcename.c_str() );
 			return;
 		}
-		m_interface->setSoundBuffer( m_resource->get() );
+		if( m_interface != NULL )
+		{
+			m_interface->setSoundBuffer( m_resource->get() );
+		}
+		else
+		{
+			SoundBufferInterface * soundBuffer = m_resource->get();
+
+			m_interface = Holder<SoundEngine>::hostage()
+				->createSoundSource( 
+				m_isHeadMode
+				, soundBuffer
+				, this 
+				);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	/*void SoundEmitter::setSoundListener( PyObject * _listener )

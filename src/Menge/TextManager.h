@@ -15,7 +15,7 @@ namespace Menge
 		virtual ~TextManager();
 
 		bool loadResourceFile( const String& _filename );
-		const String& getText( const String& _key );
+		const String& getText( const String& _key ) const;
 		void addText( const String& _key, const String& _value );
 
 	protected:

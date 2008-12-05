@@ -432,9 +432,9 @@ namespace Menge
 			it = m_children.begin(),
 			it_end = m_children.end();
 		it != it_end;
-		++it)
+		/*++it*/)
 		{
-			/*done &=*/ (*it)->compile();
+			/*done &=*/ (*it++)->compile();
 		}
 
 		//if( done == false )

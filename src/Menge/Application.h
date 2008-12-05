@@ -112,6 +112,8 @@ namespace Menge
 
 		bool getHasWindowPanel() const;
 
+		static const char* getVersionInfo();
+
 	private:
 		Game * m_game;
 		ApplicationInterface* m_interface;

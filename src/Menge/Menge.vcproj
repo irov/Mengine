@@ -103,6 +103,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="subwcrev.exe $(SolutionDir) $(SolutionDir)\src\menge\versioninfo.h.in $(SolutionDir)\src\menge\versioninfo.h"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -1605,6 +1606,10 @@
 		</File>
 		<File
 			RelativePath=".\Utils.h"
+			>
+		</File>
+		<File
+			RelativePath=".\VersionInfo.h"
 			>
 		</File>
 	</Files>

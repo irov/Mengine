@@ -52,6 +52,8 @@ static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
 		StringCchPrintfA( wBuffer, 4096, "OS: Windows %ld.%ld.%ld", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
+		StringCchPrintfA( wBuffer, 4096, "Source SVN Revision: %s", Menge::Application::getVersionInfo() );
+		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
 		strcpy( wBuffer, "\nCrash Info:\n" );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 		StringCchPrintfA( wBuffer, 4096, "Exception Code: 0x%08x\n", pRecord->ExceptionCode );
@@ -250,6 +252,9 @@ namespace Menge
 			, mem_st.ullAvailPhys/1024L
 			, mem_st.ullTotalPageFile/1024L
 			, mem_st.ullAvailPageFile );
+		LOG( strbuffer );
+
+		sprintf( strbuffer, "SVN Revision: %s", Menge::Application::getVersionInfo() );
 		LOG( strbuffer );
 
 		LOG( "Initializing Mengine..." );

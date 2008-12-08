@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8B0919E80EE96AC2004426F1 /* menge.icns in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8B0919E40EE96A89004426F1 /* menge.icns */; };
 		8B1A721A0EAC8ADB00E2DCBE /* Box2DPhysicBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A72140EAC8ADB00E2DCBE /* Box2DPhysicBody.cpp */; };
 		8B1A721B0EAC8ADB00E2DCBE /* Box2DPhysicBody.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B1A72150EAC8ADB00E2DCBE /* Box2DPhysicBody.h */; };
 		8B1A721C0EAC8ADB00E2DCBE /* Box2DPhysicJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8B1A72160EAC8ADB00E2DCBE /* Box2DPhysicJoint.cpp */; };
@@ -371,6 +372,7 @@
 		8BC8D6360ED597AF00AC00BD /* OGLRenderTextureCopy.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC8D6340ED597AF00AC00BD /* OGLRenderTextureCopy.h */; };
 		8BC8D6370ED597AF00AC00BD /* OGLRenderTextureCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC8D6350ED597AF00AC00BD /* OGLRenderTextureCopy.cpp */; };
 		8BC8FADF0EC3317A00DAC26A /* libMenge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BE693E20EA8D5CA00B18A92 /* libMenge.a */; };
+		8BC92BC00EED3CC100866926 /* MacOSApplication.nib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8BC92BBF0EED3CC100866926 /* MacOSApplication.nib */; };
 		8BC94B3F0EAE1D460034D467 /* DataStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC94B300EAE1D460034D467 /* DataStream.cpp */; };
 		8BC94B400EAE1D460034D467 /* DataStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 8BC94B310EAE1D460034D467 /* DataStream.h */; };
 		8BC94B410EAE1D460034D467 /* FileHandleDataStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8BC94B320EAE1D460034D467 /* FileHandleDataStream.cpp */; };
@@ -473,18 +475,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		8BD098FD0EE4096C00D7CE6C /* CopyFiles */ = {
+		8B0919E60EE96AAE004426F1 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
+				8B0919E80EE96AC2004426F1 /* menge.icns in CopyFiles */,
+				8BC92BC00EED3CC100866926 /* MacOSApplication.nib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8B0919E40EE96A89004426F1 /* menge.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = menge.icns; path = ../src/MacOSApplication/menge.icns; sourceTree = SOURCE_ROOT; };
 		8B1A720B0EAC8A1A00E2DCBE /* libBox2DPhysicSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBox2DPhysicSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B1A72140EAC8ADB00E2DCBE /* Box2DPhysicBody.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; name = Box2DPhysicBody.cpp; path = ../src/System/Box2DPhysicSystem/Box2DPhysicBody.cpp; sourceTree = SOURCE_ROOT; };
 		8B1A72150EAC8ADB00E2DCBE /* Box2DPhysicBody.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; name = Box2DPhysicBody.h; path = ../src/System/Box2DPhysicSystem/Box2DPhysicBody.h; sourceTree = SOURCE_ROOT; };
@@ -632,6 +637,7 @@
 		8BC5F4CF0ECDF57A00F8FE60 /* OGLUtils.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLUtils.h; sourceTree = "<group>"; };
 		8BC8D6340ED597AF00AC00BD /* OGLRenderTextureCopy.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = OGLRenderTextureCopy.h; sourceTree = "<group>"; };
 		8BC8D6350ED597AF00AC00BD /* OGLRenderTextureCopy.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = OGLRenderTextureCopy.cpp; sourceTree = "<group>"; };
+		8BC92BBF0EED3CC100866926 /* MacOSApplication.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = MacOSApplication.nib; sourceTree = "<group>"; };
 		8BC94B2A0EAE1D1D0034D467 /* libMengeMacOSFileSystem.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMengeMacOSFileSystem.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BC94B300EAE1D460034D467 /* DataStream.cpp */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.cpp.cpp; path = DataStream.cpp; sourceTree = "<group>"; };
 		8BC94B310EAE1D460034D467 /* DataStream.h */ = {isa = PBXFileReference; fileEncoding = "-2147483641"; lastKnownFileType = sourcecode.c.h; path = DataStream.h; sourceTree = "<group>"; };
@@ -1322,6 +1328,8 @@
 				8BE693E80EA8D64200B18A92 /* src */,
 				8BE693E30EA8D5CA00B18A92 /* Products */,
 				8BBFDF030EAF1E3900102B4F /* MacOSApplication-Info.plist */,
+				8B0919E40EE96A89004426F1 /* menge.icns */,
+				8BC92BBF0EED3CC100866926 /* MacOSApplication.nib */,
 			);
 			sourceTree = "<group>";
 		};
@@ -2002,10 +2010,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8BBFDF040EAF1E3A00102B4F /* Build configuration list for PBXNativeTarget "MacOSApplication" */;
 			buildPhases = (
-				8BBFDEFD0EAF1E3900102B4F /* Resources */,
 				8BBFDEFE0EAF1E3900102B4F /* Sources */,
 				8BBFDEFF0EAF1E3900102B4F /* Frameworks */,
-				8BD098FD0EE4096C00D7CE6C /* CopyFiles */,
+				8B0919E60EE96AAE004426F1 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -2102,16 +2109,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		8BBFDEFD0EAF1E3900102B4F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8B1A72080EAC8A1A00E2DCBE /* Sources */ = {
@@ -3241,20 +3238,16 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_15)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../dependencies/libPNG\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_10 = "\"$(SRCROOT)/../dependencies/pybind/macosx/build/Debug\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_11 = "\"$(SRCROOT)/../dependencies/OGG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_12 = "\"$(SRCROOT)/../dependencies/Python\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_13 = "\"$(SRCROOT)/../dependencies/expat\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_14 = "\"$(SRCROOT)/../dependencies/theora/macosx/build/Release\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_15 = "\"$(SRCROOT)/../dependencies/pybind/macosx/build/Release\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_2 = "\"$(SRCROOT)/../dependencies/libJPEG\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_3 = "\"$(SRCROOT)/../dependencies/theora/macosx/build/Debug\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_4 = "\"$(SRCROOT)/../dependencies/vorbis\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_5 = "\"$(SRCROOT)/../dependencies/pybind/macosx/build/Debug\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_6 = "\"$(SRCROOT)/../dependencies/Python\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_7 = "\"$(SRCROOT)/../dependencies/libPNG\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_8 = "\"$(SRCROOT)/../dependencies/libJPEG\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_9 = "\"$(SRCROOT)/../dependencies/theora/macosx/build/Debug\"";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;

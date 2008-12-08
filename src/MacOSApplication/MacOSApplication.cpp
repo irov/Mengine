@@ -14,7 +14,7 @@
 #include "Menge/Application.h"
 
 #include "Interface/LogSystemInterface.h"
-
+#include <AGL/agl.h>
 const Menge::TCharA * config_file = "application.xml";
 
 #	ifndef MENGE_MASTER_RELEASE
@@ -63,6 +63,7 @@ namespace Menge
 		, m_view( NULL )
 		, m_windowHandlerUPP( NULL )
 		, m_windowEventHandler( NULL )
+		, m_fullscreenOverride( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -169,11 +170,11 @@ namespace Menge
 				{ kEventClassMouse, kEventMouseWheelMoved }
 	          };
 			  
-		EventTypeSpec clientSpecs[] = 
+		/*EventTypeSpec clientSpecs[] = 
 		{
 			{ kEventClassControl, kEventControlTrackingAreaEntered },
 			{ kEventClassControl, kEventControlTrackingAreaExited }
-		};
+		};*/
 
 		m_windowHandlerUPP = NewEventHandlerUPP( MacOSApplication::s_windowHandler );
             
@@ -181,9 +182,9 @@ namespace Menge
         EventTargetRef target = GetWindowEventTarget(m_window);
 		InstallStandardEventHandler(target);
             
- 		HIViewTrackingAreaRef m_trackingRef;
+ 		/*HIViewTrackingAreaRef m_trackingRef;
 		OSStatus err = HIViewNewTrackingArea( m_view, NULL, 0, &m_trackingRef );
-		InstallControlEventHandler( m_view, s_clientHandler, GetEventTypeCount(clientSpecs), clientSpecs, (void*)this, NULL );
+		InstallControlEventHandler( m_view, s_clientHandler, GetEventTypeCount(clientSpecs), clientSpecs, (void*)this, NULL );*/
 		
 	    // We also need to install the WindowEvent Handler, we pass along the window with our requests
         InstallEventHandler( target, m_windowHandlerUPP, GetEventTypeCount(eventSpecs), eventSpecs, (void*)this, &m_windowEventHandler );
@@ -192,7 +193,15 @@ namespace Menge
 		ShowWindow( m_window );
 		SelectWindow( m_window );
 		
-		HideCursor();
+		//HideCursor();
+		Rect rect;
+		Point point = { 0, 0 };
+		GetWindowBounds( m_window, kWindowContentRgn, &rect);
+		ShieldCursor( &rect, point );
+		
+		//CFStringRef ssss = CFStringCreateWithCString( NULL, "aaaaaaa", CFStringGetSystemEncoding() );
+		//OSStatus stat = SetMenuTitleWithCFString( AcquireRootMenu(), ssss );
+		//printf( "%d", stat );
 			
 		if( m_menge->createRenderWindow( (WindowHandle)m_window ) == false )
 		{
@@ -263,6 +272,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MacOSApplication::minimizeWindow()
 	{
+		if( m_menge->getFullscreenMode() == true )
+		{
+			m_menge->setFullscreenMode( false );
+			m_fullscreenOverride = true;
+		}
 		CollapseWindow( m_window, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -310,7 +324,14 @@ namespace Menge
 		windowRect.top = 0;
 		windowRect.right = _width;
 		windowRect.bottom = _height;
-			
+	
+		//OSStatus err = CreateNibReference( CFSTR("MacOSApplication"), &m_nibRef );
+		//err = SetMenuBarFromNib( m_nibRef, CFSTR("MenuBar") );
+		//MenuRef ref = GetMenuHandle( 0 );
+		
+		//err = SetMenuTitleWithCFString( ref, CFSTR("AAAAA") );
+		
+
 		// set the default attributes for the window
 		WindowAttributes windowAttrs = kWindowHideOnFullScreenAttribute | kWindowStandardHandlerAttribute ;
 		if( _hasWindowPanel )
@@ -375,6 +396,12 @@ namespace Menge
 			switch( eventKind )
 			{	
 				case kEventWindowExpanded:
+					if( m_fullscreenOverride == true )
+					{
+						m_menge->setFullscreenMode( true );
+						m_fullscreenOverride = false;
+					}
+					break;
 				case kEventWindowActivated:
 					m_menge->onFocus( true );
 					break;
@@ -388,6 +415,13 @@ namespace Menge
 				case kEventWindowShown:
 				case kEventWindowHidden:
 				case kEventWindowDragCompleted:
+					{
+						Rect rect;
+						Point point = { 0, 0 };
+						GetWindowBounds( m_window, kWindowContentRgn, &rect);
+						ShieldCursor( &rect, point );
+					}
+					break;
 				case kEventWindowBoundsChanged:
 					break;	
 				default:
@@ -509,7 +543,7 @@ namespace Menge
 	{
 		OSStatus status = noErr;
 
-		// Event class
+		/*// Event class
 		UInt32 eventClass = GetEventClass( event );
 		UInt32 eventKind = GetEventKind( event );
 		
@@ -523,7 +557,7 @@ namespace Menge
 			{
 				ShowCursor();
 			}
-		}
+		}*/
 		
 		return status;
 	}

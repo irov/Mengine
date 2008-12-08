@@ -216,14 +216,6 @@ namespace Menge
 			return false;
 		}
 
-		const String & title = m_game->getTitle();
-		bool fullscreen = m_game->getFullscreen();
-		m_renderEngine->setFullscreenMode( fullscreen );
-
-		if( !m_fileEngine->initAppDataPath( "Menge/" + title ) )
-		{
-			MENGE_LOG_ERROR( "Warning: Can't initialize user's data path" );
-		}
 
 		/*for( TStringVector::iterator it = m_resourcePaths.begin(), 
 			it_end = m_resourcePaths.end(); it != it_end; it++ )
@@ -232,6 +224,15 @@ namespace Menge
 		}*/
 
 		m_game->registerResources( m_baseDir );
+		
+		const String & title = m_game->getTitle();
+		bool fullscreen = m_game->getFullscreen();
+		m_renderEngine->setFullscreenMode( fullscreen );
+
+		if( !m_fileEngine->initAppDataPath( "Menge/" + title ) )
+		{
+			MENGE_LOG_ERROR( "Warning: Can't initialize user's data path" );
+		}
 
 		if( _loadPersonality )
 		{
@@ -849,6 +850,11 @@ namespace Menge
 		}
 
 		m_renderEngine->setFullscreenMode( _fullscreen );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getFullscreenMode()
+	{
+		return m_renderEngine->getFullscreenMode();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Resolution & Application::getDesktopResolution() const

@@ -8,6 +8,8 @@
 	<array/>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
+	<key>CFBundleName</key>
+	<string>Mengine</string>
 	<key>CFBundleIconFile</key>
 	<string>menge</string>
 	<key>CFBundleIdentifier</key>

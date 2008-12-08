@@ -101,6 +101,7 @@ namespace Menge
 		void setMouseBounded( bool _bounded );
 
 		void setFullscreenMode( bool _fullscreen );
+		bool getFullscreenMode();
 		unsigned int getDebugMask() const;
 
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style );

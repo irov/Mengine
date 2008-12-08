@@ -165,7 +165,7 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	m_desktopDisplayMode = CGDisplayCurrentMode( m_mainDisplayID );
 	
 	m_fullscreen = _fullscreen;
-	if( m_fullscreen )
+	/*if( m_fullscreen )
 	{
 		CFDictionaryRef refDisplayMode = 0;
 		refDisplayMode = CGDisplayBestModeForParameters( CGMainDisplayID(), _bits, _width, _height, NULL );
@@ -175,10 +175,10 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	if( DMGetGDeviceByDisplayID( (DisplayIDType)m_mainDisplayID, &gdhDisplay, false ) != noErr )
 	{
 		return false;
-	}
+	}*/
 	
 	
-	pixelFormat = aglChoosePixelFormat( &gdhDisplay, 1, attribs );
+	pixelFormat = aglChoosePixelFormat( 0, 0, attribs );
 
 	// Note: when using a single context with AGL one must ensure that there is always a context attached to a window to ensure
 	// the accelerated surface is not destroyed.  We use buffer naming and use a dummy context to hold accelerated surface in place.

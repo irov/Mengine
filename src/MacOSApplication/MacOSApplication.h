@@ -69,6 +69,8 @@ namespace Menge
 		EventHandlerUPP m_windowHandlerUPP;
 		EventHandlerRef m_windowEventHandler;
 		std::size_t m_desktopResolution[2];
+		IBNibRef m_nibRef;
+		bool m_fullscreenOverride;
 	};
 }	// namespace Menge
 		

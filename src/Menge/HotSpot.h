@@ -70,6 +70,7 @@ namespace Menge
 		void _render( unsigned int _debugMask ) override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
 		void _setListener() override;
+		void _release() override;
 
 	protected:
 		mt::polygon m_polygon;

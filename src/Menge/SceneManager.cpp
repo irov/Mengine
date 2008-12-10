@@ -16,6 +16,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Node* SceneManager::createNode( const String& _type )
 	{
+		// check for pool
+		/*TNodePool::iterator it_find = m_nodePool.find( _type );
+		if( it_find == m_nodePool.end() ) 		// there is no entry in pool for this type, so create one
+		{
+			m_nodePool.insert( std::make_pair( _type, std::vector<Node*>() );
+		}
+		else
+		{
+			std::vector<Node*> vec = it_find->second;
+			if( vec.empty() == false )
+			{
+				Node* node = vec.back();
+
+				vec.pop_back();
+				return node;
+			}
+		}*/
+
+		// create new Node
 		FactoryGenStruct gs;
 		gs.type = _type;
 
@@ -143,5 +162,9 @@ namespace Menge
 
 		return node;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
+	void SceneManager::releaseNode( Node* _node )
+	{
+		TFactoryNode::release( _node->getType(), _node );
+	}
 }

@@ -276,11 +276,11 @@ namespace Menge
 
 		WindowHandle winHandle = _handle;
 
-		if( _handle == NULL )
+		/*if( _handle == NULL )
 		{
 			winHandle = m_interface->createWindow( 
 				title, m_currentResolution.getWidth(), m_currentResolution.getHeight(), isFullscreen );
-		}
+		}*/
 
 		int bits = m_game->getBits();
 		int FSAAType = m_game->getFSAAType();
@@ -911,6 +911,11 @@ namespace Menge
 	const char* Application::getVersionInfo()
 	{
 		return s_versionInfo;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Resolution& Application::getResolution() const
+	{
+		return m_game->getResolution();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -11,10 +11,12 @@
 #	include <string>
 
 #	define OBJECT_FACTORY( Type )\
-	TFactoryNode::registration( #Type , &Type::genObject )
+	TFactoryNode::registration( #Type , &Type::ms_poolManager )
+	//TFactoryNode::registration( #Type , &Type::genObject )\
 
 #	define RESOURCE_FACTORY( Type )\
-	TFactoryResource::registration( #Type , &Type::genObject )
+	TFactoryResource::registration( #Type , &Type::ms_poolManager )
+//	TFactoryResource::registration( #Type , &Type::genObject )
 
 
 namespace Menge

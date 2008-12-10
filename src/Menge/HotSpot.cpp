@@ -35,10 +35,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::~HotSpot()
 	{
-		Holder<Player>::hostage()
-			->unregGlobalMouseEventable( this );
-		Holder<Player>::hostage()
-			->unregGlobalKeyEventable( this );
 
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -384,6 +380,16 @@ namespace	Menge
 	bool HotSpot::isPicked() const
 	{
 		return m_picked;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_release()
+	{
+		Node::_release();
+
+		Holder<Player>::hostage()
+			->unregGlobalMouseEventable( this );
+		Holder<Player>::hostage()
+			->unregGlobalKeyEventable( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -30,5 +30,11 @@ namespace Menge
 		}
 
 		static bool loadNode(Node *_node, const String& _xml );
+
+		static void releaseNode( Node* _node );
+
+	/*protected:
+		typedef std::map< String, std::vector<Node*> > TNodePool;
+		TNodePool m_nodePool;*/
 	};
 }

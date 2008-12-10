@@ -33,6 +33,7 @@ namespace Menge
 		{
 			it->second->release();
 			delete it->second;
+			//TFactoryResource::release( it->second->getFactoryParams().
 			it->second = NULL;
 		}
 	}

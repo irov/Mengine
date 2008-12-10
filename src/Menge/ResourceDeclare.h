@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-
+#	include "Factory.h"
 //#	include <string>
 
 struct ResourceFactoryParam
@@ -13,5 +13,8 @@ struct ResourceFactoryParam
 
 #	define RESOURCE_DECLARE(C)\
 	public:\
-	static ResourceReference * genObject(const ResourceFactoryParam &);\
+	static ResourceReference * genObjectNew( const ResourceFactoryParam &);\
+	static ResourceReference * genObjectPlacement( void*, const ResourceFactoryParam &);\
+	static Factory<String, ResourceReference *, ResourceFactoryParam>::PoolManager<C> ms_poolManager;\
 	private:
+//	static ResourceReference * genObject(const ResourceFactoryParam &);

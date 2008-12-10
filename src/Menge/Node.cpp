@@ -50,7 +50,8 @@ namespace Menge
 
 		_destroy();
 
-		delete this;
+		//delete this;
+		SceneManager::releaseNode( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_destroy()

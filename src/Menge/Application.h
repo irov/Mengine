@@ -100,18 +100,19 @@ namespace Menge
 
 		void setMouseBounded( bool _bounded );
 
-		void setFullscreenMode( bool _fullscreen );
-		bool getFullscreenMode();
 		unsigned int getDebugMask() const;
 
 		void showMessageBox( const String& _message, const String& _header, unsigned int _style );
 
-		const String& getProjectTitle() const;
 
 		String ansiToUtf8( const String& _ansi );
 		String utf8ToAnsi( const String& _utf8 );
 
+		const String& getProjectTitle() const;
+		void setFullscreenMode( bool _fullscreen );
+		bool getFullscreenMode();
 		bool getHasWindowPanel() const;
+		const Resolution& getResolution() const;
 
 		static const char* getVersionInfo();
 

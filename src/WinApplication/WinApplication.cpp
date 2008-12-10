@@ -283,7 +283,11 @@ namespace Menge
 		m_menge->setDesktopResolution( Menge::Resolution( m_desktopWidth, m_desktopHeight ) );
 
 		LOG( "Creating Render Window..." );
-		if( m_menge->createRenderWindow( 0 ) == false )
+		bool fullscreen = m_menge->getFullscreenMode();
+		const Menge::Resolution& winRes = m_menge->getResolution();
+		WindowHandle wh = createWindow( title, winRes[0], winRes[1], fullscreen );
+
+		if( m_menge->createRenderWindow( wh ) == false )
 		{
 			return false;
 		}

@@ -145,8 +145,9 @@ namespace Menge
 		// create the window rect in global coords
 		const String& projectTitle = m_menge->getProjectTitle();
 		String ansiTitle = utf8ToAnsi( projectTitle );
-		bool hasWindowPanel = m_menge->getHasWindowPanel();
-		m_window = createWindow_( ansiTitle, 1024, 768, hasWindowPanel );
+		bool hasWindowPanel = m_menge->getHasWindowPanel();\
+		const Menge::Resolution& winRes = m_menge->getResolution();
+		m_window = createWindow_( ansiTitle, winRes[0], winRes[1], hasWindowPanel );
             
 		// Get our view
         HIViewFindByID( HIViewGetRoot( m_window ), kHIViewWindowContentID, &m_view );

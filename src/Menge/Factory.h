@@ -63,7 +63,8 @@ namespace Menge
 
 			virtual ~PoolManager()
 			{
-				for( std::vector<T*>::iterator it = m_pool.begin(), it_end = m_pool.end();
+				
+				for( typename std::vector<T*>::iterator it = m_pool.begin(), it_end = m_pool.end();
 					it != it_end;
 					it++ )
 				{

@@ -14,7 +14,7 @@
 #include "Menge/Application.h"
 
 #include "Interface/LogSystemInterface.h"
-#include <AGL/agl.h>
+
 const Menge::TCharA * config_file = "application.xml";
 
 #	ifndef MENGE_MASTER_RELEASE
@@ -37,7 +37,7 @@ namespace Menge
 		CFBundleRef mainBundle = CFBundleGetMainBundle();
 		assert(mainBundle);
 
-		CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
+		CFURLRef mainBundleURL = CFBundleCopyExecutableURL(mainBundle);
 		assert(mainBundleURL);
 
 		CFStringRef cfStringRef = CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);
@@ -48,7 +48,10 @@ namespace Menge
 		CFRelease(mainBundleURL);
 		CFRelease(cfStringRef);
 
-		return std::string(path);
+		std::string rpath( path );
+		std::string::size_type pos = rpath.find_last_of( "/" );
+		return rpath.substr( 0, pos );
+		//return std::string(path);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MacOSApplication::MacOSApplication( const StringA& _commandLine )
@@ -110,8 +113,10 @@ namespace Menge
 		
 		if( m_commandLine.find( "-debugwd" ) == StringA::npos )
 		{
+			printf( s_macBundlePath().c_str() );
 			chdir( s_macBundlePath().c_str() );
-			chdir( "../" );
+			//chdir( "Contents" );
+			//chdir( "../" );
 		}
 		
 		m_logSystem = m_menge->initializeLogSystem();

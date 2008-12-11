@@ -67,6 +67,7 @@ namespace Menge
 		, m_windowHandlerUPP( NULL )
 		, m_windowEventHandler( NULL )
 		, m_fullscreenOverride( false )
+		, m_focus( true )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -380,7 +381,7 @@ namespace Menge
 		// Event class
 		UInt32 eventClass = GetEventClass( event );
 		UInt32 eventKind = GetEventKind( event );
-		
+	
 		if( eventClass == kEventClassCommand )
 		{
 			switch( eventKind ) 
@@ -402,24 +403,35 @@ namespace Menge
 			switch( eventKind )
 			{	
 				case kEventWindowExpanded:
+					{
+						Rect rect;
+						Point point = { 0, 0 };
+						GetWindowBounds( m_window, kWindowContentRgn, &rect);
+						ShieldCursor( &rect, point );
+					}
 					if( m_fullscreenOverride == true )
 					{
 						m_menge->setFullscreenMode( true );
 						m_fullscreenOverride = false;
 					}
 					break;
+				case kEventWindowShown:
 				case kEventWindowActivated:
 					m_menge->onFocus( true );
+					m_focus = true;
 					break;
 				case kEventWindowDeactivated:
+					m_menge->onFocus( false );
+					m_focus = false;
+					break;
 				case kEventWindowCollapsed:
 					m_menge->onFocus( false );
+					m_focus = false;
+					ShowCursor();
 					break;
 				case kEventWindowClosed:
 					m_menge->onClose();
 					break;
-				case kEventWindowShown:
-				case kEventWindowHidden:
 				case kEventWindowDragCompleted:
 					{
 						Rect rect;
@@ -428,6 +440,7 @@ namespace Menge
 						ShieldCursor( &rect, point );
 					}
 					break;
+				case kEventWindowHidden:
 				case kEventWindowBoundsChanged:
 					break;	
 				default:
@@ -448,7 +461,7 @@ namespace Menge
 							GetEventParameter(event, kEventParamWindowMouseLocation, typeHIPoint, NULL, sizeof(HIPoint), NULL, &delta);
 							m_menge->onMouseMove(delta.x,delta.y,0.0f);
 						}
-						status = CallNextEventHandler( nextHandler, event );					
+						//status = CallNextEventHandler( nextHandler, event );					
 					}
 					break;
 				case kEventMouseDown:
@@ -477,7 +490,7 @@ namespace Menge
 							}
 							m_menge->onMouseButtonEvent( mouseButton, true );
 						}
-						status = CallNextEventHandler( nextHandler, event );
+						//status = CallNextEventHandler( nextHandler, event );
 					}
 					break;
 				case kEventMouseUp:
@@ -506,7 +519,7 @@ namespace Menge
 							}
 							m_menge->onMouseButtonEvent( mouseButton, false );
 						}
-						status = CallNextEventHandler( nextHandler, event );
+						//status = CallNextEventHandler( nextHandler, event );
 					}
 					break;
 				case kEventMouseWheelMoved:
@@ -527,7 +540,7 @@ namespace Menge
 								m_menge->onMouseMove( 0.0f, 0.0f, wheelDelta * 60 );
 							}
 						}
-						status = CallNextEventHandler( nextHandler, event );
+						//status = CallNextEventHandler( nextHandler, event );
 					}
 					break;
 				default:
@@ -536,6 +549,7 @@ namespace Menge
 			}
 		
 		}
+		status = CallNextEventHandler( nextHandler, event );
 		return status;
 	}
 	//////////////////////////////////////////////////////////////////////////

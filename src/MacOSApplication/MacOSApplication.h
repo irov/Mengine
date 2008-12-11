@@ -71,6 +71,7 @@ namespace Menge
 		std::size_t m_desktopResolution[2];
 		IBNibRef m_nibRef;
 		bool m_fullscreenOverride;
+		bool m_focus;
 	};
 }	// namespace Menge
 		

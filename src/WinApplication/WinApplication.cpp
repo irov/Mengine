@@ -263,7 +263,7 @@ namespace Menge
 			return false;
 		}
 
-		const String& title = m_menge->getProjectTitle();
+		String title = m_menge->getProjectTitle();
 		// try to create mutex to sure that we are not running already
 		StringW titleW = s_UTF8ToWChar( title );
 		StringW mutexName = StringW( MENGE_TEXT("MengeMutex_") ) + titleW;

@@ -108,7 +108,7 @@ namespace Menge
 		String ansiToUtf8( const String& _ansi );
 		String utf8ToAnsi( const String& _utf8 );
 
-		const String& getProjectTitle() const;
+		String getProjectTitle() const;
 		void setFullscreenMode( bool _fullscreen );
 		bool getFullscreenMode();
 		bool getHasWindowPanel() const;

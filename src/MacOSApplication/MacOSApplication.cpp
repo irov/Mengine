@@ -149,7 +149,7 @@ namespace Menge
 		m_menge->setDesktopResolution(	Resolution( m_desktopResolution[0], m_desktopResolution[1] ) );
 
 		// create the window rect in global coords
-		const String& projectTitle = m_menge->getProjectTitle();
+		String projectTitle = m_menge->getProjectTitle();
 		String ansiTitle = utf8ToAnsi( projectTitle );
 		bool hasWindowPanel = m_menge->getHasWindowPanel();\
 		const Menge::Resolution& winRes = m_menge->getResolution();

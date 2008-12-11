@@ -44,17 +44,17 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& TextManager::getText( const String& _key ) const
-	{
-		TStringMap::const_iterator it_find = m_textMap.find( _key );
-		if( it_find == m_textMap.end() )
-		{
-			MENGE_LOG_ERROR( "Error: TextManager can't find string associated with key - \"%s\""
-				, _key.c_str() );
-			return Utils::emptyString();
-		}
-		return it_find->second;
-	}
+	//const String& TextManager::getText( const String& _key ) const
+	//{
+	//	TStringMap::const_iterator it_find = m_textMap.find( _key );
+	//	if( it_find == m_textMap.end() )
+	//	{
+	//		MENGE_LOG_ERROR( "Error: TextManager can't find string associated with key - \"%s\""
+	//			, _key.c_str() );
+	//		return Utils::emptyString();
+	//	}
+	//	return it_find->second;
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::loaderResourceFile_( XmlElement* _xml )
 	{
@@ -68,10 +68,22 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Key", key );
 					XML_CASE_ATTRIBUTE( "Value", value );
 				}
-				addText( key, value );
+				TextEntry textEntry;
+				textEntry.charOffset = 0.0f;
+				textEntry.text = value;
+				addTextEntry( key, textEntry );
 			}
 			XML_CASE_NODE( "Texts" )
 			{
+				m_currentFont = "";
+				m_currentCharOffset = 0.0f;
+
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Font", m_currentFont );
+					XML_CASE_ATTRIBUTE( "CharOffset", m_currentCharOffset );
+				}
+
 				XML_PARSE_ELEMENT( this, &TextManager::loaderTexts_ );
 			}
 		}
@@ -89,14 +101,32 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Key", key );
 					XML_CASE_ATTRIBUTE( "Value", value );
 				}
-				addText( key, value );
+				TextEntry textEntry;
+				textEntry.charOffset = m_currentCharOffset;
+				textEntry.font = m_currentFont;
+				textEntry.text = value;
+				addTextEntry( key, textEntry );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::addText( const String& _key, const String& _value )
+	void TextManager::addTextEntry( const String& _key, const TextManager::TextEntry& _entry )
 	{
-		m_textMap.insert( std::make_pair( _key, _value ) );
+		m_textMap.insert( std::make_pair( _key, _entry ) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	TextManager::TextEntry TextManager::getTextEntry( const String& _key ) const
+	{
+		TStringMap::const_iterator it_find = m_textMap.find( _key );
+		if( it_find == m_textMap.end() )
+		{
+			MENGE_LOG_ERROR( "Error: TextManager can't find string associated with key - \"%s\""
+				, _key.c_str() );
+			TextEntry emptyEntry;
+			emptyEntry.charOffset = 0.0f;
+			return emptyEntry;
+		}
+		return it_find->second;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

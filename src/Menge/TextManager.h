@@ -11,19 +11,30 @@ namespace Menge
 	class TextManager
 	{
 	public:
+
+		struct TextEntry
+		{
+			String text;
+			String font;
+			float charOffset;
+		};
+
 		TextManager();
 		virtual ~TextManager();
 
 		bool loadResourceFile( const String& _filename );
-		const String& getText( const String& _key ) const;
-		void addText( const String& _key, const String& _value );
+		TextEntry getTextEntry( const String& _key ) const;
+		void addTextEntry( const String& _key, const TextEntry& _entry );
 
 	protected:
-		typedef std::map< String, String > TStringMap;
+		typedef std::map< String, TextEntry > TStringMap;
 		TStringMap m_textMap;
 
 	private:
 		void loaderResourceFile_( XmlElement* _xml );
 		void loaderTexts_( XmlElement* _xml );
+
+		float m_currentCharOffset;
+		String m_currentFont;
 	};
 }	// namespace Menge

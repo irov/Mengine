@@ -205,7 +205,7 @@ namespace Menge
 
 		static String s_getTextByKey( const String& _key )
 		{
-			return Holder<TextManager>::hostage()->getText( _key );
+			return Holder<TextManager>::hostage()->getTextEntry( _key ).text;
 		}
 
 	};

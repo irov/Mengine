@@ -91,7 +91,7 @@ namespace Menge
 		const Resolution & getResourceResolution() const;
 		bool isContentResolutionFixed() const;
 
-		const String& getTitle() const;
+		String getTitle() const;
 
 		int getBits() const;
 		bool getFullscreen() const;

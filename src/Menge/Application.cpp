@@ -225,7 +225,7 @@ namespace Menge
 
 		m_game->registerResources( m_baseDir );
 		
-		const String & title = m_game->getTitle();
+		String title = m_game->getTitle();
 		bool fullscreen = m_game->getFullscreen();
 		m_renderEngine->setFullscreenMode( fullscreen );
 
@@ -883,7 +883,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Application::getProjectTitle() const
+	String Application::getProjectTitle() const
 	{
 		return m_game->getTitle();
 	}

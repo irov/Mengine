@@ -636,14 +636,14 @@ namespace Menge
 		return m_resourceResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& Game::getTitle() const
+	String Game::getTitle() const
 	{
 		if( m_textManager != NULL )
 		{
-			const String& title = m_textManager->getText( m_title );
+			String title = m_textManager->getTextEntry( m_title ).text;
 			if( title.empty() == true )
 			{
-				static const String locTitle = m_title + " [Localize me, please!!!!!!]";
+				String locTitle = m_title + " [Localize me, please!!!!!!]";
 				return locTitle;
 			}
 			return title;

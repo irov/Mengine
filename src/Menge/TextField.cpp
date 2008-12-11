@@ -472,9 +472,17 @@ namespace     Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextByKey( const String& _key )
 	{
-		String text = Holder<TextManager>::hostage()
-			->getText( _key );
-		setText( text );
+		TextManager::TextEntry textEntry = Holder<TextManager>::hostage()
+			->getTextEntry( _key );
+		if( textEntry.font.empty() == false && textEntry.font != m_resourcename )
+		{
+			setResource( textEntry.font );
+		}
+		if( textEntry.charOffset != 0.0f && textEntry.charOffset != m_charOffset )
+		{
+			setCharOffset( textEntry.charOffset );
+		}
+		setText( textEntry.text );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

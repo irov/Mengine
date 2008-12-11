@@ -17,6 +17,7 @@
 #	include <sstream>
 #	include <iomanip>
 #	include "Menge/Utils.h"
+#	include "TextManager.h"
 
 namespace Menge
 {
@@ -202,6 +203,11 @@ namespace Menge
 			return pybind::ptr( Utils::AToW( _string ) );
 		}
 
+		static String s_getTextByKey( const String& _key )
+		{
+			return Holder<TextManager>::hostage()->getText( _key );
+		}
+
 	};
 	//////////////////////////////////////////////////////////////////////////
 	//REGISTER_SCRIPT_CLASS( Menge, ScriptHelper, Base )
@@ -248,5 +254,6 @@ namespace Menge
 		pybind::def( "setParticlesEnabled", &ScriptHelper::s_setParticlesEnabled );
 
 		pybind::def( "unicode", &ScriptHelper::s_unicode );
+		pybind::def( "getTextByKey", &ScriptHelper::s_getTextByKey );
 	}
 }

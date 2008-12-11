@@ -330,7 +330,7 @@ namespace Menge
 		a -= ox;
 		b -= oy;
 
-		setGlyph( uiGlyph, a * fontWInv, b * fontHInv, (a + _width) * fontWInv, (b + m_initSize) * fontHInv );
+		setGlyph( uiGlyph, a * fontWInv, b * fontHInv, (a + _width - 1) * fontWInv, (b + m_initSize) * fontHInv );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceFont::setFontdefPath_( const String& _path )

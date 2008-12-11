@@ -70,6 +70,27 @@ namespace Menge
 				}
 				addText( key, value );
 			}
+			XML_CASE_NODE( "Texts" )
+			{
+				XML_PARSE_ELEMENT( this, &TextManager::loaderTexts_ );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextManager::loaderTexts_( XmlElement* _xml )
+	{
+		XML_SWITCH_NODE( _xml )
+		{
+			XML_CASE_NODE( "Text" )
+			{
+				String key, value;
+				XML_FOR_EACH_ATTRIBUTES()
+				{
+					XML_CASE_ATTRIBUTE( "Key", key );
+					XML_CASE_ATTRIBUTE( "Value", value );
+				}
+				addText( key, value );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

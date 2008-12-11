@@ -24,5 +24,6 @@ namespace Menge
 
 	private:
 		void loaderResourceFile_( XmlElement* _xml );
+		void loaderTexts_( XmlElement* _xml );
 	};
 }	// namespace Menge

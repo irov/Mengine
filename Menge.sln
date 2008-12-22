@@ -6,8 +6,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Menge", "src\Menge\Menge.vc
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 	ProjectSection(ProjectDependencies) = postProject
-		{73E25478-3097-462B-913C-2B5EFC8ADD62} = {73E25478-3097-462B-913C-2B5EFC8ADD62}
 		{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0} = {CBADA4A8-0E45-4C56-883F-90F87AC5FFF0}
+		{73E25478-3097-462B-913C-2B5EFC8ADD62} = {73E25478-3097-462B-913C-2B5EFC8ADD62}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interface", "Interface", "{3D722BE0-FA23-4F25-9EB5-DE38822083E6}"
@@ -19,13 +19,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interface", "Interface", "{
 		src\Interface\ApplicationInterface.h = src\Interface\ApplicationInterface.h
 		src\Interface\CodecInterface.h = src\Interface\CodecInterface.h
 		src\Interface\FileSystemInterface.h = src\Interface\FileSystemInterface.h
+		src\Interface\ImageCodecInterface.h = src\Interface\ImageCodecInterface.h
 		src\Interface\InputSystemInterface.h = src\Interface\InputSystemInterface.h
 		src\Interface\LogSystemInterface.h = src\Interface\LogSystemInterface.h
 		src\Interface\ParticleSystemInterface.h = src\Interface\ParticleSystemInterface.h
 		src\Interface\PhysicSystem2DInterface.h = src\Interface\PhysicSystem2DInterface.h
 		src\Interface\PhysicSystemInterface.h = src\Interface\PhysicSystemInterface.h
 		src\Interface\RenderSystemInterface.h = src\Interface\RenderSystemInterface.h
+		src\Interface\SoundCodecInterface.h = src\Interface\SoundCodecInterface.h
 		src\Interface\SoundSystemInterface.h = src\Interface\SoundSystemInterface.h
+		src\Interface\VideoCodecInterface.h = src\Interface\VideoCodecInterface.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{AD697881-E6E1-46E5-9220-2D07D6AA1850}"
@@ -52,12 +55,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Systems", "Systems", "{433B
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALSoundSystem", "src\System\SoundSystem\SoundSystem.vcproj", "{E42D8FF7-12C1-4105-AFFD-4376291B8726}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.Debug = "False"
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AstralaxParticleSystem", "src\System\AstralaxParticleSystem\AstralaxParticleSystem.vcproj", "{BD7118E1-FE5A-4A90-AA51-EEB8717E2485}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
@@ -76,14 +73,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WinApplication", "src\WinAp
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 	ProjectSection(ProjectDependencies) = postProject
-		{81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC} = {81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC}
 		{C547930F-B96F-42EA-AF9F-C510C418D82C} = {C547930F-B96F-42EA-AF9F-C510C418D82C}
-		{61566E24-14DC-456C-A864-772C5064FDBA} = {61566E24-14DC-456C-A864-772C5064FDBA}
-		{17127636-4C7D-42C4-AA40-79DAEE145E8B} = {17127636-4C7D-42C4-AA40-79DAEE145E8B}
+		{3707D63A-C9C4-41C0-8D53-47B8F1616BE1} = {3707D63A-C9C4-41C0-8D53-47B8F1616BE1}
 		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0} = {41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0}
-		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD} = {FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}
 		{F055D8C9-3510-4462-BB47-0CBB9224C643} = {F055D8C9-3510-4462-BB47-0CBB9224C643}
-		{E42D8FF7-12C1-4105-AFFD-4376291B8726} = {E42D8FF7-12C1-4105-AFFD-4376291B8726}
+		{FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD} = {FB8DF384-1F79-4E2E-8FB2-1BC4173A6ACD}
+		{81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC} = {81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC}
+		{17127636-4C7D-42C4-AA40-79DAEE145E8B} = {17127636-4C7D-42C4-AA40-79DAEE145E8B}
+		{61566E24-14DC-456C-A864-772C5064FDBA} = {61566E24-14DC-456C-A864-772C5064FDBA}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Box2DPhysicSystem", "src\System\Box2DPhysicSystem\Box2DPhysicSystem.vcproj", "{17127636-4C7D-42C4-AA40-79DAEE145E8B}"
@@ -133,6 +130,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OGLRenderSystem", "src\Syst
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OALSoundSystem", "src\System\OALSoundSystem\OALSoundSystem.vcproj", "{3707D63A-C9C4-41C0-8D53-47B8F1616BE1}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
 		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}
@@ -162,12 +165,6 @@ Global
 		{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0}.Release|Win32.ActiveCfg = Release|Win32
 		{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0}.Release|Win32.Build.0 = Release|Win32
 		{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0}.Release|x64.ActiveCfg = Release|Win32
-		{E42D8FF7-12C1-4105-AFFD-4376291B8726}.Debug|Win32.ActiveCfg = Debug|Win32
-		{E42D8FF7-12C1-4105-AFFD-4376291B8726}.Debug|Win32.Build.0 = Debug|Win32
-		{E42D8FF7-12C1-4105-AFFD-4376291B8726}.Debug|x64.ActiveCfg = Debug|Win32
-		{E42D8FF7-12C1-4105-AFFD-4376291B8726}.Release|Win32.ActiveCfg = Release|Win32
-		{E42D8FF7-12C1-4105-AFFD-4376291B8726}.Release|Win32.Build.0 = Release|Win32
-		{E42D8FF7-12C1-4105-AFFD-4376291B8726}.Release|x64.ActiveCfg = Release|Win32
 		{BD7118E1-FE5A-4A90-AA51-EEB8717E2485}.Debug|Win32.ActiveCfg = Debug|Win32
 		{BD7118E1-FE5A-4A90-AA51-EEB8717E2485}.Debug|Win32.Build.0 = Debug|Win32
 		{BD7118E1-FE5A-4A90-AA51-EEB8717E2485}.Debug|x64.ActiveCfg = Debug|Win32
@@ -222,6 +219,12 @@ Global
 		{81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC}.Release|Win32.ActiveCfg = Release|Win32
 		{81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC}.Release|Win32.Build.0 = Release|Win32
 		{81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC}.Release|x64.ActiveCfg = Release|Win32
+		{3707D63A-C9C4-41C0-8D53-47B8F1616BE1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3707D63A-C9C4-41C0-8D53-47B8F1616BE1}.Debug|Win32.Build.0 = Debug|Win32
+		{3707D63A-C9C4-41C0-8D53-47B8F1616BE1}.Debug|x64.ActiveCfg = Debug|Win32
+		{3707D63A-C9C4-41C0-8D53-47B8F1616BE1}.Release|Win32.ActiveCfg = Release|Win32
+		{3707D63A-C9C4-41C0-8D53-47B8F1616BE1}.Release|Win32.Build.0 = Release|Win32
+		{3707D63A-C9C4-41C0-8D53-47B8F1616BE1}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -229,7 +232,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{73E25478-3097-462B-913C-2B5EFC8ADD62} = {AD697881-E6E1-46E5-9220-2D07D6AA1850}
 		{CBADA4A8-0E45-4C56-883F-90F87AC5FFF0} = {AD697881-E6E1-46E5-9220-2D07D6AA1850}
-		{E42D8FF7-12C1-4105-AFFD-4376291B8726} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{BD7118E1-FE5A-4A90-AA51-EEB8717E2485} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{8AF4E2F5-C021-40B7-A40C-59200252B28B} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{17127636-4C7D-42C4-AA40-79DAEE145E8B} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
@@ -238,5 +240,6 @@ Global
 		{F055D8C9-3510-4462-BB47-0CBB9224C643} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{41B25F3A-3157-4F77-8FBC-C7BE92E9BCC0} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 		{81CC5F52-7C7B-4DD0-85BC-4EC29FA457AC} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
+		{3707D63A-C9C4-41C0-8D53-47B8F1616BE1} = {433B781E-46DE-4222-964E-5E795FC7FEDE}
 	EndGlobalSection
 EndGlobal

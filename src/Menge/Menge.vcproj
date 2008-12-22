@@ -1208,35 +1208,7 @@
 			Name="Codec"
 			>
 			<File
-				RelativePath=".\Codec.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath=".\Codec.h"
-				>
-			</File>
-			<File
-				RelativePath=".\CodecTheora.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\CodecTheora.h"
 				>
 			</File>
 			<File

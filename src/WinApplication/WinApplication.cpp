@@ -329,6 +329,11 @@ namespace Menge
 		::QueryPerformanceCounter(&m_lastTime);
 		while( m_running )
 		{
+			while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
+			{
+				TranslateMessage( &msg );
+				DispatchMessage( &msg );
+			}
 			::GetCursorPos( &pos );
 			if( m_cursorInArea && m_handleMouse
 				&& ( pos.x < m_wndInfo.rcClient.left 
@@ -339,11 +344,6 @@ namespace Menge
 				::ShowCursor( TRUE );
 				m_menge->onMouseLeave();
 				m_cursorInArea = false;
-			}
-			while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
-			{
-				TranslateMessage( &msg );
-				DispatchMessage( &msg );
 			}
 
 		/*	::QueryPerformanceCounter(&time);

@@ -13,6 +13,7 @@ namespace Menge
 {
 	class SoundEmitter;
 	class ResourceSound;
+	class SoundDecoderInterface;
 
 	class SoundSulkCallback
 		: public SoundSulkCallbackInterface
@@ -57,6 +58,7 @@ namespace Menge
 		void update( float _timing );
 
 		void mute( bool _mute );
+		void onFocus( bool _focus );
 
 	public:
 		void registerSoundEmitter( SoundEmitter * _emitter );
@@ -74,8 +76,11 @@ namespace Menge
 		typedef std::set<SoundEmitter*> TSetSoundEmitters;
 		TSetSoundEmitters	m_soundEmitters;
 
-		typedef std::map< SoundBufferInterface*, DataStreamInterface* > TMapBufferStreams;
+		typedef std::map< SoundBufferInterface*, SoundDecoderInterface* > TMapBufferStreams;
 		TMapBufferStreams m_bufferStreams;
+
+		typedef std::vector<SoundEmitter*> TSoundEmitterVector;
+		TSoundEmitterVector m_focusEmitters;
 
 		bool m_initialized;
 		bool m_muted;

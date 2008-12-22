@@ -15,7 +15,7 @@
 #	include "Arrow.h"
 #	include "Math/box2.h"
 
-#	include "ImageCodec.h"
+#	include "Interface/ImageCodecInterface.h"
 #	include "Codec.h"
 #	include "Profiler.h"
 #	include "Bitwise.h"
@@ -142,7 +142,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( RenderImageInterface* _image, const String& _filename )
 	{
-		String strExt;
+		/*String strExt;
 		std::size_t pos = _filename.find_last_of( "." );
 		if( pos == std::string::npos ) 
 		{
@@ -208,7 +208,7 @@ namespace Menge
 		}
 
 		Holder<FileEngine>::hostage()->closeOutStream( outFile );
-
+*/
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -216,105 +216,62 @@ namespace Menge
 	{
 		RenderImageInterface * image = m_interface->getImage( _filename );
 
-		if(image == 0)
+		if( image == NULL )
 		{
-			String strExt;
 
-			std::size_t pos = _filename.find_last_of( "." );
+			ImageDecoderInterface* imageDecoder = CodecManager<ImageDecoderInterface>::createDecoder( _filename );
 
-			while( pos != _filename.length() - 1 )
+			if( imageDecoder == 0 )
 			{
-				strExt += _filename[++pos];
-			}
-
-			CodecInterface* codec = CodecManager::getCodec( strExt );
-
-			if( codec == 0 )
-			{
-				MENGE_LOG_ERROR( "Warning: Image codec for extension \"%s\" was not found"
-					, strExt.c_str() );
+				MENGE_LOG_ERROR( "Warning: Image decoder for file \"%s\" was not found"
+					, _filename.c_str() );
 					
-				/*MENGE_LOG_CRITICAL( "Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын",
-					_filename.c_str() );*/
-				return 0;
+				return NULL;
 			}
 
-			DataStreamInterface* stream = Holder<FileEngine>::hostage()->openFile( _filename );
-
-			if( stream == 0 )
+			const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( imageDecoder->getCodecDataInfo() );
+			if( dataInfo->format == PF_UNKNOWN )
 			{
-				MENGE_LOG_ERROR( "Can't open image file \"%s\""
-					, _filename.c_str() );
-				//MENGE_LOG_CRITICAL( "Can't open image file \"%s\"", Utils::WToA(_filename).c_str() );
-				return 0;
+				MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",
+					_filename.c_str() );
+				CodecManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
+				return NULL;
 			}
 
-			ImageCodec::ImageData data;
-			TextureDesc	textureDesc;
+			std::size_t image_width = dataInfo->width;
+			std::size_t image_height = dataInfo->height;
 
-			bool res = codec->getDataInfo( stream, static_cast<CodecInterface::CodecData*>( &data ) );
-			if( res == false )
-			{
-				MENGE_LOG_ERROR( "Error while decoding image \"%s\". Image not loaded"
-					, _filename.c_str() );
-				Holder<FileEngine>::hostage()->closeStream( stream );
-				return 0;
-			}
-			if( data.format == PF_UNKNOWN )
-			{
-				/*MENGE_LOG_CRITICAL( "Художники пидерасы!!!!! Имадж %s не поддерживаемого формата. Пересохранить в пнг 8 бит на канал!!!11адын",
-					_filename.c_str() );*/
-				Holder<FileEngine>::hostage()->closeStream( stream );
-				return 0;
-			}
-
-			stream->seek( 0 );
-
-			std::size_t image_width = data.width;
-			std::size_t image_height = data.height;
-
-			image = m_interface->createImage( _filename, image_width, image_height, data.format );
+			image = m_interface->createImage( _filename, image_width, image_height, dataInfo->format );
 			if( image == NULL )
 			{
 				MENGE_LOG_ERROR( "Error: RenderSystem couldn't create image" );
-				Holder<FileEngine>::hostage()->closeStream( stream );
+				CodecManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
 				return NULL;
 			}
 
 			int pitch = 0;
 			PixelFormat pf = image->getPixelFormat();
-			if( pf != data.format )
+			unsigned int decoderOptions = 0;
+			if( pf != dataInfo->format )
 			{
-				data.flags |= DF_COUNT_ALPHA;
+				decoderOptions |= DF_COUNT_ALPHA;
 			}
 			unsigned char* textureBuffer = image->lock( &pitch, false );
-			data.flags |= DF_CUSTOM_PITCH;
-			data.flags |= ( pitch << 16 );
-			/*data.width = Bitwise::firstPO2From( data.width );
-			data.height = Bitwise::firstPO2From( data.height );
-			int bits = 4;
-			if( data.format == PF_R8G8B8 ) bits = 3;
-			
-			unsigned char* textureBuffer = new unsigned char[data.width*data.height*bits];
-			int pitch = data.width*bits;
-			data.flags |= DF_CUSTOM_PITCH;
-			data.flags |= ( pitch << 16 );*/
 
-			res = codec->decode( stream, textureBuffer, data.flags );
-			if( res == false )
-			{
-				MENGE_LOG_ERROR( "Warning: Error while decoding image \"%s\". Image not loaded"
-					, _filename.c_str() );
-				Holder<FileEngine>::hostage()->closeStream( stream );
-				return 0;
-			}
+			decoderOptions |= DF_CUSTOM_PITCH;
+			decoderOptions |= ( pitch << 16 );
+
+			unsigned int bufferSize = pitch * image->getHeight();
+			imageDecoder->setOptions( decoderOptions );
+			imageDecoder->decode( textureBuffer, bufferSize );
+			CodecManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
 
 			// copy pixels on the edge for better image quality
-			if( data.width > image_width )
+			/*if( data->width > image_width )
 			{
 				unsigned char* image_data = textureBuffer;
-				unsigned int pitch = data.size / data.height;
-				unsigned int pixel_size = pitch / data.width;
+				unsigned int pitch = data->size / data->height;
+				unsigned int pixel_size = pitch / data->width;
 				for( int i = 0; i < image_height; i++ )
 				{
 					std::copy( image_data + (image_width - 1) * pixel_size, 
@@ -323,32 +280,19 @@ namespace Menge
 					image_data += pitch;
 				}
 			}
-			if( data.height > image_height )
+			if( data->height > image_height )
 			{
 				unsigned char* image_data = textureBuffer;
-				unsigned int pitch = data.size / data.height;
-				unsigned int pixel_size = pitch / data.width;
+				unsigned int pitch = data->size / data->height;
+				unsigned int pixel_size = pitch / data->width;
 				std::copy( image_data + (image_height - 1) * pitch,
 							image_data + image_height * pitch,
 							image_data + image_height * pitch );
-			}
+			}*/
 
-			//TextureDesc desc = { _filename, 0, textureBuffer, data.width*data.height*bits, data.width, data.height, data.format };
-			//image = m_interface->loadImage( _filename, image_width, image_height, desc );
-			//delete[] textureBuffer;
 			image->unlock();
 
-			Holder<FileEngine>::hostage()->closeStream( stream );
-
-			MemoryTextureProfiler::addMemTexture(_filename,data.size);
-
-			if( image == 0 )
-			{
-				MENGE_LOG_ERROR( "Render System failed to load image \"%s\""
-					, _filename.c_str() );
-				return 0;
-			}
-
+			MemoryTextureProfiler::addMemTexture( _filename, dataInfo->size );
 		}
 
 		return image;

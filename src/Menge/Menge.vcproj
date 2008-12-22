@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\libPNG&quot;;&quot;$(SolutionDir)dependencies\zlib&quot;;&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\theora\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..&quot;;&quot;$(SolutionDir)framework&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies\pybind\include&quot;;&quot;$(SolutionDir)dependencies\python\include&quot;;&quot;$(SolutionDir)src\libs\&quot;;&quot;$(SolutionDir)dependencies\libPNG&quot;;&quot;$(SolutionDir)dependencies\zlib&quot;;&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\theora\include&quot;;&quot;$(SolutionDir)dependencies\ogg\include&quot;;&quot;$(SolutionDir)dependencies\vorbis\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_LIB;_CRT_SECURE_NO_WARNINGS;Py_NO_ENABLE_SHARED"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -1210,6 +1210,14 @@
 			<File
 				RelativePath=".\Codec.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\Codec.h"
@@ -1218,26 +1226,30 @@
 			<File
 				RelativePath=".\CodecTheora.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\CodecTheora.h"
 				>
 			</File>
 			<File
-				RelativePath=".\ImageCodec.h"
-				>
-			</File>
-			<File
-				RelativePath=".\ImageCodecJPEG.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ImageCodecJPEG.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ImageCodecMNE.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\ImageCodecMNE.h"
@@ -1246,9 +1258,49 @@
 			<File
 				RelativePath=".\ImageCodecPNG.cpp"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\ImageCodecPNG.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ImageDecoderJPEG.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ImageDecoderJPEG.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ImageDecoderPNG.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ImageDecoderPNG.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SoundDecoderOGGVorbis.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SoundDecoderOGGVorbis.h"
+				>
+			</File>
+			<File
+				RelativePath=".\VideoDecoderOGGTheora.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\VideoDecoderOGGTheora.h"
 				>
 			</File>
 		</Filter>
@@ -1311,58 +1363,6 @@
 				RelativePath=".\ResourceReference.h"
 				>
 			</File>
-			<Filter
-				Name="Image"
-				>
-				<File
-					RelativePath=".\ResourceImage.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImage.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImageAtlas.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImageAtlas.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImageCell.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImageCell.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImageDefault.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImageDefault.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImageDynamic.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImageDynamic.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImageSet.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ResourceImageSet.h"
-					>
-				</File>
-			</Filter>
 			<Filter
 				Name="Animation"
 				>
@@ -1546,6 +1546,58 @@
 					RelativePath=".\ResourceMaterial.h"
 					>
 				</File>
+				<Filter
+					Name="Image"
+					>
+					<File
+						RelativePath=".\ResourceImage.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ResourceImage.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ResourceImageAtlas.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ResourceImageAtlas.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ResourceImageCell.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ResourceImageCell.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ResourceImageDefault.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ResourceImageDefault.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ResourceImageDynamic.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ResourceImageDynamic.h"
+						>
+					</File>
+					<File
+						RelativePath=".\ResourceImageSet.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\ResourceImageSet.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="TilePolygon"

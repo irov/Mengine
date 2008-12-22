@@ -482,7 +482,14 @@ namespace     Menge
 		{
 			setCharOffset( textEntry.charOffset );
 		}
-		setText( textEntry.text );
+		if( isCompile() == false )
+		{
+			m_text = textEntry.text;
+		}
+		else
+		{
+			setText( textEntry.text );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

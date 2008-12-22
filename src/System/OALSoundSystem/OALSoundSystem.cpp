@@ -1,0 +1,454 @@
+
+#	include "OALSoundSystem.h"
+#	include "Interface/LogSystemInterface.h"
+#	include "Config/Config.h"
+#	include "SulkSystem.h"
+
+#	include "OALSoundBuffer.h"
+#	include "OALSoundBufferStream.h"
+#	include "OALSoundSource.h"
+
+#	include <algorithm>
+
+#	ifndef MENGE_MASTER_RELEASE
+#		define LOG( message )\
+	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_LOG );
+#	else
+#		define LOG( message )
+#	endif
+
+#	define LOG_ERROR( message )\
+	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_ERROR );
+
+//////////////////////////////////////////////////////////////////////////
+bool initInterfaceSystem( Menge::SoundSystemInterface** _interface )
+{
+	if( _interface == 0 )
+	{
+		return false;
+	}
+
+	*_interface = new Menge::OALSoundSystem();
+
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+void releaseInterfaceSystem( Menge::SoundSystemInterface* _interface )
+{
+	if( _interface )
+	{
+		delete static_cast<Menge::OALSoundSystem*>( _interface );
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+
+namespace Menge
+{
+
+	//////////////////////////////////////////////////////////////////////////
+	OALSoundSystem::OALSoundSystem()
+		: m_logSystem( NULL )
+		, m_initialized( false )
+		, m_context( NULL )
+		, m_device( NULL )
+		, m_sulk( NULL )
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	OALSoundSystem::~OALSoundSystem()
+	{
+		for( TSoundSourceVector::iterator it = m_soundSourcePool.begin(), it_end = m_soundSourcePool.end();
+			it != it_end;
+			it++ )
+		{
+			OALSoundSource* source = (*it);
+			source = new (source) OALSoundSource( NULL );
+			delete source;
+		}
+		m_soundSourcePool.clear();
+
+		if( m_sulk != NULL )
+		{
+			delete m_sulk;
+			m_sulk = NULL;
+		}
+
+		if( m_monoPool.empty() == false )
+		{
+			alDeleteSources( m_monoPool.size(), &(m_monoPool[0]) );
+			m_monoPool.clear();
+		}
+		if( m_stereoPool.empty() == false )
+		{
+			alDeleteSources( m_stereoPool.size(), &(m_stereoPool[0]) );
+			m_stereoPool.clear();
+		}
+
+		alcMakeContextCurrent( NULL );
+
+		if( m_context )
+		{
+			alcDestroyContext( m_context );
+			m_context = NULL;
+		}
+
+		if( m_device )
+		{
+			alcCloseDevice( m_device );
+			m_device = NULL;
+		}
+
+		m_initialized = false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool OALSoundSystem::initialize( LogSystemInterface* _logSystem )
+	{
+		if( m_initialized == true )
+		{
+			LOG_ERROR( "OALSoundSystem: system have been already initialized" );
+			return false;
+		}
+		m_logSystem = _logSystem;
+		LOG( "Starting OpenAL Sound System..." );
+
+		//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
+		m_device = alcOpenDevice( NULL );	// open default device
+		if( m_device == NULL )
+		{
+			LOG_ERROR( "OALSoundSystem: Failed to open default sound device" );
+			return false;
+		}
+
+		m_context = alcCreateContext( m_device, NULL );
+		if( m_context == NULL )
+		{
+			LOG_ERROR( "OALSoundSystem: Failed to create context" );
+			alcCloseDevice( m_device );
+			m_device = NULL;
+			return false;
+		}
+
+		alcMakeContextCurrent( m_context );
+
+		LOG( "OpenAL driver properties" );
+		m_logSystem->logMessage( "Version: " );
+		LOG( alGetString( AL_VERSION ) );
+		m_logSystem->logMessage( "Vendor: " );
+		LOG( alGetString( AL_VENDOR ) );
+		m_logSystem->logMessage( "Renderer: " );
+		LOG( alGetString( AL_RENDERER ) );
+		m_logSystem->logMessage( "Device Specifier: " );
+		LOG( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
+
+		float lposition[] = { 0.0f, 0.0f, 0.0f };
+		float lvelocity[] = { 0.0f, 0.0f, 0.0f };
+		float lorient[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f };
+		alListenerfv( AL_POSITION, lposition );
+		alListenerfv( AL_VELOCITY, lvelocity );
+		alListenerfv( AL_ORIENTATION, lorient );
+
+
+		bool stereo = false;
+		ALuint sourceName = 0;
+		alGenSources( 1, &sourceName );
+		while( alGetError() == AL_NO_ERROR )
+		{
+			if( stereo )
+			{
+				m_stereoPool.push_back( sourceName );
+			}
+			else
+			{
+				m_monoPool.push_back( sourceName );
+			}
+			stereo = !stereo;
+			alGenSources( 1, &sourceName );
+		}
+
+		m_sulk = new SulkSystem();
+
+		m_initialized = true;
+
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::setListenerOrient( float* _position, float* _front, float* _top )
+	{
+		float orient[] = { _front[0], _front[1], _front[2], _top[0], _top[1], _top[2] };
+		alListenerfv( AL_POSITION, _position );
+		alListenerfv( AL_ORIENTATION, orient );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	SoundSourceInterface* OALSoundSystem::createSoundSource( bool _isHeadMode, 
+		SoundBufferInterface * _sample, 
+		SoundNodeListenerInterface * _listener )
+	{
+		OALSoundSource* soundSource = NULL;
+
+		if( m_soundSourcePool.empty() == false )
+		{
+			soundSource = m_soundSourcePool.back();
+			soundSource = new (soundSource) OALSoundSource( this );
+			m_soundSourcePool.pop_back();
+		}
+		else
+		{
+			soundSource = new OALSoundSource( this );
+		}
+		
+		soundSource->setHeadMode( _isHeadMode );
+		soundSource->setSoundNodeListener( _listener );
+		soundSource->loadBuffer( _sample );
+
+		return soundSource;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	SoundBufferInterface* OALSoundSystem::createSoundBuffer( SoundDecoderInterface* _soundDecoder, bool _isStream )
+	{
+		OALSoundBuffer* buffer = NULL;
+		if( _isStream == false )
+		{
+			buffer = new OALSoundBuffer();
+		}
+		else
+		{
+			buffer = new OALSoundBufferStream();
+		}
+
+		if( buffer->load( _soundDecoder ) == false )
+		{
+			LOG_ERROR( "OALSoundSystem: Failed to create sound buffer from stream" );
+			buffer->release();
+			buffer = NULL;
+		}
+
+		return buffer;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	//SoundBufferInterface* OALSoundSystem::createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem )
+	//{
+
+	//	return NULL;
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::releaseSoundBuffer( SoundBufferInterface * _soundBuffer )
+	{
+		if( _soundBuffer != NULL )
+		{
+			_soundBuffer->release();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
+	{
+		TSoundSourceVector::iterator it_find = std::find( m_updatePlaySources.begin(), m_updatePlaySources.end(), _sn );
+		if( it_find != m_updatePlaySources.end() )
+		{
+			(*it_find)->stop_();
+			m_updatePlaySources.erase( it_find );
+		}
+		it_find = std::find( m_removePlaySources.begin(), m_removePlaySources.end(), _sn );
+		if( it_find != m_removePlaySources.end() )
+		{
+			m_removePlaySources.erase( it_find );
+		}
+		it_find = std::find( m_addPlaySources.begin(), m_addPlaySources.end(), _sn );
+		if( it_find != m_addPlaySources.end() )
+		{
+			m_addPlaySources.erase( it_find );
+		}
+
+		if( _sn != NULL )
+		{
+			OALSoundSource* soundSource = static_cast<OALSoundSource*>( _sn );
+			// put into pool
+			soundSource->~OALSoundSource();
+			m_soundSourcePool.push_back( soundSource );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool OALSoundSystem::setBlow( bool _active )
+	{
+		if( m_sulk )
+		{
+			return m_sulk->activate( _active );
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float OALSoundSystem::getBlow()
+	{
+		if( m_sulk )
+		{
+			return m_sulk->getBlow();
+		}
+
+		return 0.f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::setEnoughBlow( float _enoughBlow )
+	{
+		if( m_sulk )
+		{
+			m_sulk->setEnoughBlow( _enoughBlow );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::setBlowCallback( SoundSulkCallbackInterface * _callback )
+	{
+		if( m_sulk )
+		{
+			m_sulk->setCallback( _callback );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::update( float _timing )
+	{
+
+		/*for( TSoundSourceVector::iterator it = m_removePlaySources.begin(), it_end = m_removePlaySources.end();
+			it != it_end;
+			it++ )
+		{
+			(*it)->stop_();
+			TSoundSourceVector::iterator it_find = std::find( 
+													m_updatePlaySources.begin(),
+													m_updatePlaySources.end(), 
+													(*it) 
+													);
+			if( it_find != m_updatePlaySources.end() )
+			{
+				m_updatePlaySources.erase( it_find );
+			}
+		}*/
+		for( TSoundSourceVector::size_type i = 0; i < m_removePlaySources.size(); i++ )
+		{
+			(m_removePlaySources[i])->stop_();
+			TSoundSourceVector::iterator it_find = std::find( 
+				m_updatePlaySources.begin(),
+				m_updatePlaySources.end(), 
+				m_removePlaySources[i] 
+				);
+			if( it_find != m_updatePlaySources.end() )
+			{
+				m_updatePlaySources.erase( it_find );
+			}
+		}
+		m_removePlaySources.clear();
+
+		for( TSoundSourceVector::size_type i = 0; i < m_pausingSources.size(); i++ )
+		{
+			(m_pausingSources[i])->pause_();
+			TSoundSourceVector::iterator it_find = std::find( 
+				m_updatePlaySources.begin(),
+				m_updatePlaySources.end(), 
+				m_pausingSources[i] 
+			);
+			if( it_find != m_updatePlaySources.end() )
+			{
+				m_updatePlaySources.erase( it_find );
+			}
+		}
+		m_pausingSources.clear();
+
+		for( TSoundSourceVector::iterator it = m_updatePlaySources.begin(), it_end = m_updatePlaySources.end();
+			it != it_end;
+			it++ )
+		{
+			(*it)->update( _timing );
+		}
+
+		if( m_sulk )
+		{
+			m_sulk->update();
+		}
+
+		for( TSoundSourceVector::iterator it = m_addPlaySources.begin(), it_end = m_addPlaySources.end();
+			it != it_end;
+			it++ )
+		{
+			(*it)->play_();
+			m_updatePlaySources.push_back( (*it) );
+		}
+		m_addPlaySources.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ALuint OALSoundSystem::popSource( bool _isStereo )
+	{
+		ALuint source = 0;
+		if( _isStereo == true && m_stereoPool.empty() == false )
+		{
+			source = m_stereoPool.back();
+			m_stereoPool.pop_back();
+		}
+		else if( _isStereo == false && m_monoPool.empty() == false )
+		{
+			source = m_monoPool.back();
+			m_monoPool.pop_back();
+		}
+		return source;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::pushSource( ALuint _source, bool _isStereo )
+	{
+		if( _source == 0 )
+		{
+			return;
+		}
+
+		if( _isStereo == true )
+		{
+			m_stereoPool.push_back( _source );
+		}
+		else
+		{
+			m_monoPool.push_back( _source );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::addPlay( OALSoundSource* _source )
+	{
+		TSoundSourceVector::iterator it_find = std::find( m_addPlaySources.begin(), m_addPlaySources.end(), _source );
+		if( it_find == m_addPlaySources.end() )
+		{
+			m_addPlaySources.push_back( _source );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::removePlay( OALSoundSource* _source )
+	{
+		TSoundSourceVector::iterator it_find = std::find( m_addPlaySources.begin(), m_addPlaySources.end(), _source );
+		if( it_find != m_addPlaySources.end() )
+		{
+			m_addPlaySources.erase( it_find );
+		}
+		else
+		{
+			it_find = std::find( m_removePlaySources.begin(), m_removePlaySources.end(), _source );
+			if( it_find == m_removePlaySources.end() )
+			{
+				m_removePlaySources.push_back( _source );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundSystem::pausePlay( OALSoundSource* _source )
+	{
+		TSoundSourceVector::iterator it_find = std::find( m_addPlaySources.begin(), m_addPlaySources.end(), _source );
+		if( it_find != m_addPlaySources.end() )
+		{
+			m_addPlaySources.erase( it_find );
+		}
+		else
+		{
+			it_find = std::find( m_pausingSources.begin(), m_pausingSources.end(), _source );
+			if( it_find == m_pausingSources.end() )
+			{
+				m_pausingSources.push_back( _source );
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+}	// namespace Menge

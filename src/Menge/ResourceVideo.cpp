@@ -5,7 +5,8 @@
 #	include "XmlEngine.h"
 #	include "LogEngine.h"
 #	include "Codec.h"
-#	include "ImageCodec.h"
+
+#	include "Interface/VideoCodecInterface.h"
 
 namespace Menge
 {
@@ -14,10 +15,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceVideo::ResourceVideo( const ResourceFactoryParam & _params )
 		: ResourceReference( _params )
-		, m_filestream( 0 )
-		, m_stream( 0 )
 		, m_bufferSize( 0 )
 		, m_frameSize( 0.0f, 0.0f )
+		, m_videoDecoder( NULL )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -37,27 +37,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::_compile()
 	{
-		if( m_filepath == "" )
+		if( m_filepath.empty() == true )
 		{
-			return false;
-		}
-		m_filestream = Holder<FileEngine>::hostage()->openFile( m_params.category + m_filepath );
-		if( m_filestream == 0 )
-		{
-			MENGE_LOG_ERROR( "ResourceVideo: file not found" );
-			return false;
-		}
-		m_stream = CodecManager::getCodec( "theora" );
-		ImageCodec::ImageData imageData;
-		bool res = m_stream->start( m_filestream, static_cast<CodecInterface::CodecData*>( &imageData ) );
-		if( res == false )
-		{
-			MENGE_LOG_ERROR( "failed to compile theora video" );
 			return false;
 		}
 
-		m_frameSize.x = imageData.width;
-		m_frameSize.y = imageData.height;
+		String fullpath = m_params.category + m_filepath;
+		m_videoDecoder = CodecManager<VideoDecoderInterface>::createDecoder( fullpath );
+		if( m_videoDecoder == 0 )
+		{
+			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file \"%s\""
+						, fullpath.c_str() );
+			return false;
+		}
+
+		const VideoCodecDataInfo* dataInfo = static_cast<const VideoCodecDataInfo*>( m_videoDecoder->getCodecDataInfo() );
+		m_frameSize.x = dataInfo->frame_width;
+		m_frameSize.y = dataInfo->frame_height;
 
 		m_bufferSize =  m_frameSize.x * m_frameSize.y * 4;
 		return true;
@@ -65,22 +61,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceVideo::_release()
 	{
-		if( m_stream != 0 )
+		if( m_videoDecoder != NULL )
 		{
-			m_stream->finish();
-			m_stream = 0;
-		}
-		if( m_filestream != 0 )
-		{
-			Holder<FileEngine>::hostage()
-				->closeStream( m_filestream );
-			m_filestream = 0;
+			CodecManager<VideoDecoderInterface>::releaseDecoder( m_videoDecoder );
+			m_videoDecoder = NULL;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::sync( float _timing )
 	{
-		if( m_stream->sync( _timing ) < 0 )	// if we are not up to date read frame
+		if( m_videoDecoder->sync( _timing ) < 0 )	// if we are not up to date read frame
 		{
 			return true;
 		}
@@ -89,7 +79,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceVideo::getRGBData( unsigned char* _buffer, int _pitch )
 	{
-		m_stream->read( _buffer, _pitch );
+		m_videoDecoder->decode( _buffer, _pitch );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f& ResourceVideo::getFrameSize()
@@ -99,7 +89,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceVideo::eof()
 	{
-		return m_stream->eof();
+		//return m_stream->eof();
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceVideo::seek( float _timing )

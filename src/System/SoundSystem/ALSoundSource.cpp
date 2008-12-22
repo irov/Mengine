@@ -82,16 +82,18 @@ void ALSoundSource::stop()
 	if( !m_playing ) return;
 	m_playing = false;
 
-	if( m_alSource != 0 )
-	{
-		alSourceStop( m_alSource );
-		alSourcei( m_alSource, AL_BUFFER, NULL );
-	}
-
 	if( m_soundBuffer && m_soundBuffer->isStreamed() )
 	{
 		static_cast<ALSoundBufferStream*>( m_soundBuffer )->stop();
 	}
+
+	if( m_alSource != 0 )
+	{
+		alSourceRewind( m_alSource );
+		//alSourceStop( m_alSource );
+		alSourcei( m_alSource, AL_BUFFER, NULL );
+	}
+
 
 	m_soundSystem->unregisterPlaying( this, m_alSource );
 	m_alSource = 0;

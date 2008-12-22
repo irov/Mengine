@@ -83,6 +83,11 @@
 #	include "Scene.h"
 
 #	include "Codec.h"
+#	include "ImageDecoderPNG.h"
+#	include "ImageDecoderJPEG.h"
+#	include "VideoDecoderOGGTheora.h"
+#	include "SoundDecoderOGGVorbis.h"
+
 #	include <locale.h>
 
 #	include "VersionInfo.h"
@@ -506,7 +511,17 @@ namespace Menge
 
 		//strcpy( 0, "asdf" );
 		MENGE_LOG( "Inititalizing Codecs..." );
-		CodecManager::initialize();
+		//CodecManager::initialize();
+		//CodecManager<ImageDecoderInterface>;
+		MENGE_REGISTER_DECODER( ImageDecoderInterface, ImageDecoderPNG, "png" );
+		MENGE_REGISTER_DECODER( ImageDecoderInterface, ImageDecoderJPEG, "jpeg" );
+		MENGE_REGISTER_DECODER( ImageDecoderInterface, ImageDecoderJPEG, "jpg" );
+		VideoDecoderOGGTheora::createCoefTables_();
+		MENGE_REGISTER_DECODER( VideoDecoderInterface, VideoDecoderOGGTheora, "ogg" );
+		MENGE_REGISTER_DECODER( VideoDecoderInterface, VideoDecoderOGGTheora, "ogv" );
+		MENGE_REGISTER_DECODER( SoundDecoderInterface, SoundDecoderOGGVorbis, "ogg" );
+		MENGE_REGISTER_DECODER( SoundDecoderInterface, SoundDecoderOGGVorbis, "ogv" );
+		
 
 		//Holder<ResourceManager>::keep( new ResourceManager() );
 
@@ -679,22 +694,27 @@ namespace Menge
 	{
 		if( m_focus == _focus ) return;
 
-		static float volume = 1.0f;
-		static float avolume = 1.0f;
+		//static float volume = 1.0f;
+		//static float avolume = 1.0f;
 
-		if( !_focus )
-		{
-			volume = Holder<SoundEngine>::hostage()->getCommonVolume();
-			avolume = Holder<Amplifier>::hostage()->getVolume();
-			m_soundEngine->setCommonVolume( 0.0f );
-			Holder<Amplifier>::hostage()->setVolume( 0.0f );
-		}
-		else
-		{
-			m_resetTiming = true;
-			m_soundEngine->setCommonVolume( volume );
-			Holder<Amplifier>::hostage()->setVolume( avolume );
-		}
+		//if( !_focus )
+		//{
+		//	volume = Holder<SoundEngine>::hostage()->getCommonVolume();
+		//	avolume = Holder<Amplifier>::hostage()->getVolume();
+		//	m_soundEngine->setCommonVolume( 0.0f );
+		//	Holder<Amplifier>::hostage()->setVolume( 0.0f );
+		//}
+		//else
+		//{
+		//	m_resetTiming = true;
+		//	m_soundEngine->setCommonVolume( volume );
+		//	Holder<Amplifier>::hostage()->setVolume( avolume );
+		//}
+		Holder<SoundEngine>::hostage()
+			->onFocus( _focus );
+		Holder<Amplifier>::hostage()
+			->onFocus( _focus );
+
 		m_focus = _focus;
 		if( m_game != NULL )
 		{
@@ -799,7 +819,9 @@ namespace Menge
 		Holder<LogEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
 
-		CodecManager::cleanup();
+		CodecManager<ImageDecoderInterface>::cleanup();
+		CodecManager<SoundDecoderInterface>::cleanup();
+		CodecManager<VideoDecoderInterface>::cleanup();
 
 		finalize();
 	}

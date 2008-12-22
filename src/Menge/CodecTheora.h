@@ -14,7 +14,7 @@ namespace Menge
 		ImageCodecTheora();
 		~ImageCodecTheora();
 
-		bool code( OutStreamInterface* _outStream, unsigned char* _buffer, CodecData* _data ) const override;
+		/*bool code( OutStreamInterface* _outStream, unsigned char* _buffer, CodecData* _data ) const override;
 		bool getDataInfo( DataStreamInterface* _inputData, CodecData* _codecData ) const override;
 		bool decode( DataStreamInterface* _input, unsigned char* _buffer, unsigned int _options ) const override;
 
@@ -23,7 +23,7 @@ namespace Menge
 		void finish() override;
 
 		std::streamsize read( void* _buf, std::streamsize _count ) override;
-		bool eof() const override;
+		bool eof() const override;*/
 /*		void seek( std::streamoff _pos ) override;
 		void skip( std::streampos _count ) override;
 		std::streampos tell() const override;

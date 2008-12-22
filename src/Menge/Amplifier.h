@@ -66,6 +66,7 @@ namespace	Menge
 			std::size_t getNumTracks() const;
 
 			void update( float _timing );
+			void onFocus( bool _focus );
 
 			void playTrack( const String& _playlistResource, int _index, bool _looped );
 
@@ -94,5 +95,6 @@ namespace	Menge
 
 			ValueInterpolator<float> m_volumeTo;
 			bool m_playing;
+			bool m_needRefocus;
 	};
 }

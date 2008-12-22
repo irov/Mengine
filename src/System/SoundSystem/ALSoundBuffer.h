@@ -30,6 +30,7 @@ public:
 	virtual int getPosMs();
 	virtual void setPosMs( float _posMs );
 
+	static unsigned int decodeOggVorbis_( OggVorbis_File* stream, char* _buffer, unsigned int _bufferSize );
 protected:
 
 	typedef std::vector<Menge::SoundSourceInterface*>	TVectorSoundSourceInterface;
@@ -40,5 +41,4 @@ protected:
 	bool m_isEmpty;
 	bool m_isStereo;
 
-	unsigned int decodeOggVorbis_( OggVorbis_File* stream, char* _buffer, unsigned int _bufferSize );
 };

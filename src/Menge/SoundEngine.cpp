@@ -2,7 +2,9 @@
 
 #	include "SoundEmitter.h"
 #	include "LogEngine.h"
-#	include "FileEngine.h"
+//#	include "FileEngine.h"
+#	include "Codec.h"
+#	include "Interface/SoundCodecInterface.h"
 
 #	include <algorithm>
 
@@ -49,23 +51,25 @@ namespace Menge
 		{
 			return NULL;
 		}
-		FileEngine* fileEngine = Holder<FileEngine>::hostage();
-		DataStreamInterface* stream = fileEngine->openFile( _filename );
-		if( stream == NULL )
+
+		SoundDecoderInterface* soundDecoder = CodecManager<SoundDecoderInterface>::createDecoder( _filename );
+		if( soundDecoder == NULL )
 		{
+			MENGE_LOG_ERROR( "Error: Can't create sound decoder for file \"%s\"",
+						_filename.c_str() );
 			return NULL;
 		}
 
 		SoundBufferInterface* sample = 
-			m_interface->createSoundBuffer( stream, _isStream );
+			m_interface->createSoundBuffer( soundDecoder, _isStream );
 
 		if( _isStream  == true )
 		{
-			m_bufferStreams.insert( std::make_pair( sample, stream ) );
+			m_bufferStreams.insert( std::make_pair( sample, soundDecoder ) );
 		}
 		else
 		{
-			fileEngine->closeStream( stream );
+			CodecManager<SoundDecoderInterface>::releaseDecoder( soundDecoder );
 		}
 
 		return sample;
@@ -73,25 +77,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface *	SoundEngine::createSoundBufferFromMemory( void* _buffer, int _size, bool _newmem )
 	{
-		SoundBufferInterface * sample =  
-			m_interface->createSoundBufferFromMemory( _buffer, _size, _newmem );
-
-		return sample;
+		//SoundBufferInterface * sample =  
+		//	m_interface->createSoundBufferFromMemory( _buffer, _size, _newmem );
+		assert( 0 && "Not Implemented yet" );
+		return NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::releaseSoundBuffer( SoundBufferInterface* _soundBuffer )
 	{
 		TMapBufferStreams::iterator it_find = m_bufferStreams.find( _soundBuffer );
-		DataStreamInterface* stream = 0;
+		SoundDecoderInterface* soundDecoder = NULL;
 		if( it_find != m_bufferStreams.end() )
 		{
-			stream = it_find->second;
+			soundDecoder = it_find->second;
 			m_bufferStreams.erase( it_find );
 		}
 		m_interface->releaseSoundBuffer( _soundBuffer );
-		if( stream != 0 )
+		if( soundDecoder != NULL )
 		{
-			Holder<FileEngine>::hostage()->closeStream( stream );
+			CodecManager<SoundDecoderInterface>::releaseDecoder( soundDecoder );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -185,6 +189,34 @@ namespace Menge
 	{
 		m_muted = _mute;
 		setCommonVolume( m_commonVolume );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::onFocus( bool _focus )
+	{
+		if( _focus == false )
+		{
+			for( TSetSoundEmitters::iterator it = m_soundEmitters.begin(), it_end = m_soundEmitters.end();
+				it != it_end;
+				it++ )
+			{
+				if( (*it)->isPlaying() == true )
+				{
+					(*it)->pause();
+					m_focusEmitters.push_back( (*it) );
+				}
+			}
+			update( 0.0f );
+		}
+		else
+		{
+			for( TSoundEmitterVector::iterator it = m_focusEmitters.begin(), it_end = m_focusEmitters.end();
+				it != it_end;
+				it++ )
+			{
+				(*it)->play();
+			}
+			m_focusEmitters.clear();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

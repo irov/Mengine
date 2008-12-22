@@ -135,7 +135,7 @@ namespace Menge
 		}
 		if( m_interface != NULL )
 		{
-			m_interface->setSoundBuffer( m_resource->get() );
+			m_interface->loadBuffer( m_resource->get() );
 		}
 		else
 		{

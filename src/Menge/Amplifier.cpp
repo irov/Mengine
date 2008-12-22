@@ -289,4 +289,21 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::onFocus( bool _focus )
+	{
+		if( (_focus == false) && (m_music != NULL) )
+		{
+			if( m_music->isPlaying() == true )
+			{
+				m_music->pause();
+				m_needRefocus = true;
+			}
+		}
+		else if( m_needRefocus == true )
+		{
+			m_music->play();
+			m_needRefocus = false;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

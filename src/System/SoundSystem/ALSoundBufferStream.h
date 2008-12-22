@@ -5,7 +5,36 @@
 
 #	include "Vorbis/Vorbisfile.h"
 #	include <fstream>
+//#	include "boost/thread.hpp"
+namespace boost
+{
+	class thread;
+}
 
+
+//////////////////////////////////////////////////////////////////////////
+/*class UpdateThread
+{
+public:
+	UpdateThread( ALuint _alID1, ALuint _alID2, ALuint _source,
+		ALenum _format, ALuint _frequency, ALuint _channels,
+		OggVorbis_File* _oggFile, unsigned int _bufferSize );
+	~UpdateThread();
+
+	void operator()();
+	void stop();
+
+private:
+	ALuint m_alID1, m_alID2;
+	ALuint m_source;
+	ALenum m_format;
+	ALuint m_frequency;
+	ALuint m_channels;
+	OggVorbis_File* m_oggFile;
+	unsigned int m_bufferSize;
+	volatile bool m_playing;
+	char* m_buffer;
+};*/
 //////////////////////////////////////////////////////////////////////////
 class ALSoundBufferStream 
 	: public ALSoundBuffer
@@ -23,6 +52,8 @@ public:
 
 	int getPosMs();
 	void setPosMs( float _posMs );
+
+	void threadLoop_();
 
 protected:
 
@@ -42,5 +73,8 @@ protected:
 	unsigned int m_bufferSize;	// Size of the buffer in bytes
 	bool m_looping;				// Are we looping or not?
 	bool m_updating;
+
+	//UpdateThread* m_thread;
+	boost::thread* m_boostThread;
 };
 //////////////////////////////////////////////////////////////////////////

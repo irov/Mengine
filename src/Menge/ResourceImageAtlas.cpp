@@ -10,7 +10,7 @@
 
 #	include "PixelFormat.h"
 
-#	include "ImageCodec.h"
+//#	include "ImageCodec.h"
 
 #	include "RenderEngine.h"
 

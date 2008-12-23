@@ -52,7 +52,7 @@ namespace Menge
 			return NULL;
 		}
 
-		SoundDecoderInterface* soundDecoder = CodecManager<SoundDecoderInterface>::createDecoder( _filename );
+		SoundDecoderInterface* soundDecoder = DecoderManager<SoundDecoderInterface>::createDecoder( _filename );
 		if( soundDecoder == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: Can't create sound decoder for file \"%s\"",
@@ -69,7 +69,7 @@ namespace Menge
 		}
 		else
 		{
-			CodecManager<SoundDecoderInterface>::releaseDecoder( soundDecoder );
+			DecoderManager<SoundDecoderInterface>::releaseDecoder( soundDecoder );
 		}
 
 		return sample;
@@ -95,7 +95,7 @@ namespace Menge
 		m_interface->releaseSoundBuffer( _soundBuffer );
 		if( soundDecoder != NULL )
 		{
-			CodecManager<SoundDecoderInterface>::releaseDecoder( soundDecoder );
+			DecoderManager<SoundDecoderInterface>::releaseDecoder( soundDecoder );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

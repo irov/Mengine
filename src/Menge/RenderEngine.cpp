@@ -142,41 +142,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( RenderImageInterface* _image, const String& _filename )
 	{
-		/*String strExt;
-		std::size_t pos = _filename.find_last_of( "." );
-		if( pos == std::string::npos ) 
+		ImageEncoderInterface* imageEncoder = EncoderManager<ImageEncoderInterface>::createEncoder( _filename );
+
+		if( imageEncoder == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::saveImage : extension not specified \"%s\""
+			MENGE_LOG_ERROR( "RenderEngine::saveImage : can't create encoder for filename \"%s\""
 				, _filename.c_str() );
 			return false;
 		}
 
-		while( pos != _filename.length() - 1 )
-		{
-			strExt += _filename[++pos];
-		}
-
-		CodecInterface * pCodec = CodecManager::getCodec( strExt );
-
-		if( pCodec == 0 )
-		{
-			MENGE_LOG_ERROR( "RenderEngine::saveImage : invalid extension \"%s\" codec not found"
-				, strExt.c_str() );
-			return false;
-		}
-
-		ImageCodec::ImageData imgData;
-		imgData.format = _image->getPixelFormat();
-		imgData.height = _image->getHeight();
-		imgData.width = _image->getWidth();
-		imgData.depth = 1;
-		imgData.num_mipmaps = 0;
-		imgData.flags = 0;
-		imgData.size = 0;	// we don't need this
+		ImageCodecDataInfo dataInfo;
+		dataInfo.format = _image->getPixelFormat();
+		dataInfo.height = _image->getHeight();
+		dataInfo.width = _image->getWidth();
+		dataInfo.depth = 1;
+		dataInfo.num_mipmaps = 0;
+		dataInfo.flags = 0;
+		dataInfo.size = 0;	// we don't need this
 		int pitch = 0;
 		unsigned char* buffer = _image->lock( &pitch );
 
-		unsigned char* lockBuffer = new unsigned char[ imgData.height * pitch ];
+		/*unsigned char* lockBuffer = new unsigned char[ imgData.height * pitch ];
 
 		std::size_t mPitch = Menge::PixelUtil::getNumElemBytes( imgData.format ) * imgData.width;
 		for( std::size_t i = 0; i != imgData.height; i++ )
@@ -186,29 +172,25 @@ namespace Menge
 			lockBuffer += mPitch;
 			buffer += pitch;
 		}
+		_image->unlock();*/
+
+		//lockBuffer -= mPitch * imgData.height;
+
+		unsigned int encoderOptions = 0;
+		encoderOptions |= DF_CUSTOM_PITCH;
+		encoderOptions |= (pitch << 16);
+
+		imageEncoder->setOptions( encoderOptions );
+		unsigned int bytesWritten = imageEncoder->encode( buffer, &dataInfo );
+
 		_image->unlock();
-
-		lockBuffer -= mPitch * imgData.height;
-
-		OutStreamInterface* outFile = Holder<FileEngine>::hostage()->openOutStream( _filename, true );
-		if( outFile == 0 )
+		
+		if( bytesWritten == 0 )
 		{
-			MENGE_LOG_ERROR( "RenderEngine::saveImage : failed to open file for output \"%s\""
-				, _filename.c_str() );
-			delete[] lockBuffer;
+			MENGE_LOG_ERROR( "RenderEngine::saveImage : Error while encoding image data" );
 			return false;
 		}
 
-		bool res = pCodec->code( outFile, lockBuffer, static_cast<CodecInterface::CodecData*>( &imgData ) );
-
-		delete[] lockBuffer;
-		if( res == false )
-		{
-			MENGE_LOG_ERROR( "RenderEngine::saveImage : Error while coding image data" );
-		}
-
-		Holder<FileEngine>::hostage()->closeOutStream( outFile );
-*/
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -219,7 +201,7 @@ namespace Menge
 		if( image == NULL )
 		{
 
-			ImageDecoderInterface* imageDecoder = CodecManager<ImageDecoderInterface>::createDecoder( _filename );
+			ImageDecoderInterface* imageDecoder = DecoderManager<ImageDecoderInterface>::createDecoder( _filename );
 
 			if( imageDecoder == 0 )
 			{
@@ -234,7 +216,7 @@ namespace Menge
 			{
 				MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",
 					_filename.c_str() );
-				CodecManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
+				DecoderManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
 				return NULL;
 			}
 
@@ -245,7 +227,7 @@ namespace Menge
 			if( image == NULL )
 			{
 				MENGE_LOG_ERROR( "Error: RenderSystem couldn't create image" );
-				CodecManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
+				DecoderManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
 				return NULL;
 			}
 
@@ -264,7 +246,7 @@ namespace Menge
 			unsigned int bufferSize = pitch * image->getHeight();
 			imageDecoder->setOptions( decoderOptions );
 			imageDecoder->decode( textureBuffer, bufferSize );
-			CodecManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
+			DecoderManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
 
 			// copy pixels on the edge for better image quality
 			/*if( data->width > image_width )

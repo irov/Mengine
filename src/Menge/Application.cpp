@@ -84,6 +84,7 @@
 
 #	include "Codec.h"
 #	include "ImageDecoderPNG.h"
+#	include "ImageEncoderPNG.h"
 #	include "ImageDecoderJPEG.h"
 #	include "VideoDecoderOGGTheora.h"
 #	include "SoundDecoderOGGVorbis.h"
@@ -511,8 +512,7 @@ namespace Menge
 
 		//strcpy( 0, "asdf" );
 		MENGE_LOG( "Inititalizing Codecs..." );
-		//CodecManager::initialize();
-		//CodecManager<ImageDecoderInterface>;
+		// Decoders
 		MENGE_REGISTER_DECODER( ImageDecoderInterface, ImageDecoderPNG, "png" );
 		MENGE_REGISTER_DECODER( ImageDecoderInterface, ImageDecoderJPEG, "jpeg" );
 		MENGE_REGISTER_DECODER( ImageDecoderInterface, ImageDecoderJPEG, "jpg" );
@@ -521,6 +521,8 @@ namespace Menge
 		MENGE_REGISTER_DECODER( VideoDecoderInterface, VideoDecoderOGGTheora, "ogv" );
 		MENGE_REGISTER_DECODER( SoundDecoderInterface, SoundDecoderOGGVorbis, "ogg" );
 		MENGE_REGISTER_DECODER( SoundDecoderInterface, SoundDecoderOGGVorbis, "ogv" );
+		// Encoders
+		MENGE_REGISTER_ENCODER( ImageEncoderInterface, ImageEncoderPNG, "png" );
 		
 
 		//Holder<ResourceManager>::keep( new ResourceManager() );
@@ -819,9 +821,10 @@ namespace Menge
 		Holder<LogEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
 
-		CodecManager<ImageDecoderInterface>::cleanup();
-		CodecManager<SoundDecoderInterface>::cleanup();
-		CodecManager<VideoDecoderInterface>::cleanup();
+		DecoderManager<ImageDecoderInterface>::cleanup();
+		DecoderManager<SoundDecoderInterface>::cleanup();
+		DecoderManager<VideoDecoderInterface>::cleanup();
+		EncoderManager<ImageEncoderInterface>::cleanup();
 
 		finalize();
 	}

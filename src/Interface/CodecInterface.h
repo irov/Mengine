@@ -14,10 +14,22 @@
 	Menge::DecoderInterface* _class_::creatorPlacementNew( void* _mem, DataStreamInterface* _stream, const String& _type ) { return new (_mem) _class_( _stream, _type ); }\
 	const Menge::String& _class_::getType() const { return m_type; }
 
+#	define MENGE_DECLARE_ENCODER( _class_ )\
+	Menge::String m_type;\
+		public:\
+		static Menge::EncoderInterface* _class_::creatorNew( OutStreamInterface*, const String& );\
+		static Menge::EncoderInterface* _class_::creatorPlacementNew( void*, OutStreamInterface*, const String& );\
+		private:
+
+#	define MENGE_IMPLEMENT_ENCODER( _class_ )\
+	Menge::EncoderInterface* _class_::creatorNew( OutStreamInterface* _stream, const String& _type ) { return new _class_( _stream, _type ); }\
+	Menge::EncoderInterface* _class_::creatorPlacementNew( void* _mem, OutStreamInterface* _stream, const String& _type ) { return new (_mem) _class_( _stream, _type ); }\
+	const Menge::String& _class_::getType() const { return m_type; }
+
 namespace Menge
 {
 	class DataStreamInterface;
-	//class OutStreamInterface;
+	class OutStreamInterface;
 
 	struct CodecDataInfo 
 	{
@@ -37,44 +49,15 @@ namespace Menge
 
 	};
 
-	/*class SoundDecoderInterface
-		: public DecoderInterface
+	class EncoderInterface
 	{
 	public:
-
-	};*/
-
-	/*class CodecInterface
-	{
-	public:
-
 		virtual void destructor() = 0;
 		virtual void release() = 0;
 		virtual const String& getType() const = 0;
 
-		virtual void setDecodeOptions( unsigned int _options ) = 0;
-		virtual const CodecData* startDecode( DataStreamInterface* _stream ) = 0;
-		virtual void decode( unsigned char* _buffer, unsigned int _bufferSize ) = 0;
-		virtual bool eof() const = 0;
-		virtual void finishDecode() = 0;
-
-		virtual void startEncode( OutStreamInterface* _stream ) = 0;
-		virtual void encode( unsigned char* _buffer, CodecData* _codecData ) = 0;
-		virtual void finishEncode() = 0;
-
+		virtual OutStreamInterface* getStream() = 0;
+		virtual unsigned int encode( unsigned char* _buffer, const CodecDataInfo* _bufferDataInfo ) = 0;
 	};
 
-	class StreamCodecInterface
-		: public CodecInterface
-	{
-	public:
-
-		virtual int sync( float _timing ) = 0;
-		virtual void seek( float _timing ) = 0;
-	};
-
-	class SoundCodecData
-		: public CodecData
-	{
-	};*/
 }	// namespace Menge

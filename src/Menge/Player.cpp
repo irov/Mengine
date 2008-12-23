@@ -114,6 +114,7 @@ namespace Menge
 
 		if( arrow == 0 )
 		{
+			MENGE_LOG_ERROR( "Player::init default arrow not found" );
 			return false;
 		}
 

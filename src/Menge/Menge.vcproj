@@ -1228,22 +1228,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ImageCodecPNG.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\ImageCodecPNG.h"
-				>
-			</File>
-			<File
 				RelativePath=".\ImageDecoderJPEG.cpp"
 				>
 			</File>
@@ -1257,6 +1241,14 @@
 			</File>
 			<File
 				RelativePath=".\ImageDecoderPNG.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ImageEncoderPNG.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ImageEncoderPNG.h"
 				>
 			</File>
 			<File

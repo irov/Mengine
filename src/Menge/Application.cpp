@@ -714,8 +714,6 @@ namespace Menge
 		//}
 		Holder<SoundEngine>::hostage()
 			->onFocus( _focus );
-		Holder<Amplifier>::hostage()
-			->onFocus( _focus );
 
 		m_focus = _focus;
 		if( m_game != NULL )

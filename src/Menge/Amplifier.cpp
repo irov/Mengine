@@ -17,8 +17,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::Amplifier()
-	: m_music(0)
-	, m_buffer(0)
+	: m_sourceID( 0 )
+	, m_buffer( NULL )
 	, m_currentPlayList(0)
 	, m_volume( 1.0f )
 	, m_volumeOverride( 1.0f )
@@ -29,13 +29,14 @@ namespace Menge
 	Amplifier::~Amplifier()
 	{
 		//_release();
-		if(m_music)
+		if( m_sourceID != 0 )
 		{
-			m_music->setSoundNodeListener( 0 );
-			Holder<SoundEngine>::hostage()->releaseSoundSource( m_music );
-			Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_buffer );
-			m_music = 0;
-			m_buffer = 0;
+			Holder<SoundEngine>::hostage()
+				->releaseSoundSource( m_sourceID );
+			Holder<SoundEngine>::hostage()
+				->releaseSoundBuffer( m_buffer );
+			m_sourceID = 0;
+			m_buffer = NULL;
 		}
 
 		for( TMapPlayList::iterator 
@@ -98,8 +99,11 @@ namespace Menge
 
 		_prepareSound(name);
 
-		m_music->setVolume( m_volume );
-		m_music->play();
+		Holder<SoundEngine>::hostage()
+			->setVolume( m_sourceID, m_volume );
+		Holder<SoundEngine>::hostage()
+			->play( m_sourceID );
+		
 		m_playing = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -110,7 +114,7 @@ namespace Menge
 			return 0;
 		}
 
-		return m_currentPlayList->numTracks(); 
+		return m_currentPlayList->numTracks();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::playAllTracks( const String& _playlistResource )
@@ -133,10 +137,12 @@ namespace Menge
 
 		_prepareSound(m_currentPlayList->getTrack());
 
-		if( m_music )
+		if( m_sourceID != 0 )
 		{
-			m_music->setVolume( m_volume );
-			m_music->play();
+			Holder<SoundEngine>::hostage()
+				->setVolume( m_sourceID, m_volume );
+			Holder<SoundEngine>::hostage()
+				->play( m_sourceID );
 		}
 		m_playing = true;
 	}
@@ -170,9 +176,10 @@ namespace Menge
 	void Amplifier::stop()
 	{
 		m_playing = false;
-		if( m_music )
+		if( m_sourceID != 0 )
 		{
-			m_music->stop();
+			Holder<SoundEngine>::hostage()
+				->stop( m_sourceID );
 			_release();
 		}
 	}
@@ -186,33 +193,19 @@ namespace Menge
 			const String& filename = m_currentPlayList->getTrack();
 			_prepareSound(filename);
 
-			if( m_music != 0 )
+			if( m_sourceID != 0 )
 			{
-				m_music->setVolume( m_volume );
-				m_music->play();
+				Holder<SoundEngine>::hostage()
+					->setVolume( m_sourceID, m_volume );
+				Holder<SoundEngine>::hostage()
+					->play( m_sourceID );
 				m_playing = true;
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::listenPaused( bool _pause )
+	void Amplifier::listenPaused()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::setVolume( float _volume )
-	{
-		float commonValue = Holder<SoundEngine>::hostage()->getCommonVolume();
-		m_volume = _volume * commonValue;
-
-		if( m_music )
-		{
-			m_music->setVolume( m_volume );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Amplifier::getVolume() const
-	{
-		return m_volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::_prepareSound( const String& _filename )
@@ -229,21 +222,23 @@ namespace Menge
 			return;			
 		}
 
-		m_music = Holder<SoundEngine>::hostage()->createSoundSource( false, m_buffer, this );
+		m_sourceID = Holder<SoundEngine>::hostage()->createSoundSource( false, m_buffer, true );
 
-		if( m_music == 0 )
+		if( m_sourceID == 0 )
 		{
 			MENGE_LOG_ERROR( "Warning: Amplifier \"%s\" can't create sound source"
 				, _filename.c_str() );
 			return;
 		}
+		Holder<SoundEngine>::hostage()
+			->setSourceListener( m_sourceID, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::_release()
 	{
-		Holder<SoundEngine>::hostage()->releaseSoundSource( m_music );
+		Holder<SoundEngine>::hostage()->releaseSoundSource( m_sourceID );
 		Holder<SoundEngine>::hostage()->releaseSoundBuffer( m_buffer );
-		m_music = NULL;
+		m_sourceID = 0;
 		m_buffer = NULL;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -258,7 +253,8 @@ namespace Menge
 		{
 			float volume;
 			bool end = m_volumeTo.update( _timing, &volume );
-			setVolume( volume );
+			Holder<SoundEngine>::hostage()
+				->setMusicVolume( volume );
 			/*if( end == true )
 			{
 				setVolume( m_volumeOverride );
@@ -269,40 +265,26 @@ namespace Menge
 	void Amplifier::volumeTo( float _time, float _volume )
 	{
 		//m_volumeOverride = m_volume;
-		m_volumeTo.start( m_volume, _volume, _time, ::fabsf );
+		float volume = Holder<SoundEngine>::hostage()->getMusicVolume();
+		m_volumeTo.start( volume, _volume, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Amplifier::getPosMs()
 	{
-		if( m_music == 0 )
+		if( m_sourceID == 0 )
 		{
 			return 0.0f;
 		}
-		return m_music->getPosMs();
+		return Holder<SoundEngine>::hostage()
+			->getPosMs( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::setPosMs( float _posMs )
 	{
-		if( m_music )
+		if( m_sourceID != 0 )
 		{
-			m_music->setPosMs( _posMs );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::onFocus( bool _focus )
-	{
-		if( (_focus == false) && (m_music != NULL) )
-		{
-			if( m_music->isPlaying() == true )
-			{
-				m_music->pause();
-				m_needRefocus = true;
-			}
-		}
-		else if( m_needRefocus == true )
-		{
-			m_music->play();
-			m_needRefocus = false;
+			Holder<SoundEngine>::hostage()
+				->setPosMs( m_sourceID, _posMs );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

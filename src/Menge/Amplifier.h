@@ -47,26 +47,12 @@ namespace	Menge
 			*/
 			void	stop();
 
-			//! Установка громкости. Задается от [0;1]
-			/*!
-			\param _volume значение громкости.
-			*/
-
-			void	setVolume( float _volume );
-
-			//! Возвращает величину громкости
-			/*!
-			\return величина громкости
-			*/
-			float	getVolume() const;
-
 			const String& getPlaying() const;
 
 			void volumeTo( float _time, float _value );
 			std::size_t getNumTracks() const;
 
 			void update( float _timing );
-			void onFocus( bool _focus );
 
 			void playTrack( const String& _playlistResource, int _index, bool _looped );
 
@@ -84,10 +70,10 @@ namespace	Menge
 			String	m_currentPlaylistName;
 			Playlist *	m_currentPlayList;
 			
-			SoundSourceInterface * m_music;
+			unsigned int m_sourceID;
 			SoundBufferInterface * m_buffer;
 
-			void	listenPaused( bool _pause );
+			void	listenPaused();
 			void	listenStopped();
 			void	_release();	
 			void	_prepareSound( const String& _filename );

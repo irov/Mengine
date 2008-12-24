@@ -9,7 +9,7 @@
 #	include "OALSoundSource.h"
 
 #	include "OALSoundSystem.h"
-#	include "OALSoundBuffer.h"
+#	include "OALSoundBufferBase.h"
 
 namespace Menge
 {
@@ -20,7 +20,6 @@ namespace Menge
 		, m_volume( 1.0f )
 		, m_looped( false )
 		, m_soundBuffer( NULL )
-		, m_listener( NULL )
 		, m_soundSystem( _soundSystem )
 		, m_alSourceName( 0 )
 		, m_timing( 0.0f )
@@ -32,7 +31,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSource::~OALSoundSource()
 	{
-		//stop();
+		stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::play()
@@ -42,11 +41,14 @@ namespace Menge
 			return;
 		}
 
-		if( m_timing < 0.001f )
+		bool isStereo = m_soundBuffer->isStereo();
+		m_alSourceName = m_soundSystem->popSource( isStereo );
+
+		if( m_alSourceName != 0 )
 		{
-			m_timing = m_soundBuffer->getTimeTotal() * 1000.0f;
+			apply_( m_alSourceName );
+			m_soundBuffer->play( m_alSourceName, m_looped, m_timing );
 		}
-		m_soundSystem->addPlay( this );
 
 		m_playing = true;
 	}
@@ -57,9 +59,21 @@ namespace Menge
 		{
 			return;
 		}
-
-		m_soundSystem->pausePlay( this );
 		m_playing = false;
+
+		if( m_alSourceName != 0 )
+		{
+			m_timing = m_soundBuffer->getTimePos( m_alSourceName );
+			m_soundBuffer->stop( m_alSourceName );
+			alSourceRewind( m_alSourceName );
+			ALenum error = alGetError();
+			if( error != AL_NO_ERROR )
+			{
+				// TODO error reporting
+				printf( "Error: %s\n", alGetString( error ) );
+			}
+			m_soundSystem->pushSource( m_alSourceName, m_soundBuffer->isStereo() );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::stop()
@@ -70,12 +84,19 @@ namespace Menge
 		}
 		m_playing = false;
 
-		m_soundSystem->removePlay( this );
-
-		/*if( m_listener )
+		if( m_alSourceName != 0 )
 		{
-			m_listener->listenStopped();
-		}*/
+			m_soundBuffer->stop( m_alSourceName );
+			alSourceRewind( m_alSourceName );
+			ALenum error = alGetError();
+			if( error != AL_NO_ERROR )
+			{
+				// TODO error reporting
+				printf( "Error: %s\n", alGetString( error ) );
+			}
+			m_soundSystem->pushSource( m_alSourceName, m_soundBuffer->isStereo() );
+		}
+		m_timing = 0.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundSource::isPlaying() const 
@@ -123,21 +144,21 @@ namespace Menge
 		return m_looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int OALSoundSource::getLengthMs()
+	float OALSoundSource::getLengthMs()
 	{
 		if( m_soundBuffer != NULL )
 		{
-			return m_soundBuffer->getTimeTotal() * 1000;
+			return m_soundBuffer->getTimeTotal() * 1000.0f;
 		}
 
-		return 0;
+		return 0.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int OALSoundSource::getPosMs()
+	float OALSoundSource::getPosMs()
 	{
 		if( (m_soundBuffer != NULL) && (m_alSourceName != 0) )
 		{
-			return m_soundBuffer->getTimePos( m_alSourceName ) * 1000;
+			return m_soundBuffer->getTimePos( m_alSourceName ) * 1000.0f;
 		}
 
 		return 0;
@@ -145,19 +166,23 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::setPosMs( float _posMs )
 	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSource::setSoundNodeListener( SoundNodeListenerInterface * _listener )
-	{
-		m_listener = _listener;
+		if( m_playing == true )
+		{
+			stop();
+			m_timing = _posMs * 0.001;
+			play();
+		}
+		else
+		{
+			m_timing = _posMs * 0.001;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::loadBuffer( SoundBufferInterface* _soundBuffer )
 	{
 		unloadBuffer_();
 
-		m_soundBuffer = static_cast<OALSoundBuffer*>( _soundBuffer );
+		m_soundBuffer = static_cast<OALSoundBufferBase*>( _soundBuffer );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::unloadBuffer_()
@@ -181,100 +206,84 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::apply_( ALuint _source )
 	{
+		ALenum error = AL_NO_ERROR;
 		if( m_headMode )
 		{
 			alSourcei( _source, AL_SOURCE_RELATIVE, AL_TRUE );
+			error = alGetError();
+			if( error != AL_NO_ERROR )
+			{
+				// TODO error reporting
+				printf( "Error: %s\n", alGetString( error ) );
+			}
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 0.0f );
+			error = alGetError();
+			if( error != AL_NO_ERROR )
+			{
+				// TODO error reporting
+				printf( "Error: %s\n", alGetString( error ) );
+			}
 			alSource3f( _source, AL_DIRECTION, 0.0f, 0.0f, 0.0f );
+			error = alGetError();
+			if( error != AL_NO_ERROR )
+			{
+				// TODO error reporting
+				printf( "Error: %s\n", alGetString( error ) );
+			}
 		} 
 		else 
 		{
 			alSourcei( _source, AL_SOURCE_RELATIVE, AL_FALSE );
+			error = alGetError();
+			if( error != AL_NO_ERROR )
+			{
+				// TODO error reporting
+				printf( "Error: %s\n", alGetString( error ) );
+			}
 			alSourcef( _source, AL_ROLLOFF_FACTOR, 1.0f );
+			error = alGetError();
+			if( error != AL_NO_ERROR )
+			{
+				// TODO error reporting
+				printf( "Error: %s\n", alGetString( error ) );
+			}
 		}
 
 		alSourcei( _source, AL_LOOPING, AL_FALSE );	
-		alSourcefv( _source, AL_POSITION, &(m_position[0]) );
-		alSourcef( _source, AL_MIN_GAIN, 0.0f );
-		alSourcef( _source, AL_MAX_GAIN, 1.0f );
-		alSourcef( _source, AL_GAIN, m_volume );
-
-		ALenum error = alGetError();
+		error = alGetError();
 		if( error != AL_NO_ERROR )
 		{
 			// TODO error reporting
 			printf( "Error: %s\n", alGetString( error ) );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSource::update( float _timing )
-	{
-		if( m_looped == true )
+		alSourcefv( _source, AL_POSITION, &(m_position[0]) );
+		error = alGetError();
+		if( error != AL_NO_ERROR )
 		{
-			return;
+			// TODO error reporting
+			printf( "Error: %s\n", alGetString( error ) );
 		}
+		alSourcef( _source, AL_MIN_GAIN, 0.0f );
+		error = alGetError();
+		if( error != AL_NO_ERROR )
+		{
+			// TODO error reporting
+			printf( "Error: %s\n", alGetString( error ) );
+		}
+		alSourcef( _source, AL_MAX_GAIN, 1.0f );
+		error = alGetError();
+		if( error != AL_NO_ERROR )
+		{
+			// TODO error reporting
+			printf( "Error: %s\n", alGetString( error ) );
+		}
+		alSourcef( _source, AL_GAIN, m_volume );
 
-		m_timing -= _timing;
-		if( m_timing <= 0.0f )
+		error = alGetError();
+		if( error != AL_NO_ERROR )
 		{
-			//m_soundSystem->removePlay( this );
-			stop();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSource::play_()
-	{
-		printf( "PLAY\n" );
-		bool isStereo = m_soundBuffer->isStereo();
-		m_alSourceName = m_soundSystem->popSource( isStereo );
-
-		if( m_alSourceName != 0 )
-		{
-			apply_( m_alSourceName );
-			m_soundBuffer->play( m_alSourceName, m_looped, m_soundBuffer->getTimeTotal() - m_timing * 0.001f );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSource::stop_()
-	{
-		printf( "STOP\n" );
-		if( m_alSourceName != 0 )
-		{
-			m_soundBuffer->stop( m_alSourceName );
-			alSourceRewind( m_alSourceName );
-			ALenum error = alGetError();
-			if( error != AL_NO_ERROR )
-			{
-				// TODO error reporting
-				printf( "Error: %s\n", alGetString( error ) );
-			}
-			m_soundSystem->pushSource( m_alSourceName, m_soundBuffer->isStereo() );
-		}
-		m_timing = 0.0f;
-		if( m_listener )
-		{
-			m_listener->listenStopped();
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSource::pause_()
-	{
-		printf( "PAUSE\n" );
-		if( m_alSourceName != 0 )
-		{
-			m_soundBuffer->stop( m_alSourceName );
-			alSourceRewind( m_alSourceName );
-			ALenum error = alGetError();
-			if( error != AL_NO_ERROR )
-			{
-				// TODO error reporting
-				printf( "Error: %s\n", alGetString( error ) );
-			}
-			m_soundSystem->pushSource( m_alSourceName, m_soundBuffer->isStereo() );
-		}
-		if( m_listener )
-		{
-			m_listener->listenPaused( true );
+			// TODO error reporting
+			printf( "Error: %s\n", alGetString( error ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -4,7 +4,7 @@
 #	include "Config/Config.h"
 #	include "SulkSystem.h"
 
-#	include "OALSoundBuffer.h"
+#	include "OALSoundBufferBase.h"
 #	include "OALSoundBufferStream.h"
 #	include "OALSoundSource.h"
 
@@ -138,8 +138,12 @@ namespace Menge
 		LOG( alGetString( AL_VENDOR ) );
 		m_logSystem->logMessage( "Renderer: " );
 		LOG( alGetString( AL_RENDERER ) );
-		m_logSystem->logMessage( "Device Specifier: " );
-		LOG( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
+		if( alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT") == AL_TRUE )
+		{
+			m_logSystem->logMessage( "Device Specifier: " );
+			LOG( alcGetString( m_device, ALC_DEVICE_SPECIFIER ) );
+		}
+		//LOG( alGetString( AL_EXTENSIONS ) );
 
 		float lposition[] = { 0.0f, 0.0f, 0.0f };
 		float lvelocity[] = { 0.0f, 0.0f, 0.0f };
@@ -176,14 +180,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::setListenerOrient( float* _position, float* _front, float* _top )
 	{
+		if( m_initialized == false )
+		{
+			return;
+		}
+
 		float orient[] = { _front[0], _front[1], _front[2], _top[0], _top[1], _top[2] };
 		alListenerfv( AL_POSITION, _position );
 		alListenerfv( AL_ORIENTATION, orient );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundSourceInterface* OALSoundSystem::createSoundSource( bool _isHeadMode, 
-		SoundBufferInterface * _sample, 
-		SoundNodeListenerInterface * _listener )
+	SoundSourceInterface* OALSoundSystem::createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample )
 	{
 		OALSoundSource* soundSource = NULL;
 
@@ -199,7 +206,6 @@ namespace Menge
 		}
 		
 		soundSource->setHeadMode( _isHeadMode );
-		soundSource->setSoundNodeListener( _listener );
 		soundSource->loadBuffer( _sample );
 
 		return soundSource;
@@ -207,14 +213,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface* OALSoundSystem::createSoundBuffer( SoundDecoderInterface* _soundDecoder, bool _isStream )
 	{
-		OALSoundBuffer* buffer = NULL;
-		if( _isStream == false )
+		OALSoundBufferBase* buffer = NULL;
+		if( m_initialized == false )
 		{
-			buffer = new OALSoundBuffer();
+			buffer = new OALSoundBufferBase();
 		}
 		else
 		{
-			buffer = new OALSoundBufferStream();
+			if( _isStream == false )
+			{
+				buffer = new OALSoundBuffer();
+			}
+			else
+			{
+				buffer = new OALSoundBufferStream();
+			}
 		}
 
 		if( buffer->load( _soundDecoder ) == false )
@@ -243,23 +256,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::releaseSoundNode( SoundSourceInterface * _sn )
 	{
-		TSoundSourceVector::iterator it_find = std::find( m_updatePlaySources.begin(), m_updatePlaySources.end(), _sn );
-		if( it_find != m_updatePlaySources.end() )
-		{
-			(*it_find)->stop_();
-			m_updatePlaySources.erase( it_find );
-		}
-		it_find = std::find( m_removePlaySources.begin(), m_removePlaySources.end(), _sn );
-		if( it_find != m_removePlaySources.end() )
-		{
-			m_removePlaySources.erase( it_find );
-		}
-		it_find = std::find( m_addPlaySources.begin(), m_addPlaySources.end(), _sn );
-		if( it_find != m_addPlaySources.end() )
-		{
-			m_addPlaySources.erase( it_find );
-		}
-
 		if( _sn != NULL )
 		{
 			OALSoundSource* soundSource = static_cast<OALSoundSource*>( _sn );
@@ -307,72 +303,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::update( float _timing )
 	{
-
-		/*for( TSoundSourceVector::iterator it = m_removePlaySources.begin(), it_end = m_removePlaySources.end();
-			it != it_end;
-			it++ )
-		{
-			(*it)->stop_();
-			TSoundSourceVector::iterator it_find = std::find( 
-													m_updatePlaySources.begin(),
-													m_updatePlaySources.end(), 
-													(*it) 
-													);
-			if( it_find != m_updatePlaySources.end() )
-			{
-				m_updatePlaySources.erase( it_find );
-			}
-		}*/
-		for( TSoundSourceVector::size_type i = 0; i < m_removePlaySources.size(); i++ )
-		{
-			(m_removePlaySources[i])->stop_();
-			TSoundSourceVector::iterator it_find = std::find( 
-				m_updatePlaySources.begin(),
-				m_updatePlaySources.end(), 
-				m_removePlaySources[i] 
-				);
-			if( it_find != m_updatePlaySources.end() )
-			{
-				m_updatePlaySources.erase( it_find );
-			}
-		}
-		m_removePlaySources.clear();
-
-		for( TSoundSourceVector::size_type i = 0; i < m_pausingSources.size(); i++ )
-		{
-			(m_pausingSources[i])->pause_();
-			TSoundSourceVector::iterator it_find = std::find( 
-				m_updatePlaySources.begin(),
-				m_updatePlaySources.end(), 
-				m_pausingSources[i] 
-			);
-			if( it_find != m_updatePlaySources.end() )
-			{
-				m_updatePlaySources.erase( it_find );
-			}
-		}
-		m_pausingSources.clear();
-
-		for( TSoundSourceVector::iterator it = m_updatePlaySources.begin(), it_end = m_updatePlaySources.end();
-			it != it_end;
-			it++ )
-		{
-			(*it)->update( _timing );
-		}
-
 		if( m_sulk )
 		{
 			m_sulk->update();
 		}
-
-		for( TSoundSourceVector::iterator it = m_addPlaySources.begin(), it_end = m_addPlaySources.end();
-			it != it_end;
-			it++ )
-		{
-			(*it)->play_();
-			m_updatePlaySources.push_back( (*it) );
-		}
-		m_addPlaySources.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ALuint OALSoundSystem::popSource( bool _isStereo )
@@ -405,49 +339,6 @@ namespace Menge
 		else
 		{
 			m_monoPool.push_back( _source );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::addPlay( OALSoundSource* _source )
-	{
-		TSoundSourceVector::iterator it_find = std::find( m_addPlaySources.begin(), m_addPlaySources.end(), _source );
-		if( it_find == m_addPlaySources.end() )
-		{
-			m_addPlaySources.push_back( _source );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::removePlay( OALSoundSource* _source )
-	{
-		TSoundSourceVector::iterator it_find = std::find( m_addPlaySources.begin(), m_addPlaySources.end(), _source );
-		if( it_find != m_addPlaySources.end() )
-		{
-			m_addPlaySources.erase( it_find );
-		}
-		else
-		{
-			it_find = std::find( m_removePlaySources.begin(), m_removePlaySources.end(), _source );
-			if( it_find == m_removePlaySources.end() )
-			{
-				m_removePlaySources.push_back( _source );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::pausePlay( OALSoundSource* _source )
-	{
-		TSoundSourceVector::iterator it_find = std::find( m_addPlaySources.begin(), m_addPlaySources.end(), _source );
-		if( it_find != m_addPlaySources.end() )
-		{
-			m_addPlaySources.erase( it_find );
-		}
-		else
-		{
-			it_find = std::find( m_pausingSources.begin(), m_pausingSources.end(), _source );
-			if( it_find == m_pausingSources.end() )
-			{
-				m_pausingSources.push_back( _source );
-			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -23,7 +23,7 @@ namespace Menge
 		bool initialize( LogSystemInterface* _logSystem ) override;
 
 		void setListenerOrient( float* _position, float* _front, float* _top) override;
-		SoundSourceInterface* createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener ) override;
+		SoundSourceInterface* createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) override;
 
 		SoundBufferInterface* createSoundBuffer( SoundDecoderInterface* _soundDecoder, bool _isStream ) override;
 		//SoundBufferInterface* createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) override;
@@ -38,10 +38,6 @@ namespace Menge
 		void setBlowCallback( SoundSulkCallbackInterface * _callback ) override;
 
 		void update( float _timing ) override;
-
-		void addPlay( OALSoundSource* _source );
-		void removePlay( OALSoundSource* _source );
-		void pausePlay( OALSoundSource* _source );
 
 	public:
 		ALuint popSource( bool _isStereo );
@@ -61,11 +57,5 @@ namespace Menge
 
 		typedef std::vector<OALSoundSource*> TSoundSourceVector;
 		TSoundSourceVector m_soundSourcePool;
-
-		TSoundSourceVector m_addPlaySources;
-		TSoundSourceVector m_removePlaySources;
-		TSoundSourceVector m_updatePlaySources;
-		TSoundSourceVector m_pausingSources;
-
 	};
 }	// namespace Menge

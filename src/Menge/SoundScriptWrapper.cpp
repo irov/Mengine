@@ -55,12 +55,12 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		static void musicSetVolume( float _volume )
 		{
-			Holder<Amplifier>::hostage()->setVolume( _volume );
+			Holder<SoundEngine>::hostage()->setMusicVolume( _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float musicGetVolume()
 		{
-			return Holder<Amplifier>::hostage()->getVolume();
+			return Holder<SoundEngine>::hostage()->getMusicVolume();
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void musicStop( )

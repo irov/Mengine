@@ -12,7 +12,7 @@
 namespace Menge
 {
 	class OALSoundSystem;
-	class OALSoundBuffer;
+	class OALSoundBufferBase;
 
 	class OALSoundSource
 		: public SoundSourceInterface
@@ -36,21 +36,15 @@ namespace Menge
 		void setLooped( bool _loop ) override;
 		bool isLooped() const override;
 
-		int	getLengthMs() override;
-		int getPosMs() override;
+		float getLengthMs() override;
+		float getPosMs() override;
 		void setPosMs( float _posMs ) override;
-
-		void setSoundNodeListener(SoundNodeListenerInterface * _listener) override;
 
 		void loadBuffer( SoundBufferInterface* _soundBuffer ) override;
 
 	public:
 		void setHeadMode( bool _headMode );
 		bool getHeadMode() const;
-		void update( float _timing );
-		void play_();
-		void stop_();
-		void pause_();
 
 	private:
 		bool m_headMode;
@@ -63,8 +57,7 @@ namespace Menge
 		ALuint m_alSourceName;
 		float m_timing;
 
-		OALSoundBuffer* m_soundBuffer;
-		SoundNodeListenerInterface* m_listener;
+		OALSoundBufferBase* m_soundBuffer;
 		
 		OALSoundSystem* m_soundSystem;
 

@@ -4,8 +4,6 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
-#	include <vector>
-
 namespace Menge
 {
 	class	ResourceSound;
@@ -34,13 +32,11 @@ namespace Menge
 			void setLooped( bool _loop );
 			bool isLooping();
 
-			int	getLengthMs();
-
-			//void setSoundListener( PyObject * _listener );
+			float getLengthMs();
 
 			void setSoundResource( const String& _name );
 
-			void	listenPaused( bool _pause );
+			void	listenPaused();
 			void	listenStopped();
 
 		protected:
@@ -52,15 +48,13 @@ namespace Menge
 			void _setListener() override;
 
 		private:
-
-			float m_volume;
 			ResourceSound * m_resource;
 			String m_resourcename;
 			
-			SoundSourceInterface * m_interface;
+			unsigned int m_sourceID;
 
 			bool m_isHeadMode;
 			bool m_looped;
-
+			bool m_playing;
 	};
 };

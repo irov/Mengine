@@ -21,19 +21,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundEmitter::SoundEmitter()
 		: m_resource(0)
-		, m_interface(0)
+		, m_sourceID( 0 )
 		, m_isHeadMode(false)
-		, m_volume( 1.0f )
 		, m_looped( false )
+		, m_playing( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundEmitter::~SoundEmitter()
 	{
-		if(m_interface)
-		{
-			m_interface->setSoundNodeListener(NULL);
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_activate()
@@ -87,41 +83,46 @@ namespace Menge
 
 		SoundBufferInterface * soundBuffer = m_resource->get();
 
-		m_interface = Holder<SoundEngine>::hostage()
+		m_sourceID = Holder<SoundEngine>::hostage()
 			->createSoundSource( 
 			m_isHeadMode
 			, soundBuffer
-			, this 
 			);
 
-		if( m_interface == 0 )
+		if( m_sourceID == 0 )
 		{
 			MENGE_LOG_ERROR( "Warning: sound emitter \"%s\" not compiled"
 				, m_name.c_str() );
 			return false;
 		}
 
-		m_interface->setLooped( m_looped );
-		Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
+		Holder<SoundEngine>::hostage()
+			->setSourceListener( m_sourceID, this );
+		Holder<SoundEngine>::hostage()
+			->setLooped( m_sourceID, m_looped );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_release()
 	{
-		Holder<SoundEngine>::hostage()->releaseSoundSource( m_interface );
+		Holder<SoundEngine>::hostage()->releaseSoundSource( m_sourceID );
 		Holder<ResourceManager>::hostage()->releaseResource( m_resource );
 
-		m_interface = NULL;
+		m_sourceID = 0;
 		m_resource = NULL;
-
-		Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
+		m_playing = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setSoundResource( const String& _name )
 	{
 		m_resourcename = _name;
 
-		//recompile();		
+		recompile();
+		//recompile();
+		/*Holder<ResourceManager>::hostage()
+			->releaseResource( m_resource );
+
 		m_resource = 
 			Holder<ResourceManager>::hostage()
 			->getResourceT<ResourceSound>( m_resourcename );
@@ -133,7 +134,7 @@ namespace Menge
 			, m_resourcename.c_str() );
 			return;
 		}
-		if( m_interface != NULL )
+		if( m_sourceID != 0 )
 		{
 			m_interface->loadBuffer( m_resource->get() );
 		}
@@ -141,32 +142,24 @@ namespace Menge
 		{
 			SoundBufferInterface * soundBuffer = m_resource->get();
 
-			m_interface = Holder<SoundEngine>::hostage()
+			m_sourceID = Holder<SoundEngine>::hostage()
 				->createSoundSource( 
 				m_isHeadMode
 				, soundBuffer
 				, this 
 				);
-		}
+		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*void SoundEmitter::setSoundListener( PyObject * _listener )
+	void SoundEmitter::listenPaused()
 	{
-		m_listener = _listener;
-
-		registerEvent("STOP_PLAYING", "onStopped", m_listener );
-		registerEvent("PAUSE_PLAYING", "onPaused", m_listener );
-	}*/
-
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::listenPaused( bool _pause )
-	{
+		m_playing = false;
 		callEvent( EVENT_SOUND_PAUSE, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::listenStopped()
 	{
-		//Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
+		m_playing = false;
 		callEvent( EVENT_SOUND_STOP, "(O)", this->getEmbedding() );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -177,57 +170,69 @@ namespace Menge
 			return;
 		}
 
-		//Holder<SoundEngine>::hostage()->registerSoundEmitter( this );
-		//printf("playing %s looped = %d\n", m_resourcename.c_str(), m_looped );
-		//MENGE_LOG( MENGE_TEXT("playing %s"), m_resourcename.c_str());
-		return m_interface->play();
+		m_playing = true;
+		if( m_sourceID != 0 )
+		{
+			Holder<SoundEngine>::hostage()
+				->play( m_sourceID );
+		}
+
+		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::pause()
 	{
-		return m_interface->pause();
+		m_playing = false;
+		if( m_sourceID != 0 )
+		{
+			Holder<SoundEngine>::hostage()
+				->pause( m_sourceID );
+		}
+		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::stop()
 	{
-		//MENGE_LOG("stopping %s", m_resourcename.c_str());
-		if( m_interface )
+		m_playing = false;
+		if( m_sourceID != 0 )
 		{
-			m_interface->stop();	
+			Holder<SoundEngine>::hostage()
+				->stop( m_sourceID );
 		}
-		//Holder<SoundEngine>::hostage()->unregisterSoundEmitter( this );
-		return ;
+		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::isPlaying()
 	{
-		return m_interface->isPlaying();
+		return m_playing;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setVolume( float _volume )
 	{
-		//float soundSourceVol = _volume * Holder<SoundEngine>::hostage()->getSoundSourceVolume();
-		m_volume = _volume;
-		float commonVol = m_volume * Holder<SoundEngine>::hostage()->getCommonVolume();
-		return m_interface->setVolume( commonVol );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::updateVolume()
-	{
-		setVolume( m_volume );
+		if( m_sourceID != 0 )
+		{
+			Holder<SoundEngine>::hostage()
+				->setVolume( m_sourceID, _volume );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEmitter::getVolume()
 	{
-		return m_volume;
+		if( m_sourceID != 0 )
+		{
+			return Holder<SoundEngine>::hostage()
+				->getVolume( m_sourceID );
+		}
+		return 0.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::setLooped( bool _loop )
 	{
 		m_looped = _loop;
-		if( m_interface )
+		if( m_sourceID != 0 )
 		{
-			m_interface->setLooped( m_looped );
+			Holder<SoundEngine>::hostage()
+				->setLooped( m_sourceID, m_looped );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -236,9 +241,14 @@ namespace Menge
 		return m_looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int SoundEmitter::getLengthMs()
+	float SoundEmitter::getLengthMs()
 	{
-		return m_interface->getLengthMs();
+		if( m_sourceID != 0 )
+		{
+			return Holder<SoundEngine>::hostage()
+				->getLengthMs( m_sourceID );
+		}
+		return 0.0f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_setListener()

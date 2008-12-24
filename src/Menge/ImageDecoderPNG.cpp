@@ -115,7 +115,7 @@ namespace Menge
 			}
 			//delete[] rowBuffer;
 		}
-		else */if( ( m_dataInfo.format == PF_R8G8B8 ) && ( m_options & DF_COUNT_ALPHA ) != 0 )
+		else if( ( m_dataInfo.format == PF_R8G8B8 ) && ( m_options & DF_COUNT_ALPHA ) != 0 )
 		{
 
 			/*int rowBufferSize = width * (pixel_depth / 8);
@@ -129,14 +129,26 @@ namespace Menge
 				}
 				readBuffer += row_stride;
 			}
-			delete[] rowBuffer;*/
+			delete[] rowBuffer;
 		}
-		else
+		else*/
 		{
 			while( _bufferSize >= m_rowStride && m_rowsRead < m_dataInfo.height )
 			{
 				png_read_row( m_png_ptr, _buffer, png_bytep_NULL );
 				m_rowsRead++;
+
+				if( (m_options & DF_COUNT_ALPHA) != 0 )	// place data as there is alpha
+				{
+					// place a little magic here =)
+					for( std::size_t i = 0; i < m_dataInfo.width; i++ )
+					{
+						std::copy( _buffer + 3 * ( m_dataInfo.width - i - 1 ), _buffer + 3 * ( m_dataInfo.width - i ), _buffer + m_bufferRowStride - 4 - i*4 );
+						_buffer[m_bufferRowStride-i*4-1] = 255; // alpha
+
+					}
+				}
+
 				_buffer += m_bufferRowStride;
 				_bufferSize -= m_bufferRowStride;
 			}

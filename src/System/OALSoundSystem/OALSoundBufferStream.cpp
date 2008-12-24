@@ -123,7 +123,7 @@ namespace Menge
 		if( state != AL_STOPPED && state != AL_INITIAL )
 		{
 			alSourceStop( _source );
-			alSourceRewind( _source );
+			//alSourceRewind( _source );
 		}
 
 		
@@ -183,18 +183,49 @@ namespace Menge
 		ALint queued = 0;
 		ALuint buffer = 0;
 		// Получаем количество отработанных буферов
-		alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queued );
+		alGetSourcei( m_source, AL_BUFFERS_PROCESSED, &queued );
+		ALenum error = alGetError();
+		if( error != AL_NO_ERROR )
+		{
+			printf( "OAL Error: %s\n", alGetString( error ) );
+		}
 
 		// Если таковые существуют то
 		while( queued-- )
 		{
 			// Исключаем их из очереди
 			alSourceUnqueueBuffers( m_source, 1, &buffer );
+			error = alGetError();
+			if( error != AL_NO_ERROR )
+			{
+				printf( "OAL Error: %s\n", alGetString( error ) );
+			}
 		}
 
 		alSourceStop( m_source );
-		alSourceRewind( m_source );
+		error = alGetError();
+		if( error != AL_NO_ERROR )
+		{
+			printf( "OAL Error: %s\n", alGetString( error ) );
+		}
 
+		// unqueue remaining buffers
+		alGetSourcei( m_source, AL_BUFFERS_QUEUED, &queued );
+		error = alGetError();
+		if( error != AL_NO_ERROR )
+		{
+			printf( "OAL Error: %s\n", alGetString( error ) );
+		}
+		while( queued-- )
+		{
+			alSourceUnqueueBuffers( m_source, 1, &buffer );
+			error = alGetError();
+			if( error != AL_NO_ERROR )
+			{
+				printf( "OAL Error: %s\n", alGetString( error ) );
+			}
+		}
+		
 		if( m_dataBuffer != NULL )
 		{
 			delete m_dataBuffer;
@@ -265,6 +296,8 @@ namespace Menge
 					alSourcePlay( m_source );
 				}
 			}
+			
+			Sleep( 1 );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

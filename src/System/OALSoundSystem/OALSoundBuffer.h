@@ -8,20 +8,16 @@
 
 #	pragma once
 
-#	include "Interface/SoundSystemInterface.h"
-#	include <AL/al.h>
+#	include "OALSoundBufferBase.h"
 
 namespace Menge
 {
 	class OALSoundBuffer
-		: public SoundBufferInterface
+		: public OALSoundBufferBase
 	{
 	public:
 		OALSoundBuffer();
 		virtual ~OALSoundBuffer();
-
-	public:
-		void release() override;
 
 	public:
 		virtual bool load( SoundDecoderInterface* _soundDecoder );
@@ -31,16 +27,8 @@ namespace Menge
 		virtual void stop( ALenum _source );
 		virtual float getTimePos( ALenum _source );
 
-		bool isStereo() const;
-		float getTimeTotal() const;
-
 	protected:
 		ALuint m_alBufferName;
-		int m_frequency;
-		int m_channels;
-		float m_time_total;
-		bool m_isStereo;
-		ALenum m_format;
 
 	private:
 		void cleanup_();

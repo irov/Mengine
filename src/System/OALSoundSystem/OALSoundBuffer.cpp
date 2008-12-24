@@ -13,8 +13,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBuffer::OALSoundBuffer()
-		: m_alBufferName( 0 )
-		, m_isStereo( true )
+		: OALSoundBufferBase()
+		, m_alBufferName( 0 )
 	{
 		
 	}
@@ -22,11 +22,6 @@ namespace Menge
 	OALSoundBuffer::~OALSoundBuffer()
 	{
 		cleanup_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBuffer::release()
-	{
-		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBuffer::load( SoundDecoderInterface* _soundDecoder )
@@ -51,7 +46,16 @@ namespace Menge
 		unsigned char* buffer = new unsigned char[ size ];
 		_soundDecoder->decode( buffer, size );
 
-		m_format = m_channels == 1 ? AL_FORMAT_MONO16, m_isStereo = false : AL_FORMAT_STEREO16, m_isStereo = true;
+		if( m_channels == 1 )
+		{
+			m_format = AL_FORMAT_MONO16;
+			m_isStereo = false;
+		}
+		else
+		{
+			m_format = AL_FORMAT_STEREO16;
+			m_isStereo = true;
+		}
 		alBufferData( m_alBufferName, m_format, buffer, size, m_frequency );
 
 		delete[] buffer;
@@ -68,12 +72,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBuffer::cleanup_()
 	{
-		alDeleteBuffers( 1, &m_alBufferName );
-		ALenum error = alGetError();
-		if( error != AL_NO_ERROR )
+		if( m_alBufferName != 0 )
 		{
-			// TODO: report in case of error
-			printf( "Error: %s\n", alGetString( error ) );
+			alDeleteBuffers( 1, &m_alBufferName );
+			ALenum error = alGetError();
+			if( error != AL_NO_ERROR )
+			{
+				// TODO: report in case of error
+				printf( "Error: %s\n", alGetString( error ) );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -143,16 +150,6 @@ namespace Menge
 			// TODO error reporting
 			printf( "Error: %s\n", alGetString( error ) );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBuffer::isStereo() const
-	{
-		return m_isStereo;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float OALSoundBuffer::getTimeTotal() const
-	{
-		return m_time_total;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float OALSoundBuffer::getTimePos( ALenum _source )

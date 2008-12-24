@@ -66,10 +66,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="pybind_d.lib python25_d.lib libpngd.lib zlibd.lib libjpegd.lib libtheora_d.lib winmm.lib"
+				AdditionalDependencies="pybind_d.lib python25_d.lib libpngd.lib zlibd.lib libjpegd.lib libtheora_d.lib ogg_static_d.lib vorbisfile_static_d.lib vorbis_static_d.lib winmm.lib"
 				OutputFile="$(OutDir)\Game_d.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)dependencies\libPNG\lib_debug\&quot;;&quot;$(SolutionDir)dependencies\zlib\lib_debug\&quot;;&quot;$(SolutionDir)dependencies\libJPEG\debug\&quot;;&quot;$(SolutionDir)dependencies\theora\lib\&quot;;&quot;$(SolutionDir)dependencies\boost\bin.v2\libs\thread\build\msvc-8.0\debug\link-static\runtime-link-static\threading-multi\&quot;;&quot;$(SolutionDir)dependencies\boost\bin.v2\libs\date_time\build\msvc-8.0\debug\link-static\runtime-link-static\threading-multi\&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Debug&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)dependencies\libPNG\lib_debug\&quot;;&quot;$(SolutionDir)dependencies\zlib\lib_debug\&quot;;&quot;$(SolutionDir)dependencies\libJPEG\debug\&quot;;&quot;$(SolutionDir)dependencies\theora\lib\&quot;;&quot;$(SolutionDir)dependencies\boost\bin.v2\libs\thread\build\msvc-8.0\debug\link-static\runtime-link-static\threading-multi\&quot;;&quot;$(SolutionDir)dependencies\boost\bin.v2\libs\date_time\build\msvc-8.0\debug\link-static\runtime-link-static\threading-multi\&quot;;&quot;$(SolutionDir)dependencies\ogg\lib\&quot;;&quot;$(SolutionDir)dependencies\vorbis\lib\&quot;"
 				GenerateManifest="false"
 				IgnoreDefaultLibraryNames="libci.lib"
 				GenerateDebugInformation="true"
@@ -161,10 +161,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="pybind.lib python25.lib libPNG.lib zlib.lib libJPEG.lib libtheora.lib"
+				AdditionalDependencies="pybind.lib python25.lib libPNG.lib zlib.lib libJPEG.lib libtheora.lib ogg_static.lib vorbisfile_static.lib vorbis_static.lib"
 				OutputFile="$(OutDir)\Game.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Release&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\libPNG\lib_release&quot;;&quot;$(SolutionDir)dependencies\zlib\lib_release&quot;;&quot;$(SolutionDir)dependencies\libJPEG\release&quot;;&quot;$(SolutionDir)dependencies\theora\lib\&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\python\PCbuild8\Win32Release&quot;;&quot;$(SolutionDir)dependencies\pybind\lib&quot;;&quot;$(SolutionDir)lib&quot;;&quot;$(SolutionDir)dependencies\libPNG\lib_release&quot;;&quot;$(SolutionDir)dependencies\zlib\lib_release&quot;;&quot;$(SolutionDir)dependencies\libJPEG\release&quot;;&quot;$(SolutionDir)dependencies\theora\lib\&quot;;&quot;$(SolutionDir)dependencies\ogg\lib\&quot;;&quot;$(SolutionDir)dependencies\vorbis\lib\&quot;;&quot;$(SolutionDir)dependencies\boost\bin.v2\libs\thread\build\msvc-8.0\release\link-static\runtime-link-static\threading-multi\&quot;;&quot;$(SolutionDir)dependencies\boost\bin.v2\libs\date_time\build\msvc-8.0\release\link-static\runtime-link-static\threading-multi\&quot;"
 				GenerateManifest="false"
 				IgnoreDefaultLibraryNames="libci.lib"
 				GenerateMapFile="true"

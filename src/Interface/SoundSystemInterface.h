@@ -11,7 +11,7 @@ namespace Menge
 	class	SoundNodeListenerInterface
 	{
 	public:
-		virtual void listenPaused( bool _pause ) = 0;
+		virtual void listenPaused() = 0;
 		virtual void listenStopped() = 0;
 	};
 
@@ -38,11 +38,9 @@ namespace Menge
 		virtual void setLooped( bool _loop ) = 0;
 		virtual bool isLooped() const = 0;
 
-		virtual int	getLengthMs() = 0;
-		virtual int getPosMs() = 0;
+		virtual float getLengthMs() = 0;
+		virtual float getPosMs() = 0;
 		virtual void setPosMs( float _posMs ) = 0;
-
-		virtual void setSoundNodeListener(SoundNodeListenerInterface * _listener) = 0;
 
 		virtual void loadBuffer( SoundBufferInterface* _soundBuffer ) = 0;
 	};
@@ -59,7 +57,7 @@ namespace Menge
 		virtual bool initialize( LogSystemInterface* _logSystem ) = 0;
 
 		virtual void setListenerOrient( float * _position, float * _front, float * top) = 0;
-		virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample, SoundNodeListenerInterface * _listener ) = 0;
+		virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) = 0;
 
 		virtual SoundBufferInterface* createSoundBuffer( SoundDecoderInterface* _soundDecoder, bool _isStream ) = 0;
 		//virtual SoundBufferInterface * createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) = 0;

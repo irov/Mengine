@@ -245,7 +245,11 @@ namespace Menge
 
 			unsigned int bufferSize = pitch * image->getHeight();
 			imageDecoder->setOptions( decoderOptions );
-			imageDecoder->decode( textureBuffer, bufferSize );
+			unsigned int b = imageDecoder->decode( textureBuffer, bufferSize );
+			/*if( b == 0 )
+			{
+				assert( 0 );
+			}*/
 			DecoderManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
 
 			// copy pixels on the edge for better image quality

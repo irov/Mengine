@@ -324,6 +324,7 @@ namespace Menge
 
 			// Assume put_scanline_someplace wants a pointer and sample count.
 			_buffer += m_bufferRowStride;
+			_bufferSize -= m_bufferRowStride;
 		}
 
 		return read * m_rowStride;

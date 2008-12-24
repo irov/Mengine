@@ -1,12 +1,8 @@
 #	include "SoundEngine.h"
 
-#	include "SoundEmitter.h"
 #	include "LogEngine.h"
-//#	include "FileEngine.h"
 #	include "Codec.h"
 #	include "Interface/SoundCodecInterface.h"
-
-#	include <algorithm>
 
 namespace Menge
 {
@@ -21,6 +17,7 @@ namespace Menge
 	, m_sulkcallback(0)
 	, m_soundVolume( 1.0f )
 	, m_commonVolume( 1.0f )
+	, m_musicVolume( 1.0f )
 	, m_initialized( false )
 	, m_muted( false )
 	{
@@ -30,28 +27,36 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void	SoundEngine::setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top )
+	void SoundEngine::setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top )
 	{
 		m_interface->setListenerOrient((float*)_position.m,(float*)_front.m,(float*)top.m);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundSourceInterface *	SoundEngine::createSoundSource(
+	unsigned int SoundEngine::createSoundSource(
 			bool _isHeadMode, 
 			SoundBufferInterface * _sample,
-			SoundNodeListenerInterface * _listener = 0 )
+			bool _music /* = false */ )
 	{
+		SoundSourceInterface* sourceInterface = m_interface->createSoundSource( _isHeadMode, _sample );
+		if( sourceInterface == 0 )
+		{
+			return 0;
+		}
+		static unsigned int count = 0;
+		count++;
+		
+		TSoundSource source( sourceInterface, Stopped, NULL, 0.0f, false, 1.0f, _music );
+		m_soundSourceMap.insert( std::make_pair( count, source ) );
+		if( m_muted == true )
+		{
+			sourceInterface->setVolume( 0.0f );
+		}
 
-		SoundSourceInterface* sound = m_interface->createSoundSource( _isHeadMode, _sample, _listener );
-		return	sound;
+		return	count;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const String & _filename, bool _isStream )
 	{
-		if( m_initialized == false )
-		{
-			return NULL;
-		}
-
 		SoundDecoderInterface* soundDecoder = DecoderManager<SoundDecoderInterface>::createDecoder( _filename );
 		if( soundDecoder == NULL )
 		{
@@ -99,31 +104,27 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::releaseSoundSource( SoundSourceInterface* _soundSource )
+	void SoundEngine::releaseSoundSource( unsigned int _sourceID )
 	{
-		m_interface->releaseSoundNode(_soundSource);
+		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _sourceID );
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return;
+		}
+
+		if( m_interface != NULL )
+		{
+			it_find->second.soundSourceInterface->stop();
+			m_interface->releaseSoundNode( it_find->second.soundSourceInterface );
+		}
+
+		m_soundSourceMap.erase( it_find );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setSoundSourceVolume( float _volume )
 	{
 		m_soundVolume = _volume;
-		for( TSetSoundEmitters::iterator it = m_soundEmitters.begin(); it != m_soundEmitters.end(); ++it )
-		{
-			(*it)->setVolume( _volume );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::registerSoundEmitter( SoundEmitter * _emitter )
-	{
-		//MENGE_LOG( MENGE_TEXT("Sound Registered!") );
-		_emitter->setVolume( m_soundVolume );
-		m_soundEmitters.insert( _emitter );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::unregisterSoundEmitter( SoundEmitter * _emitter )
-	{
-		//MENGE_LOG( MENGE_TEXT("Sound UnRegistered!") );
-		m_soundEmitters.erase( _emitter );
+		updateVolume_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getSoundSourceVolume() const
@@ -134,18 +135,11 @@ namespace Menge
 	void SoundEngine::setCommonVolume( float _volume )
 	{
 		m_commonVolume = _volume;
-		for( TSetSoundEmitters::iterator it = m_soundEmitters.begin(); it != m_soundEmitters.end(); ++it )
-		{
-			(*it)->updateVolume();
-		}
+		updateVolume_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getCommonVolume() const
 	{
-		if( m_muted )
-		{
-			return 0.0f;
-		}
 		return m_commonVolume;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -166,6 +160,83 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::update( float _timing )
 	{
+		for( TSoundSourceMap::iterator it = m_soundSourceMap.begin(), it_end = m_soundSourceMap.end();
+			it != it_end;
+			it++ )
+		{
+			TSoundSource& source = it->second;
+			switch( source.state )
+			{
+			case Stopped:
+			case Paused:
+				break;
+			case StopPlay:
+			case PausePlay:
+				source.state = Playing;
+				source.timing = source.soundSourceInterface->getLengthMs();
+				source.soundSourceInterface->play();
+				break;
+			case Playing:
+				if( source.looped == false )
+				{
+					source.timing -= _timing;
+					if( source.timing <= 0.0f )
+					{
+						source.state = Stopped;
+						source.soundSourceInterface->stop();
+						if( source.listener != NULL )
+						{
+							m_stopListeners.push_back( source.listener );
+						}
+					}
+				}
+				break;
+			case Stopping:
+				source.state = Stopped;
+				source.soundSourceInterface->stop();
+				if( source.listener != NULL )
+				{
+					m_stopListeners.push_back( source.listener );
+				}
+				break;
+			case Pausing:
+				source.state = Paused;
+				source.soundSourceInterface->pause();
+				if( source.listener != NULL )
+				{
+					m_pauseListeners.push_back( source.listener );
+				}
+				break;
+			case NeedRestart:
+				source.state = Playing;
+				source.soundSourceInterface->stop();
+				source.soundSourceInterface->play();
+				if( source.listener != NULL )
+				{
+					m_stopListeners.push_back( source.listener );
+				}
+				break;
+			}
+		}
+
+		// listeners should not be changed here
+		// e.g. setSourceListener( ... ) should not be called before this moment
+		for( TSourceListenerVector::iterator it = m_stopListeners.begin(), it_end = m_stopListeners.end();
+			it != it_end;
+			it++ )
+		{
+			(*it)->listenStopped();
+		}
+		m_stopListeners.clear();
+
+		for( TSourceListenerVector::iterator it = m_pauseListeners.begin(), it_end = m_pauseListeners.end();
+			it != it_end;
+			it++ )
+		{
+			(*it)->listenPaused();
+		}
+		m_pauseListeners.clear();
+
 		m_interface->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -188,35 +259,258 @@ namespace Menge
 	void SoundEngine::mute( bool _mute )
 	{
 		m_muted = _mute;
-		setCommonVolume( m_commonVolume );
+		updateVolume_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::onFocus( bool _focus )
 	{
 		if( _focus == false )
 		{
-			for( TSetSoundEmitters::iterator it = m_soundEmitters.begin(), it_end = m_soundEmitters.end();
+			for( TSoundSourceMap::iterator it = m_soundSourceMap.begin(), it_end = m_soundSourceMap.end();
 				it != it_end;
 				it++ )
 			{
-				if( (*it)->isPlaying() == true )
+				if( it->second.state == Playing )
 				{
-					(*it)->pause();
-					m_focusEmitters.push_back( (*it) );
+					it->second.soundSourceInterface->pause();
 				}
 			}
-			update( 0.0f );
 		}
 		else
 		{
-			for( TSoundEmitterVector::iterator it = m_focusEmitters.begin(), it_end = m_focusEmitters.end();
+			for( TSoundSourceMap::iterator it = m_soundSourceMap.begin(), it_end = m_soundSourceMap.end();
 				it != it_end;
 				it++ )
 			{
-				(*it)->play();
+				if( it->second.state == Playing )
+				{
+					it->second.soundSourceInterface->play();
+				}
 			}
-			m_focusEmitters.clear();
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::play( unsigned int _emitter )
+	{
+		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return;
+		}
+
+		TSoundSource& source = it_find->second;
+		switch( source.state )
+		{
+		case Stopped:
+			source.state = StopPlay;
+			break;
+		case Paused:
+			source.state = PausePlay;
+			break;
+		case Stopping:
+			source.state = NeedRestart;
+			break;
+		case Pausing:
+			source.state = Playing;
+			break;
+		case StopPlay:
+		case PausePlay:
+		case Playing:
+		case NeedRestart:
+			// nothing to do
+			break;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::pause( unsigned int _emitter )
+	{
+		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return;
+		}
+
+		TSoundSource& source = it_find->second;
+		switch( source.state )
+		{
+		case Stopped:
+		case Paused:
+		case Stopping:
+		case Pausing:
+			// nothing to do
+			break;
+		case StopPlay:
+			source.state = Stopped;
+			break;
+		case PausePlay:
+			source.state = Paused;
+			break;
+		case Playing:
+			source.state = Pausing;
+			break;
+		case NeedRestart:
+			source.state = Stopping;
+			break;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::stop( unsigned int _emitter )
+	{
+		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return;
+		}
+
+		TSoundSource& source = it_find->second;
+
+		switch( source.state )
+		{
+		case Stopped:
+		case Stopping:
+			// nothing to do
+			break;
+		case StopPlay:
+			source.state = Stopped;
+			break;
+		case Playing:
+		case NeedRestart:
+		case Paused:
+		case Pausing:
+		case PausePlay:
+			source.state = Stopping;
+			break;
+		}	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::setLooped( unsigned int _emitter, bool _looped )
+	{
+		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return;
+		}
+
+		TSoundSource& source = it_find->second;
+		source.looped = _looped;
+		source.soundSourceInterface->setLooped( _looped );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::setSourceListener( unsigned int _emitter, SoundNodeListenerInterface* _listener )
+	{
+		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return;
+		}
+	
+		it_find->second.listener = _listener;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::updateVolume_()
+	{
+		for( TSoundSourceMap::iterator it = m_soundSourceMap.begin(), it_end = m_soundSourceMap.end();
+			it != it_end;
+			it++ )
+		{
+			if( m_muted == true )
+			{
+				it->second.soundSourceInterface->setVolume( 0.0f );
+			}
+			else
+			{
+				float volume = it->second.volume;
+				if( it->second.music == false )
+				{
+					it->second.soundSourceInterface->setVolume( m_commonVolume * m_soundVolume * volume );
+				}
+				else
+				{
+					it->second.soundSourceInterface->setVolume( m_commonVolume * m_musicVolume * volume );
+				}
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::setVolume( unsigned int _emitter, float _volume )
+	{
+		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return;
+		}
+
+		it_find->second.volume = _volume;
+		if( m_muted == false )
+		{
+			it_find->second.soundSourceInterface->setVolume( m_commonVolume * m_soundVolume * _volume );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SoundEngine::isLooped( unsigned int _emitter )
+	{
+		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return false;
+		}
+
+		return it_find->second.looped;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEngine::getVolume( unsigned int _emitter )
+	{
+		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return 0.0f;
+		}
+
+		return it_find->second.volume;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEngine::getLengthMs( unsigned int _emitter )
+	{
+		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return 0.0f;
+		}
+		
+		return it_find->second.soundSourceInterface->getLengthMs();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::setMusicVolume( float _volume )
+	{
+		m_musicVolume = _volume;
+		updateVolume_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEngine::getMusicVolume() const
+	{
+		return m_musicVolume;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::setPosMs( unsigned int _emitter, float _pos )
+	{
+		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return;
+		}
+
+		it_find->second.soundSourceInterface->setPosMs( _pos );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float SoundEngine::getPosMs( unsigned int _emitter )
+	{
+		TSoundSourceMap::iterator it_find = m_soundSourceMap.find( _emitter );
+		if( it_find == m_soundSourceMap.end() )
+		{
+			return 0.0f;
+		}
+		
+		return it_find->second.soundSourceInterface->getPosMs();
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

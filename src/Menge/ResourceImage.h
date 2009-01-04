@@ -78,6 +78,15 @@ namespace Menge
 		*/
 		virtual const RenderImageInterface * getImage( std::size_t _frame ) const = 0;
 
+		//! Возвращает название файла изображения
+		/*!
+		\param _frame индекс изображения
+		\return имя файла изображения
+		*/
+		virtual const String & getFilename( std::size_t _frame ) const = 0;
+
+		virtual std::size_t getFilenameCount() const = 0;
+
 	public:
 		void loader( XmlElement * _xml ) override;
 

@@ -1,4 +1,5 @@
 #	include "ResourceDeclare.h"
+#	include "ResourceVisitor.h"
 
 //#	include "Factory.h"
 
@@ -9,7 +10,8 @@ return new C( _struct );\
 }\
 ResourceReference * C::genObjectPlacement( void* _mem, const ResourceFactoryParam & _struct){\
 return new (_mem) C( _struct );\
-}
+}\
+void C::accept(ResourceVisitor * _visitor){_visitor->visit(this);};\
 
 //namespace {\
 //volatile static TFactoryResource::\

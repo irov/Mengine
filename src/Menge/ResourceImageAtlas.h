@@ -34,6 +34,9 @@ namespace Menge
 		bool isAlpha( std::size_t _frame ) const override;
 
 		const RenderImageInterface * getImage( std::size_t _frame ) const override;
+
+		const String & getFilename( std::size_t _frame ) const override;
+		std::size_t getFilenameCount() const override;
 	
 	public:
 		void loader( XmlElement * _xml ) override;

@@ -50,6 +50,17 @@ namespace Menge
 		return m_vectorImageFrames[ _frame ].isAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const String & ResourceImageDefault::getFilename( std::size_t _frame ) const
+	{
+		return m_vectorImageDescs[ _frame ].fileName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t ResourceImageDefault::getFilenameCount() const
+	{
+		//неверно, есть еще CreateImage
+		return m_vectorImageDescs.size();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::loader( XmlElement * _xml )
 	{
 		ResourceImage::loader( _xml );
@@ -128,6 +139,7 @@ namespace Menge
 		++it)
 		{
 			ImageFrame frame;
+
 			if( it->fileName == "CreateImage" )
 			{
 				frame = createImageFrame( getName() + Utils::toString( i++ ), it->size );
@@ -136,7 +148,6 @@ namespace Menge
 			{
 				frame = loadImageFrame( it->fileName );
 			}
-
 
 			if( frame.image == NULL )
 			{
@@ -162,7 +173,6 @@ namespace Menge
 			}
 
 			frame.isAlpha = it->isAlpha;
-
 
 			m_vectorImageFrames.push_back( frame );
 		}

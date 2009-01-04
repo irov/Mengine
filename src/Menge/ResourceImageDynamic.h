@@ -27,6 +27,9 @@ namespace Menge
 		RenderImageInterface * getImage( std::size_t _frame );
 		void setSize( const mt::vec2f& _size );
 
+		virtual const String & getFilename( std::size_t _frame ) const;
+		virtual std::size_t getFilenameCount() const override;
+
 	public:
 		void loader( XmlElement * _xml ) override;
 

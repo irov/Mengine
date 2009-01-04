@@ -30,6 +30,16 @@ namespace Menge
 		return m_uvs.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const String & ResourceImageCell::getFilename( std::size_t _frame ) const
+	{
+		return m_imageDesc.fileName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t ResourceImageCell::getFilenameCount() const
+	{
+		return 1;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageCell::getSize( std::size_t _frame ) const
 	{
 		return m_imageFrame.size;

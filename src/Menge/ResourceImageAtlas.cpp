@@ -33,6 +33,17 @@ namespace Menge
 		return m_vectorImageFrames.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const String & ResourceImageAtlas::getFilename( std::size_t _frame ) const
+	{
+		return m_vectorImageDescs[ _frame ].fileName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t ResourceImageAtlas::getFilenameCount() const
+	{
+		//õç
+		return m_vectorImageDescs.size();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & ResourceImageAtlas::getSize( std::size_t _frame ) const
 	{
 		return m_vectorImageFrames[ _frame ].size;

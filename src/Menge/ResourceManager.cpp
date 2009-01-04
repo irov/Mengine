@@ -403,4 +403,16 @@ namespace Menge
 	}
 #endif
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::visitResources(ResourceVisitor * _visitor)
+	{
+		for( TMapResource::iterator it = m_mapResource.begin()
+			, it_end = m_mapResource.end()
+			; it != it_end
+			; it++ )
+		{
+			ResourceReference * resource = it->second;
+			resource->accept(_visitor);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

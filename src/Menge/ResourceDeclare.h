@@ -11,10 +11,18 @@ struct ResourceFactoryParam
 	Menge::String group;
 };
 
+/*namespace Menge
+{
+	class ResourceVisitor;
+};*/
+
 #	define RESOURCE_DECLARE(C)\
 	public:\
 	static ResourceReference * genObjectNew( const ResourceFactoryParam &);\
 	static ResourceReference * genObjectPlacement( void*, const ResourceFactoryParam &);\
 	static Factory<String, ResourceReference *, ResourceFactoryParam>::PoolManager<C> ms_poolManager;\
+	void C::accept(ResourceVisitor * _visitor) override;\
 	private:
 //	static ResourceReference * genObject(const ResourceFactoryParam &);
+
+//	

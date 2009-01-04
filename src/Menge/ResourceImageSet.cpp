@@ -4,6 +4,8 @@
 
 #	include "XmlEngine.h"
 
+#	include "Utils.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -48,6 +50,17 @@ namespace Menge
 	const RenderImageInterface * ResourceImageSet::getImage( std::size_t _frame ) const
 	{
 		return m_imageFrame.image;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const String & ResourceImageSet::getFilename( std::size_t _frame ) const
+	{
+		assert(!"ResourceImageSet::getFilename not implemented");
+		return Utils::emptyString();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t ResourceImageSet::getFilenameCount() const
+	{
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageSet::addFrameUV( const mt::vec4f & _uv )

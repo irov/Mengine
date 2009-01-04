@@ -22,11 +22,15 @@ namespace Menge
 		virtual void onResourceUnLoaded() = 0;
 	};
 
+	class ResourceVisitor;
+
 	class ResourceManager
 	{
 	public:
 		ResourceManager();
 		~ResourceManager();
+	public:
+		void visitResources(ResourceVisitor * _visitor);
 
 	public:
 		void loadResource( const String& _category, const String& _file, const String& _group );

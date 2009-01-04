@@ -10,7 +10,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference::~ResourceReference()
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceReference::setName( const String& _name )
@@ -18,7 +17,7 @@ namespace Menge
 		m_params.name = _name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String& ResourceReference::getName()
+	const String& ResourceReference::getName() const
 	{
 		return m_params.name;
 	}

@@ -5,6 +5,8 @@
 #	include "RenderEngine.h"
 #	include "FileEngine.h"
 
+#	include "Utils.h"
+
 namespace Menge
 {
 	RESOURCE_IMPLEMENT( ResourceImageDynamic );
@@ -51,6 +53,17 @@ namespace Menge
 	const mt::vec4f & ResourceImageDynamic::getUV( std::size_t _frame ) const
 	{
 		return m_uv;
+	}
+	/////////////////////////////////////////////////////////////////////////
+	const String & ResourceImageDynamic::getFilename( std::size_t _frame ) const
+	{
+		assert(!"ResourceImageDynamic::getFilename not implemented");
+		return Utils::emptyString();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	std::size_t ResourceImageDynamic::getFilenameCount() const
+	{
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const RenderImageInterface * ResourceImageDynamic::getImage( std::size_t _frame ) const

@@ -7,12 +7,6 @@
 #	define MENGE_DEFAULT_DECODER_POOL_SIZE 8
 #	define MENGE_DEFAULT_ENCODER_POOL_SIZE 8
 
-#	define MENGE_REGISTER_DECODER( _typename_, _class_, _type_ )\
-	Menge::DecoderManager<_typename_>::registerDecoder( _type_, _class_::creatorNew, _class_::creatorPlacementNew );
-
-#	define MENGE_REGISTER_ENCODER( _typename_, _class_, _type_ )\
-	Menge::EncoderManager<_typename_>::registerEncoder( _type_, _class_::creatorNew, _class_::creatorPlacementNew );
-
 namespace Menge 
 {
 	// Decoder
@@ -96,7 +90,7 @@ namespace Menge
 		ms_decoderFactory.erase( _type );
 	}
 
-	DecoderInterface * DecoderManager::createDecoder( const String& _filename )
+	DecoderInterface * DecoderManager::createDecoder( const String& _filename, const String& _type )
 	{
 		String strExt;
 
@@ -110,7 +104,7 @@ namespace Menge
 		DataStreamInterface* stream = Holder<FileEngine>::hostage()
 			->openFile( _filename );
 
-		TDecoderFactory::iterator it_factory = ms_decoderFactory.find( strExt );
+		TDecoderFactory::iterator it_factory = ms_decoderFactory.find( strExt + _type );
 
 		if(it_factory == ms_decoderFactory.end() ||  stream == NULL )
 		{
@@ -220,7 +214,7 @@ namespace Menge
 		ms_encoderFactory.erase( _type );
 	}
 
-	EncoderInterface * EncoderManager::createEncoder( const String& _filename )
+	EncoderInterface * EncoderManager::createEncoder( const String& _filename, const String& _type )
 	{
 		String strExt;
 
@@ -234,7 +228,7 @@ namespace Menge
 		OutStreamInterface* stream = Holder<FileEngine>::hostage()
 			->openOutStream( _filename, true );
 
-		TEncoderFactory::iterator it_factory = ms_encoderFactory.find( strExt );
+		TEncoderFactory::iterator it_factory = ms_encoderFactory.find( strExt + _type );
 
 		if(it_factory == ms_encoderFactory.end() ||  stream == NULL )
 		{

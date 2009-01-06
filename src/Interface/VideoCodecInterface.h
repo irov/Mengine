@@ -20,5 +20,6 @@ namespace Menge
 	public:
 		virtual int sync( float _timing ) = 0;
 		virtual bool seek( float _timing ) = 0;
+		virtual bool eof() = 0;
 	};
 }	// namespace Menge

@@ -40,10 +40,12 @@ namespace Menge
 		: m_type( _type )
 		, m_stream( _stream )
 		, m_valid( false )
+		, m_eof( true )
 	{
 		if( m_stream != NULL )
 		{
 			m_valid = readHeader_();
+			m_eof = false;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -440,6 +442,7 @@ namespace Menge
 			std::streamsize bytes = buffer_data_();
 			if( bytes == 0 )
 			{
+				m_eof = true;
 				break;
 			}
 			m_lastReadBytes += bytes;
@@ -521,6 +524,16 @@ namespace Menge
 	bool VideoDecoderOGGTheora::seek( float _timing )
 	{
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool VideoDecoderOGGTheora::eof()
+	{
+		if( m_valid == false )
+		{
+			return true;
+		}
+
+		return m_stream->eof() || m_eof;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

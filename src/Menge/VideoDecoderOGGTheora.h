@@ -34,6 +34,7 @@ namespace Menge
 
 		int sync( float _timing ) override;
 		bool seek( float _timing ) override;
+		bool eof() override;
 
 		//Lookup tables for ColorSpace conversions
 		static void createCoefTables_();
@@ -62,6 +63,7 @@ namespace Menge
 		void decodeBuffer_( unsigned char* _buffer, int _pitch );
 		int readFrame_();
 		int m_lastReadBytes;
+		bool m_eof;
 
 
 		static signed int ms_YTable[ 256 ];

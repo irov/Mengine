@@ -57,7 +57,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterface * SoundEngine::createSoundBufferFromFile( const String & _filename, bool _isStream )
 	{
-		SoundDecoderInterface* soundDecoder = DecoderManager<SoundDecoderInterface>::createDecoder( _filename );
+		SoundDecoderInterface* soundDecoder = DecoderManager::createDecoderT<SoundDecoderInterface>( _filename, "Sound" );
 		if( soundDecoder == NULL )
 		{
 			MENGE_LOG_ERROR( "Error: Can't create sound decoder for file \"%s\"",
@@ -74,7 +74,7 @@ namespace Menge
 		}
 		else
 		{
-			DecoderManager<SoundDecoderInterface>::releaseDecoder( soundDecoder );
+			DecoderManager::releaseDecoder( soundDecoder );
 		}
 
 		return sample;
@@ -100,7 +100,7 @@ namespace Menge
 		m_interface->releaseSoundBuffer( _soundBuffer );
 		if( soundDecoder != NULL )
 		{
-			DecoderManager<SoundDecoderInterface>::releaseDecoder( soundDecoder );
+			DecoderManager::releaseDecoder( soundDecoder );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

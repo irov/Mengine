@@ -142,7 +142,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( RenderImageInterface* _image, const String& _filename )
 	{
-		ImageEncoderInterface* imageEncoder = EncoderManager<ImageEncoderInterface>::createEncoder( _filename );
+		ImageEncoderInterface* imageEncoder = EncoderManager::createEncoderT<ImageEncoderInterface>( _filename, "Image" );
 
 		if( imageEncoder == 0 )
 		{
@@ -201,7 +201,7 @@ namespace Menge
 		if( image == NULL )
 		{
 
-			ImageDecoderInterface* imageDecoder = DecoderManager<ImageDecoderInterface>::createDecoder( _filename );
+			ImageDecoderInterface* imageDecoder = DecoderManager::createDecoderT<ImageDecoderInterface>( _filename, "Image" );
 
 			if( imageDecoder == 0 )
 			{
@@ -216,7 +216,7 @@ namespace Menge
 			{
 				MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",
 					_filename.c_str() );
-				DecoderManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
+				DecoderManager::releaseDecoder( imageDecoder );
 				return NULL;
 			}
 
@@ -227,7 +227,7 @@ namespace Menge
 			if( image == NULL )
 			{
 				MENGE_LOG_ERROR( "Error: RenderSystem couldn't create image" );
-				DecoderManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
+				DecoderManager::releaseDecoder( imageDecoder );
 				return NULL;
 			}
 
@@ -250,7 +250,7 @@ namespace Menge
 			{
 				assert( 0 );
 			}*/
-			DecoderManager<ImageDecoderInterface>::releaseDecoder( imageDecoder );
+			DecoderManager::releaseDecoder( imageDecoder );
 
 			// copy pixels on the edge for better image quality
 			/*if( data->width > image_width )

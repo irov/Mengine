@@ -10,11 +10,8 @@
 
 #	include "OALSoundBuffer.h"
 
-namespace boost
-{
-	class thread;
-	class mutex;
-}
+#	define PTW32_STATIC_LIB
+#	include <pthreads/pthread.h>
 
 namespace Menge
 {
@@ -48,7 +45,9 @@ namespace Menge
 		bool m_updating;
 		void setUpdating( bool _updating );
 		bool getUpdating();
-		boost::thread* m_boostThread;
-		boost::mutex* m_boostMutex;
+
+		pthread_t* m_threadID;
+		static void* s_updateStream_( void* _this );
 	};
+	
 }	// namespace Menge

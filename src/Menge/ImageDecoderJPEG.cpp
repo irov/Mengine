@@ -299,7 +299,7 @@ namespace Menge
 			return 0;
 		}
 
-		if( (m_bufferRowStride < m_rowStride) || ((_bufferSize % m_rowStride) != 0) )
+		if( (m_bufferRowStride < m_rowStride) || ((_bufferSize % m_bufferRowStride) != 0) )
 		{
 			MENGE_LOG_ERROR( "ImageDecoderJPEG::decode error, invalid buffer pitch or size" );
 			return 0;

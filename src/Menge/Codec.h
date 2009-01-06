@@ -4,6 +4,12 @@
 
 #	include <map>
 
+#	define MENGE_REGISTER_DECODER( _typename_, _class_, _type_ )\
+	Menge::DecoderManager::registerDecoder( _type_ ## _typename_, _class_::creatorNew, _class_::creatorPlacementNew );
+
+#	define MENGE_REGISTER_ENCODER( _typename_, _class_, _type_ )\
+	Menge::EncoderManager::registerEncoder( _type_ ## _typename_, _class_::creatorNew, _class_::creatorPlacementNew );
+
 namespace Menge 
 {
 	class DecoderInterface;
@@ -27,12 +33,12 @@ namespace Menge
 
 		static void unregisterDecoder( const String& _type );
 
-		static DecoderInterface * createDecoder( const String& _filename );
+		static DecoderInterface * createDecoder( const String& _filename, const String& _type );
 
 		template<class T>
-		static DecoderInterface * createDecoderT( const String& _filename )
+		static T* createDecoderT( const String& _filename, const String& _type )
 		{
-			return static_cast<T*>( createDecoder( _filename ) );
+			return static_cast<T*>( createDecoder( _filename, _type ) );
 		}
 
 		static void releaseDecoder( DecoderInterface* _decoder );
@@ -57,12 +63,12 @@ namespace Menge
 
 		static void unregisterEncoder( const String& _type );
 
-		static EncoderInterface * createEncoder( const String& _filename );
+		static EncoderInterface * createEncoder( const String& _filename, const String& _type );
 
 		template<class T>
-		static EncoderInterface * createEncoderT( const String& _filename )
+		static T* createEncoderT( const String& _filename, const String& _type )
 		{
-			return static_cast<T*>( createEncoder( _filename ) );
+			return static_cast<T*>( createEncoder( _filename, _type ) );
 		}
 
 		static void releaseEncoder( EncoderInterface* _encoder );

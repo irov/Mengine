@@ -513,16 +513,16 @@ namespace Menge
 		//strcpy( 0, "asdf" );
 		MENGE_LOG( "Inititalizing Codecs..." );
 		// Decoders
-		MENGE_REGISTER_DECODER( ImageDecoderInterface, ImageDecoderPNG, "png" );
-		MENGE_REGISTER_DECODER( ImageDecoderInterface, ImageDecoderJPEG, "jpeg" );
-		MENGE_REGISTER_DECODER( ImageDecoderInterface, ImageDecoderJPEG, "jpg" );
+		MENGE_REGISTER_DECODER( "Image", ImageDecoderPNG, "png" );
+		MENGE_REGISTER_DECODER( "Image", ImageDecoderJPEG, "jpeg" );
+		MENGE_REGISTER_DECODER( "Image", ImageDecoderJPEG, "jpg" );
 		VideoDecoderOGGTheora::createCoefTables_();
-		MENGE_REGISTER_DECODER( VideoDecoderInterface, VideoDecoderOGGTheora, "ogg" );
-		MENGE_REGISTER_DECODER( VideoDecoderInterface, VideoDecoderOGGTheora, "ogv" );
-		MENGE_REGISTER_DECODER( SoundDecoderInterface, SoundDecoderOGGVorbis, "ogg" );
-		MENGE_REGISTER_DECODER( SoundDecoderInterface, SoundDecoderOGGVorbis, "ogv" );
+		MENGE_REGISTER_DECODER( "Video", VideoDecoderOGGTheora, "ogg" );
+		MENGE_REGISTER_DECODER( "Video", VideoDecoderOGGTheora, "ogv" );
+		MENGE_REGISTER_DECODER( "Sound", SoundDecoderOGGVorbis, "ogg" );
+		MENGE_REGISTER_DECODER( "Sound", SoundDecoderOGGVorbis, "ogv" );
 		// Encoders
-		MENGE_REGISTER_ENCODER( ImageEncoderInterface, ImageEncoderPNG, "png" );
+		MENGE_REGISTER_ENCODER( "Image", ImageEncoderPNG, "png" );
 		
 
 		//Holder<ResourceManager>::keep( new ResourceManager() );
@@ -819,10 +819,10 @@ namespace Menge
 		Holder<LogEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
 
-		DecoderManager<ImageDecoderInterface>::cleanup();
-		DecoderManager<SoundDecoderInterface>::cleanup();
-		DecoderManager<VideoDecoderInterface>::cleanup();
-		EncoderManager<ImageEncoderInterface>::cleanup();
+		DecoderManager::cleanup();
+		DecoderManager::cleanup();
+		DecoderManager::cleanup();
+		EncoderManager::cleanup();
 
 		finalize();
 	}

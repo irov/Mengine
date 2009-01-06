@@ -10,6 +10,8 @@
 
 #	include <algorithm>
 
+#	include <pthreads/pthread.h>
+
 #	ifndef MENGE_MASTER_RELEASE
 #		define LOG( message )\
 	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_LOG );
@@ -99,6 +101,10 @@ namespace Menge
 			m_device = NULL;
 		}
 
+		// deinitialize pthreads
+		pthread_win32_thread_detach_np();
+		pthread_win32_process_detach_np();
+
 		m_initialized = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -111,6 +117,9 @@ namespace Menge
 		}
 		m_logSystem = _logSystem;
 		LOG( "Starting OpenAL Sound System..." );
+
+		// init pthreads
+		pthread_win32_process_attach_np();
 
 		//const ALCchar* str = alcGetString( NULL, ALC_DEVICE_SPECIFIER );
 		m_device = alcOpenDevice( NULL );	// open default device

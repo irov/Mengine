@@ -32,17 +32,17 @@ Camera
 
 ADD_FILTER(
 Codec
-	Codec.cpp
 	Codec.h
-	CodecTheora.cpp
-	CodecTheora.h
-	ImageCodec.h
-	ImageCodecJPEG.cpp
-	ImageCodecJPEG.h
-	ImageCodecMNE.cpp
-	ImageCodecMNE.h
-	ImageCodecPNG.cpp
-	ImageCodecPNG.h
+	VideoDecoderOGGTheora.cpp
+	VideoDecoderOGGTheora.h
+	ImageDecoderJPEG.h
+	ImageDecoderJPEG.cpp
+	#ImageCodecMNE.cpp
+	#ImageCodecMNE.h
+	ImageDecoderPNG.cpp
+	ImageDecoderPNG.h
+	SoundDecoderOGGVorbis.h
+	SoundDecoderOGGVorbis.cpp
 )
 
 SOURCE_GROUP( Engine )
@@ -560,3 +560,31 @@ SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
  PARENT_SCOPE
 )
+
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS}
+debug pybind_d.lib
+optimized pybind.lib
+debug python25_d.lib
+optimized python25.lib
+debug libpngd.lib
+optimized libPNG.lib
+debug zlibd.lib
+optimized zlib.lib
+debug libjpegd.lib
+optimized libJPEG.lib
+debug libtheora_d.lib
+optimized libtheora.lib
+debug ogg_static_d.lib
+optimized ogg_static.lib
+debug vorbis_static_d.lib
+optimized vorbis_static.lib
+debug vorbisfile_static_d.lib
+optimized vorbisfile_static.lib
+)
+
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS}
+ PARENT_SCOPE
+)
+

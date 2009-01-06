@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies/OpenAL/include&quot;;&quot;$(SolutionDir)dependencies/boost&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies/OpenAL/include&quot;;&quot;$(SolutionDir)dependencies&quot;;&quot;$(SolutionDir)dependencies/pthreads&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,9 +61,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="wrap_oal_d.lib"
+				AdditionalDependencies="wrap_oal_d.lib pthreadVC2d.lib Ws2_32.lib"
 				OutputFile="$(OutDir)\$(ProjectName)_d.lib"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenAL\OpenAL-Windows\OpenAL32\Debug\&quot;"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenAL\OpenAL-Windows\OpenAL32\Debug\&quot;;&quot;$(SolutionDir)dependencies\pthreads&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -107,7 +107,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies/OpenAL/include&quot;;&quot;$(SolutionDir)dependencies/boost&quot;"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)src&quot;;&quot;$(SolutionDir)dependencies/OpenAL/include&quot;;&quot;$(SolutionDir)dependencies/pthreads&quot;;&quot;$(SolutionDir)dependencies&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -126,8 +126,8 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="wrap_oal.lib"
-				AdditionalLibraryDirectories="$(SolutionDir)dependencies\OpenAL\OpenAL-Windows\OpenAL32\Release\"
+				AdditionalDependencies="wrap_oal.lib pthreadVC2.lib Ws2_32.lib"
+				AdditionalLibraryDirectories="&quot;$(SolutionDir)dependencies\OpenAL\OpenAL-Windows\OpenAL32\Release\&quot;;&quot;$(SolutionDir)dependencies\pthreads&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"

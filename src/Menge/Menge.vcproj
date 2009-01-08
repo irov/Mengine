@@ -437,31 +437,11 @@
 				Name="Xml"
 				>
 				<File
-					RelativePath=".\MnxCompile.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\MnxCompile.h"
-					>
-				</File>
-				<File
-					RelativePath=".\MnxTag.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\MnxTag.h"
-					>
-				</File>
-				<File
 					RelativePath=".\XmlEngine.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\XmlEngine.h"
-					>
-				</File>
-				<File
-					RelativePath=".\XmlEnum.h"
 					>
 				</File>
 			</Filter>

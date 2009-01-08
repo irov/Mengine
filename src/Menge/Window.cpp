@@ -119,8 +119,8 @@ namespace Menge
 		mt::mul_v2_m3_r( transfromClY, mt::vec2f( 0.0f, m_clientSize.y ), wm );
 
 		//m_quads[1].a = wm.v2.v2;
-		m_quads[1].a.x = wm.m[6];
-		m_quads[1].a.y = wm.m[7];
+		m_quads[1].a.x = wm.v2.x;
+		m_quads[1].a.y = wm.v2.y;
 		m_quads[1].b = m_quads[1].a + transform1X;
 		m_quads[1].c = m_quads[1].b + transfrom1Y;
 		m_quads[1].d = m_quads[1].a + transfrom1Y;

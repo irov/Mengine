@@ -32,22 +32,11 @@ namespace Menge
 		return m_invalidateWorldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	/*const mt::vec2f & Allocator2D::getWorldPosition()
-	{
-		const mt::mat3f &wm = getWorldMatrix();
-
-		return wm.v2.v2;
-	}*/
-	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Allocator2D::getWorldDirection()
 	{
 		const mt::mat3f &wm = getWorldMatrix();
 
-		//!!!!!
-		static mt::vec2f v;
-		v = mt::vec2f( wm.m[0], wm.m[1] );
-		return v;
-		//return wm.v0.v2;
+		return wm.v0.to_vec2f();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat3f & Allocator2D::getWorldMatrix()
@@ -79,8 +68,8 @@ namespace Menge
 	{
 		//assert( 0 );
 		//m_position = _matrix.v2.v2;
-		m_position.x = _matrix.m[6];
-		m_position.y = _matrix.m[7];
+		m_position.x = _matrix.v2.x;
+		m_position.y = _matrix.v2.y;
 		
 
 		invalidateWorldMatrix();
@@ -124,13 +113,7 @@ namespace Menge
 		if( m_fixedRotation )
 		{
 			m_worldMatrix = localMatrix;
-			mt::vec2f wp;
-			mt::vec2f lp( localMatrix.m[6], localMatrix.m[7] );
-
-			//mt::mul_v2_m3( m_worldMatrix.v2.v2, localMatrix.v2.v2, _parentMatrix );
-			mt::mul_v2_m3( wp, lp, _parentMatrix );
-			m_worldMatrix.m[6] = wp.x;
-			m_worldMatrix.m[7] = wp.y;
+			mt::mul_v2_m3( m_worldMatrix.v2.to_vec2f(), localMatrix.v2.to_vec2f(), _parentMatrix );
 		}
 		else
 		{
@@ -176,22 +159,22 @@ namespace Menge
 		mt::mat3f mat_scale;
 		mt::ident_m3( mat_scale );
 		//mat_scale.v2.v2 = -m_origin;
-		mat_scale.m[6] = -m_origin.x;
-		mat_scale.m[7] = -m_origin.y;
-		mat_scale.m[0] = m_scale.x;
-		mat_scale.m[4] = m_scale.y;
+		mat_scale.v2.x = -m_origin.x;
+		mat_scale.v2.y = -m_origin.y;
+		mat_scale.v0.x = m_scale.x;
+		mat_scale.v1.y = m_scale.y;
 
 		mt::mat3f mat_rot;
 		mt::ident_m3( mat_rot );
-		mat_rot.m[0] = m_direction[0];
-		mat_rot.m[1] = m_direction[1];
-		mat_rot.m[3] = -m_direction[1];
-		mat_rot.m[4] = m_direction[0];
+		mat_rot.v0.x = m_direction[0];
+		mat_rot.v0.y = m_direction[1];
+		mat_rot.v1.x = -m_direction[1];
+		mat_rot.v1.y = m_direction[0];
 
 		mt::mul_m3_m3( m_localMatrix, mat_scale, mat_rot );
 		//m_localMatrix.v2.v2 += m_position;
-		m_localMatrix.m[6] += m_position.x;
-		m_localMatrix.m[7] += m_position.y;
+		m_localMatrix.v2.x += m_position.x;
+		m_localMatrix.v2.y += m_position.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Allocator2D::setOrigin( const mt::vec2f& _origin )

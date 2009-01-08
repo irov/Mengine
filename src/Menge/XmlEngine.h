@@ -21,8 +21,6 @@ namespace XmlParserCast
 
 #	include "XmlParser/XmlParser.h"
 
-#	include "XmlCompile.h"
-
 #	include	"Config/Typedef.h"
 
 class XmlExpatParser;
@@ -35,9 +33,6 @@ namespace Menge
 	public:
 		XmlEngine();
 		~XmlEngine();
-
-	public:
-		void initialize();
 
 	public:
 		bool parseXmlFile( const String& _file, XmlElementListener * _listener );
@@ -87,8 +82,6 @@ namespace Menge
 
 	protected:
 		XmlExpatParser * m_parser;
-
-		XmlCompile m_compiler;
 	};
 }
 

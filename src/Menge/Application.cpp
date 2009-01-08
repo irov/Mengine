@@ -493,7 +493,6 @@ namespace Menge
 		MENGE_LOG( "Initializing Xml Engine..." );
 		m_xmlEngine = new XmlEngine();
 		Holder<XmlEngine>::keep( m_xmlEngine );
-		m_xmlEngine->initialize();
 
 		if( m_xmlEngine->parseXmlFileM( _applicationFile, this, &Application::loader ) == false )
 		{

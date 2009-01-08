@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="Menge"
 	ProjectGUID="{61566E24-14DC-456C-A864-772C5064FDBA}"
 	RootNamespace="RvEngine"
@@ -437,11 +437,19 @@
 				Name="Xml"
 				>
 				<File
-					RelativePath=".\XmlCompile.cpp"
+					RelativePath=".\MnxCompile.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\XmlCompile.h"
+					RelativePath=".\MnxCompile.h"
+					>
+				</File>
+				<File
+					RelativePath=".\MnxTag.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\MnxTag.h"
 					>
 				</File>
 				<File
@@ -454,22 +462,6 @@
 				</File>
 				<File
 					RelativePath=".\XmlEnum.h"
-					>
-				</File>
-				<File
-					RelativePath=".\XmlFormat.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\XmlFormat.h"
-					>
-				</File>
-				<File
-					RelativePath=".\XmlTag.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\XmlTag.h"
 					>
 				</File>
 			</Filter>

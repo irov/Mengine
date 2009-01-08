@@ -67,7 +67,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::screenshot( RenderImageInterface* _image, const mt::vec4f & _rect )
 	{
-		m_interface->screenshot( _image, _rect.m );
+		m_interface->screenshot( _image, _rect.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::render()
@@ -95,7 +95,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderText(const Menge::String & _text, const mt::vec2f & _pos, unsigned long _color)
 	{
-		m_interface->renderText(_text,_pos.m,_color);
+		m_interface->renderText(_text,_pos.buff(),_color);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::beginLayer3D()
@@ -106,7 +106,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void	RenderEngine::setProjectionMatrix( const mt::mat4f& _projection )
 	{
-		return m_interface->setProjectionMatrix( _projection.m );
+		return m_interface->setProjectionMatrix( _projection.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void	RenderEngine::setViewMatrix( const mt::mat4f& _view )
@@ -116,12 +116,12 @@ namespace Menge
 		{
 			mt::mul_m4_m4( view, _view, m_viewTransform );
 		}
-		return m_interface->setViewMatrix( view.m );
+		return m_interface->setViewMatrix( view.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setWorldMatrix( const mt::mat4f& _world )
 	{
-		return m_interface->setWorldMatrix( _world.m );
+		return m_interface->setWorldMatrix( _world.buff() );
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterface * RenderEngine::createImage( const String& _name, float _width, float _height, PixelFormat _format )
@@ -293,8 +293,8 @@ namespace Menge
 			EBlendFactor _dst)
 	{
 		m_interface->renderImage(
-			_vertices->m,
-			_uv.m,
+			_vertices->buff(),
+			_uv.buff(),
 			_color,
 			_image,
 			_src,
@@ -314,12 +314,12 @@ namespace Menge
 			EBlendFactor _dst)
 	{
 		m_interface->renderTriple(
-			_a.m,
-			_b.m,
-			_c.m,
-			_uv0.m,
-			_uv1.m,
-			_uv2.m,
+			_a.buff(),
+			_b.buff(),
+			_c.buff(),
+			_uv0.buff(),
+			_uv1.buff(),
+			_uv2.buff(),
 			_color,
 			_image,
 			_src,
@@ -331,7 +331,7 @@ namespace Menge
 		const mt::vec2f & _begin,
 		const mt::vec2f & _end)
 	{
-		m_interface->renderLine( _color, _begin.m, _end.m );		
+		m_interface->renderLine( _color, _begin.buff(), _end.buff() );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::releaseImage( RenderImageInterface * _image )
@@ -504,7 +504,7 @@ namespace Menge
 	void RenderEngine::beginScene()
 	{
 		m_interface->beginScene();
-		m_interface->setRenderArea( m_renderArea.m );
+		m_interface->setRenderArea( m_renderArea.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endScene()
@@ -544,7 +544,7 @@ namespace Menge
 				renderArea.v2_1 = area.max;
 			}*/
 		}
-		m_interface->setRenderArea( renderArea.m );
+		m_interface->setRenderArea( renderArea.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderFactor( float _factor )
@@ -595,10 +595,10 @@ namespace Menge
 			areaHeight = m_renderArea.w - m_renderArea.y;
 		}
 
-		m_viewTransform.m[0] = areaWidth / crx;
-		m_viewTransform.m[5] = areaHeight / cry;
-		m_viewTransform.m[12] = m_renderArea.x;
-		m_viewTransform.m[13] = m_renderArea.y;
+		m_viewTransform.v0.x = areaWidth / crx;
+		m_viewTransform.v1.y = areaHeight / cry;
+		m_viewTransform.v3.x = m_renderArea.x;
+		m_viewTransform.v3.y = m_renderArea.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setRenderTarget( const String& _target, bool _clear )

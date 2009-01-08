@@ -45,7 +45,7 @@ int s_closeOgg( void *_datasource )
 size_t s_readOgg_( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
 {
 	Menge::DataStreamInterface* stream = static_cast<Menge::DataStreamInterface*>( _datasource );
-	std::size_t count = stream->read( _ptr, _size * _nmemb );
+	std::streamsize count = stream->read( _ptr, _size * _nmemb );
 	return count;
 }
 //////////////////////////////////////////////////////////////////////////

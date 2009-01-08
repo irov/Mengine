@@ -29,13 +29,13 @@ namespace mt
 	MATH_INLINE const float vec2f::operator[](int i) const
 	{
 		assert(i < 2);
-		return m[i];
+		return (&x)[i];
 	}
 
 	MATH_INLINE float& vec2f::operator[](int i)
 	{
 		assert(i < 2);
-		return m[i];
+		return (&x)[i];
 	}
 
 	MATH_INLINE vec2f& vec2f::operator+=(const vec2f& _rhs)
@@ -74,6 +74,16 @@ namespace mt
 	MATH_INLINE float vec2f::length() const
 	{
 		return sqrtf(sqrlength());
+	}
+
+	MATH_INLINE float * vec2f::buff()
+	{
+		return &x;
+	}
+
+	MATH_INLINE const float * vec2f::buff() const
+	{
+		return &x;
 	}
 
 	MATH_INLINE float length_v2(const vec2f& _a)

@@ -29,7 +29,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setListenerOrient( const mt::vec3f& _position, const mt::vec3f& _front, const mt::vec3f& top )
 	{
-		m_interface->setListenerOrient((float*)_position.m,(float*)_front.m,(float*)top.m);
+		m_interface->setListenerOrient( _position.buff(), _front.buff(), top.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int SoundEngine::createSoundSource(

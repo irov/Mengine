@@ -14,18 +14,8 @@ namespace mt
 	{
 		static const mt::vec2f zero_v2;
 
-		union
-		{
-			struct
-			{
-				float x,y;
-			};
-			struct
-			{
-				float u,v;
-			};
-			float m[2];
-		};
+		float x;
+		float y;
 
 		MATH_INLINE vec2f();
 		MATH_INLINE vec2f(float _x, float _y);
@@ -42,6 +32,9 @@ namespace mt
 
 		MATH_INLINE float sqrlength() const;
 		MATH_INLINE float length() const;
+
+		MATH_INLINE float * buff();
+		MATH_INLINE const float * buff() const;
 	};
 
 	MATH_INLINE bool operator==(const vec2f& _a, const vec2f& _b);

@@ -265,7 +265,7 @@ namespace Menge
 
 			m_interface->addShapeConvex( 
 				numPoint, 
-				vectorPoints.front().m, 
+				vectorPoints.front().buff(), 
 				m_density, 
 				m_friction, 
 				m_restitution, 
@@ -281,7 +281,7 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
-			m_interface->addShapeCircle( it->first, it->second.m, m_density, m_friction, m_restitution, m_isSensor,
+			m_interface->addShapeCircle( it->first, it->second.buff(), m_density, m_friction, m_restitution, m_isSensor,
 											m_collisionMask, m_categoryBits, m_groupIndex );
 		}
 
@@ -290,7 +290,7 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
-			m_interface->addShapeBox( it->first.first, it->first.second, it->second.first.m, it->second.second, m_density, m_friction, m_restitution, m_isSensor,
+			m_interface->addShapeBox( it->first.first, it->first.second, it->second.first.buff(), it->second.second, m_density, m_friction, m_restitution, m_isSensor,
 										m_collisionMask, m_categoryBits, m_groupIndex );
 		}
 
@@ -651,10 +651,14 @@ namespace Menge
 			it != it_end;
 		it++ )
 		{
-			for( int i = 0; i < (*it).num_points(); i++ )
+			for( std::size_t 
+				it_point = 0,
+				it_point_end = (*it).num_points(); 
+			it_point != it_point_end;
+			++it_point )
 			{
 				mt::vec2f p;
-				mt::mul_v2_m3( p, (*it)[i], wm );
+				mt::mul_v2_m3( p, (*it)[it_point], wm );
 				mt::add_internal_point( _boundingBox, p );
 			}
 		}

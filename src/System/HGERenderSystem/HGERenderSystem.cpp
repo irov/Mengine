@@ -637,9 +637,9 @@ void HGERenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 		{
 			mt::mat4f mtex;
 			mt::ident_m4( mtex );
-			mtex.m[0] = tex->getUVMask().x;
-			mtex.m[5] = tex->getUVMask().y;
-			m_hge->Gfx_SetTextureMatrix( mtex.m );
+			mtex.v0.x = tex->getUVMask().x;
+			mtex.v1.y = tex->getUVMask().y;
+			m_hge->Gfx_SetTextureMatrix( mtex.buff() );
 			htex = tex->getHandle();
 		}
 	}
@@ -647,7 +647,7 @@ void HGERenderSystem::renderMesh( const Menge::TVertex* _vertices, std::size_t _
 
 	mt::mat4f ident;
 	mt::ident_m4( ident );
-	m_hge->Gfx_SetTextureMatrix( ident.m );
+	m_hge->Gfx_SetTextureMatrix( ident.buff() );
 }
 //////////////////////////////////////////////////////////////////////////
 void HGERenderSystem::setRenderTarget( const Menge::String& _name, bool _clear )

@@ -14,27 +14,19 @@ namespace mt
 { 
 	struct mat3f
 	{
-		union 
-		{
-			/*struct
-			{
-				vec3f v[3]; 
-			};
-			struct
-			{
-				vec3f v0, v1, v2; 
-			};*/
-			float m[9];
-		};
+		vec3f v0;
+		vec3f v1;
+		vec3f v2;
 
 		MATH_INLINE mat3f();
 		MATH_INLINE mat3f(const mat3f&	_rhs);
-		//MATH_INLINE mat3f(const vec3f&	_v0, const vec3f&	_v1, const vec3f&	_v2);
 
-		//MATH_INLINE vec3f& operator[](int i);
-		//MATH_INLINE const vec3f& operator[](int i)const;
+		MATH_INLINE vec3f& operator[](int i);
+		MATH_INLINE const vec3f& operator[](int i)const;
 
 		MATH_INLINE mat3f& operator=(const mat3f& _rhs);
+
+		MATH_INLINE float * buff();
 	};
 
 	MATH_INLINE bool operator==(const mat3f& _a, const mat3f& _b);
@@ -46,6 +38,8 @@ namespace mt
 	MATH_INLINE mat3f operator+(const mat3f& _a, const mat3f& _b);
 	MATH_INLINE mat3f operator-(const mat3f& _a, const mat3f& _b);
 	MATH_INLINE mat3f operator*(const mat3f& _rhs, float _val);
+
+	MATH_INLINE float * buff_m3( const mat3f& _a );
 
 	MATH_INLINE bool cmp_m3_m3(const mat3f& _a, const mat3f& _b);
 	

@@ -98,8 +98,8 @@ namespace mt
 
 		mt::vec3f V(1,0,0);
 
-		mt::vec3f P(polyA.support( V.getVec2f() ),0);
-		mt::vec3f Q(polyB.support( -V.getVec2f() ),0);
+		mt::vec3f P(polyA.support( V.to_vec2f() ),0);
+		mt::vec3f Q(polyB.support( -V.to_vec2f() ),0);
 
 		mt::vec3f d = P - Q;
 
@@ -109,8 +109,8 @@ namespace mt
 
 		for( int i = 0; i < MaxIterations; i++ )
 		{
-			mt::vec3f P(polyA.support( V.getVec2f() ),0);
-			mt::vec3f Q(polyB.support( -V.getVec2f() ),0);
+			mt::vec3f P(polyA.support( V.to_vec2f() ),0);
+			mt::vec3f Q(polyB.support( -V.to_vec2f() ),0);
 
 			mt::vec3f W = P - Q;
 
@@ -179,8 +179,8 @@ namespace mt
 
 		mt::vec3f V(1,0,0);
 
-		mt::vec3f P(polyA.support( V.getVec2f() ),0);
-		mt::vec3f Q(polyB.support( -V.getVec2f() ),0);
+		mt::vec3f P(polyA.support( V.to_vec2f() ),0);
+		mt::vec3f Q(polyB.support( -V.to_vec2f() ),0);
 
 		mt::vec3f d = P - Q;
 
@@ -190,8 +190,8 @@ namespace mt
 
 		for( int i = 0; i < MaxIterations; i++ )
 		{
-			mt::vec3f P(polyA.support( V.getVec2f() ),0);
-			mt::vec3f Q(polyB.support( -V.getVec2f() ),0);
+			mt::vec3f P(polyA.support( V.to_vec2f() ),0);
+			mt::vec3f Q(polyB.support( -V.to_vec2f() ),0);
 
 			mt::vec3f W = P - Q;
 

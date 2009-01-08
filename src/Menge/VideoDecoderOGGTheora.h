@@ -27,6 +27,7 @@ namespace Menge
 		void destructor() override;
 		virtual void release() override;
 		virtual const String& getType() const override;
+		bool eof() override;
 
 		DataStreamInterface* getStream() override;
 		const CodecDataInfo* getCodecDataInfo() const override;
@@ -34,7 +35,6 @@ namespace Menge
 
 		int sync( float _timing ) override;
 		bool seek( float _timing ) override;
-		bool eof() override;
 
 		//Lookup tables for ColorSpace conversions
 		static void createCoefTables_();

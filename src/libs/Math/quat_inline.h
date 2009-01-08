@@ -31,19 +31,17 @@ namespace mt
 	MATH_INLINE float& quatf::operator[](int i)
 	{
 		assert(i < 4);
-		return m[i];
+		return (&x)[i];
 	}
 
 	MATH_INLINE const float quatf::operator[](int i)const
 	{
 		assert(i < 4);
-		return m[i];
+		return (&x)[i];
 	}
 
 	MATH_INLINE quatf& quatf::operator=(const quatf& q)
 	{
-		//w = q.w;
-		//v = q.v;
 		x = q.x;
 		y = q.y;
 		z = q.z;
@@ -393,7 +391,7 @@ namespace mt
 
 	MATH_INLINE void q_from_rot_m3(quatf& out, const mat3f& _rhs)
 	{
-		float ftrace = _rhs.m[0]+_rhs.m[4]+_rhs.m[8];
+		float ftrace = _rhs.v0.x+_rhs.v1.y+_rhs.v2.z;
 		float froot;
 
 		if (ftrace > 0.0f)
@@ -401,20 +399,20 @@ namespace mt
 			froot = sqrtf(ftrace + 1.0f );  
 			out.w = 0.5f*froot;
 			froot = 0.5f/froot;  
-			out.x = (_rhs.m[7]-_rhs.m[5])*froot;
-			out.y = (_rhs.m[2]-_rhs.m[6])*froot;
-			out.z = (_rhs.m[3]-_rhs.m[1])*froot;
+			out.x = (_rhs.v2.y-_rhs.v1.z)*froot;
+			out.y = (_rhs.v0.z-_rhs.v2.x)*froot;
+			out.z = (_rhs.v1.x-_rhs.v0.y)*froot;
 		}
 		else
 		{
 			static int s_iNext[3] = { 1, 2, 0 };
 			int i = 0;
-			if ( _rhs.m[4] > _rhs.m[0] )
+			if ( _rhs.v1.y > _rhs.v0.x )
 			{
 				i = 1;
 			}
 
-			if ( _rhs.m[8] > _rhs.m[i*3+i] )
+			if ( _rhs.v2.z > _rhs[i][i] )
 			{
 				i = 2;
 			}
@@ -422,12 +420,12 @@ namespace mt
 			int j = s_iNext[i];
 			int k = s_iNext[j];
 
-			froot = sqrtf(_rhs.m[i*3+i]-_rhs.m[j*3+j]-_rhs.m[k*3+k] + 1.0f);
-			out.m[i] =	0.5f*froot;
+			froot = sqrtf(_rhs[i][i]-_rhs[j][j]-_rhs[k][k] + 1.0f);
+			out[i] =	0.5f*froot;
 			froot =		0.5f/froot;
-			out.w	   = (_rhs.m[k*3+j]-_rhs.m[j*3+k])*froot;
-			out.m[j]   = (_rhs.m[j*3+i]+_rhs.m[i*3+j])*froot;
-			out.m[k]   = (_rhs.m[k*3+i]+_rhs.m[i*3+k])*froot;
+			out.w	   = (_rhs[k][j]-_rhs[j][k])*froot;
+			out[j]   = (_rhs[j][i]+_rhs[i][j])*froot;
+			out[k]   = (_rhs[k][i]+_rhs[i][k])*froot;
 		}
 	};
 
@@ -440,7 +438,7 @@ namespace mt
 
 	MATH_INLINE void q_from_rot_m4(quatf& out, const mat4f& _rhs)
 	{
-		float ftrace = _rhs.m[0]+_rhs.m[5]+_rhs.m[10];
+		float ftrace = _rhs.v0.x +_rhs.v1.y+_rhs.v2.z;
 		float froot;
 
 		if (ftrace > 0.0f)
@@ -448,23 +446,20 @@ namespace mt
 			froot = sqrtf(ftrace + 1.0f );  
 			out.w = 0.5f*froot;
 			froot = 0.5f/froot;  
-			//out.x = (_rhs[2][1]-_rhs[1][2])*froot;
-			//out.y = (_rhs[0][2]-_rhs[2][0])*froot;
-			//out.z = (_rhs[1][0]-_rhs[0][1])*froot;
-			out.x = (_rhs.m[9]-_rhs.m[6])*froot;
-			out.y = (_rhs.m[2]-_rhs.m[8])*froot;
-			out.z = (_rhs.m[4]-_rhs.m[1])*froot;
+			out.x = (_rhs[2][1]-_rhs[1][2])*froot;
+			out.y = (_rhs[0][2]-_rhs[2][0])*froot;
+			out.z = (_rhs[1][0]-_rhs[0][1])*froot;
 		}
 		else
 		{
 			static int s_iNext[3] = { 1, 2, 0 };
 			int i = 0;
-			if ( _rhs.m[5] > _rhs.m[0] )
+			if ( _rhs.v1.y > _rhs.v0.x )
 			{
 				i = 1;
 			}
 
-			if ( _rhs.m[10] > _rhs.m[i*4+i] )
+			if ( _rhs.v2.z > _rhs[i][i] )
 			{
 				i = 2;
 			}
@@ -472,16 +467,12 @@ namespace mt
 			int j = s_iNext[i];
 			int k = s_iNext[j];
 
-			//froot = sqrtf(_rhs[i][i]-_rhs[j][j]-_rhs[k][k] + 1.0f);
-			froot = sqrtf(_rhs.m[i*4+i]-_rhs.m[j*4+j]-_rhs.m[k*4+k] + 1.0f);
-			out.m[i] =	0.5f*froot;
+			froot = sqrtf(_rhs[i][i]-_rhs[j][j]-_rhs[k][k] + 1.0f);
+			out[i] =	0.5f*froot;
 			froot =		0.5f/froot;
-			//out.w	   = (_rhs[k][j]-_rhs[j][k])*froot;
-			//out.m[j]   = (_rhs[j][i]+_rhs[i][j])*froot;
-			//out.m[k]   = (_rhs[k][i]+_rhs[i][k])*froot;
-			out.w	   = (_rhs.m[k*4+j]-_rhs.m[j*4+k])*froot;
-			out.m[j]   = (_rhs.m[j*4+i]+_rhs.m[i*4+j])*froot;
-			out.m[k]   = (_rhs.m[k*4+i]+_rhs.m[i*4+k])*froot;
+			out.w	   = (_rhs[k][j]-_rhs[j][k])*froot;
+			out[j]   = (_rhs[j][i]+_rhs[i][j])*froot;
+			out[k]   = (_rhs[k][i]+_rhs[i][k])*froot;
 		}
 	};
 
@@ -502,12 +493,9 @@ namespace mt
 		yy = _rhs.y * y2;   yz = _rhs.y * z2;   zz = _rhs.z * z2;
 		wx = _rhs.w * x2;   wy = _rhs.w * y2;   wz = _rhs.w * z2;
 
-		//out[0][0]=1.0f-(yy+zz);		out[0][1]=xy-wz;			out[0][2]=xz+wy;
-		//out[1][0]=xy+wz;			out[1][1]=1.0f-(xx+zz);		out[1][2]=yz-wx;
-		//out[2][0]=xz-wy;			out[2][1]=yz+wx;			out[2][2]=1.0f-(xx+yy);
-		out.m[0]=1.0f-(yy+zz);		out.m[1]=xy-wz;			out.m[2]=xz+wy;
-		out.m[4]=xy+wz;			out.m[5]=1.0f-(xx+zz);		out.m[6]=yz-wx;
-		out.m[8]=xz-wy;			out.m[9]=yz+wx;			out.m[10]=1.0f-(xx+yy);
+		out[0][0]=1.0f-(yy+zz);		out[0][1]=xy-wz;			out[0][2]=xz+wy;
+		out[1][0]=xy+wz;			out[1][1]=1.0f-(xx+zz);		out[1][2]=yz-wx;
+		out[2][0]=xz-wy;			out[2][1]=yz+wx;			out[2][2]=1.0f-(xx+yy);
 	}
 
 	MATH_INLINE mat3f q_to_rot_m3(const quatf& _rhs)
@@ -583,14 +571,10 @@ namespace mt
 		yy = _rhs.y * y2;   yz = _rhs.y * z2;   zz = _rhs.z * z2;
 		wx = _rhs.w * x2;   wy = _rhs.w * y2;   wz = _rhs.w * z2;
 
-		//out[0][0] = 1.0f-(yy+zz);		out[0][1] = xy-wz;			out[0][2] = xz+wy;			out[0][3] = 0.0f;
-		//out[1][0] = xy+wz;				out[1][1] = 1.0f-(xx+zz);	out[1][2] = yz-wx;			out[1][3] = 0.0f;
-		//out[2][0] = xz-wy;				out[2][1] = yz+wx;			out[2][2] = 1.0f-(xx+yy);	out[2][3] = 0.0f;
-		//out[3][0] = _pos.x;				out[3][1] = _pos.y;			out[3][2] = _pos.z;			out[3][3] = 1.0f;
-		out.m[0] = 1.0f-(yy+zz);		out.m[1] = xy-wz;			out.m[2] = xz+wy;			out.m[3] = 0.0f;
-		out.m[4] = xy+wz;				out.m[5] = 1.0f-(xx+zz);	out.m[6] = yz-wx;			out.m[7] = 0.0f;
-		out.m[8] = xz-wy;				out.m[9] = yz+wx;			out.m[10] = 1.0f-(xx+yy);	out.m[11] = 0.0f;
-		out.m[12] = _pos.x;				out.m[13] = _pos.y;			out.m[14] = _pos.z;			out.m[15] = 1.0f;
+		out[0][0] = 1.0f-(yy+zz);		out[0][1] = xy-wz;			out[0][2] = xz+wy;			out[0][3] = 0.0f;
+		out[1][0] = xy+wz;				out[1][1] = 1.0f-(xx+zz);	out[1][2] = yz-wx;			out[1][3] = 0.0f;
+		out[2][0] = xz-wy;				out[2][1] = yz+wx;			out[2][2] = 1.0f-(xx+yy);	out[2][3] = 0.0f;
+		out[3][0] = _pos.x;				out[3][1] = _pos.y;			out[3][2] = _pos.z;			out[3][3] = 1.0f;
 	}
 
 	MATH_INLINE mat4f qpos_to_rot_m4(const quatf& _rhs, const vec3f& _pos)

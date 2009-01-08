@@ -1,5 +1,3 @@
-#	pragma once
-
 #	include <math.h>
 #	include <assert.h>
 
@@ -45,13 +43,13 @@ namespace mt
 	MATH_INLINE const float vec3f::operator[](int i) const
 	{
 		assert(i < 3);
-		return m[i];
+		return (&x)[i];
 	}
 
 	MATH_INLINE float& vec3f::operator[](int i)
 	{
 		assert(i < 3);
-		return m[i];
+		return (&x)[i];
 	}
 
 	MATH_INLINE vec3f& vec3f::operator+=(const vec3f&	_rhs)
@@ -96,6 +94,33 @@ namespace mt
 		return sqrtf(len);
 	}
 
+	MATH_INLINE vec2f & vec3f::to_vec2f()
+	{
+		return *(vec2f *)(&x);
+	}
+
+	MATH_INLINE const vec2f & vec3f::to_vec2f() const
+	{
+		return *(vec2f *)(&x);
+	}
+
+	MATH_INLINE float * vec3f::buff()
+	{
+		return &x;
+	}
+
+	MATH_INLINE const float * vec3f::buff() const
+	{
+		return &x;
+	}
+
+	MATH_INLINE void ident_v3( vec3f& _a )
+	{
+		_a.x = 0.f;
+		_a.y = 0.f;
+		_a.z = 0.f;
+	}
+
 	MATH_INLINE float length_v3_v3(const vec3f& _a, const vec3f& _b)
 	{
 		vec3f c = _a - _b;
@@ -115,23 +140,6 @@ namespace mt
 	MATH_INLINE bool operator!=(const vec3f& _a, const vec3f& _b) 
 	{
 		return !operator==(_a, _b);
-	}
-
-	MATH_INLINE void vec3f::cross(const vec3f &left, const vec3f & right)	//prefered version, w/o temp object.
-	{
-		// temps needed in case left or right is this.
-		float a = (left.y * right.z) - (left.z * right.y);
-		float b = (left.z * right.x) - (left.x * right.z);
-		float c = (left.x * right.y) - (left.y * right.x);
-
-		x = a;
-		y = b;
-		z = c;
-	}
-
-	MATH_INLINE const vec2f vec3f::getVec2f() const
-	{
-		return vec2f( x, y );
 	}
 
 	/*	Addition of vecs  */
@@ -313,7 +321,7 @@ namespace mt
 
 		float result = 0.f;
 
-		vec2f n = mt::norm_v2(vec2f(dir.m[ind1], dir.m[ind2]));
+		vec2f n = mt::norm_v2(vec2f(dir[ind1], dir[ind2]));
 
 		if ( (n.x >= 0) && (n.y >= 0) )
 		{

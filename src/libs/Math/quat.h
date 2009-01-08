@@ -16,20 +16,11 @@ namespace mt
 {
 	struct quatf
 	{
-		union
-		{
-			struct
-			{
-				float x, y, z, w;
-			};
-
-			/*struct
-			{
-				float w;
-				vec3f v;
-			};*/
-			float m[4];
-		};
+	
+		float x;
+		float y;
+		float z;
+		float w;
 
 		MATH_INLINE quatf();
 		MATH_INLINE quatf(float _x, float _y, float _z, float _w);

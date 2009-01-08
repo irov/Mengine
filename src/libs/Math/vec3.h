@@ -17,30 +17,13 @@ namespace mt
 	{
 		static const mt::vec3f zero_v3;
 
-		union
-		{
-			struct
-			{
-				float x,y,z;
-			};
-			struct
-			{
-				float u,v,t;
-			};
-	/*		struct
-			{
-				vec2f	v2;
-				float	z;
-			};*/
-			float m[3];
-		};
+		float x;
+		float y;
+		float z;
 
 		MATH_INLINE vec3f();
 		MATH_INLINE vec3f(float _x, float _y, float _z);
 		MATH_INLINE vec3f(const vec3f& _v);
-
-
-		MATH_INLINE void cross(const vec3f &left, const vec3f & right);
 
 		MATH_INLINE explicit vec3f(const vec2f&	_v);
 		MATH_INLINE explicit vec3f(const vec2f&	_v, float _z);
@@ -57,7 +40,11 @@ namespace mt
 		MATH_INLINE float sqrlength() const;
 		MATH_INLINE float length() const;
 
-		MATH_INLINE const vec2f getVec2f() const;
+		MATH_INLINE vec2f & to_vec2f();
+		MATH_INLINE const vec2f & to_vec2f() const;
+
+		MATH_INLINE float * buff();
+		MATH_INLINE const float * buff() const;
 	};
 
 	MATH_INLINE bool operator==(const vec3f& _a, const vec3f& _b);
@@ -69,6 +56,8 @@ namespace mt
 	MATH_INLINE vec3f operator*(const float _val, const vec3f& _rhs);
 	MATH_INLINE vec3f operator/(const vec3f& _rhs, const float _val);
 	MATH_INLINE vec3f operator-(vec3f _rhs);
+
+	MATH_INLINE void ident_v3( vec3f& _a );
 
 	MATH_INLINE float length_v3_v3(const vec3f& _a, const vec3f& _b);
 

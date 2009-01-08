@@ -13,36 +13,21 @@ namespace mt
 {
 	struct mat4f
 	{	
-		union 
-		{
-			/*struct
-			{
-				vec4f v[4];
-			};
-
-			struct
-			{
-				vec4f v0, v1, v2, v3;
-			};
-			struct
-			{
-				vec3f v3_0;	float f_0;
-				vec3f v3_1;	float f_1;
-				vec3f v3_2;	float f_2;
-				vec3f v3_3;	float f_3;
-			};*/
-			float m[16];
-		};
+		vec4f v0;
+		vec4f v1;
+		vec4f v2;
+		vec4f v3;
 
 		MATH_INLINE mat4f();
 		MATH_INLINE mat4f(const mat4f& _rhs);
-		//MATH_INLINE mat4f(const vec4f& _a0, const vec4f& _a1, const vec4f& _a2, const vec4f& _a3);
 	
-		//MATH_INLINE vec4f& operator[](int i);
-		//MATH_INLINE const vec4f& operator[](int i)const;
+		MATH_INLINE vec4f& operator [] (int i);
+		MATH_INLINE const vec4f& operator [] (int i)const;
 
-		MATH_INLINE mat4f& operator=(const mat4f& _rhs);
-		//MATH_INLINE mat4f& operator=(const mat3f& _rhs);
+		MATH_INLINE mat4f& operator = (const mat4f& _rhs);
+
+		MATH_INLINE float * buff();
+		MATH_INLINE const float * buff() const;
 	};
 
 	MATH_INLINE bool operator==(const mat4f& _a, const mat4f& _b);
@@ -88,8 +73,7 @@ namespace mt
 	MATH_INLINE void transpose_m4(mat4f& _out, const mat4f& _rhs);
 	MATH_INLINE mat4f transpose_m4(const mat4f& _rhs);
 
-	MATH_INLINE void extract_m3(mat3f& _out, const mat4f& _rhs);
-	MATH_INLINE mat3f extract_m3(const mat4f& _rhs);
+	MATH_INLINE void extract_m4_m3(mat3f& _out, const mat4f& _rhs);
 
 	MATH_INLINE float minor_m4(const mat4f& _rhs, const int r0, const int r1, const int r2, const int c0, const int c1, const int c2);
 

@@ -44,7 +44,7 @@ namespace Menge
 	PhysicBody2DInterface* PhysicEngine2D::createBody( const mt::vec2f& _pos, float _angle, float _linearDamping, float _angularDamping,
 															 bool _allowSleep, bool _isBullet, bool _fixedRotation )
 	{
-		PhysicBody2DInterface* body = m_interface->createBody( _pos.m, _angle, _linearDamping, _angularDamping, _allowSleep, _isBullet, _fixedRotation );
+		PhysicBody2DInterface* body = m_interface->createBody( _pos.buff(), _angle, _linearDamping, _angularDamping, _allowSleep, _isBullet, _fixedRotation );
 		if( body )
 		{
 			m_bodies.push_back( body );
@@ -93,7 +93,7 @@ namespace Menge
 		PhysicBody2DInterface * rigidBody1 = _body1->getInterface();
 		PhysicBody2DInterface * rigidBody2 = _body2->getInterface();
 
-		return m_interface->createDistanceJoint( rigidBody1, rigidBody2, _offsetBody1.m, _offsetBody2.m, _collideBodies );
+		return m_interface->createDistanceJoint( rigidBody1, rigidBody2, _offsetBody1.buff(), _offsetBody2.buff(), _collideBodies );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicJoint2DInterface* PhysicEngine2D::createHingeJoint( RigidBody2D* _body1, RigidBody2D* _body2, const mt::vec2f& _offsetBody1, const mt::vec2f& _limits, bool _collideBodies )
@@ -101,7 +101,7 @@ namespace Menge
 		PhysicBody2DInterface * rigidBody1 = _body1->getInterface();
 		PhysicBody2DInterface * rigidBody2 = _body2->getInterface();
 
-		return m_interface->createHingeJoint( rigidBody1, rigidBody2, _offsetBody1.m, _limits.m, _collideBodies );
+		return m_interface->createHingeJoint( rigidBody1, rigidBody2, _offsetBody1.buff(), _limits.buff(), _collideBodies );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PhysicEngine2D::destroyJoint( PhysicJoint2DInterface* _joint )

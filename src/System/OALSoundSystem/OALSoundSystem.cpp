@@ -187,7 +187,7 @@ namespace Menge
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::setListenerOrient( float* _position, float* _front, float* _top )
+	void OALSoundSystem::setListenerOrient( const float* _position, const float* _front, const float* _top )
 	{
 		if( m_initialized == false )
 		{

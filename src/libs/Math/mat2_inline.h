@@ -1,5 +1,3 @@
-#include "mat2.h"
-
 namespace mt
 { 
 	MATH_INLINE mat2f::mat2f()

@@ -56,7 +56,7 @@ namespace Menge
 	public:
 		virtual bool initialize( LogSystemInterface* _logSystem ) = 0;
 
-		virtual void setListenerOrient( float * _position, float * _front, float * top) = 0;
+		virtual void setListenerOrient( const float * _position, const float * _front, const float * top) = 0;
 		virtual SoundSourceInterface * createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) = 0;
 
 		virtual SoundBufferInterface* createSoundBuffer( SoundDecoderInterface* _soundDecoder, bool _isStream ) = 0;

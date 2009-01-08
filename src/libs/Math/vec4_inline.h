@@ -1,5 +1,3 @@
-#	pragma once
-
 #	include <math.h>
 
 namespace mt
@@ -19,8 +17,6 @@ namespace mt
 		,y( _v0.y )
 		,z( _v1.x )
 		,w( _v1.y )
-	//	:v2_0(_v0)
-	//	,v2_1(_v1)
 	{}
 
 	MATH_INLINE vec4f::vec4f(const vec4f& _v)
@@ -55,14 +51,12 @@ namespace mt
 
 	MATH_INLINE float& vec4f::operator[](int i)
 	{
-		assert(i < 4);
-		return m[i];
+		return (&x)[i];
 	}
 
 	MATH_INLINE const float vec4f::operator[](int i)const
 	{
-		assert(i < 4);
-		return m[i];
+		return (&x)[i];
 	}
 
 	MATH_INLINE vec4f&	vec4f::operator+=(const vec4f&	_rhs)
@@ -109,10 +103,50 @@ namespace mt
 		return sqrtf(sqrlength());
 	}
 
+	MATH_INLINE const vec3f & vec4f::to_vec3f() const
+	{
+		return *(vec3f *)(&x);
+	}
+
+	MATH_INLINE float * vec4f::buff()
+	{
+		return &x;
+	}
+
+	MATH_INLINE const float * vec4f::buff() const
+	{
+		return &x;
+	}
+
+	MATH_INLINE void ident_v4( vec4f & _rhs )
+	{
+		_rhs.x = 0.f;
+		_rhs.y = 0.f;
+		_rhs.z = 0.f;
+		_rhs.w = 0.f;
+	}
+
+	MATH_INLINE void extract_v4_v3( vec3f & _out, const vec4f & _rhs )
+	{
+		_out.x = _rhs.x;
+		_out.y = _rhs.y;
+		_out.z = _rhs.z;
+	}
+
+	MATH_INLINE void set_v4_v3( vec4f & _out, const vec3f & _rhs )
+	{
+		_out.x = _rhs.x;
+		_out.y = _rhs.y;
+		_out.z = _rhs.z;
+	}
+
 	/*	cmp	 */
 	MATH_INLINE bool cmp_v4_v4(const vec4f& _a, const vec4f& _b, float eps)
 	{
-		return	(fabsf(_a.x - _b.x) < eps) && (fabsf(_a.y - _b.y) < eps) && (fabsf(_a.z - _b.z) < eps) && (fabsf(_a.w - _b.w) < eps);
+		return	(fabsf(_a.x - _b.x) < eps) 
+			&& (fabsf(_a.y - _b.y) < eps) 
+			&& (fabsf(_a.z - _b.z) < eps) 
+			&& (fabsf(_a.w - _b.w) < eps);
 	}
 
 	MATH_INLINE bool operator==(const vec4f& _a, const vec4f& _b) 
@@ -123,6 +157,13 @@ namespace mt
 	MATH_INLINE bool operator!=(const vec4f& _a, const vec4f& _b) 
 	{
 		return !operator==(_a, _b);
+	}
+
+	MATH_INLINE void add_v4_v3(vec4f& _out, const vec4f& _a, const vec3f& _b)
+	{
+		_out.x = _a.x + _b.x;
+		_out.y = _a.y + _b.y;
+		_out.z = _a.z + _b.z;
 	}
 
 	/*	Addition of vecs  */
@@ -193,8 +234,13 @@ namespace mt
 		return	_rhs;
 	}
 
+	MATH_INLINE float dot_v4_v3(const vec4f &a, const vec3f &b)
+	{
+		return a.x * b.x + a.y * b.y + a.z * b.z + a.w;
+	}
+
 	/*	Dot	Product			*/
-	MATH_INLINE float	dot_v4_v4(const vec4f& a, const vec4f& b)
+	MATH_INLINE float dot_v4_v4(const vec4f& a, const vec4f& b)
 	{
 		return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
 	}

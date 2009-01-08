@@ -22,7 +22,7 @@ namespace Menge
 	public:	// interfaces
 		bool initialize( LogSystemInterface* _logSystem ) override;
 
-		void setListenerOrient( float* _position, float* _front, float* _top) override;
+		void setListenerOrient( const float* _position, const float* _front, const float* _top) override;
 		SoundSourceInterface* createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) override;
 
 		SoundBufferInterface* createSoundBuffer( SoundDecoderInterface* _soundDecoder, bool _isStream ) override;

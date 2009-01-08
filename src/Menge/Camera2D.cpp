@@ -159,8 +159,8 @@ namespace	Menge
 		const Viewport & viewport = 
 			this->getViewport();
 
-		m_viewMatrix.m[12] = viewport.begin.x;
-		m_viewMatrix.m[13] = viewport.begin.y;
+		m_viewMatrix.v0.x = viewport.begin.x;
+		m_viewMatrix.v1.y = viewport.begin.y;
 		m_viewMatrix = mt::inv_m4( m_viewMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////

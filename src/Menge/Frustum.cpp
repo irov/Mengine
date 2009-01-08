@@ -132,42 +132,28 @@ namespace Menge
 		// D = (top + bottom) / (top - bottom)
 		// q = - (far + near) / (far - near)
 		// qn = - 2 * (far * near) / (far - near)
-		std::fill( m_projectionMatrix.m, m_projectionMatrix.m + 16, 0.0f );
-		//m_projectionMatrix[0][0] = A;
-		//m_projectionMatrix[2][0] = C;
-		//m_projectionMatrix[1][1] = B;
-		//m_projectionMatrix[2][1] = D;
-		//m_projectionMatrix[2][2] = q;
-		//m_projectionMatrix[3][2] = qn;
-		//m_projectionMatrix[2][3] = -1;
-		m_projectionMatrix.m[0] = A;
-		m_projectionMatrix.m[8] = C;
-		m_projectionMatrix.m[5] = B;
-		m_projectionMatrix.m[9] = D;
-		m_projectionMatrix.m[10] = q;
-		m_projectionMatrix.m[14] = qn;
-		m_projectionMatrix.m[11] = -1;
+		mt::ident_v4(m_projectionMatrix.v0);
+		mt::ident_v4(m_projectionMatrix.v1);
+		mt::ident_v4(m_projectionMatrix.v2);
+		mt::ident_v4(m_projectionMatrix.v3);
+		m_projectionMatrix[0][0] = A;
+		m_projectionMatrix[2][0] = C;
+		m_projectionMatrix[1][1] = B;
+		m_projectionMatrix[2][1] = D;
+		m_projectionMatrix[2][2] = q;
+		m_projectionMatrix[3][2] = qn;
+		m_projectionMatrix[2][3] = -1;
 
 		// Convert depth range from [-1,+1] to [0,1]
-		//m_projectionMatrix[0][2] = (m_projectionMatrix[0][2] + m_projectionMatrix[0][3]) * 0.5f;
-		//m_projectionMatrix[1][2] = (m_projectionMatrix[1][2] + m_projectionMatrix[1][3]) * 0.5f;
-		//m_projectionMatrix[2][2] = (m_projectionMatrix[2][2] + m_projectionMatrix[2][3]) * 0.5f;
-		//m_projectionMatrix[3][2] = (m_projectionMatrix[3][2] + m_projectionMatrix[3][3]) * 0.5f;
+		m_projectionMatrix[0][2] = (m_projectionMatrix[0][2] + m_projectionMatrix[0][3]) * 0.5f;
+		m_projectionMatrix[1][2] = (m_projectionMatrix[1][2] + m_projectionMatrix[1][3]) * 0.5f;
+		m_projectionMatrix[2][2] = (m_projectionMatrix[2][2] + m_projectionMatrix[2][3]) * 0.5f;
+		m_projectionMatrix[3][2] = (m_projectionMatrix[3][2] + m_projectionMatrix[3][3]) * 0.5f;
 
-		//m_projectionMatrix[2][0] = -m_projectionMatrix[2][0];
-		//m_projectionMatrix[2][1] = -m_projectionMatrix[2][1];
-		//m_projectionMatrix[2][2] = -m_projectionMatrix[2][2];
-		//m_projectionMatrix[2][3] = -m_projectionMatrix[2][3];
-		m_projectionMatrix.m[2] = (m_projectionMatrix.m[2] + m_projectionMatrix.m[3]) * 0.5f;
-		m_projectionMatrix.m[6] = (m_projectionMatrix.m[6] + m_projectionMatrix.m[7]) * 0.5f;
-		m_projectionMatrix.m[10] = (m_projectionMatrix.m[10] + m_projectionMatrix.m[11]) * 0.5f;
-		m_projectionMatrix.m[14] = (m_projectionMatrix.m[14] + m_projectionMatrix.m[15]) * 0.5f;
-
-		m_projectionMatrix.m[8] = -m_projectionMatrix.m[8];
-		m_projectionMatrix.m[9] = -m_projectionMatrix.m[9];
-		m_projectionMatrix.m[10] = -m_projectionMatrix.m[10];
-		m_projectionMatrix.m[11] = -m_projectionMatrix.m[11];
-
+		m_projectionMatrix[2][0] = -m_projectionMatrix[2][0];
+		m_projectionMatrix[2][1] = -m_projectionMatrix[2][1];
+		m_projectionMatrix[2][2] = -m_projectionMatrix[2][2];
+		m_projectionMatrix[2][3] = -m_projectionMatrix[2][3];
 	}
 
 	void Frustum::recalc( const mt::mat4f & wm )
@@ -180,14 +166,10 @@ namespace Menge
 		//mt::vec3f up	(wm[0][1],wm[1][1],wm[2][1]);
 		//mt::vec3f dir	(wm[0][2],wm[1][2],wm[2][2]);
 
-		//const mt::vec3f & left =	wm.v3_0;
-		//const mt::vec3f & up =		wm.v3_1;
-		//const mt::vec3f & dir =		wm.v3_2;
-		//const mt::vec3f & pos =		wm.v3_3;
-		mt::vec3f left( wm.m[0], wm.m[1], wm.m[2] );
-		mt::vec3f up( wm.m[4], wm.m[5], wm.m[6] );
-		mt::vec3f dir( wm.m[8], wm.m[9], wm.m[10] );
-		mt::vec3f pos( wm.m[12], wm.m[13], wm.m[14] );
+		const mt::vec3f & left = wm.v0.to_vec3f();
+		const mt::vec3f & up = wm.v1.to_vec3f();
+		const mt::vec3f & dir =	wm.v2.to_vec3f();
+		const mt::vec3f & pos =	wm.v3.to_vec3f();
 	
 		float fDdE = - mt::dot_v3_v3( dir , pos );
 	

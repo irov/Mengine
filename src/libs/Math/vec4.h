@@ -62,7 +62,6 @@ namespace mt
 	MATH_INLINE float length_v4( vec4f _rhs );
 
 	MATH_INLINE void extract_v4_v3( vec3f & _out, const vec4f & _rhs );
-	MATH_INLINE const vec3f & cast_v4_v3( const vec4f & _rhs );
 
 	MATH_INLINE void set_v4_v3( vec4f & _out, const vec3f & _rhs );
 

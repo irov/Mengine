@@ -34,20 +34,20 @@ namespace Menge
 	{
 		const mt::mat4f &wm = getWorldMatrix3D();
 
-		return mt::cast_v4_v3( wm.v3 );
+		return wm.v3.to_vec3f();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & Allocator3D::getWorldDirection3D()
 	{
 		const mt::mat4f &wm = getWorldMatrix3D();
 
-		return mt::cast_v4_v3( wm.v2 );
+		return wm.v2.to_vec3f();
 	}
 	const mt::vec3f & Allocator3D::getWorldStrafe3D()
 	{
 		const mt::mat4f &wm = getWorldMatrix3D();
 
-		return mt::cast_v4_v3( wm.v0 );
+		return wm.v0.to_vec3f();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Allocator3D::getWorldMatrix3D()
@@ -57,17 +57,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & Allocator3D::getLocalPosition3D() const
 	{
-		return mt::cast_v4_v3( m_localMatrix3D.v3 );
+		return m_localMatrix3D.v3.to_vec3f();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & Allocator3D::getLocalDirection3D() const
 	{
-		return mt::cast_v4_v3( m_localMatrix3D.v2 );
+		return m_localMatrix3D.v2.to_vec3f();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & Allocator3D::getLocalStrafe3D() const
 	{
-		return mt::cast_v4_v3( m_localMatrix3D.v0 );
+		return m_localMatrix3D.v0.to_vec3f();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::mat4f & Allocator3D::getLocalMatrix3D() const

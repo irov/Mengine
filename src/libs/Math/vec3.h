@@ -25,7 +25,6 @@ namespace mt
 		MATH_INLINE vec3f(float _x, float _y, float _z);
 		MATH_INLINE vec3f(const vec3f& _v);
 
-		MATH_INLINE explicit vec3f(const vec2f&	_v);
 		MATH_INLINE explicit vec3f(const vec2f&	_v, float _z);
 
 		MATH_INLINE vec3f& operator= (const vec3f& _rhs);

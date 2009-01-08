@@ -20,12 +20,6 @@ namespace mt
 		,z(_v.z)
 	{}
 
-	MATH_INLINE vec3f::vec3f(const vec2f&	_v)
-		:x(_v.x)
-		,y(_v.y)
-		,z(0.0f)
-	{}
-
 	MATH_INLINE vec3f::vec3f(const vec2f&	_v, float _z)
 		:x(_v.x)
 		,y(_v.y)

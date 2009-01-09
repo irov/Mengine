@@ -881,6 +881,7 @@ namespace Menge
 				.def( "setRenderTarget", &Scene::setRenderTarget )
 				.def( "renderSelf", &Scene::renderSelf )
 				.def( "blockInput", &Scene::blockInput )
+				.def( "getBlockInput", &Scene::getBlockInput )
 				;
 
 

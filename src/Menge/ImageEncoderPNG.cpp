@@ -158,6 +158,7 @@ namespace Menge
 
 		// init the IO
 		png_set_write_fn( m_png_ptr, m_stream, s_writeProc, s_flushProc );
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ImageEncoderPNG::setOptions( unsigned int _options )

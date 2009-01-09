@@ -185,6 +185,8 @@ namespace Menge
 
 		_image->unlock();
 		
+		EncoderManager::releaseEncoder( imageEncoder );
+
 		if( bytesWritten == 0 )
 		{
 			MENGE_LOG_ERROR( "RenderEngine::saveImage : Error while encoding image data" );

@@ -75,16 +75,14 @@ namespace Menge
 
 		static double getBlockTime( const Menge::String& _name, BlockTimingMethod _method );
 
-		static void endProfilingCycle();
-
-		static Menge::String createStatsString(BlockTimingMethod method);
-
 		static void setTimer(TimerInterface * _clock);
 
 		static void setEnabled(bool _enabled);
 		static bool isEnabled();
 
 		static void drawStats();
+		static void endProfilingCycle();
+
 
 	private:		
 		static TProfileBlockMap m_profileBlocks;
@@ -95,5 +93,6 @@ namespace Menge
 		static unsigned long int m_cycleNumber;
 
 		static ProfileBlock * findBlock(const Menge::String & _name);
+		static Menge::String createStatsString(BlockTimingMethod method);
 	};
 };

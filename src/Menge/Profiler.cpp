@@ -36,7 +36,7 @@ namespace Menge
 
 		return s;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void MemoryTextureProfiler::addMemTexture(const Menge::String & _name, unsigned long _size)
 	{
 		if(_size == 0)
@@ -54,7 +54,7 @@ namespace Menge
 		m_totalMemory+=_size;
 		m_textures.insert(std::make_pair(_name,_size));
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	void MemoryTextureProfiler::removeMemTexture(const Menge::String & _name)
 	{
 		TTextureMemoryMap::iterator it = m_textures.find(_name);			
@@ -258,7 +258,7 @@ namespace Menge
 
 			case BLOCK_FRAME_PERCENT:
 			{
-			/*	if (0 == m_lastCycleDurationMicroseconds)
+				if (0 == m_lastCycleDurationMicroseconds)
 				{
 					result = 0;
 				}
@@ -267,7 +267,7 @@ namespace Menge
 					result = 100.0 * (double)block->lastCycleTotalMicroseconds / 
 						m_lastCycleDurationMicroseconds;
 				}
-				break;*/
+				break;
 			}
 			default:
 				break;

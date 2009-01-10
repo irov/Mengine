@@ -12,6 +12,8 @@
 
 #	include "LayerScene.h"
 
+#	include "LogEngine.h"
+
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -323,6 +325,11 @@ namespace	Menge
 
 		if( m_mainLayer )
 		{
+			if( m_mainLayer == NULL )
+			{
+				MENGE_LOG_ERROR( "Main Layer is NULL in Scene::compile()" );
+			}
+
 			mt::vec2f mainSize = m_mainLayer->getSize();
 
 			Camera2D * camera2D = Holder<Player>::hostage()
@@ -405,6 +412,11 @@ namespace	Menge
 		if( isRenderable() == false )
 		{
 			return;
+		}
+
+		if( m_mainLayer == NULL )
+		{
+			MENGE_LOG_ERROR( "Main Layer is NULL in Scene::render()" );
 		}
 
 		const mt::vec2f& main_size = m_mainLayer->getSize();

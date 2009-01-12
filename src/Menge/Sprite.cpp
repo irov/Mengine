@@ -299,20 +299,20 @@ namespace	Menge
 		{
 			const mt::mat3f & wm = getWorldMatrix();
 
-			mt::mul_v2_m3( m_vertices[0], m_offset, wm );
-			mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
-			mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
-			mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
-			//mt::vec2f transformX;
-			//mt::vec2f transformY;
-
 			//mt::mul_v2_m3( m_vertices[0], m_offset, wm );
-			//mt::mul_v2_m3_r( transformX, mt::vec2f( m_size.x, 0.0f ), wm );
-			//mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, m_size.y ), wm );
+			//mt::mul_v2_m3( m_vertices[1], m_offset + mt::vec2f( m_size.x, 0.0f ), wm );
+			//mt::mul_v2_m3( m_vertices[2], m_offset + m_size, wm );
+			//mt::mul_v2_m3( m_vertices[3], m_offset + mt::vec2f( 0.0f, m_size.y ), wm );
+			mt::vec2f transformX;
+			mt::vec2f transformY;
 
-			//m_vertices[1] = m_vertices[0] + transformX;
-			//m_vertices[2] = m_vertices[1] + transformY;
-			//m_vertices[3] = m_vertices[0] + transformY;
+			mt::mul_v2_m3( m_vertices[0], m_offset, wm );
+			mt::mul_v2_m3_r( transformX, mt::vec2f( m_size.x, 0.0f ), wm );
+			mt::mul_v2_m3_r( transformY, mt::vec2f( 0.0f, m_size.y ), wm );
+
+			m_vertices[1] = m_vertices[0] + transformX;
+			m_vertices[2] = m_vertices[1] + transformY;
+			m_vertices[3] = m_vertices[0] + transformY;
 
 			m_invalidateVertices = false;
 		}

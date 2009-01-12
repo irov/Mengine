@@ -157,8 +157,8 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 #elif MENGE_PLATFORM_MACOSX
 	int i = 0;
 	AGLPixelFormat pixelFormat;
-	GLint attribs[] = { AGL_NO_RECOVERY, GL_TRUE, AGL_ACCELERATED, GL_TRUE, AGL_RGBA, AGL_DOUBLEBUFFER, AGL_ALPHA_SIZE, 8
-						,AGL_RED_SIZE, 8, AGL_STENCIL_SIZE, 8, AGL_DEPTH_SIZE, 24, AGL_FULLSCREEN, AGL_NONE };
+	GLint attribs[] = { AGL_NO_RECOVERY, GL_TRUE, AGL_ACCELERATED, GL_TRUE, AGL_RGBA, AGL_DOUBLEBUFFER, AGL_FULLSCREEN, /*AGL_ALPHA_SIZE, 8
+						,AGL_RED_SIZE, 8, AGL_STENCIL_SIZE, 8, AGL_DEPTH_SIZE, 24,*/ AGL_NONE };
 	
 	GDHandle gdhDisplay;
 	m_mainDisplayID = CGMainDisplayID();
@@ -188,6 +188,10 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	//GLint bufferName = 1;
 	//aglSetInteger( m_aglDummyContext, AGL_BUFFER_NAME, &bufferName ); // set buffer name for this window context
 	m_aglContext = aglCreateContext(pixelFormat, NULL);
+	if( m_aglContext == NULL )
+	{
+		return false;
+	}
 	//aglSetInteger( m_aglContext, AGL_BUFFER_NAME, &bufferName); // set same buffer name to share hardware buffers
 
 	aglDestroyPixelFormat( pixelFormat );
@@ -225,12 +229,22 @@ bool OGLRenderSystem::createRenderWindow( std::size_t _width, std::size_t _heigh
 	m_viewport[3] = _height;
 
 	const char* str = (const char*)glGetString( GL_VERSION );
-	LOG( "OpenGL Version: " + Menge::String( str ) );
+	Menge::String mstr = "None";
+	if( str != NULL )
+	{
+		mstr = str;
+	}
+	LOG( "OpenGL Version: " + mstr );
+	mstr = "None";
 	str = (const char*)glGetString( GL_VENDOR );
+	if( str != NULL )
+	{
+		mstr = str;
+	}
 	LOG( "Vendor: " + Menge::String( str ) );
 	str = (const char*)glGetString( GL_RENDERER );
-	LOG( "Renderer: " + Menge::String( str ) );
-	m_ext = (const char*)glGetString( GL_EXTENSIONS );
+	//LOG( "Renderer: " + Menge::String( str ) );
+	//m_ext = (const char*)glGetString( GL_EXTENSIONS );
 	//LOG( "Extensions:" );
 	//LOG( m_ext );
 	// check for NPOT

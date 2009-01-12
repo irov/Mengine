@@ -144,9 +144,9 @@ namespace mt
 
 	MATH_INLINE void mul_m4_m3_i(vec4f & _out, const vec4f & _a, const mat3f& _b)
 	{
-		_out.x = _a.x * _b.v0[0] + _a.y * _b.v0[0]+ _a.z * _b.v0[0];
-		_out.y = _a.x * _b.v1[1] + _a.y * _b.v1[1]+ _a.z * _b.v0[1];
-		_out.z = _a.x * _b.v2[2] + _a.y * _b.v2[2]+ _a.z * _b.v0[2];
+		_out.x = _a.x * _b.v0[0] + _a.y * _b.v1[0]+ _a.z * _b.v2[0];
+		_out.y = _a.x * _b.v0[1] + _a.y * _b.v1[1]+ _a.z * _b.v2[1];
+		_out.z = _a.x * _b.v0[2] + _a.y * _b.v1[2]+ _a.z * _b.v2[2];
 		_out.w = _a.w;
 	}
 	/*	Matrix/Matrix Mult  */

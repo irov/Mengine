@@ -2,8 +2,14 @@
 @set build_dir=%1
 cd ..\dependencies
 
+rem --- box2d ---
+rd /s /q box2d\%build_dir%
+
 rem --- zlib ---
 rd /s /q zlib\%build_dir%
+
+rem --- libjpeg ---
+rd /s /q libjpeg\%build_dir%
 
 rem --- libpng ---
 rd /s /q libpng\%build_dir%

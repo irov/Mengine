@@ -5,6 +5,9 @@ project(ZLIB)
 
 set(TRUE_DIR ../../zlib)
 set(ZLIB_SOURCE_DIR ${TRUE_DIR})
+
+INCLUDE( ../menge_macro.cmake )
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -47,6 +50,4 @@ if(MSVC)
 endif(MSVC)
 
 include_directories(${ZLIB_SOURCE_DIR})
-add_library( ${ZLIB_LIB_NAME} STATIC ${libzlib_sources} )
-
-#install_targets(/lib ${ZLIB_LIB_NAME})
+MENGINE_ADD_LIBRARY( ${ZLIB_LIB_NAME} STATIC ${libzlib_sources} )

@@ -5,6 +5,9 @@ project(Expat)
 
 SET(TRUE_DIR ../../expat/lib)
 SET(Expat_SOURCE_DIR ../../expat)
+
+INCLUDE( ../menge_macro.cmake )
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -45,6 +48,4 @@ if(WIN32)
 endif(WIN32)
 
 include_directories(${Expat_SOURCE_DIR}/lib)
-add_library( ${Expat_LIB_NAME} STATIC ${libexpat_sources} )
-
-#install_targets(/lib ${Expat_LIB_NAME})
+MENGINE_ADD_LIBRARY( ${Expat_LIB_NAME} STATIC ${libexpat_sources} )

@@ -6,6 +6,8 @@ project(vorbis)
 SET(TRUE_DIR ../../vorbis)
 SET(vorbis_SOURCE_DIR ${TRUE_DIR})
 
+INCLUDE( ../menge_macro.cmake )
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -52,6 +54,5 @@ if(MSVC)
 endif(MSVC)
 
 include_directories(${vorbis_SOURCE_DIR}/include ../../ogg/include)
-add_library( ${vorbis_LIB_NAME} STATIC ${libvorbis_sources} )
-add_library( ${vorbisfile_LIB_NAME} STATIC ${libvorbisfile_sources} )
-
+MENGINE_ADD_LIBRARY( ${vorbis_LIB_NAME} STATIC ${libvorbis_sources} )
+MENGINE_ADD_LIBRARY( ${vorbisfile_LIB_NAME} STATIC ${libvorbisfile_sources} )

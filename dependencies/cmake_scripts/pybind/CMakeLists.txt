@@ -6,6 +6,8 @@ project(pybind)
 SET(TRUE_DIR ../../pybind)
 SET(pybind_SOURCE_DIR ${TRUE_DIR})
 
+INCLUDE( ../menge_macro.cmake )
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -44,6 +46,4 @@ if(NOT MSVC)
 endif(NOT MSVC)
 
 include_directories(${pybind_SOURCE_DIR}/include)
-add_library( ${pybind_LIB_NAME} STATIC ${libpybind_sources} )
-
-#install_targets(/lib ${pybind_LIB_NAME})
+MENGINE_ADD_LIBRARY( ${pybind_LIB_NAME} STATIC ${libpybind_sources} )

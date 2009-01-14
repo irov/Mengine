@@ -5,6 +5,9 @@ project(JPEG)
 
 SET(TRUE_DIR ../../libJPEG)
 SET(JPGE_SOURCE_DIR ${TRUE_DIR})
+
+INCLUDE( ../menge_macro.cmake )
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -75,7 +78,4 @@ if(MSVC)
 endif(MSVC)
 
 include_directories(${JPEG_SOURCE_DIR})
-add_library( ${JPEG_LIB_NAME} STATIC ${libjpeg_sources} )
-
-#install_targets(/lib ${JPEG_LIB_NAME})
-
+MENGINE_ADD_LIBRARY( ${JPEG_LIB_NAME} STATIC ${libjpeg_sources} )

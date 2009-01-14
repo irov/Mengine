@@ -6,6 +6,8 @@ project(BOX2D)
 set(TRUE_DIR ../../box2d/Source)
 set(BOX2D_SOURCE_DIR ../../box2d)
 
+INCLUDE( ../menge_macro.cmake )
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -57,7 +59,4 @@ if(MSVC)
 endif(MSVC)
 
 include_directories(${BOX2D_SOURCE_DIR}/include)
-add_library( ${BOX2D_LIB_NAME} STATIC ${libbox2d_sources} )
-
-#install_targets(/lib ${BOX2D_LIB_NAME})
-
+MENGINE_ADD_LIBRARY( ${BOX2D_LIB_NAME} STATIC ${libbox2d_sources} )

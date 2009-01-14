@@ -5,6 +5,9 @@ project(PNG)
 
 SET(TRUE_DIR ../../libPNG)
 SET(PNG_SOURCE_DIR ${TRUE_DIR})
+
+INCLUDE( ../menge_macro.cmake )
+
 # Copyright (C) 2007 Glenn Randers-Pehrson
 # For conditions of distribution and use, see copyright notice in png.h
 
@@ -141,7 +144,7 @@ endif(PNG_SHARED)
 if(PNG_STATIC)
 # does not work without changing name
  set(PNG_LIB_NAME_STATIC ${PNG_LIB_NAME}_static)
- add_library(${PNG_LIB_NAME_STATIC} STATIC ${libpng_sources})
+ MENGINE_ADD_LIBRARY(${PNG_LIB_NAME_STATIC} STATIC ${libpng_sources})
 endif(PNG_STATIC)
 
 if(PNG_SHARED AND WIN32)
@@ -186,4 +189,3 @@ endif(PNG_SHARED AND WIN32)
 # to create msvc import lib for mingw compiled shared lib
 # pexports libpng.dll > libpng.def
 # lib /def:libpng.def /machine:x86
-

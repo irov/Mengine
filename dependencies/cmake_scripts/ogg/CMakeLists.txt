@@ -6,6 +6,8 @@ project(OGG)
 SET(TRUE_DIR ../../ogg)
 SET(OGG_SOURCE_DIR ../../ogg)
 
+INCLUDE( ../menge_macro.cmake )
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -30,7 +32,4 @@ if(MSVC)
 endif(MSVC)
 
 include_directories(${OGG_SOURCE_DIR}/include)
-add_library( ${OGG_LIB_NAME} STATIC ${libogg_sources} )
-
-#install_targets(/lib ${OGG_LIB_NAME})
-
+MENGINE_ADD_LIBRARY( ${OGG_LIB_NAME} STATIC ${libogg_sources} )

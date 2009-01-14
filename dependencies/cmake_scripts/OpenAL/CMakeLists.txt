@@ -5,6 +5,9 @@ project(OpenAL)
 
 SET(TRUE_DIR ../../OpenAL)
 SET(OpenAL_SOURCE_DIR ${TRUE_DIR} )
+
+INCLUDE( ../menge_macro.cmake )
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -60,5 +63,4 @@ if(WIN32)
 endif(WIN32)
 
 
-add_library( ${OpenAL_LIB_NAME} STATIC ${libopenal_sources} )
-
+MENGINE_ADD_LIBRARY( ${OpenAL_LIB_NAME} STATIC ${libopenal_sources} )

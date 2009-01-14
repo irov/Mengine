@@ -5,6 +5,9 @@ project(OIS)
 
 SET(TRUE_DIR ../../ois)
 SET(OIS_SOURCE_DIR ${TRUE_DIR})
+
+INCLUDE( ../menge_macro.cmake )
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -82,6 +85,4 @@ if(MSVC)
 endif(MSVC)
 
 include_directories(${OIS_SOURCE_DIR}/includes)
-add_library( ${OIS_LIB_NAME} STATIC ${libois_sources} )
-
-#install_targets(/lib ${OIS_LIB_NAME})
+MENGINE_ADD_LIBRARY( ${OIS_LIB_NAME} STATIC ${libois_sources} )

@@ -33,6 +33,7 @@ Camera
 ADD_FILTER(
 Codec
 	Codec.h
+	Codec.cpp
 	VideoDecoderOGGTheora.cpp
 	VideoDecoderOGGTheora.h
 	ImageDecoderJPEG.h
@@ -41,6 +42,8 @@ Codec
 	#ImageCodecMNE.h
 	ImageDecoderPNG.cpp
 	ImageDecoderPNG.h
+	ImageEncoderPNG.cpp
+	ImageEncoderPNG.h
 	SoundDecoderOGGVorbis.h
 	SoundDecoderOGGVorbis.cpp
 )
@@ -114,15 +117,8 @@ Engine\\\\Sound
 
 ADD_FILTER(
 Engine\\\\Xml
-	XmlCompile.cpp
-	XmlCompile.h
 	XmlEngine.cpp
 	XmlEngine.h
-	XmlEnum.h
-	XmlFormat.cpp
-	XmlFormat.h
-	XmlTag.cpp
-	XmlTag.h
 )
 
 ADD_FILTER(
@@ -547,6 +543,17 @@ Utils
 	Profiler.h
 	Utils.cpp
 	Utils.h
+	VersionInfo.h
+)
+
+INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs 
+					 ${THIRDPARTY_DIR}
+					 ${THIRDPARTY_DIR}/pybind/include
+					 ${THIRDPARTY_DIR}/python/include
+					 ${THIRDPARTY_DIR}/vorbis/include
+					 ${THIRDPARTY_DIR}/ogg/include
+					 ${THIRDPARTY_DIR}/theora/include
+					 ${THIRDPARTY_DIR}/zlib
 )
 
 ADD_LIBRARY( Menge ${SRC_FILES} )
@@ -563,28 +570,45 @@ SET( APPLICATION_DEPENDENCIES
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}
-debug pybind_d.lib
-optimized pybind.lib
-debug python25_d.lib
-optimized python25.lib
-debug libpngd.lib
-optimized libPNG.lib
-debug zlibd.lib
-optimized zlib.lib
-debug libjpegd.lib
-optimized libJPEG.lib
-debug libtheora_d.lib
-optimized libtheora.lib
-debug ogg_static_d.lib
-optimized ogg_static.lib
-debug vorbis_static_d.lib
-optimized vorbis_static.lib
-debug vorbisfile_static_d.lib
-optimized vorbisfile_static.lib
+debug ${MENGINE_LIB_PREFIX}pybind_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}pybind_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}python_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}png_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}png_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}zlib_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}jpeg_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}theora_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}theora_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}ogg_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}ogg_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}vorbis_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}vorbis_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}vorbisfile_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}vorbisfile_static${MENGINE_LIB_SUFFIX}
+)
+
+SET( APPLICATION_LIB_PATHS
+ ${APPLICATION_LIB_PATHS}
+ ${THIRDPARTY_DIR}/pybind/${MENGINE_LIB_DIR}
+ ${THIRDPARTY_DIR}/python/${MENGINE_LIB_DIR}
+ ${THIRDPARTY_DIR}/libpng/${MENGINE_LIB_DIR}
+ ${THIRDPARTY_DIR}/libjpeg/${MENGINE_LIB_DIR}
+ ${THIRDPARTY_DIR}/zlib/${MENGINE_LIB_DIR}
+ ${THIRDPARTY_DIR}/theora/${MENGINE_LIB_DIR}
+ ${THIRDPARTY_DIR}/ogg/${MENGINE_LIB_DIR}
+ ${THIRDPARTY_DIR}/vorbis/${MENGINE_LIB_DIR}
 )
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}
+ PARENT_SCOPE
+)
+
+SET( APPLICATION_LIB_PATHS
+ ${APPLICATION_LIB_PATHS}
  PARENT_SCOPE
 )
 

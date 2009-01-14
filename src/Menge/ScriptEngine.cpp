@@ -61,6 +61,7 @@ namespace Menge
 		++Py_OptimizeFlag;
 #	endif
 		++Py_NoSiteFlag;
+		//Py_IgnoreEnvironmentFlag++;
 		pybind::initialize();
 
 		PyObject * main = initModule( "__main__" );

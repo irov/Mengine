@@ -3,13 +3,13 @@
 
 #	include "WinApplication.h"
 
-#	if	MENGE_PARTICLES	== (1)
+/*#	if	MENGE_PARTICLES	== (1)
 #		ifdef _DEBUG
 #			pragma comment( lib, "AstralaxParticleSystem_d.lib" )
 #		else
 #			pragma comment( lib, "AstralaxParticleSystem.lib" )
 #		endif
-#	endif
+#	endif*/
 
 //////////////////////////////////////////////////////////////////////////
 //							Entry point									//

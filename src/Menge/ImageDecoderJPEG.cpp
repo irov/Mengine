@@ -314,10 +314,11 @@ namespace Menge
 			if( (m_options & DF_COUNT_ALPHA) != 0 )	// place data as there is alpha
 			{
 				// place a little magic here =)
+				std::size_t bufferDataWidth = m_dataInfo.width * 4;
 				for( std::size_t i = 0; i < m_dataInfo.width; i++ )
 				{
-					std::copy( _buffer + 3 * ( m_dataInfo.width - i - 1 ), _buffer + 3 * ( m_dataInfo.width - i ), _buffer + m_bufferRowStride - 4 - i*4 );
-					_buffer[m_bufferRowStride-i*4-1] = 255; // alpha
+					std::copy( _buffer + 3 * ( m_dataInfo.width - i - 1 ), _buffer + 3 * ( m_dataInfo.width - i ), _buffer + bufferDataWidth - 4 - i*4 );
+					_buffer[bufferDataWidth-i*4-1] = 255; // alpha
 					
 				}
 			}

@@ -3,6 +3,6 @@
 
 namespace Menge
 {
-	static const char s_versionInfo[] = "1831";
+	static const char s_versionInfo[] = "1838";
 
 }	// namespace Menge

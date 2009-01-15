@@ -5,4 +5,4 @@
 @call build_menge build_msvc8 generator_nmake nmake.exe Release
 
 @echo Done
-@pause
+@if NOT "%1"=="/NOPAUSE" pause

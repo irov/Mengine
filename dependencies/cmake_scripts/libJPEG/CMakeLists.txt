@@ -17,9 +17,6 @@ if(MSVC)
 endif(MSVC)
 set( JPEG_LIB_NAME ${JPEG_LIB_NAME}jpeg_static )
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
 # OUR SOURCES
 set(libjpeg_sources
 ${TRUE_DIR}/jcapimin.c 

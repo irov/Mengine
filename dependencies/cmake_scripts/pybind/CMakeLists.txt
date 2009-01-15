@@ -17,9 +17,6 @@ if(MSVC)
 endif(MSVC)
 set( pybind_LIB_NAME ${pybind_LIB_NAME}pybind_static )
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
 # OUR SOURCES
 set(libpybind_sources
 ${TRUE_DIR}/src/class_core.cpp

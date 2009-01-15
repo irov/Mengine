@@ -21,9 +21,6 @@ if(WIN32)
 	include_directories( ../../DirectX/DX8/include )
 endif(WIN32)
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
 include_directories(${OpenAL_SOURCE_DIR}/include)
  
 # OUR SOURCES

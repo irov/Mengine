@@ -17,9 +17,6 @@ if(MSVC)
 endif(MSVC)
 set( pthreads_LIB_NAME ${pthreads_LIB_NAME}pthreads_static )
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
 # OUR SOURCES
 set(libpthreads_sources
 	${TRUE_DIR}/config.h

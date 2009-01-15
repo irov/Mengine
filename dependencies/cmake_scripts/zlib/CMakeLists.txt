@@ -17,9 +17,6 @@ if(MSVC)
 endif(MSVC)
 set( ZLIB_LIB_NAME ${ZLIB_LIB_NAME}zlib_static )
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
 # OUR SOURCES
 set(libzlib_sources
 ${TRUE_DIR}/crc32.h

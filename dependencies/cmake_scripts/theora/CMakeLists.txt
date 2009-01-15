@@ -17,9 +17,6 @@ if(MSVC)
 endif(MSVC)
 set( theora_LIB_NAME ${theora_LIB_NAME}theora_static )
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
 # OUR SOURCES
 set(libtheora_sources
 	# disable encoder

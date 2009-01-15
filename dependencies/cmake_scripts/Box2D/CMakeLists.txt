@@ -17,9 +17,6 @@ if(MSVC)
 endif(MSVC)
 set( BOX2D_LIB_NAME ${BOX2D_LIB_NAME}box2d_static )
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
 # OUR SOURCES
 set(libbox2d_sources
 	${TRUE_DIR}/Dynamics/b2Body.cpp

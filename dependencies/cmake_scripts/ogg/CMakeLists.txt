@@ -17,9 +17,6 @@ if(MSVC)
 endif(MSVC)
 set( OGG_LIB_NAME ${OGG_LIB_NAME}ogg_static )
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
 # OUR SOURCES
 set(libogg_sources
 ${TRUE_DIR}/include/ogg/ogg.h

@@ -17,9 +17,6 @@ if(MSVC)
 endif(MSVC)
 set( OIS_LIB_NAME ${OIS_LIB_NAME}ois_static )
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
 if(WIN32)
 	include_directories( ../../DirectX/DX8/include )
 endif(WIN32)

@@ -17,9 +17,6 @@ if(MSVC)
 endif(MSVC)
 set( Expat_LIB_NAME ${Expat_LIB_NAME}expat_static )
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
 # OUR SOURCES
 set(libexpat_sources
 ${TRUE_DIR}/ascii.h

@@ -19,9 +19,6 @@ endif(MSVC)
 set( vorbis_LIB_NAME ${vorbis_LIB_NAME}vorbis_static )
 set( vorbisfile_LIB_NAME ${vorbisfile_LIB_NAME}vorbisfile_static )
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
 # OUR SOURCES
 set(libvorbis_sources
 ${TRUE_DIR}/lib/analysis.c

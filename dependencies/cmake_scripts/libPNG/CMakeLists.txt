@@ -79,10 +79,6 @@ if(MSVC)
 endif(MSVC)
 set(PNG_LIB_NAME ${PNG_LIB_NAME}png)
 
-# to distinguish between debug and release lib
-set(CMAKE_DEBUG_POSTFIX "d")
-
-
 # OUR SOURCES
 set(libpng_sources
  ${TRUE_DIR}/png.h

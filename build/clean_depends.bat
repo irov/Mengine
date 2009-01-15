@@ -1,5 +1,8 @@
 
 @set build_dir=%1
+
+@if "%build_dir%"=="" goto error
+
 cd ..\dependencies
 
 rem --- box2d ---
@@ -40,3 +43,10 @@ rd /s /q python\%build_dir%
 
 rem --- pthreads ---
 rd /s /q pthreads\%build_dir%
+
+@goto end
+
+:error
+@echo Invalid Use
+
+:end

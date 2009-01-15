@@ -102,7 +102,7 @@ cd %build_dir%
 
 rem --- libjpeg ---
 cd ..\..\libjpeg
-@if "%2"=="generator_nmake" copy jconfig.h.cmakenmake jconfig.h
+@if "%1"=="build_msvc8" copy ..\cmake_scripts\libjpeg\jconfig.h.msvc8 jconfig.h
 mkdir %build_dir%
 cd %build_dir%
 "..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/libjpeg
@@ -116,3 +116,5 @@ cd %build_dir%
 "..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/box2d
 
 %compiler%
+
+cd ..\..\..\build

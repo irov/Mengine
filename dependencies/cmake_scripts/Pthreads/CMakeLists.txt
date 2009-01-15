@@ -8,6 +8,8 @@ SET(pthreads_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
+MENGE_SET_PROJECT_DEFAULTS()
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -189,12 +191,7 @@ set(libpthreads_sources
 
 )
 
-# SOME NEEDED DEFINITIONS
-if(MSVC)
-  add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-endif(MSVC)
-
 add_definitions(-DPTW32_STATIC_LIB -DPTW32_BUILD_INLINED -DHAVE_CONFIG_H -DWall)
 
 include_directories(${pthreads_SOURCE_DIR})
-MENGINE_ADD_LIBRARY( ${pthreads_LIB_NAME} STATIC ${libpthreads_sources} )
+add_library( ${pthreads_LIB_NAME} STATIC ${libpthreads_sources} )

@@ -8,6 +8,8 @@ set(BOX2D_SOURCE_DIR ../../box2d)
 
 INCLUDE( ../menge_macro.cmake )
 
+MENGE_SET_PROJECT_DEFAULTS()
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -53,10 +55,5 @@ set(libbox2d_sources
 	${TRUE_DIR}/Collision/b2BroadPhase.cpp 
 )
 
-# SOME NEEDED DEFINITIONS
-if(MSVC)
-  add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-endif(MSVC)
-
 include_directories(${BOX2D_SOURCE_DIR}/include)
-MENGINE_ADD_LIBRARY( ${BOX2D_LIB_NAME} STATIC ${libbox2d_sources} )
+add_library( ${BOX2D_LIB_NAME} STATIC ${libbox2d_sources} )

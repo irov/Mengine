@@ -8,6 +8,8 @@ SET(OGG_SOURCE_DIR ../../ogg)
 
 INCLUDE( ../menge_macro.cmake )
 
+MENGE_SET_PROJECT_DEFAULTS()
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -26,10 +28,5 @@ ${TRUE_DIR}/src/bitwise.c
 ${TRUE_DIR}/src/framing.c
 )
 
-# SOME NEEDED DEFINITIONS
-if(MSVC)
-  add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-endif(MSVC)
-
 include_directories(${OGG_SOURCE_DIR}/include)
-MENGINE_ADD_LIBRARY( ${OGG_LIB_NAME} STATIC ${libogg_sources} )
+add_library( ${OGG_LIB_NAME} STATIC ${libogg_sources} )

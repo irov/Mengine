@@ -8,6 +8,8 @@ SET(OpenAL_SOURCE_DIR ${TRUE_DIR} )
 
 INCLUDE( ../menge_macro.cmake )
 
+MENGE_SET_PROJECT_DEFAULTS()
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -23,11 +25,6 @@ endif(WIN32)
 set(CMAKE_DEBUG_POSTFIX "d")
 
 include_directories(${OpenAL_SOURCE_DIR}/include)
-
-# SOME NEEDED DEFINITIONS
-if(MSVC)
-  add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-endif(MSVC)
  
 # OUR SOURCES
 set(libopenal_sources
@@ -63,4 +60,4 @@ if(WIN32)
 endif(WIN32)
 
 
-MENGINE_ADD_LIBRARY( ${OpenAL_LIB_NAME} STATIC ${libopenal_sources} )
+add_library( ${OpenAL_LIB_NAME} STATIC ${libopenal_sources} )

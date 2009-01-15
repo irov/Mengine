@@ -8,6 +8,8 @@ SET(Expat_SOURCE_DIR ../../expat)
 
 INCLUDE( ../menge_macro.cmake )
 
+MENGE_SET_PROJECT_DEFAULTS()
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -40,12 +42,9 @@ ${TRUE_DIR}/xmltok_ns.c
 )
 
 # SOME NEEDED DEFINITIONS
-if(MSVC)
-  add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-endif(MSVC)
 if(WIN32)
   add_definitions(-DCOMPILED_FROM_DSP -DXML_STATIC)
 endif(WIN32)
 
 include_directories(${Expat_SOURCE_DIR}/lib)
-MENGINE_ADD_LIBRARY( ${Expat_LIB_NAME} STATIC ${libexpat_sources} )
+add_library( ${Expat_LIB_NAME} STATIC ${libexpat_sources} )

@@ -8,6 +8,8 @@ SET(theora_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
+MENGE_SET_PROJECT_DEFAULTS()
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -40,10 +42,5 @@ set(libtheora_sources
 	${TRUE_DIR}/lib/cpu.c
 )
 
-# SOME NEEDED DEFINITIONS
-if(MSVC)
-  add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-endif(MSVC)
-
 include_directories(${theora_SOURCE_DIR}/include ${theora_SOURCE_DIR}/include/theora ../../ogg/include)
-MENGINE_ADD_LIBRARY( ${theora_LIB_NAME} STATIC ${libtheora_sources} )
+add_library( ${theora_LIB_NAME} STATIC ${libtheora_sources} )

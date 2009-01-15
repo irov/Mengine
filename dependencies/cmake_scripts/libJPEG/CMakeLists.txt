@@ -8,6 +8,8 @@ SET(JPGE_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
+MENGE_SET_PROJECT_DEFAULTS()
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -72,10 +74,5 @@ if(WIN32)
 	set(libjpeg_sources ${libjpeg_sources} ${TRUE_DIR}/jmemnobs.c)
 endif(WIN32)
 
-# SOME NEEDED DEFINITIONS
-if(MSVC)
-  add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-endif(MSVC)
-
 include_directories(${JPEG_SOURCE_DIR})
-MENGINE_ADD_LIBRARY( ${JPEG_LIB_NAME} STATIC ${libjpeg_sources} )
+add_library( ${JPEG_LIB_NAME} STATIC ${libjpeg_sources} )

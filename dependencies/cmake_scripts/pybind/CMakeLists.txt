@@ -8,6 +8,8 @@ SET(pybind_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
+MENGE_SET_PROJECT_DEFAULTS()
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -36,14 +38,9 @@ ${TRUE_DIR}/src/type_cast.cpp
 ${TRUE_DIR}/src/wrap_base.cpp
 )
 
-# SOME NEEDED DEFINITIONS
-if(MSVC)
-  add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-endif(MSVC)
-
 if(NOT MSVC)
 	ADD_DEFINITIONS(-D'override = /* */')
 endif(NOT MSVC)
 
 include_directories(${pybind_SOURCE_DIR}/include)
-MENGINE_ADD_LIBRARY( ${pybind_LIB_NAME} STATIC ${libpybind_sources} )
+add_library( ${pybind_LIB_NAME} STATIC ${libpybind_sources} )

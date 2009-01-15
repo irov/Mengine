@@ -8,6 +8,8 @@ SET(Python_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
+MENGE_SET_PROJECT_DEFAULTS()
+
 option(WITH_TSC "profile with the Pentium timestamp counter" 0)
 option(ENABLE_IPV6 "Enable IP v6" 0)
 option(WITH_THREAD "compile in rudimentary thread support" 1)
@@ -233,7 +235,7 @@ if(MSVC)
 endif(MSVC)
 set( python_LIB_NAME ${python_LIB_NAME}python_static )
 
-MENGINE_ADD_LIBRARY(${python_LIB_NAME} ${TRUE_DIR}/Modules/getbuildinfo.c ${TRUE_DIR}/Modules/_typesmodule.c
+add_library(${python_LIB_NAME} ${TRUE_DIR}/Modules/getbuildinfo.c ${TRUE_DIR}/Modules/_typesmodule.c
               ${PARSER_SRCS}
               ${OBJECT_SRCS}
               ${PYTHON_SRCS}

@@ -8,6 +8,8 @@ SET(PNG_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
+MENGE_SET_PROJECT_DEFAULTS()
+
 # Copyright (C) 2007 Glenn Randers-Pehrson
 # For conditions of distribution and use, see copyright notice in png.h
 
@@ -106,7 +108,7 @@ set(pngtest_sources
 )
 # SOME NEEDED DEFINITIONS
 if(MSVC)
-  add_definitions(-DPNG_NO_MODULEDEF -D_CRT_SECURE_NO_DEPRECATE)
+  add_definitions(-DPNG_NO_MODULEDEF)
 endif(MSVC)
 
 #add_definitions(-DZLIB_DLL)
@@ -144,7 +146,7 @@ endif(PNG_SHARED)
 if(PNG_STATIC)
 # does not work without changing name
  set(PNG_LIB_NAME_STATIC ${PNG_LIB_NAME}_static)
- MENGINE_ADD_LIBRARY(${PNG_LIB_NAME_STATIC} STATIC ${libpng_sources})
+ add_library(${PNG_LIB_NAME_STATIC} STATIC ${libpng_sources})
 endif(PNG_STATIC)
 
 if(PNG_SHARED AND WIN32)

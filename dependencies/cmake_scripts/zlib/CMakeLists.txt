@@ -8,6 +8,8 @@ set(ZLIB_SOURCE_DIR ${TRUE_DIR})
 
 INCLUDE( ../menge_macro.cmake )
 
+MENGE_SET_PROJECT_DEFAULTS()
+
 # SET LIBNAME
 # msvc does not append 'lib' - do it here to have consistent name
 if(MSVC)
@@ -44,10 +46,5 @@ ${TRUE_DIR}/uncompr.c
 ${TRUE_DIR}/zutil.c
 )
 
-# SOME NEEDED DEFINITIONS
-if(MSVC)
-  add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-endif(MSVC)
-
 include_directories(${ZLIB_SOURCE_DIR})
-MENGINE_ADD_LIBRARY( ${ZLIB_LIB_NAME} STATIC ${libzlib_sources} )
+add_library( ${ZLIB_LIB_NAME} STATIC ${libzlib_sources} )

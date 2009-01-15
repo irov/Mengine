@@ -103,6 +103,7 @@ cd %build_dir%
 rem --- libjpeg ---
 cd ..\..\libjpeg
 @if "%1"=="build_msvc8" copy ..\cmake_scripts\libjpeg\jconfig.h.msvc8 jconfig.h
+@if "%1"=="build_mingw" copy ..\cmake_scripts\libjpeg\jconfig.h.mingw jconfig.h
 mkdir %build_dir%
 cd %build_dir%
 "..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/libjpeg

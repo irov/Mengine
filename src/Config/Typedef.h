@@ -7,6 +7,7 @@
 #	include <list>
 #	include <iostream>
 //#	include <string.h>
+//#	include <iosfwd>
 
 namespace Menge
 {
@@ -14,7 +15,7 @@ namespace Menge
 	typedef char	TCharA;
 	typedef std::wstring StringW;
 	typedef std::string StringA;
-	typedef std::wstringstream StringstreamW;
+	//typedef std::wstringstream StringstreamW;
 	typedef std::stringstream StringstreamA;
 	typedef std::wstring Text;
 

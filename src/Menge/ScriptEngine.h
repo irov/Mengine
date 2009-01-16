@@ -5,6 +5,7 @@
 #	include <map>
 #	include <list>
 #	include "FileEngine.h"
+#	include <cstdarg>
 
 extern "C" 
 { 

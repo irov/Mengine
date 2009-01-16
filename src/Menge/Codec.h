@@ -5,10 +5,10 @@
 #	include <map>
 
 #	define MENGE_REGISTER_DECODER( _typename_, _class_, _type_ )\
-	Menge::DecoderManager::registerDecoder( _type_ ## _typename_, _class_::creatorNew, _class_::creatorPlacementNew );
+	Menge::DecoderManager::registerDecoder( String(_type_) + String(_typename_), _class_::creatorNew, _class_::creatorPlacementNew );
 
 #	define MENGE_REGISTER_ENCODER( _typename_, _class_, _type_ )\
-	Menge::EncoderManager::registerEncoder( _type_ ## _typename_, _class_::creatorNew, _class_::creatorPlacementNew );
+	Menge::EncoderManager::registerEncoder( String(_type_) + String(_typename_), _class_::creatorNew, _class_::creatorPlacementNew );
 
 namespace Menge 
 {

@@ -29,7 +29,7 @@ SET( THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies )
 # implementation
 
 if (NOT MSVC)
-	ADD_DEFINITIONS(-D'override = /* */')
+	ADD_DEFINITIONS(-D"override = /* */")
 endif(NOT MSVC)
 
 if( NOT MSVC )

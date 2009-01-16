@@ -16,6 +16,7 @@ http://dfn.dl.sourceforge.net/sourceforge/expat/expat-2.0.1.tar.gz
 OIS
 [1.2]
 http://sourceforge.net/projects/wgois
+http://dfn.dl.sourceforge.net/sourceforge/wgois/ois_1.2.0.tar.gz
 
 OpenAL
 [1.1]
@@ -60,6 +61,16 @@ CMake
 http://www.cmake.org/cmake/resources/software.html
 
 --------------------------------------------------------------------------------
+COMMENTS:
+1. copy Python/PC/pyconfig.h to Python/Include/
+
+2. in header ptw32_MCS_lock.c before implement.h write  #include "pthread.h"
+
+3. DirectX/DX8/
+
+--------------------------------------------------------------------------------
+
+
 TODO:
 
 libcurl

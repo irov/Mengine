@@ -38,7 +38,7 @@ vorbis
 http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.0.tar.gz
 
 Box2D
-[Box2D]
+[2.0.2]
 https://box2d.svn.sourceforge.net/svnroot/box2d
 
 libPNG

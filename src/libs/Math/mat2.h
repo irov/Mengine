@@ -14,18 +14,8 @@ namespace mt
 { 
 	struct mat2f
 	{
-		union 
-		{
-			struct
-			{
-				vec2f v[2]; 
-			};
-			struct
-			{
-				vec2f v0, v1; 
-			};
-			float m[4];
-		};
+		vec2f v0;
+		vec2f v1;
 
 		MATH_INLINE mat2f();
 		MATH_INLINE mat2f(float angle);

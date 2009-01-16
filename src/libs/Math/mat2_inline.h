@@ -3,11 +3,11 @@ namespace mt
 	MATH_INLINE mat2f::mat2f()
 	{}
 
-	MATH_INLINE mat2f::mat2f(float angle)
+	MATH_INLINE mat2f::mat2f( float angle )
 	{
 		float c = cosf(angle), s = sinf(angle);
-		v[0].x = c; v[1].x = -s;
-		v[0].y = s; v[1].y = c;
+		v0.x = c; v1.x = -s;
+		v0.y = s; v1.y = c;
 	}
 
 	MATH_INLINE mat2f::mat2f(const mat2f&	_rhs)
@@ -22,12 +22,12 @@ namespace mt
 
 	MATH_INLINE vec2f& mat2f::operator [](int i)
 	{
-		return v[i];
+		return (&v0)[i];
 	}
 
 	MATH_INLINE const vec2f& mat2f::operator [](int i)const
 	{
-		return v[i];
+		return (&v0)[i];
 	}
 
 	MATH_INLINE mat2f& mat2f::operator=(const mat2f& _rhs)
@@ -70,8 +70,8 @@ namespace mt
 	/*	Vector/Matrix Mult	*/
 	MATH_INLINE void mul_v2_m2(vec2f& _out, const vec2f& _v, const mat2f& _m)
 	{
-		_out.x = _m[0][0] * _v.x + _m[1][0] * _v.y;
-		_out.y = _m[0][1] * _v.x + _m[1][1] * _v.y;
+		_out.x = _m.v0[0] * _v.x + _m.v1[0] * _v.y;
+		_out.y = _m.v0[1] * _v.x + _m.v1[1] * _v.y;
 	}
 
 	MATH_INLINE vec2f operator* (const vec2f& _v, const mat2f& _m)
@@ -84,10 +84,10 @@ namespace mt
 	/*	Matrix/Matrix Mult  */
 	MATH_INLINE void mul_m2_m2(mat2f& _out, const mat2f& _a, const mat2f& _b)
 	{
-		_out.v0.x = _a[0][0] * _b[0][0] + _a[0][1] * _b[1][0]; 
-		_out.v0.y = _a[0][0] * _b[0][1] + _a[0][1] * _b[1][1];
-		_out.v1.x = _a[1][0] * _b[0][0] + _a[1][1] * _b[1][0];
-		_out.v1.y = _a[1][0] * _b[0][1] + _a[1][1] * _b[1][1];
+		_out.v0.x = _a.v0[0] * _b.v0[0] + _a.v0[1] * _b.v1[0]; 
+		_out.v0.y = _a.v0[0] * _b.v0[1] + _a.v0[1] * _b.v1[1];
+		_out.v1.x = _a.v1[0] * _b.v0[0] + _a.v1[1] * _b.v1[0];
+		_out.v1.y = _a.v1[0] * _b.v0[1] + _a.v1[1] * _b.v1[1];
 	}
 
 	MATH_INLINE mat2f operator* (const mat2f& _a, const mat2f& _b)

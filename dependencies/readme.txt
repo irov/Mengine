@@ -1,10 +1,6 @@
 -------------------------------------------------------------------------------
 NOW:
 
-STLPort
-[5.1.6]
-http://sourceforge.net/project/showfiles.php?group_id=146814&package_id=162032&release_id=631341
-
 python 
 [2.5.2]
 http://www.python.org/ftp/python/2.5.2/Python-2.5.2.tar.bz2
@@ -13,7 +9,7 @@ pybind
 [head]
 https://pybind.svn.sourceforge.net/svnroot/pybind
 
-[expat]
+expat
 [2.0.1]
 http://dfn.dl.sourceforge.net/sourceforge/expat/expat-2.0.1.tar.gz
 
@@ -25,7 +21,7 @@ OpenAL
 [1.1]
 http://www.openal.org/repos/openal/trunk
 
-pthreads-w32
+pthreads
 [2.8.0]
 ftp://sourceware.org/pub/pthreads-win32/pthreads-w32-2-8-0-release.tar.gz
 

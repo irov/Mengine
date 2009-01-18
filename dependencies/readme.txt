@@ -75,7 +75,6 @@ COMMENTS:
 
 --------------------------------------------------------------------------------
 
-
 TODO:
 
 libcurl
@@ -85,10 +84,6 @@ http://gd.tuwien.ac.at/utils/archivers/curl/libcurl-7.15.5-win32-msvc.zip
 pycurl
 [pycurl]
 http://pycurl.sourceforge.net/download/pycurl-7.16.2.1.tar.gz
-
-PThreads
-[2.8.0]
-ftp://sourceware.org/pub/pthreads-win32
 
 cal3d
 [snapshot]

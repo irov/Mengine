@@ -7,7 +7,8 @@
 #	include "FileStreamDataStream.h"
 #	include "FileStreamOutStream.h"
 
-#	include "shlobj.h"
+#	define _WIN32_WINNT 0x0501
+#	include <shlobj.h>
 #	include <Config/Platform.h>
 
 #	include <direct.h>
@@ -305,7 +306,7 @@ namespace Menge
 		hr = SHGetFolderPathAndSubDir( NULL,					//hWnd	
 			CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
 			NULL,										//hToken
-			SHGFP_TYPE_CURRENT,							//dwFlags
+			0,											//dwFlags
 			game_w.c_str(),								//pszSubDir
 			szPath);									//pszPath
 

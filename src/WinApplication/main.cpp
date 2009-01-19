@@ -14,7 +14,7 @@
 //////////////////////////////////////////////////////////////////////////
 //							Entry point									//
 //////////////////////////////////////////////////////////////////////////
-int APIENTRY WinMain( __in HINSTANCE hInstance, __in_opt HINSTANCE hPrevInstance, __in_opt LPSTR lpCmdLine, __in int nShowCmd )
+int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 { 
 	// keep compiler happy
 	UNREFERENCED_PARAMETER( hInstance );

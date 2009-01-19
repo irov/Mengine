@@ -556,6 +556,9 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs
 					 ${THIRDPARTY_DIR}/zlib
 )
 
+add_definitions(-DPy_BUILD_CORE)
+
+include_directories( ${Mengine_SOURCE_DIR}/Menge )
 ADD_LIBRARY( Menge ${SRC_FILES} )
 
 SET( APPLICATION_DEPENDENCIES
@@ -576,18 +579,18 @@ debug ${MENGINE_LIB_PREFIX}python_staticd${MENGINE_LIB_SUFFIX}
 optimized ${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIX}
 debug ${MENGINE_LIB_PREFIX}png_staticd${MENGINE_LIB_SUFFIX}
 optimized ${MENGINE_LIB_PREFIX}png_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}theora_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}theora_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}vorbisfile_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}vorbisfile_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}vorbis_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}vorbis_static${MENGINE_LIB_SUFFIX}
+debug ${MENGINE_LIB_PREFIX}ogg_staticd${MENGINE_LIB_SUFFIX}
+optimized ${MENGINE_LIB_PREFIX}ogg_static${MENGINE_LIB_SUFFIX}
 debug ${MENGINE_LIB_PREFIX}zlib_staticd${MENGINE_LIB_SUFFIX}
 optimized ${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
 debug ${MENGINE_LIB_PREFIX}jpeg_staticd${MENGINE_LIB_SUFFIX}
 optimized ${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}theora_staticd${MENGINE_LIB_SUFFIX}
-optimized ${MENGINE_LIB_PREFIX}theora_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}ogg_staticd${MENGINE_LIB_SUFFIX}
-optimized ${MENGINE_LIB_PREFIX}ogg_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}vorbis_staticd${MENGINE_LIB_SUFFIX}
-optimized ${MENGINE_LIB_PREFIX}vorbis_static${MENGINE_LIB_SUFFIX}
-debug ${MENGINE_LIB_PREFIX}vorbisfile_staticd${MENGINE_LIB_SUFFIX}
-optimized ${MENGINE_LIB_PREFIX}vorbisfile_static${MENGINE_LIB_SUFFIX}
 )
 
 SET( APPLICATION_LIB_PATHS

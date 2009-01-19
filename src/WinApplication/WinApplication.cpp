@@ -6,12 +6,16 @@
 #	include "LoggerConsole.h"
 #	include "Interface/LogSystemInterface.h"
 
-#	include <strsafe.h>
 #	include <cstdio>
 #	include <clocale>
 
+
 #	include "resource.h"
 #	include "Menge/Utils.h"
+
+#ifdef _MSC_VER
+#	define snprintf _snprintf
+#endif
 
 const Menge::TCharA * config_file = "application.xml";
 
@@ -48,36 +52,36 @@ static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 		::SetFilePointer( hFile, 0, 0, FILE_END );
 		strcpy( wBuffer, "\n=============Unhandled Exception Caugth=============\n" );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-		StringCchPrintfA( wBuffer, 4096, "Date: %02d.%02d.%d, %02d:%02d:%02d", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
+		snprintf( wBuffer, 4096, "Date: %02d.%02d.%d, %02d:%02d:%02d", tm.wDay, tm.wMonth, tm.wYear, tm.wHour, tm.wMinute, tm.wSecond );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-		StringCchPrintfA( wBuffer, 4096, "OS: Windows %ld.%ld.%ld", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
+		snprintf( wBuffer, 4096, "OS: Windows %ld.%ld.%ld", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
-		StringCchPrintfA( wBuffer, 4096, "Source SVN Revision: %s", Menge::Application::getVersionInfo() );
+		snprintf( wBuffer, 4096, "Source SVN Revision: %s", Menge::Application::getVersionInfo() );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ),&wr, 0 );
 		strcpy( wBuffer, "\nCrash Info:\n" );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		StringCchPrintfA( wBuffer, 4096, "Exception Code: 0x%08x\n", pRecord->ExceptionCode );
+		snprintf( wBuffer, 4096, "Exception Code: 0x%08x\n", pRecord->ExceptionCode );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		StringCchPrintfA( wBuffer, 4096, "Flags: 0x%08x\n", pRecord->ExceptionFlags );
+		snprintf( wBuffer, 4096, "Flags: 0x%08x\n", pRecord->ExceptionFlags );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-		StringCchPrintfA( wBuffer, 4096, "Address: 0x%08x\n\n", pRecord->ExceptionAddress );
+		snprintf( wBuffer, 4096, "Address: 0x%08x\n\n", pRecord->ExceptionAddress );
 		::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 		if( ( pContext->ContextFlags & CONTEXT_INTEGER ) != 0 )
 		{
-			StringCchPrintfA( wBuffer, 4096, "Edi: 0x%08x\t Esi: 0x%08x\n", pContext->Edi, pContext->Esi );
+			snprintf( wBuffer, 4096, "Edi: 0x%08x\t Esi: 0x%08x\n", pContext->Edi, pContext->Esi );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			StringCchPrintfA( wBuffer, 4096, "Ebx: 0x%08x\t Edx: 0x%08x\n", pContext->Ebx, pContext->Edx );
+			snprintf( wBuffer, 4096, "Ebx: 0x%08x\t Edx: 0x%08x\n", pContext->Ebx, pContext->Edx );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			StringCchPrintfA( wBuffer, 4096, "Ecx: 0x%08x\t Eax: 0x%08x\n\n", pContext->Ecx, pContext->Eax );
+			snprintf( wBuffer, 4096, "Ecx: 0x%08x\t Eax: 0x%08x\n\n", pContext->Ecx, pContext->Eax );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 		}
 		if( ( pContext->ContextFlags & CONTEXT_CONTROL ) != 0 )
 		{
-			StringCchPrintfA( wBuffer, 4096, "Ebp: 0x%08x\t Eip: 0x%08x\n", pContext->Ebp, pContext->Eip );
+			snprintf( wBuffer, 4096, "Ebp: 0x%08x\t Eip: 0x%08x\n", pContext->Ebp, pContext->Eip );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			StringCchPrintfA( wBuffer, 4096, "SegCs: 0x%08x\t EFlags: 0x%08x\n", pContext->SegCs, pContext->EFlags );
+			snprintf( wBuffer, 4096, "SegCs: 0x%08x\t EFlags: 0x%08x\n", pContext->SegCs, pContext->EFlags );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
-			StringCchPrintfA( wBuffer, 4096, "Esp: 0x%08x\t SegSs: 0x%08x\n", pContext->Esp, pContext->SegSs );
+			snprintf( wBuffer, 4096, "Esp: 0x%08x\t SegSs: 0x%08x\n", pContext->Esp, pContext->SegSs );
 			::WriteFile( hFile, wBuffer, strlen( wBuffer ), &wr, 0 );
 		}
 		/*switch (pRecord->ExceptionCode) 
@@ -245,14 +249,14 @@ namespace Menge
 		std::sprintf( strbuffer, "OS: Windows %ld.%ld.%ld", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
 		LOG( strbuffer );
 
-		MEMORYSTATUSEX mem_st;
-		GlobalMemoryStatusEx(&mem_st);
-		std::sprintf( strbuffer, "Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
-			, mem_st.ullTotalPhys/1024L
-			, mem_st.ullAvailPhys/1024L
-			, mem_st.ullTotalPageFile/1024L
-			, mem_st.ullAvailPageFile );
-		LOG( strbuffer );
+		//MEMORYSTATUSEX mem_st;
+		//GlobalMemoryStatusEx(&mem_st);
+		//std::sprintf( strbuffer, "Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
+		//	, mem_st.ullTotalPhys/1024L
+		//	, mem_st.ullAvailPhys/1024L
+		//	, mem_st.ullTotalPageFile/1024L
+		//	, mem_st.ullAvailPageFile );
+		//LOG( strbuffer );
 
 		sprintf( strbuffer, "SVN Revision: %s", Menge::Application::getVersionInfo() );
 		LOG( strbuffer );

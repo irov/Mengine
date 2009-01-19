@@ -19,7 +19,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileStreamOutStream::open( const char* _filename, bool _binary )
 	{
-		std::ios_base::open_mode mode = std::ios_base::out;
+		std::ios_base::openmode mode = std::ios_base::out;
 		//if( _binary )
 		{
 			mode |= std::ios_base::binary;

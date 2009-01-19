@@ -60,7 +60,9 @@ namespace	Menge
 		m_width = m_resourceMap->getWidth();
 		m_height = m_resourceMap->getHeight();
 
-		RigidBody2D* collision = SceneManager::createNodeT<RigidBody2D>( "RigidBody2D" ) ;
+		RigidBody2D* collision = Holder<SceneManager>::hostage()
+			->createNodeT<RigidBody2D>( "RigidBody2D" ) ;
+
 		const std::vector< mt::vec2f >& pos = m_resourceMap->_getPhysPos();
 		float width = m_resourceMap->_getPhysWidth();
 		collision->setName( "WorldPhysObject" );

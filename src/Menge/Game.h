@@ -183,8 +183,6 @@ namespace Menge
 		float m_FPS;
 
 		bool loaderAccounts_( const String& _iniFile );
-		ResourceManager* m_resourceManager;
-		TextManager* m_textManager;
 
 	private:
 		void _initPredefinedResources();

@@ -11,7 +11,5 @@ struct FactoryGenStruct
 
 #	define OBJECT_DECLARE(C)\
 	public:\
-	static Node * genObjectNew( const FactoryGenStruct &);\
-	static Node * genObjectPlacement( void*, const FactoryGenStruct &);\
-	static Factory<String, Node *, FactoryGenStruct>::PoolManager<C> ms_poolManager;\
+	static void * genObject( void * _data );\
 	private:

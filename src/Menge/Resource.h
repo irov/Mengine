@@ -1,7 +1,5 @@
 #	pragma once
 
-#	include <string>
-
 namespace Menge
 {
 	//! Reference - интерфейс для ресурса.

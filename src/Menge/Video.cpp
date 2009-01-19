@@ -124,7 +124,9 @@ namespace	Menge
 
 		if( m_resourceSoundName.empty() == false )
 		{
-			m_soundEmitter = SceneManager::createNodeT<SoundEmitter>( "SoundEmitter" );
+			m_soundEmitter = Holder<SceneManager>::hostage()
+				->createNodeT<SoundEmitter>( "SoundEmitter" );
+
 			addChildren( m_soundEmitter );
 			m_soundEmitter->setSoundResource( m_resourceSoundName );
 			if( m_soundEmitter->compile() == false )

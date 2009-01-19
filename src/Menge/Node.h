@@ -34,7 +34,7 @@ namespace Menge
 	{
 	public:
 		Node();
-		virtual ~Node(){};
+		virtual ~Node();
 
 	public:
 		virtual bool checkVisibility();

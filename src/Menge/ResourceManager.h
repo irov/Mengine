@@ -2,12 +2,14 @@
 
 #	include "Config/Typedef.h"
 
-#	include <map>
-//#	include <string>
-#	include <list>
-
 #	include "Holder.h"
+
+#	include "Factory.h"
+
 #	include "ScriptClassWrapper.h"
+
+#	include <map>
+#	include <list>
 
 class XmlElement;
 
@@ -29,10 +31,13 @@ namespace Menge
 	public:
 		ResourceManager();
 		~ResourceManager();
+
 	public:
 		void visitResources(ResourceVisitor * _visitor);
 
 	public:
+		void registrationType( const String& _type, Factory::TGenFunc _func );
+
 		void loadResource( const String& _category, const String& _file, const String& _group );
 
 		ResourceReference * createResource( const String& _name, const String& _type );
@@ -86,7 +91,7 @@ namespace Menge
 
 		typedef std::map< PyObject*, PyObject* > TMapResourceManagerListenerScript;
 		TMapResourceManagerListenerScript m_scriptListeners;
-
-
+	
+		Factory m_factory;
 	};
 }

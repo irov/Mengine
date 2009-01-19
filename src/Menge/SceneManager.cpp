@@ -14,31 +14,18 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	void SceneManager::registrationType( const String& _type, Factory::TGenFunc _func )
+	{
+		m_factory.registration( _type, _func );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Node* SceneManager::createNode( const String& _type )
 	{
-		// check for pool
-		/*TNodePool::iterator it_find = m_nodePool.find( _type );
-		if( it_find == m_nodePool.end() ) 		// there is no entry in pool for this type, so create one
-		{
-			m_nodePool.insert( std::make_pair( _type, std::vector<Node*>() );
-		}
-		else
-		{
-			std::vector<Node*> vec = it_find->second;
-			if( vec.empty() == false )
-			{
-				Node* node = vec.back();
-
-				vec.pop_back();
-				return node;
-			}
-		}*/
-
 		// create new Node
 		FactoryGenStruct gs;
 		gs.type = _type;
 
-		Node * node = TFactoryNode::generate( _type, gs );
+		Node * node = m_factory.generate_t<Node>( _type, gs );
 
 		if( node )
 		{
@@ -62,20 +49,6 @@ namespace Menge
 		{
 			return false;
 		}
-		//TiXmlDocument * document = Holder<FileEngine>::hostage()
-		//	->loadXml( _xml );
-
-		//XML_FOR_EACH_DOCUMENT( document )
-		//{
-		//	XML_CHECK_NODE("Node")
-		//	{
-		//		_node->loader(XML_CURRENT_NODE);
-		//	}
-		//}
-		//XML_INVALID_PARSE()
-		//{
-		//	return false;
-		//}
 
 		return true;
 	}
@@ -84,8 +57,9 @@ namespace Menge
 		: public XmlElementListener
 	{
 	public:
-		XmlNodeLoaderListener( Node ** _externalNode )
-			: m_externalNode( _externalNode )
+		XmlNodeLoaderListener( Node ** _externalNode, SceneManager * _manager )
+			: m_externalNode(_externalNode)
+			, m_manager(_manager)
 		{
 		}
 
@@ -104,7 +78,7 @@ namespace Menge
 						XML_CASE_ATTRIBUTE( "Type", type );
 					}
 
-					*m_externalNode = SceneManager::createNode( type );
+					*m_externalNode = m_manager->createNode( type );
 
 					(*m_externalNode)->setName( name );
 
@@ -115,13 +89,14 @@ namespace Menge
 
 	protected:
 		Node ** m_externalNode;	
+		SceneManager * m_manager;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	Node * SceneManager::createNodeFromXml( const String& _xml )
 	{
 		Node * node = 0;
 
-		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node );
+		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node, this );
 
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlFile( _xml, nodeLoader ) == false )
@@ -145,7 +120,7 @@ namespace Menge
 	{
 		Node * node = 0;
 
-		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node );
+		XmlNodeLoaderListener * nodeLoader = new XmlNodeLoaderListener( &node,this );
 
 		if(  Holder<XmlEngine>::hostage()
 			->parseXmlString( _xml_data, nodeLoader ) == false )
@@ -165,6 +140,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SceneManager::releaseNode( Node* _node )
 	{
-		TFactoryNode::release( _node->getType(), _node );
+		delete _node;
 	}
 }

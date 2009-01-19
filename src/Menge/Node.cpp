@@ -37,6 +37,10 @@ namespace Menge
 		, m_invalidateColor( true )
 	{}
 	//////////////////////////////////////////////////////////////////////////
+	Node::~Node()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::destroy()
 	{
 		for( TContainerChildren::iterator
@@ -51,7 +55,8 @@ namespace Menge
 		_destroy();
 
 		//delete this;
-		SceneManager::releaseNode( this );
+		Holder<SceneManager>::hostage()
+			->releaseNode( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_destroy()
@@ -361,7 +366,8 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Type", type );
 				}
 
-				Node * node = SceneManager::createNode( type );
+				Node * node = Holder<SceneManager>::hostage()
+					->createNode( type );
 
 				if(node == 0)
 				{

@@ -23,6 +23,8 @@
 #	include "XmlEngine.h"
 
 #	include "SceneManager.h"
+
+#	include "TextManager.h"
 #	include "TextField.h"
 
 #	include "Camera2D.h"
@@ -389,6 +391,10 @@ namespace Menge
 	{
 		//String loc = setlocale( LC_CTYPE, NULL ); // default (OS) locale
 
+		Holder<SceneManager>::keep( new SceneManager() );
+		Holder<ResourceManager>::keep( new ResourceManager() );
+		Holder<TextManager>::keep( new TextManager() );
+
 		parseArguments( _args );
 
 		MENGE_LOG( "Inititalizing File System..." );
@@ -548,6 +554,10 @@ namespace Menge
 		releaseInterfaceSystem( m_fileSystem );
 		releaseInterfaceSystem( m_logSystem );
 //		releaseInterfaceSystem( m_profilerSystem );
+
+		Holder<TextManager>::destroy();
+		Holder<ResourceManager>::destroy();
+		Holder<SceneManager>::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( unsigned int _key, unsigned int _char, bool _isDown )

@@ -43,8 +43,6 @@ namespace Menge
 		, m_currentAccount( 0 )
 		, m_loadingAccounts( false )
 		, m_FPS( 0.0f )
-		, m_resourceManager( NULL )
-		, m_textManager( NULL )
 		, m_hasWindowPanel( true )
 	{
 		m_player = new Player();
@@ -96,27 +94,10 @@ namespace Menge
 		Holder<Player>::destroy();
 		//Holder<MousePickerSystem>::destroy();
 		Holder<LightSystem>::destroy();
-
-		Holder<ResourceManager>::empty();
-		if( m_resourceManager != NULL )
-		{
-			delete m_resourceManager;
-			m_resourceManager = NULL;
-		}
-
-		Holder<TextManager>::empty();
-		if( m_textManager != NULL )
-		{
-			delete m_textManager;
-			m_textManager = NULL;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loader( const String& _iniFile )
 	{
-		m_textManager = new TextManager();
-		Holder<TextManager>::keep( m_textManager );
-
 		ConfigFile config;
 		if( config.load( _iniFile ) == false )
 		{
@@ -421,14 +402,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::init()
 	{
-		m_resourceManager = new ResourceManager();
-
-		if( m_resourceManager == NULL )
-		{
-			return false;
-		}
-		Holder<ResourceManager>::keep( m_resourceManager );
-
 		_initPredefinedResources();
 
 		Holder<LightSystem>::keep( new LightSystem );
@@ -444,7 +417,8 @@ namespace Menge
 			path += it->first;
 			path += ".resource";
 
-			m_resourceManager->loadResource( it->second.first, path, it->first );
+			Holder<ResourceManager>::hostage()
+				->loadResource( it->second.first, path, it->first );
 		}
 
 		for( TMapDeclaration::iterator
@@ -638,17 +612,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	String Game::getTitle() const
 	{
-		if( m_textManager != NULL )
+		TextManager * textMgr = Holder<TextManager>::hostage();
+
+		if( textMgr == 0 )
 		{
-			String title = m_textManager->getTextEntry( m_title ).text;
-			if( title.empty() == true )
-			{
-				String locTitle = m_title + " [Localize me, please!!!!!!]";
-				return locTitle;
-			}
-			return title;
+			return m_title;
 		}
-		return m_title;
+
+		String title = textMgr->getTextEntry( m_title ).text;
+
+		if( title.empty() == true )
+		{
+			String locTitle = m_title + " [Localize me, please!!!!!!]";
+			return locTitle;
+		}
+
+		return title;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::isContentResolutionFixed() const
@@ -950,7 +929,8 @@ namespace Menge
 		for( TListDeclaration::iterator it = m_pathText.begin(),
 			it_end = m_pathText.end(); it != it_end; it++ )
 		{
-			m_textManager->loadResourceFile( it->first + it->second );
+			Holder<TextManager>::hostage()
+				->loadResourceFile( it->first + it->second );
 		}
 
 	}
@@ -971,12 +951,14 @@ namespace Menge
 		image->setSize( mt::vec2f( 1.0f, 1.0f ) );
 		image->incrementReference();
 
-		m_resourceManager->registerResource( image );
+		Holder<ResourceManager>::hostage()
+			->registerResource( image );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::_removePredefinedResources()
 	{
-		m_resourceManager->directResourceRelease("WhitePixel");
+		Holder<ResourceManager>::hostage()
+			->directResourceRelease("WhitePixel");
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::getHasWindowPanel() const

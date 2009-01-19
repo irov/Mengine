@@ -205,7 +205,8 @@ namespace Menge
 
 			const TChar * xml_data = pybind::convert::to_string( _params );
 
-			Node * node = SceneManager::createNodeFromXmlData( xml_data );
+			Node * node = Holder<SceneManager>::hostage()
+				->createNodeFromXmlData( xml_data );
 
 			if( node == 0 )
 			{
@@ -318,7 +319,8 @@ namespace Menge
 
 			//image->writeToFile( "bl.bmp" );
 
-			Sprite * nodeSprite = SceneManager::createNodeT<Sprite>( "Sprite" );
+			Sprite * nodeSprite = Holder<SceneManager>::hostage()
+				->createNodeT<Sprite>( "Sprite" );
 
 			nodeSprite->setImageResource( _name );
 

@@ -121,7 +121,8 @@ namespace Menge
 		arrow->setWindow( _contentResolution );
 
 
-		Camera2D * camera = SceneManager::createNodeT<Camera2D>( "Camera2D" );
+		Camera2D * camera = Holder<SceneManager>::hostage()
+			->createNodeT<Camera2D>( "Camera2D" );
 
 		if( camera == 0 )
 		{

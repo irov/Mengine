@@ -38,6 +38,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::registrationType( const String& _type, Factory::TGenFunc _func )
+	{
+		m_factory.registration( _type, _func );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::loadResource( const String& _category, const String& _file, const String& _group )
 	{
 		m_currentCategory = _category;
@@ -76,11 +81,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Type", type );
 				}
 
-				printf("Name = %s, Type = %s\n", name.c_str() ,type.c_str() );
-
 				ResourceReference * resource = createResource( name, type );
-
-				printf("Create - %p\n", resource );
 
 				if( resource == 0 )
 				{
@@ -105,7 +106,7 @@ namespace Menge
 		param.name = _name;
 		param.category = m_currentCategory;
 		param.group = m_currentGroup;
-		return TFactoryResource::generate( _type, param );
+		return m_factory.generate_t<ResourceReference>( _type, param );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::registerResource( ResourceReference * _resource )

@@ -76,7 +76,11 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Type", type );
 				}
 
+				printf("Name = %s, Type = %s\n", name.c_str() ,type.c_str() );
+
 				ResourceReference * resource = createResource( name, type );
+
+				printf("Create - %p\n", resource );
 
 				if( resource == 0 )
 				{

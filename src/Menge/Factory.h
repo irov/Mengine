@@ -120,7 +120,13 @@ namespace Menge
 
 		//static void registration(const TKey &_key, TGenFunc _func)
 		static void registration( const TKey &_key, PoolBase* _pool )
-		{			
+		{		
+			
+
+			TMapGenerator & mg = mapGenerator();
+
+			printf("registration %s %p\n", _key.c_str(), &mg );
+
 			typename TMapGenerator::iterator it_find = mapGenerator().find(_key);
 
 			if( it_find == mapGenerator().end() )
@@ -132,13 +138,23 @@ namespace Menge
 
 		static TBase generate( const TKey & _name, const TGenStruct & _struct  )
 		{
-			typename TMapGenerator::const_iterator it_find = mapGenerator().find(_name);
+			printf("generate find %s\n", _name.c_str() );
+
+			TMapGenerator & mg = mapGenerator();
+
+			printf("mg true %p\n", &mg );
 			
-			if( it_find != mapGenerator().end())
+			typename TMapGenerator::const_iterator it_find = mg.find(_name);
+
+			printf("mg found\n" );
+
+			if( it_find != mg.end())
 			{
 				//return it_find->second( _struct );
+				printf("Generate %p\n", it_find->second );
 				return it_find->second->generate( _struct );
 			}
+			printf("T_POLICE_DEFAULT\n" );
 			return T_POLICE_DEFAULT<TBase>::Police();
 		}
 

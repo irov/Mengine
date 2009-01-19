@@ -56,7 +56,6 @@ namespace Menge
 			parser = XmlParser::newParser();
 			new_parser = true;
 		}
-
 		void * buffer = XmlParser::makeBuffer( parser, size );
 		_file->read( buffer, size );
 		_file->seek( 0 );

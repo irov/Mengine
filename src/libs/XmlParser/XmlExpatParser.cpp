@@ -66,11 +66,10 @@ bool XmlExpatParser::parseXML( std::size_t _size, XmlElementListener * _listener
 {
 	XML_SetUserData( m_parser, this );
 	XML_SetElementHandler( m_parser, cbBeginElement, cbEndElement );
-
 	pushListener( _listener );
 
 	bool done = true;
-
+	printf( "m_parser = %p, size = %d\n", m_parser, _size );
 	XML_Status status = XML_ParseBuffer( m_parser, _size, XML_TRUE );
 
 	if( status == XML_STATUS_ERROR )

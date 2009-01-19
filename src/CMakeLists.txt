@@ -28,6 +28,9 @@ SET( THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies )
 
 # implementation
 
+SET( MENGE_DEBUG )
+string(COMPARE EQUAL CMAKE_BUILD_TYPE Debug MENGE_DEBUG)
+
 if (NOT MSVC)
 	ADD_DEFINITIONS(-D"override = /* */")
 endif(NOT MSVC)

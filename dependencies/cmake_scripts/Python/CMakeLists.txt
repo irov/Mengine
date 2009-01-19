@@ -112,6 +112,8 @@ file(MAKE_DIRECTORY ${Python_BINARY_DIR}/Modules)
 #else(WIN32)
 #  configure_file(pyconfig.h.cmake ${Python_BINARY_DIR}/pyconfig.h @ONLY)
 #endif(WIN32)
+#configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
+
 configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
 file(WRITE ${Python_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
 
@@ -221,7 +223,11 @@ set_source_files_properties(${TRUE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLA
 include_directories(${TRUE_DIR}/Include ${Python_SOURCE_DIR})
 if(WIN32)
   include_directories(${TRUE_DIR}/PC ${TRUE_DIR}/Python)
-  add_definitions(-DWIN32 -D_WINDOWS -D_MSC_VER=1400)
+  if(MSVC)
+	  add_definitions(-DWIN32 -D_WINDOWS -D_MSC_VER=1400)
+  else(MSVC)
+	  add_definitions(-D_WINDOWS)
+  endif(MSVC)
 endif(WIN32)
 
 add_definitions(-DPy_BUILD_CORE)

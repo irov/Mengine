@@ -39,5 +39,7 @@ if(NOT MSVC)
 	ADD_DEFINITIONS(-D'override = /* */')
 endif(NOT MSVC)
 
+add_definitions(-DPy_BUILD_CORE)
+
 include_directories(${pybind_SOURCE_DIR}/include)
 add_library( ${pybind_LIB_NAME} STATIC ${libpybind_sources} )

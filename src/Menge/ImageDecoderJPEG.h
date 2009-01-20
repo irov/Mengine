@@ -10,6 +10,8 @@
 
 #	include "Interface/ImageCodecInterface.h"
 
+#	include "DecoderDeclare.h"
+
 struct jpeg_decompress_struct;
 
 namespace Menge
@@ -19,7 +21,7 @@ namespace Menge
 	class ImageDecoderJPEG
 		: public ImageDecoderInterface
 	{
-		MENGE_DECLARE_DECODER( ImageDecoderJPEG );
+		DECODER_DECLARE( ImageDecoderJPEG );
 	public:
 		ImageDecoderJPEG( DataStreamInterface* _stream, const String& _type );
 		~ImageDecoderJPEG();

@@ -142,7 +142,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::saveImage( RenderImageInterface* _image, const String& _filename )
 	{
-		ImageEncoderInterface* imageEncoder = EncoderManager::createEncoderT<ImageEncoderInterface>( _filename, "Image" );
+		ImageEncoderInterface * imageEncoder = Holder<EncoderManager>::hostage()
+			->createEncoderT<ImageEncoderInterface>( _filename, "Image" );
 
 		if( imageEncoder == 0 )
 		{
@@ -185,7 +186,8 @@ namespace Menge
 
 		_image->unlock();
 		
-		EncoderManager::releaseEncoder( imageEncoder );
+		Holder<EncoderManager>::hostage()
+			->releaseEncoder( imageEncoder );
 
 		if( bytesWritten == 0 )
 		{
@@ -203,7 +205,8 @@ namespace Menge
 		if( image == NULL )
 		{
 
-			ImageDecoderInterface* imageDecoder = DecoderManager::createDecoderT<ImageDecoderInterface>( _filename, "Image" );
+			ImageDecoderInterface* imageDecoder = Holder<DecoderManager>::hostage()
+				->createDecoderT<ImageDecoderInterface>( _filename, "Image" );
 
 			if( imageDecoder == 0 )
 			{
@@ -218,7 +221,10 @@ namespace Menge
 			{
 				MENGE_LOG_ERROR( "Error: Invalid image format \"%s\"",
 					_filename.c_str() );
-				DecoderManager::releaseDecoder( imageDecoder );
+				
+				Holder<DecoderManager>::hostage()
+					->releaseDecoder( imageDecoder );
+
 				return NULL;
 			}
 
@@ -229,7 +235,10 @@ namespace Menge
 			if( image == NULL )
 			{
 				MENGE_LOG_ERROR( "Error: RenderSystem couldn't create image" );
-				DecoderManager::releaseDecoder( imageDecoder );
+				
+				Holder<DecoderManager>::hostage()
+					->releaseDecoder( imageDecoder );
+
 				return NULL;
 			}
 
@@ -252,7 +261,9 @@ namespace Menge
 			{
 				assert( 0 );
 			}*/
-			DecoderManager::releaseDecoder( imageDecoder );
+			
+			Holder<DecoderManager>::hostage()
+				->releaseDecoder( imageDecoder );
 
 			// copy pixels on the edge for better image quality
 			/*if( data->width > image_width )

@@ -12,7 +12,8 @@ namespace Menge
 		typedef void * (*TGenFunc)( void * );
 
 	public:
-		void registration( const String &_key, TGenFunc _func );
+		void unregistration( const String & _key );
+		void registration( const String & _key, TGenFunc _func );
 		void * generate( const String & _name, void * _data  );
 
 		template<class T, class A>

@@ -7,6 +7,8 @@
  */
 
 #	include "ImageDecoderJPEG.h"
+#	include "DecoderImplement.h"
+
 
 extern "C" 
 {
@@ -236,7 +238,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
-	MENGE_IMPLEMENT_DECODER( ImageDecoderJPEG );
+	DECODER_IMPLEMENT( ImageDecoderJPEG );
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderJPEG::ImageDecoderJPEG( DataStreamInterface* _stream, const String& _type )
 		: m_stream( _stream )

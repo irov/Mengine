@@ -12,12 +12,14 @@
 #	include "ogg/ogg.h"
 #	include "theora/theora.h"
 
+#	include "DecoderDeclare.h"
+
 namespace Menge
 {
 	class VideoDecoderOGGTheora
 		: public VideoDecoderInterface
 	{
-		MENGE_DECLARE_DECODER( VideoDecoderOGGTheora );
+		DECODER_DECLARE( VideoDecoderOGGTheora );
 
 	public:
 		VideoDecoderOGGTheora( DataStreamInterface* _stream, const String& _type );

@@ -517,6 +517,10 @@ namespace Menge
 
 		//strcpy( 0, "asdf" );
 		MENGE_LOG( "Inititalizing Codecs..." );
+
+		Holder<DecoderManager>::keep( new DecoderManager() );
+		Holder<EncoderManager>::keep( new EncoderManager() );
+
 		// Decoders
 		MENGE_REGISTER_DECODER( "Image", ImageDecoderPNG, "png" );
 		MENGE_REGISTER_DECODER( "Image", ImageDecoderJPEG, "jpeg" );
@@ -554,6 +558,9 @@ namespace Menge
 		releaseInterfaceSystem( m_fileSystem );
 		releaseInterfaceSystem( m_logSystem );
 //		releaseInterfaceSystem( m_profilerSystem );
+
+		Holder<DecoderManager>::destroy();
+		Holder<EncoderManager>::destroy();
 
 		Holder<TextManager>::destroy();
 		Holder<ResourceManager>::destroy();
@@ -827,11 +834,6 @@ namespace Menge
 		Holder<XmlEngine>::destroy();
 		Holder<LogEngine>::destroy();
 		Holder<ScriptEngine>::destroy();
-
-		DecoderManager::cleanup();
-		DecoderManager::cleanup();
-		DecoderManager::cleanup();
-		EncoderManager::cleanup();
 
 		finalize();
 	}

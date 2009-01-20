@@ -10,6 +10,8 @@
 #	include "LogEngine.h"
 #	include "Interface/FileSystemInterface.h"
 
+#	include "DecoderImplement.h"
+
 #	define PNG_BYTES_TO_CHECK 8
 
 namespace Menge
@@ -32,7 +34,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
-	MENGE_IMPLEMENT_DECODER( ImageDecoderPNG );
+	DECODER_IMPLEMENT( ImageDecoderPNG );
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::ImageDecoderPNG( DataStreamInterface* _stream, const String& _type )
 		: m_stream( _stream )

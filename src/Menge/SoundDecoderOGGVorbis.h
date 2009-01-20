@@ -9,6 +9,7 @@
 #	pragma once
 
 #	include "Interface/SoundCodecInterface.h"
+#	include "DecoderDeclare.h"
 
 struct OggVorbis_File;
 
@@ -17,7 +18,8 @@ namespace Menge
 	class SoundDecoderOGGVorbis
 		: public SoundDecoderInterface
 	{
-		MENGE_DECLARE_DECODER( SoundDecoderOGGVorbis );
+		DECODER_DECLARE( SoundDecoderOGGVorbis );
+
 	public:
 		SoundDecoderOGGVorbis( DataStreamInterface* _stream, const String& _type );
 		~SoundDecoderOGGVorbis();

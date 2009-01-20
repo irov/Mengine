@@ -10,6 +10,9 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "LogEngine.h"
 
+#	include "DecoderImplement.h"
+
+
 #	define OGG_BUFFER_SIZE 8192
 
 //Defines
@@ -34,7 +37,7 @@ namespace Menge
 	signed int VideoDecoderOGGTheora::ms_RVTable[ 256 ];
 
 	//////////////////////////////////////////////////////////////////////////
-	MENGE_IMPLEMENT_DECODER( VideoDecoderOGGTheora );
+	DECODER_IMPLEMENT( VideoDecoderOGGTheora );
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderOGGTheora::VideoDecoderOGGTheora( DataStreamInterface* _stream, const String& _type )
 		: m_type( _type )

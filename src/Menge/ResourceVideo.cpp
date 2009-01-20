@@ -43,7 +43,10 @@ namespace Menge
 		}
 
 		String fullpath = m_params.category + m_filepath;
-		m_videoDecoder = DecoderManager::createDecoderT<VideoDecoderInterface>( fullpath, "Video" );
+		
+		m_videoDecoder = Holder<DecoderManager>::hostage()
+			->createDecoderT<VideoDecoderInterface>( fullpath, "Video" );
+
 		if( m_videoDecoder == 0 )
 		{
 			MENGE_LOG_ERROR( "ResourceVideo: can't create video decoder for file \"%s\""
@@ -63,7 +66,9 @@ namespace Menge
 	{
 		if( m_videoDecoder != NULL )
 		{
-			DecoderManager::releaseDecoder( m_videoDecoder );
+			Holder<DecoderManager>::hostage()
+				->releaseDecoder( m_videoDecoder );
+
 			m_videoDecoder = NULL;
 		}
 	}

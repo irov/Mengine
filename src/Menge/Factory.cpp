@@ -3,7 +3,12 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	void Factory::registration( const String &_key, TGenFunc _func )
+	void Factory::unregistration( const String & _key )
+	{
+		m_generator.erase( _key );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Factory::registration( const String & _key, TGenFunc _func )
 	{		
 		TMapGenerator::const_iterator it_find = m_generator.find( _key );
 

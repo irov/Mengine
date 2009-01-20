@@ -11,12 +11,15 @@
 #	include "Interface/ImageCodecInterface.h"
 #	include "libPNG/png.h"
 
+#	include "EncoderDeclare.h"
+
 namespace Menge
 {
 	class ImageEncoderPNG
 		: public ImageEncoderInterface
 	{
-		MENGE_DECLARE_ENCODER( ImageEncoderPNG );
+		ENCODER_DECLARE( ImageEncoderPNG );
+
 	public:
 		ImageEncoderPNG( OutStreamInterface* _stream, const String& _type );
 		~ImageEncoderPNG();

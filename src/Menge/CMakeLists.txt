@@ -138,6 +138,7 @@ Game
 ADD_FILTER(
 Kernel
 	Factory.h
+	Factory.cpp
 	Holder.h
 	MengeExport.h
 	ObjectDeclare.h

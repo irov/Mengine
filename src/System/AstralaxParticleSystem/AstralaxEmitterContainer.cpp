@@ -4,6 +4,7 @@
 AstralaxEmitterContainer::AstralaxEmitterContainer( HM_FILE _hFile )
 : m_hfile( _hFile )
 {
+	printf( "AstralaxEmitterContainer ctor\n" );
 };
 //////////////////////////////////////////////////////////////////////////
 AstralaxEmitterContainer::~AstralaxEmitterContainer()
@@ -28,14 +29,14 @@ HM_EMITTER AstralaxEmitterContainer::getEmitter( const Menge::String & _name ) c
 
 	if( it == m_emittersIds.end() )
 	{
-		return NULL;
+		return 0;
 	}
 
 	HM_EMITTER id = it->second;
 
 	if( id == 0 )
 	{
-		return NULL;
+		return 0;
 	}
 
 	return id;

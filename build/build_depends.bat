@@ -53,20 +53,13 @@ rem --- OpenAL ---
 
 cd ..\..\OpenAL
 mkdir %build_dir%
+copy /Y ..\cmake_scripts\OpenAL\win_patch\al.h Include\AL\al.h
+copy /Y ..\cmake_scripts\OpenAL\win_patch\alc.h Include\AL\alc.h
+copy /Y ..\cmake_scripts\OpenAL\win_patch\ALc.c OpenAL-Windows\Alc\ALc.c
 cd %build_dir%
 "..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/OpenAL
 
 %compiler%
-
-rem --- pybind ---
-
-cd ..\..\pybind
-mkdir %build_dir%
-cd %build_dir%
-"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/pybind
-
-%compiler%
-
 
 rem --- libtheora ---
 cd ..\..\theora
@@ -100,10 +93,20 @@ cd %build_dir%
 
 %compiler%
 
+rem --- pybind ---
+
+cd ..\..\pybind
+mkdir %build_dir%
+cd %build_dir%
+"..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/pybind
+
+%compiler%
+
 rem --- libjpeg ---
 cd ..\..\libjpeg
 @if "%1"=="build_msvc8" copy ..\cmake_scripts\libjpeg\jconfig.h.msvc8 jconfig.h
 @if "%1"=="build_mingw" copy ..\cmake_scripts\libjpeg\jconfig.h.mingw jconfig.h
+copy /Y ..\cmake_scripts\libjpeg\jmorecfg.h jmorecfg.h
 mkdir %build_dir%
 cd %build_dir%
 "..\..\cmake\bin\cmake.exe" %cmake_params% ../../cmake_scripts/libjpeg

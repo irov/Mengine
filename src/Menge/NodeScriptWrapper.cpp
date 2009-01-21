@@ -626,6 +626,7 @@ namespace Menge
 			.def( "getLocalDirection", &Allocator2D::getLocalDirection )
 			.def( "getOrigin", &Allocator2D::getOrigin )
 			.def( "getScale", &Allocator2D::getScale )
+			.def( "getAngle", &Allocator2D::getAngle )
 
 			//.def( "getWorldPosition", &Allocator2D::getWorldPosition )
 			.def( "getWorldDirection", &Allocator2D::getWorldDirection )
@@ -710,6 +711,8 @@ namespace Menge
 			.def( "moveToStopCb", &Node::moveToStopCb )
 			.def( "localColorToCb", &Node::localColorToCb )
 			.def( "localColorToStopCb", &Node::localColorToStopCb )
+
+			.def( "angleToCb", &Node::angleToCb )
 			;
 
 

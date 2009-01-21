@@ -41,14 +41,11 @@ Menge::EmitterContainerInterface * AstralaxParticleSystem::createEmitterContaine
 	AstralaxEmitterContainer * container = NULL;
 
 	bool init = false;
-	printf( "1\n" );
 	if ( Magic_OpenFileInMemory( static_cast<char*>(_buffer), &file ) == MAGIC_SUCCESS )
 	{
-		printf( "2\n" );
 		MAGIC_FIND_DATA find;
 
 		const char * name = Magic_FindFirst( file, &find, MAGIC_FOLDER | MAGIC_EMITTER );
-		printf( "3\n" );
 		while ( name )
 		{
 			if ( find.type & MAGIC_EMITTER )
@@ -57,24 +54,18 @@ Menge::EmitterContainerInterface * AstralaxParticleSystem::createEmitterContaine
 				{
 					if( init == false )
 					{
-						printf( "4.2 HM_FILE = %d\n", file );
 						container = new AstralaxEmitterContainer( file );
-						printf( "4.5\n" );
 						init = true;
 					}
-					printf( "id = %d\n", id );
 					Magic_SetEmitterPositionMode( id, false );
-					printf( "5\n" );
 					container->addEmitterId( name, id );
 				}
 			}
 
 			name = Magic_FindNext( file, &find );
-			printf( "6\n" );
 		}
 
 		Magic_DetachFile( file );
-		printf( "7\n" );
 	}
 
 	return container;
@@ -82,7 +73,7 @@ Menge::EmitterContainerInterface * AstralaxParticleSystem::createEmitterContaine
 //////////////////////////////////////////////////////////////////////////
 Menge::EmitterInterface * AstralaxParticleSystem::createEmitterFromContainer( const Menge::String & _name, const Menge::EmitterContainerInterface * _container )
 {
-	const AstralaxEmitterContainer * container = 
+	const AstralaxEmitterContainer * container =
 		static_cast<const AstralaxEmitterContainer*>( _container );
 
 	HM_EMITTER id = container->getEmitter( _name );
@@ -115,7 +106,7 @@ void AstralaxParticleSystem::lockEmitter( Menge::EmitterInterface * _emitter, in
 
 	int texCount = Magic_GetTextureCount();
 
-	if( texCount > MAX_TEXTURES ) 
+	if( texCount > MAX_TEXTURES )
 	{
 		texCount = MAX_TEXTURES;
 	}
@@ -139,7 +130,7 @@ Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
 
 	int texture_frame = Magic_GetTextureFrame();
 
-	MAGIC_TEXTURE * magic_texture = & (m_texture[texture_frame]);	
+	MAGIC_TEXTURE * magic_texture = & (m_texture[texture_frame]);
 
 	MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture, 0, 0 );
 
@@ -173,7 +164,7 @@ Menge::String AstralaxParticleSystem::getTextureName() const
 	return m_texture[0].file;
 }
 //////////////////////////////////////////////////////////////////////////
-void AstralaxParticleSystem::unlockEmitter( Menge::EmitterInterface * _emitter ) 
+void AstralaxParticleSystem::unlockEmitter( Menge::EmitterInterface * _emitter )
 {
 	Magic_UnlockParticlesType();
 }

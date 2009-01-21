@@ -35,6 +35,7 @@ namespace Menge
 		, m_colorLocal( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_colorWorld( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_invalidateColor( true )
+		, m_angleToCb( NULL )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Node::~Node()
@@ -422,6 +423,19 @@ namespace Menge
 			if( m_colorLocalTo.isStarted() == false )
 			{
 				this->callEvent( EVENT_COLOR_END, "(O)", this->getEmbedding() );
+			}
+		}
+		if( m_angleToCb != NULL )
+		{
+			float angle;
+			bool end = m_angleTo.update( _timing, &angle );
+			setRotate( angle );
+			if( end == true )
+			{
+				PyObject* callback = m_angleToCb;
+				m_angleToCb = NULL;
+				pybind::call( callback, "(Ob)", getEmbedding(), true );
+				pybind::decref( callback );
 			}
 		}
 	}
@@ -934,6 +948,13 @@ namespace Menge
 		m_colorLocalTo.stop();
 		callEvent( EVENT_COLOR_STOP, "(O)", this->getEmbedding() );
 		pybind::call( _cb, "(O)", this->getEmbedding() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::angleToCb( float _time, float _angle, PyObject* _cb )
+	{
+		m_angleToCb = _cb;
+		pybind::incref( m_angleToCb );
+		m_angleTo.start( getAngle(), _angle, _time, ::fabsf );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

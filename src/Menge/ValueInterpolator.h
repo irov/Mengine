@@ -40,6 +40,10 @@ namespace Menge
 
 		bool update( float _timing, T * _out )
 		{
+			if( m_started == false )
+			{
+				return true;
+			}
 			if( ( m_timing + _timing ) > m_time )
 			{
 				m_time = 0.0f;

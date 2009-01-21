@@ -20,6 +20,7 @@ namespace	Menge
 		, m_invalidateViewport( true )
 		, m_parallax( 1.0f, 1.0f )
 		, m_offset( 0.0f, 0.0f )
+		, m_boundsEnabled( false )
 	{
 		mt::ident_m4( m_viewMatrix );
 	}
@@ -63,21 +64,24 @@ namespace	Menge
 				pos += dir * way;
 			}
 
-			if( pos.x < m_boundLeftUpper.x )
+			if( m_boundsEnabled == true )
 			{
-				pos.x = m_boundLeftUpper.x;
-			}
-			else if( pos.x > m_boundRightLower.x )
-			{
-				pos.x = m_boundRightLower.x;
-			}
-			if( pos.y < m_boundLeftUpper.y )
-			{
-				pos.y = m_boundLeftUpper.y;
-			}
-			else if( pos.y > m_boundRightLower.y )
-			{
-				pos.y = m_boundRightLower.y;
+				if( pos.x < m_boundLeftUpper.x )
+				{
+					pos.x = m_boundLeftUpper.x;
+				}
+				else if( pos.x > m_boundRightLower.x )
+				{
+					pos.x = m_boundRightLower.x;
+				}
+				if( pos.y < m_boundLeftUpper.y )
+				{
+					pos.y = m_boundLeftUpper.y;
+				}
+				else if( pos.y > m_boundRightLower.y )
+				{
+					pos.y = m_boundRightLower.y;
+				}
 			}
 
 			pos.x = ::floorf( pos.x + 0.5f );
@@ -148,6 +152,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::setBounds( const mt::vec2f& _leftUpper, const mt::vec2f& _rightLower )
 	{
+		m_boundsEnabled = true;
 		m_boundLeftUpper = _leftUpper + m_viewportSize * 0.5f;
 		m_boundRightLower = _rightLower - m_viewportSize * 0.5f;
 	}

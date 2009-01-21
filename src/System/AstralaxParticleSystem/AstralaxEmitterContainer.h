@@ -6,7 +6,7 @@
 
 #	include <map>
 
-class AstralaxEmitterContainer 
+class AstralaxEmitterContainer
 	: public Menge::EmitterContainerInterface
 {
 public:
@@ -16,9 +16,9 @@ public:
 public:
 	void addEmitterId( const Menge::String & _name,  HM_EMITTER _id );
 	HM_EMITTER getEmitter( const Menge::String & _name )  const;
-	
+
 private:
 	typedef std::map<Menge::String, HM_EMITTER> TMapEmitters;
-	TMapEmitters m_emittersIds;
 	HM_FILE m_hfile;
+	TMapEmitters m_emittersIds;
 };

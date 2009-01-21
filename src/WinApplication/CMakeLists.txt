@@ -5,12 +5,12 @@ LoggerConsole
 	LoggerConsole.h
 )
 
-ADD_FILTER(
-Resources
-	menge.ico
-	resource.h
-	WinApplication.rc
-)
+#ADD_FILTER(
+#Resources
+#	menge.ico
+#	resource.h
+#	WinApplication.rc
+#)
 	
 ADD_FILTER(
 src
@@ -24,6 +24,16 @@ src
 	WinTimer.h
 )
 
+if(MINGW)
+    # resource compilation for mingw
+    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/WinApplication_rc.o
+                       COMMAND C:/MinGW/bin/windres.exe -I${CMAKE_CURRENT_SOURCE_DIR}
+                                           -i${CMAKE_CURRENT_SOURCE_DIR}/WinApplication.rc
+                                           -o ${CMAKE_CURRENT_BINARY_DIR}/WinApplication_rc.o)
+    SET(SRC_FILES ${SRC_FILES} ${CMAKE_CURRENT_BINARY_DIR}/WinApplication_rc.o)
+  else(MINGW)
+    SET(SRC_FILES ${SRC_FILES} WinApplication.rc)
+  endif(MINGW)
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/libs )
 #MESSAGE( CMAKE_ARCHIVE_OUTPUT_DIRECTORY = "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}" )

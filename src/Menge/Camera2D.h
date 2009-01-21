@@ -61,6 +61,7 @@ namespace Menge
 
 		Node* m_target;
 		bool m_targetFollowing;
+		bool m_boundsEnabled;
 		float m_followingForce;
 		mt::vec2f m_boundLeftUpper;
 		mt::vec2f m_boundRightLower;

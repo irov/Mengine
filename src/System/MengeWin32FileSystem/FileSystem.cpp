@@ -330,7 +330,8 @@ namespace Menge
 	OutStreamInterface* FileSystem::openOutStream( const String& _filename, bool _binary )
 	{
 		String filename;
-		if( m_appDataPath.empty() )
+		
+		if( m_appDataPath.empty() || s_isAbsolutePath( _filename ) )
 		{
 			filename = _filename;
 		}

@@ -4,7 +4,7 @@
 AstralaxEmitterContainer::AstralaxEmitterContainer( HM_FILE _hFile )
 : m_hfile( _hFile )
 {
-	printf( "AstralaxEmitterContainer ctor\n" );
+	//printf( "AstralaxEmitterContainer ctor\n" );
 };
 //////////////////////////////////////////////////////////////////////////
 AstralaxEmitterContainer::~AstralaxEmitterContainer()

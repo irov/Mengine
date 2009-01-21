@@ -184,11 +184,15 @@ namespace Menge
 		void moveToStop();
 		void moveToStopCb(PyObject* _cb);
 
+		void angleToCb( float _time, float _angle, PyObject* _cb );
+
 	protected:
 		ValueInterpolator<mt::vec2f> m_moveTo;
 		ColourValue m_colorLocal;
 		ColourValue m_colorWorld;
 		bool m_invalidateColor;
 		ValueInterpolator<ColourValue> m_colorLocalTo;
+		ValueInterpolator<float> m_angleTo;
+		PyObject* m_angleToCb;
 	};
 }

@@ -2,7 +2,6 @@
 ADD_FILTER(
 src
 	graphics.cpp
-	hge.def
 	hge.h
 	hge_impl.h
 	system.cpp

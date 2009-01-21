@@ -247,7 +247,6 @@ public:
 	virtual	void		CALL	Release() = 0;
 
 	virtual bool		CALL	System_Initiate( Menge::LogSystemInterface* _logSystem ) = 0;
-	virtual void		CALL	System_Shutdown() = 0;
 	virtual Menge::TCharA*		CALL	System_GetErrorMessage() = 0;
 	virtual	void		CALL	System_Log(const Menge::TCharA *format, ...) = 0;
 	virtual void		CALL	System_Snapshot(const char *filename=0) = 0;

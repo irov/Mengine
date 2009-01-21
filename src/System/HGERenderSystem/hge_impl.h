@@ -55,7 +55,6 @@ public:
 	virtual	void		CALL	Release();
 
 	virtual bool		CALL	System_Initiate( Menge::LogSystemInterface* _logSystem );
-	virtual void		CALL	System_Shutdown();
 	virtual void		CALL	System_SetStateBool  (hgeBoolState   state, bool        value);
 	virtual void		CALL	System_SetStateHwnd  (hgeHwndState   state, HWND        value);
 	virtual void		CALL	System_SetStateInt   (hgeIntState    state, int         value);

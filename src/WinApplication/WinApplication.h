@@ -37,7 +37,7 @@ namespace Menge
 
 		void createWindow(WindowHandle _handle);
 
-		WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen ) override;
+		WindowHandle createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen, bool _hasPanel );
 		std::size_t getDesktopWidth() const override;
 		std::size_t getDesktopHeight() const override;
 
@@ -68,6 +68,7 @@ namespace Menge
 		float	m_frameTime;
 		LARGE_INTEGER m_timer;
 		HWND	m_hWnd;
+		bool	m_hasWindowPanel;
 		bool	m_cursorInArea;
 		WINDOWINFO m_wndInfo;
 		HANDLE m_mutex;	// for multiple instance tracking

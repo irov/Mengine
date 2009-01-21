@@ -125,6 +125,7 @@ namespace Menge
 		, m_focus( true )
 		, m_name( "Mengine" )
 		, m_hWnd(0)
+		, m_hasWindowPanel( true )
 		, m_cursorInArea( false )
 		, m_fullscreen( false )
 		, m_handleMouse( true )
@@ -289,7 +290,8 @@ namespace Menge
 		LOG( "Creating Render Window..." );
 		bool fullscreen = m_menge->getFullscreenMode();
 		const Menge::Resolution& winRes = m_menge->getResolution();
-		WindowHandle wh = createWindow( title, winRes[0], winRes[1], fullscreen );
+		m_hasWindowPanel = m_menge->getHasWindowPanel();
+		WindowHandle wh = createWindow( title, winRes[0], winRes[1], fullscreen, m_hasWindowPanel );
 
 		if( m_menge->createRenderWindow( wh ) == false )
 		{
@@ -403,7 +405,7 @@ namespace Menge
 		//return static_cast<WINDOW_HANDLE>( m_hWnd ); 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	WindowHandle WinApplication::createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen )
+	WindowHandle WinApplication::createWindow( const Menge::String & _name, std::size_t _width, std::size_t _height, bool _fullscreen, bool _hasPanel )
 	{
 		DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
 		RECT rc;
@@ -413,7 +415,11 @@ namespace Menge
 
 		if (!_fullscreen)
 		{
-			dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
+			dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION ;//|	WS_SYSMENU | WS_MINIMIZEBOX;
+			if( _hasPanel == true )
+			{
+				dwStyle |= WS_SYSMENU | WS_MINIMIZEBOX;
+			}
 		}
 		else
 		{
@@ -607,7 +613,11 @@ namespace Menge
 		DWORD dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
 		if( !_fullscreen )
 		{
-			dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION |	WS_SYSMENU | WS_MINIMIZEBOX;
+			dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION;// |	WS_SYSMENU | WS_MINIMIZEBOX;
+			if( m_hasWindowPanel )
+			{
+				dwStyle |= WS_SYSMENU | WS_MINIMIZEBOX;
+			}
 
 			// When switching back to windowed mode, need to reset window size 
 			// after device has been restored

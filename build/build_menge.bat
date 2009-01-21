@@ -7,6 +7,7 @@
 @set configuration=%4
 
 cd ..\
+del /q bin\WinApplication.exe
 mkdir %build_dir%
 cd %build_dir%
 "..\dependencies\cmake\bin\cmake.exe" -G"%generator_name%" -DMENGINE_LIB_DIR:STRING="%build_dir%" -DCMAKE_BUILD_TYPE:STRING=%configuration% ../src

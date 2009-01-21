@@ -10,6 +10,8 @@ AstralaxEmitter::AstralaxEmitter( HM_EMITTER _id )
 	, m_looped( false )
 	, m_listener( NULL )
 	, m_angle( 0.0f )
+	//, m_posX( 0.0f )
+	//, m_posY( 0.0f )
 {
 	HM_EMITTER duplicated_id;
 	Magic_DuplicateEmitter( m_id, &duplicated_id );
@@ -132,7 +134,9 @@ void AstralaxEmitter::setListener( Menge::ParticleEmitterListenerInterface* _lis
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::setPosition(float _x, float _y)
 {
-	Magic_SetEmitterPosition( m_id, int(_x), int(_y) );
+	Magic_SetEmitterPosition( m_id, _x, _y);
+	//m_posX = _x;
+	//m_posY = _y;
 }
 //////////////////////////////////////////////////////////////////////////
 void AstralaxEmitter::restart()

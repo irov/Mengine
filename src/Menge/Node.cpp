@@ -36,6 +36,7 @@ namespace Menge
 		, m_colorWorld( 1.0f, 1.0f, 1.0f, 1.0f )
 		, m_invalidateColor( true )
 		, m_angleToCb( NULL )
+		, m_scaleToCb( NULL )
 	{}
 	//////////////////////////////////////////////////////////////////////////
 	Node::~Node()
@@ -434,6 +435,19 @@ namespace Menge
 			{
 				PyObject* callback = m_angleToCb;
 				m_angleToCb = NULL;
+				pybind::call( callback, "(Ob)", getEmbedding(), true );
+				pybind::decref( callback );
+			}
+		}
+		if( m_scaleToCb != NULL )
+		{
+			mt::vec2f scale;
+			bool end = m_scaleTo.update( _timing, &scale );
+			setScale( scale );
+			if( end == true )
+			{
+				PyObject* callback = m_scaleToCb;
+				m_scaleToCb = NULL;
 				pybind::call( callback, "(Ob)", getEmbedding(), true );
 				pybind::decref( callback );
 			}
@@ -955,6 +969,13 @@ namespace Menge
 		m_angleToCb = _cb;
 		pybind::incref( m_angleToCb );
 		m_angleTo.start( getAngle(), _angle, _time, ::fabsf );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::scaleToCb( float _time, const mt::vec2f& _scale, PyObject* _cb )
+	{
+		m_scaleToCb = _cb;
+		pybind::incref( m_scaleToCb );
+		m_scaleTo.start( getScale(), _scale, _time, mt::length_v2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

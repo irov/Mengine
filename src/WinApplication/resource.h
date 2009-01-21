@@ -3,6 +3,7 @@
 // Used by Game.rc
 //
 #define IDI_MENGE                       100
+#define IDS_PROJECT_NAME                101
 
 // Next default values for new objects
 // 

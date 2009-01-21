@@ -24,8 +24,8 @@ void releaseInterfaceSystem( Menge::ParticleSystemInterface* _ptrParticleSystem 
 }
 //////////////////////////////////////////////////////////////////////////
 AstralaxParticleSystem::AstralaxParticleSystem()
-	: m_currentX(0)
-	, m_currentY(0)
+	: m_currentX(0.0f)
+	, m_currentY(0.0f)
 {}
 //////////////////////////////////////////////////////////////////////////
 AstralaxParticleSystem::~AstralaxParticleSystem()
@@ -130,18 +130,31 @@ Menge::RenderParticle * AstralaxParticleSystem::nextParticle()
 
 	int texture_frame = Magic_GetTextureFrame();
 
+	MAGIC_PARTICLE* parent = particle->owner;
+	if( parent != NULL )
+	{
+		while( parent != NULL )
+		{
+			particle->x += parent->x;
+			particle->y += parent->y;
+
+			parent = parent->owner;
+		}
+		particle->owner = NULL;
+	}
+
 	MAGIC_TEXTURE * magic_texture = & (m_texture[texture_frame]);
+	
+	MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture );
 
-	MAGIC_VERTEX_RECTANGLE * vertex_rectangle = Magic_GetParticleRectangle( particle, magic_texture, 0, 0 );
-
-	rp.x1 = vertex_rectangle->x1;
-	rp.x2 = vertex_rectangle->x2;
-	rp.x3 = vertex_rectangle->x3;
-	rp.x4 = vertex_rectangle->x4;
-	rp.y1 = vertex_rectangle->y1;
-	rp.y2 = vertex_rectangle->y2;
-	rp.y3 = vertex_rectangle->y3;
-	rp.y4 = vertex_rectangle->y4;
+	rp.x1 = vertex_rectangle->x1 + m_currentX;
+	rp.x2 = vertex_rectangle->x2 + m_currentX;
+	rp.x3 = vertex_rectangle->x3 + m_currentX;
+	rp.x4 = vertex_rectangle->x4 + m_currentX;
+	rp.y1 = vertex_rectangle->y1 + m_currentY;
+	rp.y2 = vertex_rectangle->y2 + m_currentY;
+	rp.y3 = vertex_rectangle->y3 + m_currentY;
+	rp.y4 = vertex_rectangle->y4 + m_currentY;
 
 	/*rp.u0 = magic_texture->left;
 	rp.v0 = magic_texture->top;

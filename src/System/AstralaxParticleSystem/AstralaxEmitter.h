@@ -43,6 +43,7 @@ private:
 	bool		m_looped;
 	Menge::ParticleEmitterListenerInterface* m_listener;
 	float		m_angle;
+	//float m_posX, m_posY; 
 
 	float m_factor[20];
 	int m_typesCount;

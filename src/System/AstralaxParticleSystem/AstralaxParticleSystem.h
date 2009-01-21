@@ -27,7 +27,7 @@ public:
 	void unlockEmitter( Menge::EmitterInterface * _emitter );
 private:
 	MAGIC_TEXTURE m_texture[MAX_TEXTURES];
-	int m_currentX;
-	int m_currentY;
+	float m_currentX;
+	float m_currentY;
 
 };

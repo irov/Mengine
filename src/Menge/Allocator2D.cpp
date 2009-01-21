@@ -159,8 +159,8 @@ namespace Menge
 		mt::mat3f mat_scale;
 		mt::ident_m3( mat_scale );
 		//mat_scale.v2.v2 = -m_origin;
-		mat_scale.v2.x = -m_origin.x;
-		mat_scale.v2.y = -m_origin.y;
+		mat_scale.v2.x = -m_origin.x * m_scale.x;
+		mat_scale.v2.y = -m_origin.y * m_scale.y;
 		mat_scale.v0.x = m_scale.x;
 		mat_scale.v1.y = m_scale.y;
 

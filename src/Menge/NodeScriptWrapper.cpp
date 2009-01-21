@@ -713,6 +713,7 @@ namespace Menge
 			.def( "localColorToStopCb", &Node::localColorToStopCb )
 
 			.def( "angleToCb", &Node::angleToCb )
+			.def( "scaleToCb", &Node::scaleToCb )
 			;
 
 

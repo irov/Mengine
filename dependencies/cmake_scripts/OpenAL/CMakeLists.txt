@@ -56,5 +56,7 @@ if(WIN32)
 
 endif(WIN32)
 
+add_definitions( -DAL_STATIC_LIB )
+
 
 add_library( ${OpenAL_LIB_NAME} STATIC ${libopenal_sources} )

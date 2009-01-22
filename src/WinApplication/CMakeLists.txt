@@ -19,7 +19,6 @@ src
 	SystemDLL.h
 	WinApplication.cpp
 	WinApplication.h
-	WinApplication.def
 	WinTimer.cpp
 	WinTimer.h
 )

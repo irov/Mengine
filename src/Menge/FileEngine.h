@@ -44,6 +44,9 @@ namespace Menge
 		bool initAppDataPath( const String& _game );
 		const String& getAppDataPath();
 
+		bool isAbsolutePath( const String& _path );
+		String joinPath( const String& _base, const String& _name );
+
 	protected:
 		FileSystemInterface * m_interface;
 

@@ -9,6 +9,7 @@
 
 #	define _WIN32_WINNT 0x0501
 #	include <shlobj.h>
+#	include <atlstr.h>
 #	include <Config/Platform.h>
 
 #	include <direct.h>
@@ -49,27 +50,6 @@ void releaseInterfaceSystem( Menge::FileSystemInterface *_system )
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_isAbsolutePath( const String& _path )
-	{
-		if ( /*::isalpha( unsigned char( _path[0] ) ) && */_path[1] == ':' )
-		{
-			return true;
-		}
-		return _path[0] == '/' || _path[0] == '\\';
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static String s_concatenatePath( const String& _base, const String& _name )
-	{
-		if ( _base.empty() || s_isAbsolutePath( _name.c_str() ) )
-		{
-			return _name;
-		}
-		else
-		{
-			return _base + '/' + _name;
-		}
-	}
 	//////////////////////////////////////////////////////////////////////////
 	static Menge::StringW s_UTF8ToWChar( const Menge::String& _utf8 )
 	{
@@ -117,6 +97,27 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool FileSystem::isAbsolutePath( const String& _path )
+	{
+		if ( /*::isalpha( unsigned char( _path[0] ) ) && */_path[1] == ':' )
+		{
+			return true;
+		}
+		return _path[0] == '/' || _path[0] == '\\';
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String FileSystem::joinPath( const String& _base, const String& _name )
+	{
+		if ( _base.empty() || isAbsolutePath( _name.c_str() ) )
+		{
+			return _name;
+		}
+		else
+		{
+			return _base + '/' + _name;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void FileSystem::loadPath( const String& _path )
 	{
 		m_initPath = _path;
@@ -146,7 +147,7 @@ namespace Menge
 
 		try
 		{
-			String full_path = s_concatenatePath( m_initPath, _filename );
+			String full_path = joinPath( m_initPath, _filename );
 			//StringW full_path_w = Utils::AToW( full_path );
 			StringW full_path_w = s_UTF8ToWChar( full_path );
 			// Use filesystem to determine size 
@@ -198,7 +199,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileSystem::existFile( const String& _filename )
 	{
-		String full_path = s_concatenatePath( m_initPath, _filename );
+		String full_path = joinPath( m_initPath, _filename );
 		//StringW full_path_w = Utils::AToW( full_path );
 		StringW full_path_w = s_UTF8ToWChar( full_path );
 
@@ -331,7 +332,7 @@ namespace Menge
 	{
 		String filename;
 		
-		if( m_appDataPath.empty() || s_isAbsolutePath( _filename ) )
+		if( m_appDataPath.empty() || isAbsolutePath( _filename ) )
 		{
 			filename = _filename;
 		}

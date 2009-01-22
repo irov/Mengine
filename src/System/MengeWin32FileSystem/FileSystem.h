@@ -33,10 +33,15 @@ namespace Menge
 		bool initAppDataPath( const String& _game ) override;
 		const String& getAppDataPath() override;
 
+		bool isAbsolutePath( const String& _path ) override;
+		String joinPath( const String& _base, const String& _name ) override;
+
 	private:
 		String m_appDataPath;
 		LogSystemInterface* m_logSystem;
 		OutStreamInterface* m_logStream;
 		String m_initPath;
+
+		bool RecursiveCopyFolder(StringW csPath, StringW csNewPath);
 	};
 }

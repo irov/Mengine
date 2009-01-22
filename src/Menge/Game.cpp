@@ -25,6 +25,13 @@
 #	include "TextManager.h"
 #	include "Profiler.h"
 
+#	include "ResourceVisitor.h"
+
+#	include "ResourceReference.h"
+#	include "ResourceImageDefault.h"
+#	include "ResourceImageCell.h"
+#	include "ResourceImageSet.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -44,6 +51,8 @@ namespace Menge
 		, m_loadingAccounts( false )
 		, m_FPS( 0.0f )
 		, m_hasWindowPanel( true )
+		, m_baseDir("")
+		, m_gameFile("")
 	{
 		m_player = new Player();
 		Holder<Player>::keep( m_player );
@@ -98,6 +107,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loader( const String& _iniFile )
 	{
+		m_gameFile = _iniFile;
 		ConfigFile config;
 		if( config.load( _iniFile ) == false )
 		{
@@ -133,7 +143,6 @@ namespace Menge
 		{
 			MENGE_LOG_ERROR( "Invalid resource file \"%s\""
 				, _file.c_str() );
-			//return false;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -160,7 +169,7 @@ namespace Menge
 					XML_CASE_ATTRIBUTE( "Path", path );
 				}
 				
-				m_pathScenes.push_back( std::make_pair( m_currentResourcePath, path ) );
+				m_pathScenes.push_back( m_currentResourcePath + path );
 
 				XML_PARSE_ELEMENT( this, &Game::loaderScenes_ );
 			}
@@ -172,7 +181,7 @@ namespace Menge
 				{
 					XML_CASE_ATTRIBUTE( "Path", path );
 				}
-				m_pathArrows.push_back( std::make_pair( m_currentResourcePath, path ) );
+				m_pathArrows.push_back( m_currentResourcePath + path );
 
 				XML_PARSE_ELEMENT( this, &Game::loaderArrows_ );
 			}
@@ -184,7 +193,7 @@ namespace Menge
 				{
 					XML_CASE_ATTRIBUTE( "Path", path );
 				}
-				m_pathEntities.push_back( std::make_pair( m_currentResourcePath, path ) );
+				m_pathEntities.push_back( m_currentResourcePath + path );
 
 				XML_PARSE_ELEMENT( this, &Game::loaderEntities_ );
 			}
@@ -196,19 +205,9 @@ namespace Menge
 				{
 					XML_CASE_ATTRIBUTE( "Path", path );
 				}
-				m_pathResource.push_back( std::make_pair( m_currentResourcePath, path ) );
+				m_pathResource.push_back( m_currentResourcePath + path );
 
 				XML_PARSE_ELEMENT( this, &Game::loaderResources_ );
-			}
-
-			XML_CASE_NODE( "ResourceLocation" )
-			{
-				String path;
-				XML_FOR_EACH_ATTRIBUTES()
-				{
-					XML_CASE_ATTRIBUTE( "Path", path );
-					m_listResourceLocation.push_back( std::make_pair( m_currentResourcePath, path ) );
-				}
 			}
 
 			XML_CASE_NODE( "Scripts" )
@@ -218,7 +217,7 @@ namespace Menge
 				{
 					XML_CASE_ATTRIBUTE( "Path", path );
 				}
-				m_pathScripts.push_back( std::make_pair( m_currentResourcePath, path ) );
+				m_pathScripts.push_back( m_currentResourcePath + path );
 			}
 
 			XML_CASE_NODE( "Text" )
@@ -228,7 +227,7 @@ namespace Menge
 				{
 					XML_CASE_ATTRIBUTE( "Path", path );
 				}
-				m_pathText.push_back( std::make_pair( m_currentResourcePath, path ) );
+				m_pathText.push_back( m_currentResourcePath + path );
 			}
 		}
 	}
@@ -237,8 +236,8 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			const TPairDeclaration & pair = m_pathScenes.back();
-			m_mapScenesDeclaration[ XML_TITLE_NODE ] = pair;
+			const String & sceneFolder = m_pathScenes.back();
+			m_mapScenesDeclaration[ XML_TITLE_NODE ] = sceneFolder;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -246,8 +245,8 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			TPairDeclaration & pair = m_pathArrows.back();
-			m_mapArrowsDeclaration[ XML_TITLE_NODE ] = pair;
+			String & arrowFolder = m_pathArrows.back();
+			m_mapArrowsDeclaration[ XML_TITLE_NODE ] = arrowFolder;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -255,8 +254,8 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			TPairDeclaration & pair = m_pathEntities.back();
-			m_mapEntitiesDeclaration[ XML_TITLE_NODE ] = pair;
+			String & entityFolder = m_pathEntities.back();
+			m_mapEntitiesDeclaration[ XML_TITLE_NODE ] = entityFolder;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -264,8 +263,8 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			TPairDeclaration & pair = m_pathResource.back();
-			m_mapResourceDeclaration[ XML_TITLE_NODE ] = pair;
+			String & resourceFolder = m_pathResource.back();
+			m_mapResourceDeclaration[ XML_TITLE_NODE ] = resourceFolder;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -369,18 +368,6 @@ namespace Menge
 		m_player->render( _debugMask );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	String Game::getPathEntities( const String& _entity ) const
-	{
-		TMapDeclaration::const_iterator it_find = m_mapEntitiesDeclaration.find( _entity );
-
-		if( it_find == m_mapEntitiesDeclaration.end() )
-		{
-			return Utils::emptyString();
-		}
-
-		return it_find->second.first + it_find->second.second;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()
 	{
 		m_pyPersonality = Holder<ScriptEngine>::hostage()
@@ -405,20 +392,19 @@ namespace Menge
 		_initPredefinedResources();
 
 		Holder<LightSystem>::keep( new LightSystem );
+
 		for( TMapDeclaration::iterator
 				it = m_mapResourceDeclaration.begin(),
 				it_end = m_mapResourceDeclaration.end();
 				it != it_end;
 				it++ )
 		{
-			String path = it->second.first;
-			path += it->second.second;
-			path += '/';
-			path += it->first;
-			path += ".resource";
+			String path = getPathResource(it->first);
+
+			String category = getCategoryResource(path);
 
 			Holder<ResourceManager>::hostage()
-				->loadResource( it->second.first, path, it->first );
+				->loadResource( category, path, it->first );
 		}
 
 		for( TMapDeclaration::iterator
@@ -427,10 +413,7 @@ namespace Menge
 		it != it_end;
 		it++ )
 		{
-			String path = it->second.first;
-			path += it->second.second;
-
-			loadArrow( it->first, path );
+			loadArrow( it->first );
 		}
 
 		m_defaultArrow = getArrow( m_defaultArrowName );
@@ -493,6 +476,37 @@ namespace Menge
 		m_mapArrow.erase( _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Game::loadArrow( const String& _name )
+	{
+		String arrowModule = _name;
+		arrowModule += ".Arrow";
+
+		Arrow * arrow = Holder<ScriptEngine>::hostage()
+			->createArrow( arrowModule );
+
+		if( arrow == 0 )
+		{
+			MENGE_LOG_ERROR( "Can't create arrow \"%s\""
+				, _name.c_str() ); 
+
+			return false;
+		}
+
+		String xml_path = getPathArrow(_name);
+
+		if( Holder<XmlEngine>::hostage()
+			->parseXmlFileM( xml_path, arrow, &Arrow::loader ) == false )
+		{
+			MENGE_LOG_ERROR( "Warning: invalid loader xml \"%s\" for arrow \"%s\""
+				, xml_path.c_str()
+				, _name.c_str() );
+		}
+
+		m_mapArrow.insert( std::make_pair( _name, arrow ) );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Arrow * Game::getDefaultArrow()
 	{
 		return m_defaultArrow;
@@ -508,39 +522,6 @@ namespace Menge
 		}
 
 		return it_find->second;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadArrow( const String& _name, const String& _path )
-	{
-		String arrowModule = _name;
-		arrowModule += ".Arrow";
-
-		Arrow * arrow = Holder<ScriptEngine>::hostage()
-			->createArrow( arrowModule );
-
-		if( arrow == 0 )
-		{
-			MENGE_LOG_ERROR( "Can't create arrow \"%s\""
-				, _name.c_str() ); 
-			return false;
-		}
-
-		String xml_path = _path;
-		xml_path += "/";
-		xml_path += _name;
-		xml_path += "/Arrow.xml";
-
-		if( Holder<XmlEngine>::hostage()
-			->parseXmlFileM( xml_path, arrow, &Arrow::loader ) == false )
-		{
-
-		}
-
-		//arrow->activate();
-
-		m_mapArrow.insert( std::make_pair( _name, arrow ) );
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Game::getScene( const String& _name )
@@ -559,20 +540,13 @@ namespace Menge
 			{
 				MENGE_LOG_ERROR( "Can't create scene \"%s\""
 					, _name.c_str() ); 
+
 				return 0;
 			}
 
 			scene->setName( _name );
 			
-			String xml_path;
-
-			const TPairDeclaration & pair = m_mapScenesDeclaration[ _name ];
-
-			xml_path = pair.first;
-			xml_path += pair.second;
-			xml_path += "/";
-			xml_path += _name;
-			xml_path += "/Scene.xml";
+			String xml_path = getPathScene( _name );
 
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlFileM( xml_path, scene, &Scene::loader ) == false )
@@ -587,6 +561,7 @@ namespace Menge
 
 			return scene;
 		}
+
 		it_find->second->incrementReference();
 		return it_find->second;
 	}
@@ -692,6 +667,7 @@ namespace Menge
 		{
 			m_accountNames.push_back( _accountName );
 		}
+
 		Account* newAccount = new Account( _accountName );
 		m_accounts.insert( std::make_pair( _accountName, newAccount ) );
 
@@ -878,39 +854,41 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::registerResources( const String& _baseDir )
+	void Game::registerResources( const String & _baseDir )
 	{
+		m_baseDir = _baseDir;
+
 		for( TStringVector::iterator it = m_resourcePaths.begin(), it_end = m_resourcePaths.end();
 			it != it_end;
 			it++ )
 		{
-			readResourceFile( (*it) );
+			readResourceFile( *it );
 		}
 
 		ScriptEngine::TListModulePath m_listModulePath;
 
-		for( TListDeclaration::iterator it = m_pathScripts.begin(),
+		for( TVecDeclaration::iterator it = m_pathScripts.begin(),
 			it_end = m_pathScripts.end(); it != it_end; it++ )
 		{
-			m_listModulePath.push_back( _baseDir + it->first + it->second );
+			m_listModulePath.push_back( _baseDir + *it );
 		}
 
-		for( TListDeclaration::iterator it = m_pathEntities.begin(),
+		for( TVecDeclaration::iterator it = m_pathEntities.begin(),
 			it_end = m_pathEntities.end(); it != it_end; it++ )
 		{
-			m_listModulePath.push_back( _baseDir + it->first + it->second );
+			m_listModulePath.push_back( _baseDir + *it );
 		}
 
-		for( TListDeclaration::iterator it = m_pathScenes.begin(),
+		for( TVecDeclaration::iterator it = m_pathScenes.begin(),
 			it_end = m_pathScenes.end(); it != it_end; it++ )
 		{
-			m_listModulePath.push_back( _baseDir + it->first + it->second );
+			m_listModulePath.push_back( _baseDir + *it );
 		}
 
-		for( TListDeclaration::iterator it = m_pathArrows.begin(),
+		for( TVecDeclaration::iterator it = m_pathArrows.begin(),
 			it_end = m_pathArrows.end(); it != it_end; it++ )
 		{
-			m_listModulePath.push_back( _baseDir + it->first + it->second );
+			m_listModulePath.push_back( _baseDir + *it );
 		}
 
 		Holder<ScriptEngine>::hostage()
@@ -926,11 +904,11 @@ namespace Menge
 				->registerEntityType( it->first );
 		}
 
-		for( TListDeclaration::iterator it = m_pathText.begin(),
+		for( TVecDeclaration::iterator it = m_pathText.begin(),
 			it_end = m_pathText.end(); it != it_end; it++ )
 		{
 			Holder<TextManager>::hostage()
-				->loadResourceFile( it->first + it->second );
+				->loadResourceFile( *it );
 		}
 
 	}
@@ -941,6 +919,11 @@ namespace Menge
 		{
 			m_player->onFocus( _focus );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::getHasWindowPanel() const
+	{
+		return m_hasWindowPanel;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::_initPredefinedResources()
@@ -961,9 +944,119 @@ namespace Menge
 			->directResourceRelease("WhitePixel");
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::getHasWindowPanel() const
+	const String& Game::getBaseDirectory() const
 	{
-		return m_hasWindowPanel;
+		return m_baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getResourcePaths() const
+	{
+		return m_resourcePaths;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getScriptsPaths() const
+	{
+		return m_pathScripts;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getArrowPaths() const
+	{
+		return m_pathArrows;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getEntitiesPaths() const
+	{
+		return m_pathEntities;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TStringVector& Game::getScenesPaths() const
+	{
+		return m_pathScenes;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String Game::getPathEntity( const String& _name ) const
+	{
+		TMapDeclaration::const_iterator it_find = m_mapEntitiesDeclaration.find( _name );
+
+		if( it_find == m_mapEntitiesDeclaration.end() )
+		{
+			return Utils::emptyString();
+		}
+
+		String xml_path = it_find->second;
+
+		xml_path += '/';
+		xml_path += _name;
+		xml_path += ".xml";
+
+		return xml_path;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String Game::getPathScene( const String& _name ) const
+	{
+		TMapDeclaration::const_iterator it_find = m_mapScenesDeclaration.find( _name );
+
+		if( it_find == m_mapScenesDeclaration.end() )
+		{
+			return Utils::emptyString();
+		}
+
+		String xml_path = it_find->second;
+
+		xml_path += "/";
+		xml_path += _name;
+		xml_path += "/Scene.xml";
+
+		return xml_path;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String Game::getPathArrow( const String& _name ) const
+	{
+		TMapDeclaration::const_iterator it_find = m_mapArrowsDeclaration.find( _name );
+
+		if( it_find == m_mapArrowsDeclaration.end() )
+		{
+			return Utils::emptyString();
+		}
+
+		String xml_path = it_find->second;
+
+		xml_path += "/";
+		xml_path += _name;
+		xml_path += "/Arrow.xml";
+
+		return xml_path;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String Game::getPathResource( const String& _name ) const
+	{
+		TMapDeclaration::const_iterator it_find = m_mapResourceDeclaration.find( _name );
+
+		if( it_find == m_mapResourceDeclaration.end() )
+		{
+			return Utils::emptyString();
+		}
+
+		String path = it_find->second;
+
+		path += '/';
+		path += it_find->first;
+		path += ".resource";
+
+		return path;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String Game::getCategoryResource( const String& _path ) const
+	{
+		size_t index = _path.find_first_of( '/' );
+
+		if(index == String::npos)
+		{
+			return Utils::emptyString();
+		}
+
+		String category = _path.substr( 0, index + 1 );
+		
+		return category;
+	}
 }

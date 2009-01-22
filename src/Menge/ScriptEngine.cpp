@@ -189,11 +189,7 @@ namespace Menge
 		m_mapEntitiesType.insert( std::make_pair( _type, module ) );
 
 		String xml_path = Holder<Game>::hostage()
-			->getPathEntities( _type );
-
-		xml_path += '/';
-		xml_path += _type;
-		xml_path += ".xml";
+			->getPathEntity( _type );
 
 		DataStreamInterface * file = 
 			Holder<FileEngine>::hostage()
@@ -337,11 +333,7 @@ namespace Menge
 		Entity * entity = createEntity_( _type );
 
 		String xml_path = Holder<Game>::hostage()
-			->getPathEntities( _type );
-
-		xml_path += '/';
-		xml_path += _type;
-		xml_path += ".xml";
+			->getPathEntity( _type );
 
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlBufferM( _xml, entity, &Entity::loader ) )

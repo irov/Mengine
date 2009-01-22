@@ -56,6 +56,10 @@ namespace Menge
 
 		virtual bool initAppDataPath( const String& _game ) = 0;
 		virtual const String& getAppDataPath() = 0;
+
+		// path functions
+		virtual bool isAbsolutePath( const String& _path ) = 0;
+		virtual String joinPath( const String& _base, const String& _name ) = 0;
 	};
 }
 

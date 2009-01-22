@@ -47,6 +47,7 @@ namespace Menge
 	{
 		m_currentCategory = _category;
 		m_currentGroup = _group;
+
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( _file, this, &ResourceManager::loaderDataBlock ) == false )
 		{

@@ -1,10 +1,7 @@
 #	pragma once
 
-//#	include "ResourceManager.h"
-
 #	include "InputHandler.h"
 #	include "Eventable.h"
-#	include "math/vec3.h"
 #	include "Account.h"
 #	include "TextField.h"
 
@@ -50,14 +47,11 @@ namespace Menge
 		void release();
 
 	public:
-		String getPathEntities( const String& _entity ) const;
-
-	public:
 		Arrow * getArrow( const String& _name );
-		bool loadArrow( const String& _name, const String& _path );
-		void removeArrow( const String& _name );
-
 		Arrow * getDefaultArrow();
+
+		bool loadArrow( const String& _name );
+		void removeArrow( const String& _name );
 
 	public:
 		Scene * getScene( const String& _name );
@@ -65,7 +59,7 @@ namespace Menge
 
 	public:
 		bool loader( const String& _iniFile );
-		//void loaderGame_( XmlElement * _xml );
+		
 		void loaderScenes_( XmlElement * _xml );
 		void loaderArrows_( XmlElement * _xml );
 		void loaderEntities_( XmlElement * _xml );
@@ -76,7 +70,7 @@ namespace Menge
 		void loaderResourceFile_( XmlElement * _xml );
 
 		void loadAccounts();
-		void registerResources( const String& _baseDir );
+		void registerResources(const String & _baseDir);
 
 	public:
 		bool handleKeyEvent( unsigned int _key, unsigned int _char, bool _isDown ) override;
@@ -85,14 +79,12 @@ namespace Menge
 		void handleMouseLeave();
 		void handleMouseEnter();
 		void onFocus( bool _focus );
-	
+
 	public:
 		const Resolution & getResolution() const;
 		const Resolution & getResourceResolution() const;
 		bool isContentResolutionFixed() const;
-
 		String getTitle() const;
-
 		int getBits() const;
 		bool getFullscreen() const;
 		bool getVSync() const;
@@ -102,19 +94,32 @@ namespace Menge
 		int getFSAAQuality() const;
 		bool getHasWindowPanel() const;
 
+	public:
 		void createAccount( const String& _accountName );
 		void deleteAccount( const String& _accountName );
 		void selectAccount( const String& _accountName );
 		void saveAccount( const String& _accountName );
 		void saveAccounts();
-
+		void saveAccountsInfo();
 		Account * getCurrentAccount();
 
-		void saveAccountsInfo();
+	public:
+		String getPathEntity( const String& _name ) const;
+		String getPathScene( const String& _name ) const;
+		String getPathArrow( const String& _name ) const;
+		String getPathResource( const String& _name ) const;
+		String getCategoryResource( const String& _path ) const;
 
-	protected:
+	public:
+		const String& getBaseDirectory() const;
+		const TStringVector& getResourcePaths() const;
+		const TStringVector& getScriptsPaths() const;
+		const TStringVector& getEntitiesPaths() const;
+		const TStringVector& getArrowPaths() const;
+		const TStringVector& getScenesPaths() const;
+	
+	private:
 
-		TextField * m_debugTextField;
 		Player* m_player;
 		String m_title;
 
@@ -124,9 +129,7 @@ namespace Menge
 		bool m_fixedContentResolution;
 
 		String m_defaultArrowName;
-
 		String m_personality;
-
 		String m_eventInit;
 		String m_eventUpdate;
 		String m_eventFini;
@@ -140,24 +143,22 @@ namespace Menge
 		typedef std::map<String, Scene*> TMapScene;
 		TMapScene m_mapScene;
 
-		typedef std::pair<String, String> TPairDeclaration;
-		typedef std::list< TPairDeclaration > TListDeclaration;
-		typedef std::map<String, TPairDeclaration > TMapDeclaration;
+		typedef std::map<String, String> TMapDeclaration;
 		TMapDeclaration m_mapEntitiesDeclaration;
 		TMapDeclaration m_mapArrowsDeclaration;
 		TMapDeclaration m_mapScenesDeclaration;
 		TMapDeclaration m_mapResourceDeclaration;
-		TListDeclaration m_listResourceLocation;
 		
-		String m_currentResourcePath;
-		TListDeclaration m_pathResource;
-		TListDeclaration m_pathScripts;
-		TListDeclaration m_pathEntities;
-		TListDeclaration m_pathScenes;
-		TListDeclaration m_pathArrows;
-		TListDeclaration m_pathText;
+		typedef std::vector<String> TVecDeclaration;
+		TVecDeclaration m_pathScripts;
+		TVecDeclaration m_pathEntities;
+		TVecDeclaration m_pathScenes;
+		TVecDeclaration m_pathArrows;
+		TVecDeclaration m_pathText;
+		TVecDeclaration m_pathResource;
 
 		TStringVector m_resourcePaths;
+		String m_currentResourcePath;
 
 		int m_bits;
 		bool m_fullScreen;
@@ -165,8 +166,8 @@ namespace Menge
 		bool m_textureFiltering;
 		int	m_FSAAType;
 		int m_FSAAQuality;
-		String m_physicSystemName;
 		bool m_hasWindowPanel;
+		String m_physicSystemName;		
 
 		TStringVector m_accountNames;
 		typedef std::map<String, Account*> TAccountMap;
@@ -176,10 +177,9 @@ namespace Menge
 		String m_defaultAccountName;
 		Account* m_currentAccount;
 
+		String m_baseDir;
+		String m_gameFile;
 
-		/////
-		String m_debugResourceFont;
-		char m_debugText[128];
 		float m_FPS;
 
 		bool loaderAccounts_( const String& _iniFile );

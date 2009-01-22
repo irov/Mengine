@@ -106,4 +106,14 @@ namespace Menge
 		m_interface->closeOutStream( _outStream );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool FileEngine::isAbsolutePath( const String& _path )
+	{
+		return m_interface->isAbsolutePath( _path );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	String FileEngine::joinPath( const String& _base, const String& _name )
+	{
+		return m_interface->joinPath( _base, _name );
+	}
+	//////////////////////////////////////////////////////////////////////////
 }

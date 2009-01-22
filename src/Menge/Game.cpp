@@ -236,7 +236,7 @@ namespace Menge
 	{
 		XML_SWITCH_NODE( _xml )
 		{
-			const String & sceneFolder = m_pathScenes.back();
+			String & sceneFolder = m_pathScenes.back();
 			m_mapScenesDeclaration[ XML_TITLE_NODE ] = sceneFolder;
 		}
 	}
@@ -493,6 +493,7 @@ namespace Menge
 		}
 
 		String xml_path = getPathArrow(_name);
+		xml_path += "/Arrow.xml";
 
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlFileM( xml_path, arrow, &Arrow::loader ) == false )
@@ -547,6 +548,7 @@ namespace Menge
 			scene->setName( _name );
 			
 			String xml_path = getPathScene( _name );
+			xml_path += "/Scene.xml";
 
 			if( Holder<XmlEngine>::hostage()
 				->parseXmlFileM( xml_path, scene, &Scene::loader ) == false )
@@ -858,7 +860,8 @@ namespace Menge
 	{
 		m_baseDir = _baseDir;
 
-		for( TStringVector::iterator it = m_resourcePaths.begin(), it_end = m_resourcePaths.end();
+		for( TStringVector::iterator it = m_resourcePaths.begin(),
+			it_end = m_resourcePaths.end();
 			it != it_end;
 			it++ )
 		{
@@ -910,7 +913,6 @@ namespace Menge
 			Holder<TextManager>::hostage()
 				->loadResourceFile( *it );
 		}
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onFocus( bool _focus )
@@ -987,7 +989,6 @@ namespace Menge
 
 		xml_path += '/';
 		xml_path += _name;
-		xml_path += ".xml";
 
 		return xml_path;
 	}
@@ -1005,7 +1006,6 @@ namespace Menge
 
 		xml_path += "/";
 		xml_path += _name;
-		xml_path += "/Scene.xml";
 
 		return xml_path;
 	}
@@ -1023,7 +1023,6 @@ namespace Menge
 
 		xml_path += "/";
 		xml_path += _name;
-		xml_path += "/Arrow.xml";
 
 		return xml_path;
 	}

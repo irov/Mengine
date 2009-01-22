@@ -191,6 +191,8 @@ namespace Menge
 		String xml_path = Holder<Game>::hostage()
 			->getPathEntity( _type );
 
+		xml_path += ".xml";
+
 		DataStreamInterface * file = 
 			Holder<FileEngine>::hostage()
 			->openFile( xml_path );
@@ -334,6 +336,8 @@ namespace Menge
 
 		String xml_path = Holder<Game>::hostage()
 			->getPathEntity( _type );
+
+		xml_path += ".xml";
 
 		if( Holder<XmlEngine>::hostage()
 			->parseXmlBufferM( _xml, entity, &Entity::loader ) )

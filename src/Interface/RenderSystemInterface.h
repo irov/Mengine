@@ -422,8 +422,6 @@ namespace Menge
 
 		virtual int  getNumDIP() const = 0;
 		virtual void renderText(const String & _text, const float * _pos, unsigned long _color) = 0;
-
-		virtual bool supportNPOT() = 0;
 	};
 }
 

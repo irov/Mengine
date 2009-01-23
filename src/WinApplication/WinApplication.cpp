@@ -250,17 +250,30 @@ namespace Menge
 		std::sprintf( strbuffer, "OS: Windows %ld.%ld.%ld", os_ver.dwMajorVersion, os_ver.dwMinorVersion, os_ver.dwBuildNumber );
 		LOG( strbuffer );
 
-		//MEMORYSTATUSEX mem_st;
-		//GlobalMemoryStatusEx(&mem_st);
-		//std::sprintf( strbuffer, "Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
-		//	, mem_st.ullTotalPhys/1024L
-		//	, mem_st.ullAvailPhys/1024L
-		//	, mem_st.ullTotalPageFile/1024L
-		//	, mem_st.ullAvailPageFile );
-		//LOG( strbuffer );
+		MEMORYSTATUS mem_st;
+		GlobalMemoryStatus(&mem_st);
+		std::sprintf( strbuffer, "Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
+			, mem_st.dwTotalPhys/1024L
+			, mem_st.dwAvailPhys/1024L
+			, mem_st.dwTotalPageFile/1024L
+			, mem_st.dwAvailPageFile/1024L );
+		LOG( strbuffer );
 
 		sprintf( strbuffer, "SVN Revision: %s", Menge::Application::getVersionInfo() );
 		LOG( strbuffer );
+
+		/*wchar_t wProjName[MAX_PATH] = L"Menge"; 
+		LoadString( m_hInstance, IDS_PROJECT_NAME, (LPWSTR)wProjName, MAX_PATH );
+
+		HRESULT hr;
+		wchar_t wUserPath[MAX_PATH] = L"";
+
+		SHGetFolderPathAndSubDir( NULL,					//hWnd	
+			CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,	//csidl
+			NULL,										//hToken
+			0,											//dwFlags
+			wProjName,									//pszSubDir
+			szPath);									//pszPath*/
 
 		LOG( "Initializing Mengine..." );
 		if( m_menge->initialize( config_file, m_commandLine.c_str(), true ) == false )

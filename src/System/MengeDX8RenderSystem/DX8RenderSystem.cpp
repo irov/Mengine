@@ -266,6 +266,8 @@ namespace Menge
 			,"A8R8G8B8"
 		};
 
+		m_currentRenderTarget = "defaultCamera";
+
 		m_screenResolution[0] = _width;
 		m_screenResolution[1] = _height;
 		m_fullscreen = _fullscreen;
@@ -346,6 +348,8 @@ namespace Menge
 
 		// Init all stuff that can be lost
 		setProjectionMatrix_( _width, _height );
+
+		m_renderTextureMap.insert( std::make_pair( 	m_currentRenderTarget, (DX8RenderTexture*)NULL ) );
 
 		m_layer3D = false;	// starting with 2D
 		if(!init_lost_()) 
@@ -564,6 +568,10 @@ namespace Menge
 		TRenderTextureMap::iterator rit = m_renderTextureMap.find( dxTexture->getDescription() );
 		if( rit != m_renderTextureMap.end() )
 		{
+			if( rit->second == NULL )
+			{
+				return;
+			}
 			DX8RenderTexture* rtextrue = (DX8RenderTexture*)dxTexture;
 			if( rtextrue->decref() == 0 )
 			{
@@ -830,6 +838,8 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
+			if( it->second == NULL ) continue;
+
 			it->second->setDirty( true );
 		}
 	}
@@ -920,6 +930,7 @@ namespace Menge
 			}
 			m_currentRenderTarget = _name;
 			begin_scene_( it->second );
+			if( it->second == NULL ) return;
 			if( it->second->isDirty() && _clear )
 			{
 				clear( m_clearColor );
@@ -1189,6 +1200,8 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
+			if( it->second == NULL ) continue;
+
 			IDirect3DTexture8* d3dTexInterface = it->second->getInterface();
 			IDirect3DSurface8* depthInterface = it->second->getDepthInterface();
 			if( d3dTexInterface != NULL )
@@ -1713,6 +1726,8 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
+			if( it->second == NULL ) continue;
+
 			it->second->getInterface()->Release();
 			it->second->getDepthInterface()->Release();
 		}
@@ -1811,6 +1826,8 @@ namespace Menge
 			it != it_end;
 			it++ )
 		{
+			if( it->second == NULL ) continue;
+
 			IDirect3DTexture8* pTex = it->second->getInterface();
 			IDirect3DSurface8* pDepth = it->second->getDepthInterface();
 			if(pTex) pTex->Release();
